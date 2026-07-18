@@ -1,0 +1,1 @@
+{"root":["./src/app.tsx","./src/index.tsx","./src/vite-env.d.ts","./src/api/scanclient.ts","./src/components/findingcard.tsx","./src/components/findingslist.tsx","./src/components/reportsection.tsx","./src/components/scoregauge.tsx","./src/components/urlform.tsx","./src/utils/shadowmount.ts"],"version":"5.9.3"}

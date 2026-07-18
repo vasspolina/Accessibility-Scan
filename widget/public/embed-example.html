@@ -1,0 +1,21 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Embed example — third-party host page</title>
+    <style>
+      /* Deliberately aggressive host-page styles to prove Shadow DOM isolation */
+      body { font-family: "Comic Sans MS", cursive; background: #222; color: #eee; padding: 40px; }
+      button { all: unset; background: red !important; color: white; padding: 20px; }
+      input { border: 10px dashed purple !important; }
+    </style>
+  </head>
+  <body>
+    <h1>Example client site</h1>
+    <p>This page simulates a third-party site embedding the accessibility checker widget below. Its styles are intentionally hostile to prove the widget renders correctly inside a Shadow DOM regardless.</p>
+
+    <!-- Embed snippet: -->
+    <div id="a11y-widget-root" data-api-base="http://localhost:8787"></div>
+    <script src="./widget.js" defer></script>
+  </body>
+</html>
