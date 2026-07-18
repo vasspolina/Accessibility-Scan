@@ -39,6 +39,13 @@ export interface DomSignals {
   respectsReducedMotion: boolean;
 }
 
+export interface BoundingBox {
+  x: number;
+  y: number;
+  width: number;
+  height: number;
+}
+
 // axe-core's own types cover the shape well enough for our purposes without
 // pulling in the full runtime dependency graph here.
 export interface AxeRunResult {
@@ -69,6 +76,14 @@ export interface RenderResult {
   // confusing layouts are fundamentally perceptual and don't show up in a
   // DOM-only summary.
   screenshotBase64: string;
+  // Full-page JPEG buffer used server-side only to crop small per-finding
+  // thumbnails (see services/render/cropThumbnail.ts) — not sent to Claude
+  // directly (the viewport screenshot above covers that) and not returned
+  // to the API caller as-is, so kept as a Buffer rather than base64.
+  fullPageScreenshot: Buffer | null;
+  // Document-relative (not viewport-relative) bounding boxes for every
+  // selector we might need to crop a thumbnail for, keyed by selector.
+  boundingBoxes: Record<string, BoundingBox | null>;
 }
 
 // Runs inside the browser page context via page.evaluate — must be fully
@@ -124,22 +139,29 @@ function extractDomSignalsInPage(): DomSignals {
     selector: cssPath(el),
   }));
 
-  const images = Array.from(document.querySelectorAll("img")).map((img) => ({
-    selector: cssPath(img),
-    alt: img.hasAttribute("alt") ? img.getAttribute("alt") : null,
-    src: img.getAttribute("src") ?? "",
-  }));
+  // Capped: real e-commerce pages can have hundreds of images/links in
+  // product grids — uncapped arrays would bloat the Claude context payload
+  // and blow up the number of element thumbnails captured per scan.
+  const images = Array.from(document.querySelectorAll("img"))
+    .slice(0, 40)
+    .map((img) => ({
+      selector: cssPath(img),
+      alt: img.hasAttribute("alt") ? img.getAttribute("alt") : null,
+      src: img.getAttribute("src") ?? "",
+    }));
 
-  const interactiveElements = Array.from(document.querySelectorAll("a[href], button")).map((el) => {
-    const name = accessibleName(el);
-    return {
-      type: el.tagName.toLowerCase() === "a" ? "link" : "button",
-      selector: cssPath(el),
-      accessibleName: name,
-      href: el.tagName.toLowerCase() === "a" ? (el.getAttribute("href") ?? undefined) : undefined,
-      hasVisibleText: (el.textContent ?? "").trim().length > 0,
-    };
-  });
+  const interactiveElements = Array.from(document.querySelectorAll("a[href], button"))
+    .slice(0, 60)
+    .map((el) => {
+      const name = accessibleName(el);
+      return {
+        type: el.tagName.toLowerCase() === "a" ? "link" : "button",
+        selector: cssPath(el),
+        accessibleName: name,
+        href: el.tagName.toLowerCase() === "a" ? (el.getAttribute("href") ?? undefined) : undefined,
+        hasVisibleText: (el.textContent ?? "").trim().length > 0,
+      };
+    });
 
   const forms = Array.from(document.querySelectorAll("form")).map((form) => {
     const fields = Array.from(form.querySelectorAll("input, select, textarea")).map((field) => {
@@ -239,6 +261,34 @@ function extractDomSignalsInPage(): DomSignals {
   };
 }
 
+// Runs inside the browser page context via page.evaluate — must be fully
+// self-contained. Returns document-relative (not viewport-relative)
+// bounding boxes so they map correctly onto a full-page screenshot
+// regardless of scroll position at capture time.
+function collectBoundingBoxesInPage(selectors: string[]): Record<string, BoundingBox | null> {
+  const result: Record<string, BoundingBox | null> = {};
+  for (const sel of selectors) {
+    if (sel in result) continue;
+    try {
+      const el = document.querySelector(sel);
+      if (!el) {
+        result[sel] = null;
+        continue;
+      }
+      const rect = el.getBoundingClientRect();
+      result[sel] = {
+        x: Math.round(rect.x + window.scrollX),
+        y: Math.round(rect.y + window.scrollY),
+        width: Math.round(rect.width),
+        height: Math.round(rect.height),
+      };
+    } catch {
+      result[sel] = null;
+    }
+  }
+  return result;
+}
+
 // tsx's dev-mode esbuild transform (keepNames: true, not user-configurable)
 // wraps named function/const declarations with calls to a module-level
 // `__name` helper for stack-trace friendliness. Playwright serializes
@@ -247,8 +297,36 @@ function extractDomSignalsInPage(): DomSignals {
 // locally so the extracted source is self-contained regardless of whether
 // it went through that transform (a plain `tsc` production build never
 // injects these calls in the first place, so this is a harmless no-op there).
-function toBrowserScript(fn: () => unknown): string {
-  return `(() => { const __name = (fn) => fn; return (${fn.toString()})(); })()`;
+// `arg`, when provided, is baked into the generated source as a JSON
+// literal rather than passed via Playwright's separate evaluate() argument
+// — keeps this helper's signature simple and avoids relying on Playwright's
+// string-vs-function evaluate() argument-passing semantics.
+function toBrowserScript<A>(fn: (arg: A) => unknown, arg?: A): string {
+  const argLiteral = arg === undefined ? "" : JSON.stringify(arg);
+  return `(() => { const __name = (fn) => fn; return (${fn.toString()})(${argLiteral}); })()`;
+}
+
+// Every selector a finding could plausibly reference — axe violation
+// targets plus everything surfaced in domSignals — so we can pre-resolve
+// bounding boxes for all of them in one pass while the page is still open.
+function collectCandidateSelectors(axe: AxeRunResult, domSignals: DomSignals): string[] {
+  const selectors = new Set<string>();
+
+  for (const violation of axe.violations) {
+    for (const node of violation.nodes) selectors.add(node.target.join(" "));
+  }
+  for (const h of domSignals.headingTree) selectors.add(h.selector);
+  for (const l of domSignals.landmarks) selectors.add(l.selector);
+  for (const img of domSignals.images) selectors.add(img.selector);
+  for (const el of domSignals.interactiveElements) selectors.add(el.selector);
+  for (const form of domSignals.forms) {
+    selectors.add(form.selector);
+    for (const field of form.fields) selectors.add(field.selector);
+    for (const err of form.errorMessages) selectors.add(err.selector);
+  }
+  for (const a of domSignals.animatedElements) selectors.add(a.selector);
+
+  return Array.from(selectors);
 }
 
 export async function renderAndScan(url: string): Promise<RenderResult> {
@@ -271,6 +349,19 @@ export async function renderAndScan(url: string): Promise<RenderResult> {
     const domSignals = await page.evaluate<DomSignals>(toBrowserScript(extractDomSignalsInPage));
     const screenshotBuffer = await page.screenshot({ type: "jpeg", quality: 70 });
 
+    const candidateSelectors = collectCandidateSelectors(axe, domSignals);
+    const boundingBoxes = await page.evaluate<Record<string, BoundingBox | null>>(
+      toBrowserScript(collectBoundingBoxesInPage, candidateSelectors)
+    );
+
+    // Full-page capture used only for server-side thumbnail cropping (see
+    // cropThumbnail.ts) — best-effort: some very long/complex pages can
+    // fail or time out on a full-page screenshot, and that should degrade
+    // to "no thumbnails" rather than failing the whole scan.
+    const fullPageScreenshot = await page
+      .screenshot({ type: "jpeg", quality: 60, fullPage: true, timeout: 10_000 })
+      .catch(() => null);
+
     return {
       pageTitle: domSignals.pageTitle,
       finalUrl: page.url(),
@@ -279,6 +370,8 @@ export async function renderAndScan(url: string): Promise<RenderResult> {
       domSignals,
       renderTimeMs: Date.now() - start,
       screenshotBase64: screenshotBuffer.toString("base64"),
+      fullPageScreenshot,
+      boundingBoxes,
     };
   });
 }

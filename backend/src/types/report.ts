@@ -25,6 +25,10 @@ export const accessibilityFindingSchema = z.object({
   suggestedFix: z.string(),
   ruleId: z.string().optional(),
   confidence: z.enum(["high", "medium", "low"]).optional(),
+  // Base64 JPEG thumbnail of the flagged element, cropped from a full-page
+  // screenshot server-side. Omitted when the element couldn't be located
+  // or the thumbnail cap for this scan was reached — see routes/scan.ts.
+  elementScreenshot: z.string().optional(),
 });
 export type AccessibilityFinding = z.infer<typeof accessibilityFindingSchema>;
 

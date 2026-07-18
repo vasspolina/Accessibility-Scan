@@ -9,6 +9,7 @@ import { extractContext } from "../services/contextExtraction/extractContext.js"
 import { reviewPage } from "../services/aiReview/reviewPage.js";
 import { axeToFindings, aiToFindings, mergeFindings } from "../services/merge/mergeFindings.js";
 import { summarizeSeverity, computeScore, summarizeCategories } from "../services/merge/scoring.js";
+import { attachElementScreenshots } from "../services/render/cropThumbnail.js";
 import type { AccessibilityReport } from "../types/report.js";
 
 const scanBodySchema = z.object({
@@ -53,6 +54,8 @@ export async function scanRoutes(app: FastifyInstance) {
     const automatedFindings = axeToFindings(renderResult.axe);
     const aiFindings = aiToFindings(aiReview.findings);
     const findings = mergeFindings(automatedFindings, aiFindings);
+    await attachElementScreenshots(findings, renderResult.boundingBoxes, renderResult.fullPageScreenshot);
+
     // score/summary reflect accessibility-category findings only; design-clarity
     // and dark-pattern findings are reported via categorySummary instead.
     const summary = summarizeSeverity(findings);

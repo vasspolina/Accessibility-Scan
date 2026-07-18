@@ -21,6 +21,13 @@ export function FindingCard({ finding }: { finding: AccessibilityFinding }) {
         aria-expanded={expanded}
         aria-controls={detailsId}
       >
+        {finding.elementScreenshot && (
+          <img
+            className="a11y-finding-thumb"
+            src={`data:image/jpeg;base64,${finding.elementScreenshot}`}
+            alt=""
+          />
+        )}
         <span className="a11y-severity-badge">{severityLabel[finding.severity]}</span>
         <span className="a11y-finding-desc">{finding.description}</span>
         <span className="a11y-finding-source">
@@ -29,6 +36,13 @@ export function FindingCard({ finding }: { finding: AccessibilityFinding }) {
       </button>
       {expanded && (
         <div id={detailsId} className="a11y-finding-details">
+          {finding.elementScreenshot && (
+            <img
+              className="a11y-finding-thumb-large"
+              src={`data:image/jpeg;base64,${finding.elementScreenshot}`}
+              alt={`Screenshot of the flagged element: ${finding.selector}`}
+            />
+          )}
           {finding.wcagCriterion && finding.wcagCriterion !== "N/A" && (
             <p>
               <strong>WCAG:</strong> {finding.wcagCriterion}

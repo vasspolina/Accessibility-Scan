@@ -15,6 +15,9 @@ export interface AccessibilityFinding {
   suggestedFix: string;
   ruleId?: string;
   confidence?: "high" | "medium" | "low";
+  // Base64 JPEG (no data: prefix) — a cropped screenshot of the flagged
+  // element, when the backend could locate and capture it.
+  elementScreenshot?: string;
 }
 
 export interface AccessibilityReport {
