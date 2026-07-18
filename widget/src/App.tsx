@@ -18,12 +18,12 @@ export function App({ apiBase }: { apiBase: string }) {
     };
   }, [report]);
 
-  async function handleScan(url: string) {
+  async function handleScan(url: string, includeAiReview: boolean) {
     setLoading(true);
     setError(null);
     setReport(null);
     try {
-      const result = await scanUrl(apiBase, url);
+      const result = await scanUrl(apiBase, url, includeAiReview);
       setReport(result);
     } catch (err) {
       setError(err instanceof ScanError ? err.message : "Something went wrong. Please try again.");
@@ -55,9 +55,11 @@ export function App({ apiBase }: { apiBase: string }) {
           {report.meta.aiReviewStatus !== "completed" && (
             <p className="a11y-notice">
               AI judgment review was not included in this scan
-              {report.meta.aiReviewStatus === "skipped_no_key"
-                ? " (not configured)."
-                : " (temporarily unavailable)."}{" "}
+              {report.meta.aiReviewStatus === "disabled_by_request"
+                ? " (turned off)."
+                : report.meta.aiReviewStatus === "skipped_no_key"
+                  ? " (not configured)."
+                  : " (temporarily unavailable)."}{" "}
               Showing automated findings only.
             </p>
           )}

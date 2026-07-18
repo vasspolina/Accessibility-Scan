@@ -1,7 +1,12 @@
 export type Severity = "critical" | "serious" | "moderate" | "minor";
 export type FindingSource = "automated" | "ai-review";
 export type FindingCategory = "accessibility" | "design-clarity" | "dark-pattern";
-export type AiReviewStatus = "completed" | "skipped_no_key" | "skipped_timeout" | "skipped_error";
+export type AiReviewStatus =
+  | "completed"
+  | "skipped_no_key"
+  | "skipped_timeout"
+  | "skipped_error"
+  | "disabled_by_request";
 
 export interface AccessibilityFinding {
   id: string;
@@ -38,13 +43,17 @@ export interface AccessibilityReport {
 
 export class ScanError extends Error {}
 
-export async function scanUrl(apiBase: string, url: string): Promise<AccessibilityReport> {
+export async function scanUrl(
+  apiBase: string,
+  url: string,
+  includeAiReview: boolean
+): Promise<AccessibilityReport> {
   let response: Response;
   try {
     response = await fetch(`${apiBase.replace(/\/$/, "")}/api/scan`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ url }),
+      body: JSON.stringify({ url, includeAiReview }),
     });
   } catch {
     throw new ScanError("Could not reach the scanner service. Please try again shortly.");

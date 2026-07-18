@@ -63,6 +63,7 @@ export const aiReviewStatusSchema = z.enum([
   "skipped_no_key",
   "skipped_timeout",
   "skipped_error",
+  "disabled_by_request",
 ]);
 export type AiReviewStatus = z.infer<typeof aiReviewStatusSchema>;
 

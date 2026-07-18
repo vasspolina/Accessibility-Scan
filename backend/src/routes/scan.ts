@@ -14,6 +14,9 @@ import type { AccessibilityReport } from "../types/report.js";
 
 const scanBodySchema = z.object({
   url: z.string().min(1, "url is required"),
+  // Lets the embedder opt out of the AI judgment layer per-scan (faster,
+  // cheaper — automated axe-core findings only). Defaults to on.
+  includeAiReview: z.boolean().optional().default(true),
 });
 
 export async function scanRoutes(app: FastifyInstance) {
@@ -49,7 +52,7 @@ export async function scanRoutes(app: FastifyInstance) {
     }
 
     const context = extractContext(safeUrl.toString(), renderResult);
-    const aiReview = await reviewPage(context, renderResult.screenshotBase64);
+    const aiReview = await reviewPage(context, renderResult.screenshotBase64, parsedBody.data.includeAiReview);
 
     const automatedFindings = axeToFindings(renderResult.axe);
     const aiFindings = aiToFindings(aiReview.findings);

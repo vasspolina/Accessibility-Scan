@@ -64,9 +64,14 @@ async function callClaude(context: PageReviewContext, screenshotBase64: string):
 
 export async function reviewPage(
   context: PageReviewContext,
-  screenshotBase64: string
+  screenshotBase64: string,
+  enabled: boolean
 ): Promise<AiReviewResult> {
   const start = Date.now();
+
+  if (!enabled) {
+    return { status: "disabled_by_request", findings: [], aiReviewTimeMs: 0, model: CLAUDE_MODEL };
+  }
 
   if (!hasAnthropicKey) {
     return { status: "skipped_no_key", findings: [], aiReviewTimeMs: 0, model: CLAUDE_MODEL };

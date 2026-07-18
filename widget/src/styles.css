@@ -30,7 +30,7 @@
   background: var(--a11y-bg);
 }
 
-.a11y-url-form label {
+.a11y-url-label {
   display: block;
   font-size: 13px;
   font-weight: 600;
@@ -72,6 +72,22 @@
 .a11y-url-row button:disabled {
   opacity: 0.6;
   cursor: not-allowed;
+}
+
+.a11y-ai-toggle {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 10px;
+  font-size: 12px;
+  font-weight: 400;
+  color: var(--a11y-muted);
+  cursor: pointer;
+}
+
+.a11y-ai-toggle input[type="checkbox"] {
+  margin: 0;
+  cursor: pointer;
 }
 
 .a11y-url-row button:focus-visible {
