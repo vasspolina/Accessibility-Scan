@@ -4,7 +4,7 @@ import { env } from "../config/env.js";
 import { logger } from "../utils/logger.js";
 import { withTimeout } from "../utils/timeout.js";
 import { assertSafeUrl, UnsafeUrlError } from "../middleware/ssrfGuard.js";
-import { renderAndScan } from "../services/render/renderPage.js";
+import { renderAndScan, RebindingDetectedError } from "../services/render/renderPage.js";
 import { extractContext } from "../services/contextExtraction/extractContext.js";
 import { reviewPage } from "../services/aiReview/reviewPage.js";
 import { axeToFindings, aiToFindings, mergeFindings } from "../services/merge/mergeFindings.js";
@@ -44,6 +44,12 @@ export async function scanRoutes(app: FastifyInstance) {
         "Page render"
       );
     } catch (err) {
+      if (err instanceof RebindingDetectedError) {
+        // Don't echo the resolved IP back to the caller — log it server-side
+        // only, return the same generic rejection as the upfront SSRF guard.
+        logger.warn({ err, url: safeUrl.toString() }, "DNS rebinding detected mid-navigation");
+        return reply.status(400).send({ error: "This host is not allowed" });
+      }
       logger.warn({ err, url: safeUrl.toString() }, "Render/axe layer failed");
       return reply.status(502).send({
         error: "Could not load or scan the page",

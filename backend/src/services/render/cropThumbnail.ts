@@ -13,20 +13,22 @@ const SEVERITY_PRIORITY: Record<Severity, number> = { critical: 0, serious: 1, m
  * screenshot, so a finding can show what it's actually talking about
  * instead of just a CSS selector. Returns null (rather than throwing) for
  * anything unresolvable — a missing thumbnail should never fail a scan.
+ *
+ * Takes the full-page image's dimensions as a param rather than reading
+ * them via sharp(...).metadata() itself — this gets called once per
+ * finding (up to MAX_THUMBNAILS_PER_SCAN, concurrently), and re-decoding
+ * the same (potentially multi-MB) buffer just to read its dimensions on
+ * every call doubles the decode work for no reason.
  */
 export async function cropElementThumbnail(
   fullPageScreenshot: Buffer,
-  box: BoundingBox
+  box: BoundingBox,
+  imgWidth: number,
+  imgHeight: number
 ): Promise<string | null> {
-  if (box.width <= 0 || box.height <= 0) return null;
+  if (box.width <= 0 || box.height <= 0 || imgWidth === 0 || imgHeight === 0) return null;
 
   try {
-    const image = sharp(fullPageScreenshot);
-    const meta = await image.metadata();
-    const imgWidth = meta.width ?? 0;
-    const imgHeight = meta.height ?? 0;
-    if (imgWidth === 0 || imgHeight === 0) return null;
-
     const left = Math.max(0, Math.floor(box.x - PADDING_PX));
     const top = Math.max(0, Math.floor(box.y - PADDING_PX));
     const right = Math.min(imgWidth, Math.ceil(box.x + box.width + PADDING_PX));
@@ -61,6 +63,13 @@ export async function attachElementScreenshots(
 ): Promise<void> {
   if (!fullPageScreenshot) return;
 
+  const meta = await sharp(fullPageScreenshot)
+    .metadata()
+    .catch(() => null);
+  const imgWidth = meta?.width ?? 0;
+  const imgHeight = meta?.height ?? 0;
+  if (imgWidth === 0 || imgHeight === 0) return;
+
   const candidates = [...findings]
     .sort((a, b) => SEVERITY_PRIORITY[a.severity] - SEVERITY_PRIORITY[b.severity])
     .slice(0, MAX_THUMBNAILS_PER_SCAN);
@@ -69,7 +78,7 @@ export async function attachElementScreenshots(
     candidates.map(async (finding) => {
       const box = boundingBoxes[finding.selector];
       if (!box) return;
-      const thumbnail = await cropElementThumbnail(fullPageScreenshot, box);
+      const thumbnail = await cropElementThumbnail(fullPageScreenshot, box, imgWidth, imgHeight);
       if (thumbnail) finding.elementScreenshot = thumbnail;
     })
   );

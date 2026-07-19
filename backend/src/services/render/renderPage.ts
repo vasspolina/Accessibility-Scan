@@ -1,7 +1,8 @@
-import type { Page } from "playwright";
+import type { Page, Response } from "playwright";
 import { createRequire } from "node:module";
 import { env } from "../../config/env.js";
 import { withPage } from "./browserPool.js";
+import { isPrivateOrReservedIp } from "../../middleware/ssrfGuard.js";
 
 const require = createRequire(import.meta.url);
 
@@ -329,49 +330,87 @@ function collectCandidateSelectors(axe: AxeRunResult, domSignals: DomSignals): s
   return Array.from(selectors);
 }
 
+export class RebindingDetectedError extends Error {
+  constructor(host: string, ip: string) {
+    super(`Blocked mid-navigation: ${host} resolved to a private/internal address (${ip})`);
+    this.name = "RebindingDetectedError";
+  }
+}
+
 export async function renderAndScan(url: string): Promise<RenderResult> {
   const start = Date.now();
 
   return withPage(async (page: Page) => {
-    // "networkidle" is unreliable for real-world sites — persistent
-    // background connections (analytics, chat widgets, ad beacons) mean it
-    // never fires and the whole scan times out. Wait for "load" instead
-    // (always resolves for a reachable page), then optimistically give SPA
-    // content a brief extra moment to settle without failing the scan if
-    // the page never goes fully idle.
-    await page.goto(url, { waitUntil: "load", timeout: env.RENDER_TIMEOUT_MS });
-    await page.waitForLoadState("networkidle", { timeout: 3000 }).catch(() => {});
-
-    await page.addScriptTag({ path: require.resolve("axe-core") });
-    const axe = (await page.evaluate(() => (window as unknown as { axe: { run: () => Promise<unknown> } }).axe.run())) as AxeRunResult;
-
-    const ariaSnapshot = await page.locator("body").ariaSnapshot();
-    const domSignals = await page.evaluate<DomSignals>(toBrowserScript(extractDomSignalsInPage));
-    const screenshotBuffer = await page.screenshot({ type: "jpeg", quality: 70 });
-
-    const candidateSelectors = collectCandidateSelectors(axe, domSignals);
-    const boundingBoxes = await page.evaluate<Record<string, BoundingBox | null>>(
-      toBrowserScript(collectBoundingBoxesInPage, candidateSelectors)
-    );
-
-    // Full-page capture used only for server-side thumbnail cropping (see
-    // cropThumbnail.ts) — best-effort: some very long/complex pages can
-    // fail or time out on a full-page screenshot, and that should degrade
-    // to "no thumbnails" rather than failing the whole scan.
-    const fullPageScreenshot = await page
-      .screenshot({ type: "jpeg", quality: 60, fullPage: true, timeout: 10_000 })
-      .catch(() => null);
-
-    return {
-      pageTitle: domSignals.pageTitle,
-      finalUrl: page.url(),
-      axe,
-      ariaSnapshot,
-      domSignals,
-      renderTimeMs: Date.now() - start,
-      screenshotBase64: screenshotBuffer.toString("base64"),
-      fullPageScreenshot,
-      boundingBoxes,
+    // assertSafeUrl() (routes/scan.ts) resolves DNS once before this call
+    // and rejects private/internal IPs — but that's a check against a
+    // separate DNS lookup, and Chromium resolves the hostname again
+    // independently when actually navigating. A DNS-rebinding attacker can
+    // return a safe public IP on the first lookup (passing the guard) and a
+    // private IP on the second (this navigation), a well-known SSRF bypass.
+    // We can't prevent the resulting TCP connection — the resolved IP isn't
+    // knowable until after it's already made — but we CAN detect it via the
+    // actual connection address on every response (main navigation,
+    // redirects, subresources) and abort before any page content is
+    // extracted or returned, closing off the exfiltration path even though
+    // the connection itself briefly happened.
+    let rebindingDetected: RebindingDetectedError | null = null;
+    const onResponse = async (response: Response) => {
+      if (rebindingDetected) return;
+      const addr = await response.serverAddr().catch(() => null);
+      if (addr && isPrivateOrReservedIp(addr.ipAddress)) {
+        rebindingDetected = new RebindingDetectedError(new URL(response.url()).hostname, addr.ipAddress);
+      }
     };
+    page.on("response", onResponse);
+
+    try {
+      // "networkidle" is unreliable for real-world sites — persistent
+      // background connections (analytics, chat widgets, ad beacons) mean it
+      // never fires and the whole scan times out. Wait for "load" instead
+      // (always resolves for a reachable page), then optimistically give SPA
+      // content a brief extra moment to settle without failing the scan if
+      // the page never goes fully idle.
+      await page.goto(url, { waitUntil: "load", timeout: env.RENDER_TIMEOUT_MS });
+      await page.waitForLoadState("networkidle", { timeout: 3000 }).catch(() => {});
+      if (rebindingDetected) throw rebindingDetected;
+
+      await page.addScriptTag({ path: require.resolve("axe-core") });
+      const axe = (await page.evaluate(() => (window as unknown as { axe: { run: () => Promise<unknown> } }).axe.run())) as AxeRunResult;
+
+      const ariaSnapshot = await page.locator("body").ariaSnapshot();
+      const domSignals = await page.evaluate<DomSignals>(toBrowserScript(extractDomSignalsInPage));
+      const screenshotBuffer = await page.screenshot({ type: "jpeg", quality: 70 });
+
+      const candidateSelectors = collectCandidateSelectors(axe, domSignals);
+      const boundingBoxes = await page.evaluate<Record<string, BoundingBox | null>>(
+        toBrowserScript(collectBoundingBoxesInPage, candidateSelectors)
+      );
+
+      // Full-page capture used only for server-side thumbnail cropping (see
+      // cropThumbnail.ts) — best-effort: some very long/complex pages can
+      // fail or time out on a full-page screenshot, and that should degrade
+      // to "no thumbnails" rather than failing the whole scan.
+      const fullPageScreenshot = await page
+        .screenshot({ type: "jpeg", quality: 60, fullPage: true, timeout: 10_000 })
+        .catch(() => null);
+
+      // Final check — a late subresource (lazy-loaded image, polling XHR)
+      // could have triggered a rebind after the initial navigation settled.
+      if (rebindingDetected) throw rebindingDetected;
+
+      return {
+        pageTitle: domSignals.pageTitle,
+        finalUrl: page.url(),
+        axe,
+        ariaSnapshot,
+        domSignals,
+        renderTimeMs: Date.now() - start,
+        screenshotBase64: screenshotBuffer.toString("base64"),
+        fullPageScreenshot,
+        boundingBoxes,
+      };
+    } finally {
+      page.off("response", onResponse);
+    }
   });
 }

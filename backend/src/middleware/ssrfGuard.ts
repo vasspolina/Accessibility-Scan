@@ -10,7 +10,7 @@ export class UnsafeUrlError extends Error {
 
 const BLOCKED_HOSTNAMES = new Set(["localhost", "0.0.0.0", "::1"]);
 
-function isPrivateOrReservedIp(ip: string): boolean {
+export function isPrivateOrReservedIp(ip: string): boolean {
   const type = net.isIP(ip);
 
   if (type === 4) {
