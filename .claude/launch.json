@@ -1,0 +1,24 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "backend",
+      "runtimeExecutable": "/Users/polinavasilyeva/Desktop/untitled folder 6/.tools/node/bin/node",
+      "runtimeArgs": [
+        "/Users/polinavasilyeva/Desktop/untitled folder 6/backend/node_modules/tsx/dist/cli.mjs",
+        "watch",
+        "/Users/polinavasilyeva/Desktop/untitled folder 6/backend/src/server.ts"
+      ],
+      "port": 8787
+    },
+    {
+      "name": "widget",
+      "runtimeExecutable": "/Users/polinavasilyeva/Desktop/untitled folder 6/.tools/node/bin/node",
+      "runtimeArgs": [
+        "/Users/polinavasilyeva/Desktop/untitled folder 6/widget/node_modules/vite/bin/vite.js",
+        "/Users/polinavasilyeva/Desktop/untitled folder 6/widget"
+      ],
+      "port": 5173
+    }
+  ]
+}
