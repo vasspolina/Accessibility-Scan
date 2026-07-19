@@ -7,11 +7,21 @@ let browserPromise: Promise<Browser> | null = null;
 async function getBrowser(): Promise<Browser> {
   if (!browserPromise) {
     browserPromise = chromium.launch({ headless: true });
-    const browser = await browserPromise;
-    browser.on("disconnected", () => {
-      logger.warn("Chromium browser disconnected — will relaunch on next request");
+    try {
+      const browser = await browserPromise;
+      browser.on("disconnected", () => {
+        logger.warn("Chromium browser disconnected — will relaunch on next request");
+        browserPromise = null;
+      });
+    } catch (err) {
+      // Without this, a single failed launch (transient resource
+      // exhaustion, etc.) leaves the rejected promise cached forever —
+      // `!browserPromise` is false for a rejected-but-settled promise, so
+      // every future request would return the same stale rejection with no
+      // way to ever recover short of a process restart.
       browserPromise = null;
-    });
+      throw err;
+    }
   }
   return browserPromise;
 }
@@ -39,18 +49,26 @@ function releaseSlot(): void {
 
 export async function withPage<T>(fn: (page: Page) => Promise<T>): Promise<T> {
   await acquireSlot();
-  const browser = await getBrowser();
-  const context = await browser.newContext({
-    userAgent: "A11yCheckerBot/0.1 (+accessibility scan)",
-    // Fixed viewport so the review screenshot (see renderPage.ts) is
-    // consistent in size/cost across scans regardless of the host machine.
-    viewport: { width: 1280, height: 900 },
-  });
-  const page = await context.newPage();
   try {
-    return await fn(page);
+    const browser = await getBrowser();
+    const context = await browser.newContext({
+      userAgent: "A11yCheckerBot/0.1 (+accessibility scan)",
+      // Fixed viewport so the review screenshot (see renderPage.ts) is
+      // consistent in size/cost across scans regardless of the host machine.
+      viewport: { width: 1280, height: 900 },
+    });
+    try {
+      const page = await context.newPage();
+      return await fn(page);
+    } finally {
+      await context.close();
+    }
   } finally {
-    await context.close();
+    // Must run regardless of whether the failure happened inside fn() or
+    // during browser/context/page setup — previously only the fn() path
+    // released the slot, so a launch/context/page failure permanently
+    // leaked a concurrency slot. After MAX_CONCURRENT_RENDERS such
+    // failures every future scan would queue forever.
     releaseSlot();
   }
 }
