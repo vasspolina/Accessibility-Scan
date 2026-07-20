@@ -10,6 +10,8 @@
     "dev": "tsx watch src/server.ts",
     "build": "tsc -p tsconfig.json",
     "build:widget": "mkdir -p public && cd ../widget && npm run build && cp dist/widget.js ../backend/public/widget.js",
+    "build:widget-business": "mkdir -p public && cd ../widget-business && npm run build && cp dist/widget-business.js ../backend/public/widget-business.js",
+    "build:widgets": "npm run build:widget && npm run build:widget-business",
     "start": "node dist/server.js",
     "test": "vitest run",
     "playwright:install": "playwright install --with-deps chromium"

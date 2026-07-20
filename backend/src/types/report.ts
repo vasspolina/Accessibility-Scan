@@ -19,6 +19,10 @@ export const accessibilityFindingSchema = z.object({
   severity: severitySchema,
   category: findingCategorySchema,
   wcagCriterion: z.string().optional(),
+  // WCAG conformance level (A/AA/AAA), derived from axe's tags — only set
+  // for category:"accessibility" findings from the automated layer. AI
+  // findings aren't asked to classify formal conformance level.
+  wcagLevel: z.enum(["A", "AA", "AAA"]).optional(),
   selector: z.string(),
   elementSnippet: z.string().optional(),
   description: z.string(),

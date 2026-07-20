@@ -19,6 +19,15 @@
         "/Users/polinavasilyeva/Desktop/untitled folder 6/widget"
       ],
       "port": 5173
+    },
+    {
+      "name": "widget-business",
+      "runtimeExecutable": "/Users/polinavasilyeva/Desktop/untitled folder 6/.tools/node/bin/node",
+      "runtimeArgs": [
+        "/Users/polinavasilyeva/Desktop/untitled folder 6/widget-business/node_modules/vite/bin/vite.js",
+        "/Users/polinavasilyeva/Desktop/untitled folder 6/widget-business"
+      ],
+      "port": 5174
     }
   ]
 }

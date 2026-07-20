@@ -11,10 +11,10 @@ RUN npm ci
 
 COPY tsconfig.json ./
 COPY src ./src
-# Built by `npm run build:widget` (compiles ../widget and copies its output
-# here) before `docker build` / `railway up` — the Docker build context is
-# this directory alone, so the widget's own source isn't reachable from
-# here to build it in-line.
+# Built by `npm run build:widgets` (compiles ../widget AND ../widget-business,
+# copying both dist/*.js here) before `docker build` / `railway up` — the
+# Docker build context is this directory alone, so neither widget's own
+# source is reachable from here to build in-line.
 COPY public ./public
 
 RUN npm run build
