@@ -37,7 +37,7 @@ export function App({ apiBase }: { apiBase: string }) {
   return (
     <div className="a11y-widget-inner">
       <p className="a11y-intro">
-        A website that's hard to use for people with disabilities turns away customers and can carry
+        A website that's hard to use for people with disabilities turns away users and can carry
         real legal risk. This check is based on the{" "}
         <a href={WCAG_LINK} target="_blank" rel="noopener noreferrer">
           Web Content Accessibility Guidelines (WCAG)
@@ -76,8 +76,8 @@ export function App({ apiBase }: { apiBase: string }) {
           )}
 
           <ReportSection
-            title="Issues that could turn away customers"
-            description="Marketing or design tricks that pressure or confuse people — these don't affect the score above, but they can cost you trust and sales."
+            title="Issues that could turn away users"
+            description="Marketing or design tricks that pressure or confuse people — these don't affect the score above, but they can cost you trust and credibility."
             variant={findingsByCategory.darkPattern.length > 0 ? "redflag" : "default"}
             findings={findingsByCategory.darkPattern}
           />
