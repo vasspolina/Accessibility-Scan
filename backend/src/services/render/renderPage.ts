@@ -3,6 +3,7 @@ import { createRequire } from "node:module";
 import { env } from "../../config/env.js";
 import { withPage } from "./browserPool.js";
 import { isPrivateOrReservedIp } from "../../middleware/ssrfGuard.js";
+import { logger } from "../../utils/logger.js";
 
 const require = createRequire(import.meta.url);
 
@@ -355,10 +356,21 @@ export async function renderAndScan(url: string): Promise<RenderResult> {
     // the connection itself briefly happened.
     let rebindingDetected: RebindingDetectedError | null = null;
     const onResponse = async (response: Response) => {
-      if (rebindingDetected) return;
-      const addr = await response.serverAddr().catch(() => null);
-      if (addr && isPrivateOrReservedIp(addr.ipAddress)) {
-        rebindingDetected = new RebindingDetectedError(new URL(response.url()).hostname, addr.ipAddress);
+      // This whole body must never throw: it's a fire-and-forget event
+      // listener (page.on doesn't await or catch what listeners return), so
+      // any uncaught exception here becomes an unhandled promise rejection
+      // — which crashes the entire Node process with no way to recover.
+      // Previously only response.serverAddr() was guarded; new URL(...) and
+      // everything else below was one bad response away from taking down
+      // the whole server on any scan.
+      try {
+        if (rebindingDetected) return;
+        const addr = await response.serverAddr().catch(() => null);
+        if (addr && isPrivateOrReservedIp(addr.ipAddress)) {
+          rebindingDetected = new RebindingDetectedError(new URL(response.url()).hostname, addr.ipAddress);
+        }
+      } catch (err) {
+        logger.warn({ err }, "SSRF response check failed — ignoring this response, scan continues");
       }
     };
     page.on("response", onResponse);

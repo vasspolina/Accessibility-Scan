@@ -15,6 +15,22 @@ import { shutdownBrowserPool } from "./services/render/browserPool.js";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
+// Safety net: an unhandled rejection anywhere (e.g. a fire-and-forget
+// Playwright event listener that throws) otherwise crashes the entire
+// process by default in modern Node, taking down every in-flight scan with
+// no trace beyond a bare stack trace on stderr. Log and keep running —
+// these are isolated async failures, not corrupted shared state.
+process.on("unhandledRejection", (reason) => {
+  logger.error({ err: reason }, "Unhandled promise rejection — logging and continuing");
+});
+// A synchronous uncaught exception can leave the process in an undefined
+// state, so exit deliberately after logging rather than keep running —
+// Railway's restart policy (ON_FAILURE) brings it back up.
+process.on("uncaughtException", (err) => {
+  logger.error({ err }, "Uncaught exception — exiting");
+  process.exit(1);
+});
+
 const app = Fastify({ loggerInstance: logger, bodyLimit: 1_048_576 });
 
 const allowedOrigins = env.ALLOWED_ORIGINS === "*" ? true : env.ALLOWED_ORIGINS.split(",").map((o) => o.trim());
