@@ -1,25 +1,21 @@
-.a11y-widget-biz {
-  /* Each var() self-reference resolves to whatever the host page inherited
-     in from an ancestor (custom properties, unlike normal properties,
-     aren't reset by `all: initial` below and DO cross the Shadow DOM
-     boundary via inheritance) — so an embedder can theme this widget to
-     match their site by setting these same custom property names on any
-     ancestor of the mount element, with zero markup changes here. Anyone
-     who sets nothing gets today's defaults, unchanged. */
-  --a11y-border: var(--a11y-border, #d0d7de);
-  --a11y-text: var(--a11y-text, #1f2328);
-  --a11y-muted: var(--a11y-muted, #57606a);
-  --a11y-bg: var(--a11y-bg, #ffffff);
-  --a11y-accent: var(--a11y-accent, #0969da);
-  --a11y-score-good: var(--a11y-score-good, #1a7f37);
-  --a11y-score-warn: var(--a11y-score-warn, #9a6700);
-  --a11y-score-bad: var(--a11y-score-bad, #cf222e);
-  --a11y-surface: var(--a11y-surface, #f6f8fa);
-  --a11y-font: var(--a11y-font, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif);
+/* Themeable via CSS custom properties: an embedder can set --a11y-bg,
+   --a11y-text, --a11y-accent, etc. on any ancestor of the widget's mount
+   element to match their site (custom properties, unlike normal
+   properties, aren't reset by `all: initial` below and DO cross the Shadow
+   DOM boundary via inheritance). Every var() below carries this file's
+   original color as its fallback, so an embedder who sets nothing gets
+   today's look, unchanged.
 
+   Deliberately NOT redeclared as `--a11y-bg: var(--a11y-bg, #fff)` on
+   .a11y-widget-biz — that's a self-referencing cycle per the CSS Custom
+   Properties spec (a property that references its own name is cyclic even
+   with a fallback, and computes to the guaranteed-invalid value). The
+   fallback has to live at each point of *use* instead. */
+
+.a11y-widget-biz {
   all: initial;
-  font-family: var(--a11y-font);
-  color: var(--a11y-text);
+  font-family: var(--a11y-font, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif);
+  color: var(--a11y-text, #1f2328);
   display: block;
   box-sizing: border-box;
 }
@@ -34,9 +30,9 @@
 .a11y-widget-inner {
   max-width: 680px;
   padding: 28px;
-  border: 1px solid var(--a11y-border);
+  border: 1px solid var(--a11y-border, #d0d7de);
   border-radius: 14px;
-  background: var(--a11y-bg);
+  background: var(--a11y-bg, #ffffff);
   font-size: 16px;
   line-height: 1.5;
 }
@@ -45,12 +41,12 @@
   margin: 0 0 20px;
   font-size: 15px;
   line-height: 1.6;
-  color: var(--a11y-muted);
+  color: var(--a11y-muted, #57606a);
 }
 
 .a11y-intro a,
 .a11y-section-desc a {
-  color: var(--a11y-accent);
+  color: var(--a11y-accent, #0969da);
 }
 
 .a11y-url-label {
@@ -58,7 +54,7 @@
   font-size: 15px;
   font-weight: 600;
   margin-bottom: 8px;
-  color: var(--a11y-text);
+  color: var(--a11y-text, #1f2328);
 }
 
 .a11y-url-row {
@@ -69,15 +65,15 @@
 .a11y-url-row input {
   flex: 1;
   padding: 13px 14px;
-  border: 1px solid var(--a11y-border);
+  border: 1px solid var(--a11y-border, #d0d7de);
   border-radius: 8px;
   font-size: 16px;
-  color: var(--a11y-text);
-  background: var(--a11y-bg);
+  color: var(--a11y-text, #1f2328);
+  background: var(--a11y-bg, #ffffff);
 }
 
 .a11y-url-row input:focus-visible {
-  outline: 2px solid var(--a11y-accent);
+  outline: 2px solid var(--a11y-accent, #0969da);
   outline-offset: 1px;
 }
 
@@ -85,7 +81,7 @@
   padding: 13px 22px;
   border: none;
   border-radius: 8px;
-  background: var(--a11y-accent);
+  background: var(--a11y-accent, #0969da);
   color: #ffffff;
   font-size: 16px;
   font-weight: 600;
@@ -99,7 +95,7 @@
 }
 
 .a11y-url-row button:focus-visible {
-  outline: 2px solid var(--a11y-text);
+  outline: 2px solid var(--a11y-text, #1f2328);
   outline-offset: 2px;
 }
 
@@ -110,7 +106,7 @@
   margin-top: 14px;
   font-size: 14px;
   font-weight: 400;
-  color: var(--a11y-muted);
+  color: var(--a11y-muted, #57606a);
   cursor: pointer;
 }
 
@@ -126,14 +122,14 @@
   padding: 12px 14px;
   border-radius: 8px;
   background: #fff0ef;
-  color: var(--a11y-score-bad);
+  color: var(--a11y-score-bad, #cf222e);
   font-size: 15px;
 }
 
 .a11y-loading,
 .a11y-empty {
   margin-top: 16px;
-  color: var(--a11y-muted);
+  color: var(--a11y-muted, #57606a);
   font-size: 15px;
 }
 
@@ -153,11 +149,11 @@
 .a11y-section {
   margin-top: 28px;
   padding-left: 16px;
-  border-left: 3px solid var(--a11y-border);
+  border-left: 3px solid var(--a11y-border, #d0d7de);
 }
 
 .a11y-section-redflag {
-  border-left-color: var(--a11y-score-bad);
+  border-left-color: var(--a11y-score-bad, #cf222e);
   background: #fff5f5;
   padding: 14px 16px;
   border-radius: 0 10px 10px 0;
@@ -170,19 +166,19 @@
 }
 
 .a11y-section-redflag .a11y-section-title {
-  color: var(--a11y-score-bad);
+  color: var(--a11y-score-bad, #cf222e);
 }
 
 .a11y-section-count {
   font-weight: 400;
-  color: var(--a11y-muted);
+  color: var(--a11y-muted, #57606a);
 }
 
 .a11y-section-desc {
   margin: 0 0 14px;
   font-size: 14px;
   line-height: 1.5;
-  color: var(--a11y-muted);
+  color: var(--a11y-muted, #57606a);
 }
 
 .a11y-score {
@@ -204,7 +200,7 @@
   width: 96px;
   height: 96px;
   border-radius: 50%;
-  border: 5px solid var(--a11y-border);
+  border: 5px solid var(--a11y-border, #d0d7de);
   flex-shrink: 0;
 }
 
@@ -216,7 +212,7 @@
 
 .a11y-score-label {
   font-size: 12px;
-  color: var(--a11y-muted);
+  color: var(--a11y-muted, #57606a);
 }
 
 .a11y-score-summary {
@@ -240,7 +236,7 @@
 }
 
 .a11y-score-breakdown dt {
-  color: var(--a11y-muted);
+  color: var(--a11y-muted, #57606a);
 }
 
 .a11y-score-breakdown dd {
@@ -256,9 +252,9 @@
 
 .a11y-principle-group {
   padding: 14px 16px;
-  border: 1px solid var(--a11y-border);
+  border: 1px solid var(--a11y-border, #d0d7de);
   border-radius: 10px;
-  background: var(--a11y-surface);
+  background: var(--a11y-surface, #f6f8fa);
 }
 
 .a11y-principle-title {
@@ -270,7 +266,7 @@
 .a11y-principle-desc {
   margin: 0 0 12px;
   font-size: 13px;
-  color: var(--a11y-muted);
+  color: var(--a11y-muted, #57606a);
 }
 
 .a11y-findings-list {
@@ -283,10 +279,10 @@
 }
 
 .a11y-finding {
-  border: 1px solid var(--a11y-border);
+  border: 1px solid var(--a11y-border, #d0d7de);
   border-radius: 10px;
   overflow: hidden;
-  background: var(--a11y-bg);
+  background: var(--a11y-bg, #ffffff);
 }
 
 .a11y-finding-header {
@@ -295,7 +291,7 @@
   align-items: center;
   gap: 12px;
   padding: 12px 14px;
-  background: var(--a11y-bg);
+  background: var(--a11y-bg, #ffffff);
   border: none;
   cursor: pointer;
   text-align: left;
@@ -303,7 +299,7 @@
 }
 
 .a11y-finding-header:focus-visible {
-  outline: 2px solid var(--a11y-accent);
+  outline: 2px solid var(--a11y-accent, #0969da);
   outline-offset: -2px;
 }
 
@@ -317,7 +313,7 @@
 }
 
 .a11y-severity-critical .a11y-severity-badge {
-  background: var(--a11y-score-bad);
+  background: var(--a11y-score-bad, #cf222e);
 }
 
 .a11y-severity-serious .a11y-severity-badge {
@@ -325,11 +321,11 @@
 }
 
 .a11y-severity-moderate .a11y-severity-badge {
-  background: var(--a11y-score-warn);
+  background: var(--a11y-score-warn, #9a6700);
 }
 
 .a11y-severity-minor .a11y-severity-badge {
-  background: var(--a11y-muted);
+  background: var(--a11y-muted, #57606a);
 }
 
 .a11y-finding-desc {
@@ -339,7 +335,7 @@
 .a11y-level-badge {
   flex-shrink: 0;
   font-size: 12px;
-  color: var(--a11y-muted);
+  color: var(--a11y-muted, #57606a);
   white-space: nowrap;
 }
 
@@ -349,8 +345,8 @@
   height: 44px;
   object-fit: cover;
   border-radius: 6px;
-  border: 1px solid var(--a11y-border);
-  background: var(--a11y-surface);
+  border: 1px solid var(--a11y-border, #d0d7de);
+  background: var(--a11y-surface, #f6f8fa);
 }
 
 .a11y-finding-thumb-large {
@@ -359,16 +355,16 @@
   max-height: 240px;
   object-fit: contain;
   border-radius: 8px;
-  border: 1px solid var(--a11y-border);
-  background: var(--a11y-surface);
+  border: 1px solid var(--a11y-border, #d0d7de);
+  background: var(--a11y-surface, #f6f8fa);
   margin-bottom: 12px;
 }
 
 .a11y-finding-details {
   padding: 12px 14px 16px;
-  border-top: 1px solid var(--a11y-border);
+  border-top: 1px solid var(--a11y-border, #d0d7de);
   font-size: 14px;
-  color: var(--a11y-text);
+  color: var(--a11y-text, #1f2328);
 }
 
 .a11y-finding-details p {
@@ -380,14 +376,14 @@
   margin-top: 12px;
   padding: 10px 12px;
   border-radius: 8px;
-  background: var(--a11y-surface);
+  background: var(--a11y-surface, #f6f8fa);
   font-size: 13px;
 }
 
 .a11y-tech-details summary {
   cursor: pointer;
   font-weight: 600;
-  color: var(--a11y-muted);
+  color: var(--a11y-muted, #57606a);
 }
 
 .a11y-tech-details p {
@@ -395,7 +391,7 @@
 }
 
 .a11y-tech-details code {
-  background: var(--a11y-surface);
+  background: var(--a11y-surface, #f6f8fa);
   padding: 1px 5px;
   border-radius: 4px;
   font-size: 12px;
