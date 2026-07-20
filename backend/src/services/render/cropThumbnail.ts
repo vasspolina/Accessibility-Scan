@@ -28,6 +28,22 @@ export async function cropElementThumbnail(
 ): Promise<string | null> {
   if (box.width <= 0 || box.height <= 0 || imgWidth === 0 || imgHeight === 0) return null;
 
+  // Some sites report a much shorter document.scrollHeight than their real
+  // rendered content — typically `overflow: hidden` on <body> paired with a
+  // custom virtual-scroll container (smooth-scroll libraries like Lenis are
+  // a common cause). Playwright's fullPage screenshot relies on that height
+  // to decide how much to capture, so on these sites it silently captures
+  // far less than the actual page. An element whose box falls mostly (or
+  // entirely) outside the captured image would otherwise get a truncated,
+  // misleading partial crop instead of no crop — refuse rather than show a
+  // wrong picture. Small overflow (~15%) is tolerated as ordinary rounding/
+  // padding slop, not a sign of this problem.
+  const verticalOverflow = Math.max(0, box.y + box.height - imgHeight) + Math.max(0, -box.y);
+  const horizontalOverflow = Math.max(0, box.x + box.width - imgWidth) + Math.max(0, -box.x);
+  if (verticalOverflow > box.height * 0.15 || horizontalOverflow > box.width * 0.15) {
+    return null;
+  }
+
   try {
     const left = Math.max(0, Math.floor(box.x - PADDING_PX));
     const top = Math.max(0, Math.floor(box.y - PADDING_PX));
