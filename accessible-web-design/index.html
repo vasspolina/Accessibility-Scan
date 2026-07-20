@@ -72,6 +72,24 @@
         <p><a href="#contact" class="link">Request an accessibility audit &rarr;</a></p>
         <p>If everyone can't use the door, is it truly an entrance?</p>
 
+        <style>
+          /* Themes the embedded checker to match this site's palette. These
+             are plain inherited CSS custom properties — the widget's Shadow
+             DOM reads them from its ancestors, so no changes to the widget
+             itself are needed beyond it opting into this var() pattern. */
+          #a11y-checker {
+            --a11y-bg: var(--bg);
+            --a11y-text: var(--body-text);
+            --a11y-muted: var(--muted-text);
+            --a11y-accent: var(--blue);
+            --a11y-border: var(--border-soft);
+            --a11y-surface: rgba(255, 255, 255, 0.06);
+            --a11y-score-good: var(--teal);
+            --a11y-score-warn: var(--gold);
+            --a11y-score-bad: #ff6b6b;
+            --a11y-font: "PP Telegraf", "Helvetica Neue", Arial, sans-serif;
+          }
+        </style>
         <div id="a11y-checker" style="margin-top:2em">
           <div id="a11y-widget-business-root" data-api-base="https://a11y-checker-backend-production.up.railway.app"></div>
           <script src="https://a11y-checker-backend-production.up.railway.app/widget-business.js" defer></script>

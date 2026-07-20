@@ -1,15 +1,24 @@
 .a11y-widget-biz {
-  --a11y-border: #d0d7de;
-  --a11y-text: #1f2328;
-  --a11y-muted: #57606a;
-  --a11y-bg: #ffffff;
-  --a11y-accent: #0969da;
-  --a11y-score-good: #1a7f37;
-  --a11y-score-warn: #9a6700;
-  --a11y-score-bad: #cf222e;
+  /* Each var() self-reference resolves to whatever the host page inherited
+     in from an ancestor (custom properties, unlike normal properties,
+     aren't reset by `all: initial` below and DO cross the Shadow DOM
+     boundary via inheritance) — so an embedder can theme this widget to
+     match their site by setting these same custom property names on any
+     ancestor of the mount element, with zero markup changes here. Anyone
+     who sets nothing gets today's defaults, unchanged. */
+  --a11y-border: var(--a11y-border, #d0d7de);
+  --a11y-text: var(--a11y-text, #1f2328);
+  --a11y-muted: var(--a11y-muted, #57606a);
+  --a11y-bg: var(--a11y-bg, #ffffff);
+  --a11y-accent: var(--a11y-accent, #0969da);
+  --a11y-score-good: var(--a11y-score-good, #1a7f37);
+  --a11y-score-warn: var(--a11y-score-warn, #9a6700);
+  --a11y-score-bad: var(--a11y-score-bad, #cf222e);
+  --a11y-surface: var(--a11y-surface, #f6f8fa);
+  --a11y-font: var(--a11y-font, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif);
 
   all: initial;
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  font-family: var(--a11y-font);
   color: var(--a11y-text);
   display: block;
   box-sizing: border-box;
@@ -249,7 +258,7 @@
   padding: 14px 16px;
   border: 1px solid var(--a11y-border);
   border-radius: 10px;
-  background: #f9fafb;
+  background: var(--a11y-surface);
 }
 
 .a11y-principle-title {
@@ -341,7 +350,7 @@
   object-fit: cover;
   border-radius: 6px;
   border: 1px solid var(--a11y-border);
-  background: #f6f8fa;
+  background: var(--a11y-surface);
 }
 
 .a11y-finding-thumb-large {
@@ -351,7 +360,7 @@
   object-fit: contain;
   border-radius: 8px;
   border: 1px solid var(--a11y-border);
-  background: #f6f8fa;
+  background: var(--a11y-surface);
   margin-bottom: 12px;
 }
 
@@ -371,7 +380,7 @@
   margin-top: 12px;
   padding: 10px 12px;
   border-radius: 8px;
-  background: #f6f8fa;
+  background: var(--a11y-surface);
   font-size: 13px;
 }
 
@@ -386,7 +395,7 @@
 }
 
 .a11y-tech-details code {
-  background: #eaeef2;
+  background: var(--a11y-surface);
   padding: 1px 5px;
   border-radius: 4px;
   font-size: 12px;
