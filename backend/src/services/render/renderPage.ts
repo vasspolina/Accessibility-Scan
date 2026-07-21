@@ -264,6 +264,45 @@ function extractDomSignalsInPage(): DomSignals {
 }
 
 // Runs inside the browser page context via page.evaluate — must be fully
+// self-contained. Some sites keep the real document short (often
+// `overflow: hidden` on <body>/<html>) and put all their actual content
+// inside a nested `overflow: auto` container with a capped height —
+// perfectly normal box-model layout, just clipped from view rather than
+// flowing the document taller. Playwright's fullPage screenshot only ever
+// captures the document's own scrollHeight, so that real content silently
+// falls outside the image. Stripping the clip lets it reflow to its full
+// height before we measure or screenshot anything, so bounding boxes and
+// the full-page capture both agree on where content actually ends up.
+// (This can't help genuine transform-driven "virtual scroll" — there the
+// content's real box-model position never changes, only its rendered
+// transform does — cropElementThumbnail's overflow guard still catches
+// those cases.)
+function neutralizeScrollClippingInPage(): void {
+  try {
+    document.documentElement.style.setProperty("overflow", "visible", "important");
+    document.body.style.setProperty("overflow", "visible", "important");
+    document.body.style.setProperty("height", "auto", "important");
+
+    const all = Array.from(document.querySelectorAll<HTMLElement>("*"));
+    for (const el of all) {
+      try {
+        if (el.scrollHeight <= el.clientHeight + 40) continue;
+        const overflowY = getComputedStyle(el).overflowY;
+        if (overflowY !== "auto" && overflowY !== "scroll") continue;
+        el.style.setProperty("overflow", "visible", "important");
+        el.style.setProperty("max-height", "none", "important");
+        el.style.setProperty("height", "auto", "important");
+      } catch {
+        // One misbehaving element shouldn't stop the rest from being fixed up.
+      }
+    }
+  } catch {
+    // Best-effort only — a failure here just means we fall back to
+    // whatever Playwright's own fullPage detection would have captured.
+  }
+}
+
+// Runs inside the browser page context via page.evaluate — must be fully
 // self-contained. Returns document-relative (not viewport-relative)
 // bounding boxes so they map correctly onto a full-page screenshot
 // regardless of scroll position at capture time.
@@ -392,6 +431,12 @@ export async function renderAndScan(url: string): Promise<RenderResult> {
       const ariaSnapshot = await page.locator("body").ariaSnapshot();
       const domSignals = await page.evaluate<DomSignals>(toBrowserScript(extractDomSignalsInPage));
       const screenshotBuffer = await page.screenshot({ type: "jpeg", quality: 70 });
+
+      // Runs after the above-the-fold screenshot (which should show the page
+      // exactly as a visitor sees it) but before anything used for
+      // thumbnail cropping, so bounding boxes and the full-page capture
+      // below both reflect the same, fully-unclipped layout.
+      await page.evaluate(toBrowserScript(neutralizeScrollClippingInPage)).catch(() => {});
 
       const candidateSelectors = collectCandidateSelectors(axe, domSignals);
       const boundingBoxes = await page.evaluate<Record<string, BoundingBox | null>>(
