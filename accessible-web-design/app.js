@@ -21,6 +21,7 @@ toggle.addEventListener("click", () => {
   const magnifierToggle = document.getElementById("magnifierToggle");
   const lens = document.getElementById("magnifierLens");
   const inner = document.getElementById("magnifierInner");
+  const closeBtn = document.getElementById("magnifierClose");
 
   let active = false;
   let dragging = false;
@@ -94,8 +95,8 @@ toggle.addEventListener("click", () => {
     updateInnerTransform();
   }
 
-  magnifierToggle.addEventListener("click", () => {
-    active = !active;
+  function setActive(next) {
+    active = next;
     magnifierToggle.setAttribute("aria-pressed", String(active));
     if (active) {
       buildClone();
@@ -104,6 +105,16 @@ toggle.addEventListener("click", () => {
     } else {
       lens.setAttribute("hidden", "");
     }
+  }
+
+  magnifierToggle.addEventListener("click", () => setActive(!active));
+
+  // Close button lives inside the lens; stop the pointerdown from also
+  // starting a drag on the lens behind it.
+  closeBtn.addEventListener("pointerdown", (e) => e.stopPropagation());
+  closeBtn.addEventListener("click", (e) => {
+    e.stopPropagation();
+    setActive(false);
   });
 
   // Move/up listen on window (not the lens) so the drag keeps tracking
