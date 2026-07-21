@@ -372,6 +372,13 @@
   line-height: 1.5;
 }
 
+.a11y-finding-impact {
+  padding: 8px 12px;
+  border-radius: 8px;
+  background: var(--a11y-surface, #f6f8fa);
+  border-left: 3px solid var(--a11y-accent, #0969da);
+}
+
 .a11y-tech-details {
   margin-top: 12px;
   padding: 10px 12px;

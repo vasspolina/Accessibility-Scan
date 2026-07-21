@@ -1,6 +1,6 @@
 import { useState } from "react";
 import type { AccessibilityFinding } from "../api/scanClient";
-import { LEVEL_FRAMING } from "../lib/wcagPlain";
+import { LEVEL_FRAMING, plainForRule } from "../lib/wcagPlain";
 
 const severityLabel: Record<AccessibilityFinding["severity"], string> = {
   critical: "Fix first",
@@ -15,6 +15,11 @@ export function FindingCard({ finding }: { finding: AccessibilityFinding }) {
   const hasTechnicalDetails = Boolean(
     finding.selector || finding.elementSnippet || finding.ruleId || finding.wcagCriterion
   );
+
+  // Prefer a plain-English rewrite of this rule (business owners can read it)
+  // and keep axe's own developer-facing text only in the technical section.
+  const plain = plainForRule(finding.ruleId);
+  const headline = plain?.plain ?? finding.description;
 
   return (
     <li className={`a11y-finding a11y-severity-${finding.severity}`}>
@@ -33,7 +38,7 @@ export function FindingCard({ finding }: { finding: AccessibilityFinding }) {
           />
         )}
         <span className="a11y-severity-badge">{severityLabel[finding.severity]}</span>
-        <span className="a11y-finding-desc">{finding.description}</span>
+        <span className="a11y-finding-desc">{headline}</span>
         {finding.wcagLevel && (
           <span className="a11y-level-badge">{LEVEL_FRAMING[finding.wcagLevel]}</span>
         )}
@@ -47,12 +52,20 @@ export function FindingCard({ finding }: { finding: AccessibilityFinding }) {
               alt="Screenshot of the affected part of your page"
             />
           )}
+          {plain && (
+            <p className="a11y-finding-impact">
+              <strong>Why this matters:</strong> {plain.impact}
+            </p>
+          )}
           <p>
             <strong>What to do:</strong> {finding.suggestedFix}
           </p>
           {hasTechnicalDetails && (
             <details className="a11y-tech-details">
               <summary>Technical details for your developer</summary>
+              <p>
+                <strong>What the scanner flagged:</strong> {finding.description}
+              </p>
               {finding.wcagCriterion && finding.wcagCriterion !== "N/A" && (
                 <p>
                   <strong>WCAG criterion:</strong> {finding.wcagCriterion}

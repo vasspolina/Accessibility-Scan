@@ -40,6 +40,130 @@ export const LEVEL_FRAMING: Record<"A" | "AA" | "AAA", string> = {
   AAA: "Advanced (Level AAA)",
 };
 
+// Plain-English rewrites of the most common automated (axe-core) rules,
+// keyed by the axe rule id on each finding. `plain` says what's actually
+// wrong in words a non-technical owner understands; `impact` says who it
+// hurts and why it costs the business. axe's own `description`/`help` text
+// ("Elements must meet minimum color contrast ratio thresholds") is written
+// for developers — this is the layer that makes a report readable by the
+// person who owns the site. Anything not in this map falls back to the
+// finding's original description, so coverage gaps degrade gracefully.
+export interface PlainRule {
+  plain: string;
+  impact: string;
+}
+
+export const PLAIN_RULE_EXPLANATIONS: Record<string, PlainRule> = {
+  "color-contrast": {
+    plain: "Some text is too light against its background to read easily.",
+    impact:
+      "Anyone in bright light, on a cheap screen, or with less-than-perfect eyesight struggles to read it — so your message doesn't land.",
+  },
+  "image-alt": {
+    plain: "Some images have no text description behind them.",
+    impact:
+      "People using screen readers hear nothing for these images, and search engines can't tell what they show — costing you both accessibility and SEO.",
+  },
+  "input-image-alt": {
+    plain: "An image used as a button has no text description.",
+    impact: "People using screen readers can't tell what the button does, so they can't complete the action.",
+  },
+  "link-name": {
+    plain: "Some links have no readable text.",
+    impact:
+      "People using screen readers just hear \"link\" with no idea where it goes, so they can't navigate your site.",
+  },
+  "button-name": {
+    plain: "Some buttons have no label.",
+    impact: "People can't tell what the button does before clicking it — a common reason users abandon a task.",
+  },
+  label: {
+    plain: "Some form fields have no label.",
+    impact:
+      "People using screen readers don't know what to type in each box, so forms — including checkout and contact forms — get abandoned.",
+  },
+  "select-name": {
+    plain: "A dropdown menu has no label.",
+    impact: "People can't tell what they're choosing, which leads to errors and dropped forms.",
+  },
+  "document-title": {
+    plain: "Your page has no title.",
+    impact: "Browser tabs, bookmarks, and search results show nothing useful — hurting both usability and SEO.",
+  },
+  "html-has-lang": {
+    plain: "Your page doesn't say what language it's written in.",
+    impact: "Screen readers may read your content with the wrong accent and pronunciation, making it hard to follow.",
+  },
+  "html-lang-valid": {
+    plain: "Your page's declared language isn't a valid value.",
+    impact: "Screen readers can't pick the right voice, so your content may be read out incorrectly.",
+  },
+  "heading-order": {
+    plain: "Your headings jump levels instead of going in order.",
+    impact: "People who navigate by headings (common with screen readers) lose track of how the page is organized.",
+  },
+  "page-has-heading-one": {
+    plain: "Your page has no main heading.",
+    impact: "Visitors and screen readers can't quickly tell what the page is about.",
+  },
+  "empty-heading": {
+    plain: "A heading on the page is empty.",
+    impact: "People navigating by headings hit a blank signpost that tells them nothing.",
+  },
+  "link-in-text-block": {
+    plain: "Some links are shown only by color, with nothing else to set them apart.",
+    impact: "People who can't distinguish those colors can't tell what's a link and what's plain text.",
+  },
+  "meta-viewport": {
+    plain: "Your page stops people from zooming in.",
+    impact: "Anyone who needs bigger text can't enlarge it, so they simply can't read your site on a phone.",
+  },
+  "frame-title": {
+    plain: "An embedded frame (like a map or video) has no title.",
+    impact: "People using screen readers can't tell what the embedded content is or whether it's worth exploring.",
+  },
+  "duplicate-id-active": {
+    plain: "Two interactive elements share the same internal ID.",
+    impact: "This can break assistive technology and interactive features, causing the wrong thing to respond.",
+  },
+  list: {
+    plain: "A list isn't built as a proper list.",
+    impact: "Screen readers can't announce how many items there are or let people jump through them.",
+  },
+  listitem: {
+    plain: "A list item sits outside any real list.",
+    impact: "Screen readers lose the list structure, so grouped content stops making sense.",
+  },
+  "aria-required-attr": {
+    plain: "An interactive component is missing information assistive tech needs.",
+    impact: "Screen reader users may not know the control's state or how to use it.",
+  },
+  "aria-hidden-focus": {
+    plain: "Something hidden from screen readers can still be tabbed into.",
+    impact: "Keyboard users land on an element that reads as invisible, which is confusing and feels broken.",
+  },
+  region: {
+    plain: "Parts of your page aren't inside labelled sections.",
+    impact: "People using screen readers can't jump between the main areas of the page, so they must wade through everything.",
+  },
+  "landmark-one-main": {
+    plain: "Your page doesn't mark where its main content begins.",
+    impact: "Screen reader users can't skip straight to the content and have to sit through the menus every time.",
+  },
+  tabindex: {
+    plain: "The keyboard focus order has been forced out of its natural sequence.",
+    impact: "Keyboard users get bounced around the page unpredictably, making it hard to fill in or navigate.",
+  },
+  "scrollable-region-focusable": {
+    plain: "A scrollable area can't be reached with the keyboard.",
+    impact: "People who don't use a mouse can't scroll to see the content inside it.",
+  },
+};
+
+export function plainForRule(ruleId: string | undefined): PlainRule | undefined {
+  return ruleId ? PLAIN_RULE_EXPLANATIONS[ruleId] : undefined;
+}
+
 export const WCAG_LINK = "https://www.w3.org/WAI/standards-guidelines/wcag/";
 
 export const PRINCIPLE_ORDER: Principle[] = ["Perceivable", "Operable", "Understandable", "Robust"];
