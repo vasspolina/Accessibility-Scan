@@ -473,20 +473,27 @@ hr.divider.tan {
   color: var(--blue);
 }
 
+/* Lens is just a positioning box; the circular window + clipping lives
+   on the viewport child so the close button can sit outside the circle. */
 .magnifier-lens {
   position: fixed;
   top: 0;
   left: 0;
   width: 220px;
   height: 220px;
+  cursor: grab;
+  z-index: 300;
+  touch-action: none;
+}
+
+.magnifier-viewport {
+  position: absolute;
+  inset: 0;
   border-radius: 50%;
   border: 3px solid var(--blue);
   box-shadow: 0 10px 34px rgba(0, 0, 0, 0.6);
   overflow: hidden;
-  cursor: grab;
-  z-index: 300;
   background: var(--bg);
-  touch-action: none;
 }
 
 .magnifier-lens.dragging {
@@ -511,20 +518,16 @@ hr.divider.tan {
 
 .magnifier-close {
   position: absolute;
-  /* The lens is a circle with overflow:hidden, so a button in the
-     square's corner gets clipped by the circular mask. Place it along
-     the upper-right diagonal (percentages so it scales with the lens),
-     centered on that point, keeping it fully inside the visible circle. */
-  top: 26%;
-  left: 72%;
-  transform: translate(-50%, -50%);
-  width: 24px;
-  height: 24px;
+  /* Sits outside the circle, at the top-right corner of the lens box. */
+  top: -10px;
+  right: -10px;
+  width: 36px;
+  height: 36px;
   border-radius: 50%;
-  border: 1px solid var(--border-soft);
+  border: 2px solid var(--blue);
   background: var(--bg);
   color: var(--white);
-  font-size: 15px;
+  font-size: 24px;
   line-height: 1;
   display: flex;
   align-items: center;
