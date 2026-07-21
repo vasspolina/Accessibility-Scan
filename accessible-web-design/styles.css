@@ -511,10 +511,15 @@ hr.divider.tan {
 
 .magnifier-close {
   position: absolute;
-  top: 6px;
-  right: 6px;
-  width: 22px;
-  height: 22px;
+  /* The lens is a circle with overflow:hidden, so a button in the
+     square's corner gets clipped by the circular mask. Place it along
+     the upper-right diagonal (percentages so it scales with the lens),
+     centered on that point, keeping it fully inside the visible circle. */
+  top: 26%;
+  left: 72%;
+  transform: translate(-50%, -50%);
+  width: 24px;
+  height: 24px;
   border-radius: 50%;
   border: 1px solid var(--border-soft);
   background: var(--bg);
