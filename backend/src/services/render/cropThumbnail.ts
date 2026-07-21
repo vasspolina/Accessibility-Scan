@@ -68,16 +68,32 @@ export async function cropElementThumbnail(
 
 /**
  * Mutates findings in place, attaching an elementScreenshot thumbnail where
- * possible — capped and severity-prioritized so a page with hundreds of
- * minor violations doesn't spend the whole scan cropping images nobody
- * will look at first.
+ * possible. Prefers the precise per-element captures taken while the page
+ * was open (see renderPage.ts's captureElementScreenshots) — accurate on any
+ * page regardless of its scroll architecture — and only falls back to
+ * cropping from the document-level full-page image for findings that weren't
+ * pre-captured (AI-review findings, or axe findings past the per-element
+ * cap). The crop fallback is itself capped and severity-prioritized so a
+ * page with hundreds of minor violations doesn't spend the whole scan
+ * cropping images nobody will look at first.
  */
 export async function attachElementScreenshots(
   findings: AccessibilityFinding[],
   boundingBoxes: Record<string, BoundingBox | null>,
-  fullPageScreenshot: Buffer | null
+  fullPageScreenshot: Buffer | null,
+  precaptured: Record<string, string> = {}
 ): Promise<void> {
-  if (!fullPageScreenshot) return;
+  const needsCrop: AccessibilityFinding[] = [];
+  for (const finding of findings) {
+    const shot = precaptured[finding.selector];
+    if (shot) {
+      finding.elementScreenshot = shot;
+    } else {
+      needsCrop.push(finding);
+    }
+  }
+
+  if (!fullPageScreenshot || needsCrop.length === 0) return;
 
   const meta = await sharp(fullPageScreenshot)
     .metadata()
@@ -86,7 +102,7 @@ export async function attachElementScreenshots(
   const imgHeight = meta?.height ?? 0;
   if (imgWidth === 0 || imgHeight === 0) return;
 
-  const candidates = [...findings]
+  const candidates = needsCrop
     .sort((a, b) => SEVERITY_PRIORITY[a.severity] - SEVERITY_PRIORITY[b.severity])
     .slice(0, MAX_THUMBNAILS_PER_SCAN);
 

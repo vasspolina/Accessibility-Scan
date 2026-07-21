@@ -1,5 +1,6 @@
 import type { Page, Response } from "playwright";
 import { createRequire } from "node:module";
+import sharp from "sharp";
 import { env } from "../../config/env.js";
 import { withPage } from "./browserPool.js";
 import { isPrivateOrReservedIp } from "../../middleware/ssrfGuard.js";
@@ -86,6 +87,11 @@ export interface RenderResult {
   // Document-relative (not viewport-relative) bounding boxes for every
   // selector we might need to crop a thumbnail for, keyed by selector.
   boundingBoxes: Record<string, BoundingBox | null>;
+  // Precise per-element thumbnails (base64 JPEG) captured directly via
+  // Playwright while the page was open, keyed by selector — accurate
+  // regardless of scroll architecture. Findings prefer these over
+  // full-page crops (see cropThumbnail.ts / routes/scan.ts).
+  elementScreenshots: Record<string, string>;
 }
 
 // Runs inside the browser page context via page.evaluate — must be fully
@@ -370,6 +376,79 @@ function collectCandidateSelectors(axe: AxeRunResult, domSignals: DomSignals): s
   return Array.from(selectors);
 }
 
+// Screenshotting each flagged element directly, rather than cropping it out
+// of one document-level full-page image, is the precise path: Playwright
+// scrolls the element into view — inside inner scroll containers, fixed
+// overlays, anywhere — and captures exactly that element, so the thumbnail
+// is correct no matter how the page handles scrolling. The trade-off is one
+// screenshot per element, so we cap the count, prioritize by severity
+// (critical elements first), enforce an overall wall-clock budget, and make
+// every capture best-effort — a single element that's detached, mid-animation,
+// or slow to settle must never fail or stall the whole scan.
+const MAX_ELEMENT_SHOTS = 30;
+const ELEMENT_SHOT_BUDGET_MS = 8_000;
+const ELEMENT_IMPACT_ORDER: Record<string, number> = {
+  critical: 0,
+  serious: 1,
+  moderate: 2,
+  minor: 3,
+};
+
+async function captureElementScreenshots(
+  page: Page,
+  axe: AxeRunResult
+): Promise<Record<string, string>> {
+  const orderedSelectors: string[] = [];
+  const seen = new Set<string>();
+  const byImpact = [...axe.violations].sort(
+    (a, b) =>
+      (ELEMENT_IMPACT_ORDER[a.impact ?? "minor"] ?? 3) -
+      (ELEMENT_IMPACT_ORDER[b.impact ?? "minor"] ?? 3)
+  );
+  for (const violation of byImpact) {
+    for (const node of violation.nodes) {
+      const selector = node.target.join(" ");
+      if (!seen.has(selector)) {
+        seen.add(selector);
+        orderedSelectors.push(selector);
+      }
+    }
+  }
+
+  const result: Record<string, string> = {};
+  const deadline = Date.now() + ELEMENT_SHOT_BUDGET_MS;
+  for (const selector of orderedSelectors.slice(0, MAX_ELEMENT_SHOTS)) {
+    if (Date.now() > deadline) break;
+    try {
+      const locator = page.locator(selector).first();
+      if ((await locator.count()) === 0) continue;
+      const box = await locator.boundingBox();
+      if (!box || box.width < 2 || box.height < 2) continue;
+      const raw = await locator.screenshot({ type: "jpeg", quality: 72, timeout: 1_500 });
+      const resized = await sharp(raw)
+        .resize({ width: 480, height: 480, fit: "inside", withoutEnlargement: true })
+        .jpeg({ quality: 62 })
+        .toBuffer();
+
+      // Some flagged elements (invisible/covered overlay buttons, empty
+      // transparent hit-targets) screenshot as a flat blank rectangle —
+      // technically a valid capture but useless and confusing to show a
+      // business owner. A near-zero per-channel standard deviation means the
+      // image is essentially one solid color, so drop it and let the finding
+      // show without a thumbnail rather than with a meaningless white box.
+      const stats = await sharp(resized).stats().catch(() => null);
+      const maxStdev = stats ? Math.max(...stats.channels.map((c) => c.stdev)) : 1;
+      if (maxStdev < 2.5) continue;
+
+      result[selector] = resized.toString("base64");
+    } catch {
+      // Detached node, timed-out scroll-into-view, invalid selector, etc.
+      // — skip this one element, keep capturing the rest.
+    }
+  }
+  return result;
+}
+
 export class RebindingDetectedError extends Error {
   constructor(host: string, ip: string) {
     super(`Blocked mid-navigation: ${host} resolved to a private/internal address (${ip})`);
@@ -451,6 +530,12 @@ export async function renderAndScan(url: string): Promise<RenderResult> {
         .screenshot({ type: "jpeg", quality: 60, fullPage: true, timeout: 10_000 })
         .catch(() => null);
 
+      // Precise per-element thumbnails — captured last because each one
+      // scrolls the page, which would disturb the viewport/full-page
+      // screenshots taken above. Best-effort as a whole: if this throws for
+      // any reason, fall back to full-page crops rather than failing.
+      const elementScreenshots = await captureElementScreenshots(page, axe).catch(() => ({}));
+
       // Final check — a late subresource (lazy-loaded image, polling XHR)
       // could have triggered a rebind after the initial navigation settled.
       if (rebindingDetected) throw rebindingDetected;
@@ -465,6 +550,7 @@ export async function renderAndScan(url: string): Promise<RenderResult> {
         screenshotBase64: screenshotBuffer.toString("base64"),
         fullPageScreenshot,
         boundingBoxes,
+        elementScreenshots,
       };
     } finally {
       page.off("response", onResponse);

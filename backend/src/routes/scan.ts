@@ -63,7 +63,12 @@ export async function scanRoutes(app: FastifyInstance) {
     const automatedFindings = axeToFindings(renderResult.axe);
     const aiFindings = aiToFindings(aiReview.findings);
     const findings = mergeFindings(automatedFindings, aiFindings);
-    await attachElementScreenshots(findings, renderResult.boundingBoxes, renderResult.fullPageScreenshot);
+    await attachElementScreenshots(
+      findings,
+      renderResult.boundingBoxes,
+      renderResult.fullPageScreenshot,
+      renderResult.elementScreenshots
+    );
 
     // score/summary reflect accessibility-category findings only; design-clarity
     // and dark-pattern findings are reported via categorySummary instead.
