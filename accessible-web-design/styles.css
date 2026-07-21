@@ -447,6 +447,68 @@ hr.divider.tan {
   background: var(--blue);
 }
 
+/* Magnifier */
+
+.magnifier-toggle {
+  position: fixed;
+  right: clamp(1rem, 3vw, 2rem);
+  bottom: clamp(1rem, 3vw, 2rem);
+  z-index: 200;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5em;
+  padding: 0.7em 1.15em;
+  border-radius: 999px;
+  border: 1px solid var(--border-soft);
+  background: var(--bg);
+  color: var(--white);
+  font-family: inherit;
+  font-weight: 300;
+  font-size: 0.95rem;
+  cursor: pointer;
+}
+
+.magnifier-toggle[aria-pressed="true"] {
+  border-color: var(--blue);
+  color: var(--blue);
+}
+
+.magnifier-lens {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 220px;
+  height: 220px;
+  border-radius: 50%;
+  border: 3px solid var(--blue);
+  box-shadow: 0 10px 34px rgba(0, 0, 0, 0.6);
+  overflow: hidden;
+  cursor: grab;
+  z-index: 300;
+  background: var(--bg);
+  touch-action: none;
+}
+
+.magnifier-lens.dragging {
+  cursor: grabbing;
+}
+
+.magnifier-lens[hidden] {
+  display: none;
+}
+
+.magnifier-inner {
+  position: absolute;
+  top: 0;
+  left: 0;
+  transform-origin: 0 0;
+  pointer-events: none;
+}
+
+.magnifier-inner #page-root {
+  margin: 0;
+}
+
 /* responsive */
 
 @media (max-width: 900px) {
@@ -472,5 +534,10 @@ hr.divider.tan {
   .def-row {
     grid-template-columns: 1fr;
     gap: 0.4rem;
+  }
+
+  .magnifier-lens {
+    width: 160px;
+    height: 160px;
   }
 }
