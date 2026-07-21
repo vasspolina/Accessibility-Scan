@@ -31,9 +31,32 @@ toggle.addEventListener("click", () => {
     return lens.getBoundingClientRect().width;
   }
 
+  // cloneNode() only copies light DOM — open shadow roots (like the
+  // embedded a11y-checker widget's) are silently skipped, leaving their
+  // host collapsed to 0 height in the clone and throwing off every
+  // section below it. Walk both trees in lockstep (querySelectorAll("*")
+  // excludes shadow content on both sides, so indices stay aligned) and
+  // reattach a cloned shadow root wherever the original has one.
+  function cloneShadowRoots(realNode, cloneNode) {
+    const realAll = realNode.querySelectorAll("*");
+    const cloneAll = cloneNode.querySelectorAll("*");
+    realAll.forEach((realEl, i) => {
+      if (realEl.shadowRoot) {
+        // ShadowRoot itself isn't a clonable node type, so clone each of
+        // its children individually rather than the root.
+        const shadow = cloneAll[i].attachShadow({ mode: "open" });
+        realEl.shadowRoot.childNodes.forEach((child) => {
+          shadow.append(child.cloneNode(true));
+        });
+        cloneShadowRoots(realEl.shadowRoot, shadow);
+      }
+    });
+  }
+
   function buildClone() {
     inner.innerHTML = "";
     const clone = pageRoot.cloneNode(true);
+    cloneShadowRoots(pageRoot, clone);
     clone.querySelectorAll("[id]").forEach((el) => el.removeAttribute("id"));
     // Faking scroll with a transform never moves the clone's own scroll
     // container, so sticky elements inside it would stay glued to their
