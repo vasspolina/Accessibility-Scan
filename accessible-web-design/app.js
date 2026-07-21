@@ -16,7 +16,7 @@ toggle.addEventListener("click", () => {
 // on the real page appears there magnified. Clone (not a screenshot) so
 // it stays crisp at any zoom and reflects the live fonts/colors.
 (() => {
-  const ZOOM = 2;
+  const ZOOM = 1.5;
   const pageRoot = document.getElementById("page-root");
   const magnifierToggle = document.getElementById("magnifierToggle");
   const lens = document.getElementById("magnifierLens");
