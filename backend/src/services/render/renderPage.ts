@@ -8,6 +8,7 @@ import {
   collectTypographyBlocksInPage,
   type TypographyBlock,
 } from "../typography/analyzeTypography.js";
+import type { FocusStyles, KeyboardNavResult, TabStop } from "../keyboard/analyzeKeyboard.js";
 import { logger } from "../../utils/logger.js";
 
 const require = createRequire(import.meta.url);
@@ -99,6 +100,10 @@ export interface RenderResult {
   // Computed-style metrics for the page's text blocks, evaluated server-side
   // into micro-typography findings (services/typography/analyzeTypography.ts).
   typographyBlocks: TypographyBlock[];
+  // Result of a real Tab-through of the page (focus-visibility styles per
+  // stop), evaluated server-side into keyboard findings
+  // (services/keyboard/analyzeKeyboard.ts).
+  keyboardNav: KeyboardNavResult;
 }
 
 // Runs inside the browser page context via page.evaluate — must be fully
@@ -502,6 +507,125 @@ async function captureElementScreenshots(
   return result;
 }
 
+// Walks the page with real Tab key presses — the check most automated
+// scanners skip because it needs interaction, not static analysis. At each
+// stop we record the focused element's indicator styles (outline,
+// box-shadow, background, border), and once focus moves on we re-read the
+// same element unfocused, so the evaluator can tell whether focusing it
+// produced any visible change at all. Runs LAST in the scan: pressing Tab
+// scrolls the page and mutates :focus styles, which would disturb the
+// screenshots and style measurements taken earlier.
+const MAX_TAB_STOPS = 25;
+const KEYBOARD_BUDGET_MS = 6_000;
+
+async function captureKeyboardNavigation(page: Page): Promise<KeyboardNavResult> {
+  const stops: TabStop[] = [];
+  let reachedEnd = false;
+
+  const readActive = () =>
+    page.evaluate(() => {
+      const el = document.activeElement;
+      if (!el || el === document.body || el === document.documentElement) return null;
+      const parts: string[] = [];
+      let node: Element | null = el;
+      while (node && node.nodeType === 1 && parts.length < 6) {
+        let sel = node.tagName.toLowerCase();
+        if (node.id) {
+          parts.unshift(`#${node.id}`);
+          break;
+        }
+        const parent: Element | null = node.parentElement;
+        if (parent) {
+          const tag = node.tagName;
+          const siblings = Array.from(parent.children).filter((c) => c.tagName === tag);
+          if (siblings.length > 1) sel += `:nth-of-type(${siblings.indexOf(node) + 1})`;
+        }
+        parts.unshift(sel);
+        node = node.parentElement;
+      }
+      const cs = getComputedStyle(el);
+      return {
+        selector: parts.join(" > "),
+        tag: el.tagName.toLowerCase(),
+        styles: {
+          outlineStyle: cs.outlineStyle,
+          outlineWidth: cs.outlineWidth,
+          boxShadow: cs.boxShadow,
+          backgroundColor: cs.backgroundColor,
+          borderColor: cs.borderColor,
+        },
+      };
+    });
+
+  const readUnfocused = (selector: string) =>
+    page.evaluate((sel: string) => {
+      try {
+        const el = document.querySelector(sel);
+        if (!el || el === document.activeElement) return null;
+        const cs = getComputedStyle(el);
+        return {
+          outlineStyle: cs.outlineStyle,
+          outlineWidth: cs.outlineWidth,
+          boxShadow: cs.boxShadow,
+          backgroundColor: cs.backgroundColor,
+          borderColor: cs.borderColor,
+        };
+      } catch {
+        return null;
+      }
+    }, selector);
+
+  try {
+    await page.evaluate(() => {
+      (document.activeElement as HTMLElement | null)?.blur?.();
+      window.scrollTo(0, 0);
+    });
+
+    const deadline = Date.now() + KEYBOARD_BUDGET_MS;
+    let pending: { selector: string; tag: string; styles: FocusStyles } | null = null;
+
+    for (let i = 0; i < MAX_TAB_STOPS; i++) {
+      if (Date.now() > deadline) break;
+      await page.keyboard.press("Tab");
+      const active = await readActive();
+
+      // Focus moved on (or left the page) — now the previous element can be
+      // measured in its unfocused state.
+      if (pending && (!active || active.selector !== pending.selector)) {
+        stops.push({
+          selector: pending.selector,
+          tag: pending.tag,
+          focused: pending.styles,
+          unfocused: await readUnfocused(pending.selector),
+        });
+        pending = null;
+      }
+
+      if (!active) {
+        // Wrapped around to <body>: the full tab cycle has been seen.
+        reachedEnd = true;
+        break;
+      }
+
+      if (pending && active.selector === pending.selector) {
+        // Focus did not move — record the repeat so the evaluator can
+        // detect a trap (unfocused styles are unknowable while stuck).
+        stops.push({ selector: active.selector, tag: active.tag, focused: active.styles, unfocused: null });
+      } else {
+        pending = active;
+      }
+    }
+
+    if (pending) {
+      stops.push({ selector: pending.selector, tag: pending.tag, focused: pending.styles, unfocused: null });
+    }
+  } catch (err) {
+    logger.warn({ err }, "Keyboard walk-through failed — reporting without keyboard findings");
+  }
+
+  return { stops, reachedEnd };
+}
+
 export class RebindingDetectedError extends Error {
   constructor(host: string, ip: string) {
     super(`Blocked mid-navigation: ${host} resolved to a private/internal address (${ip})`);
@@ -586,11 +710,15 @@ export async function renderAndScan(url: string): Promise<RenderResult> {
         .screenshot({ type: "jpeg", quality: 60, fullPage: true, timeout: 10_000 })
         .catch(() => null);
 
-      // Precise per-element thumbnails — captured last because each one
-      // scrolls the page, which would disturb the viewport/full-page
-      // screenshots taken above. Best-effort as a whole: if this throws for
-      // any reason, fall back to full-page crops rather than failing.
+      // Precise per-element thumbnails — captured after the screenshots
+      // because each one scrolls the page. Best-effort as a whole: if this
+      // throws for any reason, fall back to full-page crops rather than
+      // failing.
       const elementScreenshots = await captureElementScreenshots(page, axe).catch(() => ({}));
+
+      // Real keyboard walk-through — very last, because Tab presses scroll
+      // the page and flip elements into their :focus styles.
+      const keyboardNav = await captureKeyboardNavigation(page);
 
       // Final check — a late subresource (lazy-loaded image, polling XHR)
       // could have triggered a rebind after the initial navigation settled.
@@ -608,6 +736,7 @@ export async function renderAndScan(url: string): Promise<RenderResult> {
         boundingBoxes,
         elementScreenshots,
         typographyBlocks,
+        keyboardNav,
       };
     } finally {
       page.off("response", onResponse);

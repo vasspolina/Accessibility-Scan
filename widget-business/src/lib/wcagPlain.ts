@@ -159,6 +159,26 @@ export const PLAIN_RULE_EXPLANATIONS: Record<string, PlainRule> = {
     impact: "People who don't use a mouse can't scroll to see the content inside it.",
   },
 
+  // Keyboard walk-through checks (WCAG 2.4.7 Focus Visible, 2.1.2 No
+  // Keyboard Trap) — from real Tab presses during the scan.
+  "keyboard-no-visible-focus": {
+    plain: "Moving through the page with the keyboard gives no visible sign of where you are.",
+    impact:
+      "Many people navigate entirely by keyboard — power users, people with motor disabilities, anyone whose mouse died. Without a visible highlight they are navigating blind and give up.",
+  },
+  "keyboard-focus-trap": {
+    plain: "Keyboard focus gets stuck in one spot — you can't Tab past it.",
+    impact:
+      "A keyboard user who hits this point literally cannot reach the rest of your page. This is one of the most severe accessibility failures a site can have.",
+  },
+
+  // Raw-HTML markup validation.
+  "markup-validation": {
+    plain: "The page's underlying HTML code contains errors.",
+    impact:
+      "Browsers silently guess how to repair broken markup — and screen readers, search engines, and different browsers can all guess differently, so your page may not work the way you think it does.",
+  },
+
   // Motion/animation checks (WCAG 2.2.2 Pause, Stop, Hide).
   "motion-marquee": {
     plain: "Text scrolls across the page in a moving ticker that can't be paused.",

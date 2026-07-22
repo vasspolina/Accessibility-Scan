@@ -11,6 +11,8 @@ import { attachAltTextSuggestions } from "../services/aiReview/suggestAltText.js
 import { axeToFindings, aiToFindings, mergeFindings } from "../services/merge/mergeFindings.js";
 import { evaluateTypography } from "../services/typography/analyzeTypography.js";
 import { evaluateMotion } from "../services/motion/analyzeMotion.js";
+import { evaluateKeyboardNav } from "../services/keyboard/analyzeKeyboard.js";
+import { validateMarkup } from "../services/markup/validateMarkup.js";
 import { summarizeSeverity, computeScore, summarizeCategories } from "../services/merge/scoring.js";
 import { attachElementScreenshots } from "../services/render/cropThumbnail.js";
 import type { AccessibilityReport } from "../types/report.js";
@@ -81,6 +83,11 @@ export async function scanRoutes(app: FastifyInstance) {
         new Set(automatedFindings.map((f) => f.ruleId).filter((r): r is string => Boolean(r)))
       )
     );
+    // Keyboard walk-through results (real Tab presses during render) —
+    // category "accessibility" (WCAG 2.4.7 / 2.1.2), affects the score.
+    findings.push(...evaluateKeyboardNav(renderResult.keyboardNav));
+    // Raw-HTML markup validation — one grouped design-clarity note.
+    findings.push(...(await validateMarkup(renderResult.finalUrl)));
     await attachElementScreenshots(
       findings,
       renderResult.boundingBoxes,
