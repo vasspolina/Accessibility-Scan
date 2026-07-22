@@ -4,7 +4,7 @@ import { env } from "../config/env.js";
 import { logger } from "../utils/logger.js";
 import { withTimeout } from "../utils/timeout.js";
 import { assertSafeUrl, UnsafeUrlError } from "../middleware/ssrfGuard.js";
-import { renderAndScan, RebindingDetectedError } from "../services/render/renderPage.js";
+import { renderAndScan, RebindingDetectedError, SiteBlockedError } from "../services/render/renderPage.js";
 import { extractContext } from "../services/contextExtraction/extractContext.js";
 import { reviewPage } from "../services/aiReview/reviewPage.js";
 import { attachAltTextSuggestions } from "../services/aiReview/suggestAltText.js";
@@ -54,6 +54,12 @@ export async function scanRoutes(app: FastifyInstance) {
         // only, return the same generic rejection as the upfront SSRF guard.
         logger.warn({ err, url: safeUrl.toString() }, "DNS rebinding detected mid-navigation");
         return reply.status(400).send({ error: "This host is not allowed" });
+      }
+      if (err instanceof SiteBlockedError) {
+        // The target refused the scanner — an honest "couldn't check" beats
+        // a report scored against the site's bot-block page.
+        logger.info({ url: safeUrl.toString() }, "Target site blocked the scanner");
+        return reply.status(422).send({ error: err.message });
       }
       logger.warn({ err, url: safeUrl.toString() }, "Render/axe layer failed");
       return reply.status(502).send({

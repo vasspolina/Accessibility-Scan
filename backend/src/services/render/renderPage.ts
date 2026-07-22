@@ -633,6 +633,26 @@ export class RebindingDetectedError extends Error {
   }
 }
 
+// Thrown when the target site refuses the scanner (bot protection, WAF,
+// geo-block). Without this, the scan would dutifully analyze the "Access
+// Denied" error page itself and return a report about a page the site's
+// real visitors never see — worse than failing, because it looks like a
+// genuine result.
+export class SiteBlockedError extends Error {
+  constructor(host: string, detail: string) {
+    super(
+      `${host} turned our scanner away (${detail}). This says nothing about the site's accessibility — the site blocks automated tools from visiting it. Try a different page, or a site without bot protection.`
+    );
+    this.name = "SiteBlockedError";
+  }
+}
+
+// Block pages that come back with HTTP 200 anyway (some WAFs do) — matched
+// against the page title. Deliberately specific phrases, not generic words,
+// so a legitimate article *about* CAPTCHAs never matches.
+const BLOCK_PAGE_TITLES =
+  /access denied|attention required|just a moment|pardon our interruption|request blocked|are you a robot|verify you are human/i;
+
 export async function renderAndScan(url: string): Promise<RenderResult> {
   const start = Date.now();
 
@@ -677,9 +697,23 @@ export async function renderAndScan(url: string): Promise<RenderResult> {
       // (always resolves for a reachable page), then optimistically give SPA
       // content a brief extra moment to settle without failing the scan if
       // the page never goes fully idle.
-      await page.goto(url, { waitUntil: "load", timeout: env.RENDER_TIMEOUT_MS });
+      const mainResponse = await page.goto(url, { waitUntil: "load", timeout: env.RENDER_TIMEOUT_MS });
       await page.waitForLoadState("networkidle", { timeout: 3000 }).catch(() => {});
       if (rebindingDetected) throw rebindingDetected;
+
+      // Refuse to scan a bot-block/error page as if it were the real site.
+      const status = mainResponse?.status() ?? 0;
+      const host = new URL(page.url()).hostname;
+      if (status === 403 || status === 429 || status === 503) {
+        throw new SiteBlockedError(host, `HTTP ${status} — automated-visitor protection`);
+      }
+      if (status >= 400) {
+        throw new SiteBlockedError(host, `the page returned HTTP ${status}`);
+      }
+      const pageTitle = await page.title().catch(() => "");
+      if (BLOCK_PAGE_TITLES.test(pageTitle)) {
+        throw new SiteBlockedError(host, `it served a "${pageTitle.slice(0, 60)}" page instead of content`);
+      }
 
       await page.addScriptTag({ path: require.resolve("axe-core") });
       const axe = (await page.evaluate(() => (window as unknown as { axe: { run: () => Promise<unknown> } }).axe.run())) as AxeRunResult;
