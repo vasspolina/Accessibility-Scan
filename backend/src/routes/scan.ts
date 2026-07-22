@@ -7,6 +7,7 @@ import { assertSafeUrl, UnsafeUrlError } from "../middleware/ssrfGuard.js";
 import { renderAndScan, RebindingDetectedError } from "../services/render/renderPage.js";
 import { extractContext } from "../services/contextExtraction/extractContext.js";
 import { reviewPage } from "../services/aiReview/reviewPage.js";
+import { attachAltTextSuggestions } from "../services/aiReview/suggestAltText.js";
 import { axeToFindings, aiToFindings, mergeFindings } from "../services/merge/mergeFindings.js";
 import { summarizeSeverity, computeScore, summarizeCategories } from "../services/merge/scoring.js";
 import { attachElementScreenshots } from "../services/render/cropThumbnail.js";
@@ -69,6 +70,11 @@ export async function scanRoutes(app: FastifyInstance) {
       renderResult.fullPageScreenshot,
       renderResult.elementScreenshots
     );
+
+    // Runs after screenshots are attached — it needs each flagged image's
+    // captured thumbnail to suggest alt text from what the image actually
+    // shows. Gated on the same AI opt-in flag; best-effort and non-fatal.
+    await attachAltTextSuggestions(findings, parsedBody.data.includeAiReview);
 
     // score/summary reflect accessibility-category findings only; design-clarity
     // and dark-pattern findings are reported via categorySummary instead.

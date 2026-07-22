@@ -33,6 +33,13 @@ export const accessibilityFindingSchema = z.object({
   // screenshot server-side. Omitted when the element couldn't be located
   // or the thumbnail cap for this scan was reached — see routes/scan.ts.
   elementScreenshot: z.string().optional(),
+  // For images missing alt text: an AI-generated, ready-to-use alt-text
+  // suggestion based on looking at the actual image (see aiReview/
+  // suggestAltText.ts). Present only when the AI layer ran and produced one.
+  // An empty string is meaningful — it signals the image looks purely
+  // decorative and should get alt="" so assistive tech skips it. Undefined
+  // means no suggestion was generated (no key, not an image finding, etc.).
+  suggestedAltText: z.string().optional(),
 });
 export type AccessibilityFinding = z.infer<typeof accessibilityFindingSchema>;
 

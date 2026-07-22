@@ -57,6 +57,7 @@ export function FindingCard({ finding }: { finding: AccessibilityFinding }) {
               <strong>Why this matters:</strong> {plain.impact}
             </p>
           )}
+          {finding.suggestedAltText !== undefined && <AltTextSuggestion value={finding.suggestedAltText} />}
           <p>
             <strong>What to do:</strong> {finding.suggestedFix}
           </p>
@@ -84,5 +85,46 @@ export function FindingCard({ finding }: { finding: AccessibilityFinding }) {
         </div>
       )}
     </li>
+  );
+}
+
+// Renders the AI's alt-text suggestion for an image missing one. An empty
+// value is meaningful — it means the image is decorative and the right fix
+// is an empty alt attribute, not a description.
+function AltTextSuggestion({ value }: { value: string }) {
+  const [copied, setCopied] = useState(false);
+
+  if (value === "") {
+    return (
+      <p className="a11y-alt-suggestion a11y-alt-decorative">
+        <strong>Suggested alt text:</strong> This image looks decorative, so give it an{" "}
+        <em>empty</em> alt text (<code>alt=""</code>) — that tells screen readers to skip it.
+      </p>
+    );
+  }
+
+  async function copy() {
+    try {
+      await navigator.clipboard.writeText(value);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 1500);
+    } catch {
+      // Clipboard blocked (permissions, insecure context) — the text is
+      // still shown, owner can select and copy it manually.
+    }
+  }
+
+  return (
+    <div className="a11y-alt-suggestion">
+      <p className="a11y-alt-suggestion-label">
+        <strong>Suggested alt text</strong> — written from the actual image:
+      </p>
+      <div className="a11y-alt-suggestion-value">
+        <code>{value}</code>
+        <button type="button" className="a11y-alt-copy" onClick={copy}>
+          {copied ? "Copied" : "Copy"}
+        </button>
+      </div>
+    </div>
   );
 }
