@@ -45,8 +45,15 @@
 }
 
 .a11y-intro a,
-.a11y-section-desc a {
+.a11y-section-desc a,
+.a11y-learn-more {
   color: var(--a11y-accent, #0969da);
+}
+
+.a11y-learn-more {
+  font-weight: 600;
+  text-decoration: underline;
+  cursor: pointer;
 }
 
 .a11y-url-label {

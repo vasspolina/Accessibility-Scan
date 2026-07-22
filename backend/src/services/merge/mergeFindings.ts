@@ -61,6 +61,7 @@ export function axeToFindings(axe: AxeRunResult): AccessibilityFinding[] {
         description: violation.help,
         suggestedFix: node.failureSummary ?? violation.description,
         ruleId: violation.id,
+        helpUrl: violation.helpUrl,
       });
     }
   }

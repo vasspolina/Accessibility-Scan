@@ -105,6 +105,21 @@ function charsPerLine(block: TypographyBlock): number | null {
   return block.textLength / block.lineCount;
 }
 
+// Closest official W3C guidance for each typography rule — WCAG's
+// visual-presentation (1.4.8) covers line length, leading, and justification;
+// text-spacing (1.4.12) covers letterspacing; resize-text (1.4.4) covers
+// small text. Rendered as "Learn more" links in the widgets.
+const HELP_URLS: Record<string, string> = {
+  "typo-caps-letterspacing": "https://www.w3.org/WAI/WCAG21/Understanding/text-spacing.html",
+  "typo-lowercase-letterspaced": "https://www.w3.org/WAI/WCAG21/Understanding/text-spacing.html",
+  "typo-negative-letterspacing": "https://www.w3.org/WAI/WCAG21/Understanding/text-spacing.html",
+  "typo-line-length-long": "https://www.w3.org/WAI/WCAG21/Understanding/visual-presentation.html",
+  "typo-line-length-short": "https://www.w3.org/WAI/WCAG21/Understanding/visual-presentation.html",
+  "typo-leading-tight": "https://www.w3.org/WAI/WCAG21/Understanding/visual-presentation.html",
+  "typo-justified-no-hyphens": "https://www.w3.org/WAI/WCAG21/Understanding/visual-presentation.html",
+  "typo-font-size-small": "https://www.w3.org/WAI/WCAG21/Understanding/resize-text.html",
+};
+
 function makeFinding(
   ruleId: string,
   severity: AccessibilityFinding["severity"],
@@ -121,6 +136,7 @@ function makeFinding(
     description,
     suggestedFix,
     ruleId,
+    helpUrl: HELP_URLS[ruleId],
   };
 }
 

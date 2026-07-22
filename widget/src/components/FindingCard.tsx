@@ -54,6 +54,18 @@ export function FindingCard({ finding }: { finding: AccessibilityFinding }) {
           <p>
             <strong>Suggested fix:</strong> {finding.suggestedFix}
           </p>
+          {finding.helpUrl && (
+            <p>
+              <a
+                className="a11y-learn-more"
+                href={finding.helpUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                Rule documentation ↗
+              </a>
+            </p>
+          )}
           {finding.confidence && (
             <p>
               <strong>AI confidence:</strong> {finding.confidence}

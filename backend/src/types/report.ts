@@ -28,6 +28,10 @@ export const accessibilityFindingSchema = z.object({
   description: z.string(),
   suggestedFix: z.string(),
   ruleId: z.string().optional(),
+  // Link to an official explanation of the rule — axe findings get their
+  // Deque University help page; other findings may link to relevant W3C
+  // guidance. Rendered as a "Learn more" link in the widgets.
+  helpUrl: z.string().optional(),
   confidence: z.enum(["high", "medium", "low"]).optional(),
   // Base64 JPEG thumbnail of the flagged element, cropped from a full-page
   // screenshot server-side. Omitted when the element couldn't be located

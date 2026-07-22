@@ -61,6 +61,18 @@ export function FindingCard({ finding }: { finding: AccessibilityFinding }) {
           <p>
             <strong>What to do:</strong> {finding.suggestedFix}
           </p>
+          {finding.helpUrl && (
+            <p>
+              <a
+                className="a11y-learn-more"
+                href={finding.helpUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                Learn more about this issue ↗
+              </a>
+            </p>
+          )}
           {hasTechnicalDetails && (
             <details className="a11y-tech-details">
               <summary>Technical details for your developer</summary>

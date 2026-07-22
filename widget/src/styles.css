@@ -318,3 +318,10 @@
   border-radius: 4px;
   font-size: 12px;
 }
+
+.a11y-learn-more {
+  color: var(--a11y-accent);
+  font-weight: 600;
+  text-decoration: underline;
+  cursor: pointer;
+}

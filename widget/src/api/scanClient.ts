@@ -19,6 +19,8 @@ export interface AccessibilityFinding {
   description: string;
   suggestedFix: string;
   ruleId?: string;
+  // Link to the official rule documentation (axe help page or W3C guidance).
+  helpUrl?: string;
   confidence?: "high" | "medium" | "low";
   // Base64 JPEG (no data: prefix) — a cropped screenshot of the flagged
   // element, when the backend could locate and capture it.
