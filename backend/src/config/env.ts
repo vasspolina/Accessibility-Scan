@@ -1,3 +1,9 @@
+// Loads backend/.env into process.env before validation, so secrets like
+// ANTHROPIC_API_KEY can live in a local gitignored file instead of having
+// to be exported in the shell. Real environment variables always win over
+// .env values (dotenv never overrides existing vars), so Railway/production
+// config is unaffected.
+import "dotenv/config";
 import { z } from "zod";
 
 const envSchema = z.object({
