@@ -394,23 +394,36 @@ const ELEMENT_IMPACT_ORDER: Record<string, number> = {
   minor: 3,
 };
 
+// axe rules that flag an image missing its text alternative. Their captures
+// feed the alt-text suggester (aiReview/suggestAltText.ts), which needs the
+// real image pixels — so these get capture priority and a load-wait.
+const IMAGE_ALT_RULES = new Set(["image-alt", "input-image-alt", "role-img-alt", "svg-img-alt", "area-alt"]);
+
 async function captureElementScreenshots(
   page: Page,
   axe: AxeRunResult
 ): Promise<Record<string, string>> {
   const orderedSelectors: string[] = [];
   const seen = new Set<string>();
-  const byImpact = [...axe.violations].sort(
-    (a, b) =>
+  const imageSelectors = new Set<string>();
+  // Image-alt violations first (their pixels are needed downstream for
+  // alt-text suggestions), then everything else by severity.
+  const byImpact = [...axe.violations].sort((a, b) => {
+    const aImg = IMAGE_ALT_RULES.has(a.id) ? 0 : 1;
+    const bImg = IMAGE_ALT_RULES.has(b.id) ? 0 : 1;
+    if (aImg !== bImg) return aImg - bImg;
+    return (
       (ELEMENT_IMPACT_ORDER[a.impact ?? "minor"] ?? 3) -
       (ELEMENT_IMPACT_ORDER[b.impact ?? "minor"] ?? 3)
-  );
+    );
+  });
   for (const violation of byImpact) {
     for (const node of violation.nodes) {
       const selector = node.target.join(" ");
       if (!seen.has(selector)) {
         seen.add(selector);
         orderedSelectors.push(selector);
+        if (IMAGE_ALT_RULES.has(violation.id)) imageSelectors.add(selector);
       }
     }
   }
@@ -422,6 +435,33 @@ async function captureElementScreenshots(
     try {
       const locator = page.locator(selector).first();
       if ((await locator.count()) === 0) continue;
+
+      // Lazy-loaded images (loading="lazy", IntersectionObserver loaders)
+      // only start fetching once scrolled into view — screenshotting right
+      // away grabs an empty placeholder, which the blank-detector below then
+      // discards, losing exactly the pixels the alt-text suggester needs.
+      // Scroll first, then wait until the underlying <img> has actually
+      // decoded real pixels (complete + naturalWidth) before shooting.
+      if (imageSelectors.has(selector)) {
+        await locator.scrollIntoViewIfNeeded({ timeout: 1_000 }).catch(() => {});
+        await locator
+          .evaluate(
+            (el) =>
+              new Promise<void>((resolve) => {
+                const img =
+                  el instanceof HTMLImageElement ? el : el.querySelector("img");
+                if (!img || (img.complete && img.naturalWidth > 0)) return resolve();
+                const done = () => resolve();
+                img.addEventListener("load", done, { once: true });
+                img.addEventListener("error", done, { once: true });
+                setTimeout(done, 1_500);
+              }),
+            undefined,
+            { timeout: 2_500 }
+          )
+          .catch(() => {});
+      }
+
       const box = await locator.boundingBox();
       if (!box || box.width < 2 || box.height < 2) continue;
       const raw = await locator.screenshot({ type: "jpeg", quality: 72, timeout: 1_500 });
