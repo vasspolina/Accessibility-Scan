@@ -158,6 +158,49 @@ export const PLAIN_RULE_EXPLANATIONS: Record<string, PlainRule> = {
     plain: "A scrollable area can't be reached with the keyboard.",
     impact: "People who don't use a mouse can't scroll to see the content inside it.",
   },
+
+  // Micro-typography checks, grounded in Jost Hochuli's "Detail in
+  // Typography" (Hyphen Press) — reported as design-clarity notes.
+  "typo-caps-letterspacing": {
+    plain: "Text in ALL CAPITALS is set without extra letter spacing.",
+    impact:
+      "Capital letters form uniform blocks; without a little extra space between them, headings and labels become hard to scan.",
+  },
+  "typo-lowercase-letterspaced": {
+    plain: "Paragraph text has extra space forced between its letters.",
+    impact:
+      "Spacing out lowercase letters breaks up the word shapes people recognize when reading, slowing everyone down.",
+  },
+  "typo-negative-letterspacing": {
+    plain: "Letters are squeezed so close together they can touch.",
+    impact: "Cramped letters blur into one another — especially at small sizes or for readers with low vision.",
+  },
+  "typo-line-length-long": {
+    plain: "Lines of text run too long across the page.",
+    impact:
+      "Past about 75 characters per line, the eye struggles to find the start of the next line — readers lose their place and give up sooner.",
+  },
+  "typo-line-length-short": {
+    plain: "Text is squeezed into very short, choppy lines.",
+    impact: "When almost every phrase breaks onto a new line, reading rhythm falls apart and content feels harder than it is.",
+  },
+  "typo-leading-tight": {
+    plain: "Lines of text sit too close together.",
+    impact: "Dense line spacing makes it easy to reread or skip lines — tiring for everyone, a real barrier for dyslexic readers.",
+  },
+  "typo-justified-no-hyphens": {
+    plain: "Text is stretched edge-to-edge (justified) without hyphenation.",
+    impact:
+      "Justifying stretches the spaces between words to fill each line, creating uneven gaps and distracting \"rivers\" of white space running down the text.",
+  },
+  "typo-font-size-small": {
+    plain: "Body text is set very small.",
+    impact: "Small text pushes away anyone reading on a phone, in poor light, or with less-than-perfect eyesight.",
+  },
+  "typo-typeface-count": {
+    plain: "The page mixes many different typefaces.",
+    impact: "More than two or three typefaces reads as visual noise and makes the page feel less trustworthy.",
+  },
 };
 
 export function plainForRule(ruleId: string | undefined): PlainRule | undefined {

@@ -9,6 +9,7 @@ import { extractContext } from "../services/contextExtraction/extractContext.js"
 import { reviewPage } from "../services/aiReview/reviewPage.js";
 import { attachAltTextSuggestions } from "../services/aiReview/suggestAltText.js";
 import { axeToFindings, aiToFindings, mergeFindings } from "../services/merge/mergeFindings.js";
+import { evaluateTypography } from "../services/typography/analyzeTypography.js";
 import { summarizeSeverity, computeScore, summarizeCategories } from "../services/merge/scoring.js";
 import { attachElementScreenshots } from "../services/render/cropThumbnail.js";
 import type { AccessibilityReport } from "../types/report.js";
@@ -64,6 +65,10 @@ export async function scanRoutes(app: FastifyInstance) {
     const automatedFindings = axeToFindings(renderResult.axe);
     const aiFindings = aiToFindings(aiReview.findings);
     const findings = mergeFindings(automatedFindings, aiFindings);
+    // Micro-typography checks (letterspacing, line length, leading, justified
+    // text) — deterministic, category "design-clarity", so they surface in
+    // the report without affecting the WCAG accessibility score.
+    findings.push(...evaluateTypography(renderResult.typographyBlocks));
     await attachElementScreenshots(
       findings,
       renderResult.boundingBoxes,

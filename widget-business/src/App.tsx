@@ -100,7 +100,7 @@ export function App({ apiBase }: { apiBase: string }) {
 
           <ReportSection
             title="Design & clarity notes"
-            description="Visual or content clarity issues spotted on the page — not formal WCAG violations, but worth a look."
+            description="Visual and readability issues spotted on the page — including typography details like letter spacing, line length, and line spacing, drawn from classic typographic practice. Not formal WCAG violations, but they shape how readable your site feels."
             variant="default"
             findings={findingsByCategory.designClarity}
           />

@@ -4,6 +4,10 @@ import sharp from "sharp";
 import { env } from "../../config/env.js";
 import { withPage } from "./browserPool.js";
 import { isPrivateOrReservedIp } from "../../middleware/ssrfGuard.js";
+import {
+  collectTypographyBlocksInPage,
+  type TypographyBlock,
+} from "../typography/analyzeTypography.js";
 import { logger } from "../../utils/logger.js";
 
 const require = createRequire(import.meta.url);
@@ -92,6 +96,9 @@ export interface RenderResult {
   // regardless of scroll architecture. Findings prefer these over
   // full-page crops (see cropThumbnail.ts / routes/scan.ts).
   elementScreenshots: Record<string, string>;
+  // Computed-style metrics for the page's text blocks, evaluated server-side
+  // into micro-typography findings (services/typography/analyzeTypography.ts).
+  typographyBlocks: TypographyBlock[];
 }
 
 // Runs inside the browser page context via page.evaluate — must be fully
@@ -354,14 +361,20 @@ function toBrowserScript<A>(fn: (arg: A) => unknown, arg?: A): string {
 }
 
 // Every selector a finding could plausibly reference — axe violation
-// targets plus everything surfaced in domSignals — so we can pre-resolve
-// bounding boxes for all of them in one pass while the page is still open.
-function collectCandidateSelectors(axe: AxeRunResult, domSignals: DomSignals): string[] {
+// targets plus everything surfaced in domSignals and the typography blocks —
+// so we can pre-resolve bounding boxes for all of them in one pass while
+// the page is still open.
+function collectCandidateSelectors(
+  axe: AxeRunResult,
+  domSignals: DomSignals,
+  typographyBlocks: TypographyBlock[]
+): string[] {
   const selectors = new Set<string>();
 
   for (const violation of axe.violations) {
     for (const node of violation.nodes) selectors.add(node.target.join(" "));
   }
+  for (const block of typographyBlocks) selectors.add(block.selector);
   for (const h of domSignals.headingTree) selectors.add(h.selector);
   for (const l of domSignals.landmarks) selectors.add(l.selector);
   for (const img of domSignals.images) selectors.add(img.selector);
@@ -549,6 +562,9 @@ export async function renderAndScan(url: string): Promise<RenderResult> {
 
       const ariaSnapshot = await page.locator("body").ariaSnapshot();
       const domSignals = await page.evaluate<DomSignals>(toBrowserScript(extractDomSignalsInPage));
+      const typographyBlocks = await page
+        .evaluate<TypographyBlock[]>(toBrowserScript(collectTypographyBlocksInPage))
+        .catch(() => [] as TypographyBlock[]);
       const screenshotBuffer = await page.screenshot({ type: "jpeg", quality: 70 });
 
       // Runs after the above-the-fold screenshot (which should show the page
@@ -557,7 +573,7 @@ export async function renderAndScan(url: string): Promise<RenderResult> {
       // below both reflect the same, fully-unclipped layout.
       await page.evaluate(toBrowserScript(neutralizeScrollClippingInPage)).catch(() => {});
 
-      const candidateSelectors = collectCandidateSelectors(axe, domSignals);
+      const candidateSelectors = collectCandidateSelectors(axe, domSignals, typographyBlocks);
       const boundingBoxes = await page.evaluate<Record<string, BoundingBox | null>>(
         toBrowserScript(collectBoundingBoxesInPage, candidateSelectors)
       );
@@ -591,6 +607,7 @@ export async function renderAndScan(url: string): Promise<RenderResult> {
         fullPageScreenshot,
         boundingBoxes,
         elementScreenshots,
+        typographyBlocks,
       };
     } finally {
       page.off("response", onResponse);
