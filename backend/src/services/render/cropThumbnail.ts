@@ -85,6 +85,10 @@ export async function attachElementScreenshots(
 ): Promise<void> {
   const needsCrop: AccessibilityFinding[] = [];
   for (const finding of findings) {
+    // Page-level findings (e.g. "your HTML has errors", "the page mixes N
+    // typefaces") point at the whole document, not one element — a thumbnail
+    // of the entire page tells the owner nothing, so leave them imageless.
+    if (finding.selector === "html" || finding.selector === "body") continue;
     const shot = precaptured[finding.selector];
     if (shot) {
       finding.elementScreenshot = shot;

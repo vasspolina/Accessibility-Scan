@@ -6,8 +6,10 @@ import { withPage } from "./browserPool.js";
 import { isPrivateOrReservedIp } from "../../middleware/ssrfGuard.js";
 import {
   collectTypographyBlocksInPage,
+  evaluateTypography,
   type TypographyBlock,
 } from "../typography/analyzeTypography.js";
+import { evaluateMotion } from "../motion/analyzeMotion.js";
 import type { FocusStyles, KeyboardNavResult, TabStop } from "../keyboard/analyzeKeyboard.js";
 import { logger } from "../../utils/logger.js";
 
@@ -419,7 +421,15 @@ const IMAGE_ALT_RULES = new Set(["image-alt", "input-image-alt", "role-img-alt",
 
 async function captureElementScreenshots(
   page: Page,
-  axe: AxeRunResult
+  axe: AxeRunResult,
+  // Extra element-specific selectors from the deterministic non-axe layers
+  // (typography, motion). Those findings are evaluated after the page has
+  // closed, so they can't reach this capture on their own — but their
+  // selectors are known during render, and this precise capture (scroll +
+  // element screenshot) is far more reliable than cropping a small element
+  // out of the full-page image. Page-level selectors ("body"/"html") are
+  // filtered by the caller since there's no single element to picture.
+  extraSelectors: string[] = []
 ): Promise<Record<string, string>> {
   const orderedSelectors: string[] = [];
   const seen = new Set<string>();
@@ -445,10 +455,18 @@ async function captureElementScreenshots(
       }
     }
   }
+  for (const selector of extraSelectors) {
+    if (!seen.has(selector)) {
+      seen.add(selector);
+      orderedSelectors.push(selector);
+    }
+  }
 
   const result: Record<string, string> = {};
   const deadline = Date.now() + ELEMENT_SHOT_BUDGET_MS;
-  for (const selector of orderedSelectors.slice(0, MAX_ELEMENT_SHOTS)) {
+  // Cap generously — axe findings plus a handful of typography/motion
+  // selectors — so the extra ones aren't starved by a violation-heavy page.
+  for (const selector of orderedSelectors.slice(0, MAX_ELEMENT_SHOTS + 15)) {
     if (Date.now() > deadline) break;
     try {
       const locator = page.locator(selector).first();
@@ -744,11 +762,27 @@ export async function renderAndScan(url: string): Promise<RenderResult> {
         .screenshot({ type: "jpeg", quality: 60, fullPage: true, timeout: 10_000 })
         .catch(() => null);
 
+      // Element-specific selectors from the deterministic non-axe layers, so
+      // their findings get the same reliable precise capture as axe findings.
+      // Re-running these pure evaluators here is cheap; page-level selectors
+      // ("body"/"html", e.g. typeface-count or markup) are dropped since
+      // there's no single element to picture.
+      const deterministicSelectors = [
+        ...evaluateTypography(typographyBlocks),
+        ...evaluateMotion(domSignals.animatedElements, domSignals.respectsReducedMotion, new Set()),
+      ]
+        .map((f) => f.selector)
+        .filter((s) => s && s !== "body" && s !== "html");
+
       // Precise per-element thumbnails — captured after the screenshots
       // because each one scrolls the page. Best-effort as a whole: if this
       // throws for any reason, fall back to full-page crops rather than
       // failing.
-      const elementScreenshots = await captureElementScreenshots(page, axe).catch(() => ({}));
+      const elementScreenshots = await captureElementScreenshots(
+        page,
+        axe,
+        deterministicSelectors
+      ).catch(() => ({}));
 
       // Real keyboard walk-through — very last, because Tab presses scroll
       // the page and flip elements into their :focus styles.
