@@ -34,6 +34,9 @@ export interface DomSignals {
       type: string;
       accessibleLabel: string | null;
       hasProgrammaticLabel: boolean;
+      name: string | null;
+      autocomplete: string | null;
+      required: boolean;
     }>;
     errorMessages: Array<{ selector: string; text: string; isAssociatedWithField: boolean }>;
   }>;
@@ -196,6 +199,9 @@ function extractDomSignalsInPage(): DomSignals {
         type: field.getAttribute("type") ?? field.tagName.toLowerCase(),
         accessibleLabel: label ? (label.textContent ?? "").trim() : null,
         hasProgrammaticLabel: Boolean(label) || field.hasAttribute("aria-label") || field.hasAttribute("aria-labelledby"),
+        name: field.getAttribute("name"),
+        autocomplete: field.getAttribute("autocomplete"),
+        required: field.hasAttribute("required") || field.getAttribute("aria-required") === "true",
       };
     });
 

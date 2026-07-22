@@ -172,6 +172,39 @@ export const PLAIN_RULE_EXPLANATIONS: Record<string, PlainRule> = {
       "A keyboard user who hits this point literally cannot reach the rest of your page. This is one of the most severe accessibility failures a site can have.",
   },
 
+  // Component design suggestions (forms, menus) — from the ARIA Authoring
+  // Practices. Framed as "here's a better way to build this."
+  "component-form-autocomplete": {
+    plain: "Your form fields don't let browsers autofill personal details.",
+    impact:
+      "Without autocomplete, every visitor retypes their name, email, and address by hand — slow for everyone, and a real barrier for people with motor or memory difficulties.",
+  },
+  "component-input-type": {
+    plain: "Email and phone fields use a plain text box instead of the proper input type.",
+    impact:
+      "On phones, visitors get the generic keyboard instead of one with \"@\" or a number pad — more taps, more mistakes, more abandoned forms.",
+  },
+  "component-required-cue": {
+    plain: "Required fields are marked only in the code, not visibly in the label.",
+    impact:
+      "People don't learn a field was mandatory until the form rejects them — a frustrating loop that makes sign-ups and checkouts fail.",
+  },
+  "component-submit-clarity": {
+    plain: "The form has no clearly-labelled submit button.",
+    impact:
+      "A button that just says \"Go\", shows only an icon, or is missing entirely leaves people unsure how to finish — so they don't.",
+  },
+  "component-nav-labels": {
+    plain: "Your page has several menus, but they aren't individually labelled.",
+    impact:
+      "Screen-reader users hear \"navigation… navigation…\" with no way to tell the main menu from footer links, so getting around your site is guesswork.",
+  },
+  "component-skip-link": {
+    plain: "There's no \"skip to main content\" link.",
+    impact:
+      "Keyboard and screen-reader users must tab through your whole menu on every page before reaching the content — dozens of extra key presses each visit.",
+  },
+
   // Raw-HTML markup validation.
   "markup-validation": {
     plain: "The page's underlying HTML code contains errors.",
