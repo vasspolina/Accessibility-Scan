@@ -10,6 +10,7 @@ import { reviewPage } from "../services/aiReview/reviewPage.js";
 import { attachAltTextSuggestions } from "../services/aiReview/suggestAltText.js";
 import { axeToFindings, aiToFindings, mergeFindings } from "../services/merge/mergeFindings.js";
 import { evaluateTypography } from "../services/typography/analyzeTypography.js";
+import { evaluateMotion } from "../services/motion/analyzeMotion.js";
 import { summarizeSeverity, computeScore, summarizeCategories } from "../services/merge/scoring.js";
 import { attachElementScreenshots } from "../services/render/cropThumbnail.js";
 import type { AccessibilityReport } from "../types/report.js";
@@ -69,6 +70,17 @@ export async function scanRoutes(app: FastifyInstance) {
     // text) — deterministic, category "design-clarity", so they surface in
     // the report without affecting the WCAG accessibility score.
     findings.push(...evaluateTypography(renderResult.typographyBlocks));
+    // Motion/animation checks (marquee, autoplay media, endless animations
+    // ignoring reduced-motion) — category "accessibility" (WCAG 2.2.2), so
+    // these DO affect the score. axe rule ids are passed in so overlapping
+    // axe findings (marquee, no-autoplay-audio) aren't reported twice.
+    findings.push(
+      ...evaluateMotion(
+        renderResult.domSignals.animatedElements,
+        renderResult.domSignals.respectsReducedMotion,
+        new Set(automatedFindings.map((f) => f.ruleId).filter((r): r is string => Boolean(r)))
+      )
+    );
     await attachElementScreenshots(
       findings,
       renderResult.boundingBoxes,

@@ -159,6 +159,23 @@ export const PLAIN_RULE_EXPLANATIONS: Record<string, PlainRule> = {
     impact: "People who don't use a mouse can't scroll to see the content inside it.",
   },
 
+  // Motion/animation checks (WCAG 2.2.2 Pause, Stop, Hide).
+  "motion-marquee": {
+    plain: "Text scrolls across the page in a moving ticker that can't be paused.",
+    impact:
+      "Moving text is hard to read for everyone, and for people with attention or vestibular (balance) disabilities it can make the page unusable.",
+  },
+  "motion-autoplay-media": {
+    plain: "A video or audio starts playing by itself, with no controls to stop it.",
+    impact:
+      "Visitors can't stop the motion or sound — it's disorienting, drowns out screen readers, and is a common reason people leave a site immediately.",
+  },
+  "motion-infinite-no-reduced-motion": {
+    plain: "Something on the page animates non-stop, even for visitors who asked their device for less motion.",
+    impact:
+      "Perpetual movement pulls attention away from your content, and for people with vestibular disorders it can cause dizziness or nausea.",
+  },
+
   // Micro-typography checks, grounded in Jost Hochuli's "Detail in
   // Typography" (Hyphen Press) — reported as design-clarity notes.
   "typo-caps-letterspacing": {
