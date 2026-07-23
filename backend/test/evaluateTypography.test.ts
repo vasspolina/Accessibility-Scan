@@ -18,6 +18,7 @@ function cleanParagraph(overrides: Partial<TypographyBlock> = {}): TypographyBlo
     isUppercase: false,
     textDecorationLine: "none",
     fontStyle: "normal",
+    fontWeight: 400,
     ...overrides,
   };
 }
@@ -46,6 +47,11 @@ describe("evaluateTypography — neurodiversity/readability", () => {
   it("flags a long all-caps body block", () => {
     const findings = evaluateTypography([cleanParagraph({ isUppercase: true, textLength: 200 })]);
     expect(rulesOf(findings)).toContain("typo-allcaps-block");
+  });
+
+  it("flags hairline body weight but not a normal weight", () => {
+    expect(rulesOf(evaluateTypography([cleanParagraph({ fontWeight: 100 })]))).toContain("typo-thin-weight");
+    expect(rulesOf(evaluateTypography([cleanParagraph({ fontWeight: 400 })]))).not.toContain("typo-thin-weight");
   });
 
   it("all readability findings are design-clarity with a help link", () => {

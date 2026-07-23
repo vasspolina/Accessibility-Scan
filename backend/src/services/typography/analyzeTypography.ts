@@ -25,6 +25,7 @@ export interface TypographyBlock {
   isUppercase: boolean;
   textDecorationLine: string;
   fontStyle: string;
+  fontWeight: number;
 }
 
 // Runs inside the browser page context via page.evaluate — must be fully
@@ -94,6 +95,7 @@ export function collectTypographyBlocksInPage(): TypographyBlock[] {
       isUppercase: cs.textTransform === "uppercase" || isAllCapsText,
       textDecorationLine: cs.textDecorationLine || cs.textDecoration || "none",
       fontStyle: cs.fontStyle || "normal",
+      fontWeight: parseInt(cs.fontWeight, 10) || 400,
     });
   }
 
@@ -129,6 +131,7 @@ const HELP_URLS: Record<string, string> = {
   "typo-underline-nonlink": "https://accessibility.blog.gov.uk/2016/09/02/dos-and-donts-on-designing-for-accessibility/",
   "typo-italic-body": "https://accessibility.blog.gov.uk/2016/09/02/dos-and-donts-on-designing-for-accessibility/",
   "typo-allcaps-block": "https://accessibility.blog.gov.uk/2016/09/02/dos-and-donts-on-designing-for-accessibility/",
+  "typo-thin-weight": "https://accessibility.blog.gov.uk/2016/09/02/dos-and-donts-on-designing-for-accessibility/",
 };
 
 function makeFinding(
@@ -355,6 +358,27 @@ export function evaluateTypography(blocks: TypographyBlock[]): AccessibilityFind
         longest(allCapsBlocks).selector,
         `A long passage is set in ALL CAPITALS (${allCapsBlocks.length} block${allCapsBlocks.length === 1 ? "" : "s"}). Capitals form uniform rectangles that strip out the word shapes people read by, so long all-caps text is slow and tiring — especially for dyslexic readers.`,
         "Use normal sentence case for anything longer than a short label or heading; emphasise with weight or size instead of capitals."
+      )
+    );
+  }
+
+  // Thin / hairline weight on body text. The essay's "weight balance" point,
+  // and Microsoft's readability work: parallel letter recognition needs the
+  // strokes to actually register. Hairline weights (100–200) thin out to near
+  // nothing on low-quality screens, in bright light, or for low-vision
+  // readers — a legibility problem distinct from raw colour contrast.
+  const thinBody = blocks.filter(
+    (b) => BODY_TAGS.has(b.tag) && b.textLength >= 60 && b.fontWeight > 0 && b.fontWeight <= 200
+  );
+  if (thinBody.length > 0) {
+    const worst = thinBody.reduce((a, b) => (b.fontWeight < a.fontWeight ? b : a));
+    findings.push(
+      makeFinding(
+        "typo-thin-weight",
+        "minor",
+        worst.selector,
+        `Body text is set in a very thin (hairline) weight — font-weight ${worst.fontWeight} (${thinBody.length} block${thinBody.length === 1 ? "" : "s"} at 200 or lighter). Thin strokes fade out on cheaper screens, in bright light, and for readers with low vision, even when the colour contrast passes.`,
+        "Use a regular weight (around 400) for running text. Reserve hairline weights for large display headings, not paragraphs."
       )
     );
   }

@@ -323,6 +323,11 @@ export const PLAIN_RULE_EXPLANATIONS: Record<string, PlainRule> = {
     impact:
       "Capitals strip out the word shapes people read by, so long all-caps text is slow and tiring — hardest of all for dyslexic readers.",
   },
+  "typo-thin-weight": {
+    plain: "Body text is set in a very thin (hairline) weight.",
+    impact:
+      "Thin strokes fade out on cheaper screens, in bright sunlight, and for readers with low vision — even when the colour contrast technically passes.",
+  },
 };
 
 export function plainForRule(ruleId: string | undefined): PlainRule | undefined {
