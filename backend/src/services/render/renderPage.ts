@@ -10,6 +10,8 @@ import {
   type TypographyBlock,
 } from "../typography/analyzeTypography.js";
 import { evaluateMotion } from "../motion/analyzeMotion.js";
+import { evaluateComponents } from "../components/analyzeComponents.js";
+import { evaluateDialogs } from "../dialog/analyzeDialogs.js";
 import { collectMobileSignalsInPage, type MobileSignals } from "../mobile/analyzeMobile.js";
 import type { FocusStyles, KeyboardNavResult, TabStop } from "../keyboard/analyzeKeyboard.js";
 import { logger } from "../../utils/logger.js";
@@ -525,17 +527,23 @@ async function captureElementScreenshots(
   page: Page,
   axe: AxeRunResult,
   // Extra element-specific selectors from the deterministic non-axe layers
-  // (typography, motion). Those findings are evaluated after the page has
-  // closed, so they can't reach this capture on their own — but their
-  // selectors are known during render, and this precise capture (scroll +
-  // element screenshot) is far more reliable than cropping a small element
-  // out of the full-page image. Page-level selectors ("body"/"html") are
-  // filtered by the caller since there's no single element to picture.
+  // (typography, motion, components, dialogs). Those findings are evaluated
+  // after the page has closed, so they can't reach this capture on their own
+  // — but their selectors are known during render, and this precise capture
+  // (scroll + element screenshot) is far more reliable than cropping a small
+  // element out of the full-page image. Page-level selectors ("body"/"html")
+  // are filtered by the caller since there's no single element to picture.
   extraSelectors: string[] = []
 ): Promise<Record<string, string>> {
   const orderedSelectors: string[] = [];
   const seen = new Set<string>();
   const imageSelectors = new Set<string>();
+  const pushUnique = (selector: string) => {
+    if (selector && !seen.has(selector)) {
+      seen.add(selector);
+      orderedSelectors.push(selector);
+    }
+  };
   // Image-alt violations first (their pixels are needed downstream for
   // alt-text suggestions), then everything else by severity.
   const byImpact = [...axe.violations].sort((a, b) => {
@@ -547,27 +555,30 @@ async function captureElementScreenshots(
       (ELEMENT_IMPACT_ORDER[b.impact ?? "minor"] ?? 3)
     );
   });
+  // 1. Image-alt selectors — their captures feed the alt-text suggester.
   for (const violation of byImpact) {
+    if (!IMAGE_ALT_RULES.has(violation.id)) continue;
     for (const node of violation.nodes) {
       const selector = node.target.join(" ");
-      if (!seen.has(selector)) {
-        seen.add(selector);
-        orderedSelectors.push(selector);
-        if (IMAGE_ALT_RULES.has(violation.id)) imageSelectors.add(selector);
-      }
+      imageSelectors.add(selector);
+      pushUnique(selector);
     }
   }
-  for (const selector of extraSelectors) {
-    if (!seen.has(selector)) {
-      seen.add(selector);
-      orderedSelectors.push(selector);
-    }
+  // 2. Deterministic non-axe selectors (typography, motion, components,
+  //    dialogs) next. There are only a handful, and each is the sole way its
+  //    finding can be pictured (it's evaluated after the page closes) — so
+  //    give them priority over the long tail of axe selectors rather than
+  //    letting a violation-heavy page exhaust the capture budget first.
+  for (const selector of extraSelectors) pushUnique(selector);
+  // 3. The remaining axe selectors, by severity.
+  for (const violation of byImpact) {
+    for (const node of violation.nodes) pushUnique(node.target.join(" "));
   }
 
   const result: Record<string, string> = {};
   const deadline = Date.now() + ELEMENT_SHOT_BUDGET_MS;
-  // Cap generously — axe findings plus a handful of typography/motion
-  // selectors — so the extra ones aren't starved by a violation-heavy page.
+  // Cap generously — the deterministic selectors plus axe findings — so
+  // neither group is starved by a violation-heavy page.
   for (const selector of orderedSelectors.slice(0, MAX_ELEMENT_SHOTS + 15)) {
     if (Date.now() > deadline) break;
     try {
@@ -866,12 +877,19 @@ export async function renderAndScan(url: string): Promise<RenderResult> {
 
       // Element-specific selectors from the deterministic non-axe layers, so
       // their findings get the same reliable precise capture as axe findings.
-      // Re-running these pure evaluators here is cheap; page-level selectors
-      // ("body"/"html", e.g. typeface-count or markup) are dropped since
-      // there's no single element to picture.
+      // This precise path scrolls each element into view before shooting, so
+      // it works even on sites whose scroll architecture defeats the full-page
+      // crop (e.g. a footer form on a smooth-scroll page). Re-running these
+      // pure evaluators here is cheap; page-level selectors ("body"/"html",
+      // e.g. typeface-count or markup) are dropped since there's no single
+      // element to picture. Mobile findings are excluded — their signals are
+      // measured later, and their selectors are captured against the phone
+      // viewport, not this one.
       const deterministicSelectors = [
         ...evaluateTypography(typographyBlocks),
         ...evaluateMotion(domSignals.animatedElements, domSignals.respectsReducedMotion, new Set()),
+        ...evaluateComponents(domSignals),
+        ...evaluateDialogs(domSignals.dialogs),
       ]
         .map((f) => f.selector)
         .filter((s) => s && s !== "body" && s !== "html");
