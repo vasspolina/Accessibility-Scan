@@ -299,6 +299,50 @@ export function plainForRule(ruleId: string | undefined): PlainRule | undefined 
   return ruleId ? PLAIN_RULE_EXPLANATIONS[ruleId] : undefined;
 }
 
+// One clean, plain-English "what to do" per automated (axe) rule. axe's own
+// failureSummary ("Fix all of the following: Element is in tab order and does
+// not have accessible text Fix any of the following: …") is dense developer
+// jargon repeated per element — this replaces it with a single instruction
+// for the whole group. Our own deterministic layers (keyboard/component/
+// dialog/typography/motion) already write plain fixes, so they aren't here
+// and fall back to their own suggestedFix.
+const PLAIN_RULE_FIXES: Record<string, string> = {
+  "color-contrast":
+    "Darken the text or lighten its background until they contrast strongly — aim for a 4.5:1 ratio for normal text, 3:1 for large text.",
+  "image-alt":
+    'Add an alt attribute to each image describing what it shows. Use empty alt (alt="") only for purely decorative images.',
+  "input-image-alt": 'Add an alt attribute to the image button describing its action (e.g. alt="Search").',
+  "link-name":
+    "Give each link readable text — visible text inside the link, or an aria-label describing where it goes.",
+  "button-name":
+    "Give each button a clear label — visible text inside it, or an aria-label describing what it does.",
+  label: "Connect a visible <label> to each field (the label's for matches the field's id), or add an aria-label.",
+  "select-name": "Add a <label> tied to the dropdown, or an aria-label describing what it selects.",
+  "document-title": "Add a <title> in the page's <head> that describes the page.",
+  "html-has-lang": 'Add a lang attribute to the <html> tag (e.g. <html lang="en">).',
+  "html-lang-valid": 'Set the <html> lang attribute to a valid language code (e.g. "en", "de", "fr").',
+  "heading-order": "Use headings in order without skipping levels — don't jump from <h2> straight to <h4>.",
+  "page-has-heading-one": "Add one <h1> near the top that states what the page is about.",
+  "empty-heading": "Put text in the heading, or remove the empty heading tag.",
+  "link-in-text-block": "Give in-text links a second visual cue besides colour — usually an underline.",
+  "meta-viewport": "Remove user-scalable=no and any maximum-scale limit from the viewport meta tag so people can zoom.",
+  "frame-title": 'Add a title attribute to each <iframe> describing its content (e.g. title="Location map").',
+  "duplicate-id-active": "Make every id on the page unique — no two elements should share the same id.",
+  list: "Wrap the items in a proper <ul> or <ol>, with only <li> as direct children.",
+  listitem: "Put each <li> inside a <ul> or <ol> parent.",
+  "aria-required-attr": "Add the ARIA attributes this component's role requires — see the Learn more link for the exact set.",
+  "aria-hidden-focus":
+    'Remove aria-hidden from focusable elements, or make them unfocusable (tabindex="-1") so hidden content can\'t be tabbed to.',
+  region: "Wrap page content in landmark regions — <header>, <nav>, <main>, <footer> — so nothing sits outside a labelled area.",
+  "landmark-one-main": "Wrap the primary content of the page in a single <main> element.",
+  tabindex: 'Remove positive tabindex values (tabindex="1" or higher) and let the natural page order set focus order.',
+  "scrollable-region-focusable": 'Add tabindex="0" to the scrollable container so keyboard users can scroll it.',
+};
+
+export function plainFixForRule(ruleId: string | undefined): string | undefined {
+  return ruleId ? PLAIN_RULE_FIXES[ruleId] : undefined;
+}
+
 export const WCAG_LINK = "https://www.w3.org/WAI/standards-guidelines/wcag/";
 
 export const PRINCIPLE_ORDER: Principle[] = ["Perceivable", "Operable", "Understandable", "Robust"];
