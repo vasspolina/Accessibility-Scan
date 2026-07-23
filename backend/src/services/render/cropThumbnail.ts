@@ -89,6 +89,12 @@ export async function attachElementScreenshots(
     // typefaces") point at the whole document, not one element — a thumbnail
     // of the entire page tells the owner nothing, so leave them imageless.
     if (finding.selector === "html" || finding.selector === "body") continue;
+    // Tiny tap targets are typically transparent icon controls sitting over a
+    // photo or background — a crop of that box is a confusing blur of whatever
+    // is behind them, not a recognizable control (and it changes shot to shot
+    // as the background moves). The plain label ("“Toggle search” button")
+    // identifies the element far better, so never show a thumbnail for these.
+    if (finding.ruleId === "mobile-tap-target") continue;
     const shot = precaptured[finding.selector];
     if (shot) {
       finding.elementScreenshot = shot;

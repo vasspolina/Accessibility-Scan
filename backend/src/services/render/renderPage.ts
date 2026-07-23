@@ -973,10 +973,13 @@ export async function renderAndScan(url: string): Promise<RenderResult> {
         await page.setViewportSize({ width: 390, height: 844 });
         await page.waitForTimeout(400); // let CSS media queries / reflow settle
         mobileSignals = await page.evaluate<MobileSignals>(toBrowserScript(collectMobileSignalsInPage));
-        mobileSelectors = [
-          ...mobileSignals.smallTapTargets.map((t) => t.selector),
-          ...mobileSignals.overflowingElements.map((o) => o.selector),
-        ].filter((s) => s && s !== "body" && s !== "html");
+        // Only breakout (overflow) elements — they're large regions that crop
+        // into a useful picture. Tap targets are deliberately left imageless
+        // (see cropThumbnail.ts): a tiny transparent icon can't be captured
+        // into a meaningful thumbnail, so we don't waste the budget trying.
+        mobileSelectors = mobileSignals.overflowingElements
+          .map((o) => o.selector)
+          .filter((s) => s && s !== "body" && s !== "html");
         if (mobileSelectors.length > 0) {
           mobileElementScreenshots = await captureMobileElementScreenshots(page, mobileSelectors);
         }
