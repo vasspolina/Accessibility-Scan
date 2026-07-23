@@ -638,6 +638,52 @@ async function captureElementScreenshots(
   return result;
 }
 
+// Captures thumbnails for mobile-only findings while the page is at phone
+// width. Mobile findings (tiny tap targets, breakout elements) are about
+// elements as they render on a narrow screen — a hamburger toggle hidden on
+// desktop, a menu that only appears in the mobile layout — so a desktop
+// capture of the same selector is blank or shows the wrong thing. This runs
+// during the mobile pass so each element is shot in the layout the finding is
+// actually describing. Element-level (not cropped from a full-page image)
+// because the mobile layout's scroll architecture is unknown here too.
+const MAX_MOBILE_SHOTS = 20;
+const MOBILE_SHOT_BUDGET_MS = 4_000;
+
+async function captureMobileElementScreenshots(
+  page: Page,
+  selectors: string[]
+): Promise<Record<string, string>> {
+  const result: Record<string, string> = {};
+  const seen = new Set<string>();
+  const deadline = Date.now() + MOBILE_SHOT_BUDGET_MS;
+  for (const selector of selectors) {
+    if (result[selector] || seen.has(selector)) continue;
+    seen.add(selector);
+    if (Object.keys(result).length >= MAX_MOBILE_SHOTS || Date.now() > deadline) break;
+    try {
+      const locator = page.locator(selector).first();
+      if ((await locator.count()) === 0) continue;
+      await locator.scrollIntoViewIfNeeded({ timeout: 800 }).catch(() => {});
+      const box = await locator.boundingBox();
+      if (!box || box.width < 2 || box.height < 2) continue;
+      const raw = await locator.screenshot({ type: "jpeg", quality: 72, timeout: 1_500 });
+      const resized = await sharp(raw)
+        .resize({ width: 480, height: 480, fit: "inside", withoutEnlargement: true })
+        .jpeg({ quality: 62 })
+        .toBuffer();
+      // Same blank-frame guard as the desktop path — a hidden/transparent
+      // element shot as one flat color is worse than no thumbnail.
+      const stats = await sharp(resized).stats().catch(() => null);
+      const maxStdev = stats ? Math.max(...stats.channels.map((c) => c.stdev)) : 1;
+      if (maxStdev < 2.5) continue;
+      result[selector] = resized.toString("base64");
+    } catch {
+      // skip this element, keep going
+    }
+  }
+  return result;
+}
+
 // Walks the page with real Tab key presses — the check most automated
 // scanners skip because it needs interaction, not static analysis. At each
 // stop we record the focused element's indicator styles (outline,
@@ -918,13 +964,34 @@ export async function renderAndScan(url: string): Promise<RenderResult> {
         overflowingElements: [],
         smallTapTargets: [],
       };
+      // Thumbnails for mobile findings, captured at phone width (see
+      // captureMobileElementScreenshots). Merged over the desktop captures so
+      // a mobile-only element is pictured as it actually renders on a phone.
+      let mobileElementScreenshots: Record<string, string> = {};
+      let mobileSelectors: string[] = [];
       try {
         await page.setViewportSize({ width: 390, height: 844 });
         await page.waitForTimeout(400); // let CSS media queries / reflow settle
         mobileSignals = await page.evaluate<MobileSignals>(toBrowserScript(collectMobileSignalsInPage));
+        mobileSelectors = [
+          ...mobileSignals.smallTapTargets.map((t) => t.selector),
+          ...mobileSignals.overflowingElements.map((o) => o.selector),
+        ].filter((s) => s && s !== "body" && s !== "html");
+        if (mobileSelectors.length > 0) {
+          mobileElementScreenshots = await captureMobileElementScreenshots(page, mobileSelectors);
+        }
       } catch (err) {
         logger.warn({ err }, "Mobile pass failed — reporting without mobile findings");
       }
+
+      // A mobile finding must never borrow the desktop capture of its selector
+      // (that's exactly the wrong-layout image this pass exists to avoid): drop
+      // any desktop entry for a mobile selector, then layer on the mobile shots
+      // that actually succeeded. Result: mobile findings show a phone-layout
+      // thumbnail or none at all.
+      const mergedElementScreenshots = { ...elementScreenshots };
+      for (const s of mobileSelectors) delete mergedElementScreenshots[s];
+      Object.assign(mergedElementScreenshots, mobileElementScreenshots);
 
       // Final check — a late subresource (lazy-loaded image, polling XHR)
       // could have triggered a rebind after the initial navigation settled.
@@ -940,7 +1007,7 @@ export async function renderAndScan(url: string): Promise<RenderResult> {
         screenshotBase64: screenshotBuffer.toString("base64"),
         fullPageScreenshot,
         boundingBoxes,
-        elementScreenshots,
+        elementScreenshots: mergedElementScreenshots,
         typographyBlocks,
         keyboardNav,
         mobileSignals,

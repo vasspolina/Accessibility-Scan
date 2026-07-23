@@ -92,7 +92,12 @@ export async function attachElementScreenshots(
     const shot = precaptured[finding.selector];
     if (shot) {
       finding.elementScreenshot = shot;
-    } else {
+    } else if (!finding.ruleId?.startsWith("mobile-")) {
+      // Mobile findings describe the phone layout; they only ever use the
+      // mobile capture taken at phone width (in precaptured). Never crop them
+      // from the desktop full-page image — that would picture the wrong
+      // layout, the exact problem the mobile pass avoids. No mobile shot ⇒ no
+      // thumbnail, which is correct.
       needsCrop.push(finding);
     }
   }
