@@ -441,7 +441,10 @@
   flex-shrink: 0;
   width: 72px;
   height: 52px;
-  object-fit: cover;
+  /* contain, not cover: many flagged elements (small tap targets especially)
+     are captured at their true small size — show the whole element crisply,
+     centered, rather than upscaling a crop into a blurry fill. */
+  object-fit: contain;
   border-radius: 6px;
   border: 1px solid var(--a11y-border, #d0d7de);
   background: var(--a11y-bg, #ffffff);
@@ -483,7 +486,7 @@
   flex-shrink: 0;
   width: 60px;
   height: 44px;
-  object-fit: cover;
+  object-fit: contain;
   border-radius: 6px;
   border: 1px solid var(--a11y-border, #d0d7de);
   background: var(--a11y-surface, #f6f8fa);
