@@ -13,6 +13,7 @@ import { evaluateTypography } from "../services/typography/analyzeTypography.js"
 import { evaluateMotion } from "../services/motion/analyzeMotion.js";
 import { evaluateKeyboardNav } from "../services/keyboard/analyzeKeyboard.js";
 import { evaluateComponents } from "../services/components/analyzeComponents.js";
+import { evaluateDialogs } from "../services/dialog/analyzeDialogs.js";
 import { validateMarkup } from "../services/markup/validateMarkup.js";
 import { summarizeSeverity, computeScore, summarizeCategories } from "../services/merge/scoring.js";
 import { attachElementScreenshots } from "../services/render/cropThumbnail.js";
@@ -96,6 +97,11 @@ export async function scanRoutes(app: FastifyInstance) {
     // Component design suggestions (forms, menus) grounded in the ARIA
     // Authoring Practices — design-clarity recommendations, not score hits.
     findings.push(...evaluateComponents(renderResult.domSignals));
+    // Modal / pop-up dialog checks (unlabelled close button, unmarked
+    // overlay, nameless dialog) — ARIA dialog pattern. The unlabelled-close
+    // and nameless-dialog rules are accessibility (WCAG 4.1.2); the rest are
+    // design-clarity suggestions.
+    findings.push(...evaluateDialogs(renderResult.domSignals.dialogs));
     // Raw-HTML markup validation — one grouped design-clarity note.
     findings.push(...(await validateMarkup(renderResult.finalUrl)));
     await attachElementScreenshots(

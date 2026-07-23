@@ -50,6 +50,19 @@ export interface DomSignals {
     hasPauseControls: boolean;
   }>;
   respectsReducedMotion: boolean;
+  // Modal/popup dialogs currently on the page (cookie banners, newsletter
+  // pop-ups, age gates, etc.) — either explicitly marked (role="dialog",
+  // <dialog>) or heuristically detected as a viewport-covering overlay.
+  // Evaluated for the ARIA dialog pattern in services/dialog/analyzeDialogs.
+  dialogs: Array<{
+    selector: string;
+    role: string; // "dialog" | "alertdialog" | "" (heuristic overlay)
+    isNativeDialog: boolean; // a <dialog> element
+    hasAccessibleName: boolean;
+    ariaModal: boolean;
+    looksLikeModalOverlay: boolean; // fixed/absolute, high z-index, covers viewport
+    closeControl: { present: boolean; hasAccessibleName: boolean } | null;
+  }>;
 }
 
 export interface BoundingBox {
@@ -276,6 +289,84 @@ function extractDomSignalsInPage(): DomSignals {
     // Ignore — leave as false.
   }
 
+  // Modal / pop-up dialogs: cookie banners, newsletter overlays, age gates.
+  // Two ways in — an explicit dialog (role or <dialog>), or a heuristic
+  // overlay (fixed/absolute, high z-index, covering the viewport, or with a
+  // modal-ish class/id) that carries interactive content.
+  const dialogEls = new Set<Element>();
+  document
+    .querySelectorAll('[role="dialog"], [role="alertdialog"], dialog')
+    .forEach((el) => dialogEls.add(el));
+
+  const MODAL_HINT = /modal|popup|pop-up|dialog|overlay|lightbox|cookie|consent|gdpr|newsletter|subscribe|age[-\s]?gate/i;
+  for (const el of Array.from(document.querySelectorAll<HTMLElement>("div, section, aside"))) {
+    if (dialogEls.size > 40) break;
+    try {
+      const cs = getComputedStyle(el);
+      if (cs.position !== "fixed" && cs.position !== "absolute") continue;
+      if (cs.display === "none" || cs.visibility === "hidden" || parseFloat(cs.opacity) === 0) continue;
+      const rect = el.getBoundingClientRect();
+      if (rect.width < 200 || rect.height < 120) continue;
+      const z = parseInt(cs.zIndex, 10);
+      const hintMatch = MODAL_HINT.test(`${el.className} ${el.id}`);
+      const coversViewport =
+        rect.width >= window.innerWidth * 0.5 && rect.height >= window.innerHeight * 0.3;
+      const highLayer = Number.isFinite(z) && z >= 100;
+      // Require a real modal signal AND some interactive content, so we don't
+      // flag sticky headers, hero sections, or decorative overlays.
+      if (!((hintMatch && highLayer) || (coversViewport && highLayer))) continue;
+      if (!el.querySelector("button, a[href], input, [role='button']")) continue;
+      dialogEls.add(el);
+    } catch {
+      // one bad element shouldn't stop detection
+    }
+  }
+
+  function meaningfulCloseName(ctrl: Element): { present: boolean; hasAccessibleName: boolean } {
+    const aria = (ctrl.getAttribute("aria-label") ?? ctrl.getAttribute("title") ?? "").trim();
+    const labelledBy = ctrl.getAttribute("aria-labelledby");
+    const text = (ctrl.textContent ?? "").trim();
+    // A real name is an aria label, an aria-labelledby reference, or visible
+    // text with an actual word — a bare "×"/"X" glyph does not count.
+    const hasAccessibleName = Boolean(aria) || Boolean(labelledBy) || /[a-z]{3,}/i.test(text);
+    return { present: true, hasAccessibleName };
+  }
+
+  const dialogs = Array.from(dialogEls)
+    .slice(0, 8)
+    .map((el) => {
+      const role = el.getAttribute("role") ?? "";
+      const isNativeDialog = el.tagName.toLowerCase() === "dialog";
+      const hasAccessibleName =
+        el.hasAttribute("aria-label") ||
+        el.hasAttribute("aria-labelledby") ||
+        el.hasAttribute("title");
+      const ariaModal = el.getAttribute("aria-modal") === "true";
+      const cs = getComputedStyle(el);
+      const looksLikeModalOverlay = cs.position === "fixed" || cs.position === "absolute";
+
+      // Find a close-like control inside the dialog.
+      let closeControl: { present: boolean; hasAccessibleName: boolean } | null = null;
+      const controls = Array.from(el.querySelectorAll('button, [role="button"], a[href]'));
+      for (const ctrl of controls) {
+        const hay = `${ctrl.getAttribute("aria-label") ?? ""} ${ctrl.getAttribute("title") ?? ""} ${(ctrl.textContent ?? "").trim()}`;
+        if (/close|dismiss|no thanks|not now|✕|✖|⨯|╳|^\s*[x×]\s*$/i.test(hay)) {
+          closeControl = meaningfulCloseName(ctrl);
+          break;
+        }
+      }
+
+      return {
+        selector: cssPath(el),
+        role,
+        isNativeDialog,
+        hasAccessibleName,
+        ariaModal,
+        looksLikeModalOverlay,
+        closeControl,
+      };
+    });
+
   return {
     pageTitle: document.title,
     headingTree,
@@ -286,6 +377,7 @@ function extractDomSignalsInPage(): DomSignals {
     focusOrderSample,
     animatedElements,
     respectsReducedMotion,
+    dialogs,
   };
 }
 

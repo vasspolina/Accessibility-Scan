@@ -205,6 +205,28 @@ export const PLAIN_RULE_EXPLANATIONS: Record<string, PlainRule> = {
       "Keyboard and screen-reader users must tab through your whole menu on every page before reaching the content — dozens of extra key presses each visit.",
   },
 
+  // Modal / pop-up dialogs — ARIA dialog pattern.
+  "dialog-close-unlabeled": {
+    plain: "A pop-up's close button is just an \"×\" with no readable label.",
+    impact:
+      "Screen-reader users hear only \"button\" and can't tell how to close the pop-up — it traps them, and many will simply leave your site.",
+  },
+  "dialog-no-close": {
+    plain: "A pop-up appears to have no obvious close button.",
+    impact:
+      "If it can only be dismissed by clicking outside, keyboard and screen-reader users can get stuck behind it with no way forward.",
+  },
+  "dialog-missing-role": {
+    plain: "A pop-up overlay isn't marked up as a dialog.",
+    impact:
+      "Assistive tech doesn't announce that the pop-up opened, doesn't keep focus inside it, and lets people tab off into the hidden page behind it.",
+  },
+  "dialog-missing-name": {
+    plain: "A pop-up dialog has no name describing what it's for.",
+    impact:
+      "When it opens, a screen reader just says \"dialog\" — the visitor has no idea what it's asking or why.",
+  },
+
   // Raw-HTML markup validation.
   "markup-validation": {
     plain: "The page's underlying HTML code contains errors.",
