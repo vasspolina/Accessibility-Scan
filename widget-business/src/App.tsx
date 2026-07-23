@@ -3,7 +3,6 @@ import { UrlForm } from "./components/UrlForm";
 import { ScoreGauge } from "./components/ScoreGauge";
 import { ReportSection } from "./components/ReportSection";
 import { PrincipleGroup } from "./components/PrincipleGroup";
-import { ResearchReferences } from "./components/ResearchReferences";
 import { WCAG_LINK } from "./lib/wcagPlain";
 import { scanUrl, ScanError, type AccessibilityReport } from "./api/scanClient";
 
@@ -107,8 +106,6 @@ export function App({ apiBase }: { apiBase: string }) {
           />
         </div>
       )}
-
-      <ResearchReferences />
     </div>
   );
 }
