@@ -52,26 +52,53 @@ export interface AccessibilityReport {
 
 export class ScanError extends Error {}
 
+const delay = (ms: number) => new Promise((r) => setTimeout(r, ms));
+
+// Gateway/unavailable statuses that occur briefly while the backend is
+// restarting (e.g. during a deploy) — worth a quick retry rather than an
+// error. Rate-limit (429) and real 4xx/5xx are NOT retried; they carry a
+// meaningful message the user should see.
+const TRANSIENT_STATUSES = new Set([502, 503, 504]);
+const MAX_ATTEMPTS = 3;
+
 export async function scanUrl(
   apiBase: string,
   url: string,
   includeAiReview: boolean
 ): Promise<AccessibilityReport> {
-  let response: Response;
-  try {
-    response = await fetch(`${apiBase.replace(/\/$/, "")}/api/scan`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ url, includeAiReview }),
-    });
-  } catch {
-    throw new ScanError("Could not reach the scanner service. Please try again shortly.");
+  const endpoint = `${apiBase.replace(/\/$/, "")}/api/scan`;
+  const body = JSON.stringify({ url, includeAiReview });
+
+  for (let attempt = 1; attempt <= MAX_ATTEMPTS; attempt++) {
+    let response: Response;
+    try {
+      response = await fetch(endpoint, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body,
+      });
+    } catch {
+      // Connection failure — the service may just be briefly restarting.
+      // Retry a couple of times before giving up.
+      if (attempt < MAX_ATTEMPTS) {
+        await delay(1500 * attempt);
+        continue;
+      }
+      throw new ScanError("Could not reach the scanner service. Please try again shortly.");
+    }
+
+    if (TRANSIENT_STATUSES.has(response.status) && attempt < MAX_ATTEMPTS) {
+      await delay(1500 * attempt);
+      continue;
+    }
+
+    if (!response.ok) {
+      const errBody = await response.json().catch(() => ({}) as { error?: string });
+      throw new ScanError(errBody.error ?? `Scan failed with status ${response.status}`);
+    }
+
+    return response.json();
   }
 
-  if (!response.ok) {
-    const body = await response.json().catch(() => ({}) as { error?: string });
-    throw new ScanError(body.error ?? `Scan failed with status ${response.status}`);
-  }
-
-  return response.json();
+  throw new ScanError("Could not reach the scanner service. Please try again shortly.");
 }
