@@ -3,37 +3,37 @@
   "configurations": [
     {
       "name": "backend",
-      "runtimeExecutable": "/Users/polinavasilyeva/Desktop/untitled folder 6/.tools/node/bin/node",
+      "runtimeExecutable": "/Users/polinavasilyeva/a11y-checker/.tools/node/bin/node",
       "runtimeArgs": [
-        "/Users/polinavasilyeva/Desktop/untitled folder 6/backend/node_modules/tsx/dist/cli.mjs",
+        "/Users/polinavasilyeva/a11y-checker/backend/node_modules/tsx/dist/cli.mjs",
         "watch",
-        "/Users/polinavasilyeva/Desktop/untitled folder 6/backend/src/server.ts"
+        "/Users/polinavasilyeva/a11y-checker/backend/src/server.ts"
       ],
       "port": 8787
     },
     {
       "name": "widget",
-      "runtimeExecutable": "/Users/polinavasilyeva/Desktop/untitled folder 6/.tools/node/bin/node",
+      "runtimeExecutable": "/Users/polinavasilyeva/a11y-checker/.tools/node/bin/node",
       "runtimeArgs": [
-        "/Users/polinavasilyeva/Desktop/untitled folder 6/widget/node_modules/vite/bin/vite.js",
-        "/Users/polinavasilyeva/Desktop/untitled folder 6/widget"
+        "/Users/polinavasilyeva/a11y-checker/widget/node_modules/vite/bin/vite.js",
+        "/Users/polinavasilyeva/a11y-checker/widget"
       ],
       "port": 5173
     },
     {
       "name": "widget-business",
-      "runtimeExecutable": "/Users/polinavasilyeva/Desktop/untitled folder 6/.tools/node/bin/node",
+      "runtimeExecutable": "/Users/polinavasilyeva/a11y-checker/.tools/node/bin/node",
       "runtimeArgs": [
-        "/Users/polinavasilyeva/Desktop/untitled folder 6/widget-business/node_modules/vite/bin/vite.js",
-        "/Users/polinavasilyeva/Desktop/untitled folder 6/widget-business"
+        "/Users/polinavasilyeva/a11y-checker/widget-business/node_modules/vite/bin/vite.js",
+        "/Users/polinavasilyeva/a11y-checker/widget-business"
       ],
       "port": 5174
     },
     {
       "name": "accessible-web-design",
-      "runtimeExecutable": "/Users/polinavasilyeva/Desktop/untitled folder 6/.tools/node/bin/node",
+      "runtimeExecutable": "/Users/polinavasilyeva/a11y-checker/.tools/node/bin/node",
       "runtimeArgs": [
-        "/Users/polinavasilyeva/Desktop/untitled folder 6/accessible-web-design/server.js"
+        "/Users/polinavasilyeva/a11y-checker/accessible-web-design/server.js"
       ],
       "port": 5175
     }
