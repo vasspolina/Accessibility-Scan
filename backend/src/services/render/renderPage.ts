@@ -10,6 +10,7 @@ import {
   type TypographyBlock,
 } from "../typography/analyzeTypography.js";
 import { evaluateMotion } from "../motion/analyzeMotion.js";
+import { collectMobileSignalsInPage, type MobileSignals } from "../mobile/analyzeMobile.js";
 import type { FocusStyles, KeyboardNavResult, TabStop } from "../keyboard/analyzeKeyboard.js";
 import { logger } from "../../utils/logger.js";
 
@@ -122,6 +123,9 @@ export interface RenderResult {
   // stop), evaluated server-side into keyboard findings
   // (services/keyboard/analyzeKeyboard.ts).
   keyboardNav: KeyboardNavResult;
+  // Signals from a phone-width render pass (horizontal scroll, small tap
+  // targets) — evaluated into mobile findings (services/mobile/analyzeMobile).
+  mobileSignals: MobileSignals;
 }
 
 // Runs inside the browser page context via page.evaluate — must be fully
@@ -882,9 +886,27 @@ export async function renderAndScan(url: string): Promise<RenderResult> {
         deterministicSelectors
       ).catch(() => ({}));
 
-      // Real keyboard walk-through — very last, because Tab presses scroll
-      // the page and flip elements into their :focus styles.
+      // Real keyboard walk-through — after the screenshots, because Tab
+      // presses scroll the page and flip elements into their :focus styles.
       const keyboardNav = await captureKeyboardNavigation(page);
+
+      // Mobile pass — resize to a phone width, let the layout reflow, and
+      // measure mobile-only problems (sideways scrolling, tiny tap targets).
+      // Done last: it changes the viewport, invalidating everything above.
+      // Best-effort — a failure just means no mobile findings.
+      let mobileSignals: MobileSignals = {
+        viewportWidth: 390,
+        documentScrollWidth: 0,
+        overflowingElements: [],
+        smallTapTargets: [],
+      };
+      try {
+        await page.setViewportSize({ width: 390, height: 844 });
+        await page.waitForTimeout(400); // let CSS media queries / reflow settle
+        mobileSignals = await page.evaluate<MobileSignals>(toBrowserScript(collectMobileSignalsInPage));
+      } catch (err) {
+        logger.warn({ err }, "Mobile pass failed — reporting without mobile findings");
+      }
 
       // Final check — a late subresource (lazy-loaded image, polling XHR)
       // could have triggered a rebind after the initial navigation settled.
@@ -903,6 +925,7 @@ export async function renderAndScan(url: string): Promise<RenderResult> {
         elementScreenshots,
         typographyBlocks,
         keyboardNav,
+        mobileSignals,
       };
     } finally {
       page.off("response", onResponse);

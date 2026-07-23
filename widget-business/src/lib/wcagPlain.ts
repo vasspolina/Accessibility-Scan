@@ -205,6 +205,18 @@ export const PLAIN_RULE_EXPLANATIONS: Record<string, PlainRule> = {
       "Keyboard and screen-reader users must tab through your whole menu on every page before reaching the content — dozens of extra key presses each visit.",
   },
 
+  // Mobile-only issues from the phone-width render pass.
+  "mobile-horizontal-scroll": {
+    plain: "On a phone, your page scrolls sideways.",
+    impact:
+      "Most of your visitors are on phones. If they have to swipe left and right to read each line — or content spills off the edge — many just leave.",
+  },
+  "mobile-tap-target": {
+    plain: "Some buttons or links are too small to tap reliably on a phone.",
+    impact:
+      "Tiny tap targets cause mis-taps and frustration, especially for people with larger fingers, tremors, or limited dexterity — and they cost you conversions.",
+  },
+
   // Modal / pop-up dialogs — ARIA dialog pattern.
   "dialog-close-unlabeled": {
     plain: "A pop-up's close button is just an \"×\" with no readable label.",

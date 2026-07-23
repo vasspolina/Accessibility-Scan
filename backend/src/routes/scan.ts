@@ -14,6 +14,7 @@ import { evaluateMotion } from "../services/motion/analyzeMotion.js";
 import { evaluateKeyboardNav } from "../services/keyboard/analyzeKeyboard.js";
 import { evaluateComponents } from "../services/components/analyzeComponents.js";
 import { evaluateDialogs } from "../services/dialog/analyzeDialogs.js";
+import { evaluateMobile } from "../services/mobile/analyzeMobile.js";
 import { validateMarkup } from "../services/markup/validateMarkup.js";
 import { summarizeSeverity, computeScore, summarizeCategories } from "../services/merge/scoring.js";
 import { attachElementScreenshots } from "../services/render/cropThumbnail.js";
@@ -102,6 +103,9 @@ export async function scanRoutes(app: FastifyInstance) {
     // and nameless-dialog rules are accessibility (WCAG 4.1.2); the rest are
     // design-clarity suggestions.
     findings.push(...evaluateDialogs(renderResult.domSignals.dialogs));
+    // Mobile-only checks from the phone-width render pass (sideways scrolling,
+    // tap targets too small) — category "accessibility" (WCAG 1.4.10 / 2.5.8).
+    findings.push(...evaluateMobile(renderResult.mobileSignals));
     // Raw-HTML markup validation — one grouped design-clarity note.
     findings.push(...(await validateMarkup(renderResult.finalUrl)));
     await attachElementScreenshots(
