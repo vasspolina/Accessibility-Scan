@@ -16,9 +16,48 @@ function cleanParagraph(overrides: Partial<TypographyBlock> = {}): TypographyBlo
     widthPx: 600,
     lineCount: 6, // ~67 chars/line
     isUppercase: false,
+    textDecorationLine: "none",
+    fontStyle: "normal",
     ...overrides,
   };
 }
+
+// Readability / neurodiversity checks (underline, italic, all-caps blocks).
+describe("evaluateTypography — neurodiversity/readability", () => {
+  it("flags underlined text that isn't a link", () => {
+    const findings = evaluateTypography([cleanParagraph({ textDecorationLine: "underline" })]);
+    expect(rulesOf(findings)).toContain("typo-underline-nonlink");
+  });
+
+  it("does not flag an underlined actual link", () => {
+    const findings = evaluateTypography([cleanParagraph({ tag: "a", textDecorationLine: "underline" })]);
+    expect(rulesOf(findings)).not.toContain("typo-underline-nonlink");
+  });
+
+  it("flags a long italic body passage but not a short one", () => {
+    expect(rulesOf(evaluateTypography([cleanParagraph({ fontStyle: "italic", textLength: 300 })]))).toContain(
+      "typo-italic-body"
+    );
+    expect(rulesOf(evaluateTypography([cleanParagraph({ fontStyle: "italic", textLength: 40 })]))).not.toContain(
+      "typo-italic-body"
+    );
+  });
+
+  it("flags a long all-caps body block", () => {
+    const findings = evaluateTypography([cleanParagraph({ isUppercase: true, textLength: 200 })]);
+    expect(rulesOf(findings)).toContain("typo-allcaps-block");
+  });
+
+  it("all readability findings are design-clarity with a help link", () => {
+    const findings = evaluateTypography([
+      cleanParagraph({ textDecorationLine: "underline", fontStyle: "italic", isUppercase: true }),
+    ]);
+    for (const f of findings) {
+      expect(f.category).toBe("design-clarity");
+      expect(f.helpUrl).toBeTruthy();
+    }
+  });
+});
 
 function rulesOf(findings: ReturnType<typeof evaluateTypography>): string[] {
   return findings.map((f) => f.ruleId ?? "");

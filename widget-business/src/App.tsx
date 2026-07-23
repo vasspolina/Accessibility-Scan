@@ -100,7 +100,7 @@ export function App({ apiBase }: { apiBase: string }) {
 
           <ReportSection
             title="Design & clarity notes"
-            description="Visual and readability issues spotted on the page — including typography details like letter spacing, line length, and line spacing, drawn from classic typographic practice. Not formal WCAG violations, but they shape how readable your site feels."
+            description="Visual and readability issues spotted on the page — typography details like letter spacing, line length, line spacing, italics, and all-caps, drawn from classic typographic practice and neurodiversity research (GOV.UK's accessibility guidance and the Neurodiversity Design System). Not formal WCAG violations, but they shape how readable your site feels — especially for people with dyslexia, ADHD, or low vision."
             variant="default"
             findings={findingsByCategory.designClarity}
           />

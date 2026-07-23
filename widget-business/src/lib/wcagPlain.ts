@@ -305,6 +305,24 @@ export const PLAIN_RULE_EXPLANATIONS: Record<string, PlainRule> = {
     plain: "The page mixes many different typefaces.",
     impact: "More than two or three typefaces reads as visual noise and makes the page feel less trustworthy.",
   },
+
+  // Readability / neurodiversity checks — grounded in GOV.UK's accessibility
+  // dos-and-don'ts and the Neurodiversity Design System (dyslexia, ADHD).
+  "typo-underline-nonlink": {
+    plain: "Some text that isn't a link is underlined.",
+    impact:
+      "Underlines read as links, so people click text that goes nowhere — and the line cutting through the letters slows readers with dyslexia.",
+  },
+  "typo-italic-body": {
+    plain: "Whole passages are set in italics.",
+    impact:
+      "Slanted, distorted letters are markedly harder to read over more than a few words — a real barrier for people with dyslexia or low vision.",
+  },
+  "typo-allcaps-block": {
+    plain: "A long passage is set in ALL CAPITALS.",
+    impact:
+      "Capitals strip out the word shapes people read by, so long all-caps text is slow and tiring — hardest of all for dyslexic readers.",
+  },
 };
 
 export function plainForRule(ruleId: string | undefined): PlainRule | undefined {

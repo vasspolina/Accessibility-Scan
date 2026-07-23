@@ -23,6 +23,8 @@ export interface TypographyBlock {
   widthPx: number;
   lineCount: number | null;
   isUppercase: boolean;
+  textDecorationLine: string;
+  fontStyle: string;
 }
 
 // Runs inside the browser page context via page.evaluate — must be fully
@@ -90,6 +92,8 @@ export function collectTypographyBlocksInPage(): TypographyBlock[] {
       widthPx: rect.width,
       lineCount,
       isUppercase: cs.textTransform === "uppercase" || isAllCapsText,
+      textDecorationLine: cs.textDecorationLine || cs.textDecoration || "none",
+      fontStyle: cs.fontStyle || "normal",
     });
   }
 
@@ -118,6 +122,13 @@ const HELP_URLS: Record<string, string> = {
   "typo-leading-tight": "https://www.w3.org/WAI/WCAG21/Understanding/visual-presentation.html",
   "typo-justified-no-hyphens": "https://www.w3.org/WAI/WCAG21/Understanding/visual-presentation.html",
   "typo-font-size-small": "https://www.w3.org/WAI/WCAG21/Understanding/resize-text.html",
+  // Neurodiversity / readability checks — grounded in GOV.UK's accessibility
+  // dos-and-don'ts, the Neurodiversity Design System, and Typotheque's
+  // readability research: avoid underlining non-links, italic body text, and
+  // large all-caps blocks, all of which slow dyslexic and low-vision readers.
+  "typo-underline-nonlink": "https://accessibility.blog.gov.uk/2016/09/02/dos-and-donts-on-designing-for-accessibility/",
+  "typo-italic-body": "https://accessibility.blog.gov.uk/2016/09/02/dos-and-donts-on-designing-for-accessibility/",
+  "typo-allcaps-block": "https://accessibility.blog.gov.uk/2016/09/02/dos-and-donts-on-designing-for-accessibility/",
 };
 
 function makeFinding(
@@ -290,6 +301,60 @@ export function evaluateTypography(blocks: TypographyBlock[]): AccessibilityFind
         worst.selector,
         `Body text is set very small — ${Math.round(worst.fontSizePx)}px (${smallText.length} block${smallText.length === 1 ? "" : "s"} under 13px). Small settings that work in print are hard to read on screens.`,
         "Raise body text to at least 14–16px."
+      )
+    );
+  }
+
+  // Underlined text that isn't a link (GOV.UK dyslexia don't): underlines
+  // read as links and, on body text, slow reading by cutting descenders.
+  const underlinedNonLink = blocks.filter(
+    (b) =>
+      b.tag !== "a" &&
+      b.textLength >= 20 &&
+      b.textDecorationLine.includes("underline")
+  );
+  if (underlinedNonLink.length > 0) {
+    findings.push(
+      makeFinding(
+        "typo-underline-nonlink",
+        "minor",
+        longest(underlinedNonLink).selector,
+        `Text that isn't a link is underlined (${underlinedNonLink.length} place${underlinedNonLink.length === 1 ? "" : "s"}). Underlines read as links — confusing for everyone — and the line cutting through letters' descenders slows dyslexic readers.`,
+        "Reserve underlines for links. Use bold, colour, or spacing to emphasise other text."
+      )
+    );
+  }
+
+  // Italic body text (GOV.UK / Neurodiversity Design System): italics distort
+  // letterforms and are markedly harder for dyslexic readers over a passage.
+  const italicBody = blocks.filter(
+    (b) => BODY_TAGS.has(b.tag) && b.fontStyle.startsWith("italic") && b.textLength >= 120
+  );
+  if (italicBody.length > 0) {
+    findings.push(
+      makeFinding(
+        "typo-italic-body",
+        "minor",
+        longest(italicBody).selector,
+        `Whole passages of body text are set in italics (${italicBody.length} block${italicBody.length === 1 ? "" : "s"}). Slanted, distorted letterforms are noticeably harder to read for people with dyslexia and low vision over more than a few words.`,
+        "Keep italics for short emphasis only. Set running text upright; emphasise with weight or colour instead."
+      )
+    );
+  }
+
+  // Large all-caps blocks (GOV.UK / dyslexia): capitals remove the word-shape
+  // cues readers rely on, so long all-caps runs are slow and tiring to read.
+  const allCapsBlocks = blocks.filter(
+    (b) => BODY_TAGS.has(b.tag) && b.isUppercase && b.textLength >= 60
+  );
+  if (allCapsBlocks.length > 0) {
+    findings.push(
+      makeFinding(
+        "typo-allcaps-block",
+        "minor",
+        longest(allCapsBlocks).selector,
+        `A long passage is set in ALL CAPITALS (${allCapsBlocks.length} block${allCapsBlocks.length === 1 ? "" : "s"}). Capitals form uniform rectangles that strip out the word shapes people read by, so long all-caps text is slow and tiring — especially for dyslexic readers.`,
+        "Use normal sentence case for anything longer than a short label or heading; emphasise with weight or size instead of capitals."
       )
     );
   }
