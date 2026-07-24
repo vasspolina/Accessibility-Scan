@@ -13,6 +13,7 @@ import { evaluateComponents } from "./components/analyzeComponents.js";
 import { evaluateDialogs } from "./dialog/analyzeDialogs.js";
 import { evaluateMobile } from "./mobile/analyzeMobile.js";
 import { evaluateDarkPatterns } from "./darkPatterns/analyzeDarkPatterns.js";
+import { evaluateTextResize } from "./textResize/analyzeTextResize.js";
 import { validateMarkup } from "./markup/validateMarkup.js";
 import { summarizeSeverity, computeScore, summarizeCategories } from "./merge/scoring.js";
 import { attachElementScreenshots } from "./render/cropThumbnail.js";
@@ -61,6 +62,7 @@ export async function scanUrlToReport(
   findings.push(...evaluateDialogs(renderResult.domSignals.dialogs));
   findings.push(...evaluateMobile(renderResult.mobileSignals));
   findings.push(...evaluateDarkPatterns(renderResult.darkPatternSignals));
+  findings.push(...evaluateTextResize(renderResult.textResizeSignals));
   findings.push(...(await validateMarkup(renderResult.finalUrl)));
 
   await attachElementScreenshots(

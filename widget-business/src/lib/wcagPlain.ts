@@ -217,6 +217,24 @@ export const PLAIN_RULE_EXPLANATIONS: Record<string, PlainRule> = {
       "Tiny tap targets cause mis-taps and frustration, especially for people with larger fingers, tremors, or limited dexterity — and they cost you conversions.",
   },
 
+  // Text resizing — WCAG 1.4.4 / 1.4.12, measured by actually applying the
+  // reader's overrides and looking at what breaks.
+  "text-spacing-clipped": {
+    plain: "Text gets cut off when a reader increases spacing.",
+    impact:
+      "Many people with dyslexia widen line and letter spacing to read at all. On your page the words don't reflow — they disappear behind a fixed-size box, so the content is simply lost.",
+  },
+  "text-zoom-clipped": {
+    plain: "Text gets cut off at larger font sizes.",
+    impact:
+      "Turning up the browser's font size is the most common adjustment people with low vision make — far more common than any screen reader. Here the container stays put while the words grow, so part of your content is hidden.",
+  },
+  "text-zoom-horizontal-scroll": {
+    plain: "Enlarging text makes the page scroll sideways.",
+    impact:
+      "Readers who enlarge text have to drag left and right on every single line. It's exhausting, and most people give up rather than persist.",
+  },
+
   // Dark patterns — manipulative marketing/UX. These don't affect the
   // accessibility score; they're trust and (for consent) legal red flags.
   "dark-consent-no-reject": {

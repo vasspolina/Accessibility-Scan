@@ -16,6 +16,7 @@ import { evaluateComponents } from "../services/components/analyzeComponents.js"
 import { evaluateDialogs } from "../services/dialog/analyzeDialogs.js";
 import { evaluateMobile } from "../services/mobile/analyzeMobile.js";
 import { evaluateDarkPatterns } from "../services/darkPatterns/analyzeDarkPatterns.js";
+import { evaluateTextResize } from "../services/textResize/analyzeTextResize.js";
 import { validateMarkup } from "../services/markup/validateMarkup.js";
 import { summarizeSeverity, computeScore, summarizeCategories } from "../services/merge/scoring.js";
 import { attachElementScreenshots } from "../services/render/cropThumbnail.js";
@@ -115,6 +116,7 @@ export async function scanRoutes(app: FastifyInstance) {
     // tap targets too small) — category "accessibility" (WCAG 1.4.10 / 2.5.8).
     deterministic.push(...evaluateMobile(renderResult.mobileSignals));
     deterministic.push(...evaluateDarkPatterns(renderResult.darkPatternSignals));
+    deterministic.push(...evaluateTextResize(renderResult.textResizeSignals));
     // Raw-HTML markup validation — one grouped design-clarity note.
     deterministic.push(...(await validateMarkup(renderResult.finalUrl)));
 

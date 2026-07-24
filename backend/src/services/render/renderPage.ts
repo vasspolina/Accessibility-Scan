@@ -22,6 +22,13 @@ import {
   collectScreenReaderScriptInPage,
   condenseScreenReaderScript,
 } from "../screenReader/analyzeScreenReader.js";
+import {
+  measureTextClippingInPage,
+  TEXT_SPACING_CSS,
+  TEXT_ZOOM_CSS,
+  type ClipMeasurement,
+  type TextResizeSignals,
+} from "../textResize/analyzeTextResize.js";
 import type { ScreenReaderScript } from "../../types/report.js";
 import type { FocusStyles, KeyboardNavResult, TabStop } from "../keyboard/analyzeKeyboard.js";
 import { logger } from "../../utils/logger.js";
@@ -145,6 +152,10 @@ export interface RenderResult {
   // Approximation of what a screen reader announces, in reading order —
   // rendered as a playable preview in the widget.
   screenReaderScript: ScreenReaderScript;
+  // Measurements of the page before and after the WCAG text-spacing and
+  // 200%-text overrides — evaluated into resize findings
+  // (services/textResize/analyzeTextResize.ts).
+  textResizeSignals: TextResizeSignals;
 }
 
 // Runs inside the browser page context via page.evaluate — must be fully
@@ -708,6 +719,49 @@ async function collectDarkPatternsAcrossFrames(page: Page): Promise<DarkPatternS
   return merged;
 }
 
+// WCAG 1.4.4 (Resize Text) and 1.4.12 (Text Spacing) are both defined by what
+// happens when the reader changes something, so neither can be judged from
+// static markup — the only honest test is to apply the change and measure.
+// Runs after the screenshots and the keyboard walk (both would be disturbed by
+// restyling the page) and before the mobile pass, while still at desktop width.
+// Best-effort throughout: a failure here costs these findings, nothing else.
+async function collectTextResizeSignals(page: Page): Promise<TextResizeSignals> {
+  const empty: ClipMeasurement = {
+    clipped: [],
+    snippets: {},
+    documentScrollWidth: 0,
+    viewportWidth: 0,
+  };
+  const measure = () =>
+    page
+      .evaluate<ClipMeasurement>(toBrowserScript(measureTextClippingInPage))
+      .catch(() => empty);
+
+  // Baseline first: anything already clipping its own content is a
+  // pre-existing layout bug, not something the resize broke.
+  const baseline = await measure();
+
+  const withCss = async (css: string): Promise<ClipMeasurement> => {
+    try {
+      const handle = await page.addStyleTag({ content: css });
+      // Let the restyle settle before measuring — reflow is not synchronous
+      // with the style tag being appended.
+      await page.waitForTimeout(200);
+      const result = await measure();
+      await handle.evaluate((el) => (el as Element).remove()).catch(() => {});
+      await page.waitForTimeout(80);
+      return result;
+    } catch {
+      return empty;
+    }
+  };
+
+  const spacing = await withCss(TEXT_SPACING_CSS);
+  const zoom = await withCss(TEXT_ZOOM_CSS);
+
+  return { baseline, spacing, zoom };
+}
+
 // Captures thumbnails for mobile-only findings while the page is at phone
 // width. Mobile findings (tiny tap targets, breakout elements) are about
 // elements as they render on a narrow screen — a hamburger toggle hidden on
@@ -1036,6 +1090,10 @@ export async function renderAndScan(url: string): Promise<RenderResult> {
       // presses scroll the page and flip elements into their :focus styles.
       const keyboardNav = await captureKeyboardNavigation(page);
 
+      // Text-resize passes — done at desktop width, before the viewport is
+      // changed for the mobile pass below.
+      const textResizeSignals = await collectTextResizeSignals(page);
+
       // Mobile pass — resize to a phone width, let the layout reflow, and
       // measure mobile-only problems (sideways scrolling, tiny tap targets).
       // Done last: it changes the viewport, invalidating everything above.
@@ -1098,6 +1156,7 @@ export async function renderAndScan(url: string): Promise<RenderResult> {
         mobileSignals,
         darkPatternSignals,
         screenReaderScript,
+        textResizeSignals,
       };
     } finally {
       page.off("response", onResponse);
