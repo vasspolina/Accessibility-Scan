@@ -439,8 +439,10 @@
 
 .a11y-occurrence-thumb {
   flex-shrink: 0;
-  width: 72px;
-  height: 52px;
+  /* 3x the original 72x52 — at thumbnail size you could tell there was an
+     image but not read it, which defeats the point of showing the element. */
+  width: 216px;
+  height: 156px;
   /* contain, not cover: many flagged elements (small tap targets especially)
      are captured at their true small size — show the whole element crisply,
      centered, rather than upscaling a crop into a blurry fill. */
@@ -484,12 +486,30 @@
 
 .a11y-finding-thumb {
   flex-shrink: 0;
-  width: 60px;
-  height: 44px;
+  /* Doubled rather than tripled, deliberately: this one sits in the collapsed
+     header of every finding, so its height multiplies down a list of twenty.
+     The detail thumbnail below is the one you actually inspect. */
+  width: 120px;
+  height: 88px;
   object-fit: contain;
   border-radius: 6px;
   border: 1px solid var(--a11y-border, #d0d7de);
   background: var(--a11y-surface, #f6f8fa);
+}
+
+/* Narrow embeds: a 216px image plus a label doesn't fit beside itself on a
+   phone, and the label is what identifies the element. Shrink the images
+   rather than squeezing the text to one word per line. */
+@media (max-width: 560px) {
+  .a11y-occurrence-thumb {
+    width: 120px;
+    height: 88px;
+  }
+
+  .a11y-finding-thumb {
+    width: 72px;
+    height: 52px;
+  }
 }
 
 .a11y-finding-thumb-large {
