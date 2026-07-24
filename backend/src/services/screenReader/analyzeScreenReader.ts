@@ -160,6 +160,29 @@ export function collectScreenReaderScriptInPage(): ScreenReaderScript {
     return /^[\w-]+$/.test(s) && /[_\d]/.test(s) && !/\s/.test(s);
   }
 
+  // One place deciding whether a control's name is useful, so links and
+  // buttons are judged consistently — a name that's unhelpful on a link is
+  // just as unhelpful on a button. All of these pass an automated
+  // "has an accessible name" check while telling a listener nothing.
+  function unhelpfulNameReason(name: string, what: "link" | "button"): string | undefined {
+    const purpose = what === "link" ? "where it goes" : "what it does";
+    if (isSymbolOnly(name)) {
+      return `This ${what} is announced as just “${cut(name, 20)}”, which says nothing about ${purpose}.`;
+    }
+    // Two characters or fewer is almost always a code or icon glyph — a
+    // language switcher reading "n l", a "×" close control, a bare ">".
+    if (name.length <= 2) {
+      return `This ${what} is announced as just “${name}” — too short to tell the listener ${purpose}.`;
+    }
+    if (/^(https?:\/\/|www\.)/i.test(name)) {
+      return `This ${what} is announced as a raw web address, which is read out character by character.`;
+    }
+    if (/^(click here|read more|more|here|learn more|link|continue|details|view|go)$/i.test(name)) {
+      return `Out of context this ${what} name says nothing about ${purpose}.`;
+    }
+    return undefined;
+  }
+
   const lines: ScreenReaderLine[] = [];
   let truncated = false;
   const push = (line: ScreenReaderLine) => {
@@ -249,11 +272,7 @@ export function collectScreenReaderScriptInPage(): ScreenReaderScript {
         selector,
         issue: !name
           ? "This link has no readable text — it's announced only as “link”."
-          : isSymbolOnly(name)
-            ? `This link is announced as just “${cut(name, 20)}”, which says nothing about where it goes.`
-            : /^(click here|read more|more|here|learn more|link)$/i.test(name)
-              ? "Out of context this link name says nothing about where it goes."
-              : undefined,
+          : unhelpfulNameReason(name, "link"),
       });
       continue;
     }
@@ -272,9 +291,7 @@ export function collectScreenReaderScriptInPage(): ScreenReaderScript {
         selector,
         issue: !name
           ? "This button has no name — it's announced only as “button”."
-          : isSymbolOnly(name)
-            ? `This button is announced as just “${cut(name, 20)}”, which doesn't say what it does.`
-            : undefined,
+          : unhelpfulNameReason(name, "button"),
       });
       continue;
     }
