@@ -10,6 +10,9 @@ import { scanUrl, ScanError, type AccessibilityReport } from "./api/scanClient";
 export function App({ apiBase }: { apiBase: string }) {
   const [report, setReport] = useState<AccessibilityReport | null>(null);
   const [loading, setLoading] = useState(false);
+  // Tracked so the wait message can be honest about which path is running —
+  // the AI review roughly triples the time.
+  const [aiRequested, setAiRequested] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   const findingsByCategory = useMemo(() => {
@@ -22,6 +25,7 @@ export function App({ apiBase }: { apiBase: string }) {
   }, [report]);
 
   async function handleScan(url: string, includeAiReview: boolean) {
+    setAiRequested(includeAiReview);
     setLoading(true);
     setError(null);
     setReport(null);
@@ -56,7 +60,9 @@ export function App({ apiBase }: { apiBase: string }) {
 
       {loading && (
         <p className="a11y-loading" role="status">
-          Checking your site — this can take up to a minute…
+          {aiRequested
+            ? "Checking your site, including the AI review — this can take up to a minute…"
+            : "Checking your site — this usually takes about 15 seconds…"}
         </p>
       )}
 
@@ -64,17 +70,19 @@ export function App({ apiBase }: { apiBase: string }) {
         <div className="a11y-report">
           <ScoreGauge score={report.score} summary={report.summary} />
 
-          {report.meta.aiReviewStatus !== "completed" && (
-            <p className="a11y-notice">
-              The AI-powered review wasn't included in this check
-              {report.meta.aiReviewStatus === "disabled_by_request"
-                ? " (turned off)."
-                : report.meta.aiReviewStatus === "skipped_no_key"
+          {/* Only flag it when the AI review was wanted but didn't happen.
+              "disabled_by_request" is the visitor's own choice — reporting it
+              back as a shortfall would put a warning on every default scan. */}
+          {report.meta.aiReviewStatus !== "completed" &&
+            report.meta.aiReviewStatus !== "disabled_by_request" && (
+              <p className="a11y-notice">
+                The AI-powered review wasn't included in this check
+                {report.meta.aiReviewStatus === "skipped_no_key"
                   ? " (not set up yet)."
                   : " (temporarily unavailable)."}{" "}
-              Showing rule-based findings only.
-            </p>
-          )}
+                Showing rule-based findings only.
+              </p>
+            )}
 
           <ReportSection
             title="Issues that could turn away users"

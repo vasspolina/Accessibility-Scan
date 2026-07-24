@@ -164,21 +164,20 @@ export function collectScreenReaderScriptInPage(): ScreenReaderScript {
   // buttons are judged consistently — a name that's unhelpful on a link is
   // just as unhelpful on a button. All of these pass an automated
   // "has an accessible name" check while telling a listener nothing.
+  // The issue text sits directly under the announcement it refers to, so it
+  // states only the consequence — repeating the name back ("This link is
+  // announced as just 'nl'…") just says the same thing twice on screen.
   function unhelpfulNameReason(name: string, what: "link" | "button"): string | undefined {
-    const purpose = what === "link" ? "where it goes" : "what it does";
-    if (isSymbolOnly(name)) {
-      return `This ${what} is announced as just “${cut(name, 20)}”, which says nothing about ${purpose}.`;
-    }
+    const purpose = what === "link" ? "where this goes" : "what this does";
+    if (isSymbolOnly(name)) return `Punctuation alone doesn't say ${purpose}.`;
     // Two characters or fewer is almost always a code or icon glyph — a
     // language switcher reading "n l", a "×" close control, a bare ">".
-    if (name.length <= 2) {
-      return `This ${what} is announced as just “${name}” — too short to tell the listener ${purpose}.`;
-    }
+    if (name.length <= 2) return `Too short to tell a listener ${purpose}.`;
     if (/^(https?:\/\/|www\.)/i.test(name)) {
-      return `This ${what} is announced as a raw web address, which is read out character by character.`;
+      return "A raw web address is read out character by character.";
     }
     if (/^(click here|read more|more|here|learn more|link|continue|details|view|go)$/i.test(name)) {
-      return `Out of context this ${what} name says nothing about ${purpose}.`;
+      return `Out of context this says nothing about ${purpose}.`;
     }
     return undefined;
   }
@@ -257,7 +256,7 @@ export function collectScreenReaderScriptInPage(): ScreenReaderScript {
           : `heading level ${headingLevel}, empty`,
         kind: "heading",
         selector,
-        issue: name ? undefined : "This heading is empty — it's announced but says nothing.",
+        issue: name ? undefined : "Announced, but says nothing.",
       });
       continue;
     }
@@ -271,7 +270,7 @@ export function collectScreenReaderScriptInPage(): ScreenReaderScript {
         kind: "link",
         selector,
         issue: !name
-          ? "This link has no readable text — it's announced only as “link”."
+          ? "A listener has no idea where this goes."
           : unhelpfulNameReason(name, "link"),
       });
       continue;
@@ -290,7 +289,7 @@ export function collectScreenReaderScriptInPage(): ScreenReaderScript {
         kind: "button",
         selector,
         issue: !name
-          ? "This button has no name — it's announced only as “button”."
+          ? "A listener has no idea what this does."
           : unhelpfulNameReason(name, "button"),
       });
       continue;
@@ -308,9 +307,9 @@ export function collectScreenReaderScriptInPage(): ScreenReaderScript {
         kind: "image",
         selector,
         issue: !name
-          ? "This image has no description, so its content is lost to screen-reader users."
+          ? "Its content is lost entirely to screen-reader users."
           : looksLikeFilename(name)
-            ? "This image's description is a filename — it's read out letter by letter and describes nothing."
+            ? "A filename read aloud describes nothing."
             : undefined,
       });
       continue;
@@ -333,7 +332,7 @@ export function collectScreenReaderScriptInPage(): ScreenReaderScript {
         selector,
         issue: name
           ? undefined
-          : "This field has no label — a screen-reader user hears only its type, not what to type.",
+          : "A listener hears the field type, but not what to type.",
       });
       continue;
     }
@@ -345,7 +344,7 @@ export function collectScreenReaderScriptInPage(): ScreenReaderScript {
         text: name ? `frame, “${cut(name, 60)}”` : "frame, unlabelled",
         kind: "frame",
         selector,
-        issue: name ? undefined : "This embedded frame has no title, so its purpose isn't announced.",
+        issue: name ? undefined : "Its purpose isn't announced.",
       });
       continue;
     }
@@ -366,7 +365,7 @@ export function collectScreenReaderScriptInPage(): ScreenReaderScript {
           : `table, ${rows} rows, ${cols} columns`,
         kind: "table",
         selector,
-        issue: caption ? undefined : "This table has no caption, so its purpose isn't announced.",
+        issue: caption ? undefined : "Its purpose isn't announced.",
       });
       continue;
     }

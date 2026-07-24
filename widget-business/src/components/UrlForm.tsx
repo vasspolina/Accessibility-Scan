@@ -8,7 +8,11 @@ export function UrlForm({
   loading: boolean;
 }) {
   const [value, setValue] = useState("");
-  const [includeAiReview, setIncludeAiReview] = useState(true);
+  // Off by default: the rule-based scan returns in ~15s, the AI review adds
+  // ~25s on top. Most people want an answer quickly and can opt into the
+  // deeper pass; making everyone wait 40s for their first result is the
+  // faster way to lose them.
+  const [includeAiReview, setIncludeAiReview] = useState(false);
 
   function handleSubmit(e: FormEvent) {
     e.preventDefault();
@@ -46,7 +50,8 @@ export function UrlForm({
           onChange={(e) => setIncludeAiReview(e.target.checked)}
           disabled={loading}
         />
-        Include AI-powered review (catches design and marketing issues automated tools miss)
+        Include AI-powered review — catches design and marketing issues automated tools miss, but
+        adds about half a minute
       </label>
     </form>
   );

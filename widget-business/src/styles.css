@@ -666,17 +666,6 @@
   outline-offset: 1px;
 }
 
-.a11y-sr-kind {
-  flex-shrink: 0;
-  min-width: 84px;
-  font-size: 12px;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.04em;
-  color: var(--a11y-muted, #57606a);
-  padding-top: 2px;
-}
-
 .a11y-sr-text {
   flex: 1;
   min-width: 0;

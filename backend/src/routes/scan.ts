@@ -19,7 +19,7 @@ import { evaluateDarkPatterns } from "../services/darkPatterns/analyzeDarkPatter
 import { validateMarkup } from "../services/markup/validateMarkup.js";
 import { summarizeSeverity, computeScore, summarizeCategories } from "../services/merge/scoring.js";
 import { attachElementScreenshots } from "../services/render/cropThumbnail.js";
-import type { AccessibilityReport } from "../types/report.js";
+import type { AccessibilityFinding, AccessibilityReport } from "../types/report.js";
 
 const scanBodySchema = z.object({
   url: z.string().min(1, "url is required"),
@@ -73,20 +73,27 @@ export async function scanRoutes(app: FastifyInstance) {
     }
 
     const context = extractContext(safeUrl.toString(), renderResult);
-    const aiReview = await reviewPage(context, renderResult.screenshotBase64, parsedBody.data.includeAiReview);
+    // Started but deliberately not awaited yet: the AI review is the single
+    // longest step (~20s), and none of the deterministic layers below depend
+    // on it. Letting it run while we evaluate them and validate the markup
+    // takes its cost off the critical path instead of adding to it.
+    const aiReviewPromise = reviewPage(
+      context,
+      renderResult.screenshotBase64,
+      parsedBody.data.includeAiReview
+    );
 
     const automatedFindings = axeToFindings(renderResult.axe);
-    const aiFindings = aiToFindings(aiReview.findings);
-    const findings = mergeFindings(automatedFindings, aiFindings);
+    const deterministic: AccessibilityFinding[] = [];
     // Micro-typography checks (letterspacing, line length, leading, justified
     // text) — deterministic, category "design-clarity", so they surface in
     // the report without affecting the WCAG accessibility score.
-    findings.push(...evaluateTypography(renderResult.typographyBlocks));
+    deterministic.push(...evaluateTypography(renderResult.typographyBlocks));
     // Motion/animation checks (marquee, autoplay media, endless animations
     // ignoring reduced-motion) — category "accessibility" (WCAG 2.2.2), so
     // these DO affect the score. axe rule ids are passed in so overlapping
     // axe findings (marquee, no-autoplay-audio) aren't reported twice.
-    findings.push(
+    deterministic.push(
       ...evaluateMotion(
         renderResult.domSignals.animatedElements,
         renderResult.domSignals.respectsReducedMotion,
@@ -95,21 +102,26 @@ export async function scanRoutes(app: FastifyInstance) {
     );
     // Keyboard walk-through results (real Tab presses during render) —
     // category "accessibility" (WCAG 2.4.7 / 2.1.2), affects the score.
-    findings.push(...evaluateKeyboardNav(renderResult.keyboardNav));
+    deterministic.push(...evaluateKeyboardNav(renderResult.keyboardNav));
     // Component design suggestions (forms, menus) grounded in the ARIA
     // Authoring Practices — design-clarity recommendations, not score hits.
-    findings.push(...evaluateComponents(renderResult.domSignals));
+    deterministic.push(...evaluateComponents(renderResult.domSignals));
     // Modal / pop-up dialog checks (unlabelled close button, unmarked
     // overlay, nameless dialog) — ARIA dialog pattern. The unlabelled-close
     // and nameless-dialog rules are accessibility (WCAG 4.1.2); the rest are
     // design-clarity suggestions.
-    findings.push(...evaluateDialogs(renderResult.domSignals.dialogs));
+    deterministic.push(...evaluateDialogs(renderResult.domSignals.dialogs));
     // Mobile-only checks from the phone-width render pass (sideways scrolling,
     // tap targets too small) — category "accessibility" (WCAG 1.4.10 / 2.5.8).
-    findings.push(...evaluateMobile(renderResult.mobileSignals));
-    findings.push(...evaluateDarkPatterns(renderResult.darkPatternSignals));
+    deterministic.push(...evaluateMobile(renderResult.mobileSignals));
+    deterministic.push(...evaluateDarkPatterns(renderResult.darkPatternSignals));
     // Raw-HTML markup validation — one grouped design-clarity note.
-    findings.push(...(await validateMarkup(renderResult.finalUrl)));
+    deterministic.push(...(await validateMarkup(renderResult.finalUrl)));
+
+    // Everything above ran while the AI review was in flight; collect it now.
+    const aiReview = await aiReviewPromise;
+    const findings = mergeFindings(automatedFindings, aiToFindings(aiReview.findings));
+    findings.push(...deterministic);
     await attachElementScreenshots(
       findings,
       renderResult.boundingBoxes,

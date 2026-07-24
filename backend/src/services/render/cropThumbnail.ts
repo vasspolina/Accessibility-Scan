@@ -89,6 +89,12 @@ export async function attachElementScreenshots(
     // typefaces") point at the whole document, not one element — a thumbnail
     // of the entire page tells the owner nothing, so leave them imageless.
     if (finding.selector === "html" || finding.selector === "body") continue;
+    // AI-review findings carry a model-chosen selector, which is a description
+    // of where the problem is rather than a guaranteed handle on one element —
+    // it often resolves to a parent, a sibling, or nothing. Cropping it yields
+    // a picture of the wrong thing, and a confidently wrong thumbnail is worse
+    // than none. These findings are prose and explain their own location.
+    if (finding.source === "ai-review") continue;
     // Tiny tap targets are typically transparent icon controls sitting over a
     // photo or background — a crop of that box is a confusing blur of whatever
     // is behind them, not a recognizable control (and it changes shot to shot

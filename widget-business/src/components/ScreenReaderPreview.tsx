@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import type { ScreenReaderLine, ScreenReaderScript } from "../api/scanClient";
+import type { ScreenReaderScript } from "../api/scanClient";
 
 // Lets an owner hear their own page the way a screen-reader user does. Reading
 // a list of violations is abstract; hearing "button, unlabelled" where your
@@ -9,19 +9,6 @@ import type { ScreenReaderLine, ScreenReaderScript } from "../api/scanClient";
 // anywhere and no audio is generated server-side. Where speech isn't available
 // (some browsers expose no voices at all) the transcript still reads fine on
 // its own, and we say so rather than showing a dead button.
-
-const KIND_LABEL: Record<ScreenReaderLine["kind"], string> = {
-  landmark: "Region",
-  heading: "Heading",
-  link: "Link",
-  button: "Button",
-  image: "Image",
-  field: "Form field",
-  list: "List",
-  table: "Table",
-  frame: "Frame",
-  text: "Text",
-};
 
 function speechSupported(): boolean {
   return typeof window !== "undefined" && "speechSynthesis" in window;
@@ -140,7 +127,6 @@ export function ScreenReaderPreview({ script }: { script: ScreenReaderScript }) 
               .filter(Boolean)
               .join(" ")}
           >
-            <span className="a11y-sr-kind">{KIND_LABEL[line.kind]}</span>
             <span className="a11y-sr-text">
               {supported ? (
                 <button
