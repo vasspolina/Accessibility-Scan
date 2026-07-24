@@ -528,6 +528,9 @@ function collectCandidateSelectors(
 // or slow to settle must never fail or stall the whole scan.
 const MAX_ELEMENT_SHOTS = 45;
 const ELEMENT_SHOT_BUDGET_MS = 12_000;
+// Per-channel standard deviation below which a capture is essentially one
+// solid colour — an invisible element, or one caught mid-reveal.
+const BLANK_STDEV = 2.5;
 const ELEMENT_IMPACT_ORDER: Record<string, number> = {
   critical: 0,
   serious: 1,
@@ -637,14 +640,21 @@ async function captureElementScreenshots(
         .toBuffer();
 
       // Some flagged elements (invisible/covered overlay buttons, empty
-      // transparent hit-targets) screenshot as a flat blank rectangle —
-      // technically a valid capture but useless and confusing to show a
-      // business owner. A near-zero per-channel standard deviation means the
-      // image is essentially one solid color, so drop it and let the finding
-      // show without a thumbnail rather than with a meaningless white box.
+      // transparent hit-targets, off-screen carousel slides) screenshot as a
+      // flat blank rectangle — technically a valid capture but useless and
+      // confusing to show a business owner. A near-zero per-channel standard
+      // deviation means the image is essentially one solid color, so drop it
+      // and let the finding show without a thumbnail rather than with a
+      // meaningless white box.
+      //
+      // Measured, not assumed: an added scroll-into-view plus a settle-and-
+      // retry for blank frames (on the theory that reveal animations were
+      // being caught mid-fade) changed coverage on a scroll-animated test site
+      // by exactly nothing while adding ~7s per scan. These elements really
+      // are blank. Don't reintroduce it without evidence.
       const stats = await sharp(resized).stats().catch(() => null);
       const maxStdev = stats ? Math.max(...stats.channels.map((c) => c.stdev)) : 1;
-      if (maxStdev < 2.5) continue;
+      if (maxStdev < BLANK_STDEV) continue;
 
       result[selector] = resized.toString("base64");
     } catch {
