@@ -4,6 +4,7 @@ import { ScoreGauge } from "./components/ScoreGauge";
 import { ReportSection } from "./components/ReportSection";
 import { PrincipleGroup } from "./components/PrincipleGroup";
 import { ScreenReaderPreview } from "./components/ScreenReaderPreview";
+import { ConformanceView } from "./components/ConformanceView";
 import { WCAG_LINK } from "./lib/wcagPlain";
 import { scanUrl, ScanError, type AccessibilityReport } from "./api/scanClient";
 
@@ -83,6 +84,8 @@ export function App({ apiBase }: { apiBase: string }) {
                 Showing rule-based findings only.
               </p>
             )}
+
+          {report.conformance && <ConformanceView conformance={report.conformance} />}
 
           <ReportSection
             title="Issues that could turn away users"

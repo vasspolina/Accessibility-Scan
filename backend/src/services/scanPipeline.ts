@@ -16,6 +16,7 @@ import { evaluateDarkPatterns } from "./darkPatterns/analyzeDarkPatterns.js";
 import { evaluateTextResize } from "./textResize/analyzeTextResize.js";
 import { validateMarkup } from "./markup/validateMarkup.js";
 import { summarizeSeverity, computeScore, summarizeCategories } from "./merge/scoring.js";
+import { buildConformance } from "./conformance/buildConformance.js";
 import { attachElementScreenshots } from "./render/cropThumbnail.js";
 import type { AccessibilityReport } from "../types/report.js";
 
@@ -76,6 +77,7 @@ export async function scanUrlToReport(
   const summary = summarizeSeverity(findings);
   const score = computeScore(summary);
   const categorySummary = summarizeCategories(findings);
+  const conformance = buildConformance(findings);
 
   return {
     url: safeUrl.toString(),
@@ -85,6 +87,7 @@ export async function scanUrlToReport(
     categorySummary,
     findings,
     screenReaderScript: renderResult.screenReaderScript,
+    conformance,
     meta: {
       axeVersion: renderResult.axe.testEngine?.version ?? "unknown",
       renderTimeMs: renderResult.renderTimeMs,

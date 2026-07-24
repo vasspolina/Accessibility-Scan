@@ -721,3 +721,127 @@
   font-size: 13px;
   color: var(--a11y-muted, #57606a);
 }
+
+/* ---- Conformance (EN 301 549 / WCAG 2.1 AA) ---------------------------- */
+
+.a11y-conf-tiles {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin: 0 0 14px;
+}
+
+.a11y-conf-tile {
+  flex: 1 1 140px;
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  padding: 12px 14px;
+  border: 1px solid var(--a11y-border, #d0d7de);
+  border-radius: 10px;
+  background: var(--a11y-surface, #f6f8fa);
+}
+
+.a11y-conf-tile-fail {
+  border-color: #ffcdc9;
+  background: #fff5f5;
+}
+
+.a11y-conf-num {
+  font-size: 26px;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.a11y-conf-tile-fail .a11y-conf-num {
+  color: var(--a11y-score-bad, #cf222e);
+}
+
+.a11y-conf-cap {
+  font-size: 13px;
+  color: var(--a11y-muted, #57606a);
+}
+
+.a11y-conf-cap em {
+  display: block;
+  font-style: normal;
+  font-size: 12px;
+  opacity: 0.85;
+}
+
+.a11y-conf-caveat {
+  margin: 0 0 14px;
+  padding: 12px 14px;
+  border-left: 3px solid var(--a11y-accent, #0969da);
+  border-radius: 0 8px 8px 0;
+  background: var(--a11y-surface, #f6f8fa);
+  font-size: 14px;
+  line-height: 1.55;
+}
+
+.a11y-conf-filter {
+  margin: 0 0 10px;
+}
+
+.a11y-conf-list {
+  list-style: none;
+  margin: 0 0 12px;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.a11y-conf-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 9px 12px;
+  border: 1px solid var(--a11y-border, #d0d7de);
+  border-radius: 8px;
+  background: var(--a11y-bg, #ffffff);
+  font-size: 14px;
+}
+
+.a11y-conf-failed {
+  border-color: #ffcdc9;
+  background: #fff5f5;
+}
+
+.a11y-conf-id {
+  flex-shrink: 0;
+  min-width: 62px;
+  font-variant-numeric: tabular-nums;
+  font-weight: 700;
+}
+
+.a11y-conf-id em {
+  display: block;
+  font-style: normal;
+  font-size: 11px;
+  font-weight: 400;
+  color: var(--a11y-muted, #57606a);
+}
+
+.a11y-conf-body {
+  flex: 1;
+  min-width: 0;
+}
+
+.a11y-conf-plain {
+  display: block;
+  font-size: 13px;
+  color: var(--a11y-muted, #57606a);
+}
+
+.a11y-conf-status {
+  flex-shrink: 0;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--a11y-muted, #57606a);
+  white-space: nowrap;
+}
+
+.a11y-conf-failed .a11y-conf-status {
+  color: var(--a11y-score-bad, #cf222e);
+}

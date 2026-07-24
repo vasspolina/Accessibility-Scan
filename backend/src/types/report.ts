@@ -128,6 +128,30 @@ export const screenReaderScriptSchema = z.object({
 });
 export type ScreenReaderScript = z.infer<typeof screenReaderScriptSchema>;
 
+// WCAG 2.1 A/AA conformance, criterion by criterion — the standard EN 301 549
+// (and so the European Accessibility Act) points at. There is deliberately no
+// "pass" status: a scan can evidence a failure, never conformance.
+export const criterionResultSchema = z.object({
+  id: z.string(),
+  name: z.string(),
+  level: z.enum(["A", "AA"]),
+  coverage: z.enum(["automated", "partial", "manual"]),
+  plain: z.string(),
+  status: z.enum(["failed", "no-issues-found", "needs-review"]),
+  findingCount: z.number(),
+});
+
+export const conformanceSummarySchema = z.object({
+  standard: z.string(),
+  failed: z.number(),
+  noIssuesFound: z.number(),
+  needsReview: z.number(),
+  total: z.number(),
+  failedByLevel: z.object({ A: z.number(), AA: z.number() }),
+  criteria: z.array(criterionResultSchema),
+});
+export type ConformanceSummaryReport = z.infer<typeof conformanceSummarySchema>;
+
 export const accessibilityReportSchema = z.object({
   url: z.string(),
   scannedAt: z.string(),
@@ -140,6 +164,8 @@ export const accessibilityReportSchema = z.object({
   // Optional so an older client (or a render where the walk failed) still
   // validates — the widget hides the preview when it's absent.
   screenReaderScript: screenReaderScriptSchema.optional(),
+  // Optional so an older client still validates.
+  conformance: conformanceSummarySchema.optional(),
   meta: z.object({
     axeVersion: z.string(),
     renderTimeMs: z.number(),

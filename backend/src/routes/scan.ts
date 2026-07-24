@@ -19,6 +19,7 @@ import { evaluateDarkPatterns } from "../services/darkPatterns/analyzeDarkPatter
 import { evaluateTextResize } from "../services/textResize/analyzeTextResize.js";
 import { validateMarkup } from "../services/markup/validateMarkup.js";
 import { summarizeSeverity, computeScore, summarizeCategories } from "../services/merge/scoring.js";
+import { buildConformance } from "../services/conformance/buildConformance.js";
 import { attachElementScreenshots } from "../services/render/cropThumbnail.js";
 import type { AccessibilityFinding, AccessibilityReport } from "../types/report.js";
 
@@ -141,6 +142,7 @@ export async function scanRoutes(app: FastifyInstance) {
     const summary = summarizeSeverity(findings);
     const score = computeScore(summary);
     const categorySummary = summarizeCategories(findings);
+    const conformance = buildConformance(findings);
 
     const report: AccessibilityReport = {
       url: safeUrl.toString(),
@@ -150,6 +152,7 @@ export async function scanRoutes(app: FastifyInstance) {
       categorySummary,
       findings,
       screenReaderScript: renderResult.screenReaderScript,
+      conformance,
       meta: {
         axeVersion: renderResult.axe.testEngine?.version ?? "unknown",
         renderTimeMs: renderResult.renderTimeMs,

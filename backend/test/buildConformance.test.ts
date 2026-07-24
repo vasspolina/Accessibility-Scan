@@ -1,0 +1,125 @@
+import { describe, it, expect } from "vitest";
+import { buildConformance } from "../src/services/conformance/buildConformance.js";
+import { normalizeCriterionId, WCAG_21_AA_CRITERIA } from "../src/services/conformance/wcagCriteria.js";
+import type { AccessibilityFinding } from "../src/types/report.js";
+
+function finding(overrides: Partial<AccessibilityFinding> = {}): AccessibilityFinding {
+  return {
+    id: "x",
+    source: "automated",
+    severity: "serious",
+    category: "accessibility",
+    selector: "a",
+    description: "d",
+    suggestedFix: "f",
+    ...overrides,
+  };
+}
+
+describe("normalizeCriterionId", () => {
+  it("accepts a bare number", () => {
+    expect(normalizeCriterionId("1.4.4")).toBe("1.4.4");
+  });
+
+  it("extracts the number from the AI layer's fuller label", () => {
+    expect(normalizeCriterionId("1.1.1 Non-text Content (A)")).toBe("1.1.1");
+  });
+
+  it("handles two-digit sub-numbers", () => {
+    expect(normalizeCriterionId("1.4.12 Text Spacing (AA)")).toBe("1.4.12");
+  });
+
+  it("returns undefined for non-criteria", () => {
+    expect(normalizeCriterionId("N/A")).toBeUndefined();
+    expect(normalizeCriterionId("WCAG (see rule help)")).toBeUndefined();
+    expect(normalizeCriterionId(undefined)).toBeUndefined();
+  });
+});
+
+describe("WCAG_21_AA_CRITERIA", () => {
+  it("is the complete WCAG 2.1 A/AA set — 30 A and 20 AA", () => {
+    expect(WCAG_21_AA_CRITERIA.filter((c) => c.level === "A")).toHaveLength(30);
+    expect(WCAG_21_AA_CRITERIA.filter((c) => c.level === "AA")).toHaveLength(20);
+  });
+
+  it("has no duplicate criterion ids", () => {
+    const ids = WCAG_21_AA_CRITERIA.map((c) => c.id);
+    expect(new Set(ids).size).toBe(ids.length);
+  });
+});
+
+describe("buildConformance", () => {
+  it("marks a criterion failed when a finding maps to it", () => {
+    const c = buildConformance([finding({ wcagCriterion: "1.4.4" })]);
+    const resize = c.criteria.find((x) => x.id === "1.4.4")!;
+    expect(resize.status).toBe("failed");
+    expect(resize.findingCount).toBe(1);
+    expect(c.failed).toBe(1);
+  });
+
+  it("counts multiple findings against the same criterion", () => {
+    const c = buildConformance([
+      finding({ wcagCriterion: "1.1.1" }),
+      finding({ wcagCriterion: "1.1.1 Non-text Content (A)" }),
+    ]);
+    expect(c.criteria.find((x) => x.id === "1.1.1")!.findingCount).toBe(2);
+    expect(c.failed).toBe(1);
+  });
+
+  // The point of the whole module: never claim a pass.
+  it("never reports a criterion as passed", () => {
+    const statuses = new Set(buildConformance([]).criteria.map((c) => c.status));
+    expect(statuses.has("failed" as never)).toBe(false);
+    expect([...statuses].every((s) => ["no-issues-found", "needs-review"].includes(s))).toBe(true);
+  });
+
+  it("marks untestable criteria as needing review, not as clean", () => {
+    const c = buildConformance([]);
+    // 1.2.2 Captions can't be judged from a page scan.
+    expect(c.criteria.find((x) => x.id === "1.2.2")!.status).toBe("needs-review");
+    // 1.4.3 Contrast can.
+    expect(c.criteria.find((x) => x.id === "1.4.3")!.status).toBe("no-issues-found");
+  });
+
+  it("splits failures by level, since one Level A failure sinks an AA claim", () => {
+    const c = buildConformance([
+      finding({ wcagCriterion: "1.1.1" }), // A
+      finding({ wcagCriterion: "1.4.3" }), // AA
+      finding({ wcagCriterion: "1.4.4" }), // AA
+    ]);
+    expect(c.failedByLevel).toEqual({ A: 1, AA: 2 });
+  });
+
+  it("ignores design-clarity and dark-pattern findings", () => {
+    const c = buildConformance([
+      finding({ category: "design-clarity", wcagCriterion: "1.4.4" }),
+      finding({ category: "dark-pattern", wcagCriterion: "1.1.1" }),
+    ]);
+    expect(c.failed).toBe(0);
+  });
+
+  it("ignores findings with no usable criterion", () => {
+    const c = buildConformance([
+      finding({ wcagCriterion: "N/A" }),
+      finding({ wcagCriterion: undefined }),
+      finding({ wcagCriterion: "WCAG (see rule help)" }),
+    ]);
+    expect(c.failed).toBe(0);
+  });
+
+  it("ignores a criterion outside the A/AA set (e.g. a AAA finding)", () => {
+    const c = buildConformance([finding({ wcagCriterion: "1.4.6" })]);
+    expect(c.failed).toBe(0);
+    expect(c.criteria.some((x) => x.id === "1.4.6")).toBe(false);
+  });
+
+  it("totals add up to the full criterion set", () => {
+    const c = buildConformance([finding({ wcagCriterion: "1.4.4" })]);
+    expect(c.failed + c.noIssuesFound + c.needsReview).toBe(c.total);
+    expect(c.total).toBe(50);
+  });
+
+  it("names the standard the EAA points at", () => {
+    expect(buildConformance([]).standard).toMatch(/EN 301 549/);
+  });
+});

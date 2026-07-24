@@ -62,6 +62,28 @@ export interface ScreenReaderScript {
   truncated: boolean;
 }
 
+// WCAG 2.1 A/AA conformance, criterion by criterion. Deliberately has no
+// "pass" status — a scan evidences failures, never conformance.
+export interface CriterionResult {
+  id: string;
+  name: string;
+  level: "A" | "AA";
+  coverage: "automated" | "partial" | "manual";
+  plain: string;
+  status: "failed" | "no-issues-found" | "needs-review";
+  findingCount: number;
+}
+
+export interface ConformanceSummary {
+  standard: string;
+  failed: number;
+  noIssuesFound: number;
+  needsReview: number;
+  total: number;
+  failedByLevel: { A: number; AA: number };
+  criteria: CriterionResult[];
+}
+
 export interface AccessibilityReport {
   url: string;
   scannedAt: string;
@@ -71,6 +93,8 @@ export interface AccessibilityReport {
   findings: AccessibilityFinding[];
   // Optional — absent on older backends or when the reading-order walk failed.
   screenReaderScript?: ScreenReaderScript;
+  // Absent on older backends.
+  conformance?: ConformanceSummary;
   meta: {
     axeVersion: string;
     renderTimeMs: number;
