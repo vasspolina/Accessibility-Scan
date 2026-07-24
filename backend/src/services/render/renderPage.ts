@@ -13,6 +13,10 @@ import { evaluateMotion } from "../motion/analyzeMotion.js";
 import { evaluateComponents } from "../components/analyzeComponents.js";
 import { evaluateDialogs } from "../dialog/analyzeDialogs.js";
 import { collectMobileSignalsInPage, type MobileSignals } from "../mobile/analyzeMobile.js";
+import {
+  collectDarkPatternSignalsInPage,
+  type DarkPatternSignals,
+} from "../darkPatterns/analyzeDarkPatterns.js";
 import type { FocusStyles, KeyboardNavResult, TabStop } from "../keyboard/analyzeKeyboard.js";
 import { logger } from "../../utils/logger.js";
 
@@ -128,6 +132,10 @@ export interface RenderResult {
   // Signals from a phone-width render pass (horizontal scroll, small tap
   // targets) — evaluated into mobile findings (services/mobile/analyzeMobile).
   mobileSignals: MobileSignals;
+  // Manipulative-UX signals (consent-banner choice asymmetry, pre-ticked
+  // opt-ins, confirmshaming, urgency claims) — evaluated into dark-pattern
+  // findings (services/darkPatterns/analyzeDarkPatterns.ts).
+  darkPatternSignals: DarkPatternSignals;
 }
 
 // Runs inside the browser page context via page.evaluate — must be fully
@@ -900,6 +908,18 @@ export async function renderAndScan(url: string): Promise<RenderResult> {
       const typographyBlocks = await page
         .evaluate<TypographyBlock[]>(toBrowserScript(collectTypographyBlocksInPage))
         .catch(() => [] as TypographyBlock[]);
+      // Collected while the page is in its initial desktop state, before the
+      // keyboard walk-through and mobile pass mutate it — consent banners and
+      // opt-in forms are exactly what those later passes disturb. Best-effort:
+      // a failure here must not cost the rest of the report.
+      const darkPatternSignals = await page
+        .evaluate<DarkPatternSignals>(toBrowserScript(collectDarkPatternSignalsInPage))
+        .catch(() => ({
+          consentBanner: null,
+          confirmshaming: [],
+          preCheckedOptIns: [],
+          urgencyClaims: [],
+        }) as DarkPatternSignals);
       const screenshotBuffer = await page.screenshot({ type: "jpeg", quality: 70 });
 
       // Runs after the above-the-fold screenshot (which should show the page
@@ -1014,6 +1034,7 @@ export async function renderAndScan(url: string): Promise<RenderResult> {
         typographyBlocks,
         keyboardNav,
         mobileSignals,
+        darkPatternSignals,
       };
     } finally {
       page.off("response", onResponse);

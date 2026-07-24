@@ -12,6 +12,7 @@ import { evaluateKeyboardNav } from "./keyboard/analyzeKeyboard.js";
 import { evaluateComponents } from "./components/analyzeComponents.js";
 import { evaluateDialogs } from "./dialog/analyzeDialogs.js";
 import { evaluateMobile } from "./mobile/analyzeMobile.js";
+import { evaluateDarkPatterns } from "./darkPatterns/analyzeDarkPatterns.js";
 import { validateMarkup } from "./markup/validateMarkup.js";
 import { summarizeSeverity, computeScore, summarizeCategories } from "./merge/scoring.js";
 import { attachElementScreenshots } from "./render/cropThumbnail.js";
@@ -59,6 +60,7 @@ export async function scanUrlToReport(
   findings.push(...evaluateComponents(renderResult.domSignals));
   findings.push(...evaluateDialogs(renderResult.domSignals.dialogs));
   findings.push(...evaluateMobile(renderResult.mobileSignals));
+  findings.push(...evaluateDarkPatterns(renderResult.darkPatternSignals));
   findings.push(...(await validateMarkup(renderResult.finalUrl)));
 
   await attachElementScreenshots(

@@ -217,6 +217,39 @@ export const PLAIN_RULE_EXPLANATIONS: Record<string, PlainRule> = {
       "Tiny tap targets cause mis-taps and frustration, especially for people with larger fingers, tremors, or limited dexterity — and they cost you conversions.",
   },
 
+  // Dark patterns — manipulative marketing/UX. These don't affect the
+  // accessibility score; they're trust and (for consent) legal red flags.
+  "dark-consent-no-reject": {
+    plain: "Your cookie banner lets people accept, but not refuse.",
+    impact:
+      "Under GDPR and UK PECR, refusing has to be as easy as accepting — consent collected this way can be invalid, and visitors read a missing \"Reject\" button as a trick.",
+  },
+  "dark-consent-asymmetry": {
+    plain: "Your cookie banner pushes \"accept\" and plays down \"reject\".",
+    impact:
+      "Styling one choice as a solid button and the other as plain text nudges people into agreeing without really choosing — a recognised pattern regulators look for.",
+  },
+  "dark-preselected-optin": {
+    plain: "A marketing opt-in is ticked before the visitor chooses.",
+    impact:
+      "Pre-ticked consent boxes are explicitly invalid under GDPR. People who don't spot them feel signed up without agreeing, which drives spam complaints and unsubscribes.",
+  },
+  "dark-confirmshaming": {
+    plain: "The \"no thanks\" option is worded to make people feel bad.",
+    impact:
+      "Guilt-tripping visitors for declining ('No thanks, I don't want to save money') is memorable for the wrong reasons — it reads as manipulative and damages trust in your brand.",
+  },
+  "dark-fake-scarcity": {
+    plain: "The page claims limited stock or high demand — worth verifying.",
+    impact:
+      "If the numbers aren't real, this is a deceptive practice regulators actively pursue. Shoppers have also learned to distrust these claims, so fake ones cost more sales than they win.",
+  },
+  "dark-fake-urgency": {
+    plain: "The page applies time pressure — worth verifying it's real.",
+    impact:
+      "Countdowns that reset on reload, or deadlines that never arrive, are a deceptive practice. When visitors notice, it undermines confidence in everything else you claim.",
+  },
+
   // Modal / pop-up dialogs — ARIA dialog pattern.
   "dialog-close-unlabeled": {
     plain: "A pop-up's close button is just an \"×\" with no readable label.",
