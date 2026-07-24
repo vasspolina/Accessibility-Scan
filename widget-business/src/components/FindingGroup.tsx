@@ -37,6 +37,15 @@ function attrOf(raw: string, name: string): string | undefined {
   return v ? v : undefined;
 }
 
+// Trims a label to a readable length, cutting on a word boundary where one is
+// close by so a quoted excerpt doesn't end mid-word.
+function truncate(s: string, max: number): string {
+  if (s.length <= max) return s;
+  const cut = s.slice(0, max);
+  const lastSpace = cut.lastIndexOf(" ");
+  return `${(lastSpace > max * 0.6 ? cut.slice(0, lastSpace) : cut).trimEnd()}…`;
+}
+
 // "open-archive" / "first_name" → "Open archive" / "First name".
 function humanizeSlug(s: string): string {
   const words = s.replace(/[-_]+/g, " ").replace(/\s+/g, " ").trim();
@@ -58,6 +67,30 @@ const KIND_WORDS: Record<string, string> = {
   header: "header",
   footer: "footer",
   label: "label",
+  // Text-carrying elements — these are what the typography checks flag, and
+  // "Paragraph" reads far better than "P" to a non-technical owner.
+  p: "paragraph",
+  h1: "heading",
+  h2: "heading",
+  h3: "heading",
+  h4: "heading",
+  h5: "heading",
+  h6: "heading",
+  blockquote: "quote",
+  figcaption: "caption",
+  caption: "caption",
+  td: "table cell",
+  th: "table heading",
+  dd: "list item",
+  dt: "list item",
+  span: "text",
+  div: "block of text",
+  main: "main content",
+  article: "article",
+  aside: "sidebar",
+  ul: "list",
+  ol: "list",
+  table: "table",
 };
 
 function elementKindWord(tag: string | undefined, type: string | undefined): string {
@@ -136,8 +169,10 @@ function elementLabel(finding: AccessibilityFinding): string {
   if (ariaLabel) return `“${decodeEntities(ariaLabel)}” ${kind}`;
 
   // 2. Visible text content, when the snippet isn't truncated before it.
-  const inner = raw.match(/>([^<]{1,60})</)?.[1]?.replace(/\s+/g, " ").trim();
-  if (inner && !/^translation_missing/i.test(inner)) return `“${decodeEntities(inner)}” ${kind}`;
+  const inner = raw.match(/>([^<]{1,160})</)?.[1]?.replace(/\s+/g, " ").trim();
+  if (inner && !/^translation_missing/i.test(inner)) {
+    return `“${truncate(decodeEntities(inner), 60)}” ${kind}`;
+  }
 
   // 3. An image's alt text.
   const alt = attrOf(raw, "alt");

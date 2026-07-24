@@ -26,6 +26,10 @@ export interface TypographyBlock {
   textDecorationLine: string;
   fontStyle: string;
   fontWeight: number;
+  // A short excerpt of the block's actual text, so a finding can point at
+  // "the paragraph starting 'Rijksakademie offers…'" rather than just "P".
+  // Optional: older callers/tests construct blocks without it.
+  textSample?: string;
 }
 
 // Runs inside the browser page context via page.evaluate — must be fully
@@ -96,6 +100,7 @@ export function collectTypographyBlocksInPage(): TypographyBlock[] {
       textDecorationLine: cs.textDecorationLine || cs.textDecoration || "none",
       fontStyle: cs.fontStyle || "normal",
       fontWeight: parseInt(cs.fontWeight, 10) || 400,
+      textSample: text.replace(/\s+/g, " ").slice(0, 80),
     });
   }
 
@@ -397,5 +402,27 @@ export function evaluateTypography(blocks: TypographyBlock[]): AccessibilityFind
     );
   }
 
+  attachTextSamples(findings, blocks);
   return findings;
+}
+
+// Typography findings identify their element by CSS selector alone, which
+// surfaces to a non-technical reader as a bare tag ("P"). Attach a snippet of
+// the block's real text so the report can name the actual paragraph — the
+// widget reads elementSnippet and renders e.g. “Rijksakademie offers…”
+// paragraph. Page-level findings (selector "body"/"html") match no block and
+// are left alone.
+function attachTextSamples(findings: AccessibilityFinding[], blocks: TypographyBlock[]): void {
+  const bySelector = new Map(blocks.map((b) => [b.selector, b]));
+  for (const finding of findings) {
+    const block = bySelector.get(finding.selector);
+    if (!block?.textSample) continue;
+    finding.elementSnippet = `<${block.tag}>${escapeHtml(block.textSample)}</${block.tag}>`;
+  }
+}
+
+// Escapes the sample so it can't inject stray angle brackets into the
+// synthesized snippet the widget parses.
+function escapeHtml(s: string): string {
+  return s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
 }
