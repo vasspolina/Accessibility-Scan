@@ -20,6 +20,7 @@ import { evaluateTextResize } from "../services/textResize/analyzeTextResize.js"
 import { validateMarkup } from "../services/markup/validateMarkup.js";
 import { summarizeSeverity, computeScore, summarizeCategories } from "../services/merge/scoring.js";
 import { buildConformance } from "../services/conformance/buildConformance.js";
+import { downscalePreview } from "../services/render/downscalePreview.js";
 import { attachElementScreenshots } from "../services/render/cropThumbnail.js";
 import type { AccessibilityFinding, AccessibilityReport } from "../types/report.js";
 
@@ -153,6 +154,7 @@ export async function scanRoutes(app: FastifyInstance) {
       findings,
       screenReaderScript: renderResult.screenReaderScript,
       conformance,
+      pagePreview: await downscalePreview(renderResult.screenshotBase64),
       meta: {
         axeVersion: renderResult.axe.testEngine?.version ?? "unknown",
         renderTimeMs: renderResult.renderTimeMs,

@@ -95,6 +95,8 @@ export interface AccessibilityReport {
   screenReaderScript?: ScreenReaderScript;
   // Absent on older backends.
   conformance?: ConformanceSummary;
+  // Downscaled base64 JPEG of the page, used by the vision simulators.
+  pagePreview?: string;
   meta: {
     axeVersion: string;
     renderTimeMs: number;

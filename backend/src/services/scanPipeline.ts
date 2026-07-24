@@ -17,6 +17,7 @@ import { evaluateTextResize } from "./textResize/analyzeTextResize.js";
 import { validateMarkup } from "./markup/validateMarkup.js";
 import { summarizeSeverity, computeScore, summarizeCategories } from "./merge/scoring.js";
 import { buildConformance } from "./conformance/buildConformance.js";
+import { downscalePreview } from "./render/downscalePreview.js";
 import { attachElementScreenshots } from "./render/cropThumbnail.js";
 import type { AccessibilityReport } from "../types/report.js";
 
@@ -88,6 +89,7 @@ export async function scanUrlToReport(
     findings,
     screenReaderScript: renderResult.screenReaderScript,
     conformance,
+    pagePreview: await downscalePreview(renderResult.screenshotBase64),
     meta: {
       axeVersion: renderResult.axe.testEngine?.version ?? "unknown",
       renderTimeMs: renderResult.renderTimeMs,

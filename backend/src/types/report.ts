@@ -166,6 +166,10 @@ export const accessibilityReportSchema = z.object({
   screenReaderScript: screenReaderScriptSchema.optional(),
   // Optional so an older client still validates.
   conformance: conformanceSummarySchema.optional(),
+  // Downscaled base64 JPEG of the page as a sighted visitor first sees it.
+  // Powers the vision simulators in the widget, which re-filter this one
+  // image client-side rather than asking the server to render variants.
+  pagePreview: z.string().optional(),
   meta: z.object({
     axeVersion: z.string(),
     renderTimeMs: z.number(),
