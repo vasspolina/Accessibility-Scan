@@ -56,6 +56,14 @@ export async function withPage<T>(fn: (page: Page) => Promise<T>): Promise<T> {
       // Fixed viewport so the review screenshot (see renderPage.ts) is
       // consistent in size/cost across scans regardless of the host machine.
       viewport: { width: 1280, height: 900 },
+      // axe-core is injected into the page as a script, which a strict
+      // Content-Security-Policy ("script-src 'self'") refuses — the scan then
+      // fails outright with "Executing inline script violates ... CSP" rather
+      // than degrading. That hits exactly the sites most likely to care about
+      // this report: government, banking, healthcare. Bypassing CSP affects
+      // only our own automation inside this throwaway context — it changes
+      // nothing about the page we render or what we report about it.
+      bypassCSP: true,
     });
     try {
       const page = await context.newPage();

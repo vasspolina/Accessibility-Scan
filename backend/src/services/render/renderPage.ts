@@ -646,6 +646,49 @@ async function captureElementScreenshots(
   return result;
 }
 
+// Dark-pattern signals, gathered from every frame rather than just the main
+// document. This matters more here than for any other layer: the single most
+// common dark pattern is a consent banner, and the major consent-management
+// platforms (Sourcepoint, TrustArc, Quantcast, …) render theirs inside an
+// iframe, where page.evaluate never sees it. Playwright drives the browser
+// directly, so it can evaluate inside cross-origin frames too.
+//
+// The main frame wins for the consent banner (a CMP iframe usually holds the
+// only one, but if both have a candidate the top-level page is the honest
+// one to report). Per-pattern caps are re-applied after merging so a page of
+// many frames can't flood the report. Wholly best-effort: any frame that is
+// detached, blocked, or slow is skipped rather than failing the scan.
+const MAX_FRAMES_SCANNED = 12;
+
+async function collectDarkPatternsAcrossFrames(page: Page): Promise<DarkPatternSignals> {
+  const merged: DarkPatternSignals = {
+    consentBanner: null,
+    confirmshaming: [],
+    preCheckedOptIns: [],
+    urgencyClaims: [],
+  };
+  const frames = page.frames().slice(0, MAX_FRAMES_SCANNED);
+  for (const frame of frames) {
+    try {
+      const signals = await frame.evaluate<DarkPatternSignals>(
+        toBrowserScript(collectDarkPatternSignalsInPage)
+      );
+      if (!merged.consentBanner && signals.consentBanner) {
+        merged.consentBanner = signals.consentBanner;
+      }
+      merged.confirmshaming.push(...signals.confirmshaming);
+      merged.preCheckedOptIns.push(...signals.preCheckedOptIns);
+      merged.urgencyClaims.push(...signals.urgencyClaims);
+    } catch {
+      // Detached frame, navigation mid-evaluate, or a context we can't reach.
+    }
+  }
+  merged.confirmshaming = merged.confirmshaming.slice(0, 6);
+  merged.preCheckedOptIns = merged.preCheckedOptIns.slice(0, 8);
+  merged.urgencyClaims = merged.urgencyClaims.slice(0, 6);
+  return merged;
+}
+
 // Captures thumbnails for mobile-only findings while the page is at phone
 // width. Mobile findings (tiny tap targets, breakout elements) are about
 // elements as they render on a narrow screen — a hamburger toggle hidden on
@@ -910,16 +953,8 @@ export async function renderAndScan(url: string): Promise<RenderResult> {
         .catch(() => [] as TypographyBlock[]);
       // Collected while the page is in its initial desktop state, before the
       // keyboard walk-through and mobile pass mutate it — consent banners and
-      // opt-in forms are exactly what those later passes disturb. Best-effort:
-      // a failure here must not cost the rest of the report.
-      const darkPatternSignals = await page
-        .evaluate<DarkPatternSignals>(toBrowserScript(collectDarkPatternSignalsInPage))
-        .catch(() => ({
-          consentBanner: null,
-          confirmshaming: [],
-          preCheckedOptIns: [],
-          urgencyClaims: [],
-        }) as DarkPatternSignals);
+      // opt-in forms are exactly what those later passes disturb.
+      const darkPatternSignals = await collectDarkPatternsAcrossFrames(page);
       const screenshotBuffer = await page.screenshot({ type: "jpeg", quality: 70 });
 
       // Runs after the above-the-fold screenshot (which should show the page
