@@ -86,6 +86,37 @@ export function axeToFindings(axe: AxeRunResult): AccessibilityFinding[] {
   return findings;
 }
 
+/**
+ * Removes references to "the screenshot" from AI-written prose. The model is
+ * shown a screenshot; the site owner reading the report is not, so a phrase
+ * like "(see screenshot: huge black text cuts across the photo)" points at
+ * something that isn't on their screen. The system prompt asks for locations
+ * described in page terms instead — this is the safety net for the ones that
+ * slip through, since a prompt is guidance, not a guarantee.
+ *
+ * Exported for testing.
+ */
+export function stripScreenshotReferences(text: string): string {
+  return (
+    text
+      // A whole parenthetical about the screenshot — drop it entirely.
+      .replace(/\s*\([^()]*screenshots?[^()]*\)/gi, "")
+      // Lead-ins that turn the sentence into a caption.
+      .replace(/\b(?:the |this )?screenshot shows (?:that )?/gi, "")
+      .replace(/\bas (?:can be )?seen in the screenshot\b/gi, "")
+      .replace(/\b(?:visible|shown|seen) in the screenshot\b/gi, "")
+      .replace(/\b(?:in|from|per|see) the screenshot\b/gi, "")
+      .replace(/\bsee screenshot\b/gi, "")
+      // Tidy the punctuation the removals leave behind.
+      .replace(/\s{2,}/g, " ")
+      .replace(/\s+([,.;:])/g, "$1")
+      .replace(/[,;:]\s*([.!?])/g, "$1")
+      .replace(/\s+—\s*([.!?])/g, "$1")
+      .replace(/\(\s*\)/g, "")
+      .trim()
+  );
+}
+
 export function aiToFindings(aiFindings: AiFinding[]): AccessibilityFinding[] {
   return aiFindings.map((f) => ({
     id: randomUUID(),
@@ -94,8 +125,8 @@ export function aiToFindings(aiFindings: AiFinding[]): AccessibilityFinding[] {
     category: f.category,
     wcagCriterion: f.category === "accessibility" ? (f.wcagCriterion ?? "N/A") : undefined,
     selector: f.selector,
-    description: f.description,
-    suggestedFix: f.suggestedFix,
+    description: stripScreenshotReferences(f.description),
+    suggestedFix: stripScreenshotReferences(f.suggestedFix),
     confidence: f.confidence,
   }));
 }

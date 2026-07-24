@@ -26,6 +26,7 @@ Rules:
 - Write descriptions in plain English for a non-expert site owner — explain the real-world impact on users/customers, not just the rule being broken.
 - For "accessibility" findings, cite the single most relevant WCAG success criterion (e.g. "1.1.1 Non-text Content (A)"). For "design-clarity" and "dark-pattern" findings, omit wcagCriterion or set it to "N/A" — these are not WCAG violations.
 - If you find nothing genuinely wrong in a category, do not manufacture issues to pad the report.
+- Write each description for a site owner reading a report, who cannot see the screenshot you were given. Never refer to "the screenshot", "the image provided", or "see screenshot" — they have no such thing in front of them and the reference reads as a dangling error. Say where the problem is in terms they can find on their own page instead: "the large wordmark in the header, overlapping the hero photo", not "(see screenshot: huge black text cuts across the photo)".
 - Report at most 15 findings in total across all three categories, most impactful first. The deterministic layers already catch the long tail of repetitive rule violations; your value is judgement, not volume. An unbounded list also risks being truncated mid-response, which loses the whole review.
 - Call the report_accessibility_findings tool exactly once with your findings list across all three categories.`;
 

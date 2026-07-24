@@ -374,9 +374,20 @@ export function collectScreenReaderScriptInPage(): ScreenReaderScript {
     if (TEXT_TAGS.has(tag)) {
       // Only leaf-ish blocks, so a wrapper doesn't repeat its children's text.
       if (el.querySelector("p, li, blockquote, figcaption, dd, dt, td, th")) continue;
-      if (isVisuallyHiddenButRead(el) && !clean(el.textContent)) continue;
+      // textContent, deliberately not innerText: innerText applies CSS
+      // text-transform, so a link styled uppercase comes back "NL" when what a
+      // screen reader actually announces is the underlying "nl".
       const text = clean(el.textContent);
       if (!isMeaningfulText(text)) continue;
+      // A wrapper whose whole text comes from one link or button inside it is
+      // already announced as that control — listing it again as plain text is
+      // a duplicate no listener would hear (an <li> holding a single "nl"
+      // language link, read out as "nl" and then again as "link, nl").
+      // Compared case-insensitively so styling can't defeat the match.
+      const soleControl = el.querySelector('a[href], button, [role="button"]');
+      if (soleControl && clean(soleControl.textContent).toLowerCase() === text.toLowerCase()) {
+        continue;
+      }
       // Skip text already announced as part of a link/button/heading name.
       if (announcedText.has(text)) continue;
       push({ text: cut(text, 160), kind: "text", selector });
