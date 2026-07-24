@@ -64,7 +64,25 @@ export function collectDarkPatternSignalsInPage(): DarkPatternSignals {
     return parts.join(" > ");
   }
 
-  const snippetOf = (el: Element) => (el.outerHTML ?? "").replace(/\s+/g, " ").trim().slice(0, 140);
+  // Strip class/style/data-* before truncating, so the element's own text and
+  // semantic attributes survive instead of being crowded out by utility CSS.
+  const snippetOf = (el: Element) => {
+    try {
+      const clone = el.cloneNode(true) as Element;
+      const strip = (node: Element) => {
+        for (const attr of Array.from(node.attributes)) {
+          if (/^(class|style)$/i.test(attr.name) || /^data-/i.test(attr.name)) {
+            node.removeAttribute(attr.name);
+          }
+        }
+        for (const child of Array.from(node.children)) strip(child);
+      };
+      strip(clone);
+      return (clone.outerHTML ?? "").replace(/\s+/g, " ").trim().slice(0, 220);
+    } catch {
+      return (el.outerHTML ?? "").replace(/\s+/g, " ").trim().slice(0, 220);
+    }
+  };
   const textOf = (el: Element) => (el.textContent ?? "").replace(/\s+/g, " ").trim();
 
   function isVisible(el: Element): boolean {

@@ -44,6 +44,24 @@ export function wcagLevelFromTags(tags: string[]): "A" | "AA" | "AAA" | undefine
   return undefined;
 }
 
+// Drops class/style/data-* attributes before truncating an element's HTML.
+// On a utility-CSS site one class attribute runs to hundreds of characters, so
+// a raw slice keeps the noise and discards what actually identifies the
+// element — its accessible name, href, and text. Without this, distinct
+// elements all reduce to a generic "Button"/"Link" in the report (and then
+// collapse into a single row, hiding how many there really are).
+export function compactHtml(html: string | undefined, max: number): string | undefined {
+  if (!html) return undefined;
+  const compacted = html
+    .replace(/\s+(class|style)\s*=\s*"[^"]*"/gi, "")
+    .replace(/\s+(class|style)\s*=\s*'[^']*'/gi, "")
+    .replace(/\s+data-[\w-]+\s*=\s*"[^"]*"/gi, "")
+    .replace(/\s+data-[\w-]+\s*=\s*'[^']*'/gi, "")
+    .replace(/\s+/g, " ")
+    .trim();
+  return compacted.slice(0, max);
+}
+
 export function axeToFindings(axe: AxeRunResult): AccessibilityFinding[] {
   const findings: AccessibilityFinding[] = [];
   for (const violation of axe.violations) {
@@ -57,7 +75,7 @@ export function axeToFindings(axe: AxeRunResult): AccessibilityFinding[] {
         wcagCriterion: wcagTagsToLabel(violation.tags),
         wcagLevel: wcagLevelFromTags(violation.tags),
         selector: node.target.join(" "),
-        elementSnippet: node.html?.slice(0, 300),
+        elementSnippet: compactHtml(node.html, 300),
         description: violation.help,
         suggestedFix: node.failureSummary ?? violation.description,
         ruleId: violation.id,

@@ -178,28 +178,58 @@ function elementLabel(finding: AccessibilityFinding): string {
   const alt = attrOf(raw, "alt");
   if (alt) return `“${decodeEntities(alt)}” image`;
 
-  // 4. A link with no text — fall back to its destination.
+  // 4. An icon-only control — the inner image's alt text names it.
+  const innerAlt = raw.match(/<img\b[^>]*\balt\s*=\s*"([^"]+)"/i)?.[1]?.trim();
+  if (innerAlt) return `“${decodeEntities(innerAlt)}” ${kind}`;
+
+  // 5. A submit/button input carries its label in value=.
+  const value = attrOf(raw, "value");
+  if (value && (kind === "button" || tag === "input")) {
+    return `“${decodeEntities(value)}” ${kind}`;
+  }
+
+  // 6. A tooltip is a weaker name, but better than none. Skip a truncated one
+  //    (the snippet was cut mid-attribute) and framework placeholder text.
+  const title = attrOf(raw, "title");
+  if (title && !/\.\.\.$|…$/.test(title) && !/^translation_missing/i.test(title)) {
+    return `“${decodeEntities(title)}” ${kind}`;
+  }
+
+  // 7. A link with no text of its own — name it by where it points. Phrased
+  //    "link to X", never "“X” link": quoting it would read as the link's own
+  //    text, which is exactly what a "link has no readable text" finding is
+  //    telling the owner it lacks.
   if (tag === "a") {
     const href = attrOf(raw, "href");
     const seg = href?.split(/[?#]/)[0].replace(/\/+$/, "").split("/").pop();
     if (seg) {
       const h = humanizeSlug(decodeURIComponent(seg));
-      if (h) return `“${h}” link`;
+      if (h) return `link to ${h}`;
     }
   }
 
-  // 5. A custom widget role (e.g. a carousel slide) names itself.
+  // 8. Last resort before a bare kind word: a meaningful id/name attribute
+  //    ("#newsletter-submit" → "Newsletter submit button").
+  if (kind === "button" || kind === "link") {
+    const ident = attrOf(raw, "id") ?? attrOf(raw, "name");
+    if (ident && !/^[0-9a-f-]{8,}$/i.test(ident)) {
+      const h = humanizeSlug(ident);
+      if (h && h.toLowerCase() !== kind) return `${h} ${kind}`;
+    }
+  }
+
+  // 9. A custom widget role (e.g. a carousel slide) names itself.
   const roleDesc = attrOf(raw, "aria-roledescription");
   if (roleDesc) return capitalize(roleDesc.toLowerCase());
 
-  // 6. A form field — describe its purpose, or flag a hidden one.
+  // 10. A form field — describe its purpose, or flag a hidden one.
   if (kind === "field" || kind === "checkbox" || kind === "radio button") {
     if (attrOf(raw, "tabindex") === "-1") return "Hidden field";
     const purpose = fieldPurpose(raw, type);
     return purpose ? `${purpose} field` : capitalize(kind);
   }
 
-  // 7. Nothing distinctive — the element type is the best we can do.
+  // 11. Nothing distinctive — the element type is the best we can do.
   return capitalize(kind);
 }
 
@@ -242,15 +272,16 @@ function dedupeOccurrences(findings: AccessibilityFinding[]): OccurrenceEntry[] 
   return order.map((k) => byKey.get(k)!);
 }
 
-// The exact selectors/snippets for the developer hand-off, de-duplicated so
-// a repeated element is listed once. Prefers the HTML snippet, falls back to
-// the CSS selector.
+// The exact selectors/snippets for the developer hand-off, de-duplicated so a
+// repeated element is listed once. Shows the CSS selector alongside the HTML,
+// because the snippet has class/style attributes stripped for readability and
+// the selector is what actually locates the element in the page.
 function devElementRefs(findings: AccessibilityFinding[]): string[] {
   const seen = new Set<string>();
   const refs: string[] = [];
   for (const f of findings) {
     const snippet = f.elementSnippet?.replace(/\s+/g, " ").trim();
-    const ref = snippet || f.selector;
+    const ref = snippet ? `${f.selector}  —  ${snippet}` : f.selector;
     if (ref && !seen.has(ref)) {
       seen.add(ref);
       refs.push(ref);

@@ -40,8 +40,27 @@ export function collectMobileSignalsInPage(): MobileSignals {
     return parts.join(" > ");
   }
 
-  const snippetOf = (el: Element) =>
-    (el.outerHTML ?? "").replace(/\s+/g, " ").trim().slice(0, 140);
+  // Strip class/style/data-* before truncating. On a utility-CSS site a single
+  // class attribute is hundreds of characters, so a raw outerHTML slice throws
+  // away exactly what identifies the element — its accessible name, href, and
+  // text — and every finding ends up labelled a generic "Button"/"Link".
+  const snippetOf = (el: Element) => {
+    try {
+      const clone = el.cloneNode(true) as Element;
+      const strip = (node: Element) => {
+        for (const attr of Array.from(node.attributes)) {
+          if (/^(class|style)$/i.test(attr.name) || /^data-/i.test(attr.name)) {
+            node.removeAttribute(attr.name);
+          }
+        }
+        for (const child of Array.from(node.children)) strip(child);
+      };
+      strip(clone);
+      return (clone.outerHTML ?? "").replace(/\s+/g, " ").trim().slice(0, 220);
+    } catch {
+      return (el.outerHTML ?? "").replace(/\s+/g, " ").trim().slice(0, 220);
+    }
+  };
 
   const vw = window.innerWidth;
   const scrollWidth = Math.max(
