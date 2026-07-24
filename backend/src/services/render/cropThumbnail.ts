@@ -8,6 +8,14 @@ const JPEG_QUALITY = 60;
 const MAX_THUMBNAILS_PER_SCAN = 70;
 const SEVERITY_PRIORITY: Record<Severity, number> = { critical: 0, serious: 1, moderate: 2, minor: 3 };
 
+// Whether a selector names a single image rather than standing in for a
+// region. Only the final segment matters — that's the element the selector
+// resolves to.
+function selectorTargetsAnImage(selector: string): boolean {
+  const last = selector.split(/[>\s]+/).filter(Boolean).pop() ?? "";
+  return /^(img|picture|figure|svg)\b/i.test(last);
+}
+
 /**
  * Crops a small thumbnail of a flagged element out of the full-page
  * screenshot, so a finding can show what it's actually talking about
@@ -85,16 +93,27 @@ export async function attachElementScreenshots(
 ): Promise<void> {
   const needsCrop: AccessibilityFinding[] = [];
   for (const finding of findings) {
+    // A layer that captured its own evidence keeps it. The text-resize checks
+    // shoot the page while the override is applied, because once it's removed
+    // the breakage is gone — replacing that with a normal-state capture would
+    // show a perfectly healthy element and contradict the finding.
+    if (finding.elementScreenshot) continue;
     // Page-level findings (e.g. "your HTML has errors", "the page mixes N
     // typefaces") point at the whole document, not one element — a thumbnail
     // of the entire page tells the owner nothing, so leave them imageless.
     if (finding.selector === "html" || finding.selector === "body") continue;
     // AI-review findings carry a model-chosen selector, which is a description
-    // of where the problem is rather than a guaranteed handle on one element —
-    // it often resolves to a parent, a sibling, or nothing. Cropping it yields
-    // a picture of the wrong thing, and a confidently wrong thumbnail is worse
-    // than none. These findings are prose and explain their own location.
-    if (finding.source === "ai-review") continue;
+    // of where the problem is rather than a guaranteed handle on one element.
+    // For layout and copy findings the model is explicitly told to fall back to
+    // "the closest relevant selector (e.g. the containing section)" — cropping
+    // that yields a picture of a whole section, which is why these were
+    // suppressed.
+    //
+    // Images are the exception that matters: when the finding is about a
+    // specific <img>, the picture IS the evidence. "Is this photo decorative or
+    // meaningful?" is unanswerable without seeing it, and an image selector
+    // names one element unambiguously rather than standing in for a region.
+    if (finding.source === "ai-review" && !selectorTargetsAnImage(finding.selector)) continue;
     // Tiny tap targets are typically transparent icon controls sitting over a
     // photo or background — a crop of that box is a confusing blur of whatever
     // is behind them, not a recognizable control (and it changes shot to shot

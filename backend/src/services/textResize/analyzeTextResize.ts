@@ -18,6 +18,13 @@ export interface ClipMeasurement {
   snippets: Record<string, string>;
   documentScrollWidth: number;
   viewportWidth: number;
+  // Base64 JPEG evidence captured WHILE the override was applied, keyed by
+  // selector. It has to be taken then: once the override is removed the page
+  // reverts and the breakage is no longer visible anywhere.
+  shots?: Record<string, string>;
+  // The viewport in its overridden state — the only way to show sideways
+  // scrolling, which is a property of the page rather than any one element.
+  viewportShot?: string;
 }
 
 export interface TextResizeSignals {
@@ -117,6 +124,7 @@ function makeFinding(
   wcagCriterion: string,
   selector: string,
   snippet: string | undefined,
+  shot: string | undefined,
   title: string,
   description: string,
   suggestedFix: string,
@@ -131,6 +139,8 @@ function makeFinding(
     wcagLevel: "AA",
     selector,
     elementSnippet: snippet,
+    // Evidence of the page in its broken state, not its healthy one.
+    elementScreenshot: shot,
     title,
     description,
     suggestedFix,
@@ -165,6 +175,7 @@ export function evaluateTextResize(signals: TextResizeSignals): AccessibilityFin
         "1.4.12",
         worst,
         signals.spacing.snippets[worst],
+        signals.spacing.shots?.[worst],
         "Text gets cut off when a reader increases spacing",
         `${spacingBroken.length} element${spacingBroken.length === 1 ? "" : "s"} on this page cut text off when a visitor applies the line and letter spacing WCAG requires pages to tolerate. Many people with dyslexia rely on exactly these settings to read at all — and instead of reflowing, the words disappear behind a fixed-height box.`,
         FIX_CLIPPING,
@@ -186,6 +197,7 @@ export function evaluateTextResize(signals: TextResizeSignals): AccessibilityFin
         "1.4.4",
         worst,
         signals.zoom.snippets[worst],
+        signals.zoom.shots?.[worst],
         "Text gets cut off at larger font sizes",
         `${zoomBroken.length} element${zoomBroken.length === 1 ? "" : "s"} cut text off when the reader's font size is doubled — the container keeps its size while the words grow, so the overflow is simply hidden. Raising the default font size is the most common adjustment people with low vision make, well ahead of any assistive software.`,
         FIX_CLIPPING,
@@ -205,6 +217,7 @@ export function evaluateTextResize(signals: TextResizeSignals): AccessibilityFin
         "1.4.4",
         "body",
         undefined,
+        signals.zoom.viewportShot,
         "Enlarging text makes the page scroll sideways",
         `At double the font size the page becomes about ${zoomOverflow}px wider than the window, so reading means scrolling left and right on every line. The layout is holding a fixed width instead of reflowing around the larger text.`,
         "Let the layout reflow: use max-width with percentage or rem-based widths rather than fixed pixel widths, and allow long words to wrap.",

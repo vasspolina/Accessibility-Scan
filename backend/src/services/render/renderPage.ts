@@ -741,13 +741,52 @@ async function collectTextResizeSignals(page: Page): Promise<TextResizeSignals> 
   // pre-existing layout bug, not something the resize broke.
   const baseline = await measure();
 
-  const withCss = async (css: string): Promise<ClipMeasurement> => {
+  const baselineClipped = new Set(baseline.clipped);
+
+  const withCss = async (css: string, captureViewport: boolean): Promise<ClipMeasurement> => {
     try {
       const handle = await page.addStyleTag({ content: css });
       // Let the restyle settle before measuring — reflow is not synchronous
       // with the style tag being appended.
       await page.waitForTimeout(200);
       const result = await measure();
+
+      // Capture the evidence NOW, while the page is still broken. Once the
+      // override comes off, the clipping is gone and any later screenshot
+      // would show a perfectly healthy element, contradicting the finding.
+      // Only the one element the finding will actually name is shot — the
+      // report shows a single thumbnail, so capturing more is pure cost.
+      const firstBroken = result.clipped.find((sel) => !baselineClipped.has(sel));
+      if (firstBroken) {
+        const shot = await page
+          .locator(firstBroken)
+          .first()
+          .screenshot({ type: "jpeg", quality: 70, timeout: 2_000 })
+          .then((buf) =>
+            sharp(buf)
+              .resize({ width: 640, height: 640, fit: "inside", withoutEnlargement: true })
+              .jpeg({ quality: 62 })
+              .toBuffer()
+          )
+          .catch(() => null);
+        if (shot) result.shots = { [firstBroken]: shot.toString("base64") };
+      }
+
+      // Sideways scrolling belongs to the page, not to any element, so the
+      // viewport itself is the only thing that can show it.
+      if (captureViewport && result.documentScrollWidth > result.viewportWidth + 5) {
+        const viewportShot = await page
+          .screenshot({ type: "jpeg", quality: 60, timeout: 3_000 })
+          .then((buf) =>
+            sharp(buf)
+              .resize({ width: 640, withoutEnlargement: true })
+              .jpeg({ quality: 62 })
+              .toBuffer()
+          )
+          .catch(() => null);
+        if (viewportShot) result.viewportShot = viewportShot.toString("base64");
+      }
+
       await handle.evaluate((el) => (el as Element).remove()).catch(() => {});
       await page.waitForTimeout(80);
       return result;
@@ -756,8 +795,8 @@ async function collectTextResizeSignals(page: Page): Promise<TextResizeSignals> 
     }
   };
 
-  const spacing = await withCss(TEXT_SPACING_CSS);
-  const zoom = await withCss(TEXT_ZOOM_CSS);
+  const spacing = await withCss(TEXT_SPACING_CSS, false);
+  const zoom = await withCss(TEXT_ZOOM_CSS, true);
 
   return { baseline, spacing, zoom };
 }
