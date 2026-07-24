@@ -15,6 +15,7 @@ import { evaluateDialogs } from "../dialog/analyzeDialogs.js";
 import { collectMobileSignalsInPage, type MobileSignals } from "../mobile/analyzeMobile.js";
 import {
   collectDarkPatternSignalsInPage,
+  evaluateDarkPatterns,
   type DarkPatternSignals,
 } from "../darkPatterns/analyzeDarkPatterns.js";
 import {
@@ -525,8 +526,8 @@ function collectCandidateSelectors(
 // (critical elements first), enforce an overall wall-clock budget, and make
 // every capture best-effort — a single element that's detached, mid-animation,
 // or slow to settle must never fail or stall the whole scan.
-const MAX_ELEMENT_SHOTS = 30;
-const ELEMENT_SHOT_BUDGET_MS = 8_000;
+const MAX_ELEMENT_SHOTS = 45;
+const ELEMENT_SHOT_BUDGET_MS = 12_000;
 const ELEMENT_IMPACT_ORDER: Record<string, number> = {
   critical: 0,
   serious: 1,
@@ -1006,6 +1007,7 @@ export async function renderAndScan(url: string): Promise<RenderResult> {
         ...evaluateMotion(domSignals.animatedElements, domSignals.respectsReducedMotion, new Set()),
         ...evaluateComponents(domSignals),
         ...evaluateDialogs(domSignals.dialogs),
+        ...evaluateDarkPatterns(darkPatternSignals),
       ]
         .map((f) => f.selector)
         .filter((s) => s && s !== "body" && s !== "html");

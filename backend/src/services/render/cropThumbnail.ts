@@ -5,7 +5,7 @@ import type { AccessibilityFinding, Severity } from "../../types/report.js";
 const PADDING_PX = 12;
 const MAX_THUMB_WIDTH = 480;
 const JPEG_QUALITY = 60;
-const MAX_THUMBNAILS_PER_SCAN = 40;
+const MAX_THUMBNAILS_PER_SCAN = 70;
 const SEVERITY_PRIORITY: Record<Severity, number> = { critical: 0, serious: 1, moderate: 2, minor: 3 };
 
 /**

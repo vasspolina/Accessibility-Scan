@@ -18,6 +18,8 @@ export interface AccessibilityFinding {
   wcagLevel?: WcagLevel;
   selector: string;
   elementSnippet?: string;
+  // Short headline; AI findings supply their own. Falls back to description.
+  title?: string;
   description: string;
   suggestedFix: string;
   ruleId?: string;

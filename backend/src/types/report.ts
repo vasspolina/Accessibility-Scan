@@ -25,6 +25,10 @@ export const accessibilityFindingSchema = z.object({
   wcagLevel: z.enum(["A", "AA", "AAA"]).optional(),
   selector: z.string(),
   elementSnippet: z.string().optional(),
+  // A short headline for the finding (roughly 4-8 words). Deterministic
+  // findings get theirs from the widget's plain-language map; AI findings
+  // supply their own, because only the model knows what it just wrote about.
+  title: z.string().optional(),
   description: z.string(),
   suggestedFix: z.string(),
   ruleId: z.string().optional(),
@@ -53,6 +57,10 @@ export const aiFindingSchema = z.object({
   category: findingCategorySchema,
   wcagCriterion: z.string().optional(),
   selector: z.string(),
+  // Short headline, so the report can lead with a scannable summary instead
+  // of a paragraph. Optional: an older/omitting response still validates and
+  // the widget falls back to the description.
+  title: z.string().optional(),
   description: z.string(),
   suggestedFix: z.string(),
   // Defaulted rather than required: the model sometimes omits it, and throwing

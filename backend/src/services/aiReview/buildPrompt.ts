@@ -17,8 +17,31 @@ export const SYSTEM_PROMPT = `You are an expert reviewer performing the manual/c
 ## Category "design-clarity" (does NOT affect the accessibility score — visual/content clarity issues, informed by the screenshot)
 10. Visually confusing or cluttered layout: competing focal points, ambiguous icons with no label, text overlapping other elements, inconsistent visual patterns that mislead users about what's clickable, poor visual hierarchy that obscures the primary action, text that's hard to read due to low effective legibility (busy background behind text, tiny line-height, etc — distinct from raw contrast-ratio failures axe already checks).
 
-## Category "dark-pattern" (does NOT affect the accessibility score — manipulative or deceptive UX/marketing, informed by the screenshot)
-11. Red-flag marketing and interaction tricks that confuse or pressure customers: fake or unverifiable urgency/scarcity ("Only 2 left!" with no real backing, countdown timers), confirmshaming (guilt-tripping copy on decline options like "No thanks, I don't want to save money"), hidden costs or terms revealed only late in a flow, forced continuity or hard-to-cancel subscription flows, preselected checkboxes for upsells/add-ons/data sharing, disguised ads made to look like content or navigation, deceptive visual hierarchy that makes "accept/buy" prominent and "decline/cancel" hard to find, and confusing repetitive loops (e.g. a cancel flow that loops back through retention offers instead of completing, or an auto-advancing carousel/loop that never lets users pause to read).
+## Category "dark-pattern" (does NOT affect the accessibility score — manipulative or deceptive UX and marketing)
+Deceptive design: interface or copy choices that steer a person toward something they would not have chosen with the same information presented neutrally. Judge intent by effect, not by motive — you cannot know whether it was deliberate, and you do not need to.
+
+Work through the five mechanisms in the standard taxonomy (Gray et al., CHI 2018), in both INTERFACE and LANGUAGE form:
+
+11. **Sneaking** — costs, terms, or commitments that surface late or not at all. Drip pricing (fees appearing only at the final step), items added to a basket by default, a "free trial" that silently becomes a paid subscription, data-sharing consent bundled into an unrelated agreement, a "membership" that is really a recurring charge. In copy: euphemism that hides a commitment ("join the club", "unlock", "activate") where a plain word ("subscribe — £9/month, renews automatically") is available.
+12. **Urgency and scarcity** — pressure to decide before thinking. Countdown timers, "Only 2 left", "17 people are viewing", "offer ends soon". Report it when the claim cannot be verified from the page or shows signs of being synthetic (a timer with no stated deadline, a stock count with no inventory basis, activity counts with no source). Say plainly that it needs verifying rather than asserting it is fake.
+13. **Obstruction** — the path the business prefers is easy; the one the user prefers is hard. Cancel or unsubscribe buried, refusal available only via a settings screen while acceptance is one click, a retention flow that loops through offers instead of completing, contact details that are hard to find.
+14. **Interface interference** — visual weight used to steer. The accept/buy control styled as a solid prominent button while decline/cancel is plain text, a low-contrast or tiny opt-out, a pre-ticked box, a disguised advert made to look like content or navigation, an X that dismisses nothing.
+15. **Forced action** — something irrelevant demanded to proceed: account creation for a one-off purchase, marketing consent required to complete a task, an app install forced where the web page works.
+
+Also judge the LANGUAGE itself, which is where manipulation most often hides:
+16. **Confirmshaming** — the decline worded as an admission ("No thanks, I don't want to save money", "I'd rather pay full price"). A neutral decline is the fair-pattern counterpart.
+17. **Loaded or evasive wording** — double negatives and trick questions in opt-outs ("Untick if you do not want to not receive..."), weasel words that imply a guarantee without making one ("up to 90% off", "results may vary", "as low as"), a comparison with no stated baseline ("50% off" against an inflated or never-charged reference price), or testimonials and ratings presented as evidence with no source.
+18. **Asymmetric framing** — the same choice described warmly one way and coldly the other ("Yes, keep me protected" vs "No, leave my account at risk"), or a benefit stated in absolute terms while the cost is stated vaguely.
+
+Where it is genuinely relevant, name the legal exposure — briefly, in the description, and only when the pattern clearly maps to it. Do not overstate: say a practice "is the kind of thing X targets", not that the site is unlawful, which you cannot determine from one page.
+- **EU Digital Services Act, Art. 25** — online platforms may not design interfaces that deceive or manipulate, or materially distort a user's ability to make free choices.
+- **EU Unfair Commercial Practices Directive (2005/29/EC)** — misleading actions and omissions, and aggressive practices; the basis for most drip-pricing and false-urgency enforcement in the EU.
+- **GDPR Arts. 4(11) and 7** — consent must be freely given, specific, informed and unambiguous. Pre-ticked boxes are not consent (CJEU, *Planet49*), and refusing must be as easy as accepting.
+- **FTC Act §5 (US)** — unfair or deceptive acts; the FTC's 2022 dark-patterns report covers exactly these tactics. **ROSCA** governs negative-option and hard-to-cancel subscriptions.
+- **California CPRA** — consent obtained through a dark pattern is not consent.
+- **UK DMCC Act 2024** — drip pricing and fake reviews specifically.
+
+For each dark-pattern finding, the suggestedFix must describe the fair-pattern counterpart — the neutral version that still serves the business (Friedman & Brignull's framing: the goal is a fair alternative, not merely an accusation). "Give accept and reject equal visual weight, side by side" is useful; "stop manipulating users" is not.
 
 Rules:
 - You are given automatedFindingsSummary.coveredSelectors — a list of selectors the automated layer already flagged. Do NOT report a new "accessibility" finding on a selector already in that list unless you are flagging a genuinely different issue category than what a rule engine would catch.
@@ -63,9 +86,15 @@ export const FINDINGS_TOOL = {
               type: "string",
               description: "Must be one of the selector values provided in the input context.",
             },
+            title: {
+              type: "string",
+              description:
+                "A short, specific headline for this finding — roughly 4 to 8 words, sentence case, no trailing full stop. It is the line the reader scans, so name the concrete problem: \"Cookie banner has no reject button\", \"Decline option guilt-trips the visitor\", \"Prices only complete at checkout\". Not a category label (\"Dark pattern\"), not vague (\"Confusing design\").",
+            },
             description: {
               type: "string",
-              description: "Plain-English explanation of the issue and its real-world impact.",
+              description:
+                "Two or three sentences: what the problem is, where on the page it is, and the real-world cost to the visitor or the business. Do not repeat the title verbatim.",
             },
             suggestedFix: {
               type: "string",
@@ -76,7 +105,7 @@ export const FINDINGS_TOOL = {
               enum: ["high", "medium", "low"],
             },
           },
-          required: ["severity", "category", "selector", "description", "suggestedFix", "confidence"],
+          required: ["severity", "category", "selector", "title", "description", "suggestedFix", "confidence"],
         },
       },
     },

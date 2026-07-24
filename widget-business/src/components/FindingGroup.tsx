@@ -301,7 +301,10 @@ export function FindingGroup({ findings }: { findings: AccessibilityFinding[] })
   const rep = findings[0]; // most severe (list is pre-sorted by severity)
   const count = findings.length;
   const plain = plainForRule(rep.ruleId);
-  const title = plain?.plain ?? rep.description;
+  // Deterministic findings get a plain-language title from the rule map; AI
+  // findings write their own. Only fall back to the description when neither
+  // exists — it's a paragraph, which reads badly as a heading.
+  const title = plain?.plain ?? rep.title ?? rep.description;
   const detailsId = `a11y-group-${rep.id}`;
 
   // One clean instruction for the whole group — a plain rewrite when we have

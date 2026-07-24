@@ -125,6 +125,7 @@ export function aiToFindings(aiFindings: AiFinding[]): AccessibilityFinding[] {
     category: f.category,
     wcagCriterion: f.category === "accessibility" ? (f.wcagCriterion ?? "N/A") : undefined,
     selector: f.selector,
+    title: f.title ? stripScreenshotReferences(f.title) : undefined,
     description: stripScreenshotReferences(f.description),
     suggestedFix: stripScreenshotReferences(f.suggestedFix),
     confidence: f.confidence,
