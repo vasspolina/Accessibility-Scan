@@ -55,7 +55,10 @@ export const aiFindingSchema = z.object({
   selector: z.string(),
   description: z.string(),
   suggestedFix: z.string(),
-  confidence: z.enum(["high", "medium", "low"]),
+  // Defaulted rather than required: the model sometimes omits it, and throwing
+  // away a substantive, already-paid-for finding over a missing confidence
+  // rating is a bad trade. "medium" is the honest assumption when unstated.
+  confidence: z.enum(["high", "medium", "low"]).default("medium"),
 });
 export type AiFinding = z.infer<typeof aiFindingSchema>;
 

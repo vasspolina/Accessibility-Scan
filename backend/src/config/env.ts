@@ -15,7 +15,15 @@ const envSchema = z.object({
   RATE_LIMIT_MAX: z.coerce.number().default(5),
   RATE_LIMIT_WINDOW_MS: z.coerce.number().default(60_000),
   RENDER_TIMEOUT_MS: z.coerce.number().default(20_000),
-  AI_REVIEW_TIMEOUT_MS: z.coerce.number().default(20_000),
+  // The page review reads a screenshot plus the page context and writes up to
+  // 4096 tokens of findings. 20s was enough for a trivial page but timed out
+  // on any real content-rich one, so the layer silently produced nothing
+  // exactly where it's most useful.
+  AI_REVIEW_TIMEOUT_MS: z.coerce.number().default(40_000),
+  // Captioning a handful of images is a much smaller job than the full review,
+  // and it runs after it — giving it its own, tighter budget keeps the
+  // worst-case total scan time bounded instead of doubling the review's.
+  AI_ALT_TEXT_TIMEOUT_MS: z.coerce.number().default(20_000),
   MAX_CONCURRENT_RENDERS: z.coerce.number().default(6),
 });
 

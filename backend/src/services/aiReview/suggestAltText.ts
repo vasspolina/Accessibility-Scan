@@ -97,7 +97,7 @@ export async function attachAltTextSuggestions(
   try {
     await withTimeout(
       captionImages(client, candidates),
-      env.AI_REVIEW_TIMEOUT_MS,
+      env.AI_ALT_TEXT_TIMEOUT_MS,
       "Alt-text suggestion"
     );
   } catch (err) {

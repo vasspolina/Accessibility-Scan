@@ -26,7 +26,8 @@ Rules:
 - Write descriptions in plain English for a non-expert site owner — explain the real-world impact on users/customers, not just the rule being broken.
 - For "accessibility" findings, cite the single most relevant WCAG success criterion (e.g. "1.1.1 Non-text Content (A)"). For "design-clarity" and "dark-pattern" findings, omit wcagCriterion or set it to "N/A" — these are not WCAG violations.
 - If you find nothing genuinely wrong in a category, do not manufacture issues to pad the report.
-- Call the report_accessibility_findings tool exactly once with your complete findings list across all three categories.`;
+- Report at most 15 findings in total across all three categories, most impactful first. The deterministic layers already catch the long tail of repetitive rule violations; your value is judgement, not volume. An unbounded list also risks being truncated mid-response, which loses the whole review.
+- Call the report_accessibility_findings tool exactly once with your findings list across all three categories.`;
 
 export const FINDINGS_TOOL = {
   name: "report_accessibility_findings",

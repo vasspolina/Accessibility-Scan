@@ -56,7 +56,7 @@ export function App({ apiBase }: { apiBase: string }) {
 
       {loading && (
         <p className="a11y-loading" role="status">
-          Checking your site — this can take up to 30 seconds…
+          Checking your site — this can take up to a minute…
         </p>
       )}
 
