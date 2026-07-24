@@ -3,6 +3,7 @@ import { UrlForm } from "./components/UrlForm";
 import { ScoreGauge } from "./components/ScoreGauge";
 import { ReportSection } from "./components/ReportSection";
 import { PrincipleGroup } from "./components/PrincipleGroup";
+import { ScreenReaderPreview } from "./components/ScreenReaderPreview";
 import { WCAG_LINK } from "./lib/wcagPlain";
 import { scanUrl, ScanError, type AccessibilityReport } from "./api/scanClient";
 
@@ -97,6 +98,10 @@ export function App({ apiBase }: { apiBase: string }) {
             </p>
             <PrincipleGroup findings={findingsByCategory.accessibility} />
           </section>
+
+          {report.screenReaderScript && (
+            <ScreenReaderPreview script={report.screenReaderScript} />
+          )}
 
           <ReportSection
             title="Design & clarity notes"

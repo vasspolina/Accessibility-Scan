@@ -34,6 +34,32 @@ export interface AccessibilityFinding {
   suggestedAltText?: string;
 }
 
+// One announcement in the screen-reader preview. An approximation of what a
+// screen reader says at this point in the page, not a recording of a specific
+// product — see the backend's analyzeScreenReader.ts.
+export interface ScreenReaderLine {
+  text: string;
+  kind:
+    | "landmark"
+    | "heading"
+    | "link"
+    | "button"
+    | "image"
+    | "field"
+    | "list"
+    | "table"
+    | "frame"
+    | "text";
+  selector: string;
+  // Present when this announcement reveals a problem worth highlighting.
+  issue?: string;
+}
+
+export interface ScreenReaderScript {
+  lines: ScreenReaderLine[];
+  truncated: boolean;
+}
+
 export interface AccessibilityReport {
   url: string;
   scannedAt: string;
@@ -41,6 +67,8 @@ export interface AccessibilityReport {
   summary: { critical: number; serious: number; moderate: number; minor: number; total: number };
   categorySummary: { accessibility: number; designClarity: number; darkPattern: number };
   findings: AccessibilityFinding[];
+  // Optional — absent on older backends or when the reading-order walk failed.
+  screenReaderScript?: ScreenReaderScript;
   meta: {
     axeVersion: string;
     renderTimeMs: number;

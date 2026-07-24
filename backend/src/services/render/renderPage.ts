@@ -17,6 +17,11 @@ import {
   collectDarkPatternSignalsInPage,
   type DarkPatternSignals,
 } from "../darkPatterns/analyzeDarkPatterns.js";
+import {
+  collectScreenReaderScriptInPage,
+  condenseScreenReaderScript,
+} from "../screenReader/analyzeScreenReader.js";
+import type { ScreenReaderScript } from "../../types/report.js";
 import type { FocusStyles, KeyboardNavResult, TabStop } from "../keyboard/analyzeKeyboard.js";
 import { logger } from "../../utils/logger.js";
 
@@ -136,6 +141,9 @@ export interface RenderResult {
   // opt-ins, confirmshaming, urgency claims) — evaluated into dark-pattern
   // findings (services/darkPatterns/analyzeDarkPatterns.ts).
   darkPatternSignals: DarkPatternSignals;
+  // Approximation of what a screen reader announces, in reading order —
+  // rendered as a playable preview in the widget.
+  screenReaderScript: ScreenReaderScript;
 }
 
 // Runs inside the browser page context via page.evaluate — must be fully
@@ -955,6 +963,13 @@ export async function renderAndScan(url: string): Promise<RenderResult> {
       // keyboard walk-through and mobile pass mutate it — consent banners and
       // opt-in forms are exactly what those later passes disturb.
       const darkPatternSignals = await collectDarkPatternsAcrossFrames(page);
+      // Reading-order walk of the accessibility tree, collected in the same
+      // pristine desktop state. Best-effort: an empty script just hides the
+      // preview rather than costing the report.
+      const screenReaderScript = await page
+        .evaluate<ScreenReaderScript>(toBrowserScript(collectScreenReaderScriptInPage))
+        .then(condenseScreenReaderScript)
+        .catch(() => ({ lines: [], truncated: false }) as ScreenReaderScript);
       const screenshotBuffer = await page.screenshot({ type: "jpeg", quality: 70 });
 
       // Runs after the above-the-fold screenshot (which should show the page
@@ -1070,6 +1085,7 @@ export async function renderAndScan(url: string): Promise<RenderResult> {
         keyboardNav,
         mobileSignals,
         darkPatternSignals,
+        screenReaderScript,
       };
     } finally {
       page.off("response", onResponse);

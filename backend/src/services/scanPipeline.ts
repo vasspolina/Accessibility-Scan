@@ -82,6 +82,7 @@ export async function scanUrlToReport(
     summary,
     categorySummary,
     findings,
+    screenReaderScript: renderResult.screenReaderScript,
     meta: {
       axeVersion: renderResult.axe.testEngine?.version ?? "unknown",
       renderTimeMs: renderResult.renderTimeMs,

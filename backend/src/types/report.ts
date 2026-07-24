@@ -89,6 +89,34 @@ export const categorySummarySchema = z.object({
 });
 export type CategorySummary = z.infer<typeof categorySummarySchema>;
 
+// One announcement in the screen-reader preview — see
+// services/screenReader/analyzeScreenReader.ts. An approximation of what a
+// screen reader says, not a recording of any specific one.
+export const screenReaderLineSchema = z.object({
+  text: z.string(),
+  kind: z.enum([
+    "landmark",
+    "heading",
+    "link",
+    "button",
+    "image",
+    "field",
+    "list",
+    "table",
+    "frame",
+    "text",
+  ]),
+  selector: z.string(),
+  issue: z.string().optional(),
+});
+export type ScreenReaderLine = z.infer<typeof screenReaderLineSchema>;
+
+export const screenReaderScriptSchema = z.object({
+  lines: z.array(screenReaderLineSchema),
+  truncated: z.boolean(),
+});
+export type ScreenReaderScript = z.infer<typeof screenReaderScriptSchema>;
+
 export const accessibilityReportSchema = z.object({
   url: z.string(),
   scannedAt: z.string(),
@@ -98,6 +126,9 @@ export const accessibilityReportSchema = z.object({
   summary: severitySummarySchema,
   categorySummary: categorySummarySchema,
   findings: z.array(accessibilityFindingSchema),
+  // Optional so an older client (or a render where the walk failed) still
+  // validates — the widget hides the preview when it's absent.
+  screenReaderScript: screenReaderScriptSchema.optional(),
   meta: z.object({
     axeVersion: z.string(),
     renderTimeMs: z.number(),
