@@ -8,6 +8,7 @@ import { ConformanceView } from "./components/ConformanceView";
 import { VisionSimulator } from "./components/VisionSimulator";
 import { SiteAuditView } from "./components/SiteAuditView";
 import { AccessibilityStatement } from "./components/AccessibilityStatement";
+import { BlockedNotice } from "./components/BlockedNotice";
 import { PrintButton } from "./components/PrintButton";
 import { WCAG_LINK } from "./lib/wcagPlain";
 import {
@@ -28,6 +29,9 @@ export function App({ apiBase }: { apiBase: string }) {
   const [aiRequested, setAiRequested] = useState(false);
   const [mode, setMode] = useState<ScanMode>("page");
   const [error, setError] = useState<string | null>(null);
+  // A site turning the scanner away isn't the visitor's mistake, so it's shown
+  // as guidance rather than a red error.
+  const [blocked, setBlocked] = useState<string | null>(null);
 
   const findingsByCategory = useMemo(() => {
     const findings = report?.findings ?? [];
@@ -49,6 +53,7 @@ export function App({ apiBase }: { apiBase: string }) {
     setMode(mode);
     setLoading(true);
     setError(null);
+    setBlocked(null);
     setReport(null);
     setAudit(null);
     try {
@@ -58,7 +63,11 @@ export function App({ apiBase }: { apiBase: string }) {
         setReport(await scanUrl(apiBase, url, includeAiReview, auth));
       }
     } catch (err) {
-      setError(err instanceof ScanError ? err.message : "Something went wrong. Please try again.");
+      if (err instanceof ScanError && err.blocked) {
+        setBlocked(err.message);
+      } else {
+        setError(err instanceof ScanError ? err.message : "Something went wrong. Please try again.");
+      }
     } finally {
       setLoading(false);
     }
@@ -76,6 +85,8 @@ export function App({ apiBase }: { apiBase: string }) {
       </p>
 
       <UrlForm onSubmit={handleScan} loading={loading} />
+
+      {blocked && <BlockedNotice message={blocked} />}
 
       {error && (
         <p className="a11y-error" role="alert">

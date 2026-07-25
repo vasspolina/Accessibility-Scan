@@ -111,9 +111,11 @@ export async function scanRoutes(app: FastifyInstance) {
       }
       if (err instanceof SiteBlockedError) {
         // The target refused the scanner — an honest "couldn't check" beats
-        // a report scored against the site's bot-block page.
+        // a report scored against the site's bot-block page. The `blocked`
+        // flag lets the widget show sign-in / allowlist guidance instead of a
+        // bare error, since this isn't the user's mistake to fix.
         logger.info({ url: safeUrl.toString() }, "Target site blocked the scanner");
-        return reply.status(422).send({ error: err.message });
+        return reply.status(422).send({ error: err.message, blocked: true });
       }
       logger.warn({ err, url: safeUrl.toString() }, "Render/axe layer failed");
       return reply.status(502).send({

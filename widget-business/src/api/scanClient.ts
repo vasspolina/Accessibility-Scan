@@ -147,7 +147,16 @@ export type AuthConfig =
   | { kind: "form"; loginUrl: string; username: string; password: string }
   | { kind: "cookies"; cookies: Array<{ name: string; value: string; domain?: string; path?: string }> };
 
-export class ScanError extends Error {}
+// `blocked` is set when the site refused the scanner (bot protection, a
+// CAPTCHA challenge). It isn't a fault in the request, so the widget shows
+// guidance rather than a red error.
+export class ScanError extends Error {
+  blocked: boolean;
+  constructor(message: string, blocked = false) {
+    super(message);
+    this.blocked = blocked;
+  }
+}
 
 const delay = (ms: number) => new Promise((r) => setTimeout(r, ms));
 
@@ -191,8 +200,13 @@ export async function scanUrl(
     }
 
     if (!response.ok) {
-      const errBody = await response.json().catch(() => ({}) as { error?: string });
-      throw new ScanError(errBody.error ?? `Scan failed with status ${response.status}`);
+      const errBody = await response
+        .json()
+        .catch(() => ({}) as { error?: string; blocked?: boolean });
+      throw new ScanError(
+        errBody.error ?? `Scan failed with status ${response.status}`,
+        errBody.blocked === true
+      );
     }
 
     return response.json();

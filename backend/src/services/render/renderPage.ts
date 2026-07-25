@@ -996,7 +996,7 @@ export class RebindingDetectedError extends Error {
 export class SiteBlockedError extends Error {
   constructor(host: string, detail: string) {
     super(
-      `${host} turned our scanner away (${detail}). This says nothing about the site's accessibility — the site blocks automated tools from visiting it. Try a different page, or a site without bot protection.`
+      `${host} turned our scanner away (${detail}). This says nothing about how accessible the site is. It blocks automated tools from visiting at all.`
     );
     this.name = "SiteBlockedError";
   }
