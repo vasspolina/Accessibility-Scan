@@ -85,6 +85,9 @@
 }
 
 .a11y-url-row button {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
   padding: 13px 22px;
   border: none;
   border-radius: 8px;
@@ -94,11 +97,55 @@
   font-weight: 600;
   cursor: pointer;
   white-space: nowrap;
+  /* The button had no hover or press state at all, so it read as a picture of
+     a button rather than a control. Colour and a slight lift on hover, and a
+     press that actually depresses. */
+  transition: background-color 0.15s ease, transform 0.1s ease, box-shadow 0.15s ease;
+}
+
+.a11y-url-row button:hover:not(:disabled) {
+  background: var(--a11y-accent-strong, #0757ba);
+  box-shadow: 0 2px 8px rgba(9, 105, 218, 0.3);
+}
+
+.a11y-url-row button:active:not(:disabled) {
+  transform: translateY(1px);
+  box-shadow: none;
 }
 
 .a11y-url-row button:disabled {
   opacity: 0.6;
   cursor: not-allowed;
+}
+
+/* Turns while a scan runs, so a button that waits a minute still looks alive. */
+.a11y-spinner {
+  width: 14px;
+  height: 14px;
+  border: 2px solid rgba(255, 255, 255, 0.4);
+  border-top-color: #ffffff;
+  border-radius: 50%;
+  animation: a11y-spin 0.7s linear infinite;
+}
+
+@keyframes a11y-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* This product flags sites whose motion can't be stopped (WCAG 2.2.2). It
+   would be a poor advert for that to spin regardless of the same preference:
+   the spinner stays visible as a progress cue, it just stops moving. */
+@media (prefers-reduced-motion: reduce) {
+  .a11y-url-row button,
+  .a11y-show-all {
+    transition: none;
+  }
+  .a11y-spinner {
+    animation: none;
+    opacity: 0.7;
+  }
 }
 
 .a11y-url-row button:focus-visible {
@@ -400,10 +447,16 @@
   font-size: 14px;
   font-weight: 600;
   cursor: pointer;
+  transition: border-color 0.15s ease, background-color 0.15s ease, transform 0.1s ease;
 }
 
 .a11y-show-all:hover {
   border-color: var(--a11y-accent, #0969da);
+  background: var(--a11y-accent-faint, #f2f7fd);
+}
+
+.a11y-show-all:active {
+  transform: translateY(1px);
 }
 
 .a11y-affected {

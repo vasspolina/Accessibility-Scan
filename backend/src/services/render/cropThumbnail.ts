@@ -151,12 +151,12 @@ export async function attachElementScreenshots(
     ) {
       continue;
     }
-    // Tiny tap targets are typically transparent icon controls sitting over a
-    // photo or background — a crop of that box is a confusing blur of whatever
-    // is behind them, not a recognizable control (and it changes shot to shot
-    // as the background moves). The plain label ("“Toggle search” button")
-    // identifies the element far better, so never show a thumbnail for these.
-    if (finding.ruleId === "mobile-tap-target") continue;
+    // Tap targets are no longer skipped here. They get their picture from the
+    // mobile pass, which shoots them at phone width with their neighbours in
+    // frame — the only way a 30px control reads as anything. The `mobile-`
+    // guard further down is what keeps them from being cropped out of the
+    // desktop full-page image, which would picture a layout the finding isn't
+    // about.
     // A link with no readable text is, by definition, one there is nothing to
     // see in: an empty anchor, or one wrapping an image the alt-text findings
     // already picture. The capture comes back an empty grey rectangle, which

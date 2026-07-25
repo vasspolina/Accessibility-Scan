@@ -52,7 +52,26 @@ export async function withPage<T>(fn: (page: Page) => Promise<T>): Promise<T> {
   try {
     const browser = await getBrowser();
     const context = await browser.newContext({
-      userAgent: "A11yCheckerBot/0.1 (+accessibility scan)",
+      // Names the real engine and the bot, in that order.
+      //
+      // A bare "A11yCheckerBot/0.1" is honest but incomplete, and sites that
+      // sniff the user agent to decide what to serve read it as an unknown
+      // browser and hand back a degraded page. Measured on usbank.com: with
+      // the bare token the hero panel collapses to ~130px with one word per
+      // line and the account login form is replaced by "The portal doesn't
+      // support your current browser"; with this string the same page renders
+      // correctly. Scanning that degraded page and scoring the site on it is
+      // the same mistake as scoring a bot-block page — a report about
+      // something no visitor sees.
+      //
+      // This is a truthful declaration, not a disguise: the engine really is
+      // headless Chromium, and A11yCheckerBot is still in the string, so
+      // robots rules, log filters and allowlists keyed on it all still work
+      // (see BlockedNotice, which tells owners to allowlist that token).
+      userAgent:
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 " +
+        "(KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36 " +
+        "A11yCheckerBot/0.1 (+accessibility scan)",
       // Fixed viewport so the review screenshot (see renderPage.ts) is
       // consistent in size/cost across scans regardless of the host machine.
       viewport: { width: 1280, height: 900 },

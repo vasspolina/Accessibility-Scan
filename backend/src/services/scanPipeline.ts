@@ -41,25 +41,35 @@ async function attachEvidence(
     renderResult.elementScreenshots
   );
 
-  // AI findings are the one group the render pass can't photograph: they don't
-  // exist until after the page has closed, and the model writes its own
-  // selectors, which almost never match the strings measured during render. So
-  // they'd only ever get a thumbnail by coincidence. A short second visit
-  // photographs what the model actually pointed at — worth one navigation,
-  // because "this field has no label" is far more convincing next to a picture
-  // of the field.
+  // Anything still without a picture gets one more attempt on a fresh page.
+  //
+  // AI findings are the clearest case — they don't exist until after the
+  // render pass has closed its page, and the model writes its own selectors,
+  // which almost never match the strings measured during render, so they'd
+  // only ever get a thumbnail by coincidence. But the same gap catches the
+  // layers evaluated after the page closes: a pop-up with no close button, a
+  // consent banner, a dark-pattern claim. Those were reaching the report with
+  // nothing to show either.
+  //
+  // Mobile findings are excluded on purpose. This visit runs at desktop width,
+  // and picturing a phone-layout finding in a desktop layout shows the reader
+  // something that isn't what was measured.
   const unpictured = findings.filter(
     (f) =>
-      f.source === "ai-review" &&
       !f.elementScreenshot &&
       f.selector &&
       f.selector !== "html" &&
-      f.selector !== "body"
+      f.selector !== "body" &&
+      !f.ruleId?.startsWith("mobile-")
   );
   if (unpictured.length > 0) {
+    // Severity order, because the second visit is capped: if only ten
+    // pictures fit, they should be the ten that matter most.
+    const rank = { critical: 0, serious: 1, moderate: 2, minor: 3 } as const;
+    const byImportance = [...unpictured].sort((a, b) => rank[a.severity] - rank[b.severity]);
     const shots = await captureSelectorsFresh(
       renderResult.finalUrl,
-      unpictured.map((f) => f.selector),
+      byImportance.map((f) => f.selector),
       selectorTargetsOneElement
     );
     for (const finding of unpictured) {

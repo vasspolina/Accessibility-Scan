@@ -699,7 +699,7 @@ async function captureElementScreenshots(
       // protects the alt-text suggester downstream, which reads these pixels —
       // a covered <img> would otherwise get the overlay described instead.
       if (!(await isActuallyOnScreen(locator))) continue;
-      const raw = await locator.screenshot({ type: "jpeg", quality: 72, timeout: 1_500 });
+      const raw = await locator.screenshot({ type: "jpeg", quality: 72, timeout: 1_500, animations: "disabled" });
       const resized = await sharp(raw)
         .resize({ width: 480, height: 480, fit: "inside", withoutEnlargement: true })
         .jpeg({ quality: 62 })
@@ -736,8 +736,8 @@ async function captureElementScreenshots(
 // purpose: real controls often run the full width of their column, so a width
 // test would reject exactly what we want to picture.
 const MAX_COMPONENT_HEIGHT_PX = 220;
-const AI_SHOT_BUDGET_MS = 12_000;
-const MAX_AI_SHOTS = 10;
+const SECOND_PASS_BUDGET_MS = 12_000;
+const MAX_SECOND_PASS_SHOTS = 10;
 // Below this, a tight crop of the element on its own is too small to read and
 // too plain to survive the blank-frame check — photograph its surroundings
 // instead. Above it, the element fills the frame on its own.
@@ -813,7 +813,7 @@ async function contextAncestor(locator: Locator): Promise<ElementHandle<Node> | 
 // be a single flat colour (an invisible or covered element).
 async function captureLocator(locator: Locator | ElementHandle<Node>): Promise<string | null> {
   try {
-    const raw = await locator.screenshot({ type: "jpeg", quality: 72, timeout: 2_500 });
+    const raw = await locator.screenshot({ type: "jpeg", quality: 72, timeout: 2_500, animations: "disabled" });
     // A frame this small can't show anything a reader could act on — it
     // renders as a blurry smudge next to the finding and undermines the very
     // point of showing evidence. The written element label does that job
@@ -831,6 +831,79 @@ async function captureLocator(locator: Locator | ElementHandle<Node>): Promise<s
   } catch {
     return null;
   }
+}
+
+// How long to keep waiting for a page to hold still. Generous enough for a
+// slow hero to finish, short enough that a permanently animating page costs
+// this much and no more.
+const LAYOUT_SETTLE_TIMEOUT_MS = 3_000;
+const LAYOUT_SETTLE_INTERVAL_MS = 250;
+
+/**
+ * Resolves once the page's geometry stops changing, or when the budget runs
+ * out — whichever comes first. Best-effort: a page that never settles simply
+ * costs the budget and gets photographed anyway.
+ */
+async function settleLayout(page: Page): Promise<void> {
+  await page
+    .evaluate(
+      async ({ timeout, interval }) => {
+        // Written without a named inner function on purpose. tsx's esbuild
+        // transform (keepNames) rewrites named declarations into calls to a
+        // module-level __name helper, which doesn't exist in the page — the
+        // evaluate then throws ReferenceError, and because this whole call is
+        // best-effort the failure would be swallowed and the settling would
+        // silently never happen in dev. Inline callbacks are left alone.
+        const deadline = Date.now() + timeout;
+        let previous = "";
+        let first = true;
+        while (Date.now() < deadline) {
+          // A cheap signature of where things are: positions and widths only,
+          // enough to notice a panel sliding or resizing without reading every
+          // element on a large page.
+          const current = Array.from(document.querySelectorAll("body *"))
+            .slice(0, 80)
+            .map((el) => {
+              const r = el.getBoundingClientRect();
+              return `${Math.round(r.x)},${Math.round(r.y)},${Math.round(r.width)}`;
+            })
+            .join("|");
+          if (!first && current === previous) return;
+          previous = current;
+          first = false;
+          await new Promise((resolve) => setTimeout(resolve, interval));
+        }
+      },
+      { timeout: LAYOUT_SETTLE_TIMEOUT_MS, interval: LAYOUT_SETTLE_INTERVAL_MS }
+    )
+    .catch(() => {});
+}
+
+/**
+ * Photographs one selector the way a reader needs to see it: scrolled into
+ * view, verified as actually on screen, and framed with enough around it to
+ * be legible.
+ *
+ * The framing is the point. A tap target flagged as too small is 30px of
+ * transparent icon — shot on its own it's a smudge, which is why these used
+ * to be left imageless. Shot together with its neighbours you can see both
+ * the control and how little room it has, which is the finding.
+ *
+ * Returns null whenever there's nothing worth showing, which callers treat as
+ * "no thumbnail" rather than an error.
+ */
+async function captureWithContext(page: Page, selector: string): Promise<string | null> {
+  const locator = page.locator(selector).first();
+  if ((await locator.count()) === 0) return null;
+  await locator.scrollIntoViewIfNeeded({ timeout: 1_000 }).catch(() => {});
+
+  const box = await locator.boundingBox();
+  if (!box || box.width < 2 || box.height < 2) return null;
+  if (!(await isActuallyOnScreen(locator))) return null;
+
+  const target =
+    box.height <= REGION_CAPTURE_MAX_HEIGHT_PX ? await contextAncestor(locator) : null;
+  return captureLocator(target ?? locator);
 }
 
 /**
@@ -884,52 +957,19 @@ export async function captureSelectorsFresh(
       return result;
     }
 
-    const deadline = Date.now() + AI_SHOT_BUDGET_MS;
-    for (const selector of selectors.slice(0, MAX_AI_SHOTS)) {
+    const deadline = Date.now() + SECOND_PASS_BUDGET_MS;
+    for (const selector of selectors.slice(0, MAX_SECOND_PASS_SHOTS)) {
       if (Date.now() > deadline) break;
       try {
-        const locator = page.locator(selector).first();
-        if ((await locator.count()) === 0) continue;
-        await locator.scrollIntoViewIfNeeded({ timeout: 1_000 }).catch(() => {});
-
-        const box = await locator.boundingBox();
-        if (!box || box.width < 8 || box.height < 8) continue;
-        // The live box is the evidence the selector string can't give us.
-        if (box.height > MAX_COMPONENT_HEIGHT_PX && !alwaysCapture(selector)) continue;
-        // Having a box is not the same as being on screen. An element can be
-        // laid out and fully covered by something painted over it, and then
-        // every pixel at its coordinates belongs to the thing on top — so the
-        // "thumbnail" is a photograph of an unrelated overlay. That is worse
-        // than no thumbnail: it makes the report look wrong in the one place
-        // it's supposed to be showing proof.
-        if (!(await isActuallyOnScreen(locator))) continue;
-
-        // Photograph a short element together with its surroundings, by
-        // shooting the nearest ancestor that's still component-sized rather
-        // than the element itself.
-        //
-        // Two reasons, and the first was found the hard way: a bare capture of
-        // an email input is a near-solid rectangle, so the blank-frame guard
-        // threw it away — that guard exists for invisible overlay buttons, but
-        // "mostly one colour" is also what a perfectly ordinary form field
-        // looks like.
-        //
-        // The second reason is the better one. The finding is "this field has
-        // no label". A tight crop of the field cannot show that, because the
-        // missing label is exactly what isn't in the frame. The surrounding
-        // row is what makes the absence visible.
-        //
-        // Done by screenshotting an ancestor rather than by clipping a region
-        // out of the viewport, and that distinction is load-bearing: clipping
-        // needs coordinates, and on a smooth-scrolling page the box is read
-        // while the scroll is still animating, so the clip lands somewhere
-        // else entirely. (Measured: asking for the newsletter field returned a
-        // photograph of a studio floor from further down the page.)
-        // locator.screenshot() waits for the element to stop moving first, so
-        // it cannot photograph the wrong thing.
-        const target =
-          box.height <= REGION_CAPTURE_MAX_HEIGHT_PX ? await contextAncestor(locator) : locator;
-        const shot = await captureLocator(target ?? locator);
+        // A selector that doesn't name one discrete element has to prove it's
+        // component-sized before we spend a shot on it — the model is told to
+        // fall back to the containing section for layout findings, and a
+        // picture of a whole section tells the reader nothing.
+        if (!alwaysCapture(selector)) {
+          const box = await page.locator(selector).first().boundingBox().catch(() => null);
+          if (box && box.height > MAX_COMPONENT_HEIGHT_PX) continue;
+        }
+        const shot = await captureWithContext(page, selector);
         if (shot) result[selector] = shot;
       } catch {
         // Invalid selector, detached node, timeout — skip it, keep going.
@@ -1089,7 +1129,7 @@ async function collectTextResizeSignals(page: Page): Promise<TextResizeSignals> 
       // viewport itself is the only thing that can show it.
       if (captureViewport && result.documentScrollWidth > result.viewportWidth + 5) {
         const viewportShot = await page
-          .screenshot({ type: "jpeg", quality: 60, timeout: 3_000 })
+          .screenshot({ type: "jpeg", quality: 60, timeout: 3_000, animations: "disabled" })
           .then((buf) =>
             sharp(buf)
               .resize({ width: 640, withoutEnlargement: true })
@@ -1141,25 +1181,8 @@ async function captureMobileElementScreenshots(
     seen.add(selector);
     if (Object.keys(result).length >= MAX_MOBILE_SHOTS || Date.now() > deadline) break;
     try {
-      const locator = page.locator(selector).first();
-      if ((await locator.count()) === 0) continue;
-      await locator.scrollIntoViewIfNeeded({ timeout: 800 }).catch(() => {});
-      const box = await locator.boundingBox();
-      if (!box || box.width < 2 || box.height < 2) continue;
-      // Same reason as the desktop path: a covered element photographs as
-      // whatever is on top of it.
-      if (!(await isActuallyOnScreen(locator))) continue;
-      const raw = await locator.screenshot({ type: "jpeg", quality: 72, timeout: 1_500 });
-      const resized = await sharp(raw)
-        .resize({ width: 480, height: 480, fit: "inside", withoutEnlargement: true })
-        .jpeg({ quality: 62 })
-        .toBuffer();
-      // Same blank-frame guard as the desktop path — a hidden/transparent
-      // element shot as one flat color is worse than no thumbnail.
-      const stats = await sharp(resized).stats().catch(() => null);
-      const maxStdev = stats ? Math.max(...stats.channels.map((c) => c.stdev)) : 1;
-      if (maxStdev < 2.5) continue;
-      result[selector] = resized.toString("base64");
+      const shot = await captureWithContext(page, selector);
+      if (shot) result[selector] = shot;
     } catch {
       // skip this element, keep going
     }
@@ -1427,7 +1450,46 @@ export async function renderAndScan(
         .evaluate<ScreenReaderScript>(toBrowserScript(collectScreenReaderScriptInPage))
         .then(condenseScreenReaderScript)
         .catch(() => ({ lines: [], truncated: false }) as ScreenReaderScript);
-      const screenshotBuffer = await page.screenshot({ type: "jpeg", quality: 70 });
+      // Wait for the layout to stop moving before photographing it.
+      //
+      // Found on usbank.com, whose hero is a JS-driven carousel: the preview
+      // came back with the headline panel squeezed to about 90px, one word per
+      // line, and a login card overlapping the photo — a frame that exists for
+      // a fraction of a second while a slide expands. It reads as "your site
+      // is broken", and it is also the AI review's only view of the page, so
+      // it invites the model to report overlapping text no visitor ever sees.
+      //
+      // Playwright's animations:"disabled" does not help here (verified): it
+      // handles CSS animations, transitions and Web Animations, and this
+      // carousel moves elements from JavaScript. Sampling geometry catches it
+      // regardless of what drives it. A carousel that rotates forever never
+      // settles, but it dwells on each slide far longer than it spends moving
+      // between them, so two matching samples land on a settled slide.
+      await settleLayout(page);
+
+      // Web fonts change line heights and wrapping, so a shot taken before
+      // they land shows a layout no visitor ever sees.
+      await page
+        .evaluate(() => (document as unknown as { fonts?: { ready: Promise<unknown> } }).fonts?.ready)
+        .catch(() => {});
+
+      // animations: "disabled" is doing real work here, not tidying up. A
+      // rotating hero carousel never settles, so without it this shot lands
+      // mid-transition: a slide half in frame, buttons overlapping text,
+      // headlines squeezed into a column that exists for one twentieth of a
+      // second. Measured on usbank.com, which renders as a mangled page.
+      //
+      // That matters twice over. This image is the report's preview, so a
+      // broken frame reads as "your site is broken" — and it is also the AI
+      // review's only view of the page, so a mid-transition capture invites
+      // the model to report overlapping text that no visitor will ever see.
+      // Playwright fast-forwards finite animations to their end state and
+      // resets infinite ones, giving the layout a visitor actually gets.
+      const screenshotBuffer = await page.screenshot({
+        type: "jpeg",
+        quality: 70,
+        animations: "disabled",
+      });
 
       // Runs after the above-the-fold screenshot (which should show the page
       // exactly as a visitor sees it) but before anything used for
@@ -1445,7 +1507,7 @@ export async function renderAndScan(
       // fail or time out on a full-page screenshot, and that should degrade
       // to "no thumbnails" rather than failing the whole scan.
       const fullPageScreenshot = await page
-        .screenshot({ type: "jpeg", quality: 60, fullPage: true, timeout: 10_000 })
+        .screenshot({ type: "jpeg", quality: 60, fullPage: true, timeout: 10_000, animations: "disabled" })
         .catch(() => null);
 
       // Element-specific selectors from the deterministic non-axe layers, so
@@ -1505,13 +1567,19 @@ export async function renderAndScan(
         await page.setViewportSize({ width: 390, height: 844 });
         await page.waitForTimeout(400); // let CSS media queries / reflow settle
         mobileSignals = await page.evaluate<MobileSignals>(toBrowserScript(collectMobileSignalsInPage));
-        // Only breakout (overflow) elements — they're large regions that crop
-        // into a useful picture. Tap targets are deliberately left imageless
-        // (see cropThumbnail.ts): a tiny transparent icon can't be captured
-        // into a meaningful thumbnail, so we don't waste the budget trying.
-        mobileSelectors = mobileSignals.overflowingElements
-          .map((o) => o.selector)
-          .filter((s) => s && s !== "body" && s !== "html");
+        // Breakout (overflow) elements first — they're large regions that crop
+        // into a useful picture on their own.
+        //
+        // Tap targets follow, and they used to be skipped entirely: a 30px
+        // transparent icon shot on its own is a smudge of whatever sits behind
+        // it. Capturing it with its neighbours in frame changes that — you see
+        // the control and how little room it has, which is the whole finding.
+        // Capped well below the overflow list because a phone layout can flag
+        // dozens of them and they're the less important half.
+        mobileSelectors = [
+          ...mobileSignals.overflowingElements.map((o) => o.selector),
+          ...mobileSignals.smallTapTargets.slice(0, 8).map((t) => t.selector),
+        ].filter((s) => s && s !== "body" && s !== "html");
         if (mobileSelectors.length > 0) {
           mobileElementScreenshots = await captureMobileElementScreenshots(page, mobileSelectors);
         }

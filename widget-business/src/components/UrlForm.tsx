@@ -53,6 +53,12 @@ export function UrlForm({
           required
         />
         <button type="submit" disabled={loading || !value.trim()}>
+          {/* A scan runs for anything from fifteen seconds to a minute and a
+              half. A button that just says "Checking…" and then sits there
+              looks like it has died — the spinner is the only thing telling
+              the reader it hasn't. Hidden from screen readers because the
+              status text below already announces progress. */}
+          {loading && <span className="a11y-spinner" aria-hidden="true" />}
           {loading ? "Checking…" : mode === "site" ? "Audit my site" : "Check my site"}
         </button>
       </div>
