@@ -54,12 +54,12 @@ export function SiteAuditView({ audit }: { audit: SiteAudit }) {
       {audit.siteWide.length > 0 && (
         <section className="a11y-section a11y-section-redflag">
           <h3 className="a11y-section-title">
-            Fix these once and every page improves{" "}
+            Fix once, fix everywhere{" "}
             <span className="a11y-section-count">({audit.siteWide.length})</span>
           </h3>
           <p className="a11y-section-desc">
-            These appear on every page, so they live in your template — header, footer, layout. Fix
-            each one once and the whole site improves. Start here.
+            These show up on every page, so they live in the template rather than the content.
+            Structural, not decorative. Start here.
           </p>
           <ul className="a11y-audit-list">
             {audit.siteWide.map((issue) => {

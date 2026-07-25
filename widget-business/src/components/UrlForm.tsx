@@ -57,7 +57,7 @@ export function UrlForm({
           disabled={loading}
         >
           This page
-          <em>Full detail, about 15 seconds</em>
+          <em>Everything we can see, in about 15 seconds</em>
         </button>
         <button
           type="button"
@@ -67,7 +67,7 @@ export function UrlForm({
           disabled={loading}
         >
           Whole site
-          <em>Finds template-wide problems</em>
+          <em>Finds what repeats on every page</em>
         </button>
       </div>
 

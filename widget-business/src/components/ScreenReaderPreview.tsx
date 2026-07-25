@@ -77,12 +77,12 @@ export function ScreenReaderPreview({ script }: { script: ScreenReaderScript }) 
   return (
     <section className="a11y-section a11y-sr">
       <h3 className="a11y-section-title">
-        Hear your page the way a screen reader reads it{" "}
+        Your page, read aloud{" "}
         <span className="a11y-section-count">({lines.length} announcements)</span>
       </h3>
       <p className="a11y-section-desc">
-        How your page sounds to someone who can't see it, in reading order. Red lines are where a
-        listener learns nothing. Close to how real screen readers speak, not a recording.
+        How your page sounds to someone who can't see it, in the order they hear it. Red lines are
+        where a listener learns nothing. Close to a real screen reader, not a recording.
       </p>
 
       <div className="a11y-sr-controls">

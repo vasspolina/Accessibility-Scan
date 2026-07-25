@@ -372,9 +372,9 @@ export function FindingGroup({ findings }: { findings: AccessibilityFinding[] })
           {/* Developer hand-off — the rule reference, shown once */}
           {(rep.ruleId || rep.wcagCriterion) && (
             <details className="a11y-tech-details">
-              <summary>Technical details for your developer</summary>
+              <summary>The technical version</summary>
               <p>
-                <strong>What the scanner flagged:</strong> {rep.description}
+                <strong>What we found:</strong> {rep.description}
               </p>
               {rep.wcagCriterion && rep.wcagCriterion !== "N/A" && (
                 <p>

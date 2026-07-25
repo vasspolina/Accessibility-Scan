@@ -81,10 +81,10 @@ export function VisionSimulator({ pagePreview, url }: { pagePreview: string; url
 
   return (
     <section className="a11y-section a11y-sim">
-      <h3 className="a11y-section-title">See your page as your visitors do</h3>
+      <h3 className="a11y-section-title">Your page, through other eyes</h3>
       <p className="a11y-section-desc">
-        One man in twelve is colour blind. Switch between views to see what your page loses. These
-        are close approximations, not anyone's exact sight.
+        One man in twelve is colour blind. Switch between views and watch what your page loses.
+        Close approximations — nobody's sight is exactly this.
       </p>
 
       <div className="a11y-sim-controls" role="group" aria-label="Vision condition">

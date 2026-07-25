@@ -7,9 +7,9 @@ function scoreColor(score: number): string {
 }
 
 function scoreSummary(score: number): string {
-  if (score >= 90) return "Your site is in good shape — a few things worth polishing.";
-  if (score >= 70) return "Your site works for most people, but has some real gaps to close.";
-  return "Your site has significant barriers that are likely turning users away.";
+  if (score >= 90) return "Solid foundations. A few details left to sand down.";
+  if (score >= 70) return "Works for most people. Some doors still don't open.";
+  return "Real barriers here. Plenty of people won't get past them.";
 }
 
 export function ScoreGauge({
