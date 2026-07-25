@@ -734,6 +734,59 @@ async function collectDarkPatternsAcrossFrames(page: Page): Promise<DarkPatternS
   return merged;
 }
 
+// Captures a padded region of the viewport around an element, rather than the
+// element's own box. Used by the text-resize passes, where the element being
+// flagged is one whose text has been pushed out of its own bounds — so the box
+// alone is empty and the evidence lives in what surrounds it.
+//
+// Returns null rather than a blank image: a white rectangle presented as proof
+// of a problem is worse than no picture, the same rule the desktop and mobile
+// capture paths follow.
+const REGION_PADDING_PX = 48;
+
+async function captureRegionAround(page: Page, selector: string): Promise<string | null> {
+  try {
+    const locator = page.locator(selector).first();
+    if ((await locator.count()) === 0) return null;
+    await locator.scrollIntoViewIfNeeded({ timeout: 1_000 }).catch(() => {});
+
+    const box = await locator.boundingBox();
+    if (!box) return null;
+
+    const viewport = page.viewportSize();
+    if (!viewport) return null;
+
+    // Clamp to the viewport: boundingBox is viewport-relative after the
+    // scroll, and a clip outside those bounds fails.
+    const left = Math.max(0, Math.floor(box.x - REGION_PADDING_PX));
+    const top = Math.max(0, Math.floor(box.y - REGION_PADDING_PX));
+    const right = Math.min(viewport.width, Math.ceil(box.x + box.width + REGION_PADDING_PX));
+    const bottom = Math.min(viewport.height, Math.ceil(box.y + box.height + REGION_PADDING_PX));
+    const width = right - left;
+    const height = bottom - top;
+    if (width < 8 || height < 8) return null;
+
+    const raw = await page.screenshot({
+      type: "jpeg",
+      quality: 70,
+      clip: { x: left, y: top, width, height },
+      timeout: 3_000,
+    });
+    const resized = await sharp(raw)
+      .resize({ width: 640, height: 640, fit: "inside", withoutEnlargement: true })
+      .jpeg({ quality: 62 })
+      .toBuffer();
+
+    const stats = await sharp(resized).stats().catch(() => null);
+    const maxStdev = stats ? Math.max(...stats.channels.map((c) => c.stdev)) : 1;
+    if (maxStdev < BLANK_STDEV) return null;
+
+    return resized.toString("base64");
+  } catch {
+    return null;
+  }
+}
+
 // WCAG 1.4.4 (Resize Text) and 1.4.12 (Text Spacing) are both defined by what
 // happens when the reader changes something, so neither can be judged from
 // static markup — the only honest test is to apply the change and measure.
@@ -773,18 +826,15 @@ async function collectTextResizeSignals(page: Page): Promise<TextResizeSignals> 
       // report shows a single thumbnail, so capturing more is pure cost.
       const firstBroken = result.clipped.find((sel) => !baselineClipped.has(sel));
       if (firstBroken) {
-        const shot = await page
-          .locator(firstBroken)
-          .first()
-          .screenshot({ type: "jpeg", quality: 70, timeout: 2_000 })
-          .then((buf) =>
-            sharp(buf)
-              .resize({ width: 640, height: 640, fit: "inside", withoutEnlargement: true })
-              .jpeg({ quality: 62 })
-              .toBuffer()
-          )
-          .catch(() => null);
-        if (shot) result.shots = { [firstBroken]: shot.toString("base64") };
+        // Photograph a padded region around the element, not the element box.
+        //
+        // The box is exactly the wrong thing to capture here: the override has
+        // pushed the text outside it, so an element-only screenshot returns a
+        // blank white rectangle. That was shipping as "evidence" of clipping
+        // and showed nothing at all. The region around it is what makes the
+        // truncation legible.
+        const shot = await captureRegionAround(page, firstBroken);
+        if (shot) result.shots = { [firstBroken]: shot };
       }
 
       // Sideways scrolling belongs to the page, not to any element, so the
@@ -799,7 +849,11 @@ async function collectTextResizeSignals(page: Page): Promise<TextResizeSignals> 
               .toBuffer()
           )
           .catch(() => null);
-        if (viewportShot) result.viewportShot = viewportShot.toString("base64");
+        if (viewportShot) {
+          const vStats = await sharp(viewportShot).stats().catch(() => null);
+          const vMax = vStats ? Math.max(...vStats.channels.map((c) => c.stdev)) : 1;
+          if (vMax >= BLANK_STDEV) result.viewportShot = viewportShot.toString("base64");
+        }
       }
 
       await handle.evaluate((el) => (el as Element).remove()).catch(() => {});
