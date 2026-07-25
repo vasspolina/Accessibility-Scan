@@ -39,24 +39,26 @@ export function ConformanceView({ conformance }: { conformance: ConformanceSumma
         <div className="a11y-conf-tile a11y-conf-tile-fail">
           <span className="a11y-conf-num">{conformance.failed}</span>
           <span className="a11y-conf-cap">
-            failing
-            {conformance.failed > 0 && (
-              <em>
-                {conformance.failedByLevel.A} at Level A, {conformance.failedByLevel.AA} at AA
-              </em>
-            )}
+            <strong>we found problems</strong>
+            <em>
+              {conformance.failed > 0
+                ? `${conformance.failedByLevel.A} at level A, ${conformance.failedByLevel.AA} at AA`
+                : "on this page"}
+            </em>
           </span>
         </div>
         <div className="a11y-conf-tile">
           <span className="a11y-conf-num">{conformance.noIssuesFound}</span>
           <span className="a11y-conf-cap">
-            nothing found<em>we could check these</em>
+            <strong>we checked, found nothing</strong>
+            <em>still worth a human look</em>
           </span>
         </div>
         <div className="a11y-conf-tile">
           <span className="a11y-conf-num">{conformance.needsReview}</span>
           <span className="a11y-conf-cap">
-            need a person<em>software can't judge these</em>
+            <strong>we couldn't check</strong>
+            <em>only a person can judge these</em>
           </span>
         </div>
       </div>

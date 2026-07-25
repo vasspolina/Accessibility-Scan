@@ -762,6 +762,11 @@
   color: var(--a11y-muted, #57606a);
 }
 
+.a11y-conf-cap strong {
+  display: block;
+  font-weight: 600;
+}
+
 .a11y-conf-cap em {
   display: block;
   font-style: normal;

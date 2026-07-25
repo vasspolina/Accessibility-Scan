@@ -1002,11 +1002,21 @@ export class SiteBlockedError extends Error {
   }
 }
 
-// Block pages that come back with HTTP 200 anyway (some WAFs do) — matched
-// against the page title. Deliberately specific phrases, not generic words,
-// so a legitimate article *about* CAPTCHAs never matches.
-const BLOCK_PAGE_TITLES =
-  /access denied|attention required|just a moment|pardon our interruption|request blocked|are you a robot|verify you are human/i;
+// Block and challenge pages that come back with HTTP 200 anyway, which most
+// WAFs do. Deliberately specific phrases rather than generic words, so a
+// legitimate article *about* CAPTCHAs never matches.
+//
+// Checked against the body text as well as the title, because a challenge
+// page often keeps the site's ordinary title while the body says "Let's
+// confirm you are human" — that combination reported a museum site as having
+// zero failures when the scanner had never seen the site.
+const BLOCK_PAGE_PATTERNS =
+  /access denied|attention required|just a moment|pardon our interruption|request blocked|are you a robot|(?:verify|confirm|checking) (?:that )?you(?:'re| are)? (?:a )?human|checking your browser|enable javascript and cookies|additional security check|ddos protection|verifying you are human/i;
+
+// A challenge page is characteristically tiny: a line of text, a widget, no
+// navigation. Requiring that alongside the wording keeps a real page that
+// happens to discuss bot protection from being mistaken for one.
+const CHALLENGE_MAX_TEXT_LENGTH = 1200;
 
 export async function renderAndScan(
   url: string,
@@ -1078,8 +1088,19 @@ export async function renderAndScan(
         throw new SiteBlockedError(host, `the page returned HTTP ${status}`);
       }
       const pageTitle = await page.title().catch(() => "");
-      if (BLOCK_PAGE_TITLES.test(pageTitle)) {
+      if (BLOCK_PAGE_PATTERNS.test(pageTitle)) {
         throw new SiteBlockedError(host, `it served a "${pageTitle.slice(0, 60)}" page instead of content`);
+      }
+
+      // The title can look ordinary while the body is a challenge. Only treat
+      // it as a block when the page is also nearly empty, so an article about
+      // CAPTCHAs stays scannable.
+      const bodyText = await page
+        .evaluate(() => (document.body?.innerText ?? "").replace(/\s+/g, " ").trim())
+        .catch(() => "");
+      if (bodyText.length <= CHALLENGE_MAX_TEXT_LENGTH && BLOCK_PAGE_PATTERNS.test(bodyText)) {
+        const phrase = bodyText.match(BLOCK_PAGE_PATTERNS)?.[0] ?? "a security check";
+        throw new SiteBlockedError(host, `it served a "${phrase}" check instead of the page`);
       }
 
       await page.addScriptTag({ path: require.resolve("axe-core") });
