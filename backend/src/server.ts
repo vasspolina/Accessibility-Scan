@@ -11,6 +11,7 @@ import { logger } from "./utils/logger.js";
 import { errorHandler } from "./middleware/errorHandler.js";
 import { healthRoutes } from "./routes/health.js";
 import { scanRoutes } from "./routes/scan.js";
+import { auditRoutes } from "./routes/audit.js";
 import { shutdownBrowserPool } from "./services/render/browserPool.js";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
@@ -65,6 +66,7 @@ app.setErrorHandler(errorHandler);
 
 await app.register(healthRoutes);
 await app.register(scanRoutes);
+await app.register(auditRoutes);
 
 async function shutdown(signal: string) {
   logger.info({ signal }, "Shutting down");

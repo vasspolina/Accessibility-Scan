@@ -70,6 +70,11 @@ export interface DomSignals {
     hasPauseControls: boolean;
   }>;
   respectsReducedMotion: boolean;
+  // Every same-document link with its text — used by the crawler to pick
+  // which pages to audit. Separate from interactiveElements, which is capped
+  // at 60 and mixes in buttons: a nav-heavy page would truncate the link list
+  // before the pages worth auditing appeared in it.
+  pageLinks: Array<{ href: string; text: string }>;
   // Modal/popup dialogs currently on the page (cookie banners, newsletter
   // pop-ups, age gates, etc.) — either explicitly marked (role="dialog",
   // <dialog>) or heuristically detected as a viewport-covering overlay.
@@ -401,6 +406,14 @@ function extractDomSignalsInPage(): DomSignals {
       };
     });
 
+  const pageLinks = Array.from(document.querySelectorAll<HTMLAnchorElement>("a[href]"))
+    .slice(0, 300)
+    .map((a) => ({
+      href: a.getAttribute("href") ?? "",
+      text: (a.textContent ?? "").replace(/\s+/g, " ").trim().slice(0, 80),
+    }))
+    .filter((l) => l.href && !l.href.startsWith("#") && !/^(javascript|mailto|tel):/i.test(l.href));
+
   return {
     pageTitle: document.title,
     headingTree,
@@ -411,6 +424,7 @@ function extractDomSignalsInPage(): DomSignals {
     focusOrderSample,
     animatedElements,
     respectsReducedMotion,
+    pageLinks,
     dialogs,
   };
 }
