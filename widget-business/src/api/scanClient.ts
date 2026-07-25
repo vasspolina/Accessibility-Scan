@@ -106,6 +106,40 @@ export interface AccessibilityReport {
   };
 }
 
+// One page's line in a site audit.
+export interface PageSummary {
+  url: string;
+  label: string;
+  score: number;
+  findingCount: number;
+  // Present when the page couldn't be scanned — never treat as a clean page.
+  error?: string;
+}
+
+// An issue found on every scanned page: almost always a template problem, so
+// one fix covers the whole site.
+export interface SiteWideIssue {
+  ruleId: string;
+  title: string;
+  severity: Severity;
+  pageCount: number;
+  totalOccurrences: number;
+  wcagCriterion?: string;
+  helpUrl?: string;
+}
+
+export interface SiteAudit {
+  entryUrl: string;
+  scannedAt: string;
+  pagesScanned: number;
+  pagesFailed: number;
+  averageScore: number;
+  worstPage?: PageSummary;
+  pages: PageSummary[];
+  siteWide: SiteWideIssue[];
+  conformance: ConformanceSummary;
+}
+
 export class ScanError extends Error {}
 
 const delay = (ms: number) => new Promise((r) => setTimeout(r, ms));
@@ -157,4 +191,34 @@ export async function scanUrl(
   }
 
   throw new ScanError("Could not reach the scanner service. Please try again shortly.");
+}
+
+export async function auditSite(
+  apiBase: string,
+  url: string,
+  maxPages: number
+): Promise<SiteAudit> {
+  const endpoint = `${apiBase.replace(/\/$/, "")}/api/audit`;
+  const body = JSON.stringify({ url, maxPages });
+
+  // No retry loop here, unlike scanUrl: an audit is minutes of server work,
+  // so silently firing a second one on a blip would be expensive and could
+  // double-scan the site.
+  let response: Response;
+  try {
+    response = await fetch(endpoint, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body,
+    });
+  } catch {
+    throw new ScanError("Could not reach the scanner service. Please try again shortly.");
+  }
+
+  if (!response.ok) {
+    const errBody = await response.json().catch(() => ({}) as { error?: string });
+    throw new ScanError(errBody.error ?? `Audit failed with status ${response.status}`);
+  }
+
+  return response.json();
 }

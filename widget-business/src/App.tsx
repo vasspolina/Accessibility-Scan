@@ -1,20 +1,29 @@
 import { useMemo, useState } from "react";
-import { UrlForm } from "./components/UrlForm";
+import { UrlForm, type ScanMode } from "./components/UrlForm";
 import { ScoreGauge } from "./components/ScoreGauge";
 import { ReportSection } from "./components/ReportSection";
 import { PrincipleGroup } from "./components/PrincipleGroup";
 import { ScreenReaderPreview } from "./components/ScreenReaderPreview";
 import { ConformanceView } from "./components/ConformanceView";
 import { VisionSimulator } from "./components/VisionSimulator";
+import { SiteAuditView } from "./components/SiteAuditView";
 import { WCAG_LINK } from "./lib/wcagPlain";
-import { scanUrl, ScanError, type AccessibilityReport } from "./api/scanClient";
+import {
+  scanUrl,
+  auditSite,
+  ScanError,
+  type AccessibilityReport,
+  type SiteAudit,
+} from "./api/scanClient";
 
 export function App({ apiBase }: { apiBase: string }) {
   const [report, setReport] = useState<AccessibilityReport | null>(null);
+  const [audit, setAudit] = useState<SiteAudit | null>(null);
   const [loading, setLoading] = useState(false);
   // Tracked so the wait message can be honest about which path is running —
   // the AI review roughly triples the time.
   const [aiRequested, setAiRequested] = useState(false);
+  const [mode, setMode] = useState<ScanMode>("page");
   const [error, setError] = useState<string | null>(null);
 
   const findingsByCategory = useMemo(() => {
@@ -26,14 +35,24 @@ export function App({ apiBase }: { apiBase: string }) {
     };
   }, [report]);
 
-  async function handleScan(url: string, includeAiReview: boolean) {
+  async function handleScan(
+    url: string,
+    includeAiReview: boolean,
+    mode: ScanMode,
+    maxPages: number
+  ) {
     setAiRequested(includeAiReview);
+    setMode(mode);
     setLoading(true);
     setError(null);
     setReport(null);
+    setAudit(null);
     try {
-      const result = await scanUrl(apiBase, url, includeAiReview);
-      setReport(result);
+      if (mode === "site") {
+        setAudit(await auditSite(apiBase, url, maxPages));
+      } else {
+        setReport(await scanUrl(apiBase, url, includeAiReview));
+      }
     } catch (err) {
       setError(err instanceof ScanError ? err.message : "Something went wrong. Please try again.");
     } finally {
@@ -62,11 +81,15 @@ export function App({ apiBase }: { apiBase: string }) {
 
       {loading && (
         <p className="a11y-loading" role="status">
-          {aiRequested
-            ? "Checking your site, including the AI review — this can take up to a minute…"
-            : "Checking your site — this usually takes about 15 seconds…"}
+          {mode === "site"
+            ? "Auditing your site — checking each page in turn, this takes a few minutes…"
+            : aiRequested
+              ? "Checking your site, including the AI review — this can take up to a minute…"
+              : "Checking your site — this usually takes about 15 seconds…"}
         </p>
       )}
+
+      {audit && <SiteAuditView audit={audit} />}
 
       {report && (
         <div className="a11y-report">

@@ -916,3 +916,117 @@
   font-size: 12px;
   color: var(--a11y-muted, #57606a);
 }
+
+/* ---- Scan mode + site audit -------------------------------------------- */
+
+.a11y-mode {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 14px;
+}
+
+.a11y-mode-btn {
+  flex: 1 1 180px;
+  font: inherit;
+  font-size: 14px;
+  font-weight: 600;
+  text-align: left;
+  padding: 10px 14px;
+  border: 1px solid var(--a11y-border, #d0d7de);
+  border-radius: 10px;
+  background: var(--a11y-bg, #ffffff);
+  color: var(--a11y-text, #1f2328);
+  cursor: pointer;
+}
+
+.a11y-mode-btn em {
+  display: block;
+  font-style: normal;
+  font-size: 12px;
+  font-weight: 400;
+  color: var(--a11y-muted, #57606a);
+}
+
+.a11y-mode-btn-active {
+  border-color: var(--a11y-accent, #0969da);
+  background: var(--a11y-accent, #0969da);
+  color: #ffffff;
+}
+
+.a11y-mode-btn-active em {
+  color: rgba(255, 255, 255, 0.85);
+}
+
+.a11y-ai-toggle select {
+  font: inherit;
+  font-size: 14px;
+  padding: 6px 10px;
+  border: 1px solid var(--a11y-border, #d0d7de);
+  border-radius: 8px;
+  background: var(--a11y-bg, #ffffff);
+  color: var(--a11y-text, #1f2328);
+}
+
+.a11y-audit-head {
+  border-left-color: var(--a11y-accent, #0969da);
+}
+
+.a11y-audit-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.a11y-audit-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 11px 13px;
+  border: 1px solid var(--a11y-border, #d0d7de);
+  border-radius: 10px;
+  background: var(--a11y-bg, #ffffff);
+  font-size: 15px;
+}
+
+.a11y-audit-body {
+  flex: 1;
+  min-width: 0;
+}
+
+.a11y-audit-count {
+  flex-shrink: 0;
+  text-align: right;
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--a11y-muted, #57606a);
+}
+
+.a11y-audit-count em {
+  display: block;
+  font-style: normal;
+  font-size: 11px;
+  font-weight: 400;
+}
+
+.a11y-audit-score {
+  flex-shrink: 0;
+  min-width: 40px;
+  font-size: 20px;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+.a11y-audit-score-err {
+  color: var(--a11y-muted, #57606a);
+}
+
+.a11y-audit-err {
+  display: block;
+  margin-top: 3px;
+  font-size: 13px;
+  color: var(--a11y-score-bad, #cf222e);
+}
