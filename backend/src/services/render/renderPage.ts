@@ -669,6 +669,18 @@ async function captureElementScreenshots(
 
       const box = await locator.boundingBox();
       if (!box || box.width < 2 || box.height < 2) continue;
+      // Laid out is not the same as visible. An element sitting behind a
+      // full-page overlay reports a perfectly good box, and screenshotting it
+      // returns the overlay's pixels — a thumbnail of the wrong thing, which
+      // is worse than none in a report whose whole job is showing proof.
+      //
+      // Measured before adding: on a site whose real content sits in an
+      // overlay above the document, 33 of 34 flagged elements were covered, so
+      // nearly every thumbnail in that report pictured something else. On two
+      // ordinary sites nothing was covered and nothing was lost. This also
+      // protects the alt-text suggester downstream, which reads these pixels —
+      // a covered <img> would otherwise get the overlay described instead.
+      if (!(await isActuallyOnScreen(locator))) continue;
       const raw = await locator.screenshot({ type: "jpeg", quality: 72, timeout: 1_500 });
       const resized = await sharp(raw)
         .resize({ width: 480, height: 480, fit: "inside", withoutEnlargement: true })
@@ -1116,6 +1128,9 @@ async function captureMobileElementScreenshots(
       await locator.scrollIntoViewIfNeeded({ timeout: 800 }).catch(() => {});
       const box = await locator.boundingBox();
       if (!box || box.width < 2 || box.height < 2) continue;
+      // Same reason as the desktop path: a covered element photographs as
+      // whatever is on top of it.
+      if (!(await isActuallyOnScreen(locator))) continue;
       const raw = await locator.screenshot({ type: "jpeg", quality: 72, timeout: 1_500 });
       const resized = await sharp(raw)
         .resize({ width: 480, height: 480, fit: "inside", withoutEnlargement: true })
