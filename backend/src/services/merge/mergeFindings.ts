@@ -132,11 +132,65 @@ export function aiToFindings(aiFindings: AiFinding[]): AccessibilityFinding[] {
   }));
 }
 
+// axe rules that are precisely about heading structure. An exact set rather
+// than a pattern: keying off WCAG 1.3.1 would sweep in tables, lists and form
+// labels, which are a different problem with a different severity.
+const HEADING_RULE_IDS = new Set([
+  "empty-heading",
+  "heading-order",
+  "p-as-heading",
+  "page-has-heading-one",
+]);
+
+// A table's column/row headers are also called "headings" but are a separate
+// concern — they don't carry page navigation, so they must not be caught by
+// the text match below.
+const TABLE_HEADING = /\b(table|column|row)\s+heading/i;
+const HEADING_WORD = /\bheadings?\b/i;
+
+function isHeadingStructureFinding(finding: AccessibilityFinding): boolean {
+  if (finding.category !== "accessibility") return false;
+  if (finding.ruleId && HEADING_RULE_IDS.has(finding.ruleId)) return true;
+  // AI findings carry no rule id, so fall back to what they say.
+  if (finding.source !== "ai-review") return false;
+  const text = `${finding.title ?? ""} ${finding.description}`;
+  return HEADING_WORD.test(text) && !TABLE_HEADING.test(text);
+}
+
+/**
+ * Raises heading-structure findings to at least "serious".
+ *
+ * 71.6% of screen-reader users navigate a long page by its headings first —
+ * 78% among advanced users — against 13.6% who use find and 4.8% who use links
+ * (WebAIM Screen Reader User Survey #10). A broken heading structure therefore
+ * removes the primary means of navigation for most of these users, which is
+ * not a moderate problem.
+ *
+ * The system prompt already says this, but a prompt is guidance rather than a
+ * guarantee: live runs came back rating heading findings "moderate" anyway.
+ * Enforcing it here makes the weighting deterministic, and applies it to axe
+ * findings too (axe rates heading-order "moderate" by its own scale), so the
+ * two sources can't disagree about the same problem.
+ *
+ * Only ever raises severity. A finding the AI judged critical stays critical.
+ *
+ * Exported for testing.
+ */
+export function applyHeadingSeverityFloor(
+  findings: AccessibilityFinding[]
+): AccessibilityFinding[] {
+  return findings.map((finding) => {
+    if (!isHeadingStructureFinding(finding)) return finding;
+    if (finding.severity === "critical" || finding.severity === "serious") return finding;
+    return { ...finding, severity: "serious" as const };
+  });
+}
+
 export function mergeFindings(
   automated: AccessibilityFinding[],
   aiReview: AccessibilityFinding[]
 ): AccessibilityFinding[] {
   // v1: concatenate. Dedup between layers is primarily handled upstream by
   // instructing Claude to skip axe-covered selectors (see buildPrompt.ts).
-  return [...automated, ...aiReview];
+  return applyHeadingSeverityFloor([...automated, ...aiReview]);
 }
