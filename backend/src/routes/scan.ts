@@ -2,6 +2,7 @@ import type { FastifyInstance } from "fastify";
 import { z } from "zod";
 import { logger } from "../utils/logger.js";
 import { UnsafeUrlError } from "../middleware/ssrfGuard.js";
+import { TimeoutError } from "../utils/timeout.js";
 import { RebindingDetectedError, SiteBlockedError } from "../services/render/renderPage.js";
 import { AuthError } from "../services/auth/authenticate.js";
 import { scanUrlToReport } from "../services/scanPipeline.js";
@@ -92,6 +93,27 @@ export async function scanRoutes(app: FastifyInstance) {
         // error, since this isn’t the user’s mistake to fix.
         logger.info({ url: parsedBody.data.url }, "Target site blocked the scanner");
         return reply.status(422).send({ error: err.message, blocked: true });
+      }
+      // Two unrelated classes end up here. Ours comes from the withTimeout
+      // wrapper around the whole render; Playwright throws its own, with the
+      // same name, when a single operation overruns. Checking only for ours
+      // let a Playwright timeout fall through to the generic 502, so the
+      // reader got "Could not load or scan the page" for what was plainly a
+      // slow page — and the widget then retried it twice.
+      const isTimeout =
+        err instanceof TimeoutError || (err as { name?: string } | null)?.name === "TimeoutError";
+      if (isTimeout) {
+        // Distinct from a generic failure on purpose. "Could not load or scan
+        // the page" tells the reader nothing about what to do; "it took too
+        // long" tells them it is worth another try. The timedOut flag also
+        // stops the widget retrying, which used to spend three full render
+        // budgets arriving at the same answer.
+        logger.info({ url: parsedBody.data.url }, "Render timed out");
+        return reply.status(504).send({
+          error:
+            "This page took too long to load, so the check stopped. Very heavy pages sometimes need a second attempt.",
+          timedOut: true,
+        });
       }
       logger.warn({ err, url: parsedBody.data.url }, "Scan failed");
       return reply.status(502).send({

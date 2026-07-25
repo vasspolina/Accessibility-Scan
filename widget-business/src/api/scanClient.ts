@@ -196,8 +196,19 @@ export async function scanUrl(
     }
 
     if (TRANSIENT_STATUSES.has(response.status) && attempt < MAX_ATTEMPTS) {
-      await delay(1500 * attempt);
-      continue;
+      // These statuses are retried because they usually mean the backend was
+      // briefly restarting. A render timeout arrives as 504 and is nothing of
+      // the sort: it's a real answer about this page, and retrying it spends
+      // another full render budget to fail exactly the same way. Three
+      // attempts meant a slow page took three times as long to say so.
+      const peek = await response
+        .clone()
+        .json()
+        .catch(() => ({}) as { timedOut?: boolean });
+      if (!peek.timedOut) {
+        await delay(1500 * attempt);
+        continue;
+      }
     }
 
     if (!response.ok) {

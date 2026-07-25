@@ -1434,7 +1434,15 @@ export async function renderAndScan(
       await page.addScriptTag({ path: require.resolve("axe-core") });
       const axe = (await page.evaluate(() => (window as unknown as { axe: { run: () => Promise<unknown> } }).axe.run())) as AxeRunResult;
 
-      const ariaSnapshot = await page.locator("body").ariaSnapshot();
+      // Supplementary context for the AI layer, not something the report
+      // depends on — so it must never be able to fail a scan. It normally
+      // costs tens of milliseconds, but on a heavy page on a loaded container
+      // it hit Playwright's 30s default and took the whole scan of moma.org
+      // down with it. Short budget, and an empty snapshot on failure.
+      const ariaSnapshot = await page
+        .locator("body")
+        .ariaSnapshot({ timeout: 8_000 })
+        .catch(() => "");
       const domSignals = await page.evaluate<DomSignals>(toBrowserScript(extractDomSignalsInPage));
       const typographyBlocks = await page
         .evaluate<TypographyBlock[]>(toBrowserScript(collectTypographyBlocksInPage))

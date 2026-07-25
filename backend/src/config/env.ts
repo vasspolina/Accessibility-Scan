@@ -14,7 +14,7 @@ const envSchema = z.object({
   ALLOWED_ORIGINS: z.string().default("*"),
   RATE_LIMIT_MAX: z.coerce.number().default(5),
   RATE_LIMIT_WINDOW_MS: z.coerce.number().default(60_000),
-  RENDER_TIMEOUT_MS: z.coerce.number().default(20_000),
+  RENDER_TIMEOUT_MS: z.coerce.number().default(40_000),
   // The page review reads a screenshot plus the page context and writes up to
   // 4096 tokens of findings. 20s was enough for a trivial page but timed out
   // on any real content-rich one, so the layer silently produced nothing
