@@ -24,7 +24,7 @@ export function SiteAuditView({ audit }: { audit: SiteAudit }) {
         <p className="a11y-section-desc">
           {audit.pagesScanned} page{audit.pagesScanned === 1 ? "" : "s"} checked
           {audit.pagesFailed > 0 && `, ${audit.pagesFailed} couldn't be reached`}. We pick the pages
-          that matter most — contact, booking and shop before blog posts.
+          that matter most: contact, booking and shop before blog posts.
         </p>
 
         <div className="a11y-conf-tiles">
@@ -92,7 +92,7 @@ export function SiteAuditView({ audit }: { audit: SiteAudit }) {
           {audit.pages.map((page) => (
             <li key={page.url} className="a11y-audit-row">
               <span className={`a11y-audit-score${page.error ? " a11y-audit-score-err" : ""}`}>
-                {page.error ? "—" : page.score}
+                {page.error ? "n/a" : page.score}
               </span>
               <span className="a11y-audit-body">
                 <strong>{page.label}</strong>

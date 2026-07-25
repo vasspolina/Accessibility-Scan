@@ -36,7 +36,7 @@ const CONDITIONS: Condition[] = [
     id: "deuteranopia",
     label: "Deuteranopia",
     prevalence: "~6% of men",
-    note: "Reduced sensitivity to green — the most common form of colour blindness. Red and green become hard to tell apart.",
+    note: "Reduced sensitivity to green. The most common form of colour blindness. Red and green become hard to tell apart.",
     matrix: "0.367 0.861 -0.228 0 0  0.280 0.673 0.047 0 0  -0.012 0.043 0.969 0 0  0 0 0 1 0",
   },
   {
@@ -64,7 +64,7 @@ const CONDITIONS: Condition[] = [
     id: "lowvision",
     label: "Low vision",
     prevalence: "~1 in 30 people",
-    note: "Reduced acuity. Small text and thin type stop resolving — far more common than total blindness.",
+    note: "Reduced acuity. Small text and thin type stop resolving. Far more common than total blindness.",
     cssFilter: "blur(2.2px)",
   },
   {
@@ -84,7 +84,7 @@ export function VisionSimulator({ pagePreview, url }: { pagePreview: string; url
       <h3 className="a11y-section-title">Your page, through other eyes</h3>
       <p className="a11y-section-desc">
         One man in twelve is colour blind. Switch between views and watch what your page loses.
-        Close approximations — nobody's sight is exactly this.
+        Close approximations. Nobody's sight is exactly this.
       </p>
 
       <div className="a11y-sim-controls" role="group" aria-label="Vision condition">

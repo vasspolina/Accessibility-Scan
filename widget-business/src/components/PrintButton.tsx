@@ -46,7 +46,7 @@ export function PrintButton({ label = "Save as PDF" }: { label?: string }) {
         {label}
       </button>
       <span className="a11y-sr-status">
-        Opens your browser's print dialog — choose &ldquo;Save as PDF&rdquo; as the destination.
+        Opens your browser's print dialog. Choose &ldquo;Save as PDF&rdquo; as the destination.
       </span>
     </div>
   );

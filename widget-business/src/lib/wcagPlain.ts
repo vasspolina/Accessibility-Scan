@@ -22,13 +22,13 @@ const PRINCIPLES: Record<string, PrincipleInfo> = {
     principle: "Perceivable",
     plainTitle: "Can people see and hear it?",
     plainDescription:
-      "Anything people can't see or hear — text too faint to read, images with nothing written about them, video with no captions.",
+      "Anything people can't see or hear. Text too faint to read, images with nothing written about them, video with no captions.",
   },
   "2": {
     principle: "Operable",
     plainTitle: "Can people use it?",
     plainDescription:
-      "Whether someone can actually get through your site — with a keyboard instead of a mouse, on a phone, or without fine control of their hands.",
+      "Whether someone can actually get through your site. With a keyboard instead of a mouse, on a phone, or without fine control of their hands.",
   },
   "3": {
     principle: "Understandable",
@@ -80,7 +80,7 @@ export const PLAIN_RULE_EXPLANATIONS: Record<string, PlainRule> = {
   "image-alt": {
     plain: "Some images have no text description behind them.",
     impact:
-      "People using screen readers hear nothing for these images, and search engines can't tell what they show — costing you both accessibility and SEO.",
+      "People using screen readers hear nothing for these images, and search engines can't tell what they show. Costing you both accessibility and SEO.",
   },
   "input-image-alt": {
     plain: "An image used as a button has no text description.",
@@ -98,7 +98,7 @@ export const PLAIN_RULE_EXPLANATIONS: Record<string, PlainRule> = {
   label: {
     plain: "Some form fields have no label.",
     impact:
-      "People using screen readers don't know what goes in each box, so forms get abandoned — checkout included.",
+      "People using screen readers don't know what goes in each box, so forms get abandoned, checkout included.",
   },
   "select-name": {
     plain: "A dropdown menu has no label.",
@@ -185,7 +185,7 @@ export const PLAIN_RULE_EXPLANATIONS: Record<string, PlainRule> = {
       "Plenty of people never touch a mouse. Without a visible highlight they're navigating blind, and they give up.",
   },
   "keyboard-focus-trap": {
-    plain: "Keyboard focus gets stuck in one spot — you can't Tab past it.",
+    plain: "Keyboard focus gets stuck in one spot. You can't Tab past it.",
     impact:
       "A keyboard user who reaches this point cannot go further. One of the worst failures a site can have.",
   },
@@ -200,7 +200,7 @@ export const PLAIN_RULE_EXPLANATIONS: Record<string, PlainRule> = {
   "component-input-type": {
     plain: "Email and phone fields use a plain text box instead of the proper input type.",
     impact:
-      "On phones, visitors get the generic keyboard instead of one with \"@\" or a number pad — more taps, more mistakes, more abandoned forms.",
+      "On phones, visitors get the generic keyboard instead of one with \"@\" or a number pad. More taps, more mistakes, more abandoned forms.",
   },
   "component-required-cue": {
     plain: "Required fields are marked only in the code, not visibly in the label.",
@@ -210,7 +210,7 @@ export const PLAIN_RULE_EXPLANATIONS: Record<string, PlainRule> = {
   "component-submit-clarity": {
     plain: "The form has no clearly-labelled submit button.",
     impact:
-      "A button that just says \"Go\", shows only an icon, or is missing entirely leaves people unsure how to finish — so they don't.",
+      "A button that just says \"Go\", shows only an icon, or is missing entirely leaves people unsure how to finish, so they don't.",
   },
   "component-nav-labels": {
     plain: "Your page has several menus, but they aren't individually labelled.",
@@ -232,7 +232,7 @@ export const PLAIN_RULE_EXPLANATIONS: Record<string, PlainRule> = {
   "mobile-tap-target": {
     plain: "Some buttons or links are too small to tap reliably on a phone.",
     impact:
-      "Mis-taps and frustration — worst for bigger fingers, tremors, or shaky hands. It costs you sales.",
+      "Mis-taps and frustration. Worst for bigger fingers, tremors, or shaky hands. It costs you sales.",
   },
 
   // Text resizing — WCAG 1.4.4 / 1.4.12, measured by actually applying the
@@ -240,12 +240,12 @@ export const PLAIN_RULE_EXPLANATIONS: Record<string, PlainRule> = {
   "text-spacing-clipped": {
     plain: "Text gets cut off when a reader increases spacing.",
     impact:
-      "Many dyslexic readers widen spacing just to read. Here the words don't reflow — they disappear behind a fixed box.",
+      "Many dyslexic readers widen spacing just to read. Here the words don't reflow. They disappear behind a fixed box.",
   },
   "text-zoom-clipped": {
     plain: "Text gets cut off at larger font sizes.",
     impact:
-      "Turning up font size is the commonest fix for weak eyesight — far more common than screen readers. Your boxes stay put, so the words vanish.",
+      "Turning up font size is the commonest fix for weak eyesight. Far more common than screen readers. Your boxes stay put, so the words vanish.",
   },
   "text-zoom-horizontal-scroll": {
     plain: "Enlarging text makes the page scroll sideways.",
@@ -276,12 +276,12 @@ export const PLAIN_RULE_EXPLANATIONS: Record<string, PlainRule> = {
       "\"No thanks, I don't want to save money\" is memorable for the wrong reasons. It reads as manipulation.",
   },
   "dark-fake-scarcity": {
-    plain: "The page claims limited stock or high demand — worth verifying.",
+    plain: "The page claims limited stock or high demand, worth verifying.",
     impact:
       "Regulators pursue fake scarcity. Shoppers have learned to distrust it. Invented numbers cost more sales than they win.",
   },
   "dark-fake-urgency": {
-    plain: "The page applies time pressure — worth verifying it's real.",
+    plain: "The page applies time pressure. Worth verifying it's real.",
     impact:
       "Countdowns that reset on reload are a deceptive practice. Once noticed, nothing else you claim is believed.",
   },
@@ -290,7 +290,7 @@ export const PLAIN_RULE_EXPLANATIONS: Record<string, PlainRule> = {
   "dialog-close-unlabeled": {
     plain: "A pop-up's close button is just an \"×\" with no readable label.",
     impact:
-      "People using screen readers hear only \"button\" and can't tell how to close the pop-up — it traps them, and many will simply leave your site.",
+      "People using screen readers hear only \"button\" and can't tell how to close the pop-up. It traps them, and many will simply leave your site.",
   },
   "dialog-no-close": {
     plain: "A pop-up appears to have no obvious close button.",
@@ -305,7 +305,7 @@ export const PLAIN_RULE_EXPLANATIONS: Record<string, PlainRule> = {
   "dialog-missing-name": {
     plain: "A pop-up dialog has no name describing what it's for.",
     impact:
-      "When it opens, a screen reader just says \"dialog\" — the visitor has no idea what it's asking or why.",
+      "When it opens, a screen reader just says \"dialog\". The visitor has no idea what it's asking or why.",
   },
 
   // Raw-HTML markup validation.
@@ -346,7 +346,7 @@ export const PLAIN_RULE_EXPLANATIONS: Record<string, PlainRule> = {
   },
   "typo-negative-letterspacing": {
     plain: "Letters are squeezed so close together they can touch.",
-    impact: "Cramped letters blur into one another — especially at small sizes or for readers with low vision.",
+    impact: "Cramped letters blur into one another. Especially at small sizes or for readers with low vision.",
   },
   "typo-line-length-long": {
     plain: "Lines of text run too long across the page.",
@@ -385,7 +385,7 @@ export const PLAIN_RULE_EXPLANATIONS: Record<string, PlainRule> = {
   "typo-italic-body": {
     plain: "Whole passages are set in italics.",
     impact:
-      "Slanted letters get hard past a few words — a real barrier with dyslexia or weak eyesight.",
+      "Slanted letters get hard past a few words. A real barrier with dyslexia or weak eyesight.",
   },
   "typo-allcaps-block": {
     plain: "A long passage is set in ALL CAPITALS.",
@@ -395,7 +395,7 @@ export const PLAIN_RULE_EXPLANATIONS: Record<string, PlainRule> = {
   "typo-thin-weight": {
     plain: "Body text is set in a very thin (hairline) weight.",
     impact:
-      "Thin strokes fade on cheap screens, in sunlight, and for weak eyesight — even when contrast passes.",
+      "Thin strokes fade on cheap screens, in sunlight, and for weak eyesight. Even when contrast passes.",
   },
 };
 
@@ -412,32 +412,32 @@ export function plainForRule(ruleId: string | undefined): PlainRule | undefined 
 // and fall back to their own suggestedFix.
 const PLAIN_RULE_FIXES: Record<string, string> = {
   "color-contrast":
-    "Darken the text or lighten its background until they contrast strongly — aim for a 4.5:1 ratio for normal text, 3:1 for large text.",
+    "Darken the text or lighten its background until they contrast strongly. Aim for a 4.5:1 ratio for normal text, 3:1 for large text.",
   "image-alt":
     'Add an alt attribute to each image describing what it shows. Use empty alt (alt="") only for purely decorative images.',
   "input-image-alt": 'Add an alt attribute to the image button describing its action (e.g. alt="Search").',
   "link-name":
-    "Give each link readable text — visible text inside the link, or an aria-label describing where it goes.",
+    "Give each link readable text. Visible text inside the link, or an aria-label describing where it goes.",
   "button-name":
-    "Give each button a clear label — visible text inside it, or an aria-label describing what it does.",
+    "Give each button a clear label. Visible text inside it, or an aria-label describing what it does.",
   label: "Connect a visible <label> to each field (the label's for matches the field's id), or add an aria-label.",
   "select-name": "Add a <label> tied to the dropdown, or an aria-label describing what it selects.",
   "document-title": "Add a <title> in the page's <head> that describes the page.",
   "html-has-lang": 'Add a lang attribute to the <html> tag (e.g. <html lang="en">).',
   "html-lang-valid": 'Set the <html> lang attribute to a valid language code (e.g. "en", "de", "fr").',
-  "heading-order": "Use headings in order without skipping levels — don't jump from <h2> straight to <h4>.",
+  "heading-order": "Use headings in order without skipping levels. Don't jump from <h2> straight to <h4>.",
   "page-has-heading-one": "Add one <h1> near the top that states what the page is about.",
   "empty-heading": "Put text in the heading, or remove the empty heading tag.",
-  "link-in-text-block": "Give in-text links a second visual cue besides colour — usually an underline.",
+  "link-in-text-block": "Give in-text links a second visual cue besides colour, usually an underline.",
   "meta-viewport": "Remove user-scalable=no and any maximum-scale limit from the viewport meta tag so people can zoom.",
   "frame-title": 'Add a title attribute to each <iframe> describing its content (e.g. title="Location map").',
-  "duplicate-id-active": "Make every id on the page unique — no two elements should share the same id.",
+  "duplicate-id-active": "Make every id on the page unique. No two elements should share the same id.",
   list: "Wrap the items in a proper <ul> or <ol>, with only <li> as direct children.",
   listitem: "Put each <li> inside a <ul> or <ol> parent.",
-  "aria-required-attr": "Add the ARIA attributes this component's role requires — see the Learn more link for the exact set.",
+  "aria-required-attr": "Add the ARIA attributes this component's role requires. See the Learn more link for the exact set.",
   "aria-hidden-focus":
     'Remove aria-hidden from focusable elements, or make them unfocusable (tabindex="-1") so hidden content can\'t be tabbed to.',
-  region: "Wrap page content in landmark regions — <header>, <nav>, <main>, <footer> — so nothing sits outside a labelled area.",
+  region: "Wrap page content in landmark regions. <header>, <nav>, <main>, <footer>, so nothing sits outside a labelled area.",
   "landmark-one-main": "Wrap the primary content of the page in a single <main> element.",
   tabindex: 'Remove positive tabindex values (tabindex="1" or higher) and let the natural page order set focus order.',
   "scrollable-region-focusable": 'Add tabindex="0" to the scrollable container so keyboard users can scroll it.',

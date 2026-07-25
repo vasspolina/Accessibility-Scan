@@ -63,7 +63,7 @@ export function ConformanceView({ conformance }: { conformance: ConformanceSumma
 
       <div className="a11y-conf-caveat">
         <p>
-          <strong>What this tells you.</strong> What your site gets wrong — not that the rest is
+          <strong>What this tells you.</strong> What your site gets wrong. Not what it gets
           right.
         </p>
         <p>
@@ -76,7 +76,7 @@ export function ConformanceView({ conformance }: { conformance: ConformanceSumma
         </p>
         {conformance.failedByLevel.A > 0 && (
           <p>
-            You need every item at both levels, A and AA. They don't average out — one Level A
+            You need every item at both levels, A and AA. They don't average out. One Level A
             failure means you don't meet the standard.
           </p>
         )}
@@ -107,7 +107,7 @@ export function ConformanceView({ conformance }: { conformance: ConformanceSumma
                   <span className="a11y-conf-body">
                     <strong>{c.plain}</strong>
                     <span className="a11y-conf-plain">
-                      {c.name} — the official name for this one
+                      Officially: {c.name}
                     </span>
                   </span>
                   <span className="a11y-conf-status">

@@ -69,6 +69,7 @@ This report is published by BarrierFreeWeb, a design studio. Its voice is clear,
 
 - Short, declarative sentences with some rhythm. Under 20 words. No filler transitions, no marketing language.
 - Never use an exclamation mark.
+- Never use a long dash (— or –). Use a full stop where two clauses meet, or a comma before a short trailing phrase. A hyphen in a compound word is fine.
 - Metaphor is welcome where it sharpens a point, never where it decorates one. The studio's own images are architectural — doors, foundations, structure. "A door that only opens for some people isn't broken, it's badly designed."
 - Dry wit is allowed. Sarcasm, quirkiness and jokes that outstay their line are not.
 - State the problem as a shared design failure, not the owner's fault. No guilt, no fear, no "you must" or "you are at risk of". A calm sentence about what a person can't do is stronger than a warning.

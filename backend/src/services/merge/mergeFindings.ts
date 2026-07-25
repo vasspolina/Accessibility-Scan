@@ -117,6 +117,45 @@ export function stripScreenshotReferences(text: string): string {
   );
 }
 
+/**
+ * Replaces long dashes in AI-written prose.
+ *
+ * House style is short declarative sentences; an em dash is usually a splice
+ * holding two of them together. A full stop is nearly always the better
+ * choice, so a dash joining two clauses becomes one, and a dash introducing a
+ * short trailing phrase becomes a comma (a full stop there would leave a
+ * fragment).
+ *
+ * Done in code as well as in the prompt because prompt instructions have not
+ * held reliably in this codebase — see the heading-severity floor and the
+ * screenshot-reference stripper for the same pattern.
+ *
+ * Exported for testing.
+ */
+export function replaceLongDashes(text: string): string {
+  return (
+    text
+      // Spaced dash: decide by what follows. Four or more words reads as a
+      // clause and takes a full stop; anything shorter is a trailing phrase
+      // and takes a comma.
+      .replace(/\s+[—–]\s+(\S+(?:\s+\S+)*?)(?=$|[.!?])/g, (_m, rest: string) => {
+        const words = rest.trim().split(/\s+/);
+        if (words.length >= 4) {
+          return `. ${rest.charAt(0).toUpperCase()}${rest.slice(1)}`;
+        }
+        return `, ${rest}`;
+      })
+      // Any dash left (unspaced, or mid-clause) becomes a comma rather than
+      // being deleted, which would run two words together.
+      .replace(/\s*[—–]\s*/g, ", ")
+      // Tidy what the substitutions can leave behind.
+      .replace(/,\s*,/g, ",")
+      .replace(/\s+([,.;:])/g, "$1")
+      .replace(/\s{2,}/g, " ")
+      .trim()
+  );
+}
+
 export function aiToFindings(aiFindings: AiFinding[]): AccessibilityFinding[] {
   return aiFindings.map((f) => ({
     id: randomUUID(),
@@ -125,9 +164,9 @@ export function aiToFindings(aiFindings: AiFinding[]): AccessibilityFinding[] {
     category: f.category,
     wcagCriterion: f.category === "accessibility" ? (f.wcagCriterion ?? "N/A") : undefined,
     selector: f.selector,
-    title: f.title ? stripScreenshotReferences(f.title) : undefined,
-    description: stripScreenshotReferences(f.description),
-    suggestedFix: stripScreenshotReferences(f.suggestedFix),
+    title: f.title ? replaceLongDashes(stripScreenshotReferences(f.title)) : undefined,
+    description: replaceLongDashes(stripScreenshotReferences(f.description)),
+    suggestedFix: replaceLongDashes(stripScreenshotReferences(f.suggestedFix)),
     confidence: f.confidence,
   }));
 }

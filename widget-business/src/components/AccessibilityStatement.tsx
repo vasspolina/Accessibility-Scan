@@ -46,12 +46,12 @@ We are aware of the following issues and are working to resolve them:
 ${knownIssues.map((i) => `- ${i}`).join("\n")}`
     : `## Known accessibility problems
 
-An automated check of this site found no failures it is able to detect. That is not the same as the site being fully accessible — see "How we assessed this site" below.`;
+An automated check of this site found no failures it is able to detect. That is not the same as the site being fully accessible. See "How we assessed this site" below.`;
 
   const assessmentNote = conformance
     ? `This statement is based on an automated check carried out on ${date}, covering the ${conformance.total} Level A and AA success criteria in WCAG 2.1.
 
-An automated check has real limits, and we would rather state them than imply a completeness we cannot evidence. ${conformance.needsReview} of those criteria cannot be assessed by software at all — they depend on human judgement, such as whether video captions are accurate, whether wording is easy enough to understand, or whether a form that times out can be extended. Where the check reports no issue, that means no issue was detected, not that the criterion has been verified as met.
+An automated check has real limits, and we would rather state them than imply a completeness we cannot evidence. ${conformance.needsReview} of those criteria cannot be assessed by software at all. They depend on human judgement, such as whether video captions are accurate, whether wording is easy enough to understand, or whether a form that times out can be extended. Where the check reports no issue, that means no issue was detected, not that the criterion has been verified as met.
 
 We have not yet carried out a full manual audit or testing with assistive technology users.`
     : `This statement is based on an automated check carried out on ${date}.`;
@@ -83,7 +83,7 @@ If you contact us with a complaint and are not satisfied with our response, you 
 This statement was prepared on ${date}. It was last reviewed on ${date}.
 
 ---
-*Draft generated from an automated accessibility check. Review it, complete anything in brackets, and have it checked before publishing — a published statement is a formal declaration, and it should reflect testing you have actually done.*
+*Draft generated from an automated accessibility check. Review it, complete anything in brackets, and have it checked before publishing. A published statement is a formal declaration, and it should reflect testing you have actually done.*
 `;
 }
 

@@ -281,7 +281,7 @@ function devElementRefs(findings: AccessibilityFinding[]): string[] {
   const refs: string[] = [];
   for (const f of findings) {
     const snippet = f.elementSnippet?.replace(/\s+/g, " ").trim();
-    const ref = snippet ? `${f.selector}  —  ${snippet}` : f.selector;
+    const ref = snippet ? `${f.selector}  ·  ${snippet}` : f.selector;
     if (ref && !seen.has(ref)) {
       seen.add(ref);
       refs.push(ref);
@@ -441,7 +441,7 @@ function AltTextSuggestion({ value }: { value: string }) {
     return (
       <p className="a11y-alt-suggestion a11y-alt-decorative">
         <strong>Suggested alt text:</strong> This image looks decorative, so give it an <em>empty</em>{" "}
-        alt text (<code>alt=""</code>) — that tells screen readers to skip it.
+        alt text (<code>alt=""</code>). That tells screen readers to skip it.
       </p>
     );
   }
@@ -459,7 +459,7 @@ function AltTextSuggestion({ value }: { value: string }) {
   return (
     <div className="a11y-alt-suggestion">
       <p className="a11y-alt-suggestion-label">
-        <strong>Suggested alt text</strong> — written from the actual image:
+        <strong>Suggested alt text</strong>, written from the actual image:
       </p>
       <div className="a11y-alt-suggestion-value">
         <code>{value}</code>

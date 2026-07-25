@@ -84,10 +84,10 @@ export function App({ apiBase }: { apiBase: string }) {
       {loading && (
         <p className="a11y-loading" role="status">
           {mode === "site"
-            ? "Auditing your site — checking each page in turn, this takes a few minutes…"
+            ? "Auditing your site. Checking each page in turn, so this takes a few minutes…"
             : aiRequested
-              ? "Checking your site, including the AI review — this can take up to a minute…"
-              : "Checking your site — this usually takes about 15 seconds…"}
+              ? "Checking your site, including the AI review. This can take up to a minute…"
+              : "Checking your site. This usually takes about 15 seconds…"}
         </p>
       )}
 
