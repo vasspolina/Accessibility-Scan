@@ -7,6 +7,8 @@ import { ScreenReaderPreview } from "./components/ScreenReaderPreview";
 import { ConformanceView } from "./components/ConformanceView";
 import { VisionSimulator } from "./components/VisionSimulator";
 import { SiteAuditView } from "./components/SiteAuditView";
+import { AccessibilityStatement } from "./components/AccessibilityStatement";
+import { PrintButton } from "./components/PrintButton";
 import { WCAG_LINK } from "./lib/wcagPlain";
 import {
   scanUrl,
@@ -89,10 +91,16 @@ export function App({ apiBase }: { apiBase: string }) {
         </p>
       )}
 
-      {audit && <SiteAuditView audit={audit} />}
+      {audit && (
+        <>
+          <PrintButton label="Save the audit as PDF" />
+          <SiteAuditView audit={audit} />
+        </>
+      )}
 
       {report && (
         <div className="a11y-report">
+          <PrintButton />
           <ScoreGauge score={report.score} summary={report.summary} />
 
           {/* Only flag it when the AI review was wanted but didn't happen.
@@ -148,6 +156,8 @@ export function App({ apiBase }: { apiBase: string }) {
             variant="default"
             findings={findingsByCategory.designClarity}
           />
+
+          <AccessibilityStatement report={report} />
         </div>
       )}
     </div>

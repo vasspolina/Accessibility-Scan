@@ -1040,3 +1040,141 @@
   font-size: 13px;
   color: var(--a11y-score-bad, #cf222e);
 }
+
+/* ---- Accessibility statement -------------------------------------------- */
+
+.a11y-stmt-fields {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin: 0 0 14px;
+}
+
+.a11y-stmt-field {
+  flex: 1 1 220px;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--a11y-text, #1f2328);
+}
+
+.a11y-stmt-field input {
+  font: inherit;
+  font-weight: 400;
+  padding: 9px 11px;
+  border: 1px solid var(--a11y-border, #d0d7de);
+  border-radius: 8px;
+  background: var(--a11y-bg, #ffffff);
+  color: var(--a11y-text, #1f2328);
+}
+
+.a11y-stmt-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+  margin: 0 0 12px;
+}
+
+.a11y-stmt-text {
+  max-height: 320px;
+  overflow: auto;
+  margin: 0 0 14px;
+  padding: 14px 16px;
+  border: 1px solid var(--a11y-border, #d0d7de);
+  border-radius: 10px;
+  background: var(--a11y-surface, #f6f8fa);
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 12.5px;
+  line-height: 1.6;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+/* ---- Print / save-as-PDF ------------------------------------------------ */
+
+.a11y-print-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 18px;
+}
+
+@media print {
+  /* NOTE: hiding the surrounding host page cannot be done from here. These
+     styles live inside the widget's Shadow DOM, and shadow styles cannot
+     reach light-DOM elements — a `body > *` rule here silently does nothing.
+     PrintButton injects that one rule into the document head instead. */
+
+  .a11y-widget-inner {
+    max-width: none;
+    padding: 0;
+    border: 0;
+    font-size: 11pt;
+  }
+
+  /* Controls can't be used on paper. */
+  .a11y-url-form,
+  .a11y-print-row,
+  .a11y-sim-controls,
+  .a11y-sr-controls,
+  .a11y-stmt-actions,
+  .a11y-stmt-fields,
+  .a11y-show-all,
+  .a11y-conf-filter,
+  .a11y-mode {
+    display: none !important;
+  }
+
+  /* A collapsed finding prints as a title with no detail, which is useless on
+     paper — the print copy has to stand alone. */
+  .a11y-finding-details {
+    display: block !important;
+  }
+
+  .a11y-finding,
+  .a11y-conf-row,
+  .a11y-audit-row,
+  .a11y-sr-line,
+  .a11y-section {
+    break-inside: avoid;
+  }
+
+  .a11y-section {
+    break-before: auto;
+  }
+
+  .a11y-section-title {
+    break-after: avoid;
+  }
+
+  /* Ink, and legibility on paper. */
+  .a11y-section-redflag,
+  .a11y-conf-failed,
+  .a11y-conf-tile-fail,
+  .a11y-sr-line-issue {
+    background: transparent !important;
+  }
+
+  .a11y-severity-badge {
+    color: #000 !important;
+    background: transparent !important;
+    border: 1px solid #000;
+  }
+
+  .a11y-stmt-text {
+    max-height: none;
+    overflow: visible;
+  }
+
+  /* A URL is unusable in print unless it's written out. */
+  .a11y-intro a::after,
+  .a11y-learn-more::after {
+    content: " (" attr(href) ")";
+    font-size: 9pt;
+    word-break: break-all;
+  }
+}
