@@ -70,6 +70,7 @@ export interface CriterionResult {
   level: "A" | "AA";
   coverage: "automated" | "partial" | "manual";
   plain: string;
+  failing: string;
   status: "failed" | "no-issues-found" | "needs-review";
   findingCount: number;
 }

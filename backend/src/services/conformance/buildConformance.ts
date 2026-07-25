@@ -31,6 +31,7 @@ export interface CriterionResult {
   level: CriterionLevel;
   coverage: CriterionCoverage;
   plain: string;
+  failing: string;
   status: CriterionStatus;
   findingCount: number;
 }

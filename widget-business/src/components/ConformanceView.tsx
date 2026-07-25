@@ -107,7 +107,11 @@ export function ConformanceView({ conformance }: { conformance: ConformanceSumma
                     {c.id} <em>{c.level}</em>
                   </span>
                   <span className="a11y-conf-body">
-                    <strong>{c.plain}</strong>
+                    {/* A failing row states the problem; the rest ask the
+                        question, because for those we have no problem to
+                        report — only something we didn't find, or couldn't
+                        check. */}
+                    <strong>{c.status === "failed" ? c.failing : c.plain}</strong>
                     <span className="a11y-conf-plain">
                       Officially: {c.name}
                     </span>

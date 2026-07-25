@@ -137,6 +137,7 @@ export const criterionResultSchema = z.object({
   level: z.enum(["A", "AA"]),
   coverage: z.enum(["automated", "partial", "manual"]),
   plain: z.string(),
+  failing: z.string(),
   status: z.enum(["failed", "no-issues-found", "needs-review"]),
   findingCount: z.number(),
 });

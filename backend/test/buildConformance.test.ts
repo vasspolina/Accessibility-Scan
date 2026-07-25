@@ -123,3 +123,35 @@ describe("buildConformance", () => {
     expect(buildConformance([]).standard).toMatch(/EN 301 549/);
   });
 });
+
+// Every row shows one of two phrasings, and picking the wrong one says the
+// opposite of the finding: a failing row that states the requirement reads as
+// though the requirement is broken. Cheap to check, easy to get wrong when
+// someone adds a criterion.
+describe("criterion phrasing", () => {
+  it("gives every criterion both a question and a problem statement", () => {
+    for (const c of WCAG_21_AA_CRITERIA) {
+      expect(c.plain.length, c.id).toBeGreaterThan(10);
+      expect(c.failing.length, c.id).toBeGreaterThan(10);
+    }
+  });
+
+  it("asks the question form and states the failing form", () => {
+    for (const c of WCAG_21_AA_CRITERIA) {
+      expect(c.plain.endsWith("?"), `${c.id} plain should be a question`).toBe(true);
+      expect(c.failing.endsWith("?"), `${c.id} failing should not be a question`).toBe(false);
+      // BF list style: no full stop on a list item.
+      expect(c.failing.endsWith("."), `${c.id} failing should not end in a stop`).toBe(false);
+    }
+  });
+
+  it("uses the problem statement only for failing rows", () => {
+    const c = buildConformance([finding({ wcagCriterion: "1.4.4" })]);
+    const failing = c.criteria.find((x) => x.id === "1.4.4")!;
+    const quiet = c.criteria.find((x) => x.id === "1.4.3")!;
+    expect(failing.status).toBe("failed");
+    expect(failing.failing).toMatch(/breaks/);
+    expect(quiet.status).toBe("no-issues-found");
+    expect(quiet.plain).toMatch(/\?$/);
+  });
+});

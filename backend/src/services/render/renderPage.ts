@@ -484,12 +484,22 @@ function collectBoundingBoxesInPage(selectors: string[]): Record<string, Boundin
         continue;
       }
       const rect = el.getBoundingClientRect();
-      result[sel] = {
+      const box = {
         x: Math.round(rect.x + window.scrollX),
         y: Math.round(rect.y + window.scrollY),
         width: Math.round(rect.width),
         height: Math.round(rect.height),
       };
+      result[sel] = box;
+      // Also key the box by "#id" when the element has one. Thumbnail cropping
+      // looks boxes up by exact selector string, and the AI review names
+      // elements the way a developer would — "#mce-EMAIL", not the generated
+      // "form > div > input" the deterministic layers produce. Without this
+      // alias an AI finding about a specific, obviously picturable field
+      // silently gets no thumbnail, because nothing ever measured it under
+      // the name the model used.
+      const id = el.id;
+      if (id && !(`#${id}` in result)) result[`#${id}`] = box;
     } catch {
       result[sel] = null;
     }

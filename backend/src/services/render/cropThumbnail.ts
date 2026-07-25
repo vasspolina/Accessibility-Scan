@@ -8,12 +8,21 @@ const JPEG_QUALITY = 60;
 const MAX_THUMBNAILS_PER_SCAN = 70;
 const SEVERITY_PRIORITY: Record<Severity, number> = { critical: 0, serious: 1, moderate: 2, minor: 3 };
 
-// Whether a selector names a single image rather than standing in for a
-// region. Only the final segment matters — that's the element the selector
-// resolves to.
-function selectorTargetsAnImage(selector: string): boolean {
+// Elements small and self-contained enough that a crop shows the thing itself:
+// media, and the form controls people actually operate. A bare `div`, `a`,
+// `section` or `p` is not here on purpose — those stand in for a region, and a
+// generic tag with no qualifier resolves to the first one on the page, which
+// is rarely the one the finding meant.
+const CAPTURABLE_TAGS = /^(img|picture|figure|svg|input|select|textarea|button|form|label|fieldset)\b/i;
+
+// Whether a selector names one discrete element rather than standing in for a
+// region. Only the final segment matters — that's what the selector resolves
+// to. An id makes any selector specific regardless of tag, since an id is
+// unique in a valid document.
+function selectorTargetsOneElement(selector: string): boolean {
   const last = selector.split(/[>\s]+/).filter(Boolean).pop() ?? "";
-  return /^(img|picture|figure|svg)\b/i.test(last);
+  if (last.includes("#")) return true;
+  return CAPTURABLE_TAGS.test(last);
 }
 
 /**
@@ -109,11 +118,12 @@ export async function attachElementScreenshots(
     // that yields a picture of a whole section, which is why these were
     // suppressed.
     //
-    // Images are the exception that matters: when the finding is about a
-    // specific <img>, the picture IS the evidence. "Is this photo decorative or
-    // meaningful?" is unanswerable without seeing it, and an image selector
-    // names one element unambiguously rather than standing in for a region.
-    if (finding.source === "ai-review" && !selectorTargetsAnImage(finding.selector)) continue;
+    // The exception is a selector that names one discrete element: a photo, a
+    // search box, a newsletter field. There the picture IS the evidence — "is
+    // this photo decorative or meaningful?" and "is this field labelled?" are
+    // both unanswerable without seeing the thing, and the selector resolves to
+    // one element rather than a region.
+    if (finding.source === "ai-review" && !selectorTargetsOneElement(finding.selector)) continue;
     // Tiny tap targets are typically transparent icon controls sitting over a
     // photo or background — a crop of that box is a confusing blur of whatever
     // is behind them, not a recognizable control (and it changes shot to shot
