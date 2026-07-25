@@ -779,6 +779,16 @@
   line-height: 1.55;
 }
 
+/* Short paragraphs rather than one dense block — the same readability this
+   tool asks of the sites it checks. */
+.a11y-conf-caveat p {
+  margin: 0 0 9px;
+}
+
+.a11y-conf-caveat p:last-child {
+  margin-bottom: 0;
+}
+
 .a11y-conf-filter {
   margin: 0 0 10px;
 }

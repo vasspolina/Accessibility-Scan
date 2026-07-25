@@ -63,20 +63,29 @@ export function ConformanceView({ conformance }: { conformance: ConformanceSumma
         </div>
       </div>
 
-      <p className="a11y-conf-caveat">
-        <strong>What this can and can't tell you.</strong> A check like this can prove a criterion is
-        being <em>failed</em>. It can never prove one is met — {conformance.needsReview} of the{" "}
-        {conformance.total} criteria depend on judgement no software can make (are the captions
-        accurate? is the language plain enough? can a timed form be extended?). So "no issues found"
-        means exactly that, and nothing more.
+      <div className="a11y-conf-caveat">
+        <p>
+          <strong>What this tells you.</strong> This check can show that a criterion is failing. It
+          cannot show that one is met.
+        </p>
+        <p>
+          That is a limit of any automated check, not of this one in particular.{" "}
+          {conformance.needsReview} of the {conformance.total} criteria need a person to judge them.
+          Software cannot tell whether your captions are accurate, whether your wording is plain
+          enough, or whether someone can extend a form that times out.
+        </p>
+        <p>
+          So <strong>&ldquo;no issues found&rdquo; means we found nothing</strong> — not that you
+          have passed.
+        </p>
         {conformance.failedByLevel.A > 0 && (
-          <>
-            {" "}
-            Note that {conformance.failedByLevel.A === 1 ? "a" : "any"} Level A failure rules out an
-            AA claim on its own — the levels stack rather than average.
-          </>
+          <p>
+            One thing worth knowing: a single Level A failure rules out an AA claim by itself. The
+            two levels add up rather than average out, so you need every Level A criterion as well
+            as every AA one.
+          </p>
         )}
-      </p>
+      </div>
 
       {expanded ? (
         <>
