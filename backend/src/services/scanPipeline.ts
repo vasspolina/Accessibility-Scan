@@ -1,7 +1,7 @@
 import { env } from "../config/env.js";
 import { withTimeout } from "../utils/timeout.js";
 import { assertSafeUrl } from "../middleware/ssrfGuard.js";
-import { renderAndScan } from "./render/renderPage.js";
+import { renderAndScan, captureSelectorsFresh } from "./render/renderPage.js";
 import { extractContext } from "./contextExtraction/extractContext.js";
 import { reviewPage } from "./aiReview/reviewPage.js";
 import { attachAltTextSuggestions } from "./aiReview/suggestAltText.js";
@@ -18,7 +18,7 @@ import { validateMarkup } from "./markup/validateMarkup.js";
 import { summarizeSeverity, computeScore, summarizeCategories } from "./merge/scoring.js";
 import { buildConformance } from "./conformance/buildConformance.js";
 import { downscalePreview } from "./render/downscalePreview.js";
-import { attachElementScreenshots } from "./render/cropThumbnail.js";
+import { attachElementScreenshots, selectorTargetsOneElement } from "./render/cropThumbnail.js";
 import type { AccessibilityReport } from "../types/report.js";
 
 /**
@@ -73,6 +73,33 @@ export async function scanUrlToReport(
     renderResult.fullPageScreenshot,
     renderResult.elementScreenshots
   );
+
+  // AI findings are the one group the render pass can't photograph: they don't
+  // exist until after the page has closed, and the model writes its own
+  // selectors, which almost never match the strings measured during render. So
+  // they'd only ever get a thumbnail by coincidence. A short second visit
+  // photographs what the model actually pointed at — worth one navigation,
+  // because "this field has no label" is far more convincing next to a picture
+  // of the field. Best-effort: on failure the findings simply show as before.
+  const unpictured = findings.filter(
+    (f) =>
+      f.source === "ai-review" &&
+      !f.elementScreenshot &&
+      f.selector &&
+      f.selector !== "html" &&
+      f.selector !== "body"
+  );
+  if (unpictured.length > 0) {
+    const shots = await captureSelectorsFresh(
+      renderResult.finalUrl,
+      unpictured.map((f) => f.selector),
+      selectorTargetsOneElement
+    );
+    for (const finding of unpictured) {
+      const shot = shots[finding.selector];
+      if (shot) finding.elementScreenshot = shot;
+    }
+  }
   await attachAltTextSuggestions(findings, includeAiReview);
 
   const summary = summarizeSeverity(findings);

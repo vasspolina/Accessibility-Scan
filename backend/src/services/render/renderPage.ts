@@ -1,4 +1,4 @@
-import type { Page, Response } from "playwright";
+import type { ElementHandle, Locator, Page, Response } from "playwright";
 import { createRequire } from "node:module";
 import sharp from "sharp";
 import { env } from "../../config/env.js";
@@ -699,6 +699,214 @@ async function captureElementScreenshots(
     }
   }
   return result;
+}
+
+// How tall a thing can be and still be one element rather than a region. A
+// search field is tens of pixels; a section is hundreds. Height only, on
+// purpose: real controls often run the full width of their column, so a width
+// test would reject exactly what we want to picture.
+const MAX_COMPONENT_HEIGHT_PX = 220;
+const AI_SHOT_BUDGET_MS = 12_000;
+const MAX_AI_SHOTS = 10;
+// Below this, a tight crop of the element on its own is too small to read and
+// too plain to survive the blank-frame check — photograph its surroundings
+// instead. Above it, the element fills the frame on its own.
+const REGION_CAPTURE_MAX_HEIGHT_PX = 120;
+
+/**
+ * Whether the element is the thing actually painted at its own coordinates.
+ *
+ * Hit-tests a few points across the element and asks what the browser says is
+ * on top. A covered element still reports a perfectly good bounding box, so
+ * this is the only reliable way to tell "on screen" from "laid out but hidden
+ * behind an overlay" — and photographing the latter yields a picture of the
+ * overlay, which is how a report ends up showing the wrong element.
+ *
+ * An ancestor counts as a hit: transparent or pointer-events:none elements
+ * report their container, which is still the right part of the page.
+ */
+async function isActuallyOnScreen(locator: Locator): Promise<boolean> {
+  try {
+    return await locator.evaluate((el) => {
+      const rect = el.getBoundingClientRect();
+      if (rect.width < 8 || rect.height < 8) return false;
+      // Several points, because a partly-covered element is still worth a
+      // picture — a fully covered one is not.
+      const points: Array<[number, number]> = [
+        [0.5, 0.5],
+        [0.15, 0.5],
+        [0.85, 0.5],
+      ];
+      return points.some(([fx, fy]) => {
+        const hit = document.elementFromPoint(rect.left + rect.width * fx, rect.top + rect.height * fy);
+        return !!hit && (hit === el || el.contains(hit) || hit.contains(el));
+      });
+    });
+  } catch {
+    return false;
+  }
+}
+
+/**
+ * Walks up from a small element to the nearest ancestor that still reads as
+ * one component, so the capture shows the thing in context — a field with the
+ * space where its label should be, not a bare white box.
+ *
+ * Returns null when no ancestor qualifies, in which case the caller shoots the
+ * element itself.
+ */
+async function contextAncestor(locator: Locator): Promise<ElementHandle<Node> | null> {
+  try {
+    const handle = await locator.evaluateHandle((el) => {
+      let node = el as HTMLElement;
+      let best: HTMLElement | null = null;
+      // Walk up while the ancestor still reads as one component. Stop as soon
+      // as the frame is wide enough to be legible — a thumbnail of a "…" link
+      // and nothing else is technically the right element and completely
+      // useless; the sentence around it is what makes the finding land.
+      for (let i = 0; i < 6 && node.parentElement; i++) {
+        node = node.parentElement;
+        const rect = node.getBoundingClientRect();
+        if (rect.height > 220 || rect.width < 8) break;
+        best = node;
+        if (rect.width >= 200 && rect.height >= 40) break;
+      }
+      return best;
+    });
+    return handle.asElement();
+  } catch {
+    return null;
+  }
+}
+
+// Element-only capture: crop, downscale, and reject a frame that turned out to
+// be a single flat colour (an invisible or covered element).
+async function captureLocator(locator: Locator | ElementHandle<Node>): Promise<string | null> {
+  try {
+    const raw = await locator.screenshot({ type: "jpeg", quality: 72, timeout: 2_500 });
+    // A frame this small can't show anything a reader could act on — it
+    // renders as a blurry smudge next to the finding and undermines the very
+    // point of showing evidence. The written element label does that job
+    // better at this size.
+    const rawMeta = await sharp(raw).metadata().catch(() => null);
+    if (!rawMeta?.width || !rawMeta.height || rawMeta.width < 80 || rawMeta.height < 20) return null;
+    const resized = await sharp(raw)
+      .resize({ width: 480, height: 480, fit: "inside", withoutEnlargement: true })
+      .jpeg({ quality: 62 })
+      .toBuffer();
+    const stats = await sharp(resized).stats().catch(() => null);
+    const maxStdev = stats ? Math.max(...stats.channels.map((c) => c.stdev)) : 1;
+    if (maxStdev < BLANK_STDEV) return null;
+    return resized.toString("base64");
+  } catch {
+    return null;
+  }
+}
+
+/**
+ * Photographs a handful of selectors on a freshly opened page.
+ *
+ * Exists because AI-review findings are produced after the render pass has
+ * closed its page, and the model writes its own selectors — "li:nth-of-type(6)
+ * > div > a > div > figure > img" — which almost never match the selector
+ * strings measured during render. Those findings could therefore only ever get
+ * a thumbnail by coincidence, when the model happened to name an element the
+ * same way the deterministic layers did. Cropping can't fix that: with no
+ * measured box there is nothing to crop.
+ *
+ * A second visit is the honest cost of picturing what the model actually
+ * pointed at. It reuses the pooled browser, so this is one navigation rather
+ * than a browser launch, and it is capped by both count and wall-clock so a
+ * slow page can't stretch the scan.
+ *
+ * Best-effort throughout: any failure yields no thumbnail, never a failed scan.
+ */
+export async function captureSelectorsFresh(
+  url: string,
+  selectors: string[],
+  // Selectors that name a discrete element by tag or id are worth capturing at
+  // any height (a tall product photo is still one photo). Everything else has
+  // to prove it's component-sized, because the model is told to fall back to
+  // the containing section for layout findings and a picture of a section
+  // tells the reader nothing.
+  alwaysCapture: (selector: string) => boolean
+): Promise<Record<string, string>> {
+  if (selectors.length === 0) return {};
+
+  return withPage(async (page: Page) => {
+    const result: Record<string, string> = {};
+    try {
+      await page.goto(url, { waitUntil: "load", timeout: 20_000 });
+      // Same brief settle the main render allows for SPA content.
+      await page.waitForTimeout(1_200);
+      // Deliberately NOT running neutralizeScrollClippingInPage here, even
+      // though the main render pass does. That helper un-clips inner scroll
+      // containers so the document-level full-page screenshot can see past
+      // them — necessary for cropping, actively harmful here. On a page whose
+      // real scroller is an inner `overflow:auto` div, removing the overflow
+      // stops that div scrolling, so scrollIntoViewIfNeeded can no longer
+      // bring the element into the viewport: measured on rijksakademie.nl, the
+      // newsletter field went from y=438 (a clean 673x121 capture) to y=2064
+      // and a negative clip height, i.e. no picture at all. This path doesn't
+      // need the helper anyway — Playwright scrolls inner containers by itself.
+    } catch {
+      // Couldn't get back to the page at all. No thumbnails, no harm.
+      return result;
+    }
+
+    const deadline = Date.now() + AI_SHOT_BUDGET_MS;
+    for (const selector of selectors.slice(0, MAX_AI_SHOTS)) {
+      if (Date.now() > deadline) break;
+      try {
+        const locator = page.locator(selector).first();
+        if ((await locator.count()) === 0) continue;
+        await locator.scrollIntoViewIfNeeded({ timeout: 1_000 }).catch(() => {});
+
+        const box = await locator.boundingBox();
+        if (!box || box.width < 8 || box.height < 8) continue;
+        // The live box is the evidence the selector string can't give us.
+        if (box.height > MAX_COMPONENT_HEIGHT_PX && !alwaysCapture(selector)) continue;
+        // Having a box is not the same as being on screen. An element can be
+        // laid out and fully covered by something painted over it, and then
+        // every pixel at its coordinates belongs to the thing on top — so the
+        // "thumbnail" is a photograph of an unrelated overlay. That is worse
+        // than no thumbnail: it makes the report look wrong in the one place
+        // it's supposed to be showing proof.
+        if (!(await isActuallyOnScreen(locator))) continue;
+
+        // Photograph a short element together with its surroundings, by
+        // shooting the nearest ancestor that's still component-sized rather
+        // than the element itself.
+        //
+        // Two reasons, and the first was found the hard way: a bare capture of
+        // an email input is a near-solid rectangle, so the blank-frame guard
+        // threw it away — that guard exists for invisible overlay buttons, but
+        // "mostly one colour" is also what a perfectly ordinary form field
+        // looks like.
+        //
+        // The second reason is the better one. The finding is "this field has
+        // no label". A tight crop of the field cannot show that, because the
+        // missing label is exactly what isn't in the frame. The surrounding
+        // row is what makes the absence visible.
+        //
+        // Done by screenshotting an ancestor rather than by clipping a region
+        // out of the viewport, and that distinction is load-bearing: clipping
+        // needs coordinates, and on a smooth-scrolling page the box is read
+        // while the scroll is still animating, so the clip lands somewhere
+        // else entirely. (Measured: asking for the newsletter field returned a
+        // photograph of a studio floor from further down the page.)
+        // locator.screenshot() waits for the element to stop moving first, so
+        // it cannot photograph the wrong thing.
+        const target =
+          box.height <= REGION_CAPTURE_MAX_HEIGHT_PX ? await contextAncestor(locator) : locator;
+        const shot = await captureLocator(target ?? locator);
+        if (shot) result[selector] = shot;
+      } catch {
+        // Invalid selector, detached node, timeout — skip it, keep going.
+      }
+    }
+    return result;
+  }).catch(() => ({}));
 }
 
 // Dark-pattern signals, gathered from every frame rather than just the main

@@ -19,10 +19,26 @@ const CAPTURABLE_TAGS = /^(img|picture|figure|svg|input|select|textarea|button|f
 // region. Only the final segment matters — that's what the selector resolves
 // to. An id makes any selector specific regardless of tag, since an id is
 // unique in a valid document.
-function selectorTargetsOneElement(selector: string): boolean {
+export function selectorTargetsOneElement(selector: string): boolean {
   const last = selector.split(/[>\s]+/).filter(Boolean).pop() ?? "";
   if (last.includes("#")) return true;
   return CAPTURABLE_TAGS.test(last);
+}
+
+// A control is short. A section is tall. Nothing else about a measured box
+// separates "the search field" from "the page's whole header", and the box is
+// evidence where the selector string is only a guess.
+//
+// Height alone, deliberately: plenty of real controls run the full width of
+// their column (a newsletter field, a search bar), so width would reject the
+// exact things we want. A crop this short can't swallow a section.
+const MAX_COMPONENT_HEIGHT_PX = 220;
+
+function sizeLooksLikeOneElement(box: BoundingBox | null | undefined): boolean {
+  if (!box) return false;
+  // Zero-size elements are hidden or collapsed; there is nothing to picture.
+  if (box.width < 8 || box.height < 8) return false;
+  return box.height <= MAX_COMPONENT_HEIGHT_PX;
 }
 
 /**
@@ -118,12 +134,23 @@ export async function attachElementScreenshots(
     // that yields a picture of a whole section, which is why these were
     // suppressed.
     //
-    // The exception is a selector that names one discrete element: a photo, a
-    // search box, a newsletter field. There the picture IS the evidence — "is
-    // this photo decorative or meaningful?" and "is this field labelled?" are
-    // both unanswerable without seeing the thing, and the selector resolves to
-    // one element rather than a region.
-    if (finding.source === "ai-review" && !selectorTargetsOneElement(finding.selector)) continue;
+    // The exception is anything that resolves to one discrete element: a
+    // photo, a search box, a newsletter field. There the picture IS the
+    // evidence — "is this photo decorative or meaningful?" and "is this field
+    // labelled?" are both unanswerable without seeing the thing.
+    //
+    // Two ways to qualify, because the selector string alone isn't enough. The
+    // model often points at a small wrapper rather than the control inside it,
+    // and "div:nth-of-type(1) > nav > div" is indistinguishable from a whole
+    // section by name. The measured box tells us what the name can't: a search
+    // box is tens of pixels tall, a section is hundreds. See sizeLooksLikeOneElement.
+    if (
+      finding.source === "ai-review" &&
+      !selectorTargetsOneElement(finding.selector) &&
+      !sizeLooksLikeOneElement(boundingBoxes[finding.selector])
+    ) {
+      continue;
+    }
     // Tiny tap targets are typically transparent icon controls sitting over a
     // photo or background — a crop of that box is a confusing blur of whatever
     // is behind them, not a recognizable control (and it changes shot to shot
