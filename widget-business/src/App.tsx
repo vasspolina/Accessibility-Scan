@@ -16,6 +16,7 @@ import {
   ScanError,
   type AccessibilityReport,
   type SiteAudit,
+  type AuthConfig,
 } from "./api/scanClient";
 
 export function App({ apiBase }: { apiBase: string }) {
@@ -41,7 +42,8 @@ export function App({ apiBase }: { apiBase: string }) {
     url: string,
     includeAiReview: boolean,
     mode: ScanMode,
-    maxPages: number
+    maxPages: number,
+    auth?: AuthConfig
   ) {
     setAiRequested(includeAiReview);
     setMode(mode);
@@ -53,7 +55,7 @@ export function App({ apiBase }: { apiBase: string }) {
       if (mode === "site") {
         setAudit(await auditSite(apiBase, url, maxPages));
       } else {
-        setReport(await scanUrl(apiBase, url, includeAiReview));
+        setReport(await scanUrl(apiBase, url, includeAiReview, auth));
       }
     } catch (err) {
       setError(err instanceof ScanError ? err.message : "Something went wrong. Please try again.");

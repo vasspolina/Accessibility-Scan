@@ -140,6 +140,13 @@ export interface SiteAudit {
   conformance: ConformanceSummary;
 }
 
+// Sign-in details for scanning a page behind a login. Sent with one scan and
+// nothing else: the backend holds them in memory for that scan, never stores
+// or logs them, and never passes them to the AI layer.
+export type AuthConfig =
+  | { kind: "form"; loginUrl: string; username: string; password: string }
+  | { kind: "cookies"; cookies: Array<{ name: string; value: string; domain?: string; path?: string }> };
+
 export class ScanError extends Error {}
 
 const delay = (ms: number) => new Promise((r) => setTimeout(r, ms));
@@ -154,10 +161,11 @@ const MAX_ATTEMPTS = 3;
 export async function scanUrl(
   apiBase: string,
   url: string,
-  includeAiReview: boolean
+  includeAiReview: boolean,
+  auth?: AuthConfig
 ): Promise<AccessibilityReport> {
   const endpoint = `${apiBase.replace(/\/$/, "")}/api/scan`;
-  const body = JSON.stringify({ url, includeAiReview });
+  const body = JSON.stringify({ url, includeAiReview, ...(auth ? { auth } : {}) });
 
   for (let attempt = 1; attempt <= MAX_ATTEMPTS; attempt++) {
     let response: Response;

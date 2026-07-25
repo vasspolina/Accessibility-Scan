@@ -32,6 +32,7 @@ import {
 import type { ScreenReaderScript } from "../../types/report.js";
 import type { FocusStyles, KeyboardNavResult, TabStop } from "../keyboard/analyzeKeyboard.js";
 import { logger } from "../../utils/logger.js";
+import { authenticate, type AuthConfig } from "../auth/authenticate.js";
 
 const require = createRequire(import.meta.url);
 
@@ -1007,10 +1008,22 @@ export class SiteBlockedError extends Error {
 const BLOCK_PAGE_TITLES =
   /access denied|attention required|just a moment|pardon our interruption|request blocked|are you a robot|verify you are human/i;
 
-export async function renderAndScan(url: string): Promise<RenderResult> {
+export async function renderAndScan(
+  url: string,
+  // Optional sign-in, applied before navigating. Credentials are used here and
+  // nowhere else: they are never stored, never logged, never put in the
+  // report, and never sent to the AI layer (see services/auth/authenticate.ts
+  // and contextExtraction/extractContext.ts).
+  auth?: AuthConfig
+): Promise<RenderResult> {
   const start = Date.now();
 
   return withPage(async (page: Page) => {
+    if (auth) {
+      // Before the target navigation, so the session is live when we arrive.
+      // Throws AuthError, which the route surfaces as a clear message.
+      await authenticate(page, auth);
+    }
     // assertSafeUrl() (routes/scan.ts) resolves DNS once before this call
     // and rejects private/internal IPs — but that's a check against a
     // separate DNS lookup, and Chromium resolves the hostname again

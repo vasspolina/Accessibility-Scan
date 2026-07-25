@@ -1,4 +1,6 @@
 import { useState, type FormEvent } from "react";
+import { LoginFields } from "./LoginFields";
+import type { AuthConfig } from "../api/scanClient";
 
 export type ScanMode = "page" | "site";
 
@@ -6,7 +8,13 @@ export function UrlForm({
   onSubmit,
   loading,
 }: {
-  onSubmit: (url: string, includeAiReview: boolean, mode: ScanMode, maxPages: number) => void;
+  onSubmit: (
+    url: string,
+    includeAiReview: boolean,
+    mode: ScanMode,
+    maxPages: number,
+    auth?: AuthConfig
+  ) => void;
   loading: boolean;
 }) {
   const [value, setValue] = useState("");
@@ -17,13 +25,14 @@ export function UrlForm({
   // deeper pass; making everyone wait 40s for their first result is the
   // faster way to lose them.
   const [includeAiReview, setIncludeAiReview] = useState(false);
+  const [auth, setAuth] = useState<AuthConfig | undefined>(undefined);
 
   function handleSubmit(e: FormEvent) {
     e.preventDefault();
     const trimmed = value.trim();
     if (!trimmed) return;
     const withProtocol = /^https?:\/\//i.test(trimmed) ? trimmed : `https://${trimmed}`;
-    onSubmit(withProtocol, includeAiReview, mode, maxPages);
+    onSubmit(withProtocol, includeAiReview, mode, maxPages, auth);
   }
 
   return (
@@ -70,6 +79,10 @@ export function UrlForm({
           <em>Finds what repeats on every page</em>
         </button>
       </div>
+
+      {mode === "page" && (
+        <LoginFields auth={auth} onChange={setAuth} disabled={loading} />
+      )}
 
       {mode === "site" ? (
         <label className="a11y-ai-toggle" htmlFor="a11y-pages">

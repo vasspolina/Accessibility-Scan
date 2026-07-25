@@ -5,6 +5,7 @@ import { logger } from "../utils/logger.js";
 import { withTimeout } from "../utils/timeout.js";
 import { assertSafeUrl, UnsafeUrlError } from "../middleware/ssrfGuard.js";
 import { renderAndScan, RebindingDetectedError, SiteBlockedError } from "../services/render/renderPage.js";
+import { AuthError } from "../services/auth/authenticate.js";
 import { extractContext } from "../services/contextExtraction/extractContext.js";
 import { reviewPage } from "../services/aiReview/reviewPage.js";
 import { attachAltTextSuggestions } from "../services/aiReview/suggestAltText.js";
@@ -24,8 +25,38 @@ import { downscalePreview } from "../services/render/downscalePreview.js";
 import { attachElementScreenshots } from "../services/render/cropThumbnail.js";
 import type { AccessibilityFinding, AccessibilityReport } from "../types/report.js";
 
+// Sign-in details for scanning pages behind a login. Accepted per request,
+// held in memory for one scan, and never stored, logged, or included in the
+// report. See services/auth/authenticate.ts for the full handling rules.
+const authSchema = z.discriminatedUnion("kind", [
+  z.object({
+    kind: z.literal("cookies"),
+    cookies: z
+      .array(
+        z.object({
+          name: z.string().min(1),
+          value: z.string(),
+          domain: z.string().optional(),
+          path: z.string().optional(),
+        })
+      )
+      .min(1)
+      .max(50),
+  }),
+  z.object({
+    kind: z.literal("form"),
+    loginUrl: z.string().min(1),
+    username: z.string().min(1),
+    password: z.string().min(1),
+    usernameSelector: z.string().optional(),
+    passwordSelector: z.string().optional(),
+    submitSelector: z.string().optional(),
+  }),
+]);
+
 const scanBodySchema = z.object({
   url: z.string().min(1, "url is required"),
+  auth: authSchema.optional(),
   // Lets the embedder opt out of the AI judgment layer per-scan (faster,
   // cheaper — automated axe-core findings only). Defaults to on.
   includeAiReview: z.boolean().optional().default(true),
@@ -35,7 +66,15 @@ export async function scanRoutes(app: FastifyInstance) {
   app.post("/api/scan", async (request, reply) => {
     const parsedBody = scanBodySchema.safeParse(request.body);
     if (!parsedBody.success) {
-      return reply.status(400).send({ error: "Invalid request body", details: parsedBody.error.flatten() });
+      // Zod's flattened errors quote parts of the input, and the input may
+      // contain a password. Echo the detail only when no credentials were
+      // sent; otherwise say nothing beyond "invalid".
+      const hasAuth =
+        typeof request.body === "object" && request.body !== null && "auth" in request.body;
+      return reply.status(400).send({
+        error: "Invalid request body",
+        ...(hasAuth ? {} : { details: parsedBody.error.flatten() }),
+      });
     }
 
     let safeUrl: URL;
@@ -51,11 +90,19 @@ export async function scanRoutes(app: FastifyInstance) {
     let renderResult;
     try {
       renderResult = await withTimeout(
-        renderAndScan(safeUrl.toString()),
-        env.RENDER_TIMEOUT_MS + 5000,
+        // Sign-in, when supplied, happens inside the render call so the
+        // session lives and dies with that throwaway browser context.
+        renderAndScan(safeUrl.toString(), parsedBody.data.auth),
+        // Signing in costs a page load of its own before the scan starts.
+        env.RENDER_TIMEOUT_MS + (parsedBody.data.auth ? 25_000 : 5000),
         "Page render"
       );
     } catch (err) {
+      if (err instanceof AuthError) {
+        // The message is written to be safe to show and never contains the
+        // credentials themselves.
+        return reply.status(401).send({ error: err.message });
+      }
       if (err instanceof RebindingDetectedError) {
         // Don't echo the resolved IP back to the caller — log it server-side
         // only, return the same generic rejection as the upfront SSRF guard.
