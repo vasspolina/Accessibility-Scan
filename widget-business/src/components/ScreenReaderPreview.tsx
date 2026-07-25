@@ -81,10 +81,8 @@ export function ScreenReaderPreview({ script }: { script: ScreenReaderScript }) 
         <span className="a11y-section-count">({lines.length} announcements)</span>
       </h3>
       <p className="a11y-section-desc">
-        This is how your page is announced to someone who can't see it — in reading order. It's a
-        close approximation, not a recording: real screen readers (NVDA, JAWS, VoiceOver) differ in
-        wording and verbosity. Lines flagged below are where the announcement tells the listener
-        nothing useful.
+        How your page sounds to someone who can't see it, in reading order. Red lines are where a
+        listener learns nothing. Close to how real screen readers speak, not a recording.
       </p>
 
       <div className="a11y-sr-controls">

@@ -23,9 +23,8 @@ export function SiteAuditView({ audit }: { audit: SiteAudit }) {
         <h3 className="a11y-section-title">Site audit</h3>
         <p className="a11y-section-desc">
           {audit.pagesScanned} page{audit.pagesScanned === 1 ? "" : "s"} checked
-          {audit.pagesFailed > 0 && `, ${audit.pagesFailed} couldn't be reached`}. Pages are chosen
-          by how much they matter to your business — contact, booking and shop pages before blog
-          posts.
+          {audit.pagesFailed > 0 && `, ${audit.pagesFailed} couldn't be reached`}. We pick the pages
+          that matter most — contact, booking and shop before blog posts.
         </p>
 
         <div className="a11y-conf-tiles">
@@ -59,9 +58,8 @@ export function SiteAuditView({ audit }: { audit: SiteAudit }) {
             <span className="a11y-section-count">({audit.siteWide.length})</span>
           </h3>
           <p className="a11y-section-desc">
-            These appear on every page checked, so they almost certainly live in your header, footer
-            or page template rather than in the content. They're the highest-value fixes you can
-            make.
+            These appear on every page, so they live in your template — header, footer, layout. Fix
+            each one once and the whole site improves. Start here.
           </p>
           <ul className="a11y-audit-list">
             {audit.siteWide.map((issue) => {
@@ -88,8 +86,7 @@ export function SiteAuditView({ audit }: { audit: SiteAudit }) {
       <section className="a11y-section">
         <h3 className="a11y-section-title">Page by page</h3>
         <p className="a11y-section-desc">
-          Scan any single page on its own for the full detail — the element list, screen-reader
-          preview and vision simulators.
+          Scan a page on its own for the full detail.
         </p>
         <ul className="a11y-audit-list">
           {audit.pages.map((page) => (

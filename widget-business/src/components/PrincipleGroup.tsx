@@ -47,7 +47,7 @@ export function PrincipleGroup({ findings }: { findings: AccessibilityFinding[] 
       {unclassified.length > 0 && (
         <div className="a11y-principle-group">
           <h4 className="a11y-principle-title">
-            General best-practice recommendations{" "}
+            Worth doing anyway{" "}
             <span className="a11y-section-count">({unclassified.length})</span>
           </h4>
           <p className="a11y-principle-desc">

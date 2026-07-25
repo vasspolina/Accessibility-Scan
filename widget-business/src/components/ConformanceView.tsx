@@ -32,8 +32,7 @@ export function ConformanceView({ conformance }: { conformance: ConformanceSumma
         <span className="a11y-section-count">{conformance.standard}</span>
       </h3>
       <p className="a11y-section-desc">
-        This is the checklist European accessibility law measures websites against. It has{" "}
-        {conformance.total} items. Below is what this check was able to find out about each one.
+        The {conformance.total}-item checklist European accessibility law measures sites against.
       </p>
 
       <div className="a11y-conf-tiles">
@@ -64,24 +63,21 @@ export function ConformanceView({ conformance }: { conformance: ConformanceSumma
 
       <div className="a11y-conf-caveat">
         <p>
-          <strong>What this tells you.</strong> This check can show you what your site is getting
-          wrong. It cannot tell you that the rest is right.
+          <strong>What this tells you.</strong> What your site gets wrong — not that the rest is
+          right.
         </p>
         <p>
-          That's true of any automated check, not just this one. {conformance.needsReview} of the{" "}
-          {conformance.total} items need a person to judge them. No software can tell you whether
-          your video captions are actually correct, whether your wording is clear enough, or whether
-          someone slow at typing can finish a form before it times out.
+          {conformance.needsReview} of the {conformance.total} items need a person. No software can
+          judge whether your captions are correct, your wording clear, or your forms fast enough to
+          finish. That's true of every automated check.
         </p>
         <p>
-          So <strong>&ldquo;nothing found&rdquo; means exactly that</strong> — we didn't find a
-          problem. It isn't a pass.
+          So <strong>&ldquo;nothing found&rdquo; is not a pass.</strong>
         </p>
         {conformance.failedByLevel.A > 0 && (
           <p>
-            One thing worth knowing: the checklist has two levels, A and AA, and you need all of
-            both. They don't average out — a single Level A item failing is enough on its own to
-            mean you don't meet the standard.
+            You need every item at both levels, A and AA. They don't average out — one Level A
+            failure means you don't meet the standard.
           </p>
         )}
       </div>

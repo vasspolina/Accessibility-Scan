@@ -150,9 +150,8 @@ export function AccessibilityStatement({ report }: { report: AccessibilityReport
     <section className="a11y-section a11y-stmt">
       <h3 className="a11y-section-title">Your accessibility statement</h3>
       <p className="a11y-section-desc">
-        The European Accessibility Act requires businesses serving EU customers to publish one of
-        these. Most of it can be filled in from this check. Add your details below and the draft
-        updates as you type.
+        European law requires one if you serve EU customers. This check fills in most of it. Add
+        your details and the draft writes itself.
       </p>
 
       <div className="a11y-stmt-fields">
@@ -189,11 +188,10 @@ export function AccessibilityStatement({ report }: { report: AccessibilityReport
       <pre className="a11y-stmt-text">{statement}</pre>
 
       <p className="a11y-conf-caveat">
-        <strong>Read this before you publish it.</strong> A statement is a formal, dated, public
-        declaration. This draft deliberately never claims full conformance, because an automated
-        check cannot establish it — and an overclaiming statement is its own legal exposure under
-        the EAA. Check that it matches the testing you have actually done, and get advice if you are
-        unsure. This is a starting point, not legal advice.
+        <strong>Read it before you publish.</strong> This is a public, dated declaration. The draft
+        never claims full compliance, because no automated check can prove it — and overclaiming is
+        its own legal risk. Make sure it matches the testing you've actually done. A starting point,
+        not legal advice.
       </p>
     </section>
   );

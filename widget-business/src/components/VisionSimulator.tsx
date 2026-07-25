@@ -83,10 +83,8 @@ export function VisionSimulator({ pagePreview, url }: { pagePreview: string; url
     <section className="a11y-section a11y-sim">
       <h3 className="a11y-section-title">See your page as your visitors do</h3>
       <p className="a11y-section-desc">
-        Around one in twelve men has some form of colour blindness, and reduced acuity is more common
-        still. Switch between them below. These are close approximations of the most common form of
-        each condition — severity differs from person to person, so treat this as a way to spot what
-        depends on colour or fine detail, not as a reproduction of anyone's actual sight.
+        One man in twelve is colour blind. Switch between views to see what your page loses. These
+        are close approximations, not anyone's exact sight.
       </p>
 
       <div className="a11y-sim-controls" role="group" aria-label="Vision condition">

@@ -65,8 +65,8 @@ export function App({ apiBase }: { apiBase: string }) {
   return (
     <div className="a11y-widget-inner">
       <p className="a11y-intro">
-        If people with a disability can't use your website, you lose them as customers — and in
-        many countries you're breaking the law. This check is based on the{" "}
+        If disabled people can't use your site, you lose them as customers — and in many countries
+        you're breaking the law. Based on the{" "}
         <a href={WCAG_LINK} target="_blank" rel="noopener noreferrer">
           Web Content Accessibility Guidelines (WCAG)
         </a>
@@ -121,20 +121,19 @@ export function App({ apiBase }: { apiBase: string }) {
 
           <ReportSection
             title="Issues that could turn away users"
-            description="Ways your site might be pushing people into things rather than letting them choose. These don't change the score above, but they are what makes visitors stop trusting a business."
+            description="Places your site pushes people rather than letting them choose. Doesn't affect the score — does affect whether they trust you."
             variant={findingsByCategory.darkPattern.length > 0 ? "redflag" : "default"}
             findings={findingsByCategory.darkPattern}
           />
 
           <section className="a11y-section">
             <h3 className="a11y-section-title">
-              Accessibility issues, organized by the four WCAG principles{" "}
+              What people can't use{" "}
               <span className="a11y-section-count">({findingsByCategory.accessibility.length})</span>
             </h3>
             <p className="a11y-section-desc">
-              Everything below is grouped by the four questions the standard asks about any
-              website: can people see it, use it, understand it, and will it keep working. Read
-              more at{" "}
+              Grouped by the four questions the standard asks: can people see it, use it,
+              understand it, and will it keep working. More at{" "}
               <a href={WCAG_LINK} target="_blank" rel="noopener noreferrer">
                 w3.org/WAI
               </a>
@@ -153,7 +152,7 @@ export function App({ apiBase }: { apiBase: string }) {
 
           <ReportSection
             title="Design & clarity notes"
-            description="Things that make your writing harder work to read: text too small, lines too close together, whole sentences in capitals. None of these break the law. They quietly cost you readers anyway — especially anyone with dyslexia, ADHD or weaker eyesight."
+            description="Text that's harder work to read than it needs to be — too small, too tight, too many capitals. Not illegal. Still costs you readers, especially anyone with dyslexia or weak eyesight."
             variant="default"
             findings={findingsByCategory.designClarity}
           />

@@ -75,106 +75,106 @@ export const PLAIN_RULE_EXPLANATIONS: Record<string, PlainRule> = {
   "color-contrast": {
     plain: "Some text is too light against its background to read easily.",
     impact:
-      "Anyone in bright light, on a cheap screen, or with less-than-perfect eyesight struggles to read it — so your message doesn't land.",
+      "Hard to read in bright light, on a cheap screen, or with imperfect eyesight. Your message doesn't land.",
   },
   "image-alt": {
     plain: "Some images have no text description behind them.",
     impact:
-      "People using screen readers hear nothing for these images, and search engines can't tell what they show — costing you both accessibility and SEO.",
+      "Screen readers say nothing. Search engines learn nothing. You lose on both.",
   },
   "input-image-alt": {
     plain: "An image used as a button has no text description.",
-    impact: "People using screen readers can't tell what the button does, so they can't complete the action.",
+    impact: "Screen reader users can't tell what it does, so they can't finish.",
   },
   "link-name": {
     plain: "Some links have no readable text.",
     impact:
-      "People using screen readers just hear \"link\" with no idea where it goes, so they can't navigate your site.",
+      "Screen readers say only \"link\". No idea where it goes.",
   },
   "button-name": {
     plain: "Some buttons have no label.",
-    impact: "People can't tell what the button does before clicking it — a common reason users abandon a task.",
+    impact: "Nobody can tell what it does before clicking. A common reason people give up.",
   },
   label: {
     plain: "Some form fields have no label.",
     impact:
-      "People using screen readers don't know what to type in each box, so forms — including checkout and contact forms — get abandoned.",
+      "Screen reader users don't know what goes in each box, so forms get abandoned — including checkout.",
   },
   "select-name": {
     plain: "A dropdown menu has no label.",
-    impact: "People can't tell what they're choosing, which leads to errors and dropped forms.",
+    impact: "People can't tell what they're choosing. Errors and dropped forms follow.",
   },
   "document-title": {
     plain: "Your page has no title.",
-    impact: "Browser tabs, bookmarks, and search results show nothing useful — hurting both usability and SEO.",
+    impact: "Tabs, bookmarks and search results show nothing useful.",
   },
   "html-has-lang": {
     plain: "Your page doesn't say what language it's written in.",
-    impact: "Screen readers may read your content with the wrong accent and pronunciation, making it hard to follow.",
+    impact: "Screen readers use the wrong accent, making it hard to follow.",
   },
   "html-lang-valid": {
     plain: "Your page's declared language isn't a valid value.",
-    impact: "Screen readers can't pick the right voice, so your content may be read out incorrectly.",
+    impact: "Screen readers pick the wrong voice and mispronounce your words.",
   },
   "heading-order": {
     plain: "Your headings jump levels instead of going in order.",
-    impact: "People who navigate by headings (common with screen readers) lose track of how the page is organized.",
+    impact: "Most screen reader users navigate by headings. They lose the thread.",
   },
   "page-has-heading-one": {
     plain: "Your page has no main heading.",
-    impact: "Visitors and screen readers can't quickly tell what the page is about.",
+    impact: "Nobody can tell at a glance what the page is about.",
   },
   "empty-heading": {
     plain: "A heading on the page is empty.",
-    impact: "People navigating by headings hit a blank signpost that tells them nothing.",
+    impact: "A signpost with nothing written on it.",
   },
   "link-in-text-block": {
     plain: "Some links are shown only by color, with nothing else to set them apart.",
-    impact: "People who can't distinguish those colors can't tell what's a link and what's plain text.",
+    impact: "Colour-blind readers can't tell a link from ordinary text.",
   },
   "meta-viewport": {
     plain: "Your page stops people from zooming in.",
-    impact: "Anyone who needs bigger text can't enlarge it, so they simply can't read your site on a phone.",
+    impact: "Anyone who needs bigger text can't get it. On a phone, they just leave.",
   },
   "frame-title": {
     plain: "An embedded frame (like a map or video) has no title.",
-    impact: "People using screen readers can't tell what the embedded content is or whether it's worth exploring.",
+    impact: "Screen reader users can't tell what's in it, or whether to bother.",
   },
   "duplicate-id-active": {
     plain: "Two interactive elements share the same hidden name in the code.",
-    impact: "This can break screen readers and interactive features, causing the wrong thing to respond.",
+    impact: "Screen readers and scripts get confused, and the wrong thing responds.",
   },
   list: {
     plain: "A list isn't built as a proper list.",
-    impact: "Screen readers can't announce how many items there are or let people jump through them.",
+    impact: "Screen readers can't say how many items there are, or skip through them.",
   },
   listitem: {
     plain: "A list item sits outside any real list.",
-    impact: "Screen readers lose the list structure, so grouped content stops making sense.",
+    impact: "The grouping is lost, so the content stops making sense.",
   },
   "aria-required-attr": {
     plain: "A menu or slider is missing information screen readers need.",
-    impact: "People using screen readers may not know the control's state or how to use it.",
+    impact: "Screen reader users can't tell its state or how to work it.",
   },
   "aria-hidden-focus": {
     plain: "Something hidden from screen readers can still be reached with the Tab key.",
-    impact: "Someone tabbing through lands on something a screen reader says nothing about, so the page feels broken.",
+    impact: "Someone tabbing lands on something their screen reader won't read. The page feels broken.",
   },
   region: {
     plain: "The main areas of your page aren't named in the code.",
-    impact: "People using screen readers can't skip to the part they want, so they have to listen to everything.",
+    impact: "Screen reader users can't skip ahead. They hear everything, every time.",
   },
   "landmark-one-main": {
     plain: "Your page doesn't say where the main content starts.",
-    impact: "People using screen readers can't skip straight to the content and have to sit through the menu on every page.",
+    impact: "Screen reader users sit through the menu on every single page.",
   },
   tabindex: {
     plain: "Tabbing jumps around the page instead of following the order things appear.",
-    impact: "People who can't use a mouse get thrown around the page, which makes forms and menus hard to get through.",
+    impact: "People who can't use a mouse get thrown around the page.",
   },
   "scrollable-region-focusable": {
     plain: "A scrollable area can't be reached with the keyboard.",
-    impact: "People who don't use a mouse can't scroll to see the content inside it.",
+    impact: "Without a mouse, you can't scroll to what's inside.",
   },
 
   // Keyboard walk-through checks (WCAG 2.4.7 Focus Visible, 2.1.2 No
@@ -182,12 +182,12 @@ export const PLAIN_RULE_EXPLANATIONS: Record<string, PlainRule> = {
   "keyboard-no-visible-focus": {
     plain: "Moving through the page with the keyboard gives no visible sign of where you are.",
     impact:
-      "Many people navigate entirely by keyboard — power users, people with motor disabilities, anyone whose mouse died. Without a visible highlight they are navigating blind and give up.",
+      "Plenty of people never touch a mouse. Without a visible highlight they're navigating blind, and they give up.",
   },
   "keyboard-focus-trap": {
     plain: "Keyboard focus gets stuck in one spot — you can't Tab past it.",
     impact:
-      "A keyboard user who hits this point literally cannot reach the rest of your page. This is one of the most severe accessibility failures a site can have.",
+      "A keyboard user who reaches this point cannot go further. One of the worst failures a site can have.",
   },
 
   // Component design suggestions (forms, menus) — from the ARIA Authoring
@@ -195,7 +195,7 @@ export const PLAIN_RULE_EXPLANATIONS: Record<string, PlainRule> = {
   "component-form-autocomplete": {
     plain: "Your form fields don't let browsers autofill personal details.",
     impact:
-      "Without autocomplete, every visitor retypes their name, email, and address by hand — slow for everyone, and a real barrier for people with motor or memory difficulties.",
+      "Everyone retypes their name, email and address by hand. Slow for all, a real barrier for some.",
   },
   "component-input-type": {
     plain: "Email and phone fields use a plain text box instead of the proper input type.",
@@ -205,7 +205,7 @@ export const PLAIN_RULE_EXPLANATIONS: Record<string, PlainRule> = {
   "component-required-cue": {
     plain: "Required fields are marked only in the code, not visibly in the label.",
     impact:
-      "People don't learn a field was mandatory until the form rejects them — a frustrating loop that makes sign-ups and checkouts fail.",
+      "Nobody knows a field was required until the form rejects them. Sign-ups fail.",
   },
   "component-submit-clarity": {
     plain: "The form has no clearly-labelled submit button.",
@@ -220,19 +220,19 @@ export const PLAIN_RULE_EXPLANATIONS: Record<string, PlainRule> = {
   "component-skip-link": {
     plain: "There's no \"skip to main content\" link.",
     impact:
-      "Keyboard and screen-reader users must tab through your whole menu on every page before reaching the content — dozens of extra key presses each visit.",
+      "Keyboard users tab through your entire menu on every page. Dozens of extra presses each visit.",
   },
 
   // Mobile-only issues from the phone-width render pass.
   "mobile-horizontal-scroll": {
     plain: "On a phone, your page scrolls sideways.",
     impact:
-      "Most of your visitors are on phones. If they have to swipe left and right to read each line — or content spills off the edge — many just leave.",
+      "Most visitors are on phones. Swiping sideways to read each line makes them leave.",
   },
   "mobile-tap-target": {
     plain: "Some buttons or links are too small to tap reliably on a phone.",
     impact:
-      "Tiny tap targets cause mis-taps and frustration, especially for people with larger fingers, tremors, or limited dexterity — and they cost you conversions.",
+      "Mis-taps and frustration — worst for bigger fingers, tremors, or shaky hands. It costs you sales.",
   },
 
   // Text resizing — WCAG 1.4.4 / 1.4.12, measured by actually applying the
@@ -240,17 +240,17 @@ export const PLAIN_RULE_EXPLANATIONS: Record<string, PlainRule> = {
   "text-spacing-clipped": {
     plain: "Text gets cut off when a reader increases spacing.",
     impact:
-      "Many people with dyslexia widen line and letter spacing to read at all. On your page the words don't reflow — they disappear behind a fixed-size box, so the content is simply lost.",
+      "Many dyslexic readers widen spacing just to read. Here the words don't reflow — they disappear behind a fixed box.",
   },
   "text-zoom-clipped": {
     plain: "Text gets cut off at larger font sizes.",
     impact:
-      "Turning up the browser's font size is the most common adjustment people with low vision make — far more common than any screen reader. Here the container stays put while the words grow, so part of your content is hidden.",
+      "Turning up font size is the commonest fix for weak eyesight — far more common than screen readers. Your boxes stay put, so the words vanish.",
   },
   "text-zoom-horizontal-scroll": {
     plain: "Enlarging text makes the page scroll sideways.",
     impact:
-      "Readers who enlarge text have to drag left and right on every single line. It's exhausting, and most people give up rather than persist.",
+      "Dragging left and right on every line is exhausting. Most people give up.",
   },
 
   // Dark patterns — manipulative marketing/UX. These don't affect the
@@ -263,27 +263,27 @@ export const PLAIN_RULE_EXPLANATIONS: Record<string, PlainRule> = {
   "dark-consent-asymmetry": {
     plain: "Your cookie banner pushes \"accept\" and plays down \"reject\".",
     impact:
-      "Styling one choice as a solid button and the other as plain text nudges people into agreeing without really choosing — a recognised pattern regulators look for.",
+      "Making one option a button and the other plain text nudges people into agreeing. Regulators look for this.",
   },
   "dark-preselected-optin": {
     plain: "A marketing opt-in is ticked before the visitor chooses.",
     impact:
-      "Pre-ticked consent boxes are explicitly invalid under GDPR. People who don't spot them feel signed up without agreeing, which drives spam complaints and unsubscribes.",
+      "GDPR says a pre-ticked box isn't consent. People who miss it feel signed up without agreeing.",
   },
   "dark-confirmshaming": {
     plain: "The \"no thanks\" option is worded to make people feel bad.",
     impact:
-      "Guilt-tripping visitors for declining ('No thanks, I don't want to save money') is memorable for the wrong reasons — it reads as manipulative and damages trust in your brand.",
+      "\"No thanks, I don't want to save money\" is memorable for the wrong reasons. It reads as manipulation.",
   },
   "dark-fake-scarcity": {
     plain: "The page claims limited stock or high demand — worth verifying.",
     impact:
-      "If the numbers aren't real, this is a deceptive practice regulators actively pursue. Shoppers have also learned to distrust these claims, so fake ones cost more sales than they win.",
+      "Regulators pursue fake scarcity. Shoppers have learned to distrust it. Invented numbers cost more sales than they win.",
   },
   "dark-fake-urgency": {
     plain: "The page applies time pressure — worth verifying it's real.",
     impact:
-      "Countdowns that reset on reload, or deadlines that never arrive, are a deceptive practice. When visitors notice, it undermines confidence in everything else you claim.",
+      "Countdowns that reset on reload are a deceptive practice. Once noticed, nothing else you claim is believed.",
   },
 
   // Modal / pop-up dialogs — ARIA dialog pattern.
@@ -295,12 +295,12 @@ export const PLAIN_RULE_EXPLANATIONS: Record<string, PlainRule> = {
   "dialog-no-close": {
     plain: "A pop-up appears to have no obvious close button.",
     impact:
-      "If it can only be dismissed by clicking outside, keyboard and screen-reader users can get stuck behind it with no way forward.",
+      "If clicking outside is the only way out, keyboard users get stuck behind it.",
   },
   "dialog-missing-role": {
     plain: "A pop-up overlay isn't marked up as a dialog.",
     impact:
-      "Screen readers don't announce that the pop-up opened, doesn't keep focus inside it, and lets people tab off into the hidden page behind it.",
+      "Screen readers don't announce it opened, and people tab straight off into the hidden page behind.",
   },
   "dialog-missing-name": {
     plain: "A pop-up dialog has no name describing what it's for.",
@@ -312,19 +312,19 @@ export const PLAIN_RULE_EXPLANATIONS: Record<string, PlainRule> = {
   "markup-validation": {
     plain: "The page's underlying HTML code contains errors.",
     impact:
-      "Browsers silently guess how to repair broken markup — and screen readers, search engines, and different browsers can all guess differently, so your page may not work the way you think it does.",
+      "Browsers quietly guess how to fix it, and each one guesses differently. Your page may not work the way you think.",
   },
 
   // Motion/animation checks (WCAG 2.2.2 Pause, Stop, Hide).
   "motion-marquee": {
     plain: "Text scrolls across the page in a moving ticker that can't be paused.",
     impact:
-      "Moving text is hard to read for everyone, and for people with attention or vestibular (balance) disabilities it can make the page unusable.",
+      "Moving text is hard for everyone. For anyone with attention or balance problems it's unusable.",
   },
   "motion-autoplay-media": {
     plain: "A video or audio starts playing by itself, with no controls to stop it.",
     impact:
-      "Visitors can't stop the motion or sound — it's disorienting, drowns out screen readers, and is a common reason people leave a site immediately.",
+      "Nobody can stop it. It's disorienting, it drowns out screen readers, and people leave.",
   },
   "motion-infinite-no-reduced-motion": {
     plain: "Something on the page animates non-stop, even for visitors who asked their device for less motion.",
@@ -351,7 +351,7 @@ export const PLAIN_RULE_EXPLANATIONS: Record<string, PlainRule> = {
   "typo-line-length-long": {
     plain: "Lines of text run too long across the page.",
     impact:
-      "Past about 75 characters per line, the eye struggles to find the start of the next line — readers lose their place and give up sooner.",
+      "Past about 75 characters a line, the eye loses its place jumping back.",
   },
   "typo-line-length-short": {
     plain: "Text is squeezed into very short, choppy lines.",
@@ -380,22 +380,22 @@ export const PLAIN_RULE_EXPLANATIONS: Record<string, PlainRule> = {
   "typo-underline-nonlink": {
     plain: "Some text that isn't a link is underlined.",
     impact:
-      "Underlines read as links, so people click text that goes nowhere — and the line cutting through the letters slows readers with dyslexia.",
+      "Underlines read as links, so people click text that goes nowhere.",
   },
   "typo-italic-body": {
     plain: "Whole passages are set in italics.",
     impact:
-      "Slanted, distorted letters are markedly harder to read over more than a few words — a real barrier for people with dyslexia or low vision.",
+      "Slanted letters get hard past a few words — a real barrier with dyslexia or weak eyesight.",
   },
   "typo-allcaps-block": {
     plain: "A long passage is set in ALL CAPITALS.",
     impact:
-      "Capitals strip out the word shapes people read by, so long all-caps text is slow and tiring — hardest of all for dyslexic readers.",
+      "Capitals strip out the word shapes we read by. Slow and tiring, worst for dyslexic readers.",
   },
   "typo-thin-weight": {
     plain: "Body text is set in a very thin (hairline) weight.",
     impact:
-      "Thin strokes fade out on cheaper screens, in bright sunlight, and for readers with low vision — even when the colour contrast technically passes.",
+      "Thin strokes fade on cheap screens, in sunlight, and for weak eyesight — even when contrast passes.",
   },
 };
 
