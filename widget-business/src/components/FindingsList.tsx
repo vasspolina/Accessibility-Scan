@@ -15,7 +15,7 @@ const severityRank: Record<AccessibilityFinding["severity"], number> = {
 // still stand alone.
 export function FindingsList({ findings }: { findings: AccessibilityFinding[] }) {
   if (findings.length === 0) {
-    return <p className="a11y-empty">No issues found. Nice work!</p>;
+    return <p className="a11y-empty">Nothing found here.</p>;
   }
 
   const groups = new Map<string, AccessibilityFinding[]>();

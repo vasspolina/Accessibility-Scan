@@ -80,16 +80,16 @@ export const PLAIN_RULE_EXPLANATIONS: Record<string, PlainRule> = {
   "image-alt": {
     plain: "Some images have no text description behind them.",
     impact:
-      "Screen readers say nothing. Search engines learn nothing. You lose on both.",
+      "People using screen readers hear nothing for these images, and search engines can't tell what they show — costing you both accessibility and SEO.",
   },
   "input-image-alt": {
     plain: "An image used as a button has no text description.",
-    impact: "Screen reader users can't tell what it does, so they can't finish.",
+    impact: "People using screen readers can't tell what the button does, so they can't finish.",
   },
   "link-name": {
     plain: "Some links have no readable text.",
     impact:
-      "Screen readers say only \"link\". No idea where it goes.",
+      "People using screen readers hear only \"link\", with no idea where it goes.",
   },
   "button-name": {
     plain: "Some buttons have no label.",
@@ -98,7 +98,7 @@ export const PLAIN_RULE_EXPLANATIONS: Record<string, PlainRule> = {
   label: {
     plain: "Some form fields have no label.",
     impact:
-      "Screen reader users don't know what goes in each box, so forms get abandoned — including checkout.",
+      "People using screen readers don't know what goes in each box, so forms get abandoned — checkout included.",
   },
   "select-name": {
     plain: "A dropdown menu has no label.",
@@ -110,11 +110,11 @@ export const PLAIN_RULE_EXPLANATIONS: Record<string, PlainRule> = {
   },
   "html-has-lang": {
     plain: "Your page doesn't say what language it's written in.",
-    impact: "Screen readers use the wrong accent, making it hard to follow.",
+    impact: "People hear your content in the wrong accent, which is hard to follow.",
   },
   "html-lang-valid": {
     plain: "Your page's declared language isn't a valid value.",
-    impact: "Screen readers pick the wrong voice and mispronounce your words.",
+    impact: "People hear your words in the wrong voice, mispronounced.",
   },
   "heading-order": {
     plain: "Your headings jump levels instead of going in order.",
@@ -126,7 +126,7 @@ export const PLAIN_RULE_EXPLANATIONS: Record<string, PlainRule> = {
   },
   "empty-heading": {
     plain: "A heading on the page is empty.",
-    impact: "A signpost with nothing written on it.",
+    impact: "People navigating by headings hit a blank signpost that tells them nothing.",
   },
   "link-in-text-block": {
     plain: "Some links are shown only by color, with nothing else to set them apart.",
@@ -138,35 +138,35 @@ export const PLAIN_RULE_EXPLANATIONS: Record<string, PlainRule> = {
   },
   "frame-title": {
     plain: "An embedded frame (like a map or video) has no title.",
-    impact: "Screen reader users can't tell what's in it, or whether to bother.",
+    impact: "People using screen readers can't tell what's in it, or whether it's worth their time.",
   },
   "duplicate-id-active": {
     plain: "Two interactive elements share the same hidden name in the code.",
-    impact: "Screen readers and scripts get confused, and the wrong thing responds.",
+    impact: "Screen readers get confused and the wrong thing responds when someone clicks.",
   },
   list: {
     plain: "A list isn't built as a proper list.",
-    impact: "Screen readers can't say how many items there are, or skip through them.",
+    impact: "People using screen readers aren't told how many items there are, and can't skip through them.",
   },
   listitem: {
     plain: "A list item sits outside any real list.",
-    impact: "The grouping is lost, so the content stops making sense.",
+    impact: "People using screen readers lose the grouping, so the content stops making sense.",
   },
   "aria-required-attr": {
     plain: "A menu or slider is missing information screen readers need.",
-    impact: "Screen reader users can't tell its state or how to work it.",
+    impact: "People using screen readers can't tell what state it's in, or how to work it.",
   },
   "aria-hidden-focus": {
     plain: "Something hidden from screen readers can still be reached with the Tab key.",
-    impact: "Someone tabbing lands on something their screen reader won't read. The page feels broken.",
+    impact: "Someone tabbing through lands on something their screen reader won't read. The page feels broken.",
   },
   region: {
     plain: "The main areas of your page aren't named in the code.",
-    impact: "Screen reader users can't skip ahead. They hear everything, every time.",
+    impact: "People using screen readers can't skip ahead. They hear everything, every time.",
   },
   "landmark-one-main": {
     plain: "Your page doesn't say where the main content starts.",
-    impact: "Screen reader users sit through the menu on every single page.",
+    impact: "People using screen readers sit through the whole menu on every single page.",
   },
   tabindex: {
     plain: "Tabbing jumps around the page instead of following the order things appear.",
@@ -258,7 +258,7 @@ export const PLAIN_RULE_EXPLANATIONS: Record<string, PlainRule> = {
   "dark-consent-no-reject": {
     plain: "Your cookie banner lets people accept, but not refuse.",
     impact:
-      "Under GDPR and UK PECR, refusing has to be as easy as accepting — consent collected this way can be invalid, and visitors read a missing \"Reject\" button as a trick.",
+      "Under GDPR, refusing has to be as easy as accepting. Consent collected this way can be invalid. Visitors read a missing \"Reject\" button as a trick.",
   },
   "dark-consent-asymmetry": {
     plain: "Your cookie banner pushes \"accept\" and plays down \"reject\".",
@@ -359,7 +359,7 @@ export const PLAIN_RULE_EXPLANATIONS: Record<string, PlainRule> = {
   },
   "typo-leading-tight": {
     plain: "Lines of text sit too close together.",
-    impact: "Dense line spacing makes it easy to reread or skip lines — tiring for everyone, a real barrier for dyslexic readers.",
+    impact: "Cramped lines make it easy to reread or skip one. Tiring for everyone, a real barrier for dyslexic readers.",
   },
   "typo-justified-no-hyphens": {
     plain: "Text is stretched edge-to-edge (justified) without hyphenation.",

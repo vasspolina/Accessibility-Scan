@@ -127,7 +127,9 @@ export function AccessibilityStatement({ report }: { report: AccessibilityReport
         position,
         conformance: report.conformance,
         knownIssues,
-        date: new Date(report.scannedAt).toLocaleDateString(undefined, {
+        // en-GB, not the viewer's locale: house style is European dates
+        // (28 June 2025), and that shouldn't change with who's reading.
+        date: new Date(report.scannedAt).toLocaleDateString("en-GB", {
           year: "numeric",
           month: "long",
           day: "numeric",

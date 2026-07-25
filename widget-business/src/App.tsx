@@ -65,12 +65,12 @@ export function App({ apiBase }: { apiBase: string }) {
   return (
     <div className="a11y-widget-inner">
       <p className="a11y-intro">
-        If disabled people can't use your site, you lose them as customers — and in many countries
-        you're breaking the law. Based on the{" "}
+        A door that only opens for some people isn't a broken door. It's a badly designed one. The
+        same goes for websites. This check follows the{" "}
         <a href={WCAG_LINK} target="_blank" rel="noopener noreferrer">
           Web Content Accessibility Guidelines (WCAG)
         </a>
-        , the rulebook nearly every accessibility law is built on.
+        , the standard nearly every accessibility law is built on.
       </p>
 
       <UrlForm onSubmit={handleScan} loading={loading} />
@@ -121,7 +121,7 @@ export function App({ apiBase }: { apiBase: string }) {
 
           <ReportSection
             title="Issues that could turn away users"
-            description="Places your site pushes people rather than letting them choose. Doesn't affect the score — does affect whether they trust you."
+            description="Places your site nudges people instead of letting them choose. These don't move the score. They move how much you're trusted."
             variant={findingsByCategory.darkPattern.length > 0 ? "redflag" : "default"}
             findings={findingsByCategory.darkPattern}
           />
@@ -152,7 +152,7 @@ export function App({ apiBase }: { apiBase: string }) {
 
           <ReportSection
             title="Design & clarity notes"
-            description="Text that's harder work to read than it needs to be — too small, too tight, too many capitals. Not illegal. Still costs you readers, especially anyone with dyslexia or weak eyesight."
+            description="Type that works against the reader: too small, too tight, too many capitals. None of it is illegal. All of it costs you readers, and dyslexic ones first."
             variant="default"
             findings={findingsByCategory.designClarity}
           />
