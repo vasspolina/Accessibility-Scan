@@ -65,12 +65,12 @@ export function App({ apiBase }: { apiBase: string }) {
   return (
     <div className="a11y-widget-inner">
       <p className="a11y-intro">
-        A website that's hard to use for people with disabilities turns away users and can carry
-        real legal risk. This check is based on the{" "}
+        If people with a disability can't use your website, you lose them as customers — and in
+        many countries you're breaking the law. This check is based on the{" "}
         <a href={WCAG_LINK} target="_blank" rel="noopener noreferrer">
           Web Content Accessibility Guidelines (WCAG)
         </a>
-        , the standard most accessibility laws are built on.
+        , the rulebook nearly every accessibility law is built on.
       </p>
 
       <UrlForm onSubmit={handleScan} loading={loading} />
@@ -121,7 +121,7 @@ export function App({ apiBase }: { apiBase: string }) {
 
           <ReportSection
             title="Issues that could turn away users"
-            description="Marketing or design tricks that pressure or confuse people — these don't affect the score above, but they can cost you trust and credibility."
+            description="Ways your site might be pushing people into things rather than letting them choose. These don't change the score above, but they are what makes visitors stop trusting a business."
             variant={findingsByCategory.darkPattern.length > 0 ? "redflag" : "default"}
             findings={findingsByCategory.darkPattern}
           />
@@ -132,8 +132,9 @@ export function App({ apiBase }: { apiBase: string }) {
               <span className="a11y-section-count">({findingsByCategory.accessibility.length})</span>
             </h3>
             <p className="a11y-section-desc">
-              Every WCAG rule falls under one of four principles — content should be Perceivable,
-              Operable, Understandable, and Robust. Read more at{" "}
+              Everything below is grouped by the four questions the standard asks about any
+              website: can people see it, use it, understand it, and will it keep working. Read
+              more at{" "}
               <a href={WCAG_LINK} target="_blank" rel="noopener noreferrer">
                 w3.org/WAI
               </a>
@@ -152,7 +153,7 @@ export function App({ apiBase }: { apiBase: string }) {
 
           <ReportSection
             title="Design & clarity notes"
-            description="Visual and readability issues spotted on the page — typography details like letter spacing, line length, line spacing, italics, and all-caps, drawn from classic typographic practice and neurodiversity research (GOV.UK's accessibility guidance and the Neurodiversity Design System). Not formal WCAG violations, but they shape how readable your site feels — especially for people with dyslexia, ADHD, or low vision."
+            description="Things that make your writing harder work to read: text too small, lines too close together, whole sentences in capitals. None of these break the law. They quietly cost you readers anyway — especially anyone with dyslexia, ADHD or weaker eyesight."
             variant="default"
             findings={findingsByCategory.designClarity}
           />

@@ -1178,3 +1178,15 @@
     word-break: break-all;
   }
 }
+
+/* The standard's own term, kept visible for credibility but subordinate to
+   the plain-language question a reader can actually act on. */
+.a11y-principle-term {
+  display: block;
+  font-style: normal;
+  font-size: 11px;
+  font-weight: 400;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--a11y-muted, #57606a);
+}

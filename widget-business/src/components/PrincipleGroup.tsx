@@ -35,7 +35,9 @@ export function PrincipleGroup({ findings }: { findings: AccessibilityFinding[] 
         return (
           <div className="a11y-principle-group" key={principle}>
             <h4 className="a11y-principle-title">
-              {principle} <span className="a11y-section-count">({groupFindings.length})</span>
+              {info?.plainTitle ?? principle}{" "}
+              <span className="a11y-section-count">({groupFindings.length})</span>
+              {info && <em className="a11y-principle-term">{principle}</em>}
             </h4>
             {info && <p className="a11y-principle-desc">{info.plainDescription}</p>}
             <FindingsList findings={groupFindings} />

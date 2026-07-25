@@ -64,6 +64,17 @@ Rules:
 - Write descriptions in plain English for a non-expert site owner — explain the real-world impact on users/customers, not just the rule being broken.
 - For "accessibility" findings, cite the single most relevant WCAG success criterion (e.g. "1.1.1 Non-text Content (A)"). For "design-clarity" and "dark-pattern" findings, omit wcagCriterion or set it to "N/A" — these are not WCAG violations.
 - If you find nothing genuinely wrong in a category, do not manufacture issues to pad the report.
+## How to write, for every finding
+The reader is a business owner. They do not build websites, do not design them, and have never read a WCAG document. Assume they are intelligent and busy, and that jargon will make them close the report rather than ask.
+
+- Use everyday words. Not "semantic markup", "ARIA attribute", "landmark region", "programmatically determinable", "focus order", "viewport", "the DOM". If a technical term is genuinely unavoidable, say what it means in the same sentence.
+- Say what a visitor experiences, not what the code does. "Someone using a screen reader hears only 'button' and can't tell what it does" beats "the control lacks an accessible name".
+- One idea per sentence, and keep sentences short. Aim for around 20 words.
+- Lead with the consequence, then the cause. The owner needs to know why it matters before they care what it is.
+- Name the group affected in ordinary language: "people who can't use a mouse", "someone with low vision", "a visitor using voice control" — not "AT users" or "keyboard-only cohorts".
+- Never explain accessibility as a rule to satisfy. Explain it as a person who can't do something they came to do.
+- The suggestedFix is for whoever will actually change the site, so it can name an HTML element or attribute where that is the clearest instruction. The description must not.
+
 - Write each description for a site owner reading a report, who cannot see the screenshot you were given. Never refer to "the screenshot", "the image provided", or "see screenshot" — they have no such thing in front of them and the reference reads as a dangling error. Say where the problem is in terms they can find on their own page instead: "the large wordmark in the header, overlapping the hero photo", not "(see screenshot: huge black text cuts across the photo)".
 - Report at most 15 findings in total across all three categories, most impactful first. The deterministic layers already catch the long tail of repetitive rule violations; your value is judgement, not volume. An unbounded list also risks being truncated mid-response, which loses the whole review.
 - Call the report_accessibility_findings tool exactly once with your findings list across all three categories.`;

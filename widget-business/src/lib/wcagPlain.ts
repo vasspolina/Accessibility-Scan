@@ -6,6 +6,10 @@ export type Principle = "Perceivable" | "Operable" | "Understandable" | "Robust"
 
 interface PrincipleInfo {
   principle: Principle;
+  // The heading a reader actually sees. "Perceivable" is the standard's own
+  // word and means nothing to someone who hasn't read it, so the plain
+  // question leads and the formal term follows in smaller type.
+  plainTitle: string;
   plainDescription: string;
 }
 
@@ -14,15 +18,29 @@ interface PrincipleInfo {
 // like "1.1.1" (automated findings) or "1.1.1 Non-text Content (A)" (AI
 // findings, which are asked to include the criterion name).
 const PRINCIPLES: Record<string, PrincipleInfo> = {
-  "1": { principle: "Perceivable", plainDescription: "Can people see or hear this content?" },
+  "1": {
+    principle: "Perceivable",
+    plainTitle: "Can people see and hear it?",
+    plainDescription:
+      "Anything people can't see or hear — text too faint to read, images with nothing written about them, video with no captions.",
+  },
   "2": {
     principle: "Operable",
-    plainDescription: "Can people navigate and interact with this using a keyboard, mouse, or assistive device?",
+    plainTitle: "Can people use it?",
+    plainDescription:
+      "Whether someone can actually get through your site — with a keyboard instead of a mouse, on a phone, or without fine control of their hands.",
   },
-  "3": { principle: "Understandable", plainDescription: "Is the content and behavior clear and predictable?" },
+  "3": {
+    principle: "Understandable",
+    plainTitle: "Can people follow it?",
+    plainDescription:
+      "Whether your wording and layout make sense, and whether the site behaves the way people expect it to.",
+  },
   "4": {
     principle: "Robust",
-    plainDescription: "Will this keep working across browsers, devices, and assistive technology?",
+    plainTitle: "Will it keep working?",
+    plainDescription:
+      "Whether your site still works properly in other browsers, on other devices, and with the software blind visitors use to read it aloud.",
   },
 };
 
@@ -123,8 +141,8 @@ export const PLAIN_RULE_EXPLANATIONS: Record<string, PlainRule> = {
     impact: "People using screen readers can't tell what the embedded content is or whether it's worth exploring.",
   },
   "duplicate-id-active": {
-    plain: "Two interactive elements share the same internal ID.",
-    impact: "This can break assistive technology and interactive features, causing the wrong thing to respond.",
+    plain: "Two interactive elements share the same hidden name in the code.",
+    impact: "This can break screen readers and interactive features, causing the wrong thing to respond.",
   },
   list: {
     plain: "A list isn't built as a proper list.",
@@ -135,24 +153,24 @@ export const PLAIN_RULE_EXPLANATIONS: Record<string, PlainRule> = {
     impact: "Screen readers lose the list structure, so grouped content stops making sense.",
   },
   "aria-required-attr": {
-    plain: "An interactive component is missing information assistive tech needs.",
-    impact: "Screen reader users may not know the control's state or how to use it.",
+    plain: "A menu or slider is missing information screen readers need.",
+    impact: "People using screen readers may not know the control's state or how to use it.",
   },
   "aria-hidden-focus": {
-    plain: "Something hidden from screen readers can still be tabbed into.",
-    impact: "Keyboard users land on an element that reads as invisible, which is confusing and feels broken.",
+    plain: "Something hidden from screen readers can still be reached with the Tab key.",
+    impact: "Someone tabbing through lands on something a screen reader says nothing about, so the page feels broken.",
   },
   region: {
-    plain: "Parts of your page aren't inside labelled sections.",
-    impact: "People using screen readers can't jump between the main areas of the page, so they must wade through everything.",
+    plain: "The main areas of your page aren't named in the code.",
+    impact: "People using screen readers can't skip to the part they want, so they have to listen to everything.",
   },
   "landmark-one-main": {
-    plain: "Your page doesn't mark where its main content begins.",
-    impact: "Screen reader users can't skip straight to the content and have to sit through the menus every time.",
+    plain: "Your page doesn't say where the main content starts.",
+    impact: "People using screen readers can't skip straight to the content and have to sit through the menu on every page.",
   },
   tabindex: {
-    plain: "The keyboard focus order has been forced out of its natural sequence.",
-    impact: "Keyboard users get bounced around the page unpredictably, making it hard to fill in or navigate.",
+    plain: "Tabbing jumps around the page instead of following the order things appear.",
+    impact: "People who can't use a mouse get thrown around the page, which makes forms and menus hard to get through.",
   },
   "scrollable-region-focusable": {
     plain: "A scrollable area can't be reached with the keyboard.",
@@ -197,7 +215,7 @@ export const PLAIN_RULE_EXPLANATIONS: Record<string, PlainRule> = {
   "component-nav-labels": {
     plain: "Your page has several menus, but they aren't individually labelled.",
     impact:
-      "Screen-reader users hear \"navigation… navigation…\" with no way to tell the main menu from footer links, so getting around your site is guesswork.",
+      "People using screen readers hear \"navigation… navigation…\" with no way to tell the main menu from footer links, so getting around your site is guesswork.",
   },
   "component-skip-link": {
     plain: "There's no \"skip to main content\" link.",
@@ -272,7 +290,7 @@ export const PLAIN_RULE_EXPLANATIONS: Record<string, PlainRule> = {
   "dialog-close-unlabeled": {
     plain: "A pop-up's close button is just an \"×\" with no readable label.",
     impact:
-      "Screen-reader users hear only \"button\" and can't tell how to close the pop-up — it traps them, and many will simply leave your site.",
+      "People using screen readers hear only \"button\" and can't tell how to close the pop-up — it traps them, and many will simply leave your site.",
   },
   "dialog-no-close": {
     plain: "A pop-up appears to have no obvious close button.",
@@ -282,7 +300,7 @@ export const PLAIN_RULE_EXPLANATIONS: Record<string, PlainRule> = {
   "dialog-missing-role": {
     plain: "A pop-up overlay isn't marked up as a dialog.",
     impact:
-      "Assistive tech doesn't announce that the pop-up opened, doesn't keep focus inside it, and lets people tab off into the hidden page behind it.",
+      "Screen readers don't announce that the pop-up opened, doesn't keep focus inside it, and lets people tab off into the hidden page behind it.",
   },
   "dialog-missing-name": {
     plain: "A pop-up dialog has no name describing what it's for.",
