@@ -9,8 +9,15 @@ import { VisionSimulator } from "./components/VisionSimulator";
 import { SiteAuditView } from "./components/SiteAuditView";
 import { AccessibilityStatement } from "./components/AccessibilityStatement";
 import { BlockedNotice } from "./components/BlockedNotice";
+import { ScanHistory } from "./components/ScanHistory";
 import { PrintButton } from "./components/PrintButton";
 import { WCAG_LINK } from "./lib/wcagPlain";
+import {
+  recordScan,
+  getHistory,
+  toHistoryEntry,
+  type HistoryEntry,
+} from "./lib/scanHistory";
 import {
   scanUrl,
   auditSite,
@@ -32,6 +39,9 @@ export function App({ apiBase }: { apiBase: string }) {
   // A site turning the scanner away isn't the visitor's mistake, so it's shown
   // as guidance rather than a red error.
   const [blocked, setBlocked] = useState<string | null>(null);
+  // Earlier scans of the page just checked, read before this one is recorded
+  // so the current scan isn't compared against itself.
+  const [history, setHistory] = useState<HistoryEntry[]>([]);
 
   const findingsByCategory = useMemo(() => {
     const findings = report?.findings ?? [];
@@ -56,11 +66,17 @@ export function App({ apiBase }: { apiBase: string }) {
     setBlocked(null);
     setReport(null);
     setAudit(null);
+    setHistory([]);
     try {
       if (mode === "site") {
         setAudit(await auditSite(apiBase, url, maxPages));
       } else {
-        setReport(await scanUrl(apiBase, url, includeAiReview, auth));
+        const result = await scanUrl(apiBase, url, includeAiReview, auth);
+        // Read before recording, so "since last time" compares against the
+        // previous run rather than this one.
+        setHistory(getHistory(result.url, result.scannedAt));
+        recordScan(result, Boolean(auth));
+        setReport(result);
       }
     } catch (err) {
       if (err instanceof ScanError && err.blocked) {
@@ -129,6 +145,8 @@ export function App({ apiBase }: { apiBase: string }) {
                 Showing rule-based findings only.
               </p>
             )}
+
+          <ScanHistory current={toHistoryEntry(report)} previous={history} />
 
           {report.conformance && <ConformanceView conformance={report.conformance} />}
 
