@@ -19,7 +19,8 @@ import { summarizeSeverity, computeScore, summarizeCategories } from "./merge/sc
 import { buildConformance } from "./conformance/buildConformance.js";
 import { downscalePreview } from "./render/downscalePreview.js";
 import { attachElementScreenshots, selectorTargetsOneElement } from "./render/cropThumbnail.js";
-import type { AccessibilityReport } from "../types/report.js";
+import type { AccessibilityFinding, AccessibilityReport } from "../types/report.js";
+import type { AuthConfig } from "./auth/authenticate.js";
 
 /**
  * The full single-URL scan: render + all deterministic finding layers +
@@ -34,38 +35,50 @@ import type { AccessibilityReport } from "../types/report.js";
  */
 export async function scanUrlToReport(
   rawUrl: string,
-  includeAiReview: boolean
+  includeAiReview: boolean,
+  // Optional sign-in for pages behind a login. Passed straight through to the
+  // render call so the session lives and dies with that throwaway browser
+  // context — credentials are never stored, logged, or sent to the AI layer.
+  auth?: AuthConfig
 ): Promise<AccessibilityReport> {
   const safeUrl = await assertSafeUrl(rawUrl);
 
   const renderResult = await withTimeout(
-    renderAndScan(safeUrl.toString()),
-    env.RENDER_TIMEOUT_MS + 5000,
+    renderAndScan(safeUrl.toString(), auth),
+    // Signing in costs a page load of its own before the scan starts.
+    env.RENDER_TIMEOUT_MS + (auth ? 25_000 : 5000),
     "Page render"
   );
 
   const context = extractContext(safeUrl.toString(), renderResult);
-  const aiReview = await reviewPage(context, renderResult.screenshotBase64, includeAiReview);
+  // Started but deliberately not awaited yet: the AI review is the single
+  // longest step (~20s), and none of the deterministic layers below depend on
+  // it. Letting it run while we evaluate them and validate the markup takes
+  // its cost off the critical path instead of adding to it.
+  const aiReviewPromise = reviewPage(context, renderResult.screenshotBase64, includeAiReview);
 
   const automatedFindings = axeToFindings(renderResult.axe);
-  const aiFindings = aiToFindings(aiReview.findings);
-  const findings = mergeFindings(automatedFindings, aiFindings);
-
-  findings.push(...evaluateTypography(renderResult.typographyBlocks));
-  findings.push(
+  const deterministic: AccessibilityFinding[] = [];
+  deterministic.push(...evaluateTypography(renderResult.typographyBlocks));
+  deterministic.push(
     ...evaluateMotion(
       renderResult.domSignals.animatedElements,
       renderResult.domSignals.respectsReducedMotion,
       new Set(automatedFindings.map((f) => f.ruleId).filter((r): r is string => Boolean(r)))
     )
   );
-  findings.push(...evaluateKeyboardNav(renderResult.keyboardNav));
-  findings.push(...evaluateComponents(renderResult.domSignals));
-  findings.push(...evaluateDialogs(renderResult.domSignals.dialogs));
-  findings.push(...evaluateMobile(renderResult.mobileSignals));
-  findings.push(...evaluateDarkPatterns(renderResult.darkPatternSignals));
-  findings.push(...evaluateTextResize(renderResult.textResizeSignals));
-  findings.push(...(await validateMarkup(renderResult.finalUrl)));
+  deterministic.push(...evaluateKeyboardNav(renderResult.keyboardNav));
+  deterministic.push(...evaluateComponents(renderResult.domSignals));
+  deterministic.push(...evaluateDialogs(renderResult.domSignals.dialogs));
+  deterministic.push(...evaluateMobile(renderResult.mobileSignals));
+  deterministic.push(...evaluateDarkPatterns(renderResult.darkPatternSignals));
+  deterministic.push(...evaluateTextResize(renderResult.textResizeSignals));
+  deterministic.push(...(await validateMarkup(renderResult.finalUrl)));
+
+  // Everything above ran while the AI review was in flight; collect it now.
+  const aiReview = await aiReviewPromise;
+  const findings = mergeFindings(automatedFindings, aiToFindings(aiReview.findings));
+  findings.push(...deterministic);
 
   await attachElementScreenshots(
     findings,
@@ -122,6 +135,7 @@ export async function scanUrlToReport(
       renderTimeMs: renderResult.renderTimeMs,
       aiReviewTimeMs: aiReview.aiReviewTimeMs,
       aiReviewStatus: aiReview.status,
+      aiReviewErrorKind: aiReview.errorKind,
       model: aiReview.model,
     },
   };

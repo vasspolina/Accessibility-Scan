@@ -93,6 +93,17 @@ export const aiReviewStatusSchema = z.enum([
 ]);
 export type AiReviewStatus = z.infer<typeof aiReviewStatusSchema>;
 
+// Why a failed AI review failed, in coarse terms. A small fixed set, never a
+// raw error message: this crosses a public API boundary.
+export const aiReviewErrorKindSchema = z.enum([
+  "overloaded",
+  "invalid_request",
+  "auth",
+  "truncated",
+  "malformed",
+  "unknown",
+]);
+
 export const categorySummarySchema = z.object({
   accessibility: z.number(),
   designClarity: z.number(),
@@ -176,6 +187,7 @@ export const accessibilityReportSchema = z.object({
     renderTimeMs: z.number(),
     aiReviewTimeMs: z.number(),
     aiReviewStatus: aiReviewStatusSchema,
+    aiReviewErrorKind: aiReviewErrorKindSchema.optional(),
     model: z.string().optional(),
   }),
 });

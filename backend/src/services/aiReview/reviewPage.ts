@@ -13,9 +13,43 @@ import { SYSTEM_PROMPT, FINDINGS_TOOL } from "./buildPrompt.js";
 
 export interface AiReviewResult {
   status: AiReviewStatus;
+  // Why a failed review failed, in coarse terms. "skipped_error" on its own
+  // says a headline feature didn't run and gives nobody — us or the reader —
+  // any way to tell a passing hiccup from a request this page will never
+  // survive. Deliberately a small fixed set rather than the raw message: this
+  // is returned over a public API, so it must not carry internals.
+  errorKind?: AiReviewErrorKind;
   findings: AiFinding[];
   aiReviewTimeMs: number;
   model: string;
+}
+
+export type AiReviewErrorKind =
+  // The service was busy or rate-limited. Trying again usually works.
+  | "overloaded"
+  // The request itself was rejected — too large, or otherwise malformed. Same
+  // page will fail the same way until the request changes.
+  | "invalid_request"
+  // Authentication or billing. Nothing about the page will fix it.
+  | "auth"
+  // The answer ran past the token budget and was cut off mid-JSON.
+  | "truncated"
+  // The answer arrived complete but in a shape the schema rejected.
+  | "malformed"
+  | "unknown";
+
+function classifyReviewError(err: unknown): AiReviewErrorKind {
+  const status = (err as { status?: number } | null)?.status;
+  if (status === 429 || status === 529 || (typeof status === "number" && status >= 500)) {
+    return "overloaded";
+  }
+  if (status === 401 || status === 403) return "auth";
+  if (typeof status === "number" && status >= 400) return "invalid_request";
+
+  const message = err instanceof Error ? err.message : "";
+  if (/max_tokens/i.test(message)) return "truncated";
+  if (/schema validation|tool_use block/i.test(message)) return "malformed";
+  return "unknown";
 }
 
 async function callClaude(context: PageReviewContext, screenshotBase64: string): Promise<AiFinding[]> {
@@ -128,13 +162,77 @@ export function normalizeToolInput(input: unknown): unknown {
   if (typeof input !== "object" || input === null) return input;
   const record = input as Record<string, unknown>;
   if (typeof record.findings !== "string") return input;
+
+  const text = record.findings.trim();
   try {
-    const decoded = JSON.parse(record.findings);
+    const decoded = JSON.parse(text);
     if (!Array.isArray(decoded)) return input;
     return { ...record, findings: decoded };
   } catch {
-    return input;
+    // The whole string wouldn't parse, so salvage the findings that would.
+    // Measured live: this was ~40% of review attempts on a content-rich page,
+    // and every one of them threw away a complete, paid-for response over a
+    // single bad character somewhere in a 5,000-character string.
+    const salvaged = salvageJsonObjects(text);
+    if (salvaged.length === 0) return input;
+    logger.warn(
+      { salvaged: salvaged.length, chars: text.length },
+      "findings string wouldn't parse — recovered the well-formed entries"
+    );
+    return { ...record, findings: salvaged };
   }
+}
+
+/**
+ * Pulls every top-level {...} out of a string and parses each one on its own,
+ * keeping the ones that work.
+ *
+ * Deliberately per-object rather than one parse of the whole text: the two
+ * ways this input goes wrong are a tail cut off mid-object and one entry with
+ * a stray character in its prose, and both cost the entire review under an
+ * all-or-nothing parse. Recovering eight of nine findings is worth far more
+ * than reporting none.
+ *
+ * Tracks string state so a brace inside a description — "click the {more}
+ * button" — doesn't throw the depth count off.
+ *
+ * Exported for testing.
+ */
+export function salvageJsonObjects(text: string): unknown[] {
+  const found: unknown[] = [];
+  let depth = 0;
+  let start = -1;
+  let inString = false;
+  let escaped = false;
+
+  for (let i = 0; i < text.length; i++) {
+    const ch = text[i];
+    if (inString) {
+      if (escaped) escaped = false;
+      else if (ch === "\\") escaped = true;
+      else if (ch === '"') inString = false;
+      continue;
+    }
+    if (ch === '"') {
+      inString = true;
+    } else if (ch === "{") {
+      if (depth === 0) start = i;
+      depth++;
+    } else if (ch === "}") {
+      if (depth > 0) {
+        depth--;
+        if (depth === 0 && start >= 0) {
+          try {
+            found.push(JSON.parse(text.slice(start, i + 1)));
+          } catch {
+            // One unsalvageable entry shouldn't cost the others.
+          }
+          start = -1;
+        }
+      }
+    }
+  }
+  return found;
 }
 
 export async function reviewPage(
@@ -162,6 +260,12 @@ export async function reviewPage(
   } catch (err) {
     const status: AiReviewStatus = err instanceof TimeoutError ? "skipped_timeout" : "skipped_error";
     logger.warn({ err, status }, "AI review layer failed — degrading to automated-only report");
-    return { status, findings: [], aiReviewTimeMs: Date.now() - start, model: CLAUDE_MODEL };
+    return {
+      status,
+      errorKind: classifyReviewError(err),
+      findings: [],
+      aiReviewTimeMs: Date.now() - start,
+      model: CLAUDE_MODEL,
+    };
   }
 }

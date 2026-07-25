@@ -60,3 +60,48 @@ describe("normalizeToolInput", () => {
     expect(typeof input.findings).toBe("string");
   });
 });
+
+// The failure that actually happened in production: the findings string is
+// well-formed enough to read but not to JSON.parse, and an all-or-nothing
+// repair threw away the whole review — measured at roughly 40% of attempts.
+describe("salvaging a findings string that won't parse", () => {
+  const one = (title: string) =>
+    `{"severity":"serious","category":"accessibility","selector":"a","title":${JSON.stringify(title)},"description":"d","suggestedFix":"f"}`;
+
+  it("recovers every complete entry when the tail is cut off mid-object", () => {
+    const truncated = `[${one("first")},${one("second")},{"severity":"serious","categ`;
+    const out = normalizeToolInput({ findings: truncated }) as { findings: unknown[] };
+    expect(out.findings).toHaveLength(2);
+    expect((out.findings[0] as { title: string }).title).toBe("first");
+    expect((out.findings[1] as { title: string }).title).toBe("second");
+  });
+
+  it("drops only the malformed entry, keeping its neighbours", () => {
+    const broken = `[${one("good one")},{"severity":"serious",,},${one("good two")}]`;
+    const out = normalizeToolInput({ findings: broken }) as { findings: unknown[] };
+    expect(out.findings).toHaveLength(2);
+    expect((out.findings as Array<{ title: string }>).map((f) => f.title)).toEqual([
+      "good one",
+      "good two",
+    ]);
+  });
+
+  it("is not fooled by braces inside a description", () => {
+    const withBraces = `[${one("press the {more} button")},`;
+    const out = normalizeToolInput({ findings: withBraces }) as { findings: unknown[] };
+    expect(out.findings).toHaveLength(1);
+    expect((out.findings[0] as { title: string }).title).toBe("press the {more} button");
+  });
+
+  it("is not fooled by an escaped quote inside a description", () => {
+    const withQuote = `[${one('the "buy" button')},`;
+    const out = normalizeToolInput({ findings: withQuote }) as { findings: unknown[] };
+    expect(out.findings).toHaveLength(1);
+    expect((out.findings[0] as { title: string }).title).toBe('the "buy" button');
+  });
+
+  it("leaves the input untouched when nothing can be recovered", () => {
+    const input = { findings: "not json at all" };
+    expect(normalizeToolInput(input)).toBe(input);
+  });
+});
