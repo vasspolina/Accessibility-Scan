@@ -67,7 +67,7 @@ export const WCAG_21_AA_CRITERIA: WcagCriterion[] = [
   { id: "2.4.1", name: "Bypass Blocks", level: "A", coverage: "automated", plain: "Is there a way to jump past the menu to the main content?", failing: "There's no way to jump past the menu to the main content" },
   { id: "2.4.2", name: "Page Titled", level: "A", coverage: "automated", plain: "Does the browser tab say what this page is?", failing: "The browser tab doesn't say what this page is" },
   { id: "2.4.3", name: "Focus Order", level: "A", coverage: "partial", plain: "Does tabbing move through the page in the order it reads?", failing: "Tabbing jumps around the page in a confusing order" },
-  { id: "2.4.4", name: "Link Purpose (In Context)", level: "A", coverage: "automated", plain: "Does every link say where it goes?", failing: "Some links say only 'read more', so you can't tell where they go" },
+  { id: "2.4.4", name: "Link Purpose (In Context)", level: "A", coverage: "automated", plain: "Does every link say where it goes?", failing: "Some links don't say where they go, either because they have no text or because it says nothing" },
   { id: "2.4.5", name: "Multiple Ways", level: "AA", coverage: "partial", plain: "Is there more than one way to reach a page?", failing: "There's only one way to reach some pages" },
   { id: "2.4.6", name: "Headings and Labels", level: "AA", coverage: "partial", plain: "Do headings and labels describe what's under them?", failing: "Some headings and labels don't describe what's under them" },
   { id: "2.4.7", name: "Focus Visible", level: "AA", coverage: "automated", plain: "Can you see where you are while tabbing through?", failing: "You can't see where you are while tabbing through" },

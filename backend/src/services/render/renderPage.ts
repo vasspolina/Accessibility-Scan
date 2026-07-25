@@ -61,6 +61,10 @@ export interface DomSignals {
     }>;
     errorMessages: Array<{ selector: string; text: string; isAssociatedWithField: boolean }>;
   }>;
+  // Every link on the page with its accessible text and destination, kept
+  // out of the Claude payload so it can be complete rather than capped at 60.
+  // Feeds the vague-link-text check (WCAG 2.4.4).
+  linkTexts: Array<{ selector: string; text: string; href: string }>;
   focusOrderSample: string[];
   animatedElements: Array<{
     selector: string;
@@ -226,6 +230,19 @@ function extractDomSignalsInPage(): DomSignals {
       selector: cssPath(img),
       alt: img.hasAttribute("alt") ? img.getAttribute("alt") : null,
       src: img.getAttribute("src") ?? "",
+    }));
+
+  // Every link's accessible text, kept separately from interactiveElements.
+  // That list is capped at 60 because it goes to Claude, and a nav-heavy page
+  // exhausts the cap long before reaching the "Read more" links in the body —
+  // so the vague-link-text check (WCAG 2.4.4) could only ever see the top of
+  // the page. This one stays server-side, so it can afford to be complete.
+  const linkTexts = Array.from(document.querySelectorAll("a[href]"))
+    .slice(0, 300)
+    .map((el) => ({
+      selector: cssPath(el),
+      text: accessibleName(el),
+      href: el.getAttribute("href") ?? "",
     }));
 
   const interactiveElements = Array.from(document.querySelectorAll("a[href], button"))
@@ -422,6 +439,7 @@ function extractDomSignalsInPage(): DomSignals {
     images,
     interactiveElements,
     forms,
+    linkTexts,
     focusOrderSample,
     animatedElements,
     respectsReducedMotion,

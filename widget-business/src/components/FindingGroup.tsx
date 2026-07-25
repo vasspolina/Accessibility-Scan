@@ -52,6 +52,27 @@ function humanizeSlug(s: string): string {
   return words ? capitalize(words.toLowerCase()) : "";
 }
 
+// Where a link points, as a readable phrase. The last path segment is the
+// part that names the destination; the rest is site plumbing.
+function destinationOf(raw: string): string {
+  const href = attrOf(raw, "href");
+  const seg = href?.split(/[?#]/)[0].replace(/\/+$/, "").split("/").pop();
+  if (!seg) return "";
+  try {
+    return humanizeSlug(decodeURIComponent(seg));
+  } catch {
+    // A malformed escape sequence shouldn't cost the whole label.
+    return humanizeSlug(seg);
+  }
+}
+
+// Link text that reads identically wherever it points, so the destination has
+// to be shown alongside it. Kept in step with VAGUE_LINK_TEXT in the backend's
+// analyzeComponents — the backend decides what to flag, this decides how to
+// label it, and they describe the same idea.
+const SAYS_NOTHING =
+  /^(read\s*more|more|learn\s*more|click\s*here|here|find\s*out\s*more|see\s*more|view\s*more|details|more\s*details|continue|continue\s*reading|go|link|this\s*link|full\s*story|read\s*on|next|previous|…|\.\.\.|>|>>|→|»)$/i;
+
 // The everyday word for an element, keyed off its tag (and input type).
 const KIND_WORDS: Record<string, string> = {
   a: "link",
@@ -171,7 +192,15 @@ function elementLabel(finding: AccessibilityFinding): string {
   // 2. Visible text content, when the snippet isn't truncated before it.
   const inner = raw.match(/>([^<]{1,160})</)?.[1]?.replace(/\s+/g, " ").trim();
   if (inner && !/^translation_missing/i.test(inner)) {
-    return `“${truncate(decodeEntities(inner), 60)}” ${kind}`;
+    const label = `“${truncate(decodeEntities(inner), 60)}” ${kind}`;
+    // A list of nine “Read more” links is nine identical rows, which is the
+    // very complaint the finding is making. Where the text says nothing,
+    // the destination is the only thing that tells them apart.
+    if (tag === "a" && SAYS_NOTHING.test(decodeEntities(inner))) {
+      const dest = destinationOf(raw);
+      if (dest) return `${label} to ${dest}`;
+    }
+    return label;
   }
 
   // 3. An image's alt text.
@@ -200,12 +229,8 @@ function elementLabel(finding: AccessibilityFinding): string {
   //    text, which is exactly what a "link has no readable text" finding is
   //    telling the owner it lacks.
   if (tag === "a") {
-    const href = attrOf(raw, "href");
-    const seg = href?.split(/[?#]/)[0].replace(/\/+$/, "").split("/").pop();
-    if (seg) {
-      const h = humanizeSlug(decodeURIComponent(seg));
-      if (h) return `link to ${h}`;
-    }
+    const dest = destinationOf(raw);
+    if (dest) return `link to ${dest}`;
   }
 
   // 8. Last resort before a bare kind word: a meaningful id/name attribute

@@ -157,6 +157,14 @@ export async function attachElementScreenshots(
     // as the background moves). The plain label ("“Toggle search” button")
     // identifies the element far better, so never show a thumbnail for these.
     if (finding.ruleId === "mobile-tap-target") continue;
+    // A link with no readable text is, by definition, one there is nothing to
+    // see in: an empty anchor, or one wrapping an image the alt-text findings
+    // already picture. The capture comes back an empty grey rectangle, which
+    // takes up the most prominent space on the card and shows nothing. The
+    // written label — "link to Accessible UX Research" — identifies it far
+    // better, and where a link's text says nothing the label carries the
+    // destination for exactly this reason.
+    if (finding.ruleId === "link-name" || finding.ruleId === "link-text-vague") continue;
     const shot = precaptured[finding.selector];
     if (shot) {
       finding.elementScreenshot = shot;

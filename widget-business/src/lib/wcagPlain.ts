@@ -91,6 +91,11 @@ export const PLAIN_RULE_EXPLANATIONS: Record<string, PlainRule> = {
     impact:
       "People using screen readers hear only \"link\", with no idea where it goes.",
   },
+  "link-text-vague": {
+    plain: "Some links say only \"read more\" or similar.",
+    impact:
+      "People using screen readers can pull up a list of every link on the page. When they all read the same, the list is no help at all.",
+  },
   "button-name": {
     plain: "Some buttons have no label.",
     impact: "Nobody can tell what it does before clicking. A common reason people give up.",
@@ -418,6 +423,8 @@ const PLAIN_RULE_FIXES: Record<string, string> = {
   "input-image-alt": 'Add an alt attribute to the image button describing its action (e.g. alt="Search").',
   "link-name":
     "Give each link readable text. Visible text inside the link, or an aria-label describing where it goes.",
+  "link-text-vague":
+    "Write link text that makes sense on its own: \"Read the 2026 fee changes\", not \"Read more\". To keep the short version on screen, add the full wording with aria-label.",
   "button-name":
     "Give each button a clear label. Visible text inside it, or an aria-label describing what it does.",
   label: "Connect a visible <label> to each field (the label's for matches the field's id), or add an aria-label.",

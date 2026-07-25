@@ -22,6 +22,7 @@ function dom(overrides: Partial<DomSignals> = {}): DomSignals {
     landmarks: [],
     images: [],
     interactiveElements: [],
+    linkTexts: [],
     forms: [],
     focusOrderSample: [],
     animatedElements: [],
@@ -142,5 +143,67 @@ describe("evaluateComponents", () => {
       ],
     });
     expect(rules(d)).not.toContain("component-skip-link");
+  });
+});
+
+// WCAG 2.4.4. axe only catches links with no accessible name at all, so a page
+// full of "Read more" passes every automated check while being exactly the
+// problem the criterion describes.
+describe("links whose text says nothing", () => {
+  const link = (text: string, href = "/a", selector = "a") => ({ selector, text, href });
+
+  function vague(...links: Array<ReturnType<typeof link>>) {
+    return evaluateComponents(dom({ linkTexts: links })).filter(
+      (f) => f.ruleId === "link-text-vague"
+    );
+  }
+
+  it("flags the usual offenders", () => {
+    for (const text of ["Read more", "click here", "MORE", "Learn more", "…", "→", "Details"]) {
+      expect(vague(link(text)), text).toHaveLength(1);
+    }
+  });
+
+  it("leaves a link alone when its text actually says something", () => {
+    for (const text of ["Read the 2026 fee changes", "Contact us", "Download the annual report"]) {
+      expect(vague(link(text)), text).toHaveLength(0);
+    }
+  });
+
+  // The whole-string match is the point: only a bare "Read more" is useless.
+  it("does not flag a descriptive link that merely starts with a vague phrase", () => {
+    expect(vague(link("Read more about the 2026 fee changes"))).toHaveLength(0);
+  });
+
+  it("flags a bare URL, which a screen reader reads out character by character", () => {
+    expect(vague(link("https://example.com/pricing"))).toHaveLength(1);
+  });
+
+  // Those are axe's link-name findings; reporting them twice helps nobody.
+  it("ignores links with no text at all", () => {
+    expect(vague(link(""), link("   "))).toHaveLength(0);
+  });
+
+  it("reports one finding per link so the widget can list them", () => {
+    const found = vague(link("Read more", "/a", "a.one"), link("Read more", "/b", "a.two"));
+    expect(found).toHaveLength(2);
+    expect(found.map((f) => f.selector)).toEqual(["a.one", "a.two"]);
+  });
+
+  // The destination is the only thing telling nine identical "Read more"s
+  // apart, so it has to survive into the element label.
+  it("carries the destination in the snippet", () => {
+    expect(vague(link("Read more", "/fees-2026"))[0].elementSnippet).toContain("/fees-2026");
+  });
+
+  it("counts as an accessibility failure against 2.4.4, not a design note", () => {
+    const f = vague(link("Read more"))[0];
+    expect(f.category).toBe("accessibility");
+    expect(f.wcagCriterion).toBe("2.4.4");
+  });
+
+  it("caps the list so a link-heavy page can't flood the report", () => {
+    const many = Array.from({ length: 30 }, (_, i) => link("Read more", `/p${i}`, `a.n${i}`));
+    expect(vague(...many)).toHaveLength(12);
   });
 });

@@ -60,6 +60,31 @@ function makeFinding(
   };
 }
 
+// Link text that reads the same wherever it points. A screen-reader user can
+// pull up a list of every link on the page, and a list of nine "Read more"s
+// is a list of nine identical, useless entries.
+//
+// Deliberately whole-string matches, not substrings: "Read more about the
+// 2026 fee changes" is a perfectly good link, and only a bare "Read more"
+// isn't. Arrows and ellipses are here because they are common as "link text"
+// and say even less than the words do.
+const VAGUE_LINK_TEXT =
+  /^(read\s*more|more|learn\s*more|click\s*here|here|find\s*out\s*more|see\s*more|view\s*more|details|more\s*details|continue|continue\s*reading|go|link|this\s*link|full\s*story|read\s*on|next|previous|…|\.\.\.|>|>>|→|»)$/i;
+
+// Nothing to say about a link that says nothing yet — axe's link-name rule
+// already reports those, and reporting them twice helps nobody.
+function hasName(name: string): boolean {
+  return name.trim().length > 0;
+}
+
+function looksVague(name: string): boolean {
+  const text = name.trim().replace(/\s+/g, " ");
+  if (VAGUE_LINK_TEXT.test(text)) return true;
+  // A bare URL read aloud character by character is worse than no text.
+  if (/^https?:\/\//i.test(text)) return true;
+  return false;
+}
+
 /**
  * Pure and deterministic — one grouped suggestion per rule, consistent with
  * the typography/motion layers.
@@ -181,6 +206,37 @@ export function evaluateComponents(dom: DomSignals): AccessibilityFinding[] {
         "https://www.w3.org/WAI/WCAG21/Understanding/bypass-blocks.html"
       )
     );
+  }
+
+  // 7. Links whose text says nothing about where they go (WCAG 2.4.4 Link
+  //    Purpose, Level A). axe only catches links with no name at all, so a
+  //    page full of "Read more" passes every automated check while being
+  //    exactly the problem 2.4.4 describes.
+  //    Reads linkTexts rather than interactiveElements: that list stops at 60
+  //    because it goes to Claude, and on a nav-heavy page the body's "Read
+  //    more" links fall outside it entirely.
+  const vagueLinks = dom.linkTexts.filter((l) => hasName(l.text) && looksVague(l.text));
+  // One finding per link, capped — the widget groups findings that share a
+  // ruleId into a single card listing each element, the same way axe's
+  // link-name findings are presented.
+  for (const link of vagueLinks.slice(0, 12)) {
+    const text = link.text.trim().replace(/\s+/g, " ");
+    findings.push({
+      id: randomUUID(),
+      source: "automated",
+      severity: "moderate",
+      category: "accessibility",
+      selector: link.selector,
+      ruleId: "link-text-vague",
+      wcagCriterion: "2.4.4",
+      description: `This link reads only “${text}”, so it gives no clue where it goes.`,
+      suggestedFix:
+        "Write link text that makes sense read on its own: “Read the 2026 fee changes” rather than “Read more”. Where the design needs the short version, keep the visible text and add the full wording with aria-label.",
+      helpUrl: "https://www.w3.org/WAI/WCAG21/Understanding/link-purpose-in-context.html",
+      // Carries the destination, which is the only thing telling these links
+      // apart — nine identical “Read more”s is precisely the problem.
+      elementSnippet: `<a href="${link.href}">${text}</a>`,
+    });
   }
 
   return findings;
