@@ -118,7 +118,13 @@ export function ConformanceView({ conformance }: { conformance: ConformanceSumma
                   </span>
                   <span className="a11y-conf-status">
                     {STATUS_LABEL[c.status]}
-                    {c.findingCount > 0 && ` (${c.findingCount})`}
+                    {/* "(13)" leaves the reader to guess thirteen of what.
+                        Say it: thirteen places on this page. */}
+                    {c.findingCount > 0 && (
+                      <em className="a11y-conf-count">
+                        {c.findingCount === 1 ? "1 place" : `${c.findingCount} places`}
+                      </em>
+                    )}
                   </span>
                 </li>
               ))}

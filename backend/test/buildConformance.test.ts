@@ -149,8 +149,13 @@ describe("criterion phrasing", () => {
     const c = buildConformance([finding({ wcagCriterion: "1.4.4" })]);
     const failing = c.criteria.find((x) => x.id === "1.4.4")!;
     const quiet = c.criteria.find((x) => x.id === "1.4.3")!;
+    // Deliberately not asserting the wording itself — that is copy, and
+    // pinning it here just means every rewrite breaks a test that was never
+    // about the words. The invariant is that both phrasings reach the row and
+    // that they say different things.
     expect(failing.status).toBe("failed");
-    expect(failing.failing).toMatch(/breaks/);
+    expect(failing.failing).not.toBe(failing.plain);
+    expect(failing.failing.endsWith("?")).toBe(false);
     expect(quiet.status).toBe("no-issues-found");
     expect(quiet.plain).toMatch(/\?$/);
   });

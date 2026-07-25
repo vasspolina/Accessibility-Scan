@@ -861,6 +861,17 @@
   color: var(--a11y-score-bad, #cf222e);
 }
 
+/* The count sits under its status word rather than beside it, so the row
+   reads "Failing / 13 places" instead of running together on one line. */
+.a11y-conf-count {
+  display: block;
+  margin-top: 2px;
+  font-size: 11px;
+  font-weight: 400;
+  font-style: normal;
+  color: var(--a11y-muted, #57606a);
+}
+
 /* ---- Vision simulators -------------------------------------------------- */
 
 .a11y-sim-defs {
