@@ -83,7 +83,15 @@ export async function auditRoutes(app: FastifyInstance) {
         }
 
         try {
-          const report = await scanUrlToReport(page.url, parsed.data.includeAiReview);
+          // No auth for crawled pages, and no evidence capture: this
+          // aggregate returns counts and conformance, never screenshots, so
+          // cropping them would be work thrown away on every page.
+          const report = await scanUrlToReport(
+            page.url,
+            parsed.data.includeAiReview,
+            undefined,
+            false
+          );
           outcomes.push({ ...page, report });
         } catch (err) {
           // One bad page must not sink the audit — record it and continue.

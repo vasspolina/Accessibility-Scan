@@ -23,6 +23,57 @@ import type { AccessibilityFinding, AccessibilityReport } from "../types/report.
 import type { AuthConfig } from "./auth/authenticate.js";
 
 /**
+ * Attaches the pictures a human reader needs: a thumbnail per finding, and
+ * alt-text suggestions read from the flagged images themselves.
+ *
+ * Best-effort by construction — every step here degrades to "no picture", and
+ * none of it may fail a scan.
+ */
+async function attachEvidence(
+  findings: AccessibilityFinding[],
+  renderResult: Awaited<ReturnType<typeof renderAndScan>>,
+  includeAiReview: boolean
+): Promise<void> {
+  await attachElementScreenshots(
+    findings,
+    renderResult.boundingBoxes,
+    renderResult.fullPageScreenshot,
+    renderResult.elementScreenshots
+  );
+
+  // AI findings are the one group the render pass can't photograph: they don't
+  // exist until after the page has closed, and the model writes its own
+  // selectors, which almost never match the strings measured during render. So
+  // they'd only ever get a thumbnail by coincidence. A short second visit
+  // photographs what the model actually pointed at — worth one navigation,
+  // because "this field has no label" is far more convincing next to a picture
+  // of the field.
+  const unpictured = findings.filter(
+    (f) =>
+      f.source === "ai-review" &&
+      !f.elementScreenshot &&
+      f.selector &&
+      f.selector !== "html" &&
+      f.selector !== "body"
+  );
+  if (unpictured.length > 0) {
+    const shots = await captureSelectorsFresh(
+      renderResult.finalUrl,
+      unpictured.map((f) => f.selector),
+      selectorTargetsOneElement
+    );
+    for (const finding of unpictured) {
+      const shot = shots[finding.selector];
+      if (shot) finding.elementScreenshot = shot;
+    }
+  }
+
+  // Runs last: it needs each flagged image's captured thumbnail to suggest alt
+  // text from what the image actually shows.
+  await attachAltTextSuggestions(findings, includeAiReview);
+}
+
+/**
  * The full single-URL scan: render + all deterministic finding layers +
  * optional AI review, merged into one AccessibilityReport. Extracted from
  * routes/scan.ts so the crawler (routes/audit.ts) runs the identical
@@ -39,7 +90,13 @@ export async function scanUrlToReport(
   // Optional sign-in for pages behind a login. Passed straight through to the
   // render call so the session lives and dies with that throwaway browser
   // context — credentials are never stored, logged, or sent to the AI layer.
-  auth?: AuthConfig
+  auth?: AuthConfig,
+  // Thumbnails, and the alt-text suggestions that read them, are for a report
+  // a person looks at. A crawl aggregates findings into counts and conformance
+  // and returns no screenshots at all, so for a crawl this is pure cost:
+  // cropping per finding, a second page visit, and one AI call per page, all
+  // of it discarded. Off by default for callers that say so.
+  captureEvidence = true
 ): Promise<AccessibilityReport> {
   const safeUrl = await assertSafeUrl(rawUrl);
 
@@ -80,40 +137,9 @@ export async function scanUrlToReport(
   const findings = mergeFindings(automatedFindings, aiToFindings(aiReview.findings));
   findings.push(...deterministic);
 
-  await attachElementScreenshots(
-    findings,
-    renderResult.boundingBoxes,
-    renderResult.fullPageScreenshot,
-    renderResult.elementScreenshots
-  );
-
-  // AI findings are the one group the render pass can't photograph: they don't
-  // exist until after the page has closed, and the model writes its own
-  // selectors, which almost never match the strings measured during render. So
-  // they'd only ever get a thumbnail by coincidence. A short second visit
-  // photographs what the model actually pointed at — worth one navigation,
-  // because "this field has no label" is far more convincing next to a picture
-  // of the field. Best-effort: on failure the findings simply show as before.
-  const unpictured = findings.filter(
-    (f) =>
-      f.source === "ai-review" &&
-      !f.elementScreenshot &&
-      f.selector &&
-      f.selector !== "html" &&
-      f.selector !== "body"
-  );
-  if (unpictured.length > 0) {
-    const shots = await captureSelectorsFresh(
-      renderResult.finalUrl,
-      unpictured.map((f) => f.selector),
-      selectorTargetsOneElement
-    );
-    for (const finding of unpictured) {
-      const shot = shots[finding.selector];
-      if (shot) finding.elementScreenshot = shot;
-    }
+  if (captureEvidence) {
+    await attachEvidence(findings, renderResult, includeAiReview);
   }
-  await attachAltTextSuggestions(findings, includeAiReview);
 
   const summary = summarizeSeverity(findings);
   const score = computeScore(summary);
