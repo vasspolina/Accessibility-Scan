@@ -188,11 +188,11 @@ export const PLAIN_RULE_EXPLANATIONS: Record<string, PlainRule> = {
     impact: "Screen readers get confused and the wrong thing responds when someone clicks.",
   },
   list: {
-    plain: "A list isn't built as a proper list.",
+    plain: "A list looks like a list on screen but isn't coded as one.",
     impact: "People using screen readers aren't told how many items there are, and can't skip through them.",
   },
   listitem: {
-    plain: "A list item sits outside any real list.",
+    plain: "A list item sits on its own, outside any list.",
     impact: "People using screen readers lose the grouping, so the content stops making sense.",
   },
   "aria-required-attr": {

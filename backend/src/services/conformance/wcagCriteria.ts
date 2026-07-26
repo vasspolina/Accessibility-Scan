@@ -42,7 +42,7 @@ export const WCAG_21_AA_CRITERIA: WcagCriterion[] = [
   { id: "1.2.3", name: "Audio Description or Media Alternative", level: "A", coverage: "manual", plain: "Do videos say out loud what's shown on screen?", failing: "Videos never say out loud what's on screen" },
   { id: "1.2.4", name: "Captions (Live)", level: "AA", coverage: "manual", plain: "Does live video have live captions?", failing: "Live video runs with no captions" },
   { id: "1.2.5", name: "Audio Description (Prerecorded)", level: "AA", coverage: "manual", plain: "Do videos have a spoken description of what's on screen?", failing: "Videos have no spoken description of what's on screen" },
-  { id: "1.3.1", name: "Info and Relationships", level: "A", coverage: "automated", plain: "Do headings and lists work as headings and lists, not just look like them?", failing: "Headings and lists only look the part, so a screen reader can't tell" },
+  { id: "1.3.1", name: "Info and Relationships", level: "A", coverage: "automated", plain: "Do your lists and headings exist in the code, not just in the design?", failing: "Lists and headings look right on screen but the code doesn't say what they are" },
   { id: "1.3.2", name: "Meaningful Sequence", level: "A", coverage: "partial", plain: "Do screen readers read the page in a sensible order?", failing: "Screen readers read parts of the page out of order" },
   { id: "1.3.3", name: "Sensory Characteristics", level: "A", coverage: "manual", plain: "Do instructions work without seeing shape, size or position?", failing: "Instructions rely on seeing shape, size or position" },
   { id: "1.3.4", name: "Orientation", level: "AA", coverage: "manual", plain: "Does the page work held sideways?", failing: "The page doesn't work when the phone is held sideways" },
@@ -54,7 +54,7 @@ export const WCAG_21_AA_CRITERIA: WcagCriterion[] = [
   { id: "1.4.5", name: "Images of Text", level: "AA", coverage: "manual", plain: "Is text real text, rather than a picture of text?", failing: "Pictures of text blur when someone enlarges them" },
   { id: "1.4.10", name: "Reflow", level: "AA", coverage: "automated", plain: "Does the page fit a phone screen without scrolling sideways?", failing: "The page scrolls sideways on a phone" },
   { id: "1.4.11", name: "Non-text Contrast", level: "AA", coverage: "automated", plain: "Are buttons and icons dark enough to make out?", failing: "Buttons and icons are too pale to make out" },
-  { id: "1.4.12", name: "Text Spacing", level: "AA", coverage: "automated", plain: "Does the page survive someone spacing out the text to read it?", failing: "Things overlap when someone spaces out the text to read it" },
+  { id: "1.4.12", name: "Text Spacing", level: "AA", coverage: "automated", plain: "Does the page survive someone spacing out the text to read it?", failing: "Text overlaps and runs together when someone spaces it out to read it" },
   { id: "1.4.13", name: "Content on Hover or Focus", level: "AA", coverage: "manual", plain: "Can pop-ups be closed, and do they stay out of the way?", failing: "Pop-ups can't be closed, or cover what you were reading" },
 
   // ---- Operable ---------------------------------------------------------
@@ -72,7 +72,7 @@ export const WCAG_21_AA_CRITERIA: WcagCriterion[] = [
   { id: "2.4.6", name: "Headings and Labels", level: "AA", coverage: "partial", plain: "Do headings and labels describe what's under them?", failing: "Headings and labels don't describe what's under them" },
   { id: "2.4.7", name: "Focus Visible", level: "AA", coverage: "automated", plain: "Can you see where you are while tabbing through?", failing: "You can't see where you are while tabbing through" },
   { id: "2.5.1", name: "Pointer Gestures", level: "A", coverage: "manual", plain: "Is there a simpler way to do anything needing a swipe or pinch?", failing: "A swipe or pinch is the only way to do something" },
-  { id: "2.5.2", name: "Pointer Cancellation", level: "A", coverage: "manual", plain: "Can a mis-tap be taken back by sliding your finger away?", failing: "A mis-tap can't be taken back by sliding your finger away" },
+  { id: "2.5.2", name: "Pointer Cancellation", level: "A", coverage: "manual", plain: "Can someone who taps the wrong thing slide their finger off to undo it?", failing: "Tapping the wrong thing can't be undone by sliding your finger off it" },
   { id: "2.5.3", name: "Label in Name", level: "A", coverage: "automated", plain: "Does a button's spoken name match the words on it?", failing: "A button's spoken name doesn't match the words on it" },
   { id: "2.5.4", name: "Motion Actuation", level: "A", coverage: "manual", plain: "Is there a normal control for anything worked by shaking or tilting?", failing: "An action only works by shaking or tilting the device" },
 
