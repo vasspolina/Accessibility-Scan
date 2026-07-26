@@ -1719,3 +1719,56 @@
 .a11y-widget-biz.a11y-widget-biz .a11y-score-circle {
   border-radius: 50%;
 }
+
+/* Carbon accordion --------------------------------------------------------
+   Full-bleed row, rule underneath, chevron at the trailing edge that rotates
+   on open. Carbon's accordion is a list of rules rather than a stack of
+   boxes, which is why there's no border or fill here. */
+.a11y-accordion-title {
+  margin: 0;
+}
+
+.a11y-accordion-head {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  width: 100%;
+  min-height: 48px;
+  padding: 8px 0;
+  border: none;
+  border-bottom: 1px solid var(--a11y-border, #e0e0e0);
+  background: none;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+  transition: background-color 0.11s cubic-bezier(0.2, 0, 0.38, 0.9);
+}
+
+.a11y-accordion-head:hover {
+  background: var(--a11y-surface, #f4f4f4);
+}
+
+.a11y-accordion-head > span:first-child {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.a11y-accordion-chevron {
+  flex-shrink: 0;
+  width: 16px;
+  height: 16px;
+  /* Carbon's expansion motion: fast-02 with the productive curve. */
+  transition: transform 0.11s cubic-bezier(0.2, 0, 0.38, 0.9);
+}
+
+.a11y-accordion-head[aria-expanded="true"] .a11y-accordion-chevron {
+  transform: rotate(180deg);
+}
+
+/* The problem count rides along in the collapsed header, so it reads as a
+   reason to open rather than decoration. */
+.a11y-accordion-head .a11y-sr-issue-count {
+  flex-shrink: 0;
+  margin: 0;
+}

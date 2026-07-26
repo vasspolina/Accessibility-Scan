@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useId, useMemo, useRef, useState } from "react";
 import type { ScreenReaderScript } from "../api/scanClient";
 
 // Lets an owner hear their own page the way a screen-reader user does. Reading
@@ -18,6 +18,11 @@ export function ScreenReaderPreview({ script }: { script: ScreenReaderScript }) 
   const [playing, setPlaying] = useState(false);
   const [current, setCurrent] = useState<number | null>(null);
   const [expanded, setExpanded] = useState(false);
+  // Whether the accordion is open. Closed by default: this is the longest
+  // section in the report and the one you consult rather than read.
+  const [open, setOpen] = useState(false);
+  const [onlyIssues, setOnlyIssues] = useState(false);
+  const panelId = useId();
   // Guards against an utterance that finished because we cancelled it
   // advancing playback — cancel() fires onend just like a natural finish.
   const stoppedRef = useRef(false);
@@ -72,14 +77,50 @@ export function ScreenReaderPreview({ script }: { script: ScreenReaderScript }) 
 
   if (lines.length === 0) return null;
 
-  const visible = expanded ? lines : lines.slice(0, 12);
+  // Keep each line's original position. Playback indexes into the full script,
+  // so filtering the view must not renumber it — otherwise "play from here"
+  // starts somewhere else entirely.
+  const entries = lines.map((line, index) => ({ line, index }));
+  const filtered = onlyIssues ? entries.filter((e) => e.line.issue) : entries;
+  const visible = expanded ? filtered : filtered.slice(0, 12);
 
   return (
     <section className="a11y-section a11y-sr">
-      <h2 className="a11y-section-title">
-        Your page, read aloud{" "}
-        <span className="a11y-section-count">({lines.length} announcements)</span>
+      {/* Carbon accordion. This section is the longest thing in the report by
+          a wide margin — 120 rows on a normal page — and it is supplementary:
+          you open it to hear a problem, not to read it end to end. Collapsed
+          by default it costs one row instead of a screenful.
+
+          The heading holds the button rather than sitting inside it, so the
+          heading stays a heading in the accessibility tree and screen-reader
+          users can still jump between sections by heading. */}
+      <h2 className="a11y-section-title a11y-accordion-title">
+        <button
+          type="button"
+          className="a11y-accordion-head"
+          aria-expanded={open}
+          aria-controls={panelId}
+          onClick={() => setOpen((v) => !v)}
+        >
+          <span>
+            Your page, read aloud{" "}
+            <span className="a11y-section-count">({lines.length} announcements)</span>
+          </span>
+          {/* The count of problems stays visible while collapsed. A closed
+              section with nothing to show for it gives no reason to open it. */}
+          {issueCount > 0 && (
+            <span className="a11y-sr-issue-count">
+              {issueCount} say nothing useful
+            </span>
+          )}
+          <svg className="a11y-accordion-chevron" viewBox="0 0 16 16" aria-hidden="true" focusable="false">
+            <path d="M8 11L3 6l.7-.7L8 9.6l4.3-4.3L13 6z" fill="currentColor" />
+          </svg>
+        </button>
       </h2>
+
+      {!open ? null : (
+      <div id={panelId}>
       <p className="a11y-section-desc">
         How your page sounds to someone who can't see it, in the order they hear it. Red lines are
         where a listener learns nothing. Close to a real screen reader, not a recording.
@@ -106,15 +147,25 @@ export function ScreenReaderPreview({ script }: { script: ScreenReaderScript }) 
             Your browser can't play audio for this, so the transcript below is read-only.
           </p>
         )}
+        {/* Filtering beats paging here. Carbon would page a 120-row data
+            table, but this is a reading order, and page 4 of 10 of a
+            narrative is meaningless. What a reader actually wants is the 16
+            lines that go wrong, which is the same "show only what's failing"
+            control the conformance list already uses. */}
         {issueCount > 0 && (
-          <span className="a11y-sr-issue-count">
-            {issueCount} announcement{issueCount === 1 ? "" : "s"} say nothing useful
-          </span>
+          <label className="a11y-ai-toggle">
+            <input
+              type="checkbox"
+              checked={onlyIssues}
+              onChange={(e) => setOnlyIssues(e.target.checked)}
+            />
+            Only the {issueCount} that say nothing useful
+          </label>
         )}
       </div>
 
       <ol className="a11y-sr-list">
-        {visible.map((line, i) => (
+        {visible.map(({ line, index: i }) => (
           <li
             key={`${line.selector}-${i}`}
             className={[
@@ -144,15 +195,18 @@ export function ScreenReaderPreview({ script }: { script: ScreenReaderScript }) 
         ))}
       </ol>
 
-      {lines.length > visible.length && (
+      {filtered.length > visible.length && (
         <button type="button" className="a11y-show-all" onClick={() => setExpanded(true)}>
-          Show all {lines.length} announcements
+          Show all {filtered.length}
+          {onlyIssues ? " with problems" : " announcements"}
         </button>
       )}
       {script.truncated && (
         <p className="a11y-sr-note">
           Only the first part of the page is shown. Long pages are cut short to keep this readable.
         </p>
+      )}
+      </div>
       )}
     </section>
   );
