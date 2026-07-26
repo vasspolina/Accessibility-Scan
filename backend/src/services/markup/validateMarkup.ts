@@ -41,7 +41,30 @@ const IGNORED_RULES = new Set([
   "tel-non-breaking",
   "no-redundant-for",
   "no-dup-class",
+  // Says so itself: "strictly allowed but is not recommended". Allowed is not
+  // invalid, and this was the single loudest rule in the set — 20 of the
+  // messages across four sites.
+  "aria-label-misuse",
+  // "Prefer to use the native <section> element" is a preference about how to
+  // build the same valid page. gov.uk was told it had "2 markup validity
+  // issues" and both were this, on a page whose HTML is fine.
+  "prefer-native-element",
+  "no-redundant-role",
+  // Accessibility rules, not validity rules, and axe already reports every one
+  // of them properly — with a plain-language title, a fix, and a thumbnail.
+  // Leaving them here counted the same problem twice and buried it inside a
+  // finding about markup, where nobody would look for it.
+  "text-content",
+  "unique-landmark",
 ]);
+
+// Everything html-validate namespaces under wcag/ is an accessibility check
+// duplicating axe: wcag/h30 is link text, wcag/h37 is image alt, wcag/h71 is
+// fieldset legends. This layer answers one question — is the HTML itself
+// broken — and accessibility findings belong to the layers built for them.
+function isAccessibilityRule(ruleId: string): boolean {
+  return ruleId.startsWith("wcag/");
+}
 
 const validator = new HtmlValidate({ extends: ["html-validate:recommended"] });
 
@@ -50,7 +73,7 @@ export async function markupFindingsFromHtml(html: string): Promise<Accessibilit
   const report = await validator.validateString(html);
   const messages = report.results
     .flatMap((r) => r.messages)
-    .filter((m) => !IGNORED_RULES.has(m.ruleId));
+    .filter((m) => !IGNORED_RULES.has(m.ruleId) && !isAccessibilityRule(m.ruleId));
 
   if (messages.length === 0) return [];
 
