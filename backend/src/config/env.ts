@@ -24,7 +24,13 @@ const envSchema = z.object({
   // and it runs after it — giving it its own, tighter budget keeps the
   // worst-case total scan time bounded instead of doubling the review's.
   AI_ALT_TEXT_TIMEOUT_MS: z.coerce.number().default(20_000),
-  MAX_CONCURRENT_RENDERS: z.coerce.number().default(6),
+  // Six was optimistic. Each render is a full Chromium page holding a
+  // full-page screenshot, a text-resize pass and a mobile pass, and the
+  // container is several times slower than a laptop. Measured: five scans in
+  // parallel, and the heaviest page died with "Target crashed" — the tab ran
+  // out of memory, so the visitor got an error where they should have got a
+  // short queue. Queuing is the better failure.
+  MAX_CONCURRENT_RENDERS: z.coerce.number().default(3),
 });
 
 const parsed = envSchema.safeParse(process.env);

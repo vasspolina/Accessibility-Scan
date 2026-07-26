@@ -1,5 +1,6 @@
 import { chromium, type Browser, type Page } from "playwright";
 import { env } from "../../config/env.js";
+import { withTimeout } from "../../utils/timeout.js";
 import { logger } from "../../utils/logger.js";
 
 let browserPromise: Promise<Browser> | null = null;
@@ -32,12 +33,36 @@ async function getBrowser(): Promise<Browser> {
 let activeCount = 0;
 const waitQueue: Array<() => void> = [];
 
+// Long enough that a short rush queues quietly, short enough that nobody
+// watches a spinner forever wondering whether it is working.
+const MAX_QUEUE_WAIT_MS = 90_000;
+
+export class ServiceBusyError extends Error {
+  constructor() {
+    super("All scanners are busy");
+    this.name = "ServiceBusyError";
+  }
+}
+
 async function acquireSlot(): Promise<void> {
   if (activeCount < env.MAX_CONCURRENT_RENDERS) {
     activeCount += 1;
     return;
   }
-  await new Promise<void>((resolve) => waitQueue.push(resolve));
+  let waiter: (() => void) | null = null;
+  try {
+    await new Promise<void>((resolve, reject) => {
+      waiter = resolve;
+      waitQueue.push(resolve);
+      setTimeout(() => reject(new ServiceBusyError()), MAX_QUEUE_WAIT_MS);
+    });
+  } catch (err) {
+    // Drop out of the queue so releaseSlot does not hand a slot to a request
+    // that has already given up, which would leak the slot until the next one.
+    const i = waiter ? waitQueue.indexOf(waiter) : -1;
+    if (i >= 0) waitQueue.splice(i, 1);
+    throw err;
+  }
   activeCount += 1;
 }
 
@@ -47,7 +72,24 @@ function releaseSlot(): void {
   if (next) next();
 }
 
-export async function withPage<T>(fn: (page: Page) => Promise<T>): Promise<T> {
+/**
+ * Runs `fn` with a fresh page, at most MAX_CONCURRENT_RENDERS at a time.
+ *
+ * `budgetMs` times the work, and the timer deliberately starts here — after a
+ * slot is free and the page exists — rather than when the request arrived.
+ *
+ * That distinction is the whole point. The budget used to be applied around
+ * this call, so time spent queueing counted against it: a request could wait
+ * for a slot, render perfectly well inside its allowance, and still be
+ * reported as "this page took too long to load". Measured after lowering the
+ * concurrency limit, five simultaneous scans all failed that way while a
+ * single scan of the same site rendered in five seconds. The page was never
+ * the problem, and telling the owner it was would have sent them looking for a
+ * fault that does not exist.
+ *
+ * Queue time is bounded separately, and being busy is its own answer.
+ */
+export async function withPage<T>(fn: (page: Page) => Promise<T>, budgetMs?: number): Promise<T> {
   await acquireSlot();
   try {
     const browser = await getBrowser();
@@ -86,7 +128,8 @@ export async function withPage<T>(fn: (page: Page) => Promise<T>): Promise<T> {
     });
     try {
       const page = await context.newPage();
-      return await fn(page);
+      const work = fn(page);
+      return budgetMs ? await withTimeout(work, budgetMs, "Page render") : await work;
     } finally {
       await context.close();
     }

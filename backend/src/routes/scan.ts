@@ -3,6 +3,7 @@ import { z } from "zod";
 import { logger } from "../utils/logger.js";
 import { UnsafeUrlError } from "../middleware/ssrfGuard.js";
 import { TimeoutError } from "../utils/timeout.js";
+import { ServiceBusyError } from "../services/render/browserPool.js";
 import { RebindingDetectedError, SiteBlockedError } from "../services/render/renderPage.js";
 import { AuthError } from "../services/auth/authenticate.js";
 import { scanUrlToReport } from "../services/scanPipeline.js";
@@ -115,6 +116,27 @@ export async function scanRoutes(app: FastifyInstance) {
           timedOut: true,
         });
       }
+      // Busy is not broken, and it is not the page's fault either. Say so, and
+      // say it is worth coming back: a queue that has overflowed clears.
+      if (err instanceof ServiceBusyError) {
+        logger.info({ url: parsedBody.data.url }, "Queue full, turning the request away");
+        return reply.status(503).send({
+          error: "Every scanner is busy right now. Please try again in a minute.",
+        });
+      }
+
+      // A crashed tab is the browser running out of memory on a heavy page, not
+      // anything wrong with the site. "Could not load or scan the page" points
+      // the reader at their own site and gives them nothing to do; this says
+      // the truth, which is that it is worth another go.
+      if (/target crashed|page crashed|browser has been closed/i.test(String(err))) {
+        logger.warn({ url: parsedBody.data.url }, "Browser crashed during render");
+        return reply.status(503).send({
+          error:
+            "The checker ran out of room on this page, which can happen with very heavy ones. Please try again.",
+        });
+      }
+
       logger.warn({ err, url: parsedBody.data.url }, "Scan failed");
       return reply.status(502).send({
         error: "Could not load or scan the page",

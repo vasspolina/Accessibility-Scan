@@ -115,11 +115,15 @@ export async function scanUrlToReport(
 ): Promise<AccessibilityReport> {
   const safeUrl = await assertSafeUrl(rawUrl);
 
-  const renderResult = await withTimeout(
-    renderAndScan(safeUrl.toString(), auth),
+  // The budget goes in rather than around: applied here it would have been
+  // running while the request waited for a free scanner, so a page that
+  // rendered perfectly well inside its allowance still got reported as too
+  // slow. See withPage.
+  const renderResult = await renderAndScan(
+    safeUrl.toString(),
+    auth,
     // Signing in costs a page load of its own before the scan starts.
-    env.RENDER_TIMEOUT_MS + (auth ? 25_000 : 5000),
-    "Page render"
+    env.RENDER_TIMEOUT_MS + (auth ? 25_000 : 5000)
   );
 
   const context = extractContext(safeUrl.toString(), renderResult);

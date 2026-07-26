@@ -1372,11 +1372,18 @@ export async function renderAndScan(
   // nowhere else: they are never stored, never logged, never put in the
   // report, and never sent to the AI layer (see services/auth/authenticate.ts
   // and contextExtraction/extractContext.ts).
-  auth?: AuthConfig
+  auth?: AuthConfig,
+  // Times the render itself. Passed down so the clock starts once a page
+  // exists rather than when the request arrived — see withPage.
+  budgetMs?: number
 ): Promise<RenderResult> {
-  const start = Date.now();
+
 
   return withPage(async (page: Page) => {
+    // Started here, not before the call: everything above is waiting for a
+    // free scanner, and reporting queue time as render time overstated it by
+    // more than the whole budget on a busy service.
+    const start = Date.now();
     if (auth) {
       // Before the target navigation, so the session is live when we arrive.
       // Throws AuthError, which the route surfaces as a clear message.
@@ -1451,8 +1458,33 @@ export async function renderAndScan(
         throw new SiteBlockedError(host, `it served a "${phrase}" check instead of the page`);
       }
 
-      await page.addScriptTag({ path: require.resolve("axe-core") });
-      const axe = (await page.evaluate(() => (window as unknown as { axe: { run: () => Promise<unknown> } }).axe.run())) as AxeRunResult;
+      // Injecting axe is the step most exposed to a page that hasn't finished
+      // moving. Plenty of sites navigate again after load — a consent
+      // redirect, a locale route, a client-side router settling — and doing
+      // that mid-injection destroys the execution context and throws. Measured
+      // on bbc.co.uk/news, which lost an entire scan to it and reported only
+      // "Could not load or scan the page".
+      //
+      // The page is fine; we were simply early. Wait for it to come to rest
+      // and go again. Once, because a page that navigates twice more is not
+      // settling and the render timeout should have the last word.
+      let axeResult: AxeRunResult;
+      try {
+        await page.addScriptTag({ path: require.resolve("axe-core") });
+        axeResult = (await page.evaluate(() =>
+          (window as unknown as { axe: { run: () => Promise<unknown> } }).axe.run()
+        )) as AxeRunResult;
+      } catch (err) {
+        if (!/execution context was destroyed|navigation/i.test(String(err))) throw err;
+        logger.info("Page navigated while injecting axe — waiting for it to settle and retrying");
+        await page.waitForLoadState("load", { timeout: 15_000 }).catch(() => {});
+        await page.waitForTimeout(800);
+        await page.addScriptTag({ path: require.resolve("axe-core") });
+        axeResult = (await page.evaluate(() =>
+          (window as unknown as { axe: { run: () => Promise<unknown> } }).axe.run()
+        )) as AxeRunResult;
+      }
+      const axe = axeResult;
 
       // Supplementary context for the AI layer, not something the report
       // depends on — so it must never be able to fail a scan. It normally
@@ -1656,5 +1688,5 @@ export async function renderAndScan(
     } finally {
       page.off("response", onResponse);
     }
-  });
+  }, budgetMs);
 }
