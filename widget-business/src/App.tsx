@@ -160,7 +160,7 @@ export function App({ apiBase }: { apiBase: string }) {
       {report && (
         <div className="a11y-report">
           <PrintButton />
-          <ScoreGauge score={report.score} summary={report.summary} />
+          <ScoreGauge score={report.score} summary={report.summary} seed={report.scannedAt} />
 
           {/* Only flag it when the AI review was wanted but didn't happen.
               "disabled_by_request" is the visitor's own choice — reporting it
