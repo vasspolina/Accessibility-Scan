@@ -1,4 +1,5 @@
 import sharp from "sharp";
+import { BLANK_STDEV } from "./renderPage.js";
 import type { BoundingBox } from "./renderPage.js";
 import type { AccessibilityFinding, Severity } from "../../types/report.js";
 
@@ -92,6 +93,22 @@ export async function cropElementThumbnail(
       .resize({ width: Math.min(MAX_THUMB_WIDTH, width), withoutEnlargement: true })
       .jpeg({ quality: JPEG_QUALITY })
       .toBuffer();
+
+    // Every element-capture path in renderPage rejects a frame that came out a
+    // single flat colour; this one didn't, and it was the gap that shipped a
+    // blank white box as a thumbnail. It happens for real reasons — a
+    // lazy-loaded image that never entered the viewport before the full-page
+    // shot, an element the capture didn't reach — and the crop succeeds
+    // regardless, so nothing else catches it.
+    //
+    // The damage went further than an ugly thumbnail. The alt-text suggester
+    // reads exactly these pixels, so a blank crop got sent to the model, which
+    // dutifully reported the image "looks decorative" and advised alt="" on a
+    // picture nobody had seen. Refusing the crop removes both: no thumbnail,
+    // and no suggestion drawn from one.
+    const stats = await sharp(cropped).stats().catch(() => null);
+    const maxStdev = stats ? Math.max(...stats.channels.map((c) => c.stdev)) : 1;
+    if (maxStdev < BLANK_STDEV) return null;
 
     return cropped.toString("base64");
   } catch {

@@ -596,7 +596,11 @@ const MAX_ELEMENT_SHOTS = 45;
 const ELEMENT_SHOT_BUDGET_MS = 12_000;
 // Per-channel standard deviation below which a capture is essentially one
 // solid colour — an invisible element, or one caught mid-reveal.
-const BLANK_STDEV = 2.5;
+// Per-channel standard deviation below which an image is essentially one flat
+// colour. Exported so every capture path applies the same bar — a threshold
+// that lives in two places drifts, and the one place that lacked this check
+// shipped white rectangles.
+export const BLANK_STDEV = 2.5;
 const ELEMENT_IMPACT_ORDER: Record<string, number> = {
   critical: 0,
   serious: 1,
