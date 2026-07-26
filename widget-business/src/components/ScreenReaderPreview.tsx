@@ -108,7 +108,7 @@ export function ScreenReaderPreview({ script }: { script: ScreenReaderScript }) 
             onClick={() => setOpen((v) => !v)}
           >
             <span>
-              Your page, read aloud{" "}
+              Screen reader preview{" "}
               <span className="a11y-section-count">({lines.length} announcements)</span>
             </span>
             {/* The count of problems stays visible while collapsed. A closed
