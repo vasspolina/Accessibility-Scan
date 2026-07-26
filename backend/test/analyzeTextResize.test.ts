@@ -106,3 +106,30 @@ describe("evaluateTextResize", () => {
     }
   });
 });
+
+// A pass that gives up must not read as a pass that found nothing. The score
+// counts only what ran, so silently-empty signals make a site look better than
+// it is — measured on a live site as a 20-point swing between identical scans.
+describe("a check that did not run", () => {
+  it("marks the signals as failed rather than empty-and-fine", () => {
+    const failed: TextResizeSignals = {
+      baseline: { clipped: [], documentScrollWidth: 1280, viewportWidth: 1280 },
+      spacing: { clipped: [], documentScrollWidth: 1280, viewportWidth: 1280 },
+      zoom: { clipped: [], documentScrollWidth: 1280, viewportWidth: 1280 },
+      failed: true,
+    };
+    // No findings, because nothing was measured — the honesty lives in the
+    // flag, which the report surfaces, not in invented findings.
+    expect(evaluateTextResize(failed)).toEqual([]);
+    expect(failed.failed).toBe(true);
+  });
+
+  it("is absent on a normal run, so the notice only appears when it should", () => {
+    const ok: TextResizeSignals = {
+      baseline: { clipped: [], documentScrollWidth: 1280, viewportWidth: 1280 },
+      spacing: { clipped: [], documentScrollWidth: 1280, viewportWidth: 1280 },
+      zoom: { clipped: [], documentScrollWidth: 1280, viewportWidth: 1280 },
+    };
+    expect(ok.failed).toBeUndefined();
+  });
+});

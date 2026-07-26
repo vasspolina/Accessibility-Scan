@@ -187,6 +187,9 @@ export const accessibilityReportSchema = z.object({
     renderTimeMs: z.number(),
     aiReviewTimeMs: z.number(),
     aiReviewStatus: aiReviewStatusSchema,
+    // Checks that did not finish on this run. Present so the reader can tell a
+    // clean result from an incomplete one — the score only counts what ran.
+    incompleteChecks: z.array(z.string()).optional(),
     aiReviewErrorKind: aiReviewErrorKindSchema.optional(),
     model: z.string().optional(),
   }),

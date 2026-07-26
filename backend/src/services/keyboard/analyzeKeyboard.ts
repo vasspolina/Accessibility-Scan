@@ -33,6 +33,10 @@ export interface KeyboardNavResult {
   // True when tabbing wrapped back to <body> before the cap — we saw the
   // whole tab cycle, not just a prefix of it.
   reachedEnd: boolean;
+  // Set when the walk threw partway through. Without it an aborted walk is
+  // indistinguishable from a page with no keyboard problems, and the report
+  // quietly scores the site as if we had checked.
+  failed?: boolean;
 }
 
 function hasVisibleIndicator(stop: TabStop): boolean {

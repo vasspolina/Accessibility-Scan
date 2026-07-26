@@ -166,6 +166,18 @@ export interface RenderResult {
   // 200%-text overrides — evaluated into resize findings
   // (services/textResize/analyzeTextResize.ts).
   textResizeSignals: TextResizeSignals;
+  // Checks that did not complete on this run, in words a reader understands.
+  //
+  // Each of these passes catches its own failures and returns empty signals so
+  // one broken check can not fail a whole scan. That is right, but it left the
+  // report unable to tell "we looked and found nothing" from "we never
+  // looked" — and the score counted the second as if it were the first.
+  // Measured on moma.org against the deployed service: three identical scans
+  // returned 73, 60 and 60 findings, scoring 4, 24 and 24, purely because the
+  // keyboard, mobile and text-resize passes ran on one and silently gave up on
+  // the others. A site must not look twenty points better because our own
+  // checks fell over.
+  incompleteChecks: string[];
 }
 
 // Runs inside the browser page context via page.evaluate — must be fully
@@ -1098,6 +1110,7 @@ async function collectTextResizeSignals(page: Page): Promise<TextResizeSignals> 
   const baseline = await measure();
 
   const baselineClipped = new Set(baseline.clipped);
+  let resizeFailed = false;
 
   const withCss = async (css: string, captureViewport: boolean): Promise<ClipMeasurement> => {
     try {
@@ -1148,6 +1161,7 @@ async function collectTextResizeSignals(page: Page): Promise<TextResizeSignals> 
       await page.waitForTimeout(80);
       return result;
     } catch {
+      resizeFailed = true;
       return empty;
     }
   };
@@ -1155,7 +1169,7 @@ async function collectTextResizeSignals(page: Page): Promise<TextResizeSignals> 
   const spacing = await withCss(TEXT_SPACING_CSS, false);
   const zoom = await withCss(TEXT_ZOOM_CSS, true);
 
-  return { baseline, spacing, zoom };
+  return { baseline, spacing, zoom, failed: resizeFailed };
 }
 
 // Captures thumbnails for mobile-only findings while the page is at phone
@@ -1204,6 +1218,7 @@ const KEYBOARD_BUDGET_MS = 6_000;
 async function captureKeyboardNavigation(page: Page): Promise<KeyboardNavResult> {
   const stops: TabStop[] = [];
   let reachedEnd = false;
+  let failed = false;
 
   const readActive = () =>
     page.evaluate(() => {
@@ -1304,9 +1319,10 @@ async function captureKeyboardNavigation(page: Page): Promise<KeyboardNavResult>
     }
   } catch (err) {
     logger.warn({ err }, "Keyboard walk-through failed — reporting without keyboard findings");
+    failed = true;
   }
 
-  return { stops, reachedEnd };
+  return { stops, reachedEnd, failed };
 }
 
 export class RebindingDetectedError extends Error {
@@ -1569,6 +1585,7 @@ export async function renderAndScan(
       // Thumbnails for mobile findings, captured at phone width (see
       // captureMobileElementScreenshots). Merged over the desktop captures so
       // a mobile-only element is pictured as it actually renders on a phone.
+      let mobileFailed = false;
       let mobileElementScreenshots: Record<string, string> = {};
       let mobileSelectors: string[] = [];
       try {
@@ -1593,6 +1610,7 @@ export async function renderAndScan(
         }
       } catch (err) {
         logger.warn({ err }, "Mobile pass failed — reporting without mobile findings");
+        mobileFailed = true;
       }
 
       // A mobile finding must never borrow the desktop capture of its selector
@@ -1625,6 +1643,11 @@ export async function renderAndScan(
         darkPatternSignals,
         screenReaderScript,
         textResizeSignals,
+        incompleteChecks: [
+          ...(keyboardNav.failed ? ["keyboard navigation"] : []),
+          ...(mobileFailed ? ["phone layout"] : []),
+          ...(textResizeSignals.failed ? ["text resizing"] : []),
+        ],
       };
     } finally {
       page.off("response", onResponse);

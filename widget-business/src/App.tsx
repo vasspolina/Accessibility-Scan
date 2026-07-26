@@ -146,6 +146,19 @@ export function App({ apiBase }: { apiBase: string }) {
               </p>
             )}
 
+          {/* The score only counts checks that ran, so a scan where some fell
+              over can look better than a complete one. Measured on a real site:
+              three identical scans scored 4, 24 and 24, purely because the
+              keyboard and phone-layout checks gave up on two of them. Saying so
+              is the difference between a number and a trustworthy number. */}
+          {report.meta.incompleteChecks && report.meta.incompleteChecks.length > 0 && (
+            <p className="a11y-notice">
+              Some checks didn't finish this time:{" "}
+              {report.meta.incompleteChecks.join(", ")}. The score above only counts what ran,
+              so it may look better than it should. Running the check again usually completes them.
+            </p>
+          )}
+
           <ScanHistory current={toHistoryEntry(report)} previous={history} />
 
           {report.conformance && <ConformanceView conformance={report.conformance} />}

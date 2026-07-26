@@ -103,6 +103,10 @@ export interface AccessibilityReport {
     renderTimeMs: number;
     aiReviewTimeMs: number;
     aiReviewStatus: AiReviewStatus;
+    // Checks that didn't finish on this run. The score only counts what ran,
+    // so an incomplete scan can look better than a complete one — the report
+    // says so rather than letting the number stand unqualified.
+    incompleteChecks?: string[];
     model?: string;
   };
 }

@@ -33,6 +33,10 @@ export interface TextResizeSignals {
   spacing: ClipMeasurement;
   // After setting the root font size to 200% (WCAG 1.4.4).
   zoom: ClipMeasurement;
+  // Set when applying or measuring an override threw. Same reason as the
+  // keyboard walk: "we found nothing" and "we never looked" must not read
+  // the same way in a report.
+  failed?: boolean;
 }
 
 // The exact overrides WCAG 1.4.12 requires a page to survive. Quoted from the

@@ -171,6 +171,9 @@ export async function scanUrlToReport(
       renderTimeMs: renderResult.renderTimeMs,
       aiReviewTimeMs: aiReview.aiReviewTimeMs,
       aiReviewStatus: aiReview.status,
+      incompleteChecks: renderResult.incompleteChecks.length
+        ? renderResult.incompleteChecks
+        : undefined,
       aiReviewErrorKind: aiReview.errorKind,
       model: aiReview.model,
     },
