@@ -1772,3 +1772,116 @@
   flex-shrink: 0;
   margin: 0;
 }
+
+/* Carbon form area --------------------------------------------------------
+   The entry form is the first thing anyone sees, so it is the part that has
+   to be Carbon rather than approximately Carbon. */
+
+/* Field label: Carbon's label-01. Small and quiet — it names the field, it
+   isn't a heading, and at 15px/600 it was competing with the body copy. */
+.a11y-url-label {
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 1.33;
+  letter-spacing: 0.32px;
+  color: var(--a11y-muted, #525252);
+  margin-bottom: 8px;
+}
+
+/* Field and its action are joined, which is how Carbon pairs an input with
+   the button that acts on it. The gap made them read as two unrelated
+   controls that happened to sit side by side. */
+.a11y-url-row {
+  gap: 0;
+}
+
+.a11y-url-row input {
+  /* Carbon fields carry their affordance on one strong bottom border. */
+  border-bottom: 1px solid #8d8d8d;
+}
+
+.a11y-url-row input::placeholder {
+  color: #6f6f6f;        /* text-placeholder — 4.6:1 on layer-01 */
+  opacity: 1;            /* Firefox fades placeholders by default */
+}
+
+/* Disabled: Carbon has its own tokens for this. A faded primary reads as
+   "the blue button, but broken" — grey reads as "not yet". The pair below is
+   Carbon's disabled button, and it is deliberately low contrast because a
+   disabled control is not something you are meant to be able to use. */
+.a11y-url-row button:disabled {
+  background: #c6c6c6;   /* button-disabled */
+  color: #8d8d8d;        /* text-on-color-disabled */
+  opacity: 1;
+  cursor: not-allowed;
+}
+
+/* Mode choice: Carbon's selectable tile. Bordered, on the layer fill, with
+   the selected one marked by a 2px inset border AND a tick.
+   The tick is not decoration. Carbon shows one because a border colour on its
+   own conveys the selection by colour alone, which is WCAG 1.4.1 — the exact
+   thing this product reports on other people's sites. The solid blue fill it
+   replaces was unambiguous but far too loud for a control this early in the
+   page, and it fought the primary button beside it. */
+.a11y-mode-btn {
+  padding: 16px;
+  border: 1px solid var(--a11y-border, #e0e0e0);
+  background: var(--a11y-surface, #f4f4f4);
+  font-weight: 400;
+  transition: background-color 0.11s cubic-bezier(0.2, 0, 0.38, 0.9);
+}
+
+.a11y-mode-btn:hover {
+  background: #e8e8e8;   /* layer-hover-01 */
+}
+
+.a11y-mode-btn-active,
+.a11y-mode-btn-active:hover {
+  background: var(--a11y-bg, #ffffff);
+  border-color: var(--a11y-accent, #0f62fe);
+  box-shadow: inset 0 0 0 2px var(--a11y-accent, #0f62fe);
+  color: var(--a11y-text, #161616);
+  position: relative;
+  padding-right: 40px;
+}
+
+.a11y-mode-btn-active::after {
+  content: "✓";
+  position: absolute;
+  top: 12px;
+  right: 14px;
+  font-size: 16px;
+  line-height: 1;
+  color: var(--a11y-accent, #0f62fe);
+}
+
+/* The description inside the selected tile goes back to ordinary secondary
+   text now that the tile is no longer solid blue. */
+.a11y-mode-btn-active em {
+  color: var(--a11y-muted, #525252);
+}
+
+/* Checkbox: Carbon's is a 16px square with a 1px solid border, not the
+   browser default, and its label is body-compact-01. */
+.a11y-ai-toggle {
+  align-items: flex-start;
+  gap: 12px;
+  font-size: 14px;
+  line-height: 1.29;
+  letter-spacing: 0.16px;
+  color: var(--a11y-text, #161616);
+}
+
+.a11y-ai-toggle input[type="checkbox"] {
+  flex-shrink: 0;
+  margin-top: 1px;
+  accent-color: var(--a11y-accent, #0f62fe);
+}
+
+/* Links: Carbon's link-primary, underlined so they are not identified by
+   colour alone, and regular weight rather than bold. */
+.a11y-widget-biz.a11y-widget-biz a {
+  color: var(--a11y-accent, #0f62fe);
+  text-decoration: underline;
+  font-weight: 400;
+}
