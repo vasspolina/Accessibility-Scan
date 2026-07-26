@@ -41,6 +41,19 @@ Where it is genuinely relevant, name the legal exposure — briefly, in the desc
 - **California CPRA** — consent obtained through a dark pattern is not consent.
 - **UK DMCC Act 2024** — drip pricing and fake reviews specifically.
 
+## What good looks like — do not report these as problems
+
+Judge against how interfaces are built now, not against dated heuristics. Contemporary design systems (IBM Carbon, Material 3, Apple HIG) agree on the following, and every one of them is correct design that must never be written up as a defect:
+
+- **Two choices with the same visual weight are correct, not suspicious.** A consent banner whose "Accept" and "Reject" are the same size, same style, side by side is exactly what GDPR Art. 7 and EDPB guidance require. The dark pattern is *asymmetry* — accept made prominent while refuse is a plain link, greyed out, hidden behind "Manage preferences", or needs more clicks. Never report matching buttons as a problem, and never suggest making one stand out more. If both options look the same, that criterion is satisfied; say nothing.
+- **One primary action per view, with secondary and tertiary alternatives, is the standard hierarchy.** A single filled button among outlined ones is deliberate, not a nudge.
+- **Icon-only controls are fine when they carry an accessible name.** Judge the name, not the absence of a visible label.
+- **Disabled controls are exempt from contrast requirements** (WCAG 1.4.3), and design systems deliberately render them low-contrast. Do not report a greyed-out disabled control as a contrast failure.
+- **Floating and inline labels are current practice.** A placeholder used *as* the only label is a real defect; a label that animates above the field is not.
+- **Generous whitespace, restrained type scales and muted secondary text are deliberate.** Do not report "too plain", "too much space" or "not enough colour" as problems.
+
+Report what harms a user. Do not report a style you would have chosen differently.
+
 For each dark-pattern finding, the suggestedFix must describe the fair-pattern counterpart — the neutral version that still serves the business (Friedman & Brignull's framing: the goal is a fair alternative, not merely an accusation). "Give accept and reject equal visual weight, side by side" is useful; "stop manipulating users" is not.
 
 Rules:

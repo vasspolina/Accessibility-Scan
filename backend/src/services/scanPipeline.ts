@@ -5,7 +5,12 @@ import { renderAndScan, captureSelectorsFresh } from "./render/renderPage.js";
 import { extractContext } from "./contextExtraction/extractContext.js";
 import { reviewPage } from "./aiReview/reviewPage.js";
 import { attachAltTextSuggestions } from "./aiReview/suggestAltText.js";
-import { axeToFindings, aiToFindings, mergeFindings } from "./merge/mergeFindings.js";
+import {
+  axeToFindings,
+  aiToFindings,
+  mergeFindings,
+  dropContradictedConsentClaims,
+} from "./merge/mergeFindings.js";
 import { evaluateTypography } from "./typography/analyzeTypography.js";
 import { evaluateMotion } from "./motion/analyzeMotion.js";
 import { evaluateKeyboardNav } from "./keyboard/analyzeKeyboard.js";
@@ -144,7 +149,14 @@ export async function scanUrlToReport(
 
   // Everything above ran while the AI review was in flight; collect it now.
   const aiReview = await aiReviewPromise;
-  const findings = mergeFindings(automatedFindings, aiToFindings(aiReview.findings));
+  // The model is told that matching accept/reject buttons are correct, and it
+  // has still claimed the opposite. Where the page was measured, the
+  // measurement decides.
+  const aiFindings = dropContradictedConsentClaims(
+    aiToFindings(aiReview.findings),
+    renderResult.darkPatternSignals.consentBanner
+  );
+  const findings = mergeFindings(automatedFindings, aiFindings);
   findings.push(...deterministic);
 
   if (captureEvidence) {

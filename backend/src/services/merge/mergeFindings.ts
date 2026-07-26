@@ -233,3 +233,54 @@ export function mergeFindings(
   // instructing Claude to skip axe-covered selectors (see buildPrompt.ts).
   return applyHeadingSeverityFloor([...automated, ...aiReview]);
 }
+
+// Claims about consent-button styling that the page's own measurements
+// contradict. Matches a finding that is about the accept/reject pair AND about
+// how they look — not merely a finding that mentions a cookie banner.
+const CONSENT_PAIR_RE = /\b(accept|agree|allow)\b/i;
+const CONSENT_REFUSE_RE = /\b(reject|decline|refuse|opt[- ]?out|necessary only)\b/i;
+const APPEARANCE_RE =
+  /\b(identical|indistinguish\w*|same (?:size|style|colour|color|weight|appearance)|look\w* (?:the same|alike|similar|visually)|visually (?:identical|similar|the same)|styl\w+|prominen\w+|visual weight|stand\s?out)\b/i;
+
+/**
+ * Drops AI dark-pattern findings that say the consent buttons are wrongly
+ * styled when we measured them and they are not.
+ *
+ * The prompt already tells the model that equal visual weight is the correct
+ * end state — Art. 7 requires refusing to be as easy as accepting — and it
+ * still produced "accept and reject look visually identical, but only one is
+ * a real choice" for a banner whose buttons match. That is the rule inverted:
+ * matching buttons are the fix, not the fault, and telling an owner to make
+ * one stand out would walk them into the actual dark pattern.
+ *
+ * The deterministic layer already computes this from the live DOM (see
+ * dark-consent-asymmetry). Where measurement and model disagree about
+ * something measurable, measurement wins.
+ *
+ * Pure and deterministic. Exported for testing.
+ */
+export function dropContradictedConsentClaims(
+  findings: AccessibilityFinding[],
+  consentBanner: {
+    acceptControls: Array<{ prominent: boolean }>;
+    rejectControls: Array<{ prominent: boolean }>;
+  } | null
+): AccessibilityFinding[] {
+  // No banner, or no pair to compare, means nothing was measured — leave the
+  // model's judgement alone rather than silencing it on no evidence.
+  if (!consentBanner) return findings;
+  const { acceptControls, rejectControls } = consentBanner;
+  if (acceptControls.length === 0 || rejectControls.length === 0) return findings;
+
+  // The same test dark-consent-asymmetry uses, so the two can never disagree.
+  const asymmetric =
+    acceptControls.some((c) => c.prominent) && rejectControls.every((c) => !c.prominent);
+  if (asymmetric) return findings;
+
+  return findings.filter((f) => {
+    if (f.source !== "ai-review" || f.category !== "dark-pattern") return true;
+    const text = `${f.title ?? ""} ${f.description} ${f.suggestedFix}`;
+    const aboutThePair = CONSENT_PAIR_RE.test(text) && CONSENT_REFUSE_RE.test(text);
+    return !(aboutThePair && APPEARANCE_RE.test(text));
+  });
+}
