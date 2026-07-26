@@ -3,11 +3,27 @@ import type { AccessibilityReport, ConformanceSummary } from "../api/scanClient"
 
 // Generates a draft accessibility statement.
 //
-// The European Accessibility Act requires covered services to publish one, and
-// it has required content: who the provider is, how to reach them, what the
-// service's accessibility position actually is, and what isn't covered. Most
-// small businesses have never seen one and won't know where to start — but the
-// scan already holds most of the substance.
+// Two different EU regimes are in play, and conflating them is how these
+// documents end up wrong:
+//
+//   - Directive (EU) 2016/2102 (the Web Accessibility Directive) covers public
+//     sector bodies and prescribes an actual template — the model statement in
+//     Commission Implementing Decision (EU) 2018/1523. Its structure is
+//     mandatory: compliance status, non-accessible content split into three
+//     named categories, preparation (including the assessment method), feedback
+//     and contact, enforcement procedure.
+//
+//   - Directive (EU) 2019/882 (the European Accessibility Act) covers private
+//     sector services from 28 June 2025, and does NOT require a statement in
+//     that sense. Article 13(2) and Annex V require the provider to explain how
+//     the service meets the requirements, in the general terms and conditions
+//     or an equivalent document, published in written and oral format and in a
+//     form people with disabilities can use.
+//
+// This draft follows the 2018/1523 model, because it is the only prescribed
+// structure and it covers the substance either regime asks for, and then says
+// plainly what the EAA additionally expects. Most small businesses have never
+// seen one of these — but the scan already holds most of the substance.
 //
 // The hard rule here is the same as the conformance view: never claim more
 // than the evidence supports. A scan cannot establish conformance, so the
@@ -20,7 +36,9 @@ import type { AccessibilityReport, ConformanceSummary } from "../api/scanClient"
 // offered: nothing this tool produces can support that claim.
 type Position = "partially" | "non";
 
-function buildStatement(opts: {
+// Exported for testing. The mandatory structure of this document is set by
+// law, so it is checked against that structure rather than trusted to review.
+export function buildStatement(opts: {
   organisation: string;
   contactEmail: string;
   siteUrl: string;
@@ -38,18 +56,44 @@ function buildStatement(opts: {
       ? `${org} considers ${siteUrl} to be **partially conformant** with EN 301 549 (which adopts WCAG 2.1 Level AA). "Partially conformant" means some parts of the site do not yet fully conform to the standard.`
       : `${org} considers ${siteUrl} to be **non-conformant** with EN 301 549 (which adopts WCAG 2.1 Level AA). Non-conformant means the site does not yet meet the standard, and we are working to address this.`;
 
-  const issuesBlock = knownIssues.length
-    ? `## Known accessibility problems
+  // The model statement in Commission Implementing Decision (EU) 2018/1523
+  // requires non-accessible content to be split into three named categories,
+  // not one list. Only the first is generated from the scan — the other two
+  // are declarations only the owner can make, so they are left as prompts
+  // rather than quietly omitted. An omitted mandatory heading is the kind of
+  // gap that gets a statement rejected.
+  const issuesBlock = `## Non-accessible content
 
-We are aware of the following issues and are working to resolve them:
+The content below is non-accessible for the following reasons.
+
+### Non-compliance
+
+${
+  knownIssues.length
+    ? `We are aware of the following problems and are working to resolve them:
 
 ${knownIssues.map((i) => `- ${i}`).join("\n")}`
-    : `## Known accessibility problems
+    : `An automated check found no failures it is able to detect. That is not the same as the site being fully accessible — see "Preparation of this statement" below.`
+}
 
-An automated check of this site found no failures it is able to detect. That is not the same as the site being fully accessible. See "How we assessed this site" below.`;
+### Disproportionate burden
 
+[List here anything you are not fixing because doing so would be a disproportionate burden, and say why. Delete this section if it does not apply.]
+
+*Note: under Article 14 of the European Accessibility Act, invoking disproportionate burden is not a matter of saying so. You must carry out and document an assessment, keep it for five years, and inform the relevant market surveillance authority.*
+
+### Content outside the scope of the legislation
+
+[List here anything on the site that the accessibility rules do not cover — for example third-party content you neither fund nor control, archived material, or office file formats published before the relevant date. Where an accessible alternative exists, say so. Delete this section if it does not apply.]`;
+
+  // "Method used to prepare the statement" is a required element of the model
+  // (Implementing Decision (EU) 2018/1523, and Art. 3(1) on assessment
+  // methods). It distinguishes a self-assessment from a third-party audit, and
+  // a statement that does not say which is not complete.
   const assessmentNote = conformance
-    ? `This statement is based on an automated check carried out on ${date}, covering the ${conformance.total} Level A and AA success criteria in WCAG 2.1.
+    ? `**Method used:** self-assessment, carried out by the site owner using an automated accessibility checker. It was not a third-party evaluation.
+
+This statement is based on an automated check carried out on ${date}, covering the ${conformance.total} Level A and AA success criteria in WCAG 2.1.
 
 An automated check has real limits, and we would rather state them than imply a completeness we cannot evidence. ${conformance.needsReview} of those criteria cannot be assessed by software at all. They depend on human judgement, such as whether video captions are accurate, whether wording is easy enough to understand, or whether a form that times out can be extended. Where the check reports no issue, that means no issue was detected, not that the criterion has been verified as met.
 
@@ -76,14 +120,29 @@ If you find an accessibility problem on this site, or need information from it i
 
 ## Enforcement procedure
 
-If you contact us with a complaint and are not satisfied with our response, you can escalate it to the accessibility enforcement body in your country. Under the European Accessibility Act, each EU member state designates its own authority.
+If you contact us with a complaint and are not satisfied with our response, you can escalate it to the body responsible for enforcement in your country.
+
+[Name the enforcement body that applies to you, and link to its complaints procedure. Each EU member state designates its own — for the European Accessibility Act these are the market surveillance authorities, and for public sector bodies it is the authority named in your country's transposition of Directive (EU) 2016/2102.]
 
 ## Preparation of this statement
 
 This statement was prepared on ${date}. It was last reviewed on ${date}.
 
+We review this statement at least once a year, and whenever the site changes substantially.
+
+## How this information is published
+
+The European Accessibility Act (Article 13(2) and Annex V) asks for more than a page like this one. Two things are worth checking:
+
+- **Where it lives.** Annex V says the assessment of how the service meets the accessibility requirements belongs in your general terms and conditions, or an equivalent document. Publishing this page is a good start; it does not on its own satisfy that.
+- **What format it is in.** The information has to be available *in written and oral format*, and in a way that people with disabilities can use. In practice that means this page must itself be accessible, and there must be a way to get the same information by speaking to someone.
+
+Annex V also asks for a general description of the service in accessible formats, whatever explanation is needed to understand how the service works, and a description of how it meets the requirements in Annex I. [Add or link to those here.]
+
 ---
-*Draft generated from an automated accessibility check. Review it, complete anything in brackets, and have it checked before publishing. A published statement is a formal declaration, and it should reflect testing you have actually done.*
+*Draft generated from an automated accessibility check. It follows the structure of the model statement in Commission Implementing Decision (EU) 2018/1523, which is the template the Web Accessibility Directive prescribes for public sector bodies and the closest formal model for everyone else.*
+
+*Complete anything in brackets and have it checked before publishing. Two of the three "non-accessible content" headings above are declarations only you can make, and a statement is a public, dated, formal declaration — under the European Accessibility Act an inaccurate one is its own exposure.*
 `;
 }
 
