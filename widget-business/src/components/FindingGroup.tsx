@@ -358,8 +358,19 @@ export function FindingGroup({ findings }: { findings: AccessibilityFinding[] })
         {rep.wcagLevel && <span className="a11y-level-badge">{LEVEL_FRAMING[rep.wcagLevel]}</span>}
       </button>
 
-      {expanded && (
-        <div id={detailsId} className="a11y-finding-details">
+      {/* Always rendered, hidden when collapsed, rather than rendered only
+          when open. Two reasons.
+
+          The print stylesheet forces these open so a printed report stands on
+          its own — a page of bare titles with no "why this matters", no fix
+          and no affected elements is not a report. That rule could never work
+          against conditional rendering: CSS cannot reveal what React never put
+          in the DOM. Measured on a nine-finding report, the PDF contained
+          zero of them.
+
+          And aria-controls above pointed at an element that did not exist
+          while collapsed, which is exactly what that attribute must not do. */}
+      <div id={detailsId} className="a11y-finding-details" hidden={!expanded}>
           {/* Shared explanation — shown once for the whole group */}
           {plain && (
             <p className="a11y-finding-impact">
@@ -423,8 +434,7 @@ export function FindingGroup({ findings }: { findings: AccessibilityFinding[] })
               </ul>
             </details>
           )}
-        </div>
-      )}
+      </div>
     </li>
   );
 }

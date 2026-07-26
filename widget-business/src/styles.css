@@ -1223,9 +1223,25 @@
   }
 
   /* A collapsed finding prints as a title with no detail, which is useless on
-     paper — the print copy has to stand alone. */
-  .a11y-finding-details {
+     paper — the print copy has to stand alone. The [hidden] selector is the
+     load-bearing part: the details are always in the DOM now and carry the
+     hidden attribute when collapsed, so this has to beat the browser default
+     of display:none that the attribute brings with it. */
+  .a11y-finding-details,
+  .a11y-finding-details[hidden],
+  .a11y-conf-panel,
+  .a11y-conf-panel[hidden] {
     display: block !important;
+  }
+
+  /* The whole checklist prints, whatever the on-screen filter was set to. */
+  .a11y-conf-row[hidden] {
+    display: flex !important;
+  }
+
+  /* Listening to the page is not something paper does. */
+  .a11y-sr-play {
+    display: none !important;
   }
 
   .a11y-finding,
@@ -1929,4 +1945,20 @@
   outline: 2px solid var(--a11y-accent, #0f62fe);
   outline-offset: -2px;
   box-shadow: inset 0 0 0 1px #ffffff;
+}
+
+/* The hidden attribute needs help here.
+   A browser's default [hidden] { display: none } is the weakest kind of rule,
+   and any stylesheet that sets display on the same element beats it. These
+   three all do — .a11y-conf-row is display:flex — so marking them hidden did
+   exactly nothing on screen while looking completely correct in the DOM.
+   Caught by measuring: 45 of 50 rows carried the attribute and all 50 were
+   still visible.
+   The print stylesheet overrides these back to visible with !important, which
+   is the whole reason these elements are rendered-and-hidden rather than not
+   rendered at all. */
+.a11y-widget-biz .a11y-conf-row[hidden],
+.a11y-widget-biz .a11y-conf-panel[hidden],
+.a11y-widget-biz .a11y-finding-details[hidden] {
+  display: none;
 }

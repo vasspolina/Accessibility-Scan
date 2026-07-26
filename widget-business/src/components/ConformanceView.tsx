@@ -1,5 +1,5 @@
 import { useMemo, useState } from "react";
-import type { ConformanceSummary } from "../api/scanClient";
+import type { ConformanceSummary, CriterionResult } from "../api/scanClient";
 
 // Answers the question the 0-100 score can't: "are we compliant?"
 //
@@ -23,7 +23,14 @@ export function ConformanceView({ conformance }: { conformance: ConformanceSumma
     () => conformance.criteria.filter((c) => c.status === "failed"),
     [conformance.criteria]
   );
-  const shown = onlyFailing ? failing : conformance.criteria;
+  // Every criterion is rendered; the filter hides rather than removes. On
+  // screen that is identical. On paper it is the difference between a record
+  // of what was checked and a list of what went wrong — a printed compliance
+  // document that omits the 22 criteria needing a person is hiding the most
+  // honest part of the report. Filtering by not rendering put those rows
+  // beyond the reach of the print stylesheet entirely.
+  const shown = conformance.criteria;
+  const isFilteredOut = (status: CriterionResult["status"]) => onlyFailing && status !== "failed";
 
   return (
     <section className="a11y-section a11y-conf">
@@ -84,8 +91,12 @@ export function ConformanceView({ conformance }: { conformance: ConformanceSumma
         )}
       </div>
 
-      {expanded ? (
-        <>
+      {/* Always in the DOM, hidden when collapsed. A printed report is
+          compliance evidence, and behind a conditional this checklist — the
+          substance of it — appeared on paper only if the reader happened to
+          expand it first. The print stylesheet can reveal a hidden element;
+          it cannot reveal one React never rendered. */}
+      <div className="a11y-conf-panel" hidden={!expanded}>
           <div className="a11y-conf-filter">
             <label className="a11y-ai-toggle">
               <input
@@ -97,12 +108,16 @@ export function ConformanceView({ conformance }: { conformance: ConformanceSumma
             </label>
           </div>
 
-          {shown.length === 0 ? (
+          {failing.length === 0 && onlyFailing ? (
             <p className="a11y-conf-caveat">Nothing on this page is failing.</p>
           ) : (
             <ul className="a11y-conf-list">
               {shown.map((c) => (
-                <li key={c.id} className={`a11y-conf-row a11y-conf-${c.status}`}>
+                <li
+                  key={c.id}
+                  className={`a11y-conf-row a11y-conf-${c.status}`}
+                  hidden={isFilteredOut(c.status)}
+                >
                   <span className="a11y-conf-id">
                     {c.id} <em>{c.level}</em>
                   </span>
@@ -133,8 +148,8 @@ export function ConformanceView({ conformance }: { conformance: ConformanceSumma
           <button type="button" className="a11y-show-all" onClick={() => setExpanded(false)}>
             Hide the full list
           </button>
-        </>
-      ) : (
+      </div>
+      {!expanded && (
         <button type="button" className="a11y-show-all" onClick={() => setExpanded(true)}>
           Show all {conformance.total} items
         </button>
