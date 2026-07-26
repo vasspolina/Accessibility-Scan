@@ -1,4 +1,4 @@
-import { describe, it, expect, afterEach } from "vitest";
+import { describe, it, expect, afterEach, vi } from "vitest";
 import { scanUrl, ScanError } from "../src/api/scanClient";
 
 // Retry behaviour is worth pinning down: a wrong call here is invisible in the
@@ -58,5 +58,44 @@ describe("scanUrl retries", () => {
     await expect(scanUrl("http://api", "https://example.com", false)).resolves.toMatchObject({
       score: 80,
     });
+  });
+});
+
+// Without a deadline, a backend that accepts the connection and never answers
+// leaves the spinner turning with nothing the visitor can do but reload and
+// lose their place. It happens for the half-minute or so around every deploy.
+describe("a request that never comes back", () => {
+  it("aborts the request once the deadline passes", async () => {
+    vi.useFakeTimers();
+    let aborted = false;
+    globalThis.fetch = ((_url: string, init?: RequestInit) =>
+      new Promise((_resolve, reject) => {
+        init?.signal?.addEventListener("abort", () => {
+          aborted = true;
+          reject(new DOMException("aborted", "AbortError"));
+        });
+      })) as typeof fetch;
+
+    const scan = scanUrl("http://api", "https://example.com", false);
+    const assertion = expect(scan).rejects.toThrow(/stopped responding/i);
+    // Past the three-minute deadline without waiting three real minutes.
+    await vi.advanceTimersByTimeAsync(181_000);
+    await assertion;
+    expect(aborted).toBe(true);
+    vi.useRealTimers();
+  });
+
+  it("treats a deadline as final, not as something to retry", async () => {
+    let calls = 0;
+    globalThis.fetch = (() => {
+      calls++;
+      return Promise.reject(new DOMException("aborted", "AbortError"));
+    }) as typeof fetch;
+
+    await expect(scanUrl("http://api", "https://example.com", false)).rejects.toThrow(
+      /stopped responding/i
+    );
+    // One attempt. Retrying spends another full deadline to say the same thing.
+    expect(calls).toBe(1);
   });
 });

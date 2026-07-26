@@ -170,6 +170,32 @@ const delay = (ms: number) => new Promise((r) => setTimeout(r, ms));
 // error. Rate-limit (429) and real 4xx/5xx are NOT retried; they carry a
 // meaningful message the user should see.
 const TRANSIENT_STATUSES = new Set([502, 503, 504]);
+
+// A single page scan is generous: render, AI review and a second visit for
+// screenshots. A whole-site audit walks several pages, so it gets far longer.
+// Neither is a target — they are the point at which waiting has clearly stopped
+// being useful.
+const SCAN_TIMEOUT_MS = 180_000;
+const AUDIT_TIMEOUT_MS = 900_000;
+
+/**
+ * fetch with a deadline.
+ *
+ * Without one, a backend that accepts the connection and then never answers
+ * leaves the spinner turning forever with nothing the visitor can do but
+ * reload and lose their place. That is not hypothetical: it happens for the
+ * half-minute or so around every deploy. An honest "it stopped responding"
+ * beats an animation that means nothing.
+ */
+async function fetchWithDeadline(url: string, init: RequestInit, ms: number): Promise<Response> {
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), ms);
+  try {
+    return await fetch(url, { ...init, signal: controller.signal });
+  } finally {
+    clearTimeout(timer);
+  }
+}
 const MAX_ATTEMPTS = 3;
 
 export async function scanUrl(
@@ -184,12 +210,19 @@ export async function scanUrl(
   for (let attempt = 1; attempt <= MAX_ATTEMPTS; attempt++) {
     let response: Response;
     try {
-      response = await fetch(endpoint, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body,
-      });
-    } catch {
+      response = await fetchWithDeadline(
+        endpoint,
+        { method: "POST", headers: { "Content-Type": "application/json" }, body },
+        SCAN_TIMEOUT_MS
+      );
+    } catch (err) {
+      // A deadline is a real answer, not a blip: retrying spends another three
+      // minutes to say the same thing.
+      if (err instanceof DOMException && err.name === "AbortError") {
+        throw new ScanError(
+          "The check stopped responding, so we gave up waiting. Please try again."
+        );
+      }
       // Connection failure — the service may just be briefly restarting.
       // Retry a couple of times before giving up.
       if (attempt < MAX_ATTEMPTS) {
@@ -244,12 +277,15 @@ export async function auditSite(
   // double-scan the site.
   let response: Response;
   try {
-    response = await fetch(endpoint, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body,
-    });
-  } catch {
+    response = await fetchWithDeadline(
+      endpoint,
+      { method: "POST", headers: { "Content-Type": "application/json" }, body },
+      AUDIT_TIMEOUT_MS
+    );
+  } catch (err) {
+    if (err instanceof DOMException && err.name === "AbortError") {
+      throw new ScanError("The audit stopped responding, so we gave up waiting. Please try again.");
+    }
     throw new ScanError("Could not reach the scanner service. Please try again shortly.");
   }
 
