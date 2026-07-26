@@ -73,12 +73,12 @@ export interface PlainRule {
 
 export const PLAIN_RULE_EXPLANATIONS: Record<string, PlainRule> = {
   "color-contrast": {
-    plain: "Some text is too light against its background to read easily.",
+    plain: "Text is too light against its background to read easily.",
     impact:
       "Hard to read in bright light, on a cheap screen, or with imperfect eyesight. Your message doesn't land.",
   },
   "image-alt": {
-    plain: "Some images have no text description behind them.",
+    plain: "Images have no text description behind them.",
     impact:
       "People using screen readers hear nothing for these images, and search engines can't tell what they show. Costing you both accessibility and SEO.",
   },
@@ -87,21 +87,21 @@ export const PLAIN_RULE_EXPLANATIONS: Record<string, PlainRule> = {
     impact: "People using screen readers can't tell what the button does, so they can't finish.",
   },
   "link-name": {
-    plain: "Some links have no readable text.",
+    plain: "Links have no readable text at all.",
     impact:
       "People using screen readers hear only \"link\", with no idea where it goes.",
   },
   "link-text-vague": {
-    plain: "Some links say only \"read more\" or similar.",
+    plain: "Links say only \"read more\" or similar.",
     impact:
       "People using screen readers can pull up a list of every link on the page. When they all read the same, the list is no help at all.",
   },
   "button-name": {
-    plain: "Some buttons have no label.",
+    plain: "Buttons have no label.",
     impact: "Nobody can tell what it does before clicking. A common reason people give up.",
   },
   label: {
-    plain: "Some form fields have no label.",
+    plain: "Form fields have no label.",
     impact:
       "People using screen readers don't know what goes in each box, so forms get abandoned, checkout included.",
   },
@@ -134,7 +134,7 @@ export const PLAIN_RULE_EXPLANATIONS: Record<string, PlainRule> = {
     impact: "People navigating by headings hit a blank signpost that tells them nothing.",
   },
   "link-in-text-block": {
-    plain: "Some links are shown only by color, with nothing else to set them apart.",
+    plain: "Links are shown by colour alone, with nothing else to set them apart.",
     impact: "Colour-blind readers can't tell a link from ordinary text.",
   },
   "meta-viewport": {
@@ -235,7 +235,7 @@ export const PLAIN_RULE_EXPLANATIONS: Record<string, PlainRule> = {
       "Most visitors are on phones. Swiping sideways to read each line makes them leave.",
   },
   "mobile-tap-target": {
-    plain: "Some buttons or links are too small to tap reliably on a phone.",
+    plain: "Buttons and links are too small to tap reliably on a phone.",
     impact:
       "Mis-taps and frustration. Worst for bigger fingers, tremors, or shaky hands. It costs you sales.",
   },
@@ -383,7 +383,7 @@ export const PLAIN_RULE_EXPLANATIONS: Record<string, PlainRule> = {
   // Readability / neurodiversity checks — grounded in GOV.UK's accessibility
   // dos-and-don'ts and the Neurodiversity Design System (dyslexia, ADHD).
   "typo-underline-nonlink": {
-    plain: "Some text that isn't a link is underlined.",
+    plain: "Underlined text that isn't a link looks clickable.",
     impact:
       "Underlines read as links, so people click text that goes nowhere.",
   },
