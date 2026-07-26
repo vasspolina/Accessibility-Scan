@@ -56,7 +56,9 @@ describe("evaluateMobile", () => {
     const findings = evaluateMobile(m);
     const tap = findings.filter((f) => f.ruleId === "mobile-tap-target");
     expect(tap).toHaveLength(2);
-    expect(tap[0].wcagCriterion).toBe("2.5.8");
+    // 2.5.5, not 2.5.8: this report measures WCAG 2.1, and 2.5.8 belongs to
+    // 2.2. This assertion previously encoded the wrong value.
+    expect(tap[0].wcagCriterion).toBe("2.5.5");
     expect(tap[0].description).toContain("16×16");
     expect(tap[0].suggestedFix).toMatch(/24×24/);
   });
@@ -71,5 +73,40 @@ describe("evaluateMobile", () => {
       expect(f.category).toBe("accessibility");
       expect(f.helpUrl).toBeTruthy();
     }
+  });
+});
+
+// This report measures WCAG 2.1. Claiming a criterion that only exists in 2.2,
+// at a level 2.1 does not require, tells an owner they have a legal duty they
+// do not have — the same fault as overclaiming conformance, pointed the other
+// way.
+describe("what a tap-target finding is allowed to claim", () => {
+  const tiny = {
+    viewportWidth: 390,
+    documentScrollWidth: 390,
+    overflowingElements: [],
+    smallTapTargets: [{ selector: "a.x", snippet: "<a>x</a>", width: 18, height: 18 }],
+  };
+
+  it("cites the criterion WCAG 2.1 actually has for target size", () => {
+    const f = evaluateMobile(tiny).find((x) => x.ruleId === "mobile-tap-target")!;
+    expect(f.wcagCriterion).toBe("2.5.5");
+  });
+
+  it("does not present it as a legal requirement, because at 2.1 it isn't one", () => {
+    const f = evaluateMobile(tiny).find((x) => x.ruleId === "mobile-tap-target")!;
+    expect(f.wcagLevel).toBe("AAA");
+    expect(f.wcagLevel).not.toBe("AA");
+  });
+
+  it("still reports it, and says where the requirement does bite", () => {
+    const f = evaluateMobile(tiny).find((x) => x.ruleId === "mobile-tap-target")!;
+    expect(f.description).toMatch(/WCAG 2\.2/);
+    expect(f.description).toMatch(/24×24/);
+  });
+
+  it("points at 2.1 guidance rather than 2.2 guidance", () => {
+    const f = evaluateMobile(tiny).find((x) => x.ruleId === "mobile-tap-target")!;
+    expect(f.helpUrl).toMatch(/WCAG21/);
   });
 });

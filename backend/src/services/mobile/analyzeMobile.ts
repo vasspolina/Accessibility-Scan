@@ -135,7 +135,7 @@ function makeFinding(
   ruleId: string,
   severity: AccessibilityFinding["severity"],
   wcagCriterion: string,
-  wcagLevel: "A" | "AA",
+  wcagLevel: "A" | "AA" | "AAA",
   selector: string,
   snippet: string,
   description: string,
@@ -193,13 +193,27 @@ export function evaluateMobile(m: MobileSignals): AccessibilityFinding[] {
       makeFinding(
         "mobile-tap-target",
         "moderate",
-        "2.5.8",
-        "AA",
+        // 2.5.5 Target Size, and Level AAA, because this report measures
+        // WCAG 2.1 and that is where 2.1 puts target size. It was tagged
+        // 2.5.8 at AA, which is a WCAG 2.2 criterion that does not exist in
+        // 2.1 at all — so the badge read "Required by law in most places",
+        // for something 2.1 explicitly does not require. Overclaiming a legal
+        // obligation is the same fault as overclaiming conformance, pointed
+        // the other way, and this tool refuses the one so it must refuse the
+        // other.
+        //
+        // The finding stays. Small targets genuinely hurt people with tremors,
+        // large fingers, or a phone on a bumpy train, and 2.2 agrees — it adds
+        // exactly this as an AA requirement. The conformance checklist covers
+        // A and AA only, so it correctly leaves this out, and the level badge
+        // now says "Advanced (Level AAA)" rather than implying a duty.
+        "2.5.5",
+        "AAA",
         t.selector,
         t.snippet,
-        `On a phone this tap target is only ${t.width}×${t.height}px — smaller than the 24×24px minimum, so it's easy to miss or tap the wrong thing.`,
+        `On a phone this tap target is only ${t.width}×${t.height}px, so it's easy to miss or to tap the wrong thing. That is below the 24×24px floor WCAG 2.2 sets as a requirement. WCAG 2.1, which this report measures against, only covers target size at Level AAA, where the bar is higher still at 44×44px.`,
         FIX_TAP,
-        "https://www.w3.org/WAI/WCAG22/Understanding/target-size-minimum.html"
+        "https://www.w3.org/WAI/WCAG21/Understanding/target-size.html"
       )
     );
   }
