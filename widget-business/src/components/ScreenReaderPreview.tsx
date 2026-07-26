@@ -144,13 +144,19 @@ export function ScreenReaderPreview({ script }: { script: ScreenReaderScript }) 
         )}
       </div>
 
-      {!open ? null : (
-      <div id={panelId}>
+      {/* Stays visible when collapsed, and that is not a detail. With it hidden
+          inside the panel this section shrank to a bare title, while every
+          other section on the page shows a title and a line saying what it is
+          — so it stopped reading as a section at all and became a stray
+          heading between two tall ones. Easy to scroll straight past, which is
+          exactly what happened. */}
       <p className="a11y-section-desc">
         How your page sounds to someone who can't see it, in the order they hear it. Red lines are
         where a listener learns nothing. Close to a real screen reader, not a recording.
       </p>
 
+      {!open ? null : (
+      <div id={panelId}>
       <div className="a11y-sr-controls">
         {/* Play itself now lives in the header row above, so it is reachable
             without opening the section. What stays here is what only makes
