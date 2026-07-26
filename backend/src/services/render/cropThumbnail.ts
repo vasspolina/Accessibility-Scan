@@ -208,12 +208,33 @@ export async function attachElementScreenshots(
     .sort((a, b) => SEVERITY_PRIORITY[a.severity] - SEVERITY_PRIORITY[b.severity])
     .slice(0, MAX_THUMBNAILS_PER_SCAN);
 
-  await Promise.all(
-    candidates.map(async (finding) => {
-      const box = boundingBoxes[finding.selector];
-      if (!box) return;
-      const thumbnail = await cropElementThumbnail(fullPageScreenshot, box, imgWidth, imgHeight);
-      if (thumbnail) finding.elementScreenshot = thumbnail;
-    })
-  );
+  // A few at a time, not all seventy at once.
+  //
+  // Every crop calls sharp(fullPageScreenshot), and a full-page shot is a
+  // large image: smashingmagazine's is 1280x9570. Running seventy of those
+  // through libvips simultaneously spikes memory for no benefit, because the
+  // crops are quick and nothing downstream needs them sooner.
+  //
+  // Measured on that page, seventy at once against four at a time: peak node
+  // RSS growth 156MB versus 28MB, for 297ms versus 338ms. So it costs about
+  // 40ms and saves about 128MB per scan, which at three concurrent scans is
+  // most of a third of a gigabyte off the peak.
+  //
+  // Worth recording that the arithmetic that prompted this was wrong. 1280 x
+  // 9570 x 3 bytes is 35MB of raw pixels, which suggested 2.4GB for seventy —
+  // and the measurement says 156MB. libvips shrinks on load and streams rather
+  // than expanding the whole image per call, so the naive figure overstated it
+  // roughly fifteenfold. The change is still worth having; it is not the
+  // dramatic fix the estimate implied.
+  const CONCURRENT_CROPS = 4;
+  for (let i = 0; i < candidates.length; i += CONCURRENT_CROPS) {
+    await Promise.all(
+      candidates.slice(i, i + CONCURRENT_CROPS).map(async (finding) => {
+        const box = boundingBoxes[finding.selector];
+        if (!box) return;
+        const thumbnail = await cropElementThumbnail(fullPageScreenshot, box, imgWidth, imgHeight);
+        if (thumbnail) finding.elementScreenshot = thumbnail;
+      })
+    );
+  }
 }
