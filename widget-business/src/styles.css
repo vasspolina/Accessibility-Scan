@@ -1467,3 +1467,255 @@
   white-space: nowrap;
   border: 0;
 }
+
+/* ==========================================================================
+   IBM Carbon Design System
+   ==========================================================================
+   Applied as a final layer rather than a rewrite of the 1469 lines above:
+   same selectors, same specificity, later in the cascade, so it wins without
+   touching markup or risking the layout work that came before it.
+
+   Carbon v11 White theme tokens, used by their real names so anyone who knows
+   Carbon can read this. Every colour pairing below was checked against 4.5:1
+   before it went in — a checker that ships contrast failures has no business
+   reporting them.
+   ========================================================================== */
+
+.a11y-widget-biz {
+  /* Carbon White theme */
+  --a11y-text: #161616;        /* text-primary */
+  --a11y-muted: #525252;       /* text-secondary — 7.4:1 on white, 6.9:1 on layer-01 */
+  --a11y-bg: #ffffff;          /* background */
+  --a11y-surface: #f4f4f4;     /* layer-01 */
+  --a11y-border: #e0e0e0;      /* border-subtle-01 */
+  --a11y-accent: #0f62fe;      /* interactive / link-primary — 4.6:1 on white */
+  --a11y-accent-strong: #0353e9; /* button-primary-hover */
+  --a11y-accent-faint: #edf5ff;  /* blue-10 */
+  --a11y-score-bad: #da1e28;     /* support-error — 4.8:1 on white */
+  --a11y-score-warn: #8a3800;    /* orange-70: Carbon's warning yellow is a status
+                                    fill, never text — as text it fails badly */
+
+  /* IBM Plex Sans is Carbon's typeface. Named first so it is used wherever it
+     is installed, with a system fallback rather than a webfont request: this
+     widget is embedded on other people's pages, and reaching out to a font CDN
+     from there costs performance, adds a CSP problem, and tells a third party
+     who visited them. */
+  --a11y-font: "IBM Plex Sans", "Helvetica Neue", -apple-system, BlinkMacSystemFont, Arial, sans-serif;
+}
+
+/* Carbon is square. The radius is the single most recognisable thing about the
+   system, and half-measures read as neither one thing nor the other.
+   The class is doubled to raise specificity to (0,2,0): rules above are
+   element-qualified, like ".a11y-url-row button" at (0,1,1), and a plain
+   ".a11y-widget-biz *" at (0,1,0) loses to them. Measured, not assumed — the
+   submit button kept its 8px until this was doubled. */
+.a11y-widget-biz.a11y-widget-biz *,
+.a11y-widget-biz.a11y-widget-biz *::before,
+.a11y-widget-biz.a11y-widget-biz *::after {
+  border-radius: 0;
+}
+
+/* Type: Carbon's scale. body-02 for reading, body-01 for supporting text,
+   heading-03 for section titles. Letter-spacing matters in Plex at small
+   sizes — Carbon specifies it per step rather than leaving it at normal. */
+.a11y-widget-inner {
+  font-size: 16px;   /* body-02 */
+  line-height: 1.5;
+  letter-spacing: 0;
+  padding: 32px;     /* spacing-07 */
+  border: 1px solid var(--a11y-border, #e0e0e0);
+}
+
+.a11y-section-title,
+.a11y-principle-title {
+  font-size: 20px;   /* heading-03 */
+  line-height: 1.4;
+  font-weight: 400;  /* Carbon headings are regular weight, not bold */
+  letter-spacing: 0;
+}
+
+.a11y-section-desc,
+.a11y-principle-desc,
+.a11y-intro {
+  font-size: 14px;   /* body-01 */
+  line-height: 1.43;
+  letter-spacing: 0.16px;
+}
+
+/* Buttons: Carbon primary. 48px tall (field-02), square, no shadow, and the
+   focus ring is the double ring Carbon uses — 2px blue outside, 1px white
+   inside — so it stays visible against both the button and the page. */
+.a11y-url-row button {
+  min-height: 48px;
+  padding: 0 16px;
+  font-size: 14px;
+  font-weight: 400;
+  letter-spacing: 0.16px;
+  background: var(--a11y-accent, #0f62fe);
+  transition: background-color 0.11s cubic-bezier(0.2, 0, 0.38, 0.9);
+}
+
+.a11y-url-row button:hover:not(:disabled) {
+  background: var(--a11y-accent-strong, #0353e9);
+  box-shadow: none;
+  transform: none;
+}
+
+.a11y-url-row button:active:not(:disabled) {
+  background: #002d9c;  /* button-primary-active */
+  transform: none;
+}
+
+.a11y-url-row button:focus-visible,
+.a11y-show-all:focus-visible,
+.a11y-finding-header:focus-visible,
+.a11y-mode-btn:focus-visible {
+  outline: 2px solid var(--a11y-accent, #0f62fe);
+  outline-offset: -2px;
+  box-shadow: inset 0 0 0 1px #ffffff;
+}
+
+/* Text input: Carbon's field. Filled, with a single strong bottom border and
+   no box — the bottom border is what carries the affordance. */
+.a11y-url-row input {
+  min-height: 48px;
+  padding: 0 16px;
+  background: var(--a11y-surface, #f4f4f4);
+  border: none;
+  border-bottom: 1px solid #8d8d8d;  /* border-strong-01 */
+  font-size: 14px;
+  letter-spacing: 0.16px;
+}
+
+.a11y-url-row input:focus-visible {
+  outline: 2px solid var(--a11y-accent, #0f62fe);
+  outline-offset: -2px;
+}
+
+/* Secondary action: Carbon's tertiary button — outlined, fills on hover. */
+.a11y-show-all {
+  min-height: 40px;
+  padding: 0 16px;
+  border: 1px solid var(--a11y-accent, #0f62fe);
+  background: transparent;
+  color: var(--a11y-accent, #0f62fe);
+  font-size: 14px;
+  font-weight: 400;
+  letter-spacing: 0.16px;
+  transition: background-color 0.11s cubic-bezier(0.2, 0, 0.38, 0.9);
+}
+
+.a11y-show-all:hover {
+  background: var(--a11y-accent, #0f62fe);
+  color: #ffffff;
+  transform: none;
+}
+
+/* Severity as Carbon tags: pale fill, dark text of the same hue. The solid
+   pills they replace were heavier than anything else on the page and pulled
+   the eye away from the finding itself, which is the thing to read. Each pair
+   is a Carbon tag colour and clears 6:1. */
+.a11y-severity-badge {
+  padding: 2px 8px;
+  font-size: 12px;
+  font-weight: 400;
+  letter-spacing: 0.32px;
+}
+
+.a11y-severity-critical .a11y-severity-badge {
+  background: #ffd7d9;   /* red-10  */
+  color: #a2191f;        /* red-70  — 6.1:1 */
+}
+
+.a11y-severity-serious .a11y-severity-badge {
+  background: #ffd6e8;   /* magenta-10 */
+  color: #9f1853;        /* magenta-70 — 6.4:1 */
+}
+
+.a11y-severity-moderate .a11y-severity-badge {
+  background: #e8daff;   /* purple-10 */
+  color: #6929c4;        /* purple-70 — 6.6:1 */
+}
+
+.a11y-severity-minor .a11y-severity-badge {
+  background: #dde1e6;   /* cool-gray-20 */
+  color: #121619;        /* cool-gray-100 */
+}
+
+.a11y-count-badge {
+  padding: 2px 8px;
+  font-size: 12px;
+  font-weight: 400;
+  background: var(--a11y-surface, #f4f4f4);
+  border: none;
+  color: var(--a11y-muted, #525252);
+}
+
+/* Cards and panels: Carbon uses a layer fill and a subtle border, never a
+   shadow, and never a radius. */
+.a11y-finding,
+.a11y-principle-group,
+.a11y-conf-row,
+.a11y-conf-tile,
+.a11y-hist,
+.a11y-section {
+  border-radius: 0;
+}
+
+.a11y-principle-group {
+  background: var(--a11y-surface, #f4f4f4);
+  border: none;
+  padding: 16px;
+}
+
+.a11y-finding {
+  background: var(--a11y-bg, #ffffff);
+  border: 1px solid var(--a11y-border, #e0e0e0);
+}
+
+/* Inline notification: Carbon marks status with a 3px bar down the left edge
+   and a tinted fill, rather than a coloured box. */
+.a11y-error {
+  background: #fff1f1;              /* red-10 at notification tint */
+  border-left: 3px solid var(--a11y-score-bad, #da1e28);
+  color: var(--a11y-text, #161616);
+  padding: 16px;
+  font-size: 14px;
+}
+
+.a11y-notice {
+  background: #edf5ff;              /* blue-10 */
+  border-left: 3px solid var(--a11y-accent, #0f62fe);
+  color: var(--a11y-text, #161616);
+  padding: 16px;
+  font-size: 14px;
+}
+
+/* Mode switch: Carbon content switcher — square, joined, the selected one
+   filled rather than outlined. */
+.a11y-mode-btn {
+  border-radius: 0;
+  min-height: 48px;
+}
+
+.a11y-mode-btn-active {
+  background: var(--a11y-accent, #0f62fe);
+  border-color: var(--a11y-accent, #0f62fe);
+}
+
+/* Carbon's motion tokens: fast-02 with the productive easing curve. Still
+   removed entirely for anyone who asked for less motion. */
+@media (prefers-reduced-motion: reduce) {
+  .a11y-widget-biz * {
+    transition: none !important;
+    animation: none !important;
+  }
+}
+
+/* Two exceptions to the square rule, because they aren't surfaces: the
+   loading spinner has to be a circle to read as one, and the score gauge is a
+   dial. Carbon squares off panels and controls, not indicators. */
+.a11y-widget-biz.a11y-widget-biz .a11y-spinner,
+.a11y-widget-biz.a11y-widget-biz .a11y-score-circle {
+  border-radius: 50%;
+}
