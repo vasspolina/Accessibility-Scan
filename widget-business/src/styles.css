@@ -1736,7 +1736,6 @@
   min-height: 48px;
   padding: 8px 0;
   border: none;
-  border-bottom: 1px solid var(--a11y-border, #e0e0e0);
   background: none;
   color: inherit;
   font: inherit;
@@ -1884,4 +1883,50 @@
   color: var(--a11y-accent, #0f62fe);
   text-decoration: underline;
   font-weight: 400;
+}
+
+
+/* Accordion header row: the toggle grows, the play action sits at the end,
+   and the rule that closes the header spans both. Wraps rather than
+   squeezing, so on a narrow screen the action drops below the title instead
+   of crushing it. */
+.a11y-accordion-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 16px;
+  border-bottom: 1px solid var(--a11y-border, #e0e0e0);
+}
+
+.a11y-accordion-row .a11y-accordion-title {
+  flex: 1 1 20rem;
+  min-width: 0;
+}
+
+/* Play is a secondary action next to a heading, not the page primary, so it
+   takes Carbon tertiary: outlined, filling on hover. The solid blue it had
+   was the loudest thing in the report and this is not the main task. */
+.a11y-accordion-row .a11y-sr-play {
+  flex-shrink: 0;
+  min-height: 40px;
+  padding: 0 16px;
+  border: 1px solid var(--a11y-accent, #0f62fe);
+  background: transparent;
+  color: var(--a11y-accent, #0f62fe);
+  font: inherit;
+  font-size: 14px;
+  letter-spacing: 0.16px;
+  cursor: pointer;
+  transition: background-color 0.11s cubic-bezier(0.2, 0, 0.38, 0.9);
+}
+
+.a11y-accordion-row .a11y-sr-play:hover {
+  background: var(--a11y-accent, #0f62fe);
+  color: #ffffff;
+}
+
+.a11y-accordion-row .a11y-sr-play:focus-visible {
+  outline: 2px solid var(--a11y-accent, #0f62fe);
+  outline-offset: -2px;
+  box-shadow: inset 0 0 0 1px #ffffff;
 }

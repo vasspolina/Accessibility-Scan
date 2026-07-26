@@ -94,30 +94,55 @@ export function ScreenReaderPreview({ script }: { script: ScreenReaderScript }) 
           The heading holds the button rather than sitting inside it, so the
           heading stays a heading in the accessibility tree and screen-reader
           users can still jump between sections by heading. */}
-      <h2 className="a11y-section-title a11y-accordion-title">
-        <button
-          type="button"
-          className="a11y-accordion-head"
-          aria-expanded={open}
-          aria-controls={panelId}
-          onClick={() => setOpen((v) => !v)}
-        >
-          <span>
-            Your page, read aloud{" "}
-            <span className="a11y-section-count">({lines.length} announcements)</span>
-          </span>
-          {/* The count of problems stays visible while collapsed. A closed
-              section with nothing to show for it gives no reason to open it. */}
-          {issueCount > 0 && (
-            <span className="a11y-sr-issue-count">
-              {issueCount} say nothing useful
+      {/* Play sits beside the accordion toggle rather than inside it. Nesting a
+          button in a button is invalid HTML and assistive tech handles it
+          unpredictably, so the two are siblings in one row and the rule that
+          closes the header belongs to the row. */}
+      <div className="a11y-accordion-row">
+        <h2 className="a11y-section-title a11y-accordion-title">
+          <button
+            type="button"
+            className="a11y-accordion-head"
+            aria-expanded={open}
+            aria-controls={panelId}
+            onClick={() => setOpen((v) => !v)}
+          >
+            <span>
+              Your page, read aloud{" "}
+              <span className="a11y-section-count">({lines.length} announcements)</span>
             </span>
-          )}
-          <svg className="a11y-accordion-chevron" viewBox="0 0 16 16" aria-hidden="true" focusable="false">
-            <path d="M8 11L3 6l.7-.7L8 9.6l4.3-4.3L13 6z" fill="currentColor" />
-          </svg>
-        </button>
-      </h2>
+            {/* The count of problems stays visible while collapsed. A closed
+                section with nothing to show for it gives no reason to open it. */}
+            {issueCount > 0 && (
+              <span className="a11y-sr-issue-count">
+                {issueCount === 1 ? "1 says nothing useful" : `${issueCount} say nothing useful`}
+              </span>
+            )}
+            <svg className="a11y-accordion-chevron" viewBox="0 0 16 16" aria-hidden="true" focusable="false">
+              <path d="M8 11L3 6l.7-.7L8 9.6l4.3-4.3L13 6z" fill="currentColor" />
+            </svg>
+          </button>
+        </h2>
+        {supported && (
+          <button
+            type="button"
+            className="a11y-sr-play"
+            onClick={() => {
+              if (playing) {
+                stop();
+                return;
+              }
+              // Opening on play is the point of having the button out here:
+              // you press it from a closed section and the transcript is there
+              // to follow, with the current line highlighted as it reads.
+              setOpen(true);
+              speakFrom(current ?? 0);
+            }}
+          >
+            {playing ? "■ Stop" : "▶ Play the page aloud"}
+          </button>
+        )}
+      </div>
 
       {!open ? null : (
       <div id={panelId}>
@@ -127,21 +152,15 @@ export function ScreenReaderPreview({ script }: { script: ScreenReaderScript }) 
       </p>
 
       <div className="a11y-sr-controls">
+        {/* Play itself now lives in the header row above, so it is reachable
+            without opening the section. What stays here is what only makes
+            sense alongside the transcript. */}
         {supported ? (
-          <>
-            <button
-              type="button"
-              className="a11y-sr-play"
-              onClick={() => (playing ? stop() : speakFrom(current ?? 0))}
-            >
-              {playing ? "■ Stop" : "▶ Play the page aloud"}
-            </button>
-            {playing && (
-              <span className="a11y-sr-status" role="status">
-                Reading line {(current ?? 0) + 1} of {lines.length}
-              </span>
-            )}
-          </>
+          playing && (
+            <span className="a11y-sr-status" role="status">
+              Reading line {(current ?? 0) + 1} of {lines.length}
+            </span>
+          )
         ) : (
           <p className="a11y-sr-status">
             Your browser can't play audio for this, so the transcript below is read-only.
@@ -159,7 +178,9 @@ export function ScreenReaderPreview({ script }: { script: ScreenReaderScript }) 
               checked={onlyIssues}
               onChange={(e) => setOnlyIssues(e.target.checked)}
             />
-            Only the {issueCount} that say nothing useful
+            {issueCount === 1
+              ? "Only the one that says nothing useful"
+              : `Only the ${issueCount} that say nothing useful`}
           </label>
         )}
       </div>
