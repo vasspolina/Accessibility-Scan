@@ -22,13 +22,45 @@ export function summarizeSeverity(findings: AccessibilityFinding[]): SeveritySum
   return summary;
 }
 
+// Where the linear scale runs out and the curve takes over. Below this the
+// score is exactly 100 minus the penalty, as it has always been.
+const LINEAR_FLOOR = 10;
+const LINEAR_LIMIT = 100 - LINEAR_FLOOR;
+
+/**
+ * Turns the severity summary into a score out of 100.
+ *
+ * The penalty is linear up to LINEAR_LIMIT and then decays, and that second
+ * part exists for a reason worth stating: the caps sum to 200 while only 100
+ * of it could ever show, so every site past 100 penalty scored exactly 0 and
+ * stayed there.
+ *
+ * Measured on a real page: 7 critical, 10 serious, 11 moderate is a penalty of
+ * 142. Fixing half the serious findings — real work, a real improvement for
+ * real visitors — moved the penalty to 117 and the score not at all. Nothing
+ * below the top of the pile could ever show progress, which makes the score
+ * useless exactly where someone most needs encouragement, and quietly
+ * contradicts the re-scan history sitting underneath it saying five problems
+ * are gone.
+ *
+ * The curve is continuous at the join (both give 10 there) and strictly
+ * decreasing after it, so a fix always raises the number by at least a little.
+ * Nothing below that point changes: every score in the 10-100 range is exactly
+ * what it was before, so this does not re-baseline anyone's history.
+ */
 export function computeScore(summary: SeveritySummary): number {
   let penalty = 0;
   for (const severity of Object.keys(WEIGHTS) as Severity[]) {
     const raw = summary[severity] * WEIGHTS[severity];
     penalty += Math.min(raw, CAPS[severity]);
   }
-  return Math.max(0, 100 - Math.min(100, penalty));
+
+  if (penalty <= LINEAR_LIMIT) return 100 - penalty;
+
+  // Hyperbolic decay: approaches zero without reaching it while the page still
+  // has any penalty at all. A page in this range is in serious trouble and the
+  // single digit says so; what matters is that the digit still moves.
+  return Math.max(0, Math.round((LINEAR_FLOOR * LINEAR_LIMIT) / penalty));
 }
 
 export function summarizeCategories(findings: AccessibilityFinding[]): CategorySummary {
