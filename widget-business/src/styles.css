@@ -342,9 +342,17 @@
 .a11y-finding-header {
   width: 100%;
   display: flex;
+  /* Wraps rather than clipping. Every item on this row previously refused to
+     shrink, so on a row carrying a thumbnail the total demanded more width
+     than the card had: the title collapsed to one word per line and the level
+     text was cut mid-word ("Required by law in most places (Lev"). Allowing
+     the row to wrap means the metadata drops to a second line instead of the
+     title being crushed — the reading order is unchanged either way. */
+  flex-wrap: wrap;
   align-items: center;
-  gap: 12px;
-  padding: 12px 14px;
+  /* 8px spacing scale: 8 between wrapped rows, 16 along the row. */
+  gap: 8px 16px;
+  padding: 16px;
   background: var(--a11y-bg, #ffffff);
   border: none;
   cursor: pointer;
@@ -383,14 +391,24 @@
 }
 
 .a11y-finding-desc {
-  flex: 1;
+  /* The basis is the point: the title claims a readable measure before
+     anything else gets to wrap, so it is never the thing that collapses.
+     min-width: 0 overrides the flex default of min-width: auto, which is what
+     pinned it at min-content (its longest word) instead of letting it shrink. */
+  flex: 1 1 18rem;
+  min-width: 0;
+  font-weight: 600;
 }
 
 .a11y-level-badge {
-  flex-shrink: 0;
+  /* Was flex-shrink: 0 with nowrap, which is what forced the overflow: the
+     longest of these strings is wider than the space left beside a thumbnail,
+     and it would rather spill out of the card than give way. */
+  flex-shrink: 1;
+  min-width: 0;
+  margin-left: auto;
   font-size: 12px;
   color: var(--a11y-muted, #57606a);
-  white-space: nowrap;
 }
 
 .a11y-count-badge {

@@ -72,6 +72,44 @@ export interface PlainRule {
 }
 
 export const PLAIN_RULE_EXPLANATIONS: Record<string, PlainRule> = {
+  "aria-allowed-role": {
+    plain: "Parts of the page are labelled in the code as something they cannot be.",
+    impact:
+      "Screen readers announce the wrong thing, so people are told they have reached a button when it is a link, or a heading when it is a list.",
+  },
+  "aria-allowed-attr": {
+    plain: "An element carries code settings that do not belong on it.",
+    impact: "Screen readers can announce nonsense, or skip the element entirely.",
+  },
+  "aria-required-children": {
+    plain: "A menu or list is missing the parts it needs to work.",
+    impact: "Screen readers cannot work out its structure, so people cannot navigate it.",
+  },
+  "landmark-unique": {
+    plain: "Two areas of the page share the same name.",
+    impact: "People using screen readers get a list of identical entries and cannot tell them apart.",
+  },
+  "landmark-no-duplicate-banner": {
+    plain: "The page has more than one header area.",
+    impact: "Screen readers list several headers, so nobody can tell which is the real one.",
+  },
+  "landmark-no-duplicate-contentinfo": {
+    plain: "The page has more than one footer area.",
+    impact: "Screen readers list several footers, and people cannot tell which is which.",
+  },
+  "landmark-contentinfo-is-top-level": {
+    plain: "The footer sits nested inside another area instead of standing on its own.",
+    impact: "People using screen readers cannot jump straight to it the way they expect.",
+  },
+  "skip-link": {
+    plain: "The \"skip to content\" link does not go anywhere.",
+    impact:
+      "Keyboard users press it and stay exactly where they were, then tab through the whole menu anyway.",
+  },
+  "image-redundant-alt": {
+    plain: "An image description repeats the words printed next to it.",
+    impact: "People using screen readers hear the same thing twice, which slows them down for nothing.",
+  },
   "color-contrast": {
     plain: "Text is too light against its background to read easily.",
     impact:
@@ -416,6 +454,15 @@ export function plainForRule(ruleId: string | undefined): PlainRule | undefined 
 // dialog/typography/motion) already write plain fixes, so they aren't here
 // and fall back to their own suggestedFix.
 const PLAIN_RULE_FIXES: Record<string, string> = {
+  "aria-allowed-role": "Remove the role attribute, or use an element that genuinely is that thing (a <button> for a button, a <nav> for navigation).",
+  "aria-allowed-attr": "Remove the aria-* attributes that do not apply to this element, or change the element to one that supports them.",
+  "aria-required-children": "Give the component the child elements its role requires, e.g. a role=\"list\" needs role=\"listitem\" children.",
+  "landmark-unique": "Give each area a distinct aria-label, so \"Main menu\" and \"Footer links\" are told apart.",
+  "landmark-no-duplicate-banner": "Keep one <header> at the top level of the page and turn the others into plain containers.",
+  "landmark-no-duplicate-contentinfo": "Keep one <footer> at the top level of the page and turn the others into plain containers.",
+  "landmark-contentinfo-is-top-level": "Move the <footer> out so it is a direct child of <body>, not nested inside another landmark.",
+  "skip-link": "Point the skip link at an id that exists on the main content, and make sure that target can take focus.",
+  "image-redundant-alt": "Give the image an empty alt (alt=\"\") when the text beside it already says the same thing.",
   "color-contrast":
     "Darken the text or lighten its background until they contrast strongly. Aim for a 4.5:1 ratio for normal text, 3:1 for large text.",
   "image-alt":
