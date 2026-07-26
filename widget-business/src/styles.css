@@ -824,7 +824,11 @@
   display: block;
   font-style: normal;
   font-size: 12px;
-  opacity: 0.85;
+  /* Was opacity: 0.85, which measured 4.26:1 against the tile background and
+     4.28:1 against the failing tile — under the 4.5:1 this product flags other
+     sites for. Fading small text is the most common way to fail contrast
+     without noticing, because nothing in the stylesheet names a colour. */
+  color: var(--a11y-muted, #57606a);
 }
 
 .a11y-conf-caveat {
@@ -1034,7 +1038,9 @@
 }
 
 .a11y-mode-btn-active em {
-  color: rgba(255, 255, 255, 0.85);
+  /* Was rgba(255,255,255,0.85) on the accent blue: 4.2:1, and this is 12px
+     text so 4.5:1 applies. Full white clears it. */
+  color: #ffffff;
 }
 
 .a11y-ai-toggle select {
@@ -1426,4 +1432,20 @@
   min-width: 34px;
   font-weight: 700;
   font-variant-numeric: tabular-nums;
+}
+
+
+/* Hidden from view, available to screen readers. Not display:none or
+   visibility:hidden — both remove the element from the accessibility tree, so
+   a live region using them announces nothing at all. */
+.a11y-sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
 }

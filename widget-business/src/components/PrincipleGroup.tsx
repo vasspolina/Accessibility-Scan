@@ -34,11 +34,11 @@ export function PrincipleGroup({ findings }: { findings: AccessibilityFinding[] 
         const info = classifyWcag(groupFindings[0].wcagCriterion);
         return (
           <div className="a11y-principle-group" key={principle}>
-            <h4 className="a11y-principle-title">
+            <h3 className="a11y-principle-title">
               {info?.plainTitle ?? principle}{" "}
               <span className="a11y-section-count">({groupFindings.length})</span>
               {info && <em className="a11y-principle-term">{principle}</em>}
-            </h4>
+            </h3>
             {info && <p className="a11y-principle-desc">{info.plainDescription}</p>}
             <FindingsList findings={groupFindings} />
           </div>
@@ -46,10 +46,10 @@ export function PrincipleGroup({ findings }: { findings: AccessibilityFinding[] 
       })}
       {unclassified.length > 0 && (
         <div className="a11y-principle-group">
-          <h4 className="a11y-principle-title">
+          <h3 className="a11y-principle-title">
             Worth doing anyway{" "}
             <span className="a11y-section-count">({unclassified.length})</span>
-          </h4>
+          </h3>
           <p className="a11y-principle-desc">
             Not tied to a specific WCAG rule, but still worth doing. These are widely recommended
             practices for a well-built, accessible site.

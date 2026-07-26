@@ -90,7 +90,13 @@ export function App({ apiBase }: { apiBase: string }) {
   }
 
   return (
-    <div className="a11y-widget-inner">
+    // A landmark, so everything the widget renders sits inside something a
+    // screen-reader user can find and skip. Without it our content counted as
+    // orphaned page content, which is a rule this product reports on others.
+    //
+    // <section aria-label> rather than <main>: the widget is a guest on
+    // somebody else's page, and that page's own <main> is not ours to claim.
+    <section className="a11y-widget-inner" aria-label="Website accessibility check">
       <p className="a11y-intro">
         A door that only opens for some people isn't a broken door. It's a badly designed one. The
         same goes for websites. This check follows the{" "}
@@ -119,6 +125,30 @@ export function App({ apiBase }: { apiBase: string }) {
               : "Checking your site. This usually takes about 15 seconds…"}
         </p>
       )}
+
+      {/* Announces the outcome to anyone not watching the screen.
+          The loading paragraph above is a live region too, but it is unmounted
+          the moment results arrive, and a live region that disappears announces
+          nothing. So a screen-reader user heard "Checking your site…" and then
+          silence, with a full report sitting on screen unannounced. On a tool
+          built for exactly this audience that was the worst thing in the UI.
+
+          Kept mounted and separate from the results so the text changing is
+          what triggers the announcement, and visually hidden because sighted
+          users already have the score in front of them. */}
+      <p className="a11y-sr-only" role="status">
+        {loading
+          ? ""
+          : report
+            ? `Check complete. Score ${report.score} out of 100, ${report.summary.total} ${
+                report.summary.total === 1 ? "issue" : "issues"
+              } found. The full report follows.`
+            : audit
+              ? `Site audit complete. ${audit.pagesScanned} ${
+                  audit.pagesScanned === 1 ? "page" : "pages"
+                } checked, average score ${audit.averageScore} out of 100. The full report follows.`
+              : ""}
+      </p>
 
       {audit && (
         <>
@@ -204,6 +234,6 @@ export function App({ apiBase }: { apiBase: string }) {
           <AccessibilityStatement report={report} />
         </div>
       )}
-    </div>
+    </section>
   );
 }

@@ -37,12 +37,12 @@ export function ScanHistory({
 
   return (
     <section className="a11y-section a11y-hist">
-      <h3 className="a11y-section-title">
+      <h2 className="a11y-section-title">
         Since last time{" "}
         <span className="a11y-section-count">
           {previous.length === 1 ? "1 earlier scan" : `${previous.length} earlier scans`}
         </span>
-      </h3>
+      </h2>
       <p className="a11y-section-desc">
         Compared with {formatDate(last.scannedAt)}. Kept in this browser only, never sent anywhere.
       </p>
@@ -77,7 +77,7 @@ export function ScanHistory({
 
       {diff.fixed.length > 0 && (
         <>
-          <h4 className="a11y-hist-head">Fixed since {formatDate(last.scannedAt)}</h4>
+          <h3 className="a11y-hist-head">Fixed since {formatDate(last.scannedAt)}</h3>
           <ul className="a11y-hist-list">
             {diff.fixed.map((r) => (
               <li key={r} className="a11y-hist-fixed">
@@ -90,7 +90,7 @@ export function ScanHistory({
 
       {diff.appeared.length > 0 && (
         <>
-          <h4 className="a11y-hist-head">New since then</h4>
+          <h3 className="a11y-hist-head">New since then</h3>
           <ul className="a11y-hist-list">
             {diff.appeared.map((r) => (
               <li key={r} className="a11y-hist-new">
@@ -101,7 +101,7 @@ export function ScanHistory({
         </>
       )}
 
-      <h4 className="a11y-hist-head">Every scan of this page</h4>
+      <h3 className="a11y-hist-head">Every scan of this page</h3>
       <ul className="a11y-hist-runs">
         <li>
           <span className="a11y-hist-score">{current.score}</span>

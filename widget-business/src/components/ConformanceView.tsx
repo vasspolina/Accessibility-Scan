@@ -27,10 +27,10 @@ export function ConformanceView({ conformance }: { conformance: ConformanceSumma
 
   return (
     <section className="a11y-section a11y-conf">
-      <h3 className="a11y-section-title">
+      <h2 className="a11y-section-title">
         Are you meeting the legal standard?{" "}
         <span className="a11y-section-count">{conformance.standard}</span>
-      </h3>
+      </h2>
       <p className="a11y-section-desc">
         The {conformance.total}-item checklist European accessibility law measures sites against.
       </p>

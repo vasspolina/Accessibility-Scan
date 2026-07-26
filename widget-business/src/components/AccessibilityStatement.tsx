@@ -150,7 +150,7 @@ export function AccessibilityStatement({ report }: { report: AccessibilityReport
 
   return (
     <section className="a11y-section a11y-stmt">
-      <h3 className="a11y-section-title">Your accessibility statement</h3>
+      <h2 className="a11y-section-title">Your accessibility statement</h2>
       <p className="a11y-section-desc">
         European law asks for one if you serve EU customers. This check already knows most of the
         answers. Add your details and the draft writes itself.
@@ -187,7 +187,21 @@ export function AccessibilityStatement({ report }: { report: AccessibilityReport
         </span>
       </div>
 
-      <pre className="a11y-stmt-text">{statement}</pre>
+      {/* Focusable on purpose. The block scrolls (overflow: auto), and a
+          scrollable box that can't be focused is unreachable by keyboard —
+          you can see there's more text and have no way to get to it. Giving
+          it tabindex="0" puts it in the tab order so arrow keys work, and the
+          role plus label mean it's announced as something worth entering
+          rather than an unnamed stop. This is WCAG 2.1.1, which the checker
+          flags on other people's sites. */}
+      <pre
+        className="a11y-stmt-text"
+        tabIndex={0}
+        role="region"
+        aria-label="Draft accessibility statement"
+      >
+        {statement}
+      </pre>
 
       <p className="a11y-conf-caveat">
         <strong>Read it before you publish.</strong> This is a public, dated declaration. The draft
