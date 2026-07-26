@@ -7,9 +7,17 @@ function scoreColor(score: number): string {
 }
 
 function scoreSummary(score: number): string {
-  if (score >= 90) return "Solid foundations. A few details left to sand down.";
-  if (score >= 70) return "Works for most people. Some doors still don't open.";
-  return "Real barriers here. Plenty of people won't get past them.";
+  // Three lines that have to work as a family. Each states a judgement and
+  // stops. No hedging, no cheerleading, no exclamation of any kind: the number
+  // above has already made the point, and a sentence that softens it reads as
+  // an apology for the measurement.
+  //
+  // The middle one carries the argument. "Adequate for most" is exactly the
+  // standard a merely-compliant site is aiming at, and the second half says
+  // why that is not a compliment.
+  if (score >= 90) return "Well built. What remains is craft, not repair.";
+  if (score >= 70) return "Adequate for most. Design is judged by the rest.";
+  return "This shuts people out. Not deliberately, but by design.";
 }
 
 export function ScoreGauge({
