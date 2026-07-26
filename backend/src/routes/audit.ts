@@ -5,6 +5,7 @@ import { logger } from "../utils/logger.js";
 import { withTimeout } from "../utils/timeout.js";
 import { assertSafeUrl, UnsafeUrlError } from "../middleware/ssrfGuard.js";
 import { renderAndScan, SiteBlockedError } from "../services/render/renderPage.js";
+import { describeScanFailure } from "../services/scanFailure.js";
 import { scanUrlToReport } from "../services/scanPipeline.js";
 import { selectPagesToAudit } from "../services/crawl/discoverPages.js";
 import { aggregateAudit, type PageOutcome } from "../services/crawl/aggregateAudit.js";
@@ -95,11 +96,16 @@ export async function auditRoutes(app: FastifyInstance) {
           outcomes.push({ ...page, report });
         } catch (err) {
           // One bad page must not sink the audit — record it and continue.
+          //
+          // The reason comes from the same classifier the single-page route
+          // uses. This used to say "This page could not be scanned" for
+          // everything except a blocked site, which told the reader nothing
+          // and hid the cases they could act on: a page that merely timed out
+          // is worth retrying, a blocked one needs an allowlist, and a crash
+          // is ours rather than theirs.
+          const failure = describeScanFailure(err);
           logger.info({ err, url: page.url }, "Audit page failed, continuing");
-          outcomes.push({
-            ...page,
-            error: err instanceof SiteBlockedError ? err.message : "This page could not be scanned.",
-          });
+          outcomes.push({ ...page, error: failure.message });
         }
       }
     };

@@ -1,11 +1,7 @@
 import type { FastifyInstance } from "fastify";
 import { z } from "zod";
 import { logger } from "../utils/logger.js";
-import { UnsafeUrlError } from "../middleware/ssrfGuard.js";
-import { TimeoutError } from "../utils/timeout.js";
-import { ServiceBusyError } from "../services/render/browserPool.js";
-import { RebindingDetectedError, SiteBlockedError } from "../services/render/renderPage.js";
-import { AuthError } from "../services/auth/authenticate.js";
+import { describeScanFailure } from "../services/scanFailure.js";
 import { scanUrlToReport } from "../services/scanPipeline.js";
 import type { AccessibilityReport } from "../types/report.js";
 
@@ -73,74 +69,24 @@ export async function scanRoutes(app: FastifyInstance) {
         parsedBody.data.auth
       );
     } catch (err) {
-      if (err instanceof UnsafeUrlError) {
-        return reply.status(400).send({ error: err.message });
+      // Every branch of this used to live here, and the crawler had its own
+      // much poorer copy. One classifier now serves both, so the two can no
+      // longer disagree about what a failure means.
+      const failure = describeScanFailure(err);
+      if (failure.logLevel === "warn") {
+        logger.warn({ err, url: parsedBody.data.url }, "Scan failed");
+      } else {
+        logger.info({ url: parsedBody.data.url }, failure.message);
       }
-      if (err instanceof AuthError) {
-        // The message is written to be safe to show and never contains the
-        // credentials themselves.
-        return reply.status(401).send({ error: err.message });
-      }
-      if (err instanceof RebindingDetectedError) {
-        // Don’t echo the resolved IP back to the caller — log it server-side
-        // only, return the same generic rejection as the upfront SSRF guard.
-        logger.warn({ err, url: parsedBody.data.url }, "DNS rebinding detected mid-navigation");
-        return reply.status(400).send({ error: "This host is not allowed" });
-      }
-      if (err instanceof SiteBlockedError) {
-        // The target refused the scanner — an honest "couldn’t check" beats a
-        // report scored against the site’s bot-block page. The `blocked` flag
-        // lets the widget show sign-in / allowlist guidance instead of a bare
-        // error, since this isn’t the user’s mistake to fix.
-        logger.info({ url: parsedBody.data.url }, "Target site blocked the scanner");
-        return reply.status(422).send({ error: err.message, blocked: true });
-      }
-      // Two unrelated classes end up here. Ours comes from the withTimeout
-      // wrapper around the whole render; Playwright throws its own, with the
-      // same name, when a single operation overruns. Checking only for ours
-      // let a Playwright timeout fall through to the generic 502, so the
-      // reader got "Could not load or scan the page" for what was plainly a
-      // slow page — and the widget then retried it twice.
-      const isTimeout =
-        err instanceof TimeoutError || (err as { name?: string } | null)?.name === "TimeoutError";
-      if (isTimeout) {
-        // Distinct from a generic failure on purpose. "Could not load or scan
-        // the page" tells the reader nothing about what to do; "it took too
-        // long" tells them it is worth another try. The timedOut flag also
-        // stops the widget retrying, which used to spend three full render
-        // budgets arriving at the same answer.
-        logger.info({ url: parsedBody.data.url }, "Render timed out");
-        return reply.status(504).send({
-          error:
-            "This page took too long to load, so the check stopped. Very heavy pages sometimes need a second attempt.",
-          timedOut: true,
-        });
-      }
-      // Busy is not broken, and it is not the page's fault either. Say so, and
-      // say it is worth coming back: a queue that has overflowed clears.
-      if (err instanceof ServiceBusyError) {
-        logger.info({ url: parsedBody.data.url }, "Queue full, turning the request away");
-        return reply.status(503).send({
-          error: "Every scanner is busy right now. Please try again in a minute.",
-        });
-      }
-
-      // A crashed tab is the browser running out of memory on a heavy page, not
-      // anything wrong with the site. "Could not load or scan the page" points
-      // the reader at their own site and gives them nothing to do; this says
-      // the truth, which is that it is worth another go.
-      if (/target crashed|page crashed|browser has been closed/i.test(String(err))) {
-        logger.warn({ url: parsedBody.data.url }, "Browser crashed during render");
-        return reply.status(503).send({
-          error:
-            "The checker ran out of room on this page, which can happen with very heavy ones. Please try again.",
-        });
-      }
-
-      logger.warn({ err, url: parsedBody.data.url }, "Scan failed");
-      return reply.status(502).send({
-        error: "Could not load or scan the page",
-        details: err instanceof Error ? err.message : String(err),
+      return reply.status(failure.status).send({
+        error: failure.message,
+        ...(failure.blocked ? { blocked: true } : {}),
+        ...(failure.timedOut ? { timedOut: true } : {}),
+        // Only on a genuine unknown, and only server-side detail that is safe
+        // to show: the classified cases already say everything useful.
+        ...(failure.status === 502
+          ? { details: err instanceof Error ? err.message : String(err) }
+          : {}),
       });
     }
 
