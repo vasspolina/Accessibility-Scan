@@ -5,6 +5,7 @@ import { ReportSection } from "./components/ReportSection";
 import { PrincipleGroup } from "./components/PrincipleGroup";
 import { ScreenReaderPreview } from "./components/ScreenReaderPreview";
 import { ConformanceView } from "./components/ConformanceView";
+import { Wcag22Readiness } from "./components/Wcag22Readiness";
 import { VisionSimulator } from "./components/VisionSimulator";
 import { SiteAuditView } from "./components/SiteAuditView";
 import { AccessibilityStatement } from "./components/AccessibilityStatement";
@@ -192,6 +193,8 @@ export function App({ apiBase }: { apiBase: string }) {
           <ScanHistory current={toHistoryEntry(report)} previous={history} />
 
           {report.conformance && <ConformanceView conformance={report.conformance} />}
+
+          {report.wcag22 && <Wcag22Readiness readiness={report.wcag22} />}
 
           <ReportSection
             title="Issues that could turn away users"

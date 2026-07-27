@@ -22,6 +22,7 @@ import { evaluateTextResize } from "./textResize/analyzeTextResize.js";
 import { validateMarkup } from "./markup/validateMarkup.js";
 import { summarizeSeverity, computeScore, summarizeCategories } from "./merge/scoring.js";
 import { buildConformance } from "./conformance/buildConformance.js";
+import { buildWcag22Readiness } from "./conformance/wcag22Readiness.js";
 import { downscalePreview } from "./render/downscalePreview.js";
 import { attachElementScreenshots, selectorTargetsOneElement } from "./render/cropThumbnail.js";
 import type { AccessibilityFinding, AccessibilityReport } from "../types/report.js";
@@ -185,6 +186,7 @@ export async function scanUrlToReport(
   const score = computeScore(summarizeSeverity(findings.filter((f) => f.wcagLevel !== "AAA")));
   const categorySummary = summarizeCategories(findings);
   const conformance = buildConformance(findings);
+  const wcag22 = buildWcag22Readiness(findings);
 
   return {
     url: safeUrl.toString(),
@@ -195,6 +197,7 @@ export async function scanUrlToReport(
     findings,
     screenReaderScript: renderResult.screenReaderScript,
     conformance,
+    wcag22,
     pagePreview: await downscalePreview(renderResult.screenshotBase64),
     meta: {
       axeVersion: renderResult.axe.testEngine?.version ?? "unknown",

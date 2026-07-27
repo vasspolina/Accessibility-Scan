@@ -85,6 +85,32 @@ export interface ConformanceSummary {
   criteria: CriterionResult[];
 }
 
+// What changes when EN 301 549 adopts WCAG 2.2, expected to be cited in the
+// Official Journal around October 2026. Separate from ConformanceSummary
+// because these are not requirements yet, and reporting them as failures
+// would claim a duty that does not exist.
+export interface Wcag22Criterion {
+  id: string;
+  name: string;
+  level: "A" | "AA";
+  coverage: "automated" | "manual";
+  plain: string;
+  failing: string;
+  whyManual?: string;
+  status: "already-failing" | "no-issues-found" | "needs-review";
+  findingCount: number;
+}
+
+export interface Wcag22Readiness {
+  standard: string;
+  expectedFrom: string;
+  criteria: Wcag22Criterion[];
+  alreadyFailing: number;
+  needsReview: number;
+  total: number;
+  parsingNoLongerCounts: boolean;
+}
+
 export interface AccessibilityReport {
   url: string;
   scannedAt: string;
@@ -96,6 +122,8 @@ export interface AccessibilityReport {
   screenReaderScript?: ScreenReaderScript;
   // Absent on older backends.
   conformance?: ConformanceSummary;
+  // Absent on older backends.
+  wcag22?: Wcag22Readiness;
   // Downscaled base64 JPEG of the page, used by the vision simulators.
   pagePreview?: string;
   meta: {

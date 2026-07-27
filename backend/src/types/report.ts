@@ -153,6 +153,32 @@ export const criterionResultSchema = z.object({
   findingCount: z.number(),
 });
 
+// What changes when EN 301 549 adopts WCAG 2.2, expected in the Official
+// Journal around October 2026. Kept separate from the conformance summary on
+// purpose: reporting a site as failing something it is not yet required to
+// meet would be the same overclaim this report refuses elsewhere.
+export const wcag22CriterionSchema = z.object({
+  id: z.string(),
+  name: z.string(),
+  level: z.enum(["A", "AA"]),
+  coverage: z.enum(["automated", "manual"]),
+  plain: z.string(),
+  failing: z.string(),
+  whyManual: z.string().optional(),
+  status: z.enum(["already-failing", "no-issues-found", "needs-review"]),
+  findingCount: z.number(),
+});
+
+export const wcag22ReadinessSchema = z.object({
+  standard: z.string(),
+  expectedFrom: z.string(),
+  criteria: z.array(wcag22CriterionSchema),
+  alreadyFailing: z.number(),
+  needsReview: z.number(),
+  total: z.number(),
+  parsingNoLongerCounts: z.boolean(),
+});
+
 export const conformanceSummarySchema = z.object({
   standard: z.string(),
   failed: z.number(),
@@ -178,6 +204,7 @@ export const accessibilityReportSchema = z.object({
   screenReaderScript: screenReaderScriptSchema.optional(),
   // Optional so an older client still validates.
   conformance: conformanceSummarySchema.optional(),
+  wcag22: wcag22ReadinessSchema.optional(),
   // Downscaled base64 JPEG of the page as a sighted visitor first sees it.
   // Powers the vision simulators in the widget, which re-filter this one
   // image client-side rather than asking the server to render variants.

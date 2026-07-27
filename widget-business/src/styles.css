@@ -1962,3 +1962,20 @@
 .a11y-widget-biz .a11y-finding-details[hidden] {
   display: none;
 }
+
+/* WCAG 2.2 readiness --------------------------------------------------------
+   Quieter than the conformance checklist on purpose. Nothing in it is required
+   yet, and it must not read as a second list of failures. */
+.a11y-w22-already-failing {
+  background: #fff8e1;
+  border-left: 3px solid var(--a11y-score-warn, #8a3800);
+}
+
+.a11y-w22-needs-review,
+.a11y-w22-no-issues-found {
+  background: var(--a11y-surface, #f4f4f4);
+}
+
+.a11y-w22 .a11y-conf-status {
+  color: var(--a11y-muted, #525252);
+}
