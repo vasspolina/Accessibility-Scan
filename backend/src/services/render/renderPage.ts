@@ -146,6 +146,17 @@ export interface RenderResult {
   ariaSnapshot: string;
   domSignals: DomSignals;
   renderTimeMs: number;
+  /**
+   * Milliseconds spent in each named phase of the render.
+   *
+   * Added after two separate timing problems were diagnosed by guesswork
+   * before measurement corrected them: probes suspected of costing seconds
+   * that cost about one between them, and a budget that failed on a shared
+   * CPU for arithmetic reasons rather than because any page was slow. A
+   * render that takes seventy-nine seconds should be able to say where they
+   * went without anyone rebuilding it to find out.
+   */
+  phaseMs: Record<string, number>;
   // Base64 JPEG of the above-the-fold viewport, given to the AI review
   // layer as a vision input — visual clutter, fake urgency banners, and
   // confusing layouts are fundamentally perceptual and don't show up in a
@@ -670,6 +681,10 @@ const ELEMENT_SHOT_BUDGET_MS = 12_000;
 // the last budgeted phase can run right up to the deadline and the steps
 // after it push past.
 const RENDER_TAIL_MARGIN_MS = 6_000;
+// How long to let images, fonts and third-party scripts finish after the
+// document is ready. Generous enough for a normal page to complete, short
+// enough that one unreachable tracker cannot take the scan down with it.
+const SUBRESOURCE_WAIT_MS = 12_000;
 // Per-channel standard deviation below which a capture is essentially one
 // solid colour — an invisible element, or one caught mid-reveal.
 // Per-channel standard deviation below which an image is essentially one flat
@@ -1481,6 +1496,18 @@ async function captureKeyboardNavigation(
     failed = true;
   }
 
+  // A walk that recorded nothing did not succeed, whatever reachedEnd says.
+  //
+  // The first Tab press landing on <body> is read as the cycle having wrapped
+  // round, which is right on a page with one focusable element and wrong on a
+  // page whose focus is somewhere the main document cannot see. Measured on
+  // theguardian.com, whose consent iframe holds focus at load: zero stops,
+  // reachedEnd true, walk over in five milliseconds — and every focus check
+  // downstream then found nothing to complain about and said so. A silent
+  // pass on a page nobody tested is the failure mode `failed` exists to
+  // prevent, so an empty walk counts as one.
+  if (stops.length === 0) failed = true;
+
   const mouseOnly = await collectMouseOnlyControls(page);
   return { stops, reachedEnd, failed, truncated, mouseOnly };
 }
@@ -2129,6 +2156,18 @@ export async function renderAndScan(
     // budgeted phase.
     const renderDeadline = budgetMs ? start + budgetMs - RENDER_TAIL_MARGIN_MS : Infinity;
     const remaining = () => renderDeadline - Date.now();
+
+    const phaseMs: Record<string, number> = {};
+    // Times a phase and hands its value straight back, so wrapping a call
+    // never changes what the call returns.
+    const timed = async <T>(name: string, fn: () => Promise<T>): Promise<T> => {
+      const began = Date.now();
+      try {
+        return await fn();
+      } finally {
+        phaseMs[name] = (phaseMs[name] ?? 0) + (Date.now() - began);
+      }
+    };
     if (auth) {
       // Before the target navigation, so the session is live when we arrive.
       // Throws AuthError, which the route surfaces as a clear message.
@@ -2174,7 +2213,28 @@ export async function renderAndScan(
       // (always resolves for a reachable page), then optimistically give SPA
       // content a brief extra moment to settle without failing the scan if
       // the page never goes fully idle.
-      const mainResponse = await page.goto(url, { waitUntil: "load", timeout: env.RENDER_TIMEOUT_MS });
+      // Wait for the document, then give subresources a bounded chance to
+      // finish — rather than blocking on all of them.
+      //
+      // "load" does not fire until every image, font, iframe, advert and
+      // tracker has settled, and on a news site that is dozens of third-party
+      // requests the page itself does not need. Locally the Guardian's load
+      // completes in under half a second; from the deployed service the same
+      // scan took seventy-nine, and the page was not the slow part — waiting
+      // on other people's servers was.
+      //
+      // "domcontentloaded" returns the same main response, so the status
+      // check below is unaffected. The load wait that follows is best-effort:
+      // when it expires the scan carries on with the document it has, because
+      // a report measured on a fully-built page missing one advert beats no
+      // report at all. settleLayout further down then waits for the geometry
+      // to stop moving, which is the thing measurement actually depends on.
+      const mainResponse = await timed("goto", () =>
+        page.goto(url, { waitUntil: "domcontentloaded", timeout: env.RENDER_TIMEOUT_MS })
+      );
+      await timed("subresources", () =>
+        page.waitForLoadState("load", { timeout: SUBRESOURCE_WAIT_MS }).catch(() => {})
+      );
       await page.waitForLoadState("networkidle", { timeout: 3000 }).catch(() => {});
       if (rebindingDetected) throw rebindingDetected;
 
@@ -2214,6 +2274,7 @@ export async function renderAndScan(
       // and go again. Once, because a page that navigates twice more is not
       // settling and the render timeout should have the last word.
       let axeResult: AxeRunResult;
+      const axeBegan = Date.now();
       try {
         await page.addScriptTag({ path: require.resolve("axe-core") });
         axeResult = (await page.evaluate(() =>
@@ -2229,6 +2290,7 @@ export async function renderAndScan(
           (window as unknown as { axe: { run: () => Promise<unknown> } }).axe.run()
         )) as AxeRunResult;
       }
+      phaseMs.axe = Date.now() - axeBegan;
       const axe = axeResult;
 
       // Supplementary context for the AI layer, not something the report
@@ -2247,7 +2309,9 @@ export async function renderAndScan(
       // Collected while the page is in its initial desktop state, before the
       // keyboard walk-through and mobile pass mutate it — consent banners and
       // opt-in forms are exactly what those later passes disturb.
-      const darkPatternSignals = await collectDarkPatternsAcrossFrames(page);
+      const darkPatternSignals = await timed("darkPatterns", () =>
+        collectDarkPatternsAcrossFrames(page)
+      );
       // Reading-order walk of the accessibility tree, collected in the same
       // pristine desktop state. Best-effort: an empty script just hides the
       // preview rather than costing the report.
@@ -2339,16 +2403,17 @@ export async function renderAndScan(
       // because each one scrolls the page. Best-effort as a whole: if this
       // throws for any reason, fall back to full-page crops rather than
       // failing.
-      const elementScreenshots = await captureElementScreenshots(
-        page,
-        renderDeadline,
-        axe,
-        deterministicSelectors
-      ).catch(() => ({}));
+      const elementScreenshots = await timed("elementShots", () =>
+        captureElementScreenshots(page, renderDeadline, axe, deterministicSelectors).catch(
+          () => ({})
+        )
+      );
 
       // Real keyboard walk-through — after the screenshots, because Tab
       // presses scroll the page and flip elements into their :focus styles.
-      const keyboardNav = await captureKeyboardNavigation(page, renderDeadline);
+      const keyboardNav = await timed("keyboard", () =>
+        captureKeyboardNavigation(page, renderDeadline)
+      );
 
       // Visual-versus-source order. Geometry only, so it changes nothing and
       // has to run at desktop width, before the mobile pass reflows the page.
@@ -2364,7 +2429,7 @@ export async function renderAndScan(
 
       // Text-resize passes — done at desktop width, before the viewport is
       // changed for the mobile pass below.
-      const textResizeSignals = await collectTextResizeSignals(page);
+      const textResizeSignals = await timed("textResize", () => collectTextResizeSignals(page));
 
       // Mobile pass — resize to a phone width, let the layout reflow, and
       // measure mobile-only problems (sideways scrolling, tiny tap targets).
@@ -2385,7 +2450,9 @@ export async function renderAndScan(
       try {
         await page.setViewportSize({ width: 390, height: 844 });
         await page.waitForTimeout(400); // let CSS media queries / reflow settle
-        mobileSignals = await page.evaluate<MobileSignals>(toBrowserScript(collectMobileSignalsInPage));
+        mobileSignals = await timed("mobile", () =>
+          page.evaluate<MobileSignals>(toBrowserScript(collectMobileSignalsInPage))
+        );
         // Breakout (overflow) elements first — they're large regions that crop
         // into a useful picture on their own.
         //
@@ -2467,6 +2534,7 @@ export async function renderAndScan(
         ariaSnapshot,
         domSignals,
         renderTimeMs: Date.now() - start,
+        phaseMs,
         screenshotBase64: screenshotBuffer.toString("base64"),
         fullPageScreenshot,
         boundingBoxes,

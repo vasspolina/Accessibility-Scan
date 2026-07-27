@@ -226,3 +226,33 @@ describe("evaluateKeyboardNav", () => {
     expect(evaluateKeyboardNav({ mouseOnly: [], stops: [], reachedEnd: false })).toEqual([]);
   });
 });
+
+describe("an empty walk is not a clean pass", () => {
+  // The evaluator's own guard: with no stops there is nothing to judge, so it
+  // must not emit focus findings. The render side marks such a walk failed so
+  // the report says the check was incomplete rather than implying it passed —
+  // measured on theguardian.com, whose consent iframe holds focus at load, so
+  // the first Tab press lands on <body> and the walk ends having seen nothing.
+  it("emits no focus findings when nothing was measured", () => {
+    const findings = evaluateKeyboardNav({
+      mouseOnly: [],
+      stops: [],
+      reachedEnd: true,
+      failed: true,
+    });
+    expect(findings.find((f) => f.ruleId === "keyboard-no-visible-focus")).toBeUndefined();
+    expect(findings.find((f) => f.ruleId === "keyboard-faint-focus")).toBeUndefined();
+  });
+
+  // Mouse-only controls are collected separately from the tab walk, so they
+  // survive a walk that recorded nothing.
+  it("still reports controls the keyboard cannot reach", () => {
+    const findings = evaluateKeyboardNav({
+      mouseOnly: [{ selector: "div.buy", snippet: "<div>Buy</div>", tag: "div", label: "Buy" }],
+      stops: [],
+      reachedEnd: true,
+      failed: true,
+    });
+    expect(findings.map((f) => f.ruleId)).toContain("keyboard-mouse-only");
+  });
+});
