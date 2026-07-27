@@ -24,6 +24,8 @@ import type { AccessibilityFinding } from "../../types/report.js";
 // that only genuinely dense prose trips it.
 
 export interface ReadabilitySignals {
+  /** Set when the probe could not run at all, rather than finding no prose. */
+  failed?: boolean;
   /** Prose from the main content, capped. Empty when there was too little. */
   text: string;
   /** The document's declared language, lowercased; "" when absent. */

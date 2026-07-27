@@ -1661,6 +1661,8 @@ async function collectMouseOnlyControls(page: Page): Promise<MouseOnlyControl[]>
  * side on one line, where the one that reads first is reached second.
  */
 export interface ReadingOrderSignals {
+  /** Set when the probe could not run — see the note on incompleteChecks. */
+  failed?: boolean;
   reorderedRows: Array<{
     selector: string;
     reason: string;
@@ -1699,7 +1701,7 @@ async function collectReadability(page: Page): Promise<ReadabilitySignals> {
     })()`)) as ReadabilitySignals;
   } catch (err) {
     logger.warn({ err }, "Readability probe failed — reporting without it");
-    return { text: "", lang: "" };
+    return { text: "", lang: "", failed: true };
   }
 }
 
@@ -1800,7 +1802,7 @@ async function collectReadingOrder(page: Page): Promise<ReadingOrderSignals> {
     return { reorderedRows };
   } catch (err) {
     logger.warn({ err }, "Reading-order probe failed — reporting without it");
-    return { reorderedRows: [] };
+    return { reorderedRows: [], failed: true };
   }
 }
 
@@ -2550,6 +2552,13 @@ export async function renderAndScan(
           ...(mobileFailed ? ["phone layout"] : []),
           ...(textResizeSignals.failed ? ["text resizing"] : []),
           ...(userPreferences.failed ? ["display preferences"] : []),
+          // A crashed renderer takes out every probe after it, each caught and
+          // logged so the scan still returns a report. That resilience is
+          // right, and silently dropping the checks is not: a reader would be
+          // told nothing about reading order on a page where the check never
+          // ran. Anything that could not run says so here.
+          ...(readingOrder.failed ? ["reading order"] : []),
+          ...(readability.failed ? ["reading level"] : []),
         ],
       };
     } finally {
