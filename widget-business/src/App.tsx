@@ -1,6 +1,7 @@
 import { useMemo, useState } from "react";
 import { UrlForm, type ScanMode } from "./components/UrlForm";
 import { ScoreGauge } from "./components/ScoreGauge";
+import { DocumentSummary } from "./components/DocumentSummary";
 import { ReportSection } from "./components/ReportSection";
 import { PrincipleGroup } from "./components/PrincipleGroup";
 import { ScreenReaderPreview } from "./components/ScreenReaderPreview";
@@ -44,6 +45,10 @@ export function App({ apiBase }: { apiBase: string }) {
   // Earlier scans of the page just checked, read before this one is recorded
   // so the current scan isn't compared against itself.
   const [history, setHistory] = useState<HistoryEntry[]>([]);
+
+  // A PDF is checked for a handful of structural things, not crawled as a
+  // page, so several sections of the report simply do not apply to it.
+  const isDocument = report?.meta.documentKind === "pdf";
 
   const findingsByCategory = useMemo(() => {
     const findings = report?.findings ?? [];
@@ -162,7 +167,11 @@ export function App({ apiBase }: { apiBase: string }) {
       {report && (
         <div className="a11y-report">
           <PrintButton />
-          <ScoreGauge score={report.score} summary={report.summary} seed={report.scannedAt} />
+          {isDocument ? (
+            <DocumentSummary report={report} />
+          ) : (
+            <ScoreGauge score={report.score} summary={report.summary} seed={report.scannedAt} />
+          )}
 
           {/* Only flag it when the AI review was wanted but didn't happen.
               "disabled_by_request" is the visitor's own choice — reporting it
@@ -197,12 +206,14 @@ export function App({ apiBase }: { apiBase: string }) {
 
           {report.wcag22 && <Wcag22Readiness readiness={report.wcag22} />}
 
+          {!isDocument && (
           <ReportSection
             title="Issues that could turn away users"
             description="Places your site nudges people instead of letting them choose. These don't move the score. They move how much you're trusted."
             variant={findingsByCategory.darkPattern.length > 0 ? "redflag" : "default"}
             findings={findingsByCategory.darkPattern}
           />
+          )}
 
           <section className="a11y-section">
             <h3 className="a11y-section-title">
@@ -210,8 +221,9 @@ export function App({ apiBase }: { apiBase: string }) {
               <span className="a11y-section-count">({findingsByCategory.accessibility.length})</span>
             </h3>
             <p className="a11y-section-desc">
-              Grouped by the four questions the standard asks: can people see it, use it,
-              understand it, and will it keep working. More at{" "}
+              {isDocument
+                ? "What stops this document being read aloud, grouped by the four questions the standard asks. More at "
+                : "Grouped by the four questions the standard asks: can people see it, use it, understand it, and will it keep working. More at "}
               <a href={WCAG_LINK} target="_blank" rel="noopener noreferrer">
                 w3.org/WAI
               </a>
@@ -228,16 +240,18 @@ export function App({ apiBase }: { apiBase: string }) {
             <ScreenReaderPreview script={report.screenReaderScript} />
           )}
 
+          {!isDocument && (
           <ReportSection
             title="Design & clarity notes"
             description="Type that works against the reader: too small, too tight, too many capitals. None of it is illegal. All of it costs you readers, and dyslexic ones first."
             variant="default"
             findings={findingsByCategory.designClarity}
           />
+          )}
 
-          <AccessibilityStatement report={report} />
+          {!isDocument && <AccessibilityStatement report={report} />}
 
-          <AcrDraft report={report} />
+          {!isDocument && <AcrDraft report={report} />}
         </div>
       )}
     </section>

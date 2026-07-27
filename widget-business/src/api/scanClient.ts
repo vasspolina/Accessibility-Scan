@@ -144,6 +144,10 @@ export interface AccessibilityReport {
     // so an incomplete scan can look better than a complete one — the report
     // says so rather than letting the number stand unqualified.
     incompleteChecks?: string[];
+    // Set when what was checked was a document rather than a web page. Several
+    // sections of the report do not apply to one.
+    documentKind?: "pdf";
+    documentPages?: number;
     model?: string;
   };
 }
