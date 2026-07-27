@@ -100,6 +100,9 @@ export interface DomSignals {
     closeControl: { present: boolean; hasAccessibleName: boolean } | null;
     // Whether focus was inside the dialog when the page finished loading.
     hasFocusInside: boolean;
+    // On screen when the page settled. A dialog that is not cannot be
+    // photographed, and mostly cannot be judged either.
+    visible: boolean;
   }>;
 }
 
@@ -477,6 +480,26 @@ function extractDomSignalsInPage(): DomSignals {
         hasFocusInside: (() => {
           const active = document.activeElement;
           return !!active && active !== document.body && el.contains(active);
+        })(),
+        // Whether this dialog was actually on screen when the page settled.
+        //
+        // The heuristic overlay path below already required visibility, but
+        // the explicit path above takes every [role="dialog"] and <dialog> in
+        // the document, and a site commonly ships several that stay hidden
+        // until something opens them. Those were being reported as pop-ups
+        // the visitor meets, counted in "(4 pop-ups)", and picked as the
+        // element to photograph — which is why a finding could arrive with no
+        // picture and nothing to identify it by.
+        visible: (() => {
+          try {
+            const cs = getComputedStyle(el);
+            if (cs.display === "none" || cs.visibility === "hidden") return false;
+            if (parseFloat(cs.opacity) === 0) return false;
+            const r = el.getBoundingClientRect();
+            return r.width > 1 && r.height > 1;
+          } catch (e) {
+            return false;
+          }
         })(),
       };
     });

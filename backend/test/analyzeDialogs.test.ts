@@ -14,6 +14,7 @@ function dialog(overrides: Partial<Dialog> = {}): Dialog {
     looksLikeModalOverlay: true,
     closeControl: { present: true, hasAccessibleName: true },
     hasFocusInside: true,
+    visible: true,
     ...overrides,
   };
 }
@@ -137,5 +138,41 @@ describe("evaluateDialogs: what a real keyboard did to an open modal", () => {
     expect(
       ids(probe({ closedByEscape: false, focusEscapes: true, focusLostAfterClose: true }))
     ).not.toContain("dialog-focus-lost-on-close");
+  });
+});
+
+describe("evaluateDialogs: dialogs that were never on screen", () => {
+  // A page commonly ships several [role="dialog"] elements that stay hidden
+  // until something opens them. Reporting those as pop-ups the visitor met
+  // gave a finding nobody could place — no picture is possible, and "Dialog"
+  // is the whole label.
+  const hidden = (o: Partial<Dialog> = {}) => dialog({ visible: false, ...o });
+
+  it("does not judge the close button of a dialog it never saw", () => {
+    // A hidden dialog may well grow a close button when it opens — plenty are
+    // built that way — so calling it closable or not is guessing at markup
+    // that does not exist yet.
+    expect(rules([hidden({ closeControl: null })])).not.toContain("dialog-no-close");
+    expect(rules([dialog({ closeControl: null })])).toContain("dialog-no-close");
+  });
+
+  it("still reports a missing name on a hidden dialog", () => {
+    // A name is in the markup whether or not the dialog is on screen, so this
+    // one can be judged without seeing it.
+    expect(rules([hidden({ hasAccessibleName: false })])).toContain("dialog-missing-name");
+  });
+
+  it("names a visible dialog rather than a hidden one, so it can be pictured", () => {
+    const findings = evaluateDialogs([
+      hidden({ selector: "#hidden-template", hasAccessibleName: false }),
+      dialog({ selector: "#the-cookie-banner", hasAccessibleName: false }),
+    ]);
+    const f = findings.find((x) => x.ruleId === "dialog-missing-name");
+    expect(f!.selector).toBe("#the-cookie-banner");
+  });
+
+  it("falls back to the first when none were visible", () => {
+    const findings = evaluateDialogs([hidden({ selector: "#only-one", hasAccessibleName: false })]);
+    expect(findings.find((x) => x.ruleId === "dialog-missing-name")!.selector).toBe("#only-one");
   });
 });

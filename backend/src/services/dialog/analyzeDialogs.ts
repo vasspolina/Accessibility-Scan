@@ -133,6 +133,22 @@ export function evaluateDialogs(
   findings.push(...evaluateDialogKeyboard(keyboard));
   if (dialogs.length === 0) return findings;
 
+  // Which dialog to name and photograph. A page often ships several
+  // [role="dialog"] elements that stay hidden until something opens them, and
+  // naming one of those leaves the reader with a finding they cannot place:
+  // no picture is possible, and "Dialog" is all the label there is. Prefer one
+  // that was actually on screen.
+  const pick = (list: Dialog[]) => (list.find((d) => d.visible) ?? list[0]).selector;
+
+  // When none of them were on screen there is no picture to take and no
+  // visible thing to point at, and the report was leaving the reader with an
+  // unplaceable card labelled "Dialog". Saying so outright is the fix: it
+  // explains the missing screenshot instead of looking like one failed.
+  const unseen = (list: Dialog[]) =>
+    list.some((d) => d.visible)
+      ? ""
+      : " This one was not on screen while the page was scanned — it opens in response to something — so there is no picture of it here, and you will need to trigger it to see it.";
+
   // 1. Close control with no meaningful accessible name (a bare "×"/icon).
   //    The clearest, highest-impact failure — WCAG 4.1.2 Name, Role, Value.
   const unlabelledClose = dialogs.filter((d) => d.closeControl?.present && !d.closeControl.hasAccessibleName);
@@ -142,8 +158,8 @@ export function evaluateDialogs(
         "dialog-close-unlabeled",
         "serious",
         "accessibility",
-        unlabelledClose[0].selector,
-        `A pop-up's close button has no readable label — it's just an "×" or icon (${unlabelledClose.length} pop-up${unlabelledClose.length === 1 ? "" : "s"}). People using a screen reader hear only "button" and can't tell how to dismiss the pop-up, so it traps them.`,
+        pick(unlabelledClose),
+        `A pop-up's close button has no readable label — it's just an "×" or icon (${unlabelledClose.length} pop-up${unlabelledClose.length === 1 ? "" : "s"}). People using a screen reader hear only "button" and can't tell how to dismiss the pop-up, so it traps them.${unseen(unlabelledClose)}`,
         'Give the close control an accessible name — aria-label="Close" on the button (a bare "×" glyph is announced as "multiplication sign", not "close").',
         { criterion: "4.1.2", level: "A" }
       )
@@ -151,14 +167,25 @@ export function evaluateDialogs(
   }
 
   // 2. A pop-up with no identifiable close control at all.
-  const noClose = dialogs.filter((d) => d.closeControl === null && (d.role !== "" || d.isNativeDialog || d.looksLikeModalOverlay));
+  //
+  // Visible dialogs only, and that restriction is about honesty rather than
+  // pictures. A dialog sitting hidden in the markup may well grow a close
+  // button when it opens — plenty are built that way — so calling it closable
+  // or not is guessing at markup that does not exist yet. This rule can only
+  // speak for pop-ups the visitor was actually shown.
+  const noClose = dialogs.filter(
+    (d) =>
+      d.visible &&
+      d.closeControl === null &&
+      (d.role !== "" || d.isNativeDialog || d.looksLikeModalOverlay)
+  );
   if (noClose.length > 0) {
     findings.push(
       makeFinding(
         "dialog-no-close",
         "moderate",
         "design-clarity",
-        noClose[0].selector,
+        pick(noClose),
         `A pop-up appears to have no obvious close button (${noClose.length} pop-up${noClose.length === 1 ? "" : "s"}). If it can only be dismissed by clicking outside it, keyboard and screen-reader users may be stuck behind it.`,
         "Add a clearly-labelled close button inside the pop-up, and make sure pressing Escape closes it too.",
         undefined
@@ -177,7 +204,7 @@ export function evaluateDialogs(
         "dialog-missing-role",
         "moderate",
         "design-clarity",
-        notMarked[0].selector,
+        pick(notMarked),
         `A pop-up overlay isn't marked up as a dialog (${notMarked.length} overlay${notMarked.length === 1 ? "" : "s"}). Assistive technology doesn't announce that it opened, doesn't keep focus inside it, and lets people tab off into the hidden page behind it.`,
         'Add role="dialog" and aria-modal="true" to the overlay, give it an accessible name (aria-label or aria-labelledby), move keyboard focus into it when it opens, and return focus to the trigger when it closes.',
         undefined
@@ -185,7 +212,11 @@ export function evaluateDialogs(
     );
   }
 
-  // 4. An explicitly-marked dialog with no accessible name.
+  // 4. An explicitly-marked dialog with no accessible name. Hidden ones count
+  //    here, unlike the close-button rule above: a name is in the markup
+  //    whether or not the dialog is on screen, so this can be judged without
+  //    seeing it. Only the element named and photographed prefers a visible
+  //    one.
   const namelessDialog = dialogs.filter(
     (d) => (d.role === "dialog" || d.role === "alertdialog" || d.isNativeDialog) && !d.hasAccessibleName
   );
@@ -195,8 +226,8 @@ export function evaluateDialogs(
         "dialog-missing-name",
         "moderate",
         "accessibility",
-        namelessDialog[0].selector,
-        `A dialog has no accessible name (${namelessDialog.length} dialog${namelessDialog.length === 1 ? "" : "s"}). When it opens, a screen reader announces "dialog" with no indication of what it's for.`,
+        pick(namelessDialog),
+        `A dialog has no accessible name (${namelessDialog.length} dialog${namelessDialog.length === 1 ? "" : "s"}). When it opens, a screen reader announces "dialog" with no indication of what it's for.${unseen(namelessDialog)}`,
         "Give the dialog an accessible name with aria-label, or point aria-labelledby at the dialog's visible heading.",
         { criterion: "4.1.2", level: "A" }
       )

@@ -73,10 +73,17 @@ const BY_RULE: Record<string, MethodKey> = {
   "dialog-focus-not-moved": "keyboard",
   "dialog-focus-lost-on-close": "keyboard",
   "reading-order-mismatch": "keyboard",
-  "component-skip-link": "keyboard",
   "forced-colors-focus-lost": "keyboard",
 
-  // Announced badly, or not at all.
+  // Screen reader, on one line: the element is there and works, but it is
+  // announced wrongly or not at all. You verify these by listening.
+  //
+  // Structure is deliberately NOT here, however much it affects screen reader
+  // users. Landmarks, heading order and list nesting change how a page can be
+  // navigated, not what any single control is called, and you find them by
+  // reading markup rather than by listening — which is why the landmark
+  // finding's own title says "aren't named in the code". Badging that one
+  // "Screen reader" contradicted the sentence directly above it.
   "dialog-missing-name": "screen-reader",
   "dialog-missing-role": "screen-reader",
   "dialog-close-unlabeled": "screen-reader",
@@ -85,16 +92,32 @@ const BY_RULE: Record<string, MethodKey> = {
   "button-name": "screen-reader",
   "link-name": "screen-reader",
   label: "screen-reader",
+  "empty-heading": "screen-reader",
+  "frame-title": "screen-reader",
   "document-title": "screen-reader",
   "html-has-lang": "screen-reader",
-  "heading-order": "screen-reader",
-  "empty-heading": "screen-reader",
-  listitem: "screen-reader",
-  list: "screen-reader",
-  "landmark-one-main": "screen-reader",
-  "landmark-unique": "screen-reader",
-  region: "screen-reader",
-  "frame-title": "screen-reader",
+
+  // Structural markup: nothing looks or sounds wrong element by element, and
+  // the fault is only visible by reading the code.
+  //
+  // A missing skip link belongs here rather than with the keyboard tests, and
+  // the line is worth stating: a keyboard pass can find a thing that behaves
+  // wrongly, but not a thing that was never built. There is nothing to tab to
+  // and nothing to observe — you notice its absence by reading the markup.
+  // Reading order stays a keyboard finding by the same rule: the controls are
+  // there, and tabbing them shows the order is wrong.
+  "component-skip-link": "code",
+  "heading-order": "code",
+  listitem: "code",
+  list: "code",
+  "landmark-one-main": "code",
+  "landmark-unique": "code",
+  "landmark-complementary-is-top-level": "code",
+  "landmark-no-duplicate-banner": "code",
+  "landmark-no-duplicate-contentinfo": "code",
+  region: "code",
+  "duplicate-id": "code",
+  bypass: "code",
 
   // Visible without any tooling.
   "color-contrast": "screen",

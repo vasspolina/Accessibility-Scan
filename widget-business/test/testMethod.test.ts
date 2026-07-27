@@ -33,7 +33,6 @@ describe("methodForFinding", () => {
       "dialog-focus-not-moved",
       "dialog-focus-lost-on-close",
       "reading-order-mismatch",
-      "component-skip-link",
       "forced-colors-focus-lost",
     ]) {
       expect(keyOf(rule), `${rule} should be a keyboard finding`).toBe("keyboard");
@@ -54,6 +53,28 @@ describe("methodForFinding", () => {
   it("splits forced-colours findings by how you would notice them", () => {
     expect(keyOf("forced-colors-focus-lost")).toBe("keyboard");
     expect(keyOf("forced-colors-icon-lost")).toBe("screen");
+  });
+
+  // The line between a keyboard finding and a code one: a keyboard pass can
+  // find a thing that behaves wrongly, but not a thing that was never built.
+  it("files a missing skip link as code, and a wrong reading order as keyboard", () => {
+    expect(keyOf("component-skip-link")).toBe("code");
+    expect(keyOf("reading-order-mismatch")).toBe("keyboard");
+  });
+
+  // Structure affects screen reader users but is not found by listening, and
+  // the landmark finding's own title says "aren't named in the code".
+  it("files structural markup as code, not as a screen reader problem", () => {
+    for (const rule of ["landmark-one-main", "region", "heading-order", "listitem", "list"]) {
+      expect(keyOf(rule), rule).toBe("code");
+    }
+  });
+
+  // What is announced, or not, stays with the screen reader.
+  it("keeps missing names and labels with the screen reader", () => {
+    for (const rule of ["image-alt", "button-name", "link-name", "label", "dialog-missing-name"]) {
+      expect(keyOf(rule), rule).toBe("screen-reader");
+    }
   });
 
   it("files rendering measurements under what is on screen", () => {
