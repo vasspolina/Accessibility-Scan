@@ -235,6 +235,11 @@ export const PLAIN_RULE_EXPLANATIONS: Record<string, PlainRule> = {
     impact:
       "Plenty of people never touch a mouse. Without a visible highlight they're navigating blind, and they give up.",
   },
+  "readability-dense-prose": {
+    plain: "The writing needs about a first-year-university reading level.",
+    impact:
+      "Not a legal requirement, and the change with the widest reach in this whole report. It helps people with cognitive disabilities, anyone reading in a second language, and everyone skimming on a phone with one bar of signal. GOV.UK writes at roughly a nine-year-old's reading age deliberately — that isn't a simple site, it's a well-written one.",
+  },
   "reading-order-mismatch": {
     plain: "Two controls sitting side by side are tabbed to in the opposite order.",
     impact:

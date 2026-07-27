@@ -30,6 +30,7 @@ import {
   type TextResizeSignals,
 } from "../textResize/analyzeTextResize.js";
 import type { ScreenReaderScript } from "../../types/report.js";
+import type { ReadabilitySignals } from "../readability/analyzeReadability.js";
 import type {
   FocusStyles,
   KeyboardNavResult,
@@ -191,6 +192,9 @@ export interface RenderResult {
   // Rows where CSS reordering made the tab order disagree with what is on
   // screen (services/readingOrder/analyzeReadingOrder.ts).
   readingOrder: ReadingOrderSignals;
+  // Main-content prose and the declared language, for the reading-level
+  // advisory (services/readability/analyzeReadability.ts).
+  readability: ReadabilitySignals;
   // Checks that did not complete on this run, in words a reader understands.
   //
   // Each of these passes catches its own failures and returns empty signals so
@@ -1544,6 +1548,40 @@ export interface ReadingOrderSignals {
   }>;
 }
 
+/** Prose from the main content, plus the declared language, for 3.1.5. */
+async function collectReadability(page: Page): Promise<ReadabilitySignals> {
+  try {
+    return (await page.evaluate(String.raw`(() => {
+      const __name = (fn) => fn;
+      const root =
+        document.querySelector("main") ||
+        document.querySelector('[role="main"]') ||
+        document.querySelector("article") ||
+        document.body;
+      if (!root) return { text: "", lang: "" };
+      const parts = [];
+      let total = 0;
+      // Paragraphs and list items only. Headings, nav labels and button text
+      // are fragments, and counting them as sentences wrecks the average.
+      for (const el of Array.from(root.querySelectorAll("p, li"))) {
+        if (total > 20000) break;
+        if (el.closest("nav, header, footer, aside, form")) continue;
+        const t = (el.textContent || "").replace(/\s+/g, " ").trim();
+        if (t.length < 40) continue;   // skip captions and stray fragments
+        parts.push(t);
+        total += t.length;
+      }
+      return {
+        text: parts.join(" "),
+        lang: (document.documentElement.getAttribute("lang") || "").toLowerCase().trim(),
+      };
+    })()`)) as ReadabilitySignals;
+  } catch (err) {
+    logger.warn({ err }, "Readability probe failed — reporting without it");
+    return { text: "", lang: "" };
+  }
+}
+
 async function collectReadingOrder(page: Page): Promise<ReadingOrderSignals> {
   try {
     const reorderedRows = (await page.evaluate(String.raw`(() => {
@@ -2205,6 +2243,7 @@ export async function renderAndScan(
       // Visual-versus-source order. Geometry only, so it changes nothing and
       // has to run at desktop width, before the mobile pass reflows the page.
       const readingOrder = await collectReadingOrder(page);
+      const readability = await collectReadability(page);
 
       // Text-resize passes — done at desktop width, before the viewport is
       // changed for the mobile pass below.
@@ -2294,6 +2333,7 @@ export async function renderAndScan(
         dialogKeyboard,
         userPreferences,
         readingOrder,
+        readability,
         pageTitle: domSignals.pageTitle,
         finalUrl: page.url(),
         axe,
