@@ -211,8 +211,20 @@ export async function scanUrlToReport(
   const renderResult = await renderAndScan(
     safeUrl.toString(),
     auth,
+    // The page load is allowed RENDER_TIMEOUT_MS on its own, so the total has
+    // to be that plus room for everything after it — otherwise a slow load
+    // eats the whole allowance and the render fails with every finding
+    // already in hand.
+    //
+    // It was RENDER_TIMEOUT_MS + 5s, which meant a page taking the full forty
+    // seconds to load left five for axe, screenshots, the keyboard walk and
+    // the mobile pass combined. moma.org failed at forty-six seconds twice in
+    // a row on the deployed service while taking eight locally: the same page
+    // that renders comfortably here is four or five times slower on a shared
+    // CPU, and it was the arithmetic rather than the page that ran out.
+    //
     // Signing in costs a page load of its own before the scan starts.
-    env.RENDER_TIMEOUT_MS + (auth ? 25_000 : 5000)
+    env.RENDER_TIMEOUT_MS + (auth ? 55_000 : 35_000)
   );
 
   const context = extractContext(safeUrl.toString(), renderResult);
