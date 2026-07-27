@@ -105,6 +105,7 @@ describe("qa-layers.html: the layers written for this project", () => {
     "component-submit-clarity",
     "component-skip-link",
     "keyboard-mouse-only",
+    "keyboard-faint-focus",
   ];
 
   for (const rule of expected) {
@@ -112,6 +113,20 @@ describe("qa-layers.html: the layers written for this project", () => {
       expect(rules.has(rule)).toBe(true);
     });
   }
+
+  // The browser's own focus ring is exempt from the contrast requirement —
+  // 1.4.11 says so outright. The fixture leaves two elements with the default
+  // ring, and on this page Chrome draws it as rgb(0, 95, 204), which against
+  // the blue Accept button behind it is close to 1:1. If the exemption were
+  // dropped those would be reported, so a quiet result here is load-bearing.
+  it("reports the faint ring once, and never the browser's own", () => {
+    const faint = findings.filter((f) => f.ruleId === "keyboard-faint-focus");
+    expect(faint).toHaveLength(1);
+    expect(faint[0].wcagCriterion).toBe("1.4.11");
+    // Two stops carry the pale ring; the strong and default ones must not be
+    // counted in with them.
+    expect(faint[0].description).toContain("2 of");
+  });
 
   // The mouse-only check is the one most able to cry wolf: almost every
   // element on a modern page has a click handler somewhere above it, and the

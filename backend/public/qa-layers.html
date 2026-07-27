@@ -45,6 +45,12 @@
   /* Sized so it is more than half the 1280x900 viewport: the check treats a
      full-page overlay as a backdrop, not as the only way to do something. */
   .backdrop { width: 1200px; height: 700px; }
+
+  /* EXPECTED keyboard-faint-focus: a ring that exists but is far under the
+     3:1 that 1.4.11 asks for. #e8e8e8 on white is about 1.2:1. */
+  .faintfocus:focus { outline: 1px solid #e8e8e8; }
+  /* Control: a ring well over 3:1, which must stay silent. */
+  .goodfocus:focus { outline: 3px solid #0f3d91; }
 </style>
 </head>
 <body>
@@ -78,6 +84,19 @@
   <h2>Keyboard</h2>
   <button class="nofocus" type="button">Focus me and see nothing happen</button>
   <a class="nofocus" href="/also">And this one too</a>
+
+  <!-- EXPECTED keyboard-faint-focus: a ring is drawn, but at ~1.2:1 it may as
+       well not be. Two of them, because one is treated as measurement noise. -->
+  <button class="faintfocus" type="button">Barely visible focus</button>
+  <a class="faintfocus" href="/faint">Barely visible focus too</a>
+
+  <!-- Controls, both of which must stay silent: a strong author ring, and two
+       elements left with the browser's own ring, which 1.4.11 exempts by
+       name. If the exemption were dropped these would be reported. -->
+  <button class="goodfocus" type="button">Strong focus ring</button>
+  <a class="goodfocus" href="/good">Strong focus ring too</a>
+  <button class="uadefault" type="button">Browser default ring</button>
+  <a class="uadefault" href="/ua">Browser default ring too</a>
 </section>
 
 <section>

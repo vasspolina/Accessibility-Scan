@@ -235,6 +235,11 @@ export const PLAIN_RULE_EXPLANATIONS: Record<string, PlainRule> = {
     impact:
       "Plenty of people never touch a mouse. Without a visible highlight they're navigating blind, and they give up.",
   },
+  "keyboard-faint-focus": {
+    plain: "The highlight showing where you are on the page is too pale to pick out.",
+    impact:
+      "This one hides in testing, because there is technically a highlight there. Try tabbing through your own page and see how long it takes to spot it — that pause is what every keyboard user gets on every single click.",
+  },
   "keyboard-focus-trap": {
     plain: "Keyboard focus gets stuck in one spot. You can't Tab past it.",
     impact:

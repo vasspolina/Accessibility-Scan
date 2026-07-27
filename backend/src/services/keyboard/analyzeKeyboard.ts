@@ -1,5 +1,9 @@
 import { randomUUID } from "node:crypto";
 import type { AccessibilityFinding } from "../../types/report.js";
+import { contrastRatio, parseColour, type Rgb } from "../contrast/suggestAccessibleColour.js";
+
+/** 1.4.11 Non-text Contrast: 3:1 for anything identifying a component state. */
+const FOCUS_CONTRAST_MIN = 3;
 
 // Evaluates the results of a real keyboard walk-through: renderPage.ts
 // presses Tab through the page (see captureKeyboardNavigation) and records,
@@ -23,9 +27,12 @@ export interface TabStop {
 export interface FocusStyles {
   outlineStyle: string;
   outlineWidth: string;
+  outlineColor: string;
   boxShadow: string;
   backgroundColor: string;
   borderColor: string;
+  /** Nearest opaque ancestor background — what the ring is seen against. */
+  backdropColor: string;
 }
 
 /** A control a mouse can operate that the keyboard cannot reach at all. */
@@ -57,13 +64,87 @@ export interface KeyboardNavResult {
 function hasVisibleIndicator(stop: TabStop): boolean {
   const { focused, unfocused } = stop;
   if (!unfocused) return true; // can't compare — assume the best
-  const hasOutline = focused.outlineStyle !== "none" && parseFloat(focused.outlineWidth) > 0;
+  // A transparent outline is not an indicator. `outline: 3px solid
+  // transparent` is a real and deliberate pattern — it gives Windows High
+  // Contrast Mode something to recolour while a box-shadow does the visible
+  // work — so the shadow check below is what rightly clears gov.uk and
+  // wikipedia.org. But a page carrying only the transparent outline shows the
+  // user nothing, and counting it as an indicator hid exactly that case.
+  const hasOutline =
+    focused.outlineStyle !== "none" &&
+    parseFloat(focused.outlineWidth) > 0 &&
+    alphaOf(focused.outlineColor) > 0;
   return (
     hasOutline ||
     focused.boxShadow !== unfocused.boxShadow ||
     focused.backgroundColor !== unfocused.backgroundColor ||
     focused.borderColor !== unfocused.borderColor
   );
+}
+
+/**
+ * How well a focus ring stands out, judged against both surfaces it touches.
+ *
+ * An outline is drawn just outside the element's border box, so it runs
+ * between two colours: the element's own background on the inside and
+ * whatever the element sits on outside. A ring that contrasts with either one
+ * is a ring you can see, so the better of the two is what counts. Taking only
+ * the outer surface would report a dark button's dark focus ring as invisible
+ * when it is plainly legible against the pale page behind it.
+ *
+ * Translucency has to be flattened first, or the maths runs against colours
+ * nobody can see. `rgba(0, 0, 0, 0)` is how a computed style reports "no
+ * background", and read as plain channels it is pure black — so a pale ring
+ * on a transparent element scored about 15:1 against a surface that is not
+ * there, and the check went quiet on exactly the elements most likely to be
+ * at fault. Everything is composited onto the opaque backdrop before being
+ * compared, which is what the screen does.
+ */
+function ringContrast(focused: FocusStyles): number {
+  const ring = parseColour(focused.outlineColor);
+  const backdrop = parseColour(focused.backdropColor);
+  if (!ring || !backdrop) return Infinity; // unreadable — do not judge
+  const ringAlpha = alphaOf(focused.outlineColor);
+  // A fully transparent ring is not a faint ring, it is no ring. Saying it
+  // fails on contrast would name the wrong fault; hasVisibleIndicator treats
+  // it as absent, so keyboard-no-visible-focus is the rule that speaks.
+  if (ringAlpha === 0) return Infinity;
+
+  const surfaces: Rgb[] = [backdrop];
+  const own = parseColour(focused.backgroundColor);
+  const ownAlpha = alphaOf(focused.backgroundColor);
+  if (own && ownAlpha > 0) surfaces.push(composite(own, ownAlpha, backdrop));
+
+  return Math.max(...surfaces.map((s) => contrastRatio(composite(ring, ringAlpha, s), s)));
+}
+
+/**
+ * Alpha from a computed colour, 1 when it carries none.
+ *
+ * Necessary because getComputedStyle reports translucency the contrast maths
+ * cannot see: parseColour reads only the three channels, so `rgba(0,0,0,0)`
+ * arrives as pure black and `rgba(0,0,0,0.15)` over red arrives as black too.
+ * Measured on real pages — gov.uk and wikipedia.org both draw
+ * `outline: solid transparent` and let a box-shadow do the visible work, and
+ * smashingmagazine.com layers `rgba(0, 0, 0, 0.15)` over its red banner.
+ */
+function alphaOf(colour: string): number {
+  const s = colour.trim().toLowerCase();
+  if (s === "transparent") return 0;
+  const m = /^rgba\(\s*[\d.]+[\s,]+[\d.]+[\s,]+[\d.]+[\s,/]+([\d.]+)\s*\)$/.exec(s);
+  if (!m) return 1;
+  const a = Number(m[1]);
+  return Number.isFinite(a) ? Math.min(1, Math.max(0, a)) : 1;
+}
+
+/** Flattens a translucent colour onto an opaque one, as the screen does. */
+function composite(fg: Rgb, alpha: number, bg: Rgb): Rgb {
+  if (alpha >= 1) return fg;
+  return {
+    r: fg.r * alpha + bg.r * (1 - alpha),
+    g: fg.g * alpha + bg.g * (1 - alpha),
+    b: fg.b * alpha + bg.b * (1 - alpha),
+  };
 }
 
 function makeFinding(
@@ -175,6 +256,60 @@ export function evaluateKeyboardNav(nav: KeyboardNavResult): AccessibilityFindin
         invisible[0].selector,
         `Moving through the page with the Tab key gives no visible sign of where you are: ${invisible.length} of ${comparable.length} keyboard stops show no focus outline, highlight, or any other visual change. Sighted keyboard users are navigating blind.`,
         "Remove `outline: none` (or provide a replacement) so every interactive element shows a clear focus indicator — e.g. `:focus-visible { outline: 2px solid; outline-offset: 2px; }`."
+      )
+    );
+  }
+
+  // A focus ring too faint to notice. The checklist this came from calls the
+  // focus indicator the single most common failure, and a 1px pale-grey
+  // outline fails it just as surely as `outline: none` — it is technically
+  // present and practically invisible.
+  //
+  // Two constraints keep this honest, both from the standard itself:
+  //
+  // 1. Browser default focus styles are exempt. 1.4.11's Understanding
+  //    document says so outright: "Where the focus style of the user agent is
+  //    not adjusted ... the default focus style is exempt from contrast
+  //    requirements (but must still be visible)." Chrome's default ring
+  //    computes as `outline-style: auto`, and authors essentially never write
+  //    that themselves, so it is a reliable marker for "untouched". Reporting
+  //    those would be inventing a fault the standard explicitly excuses —
+  //    the same error as claiming a criterion the version under test does not
+  //    contain.
+  //
+  // 2. An element with a box-shadow ring is skipped. `box-shadow: 0 0 0 3px`
+  //    is a common way to draw a focus indicator, and the shadow can be doing
+  //    the visible work while the outline is a faint leftover. Parsing shadow
+  //    colours reliably is another problem; declining to judge that case is
+  //    better than guessing at it.
+  //
+  // Note this is 1.4.11 Non-text Contrast, not 2.4.7. WCAG 2.2 does add a
+  // criterion specifically about how a focus indicator looks — but that is
+  // 2.4.13 Focus Appearance, and it is Level AAA, so it would carry no legal
+  // weight. 1.4.11 is AA and in WCAG 2.1, and its Understanding document
+  // states that with 2.4.7 "the visual focus indicator ... must have
+  // sufficient contrast against the adjacent background".
+  const faint = comparable.filter((s) => {
+    const { focused } = s;
+    if (focused.outlineStyle === "auto") return false; // UA default, exempt
+    if (focused.outlineStyle === "none") return false; // handled above
+    if (parseFloat(focused.outlineWidth) <= 0) return false;
+    if (s.unfocused && focused.boxShadow !== s.unfocused.boxShadow) return false;
+    return ringContrast(focused) < FOCUS_CONTRAST_MIN;
+  });
+  if (faint.length >= 2) {
+    const worst = faint[0];
+    const ratio = ringContrast(worst.focused);
+    findings.push(
+      makeFinding(
+        "keyboard-faint-focus",
+        "serious",
+        "1.4.11",
+        "AA",
+        "https://www.w3.org/WAI/WCAG21/Understanding/non-text-contrast.html",
+        worst.selector,
+        `The focus outline on this page is too pale to pick out: ${faint.length} of ${comparable.length} keyboard stops draw a ring at about ${ratio.toFixed(1)}:1 against what is behind it, where 3:1 is the minimum. There is an indicator, so this is easy to miss in testing — but at this contrast a sighted keyboard user still cannot tell at a glance where they are.`,
+        "Darken the focus colour until it reaches 3:1 against the background behind it, and give it some weight — 2px or more, with `outline-offset` to hold it clear of the element's own edge. A single hairline in a pale grey reads as a rendering artifact rather than a cursor."
       )
     );
   }

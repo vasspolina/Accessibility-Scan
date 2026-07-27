@@ -1259,15 +1259,34 @@ async function captureKeyboardNavigation(page: Page): Promise<KeyboardNavResult>
         node = node.parentElement;
       }
       const cs = getComputedStyle(el);
+      // The colour the focus ring is actually seen against. An outline is
+      // drawn outside the element's border box, so it sits on whatever is
+      // behind the element, not on the element's own background — and that is
+      // what 1.4.11 means by "adjacent background". Walk up for the first
+      // ancestor with a non-transparent background, defaulting to white.
+      // Written as an inline loop with no named inner function: esbuild's
+      // keepNames rewrites those into __name calls that do not exist here.
+      let backdropColor = "rgb(255, 255, 255)";
+      let bgNode: Element | null = el.parentElement;
+      while (bgNode) {
+        const bg = getComputedStyle(bgNode).backgroundColor;
+        if (bg && bg !== "transparent" && !/rgba\(\s*0,\s*0,\s*0,\s*0\s*\)/.test(bg)) {
+          backdropColor = bg;
+          break;
+        }
+        bgNode = bgNode.parentElement;
+      }
       return {
         selector: parts.join(" > "),
         tag: el.tagName.toLowerCase(),
         styles: {
           outlineStyle: cs.outlineStyle,
           outlineWidth: cs.outlineWidth,
+          outlineColor: cs.outlineColor,
           boxShadow: cs.boxShadow,
           backgroundColor: cs.backgroundColor,
           borderColor: cs.borderColor,
+          backdropColor,
         },
       };
     });
@@ -1281,9 +1300,13 @@ async function captureKeyboardNavigation(page: Page): Promise<KeyboardNavResult>
         return {
           outlineStyle: cs.outlineStyle,
           outlineWidth: cs.outlineWidth,
+          outlineColor: cs.outlineColor,
           boxShadow: cs.boxShadow,
           backgroundColor: cs.backgroundColor,
           borderColor: cs.borderColor,
+          // Only read while focused: the unfocused state never draws a ring,
+          // so its backdrop is not needed and is left at the same default.
+          backdropColor: "rgb(255, 255, 255)",
         };
       } catch {
         return null;
