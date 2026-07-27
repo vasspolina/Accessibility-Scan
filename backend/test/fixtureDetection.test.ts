@@ -183,6 +183,27 @@ describe("qa-layers.html: the layers written for this project", () => {
 // fixtures, because a rule that fires on every modal it sees would pass a
 // test that only ever showed it a broken one.
 describe("the dialog keyboard probe", () => {
+  // Screenshots are attached by the scan pipeline, not by the evaluators, so
+  // this checks the layer that actually captures: whether the render pass
+  // could resolve the dialog's selector and photograph it.
+  //
+  // The regression it guards is quiet and total. An id starting with a digit
+  // is legal HTML but an invalid CSS identifier — "#6a67b23825139" is a
+  // syntax error, so every querySelector for it throws. Generated consent
+  // markup produces such ids routinely. Both capture passes caught the error
+  // and moved on, so the finding simply arrived with nothing to show.
+  it("photographs a dialog whose id is not a valid CSS identifier", async () => {
+    const url = "file://" + path.resolve("public/qa-dialog-trap.html");
+    const r = await renderAndScan(url, undefined, 90_000);
+    const selector = r.domSignals.dialogs[0]?.selector;
+    expect(selector, "no dialog was detected at all").toBeTruthy();
+    expect(selector).toContain("\\");
+    expect(
+      r.elementScreenshots[selector!],
+      `no screenshot captured for ${selector}`
+    ).toBeTruthy();
+  }, 180_000);
+
   it("says nothing at all about a modal that behaves", async () => {
     const findings = await scanFixture("qa-dialog-good.html");
     const dialogFindings = findings.filter((f) => (f.ruleId ?? "").startsWith("dialog-"));
@@ -197,6 +218,11 @@ describe("the dialog keyboard probe", () => {
     expect(trap!.wcagCriterion).toBe("2.1.2");
     // The lesser complaints about the same element stay suppressed.
     expect(findings.find((f) => f.ruleId === "dialog-focus-not-moved")).toBeUndefined();
+
+    // The selector must be valid CSS. This dialog's id starts with a digit,
+    // which is legal HTML and an invalid CSS identifier, so it has to arrive
+    // escaped or nothing downstream can resolve it.
+    expect(trap!.selector).toContain("\\");
   }, 180_000);
 });
 

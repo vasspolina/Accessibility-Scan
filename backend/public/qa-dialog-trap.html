@@ -17,6 +17,14 @@
   The trap is written with a Tab handler rather than by hiding the page,
   because that is how real ones are written — the author meant to keep focus
   inside the dialog and forgot to provide any way out.
+
+  The dialog's id deliberately starts with a digit, which is legal in HTML but
+  is NOT a valid CSS identifier: "#6a67b23825139" is a syntax error, so every
+  querySelector for it throws. Generated consent markup produces ids like this
+  routinely, and the selector built for them could not be resolved by
+  anything — so the finding arrived with no screenshot and no measured box,
+  silently, because each caller catches and carries on. The id stays numeric
+  here so that escaping is exercised on every run.
 -->
 <style>
   body { font-family: system-ui; margin: 0; padding: 24px; color: #1a1a1a; }
@@ -33,7 +41,7 @@
 </main>
 
 <div class="backdrop"></div>
-<div class="modal" role="dialog" aria-modal="true" aria-labelledby="ttitle" id="trap">
+<div class="modal" role="dialog" aria-modal="true" aria-labelledby="ttitle" id="6a67b23825139">
   <h2 id="ttitle">We value your privacy</h2>
   <p>This dialog ignores the Escape key and will not let focus leave.</p>
   <button id="first" type="button">Accept all</button>
@@ -50,7 +58,7 @@
   // outside the dialog is pulled back in.
   document.addEventListener("keydown", function (e) {
     if (e.key !== "Tab") return;
-    var inside = document.getElementById("trap").contains(document.activeElement);
+    var inside = document.getElementById("6a67b23825139").contains(document.activeElement);
     if (!inside) {
       e.preventDefault();
       first.focus();

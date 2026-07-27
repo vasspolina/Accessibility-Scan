@@ -213,7 +213,14 @@ export interface RenderResult {
 // self-contained (no closures over outer-scope variables).
 function extractDomSignalsInPage(): DomSignals {
   function cssPath(el: Element): string {
-    if (el.id) return `#${el.id}`;
+    // CSS.escape, because an id is not automatically a valid CSS identifier.
+    // Generated markup routinely produces ids starting with a digit, and
+    // "#6a67b23825139" is a syntax error rather than a selector — every
+    // querySelector for it throws. Nothing downstream could resolve those
+    // elements, so a consent dialog with a hashed id was reported with no
+    // screenshot and no measurable box, and the failure was silent because
+    // each caller catches and carries on.
+    if (el.id) return `#${CSS.escape(el.id)}`;
     const parts: string[] = [];
     let node: Element | null = el;
     while (node && node.nodeType === 1 && parts.length < 6) {
@@ -567,7 +574,10 @@ function collectBoundingBoxesInPage(selectors: string[]): Record<string, Boundin
       // silently gets no thumbnail, because nothing ever measured it under
       // the name the model used.
       const id = el.id;
-      if (id && !(`#${id}` in result)) result[`#${id}`] = box;
+      // Same escaping as cssPath above — these keys are looked up by selector,
+      // so an unescaped alias would simply never match.
+      const idSel = id ? `#${CSS.escape(id)}` : "";
+      if (idSel && !(idSel in result)) result[idSel] = box;
     } catch {
       result[sel] = null;
     }
@@ -1271,7 +1281,11 @@ async function captureKeyboardNavigation(page: Page): Promise<KeyboardNavResult>
       while (node && node.nodeType === 1 && parts.length < 6) {
         let sel = node.tagName.toLowerCase();
         if (node.id) {
-          parts.unshift(`#${node.id}`);
+          // Escaped for the same reason as cssPath: readUnfocused looks the
+          // element up again by this selector, and an invalid one throws, so
+          // the stop was recorded with unfocused: null and quietly dropped
+          // from every focus-indicator check.
+          parts.unshift(`#${CSS.escape(node.id)}`);
           break;
         }
         const parent: Element | null = node.parentElement;

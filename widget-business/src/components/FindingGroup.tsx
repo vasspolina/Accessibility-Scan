@@ -75,8 +75,20 @@ function truncate(s: string, max: number): string {
 }
 
 // "open-archive" / "first_name" → "Open archive" / "First name".
+//
+// Generated fragments are dropped rather than read out. Framework and consent
+// markup is full of ids like "dialog-6a67b23825139" and
+// "sp_message_container_1482251", and printing the hash gave an owner
+// "Dialog 6a67b23825139" — a label that names nothing and looks like the
+// report is malfunctioning. A part is treated as generated when it is long
+// and carries a digit, which keeps "col-2" and "h1" intact.
 function humanizeSlug(s: string): string {
-  const words = s.replace(/[-_]+/g, " ").replace(/\s+/g, " ").trim();
+  const words = s
+    .replace(/[-_]+/g, " ")
+    .split(/\s+/)
+    .filter((part) => part && !(part.length >= 6 && /\d/.test(part)))
+    .join(" ")
+    .trim();
   return words ? capitalize(words.toLowerCase()) : "";
 }
 
@@ -182,7 +194,15 @@ function fieldPurpose(raw: string, type: string | undefined): string | undefined
 // id/class becomes its humanized name, recognising a field purpose where the
 // name gives it away ("#mce-EMAIL" → "Email field").
 function prettySelector(sel: string): string {
-  const last = sel.split(/[>\s]+/).filter(Boolean).pop() ?? sel;
+  // Undo CSS.escape before reading the selector as words. The backend has to
+  // escape ids to produce valid CSS — an id may legally start with a digit,
+  // where "#6a67…" is a syntax error — so a selector can arrive as
+  // "#\36 a67b23825139", and splitting that on whitespace finds nothing
+  // recognisable.
+  const readable = sel.replace(/\\([0-9a-fA-F]{1,6})\s?/g, (_, hex) =>
+    String.fromCodePoint(parseInt(hex, 16))
+  );
+  const last = readable.split(/[>\s]+/).filter(Boolean).pop() ?? readable;
 
   // A plain tag selector (no leading # or .).
   if (/^[a-zA-Z]/.test(last)) {
