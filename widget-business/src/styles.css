@@ -2018,3 +2018,22 @@
   line-height: 1.4;
   color: var(--a11y-muted, #525252);
 }
+
+/* "Fix once, fixes 13" ------------------------------------------------------
+   The most useful sentence in a long finding group, so it sits above the list
+   rather than under it. */
+.a11y-fix-once {
+  margin: 0 0 12px;
+  padding: 12px;
+  background: var(--a11y-accent-faint, #edf5ff);
+  border-left: 3px solid var(--a11y-accent, #0f62fe);
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.a11y-fix-once code {
+  font-size: 13px;
+  padding: 1px 5px;
+  background: var(--a11y-bg, #ffffff);
+  border: 1px solid var(--a11y-border, #e0e0e0);
+}

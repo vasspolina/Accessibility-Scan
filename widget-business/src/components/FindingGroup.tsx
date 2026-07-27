@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { dominantComponent, describeComponent } from "../lib/componentCluster";
 import type { AccessibilityFinding } from "../api/scanClient";
 import { LEVEL_FRAMING, plainForRule, plainFixForRule } from "../lib/wcagPlain";
 
@@ -337,6 +338,9 @@ export function FindingGroup({ findings }: { findings: AccessibilityFinding[] })
   const whatToDo = plainFixForRule(rep.ruleId) ?? rep.suggestedFix;
 
   const entries = dedupeOccurrences(findings);
+  // When most of a long list is one component repeated, say so. A reader shown
+  // thirteen rows reasonably concludes there are thirteen things to do.
+  const cluster = dominantComponent(findings);
   const summarize = entries.length > SUMMARY_THRESHOLD;
   const visibleEntries = summarize && !showAll ? entries.slice(0, SUMMARY_THRESHOLD) : entries;
 
@@ -385,6 +389,15 @@ export function FindingGroup({ findings }: { findings: AccessibilityFinding[] })
               <a className="a11y-learn-more" href={rep.helpUrl} target="_blank" rel="noopener noreferrer">
                 Learn more about this issue ↗
               </a>
+            </p>
+          )}
+
+          {cluster && (
+            <p className="a11y-fix-once">
+              <strong>Fix once, fixes {cluster.count}.</strong> These all come from the same
+              component, <code>{describeComponent(cluster.signature)}</code>
+              {cluster.share < 1 ? " (most of them)" : ""}. Change it where it is defined and every
+              one of them is done.
             </p>
           )}
 
