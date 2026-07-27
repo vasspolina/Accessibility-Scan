@@ -232,12 +232,43 @@ export function collectDarkPatternSignalsInPage(): DarkPatternSignals {
   }
 
   // ---- Urgency / scarcity pressure ---------------------------------------
+  // Two different claims wearing the same words, and only one is a dark
+  // pattern.
+  //
+  // A quantity claim — "only 2 left", "18 people are viewing this" — cannot
+  // be checked by the person reading it, which is exactly what makes it
+  // useful for pressuring them. A deadline claim can: "Last chance, through
+  // 9 August" names a date, and a date is either true or it is not.
+  //
+  // Splitting them was forced by a real page. MoMA lists closing exhibitions
+  // as "Last chance — Through Aug 9", and this reported the museum three
+  // times for manufacturing urgency about a genuine, published closing date.
+  // Accusing a site of a deceptive practice regulators pursue is not a small
+  // thing to get wrong, and it was wrong here.
+  //
+  // So deadline wording is only reported when no date accompanies it. "Hurry,
+  // offer ends soon" stays a finding; "Ends 31 December" does not.
+  const DEADLINE_RE =
+    /\b(hurry|act now|don'?t miss out|limited time|offer ends|ends (in|soon)|expires? (in|soon)|while stocks last|last chance|final call|closing soon)\b/i;
   const URGENCY_PATTERNS: Array<{ kind: string; re: RegExp }> = [
     { kind: "scarcity", re: /\bonly \d+ (left|remaining|in stock|spots?|seats?|rooms?|tickets?)\b/i },
     { kind: "scarcity", re: /\b\d+ (people|others|customers|guests) (are )?(viewing|looking|booked|bought)\b/i },
-    { kind: "scarcity", re: /\b(almost (gone|sold out)|selling fast|going fast|last chance|final call)\b/i },
-    { kind: "urgency", re: /\b(hurry|act now|don'?t miss out|limited time|offer ends|ends (in|soon)|expires? (in|soon)|while stocks last)\b/i },
+    // Still quantity claims: no date makes "almost sold out" verifiable.
+    { kind: "scarcity", re: /\b(almost (gone|sold out)|selling fast|going fast)\b/i },
+    { kind: "urgency", re: DEADLINE_RE },
   ];
+  // A specific day. Deliberately not matching "soon", "today" or a bare
+  // weekday — those are the vague ones the pattern is about.
+  const MONTHS = "jan|feb|mar|apr|may|jun|jul|aug|sep|sept|oct|nov|dec";
+  const HAS_DATE = new RegExp(
+    "\\b(" +
+      "\\d{4}-\\d{2}-\\d{2}" + // 2026-08-09
+      "|\\d{1,2}[/.]\\d{1,2}(?:[/.]\\d{2,4})?" + // 9/8 or 09.08.2026
+      `|(?:${MONTHS})[a-z]*\\.?\\s+\\d{1,2}` + // Aug 9 / August 9
+      `|\\d{1,2}\\s+(?:${MONTHS})[a-z]*` + // 9 Aug / 9 August
+      ")\\b",
+    "i"
+  );
   const urgencyClaims: DarkPatternSignals["urgencyClaims"] = [];
   const seenUrgency = new Set<string>();
   for (const el of Array.from(document.querySelectorAll<HTMLElement>("*"))) {
@@ -251,6 +282,22 @@ export function collectDarkPatternSignalsInPage(): DarkPatternSignals {
       if (!isVisible(el)) continue;
       const hit = URGENCY_PATTERNS.find((p) => p.re.test(t));
       if (!hit) continue;
+      // A deadline that names its date is a statement of fact, whoever is
+      // making it. Quantity claims get no such exemption — a date does not
+      // make "only 2 left" any easier to verify.
+      //
+      // The date is looked for in the surrounding block, not just this
+      // element, because it is usually a sibling: MoMA renders the phrase and
+      // the date as two separate paragraphs inside one exhibition card, so
+      // checking the element alone still reported it. The parent is as wide
+      // as this goes, and only when the parent is small enough to be one
+      // card — otherwise a date anywhere on a long page would excuse genuine
+      // pressure somewhere else on it.
+      if (hit.kind === "urgency") {
+        const near = el.parentElement ? textOf(el.parentElement) : t;
+        const context = near.length <= 300 ? near : t;
+        if (HAS_DATE.test(context)) continue;
+      }
       const key = t.toLowerCase();
       if (seenUrgency.has(key)) continue;
       seenUrgency.add(key);

@@ -137,6 +137,23 @@ describe("qa-layers.html: the layers written for this project", () => {
     expect(faint[0].description).toContain("2 of");
   });
 
+  // Urgency wording that names a date is a statement of fact, not a dark
+  // pattern. MoMA lists closing exhibitions as "Last chance — Through Aug 9"
+  // and was reported three times for manufacturing urgency about a genuine
+  // published closing date. Accusing a site of a practice regulators pursue
+  // is not a small thing to get wrong.
+  it("does not call a dated deadline a dark pattern", () => {
+    const flagged = findings
+      .filter((f) => (f.ruleId ?? "").startsWith("dark-fake"))
+      .map((f) => f.selector ?? "")
+      .join(" ");
+    expect(flagged).not.toContain("#real-deadline");
+    expect(flagged).not.toContain("#dated-offer");
+    // But a date says nothing about whether a stock count is real, so the
+    // exemption must not reach quantity claims.
+    expect(flagged).toContain("#dated-stock");
+  });
+
   // The mouse-only check is the one most able to cry wolf: almost every
   // element on a modern page has a click handler somewhere above it, and the
   // rule is only useful if it can tell the two genuine faults in the fixture

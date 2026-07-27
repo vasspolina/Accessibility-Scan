@@ -125,8 +125,19 @@
 
 <section>
   <h2>Urgency</h2>
-  <!-- EXPECTED dark-fake-urgency / dark-fake-scarcity -->
+  <!-- EXPECTED dark-fake-urgency / dark-fake-scarcity: pressure with no date
+       anywhere, and a stock count nobody can check. -->
   <p><strong>Hurry, offer ends soon!</strong> Only 2 left in stock. Limited time only.</p>
+
+  <!-- CONTROL: a deadline that names its date is a statement of fact. This is
+       how MoMA lists a closing exhibition, and the museum was reported three
+       times for manufacturing urgency about a genuine published end date. -->
+  <p id="real-deadline">American Folk Art: Revisiting the Collection. Last chance — through Aug 9.</p>
+  <p id="dated-offer">Winter sale. Offer ends 31 December.</p>
+
+  <!-- CONTROL boundary: a date does NOT excuse a quantity claim, because a
+       date says nothing about whether the count is real. -->
+  <p id="dated-stock">Only 2 left in stock. Sale ends 31 December.</p>
 </section>
 
 <section>
