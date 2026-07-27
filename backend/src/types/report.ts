@@ -229,6 +229,9 @@ export const accessibilityReportSchema = z.object({
     // Checks that did not finish on this run. Present so the reader can tell a
     // clean result from an incomplete one — the score only counts what ran.
     incompleteChecks: z.array(z.string()).optional(),
+    // Set when the thing checked was a document rather than a web page.
+    documentKind: z.literal("pdf").optional(),
+    documentPages: z.number().optional(),
     aiReviewErrorKind: aiReviewErrorKindSchema.optional(),
     model: z.string().optional(),
   }),

@@ -23,6 +23,7 @@ import { validateMarkup } from "./markup/validateMarkup.js";
 import { summarizeSeverity, computeScore, summarizeCategories } from "./merge/scoring.js";
 import { buildConformance } from "./conformance/buildConformance.js";
 import { buildWcag22Readiness } from "./conformance/wcag22Readiness.js";
+import { checkPdfDocument } from "./documents/checkPdf.js";
 import { downscalePreview } from "./render/downscalePreview.js";
 import { attachElementScreenshots, selectorTargetsOneElement } from "./render/cropThumbnail.js";
 import type { AccessibilityFinding, AccessibilityReport } from "../types/report.js";
@@ -100,6 +101,46 @@ async function attachEvidence(
  * Throws on render failure (RebindingDetectedError, SiteBlockedError, or a
  * generic render error) — the caller decides how to present those.
  */
+/**
+ * Whether this address is a document rather than a page.
+ *
+ * Path-based rather than a HEAD request on every scan: a content-type check
+ * would cost a round trip on every ordinary page to catch the rare PDF served
+ * without the extension, and the extension is right nearly always.
+ */
+function looksLikePdf(url: URL): boolean {
+  return /\.pdf$/i.test(url.pathname);
+}
+
+/**
+ * A report for a document rather than a page.
+ *
+ * Shares the report shape so the widget renders it with no special casing, but
+ * deliberately carries no conformance checklist: most of the 50 criteria are
+ * about pages and marking them "nothing found" against a PDF would imply a
+ * breadth of checking that did not happen. The findings and the score are real.
+ */
+async function documentReport(url: URL): Promise<AccessibilityReport> {
+  const result = await checkPdfDocument(url.toString());
+  const summary = summarizeSeverity(result.findings);
+  return {
+    url: url.toString(),
+    scannedAt: new Date().toISOString(),
+    score: computeScore(summarizeSeverity(result.findings.filter((f) => f.wcagLevel !== "AAA"))),
+    summary,
+    categorySummary: summarizeCategories(result.findings),
+    findings: result.findings,
+    meta: {
+      axeVersion: "n/a",
+      renderTimeMs: 0,
+      aiReviewTimeMs: 0,
+      aiReviewStatus: "disabled_by_request",
+      documentKind: "pdf",
+      documentPages: result.pageCount,
+    },
+  };
+}
+
 export async function scanUrlToReport(
   rawUrl: string,
   includeAiReview: boolean,
@@ -115,6 +156,11 @@ export async function scanUrlToReport(
   captureEvidence = true
 ): Promise<AccessibilityReport> {
   const safeUrl = await assertSafeUrl(rawUrl);
+
+  // A PDF is not a page. Rendering one in Chromium and running axe over the
+  // viewer produced "Could not load or scan the page", which told the reader
+  // nothing about a document the accessibility rules very much cover.
+  if (looksLikePdf(safeUrl)) return documentReport(safeUrl);
 
   // The budget goes in rather than around: applied here it would have been
   // running while the request waited for a free scanner, so a page that
