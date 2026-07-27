@@ -9,6 +9,7 @@ import { Wcag22Readiness } from "./components/Wcag22Readiness";
 import { VisionSimulator } from "./components/VisionSimulator";
 import { SiteAuditView } from "./components/SiteAuditView";
 import { AccessibilityStatement } from "./components/AccessibilityStatement";
+import { AcrDraft } from "./components/AcrDraft";
 import { BlockedNotice } from "./components/BlockedNotice";
 import { ScanHistory } from "./components/ScanHistory";
 import { PrintButton } from "./components/PrintButton";
@@ -235,6 +236,8 @@ export function App({ apiBase }: { apiBase: string }) {
           />
 
           <AccessibilityStatement report={report} />
+
+          <AcrDraft report={report} />
         </div>
       )}
     </section>
