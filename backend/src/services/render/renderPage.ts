@@ -113,7 +113,15 @@ export interface AxeRunResult {
     description: string;
     help: string;
     helpUrl: string;
-    nodes: Array<{ target: string[]; html: string; failureSummary?: string }>;
+    nodes: Array<{
+      target: string[];
+      html: string;
+      failureSummary?: string;
+      // axe attaches per-check data here. For color-contrast it is the pair of
+      // colours and the ratio required, which is everything needed to work out
+      // a colour that would pass — see services/contrast.
+      any?: Array<{ id: string; data?: unknown }>;
+    }>;
   }>;
 }
 

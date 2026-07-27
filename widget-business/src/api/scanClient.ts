@@ -18,6 +18,15 @@ export interface AccessibilityFinding {
   wcagLevel?: WcagLevel;
   selector: string;
   elementSnippet?: string;
+  // A colour that would pass, for a contrast failure. Same hue, enough
+  // lightness to clear the bar.
+  suggestedColour?: {
+    from: string;
+    to: string;
+    background: string;
+    ratio: number;
+    required: number;
+  };
   // Short headline; AI findings supply their own. Falls back to description.
   title?: string;
   description: string;

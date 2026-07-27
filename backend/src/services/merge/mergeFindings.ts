@@ -1,6 +1,7 @@
 import { randomUUID } from "node:crypto";
 import type { AxeRunResult } from "../render/renderPage.js";
 import type { AccessibilityFinding, AiFinding, Severity } from "../../types/report.js";
+import { suggestAccessibleForeground } from "../contrast/suggestAccessibleColour.js";
 
 const impactToSeverity: Record<string, Severity> = {
   critical: "critical",
@@ -62,6 +63,39 @@ export function compactHtml(html: string | undefined, max: number): string | und
   return compacted.slice(0, max);
 }
 
+/**
+ * Reads the colour pair out of an axe color-contrast node and works out a
+ * colour that would pass.
+ *
+ * Reporting "1.96:1, needs 4.5:1" states a fact and leaves the reader to solve
+ * it, and the person reading this report is usually not the person who chose
+ * the colour. A hex they can paste is the difference between a report and a
+ * fix. Best-effort throughout: anything unexpected in the shape of the data
+ * means no suggestion, never a wrong one.
+ */
+function contrastSuggestionFor(node: {
+  any?: Array<{ id: string; data?: unknown }>;
+}): AccessibilityFinding["suggestedColour"] {
+  const check = node.any?.find((a) => a.id === "color-contrast");
+  const data = check?.data as
+    | { fgColor?: string; bgColor?: string; expectedContrastRatio?: string }
+    | undefined;
+  if (!data?.fgColor || !data.bgColor) return undefined;
+  // "4.5:1" — the bar depends on text size and weight, and axe has already
+  // worked that out, so take its answer rather than recomputing it.
+  const required = Number.parseFloat(String(data.expectedContrastRatio ?? "4.5"));
+  if (!Number.isFinite(required) || required <= 1) return undefined;
+  const suggestion = suggestAccessibleForeground(data.fgColor, data.bgColor, required);
+  if (!suggestion) return undefined;
+  return {
+    from: suggestion.from,
+    to: suggestion.to,
+    background: data.bgColor,
+    ratio: suggestion.ratio,
+    required: suggestion.required,
+  };
+}
+
 export function axeToFindings(axe: AxeRunResult): AccessibilityFinding[] {
   const findings: AccessibilityFinding[] = [];
   for (const violation of axe.violations) {
@@ -80,6 +114,9 @@ export function axeToFindings(axe: AxeRunResult): AccessibilityFinding[] {
         suggestedFix: node.failureSummary ?? violation.description,
         ruleId: violation.id,
         helpUrl: violation.helpUrl,
+        ...(violation.id === "color-contrast"
+          ? { suggestedColour: contrastSuggestionFor(node) }
+          : {}),
       });
     }
   }

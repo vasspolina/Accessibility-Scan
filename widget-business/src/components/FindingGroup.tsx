@@ -462,7 +462,66 @@ function Occurrence({
         {repeatCount > 1 && <span className="a11y-occurrence-count">{repeatCount}×</span>}
       </div>
       {hasAlt && <AltTextSuggestion value={finding.suggestedAltText!} />}
+      {finding.suggestedColour && <ColourSuggestion suggestion={finding.suggestedColour} />}
     </li>
+  );
+}
+
+// Hands over a colour that would pass, rather than a ratio and a problem.
+//
+// Every other tool reports "1.96:1, needs 4.5:1", which states the fault and
+// leaves the reader to solve it — and the reader is usually not the person who
+// chose the colour. The swatches are there because a hex code alone does not
+// tell a non-designer whether the suggestion is still their colour. Seeing the
+// two side by side does.
+function ColourSuggestion({
+  suggestion,
+}: {
+  suggestion: NonNullable<AccessibilityFinding["suggestedColour"]>;
+}) {
+  const [copied, setCopied] = useState(false);
+
+  async function copy() {
+    try {
+      await navigator.clipboard.writeText(suggestion.to);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 1500);
+    } catch {
+      // Clipboard blocked — the value is on screen to copy by hand.
+    }
+  }
+
+  return (
+    <div className="a11y-colour-fix">
+      <p className="a11y-colour-fix-line">
+        <strong>A colour that would pass:</strong> change{" "}
+        <span className="a11y-swatch-pair">
+          <span
+            className="a11y-swatch"
+            style={{ background: suggestion.from, borderColor: suggestion.background }}
+            aria-hidden="true"
+          />
+          <code>{suggestion.from}</code>
+        </span>{" "}
+        to{" "}
+        <span className="a11y-swatch-pair">
+          <span
+            className="a11y-swatch"
+            style={{ background: suggestion.to, borderColor: suggestion.background }}
+            aria-hidden="true"
+          />
+          <code>{suggestion.to}</code>
+        </span>{" "}
+        <button type="button" className="a11y-copy-btn" onClick={copy}>
+          {copied ? "Copied" : "Copy"}
+        </button>
+      </p>
+      <p className="a11y-colour-fix-note">
+        Same hue, dark enough to reach {suggestion.ratio}:1 against {suggestion.background}, where{" "}
+        {suggestion.required}:1 is the minimum. Adjust it to taste as long as it stays at or above
+        that.
+      </p>
+    </div>
   );
 }
 

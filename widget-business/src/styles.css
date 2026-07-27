@@ -1979,3 +1979,42 @@
 .a11y-w22 .a11y-conf-status {
   color: var(--a11y-muted, #525252);
 }
+
+/* A colour you can paste ----------------------------------------------------
+   The swatches matter as much as the hex: a code alone does not tell someone
+   who did not choose the colour whether the suggestion is still theirs. */
+.a11y-colour-fix {
+  margin-top: 10px;
+  padding: 12px;
+  background: var(--a11y-surface, #f4f4f4);
+  border-left: 3px solid var(--a11y-accent, #0f62fe);
+  font-size: 14px;
+}
+
+.a11y-colour-fix-line {
+  margin: 0;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+}
+
+.a11y-swatch-pair {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.a11y-swatch {
+  width: 18px;
+  height: 18px;
+  border: 1px solid var(--a11y-border, #e0e0e0);
+  flex-shrink: 0;
+}
+
+.a11y-colour-fix-note {
+  margin: 8px 0 0;
+  font-size: 12px;
+  line-height: 1.4;
+  color: var(--a11y-muted, #525252);
+}

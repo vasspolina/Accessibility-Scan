@@ -25,6 +25,18 @@ export const accessibilityFindingSchema = z.object({
   wcagLevel: z.enum(["A", "AA", "AAA"]).optional(),
   selector: z.string(),
   elementSnippet: z.string().optional(),
+  // A colour that would pass, for a contrast failure. Keeps the original hue
+  // and saturation and moves only lightness, so the suggestion is still
+  // recognisably the same colour rather than "use black".
+  suggestedColour: z
+    .object({
+      from: z.string(),
+      to: z.string(),
+      background: z.string(),
+      ratio: z.number(),
+      required: z.number(),
+    })
+    .optional(),
   // A short headline for the finding (roughly 4-8 words). Deterministic
   // findings get theirs from the widget's plain-language map; AI findings
   // supply their own, because only the model knows what it just wrote about.
