@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>QA fixture: a modal that behaves</title>
+<!--
+  The control for the dialog keyboard probe. This modal does everything the
+  ARIA Authoring Practices dialog pattern asks: it takes focus when it opens,
+  Escape closes it, and closing puts focus somewhere sensible rather than
+  dropping it on the floor.
+
+  It must produce no keyboard dialog findings at all. Without this file the
+  probe could report every modal it ever sees and the tests would still pass.
+-->
+<style>
+  body { font-family: system-ui; margin: 0; padding: 24px; color: #1a1a1a; }
+  .backdrop { position: fixed; inset: 0; background: rgba(0,0,0,.5); z-index: 90; }
+  .modal { position: fixed; z-index: 91; top: 20%; left: 50%; transform: translateX(-50%);
+           background: #fff; padding: 24px; width: 380px; border: 1px solid #999; }
+</style>
+</head>
+<body>
+<main id="main">
+  <h1>A page with a well-behaved modal</h1>
+  <p>The dialog below is the control case for the keyboard probe.</p>
+  <button id="reopen" type="button">Open the dialog</button>
+</main>
+
+<div class="backdrop" id="backdrop"></div>
+<div class="modal" role="dialog" aria-modal="true" aria-labelledby="dtitle" id="dlg">
+  <h2 id="dtitle">Before you continue</h2>
+  <p>This dialog can be closed with the Escape key.</p>
+  <button id="ok" type="button">Accept</button>
+  <button id="close" type="button" aria-label="Close dialog">Close</button>
+</div>
+
+<script>
+  var dlg = document.getElementById("dlg");
+  var backdrop = document.getElementById("backdrop");
+  var reopen = document.getElementById("reopen");
+
+  // Focus moves into the dialog as soon as it is shown.
+  document.getElementById("ok").focus();
+
+  function closeDialog() {
+    dlg.style.display = "none";
+    backdrop.style.display = "none";
+    // Focus goes to a real control rather than being left on <body>.
+    reopen.focus();
+  }
+
+  document.addEventListener("keydown", function (e) {
+    if (e.key === "Escape") closeDialog();
+  });
+  document.getElementById("close").addEventListener("click", closeDialog);
+</script>
+</body>
+</html>

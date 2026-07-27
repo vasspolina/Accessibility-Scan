@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>QA fixture: a modal you cannot get out of</title>
+<!--
+  The failing case for the dialog keyboard probe, built to be exactly the
+  cookie wall people actually meet: it covers the page, it ignores Escape, and
+  it cycles Tab back on itself so focus never returns to the document.
+
+  EXPECTED dialog-keyboard-trap — Escape does nothing AND focus cannot leave.
+
+  Nothing takes focus when it appears either, but the trap finding deliberately
+  suppresses that lesser complaint about the same element: being unable to
+  leave is the whole problem, and a second bullet underneath it only dilutes.
+
+  The trap is written with a Tab handler rather than by hiding the page,
+  because that is how real ones are written — the author meant to keep focus
+  inside the dialog and forgot to provide any way out.
+-->
+<style>
+  body { font-family: system-ui; margin: 0; padding: 24px; color: #1a1a1a; }
+  .backdrop { position: fixed; inset: 0; background: rgba(0,0,0,.6); z-index: 90; }
+  .modal { position: fixed; z-index: 91; top: 18%; left: 50%; transform: translateX(-50%);
+           background: #fff; padding: 24px; width: 420px; border: 1px solid #999; }
+</style>
+</head>
+<body>
+<main id="main">
+  <h1>A page behind an inescapable cookie wall</h1>
+  <p>Everything here is unreachable by keyboard while the dialog is up.</p>
+  <a href="/somewhere">A link nobody can tab to</a>
+</main>
+
+<div class="backdrop"></div>
+<div class="modal" role="dialog" aria-modal="true" aria-labelledby="ttitle" id="trap">
+  <h2 id="ttitle">We value your privacy</h2>
+  <p>This dialog ignores the Escape key and will not let focus leave.</p>
+  <button id="first" type="button">Accept all</button>
+  <button id="last" type="button">Manage preferences</button>
+</div>
+
+<script>
+  // Deliberately no Escape handler at all, and focus is never moved in.
+  var first = document.getElementById("first");
+  var last = document.getElementById("last");
+
+  // A focus trap with no exit: Tab from the last control returns to the
+  // first, Shift+Tab from the first returns to the last, and focus that is
+  // outside the dialog is pulled back in.
+  document.addEventListener("keydown", function (e) {
+    if (e.key !== "Tab") return;
+    var inside = document.getElementById("trap").contains(document.activeElement);
+    if (!inside) {
+      e.preventDefault();
+      first.focus();
+      return;
+    }
+    if (!e.shiftKey && document.activeElement === last) {
+      e.preventDefault();
+      first.focus();
+    } else if (e.shiftKey && document.activeElement === first) {
+      e.preventDefault();
+      last.focus();
+    }
+  });
+</script>
+</body>
+</html>

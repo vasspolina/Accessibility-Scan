@@ -1,6 +1,6 @@
 import { describe, it, expect } from "vitest";
 import { evaluateDialogs } from "../src/services/dialog/analyzeDialogs.js";
-import type { DomSignals } from "../src/services/render/renderPage.js";
+import type { DialogKeyboardResult, DomSignals } from "../src/services/render/renderPage.js";
 
 type Dialog = DomSignals["dialogs"][number];
 
@@ -13,6 +13,7 @@ function dialog(overrides: Partial<Dialog> = {}): Dialog {
     ariaModal: true,
     looksLikeModalOverlay: true,
     closeControl: { present: true, hasAccessibleName: true },
+    hasFocusInside: true,
     ...overrides,
   };
 }
@@ -78,5 +79,63 @@ describe("evaluateDialogs", () => {
     const close = findings.filter((f) => f.ruleId === "dialog-close-unlabeled");
     expect(close).toHaveLength(1);
     expect(close[0].description).toContain("2 pop-ups");
+  });
+});
+
+describe("evaluateDialogs: what a real keyboard did to an open modal", () => {
+  const probe = (o: Partial<DialogKeyboardResult> = {}): DialogKeyboardResult => ({
+    selector: "#dlg",
+    role: "dialog",
+    focusMovedIn: true,
+    closedByEscape: true,
+    focusEscapes: true,
+    focusLostAfterClose: false,
+    ...o,
+  });
+  const ids = (p: DialogKeyboardResult) => evaluateDialogs([], [p]).map((f) => f.ruleId);
+
+  it("says nothing about a modal that does everything right", () => {
+    expect(ids(probe())).toEqual([]);
+  });
+
+  it("claims a keyboard trap only when Escape failed AND focus could not leave", () => {
+    const findings = evaluateDialogs([], [probe({ closedByEscape: false, focusEscapes: false })]);
+    const trap = findings.find((f) => f.ruleId === "dialog-keyboard-trap");
+    expect(trap).toBeDefined();
+    expect(trap!.severity).toBe("critical");
+    expect(trap!.wcagCriterion).toBe("2.1.2");
+    expect(trap!.wcagLevel).toBe("A");
+  });
+
+  it("does not claim a trap when Escape failed but focus could still leave", () => {
+    // The distinction the whole probe exists to draw. Ignoring Escape is bad
+    // manners; being unable to leave is a Level A failure. Reporting the
+    // first as the second would be inventing a legal duty out of guidance.
+    const found = ids(probe({ closedByEscape: false, focusEscapes: true }));
+    expect(found).toContain("dialog-no-escape");
+    expect(found).not.toContain("dialog-keyboard-trap");
+    const noEscape = evaluateDialogs([], [probe({ closedByEscape: false, focusEscapes: true })])[0];
+    expect(noEscape.wcagCriterion).toBeUndefined();
+  });
+
+  it("reports only the trap, not the lesser complaints about the same element", () => {
+    expect(
+      ids(probe({ closedByEscape: false, focusEscapes: false, focusMovedIn: false }))
+    ).toEqual(["dialog-keyboard-trap"]);
+  });
+
+  it("flags a modal that appeared without taking focus", () => {
+    expect(ids(probe({ focusMovedIn: false }))).toContain("dialog-focus-not-moved");
+  });
+
+  it("flags focus being dropped when the modal closes", () => {
+    expect(ids(probe({ focusLostAfterClose: true }))).toContain("dialog-focus-lost-on-close");
+  });
+
+  it("does not complain about lost focus when the modal never closed", () => {
+    // focusLostAfterClose is only meaningful once it actually closed.
+    expect(
+      ids(probe({ closedByEscape: false, focusEscapes: true, focusLostAfterClose: true }))
+    ).not.toContain("dialog-focus-lost-on-close");
   });
 });

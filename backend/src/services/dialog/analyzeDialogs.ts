@@ -1,5 +1,5 @@
 import { randomUUID } from "node:crypto";
-import type { DomSignals } from "../render/renderPage.js";
+import type { DialogKeyboardResult, DomSignals } from "../render/renderPage.js";
 import type { AccessibilityFinding } from "../../types/report.js";
 
 // Modal / pop-up accessibility, grounded in the WAI-ARIA Authoring Practices
@@ -38,11 +38,99 @@ function makeFinding(
 }
 
 /**
+ * What a real keyboard did to a modal that was open when the page loaded.
+ *
+ * The distinction the probe exists to draw is between a modal that ignores
+ * Escape and one that cannot be left at all. Those look identical from the
+ * outside and are not remotely the same problem, so the trap is only ever
+ * claimed when both halves were observed: Escape did nothing, AND fifteen
+ * Tab presses never moved focus out. That combination is a demonstrated
+ * failure of 2.1.2, not an inference from one.
+ *
+ * Where Escape merely does nothing but the keyboard can still walk away, the
+ * finding says exactly that and claims no criterion — the ARIA Authoring
+ * Practices ask for Escape, but WCAG does not, and a rule that dressed
+ * guidance up as a legal duty would be the same overclaim this project
+ * refuses everywhere else.
+ */
+function evaluateDialogKeyboard(results: DialogKeyboardResult[]): AccessibilityFinding[] {
+  const findings: AccessibilityFinding[] = [];
+
+  for (const r of results) {
+    const what = r.role ? `This ${r.role}` : "This pop-up";
+
+    if (!r.closedByEscape && !r.focusEscapes) {
+      findings.push(
+        makeFinding(
+          "dialog-keyboard-trap",
+          "critical",
+          "accessibility",
+          r.selector,
+          `${what} cannot be escaped with the keyboard. Pressing Escape does not close it, and pressing Tab fifteen times never moved focus back out to the page. Anyone who is not using a mouse arrives here and stops — they cannot dismiss it and they cannot go around it.`,
+          "Close the dialog when Escape is pressed, and make sure focus can leave it. This is the single most damaging thing a modal can do, and it usually appears on the cookie or newsletter overlay that every visitor meets first.",
+          { criterion: "2.1.2", level: "A" }
+        )
+      );
+      // Nothing further about this element. A trapped dialog usually also
+      // failed to take focus and usually has no close button, and listing
+      // those underneath "you cannot get out of this" buries the one that
+      // matters. One element, one verdict, the worst one.
+      continue;
+    }
+
+    if (!r.closedByEscape) {
+      findings.push(
+        makeFinding(
+          "dialog-no-escape",
+          "moderate",
+          "accessibility",
+          r.selector,
+          `${what} does not close when you press Escape. Focus can still be moved away with Tab, so nobody is stuck, but Escape is the key people reach for first and it does nothing here.`,
+          "Listen for the Escape key on the dialog and close it, as the ARIA Authoring Practices dialog pattern describes. It is a few lines, and it is what every keyboard user expects."
+        )
+      );
+    }
+
+    if (!r.focusMovedIn) {
+      findings.push(
+        makeFinding(
+          "dialog-focus-not-moved",
+          "serious",
+          "accessibility",
+          r.selector,
+          `${what} appeared without focus being moved into it. Someone using a screen reader is not told it is there, and a keyboard user has to tab through the whole page behind it to reach the thing now covering their screen.`,
+          "When the dialog opens, move focus to it — the dialog container itself, or the first control inside it. Remember where focus was, so it can be put back when the dialog closes."
+        )
+      );
+    }
+
+    if (r.closedByEscape && r.focusLostAfterClose) {
+      findings.push(
+        makeFinding(
+          "dialog-focus-lost-on-close",
+          "serious",
+          "accessibility",
+          r.selector,
+          `${what} closed on Escape, but focus was left nowhere — it fell back to the top of the document. The next Tab press starts again from the beginning of the page, so anyone who had worked their way down loses their place entirely.`,
+          "On close, put focus back on the control that opened the dialog. Where the dialog was open from the start and has no trigger, move focus to the heading or first control of the main content instead, so tabbing carries on from a sensible spot."
+        )
+      );
+    }
+  }
+
+  return findings;
+}
+
+/**
  * Pure and deterministic — one grouped finding per rule, consistent with the
  * other component/typography/motion layers.
  */
-export function evaluateDialogs(dialogs: Dialog[]): AccessibilityFinding[] {
+export function evaluateDialogs(
+  dialogs: Dialog[],
+  keyboard: DialogKeyboardResult[] = []
+): AccessibilityFinding[] {
   const findings: AccessibilityFinding[] = [];
+  findings.push(...evaluateDialogKeyboard(keyboard));
   if (dialogs.length === 0) return findings;
 
   // 1. Close control with no meaningful accessible name (a bare "×"/icon).

@@ -192,7 +192,7 @@ export async function scanUrlToReport(
   );
   deterministic.push(...evaluateKeyboardNav(renderResult.keyboardNav));
   deterministic.push(...evaluateComponents(renderResult.domSignals));
-  deterministic.push(...evaluateDialogs(renderResult.domSignals.dialogs));
+  deterministic.push(...evaluateDialogs(renderResult.domSignals.dialogs, renderResult.dialogKeyboard));
   deterministic.push(...evaluateMobile(renderResult.mobileSignals));
   deterministic.push(...evaluateDarkPatterns(renderResult.darkPatternSignals));
   deterministic.push(...evaluateTextResize(renderResult.textResizeSignals));

@@ -348,6 +348,26 @@ export const PLAIN_RULE_EXPLANATIONS: Record<string, PlainRule> = {
     impact:
       "People using screen readers hear only \"button\" and can't tell how to close the pop-up. It traps them, and many will simply leave your site.",
   },
+  "dialog-keyboard-trap": {
+    plain: "A pop-up cannot be closed or escaped using the keyboard at all.",
+    impact:
+      "This is the worst outcome on the whole report. Escape does nothing and Tab goes nowhere, so a keyboard user reaches your site, meets this, and can go no further. Usually it is the cookie banner, which means it is every visitor's first impression.",
+  },
+  "dialog-no-escape": {
+    plain: "A pop-up doesn't close when you press the Escape key.",
+    impact:
+      "Escape is the key everyone reaches for first. Nobody is stuck here — you can still tab away — but every keyboard user tries it, and nothing happens.",
+  },
+  "dialog-focus-not-moved": {
+    plain: "A pop-up appears without moving the cursor into it.",
+    impact:
+      "Someone using a screen reader is never told it opened. A keyboard user has to tab through the entire page underneath before reaching the thing now covering their screen.",
+  },
+  "dialog-focus-lost-on-close": {
+    plain: "Closing a pop-up drops you back at the very top of the page.",
+    impact:
+      "Anyone who had tabbed halfway down has to start again from the beginning. It is the web equivalent of a page you were reading snapping shut.",
+  },
   "dialog-no-close": {
     plain: "A pop-up appears to have no obvious close button.",
     impact:

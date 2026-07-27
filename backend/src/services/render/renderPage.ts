@@ -97,6 +97,8 @@ export interface DomSignals {
     ariaModal: boolean;
     looksLikeModalOverlay: boolean; // fixed/absolute, high z-index, covers viewport
     closeControl: { present: boolean; hasAccessibleName: boolean } | null;
+    // Whether focus was inside the dialog when the page finished loading.
+    hasFocusInside: boolean;
   }>;
 }
 
@@ -179,6 +181,9 @@ export interface RenderResult {
   // 200%-text overrides — evaluated into resize findings
   // (services/textResize/analyzeTextResize.ts).
   textResizeSignals: TextResizeSignals;
+  // What a real keyboard does to a modal that was open on arrival — Escape,
+  // and where focus sits (services/dialog/analyzeDialogs.ts).
+  dialogKeyboard: DialogKeyboardResult[];
   // Checks that did not complete on this run, in words a reader understands.
   //
   // Each of these passes catches its own failures and returns empty signals so
@@ -446,6 +451,15 @@ function extractDomSignalsInPage(): DomSignals {
         ariaModal,
         looksLikeModalOverlay,
         closeControl,
+        // Read here, at load, and nowhere later. The keyboard walk blurs the
+        // page and presses Tab dozens of times, so by the end of the scan
+        // this answer is about our own instrumentation rather than the site:
+        // measured after the walk, a correct dialog reported focus outside it
+        // and a focus-trapping one reported focus inside, both backwards.
+        hasFocusInside: (() => {
+          const active = document.activeElement;
+          return !!active && active !== document.body && el.contains(active);
+        })(),
       };
     });
 
@@ -1483,6 +1497,117 @@ async function collectMouseOnlyControls(page: Page): Promise<MouseOnlyControl[]>
   }
 }
 
+/**
+ * Drives a real keyboard at a modal that is already open, and reports what
+ * happens. Covers the last three items of the keyboard checklist: focus moves
+ * into the dialog, Escape closes it, and closing leaves focus somewhere sane.
+ *
+ * Only dialogs already open when the page loads are probed — cookie walls,
+ * newsletter overlays, age gates. That is a real limitation and it is
+ * deliberate: reaching a dialog that opens on click means clicking a control
+ * on somebody else's site, and a scan should not be pressing buttons whose
+ * effects it cannot predict. What is covered is the case that blocks people
+ * before they have done anything at all, which is also the most common.
+ *
+ * Runs last in the pipeline, after the mobile pass, because it is the only
+ * step that deliberately changes the page: dismissing a cookie banner would
+ * otherwise alter what every later layer measures.
+ */
+export interface DialogKeyboardResult {
+  selector: string;
+  role: string;
+  /** Was focus inside the dialog while it was open? */
+  focusMovedIn: boolean;
+  closedByEscape: boolean;
+  /** Only measured when Escape failed: can Tab move focus out at all? */
+  focusEscapes: boolean;
+  /** Only meaningful when it closed: focus fell back to nothing. */
+  focusLostAfterClose: boolean;
+}
+
+async function probeDialogKeyboard(
+  page: Page,
+  dialogs: Array<{ selector: string; hasFocusInside: boolean }>
+): Promise<DialogKeyboardResult[]> {
+  if (dialogs.length === 0) return [];
+  // Whether the element is still on screen, and whether focus sits inside it.
+  const inspect = (selector: string) =>
+    page.evaluate(
+      ([sel]) => {
+        const el = document.querySelector(sel);
+        if (!el) return { visible: false, focusInside: false, activeIsBody: true };
+        const cs = getComputedStyle(el);
+        const r = el.getBoundingClientRect();
+        const visible =
+          cs.display !== "none" &&
+          cs.visibility !== "hidden" &&
+          parseFloat(cs.opacity) > 0 &&
+          r.width > 0 &&
+          r.height > 0;
+        const active = document.activeElement;
+        return {
+          visible,
+          focusInside: !!active && el.contains(active),
+          activeIsBody: !active || active === document.body || active === document.documentElement,
+        };
+      },
+      [selector] as const
+    );
+
+  const results: DialogKeyboardResult[] = [];
+  for (const dialog of dialogs.slice(0, 2)) {
+    const selector = dialog.selector;
+    try {
+      const before = await inspect(selector);
+      if (!before.visible) continue; // never opened, or already dismissed
+
+      const role = await page
+        .evaluate(([s]) => document.querySelector(s)?.getAttribute("role") ?? "", [selector] as const)
+        .catch(() => "");
+
+      await page.keyboard.press("Escape");
+      await page.waitForTimeout(450); // closing is usually animated
+      const after = await inspect(selector);
+
+      if (!after.visible) {
+        results.push({
+          selector,
+          role,
+          focusMovedIn: dialog.hasFocusInside,
+          closedByEscape: true,
+          focusEscapes: true,
+          focusLostAfterClose: after.activeIsBody,
+        });
+        continue;
+      }
+
+      // Escape did nothing. Whether that is merely awkward or an outright
+      // trap depends on one further question: can the keyboard get out at
+      // all? Tab around and find out, rather than assuming either way.
+      let focusEscapes = false;
+      for (let i = 0; i < 15; i++) {
+        await page.keyboard.press("Tab");
+        const probe = await inspect(selector);
+        if (!probe.focusInside && !probe.activeIsBody) {
+          focusEscapes = true;
+          break;
+        }
+      }
+      results.push({
+        selector,
+        role,
+        focusMovedIn: dialog.hasFocusInside,
+        closedByEscape: false,
+        focusEscapes,
+        focusLostAfterClose: false,
+      });
+    } catch {
+      // A dialog that tears itself down mid-probe tells us nothing; skip it.
+    }
+  }
+  return results;
+}
+
 export class RebindingDetectedError extends Error {
   constructor(host: string, ip: string) {
     super(`Blocked mid-navigation: ${host} resolved to a private/internal address (${ip})`);
@@ -1738,7 +1863,7 @@ export async function renderAndScan(
         ...evaluateTypography(typographyBlocks),
         ...evaluateMotion(domSignals.animatedElements, domSignals.respectsReducedMotion, new Set()),
         ...evaluateComponents(domSignals),
-        ...evaluateDialogs(domSignals.dialogs),
+        ...evaluateDialogs(domSignals.dialogs, []),
         ...evaluateDarkPatterns(darkPatternSignals),
       ]
         .map((f) => f.selector)
@@ -1812,11 +1937,29 @@ export async function renderAndScan(
       for (const s of mobileSelectors) delete mergedElementScreenshots[s];
       Object.assign(mergedElementScreenshots, mobileElementScreenshots);
 
+      // Escape / focus behaviour of any modal that was open on arrival.
+      // Deliberately the very last thing done to the page: it is the only
+      // step that sets out to change what is on screen, so nothing measured
+      // above can be disturbed by it. The viewport goes back to desktop
+      // first, so the dialog is driven at the size everything else saw.
+      let dialogKeyboard: DialogKeyboardResult[] = [];
+      try {
+        await page.setViewportSize({ width: 1280, height: 900 });
+        await page.waitForTimeout(300);
+        dialogKeyboard = await probeDialogKeyboard(
+          page,
+          domSignals.dialogs.filter((d) => d.selector)
+        );
+      } catch (err) {
+        logger.warn({ err }, "Dialog keyboard probe failed — reporting without it");
+      }
+
       // Final check — a late subresource (lazy-loaded image, polling XHR)
       // could have triggered a rebind after the initial navigation settled.
       if (rebindingDetected) throw rebindingDetected;
 
       return {
+        dialogKeyboard,
         pageTitle: domSignals.pageTitle,
         finalUrl: page.url(),
         axe,

@@ -35,7 +35,7 @@ async function scanFixture(name: string): Promise<AccessibilityFinding[]> {
   );
   findings.push(...evaluateKeyboardNav(r.keyboardNav));
   findings.push(...evaluateComponents(r.domSignals));
-  findings.push(...evaluateDialogs(r.domSignals.dialogs));
+  findings.push(...evaluateDialogs(r.domSignals.dialogs, r.dialogKeyboard));
   findings.push(...evaluateMobile(r.mobileSignals));
   findings.push(...evaluateDarkPatterns(r.darkPatternSignals));
   findings.push(...evaluateTextResize(r.textResizeSignals));
@@ -150,4 +150,26 @@ describe("qa-layers.html: the layers written for this project", () => {
       expect(flagged.join(" "), `${correct} was wrongly reported`).not.toContain(correct);
     }
   });
+});
+
+// The dialog keyboard probe drives a real Escape key and real Tab presses at
+// a modal that is open on arrival, so it can only be tested end to end. Two
+// fixtures, because a rule that fires on every modal it sees would pass a
+// test that only ever showed it a broken one.
+describe("the dialog keyboard probe", () => {
+  it("says nothing at all about a modal that behaves", async () => {
+    const findings = await scanFixture("qa-dialog-good.html");
+    const dialogFindings = findings.filter((f) => (f.ruleId ?? "").startsWith("dialog-"));
+    expect(dialogFindings.map((f) => `${f.ruleId} on ${f.selector}`)).toEqual([]);
+  }, 180_000);
+
+  it("proves the trap rather than inferring it", async () => {
+    const findings = await scanFixture("qa-dialog-trap.html");
+    const trap = findings.find((f) => f.ruleId === "dialog-keyboard-trap");
+    expect(trap).toBeDefined();
+    expect(trap!.severity).toBe("critical");
+    expect(trap!.wcagCriterion).toBe("2.1.2");
+    // The lesser complaints about the same element stay suppressed.
+    expect(findings.find((f) => f.ruleId === "dialog-focus-not-moved")).toBeUndefined();
+  }, 180_000);
 });
