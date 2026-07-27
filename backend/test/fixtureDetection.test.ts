@@ -83,10 +83,10 @@ describe("qa-fixture.html: the rules axe owns", () => {
 
 describe("qa-layers.html: the layers written for this project", () => {
   let rules: Set<string>;
+  let findings: Awaited<ReturnType<typeof scanFixture>>;
   beforeAll(async () => {
-    rules = new Set(
-      (await scanFixture("qa-layers.html")).map((f) => f.ruleId).filter(Boolean) as string[]
-    );
+    findings = await scanFixture("qa-layers.html");
+    rules = new Set(findings.map((f) => f.ruleId).filter(Boolean) as string[]);
   }, 180_000);
 
   const expected = [
@@ -104,6 +104,7 @@ describe("qa-layers.html: the layers written for this project", () => {
     "component-required-cue",
     "component-submit-clarity",
     "component-skip-link",
+    "keyboard-mouse-only",
   ];
 
   for (const rule of expected) {
@@ -111,4 +112,27 @@ describe("qa-layers.html: the layers written for this project", () => {
       expect(rules.has(rule)).toBe(true);
     });
   }
+
+  // The mouse-only check is the one most able to cry wolf: almost every
+  // element on a modern page has a click handler somewhere above it, and the
+  // rule is only useful if it can tell the two genuine faults in the fixture
+  // apart from the five correct patterns sitting beside them.
+  it("finds both mouse-only controls and neither of the correct ones", () => {
+    const flagged = findings
+      .filter((f) => f.ruleId === "keyboard-mouse-only")
+      .map((f) => f.selector);
+
+    expect(flagged).toHaveLength(2);
+    expect(flagged.join(" ")).toContain("div");
+    expect(flagged.join(" ")).toContain("span");
+
+    // A real button, a div with role+tabindex, a wrapper around a link, a span
+    // inside a link, and a full-page backdrop. Each is reachable or
+    // dismissable by keyboard, so reporting any would be a false alarm. Each
+    // also covers a different filter: removing any one of them from the code
+    // makes this test fail, which is how they were checked.
+    for (const correct of ["real-button", "real-custom-button", "click-wrapper", "card-inner", "backdrop"]) {
+      expect(flagged.join(" "), `${correct} was wrongly reported`).not.toContain(correct);
+    }
+  });
 });

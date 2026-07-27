@@ -30,7 +30,12 @@ import {
   type TextResizeSignals,
 } from "../textResize/analyzeTextResize.js";
 import type { ScreenReaderScript } from "../../types/report.js";
-import type { FocusStyles, KeyboardNavResult, TabStop } from "../keyboard/analyzeKeyboard.js";
+import type {
+  FocusStyles,
+  KeyboardNavResult,
+  MouseOnlyControl,
+  TabStop,
+} from "../keyboard/analyzeKeyboard.js";
 import { logger } from "../../utils/logger.js";
 import { authenticate, type AuthConfig } from "../auth/authenticate.js";
 
@@ -1334,7 +1339,125 @@ async function captureKeyboardNavigation(page: Page): Promise<KeyboardNavResult>
     failed = true;
   }
 
-  return { stops, reachedEnd, failed };
+  const mouseOnly = await collectMouseOnlyControls(page);
+  return { stops, reachedEnd, failed, mouseOnly };
+}
+
+/**
+ * Reads back the elements the click-listener probe recorded (see
+ * CLICK_LISTENER_PROBE in browserPool.ts) and keeps only those a keyboard
+ * genuinely cannot reach.
+ *
+ * Every filter below removes a pattern that is correct but looks suspicious,
+ * and each was put here because it fired on a real page:
+ *
+ *   - the handler is on <html>/<body>: event delegation, the standard way a
+ *     framework routes clicks for the whole page
+ *   - the element is focusable, or sits inside something focusable: the
+ *     keyboard reaches it by tabbing to that
+ *   - it contains a focusable element: a wrapper listening for clicks on the
+ *     real control inside it
+ *   - pointer-events: none, or hidden: not clickable either, so not a case of
+ *     mouse-only access
+ *   - larger than half the viewport: a backdrop or page shell, where the click
+ *     handler is a dismiss shortcut rather than the only way to do something
+ *
+ * Verified against qa-layers.html, which holds both faults and the five
+ * correct patterns beside them: both faults reported, all five rejected, and
+ * removing any single filter above makes that test fail.
+ *
+ * On real sites it is quiet, which is the point. gov.uk, smashingmagazine.com,
+ * rijksakademie.nl and kunsthallebern.ch reported nothing at all — their
+ * candidates were a delegation root, a pointer-events:none overlay and a
+ * hidden sidebar. moma.org reported one, and it is real: a carousel's
+ * pagination bullets, clickable, with no role and no tabindex, so the slide
+ * controls cannot be reached by keyboard at all.
+ */
+async function collectMouseOnlyControls(page: Page): Promise<MouseOnlyControl[]> {
+  try {
+    return (await page.evaluate(String.raw`(() => {
+      const __name = (fn) => fn;
+      const FOCUSABLE = 'a[href],button,input:not([type="hidden"]),select,textarea,summary,details,[tabindex],[contenteditable=""],[contenteditable="true"]';
+      const MAX_REPORTED = 8;
+      const tracked = window.__a11yClickTargets;
+      if (!Array.isArray(tracked)) return [];
+
+      const cssPath = (el) => {
+        if (el.id) return "#" + CSS.escape(el.id);
+        const parts = [];
+        let node = el;
+        while (node && node.nodeType === 1 && parts.length < 6) {
+          let selector = node.tagName.toLowerCase();
+          const parent = node.parentElement;
+          if (parent) {
+            const siblings = Array.from(parent.children).filter((c) => c.tagName === node.tagName);
+            if (siblings.length > 1) selector += ":nth-of-type(" + (siblings.indexOf(node) + 1) + ")";
+          }
+          parts.unshift(selector);
+          node = parent;
+        }
+        return parts.join(" > ");
+      };
+
+      // Unlike the other snippet builders here, this one keeps the class
+      // attribute (truncated). These elements are the ones with no text, no
+      // href and no accessible name — that is what makes them findings — so
+      // stripping class leaves literally "<div></div>", which tells the
+      // developer nothing about which div is meant. Measured on moma.org,
+      // where the offender is a carousel's pagination bullets and the class
+      // "custom-swiper-pagination-clickable" is the entire identification.
+      const snippetOf = (el) => {
+        try {
+          const clone = el.cloneNode(false);
+          for (const attr of Array.from(clone.attributes)) {
+            if (/^style$/i.test(attr.name) || /^data-/i.test(attr.name)) clone.removeAttribute(attr.name);
+          }
+          if (clone.getAttribute("class") && clone.getAttribute("class").length > 80) {
+            clone.setAttribute("class", clone.getAttribute("class").slice(0, 80) + "…");
+          }
+          const open = clone.outerHTML.replace(/<\/[a-z-]+>$/i, "");
+          const text = (el.textContent || "").replace(/\s+/g, " ").trim().slice(0, 80);
+          return (open + text + "</" + el.tagName.toLowerCase() + ">").slice(0, 220);
+        } catch (e) {
+          return "";
+        }
+      };
+
+      const out = [];
+      for (const el of tracked) {
+        if (out.length >= MAX_REPORTED) break;
+        try {
+          if (!el.isConnected) continue; // detached by a re-render
+          const tag = el.tagName.toLowerCase();
+          if (tag === "body" || tag === "html") continue;
+          if (el.matches(FOCUSABLE)) continue;
+          // parentElement first because closest() starts at the element
+          // itself, which the line above already covers — walking from the
+          // parent keeps the two filters independent and separately testable.
+          if (el.parentElement?.closest(FOCUSABLE)) continue;
+          if (el.querySelector(FOCUSABLE)) continue;
+          const cs = getComputedStyle(el);
+          if (cs.display === "none" || cs.visibility === "hidden" || cs.pointerEvents === "none") continue;
+          if (parseFloat(cs.opacity) === 0) continue;
+          const r = el.getBoundingClientRect();
+          if (r.width < 8 || r.height < 8) continue;
+          if (r.width * r.height > window.innerWidth * window.innerHeight * 0.5) continue;
+          out.push({
+            selector: cssPath(el),
+            snippet: snippetOf(el),
+            tag,
+            label: (el.textContent || "").replace(/\s+/g, " ").trim().slice(0, 60),
+          });
+        } catch (e) {
+          // skip a bad element
+        }
+      }
+      return out;
+    })()`)) as MouseOnlyControl[];
+  } catch (err) {
+    logger.warn({ err }, "Mouse-only control probe failed — reporting without it");
+    return [];
+  }
 }
 
 export class RebindingDetectedError extends Error {

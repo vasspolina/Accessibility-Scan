@@ -24,7 +24,7 @@ describe("evaluateKeyboardNav", () => {
       stop("a.one", { outlineStyle: "solid", outlineWidth: "2px" }),
       stop("a.two", { outlineStyle: "solid", outlineWidth: "2px" }),
     ];
-    expect(evaluateKeyboardNav({ stops, reachedEnd: true })).toEqual([]);
+    expect(evaluateKeyboardNav({ mouseOnly: [], stops, reachedEnd: true })).toEqual([]);
   });
 
   it("accepts a box-shadow change as a visible indicator", () => {
@@ -32,12 +32,12 @@ describe("evaluateKeyboardNav", () => {
       stop("a.one", { boxShadow: "0 0 0 3px blue" }, { boxShadow: "none" }),
       stop("a.two", { boxShadow: "0 0 0 3px blue" }, { boxShadow: "none" }),
     ];
-    expect(evaluateKeyboardNav({ stops, reachedEnd: true })).toEqual([]);
+    expect(evaluateKeyboardNav({ mouseOnly: [], stops, reachedEnd: true })).toEqual([]);
   });
 
   it("flags invisible focus when multiple stops show no visual change", () => {
     const stops = [stop("a.one", {}), stop("a.two", {}), stop("a.three", { outlineStyle: "solid", outlineWidth: "2px" })];
-    const findings = evaluateKeyboardNav({ stops, reachedEnd: true });
+    const findings = evaluateKeyboardNav({ mouseOnly: [], stops, reachedEnd: true });
     expect(findings).toHaveLength(1);
     expect(findings[0].ruleId).toBe("keyboard-no-visible-focus");
     expect(findings[0].wcagCriterion).toBe("2.4.7");
@@ -52,12 +52,12 @@ describe("evaluateKeyboardNav", () => {
       stop("a.two", { outlineStyle: "solid", outlineWidth: "2px" }),
       stop("a.three", { outlineStyle: "solid", outlineWidth: "2px" }),
     ];
-    expect(evaluateKeyboardNav({ stops, reachedEnd: true })).toEqual([]);
+    expect(evaluateKeyboardNav({ mouseOnly: [], stops, reachedEnd: true })).toEqual([]);
   });
 
   it("skips stops whose unfocused state could not be measured", () => {
     const stops = [stop("a.one", {}, null), stop("a.two", {}, null)];
-    expect(evaluateKeyboardNav({ stops, reachedEnd: false })).toEqual([]);
+    expect(evaluateKeyboardNav({ mouseOnly: [], stops, reachedEnd: false })).toEqual([]);
   });
 
   it("flags a focus trap when the same element repeats three times", () => {
@@ -66,7 +66,7 @@ describe("evaluateKeyboardNav", () => {
       stop("input.trap", {}, null),
       stop("input.trap", {}, null),
     ];
-    const findings = evaluateKeyboardNav({ stops, reachedEnd: false });
+    const findings = evaluateKeyboardNav({ mouseOnly: [], stops, reachedEnd: false });
     const trap = findings.find((f) => f.ruleId === "keyboard-focus-trap");
     expect(trap).toBeDefined();
     expect(trap!.severity).toBe("critical");
@@ -76,11 +76,11 @@ describe("evaluateKeyboardNav", () => {
 
   it("does not flag a trap for a single repeat", () => {
     const stops = [stop("a.one", {}, null), stop("a.one", {}, null), stop("a.two", {}, null)];
-    const findings = evaluateKeyboardNav({ stops, reachedEnd: true });
+    const findings = evaluateKeyboardNav({ mouseOnly: [], stops, reachedEnd: true });
     expect(findings.find((f) => f.ruleId === "keyboard-focus-trap")).toBeUndefined();
   });
 
   it("returns nothing for an empty walk", () => {
-    expect(evaluateKeyboardNav({ stops: [], reachedEnd: false })).toEqual([]);
+    expect(evaluateKeyboardNav({ mouseOnly: [], stops: [], reachedEnd: false })).toEqual([]);
   });
 });

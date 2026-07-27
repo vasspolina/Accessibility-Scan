@@ -224,7 +224,12 @@ export const PLAIN_RULE_EXPLANATIONS: Record<string, PlainRule> = {
   },
 
   // Keyboard walk-through checks (WCAG 2.4.7 Focus Visible, 2.1.2 No
-  // Keyboard Trap) — from real Tab presses during the scan.
+  // Keyboard Trap, 2.1.1 Keyboard) — from real Tab presses during the scan.
+  "keyboard-mouse-only": {
+    plain: "Something on the page works when clicked but cannot be reached with the keyboard at all.",
+    impact:
+      "There is no workaround for this one. Anyone who cannot use a mouse simply cannot do whatever this control does — and if it's a Buy button or a form step, that's the end of the visit.",
+  },
   "keyboard-no-visible-focus": {
     plain: "Moving through the page with the keyboard gives no visible sign of where you are.",
     impact:

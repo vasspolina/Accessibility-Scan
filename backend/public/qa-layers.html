@@ -41,6 +41,10 @@
   .cookie { border: 1px solid #ccc; padding: 16px; }
   .accept { background: #0f62fe; color: #fff; border: 0; padding: 12px 20px; font-size: 16px; }
   .refuse-plain { background: none; border: 0; color: #666; text-decoration: underline; font-size: 13px; }
+
+  /* Sized so it is more than half the 1280x900 viewport: the check treats a
+     full-page overlay as a backdrop, not as the only way to do something. */
+  .backdrop { width: 1200px; height: 700px; }
 </style>
 </head>
 <body>
@@ -105,6 +109,31 @@
   <!-- EXPECTED dark-fake-urgency / dark-fake-scarcity -->
   <p><strong>Hurry, offer ends soon!</strong> Only 2 left in stock. Limited time only.</p>
 </section>
+
+<section>
+  <h2>Clickable things</h2>
+  <!-- EXPECTED keyboard-mouse-only x2: a click handler on an element the
+       browser never makes focusable. Tab skips straight past both. -->
+  <div class="fake-button">Add to basket</div>
+  <span class="fake-close">Dismiss</span>
+
+  <!-- Controls: all five are correct and must stay silent. They are the
+       patterns the check has to tell apart from the two above. -->
+  <div role="button" tabindex="0" class="real-custom-button">Proper custom button</div>
+  <button type="button" class="real-button">Real button</button>
+  <div class="click-wrapper"><a href="#main">Wrapper listening for its own link</a></div>
+  <a href="#main" class="card-link"><span class="card-inner">Handler on a span inside a link</span></a>
+  <div class="backdrop">Full-page overlay whose click handler only dismisses it</div>
+</section>
+
+<script>
+  // Attached with addEventListener, not an onclick attribute, because that is
+  // how every framework does it and the check has to find these.
+  for (const sel of [".fake-button", ".fake-close", ".real-custom-button",
+                     ".real-button", ".click-wrapper", ".card-inner", ".backdrop"]) {
+    document.querySelector(sel).addEventListener("click", function () {});
+  }
+</script>
 
 <!-- EXPECTED component-skip-link: nothing that skips to the content -->
 

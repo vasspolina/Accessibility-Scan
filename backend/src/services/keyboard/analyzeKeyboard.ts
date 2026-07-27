@@ -28,8 +28,23 @@ export interface FocusStyles {
   borderColor: string;
 }
 
+/** A control a mouse can operate that the keyboard cannot reach at all. */
+export interface MouseOnlyControl {
+  selector: string;
+  snippet: string;
+  tag: string;
+  /** Visible text, used to name the control in the finding. */
+  label: string;
+}
+
 export interface KeyboardNavResult {
   stops: TabStop[];
+  /**
+   * Elements carrying a click handler that no amount of tabbing will reach.
+   * Empty when the probe could not run, which is indistinguishable here from
+   * a clean page — the same known limitation as `failed` below.
+   */
+  mouseOnly: MouseOnlyControl[];
   // True when tabbing wrapped back to <body> before the cap — we saw the
   // whole tab cycle, not just a prefix of it.
   reachedEnd: boolean;
@@ -59,7 +74,8 @@ function makeFinding(
   helpUrl: string,
   selector: string,
   description: string,
-  suggestedFix: string
+  suggestedFix: string,
+  elementSnippet?: string
 ): AccessibilityFinding {
   return {
     id: randomUUID(),
@@ -69,6 +85,7 @@ function makeFinding(
     wcagCriterion,
     wcagLevel,
     selector,
+    elementSnippet: elementSnippet || undefined,
     description,
     suggestedFix,
     ruleId,
@@ -82,6 +99,31 @@ function makeFinding(
  */
 export function evaluateKeyboardNav(nav: KeyboardNavResult): AccessibilityFinding[] {
   const findings: AccessibilityFinding[] = [];
+
+  // Controls only a mouse can use. Checked before the tab-stop rules and
+  // independently of them: the fault is that these elements never appear as a
+  // tab stop at all, so an empty or failed walk says nothing about them.
+  for (const c of nav.mouseOnly ?? []) {
+    findings.push(
+      makeFinding(
+        "keyboard-mouse-only",
+        // The highest severity this layer reports, and it is the right one.
+        // A missing focus outline makes a task hard; this makes it
+        // impossible. Anyone who cannot use a mouse — a motor disability, a
+        // screen reader user, someone whose trackpad has died — cannot reach
+        // this control by any means.
+        "critical",
+        "2.1.1",
+        "A",
+        "https://www.w3.org/WAI/WCAG21/Understanding/keyboard.html",
+        c.selector,
+        `${c.label ? `"${c.label}" is a <${c.tag}>` : `A <${c.tag}> on this page`} that responds to being clicked, but the Tab key never lands on it. A <${c.tag}> is not focusable on its own, and nothing has been added to make it one, so someone working through the page by keyboard cannot reach this at all — it is not merely awkward to get to, it is not there.`,
+        "Use a real `<button>` (or `<a href>` if it navigates). If the element has to stay as it is, it needs all three of: `tabindex=\"0\"` so it can be focused, `role=\"button\"` so it is announced as one, and a keydown handler firing on Enter and Space — a click handler alone does not run for keyboard users.",
+        c.snippet
+      )
+    );
+  }
+
   if (nav.stops.length === 0) return findings;
 
   // Focus trap / stuck focus: the same element stays focused across three
