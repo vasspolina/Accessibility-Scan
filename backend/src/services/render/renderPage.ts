@@ -665,6 +665,11 @@ function collectCandidateSelectors(
 // or slow to settle must never fail or stall the whole scan.
 const MAX_ELEMENT_SHOTS = 45;
 const ELEMENT_SHOT_BUDGET_MS = 12_000;
+// Kept clear at the end of the render budget for the unbudgeted tail: the
+// dialog probe, the preference probe, and assembling the result. Without it
+// the last budgeted phase can run right up to the deadline and the steps
+// after it push past.
+const RENDER_TAIL_MARGIN_MS = 6_000;
 // Per-channel standard deviation below which a capture is essentially one
 // solid colour — an invisible element, or one caught mid-reveal.
 // Per-channel standard deviation below which an image is essentially one flat
@@ -686,6 +691,9 @@ const IMAGE_ALT_RULES = new Set(["image-alt", "input-image-alt", "role-img-alt",
 
 async function captureElementScreenshots(
   page: Page,
+  // Absolute time this phase must not run past, shared with the rest of the
+  // render. Its own budget still applies; whichever is sooner wins.
+  hardDeadline: number,
   axe: AxeRunResult,
   // Extra element-specific selectors from the deterministic non-axe layers
   // (typography, motion, components, dialogs). Those findings are evaluated
@@ -737,7 +745,7 @@ async function captureElementScreenshots(
   }
 
   const result: Record<string, string> = {};
-  const deadline = Date.now() + ELEMENT_SHOT_BUDGET_MS;
+  const deadline = Math.min(Date.now() + ELEMENT_SHOT_BUDGET_MS, hardDeadline);
   // Cap generously — the deterministic selectors plus axe findings — so
   // neither group is starved by a violation-heavy page.
   for (const selector of orderedSelectors.slice(0, MAX_ELEMENT_SHOTS + 15)) {
@@ -1299,11 +1307,12 @@ const MOBILE_SHOT_BUDGET_MS = 4_000;
 
 async function captureMobileElementScreenshots(
   page: Page,
+  hardDeadline: number,
   selectors: string[]
 ): Promise<Record<string, string>> {
   const result: Record<string, string> = {};
   const seen = new Set<string>();
-  const deadline = Date.now() + MOBILE_SHOT_BUDGET_MS;
+  const deadline = Math.min(Date.now() + MOBILE_SHOT_BUDGET_MS, hardDeadline);
   for (const selector of selectors) {
     if (result[selector] || seen.has(selector)) continue;
     seen.add(selector);
@@ -1329,10 +1338,14 @@ async function captureMobileElementScreenshots(
 const MAX_TAB_STOPS = 25;
 const KEYBOARD_BUDGET_MS = 6_000;
 
-async function captureKeyboardNavigation(page: Page): Promise<KeyboardNavResult> {
+async function captureKeyboardNavigation(
+  page: Page,
+  hardDeadline: number
+): Promise<KeyboardNavResult> {
   const stops: TabStop[] = [];
   let reachedEnd = false;
   let failed = false;
+  let truncated = false;
 
   const readActive = () =>
     page.evaluate(() => {
@@ -1420,11 +1433,16 @@ async function captureKeyboardNavigation(page: Page): Promise<KeyboardNavResult>
       window.scrollTo(0, 0);
     });
 
-    const deadline = Date.now() + KEYBOARD_BUDGET_MS;
+    const deadline = Math.min(Date.now() + KEYBOARD_BUDGET_MS, hardDeadline);
     let pending: { selector: string; tag: string; styles: FocusStyles } | null = null;
 
     for (let i = 0; i < MAX_TAB_STOPS; i++) {
-      if (Date.now() > deadline) break;
+      if (Date.now() > deadline) {
+        // Out of time rather than out of page. Only counts as truncation if
+        // the cycle had not already wrapped round to the start.
+        truncated = !reachedEnd;
+        break;
+      }
       await page.keyboard.press("Tab");
       const active = await readActive();
 
@@ -1464,7 +1482,7 @@ async function captureKeyboardNavigation(page: Page): Promise<KeyboardNavResult>
   }
 
   const mouseOnly = await collectMouseOnlyControls(page);
-  return { stops, reachedEnd, failed, mouseOnly };
+  return { stops, reachedEnd, failed, truncated, mouseOnly };
 }
 
 /**
@@ -2096,6 +2114,21 @@ export async function renderAndScan(
     // free scanner, and reporting queue time as render time overstated it by
     // more than the whole budget on a busy service.
     const start = Date.now();
+    // One clock for the whole render, shared by every phase that has its own
+    // budget. Each of those budgets was sound in isolation and the sum was
+    // not: element screenshots may take twelve seconds, the keyboard walk
+    // six, the mobile pass its own, and nothing was checking the total
+    // against the allowance the whole render has. On a slow machine they add
+    // up past it and the scan fails outright with "took too long", which is
+    // the worst possible outcome — the findings were all there, only the
+    // pictures were slow.
+    //
+    // With a shared deadline a phase takes the smaller of its own budget and
+    // whatever is actually left, so a heavy page loses screenshots instead of
+    // losing the report. A margin is held back for the work after the last
+    // budgeted phase.
+    const renderDeadline = budgetMs ? start + budgetMs - RENDER_TAIL_MARGIN_MS : Infinity;
+    const remaining = () => renderDeadline - Date.now();
     if (auth) {
       // Before the target navigation, so the session is live when we arrive.
       // Throws AuthError, which the route surfaces as a clear message.
@@ -2308,18 +2341,26 @@ export async function renderAndScan(
       // failing.
       const elementScreenshots = await captureElementScreenshots(
         page,
+        renderDeadline,
         axe,
         deterministicSelectors
       ).catch(() => ({}));
 
       // Real keyboard walk-through — after the screenshots, because Tab
       // presses scroll the page and flip elements into their :focus styles.
-      const keyboardNav = await captureKeyboardNavigation(page);
+      const keyboardNav = await captureKeyboardNavigation(page, renderDeadline);
 
       // Visual-versus-source order. Geometry only, so it changes nothing and
       // has to run at desktop width, before the mobile pass reflows the page.
-      const readingOrder = await collectReadingOrder(page);
-      const readability = await collectReadability(page);
+      //
+      // Both are skipped when the render has already overrun. They are worth
+      // roughly twenty milliseconds between them on the pages measured, so
+      // this will almost never trigger — but a report that arrives without a
+      // reading-order check beats one that does not arrive.
+      const readingOrder =
+        remaining() > 0 ? await collectReadingOrder(page) : { reorderedRows: [] };
+      const readability =
+        remaining() > 0 ? await collectReadability(page) : { text: "", lang: "" };
 
       // Text-resize passes — done at desktop width, before the viewport is
       // changed for the mobile pass below.
@@ -2359,7 +2400,11 @@ export async function renderAndScan(
           ...mobileSignals.smallTapTargets.slice(0, 8).map((t) => t.selector),
         ].filter((s) => s && s !== "body" && s !== "html");
         if (mobileSelectors.length > 0) {
-          mobileElementScreenshots = await captureMobileElementScreenshots(page, mobileSelectors);
+          mobileElementScreenshots = await captureMobileElementScreenshots(
+            page,
+            renderDeadline,
+            mobileSelectors
+          );
         }
       } catch (err) {
         logger.warn({ err }, "Mobile pass failed — reporting without mobile findings");
@@ -2390,13 +2435,19 @@ export async function renderAndScan(
 
       let dialogKeyboard: DialogKeyboardResult[] = [];
       try {
-        await page.setViewportSize({ width: 1280, height: 900 });
-        await page.waitForTimeout(300);
-        userPreferences = await probeUserPreferences(page, domSignals.animatedElements);
-        dialogKeyboard = await probeDialogKeyboard(
-          page,
-          domSignals.dialogs.filter((d) => d.selector)
-        );
+        // These two are the tail the margin was reserved for: about a second
+        // of deliberate waiting between them, for switching media features
+        // and for a dialog's closing animation. If the render is already over
+        // its allowance, hand back what exists rather than spending more.
+        if (remaining() > -RENDER_TAIL_MARGIN_MS / 2) {
+          await page.setViewportSize({ width: 1280, height: 900 });
+          await page.waitForTimeout(300);
+          userPreferences = await probeUserPreferences(page, domSignals.animatedElements);
+          dialogKeyboard = await probeDialogKeyboard(
+            page,
+            domSignals.dialogs.filter((d) => d.selector)
+          );
+        }
       } catch (err) {
         logger.warn({ err }, "Dialog keyboard probe failed — reporting without it");
       }
@@ -2427,7 +2478,7 @@ export async function renderAndScan(
         screenReaderScript,
         textResizeSignals,
         incompleteChecks: [
-          ...(keyboardNav.failed ? ["keyboard navigation"] : []),
+          ...(keyboardNav.failed || keyboardNav.truncated ? ["keyboard navigation"] : []),
           ...(mobileFailed ? ["phone layout"] : []),
           ...(textResizeSignals.failed ? ["text resizing"] : []),
           ...(userPreferences.failed ? ["display preferences"] : []),

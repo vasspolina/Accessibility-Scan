@@ -59,6 +59,11 @@ export interface KeyboardNavResult {
   // indistinguishable from a page with no keyboard problems, and the report
   // quietly scores the site as if we had checked.
   failed?: boolean;
+  // Set when the render ran out of time and the walk was cut short. Same
+  // reasoning as `failed`, different cause: a heavy page now degrades rather
+  // than failing outright, and the degrading has to be visible or the report
+  // claims a clean keyboard pass it never finished.
+  truncated?: boolean;
 }
 
 function hasVisibleIndicator(stop: TabStop): boolean {
