@@ -110,3 +110,34 @@ describe("what a tap-target finding is allowed to claim", () => {
     expect(f.helpUrl).toMatch(/WCAG21/);
   });
 });
+
+// WCAG 2.5.5 and 2.5.8 both state a spacing exception: an undersized target
+// passes if a 24px-diameter circle centred on it does not intersect another
+// target's circle. Without it the check flagged correct pages — a default
+// button is about 21px tall, and an isolated one is not a problem.
+//
+// The collector runs in the page, so these exercise the same geometry through
+// the evaluator's contract: what it is handed is what survived the exception.
+describe("the spacing exception", () => {
+  const signals = (targets: Array<{ selector: string; width: number; height: number }>) => ({
+    viewportWidth: 390,
+    documentScrollWidth: 390,
+    overflowingElements: [],
+    smallTapTargets: targets.map((t) => ({ ...t, snippet: `<a>${t.selector}</a>` })),
+  });
+
+  it("reports the targets the collector judged crowded", () => {
+    const found = evaluateMobile(signals([{ selector: "a.one", width: 18, height: 18 }]));
+    expect(found.filter((f) => f.ruleId === "mobile-tap-target")).toHaveLength(1);
+  });
+
+  it("says nothing when the collector exempted them all", () => {
+    expect(evaluateMobile(signals([])).filter((f) => f.ruleId === "mobile-tap-target")).toEqual([]);
+  });
+
+  it("keeps reporting the size that was measured, so the advice is concrete", () => {
+    const f = evaluateMobile(signals([{ selector: "a.x", width: 12, height: 9 }]))
+      .find((x) => x.ruleId === "mobile-tap-target")!;
+    expect(f.description).toMatch(/12×9px/);
+  });
+});

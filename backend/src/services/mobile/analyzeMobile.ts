@@ -97,6 +97,14 @@ export function collectMobileSignalsInPage(): MobileSignals {
   const interactive = Array.from(
     document.querySelectorAll('a[href], button, [role="button"], input:not([type="hidden"]), select')
   );
+  // Every visible target's centre, measured once, so the spacing exception
+  // below can be evaluated without re-reading layout per comparison.
+  const centres: Array<{ x: number; y: number }> = [];
+  for (const el of interactive) {
+    const r = el.getBoundingClientRect();
+    if (r.width > 0 && r.height > 0) centres.push({ x: r.x + r.width / 2, y: r.y + r.height / 2 });
+  }
+
   for (const el of interactive) {
     if (smallTapTargets.length >= 15) break;
     try {
@@ -106,6 +114,33 @@ export function collectMobileSignalsInPage(): MobileSignals {
       const inText = el.closest("p, li, span, td, dd, dt, h1, h2, h3, h4, h5, h6");
       if (el.tagName.toLowerCase() === "a" && inText) continue;
       if (r.width < 24 || r.height < 24) {
+        // The spacing exception, which the criterion states outright: an
+        // undersized target passes if a 24px-diameter circle centred on it
+        // does not intersect the circle of any other target. Two such circles
+        // intersect only when their centres are closer than 24px apart.
+        //
+        // Without this the check flagged correct pages. A default-styled
+        // button is about 21px tall, so an isolated, properly labelled button
+        // with nothing near it was reported as too small to tap — which the
+        // standard explicitly says it is not. Measured on a fixture whose
+        // control section is deliberately correct: three findings, all of them
+        // wrong, on a button, a link and a labelled input.
+        //
+        // What remains flagged is the case that actually hurts: small targets
+        // packed tightly together, where a near miss hits the neighbour.
+        const cx = r.x + r.width / 2;
+        const cy = r.y + r.height / 2;
+        let crowded = false;
+        for (const c of centres) {
+          const dx = c.x - cx;
+          const dy = c.y - cy;
+          if (dx === 0 && dy === 0) continue; // itself
+          if (Math.sqrt(dx * dx + dy * dy) < 24) {
+            crowded = true;
+            break;
+          }
+        }
+        if (!crowded) continue;
         smallTapTargets.push({
           selector: cssPath(el),
           snippet: snippetOf(el),

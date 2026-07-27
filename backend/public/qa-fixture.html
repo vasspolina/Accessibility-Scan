@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+  body { font-family: system-ui; margin: 0; padding: 24px; }
+  .faint { color: #b9b9b9; background: #ffffff; }
+  .fakeheading { font-size: 28px; font-weight: 700; margin: 18px 0; }
+  .icon-btn { width: 16px; height: 16px; padding: 0; border: 0; background: #eee; }
+  /* The control section's interactive elements are spaced apart on purpose.
+     WCAG 2.5.5/2.5.8 exempt an undersized target whose 24px circle does not
+     intersect another target's, so a control that is genuinely compliant has
+     to be genuinely spaced. Without this the control section failed the
+     criterion for real, and the checker was right to say so. */
+  main > * { display: block; margin: 28px 0; }
+  .crowded { display: flex; gap: 0; }
+  .crowded a { padding: 2px; }
+</style>
+</head>
+<body>
+<!--
+  QA fixture. A page with a known, deliberate list of WCAG 2.1 A/AA defects,
+  and a control section that is correct and must never be flagged.
+
+  It exists because every other test in this project runs against real sites,
+  where nobody knows the right answer. Measuring detection needs a page where
+  the answer is written down. Served publicly so the deployed scanner can
+  reach it: the SSRF guard refuses localhost, correctly.
+
+  Each defect below is annotated with the criterion it should fail.
+-->
+
+<!-- EXPECTED: 3.1.1 no lang on <html>, 2.4.2 no <title> -->
+
+<!-- EXPECTED: 1.1.1 image with no alt -->
+<img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" width="120" height="80">
+
+<!-- EXPECTED: 2.5.5 undersized targets packed together with no spacing -->
+<div class="crowded"><a href="/a">a</a><a href="/b">b</a><a href="/c">c</a></div>
+
+<!-- EXPECTED: 4.1.2 button with no accessible name -->
+<button class="icon-btn"></button>
+
+<!-- EXPECTED: 2.4.4 link with no text -->
+<a href="/somewhere"></a>
+
+<!-- EXPECTED: 2.4.4 link text says nothing -->
+<p>About our fees. <a href="/fees-2026">Read more</a></p>
+
+<!-- EXPECTED: 3.3.2 / 1.3.1 input with no label -->
+<input type="text" name="email">
+
+<!-- EXPECTED: 1.4.3 contrast far below 4.5:1 -->
+<p class="faint">This paragraph is deliberately too pale to read.</p>
+
+<!-- EXPECTED: 1.3.1 styled to look like a heading but is a div -->
+<div class="fakeheading">This looks like a heading but is a div</div>
+
+<!-- EXPECTED: 1.3.1 heading level skips from h1 to h3 -->
+<h1>Real heading</h1>
+<h3>Skipped a level</h3>
+
+<!-- EXPECTED: 1.3.1 list items outside a list -->
+<li>Orphan item one</li>
+<li>Orphan item two</li>
+
+<!-- EXPECTED: 4.1.1 duplicate id -->
+<span id="dup">one</span><span id="dup">two</span>
+
+<!-- CONTROL: all of the following are correct and must NOT be flagged -->
+<main>
+  <h2>Properly built section</h2>
+  <p style="color:#1a1a1a;background:#ffffff">Text with strong contrast.</p>
+  <img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" alt="A meaningful description">
+  <button type="button">Clearly labelled button</button>
+  <a href="/pricing">See our pricing plans</a>
+  <label for="ok-input">Your email address</label>
+  <input id="ok-input" type="email" name="ok">
+  <ul><li>Proper list item</li></ul>
+</main>
+
+</body>
+</html>
