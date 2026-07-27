@@ -7,6 +7,7 @@ import { evaluateMotion } from "../src/services/motion/analyzeMotion.js";
 import { evaluateKeyboardNav } from "../src/services/keyboard/analyzeKeyboard.js";
 import { evaluateComponents } from "../src/services/components/analyzeComponents.js";
 import { evaluateDialogs } from "../src/services/dialog/analyzeDialogs.js";
+import { evaluateForcedColors } from "../src/services/forcedColors/analyzeForcedColors.js";
 import { evaluateMobile } from "../src/services/mobile/analyzeMobile.js";
 import { evaluateDarkPatterns } from "../src/services/darkPatterns/analyzeDarkPatterns.js";
 import { evaluateTextResize } from "../src/services/textResize/analyzeTextResize.js";
@@ -31,11 +32,17 @@ async function scanFixture(name: string): Promise<AccessibilityFinding[]> {
   const findings = axeToFindings(r.axe);
   findings.push(...evaluateTypography(r.typographyBlocks));
   findings.push(
-    ...evaluateMotion(r.domSignals.animatedElements, r.domSignals.respectsReducedMotion, new Set())
+    ...evaluateMotion(
+      r.domSignals.animatedElements,
+      r.domSignals.respectsReducedMotion,
+      new Set(),
+      r.userPreferences
+    )
   );
   findings.push(...evaluateKeyboardNav(r.keyboardNav));
   findings.push(...evaluateComponents(r.domSignals));
   findings.push(...evaluateDialogs(r.domSignals.dialogs, r.dialogKeyboard));
+  findings.push(...evaluateForcedColors(r.keyboardNav.stops, r.userPreferences));
   findings.push(...evaluateMobile(r.mobileSignals));
   findings.push(...evaluateDarkPatterns(r.darkPatternSignals));
   findings.push(...evaluateTextResize(r.textResizeSignals));
@@ -172,4 +179,52 @@ describe("the dialog keyboard probe", () => {
     // The lesser complaints about the same element stay suppressed.
     expect(findings.find((f) => f.ruleId === "dialog-focus-not-moved")).toBeUndefined();
   }, 180_000);
+});
+
+// Forced colours and reduced motion are only meaningful end to end: both are
+// answered by the browser under an emulated user preference, not by anything
+// readable in the source.
+describe("qa-preferences.html: display preferences", () => {
+  let findings: AccessibilityFinding[];
+  beforeAll(async () => {
+    findings = await scanFixture("qa-preferences.html");
+  }, 180_000);
+
+  const ruleOn = (id: string) => findings.filter((f) => f.ruleId === id).map((f) => f.selector);
+
+  it("finds focus rings that disappear in forced colours", () => {
+    expect(ruleOn("forced-colors-focus-lost")).toHaveLength(1);
+  });
+
+  it("finds the button that is nothing but a background image", () => {
+    expect(ruleOn("forced-colors-icon-lost")).toEqual(["#css-icon"]);
+  });
+
+  it("finds the animation that ignores the preference, and only that one", () => {
+    const flagged = ruleOn("motion-infinite-no-reduced-motion");
+    expect(flagged).toHaveLength(1);
+    // .calms answers the preference and sits right beside .spins; reporting
+    // it would mean the probe is reading the stylesheet rather than the page.
+    expect(flagged[0]).toContain("div:nth-of-type(1)");
+  });
+
+  it("says nothing about any of the five correct patterns", () => {
+    // An outline on a button and on a link, the transparent-outline idiom, a
+    // real <img> icon, and a button with text. Each is a pattern that looks
+    // like a failure until the rule is right.
+    const flagged = findings
+      .filter((f) => (f.ruleId ?? "").startsWith("forced-colors-"))
+      .map((f) => f.selector ?? "")
+      .join(" ");
+    expect(flagged).not.toContain("#real-icon");
+    expect(flagged).not.toContain("#text-button");
+    // The stretched-link overlay: empty, but with no background image to
+    // lose. Six of these were wrongly reported on a real site before the
+    // check compared normal rendering against forced colours.
+    expect(flagged).not.toContain("#stretched-link");
+    // The outline controls are buttons 3 and 4 plus the link in section 1.
+    expect(flagged).not.toContain("button:nth-of-type(3)");
+    expect(flagged).not.toContain("button:nth-of-type(4)");
+    expect(flagged).not.toContain("section:nth-of-type(1) > a");
+  });
 });

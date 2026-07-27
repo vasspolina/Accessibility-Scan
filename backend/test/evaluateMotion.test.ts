@@ -80,3 +80,55 @@ describe("evaluateMotion", () => {
     expect(evaluateMotion([animated({ animationIterationCount: "3" })], false, none)).toEqual([]);
   });
 });
+
+describe("evaluateMotion: measuring the preference instead of inferring it", () => {
+  const spinner = {
+    selector: "div.hero",
+    tag: "div",
+    animationName: "spin",
+    animationIterationCount: "infinite",
+    isAutoplayMedia: false,
+    hasPauseControls: false,
+  };
+
+  it("reports an animation observed still running under reduced motion", () => {
+    const findings = evaluateMotion([spinner], false, new Set(), {
+      motionIgnoringPreference: [{ selector: "div.hero" }],
+    });
+    const f = findings.find((x) => x.ruleId === "motion-infinite-no-reduced-motion");
+    expect(f).toBeDefined();
+    expect(f!.description).toContain("watching");
+  });
+
+  it("stays quiet about an animation that stopped when asked", () => {
+    expect(
+      evaluateMotion([spinner], false, new Set(), { motionIgnoringPreference: [] }).map(
+        (f) => f.ruleId
+      )
+    ).not.toContain("motion-infinite-no-reduced-motion");
+  });
+
+  it("believes the measurement over the stylesheet, in both directions", () => {
+    // The case the upgrade exists for. A page whose stylesheet mentions
+    // prefers-reduced-motion somewhere was cleared outright by the old
+    // inference, even when the rule covered a hover effect and not the
+    // spinning hero. Observation says otherwise and observation wins.
+    const cleared = evaluateMotion([spinner], true, new Set(), {
+      motionIgnoringPreference: [{ selector: "div.hero" }],
+    });
+    expect(cleared.map((f) => f.ruleId)).toContain("motion-infinite-no-reduced-motion");
+
+    // And the reverse: no media query anywhere, but the animation does stop,
+    // so there is nothing to report.
+    const quiet = evaluateMotion([spinner], false, new Set(), { motionIgnoringPreference: [] });
+    expect(quiet.map((f) => f.ruleId)).not.toContain("motion-infinite-no-reduced-motion");
+  });
+
+  it("falls back to the stylesheet check when the probe could not run", () => {
+    const failed = evaluateMotion([spinner], false, new Set(), {
+      motionIgnoringPreference: [],
+      failed: true,
+    });
+    expect(failed.map((f) => f.ruleId)).toContain("motion-infinite-no-reduced-motion");
+  });
+});

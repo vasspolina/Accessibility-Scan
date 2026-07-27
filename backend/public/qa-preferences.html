@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>QA fixture: display preferences</title>
+<!--
+  Forced Colors Mode and reduced motion, both checked by asking the browser
+  for them rather than by reading the stylesheet.
+
+  EXPECTED forced-colors-focus-lost   — focus rings drawn only with a
+    box-shadow or a colour swap. Both vanish in Windows High Contrast.
+  EXPECTED forced-colors-icon-lost    — a button whose only content is a CSS
+    background image, which the mode deletes, leaving an empty box.
+  EXPECTED motion-infinite-no-reduced-motion — .spins keeps going with the
+    preference switched on.
+
+  The controls matter more than usual here, because every one of them is a
+  pattern that looks identical to a failure until you know the rule:
+    .outline-focus     an outline survives the mode
+    .transparent-focus the deliberate `outline: solid transparent` idiom that
+                       gov.uk and wikipedia.org use — invisible normally,
+                       repainted by the system in forced colours
+    #real-icon         an <img>, which survives
+    #text-button       has text, so nothing is lost
+    #stretched-link    a transparent overlay anchor with no image to lose
+    .calms             an animation that actually answers the preference
+-->
+<style>
+  body { font-family: system-ui; margin: 0; padding: 24px; color: #1a1a1a; }
+  section { margin: 32px 0; }
+
+  /* FAIL: box-shadow is deleted in forced colours. */
+  .shadow-focus:focus { outline: none; box-shadow: 0 0 0 3px #0a5; }
+  /* FAIL: both colours collapse to the same system colour. */
+  .swap-focus { background: #eee; }
+  .swap-focus:focus { outline: none; background: #036; color: #fff; }
+
+  /* CONTROL: an outline is kept and recoloured. */
+  .outline-focus:focus { outline: 3px solid #036; }
+  /* CONTROL: the standard idiom — nothing to see until the mode paints it. */
+  .transparent-focus:focus { outline: 3px solid transparent; box-shadow: 0 0 0 3px #036; }
+
+  /* FAIL: the whole button is a background image. */
+  #css-icon { width: 44px; height: 44px; border: 0; background-color: transparent;
+              background-image: linear-gradient(#036, #06c); }
+
+  @keyframes spin { to { transform: rotate(360deg); } }
+  /* FAIL: never answers the preference. */
+  .spins { width: 40px; height: 40px; background: #444; animation: spin 2s linear infinite; }
+  /* CONTROL: answers it properly. */
+  .calms { width: 40px; height: 40px; background: #777; animation: spin 2s linear infinite; }
+  @media (prefers-reduced-motion: reduce) { .calms { animation: none; } }
+</style>
+</head>
+<body>
+<main>
+
+<section>
+  <h2>Focus indicators</h2>
+  <button class="shadow-focus" type="button">Shadow ring only</button>
+  <button class="swap-focus" type="button">Colour swap only</button>
+
+  <button class="outline-focus" type="button">Outline (control)</button>
+  <a class="outline-focus" href="/a">Outline link (control)</a>
+  <button class="transparent-focus" type="button">Transparent outline (control)</button>
+</section>
+
+<section>
+  <h2>Icons</h2>
+  <button id="css-icon" type="button" aria-label="Search"></button>
+
+  <button id="real-icon" type="button" aria-label="Print">
+    <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCI+PHJlY3Qgd2lkdGg9IjI0IiBoZWlnaHQ9IjI0IiBmaWxsPSIjMDM2Ii8+PC9zdmc+" width="24" height="24" alt="">
+  </button>
+  <button id="text-button" type="button">Has real text</button>
+
+  <!-- CONTROL: the stretched-link pattern — a transparent anchor covering a
+       card, with the picture and text as siblings. It has no background image,
+       so it has nothing to lose. This was a real false positive: the check
+       first looked only at forced colours and flagged anything computing
+       background-image: none, which is just as true of an element that never
+       had one. Six of these on kunsthallebern.ch were reported before the
+       check was made to compare before and after. -->
+  <div style="position:relative;width:220px;height:120px;background:#eee">
+    <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyMjAiIGhlaWdodD0iOTAiPjxyZWN0IHdpZHRoPSIyMjAiIGhlaWdodD0iOTAiIGZpbGw9IiNjY2MiLz48L3N2Zz4=" width="220" height="90" alt="">
+    <span>Card title</span>
+    <a id="stretched-link" href="/card" aria-label="Open card" style="position:absolute;inset:0"></a>
+  </div>
+</section>
+
+<section>
+  <h2>Motion</h2>
+  <div class="spins"></div>
+  <div class="calms"></div>
+</section>
+
+</main>
+</body>
+</html>

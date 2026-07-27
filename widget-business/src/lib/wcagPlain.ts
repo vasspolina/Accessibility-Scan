@@ -235,6 +235,18 @@ export const PLAIN_RULE_EXPLANATIONS: Record<string, PlainRule> = {
     impact:
       "Plenty of people never touch a mouse. Without a visible highlight they're navigating blind, and they give up.",
   },
+  // Forced Colors Mode — Windows High Contrast. Checked by switching the mode
+  // on and seeing what disappears.
+  "forced-colors-focus-lost": {
+    plain: "In Windows High Contrast mode, your focus highlight disappears completely.",
+    impact:
+      "High contrast mode is what people use when they can't make out low-contrast detail — and it throws away shadows and colours, which is how most focus highlights are drawn. So the users who most need to see where they are are the exact ones who see nothing. Your page looks perfect until that mode is switched on.",
+  },
+  "forced-colors-icon-lost": {
+    plain: "An icon button vanishes entirely in Windows High Contrast mode.",
+    impact:
+      "The icon is drawn as a background image, and that mode removes background images. The button still works, but it renders as an empty box — no picture, no label, no hint that it's a button at all.",
+  },
   "keyboard-faint-focus": {
     plain: "The highlight showing where you are on the page is too pale to pick out.",
     impact:

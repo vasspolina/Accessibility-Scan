@@ -16,6 +16,7 @@ import { evaluateMotion } from "./motion/analyzeMotion.js";
 import { evaluateKeyboardNav } from "./keyboard/analyzeKeyboard.js";
 import { evaluateComponents } from "./components/analyzeComponents.js";
 import { evaluateDialogs } from "./dialog/analyzeDialogs.js";
+import { evaluateForcedColors } from "./forcedColors/analyzeForcedColors.js";
 import { evaluateMobile } from "./mobile/analyzeMobile.js";
 import { evaluateDarkPatterns } from "./darkPatterns/analyzeDarkPatterns.js";
 import { evaluateTextResize } from "./textResize/analyzeTextResize.js";
@@ -187,12 +188,16 @@ export async function scanUrlToReport(
     ...evaluateMotion(
       renderResult.domSignals.animatedElements,
       renderResult.domSignals.respectsReducedMotion,
-      new Set(automatedFindings.map((f) => f.ruleId).filter((r): r is string => Boolean(r)))
+      new Set(automatedFindings.map((f) => f.ruleId).filter((r): r is string => Boolean(r))),
+      renderResult.userPreferences
     )
   );
   deterministic.push(...evaluateKeyboardNav(renderResult.keyboardNav));
   deterministic.push(...evaluateComponents(renderResult.domSignals));
   deterministic.push(...evaluateDialogs(renderResult.domSignals.dialogs, renderResult.dialogKeyboard));
+  deterministic.push(
+    ...evaluateForcedColors(renderResult.keyboardNav.stops, renderResult.userPreferences)
+  );
   deterministic.push(...evaluateMobile(renderResult.mobileSignals));
   deterministic.push(...evaluateDarkPatterns(renderResult.darkPatternSignals));
   deterministic.push(...evaluateTextResize(renderResult.textResizeSignals));

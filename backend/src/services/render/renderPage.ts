@@ -184,6 +184,10 @@ export interface RenderResult {
   // What a real keyboard does to a modal that was open on arrival — Escape,
   // and where focus sits (services/dialog/analyzeDialogs.ts).
   dialogKeyboard: DialogKeyboardResult[];
+  // How the page answers reduced-motion and forced-colours, measured by
+  // asking for them rather than reading the stylesheet
+  // (services/motion/analyzeMotion.ts).
+  userPreferences: UserPreferenceSignals;
   // Checks that did not complete on this run, in words a reader understands.
   //
   // Each of these passes catches its own failures and returns empty signals so
@@ -1498,6 +1502,177 @@ async function collectMouseOnlyControls(page: Page): Promise<MouseOnlyControl[]>
 }
 
 /**
+ * Re-renders the page as two kinds of user actually receive it, by switching
+ * the media features Chromium exposes and re-reading what changed.
+ *
+ * Everything here was measured rather than assumed, on a fixture built for
+ * the purpose. Under `forced-colors: active`:
+ *
+ *   box-shadow      -> none          (removed outright)
+ *   background-image-> none          (removed outright)
+ *   background-color-> system Canvas (every author colour collapses to one)
+ *   border-color    -> system text colour
+ *   outline         -> kept, recoloured
+ *
+ * Which is the whole finding: an outline is the only focus indicator that
+ * survives. A ring drawn with box-shadow — the single most popular way to do
+ * it — is simply not there for someone using Windows High Contrast, and
+ * neither is one drawn by swapping a background or border colour, because
+ * both states end up the same system colour.
+ *
+ * Under `prefers-reduced-motion: reduce` nothing is forced at all: the page's
+ * own stylesheet either answers or it does not. That is what makes it worth
+ * measuring instead of inferring. The existing check searches stylesheets for
+ * the string "prefers-reduced-motion" and believes any match, so one
+ * unrelated media query anywhere marks a page as respecting a preference it
+ * may still ignore on the animation that matters. Asking the page directly
+ * replaces a guess with an observation.
+ */
+export interface UserPreferenceSignals {
+  /** Animations still running when reduced motion is asked for. */
+  motionIgnoringPreference: Array<{ selector: string; tag: string; animationName: string }>;
+  /** Controls whose only visible content is a CSS background image. */
+  iconLostInForcedColors: Array<{ selector: string; tag: string; snippet: string }>;
+  failed?: boolean;
+}
+
+async function probeUserPreferences(
+  page: Page,
+  animated: Array<{ selector: string; tag: string; animationName: string }>
+): Promise<UserPreferenceSignals> {
+  const empty: UserPreferenceSignals = {
+    motionIgnoringPreference: [],
+    iconLostInForcedColors: [],
+  };
+  // Which controls are drawn only with a CSS background image, read while
+  // the page is still rendering normally.
+  //
+  // This half has to happen first, and getting it wrong was instructive:
+  // the check originally ran only under forced colours and flagged any
+  // control computing `background-image: none`, on the reasoning that the
+  // mode had removed it. It had not — that value is equally true of an
+  // element that never had a background image, and on kunsthallebern.ch it
+  // reported six `absolute inset-0` overlay links, the stretched-link
+  // pattern where a transparent anchor covers a card whose picture and text
+  // are siblings. Nothing was lost there because nothing was ever drawn.
+  // A disappearance can only be established by seeing the thing first.
+  const CANDIDATES = String.raw`(() => {
+    const __name = (fn) => fn;
+    const out = [];
+    const controls = Array.from(
+      document.querySelectorAll('button, a[href], [role="button"], summary')
+    );
+    for (const el of controls) {
+      if (out.length >= 8) break;
+      try {
+        const cs = getComputedStyle(el);
+        if (cs.backgroundImage === "none") continue; // nothing to lose
+        const r = el.getBoundingClientRect();
+        if (r.width < 8 || r.height < 8) continue;
+        if (cs.display === "none" || cs.visibility === "hidden") continue;
+        if ((el.textContent || "").trim().length > 0) continue;
+        if (el.querySelector("img, svg, picture, video, canvas")) continue;
+        const glyph = (c) => c && c !== "none" && c !== "normal" && c !== '""';
+        if (glyph(getComputedStyle(el, "::before").content)) continue;
+        if (glyph(getComputedStyle(el, "::after").content)) continue;
+        const parts = [];
+        let node = el;
+        while (node && node.nodeType === 1 && parts.length < 6) {
+          if (node.id) { parts.unshift("#" + CSS.escape(node.id)); break; }
+          let sel = node.tagName.toLowerCase();
+          const parent = node.parentElement;
+          if (parent) {
+            const sib = Array.from(parent.children).filter((c) => c.tagName === node.tagName);
+            if (sib.length > 1) sel += ":nth-of-type(" + (sib.indexOf(node) + 1) + ")";
+          }
+          parts.unshift(sel);
+          node = parent;
+        }
+        const name = el.getAttribute("aria-label") || el.getAttribute("title") || "";
+        const tag = el.tagName.toLowerCase();
+        out.push({
+          selector: parts.join(" > "),
+          tag,
+          snippet: "<" + tag + (name ? ' aria-label="' + name + '"' : "") + "></" + tag + ">",
+        });
+      } catch (e) {
+        // skip
+      }
+    }
+    return out;
+  })()`;
+
+  try {
+    const candidates = (await page.evaluate(CANDIDATES)) as UserPreferenceSignals["iconLostInForcedColors"];
+
+    // 1. Ask for reduced motion and see which animations carry on regardless.
+    await page.emulateMedia({ reducedMotion: "reduce" });
+    await page.waitForTimeout(250); // let the cascade re-resolve
+    const stillMoving = await page.evaluate(
+      (items) => {
+        const out: Array<{ selector: string; tag: string; animationName: string }> = [];
+        for (const item of items) {
+          try {
+            const el = document.querySelector(item.selector);
+            if (!el) continue;
+            const cs = getComputedStyle(el);
+            // Respecting the preference means the animation stops. Any of
+            // these is a stop: the name is dropped, the duration collapses,
+            // or it is explicitly paused.
+            const name = cs.animationName;
+            const stopped =
+              name === "none" ||
+              name === "" ||
+              parseFloat(cs.animationDuration) === 0 ||
+              cs.animationPlayState === "paused";
+            if (!stopped) {
+              out.push({ selector: item.selector, tag: item.tag, animationName: name });
+            }
+          } catch {
+            // skip
+          }
+        }
+        return out;
+      },
+      animated.filter((a) => a.animationName && a.animationName !== "none")
+    );
+
+    // 2. Now switch to forced colours and confirm each candidate actually
+    //    lost its image. Only a before-and-after establishes that.
+    await page.emulateMedia({ reducedMotion: "no-preference", forcedColors: "active" });
+    await page.waitForTimeout(250);
+    const lostIcons = await page.evaluate(
+      (items) => {
+        const out: typeof items = [];
+        for (const item of items) {
+          try {
+            const el = document.querySelector(item.selector);
+            if (!el) continue;
+            // It had one a moment ago; if it has none now, the mode took it.
+            if (getComputedStyle(el).backgroundImage === "none") out.push(item);
+          } catch {
+            // skip
+          }
+        }
+        return out;
+      },
+      candidates
+    );
+
+    return {
+      motionIgnoringPreference: stillMoving as UserPreferenceSignals["motionIgnoringPreference"],
+      iconLostInForcedColors: lostIcons as UserPreferenceSignals["iconLostInForcedColors"],
+    };
+  } catch (err) {
+    logger.warn({ err }, "User-preference probe failed — reporting without it");
+    return { ...empty, failed: true };
+  } finally {
+    // Always hand the page back as it was found; the dialog probe runs next.
+    await page.emulateMedia({ reducedMotion: null, forcedColors: null }).catch(() => {});
+  }
+}
+
+/**
  * Drives a real keyboard at a modal that is already open, and reports what
  * happens. Covers the last three items of the keyboard checklist: focus moves
  * into the dialog, Escape closes it, and closing leaves focus somewhere sane.
@@ -1942,10 +2117,19 @@ export async function renderAndScan(
       // step that sets out to change what is on screen, so nothing measured
       // above can be disturbed by it. The viewport goes back to desktop
       // first, so the dialog is driven at the size everything else saw.
+      // How the page answers two user preferences. Non-destructive — it
+      // switches media features and reads back, changing no DOM — so it goes
+      // before the dialog probe, which does change things.
+      let userPreferences: UserPreferenceSignals = {
+        motionIgnoringPreference: [],
+        iconLostInForcedColors: [],
+      };
+
       let dialogKeyboard: DialogKeyboardResult[] = [];
       try {
         await page.setViewportSize({ width: 1280, height: 900 });
         await page.waitForTimeout(300);
+        userPreferences = await probeUserPreferences(page, domSignals.animatedElements);
         dialogKeyboard = await probeDialogKeyboard(
           page,
           domSignals.dialogs.filter((d) => d.selector)
@@ -1960,6 +2144,7 @@ export async function renderAndScan(
 
       return {
         dialogKeyboard,
+        userPreferences,
         pageTitle: domSignals.pageTitle,
         finalUrl: page.url(),
         axe,
@@ -1980,6 +2165,7 @@ export async function renderAndScan(
           ...(keyboardNav.failed ? ["keyboard navigation"] : []),
           ...(mobileFailed ? ["phone layout"] : []),
           ...(textResizeSignals.failed ? ["text resizing"] : []),
+          ...(userPreferences.failed ? ["display preferences"] : []),
         ],
       };
     } finally {

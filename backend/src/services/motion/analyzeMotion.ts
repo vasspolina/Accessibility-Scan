@@ -46,7 +46,14 @@ function makeFinding(
 export function evaluateMotion(
   animatedElements: AnimatedElement[],
   respectsReducedMotion: boolean,
-  existingRuleIds: Set<string>
+  existingRuleIds: Set<string>,
+  /**
+   * Which animations were still running when reduced motion was actually
+   * requested. Authoritative when present, because it is an observation of
+   * this page rather than a guess from its stylesheets. Absent only when the
+   * probe could not run, and then the old inference below is all there is.
+   */
+  measured?: { motionIgnoringPreference: Array<{ selector: string }>; failed?: boolean }
 ): AccessibilityFinding[] {
   const findings: AccessibilityFinding[] = [];
 
@@ -81,24 +88,45 @@ export function evaluateMotion(
   }
 
   // Endless CSS animations on a page that ignores the visitor's
-  // reduced-motion preference. If the site has a prefers-reduced-motion
-  // rule anywhere, we assume it handles this deliberately and stay quiet.
+  // reduced-motion preference.
   const infinite = animatedElements.filter(
     (a) =>
       a.tag !== "marquee" &&
       !a.isAutoplayMedia &&
       a.animationIterationCount.includes("infinite")
   );
-  if (infinite.length > 0 && !respectsReducedMotion) {
-    findings.push(
-      makeFinding(
-        "motion-infinite-no-reduced-motion",
-        "moderate",
-        infinite[0].selector,
-        `Content animates non-stop (${infinite.length} element${infinite.length === 1 ? "" : "s"} with infinite animations), and the site never honors the visitor's "reduce motion" system setting. Perpetual motion distracts from reading and can trigger nausea for people with vestibular disorders.`,
-        "Wrap the animations in an @media (prefers-reduced-motion: no-preference) block, or stop them after a few seconds, or add a pause control."
-      )
-    );
+
+  if (infinite.length > 0) {
+    if (measured && !measured.failed) {
+      // The preference was switched on and these animations kept going. No
+      // inference is involved, and that matters: the fallback below clears a
+      // whole page the moment any stylesheet mentions prefers-reduced-motion,
+      // so a site with one such rule covering a hover effect was recorded as
+      // respecting a preference its spinning hero still ignores.
+      const ignoring = new Set(measured.motionIgnoringPreference.map((m) => m.selector));
+      const stillMoving = infinite.filter((a) => ignoring.has(a.selector));
+      if (stillMoving.length > 0) {
+        findings.push(
+          makeFinding(
+            "motion-infinite-no-reduced-motion",
+            "moderate",
+            stillMoving[0].selector,
+            `${stillMoving.length} element${stillMoving.length === 1 ? "" : "s"} on this page animate without stopping, and they carry on even when the visitor has asked their system to reduce motion — this was checked by turning that setting on and watching. Perpetual movement makes text hard to read, and for people with vestibular disorders it causes real nausea.`,
+            "Wrap the animation in @media (prefers-reduced-motion: no-preference), or stop it after a few seconds, or add a pause control. Note that having such a rule somewhere in your stylesheets is not enough — it has to cover these particular animations."
+          )
+        );
+      }
+    } else if (!respectsReducedMotion) {
+      findings.push(
+        makeFinding(
+          "motion-infinite-no-reduced-motion",
+          "moderate",
+          infinite[0].selector,
+          `Content animates non-stop (${infinite.length} element${infinite.length === 1 ? "" : "s"} with infinite animations), and no stylesheet on this page mentions the visitor's "reduce motion" setting at all. Perpetual motion distracts from reading and can trigger nausea for people with vestibular disorders.`,
+          "Wrap the animations in an @media (prefers-reduced-motion: no-preference) block, or stop them after a few seconds, or add a pause control."
+        )
+      );
+    }
   }
 
   return findings;
