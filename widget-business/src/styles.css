@@ -28,8 +28,8 @@
 }
 
 .a11y-widget-inner {
-  max-width: 680px;
-  padding: 28px;
+  max-width: 672px;
+  padding: 32px;
   border: 1px solid var(--a11y-border, #d0d7de);
   border-radius: 14px;
   background: var(--a11y-bg, #ffffff);
@@ -38,8 +38,8 @@
 }
 
 .a11y-intro {
-  margin: 0 0 20px;
-  font-size: 15px;
+  margin: 0 0 24px;
+  font-size: 16px;
   line-height: 1.6;
   color: var(--a11y-muted, #57606a);
 }
@@ -58,7 +58,7 @@
 
 .a11y-url-label {
   display: block;
-  font-size: 15px;
+  font-size: 16px;
   font-weight: 600;
   margin-bottom: 8px;
   color: var(--a11y-text, #1f2328);
@@ -66,12 +66,12 @@
 
 .a11y-url-row {
   display: flex;
-  gap: 10px;
+  gap: 12px;
 }
 
 .a11y-url-row input {
   flex: 1;
-  padding: 13px 14px;
+  padding: 12px 16px;
   border: 1px solid var(--a11y-border, #d0d7de);
   border-radius: 8px;
   font-size: 16px;
@@ -88,7 +88,7 @@
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  padding: 13px 22px;
+  padding: 12px 24px;
   border: none;
   border-radius: 8px;
   background: var(--a11y-accent, #0969da);
@@ -157,7 +157,7 @@
   display: flex;
   align-items: center;
   gap: 8px;
-  margin-top: 14px;
+  margin-top: 16px;
   font-size: 14px;
   font-weight: 400;
   color: var(--a11y-muted, #57606a);
@@ -173,23 +173,23 @@
 
 .a11y-error {
   margin-top: 16px;
-  padding: 12px 14px;
+  padding: 12px 16px;
   border-radius: 8px;
   background: #fff0ef;
   color: var(--a11y-score-bad, #cf222e);
-  font-size: 15px;
+  font-size: 16px;
 }
 
 .a11y-loading,
 .a11y-empty {
   margin-top: 16px;
   color: var(--a11y-muted, #57606a);
-  font-size: 15px;
+  font-size: 16px;
 }
 
 .a11y-notice {
-  margin-top: 14px;
-  padding: 12px 14px;
+  margin-top: 16px;
+  padding: 12px 16px;
   border-radius: 8px;
   background: #fff8c5;
   color: #4d3800;
@@ -197,11 +197,11 @@
 }
 
 .a11y-report {
-  margin-top: 26px;
+  margin-top: 24px;
 }
 
 .a11y-section {
-  margin-top: 28px;
+  margin-top: 32px;
   padding-left: 16px;
   border-left: 3px solid var(--a11y-border, #d0d7de);
 }
@@ -209,12 +209,12 @@
 .a11y-section-redflag {
   border-left-color: var(--a11y-score-bad, #cf222e);
   background: #fff5f5;
-  padding: 14px 16px;
+  padding: 16px;
   border-radius: 0 10px 10px 0;
 }
 
 .a11y-section-title {
-  margin: 0 0 6px;
+  margin: 0 0 8px;
   font-size: 18px;
   font-weight: 700;
 }
@@ -229,20 +229,20 @@
 }
 
 .a11y-section-desc {
-  margin: 0 0 14px;
+  margin: 0 0 16px;
   font-size: 14px;
   line-height: 1.5;
   color: var(--a11y-muted, #57606a);
 }
 
 .a11y-score {
-  margin-bottom: 20px;
+  margin-bottom: 24px;
 }
 
 .a11y-score-top {
   display: flex;
   align-items: center;
-  gap: 20px;
+  gap: 24px;
   margin-bottom: 16px;
 }
 
@@ -259,7 +259,7 @@
 }
 
 .a11y-score-number {
-  font-size: 30px;
+  font-size: 32px;
   font-weight: 700;
   line-height: 1;
 }
@@ -278,14 +278,14 @@
 .a11y-score-breakdown {
   display: grid;
   grid-template-columns: repeat(2, auto);
-  gap: 6px 24px;
+  gap: 8px 24px;
   margin: 0;
 }
 
 .a11y-score-breakdown div {
   display: flex;
   justify-content: space-between;
-  gap: 10px;
+  gap: 12px;
   font-size: 14px;
 }
 
@@ -301,11 +301,11 @@
 .a11y-principle-groups {
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  gap: 24px;
 }
 
 .a11y-principle-group {
-  padding: 14px 16px;
+  padding: 16px;
   border: 1px solid var(--a11y-border, #d0d7de);
   border-radius: 10px;
   background: var(--a11y-surface, #f6f8fa);
@@ -313,13 +313,13 @@
 
 .a11y-principle-title {
   margin: 0 0 4px;
-  font-size: 15px;
+  font-size: 16px;
   font-weight: 700;
 }
 
 .a11y-principle-desc {
   margin: 0 0 12px;
-  font-size: 13px;
+  font-size: 14px;
   color: var(--a11y-muted, #57606a);
 }
 
@@ -329,7 +329,7 @@
   padding: 0;
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 12px;
 }
 
 .a11y-finding {
@@ -357,7 +357,7 @@
   border: none;
   cursor: pointer;
   text-align: left;
-  font-size: 15px;
+  font-size: 16px;
 }
 
 .a11y-finding-header:focus-visible {
@@ -367,7 +367,7 @@
 
 .a11y-severity-badge {
   flex-shrink: 0;
-  padding: 4px 10px;
+  padding: 4px 12px;
   border-radius: 999px;
   font-size: 12px;
   font-weight: 700;
@@ -413,7 +413,7 @@
 
 .a11y-count-badge {
   flex-shrink: 0;
-  padding: 2px 9px;
+  padding: 2px 8px;
   border-radius: 999px;
   font-size: 12px;
   font-weight: 700;
@@ -424,7 +424,7 @@
 }
 
 .a11y-group-count {
-  margin: 0 0 10px;
+  margin: 0 0 12px;
   font-size: 14px;
   color: var(--a11y-muted, #57606a);
 }
@@ -451,13 +451,13 @@
 }
 
 .a11y-thumb-more {
-  font-size: 13px;
+  font-size: 14px;
   font-weight: 600;
   color: var(--a11y-muted, #57606a);
 }
 
 .a11y-show-all {
-  padding: 8px 14px;
+  padding: 8px 16px;
   border: 1px solid var(--a11y-border, #d0d7de);
   border-radius: 8px;
   background: var(--a11y-bg, #ffffff);
@@ -478,7 +478,7 @@
 }
 
 .a11y-affected {
-  margin: 14px 0;
+  margin: 16px 0;
 }
 
 .a11y-affected-label {
@@ -496,7 +496,7 @@
 
 .a11y-occurrence {
   margin: 0;
-  padding: 8px 10px;
+  padding: 8px 12px;
   border: 1px solid var(--a11y-border, #d0d7de);
   border-radius: 8px;
   background: var(--a11y-surface, #f6f8fa);
@@ -505,7 +505,7 @@
 .a11y-occurrence-head {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 12px;
 }
 
 .a11y-occurrence-thumb {
@@ -541,17 +541,17 @@
   background: var(--a11y-bg, #ffffff);
   border: 1px solid var(--a11y-border, #d0d7de);
   border-radius: 999px;
-  padding: 1px 8px;
+  padding: 2px 8px;
   white-space: nowrap;
 }
 
 .a11y-tech-elements {
   margin: 4px 0 0;
-  padding-left: 18px;
+  padding-left: 16px;
 }
 
 .a11y-tech-elements code {
-  font-size: 11px;
+  font-size: 12px;
   word-break: break-word;
 }
 
@@ -595,14 +595,14 @@
 }
 
 .a11y-finding-details {
-  padding: 12px 14px 16px;
+  padding: 12px 16px 16px;
   border-top: 1px solid var(--a11y-border, #d0d7de);
   font-size: 14px;
   color: var(--a11y-text, #1f2328);
 }
 
 .a11y-finding-details p {
-  margin: 6px 0;
+  margin: 8px 0;
   line-height: 1.5;
 }
 
@@ -619,9 +619,13 @@
    in the body font and the distinction it exists to make was invisible. */
 .a11y-widget-biz code {
   font-family: var(--a11y-mono, ui-monospace, SFMono-Regular, Menlo, Consolas, monospace);
-  font-size: 0.92em;
+  /* Carbon code-02. A relative 0.92em was the last thing on the page landing
+     off the type scale — it computed to 12.88px inside body text and 13.33px
+     where the surrounding size differed, which is exactly the drift the scale
+     exists to prevent. */
+  font-size: 14px;
   background: var(--a11y-surface, #f6f8fa);
-  padding: 1px 5px;
+  padding: 2px 4px;
   border-radius: 3px;
   /* Long selectors must be able to break, or one of them widens the card and
      the whole report scrolls sideways — which this tool reports as a fault. */
@@ -631,7 +635,7 @@
 /* What was measured, above the explanation: plain body text, so the order
    reads as fact, then why it matters, then what to change. */
 .a11y-finding-measured {
-  margin: 0 0 10px;
+  margin: 0 0 12px;
 }
 
 /* How the finding was found. An outline tag rather than a filled one: it is
@@ -644,10 +648,10 @@
 .a11y-method-badge {
   flex-shrink: 0;
   margin-left: auto;
-  padding: 1px 7px;
+  padding: 2px 8px;
   border: 1px solid var(--a11y-border, #d0d7de);
   border-radius: 999px;
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 400;
   color: var(--a11y-muted, #57606a);
   white-space: nowrap;
@@ -665,25 +669,25 @@
 }
 
 .a11y-method-hint {
-  margin: 0 0 10px;
-  font-size: 13px;
+  margin: 0 0 12px;
+  font-size: 14px;
   color: var(--a11y-muted, #57606a);
 }
 
 .a11y-alt-suggestion {
-  margin: 10px 0;
-  padding: 10px 12px;
+  margin: 12px 0;
+  padding: 12px 12px;
   border-radius: 8px;
   background: var(--a11y-surface, #f6f8fa);
   border: 1px solid var(--a11y-border, #d0d7de);
 }
 
 .a11y-alt-suggestion.a11y-alt-decorative {
-  margin: 10px 0;
+  margin: 12px 0;
 }
 
 .a11y-alt-suggestion-label {
-  margin: 0 0 6px;
+  margin: 0 0 8px;
 }
 
 .a11y-alt-suggestion-value {
@@ -694,23 +698,23 @@
 
 .a11y-alt-suggestion-value code {
   flex: 1;
-  padding: 6px 10px;
+  padding: 8px 12px;
   border-radius: 6px;
   background: var(--a11y-bg, #ffffff);
   border: 1px solid var(--a11y-border, #d0d7de);
-  font-size: 13px;
+  font-size: 14px;
   line-height: 1.4;
   word-break: break-word;
 }
 
 .a11y-alt-copy {
   flex-shrink: 0;
-  padding: 6px 14px;
+  padding: 8px 16px;
   border: none;
   border-radius: 6px;
   background: var(--a11y-accent, #0969da);
   color: #ffffff;
-  font-size: 13px;
+  font-size: 14px;
   font-weight: 600;
   cursor: pointer;
 }
@@ -721,10 +725,10 @@
 
 .a11y-tech-details {
   margin-top: 12px;
-  padding: 10px 12px;
+  padding: 12px 12px;
   border-radius: 8px;
   background: var(--a11y-surface, #f6f8fa);
-  font-size: 13px;
+  font-size: 14px;
 }
 
 .a11y-tech-details summary {
@@ -734,12 +738,12 @@
 }
 
 .a11y-tech-details p {
-  margin: 6px 0 0;
+  margin: 8px 0 0;
 }
 
 .a11y-tech-details code {
   background: var(--a11y-surface, #f6f8fa);
-  padding: 1px 5px;
+  padding: 2px 4px;
   border-radius: 4px;
   font-size: 12px;
 }
@@ -752,7 +756,7 @@
   flex-wrap: wrap;
   align-items: center;
   gap: 12px;
-  margin: 0 0 14px;
+  margin: 0 0 16px;
 }
 
 .a11y-sr-play {
@@ -762,7 +766,7 @@
   background: var(--a11y-accent, #0969da);
   border: 1px solid transparent;
   border-radius: 8px;
-  padding: 9px 16px;
+  padding: 8px 16px;
   cursor: pointer;
 }
 
@@ -776,13 +780,13 @@
 }
 
 .a11y-sr-issue-count {
-  font-size: 13px;
+  font-size: 14px;
   font-weight: 600;
   color: var(--a11y-score-bad, #cf222e);
   background: #fff5f5;
   border: 1px solid #ffcdc9;
   border-radius: 999px;
-  padding: 3px 10px;
+  padding: 4px 12px;
 }
 
 .a11y-sr-list {
@@ -791,14 +795,14 @@
   padding: 0;
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: 8px;
 }
 
 .a11y-sr-line {
   display: flex;
   align-items: flex-start;
-  gap: 10px;
-  padding: 8px 10px;
+  gap: 12px;
+  padding: 8px 12px;
   border: 1px solid var(--a11y-border, #d0d7de);
   border-radius: 8px;
   background: var(--a11y-surface, #f6f8fa);
@@ -817,7 +821,7 @@
 .a11y-sr-text {
   flex: 1;
   min-width: 0;
-  font-size: 15px;
+  font-size: 16px;
   line-height: 1.5;
   color: var(--a11y-text, #1f2328);
   word-break: break-word;
@@ -839,14 +843,14 @@
 
 .a11y-sr-issue {
   display: block;
-  margin-top: 3px;
-  font-size: 13px;
+  margin-top: 4px;
+  font-size: 14px;
   color: var(--a11y-score-bad, #cf222e);
 }
 
 .a11y-sr-note {
-  margin: 10px 0 0;
-  font-size: 13px;
+  margin: 12px 0 0;
+  font-size: 14px;
   color: var(--a11y-muted, #57606a);
 }
 
@@ -855,16 +859,16 @@
 .a11y-conf-tiles {
   display: flex;
   flex-wrap: wrap;
-  gap: 10px;
-  margin: 0 0 14px;
+  gap: 12px;
+  margin: 0 0 16px;
 }
 
 .a11y-conf-tile {
   flex: 1 1 140px;
   display: flex;
   align-items: baseline;
-  gap: 10px;
-  padding: 12px 14px;
+  gap: 12px;
+  padding: 12px 16px;
   border: 1px solid var(--a11y-border, #d0d7de);
   border-radius: 10px;
   background: var(--a11y-surface, #f6f8fa);
@@ -876,7 +880,7 @@
 }
 
 .a11y-conf-num {
-  font-size: 26px;
+  font-size: 28px;
   font-weight: 700;
   line-height: 1;
 }
@@ -886,7 +890,7 @@
 }
 
 .a11y-conf-cap {
-  font-size: 13px;
+  font-size: 14px;
   color: var(--a11y-muted, #57606a);
 }
 
@@ -907,8 +911,8 @@
 }
 
 .a11y-conf-caveat {
-  margin: 0 0 14px;
-  padding: 12px 14px;
+  margin: 0 0 16px;
+  padding: 12px 16px;
   border-left: 3px solid var(--a11y-accent, #0969da);
   border-radius: 0 8px 8px 0;
   background: var(--a11y-surface, #f6f8fa);
@@ -919,7 +923,7 @@
 /* Short paragraphs rather than one dense block — the same readability this
    tool asks of the sites it checks. */
 .a11y-conf-caveat p {
-  margin: 0 0 9px;
+  margin: 0 0 8px;
 }
 
 .a11y-conf-caveat p:last-child {
@@ -927,7 +931,7 @@
 }
 
 .a11y-conf-filter {
-  margin: 0 0 10px;
+  margin: 0 0 12px;
 }
 
 .a11y-conf-list {
@@ -936,14 +940,14 @@
   padding: 0;
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: 8px;
 }
 
 .a11y-conf-row {
   display: flex;
   align-items: flex-start;
   gap: 12px;
-  padding: 9px 12px;
+  padding: 8px 12px;
   border: 1px solid var(--a11y-border, #d0d7de);
   border-radius: 8px;
   background: var(--a11y-bg, #ffffff);
@@ -965,7 +969,7 @@
 .a11y-conf-id em {
   display: block;
   font-style: normal;
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 400;
   color: var(--a11y-muted, #57606a);
 }
@@ -977,7 +981,7 @@
 
 .a11y-conf-plain {
   display: block;
-  font-size: 13px;
+  font-size: 14px;
   color: var(--a11y-muted, #57606a);
 }
 
@@ -998,7 +1002,7 @@
 .a11y-conf-count {
   display: block;
   margin-top: 2px;
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 400;
   font-style: normal;
   color: var(--a11y-muted, #57606a);
@@ -1022,9 +1026,9 @@
 
 .a11y-sim-btn {
   font: inherit;
-  font-size: 13px;
+  font-size: 14px;
   text-align: left;
-  padding: 7px 12px;
+  padding: 8px 12px;
   border: 1px solid var(--a11y-border, #d0d7de);
   border-radius: 999px;
   background: var(--a11y-bg, #ffffff);
@@ -1035,7 +1039,7 @@
 .a11y-sim-btn em {
   display: block;
   font-style: normal;
-  font-size: 11px;
+  font-size: 12px;
   color: var(--a11y-muted, #57606a);
 }
 
@@ -1081,7 +1085,7 @@
   display: flex;
   flex-wrap: wrap;
   gap: 8px;
-  margin-top: 14px;
+  margin-top: 16px;
 }
 
 .a11y-mode-btn {
@@ -1090,7 +1094,7 @@
   font-size: 14px;
   font-weight: 600;
   text-align: left;
-  padding: 10px 14px;
+  padding: 12px 16px;
   border: 1px solid var(--a11y-border, #d0d7de);
   border-radius: 10px;
   background: var(--a11y-bg, #ffffff);
@@ -1121,7 +1125,7 @@
 .a11y-ai-toggle select {
   font: inherit;
   font-size: 14px;
-  padding: 6px 10px;
+  padding: 8px 12px;
   border: 1px solid var(--a11y-border, #d0d7de);
   border-radius: 8px;
   background: var(--a11y-bg, #ffffff);
@@ -1145,11 +1149,11 @@
   display: flex;
   align-items: flex-start;
   gap: 12px;
-  padding: 11px 13px;
+  padding: 12px 12px;
   border: 1px solid var(--a11y-border, #d0d7de);
   border-radius: 10px;
   background: var(--a11y-bg, #ffffff);
-  font-size: 15px;
+  font-size: 16px;
 }
 
 .a11y-audit-body {
@@ -1168,7 +1172,7 @@
 .a11y-audit-count em {
   display: block;
   font-style: normal;
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 400;
 }
 
@@ -1186,8 +1190,8 @@
 
 .a11y-audit-err {
   display: block;
-  margin-top: 3px;
-  font-size: 13px;
+  margin-top: 4px;
+  font-size: 14px;
   color: var(--a11y-score-bad, #cf222e);
 }
 
@@ -1197,14 +1201,14 @@
   display: flex;
   flex-wrap: wrap;
   gap: 12px;
-  margin: 0 0 14px;
+  margin: 0 0 16px;
 }
 
 .a11y-stmt-field {
   flex: 1 1 220px;
   display: flex;
   flex-direction: column;
-  gap: 5px;
+  gap: 4px;
   font-size: 14px;
   font-weight: 600;
   color: var(--a11y-text, #1f2328);
@@ -1213,7 +1217,7 @@
 .a11y-stmt-field input {
   font: inherit;
   font-weight: 400;
-  padding: 9px 11px;
+  padding: 8px 12px;
   border: 1px solid var(--a11y-border, #d0d7de);
   border-radius: 8px;
   background: var(--a11y-bg, #ffffff);
@@ -1231,13 +1235,13 @@
 .a11y-stmt-text {
   max-height: 320px;
   overflow: auto;
-  margin: 0 0 14px;
-  padding: 14px 16px;
+  margin: 0 0 16px;
+  padding: 16px;
   border: 1px solid var(--a11y-border, #d0d7de);
   border-radius: 10px;
   background: var(--a11y-surface, #f6f8fa);
   font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
-  font-size: 12.5px;
+  font-size: 12px;
   line-height: 1.6;
   white-space: pre-wrap;
   word-break: break-word;
@@ -1250,7 +1254,7 @@
   flex-wrap: wrap;
   align-items: center;
   gap: 12px;
-  margin-bottom: 18px;
+  margin-bottom: 16px;
 }
 
 @media print {
@@ -1350,7 +1354,7 @@
 .a11y-principle-term {
   display: block;
   font-style: normal;
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 400;
   text-transform: uppercase;
   letter-spacing: 0.05em;
@@ -1367,14 +1371,14 @@
   background: none;
   border: 0;
   padding: 0;
-  margin-top: 14px;
+  margin-top: 16px;
   cursor: pointer;
   text-decoration: underline;
 }
 
 .a11y-login {
-  margin-top: 14px;
-  padding: 14px 16px;
+  margin-top: 16px;
+  padding: 16px;
   border: 1px solid var(--a11y-border, #d0d7de);
   border-radius: 10px;
   background: var(--a11y-surface, #f6f8fa);
@@ -1395,14 +1399,14 @@
 
 .a11y-login-note {
   margin: 0 0 12px;
-  font-size: 13px;
+  font-size: 14px;
   line-height: 1.5;
   color: var(--a11y-muted, #57606a);
 }
 
 .a11y-login-ready {
-  margin: 10px 0 0;
-  font-size: 13px;
+  margin: 12px 0 0;
+  font-size: 14px;
   color: var(--a11y-muted, #57606a);
 }
 
@@ -1411,8 +1415,8 @@
 /* Not styled as an error: the site refusing a scanner is a fact about the
    site, not a mistake the reader made. */
 .a11y-blocked {
-  margin-top: 18px;
-  padding: 16px 18px;
+  margin-top: 16px;
+  padding: 16px;
   border: 1px solid var(--a11y-border, #d0d7de);
   border-left: 3px solid var(--a11y-accent, #0969da);
   border-radius: 0 10px 10px 0;
@@ -1420,14 +1424,14 @@
 }
 
 .a11y-blocked-lead {
-  margin: 0 0 10px;
-  font-size: 15px;
+  margin: 0 0 12px;
+  font-size: 16px;
   font-weight: 600;
   line-height: 1.5;
 }
 
 .a11y-blocked-body {
-  margin: 0 0 10px;
+  margin: 0 0 12px;
   font-size: 14px;
   line-height: 1.55;
   color: var(--a11y-muted, #57606a);
@@ -1435,7 +1439,7 @@
 
 .a11y-blocked-list {
   margin: 0;
-  padding-left: 20px;
+  padding-left: 24px;
   font-size: 14px;
   line-height: 1.6;
 }
@@ -1449,8 +1453,8 @@
 }
 
 .a11y-blocked-list code {
-  font-size: 13px;
-  padding: 1px 5px;
+  font-size: 14px;
+  padding: 2px 4px;
   border-radius: 4px;
   background: var(--a11y-bg, #ffffff);
   border: 1px solid var(--a11y-border, #d0d7de);
@@ -1474,7 +1478,7 @@
   padding: 0;
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: 8px;
   font-size: 14px;
 }
 
@@ -1505,7 +1509,7 @@
   display: flex;
   align-items: baseline;
   gap: 12px;
-  padding: 6px 0;
+  padding: 8px 0;
   border-bottom: 1px solid var(--a11y-border, #d0d7de);
 }
 
@@ -1979,7 +1983,7 @@
 
 .a11y-ai-toggle input[type="checkbox"] {
   flex-shrink: 0;
-  margin-top: 1px;
+  margin-top: 2px;
   accent-color: var(--a11y-accent, #0f62fe);
 }
 
@@ -2074,7 +2078,7 @@
    The swatches matter as much as the hex: a code alone does not tell someone
    who did not choose the colour whether the suggestion is still theirs. */
 .a11y-colour-fix {
-  margin-top: 10px;
+  margin-top: 12px;
   padding: 12px;
   background: var(--a11y-surface, #f4f4f4);
   border-left: 3px solid var(--a11y-accent, #0f62fe);
@@ -2086,13 +2090,13 @@
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  gap: 6px;
+  gap: 8px;
 }
 
 .a11y-swatch-pair {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
+  gap: 8px;
 }
 
 .a11y-swatch {
@@ -2122,8 +2126,8 @@
 }
 
 .a11y-fix-once code {
-  font-size: 13px;
-  padding: 1px 5px;
+  font-size: 14px;
+  padding: 2px 4px;
   background: var(--a11y-bg, #ffffff);
   border: 1px solid var(--a11y-border, #e0e0e0);
 }
@@ -2133,7 +2137,7 @@
   padding: 16px;
   border-left: 3px solid var(--a11y-border, #e0e0e0);
   background: var(--a11y-surface, #f4f4f4);
-  margin-bottom: 20px;
+  margin-bottom: 24px;
 }
 
 .a11y-doc-bad {
