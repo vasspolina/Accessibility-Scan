@@ -167,8 +167,22 @@ export async function scanUrlToReport(
     await attachEvidence(findings, renderResult, includeAiReview);
   }
 
+  // The summary counts everything, because it is the triage list under the
+  // gauge and has to agree with the findings actually shown.
   const summary = summarizeSeverity(findings);
-  const score = computeScore(summary);
+  // The score counts Level A and AA only.
+  //
+  // This report measures WCAG 2.1 A/AA — it says so above the conformance
+  // checklist, and that is the bar EN 301 549 and the accessibility statement
+  // are written against. Penalising the headline number for AAA findings meant
+  // marking a site down against a standard it was never being held to. Target
+  // size is the case in point: fifteen AAA findings on one page, moderate
+  // severity, enough on their own to exhaust the entire moderate penalty cap.
+  //
+  // The findings stay in the report and in the triage counts. They are good
+  // advice and WCAG 2.2 makes several of them requirements. They simply do not
+  // move a number that claims to describe A/AA conformance.
+  const score = computeScore(summarizeSeverity(findings.filter((f) => f.wcagLevel !== "AAA")));
   const categorySummary = summarizeCategories(findings);
   const conformance = buildConformance(findings);
 

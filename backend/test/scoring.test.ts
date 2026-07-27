@@ -69,3 +69,59 @@ describe("computeScore", () => {
     expect(s.total).toBe(1);
   });
 });
+
+// This report measures WCAG 2.1 A and AA. Marking a site down against a
+// standard it is not being held to is the same overclaim as the tap-target
+// badge that said "required by law" for a AAA criterion, one step further on.
+describe("what the score counts", () => {
+  const finding = (
+    severity: AccessibilityFinding["severity"],
+    wcagLevel?: "A" | "AA" | "AAA"
+  ): AccessibilityFinding => ({
+    id: Math.random().toString(),
+    source: "automated",
+    severity,
+    category: "accessibility",
+    wcagLevel,
+    selector: "a",
+    description: "d",
+    suggestedFix: "f",
+  });
+
+  // Mirrors the pipeline: everything is summarised for the triage counts, and
+  // the score is computed from the A/AA subset.
+  const scoreOf = (findings: AccessibilityFinding[]) =>
+    computeScore(summarizeSeverity(findings.filter((f) => f.wcagLevel !== "AAA")));
+
+  it("ignores AAA findings", () => {
+    const aaaOnly = [finding("moderate", "AAA"), finding("moderate", "AAA")];
+    expect(scoreOf(aaaOnly)).toBe(100);
+  });
+
+  it("still counts A and AA", () => {
+    expect(scoreOf([finding("critical", "A")])).toBe(90);
+    expect(scoreOf([finding("serious", "AA")])).toBe(95);
+  });
+
+  // Most findings carry no level at all — best-practice axe rules, and our own
+  // deterministic layers. Silence must not be read as AAA.
+  it("counts a finding with no level, rather than dropping it", () => {
+    expect(scoreOf([finding("critical", undefined)])).toBe(90);
+  });
+
+  it("leaves the triage counts alone, so they still match the list shown", () => {
+    const mixed = [finding("critical", "A"), finding("moderate", "AAA")];
+    const shown = summarizeSeverity(mixed);
+    expect(shown.total).toBe(2);
+    expect(shown.moderate).toBe(1);
+    // ...while the score sees only the Level A one.
+    expect(scoreOf(mixed)).toBe(90);
+  });
+
+  // The case that prompted this: fifteen AAA tap-target findings, moderate,
+  // which alone reach the moderate cap of 30.
+  it("does not let AAA findings exhaust a penalty cap", () => {
+    const many = Array.from({ length: 15 }, () => finding("moderate", "AAA"));
+    expect(scoreOf(many)).toBe(100);
+  });
+});

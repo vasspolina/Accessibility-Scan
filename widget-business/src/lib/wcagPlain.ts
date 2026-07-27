@@ -55,7 +55,10 @@ export function classifyWcag(wcagCriterion: string | undefined): PrincipleInfo |
 export const LEVEL_FRAMING: Record<"A" | "AA" | "AAA", string> = {
   A: "Basic requirement (Level A)",
   AA: "Required by law in most places (Level AA)",
-  AAA: "Advanced (Level AAA)",
+  // Says plainly that this one is advice rather than obligation. The score
+  // counts A and AA only, so a reader who fixes an AAA finding and sees the
+  // number stay put deserves to know why before they go looking for a bug.
+  AAA: "Advanced (Level AAA): worth doing, not required, not scored",
 };
 
 // Plain-English rewrites of the most common automated (axe-core) rules,
