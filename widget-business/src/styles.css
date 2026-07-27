@@ -1689,6 +1689,39 @@
   border: 1px solid var(--a11y-border, #e0e0e0);
 }
 
+/* A highlighter down the findings that stop somebody completely, using the
+   same inline-notification shape as .a11y-error and .a11y-notice below: a 3px
+   bar down the left edge and a pale wash of the same hue. Carbon's
+   support-warning yellow.
+
+   Must come after the .a11y-finding rule above, which sets the `border`
+   shorthand. Both selectors are a single class, so the later one wins and an
+   earlier border-left here was silently reset to the grey 1px — the stripe
+   simply did not appear.
+
+   Applied by severity rather than to one rule, so anything else that blocks a
+   person is marked without another edit here.
+
+   The stripe is emphasis and carries no meaning of its own: the "Fix first"
+   tag and the finding's own words already say it. That is deliberate. A tool
+   that marked its most serious findings by colour alone would be failing
+   1.4.1 Use of Color, which is a rule it reports other people for breaking.
+   It also survives Windows High Contrast, where the wash is dropped for
+   system colours — forced-colors keeps borders, and the tag keeps its text. */
+.a11y-severity-critical {
+  border-left: 3px solid #f1c21b;   /* yellow-30, Carbon support-warning */
+}
+
+.a11y-severity-critical .a11y-finding-header {
+  background: #fcf4d6;              /* yellow-10 — 17:1 behind body text */
+}
+
+/* Open, the stripe stays but the wash goes, so the explanation is read on
+   plain white like every other finding. */
+.a11y-severity-critical .a11y-finding-header[aria-expanded="true"] {
+  background: var(--a11y-bg, #ffffff);
+}
+
 /* Inline notification: Carbon marks status with a 3px bar down the left edge
    and a tinted fill, rather than a coloured box. */
 .a11y-error {

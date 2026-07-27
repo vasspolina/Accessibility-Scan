@@ -66,8 +66,8 @@ function evaluateDialogKeyboard(results: DialogKeyboardResult[]): AccessibilityF
           "critical",
           "accessibility",
           r.selector,
-          `${what} cannot be escaped with the keyboard. Pressing Escape does not close it, and pressing Tab fifteen times never moved focus back out to the page. Anyone who is not using a mouse arrives here and stops — they cannot dismiss it and they cannot go around it.`,
-          "Close the dialog when Escape is pressed, and make sure focus can leave it. This is the single most damaging thing a modal can do, and it usually appears on the cookie or newsletter overlay that every visitor meets first.",
+          `${what} cannot be escaped with the keyboard. This was checked directly: pressing Escape did not close it, and pressing Tab fifteen times never moved focus back out to the page.`,
+          "Two changes, and it needs both. First, listen for the Escape key and close the dialog. Second, when it closes, put focus back on the page — on the control that opened the dialog, or the main heading if it opened by itself. Note that holding focus inside an open dialog is correct and should stay; the fault is only that there is no way out. If this is a consent or newsletter banner from a third party, the bug is in their code rather than yours, so send them this finding — it is their fix to make.",
           { criterion: "2.1.2", level: "A" }
         )
       );

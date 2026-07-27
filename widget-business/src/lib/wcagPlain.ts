@@ -361,9 +361,9 @@ export const PLAIN_RULE_EXPLANATIONS: Record<string, PlainRule> = {
       "People using screen readers hear only \"button\" and can't tell how to close the pop-up. It traps them, and many will simply leave your site.",
   },
   "dialog-keyboard-trap": {
-    plain: "A pop-up cannot be closed or escaped using the keyboard at all.",
+    plain: "A pop-up traps keyboard users — they can't close it or get past it.",
     impact:
-      "This is the worst outcome on the whole report. Escape does nothing and Tab goes nowhere, so a keyboard user reaches your site, meets this, and can go no further. Usually it is the cookie banner, which means it is every visitor's first impression.",
+      "Someone using only a keyboard hits this pop-up and stops there. Escape doesn't close it, and Tab just cycles around the buttons inside it, so they can't reach your page and can't get out of the pop-up either. Closing the tab is the only way out. If this is your cookie banner, it happens before they have seen anything at all.",
   },
   "dialog-no-escape": {
     plain: "A pop-up doesn't close when you press the Escape key.",
