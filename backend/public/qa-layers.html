@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>QA fixture: this checker's own detection layers</title>
+<!--
+  A second fixture, for the layers this project wrote itself rather than the
+  ones axe-core owns. Those are the ones with no upstream test suite behind
+  them, so they are where a wrong answer is most likely and least likely to be
+  noticed. Every case below is annotated with the rule it should fire.
+  The control section at the end is correct and must stay silent.
+-->
+<style>
+  body { font-family: system-ui; margin: 0; padding: 24px; color: #1a1a1a; }
+  main > section { margin: 40px 0; }
+  h2 { font-size: 20px; }
+
+  /* EXPECTED motion-infinite-no-reduced-motion: never-ending animation and no
+     prefers-reduced-motion rule anywhere in the stylesheet. */
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .forever { width: 40px; height: 40px; background: #444; animation: spin 2s linear infinite; }
+
+  /* EXPECTED typo-leading-tight */
+  .tight { line-height: 1.05; width: 600px; }
+  /* EXPECTED typo-negative-letterspacing */
+  .squeezed { letter-spacing: -0.08em; }
+  /* EXPECTED typo-font-size-small */
+  .tiny { font-size: 9px; }
+  /* EXPECTED typo-allcaps-block */
+  .shout { text-transform: uppercase; }
+
+  /* EXPECTED mobile-horizontal-scroll: fixed width wider than a phone. */
+  .toowide { width: 900px; background: #eee; padding: 12px; }
+
+  /* EXPECTED keyboard-no-visible-focus: focus removed with nothing put back. */
+  .nofocus:focus { outline: none; box-shadow: none; }
+
+  /* Consent banner styled the way the criterion warns about: accept is a
+     solid button, refusing is plain text. EXPECTED dark-consent-asymmetry. */
+  .cookie { border: 1px solid #ccc; padding: 16px; }
+  .accept { background: #0f62fe; color: #fff; border: 0; padding: 12px 20px; font-size: 16px; }
+  .refuse-plain { background: none; border: 0; color: #666; text-decoration: underline; font-size: 13px; }
+</style>
+</head>
+<body>
+<nav aria-label="Main menu">
+  <a href="/one">Section one</a>
+  <a href="/two">Section two</a>
+  <a href="/three">Section three</a>
+</nav>
+
+<main>
+
+<section>
+  <h2>Motion</h2>
+  <div class="forever"></div>
+</section>
+
+<section>
+  <h2>Typography</h2>
+  <p class="tight">Lines packed together so tightly that a dyslexic reader loses their place between them, which is the whole reason the criterion exists and why this paragraph runs on for long enough to actually wrap several times on any reasonable screen width.</p>
+  <p class="squeezed">Letters squeezed together well past the point of comfort.</p>
+  <p class="tiny">Text far below a comfortable reading size for a body paragraph, written out at enough length to count as a block of running text rather than a caption, because the rule quite reasonably ignores short fragments where small type is normal.</p>
+  <p class="shout">AN ENTIRE PARAGRAPH SET IN CAPITALS IS SLOWER TO READ BECAUSE WORD SHAPES ALL BECOME RECTANGLES.</p>
+</section>
+
+<section>
+  <h2>Mobile</h2>
+  <div class="toowide">A fixed 900px block, which forces sideways scrolling on a phone.</div>
+</section>
+
+<section>
+  <h2>Keyboard</h2>
+  <button class="nofocus" type="button">Focus me and see nothing happen</button>
+  <a class="nofocus" href="/also">And this one too</a>
+</section>
+
+<section>
+  <h2>Consent</h2>
+  <div class="cookie">
+    <p>We use cookies and similar technologies for tracking and privacy preferences.</p>
+    <button class="accept" type="button">Accept all</button>
+    <button class="refuse-plain" type="button">Reject non-essential</button>
+  </div>
+</section>
+
+<section>
+  <h2>Marketing choices</h2>
+  <form>
+    <!-- EXPECTED dark-preselected-optin -->
+    <label><input type="checkbox" name="marketing" checked> Yes, send me marketing email about offers</label>
+    <!-- EXPECTED dark-confirmshaming: the decline control itself, which is
+         the form this pattern actually takes. -->
+    <button type="button">No thanks, I don't want to save money</button>
+    <!-- EXPECTED component-required-cue: required in code, nothing in the label -->
+    <label for="req">Email</label>
+    <input id="req" name="email" type="text" required>
+    <!-- EXPECTED component-submit-clarity: a form with no submit control -->
+  </form>
+</section>
+
+<section>
+  <h2>Urgency</h2>
+  <!-- EXPECTED dark-fake-urgency / dark-fake-scarcity -->
+  <p><strong>Hurry, offer ends soon!</strong> Only 2 left in stock. Limited time only.</p>
+</section>
+
+<!-- EXPECTED component-skip-link: nothing that skips to the content -->
+
+</main>
+</body>
+</html>
