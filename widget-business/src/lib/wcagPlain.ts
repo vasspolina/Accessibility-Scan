@@ -235,6 +235,12 @@ export const PLAIN_RULE_EXPLANATIONS: Record<string, PlainRule> = {
     impact:
       "Plenty of people never touch a mouse. Without a visible highlight they're navigating blind, and they give up.",
   },
+  "reading-order-mismatch": {
+    plain: "Two controls sitting side by side are tabbed to in the opposite order.",
+    impact:
+      "CSS moved them on screen without moving them in the page's code, and the Tab key follows the code. Where this bites hardest is a pair like Cancel and Submit: the button under your cursor is not the one the keyboard has landed on. Screen reader users get the same mismatch, because they are read the code order too.",
+  },
+
   // Forced Colors Mode — Windows High Contrast. Checked by switching the mode
   // on and seeing what disappears.
   "forced-colors-focus-lost": {

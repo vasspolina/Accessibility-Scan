@@ -188,6 +188,9 @@ export interface RenderResult {
   // asking for them rather than reading the stylesheet
   // (services/motion/analyzeMotion.ts).
   userPreferences: UserPreferenceSignals;
+  // Rows where CSS reordering made the tab order disagree with what is on
+  // screen (services/readingOrder/analyzeReadingOrder.ts).
+  readingOrder: ReadingOrderSignals;
   // Checks that did not complete on this run, in words a reader understands.
   //
   // Each of these passes catches its own failures and returns empty signals so
@@ -1502,6 +1505,147 @@ async function collectMouseOnlyControls(page: Page): Promise<MouseOnlyControl[]>
 }
 
 /**
+ * Finds places where CSS has reordered controls, so the order you see and the
+ * order you tab through disagree (WCAG 2.4.3 Focus Order).
+ *
+ * The approach is deliberately not geometric guesswork, which is what made
+ * earlier attempts at this too noisy to ship. It starts from the cause: only
+ * a handful of CSS features can reorder anything — `order`, a reversed
+ * flex-direction or flex-wrap, explicit grid placement, and grid-auto-flow:
+ * dense. A container using none of them cannot have this fault, and most of
+ * the page is dismissed before any measuring happens.
+ *
+ * Two further constraints came from measuring against real sites, and both
+ * removed whole classes of false positive:
+ *
+ * 1. Two focusable elements must themselves be out of order relative to each
+ *    other. Reordering children is common and usually harmless — gov.uk swaps
+ *    the image and text of a card, the BBC places grid items explicitly — and
+ *    with one focusable per card there is no sequence to get wrong. Requiring
+ *    a genuine pair took gov.uk from four findings to none and the BBC from
+ *    five. The work is done by the pair comparison below, which cannot fire
+ *    on a lone control; the length test is only an early exit.
+ *
+ * 2. Only elements on the same visual row are compared. Down a column,
+ *    reading order is genuinely ambiguous: a three-column footer is read
+ *    column by column, so sorting everything row-major reports a fault that
+ *    is not there. That was the last false positive standing, on moma.org's
+ *    `divided-columns` and kunsthallebern.ch's front page grid.
+ *
+ * What remains is the case with no ambiguity at all: two controls side by
+ * side on one line, where the one that reads first is reached second.
+ */
+export interface ReadingOrderSignals {
+  reorderedRows: Array<{
+    selector: string;
+    reason: string;
+    firstInDom: string;
+    firstOnScreen: string;
+  }>;
+}
+
+async function collectReadingOrder(page: Page): Promise<ReadingOrderSignals> {
+  try {
+    const reorderedRows = (await page.evaluate(String.raw`(() => {
+      const __name = (fn) => fn;
+      const FOCUSABLE = 'a[href],button,input:not([type="hidden"]),select,textarea,summary,[tabindex]';
+      const out = [];
+      const label = (el) => {
+        const t = (el.textContent || "").replace(/\s+/g, " ").trim();
+        return (t || el.getAttribute("aria-label") || el.getAttribute("title") || el.tagName.toLowerCase()).slice(0, 40);
+      };
+      for (const el of Array.from(document.querySelectorAll("*"))) {
+        if (out.length >= 5) break;
+        try {
+          const cs = getComputedStyle(el);
+          if (!/flex|grid/.test(cs.display)) continue;
+          const kids = Array.from(el.children).filter((c) => {
+            const k = getComputedStyle(c);
+            if (k.position === "absolute" || k.position === "fixed") return false;
+            const r = c.getBoundingClientRect();
+            return r.width > 0 && r.height > 0;
+          });
+          if (kids.length < 2) continue;
+
+          // Which reordering feature is in play, if any.
+          let reason = "";
+          if (/reverse/.test(cs.flexDirection)) reason = "flex-direction: " + cs.flexDirection;
+          else if (/reverse/.test(cs.flexWrap)) reason = "flex-wrap: " + cs.flexWrap;
+          else if (/dense/.test(cs.gridAutoFlow)) reason = "grid-auto-flow: dense";
+          else {
+            for (const c of kids) {
+              const k = getComputedStyle(c);
+              if (k.order && k.order !== "0") { reason = "order: " + k.order; break; }
+              if (/grid/.test(cs.display) &&
+                  ((k.gridRowStart && k.gridRowStart !== "auto") ||
+                   (k.gridColumnStart && k.gridColumnStart !== "auto"))) {
+                reason = "explicit grid placement";
+                break;
+              }
+            }
+          }
+          if (!reason) continue;
+
+          // Focusable descendants, in the order the keyboard will reach them.
+          const foci = [];
+          for (const c of kids) {
+            const found = c.matches(FOCUSABLE) ? [c] : Array.from(c.querySelectorAll(FOCUSABLE));
+            for (const f of found) {
+              const r = f.getBoundingClientRect();
+              if (r.width > 0 && r.height > 0) {
+                foci.push({ el: f, top: r.top, left: r.left });
+              }
+            }
+          }
+          if (foci.length < 2) continue;
+
+          const rtl = cs.direction === "rtl";
+          for (let a = 0; a < foci.length; a++) {
+            let hit = null;
+            for (let b = a + 1; b < foci.length; b++) {
+              const A = foci[a], B = foci[b];
+              if (Math.abs(A.top - B.top) > 6) continue; // different rows
+              // A is reached first by Tab. If it sits after B along the
+              // reading direction, the row is walked backwards.
+              const backwards = rtl ? A.left < B.left : A.left > B.left;
+              if (backwards && Math.abs(A.left - B.left) > 12) { hit = B; break; }
+            }
+            if (!hit) continue;
+            const parts = [];
+            let node = el;
+            while (node && node.nodeType === 1 && parts.length < 6) {
+              if (node.id) { parts.unshift("#" + CSS.escape(node.id)); break; }
+              let sel = node.tagName.toLowerCase();
+              const parent = node.parentElement;
+              if (parent) {
+                const sib = Array.from(parent.children).filter((c) => c.tagName === node.tagName);
+                if (sib.length > 1) sel += ":nth-of-type(" + (sib.indexOf(node) + 1) + ")";
+              }
+              parts.unshift(sel);
+              node = parent;
+            }
+            out.push({
+              selector: parts.join(" > "),
+              reason,
+              firstInDom: label(foci[a].el),
+              firstOnScreen: label(hit.el),
+            });
+            break;
+          }
+        } catch (e) {
+          // skip a bad container
+        }
+      }
+      return out;
+    })()`)) as ReadingOrderSignals["reorderedRows"];
+    return { reorderedRows };
+  } catch (err) {
+    logger.warn({ err }, "Reading-order probe failed — reporting without it");
+    return { reorderedRows: [] };
+  }
+}
+
+/**
  * Re-renders the page as two kinds of user actually receive it, by switching
  * the media features Chromium exposes and re-reading what changed.
  *
@@ -2058,6 +2202,10 @@ export async function renderAndScan(
       // presses scroll the page and flip elements into their :focus styles.
       const keyboardNav = await captureKeyboardNavigation(page);
 
+      // Visual-versus-source order. Geometry only, so it changes nothing and
+      // has to run at desktop width, before the mobile pass reflows the page.
+      const readingOrder = await collectReadingOrder(page);
+
       // Text-resize passes — done at desktop width, before the viewport is
       // changed for the mobile pass below.
       const textResizeSignals = await collectTextResizeSignals(page);
@@ -2145,6 +2293,7 @@ export async function renderAndScan(
       return {
         dialogKeyboard,
         userPreferences,
+        readingOrder,
         pageTitle: domSignals.pageTitle,
         finalUrl: page.url(),
         axe,

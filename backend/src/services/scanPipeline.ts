@@ -17,6 +17,7 @@ import { evaluateKeyboardNav } from "./keyboard/analyzeKeyboard.js";
 import { evaluateComponents } from "./components/analyzeComponents.js";
 import { evaluateDialogs } from "./dialog/analyzeDialogs.js";
 import { evaluateForcedColors } from "./forcedColors/analyzeForcedColors.js";
+import { evaluateReadingOrder } from "./readingOrder/analyzeReadingOrder.js";
 import { evaluateMobile } from "./mobile/analyzeMobile.js";
 import { evaluateDarkPatterns } from "./darkPatterns/analyzeDarkPatterns.js";
 import { evaluateTextResize } from "./textResize/analyzeTextResize.js";
@@ -198,6 +199,7 @@ export async function scanUrlToReport(
   deterministic.push(
     ...evaluateForcedColors(renderResult.keyboardNav.stops, renderResult.userPreferences)
   );
+  deterministic.push(...evaluateReadingOrder(renderResult.readingOrder));
   deterministic.push(...evaluateMobile(renderResult.mobileSignals));
   deterministic.push(...evaluateDarkPatterns(renderResult.darkPatternSignals));
   deterministic.push(...evaluateTextResize(renderResult.textResizeSignals));

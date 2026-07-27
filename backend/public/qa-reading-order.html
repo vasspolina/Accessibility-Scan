@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>QA fixture: visual order versus source order</title>
+<!--
+  WCAG 2.4.3 Focus Order. CSS can move controls on screen without moving them
+  in the document, and the Tab key follows the document.
+
+  EXPECTED reading-order-mismatch x2
+    .reversed-actions  Cancel and Submit written in that order, shown swapped
+                       by flex-direction: row-reverse. Tabbing hits Cancel
+                       first while Submit is the button under the cursor —
+                       the pair where getting it wrong costs the most.
+    .promoted-link     `order: -1` pulls the last link to the front of a nav.
+
+  The controls are the whole reason this rule is shippable. Each is a layout
+  that an earlier, geometry-first version of the check reported as broken:
+
+    .plain-row      no reordering at all
+    .single-focus   reordered, but only one focusable — so there is no
+                    sequence to get wrong. This is gov.uk's image card, which
+                    was reported four times before the rule required two.
+    .columns        a two-column list, read down one column then down the
+                    next. Sorting the page row-major calls this reversed when
+                    it is perfectly correct; moma.org and kunsthallebern.ch
+                    were both flagged for it.
+    .stacked        reordered and vertical, so no two controls share a row and
+                    reading order is ambiguous rather than wrong.
+    .dense-grid     declares grid-auto-flow: dense — so it reaches the row
+                    check — and wraps onto two rows in the correct order.
+                    Item 2 sits to the right of item 3 simply because 3 is on
+                    the next line. Comparing across rows calls that reversed,
+                    which is what the same-row constraint exists to stop.
+-->
+<style>
+  body { font-family: system-ui; margin: 0; padding: 24px; color: #1a1a1a; }
+  section { margin: 28px 0; }
+  a, button { font-size: 15px; }
+
+  .reversed-actions { display: flex; flex-direction: row-reverse; gap: 12px; width: 420px; }
+  .promoted-link { display: flex; gap: 16px; width: 420px; }
+  .promoted-link .last { order: -1; }
+
+  .plain-row { display: flex; gap: 12px; }
+  .single-focus { display: flex; flex-direction: row-reverse; gap: 12px; width: 320px; }
+  .columns { display: flex; gap: 48px; }
+  .columns ul { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 6px; }
+  .stacked { display: flex; flex-direction: column-reverse; gap: 8px; width: 200px; }
+  .dense-grid { display: grid; grid-template-columns: repeat(2, 130px);
+                grid-auto-flow: dense; gap: 8px; }
+</style>
+</head>
+<body>
+<main>
+
+<section>
+  <h2>Reordered rows</h2>
+  <div class="reversed-actions">
+    <button type="button">Cancel</button>
+    <button type="button">Submit</button>
+  </div>
+
+  <nav class="promoted-link" aria-label="Sections">
+    <a href="/one">One</a>
+    <a href="/two">Two</a>
+    <a href="/three" class="last">Three</a>
+  </nav>
+</section>
+
+<section>
+  <h2>Controls, all correct</h2>
+
+  <div class="plain-row">
+    <button type="button">First</button>
+    <button type="button">Second</button>
+    <button type="button">Third</button>
+  </div>
+
+  <div class="single-focus">
+    <span>A card with a picture and one link</span>
+    <a href="/card">Read more</a>
+  </div>
+
+  <div class="columns">
+    <ul><li><a href="/a1">Column one, first</a></li><li><a href="/a2">Column one, second</a></li></ul>
+    <ul><li><a href="/b1">Column two, first</a></li><li><a href="/b2">Column two, second</a></li></ul>
+  </div>
+
+  <div class="stacked">
+    <a href="/s1">Stacked one</a>
+    <a href="/s2">Stacked two</a>
+  </div>
+
+  <div class="dense-grid">
+    <a href="/g1">Grid one</a>
+    <a href="/g2">Grid two</a>
+    <a href="/g3">Grid three</a>
+    <a href="/g4">Grid four</a>
+  </div>
+</section>
+
+</main>
+</body>
+</html>

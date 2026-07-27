@@ -8,6 +8,7 @@ import { evaluateKeyboardNav } from "../src/services/keyboard/analyzeKeyboard.js
 import { evaluateComponents } from "../src/services/components/analyzeComponents.js";
 import { evaluateDialogs } from "../src/services/dialog/analyzeDialogs.js";
 import { evaluateForcedColors } from "../src/services/forcedColors/analyzeForcedColors.js";
+import { evaluateReadingOrder } from "../src/services/readingOrder/analyzeReadingOrder.js";
 import { evaluateMobile } from "../src/services/mobile/analyzeMobile.js";
 import { evaluateDarkPatterns } from "../src/services/darkPatterns/analyzeDarkPatterns.js";
 import { evaluateTextResize } from "../src/services/textResize/analyzeTextResize.js";
@@ -43,6 +44,7 @@ async function scanFixture(name: string): Promise<AccessibilityFinding[]> {
   findings.push(...evaluateComponents(r.domSignals));
   findings.push(...evaluateDialogs(r.domSignals.dialogs, r.dialogKeyboard));
   findings.push(...evaluateForcedColors(r.keyboardNav.stops, r.userPreferences));
+  findings.push(...evaluateReadingOrder(r.readingOrder));
   findings.push(...evaluateMobile(r.mobileSignals));
   findings.push(...evaluateDarkPatterns(r.darkPatternSignals));
   findings.push(...evaluateTextResize(r.textResizeSignals));
@@ -226,5 +228,44 @@ describe("qa-preferences.html: display preferences", () => {
     expect(flagged).not.toContain("button:nth-of-type(3)");
     expect(flagged).not.toContain("button:nth-of-type(4)");
     expect(flagged).not.toContain("section:nth-of-type(1) > a");
+  });
+});
+
+// Visual order versus source order. Only meaningful end to end: the fault is
+// the disagreement between where a control sits and where the Tab key reaches
+// it, and neither is readable from the source alone.
+describe("qa-reading-order.html: visual versus source order", () => {
+  let findings: AccessibilityFinding[];
+  beforeAll(async () => {
+    findings = await scanFixture("qa-reading-order.html");
+  }, 180_000);
+
+  it("finds both reordered rows and no others", () => {
+    const flagged = findings.filter((f) => f.ruleId === "reading-order-mismatch");
+    expect(flagged).toHaveLength(2);
+    const text = flagged.map((f) => f.description).join(" ");
+    expect(text).toContain("Cancel");
+    expect(text).toContain("Three");
+  });
+
+  it("names the criterion it can actually prove", () => {
+    const f = findings.find((x) => x.ruleId === "reading-order-mismatch");
+    expect(f!.wcagCriterion).toBe("2.4.3");
+    expect(f!.wcagLevel).toBe("A");
+  });
+
+  // Five layouts an earlier geometry-first version of this check called
+  // broken. Each is correct, and each pins down a constraint: gov.uk's
+  // single-focusable card, moma.org's and kunsthallebern.ch's columns, and a
+  // dense grid whose second item sits right of its third only because the
+  // third is on the next line. Removing either constraint from the probe
+  // makes this test fail, which is how they were checked.
+  it("says nothing about the five correct layouts beside them", () => {
+    const flagged = findings
+      .filter((f) => f.ruleId === "reading-order-mismatch")
+      .map((f) => f.selector ?? "")
+      .join(" ");
+    // Everything correct lives in section 2; both faults are in section 1.
+    expect(flagged).not.toContain("section:nth-of-type(2)");
   });
 });
