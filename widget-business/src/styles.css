@@ -657,9 +657,29 @@
   white-space: nowrap;
 }
 
+/* The keyboard mark is the only one given colour: it is the one group the
+   owner can verify unaided, so it is the one worth catching the eye. */
 .a11y-method-keyboard {
   border-color: #0f62fe;
   color: #0043ce;
+}
+
+/* Where the fix is made. Neutral by default because "Code fix" is true of
+   most of the report and should not shout; the two exceptions carry a tint,
+   since sending a copywriting problem to a developer wastes both of them. */
+.a11y-fix-content {
+  border-color: #8a3ffc;
+  color: #6929c4;
+}
+
+.a11y-fix-document {
+  border-color: #009d9a;
+  color: #005d5d;
+}
+
+/* Only the first mark in the row may push to the end. */
+.a11y-method-badge + .a11y-method-badge {
+  margin-left: 8px;
 }
 
 /* The level badge already claims margin-left:auto to sit at the end of the
