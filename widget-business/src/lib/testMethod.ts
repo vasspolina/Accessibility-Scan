@@ -16,7 +16,7 @@ import type { AccessibilityFinding } from "../api/scanClient";
 // different kind of instruction from "ask a developer to look at the markup",
 // and grouping by it tells an owner who needs to do what.
 
-export type MethodKey = "keyboard" | "screen-reader" | "code" | "screen" | "judgement" | "ai";
+export type MethodKey = "keyboard" | "code" | "document" | "screen" | "judgement" | "ai";
 
 export interface TestMethod {
   key: MethodKey;
@@ -32,15 +32,15 @@ export const METHODS: Record<MethodKey, TestMethod> = {
     label: "Keyboard test",
     hint: "Found by putting the mouse aside and moving through the page with Tab, Enter and Escape. You can repeat this yourself in a few minutes, with nothing installed.",
   },
-  "screen-reader": {
-    key: "screen-reader",
-    label: "Screen reader",
-    hint: "About what gets announced aloud. Checking it by hand means using a screen reader — VoiceOver on a Mac, NVDA on Windows — though the fault itself is visible in the code.",
-  },
   code: {
     key: "code",
     label: "In the code",
-    hint: "Nothing looks wrong on screen; the problem is in the markup. This one goes to whoever maintains the site.",
+    hint: "Nothing looks wrong on screen — the fault is in the markup, and the fix is an attribute or a tag. This one goes to whoever maintains the site.",
+  },
+  document: {
+    key: "document",
+    label: "In the document",
+    hint: "The fault is inside the PDF rather than on the website. Fix it in the original — Word, InDesign, Acrobat — and export again; editing the site will not help.",
   },
   screen: {
     key: "screen",
@@ -61,7 +61,8 @@ export const METHODS: Record<MethodKey, TestMethod> = {
 
 // Exact rule ids first, because several layers emit rules that belong to a
 // different method than their prefix suggests: the dialog layer produces both
-// keyboard findings (Escape, focus) and screen-reader ones (missing name).
+// keyboard findings — Escape, focus — and markup ones, like a dialog with no
+// name, where there is nothing to press and only an attribute to add.
 const BY_RULE: Record<string, MethodKey> = {
   // The keyboard-only checklist, item by item.
   "keyboard-focus-trap": "keyboard",
@@ -75,27 +76,29 @@ const BY_RULE: Record<string, MethodKey> = {
   "reading-order-mismatch": "keyboard",
   "forced-colors-focus-lost": "keyboard",
 
-  // Screen reader, on one line: the element is there and works, but it is
-  // announced wrongly or not at all. You verify these by listening.
+  // A "Screen reader" method used to sit here, holding everything about what
+  // gets announced: missing names, alt text, labels, roles. It was removed
+  // because it answered the wrong question. This badge exists to tell an
+  // owner who picks the work up, and every rule in that group was fixed by
+  // editing markup — aria-label, alt, <label>, lang. Naming the affected
+  // audience instead of the work put "Screen reader" on findings whose own
+  // instruction was to add an attribute, which read as a contradiction and
+  // was reported as one three times over.
   //
-  // Structure is deliberately NOT here, however much it affects screen reader
-  // users. Landmarks, heading order and list nesting change how a page can be
-  // navigated, not what any single control is called, and you find them by
-  // reading markup rather than by listening — which is why the landmark
-  // finding's own title says "aren't named in the code". Badging that one
-  // "Screen reader" contradicted the sentence directly above it.
-  "dialog-missing-name": "screen-reader",
-  "dialog-missing-role": "screen-reader",
-  "dialog-close-unlabeled": "screen-reader",
-  "component-nav-labels": "screen-reader",
-  "image-alt": "screen-reader",
-  "button-name": "screen-reader",
-  "link-name": "screen-reader",
-  label: "screen-reader",
-  "empty-heading": "screen-reader",
-  "frame-title": "screen-reader",
-  "document-title": "screen-reader",
-  "html-has-lang": "screen-reader",
+  // Who is affected has not been lost; it is what the impact paragraph of
+  // every one of these findings is for.
+  "dialog-missing-name": "code",
+  "dialog-missing-role": "code",
+  "dialog-close-unlabeled": "code",
+  "component-nav-labels": "code",
+  "image-alt": "code",
+  "button-name": "code",
+  "link-name": "code",
+  label: "code",
+  "empty-heading": "code",
+  "frame-title": "code",
+  "document-title": "code",
+  "html-has-lang": "code",
 
   // Structural markup: nothing looks or sounds wrong element by element, and
   // the fault is only visible by reading the code.
@@ -134,9 +137,9 @@ const BY_RULE: Record<string, MethodKey> = {
 // Prefixes, checked after the exact table above.
 const BY_PREFIX: Array<[string, MethodKey]> = [
   ["keyboard-", "keyboard"],
-  ["dialog-", "screen-reader"],
-  ["aria-", "screen-reader"],
-  ["pdf-", "screen-reader"],
+  ["dialog-", "code"],
+  ["aria-", "code"],
+  ["pdf-", "document"],
   ["typo-", "screen"],
   ["motion-", "screen"],
   ["mobile-", "screen"],

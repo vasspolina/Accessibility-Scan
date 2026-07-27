@@ -40,12 +40,12 @@ describe("methodForFinding", () => {
   });
 
   // The dialog layer is the reason exact rules are checked before prefixes:
-  // it emits both keyboard findings and screen-reader ones, so a prefix rule
-  // alone would file "Escape does nothing" under the wrong method.
+  // it emits both keyboard findings and markup ones, so a prefix rule alone
+  // would file "Escape does nothing" under the wrong method.
   it("splits the dialog layer by what the finding is actually about", () => {
     expect(keyOf("dialog-no-escape")).toBe("keyboard");
-    expect(keyOf("dialog-missing-name")).toBe("screen-reader");
-    expect(keyOf("dialog-missing-role")).toBe("screen-reader");
+    expect(keyOf("dialog-missing-name")).toBe("code");
+    expect(keyOf("dialog-missing-role")).toBe("code");
   });
 
   // Likewise forced colours: a lost focus ring is something you find by
@@ -70,11 +70,20 @@ describe("methodForFinding", () => {
     }
   });
 
-  // What is announced, or not, stays with the screen reader.
-  it("keeps missing names and labels with the screen reader", () => {
-    for (const rule of ["image-alt", "button-name", "link-name", "label", "dialog-missing-name"]) {
-      expect(keyOf(rule), rule).toBe("screen-reader");
+  // Anything whose fix is an attribute or a tag is code, however much it is
+  // a screen reader user who suffers for it. The badge says who picks the
+  // work up; the impact paragraph says who it hurts.
+  it("files missing names and labels as code, not as an audience", () => {
+    for (const rule of ["image-alt", "button-name", "link-name", "label", "dialog-missing-name", "aria-hidden"]) {
+      expect(keyOf(rule), rule).toBe("code");
     }
+  });
+
+  // A PDF is the exception: the fix is in the source document, and editing
+  // the site will not help.
+  it("sends PDF faults to the document rather than the code", () => {
+    expect(keyOf("pdf-not-tagged")).toBe("document");
+    expect(keyOf("pdf-no-title")).toBe("document");
   });
 
   it("files rendering measurements under what is on screen", () => {

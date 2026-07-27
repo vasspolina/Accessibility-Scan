@@ -147,7 +147,7 @@ export function evaluateDialogs(
   const unseen = (list: Dialog[]) =>
     list.some((d) => d.visible)
       ? ""
-      : " This one was not on screen while the page was scanned — it opens in response to something — so there is no picture of it here, and you will need to trigger it to see it.";
+      : ` Nothing here was open during the scan — ${list.length === 1 ? "it appears" : "they appear"} when something on the page triggers ${list.length === 1 ? "it" : "them"} — which is why there is no picture.`;
 
   // 1. Close control with no meaningful accessible name (a bare "×"/icon).
   //    The clearest, highest-impact failure — WCAG 4.1.2 Name, Role, Value.
@@ -227,8 +227,12 @@ export function evaluateDialogs(
         "moderate",
         "accessibility",
         pick(namelessDialog),
-        `A dialog has no accessible name (${namelessDialog.length} dialog${namelessDialog.length === 1 ? "" : "s"}). When it opens, a screen reader announces "dialog" with no indication of what it's for.${unseen(namelessDialog)}`,
-        "Give the dialog an accessible name with aria-label, or point aria-labelledby at the dialog's visible heading.",
+        // Says what was counted and nothing else. It used to restate the
+        // impact paragraph sitting directly beneath it — both explaining that
+        // a screen reader announces "dialog" — and led with "accessible
+        // name", which is the specification's phrase rather than anybody's.
+        `${namelessDialog.length} pop-up${namelessDialog.length === 1 ? " has" : "s have"} nothing in the code naming ${namelessDialog.length === 1 ? "it" : "them"}, so there is no title for software to read out.${unseen(namelessDialog)}`,
+        "Add a name to the dialog itself: `aria-label=\"Cookie preferences\"`, or `aria-labelledby` pointing at the id of the heading already inside it. Use the words of that visible heading, so what gets read aloud matches what is on the screen.",
         { criterion: "4.1.2", level: "A" }
       )
     );
