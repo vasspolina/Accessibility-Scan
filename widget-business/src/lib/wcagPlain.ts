@@ -259,7 +259,12 @@ export const PLAIN_RULE_EXPLANATIONS: Record<string, PlainRule> = {
       "The icon is drawn as a background image, and that mode removes background images. The button still works, but it renders as an empty box — no picture, no label, no hint that it's a button at all.",
   },
   "keyboard-faint-focus": {
-    plain: "The outline marking which link or button you're on is too faint to see.",
+    // "The outline" assumed the reader already knew which outline was meant.
+    // Somebody who has never navigated without a mouse has no idea that a box
+    // appears around each control as you Tab, so the title has to introduce
+    // the thing before calling it faint — when it appears, what it is for,
+    // and what is wrong with it.
+    plain: "Tab through your page and a box marks where you are. Yours is too faint to see.",
     impact:
       "Pressing Tab moves an invisible cursor from one control to the next, and this outline is the only thing showing where it has got to. Too faint, and someone using a keyboard instead of a mouse cannot tell what they are about to activate — so they press Enter and hope, or start again from the top. It slips through testing easily, because there genuinely is an outline there; it only shows up when you put the mouse down and try to get through the page yourself.",
   },

@@ -232,14 +232,6 @@ export function App({ apiBase }: { apiBase: string }) {
             <PrincipleGroup findings={findingsByCategory.accessibility} />
           </section>
 
-          {report.pagePreview && (
-            <VisionSimulator pagePreview={report.pagePreview} url={report.url} />
-          )}
-
-          {report.screenReaderScript && (
-            <ScreenReaderPreview script={report.screenReaderScript} />
-          )}
-
           {!isDocument && (
           <ReportSection
             title="Design & clarity notes"
@@ -247,6 +239,19 @@ export function App({ apiBase }: { apiBase: string }) {
             variant="default"
             findings={findingsByCategory.designClarity}
           />
+          )}
+
+          {/* The two "see and hear it yourself" views, kept together and below
+              every finding. They used to sit in the middle of the report, which
+              put a large picture between the accessibility findings and the
+              design notes and broke the run of things to act on. Nothing here
+              is a finding — it is somewhere to look once the list is read. */}
+          {report.pagePreview && (
+            <VisionSimulator pagePreview={report.pagePreview} url={report.url} />
+          )}
+
+          {report.screenReaderScript && (
+            <ScreenReaderPreview script={report.screenReaderScript} />
           )}
 
           {!isDocument && <AccessibilityStatement report={report} />}
