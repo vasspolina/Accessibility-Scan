@@ -1474,7 +1474,32 @@ async function captureKeyboardNavigation(
       }
 
       if (!active) {
-        // Wrapped around to <body>: the full tab cycle has been seen.
+        // Focus is on <body>. What that means depends entirely on whether the
+        // walk has started.
+        //
+        // After a stop has been recorded it means the cycle wrapped round, and
+        // the walk is done. Before that it means the press went nowhere, and
+        // treating it as a completed cycle ends the walk having seen nothing.
+        //
+        // Which is what happened on any page whose consent dialog takes focus
+        // at load — a great many of them. Measured on theguardian.com: focus
+        // starts inside the Sourcepoint iframe, the blur that begins the walk
+        // moves it to <body>, and the first Tab press is absorbed getting back
+        // into the document. The second press lands on a link and everything
+        // afterwards works normally. The walk was giving up one press early
+        // and reporting a page with 391 focusable elements as having none.
+        //
+        // Pressing on costs at most the loop's own cap, and a page that
+        // genuinely has nothing to focus simply exhausts it.
+        //
+        // Verified against theguardian.com rather than a fixture, and that is
+        // not laziness. A local fixture with an iframe that takes focus does
+        // not reproduce it: blurring in the main document is enough there, and
+        // the first Tab lands on a link. The absorbed press needs a
+        // cross-origin subframe holding focus, which a file:// page cannot
+        // have. A fixture was written, found to pass with the fix removed, and
+        // deleted — a test that cannot fail is worse than none.
+        if (stops.length === 0 && !pending) continue;
         reachedEnd = true;
         break;
       }
