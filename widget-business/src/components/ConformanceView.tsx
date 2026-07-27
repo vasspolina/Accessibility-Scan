@@ -104,7 +104,13 @@ export function ConformanceView({ conformance }: { conformance: ConformanceSumma
                 checked={onlyFailing}
                 onChange={(e) => setOnlyFailing(e.target.checked)}
               />
-              Show only what's failing
+              {/* The counts belong here rather than on the button that opens
+                  this panel. That button used to promise "Show all 50 items"
+                  and then show three, because this filter is on by default —
+                  it was describing the checklist's length while the reader
+                  got the filtered view. Here the number moves with the
+                  checkbox and is true either way. */}
+              Show only what's failing ({failing.length} of {conformance.total})
             </label>
           </div>
 
@@ -146,12 +152,12 @@ export function ConformanceView({ conformance }: { conformance: ConformanceSumma
             </ul>
           )}
           <button type="button" className="a11y-show-all" onClick={() => setExpanded(false)}>
-            Hide the full list
+            Hide the checklist
           </button>
       </div>
       {!expanded && (
         <button type="button" className="a11y-show-all" onClick={() => setExpanded(true)}>
-          Show all {conformance.total} items
+          Show the checklist
         </button>
       )}
     </section>
