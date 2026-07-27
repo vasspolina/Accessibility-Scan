@@ -634,6 +634,42 @@
   margin: 0 0 10px;
 }
 
+/* How the finding was found. An outline tag rather than a filled one: it is
+   orientation, not a verdict, and must not compete with the severity badge
+   sitting at the other end of the same row.
+
+   The keyboard one is the only one given colour, because it is the only one
+   that changes what the reader can do next — that whole group can be checked
+   by hand, today, with nothing installed. */
+.a11y-method-badge {
+  flex-shrink: 0;
+  margin-left: auto;
+  padding: 1px 7px;
+  border: 1px solid var(--a11y-border, #d0d7de);
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 400;
+  color: var(--a11y-muted, #57606a);
+  white-space: nowrap;
+}
+
+.a11y-method-keyboard {
+  border-color: #0f62fe;
+  color: #0043ce;
+}
+
+/* The level badge already claims margin-left:auto to sit at the end of the
+   row. With the method badge before it, only the first may push. */
+.a11y-method-badge + .a11y-level-badge {
+  margin-left: 8px;
+}
+
+.a11y-method-hint {
+  margin: 0 0 10px;
+  font-size: 13px;
+  color: var(--a11y-muted, #57606a);
+}
+
 .a11y-alt-suggestion {
   margin: 10px 0;
   padding: 10px 12px;

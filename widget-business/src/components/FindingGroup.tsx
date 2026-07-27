@@ -2,6 +2,7 @@ import { useState } from "react";
 import { dominantComponent, describeComponent } from "../lib/componentCluster";
 import type { AccessibilityFinding } from "../api/scanClient";
 import { LEVEL_FRAMING, plainForRule, plainFixForRule } from "../lib/wcagPlain";
+import { methodForFinding } from "../lib/testMethod";
 
 const severityLabel: Record<AccessibilityFinding["severity"], string> = {
   critical: "Fix first",
@@ -379,6 +380,8 @@ export function FindingGroup({ findings }: { findings: AccessibilityFinding[] })
   // exists — it's a paragraph, which reads badly as a heading.
   const title = plain?.plain ?? rep.title ?? rep.description;
   const detailsId = `a11y-group-${rep.id}`;
+  // How this was found, which is also how the owner could find it again.
+  const method = methodForFinding(rep);
 
   // One clean instruction for the whole group — a plain rewrite when we have
   // one, otherwise the finding's own (already-plain) suggested fix.
@@ -406,6 +409,7 @@ export function FindingGroup({ findings }: { findings: AccessibilityFinding[] })
         <span className="a11y-severity-badge">{severityLabel[rep.severity]}</span>
         <span className="a11y-finding-desc">{title}</span>
         {count > 1 && <span className="a11y-count-badge">{count}×</span>}
+        <span className={`a11y-method-badge a11y-method-${method.key}`}>{method.label}</span>
         {rep.wcagLevel && <span className="a11y-level-badge">{LEVEL_FRAMING[rep.wcagLevel]}</span>}
       </button>
 
@@ -428,6 +432,9 @@ export function FindingGroup({ findings }: { findings: AccessibilityFinding[] })
               on how many controls — the numbers are the most useful sentence
               in the finding. Skipped when there is no plain-language title,
               because then the description is already the heading. */}
+          <p className="a11y-method-hint">
+            <strong>How this was found:</strong> {method.hint}
+          </p>
           {plain && rep.description && (
             <p className="a11y-finding-measured">
               <strong>What we found:</strong> <CodeText text={rep.description} />
