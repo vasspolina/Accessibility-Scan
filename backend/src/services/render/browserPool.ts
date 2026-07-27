@@ -7,7 +7,27 @@ let browserPromise: Promise<Browser> | null = null;
 
 async function getBrowser(): Promise<Browser> {
   if (!browserPromise) {
-    browserPromise = chromium.launch({ headless: true });
+    browserPromise = chromium.launch({
+      headless: true,
+      args: [
+        // Chromium keeps its inter-process shared memory in /dev/shm, which a
+        // container gives 64MB by default. A page with many large images
+        // exhausts that and the renderer dies — surfacing as "Target crashed"
+        // partway through a scan, which is what moma.org was doing on the
+        // deployed service while rendering comfortably here.
+        //
+        // The flag moves that memory to a regular temporary file instead. It
+        // is the documented remedy when the host's /dev/shm cannot be resized,
+        // which on a managed platform it cannot.
+        //
+        // Deliberately the only flag. --no-sandbox is the other one usually
+        // reached for and it is not needed here: the Playwright base image
+        // already runs Chromium sandboxed correctly, and turning that off to
+        // chase a memory bug would trade a crash for a weaker boundary around
+        // untrusted pages we load on purpose.
+        "--disable-dev-shm-usage",
+      ],
+    });
     try {
       const browser = await browserPromise;
       browser.on("disconnected", () => {
