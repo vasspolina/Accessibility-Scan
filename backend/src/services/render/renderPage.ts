@@ -1011,6 +1011,16 @@ async function captureWithContext(page: Page, selector: string): Promise<string 
  *
  * Best-effort throughout: any failure yields no thumbnail, never a failed scan.
  */
+export interface FreshCaptureResult {
+  shots: Record<string, string>;
+  /**
+   * Why a selector could not be photographed, where the page could tell us.
+   * "hidden" and "offscreen" are usually correct behaviour rather than a
+   * fault — the report just has to say so instead of showing a blank.
+   */
+  unpicturable: Record<string, "hidden" | "offscreen" | "missing">;
+}
+
 export async function captureSelectorsFresh(
   url: string,
   selectors: string[],
@@ -1020,11 +1030,11 @@ export async function captureSelectorsFresh(
   // the containing section for layout findings and a picture of a section
   // tells the reader nothing.
   alwaysCapture: (selector: string) => boolean
-): Promise<Record<string, string>> {
-  if (selectors.length === 0) return {};
+): Promise<FreshCaptureResult> {
+  if (selectors.length === 0) return { shots: {}, unpicturable: {} };
 
   return withPage(async (page: Page) => {
-    const result: Record<string, string> = {};
+    const result: FreshCaptureResult = { shots: {}, unpicturable: {} };
     try {
       await page.goto(url, { waitUntil: "load", timeout: 20_000 });
       // Same brief settle the main render allows for SPA content.
@@ -1057,13 +1067,42 @@ export async function captureSelectorsFresh(
           if (box && box.height > MAX_COMPONENT_HEIGHT_PX) continue;
         }
         const shot = await captureWithContext(page, selector);
-        if (shot) result[selector] = shot;
+        if (shot) {
+          result.shots[selector] = shot;
+          continue;
+        }
+        // No picture. Find out why, because a finding with nothing to look at
+        // and no explanation is one the reader cannot place — which is how a
+        // hidden dialog came to be reported as an unidentifiable "Dialog".
+        // Most of these are entirely correct: a skip link lives off-screen
+        // until it takes focus, and a search panel has no size until it is
+        // opened. Saying so turns an apparent malfunction into information.
+        const why = await page
+          .evaluate(([sel]) => {
+            try {
+              const el = document.querySelector(sel);
+              if (!el) return "missing";
+              const cs = getComputedStyle(el);
+              if (cs.display === "none" || cs.visibility === "hidden") return "hidden";
+              if (parseFloat(cs.opacity) === 0) return "hidden";
+              const r = el.getBoundingClientRect();
+              if (r.width < 2 || r.height < 2) return "hidden";
+              // Deliberately off to one side — the standard way a skip link is
+              // kept out of sight until somebody tabs to it.
+              if (r.right < 0 || r.bottom < 0 || r.left > window.innerWidth) return "offscreen";
+              return "";
+            } catch (e) {
+              return "missing";
+            }
+          }, [selector] as const)
+          .catch(() => "");
+        if (why) result.unpicturable[selector] = why as FreshCaptureResult["unpicturable"][string];
       } catch {
         // Invalid selector, detached node, timeout — skip it, keep going.
       }
     }
     return result;
-  }).catch(() => ({}));
+  }).catch(() => ({ shots: {}, unpicturable: {} }));
 }
 
 // Dark-pattern signals, gathered from every frame rather than just the main

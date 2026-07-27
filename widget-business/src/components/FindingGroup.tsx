@@ -441,6 +441,9 @@ export function FindingGroup({ findings }: { findings: AccessibilityFinding[] })
             <strong>Who fixes this:</strong> {fix.hint}
             {keyboardCheck && ` ${KEYBOARD_HINT}`}
           </p>
+          {!rep.elementScreenshot && rep.pictureNote && (
+            <p className="a11y-picture-note">{rep.pictureNote}</p>
+          )}
           {plain && rep.description && (
             <p className="a11y-finding-measured">
               <strong>What we found:</strong> <CodeText text={rep.description} />

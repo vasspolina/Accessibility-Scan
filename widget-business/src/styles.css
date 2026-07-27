@@ -688,6 +688,16 @@
   margin-left: 8px;
 }
 
+/* Why there is nothing to look at. Quiet — it is an explanation, not a
+   finding — but present, because a picture-less card with no reason reads
+   as a malfunction. */
+.a11y-picture-note {
+  margin: 0 0 12px;
+  font-size: 14px;
+  color: var(--a11y-muted, #57606a);
+  font-style: italic;
+}
+
 .a11y-method-hint {
   margin: 0 0 12px;
   font-size: 14px;

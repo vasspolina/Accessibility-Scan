@@ -39,6 +39,7 @@ export interface AccessibilityFinding {
   // Base64 JPEG (no data: prefix) — a cropped screenshot of the flagged
   // element, when the backend could locate and capture it.
   elementScreenshot?: string;
+  pictureNote?: string;
   // AI-suggested alt text for an image that's missing one. A non-empty
   // string is ready-to-use alt text; an empty string means the image looks
   // decorative and should get alt=""; undefined means none was generated.

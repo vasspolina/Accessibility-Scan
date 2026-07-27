@@ -53,6 +53,11 @@ export const accessibilityFindingSchema = z.object({
   // screenshot server-side. Omitted when the element couldn't be located
   // or the thumbnail cap for this scan was reached — see routes/scan.ts.
   elementScreenshot: z.string().optional(),
+  // Set only when there is no screenshot and the page could tell us why —
+  // the element is hidden, or parked off-screen until it is used. Both are
+  // usually correct behaviour, and saying so is what stops a picture-less
+  // finding reading as a broken report.
+  pictureNote: z.string().optional(),
   // For images missing alt text: an AI-generated, ready-to-use alt-text
   // suggestion based on looking at the actual image (see aiReview/
   // suggestAltText.ts). Present only when the AI layer ran and produced one.

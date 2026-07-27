@@ -77,14 +77,53 @@ async function attachEvidence(
     // pictures fit, they should be the ten that matter most.
     const rank = { critical: 0, serious: 1, moderate: 2, minor: 3 } as const;
     const byImportance = [...unpictured].sort((a, b) => rank[a.severity] - rank[b.severity]);
+
+    // One selector per rule, because the report shows one picture per rule.
+    // The widget groups every occurrence of an issue into a single card and
+    // illustrates it with the first, so a page carrying twenty instances of
+    // one axe rule could spend the entire capped budget on that one card and
+    // leave nine other rules with nothing. Measured on moma.org: eleven
+    // findings went unpictured while aria-allowed-role took the slots over
+    // and over. Asking for one apiece fits nine more rules into the same
+    // number of screenshots.
+    //
+    // The full list still follows the deduplicated head, so leftover budget
+    // goes to the remaining instances rather than being thrown away.
+    const seenRule = new Set<string>();
+    const oneEach: typeof byImportance = [];
+    const rest: typeof byImportance = [];
+    for (const f of byImportance) {
+      const key = f.ruleId ?? f.selector;
+      if (seenRule.has(key)) rest.push(f);
+      else {
+        seenRule.add(key);
+        oneEach.push(f);
+      }
+    }
     const shots = await captureSelectorsFresh(
       renderResult.finalUrl,
-      byImportance.map((f) => f.selector),
+      [...oneEach, ...rest].map((f) => f.selector),
       selectorTargetsOneElement
     );
     for (const finding of unpictured) {
-      const shot = shots[finding.selector];
-      if (shot) finding.elementScreenshot = shot;
+      const shot = shots.shots[finding.selector];
+      if (shot) {
+        finding.elementScreenshot = shot;
+        continue;
+      }
+      // No picture, and the page told us why. Nearly always this is correct
+      // behaviour being reported honestly rather than a failure: a skip link
+      // sits off-screen until it takes focus, a search panel has no size
+      // until it opens. Without the note the reader is left with a finding
+      // and nothing to identify it by.
+      const why = shots.unpicturable[finding.selector];
+      if (why === "hidden") {
+        finding.pictureNote =
+          "No picture: this was not visible on the page when it was scanned. It is revealed by something — opening a panel, or moving focus to it.";
+      } else if (why === "offscreen") {
+        finding.pictureNote =
+          "No picture: this sits off the edge of the screen until it is used. Skip links are built this way on purpose, so nothing is necessarily wrong with it being there.";
+      }
     }
   }
 
