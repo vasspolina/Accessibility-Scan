@@ -259,9 +259,9 @@ export const PLAIN_RULE_EXPLANATIONS: Record<string, PlainRule> = {
       "The icon is drawn as a background image, and that mode removes background images. The button still works, but it renders as an empty box — no picture, no label, no hint that it's a button at all.",
   },
   "keyboard-faint-focus": {
-    plain: "The highlight showing where you are on the page is too pale to pick out.",
+    plain: "The outline marking which link or button you're on is too faint to see.",
     impact:
-      "This one hides in testing, because there is technically a highlight there. Try tabbing through your own page and see how long it takes to spot it — that pause is what every keyboard user gets on every single click.",
+      "Pressing Tab moves an invisible cursor from one control to the next, and this outline is the only thing showing where it has got to. Too faint, and someone using a keyboard instead of a mouse cannot tell what they are about to activate — so they press Enter and hope, or start again from the top. It slips through testing easily, because there genuinely is an outline there; it only shows up when you put the mouse down and try to get through the page yourself.",
   },
   "keyboard-focus-trap": {
     plain: "Keyboard focus gets stuck in one spot. You can't Tab past it.",

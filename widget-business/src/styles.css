@@ -613,6 +613,27 @@
   border-left: 3px solid var(--a11y-accent, #0969da);
 }
 
+/* Code spans inside advice text, and the existing ones for rule ids and
+   selectors. Needs its own font-family: the reset at the top of this file
+   forces `font-family: inherit` onto every element, so <code> was rendering
+   in the body font and the distinction it exists to make was invisible. */
+.a11y-widget-biz code {
+  font-family: var(--a11y-mono, ui-monospace, SFMono-Regular, Menlo, Consolas, monospace);
+  font-size: 0.92em;
+  background: var(--a11y-surface, #f6f8fa);
+  padding: 1px 5px;
+  border-radius: 3px;
+  /* Long selectors must be able to break, or one of them widens the card and
+     the whole report scrolls sideways — which this tool reports as a fault. */
+  overflow-wrap: anywhere;
+}
+
+/* What was measured, above the explanation: plain body text, so the order
+   reads as fact, then why it matters, then what to change. */
+.a11y-finding-measured {
+  margin: 0 0 10px;
+}
+
 .a11y-alt-suggestion {
   margin: 10px 0;
   padding: 10px 12px;

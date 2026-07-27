@@ -10,6 +10,33 @@ const severityLabel: Record<AccessibilityFinding["severity"], string> = {
   minor: "Minor polish",
 };
 
+/**
+ * Renders `code spans` in advice text as real code.
+ *
+ * The fix strings name CSS properties and HTML attributes, and marked them up
+ * with backticks the way the rest of this codebase writes prose. Nothing was
+ * rendering them, so a reader was told to add "`outline-offset`" — backticks
+ * included — which looks like a bug in the report and undermines the advice
+ * sitting next to it.
+ *
+ * Splitting into React elements rather than setting HTML: the text is ours,
+ * but some of it is assembled from page content, and there is no reason for
+ * any of it to reach an HTML parser.
+ */
+function CodeText({ text }: { text: string }) {
+  if (!text.includes("`")) return <>{text}</>;
+  // Odd indexes are the spans between backtick pairs. A trailing unmatched
+  // backtick simply leaves its text in an even slot and renders as prose.
+  const parts = text.split("`");
+  return (
+    <>
+      {parts.map((part, i) =>
+        i % 2 === 1 ? <code key={i}>{part}</code> : <span key={i}>{part}</span>
+      )}
+    </>
+  );
+}
+
 // Above this many occurrences of the same issue on one page, the affected-
 // element list collapses to the first few plus a "show all" toggle.
 const SUMMARY_THRESHOLD = 5;
@@ -375,14 +402,25 @@ export function FindingGroup({ findings }: { findings: AccessibilityFinding[] })
           And aria-controls above pointed at an element that did not exist
           while collapsed, which is exactly what that attribute must not do. */}
       <div id={detailsId} className="a11y-finding-details" hidden={!expanded}>
+          {/* What was actually measured on this page. It used to sit inside
+              the technical drawer, two clicks from view, which left the
+              summary above saying a ring was "too pale" and never how pale or
+              on how many controls — the numbers are the most useful sentence
+              in the finding. Skipped when there is no plain-language title,
+              because then the description is already the heading. */}
+          {plain && rep.description && (
+            <p className="a11y-finding-measured">
+              <strong>What we found:</strong> <CodeText text={rep.description} />
+            </p>
+          )}
           {/* Shared explanation — shown once for the whole group */}
           {plain && (
             <p className="a11y-finding-impact">
-              <strong>Why this matters:</strong> {plain.impact}
+              <strong>Why this matters:</strong> <CodeText text={plain.impact} />
             </p>
           )}
           <p>
-            <strong>What to do:</strong> {whatToDo}
+            <strong>What to do:</strong> <CodeText text={whatToDo} />
           </p>
           {rep.helpUrl && (
             <p>
@@ -422,9 +460,11 @@ export function FindingGroup({ findings }: { findings: AccessibilityFinding[] })
           {(rep.ruleId || rep.wcagCriterion) && (
             <details className="a11y-tech-details">
               <summary>The technical version</summary>
-              <p>
-                <strong>What we found:</strong> {rep.description}
-              </p>
+              {!plain && (
+                <p>
+                  <strong>What we found:</strong> <CodeText text={rep.description} />
+                </p>
+              )}
               {rep.wcagCriterion && rep.wcagCriterion !== "N/A" && (
                 <p>
                   <strong>WCAG criterion:</strong> {rep.wcagCriterion}

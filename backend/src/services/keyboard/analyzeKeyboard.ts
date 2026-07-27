@@ -308,8 +308,12 @@ export function evaluateKeyboardNav(nav: KeyboardNavResult): AccessibilityFindin
         "AA",
         "https://www.w3.org/WAI/WCAG21/Understanding/non-text-contrast.html",
         worst.selector,
-        `The focus outline on this page is too pale to pick out: ${faint.length} of ${comparable.length} keyboard stops draw a ring at about ${ratio.toFixed(1)}:1 against what is behind it, where 3:1 is the minimum. There is an indicator, so this is easy to miss in testing — but at this contrast a sighted keyboard user still cannot tell at a glance where they are.`,
-        "Darken the focus colour until it reaches 3:1 against the background behind it, and give it some weight — 2px or more, with `outline-offset` to hold it clear of the element's own edge. A single hairline in a pale grey reads as a rendering artifact rather than a cursor."
+        // Just the measurement. The widget shows this above "Why this
+        // matters", which already covers why a faint ring survives testing,
+        // and saying it twice in consecutive paragraphs was the exact fault
+        // this report gets criticised for elsewhere.
+        `${faint.length} of the ${comparable.length} places the Tab key stops draw a focus ring at roughly ${ratio.toFixed(1)}:1 against what sits behind it. Three to one is the minimum for an indicator to count as visible.`,
+        "Two changes: a stronger colour and more weight. Pick a focus colour at least three times as light or dark as whatever sits behind it — in practice a firm dark tone or your brand colour, not a pale grey — and draw it at 2px or more. Add `outline-offset: 2px` so the ring sits just off the control instead of merging into its own border. A 1px line in a light grey reads as a rendering glitch rather than as “you are here”, which is why it survives testing and still fails in use."
       )
     );
   }
