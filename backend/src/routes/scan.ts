@@ -2,6 +2,7 @@ import type { FastifyInstance } from "fastify";
 import { z } from "zod";
 import { logger } from "../utils/logger.js";
 import { describeScanFailure } from "../services/scanFailure.js";
+import { memorySnapshot, trackPeakMemory } from "../utils/memory.js";
 import { scanUrlToReport } from "../services/scanPipeline.js";
 import type { AccessibilityReport } from "../types/report.js";
 
@@ -57,6 +58,17 @@ export async function scanRoutes(app: FastifyInstance) {
       });
     }
 
+    // Where the memory goes, logged around every scan.
+    //
+    // "Target crashed" is Chromium's renderer dying, and that is a different
+    // process from this one. Without both numbers there is no way to tell
+    // whether trimming what Node holds — screenshots, mostly — could help at
+    // all, or whether every byte that matters belongs to the browser. Three
+    // changes have already been aimed at this crash on a hypothesis; this is
+    // so the fourth does not have to be.
+    const memBefore = await memorySnapshot();
+    const peakTracker = trackPeakMemory();
+
     let report: AccessibilityReport;
     try {
       // One pipeline, shared with the crawler. It used to be duplicated here,
@@ -72,6 +84,15 @@ export async function scanRoutes(app: FastifyInstance) {
       // Every branch of this used to live here, and the crawler had its own
       // much poorer copy. One classifier now serves both, so the two can no
       // longer disagree about what a failure means.
+      logger.info(
+        {
+          url: parsedBody.data.url,
+          before: memBefore,
+          peak: await peakTracker.stop(),
+          atFailure: await memorySnapshot(),
+        },
+        "Memory around a failed scan"
+      );
       const failure = describeScanFailure(err);
       if (failure.logLevel === "warn") {
         logger.warn({ err, url: parsedBody.data.url }, "Scan failed");
@@ -90,6 +111,15 @@ export async function scanRoutes(app: FastifyInstance) {
       });
     }
 
+    logger.info(
+      {
+        url: parsedBody.data.url,
+        before: memBefore,
+        peak: await peakTracker.stop(),
+        after: await memorySnapshot(),
+      },
+      "Memory around a completed scan"
+    );
     return reply.send(report);
   });
 }
