@@ -1,5 +1,9 @@
 import { describe, it, expect } from "vitest";
-import { evaluateTypography, type TypographyBlock } from "../src/services/typography/analyzeTypography.js";
+import {
+  evaluateTypography,
+  leadingNeededFor,
+  type TypographyBlock,
+} from "../src/services/typography/analyzeTypography.js";
 
 // A comfortable, well-set paragraph — should trigger nothing.
 function cleanParagraph(overrides: Partial<TypographyBlock> = {}): TypographyBlock {
@@ -162,5 +166,66 @@ describe("evaluateTypography", () => {
       expect(finding.category).toBe("design-clarity");
       expect(finding.source).toBe("automated");
     }
+  });
+});
+
+// Hochuli, "Detail in typography": the longer the line, the more linespacing
+// it needs. The two existing rules cannot express that between them — one is
+// an absolute floor on leading, the other an absolute ceiling on line length,
+// and a paragraph can clear both while still being under-led for its measure.
+describe("evaluateTypography — leading against measure", () => {
+  it("flags a long line whose leading clears the absolute floor", () => {
+    // 85 characters per line at 1.31 — passes the 1.25 floor, passes the
+    // 90-character limit, and needs about 1.43 at this measure.
+    const findings = evaluateTypography([
+      cleanParagraph({ textLength: 850, lineCount: 10, lineHeightPx: 21, fontSizePx: 16 }),
+    ]);
+    expect(rulesOf(findings)).toContain("typo-leading-for-measure");
+    expect(rulesOf(findings)).not.toContain("typo-leading-tight");
+    expect(rulesOf(findings)).not.toContain("typo-line-length-long");
+  });
+
+  it("asks nothing extra of a narrow column at the same leading", () => {
+    // Same 1.31 leading, 45 characters per line. Comfortable, and silence is
+    // the correct answer — this is the half that stops the rule being a
+    // disguised demand for 1.5 everywhere.
+    const findings = evaluateTypography([
+      cleanParagraph({ textLength: 450, lineCount: 10, lineHeightPx: 21, fontSizePx: 16 }),
+    ]);
+    expect(rulesOf(findings)).not.toContain("typo-leading-for-measure");
+  });
+
+  it("says nothing about a well-set paragraph", () => {
+    expect(rulesOf(evaluateTypography([cleanParagraph()]))).not.toContain(
+      "typo-leading-for-measure"
+    );
+  });
+
+  // One fault, one card. A block under the floor is the other rule's finding.
+  it("leaves genuinely tight leading to the rule that owns it", () => {
+    const findings = evaluateTypography([
+      cleanParagraph({ textLength: 850, lineCount: 10, lineHeightPx: 18, fontSizePx: 16 }),
+    ]);
+    expect(rulesOf(findings)).toContain("typo-leading-tight");
+    expect(rulesOf(findings)).not.toContain("typo-leading-for-measure");
+  });
+
+  // Runs from this project's existing floor at 50 characters to WCAG 1.4.8's
+  // 1.5 at 70, and asks nothing more beyond that.
+  it("scales the requirement with the measure, between two borrowed ends", () => {
+    expect(leadingNeededFor(30)).toBeCloseTo(1.25, 2);
+    expect(leadingNeededFor(50)).toBeCloseTo(1.25, 2);
+    expect(leadingNeededFor(60)).toBeCloseTo(1.375, 2);
+    expect(leadingNeededFor(70)).toBeCloseTo(1.5, 2);
+    expect(leadingNeededFor(200)).toBeCloseTo(1.5, 2);
+  });
+
+  // Measured on bundesregierung.de, the one site of eight where this fires:
+  // six paragraphs between 65 and 83 characters, all set at 1.42.
+  it("flags the setting a real government site ships", () => {
+    const findings = evaluateTypography([
+      cleanParagraph({ textLength: 830, lineCount: 10, lineHeightPx: 22.72, fontSizePx: 16 }),
+    ]);
+    expect(rulesOf(findings)).toContain("typo-leading-for-measure");
   });
 });

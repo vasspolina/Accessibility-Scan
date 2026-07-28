@@ -127,6 +127,7 @@ const HELP_URLS: Record<string, string> = {
   "typo-line-length-long": "https://www.w3.org/WAI/WCAG21/Understanding/visual-presentation.html",
   "typo-line-length-short": "https://www.w3.org/WAI/WCAG21/Understanding/visual-presentation.html",
   "typo-leading-tight": "https://www.w3.org/WAI/WCAG21/Understanding/visual-presentation.html",
+  "typo-leading-for-measure": "https://www.w3.org/WAI/WCAG21/Understanding/visual-presentation.html",
   "typo-justified-no-hyphens": "https://www.w3.org/WAI/WCAG21/Understanding/visual-presentation.html",
   "typo-font-size-small": "https://www.w3.org/WAI/WCAG21/Understanding/resize-text.html",
   // Neurodiversity / readability checks — grounded in GOV.UK's accessibility
@@ -138,6 +139,43 @@ const HELP_URLS: Record<string, string> = {
   "typo-allcaps-block": "https://accessibility.blog.gov.uk/2016/09/02/dos-and-donts-on-designing-for-accessibility/",
   "typo-thin-weight": "https://accessibility.blog.gov.uk/2016/09/02/dos-and-donts-on-designing-for-accessibility/",
 };
+
+/**
+ * The leading a line of this length needs, as a multiple of the font size.
+ *
+ * Hochuli states the interdependence plainly: the longer the line, the more
+ * linespacing it needs, and he takes it from Tinker, who measured it. The
+ * reason is in how reading actually works — the eye does not glide along a
+ * line, it lands in fixations of a fifth to two fifths of a second and jumps
+ * between them, and the hardest jump of all is the one back to the start of
+ * the next line. The further left that return sweep has to travel, the more
+ * vertical separation it needs to land on the right line rather than the one
+ * above or below. Land wrong and the reader makes a regression: a backwards
+ * jump to work out where they are.
+ *
+ * So a single floor cannot be right for every measure. The scale runs from
+ * 1.25 at 50 characters to 1.5 at 70, and stays at 1.5 beyond that.
+ *
+ * Both ends are borrowed rather than invented. The top is WCAG 1.4.8, which
+ * asks for 1.5 within paragraphs; by 70 characters a line is long enough that
+ * its concern plainly applies. The bottom is this project's existing floor,
+ * below which a setting is dense at any width.
+ *
+ * The useful half is the bottom. A blanket 1.5 would flag a 40-character
+ * column set at 1.3, which reads perfectly well and is a common, deliberate
+ * choice in a narrow card. Asking less of narrow measures is what makes this
+ * a rule about the relationship rather than a second demand for 1.5.
+ */
+const LEADING_FLOOR = 1.25;
+const LEADING_CEILING = 1.5;
+const MEASURE_AT_FLOOR = 50;
+const MEASURE_AT_CEILING = 70;
+
+export function leadingNeededFor(charsPerLine: number): number {
+  const slope = (LEADING_CEILING - LEADING_FLOOR) / (MEASURE_AT_CEILING - MEASURE_AT_FLOOR);
+  const needed = LEADING_FLOOR + (charsPerLine - MEASURE_AT_FLOOR) * slope;
+  return Math.min(LEADING_CEILING, Math.max(LEADING_FLOOR, needed));
+}
 
 function makeFinding(
   ruleId: string,
@@ -277,6 +315,43 @@ export function evaluateTypography(blocks: TypographyBlock[]): AccessibilityFind
         worst.selector,
         `Lines of body text sit too close together — line-height is ${ratio}× the font size (${tightLeading.length} block${tightLeading.length === 1 ? "" : "s"} under 1.25). Dense settings make it easy to reread or skip lines.`,
         "Raise line-height on body text to roughly 1.4–1.6 (WCAG's visual-presentation guidance suggests 1.5)."
+      )
+    );
+  }
+
+  // Leading that is fine in itself, and not fine for lines this long.
+  //
+  // The rule above is an absolute floor: below 1.25 the setting is dense at
+  // any measure. This one is the interdependence — a paragraph at 1.3 passes
+  // that floor and passes the line-length rule at 85 characters, and is still
+  // under-led, because the return sweep to the start of the next line is that
+  // much longer. Neither existing rule can see it; only the two together can.
+  const underLedForMeasure = bodyBlocks.filter((b) => {
+    if (b.lineCount === null || b.lineCount < 3) return false;
+    if (b.lineHeightPx === null || b.fontSizePx <= 0) return false;
+    const ratio = b.lineHeightPx / b.fontSizePx;
+    // Below the floor is the other rule's finding. Reporting both would be
+    // one fault printed twice.
+    if (ratio < 1.25) return false;
+    const cpl = charsPerLine(b);
+    return cpl !== null && ratio < leadingNeededFor(cpl);
+  });
+  if (underLedForMeasure.length > 0) {
+    const worst = underLedForMeasure.reduce((a, b) => {
+      const deficit = (x: TypographyBlock) =>
+        leadingNeededFor(charsPerLine(x) ?? 0) - (x.lineHeightPx ?? 0) / x.fontSizePx;
+      return deficit(b) > deficit(a) ? b : a;
+    });
+    const cpl = Math.round(charsPerLine(worst) ?? 0);
+    const ratio = ((worst.lineHeightPx ?? 0) / worst.fontSizePx).toFixed(2);
+    const needed = leadingNeededFor(cpl).toFixed(2);
+    findings.push(
+      makeFinding(
+        "typo-leading-for-measure",
+        "minor",
+        worst.selector,
+        `Lines here run about ${cpl} characters long and sit ${ratio} times the text size apart (${underLedForMeasure.length} block${underLedForMeasure.length === 1 ? "" : "s"}). That spacing would be comfortable on a narrower column, but long lines need more room between them than short ones: the hardest move in reading is the jump back to the start of the next line, and the further left it has to travel, the more likely it lands on the wrong one. At this length about ${needed} would be comfortable.`,
+        `Two fixes work and you only need one. Raise line-height to about ${needed} on this text, or narrow the column so the lines are shorter — a max-width of around 65 characters is the usual way.`
       )
     );
   }

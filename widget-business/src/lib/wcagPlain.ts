@@ -359,6 +359,13 @@ export const PLAIN_RULE_EXPLANATIONS: Record<string, PlainRule> = {
     impact:
       "Not a legal requirement, and the change with the widest reach in this whole report. It helps people with cognitive disabilities, anyone reading in a second language, and everyone skimming on a phone with one bar of signal. GOV.UK writes at roughly a nine-year-old's reading age deliberately — that isn't a simple site, it's a well-written one.",
   },
+  "typo-leading-for-measure": {
+    plain: "Lines this long need more room between them.",
+    found: (n) =>
+      `${n === 1 ? "A block of text sets" : `${n} blocks of text set`} long lines close together. The spacing would be comfortable in a narrow column and is tight at this width.`,
+    impact:
+      "Reading is not a glide along the line, it is a series of jumps, and the hardest one is the jump back to the start of the next line. The further left it travels, the more space it needs to land on the right line — get it wrong and you reread the line you just finished, or skip one.",
+  },
   "reading-order-mismatch": {
     plain: "Two controls sitting side by side are tabbed to in the opposite order.",
     impact:
