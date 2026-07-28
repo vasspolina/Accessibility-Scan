@@ -10,6 +10,7 @@ import {
   aiToFindings,
   mergeFindings,
   dropContradictedConsentClaims,
+  dropSpeculativeFindings,
 } from "./merge/mergeFindings.js";
 import { evaluateTypography } from "./typography/analyzeTypography.js";
 import { evaluateMotion } from "./motion/analyzeMotion.js";
@@ -263,9 +264,15 @@ export async function scanUrlToReport(
   // The model is told that matching accept/reject buttons are correct, and it
   // has still claimed the opposite. Where the page was measured, the
   // measurement decides.
-  const aiFindings = dropContradictedConsentClaims(
-    aiToFindings(aiReview.findings),
-    renderResult.darkPatternSignals.consentBanner
+  //
+  // Then anything the model was not sure of. Its own confidence rating was
+  // being carried into the report and never read, so a guess and a certainty
+  // printed identically.
+  const aiFindings = dropSpeculativeFindings(
+    dropContradictedConsentClaims(
+      aiToFindings(aiReview.findings),
+      renderResult.darkPatternSignals.consentBanner
+    )
   );
   const findings = mergeFindings(automatedFindings, aiFindings);
   findings.push(...deterministic);

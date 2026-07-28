@@ -124,7 +124,7 @@ export const FINDINGS_TOOL = {
             title: {
               type: "string",
               description:
-                "A short, specific headline for this finding — roughly 4 to 8 words, sentence case, no trailing full stop. It is the line the reader scans, so name the concrete problem: \"Cookie banner has no reject button\", \"Decline option guilt-trips the visitor\", \"Prices only complete at checkout\". Not a category label (\"Dark pattern\"), not vague (\"Confusing design\").",
+                "A short, specific headline for this finding — roughly 4 to 8 words, sentence case, no trailing full stop. It is the line the reader scans, so name the concrete problem: \"Cookie banner has no reject button\", \"Decline option guilt-trips the visitor\", \"Prices only complete at checkout\". Not a category label (\"Dark pattern\"), not vague (\"Confusing design\"). State it as a fact you have established, in plain English a shop owner would use. Never hedge in the title — no \"may\", \"might\", \"could\", \"appears to\", \"seems to\". If you cannot state it plainly then you have not established it, and it belongs in no finding at all rather than in a hedged one.",
             },
             description: {
               type: "string",
@@ -138,6 +138,8 @@ export const FINDINGS_TOOL = {
             confidence: {
               type: "string",
               enum: ["high", "medium", "low"],
+              description:
+                "How sure you are that this is genuinely wrong on this page. Answer honestly: low-confidence findings are discarded rather than shown, so guessing costs you nothing and misleads the owner if it survives. Reserve high for something visible in the evidence you were given.",
             },
           },
           required: ["severity", "category", "selector", "title", "description", "suggestedFix", "confidence"],

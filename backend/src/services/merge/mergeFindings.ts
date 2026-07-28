@@ -321,3 +321,39 @@ export function dropContradictedConsentClaims(
     return !(aboutThePair && APPEARANCE_RE.test(text));
   });
 }
+
+/**
+ * Drops the findings the model itself was not sure of.
+ *
+ * Every AI finding carries a confidence the model assigns, and until now that
+ * value travelled all the way into the report and was never read. A guess and
+ * a certainty were printed identically, which is the overclaim this project
+ * refuses everywhere it can measure — applied to the one layer that cannot be
+ * measured at all.
+ *
+ * Two things go:
+ *
+ * Low confidence, on the model's own word. If it is not sure, the owner
+ * should not be reading it as a fault on their site.
+ *
+ * And any claim hedged in the title, whatever confidence came with it.
+ * "Cookie banner's close icon may not equal rejecting cookies" asserts
+ * nothing: it is a thought, not a finding, and it arrived labelled the same
+ * as a measured contrast failure. A title is the claim, and a claim that has
+ * to say "may" has not been established.
+ *
+ * The description may still hedge — some genuine faults are conditional, and
+ * a sentence explaining "if this is what the button does, then…" is honest
+ * where a headline of the same shape is not.
+ *
+ * Pure and deterministic. Exported for testing.
+ */
+const HEDGED_CLAIM = /\b(may|might|could|possibly|perhaps|potentially|seems?|appears?)\b/i;
+
+export function dropSpeculativeFindings(findings: AccessibilityFinding[]): AccessibilityFinding[] {
+  return findings.filter((f) => {
+    if (f.source !== "ai-review") return true;
+    if (f.confidence === "low") return false;
+    return !HEDGED_CLAIM.test(f.title ?? "");
+  });
+}
