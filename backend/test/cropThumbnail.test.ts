@@ -58,3 +58,40 @@ describe("cropElementThumbnail", () => {
     expect(await cropElementThumbnail(page, { x: 10, y: 10, width: 0, height: 50 }, 400, 400)).toBeNull();
   });
 });
+
+// Sixteen of the thumbnails on one real report were icons under 21px square,
+// displayed in a 216px box. The layout magnified them roughly elevenfold and
+// they arrived as smudges. Padding the crop out to a legible frame fixes it at
+// the source: the reader gets the icon and its surroundings, at a size that
+// needs no magnification to read.
+describe("cropElementThumbnail: elements too small to see", () => {
+  it("pads a tiny element out to a legible frame", async () => {
+    const page = await halfAndHalf(1280, 800);
+    const out = await cropElementThumbnail(page, { x: 200, y: 380, width: 17, height: 17 }, 1280, 800);
+    expect(out).not.toBeNull();
+    const meta = await sharp(Buffer.from(out!, "base64")).metadata();
+    expect(meta.width!).toBeGreaterThanOrEqual(240);
+    expect(meta.height!).toBeGreaterThanOrEqual(100);
+  });
+
+  // The padding must not push the crop off the edge of the page image, which
+  // would either throw or produce a frame of the wrong shape.
+  it("keeps a tiny element in the corner inside the page", async () => {
+    const page = await halfAndHalf(1280, 800);
+    const out = await cropElementThumbnail(page, { x: 2, y: 396, width: 16, height: 16 }, 1280, 800);
+    expect(out).not.toBeNull();
+    const meta = await sharp(Buffer.from(out!, "base64")).metadata();
+    expect(meta.width!).toBeLessThanOrEqual(1280);
+  });
+
+  // A crop already big enough keeps its own dimensions rather than being
+  // grown to the minimum for no reason.
+  it("leaves a large element alone", async () => {
+    const page = await halfAndHalf(1280, 800);
+    const out = await cropElementThumbnail(page, { x: 100, y: 340, width: 600, height: 200 }, 1280, 800);
+    expect(out).not.toBeNull();
+    const meta = await sharp(Buffer.from(out!, "base64")).metadata();
+    // Downscaled to the 480 cap, so the aspect ratio is what identifies it.
+    expect(meta.width! / meta.height!).toBeGreaterThan(2);
+  });
+});

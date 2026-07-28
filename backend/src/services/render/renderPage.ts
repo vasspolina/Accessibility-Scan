@@ -520,7 +520,11 @@ function extractDomSignalsInPage(): DomSignals {
         // measured after the walk, a correct dialog reported focus outside it
         // and a focus-trapping one reported focus inside, both backwards.
         hasFocusInside: (() => {
-          const active = document.activeElement;
+          // Same shadow-host problem as the keyboard walk: contains() is false
+          // for a node living in a shadow tree, and the host is what
+          // activeElement hands back.
+          let active: Element | null = document.activeElement;
+          while (active?.shadowRoot?.activeElement) active = active.shadowRoot.activeElement;
           return !!active && active !== document.body && el.contains(active);
         })(),
         // Whether this dialog was actually on screen when the page settled.
@@ -733,6 +737,10 @@ const ELEMENT_IMPACT_ORDER: Record<string, number> = {
 // axe rules that flag an image missing its text alternative. Their captures
 // feed the alt-text suggester (aiReview/suggestAltText.ts), which needs the
 // real image pixels — so these get capture priority and a load-wait.
+// Below this, on either side, an element cannot be identified from a picture
+// of itself. Icons, checkboxes, radio buttons, close crosses.
+const TINY_ELEMENT_PX = 48;
+
 const IMAGE_ALT_RULES = new Set(["image-alt", "input-image-alt", "role-img-alt", "svg-img-alt", "area-alt"]);
 
 async function captureElementScreenshots(
@@ -840,6 +848,24 @@ async function captureElementScreenshots(
       // protects the alt-text suggester downstream, which reads these pixels —
       // a covered <img> would otherwise get the overlay described instead.
       if (!(await isActuallyOnScreen(locator))) continue;
+
+      // An element too small to be identified on its own is photographed with
+      // its surroundings instead. Measured on bundesregierung.de: 21 of 38
+      // thumbnails came back narrower than the box the report shows them in,
+      // sixteen of those icons under 21px square, which the layout magnified
+      // into smudges. The icon alone could not have been identified at any
+      // size — what tells the reader which one is meant is the button it sits
+      // in and the text beside it.
+      //
+      // The alt-text suggester reads these same pixels, and it gains here for
+      // the same reason: seventeen pixels of glyph is not something to write a
+      // description from either.
+      const elBox = await locator.boundingBox().catch(() => null);
+      if (elBox && (elBox.width < TINY_ELEMENT_PX || elBox.height < TINY_ELEMENT_PX)) {
+        const withContext = await captureRegionAround(page, selector, 260, 120);
+        if (withContext) result[selector] = withContext;
+        continue;
+      }
       const raw = await locator.screenshot({ type: "jpeg", quality: 72, timeout: 1_500, animations: "disabled" });
       const resized = await sharp(raw)
         .resize({ width: 480, height: 480, fit: "inside", withoutEnlargement: true })
@@ -1272,7 +1298,16 @@ async function collectDarkPatternsAcrossFrames(page: Page): Promise<DarkPatternS
 // capture paths follow.
 const REGION_PADDING_PX = 48;
 
-async function captureRegionAround(page: Page, selector: string): Promise<string | null> {
+async function captureRegionAround(
+  page: Page,
+  selector: string,
+  // Smallest frame worth returning. An icon is 16-20px square and a fixed
+  // 48px of padding still yields something no reader can identify, so callers
+  // picturing small controls ask for a frame that holds enough around it to
+  // say which control is meant.
+  minWidth = 0,
+  minHeight = 0
+): Promise<string | null> {
   try {
     const locator = page.locator(selector).first();
     if ((await locator.count()) === 0) return null;
@@ -1286,10 +1321,12 @@ async function captureRegionAround(page: Page, selector: string): Promise<string
 
     // Clamp to the viewport: boundingBox is viewport-relative after the
     // scroll, and a clip outside those bounds fails.
-    const left = Math.max(0, Math.floor(box.x - REGION_PADDING_PX));
-    const top = Math.max(0, Math.floor(box.y - REGION_PADDING_PX));
-    const right = Math.min(viewport.width, Math.ceil(box.x + box.width + REGION_PADDING_PX));
-    const bottom = Math.min(viewport.height, Math.ceil(box.y + box.height + REGION_PADDING_PX));
+    const padX = Math.max(REGION_PADDING_PX, (minWidth - box.width) / 2);
+    const padY = Math.max(REGION_PADDING_PX, (minHeight - box.height) / 2);
+    const left = Math.max(0, Math.floor(box.x - padX));
+    const top = Math.max(0, Math.floor(box.y - padY));
+    const right = Math.min(viewport.width, Math.ceil(box.x + box.width + padX));
+    const bottom = Math.min(viewport.height, Math.ceil(box.y + box.height + padY));
     const width = right - left;
     const height = bottom - top;
     if (width < 8 || height < 8) return null;
@@ -1455,7 +1492,18 @@ async function captureKeyboardNavigation(
 
   const readActive = () =>
     page.evaluate(() => {
-      const el = document.activeElement;
+      // document.activeElement stops at a shadow host: focus anywhere inside a
+      // web component reports the host itself. Every Tab press then returns the
+      // same element and the walk concludes focus is stuck.
+      //
+      // Measured on this project's own widget, which renders into a shadow
+      // root: the scan reported a critical keyboard trap and "1 of 1 stops
+      // show no focus outline", for a component that traps nothing and draws
+      // a ring on every control. Any site built from web components would have
+      // received the same two findings, both false, and a critical one at
+      // that. Descending into the shadow root reads what is really focused.
+      let el: Element | null = document.activeElement;
+      while (el?.shadowRoot?.activeElement) el = el.shadowRoot.activeElement;
       if (!el || el === document.body || el === document.documentElement) return null;
       const parts: string[] = [];
       let node: Element | null = el;
@@ -1469,14 +1517,22 @@ async function captureKeyboardNavigation(
           parts.unshift(`#${CSS.escape(node.id)}`);
           break;
         }
-        const parent: Element | null = node.parentElement;
-        if (parent) {
+        // parentElement is null for a node sitting directly in a shadow root:
+        // its parent is the ShadowRoot, which is a DocumentFragment. Without
+        // this the three buttons in a component all produced the bare string
+        // "button", three identical stops in a row, and the trap rule fires on
+        // exactly that. Counting siblings through parentNode keeps them apart,
+        // and stepping to the host keeps the path going instead of stopping at
+        // the boundary.
+        const parent: ParentNode | null = node.parentElement ?? node.parentNode;
+        if (parent && "children" in parent) {
           const tag = node.tagName;
           const siblings = Array.from(parent.children).filter((c) => c.tagName === tag);
           if (siblings.length > 1) sel += `:nth-of-type(${siblings.indexOf(node) + 1})`;
         }
         parts.unshift(sel);
-        node = node.parentElement;
+        const root = node.parentNode as ShadowRoot | null;
+        node = node.parentElement ?? (root && "host" in root ? (root.host as Element) : null);
       }
       const cs = getComputedStyle(el);
       // The colour the focus ring is actually seen against. An outline is
@@ -2147,7 +2203,8 @@ async function probeDialogKeyboard(
           parseFloat(cs.opacity) > 0 &&
           r.width > 0 &&
           r.height > 0;
-        const active = document.activeElement;
+        let active: Element | null = document.activeElement;
+        while (active?.shadowRoot?.activeElement) active = active.shadowRoot.activeElement;
         return {
           visible,
           focusInside: !!active && el.contains(active),

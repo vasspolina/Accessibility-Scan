@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>QA: focusable controls inside a shadow root</title>
+    <style>
+      body { font-family: system-ui, sans-serif; margin: 0; padding: 24px; color: #111; }
+    </style>
+  </head>
+  <body>
+    <main>
+      <h1>Controls inside a web component</h1>
+      <p>
+        Every control on this page lives inside a shadow root, the way an
+        embeddable widget builds itself. Nothing here traps focus and every
+        control draws a visible ring.
+      </p>
+
+      <!--
+        The reason this page exists.
+
+        document.activeElement stops at a shadow host. Focus any of the buttons
+        below and it reports <my-panel>, not the button — so a keyboard walk
+        that reads it sees the same element on every Tab press and concludes
+        focus is stuck.
+
+        Measured on this project's own widget, which renders into a shadow
+        root: the scan reported a critical keyboard trap and "1 of 1 stops show
+        no focus outline". Both false, on a component that traps nothing and
+        rings every control. Any site built from web components would have got
+        the same.
+      -->
+      <my-panel></my-panel>
+
+      <p><a href="#end" id="after">A link after the component</a></p>
+      <p id="end">End of page.</p>
+    </main>
+
+    <script>
+      class MyPanel extends HTMLElement {
+        connectedCallback() {
+          const root = this.attachShadow({ mode: "open" });
+          root.innerHTML = `
+            <style>
+              button, input {
+                font: inherit;
+                padding: 8px 14px;
+                margin: 0 8px 8px 0;
+                border: 1px solid #0f62fe;
+                background: #fff;
+                color: #0f62fe;
+              }
+              /* A ring nobody could miss, so "no visible focus" can only be
+                 reported if the walk failed to see the real element. */
+              button:focus-visible, input:focus-visible {
+                outline: 4px solid #d33;
+                outline-offset: 2px;
+              }
+            </style>
+            <label for="q">Search</label>
+            <input id="q" type="text" />
+            <button type="button">First</button>
+            <button type="button">Second</button>
+            <button type="button">Third</button>
+          `;
+        }
+      }
+      customElements.define("my-panel", MyPanel);
+    </script>
+  </body>
+</html>

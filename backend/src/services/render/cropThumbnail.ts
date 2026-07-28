@@ -4,6 +4,18 @@ import type { BoundingBox } from "./renderPage.js";
 import type { AccessibilityFinding, Severity } from "../../types/report.js";
 
 const PADDING_PX = 12;
+// The smallest crop worth showing. An icon is 16-20px square, and twelve
+// pixels of padding around one still gives a frame nobody can read: measured
+// on bundesregierung.de, 23 of 38 thumbnails came out narrower than the box
+// they are displayed in, sixteen of them icons under 21px, blown up roughly
+// elevenfold by the layout into the smudges that prompted this.
+//
+// The answer is context rather than magnification. A crop this size centred on
+// a small element shows the icon *and* what sits around it, which is what
+// tells the reader which icon is meant — and it arrives crisp, because it is
+// never scaled up.
+const MIN_CROP_WIDTH = 260;
+const MIN_CROP_HEIGHT = 120;
 const MAX_THUMB_WIDTH = 480;
 const JPEG_QUALITY = 60;
 const MAX_THUMBNAILS_PER_SCAN = 70;
@@ -79,10 +91,14 @@ export async function cropElementThumbnail(
   }
 
   try {
-    const left = Math.max(0, Math.floor(box.x - PADDING_PX));
-    const top = Math.max(0, Math.floor(box.y - PADDING_PX));
-    const right = Math.min(imgWidth, Math.ceil(box.x + box.width + PADDING_PX));
-    const bottom = Math.min(imgHeight, Math.ceil(box.y + box.height + PADDING_PX));
+    // Pad out to a legible frame, keeping the element in the middle of it, and
+    // never widening past the page image itself.
+    const padX = Math.max(PADDING_PX, (MIN_CROP_WIDTH - box.width) / 2);
+    const padY = Math.max(PADDING_PX, (MIN_CROP_HEIGHT - box.height) / 2);
+    const left = Math.max(0, Math.floor(box.x - padX));
+    const top = Math.max(0, Math.floor(box.y - padY));
+    const right = Math.min(imgWidth, Math.ceil(box.x + box.width + padX));
+    const bottom = Math.min(imgHeight, Math.ceil(box.y + box.height + padY));
     const width = right - left;
     const height = bottom - top;
 

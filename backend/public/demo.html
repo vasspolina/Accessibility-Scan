@@ -12,9 +12,11 @@
         background: #f4f4f4;
         color: #161616;
       }
-      .page { max-width: 1056px; margin: 0 auto; }
+      /* Full width: the widget is fluid, and a wrapper capping it at 1056px
+         was the only thing stopping it using the screen. */
+      .page { width: 100%; margin: 0; }
       h1 { font-size: 28px; line-height: 36px; margin: 0 0 8px; font-weight: 400; }
-      p.lede { font-size: 16px; line-height: 22px; color: #525252; margin: 0 0 32px; max-width: 40em; }
+      p.lede { font-size: 16px; line-height: 22px; color: #525252; margin: 0 0 32px; max-width: 60ch; }
       .try { font-size: 14px; line-height: 20px; color: #525252; margin: 32px 0 0; }
       .try code {
         font-family: ui-monospace, "SF Mono", Menlo, monospace;
@@ -23,7 +25,7 @@
     </style>
   </head>
   <body>
-    <div class="page">
+    <main class="page">
       <h1>Accessibility checker</h1>
       <p class="lede">
         Enter any public web address to scan it. The widget below is the
@@ -47,7 +49,7 @@
         <code>gov.pl</code>, whose banner is correct — it should report no
         consent problem at all.
       </p>
-    </div>
+    </main>
 
     <script src="./widget-business.js" defer></script>
   </body>

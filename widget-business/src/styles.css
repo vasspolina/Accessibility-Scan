@@ -27,19 +27,68 @@
   font-family: inherit;
 }
 
+/* Three sizes, and no others.
+ *
+ * The report had eight — 12, 14, 15, 16, 18, 20, 28, 32 — and 77 of its 99
+ * size declarations were 12 or 14px. A checker that flags body text under 13px
+ * should not be setting its own findings in 12px, and a reader who has to
+ * enlarge the page is the reader this tool exists for.
+ *
+ * So the floor is 16px and nothing sits below it. Meta text, badges, counts
+ * and captions are all body size now; they are distinguished by colour and
+ * weight, which cost the reader nothing, rather than by being small.
+ *
+ * Sizes are in rem so they follow the browser's own text setting. A visitor
+ * who has set 20px as their default gets a report scaled to it, which px
+ * would have quietly overridden.
+ */
+:host,
+.a11y-widget-biz {
+  --a11y-text-body: 1rem;      /* 16px — body, labels, badges, everything */
+  --a11y-text-title: 1.25rem;  /* 20px — section and card headings */
+  --a11y-text-display: 2rem;   /* 32px — the score, and nothing else */
+}
+
 .a11y-widget-inner {
-  max-width: 672px;
+  /* Full width, with two limits that are not the same thing.
+   *
+   * The panel takes the whole screen: cards, thumbnails, the score row and
+   * the affected-element lists all read better with room, and a 672px column
+   * on a wide monitor wasted most of it.
+   *
+   * Prose does not get the whole screen, and that is deliberate rather than
+   * timid. This report flags body text running past 90 characters a line,
+   * because the jump back to the start of the next line gets harder the
+   * further left it travels. At 1600px an unconstrained paragraph runs to
+   * about 200. Setting our own text the way we tell other people to set
+   * theirs is the least we can do — so the panel is fluid and the paragraphs
+   * inside it are capped, in the rule below.
+   */
+  width: 100%;
+  max-width: 100%;
   padding: 32px;
   border: 1px solid var(--a11y-border, #d0d7de);
   border-radius: 14px;
   background: var(--a11y-bg, #ffffff);
-  font-size: 16px;
+  font-size: var(--a11y-text-body);
   line-height: 1.5;
+}
+
+/* Anything that is a run of sentences. Capped at a measure the same report
+   would pass, rather than at whatever the window happens to be. */
+.a11y-intro,
+.a11y-section-desc,
+.a11y-finding-details p,
+.a11y-score-caveat,
+.a11y-notice,
+.a11y-undecided-head,
+.a11y-undecided-do {
+  max-width: 76ch;
 }
 
 .a11y-intro {
   margin: 0 0 24px;
-  font-size: 16px;
+  font-size: var(--a11y-text-body);
   line-height: 1.6;
   color: var(--a11y-muted, #57606a);
 }
@@ -58,7 +107,7 @@
 
 .a11y-url-label {
   display: block;
-  font-size: 16px;
+  font-size: var(--a11y-text-body);
   font-weight: 600;
   margin-bottom: 8px;
   color: var(--a11y-text, #1f2328);
@@ -67,14 +116,22 @@
 .a11y-url-row {
   display: flex;
   gap: 12px;
+  /* The button carries white-space: nowrap, so at a phone width the row could
+     not shrink below input + button and pushed 18px of itself off the screen
+     — our own scan reported the page scrolling sideways on a 390px screen.
+     Wrapping lets the button drop under the field instead. */
+  flex-wrap: wrap;
 }
 
 .a11y-url-row input {
-  flex: 1;
+  /* A flex item's default min-width is its content, which is what stops a row
+     shrinking. Allowing it to shrink is what makes the wrap above work. */
+  flex: 1 1 12rem;
+  min-width: 0;
   padding: 12px 16px;
   border: 1px solid var(--a11y-border, #d0d7de);
   border-radius: 8px;
-  font-size: 16px;
+  font-size: var(--a11y-text-body);
   color: var(--a11y-text, #1f2328);
   background: var(--a11y-bg, #ffffff);
 }
@@ -93,7 +150,7 @@
   border-radius: 8px;
   background: var(--a11y-accent, #0969da);
   color: #ffffff;
-  font-size: 16px;
+  font-size: var(--a11y-text-body);
   font-weight: 600;
   cursor: pointer;
   white-space: nowrap;
@@ -158,7 +215,7 @@
   align-items: center;
   gap: 8px;
   margin-top: 16px;
-  font-size: 14px;
+  font-size: var(--a11y-text-body);
   font-weight: 400;
   color: var(--a11y-muted, #57606a);
   cursor: pointer;
@@ -177,14 +234,14 @@
   border-radius: 8px;
   background: #fff0ef;
   color: var(--a11y-score-bad, #cf222e);
-  font-size: 16px;
+  font-size: var(--a11y-text-body);
 }
 
 .a11y-loading,
 .a11y-empty {
   margin-top: 16px;
   color: var(--a11y-muted, #57606a);
-  font-size: 16px;
+  font-size: var(--a11y-text-body);
 }
 
 .a11y-notice {
@@ -193,7 +250,7 @@
   border-radius: 8px;
   background: #fff8c5;
   color: #4d3800;
-  font-size: 14px;
+  font-size: var(--a11y-text-body);
 }
 
 .a11y-report {
@@ -215,7 +272,7 @@
 
 .a11y-section-title {
   margin: 0 0 8px;
-  font-size: 18px;
+  font-size: var(--a11y-text-title);
   font-weight: 700;
 }
 
@@ -230,7 +287,7 @@
 
 .a11y-section-desc {
   margin: 0 0 16px;
-  font-size: 14px;
+  font-size: var(--a11y-text-body);
   line-height: 1.5;
   color: var(--a11y-muted, #57606a);
 }
@@ -259,19 +316,19 @@
 }
 
 .a11y-score-number {
-  font-size: 32px;
+  font-size: var(--a11y-text-display);
   font-weight: 700;
   line-height: 1;
 }
 
 .a11y-score-label {
-  font-size: 12px;
+  font-size: var(--a11y-text-body);
   color: var(--a11y-muted, #57606a);
 }
 
 .a11y-score-summary {
   margin: 0;
-  font-size: 16px;
+  font-size: var(--a11y-text-body);
   line-height: 1.5;
 }
 
@@ -286,7 +343,7 @@
   display: flex;
   justify-content: space-between;
   gap: 12px;
-  font-size: 14px;
+  font-size: var(--a11y-text-body);
 }
 
 .a11y-score-breakdown dt {
@@ -303,7 +360,7 @@
    because a score shown without it invites a conformance claim nobody made. */
 .a11y-score-caveat {
   margin: 16px 0 0;
-  font-size: 14px;
+  font-size: var(--a11y-text-body);
   line-height: 1.5;
   color: var(--a11y-muted, #57606a);
   max-width: 62ch;
@@ -327,13 +384,13 @@
 
 .a11y-undecided-head {
   margin: 0;
-  font-size: 15px;
+  font-size: var(--a11y-text-body);
   line-height: 1.5;
 }
 
 .a11y-undecided-do {
   margin: 8px 0 0;
-  font-size: 14px;
+  font-size: var(--a11y-text-body);
   line-height: 1.5;
   color: var(--a11y-muted, #57606a);
 }
@@ -353,13 +410,13 @@
 
 .a11y-principle-title {
   margin: 0 0 4px;
-  font-size: 16px;
+  font-size: var(--a11y-text-body);
   font-weight: 700;
 }
 
 .a11y-principle-desc {
   margin: 0 0 12px;
-  font-size: 14px;
+  font-size: var(--a11y-text-body);
   color: var(--a11y-muted, #57606a);
 }
 
@@ -397,7 +454,7 @@
   border: none;
   cursor: pointer;
   text-align: left;
-  font-size: 16px;
+  font-size: var(--a11y-text-body);
 }
 
 .a11y-finding-header:focus-visible {
@@ -409,7 +466,7 @@
   flex-shrink: 0;
   padding: 4px 12px;
   border-radius: 999px;
-  font-size: 12px;
+  font-size: var(--a11y-text-body);
   font-weight: 700;
   color: #ffffff;
 }
@@ -447,7 +504,7 @@
   flex-shrink: 1;
   min-width: 0;
   margin-left: auto;
-  font-size: 12px;
+  font-size: var(--a11y-text-body);
   color: var(--a11y-muted, #57606a);
 }
 
@@ -455,7 +512,7 @@
   flex-shrink: 0;
   padding: 2px 8px;
   border-radius: 999px;
-  font-size: 12px;
+  font-size: var(--a11y-text-body);
   font-weight: 700;
   color: var(--a11y-text, #1f2328);
   background: var(--a11y-surface, #f6f8fa);
@@ -465,7 +522,7 @@
 
 .a11y-group-count {
   margin: 0 0 12px;
-  font-size: 14px;
+  font-size: var(--a11y-text-body);
   color: var(--a11y-muted, #57606a);
 }
 
@@ -491,7 +548,7 @@
 }
 
 .a11y-thumb-more {
-  font-size: 14px;
+  font-size: var(--a11y-text-body);
   font-weight: 600;
   color: var(--a11y-muted, #57606a);
 }
@@ -502,7 +559,7 @@
   border-radius: 8px;
   background: var(--a11y-bg, #ffffff);
   color: var(--a11y-accent, #0969da);
-  font-size: 14px;
+  font-size: var(--a11y-text-body);
   font-weight: 600;
   cursor: pointer;
   transition: border-color 0.15s ease, background-color 0.15s ease, transform 0.1s ease;
@@ -554,10 +611,11 @@
      image but not read it, which defeats the point of showing the element. */
   width: 216px;
   height: 156px;
-  /* contain, not cover: many flagged elements (small tap targets especially)
-     are captured at their true small size — show the whole element crisply,
-     centered, rather than upscaling a crop into a blurry fill. */
-  object-fit: contain;
+  /* scale-down, not contain. Both fit the whole frame inside the box; contain
+     also scales it *up* to fill, which is what turned a 17px icon into an
+     eleven-times-magnified smudge. scale-down never exceeds the image's own
+     size, so a small crop stays small and sharp and a large one is reduced. */
+  object-fit: scale-down;
   border-radius: 6px;
   border: 1px solid var(--a11y-border, #d0d7de);
   background: var(--a11y-bg, #ffffff);
@@ -566,7 +624,7 @@
 .a11y-occurrence-label {
   flex: 1;
   min-width: 0;
-  font-size: 14px;
+  font-size: var(--a11y-text-body);
   line-height: 1.45;
   word-break: break-word;
   color: var(--a11y-text, #1f2328);
@@ -575,7 +633,7 @@
 .a11y-occurrence-count {
   flex-shrink: 0;
   align-self: flex-start;
-  font-size: 12px;
+  font-size: var(--a11y-text-body);
   font-weight: 600;
   color: var(--a11y-muted, #57606a);
   background: var(--a11y-bg, #ffffff);
@@ -591,7 +649,7 @@
 }
 
 .a11y-tech-elements code {
-  font-size: 12px;
+  font-size: var(--a11y-text-body);
   word-break: break-word;
 }
 
@@ -602,7 +660,7 @@
      The detail thumbnail below is the one you actually inspect. */
   width: 120px;
   height: 88px;
-  object-fit: contain;
+  object-fit: scale-down;
   border-radius: 6px;
   border: 1px solid var(--a11y-border, #d0d7de);
   background: var(--a11y-surface, #f6f8fa);
@@ -637,7 +695,7 @@
 .a11y-finding-details {
   padding: 12px 16px 16px;
   border-top: 1px solid var(--a11y-border, #d0d7de);
-  font-size: 14px;
+  font-size: var(--a11y-text-body);
   color: var(--a11y-text, #1f2328);
 }
 
@@ -663,7 +721,7 @@
      off the type scale — it computed to 12.88px inside body text and 13.33px
      where the surrounding size differed, which is exactly the drift the scale
      exists to prevent. */
-  font-size: 14px;
+  font-size: var(--a11y-text-body);
   background: var(--a11y-surface, #f6f8fa);
   padding: 2px 4px;
   border-radius: 3px;
@@ -691,7 +749,7 @@
   padding: 2px 8px;
   border: 1px solid var(--a11y-border, #d0d7de);
   border-radius: 999px;
-  font-size: 12px;
+  font-size: var(--a11y-text-body);
   font-weight: 400;
   color: var(--a11y-muted, #57606a);
   white-space: nowrap;
@@ -762,14 +820,14 @@
 
 .a11y-picture-note {
   margin: 0 0 12px;
-  font-size: 14px;
+  font-size: var(--a11y-text-body);
   color: var(--a11y-muted, #57606a);
   font-style: italic;
 }
 
 .a11y-method-hint {
   margin: 0 0 12px;
-  font-size: 14px;
+  font-size: var(--a11y-text-body);
   color: var(--a11y-muted, #57606a);
 }
 
@@ -801,7 +859,7 @@
   border-radius: 6px;
   background: var(--a11y-bg, #ffffff);
   border: 1px solid var(--a11y-border, #d0d7de);
-  font-size: 14px;
+  font-size: var(--a11y-text-body);
   line-height: 1.4;
   word-break: break-word;
 }
@@ -813,7 +871,7 @@
   border-radius: 6px;
   background: var(--a11y-accent, #0969da);
   color: #ffffff;
-  font-size: 14px;
+  font-size: var(--a11y-text-body);
   font-weight: 600;
   cursor: pointer;
 }
@@ -827,7 +885,7 @@
   padding: 12px 12px;
   border-radius: 8px;
   background: var(--a11y-surface, #f6f8fa);
-  font-size: 14px;
+  font-size: var(--a11y-text-body);
 }
 
 .a11y-tech-details summary {
@@ -844,7 +902,7 @@
   background: var(--a11y-surface, #f6f8fa);
   padding: 2px 4px;
   border-radius: 4px;
-  font-size: 12px;
+  font-size: var(--a11y-text-body);
 }
 
 
@@ -874,12 +932,12 @@
 }
 
 .a11y-sr-status {
-  font-size: 14px;
+  font-size: var(--a11y-text-body);
   color: var(--a11y-muted, #57606a);
 }
 
 .a11y-sr-issue-count {
-  font-size: 14px;
+  font-size: var(--a11y-text-body);
   font-weight: 600;
   color: var(--a11y-score-bad, #cf222e);
   background: #fff5f5;
@@ -920,7 +978,7 @@
 .a11y-sr-text {
   flex: 1;
   min-width: 0;
-  font-size: 16px;
+  font-size: var(--a11y-text-body);
   line-height: 1.5;
   color: var(--a11y-text, #1f2328);
   word-break: break-word;
@@ -943,13 +1001,13 @@
 .a11y-sr-issue {
   display: block;
   margin-top: 4px;
-  font-size: 14px;
+  font-size: var(--a11y-text-body);
   color: var(--a11y-score-bad, #cf222e);
 }
 
 .a11y-sr-note {
   margin: 12px 0 0;
-  font-size: 14px;
+  font-size: var(--a11y-text-body);
   color: var(--a11y-muted, #57606a);
 }
 
@@ -979,7 +1037,7 @@
 }
 
 .a11y-conf-num {
-  font-size: 28px;
+  font-size: var(--a11y-text-display);
   font-weight: 700;
   line-height: 1;
 }
@@ -989,7 +1047,7 @@
 }
 
 .a11y-conf-cap {
-  font-size: 14px;
+  font-size: var(--a11y-text-body);
   color: var(--a11y-muted, #57606a);
 }
 
@@ -1001,7 +1059,7 @@
 .a11y-conf-cap em {
   display: block;
   font-style: normal;
-  font-size: 12px;
+  font-size: var(--a11y-text-body);
   /* Was opacity: 0.85, which measured 4.26:1 against the tile background and
      4.28:1 against the failing tile — under the 4.5:1 this product flags other
      sites for. Fading small text is the most common way to fail contrast
@@ -1015,7 +1073,7 @@
   border-left: 3px solid var(--a11y-accent, #0969da);
   border-radius: 0 8px 8px 0;
   background: var(--a11y-surface, #f6f8fa);
-  font-size: 14px;
+  font-size: var(--a11y-text-body);
   line-height: 1.55;
 }
 
@@ -1050,7 +1108,7 @@
   border: 1px solid var(--a11y-border, #d0d7de);
   border-radius: 8px;
   background: var(--a11y-bg, #ffffff);
-  font-size: 14px;
+  font-size: var(--a11y-text-body);
 }
 
 .a11y-conf-failed {
@@ -1068,7 +1126,7 @@
 .a11y-conf-id em {
   display: block;
   font-style: normal;
-  font-size: 12px;
+  font-size: var(--a11y-text-body);
   font-weight: 400;
   color: var(--a11y-muted, #57606a);
 }
@@ -1080,13 +1138,13 @@
 
 .a11y-conf-plain {
   display: block;
-  font-size: 14px;
+  font-size: var(--a11y-text-body);
   color: var(--a11y-muted, #57606a);
 }
 
 .a11y-conf-status {
   flex-shrink: 0;
-  font-size: 12px;
+  font-size: var(--a11y-text-body);
   font-weight: 600;
   color: var(--a11y-muted, #57606a);
   white-space: nowrap;
@@ -1101,7 +1159,7 @@
 .a11y-conf-count {
   display: block;
   margin-top: 2px;
-  font-size: 12px;
+  font-size: var(--a11y-text-body);
   font-weight: 400;
   font-style: normal;
   color: var(--a11y-muted, #57606a);
@@ -1125,7 +1183,7 @@
 
 .a11y-sim-btn {
   font: inherit;
-  font-size: 14px;
+  font-size: var(--a11y-text-body);
   text-align: left;
   padding: 8px 12px;
   border: 1px solid var(--a11y-border, #d0d7de);
@@ -1138,7 +1196,7 @@
 .a11y-sim-btn em {
   display: block;
   font-style: normal;
-  font-size: 12px;
+  font-size: var(--a11y-text-body);
   color: var(--a11y-muted, #57606a);
 }
 
@@ -1154,7 +1212,7 @@
 
 .a11y-sim-note {
   margin: 0 0 12px;
-  font-size: 14px;
+  font-size: var(--a11y-text-body);
   line-height: 1.55;
   color: var(--a11y-text, #1f2328);
 }
@@ -1174,7 +1232,7 @@
 
 .a11y-sim-caption {
   margin: 8px 0 0;
-  font-size: 12px;
+  font-size: var(--a11y-text-body);
   color: var(--a11y-muted, #57606a);
 }
 
@@ -1190,7 +1248,7 @@
 .a11y-mode-btn {
   flex: 1 1 180px;
   font: inherit;
-  font-size: 14px;
+  font-size: var(--a11y-text-body);
   font-weight: 600;
   text-align: left;
   padding: 12px 16px;
@@ -1204,7 +1262,7 @@
 .a11y-mode-btn em {
   display: block;
   font-style: normal;
-  font-size: 12px;
+  font-size: var(--a11y-text-body);
   font-weight: 400;
   color: var(--a11y-muted, #57606a);
 }
@@ -1223,7 +1281,7 @@
 
 .a11y-ai-toggle select {
   font: inherit;
-  font-size: 14px;
+  font-size: var(--a11y-text-body);
   padding: 8px 12px;
   border: 1px solid var(--a11y-border, #d0d7de);
   border-radius: 8px;
@@ -1252,7 +1310,7 @@
   border: 1px solid var(--a11y-border, #d0d7de);
   border-radius: 10px;
   background: var(--a11y-bg, #ffffff);
-  font-size: 16px;
+  font-size: var(--a11y-text-body);
 }
 
 .a11y-audit-body {
@@ -1263,7 +1321,7 @@
 .a11y-audit-count {
   flex-shrink: 0;
   text-align: right;
-  font-size: 14px;
+  font-size: var(--a11y-text-body);
   font-weight: 700;
   color: var(--a11y-muted, #57606a);
 }
@@ -1271,14 +1329,14 @@
 .a11y-audit-count em {
   display: block;
   font-style: normal;
-  font-size: 12px;
+  font-size: var(--a11y-text-body);
   font-weight: 400;
 }
 
 .a11y-audit-score {
   flex-shrink: 0;
   min-width: 40px;
-  font-size: 20px;
+  font-size: var(--a11y-text-title);
   font-weight: 700;
   font-variant-numeric: tabular-nums;
 }
@@ -1290,7 +1348,7 @@
 .a11y-audit-err {
   display: block;
   margin-top: 4px;
-  font-size: 14px;
+  font-size: var(--a11y-text-body);
   color: var(--a11y-score-bad, #cf222e);
 }
 
@@ -1308,7 +1366,7 @@
   display: flex;
   flex-direction: column;
   gap: 4px;
-  font-size: 14px;
+  font-size: var(--a11y-text-body);
   font-weight: 600;
   color: var(--a11y-text, #1f2328);
 }
@@ -1340,7 +1398,7 @@
   border-radius: 10px;
   background: var(--a11y-surface, #f6f8fa);
   font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
-  font-size: 12px;
+  font-size: var(--a11y-text-body);
   line-height: 1.6;
   white-space: pre-wrap;
   word-break: break-word;
@@ -1453,7 +1511,7 @@
 .a11y-principle-term {
   display: block;
   font-style: normal;
-  font-size: 12px;
+  font-size: var(--a11y-text-body);
   font-weight: 400;
   text-transform: uppercase;
   letter-spacing: 0.05em;
@@ -1464,7 +1522,7 @@
 
 .a11y-login-toggle {
   font: inherit;
-  font-size: 14px;
+  font-size: var(--a11y-text-body);
   font-weight: 600;
   color: var(--a11y-accent, #0969da);
   background: none;
@@ -1498,14 +1556,14 @@
 
 .a11y-login-note {
   margin: 0 0 12px;
-  font-size: 14px;
+  font-size: var(--a11y-text-body);
   line-height: 1.5;
   color: var(--a11y-muted, #57606a);
 }
 
 .a11y-login-ready {
   margin: 12px 0 0;
-  font-size: 14px;
+  font-size: var(--a11y-text-body);
   color: var(--a11y-muted, #57606a);
 }
 
@@ -1524,14 +1582,14 @@
 
 .a11y-blocked-lead {
   margin: 0 0 12px;
-  font-size: 16px;
+  font-size: var(--a11y-text-body);
   font-weight: 600;
   line-height: 1.5;
 }
 
 .a11y-blocked-body {
   margin: 0 0 12px;
-  font-size: 14px;
+  font-size: var(--a11y-text-body);
   line-height: 1.55;
   color: var(--a11y-muted, #57606a);
 }
@@ -1539,7 +1597,7 @@
 .a11y-blocked-list {
   margin: 0;
   padding-left: 24px;
-  font-size: 14px;
+  font-size: var(--a11y-text-body);
   line-height: 1.6;
 }
 
@@ -1552,7 +1610,7 @@
 }
 
 .a11y-blocked-list code {
-  font-size: 14px;
+  font-size: var(--a11y-text-body);
   padding: 2px 4px;
   border-radius: 4px;
   background: var(--a11y-bg, #ffffff);
@@ -1567,7 +1625,7 @@
 
 .a11y-hist-head {
   margin: 16px 0 8px;
-  font-size: 14px;
+  font-size: var(--a11y-text-body);
   font-weight: 700;
 }
 
@@ -1578,7 +1636,7 @@
   display: flex;
   flex-direction: column;
   gap: 8px;
-  font-size: 14px;
+  font-size: var(--a11y-text-body);
 }
 
 .a11y-hist-list li {
@@ -1601,7 +1659,7 @@
   list-style: none;
   margin: 0 0 12px;
   padding: 0;
-  font-size: 14px;
+  font-size: var(--a11y-text-body);
 }
 
 .a11y-hist-runs li {
@@ -1618,7 +1676,7 @@
 
 .a11y-hist-runs em {
   font-style: normal;
-  font-size: 12px;
+  font-size: var(--a11y-text-body);
   color: var(--a11y-muted, #57606a);
 }
 
@@ -1695,7 +1753,7 @@
    heading-03 for section titles. Letter-spacing matters in Plex at small
    sizes — Carbon specifies it per step rather than leaving it at normal. */
 .a11y-widget-inner {
-  font-size: 16px;   /* body-02 */
+  font-size: var(--a11y-text-body);   /* body-02 */
   line-height: 1.5;
   letter-spacing: 0;
   padding: 32px;     /* spacing-07 */
@@ -1704,7 +1762,7 @@
 
 .a11y-section-title,
 .a11y-principle-title {
-  font-size: 20px;   /* heading-03 */
+  font-size: var(--a11y-text-title);   /* heading-03 */
   line-height: 1.4;
   font-weight: 400;  /* Carbon headings are regular weight, not bold */
   letter-spacing: 0;
@@ -1713,7 +1771,7 @@
 .a11y-section-desc,
 .a11y-principle-desc,
 .a11y-intro {
-  font-size: 14px;   /* body-01 */
+  font-size: var(--a11y-text-body);   /* body-01 */
   line-height: 1.43;
   letter-spacing: 0.16px;
 }
@@ -1724,7 +1782,7 @@
 .a11y-url-row button {
   min-height: 48px;
   padding: 0 16px;
-  font-size: 14px;
+  font-size: var(--a11y-text-body);
   font-weight: 400;
   letter-spacing: 0.16px;
   background: var(--a11y-accent, #0f62fe);
@@ -1759,7 +1817,7 @@
   background: var(--a11y-surface, #f4f4f4);
   border: none;
   border-bottom: 1px solid #8d8d8d;  /* border-strong-01 */
-  font-size: 14px;
+  font-size: var(--a11y-text-body);
   letter-spacing: 0.16px;
 }
 
@@ -1775,7 +1833,7 @@
   border: 1px solid var(--a11y-accent, #0f62fe);
   background: transparent;
   color: var(--a11y-accent, #0f62fe);
-  font-size: 14px;
+  font-size: var(--a11y-text-body);
   font-weight: 400;
   letter-spacing: 0.16px;
   transition: background-color 0.11s cubic-bezier(0.2, 0, 0.38, 0.9);
@@ -1793,7 +1851,7 @@
    is a Carbon tag colour and clears 6:1. */
 .a11y-severity-badge {
   padding: 2px 8px;
-  font-size: 12px;
+  font-size: var(--a11y-text-body);
   font-weight: 400;
   letter-spacing: 0.32px;
 }
@@ -1820,7 +1878,7 @@
 
 .a11y-count-badge {
   padding: 2px 8px;
-  font-size: 12px;
+  font-size: var(--a11y-text-body);
   font-weight: 400;
   background: var(--a11y-surface, #f4f4f4);
   border: none;
@@ -1889,7 +1947,7 @@
   border-left: 3px solid var(--a11y-score-bad, #da1e28);
   color: var(--a11y-text, #161616);
   padding: 16px;
-  font-size: 14px;
+  font-size: var(--a11y-text-body);
 }
 
 .a11y-notice {
@@ -1897,7 +1955,7 @@
   border-left: 3px solid var(--a11y-accent, #0f62fe);
   color: var(--a11y-text, #161616);
   padding: 16px;
-  font-size: 14px;
+  font-size: var(--a11y-text-body);
 }
 
 /* Mode switch: Carbon content switcher — square, joined, the selected one
@@ -1988,7 +2046,7 @@
 /* Field label: Carbon's label-01. Small and quiet — it names the field, it
    isn't a heading, and at 15px/600 it was competing with the body copy. */
 .a11y-url-label {
-  font-size: 12px;
+  font-size: var(--a11y-text-body);
   font-weight: 400;
   line-height: 1.33;
   letter-spacing: 0.32px;
@@ -2058,7 +2116,7 @@
   position: absolute;
   top: 12px;
   right: 14px;
-  font-size: 16px;
+  font-size: var(--a11y-text-body);
   line-height: 1;
   color: var(--a11y-accent, #0f62fe);
 }
@@ -2074,7 +2132,7 @@
 .a11y-ai-toggle {
   align-items: flex-start;
   gap: 12px;
-  font-size: 14px;
+  font-size: var(--a11y-text-body);
   line-height: 1.29;
   letter-spacing: 0.16px;
   color: var(--a11y-text, #161616);
@@ -2123,7 +2181,7 @@
   background: transparent;
   color: var(--a11y-accent, #0f62fe);
   font: inherit;
-  font-size: 14px;
+  font-size: var(--a11y-text-body);
   letter-spacing: 0.16px;
   cursor: pointer;
   transition: background-color 0.11s cubic-bezier(0.2, 0, 0.38, 0.9);
@@ -2181,7 +2239,7 @@
   padding: 12px;
   background: var(--a11y-surface, #f4f4f4);
   border-left: 3px solid var(--a11y-accent, #0f62fe);
-  font-size: 14px;
+  font-size: var(--a11y-text-body);
 }
 
 .a11y-colour-fix-line {
@@ -2207,7 +2265,7 @@
 
 .a11y-colour-fix-note {
   margin: 8px 0 0;
-  font-size: 12px;
+  font-size: var(--a11y-text-body);
   line-height: 1.4;
   color: var(--a11y-muted, #525252);
 }
@@ -2220,12 +2278,12 @@
   padding: 12px;
   background: var(--a11y-accent-faint, #edf5ff);
   border-left: 3px solid var(--a11y-accent, #0f62fe);
-  font-size: 14px;
+  font-size: var(--a11y-text-body);
   line-height: 1.5;
 }
 
 .a11y-fix-once code {
-  font-size: 14px;
+  font-size: var(--a11y-text-body);
   padding: 2px 4px;
   background: var(--a11y-bg, #ffffff);
   border: 1px solid var(--a11y-border, #e0e0e0);
@@ -2250,13 +2308,13 @@
 
 .a11y-doc-verdict {
   margin: 0 0 8px;
-  font-size: 18px;
+  font-size: var(--a11y-text-title);
   line-height: 1.4;
 }
 
 .a11y-doc-meta {
   margin: 0;
-  font-size: 14px;
+  font-size: var(--a11y-text-body);
   line-height: 1.5;
   color: var(--a11y-muted, #525252);
 }

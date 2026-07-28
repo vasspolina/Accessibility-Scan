@@ -382,3 +382,29 @@ describe("qa-consent-frame.html: a banner served from its own document", () => {
     );
   }, 120_000);
 });
+
+describe("qa-shadow-keyboard.html: controls inside a shadow root", () => {
+  // document.activeElement stops at a shadow host, so a walk that reads it
+  // sees the same element on every Tab press. This project's own widget
+  // renders into a shadow root and the scan reported a critical keyboard trap
+  // and "1 of 1 stops show no focus outline" — both false, on a component that
+  // traps nothing and rings every control. Every site built from web
+  // components would have received the same two findings.
+  it("walks into the shadow root instead of stopping at its host", async () => {
+    const url = "file://" + path.resolve("public/qa-shadow-keyboard.html");
+    const r = await renderAndScan(url, undefined, 90_000);
+    // Five controls live in the shadow root, plus the link after it.
+    expect(r.keyboardNav.stops.length).toBeGreaterThan(3);
+    const hosts = r.keyboardNav.stops.filter((s) => /my-panel/i.test(s.selector ?? ""));
+    expect(hosts.length, "every stop reported as the host element").toBeLessThan(
+      r.keyboardNav.stops.length
+    );
+  }, 120_000);
+
+  it("accuses a well-behaved component of nothing", async () => {
+    const findings = await scanFixture("qa-shadow-keyboard.html");
+    const ids = findings.map((f) => f.ruleId);
+    expect(ids).not.toContain("keyboard-focus-trap");
+    expect(ids).not.toContain("keyboard-no-visible-focus");
+  }, 120_000);
+});
