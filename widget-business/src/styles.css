@@ -667,6 +667,20 @@
 /* Where the fix is made. Neutral by default because "Code fix" is true of
    most of the report and should not shout; the two exceptions carry a tint,
    since sending a copywriting problem to a developer wastes both of them. */
+/* Provenance, like the keyboard mark: this one came from a model rather than
+   a rule, and the reader should know before acting on it. */
+/* A second paragraph inside a piece of advice — the plain instruction first,
+   then the part addressed to whoever writes the code. */
+.a11y-para {
+  display: block;
+  margin-top: 12px;
+}
+
+.a11y-method-ai {
+  border-color: #8a3ffc;
+  color: #6929c4;
+}
+
 .a11y-fix-content {
   border-color: #8a3ffc;
   color: #6929c4;

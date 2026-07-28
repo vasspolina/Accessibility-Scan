@@ -33,7 +33,10 @@ export const FIX_KINDS: Record<FixOwner, FixKind> = {
   code: {
     key: "code",
     label: "Code fix",
-    hint: "Changed in the markup or the stylesheet. This one goes to whoever maintains the site.",
+    // "Markup or the stylesheet" is two pieces of jargon in one sentence, on
+    // a report written for the person who owns the site rather than the one
+    // who builds it. They do not need the names of the files.
+    hint: "This is a change in the site's own code, so it goes to whoever builds or maintains the site for you.",
   },
   content: {
     key: "content",
@@ -93,6 +96,27 @@ const KEYBOARD_CHECKS = new Set([
   "reading-order-mismatch",
   "forced-colors-focus-lost",
 ]);
+
+/**
+ * Whether a model wrote this finding rather than a rule.
+ *
+ * Kept as its own mark, next to the keyboard one, because it answers the same
+ * kind of question: how much to trust it before acting. The AI pass reads a
+ * page the way a person might and catches things no rule can express, and it
+ * is also the only part of this report that can be confidently wrong.
+ *
+ * It had a marker until the badge was split in two, and then lost it — the
+ * fix-kind badge asks who does the work, and for an AI finding the answer is
+ * usually "a developer", which is true and says nothing about where it came
+ * from. Provenance and workload are different questions, as that split was
+ * supposed to establish.
+ */
+export function isAiFinding(finding: AccessibilityFinding): boolean {
+  return finding.source === "ai-review";
+}
+
+export const AI_HINT =
+  "Raised by the AI review, which reads the page the way a person might rather than checking a rule. It catches things no rule can express, and it is the one part of this report that can be confidently wrong — worth a second look before acting.";
 
 export const KEYBOARD_HINT =
   "You can confirm this one yourself in a few minutes, with nothing installed: put the mouse aside and move through the page using Tab, Enter and Escape.";

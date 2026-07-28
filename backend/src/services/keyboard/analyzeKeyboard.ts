@@ -203,8 +203,18 @@ export function evaluateKeyboardNav(nav: KeyboardNavResult): AccessibilityFindin
         "A",
         "https://www.w3.org/WAI/WCAG21/Understanding/keyboard.html",
         c.selector,
-        `${c.label ? `"${c.label}" is a <${c.tag}>` : `A <${c.tag}> on this page`} that responds to being clicked, but the Tab key never lands on it. A <${c.tag}> is not focusable on its own, and nothing has been added to make it one, so someone working through the page by keyboard cannot reach this at all — it is not merely awkward to get to, it is not there.`,
-        "Use a real `<button>` (or `<a href>` if it navigates). If the element has to stay as it is, it needs all three of: `tabindex=\"0\"` so it can be focused, `role=\"button\"` so it is announced as one, and a keydown handler firing on Enter and Space — a click handler alone does not run for keyboard users.",
+        // Written for the person who owns the site, not the one who builds
+        // it. The tag name was in this sentence three times, and "<div>" is
+        // an answer to a question a non-developer has not asked — they need
+        // to know something on their page cannot be reached, and why. The
+        // exact element is named in the technical version and shown in the
+        // picture; whoever fixes it will not be short of detail.
+        `${c.label ? `"${c.label}"` : "Something on this page"} responds when you click it, but pressing Tab never reaches it. It was built as an ordinary piece of the page rather than as a button or a link, and only buttons and links can be reached by keyboard. So this is not merely awkward to get to without a mouse — there is no way to get to it at all.`,
+        // Plain instruction first, because that is the one the owner can act
+        // on — brief their developer, or check it was done. The specifics
+        // follow, addressed to whoever writes the code, so the technical
+        // half is clearly not homework for the reader.
+        "Rebuild it as a real button, or as a link if it takes you somewhere. That alone fixes it, with no extra code: the keyboard reaches buttons and links by default, which is the whole reason to use them.\n\nIf it genuinely has to stay as it is, your developer needs three things on it — `tabindex=\"0\"` so it can take focus, `role=\"button\"` so it is announced as a button, and a keydown handler firing on Enter and Space. That last one is the part most often missed: a click handler alone never runs for someone using a keyboard.",
         c.snippet
       )
     );

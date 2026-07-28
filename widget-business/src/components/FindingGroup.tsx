@@ -2,7 +2,13 @@ import { useState } from "react";
 import { dominantComponent, describeComponent } from "../lib/componentCluster";
 import type { AccessibilityFinding } from "../api/scanClient";
 import { LEVEL_FRAMING, plainForRule, plainFixForRule } from "../lib/wcagPlain";
-import { fixKindForFinding, isKeyboardCheck, KEYBOARD_HINT } from "../lib/testMethod";
+import {
+  fixKindForFinding,
+  isKeyboardCheck,
+  isAiFinding,
+  AI_HINT,
+  KEYBOARD_HINT,
+} from "../lib/testMethod";
 
 const severityLabel: Record<AccessibilityFinding["severity"], string> = {
   critical: "Fix first",
@@ -25,6 +31,20 @@ const severityLabel: Record<AccessibilityFinding["severity"], string> = {
  * any of it to reach an HTML parser.
  */
 function CodeText({ text }: { text: string }) {
+  // A blank line means a new paragraph. Advice that leads with the plain
+  // instruction and then addresses the developer needs the two visibly
+  // apart, and HTML collapses the newline to a space if nobody does this.
+  if (text.includes("\n\n")) {
+    return (
+      <>
+        {text.split(/\n{2,}/).map((para, i) => (
+          <span key={i} className={i > 0 ? "a11y-para" : undefined}>
+            <CodeText text={para} />
+          </span>
+        ))}
+      </>
+    );
+  }
   if (!text.includes("`")) return <>{text}</>;
   // Odd indexes are the spans between backtick pairs. A trailing unmatched
   // backtick simply leaves its text in an even slot and renders as prose.
@@ -384,6 +404,7 @@ export function FindingGroup({ findings }: { findings: AccessibilityFinding[] })
   // help. Two separate questions, two separate marks.
   const fix = fixKindForFinding(rep);
   const keyboardCheck = isKeyboardCheck(rep);
+  const fromAi = isAiFinding(rep);
 
   // One clean instruction for the whole group — a plain rewrite when we have
   // one, otherwise the finding's own (already-plain) suggested fix.
@@ -414,6 +435,7 @@ export function FindingGroup({ findings }: { findings: AccessibilityFinding[] })
         {keyboardCheck && (
           <span className="a11y-method-badge a11y-method-keyboard">Keyboard test</span>
         )}
+        {fromAi && <span className="a11y-method-badge a11y-method-ai">AI review</span>}
         <span className={`a11y-method-badge a11y-fix-${fix.key}`}>{fix.label}</span>
         {rep.wcagLevel && <span className="a11y-level-badge">{LEVEL_FRAMING[rep.wcagLevel]}</span>}
       </button>
@@ -440,6 +462,7 @@ export function FindingGroup({ findings }: { findings: AccessibilityFinding[] })
           <p className="a11y-method-hint">
             <strong>Who fixes this:</strong> {fix.hint}
             {keyboardCheck && ` ${KEYBOARD_HINT}`}
+            {fromAi && ` ${AI_HINT}`}
           </p>
           {!rep.elementScreenshot && rep.pictureNote && (
             <p className="a11y-picture-note">{rep.pictureNote}</p>
