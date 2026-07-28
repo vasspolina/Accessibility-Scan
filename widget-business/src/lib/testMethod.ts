@@ -21,7 +21,7 @@ import type { AccessibilityFinding } from "../api/scanClient";
 // wastes both of them. The keyboard mark answers the second question on its
 // own, alongside.
 
-export type FixOwner = "code" | "content" | "document";
+export type FixOwner = "code" | "content" | "design" | "document";
 
 export interface FixKind {
   key: FixOwner;
@@ -41,7 +41,17 @@ export const FIX_KINDS: Record<FixOwner, FixKind> = {
   content: {
     key: "content",
     label: "Content fix",
-    hint: "No code needs to change — this is a decision about wording or design. It belongs with whoever writes and designs the page rather than with a developer.",
+    hint: "No code needs to change — this is a decision about wording. It belongs with whoever writes the page rather than with a developer.",
+  },
+  design: {
+    key: "design",
+    label: "Design fix",
+    // Somebody does eventually change a stylesheet, and saying "code fix"
+    // sends it to the wrong desk anyway: a developer handed "make these
+    // targets bigger" has to invent a size, a colour or a spacing, which is
+    // not their decision to make. The decision comes first and belongs to
+    // whoever owns how the page looks.
+    hint: "This is a decision about how the page looks — a size, a colour, a spacing — so it belongs with whoever designs the site. Someone will change a stylesheet afterwards, but the choice comes first.",
   },
   document: {
     key: "document",
@@ -50,7 +60,7 @@ export const FIX_KINDS: Record<FixOwner, FixKind> = {
   },
 };
 
-// Wording and design decisions. Everything not listed here is code, which is
+// Wording decisions. Everything not listed here or below is code, which is
 // the honest default rather than a guess.
 const CONTENT_RULES = new Set([
   "link-text-vague",
@@ -60,11 +70,33 @@ const CONTENT_RULES = new Set([
 
 const CONTENT_PREFIXES = ["dark-"];
 
+// Decisions about how the page looks: a size, a colour, a spacing, a weight.
+// These do end in a stylesheet, and that is not the useful thing to say about
+// them — a developer given "make the tap targets bigger" has to pick a size,
+// which is somebody else's decision. Reported as a design fix so it reaches
+// that person first.
+//
+// The typography notes are all of this kind, and every one of them carried a
+// "Code fix" mark while sitting under a heading that called them notes on the
+// design.
+const DESIGN_RULES = new Set([
+  "mobile-tap-target",
+  "color-contrast",
+  "keyboard-faint-focus",
+  "keyboard-no-visible-focus",
+  "component-required-cue",
+]);
+
+const DESIGN_PREFIXES = ["typo-"];
+
 export function fixKindForFinding(finding: AccessibilityFinding): FixKind {
   const id = finding.ruleId ?? "";
   if (id.startsWith("pdf-")) return FIX_KINDS.document;
   if (CONTENT_RULES.has(id) || CONTENT_PREFIXES.some((p) => id.startsWith(p))) {
     return FIX_KINDS.content;
+  }
+  if (DESIGN_RULES.has(id) || DESIGN_PREFIXES.some((p) => id.startsWith(p))) {
+    return FIX_KINDS.design;
   }
   return FIX_KINDS.code;
 }

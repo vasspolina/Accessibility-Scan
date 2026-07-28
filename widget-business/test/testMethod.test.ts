@@ -20,12 +20,58 @@ const fixOf = (ruleId: string, over: Partial<AccessibilityFinding> = {}) =>
 const kb = (ruleId: string) => isKeyboardCheck(finding({ ruleId }));
 
 describe("fixKindForFinding", () => {
-  // The default, and it is the honest one: this tool reads markup and
-  // stylesheets, so almost everything it can see is changed in one or the
-  // other. Anything whose instruction is "add an attribute" is code, however
-  // much it is a screen reader user who suffers for it — that is what the
-  // impact paragraph is for.
-  it("calls markup and stylesheet faults code", () => {
+  // The one this was reported on: a card reading "Buttons and links are too
+  // small to tap reliably on a phone", marked Code fix. A developer handed
+  // that has to invent a size, which is not their decision to make.
+  it("sends a decision about size, colour or spacing to design", () => {
+    for (const rule of [
+      "mobile-tap-target",
+      "color-contrast",
+      "keyboard-faint-focus",
+      "keyboard-no-visible-focus",
+      "component-required-cue",
+    ]) {
+      expect(fixOf(rule), rule).toBe("design");
+    }
+  });
+
+  // Every typography note is a design decision, and all of them wore a code
+  // mark while sitting under a heading calling them notes on the design.
+  it("treats the whole typography set as design", () => {
+    for (const rule of [
+      "typo-caps-letterspacing",
+      "typo-leading-tight",
+      "typo-leading-for-measure",
+      "typo-line-length-short",
+      "typo-line-length-long",
+      "typo-italic-body",
+      "typo-thin-weight",
+    ]) {
+      expect(fixOf(rule), rule).toBe("design");
+    }
+  });
+
+  // Design and content are separate desks, and were sharing a badge.
+  it("does not sweep wording into design", () => {
+    expect(fixOf("link-text-vague")).toBe("content");
+    expect(fixOf("dark-consent-no-reject")).toBe("content");
+  });
+
+  it("gives design its own label and its own hint", () => {
+    expect(FIX_KINDS.design.label).toBe("Design fix");
+    expect(FIX_KINDS.design.hint).not.toBe(FIX_KINDS.content.hint);
+    // The content hint used to claim design as well, which is what made the
+    // wrong badge readable as correct.
+    expect(FIX_KINDS.content.hint).not.toMatch(/design/i);
+  });
+
+  // The default, and it is still the honest one. The boundary is no longer
+  // "does it end in a stylesheet" — nearly everything does — but whether
+  // somebody has to make a visual decision first. Add a missing name, a role,
+  // an alt attribute, a skip link: there is one right answer and a developer
+  // can supply it. Those are code, however much it is a screen reader user
+  // who suffers for it, which is what the impact paragraph is for.
+  it("calls markup and structure faults code", () => {
     for (const rule of [
       "dialog-missing-name",
       "dialog-missing-role",
@@ -37,9 +83,6 @@ describe("fixKindForFinding", () => {
       "landmark-one-main",
       "heading-order",
       "component-skip-link",
-      "color-contrast",
-      "typo-leading-tight",
-      "keyboard-faint-focus",
       "aria-hidden",
       "some-future-axe-rule",
     ]) {
@@ -47,7 +90,7 @@ describe("fixKindForFinding", () => {
     }
   });
 
-  it("keeps wording and design decisions out of the developer's queue", () => {
+  it("keeps wording decisions out of the developer's queue", () => {
     for (const rule of ["dark-fake-urgency", "readability-dense-prose", "link-text-vague"]) {
       expect(fixOf(rule), rule).toBe("content");
     }
@@ -103,11 +146,16 @@ describe("isKeyboardCheck", () => {
     }
   });
 
-  // Both marks appear together on a keyboard finding: it is a code fix AND
-  // something the owner can verify unaided. Collapsing them into one badge is
-  // what put the wrong word on the card in the first place.
+  // Both marks appear together on a keyboard finding: the owner can verify it
+  // unaided, and somebody else does the work. Collapsing them into one badge
+  // is what put the wrong word on the card in the first place, and the case
+  // below shows why one badge could never have carried both — two findings
+  // the owner checks the same way, going to two different desks.
   it("is independent of who fixes it", () => {
     expect(kb("keyboard-faint-focus")).toBe(true);
-    expect(fixOf("keyboard-faint-focus")).toBe("code");
+    expect(fixOf("keyboard-faint-focus")).toBe("design");
+
+    expect(kb("dialog-no-escape")).toBe(true);
+    expect(fixOf("dialog-no-escape")).toBe("code");
   });
 });

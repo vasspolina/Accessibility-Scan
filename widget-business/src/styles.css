@@ -726,6 +726,13 @@
   color: #6929c4;
 }
 
+/* Distinct from the content mark: the two send work to different people, and
+   two purples would read as the same badge at a glance. */
+.a11y-fix-design {
+  border-color: #0072c3;
+  color: #00539a;
+}
+
 .a11y-fix-document {
   border-color: #009d9a;
   color: #005d5d;
