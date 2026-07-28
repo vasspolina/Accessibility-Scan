@@ -74,4 +74,33 @@ describe("dropSpeculativeFindings", () => {
       "Mayfair store hours are wrong",
     ]);
   });
+
+  // Observed on moma.org. The defect was real — the captions do describe
+  // colours instead of the paintings — but who wrote them is inferred from
+  // style, and the report cannot know whether a person, a tool or a model
+  // produced any text on a page. It also puts an accusation in front of an
+  // owner that they may simply deny.
+  it("drops a claim about who or what wrote the content", () => {
+    for (const t of [
+      "AI-written image captions describe colours, not the artwork",
+      "Auto-generated alt text misses the subject",
+      "Machine-generated descriptions repeat the filename",
+    ]) {
+      expect(dropSpeculativeFindings([ai({ title: t })]), t).toEqual([]);
+    }
+  });
+
+  // "Another AI-generated caption misses the artwork's name" only parses if
+  // you have read a previous card, and the report groups, sorts and filters
+  // findings — nothing guarantees one is above it.
+  it("drops a title that leans on a finding above it", () => {
+    for (const t of ["Another caption misses the artwork's name", "Also blocks keyboard users"]) {
+      expect(dropSpeculativeFindings([ai({ title: t })]), t).toEqual([]);
+    }
+  });
+
+  it("keeps the same observation once it stands on its own", () => {
+    const f = ai({ title: "Image captions describe colours, not the artwork" });
+    expect(dropSpeculativeFindings([f])).toHaveLength(1);
+  });
 });

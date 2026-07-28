@@ -350,10 +350,39 @@ export function dropContradictedConsentClaims(
  */
 const HEDGED_CLAIM = /\b(may|might|could|possibly|perhaps|potentially|seems?|appears?)\b/i;
 
+/**
+ * Claims about where content came from, which the model cannot establish.
+ *
+ * Observed on moma.org: "AI-written image captions describe colours, not the
+ * artwork", and "Another AI-generated caption misses the artwork's name". The
+ * defect is real and worth reporting — the captions do describe colours
+ * rather than the paintings. Who wrote them is a guess from style, and the
+ * report has no way to know whether a person, a tool or a model produced any
+ * text on the page.
+ *
+ * It also puts an accusation in front of the owner that they may simply have
+ * to deny, which is a poor use of the one sentence they read.
+ */
+const UNVERIFIABLE_ORIGIN =
+  /\b(ai[- ](written|generated)|auto[- ]generated|machine[- ]generated|written by (a|an) (ai|model|bot))\b/i;
+
+/**
+ * A title leaning on another finding rather than standing by itself.
+ *
+ * "Another AI-generated caption misses the artwork's name" only parses if you
+ * have read a previous card, and the report groups, sorts and filters
+ * findings — so there is no previous card guaranteed to be there. Each one is
+ * read alone, and has to make sense alone.
+ */
+const REFERS_TO_ANOTHER = /^(another|also|additionally|likewise|similarly)\b/i;
+
 export function dropSpeculativeFindings(findings: AccessibilityFinding[]): AccessibilityFinding[] {
   return findings.filter((f) => {
     if (f.source !== "ai-review") return true;
     if (f.confidence === "low") return false;
-    return !HEDGED_CLAIM.test(f.title ?? "");
+    const title = f.title ?? "";
+    if (HEDGED_CLAIM.test(title)) return false;
+    if (UNVERIFIABLE_ORIGIN.test(title)) return false;
+    return !REFERS_TO_ANOTHER.test(title.trim());
   });
 }
