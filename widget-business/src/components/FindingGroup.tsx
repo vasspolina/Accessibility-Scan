@@ -444,9 +444,14 @@ export function FindingGroup({ findings }: { findings: AccessibilityFinding[] })
           {!rep.elementScreenshot && rep.pictureNote && (
             <p className="a11y-picture-note">{rep.pictureNote}</p>
           )}
-          {plain && rep.description && (
+          {/* The rule's own account of what was found where it has one, and
+              the finding's description otherwise. axe supplies a requirement
+              rather than a finding — "Links must have discernible text" — and
+              that read as a category error under this heading. */}
+          {plain && (plain.found || rep.description) && (
             <p className="a11y-finding-measured">
-              <strong>What we found:</strong> <CodeText text={rep.description} />
+              <strong>What we found:</strong>{" "}
+              <CodeText text={plain.found ? plain.found(entries.length) : rep.description} />
             </p>
           )}
           {/* Shared explanation — shown once for the whole group */}

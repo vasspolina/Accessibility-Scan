@@ -72,6 +72,17 @@ export const LEVEL_FRAMING: Record<"A" | "AA" | "AAA", string> = {
 export interface PlainRule {
   plain: string;
   impact: string;
+  /**
+   * What was actually found on this page, given how many times it occurred.
+   *
+   * Only needed where the finding's own description is unusable, which for
+   * axe rules is most of them: axe states the requirement — "Links must have
+   * discernible text" — and the report shows that under a heading promising
+   * what we found. A requirement is not a finding, and reading one where the
+   * other was expected is the same fault the conformance rows were pulled up
+   * for. Where this is absent the description is used as it always was.
+   */
+  found?: (count: number) => string;
 }
 
 export const PLAIN_RULE_EXPLANATIONS: Record<string, PlainRule> = {
@@ -128,9 +139,11 @@ export const PLAIN_RULE_EXPLANATIONS: Record<string, PlainRule> = {
     impact: "People using screen readers can't tell what the button does, so they can't finish.",
   },
   "link-name": {
-    plain: "Links have no readable text at all.",
+    plain: "Some links have nothing a screen reader can read out.",
+    found: (n) =>
+      `${n} ${n === 1 ? "link has" : "links have"} no readable text inside — no words, no label, nothing to announce. Usually these are icons, arrows or images used as links, where the picture carries the meaning and the code carries none of it.`,
     impact:
-      "People using screen readers hear only \"link\", with no idea where it goes.",
+      "Screen reader users rarely read a page top to bottom. They pull up a list of every link on it and pick from that, the way a sighted visitor scans a menu. A link with no text appears in that list as the single word \"link\" — no destination, no clue. Several of them turn the list into \"link, link, link\", and the only way through is to open each one and see where it lands.",
   },
   "link-text-vague": {
     plain: "Links say only \"read more\" or similar.",
@@ -530,7 +543,7 @@ const PLAIN_RULE_FIXES: Record<string, string> = {
     'Add an alt attribute to each image describing what it shows. Use empty alt (alt="") only for purely decorative images.',
   "input-image-alt": 'Add an alt attribute to the image button describing its action (e.g. alt="Search").',
   "link-name":
-    "Give each link readable text. Visible text inside the link, or an aria-label describing where it goes.",
+    "Put readable words inside the link. Where the link is an icon or an image, `aria-label` on the link does it — or alt text on the image, if that is what the link contains. Describe the destination rather than the picture: `aria-label=\"Major partnerships\"` tells somebody where they are going, `aria-label=\"arrow\"` tells them nothing. Write it to make sense read on its own, because in that list of links it will be.",
   "link-text-vague":
     "Write link text that makes sense on its own: \"Read the 2026 fee changes\", not \"Read more\". To keep the short version on screen, add the full wording with aria-label.",
   "button-name":
