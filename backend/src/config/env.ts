@@ -30,7 +30,21 @@ const envSchema = z.object({
   // parallel, and the heaviest page died with "Target crashed" — the tab ran
   // out of memory, so the visitor got an error where they should have got a
   // short queue. Queuing is the better failure.
-  MAX_CONCURRENT_RENDERS: z.coerce.number().default(3),
+  //
+  // Down from three now, for the same reason at a smaller scale. moma.org —
+  // an art museum, so pages of large images — kept dying the same way on the
+  // deployed service while rendering comfortably on a laptop, and two other
+  // explanations were tried and measured wrong first: the full-page
+  // screenshot (moma is 41MB uncompressed, the Guardian 101MB and fine), and
+  // Chromium's shared memory (crashes continued a minute after the flag went
+  // in). What is left is the ordinary explanation — three Chromium contexts
+  // is more than this container holds when one of them is heavy.
+  //
+  // The cost is real and belongs in the open: a third simultaneous visitor
+  // queues instead of scanning straight away, and waits up to
+  // MAX_QUEUE_WAIT_MS before being told the scanners are busy. Worse than an
+  // instant scan, better than an error halfway through somebody else's.
+  MAX_CONCURRENT_RENDERS: z.coerce.number().default(2),
 });
 
 const parsed = envSchema.safeParse(process.env);
