@@ -691,6 +691,14 @@
 /* Why there is nothing to look at. Quiet — it is an explanation, not a
    finding — but present, because a picture-less card with no reason reads
    as a malfunction. */
+/* The running count beside the waiting message. Tabular figures so the width
+   does not jitter as the digits change — a number that shifts the text beside
+   it every second is its own small irritation. */
+.a11y-elapsed {
+  font-variant-numeric: tabular-nums;
+  color: var(--a11y-muted, #57606a);
+}
+
 .a11y-picture-note {
   margin: 0 0 12px;
   font-size: 14px;

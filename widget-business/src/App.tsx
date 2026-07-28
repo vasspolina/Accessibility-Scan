@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { UrlForm, type ScanMode } from "./components/UrlForm";
 import { ScoreGauge } from "./components/ScoreGauge";
 import { DocumentSummary } from "./components/DocumentSummary";
@@ -30,6 +30,38 @@ import {
   type AuthConfig,
 } from "./api/scanClient";
 
+/**
+ * What to say while waiting, as a function of how long it has been.
+ *
+ * Returns the same string for long stretches on purpose. The element holding
+ * it is a live region, so a screen reader re-announces whenever the text
+ * changes — a message that mentioned the running count would speak every
+ * second. Changing only at milestones means an update arrives when there is
+ * actually news.
+ *
+ * The thresholds come from measurement rather than optimism. A light page
+ * finishes in about twenty seconds, moma.org takes forty, and the Guardian
+ * has taken eighty. "About 15 seconds" was true of the fixtures and of
+ * nothing else, and a promise that expires while the user watches is worse
+ * than no promise.
+ */
+export function waitingMessage(mode: ScanMode, aiRequested: boolean, elapsed: number): string {
+  if (mode === "site") {
+    return "Auditing your site. Checking each page in turn, so this takes a few minutes…";
+  }
+  if (elapsed >= 60) {
+    return "Still going. This one is unusually heavy — a page of large images can take a while to load and measure.";
+  }
+  if (elapsed >= 25) {
+    return aiRequested
+      ? "Still going. The AI review is the slow part, and it is nearly always worth the wait."
+      : "Still going. Heavier pages take longer, and this one is on the heavier side.";
+  }
+  return aiRequested
+    ? "Checking your site, including the AI review. That usually takes about a minute…"
+    : "Checking your site. Most pages take twenty to forty seconds…";
+}
+
 export function App({ apiBase }: { apiBase: string }) {
   const [report, setReport] = useState<AccessibilityReport | null>(null);
   const [audit, setAudit] = useState<SiteAudit | null>(null);
@@ -45,10 +77,27 @@ export function App({ apiBase }: { apiBase: string }) {
   // Earlier scans of the page just checked, read before this one is recorded
   // so the current scan isn't compared against itself.
   const [history, setHistory] = useState<HistoryEntry[]>([]);
+  // Seconds since the scan began, and how long the last one took.
+  //
+  // Worth showing because the honest answer is "it depends". A light page
+  // finishes in about twenty seconds and a heavy one has taken eighty, and a
+  // message promising fifteen while nothing moves reads as a hang. A number
+  // that keeps counting is the difference between waiting and wondering.
+  const [elapsed, setElapsed] = useState(0);
+  const [tookSeconds, setTookSeconds] = useState<number | null>(null);
 
   // A PDF is checked for a handful of structural things, not crawled as a
   // page, so several sections of the report simply do not apply to it.
   const isDocument = report?.meta.documentKind === "pdf";
+
+  // Ticks once a second while a scan runs, and stops when it does.
+  useEffect(() => {
+    if (!loading) return;
+    setElapsed(0);
+    const started = Date.now();
+    const id = setInterval(() => setElapsed(Math.round((Date.now() - started) / 1000)), 1000);
+    return () => clearInterval(id);
+  }, [loading]);
 
   const findingsByCategory = useMemo(() => {
     const findings = report?.findings ?? [];
@@ -69,6 +118,8 @@ export function App({ apiBase }: { apiBase: string }) {
     setAiRequested(includeAiReview);
     setMode(mode);
     setLoading(true);
+    setTookSeconds(null);
+    const startedAt = Date.now();
     setError(null);
     setBlocked(null);
     setReport(null);
@@ -92,6 +143,7 @@ export function App({ apiBase }: { apiBase: string }) {
         setError(err instanceof ScanError ? err.message : "Something went wrong. Please try again.");
       }
     } finally {
+      setTookSeconds(Math.max(1, Math.round((Date.now() - startedAt) / 1000)));
       setLoading(false);
     }
   }
@@ -124,12 +176,21 @@ export function App({ apiBase }: { apiBase: string }) {
       )}
 
       {loading && (
-        <p className="a11y-loading" role="status">
-          {mode === "site"
-            ? "Auditing your site. Checking each page in turn, so this takes a few minutes…"
-            : aiRequested
-              ? "Checking your site, including the AI review. This can take up to a minute…"
-              : "Checking your site. This usually takes about 15 seconds…"}
+        <p className="a11y-loading">
+          {/* Two parts, deliberately. The words are a live region and change
+              only at milestones; the seconds tick outside it and are hidden
+              from assistive technology.
+
+              A counter inside a live region announces itself every second,
+              which would make this tool's own waiting screen the most
+              irritating thing a screen reader user met all day — on a product
+              whose entire subject is not doing that. Sighted users get the
+              reassurance of a moving number; everyone else gets an update
+              when there is genuinely something new to say. */}
+          <span role="status">{waitingMessage(mode, aiRequested, elapsed)}</span>{" "}
+          <span className="a11y-elapsed" aria-hidden="true">
+            {elapsed}s
+          </span>
         </p>
       )}
 
@@ -147,9 +208,9 @@ export function App({ apiBase }: { apiBase: string }) {
         {loading
           ? ""
           : report
-            ? `Check complete. Score ${report.score} out of 100, ${report.summary.total} ${
-                report.summary.total === 1 ? "issue" : "issues"
-              } found. The full report follows.`
+            ? `Check complete in ${tookSeconds ?? 0} seconds. Score ${report.score} out of 100, ${
+                report.summary.total
+              } ${report.summary.total === 1 ? "issue" : "issues"} found. The full report follows.`
             : audit
               ? `Site audit complete. ${audit.pagesScanned} ${
                   audit.pagesScanned === 1 ? "page" : "pages"
