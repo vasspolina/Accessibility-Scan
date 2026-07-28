@@ -1936,8 +1936,16 @@ async function probeUserPreferences(
     const candidates = (await page.evaluate(CANDIDATES)) as UserPreferenceSignals["iconLostInForcedColors"];
 
     // 1. Ask for reduced motion and see which animations carry on regardless.
+    //
+    // No wait afterwards, and that is measured rather than assumed. There
+    // used to be 250ms here "to let the cascade re-resolve", which was a
+    // guess: emulateMedia is awaited, and getComputedStyle forces a style
+    // flush before it returns anything, so a computed value read after it is
+    // never stale. Tested against the fixture at 0, 10, 25, 50, 100 and
+    // 250ms — the reduced-motion and forced-colours results were identical at
+    // every one, including none at all. Two of these cost half a second of
+    // every scan for nothing.
     await page.emulateMedia({ reducedMotion: "reduce" });
-    await page.waitForTimeout(250); // let the cascade re-resolve
     const stillMoving = await page.evaluate(
       (items) => {
         const out: Array<{ selector: string; tag: string; animationName: string }> = [];
@@ -1970,7 +1978,6 @@ async function probeUserPreferences(
     // 2. Now switch to forced colours and confirm each candidate actually
     //    lost its image. Only a before-and-after establishes that.
     await page.emulateMedia({ reducedMotion: "no-preference", forcedColors: "active" });
-    await page.waitForTimeout(250);
     const lostIcons = await page.evaluate(
       (items) => {
         const out: typeof items = [];
@@ -2325,14 +2332,17 @@ export async function renderAndScan(
       // costs tens of milliseconds, but on a heavy page on a loaded container
       // it hit Playwright's 30s default and took the whole scan of moma.org
       // down with it. Short budget, and an empty snapshot on failure.
-      const ariaSnapshot = await page
-        .locator("body")
-        .ariaSnapshot({ timeout: 8_000 })
-        .catch(() => "");
-      const domSignals = await page.evaluate<DomSignals>(toBrowserScript(extractDomSignalsInPage));
-      const typographyBlocks = await page
-        .evaluate<TypographyBlock[]>(toBrowserScript(collectTypographyBlocksInPage))
-        .catch(() => [] as TypographyBlock[]);
+      const ariaSnapshot = await timed("ariaSnapshot", () =>
+        page.locator("body").ariaSnapshot({ timeout: 8_000 }).catch(() => "")
+      );
+      const domSignals = await timed("domSignals", () =>
+        page.evaluate<DomSignals>(toBrowserScript(extractDomSignalsInPage))
+      );
+      const typographyBlocks = await timed("typography", () =>
+        page
+          .evaluate<TypographyBlock[]>(toBrowserScript(collectTypographyBlocksInPage))
+          .catch(() => [] as TypographyBlock[])
+      );
       // Collected while the page is in its initial desktop state, before the
       // keyboard walk-through and mobile pass mutate it — consent banners and
       // opt-in forms are exactly what those later passes disturb.
@@ -2342,10 +2352,12 @@ export async function renderAndScan(
       // Reading-order walk of the accessibility tree, collected in the same
       // pristine desktop state. Best-effort: an empty script just hides the
       // preview rather than costing the report.
-      const screenReaderScript = await page
-        .evaluate<ScreenReaderScript>(toBrowserScript(collectScreenReaderScriptInPage))
-        .then(condenseScreenReaderScript)
-        .catch(() => ({ lines: [], truncated: false }) as ScreenReaderScript);
+      const screenReaderScript = await timed("screenReader", () =>
+        page
+          .evaluate<ScreenReaderScript>(toBrowserScript(collectScreenReaderScriptInPage))
+          .then(condenseScreenReaderScript)
+          .catch(() => ({ lines: [], truncated: false }) as ScreenReaderScript)
+      );
       // Wait for the layout to stop moving before photographing it.
       //
       // Found on usbank.com, whose hero is a JS-driven carousel: the preview
@@ -2361,7 +2373,7 @@ export async function renderAndScan(
       // regardless of what drives it. A carousel that rotates forever never
       // settles, but it dwells on each slide far longer than it spends moving
       // between them, so two matching samples land on a settled slide.
-      await settleLayout(page);
+      await timed("settleLayout", () => settleLayout(page));
 
       // Web fonts change line heights and wrapping, so a shot taken before
       // they land shows a layout no visitor ever sees.
@@ -2381,11 +2393,13 @@ export async function renderAndScan(
       // the model to report overlapping text that no visitor will ever see.
       // Playwright fast-forwards finite animations to their end state and
       // resets infinite ones, giving the layout a visitor actually gets.
-      const screenshotBuffer = await page.screenshot({
-        type: "jpeg",
-        quality: 70,
-        animations: "disabled",
-      });
+      const screenshotBuffer = await timed("viewportShot", () =>
+        page.screenshot({
+          type: "jpeg",
+          quality: 70,
+          animations: "disabled",
+        })
+      );
 
       // Runs after the above-the-fold screenshot (which should show the page
       // exactly as a visitor sees it) but before anything used for
@@ -2402,9 +2416,11 @@ export async function renderAndScan(
       // cropThumbnail.ts) — best-effort: some very long/complex pages can
       // fail or time out on a full-page screenshot, and that should degrade
       // to "no thumbnails" rather than failing the whole scan.
-      const fullPageScreenshot = await page
-        .screenshot({ type: "jpeg", quality: 60, fullPage: true, timeout: 10_000, animations: "disabled" })
-        .catch(() => null);
+      const fullPageScreenshot = await timed("fullPageShot", () =>
+        page
+          .screenshot({ type: "jpeg", quality: 60, fullPage: true, timeout: 10_000, animations: "disabled" })
+          .catch(() => null)
+      );
 
       // Element-specific selectors from the deterministic non-axe layers, so
       // their findings get the same reliable precise capture as axe findings.
@@ -2475,8 +2491,10 @@ export async function renderAndScan(
       let mobileElementScreenshots: Record<string, string> = {};
       let mobileSelectors: string[] = [];
       try {
-        await page.setViewportSize({ width: 390, height: 844 });
-        await page.waitForTimeout(400); // let CSS media queries / reflow settle
+        await timed("mobileSwitch", async () => {
+          await page.setViewportSize({ width: 390, height: 844 });
+          await page.waitForTimeout(400); // let CSS media queries / reflow settle
+        });
         mobileSignals = await timed("mobile", () =>
           page.evaluate<MobileSignals>(toBrowserScript(collectMobileSignalsInPage))
         );
@@ -2494,10 +2512,8 @@ export async function renderAndScan(
           ...mobileSignals.smallTapTargets.slice(0, 8).map((t) => t.selector),
         ].filter((s) => s && s !== "body" && s !== "html");
         if (mobileSelectors.length > 0) {
-          mobileElementScreenshots = await captureMobileElementScreenshots(
-            page,
-            renderDeadline,
-            mobileSelectors
+          mobileElementScreenshots = await timed("mobileShots", () =>
+            captureMobileElementScreenshots(page, renderDeadline, mobileSelectors)
           );
         }
       } catch (err) {
@@ -2536,11 +2552,13 @@ export async function renderAndScan(
         if (remaining() > -RENDER_TAIL_MARGIN_MS / 2) {
           await page.setViewportSize({ width: 1280, height: 900 });
           await page.waitForTimeout(300);
-          userPreferences = await probeUserPreferences(page, domSignals.animatedElements);
-          dialogKeyboard = await probeDialogKeyboard(
+          userPreferences = await timed("prefsProbe", () =>
+            probeUserPreferences(page, domSignals.animatedElements)
+          );
+          dialogKeyboard = await timed("dialogProbe", () => probeDialogKeyboard(
             page,
             domSignals.dialogs.filter((d) => d.selector)
-          );
+          ));
         }
       } catch (err) {
         logger.warn({ err }, "Dialog keyboard probe failed — reporting without it");
