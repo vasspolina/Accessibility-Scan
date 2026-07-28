@@ -88,6 +88,8 @@ export interface PlainRule {
 export const PLAIN_RULE_EXPLANATIONS: Record<string, PlainRule> = {
   "aria-allowed-role": {
     plain: "Parts of the page are labelled in the code as something they cannot be.",
+    found: (n) =>
+      `${n} ${n === 1 ? "element is" : "elements are"} labelled in the code as something ${n === 1 ? "it cannot be" : "they cannot be"} — a role that does not belong on that kind of tag.`,
     impact:
       "Screen readers announce the wrong thing, so people are told they have reached a button when it is a link, or a heading when it is a list.",
   },
@@ -101,6 +103,8 @@ export const PLAIN_RULE_EXPLANATIONS: Record<string, PlainRule> = {
   },
   "landmark-unique": {
     plain: "Two areas of the page share the same name.",
+    found: (n) =>
+      `${n} ${n === 1 ? "region shares its name with another" : "regions share their names with others"}, so a list of regions reads as repeats with no way to tell which is which.`,
     impact: "People using screen readers get a list of identical entries and cannot tell them apart.",
   },
   "landmark-no-duplicate-banner": {
@@ -122,20 +126,28 @@ export const PLAIN_RULE_EXPLANATIONS: Record<string, PlainRule> = {
   },
   "image-redundant-alt": {
     plain: "An image description repeats the words printed next to it.",
+    found: (n) =>
+      `${n} ${n === 1 ? "image repeats, in its alt text, the words already printed beside it" : "images repeat, in their alt text, the words already printed beside them"}, so a screen reader says the same thing twice.`,
     impact: "People using screen readers hear the same thing twice, which slows them down for nothing.",
   },
   "color-contrast": {
     plain: "Text is too light against its background to read easily.",
+    found: (n) =>
+      `${n} ${n === 1 ? "piece" : "pieces"} of text on this page ${n === 1 ? "sits" : "sit"} too close in colour to the background behind ${n === 1 ? "it" : "them"}. Each one is listed below, and the technical version gives the measured ratio.`,
     impact:
       "Hard to read in bright light, on a cheap screen, or with imperfect eyesight. Your message doesn't land.",
   },
   "image-alt": {
     plain: "Images have no text description behind them.",
+    found: (n) =>
+      `${n} ${n === 1 ? "image has" : "images have"} no alt text at all — not even an empty one to mark ${n === 1 ? "it" : "them"} decorative. A screen reader falls back to reading the filename aloud, or skips ${n === 1 ? "it" : "them"} in silence.`,
     impact:
       "People using screen readers hear nothing for these images, and search engines can't tell what they show. Costing you both accessibility and SEO.",
   },
   "input-image-alt": {
     plain: "An image used as a button has no text description.",
+    found: (n) =>
+      `${n} ${n === 1 ? "image used as a button has" : "images used as buttons have"} no alt text, so there is nothing to announce and nothing to read.`,
     impact: "People using screen readers can't tell what the button does, so they can't finish.",
   },
   "link-name": {
@@ -152,63 +164,93 @@ export const PLAIN_RULE_EXPLANATIONS: Record<string, PlainRule> = {
   },
   "button-name": {
     plain: "Buttons have no label.",
+    found: (n) =>
+      `${n} ${n === 1 ? "button has" : "buttons have"} no label of any kind: no words inside, no aria-label. Nearly always an icon button, where the symbol carries the meaning and the code carries none of it.`,
     impact: "Nobody can tell what it does before clicking. A common reason people give up.",
   },
   label: {
     plain: "Form fields have no label.",
+    found: (n) =>
+      `${n} form ${n === 1 ? "field is" : "fields are"} not joined to a label in the code. The words may sit right beside the field on screen — nothing connects the two, so a screen reader announces the field with no idea what it is for.`,
     impact:
       "People using screen readers don't know what goes in each box, so forms get abandoned, checkout included.",
   },
   "select-name": {
     plain: "A dropdown menu has no label.",
+    found: (n) =>
+      `${n} ${n === 1 ? "dropdown has" : "dropdowns have"} no label in the code, so ${n === 1 ? "it is" : "they are"} announced as a list of options with no indication of what is being chosen.`,
     impact: "People can't tell what they're choosing. Errors and dropped forms follow.",
   },
   "document-title": {
     plain: "Your page has no title.",
+    found: (n) =>
+      `The page has no title, so a browser tab and a screen reader both fall back to the address.`,
     impact: "Tabs, bookmarks and search results show nothing useful.",
   },
   "html-has-lang": {
     plain: "Your page doesn't say what language it's written in.",
+    found: (n) =>
+      `The page does not declare what language it is written in.`,
     impact: "People hear your content in the wrong accent, which is hard to follow.",
   },
   "html-lang-valid": {
     plain: "Your page's declared language isn't a valid value.",
+    found: (n) =>
+      `The page declares a language, but not one that software recognises.`,
     impact: "People hear your words in the wrong voice, mispronounced.",
   },
   "heading-order": {
     plain: "Your headings jump levels instead of going in order.",
+    found: (n) =>
+      `The heading levels jump instead of stepping — ${n === 1 ? "one place" : `${n} places`} where a level is skipped, an h2 followed straight by an h4 or similar.`,
     impact: "Most screen reader users navigate by headings. They lose the thread.",
   },
   "page-has-heading-one": {
     plain: "Your page has no main heading.",
+    found: (n) =>
+      `The page has no top-level heading, so there is nothing naming what it is about.`,
     impact: "Nobody can tell at a glance what the page is about.",
   },
   "empty-heading": {
     plain: "A heading on the page is empty.",
+    found: (n) =>
+      `${n} ${n === 1 ? "heading is" : "headings are"} empty: the tag is there, the words are not.`,
     impact: "People navigating by headings hit a blank signpost that tells them nothing.",
   },
   "link-in-text-block": {
     plain: "Links are shown by colour alone, with nothing else to set them apart.",
+    found: (n) =>
+      `${n} ${n === 1 ? "link inside running text is" : "links inside running text are"} marked only by colour, with no underline, so anyone who cannot separate those colours cannot see there is a link there.`,
     impact: "Colour-blind readers can't tell a link from ordinary text.",
   },
   "meta-viewport": {
     plain: "Your page stops people from zooming in.",
+    found: (n) =>
+      `The page blocks zooming, so anyone who needs to enlarge it on a phone cannot.`,
     impact: "Anyone who needs bigger text can't get it. On a phone, they just leave.",
   },
   "frame-title": {
     plain: "An embedded frame (like a map or video) has no title.",
+    found: (n) =>
+      `${n} embedded ${n === 1 ? "frame has" : "frames have"} no title, so ${n === 1 ? "it is" : "they are"} announced only as "frame".`,
     impact: "People using screen readers can't tell what's in it, or whether it's worth their time.",
   },
   "duplicate-id-active": {
     plain: "Two interactive elements share the same hidden name in the code.",
+    found: (n) =>
+      `${n} ${n === 1 ? "id is" : "ids are"} used more than once on controls, so labels and references can point at the wrong element.`,
     impact: "Screen readers get confused and the wrong thing responds when someone clicks.",
   },
   list: {
     plain: "A list looks like a list on screen but isn't coded as one.",
+    found: (n) =>
+      `${n} ${n === 1 ? "list is" : "lists are"} built with something other than list items inside, so the grouping exists visually and not in the code.`,
     impact: "People using screen readers aren't told how many items there are, and can't skip through them.",
   },
   listitem: {
     plain: "A list item sits on its own, outside any list.",
+    found: (n) =>
+      `${n} list ${n === 1 ? "item sits" : "items sit"} outside any list, so a screen reader never announces how many there are or where the group starts.`,
     impact: "People using screen readers lose the grouping, so the content stops making sense.",
   },
   "aria-required-attr": {
@@ -217,22 +259,32 @@ export const PLAIN_RULE_EXPLANATIONS: Record<string, PlainRule> = {
   },
   "aria-hidden-focus": {
     plain: "Something hidden from screen readers can still be reached with the Tab key.",
+    found: (n) =>
+      `${n} ${n === 1 ? "element is" : "elements are"} hidden from screen readers while still being reachable by keyboard, so focus lands somewhere that announces nothing.`,
     impact: "Someone tabbing through lands on something their screen reader won't read. The page feels broken.",
   },
   region: {
     plain: "The main areas of your page aren't named in the code.",
+    found: (n) =>
+      `Some of this page sits outside any named region — ${n === 1 ? "one block" : `${n} blocks`} of content with no header, nav, main or footer around ${n === 1 ? "it" : "them"}.`,
     impact: "People using screen readers can't skip ahead. They hear everything, every time.",
   },
   "landmark-one-main": {
     plain: "Your page doesn't say where the main content starts.",
+    found: (n) =>
+      `The page has no main region marking where the content starts, so there is nothing to skip to.`,
     impact: "People using screen readers sit through the whole menu on every single page.",
   },
   tabindex: {
     plain: "Tabbing jumps around the page instead of following the order things appear.",
+    found: (n) =>
+      `${n} ${n === 1 ? "element uses" : "elements use"} a positive tabindex, which forces ${n === 1 ? "it" : "them"} to the front of the tab order regardless of where ${n === 1 ? "it sits" : "they sit"} on the page.`,
     impact: "People who can't use a mouse get thrown around the page.",
   },
   "scrollable-region-focusable": {
     plain: "A scrollable area can't be reached with the keyboard.",
+    found: (n) =>
+      `${n} ${n === 1 ? "area scrolls" : "areas scroll"} but cannot be reached with the keyboard, so whatever has scrolled out of view is unreachable without a mouse.`,
     impact: "Without a mouse, you can't scroll to what's inside.",
   },
 
