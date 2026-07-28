@@ -176,6 +176,22 @@ const KIND_WORDS: Record<string, string> = {
   table: "table",
 };
 
+/**
+ * Whether a label names a particular thing or only a category of thing.
+ *
+ * "“Toggle search” button" locates something. "Heading" does not — it is what
+ * prettySelector falls back to when the selector is a bare tag and no snippet
+ * came with the finding, which is where an AI finding usually lands because
+ * the model writes its own selector and we never measured the element.
+ *
+ * Reported on a card headed "Screen reader hears exhibition dates with no
+ * artwork description", whose affected-element list read, in full: Heading.
+ */
+export function labelNamesSomething(label: string): boolean {
+  const generic = new Set([...Object.values(KIND_WORDS).map(capitalize), "Element"]);
+  return !generic.has(label.trim());
+}
+
 function elementKindWord(tag: string | undefined, type: string | undefined): string {
   if (tag === "input") {
     switch ((type ?? "text").toLowerCase()) {
@@ -425,6 +441,11 @@ export function FindingGroup({
 
   // What was actually found on this page, in whatever form we have it.
   const measured = whatWeFound(rep, plain, entries.length, title);
+  // Worth showing only if some row points at a particular thing, or carries a
+  // picture of one.
+  const locatesSomething = entries.some(
+    (e) => labelNamesSomething(e.label) || e.rep.elementScreenshot
+  );
   // When most of a long list is one component repeated, say so. A reader shown
   // thirteen rows reasonably concludes there are thirteen things to do.
   const cluster = dominantComponent(findings);
@@ -528,7 +549,13 @@ export function FindingGroup({
             </p>
           )}
 
-          {/* Which specific elements are affected */}
+          {/* Which specific elements are affected.
+              Dropped entirely when not one row would name anything: a list
+              whose only entry is the word "Heading" tells the reader less
+              than the sentence above it already did, while looking like it
+              is about to be useful. The count is on the header badge and the
+              selector is in the technical drawer, so nothing is lost. */}
+          {locatesSomething && (
           <div className="a11y-affected">
             <p className="a11y-affected-label">
               <strong>{count > 1 ? `Affected elements (${count}):` : "Affected element:"}</strong>
@@ -544,6 +571,7 @@ export function FindingGroup({
               </button>
             )}
           </div>
+          )}
 
           {/* Developer hand-off — the rule reference, shown once */}
           {(rep.ruleId || rep.wcagCriterion) && (
