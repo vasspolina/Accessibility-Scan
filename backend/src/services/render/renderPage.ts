@@ -1041,7 +1041,7 @@ export interface FreshCaptureResult {
    * "hidden" and "offscreen" are usually correct behaviour rather than a
    * fault — the report just has to say so instead of showing a blank.
    */
-  unpicturable: Record<string, "hidden" | "offscreen" | "missing">;
+  unpicturable: Record<string, "hidden" | "offscreen" | "missing" | "too-large">;
 }
 
 export async function captureSelectorsFresh(
@@ -1087,7 +1087,16 @@ export async function captureSelectorsFresh(
         // picture of a whole section tells the reader nothing.
         if (!alwaysCapture(selector)) {
           const box = await page.locator(selector).first().boundingBox().catch(() => null);
-          if (box && box.height > MAX_COMPONENT_HEIGHT_PX) continue;
+          if (box && box.height > MAX_COMPONENT_HEIGHT_PX) {
+            // Skipped for being a whole region rather than a component, and
+            // that used to happen in silence — the card arrived with no
+            // picture and no reason, which is the thing this whole mechanism
+            // exists to stop. A reason is recorded even though the skip is
+            // correct: a picture of an entire page section shows the reader
+            // nothing about which part of it is at fault.
+            result.unpicturable[selector] = "too-large";
+            continue;
+          }
         }
         const shot = await captureWithContext(page, selector);
         if (shot) {
