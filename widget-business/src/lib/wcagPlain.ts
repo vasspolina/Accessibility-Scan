@@ -652,16 +652,16 @@ const PLAIN_RULE_FIXES: Record<string, string> = {
   "skip-link": "Point the skip link at an id that exists on the main content, and make sure that target can take focus.",
   "image-redundant-alt": "Give the image an empty alt (alt=\"\") when the text beside it already says the same thing.",
   "color-contrast":
-    "Darken the text or lighten its background until they contrast strongly. Aim for a 4.5:1 ratio for normal text, 3:1 for large text.",
+    "Darken the text or lighten its background until they contrast strongly. Aim for a 4.5:1 ratio for normal text and 3:1 for large text — large meaning about 24px, or 19px if it is bold.",
   "image-alt":
     'Add an alt attribute to each image describing what it shows. Use empty alt (alt="") only for purely decorative images.',
   "input-image-alt": 'Add an alt attribute to the image button describing its action (e.g. alt="Search").',
   "link-name":
-    "Put readable words inside the link. Where the link is an icon or an image, `aria-label` on the link does it — or alt text on the image, if that is what the link contains. Describe the destination rather than the picture: `aria-label=\"Major partnerships\"` tells somebody where they are going, `aria-label=\"arrow\"` tells them nothing. Write it to make sense read on its own, because in that list of links it will be.",
+    "Put readable words inside the link. Where the link is an icon or an image, `aria-label` on the link does it — or alt text on the image, if that is what the link contains. Describe the destination rather than the picture: `aria-label=\"Major partnerships\"` tells somebody where they are going, `aria-label=\"arrow\"` tells them nothing. Write it to make sense read on its own, because in that list of links it will be.\n\nWhere the link already shows words, keep those words inside the label you write. A label replaces the visible text for software instead of adding to it, so someone using voice control who says what they can see will otherwise get no response at all.",
   "link-text-vague":
     "Write link text that makes sense on its own: \"Read the 2026 fee changes\", not \"Read more\". To keep the short version on screen, add the full wording with aria-label.",
   "button-name":
-    "Give each button a clear label. Visible text inside it, or an aria-label describing what it does.",
+    "Give each button a clear label. Visible text inside it, or an `aria-label` describing what it does.\n\nOne trap worth knowing if the button already shows words: an `aria-label` replaces them for software rather than adding to them, so the visible words have to appear inside it. Someone using voice control says what they can see — \"click Send\" — and if the label underneath says something else, nothing happens and they have no way to find out why.",
   label: "Connect a visible <label> to each field (the label's for matches the field's id), or add an aria-label.",
   "select-name": "Add a <label> tied to the dropdown, or an aria-label describing what it selects.",
   "document-title": "Add a <title> in the page's <head> that describes the page.",

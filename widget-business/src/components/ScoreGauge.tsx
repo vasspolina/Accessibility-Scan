@@ -16,13 +16,18 @@ function scoreColor(score: number): string {
 // expense of the design, or of the comfortable assumption behind it. It is
 // never at the expense of the people the site turns away, who are the reason
 // any of this exists and are not a punchline.
+//
+// The top band carries a second constraint. A scan reaches perhaps half of
+// what is wrong, so "faultless" and "nobody is turned away" were claims this
+// tool is not entitled to make on the evidence it has. The good lines say what
+// was looked for and found clean, and stop there.
 export const SUMMARIES: Record<"good" | "middling" | "poor", string[]> = {
   good: [
     "Well built. What remains is craft, not repair.",
     "Close to right. The rest is finishing, not fixing.",
-    "Very nearly faultless. We did look quite hard.",
+    "Nothing left that a machine can find. Not the same as nothing left.",
     "A good site. We had a whole speech prepared.",
-    "Almost nobody is turned away. Steady on.",
+    "Few doors left closed. A scan cannot see all of them.",
   ],
   middling: [
     "Adequate for most. Design is judged by the rest.",
@@ -94,6 +99,21 @@ export function ScoreGauge({
           <dd>{summary.minor}</dd>
         </div>
       </dl>
+      {/* What the number is, next to the number.
+
+          An aggregate score is fine for tracking whether a site is getting
+          better and is not a conformance claim, and this one was presented
+          without saying so. Automated testing reaches somewhere between a
+          third and a half of accessibility problems; the rest needs a person
+          with a keyboard and a screen reader. A reader who takes 100 to mean
+          "accessible" has been misled by us, not by their own optimism. */}
+      <p className="a11y-score-caveat">
+        This is what an automated scan found, weighted by how much each problem
+        costs a visitor. A scan of this kind reaches somewhere between a third
+        and a half of accessibility problems — the rest need a person with a
+        keyboard and a screen reader. Useful for telling whether the site is
+        improving. Not a statement that it meets the law.
+      </p>
     </div>
   );
 }

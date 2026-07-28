@@ -298,6 +298,17 @@
   font-weight: 600;
 }
 
+/* Sits under the number it qualifies. Quieter than the breakdown above it,
+   because it is context rather than a result — but present on every report,
+   because a score shown without it invites a conformance claim nobody made. */
+.a11y-score-caveat {
+  margin: 16px 0 0;
+  font-size: 14px;
+  line-height: 1.5;
+  color: var(--a11y-muted, #57606a);
+  max-width: 62ch;
+}
+
 .a11y-principle-groups {
   display: flex;
   flex-direction: column;

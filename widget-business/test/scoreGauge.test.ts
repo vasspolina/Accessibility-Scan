@@ -50,6 +50,17 @@ describe("score summaries", () => {
     }
   });
 
+  // An aggregate score is fine for tracking whether a site is improving and is
+  // not a conformance claim. A scan reaches perhaps half of what is wrong, so
+  // the top band cannot promise the other half.
+  it("never claims more than a scan can support", () => {
+    const overclaims =
+      /\b(faultless|flawless|perfect|fully accessible|compliant|conforms?|nobody is turned away|everyone can)\b/i;
+    for (const line of SUMMARIES.good) {
+      expect(line, line).not.toMatch(overclaims);
+    }
+  });
+
   // The one rule that is not negotiable. The joke is aimed at the design, or
   // at the assumption behind it. Never at the people the site turns away.
   it("never makes the excluded the punchline", () => {
