@@ -4,6 +4,7 @@ import { ScoreGauge } from "./components/ScoreGauge";
 import { DocumentSummary } from "./components/DocumentSummary";
 import { ReportSection } from "./components/ReportSection";
 import { PrincipleGroup } from "./components/PrincipleGroup";
+import { UndecidedChecks } from "./components/UndecidedChecks";
 import { ScreenReaderPreview } from "./components/ScreenReaderPreview";
 import { ConformanceView } from "./components/ConformanceView";
 import { Wcag22Readiness } from "./components/Wcag22Readiness";
@@ -292,6 +293,10 @@ export function App({ apiBase }: { apiBase: string }) {
             </p>
             <PrincipleGroup findings={findingsByCategory.accessibility} />
           </section>
+
+          {report.undecidedChecks && report.undecidedChecks.length > 0 && (
+            <UndecidedChecks rows={report.undecidedChecks} />
+          )}
 
           {!isDocument && (
           <ReportSection

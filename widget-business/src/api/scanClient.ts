@@ -135,6 +135,8 @@ export interface AccessibilityReport {
   // Absent on older backends.
   wcag22?: Wcag22Readiness;
   // Downscaled base64 JPEG of the page, used by the vision simulators.
+  // Checks the engine ran and could not settle — a person decides these.
+  undecidedChecks?: Array<{ ruleId: string; count: number; help: string; helpUrl?: string }>;
   pagePreview?: string;
   meta: {
     axeVersion: string;

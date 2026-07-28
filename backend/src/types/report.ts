@@ -225,6 +225,35 @@ export const accessibilityReportSchema = z.object({
   // Downscaled base64 JPEG of the page as a sighted visitor first sees it.
   // Powers the vision simulators in the widget, which re-filter this one
   // image client-side rather than asking the server to render variants.
+  /**
+   * What the engine checked and could not settle, for a person to judge.
+   *
+   * Deliberately not findings. A finding is a fault we are willing to state,
+   * and these are the cases axe refuses to state precisely so that its
+   * violations can be trusted — text over a photograph, a video it cannot
+   * watch. Turning them into findings would import exactly the false
+   * positives that discipline exists to prevent, and inflate a count the
+   * score is computed from.
+   *
+   * They are also not nothing, which is what they were until now. Dropping
+   * the array made a page with ninety-five undecided contrast pairs look
+   * identical to one with none.
+   *
+   * Named for the engine's uncertainty rather than "needs review", which is
+   * already the conformance table's word for a WCAG criterion nothing decided.
+   * Two different questions, and they should not share a name.
+   */
+  undecidedChecks: z
+    .array(
+      z.object({
+        ruleId: z.string(),
+        // How many places on the page the engine could not settle.
+        count: z.number(),
+        help: z.string(),
+        helpUrl: z.string().optional(),
+      })
+    )
+    .optional(),
   pagePreview: z.string().optional(),
   meta: z.object({
     axeVersion: z.string(),

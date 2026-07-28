@@ -2,6 +2,7 @@ import { env } from "../config/env.js";
 import { withTimeout } from "../utils/timeout.js";
 import { assertSafeUrl } from "../middleware/ssrfGuard.js";
 import { renderAndScan, captureSelectorsFresh } from "./render/renderPage.js";
+import type { AxeRunResult } from "./render/renderPage.js";
 import { extractContext } from "./contextExtraction/extractContext.js";
 import { reviewPage } from "./aiReview/reviewPage.js";
 import { attachAltTextSuggestions } from "./aiReview/suggestAltText.js";
@@ -209,6 +210,31 @@ export function worthPicturingWhole(
 }
 
 /**
+ * axe's undecided checks, one row per rule.
+ *
+ * Rolled up by rule rather than listed per element because the reader's next
+ * move is the same for all of them: look at the text over that photograph and
+ * judge it. Ninety-five separate rows would bury the report; one row saying
+ * ninety-five places tells them the size of the job.
+ *
+ * frame-tested is dropped. It means axe could not reach into an iframe to test
+ * it, which is a fact about the scan and not about the page — and it is
+ * usually a third-party embed the owner cannot change anyway.
+ */
+export function summariseUndecided(axe: AxeRunResult): AccessibilityReport["undecidedChecks"] {
+  const rows = (axe.incomplete ?? [])
+    .filter((r) => r.id !== "frame-tested" && r.nodes.length > 0)
+    .map((r) => ({
+      ruleId: r.id,
+      count: r.nodes.length,
+      help: r.help,
+      helpUrl: r.helpUrl,
+    }))
+    .sort((a, b) => b.count - a.count);
+  return rows.length > 0 ? rows : undefined;
+}
+
+/**
  * The full single-URL scan: render + all deterministic finding layers +
  * optional AI review, merged into one AccessibilityReport. Extracted from
  * routes/scan.ts so the crawler (routes/audit.ts) runs the identical
@@ -393,6 +419,7 @@ export async function scanUrlToReport(
     screenReaderScript: renderResult.screenReaderScript,
     conformance,
     wcag22,
+    undecidedChecks: summariseUndecided(renderResult.axe),
     pagePreview: await downscalePreview(renderResult.screenshotBase64),
     meta: {
       axeVersion: renderResult.axe.testEngine?.version ?? "unknown",

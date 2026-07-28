@@ -134,6 +134,30 @@ export interface AxeRunResult {
       any?: Array<{ id: string; data?: unknown }>;
     }>;
   }>;
+  /**
+   * Checks that ran and could not reach a verdict.
+   *
+   * axe is built to report no false positives, and the way it earns that is by
+   * routing anything it cannot settle here instead of into violations. Text
+   * over a photograph or a gradient is the common case: the engine can read
+   * the foreground colour and has no single background colour to measure it
+   * against. Video captions are another — it can see a video element and
+   * cannot watch it.
+   *
+   * We discarded this array, which quietly made those cases disappear rather
+   * than pass. Measured across five sites: Wikipedia returned 4 violations and
+   * 163 undecided nodes, and the Guardian three videos whose captions nobody
+   * had confirmed either way.
+   */
+  incomplete: Array<{
+    id: string;
+    impact: "critical" | "serious" | "moderate" | "minor" | null;
+    tags: string[];
+    description: string;
+    help: string;
+    helpUrl: string;
+    nodes: Array<{ target: string[]; html: string }>;
+  }>;
 }
 
 export interface RenderResult {

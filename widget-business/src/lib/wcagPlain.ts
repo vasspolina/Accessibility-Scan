@@ -692,3 +692,55 @@ export function plainFixForRule(ruleId: string | undefined): string | undefined 
 export const WCAG_LINK = "https://www.w3.org/WAI/standards-guidelines/wcag/";
 
 export const PRINCIPLE_ORDER: Principle[] = ["Perceivable", "Operable", "Understandable", "Robust"];
+
+/**
+ * Why the engine could not settle a check, and what a person should do.
+ *
+ * These are not faults. axe reports no false positives by refusing to call
+ * anything it cannot measure, and this is where those cases go. The reader
+ * needs two things: why a machine could not answer, and what looking at it
+ * themselves involves.
+ *
+ * Written for the rules a sweep of real sites actually produced.
+ */
+export const UNDECIDED_EXPLANATIONS: Record<string, { what: string; youCheck: string }> = {
+  "color-contrast": {
+    what: "Text sitting on a photograph, a video or a gradient. The checker can read the colour of the text but there is no single colour behind it to measure against, so it will not guess.",
+    youCheck:
+      "Look at each one on a bright screen and on a dim one. If the text disappears into the picture anywhere behind it, it needs a solid panel behind the words, a shadow, or a different position.",
+  },
+  "link-in-text-block": {
+    what: "Links inside a paragraph that may be marked only by their colour. The checker cannot tell whether the difference is strong enough on its own.",
+    youCheck:
+      "Imagine the page in grey. If a link in the middle of a sentence still looks like a link, it passes. If it only stands out by being a different colour, underline it.",
+  },
+  "video-caption": {
+    what: "A video the checker can see and cannot watch. It has no way to tell whether captions exist or whether they are any good.",
+    youCheck:
+      "Play each one with the sound off. If you cannot follow it, it needs captions — and auto-generated ones count only if somebody has corrected them.",
+  },
+  "aria-valid-attr-value": {
+    what: "Code labels that point at another part of the page. The checker cannot always tell whether the thing they point at is really there.",
+    youCheck:
+      "One for whoever maintains the site: check that every id referenced by an aria attribute exists on the page and is not inside a hidden or removed block.",
+  },
+  "aria-allowed-role": {
+    what: "Parts of the page labelled in the code as something they may not be able to be. Whether it is wrong depends on how the component behaves.",
+    youCheck:
+      "One for whoever maintains the site: confirm each of these behaves the way its role promises, keyboard included, or drop the role and use the native element.",
+  },
+  "aria-prohibited-attr": {
+    what: "An element carrying a name the code may not let it keep. Whether it survives depends on the element's role.",
+    youCheck:
+      "One for whoever maintains the site: check that each of these is announced with the name you intended, and move the name onto an element allowed to carry one if not.",
+  },
+  "duplicate-id-aria": {
+    what: "An id that may be used more than once. Every code label pointing at it follows only the first, so a name can silently attach to the wrong thing.",
+    youCheck:
+      "One for whoever maintains the site: make each id on the page unique, starting with any referenced by an aria attribute.",
+  },
+};
+
+export function undecidedExplanation(ruleId: string) {
+  return UNDECIDED_EXPLANATIONS[ruleId];
+}

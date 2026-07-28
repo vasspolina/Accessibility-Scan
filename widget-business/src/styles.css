@@ -309,6 +309,35 @@
   max-width: 62ch;
 }
 
+.a11y-undecided-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.a11y-undecided {
+  border: 1px solid var(--a11y-border, #d0d7de);
+  border-left: 4px solid var(--a11y-muted, #57606a);
+  padding: 16px;
+  background: var(--a11y-card, #fff);
+}
+
+.a11y-undecided-head {
+  margin: 0;
+  font-size: 15px;
+  line-height: 1.5;
+}
+
+.a11y-undecided-do {
+  margin: 8px 0 0;
+  font-size: 14px;
+  line-height: 1.5;
+  color: var(--a11y-muted, #57606a);
+}
+
 .a11y-principle-groups {
   display: flex;
   flex-direction: column;
