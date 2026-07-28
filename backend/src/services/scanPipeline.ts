@@ -114,10 +114,21 @@ async function attachEvidence(
     // with no picture and a note explaining that photographing a region
     // would not show which part was at fault. For this finding the region is
     // the part at fault.
+    // Where the consent banner lives in a third-party frame, say so, or the
+    // second visit resolves its path against the host document and photographs
+    // whatever happens to sit there.
+    const banner = renderResult.darkPatternSignals.consentBanner;
+    const frameForSelector: Record<string, string> = {};
+    if (banner?.frameUrl) {
+      for (const f of unpictured) {
+        if (f.ruleId?.startsWith("dark-consent-")) frameForSelector[f.selector] = originOfUrl(banner.frameUrl);
+      }
+    }
     const shots = await captureSelectorsFresh(
       renderResult.finalUrl,
       [...oneEach, ...rest].map((f) => f.selector),
-      worthPicturingWhole(unpictured)
+      worthPicturingWhole(unpictured),
+      frameForSelector
     );
     for (const finding of unpictured) {
       const shot = shots.shots[finding.selector];
@@ -143,6 +154,19 @@ async function attachEvidence(
       } else if (why === "too-large") {
         finding.pictureNote =
           "No picture: this covers a whole region of the page rather than one component, and a photograph of the entire section would not show you which part of it is at fault. The selector below locates it exactly.";
+      } else if (why === "missing") {
+        finding.pictureNote =
+          "No picture: the element was on the page when we judged it, and gone when we went back to photograph it. Banners that appear once per visitor do this.";
+      }
+      // Everything above ends by telling the reader the selector locates the
+      // element exactly. For a banner in a third-party consent frame that is
+      // not true: the path is through the frame's own document and means
+      // something else in the page it sits on. Measured on spiegel.de, where
+      // it matched two unrelated elements in the host page.
+      if (finding.pictureNote && frameForSelector[finding.selector]) {
+        finding.pictureNote =
+          finding.pictureNote.replace(" The selector below locates it exactly.", "") +
+          ` This banner is served inside a consent frame from ${frameForSelector[finding.selector]}, so the selector below is a path within that frame rather than within your own page.`;
       }
     }
   }
@@ -150,6 +174,14 @@ async function attachEvidence(
   // Runs last: it needs each flagged image's captured thumbnail to suggest alt
   // text from what the image actually shows.
   await attachAltTextSuggestions(findings, includeAiReview);
+}
+
+function originOfUrl(url: string): string {
+  try {
+    return new URL(url).origin;
+  } catch {
+    return url;
+  }
 }
 
 /**

@@ -26,6 +26,12 @@ export interface DarkPatternSignals {
     // "Manage"/"Settings"/"Customise" — not a refusal, an extra step before
     // one is possible.
     manageControls: ChoiceControl[];
+    // Set when the banner was found inside an iframe rather than the host
+    // page — which is where Sourcepoint, OneTrust and Didomi all put theirs.
+    // `selector` is then a path through that frame's document and means
+    // nothing in the main one, so anything that resolves it later has to know
+    // where to look.
+    frameUrl?: string;
   } | null;
   // Decline/dismiss controls worded to make the user feel bad for declining.
   confirmshaming: Array<{ selector: string; snippet: string; text: string }>;

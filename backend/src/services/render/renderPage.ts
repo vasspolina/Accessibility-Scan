@@ -1,4 +1,4 @@
-import type { ElementHandle, Locator, Page, Response } from "playwright";
+import type { ElementHandle, Frame, Locator, Page, Response } from "playwright";
 import { createRequire } from "node:module";
 import sharp from "sharp";
 import { env } from "../../config/env.js";
@@ -1009,8 +1009,11 @@ async function settleLayout(page: Page): Promise<void> {
  * Returns null whenever there's nothing worth showing, which callers treat as
  * "no thumbnail" rather than an error.
  */
-async function captureWithContext(page: Page, selector: string): Promise<string | null> {
-  const locator = page.locator(selector).first();
+async function captureWithContext(
+  scope: Page | Frame,
+  selector: string
+): Promise<string | null> {
+  const locator = scope.locator(selector).first();
   if ((await locator.count()) === 0) return null;
   await locator.scrollIntoViewIfNeeded({ timeout: 1_000 }).catch(() => {});
 
@@ -1041,6 +1044,17 @@ async function captureWithContext(page: Page, selector: string): Promise<string 
  *
  * Best-effort throughout: any failure yields no thumbnail, never a failed scan.
  */
+// Origin of a URL, or the string itself if it will not parse. Frame identity
+// across two visits is an origin question: the path and query of a consent
+// frame change per visit, the host does not.
+function originOf(url: string): string {
+  try {
+    return new URL(url).origin;
+  } catch {
+    return url;
+  }
+}
+
 export interface FreshCaptureResult {
   shots: Record<string, string>;
   /**
@@ -1059,7 +1073,15 @@ export async function captureSelectorsFresh(
   // to prove it's component-sized, because the model is told to fall back to
   // the containing section for layout findings and a picture of a section
   // tells the reader nothing.
-  alwaysCapture: (selector: string) => boolean
+  alwaysCapture: (selector: string) => boolean,
+  // Selectors measured inside an iframe rather than the main document, keyed
+  // to the frame they came from. A consent banner is very often one of these:
+  // Sourcepoint, OneTrust and Didomi all render theirs in a third-party frame.
+  // Its selector is a path through that frame's document, and run against the
+  // main document it does not mean nothing -- it means something else. On
+  // spiegel.de the banner's path matched two unrelated elements in the host
+  // page, and the first of them is what we photographed.
+  frameForSelector: Record<string, string> = {}
 ): Promise<FreshCaptureResult> {
   if (selectors.length === 0) return { shots: {}, unpicturable: {} };
 
@@ -1088,12 +1110,27 @@ export async function captureSelectorsFresh(
     for (const selector of selectors.slice(0, MAX_SECOND_PASS_SHOTS)) {
       if (Date.now() > deadline) break;
       try {
+        // Match the frame by origin, not by full URL. CMP frame URLs carry a
+        // per-visit message id -- spiegel.de's ends "?message_id=142" -- so an
+        // exact comparison would miss on the second visit every time.
+        const wantOrigin = frameForSelector[selector];
+        const scope: Page | Frame = wantOrigin
+          ? (page.frames().find((f) => originOf(f.url()) === wantOrigin) ?? page)
+          : page;
+        // The frame is gone on this visit (consent already given, a different
+        // CMP flight, a frame that failed to load). Photographing the same
+        // path against the main document would produce a picture of something
+        // else entirely, so take none.
+        if (wantOrigin && scope === page) {
+          result.unpicturable[selector] = "missing";
+          continue;
+        }
         // A selector that doesn't name one discrete element has to prove it's
         // component-sized before we spend a shot on it — the model is told to
         // fall back to the containing section for layout findings, and a
         // picture of a whole section tells the reader nothing.
         if (!alwaysCapture(selector)) {
-          const box = await page.locator(selector).first().boundingBox().catch(() => null);
+          const box = await scope.locator(selector).first().boundingBox().catch(() => null);
           if (box && box.height > MAX_COMPONENT_HEIGHT_PX) {
             // Skipped for being a whole region rather than a component, and
             // that used to happen in silence — the card arrived with no
@@ -1105,7 +1142,7 @@ export async function captureSelectorsFresh(
             continue;
           }
         }
-        const shot = await captureWithContext(page, selector);
+        const shot = await captureWithContext(scope, selector);
         if (shot) {
           result.shots[selector] = shot;
           continue;
@@ -1116,7 +1153,7 @@ export async function captureSelectorsFresh(
         // Most of these are entirely correct: a skip link lives off-screen
         // until it takes focus, and a search panel has no size until it is
         // opened. Saying so turns an apparent malfunction into information.
-        const why = await page
+        const why = await scope
           .evaluate(([sel]) => {
             try {
               const el = document.querySelector(sel);
@@ -1181,6 +1218,12 @@ async function collectDarkPatternsAcrossFrames(page: Page): Promise<DarkPatternS
       );
       if (!merged.consentBanner && signals.consentBanner) {
         merged.consentBanner = signals.consentBanner;
+        // Remember where it was found. Its selector is a path through this
+        // frame's document, and the capture pass runs against the host page
+        // unless it is told otherwise.
+        if (frame !== page.mainFrame()) {
+          merged.consentBanner.frameUrl = frame.url();
+        }
       }
       merged.confirmshaming.push(...signals.confirmshaming);
       merged.preCheckedOptIns.push(...signals.preCheckedOptIns);

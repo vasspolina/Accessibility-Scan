@@ -353,3 +353,32 @@ describe("qa-consent-pl.html: a banner that offers a real choice", () => {
     expect(findings.filter((f) => f.ruleId?.startsWith("dark-"))).toEqual([]);
   });
 });
+
+describe("qa-consent-frame.html: a banner served from its own document", () => {
+  // Every consent management platform in wide use -- Sourcepoint, OneTrust,
+  // Didomi -- serves its banner in an iframe. Two things have to hold: the
+  // banner is found there at all, and we remember it was found there. Without
+  // the second, the selector is a path through the frame's document that gets
+  // resolved against the host page, where it means something else entirely.
+  it("finds the banner in the frame and records where it was found", async () => {
+    const url = "file://" + path.resolve("public/qa-consent-frame.html");
+    const r = await renderAndScan(url, undefined, 90_000);
+    const banner = r.darkPatternSignals.consentBanner;
+    expect(banner).not.toBeNull();
+    expect(banner?.frameUrl).toContain("qa-consent-frame-inner.html");
+    expect(evaluateDarkPatterns(r.darkPatternSignals).map((f) => f.ruleId)).toContain(
+      "dark-consent-no-reject"
+    );
+  }, 120_000);
+
+  // The decoy divs in the host page match the same path the frame produced.
+  // If the banner is ever reported without its frame recorded, that path will
+  // quietly resolve to one of these.
+  it("does not mistake the host page's own markup for the banner", async () => {
+    const url = "file://" + path.resolve("public/qa-consent-frame.html");
+    const r = await renderAndScan(url, undefined, 90_000);
+    expect(r.darkPatternSignals.consentBanner?.snippet ?? "").not.toContain(
+      "Nothing to do with consent"
+    );
+  }, 120_000);
+});
