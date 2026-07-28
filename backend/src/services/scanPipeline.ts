@@ -124,6 +124,9 @@ async function attachEvidence(
       } else if (why === "offscreen") {
         finding.pictureNote =
           "No picture: this sits off the edge of the screen until it is used. Skip links are built this way on purpose, so nothing is necessarily wrong with it being there.";
+      } else if (why === "no-usable-image") {
+        finding.pictureNote =
+          "No picture: the element is there, but photographing it produced nothing worth showing — a blank rectangle, or whatever is sitting on top of it. The selector below locates it exactly.";
       } else if (why === "too-large") {
         finding.pictureNote =
           "No picture: this covers a whole region of the page rather than one component, and a photograph of the entire section would not show you which part of it is at fault. The selector below locates it exactly.";

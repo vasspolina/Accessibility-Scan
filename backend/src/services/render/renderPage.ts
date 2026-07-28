@@ -1041,7 +1041,7 @@ export interface FreshCaptureResult {
    * "hidden" and "offscreen" are usually correct behaviour rather than a
    * fault — the report just has to say so instead of showing a blank.
    */
-  unpicturable: Record<string, "hidden" | "offscreen" | "missing" | "too-large">;
+  unpicturable: Record<string, "hidden" | "offscreen" | "missing" | "too-large" | "no-usable-image">;
 }
 
 export async function captureSelectorsFresh(
@@ -1122,7 +1122,15 @@ export async function captureSelectorsFresh(
               // Deliberately off to one side — the standard way a skip link is
               // kept out of sight until somebody tabs to it.
               if (r.right < 0 || r.bottom < 0 || r.left > window.innerWidth) return "offscreen";
-              return "";
+              // Resolvable, on screen, sized — and the capture still produced
+              // nothing usable. Blank frames are discarded on purpose (a flat
+              // rectangle of one colour tells the reader nothing and has been
+              // shipped as a "screenshot" before), and an element hidden
+              // behind an overlay photographs the overlay. Either way there
+              // is no picture, and saying so beats a silent blank: the last
+              // card on the Guardian sat bare for exactly this reason after
+              // three other causes had been explained.
+              return "no-usable-image";
             } catch (e) {
               return "missing";
             }
