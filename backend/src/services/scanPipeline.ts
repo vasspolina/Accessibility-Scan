@@ -101,10 +101,22 @@ async function attachEvidence(
         oneEach.push(f);
       }
     }
+    // A dark pattern is, by definition, something you can see. The whole
+    // banner is the evidence: one prominent "Accept all" and no refusal
+    // beside it is a claim the reader can check at a glance and can barely
+    // check any other way. The height guard exists to stop a picture of a
+    // whole page section standing in for a component, and it was rejecting
+    // these — a consent banner's selector ends in a bare div and a banner is
+    // taller than a control, so it failed both tests.
+    //
+    // Measured on bundesregierung.de: the missing-refusal finding arrived
+    // with no picture and a note explaining that photographing a region
+    // would not show which part was at fault. For this finding the region is
+    // the part at fault.
     const shots = await captureSelectorsFresh(
       renderResult.finalUrl,
       [...oneEach, ...rest].map((f) => f.selector),
-      selectorTargetsOneElement
+      worthPicturingWhole(unpictured)
     );
     for (const finding of unpictured) {
       const shot = shots.shots[finding.selector];
@@ -137,6 +149,30 @@ async function attachEvidence(
   // Runs last: it needs each flagged image's captured thumbnail to suggest alt
   // text from what the image actually shows.
   await attachAltTextSuggestions(findings, includeAiReview);
+}
+
+/**
+ * Which selectors may be photographed whole, ignoring the height guard.
+ *
+ * A dark pattern is, by definition, something you can see. The whole banner
+ * is the evidence: one prominent "Accept all" with no refusal beside it is a
+ * claim the reader can check at a glance and can barely check any other way.
+ *
+ * The height guard exists to stop a picture of an entire page section standing
+ * in for a component, and it was rejecting exactly these — a consent banner's
+ * selector ends in a bare div, and a banner is taller than a control, so it
+ * failed both tests. Measured on bundesregierung.de, where the missing-refusal
+ * finding arrived with no picture and a note explaining that photographing a
+ * region would not show which part was at fault. For this finding, the region
+ * is the part at fault.
+ */
+export function worthPicturingWhole(
+  findings: readonly AccessibilityFinding[]
+): (selector: string) => boolean {
+  const whole = new Set(
+    findings.filter((f) => f.category === "dark-pattern").map((f) => f.selector)
+  );
+  return (selector) => whole.has(selector) || selectorTargetsOneElement(selector);
 }
 
 /**
