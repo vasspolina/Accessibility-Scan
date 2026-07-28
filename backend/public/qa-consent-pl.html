@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="pl">
+  <head>
+    <meta charset="utf-8" />
+    <title>QA: baner zgody z równorzędnym wyborem</title>
+    <style>
+      body { font-family: system-ui, sans-serif; margin: 0; color: #111; }
+      main { padding: 24px; max-width: 40em; }
+      .banner {
+        position: fixed; inset: auto 0 0 0; background: #fff;
+        border-top: 2px solid #333; padding: 16px;
+      }
+      /* Both answers carry the same weight. That is the point of the page. */
+      .banner button {
+        font: inherit; padding: 8px 14px; margin-right: 8px;
+        background: #0f62fe; color: #fff; border: 1px solid #0f62fe;
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <h1>Strona testowa zgody na pliki cookies</h1>
+      <p>
+        Ta strona istnieje po to, aby sprawdzić, że baner z równorzędnym
+        wyborem nie jest zgłaszany jako problem.
+      </p>
+    </main>
+
+    <!--
+      The counterpart to qa-consent-de.html. That page has an accept and no
+      refusal, and must be reported. This one offers both, at the same size and
+      the same weight, and must not be.
+
+      It is in Polish because "Odrzuć" ends in a letter that JavaScript's \b
+      does not count as a word character. Under the old ASCII word boundaries
+      the refusal here would go unrecognised, the banner would look like an
+      accept-only banner, and this page -- which has nothing wrong with it --
+      would be reported for the commonest dark pattern there is. Measured
+      against gov.pl, whose banner is built this way and is correct.
+    -->
+    <div class="banner" role="region" aria-label="Zgoda na pliki cookies">
+      <h2>Pliki cookies</h2>
+      <p>
+        Serwis używa plików cookies. Twoja zgoda jest dobrowolna i możesz ją
+        w każdej chwili wycofać. Szczegóły opisuje polityka prywatności.
+      </p>
+      <button type="button">Zezwól na wszystkie</button>
+      <button type="button">Odrzuć</button>
+    </div>
+  </body>
+</html>

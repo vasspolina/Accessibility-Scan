@@ -335,3 +335,21 @@ describe("qa-consent-de.html: a consent banner in a language we do not read", ()
     expect(findings.some((f) => f.ruleId.startsWith("dark-"))).toBe(true);
   });
 });
+
+describe("qa-consent-pl.html: a banner that offers a real choice", () => {
+  let findings: AccessibilityFinding[];
+  beforeAll(async () => {
+    findings = await scanFixture("qa-consent-pl.html");
+  }, 120_000);
+
+  // The half no amount of testing against real sites gives you. Accept and
+  // refuse are both there, both the same size, both the same weight. Saying
+  // nothing is the correct answer, and it has to stay correct in an alphabet
+  // JavaScript's \b does not handle: "Odrzuć" ends in a character \b does not
+  // count as part of a word, so under ASCII boundaries the refusal vanishes,
+  // the banner reads as accept-only, and a page with nothing wrong with it
+  // gets reported for the commonest dark pattern there is.
+  it("says nothing about a refusal spelled outside the ASCII alphabet", () => {
+    expect(findings.filter((f) => f.ruleId?.startsWith("dark-"))).toEqual([]);
+  });
+});
