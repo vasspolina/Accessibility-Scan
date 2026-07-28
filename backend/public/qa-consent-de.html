@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="de">
+  <head>
+    <meta charset="utf-8" />
+    <title>QA: Zustimmungsbanner (nicht englisch)</title>
+    <style>
+      body { font-family: system-ui, sans-serif; margin: 0; color: #111; }
+      main { padding: 24px; max-width: 40em; }
+      .overlay {
+        position: fixed; inset: auto 0 0 0; background: #fff;
+        border-top: 2px solid #333; padding: 16px;
+      }
+      .inner { padding: 8px; }
+      .detail { border: 1px solid #ccc; padding: 8px; margin: 8px 0; }
+      button { font: inherit; padding: 8px 14px; }
+      .primary { background: #0f62fe; color: #fff; border: 1px solid #0f62fe; }
+      .secondary { background: transparent; color: #0f62fe; border: none; text-decoration: underline; }
+    </style>
+  </head>
+  <body>
+    <main>
+      <h1>Testseite für die Zustimmungserkennung</h1>
+      <p>
+        Diese Seite existiert nur, damit der Prüfer ein deutschsprachiges
+        Cookie-Banner findet. Der Text hier ist ohne Bedeutung.
+      </p>
+    </main>
+
+    <!--
+      Two things are being reproduced here at once, both measured on
+      bundesregierung.de.
+
+      1. Every control is German. Nothing on this page says "accept",
+         "reject", or "cookies" in English.
+
+      2. The banner nests. The outer .overlay holds the buttons that
+         actually decide anything; the .inner block beneath it also carries
+         consent wording and its own clickable control (the expandable
+         detail rows), but no accept and no reject. A selector that prefers
+         the innermost consent-looking block picks .inner, finds no choice
+         in it, and reports nothing at all — while .overlay, which held the
+         answer, was already discarded in .inner's favour.
+    -->
+    <div class="overlay" role="dialog" aria-label="Datenschutzeinstellungen">
+      <div class="inner">
+        <h2>Wir verwenden Cookies</h2>
+        <p>
+          Diese Website nutzt Cookies und ähnliche Technologien. Sie können
+          Ihre Einwilligung jederzeit widerrufen. Weitere Angaben finden Sie
+          in unserer Datenschutzerklärung.
+        </p>
+        <div class="detail">
+          <span>Statistik</span>
+          <button type="button">mehr Informationen Öffnen Minimieren</button>
+        </div>
+        <div class="detail">
+          <span>Externe Medien</span>
+          <button type="button">mehr Informationen Öffnen Minimieren</button>
+        </div>
+      </div>
+      <button type="button" class="primary">Alle auswählen</button>
+      <button type="button" class="secondary">Auswahl bestätigen</button>
+    </div>
+  </body>
+</html>

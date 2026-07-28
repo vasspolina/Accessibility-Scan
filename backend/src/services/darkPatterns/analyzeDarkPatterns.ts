@@ -130,11 +130,68 @@ export function collectDarkPatternSignalsInPage(): DarkPatternSignals {
   const clickableSelector = 'button, a[href], [role="button"], input[type="button"], input[type="submit"]';
 
   // ---- Consent banner -----------------------------------------------------
-  const CONSENT_RE = /\b(cookie|cookies|consent|gdpr|tracking|privacy preferences)\b/i;
-  const ACCEPT_RE = /\b(accept|agree|allow|got it|okay|ok|yes|enable|i understand|continue)\b/i;
-  const REJECT_RE =
-    /\b(reject|decline|refuse|deny|disagree|opt[- ]?out|necessary only|essential only|only necessary|only essential|strictly necessary|no thanks|do not (accept|allow|sell))\b/i;
-  const MANAGE_RE = /\b(manage|settings|preferences|customi[sz]e|options|choose|more options)\b/i;
+  //
+  // Matched in the languages this report is actually read in, which is the
+  // whole point of it. Every pattern here was English-only, on a tool whose
+  // subject is EU accessibility law and GDPR consent — so on a German or
+  // French site the commonest dark pattern of all was invisible. Measured on
+  // bundesregierung.de: the banner was found and reported for keyboard faults
+  // while the consent analysis returned nothing at all, because its buttons
+  // say "Akzeptieren" and "Ablehnen".
+  //
+  // Word boundaries are Unicode-aware rather than \b, which is defined on
+  // ASCII word characters: "odrzuć" ends in a character \b does not consider
+  // part of a word, so \bodrzuć\b matches unreliably. Lookarounds on \p{L}
+  // treat every alphabet the same way.
+  const edge = (body: string) => new RegExp(`(?<!\\p{L})(?:${body})(?!\\p{L})`, "iu");
+  const CONSENT_RE = edge(
+    "cookies?|consent|gdpr|tracking|privacy preferences" +
+      "|zustimmung|einwilligung|datenschutz" + // de
+      "|consentement|confidentialit\u00e9" + // fr
+      "|toestemming|privacyinstellingen" + // nl
+      "|consentimiento|privacidad" + // es
+      "|consenso|privacy" + // it
+      "|zgoda|prywatno\u015b\u0107" + // pl
+      "|samtycke|integritet" + // sv
+      "|samtykke" // da/no
+  );
+  const ACCEPT_RE = edge(
+    "accept|agree|allow|got it|okay|ok|yes|enable|i understand|continue" +
+      "|akzeptieren|zustimmen|einverstanden|annehmen|erlauben|alle auswählen" + // de
+      "|accepter|j'accepte|tout accepter|autoriser" + // fr
+      "|accepteren|akkoord|toestaan|alles toestaan" + // nl
+      "|aceptar|permitir|estoy de acuerdo" + // es
+      "|accetta|accetto|consenti" + // it
+      "|aceitar|permitir" + // pt
+      "|akceptuj|zgadzam|zezw\u00f3l" + // pl
+      "|acceptera|godk\u00e4nn|till\u00e5t" + // sv
+      "|tillad" // da
+  );
+  const REJECT_RE = edge(
+    "reject|decline|refuse|deny|disagree|opt[- ]?out|necessary only|essential only" +
+      "|only necessary|only essential|strictly necessary|no thanks|do not (?:accept|allow|sell)" +
+      "|ablehnen|verweigern|widersprechen|nur notwendige|nur erforderliche|nur essenzielle" + // de
+      "|refuser|tout refuser|rejeter|continuer sans accepter|poursuivre sans accepter" + // fr
+      "|weigeren|afwijzen|alleen noodzakelijke|alleen functionele" + // nl
+      "|rechazar|denegar|solo necesarias|s\u00f3lo necesarias" + // es
+      "|rifiuta|nega|solo necessari" + // it
+      "|rejeitar|recusar|apenas necess\u00e1rios" + // pt
+      "|odrzu\u0107|odm\u00f3w|tylko niezb\u0119dne" + // pl
+      "|avvisa|neka|endast n\u00f6dv\u00e4ndiga" + // sv
+      "|afvis|kun n\u00f8dvendige" // da
+  );
+  const MANAGE_RE = edge(
+    "manage|settings|preferences|customi[sz]e|options|choose|more options" +
+      "|einstellungen|verwalten|anpassen|auswahl" + // de
+      "|param\u00e8tres|g\u00e9rer|personnaliser" + // fr
+      "|instellingen|beheren|aanpassen" + // nl
+      "|configurar|ajustes|personalizar" + // es
+      "|impostazioni|gestisci|personalizza" + // it
+      "|configura\u00e7\u00f5es|gerir" + // pt
+      "|ustawienia|zarz\u0105dzaj" + // pl
+      "|inst\u00e4llningar|hantera" + // sv
+      "|indstillinger" // da
+  );
 
   let consentBanner: DarkPatternSignals["consentBanner"] = null;
   const bannerCandidates = Array.from(
@@ -151,13 +208,31 @@ export function collectDarkPatternSignalsInPage(): DarkPatternSignals {
       if (controls.length === 0 || controls.length > 12) continue;
       // Prefer the innermost matching container: skip if a descendant also
       // qualifies, so we describe the banner itself rather than a page wrapper.
+      //
+      // "Qualifies" has to mean it carries a choice, not merely a control.
+      // Requiring only some clickable descendant handed the banner to an inner
+      // block that had one — a "more information" toggle, a link to the
+      // privacy policy — which then failed the accept/reject test below and
+      // was dropped, while the container that did hold the buttons had already
+      // been skipped in its favour. Nothing was reported at all.
+      //
+      // Measured on bundesregierung.de, whose banner nests three deep and puts
+      // "Alle auswählen" and "Auswahl bestätigen" at one level and expandable
+      // detail rows at another.
+      const carriesChoice = (node: Element) =>
+        Array.from(node.querySelectorAll(clickableSelector))
+          .filter(isVisible)
+          .some((c) => {
+            const t = accessibleText(c);
+            return !!t && (ACCEPT_RE.test(t) || REJECT_RE.test(t));
+          });
       const hasQualifyingDescendant = bannerCandidates.some(
         (other) =>
           other !== el &&
           el.contains(other) &&
           CONSENT_RE.test(textOf(other)) &&
           textOf(other).length >= 20 &&
-          Array.from(other.querySelectorAll(clickableSelector)).filter(isVisible).length > 0
+          carriesChoice(other)
       );
       if (hasQualifyingDescendant) continue;
 

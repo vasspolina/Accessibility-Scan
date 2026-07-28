@@ -312,3 +312,26 @@ describe("qa-reading-order.html: visual versus source order", () => {
     expect(flagged).not.toContain("section:nth-of-type(2)");
   });
 });
+
+describe("qa-consent-de.html: a consent banner in a language we do not read", () => {
+  let findings: AccessibilityFinding[];
+  beforeAll(async () => {
+    findings = await scanFixture("qa-consent-de.html");
+  }, 120_000);
+
+  // The banner offers "Alle auswählen" and no way to refuse. That is the
+  // asymmetry rule, and it has to fire on a German page exactly as it does
+  // on an English one — the product is sold on GDPR consent.
+  it("finds the missing refusal even though nothing on the page is in English", () => {
+    expect(findings.map((f) => f.ruleId)).toContain("dark-consent-no-reject");
+  });
+
+  // The regression this fixture exists for. The buttons that decide anything
+  // sit on the outer container; the inner one carries consent wording and its
+  // own controls but no choice. Preferring the innermost block used to throw
+  // away the only element that could have been judged, and the page came back
+  // clean.
+  it("judges the container holding the choice, not the deepest one holding text", () => {
+    expect(findings.some((f) => f.ruleId.startsWith("dark-"))).toBe(true);
+  });
+});

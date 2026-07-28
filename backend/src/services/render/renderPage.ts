@@ -469,7 +469,14 @@ function extractDomSignalsInPage(): DomSignals {
       const controls = Array.from(el.querySelectorAll('button, [role="button"], a[href]'));
       for (const ctrl of controls) {
         const hay = `${ctrl.getAttribute("aria-label") ?? ""} ${ctrl.getAttribute("title") ?? ""} ${(ctrl.textContent ?? "").trim()}`;
-        if (/close|dismiss|no thanks|not now|✕|✖|⨯|╳|^\s*[x×]\s*$/i.test(hay)) {
+        // The close control, in the languages this report is read in. An
+        // English-only match meant a German banner's "Schließen" was not
+        // recognised as a close control at all, so the dialog was reported as
+        // having no way out when it plainly had one.
+        if (
+          /(?<!\p{L})(close|dismiss|no thanks|not now|schlie(ß|ss)en|fermer|sluiten|cerrar|chiudi|fechar|zamknij|st\u00e4ng|lukke?|sulje)(?!\p{L})/iu.test(hay) ||
+          /✕|✖|⨯|╳|^\s*[x×]\s*$/i.test(hay)
+        ) {
           closeControl = meaningfulCloseName(ctrl);
           break;
         }
