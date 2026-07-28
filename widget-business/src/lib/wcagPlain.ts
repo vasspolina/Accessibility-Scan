@@ -97,9 +97,23 @@ export const PLAIN_RULE_EXPLANATIONS: Record<string, PlainRule> = {
     plain: "An element carries code settings that do not belong on it.",
     impact: "Screen readers can announce nonsense, or skip the element entirely.",
   },
+  "aria-prohibited-attr": {
+    plain: "An element carries a name that the code will not let it keep.",
+    found: (n) =>
+      `${n} ${n === 1 ? "element has" : "elements have"} been given a label in the code that is not allowed on that kind of tag, so the label is thrown away rather than read out.`,
+    impact:
+      "This one is quietly worse than it sounds: the element looks named in your source, so nobody notices it is missing. Screen readers ignore the label and announce whatever text happens to be inside instead — often nothing.",
+  },
   "aria-required-children": {
     plain: "A menu or list is missing the parts it needs to work.",
     impact: "Screen readers cannot work out its structure, so people cannot navigate it.",
+  },
+  "aria-required-parent": {
+    plain: "Part of a control has been separated from the control it belongs to.",
+    found: (n) =>
+      `${n} ${n === 1 ? "element is" : "elements are"} labelled in the code as ${n === 1 ? "a piece" : "pieces"} of a larger control — a tab, a menu item, a list option — without being inside the control ${n === 1 ? "it belongs" : "they belong"} to.`,
+    impact:
+      "A tab outside its tab strip is not a tab to anything. Screen readers cannot say which one of how many it is, and the arrow keys people use to move through these controls have nothing to move through.",
   },
   "landmark-unique": {
     plain: "Two areas of the page share the same name.",
@@ -114,6 +128,15 @@ export const PLAIN_RULE_EXPLANATIONS: Record<string, PlainRule> = {
   "landmark-no-duplicate-contentinfo": {
     plain: "The page has more than one footer area.",
     impact: "Screen readers list several footers, and people cannot tell which is which.",
+  },
+  "landmark-no-duplicate-main": {
+    plain: "The page marks more than one area as its main content.",
+    impact:
+      "\"Skip to main content\" has to pick one, and there is no way for it to know which you meant. People land in the wrong half of the page.",
+  },
+  "landmark-banner-is-top-level": {
+    plain: "The page header sits nested inside another area instead of standing on its own.",
+    impact: "People using screen readers cannot jump straight to it the way they expect.",
   },
   "landmark-contentinfo-is-top-level": {
     plain: "The footer sits nested inside another area instead of standing on its own.",
@@ -143,6 +166,13 @@ export const PLAIN_RULE_EXPLANATIONS: Record<string, PlainRule> = {
       `${n} ${n === 1 ? "image has" : "images have"} no alt text at all — not even an empty one to mark ${n === 1 ? "it" : "them"} decorative. A screen reader falls back to reading the filename aloud, or skips ${n === 1 ? "it" : "them"} in silence.`,
     impact:
       "People using screen readers hear nothing for these images, and search engines can't tell what they show. Costing you both accessibility and SEO.",
+  },
+  "svg-img-alt": {
+    plain: "Icons drawn in the page's code have nothing describing them.",
+    found: (n) =>
+      `${n} ${n === 1 ? "icon is" : "icons are"} marked in the code as ${n === 1 ? "a picture" : "pictures"} but ${n === 1 ? "carries" : "carry"} no words saying what ${n === 1 ? "it shows" : "they show"}.`,
+    impact:
+      "Where the icon is the only thing labelling a control — a magnifying glass for search, a cross for close, a basket for the cart — a screen reader reaches it and has nothing to announce.",
   },
   "input-image-alt": {
     plain: "An image used as a button has no text description.",
@@ -229,6 +259,13 @@ export const PLAIN_RULE_EXPLANATIONS: Record<string, PlainRule> = {
       `The page blocks zooming, so anyone who needs to enlarge it on a phone cannot.`,
     impact: "Anyone who needs bigger text can't get it. On a phone, they just leave.",
   },
+  "meta-viewport-large": {
+    plain: "The page puts a ceiling on how far it can be zoomed.",
+    found: (n) =>
+      `Zooming works, but the page caps it below the 500% that people with low vision are entitled to reach.`,
+    impact:
+      "Milder than blocking zoom outright, and it fails the same people: anyone who needs very large text gets as far as the cap and no further.",
+  },
   "frame-title": {
     plain: "An embedded frame (like a map or video) has no title.",
     found: (n) =>
@@ -262,6 +299,23 @@ export const PLAIN_RULE_EXPLANATIONS: Record<string, PlainRule> = {
     found: (n) =>
       `${n} ${n === 1 ? "element is" : "elements are"} hidden from screen readers while still being reachable by keyboard, so focus lands somewhere that announces nothing.`,
     impact: "Someone tabbing through lands on something their screen reader won't read. The page feels broken.",
+  },
+  "aria-dialog-name": {
+    plain: "A pop-up has no name in the code.",
+    impact:
+      "It is announced as \"dialog\" and nothing else. Something has taken over the screen and there is no way to hear what it is.",
+  },
+  "nested-interactive": {
+    plain: "One control sits inside another — a button within a link, or similar.",
+    found: (n) =>
+      `${n} ${n === 1 ? "control contains another control" : "controls each contain another control"}, so what looks like one thing to click is two things wrapped around each other.`,
+    impact:
+      "Screen readers announce the outer one and hide what is inside it, so the inner control is unreachable. Which of the two a click or a keypress activates is anyone's guess.",
+  },
+  "presentation-role-conflict": {
+    plain: "Something is marked in the code as decoration while still working as a control.",
+    impact:
+      "The code says to ignore it and the element says to use it. Screen readers resolve that inconsistently, so some people never find it.",
   },
   region: {
     plain: "The main areas of your page aren't named in the code.",

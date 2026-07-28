@@ -5,7 +5,28 @@ const withFound = Object.entries(PLAIN_RULE_EXPLANATIONS).filter(([, r]) => r.fo
 
 describe("what-we-found text", () => {
   it("covers the common axe rules", () => {
-    expect(withFound.length).toBeGreaterThanOrEqual(20);
+    expect(withFound.length).toBeGreaterThanOrEqual(30);
+  });
+
+  // Every axe rule that came back from a sweep of sixteen European government
+  // and news sites. Picked from what real pages actually produce rather than
+  // written out against the full rule list on spec: these are the ones a
+  // reader will meet.
+  it("explains every rule a real European site produced", () => {
+    const seenInTheWild = [
+      "aria-allowed-attr", "aria-allowed-role", "aria-dialog-name", "aria-hidden-focus",
+      "aria-prohibited-attr", "aria-required-attr", "aria-required-children",
+      "aria-required-parent", "button-name", "color-contrast", "duplicate-id-active",
+      "empty-heading", "frame-title", "heading-order", "html-has-lang", "image-alt",
+      "landmark-banner-is-top-level", "landmark-no-duplicate-main", "landmark-one-main",
+      "landmark-unique", "link-in-text-block", "link-name", "list", "listitem",
+      "meta-viewport", "meta-viewport-large", "nested-interactive",
+      "page-has-heading-one", "presentation-role-conflict", "region",
+      "scrollable-region-focusable", "select-name", "svg-img-alt", "tabindex",
+    ];
+    for (const id of seenInTheWild) {
+      expect(PLAIN_RULE_EXPLANATIONS[id], `${id} has no plain-language explanation`).toBeDefined();
+    }
   });
 
   // These replace axe's requirement text ("Links must have discernible
