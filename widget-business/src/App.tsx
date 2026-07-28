@@ -300,10 +300,11 @@ export function App({ apiBase }: { apiBase: string }) {
 
           {!isDocument && (
           <ReportSection
-            title="Design & clarity notes"
-            description="Type that works against the reader: too small, too tight, too many capitals. None of it is illegal. All of it costs you readers, and dyslexic ones first."
+            title="Notes on the design"
+            description="Remarks rather than faults. None of this counts towards the score, and the reason is worth knowing: every one of them is judgement rather than measurement, with no rule underneath it to point at. Mostly type working against the reader — too small, too tight, too many capitals. It still costs you readers, and dyslexic ones first."
             variant="default"
             findings={findingsByCategory.designClarity}
+            asNotes
           />
           )}
 

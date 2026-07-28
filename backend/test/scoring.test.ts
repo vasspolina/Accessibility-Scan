@@ -68,6 +68,29 @@ describe("computeScore", () => {
     expect(s.critical).toBe(1);
     expect(s.total).toBe(1);
   });
+
+  // Stated end to end rather than only on the summary, because the report now
+  // tells the reader outright that the notes do not count. A pile of critical
+  // design notes must leave the number exactly where it was.
+  it("gives the same score whether or not the notes are there", () => {
+    const f = (
+      category: AccessibilityFinding["category"],
+      severity: AccessibilityFinding["severity"]
+    ): AccessibilityFinding => ({
+      id: "x", source: "automated", severity, category,
+      selector: "a", description: "d", suggestedFix: "f",
+    });
+    const accessibility = [f("accessibility", "serious"), f("accessibility", "moderate")];
+    const withNotes = [
+      ...accessibility,
+      f("design-clarity", "critical"),
+      f("design-clarity", "critical"),
+      f("dark-pattern", "critical"),
+    ];
+    expect(computeScore(summarizeSeverity(withNotes))).toBe(
+      computeScore(summarizeSeverity(accessibility))
+    );
+  });
 });
 
 // This report measures WCAG 2.1 A and AA. Marking a site down against a

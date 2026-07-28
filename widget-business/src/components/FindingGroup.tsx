@@ -389,7 +389,17 @@ function devElementRefs(findings: AccessibilityFinding[]): string[] {
 // shared explanation (why it matters, one clean instruction, learn-more) is
 // shown once; below it, the specific elements affected are listed so the
 // owner knows exactly what to fix.
-export function FindingGroup({ findings }: { findings: AccessibilityFinding[] }) {
+export function FindingGroup({
+  findings,
+  asNotes = false,
+}: {
+  findings: AccessibilityFinding[];
+  // A remark on the design rather than a fault to rank. Drops the severity
+  // chip: "Fix first" and "Minor polish" are the vocabulary of the scored
+  // list, and wearing them made these look like scored findings however
+  // plainly the section above said otherwise.
+  asNotes?: boolean;
+}) {
   const [expanded, setExpanded] = useState(false);
   const [showAll, setShowAll] = useState(false);
 
@@ -433,7 +443,9 @@ export function FindingGroup({ findings }: { findings: AccessibilityFinding[] })
         {rep.elementScreenshot && (
           <img className="a11y-finding-thumb" src={`data:image/jpeg;base64,${rep.elementScreenshot}`} alt="" />
         )}
-        <span className="a11y-severity-badge">{severityLabel[rep.severity]}</span>
+        {!asNotes && (
+          <span className="a11y-severity-badge">{severityLabel[rep.severity]}</span>
+        )}
         <span className="a11y-finding-desc">{title}</span>
         {count > 1 && <span className="a11y-count-badge">{count}×</span>}
         {keyboardCheck && (
