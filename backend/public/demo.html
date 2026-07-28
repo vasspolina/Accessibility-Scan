@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Accessibility checker — demo</title>
+    <style>
+      body {
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
+        margin: 0;
+        padding: 32px 16px 64px;
+        background: #f4f4f4;
+        color: #161616;
+      }
+      .page { max-width: 1056px; margin: 0 auto; }
+      h1 { font-size: 28px; line-height: 36px; margin: 0 0 8px; font-weight: 400; }
+      p.lede { font-size: 16px; line-height: 22px; color: #525252; margin: 0 0 32px; max-width: 40em; }
+      .try { font-size: 14px; line-height: 20px; color: #525252; margin: 32px 0 0; }
+      .try code {
+        font-family: ui-monospace, "SF Mono", Menlo, monospace;
+        background: #e0e0e0; padding: 1px 6px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="page">
+      <h1>Accessibility checker</h1>
+      <p class="lede">
+        Enter any public web address to scan it. The widget below is the
+        embeddable one, running against this service.
+      </p>
+
+      <!-- The embed itself, exactly as a client would paste it. The address is
+           written out rather than derived from window.location: this service
+           sends script-src 'self' with no unsafe-inline, so a one-line inline
+           script to fill it in is blocked, and the page renders empty with
+           nothing in the console to say why. -->
+      <div
+        id="a11y-widget-business-root"
+        data-api-base="https://a11y-checker-v2-production.up.railway.app"
+      ></div>
+
+      <p class="try">
+        Consent banners in a language other than English are worth trying:
+        <code>bundesregierung.de</code>, <code>spiegel.de</code>,
+        <code>dr.dk</code>, <code>corriere.it</code>. And
+        <code>gov.pl</code>, whose banner is correct — it should report no
+        consent problem at all.
+      </p>
+    </div>
+
+    <script src="./widget-business.js" defer></script>
+  </body>
+</html>
