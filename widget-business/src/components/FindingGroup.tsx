@@ -2,6 +2,7 @@ import { useState } from "react";
 import { dominantComponent, describeComponent } from "../lib/componentCluster";
 import type { AccessibilityFinding } from "../api/scanClient";
 import { LEVEL_FRAMING, plainForRule, plainFixForRule } from "../lib/wcagPlain";
+import { whatWeFound } from "../lib/findingText";
 import {
   fixKindForFinding,
   isKeyboardCheck,
@@ -411,6 +412,9 @@ export function FindingGroup({ findings }: { findings: AccessibilityFinding[] })
   const whatToDo = plainFixForRule(rep.ruleId) ?? rep.suggestedFix;
 
   const entries = dedupeOccurrences(findings);
+
+  // What was actually found on this page, in whatever form we have it.
+  const measured = whatWeFound(rep, plain, entries.length, title);
   // When most of a long list is one component repeated, say so. A reader shown
   // thirteen rows reasonably concludes there are thirteen things to do.
   const cluster = dominantComponent(findings);
@@ -470,11 +474,20 @@ export function FindingGroup({ findings }: { findings: AccessibilityFinding[] })
           {/* The rule's own account of what was found where it has one, and
               the finding's description otherwise. axe supplies a requirement
               rather than a finding — "Links must have discernible text" — and
-              that read as a category error under this heading. */}
-          {plain && (plain.found || rep.description) && (
+              that read as a category error under this heading.
+
+              This used to require a plain-language entry, on the reasoning
+              that without one the description was already serving as the
+              heading. True for axe findings, false for every AI one: those
+              write a short headline of their own and put the substance in the
+              description. So the substance went to the technical drawer, two
+              clicks down, and where a finding had neither rule id nor
+              criterion the drawer never rendered and the description was not
+              shown anywhere at all. Measured across the European sweep: 32 of
+              80 AI findings arrived as a headline and three badges. */}
+          {measured && (
             <p className="a11y-finding-measured">
-              <strong>What we found:</strong>{" "}
-              <CodeText text={plain.found ? plain.found(entries.length) : rep.description} />
+              <strong>What we found:</strong> <CodeText text={measured} />
             </p>
           )}
           {/* Shared explanation — shown once for the whole group */}
@@ -524,7 +537,9 @@ export function FindingGroup({ findings }: { findings: AccessibilityFinding[] })
           {(rep.ruleId || rep.wcagCriterion) && (
             <details className="a11y-tech-details">
               <summary>The technical version</summary>
-              {!plain && (
+              {/* Only when it was not already shown in the open part of the
+                  card above. It nearly always is now. */}
+              {!measured && rep.description && (
                 <p>
                   <strong>What we found:</strong> <CodeText text={rep.description} />
                 </p>

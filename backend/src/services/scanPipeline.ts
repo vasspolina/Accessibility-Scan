@@ -150,10 +150,10 @@ async function attachEvidence(
           "No picture: this sits off the edge of the screen until it is used. Skip links are built this way on purpose, so nothing is necessarily wrong with it being there.";
       } else if (why === "no-usable-image") {
         finding.pictureNote =
-          "No picture: the element is there, but photographing it produced nothing worth showing — a blank rectangle, or whatever is sitting on top of it. The selector below locates it exactly.";
+          "No picture: the element is there, but photographing it produced nothing worth showing — a blank rectangle, or whatever is sitting on top of it. The technical details for this finding identify the exact element.";
       } else if (why === "too-large") {
         finding.pictureNote =
-          "No picture: this covers a whole region of the page rather than one component, and a photograph of the entire section would not show you which part of it is at fault. The selector below locates it exactly.";
+          "No picture: this covers a whole region of the page rather than one component, and a photograph of the entire section would not show you which part of it is at fault. The technical details for this finding identify the exact element.";
       } else if (why === "missing") {
         finding.pictureNote =
           "No picture: the element was on the page when we judged it, and gone when we went back to photograph it. Banners that appear once per visitor do this.";
@@ -165,8 +165,8 @@ async function attachEvidence(
       // it matched two unrelated elements in the host page.
       if (finding.pictureNote && frameForSelector[finding.selector]) {
         finding.pictureNote =
-          finding.pictureNote.replace(" The selector below locates it exactly.", "") +
-          ` This banner is served inside a consent frame from ${frameForSelector[finding.selector]}, so the selector below is a path within that frame rather than within your own page.`;
+          finding.pictureNote.replace(" The technical details for this finding identify the exact element.", "") +
+          ` This banner is served inside a consent frame from ${frameForSelector[finding.selector]}, so the selector in the technical details is a path within that frame rather than within your own page.`;
       }
     }
   }
