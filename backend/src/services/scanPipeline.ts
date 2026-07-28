@@ -26,7 +26,7 @@ import { evaluateMobile } from "./mobile/analyzeMobile.js";
 import { evaluateDarkPatterns } from "./darkPatterns/analyzeDarkPatterns.js";
 import { evaluateTextResize } from "./textResize/analyzeTextResize.js";
 import { validateMarkup } from "./markup/validateMarkup.js";
-import { summarizeSeverity, computeScore, summarizeCategories } from "./merge/scoring.js";
+import { summarizeSeverity, scoreFindings, summarizeCategories } from "./merge/scoring.js";
 import { buildConformance } from "./conformance/buildConformance.js";
 import { buildWcag22Readiness } from "./conformance/wcag22Readiness.js";
 import { checkPdfDocument } from "./documents/checkPdf.js";
@@ -270,7 +270,7 @@ async function documentReport(url: URL): Promise<AccessibilityReport> {
   return {
     url: url.toString(),
     scannedAt: new Date().toISOString(),
-    score: computeScore(summarizeSeverity(result.findings.filter((f) => f.wcagLevel !== "AAA"))),
+    score: scoreFindings(result.findings),
     summary,
     categorySummary: summarizeCategories(result.findings),
     findings: result.findings,
@@ -401,10 +401,10 @@ export async function scanUrlToReport(
   // size is the case in point: fifteen AAA findings on one page, moderate
   // severity, enough on their own to exhaust the entire moderate penalty cap.
   //
-  // The findings stay in the report and in the triage counts. They are good
+  // AAA findings stay in the report and in the triage counts. They are good
   // advice and WCAG 2.2 makes several of them requirements. They simply do not
-  // move a number that claims to describe A/AA conformance.
-  const score = computeScore(summarizeSeverity(findings.filter((f) => f.wcagLevel !== "AAA")));
+  // move a number that claims to describe A/AA conformance — see scoreFindings.
+  const score = scoreFindings(findings);
   const categorySummary = summarizeCategories(findings);
   const conformance = buildConformance(findings);
   const wcag22 = buildWcag22Readiness(findings);

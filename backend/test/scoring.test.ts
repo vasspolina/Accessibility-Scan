@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { computeScore, summarizeSeverity } from "../src/services/merge/scoring.js";
+import { computeScore, summarizeSeverity, scoreFindings } from "../src/services/merge/scoring.js";
 import type { AccessibilityFinding, SeveritySummary } from "../src/types/report.js";
 
 function summary(p: Partial<SeveritySummary>): SeveritySummary {
@@ -111,10 +111,11 @@ describe("what the score counts", () => {
     suggestedFix: "f",
   });
 
-  // Mirrors the pipeline: everything is summarised for the triage counts, and
-  // the score is computed from the A/AA subset.
-  const scoreOf = (findings: AccessibilityFinding[]) =>
-    computeScore(summarizeSeverity(findings.filter((f) => f.wcagLevel !== "AAA")));
+  // The pipeline's own function, not a local re-statement of it. This used to
+  // filter AAA here and then assert the result, which tested the expression on
+  // this line: both call sites could have dropped the filter and every case
+  // below would still have passed.
+  const scoreOf = scoreFindings;
 
   it("ignores AAA findings", () => {
     const aaaOnly = [finding("moderate", "AAA"), finding("moderate", "AAA")];

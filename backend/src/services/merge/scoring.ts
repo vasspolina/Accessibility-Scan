@@ -63,6 +63,26 @@ export function computeScore(summary: SeveritySummary): number {
   return Math.max(0, Math.round((LINEAR_FLOOR * LINEAR_LIMIT) / penalty));
 }
 
+/**
+ * The score for a set of findings — the one place that knows what counts.
+ *
+ * Two exclusions, and they were both living somewhere else. Category is
+ * handled by summarizeSeverity below; the level was an inline filter repeated
+ * at each call site, with the test asserting it through a third private copy
+ * of the same expression. Nothing in this module knew the rule, so every one
+ * of those could have been deleted and the suite would still have passed:
+ * the test was checking its own helper.
+ *
+ * AAA is out because this report measures WCAG 2.1 A and AA, and the cards
+ * say so — "worth doing, not required, not scored". Marking a site down
+ * against a standard it is not being held to would make that line false.
+ * The findings stay in the report and in the triage counts, which is why the
+ * summary total can exceed what the score was computed from.
+ */
+export function scoreFindings(findings: AccessibilityFinding[]): number {
+  return computeScore(summarizeSeverity(findings.filter((f) => f.wcagLevel !== "AAA")));
+}
+
 export function summarizeCategories(findings: AccessibilityFinding[]): CategorySummary {
   const summary: CategorySummary = { accessibility: 0, designClarity: 0, darkPattern: 0 };
   for (const f of findings) {
