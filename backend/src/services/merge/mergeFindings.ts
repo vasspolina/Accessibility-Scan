@@ -323,6 +323,43 @@ export function dropContradictedConsentClaims(
 }
 
 /**
+ * Drops AI dark-pattern findings that repeat a consent problem we measured.
+ *
+ * The sibling above handles the model contradicting the measurement. This
+ * handles it agreeing, which reads worse in a report than it sounds: on
+ * bundesregierung.de the reader got two serious cards side by side, "Accepting
+ * cookies is one click, declining takes several" and "Your cookie banner lets
+ * people accept in one click, but the only way to refuse is to go into a
+ * settings screen first". One problem, counted twice, inflating the count the
+ * whole score is built on.
+ *
+ * The measured finding wins. It was proved rather than judged, it carries the
+ * photograph of the banner, and its wording is the wording this project
+ * settled on. The model's version goes.
+ *
+ * Scoped to the accept/refuse pair on purpose. Everything else the model
+ * notices about a banner survives -- corriere.it's count of 1196 third
+ * parties, a refusal that quietly means "subscribe" -- because those are
+ * things no rule here measures, and dropping them would cost the report the
+ * only layer that could have caught them.
+ */
+export function dropDuplicateConsentClaims(
+  aiFindings: AccessibilityFinding[],
+  measured: readonly AccessibilityFinding[]
+): AccessibilityFinding[] {
+  const alreadyProved = measured.some(
+    (f) => f.ruleId === "dark-consent-no-reject" || f.ruleId === "dark-consent-asymmetry"
+  );
+  if (!alreadyProved) return aiFindings;
+
+  return aiFindings.filter((f) => {
+    if (f.category !== "dark-pattern") return true;
+    const text = `${f.title ?? ""} ${f.description} ${f.suggestedFix}`;
+    return !(CONSENT_PAIR_RE.test(text) && CONSENT_REFUSE_RE.test(text));
+  });
+}
+
+/**
  * Drops the findings the model itself was not sure of.
  *
  * Every AI finding carries a confidence the model assigns, and until now that

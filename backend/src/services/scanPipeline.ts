@@ -10,6 +10,7 @@ import {
   aiToFindings,
   mergeFindings,
   dropContradictedConsentClaims,
+  dropDuplicateConsentClaims,
   dropSpeculativeFindings,
 } from "./merge/mergeFindings.js";
 import { evaluateTypography } from "./typography/analyzeTypography.js";
@@ -310,10 +311,17 @@ export async function scanUrlToReport(
   // Then anything the model was not sure of. Its own confidence rating was
   // being carried into the report and never read, so a guess and a certainty
   // printed identically.
+  //
+  // And where a deterministic rule already proved the same consent problem,
+  // the model's retelling of it goes: two cards for one fault inflate the
+  // count the score is built on, and the measured one carries the picture.
   const aiFindings = dropSpeculativeFindings(
-    dropContradictedConsentClaims(
-      aiToFindings(aiReview.findings),
-      renderResult.darkPatternSignals.consentBanner
+    dropDuplicateConsentClaims(
+      dropContradictedConsentClaims(
+        aiToFindings(aiReview.findings),
+        renderResult.darkPatternSignals.consentBanner
+      ),
+      deterministic
     )
   );
   const findings = mergeFindings(automatedFindings, aiFindings);
