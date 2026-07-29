@@ -50,22 +50,26 @@
 }
 
 .a11y-widget-inner {
-  /* Full width, with two limits that are not the same thing.
+  /* The prose cap below stays regardless. It stopped mattering at this width
+   * — half of 1440px leaves a measure the report would pass anyway — but it
+   * is what keeps the text honest on a very wide screen, where this panel is
+   * still half of a lot. */
+  /* Half the screen, centred — with a floor so it does not become a slot.
    *
-   * The panel takes the whole screen: cards, thumbnails, the score row and
-   * the affected-element lists all read better with room, and a 672px column
-   * on a wide monitor wasted most of it.
+   * Half the viewport, not half the container. A percentage resolves against
+   * whatever box the widget is dropped into, so when the demo page gave it a
+   * half-width column of its own the two multiplied and the panel came out at
+   * a quarter of a 1920px screen. vw asks the screen directly, and the
+   * min(100%) in front of it means a host that gives the widget a narrow
+   * column still gets a widget that fits, rather than one overflowing it.
    *
-   * Prose does not get the whole screen, and that is deliberate rather than
-   * timid. This report flags body text running past 90 characters a line,
-   * because the jump back to the start of the next line gets harder the
-   * further left it travels. At 1600px an unconstrained paragraph runs to
-   * about 200. Setting our own text the way we tell other people to set
-   * theirs is the least we can do — so the panel is fluid and the paragraphs
-   * inside it are capped, in the rule below.
+   * min() and max() rather than a breakpoint: 960px at 1920, 720px at 1440,
+   * and below about 960px the 30rem floor takes over until the viewport
+   * itself is narrower, at which point it is simply full width. No jumps, and
+   * nothing to keep in step with the media queries further down.
    */
-  width: 100%;
-  max-width: 100%;
+  width: min(100%, max(50vw, 30rem));
+  margin-inline: auto;
   padding: 32px;
   border: 1px solid var(--a11y-border, #d0d7de);
   border-radius: 14px;
