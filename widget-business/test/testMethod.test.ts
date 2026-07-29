@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { fixKindForFinding, isKeyboardCheck, FIX_KINDS } from "../src/lib/testMethod";
+import { fixKindForFinding, fixKindForRule, isKeyboardCheck, FIX_KINDS } from "../src/lib/testMethod";
 import type { AccessibilityFinding } from "../src/api/scanClient";
 
 function finding(over: Partial<AccessibilityFinding> = {}): AccessibilityFinding {
@@ -157,5 +157,31 @@ describe("isKeyboardCheck", () => {
 
     expect(kb("dialog-no-escape")).toBe(true);
     expect(fixOf("dialog-no-escape")).toBe("code");
+  });
+});
+
+// The undecided checks are rolled up per rule and never become findings, so
+// they reach the badge logic by rule id alone. They still have to say which
+// desk they go to — the section that holds them is addressed to the designer
+// and the developer, and a row that names neither leaves the reader to guess.
+describe("fixKindForRule: the undecided checks", () => {
+  it("routes every check a real sweep produced", () => {
+    const expected: Record<string, string> = {
+      "color-contrast": "design",
+      "link-in-text-block": "design",
+      "video-caption": "content",
+      "aria-valid-attr-value": "code",
+      "aria-allowed-role": "code",
+      "aria-prohibited-attr": "code",
+      "duplicate-id-aria": "code",
+    };
+    for (const [rule, desk] of Object.entries(expected)) {
+      expect(fixKindForRule(rule).key, rule).toBe(desk);
+    }
+  });
+
+  it("falls back to code for a rule it has never seen", () => {
+    expect(fixKindForRule("some-future-axe-rule").key).toBe("code");
+    expect(fixKindForRule(undefined).key).toBe("code");
   });
 });

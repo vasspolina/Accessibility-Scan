@@ -64,6 +64,7 @@ export const FIX_KINDS: Record<FixOwner, FixKind> = {
 // the honest default rather than a guess.
 const CONTENT_RULES = new Set([
   "link-text-vague",
+  "video-caption",
   "component-submit-clarity",
   "readability-dense-prose",
 ]);
@@ -81,6 +82,7 @@ const CONTENT_PREFIXES = ["dark-"];
 // design.
 const DESIGN_RULES = new Set([
   "mobile-tap-target",
+  "link-in-text-block",
   "color-contrast",
   "keyboard-faint-focus",
   "keyboard-no-visible-focus",
@@ -89,8 +91,15 @@ const DESIGN_RULES = new Set([
 
 const DESIGN_PREFIXES = ["typo-"];
 
-export function fixKindForFinding(finding: AccessibilityFinding): FixKind {
-  const id = finding.ruleId ?? "";
+/**
+ * Which desk a rule belongs to, from its id alone.
+ *
+ * Split out from fixKindForFinding for the undecided checks, which are rolled
+ * up per rule and never become findings — they still have to say who acts on
+ * them, and the answer is the same one the findings use.
+ */
+export function fixKindForRule(ruleId: string | undefined): FixKind {
+  const id = ruleId ?? "";
   if (id.startsWith("pdf-")) return FIX_KINDS.document;
   if (CONTENT_RULES.has(id) || CONTENT_PREFIXES.some((p) => id.startsWith(p))) {
     return FIX_KINDS.content;
@@ -99,6 +108,10 @@ export function fixKindForFinding(finding: AccessibilityFinding): FixKind {
     return FIX_KINDS.design;
   }
   return FIX_KINDS.code;
+}
+
+export function fixKindForFinding(finding: AccessibilityFinding): FixKind {
+  return fixKindForRule(finding.ruleId);
 }
 
 /**

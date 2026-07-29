@@ -1,4 +1,5 @@
 import { undecidedExplanation } from "../lib/wcagPlain";
+import { fixKindForRule } from "../lib/testMethod";
 
 /**
  * What the engine checked and could not settle.
@@ -21,22 +22,25 @@ export function UndecidedChecks({
   return (
     <section className="a11y-section">
       <h3 className="a11y-section-title">
-        Needs your eyes, not ours{" "}
+        For your designer and developer{" "}
         <span className="a11y-section-count">({total})</span>
       </h3>
       <p className="a11y-section-desc">
-        The checker looked at {total === 1 ? "this" : `these ${total}`} and could
-        not decide. That is deliberate: it reports a problem only when it can
-        prove one, so anything it cannot measure comes here instead of being
-        guessed at either way. None of it counts against the score, and some of
-        it will turn out to be perfectly fine.
+        The checker could not settle {total === 1 ? "this one" : `these ${total}`}{" "}
+        on its own, and that is deliberate: it reports a problem only where it
+        can prove one, so anything needing judgement comes here rather than
+        being guessed at either way. Each is a decision for somebody on your
+        side — the mark on every one says whose. None of it counts against the
+        score, and some of it will turn out to be perfectly fine.
       </p>
       <ul className="a11y-undecided-list">
         {rows.map((r) => {
           const e = undecidedExplanation(r.ruleId);
+          const fix = fixKindForRule(r.ruleId);
           return (
             <li key={r.ruleId} className="a11y-undecided">
               <p className="a11y-undecided-head">
+                <span className={`a11y-method-badge a11y-fix-${fix.key}`}>{fix.label}</span>{" "}
                 <strong>
                   {r.count} {r.count === 1 ? "place" : "places"}
                 </strong>{" "}
@@ -44,7 +48,7 @@ export function UndecidedChecks({
               </p>
               {e && (
                 <p className="a11y-undecided-do">
-                  <strong>How to check:</strong> {e.youCheck}
+                  <strong>What to ask for:</strong> {e.ask}
                 </p>
               )}
               {r.helpUrl && (

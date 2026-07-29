@@ -703,41 +703,34 @@ export const PRINCIPLE_ORDER: Principle[] = ["Perceivable", "Operable", "Underst
  *
  * Written for the rules a sweep of real sites actually produced.
  */
-export const UNDECIDED_EXPLANATIONS: Record<string, { what: string; youCheck: string }> = {
+export const UNDECIDED_EXPLANATIONS: Record<string, { what: string; ask: string }> = {
   "color-contrast": {
-    what: "Text sitting on a photograph, a video or a gradient. The checker can read the colour of the text but there is no single colour behind it to measure against, so it will not guess.",
-    youCheck:
-      "Look at each one on a bright screen and on a dim one. If the text disappears into the picture anywhere behind it, it needs a solid panel behind the words, a shadow, or a different position.",
+    what: "Text sitting on a photograph, a video or a gradient. The checker can read the colour of the text but there is no single colour behind it to measure it against, so it will not guess.",
+    ask: "Ask your designer to look at each one against the picture behind it, at the lightest and darkest that picture gets. Where the words are lost, they need a solid panel behind them, a dark wash over the image, or a different position.",
   },
   "link-in-text-block": {
-    what: "Links inside a paragraph that may be marked only by their colour. The checker cannot tell whether the difference is strong enough on its own.",
-    youCheck:
-      "Imagine the page in grey. If a link in the middle of a sentence still looks like a link, it passes. If it only stands out by being a different colour, underline it.",
+    what: "Links inside a paragraph that may be marked only by their colour. The checker cannot tell whether the difference is strong enough to stand on its own.",
+    ask: "Ask your designer whether these links are still findable with the colour taken away. If colour is the only thing marking them, they need an underline or another visible cue.",
   },
   "video-caption": {
-    what: "A video the checker can see and cannot watch. It has no way to tell whether captions exist or whether they are any good.",
-    youCheck:
-      "Play each one with the sound off. If you cannot follow it, it needs captions — and auto-generated ones count only if somebody has corrected them.",
+    what: "A video the checker can see and cannot watch. It has no way to tell whether captions exist, or whether they are any good.",
+    ask: "Ask whoever made the video whether it carries captions and whether a person corrected them. Auto-generated captions on their own do not count.",
   },
   "aria-valid-attr-value": {
     what: "Code labels that point at another part of the page. The checker cannot always tell whether the thing they point at is really there.",
-    youCheck:
-      "One for whoever maintains the site: check that every id referenced by an aria attribute exists on the page and is not inside a hidden or removed block.",
+    ask: "Ask your developer to confirm every id referenced by an aria attribute exists on the page, and is not inside a block that gets hidden or removed.",
   },
   "aria-allowed-role": {
     what: "Parts of the page labelled in the code as something they may not be able to be. Whether it is wrong depends on how the component behaves.",
-    youCheck:
-      "One for whoever maintains the site: confirm each of these behaves the way its role promises, keyboard included, or drop the role and use the native element.",
+    ask: "Ask your developer to confirm each behaves the way its role promises, keyboard included — or to drop the role and use the native element instead.",
   },
   "aria-prohibited-attr": {
     what: "An element carrying a name the code may not let it keep. Whether it survives depends on the element's role.",
-    youCheck:
-      "One for whoever maintains the site: check that each of these is announced with the name you intended, and move the name onto an element allowed to carry one if not.",
+    ask: "Ask your developer to check each is announced with the name you intended, and to move that name onto an element allowed to carry one where it is not.",
   },
   "duplicate-id-aria": {
     what: "An id that may be used more than once. Every code label pointing at it follows only the first, so a name can silently attach to the wrong thing.",
-    youCheck:
-      "One for whoever maintains the site: make each id on the page unique, starting with any referenced by an aria attribute.",
+    ask: "Ask your developer to make every id on the page unique, starting with any that an aria attribute refers to.",
   },
 };
 
