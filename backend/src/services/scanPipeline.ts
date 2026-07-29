@@ -158,6 +158,12 @@ async function attachEvidence(
       } else if (why === "missing") {
         finding.pictureNote =
           "No picture: the element was on the page when we judged it, and gone when we went back to photograph it. Banners that appear once per visitor do this.";
+      } else if (why === "not-attempted") {
+        finding.pictureNote =
+          "No picture: each scan photographs a limited number of elements, and this one was past that limit. Nothing about the element itself — scanning again may reach it.";
+      } else if (why === "unreachable") {
+        finding.pictureNote =
+          "No picture: this element could not be located again on the return visit. Pages that rebuild themselves on every load do this.";
       }
       // Everything above ends by telling the reader the selector locates the
       // element exactly. For a banner in a third-party consent frame that is

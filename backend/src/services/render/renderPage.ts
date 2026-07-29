@@ -1112,7 +1112,22 @@ export interface FreshCaptureResult {
    * "hidden" and "offscreen" are usually correct behaviour rather than a
    * fault — the report just has to say so instead of showing a blank.
    */
-  unpicturable: Record<string, "hidden" | "offscreen" | "missing" | "too-large" | "no-usable-image">;
+  unpicturable: Record<
+    string,
+    | "hidden"
+    | "offscreen"
+    | "missing"
+    | "too-large"
+    | "no-usable-image"
+    // The loop never reached it: the per-scan shot cap or the time budget ran
+    // out first. Not a fact about the element at all, and the report has to
+    // say so rather than leave the card bare — this was the last silent way
+    // out of this function, found by counting seven bare cards on moma.org.
+    | "not-attempted"
+    // Locating it threw: a selector the engine accepts but the browser's
+    // querySelector does not, or a node that detached mid-visit.
+    | "unreachable"
+  >;
 }
 
 export async function captureSelectorsFresh(
@@ -1232,7 +1247,18 @@ export async function captureSelectorsFresh(
           .catch(() => "");
         if (why) result.unpicturable[selector] = why as FreshCaptureResult["unpicturable"][string];
       } catch {
-        // Invalid selector, detached node, timeout — skip it, keep going.
+        // Invalid selector, detached node, timeout. Skip it and keep going —
+        // but on the record: an exception here used to leave the finding with
+        // no picture and no reason, indistinguishable from never having been
+        // tried.
+        result.unpicturable[selector] = "unreachable";
+      }
+    }
+    // Whatever the loop never reached — past the shot cap, or past the
+    // deadline — gets the honest reason rather than silence.
+    for (const selector of selectors) {
+      if (!(selector in result.shots) && !(selector in result.unpicturable)) {
+        result.unpicturable[selector] = "not-attempted";
       }
     }
     return result;
