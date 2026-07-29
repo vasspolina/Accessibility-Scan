@@ -45,6 +45,25 @@ describe("dropDuplicateConsentClaims", () => {
     expect(kept).toHaveLength(0);
   });
 
+  // The one that reached a reader. The model writes in English and quotes the
+  // page's own buttons, so on stedelijk.nl the retelling said the popup
+  // "offers 'Accepteren' as a solid button". \b(accept)\b does not match
+  // inside Accepteren, the reconciliation did nothing, and the report showed
+  // the measured finding and the model's version of it one after the other.
+  it("drops a retelling that quotes the page's own language", () => {
+    const kept = dropDuplicateConsentClaims(
+      [
+        ai({
+          title: "Cookie banner cannot be dismissed with equal ease",
+          description:
+            "The cookie popup offers 'Accepteren' as a solid button but the refusal option is labelled 'Noodzakelijke cookies' (necessary cookies only), which is not a plain reject choice.",
+        }),
+      ],
+      [measured("dark-consent-no-reject")]
+    );
+    expect(kept).toHaveLength(0);
+  });
+
   it("keeps it when no rule proved anything about the banner", () => {
     const kept = dropDuplicateConsentClaims(
       [

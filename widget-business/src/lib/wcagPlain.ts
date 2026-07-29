@@ -95,6 +95,8 @@ export const PLAIN_RULE_EXPLANATIONS: Record<string, PlainRule> = {
   },
   "aria-allowed-attr": {
     plain: "An element carries code settings that do not belong on it.",
+    found: (n) =>
+      `${n} ${n === 1 ? "element carries a setting" : "elements carry settings"} that ${n === 1 ? "its" : "their"} kind of tag is not allowed to have, so the browser and the screen reader disagree about what it is.`,
     impact: "Screen readers can announce nonsense, or skip the element entirely.",
   },
   "aria-prohibited-attr": {
@@ -106,6 +108,8 @@ export const PLAIN_RULE_EXPLANATIONS: Record<string, PlainRule> = {
   },
   "aria-required-children": {
     plain: "A menu or list is missing the parts it needs to work.",
+    found: (n) =>
+      `${n} ${n === 1 ? "control is" : "controls are"} labelled in the code as a menu or a list without containing the items ${n === 1 ? "it needs" : "they need"} — a list announced as having nothing in it.`,
     impact: "Screen readers cannot work out its structure, so people cannot navigate it.",
   },
   "aria-required-parent": {
@@ -123,27 +127,39 @@ export const PLAIN_RULE_EXPLANATIONS: Record<string, PlainRule> = {
   },
   "landmark-no-duplicate-banner": {
     plain: "The page has more than one header area.",
+    found: () =>
+      `The page marks more than one area as its header, so a list of regions offers several and none of them is the header.`,
     impact: "Screen readers list several headers, so nobody can tell which is the real one.",
   },
   "landmark-no-duplicate-contentinfo": {
     plain: "The page has more than one footer area.",
+    found: () =>
+      `The page marks more than one area as its footer, so there is no single place to jump to for contact details or terms.`,
     impact: "Screen readers list several footers, and people cannot tell which is which.",
   },
   "landmark-no-duplicate-main": {
     plain: "The page marks more than one area as its main content.",
+    found: () =>
+      `More than one area is marked as the main content, so "skip to main content" has to pick one and cannot know which you meant.`,
     impact:
       "\"Skip to main content\" has to pick one, and there is no way for it to know which you meant. People land in the wrong half of the page.",
   },
   "landmark-banner-is-top-level": {
     plain: "The page header sits nested inside another area instead of standing on its own.",
+    found: () =>
+      `The header is tucked inside another region rather than sitting alongside it, so it does not appear where someone jumping between regions expects to find it.`,
     impact: "People using screen readers cannot jump straight to it the way they expect.",
   },
   "landmark-contentinfo-is-top-level": {
     plain: "The footer sits nested inside another area instead of standing on its own.",
+    found: () =>
+      `The footer is tucked inside another region rather than sitting alongside it, so it is not where someone jumping between regions expects it.`,
     impact: "People using screen readers cannot jump straight to it the way they expect.",
   },
   "skip-link": {
     plain: "The \"skip to content\" link does not go anywhere.",
+    found: (n) =>
+      `${n} skip ${n === 1 ? "link points" : "links point"} at something that is not on the page, so pressing ${n === 1 ? "it" : "them"} moves nobody anywhere.`,
     impact:
       "Keyboard users press it and stay exactly where they were, then tab through the whole menu anyway.",
   },
@@ -292,6 +308,8 @@ export const PLAIN_RULE_EXPLANATIONS: Record<string, PlainRule> = {
   },
   "aria-required-attr": {
     plain: "A menu or slider is missing information screen readers need.",
+    found: (n) =>
+      `${n} ${n === 1 ? "control is" : "controls are"} labelled in the code as something with a state — checked, expanded, a value on a scale — without saying what that state is.`,
     impact: "People using screen readers can't tell what state it's in, or how to work it.",
   },
   "aria-hidden-focus": {
@@ -302,6 +320,8 @@ export const PLAIN_RULE_EXPLANATIONS: Record<string, PlainRule> = {
   },
   "aria-dialog-name": {
     plain: "A pop-up has no name in the code.",
+    found: (n) =>
+      `${n} ${n === 1 ? "pop-up has" : "pop-ups have"} nothing naming ${n === 1 ? "it" : "them"}, so ${n === 1 ? "it is" : "they are"} announced as "dialog" and nothing else.`,
     impact:
       "It is announced as \"dialog\" and nothing else. Something has taken over the screen and there is no way to hear what it is.",
   },
@@ -314,6 +334,8 @@ export const PLAIN_RULE_EXPLANATIONS: Record<string, PlainRule> = {
   },
   "presentation-role-conflict": {
     plain: "An element is marked in the code as decoration while still working as a control.",
+    found: (n) =>
+      `${n} ${n === 1 ? "element is" : "elements are"} marked to be ignored while still being reachable and usable, so the code contradicts itself about whether ${n === 1 ? "it exists" : "they exist"}.`,
     impact:
       "The code says to ignore it and the element says to use it. Screen readers resolve that inconsistently, so some people never find it.",
   },

@@ -274,8 +274,26 @@ export function mergeFindings(
 // Claims about consent-button styling that the page's own measurements
 // contradict. Matches a finding that is about the accept/reject pair AND about
 // how they look — not merely a finding that mentions a cookie banner.
-const CONSENT_PAIR_RE = /\b(accept|agree|allow)\b/i;
-const CONSENT_REFUSE_RE = /\b(reject|decline|refuse|opt[- ]?out|necessary only)\b/i;
+// The model writes in English and quotes the page's own buttons, so these have
+// to survive a Dutch label inside an English sentence: "the popup offers
+// 'Accepteren' as a solid button". \b(accept)\b does not match inside
+// "Accepteren" — there is no word boundary after "accept" — so on
+// stedelijk.nl the reconciliation below silently did nothing and the reader
+// got the measured finding and the model's retelling of it, side by side.
+//
+// Stems rather than whole words, and the same alphabets the consent detector
+// learned to read. \p{L}* takes the ending off the caller's hands: "accept"
+// covers Accepteren and accepting alike.
+const edge = (body: string) => new RegExp(`(?<!\\p{L})(?:${body})\\p{L}*`, "iu");
+const CONSENT_PAIR_RE = edge(
+  "accept|agree|allow|akzeptier|zustimm|einverstand|accetta|aceptar|aceitar|" +
+    "godk\u00e4nn|tillad|zgadzam|zezw|toestaan|akkoord"
+);
+const CONSENT_REFUSE_RE = edge(
+  "reject|declin|refus|deny|opt[- ]?out|necessary only|only necessary|" +
+    "ablehn|verweiger|weiger|afwijz|noodzakelijk|rifiut|rechaz|recus|rejeit|" +
+    "odrzu|avvis|neka|afvis"
+);
 const APPEARANCE_RE =
   /\b(identical|indistinguish\w*|same (?:size|style|colour|color|weight|appearance)|look\w* (?:the same|alike|similar|visually)|visually (?:identical|similar|the same)|styl\w+|prominen\w+|visual weight|stand\s?out)\b/i;
 
