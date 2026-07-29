@@ -1,0 +1,302 @@
+// Dev-harness fixture. Loaded by index.html (dev server only — the library
+// build never sees this file). Does nothing unless the page is opened with
+// ?fixture in the URL, in which case it:
+//   - stubs window.fetch for /api/scan and /api/audit with canned reports,
+//     so every view and state of the widget can be rendered and audited
+//     without a running backend;
+//   - loads axe-core (copy backend/node_modules/axe-core/axe.min.js to
+//     ./axe.dev.js — gitignored) so the rendered widget can be scanned with
+//     the same engine the product itself uses.
+//
+// Special URLs: scan anything containing "error" for the error state, or
+// "blocked" for the bot-wall state.
+(function () {
+  if (!location.search.includes("fixture")) return;
+
+  var axeScript = document.createElement("script");
+  axeScript.src = "/axe.dev.js";
+  document.head.appendChild(axeScript);
+
+  // 1x1 grey JPEG, stands in for element screenshots and the page preview.
+  var TINY_JPEG =
+    "/9j/4AAQSkZJRgABAQEAYABgAAD/2wBDAAgGBgcGBQgHBwcJCQgKDBQNDAsLDBkSEw8UHRofHh0aHBwgJC4nICIsIxwcKDcpLDAxNDQ0Hyc5PTgyPC4zNDL/wAALCAABAAEBAREA/8QAFAABAAAAAAAAAAAAAAAAAAAACf/EABQQAQAAAAAAAAAAAAAAAAAAAAD/2gAIAQEAAD8AKp//2Q==";
+
+  function finding(over) {
+    return Object.assign(
+      {
+        id: Math.random().toString(36).slice(2),
+        source: "automated",
+        severity: "moderate",
+        category: "accessibility",
+        selector: "body > main > p",
+        description: "Example finding",
+        suggestedFix: "Fix it like `this`.",
+        ruleId: "color-contrast",
+        wcagCriterion: "1.4.3",
+        wcagLevel: "AA",
+        helpUrl: "https://dequeuniversity.com/rules/axe/4.10/color-contrast",
+      },
+      over
+    );
+  }
+
+  function makeReport(url) {
+    var findings = [
+      finding({
+        id: "f1",
+        severity: "serious",
+        selector: ".hero > a.cta",
+        elementSnippet: '<a href="/pricing" class="cta">See pricing</a>',
+        description: "Text has a contrast of 2.9:1, below the 4.5:1 minimum.",
+        suggestedFix: "Darken the text colour until it reaches 4.5:1.",
+        elementScreenshot: TINY_JPEG,
+        suggestedColour: { from: "#8a9bb0", to: "#4a617f", background: "#ffffff", ratio: 4.6, required: 4.5 },
+      }),
+      finding({
+        id: "f2",
+        severity: "serious",
+        selector: "footer .legal",
+        elementSnippet: '<span class="legal">All rights reserved</span>',
+        description: "Text has a contrast of 3.2:1, below the 4.5:1 minimum.",
+        suggestedFix: "Darken the text colour until it reaches 4.5:1.",
+      }),
+      finding({
+        id: "f3",
+        severity: "serious",
+        selector: "nav .muted",
+        elementSnippet: '<a href="/about" class="muted">About</a>',
+        description: "Text has a contrast of 4.1:1, below the 4.5:1 minimum.",
+        suggestedFix: "Darken the text colour until it reaches 4.5:1.",
+      }),
+      finding({
+        id: "f4",
+        severity: "critical",
+        ruleId: "image-alt",
+        wcagCriterion: "1.1.1",
+        wcagLevel: "A",
+        selector: ".gallery img:nth-child(1)",
+        elementSnippet: '<img src="/bike.jpg">',
+        description: "Image has no alt attribute.",
+        suggestedFix: "Describe the image in an alt attribute.",
+        elementScreenshot: TINY_JPEG,
+        suggestedAltText: "A red bicycle leaning against a brick wall",
+        helpUrl: "https://dequeuniversity.com/rules/axe/4.10/image-alt",
+      }),
+      finding({
+        id: "f5",
+        severity: "critical",
+        ruleId: "image-alt",
+        wcagCriterion: "1.1.1",
+        wcagLevel: "A",
+        selector: ".gallery img:nth-child(2)",
+        elementSnippet: '<img src="/divider.png">',
+        description: "Image has no alt attribute.",
+        suggestedFix: "Describe the image in an alt attribute.",
+        suggestedAltText: "",
+      }),
+      finding({
+        id: "f6",
+        severity: "minor",
+        ruleId: "link-name-vague",
+        wcagCriterion: "2.4.4",
+        wcagLevel: "A",
+        selector: ".news a.more",
+        elementSnippet: '<a href="/posts/spring-opening" class="more">Read more</a>',
+        description: "Link text says nothing about where it goes.",
+        suggestedFix: "Name the destination in the link text.",
+      }),
+      finding({
+        id: "f7",
+        source: "ai-review",
+        severity: "moderate",
+        category: "design-clarity",
+        ruleId: undefined,
+        wcagCriterion: "N/A",
+        wcagLevel: undefined,
+        selector: "main p",
+        title: "Body text is set very small",
+        description: "Paragraph text across the page is around 12px, which many readers will struggle with.",
+        suggestedFix: "Raise body text to at least 16px.",
+        confidence: "high",
+        helpUrl: undefined,
+      }),
+      finding({
+        id: "f8",
+        severity: "moderate",
+        category: "dark-pattern",
+        ruleId: "countdown-pressure",
+        wcagCriterion: "N/A",
+        wcagLevel: undefined,
+        selector: ".offer .countdown",
+        title: "A countdown pressures the visitor",
+        description: "A ticking countdown implies the offer expires, and it resets on reload.",
+        suggestedFix: "Remove the countdown or make it truthful.",
+        helpUrl: undefined,
+      }),
+      finding({
+        id: "f9",
+        severity: "serious",
+        ruleId: "focus-not-visible",
+        wcagCriterion: "2.4.7",
+        wcagLevel: "AA",
+        selector: ".menu button",
+        elementSnippet: '<button class="menu-toggle" aria-label="Menu"></button>',
+        description: "Keyboard focus is invisible on this control.",
+        suggestedFix: "Restore the focus outline, or draw your own of at least 2px.",
+      }),
+    ];
+
+    var srLines = [];
+    var kinds = ["landmark", "heading", "link", "button", "image", "field", "list", "text"];
+    for (var i = 0; i < 16; i++) {
+      srLines.push({
+        text:
+          i === 3
+            ? "button, unlabelled"
+            : i === 7
+              ? "link, Read more"
+              : i === 12
+                ? "image, bike dot jpg"
+                : "Announcement " + (i + 1) + " of the page content",
+        kind: kinds[i % kinds.length],
+        selector: "sel-" + i,
+        issue:
+          i === 3
+            ? "A button with no name — the listener hears only 'button'."
+            : i === 7
+              ? "Nine links on this page all announce 'Read more'."
+              : i === 12
+                ? "The file name is read out in place of a description."
+                : undefined,
+      });
+    }
+
+    function crit(id, name, level, status, plain, failing, count) {
+      return {
+        id: id,
+        name: name,
+        level: level,
+        coverage: status === "needs-review" ? "manual" : "automated",
+        plain: plain,
+        failing: failing,
+        status: status,
+        findingCount: count,
+      };
+    }
+
+    var conformance = {
+      standard: "WCAG 2.1 AA",
+      failed: 2,
+      noIssuesFound: 26,
+      needsReview: 22,
+      total: 50,
+      failedByLevel: { A: 1, AA: 1 },
+      criteria: [
+        crit("1.1.1", "Non-text Content", "A", "failed", "Do images have descriptions?", "Two images have no description at all.", 2),
+        crit("1.4.3", "Contrast (Minimum)", "AA", "failed", "Can the text be read against its background?", "Three places are too pale to read.", 3),
+        crit("2.1.1", "Keyboard", "A", "no-issues-found", "Does everything work with a keyboard?", "", 0),
+        crit("2.4.7", "Focus Visible", "AA", "no-issues-found", "Can you see where the keyboard is?", "", 0),
+        crit("1.2.2", "Captions (Prerecorded)", "A", "needs-review", "Do videos have captions?", "", 0),
+        crit("3.1.5", "Reading Level", "AAA", "needs-review", "Is the wording plain enough?", "", 0),
+      ],
+    };
+
+    var isPdf = url.includes("pdf");
+    return {
+      url: url,
+      scannedAt: new Date().toISOString(),
+      score: 62,
+      summary: { critical: 2, serious: 4, moderate: 2, minor: 1, total: 9 },
+      categorySummary: { accessibility: 7, designClarity: 1, darkPattern: 1 },
+      findings: findings,
+      screenReaderScript: { lines: srLines, truncated: true },
+      conformance: conformance,
+      wcag22: {
+        standard: "WCAG 2.2",
+        expectedFrom: "October 2026",
+        alreadyFailing: 1,
+        needsReview: 5,
+        total: 6,
+        parsingNoLongerCounts: true,
+        criteria: [
+          {
+            id: "2.4.11",
+            name: "Focus Not Obscured (Minimum)",
+            level: "AA",
+            coverage: "automated",
+            plain: "Does the sticky header cover what you tabbed to?",
+            failing: "The sticky header covers focused links beneath it.",
+            status: "already-failing",
+            findingCount: 2,
+          },
+          { id: "2.5.7", name: "Dragging Movements", level: "AA", coverage: "manual", plain: "Can every drag be done another way?", failing: "", whyManual: "Only a person can try the drag.", status: "needs-review", findingCount: 0 },
+          { id: "2.5.8", name: "Target Size (Minimum)", level: "AA", coverage: "manual", plain: "Are tap targets big enough?", failing: "", status: "needs-review", findingCount: 0 },
+          { id: "3.2.6", name: "Consistent Help", level: "A", coverage: "manual", plain: "Is help in the same place on every page?", failing: "", status: "needs-review", findingCount: 0 },
+          { id: "3.3.7", name: "Redundant Entry", level: "A", coverage: "manual", plain: "Does a form ask for the same thing twice?", failing: "", status: "needs-review", findingCount: 0 },
+          { id: "3.3.8", name: "Accessible Authentication", level: "AA", coverage: "manual", plain: "Can you sign in without solving a puzzle?", failing: "", status: "needs-review", findingCount: 0 },
+        ],
+      },
+      undecidedChecks: [
+        { ruleId: "color-contrast", count: 12, help: "Contrast could not be measured over an image background.", helpUrl: "https://dequeuniversity.com/rules/axe/4.10/color-contrast" },
+      ],
+      pagePreview: TINY_JPEG,
+      meta: {
+        axeVersion: "4.10.2",
+        renderTimeMs: 1234,
+        aiReviewTimeMs: 8000,
+        aiReviewStatus: "completed",
+        incompleteChecks: ["phone-layout walk"],
+        documentKind: isPdf ? "pdf" : undefined,
+        documentPages: isPdf ? 4 : undefined,
+      },
+    };
+  }
+
+  function makeAudit(url) {
+    return {
+      entryUrl: url,
+      scannedAt: new Date().toISOString(),
+      pagesScanned: 3,
+      pagesFailed: 1,
+      averageScore: 71,
+      worstPage: { url: url + "/contact", label: "Contact", score: 54, findingCount: 12 },
+      pages: [
+        { url: url, label: "Home", score: 78, findingCount: 6 },
+        { url: url + "/contact", label: "Contact", score: 54, findingCount: 12 },
+        { url: url + "/legal", label: "Legal", score: 0, findingCount: 0, error: "The page took too long to load." },
+      ],
+      siteWide: [
+        { ruleId: "image-alt", title: "Images have no descriptions", severity: "critical", pageCount: 3, totalOccurrences: 9, wcagCriterion: "1.1.1" },
+        { ruleId: "color-contrast", title: "Text is too pale to read", severity: "serious", pageCount: 3, totalOccurrences: 21, wcagCriterion: "1.4.3" },
+      ],
+      conformance: makeReport(url).conformance,
+    };
+  }
+
+  var realFetch = window.fetch.bind(window);
+  window.fetch = function (input, init) {
+    var target = typeof input === "string" ? input : input.url;
+    if (!/\/api\/(scan|audit)$/.test(target)) return realFetch(input, init);
+
+    var body = {};
+    try {
+      body = JSON.parse(init && init.body ? init.body : "{}");
+    } catch (e) { /* ignore */ }
+    var url = body.url || "https://example.com";
+
+    return new Promise(function (resolve, reject) {
+      setTimeout(function () {
+        if (url.includes("error")) {
+          resolve(new Response(JSON.stringify({ error: "The page could not be rendered. Check the address and try again." }), { status: 500, headers: { "Content-Type": "application/json" } }));
+          return;
+        }
+        if (url.includes("blocked")) {
+          resolve(new Response(JSON.stringify({ error: "The site turned our scanner away before the page loaded.", blocked: true }), { status: 403, headers: { "Content-Type": "application/json" } }));
+          return;
+        }
+        var payload = /audit$/.test(target) ? makeAudit(url) : makeReport(url);
+        resolve(new Response(JSON.stringify(payload), { status: 200, headers: { "Content-Type": "application/json" } }));
+      }, 1500);
+    });
+  };
+})();

@@ -82,8 +82,9 @@ export function AcrDraft({ report }: { report: AccessibilityReport }) {
         is the document a procurement team reads instead of your website.
       </p>
 
-      {open && (
-        <div id={panelId}>
+      {/* Hidden rather than unrendered, so aria-controls always points at a
+          real element. */}
+      <div id={panelId} hidden={!open}>
           <p className="a11y-conf-caveat">
             <strong>This fills in the failures, not the whole form.</strong> The template allows four
             answers: Supports, Partially Supports, Does Not Support, Not Applicable. A scan can find
@@ -127,6 +128,11 @@ export function AcrDraft({ report }: { report: AccessibilityReport }) {
             <button type="button" className="a11y-sr-play" onClick={copy}>
               {copied ? "Copied" : "Copy the draft"}
             </button>
+            {/* The button's own text changing is not reliably announced;
+                this mounted status region is. */}
+            <span className="a11y-sr-only" role="status">
+              {copied ? "Draft copied to the clipboard." : ""}
+            </span>
           </div>
 
           <pre
@@ -137,8 +143,7 @@ export function AcrDraft({ report }: { report: AccessibilityReport }) {
           >
             {draft}
           </pre>
-        </div>
-      )}
+      </div>
     </section>
   );
 }

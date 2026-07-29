@@ -61,8 +61,9 @@ export function Wcag22Readiness({ readiness }: { readiness: Readiness }) {
         schedule rather than someone else's.
       </p>
 
-      {open && (
-        <div id={panelId}>
+      {/* Hidden rather than unrendered, so aria-controls always points at a
+          real element. */}
+      <div id={panelId} hidden={!open}>
           <p className="a11y-conf-caveat">
             <strong>What is actually changing.</strong> The European Accessibility Act points at a
             standard called EN 301 549, which today adopts WCAG 2.1. The next version of that
@@ -109,8 +110,7 @@ export function Wcag22Readiness({ readiness }: { readiness: Readiness }) {
               simply stops counting.
             </p>
           )}
-        </div>
-      )}
+      </div>
     </section>
   );
 }

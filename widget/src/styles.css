@@ -229,14 +229,21 @@
 .a11y-finding-header {
   width: 100%;
   display: flex;
+  /* Wraps rather than clipping: on a 320px screen the severity badge, title
+     and source label don't fit on one line, and without this the source
+     label was cut off at the card edge. */
+  flex-wrap: wrap;
   align-items: center;
-  gap: 10px;
+  gap: 6px 10px;
   padding: 10px 12px;
   background: var(--a11y-bg);
   border: none;
   cursor: pointer;
   text-align: left;
   font-size: 13px;
+  /* Buttons don't inherit colour; without this the UA paints them black,
+     which breaks in the dark scheme. */
+  color: var(--a11y-text);
 }
 
 .a11y-finding-header:focus-visible {
@@ -271,7 +278,8 @@
 }
 
 .a11y-finding-desc {
-  flex: 1;
+  flex: 1 1 12rem;
+  min-width: 0;
 }
 
 .a11y-finding-source {
@@ -324,4 +332,106 @@
   font-weight: 600;
   text-decoration: underline;
   cursor: pointer;
+}
+
+/* Hidden from view, available to screen readers. Not display:none or
+   visibility:hidden — both remove the element from the accessibility tree,
+   so a live region using them announces nothing at all. */
+.a11y-sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* Every focusable thing gets a visible ring, whatever it is. Specific rules
+   above may tighten the offset; nothing may remove the ring. 2px solid accent
+   clears 3:1 against both the white background and the grey surfaces. */
+.a11y-widget :is(a, button, input, select, textarea, summary, [tabindex]):focus-visible {
+  outline: 2px solid var(--a11y-accent);
+  outline-offset: 2px;
+}
+
+/* Touch targets: the submit button reaches 44px; the checkbox itself stays
+   16px but sits inside its clickable label, which is the real target. */
+.a11y-url-row button {
+  min-height: 44px;
+}
+
+.a11y-ai-toggle input[type="checkbox"] {
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+  accent-color: var(--a11y-accent);
+}
+
+/* Dark scheme. Tokens only — component rules read the vars. The handful of
+   hard-coded tints below are re-stated. Badge fills are pinned to their
+   light-scheme values: they keep white text, so their background must not
+   follow the theme. Every pairing here clears 4.5:1. */
+@media (prefers-color-scheme: dark) {
+  .a11y-widget {
+    --a11y-border: #444c56;
+    --a11y-text: #e6edf3;
+    --a11y-muted: #9ea7b3;
+    --a11y-bg: #0d1117;
+    --a11y-accent: #58a6ff;
+    --a11y-score-good: #3fb950;
+    --a11y-score-warn: #d29922;
+    --a11y-score-bad: #f85149;
+  }
+
+  /* The accent brightens to #58a6ff in the dark scheme so *links* stay
+     readable on the dark page — but white text on that light blue would be
+     2.5:1. Solid button fills keep the deeper blue. */
+  .a11y-url-row button {
+    background: #0969da;
+  }
+
+  .a11y-error {
+    background: rgba(248, 81, 73, 0.15);
+    color: #ff7b72;
+  }
+
+  .a11y-notice {
+    background: rgba(187, 128, 9, 0.15);
+    color: #e3b341;
+  }
+
+  .a11y-section-redflag {
+    background: rgba(248, 81, 73, 0.08);
+  }
+
+  .a11y-finding-details code,
+  .a11y-finding-thumb,
+  .a11y-finding-thumb-large {
+    background: #161b22;
+  }
+
+  /* White-on-colour badges keep their light-scheme fills — the dark-scheme
+     vars would put white text on light grey. */
+  .a11y-severity-critical .a11y-severity-badge {
+    background: #cf222e;
+  }
+  .a11y-severity-moderate .a11y-severity-badge {
+    background: #9a6700;
+  }
+  .a11y-severity-minor .a11y-severity-badge {
+    background: #57606a;
+  }
+}
+
+/* Windows High Contrast / forced colors: backgrounds are dropped by the
+   system, so anything that only a fill distinguishes gets a border. Severity
+   is already text ("Critical"), never colour alone. */
+@media (forced-colors: active) {
+  .a11y-severity-badge,
+  .a11y-finding-source {
+    border: 1px solid CanvasText;
+  }
 }

@@ -2,14 +2,60 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
+    <!-- width=device-width so phones render at their real width instead of a
+         zoomed-out 980px canvas. No maximum-scale / user-scalable: pinch zoom
+         stays available (WCAG 1.4.4). -->
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>A11y Widget — Dev</title>
+    <style>
+      /* Explicit page colours (axe cannot judge contrast against a
+         transparent body), following the visitor's colour-scheme setting so
+         the host page and the widget agree in dark mode. */
+      body {
+        background: #ffffff;
+        color: #1f2328;
+      }
+      @media (prefers-color-scheme: dark) {
+        body {
+          background: #0d1117;
+          color: #e6edf3;
+        }
+      }
+      /* Skip link: first focusable element on the page, visible on focus. */
+      .skip-link {
+        position: absolute;
+        left: -9999px;
+        top: 0;
+        background: #0969da;
+        color: #fff;
+        padding: 8px 16px;
+        z-index: 10;
+      }
+      .skip-link:focus {
+        left: 0;
+        outline: 2px solid #1f2328;
+        outline-offset: 2px;
+      }
+    </style>
   </head>
   <body>
-    <h1>Host page content (unrelated to the widget)</h1>
-    <p>This paragraph exists to prove host-page styles don't leak into the widget below.</p>
+    <header>
+      <a class="skip-link" href="#main">Skip to main content</a>
+    </header>
+    <!-- Wrapped in <main> because this harness gets scanned like any other
+         page, and orphaned content outside a landmark is a finding we report
+         on other people's sites. -->
+    <main id="main">
+      <h1>Host page content (unrelated to the widget)</h1>
+      <p>This paragraph exists to prove host-page styles don't leak into the widget below.</p>
 
-    <div id="a11y-widget-root" data-api-base="http://localhost:8787"></div>
+      <div id="a11y-widget-root" data-api-base="http://localhost:8787"></div>
+    </main>
 
+    <!-- Dev-only test harness: no-op without ?fixture in the URL. Stubs the
+         scan API with canned reports and loads axe-core so every view can be
+         rendered and audited without a backend. -->
+    <script src="/dev-fixture.js"></script>
     <script type="module" src="/src/index.tsx"></script>
   </body>
 </html>

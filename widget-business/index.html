@@ -2,20 +2,61 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
+    <!-- width=device-width so phones render at their real width instead of a
+         zoomed-out 980px canvas. No maximum-scale / user-scalable: pinch zoom
+         stays available (WCAG 1.4.4). -->
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>A11y Widget (Business) — Dev</title>
+    <style>
+      /* Explicit page colours (axe cannot judge contrast against a
+         transparent body), following the visitor's colour-scheme setting so
+         the host page and the widget agree in dark mode. */
+      body {
+        background: #ffffff;
+        color: #161616;
+      }
+      @media (prefers-color-scheme: dark) {
+        body {
+          background: #161616;
+          color: #f4f4f4;
+        }
+      }
+      /* Skip link: first focusable element on the page, visible on focus. */
+      .skip-link {
+        position: absolute;
+        left: -9999px;
+        top: 0;
+        background: #0f62fe;
+        color: #fff;
+        padding: 8px 16px;
+        z-index: 10;
+      }
+      .skip-link:focus {
+        left: 0;
+        outline: 2px solid #161616;
+        outline-offset: 2px;
+      }
+    </style>
   </head>
   <body>
+    <header>
+      <a class="skip-link" href="#main">Skip to main content</a>
+    </header>
     <!-- Wrapped in <main> because this harness gets scanned like any other
          page, and orphaned content outside a landmark is a finding we report
          on other people's sites. A test page for an accessibility tool should
          not fail the tool. -->
-    <main>
+    <main id="main">
       <h1>Host page content (unrelated to the widget)</h1>
       <p>This paragraph exists to prove host-page styles don't leak into the widget below.</p>
 
       <div id="a11y-widget-business-root" data-api-base="https://a11y-checker-v2-production.up.railway.app"></div>
     </main>
 
+    <!-- Dev-only test harness: no-op without ?fixture in the URL. Stubs the
+         scan API with canned reports and loads axe-core so every view can be
+         rendered and audited without a backend. -->
+    <script src="/dev-fixture.js"></script>
     <script type="module" src="/src/index.tsx"></script>
   </body>
 </html>

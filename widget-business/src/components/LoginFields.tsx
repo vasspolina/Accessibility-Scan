@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useId, useRef, useState } from "react";
 import type { AuthConfig } from "../api/scanClient";
 
 // Lets someone scan the pages that sit behind a login. Checkout, account
@@ -25,6 +25,11 @@ export function LoginFields({
   const [loginUrl, setLoginUrl] = useState("");
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const panelId = useId();
+  // The toggle stays mounted whether the panel is open or closed, so keyboard
+  // focus has somewhere to live across both states. The old version swapped
+  // the button for the panel, which dropped focus to <body> on every open.
+  const toggleRef = useRef<HTMLButtonElement>(null);
 
   function update(next: { loginUrl?: string; username?: string; password?: string }) {
     const merged = {
@@ -41,79 +46,92 @@ export function LoginFields({
     onChange(complete ? { kind: "form", ...merged } : undefined);
   }
 
-  if (!open) {
-    return (
+  function close() {
+    setOpen(false);
+    onChange(undefined);
+    toggleRef.current?.focus();
+  }
+
+  return (
+    <div>
       <button
+        ref={toggleRef}
         type="button"
         className="a11y-login-toggle"
-        onClick={() => setOpen(true)}
+        aria-expanded={open}
+        aria-controls={panelId}
+        onClick={() => (open ? close() : setOpen(true))}
         disabled={disabled}
       >
         Scan a page behind a login
       </button>
-    );
-  }
 
-  return (
-    <div className="a11y-login">
-      <div className="a11y-login-head">
-        <strong>Sign the scanner in</strong>
-        <button
-          type="button"
-          className="a11y-login-toggle"
-          onClick={() => {
-            setOpen(false);
-            onChange(undefined);
-          }}
-          disabled={disabled}
-        >
-          Cancel
-        </button>
+      <div id={panelId} className="a11y-login" hidden={!open}>
+        {/* fieldset/legend rather than a styled heading: the three fields are
+            one group, and the legend is what a screen reader repeats as
+            context when focus lands on any of them. */}
+        <fieldset className="a11y-login-fieldset">
+          <legend className="a11y-login-legend">Sign the scanner in</legend>
+
+          <p className="a11y-login-note">
+            Use a test account, not your own. We sign in, scan the page, and throw the session away.
+            Nothing is saved. The page we photograph will show whatever that account can see.
+          </p>
+
+          <div className="a11y-stmt-fields">
+            <label className="a11y-stmt-field">
+              Login page address
+              <input
+                type="text"
+                inputMode="url"
+                autoComplete="off"
+                placeholder="example.com/login"
+                value={loginUrl}
+                onChange={(e) => update({ loginUrl: e.target.value })}
+                disabled={disabled}
+              />
+            </label>
+            <label className="a11y-stmt-field">
+              Username or email
+              <input
+                type="text"
+                autoComplete="off"
+                value={username}
+                onChange={(e) => update({ username: e.target.value })}
+                disabled={disabled}
+              />
+            </label>
+            <label className="a11y-stmt-field">
+              Password
+              <input
+                type="password"
+                // Off, so the browser doesn't offer to remember a test login the
+                // person is unlikely to want kept.
+                autoComplete="off"
+                value={password}
+                onChange={(e) => update({ password: e.target.value })}
+                disabled={disabled}
+              />
+            </label>
+          </div>
+
+          {/* A status region so "the scan will now sign in first" reaches
+              someone who can't see the text appear. Mounted while open, empty
+              until true. */}
+          <p className="a11y-login-ready" role="status">
+            {auth ? "Ready. The scan will sign in first." : ""}
+          </p>
+
+          <button
+            type="button"
+            className="a11y-login-toggle"
+            onClick={close}
+            disabled={disabled}
+          >
+            Cancel — scan without signing in
+          </button>
+        </fieldset>
       </div>
-
-      <p className="a11y-login-note">
-        Use a test account, not your own. We sign in, scan the page, and throw the session away.
-        Nothing is saved. The page we photograph will show whatever that account can see.
-      </p>
-
-      <div className="a11y-stmt-fields">
-        <label className="a11y-stmt-field">
-          Login page address
-          <input
-            type="text"
-            inputMode="url"
-            autoComplete="off"
-            placeholder="example.com/login"
-            value={loginUrl}
-            onChange={(e) => update({ loginUrl: e.target.value })}
-            disabled={disabled}
-          />
-        </label>
-        <label className="a11y-stmt-field">
-          Username or email
-          <input
-            type="text"
-            autoComplete="off"
-            value={username}
-            onChange={(e) => update({ username: e.target.value })}
-            disabled={disabled}
-          />
-        </label>
-        <label className="a11y-stmt-field">
-          Password
-          <input
-            type="password"
-            // Off, so the browser doesn't offer to remember a test login the
-            // person is unlikely to want kept.
-            autoComplete="off"
-            value={password}
-            onChange={(e) => update({ password: e.target.value })}
-            disabled={disabled}
-          />
-        </label>
-      </div>
-
-      {auth && <p className="a11y-login-ready">Ready. The scan will sign in first.</p>}
     </div>
   );
 }

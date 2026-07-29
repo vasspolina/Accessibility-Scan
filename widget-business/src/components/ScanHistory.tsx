@@ -28,7 +28,21 @@ export function ScanHistory({
 }) {
   const [cleared, setCleared] = useState(false);
 
-  if (cleared || previous.length === 0) return null;
+  if (previous.length === 0) return null;
+
+  // The section doesn't vanish under the person who just pressed Delete —
+  // that would drop keyboard focus to <body> and say nothing to a screen
+  // reader. A confirmation stays where the section was.
+  if (cleared) {
+    return (
+      <section className="a11y-section a11y-hist">
+        <h2 className="a11y-section-title">Since last time</h2>
+        <p className="a11y-section-desc" role="status" tabIndex={-1} ref={(el) => el?.focus()}>
+          Scan history deleted from this browser.
+        </p>
+      </section>
+    );
+  }
 
   const last = previous[0];
   const diff = diffScans(last, current);

@@ -565,9 +565,17 @@ export function FindingGroup({
                 <Occurrence key={e.rep.id} finding={e.rep} label={e.label} repeatCount={e.count} />
               ))}
             </ul>
-            {summarize && !showAll && (
-              <button type="button" className="a11y-show-all" onClick={() => setShowAll(true)}>
-                Show all {entries.length} kinds of element
+            {/* A toggle, not a self-removing button: a control that vanishes
+                under the keyboard focus that just pressed it strands the
+                user. */}
+            {summarize && (
+              <button
+                type="button"
+                className="a11y-show-all"
+                aria-expanded={showAll}
+                onClick={() => setShowAll((v) => !v)}
+              >
+                {showAll ? "Show fewer" : `Show all ${entries.length} kinds of element`}
               </button>
             )}
           </div>
@@ -686,7 +694,13 @@ function ColourSuggestion({
         </span>{" "}
         <button type="button" className="a11y-copy-btn" onClick={copy}>
           {copied ? "Copied" : "Copy"}
+          <span className="a11y-sr-only"> the suggested colour</span>
         </button>
+        {/* The button's own text changing is not reliably announced;
+            this mounted status region is. */}
+        <span className="a11y-sr-only" role="status">
+          {copied ? "Colour copied to the clipboard." : ""}
+        </span>
       </p>
       <p className="a11y-colour-fix-note">
         Same hue, dark enough to reach {suggestion.ratio}:1 against {suggestion.background}, where{" "}
@@ -731,7 +745,11 @@ function AltTextSuggestion({ value }: { value: string }) {
         <code>{value}</code>
         <button type="button" className="a11y-alt-copy" onClick={copy}>
           {copied ? "Copied" : "Copy"}
+          <span className="a11y-sr-only"> the suggested alt text</span>
         </button>
+        <span className="a11y-sr-only" role="status">
+          {copied ? "Alt text copied to the clipboard." : ""}
+        </span>
       </div>
     </div>
   );

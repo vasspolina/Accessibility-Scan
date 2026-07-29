@@ -34,8 +34,9 @@ export function FindingCard({ finding }: { finding: AccessibilityFinding }) {
           {finding.source === "ai-review" ? "AI review" : "Automated"}
         </span>
       </button>
-      {expanded && (
-        <div id={detailsId} className="a11y-finding-details">
+      {/* Always in the DOM, hidden when collapsed — aria-controls must never
+          point at an element that doesn't exist. */}
+      <div id={detailsId} className="a11y-finding-details" hidden={!expanded}>
           {finding.elementScreenshot && (
             <img
               className="a11y-finding-thumb-large"
@@ -71,8 +72,7 @@ export function FindingCard({ finding }: { finding: AccessibilityFinding }) {
               <strong>AI confidence:</strong> {finding.confidence}
             </p>
           )}
-        </div>
-      )}
+      </div>
     </li>
   );
 }

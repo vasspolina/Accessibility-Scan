@@ -151,22 +151,26 @@ export function ScreenReaderPreview({ script }: { script: ScreenReaderScript }) 
           heading between two tall ones. Easy to scroll straight past, which is
           exactly what happened. */}
       <p className="a11y-section-desc">
-        How your page sounds to someone who can't see it, in the order they hear it. Red lines are
-        where a listener learns nothing. Close to a real screen reader, not a recording.
+        How your page sounds to someone who can't see it, in the order they hear it. Lines marked
+        &ldquo;says nothing useful&rdquo; are where a listener learns nothing. Close to a real
+        screen reader, not a recording.
       </p>
 
-      {!open ? null : (
-      <div id={panelId}>
+      {/* Hidden rather than unrendered: the accordion button's aria-controls
+          points here, and it must never point at an element that does not
+          exist. */}
+      <div id={panelId} hidden={!open}>
       <div className="a11y-sr-controls">
         {/* Play itself now lives in the header row above, so it is reachable
             without opening the section. What stays here is what only makes
-            sense alongside the transcript. */}
+            sense alongside the transcript.
+
+            The status span stays mounted while empty — a live region that
+            appears already carrying text announces unreliably. */}
         {supported ? (
-          playing && (
-            <span className="a11y-sr-status" role="status">
-              Reading line {(current ?? 0) + 1} of {lines.length}
-            </span>
-          )
+          <span className="a11y-sr-status" role="status">
+            {playing ? `Reading line ${(current ?? 0) + 1} of ${lines.length}` : ""}
+          </span>
         ) : (
           <p className="a11y-sr-status">
             Your browser can't play audio for this, so the transcript below is read-only.
@@ -205,13 +209,12 @@ export function ScreenReaderPreview({ script }: { script: ScreenReaderScript }) 
           >
             <span className="a11y-sr-text">
               {supported ? (
-                <button
-                  type="button"
-                  className="a11y-sr-line-play"
-                  onClick={() => speakFrom(i)}
-                  title="Play from here"
-                >
+                <button type="button" className="a11y-sr-line-play" onClick={() => speakFrom(i)}>
                   {line.text}
+                  {/* The visible label is the line itself; this suffix tells a
+                      screen-reader user what pressing it does. In the name, not
+                      a title attribute — tooltips reach nobody on a keyboard. */}
+                  <span className="a11y-sr-only"> — play aloud from this line</span>
                 </button>
               ) : (
                 line.text
@@ -222,10 +225,19 @@ export function ScreenReaderPreview({ script }: { script: ScreenReaderScript }) 
         ))}
       </ol>
 
-      {filtered.length > visible.length && (
-        <button type="button" className="a11y-show-all" onClick={() => setExpanded(true)}>
-          Show all {filtered.length}
-          {onlyIssues ? " with problems" : " announcements"}
+      {/* A toggle rather than a button that removes itself: a control that
+          disappears under the keyboard focus that just used it strands the
+          user at the top of the page. */}
+      {filtered.length > 12 && (
+        <button
+          type="button"
+          className="a11y-show-all"
+          aria-expanded={expanded}
+          onClick={() => setExpanded((v) => !v)}
+        >
+          {expanded
+            ? "Show fewer"
+            : `Show all ${filtered.length}${onlyIssues ? " with problems" : " announcements"}`}
         </button>
       )}
       {script.truncated && (
@@ -234,7 +246,6 @@ export function ScreenReaderPreview({ script }: { script: ScreenReaderScript }) 
         </p>
       )}
       </div>
-      )}
     </section>
   );
 }

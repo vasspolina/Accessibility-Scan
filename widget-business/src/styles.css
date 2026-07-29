@@ -391,7 +391,10 @@
   border: 1px solid var(--a11y-border, #d0d7de);
   border-left: 4px solid var(--a11y-muted, #57606a);
   padding: 16px;
-  background: var(--a11y-card, #fff);
+  /* --a11y-bg, not the never-defined --a11y-card: the stray token fell back
+     to white in every theme, which put light text on a white card in dark
+     mode. */
+  background: var(--a11y-bg, #fff);
 }
 
 .a11y-undecided-head {
@@ -467,6 +470,9 @@
   cursor: pointer;
   text-align: left;
   font-size: var(--a11y-text-body);
+  /* Buttons don't inherit colour — the UA paints them buttontext (black),
+     which is invisible in a light theme and unreadable in a dark one. */
+  color: var(--a11y-text, #1f2328);
 }
 
 .a11y-finding-header:focus-visible {
@@ -1748,6 +1754,22 @@
   outline-offset: 2px;
 }
 
+/* The colour-suggestion copy button had no rule at all and rendered as the
+   UA default, which ignores the theme. Small tertiary, same as alt-copy. */
+.a11y-copy-btn {
+  padding: 4px 12px;
+  border: 1px solid var(--a11y-accent, #0f62fe);
+  background: transparent;
+  color: var(--a11y-accent, #0f62fe);
+  font: inherit;
+  font-size: var(--a11y-text-body);
+  cursor: pointer;
+}
+
+.a11y-copy-btn:hover {
+  background: var(--a11y-accent-faint, #edf5ff);
+}
+
 /* The sign-in group. A fieldset so the legend is announced as context on
    every field in it; the default fieldset chrome is stripped because the
    surrounding .a11y-login panel already draws the box. */
@@ -1800,6 +1822,10 @@
    ========================================================================== */
 
 .a11y-widget-biz {
+  /* Form controls (checkboxes, selects, scrollbars) render for the light
+     theme; the dark block below flips this with the tokens. */
+  color-scheme: light;
+
   /* Carbon White theme */
   --a11y-text: #161616;        /* text-primary */
   --a11y-muted: #525252;       /* text-secondary — 7.4:1 on white, 6.9:1 on layer-01 */
@@ -2428,6 +2454,7 @@
    ========================================================================== */
 @media (prefers-color-scheme: dark) {
   .a11y-widget-biz {
+    color-scheme: dark;
     --a11y-text: #f4f4f4;          /* text-primary */
     --a11y-muted: #c6c6c6;         /* text-secondary — 9:1 on #262626 */
     --a11y-bg: #161616;            /* background */
@@ -2576,6 +2603,10 @@
   }
 
   .a11y-widget-biz .a11y-fix-once {
+    background: rgba(120, 169, 255, 0.12);
+  }
+
+  .a11y-widget-biz .a11y-copy-btn:hover {
     background: rgba(120, 169, 255, 0.12);
   }
 

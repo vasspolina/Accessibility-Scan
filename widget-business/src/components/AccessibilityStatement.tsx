@@ -240,6 +240,11 @@ export function AccessibilityStatement({ report }: { report: AccessibilityReport
         <button type="button" className="a11y-sr-play" onClick={copy}>
           {copied ? "Copied" : "Copy the statement"}
         </button>
+        {/* The button's own text changing is not reliably announced;
+            this mounted status region is. */}
+        <span className="a11y-sr-only" role="status">
+          {copied ? "Statement copied to the clipboard." : ""}
+        </span>
         <span className="a11y-sr-status">
           Says <strong>{position === "partially" ? "partially conformant" : "non-conformant"}</strong>,
           based on {failing} failing {failing === 1 ? "criterion" : "criteria"}.

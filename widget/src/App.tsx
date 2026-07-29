@@ -33,7 +33,10 @@ export function App({ apiBase }: { apiBase: string }) {
   }
 
   return (
-    <div className="a11y-widget-inner">
+    // A landmark, so the widget's content isn't orphaned on the host page.
+    // <section aria-label> rather than <main>: the widget is a guest on
+    // somebody else's page, and that page's own <main> is not ours to claim.
+    <section className="a11y-widget-inner" aria-label="Website accessibility check">
       <UrlForm onSubmit={handleScan} loading={loading} />
 
       {error && (
@@ -47,6 +50,20 @@ export function App({ apiBase }: { apiBase: string }) {
           Scanning page — this can take up to 30 seconds…
         </p>
       )}
+
+      {/* Announces the outcome. The loading paragraph above is a live region
+          too, but it unmounts the moment results arrive, and a live region
+          that disappears announces nothing — so without this, a screen-reader
+          user heard "Scanning page…" and then silence. Kept mounted so the
+          text changing is what triggers the announcement, and visually hidden
+          because sighted users already see the score. */}
+      <p className="a11y-sr-only" role="status">
+        {loading || !report
+          ? ""
+          : `Scan complete. Score ${report.score} out of 100, ${report.summary.total} ${
+              report.summary.total === 1 ? "issue" : "issues"
+            } found. The full report follows.`}
+      </p>
 
       {report && (
         <div className="a11y-report">
@@ -86,6 +103,6 @@ export function App({ apiBase }: { apiBase: string }) {
           />
         </div>
       )}
-    </div>
+    </section>
   );
 }

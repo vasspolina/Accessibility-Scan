@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useId, useMemo, useRef, useState } from "react";
 import type { ConformanceSummary, CriterionResult } from "../api/scanClient";
 
 // Answers the question the 0-100 score can't: "are we compliant?"
@@ -18,6 +18,11 @@ const STATUS_LABEL = {
 export function ConformanceView({ conformance }: { conformance: ConformanceSummary }) {
   const [expanded, setExpanded] = useState(false);
   const [onlyFailing, setOnlyFailing] = useState(true);
+  const panelId = useId();
+  // The toggle stays mounted whichever state we're in, so keyboard focus
+  // never evaporates when the panel opens or closes. The convenience "hide"
+  // at the bottom of a long checklist hands focus back up here.
+  const toggleRef = useRef<HTMLButtonElement>(null);
 
   const failing = useMemo(
     () => conformance.criteria.filter((c) => c.status === "failed"),
@@ -91,12 +96,23 @@ export function ConformanceView({ conformance }: { conformance: ConformanceSumma
         )}
       </div>
 
+      <button
+        ref={toggleRef}
+        type="button"
+        className="a11y-show-all"
+        aria-expanded={expanded}
+        aria-controls={panelId}
+        onClick={() => setExpanded((v) => !v)}
+      >
+        {expanded ? "Hide the checklist" : "Show the checklist"}
+      </button>
+
       {/* Always in the DOM, hidden when collapsed. A printed report is
           compliance evidence, and behind a conditional this checklist — the
           substance of it — appeared on paper only if the reader happened to
           expand it first. The print stylesheet can reveal a hidden element;
           it cannot reveal one React never rendered. */}
-      <div className="a11y-conf-panel" hidden={!expanded}>
+      <div id={panelId} className="a11y-conf-panel" hidden={!expanded}>
           <div className="a11y-conf-filter">
             <label className="a11y-ai-toggle">
               <input
@@ -151,15 +167,19 @@ export function ConformanceView({ conformance }: { conformance: ConformanceSumma
               ))}
             </ul>
           )}
-          <button type="button" className="a11y-show-all" onClick={() => setExpanded(false)}>
+          <button
+            type="button"
+            className="a11y-show-all"
+            onClick={() => {
+              setExpanded(false);
+              // This button is about to hide with the panel it lives in —
+              // hand focus back to the toggle rather than dropping it.
+              toggleRef.current?.focus();
+            }}
+          >
             Hide the checklist
           </button>
       </div>
-      {!expanded && (
-        <button type="button" className="a11y-show-all" onClick={() => setExpanded(true)}>
-          Show the checklist
-        </button>
-      )}
     </section>
   );
 }
