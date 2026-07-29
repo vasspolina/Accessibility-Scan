@@ -17,9 +17,28 @@
   axeScript.src = "/axe.dev.js";
   document.head.appendChild(axeScript);
 
-  // 1x1 grey JPEG, stands in for element screenshots and the page preview.
-  var TINY_JPEG =
-    "/9j/4AAQSkZJRgABAQEAYABgAAD/2wBDAAgGBgcGBQgHBwcJCQgKDBQNDAsLDBkSEw8UHRofHh0aHBwgJC4nICIsIxwcKDcpLDAxNDQ0Hyc5PTgyPC4zNDL/wAALCAABAAEBAREA/8QAFAABAAAAAAAAAAAAAAAAAAAACf/EABQQAQAAAAAAAAAAAAAAAAAAAAD/2gAIAQEAAD8AKp//2Q==";
+  // A drawn placeholder, not a real capture. The first version was a 1x1
+  // grey pixel, which rendered as a blank white box — next to copy like
+  // "written from the actual image" that read as the product failing, and it
+  // was reported as exactly that. A fixture's fake data has to look fake on
+  // purpose: this one is a grey card that says SAMPLE across it.
+  function sampleShot(label) {
+    var c = document.createElement("canvas");
+    c.width = 480; c.height = 160;
+    var g = c.getContext("2d");
+    g.fillStyle = "#e8e8e8"; g.fillRect(0, 0, 480, 160);
+    g.fillStyle = "#c6c6c6"; g.fillRect(0, 0, 480, 28);
+    for (var y = 48; y < 150; y += 22) {
+      g.fillStyle = "#cfcfcf";
+      g.fillRect(16, y, 300 + ((y * 7) % 120), 10);
+    }
+    g.fillStyle = "#8d8d8d";
+    g.font = "bold 28px system-ui, sans-serif";
+    g.textAlign = "center";
+    g.fillText(label || "SAMPLE", 240, 100);
+    return c.toDataURL("image/jpeg", 0.7).split(",")[1];
+  }
+  var TINY_JPEG = sampleShot("SAMPLE");
 
   function finding(over) {
     return Object.assign(

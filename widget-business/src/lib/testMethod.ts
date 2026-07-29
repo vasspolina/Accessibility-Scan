@@ -111,6 +111,14 @@ export function fixKindForRule(ruleId: string | undefined): FixKind {
 }
 
 export function fixKindForFinding(finding: AccessibilityFinding): FixKind {
+  // Category before rule id. A dark pattern is a marketing decision whatever
+  // produced the finding, and routing by rule id alone sent two kinds of them
+  // to a developer: AI-written ones, which carry no rule id at all and fell
+  // through to the "code" default, and any deterministic rule not spelled
+  // with the dark- prefix. Reported on a countdown-pressure card wearing
+  // "Code fix" — a ticking timer that resets on reload is a marketing trick,
+  // and removing it is not a developer's call to make.
+  if (finding.category === "dark-pattern") return FIX_KINDS.content;
   return fixKindForRule(finding.ruleId);
 }
 

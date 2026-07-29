@@ -27,7 +27,8 @@
         "/Users/polinavasilyeva/a11y-checker/widget-business/node_modules/vite/bin/vite.js",
         "/Users/polinavasilyeva/a11y-checker/widget-business"
       ],
-      "port": 5174
+      "port": 5174,
+      "autoPort": true
     },
     {
       "name": "accessible-web-design",

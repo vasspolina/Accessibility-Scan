@@ -51,6 +51,17 @@ describe("fixKindForFinding", () => {
     }
   });
 
+  // A dark pattern is a marketing decision whatever produced the finding.
+  // AI findings carry no rule id, so routing by id alone sent them to the
+  // developer; a deterministic rule without the dark- prefix went the same
+  // way. Category decides first.
+  it("sends every dark-pattern finding to content, rule id or not", () => {
+    const aiDark = finding({ category: "dark-pattern", ruleId: undefined, source: "ai-review" });
+    expect(fixKindForFinding(aiDark).key).toBe("content");
+    const oddId = finding({ category: "dark-pattern", ruleId: "countdown-pressure" });
+    expect(fixKindForFinding(oddId).key).toBe("content");
+  });
+
   // Design and content are separate desks, and were sharing a badge.
   it("does not sweep wording into design", () => {
     expect(fixOf("link-text-vague")).toBe("content");

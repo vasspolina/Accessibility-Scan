@@ -37,10 +37,14 @@ the score caveat; "A control" instead of "Something".
 Chromium against the deployed demo page. Result: zero violations, score
 100/100 (was 72 before this week's fixes — the deficit was our own walker
 misreading shadow DOM, plus real landmark and overflow faults on the host
-page, all fixed). States covered: initial only. The post-scan report state
-cannot be reached by the scanner (it scans fresh pages) — **not verified by
-axe; see the human test plan.** axe's coverage is the floor, not the finish
-line: it reaches roughly half of issues by volume.
+page, all fixed).
+
+The report state, which the pipeline cannot reach because it always scans
+fresh, was scanned 29 July through the dev fixture: canned report rendered,
+every card and drawer expanded, axe 4.12.1 against the shadow root with tags
+wcag2a/2aa/21a/21aa/22aa/best-practice. **Zero violations and zero
+incompletes, in light mode and in dark mode.** axe's coverage remains the
+floor, not the finish line: it reaches roughly half of issues by volume.
 
 **7.2 Keyboard.** Initial state: machine-verified by our own keyboard layer —
 real CDP Tab presses, focus-visible detection, ring-contrast measurement at
@@ -71,8 +75,8 @@ zoom (no clipped text), forced-colors focus visibility, focus-ring contrast,
 reading order, tap targets. Verified by inspection: `prefers-reduced-motion`
 disables every animation including the spinner (two independent CSS layers);
 type in rem throughout; `autocomplete="url"` on the URL field; paste is not
-blocked anywhere. Dark mode: a `prefers-color-scheme: dark` block exists but
-its contrast has **not** been measured — needs a pass.
+blocked anywhere. Dark mode: axe-clean including contrast, measured through
+the dev fixture with the report fully expanded (see 7.1).
 
 **7.5 Self-audit.** Criteria the widget touches:
 
@@ -83,7 +87,7 @@ its contrast has **not** been measured — needs a pass.
 | 1.3.2 | A | Pass | No CSS reordering; audit-row stacking uses wrap+order on one row's children, count announced after text either way |
 | 1.3.5 | AA | Pass | autocomplete="url"; login fields deliberately off (third-party site credentials, not user data — keeping managers from mis-saving them against our origin) |
 | 1.4.1 | A | Pass | Severity has text chips, not colour alone; links underlined |
-| 1.4.3 | AA | Pass (light) / **Needs check (dark)** | Carbon tokens verified 4.5:1 in light theme; dark block unmeasured |
+| 1.4.3 | AA | Pass | Carbon tokens 4.5:1 in light; dark scheme axe-clean via the dev fixture, report state fully expanded |
 | 1.4.4 / 1.4.10 / 1.4.12 | AA | Pass | rem type; measured at 200% zoom and 390px by our own scanner; no fixed text heights |
 | 1.4.11 | AA | Pass | Focus ring measured ≥3:1 by our own contrast layer |
 | 1.4.13 | AA | N/A | No hover-revealed content; no title-attribute tooltips |
@@ -116,11 +120,12 @@ its contrast has **not** been measured — needs a pass.
    through headings (expect h2 sections, h3 only inside history/principles);
    Tab through ~30 stops confirming visible rings and no trap; expand a card
    with Enter, confirm "expanded" is announced; open the technical drawer.
-2. **Dark mode contrast.** Measure the `prefers-color-scheme: dark` block's
-   pairings; nobody has.
-3. **axe on the report state.** Run axe DevTools manually on a completed
-   report, since the pipeline cannot reach that state.
-4. **2.4.13 (AAA)** formal check if pursued.
+2. **2.4.13 (AAA)** formal check if pursued.
+
+Closed since first written: axe on the report state, and dark-mode contrast —
+both run 29 July through the dev fixture (`?fixture` on the dev harness),
+every state expanded, zero violations and zero incompletes in both colour
+schemes. The 1.4.3 dark-mode verdict above is upgraded on that evidence.
 
 ## Forward-looking (non-normative, WCAG 3 Working Draft)
 
