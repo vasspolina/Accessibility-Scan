@@ -21,10 +21,11 @@ export function UndecidedChecks({
   const total = rows.reduce((n, r) => n + r.count, 0);
   return (
     <section className="a11y-section">
-      <h3 className="a11y-section-title">
+      {/* h2: this is a top-level section of the report, same as its siblings. */}
+      <h2 className="a11y-section-title">
         For your designer and developer{" "}
         <span className="a11y-section-count">({total})</span>
-      </h3>
+      </h2>
       <p className="a11y-section-desc">
         The checker could not settle {total === 1 ? "this one" : `these ${total}`}{" "}
         on its own, and that is deliberate: it reports a problem only where it

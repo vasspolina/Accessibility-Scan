@@ -170,11 +170,17 @@ export function App({ apiBase }: { apiBase: string }) {
 
       {blocked && <BlockedNotice message={blocked} />}
 
-      {error && (
-        <p className="a11y-error" role="alert">
-          {error}
-        </p>
-      )}
+      {error && <p className="a11y-error">{error}</p>}
+
+      {/* The announcement lives here, not on the visible paragraph above. A
+          live region mounted together with its message is the classic way to
+          say nothing: assistive technology watches existing regions for
+          changes, and a region that arrives already full has not changed.
+          This one is always in the DOM; the error text arriving is the
+          change. */}
+      <div className="a11y-sr-only" role="alert">
+        {error ?? ""}
+      </div>
 
       {loading && (
         <p className="a11y-loading">
@@ -188,7 +194,7 @@ export function App({ apiBase }: { apiBase: string }) {
               whose entire subject is not doing that. Sighted users get the
               reassurance of a moving number; everyone else gets an update
               when there is genuinely something new to say. */}
-          <span role="status">{waitingMessage(mode, aiRequested, elapsed)}</span>{" "}
+          <span>{waitingMessage(mode, aiRequested, elapsed)}</span>{" "}
           <span className="a11y-elapsed" aria-hidden="true">
             {elapsed}s
           </span>
@@ -207,7 +213,7 @@ export function App({ apiBase }: { apiBase: string }) {
           users already have the score in front of them. */}
       <p className="a11y-sr-only" role="status">
         {loading
-          ? ""
+          ? waitingMessage(mode, aiRequested, elapsed)
           : report
             ? `Check complete in ${tookSeconds ?? 0} seconds. Score ${report.score} out of 100, ${
                 report.summary.total
@@ -278,10 +284,13 @@ export function App({ apiBase }: { apiBase: string }) {
           )}
 
           <section className="a11y-section">
-            <h3 className="a11y-section-title">
+            {/* h2 like every other top-level section — as an h3 it sat at the
+                same level as the principle headings inside it, so the outline
+                had children at their parent's level. */}
+            <h2 className="a11y-section-title">
               What people can't use{" "}
               <span className="a11y-section-count">({findingsByCategory.accessibility.length})</span>
-            </h3>
+            </h2>
             <p className="a11y-section-desc">
               {isDocument
                 ? "What stops this document being read aloud, grouped by the four questions the standard asks. More at "
