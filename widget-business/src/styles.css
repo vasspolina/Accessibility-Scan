@@ -70,6 +70,14 @@
    */
   width: min(100%, max(50vw, 30rem));
   margin-inline: auto;
+  /* A size container, so everything inside adapts to the panel's own width.
+     The narrow-layout rules below used to be viewport media queries, and the
+     half-width change above broke their premise: at a 1000px window this
+     panel is 500px wide — narrower than the 560px "mobile" breakpoint — and
+     no narrow rule fired. Found on the site-audit rows, whose text wrapped at
+     twenty characters a line inside a card built for a full-width panel. */
+  container-type: inline-size;
+  container-name: a11y-panel;
   padding: 32px;
   border: 1px solid var(--a11y-border, #d0d7de);
   border-radius: 14px;
@@ -673,7 +681,7 @@
 /* Narrow embeds: a 216px image plus a label doesn't fit beside itself on a
    phone, and the label is what identifies the element. Shrink the images
    rather than squeezing the text to one word per line. */
-@media (max-width: 560px) {
+@container a11y-panel (max-width: 560px) {
   .a11y-occurrence-thumb {
     width: 120px;
     height: 88px;
@@ -1211,7 +1219,9 @@
 }
 
 .a11y-sim-btn-active em {
-  color: rgba(255, 255, 255, 0.85);
+  /* Full white, not rgba(255,255,255,0.85): the faded version measured 4.2:1
+     on the accent blue, under the 4.5:1 this product flags other sites for. */
+  color: #ffffff;
 }
 
 .a11y-sim-note {
@@ -1335,6 +1345,27 @@
   font-style: normal;
   font-size: var(--a11y-text-body);
   font-weight: 400;
+}
+
+/* Three columns need room. When the panel cannot give it, the row stacks and
+   the count sits under the text instead of squeezing it into a sliver —
+   measured at a 795px window: badge and count left the body 180px, about
+   twenty characters a line. */
+@container a11y-panel (max-width: 640px) {
+  .a11y-audit-row {
+    flex-wrap: wrap;
+  }
+  .a11y-audit-body {
+    flex-basis: 100%;
+    order: 3;
+  }
+  .a11y-audit-count {
+    text-align: left;
+  }
+  .a11y-audit-count em {
+    display: inline;
+    margin-left: 4px;
+  }
 }
 
 .a11y-audit-score {
@@ -1704,6 +1735,55 @@
   clip: rect(0, 0, 0, 0);
   white-space: nowrap;
   border: 0;
+}
+
+/* Every focusable thing gets a visible ring, whatever it is — including the
+   ones no specific rule below names (accordion heads, copy buttons, links,
+   the focusable statement region, the details summary). Sits before the
+   Carbon layer on purpose: the Carbon rules tie on specificity and win,
+   keeping their inset double ring where they define one. 2px accent clears
+   3:1 against the white background and the grey layer fills. */
+.a11y-widget-biz :is(a, button, input, select, textarea, summary, [tabindex]):focus-visible {
+  outline: 2px solid var(--a11y-accent, #0f62fe);
+  outline-offset: 2px;
+}
+
+/* The sign-in group. A fieldset so the legend is announced as context on
+   every field in it; the default fieldset chrome is stripped because the
+   surrounding .a11y-login panel already draws the box. */
+.a11y-login-fieldset {
+  border: 0;
+  margin: 0;
+  padding: 0;
+  min-width: 0;
+}
+
+.a11y-login-legend {
+  padding: 0;
+  margin-bottom: 8px;
+  font-size: var(--a11y-text-body);
+  font-weight: 600;
+}
+
+.a11y-login .a11y-login-toggle {
+  margin-top: 12px;
+}
+
+/* Reflow at 320px: the 32px padding is an eighth of the whole screen there,
+   and the nowrap status column could push a checklist row sideways. */
+/* The container cannot restyle itself, so its own padding keys off the
+   viewport as before; everything inside keys off the panel. */
+@media (max-width: 480px) {
+  .a11y-widget-inner {
+    padding: 16px;
+  }
+}
+
+@container a11y-panel (max-width: 480px) {
+  .a11y-conf-status,
+  .a11y-method-badge {
+    white-space: normal;
+  }
 }
 
 /* ==========================================================================
@@ -2116,7 +2196,11 @@
 }
 
 .a11y-mode-btn-active::after {
+  /* The empty alternative text keeps screen readers from announcing "check
+     mark" — aria-pressed on the button already carries the state. The plain
+     declaration first is the fallback for browsers without the / syntax. */
   content: "✓";
+  content: "✓" / "";
   position: absolute;
   top: 12px;
   right: 14px;
@@ -2321,4 +2405,222 @@
   font-size: var(--a11y-text-body);
   line-height: 1.5;
   color: var(--a11y-muted, #525252);
+}
+
+/* The score ring's "good" colour, referenced by ScoreGauge but previously
+   never defined — the var fell through to currentColor. Green-60: 3.7:1 on
+   white, enough for a graphical object. */
+.a11y-widget-biz {
+  --a11y-score-good: #198038;
+}
+
+/* ==========================================================================
+   Dark scheme — Carbon Gray 100 tokens.
+   Token overrides first; then the components whose colours are hard-coded
+   tints rather than tokens (notification washes, severity tags, the yellow
+   highlighter). Every pairing checked against 4.5:1 for text and 3:1 for
+   UI parts, same as the light theme.
+
+   Solid blue fills are pinned back to #0f62fe: in dark themes Carbon
+   brightens *links* to blue-40 for contrast against the dark page, but a
+   white-on-blue-40 button would drop to 2.3:1 — the fill colour and the
+   link colour have to part ways here.
+   ========================================================================== */
+@media (prefers-color-scheme: dark) {
+  .a11y-widget-biz {
+    --a11y-text: #f4f4f4;          /* text-primary */
+    --a11y-muted: #c6c6c6;         /* text-secondary — 9:1 on #262626 */
+    --a11y-bg: #161616;            /* background */
+    --a11y-surface: #262626;       /* layer-01 */
+    --a11y-border: #393939;        /* border-subtle-01 */
+    --a11y-accent: #78a9ff;        /* link-primary dark — 6.9:1 on #161616 */
+    --a11y-score-bad: #ff8389;     /* support-error dark */
+    --a11y-score-warn: #ffb784;
+    --a11y-score-good: #42be65;
+  }
+
+  /* Solid primary actions keep the light-theme fill (see note above). */
+  .a11y-widget-biz .a11y-url-row button:not(:disabled),
+  .a11y-widget-biz .a11y-sr-play,
+  .a11y-widget-biz .a11y-alt-copy,
+  .a11y-widget-biz .a11y-sim-btn-active {
+    background: #0f62fe;
+    color: #ffffff;
+  }
+
+  .a11y-widget-biz .a11y-url-row button:hover:not(:disabled) {
+    background: #0353e9;
+  }
+
+  .a11y-widget-biz .a11y-url-row button:disabled {
+    background: #525252;
+    color: #8d8d8d;
+  }
+
+  .a11y-widget-biz .a11y-sim-btn-active {
+    border-color: #0f62fe;
+  }
+
+  /* Tertiary buttons fill on hover; white text needs the darker blue. */
+  .a11y-widget-biz .a11y-show-all:hover,
+  .a11y-widget-biz .a11y-accordion-row .a11y-sr-play:hover {
+    background: #0f62fe;
+    color: #ffffff;
+  }
+
+  .a11y-widget-biz .a11y-mode-btn:hover {
+    background: #333333;
+  }
+
+  .a11y-widget-biz .a11y-url-row input::placeholder {
+    color: #a8a8a8;
+  }
+
+  /* Notification washes. */
+  .a11y-widget-biz .a11y-error {
+    background: rgba(255, 131, 137, 0.12);
+  }
+
+  .a11y-widget-biz .a11y-notice {
+    background: rgba(120, 169, 255, 0.12);
+  }
+
+  .a11y-widget-biz .a11y-section-redflag,
+  .a11y-widget-biz .a11y-conf-tile-fail,
+  .a11y-widget-biz .a11y-sr-line-issue,
+  .a11y-widget-biz .a11y-conf-failed,
+  .a11y-widget-biz .a11y-hist-new,
+  .a11y-widget-biz .a11y-doc-bad {
+    background: rgba(255, 131, 137, 0.1);
+    border-color: rgba(255, 131, 137, 0.4);
+  }
+
+  .a11y-widget-biz .a11y-section-redflag {
+    border-left-color: var(--a11y-score-bad, #ff8389);
+  }
+
+  .a11y-widget-biz .a11y-sr-issue-count {
+    background: rgba(255, 131, 137, 0.12);
+    border-color: rgba(255, 131, 137, 0.4);
+  }
+
+  .a11y-widget-biz .a11y-hist-fixed {
+    border-color: rgba(66, 190, 101, 0.5) !important;
+  }
+
+  /* The base rule pins these with !important, so the dark values must match. */
+  .a11y-widget-biz .a11y-hist-new {
+    background: rgba(255, 131, 137, 0.1) !important;
+    border-color: rgba(255, 131, 137, 0.4) !important;
+  }
+
+  .a11y-widget-biz .a11y-hist-up .a11y-conf-num {
+    color: #42be65;
+  }
+
+  /* Severity tags: Carbon's dark tags invert the pair — deep fill, pale text. */
+  .a11y-widget-biz .a11y-severity-critical .a11y-severity-badge {
+    background: #a2191f;
+    color: #ffd7d9;
+  }
+
+  .a11y-widget-biz .a11y-severity-serious .a11y-severity-badge {
+    background: #9f1853;
+    color: #ffd6e8;
+  }
+
+  .a11y-widget-biz .a11y-severity-moderate .a11y-severity-badge {
+    background: #6929c4;
+    color: #e8daff;
+  }
+
+  .a11y-widget-biz .a11y-severity-minor .a11y-severity-badge {
+    background: #393939;
+    color: #f4f4f4;
+  }
+
+  /* The critical-finding highlighter. */
+  .a11y-widget-biz .a11y-severity-critical .a11y-finding-header {
+    background: rgba(241, 194, 27, 0.1);
+  }
+
+  .a11y-widget-biz .a11y-severity-critical .a11y-finding-header[aria-expanded="true"] {
+    background: var(--a11y-bg, #161616);
+  }
+
+  .a11y-widget-biz .a11y-w22-already-failing {
+    background: rgba(241, 194, 27, 0.08);
+    border-left-color: var(--a11y-score-warn, #ffb784);
+  }
+
+  /* Method badges: -40-range hues clear 4.5:1 on the dark grounds. */
+  .a11y-widget-biz .a11y-method-keyboard {
+    border-color: #4589ff;
+    color: #78a9ff;
+  }
+
+  .a11y-widget-biz .a11y-method-ai,
+  .a11y-widget-biz .a11y-fix-content {
+    border-color: #a56eff;
+    color: #be95ff;
+  }
+
+  .a11y-widget-biz .a11y-fix-design {
+    border-color: #1192e8;
+    color: #82cfff;
+  }
+
+  .a11y-widget-biz .a11y-fix-document {
+    border-color: #009d9a;
+    color: #3ddbd9;
+  }
+
+  .a11y-widget-biz .a11y-fix-once {
+    background: rgba(120, 169, 255, 0.12);
+  }
+
+  .a11y-widget-biz .a11y-fix-once code,
+  .a11y-widget-biz .a11y-blocked-list code,
+  .a11y-widget-biz .a11y-alt-suggestion-value code,
+  .a11y-widget-biz .a11y-hist-list li {
+    background: var(--a11y-surface, #262626);
+  }
+
+  /* Screenshots were captured on the scanned page's own background; a white
+     backing keeps them legible instead of dissolving into the dark theme. */
+  .a11y-widget-biz .a11y-occurrence-thumb,
+  .a11y-widget-biz .a11y-finding-thumb,
+  .a11y-widget-biz .a11y-finding-thumb-large,
+  .a11y-widget-biz .a11y-sim-frame {
+    background: #ffffff;
+  }
+}
+
+/* ==========================================================================
+   Forced colors (Windows High Contrast). The system strips backgrounds and
+   repaints text, so anything that only a fill distinguishes gets a real
+   border, and the colour swatches — where the colour IS the content — opt
+   out of repainting entirely.
+   ========================================================================== */
+@media (forced-colors: active) {
+  .a11y-severity-badge,
+  .a11y-count-badge,
+  .a11y-sr-issue-count,
+  .a11y-occurrence-count {
+    border: 1px solid CanvasText;
+  }
+
+  /* A selected tile's inset box-shadow is dropped by the system; the tick
+     (mode) and aria-pressed survive, and this outline restores a visible
+     difference. */
+  .a11y-widget-biz [aria-pressed="true"] {
+    outline: 3px double CanvasText;
+    outline-offset: -4px;
+  }
+
+  /* The swatch exists to show a colour; repainting it to Canvas would turn
+     the suggestion into two identical grey squares. */
+  .a11y-swatch {
+    forced-color-adjust: none;
+  }
 }
