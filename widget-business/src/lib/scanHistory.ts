@@ -41,7 +41,26 @@ export interface HistoryEntry {
   // Rule ids present in this scan, which is what makes a meaningful diff
   // possible: descriptions embed per-page counts and change between runs.
   ruleIds: string[];
+  // Which set of scoring rules produced `score`.
+  //
+  // A score is only comparable with another one counted the same way, and this
+  // report has changed what counts: four checks that used to sit outside the
+  // number now go into it. A site nobody touched drops several points across
+  // that change, and the panel above would have announced "score is down" and
+  // named a regression that never happened.
+  //
+  // Absent on entries stored before this existed, which is the same situation:
+  // scored by other rules, not comparable.
+  scoringVersion?: number;
 }
+
+// Bump when a change alters what the score counts, not when a rule's wording
+// or a threshold moves — a threshold change is a real change in the site's
+// standing, and should show.
+//
+// 2: skip links, unlabelled menu sets, pop-ups with no close control and
+//    invalid markup began counting towards the score (2026-07-29).
+export const SCORING_VERSION = 2;
 
 type HistoryStore = Record<string, HistoryEntry[]>;
 
@@ -103,7 +122,19 @@ export function toHistoryEntry(report: AccessibilityReport): HistoryEntry {
     minor: report.summary.minor,
     conformanceFailed: report.conformance?.failed ?? 0,
     ruleIds,
+    scoringVersion: SCORING_VERSION,
   };
+}
+
+/**
+ * Whether two entries' scores were counted the same way, and can be compared.
+ *
+ * Everything else in the comparison survives a scoring change: the rule ids
+ * are what they always were, so "problems gone" and "new problems" stay true.
+ * Only the number needs withholding.
+ */
+export function scoresComparable(a: HistoryEntry, b: HistoryEntry): boolean {
+  return (a.scoringVersion ?? 1) === (b.scoringVersion ?? 1);
 }
 
 /**

@@ -1,10 +1,5 @@
 import { describe, it, expect } from "vitest";
-import {
-  diffScans,
-  historyKey,
-  toHistoryEntry,
-  type HistoryEntry,
-} from "../src/lib/scanHistory";
+import { diffScans, historyKey, toHistoryEntry, type HistoryEntry, scoresComparable, SCORING_VERSION } from "../src/lib/scanHistory";
 import type { AccessibilityFinding, AccessibilityReport } from "../src/api/scanClient";
 
 function entry(overrides: Partial<HistoryEntry> = {}): HistoryEntry {
@@ -234,5 +229,43 @@ describe("recordScan", () => {
     };
     expect(() => recordScan(report([]), false)).not.toThrow();
     expect(getHistory("https://example.com/page")).toEqual([]);
+  });
+});
+
+// A score is only comparable with another counted the same way. Four checks
+// moved into the number on 2026-07-29, so a site nobody touched drops several
+// points across that change — and the panel would have announced "score is
+// down" and named a regression that never happened.
+describe("scoresComparable", () => {
+  const entry = (over: Partial<HistoryEntry>): HistoryEntry => ({
+    url: "example.com",
+    scannedAt: "2026-07-29T10:00:00.000Z",
+    score: 50,
+    critical: 0,
+    serious: 0,
+    moderate: 0,
+    minor: 0,
+    conformanceFailed: 0,
+    ruleIds: [],
+    ...over,
+  });
+
+  it("compares two scans counted the same way", () => {
+    expect(scoresComparable(entry({ scoringVersion: 2 }), entry({ scoringVersion: 2 }))).toBe(true);
+  });
+
+  it("refuses to compare across a change in what counts", () => {
+    expect(scoresComparable(entry({ scoringVersion: 1 }), entry({ scoringVersion: 2 }))).toBe(false);
+  });
+
+  // Everything stored before the field existed was scored by the old rules,
+  // which is the same situation rather than an unknown one.
+  it("treats an entry from before this existed as the older rules", () => {
+    expect(scoresComparable(entry({}), entry({ scoringVersion: 2 }))).toBe(false);
+    expect(scoresComparable(entry({}), entry({ scoringVersion: 1 }))).toBe(true);
+  });
+
+  it("stamps new entries with the current version", () => {
+    expect(SCORING_VERSION).toBeGreaterThanOrEqual(2);
   });
 });

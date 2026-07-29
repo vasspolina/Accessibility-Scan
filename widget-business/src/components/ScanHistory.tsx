@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { clearHistory, diffScans, type HistoryEntry } from "../lib/scanHistory";
+import { clearHistory, diffScans, scoresComparable, type HistoryEntry } from "../lib/scanHistory";
 import { plainForRule } from "../lib/wcagPlain";
 
 // Shows whether the work actually moved anything. A score on its own is a
@@ -34,6 +34,12 @@ export function ScanHistory({
   const diff = diffScans(last, current);
   const up = diff.scoreChange > 0;
   const flat = diff.scoreChange === 0;
+  // Two scores are only comparable if they were counted the same way. When
+  // what counts has changed under a site, the difference between the numbers
+  // is our doing rather than theirs, and calling it "score is down" would name
+  // a regression that never happened. The rule ids are unaffected, so the two
+  // tiles beside this one stay exactly as true as they were.
+  const comparable = scoresComparable(last, current);
 
   return (
     <section className="a11y-section a11y-hist">
@@ -45,18 +51,40 @@ export function ScanHistory({
       </h2>
       <p className="a11y-section-desc">
         Compared with {formatDate(last.scannedAt)}. Kept in this browser only, never sent anywhere.
+        {!comparable && (
+          <>
+            {" "}
+            The scoring has changed since that scan — some checks that used to
+            sit outside the number now count towards it — so the two scores are
+            not a fair comparison and no change is claimed. What was fixed and
+            what appeared is unaffected, and is shown below.
+          </>
+        )}
       </p>
 
       <div className="a11y-conf-tiles">
-        <div className={`a11y-conf-tile${up ? " a11y-hist-up" : ""}`}>
+        <div className={`a11y-conf-tile${comparable && up ? " a11y-hist-up" : ""}`}>
           <span className="a11y-conf-num">
-            {flat ? current.score : `${up ? "+" : ""}${diff.scoreChange}`}
+            {!comparable
+              ? current.score
+              : flat
+                ? current.score
+                : `${up ? "+" : ""}${diff.scoreChange}`}
           </span>
           <span className="a11y-conf-cap">
-            <strong>{flat ? "score unchanged" : up ? "score is up" : "score is down"}</strong>
-            <em>
-              {last.score} then, {current.score} now
-            </em>
+            {comparable ? (
+              <>
+                <strong>{flat ? "score unchanged" : up ? "score is up" : "score is down"}</strong>
+                <em>
+                  {last.score} then, {current.score} now
+                </em>
+              </>
+            ) : (
+              <>
+                <strong>not comparable</strong>
+                <em>the earlier scan was scored by different rules</em>
+              </>
+            )}
           </span>
         </div>
         <div className="a11y-conf-tile">
