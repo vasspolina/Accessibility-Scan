@@ -207,3 +207,27 @@ describe("links whose text says nothing", () => {
     expect(vague(...many)).toHaveLength(12);
   });
 });
+
+// Three rules moved out of the notes and into the score. They are about
+// whether somebody can get through the page — a menu nobody can tell apart,
+// no way past the navigation, a pop-up that will not close — not about how it
+// looks, and the score is what the report treats as consequential.
+describe("what counts towards the score", () => {
+  it("files the access advisories as accessibility, not design", () => {
+    const findings = evaluateComponents({
+      landmarks: [
+        { role: "nav", label: "", selector: "nav" },
+        { role: "nav", label: "", selector: "nav:nth-of-type(2)" },
+      ],
+      interactiveElements: [
+        { type: "link", accessibleName: "Home", href: "/", selector: "a" },
+      ],
+      linkTexts: [],
+      forms: [],
+      dialogs: [],
+    } as never);
+    const byRule = Object.fromEntries(findings.map((f) => [f.ruleId, f.category]));
+    expect(byRule["component-nav-labels"]).toBe("accessibility");
+    expect(byRule["component-skip-link"]).toBe("accessibility");
+  });
+});

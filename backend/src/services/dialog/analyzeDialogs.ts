@@ -184,7 +184,12 @@ export function evaluateDialogs(
       makeFinding(
         "dialog-no-close",
         "moderate",
-        "design-clarity",
+        // Access, not decoration. Its siblings on this layer -- no Escape, no
+        // name, focus never moved -- are all accessibility findings, and a
+        // pop-up that cannot be dismissed is the same kind of problem: a
+        // keyboard user is left behind it. It sat outside the score only
+        // because nothing here can point at a criterion for it.
+        "accessibility",
         pick(noClose),
         `A pop-up appears to have no obvious close button (${noClose.length} pop-up${noClose.length === 1 ? "" : "s"}). If it can only be dismissed by clicking outside it, keyboard and screen-reader users may be stuck behind it.`,
         "Add a clearly-labelled close button inside the pop-up, and make sure pressing Escape closes it too.",

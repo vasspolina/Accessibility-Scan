@@ -87,7 +87,16 @@ export async function markupFindingsFromHtml(html: string): Promise<Accessibilit
       id: randomUUID(),
       source: "automated",
       severity: "minor",
-      category: "design-clarity",
+      // Counts towards the score, by the owner's decision, and the reasoning
+      // holds: WCAG 2.2 retired 4.1.1 Parsing because browsers recover from
+      // most bad markup, but the failures that survive that recovery are
+      // assistive-technology failures. A duplicate id silently breaks every
+      // aria reference pointing at it, and nothing else in this report would
+      // catch that.
+      //
+      // Minor severity, deliberately unchanged: it is one point of penalty,
+      // which is the weight of a thing worth knowing rather than a barrier.
+      category: "accessibility",
       selector: "html",
       description: `The page's HTML has ${messages.length} markup validity issue${messages.length === 1 ? "" : "s"}. For example: ${examples}. Invalid markup forces browsers and assistive technology to guess at the page structure, and different ones guess differently.`,
       suggestedFix:

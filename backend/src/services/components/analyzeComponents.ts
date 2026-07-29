@@ -45,13 +45,17 @@ function makeFinding(
   selector: string,
   description: string,
   suggestedFix: string,
-  helpUrl: string
+  helpUrl: string,
+  // Most of this layer is advice about clarity. A few of its rules are about
+  // whether somebody can get through the page at all, and those belong with
+  // the findings that count.
+  category: AccessibilityFinding["category"] = "design-clarity"
 ): AccessibilityFinding {
   return {
     id: randomUUID(),
     source: "automated",
     severity: "minor",
-    category: "design-clarity",
+    category,
     selector,
     description,
     suggestedFix,
@@ -184,7 +188,8 @@ export function evaluateComponents(dom: DomSignals): AccessibilityFinding[] {
         unlabelledNavs[0].selector,
         `The page has ${navs.length} separate navigation menus, and ${unlabelledNavs.length} of them have no label. Someone using a screen reader hears each one announced only as "navigation" and can't tell the main menu from the footer links or breadcrumbs.`,
         'Give each navigation an aria-label describing its purpose — aria-label="Main menu", aria-label="Footer", aria-label="Breadcrumb" — so they\'re distinguishable when listed.',
-        "https://www.w3.org/WAI/ARIA/apg/patterns/landmarks/examples/navigation.html"
+        "https://www.w3.org/WAI/ARIA/apg/patterns/landmarks/examples/navigation.html",
+        "accessibility"
       )
     );
   }
@@ -203,7 +208,8 @@ export function evaluateComponents(dom: DomSignals): AccessibilityFinding[] {
         navs[0].selector,
         "There's no \"skip to main content\" link. Keyboard and screen-reader users have to tab through the entire navigation menu on every single page before they can reach the actual content.",
         'Add a skip link as the very first focusable element: a link to #main-content that\'s visually hidden until focused. It\'s a small addition that saves keyboard users dozens of key presses per page.',
-        "https://www.w3.org/WAI/WCAG21/Understanding/bypass-blocks.html"
+        "https://www.w3.org/WAI/WCAG21/Understanding/bypass-blocks.html",
+        "accessibility"
       )
     );
   }

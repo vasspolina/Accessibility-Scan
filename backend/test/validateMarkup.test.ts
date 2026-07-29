@@ -21,12 +21,17 @@ describe("markupFindingsFromHtml", () => {
     expect(await markupFindingsFromHtml(VALID_PAGE)).toEqual([]);
   });
 
-  it("returns one grouped design-clarity finding for broken HTML", async () => {
+  // Counted towards the score by the owner's decision. WCAG 2.2 retired 4.1.1
+  // Parsing because browsers recover from most bad markup — but a duplicate id
+  // still breaks every aria reference pointing at it, silently, and nothing
+  // else in this report looks for that. Minor: one point of penalty, the
+  // weight of a thing worth knowing rather than a barrier.
+  it("returns one grouped accessibility finding for broken HTML", async () => {
     const findings = await markupFindingsFromHtml(BROKEN_PAGE);
     expect(findings).toHaveLength(1);
     const f = findings[0];
     expect(f.ruleId).toBe("markup-validation");
-    expect(f.category).toBe("design-clarity");
+    expect(f.category).toBe("accessibility");
     expect(f.severity).toBe("minor");
     expect(f.description).toMatch(/markup validity issue/);
     expect(f.helpUrl).toBe("https://validator.w3.org/");
