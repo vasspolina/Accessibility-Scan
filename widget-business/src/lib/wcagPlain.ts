@@ -295,7 +295,7 @@ export const PLAIN_RULE_EXPLANATIONS: Record<string, PlainRule> = {
     impact: "People using screen readers can't tell what state it's in, or how to work it.",
   },
   "aria-hidden-focus": {
-    plain: "Something hidden from screen readers can still be reached with the Tab key.",
+    plain: "An element hidden from screen readers can still be reached with the Tab key.",
     found: (n) =>
       `${n} ${n === 1 ? "element is" : "elements are"} hidden from screen readers while still being reachable by keyboard, so focus lands somewhere that announces nothing.`,
     impact: "Someone tabbing through lands on something their screen reader won't read. The page feels broken.",
@@ -313,7 +313,7 @@ export const PLAIN_RULE_EXPLANATIONS: Record<string, PlainRule> = {
       "Screen readers announce the outer one and hide what is inside it, so the inner control is unreachable. Which of the two a click or a keypress activates is anyone's guess.",
   },
   "presentation-role-conflict": {
-    plain: "Something is marked in the code as decoration while still working as a control.",
+    plain: "An element is marked in the code as decoration while still working as a control.",
     impact:
       "The code says to ignore it and the element says to use it. Screen readers resolve that inconsistently, so some people never find it.",
   },
@@ -345,7 +345,12 @@ export const PLAIN_RULE_EXPLANATIONS: Record<string, PlainRule> = {
   // Keyboard walk-through checks (WCAG 2.4.7 Focus Visible, 2.1.2 No
   // Keyboard Trap, 2.1.1 Keyboard) — from real Tab presses during the scan.
   "keyboard-mouse-only": {
-    plain: "Something on the page works when clicked but cannot be reached with the keyboard at all.",
+    // "Something on the page" was hedging about a thing we had measured. The
+    // scan watched this element take a click handler and then watched Tab
+    // never reach it, so it is a control — that is what a control is — and
+    // saying so is both more accurate and more confident than "something".
+    // The impact line below had been calling it a control all along.
+    plain: "A control works when clicked but cannot be reached with the keyboard at all.",
     impact:
       "There is no workaround for this one. Anyone who cannot use a mouse simply cannot do whatever this control does — and if it's a Buy button or a form step, that's the end of the visit.",
   },
@@ -558,7 +563,7 @@ export const PLAIN_RULE_EXPLANATIONS: Record<string, PlainRule> = {
       "Nobody can stop it. It's disorienting, it drowns out screen readers, and people leave.",
   },
   "motion-infinite-no-reduced-motion": {
-    plain: "Something on the page animates non-stop, even for visitors who asked their device for less motion.",
+    plain: "An animation runs non-stop, even for visitors who asked their device for less motion.",
     impact:
       "Perpetual movement pulls attention away from your content, and for people with vestibular disorders it can cause dizziness or nausea.",
   },

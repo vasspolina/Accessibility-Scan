@@ -70,3 +70,16 @@ describe("what-we-found text", () => {
     }
   });
 });
+
+// "Something on the page works when clicked but cannot be reached with the
+// keyboard" was hedging about a thing the scan had measured: it watched the
+// element take a click handler and watched Tab never reach it. Naming what
+// was found is both more accurate and more confident, and the impact lines
+// underneath were already using the right words.
+describe("titles name what was found", () => {
+  it("never opens with a hedge", () => {
+    for (const [id, rule] of Object.entries(PLAIN_RULE_EXPLANATIONS)) {
+      expect(rule.plain, `${id} hedges`).not.toMatch(/^(something|some thing|stuff)\b/i);
+    }
+  });
+});

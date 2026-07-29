@@ -209,7 +209,7 @@ export function evaluateKeyboardNav(nav: KeyboardNavResult): AccessibilityFindin
         // to know something on their page cannot be reached, and why. The
         // exact element is named in the technical version and shown in the
         // picture; whoever fixes it will not be short of detail.
-        `${c.label ? `"${c.label}"` : "Something on this page"} responds when you click it, but pressing Tab never reaches it. It was built as an ordinary piece of the page rather than as a button or a link, and only buttons and links can be reached by keyboard. So this is not merely awkward to get to without a mouse — there is no way to get to it at all.`,
+        `${c.label ? `"${c.label}"` : "A control on this page"} responds when you click it, but pressing Tab never reaches it. It was built as an ordinary piece of the page rather than as a button or a link, and only buttons and links can be reached by keyboard. So this is not merely awkward to get to without a mouse — there is no way to get to it at all.`,
         // Plain instruction first, because that is the one the owner can act
         // on — brief their developer, or check it was done. The specifics
         // follow, addressed to whoever writes the code, so the technical
