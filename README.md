@@ -19,10 +19,19 @@ Every scan renders the page in headless Chromium and layers:
   reading order versus source order, typography (including leading judged
   against line length), markup validity, and GDPR consent banners — read in
   nine languages, inside consent-platform iframes if that is where they live.
-- **An optional AI review** that reads the page the way a person might. Its
-  findings are marked as such, its hedged or low-confidence claims are
-  dropped, and where a deterministic rule proved the same fault the measured
-  finding wins — one fault, one card.
+- **An optional AI review** that reads the page the way a person might,
+  including an age-inclusive lens: the decisions that pass every rule and
+  still cost a visitor in their sixties or eighties the task. Its findings
+  are marked as such, its hedged or low-confidence claims are dropped, its
+  framing rules are enforced in code rather than requested in prose, and
+  where a deterministic rule proved the same fault the measured finding wins
+  — one fault, one card.
+
+Common findings also carry a hand-curated "what the research shows" line —
+WebAIM Million, WHO, Click-Away Pound and their peers, written without a
+single digit so an invented or stale figure can never reach a reader. A test
+enforces that, along with the vocabulary the report refuses across all its
+copy.
 
 The score counts only findings groundable in WCAG A/AA. Design notes, dark
 patterns, and AAA advice are reported but never move the number, and the

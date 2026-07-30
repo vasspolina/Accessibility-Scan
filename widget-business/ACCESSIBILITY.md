@@ -40,10 +40,13 @@ misreading shadow DOM, plus real landmark and overflow faults on the host
 page, all fixed).
 
 The report state, which the pipeline cannot reach because it always scans
-fresh, was scanned 29 July through the dev fixture: canned report rendered,
-every card and drawer expanded, axe 4.12.1 against the shadow root with tags
+fresh, is scanned through the dev fixture: canned report rendered, every card
+and drawer expanded, axe 4.12.1 against the shadow root with tags
 wcag2a/2aa/21a/21aa/22aa/best-practice. **Zero violations and zero
-incompletes, in light mode and in dark mode.** axe's coverage remains the
+incompletes, in light mode and in dark mode** — first run 29 July; re-run 30
+July after the report grew age-inclusive notes, research lines and stacked
+audit rows, with the same result. The evidence is re-earned when the report's
+surfaces change, not assumed from the last pass. axe's coverage remains the
 floor, not the finish line: it reaches roughly half of issues by volume.
 
 **7.2 Keyboard.** Initial state: machine-verified by our own keyboard layer —
