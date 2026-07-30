@@ -25,6 +25,13 @@
       </p>
       <button type="button">Consent and continue</button>
       <a href="#">Privacy settings</a>
+      <!-- An axe violation inside the consent frame: axe injected into the
+           host page cannot see this. The frame audit exists to catch it. -->
+      <img
+        src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='90' height='30'%3E%3Crect width='90' height='30' fill='%23ccd6e4'/%3E%3Crect x='8' y='8' width='74' height='14' fill='%23405a7c'/%3E%3C/svg%3E"
+        width="90"
+        height="30"
+      />
     </div>
   </body>
 </html>

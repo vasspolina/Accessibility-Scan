@@ -239,6 +239,10 @@ export interface RenderResult {
   // opt-ins, confirmshaming, urgency claims) — evaluated into dark-pattern
   // findings (services/darkPatterns/analyzeDarkPatterns.ts).
   darkPatternSignals: DarkPatternSignals;
+  // Selectors whose findings were measured inside an iframe, mapped to that
+  // frame's origin. The capture pass resolves these inside the frame, and the
+  // report's picture notes say where the element actually lives.
+  frameSelectors: Record<string, string>;
   // Approximation of what a screen reader announces, in reading order —
   // rendered as a playable preview in the widget.
   screenReaderScript: ScreenReaderScript;
@@ -1226,8 +1230,11 @@ export async function captureSelectorsFresh(
         // per-visit message id -- spiegel.de's ends "?message_id=142" -- so an
         // exact comparison would miss on the second visit every time.
         const wantOrigin = frameForSelector[selector];
+        // Main frame excluded for the same reason as the frame audit: every
+        // file:// document's origin is the literal string "null", and an
+        // origin match would hand a fixture's selectors to the host page.
         const scope: Page | Frame = wantOrigin
-          ? (page.frames().find((f) => originOf(f.url()) === wantOrigin) ?? page)
+          ? (page.frames().find((f) => f !== page.mainFrame() && originOf(f.url()) === wantOrigin) ?? page)
           : page;
         // The frame is gone on this visit (consent already given, a different
         // CMP flight, a frame that failed to load). Photographing the same
@@ -2571,6 +2578,47 @@ export async function renderAndScan(
       const darkPatternSignals = await timed("darkPatterns", () =>
         collectDarkPatternsAcrossFrames(page)
       );
+
+      // axe injected into the page never sees inside an iframe — and on a
+      // large share of European sites the iframe is where the consent
+      // banner's own controls live, rendered there by Sourcepoint, OneTrust
+      // or Didomi. An unlabeled toggle inside that frame is exactly the kind
+      // of fault this product is sold on catching, and it was invisible to
+      // every deterministic rule. The whole frame tree is deliberately NOT
+      // scanned — ad frames would flood the report with third-party noise
+      // the owner cannot fix — only the one frame we already identified as
+      // holding the consent banner.
+      const frameSelectors: Record<string, string> = {};
+      if (darkPatternSignals.consentBanner?.frameUrl) {
+        await timed("axeConsentFrame", async () => {
+          try {
+            const frameUrl = darkPatternSignals.consentBanner!.frameUrl!;
+            const wantOrigin = originOf(frameUrl);
+            // Never the main frame, and exact URL beats origin: every file://
+            // document has the literal origin "null", so an origin match on a
+            // fixture would select the host page and audit it twice.
+            const frame = page
+              .frames()
+              .find((f) => f !== page.mainFrame() && (f.url() === frameUrl || originOf(f.url()) === wantOrigin));
+            if (!frame) return;
+            await frame.addScriptTag({ path: require.resolve("axe-core") });
+            const frameAxe = (await frame.evaluate(() =>
+              (window as unknown as { axe: { run: () => Promise<unknown> } }).axe.run()
+            )) as AxeRunResult;
+            for (const violation of frameAxe.violations) {
+              // Cap per rule: one consent dialog can hold forty toggle rows,
+              // and the report shows one card per rule anyway.
+              violation.nodes = violation.nodes.slice(0, 8);
+              for (const node of violation.nodes) {
+                frameSelectors[axeTargetToSelector(node.target)] = wantOrigin;
+              }
+              axe.violations.push(violation);
+            }
+          } catch {
+            // A slow or detached frame costs the frame audit, never the scan.
+          }
+        });
+      }
       // Reading-order walk of the accessibility tree, collected in the same
       // pristine desktop state. Best-effort: an empty script just hides the
       // preview rather than costing the report.
@@ -2818,6 +2866,7 @@ export async function renderAndScan(
         keyboardNav,
         mobileSignals,
         darkPatternSignals,
+        frameSelectors,
         screenReaderScript,
         textResizeSignals,
         incompleteChecks: [

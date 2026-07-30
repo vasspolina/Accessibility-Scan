@@ -119,7 +119,9 @@ async function attachEvidence(
     // second visit resolves its path against the host document and photographs
     // whatever happens to sit there.
     const banner = renderResult.darkPatternSignals.consentBanner;
-    const frameForSelector: Record<string, string> = {};
+    // Everything measured inside a frame — axe findings from the consent
+    // frame audit, and the banner findings themselves.
+    const frameForSelector: Record<string, string> = { ...renderResult.frameSelectors };
     if (banner?.frameUrl) {
       for (const f of unpictured) {
         if (f.ruleId?.startsWith("dark-consent-")) frameForSelector[f.selector] = originOfUrl(banner.frameUrl);
@@ -147,7 +149,7 @@ async function attachEvidence(
       if (finding.pictureNote && frameForSelector[finding.selector]) {
         finding.pictureNote =
           finding.pictureNote.replace(" The technical details for this finding identify the exact element.", "") +
-          ` This banner is served inside a consent frame from ${frameForSelector[finding.selector]}, so the selector in the technical details is a path within that frame rather than within your own page.`;
+          ` This element lives inside the consent frame from ${frameForSelector[finding.selector]}, so the selector in the technical details is a path within that frame rather than within your own page.`;
       }
     }
   }

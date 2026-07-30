@@ -437,3 +437,30 @@ describe("qa-shadow-violations.html: an axe violation inside a shadow root", () 
     ).toBeTruthy();
   }, 120_000);
 });
+
+describe("qa-consent-frame.html: axe inside the consent frame", () => {
+  // axe injected into the host page never sees inside an iframe, and on a
+  // large share of European sites the iframe is where the consent controls
+  // live. The frame audit runs axe in the one frame already identified as
+  // holding the banner — never the whole frame tree, which would flood the
+  // report with third-party ad noise.
+  it("finds a violation the host-page audit cannot see", async () => {
+    const url = "file://" + path.resolve("public/qa-consent-frame.html");
+    const r = await renderAndScan(url, undefined, 90_000);
+    const findings = axeToFindings(r.axe);
+    const alt = findings.find(
+      (f) => f.ruleId === "image-alt" && r.frameSelectors[f.selector]
+    );
+    expect(alt, "no image-alt finding attributed to the frame").toBeDefined();
+  }, 120_000);
+
+  // The host page must not be audited twice: every file:// document has the
+  // literal origin "null", and an origin-matched frame lookup used to be one
+  // main-frame collision away from exactly that.
+  it("does not duplicate the host page's own findings", async () => {
+    const url = "file://" + path.resolve("public/qa-consent-frame.html");
+    const r = await renderAndScan(url, undefined, 90_000);
+    const ids = r.axe.violations.map((v) => v.id);
+    expect(new Set(ids).size, "a rule appears twice — host audited twice").toBe(ids.length);
+  }, 120_000);
+});
