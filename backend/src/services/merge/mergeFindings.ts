@@ -379,8 +379,7 @@ export function applyAgeEnrichments(
     );
     if (!target) continue;
     noted.add(key);
-    const note = e.ageNote.trim().replace(/\.?$/, ".");
-    target.description = `${target.description} ${note}`;
+    target.ageNote = e.ageNote.trim().replace(/\.?$/, ".");
   }
   return { received: enrichments.length, attached: noted.size };
 }

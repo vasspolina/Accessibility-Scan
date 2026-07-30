@@ -18,7 +18,8 @@ describe("applyAgeEnrichments", () => {
       ruleId: "typo-font-size-small", selector: "main > p",
       ageNote: "At sixty, perceiving the same brightness takes about three times the light it did at twenty",
     }]);
-    expect(f.description).toMatch(/three times the light it did at twenty\.$/);
+    expect(f.ageNote).toMatch(/three times the light it did at twenty\.$/);
+    expect(f.description).toBe("Body text is set at 14px.");
   });
 
   // Prompt instructions set direction; they do not enforce invariants. The
@@ -31,9 +32,8 @@ describe("applyAgeEnrichments", () => {
       "Offer a senior mode with larger text.",
     ]) {
       const f = finding({});
-      const before = f.description;
       applyAgeEnrichments([f], [{ ruleId: "typo-font-size-small", selector: "main > p", ageNote: bad }]);
-      expect(f.description, bad).toBe(before);
+      expect(f.ageNote, bad).toBeUndefined();
     }
   });
 
@@ -44,21 +44,19 @@ describe("applyAgeEnrichments", () => {
       ruleId: "typo-font-size-small", selector: "main > p",
       ageNote: "Text this size is the first thing seniority in a design review flags",
     }]);
-    expect(f.description).toContain("seniority");
+    expect(f.ageNote).toContain("seniority");
   });
 
   it("attaches nothing to a finding that does not exist", () => {
     const f = finding({});
-    const before = f.description;
     applyAgeEnrichments([f], [{ ruleId: "color-contrast", selector: "footer a", ageNote: "A real note." }]);
-    expect(f.description).toBe(before);
+    expect(f.ageNote).toBeUndefined();
   });
 
   it("never enriches an AI finding — only measured ones carry notes", () => {
     const f = finding({ source: "ai-review" });
-    const before = f.description;
     applyAgeEnrichments([f], [{ ruleId: "typo-font-size-small", selector: "main > p", ageNote: "A note." }]);
-    expect(f.description).toBe(before);
+    expect(f.ageNote).toBeUndefined();
   });
 
   it("takes the first note per finding and ignores repeats", () => {
@@ -67,7 +65,6 @@ describe("applyAgeEnrichments", () => {
       { ruleId: "typo-font-size-small", selector: "main > p", ageNote: "First note" },
       { ruleId: "typo-font-size-small", selector: "main > p", ageNote: "Second note" },
     ]);
-    expect(f.description).toContain("First note.");
-    expect(f.description).not.toContain("Second note");
+    expect(f.ageNote).toBe("First note.");
   });
 });

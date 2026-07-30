@@ -523,6 +523,15 @@ export function FindingGroup({
               <strong>What we found:</strong> <CodeText text={measured} />
             </p>
           )}
+          {/* Its own line, not folded into the text above: rules with a
+              plain-language account replace the description entirely, which
+              made the first of these notes invisible on the very rule it
+              attached to. */}
+          {rep.ageNote && (
+            <p className="a11y-finding-measured">
+              <strong>Past sixty:</strong> <CodeText text={rep.ageNote} />
+            </p>
+          )}
           {/* Shared explanation — shown once for the whole group */}
           {plain && (
             <p className="a11y-finding-impact">

@@ -40,6 +40,8 @@ export interface AccessibilityFinding {
   // element, when the backend could locate and capture it.
   elementScreenshot?: string;
   pictureNote?: string;
+  // One sentence from the age-inclusive review, shown as its own line.
+  ageNote?: string;
   // AI-suggested alt text for an image that's missing one. A non-empty
   // string is ready-to-use alt text; an empty string means the image looks
   // decorative and should get alt=""; undefined means none was generated.

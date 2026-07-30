@@ -58,6 +58,12 @@ export const accessibilityFindingSchema = z.object({
   // usually correct behaviour, and saying so is what stops a picture-less
   // finding reading as a broken report.
   pictureNote: z.string().optional(),
+  // One sentence from the age-inclusive review on how this measured finding
+  // lands for visitors past sixty. Its own field, not folded into the
+  // description: rules with a plain-language account show that account
+  // instead of the description, which made the first shipped note invisible
+  // on the very rule it attached to.
+  ageNote: z.string().optional(),
   // For images missing alt text: an AI-generated, ready-to-use alt-text
   // suggestion based on looking at the actual image (see aiReview/
   // suggestAltText.ts). Present only when the AI layer ran and produced one.

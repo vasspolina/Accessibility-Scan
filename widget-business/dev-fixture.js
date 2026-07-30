@@ -70,6 +70,7 @@
         suggestedFix: "Darken the text colour until it reaches 4.5:1.",
         elementScreenshot: TINY_JPEG,
         suggestedColour: { from: "#8a9bb0", to: "#4a617f", background: "#ffffff", ratio: 4.6, required: 4.5 },
+        ageNote: "Contrast this faint sits below what reduced contrast sensitivity, a common change past sixty, can reliably resolve.",
       }),
       finding({
         id: "f2",
