@@ -42,7 +42,9 @@ export function buildAutomatedFindingsSummary(axe: RenderResult["axe"]) {
     const severity = violation.impact ? impactToSeverity[violation.impact] : undefined;
     for (const node of violation.nodes) {
       if (severity) bySeverity[severity] += 1;
-      for (const target of node.target) coveredSelectors.add(target);
+      // A shadow-piercing entry is itself an array — flatten so the covered
+      // set holds selector strings, matching what the AI context is built on.
+      for (const target of node.target.flat()) coveredSelectors.add(target);
     }
   }
 

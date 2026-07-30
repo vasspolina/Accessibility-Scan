@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>QA: an axe violation inside a shadow root</title>
+    <style>
+      body { font-family: system-ui, sans-serif; margin: 0; padding: 24px; color: #111; }
+    </style>
+  </head>
+  <body>
+    <main>
+      <h1>A violation behind a shadow boundary</h1>
+      <p>
+        The image below has no alt text, and it lives inside a web component's
+        shadow root. axe pierces open shadow roots natively and reports the
+        element with a nested-array target: [host selector, inner selector].
+      </p>
+
+      <!--
+        The reason this page exists. The old code joined the outer target
+        array with a space, which coerces a nested array with commas — and a
+        comma makes a CSS selector LIST: "match the host OR the inner
+        element". The capture then photographed the component's host, the
+        report displayed a garbled selector, and deduplication keyed on the
+        wrong string. Any site built from web components hit this.
+      -->
+      <my-gallery></my-gallery>
+    </main>
+
+    <script>
+      class MyGallery extends HTMLElement {
+        connectedCallback() {
+          const root = this.attachShadow({ mode: "open" });
+          // Two-tone SVG, so the capture survives the blank-frame check.
+          const svg = encodeURIComponent(
+            '<svg xmlns="http://www.w3.org/2000/svg" width="120" height="80">' +
+              '<rect width="120" height="80" fill="#dde6f0"/>' +
+              '<rect x="12" y="14" width="96" height="52" fill="#3a5b83"/>' +
+              "</svg>"
+          );
+          root.innerHTML =
+            '<figure><img src="data:image/svg+xml,' + svg + '" width="120" height="80">' +
+            "<figcaption>A picture with no alt text</figcaption></figure>";
+        }
+      }
+      customElements.define("my-gallery", MyGallery);
+    </script>
+  </body>
+</html>

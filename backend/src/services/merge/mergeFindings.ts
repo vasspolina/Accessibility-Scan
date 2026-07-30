@@ -1,5 +1,6 @@
 import { randomUUID } from "node:crypto";
 import type { AxeRunResult } from "../render/renderPage.js";
+import { axeTargetToSelector } from "../render/renderPage.js";
 import type { AccessibilityFinding, AiFinding, Severity } from "../../types/report.js";
 import { suggestAccessibleForeground } from "../contrast/suggestAccessibleColour.js";
 
@@ -108,7 +109,7 @@ export function axeToFindings(axe: AxeRunResult): AccessibilityFinding[] {
         category: "accessibility",
         wcagCriterion: wcagTagsToLabel(violation.tags),
         wcagLevel: wcagLevelFromTags(violation.tags),
-        selector: node.target.join(" "),
+        selector: axeTargetToSelector(node.target),
         elementSnippet: compactHtml(node.html, 300),
         description: violation.help,
         suggestedFix: node.failureSummary ?? violation.description,

@@ -2,7 +2,7 @@ import { env } from "../config/env.js";
 import { withTimeout } from "../utils/timeout.js";
 import { assertSafeUrl } from "../middleware/ssrfGuard.js";
 import { renderAndScan, captureSelectorsFresh } from "./render/renderPage.js";
-import type { AxeRunResult } from "./render/renderPage.js";
+import type { AxeRunResult, FreshCaptureResult } from "./render/renderPage.js";
 import { extractContext } from "./contextExtraction/extractContext.js";
 import { reviewPage } from "./aiReview/reviewPage.js";
 import { attachAltTextSuggestions } from "./aiReview/suggestAltText.js";
@@ -143,33 +143,7 @@ async function attachEvidence(
       // until it opens. Without the note the reader is left with a finding
       // and nothing to identify it by.
       const why = shots.unpicturable[finding.selector];
-      if (why === "hidden") {
-        finding.pictureNote =
-          "No picture: this was not visible on the page when it was scanned. It is revealed by something — opening a panel, or moving focus to it.";
-      } else if (why === "offscreen") {
-        finding.pictureNote =
-          "No picture: this sits off the edge of the screen until it is used. Skip links are built this way on purpose, so nothing is necessarily wrong with it being there.";
-      } else if (why === "no-usable-image") {
-        finding.pictureNote =
-          "No picture: the element is there, but photographing it produced nothing worth showing — a blank rectangle, or whatever is sitting on top of it. The technical details for this finding identify the exact element.";
-      } else if (why === "too-large") {
-        finding.pictureNote =
-          "No picture: this covers a whole region of the page rather than one component, and a photograph of the entire section would not show you which part of it is at fault. The technical details for this finding identify the exact element.";
-      } else if (why === "missing") {
-        finding.pictureNote =
-          "No picture: the element was on the page when we judged it, and gone when we went back to photograph it. Banners that appear once per visitor do this.";
-      } else if (why === "not-attempted") {
-        finding.pictureNote =
-          "No picture: each scan photographs a limited number of elements, and this one was past that limit. Nothing about the element itself — scanning again may reach it.";
-      } else if (why === "unreachable") {
-        finding.pictureNote =
-          "No picture: this element could not be located again on the return visit. Pages that rebuild themselves on every load do this.";
-      }
-      // Everything above ends by telling the reader the selector locates the
-      // element exactly. For a banner in a third-party consent frame that is
-      // not true: the path is through the frame's own document and means
-      // something else in the page it sits on. Measured on spiegel.de, where
-      // it matched two unrelated elements in the host page.
+      if (why) finding.pictureNote = UNPICTURABLE_NOTES[why];
       if (finding.pictureNote && frameForSelector[finding.selector]) {
         finding.pictureNote =
           finding.pictureNote.replace(" The technical details for this finding identify the exact element.", "") +
@@ -182,6 +156,35 @@ async function attachEvidence(
   // text from what the image actually shows.
   await attachAltTextSuggestions(findings, includeAiReview);
 }
+
+/**
+ * The reader's explanation for every way a capture can decline.
+ *
+ * A Record over the reason union, on purpose: when the capture pass grows a
+ * new way of not producing a picture, this fails to compile until the reader
+ * is told what it means. The bare card — a finding with no picture and no
+ * reason — has been rediscovered three separate times in this project's
+ * history; this is the arrangement under which it cannot come back quietly.
+ */
+const UNPICTURABLE_NOTES: Record<
+  NonNullable<FreshCaptureResult["unpicturable"][string]>,
+  string
+> = {
+  hidden:
+    "No picture: this was not visible on the page when it was scanned. It is revealed by something — opening a panel, or moving focus to it.",
+  offscreen:
+    "No picture: this sits off the edge of the screen until it is used. Skip links are built this way on purpose, so nothing is necessarily wrong with it being there.",
+  "no-usable-image":
+    "No picture: the element is there, but photographing it produced nothing worth showing — a blank rectangle, or whatever is sitting on top of it. The technical details for this finding identify the exact element.",
+  "too-large":
+    "No picture: this covers a whole region of the page rather than one component, and a photograph of the entire section would not show you which part of it is at fault. The technical details for this finding identify the exact element.",
+  missing:
+    "No picture: the element was on the page when we judged it, and gone when we went back to photograph it. Banners that appear once per visitor do this.",
+  "not-attempted":
+    "No picture: each scan photographs a limited number of elements, and this one was past that limit. Nothing about the element itself — scanning again may reach it.",
+  unreachable:
+    "No picture: this element could not be located again on the return visit. Pages that rebuild themselves on every load do this.",
+};
 
 function originOfUrl(url: string): string {
   try {

@@ -1,6 +1,6 @@
 import { describe, it, expect, beforeAll } from "vitest";
 import path from "node:path";
-import { renderAndScan } from "../src/services/render/renderPage.js";
+import { renderAndScan, captureSelectorsFresh } from "../src/services/render/renderPage.js";
 import { axeToFindings } from "../src/services/merge/mergeFindings.js";
 import { evaluateTypography } from "../src/services/typography/analyzeTypography.js";
 import { evaluateMotion } from "../src/services/motion/analyzeMotion.js";
@@ -406,5 +406,34 @@ describe("qa-shadow-keyboard.html: controls inside a shadow root", () => {
     const ids = findings.map((f) => f.ruleId);
     expect(ids).not.toContain("keyboard-focus-trap");
     expect(ids).not.toContain("keyboard-no-visible-focus");
+  }, 120_000);
+});
+
+describe("qa-shadow-violations.html: an axe violation inside a shadow root", () => {
+  // axe reports a shadow element with a nested-array target: [host, inner].
+  // Joining the outer array with a space coerced that inner array with a
+  // comma, and a comma makes a CSS selector LIST — "the host, or the inner
+  // element". The capture photographed the component's host, the report
+  // displayed a garbled selector, and dedup keyed on the wrong string.
+  it("writes a piercing selector, not a selector list", async () => {
+    const findings = await scanFixture("qa-shadow-violations.html");
+    const alt = findings.find((f) => f.ruleId === "image-alt");
+    expect(alt, "axe did not pierce the shadow root").toBeDefined();
+    expect(alt!.selector).not.toContain(",");
+    expect(alt!.selector).toMatch(/my-gallery/);
+    expect(alt!.selector).toMatch(/img/);
+  }, 120_000);
+
+  // Playwright's CSS engine pierces open shadow roots with plain descendant
+  // selectors, so the flattened path must actually photograph the image.
+  it("can photograph the element the selector names", async () => {
+    const findings = await scanFixture("qa-shadow-violations.html");
+    const alt = findings.find((f) => f.ruleId === "image-alt");
+    const url = "file://" + path.resolve("public/qa-shadow-violations.html");
+    const result = await captureSelectorsFresh(url, [alt!.selector], () => true);
+    expect(
+      result.shots[alt!.selector],
+      `no shot; reason: ${result.unpicturable[alt!.selector] ?? "none recorded"}`
+    ).toBeTruthy();
   }, 120_000);
 });

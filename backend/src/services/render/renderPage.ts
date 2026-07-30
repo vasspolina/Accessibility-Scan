@@ -125,7 +125,11 @@ export interface AxeRunResult {
     help: string;
     helpUrl: string;
     nodes: Array<{
-      target: string[];
+      // An entry is a plain selector, or — for an element inside a shadow
+      // root — an array forming a piercing path: [host selector, inner
+      // selector]. axe pierces open shadow roots natively, so any site built
+      // from web components produces these.
+      target: Array<string | string[]>;
       html: string;
       failureSummary?: string;
       // axe attaches per-check data here. For color-contrast it is the pair of
@@ -158,6 +162,28 @@ export interface AxeRunResult {
     helpUrl: string;
     nodes: Array<{ target: string[]; html: string }>;
   }>;
+}
+
+/**
+ * One selector string for an axe node target.
+ *
+ * target is an array, and its entries can themselves be arrays: a shadow-DOM
+ * piercing path of [host, inner]. The old code joined the outer array with a
+ * space, which coerces an inner array with commas — and a comma makes a CSS
+ * selector LIST, "match the host OR the inner element". Every capture,
+ * displayed selector, and deduplication key for a shadow element then pointed
+ * at the component's host instead of the element axe flagged. Found by
+ * auditing against the element-screenshot spec, which calls this exact case
+ * out; our own demo widget is a web component and would have produced these.
+ *
+ * Flattened with spaces: Playwright's CSS engine pierces open shadow roots
+ * with plain descendant selectors, so "my-panel img" resolves for capture.
+ * document.querySelector does not pierce — in-page probes that miss simply
+ * record their honest "unreachable"/"missing" reason, which the notes
+ * machinery already explains.
+ */
+export function axeTargetToSelector(target: Array<string | string[]>): string {
+  return target.flat().join(" ");
 }
 
 export interface RenderResult {
@@ -683,7 +709,7 @@ function collectCandidateSelectors(
   const selectors = new Set<string>();
 
   for (const violation of axe.violations) {
-    for (const node of violation.nodes) selectors.add(node.target.join(" "));
+    for (const node of violation.nodes) selectors.add(axeTargetToSelector(node.target));
   }
   for (const block of typographyBlocks) selectors.add(block.selector);
   for (const h of domSignals.headingTree) selectors.add(h.selector);
@@ -782,7 +808,7 @@ async function captureElementScreenshots(
   for (const violation of byImpact) {
     if (!IMAGE_ALT_RULES.has(violation.id)) continue;
     for (const node of violation.nodes) {
-      const selector = node.target.join(" ");
+      const selector = axeTargetToSelector(node.target);
       imageSelectors.add(selector);
       pushUnique(selector);
     }
@@ -795,7 +821,7 @@ async function captureElementScreenshots(
   for (const selector of extraSelectors) pushUnique(selector);
   // 3. The remaining axe selectors, by severity.
   for (const violation of byImpact) {
-    for (const node of violation.nodes) pushUnique(node.target.join(" "));
+    for (const node of violation.nodes) pushUnique(axeTargetToSelector(node.target));
   }
 
   const result: Record<string, string> = {};
@@ -936,7 +962,28 @@ async function isActuallyOnScreen(locator: Locator): Promise<boolean> {
       ];
       return points.some(([fx, fy]) => {
         const hit = document.elementFromPoint(rect.left + rect.width * fx, rect.top + rect.height * fy);
-        return !!hit && (hit === el || el.contains(hit) || hit.contains(el));
+        if (!hit) return false;
+        if (hit === el || el.contains(hit) || hit.contains(el)) return true;
+        // elementFromPoint called on the document stops at a shadow host: for
+        // an element inside a web component it returns the host, and
+        // contains() does not cross the boundary in either direction — so
+        // every visible shadow element failed this check and was refused a
+        // picture as "missing". Walk the composed tree instead: if the hit is
+        // among el's shadow-crossing ancestors (or vice versa), the point
+        // genuinely lands on this element's slab of the page.
+        // Inline loops, no named inner function — esbuild's keepNames rewrites
+        // those into __name calls that do not exist in the page.
+        let n: Node | null = el;
+        while (n) {
+          if (n === hit) return true;
+          n = n.parentNode instanceof ShadowRoot ? n.parentNode.host : n.parentNode;
+        }
+        let m: Node | null = hit;
+        while (m) {
+          if (m === el) return true;
+          m = m.parentNode instanceof ShadowRoot ? m.parentNode.host : m.parentNode;
+        }
+        return false;
       });
     });
   } catch {
@@ -1362,6 +1409,7 @@ async function captureRegionAround(
       quality: 70,
       clip: { x: left, y: top, width, height },
       timeout: 3_000,
+      animations: "disabled",
     });
     const resized = await sharp(raw)
       .resize({ width: 640, height: 640, fit: "inside", withoutEnlargement: true })
@@ -2567,6 +2615,14 @@ export async function renderAndScan(
       // the model to report overlapping text that no visitor will ever see.
       // Playwright fast-forwards finite animations to their end state and
       // resets infinite ones, giving the layout a visitor actually gets.
+      // Fonts still loading render as invisible or fallback text, and this
+      // image is both the report's preview and the AI review's only view of
+      // the page. Bounded: a page that never settles its fonts costs two
+      // seconds here, not the scan.
+      await Promise.race([
+        page.evaluate(() => document.fonts?.ready).catch(() => {}),
+        new Promise((r) => setTimeout(r, 2_000)),
+      ]);
       const screenshotBuffer = await timed("viewportShot", () =>
         page.screenshot({
           type: "jpeg",
