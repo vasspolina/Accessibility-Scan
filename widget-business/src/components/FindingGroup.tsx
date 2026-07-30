@@ -538,6 +538,13 @@ export function FindingGroup({
               <strong>Why this matters:</strong> <CodeText text={plain.impact} />
             </p>
           )}
+          {/* Curated, hand-verified research context — never generated per
+              scan, which is how invented statistics happen. */}
+          {plain?.research && (
+            <p className="a11y-finding-research">
+              <strong>What the research shows:</strong> <CodeText text={plain.research} />
+            </p>
+          )}
           <p>
             <strong>What to do:</strong> <CodeText text={whatToDo} />
           </p>

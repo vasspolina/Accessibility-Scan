@@ -83,6 +83,17 @@ export interface PlainRule {
    * for. Where this is absent the description is used as it always was.
    */
   found?: (count: number) => string;
+  /**
+   * One or two sentences of real, verifiable research context, from the
+   * educational-insights module: WebAIM Million, WHO, Click-Away Pound,
+   * Eurostat, NN/g, W3C/WAI. Curated by hand rather than generated at scan
+   * time — a model asked for a statistic per scan is the invented-number
+   * machine that module's own rules forbid. Written without digits on
+   * purpose (numbers appear as words, and only where rock-solid), which a
+   * test enforces; that is the structural guard against a made-up figure
+   * ever reaching a reader.
+   */
+  research?: string;
 }
 
 export const PLAIN_RULE_EXPLANATIONS: Record<string, PlainRule> = {
@@ -170,6 +181,8 @@ export const PLAIN_RULE_EXPLANATIONS: Record<string, PlainRule> = {
     impact: "People using screen readers hear the same thing twice, which slows them down for nothing.",
   },
   "color-contrast": {
+    research:
+      "WebAIM's annual analysis of a million homepages finds low-contrast text the single most common failure on the web, year after year. The World Health Organization estimates about one in six people worldwide lives with significant disability, and far more see less sharply than a design team's monitors assume.",
     plain: "Text is too light against its background to read easily.",
     found: (n) =>
       `${n} ${n === 1 ? "piece" : "pieces"} of text on this page ${n === 1 ? "sits" : "sit"} too close in colour to the background behind ${n === 1 ? "it" : "them"}. Each one is listed below, and the technical version gives the measured ratio.`,
@@ -177,6 +190,8 @@ export const PLAIN_RULE_EXPLANATIONS: Record<string, PlainRule> = {
       "Hard to read in bright light, on a cheap screen, or with imperfect eyesight. Your message doesn't land.",
   },
   "image-alt": {
+    research:
+      "WebAIM's annual analysis of a million homepages finds images with no description among the most common failures on the web, year after year. It is also one of the simplest to resolve.",
     plain: "Images have no text description behind them.",
     found: (n) =>
       `${n} ${n === 1 ? "image has" : "images have"} no alt text at all — not even an empty one to mark ${n === 1 ? "it" : "them"} decorative. A screen reader falls back to reading the filename aloud, or skips ${n === 1 ? "it" : "them"} in silence.`,
@@ -197,6 +212,8 @@ export const PLAIN_RULE_EXPLANATIONS: Record<string, PlainRule> = {
     impact: "People using screen readers can't tell what the button does, so they can't finish.",
   },
   "link-name": {
+    research:
+      "Empty links are among the most common failures in WebAIM's annual analysis of a million homepages. Screen reader users navigate by pulling up a list of links, which is why one silent link costs more than it looks.",
     plain: "Some links have nothing a screen reader can read out.",
     found: (n) =>
       `${n} ${n === 1 ? "link has" : "links have"} no readable text inside — no words, no label, nothing to announce. Usually these are icons, arrows or images used as links, where the picture carries the meaning and the code carries none of it.`,
@@ -209,12 +226,16 @@ export const PLAIN_RULE_EXPLANATIONS: Record<string, PlainRule> = {
       "People using screen readers can pull up a list of every link on the page. When they all read the same, the list is no help at all.",
   },
   "button-name": {
+    research:
+      "Unlabelled buttons appear near the top of WebAIM's million-homepage failure list every year, usually as icon-only controls that were obvious to whoever designed them.",
     plain: "Buttons have no label.",
     found: (n) =>
       `${n} ${n === 1 ? "button has" : "buttons have"} no label of any kind: no words inside, no aria-label. Nearly always an icon button, where the symbol carries the meaning and the code carries none of it.`,
     impact: "Nobody can tell what it does before clicking. A common reason people give up.",
   },
   label: {
+    research:
+      "Missing form labels sit near the top of WebAIM's million-homepage failure list every year. In the UK's Click-Away Pound research, most shoppers who met a barrier like this left without saying anything, and took their spending elsewhere.",
     plain: "Form fields have no label.",
     found: (n) =>
       `${n} form ${n === 1 ? "field is" : "fields are"} not joined to a label in the code. The words may sit right beside the field on screen — nothing connects the two, so a screen reader announces the field with no idea what it is for.`,
@@ -234,6 +255,8 @@ export const PLAIN_RULE_EXPLANATIONS: Record<string, PlainRule> = {
     impact: "Tabs, bookmarks and search results show nothing useful.",
   },
   "html-has-lang": {
+    research:
+      "A missing document language is one of the handful of failures WebAIM's million-homepage analysis finds on a majority of the web, year after year, largely because nobody notices it working badly.",
     plain: "Your page doesn't say what language it's written in.",
     found: (n) =>
       `The page does not declare what language it is written in.`,
@@ -367,6 +390,8 @@ export const PLAIN_RULE_EXPLANATIONS: Record<string, PlainRule> = {
   // Keyboard walk-through checks (WCAG 2.4.7 Focus Visible, 2.1.2 No
   // Keyboard Trap, 2.1.1 Keyboard) — from real Tab presses during the scan.
   "keyboard-mouse-only": {
+    research:
+      "Usability research, including decades of it from the Nielsen Norman Group, keeps reaching the same conclusion: keyboard access serves power users as much as it serves people who cannot hold a mouse.",
     // "Something on the page" was hedging about a thing we had measured. The
     // scan watched this element take a click handler and then watched Tab
     // never reach it, so it is a control — that is what a control is — and

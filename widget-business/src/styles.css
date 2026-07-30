@@ -370,6 +370,12 @@
 /* Sits under the number it qualifies. Quieter than the breakdown above it,
    because it is context rather than a result — but present on every report,
    because a score shown without it invites a conformance claim nobody made. */
+/* Research context: present, quiet. It informs the decision; it is not the
+   finding. */
+.a11y-finding-research {
+  color: var(--a11y-muted, #57606a);
+}
+
 .a11y-score-caveat {
   margin: 16px 0 0;
   font-size: var(--a11y-text-body);
