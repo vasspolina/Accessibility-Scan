@@ -74,6 +74,17 @@ export async function cropElementThumbnail(
 ): Promise<string | null> {
   if (box.width <= 0 || box.height <= 0 || imgWidth === 0 || imgHeight === 0) return null;
 
+  // A box this small is not a small element — it is a hidden one. Skip links
+  // and other screen-reader-only content are clipped to a pixel or two at the
+  // page's top-left corner, and the context padding below, added so a 17px
+  // icon arrives with its surroundings, turned that pixel into a crop of
+  // whatever occupies the corner. Measured on gov.uk: the region finding on
+  // the "Skip to main content" link shipped a slab of blue header as its
+  // evidence, twice. Around an element nobody can see there is nothing to
+  // photograph; the written label identifies it better than a picture of its
+  // neighbourhood.
+  if (box.width < 8 || box.height < 8) return null;
+
   // Some sites report a much shorter document.scrollHeight than their real
   // rendered content — typically `overflow: hidden` on <body> paired with a
   // custom virtual-scroll container (smooth-scroll libraries like Lenis are

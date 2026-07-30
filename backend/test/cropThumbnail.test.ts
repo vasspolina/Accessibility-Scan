@@ -95,3 +95,21 @@ describe("cropElementThumbnail: elements too small to see", () => {
     expect(meta.width! / meta.height!).toBeGreaterThan(2);
   });
 });
+
+// A visually-hidden element — a skip link clipped to a pixel at the corner —
+// has a box, and the context padding turned that box into a crop of whatever
+// sits at the corner. gov.uk's region finding shipped a slab of header as its
+// evidence. Around an invisible element there is nothing to photograph.
+describe("cropElementThumbnail: hidden elements", () => {
+  it("refuses a box too small to be a visible element", async () => {
+    const page = await halfAndHalf(1280, 800);
+    expect(await cropElementThumbnail(page, { x: 0, y: 0, width: 1, height: 1 }, 1280, 800)).toBeNull();
+    expect(await cropElementThumbnail(page, { x: 0, y: 0, width: 7, height: 120 }, 1280, 800)).toBeNull();
+  });
+
+  it("still pads a small but visible icon out to a legible frame", async () => {
+    const page = await halfAndHalf(1280, 800);
+    const out = await cropElementThumbnail(page, { x: 200, y: 380, width: 16, height: 16 }, 1280, 800);
+    expect(out).not.toBeNull();
+  });
+});
