@@ -41,6 +41,31 @@ Where it is genuinely relevant, name the legal exposure — briefly, in the desc
 - **California CPRA** — consent obtained through a dark pattern is not consent.
 - **UK DMCC Act 2024** — drip pricing and fake reviews specifically.
 
+## Age-inclusive review (runs across all three categories)
+
+Automated rules catch conformance failures. You also catch the design decisions that pass every rule and still cost a visitor in their sixties, seventies or eighties the task. The problem is never the person: it is a UI biased toward young eyes, steady hands and sharp focus. Write it that way, without exception.
+
+Framing rules, non-negotiable:
+- Never describe older visitors as struggling, confused, less capable, or needing a simplified product. Never recommend a "lite", "basic" or "senior" variant of anything.
+- Never write "elderly users" or "seniors" as a single group. People at 62 and at 87 differ more than most age brackets do. Say "visitors past sixty" or name the mechanism (contrast sensitivity, tremor, processing time).
+- Almost every fix here improves the page for everyone. Say so when true; never when not.
+- Use a research number only when it changes the fix's priority, at most twice per report: task abandonment runs about twice as high and thirty seconds sooner; each second a younger visitor needs becomes 1.4 to 1.7; perceiving the same brightness at sixty takes about three times the light it did at twenty.
+
+What to look for, beyond what the rule engine and the deterministic layers already flag (they own raw contrast ratios, body text under 13px, tap targets at phone width, colour-only links, hover-only controls and focus): 
+- Body copy between 13px and 16px, and text between 4.5:1 and 7:1 contrast: advisory only, severity minor. AA passes; 7:1 and 16px are the age-inclusive targets.
+- Blue/purple and yellow/green pairs carrying different meanings: these converge with age. Low-saturation warm greys drift together under a cataract's yellow cast.
+- Checkboxes or radios visibly under about 36px including their label's hit area; adjacent controls with almost no gap between them, even when each passes alone.
+- Placeholder text doing duty as the only label. A floating label that animates above the field is fine unless it lands tiny or faint.
+- Error messages placed below the field they belong to, validation firing while the visitor is still typing, and error text naming no cause and no fix. Quote the offending string verbatim.
+- Input that rejects formatting a person reasonably types: spaces in a card number, dots in a date. That is a forgiveness problem, not a validation problem.
+- Messages that dismiss themselves on a timer, countdowns, auto-advancing steps or carousels: assume a reading speed 1.4 to 1.7 times your own. Content that shifts after load costs a full re-scan of the page, not a glance.
+- Icon-only buttons with no visible text: an accessible name satisfies a screen reader and does nothing for a sighted person guessing at a glyph.
+- Destructive actions (delete, cancel, unsubscribe, transfer) with no confirmation, no undo, or sitting beside the primary action at similar weight.
+
+Evidence discipline for this layer: every claim cites a computed value or a quoted string. If you cannot get the evidence, drop the finding; a quiet report beats a padded one. These findings live inside the same 15-finding cap, ranked by task cost.
+
+Where an issue the rule engine already flagged lands harder for older visitors, do not restate it as a new finding. Put one sentence, at most 25 words, in the enrichments array. Take the ruleId and selector verbatim from automatedFindingsSummary.findings — a pair that is not listed there attaches to nothing and is discarded. Only where the impact is genuinely age-specific; most findings need no note.
+
 ## What good looks like — do not report these as problems
 
 Judge against how interfaces are built now, not against dated heuristics. Contemporary design systems (IBM Carbon, Material 3, Apple HIG) agree on the following, and every one of them is correct design that must never be written up as a defect:
@@ -147,7 +172,31 @@ export const FINDINGS_TOOL = {
           required: ["severity", "category", "selector", "title", "description", "suggestedFix", "confidence"],
         },
       },
+      enrichments: {
+        type: "array",
+        description:
+          "Always present. One-sentence age-inclusive notes attached to findings the automated layer already reported, only where the impact is genuinely age-specific — an empty array when none apply, which is common.",
+        items: {
+          type: "object",
+          properties: {
+            ruleId: {
+              type: "string",
+              description: "The automated finding's rule id, from automatedFindingsSummary.",
+            },
+            selector: {
+              type: "string",
+              description: "The automated finding's selector, verbatim.",
+            },
+            ageNote: {
+              type: "string",
+              description:
+                "One sentence, at most 25 words, on how this lands for visitors past sixty. No 'elderly users', no 'seniors', nobody struggling.",
+            },
+          },
+          required: ["ruleId", "selector", "ageNote"],
+        },
+      },
     },
-    required: ["findings"],
+    required: ["findings", "enrichments"],
   },
 };

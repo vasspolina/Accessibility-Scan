@@ -1,3 +1,4 @@
+import { logger } from "../utils/logger.js";
 import { env } from "../config/env.js";
 import { withTimeout } from "../utils/timeout.js";
 import { assertSafeUrl } from "../middleware/ssrfGuard.js";
@@ -12,6 +13,7 @@ import {
   mergeFindings,
   dropContradictedConsentClaims,
   dropDuplicateConsentClaims,
+  applyAgeEnrichments,
   dropSpeculativeFindings,
 } from "./merge/mergeFindings.js";
 import { evaluateTypography } from "./typography/analyzeTypography.js";
@@ -395,6 +397,15 @@ export async function scanUrlToReport(
   );
   const findings = mergeFindings(automatedFindings, aiFindings);
   findings.push(...deterministic);
+  // Age-inclusive notes attach to the measured findings they describe, after
+  // everything that could still drop or reorder a finding has run.
+  const ageStats = applyAgeEnrichments(findings, aiReview.enrichments);
+  if (aiReview.status === "completed") {
+    // Received-vs-attached is the observability this layer shipped without:
+    // its first live runs produced zero notes and nothing said whether the
+    // model wrote none or every note failed to attach.
+    logger.info(ageStats, "age enrichments");
+  }
 
   if (captureEvidence) {
     await attachEvidence(findings, renderResult, includeAiReview);

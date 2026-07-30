@@ -7,7 +7,21 @@ import { aiFindingSchema, type AiFinding, type AiReviewStatus } from "../../type
 
 // Only the envelope is validated up front — each finding inside is checked
 // individually so one bad entry doesn't cost the whole review.
-const aiReviewEnvelopeSchema = z.object({ findings: z.array(z.unknown()) });
+const aiReviewEnvelopeSchema = z.object({
+  findings: z.array(z.unknown()),
+  enrichments: z.array(z.unknown()).optional(),
+});
+
+// One-sentence age-inclusive notes the model attaches to findings the
+// automated layer already reported. Validated one by one, same as findings:
+// a malformed note costs itself, never the review.
+export const ageEnrichmentSchema = z.object({
+  ruleId: z.string().min(1),
+  selector: z.string().min(1),
+  // 25 words is the instruction; 220 characters is the deterministic ceiling.
+  ageNote: z.string().min(1).max(220),
+});
+export type AgeEnrichment = z.infer<typeof ageEnrichmentSchema>;
 import { getClaudeClient, CLAUDE_MODEL } from "./claudeClient.js";
 import { SYSTEM_PROMPT, FINDINGS_TOOL } from "./buildPrompt.js";
 
@@ -20,6 +34,7 @@ export interface AiReviewResult {
   // is returned over a public API, so it must not carry internals.
   errorKind?: AiReviewErrorKind;
   findings: AiFinding[];
+  enrichments: AgeEnrichment[];
   aiReviewTimeMs: number;
   model: string;
 }
@@ -52,7 +67,10 @@ function classifyReviewError(err: unknown): AiReviewErrorKind {
   return "unknown";
 }
 
-async function callClaude(context: PageReviewContext, screenshotBase64: string): Promise<AiFinding[]> {
+async function callClaude(
+  context: PageReviewContext,
+  screenshotBase64: string
+): Promise<{ findings: AiFinding[]; enrichments: AgeEnrichment[] }> {
   const client = getClaudeClient();
   if (!client) throw new Error("Claude client unavailable");
 
@@ -136,7 +154,13 @@ async function callClaude(context: PageReviewContext, screenshotBase64: string):
     );
   }
 
-  return findings;
+  const enrichments: AgeEnrichment[] = [];
+  for (const candidate of envelope.data.enrichments ?? []) {
+    const one = ageEnrichmentSchema.safeParse(candidate);
+    if (one.success) enrichments.push(one.data);
+  }
+
+  return { findings, enrichments: enrichments.slice(0, 8) };
 }
 
 /**
@@ -243,20 +267,20 @@ export async function reviewPage(
   const start = Date.now();
 
   if (!enabled) {
-    return { status: "disabled_by_request", findings: [], aiReviewTimeMs: 0, model: CLAUDE_MODEL };
+    return { status: "disabled_by_request", findings: [], enrichments: [], aiReviewTimeMs: 0, model: CLAUDE_MODEL };
   }
 
   if (!hasAnthropicKey) {
-    return { status: "skipped_no_key", findings: [], aiReviewTimeMs: 0, model: CLAUDE_MODEL };
+    return { status: "skipped_no_key", findings: [], enrichments: [], aiReviewTimeMs: 0, model: CLAUDE_MODEL };
   }
 
   try {
-    const findings = await withTimeout(
+    const outcome = await withTimeout(
       callClaude(context, screenshotBase64),
       env.AI_REVIEW_TIMEOUT_MS,
       "AI review"
     );
-    return { status: "completed", findings, aiReviewTimeMs: Date.now() - start, model: CLAUDE_MODEL };
+    return { status: "completed", ...outcome, aiReviewTimeMs: Date.now() - start, model: CLAUDE_MODEL };
   } catch (err) {
     const status: AiReviewStatus = err instanceof TimeoutError ? "skipped_timeout" : "skipped_error";
     logger.warn({ err, status }, "AI review layer failed — degrading to automated-only report");
@@ -264,6 +288,7 @@ export async function reviewPage(
       status,
       errorKind: classifyReviewError(err),
       findings: [],
+      enrichments: [],
       aiReviewTimeMs: Date.now() - start,
       model: CLAUDE_MODEL,
     };

@@ -341,6 +341,50 @@ export function dropContradictedConsentClaims(
   });
 }
 
+
+/**
+ * The age layer's framing rules, enforced rather than hoped for.
+ *
+ * The prompt forbids describing older visitors as a single struggling group,
+ * and prompt instructions set direction without enforcing invariants — the
+ * lesson this codebase has now paid for six times. Text that names "elderly
+ * users", "seniors", "old people", calls anyone senile, or prescribes a
+ * simplified or senior variant is dropped here, whatever the instructions
+ * said. Applied to age enrichment notes, where this vocabulary would appear.
+ */
+const FORBIDDEN_AGE_FRAMING =
+  /\b(the elderly|elderly (users?|people|visitors?)|seniors?\b(?!ority)|old people|senile|(senior|simplified|lite|basic) (version|variant|mode|site))\b/i;
+
+/**
+ * Attaches the model's age-inclusive notes to the automated findings they
+ * describe. One sentence on how an already-proved fault lands for visitors
+ * past sixty — enrichment of a measured finding, never a finding of its own,
+ * which is what keeps the note from double-counting the fault.
+ *
+ * Deterministic guards, since every instruction here is only a request:
+ * a note must name a finding that exists (rule id and selector both), must
+ * survive the framing filter, and one note per finding — the first wins.
+ */
+export function applyAgeEnrichments(
+  findings: AccessibilityFinding[],
+  enrichments: Array<{ ruleId: string; selector: string; ageNote: string }>
+): { received: number; attached: number } {
+  const noted = new Set<string>();
+  for (const e of enrichments) {
+    if (FORBIDDEN_AGE_FRAMING.test(e.ageNote)) continue;
+    const key = `${e.ruleId}\u0000${e.selector}`;
+    if (noted.has(key)) continue;
+    const target = findings.find(
+      (f) => f.source === "automated" && f.ruleId === e.ruleId && f.selector === e.selector
+    );
+    if (!target) continue;
+    noted.add(key);
+    const note = e.ageNote.trim().replace(/\.?$/, ".");
+    target.description = `${target.description} ${note}`;
+  }
+  return { received: enrichments.length, attached: noted.size };
+}
+
 /**
  * Drops AI dark-pattern findings that repeat a consent problem we measured.
  *

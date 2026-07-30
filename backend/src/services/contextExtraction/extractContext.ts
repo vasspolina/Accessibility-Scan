@@ -1,4 +1,5 @@
 import type { RenderResult } from "../render/renderPage.js";
+import { axeTargetToSelector } from "../render/renderPage.js";
 import type { Severity } from "../../types/report.js";
 
 export interface PageReviewContext {
@@ -24,6 +25,10 @@ export interface PageReviewContext {
     totalViolations: number;
     bySeverity: Record<Severity, number>;
     coveredSelectors: string[];
+    // Rule id and selector pairs, verbatim — what an age enrichment must name
+    // to attach. Without these the model could only guess at pairs, and the
+    // exists-guard in applyAgeEnrichments rightly dropped every guess.
+    findings: Array<{ ruleId: string; selector: string }>;
   };
 }
 
@@ -50,7 +55,26 @@ export function buildAutomatedFindingsSummary(axe: RenderResult["axe"]) {
 
   const totalViolations = Object.values(bySeverity).reduce((a, b) => a + b, 0);
 
-  return { totalViolations, bySeverity, coveredSelectors: Array.from(coveredSelectors) };
+  // Deduplicated and capped: one consent dialog can hold forty rows of the
+  // same violation, and the model needs the vocabulary, not the census.
+  const findingPairs: Array<{ ruleId: string; selector: string }> = [];
+  const seenPairs = new Set<string>();
+  for (const violation of axe.violations) {
+    for (const node of violation.nodes) {
+      const selector = axeTargetToSelector(node.target);
+      const key = violation.id + "\u0000" + selector;
+      if (seenPairs.has(key)) continue;
+      seenPairs.add(key);
+      if (findingPairs.length < 40) findingPairs.push({ ruleId: violation.id, selector });
+    }
+  }
+
+  return {
+    totalViolations,
+    bySeverity,
+    coveredSelectors: Array.from(coveredSelectors),
+    findings: findingPairs,
+  };
 }
 
 /**
