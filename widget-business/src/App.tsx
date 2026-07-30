@@ -317,15 +317,8 @@ export function App({ apiBase }: { apiBase: string }) {
           />
           )}
 
-          {/* The two "see and hear it yourself" views, kept together and below
-              every finding. They used to sit in the middle of the report, which
-              put a large picture between the accessibility findings and the
-              design notes and broke the run of things to act on. Nothing here
-              is a finding — it is somewhere to look once the list is read. */}
-          {report.pagePreview && (
-            <VisionSimulator pagePreview={report.pagePreview} url={report.url} />
-          )}
-
+          {/* The screen-reader walkthrough stays above the documents: it is
+              evidence about this page, read once the findings are. */}
           {report.screenReaderScript && (
             <ScreenReaderPreview script={report.screenReaderScript} />
           )}
@@ -333,6 +326,16 @@ export function App({ apiBase }: { apiBase: string }) {
           {!isDocument && <AccessibilityStatement report={report} />}
 
           {!isDocument && <AcrDraft report={report} />}
+
+          {/* Dead last, on purpose. The simulator is the one part of the
+              report that is neither a finding, evidence, nor a document — it
+              is an empathy exercise, and sitting above the statement and the
+              VPAT it read as more load-bearing than it is. The report ends on
+              it the way a museum ends on the gift shop: worth a look, after
+              everything that matters. */}
+          {report.pagePreview && (
+            <VisionSimulator pagePreview={report.pagePreview} url={report.url} />
+          )}
         </div>
       )}
     </section>
