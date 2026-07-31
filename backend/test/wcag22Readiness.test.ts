@@ -86,3 +86,34 @@ describe("WCAG 2.2 readiness", () => {
     expect(r.expectedFrom).toMatch(/2026/);
   });
 });
+
+// The mobile advisories measure things NEAR two 2.2 criteria without proving
+// either fails: spacing flags targets that satisfy 2.5.8 (they are 24px or
+// larger), and sticky coverage measures the precondition of 2.4.11, not a
+// focused element actually hidden. Mapping them into the readiness table
+// would mark criteria "already failing" on evidence that proves no such
+// thing. This pins that decision.
+describe("what the readiness table refuses to claim", () => {
+  const advisory = (ruleId: string): AccessibilityFinding => ({
+    id: ruleId, source: "automated", severity: "moderate", category: "design-clarity",
+    selector: "header", description: "d", suggestedFix: "f", ruleId,
+  } as AccessibilityFinding);
+
+  it("does not call 2.4.11 failing on sticky-coverage evidence", () => {
+    const r = buildWcag22Readiness([advisory("mobile-sticky-coverage")]);
+    const row = r.criteria.find((c) => c.id === "2.4.11")!;
+    expect(row.status).toBe("needs-review");
+  });
+
+  it("does not call 2.5.8 failing on spacing evidence", () => {
+    const r = buildWcag22Readiness([advisory("mobile-target-spacing")]);
+    const row = r.criteria.find((c) => c.id === "2.5.8")!;
+    expect(row.status).not.toBe("already-failing");
+  });
+
+  it("still calls 2.5.8 failing on undersized targets, which do prove it", () => {
+    const tap = { ...advisory("mobile-tap-target"), category: "accessibility" } as AccessibilityFinding;
+    const r = buildWcag22Readiness([tap]);
+    expect(r.criteria.find((c) => c.id === "2.5.8")!.status).toBe("already-failing");
+  });
+});

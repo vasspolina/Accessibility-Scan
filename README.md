@@ -15,7 +15,9 @@ Every scan renders the page in headless Chromium and layers:
 - **Deterministic probes** for what axe cannot see: a real keyboard walk with
   Tab presses (shadow-DOM aware), focus-ring contrast against the composited
   backdrop, dialog behaviour (Escape, focus, close controls), forced-colors
-  mode, reduced-motion, text resize to 200%, phone-width reflow, tap targets,
+  mode, reduced-motion, text resize to 200%, reflow measured at the 320px width
+  WCAG defines (in a real phone emulation: touch on, coarse pointer), tap
+  targets and the spacing between them, pinned chrome coverage,
   reading order versus source order, typography (including leading judged
   against line length), markup validity, and GDPR consent banners — read in
   nine languages, inside consent-platform iframes if that is where they live.

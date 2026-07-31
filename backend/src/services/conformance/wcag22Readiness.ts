@@ -38,7 +38,7 @@ export const WCAG_22_NEW_AA: Wcag22Criterion[] = [
     plain: "When something is tabbed to, is it still visible?",
     failing: "A sticky header or footer hides the thing you have just tabbed to",
     whyManual:
-      "It depends on where a sticky bar sits at the moment a particular control takes focus, which needs a person tabbing through and watching.",
+      "It depends on where a sticky bar sits at the moment a particular control takes focus, which needs a person tabbing through and watching. The scan does measure how much of a phone screen pinned bars hold, which is where this failure usually starts.",
   },
   {
     id: "2.5.7",
@@ -93,6 +93,17 @@ export const WCAG_22_NEW_AA: Wcag22Criterion[] = [
 // axe and our own layers tag findings against WCAG 2.1, where target size is
 // 2.5.5 at AAA. The same evidence is what 2.5.8 asks about, so the readiness
 // view reads it across rather than re-detecting it.
+//
+// Two rules are deliberately NOT here, and adding them is the tempting
+// mistake this comment exists to stop. mobile-target-spacing flags targets
+// that PASS 2.5.8 — they are 24px or larger, so the criterion is satisfied
+// and the spacing exception is never even consulted; the rule is comfort
+// advice beyond the standard. mobile-sticky-coverage measures the
+// precondition for a 2.4.11 failure (pinned chrome holding the screen), not
+// the failure itself, which is a focused element actually hidden — and
+// "already failing" on precondition evidence is an overclaim. A row here
+// marks a criterion as failing today; only map a rule whose firing proves
+// exactly that.
 const RULES_EVIDENCING: Record<string, string[]> = {
   "2.5.8": ["mobile-tap-target"],
 };
