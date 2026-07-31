@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>QA: phone-width done right</title>
+    <style>
+      body { font-family: system-ui, sans-serif; margin: 0; color: #111; }
+      main { padding: 16px; max-width: 100%; }
+      /* A slim pinned header: 64px of an 844px screen, about 8%. */
+      .bar-top { position: sticky; top: 0; height: 64px; background: #16335b; color: #fff; padding: 8px 16px; }
+      /* The SC's own exception for two-dimensional content: a wide data table
+         inside a horizontally scrollable, keyboard-reachable, named region.
+         The container scrolls; the page must not be blamed for it. */
+      .table-scroll { overflow-x: auto; }
+      table { border-collapse: collapse; width: 640px; }
+      td, th { border: 1px solid #999; padding: 8px 12px; text-align: left; }
+      /* Comfortable targets with room between them. */
+      .actions { display: flex; gap: 16px; margin-top: 24px; }
+      .actions button {
+        min-width: 120px; height: 44px;
+        font: inherit; background: #fff; border: 1px solid #16335b; color: #16335b;
+      }
+    </style>
+  </head>
+  <body>
+    <header class="bar-top">A header sized like a header.</header>
+    <main>
+      <h1>Phone-width layout with nothing to report</h1>
+      <p>
+        Everything here follows the rules the sibling fixture breaks: fluid
+        width, a slim pinned bar, spaced controls, and wide data behind the
+        standard's own scroll-container exception.
+      </p>
+      <div class="table-scroll" tabindex="0" role="region" aria-label="Quarterly figures">
+        <table>
+          <caption>Quarterly figures</caption>
+          <thead>
+            <tr><th scope="col">Quarter</th><th scope="col">Visitors</th><th scope="col">Orders</th><th scope="col">Refunds</th><th scope="col">Notes</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>Q1</td><td>18,204</td><td>512</td><td>14</td><td>Steady</td></tr>
+            <tr><td>Q2</td><td>21,977</td><td>604</td><td>9</td><td>Campaign month</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="actions">
+        <button type="button">Save draft</button>
+        <button type="button">Delete</button>
+      </div>
+    </main>
+  </body>
+</html>

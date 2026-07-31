@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>QA: phone-width faults</title>
+    <style>
+      body { font-family: system-ui, sans-serif; margin: 0; color: #111; }
+      main { padding: 16px; }
+      /* Fails reflow at the 320px conformance width (and at 390): a fixed
+         width wider than either. */
+      .breakout { width: 430px; background: #dde6f0; padding: 12px; }
+      /* Combined pinned chrome past 30% of an 844px-tall phone screen:
+         180 + 120 = 300px ≈ 36%. */
+      .bar-top { position: fixed; top: 0; left: 0; right: 0; height: 180px; background: #16335b; color: #fff; padding: 8px; }
+      .bar-bottom { position: fixed; bottom: 0; left: 0; right: 0; height: 120px; background: #16335b; color: #fff; padding: 8px; }
+      /* Adequately sized targets — 36px, passing the 24px floor — packed
+         4px apart, so a thumb has no room to miss. */
+      .crowded button {
+        width: 120px; height: 36px; margin: 0;
+        font: inherit; background: #fff; border: 1px solid #16335b; color: #16335b;
+      }
+      .crowded { display: flex; gap: 4px; margin-top: 320px; }
+    </style>
+  </head>
+  <body>
+    <div class="bar-top">A pinned header far taller than it needs to be.</div>
+    <main>
+      <h1>Phone-width faults, one of each</h1>
+      <div class="breakout">
+        This block is 430px wide on purpose, so the page scrolls sideways at
+        320px — the width WCAG 1.4.10 is defined at — and at 390px too.
+      </div>
+      <div class="crowded">
+        <button type="button">Save draft</button>
+        <button type="button">Delete</button>
+      </div>
+    </main>
+    <div class="bar-bottom">A pinned banner underneath.</div>
+  </body>
+</html>

@@ -12,7 +12,7 @@ import {
 import { evaluateMotion } from "../motion/analyzeMotion.js";
 import { evaluateComponents } from "../components/analyzeComponents.js";
 import { evaluateDialogs } from "../dialog/analyzeDialogs.js";
-import { collectMobileSignalsInPage, type MobileSignals } from "../mobile/analyzeMobile.js";
+import { collectMobileSignalsInPage, collectReflow320InPage, type MobileSignals } from "../mobile/analyzeMobile.js";
 import {
   collectDarkPatternSignalsInPage,
   evaluateDarkPatterns,
@@ -160,7 +160,7 @@ export interface AxeRunResult {
     description: string;
     help: string;
     helpUrl: string;
-    nodes: Array<{ target: string[]; html: string }>;
+    nodes: Array<{ target: Array<string | string[]>; html: string }>;
   }>;
 }
 
@@ -2760,6 +2760,8 @@ export async function renderAndScan(
         viewportWidth: 390,
         documentScrollWidth: 0,
         overflowingElements: [],
+        crowdedPairs: [],
+        stickyCoverage: { totalPx: 0, viewportHeight: 844, elements: [] },
         smallTapTargets: [],
       };
       // Thumbnails for mobile findings, captured at phone width (see
@@ -2771,11 +2773,58 @@ export async function renderAndScan(
       try {
         await timed("mobileSwitch", async () => {
           await page.setViewportSize({ width: 390, height: 844 });
+          // A resized desktop browser is not a phone. mobile:true and touch
+          // emulation are what flip `pointer: coarse` and `hover: none`
+          // media queries — the difference between the layout a phone
+          // renders and the one a narrow desktop window does. Done over CDP
+          // on the live page: Playwright fixes isMobile at context creation,
+          // and a fresh context would mean a second full page load inside a
+          // scan that promises about fifteen seconds. The user agent stays
+          // truthful and unchanged — the server already answered it, and
+          // swapping it mid-page would misrepresent what was actually
+          // served. deviceScaleFactor stays 1: DPR 2 doubles screenshot
+          // memory, and this service has hit its memory ceiling before.
+          const cdp = await page.context().newCDPSession(page);
+          await cdp.send("Emulation.setDeviceMetricsOverride", {
+            mobile: true,
+            width: 390,
+            height: 844,
+            deviceScaleFactor: 1,
+            screenOrientation: { type: "portraitPrimary", angle: 0 },
+          });
+          await cdp.send("Emulation.setTouchEmulationEnabled", { enabled: true, maxTouchPoints: 5 });
           await page.waitForTimeout(400); // let CSS media queries / reflow settle
         });
         mobileSignals = await timed("mobile", () =>
           page.evaluate<MobileSignals>(toBrowserScript(collectMobileSignalsInPage))
         );
+
+        // The 1.4.10 measurement, at the width the criterion is defined at.
+        // 390 is a typical phone; 320 is the conformance line, and measuring
+        // at 390 alone meant the reflow claim was made at the wrong width.
+        await timed("reflow320", async () => {
+          await page.setViewportSize({ width: 320, height: 844 });
+          await page.waitForTimeout(300);
+          mobileSignals.reflow320 = await page.evaluate(toBrowserScript(collectReflow320InPage));
+          await page.setViewportSize({ width: 390, height: 844 });
+          await page.waitForTimeout(200);
+        }).catch(() => {});
+
+        // Orientation lock (1.3.4) — axe's css-orientation-lock rule, which
+        // is experimental and off by default. Experimental rules cry wolf,
+        // so its results go to the undecided channel for a person to judge
+        // rather than into the findings as confident claims.
+        await timed("orientationLock", async () => {
+          const lock = (await page.evaluate(() =>
+            (window as unknown as { axe: { run: (c: unknown, o: unknown) => Promise<unknown> } }).axe.run(
+              document,
+              { runOnly: { type: "rule", values: ["css-orientation-lock"] } }
+            )
+          )) as AxeRunResult;
+          for (const v of lock.violations) {
+            if (v.nodes.length > 0) (axe.incomplete ?? (axe.incomplete = [])).push(v);
+          }
+        }).catch(() => {});
         // Breakout (overflow) elements first — they're large regions that crop
         // into a useful picture on their own.
         //
@@ -2787,7 +2836,10 @@ export async function renderAndScan(
         // dozens of them and they're the less important half.
         mobileSelectors = [
           ...mobileSignals.overflowingElements.map((o) => o.selector),
+          ...(mobileSignals.reflow320?.overflowingElements.map((o) => o.selector) ?? []),
           ...mobileSignals.smallTapTargets.slice(0, 8).map((t) => t.selector),
+          ...mobileSignals.crowdedPairs.slice(0, 4).map((c) => c.selector),
+          ...mobileSignals.stickyCoverage.elements.slice(0, 2).map((e) => e.selector),
         ].filter((s) => s && s !== "body" && s !== "html");
         if (mobileSelectors.length > 0) {
           mobileElementScreenshots = await timed("mobileShots", () =>
@@ -2828,6 +2880,16 @@ export async function renderAndScan(
         // and for a dialog's closing animation. If the render is already over
         // its allowance, hand back what exists rather than spending more.
         if (remaining() > -RENDER_TAIL_MARGIN_MS / 2) {
+          // Undo the phone emulation along with the phone viewport, so the
+          // preference probes and dialog probe below run in the same desktop
+          // conditions everything before the mobile pass measured.
+          try {
+            const cdp = await page.context().newCDPSession(page);
+            await cdp.send("Emulation.clearDeviceMetricsOverride");
+            await cdp.send("Emulation.setTouchEmulationEnabled", { enabled: false });
+          } catch {
+            // Emulation cleanup is best-effort; the resize below still runs.
+          }
           await page.setViewportSize({ width: 1280, height: 900 });
           await page.waitForTimeout(300);
           userPreferences = await timed("prefsProbe", () =>

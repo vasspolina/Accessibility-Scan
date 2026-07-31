@@ -82,6 +82,8 @@ const CONTENT_PREFIXES = ["dark-"];
 // design.
 const DESIGN_RULES = new Set([
   "mobile-tap-target",
+  "mobile-target-spacing",
+  "mobile-sticky-coverage",
   "link-in-text-block",
   "color-contrast",
   "keyboard-faint-focus",

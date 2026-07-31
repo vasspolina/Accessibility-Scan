@@ -464,3 +464,50 @@ describe("qa-consent-frame.html: axe inside the consent frame", () => {
     expect(new Set(ids).size, "a rule appears twice — host audited twice").toBe(ids.length);
   }, 120_000);
 });
+
+describe("qa-mobile.html: phone-width faults, one of each", () => {
+  let findings: AccessibilityFinding[];
+  beforeAll(async () => {
+    findings = await scanFixture("qa-mobile.html");
+  }, 120_000);
+
+  // The conformance claim is made at 320 CSS px — the width 1.4.10 is
+  // defined at. It was measured at 390 only, which is the right idea asked
+  // at the wrong width.
+  it("measures reflow at the width the criterion defines", () => {
+    const f = findings.find((x) => x.ruleId === "mobile-horizontal-scroll");
+    expect(f).toBeDefined();
+    expect(f!.wcagCriterion).toBe("1.4.10");
+    expect(f!.description).toContain("320px");
+  });
+
+  it("flags pinned chrome holding over a third of the screen", () => {
+    const f = findings.find((x) => x.ruleId === "mobile-sticky-coverage");
+    expect(f).toBeDefined();
+    // Advisory framing: a 2.2 readiness note, never a scored 2.1 claim.
+    expect(f!.category).toBe("design-clarity");
+  });
+
+  // Both buttons pass every size rule at 44px. The fault is the 4px between
+  // them: a thumb aiming for Save has no room to miss Delete.
+  it("flags adequately-sized targets packed too close", () => {
+    const f = findings.find((x) => x.ruleId === "mobile-target-spacing");
+    expect(f).toBeDefined();
+    expect(f!.description).toMatch(/\d+px apart/);
+  });
+});
+
+describe("qa-mobile-good.html: phone-width done right", () => {
+  let findings: AccessibilityFinding[];
+  beforeAll(async () => {
+    findings = await scanFixture("qa-mobile-good.html");
+  }, 120_000);
+
+  // The half no real site can give you: a wide data table behind the SC's
+  // own scroll-container exception, a slim pinned bar, spaced targets —
+  // and the checker saying nothing about any of it.
+  it("stays silent about every correct pattern", () => {
+    const mobile = findings.filter((f) => f.ruleId?.startsWith("mobile-"));
+    expect(mobile.map((f) => f.ruleId)).toEqual([]);
+  });
+});

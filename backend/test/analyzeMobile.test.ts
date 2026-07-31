@@ -7,6 +7,9 @@ function signals(overrides: Partial<MobileSignals> = {}): MobileSignals {
     documentScrollWidth: 390,
     overflowingElements: [],
     smallTapTargets: [],
+    crowdedPairs: [],
+    stickyCoverage: { totalPx: 0, viewportHeight: 844, elements: [] },
+    reflow320: { viewportWidth: 320, documentScrollWidth: 320, overflowingElements: [] },
     ...overrides,
   };
 }
@@ -29,6 +32,14 @@ describe("evaluateMobile", () => {
         { selector: "div.wide", snippet: "<div class='wide'>", overflowPx: 250 },
         { selector: "img.hero", snippet: "<img class='hero'>", overflowPx: 120 },
       ],
+      reflow320: {
+        viewportWidth: 320,
+        documentScrollWidth: 640,
+        overflowingElements: [
+          { selector: "div.wide", snippet: "<div class='wide'>", overflowPx: 320 },
+          { selector: "img.hero", snippet: "<img class='hero'>", overflowPx: 190 },
+        ],
+      },
     });
     const findings = evaluateMobile(m);
     const scroll = findings.filter((f) => f.ruleId === "mobile-horizontal-scroll");
@@ -40,7 +51,13 @@ describe("evaluateMobile", () => {
   });
 
   it("falls back to a body-level finding when no specific culprit is found", () => {
-    const findings = evaluateMobile(signals({ documentScrollWidth: 640, overflowingElements: [] }));
+    const findings = evaluateMobile(
+      signals({
+        documentScrollWidth: 640,
+        overflowingElements: [],
+        reflow320: { viewportWidth: 320, documentScrollWidth: 640, overflowingElements: [] },
+      })
+    );
     const scroll = findings.filter((f) => f.ruleId === "mobile-horizontal-scroll");
     expect(scroll).toHaveLength(1);
     expect(scroll[0].selector).toBe("body");
@@ -63,16 +80,74 @@ describe("evaluateMobile", () => {
     expect(tap[0].suggestedFix).toMatch(/24×24/);
   });
 
-  it("all mobile findings are accessibility category", () => {
+  it("scored rules are accessibility; advisories are design notes", () => {
     const m = signals({
       documentScrollWidth: 640,
       overflowingElements: [{ selector: "div", snippet: "<div>", overflowPx: 250 }],
+      reflow320: {
+        viewportWidth: 320,
+        documentScrollWidth: 640,
+        overflowingElements: [{ selector: "div", snippet: "<div>", overflowPx: 320 }],
+      },
       smallTapTargets: [{ selector: "button", snippet: "<button>", width: 16, height: 16 }],
+      crowdedPairs: [
+        { selector: "a.one", snippet: "<a>one</a>", neighbourSnippet: "<a>two</a>", gapPx: 4 },
+      ],
+      stickyCoverage: {
+        totalPx: 300,
+        viewportHeight: 844,
+        elements: [{ selector: "header", snippet: "<header>", heightPx: 300 }],
+      },
     });
     for (const f of evaluateMobile(m)) {
-      expect(f.category).toBe("accessibility");
+      const advisory = f.ruleId === "mobile-target-spacing" || f.ruleId === "mobile-sticky-coverage";
+      expect(f.category, f.ruleId).toBe(advisory ? "design-clarity" : "accessibility");
       expect(f.helpUrl).toBeTruthy();
     }
+  });
+
+  // The conformance claim belongs to 320, the width 1.4.10 is defined at. A
+  // page that fits at 320 and scrolls at 390 has a real problem and not a
+  // 1.4.10 failure, and the two must not be conflated.
+  it("does not claim 1.4.10 for a page that fits at 320", () => {
+    const findings = evaluateMobile(
+      signals({
+        documentScrollWidth: 640,
+        overflowingElements: [{ selector: "div", snippet: "<div>", overflowPx: 250 }],
+        reflow320: { viewportWidth: 320, documentScrollWidth: 320, overflowingElements: [] },
+      })
+    );
+    const f = findings.find((x) => x.ruleId === "mobile-horizontal-scroll")!;
+    expect(f.wcagCriterion).toBe("N/A");
+    expect(f.severity).toBe("moderate");
+    expect(f.description).toContain("does fit at the 320px");
+  });
+
+  it("flags targets that pass on size and fail on proximity", () => {
+    const findings = evaluateMobile(
+      signals({
+        crowdedPairs: [
+          { selector: "button.save", snippet: "<button>Save</button>", neighbourSnippet: "<button>Delete</button>", gapPx: 4 },
+        ],
+      })
+    );
+    const f = findings.find((x) => x.ruleId === "mobile-target-spacing")!;
+    expect(f.description).toContain("4px apart");
+    expect(f.severity).toBe("minor");
+  });
+
+  it("flags pinned chrome past thirty percent, and not below it", () => {
+    const bar = (h: number) => ({
+      totalPx: h,
+      viewportHeight: 844,
+      elements: [{ selector: "header", snippet: "<header>", heightPx: h }],
+    });
+    expect(
+      evaluateMobile(signals({ stickyCoverage: bar(300) })).map((f) => f.ruleId)
+    ).toContain("mobile-sticky-coverage");
+    expect(
+      evaluateMobile(signals({ stickyCoverage: bar(200) })).map((f) => f.ruleId)
+    ).not.toContain("mobile-sticky-coverage");
   });
 });
 
@@ -81,11 +156,13 @@ describe("evaluateMobile", () => {
 // do not have — the same fault as overclaiming conformance, pointed the other
 // way.
 describe("what a tap-target finding is allowed to claim", () => {
-  const tiny = {
+  const tiny: MobileSignals = {
     viewportWidth: 390,
     documentScrollWidth: 390,
     overflowingElements: [],
     smallTapTargets: [{ selector: "a.x", snippet: "<a>x</a>", width: 18, height: 18 }],
+    crowdedPairs: [],
+    stickyCoverage: { totalPx: 0, viewportHeight: 844, elements: [] },
   };
 
   it("cites the criterion WCAG 2.1 actually has for target size", () => {
@@ -119,11 +196,13 @@ describe("what a tap-target finding is allowed to claim", () => {
 // The collector runs in the page, so these exercise the same geometry through
 // the evaluator's contract: what it is handed is what survived the exception.
 describe("the spacing exception", () => {
-  const signals = (targets: Array<{ selector: string; width: number; height: number }>) => ({
+  const signals = (targets: Array<{ selector: string; width: number; height: number }>): MobileSignals => ({
     viewportWidth: 390,
     documentScrollWidth: 390,
     overflowingElements: [],
     smallTapTargets: targets.map((t) => ({ ...t, snippet: `<a>${t.selector}</a>` })),
+    crowdedPairs: [],
+    stickyCoverage: { totalPx: 0, viewportHeight: 844, elements: [] },
   });
 
   it("reports the targets the collector judged crowded", () => {
@@ -139,5 +218,24 @@ describe("the spacing exception", () => {
     const f = evaluateMobile(signals([{ selector: "a.x", width: 12, height: 9 }]))
       .find((x) => x.ruleId === "mobile-tap-target")!;
     expect(f.description).toMatch(/12×9px/);
+  });
+});
+
+// A finding whose copy says "not a conformance failure" must not move the
+// score. The 390-only reflow case is an advisory, and advisories are design
+// notes.
+describe("the 390-only reflow case", () => {
+  it("is a design note, not a scored accessibility finding", () => {
+    const findings = evaluateMobile({
+      viewportWidth: 390,
+      documentScrollWidth: 640,
+      overflowingElements: [{ selector: "div", snippet: "<div>", overflowPx: 250 }],
+      smallTapTargets: [],
+      crowdedPairs: [],
+      stickyCoverage: { totalPx: 0, viewportHeight: 844, elements: [] },
+      reflow320: { viewportWidth: 320, documentScrollWidth: 320, overflowingElements: [] },
+    });
+    const f = findings.find((x) => x.ruleId === "mobile-horizontal-scroll")!;
+    expect(f.category).toBe("design-clarity");
   });
 });

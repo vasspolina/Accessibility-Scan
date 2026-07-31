@@ -487,6 +487,20 @@ export const PLAIN_RULE_EXPLANATIONS: Record<string, PlainRule> = {
   },
 
   // Mobile-only issues from the phone-width render pass.
+  "mobile-target-spacing": {
+    plain: "Tap targets sit too close together on a phone.",
+    found: (n) =>
+      `${n} pair${n === 1 ? "" : "s"} of controls sit less than 8px apart at phone width. Each is big enough on its own; together they leave no room to miss.`,
+    impact:
+      "A thumb is not a cursor. Aiming for one control and landing on its neighbour is how the wrong thing gets tapped, bought, or dismissed — and people with tremors or larger fingers meet it first.",
+  },
+  "mobile-sticky-coverage": {
+    plain: "Bars pinned to the screen take up too much of a phone display.",
+    found: (n) =>
+      `Pinned headers, banners or toolbars hold more than a third of the screen at phone width.`,
+    impact:
+      "Every pinned pixel is one the visitor cannot read the page through, and anything the keyboard focuses can end up hidden behind it. The next version of the standard, WCAG 2.2, makes exactly that a requirement.",
+  },
   "mobile-horizontal-scroll": {
     plain: "On a phone, your page scrolls sideways.",
     impact:
@@ -779,6 +793,10 @@ export const UNDECIDED_EXPLANATIONS: Record<string, { what: string; ask: string 
   "aria-prohibited-attr": {
     what: "An element carrying a name the code may not let it keep. Whether it survives depends on the element's role.",
     ask: "Ask your developer to check each is announced with the name you intended, and to move that name onto an element allowed to carry one where it is not.",
+  },
+  "css-orientation-lock": {
+    what: "Styles that may lock the page to portrait or landscape. The check that found this is experimental, which is why it is a question rather than a finding.",
+    ask: "Ask your developer whether the page rotates with the device. Some people mount a phone or wheelchair tablet in one orientation and cannot turn it.",
   },
   "duplicate-id-aria": {
     what: "An id that may be used more than once. Every code label pointing at it follows only the first, so a name can silently attach to the wrong thing.",
