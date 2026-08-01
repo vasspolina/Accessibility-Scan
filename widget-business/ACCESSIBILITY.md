@@ -168,6 +168,12 @@ the deployed demo self-scans clean. Dark scheme no longer exists — the
 panel is white with explicit black text at every host, which is the
 contrast case the barebones reset guarantees.
 
+**Design restored, 1 August (later still).** The user re-sent the same
+design bundle with "now apply this system"; the dressed widget came back
+whole from df0cf62 — the rebuilt bundle hashed byte-identical to that
+revision's, so every verdict earned on it stands unchanged, dark scheme
+included. The barebones interlude is the paragraph above.
+
 ## Forward-looking (non-normative, WCAG 3 Working Draft)
 
 The one direction worth naming: task-level testing. The task a disabled user

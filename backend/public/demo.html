@@ -5,10 +5,67 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Accessibility checker — demo</title>
     <style>
-      /* Barebones by request: browser defaults. The one rule left exists
-         because unstyled pages read at 200+ characters a line on a wide
-         screen — the readability floor, not decoration. */
-      body { max-width: 70ch; margin: 0 auto; padding: 1rem; }
+      body {
+        /* PP Telegraf arrives via the widget's injected @font-face; the
+           stack falls back to the system face until it loads. */
+        font-family: "PP Telegraf", -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
+        letter-spacing: 0.01em;
+        margin: 0;
+        padding: 32px 16px 64px;
+        background: #f4f4f4;
+        color: #161616;
+      }
+      /* Full width. The widget sizes and centres itself against the viewport,
+         so giving it a column here as well made the two multiply. This page's
+         own text is aligned to the panel by the rule below instead. */
+      .page { width: 100%; margin: 0; }
+      .page > h1, .page > h2, .page > p, .page > ul {
+        /* Kept in step with the widget's own cap so the host copy and the
+           panel share one column. */
+        width: min(100%, 48rem);
+        /* Our own line-length rule flagged this page at ~97 characters a
+           line; the cap keeps the measure readable at wide viewports. */
+        max-width: 66ch;
+        margin-inline: auto;
+      }
+      h1 { font-size: 28px; line-height: 36px; margin: 0 0 8px; font-weight: 400; }
+      p.lede { font-size: 16px; line-height: 1.5; color: #525252; margin: 0 0 32px; }
+      .try-title { font-size: 18px; font-weight: 500; margin: 40px 0 0; }
+      .try { font-size: 14px; line-height: 1.5; color: #525252; margin: 8px 0 0; }
+      /* Buttons, not decorated text: our own scan flagged the previous
+         code-chip styling as implying a click it never delivered. Each one
+         fills the scanner input above. A list beside the prose, not inside
+         it — inline chips inside a paragraph made the measure unmeasurable
+         (our line-length rule counts their labels as running text). */
+      .try-list {
+        list-style: none;
+        padding: 0;
+        margin: 8px auto 0;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+      }
+      .try-list button {
+        font-family: ui-monospace, "SF Mono", Menlo, monospace;
+        font-size: 14px;
+        background: #e0e0e0; padding: 2px 8px;
+        border: 1px solid #8d8d8d; border-radius: 4px;
+        color: #161616; cursor: pointer;
+      }
+      .try-list button:hover { background: #d1d1d1; }
+      .try-list button:focus-visible { outline: 2px solid #0f62fe; outline-offset: 1px; }
+      /* The widget follows the visitor's scheme; the page around it should
+         too, or a dark report sits in a glowing light frame. Same Carbon
+         ramp the design system uses. */
+      @media (prefers-color-scheme: dark) {
+        body { background: #161616; color: #f4f4f4; }
+        p.lede, .try { color: #c6c6c6; }
+        .try-list button {
+          background: #262626; border-color: #6f6f6f; color: #f4f4f4;
+        }
+        .try-list button:hover { background: #333333; }
+        .try-list button:focus-visible { outline-color: #ffffff; }
+      }
     </style>
   </head>
   <body>
