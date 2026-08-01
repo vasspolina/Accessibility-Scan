@@ -134,7 +134,12 @@ modes, both colour schemes, cards collapsed and expanded — the expanded run
 caught the professional snippet `<pre>` as a keyboard-unreachable scrollable
 region (our own rule), fixed with `tabindex="0"` and a `group` label before
 release; a first attempt with `role="region"` failed `landmark-unique` and
-was corrected. Zero violations in every state after the fix.
+was corrected. Zero violations in every state after the fix. The site-audit view, which
+later gained the same audience treatment (rule-id chips, BFSG sentence),
+was re-run the same way: clean in both modes and both schemes — after one
+false alarm from a stale hot-reloaded stylesheet inside the shadow root,
+which a full page reload resolved. Axe runs after CSS edits need a fresh
+mount, not hot module replacement.
 
 ## Forward-looking (non-normative, WCAG 3 Working Draft)
 

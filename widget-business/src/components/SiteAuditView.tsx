@@ -1,6 +1,7 @@
 import type { SiteAudit } from "../api/scanClient";
 import { ConformanceView } from "./ConformanceView";
 import { plainForRule } from "../lib/wcagPlain";
+import { useReportView } from "./ReportViewContext";
 
 const severityLabel = {
   critical: "Fix first",
@@ -16,6 +17,7 @@ const severityLabel = {
 
 export function SiteAuditView({ audit }: { audit: SiteAudit }) {
   const worst = audit.worstPage;
+  const { professional } = useReportView();
 
   return (
     <div className="a11y-report">
@@ -68,7 +70,15 @@ export function SiteAuditView({ audit }: { audit: SiteAudit }) {
                 <li key={issue.ruleId} className={`a11y-audit-row a11y-severity-${issue.severity}`}>
                   <span className="a11y-severity-badge">{severityLabel[issue.severity]}</span>
                   <span className="a11y-audit-body">
-                    <strong>{plain?.plain ?? issue.title}</strong>
+                    <strong>
+                      {plain?.plain ?? issue.title}
+                      {professional && (
+                        <>
+                          {" "}
+                          <code className="a11y-rule-chip">{issue.ruleId}</code>
+                        </>
+                      )}
+                    </strong>
                     {plain && <span className="a11y-conf-plain">{plain.impact}</span>}
                   </span>
                   <span className="a11y-audit-count">
@@ -81,7 +91,7 @@ export function SiteAuditView({ audit }: { audit: SiteAudit }) {
         </section>
       )}
 
-      <ConformanceView conformance={audit.conformance} />
+      <ConformanceView conformance={audit.conformance} showBfsgNote={!professional} />
 
       <section className="a11y-section">
         <h2 className="a11y-section-title">Page by page</h2>

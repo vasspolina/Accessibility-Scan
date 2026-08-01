@@ -270,10 +270,14 @@ export function App({ apiBase, cta }: { apiBase: string; cta?: CtaConfig }) {
       </p>
 
       {audit && (
-        <>
+        /* The same provider as the single-page report: the audit view shows
+           rule ids in professional mode and the BFSG sentence in business
+           mode. criterionNames stays empty here — the audit aggregates by
+           rule, not by criterion. */
+        <ReportViewProvider value={reportView}>
           <PrintButton label="Save the audit as PDF" />
           <SiteAuditView audit={audit} />
-        </>
+        </ReportViewProvider>
       )}
 
       {report && (
