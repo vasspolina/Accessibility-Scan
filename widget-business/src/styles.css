@@ -227,14 +227,19 @@
   outline-offset: 2px;
 }
 
+/* The class sits on a wrapper div since the hint moved out of the label —
+   the flex row is the label's own. */
 .a11y-ai-toggle {
-  display: flex;
-  align-items: center;
-  gap: 8px;
   margin-top: 16px;
   font-size: var(--a11y-text-body);
   font-weight: 400;
   color: var(--a11y-muted, #57606a);
+}
+
+.a11y-ai-toggle label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
   cursor: pointer;
 }
 
@@ -2347,12 +2352,15 @@
 /* Checkbox: Carbon's is a 16px square with a 1px solid border, not the
    browser default, and its label is body-compact-01. */
 .a11y-ai-toggle {
-  align-items: flex-start;
-  gap: 12px;
   font-size: var(--a11y-text-body);
   line-height: 1.29;
   letter-spacing: 0.16px;
   color: var(--a11y-text, #161616);
+}
+
+.a11y-ai-toggle label {
+  align-items: flex-start;
+  gap: 12px;
 }
 
 .a11y-ai-toggle input[type="checkbox"] {

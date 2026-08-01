@@ -146,7 +146,12 @@ both audience modes, both colour schemes, collapsed and expanded — zero
 violations, and the deployed demo self-scans at 100 with no findings.
 The system's 14px label size was deliberately not adopted; the 16px
 floor in styles.css explains why, and the system's own readme concurs
-(every component must pass the product's checks).
+(every component must pass the product's checks). The self-scan then
+drove three more rounds on its own product — the worded "✓ Selected"
+tag on option cards (1.4.1), the gov.pl exception moved onto its button
+and then trimmed to a short name, the AI-review checkbox split into a
+four-word label plus aria-describedby description — each deployed,
+re-scanned, and back at 100 before the next began.
 
 ## Forward-looking (non-normative, WCAG 3 Working Draft)
 
