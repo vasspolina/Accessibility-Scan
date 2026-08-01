@@ -13,17 +13,11 @@ const severityRank: Record<AccessibilityFinding["severity"], number> = {
 // key is the rule id (every deterministic finding has one); AI findings with
 // no rule id fall back to their description, so genuinely distinct AI issues
 // still stand alone.
-export function FindingsList({
-  findings,
-  asNotes = false,
-}: {
-  findings: AccessibilityFinding[];
-  asNotes?: boolean;
-}) {
-  if (findings.length === 0) {
-    return <p className="a11y-empty">Nothing found here.</p>;
-  }
-
+/** The one grouping the report uses everywhere — cards and the
+ * professional table must agree on what "one issue" means, so the logic
+ * lives once. Returns groups sorted most-severe-first, each group sorted
+ * the same way so [0] is the representative. */
+export function groupFindings(findings: AccessibilityFinding[]): AccessibilityFinding[][] {
   const groups = new Map<string, AccessibilityFinding[]>();
   for (const finding of findings) {
     const key = finding.ruleId ?? finding.description;
@@ -40,6 +34,21 @@ export function FindingsList({
     const bySeverity = severityRank[a[0].severity] - severityRank[b[0].severity];
     return bySeverity !== 0 ? bySeverity : b.length - a.length;
   });
+  return grouped;
+}
+
+export function FindingsList({
+  findings,
+  asNotes = false,
+}: {
+  findings: AccessibilityFinding[];
+  asNotes?: boolean;
+}) {
+  if (findings.length === 0) {
+    return <p className="a11y-empty">Nothing found here.</p>;
+  }
+
+  const grouped = groupFindings(findings);
 
   return (
     <ul className="a11y-findings-list">

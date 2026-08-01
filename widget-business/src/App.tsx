@@ -7,6 +7,15 @@ import { ReportSection } from "./components/ReportSection";
 import { PrincipleGroup } from "./components/PrincipleGroup";
 import { UndecidedChecks } from "./components/UndecidedChecks";
 import { ReportViewProvider, type ReportView } from "./components/ReportViewContext";
+import { ProfessionalTable } from "./components/ProfessionalTable";
+
+function hostnameOf(url: string): string {
+  try {
+    return new URL(url).hostname;
+  } catch {
+    return url;
+  }
+}
 import {
   loadAudienceMode,
   saveAudienceMode,
@@ -307,6 +316,12 @@ export function App({ apiBase, cta }: { apiBase: string; cta?: CtaConfig }) {
       {report && (
         <ReportViewProvider value={reportView}>
         <div className="a11y-report">
+          {/* The kit's results header: what was scanned, said plainly. */}
+          {professional && (
+            <h2 className="a11y-results-title">
+              {hostnameOf(report.url)} — scan results
+            </h2>
+          )}
           <PrintButton />
           {isDocument ? (
             <DocumentSummary report={report} />
@@ -377,6 +392,21 @@ export function App({ apiBase, cta }: { apiBase: string; cta?: CtaConfig }) {
 
           {report.wcag22 && <Wcag22Readiness readiness={report.wcag22} />}
 
+          {professional && !isDocument && (
+            <ProfessionalTable
+              findings={[
+                ...findingsByCategory.darkPattern,
+                ...findingsByCategory.accessibility,
+                ...findingsByCategory.designClarity,
+              ]}
+              conformance={report.conformance}
+            />
+          )}
+
+          {/* In professional mode these card sections are print-only: the
+              screen shows the kit's table above, but a printed report has
+              to stand alone, and only the cards carry everything open. */}
+          <div className={professional && !isDocument ? "a11y-print-cards" : undefined}>
           {!isDocument && (
           <ReportSection
             title="Issues that could turn away users"
@@ -419,6 +449,7 @@ export function App({ apiBase, cta }: { apiBase: string; cta?: CtaConfig }) {
             asNotes
           />
           )}
+          </div>
 
           {/* The screen-reader walkthrough stays above the documents: it is
               evidence about this page, read once the findings are. */}

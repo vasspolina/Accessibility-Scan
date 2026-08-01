@@ -2815,7 +2815,15 @@
   --type-heading-size: var(--a11y-text-title, 1.75rem);
   --type-body-size: var(--a11y-text-body, 1.125rem);
   --type-label-size: var(--a11y-text-body, 1.125rem);
+  --type-body-lh: 1.5;
   --space-03: 0.5rem;
+  --space-04: 0.75rem;
+  --space-05: 1rem;
+  --background: var(--a11y-bg, #ffffff);
+  --layer-01: var(--a11y-layer-1, #f4f4f4);
+  --layer-hover: #e8e8e8;
+  --border-strong: #8d8d8d;
+  --interactive: var(--a11y-accent, #0f62fe);
 }
 
 /* The system's Card: a layer-01 rectangle with a hairline border and no
@@ -2984,6 +2992,7 @@
     --a11y-focus-inset: #161616;
     --a11y-layer-1: #262626;  /* gray-90 */
     --a11y-layer-2: #393939;  /* gray-80 */
+    --layer-hover: #333333;
   }
 
   /* Severity hues lift one ramp step in dark to hold contrast, on the
@@ -3052,4 +3061,68 @@
 .a11y-score-breakdown dd {
   margin: 0;
   font-weight: 500;
+}
+
+/* The kit's results screen: header, tabbed table, and the print swap. */
+.a11y-results-title {
+  margin: 0 0 8px;
+  font-size: var(--a11y-text-title, 1.75rem);
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  overflow-wrap: anywhere;
+}
+
+.a11y-pro-table {
+  border-left: 0;
+  padding-left: 0;
+}
+
+/* The table scrolls inside its own section on a narrow panel rather than
+   widening the page — the reflow rule this product enforces on others.
+   The panel is already keyboard-reachable: the imported Tabs gives it
+   tabindex and a label. The min-width keeps the columns readable instead
+   of letting them crush; below it, the panel scrolls. */
+.a11y-pro-table [role="tabpanel"] {
+  overflow-x: auto;
+}
+
+.a11y-pro-table table {
+  min-width: 640px;
+}
+
+.a11y-pro-table .a11y-severity-badge {
+  white-space: nowrap;
+}
+
+.a11y-table-detail p {
+  margin: 8px 0;
+}
+
+.a11y-clean-list {
+  margin: 0;
+  padding-left: 24px;
+}
+
+.a11y-clean-list li {
+  margin: 4px 0;
+}
+
+.a11y-clean-level {
+  color: var(--a11y-muted, #525252);
+}
+
+@media print {
+  /* Print swaps the professional table for the full cards: the table's
+     one-open-row state cannot be forced open from CSS, and a printed
+     report has to stand alone. On screen the swap runs the other way. */
+  .a11y-pro-table {
+    display: none !important;
+  }
+}
+
+/* Hidden on screen, default (visible) in print — the swap's other half. */
+@media screen {
+  .a11y-print-cards {
+    display: none;
+  }
 }
