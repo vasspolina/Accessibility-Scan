@@ -15,7 +15,16 @@ const STATUS_LABEL = {
   "needs-review": "Needs a person",
 } as const;
 
-export function ConformanceView({ conformance }: { conformance: ConformanceSummary }) {
+export function ConformanceView({
+  conformance,
+  showBfsgNote = false,
+}: {
+  conformance: ConformanceSummary;
+  // One factual sentence naming the German law, shown to business readers who
+  // asked what the score means for them legally. Once per report, no alarm,
+  // no fine amounts — the same rules the AI layer's legal framing follows.
+  showBfsgNote?: boolean;
+}) {
   const [expanded, setExpanded] = useState(false);
   const [onlyFailing, setOnlyFailing] = useState(true);
   const panelId = useId();
@@ -45,6 +54,8 @@ export function ConformanceView({ conformance }: { conformance: ConformanceSumma
       </h2>
       <p className="a11y-section-desc">
         The {conformance.total}-item checklist European accessibility law measures sites against.
+        {showBfsgNote &&
+          " In Germany this is the standard the BFSG points at — the law that implements the European Accessibility Act, in force since June 2025."}
       </p>
 
       <div className="a11y-conf-tiles">

@@ -129,6 +129,12 @@ Closed since first written: axe on the report state, and dark-mode contrast —
 both run 29 July through the dev fixture (`?fixture` on the dev harness),
 every state expanded, zero violations and zero incompletes in both colour
 schemes. The 1.4.3 dark-mode verdict above is upgraded on that evidence.
+Re-earned 1 August after the audience-mode toggle shipped: both audience
+modes, both colour schemes, cards collapsed and expanded — the expanded run
+caught the professional snippet `<pre>` as a keyboard-unreachable scrollable
+region (our own rule), fixed with `tabindex="0"` and a `group` label before
+release; a first attempt with `role="region"` failed `landmark-unique` and
+was corrected. Zero violations in every state after the fix.
 
 ## Forward-looking (non-normative, WCAG 3 Working Draft)
 

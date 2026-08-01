@@ -3,6 +3,8 @@ import { dominantComponent, describeComponent } from "../lib/componentCluster";
 import type { AccessibilityFinding } from "../api/scanClient";
 import { LEVEL_FRAMING, plainForRule, plainFixForRule } from "../lib/wcagPlain";
 import { whatWeFound } from "../lib/findingText";
+import { useReportView } from "./ReportViewContext";
+import { enClauseFor } from "../lib/audienceMode";
 import {
   fixKindForFinding,
   isKeyboardCheck,
@@ -418,6 +420,7 @@ export function FindingGroup({
 }) {
   const [expanded, setExpanded] = useState(false);
   const [showAll, setShowAll] = useState(false);
+  const { professional, criterionNames } = useReportView();
 
   const rep = findings[0]; // most severe (list is pre-sorted by severity)
   const count = findings.length;
@@ -475,6 +478,7 @@ export function FindingGroup({
         {fromAi && <span className="a11y-method-badge a11y-method-ai">AI review</span>}
         <span className={`a11y-method-badge a11y-fix-${fix.key}`}>{fix.label}</span>
         {rep.wcagLevel && <span className="a11y-level-badge">{LEVEL_FRAMING[rep.wcagLevel]}</span>}
+        {professional && rep.ruleId && <code className="a11y-rule-chip">{rep.ruleId}</code>}
       </button>
 
       {/* Always rendered, hidden when collapsed, rather than rendered only
@@ -597,8 +601,60 @@ export function FindingGroup({
           </div>
           )}
 
-          {/* Developer hand-off — the rule reference, shown once */}
-          {(rep.ruleId || rep.wcagCriterion) && (
+          {/* Professional mode: the hand-off detail open on the card, not
+              two clicks down. Criterion cited by number, name and level from
+              the same table the conformance section renders; the EN 301 549
+              clause derived mechanically (chapter 9 maps one-to-one onto
+              WCAG 2.1 A/AA) and never claimed for AAA or N/A. */}
+          {professional && (
+            <div className="a11y-pro-block">
+              {(() => {
+                const num = rep.wcagCriterion?.match(/^(\d\.\d+\.\d+)/)?.[1];
+                const known = num ? criterionNames[num] : undefined;
+                const en = enClauseFor(rep.wcagCriterion, rep.wcagLevel);
+                return (
+                  <>
+                    {num && (
+                      <p className="a11y-pro-line">
+                        <strong>WCAG:</strong> {num}
+                        {known ? ` ${known.name} (${known.level})` : rep.wcagLevel ? ` (${rep.wcagLevel})` : ""}
+                        {en ? <span className="a11y-pro-en"> · {en}</span> : null}
+                      </p>
+                    )}
+                    <p className="a11y-pro-line">
+                      <strong>Selector:</strong> <code>{rep.selector}</code>
+                    </p>
+                    {rep.elementSnippet && (
+                      /* Scrolls horizontally, so it must be reachable by
+                         keyboard — our own scan flags scrollable regions a
+                         Tab press cannot enter. role="group", not "region":
+                         a region is a landmark, and one per card would fill
+                         the landmark list with identical entries. */
+                      <pre
+                        className="a11y-pro-snippet"
+                        tabIndex={0}
+                        role="group"
+                        aria-label="Element markup"
+                      >
+                        <code>{rep.elementSnippet}</code>
+                      </pre>
+                    )}
+                    {rep.helpUrl && (
+                      <p className="a11y-pro-line">
+                        <a className="a11y-learn-more" href={rep.helpUrl} target="_blank" rel="noopener noreferrer">
+                          Fix technique ↗
+                        </a>
+                      </p>
+                    )}
+                  </>
+                );
+              })()}
+            </div>
+          )}
+
+          {/* Developer hand-off — the rule reference, shown once. Redundant
+              in professional mode, where the block above is already open. */}
+          {!professional && (rep.ruleId || rep.wcagCriterion) && (
             <details className="a11y-tech-details">
               <summary>The technical version</summary>
               {/* Only when it was not already shown in the open part of the

@@ -5,6 +5,14 @@ import { DocumentSummary } from "./components/DocumentSummary";
 import { ReportSection } from "./components/ReportSection";
 import { PrincipleGroup } from "./components/PrincipleGroup";
 import { UndecidedChecks } from "./components/UndecidedChecks";
+import { ReportViewProvider, type ReportView } from "./components/ReportViewContext";
+import {
+  loadAudienceMode,
+  saveAudienceMode,
+  matchesFixFilter,
+  type AudienceMode,
+  type FixFilter,
+} from "./lib/audienceMode";
 import { ScreenReaderPreview } from "./components/ScreenReaderPreview";
 import { ConformanceView } from "./components/ConformanceView";
 import { Wcag22Readiness } from "./components/Wcag22Readiness";
@@ -63,7 +71,12 @@ export function waitingMessage(mode: ScanMode, aiRequested: boolean, elapsed: nu
     : "Checking your site. Most pages take twenty to forty seconds…";
 }
 
-export function App({ apiBase }: { apiBase: string }) {
+export interface CtaConfig {
+  text: string;
+  href: string;
+}
+
+export function App({ apiBase, cta }: { apiBase: string; cta?: CtaConfig }) {
   const [report, setReport] = useState<AccessibilityReport | null>(null);
   const [audit, setAudit] = useState<SiteAudit | null>(null);
   const [loading, setLoading] = useState(false);
@@ -71,6 +84,18 @@ export function App({ apiBase }: { apiBase: string }) {
   // the AI review roughly triples the time.
   const [aiRequested, setAiRequested] = useState(false);
   const [mode, setMode] = useState<ScanMode>("page");
+  // Presentation only — the scan is identical in both modes, and flipping
+  // re-renders the report already in hand. Persisted so a returning visitor
+  // keeps their choice.
+  const [audience, setAudienceState] = useState<AudienceMode>(() => loadAudienceMode());
+  const setAudience = (m: AudienceMode) => {
+    setAudienceState(m);
+    saveAudienceMode(m);
+  };
+  // The professional view filter. Reset to "all" is deliberate on mode
+  // switch: a business reader must never inherit a hidden-cards state.
+  const [fixFilter, setFixFilter] = useState<FixFilter>("all");
+  const professional = audience === "professional";
   const [error, setError] = useState<string | null>(null);
   // A site turning the scanner away isn't the visitor's mistake, so it's shown
   // as guidance rather than a red error.
@@ -100,14 +125,25 @@ export function App({ apiBase }: { apiBase: string }) {
     return () => clearInterval(id);
   }, [loading]);
 
+  const reportView = useMemo<ReportView>(() => {
+    const criterionNames: ReportView["criterionNames"] = {};
+    for (const c of report?.conformance?.criteria ?? []) {
+      criterionNames[c.id] = { name: c.name, level: c.level };
+    }
+    return { professional, criterionNames };
+  }, [report, professional]);
+
   const findingsByCategory = useMemo(() => {
-    const findings = report?.findings ?? [];
+    const all = report?.findings ?? [];
+    // The professional filter narrows the view, never the data: exports,
+    // history and the score are computed from the full report regardless.
+    const findings = professional ? all.filter((f) => matchesFixFilter(f, fixFilter)) : all;
     return {
       accessibility: findings.filter((f) => f.category === "accessibility"),
       darkPattern: findings.filter((f) => f.category === "dark-pattern"),
       designClarity: findings.filter((f) => f.category === "design-clarity"),
     };
-  }, [report]);
+  }, [report, professional, fixFilter]);
 
   async function handleScan(
     url: string,
@@ -166,7 +202,15 @@ export function App({ apiBase }: { apiBase: string }) {
         , the standard nearly every accessibility law is built on.
       </p>
 
-      <UrlForm onSubmit={handleScan} loading={loading} />
+      <UrlForm
+        onSubmit={handleScan}
+        loading={loading}
+        audience={audience}
+        onAudienceChange={(m) => {
+          setAudience(m);
+          setFixFilter("all");
+        }}
+      />
 
       {blocked && <BlockedNotice message={blocked} />}
 
@@ -233,6 +277,7 @@ export function App({ apiBase }: { apiBase: string }) {
       )}
 
       {report && (
+        <ReportViewProvider value={reportView}>
         <div className="a11y-report">
           <PrintButton />
           {isDocument ? (
@@ -270,7 +315,37 @@ export function App({ apiBase }: { apiBase: string }) {
 
           <ScanHistory current={toHistoryEntry(report)} previous={history} />
 
-          {report.conformance && <ConformanceView conformance={report.conformance} />}
+          {report.conformance && (
+            <ConformanceView conformance={report.conformance} showBfsgNote={!professional} />
+          )}
+
+          {/* The professional view filter. Chips partition by who makes the
+              change — the same tested mapping the fix badges use — so
+              "Design" pulls the visual decisions forward and "Code" the
+              markup work. A narrowed view is announced by the counts on the
+              section headings changing; the data underneath never narrows. */}
+          {professional && (
+            <div className="a11y-mode a11y-filter" role="group" aria-label="Show findings by fix type">
+              {(
+                [
+                  ["all", "All"],
+                  ["design", "Design"],
+                  ["code", "Code"],
+                  ["content", "Content"],
+                ] as const
+              ).map(([key, label]) => (
+                <button
+                  key={key}
+                  type="button"
+                  className={`a11y-mode-btn a11y-filter-btn${fixFilter === key ? " a11y-mode-btn-active" : ""}`}
+                  aria-pressed={fixFilter === key}
+                  onClick={() => setFixFilter(key)}
+                >
+                  {label}
+                </button>
+              ))}
+            </div>
+          )}
 
           {report.wcag22 && <Wcag22Readiness readiness={report.wcag22} />}
 
@@ -336,7 +411,20 @@ export function App({ apiBase }: { apiBase: string }) {
           {report.pagePreview && (
             <VisionSimulator pagePreview={report.pagePreview} url={report.url} />
           )}
+
+          {/* One call to action, configured by the embedder, rendered only
+              when configured — the public demo carries none. Business mode
+              only: a professional reading selectors is not the person the
+              offer is for. */}
+          {!professional && cta?.text && cta?.href && (
+            <section className="a11y-section a11y-cta">
+              <a className="a11y-cta-link" href={cta.href} target="_blank" rel="noopener noreferrer">
+                {cta.text}
+              </a>
+            </section>
+          )}
         </div>
+        </ReportViewProvider>
       )}
     </section>
   );

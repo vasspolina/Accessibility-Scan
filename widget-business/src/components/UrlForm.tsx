@@ -1,12 +1,15 @@
 import { useState, type FormEvent } from "react";
 import { LoginFields } from "./LoginFields";
 import type { AuthConfig } from "../api/scanClient";
+import type { AudienceMode } from "../lib/audienceMode";
 
 export type ScanMode = "page" | "site";
 
 export function UrlForm({
   onSubmit,
   loading,
+  audience,
+  onAudienceChange,
 }: {
   onSubmit: (
     url: string,
@@ -16,6 +19,10 @@ export function UrlForm({
     auth?: AuthConfig
   ) => void;
   loading: boolean;
+  // Presentation only. Lives in App so flipping it re-renders a report that
+  // is already in hand — it is never sent with the scan request.
+  audience: AudienceMode;
+  onAudienceChange: (mode: AudienceMode) => void;
 }) {
   const [value, setValue] = useState("");
   const [mode, setMode] = useState<ScanMode>("page");
@@ -60,6 +67,30 @@ export function UrlForm({
               status text below already announces progress. */}
           {loading && <span className="a11y-spinner" aria-hidden="true" />}
           {loading ? "Checking…" : mode === "site" ? "Audit my site" : "Check my site"}
+        </button>
+      </div>
+
+      {/* Who the report is written for. Deliberately not disabled while
+          loading: it changes nothing about the scan, and someone who realises
+          mid-scan they wanted the other rendering should not have to wait. */}
+      <div className="a11y-mode" role="group" aria-label="Who the report is for">
+        <button
+          type="button"
+          className={`a11y-mode-btn${audience === "business" ? " a11y-mode-btn-active" : ""}`}
+          aria-pressed={audience === "business"}
+          onClick={() => onAudienceChange("business")}
+        >
+          For business owners
+          <em>Plain-language summary, no technical background needed</em>
+        </button>
+        <button
+          type="button"
+          className={`a11y-mode-btn${audience === "professional" ? " a11y-mode-btn-active" : ""}`}
+          aria-pressed={audience === "professional"}
+          onClick={() => onAudienceChange("professional")}
+        >
+          For professionals
+          <em>Designers &amp; developers — WCAG-mapped technical report</em>
         </button>
       </div>
 

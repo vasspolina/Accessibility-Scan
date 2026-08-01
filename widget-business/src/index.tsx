@@ -5,6 +5,10 @@ import { mountShadowRoot } from "./utils/shadowMount";
 
 export interface MountOptions {
   apiBase: string;
+  // Optional call-to-action rendered at the end of a business-mode report —
+  // both text and link come from the embedder, so the offer is theirs, not
+  // ours. Absent means no block at all: the public demo carries none.
+  cta?: { text: string; href: string };
 }
 
 export function mount(target: string | HTMLElement, options: MountOptions) {
@@ -24,7 +28,7 @@ export function mount(target: string | HTMLElement, options: MountOptions) {
   const root = createRoot(mountPoint);
   root.render(
     <React.StrictMode>
-      <App apiBase={options.apiBase} />
+      <App apiBase={options.apiBase} cta={options.cta} />
     </React.StrictMode>
   );
 }
@@ -38,7 +42,11 @@ function autoInit() {
   try {
     const el = document.getElementById("a11y-widget-business-root");
     if (el?.dataset.apiBase) {
-      mount(el, { apiBase: el.dataset.apiBase });
+      const { ctaText, ctaHref } = el.dataset;
+      mount(el, {
+        apiBase: el.dataset.apiBase,
+        cta: ctaText && ctaHref ? { text: ctaText, href: ctaHref } : undefined,
+      });
     }
   } catch (err) {
     console.error("[A11yWidgetBusiness] auto-init failed:", err);
