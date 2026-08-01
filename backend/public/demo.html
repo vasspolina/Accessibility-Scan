@@ -16,14 +16,38 @@
          so giving it a column here as well made the two multiply. This page's
          own text is aligned to the panel by the rule below instead. */
       .page { width: 100%; margin: 0; }
-      .page > h1, .page > p { width: min(100%, max(50vw, 30rem)); margin-inline: auto; }
+      .page > h1, .page > p, .page > ul {
+        width: min(100%, max(50vw, 30rem));
+        /* Our own line-length rule flagged this page at ~97 characters a
+           line; the cap keeps the measure readable at wide viewports. */
+        max-width: 66ch;
+        margin-inline: auto;
+      }
       h1 { font-size: 28px; line-height: 36px; margin: 0 0 8px; font-weight: 400; }
       p.lede { font-size: 16px; line-height: 1.5; color: #525252; margin: 0 0 32px; }
       .try { font-size: 14px; line-height: 1.5; color: #525252; margin: 32px 0 0; }
-      .try code {
-        font-family: ui-monospace, "SF Mono", Menlo, monospace;
-        background: #e0e0e0; padding: 1px 6px;
+      /* Buttons, not decorated text: our own scan flagged the previous
+         code-chip styling as implying a click it never delivered. Each one
+         fills the scanner input above. A list beside the prose, not inside
+         it — inline chips inside a paragraph made the measure unmeasurable
+         (our line-length rule counts their labels as running text). */
+      .try-list {
+        list-style: none;
+        padding: 0;
+        margin: 8px auto 0;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
       }
+      .try-list button {
+        font-family: ui-monospace, "SF Mono", Menlo, monospace;
+        font-size: 14px;
+        background: #e0e0e0; padding: 2px 8px;
+        border: 1px solid #8d8d8d; border-radius: 4px;
+        color: #161616; cursor: pointer;
+      }
+      .try-list button:hover { background: #d1d1d1; }
+      .try-list button:focus-visible { outline: 2px solid #0f62fe; outline-offset: 1px; }
     </style>
   </head>
   <body>
@@ -45,14 +69,22 @@
       ></div>
 
       <p class="try">
-        Consent banners in a language other than English are worth trying:
-        <code>bundesregierung.de</code>, <code>spiegel.de</code>,
-        <code>dr.dk</code>, <code>corriere.it</code>. And
-        <code>gov.pl</code>, whose banner is correct — it should report no
-        consent problem at all.
+        Consent banners in a language other than English are worth trying.
+        Each button fills the address in for you. The last one, gov.pl, has a
+        correct banner. Expect no consent finding there at all.
       </p>
+      <ul class="try-list">
+        <li><button type="button" data-domain="bundesregierung.de" aria-label="Fill in bundesregierung.de">bundesregierung.de</button></li>
+        <li><button type="button" data-domain="spiegel.de" aria-label="Fill in spiegel.de">spiegel.de</button></li>
+        <li><button type="button" data-domain="dr.dk" aria-label="Fill in dr.dk">dr.dk</button></li>
+        <li><button type="button" data-domain="corriere.it" aria-label="Fill in corriere.it">corriere.it</button></li>
+        <li><button type="button" data-domain="gov.pl" aria-label="Fill in gov.pl">gov.pl</button></li>
+      </ul>
     </main>
 
     <script src="./widget-business.js" defer></script>
+    <!-- External file, not inline: this service's CSP is script-src 'self'
+         with no unsafe-inline. -->
+    <script src="./demo.js" defer></script>
   </body>
 </html>

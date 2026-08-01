@@ -47,13 +47,22 @@ cannot leak in.
 - **`widget-business/`** — written for the person who owns the site. Plain
   language, POUR grouping, severity as "Fix first / Fix soon", fix routing
   (code / content / design / document), a printable report, an accessibility
-  statement generator and a VPAT/ACR draft.
+  statement generator and a VPAT/ACR draft. An audience toggle under the URL
+  field switches the same report into a professional view — rule ids, WCAG
+  criterion with name and level, the EN 301 549 clause, selector, element
+  markup, a fix-technique link, and filter chips that slice findings by fix
+  kind. The choice is remembered per browser; the scan itself is identical
+  in both modes.
 - **`widget/`** — the technical original: rule ids, selectors, WCAG numbers.
 
 ```html
 <div id="a11y-widget-business-root" data-api-base="https://your-backend"></div>
 <script src="https://your-backend/widget-business.js" defer></script>
 ```
+
+Two optional attributes, `data-cta-text` and `data-cta-href`, add a
+call-to-action link at the end of business-mode reports — your text, your
+link. Leave them off and no such block exists.
 
 ## Running it locally
 

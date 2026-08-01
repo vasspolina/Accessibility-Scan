@@ -256,6 +256,18 @@
   font-size: var(--a11y-text-body);
 }
 
+.a11y-url-error {
+  margin-top: 8px;
+}
+
+/* Zero footprint while empty; the element itself stays in the DOM so the
+   live region exists before its first message arrives. */
+.a11y-url-error:empty {
+  padding: 0;
+  border: 0;
+  margin: 0;
+}
+
 .a11y-notice {
   margin-top: 16px;
   padding: 12px 16px;
