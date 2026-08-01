@@ -44,9 +44,14 @@
  */
 :host,
 .a11y-widget-biz {
-  --a11y-text-body: 1rem;      /* 16px — body, labels, badges, everything */
-  --a11y-text-title: 1.25rem;  /* 20px — section and card headings */
-  --a11y-text-display: 2rem;   /* 32px — the score, and nothing else */
+  /* The Verify design system's scale: three sizes, hierarchy by weight,
+     colour and space. Its third size — a 14px label — is deliberately not
+     adopted: the floor above stands, so labels, badges and captions stay at
+     body size. The system's own readme agrees: every component must pass
+     the checks the product performs, and ours are stricter here. */
+  --a11y-text-body: 1.125rem;  /* 18px — body, labels, badges, everything */
+  --a11y-text-title: 1.75rem;  /* 28px — section and card headings */
+  --a11y-text-display: 1.75rem; /* the score too: three sizes means three */
 }
 
 .a11y-widget-inner {
@@ -408,7 +413,7 @@
 }
 
 .a11y-rule-chip {
-  font-family: ui-monospace, "SF Mono", Menlo, monospace;
+  font-family: inherit; /* no monospace in this system: surface + border mark code */
   font-size: var(--a11y-text-body);
   color: var(--a11y-muted, #57606a);
   background: var(--a11y-surface, #f6f8fa);
@@ -439,7 +444,7 @@
 }
 
 .a11y-pro-snippet code {
-  font-family: ui-monospace, "SF Mono", Menlo, monospace;
+  font-family: inherit; /* no monospace in this system: surface + border mark code */
   font-size: var(--a11y-text-body);
   white-space: pre;
 }
@@ -821,7 +826,7 @@
    forces `font-family: inherit` onto every element, so <code> was rendering
    in the body font and the distinction it exists to make was invisible. */
 .a11y-widget-biz code {
-  font-family: var(--a11y-mono, ui-monospace, SFMono-Regular, Menlo, Consolas, monospace);
+  font-family: inherit; /* no monospace in this system: surface + border mark code */
   /* Carbon code-02. A relative 0.92em was the last thing on the page landing
      off the type scale — it computed to 12.88px inside body text and 13.33px
      where the surrounding size differed, which is exactly the drift the scale
@@ -1525,7 +1530,7 @@
   border: 1px solid var(--a11y-border, #d0d7de);
   border-radius: 10px;
   background: var(--a11y-surface, #f6f8fa);
-  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-family: inherit; /* no monospace in this system: surface + border mark code */
   font-size: var(--a11y-text-body);
   line-height: 1.6;
   white-space: pre-wrap;
@@ -1937,12 +1942,12 @@
   --a11y-score-warn: #8a3800;    /* orange-70: Carbon's warning yellow is a status
                                     fill, never text — as text it fails badly */
 
-  /* IBM Plex Sans is Carbon's typeface. Named first so it is used wherever it
-     is installed, with a system fallback rather than a webfont request: this
-     widget is embedded on other people's pages, and reaching out to a font CDN
-     from there costs performance, adds a CSP problem, and tells a third party
-     who visited them. */
-  --a11y-font: "IBM Plex Sans", "Helvetica Neue", -apple-system, BlinkMacSystemFont, Arial, sans-serif;
+  /* PP Telegraf is the design system's typeface, self-hosted next to the
+     widget bundle — the request goes to the same origin that served the
+     script, so no third party learns who visited (the objection that kept
+     this widget off font CDNs). Full system fallback behind it, and
+     font-display swap in the @font-face, so text never waits on the font. */
+  --a11y-font: "PP Telegraf", "IBM Plex Sans", "Helvetica Neue", -apple-system, BlinkMacSystemFont, Arial, sans-serif;
 }
 
 /* Carbon is square. The radius is the single most recognisable thing about the
@@ -2751,5 +2756,128 @@
      the suggestion into two identical grey squares. */
   .a11y-swatch {
     forced-color-adjust: none;
+  }
+}
+
+/* ==========================================================================
+   Verify design system
+   ==========================================================================
+   The Accessible Design System (claude.ai/design "Verify") applied the same
+   way the Carbon layer above was: a final cascade layer, same selectors,
+   later in the file. The system is Carbon-derived, so most of its values
+   were already here — this layer carries only what differs: PP Telegraf,
+   the 18/28 type scale (set in the token block near the top), Medium 500
+   where Carbon used bold or regular, body tracking, the focus ring's inner
+   contrast line, tinted severity tags, and 2px corners on inputs and cards.
+   Its 14px label size is refused; the 16px floor comment explains why.
+   ========================================================================== */
+
+.a11y-widget-biz {
+  /* Focus tokens: blue ring with a white inner line in light, white ring
+     with a dark inner line in dark — the inner line is what keeps the ring
+     visible when it lands on a surface the same colour as the ring. */
+  --a11y-focus: #0f62fe;
+  --a11y-focus-inset: #ffffff;
+}
+
+.a11y-widget-inner {
+  /* 1% tracking for airiness at 18px — the system's body letter-spacing. */
+  letter-spacing: 0.01em;
+}
+
+.a11y-section-title,
+.a11y-principle-title {
+  /* PP Telegraf Medium is the heading weight; the face has no bold, and a
+     synthesized one would smear. Tight tracking on the large size. */
+  font-weight: 500;
+  letter-spacing: -0.01em;
+}
+
+.a11y-url-row button,
+.a11y-cta-link,
+.a11y-severity-badge,
+.a11y-mode-btn,
+.a11y-filter-btn {
+  font-weight: 500;
+}
+
+.a11y-score-num {
+  font-weight: 500;
+}
+
+/* The ring everywhere, now with the system's 1px inner contrast line. More
+   specific rules above (Carbon's double ring on primary buttons) still win
+   their ties — this is the default, not the override. */
+.a11y-widget-biz :is(a, button, input, select, textarea, summary, [tabindex]):focus-visible {
+  outline: 2px solid var(--a11y-focus, #0f62fe);
+  outline-offset: 1px;
+  box-shadow: inset 0 0 0 1px var(--a11y-focus-inset, #ffffff);
+}
+
+/* Severity: the system's tag — tinted fill, matching text, hairline
+   currentColor border, pill. The words stay ours ("Fix first", not
+   "Critical"): the vocabulary is the report's, the clothing is the
+   system's. Every pair meets 4.5:1 on its tint, both themes. */
+.a11y-widget-biz.a11y-widget-biz .a11y-severity-badge {
+  border-radius: 999px;
+  border: 1px solid currentColor;
+}
+
+.a11y-severity-critical .a11y-severity-badge {
+  background: #fff1f1;
+  color: #a2191f;
+}
+
+.a11y-severity-serious .a11y-severity-badge {
+  background: #fff2e8;
+  color: #8a3800;
+}
+
+.a11y-severity-moderate .a11y-severity-badge {
+  background: #fcf4d6;
+  color: #6f5500;
+}
+
+.a11y-severity-minor .a11y-severity-badge {
+  background: #f4f4f4;
+  color: #525252;
+}
+
+/* 2px where a hairline needs softening — inputs and cards, nothing else.
+   The doubled class beats the square-rule reset the Carbon layer set. */
+.a11y-widget-biz.a11y-widget-biz .a11y-url-row input,
+.a11y-widget-biz.a11y-widget-biz .a11y-finding,
+.a11y-widget-biz.a11y-widget-biz .a11y-pro-block,
+.a11y-widget-biz.a11y-widget-biz .a11y-pro-snippet {
+  border-radius: 2px;
+}
+
+@media (prefers-color-scheme: dark) {
+  .a11y-widget-biz {
+    /* Dark focus is white — blue on blue disappears; the inner line flips. */
+    --a11y-focus: #ffffff;
+    --a11y-focus-inset: #161616;
+  }
+
+  /* Severity hues lift one ramp step in dark to hold contrast, on the
+     system's dark tint pairs. */
+  .a11y-widget-biz .a11y-severity-critical .a11y-severity-badge {
+    background: #520408;
+    color: #ff8389;
+  }
+
+  .a11y-widget-biz .a11y-severity-serious .a11y-severity-badge {
+    background: #4b2400;
+    color: #ff832b;
+  }
+
+  .a11y-widget-biz .a11y-severity-moderate .a11y-severity-badge {
+    background: #3d3000;
+    color: #f1c21b;
+  }
+
+  .a11y-widget-biz .a11y-severity-minor .a11y-severity-badge {
+    background: #393939;
+    color: #c6c6c6;
   }
 }

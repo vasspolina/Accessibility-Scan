@@ -139,7 +139,14 @@ later gained the same audience treatment (rule-id chips, BFSG sentence),
 was re-run the same way: clean in both modes and both schemes — after one
 false alarm from a stale hot-reloaded stylesheet inside the shadow root,
 which a full page reload resolved. Axe runs after CSS edits need a fresh
-mount, not hot module replacement.
+mount, not hot module replacement. Re-earned once more on 1 August after
+the Verify design-system restyle (PP Telegraf, 18/28 type scale, tinted
+severity tags, focus ring with inner contrast line): the full matrix —
+both audience modes, both colour schemes, collapsed and expanded — zero
+violations, and the deployed demo self-scans at 100 with no findings.
+The system's 14px label size was deliberately not adopted; the 16px
+floor in styles.css explains why, and the system's own readme concurs
+(every component must pass the product's checks).
 
 ## Forward-looking (non-normative, WCAG 3 Working Draft)
 
