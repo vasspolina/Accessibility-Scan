@@ -100,11 +100,17 @@ export function ProfessionalTable({
       <p className="a11y-empty">Nothing found here.</p>
     ) : (
       <DataTable
+        /* Carbon's width rule: columns size to their content and only need
+           the 16px spacing between them. Severity and Instances shrink to
+           fit (1% + nowrap in the stylesheet), the issue statement takes
+           the room that remains — it is the row's point — and the
+           criterion holds a fixed 24% metadata share — measured so the issue
+           column stays the widest text column at every panel width. */
         headers={[
-          { key: "severity", label: "Severity", width: "140px" },
+          { key: "severity", label: "Severity", width: "1%" },
           { key: "issue", label: "Issue" },
-          { key: "criterion", label: "Criterion" },
-          { key: "count", label: "Instances", align: "right", width: "110px" },
+          { key: "criterion", label: "Criterion", width: "24%" },
+          { key: "count", label: "Instances", align: "right", width: "1%" },
         ]}
         rows={rows}
       />

@@ -2824,6 +2824,9 @@
   --layer-hover: #e8e8e8;
   --border-strong: #8d8d8d;
   --interactive: var(--a11y-accent, #0f62fe);
+  /* Carbon's column-header surface — one step past the layer the table
+     sits on ($layer-accent-01 light, its gray-80 counterpart dark). */
+  --a11y-layer-accent: #e0e0e0;
 }
 
 /* The system's Card: a layer-01 rectangle with a hairline border and no
@@ -2993,6 +2996,7 @@
     --a11y-layer-1: #262626;  /* gray-90 */
     --a11y-layer-2: #393939;  /* gray-80 */
     --layer-hover: #333333;
+    --a11y-layer-accent: #393939;
   }
 
   /* Severity hues lift one ramp step in dark to hold contrast, on the
@@ -3087,7 +3091,37 @@
 }
 
 .a11y-pro-table table {
-  min-width: 640px;
+  /* The floor is the sum of what each column needs at minimum — chevron
+     44, severity chip ~150, issue ~240, criterion ~180, count ~90 — in
+     rem so it grows with the reader's text setting. */
+  min-width: 44rem;
+}
+
+/* Carbon's data table, measured from its style spec rather than guessed:
+   column headers on $layer-accent (the vendored component paints layer-01;
+   !important is what beats an inline style), content-sized severity and
+   instances columns, right-aligned tabular numerals, criterion as
+   secondary-colour metadata, and the expanded panel's 16/24 vertical
+   rhythm. */
+.a11y-pro-table thead tr {
+  background: var(--a11y-layer-accent, #e0e0e0) !important;
+}
+
+.a11y-pro-table tbody td:nth-child(2),
+.a11y-pro-table tbody td:nth-child(5) {
+  white-space: nowrap;
+}
+
+.a11y-pro-table tbody td:nth-child(5) {
+  font-variant-numeric: tabular-nums;
+}
+
+.a11y-pro-table tbody td:nth-child(4) {
+  color: var(--a11y-muted, #525252);
+}
+
+.a11y-table-detail {
+  padding: 16px 0 8px;   /* + the cell's own 16px = Carbon's 24px bottom */
 }
 
 .a11y-pro-table .a11y-severity-badge {
