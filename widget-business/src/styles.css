@@ -1625,6 +1625,17 @@
     overflow: visible;
   }
 
+  /* Ink: the professional hand-off block prints as a rule-off box, not a
+     grey wash. The CTA is the embedder's pitch, not report content. */
+  .a11y-pro-block,
+  .a11y-pro-snippet {
+    background: transparent !important;
+  }
+
+  .a11y-cta {
+    display: none !important;
+  }
+
   /* A URL is unusable in print unless it's written out. */
   .a11y-intro a::after,
   .a11y-learn-more::after {

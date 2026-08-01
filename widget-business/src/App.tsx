@@ -1,4 +1,5 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
+import { flushSync } from "react-dom";
 import { UrlForm, type ScanMode } from "./components/UrlForm";
 import { ScoreGauge } from "./components/ScoreGauge";
 import { DocumentSummary } from "./components/DocumentSummary";
@@ -132,6 +133,29 @@ export function App({ apiBase, cta }: { apiBase: string; cta?: CtaConfig }) {
     }
     return { professional, criterionNames };
   }, [report, professional]);
+
+  // Print must include every card whatever the on-screen filter shows — the
+  // rule the conformance checklist already follows. The filter lives in React
+  // state, so print CSS cannot undo it; instead it lifts for the duration of
+  // the print and returns afterwards. flushSync because the browser takes its
+  // snapshot as soon as the beforeprint handlers return.
+  const printFilterRestore = useRef<FixFilter>("all");
+  useEffect(() => {
+    const before = () => {
+      printFilterRestore.current = fixFilter;
+      if (fixFilter !== "all") flushSync(() => setFixFilter("all"));
+    };
+    const after = () => {
+      if (printFilterRestore.current !== "all") setFixFilter(printFilterRestore.current);
+      printFilterRestore.current = "all";
+    };
+    window.addEventListener("beforeprint", before);
+    window.addEventListener("afterprint", after);
+    return () => {
+      window.removeEventListener("beforeprint", before);
+      window.removeEventListener("afterprint", after);
+    };
+  }, [fixFilter]);
 
   const findingsByCategory = useMemo(() => {
     const all = report?.findings ?? [];
