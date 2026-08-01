@@ -32,19 +32,31 @@ function ensureHostPrintStyle() {
   document.head.appendChild(style);
 }
 
-export function PrintButton({ label = "Save as PDF" }: { label?: string }) {
+export function PrintButton({
+  label = "Save as PDF",
+  compact = false,
+}: {
+  label?: string;
+  /* The professional action row wants the master file's bare button; the
+     business report keeps the sentence explaining what the dialog is. */
+  compact?: boolean;
+}) {
+  const button = (
+    <button
+      type="button"
+      className="a11y-sr-play"
+      onClick={() => {
+        ensureHostPrintStyle();
+        window.print();
+      }}
+    >
+      {label}
+    </button>
+  );
+  if (compact) return button;
   return (
     <div className="a11y-print-row">
-      <button
-        type="button"
-        className="a11y-sr-play"
-        onClick={() => {
-          ensureHostPrintStyle();
-          window.print();
-        }}
-      >
-        {label}
-      </button>
+      {button}
       <span className="a11y-sr-status">
         Opens your browser's print dialog. Choose &ldquo;Save as PDF&rdquo; as the destination.
       </span>

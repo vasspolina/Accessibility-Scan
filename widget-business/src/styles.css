@@ -1560,6 +1560,7 @@
 
   /* Controls can't be used on paper. */
   .a11y-url-form,
+  .a11y-pro-actions,
   .a11y-print-row,
   .a11y-sim-controls,
   .a11y-sr-controls,
@@ -3217,4 +3218,48 @@
 .a11y-pro-summary .a11y-issues-line {
   margin: 0;
   color: var(--a11y-muted, #525252);
+}
+
+/* "Use cards for these elements" — the conformance section, per the
+   user's screenshot. The section becomes the system's Card and hands
+   layer-2 down, so its tiles and explainer step up a surface level the
+   same way the finding cards' innards do. The failed tile keeps its
+   literal red tint — status fills are allowed for findings. */
+.a11y-widget-biz.a11y-widget-biz .a11y-conf,
+.a11y-widget-biz.a11y-widget-biz .a11y-w22 {
+  background: var(--a11y-layer-1, #f4f4f4);
+  border: 1px solid var(--a11y-border, #e0e0e0);
+  border-left-width: 1px;
+  border-radius: 2px;
+  padding: 16px;
+  --a11y-surface: var(--a11y-layer-2, #ffffff);
+}
+
+.a11y-widget-biz.a11y-widget-biz .a11y-conf-caveat {
+  background: var(--a11y-layer-2, #ffffff);
+}
+
+/* The master file draws "Export report" as the secondary variant —
+   outlined, not filled. Scoped to the action row so the business
+   report's tertiary buttons stay as they were. */
+.a11y-widget-biz.a11y-widget-biz .a11y-pro-actions .a11y-sr-play {
+  background: transparent;
+  border: 1px solid #8d8d8d;
+  color: var(--a11y-text, #161616);
+}
+
+.a11y-widget-biz.a11y-widget-biz .a11y-pro-actions .a11y-sr-play:hover {
+  background: var(--a11y-surface, #f4f4f4);
+  color: var(--a11y-text, #161616);
+}
+
+/* The fix-type chips are chips, not option cards: the mode-button base
+   they share declares flex: 1 1 180px later in the file than the first
+   compact override, so the slab sizing won — the user's screenshot
+   caught them at full card width. Doubled class ends the tie for good. */
+.a11y-widget-biz.a11y-widget-biz .a11y-filter-btn {
+  flex: 0 1 auto;
+  min-width: 96px;
+  min-height: 40px;
+  padding: 8px 16px;
 }

@@ -342,7 +342,7 @@ export function App({ apiBase, cta }: { apiBase: string; cta?: CtaConfig }) {
           ) : professional ? (
             <ProSummary
               report={report}
-              actions={<PrintButton label="Export report" />}
+              actions={<PrintButton label="Export report" compact />}
               onNewScan={focusForm}
             />
           ) : (
