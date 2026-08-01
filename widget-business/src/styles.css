@@ -110,7 +110,7 @@
 }
 
 .a11y-learn-more {
-  font-weight: 600;
+  font-weight: 500;
   text-decoration: underline;
   cursor: pointer;
 }
@@ -118,7 +118,7 @@
 .a11y-url-label {
   display: block;
   font-size: var(--a11y-text-body);
-  font-weight: 600;
+  font-weight: 500;
   margin-bottom: 8px;
   color: var(--a11y-text, #1f2328);
 }
@@ -161,7 +161,7 @@
   background: var(--a11y-accent, #0969da);
   color: #ffffff;
   font-size: var(--a11y-text-body);
-  font-weight: 600;
+  font-weight: 500;
   cursor: pointer;
   white-space: nowrap;
   /* The button had no hover or press state at all, so it read as a picture of
@@ -300,7 +300,7 @@
 .a11y-section-title {
   margin: 0 0 8px;
   font-size: var(--a11y-text-title);
-  font-weight: 700;
+  font-weight: 500;
 }
 
 .a11y-section-redflag .a11y-section-title {
@@ -344,7 +344,7 @@
 
 .a11y-score-number {
   font-size: var(--a11y-text-display);
-  font-weight: 700;
+  font-weight: 500;
   line-height: 1;
 }
 
@@ -379,7 +379,7 @@
 
 .a11y-score-breakdown dd {
   margin: 0;
-  font-weight: 600;
+  font-weight: 500;
 }
 
 /* Sits under the number it qualifies. Quieter than the breakdown above it,
@@ -456,7 +456,7 @@
   padding: 14px 28px;
   background: var(--a11y-accent, #0969da);
   color: #ffffff;
-  font-weight: 600;
+  font-weight: 500;
   text-decoration: none;
   border-radius: 8px;
 }
@@ -514,7 +514,7 @@
 .a11y-principle-title {
   margin: 0 0 4px;
   font-size: var(--a11y-text-body);
-  font-weight: 700;
+  font-weight: 500;
 }
 
 .a11y-principle-desc {
@@ -573,7 +573,7 @@
   padding: 4px 12px;
   border-radius: 999px;
   font-size: var(--a11y-text-body);
-  font-weight: 700;
+  font-weight: 500;
   color: #ffffff;
 }
 
@@ -600,7 +600,7 @@
      pinned it at min-content (its longest word) instead of letting it shrink. */
   flex: 1 1 18rem;
   min-width: 0;
-  font-weight: 600;
+  font-weight: 500;
 }
 
 .a11y-level-badge {
@@ -619,7 +619,7 @@
   padding: 2px 8px;
   border-radius: 999px;
   font-size: var(--a11y-text-body);
-  font-weight: 700;
+  font-weight: 500;
   color: var(--a11y-text, #1f2328);
   background: var(--a11y-surface, #f6f8fa);
   border: 1px solid var(--a11y-border, #d0d7de);
@@ -655,7 +655,7 @@
 
 .a11y-thumb-more {
   font-size: var(--a11y-text-body);
-  font-weight: 600;
+  font-weight: 500;
   color: var(--a11y-muted, #57606a);
 }
 
@@ -666,7 +666,7 @@
   background: var(--a11y-bg, #ffffff);
   color: var(--a11y-accent, #0969da);
   font-size: var(--a11y-text-body);
-  font-weight: 600;
+  font-weight: 500;
   cursor: pointer;
   transition: border-color 0.15s ease, background-color 0.15s ease, transform 0.1s ease;
 }
@@ -742,7 +742,7 @@
   flex-shrink: 0;
   align-self: flex-start;
   font-size: var(--a11y-text-body);
-  font-weight: 600;
+  font-weight: 500;
   color: var(--a11y-muted, #57606a);
   background: var(--a11y-bg, #ffffff);
   border: 1px solid var(--a11y-border, #d0d7de);
@@ -980,7 +980,7 @@
   background: var(--a11y-accent, #0969da);
   color: #ffffff;
   font-size: var(--a11y-text-body);
-  font-weight: 600;
+  font-weight: 500;
   cursor: pointer;
 }
 
@@ -998,7 +998,7 @@
 
 .a11y-tech-details summary {
   cursor: pointer;
-  font-weight: 600;
+  font-weight: 500;
   color: var(--a11y-muted, #57606a);
 }
 
@@ -1026,7 +1026,7 @@
 
 .a11y-sr-play {
   font: inherit;
-  font-weight: 600;
+  font-weight: 500;
   color: #ffffff;
   background: var(--a11y-accent, #0969da);
   border: 1px solid transparent;
@@ -1046,7 +1046,7 @@
 
 .a11y-sr-issue-count {
   font-size: var(--a11y-text-body);
-  font-weight: 600;
+  font-weight: 500;
   color: var(--a11y-score-bad, #cf222e);
   background: #fff5f5;
   border: 1px solid #ffcdc9;
@@ -1146,7 +1146,7 @@
 
 .a11y-conf-num {
   font-size: var(--a11y-text-display);
-  font-weight: 700;
+  font-weight: 500;
   line-height: 1;
 }
 
@@ -1161,7 +1161,7 @@
 
 .a11y-conf-cap strong {
   display: block;
-  font-weight: 600;
+  font-weight: 500;
 }
 
 .a11y-conf-cap em {
@@ -1228,7 +1228,7 @@
   flex-shrink: 0;
   min-width: 62px;
   font-variant-numeric: tabular-nums;
-  font-weight: 700;
+  font-weight: 500;
 }
 
 .a11y-conf-id em {
@@ -1253,7 +1253,7 @@
 .a11y-conf-status {
   flex-shrink: 0;
   font-size: var(--a11y-text-body);
-  font-weight: 600;
+  font-weight: 500;
   color: var(--a11y-muted, #57606a);
   white-space: nowrap;
 }
@@ -1359,7 +1359,7 @@
   flex: 1 1 180px;
   font: inherit;
   font-size: var(--a11y-text-body);
-  font-weight: 600;
+  font-weight: 500;
   text-align: left;
   padding: 12px 16px;
   border: 1px solid var(--a11y-border, #d0d7de);
@@ -1432,7 +1432,7 @@
   flex-shrink: 0;
   text-align: right;
   font-size: var(--a11y-text-body);
-  font-weight: 700;
+  font-weight: 500;
   color: var(--a11y-muted, #57606a);
 }
 
@@ -1468,7 +1468,7 @@
   flex-shrink: 0;
   min-width: 40px;
   font-size: var(--a11y-text-title);
-  font-weight: 700;
+  font-weight: 500;
   font-variant-numeric: tabular-nums;
 }
 
@@ -1498,7 +1498,7 @@
   flex-direction: column;
   gap: 4px;
   font-size: var(--a11y-text-body);
-  font-weight: 600;
+  font-weight: 500;
   color: var(--a11y-text, #1f2328);
 }
 
@@ -1670,7 +1670,7 @@
 .a11y-login-toggle {
   font: inherit;
   font-size: var(--a11y-text-body);
-  font-weight: 600;
+  font-weight: 500;
   color: var(--a11y-accent, #0969da);
   background: none;
   border: 0;
@@ -1730,7 +1730,7 @@
 .a11y-blocked-lead {
   margin: 0 0 12px;
   font-size: var(--a11y-text-body);
-  font-weight: 600;
+  font-weight: 500;
   line-height: 1.5;
 }
 
@@ -1773,7 +1773,7 @@
 .a11y-hist-head {
   margin: 16px 0 8px;
   font-size: var(--a11y-text-body);
-  font-weight: 700;
+  font-weight: 500;
 }
 
 .a11y-hist-list {
@@ -1829,7 +1829,7 @@
 
 .a11y-hist-score {
   min-width: 34px;
-  font-weight: 700;
+  font-weight: 500;
   font-variant-numeric: tabular-nums;
 }
 
@@ -1890,7 +1890,7 @@
   padding: 0;
   margin-bottom: 8px;
   font-size: var(--a11y-text-body);
-  font-weight: 600;
+  font-weight: 500;
 }
 
 .a11y-login .a11y-login-toggle {
@@ -3098,10 +3098,13 @@
 }
 
 .a11y-pro-table table {
-  /* The floor is the sum of what each column needs at minimum — chevron
-     44, severity chip ~150, issue ~240, criterion ~180, count ~90 — in
-     rem so it grows with the reader's text setting. */
-  min-width: 44rem;
+  /* No side-scroll and no outer box, by request — and Carbon agrees on
+     the second: its data tables draw row dividers and a header band, no
+     frame. The columns squeeze and wrap instead of scrolling; the
+     !important beats the component's inline border. */
+  min-width: 0;
+  width: 100%;
+  border: 0 !important;
 }
 
 /* Carbon's data table, measured from its style spec rather than guessed:
@@ -3262,4 +3265,42 @@
   min-width: 96px;
   min-height: 40px;
   padding: 8px 16px;
+}
+
+/* "What are these stripes" — the pre-card section style: a 3px left rule
+   on every top-level section, reading as grey bars in dark mode. Retired
+   here: every section is now the master file's Card, full hairline
+   border, layer-1 fill, handing layer-2 down to its contents. The
+   red-flag section keeps its warning tint and bar on top of the card —
+   status colour is allowed for findings. Findings inside a carded
+   section paint the handed-down surface, so they step to layer-2 and
+   their own innards go flat-with-borders: the system's two visible
+   surface levels, never three. */
+.a11y-widget-biz.a11y-widget-biz .a11y-section {
+  background: var(--a11y-layer-1, #f4f4f4);
+  border: 1px solid var(--a11y-border, #e0e0e0);
+  border-radius: 2px;
+  padding: 16px;
+  margin-top: 16px;
+  --a11y-surface: var(--a11y-layer-2, #ffffff);
+}
+
+.a11y-widget-biz.a11y-widget-biz .a11y-section-redflag {
+  background: rgba(255, 131, 137, 0.08);
+  border-left: 3px solid var(--a11y-score-bad, #da1e28);
+}
+
+.a11y-widget-biz.a11y-widget-biz .a11y-finding {
+  background: var(--a11y-surface, #f4f4f4);
+}
+
+/* PP Telegraf has Regular 400 and Medium 500 — nothing heavier exists,
+   and the browser's synthesized bold smears the letterforms. The system's
+   rule is explicit: do not synthesize. Every emphasis element and every
+   leftover 600/700 declaration lands on the face's real maximum. */
+.a11y-widget-biz strong,
+.a11y-widget-biz b,
+.a11y-widget-biz th,
+.a11y-widget-biz dt {
+  font-weight: 500;
 }
