@@ -57,6 +57,11 @@ export function ProSummary({
             conformance section: what the scan checks against. */}
         <Tag tone="gray">Checked against WCAG 2.1 AA</Tag>
         <Tag tone="blue">1 page</Tag>
+        {/* The master's red status tag, carrying real state in the
+            report's own words: the count that must move first. */}
+        {report.summary.critical > 0 && (
+          <Tag tone="red">{report.summary.critical} fix first</Tag>
+        )}
         <Badge count={total} label={total === 1 ? "finding" : "findings"} />
       </div>
 

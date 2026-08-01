@@ -158,9 +158,11 @@ export function ScanHistory({
         ))}
       </ul>
 
+      {/* The master's danger variant, on the checker's one genuinely
+          destructive action. */}
       <button
         type="button"
-        className="a11y-show-all"
+        className="a11y-show-all a11y-danger-btn"
         onClick={() => {
           clearHistory();
           setCleared(true);

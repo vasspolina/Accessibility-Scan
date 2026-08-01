@@ -3263,6 +3263,19 @@
   color: var(--a11y-text, #161616);
 }
 
+/* The master's danger variant: red outline at rest, red fill on hover —
+   Carbon's danger button, reserved for the one destructive action. */
+.a11y-widget-biz.a11y-widget-biz .a11y-danger-btn {
+  border: 1px solid var(--a11y-score-bad, #da1e28);
+  color: var(--a11y-score-bad, #da1e28);
+  background: transparent;
+}
+
+.a11y-widget-biz.a11y-widget-biz .a11y-danger-btn:hover {
+  background: var(--a11y-score-bad, #da1e28);
+  color: #ffffff;
+}
+
 /* The fix-type chips are chips, not option cards: the mode-button base
    they share declares flex: 1 1 180px later in the file than the first
    compact override, so the slab sizing won — the user's screenshot
