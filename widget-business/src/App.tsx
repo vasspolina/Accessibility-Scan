@@ -344,6 +344,14 @@ export function App({ apiBase, cta }: { apiBase: string; cta?: CtaConfig }) {
               report={report}
               actions={<PrintButton label="Export report" compact />}
               onNewScan={focusForm}
+              onRunScan={() =>
+                handleScan(
+                  report.url,
+                  report.meta.aiReviewStatus === "completed",
+                  "page",
+                  5
+                )
+              }
             />
           ) : (
             <ScoreGauge score={report.score} summary={report.summary} seed={report.scannedAt} />
@@ -376,12 +384,6 @@ export function App({ apiBase, cta }: { apiBase: string; cta?: CtaConfig }) {
             </p>
           )}
 
-          <ScanHistory current={toHistoryEntry(report)} previous={history} />
-
-          {report.conformance && (
-            <ConformanceView conformance={report.conformance} showBfsgNote={!professional} />
-          )}
-
           {/* The professional view filter. Chips partition by who makes the
               change — the same tested mapping the fix badges use — so
               "Design" pulls the visual decisions forward and "Code" the
@@ -410,8 +412,6 @@ export function App({ apiBase, cta }: { apiBase: string; cta?: CtaConfig }) {
             </div>
           )}
 
-          {report.wcag22 && <Wcag22Readiness readiness={report.wcag22} />}
-
           {professional && !isDocument && (
             <ProfessionalTable
               findings={[
@@ -422,6 +422,14 @@ export function App({ apiBase, cta }: { apiBase: string; cta?: CtaConfig }) {
               conformance={report.conformance}
             />
           )}
+
+          <ScanHistory current={toHistoryEntry(report)} previous={history} />
+
+          {report.conformance && (
+            <ConformanceView conformance={report.conformance} showBfsgNote={!professional} />
+          )}
+
+          {report.wcag22 && <Wcag22Readiness readiness={report.wcag22} />}
 
           {/* In professional mode these card sections are print-only: the
               screen shows the kit's table above, but a printed report has

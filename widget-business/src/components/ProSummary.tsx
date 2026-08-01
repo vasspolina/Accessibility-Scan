@@ -22,12 +22,16 @@ export function ProSummary({
   report,
   actions,
   onNewScan,
+  onRunScan,
 }: {
   report: AccessibilityReport;
   /* Rendered into the master file's action row — App passes the print
      button so the print logic stays in one place. */
   actions?: ReactNode;
   onNewScan?: () => void;
+  /* The master's leading primary action, doing what it says: re-run the
+     scan of this same page. */
+  onRunScan?: () => void;
 }) {
   const total = report.summary.total;
   return (
@@ -38,6 +42,9 @@ export function ProSummary({
           is a specimen sheet, and five button variants with nothing to
           do would be decoration. */}
       <div className="a11y-pro-actions">
+        {/* The master's variant order: primary leads, secondary follows,
+            ghost last. Each does what its verb says. */}
+        {onRunScan && <Button onClick={onRunScan}>Run scan</Button>}
         {actions}
         {onNewScan && (
           <Button variant="ghost" onClick={onNewScan}>

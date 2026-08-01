@@ -2829,6 +2829,13 @@
   --space-02: 0.25rem;
   --gray-100: #161616;
   --white: #ffffff;
+  /* The imported Button's palette and motion. Primary keeps the same blue
+     in both schemes (Carbon's own choice for solid actions on dark). */
+  --button-primary: var(--a11y-accent, #0f62fe);
+  --button-danger: var(--a11y-score-bad, #da1e28);
+  --text-on-color: #ffffff;
+  --duration-fast-02: 110ms;
+  --ease-productive-standard: cubic-bezier(0.2, 0, 0.38, 0.9);
   /* Carbon's column-header surface — one step past the layer the table
      sits on ($layer-accent-01 light, its gray-80 counterpart dark). */
   --a11y-layer-accent: #e0e0e0;
