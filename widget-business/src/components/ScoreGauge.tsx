@@ -75,9 +75,18 @@ export function ScoreGauge({
   return (
     <div className="a11y-score">
       <div className="a11y-score-top">
-        <div className="a11y-score-circle" style={{ borderColor: scoreColor(score) }}>
-          <span className="a11y-score-number">{score}</span>
-          <span className="a11y-score-label">/ 100</span>
+        {/* Named as one image, the design system's ScoreDial contract: a
+            screen reader gets "Accessibility score: 72 out of 100" instead
+            of "72", "slash", "100" as three scraps of text. The band's tone
+            is carried by the summary line that follows, not by a colour. */}
+        <div
+          className="a11y-score-circle"
+          style={{ borderColor: scoreColor(score) }}
+          role="img"
+          aria-label={`Accessibility score: ${score} out of 100`}
+        >
+          <span className="a11y-score-number" aria-hidden="true">{score}</span>
+          <span className="a11y-score-label" aria-hidden="true">/ 100</span>
         </div>
         <p className="a11y-score-summary">{scoreSummary(score, seed)}</p>
       </div>
