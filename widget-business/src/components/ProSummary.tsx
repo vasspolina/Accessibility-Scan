@@ -1,4 +1,5 @@
-import { Badge, Card, ScoreDial, Tag } from "@verify/design-system";
+import { Badge, Button, Card, ScoreDial, Tag } from "@verify/design-system";
+import type { ReactNode } from "react";
 import type { AccessibilityReport } from "../api/scanClient";
 import { SCORE_CAVEAT } from "./ScoreGauge";
 
@@ -17,10 +18,33 @@ const severityRows = [
  * business-mode voice; professionals get the facts and the caveat, which
  * is the honesty fixture both audiences share.
  */
-export function ProSummary({ report }: { report: AccessibilityReport }) {
+export function ProSummary({
+  report,
+  actions,
+  onNewScan,
+}: {
+  report: AccessibilityReport;
+  /* Rendered into the master file's action row — App passes the print
+     button so the print logic stays in one place. */
+  actions?: ReactNode;
+  onNewScan?: () => void;
+}) {
   const total = report.summary.total;
   return (
     <>
+      {/* core.card.html is the layout master: an action row first, then
+          the tag row, then a 1fr/1fr card grid, then the full-width
+          table further down. Only real actions appear here — the master
+          is a specimen sheet, and five button variants with nothing to
+          do would be decoration. */}
+      <div className="a11y-pro-actions">
+        {actions}
+        {onNewScan && (
+          <Button variant="ghost" onClick={onNewScan}>
+            New scan
+          </Button>
+        )}
+      </div>
       <div className="a11y-meta-row">
         {/* The target standard, not an achievement — same honesty as the
             conformance section: what the scan checks against. */}

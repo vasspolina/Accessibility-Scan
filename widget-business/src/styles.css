@@ -3184,15 +3184,27 @@
   height: 28px !important;
 }
 
-.a11y-pro-summary {
+/* The master file's grid: two equal columns, stacking when the panel
+   narrows past the point where two cards can breathe. */
+.a11y-pro-actions {
   display: flex;
   flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+  margin: 0 0 16px;
+}
+
+.a11y-pro-summary {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
   gap: 16px;
   margin-bottom: 16px;
 }
 
-.a11y-pro-summary > section {
-  flex: 1 1 16rem;
+@container a11y-panel (max-width: 560px) {
+  .a11y-pro-summary {
+    grid-template-columns: 1fr;
+  }
 }
 
 .a11y-pro-summary .a11y-score-breakdown {

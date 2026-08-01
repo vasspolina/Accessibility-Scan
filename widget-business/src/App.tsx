@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from "react";
+import type { RefObject } from "react";
 import { flushSync } from "react-dom";
 import { UrlForm, type ScanMode } from "./components/UrlForm";
 import { ScoreGauge } from "./components/ScoreGauge";
@@ -150,6 +151,13 @@ export function App({ apiBase, cta }: { apiBase: string; cta?: CtaConfig }) {
   // the print and returns afterwards. flushSync because the browser takes its
   // snapshot as soon as the beforeprint handlers return.
   const printFilterRestore = useRef<FixFilter>("all");
+  // "New scan" in the professional action row: back to the form, focus
+  // the field — the master file's button, wired to the one real action.
+  const formRef: RefObject<HTMLDivElement> = useRef(null);
+  const focusForm = () => {
+    formRef.current?.scrollIntoView({ block: "start" });
+    formRef.current?.querySelector<HTMLInputElement>("#a11y-url-input")?.focus();
+  };
   useEffect(() => {
     const before = () => {
       printFilterRestore.current = fixFilter;
@@ -236,6 +244,7 @@ export function App({ apiBase, cta }: { apiBase: string; cta?: CtaConfig }) {
         , the standard nearly every accessibility law is built on.
       </p>
 
+      <div ref={formRef}>
       <UrlForm
         onSubmit={handleScan}
         loading={loading}
@@ -245,6 +254,7 @@ export function App({ apiBase, cta }: { apiBase: string; cta?: CtaConfig }) {
           setFixFilter("all");
         }}
       />
+      </div>
 
       {blocked && <BlockedNotice message={blocked} />}
 
@@ -323,11 +333,18 @@ export function App({ apiBase, cta }: { apiBase: string; cta?: CtaConfig }) {
               {hostnameOf(report.url)} — scan results
             </h2>
           )}
-          <PrintButton />
+          {/* Professional mode prints from the action row inside the
+              summary; a second button here would be the same control
+              twice. */}
+          {!professional && <PrintButton />}
           {isDocument ? (
             <DocumentSummary report={report} />
           ) : professional ? (
-            <ProSummary report={report} />
+            <ProSummary
+              report={report}
+              actions={<PrintButton label="Export report" />}
+              onNewScan={focusForm}
+            />
           ) : (
             <ScoreGauge score={report.score} summary={report.summary} seed={report.scannedAt} />
           )}
