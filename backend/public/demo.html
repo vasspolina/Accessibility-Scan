@@ -20,7 +20,9 @@
          own text is aligned to the panel by the rule below instead. */
       .page { width: 100%; margin: 0; }
       .page > h1, .page > h2, .page > p, .page > ul {
-        width: min(100%, max(50vw, 30rem));
+        /* Kept in step with the widget's own cap so the host copy and the
+           panel share one column. */
+        width: min(100%, 48rem);
         /* Our own line-length rule flagged this page at ~97 characters a
            line; the cap keeps the measure readable at wide viewports. */
         max-width: 66ch;

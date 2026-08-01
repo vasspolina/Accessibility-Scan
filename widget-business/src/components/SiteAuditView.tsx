@@ -1,3 +1,4 @@
+import { DataTable, Tag } from "@verify/design-system";
 import type { SiteAudit } from "../api/scanClient";
 import { ConformanceView } from "./ConformanceView";
 import { plainForRule } from "../lib/wcagPlain";
@@ -98,6 +99,44 @@ export function SiteAuditView({ audit }: { audit: SiteAudit }) {
         <p className="a11y-section-desc">
           Scan a page on its own for the full detail.
         </p>
+        {professional ? (
+          /* The core.card composition's page table. The status words obey
+             the report's honesty line: findings are evidenced failures, so
+             "Failing" is earned; their absence is only "No issues found",
+             never "Passing". */
+          <div className="a11y-pro-table">
+            <DataTable
+              headers={[
+                { key: "page", label: "Page" },
+                { key: "score", label: "Score", align: "right", width: "1%" },
+                { key: "issues", label: "Issues", align: "right", width: "1%" },
+                { key: "status", label: "Status", width: "1%" },
+              ]}
+              rows={audit.pages.map((page) => ({
+                id: page.url,
+                cells: [
+                  <span key="p">
+                    <strong>{page.label}</strong>
+                    <span className="a11y-conf-plain">{page.url}</span>
+                    {page.error && <span className="a11y-audit-err">{page.error}</span>}
+                  </span>,
+                  page.error ? "n/a" : page.score,
+                  page.error ? "—" : page.findingCount,
+                  <Tag
+                    key="s"
+                    tone={page.error ? "gray" : page.findingCount > 0 ? "red" : "green"}
+                  >
+                    {page.error
+                      ? "Unreachable"
+                      : page.findingCount > 0
+                        ? "Failing"
+                        : "No issues found"}
+                  </Tag>,
+                ],
+              }))}
+            />
+          </div>
+        ) : (
         <ul className="a11y-audit-list">
           {audit.pages.map((page) => (
             <li key={page.url} className="a11y-audit-row">
@@ -118,6 +157,7 @@ export function SiteAuditView({ audit }: { audit: SiteAudit }) {
             </li>
           ))}
         </ul>
+        )}
       </section>
     </div>
   );

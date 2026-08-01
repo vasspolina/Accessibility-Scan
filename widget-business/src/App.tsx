@@ -8,6 +8,7 @@ import { PrincipleGroup } from "./components/PrincipleGroup";
 import { UndecidedChecks } from "./components/UndecidedChecks";
 import { ReportViewProvider, type ReportView } from "./components/ReportViewContext";
 import { ProfessionalTable } from "./components/ProfessionalTable";
+import { ProSummary } from "./components/ProSummary";
 
 function hostnameOf(url: string): string {
   try {
@@ -325,6 +326,8 @@ export function App({ apiBase, cta }: { apiBase: string; cta?: CtaConfig }) {
           <PrintButton />
           {isDocument ? (
             <DocumentSummary report={report} />
+          ) : professional ? (
+            <ProSummary report={report} />
           ) : (
             <ScoreGauge score={report.score} summary={report.summary} seed={report.scannedAt} />
           )}

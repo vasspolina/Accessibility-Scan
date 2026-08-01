@@ -56,6 +56,16 @@ export function scoreSummary(score: number, seed: string): string {
   return lines[Math.abs(hash) % lines.length];
 }
 
+/* The score caveat is a honesty fixture — single-sourced so the business
+   card and the professional summary can never drift apart on what the
+   number means. */
+export const SCORE_CAVEAT =
+  "This is what an automated scan found, weighted by how much each problem " +
+  "costs a visitor. A scan of this kind reaches somewhere between a third " +
+  "and a half of accessibility problems — the rest need a person with a " +
+  "keyboard and a screen reader. Useful for telling whether the site is " +
+  "improving. Not a statement that it meets the law.";
+
 export function ScoreGauge({
   score,
   summary,
@@ -107,13 +117,7 @@ export function ScoreGauge({
           third and a half of accessibility problems; the rest needs a person
           with a keyboard and a screen reader. A reader who takes 100 to mean
           "accessible" has been misled by us, not by their own optimism. */}
-      <p className="a11y-score-caveat">
-        This is what an automated scan found, weighted by how much each problem
-        costs a visitor. A scan of this kind reaches somewhere between a third
-        and a half of accessibility problems — the rest need a person with a
-        keyboard and a screen reader. Useful for telling whether the site is
-        improving. Not a statement that it meets the law.
-      </p>
+      <p className="a11y-score-caveat">{SCORE_CAVEAT}</p>
     </div>
   );
 }

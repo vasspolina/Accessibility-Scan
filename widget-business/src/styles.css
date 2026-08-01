@@ -55,25 +55,18 @@
 }
 
 .a11y-widget-inner {
-  /* The prose cap below stays regardless. It stopped mattering at this width
-   * — half of 1440px leaves a measure the report would pass anyway — but it
-   * is what keeps the text honest on a very wide screen, where this panel is
-   * still half of a lot. */
-  /* Half the screen, centred — with a floor so it does not become a slot.
+  /* Fluid up to a content-derived cap, centred — not half the screen.
    *
-   * Half the viewport, not half the container. A percentage resolves against
-   * whatever box the widget is dropped into, so when the demo page gave it a
-   * half-width column of its own the two multiplied and the panel came out at
-   * a quarter of a 1920px screen. vw asks the screen directly, and the
-   * min(100%) in front of it means a host that gives the widget a narrow
-   * column still gets a widget that fits, rather than one overflowing it.
-   *
-   * min() and max() rather than a breakpoint: 960px at 1920, 720px at 1440,
-   * and below about 960px the 30rem floor takes over until the viewport
-   * itself is narrower, at which point it is simply full width. No jumps, and
-   * nothing to keep in step with the media queries further down.
-   */
-  width: min(100%, max(50vw, 30rem));
+   * The panel used to pin itself to 50vw, which was a size borrowed from
+   * the viewport rather than earned by the content: a 1280px slab on a
+   * 2560px monitor, with the text capped at 66ch swimming inside it. The
+   * cap is now 48rem — the professional table's 44rem column floor plus
+   * this panel's own padding, so the widest thing the report renders fits
+   * exactly without an inner scrollbar — and being rem it follows the
+   * reader's text setting. Below the cap the panel simply fills whatever
+   * column the host page gives it, which is what responsive meant all
+   * along. */
+  width: min(100%, 48rem);
   margin-inline: auto;
   /* A size container, so everything inside adapts to the panel's own width.
      The narrow-layout rules below used to be viewport media queries, and the
@@ -2824,6 +2817,17 @@
   --layer-hover: #e8e8e8;
   --border-strong: #8d8d8d;
   --interactive: var(--a11y-accent, #0f62fe);
+  --text-secondary: var(--a11y-muted, #525252);
+  --link-primary: var(--a11y-accent, #0f62fe);
+  --support-error: var(--a11y-score-bad, #da1e28);
+  --support-success: var(--a11y-score-good, #198038);
+  --severity-critical-bg: #fff1f1;
+  --severity-pass-bg: #defbe6;
+  --radius-pill: 999px;
+  --radius-sm: 2px;
+  --space-02: 0.25rem;
+  --gray-100: #161616;
+  --white: #ffffff;
   /* Carbon's column-header surface — one step past the layer the table
      sits on ($layer-accent-01 light, its gray-80 counterpart dark). */
   --a11y-layer-accent: #e0e0e0;
@@ -2997,6 +3001,8 @@
     --a11y-layer-2: #393939;  /* gray-80 */
     --layer-hover: #333333;
     --a11y-layer-accent: #393939;
+    --severity-critical-bg: #520408;
+    --severity-pass-bg: #044317;
   }
 
   /* Severity hues lift one ramp step in dark to hold contrast, on the
@@ -3159,4 +3165,44 @@
   .a11y-print-cards {
     display: none;
   }
+}
+
+/* The core.card composition: meta tag row, then the dial and the
+   "Issues by severity" card side by side, stacking when the panel
+   narrows. The imported Tag and Badge assume the system's 14px label;
+   on our 18px floor they need taller boxes than their inline 24px —
+   the !important is what beats an inline style. */
+.a11y-meta-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  margin: 0 0 16px;
+}
+
+.a11y-meta-row > span {
+  height: 28px !important;
+}
+
+.a11y-pro-summary {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+.a11y-pro-summary > section {
+  flex: 1 1 16rem;
+}
+
+.a11y-pro-summary .a11y-score-breakdown {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin: 0 0 12px;
+}
+
+.a11y-pro-summary .a11y-issues-line {
+  margin: 0;
+  color: var(--a11y-muted, #525252);
 }
