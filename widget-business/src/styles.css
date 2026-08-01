@@ -3324,3 +3324,204 @@
 .a11y-widget-biz dt {
   font-weight: 500;
 }
+
+/* ==========================================================================
+   Flat pass — "get rid of boxes, no need to have background for card".
+   The card recipe's fills and frames come off: separation is done the way
+   the system's readme actually phrases it, "with lines and space" — one
+   hairline divider above each section, dividers between findings, and
+   breathing room. What keeps a mark: status (the red-flag tint, the
+   explainer's accent bar), code (hairline only), and the table's header
+   band. The !importants exist to beat imported components' inline styles.
+   ========================================================================== */
+
+.a11y-widget-biz.a11y-widget-biz .a11y-section,
+.a11y-widget-biz.a11y-widget-biz .a11y-conf,
+.a11y-widget-biz.a11y-widget-biz .a11y-w22,
+.a11y-widget-biz.a11y-widget-biz .a11y-url-form,
+.a11y-widget-biz.a11y-widget-biz .a11y-score {
+  background: transparent;
+  border: 0;
+  border-radius: 0;
+  padding-left: 0;
+  padding-right: 0;
+}
+
+.a11y-widget-biz.a11y-widget-biz .a11y-section {
+  border-top: 1px solid var(--a11y-border, #e0e0e0);
+  padding-top: 24px;
+  margin-top: 24px;
+}
+
+.a11y-widget-biz.a11y-widget-biz .a11y-finding {
+  background: transparent;
+  border: 0;
+  border-top: 1px solid var(--a11y-border, #e0e0e0);
+  border-radius: 0;
+}
+
+/* The imported Cards in the summary grid: same flattening, inline styles
+   and all. */
+.a11y-pro-summary > section {
+  background: transparent !important;
+  border: 0 !important;
+  padding: 0 !important;
+}
+
+.a11y-widget-biz.a11y-widget-biz .a11y-conf-tile {
+  background: transparent;
+  border: 0;
+  padding-left: 0;
+}
+
+/* Status keeps its ink: the failed tile's message is the red, not a box. */
+.a11y-widget-biz.a11y-widget-biz .a11y-conf-tile-fail {
+  background: transparent;
+  border: 0;
+}
+
+.a11y-widget-biz.a11y-widget-biz .a11y-conf-caveat {
+  background: transparent;
+}
+
+.a11y-widget-biz.a11y-widget-biz .a11y-pro-block {
+  background: transparent;
+  border: 0;
+  border-left: 4px solid var(--a11y-muted, #57606a);
+  border-radius: 0;
+}
+
+.a11y-widget-biz.a11y-widget-biz .a11y-pro-snippet,
+.a11y-widget-biz.a11y-widget-biz .a11y-rule-chip {
+  background: transparent;
+}
+
+/* The red-flag section keeps its tint — that box is a warning, not
+   decoration — and sits on the divider rhythm like everyone else. */
+.a11y-widget-biz.a11y-widget-biz .a11y-section-redflag {
+  background: rgba(255, 131, 137, 0.08);
+  border-left: 3px solid var(--a11y-score-bad, #da1e28);
+  padding-left: 16px;
+  padding-right: 16px;
+}
+
+/* "There is no need for light grey background" — the resting greys go at
+   the token level, so every wash disappears at once: the layer tokens
+   flatten to the page colour, the imported table's header band and
+   expanded-row fill go transparent (weight and the strong underline mark
+   the header now), and the minor badge keeps only its outline. Hover
+   feedback stays — it is transient state, not a resting surface. */
+.a11y-widget-biz {
+  --a11y-surface: #ffffff;
+  --a11y-layer-1: #ffffff;
+  --a11y-layer-2: #ffffff;
+  --layer-01: transparent;
+  --a11y-layer-accent: transparent;
+}
+
+.a11y-severity-minor .a11y-severity-badge {
+  background: transparent;
+}
+
+@media (prefers-color-scheme: dark) {
+  .a11y-widget-biz {
+    --a11y-surface: #161616;
+    --a11y-layer-1: #161616;
+    --a11y-layer-2: #161616;
+  }
+
+  .a11y-widget-biz .a11y-severity-minor .a11y-severity-badge {
+    background: transparent;
+  }
+}
+
+/* The rendered reference ("this is how it should look") settles where
+   grey lives: a white, flat page — with layer-01 kept in exactly the
+   three places the specimen shows it. The summary Cards, the table's
+   header band, and the expanded row. Everything else stays flat from
+   the pass above. */
+.a11y-widget-biz {
+  --layer-01: #f4f4f4;
+  --a11y-layer-accent: #f4f4f4;
+}
+
+.a11y-pro-summary > section {
+  background: var(--layer-01, #f4f4f4) !important;
+  border: 1px solid var(--a11y-border, #e0e0e0) !important;
+  border-radius: 2px !important;
+  padding: 16px !important;
+}
+
+@media (prefers-color-scheme: dark) {
+  .a11y-widget-biz {
+    --layer-01: #262626;
+    --a11y-layer-accent: #262626;
+  }
+}
+
+/* "No need for a frame around" — the panel's outer border goes; the
+   widget sits on the host page frameless, breathing room intact. */
+.a11y-widget-biz.a11y-widget-biz .a11y-widget-inner {
+  border: 0;
+}
+
+/* ==========================================================================
+   No stripes, and Hochuli's details
+   ==========================================================================
+   "Delete this yellow stripe and all the other left stripes": every
+   left-edge accent bar goes — the yellow severity marker, the notice and
+   error bars, the block and summary markers. The washes and words that
+   accompanied them carry the meaning alone, which they already did; a
+   bar beside a labelled tint was saying everything twice. */
+.a11y-widget-biz.a11y-widget-biz .a11y-severity-critical,
+.a11y-widget-biz.a11y-widget-biz .a11y-section-redflag,
+.a11y-widget-biz.a11y-widget-biz .a11y-pro-block,
+.a11y-widget-biz.a11y-widget-biz .a11y-undecided,
+.a11y-widget-biz.a11y-widget-biz .a11y-finding-impact,
+.a11y-widget-biz.a11y-widget-biz .a11y-conf-caveat,
+.a11y-widget-biz.a11y-widget-biz .a11y-audit-head,
+.a11y-widget-biz.a11y-widget-biz .a11y-blocked,
+.a11y-widget-biz.a11y-widget-biz .a11y-error,
+.a11y-widget-biz.a11y-widget-biz .a11y-notice,
+.a11y-widget-biz.a11y-widget-biz .a11y-w22-already-failing,
+.a11y-widget-biz.a11y-widget-biz .a11y-colour-fix,
+.a11y-widget-biz.a11y-widget-biz .a11y-fix-once,
+.a11y-widget-biz.a11y-widget-biz .a11y-doc-summary,
+.a11y-widget-biz.a11y-widget-biz .a11y-url-error {
+  border-left: 0;
+}
+
+/* Hochuli, "Detail in Typography", applied to what a stylesheet can hold:
+   — the measure is capped where reading happens (66ch on prose; tables
+     and code keep their width), because the flat pass had let paragraphs
+     run the panel's full 90-character width;
+   — body leading rises to 1.55 for that measure — his rule that leading
+     must grow with line length is the same one this product's own
+     typo-leading-for-measure check enforces on other people's sites;
+   — headings take tight leading and carry more space above than below,
+     binding them to the text they introduce;
+   — emphasis stays at the face's Medium — Hochuli's restraint, and the
+     face has nothing heavier anyway. */
+.a11y-widget-biz.a11y-widget-biz .a11y-widget-inner {
+  line-height: 1.55;
+}
+
+.a11y-widget-biz .a11y-widget-inner p,
+.a11y-widget-biz .a11y-widget-inner li,
+.a11y-widget-biz .a11y-widget-inner dd {
+  /* Not ch: PP Telegraf's wide zero makes 66ch wider than the panel.
+     34rem is the measured ~70 characters of its running text at 18px. */
+  max-width: 34rem;
+}
+
+.a11y-widget-biz.a11y-widget-biz .a11y-section-title,
+.a11y-widget-biz.a11y-widget-biz .a11y-principle-title,
+.a11y-widget-biz.a11y-widget-biz .a11y-results-title {
+  line-height: 1.2;
+  margin-top: 32px;
+  margin-bottom: 8px;
+}
+
+.a11y-widget-biz.a11y-widget-biz .a11y-section > .a11y-section-title:first-child {
+  margin-top: 0;
+}
