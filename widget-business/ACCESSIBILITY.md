@@ -153,6 +153,21 @@ and then trimmed to a short name, the AI-review checkbox split into a
 four-word label plus aria-describedby description — each deployed,
 re-scanned, and back at 100 before the next began.
 
+**Design strip, 1 August (late).** At the user's direction the widget was
+stripped to browser defaults: the GitHub, Carbon and Verify design layers
+and the imported design-system components are gone (git history keeps
+them; df0cf62 is the last dressed revision). The stylesheet now holds only
+what accessibility requires — the shadow-boundary reset with explicit
+colours, the screen-reader-only utility, a visible aria-pressed state (no
+UA shows one), reflow guards, and the print rules. Much of the visual
+evidence above describes the dressed widget and is superseded; what still
+holds is everything structural: semantics, live regions, keyboard
+contracts, print completeness. Re-earned on the barebones build: axe
+zero violations in both audience modes, report expanded, fixture harness;
+the deployed demo self-scans clean. Dark scheme no longer exists — the
+panel is white with explicit black text at every host, which is the
+contrast case the barebones reset guarantees.
+
 ## Forward-looking (non-normative, WCAG 3 Working Draft)
 
 The one direction worth naming: task-level testing. The task a disabled user

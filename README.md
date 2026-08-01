@@ -100,13 +100,13 @@ everything right.
 
 ## The design system
 
-The widgets' look follows the vendored **Verify design system** —
-[design-system/](design-system/) holds the spec (`system-guide.md`), the
-`@verify/design-system` production package, and reference screenshots.
-PP Telegraf is self-hosted; the token layer is applied as the final
-cascade layer in the business widget's stylesheet. Two documented
-divergences (label size, theme mechanism) are explained in
-[design-system/README.md](design-system/README.md).
+By request, the widget currently ships **barebones**: browser defaults
+plus only what accessibility requires (see the stylesheet's header
+comment). The vendored **Verify design system** remains the reference —
+[design-system/](design-system/) holds the spec, the
+`@verify/design-system` production package, and reference screenshots —
+and git history keeps the fully dressed widget (`df0cf62`) for whenever
+the design returns.
 
 ## The checker, checked
 

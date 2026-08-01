@@ -1,4 +1,3 @@
-import { ScoreDial } from "@verify/design-system";
 import type { AccessibilityReport } from "../api/scanClient";
 
 // Each line states a judgement and stops. The number above has already made
@@ -80,13 +79,10 @@ export function ScoreGauge({
   return (
     <div className="a11y-score">
       <div className="a11y-score-top">
-        {/* The design system's own dial, imported rather than imitated. It
-            brings the ring, the tone word (Good / Needs work / Failing —
-            never colour alone) and the single accessible name
-            "Accessibility score: N out of 100 — <word>". Its token names
-            are bridged onto ours in styles.css, so it follows our dark
-            scheme and the 16px floor without knowing either exists. */}
-        <ScoreDial score={score} size={120} />
+        {/* Plain text, one accessible phrase — no dial to decorate it. */}
+        <p className="a11y-score-line">
+          <strong>Accessibility score: {score} out of 100</strong>
+        </p>
         <p className="a11y-score-summary">{scoreSummary(score, seed)}</p>
       </div>
       {/* The kit's summary row: severity tags with counts. The words stay

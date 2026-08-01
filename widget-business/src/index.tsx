@@ -11,35 +11,6 @@ export interface MountOptions {
   cta?: { text: string; href: string };
 }
 
-// @font-face is ignored inside shadow-root stylesheets, so the faces are
-// declared once at document level — same route PrintButton takes for its
-// one host-page rule. The design system's PP Telegraf, served alongside the
-// widget bundle; font-display swap keeps text readable while it loads, and
-// every rule keeps a full system-font fallback stack.
-function injectFonts(apiBase: string) {
-  const id = "a11y-widget-fonts";
-  if (document.getElementById(id)) return;
-  const base = apiBase.replace(/\/+$/, "");
-  const style = document.createElement("style");
-  style.id = id;
-  style.textContent = `
-@font-face {
-  font-family: "PP Telegraf";
-  src: url("${base}/fonts/PPTelegraf-Regular.otf") format("opentype");
-  font-weight: 400;
-  font-style: normal;
-  font-display: swap;
-}
-@font-face {
-  font-family: "PP Telegraf";
-  src: url("${base}/fonts/PPTelegraf-Medium.otf") format("opentype");
-  font-weight: 500;
-  font-style: normal;
-  font-display: swap;
-}`;
-  document.head.appendChild(style);
-}
-
 export function mount(target: string | HTMLElement, options: MountOptions) {
   const container = typeof target === "string" ? document.querySelector<HTMLElement>(target) : target;
 
@@ -53,7 +24,6 @@ export function mount(target: string | HTMLElement, options: MountOptions) {
     return;
   }
 
-  injectFonts(options.apiBase);
   const mountPoint = mountShadowRoot(container);
   const root = createRoot(mountPoint);
   root.render(
