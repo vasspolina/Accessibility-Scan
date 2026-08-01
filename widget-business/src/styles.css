@@ -3554,3 +3554,74 @@
   gap: 12px;
   align-items: center;
 }
+
+/* "No need for frame and margin" — the summary cards dissolve entirely:
+   no hairline, no padding, just the dial and the list sitting on the
+   page in their two columns. */
+.a11y-pro-summary > section {
+  border: 0 !important;
+  padding: 0 !important;
+}
+
+/* "20% tighter" line height, taken at its word, role by role — body
+   1.55 → 1.24, UI 1.3 → 1.05, headings 1.2 → 1.0 (the floor a line box
+   allows without clipping this face). Tighter leading demands shorter
+   lines — Hochuli's trade, and the widget's own leading-for-measure
+   check enforces exactly that pairing — so the prose measure narrows to
+   ~50 characters (25rem) where 1.24 is legitimate. */
+.a11y-widget-biz.a11y-widget-biz .a11y-widget-inner {
+  line-height: 1.24;
+}
+
+.a11y-widget-biz .a11y-widget-inner p,
+.a11y-widget-biz .a11y-widget-inner li,
+.a11y-widget-biz .a11y-widget-inner dd {
+  max-width: 25rem;
+}
+
+.a11y-widget-biz.a11y-widget-biz .a11y-severity-badge,
+.a11y-widget-biz.a11y-widget-biz .a11y-rule-chip,
+.a11y-widget-biz.a11y-widget-biz .a11y-meta-row > span,
+.a11y-widget-biz.a11y-widget-biz button,
+.a11y-pro-summary h3,
+.a11y-pro-summary dl,
+.a11y-pro-summary dt,
+.a11y-pro-summary dd,
+.a11y-issues-line {
+  line-height: 1.05;
+}
+
+.a11y-widget-biz.a11y-widget-biz .a11y-section-title,
+.a11y-widget-biz.a11y-widget-biz .a11y-principle-title,
+.a11y-widget-biz.a11y-widget-biz .a11y-results-title {
+  line-height: 1;
+}
+
+/* The reference's summary card: grey, borderless, quiet. */
+.a11y-sum-card {
+  background: #f4f4f4;
+  border-radius: 2px;
+  padding: 16px;
+}
+
+.a11y-sum-card h3 {
+  margin: 0 0 8px;
+  font-size: var(--a11y-text-body);
+  font-weight: 500;
+}
+
+.a11y-sum-card p {
+  margin: 4px 0;
+  color: var(--a11y-muted, #525252);
+}
+
+.a11y-sum-card .a11y-sum-score {
+  color: var(--a11y-text, #161616);
+  font-weight: 500;
+}
+
+@media (prefers-color-scheme: dark) {
+  .a11y-widget-biz .a11y-sum-card {
+    background: #262626;
+  }
+}

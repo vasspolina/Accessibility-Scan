@@ -1,4 +1,5 @@
-import { DataTable, Tabs } from "@verify/design-system";
+import { DataTable } from "@verify/design-system";
+import type { ProView } from "./ProSummary";
 import type { AccessibilityFinding, ConformanceSummary } from "../api/scanClient";
 import { plainForRule } from "../lib/wcagPlain";
 import { enClauseFor } from "../lib/audienceMode";
@@ -27,9 +28,12 @@ const severityWord: Record<AccessibilityFinding["severity"], string> = {
 export function ProfessionalTable({
   findings,
   conformance,
+  view,
 }: {
   findings: AccessibilityFinding[];
   conformance?: ConformanceSummary;
+  /* Which region shows — the tabs above (in ProSummary) drive it. */
+  view: ProView;
 }) {
   const { criterionNames } = useReportView();
   const grouped = groupFindings(findings);
@@ -131,12 +135,7 @@ export function ProfessionalTable({
 
   return (
     <section className="a11y-section a11y-pro-table" aria-label="Findings">
-      <Tabs
-        items={[
-          { id: "issues", label: `Issues (${grouped.length})`, panel: issuesTable },
-          { id: "clean", label: `No issues found (${clean.length})`, panel: cleanList },
-        ]}
-      />
+      {view === "issues" ? issuesTable : cleanList}
     </section>
   );
 }

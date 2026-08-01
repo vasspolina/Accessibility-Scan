@@ -1,49 +1,41 @@
-import { Badge, Button, Card, ScoreDial, Tag } from "@verify/design-system";
+import { Badge, Button, Tabs, Tag } from "@verify/design-system";
 import type { ReactNode } from "react";
 import type { AccessibilityReport } from "../api/scanClient";
 import { SCORE_CAVEAT } from "./ScoreGauge";
 
-const severityRows = [
-  ["critical", "Fix first"],
-  ["serious", "Fix soon"],
-  ["moderate", "Worth fixing"],
-  ["minor", "Minor polish"],
-] as const;
+export type ProView = "issues" | "clean";
 
 /**
- * The core.card composition, for the professional report head: a meta tag
- * row (target standard, scope, finding count), then the dial and the
- * "Issues by severity" card side by side — imported Card, Tag, Badge and
- * ScoreDial, our vocabulary inside them. The deadpan summary line stays a
- * business-mode voice; professionals get the facts and the caveat, which
- * is the honesty fixture both audiences share.
+ * The reference screenshot's head, exactly: action row, tag row, then a
+ * grid of [borderless grey "Issues by severity" card | Tabs]. The tabs
+ * are the switch for the full-width findings region below — their panels
+ * hold only the summary line, the way the reference draws them. The
+ * score lives as the card's first line: the reference card carries the
+ * headline numbers, and the score is ours.
  */
 export function ProSummary({
   report,
+  issueCount,
+  cleanCount,
+  view,
+  onViewChange,
   actions,
   onNewScan,
   onRunScan,
 }: {
   report: AccessibilityReport;
-  /* Rendered into the master file's action row — App passes the print
-     button so the print logic stays in one place. */
+  issueCount: number;
+  cleanCount: number;
+  view: ProView;
+  onViewChange: (v: ProView) => void;
   actions?: ReactNode;
   onNewScan?: () => void;
-  /* The master's leading primary action, doing what it says: re-run the
-     scan of this same page. */
   onRunScan?: () => void;
 }) {
   const total = report.summary.total;
   return (
     <>
-      {/* core.card.html is the layout master: an action row first, then
-          the tag row, then a 1fr/1fr card grid, then the full-width
-          table further down. Only real actions appear here — the master
-          is a specimen sheet, and five button variants with nothing to
-          do would be decoration. */}
       <div className="a11y-pro-actions">
-        {/* The master's variant order: primary leads, secondary follows,
-            ghost last. Each does what its verb says. */}
         {onRunScan && <Button onClick={onRunScan}>Run scan</Button>}
         {actions}
         {onNewScan && (
@@ -53,12 +45,8 @@ export function ProSummary({
         )}
       </div>
       <div className="a11y-meta-row">
-        {/* The target standard, not an achievement — same honesty as the
-            conformance section: what the scan checks against. */}
         <Tag tone="gray">Checked against WCAG 2.1 AA</Tag>
         <Tag tone="blue">1 page</Tag>
-        {/* The master's red status tag, carrying real state in the
-            report's own words: the count that must move first. */}
         {report.summary.critical > 0 && (
           <Tag tone="red">{report.summary.critical} fix first</Tag>
         )}
@@ -66,24 +54,29 @@ export function ProSummary({
       </div>
 
       <div className="a11y-pro-summary">
-        <Card>
-          <ScoreDial score={report.score} size={120} />
-        </Card>
-        <Card title="Issues by severity">
-          <dl className="a11y-score-breakdown">
-            {severityRows.map(([key, word]) => (
-              <div key={key} className={`a11y-severity-${key}`}>
-                <dt>
-                  <span className="a11y-severity-badge">{word}</span>
-                </dt>
-                <dd>{report.summary[key]}</dd>
-              </div>
-            ))}
-          </dl>
+        <div className="a11y-sum-card">
+          <h3>Issues by severity</h3>
+          <p className="a11y-sum-score">Score {report.score} out of 100</p>
           <p className="a11y-issues-line">
             {total} {total === 1 ? "issue" : "issues"} on 1 page
           </p>
-        </Card>
+        </div>
+        <Tabs
+          items={[
+            {
+              id: "issues",
+              label: `Issues (${issueCount})`,
+              panel: `${issueCount} finding${issueCount === 1 ? "" : "s"}`,
+            },
+            {
+              id: "clean",
+              label: `No issues found (${cleanCount})`,
+              panel: `${cleanCount} criteria with nothing found`,
+            },
+          ]}
+          defaultId={view}
+          onChange={(id: string) => onViewChange(id as ProView)}
+        />
       </div>
 
       <p className="a11y-score-caveat">{SCORE_CAVEAT}</p>

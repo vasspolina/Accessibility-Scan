@@ -9,7 +9,8 @@ import { PrincipleGroup } from "./components/PrincipleGroup";
 import { UndecidedChecks } from "./components/UndecidedChecks";
 import { ReportViewProvider, type ReportView } from "./components/ReportViewContext";
 import { ProfessionalTable } from "./components/ProfessionalTable";
-import { ProSummary } from "./components/ProSummary";
+import { ProSummary, type ProView } from "./components/ProSummary";
+import { groupFindings } from "./components/FindingsList";
 
 function hostnameOf(url: string): string {
   try {
@@ -151,6 +152,9 @@ export function App({ apiBase, cta }: { apiBase: string; cta?: CtaConfig }) {
   // the print and returns afterwards. flushSync because the browser takes its
   // snapshot as soon as the beforeprint handlers return.
   const printFilterRestore = useRef<FixFilter>("all");
+  // Which region the professional tabs show; the tabs live in the summary
+  // grid (the reference's layout), the region renders full-width below.
+  const [proView, setProView] = useState<ProView>("issues");
   // "New scan" in the professional action row: back to the form, focus
   // the field — the master file's button, wired to the one real action.
   const formRef: RefObject<HTMLDivElement> = useRef(null);
@@ -174,6 +178,18 @@ export function App({ apiBase, cta }: { apiBase: string; cta?: CtaConfig }) {
       window.removeEventListener("afterprint", after);
     };
   }, [fixFilter]);
+
+  const proIssueGroups = useMemo(
+    () =>
+      report
+        ? groupFindings([
+            ...(report.findings ?? []),
+          ]).length
+        : 0,
+    [report]
+  );
+  const proCleanCount =
+    report?.conformance?.criteria.filter((c) => c.status === "no-issues-found").length ?? 0;
 
   const findingsByCategory = useMemo(() => {
     const all = report?.findings ?? [];
@@ -342,6 +358,10 @@ export function App({ apiBase, cta }: { apiBase: string; cta?: CtaConfig }) {
           ) : professional ? (
             <ProSummary
               report={report}
+              issueCount={proIssueGroups}
+              cleanCount={proCleanCount}
+              view={proView}
+              onViewChange={setProView}
               actions={<PrintButton label="Export report" compact />}
               onNewScan={focusForm}
               onRunScan={() =>
@@ -420,6 +440,7 @@ export function App({ apiBase, cta }: { apiBase: string; cta?: CtaConfig }) {
                 ...findingsByCategory.designClarity,
               ]}
               conformance={report.conformance}
+              view={proView}
             />
           )}
 
