@@ -1,0 +1,23 @@
+{
+  "name": "@verify/design-system",
+  "version": "1.0.0",
+  "description": "Verify accessibility-checker design system — Carbon-derived tokens + 21 accessible React components",
+  "type": "module",
+  "main": "src/index.js",
+  "types": "src/index.d.ts",
+  "exports": {
+    ".": "./src/index.js",
+    "./styles.css": "./styles.css",
+    "./tokens/*": "./tokens/*"
+  },
+  "files": [
+    "src",
+    "tokens",
+    "assets",
+    "styles.css"
+  ],
+  "peerDependencies": {
+    "react": ">=18"
+  },
+  "license": "Apache-2.0"
+}

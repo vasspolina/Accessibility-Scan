@@ -1,0 +1,123 @@
+/* Carbon-derived neutral + status ramps, professional (desaturated) accent.
+   Light theme on :root, dark theme on [data-theme="dark"].
+   All text/background pairs below meet WCAG 2.2 AA (4.5:1) or better. */
+:root {
+  /* Neutral ramp (Carbon Gray) */
+  --gray-10: #f4f4f4;
+  --gray-20: #e0e0e0;
+  --gray-30: #c6c6c6;
+  --gray-40: #a8a8a8;
+  --gray-50: #8d8d8d;
+  --gray-60: #6f6f6f;
+  --gray-70: #525252;
+  --gray-80: #393939;
+  --gray-90: #262626;
+  --gray-100: #161616;
+  --white: #ffffff;
+
+  /* Accent (Carbon Blue) */
+  --blue-40: #78a9ff;
+  --blue-50: #4589ff;
+  --blue-60: #0f62fe;
+  --blue-70: #0043ce;
+  --blue-80: #002d9c;
+
+  /* Status ramps */
+  --red-40: #ff8389;
+  --red-50: #fa4d56;
+  --red-60: #da1e28;
+  --red-70: #a2191f;
+  --magenta-60: #d02670;
+  --orange-40: #ff832b;
+  --orange-60: #ba4e00;
+  --yellow-30: #f1c21b;
+  --green-40: #42be65;
+  --green-50: #24a148;
+  --green-60: #198038;
+  --teal-50: #009d9a;
+  --purple-60: #8a3ffc;
+
+  /* Semantic — light */
+  --background: var(--white);
+  --layer-01: var(--gray-10);
+  --layer-02: var(--white);
+  --layer-hover: #e8e8e8;
+  --field: var(--gray-10);
+  --border-subtle: var(--gray-20);
+  --border-strong: var(--gray-50);
+  --text-primary: var(--gray-100);
+  --text-secondary: var(--gray-70);
+  --text-placeholder: var(--gray-60);
+  --text-on-color: var(--white);
+  --text-inverse: var(--white);
+  --link-primary: var(--blue-60);
+  --link-primary-hover: var(--blue-70);
+  --interactive: var(--blue-60);
+  --button-primary: var(--blue-60);
+  --button-primary-hover: var(--blue-70);
+  --button-primary-active: var(--blue-80);
+  --button-danger: var(--red-60);
+  --button-danger-hover: var(--red-70);
+
+  /* Severity — accessibility findings (never color-only; pair with icon + label) */
+  --severity-critical: var(--red-60);
+  --severity-serious: var(--orange-60);
+  --severity-moderate: #8e6a00;
+  --severity-minor: var(--gray-70);
+  --severity-pass: var(--green-60);
+  --severity-critical-bg: #fff1f1;
+  --severity-serious-bg: #fff2e8;
+  --severity-moderate-bg: #fcf4d6;
+  --severity-minor-bg: var(--gray-10);
+  --severity-pass-bg: #defbe6;
+
+  --support-error: var(--red-60);
+  --support-success: var(--green-60);
+  --support-warning: var(--yellow-30);
+  --support-info: var(--blue-60);
+
+  --focus: var(--blue-60);
+  --focus-inset: var(--white);
+}
+
+[data-theme="dark"] {
+  --background: var(--gray-100);
+  --layer-01: var(--gray-90);
+  --layer-02: var(--gray-80);
+  --layer-hover: #333333;
+  --field: var(--gray-90);
+  --border-subtle: var(--gray-80);
+  --border-strong: var(--gray-50);
+  --text-primary: #f4f4f4;
+  --text-secondary: var(--gray-30);
+  --text-placeholder: var(--gray-50);
+  --text-on-color: var(--white);
+  --text-inverse: var(--gray-100);
+  --link-primary: var(--blue-40);
+  --link-primary-hover: #a6c8ff;
+  --interactive: var(--blue-50);
+  --button-primary: var(--blue-60);
+  --button-primary-hover: #0353e9;
+  --button-primary-active: var(--blue-80);
+  --button-danger: var(--red-60);
+  --button-danger-hover: #ba1b23;
+
+  --severity-critical: var(--red-40);
+  --severity-serious: var(--orange-40);
+  --severity-moderate: var(--yellow-30);
+  --severity-minor: var(--gray-30);
+  --severity-pass: var(--green-40);
+  --severity-critical-bg: #520408;
+  --severity-serious-bg: #4b2400;
+  --severity-moderate-bg: #3d3000;
+  --severity-minor-bg: var(--gray-80);
+  --severity-pass-bg: #044317;
+
+  --support-error: var(--red-40);
+  --support-success: var(--green-40);
+  --support-warning: var(--yellow-30);
+  --support-info: var(--blue-40);
+
+  --focus: var(--white);
+  --focus-inset: var(--gray-100);
+}

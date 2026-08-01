@@ -1,0 +1,36 @@
+:root {
+  --font-sans: "PP Telegraf", "Helvetica Neue", Helvetica, Arial, sans-serif;
+
+  --weight-regular: 400;
+  --weight-medium: 500;
+
+  /* THREE type sizes only. Hierarchy comes from weight, color and space. */
+  --type-heading-size: 1.75rem;  /* 28px — page and section headings */
+  --type-heading-lh: 1.25;
+  --type-body-size: 1.125rem;    /* 18px — all body, controls, tables */
+  --type-body-lh: 1.5;
+  --type-label-size: 0.875rem;   /* 14px — labels, captions, metadata */
+  --type-label-lh: 1.33;
+
+  /* Aliases — every legacy name resolves to one of the three sizes. */
+  --type-display-size: var(--type-heading-size);
+  --type-heading-04-size: var(--type-heading-size);
+  --type-heading-03-size: var(--type-heading-size);
+  --type-heading-02-size: var(--type-heading-size);
+  --type-heading-01-size: var(--type-body-size);
+  --type-heading-compact-size: var(--type-body-size);
+  --type-body-compact-size: var(--type-body-size);
+  --type-caption-size: var(--type-label-size);
+  --type-helper-size: var(--type-label-size);
+
+  --tracking-tight: -0.01em;
+  --tracking-normal: 0.01em;
+  --tracking-caps: 0.04em;
+
+  --measure-max: 66ch;
+  --min-body-size: 1.125rem;
+}
+
+body {
+  letter-spacing: var(--tracking-normal);
+}

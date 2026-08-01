@@ -98,6 +98,16 @@ thought of. Several fixtures exist to prove a *silence*: a correct Polish
 consent banner, a well-behaved shadow-DOM component, a dialog that does
 everything right.
 
+## The design system
+
+The widgets' look follows the vendored **Verify design system** —
+[design-system/](design-system/) holds the spec (`system-guide.md`), the
+`@verify/design-system` production package, and reference screenshots.
+PP Telegraf is self-hosted; the token layer is applied as the final
+cascade layer in the business widget's stylesheet. Two documented
+divergences (label size, theme mechanism) are explained in
+[design-system/README.md](design-system/README.md).
+
 ## The checker, checked
 
 The widget is audited against the standard it enforces —
