@@ -1,10 +1,5 @@
+import { ScoreDial } from "@verify/design-system";
 import type { AccessibilityReport } from "../api/scanClient";
-
-function scoreColor(score: number): string {
-  if (score >= 90) return "var(--a11y-score-good)";
-  if (score >= 70) return "var(--a11y-score-warn)";
-  return "var(--a11y-score-bad)";
-}
 
 // Each line states a judgement and stops. The number above has already made
 // the point, and a sentence that softens it reads as an apology for the
@@ -75,36 +70,32 @@ export function ScoreGauge({
   return (
     <div className="a11y-score">
       <div className="a11y-score-top">
-        {/* Named as one image, the design system's ScoreDial contract: a
-            screen reader gets "Accessibility score: 72 out of 100" instead
-            of "72", "slash", "100" as three scraps of text. The band's tone
-            is carried by the summary line that follows, not by a colour. */}
-        <div
-          className="a11y-score-circle"
-          style={{ borderColor: scoreColor(score) }}
-          role="img"
-          aria-label={`Accessibility score: ${score} out of 100`}
-        >
-          <span className="a11y-score-number" aria-hidden="true">{score}</span>
-          <span className="a11y-score-label" aria-hidden="true">/ 100</span>
-        </div>
+        {/* The design system's own dial, imported rather than imitated. It
+            brings the ring, the tone word (Good / Needs work / Failing —
+            never colour alone) and the single accessible name
+            "Accessibility score: N out of 100 — <word>". Its token names
+            are bridged onto ours in styles.css, so it follows our dark
+            scheme and the 16px floor without knowing either exists. */}
+        <ScoreDial score={score} size={120} />
         <p className="a11y-score-summary">{scoreSummary(score, seed)}</p>
       </div>
+      {/* The kit's summary row: severity tags with counts. The words stay
+          ours; the tags are the same chips the finding cards wear. */}
       <dl className="a11y-score-breakdown">
-        <div>
-          <dt>Fix first</dt>
+        <div className="a11y-severity-critical">
+          <dt><span className="a11y-severity-badge">Fix first</span></dt>
           <dd>{summary.critical}</dd>
         </div>
-        <div>
-          <dt>Fix soon</dt>
+        <div className="a11y-severity-serious">
+          <dt><span className="a11y-severity-badge">Fix soon</span></dt>
           <dd>{summary.serious}</dd>
         </div>
-        <div>
-          <dt>Worth fixing</dt>
+        <div className="a11y-severity-moderate">
+          <dt><span className="a11y-severity-badge">Worth fixing</span></dt>
           <dd>{summary.moderate}</dd>
         </div>
-        <div>
-          <dt>Minor polish</dt>
+        <div className="a11y-severity-minor">
+          <dt><span className="a11y-severity-badge">Minor polish</span></dt>
           <dd>{summary.minor}</dd>
         </div>
       </dl>

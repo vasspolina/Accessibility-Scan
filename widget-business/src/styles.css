@@ -1636,9 +1636,13 @@
   }
 
   /* Ink: the professional hand-off block prints as a rule-off box, not a
-     grey wash. The CTA is the embedder's pitch, not report content. */
+     grey wash — and the layer-01 card fills print hollow for the same
+     reason. The CTA is the embedder's pitch, not report content. */
   .a11y-pro-block,
-  .a11y-pro-snippet {
+  .a11y-pro-snippet,
+  .a11y-finding,
+  .a11y-score,
+  .a11y-conf-tile {
     background: transparent !important;
   }
 
@@ -2790,6 +2794,43 @@
      visible when it lands on a surface the same colour as the ring. */
   --a11y-focus: #0f62fe;
   --a11y-focus-inset: #ffffff;
+  /* The system's two surface levels, named so a card can hand the next one
+     down. layer-1 is what --a11y-surface already was; layer-2 is the step
+     above it (white in light, gray-80 in dark). */
+  --a11y-layer-1: #f4f4f4;
+  --a11y-layer-2: #ffffff;
+
+  /* Token bridge for components imported from @verify/design-system. The
+     package's components consume the system's own token names; the shadow
+     root never loads its styles.css (whose :root cannot match in here), so
+     the names are mapped onto our tokens instead. Values stay ours — dark
+     mode flips them through the same dark block as everything else, and
+     the label size lands on body, where the 16px floor keeps it. */
+  --font-sans: var(--a11y-font);
+  --text-primary: var(--a11y-text, #161616);
+  --border-subtle: var(--a11y-border, #e0e0e0);
+  --severity-pass: var(--a11y-score-good, #198038);
+  --severity-moderate: var(--a11y-score-warn, #8a3800);
+  --severity-critical: var(--a11y-score-bad, #da1e28);
+  --type-heading-size: var(--a11y-text-title, 1.75rem);
+  --type-body-size: var(--a11y-text-body, 1.125rem);
+  --type-label-size: var(--a11y-text-body, 1.125rem);
+  --space-03: 0.5rem;
+}
+
+/* The system's Card: a layer-01 rectangle with a hairline border and no
+   shadow. The trick is the last line — the card re-maps --a11y-surface to
+   layer-2 for everything inside it, so every inner panel that painted
+   itself "surface" steps up one level automatically and the system's
+   "maximum two surface levels visible at once" holds by construction.
+   The card's own fill reads layer-1 directly, before the re-map. */
+.a11y-widget-biz.a11y-widget-biz .a11y-finding {
+  background: var(--a11y-layer-1, #f4f4f4);
+  --a11y-surface: var(--a11y-layer-2, #ffffff);
+}
+
+.a11y-widget-biz.a11y-widget-biz .a11y-conf-tile {
+  border-radius: 2px;
 }
 
 .a11y-widget-inner {
@@ -2941,6 +2982,8 @@
     /* Dark focus is white — blue on blue disappears; the inner line flips. */
     --a11y-focus: #ffffff;
     --a11y-focus-inset: #161616;
+    --a11y-layer-1: #262626;  /* gray-90 */
+    --a11y-layer-2: #393939;  /* gray-80 */
   }
 
   /* Severity hues lift one ramp step in dark to hold contrast, on the
@@ -2964,4 +3007,49 @@
     background: #393939;
     color: #c6c6c6;
   }
+}
+
+/* ---- The composed UI kit's screens, applied -----------------------------
+   From the four reference screenshots (design-system/screenshots/): the
+   scan form and the score live in cards; fields are filled and underlined,
+   not boxed; the severity summary is a row of tinted chips with counts.
+   Each card hands layer-2 down, same as the finding cards. */
+
+.a11y-widget-biz.a11y-widget-biz .a11y-url-form {
+  background: var(--a11y-layer-1, #f4f4f4);
+  border: 1px solid var(--a11y-border, #e0e0e0);
+  border-radius: 2px;
+  padding: 16px;
+  --a11y-surface: var(--a11y-layer-2, #ffffff);
+}
+
+.a11y-widget-biz.a11y-widget-biz .a11y-score {
+  background: var(--a11y-layer-1, #f4f4f4);
+  border: 1px solid var(--a11y-border, #e0e0e0);
+  border-radius: 2px;
+  padding: 16px;
+  --a11y-surface: var(--a11y-layer-2, #ffffff);
+}
+
+/* Kit fields: the field shares the card's fill and a 1px underline does
+   the boundary work — the focus ring supplies the strong state. */
+.a11y-widget-biz.a11y-widget-biz .a11y-url-row input,
+.a11y-widget-biz.a11y-widget-biz .a11y-login input,
+.a11y-widget-biz.a11y-widget-biz .a11y-ai-toggle select {
+  background: transparent;
+  border: 0;
+  border-bottom: 1px solid #8d8d8d;   /* border-strong, both themes */
+  border-radius: 0;
+}
+
+/* The summary chips: our words in the kit's severity tags, count after. */
+.a11y-score-breakdown div {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.a11y-score-breakdown dd {
+  margin: 0;
+  font-weight: 500;
 }

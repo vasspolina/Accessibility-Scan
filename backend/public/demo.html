@@ -19,7 +19,7 @@
          so giving it a column here as well made the two multiply. This page's
          own text is aligned to the panel by the rule below instead. */
       .page { width: 100%; margin: 0; }
-      .page > h1, .page > p, .page > ul {
+      .page > h1, .page > h2, .page > p, .page > ul {
         width: min(100%, max(50vw, 30rem));
         /* Our own line-length rule flagged this page at ~97 characters a
            line; the cap keeps the measure readable at wide viewports. */
@@ -28,7 +28,8 @@
       }
       h1 { font-size: 28px; line-height: 36px; margin: 0 0 8px; font-weight: 400; }
       p.lede { font-size: 16px; line-height: 1.5; color: #525252; margin: 0 0 32px; }
-      .try { font-size: 14px; line-height: 1.5; color: #525252; margin: 32px 0 0; }
+      .try-title { font-size: 18px; font-weight: 500; margin: 40px 0 0; }
+      .try { font-size: 14px; line-height: 1.5; color: #525252; margin: 8px 0 0; }
       /* Buttons, not decorated text: our own scan flagged the previous
          code-chip styling as implying a click it never delivered. Each one
          fills the scanner input above. A list beside the prose, not inside
@@ -83,6 +84,7 @@
         data-api-base="https://a11y-checker-v2-production.up.railway.app"
       ></div>
 
+      <h2 class="try-title">Try an example</h2>
       <p class="try">
         Consent banners in a language other than English are worth trying.
         Each button fills the address in for you.
