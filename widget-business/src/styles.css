@@ -2778,6 +2778,10 @@
    where Carbon used bold or regular, body tracking, the focus ring's inner
    contrast line, tinted severity tags, and 2px corners on inputs and cards.
    Its 14px label size is refused; the 16px floor comment explains why.
+   One mechanical adaptation: the system switches themes with
+   data-theme="dark" on the root; this widget is embedded on other
+   people's pages and offers no switch, so the same dark tokens hang off
+   prefers-color-scheme instead — the visitor's own setting decides.
    ========================================================================== */
 
 .a11y-widget-biz {
@@ -2882,12 +2886,25 @@
 }
 
 /* Severity: the system's tag — tinted fill, matching text, hairline
-   currentColor border, pill. The words stay ours ("Fix first", not
-   "Critical"): the vocabulary is the report's, the clothing is the
-   system's. Every pair meets 4.5:1 on its tint, both themes. */
+   currentColor border, pill, and the fixed glyph the SeverityTag spec
+   pairs with every word ("!" for the urgent three, "i" minor). The words
+   stay ours ("Fix first", not "Critical"): the vocabulary is the report's,
+   the clothing is the system's. Glyph alternative text is empty — the
+   word already says it. Every pair meets 4.5:1 on its tint, both themes. */
 .a11y-widget-biz.a11y-widget-biz .a11y-severity-badge {
   border-radius: 999px;
   border: 1px solid currentColor;
+}
+
+.a11y-severity-badge::before {
+  content: "! ";
+  content: "! " / "";
+  font-weight: 500;
+}
+
+.a11y-severity-minor .a11y-severity-badge::before {
+  content: "i ";
+  content: "i " / "";
 }
 
 .a11y-severity-critical .a11y-severity-badge {
