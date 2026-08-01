@@ -144,9 +144,12 @@ the Verify design-system restyle (PP Telegraf, 18/28 type scale, tinted
 severity tags, focus ring with inner contrast line): the full matrix —
 both audience modes, both colour schemes, collapsed and expanded — zero
 violations, and the deployed demo self-scans at 100 with no findings.
-The system's 14px label size was deliberately not adopted; the 16px
-floor in styles.css explains why, and the system's own readme concurs
-(every component must pass the product's checks). The self-scan then
+The system's 14px label size was refused at first for a 16px floor,
+then adopted on 1 August (late evening) when the user ordered
+pixel-fidelity to the core.card reference: tags, badges, table headers
+and metadata sit at 14px now — above the scanner's own 13px small-text
+line and contrast-checked at that size by the system's token pairs, so
+the checker still passes its own scan. Running prose stays 18px. The self-scan then
 drove three more rounds on its own product — the worded "✓ Selected"
 tag on option cards (1.4.1), the gov.pl exception moved onto its button
 and then trimmed to a short name, the AI-review checkbox split into a

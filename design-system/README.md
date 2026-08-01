@@ -21,10 +21,10 @@ system" banner), with the fonts self-hosted at `backend/public/fonts/` and
 injected from `widget-business/src/index.tsx`.
 
 Two documented divergences:
-- **14px labels are refused.** The widget's floor is 16px+ — a checker that
-  flags small text does not set its own findings small. Labels sit at body
-  size, distinguished by weight and colour. (The system-guide agrees in
-  principle: every component must pass the checks the product performs.)
+- ~~14px labels are refused~~ **Adopted** (1 Aug, evening) at the user's
+  pixel-fidelity order for the core.card reference: labels, tags, badges
+  and table metadata sit at the system's 14px — above the scanner's own
+  13px small-text line. Running prose stays 18px.
 - **Theme switching.** The system uses `data-theme="dark"` on the root; the
   widget is embedded on pages that offer no switch, so the same dark tokens
   hang off `prefers-color-scheme` instead.

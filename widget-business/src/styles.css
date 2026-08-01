@@ -44,14 +44,15 @@
  */
 :host,
 .a11y-widget-biz {
-  /* The Verify design system's scale: three sizes, hierarchy by weight,
-     colour and space. Its third size — a 14px label — is deliberately not
-     adopted: the floor above stands, so labels, badges and captions stay at
-     body size. The system's own readme agrees: every component must pass
-     the checks the product performs, and ours are stricter here. */
-  --a11y-text-body: 1.125rem;  /* 18px — body, labels, badges, everything */
+  /* The Verify design system's scale, complete. The 14px label size was
+     refused for a while under a 16px floor; the user's pixel-fidelity
+     order for the core.card reference adopted it (1 Aug, evening) — it
+     sits above the scanner's own 13px small-text line, so the checker
+     still passes its own scan. */
+  --a11y-text-body: 1.125rem;  /* 18px — body and controls */
   --a11y-text-title: 1.75rem;  /* 28px — section and card headings */
   --a11y-text-display: 1.75rem; /* the score too: three sizes means three */
+  --a11y-text-label: 0.875rem; /* 14px — tags, badges, table headers */
 }
 
 .a11y-widget-inner {
@@ -2808,7 +2809,7 @@
   --severity-critical: var(--a11y-score-bad, #da1e28);
   --type-heading-size: var(--a11y-text-title, 1.75rem);
   --type-body-size: var(--a11y-text-body, 1.125rem);
-  --type-label-size: var(--a11y-text-body, 1.125rem);
+  --type-label-size: var(--a11y-text-label, 0.875rem);
   --type-body-lh: 1.5;
   --space-03: 0.5rem;
   --space-04: 0.75rem;
@@ -3105,13 +3106,10 @@
 }
 
 .a11y-pro-table table {
-  /* No side-scroll and no outer box, by request — and Carbon agrees on
-     the second: its data tables draw row dividers and a header band, no
-     frame. The columns squeeze and wrap instead of scrolling; the
-     !important beats the component's inline border. */
+  /* No side-scroll (columns squeeze and wrap); the outer hairline is the
+     component's own and the reference shows it, so it stays. */
   min-width: 0;
   width: 100%;
-  border: 0 !important;
 }
 
 /* Carbon's data table, measured from its style spec rather than guessed:
@@ -3191,9 +3189,8 @@
   margin: 0 0 16px;
 }
 
-.a11y-meta-row > span {
-  height: 28px !important;
-}
+/* Component-true 24px tags; nothing to override now the label size is
+   the system's own. */
 
 /* The master file's grid: two equal columns, stacking when the panel
    narrows past the point where two cards can breathe. */
@@ -3253,8 +3250,18 @@
    outlined, not filled. Scoped to the action row so the business
    report's tertiary buttons stay as they were. */
 .a11y-widget-biz.a11y-widget-biz .a11y-pro-actions .a11y-sr-play {
+  /* The imported secondary Button's exact metrics, so Export report sits
+     flush with Run scan: 40px tall, 0 16 padding, 18px Medium. */
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 40px;
+  padding: 0 16px;
+  font-size: var(--a11y-text-body, 1.125rem);
+  font-weight: 500;
   background: transparent;
   border: 1px solid #8d8d8d;
+  border-radius: 0;
   color: var(--a11y-text, #161616);
 }
 
@@ -3624,4 +3631,21 @@
   .a11y-widget-biz .a11y-sum-card {
     background: #262626;
   }
+}
+
+/* Pixel pass against the reference: everything the spec sets in label
+   size now is 14px — our severity chips (the SeverityTag spec's size),
+   rule chips, the criterion column (IssueRow's subline). Card title
+   carries the component's 12px stand-off. */
+.a11y-widget-biz.a11y-widget-biz .a11y-severity-badge,
+.a11y-widget-biz.a11y-widget-biz .a11y-rule-chip {
+  font-size: var(--a11y-text-label, 0.875rem);
+}
+
+.a11y-widget-biz.a11y-widget-biz .a11y-pro-table tbody td:nth-child(4) {
+  font-size: var(--a11y-text-label, 0.875rem);
+}
+
+.a11y-widget-biz.a11y-widget-biz .a11y-sum-card h3 {
+  margin-bottom: 12px;
 }
