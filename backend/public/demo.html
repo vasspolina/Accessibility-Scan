@@ -51,6 +51,18 @@
       }
       .try-list button:hover { background: #d1d1d1; }
       .try-list button:focus-visible { outline: 2px solid #0f62fe; outline-offset: 1px; }
+      /* The widget follows the visitor's scheme; the page around it should
+         too, or a dark report sits in a glowing light frame. Same Carbon
+         ramp the design system uses. */
+      @media (prefers-color-scheme: dark) {
+        body { background: #161616; color: #f4f4f4; }
+        p.lede, .try { color: #c6c6c6; }
+        .try-list button {
+          background: #262626; border-color: #6f6f6f; color: #f4f4f4;
+        }
+        .try-list button:hover { background: #333333; }
+        .try-list button:focus-visible { outline-color: #ffffff; }
+      }
     </style>
   </head>
   <body>
@@ -73,15 +85,19 @@
 
       <p class="try">
         Consent banners in a language other than English are worth trying.
-        Each button fills the address in for you. The last one, gov.pl, has a
-        correct banner. Expect no consent finding there at all.
+        Each button fills the address in for you.
       </p>
       <ul class="try-list">
         <li><button type="button" data-domain="bundesregierung.de" aria-label="Fill in bundesregierung.de">bundesregierung.de</button></li>
         <li><button type="button" data-domain="spiegel.de" aria-label="Fill in spiegel.de">spiegel.de</button></li>
         <li><button type="button" data-domain="dr.dk" aria-label="Fill in dr.dk">dr.dk</button></li>
         <li><button type="button" data-domain="corriere.it" aria-label="Fill in corriere.it">corriere.it</button></li>
-        <li><button type="button" data-domain="gov.pl" aria-label="Fill in gov.pl">gov.pl</button></li>
+        <!-- The exception is named on the button itself, not in prose a list
+             reader never meets: this banner is correct, and the scan should
+             say so by staying silent about it. -->
+        <li><button type="button" data-domain="gov.pl"
+          aria-label="Fill in gov.pl — correct banner">gov.pl
+          — correct banner</button></li>
       </ul>
     </main>
 

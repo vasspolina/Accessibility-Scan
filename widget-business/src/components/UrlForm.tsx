@@ -160,16 +160,25 @@ export function UrlForm({
           </select>
         </label>
       ) : (
-        <label className="a11y-ai-toggle">
-          <input
-            type="checkbox"
-            checked={includeAiReview}
-            onChange={(e) => setIncludeAiReview(e.target.checked)}
-            disabled={loading}
-          />
-          Include AI-powered review — catches design and marketing issues automated tools miss, but
-          adds about half a minute
-        </label>
+        // Short label, separate description — a checkbox whose label is a
+        // whole sales sentence gets that sentence read on every focus. The
+        // description is still announced, once, as a description.
+        <div className="a11y-ai-toggle">
+          <label>
+            <input
+              type="checkbox"
+              checked={includeAiReview}
+              onChange={(e) => setIncludeAiReview(e.target.checked)}
+              disabled={loading}
+              aria-describedby="a11y-ai-hint"
+            />
+            Include AI-powered review
+          </label>
+          <span id="a11y-ai-hint" className="a11y-ai-hint">
+            Catches design and marketing issues automated tools miss. Adds
+            about half a minute.
+          </span>
+        </div>
       )}
     </form>
   );

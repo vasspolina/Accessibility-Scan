@@ -2795,10 +2795,69 @@
 
 .a11y-url-row button,
 .a11y-cta-link,
-.a11y-severity-badge,
-.a11y-mode-btn,
-.a11y-filter-btn {
+.a11y-severity-badge {
   font-weight: 500;
+}
+
+/* Selection on the option cards, done the way the system's own rule
+   demands — "status is always encoded by an icon and a text label as well
+   as color". The old state was a blue border and a blue checkmark: two
+   hues, no word, and the self-scan finally scored it under 1.4.1. Now the
+   selected card carries a worded tag in the neutral text colour (legible
+   to any colour vision), sits one weight heavier than its neighbours, and
+   keeps the accent border for those who do see it. The tag's alternative
+   text is empty on purpose: aria-pressed already announces the state, and
+   a second "selected" would double-speak. */
+.a11y-mode-btn {
+  font-weight: 400;
+}
+
+.a11y-mode-btn-active {
+  font-weight: 500;
+}
+
+.a11y-widget-biz.a11y-widget-biz .a11y-mode-btn-active {
+  padding-right: 16px;
+}
+
+.a11y-widget-biz.a11y-widget-biz .a11y-mode-btn-active::after {
+  content: "\2713\00a0 Selected";
+  content: "\2713\00a0 Selected" / "";
+  position: static;
+  display: inline-block;
+  margin-top: 8px;
+  padding: 1px 10px;
+  border: 1px solid currentColor;
+  border-radius: 999px;
+  font-size: var(--a11y-text-body);
+  font-weight: 500;
+  line-height: 1.4;
+  color: var(--a11y-text, #161616);
+  background: transparent;
+}
+
+/* The AI toggle's hint hangs under the label it describes, in the
+   secondary colour — description, not label, in both senses. */
+.a11y-ai-hint {
+  display: block;
+  margin: 4px 0 0 28px;
+  color: var(--a11y-muted, #525252);
+  font-size: var(--a11y-text-body);
+}
+
+/* The filter chips share the classes but not the room — they keep the bare
+   glyph, still in the neutral colour, still beside a pressed state. */
+.a11y-widget-biz.a11y-widget-biz .a11y-filter-btn {
+  font-weight: 500;
+}
+
+.a11y-widget-biz.a11y-widget-biz .a11y-filter-btn.a11y-mode-btn-active::after {
+  content: "\2713";
+  content: "\2713" / "";
+  display: inline;
+  border: 0;
+  padding: 0 0 0 6px;
+  margin: 0;
 }
 
 .a11y-score-num {
