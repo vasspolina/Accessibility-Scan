@@ -1,3 +1,4 @@
+import { SeverityTag } from "@verify/design-system";
 import { useState } from "react";
 import { dominantComponent, describeComponent } from "../lib/componentCluster";
 import type { AccessibilityFinding } from "../api/scanClient";
@@ -468,7 +469,7 @@ export function FindingGroup({
           <img className="a11y-finding-thumb" src={`data:image/jpeg;base64,${rep.elementScreenshot}`} alt="" />
         )}
         {!asNotes && (
-          <span className="a11y-severity-badge">{severityLabel[rep.severity]}</span>
+          <SeverityTag severity={rep.severity} label={severityLabel[rep.severity]} />
         )}
         <span className="a11y-finding-desc">
           {title}

@@ -1,4 +1,4 @@
-import { DataTable } from "@verify/design-system";
+import { DataTable, SeverityTag } from "@verify/design-system";
 import type { ProView } from "./ProSummary";
 import type { AccessibilityFinding, ConformanceSummary } from "../api/scanClient";
 import { plainForRule } from "../lib/wcagPlain";
@@ -54,9 +54,7 @@ export function ProfessionalTable({
     return {
       id: rep.id,
       cells: [
-        <span key="sev" className={`a11y-severity-${rep.severity}`}>
-          <span className="a11y-severity-badge">{severityWord[rep.severity]}</span>
-        </span>,
+        <SeverityTag key="sev" severity={rep.severity} label={severityWord[rep.severity]} />,
         <span key="title">
           {title}
           {rep.ruleId && (

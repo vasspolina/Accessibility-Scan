@@ -1,4 +1,4 @@
-import { Card, ScoreDial } from "@verify/design-system";
+import { Card, ScoreDial, SeverityTag } from "@verify/design-system";
 import type { CSSProperties } from "react";
 import type { AccessibilityReport } from "../api/scanClient";
 
@@ -113,11 +113,7 @@ export function ScoreGauge({
         {SEVERITY_TILES.map(([key, word]) => (
           <Card key={key} style={TILE}>
             <span className="a11y-stat-num">{summary[key]}</span>
-            {/* The severity class stays on a wrapper: the badge inks are
-                descendant selectors, and Card takes no className. */}
-            <span className={`a11y-severity-${key}`}>
-              <span className="a11y-severity-badge">{word}</span>
-            </span>
+            <SeverityTag severity={key} label={word} />
           </Card>
         ))}
       </div>

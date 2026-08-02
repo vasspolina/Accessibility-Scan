@@ -1,3 +1,4 @@
+import { SeverityTag } from "@verify/design-system";
 import { DataTable, Tag } from "@verify/design-system";
 import type { SiteAudit } from "../api/scanClient";
 import { ConformanceView } from "./ConformanceView";
@@ -69,7 +70,7 @@ export function SiteAuditView({ audit }: { audit: SiteAudit }) {
               const plain = plainForRule(issue.ruleId);
               return (
                 <li key={issue.ruleId} className={`a11y-audit-row a11y-severity-${issue.severity}`}>
-                  <span className="a11y-severity-badge">{severityLabel[issue.severity]}</span>
+                  <SeverityTag severity={issue.severity} label={severityLabel[issue.severity]} />
                   <span className="a11y-audit-body">
                     <strong>
                       {plain?.plain ?? issue.title}
