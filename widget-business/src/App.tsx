@@ -10,7 +10,7 @@ import { UndecidedChecks } from "./components/UndecidedChecks";
 import { ReportViewProvider, type ReportView } from "./components/ReportViewContext";
 import { ProfessionalTable } from "./components/ProfessionalTable";
 import { ProSummary, type ProView } from "./components/ProSummary";
-import { ProgressBar } from "@verify/design-system";
+import { Notification, ProgressBar } from "@verify/design-system";
 import { groupFindings } from "./components/FindingsList";
 
 function hostnameOf(url: string): string {
@@ -401,13 +401,20 @@ export function App({ apiBase, cta }: { apiBase: string; cta?: CtaConfig }) {
               back as a shortfall would put a warning on every default scan. */}
           {report.meta.aiReviewStatus !== "completed" &&
             report.meta.aiReviewStatus !== "disabled_by_request" && (
-              <p className="a11y-notice">
-                The AI-powered review wasn't included in this check
-                {report.meta.aiReviewStatus === "skipped_no_key"
-                  ? " (not set up yet)."
-                  : " (temporarily unavailable)."}{" "}
-                Showing rule-based findings only.
-              </p>
+              /* Notification, whose role="status" is inert here on purpose:
+                 this notice mounts with the report and never changes, so the
+                 region has nothing to announce and competes with nothing.
+                 That is the whole reason it is safe here and not on the scan
+                 error below. */
+              <Notification
+                kind="info"
+                title="The AI-powered review wasn't included in this check"
+                subtitle={
+                  (report.meta.aiReviewStatus === "skipped_no_key"
+                    ? "Not set up yet."
+                    : "Temporarily unavailable.") + " Showing rule-based findings only."
+                }
+              />
             )}
 
           {/* The score only counts checks that ran, so a scan where some fell
@@ -416,11 +423,11 @@ export function App({ apiBase, cta }: { apiBase: string; cta?: CtaConfig }) {
               keyboard and phone-layout checks gave up on two of them. Saying so
               is the difference between a number and a trustworthy number. */}
           {report.meta.incompleteChecks && report.meta.incompleteChecks.length > 0 && (
-            <p className="a11y-notice">
-              Some checks didn't finish this time:{" "}
-              {report.meta.incompleteChecks.join(", ")}. The score above only counts what ran,
-              so it may look better than it should. Running the check again usually completes them.
-            </p>
+            <Notification
+              kind="warning"
+              title={`Some checks didn't finish this time: ${report.meta.incompleteChecks.join(", ")}.`}
+              subtitle="The score above only counts what ran, so it may look better than it should. Running the check again usually completes them."
+            />
           )}
 
           {/* The professional view filter. Chips partition by who makes the

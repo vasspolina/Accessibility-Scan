@@ -4147,3 +4147,38 @@
   padding-bottom: 0;
   margin-bottom: 0;
 }
+
+/* The scan error, matched to the Notification component it cannot be.
+   Notification bakes role="alert" into its root, and this widget announces
+   errors from a separate persistent region that is in the DOM before the
+   text arrives — a live region that mounts already full is the classic way
+   to announce nothing, which this codebase's own audit fixed. Rendering
+   Notification here would either double-announce or regress that. So the
+   contract stays ours and only the anatomy is borrowed: layer-01 fill (the
+   component tints the stripe and glyph, never the box), a 3px stripe in the
+   error ink, and the same "!" glyph.
+   :not(:empty) matters — the inline form error is a persistent region that
+   sits empty until it has something to say, and a glyph on an empty region
+   would draw a permanent stray "!". */
+.a11y-widget-biz.a11y-widget-biz .a11y-error:not(:empty) {
+  display: flex;
+  gap: 12px;
+  padding: 12px 16px;
+  border-radius: 0;
+  /* --layer-01, not --a11y-layer-1: the flat pass set the latter to the
+     page colour, and Notification reads the former. Same token the
+     component fills its box with, so the two match by construction. */
+  background: var(--layer-01, #f4f4f4);
+  border-left: 3px solid var(--severity-critical, #da1e28);
+  color: var(--a11y-text, #161616);
+}
+
+.a11y-widget-biz.a11y-widget-biz .a11y-error:not(:empty)::before {
+  content: "!";
+  content: "!" / "";
+  flex-shrink: 0;
+  width: 16px;
+  text-align: center;
+  font-weight: 500;
+  color: var(--severity-critical, #da1e28);
+}
