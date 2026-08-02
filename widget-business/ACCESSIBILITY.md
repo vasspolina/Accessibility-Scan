@@ -149,7 +149,15 @@ then adopted on 1 August (late evening) when the user ordered
 pixel-fidelity to the core.card reference: tags, badges, table headers
 and metadata sit at 14px now — above the scanner's own 13px small-text
 line and contrast-checked at that size by the system's token pairs, so
-the checker still passes its own scan. Running prose stays 18px. The self-scan then
+the checker still passes its own scan. Running prose stays 18px. The full-matrix sweep after the flat/pixel
+arc (2 Aug) — business, professional and audit views in both schemes —
+caught one real defect the light-only rounds had missed: the imported
+primary Button's fill was bridged through the accent token, which lifts
+to blue-40 in dark for link contrast, putting white button text at
+2.35:1. Solid button fills are literal blue-60/red-60 now, both
+schemes, as the system's own dark theme has them; the danger button's
+dark hover had the same latent fault and got the same fix. All six
+matrix cells axe-clean after. The self-scan then
 drove three more rounds on its own product — the worded "✓ Selected"
 tag on option cards (1.4.1), the gov.pl exception moved onto its button
 and then trimmed to a short name, the AI-review checkbox split into a
