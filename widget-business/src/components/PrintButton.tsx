@@ -10,6 +10,8 @@
 // injected into the document head. The widget's own print styling stays in
 // styles.css where it belongs.
 
+import { Button } from "@verify/design-system";
+
 const HOST_PRINT_STYLE_ID = "a11y-widget-host-print-style";
 
 // Hides everything on the embedding page except the widget's mount point, so a
@@ -41,19 +43,23 @@ export function PrintButton({
      business report keeps the sentence explaining what the dialog is. */
   compact?: boolean;
 }) {
+  const onPrint = () => {
+    ensureHostPrintStyle();
+    window.print();
+  };
+  /* The action row gets the real imported component; the business report
+     keeps the classed button its print styles and layout already know. */
+  if (compact)
+    return (
+      <Button variant="secondary" onClick={onPrint}>
+        {label}
+      </Button>
+    );
   const button = (
-    <button
-      type="button"
-      className="a11y-sr-play"
-      onClick={() => {
-        ensureHostPrintStyle();
-        window.print();
-      }}
-    >
+    <button type="button" className="a11y-sr-play" onClick={onPrint}>
       {label}
     </button>
   );
-  if (compact) return button;
   return (
     <div className="a11y-print-row">
       {button}

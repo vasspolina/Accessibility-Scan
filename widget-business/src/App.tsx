@@ -10,6 +10,7 @@ import { UndecidedChecks } from "./components/UndecidedChecks";
 import { ReportViewProvider, type ReportView } from "./components/ReportViewContext";
 import { ProfessionalTable } from "./components/ProfessionalTable";
 import { ProSummary, type ProView } from "./components/ProSummary";
+import { ProgressBar } from "@verify/design-system";
 import { groupFindings } from "./components/FindingsList";
 
 function hostnameOf(url: string): string {
@@ -286,6 +287,24 @@ export function App({ apiBase, cta }: { apiBase: string; cta?: CtaConfig }) {
         {error ?? ""}
       </div>
 
+      {loading && (
+        /* The system's own scanning UX: a determinate bar driven by elapsed
+           time against an honest expectation (a page scan usually lands
+           inside forty seconds; AI adds about thirty; audits scale with
+           pages), held at 95% until the real result arrives — the words
+           below stay the live region, the bar is the picture. */
+        <ProgressBar
+          label="Scanning"
+          value={Math.min(
+            95,
+            Math.round(
+              (elapsed /
+                ((mode === "site" ? 75 : 40) + (aiRequested ? 30 : 0))) *
+                100
+            )
+          )}
+        />
+      )}
       {loading && (
         <p className="a11y-loading">
           {/* Two parts, deliberately. The words are a live region and change
