@@ -88,8 +88,14 @@ export function UrlForm({
             disabled={loading}
             required
             aria-invalid={showEmptyError || undefined}
-            aria-describedby={showEmptyError ? "a11y-url-error" : undefined}
+            aria-describedby={showEmptyError ? "a11y-url-error" : "a11y-url-hint"}
           />
+          {/* The kit's helper line under the field, kept true per scope. */}
+          <span id="a11y-url-hint" className="a11y-group-hint">
+            {mode === "site"
+              ? "We scan every page we can reach."
+              : "We scan this one page and everything visible on it."}
+          </span>
           {/* Persistent and empty until filled — a live region mounted with
               its message already inside never announces. */}
           <p id="a11y-url-error" className="a11y-error a11y-url-error" role="alert">
