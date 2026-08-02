@@ -58,7 +58,9 @@ a full ordered walk was not possible here. **Needs human verification.**
 Known-good by construction and spot-check: finding cards are
 `<button aria-expanded aria-controls>` disclosures; the technical drawer is
 native `<details>`; the vision simulator uses `aria-pressed` toggles; the
-mode selector is two `aria-pressed` buttons in a labelled group; no positive
+audience and scan-mode choices are native radio groups in fieldsets with
+legends (2 Aug — previously aria-pressed button cards; radios announce
+position-in-set and arrow-navigate natively); no positive
 tabindex anywhere; `hidden` rather than conditional render for collapsible
 card bodies, so `aria-controls` always resolves.
 

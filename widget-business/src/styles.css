@@ -3706,3 +3706,65 @@
     background: #262626;
   }
 }
+
+/* ==========================================================================
+   The Forms reference on the landing form
+   ==========================================================================
+   Filled fields with small labels above (already in place), and the two
+   exclusive choices as Carbon radios — 20px controls in the accent, the
+   option name at body size with its description as a secondary line. The
+   fieldset is the group; the legend is its name; nothing needs a
+   "(selected)" marker because checked is native. */
+.a11y-widget-biz.a11y-widget-biz .a11y-url-label {
+  font-size: var(--a11y-text-label, 0.875rem);
+  font-weight: 500;
+  color: var(--a11y-muted, #525252);
+}
+
+.a11y-radio-group {
+  border: 0;
+  margin: 16px 0 0;
+  padding: 0;
+}
+
+.a11y-radio-group legend {
+  padding: 0;
+  margin-bottom: 8px;
+  font-size: var(--a11y-text-label, 0.875rem);
+  font-weight: 500;
+  color: var(--a11y-muted, #525252);
+}
+
+.a11y-radio {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  margin: 8px 0;
+  cursor: pointer;
+}
+
+.a11y-radio input {
+  width: 20px;
+  height: 20px;
+  margin: 2px 0 0;
+  accent-color: var(--a11y-accent, #0f62fe);
+  flex-shrink: 0;
+}
+
+.a11y-radio span {
+  font-size: var(--a11y-text-body, 1.125rem);
+}
+
+.a11y-radio em {
+  display: block;
+  font-style: normal;
+  font-size: var(--a11y-text-label, 0.875rem);
+  color: var(--a11y-muted, #525252);
+}
+
+/* The AI checkbox joins the reference's control style. */
+.a11y-widget-biz.a11y-widget-biz .a11y-ai-toggle input[type="checkbox"] {
+  width: 20px;
+  height: 20px;
+  accent-color: var(--a11y-accent, #0f62fe);
+}

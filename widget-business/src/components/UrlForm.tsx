@@ -92,52 +92,70 @@ export function UrlForm({
         {showEmptyError ? "Enter a website address first. For example: example.com." : ""}
       </p>
 
-      {/* Who the report is written for. Deliberately not disabled while
-          loading: it changes nothing about the scan, and someone who realises
-          mid-scan they wanted the other rendering should not have to wait. */}
-      <div className="a11y-mode" role="group" aria-label="Who the report is for">
-        <button
-          type="button"
-          className={`a11y-mode-btn${audience === "business" ? " a11y-mode-btn-active" : ""}`}
-          aria-pressed={audience === "business"}
-          onClick={() => onAudienceChange("business")}
-        >
-          For business owners
-          <em>Plain-language summary, no technical background needed</em>
-        </button>
-        <button
-          type="button"
-          className={`a11y-mode-btn${audience === "professional" ? " a11y-mode-btn-active" : ""}`}
-          aria-pressed={audience === "professional"}
-          onClick={() => onAudienceChange("professional")}
-        >
-          For professionals
-          <em>Designers &amp; developers — WCAG-mapped technical report</em>
-        </button>
-      </div>
+      {/* The Forms reference styles exclusive choices as what they are:
+          radio groups. That is also the better semantic than the previous
+          aria-pressed cards — native radios announce "2 of 2", arrow keys
+          move within the group, and the checked state needs no invented
+          marker. The audience group stays enabled while loading: it
+          changes nothing about the scan, and someone who realises
+          mid-scan they wanted the other rendering should not wait. */}
+      <fieldset className="a11y-radio-group">
+        <legend>Who the report is for</legend>
+        <label className="a11y-radio">
+          <input
+            type="radio"
+            name="a11y-audience"
+            checked={audience === "business"}
+            onChange={() => onAudienceChange("business")}
+          />
+          <span>
+            For business owners
+            <em>Plain-language summary, no technical background needed</em>
+          </span>
+        </label>
+        <label className="a11y-radio">
+          <input
+            type="radio"
+            name="a11y-audience"
+            checked={audience === "professional"}
+            onChange={() => onAudienceChange("professional")}
+          />
+          <span>
+            For professionals
+            <em>Designers &amp; developers — WCAG-mapped technical report</em>
+          </span>
+        </label>
+      </fieldset>
 
-      <div className="a11y-mode" role="group" aria-label="What to check">
-        <button
-          type="button"
-          className={`a11y-mode-btn${mode === "page" ? " a11y-mode-btn-active" : ""}`}
-          aria-pressed={mode === "page"}
-          onClick={() => setMode("page")}
-          disabled={loading}
-        >
-          This page
-          <em>Everything we can see, in about 15 seconds</em>
-        </button>
-        <button
-          type="button"
-          className={`a11y-mode-btn${mode === "site" ? " a11y-mode-btn-active" : ""}`}
-          aria-pressed={mode === "site"}
-          onClick={() => setMode("site")}
-          disabled={loading}
-        >
-          Whole site
-          <em>Finds what repeats on every page</em>
-        </button>
-      </div>
+      <fieldset className="a11y-radio-group">
+        <legend>What to check</legend>
+        <label className="a11y-radio">
+          <input
+            type="radio"
+            name="a11y-scan-mode"
+            checked={mode === "page"}
+            onChange={() => setMode("page")}
+            disabled={loading}
+          />
+          <span>
+            This page
+            <em>Everything we can see, in about 15 seconds</em>
+          </span>
+        </label>
+        <label className="a11y-radio">
+          <input
+            type="radio"
+            name="a11y-scan-mode"
+            checked={mode === "site"}
+            onChange={() => setMode("site")}
+            disabled={loading}
+          />
+          <span>
+            Whole site
+            <em>Finds what repeats on every page</em>
+          </span>
+        </label>
+      </fieldset>
 
       {mode === "page" && (
         <LoginFields auth={auth} onChange={setAuth} disabled={loading} />
