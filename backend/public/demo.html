@@ -20,13 +20,11 @@
          own text is aligned to the panel by the rule below instead. */
       .page { width: 100%; margin: 0; }
       .page > h1, .page > h2, .page > p, .page > ul {
-        /* Kept in step with the widget's own cap so the host copy and the
-           panel share one column. */
-        width: min(100%, 48rem);
-        /* Our own line-length rule flagged this page at ~97 characters a
-           line; the cap keeps the measure readable at wide viewports. */
-        max-width: 66ch;
-        margin-inline: auto;
+        /* CRM layout: the page flows left with app gutters; the copy keeps
+           a readable measure (also our own line-length rule's demand), the
+           widget below runs full width. */
+        max-width: 40rem;
+        margin-inline: 32px;
       }
       h1 { font-size: 28px; line-height: 36px; margin: 0 0 8px; font-weight: 400; }
       p.lede { font-size: 16px; line-height: 1.5; color: #525252; margin: 0 0 32px; }
