@@ -56,7 +56,7 @@ export function buildStatement(opts: {
   const positionSentence =
     position === "partially"
       ? `${org} considers ${siteUrl} to be **partially conformant** with EN 301 549 (which adopts WCAG 2.1 Level AA). "Partially conformant" means some parts of the site do not yet fully conform to the standard.`
-      : `${org} considers ${siteUrl} to be **non-conformant** with EN 301 549 (which adopts WCAG 2.1 Level AA). Non-conformant means the site does not yet meet the standard, and we are working to address this.`;
+      : `${org} considers ${siteUrl} to be **non-conformant** with EN 301 549 (which adopts WCAG 2.1 Level AA). Non-conformant means the site does not yet meet the standard, and we aim to fix this.`;
 
   // The model statement in Commission Implementing Decision (EU) 2018/1523
   // requires non-accessible content to be split into three named categories,
@@ -72,32 +72,32 @@ The content below is non-accessible for the following reasons.
 
 ${
   knownIssues.length
-    ? `We are aware of the following problems and are working to resolve them:
+    ? `We are aware of the following problems and aim to resolve them:
 
 ${knownIssues.map((i) => `- ${i}`).join("\n")}`
-    : `An automated check found no failures it is able to detect. That is not the same as the site being fully accessible — see "Preparation of this statement" below.`
+    : `An automated check found no failures it is able to detect. That does not mean the site is fully accessible — see "Preparation of this statement" below.`
 }
 
 ### Disproportionate burden
 
-[List here anything you are not fixing because doing so would be a disproportionate burden, and say why. Delete this section if it does not apply.]
+[List here anything you will not fix because it would be a disproportionate burden, and say why. Delete this section if it does not apply.]
 
-*Note: under Article 14 of the European Accessibility Act, invoking disproportionate burden is not a matter of saying so. You must carry out and document an assessment, keep it for five years, and inform the relevant market surveillance authority.*
+*Note: under Article 14 of the European Accessibility Act, to claim disproportionate burden takes more than a mention. You must carry out and document an assessment, keep it for five years, and inform the relevant market surveillance authority.*
 
 ### Content outside the scope of the legislation
 
-[List here anything on the site that the accessibility rules do not cover — for example third-party content you neither fund nor control, archived material, or office file formats published before the relevant date. Where an accessible alternative exists, say so. Delete this section if it does not apply.]`;
+[List here anything on the site that the accessibility rules do not cover — for example third party content you neither fund nor control, archived material, or office file formats published before the relevant date. Where an accessible alternative exists, say so. Delete this section if it does not apply.]`;
 
   // "Method used to prepare the statement" is a required element of the model
   // (Implementing Decision (EU) 2018/1523, and Art. 3(1) on assessment
   // methods). It distinguishes a self-assessment from a third-party audit, and
   // a statement that does not say which is not complete.
   const assessmentNote = conformance
-    ? `**Method used:** self-assessment, carried out by the site owner using an automated accessibility checker. It was not a third-party evaluation.
+    ? `**Method used:** self assessment, carried out by the site owner with an automated accessibility checker. It was not a third party evaluation.
 
-This statement is based on an automated check carried out on ${date}, covering the ${conformance.total} Level A and AA success criteria in WCAG 2.1.
+This statement is based on an automated check carried out on ${date}, which covers the ${conformance.total} Level A and AA success criteria in WCAG 2.1.
 
-An automated check has real limits, and we would rather state them than imply a completeness we cannot evidence. ${conformance.needsReview} of those criteria cannot be assessed by software at all. They depend on human judgement, such as whether video captions are accurate, whether wording is easy enough to understand, or whether a form that times out can be extended. Where the check reports no issue, that means no issue was detected, not that the criterion has been verified as met.
+An automated check has real limits, and we would rather state them than imply a completeness we cannot evidence. ${conformance.needsReview} of those criteria cannot be assessed by software at all. They depend on human judgement, such as whether video captions are accurate or whether a form that times out can be extended. Where the check reports no issue, that means no issue was detected, not that the criterion has been verified as met.
 
 We have not yet carried out a full manual audit or testing with assistive technology users.`
     : `This statement is based on an automated check carried out on ${date}.`;
@@ -118,7 +118,7 @@ ${assessmentNote}
 
 ## Feedback and contact information
 
-If you find an accessibility problem on this site, or need information from it in a different format, please contact us at ${email}. We aim to respond within 10 working days.
+If you find an accessibility problem on this site, or need information from it in a different format, please contact us at ${email}. We aim to respond within 10 business days.
 
 ## Enforcement procedure
 
@@ -134,17 +134,17 @@ We review this statement at least once a year, and whenever the site changes sub
 
 ## How this information is published
 
-The European Accessibility Act (Article 13(2) and Annex V) asks for more than a page like this one. Two things are worth checking:
+The European Accessibility Act (Article 13(2) and Annex V) asks for more than a page like this one. Two things are worth a check:
 
-- **Where it lives.** Annex V says the assessment of how the service meets the accessibility requirements belongs in your general terms and conditions, or an equivalent document. Publishing this page is a good start; it does not on its own satisfy that.
-- **What format it is in.** The information has to be available *in written and oral format*, and in a way that people with disabilities can use. In practice that means this page must itself be accessible, and there must be a way to get the same information by speaking to someone.
+- **Where it lives.** Annex V says the assessment of how the service meets the accessibility requirements belongs in your general terms and conditions, or an equivalent document. A published page like this one is a good start; it does not on its own satisfy that.
+- **What format it is in.** The information has to be available *in written and oral format*, and in a way that people with disabilities can use. In practice that means this page must itself be accessible, and there must be a way to get the same information from a person directly.
 
 Annex V also asks for a general description of the service in accessible formats, whatever explanation is needed to understand how the service works, and a description of how it meets the requirements in Annex I. [Add or link to those here.]
 
 ---
 *Draft generated from an automated accessibility check. It follows the structure of the model statement in Commission Implementing Decision (EU) 2018/1523, which is the template the Web Accessibility Directive prescribes for public sector bodies and the closest formal model for everyone else.*
 
-*Complete anything in brackets and have it checked before publishing. Two of the three "non-accessible content" headings above are declarations only you can make, and a statement is a public, dated, formal declaration — under the European Accessibility Act an inaccurate one is its own exposure.*
+*Complete anything in brackets and have it checked before you publish. Two of the three "non-accessible content" headings above are declarations only you can make, and a statement is a public, dated, formal declaration — under the European Accessibility Act an inaccurate one is its own exposure.*
 `;
 }
 
@@ -213,8 +213,8 @@ export function AccessibilityStatement({ report }: { report: AccessibilityReport
     <section className="a11y-section a11y-stmt">
       <SectionHeader eyebrow="European law" title="Your accessibility statement" />
       <p className="a11y-section-desc">
-        European law asks for one if you serve EU customers. This check already knows most of the
-        answers. Add your details and the draft writes itself.
+        European law asks for one if you serve EU customers, and this check already knows most of
+        the answers. Add your details and the draft writes itself.
       </p>
 
       <div className="a11y-stmt-fields">
@@ -280,7 +280,7 @@ export function AccessibilityStatement({ report }: { report: AccessibilityReport
         </span>
         <span className="a11y-sr-status">
           Says <strong>{position === "partially" ? "partially conformant" : "non-conformant"}</strong>,
-          based on {failing} failing {failing === 1 ? "criterion" : "criteria"}.
+          based on {failing} failed {failing === 1 ? "criterion" : "criteria"}.
         </span>
       </div>
 

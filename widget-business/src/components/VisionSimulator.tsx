@@ -36,7 +36,7 @@ const CONDITIONS: Condition[] = [
     id: "deuteranopia",
     label: "Deuteranopia",
     prevalence: "~6% of men",
-    note: "Reduced sensitivity to green. The most common form of colour blindness. Red and green become hard to tell apart.",
+    note: "Reduced sensitivity to green, the most common form of colour blindness. Red and green become hard to tell apart.",
     matrix: "0.367 0.861 -0.228 0 0  0.280 0.673 0.047 0 0  -0.012 0.043 0.969 0 0  0 0 0 1 0",
   },
   {
@@ -64,14 +64,14 @@ const CONDITIONS: Condition[] = [
     id: "lowvision",
     label: "Low vision",
     prevalence: "~1 in 30 people",
-    note: "Reduced acuity. Small text and thin type stop resolving. Far more common than total blindness.",
+    note: "Reduced acuity, far more common than total blindness. Small text and thin type lose their edges.",
     cssFilter: "blur(2.2px)",
   },
   {
     id: "cataracts",
     label: "Cataracts",
     prevalence: "common over 60",
-    note: "Clouding plus washed-out contrast. Low-contrast text is the first thing to go.",
+    note: "Clouded vision and faded contrast. Text with low contrast is the first thing to go.",
     cssFilter: "blur(1.6px) contrast(0.68) brightness(1.12)",
   },
 ];
@@ -130,7 +130,7 @@ export function VisionSimulator({ pagePreview, url }: { pagePreview: string; url
         />
       </div>
       <p className="a11y-sim-caption">
-        Showing the top of the page, as first loaded.
+        This shows the top of the page, as first loaded.
       </p>
     </section>
   );

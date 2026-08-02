@@ -78,7 +78,7 @@ export function AcrDraft({ report }: { report: AccessibilityReport }) {
       </div>
 
       <p className="a11y-section-desc">
-        If a public body or a large customer is buying from you, they will ask for one of these. It
+        If a public body or a large customer wants to buy from you, they will ask for one of these. It
         is the document a procurement team reads instead of your website.
       </p>
 
@@ -89,9 +89,9 @@ export function AcrDraft({ report }: { report: AccessibilityReport }) {
             <strong>This fills in the failures, not the whole form.</strong> The template allows four
             answers: Supports, Partially Supports, Does Not Support, Not Applicable. A scan can find
             failures but can never establish conformance, so the rows it can evidence are completed
-            and the rest are left blank on purpose. Filling them with "Supports" would produce a
-            document that looks finished and claims something nobody checked, which in a procurement
-            report is the version with legal consequences.
+            and the rest are left blank on purpose. Put "Supports" in every row and the document
+            looks finished but claims something nobody checked, which in a procurement report is
+            the version with legal consequences.
           </p>
 
           <div className="a11y-stmt-fields">

@@ -11,7 +11,7 @@ import type { ConformanceSummary, CriterionResult } from "../api/scanClient";
 // respect and one they'll dismiss.
 
 const STATUS_LABEL = {
-  failed: "Failing",
+  failed: "Fails",
   "no-issues-found": "Nothing found",
   "needs-review": "Needs a person",
 } as const;
@@ -50,11 +50,11 @@ export function ConformanceView({
   return (
     <section className="a11y-section a11y-conf">
       <h2 className="a11y-section-title">
-        Are you meeting the legal standard?{" "}
+        Do you meet the legal standard?{" "}
         <span className="a11y-section-count">{conformance.standard}</span>
       </h2>
       <p className="a11y-section-desc">
-        The {conformance.total}-item checklist European accessibility law measures sites against.
+        The checklist of {conformance.total} items European accessibility law measures sites against.
         {showBfsgNote &&
           " In Germany this is the standard the BFSG points at — the law that implements the European Accessibility Act, in force since June 2025."}
       </p>
@@ -62,7 +62,7 @@ export function ConformanceView({
       {/* The kit's LegalStandard screen: the three tiles as a tinted-row
           table — glyph + words + count + meaning, never colour alone. */}
       <DataTable
-        caption={`Automated check results against the ${conformance.total}-item ${conformance.standard} checklist`}
+        caption={`Automated check results against the ${conformance.standard} checklist of ${conformance.total} items`}
         headers={[
           { key: "result", label: "Result" },
           { key: "items", label: "Items", align: "right", width: "90px" },
@@ -107,13 +107,12 @@ export function ConformanceView({
 
       <div className="a11y-conf-caveat">
         <p>
-          <strong>What this tells you.</strong> What your site gets wrong. Not what it gets
-          right.
+          <strong>What this tells you.</strong> What your site gets wrong, not what it gets right.
         </p>
         <p>
           {conformance.needsReview} of the {conformance.total} items need a person. No software can
-          judge whether your captions are correct, your wording clear, or your forms fast enough to
-          finish. That's true of every automated check.
+          judge whether your captions are correct or your forms are fast enough to finish. That's
+          true of every automated check.
         </p>
         <p>
           So <strong>&ldquo;nothing found&rdquo; is not a pass.</strong>
@@ -156,12 +155,12 @@ export function ConformanceView({
                   it was describing the checklist's length while the reader
                   got the filtered view. Here the number moves with the
                   checkbox and is true either way. */}
-              Show only what's failing ({failing.length} of {conformance.total})
+              Show only the failures ({failing.length} of {conformance.total})
             </label>
           </div>
 
           {failing.length === 0 && onlyFailing ? (
-            <p className="a11y-conf-caveat">Nothing on this page is failing.</p>
+            <p className="a11y-conf-caveat">Nothing on this page fails.</p>
           ) : (
             <ul className="a11y-conf-list">
               {shown.map((c) => (

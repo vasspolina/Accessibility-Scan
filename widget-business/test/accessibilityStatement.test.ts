@@ -46,8 +46,8 @@ describe("the model statement (Implementing Decision (EU) 2018/1523)", () => {
 
   it("says how the assessment was made, not just when", () => {
     expect(text).toMatch(/Method used:/i);
-    expect(text).toMatch(/self-assessment/i);
-    expect(text).toMatch(/not a third-party evaluation/i);
+    expect(text).toMatch(/self assessment/i);
+    expect(text).toMatch(/not a third party evaluation/i);
   });
 
   it("gives the preparation date and the review date", () => {
@@ -89,7 +89,7 @@ describe("what it refuses to claim", () => {
   });
 
   it("says a clean automated result is not the same as being accessible", () => {
-    expect(statement({ knownIssues: [] })).toMatch(/not the same as the site being fully accessible/i);
+    expect(statement({ knownIssues: [] })).toMatch(/does not mean the site is fully accessible/i);
   });
 
   it("still lists the known problems when there are some", () => {

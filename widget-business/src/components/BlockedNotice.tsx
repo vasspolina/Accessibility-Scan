@@ -11,7 +11,7 @@ export function BlockedNotice({ message }: { message: string }) {
     <section className="a11y-blocked" role="status">
       <p className="a11y-blocked-lead">{message}</p>
       <p className="a11y-blocked-body">
-        This isn't something to work around. The site is protecting itself on purpose, and we won't
+        This isn't something to work around. The site guards itself on purpose, and we won't
         try to slip past that. A few honest ways in:
       </p>
       <ul className="a11y-blocked-list">
@@ -26,8 +26,8 @@ export function BlockedNotice({ message }: { message: string }) {
         </li>
         <li>
           <strong>Sign in with a session.</strong> If you can already reach the page in your own
-          browser, use the sign-in option above to hand the scanner your session. It arrives past the
-          wall without touching the wall.
+          browser, use the login option above to hand the scanner your session. It arrives past the
+          wall, never through it.
         </li>
       </ul>
     </section>

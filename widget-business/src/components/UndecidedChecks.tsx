@@ -29,8 +29,8 @@ export function UndecidedChecks({
       <p className="a11y-section-desc">
         The checker could not settle {total === 1 ? "this one" : `these ${total}`}{" "}
         on its own, and that is deliberate: it reports a problem only where it
-        can prove one, so anything needing judgement comes here rather than
-        being guessed at either way. Each is a decision for somebody on your
+        can prove one, so anything that needs judgement comes here rather than
+        a guess either way. Each is a decision for somebody on your
         side — the mark on every one says whose. None of it counts against the
         score, and some of it will turn out to be perfectly fine.
       </p>

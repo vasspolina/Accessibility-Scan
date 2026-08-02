@@ -9,7 +9,7 @@ import { useReportView } from "./ReportViewContext";
 const severityWord: Record<AccessibilityFinding["severity"], string> = {
   critical: "Fix first",
   serious: "Fix soon",
-  moderate: "Worth fixing",
+  moderate: "Fix eventually",
   minor: "Minor polish",
 };
 

@@ -99,7 +99,7 @@ export function ScanHistory({
         {!comparable && (
           <>
             {" "}
-            The scoring has changed since that scan — some checks that used to
+            How scores are worked out has changed since that scan — some checks that used to
             sit outside the number now count towards it — so the two scores are
             not a fair comparison and no change is claimed. What was fixed and
             what appeared is unaffected, and is shown below.

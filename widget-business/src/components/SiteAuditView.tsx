@@ -8,7 +8,7 @@ import { useReportView } from "./ReportViewContext";
 const severityLabel = {
   critical: "Fix first",
   serious: "Fix soon",
-  moderate: "Worth fixing",
+  moderate: "Fix eventually",
   minor: "Minor polish",
 } as const;
 
@@ -41,7 +41,7 @@ export function SiteAuditView({ audit }: { audit: SiteAudit }) {
           <div className="a11y-conf-tile a11y-conf-tile-fail">
             <span className="a11y-conf-num">{audit.siteWide.length}</span>
             <span className="a11y-conf-cap">
-              site-wide issues<em>one fix each, everywhere</em>
+              site wide issues<em>one fix each, everywhere</em>
             </span>
           </div>
           {worst && (
@@ -62,8 +62,8 @@ export function SiteAuditView({ audit }: { audit: SiteAudit }) {
             <span className="a11y-section-count">({audit.siteWide.length})</span>
           </h2>
           <p className="a11y-section-desc">
-            These show up on every page, so they live in the template rather than the content.
-            Structural, not decorative. Start here.
+            These show up on every page, so they live in the template rather than the content —
+            structural, not decorative. Start here.
           </p>
           <ul className="a11y-audit-list">
             {audit.siteWide.map((issue) => {
@@ -103,8 +103,8 @@ export function SiteAuditView({ audit }: { audit: SiteAudit }) {
         {professional ? (
           /* The core.card composition's page table. The status words obey
              the report's honesty line: findings are evidenced failures, so
-             "Failing" is earned; their absence is only "No issues found",
-             never "Passing". */
+             "Fails" is earned; their absence is only "No issues found",
+             never "Passes". */
           <div className="a11y-pro-table">
             <DataTable
               headers={[
@@ -130,7 +130,7 @@ export function SiteAuditView({ audit }: { audit: SiteAudit }) {
                     {page.error
                       ? "Unreachable"
                       : page.findingCount > 0
-                        ? "Failing"
+                        ? "Fails"
                         : "No issues found"}
                   </Tag>,
                 ],

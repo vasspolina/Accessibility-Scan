@@ -171,11 +171,11 @@ export function ScreenReaderPreview({ script }: { script: ScreenReaderScript }) 
             appears already carrying text announces unreliably. */}
         {supported ? (
           <span className="a11y-sr-status" role="status">
-            {playing ? `Reading line ${(current ?? 0) + 1} of ${lines.length}` : ""}
+            {playing ? `On line ${(current ?? 0) + 1} of ${lines.length}` : ""}
           </span>
         ) : (
           <p className="a11y-sr-status">
-            Your browser can't play audio for this, so the transcript below is read-only.
+            Your browser can't play audio for this, so the transcript below is read only.
           </p>
         )}
         {/* Filtering beats paging here. Carbon would page a 120-row data

@@ -48,24 +48,24 @@ const PREVIEW_LIMIT = 3;
 export const SUMMARIES: Record<"good" | "middling" | "poor", string[]> = {
   good: [
     "Well built. What remains is craft, not repair.",
-    "Close to right. The rest is finishing, not fixing.",
+    "Close to right. What's left is finish work, not repair.",
     "Nothing left that a machine can find. Not the same as nothing left.",
     "A good site. We had a whole speech prepared.",
     "Few doors left closed. A scan cannot see all of them.",
   ],
   middling: [
     "Adequate for most. Design is judged by the rest.",
-    "Broadly fine. Broadly is doing a lot of work there.",
+    "Broadly fine. Broadly carries a lot of weight there.",
     "Mostly accessible, the way a bridge is mostly finished.",
     "Works for most people. The others also have money.",
     "Built for the average visitor. No such person has ever visited.",
   ],
   poor: [
     "This shuts people out. Not deliberately, but by design.",
-    "It works perfectly, provided you can see, click and hear.",
-    "Barriers throughout. Calling them features would be brave.",
+    "It works perfectly, provided you can see and click.",
+    "Barriers throughout. To call them features would be brave.",
     "Not one problem. A committee of them.",
-    "The door is locked. Nobody remembers choosing the lock.",
+    "The door is locked. Nobody remembers who chose the lock.",
   ],
 };
 
@@ -92,8 +92,8 @@ export const SCORE_CAVEAT =
   "This is what an automated scan found, weighted by how much each problem " +
   "costs a visitor. A scan of this kind reaches somewhere between a third " +
   "and a half of accessibility problems — the rest need a person with a " +
-  "keyboard and a screen reader. Useful for telling whether the site is " +
-  "improving. Not a statement that it meets the law.";
+  "keyboard and a screen reader. Useful to track whether the site improves " +
+  "over time. Not a statement that it meets the law.";
 
 export function ScoreGauge({
   score,
@@ -125,7 +125,7 @@ export function ScoreGauge({
         </Card>
         <Card style={{ flex: "1 1 320px", minWidth: 0 }}>
           {preview.length === 0 ? (
-            <p className="a11y-score-clean">Nothing here needs fixing.</p>
+            <p className="a11y-score-clean">Nothing here needs a fix.</p>
           ) : (
             <ul className="a11y-score-preview">
               {preview.map((group) => {

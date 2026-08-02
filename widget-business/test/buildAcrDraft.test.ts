@@ -132,7 +132,7 @@ describe("the ACR draft", () => {
 
   it("is honest about what was actually tested", () => {
     const text = draft([criterion({})]);
-    expect(text).toMatch(/No manual testing/i);
+    expect(text).toMatch(/none of manual testing.*carried out/i);
     expect(text).toMatch(/single page/i);
     expect(text).toMatch(/Chapter 9/);
   });

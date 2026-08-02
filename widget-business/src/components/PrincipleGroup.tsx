@@ -50,12 +50,12 @@ export function PrincipleGroup({ findings }: { findings: AccessibilityFinding[] 
       {unclassified.length > 0 && (
         <div className="a11y-principle-group">
           <h3 className="a11y-principle-title">
-            Worth doing anyway{" "}
+            Worth a look anyway{" "}
             <span className="a11y-section-count">({unclassified.length})</span>
           </h3>
           <p className="a11y-principle-desc">
-            Not tied to a specific WCAG rule, but still worth doing. These are widely recommended
-            practices for a well-built, accessible site.
+            Not tied to a specific WCAG rule, but still worth a look. These are widely recommended
+            practices for a well built, accessible site.
           </p>
           <FindingsList findings={unclassified} />
         </div>

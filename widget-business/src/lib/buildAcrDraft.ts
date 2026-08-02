@@ -102,7 +102,7 @@ export function buildAcrDraft(opts: AcrOptions): string {
 **This is an unfinished draft. Do not publish it as it stands.**
 
 An Accessibility Conformance Report is a formal claim relied on by the people
-buying your product. This draft was produced by an automated scan, which can
+who buy your product. This draft was produced by an automated scan, which can
 find failures but can never establish conformance. Every row it could evidence
 is filled in below. Every other row is deliberately blank, because the only
 honest alternative would be to assert something nobody has checked.
@@ -115,7 +115,7 @@ in here, and take responsibility for the result.
 **Product Description:** Web content at ${siteUrl}
 **Contact Information:** ${email}
 **Notes:** Draft generated from an automated accessibility scan of a single page (${siteUrl}). Automated testing covers roughly a third of WCAG success criteria. ${conformance.needsReview} of the ${conformance.total} criteria in this report cannot be assessed by software at all.
-**Evaluation Methods Used:** Automated testing with axe-core and additional rule-based checks, in headless Chromium at 1280x900 and at 390px width. No manual testing, no assistive technology testing, and no testing with disabled users was carried out.
+**Evaluation Methods Used:** Automated testing with axe-core and additional rule based checks, in headless Chromium at 1280x900 and at 390px width. None of manual testing, testing with assistive technology, or testing with disabled users was carried out.
 
 ## Applicable Standards/Guidelines
 
@@ -150,7 +150,7 @@ ${table("AA", conformance, findings)}
 ## What is still missing
 
 - EN 301 549 contains requirements beyond Chapter 9 that a website may still be subject to, including documentation and support services. None of them are covered here.
-- Testing with real assistive technology, and with disabled users, has not been done. It is the part that finds what automated testing cannot.
+- Nobody has tested this with real assistive technology or with disabled users. That is the part that finds what automated testing cannot.
 - Every blank row above needs a human judgement before this document can be used.
 `;
 }

@@ -27,7 +27,7 @@ export function Wcag22Readiness({ readiness }: { readiness: Readiness }) {
 
   return (
     <section className="a11y-section a11y-w22">
-      <span className="a11y-section-eyebrow">Looking ahead</span>
+      <span className="a11y-section-eyebrow">What's next</span>
       <div className="a11y-accordion-row">
         <h2 className="a11y-section-title a11y-accordion-title">
           <button
@@ -59,7 +59,7 @@ export function Wcag22Readiness({ readiness }: { readiness: Readiness }) {
       </div>
 
       <p className="a11y-section-desc">
-        The standard European law points at is being updated. Nothing here is required yet. These are
+        The standard European law points at will change. Nothing here is required yet. These are
         the {total} new items that become Level A or AA when it lands, so you can fix them on your own
         schedule rather than someone else's.
       </p>
@@ -68,7 +68,7 @@ export function Wcag22Readiness({ readiness }: { readiness: Readiness }) {
           real element. */}
       <div id={panelId} hidden={!open}>
           <p className="a11y-conf-caveat">
-            <strong>What is actually changing.</strong> The European Accessibility Act points at a
+            <strong>What actually changes.</strong> The European Accessibility Act points at a
             standard called EN 301 549, which today adopts WCAG 2.1. The next version of that
             standard adopts WCAG 2.2 and is expected to be published in the EU's Official Journal in{" "}
             {readiness.expectedFrom}. Until then, the checklist above is the one that counts.
@@ -124,7 +124,7 @@ export function Wcag22Readiness({ readiness }: { readiness: Readiness }) {
             <strong>Only one of these can be checked by software.</strong> {needsReview} of the{" "}
             {total} depend on things a machine cannot judge: whether a sticky header covers what you
             have tabbed to, whether a drag has a simpler alternative, whether help sits in the same
-            place on every page, whether a form asks twice, and whether signing in can be done
+            place on every page, whether a form asks twice, and whether a login can be done
             without a puzzle. That is the same honesty as the checklist above, and the same answer:
             these need a person.
           </p>
@@ -133,7 +133,7 @@ export function Wcag22Readiness({ readiness }: { readiness: Readiness }) {
             <p className="a11y-notice">
               One piece of good news. This scan reports a failure against 4.1.1 Parsing, and WCAG 2.2
               removes that criterion as obsolete. When the standard updates, that particular failure
-              simply stops counting.
+              simply no longer counts.
             </p>
           )}
       </div>
