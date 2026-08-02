@@ -1,4 +1,6 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import { createPortal } from "react-dom";
+import { Dialog } from "@verify/design-system";
 import { clearHistory, diffScans, scoresComparable, type HistoryEntry } from "../lib/scanHistory";
 import { plainForRule } from "../lib/wcagPlain";
 
@@ -27,6 +29,35 @@ export function ScanHistory({
   previous: HistoryEntry[];
 }) {
   const [cleared, setCleared] = useState(false);
+  // Deleting history is irreversible and was firing on one click with no
+  // way back — the system's own content rule for dialogs is "state
+  // consequences plainly", and this is exactly the destructive action it
+  // describes. The imported Dialog gates it now.
+  const [confirmOpen, setConfirmOpen] = useState(false);
+  const anchorRef = useRef<HTMLButtonElement>(null);
+
+  // The imported Dialog is a scrim overlay, not a full modal: nothing marks
+  // the page behind it inert, so a screen reader can still reach the report
+  // underneath and — the finding that caught this — axe reported the
+  // background text failing contrast against the scrim it sits behind.
+  // Portalling the dialog to the shadow root's top level (rather than
+  // leaving it nested inside this section) makes it possible to inert
+  // everything else with one line instead of walking every ancestor's
+  // siblings, which is what the loop below does while the dialog is open.
+  useEffect(() => {
+    const root = anchorRef.current?.getRootNode();
+    const contentEl =
+      root instanceof ShadowRoot ? root.querySelector<HTMLElement>(".a11y-widget-inner") : null;
+    if (!contentEl) return;
+    contentEl.inert = confirmOpen;
+    return () => {
+      contentEl.inert = false;
+    };
+  }, [confirmOpen]);
+
+  const root = anchorRef.current?.getRootNode();
+  const portalTarget =
+    root instanceof ShadowRoot ? root.querySelector<HTMLElement>(".a11y-dialog-root") : null;
 
   if (previous.length === 0) return null;
 
@@ -159,17 +190,38 @@ export function ScanHistory({
       </ul>
 
       {/* The master's danger variant, on the checker's one genuinely
-          destructive action. */}
+          destructive action — now gated by the imported Dialog rather than
+          firing on one click. */}
       <button
+        ref={anchorRef}
         type="button"
         className="a11y-show-all a11y-danger-btn"
-        onClick={() => {
-          clearHistory();
-          setCleared(true);
-        }}
+        onClick={() => setConfirmOpen(true)}
       >
         Delete this history
       </button>
+
+      {portalTarget &&
+        createPortal(
+          <Dialog
+            open={confirmOpen}
+            title="Delete this history?"
+            primaryLabel="Delete"
+            danger
+            secondaryLabel="Cancel"
+            onClose={() => setConfirmOpen(false)}
+            onPrimary={() => {
+              clearHistory();
+              setCleared(true);
+              setConfirmOpen(false);
+            }}
+          >
+            This can&rsquo;t be undone. Every past scan of this page, kept
+            only in this browser, will be gone — including the comparison
+            above.
+          </Dialog>,
+          portalTarget
+        )}
     </section>
   );
 }

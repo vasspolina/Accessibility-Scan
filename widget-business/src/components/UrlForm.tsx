@@ -1,5 +1,5 @@
-import { useState, type FormEvent } from "react";
-import { Button, Radio } from "@verify/design-system";
+import { useState, type ChangeEvent, type FormEvent } from "react";
+import { Button, Radio, Select } from "@verify/design-system";
 import { LoginFields } from "./LoginFields";
 import { PrintButton } from "./PrintButton";
 import type { AuthConfig } from "../api/scanClient";
@@ -12,6 +12,7 @@ export function UrlForm({
   loading,
   audience,
   onAudienceChange,
+  hasReport,
 }: {
   onSubmit: (
     url: string,
@@ -25,6 +26,9 @@ export function UrlForm({
   // is already in hand — it is never sent with the scan request.
   audience: AudienceMode;
   onAudienceChange: (mode: AudienceMode) => void;
+  // Save as PDF has nothing to export before a scan exists — the button
+  // only earns its place in the footer once one does.
+  hasReport: boolean;
 }) {
   const [value, setValue] = useState("");
   const [mode, setMode] = useState<ScanMode>("page");
@@ -74,22 +78,30 @@ export function UrlForm({
           <label className="a11y-url-label" htmlFor="a11y-url-input">
             Your website address
           </label>
-          <input
-            id="a11y-url-input"
-            type="text"
-            inputMode="url"
-            autoComplete="url"
-            placeholder="example.com"
-            value={value}
-            onChange={(e) => {
-              setValue(e.target.value);
-              if (e.target.value.trim()) setShowEmptyError(false);
-            }}
-            disabled={loading}
-            required
-            aria-invalid={showEmptyError || undefined}
-            aria-describedby={showEmptyError ? "a11y-url-error" : "a11y-url-hint"}
-          />
+          {/* The submit button rejoins the field as one row — the kit's own
+              search-plus-action pattern — rather than waiting in the
+              footer below two columns of options. */}
+          <div className="a11y-url-row">
+            <input
+              id="a11y-url-input"
+              type="text"
+              inputMode="url"
+              autoComplete="url"
+              placeholder="example.com"
+              value={value}
+              onChange={(e) => {
+                setValue(e.target.value);
+                if (e.target.value.trim()) setShowEmptyError(false);
+              }}
+              disabled={loading}
+              required
+              aria-invalid={showEmptyError || undefined}
+              aria-describedby={showEmptyError ? "a11y-url-error" : "a11y-url-hint"}
+            />
+            <Button type="submit" disabled={loading}>
+              {loading ? "Checking…" : mode === "site" ? "Audit my site" : "Check my site"}
+            </Button>
+          </div>
           {/* The kit's helper line under the field, kept true per scope. */}
           <span id="a11y-url-hint" className="a11y-group-hint">
             {mode === "site"
@@ -155,21 +167,17 @@ export function UrlForm({
           </fieldset>
 
           {mode === "site" && (
-            <label className="a11y-ai-toggle" htmlFor="a11y-pages">
-              Pages to check
-              <select
-                id="a11y-pages"
-                value={maxPages}
-                onChange={(e) => setMaxPages(Number(e.target.value))}
-                disabled={loading}
-              >
-                {[3, 5, 8, 10].map((n) => (
-                  <option key={n} value={n}>
-                    {n} pages (about {Math.ceil((n * 15) / 60)} min)
-                  </option>
-                ))}
-              </select>
-            </label>
+            <Select
+              id="a11y-pages"
+              label="Pages to check"
+              value={String(maxPages)}
+              onChange={(e: ChangeEvent<HTMLSelectElement>) => setMaxPages(Number(e.target.value))}
+              disabled={loading}
+              options={[3, 5, 8, 10].map((n) => ({
+                value: String(n),
+                label: `${n} pages (about ${Math.ceil((n * 15) / 60)} min)`,
+              }))}
+            />
           )}
 
           {mode === "page" && (
@@ -197,14 +205,15 @@ export function UrlForm({
         </div>
       </div>
 
-      <div className="a11y-form-footer">
-        <Button type="submit" disabled={loading}>
-          {loading ? "Checking…" : mode === "site" ? "Audit my site" : "Check my site"}
-        </Button>
-        {/* Business mode prints from here, the kit's footer; professionals
-            have Export report in the report's own action row. */}
-        {audience === "business" && <PrintButton />}
-      </div>
+      {/* The footer now holds only Save as PDF, and only once a scan
+          exists to export — nothing to print before that, and an empty
+          hairline-topped row would be a divider to nowhere. Professionals
+          print from the report's own action row instead. */}
+      {hasReport && audience === "business" && (
+        <div className="a11y-form-footer">
+          <PrintButton />
+        </div>
+      )}
     </form>
     </>
   );

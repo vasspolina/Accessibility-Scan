@@ -251,6 +251,7 @@ export function App({ apiBase, cta }: { apiBase: string; cta?: CtaConfig }) {
     //
     // <section aria-label> rather than <main>: the widget is a guest on
     // somebody else's page, and that page's own <main> is not ours to claim.
+    <>
     <section className="a11y-widget-inner" aria-label="Website accessibility check">
       <p className="a11y-intro">
         A door that only opens for some people isn't a broken door. It's a badly designed one. The
@@ -270,6 +271,7 @@ export function App({ apiBase, cta }: { apiBase: string; cta?: CtaConfig }) {
           setAudience(m);
           setFixFilter("all");
         }}
+        hasReport={!!report}
       />
       </div>
 
@@ -552,5 +554,12 @@ export function App({ apiBase, cta }: { apiBase: string; cta?: CtaConfig }) {
         </ReportViewProvider>
       )}
     </section>
+    {/* A portal target for anything that must escape .a11y-widget-inner —
+        so far, just the delete-history confirmation dialog, which needs to
+        sit outside the content it inerts while open (see ScanHistory). A
+        sibling of the section above, still inside .a11y-widget-biz, so the
+        reset and every scoped rule still reach it. */}
+    <div className="a11y-dialog-root" />
+    </>
   );
 }

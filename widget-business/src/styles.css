@@ -2816,8 +2816,16 @@
   --space-05: 1rem;
   --background: var(--a11y-bg, #ffffff);
   --layer-01: var(--a11y-layer-1, #f4f4f4);
+  --layer-02: #ffffff;
   --layer-hover: #e8e8e8;
   --border-strong: #8d8d8d;
+  --border-subtle: var(--a11y-border, #e0e0e0);
+  /* The imported Select and Dialog both needed a field/layer-02 token
+     this bridge never carried — Select's background resolved to nothing
+     and rendered transparent, the exact class of gap the dark-mode
+     button sweep found earlier. */
+  --field: #f4f4f4;
+  --shadow-overlay: 0 2px 6px rgba(0, 0, 0, 0.2);
   --interactive: var(--a11y-accent, #0f62fe);
   --text-secondary: var(--a11y-muted, #525252);
   --link-primary: var(--a11y-accent, #0f62fe);
@@ -2825,6 +2833,11 @@
   --support-success: var(--a11y-score-good, #198038);
   --severity-critical-bg: #fff1f1;
   --severity-pass-bg: #defbe6;
+  /* The third tint the LegalStandard-style tables use ("we couldn't
+     check") — bridged for the same reason as the two above; it was
+     simply left out when they were added, so it fell back to its
+     literal light value in both schemes. */
+  --severity-minor-bg: #f4f4f4;
   --radius-pill: 999px;
   --radius-sm: 2px;
   --space-02: 0.25rem;
@@ -3015,6 +3028,11 @@
     --a11y-layer-accent: #393939;
     --severity-critical-bg: #520408;
     --severity-pass-bg: #044317;
+    --severity-minor-bg: #393939;
+    /* The Select field and the Dialog panel — the same gap the button
+       fill bug came from: these two never had a dark value at all. */
+    --field: #262626;
+    --layer-02: #393939;
   }
 
   /* Severity hues lift one ramp step in dark to hold contrast, on the
@@ -3866,11 +3884,20 @@
 }
 
 @media (prefers-color-scheme: dark) {
-  .a11y-widget-biz .a11y-url-form {
+  /* Doubled class to match the light-mode rule's own specificity — a
+     single class here was silently losing the cascade tie to
+     `.a11y-widget-biz.a11y-widget-biz .a11y-url-form { background: #fff }`
+     from the NewScan-card round, so the form (and the conformance card)
+     stayed white in dark mode while every label and legend on it flipped
+     to the dark text tokens — exactly the axe contrast failures the
+     Dialog work's verification pass caught (labels at #c6c6c6/#f4f4f4 on
+     a #ffffff card). Media queries don't add specificity of their own;
+     only matching or exceeding the rule being overridden does. */
+  .a11y-widget-biz.a11y-widget-biz .a11y-url-form {
     background: #262626;
   }
 
-  .a11y-widget-biz .a11y-conf {
+  .a11y-widget-biz.a11y-widget-biz .a11y-conf {
     background: #262626;
   }
 
@@ -4034,4 +4061,34 @@
   font-weight: 400;
   border: 0;
   padding: 0;
+}
+
+/* The address field and its submit button as one row — the kit's own
+   search-plus-action pattern. The field carries the Input anatomy from
+   the fix above; the button is the imported component at its default
+   40px, so the two align without extra rules. wrap lets the button drop
+   under the field rather than force a horizontal scroll at phone widths
+   (the fault our own scan caught on the old .a11y-url-row layout). */
+.a11y-url-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.a11y-url-row input {
+  /* A lower basis than the two-column NewScan layout's ~336px column can
+     hold alongside the button at 12rem — the field would hit the
+     line-breaking check before flex-shrink ever got to act (the browser
+     lines up flex-basis widths, not shrunk ones, when it decides whether
+     to wrap). 8rem clears the button at every panel width down to about
+     300px; below that, wrapping the button under the field is correct,
+     not a bug — the same reasoning the wrap itself already documents. */
+  flex: 1 1 8rem;
+  min-width: 0;
+}
+
+.a11y-url-row > button {
+  flex-shrink: 0;
+  white-space: nowrap;
 }

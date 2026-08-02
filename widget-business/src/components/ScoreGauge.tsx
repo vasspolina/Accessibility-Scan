@@ -79,36 +79,36 @@ export function ScoreGauge({
 }) {
   return (
     <div className="a11y-score">
-      <div className="a11y-score-top">
-        {/* The design system's own dial, imported rather than imitated. It
-            brings the ring, the tone word (Good / Needs work / Failing —
-            never colour alone) and the single accessible name
-            "Accessibility score: N out of 100 — <word>". Its token names
-            are bridged onto ours in styles.css, so it follows our dark
-            scheme and the 16px floor without knowing either exists. */}
-        <ScoreDial score={score} size={120} />
-        <p className="a11y-score-summary">{scoreSummary(score, seed)}</p>
+      {/* The scan-app dashboard's stat row: the dial in its own labelled
+          card, then one tile per severity — the count on top, the tag
+          beneath, the kit's composition exactly. The dial brings the tone
+          word and the single accessible name with it. */}
+      <div className="a11y-stat-row">
+        <div className="a11y-stat-card a11y-stat-score">
+          <span className="a11y-stat-label">Accessibility score</span>
+          <ScoreDial score={score} size={110} />
+        </div>
+        <div className="a11y-stat-card a11y-severity-critical">
+          <span className="a11y-stat-num">{summary.critical}</span>
+          <span className="a11y-severity-badge">Fix first</span>
+        </div>
+        <div className="a11y-stat-card a11y-severity-serious">
+          <span className="a11y-stat-num">{summary.serious}</span>
+          <span className="a11y-severity-badge">Fix soon</span>
+        </div>
+        <div className="a11y-stat-card a11y-severity-moderate">
+          <span className="a11y-stat-num">{summary.moderate}</span>
+          <span className="a11y-severity-badge">Worth fixing</span>
+        </div>
+        <div className="a11y-stat-card a11y-severity-minor">
+          <span className="a11y-stat-num">{summary.minor}</span>
+          <span className="a11y-severity-badge">Minor polish</span>
+        </div>
       </div>
-      {/* The kit's summary row: severity tags with counts. The words stay
-          ours; the tags are the same chips the finding cards wear. */}
-      <dl className="a11y-score-breakdown">
-        <div className="a11y-severity-critical">
-          <dt><span className="a11y-severity-badge">Fix first</span></dt>
-          <dd>{summary.critical}</dd>
-        </div>
-        <div className="a11y-severity-serious">
-          <dt><span className="a11y-severity-badge">Fix soon</span></dt>
-          <dd>{summary.serious}</dd>
-        </div>
-        <div className="a11y-severity-moderate">
-          <dt><span className="a11y-severity-badge">Worth fixing</span></dt>
-          <dd>{summary.moderate}</dd>
-        </div>
-        <div className="a11y-severity-minor">
-          <dt><span className="a11y-severity-badge">Minor polish</span></dt>
-          <dd>{summary.minor}</dd>
-        </div>
-      </dl>
+
+      {/* The kit's callout slot, carrying the line this report has always
+          led with. */}
+      <p className="a11y-notice a11y-score-callout">{scoreSummary(score, seed)}</p>
       {/* What the number is, next to the number.
 
           An aggregate score is fine for tracking whether a site is getting
