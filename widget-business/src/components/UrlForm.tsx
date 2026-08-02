@@ -99,7 +99,7 @@ export function UrlForm({
               aria-describedby={showEmptyError ? "a11y-url-error" : "a11y-url-hint"}
             />
             <Button type="submit" disabled={loading}>
-              {loading ? "Checking…" : mode === "site" ? "Audit my site" : "Check my site"}
+              {loading ? "One moment…" : mode === "site" ? "Audit my site" : "Check my site"}
             </Button>
           </div>
           {/* The kit's helper line under the field, kept true per scope. */}
@@ -133,8 +133,8 @@ export function UrlForm({
               onChange={() => onAudienceChange("professional")}
             />
             <span className="a11y-group-hint">
-              Business owners get a plain-language summary; professionals get a
-              WCAG-mapped technical report.
+              Business owners get a plain language summary; professionals get a
+              WCAG mapped technical report.
             </span>
           </fieldset>
         </div>
@@ -190,7 +190,7 @@ export function UrlForm({
                   disabled={loading}
                   aria-describedby="a11y-ai-hint"
                 />
-                Include AI-powered review
+                Include AI review
               </label>
               <span id="a11y-ai-hint" className="a11y-ai-hint">
                 Catches design and marketing issues automated tools miss. Adds

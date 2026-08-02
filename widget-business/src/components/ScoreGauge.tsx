@@ -1,6 +1,8 @@
 import { Card, ScoreDial, SeverityTag } from "@verify/design-system";
 import type { CSSProperties } from "react";
-import type { AccessibilityReport } from "../api/scanClient";
+import type { AccessibilityFinding } from "../api/scanClient";
+import { groupFindings } from "./FindingsList";
+import { plainForRule } from "../lib/wcagPlain";
 
 /* The stat tiles ARE the Card component's anatomy — layer-01 fill, subtle
    hairline, 2px corner, 16px padding — so they use it rather than a div
@@ -16,12 +18,17 @@ const TILE: CSSProperties = {
   gap: 12,
 };
 
-const SEVERITY_TILES = [
-  ["critical", "Fix first"],
-  ["serious", "Fix soon"],
-  ["moderate", "Worth fixing"],
-  ["minor", "Minor polish"],
-] as const;
+const SEVERITY_LABEL: Record<AccessibilityFinding["severity"], string> = {
+  critical: "Fix first",
+  serious: "Fix soon",
+  moderate: "Fix eventually",
+  minor: "Minor polish",
+};
+
+// How many groups the preview beside the dial shows before the full list
+// further down the report takes over. Three matches what a reader can
+// scan in the time it takes to look at the dial next to it.
+const PREVIEW_LIMIT = 3;
 
 // Each line states a judgement and stops. The number above has already made
 // the point, and a sentence that softens it reads as an apology for the
@@ -90,32 +97,59 @@ export const SCORE_CAVEAT =
 
 export function ScoreGauge({
   score,
-  summary,
   seed,
+  findings,
 }: {
   score: number;
-  summary: AccessibilityReport["summary"];
   // The scan timestamp. Fixes which line this report gets, so it stays put
   // across re-renders and changes for the next scan.
   seed: string;
+  // The accessibility-category findings, for the preview beside the dial.
+  // The full, expandable list further down the report is still the one
+  // source of truth — this is a glance at what it holds, not a second
+  // copy of it, so it carries no selector and no disclosure of its own.
+  findings: AccessibilityFinding[];
 }) {
+  const preview = groupFindings(findings).slice(0, PREVIEW_LIMIT);
   return (
     <div className="a11y-score">
       {/* The scan-app dashboard's stat row: the dial in its own labelled
-          card, then one tile per severity — the count on top, the tag
-          beneath, the kit's composition exactly. The dial brings the tone
-          word and the single accessible name with it. */}
+          card, then the worst of what it found beside it — the kit's own
+          dial-plus-list composition, in place of a row of count tiles that
+          repeated the summary line below without saying what any of it
+          actually was. */}
       <div className="a11y-stat-row">
         <Card style={{ ...TILE, alignItems: "center" }}>
           <span className="a11y-stat-label">Accessibility score</span>
           <ScoreDial score={score} size={110} />
         </Card>
-        {SEVERITY_TILES.map(([key, word]) => (
-          <Card key={key} style={TILE}>
-            <span className="a11y-stat-num">{summary[key]}</span>
-            <SeverityTag severity={key} label={word} />
-          </Card>
-        ))}
+        <Card style={{ flex: "1 1 320px", minWidth: 0 }}>
+          {preview.length === 0 ? (
+            <p className="a11y-score-clean">Nothing here needs fixing.</p>
+          ) : (
+            <ul className="a11y-score-preview">
+              {preview.map((group) => {
+                const rep = group[0];
+                const plain = plainForRule(rep.ruleId);
+                const title = plain?.plain ?? rep.title ?? rep.description;
+                const criterion =
+                  rep.wcagCriterion && rep.wcagCriterion !== "N/A"
+                    ? (rep.wcagCriterion.match(/^\d\.\d+\.\d+/)?.[0] ?? rep.wcagCriterion)
+                    : null;
+                return (
+                  <li key={rep.id} className="a11y-score-preview-row">
+                    <SeverityTag severity={rep.severity} label={SEVERITY_LABEL[rep.severity]} />
+                    <span className="a11y-score-preview-desc">
+                      {title}
+                      {criterion && <span className="a11y-score-preview-meta">WCAG {criterion}</span>}
+                    </span>
+                    {group.length > 1 && <span className="a11y-count-badge">{group.length}×</span>}
+                  </li>
+                );
+              })}
+            </ul>
+          )}
+        </Card>
       </div>
 
       {/* The kit's callout slot, carrying the line this report has always

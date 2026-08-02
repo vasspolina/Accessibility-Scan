@@ -472,8 +472,17 @@ export function FindingGroup({
         aria-expanded={expanded}
         aria-controls={detailsId}
       >
-        {rep.elementScreenshot && (
+        {/* The image column is reserved whether or not this particular
+            finding has one — a table where some rows carry a picture and
+            others don't otherwise puts the title (and everything folded
+            under it) at a different starting column row to row, which
+            reads as misaligned rather than as a table. asNotes is the one
+            context where every row already carries real evidence, so it
+            never needs the empty placeholder. */}
+        {rep.elementScreenshot ? (
           <img className="a11y-finding-thumb" src={`data:image/jpeg;base64,${rep.elementScreenshot}`} alt="" />
+        ) : (
+          !asNotes && <span className="a11y-finding-thumb a11y-finding-thumb-empty" aria-hidden="true" />
         )}
         {!asNotes && (
           <SeverityTag severity={rep.severity} label={severityLabel[rep.severity]} />

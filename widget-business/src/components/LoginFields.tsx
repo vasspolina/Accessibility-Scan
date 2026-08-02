@@ -74,7 +74,7 @@ export function LoginFields({
           <legend className="a11y-login-legend">Sign the scanner in</legend>
 
           <p className="a11y-login-note">
-            Use a test account, not your own. We sign in, scan the page, and throw the session away.
+            Use a test account, not your own. We sign in and scan the page, then throw the session away.
             Nothing is saved. The page we photograph will show whatever that account can see.
           </p>
 
@@ -128,7 +128,7 @@ export function LoginFields({
             onClick={close}
             disabled={disabled}
           >
-            Cancel — scan without signing in
+            Cancel — scan without a login
           </button>
         </fieldset>
       </div>

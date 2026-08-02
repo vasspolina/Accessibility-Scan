@@ -70,19 +70,19 @@ import {
  */
 export function waitingMessage(mode: ScanMode, aiRequested: boolean, elapsed: number): string {
   if (mode === "site") {
-    return "Auditing your site. Checking each page in turn, so this takes a few minutes…";
+    return "Site audit under way. Each page in turn, so this takes a few minutes…";
   }
   if (elapsed >= 60) {
-    return "Still going. This one is unusually heavy — a page of large images can take a while to load and measure.";
+    return "Still at it. This one is unusually heavy — a page of large images can take a while to load and measure.";
   }
   if (elapsed >= 25) {
     return aiRequested
-      ? "Still going. The AI review is the slow part, and it is nearly always worth the wait."
-      : "Still going. Heavier pages take longer, and this one is on the heavier side.";
+      ? "Still at it. The AI review is the slow part, and it is nearly always worth the wait."
+      : "Still at it. Heavier pages take longer, and this one is on the heavier side.";
   }
   return aiRequested
-    ? "Checking your site, including the AI review. That usually takes about a minute…"
-    : "Checking your site. Most pages take twenty to forty seconds…";
+    ? "We check your site, including the AI review. That usually takes about a minute…"
+    : "We check your site. Most pages take twenty to forty seconds…";
 }
 
 export interface CtaConfig {
@@ -296,7 +296,7 @@ export function App({ apiBase, cta }: { apiBase: string; cta?: CtaConfig }) {
            pages), held at 95% until the real result arrives — the words
            below stay the live region, the bar is the picture. */
         <ProgressBar
-          label="Scanning"
+          label="In progress"
           value={Math.min(
             95,
             Math.round(
@@ -393,7 +393,11 @@ export function App({ apiBase, cta }: { apiBase: string; cta?: CtaConfig }) {
               }
             />
           ) : (
-            <ScoreGauge score={report.score} summary={report.summary} seed={report.scannedAt} />
+            <ScoreGauge
+              score={report.score}
+              seed={report.scannedAt}
+              findings={findingsByCategory.accessibility}
+            />
           )}
 
           {/* Only flag it when the AI review was wanted but didn't happen.
@@ -408,11 +412,11 @@ export function App({ apiBase, cta }: { apiBase: string; cta?: CtaConfig }) {
                  error below. */
               <Notification
                 kind="info"
-                title="The AI-powered review wasn't included in this check"
+                title="The AI review wasn't included in this check"
                 subtitle={
                   (report.meta.aiReviewStatus === "skipped_no_key"
                     ? "Not set up yet."
-                    : "Temporarily unavailable.") + " Showing rule-based findings only."
+                    : "Temporarily unavailable.") + " These findings come from automated checks only."
                 }
               />
             )}
@@ -426,7 +430,7 @@ export function App({ apiBase, cta }: { apiBase: string; cta?: CtaConfig }) {
             <Notification
               kind="warning"
               title={`Some checks didn't finish this time: ${report.meta.incompleteChecks.join(", ")}.`}
-              subtitle="The score above only counts what ran, so it may look better than it should. Running the check again usually completes them."
+              subtitle="The score above only counts what ran, so it may look better than it should. A second run usually completes them."
             />
           )}
 
@@ -485,8 +489,8 @@ export function App({ apiBase, cta }: { apiBase: string; cta?: CtaConfig }) {
           {!isDocument && (
           <ReportSection
             title="Issues that could turn away users"
-            eyebrow="Dark-pattern findings"
-            description="Places your site nudges people instead of letting them choose. These don't move the score. They move how much you're trusted."
+            eyebrow="Dark pattern findings"
+            description="Places your site nudges people rather than leaves the choice to them. These don't move the score. They move how much you're trusted."
             variant={findingsByCategory.darkPattern.length > 0 ? "redflag" : "default"}
             findings={findingsByCategory.darkPattern}
           />
@@ -502,8 +506,8 @@ export function App({ apiBase, cta }: { apiBase: string; cta?: CtaConfig }) {
             </h2>
             <p className="a11y-section-desc">
               {isDocument
-                ? "What stops this document being read aloud, grouped by the four questions the standard asks. More at "
-                : "Grouped by the four questions the standard asks: can people see it, use it, understand it, and will it keep working. More at "}
+                ? "What a screen reader cannot read aloud in this document, grouped by the four questions the standard asks. More at "
+                : "Grouped by the four questions the standard asks: can people see it, use it, understand it, and will it still work. More at "}
               <a href={WCAG_LINK} target="_blank" rel="noopener noreferrer">
                 w3.org/WAI
               </a>
@@ -519,7 +523,7 @@ export function App({ apiBase, cta }: { apiBase: string; cta?: CtaConfig }) {
           {!isDocument && (
           <ReportSection
             title="Notes on the design"
-            description="Remarks rather than faults. None of this counts towards the score, and the reason is worth knowing: every one of them is judgement rather than measurement, with no rule underneath it to point at. Mostly type working against the reader — too small, too tight, too many capitals. It still costs you readers, and dyslexic ones first."
+            description="Remarks rather than faults. None of this counts towards the score, and the reason is worth a mention: every one of them is judgement rather than measurement, with no rule underneath it to point at. Mostly type that works against the reader — cramped, or shouting in capitals. It still costs you readers, and dyslexic ones first."
             variant="default"
             findings={findingsByCategory.designClarity}
             asNotes

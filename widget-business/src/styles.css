@@ -775,6 +775,14 @@
   background: var(--a11y-surface, #f6f8fa);
 }
 
+/* The reserved column for a finding with no picture of its own — same
+   box, no border or fill, so it takes up the space without reading as
+   an empty frame. */
+.a11y-finding-thumb-empty {
+  border-color: transparent;
+  background: transparent;
+}
+
 /* Narrow embeds: a 216px image plus a label doesn't fit beside itself on a
    phone, and the label is what identifies the element. Shrink the images
    rather than squeezing the text to one word per line. */
@@ -854,7 +862,6 @@
    by hand, today, with nothing installed. */
 .a11y-method-badge {
   flex-shrink: 0;
-  margin-left: auto;
   padding: 2px 8px;
   border: 1px solid var(--a11y-border, #d0d7de);
   border-radius: 999px;
@@ -3818,15 +3825,15 @@
 /* ==========================================================================
    Accessible Scan Design System (2 Aug update)
    ==========================================================================
-   The rebuilt project's deltas. Fields go back to Carbon's filled style —
-   gray-10 with the bottom border, the spec's own words — and the severity
-   chip inks snap to the token-exact values (ours had drifted one ramp
-   step darker; the tokens' pairs are the AA-checked ones). */
-.a11y-widget-biz.a11y-widget-biz .a11y-url-row input,
-.a11y-widget-biz.a11y-widget-biz .a11y-login input,
-.a11y-widget-biz.a11y-widget-biz .a11y-ai-toggle select {
-  background: #f4f4f4;
-}
+   The rebuilt project's deltas: the severity chip inks snap to the
+   token-exact values (ours had drifted one ramp step darker; the
+   tokens' pairs are the AA-checked ones).
+
+   Carbon's filled-field style (gray-10, no border) was tried here too,
+   but a resting gray belongs to status — a wash of it under every field
+   whether or not anything is wrong reads as a page's worth of quiet
+   alerts. Left on the base rule's plain white-with-border instead, so
+   gray on this page means one thing. */
 
 .a11y-severity-critical .a11y-severity-badge {
   color: #da1e28;
@@ -4075,23 +4082,15 @@
    count over tag, layer-01 fill, hairline, the kit's own anatomy.
 
    On the 16-column grid at a comfortable width: the dial gets a 4-span,
-   each of the four severity tiles a 3-span (4 + 3×4 = 16) — explicit
-   track math rather than an equal-fraction guess, same as every other
-   multi-column region on the page.
+   the preview card the other 12 — explicit track math rather than an
+   equal-fraction guess, same as every other multi-column region on the
+   page.
 
-   Below ~950px of panel that stops working: a 3-span track shrinks
-   below what "! Worth fixing" needs (9.5rem/152px — 14px label plus the
-   Card's 16px padding either side) long before the panel is actually
-   narrow, since 16 columns plus 15 gutters at 2rem each is a lot of
-   fixed gutter to spend on a panel this size. 900px was the original
-   guess and measured about 9px (6%) short of the actual crossover —
-   solving 3 tile-tracks + 2 internal gutters = 152px for panel width
-   puts it at ~949px, so the threshold is set a little past that. The
-   container query below is the same fix that was here before —
-   auto-fit against a floor width, so the row always fills with as many
-   equal columns as fit rather than stranding a tile alone — kept as
-   the narrow-width fallback instead of being replaced by the grid math
-   that only works at full width. */
+   Below a panel width where that stops leaving the dial's own card
+   enough room (16 columns plus 15 gutters at 2rem each is a lot of
+   fixed gutter to spend on a narrow panel), auto-fit against a floor
+   width takes over: each card claims a full row of its own rather than
+   being squeezed to a sliver beside the other. */
 .a11y-stat-row {
   display: grid;
   grid-template-columns: repeat(16, minmax(0, 1fr));
@@ -4106,12 +4105,17 @@
 }
 
 .a11y-stat-row > :not(:first-child) {
-  grid-column: span 3;
+  grid-column: span 12;
 }
 
 @container a11y-panel (max-width: 960px) {
   .a11y-stat-row {
-    grid-template-columns: repeat(auto-fit, minmax(9.5rem, 1fr));
+    /* Wider floor than a severity pill needs: the second card holds a
+       list of finding rows now, and a title that wraps to one word a
+       line before the row's own badges even get involved is the same
+       failure the pill floor existed to prevent, just for text instead
+       of a tag. */
+    grid-template-columns: repeat(auto-fit, minmax(16rem, 1fr));
     column-gap: 16px;
   }
 
@@ -4127,14 +4131,47 @@
   color: var(--a11y-muted, #525252);
 }
 
-.a11y-stat-num {
-  font-size: var(--a11y-text-title, 1.75rem);
-  font-weight: 500;
-  line-height: 1;
-}
-
 .a11y-score-callout {
   max-width: none;
+}
+
+/* The preview beside the dial: the finding row's own anatomy (severity,
+   title, a WCAG meta line, a trailing count) minus the button and the
+   caret — this list is a glance at what the full, expandable list below
+   already holds, not a second interactive copy of it. */
+.a11y-score-preview {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.a11y-score-preview-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 16px;
+}
+
+.a11y-score-preview-desc {
+  flex: 1 1 12rem;
+  min-width: 10rem;
+  font-weight: 500;
+}
+
+.a11y-score-preview-meta {
+  display: block;
+  margin-top: 2px;
+  font-size: var(--a11y-text-label, 0.875rem);
+  font-weight: 400;
+  color: var(--a11y-muted, #525252);
+}
+
+.a11y-score-clean {
+  margin: 0;
+  color: var(--a11y-muted, #525252);
 }
 
 /* (Same here — the stat tiles are Cards now, so --layer-01 carries the
@@ -4216,15 +4253,20 @@
   font-weight: 500;
 }
 
-/* Folds count/method/fix/level onto their own line, always — not only
-   when the row runs out of room. flex-basis: 100% inside a wrapping
-   flex row is what forces that: the item claims a full line for
-   itself, so nothing after .a11y-finding-desc shares its line with it.
-
-   Indented to sit under the title text next to the thumbnail, not
-   flush under the thumbnail itself — the thumbnail's own width plus
-   the row's 16px gap (168 + 16 = 184px). :has() degrades safely on
-   rows with no thumbnail, where a floor of 0 is correct anyway. */
+/* Folds count/method/fix/level onto their own line, always, and
+   indents it to the same column every row uses — the image column is
+   now reserved whether or not a given finding has a picture (see
+   FindingGroup's empty thumbnail placeholder), so this margin is a
+   constant 184px (168px image column + the row's 16px gap) rather
+   than something that only applied on rows that happened to carry a
+   thumbnail. That was tried without the forced fold first — meta left
+   to wrap only when it ran out of room — but the margin then only
+   makes sense on the lines where meta actually wrapped, and on any
+   line where title and meta both fit side by side the same 184px
+   showed up as a stray gap between them instead. Forcing the fold
+   trades a short row's one saved line for every row in a table
+   landing its data in the same columns, which is the more valuable of
+   the two given a table is the whole point of the anatomy. */
 .a11y-widget-biz.a11y-widget-biz .a11y-finding-meta {
   display: flex;
   flex-wrap: wrap;
@@ -4232,9 +4274,6 @@
   flex-basis: 100%;
   gap: 8px 16px;
   margin-top: 4px;
-}
-
-.a11y-widget-biz.a11y-widget-biz .a11y-finding-header:has(.a11y-finding-thumb) .a11y-finding-meta {
   margin-left: 184px;
 }
 
@@ -4604,7 +4643,8 @@
 .a11y-widget-biz.a11y-widget-biz .a11y-audit-row,
 .a11y-widget-biz.a11y-widget-biz .a11y-sr-line,
 .a11y-widget-biz.a11y-widget-biz .a11y-conf-row,
-.a11y-widget-biz.a11y-widget-biz .a11y-undecided {
+.a11y-widget-biz.a11y-widget-biz .a11y-undecided,
+.a11y-widget-biz.a11y-widget-biz .a11y-score-preview-row {
   max-width: none;
 }
 
