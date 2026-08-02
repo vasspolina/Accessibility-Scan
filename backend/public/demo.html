@@ -36,7 +36,14 @@
         padding: 0 32px;
         background: #161616;
       }
-      .shell strong { color: #ffffff; font-weight: 500; font-size: 16px; }
+      /* The wordmark rule: "Accessible Scan" in PP Telegraf Medium at
+         heading size, tight tracking, never a graphic mark. */
+      .shell strong {
+        color: #ffffff;
+        font-weight: 500;
+        font-size: 28px;
+        letter-spacing: -0.01em;
+      }
       .shell span { color: #c6c6c6; font-size: 14px; }
       .page {
         padding-top: 24px;
@@ -90,7 +97,7 @@
   </head>
   <body>
     <header class="shell">
-      <strong>Accessibility Scan</strong>
+      <strong>Accessible Scan</strong>
       <span>checker</span>
     </header>
     <main class="page">

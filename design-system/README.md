@@ -1,4 +1,15 @@
-# Verify design system — vendored source of truth
+# Accessible Scan design system — vendored source of truth
+
+> **Updated 2 Aug 2026.** The claude.ai/design project was rebuilt as
+> **"Accessible Scan Design System"** (project id
+> `64839af2-a0e9-445d-8484-e5109399c984`), superseding the "Verify"
+> project. Same tokens and component behaviour (verified by diff);
+> what changed: component groups (actions/display/navigation/scan…),
+> a brand rule — **the logo is the wordmark: "Accessible Scan" in
+> PP Telegraf Medium at 28px, never a graphic mark** — a dedicated
+> `tokens/a11y.css` (vendored into production/tokens/), filled
+> Carbon-style fields, and a scan-app UI kit. The production package
+> below remains the installable copy the widget imports.
 
 This is the user's **Accessible Design System** ("Verify"), the design the
 business widget follows. Vendored from the design handoff bundle so the

@@ -3669,3 +3669,40 @@
   margin-inline: 0;
   padding: 24px 32px;
 }
+
+/* ==========================================================================
+   Accessible Scan Design System (2 Aug update)
+   ==========================================================================
+   The rebuilt project's deltas. Fields go back to Carbon's filled style —
+   gray-10 with the bottom border, the spec's own words — and the severity
+   chip inks snap to the token-exact values (ours had drifted one ramp
+   step darker; the tokens' pairs are the AA-checked ones). */
+.a11y-widget-biz.a11y-widget-biz .a11y-url-row input,
+.a11y-widget-biz.a11y-widget-biz .a11y-login input,
+.a11y-widget-biz.a11y-widget-biz .a11y-ai-toggle select {
+  background: #f4f4f4;
+}
+
+.a11y-severity-critical .a11y-severity-badge {
+  color: #da1e28;
+}
+
+.a11y-severity-serious .a11y-severity-badge {
+  color: #ba4e00;
+}
+
+.a11y-severity-moderate .a11y-severity-badge {
+  color: #8e6a00;
+}
+
+.a11y-severity-minor .a11y-severity-badge {
+  color: #525252;
+}
+
+@media (prefers-color-scheme: dark) {
+  .a11y-widget-biz .a11y-url-row input,
+  .a11y-widget-biz .a11y-login input,
+  .a11y-widget-biz .a11y-ai-toggle select {
+    background: #262626;
+  }
+}
