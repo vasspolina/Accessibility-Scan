@@ -1,4 +1,4 @@
-import { Badge, Button, Tabs, Tag } from "@verify/design-system";
+import { Badge, Button, Card, Tabs, Tag } from "@verify/design-system";
 import type { ReactNode } from "react";
 import type { AccessibilityReport } from "../api/scanClient";
 import { SCORE_CAVEAT } from "./ScoreGauge";
@@ -54,13 +54,16 @@ export function ProSummary({
       </div>
 
       <div className="a11y-pro-summary">
-        <div className="a11y-sum-card">
-          <h3>Issues by severity</h3>
+        {/* Card, with its own title slot — its h3 styling is identical to
+            the CSS this replaced. Borderless because the reference draws
+            this one as a flat grey block: grey on white is already an
+            edge, and a hairline on top of it reads as a second one. */}
+        <Card title="Issues by severity" style={{ border: 0 }}>
           <p className="a11y-sum-score">Score {report.score} out of 100</p>
           <p className="a11y-issues-line">
             {total} {total === 1 ? "issue" : "issues"} on 1 page
           </p>
-        </div>
+        </Card>
         <Tabs
           items={[
             {

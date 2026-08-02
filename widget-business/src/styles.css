@@ -3223,6 +3223,14 @@
   margin: 0 0 16px;
 }
 
+/* NB: four stacked `.a11y-pro-summary > section` overrides used to live
+   further down this file — the sediment of the flat/reference rounds.
+   They went dead when the summary card became a plain div, then came
+   back to life the moment it became a Card again (Card renders a
+   <section>), blanking the grey the reference had restored. Removed
+   rather than re-tuned: the card's look is Card's inline styles plus one
+   deliberate `border: 0` at the call site, which is one source of truth
+   instead of five. */
 .a11y-pro-summary {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -3390,14 +3398,6 @@
   border-radius: 0;
 }
 
-/* The imported Cards in the summary grid: same flattening, inline styles
-   and all. */
-.a11y-pro-summary > section {
-  background: transparent !important;
-  border: 0 !important;
-  padding: 0 !important;
-}
-
 .a11y-widget-biz.a11y-widget-biz .a11y-conf-tile {
   background: transparent;
   border: 0;
@@ -3473,13 +3473,6 @@
 .a11y-widget-biz {
   --layer-01: #f4f4f4;
   --a11y-layer-accent: #f4f4f4;
-}
-
-.a11y-pro-summary > section {
-  background: var(--layer-01, #f4f4f4) !important;
-  border: 1px solid var(--a11y-border, #e0e0e0) !important;
-  border-radius: 2px !important;
-  padding: 16px !important;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -3561,10 +3554,6 @@
    text leading (Hochuli), which was stretching single-line UI — pills,
    buttons, the card title, the count rows. Those get the tight 1.3 a
    label needs; paragraphs keep their 1.55. */
-.a11y-pro-summary > section {
-  background: transparent !important;
-}
-
 .a11y-widget-biz.a11y-widget-biz .a11y-severity-badge,
 .a11y-widget-biz.a11y-widget-biz .a11y-rule-chip,
 .a11y-widget-biz.a11y-widget-biz .a11y-meta-row > span,
@@ -3583,14 +3572,6 @@
 .a11y-widget-biz.a11y-widget-biz .a11y-score-breakdown div {
   gap: 12px;
   align-items: center;
-}
-
-/* "No need for frame and margin" — the summary cards dissolve entirely:
-   no hairline, no padding, just the dial and the list sitting on the
-   page in their two columns. */
-.a11y-pro-summary > section {
-  border: 0 !important;
-  padding: 0 !important;
 }
 
 /* "20% tighter" line height, taken at its word, role by role — body
@@ -3628,33 +3609,23 @@
 }
 
 /* The reference's summary card: grey, borderless, quiet. */
-.a11y-sum-card {
-  background: #f4f4f4;
-  border-radius: 2px;
-  padding: 16px;
-}
-
-.a11y-sum-card h3 {
-  margin: 0 0 8px;
-  font-size: var(--a11y-text-body);
-  font-weight: 500;
-}
-
-.a11y-sum-card p {
+/* The box and its h3 come from the Card component now; only the two
+   lines inside it are still ours. Their old selectors were scoped to
+   .a11y-sum-card, a class Card does not render — hence the rewrite to
+   the paragraphs' own classes. */
+.a11y-pro-summary .a11y-sum-score,
+.a11y-pro-summary .a11y-issues-line {
   margin: 4px 0;
   color: var(--a11y-muted, #525252);
 }
 
-.a11y-sum-card .a11y-sum-score {
+.a11y-pro-summary .a11y-sum-score {
   color: var(--a11y-text, #161616);
   font-weight: 500;
 }
 
-@media (prefers-color-scheme: dark) {
-  .a11y-widget-biz .a11y-sum-card {
-    background: #262626;
-  }
-}
+/* (The dark fill for this card is gone on purpose: Card reads
+   --layer-01, which the bridge already flips per scheme.) */
 
 /* Pixel pass against the reference: everything the spec sets in label
    size now is 14px — our severity chips (the SeverityTag spec's size),
@@ -3669,9 +3640,8 @@
   font-size: var(--a11y-text-label, 0.875rem);
 }
 
-.a11y-widget-biz.a11y-widget-biz .a11y-sum-card h3 {
-  margin-bottom: 12px;
-}
+/* (Card's title h3 already ships margin: 0 0 var(--space-04) — 12px —
+   so the override that used to set it here is redundant.) */
 
 /* ==========================================================================
    CRM full-page layout, per the reference at its real width
@@ -3944,21 +3914,6 @@
   }
 }
 
-.a11y-stat-card {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: 12px;
-  padding: 16px;
-  background: #f4f4f4;
-  border: 1px solid var(--a11y-border, #e0e0e0);
-  border-radius: 2px;
-}
-
-.a11y-stat-score {
-  align-items: center;
-}
-
 .a11y-stat-label {
   font-size: var(--a11y-text-label, 0.875rem);
   font-weight: 500;
@@ -3975,11 +3930,8 @@
   max-width: none;
 }
 
-@media (prefers-color-scheme: dark) {
-  .a11y-widget-biz .a11y-stat-card {
-    background: #262626;
-  }
-}
+/* (Same here — the stat tiles are Cards now, so --layer-01 carries the
+   dark fill and this override would only be a second source of truth.) */
 
 /* ==========================================================================
    The Input component's anatomy, on the field that lost it

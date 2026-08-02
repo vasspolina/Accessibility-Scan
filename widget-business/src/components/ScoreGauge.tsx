@@ -1,5 +1,27 @@
-import { ScoreDial } from "@verify/design-system";
+import { Card, ScoreDial } from "@verify/design-system";
+import type { CSSProperties } from "react";
 import type { AccessibilityReport } from "../api/scanClient";
+
+/* The stat tiles ARE the Card component's anatomy — layer-01 fill, subtle
+   hairline, 2px corner, 16px padding — so they use it rather than a div
+   whose CSS restated the same inline styles. Card takes no className, so
+   the flex layout rides in `style`, which is how the kit's own screens
+   compose it. One quiet win: Card reads --layer-01, already bridged and
+   scheme-aware, which retires the hardcoded #262626 dark overrides these
+   tiles used to need. */
+const TILE: CSSProperties = {
+  display: "flex",
+  flexDirection: "column",
+  alignItems: "flex-start",
+  gap: 12,
+};
+
+const SEVERITY_TILES = [
+  ["critical", "Fix first"],
+  ["serious", "Fix soon"],
+  ["moderate", "Worth fixing"],
+  ["minor", "Minor polish"],
+] as const;
 
 // Each line states a judgement and stops. The number above has already made
 // the point, and a sentence that softens it reads as an apology for the
@@ -84,26 +106,20 @@ export function ScoreGauge({
           beneath, the kit's composition exactly. The dial brings the tone
           word and the single accessible name with it. */}
       <div className="a11y-stat-row">
-        <div className="a11y-stat-card a11y-stat-score">
+        <Card style={{ ...TILE, alignItems: "center" }}>
           <span className="a11y-stat-label">Accessibility score</span>
           <ScoreDial score={score} size={110} />
-        </div>
-        <div className="a11y-stat-card a11y-severity-critical">
-          <span className="a11y-stat-num">{summary.critical}</span>
-          <span className="a11y-severity-badge">Fix first</span>
-        </div>
-        <div className="a11y-stat-card a11y-severity-serious">
-          <span className="a11y-stat-num">{summary.serious}</span>
-          <span className="a11y-severity-badge">Fix soon</span>
-        </div>
-        <div className="a11y-stat-card a11y-severity-moderate">
-          <span className="a11y-stat-num">{summary.moderate}</span>
-          <span className="a11y-severity-badge">Worth fixing</span>
-        </div>
-        <div className="a11y-stat-card a11y-severity-minor">
-          <span className="a11y-stat-num">{summary.minor}</span>
-          <span className="a11y-severity-badge">Minor polish</span>
-        </div>
+        </Card>
+        {SEVERITY_TILES.map(([key, word]) => (
+          <Card key={key} style={TILE}>
+            <span className="a11y-stat-num">{summary[key]}</span>
+            {/* The severity class stays on a wrapper: the badge inks are
+                descendant selectors, and Card takes no className. */}
+            <span className={`a11y-severity-${key}`}>
+              <span className="a11y-severity-badge">{word}</span>
+            </span>
+          </Card>
+        ))}
       </div>
 
       {/* The kit's callout slot, carrying the line this report has always
