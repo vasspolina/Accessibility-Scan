@@ -470,7 +470,14 @@ export function FindingGroup({
         {!asNotes && (
           <span className="a11y-severity-badge">{severityLabel[rep.severity]}</span>
         )}
-        <span className="a11y-finding-desc">{title}</span>
+        <span className="a11y-finding-desc">
+          {title}
+          {!professional && rep.wcagCriterion && rep.wcagCriterion !== "N/A" && (
+            <span className="a11y-finding-criterion">
+              WCAG {rep.wcagCriterion.match(/^\d\.\d+\.\d+/)?.[0] ?? rep.wcagCriterion}
+            </span>
+          )}
+        </span>
         {count > 1 && <span className="a11y-count-badge">{count}×</span>}
         {keyboardCheck && (
           <span className="a11y-method-badge a11y-method-keyboard">Keyboard test</span>

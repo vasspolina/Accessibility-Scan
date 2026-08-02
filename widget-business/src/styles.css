@@ -3889,3 +3889,149 @@
   margin: 0 0 16px;
   color: var(--a11y-muted, #525252);
 }
+
+/* The scan-app dashboard's stat row: dial card plus severity tiles —
+   count over tag, layer-01 fill, hairline, the kit's own anatomy. */
+/* Five tiles, always five columns down to the point the panel can no
+   longer hold them — auto-fit's minmax left the fifth tile wrapping
+   alone onto its own row with a wide gap beside it at panel widths that
+   fit four comfortably. auto-fill against a floor width fills the row
+   with as many equal columns as fit, so it never strands one. */
+.a11y-stat-row {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 16px;
+  align-items: stretch;
+  margin-bottom: 16px;
+}
+
+@container a11y-panel (max-width: 720px) {
+  .a11y-stat-row {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@container a11y-panel (max-width: 460px) {
+  .a11y-stat-row {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+.a11y-stat-card {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 16px;
+  background: #f4f4f4;
+  border: 1px solid var(--a11y-border, #e0e0e0);
+  border-radius: 2px;
+}
+
+.a11y-stat-score {
+  align-items: center;
+}
+
+.a11y-stat-label {
+  font-size: var(--a11y-text-label, 0.875rem);
+  font-weight: 500;
+  color: var(--a11y-muted, #525252);
+}
+
+.a11y-stat-num {
+  font-size: var(--a11y-text-title, 1.75rem);
+  font-weight: 500;
+  line-height: 1;
+}
+
+.a11y-score-callout {
+  max-width: none;
+}
+
+@media (prefers-color-scheme: dark) {
+  .a11y-widget-biz .a11y-stat-card {
+    background: #262626;
+  }
+}
+
+/* ==========================================================================
+   The Input component's anatomy, on the field that lost it
+   ==========================================================================
+   The NewScan rebuild dropped the .a11y-url-row wrapper, and every field
+   rule in this file was scoped to it — so the address input fell back to
+   the user agent's 25px box. These rules key off the form instead, and
+   carry the kit's Input exactly: 40px tall, 0/16 padding, --field fill,
+   no border but the bottom hairline, invalid state 2px in the error ink. */
+.a11y-widget-biz.a11y-widget-biz .a11y-url-form input[type="text"],
+.a11y-widget-biz.a11y-widget-biz .a11y-url-form input[type="password"],
+.a11y-widget-biz.a11y-widget-biz .a11y-url-form select {
+  width: 100%;
+  height: 40px;
+  padding: 0 16px;
+  background: #f4f4f4;
+  color: var(--a11y-text, #161616);
+  border: 0;
+  border-bottom: 1px solid #8d8d8d;
+  border-radius: 0;
+  font: inherit;
+  font-size: var(--a11y-text-body, 1.125rem);
+}
+
+.a11y-widget-biz.a11y-widget-biz .a11y-url-form input[aria-invalid="true"] {
+  border-bottom: 2px solid var(--a11y-score-bad, #da1e28);
+}
+
+.a11y-widget-biz.a11y-widget-biz .a11y-url-form input::placeholder {
+  color: #6f6f6f;
+}
+
+@media (prefers-color-scheme: dark) {
+  .a11y-widget-biz .a11y-url-form input[type="text"],
+  .a11y-widget-biz .a11y-url-form input[type="password"],
+  .a11y-widget-biz .a11y-url-form select {
+    background: #262626;
+    color: #f4f4f4;
+  }
+}
+
+/* ==========================================================================
+   The dashboard's IssueRow anatomy, on the finding cards
+   ==========================================================================
+   The scan-app lists findings as: severity tag, title with a criterion
+   subline, count at the trailing edge. Our cards carry all of that plus
+   the evidence a business reader needs, so the header takes the kit's
+   anatomy and the disclosure stays underneath it. */
+.a11y-widget-biz.a11y-widget-biz .a11y-finding-header {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  width: 100%;
+  min-height: 48px;
+  padding: 12px 16px;
+  text-align: left;
+}
+
+.a11y-widget-biz.a11y-widget-biz .a11y-finding-desc {
+  flex: 1;
+  min-width: 0;
+  font-size: var(--a11y-text-body, 1.125rem);
+  font-weight: 500;
+}
+
+.a11y-finding-criterion {
+  display: block;
+  margin-top: 2px;
+  font-size: var(--a11y-text-label, 0.875rem);
+  font-weight: 400;
+  color: var(--a11y-muted, #525252);
+}
+
+.a11y-widget-biz.a11y-widget-biz .a11y-count-badge {
+  flex-shrink: 0;
+  background: transparent;
+  color: var(--a11y-muted, #525252);
+  font-size: var(--a11y-text-label, 0.875rem);
+  font-weight: 400;
+  border: 0;
+  padding: 0;
+}
