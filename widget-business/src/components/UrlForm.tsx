@@ -1,5 +1,7 @@
 import { useState, type FormEvent } from "react";
+import { Button, Radio } from "@verify/design-system";
 import { LoginFields } from "./LoginFields";
+import { PrintButton } from "./PrintButton";
 import type { AuthConfig } from "../api/scanClient";
 import type { AudienceMode } from "../lib/audienceMode";
 
@@ -55,149 +57,140 @@ export function UrlForm({
 
   return (
     <form className="a11y-url-form" onSubmit={handleSubmit} noValidate>
-      <label className="a11y-url-label" htmlFor="a11y-url-input">
-        Your website address
-      </label>
-      <div className="a11y-url-row">
-        <input
-          id="a11y-url-input"
-          type="text"
-          inputMode="url"
-          autoComplete="url"
-          placeholder="example.com"
-          value={value}
-          onChange={(e) => {
-            setValue(e.target.value);
-            if (e.target.value.trim()) setShowEmptyError(false);
-          }}
-          disabled={loading}
-          required
-          aria-invalid={showEmptyError || undefined}
-          aria-describedby={showEmptyError ? "a11y-url-error" : undefined}
-        />
-        <button type="submit" disabled={loading}>
-          {/* A scan runs for anything from fifteen seconds to a minute and a
-              half. A button that just says "Checking…" and then sits there
-              looks like it has died — the spinner is the only thing telling
-              the reader it hasn't. Hidden from screen readers because the
-              status text below already announces progress. */}
-          {loading && <span className="a11y-spinner" aria-hidden="true" />}
-          {loading ? "Checking…" : mode === "site" ? "Audit my site" : "Check my site"}
-        </button>
-      </div>
-      {/* Persistent and empty until filled — a live region mounted with its
-          message already inside never announces. Kept in the DOM when clear
-          (collapsed by the :empty style) for the same reason. */}
-      <p id="a11y-url-error" className="a11y-error a11y-url-error" role="alert">
-        {showEmptyError ? "Enter a website address first. For example: example.com." : ""}
-      </p>
-
-      {/* The Forms reference styles exclusive choices as what they are:
-          radio groups. That is also the better semantic than the previous
-          aria-pressed cards — native radios announce "2 of 2", arrow keys
-          move within the group, and the checked state needs no invented
-          marker. The audience group stays enabled while loading: it
-          changes nothing about the scan, and someone who realises
-          mid-scan they wanted the other rendering should not wait. */}
-      <fieldset className="a11y-radio-group">
-        <legend>Who the report is for</legend>
-        <label className="a11y-radio">
-          <input
-            type="radio"
-            name="a11y-audience"
-            checked={audience === "business"}
-            onChange={() => onAudienceChange("business")}
-          />
-          <span>
-            For business owners
-            <em>Plain-language summary, no technical background needed</em>
-          </span>
-        </label>
-        <label className="a11y-radio">
-          <input
-            type="radio"
-            name="a11y-audience"
-            checked={audience === "professional"}
-            onChange={() => onAudienceChange("professional")}
-          />
-          <span>
-            For professionals
-            <em>Designers &amp; developers — WCAG-mapped technical report</em>
-          </span>
-        </label>
-      </fieldset>
-
-      <fieldset className="a11y-radio-group">
-        <legend>What to check</legend>
-        <label className="a11y-radio">
-          <input
-            type="radio"
-            name="a11y-scan-mode"
-            checked={mode === "page"}
-            onChange={() => setMode("page")}
-            disabled={loading}
-          />
-          <span>
-            This page
-            <em>Everything we can see, in about 15 seconds</em>
-          </span>
-        </label>
-        <label className="a11y-radio">
-          <input
-            type="radio"
-            name="a11y-scan-mode"
-            checked={mode === "site"}
-            onChange={() => setMode("site")}
-            disabled={loading}
-          />
-          <span>
-            Whole site
-            <em>Finds what repeats on every page</em>
-          </span>
-        </label>
-      </fieldset>
-
-      {mode === "page" && (
-        <LoginFields auth={auth} onChange={setAuth} disabled={loading} />
-      )}
-
-      {mode === "site" ? (
-        <label className="a11y-ai-toggle" htmlFor="a11y-pages">
-          Pages to check
-          <select
-            id="a11y-pages"
-            value={maxPages}
-            onChange={(e) => setMaxPages(Number(e.target.value))}
-            disabled={loading}
-          >
-            {[3, 5, 8, 10].map((n) => (
-              <option key={n} value={n}>
-                {n} pages (about {Math.ceil((n * 15) / 60)} min)
-              </option>
-            ))}
-          </select>
-        </label>
-      ) : (
-        // Short label, separate description — a checkbox whose label is a
-        // whole sales sentence gets that sentence read on every focus. The
-        // description is still announced, once, as a description.
-        <div className="a11y-ai-toggle">
-          <label>
-            <input
-              type="checkbox"
-              checked={includeAiReview}
-              onChange={(e) => setIncludeAiReview(e.target.checked)}
-              disabled={loading}
-              aria-describedby="a11y-ai-hint"
-            />
-            Include AI-powered review
+      {/* The kit's NewScan composition: a quiet card, two columns, and the
+          actions gathered in a hairline-topped footer. Our content and our
+          contracts (persistent error region, described-by hints, login
+          fields) ride inside it. */}
+      <div className="a11y-form-grid">
+        <div className="a11y-form-col">
+          <label className="a11y-url-label" htmlFor="a11y-url-input">
+            Your website address
           </label>
-          <span id="a11y-ai-hint" className="a11y-ai-hint">
-            Catches design and marketing issues automated tools miss. Adds
-            about half a minute.
-          </span>
+          <input
+            id="a11y-url-input"
+            type="text"
+            inputMode="url"
+            autoComplete="url"
+            placeholder="example.com"
+            value={value}
+            onChange={(e) => {
+              setValue(e.target.value);
+              if (e.target.value.trim()) setShowEmptyError(false);
+            }}
+            disabled={loading}
+            required
+            aria-invalid={showEmptyError || undefined}
+            aria-describedby={showEmptyError ? "a11y-url-error" : undefined}
+          />
+          {/* Persistent and empty until filled — a live region mounted with
+              its message already inside never announces. */}
+          <p id="a11y-url-error" className="a11y-error a11y-url-error" role="alert">
+            {showEmptyError ? "Enter a website address first. For example: example.com." : ""}
+          </p>
+
+          <fieldset className="a11y-radio-group">
+            <legend>Report style</legend>
+            <Radio
+              id="a11y-aud-biz"
+              name="a11y-audience"
+              value="business"
+              label="For business owners"
+              checked={audience === "business"}
+              onChange={() => onAudienceChange("business")}
+            />
+            <Radio
+              id="a11y-aud-pro"
+              name="a11y-audience"
+              value="professional"
+              label="For professionals"
+              checked={audience === "professional"}
+              onChange={() => onAudienceChange("professional")}
+            />
+            <span className="a11y-group-hint">
+              Business owners get a plain-language summary; professionals get a
+              WCAG-mapped technical report.
+            </span>
+          </fieldset>
         </div>
-      )}
+
+        <div className="a11y-form-col">
+          <fieldset className="a11y-radio-group">
+            <legend>Scan scope</legend>
+            <Radio
+              id="a11y-scope-page"
+              name="a11y-scan-mode"
+              value="page"
+              label="This page"
+              checked={mode === "page"}
+              onChange={() => setMode("page")}
+              disabled={loading}
+            />
+            <Radio
+              id="a11y-scope-site"
+              name="a11y-scan-mode"
+              value="site"
+              label="Whole site"
+              checked={mode === "site"}
+              onChange={() => setMode("site")}
+              disabled={loading}
+            />
+            <span className="a11y-group-hint">
+              This page takes about 15 seconds; whole site finds what repeats
+              on every page.
+            </span>
+          </fieldset>
+
+          {mode === "site" && (
+            <label className="a11y-ai-toggle" htmlFor="a11y-pages">
+              Pages to check
+              <select
+                id="a11y-pages"
+                value={maxPages}
+                onChange={(e) => setMaxPages(Number(e.target.value))}
+                disabled={loading}
+              >
+                {[3, 5, 8, 10].map((n) => (
+                  <option key={n} value={n}>
+                    {n} pages (about {Math.ceil((n * 15) / 60)} min)
+                  </option>
+                ))}
+              </select>
+            </label>
+          )}
+
+          {mode === "page" && (
+            <div className="a11y-ai-toggle">
+              <label>
+                <input
+                  type="checkbox"
+                  checked={includeAiReview}
+                  onChange={(e) => setIncludeAiReview(e.target.checked)}
+                  disabled={loading}
+                  aria-describedby="a11y-ai-hint"
+                />
+                Include AI-powered review
+              </label>
+              <span id="a11y-ai-hint" className="a11y-ai-hint">
+                Catches design and marketing issues automated tools miss. Adds
+                about half a minute.
+              </span>
+            </div>
+          )}
+
+          {mode === "page" && (
+            <LoginFields auth={auth} onChange={setAuth} disabled={loading} />
+          )}
+        </div>
+      </div>
+
+      <div className="a11y-form-footer">
+        <Button type="submit" disabled={loading}>
+          {loading ? "Checking…" : mode === "site" ? "Audit my site" : "Check my site"}
+        </Button>
+        {/* Business mode prints from here, the kit's footer; professionals
+            have Export report in the report's own action row. */}
+        {audience === "business" && <PrintButton />}
+      </div>
     </form>
   );
 }

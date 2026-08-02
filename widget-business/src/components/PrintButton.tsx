@@ -55,14 +55,11 @@ export function PrintButton({
         {label}
       </Button>
     );
-  const button = (
-    <button type="button" className="a11y-sr-play" onClick={onPrint}>
-      {label}
-    </button>
-  );
   return (
     <div className="a11y-print-row">
-      {button}
+      <Button variant="secondary" onClick={onPrint}>
+        {label}
+      </Button>
       <span className="a11y-sr-status">
         Opens your browser's print dialog. Choose &ldquo;Save as PDF&rdquo; as the destination.
       </span>

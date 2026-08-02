@@ -1,4 +1,5 @@
 import { useId, useMemo, useRef, useState } from "react";
+import { DataTable } from "@verify/design-system";
 import type { ConformanceSummary, CriterionResult } from "../api/scanClient";
 
 // Answers the question the 0-100 score can't: "are we compliant?"
@@ -58,33 +59,51 @@ export function ConformanceView({
           " In Germany this is the standard the BFSG points at — the law that implements the European Accessibility Act, in force since June 2025."}
       </p>
 
-      <div className="a11y-conf-tiles">
-        <div className="a11y-conf-tile a11y-conf-tile-fail">
-          <span className="a11y-conf-num">{conformance.failed}</span>
-          <span className="a11y-conf-cap">
-            <strong>we found problems</strong>
-            <em>
-              {conformance.failed > 0
-                ? `${conformance.failedByLevel.A} at level A, ${conformance.failedByLevel.AA} at AA`
-                : "on this page"}
-            </em>
-          </span>
-        </div>
-        <div className="a11y-conf-tile">
-          <span className="a11y-conf-num">{conformance.noIssuesFound}</span>
-          <span className="a11y-conf-cap">
-            <strong>we checked, found nothing</strong>
-            <em>still worth a human look</em>
-          </span>
-        </div>
-        <div className="a11y-conf-tile">
-          <span className="a11y-conf-num">{conformance.needsReview}</span>
-          <span className="a11y-conf-cap">
-            <strong>we couldn't check</strong>
-            <em>only a person can judge these</em>
-          </span>
-        </div>
-      </div>
+      {/* The kit's LegalStandard screen: the three tiles as a tinted-row
+          table — glyph + words + count + meaning, never colour alone. */}
+      <DataTable
+        caption={`Automated check results against the ${conformance.total}-item ${conformance.standard} checklist`}
+        headers={[
+          { key: "result", label: "Result", width: "260px" },
+          { key: "items", label: "Items", align: "right", width: "90px" },
+          { key: "meaning", label: "What it means" },
+        ]}
+        rows={[
+          {
+            id: "failed",
+            background: "var(--severity-critical-bg, #fff1f1)",
+            cells: [
+              <span key="r" className="a11y-conf-result a11y-conf-result-fail">
+                <span aria-hidden="true">!</span> We found problems
+              </span>,
+              String(conformance.failed),
+              `${conformance.failedByLevel.A} at level A, ${conformance.failedByLevel.AA} at AA`,
+            ],
+          },
+          {
+            id: "clean",
+            background: "var(--severity-pass-bg, #defbe6)",
+            cells: [
+              <span key="r" className="a11y-conf-result a11y-conf-result-pass">
+                <span aria-hidden="true">✓</span> We checked, found nothing
+              </span>,
+              String(conformance.noIssuesFound),
+              "Still worth a human look",
+            ],
+          },
+          {
+            id: "manual",
+            background: "var(--severity-minor-bg, #f4f4f4)",
+            cells: [
+              <span key="r" className="a11y-conf-result a11y-conf-result-minor">
+                <span aria-hidden="true">i</span> We couldn't check
+              </span>,
+              String(conformance.needsReview),
+              "Only a person can judge these",
+            ],
+          },
+        ]}
+      />
 
       <div className="a11y-conf-caveat">
         <p>

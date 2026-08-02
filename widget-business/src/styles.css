@@ -3768,3 +3768,113 @@
   height: 20px;
   accent-color: var(--a11y-accent, #0f62fe);
 }
+
+/* ==========================================================================
+   The kit's two new screens (2 Aug, second update)
+   ==========================================================================
+   NewScan: the form as a quiet white card — two columns, group hints, the
+   actions gathered in a hairline-topped footer. LegalStandard: the
+   conformance section as a card again (the kit is ground truth), its
+   three tiles now a tinted-row table, results as glyph + word + colour. */
+.a11y-widget-biz.a11y-widget-biz .a11y-url-form {
+  background: #ffffff;
+  border: 1px solid var(--a11y-border, #e0e0e0);
+  border-radius: 2px;
+  padding: 24px;
+}
+
+.a11y-form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px 32px;
+  align-items: start;
+}
+
+@container a11y-panel (max-width: 560px) {
+  .a11y-form-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.a11y-form-col {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.a11y-group-hint {
+  display: block;
+  margin-top: 4px;
+  font-size: var(--a11y-text-label, 0.875rem);
+  color: var(--a11y-muted, #525252);
+  line-height: 1.33;
+}
+
+.a11y-form-footer {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+  margin-top: 24px;
+  padding-top: 16px;
+  border-top: 1px solid var(--a11y-border, #e0e0e0);
+}
+
+.a11y-form-footer .a11y-print-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 0;
+}
+
+.a11y-widget-biz.a11y-widget-biz .a11y-conf {
+  background: #f4f4f4;
+  border: 1px solid var(--a11y-border, #e0e0e0);
+  border-radius: 2px;
+  border-top-width: 1px;
+  padding: 24px;
+}
+
+.a11y-conf-result {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.a11y-conf-result-fail { color: #da1e28; }
+.a11y-conf-result-pass { color: #198038; }
+.a11y-conf-result-minor { color: #525252; }
+
+.a11y-widget-biz.a11y-widget-biz .a11y-conf-caveat {
+  background: transparent;
+  padding-left: 0;
+}
+
+/* The checklist toggle as the kit's secondary button — kept native for
+   its aria-expanded contract. */
+.a11y-widget-biz.a11y-widget-biz .a11y-conf .a11y-show-all {
+  display: inline-flex;
+  align-items: center;
+  height: 40px;
+  padding: 0 16px;
+  background: transparent;
+  border: 1px solid #8d8d8d;
+  color: var(--a11y-text, #161616);
+  font-weight: 500;
+}
+
+@media (prefers-color-scheme: dark) {
+  .a11y-widget-biz .a11y-url-form {
+    background: #262626;
+  }
+
+  .a11y-widget-biz .a11y-conf {
+    background: #262626;
+  }
+
+  .a11y-widget-biz .a11y-conf-result-fail { color: #ff8389; }
+  .a11y-widget-biz .a11y-conf-result-pass { color: #42be65; }
+  .a11y-widget-biz .a11y-conf-result-minor { color: #c6c6c6; }
+}

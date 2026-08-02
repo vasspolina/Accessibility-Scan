@@ -368,10 +368,8 @@ export function App({ apiBase, cta }: { apiBase: string; cta?: CtaConfig }) {
               {hostnameOf(report.url)} — scan results
             </h2>
           )}
-          {/* Professional mode prints from the action row inside the
-              summary; a second button here would be the same control
-              twice. */}
-          {!professional && <PrintButton />}
+          {/* Printing lives in the form footer (business) and the report
+              action row (professional) now — nothing here. */}
           {isDocument ? (
             <DocumentSummary report={report} />
           ) : professional ? (

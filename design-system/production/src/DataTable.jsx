@@ -22,7 +22,7 @@ export function DataTable({ caption, headers, rows }) {
           const divider = isOpen ? "none" : "1px solid var(--border-subtle)";
           return (
             <React.Fragment key={r.id}>
-              <tr onMouseEnter={() => setHover(r.id)} onMouseLeave={() => setHover(null)} style={{ background: hover === r.id ? "var(--layer-hover)" : "transparent" }}>
+              <tr onMouseEnter={() => setHover(r.id)} onMouseLeave={() => setHover(null)} style={{ background: hover === r.id ? "var(--layer-hover)" : (r.background || "transparent") }}>
                 {expandable ? (
                   <td style={{ borderBottom: divider, padding: 0, textAlign: "center" }}>
                     {r.expand ? (
