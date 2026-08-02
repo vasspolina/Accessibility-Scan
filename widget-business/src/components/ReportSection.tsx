@@ -1,14 +1,18 @@
 import type { AccessibilityFinding } from "../api/scanClient";
 import { FindingsList } from "./FindingsList";
+import { SectionHeader } from "./SectionHeader";
 
 export function ReportSection({
   title,
+  eyebrow,
   description,
   variant,
   findings,
   asNotes = false,
 }: {
   title: string;
+  /** The kit's uppercase category line above the title. */
+  eyebrow?: string;
   description: string;
   variant: "default" | "redflag";
   findings: AccessibilityFinding[];
@@ -20,9 +24,7 @@ export function ReportSection({
 }) {
   return (
     <section className={`a11y-section a11y-section-${variant}`}>
-      <h2 className="a11y-section-title">
-        {title} <span className="a11y-section-count">({findings.length})</span>
-      </h2>
+      <SectionHeader eyebrow={eyebrow} title={title} qualifier={`(${findings.length})`} />
       <p className="a11y-section-desc">{description}</p>
       <FindingsList findings={findings} asNotes={asNotes} />
     </section>

@@ -478,6 +478,7 @@ export function App({ apiBase, cta }: { apiBase: string; cta?: CtaConfig }) {
           {!isDocument && (
           <ReportSection
             title="Issues that could turn away users"
+            eyebrow="Dark-pattern findings"
             description="Places your site nudges people instead of letting them choose. These don't move the score. They move how much you're trusted."
             variant={findingsByCategory.darkPattern.length > 0 ? "redflag" : "default"}
             findings={findingsByCategory.darkPattern}

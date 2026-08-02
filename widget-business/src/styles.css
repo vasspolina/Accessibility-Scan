@@ -4044,3 +4044,84 @@
   flex-shrink: 0;
   white-space: nowrap;
 }
+
+/* ==========================================================================
+   The kit's shared section anatomy (design project, 2 Aug import)
+   ==========================================================================
+   Every composed screen in ui_kits/scan-app agrees on it: eyebrow, title
+   with an inline qualifier, chip + action right-aligned, hairline under
+   the header. Applied here to the sections that have those pieces —
+   readiness, the screen-reader preview, the statement, trust issues — so
+   they stop each carrying a slightly different header. */
+.a11y-section-head {
+  display: flex;
+  align-items: flex-end;
+  gap: 16px;
+  flex-wrap: wrap;
+  padding-bottom: 12px;
+  margin-bottom: 16px;
+  border-bottom: 1px solid var(--a11y-border, #e0e0e0);
+}
+
+.a11y-section-head-text {
+  flex: 1 1 280px;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.a11y-section-head-aside {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-shrink: 0;
+}
+
+/* The eyebrow: label size, medium, secondary, tracked and uppercased —
+   the same treatment .a11y-principle-term already gave the POUR sections,
+   which is where the kit's pattern was already half-implemented. */
+.a11y-section-eyebrow {
+  font-size: var(--a11y-text-label, 0.875rem);
+  font-weight: 500;
+  color: var(--a11y-muted, #525252);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+/* Square, not a pill: the kit reserves pills for severity tags, so a
+   status chip that borrowed the pill shape would claim to be one. */
+.a11y-status-chip {
+  display: inline-flex;
+  align-items: center;
+  height: 24px;
+  padding: 0 8px;
+  font-size: var(--a11y-text-label, 0.875rem);
+  font-weight: 500;
+  white-space: nowrap;
+  border-radius: 0;
+}
+
+.a11y-status-chip-critical {
+  background: var(--severity-critical-bg, #fff1f1);
+  color: #da1e28;
+}
+
+.a11y-status-chip-neutral {
+  background: var(--a11y-layer-1, #f4f4f4);
+  color: var(--a11y-muted, #525252);
+}
+
+@media (prefers-color-scheme: dark) {
+  .a11y-widget-biz .a11y-status-chip-critical {
+    color: #ff8389;
+  }
+}
+
+/* A header that is itself the accordion button keeps the row's layout but
+   drops the extra rule — the accordion draws its own. */
+.a11y-accordion-row .a11y-section-head {
+  border-bottom: 0;
+  padding-bottom: 0;
+  margin-bottom: 0;
+}

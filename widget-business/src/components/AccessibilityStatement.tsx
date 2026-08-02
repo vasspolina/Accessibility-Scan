@@ -1,4 +1,5 @@
 import { useMemo, useState } from "react";
+import { SectionHeader } from "./SectionHeader";
 import { DataTable } from "@verify/design-system";
 import type { AccessibilityReport, ConformanceSummary } from "../api/scanClient";
 
@@ -210,7 +211,7 @@ export function AccessibilityStatement({ report }: { report: AccessibilityReport
 
   return (
     <section className="a11y-section a11y-stmt">
-      <h2 className="a11y-section-title">Your accessibility statement</h2>
+      <SectionHeader eyebrow="European law" title="Your accessibility statement" />
       <p className="a11y-section-desc">
         European law asks for one if you serve EU customers. This check already knows most of the
         answers. Add your details and the draft writes itself.

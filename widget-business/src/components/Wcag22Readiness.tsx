@@ -1,5 +1,6 @@
 import { useId, useState } from "react";
 import { DataTable } from "@verify/design-system";
+import { StatusChip } from "./SectionHeader";
 import type { Wcag22Readiness as Readiness } from "../api/scanClient";
 
 // The law is going to move, and an owner should see it coming rather than
@@ -26,6 +27,7 @@ export function Wcag22Readiness({ readiness }: { readiness: Readiness }) {
 
   return (
     <section className="a11y-section a11y-w22">
+      <span className="a11y-section-eyebrow">Looking ahead</span>
       <div className="a11y-accordion-row">
         <h2 className="a11y-section-title a11y-accordion-title">
           <button
@@ -40,9 +42,9 @@ export function Wcag22Readiness({ readiness }: { readiness: Readiness }) {
               <span className="a11y-section-count">WCAG 2.2, expected {readiness.expectedFrom}</span>
             </span>
             {alreadyFailing > 0 && (
-              <span className="a11y-sr-issue-count">
+              <StatusChip>
                 {alreadyFailing === 1 ? "1 would fail today" : `${alreadyFailing} would fail today`}
-              </span>
+              </StatusChip>
             )}
             <svg
               className="a11y-accordion-chevron"

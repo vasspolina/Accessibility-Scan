@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useId, useMemo, useRef, useState } from "react";
+import { StatusChip } from "./SectionHeader";
 import { DataTable } from "@verify/design-system";
 import type { ScreenReaderScript } from "../api/scanClient";
 
@@ -115,9 +116,9 @@ export function ScreenReaderPreview({ script }: { script: ScreenReaderScript }) 
             {/* The count of problems stays visible while collapsed. A closed
                 section with nothing to show for it gives no reason to open it. */}
             {issueCount > 0 && (
-              <span className="a11y-sr-issue-count">
+              <StatusChip>
                 {issueCount === 1 ? "1 says nothing useful" : `${issueCount} say nothing useful`}
-              </span>
+              </StatusChip>
             )}
             <svg className="a11y-accordion-chevron" viewBox="0 0 16 16" aria-hidden="true" focusable="false">
               <path d="M8 11L3 6l.7-.7L8 9.6l4.3-4.3L13 6z" fill="currentColor" />
