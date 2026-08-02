@@ -3453,11 +3453,18 @@
 
 /* The red-flag section keeps its tint — that box is a warning, not
    decoration — and sits on the divider rhythm like everyone else. */
+/* The kit's TrustIssues screen: the whole section sits on the critical
+   tint with its heading in the critical ink — a dark pattern is the one
+   finding class that is about trust rather than capability, and the kit
+   colours the section to say so. Token-driven, so dark flips both. */
 .a11y-widget-biz.a11y-widget-biz .a11y-section-redflag {
-  background: rgba(255, 131, 137, 0.08);
-  border-left: 3px solid var(--a11y-score-bad, #da1e28);
-  padding-left: 16px;
-  padding-right: 16px;
+  background: var(--severity-critical-bg, #fff1f1);
+  border-left: 0;
+  padding: 16px;
+}
+
+.a11y-widget-biz.a11y-widget-biz .a11y-section-redflag .a11y-section-title {
+  color: var(--severity-critical, #da1e28);
 }
 
 /* "There is no need for light grey background" — the resting greys go at
@@ -3683,8 +3690,8 @@
    table finally get the width the reference drew them at. */
 .a11y-widget-biz.a11y-widget-biz .a11y-widget-inner {
   width: 100%;
-  max-width: none;
-  margin-inline: 0;
+  max-width: 1440px;
+  margin-inline: auto;
   padding: 24px 32px;
 }
 
@@ -4229,5 +4236,87 @@
 @container a11y-panel (max-width: 560px) {
   .a11y-widget-biz.a11y-widget-biz .a11y-finding-note .a11y-finding-header {
     gap: 12px;
+  }
+}
+
+/* The POUR eyebrow, at the kit's proportions — label size, tracked caps,
+   secondary — matching .a11y-section-eyebrow, which is the same idea in
+   the sections that carry one. */
+.a11y-widget-biz.a11y-widget-biz .a11y-principle-term {
+  font-size: var(--a11y-text-label, 0.875rem);
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  color: var(--a11y-muted, #525252);
+}
+
+/* ==========================================================================
+   Fix kinds and test methods, told apart
+   ==========================================================================
+   These badges answer two different questions and were reading as one set:
+   Design fix (#0072c3) sat a hair from Keyboard test (#0f62fe), and Content
+   fix shared purple with AI review exactly.
+
+   The families are now split by treatment as well as hue, because hue alone
+   would be a colour-only distinction — the thing this product reports other
+   people for:
+
+   - FIX KIND (who makes the change) carries a hue, one each.
+   - TEST METHOD (how we found it) is neutral. It is provenance, not an
+     action, and the blue outline it wore also read as a button that does
+     nothing when clicked.
+
+   Every hue avoids the severity ramp — no red, orange, dark yellow or
+   green here — so a fix badge can never be mistaken for a severity. */
+.a11y-widget-biz.a11y-widget-biz .a11y-fix-code {
+  border-color: #8a3ffc;
+  color: #6929c4;
+}
+
+.a11y-widget-biz.a11y-widget-biz .a11y-fix-design {
+  border-color: #d02670;
+  color: #9f1853;
+}
+
+.a11y-widget-biz.a11y-widget-biz .a11y-fix-content {
+  border-color: #009d9a;
+  color: #005d5d;
+}
+
+.a11y-widget-biz.a11y-widget-biz .a11y-fix-document {
+  border-color: #0f62fe;
+  color: #0043ce;
+}
+
+.a11y-widget-biz.a11y-widget-biz .a11y-method-keyboard,
+.a11y-widget-biz.a11y-widget-biz .a11y-method-ai {
+  border-color: var(--a11y-border, #e0e0e0);
+  color: var(--a11y-muted, #525252);
+}
+
+@media (prefers-color-scheme: dark) {
+  .a11y-widget-biz.a11y-widget-biz .a11y-fix-code {
+    border-color: #a56eff;
+    color: #be95ff;
+  }
+
+  .a11y-widget-biz.a11y-widget-biz .a11y-fix-design {
+    border-color: #ee5396;
+    color: #ff7eb6;
+  }
+
+  .a11y-widget-biz.a11y-widget-biz .a11y-fix-content {
+    border-color: #009d9a;
+    color: #08bdba;
+  }
+
+  .a11y-widget-biz.a11y-widget-biz .a11y-fix-document {
+    border-color: #4589ff;
+    color: #78a9ff;
+  }
+
+  .a11y-widget-biz.a11y-widget-biz .a11y-method-keyboard,
+  .a11y-widget-biz.a11y-widget-biz .a11y-method-ai {
+    border-color: #6f6f6f;
+    color: #c6c6c6;
   }
 }

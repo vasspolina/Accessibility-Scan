@@ -37,8 +37,11 @@ export function PrincipleGroup({ findings }: { findings: AccessibilityFinding[] 
             <h3 className="a11y-principle-title">
               {info?.plainTitle ?? principle}{" "}
               <span className="a11y-section-count">({groupFindings.length})</span>
-              {info && <em className="a11y-principle-term">{principle}</em>}
             </h3>
+            {/* Outside the heading on purpose: "Perceivable" restates the
+                category the heading already asks about, so a screen reader
+                reading the h3 should not have to hear it twice. */}
+            {info && <span className="a11y-principle-term">{principle}</span>}
             {info && <p className="a11y-principle-desc">{info.plainDescription}</p>}
             <FindingsList findings={groupFindings} />
           </div>
