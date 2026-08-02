@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useId, useMemo, useRef, useState } from "react";
+import { DataTable } from "@verify/design-system";
 import type { ScreenReaderScript } from "../api/scanClient";
 
 // Lets an owner hear their own page the way a screen-reader user does. Reading
@@ -195,35 +196,40 @@ export function ScreenReaderPreview({ script }: { script: ScreenReaderScript }) 
         )}
       </div>
 
-      <ol className="a11y-sr-list">
-        {visible.map(({ line, index: i }) => (
-          <li
-            key={`${line.selector}-${i}`}
-            className={[
-              "a11y-sr-line",
-              line.issue ? "a11y-sr-line-issue" : "",
-              current === i ? "a11y-sr-line-current" : "",
-            ]
-              .filter(Boolean)
-              .join(" ")}
-          >
-            <span className="a11y-sr-text">
+      {/* The walkthrough as the kit's table: order, what you would hear,
+          and the note. Issue rows wear the critical tint; the row currently
+          being read aloud wears the accent wash. The play-from-here button
+          stays the line itself, its purpose in the accessible name. */}
+      <DataTable
+        caption="What a screen reader announces, in reading order"
+        headers={[
+          { key: "n", label: "#", align: "right", width: "56px" },
+          { key: "text", label: "What you'd hear" },
+          { key: "note", label: "Note", width: "220px" },
+        ]}
+        rows={visible.map(({ line, index: i }) => ({
+          id: `${line.selector}-${i}`,
+          background: line.issue
+            ? "var(--severity-critical-bg, #fff1f1)"
+            : current === i
+              ? "var(--a11y-accent-faint, #edf5ff)"
+              : undefined,
+          cells: [
+            String(i + 1),
+            <span key="t" className="a11y-sr-text">
               {supported ? (
                 <button type="button" className="a11y-sr-line-play" onClick={() => speakFrom(i)}>
                   {line.text}
-                  {/* The visible label is the line itself; this suffix tells a
-                      screen-reader user what pressing it does. In the name, not
-                      a title attribute — tooltips reach nobody on a keyboard. */}
                   <span className="a11y-sr-only"> — play aloud from this line</span>
                 </button>
               ) : (
                 line.text
               )}
-              {line.issue && <span className="a11y-sr-issue">{line.issue}</span>}
-            </span>
-          </li>
-        ))}
-      </ol>
+            </span>,
+            line.issue ? <span key="n" className="a11y-sr-issue">{line.issue}</span> : "",
+          ],
+        }))}
+      />
 
       {/* A toggle rather than a button that removes itself: a control that
           disappears under the keyboard focus that just used it strands the

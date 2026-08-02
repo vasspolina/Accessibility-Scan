@@ -1,4 +1,5 @@
 import { useId, useState } from "react";
+import { DataTable } from "@verify/design-system";
 import type { Wcag22Readiness as Readiness } from "../api/scanClient";
 
 // The law is going to move, and an owner should see it coming rather than
@@ -71,28 +72,51 @@ export function Wcag22Readiness({ readiness }: { readiness: Readiness }) {
             {readiness.expectedFrom}. Until then, the checklist above is the one that counts.
           </p>
 
-          <ul className="a11y-conf-list">
-            {criteria.map((c) => (
-              <li key={c.id} className={`a11y-conf-row a11y-w22-${c.status}`}>
-                <span className="a11y-conf-id">
-                  {c.id} <em>{c.level}</em>
-                </span>
-                <span className="a11y-conf-body">
-                  <strong>{c.status === "already-failing" ? c.failing : c.plain}</strong>
+          {/* The kit's tinted-row table, as the legal-standard section has
+              it: result ink + word, never colour alone; the criterion cell
+              carries the plain sentence with the official name beneath. */}
+          <DataTable
+            caption={`The ${total} new WCAG 2.2 items, checked where software can`}
+            headers={[
+              { key: "criterion", label: "Criterion" },
+              { key: "status", label: "Status", width: "200px" },
+              { key: "found", label: "Found", align: "right", width: "90px" },
+            ]}
+            rows={criteria.map((c) => ({
+              id: c.id,
+              background:
+                c.status === "already-failing"
+                  ? "var(--severity-critical-bg, #fff1f1)"
+                  : c.status === "no-issues-found"
+                    ? "var(--severity-pass-bg, #defbe6)"
+                    : "var(--severity-minor-bg, #f4f4f4)",
+              cells: [
+                <span key="c">
+                  <strong>
+                    {c.id} ({c.level}) — {c.status === "already-failing" ? c.failing : c.plain}
+                  </strong>
                   <span className="a11y-conf-plain">Officially: {c.name}</span>
                   {c.whyManual && <span className="a11y-conf-plain">{c.whyManual}</span>}
-                </span>
-                <span className="a11y-conf-status">
+                </span>,
+                <span
+                  key="s"
+                  className={`a11y-conf-result ${
+                    c.status === "already-failing"
+                      ? "a11y-conf-result-fail"
+                      : c.status === "no-issues-found"
+                        ? "a11y-conf-result-pass"
+                        : "a11y-conf-result-minor"
+                  }`}
+                >
+                  <span aria-hidden="true">
+                    {c.status === "already-failing" ? "!" : c.status === "no-issues-found" ? "✓" : "i"}
+                  </span>{" "}
                   {STATUS_LABEL[c.status]}
-                  {c.findingCount > 0 && (
-                    <em className="a11y-conf-count">
-                      {c.findingCount === 1 ? "1 place" : `${c.findingCount} places`}
-                    </em>
-                  )}
-                </span>
-              </li>
-            ))}
-          </ul>
+                </span>,
+                c.findingCount > 0 ? `${c.findingCount} ×` : "—",
+              ],
+            }))}
+          />
 
           <p className="a11y-conf-caveat">
             <strong>Only one of these can be checked by software.</strong> {needsReview} of the{" "}

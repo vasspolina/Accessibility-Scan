@@ -1,4 +1,5 @@
 import { useMemo, useState } from "react";
+import { DataTable } from "@verify/design-system";
 import type { AccessibilityReport, ConformanceSummary } from "../api/scanClient";
 
 // Generates a draft accessibility statement.
@@ -235,6 +236,37 @@ export function AccessibilityStatement({ report }: { report: AccessibilityReport
           />
         </label>
       </div>
+
+      {/* The statement's declared facts, as the kit's table — the same
+          numbers the prose below commits to, checkable at a glance. */}
+      <DataTable
+        caption="What this statement declares"
+        headers={[
+          { key: "field", label: "Field", width: "220px" },
+          { key: "value", label: "Value" },
+        ]}
+        rows={[
+          { id: "org", cells: ["Prepared for", organisation.trim() || "[Your organisation]"] },
+          { id: "site", cells: ["Website", report.url] },
+          { id: "std", cells: ["Checked against", "EN 301 549 · WCAG 2.1 AA"] },
+          {
+            id: "pos",
+            cells: [
+              "Position",
+              position === "partially" ? "Partially conformant" : "Non-conformant",
+            ],
+          },
+          {
+            id: "issues",
+            cells: [
+              "Problems disclosed",
+              knownIssues.length === 0
+                ? "None the scan can detect"
+                : String(knownIssues.length),
+            ],
+          },
+        ]}
+      />
 
       <div className="a11y-stmt-actions">
         <button type="button" className="a11y-sr-play" onClick={copy}>
