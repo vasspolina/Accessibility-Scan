@@ -3878,3 +3878,14 @@
   .a11y-widget-biz .a11y-conf-result-pass { color: #42be65; }
   .a11y-widget-biz .a11y-conf-result-minor { color: #c6c6c6; }
 }
+
+/* The NewScan section header, per the kit: heading then a muted one-line
+   subtitle, then the card. */
+.a11y-widget-biz.a11y-widget-biz .a11y-newscan-title {
+  margin: 24px 0 4px;
+}
+
+.a11y-newscan-sub {
+  margin: 0 0 16px;
+  color: var(--a11y-muted, #525252);
+}

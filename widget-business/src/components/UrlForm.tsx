@@ -56,6 +56,14 @@ export function UrlForm({
   }
 
   return (
+    <>
+      {/* The kit's NewScan opens with its own heading and one-line
+          subtitle before the card. The kit's sentence says WCAG 2.2; ours
+          says what this scan actually measures. */}
+      <h2 className="a11y-section-title a11y-newscan-title">New scan</h2>
+      <p className="a11y-newscan-sub">
+        We audit the page against WCAG 2.1 AA and explain what to fix.
+      </p>
     <form className="a11y-url-form" onSubmit={handleSubmit} noValidate>
       {/* The kit's NewScan composition: a quiet card, two columns, and the
           actions gathered in a hairline-topped footer. Our content and our
@@ -192,5 +200,6 @@ export function UrlForm({
         {audience === "business" && <PrintButton />}
       </div>
     </form>
+    </>
   );
 }
