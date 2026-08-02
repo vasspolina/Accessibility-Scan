@@ -486,14 +486,23 @@ export function FindingGroup({
             </span>
           )}
         </span>
-        {count > 1 && <span className="a11y-count-badge">{count}×</span>}
-        {keyboardCheck && (
-          <span className="a11y-method-badge a11y-method-keyboard">Keyboard test</span>
-        )}
-        {fromAi && <span className="a11y-method-badge a11y-method-ai">AI review</span>}
-        <span className={`a11y-method-badge a11y-fix-${fix.key}`}>{fix.label}</span>
-        {rep.wcagLevel && <span className="a11y-level-badge">{LEVEL_FRAMING[rep.wcagLevel]}</span>}
-        {professional && rep.ruleId && <code className="a11y-rule-chip">{rep.ruleId}</code>}
+        {/* A second line, folded under the title rather than trailing beside
+            it on the first: severity and the title are what the row is
+            about, count/method/fix/level are what to do about it, and the
+            reference keeps those two questions visually separate instead
+            of running them all together on one crowded line. */}
+        <span className="a11y-finding-meta">
+          {count > 1 && <span className="a11y-count-badge">{count}×</span>}
+          {keyboardCheck && (
+            <span className="a11y-method-badge a11y-method-keyboard">Keyboard test</span>
+          )}
+          {fromAi && <span className="a11y-method-badge a11y-method-ai">AI review</span>}
+          <span className={`a11y-method-badge a11y-fix-${fix.key}`}>{fix.label}</span>
+          {rep.wcagLevel && (
+            <span className="a11y-level-badge">{LEVEL_FRAMING[rep.wcagLevel]}</span>
+          )}
+          {professional && rep.ruleId && <code className="a11y-rule-chip">{rep.ruleId}</code>}
+        </span>
       </button>
 
       {/* Always rendered, hidden when collapsed, rather than rendered only

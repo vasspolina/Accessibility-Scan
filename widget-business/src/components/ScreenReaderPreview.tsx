@@ -206,7 +206,7 @@ export function ScreenReaderPreview({ script }: { script: ScreenReaderScript }) 
         headers={[
           { key: "n", label: "#", align: "right", width: "56px" },
           { key: "text", label: "What you'd hear" },
-          { key: "note", label: "Note", width: "220px" },
+          { key: "note", label: "Note" },
         ]}
         rows={visible.map(({ line, index: i }) => ({
           id: `${line.selector}-${i}`,

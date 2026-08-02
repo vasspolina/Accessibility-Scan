@@ -22,6 +22,28 @@ export function ReportSection({
   // which is a strong enough signal to override the sentence saying so.
   asNotes?: boolean;
 }) {
+  // The kit's TrustIssues screen reads differently from every other section:
+  // the tint IS the alert, so the headline leads it and the category line
+  // sits underneath as a caption — reversed from the eyebrow-first anatomy
+  // every other section shares (see SectionHeader's own comment). The
+  // finding rows then sit outside the tint, under their own column labels,
+  // on the card's plain surface — the warning colour marks the claim, not
+  // the evidence for it.
+  if (variant === "redflag") {
+    return (
+      <section className="a11y-section a11y-section-redflag">
+        <div className="a11y-section-tint">
+          <h2 className="a11y-section-title">
+            {title} <span className="a11y-section-count">({findings.length})</span>
+          </h2>
+          {eyebrow && <span className="a11y-section-eyebrow">{eyebrow}</span>}
+          <p className="a11y-section-desc">{description}</p>
+        </div>
+        <FindingsList findings={findings} asNotes={asNotes} />
+      </section>
+    );
+  }
+
   return (
     <section className={`a11y-section a11y-section-${variant}`}>
       <SectionHeader eyebrow={eyebrow} title={title} qualifier={`(${findings.length})`} />

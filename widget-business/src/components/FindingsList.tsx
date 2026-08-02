@@ -51,10 +51,23 @@ export function FindingsList({
   const grouped = groupFindings(findings);
 
   return (
-    <ul className="a11y-findings-list">
-      {grouped.map((group) => (
-        <FindingGroup key={group[0].id} findings={group} asNotes={asNotes} />
-      ))}
-    </ul>
+    <>
+      {/* The kit's table anatomy — a label row over the two columns every
+          row actually carries, severity and the issue itself. Skipped for
+          notes: those rows carry no severity tag (a remark isn't ranked
+          the way a defect is), so a "Severity" label over nothing would be
+          a header for a column that doesn't exist. */}
+      {!asNotes && (
+        <div className="a11y-findings-columns" aria-hidden="true">
+          <span className="a11y-findings-col-severity">Severity</span>
+          <span>Issue</span>
+        </div>
+      )}
+      <ul className="a11y-findings-list">
+        {grouped.map((group) => (
+          <FindingGroup key={group[0].id} findings={group} asNotes={asNotes} />
+        ))}
+      </ul>
+    </>
   );
 }

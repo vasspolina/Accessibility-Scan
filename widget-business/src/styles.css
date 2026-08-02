@@ -1122,15 +1122,55 @@
 
 /* ---- Conformance (EN 301 549 / WCAG 2.1 AA) ---------------------------- */
 
+/* The other three-tile summary row (SiteAuditView's site-wide average/
+   issues/worst-page, ScanHistory's score-change/fixed/new) — on the same
+   16-column grid .a11y-stat-row uses, 5+5+6 rather than an even flex
+   guess. Below the width three tiles actually need (a lower bar than
+   .a11y-stat-row's five: fewer, wider tiles), auto-fit against the
+   tile's own 140px floor takes over — the same two-tier shape, tuned
+   for this row's own content rather than copied wholesale, since the
+   login-fields regression this same pass found showed that reusing one
+   region's breakpoint for a differently-nested one is exactly how this
+   kind of bug gets in. */
 .a11y-conf-tiles {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 12px;
+  display: grid;
+  grid-template-columns: repeat(16, minmax(0, 1fr));
+  column-gap: 2rem;
+  row-gap: 12px;
   margin: 0 0 16px;
 }
 
+.a11y-conf-tiles > :nth-child(1),
+.a11y-conf-tiles > :nth-child(2) {
+  grid-column: span 5;
+}
+
+.a11y-conf-tiles > :nth-child(3) {
+  grid-column: span 6;
+}
+
+@container a11y-panel (max-width: 700px) {
+  .a11y-conf-tiles {
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  }
+
+  /* A container query adds no specificity of its own, so a bare `> *`
+     here (0,1,0) never actually beat the span rules' `> :nth-child(n)`
+     (0,2,0) above — same failure mode as the .a11y-form-grid fix
+     earlier, one level more subtle since the grid-template-columns
+     half of the reset DID apply, so this silently kept every tile
+     pinned to its old 5-or-6-span width instead of the auto-fit track
+     auto-fit had just computed for it. Matching the same selector
+     shape restores equal specificity. */
+  .a11y-conf-tiles > :nth-child(1),
+  .a11y-conf-tiles > :nth-child(2),
+  .a11y-conf-tiles > :nth-child(3) {
+    grid-column: auto;
+  }
+}
+
 .a11y-conf-tile {
-  flex: 1 1 140px;
+  min-width: 0;
   display: flex;
   align-items: baseline;
   gap: 12px;
@@ -1486,21 +1526,75 @@
 
 /* ---- Accessibility statement -------------------------------------------- */
 
+/* Two fields, on the grid the same way the scan form's two columns are:
+   8 of 16 tracks each rather than a flex-wrap guess at when they no
+   longer fit side by side. min-width: 0 is load-bearing on a grid
+   item — without it a long email address holds the track open past
+   its 8-span share instead of wrapping inside it. */
 .a11y-stmt-fields {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 12px;
+  display: grid;
+  grid-template-columns: repeat(16, minmax(0, 1fr));
+  column-gap: 2rem;
+  row-gap: 16px;
   margin: 0 0 16px;
 }
 
 .a11y-stmt-field {
-  flex: 1 1 220px;
+  grid-column: span 8;
+  min-width: 0;
   display: flex;
   flex-direction: column;
   gap: 4px;
   font-size: var(--a11y-text-body);
   font-weight: 500;
   color: var(--a11y-text, #1f2328);
+}
+
+@container a11y-panel (max-width: 560px) {
+  /* The parent's own tracks, not just the child's span — 16 tracks
+     always reserve their 15 fixed 2rem gutters (480px) regardless of
+     whether anything's grid-column crosses them, so a lone track
+     redefinition here is what actually gives that space back. */
+  .a11y-stmt-fields {
+    grid-template-columns: 1fr;
+  }
+
+  .a11y-stmt-field {
+    grid-column: 1 / -1;
+  }
+}
+
+/* Two other places reuse this same field styling for three inputs
+   instead of the statement's two — LoginFields (login URL, username,
+   password) and AcrDraft's VPAT header (product, version, contact).
+   Three 8-spans would overrun 16 columns, so this used to give them an
+   explicit 6+5+5 split scoped to .a11y-login specifically.
+
+   That broke: LoginFields sits inside an 8-span .a11y-form-col, itself
+   inside .a11y-url-form's own padding, so its actual available width is
+   under half the panel's — nowhere near enough for 16 columns of 2rem
+   gutters (15 × 32px = 480px alone) to produce a usable track, and the
+   fields overflowed the panel at completely ordinary embed widths.
+   Fixed AcrDraft too, since it has the identical three-field shape and
+   the same "was never given the split at all" gap — its 8+8 default
+   just pushed the third field onto its own half-empty row.
+
+   Rather than re-deriving a width threshold for every depth a 3-field
+   group might get nested at, :has() picks out any .a11y-stmt-fields
+   that actually holds a third field and takes it off the 16-column grid
+   entirely — a plain wrapping flex row measures itself against
+   whatever width it actually has, at any nesting depth, with no
+   breakpoint math to get wrong. */
+.a11y-stmt-fields:has(> :nth-child(3)) {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.a11y-stmt-fields:has(> :nth-child(3)) > .a11y-stmt-field {
+  grid-column: auto;
+  flex: 1 1 9.5rem;
+  min-width: 9.5rem;
 }
 
 .a11y-stmt-field input {
@@ -1896,16 +1990,6 @@
 
 .a11y-login .a11y-login-toggle {
   margin-top: 12px;
-}
-
-/* Reflow at 320px: the 32px padding is an eighth of the whole screen there,
-   and the nowrap status column could push a checklist row sideways. */
-/* The container cannot restyle itself, so its own padding keys off the
-   viewport as before; everything inside keys off the panel. */
-@media (max-width: 480px) {
-  .a11y-widget-inner {
-    padding: 16px;
-  }
 }
 
 @container a11y-panel (max-width: 480px) {
@@ -3256,16 +3340,30 @@
    rather than re-tuned: the card's look is Card's inline styles plus one
    deliberate `border: 0` at the call site, which is one source of truth
    instead of five. */
+/* The severity card and the tabs, each an 8-span half of the same
+   16-column row every other two-up region on the page uses. */
 .a11y-pro-summary {
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 16px;
+  grid-template-columns: repeat(16, minmax(0, 1fr));
+  column-gap: 2rem;
+  row-gap: 16px;
   margin-bottom: 16px;
 }
 
+.a11y-pro-summary > * {
+  grid-column: span 8;
+  min-width: 0;
+}
+
 @container a11y-panel (max-width: 560px) {
+  /* The parent's own tracks, not just each child's span — see the same
+     fix and the same reasoning on .a11y-stmt-fields above. */
   .a11y-pro-summary {
     grid-template-columns: 1fr;
+  }
+
+  .a11y-pro-summary > * {
+    grid-column: 1 / -1;
   }
 }
 
@@ -3691,9 +3789,31 @@
 .a11y-widget-biz.a11y-widget-biz .a11y-widget-inner {
   width: 100%;
   max-width: 1440px;
-  margin-inline: auto;
+  /* Not auto: an auto inline margin centres the panel once the host is
+     wider than the cap, which is exactly what "the panel stops being a
+     centred column" above was trying to undo. Left-aligned, with its own
+     padding as the only gutter, regardless of how wide the host gets. */
+  margin-inline: 0;
   padding: 24px 32px;
+  padding-left: 25px;
 }
+
+/* Carbon's 16-column ruler lives at the section level, not here: every
+   direct child of .a11y-widget-inner has always spanned the full width
+   (the report is a single vertical stack, never a row of top-level
+   columns), so making this element itself a 16-track grid never placed
+   anything — it only ever reserved 15 fixed 2rem gutters (480px) that
+   no content used, which a container this narrow embeds at cannot give
+   back at 320px, the width WCAG 1.4.10 reflow requires fitting inside
+   without horizontal scrolling (a live self-scan of the deployed demo
+   caught exactly this: the whole page scrolled sideways ~210px at
+   320px, traced to this rule). The prose-measure calc() below still
+   expresses its half-page cap as "8 of 16 columns" — that math doesn't
+   need an actual grid under it, only the five regions that genuinely
+   place multiple things side by side do (the New Scan form, the
+   statement/login fields, the professional summary, the stat row, the
+   conformance tiles), and each of those defines and resets its own
+   16-column grid at the width it's actually laid out at. */
 
 /* ==========================================================================
    Accessible Scan Design System (2 Aug update)
@@ -3808,16 +3928,38 @@
   padding: 24px;
 }
 
+/* On the Carbon grid: 16 tracks, 2rem gutter, each column spanning 8 —
+   two equal halves expressed as grid math rather than a bare 1fr 1fr,
+   so this row measures the same way every other multi-column region on
+   the page does. Collapses to a single 16-wide column below 560px,
+   where two 8-spans would otherwise have less room than the "! Worth
+   fixing"-class content inside them needs to stay legible. */
 .a11y-form-grid {
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 24px 32px;
+  grid-template-columns: repeat(16, minmax(0, 1fr));
+  column-gap: 2rem;
+  row-gap: 24px;
   align-items: start;
 }
 
+.a11y-form-col {
+  grid-column: span 8;
+}
+
 @container a11y-panel (max-width: 560px) {
+  /* Redefining the tracks themselves, not just re-spanning the columns
+     across them: 16 tracks always reserve their 15 fixed 2rem gutters
+     (480px) whether or not anything's grid-column actually crosses
+     them, so leaving 16 tracks in place here while just widening
+     .a11y-form-col's span to 1/-1 kept that 480px as a hard floor under
+     a "collapsed" row that no longer has two columns to gutter between.
+     A single track has no internal gutters to reserve. */
   .a11y-form-grid {
     grid-template-columns: 1fr;
+  }
+
+  .a11y-form-col {
+    grid-column: 1 / -1;
   }
 }
 
@@ -3852,7 +3994,10 @@
   margin: 0;
 }
 
-.a11y-widget-biz.a11y-widget-biz .a11y-conf {
+.a11y-widget-biz.a11y-widget-biz .a11y-conf,
+.a11y-widget-biz.a11y-widget-biz .a11y-w22,
+.a11y-widget-biz.a11y-widget-biz .a11y-sr,
+.a11y-widget-biz.a11y-widget-biz .a11y-stmt {
   background: #f4f4f4;
   border: 1px solid var(--a11y-border, #e0e0e0);
   border-radius: 2px;
@@ -3865,7 +4010,6 @@
   align-items: center;
   gap: 8px;
   font-weight: 500;
-  white-space: nowrap;
 }
 
 .a11y-conf-result-fail { color: #da1e28; }
@@ -3904,7 +4048,10 @@
     background: #262626;
   }
 
-  .a11y-widget-biz.a11y-widget-biz .a11y-conf {
+  .a11y-widget-biz.a11y-widget-biz .a11y-conf,
+  .a11y-widget-biz.a11y-widget-biz .a11y-w22,
+  .a11y-widget-biz.a11y-widget-biz .a11y-sr,
+  .a11y-widget-biz.a11y-widget-biz .a11y-stmt {
     background: #262626;
   }
 
@@ -3925,22 +4072,53 @@
 }
 
 /* The scan-app dashboard's stat row: dial card plus severity tiles —
-   count over tag, layer-01 fill, hairline, the kit's own anatomy. */
-/* Five tiles, always five columns down to the point the panel can no
-   longer hold them — auto-fit's minmax left the fifth tile wrapping
-   alone onto its own row with a wide gap beside it at panel widths that
-   fit four comfortably. auto-fill against a floor width fills the row
-   with as many equal columns as fit, so it never strands one. */
-/* auto-fit rather than a fixed five, now that the pills cannot wrap to
-   fit a column: the track floor is what "! Worth fixing" needs at 14px
-   plus the Card's 16px padding either side, so a tile is never narrower
-   than its own longest label. Wider panels still land five across. */
+   count over tag, layer-01 fill, hairline, the kit's own anatomy.
+
+   On the 16-column grid at a comfortable width: the dial gets a 4-span,
+   each of the four severity tiles a 3-span (4 + 3×4 = 16) — explicit
+   track math rather than an equal-fraction guess, same as every other
+   multi-column region on the page.
+
+   Below ~950px of panel that stops working: a 3-span track shrinks
+   below what "! Worth fixing" needs (9.5rem/152px — 14px label plus the
+   Card's 16px padding either side) long before the panel is actually
+   narrow, since 16 columns plus 15 gutters at 2rem each is a lot of
+   fixed gutter to spend on a panel this size. 900px was the original
+   guess and measured about 9px (6%) short of the actual crossover —
+   solving 3 tile-tracks + 2 internal gutters = 152px for panel width
+   puts it at ~949px, so the threshold is set a little past that. The
+   container query below is the same fix that was here before —
+   auto-fit against a floor width, so the row always fills with as many
+   equal columns as fit rather than stranding a tile alone — kept as
+   the narrow-width fallback instead of being replaced by the grid math
+   that only works at full width. */
 .a11y-stat-row {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(9.5rem, 1fr));
-  gap: 16px;
+  grid-template-columns: repeat(16, minmax(0, 1fr));
+  column-gap: 2rem;
+  row-gap: 16px;
   align-items: stretch;
   margin-bottom: 16px;
+}
+
+.a11y-stat-row > :first-child {
+  grid-column: span 4;
+}
+
+.a11y-stat-row > :not(:first-child) {
+  grid-column: span 3;
+}
+
+@container a11y-panel (max-width: 960px) {
+  .a11y-stat-row {
+    grid-template-columns: repeat(auto-fit, minmax(9.5rem, 1fr));
+    column-gap: 16px;
+  }
+
+  .a11y-stat-row > :first-child,
+  .a11y-stat-row > :not(:first-child) {
+    grid-column: auto;
+  }
 }
 
 .a11y-stat-label {
@@ -4012,7 +4190,16 @@
 .a11y-widget-biz.a11y-widget-biz .a11y-finding-header {
   display: flex;
   align-items: center;
-  gap: 16px;
+  /* This later "IssueRow anatomy" rule dropped the flex-wrap the row had
+     been given earlier for exactly this reason (see the wrap comment
+     further up this file) — wide enough cards never showed the gap, so
+     the regression sat quiet until a half-page card finally ran the row
+     out of room: the title crushed to one word per line while the fix
+     and level badges sat untouched beside it. Restoring wrap lets the
+     trailing badges drop to their own line instead, which is what a
+     table row does when a column runs out of space. */
+  flex-wrap: wrap;
+  gap: 8px 16px;
   width: 100%;
   min-height: 48px;
   padding: 12px 16px;
@@ -4020,10 +4207,35 @@
 }
 
 .a11y-widget-biz.a11y-widget-biz .a11y-finding-desc {
-  flex: 1;
-  min-width: 0;
+  /* A floor, not a fixed size: the title claims at least this much of the
+     row before anything else gets to push it narrower, so it wraps like a
+     sentence (a few words per line) rather than one word at a time. */
+  flex: 1 1 12rem;
+  min-width: 10rem;
   font-size: var(--a11y-text-body, 1.125rem);
   font-weight: 500;
+}
+
+/* Folds count/method/fix/level onto their own line, always — not only
+   when the row runs out of room. flex-basis: 100% inside a wrapping
+   flex row is what forces that: the item claims a full line for
+   itself, so nothing after .a11y-finding-desc shares its line with it.
+
+   Indented to sit under the title text next to the thumbnail, not
+   flush under the thumbnail itself — the thumbnail's own width plus
+   the row's 16px gap (168 + 16 = 184px). :has() degrades safely on
+   rows with no thumbnail, where a floor of 0 is correct anyway. */
+.a11y-widget-biz.a11y-widget-biz .a11y-finding-meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  flex-basis: 100%;
+  gap: 8px 16px;
+  margin-top: 4px;
+}
+
+.a11y-widget-biz.a11y-widget-biz .a11y-finding-header:has(.a11y-finding-thumb) .a11y-finding-meta {
+  margin-left: 184px;
 }
 
 .a11y-finding-criterion {
@@ -4318,5 +4530,247 @@
   .a11y-widget-biz.a11y-widget-biz .a11y-method-ai {
     border-color: #6f6f6f;
     color: #c6c6c6;
+  }
+}
+
+/* ==========================================================================
+   Finding rows: hover state and caret
+   ==========================================================================
+   These rows are disclosures — the whole header is a button — but nothing
+   said so. No hover feedback, no caret, so they read as static text that
+   happened to be clickable. The kit's own DataTable marks its expandable
+   rows with a chevron that turns, and hovers the row on --layer-hover;
+   both come across here.
+
+   The caret is a pseudo-element with empty alternative text: aria-expanded
+   on the button already carries the state, and a screen reader that also
+   read a glyph would be hearing it twice. It is not the only signal
+   either — the row hovers, and focus draws the ring — so it never becomes
+   a shape-only cue. */
+.a11y-widget-biz.a11y-widget-biz .a11y-finding-header {
+  cursor: pointer;
+  transition: background-color var(--duration-fast-02, 110ms)
+    var(--ease-productive-standard, cubic-bezier(0.2, 0, 0.38, 0.9));
+}
+
+.a11y-widget-biz.a11y-widget-biz .a11y-finding-header:hover {
+  background: var(--layer-hover, #e8e8e8);
+}
+
+/* Leading the row, as the kit's DataTable places it — pushed to the far
+   right by margin-left:auto it sat stranded past the level text, nowhere
+   near the thing it opens. ::before puts it first in flex order without
+   touching the markup. */
+.a11y-widget-biz.a11y-widget-biz .a11y-finding-header::before {
+  content: "\25B8";
+  content: "\25B8" / "";
+  flex-shrink: 0;
+  padding-right: 8px;
+  color: var(--a11y-muted, #525252);
+  transition: transform var(--duration-fast-02, 110ms)
+    var(--ease-productive-standard, cubic-bezier(0.2, 0, 0.38, 0.9));
+}
+
+.a11y-widget-biz.a11y-widget-biz .a11y-finding-header[aria-expanded="true"]::before {
+  transform: rotate(90deg);
+}
+
+@media (prefers-color-scheme: dark) {
+  .a11y-widget-biz.a11y-widget-biz .a11y-finding-header:hover {
+    background: #333333;
+  }
+}
+
+/* Paper has no hover and nothing to expand — the caret would just be a
+   stray glyph on every finding. */
+@media print {
+  .a11y-widget-biz .a11y-finding-header::before {
+    content: none;
+  }
+}
+
+/* The prose measure applies to prose, not to structure. The tighter-leading
+   round capped `p, li, dd` at 25rem so running text keeps a readable line —
+   correct for paragraphs, wrong for every list item that is a layout row.
+   Finding rows are <li>, so they inherited a 400px cap inside a 1424px
+   panel: the thumbnail and badges took their space and the title collapsed
+   to three words a line. Measured before this rule: header 400px, title
+   89px over four lines.
+
+   Released explicitly rather than by narrowing the cap's selector — naming
+   the rows that are structure makes the next one added here obvious. */
+.a11y-widget-biz.a11y-widget-biz .a11y-finding,
+.a11y-widget-biz.a11y-widget-biz .a11y-occurrence,
+.a11y-widget-biz.a11y-widget-biz .a11y-audit-row,
+.a11y-widget-biz.a11y-widget-biz .a11y-sr-line,
+.a11y-widget-biz.a11y-widget-biz .a11y-conf-row,
+.a11y-widget-biz.a11y-widget-biz .a11y-undecided {
+  max-width: none;
+}
+
+/* Prose runs to half the content width — 8 of the 16 grid columns above,
+   not a bare 50%. Half of a 16-column row spanning the full width is 8
+   columns plus 7 of the gutters between them, which comes out to 50% of
+   the row minus half one gutter (the gutter the two halves would have
+   split). Never narrower than the old 25rem, so a small panel is
+   unaffected. The scan form is untouched — it is a two-column card, not
+   running text. */
+.a11y-widget-biz .a11y-widget-inner p,
+.a11y-widget-biz .a11y-widget-inner dd {
+  max-width: max(25rem, calc(50% - 1rem));
+}
+
+/* The accordion heads had a hover all along — on --a11y-surface, which the
+   flat pass set to the page colour, so hovering a section painted white on
+   white and looked like nothing happened. Both kinds of disclosure now use
+   --layer-hover, the kit's own row-hover token, so the two behave alike. */
+.a11y-widget-biz.a11y-widget-biz .a11y-accordion-head:hover {
+  background: var(--layer-hover, #e8e8e8);
+}
+
+@media (prefers-color-scheme: dark) {
+  .a11y-widget-biz.a11y-widget-biz .a11y-accordion-head:hover {
+    background: #333333;
+  }
+}
+
+/* Sections and cards run the widget's full width — only running text
+   measures itself to half the page (the rule above). A container that
+   also capped itself would either crush the table it holds (the finding
+   rows, the conformance list) or double-narrow its own paragraph inside
+   an already-half-width box; leaving the box full width and letting
+   only the `p`/`dd` elements inside it cap themselves is the one rule
+   that is correct in every case, so nothing here needs the general
+   rule's own exceptions repeated. */
+.a11y-widget-biz.a11y-widget-biz .a11y-section,
+.a11y-widget-biz.a11y-widget-biz .a11y-meta-row,
+.a11y-widget-biz.a11y-widget-biz .a11y-pro-actions,
+.a11y-widget-biz.a11y-widget-biz .a11y-pro-summary,
+.a11y-widget-biz.a11y-widget-biz .a11y-score,
+.a11y-widget-biz.a11y-widget-biz .a11y-stat-row,
+.a11y-widget-biz.a11y-widget-biz .a11y-pro-table,
+.a11y-widget-biz.a11y-widget-biz .a11y-url-form,
+.a11y-widget-biz.a11y-widget-biz .a11y-conf {
+  max-width: none;
+}
+
+/* ==========================================================================
+   Trust issues — the kit's TrustIssues screen, not the generic section
+   anatomy. The tint reads as an alert here, so it leads with the claim
+   (title) and gives its category as a caption underneath, and it wraps
+   only the claim + description — the evidence for it (the finding rows)
+   sits below on the card's plain surface, under real column labels,
+   inside one shared card border rather than loose on the page.
+   ========================================================================== */
+.a11y-widget-biz.a11y-widget-biz .a11y-section-redflag {
+  background: var(--a11y-layer-2, #ffffff);
+  border: 1px solid var(--a11y-border, #e0e0e0);
+  border-top: 1px solid var(--a11y-border, #e0e0e0);
+  border-radius: 2px;
+  padding: 0;
+}
+
+.a11y-widget-biz.a11y-widget-biz .a11y-section-tint {
+  background: var(--severity-critical-bg, #fff1f1);
+  padding: 16px;
+  border-radius: 2px 2px 0 0;
+}
+
+.a11y-widget-biz.a11y-widget-biz .a11y-section-redflag .a11y-section-title {
+  margin: 0 0 4px;
+  color: var(--severity-critical, #da1e28);
+}
+
+.a11y-widget-biz.a11y-widget-biz .a11y-section-redflag .a11y-section-eyebrow {
+  display: block;
+  margin: 0 0 12px;
+}
+
+.a11y-widget-biz.a11y-widget-biz .a11y-section-redflag .a11y-section-desc {
+  margin: 0;
+}
+
+.a11y-widget-biz.a11y-widget-biz .a11y-findings-columns {
+  display: flex;
+  gap: 12px;
+  padding: 8px 16px;
+  font-size: var(--a11y-text-label, 0.875rem);
+  font-weight: 500;
+  color: var(--a11y-muted, #525252);
+  background: var(--a11y-layer-1, #f4f4f4);
+  border-bottom: 1px solid var(--a11y-border, #e0e0e0);
+}
+
+/* PrincipleGroup is a padded card from an earlier round (16px on every
+   side, for the title and description it still wraps). The table below
+   it — the column bar and the rows — is meant to reach the same edge the
+   redflag and undecided tables reach, so it bleeds out to the card's
+   outer edge with negative margins and pays the 16px back as its own
+   padding, rather than sitting inset a second time inside the card's
+   padding. Without this, hover stopped short of the true edge — a
+   visible unfilled strip the width of the card's own padding. */
+.a11y-widget-biz.a11y-widget-biz .a11y-principle-group .a11y-findings-columns {
+  margin-inline: -16px;
+  padding-inline: 16px;
+}
+
+.a11y-widget-biz.a11y-widget-biz .a11y-principle-group .a11y-findings-list {
+  margin-inline: -16px;
+}
+
+.a11y-widget-biz.a11y-widget-biz .a11y-principle-group .a11y-finding-header {
+  padding-inline: 16px;
+}
+
+.a11y-widget-biz.a11y-widget-biz .a11y-findings-col-severity {
+  width: 140px;
+  flex-shrink: 0;
+}
+
+/* No horizontal padding on the list itself, everywhere it's used: each
+   row's own hover fill needs to reach the card's true edge, the same
+   edge the column-label bar's background already reaches above it. The
+   rows' own 16px padding keeps their text at the same inset as those
+   labels — insetting the list too would have doubled it, and hover
+   would have stopped a visible margin short of the edge instead of
+   filling it. */
+.a11y-widget-biz.a11y-widget-biz .a11y-findings-list {
+  padding: 0 0 8px;
+}
+
+/* The undecided-checks table: a hairline between rows and hover, like every
+   other table here, but one column rather than two — "who fixes this" reads
+   as a kicker over the row's own paragraphs, not a value worth a column of
+   its own the way severity is. */
+.a11y-widget-biz.a11y-widget-biz .a11y-undecided {
+  display: block;
+  border: 0;
+  border-top: 1px solid var(--a11y-border, #e0e0e0);
+  padding: 12px 16px;
+  background: transparent;
+}
+
+.a11y-widget-biz.a11y-widget-biz .a11y-undecided:hover {
+  background: var(--layer-hover, #e8e8e8);
+}
+
+@media (prefers-color-scheme: dark) {
+  .a11y-widget-biz.a11y-widget-biz .a11y-undecided:hover {
+    background: #333333;
+  }
+}
+
+.a11y-widget-biz.a11y-widget-biz .a11y-undecided-fix {
+  display: inline-flex;
+  margin-bottom: 8px;
+}
+
+.a11y-widget-biz.a11y-widget-biz .a11y-undecided-body {
+  min-width: 0;
+}
+
+@media (prefers-color-scheme: dark) {
+  .a11y-widget-biz .a11y-section-redflag {
+    background: var(--a11y-layer-2, #262626);
   }
 }

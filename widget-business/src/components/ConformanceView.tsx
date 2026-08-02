@@ -64,7 +64,7 @@ export function ConformanceView({
       <DataTable
         caption={`Automated check results against the ${conformance.total}-item ${conformance.standard} checklist`}
         headers={[
-          { key: "result", label: "Result", width: "260px" },
+          { key: "result", label: "Result" },
           { key: "items", label: "Items", align: "right", width: "90px" },
           { key: "meaning", label: "What it means" },
         ]}

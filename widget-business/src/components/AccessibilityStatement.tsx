@@ -243,7 +243,7 @@ export function AccessibilityStatement({ report }: { report: AccessibilityReport
       <DataTable
         caption="What this statement declares"
         headers={[
-          { key: "field", label: "Field", width: "220px" },
+          { key: "field", label: "Field" },
           { key: "value", label: "Value" },
         ]}
         rows={[
