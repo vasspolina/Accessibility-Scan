@@ -4182,3 +4182,52 @@
   font-weight: 500;
   color: var(--severity-critical, #da1e28);
 }
+
+/* ==========================================================================
+   Design notes rows — the kit's DesignNotes anatomy
+   ==========================================================================
+   Flat rows divided by hairlines instead of cards, and the evidence given
+   the room the kit gives it (330px there; here a cap that still shrinks on
+   a narrow panel). What is deliberately NOT copied is the "Design fix"
+   secondary Button: in the kit that is an action, while ours is a label
+   saying who makes the change. Dressing a non-interactive label as a
+   button is the exact fault this product reports on other people's sites,
+   so the label keeps its badge shape. */
+.a11y-widget-biz.a11y-widget-biz .a11y-finding-note {
+  background: transparent;
+  border: 0;
+  border-top: 1px solid var(--a11y-border, #e0e0e0);
+  border-radius: 0;
+}
+
+.a11y-widget-biz.a11y-widget-biz .a11y-finding-note .a11y-finding-header {
+  align-items: flex-start;
+  gap: 24px;
+  padding: 16px 0;
+}
+
+/* The evidence, at the kit's proportions rather than the report's small
+   inline thumb. object-fit stays scale-down so a small capture is never
+   blown up into a blur. */
+.a11y-widget-biz.a11y-widget-biz .a11y-finding-note .a11y-finding-thumb {
+  width: 100%;
+  max-width: 330px;
+  height: auto;
+  max-height: 220px;
+  flex: 0 1 330px;
+  border: 1px solid var(--a11y-border, #e0e0e0);
+  object-fit: scale-down;
+}
+
+/* The remark is the row's point, so it carries the weight the kit gives
+   it and takes the room left over. */
+.a11y-widget-biz.a11y-widget-biz .a11y-finding-note .a11y-finding-desc {
+  flex: 1 1 16rem;
+  font-weight: 500;
+}
+
+@container a11y-panel (max-width: 560px) {
+  .a11y-widget-biz.a11y-widget-biz .a11y-finding-note .a11y-finding-header {
+    gap: 12px;
+  }
+}

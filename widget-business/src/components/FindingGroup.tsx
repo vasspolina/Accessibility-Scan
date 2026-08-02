@@ -457,7 +457,14 @@ export function FindingGroup({
   const visibleEntries = summarize && !showAll ? entries.slice(0, SUMMARY_THRESHOLD) : entries;
 
   return (
-    <li className={`a11y-finding a11y-severity-${rep.severity}`}>
+    /* asNotes marks the advisory rows so the stylesheet can give them the
+       kit's DesignNotes anatomy — flat dividers rather than cards, and the
+       evidence given real room, because for a remark like "text too tight"
+       the screenshot IS the argument and a thumbnail too small to read it
+       in proves nothing. */
+    <li
+      className={`a11y-finding a11y-severity-${rep.severity}${asNotes ? " a11y-finding-note" : ""}`}
+    >
       <button
         type="button"
         className="a11y-finding-header"
