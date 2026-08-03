@@ -53,6 +53,11 @@ export function FindingsList({
   }
 
   const grouped = groupFindings(findings);
+  // Only a fraction of findings carry a WCAG level at all — best-practice
+  // rules (no numbered criterion) never do. A column that's blank in every
+  // row is worse than no column, so it's dropped for the whole table
+  // rather than left in place empty.
+  const showLevel = grouped.some((group) => Boolean(group[0].wcagLevel));
 
   return (
     <>
@@ -75,11 +80,11 @@ export function FindingsList({
                     { key: "issue", label: "Issue" },
                     { key: "wcag", label: "WCAG", width: "1%" },
                     { key: "fix", label: "Who fixes this", width: "1%" },
-                    { key: "level", label: "Level" },
+                    ...(showLevel ? [{ key: "level", label: "Level" }] : []),
                     { key: "count", label: "Instances", align: "right", width: "1%" },
                   ]
             }
-            rows={grouped.map((group) => findingRow(group, { asNotes }))}
+            rows={grouped.map((group) => findingRow(group, { asNotes, showLevel }))}
           />
         </div>
       )}

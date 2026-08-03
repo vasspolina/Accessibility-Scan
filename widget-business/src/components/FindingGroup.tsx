@@ -645,7 +645,7 @@ function FindingDetails({
 // the section above already said otherwise.
 export function findingRow(
   findings: AccessibilityFinding[],
-  { asNotes = false }: { asNotes?: boolean } = {}
+  { asNotes = false, showLevel = true }: { asNotes?: boolean; showLevel?: boolean } = {}
 ): { id: string; cells: ReactNode[]; expand: ReactNode } {
   const rep = findings[0];
   const count = findings.length;
@@ -689,7 +689,11 @@ export function findingRow(
           <span key="fix" className={`a11y-method-badge a11y-fix-${fix.key}`}>
             {fix.label}
           </span>,
-          rep.wcagLevel ? LEVEL_FRAMING[rep.wcagLevel] : "",
+          // Column dropped entirely by FindingsList when no group in the
+          // table has a level at all — an empty column is worse than no
+          // column, and best-practice rules (no numbered criterion) never
+          // carry one.
+          ...(showLevel ? [rep.wcagLevel ? LEVEL_FRAMING[rep.wcagLevel] : ""] : []),
           count > 1 ? `${count} ×` : "",
         ],
     expand: <FindingDetails findings={findings} asNotes={asNotes} />,
