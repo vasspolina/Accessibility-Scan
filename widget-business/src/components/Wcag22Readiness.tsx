@@ -78,12 +78,15 @@ export function Wcag22Readiness({ readiness }: { readiness: Readiness }) {
 
           {/* The kit's tinted-row table, as the legal-standard section has
               it: result ink + word, never colour alone; the criterion cell
-              carries the plain sentence with the official name beneath. */}
+              carries the plain sentence with the official name beneath.
+              Status sits under that text rather than in its own column —
+              a narrow "Status" column and a long criterion sentence beside
+              it left the sentence with no room, crushing it letter by
+              letter on a phone. */}
           <DataTable
             caption={`The ${total} new WCAG 2.2 items, checked where software can`}
             headers={[
               { key: "criterion", label: "Criterion" },
-              { key: "status", label: "Status", width: "1%" },
               { key: "found", label: "Found", align: "right", width: "90px" },
             ]}
             rows={criteria.map((c) => ({
@@ -101,21 +104,20 @@ export function Wcag22Readiness({ readiness }: { readiness: Readiness }) {
                   </strong>
                   <span className="a11y-conf-plain">Officially: {c.name}</span>
                   {c.whyManual && <span className="a11y-conf-plain">{c.whyManual}</span>}
-                </span>,
-                <span
-                  key="s"
-                  className={`a11y-conf-result ${
-                    c.status === "already-failing"
-                      ? "a11y-conf-result-fail"
-                      : c.status === "no-issues-found"
-                        ? "a11y-conf-result-pass"
-                        : "a11y-conf-result-minor"
-                  }`}
-                >
-                  <span aria-hidden="true">
-                    {c.status === "already-failing" ? "!" : c.status === "no-issues-found" ? "✓" : "i"}
-                  </span>{" "}
-                  {STATUS_LABEL[c.status]}
+                  <span
+                    className={`a11y-conf-result ${
+                      c.status === "already-failing"
+                        ? "a11y-conf-result-fail"
+                        : c.status === "no-issues-found"
+                          ? "a11y-conf-result-pass"
+                          : "a11y-conf-result-minor"
+                    }`}
+                  >
+                    <span aria-hidden="true">
+                      {c.status === "already-failing" ? "!" : c.status === "no-issues-found" ? "✓" : "i"}
+                    </span>{" "}
+                    {STATUS_LABEL[c.status]}
+                  </span>
                 </span>,
                 c.findingCount > 0 ? `${c.findingCount} ×` : "—",
               ],

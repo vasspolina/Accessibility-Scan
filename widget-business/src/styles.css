@@ -4784,6 +4784,14 @@ label.a11y-ai-toggle {
   font-weight: 500;
 }
 
+/* Only when it follows the criterion's own text (Wcag22Readiness, folded
+   into that cell rather than holding a narrow column of its own) — the
+   conformance table's Result column uses this same class as the cell's
+   sole content, where an added top gap would be unwanted space above it. */
+.a11y-conf-plain + .a11y-conf-result {
+  margin-top: 8px;
+}
+
 .a11y-conf-meaning {
   color: var(--a11y-muted, #525252);
 }
