@@ -3697,6 +3697,35 @@ label.a11y-ai-toggle {
   white-space: nowrap;
 }
 
+/* At a genuinely narrow panel, Severity's badge (~150px), Issue's own
+   12rem floor and the arrow column alone already run past what's left —
+   WCAG and Who-fixes-this can't fit at any reasonable width without
+   forcing horizontal scroll, the exact thing this table was built to
+   avoid. Both stay reachable in the expand panel (every row already
+   carries them there); dropping them from the compact view is what
+   actually lets Severity, Issue and Instances render without a
+   scrollbar. Issue's own floor also drops here, from 12rem to 8rem —
+   still real room for a title, not the letter-per-line crush the 12rem
+   minimum exists to prevent, and the last few pixels needed to clear
+   the arrow column and Severity's badge without scrolling. */
+@container a11y-panel (max-width: 480px) {
+  .a11y-findings-table th:nth-child(4),
+  .a11y-findings-table th:nth-child(5),
+  .a11y-findings-table tbody td:nth-child(4),
+  .a11y-findings-table tbody td:nth-child(5) {
+    display: none;
+  }
+
+  .a11y-findings-table td:has(.a11y-finding-issue) {
+    /* 6rem, not the usual 12 — the arrow column and Severity's own badge
+       (~150px, not further compressible) already claim most of a panel
+       this narrow. A long word can still break here (rare — most issue
+       titles are short phrases), which reads better than the scrollbar
+       any larger floor forces at this width. */
+    min-width: 6rem;
+  }
+}
+
 .a11y-undecided-cell {
   display: flex;
   flex-direction: column;
