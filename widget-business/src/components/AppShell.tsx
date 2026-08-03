@@ -24,9 +24,7 @@ export function AppShell({
   const hasNav = sections.length > 0;
   return (
     <>
-      <header className="a11y-shell-header">
-        <span className="a11y-shell-title">Accessibility check</span>
-      </header>
+      <header className="a11y-shell-header" />
       {hasNav && <SideNav sections={sections} activeId={activeId} />}
       <div className="a11y-shell-content" ref={contentRef}>
         {children}

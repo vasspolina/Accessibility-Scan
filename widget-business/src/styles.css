@@ -16,6 +16,11 @@
   all: initial;
   font-family: var(--a11y-font, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif);
   color: var(--a11y-text, #1f2328);
+  /* 120% across every text size in the report, desktop and mobile alike
+     — the baseline every element inherits unless it declares its own
+     (score/count numerals keep line-height: 1, set on their own rules,
+     for tight single-line vertical centring). */
+  line-height: 1.2;
   display: block;
   box-sizing: border-box;
 }
@@ -25,6 +30,80 @@
 .a11y-widget-biz *::after {
   box-sizing: border-box;
   font-family: inherit;
+}
+
+/* Radios and checkboxes, hand-drawn instead of left to the OS: the kit's
+   own Radio/Checkbox components only tint the native control with
+   accent-color, and a native control's actual shape is the browser's to
+   draw — Safari's circle and Chrome's are genuinely different sizes and
+   proportions, so the same page looked like two different products
+   depending on what rendered it. appearance: none opts out of all of
+   that; every property below is what replaces it, so a radio or checkbox
+   is pixel-identical everywhere this widget runs. */
+.a11y-widget-biz input[type="radio"],
+.a11y-widget-biz input[type="checkbox"] {
+  appearance: none;
+  -webkit-appearance: none;
+  width: 20px;
+  height: 20px;
+  margin: 0;
+  /* The kit's own form-control colours — the same --border-strong and
+     --interactive its Radio/Checkbox/Input/Select all reach for — rather
+     than this file's --a11y-border, which is the subtle hairline used
+     for section frames and is too faint to read as a control edge. */
+  border: 1px solid var(--border-strong, #8d8d8d);
+  background: var(--background, #ffffff);
+  flex-shrink: 0;
+  cursor: pointer;
+}
+
+.a11y-widget-biz input[type="radio"] {
+  border-radius: 50%;
+}
+
+/* The dot is the border closing inward, not a second element: one
+   property to animate, and it can never drift off-centre the way an
+   absolutely-positioned pseudo-element can at odd zoom levels. */
+.a11y-widget-biz input[type="radio"]:checked {
+  border-width: 6px;
+  border-color: var(--interactive, #0f62fe);
+}
+
+.a11y-widget-biz input[type="checkbox"] {
+  /* 2px, the corner every other Carbon surface in this file uses — a
+     3px radius on a 20px box reads as a different design language than
+     the cards and buttons beside it. */
+  border-radius: 2px;
+  position: relative;
+}
+
+.a11y-widget-biz input[type="checkbox"]:checked {
+  background: var(--interactive, #0f62fe);
+  border-color: var(--interactive, #0f62fe);
+}
+
+.a11y-widget-biz input[type="checkbox"]:checked::after {
+  content: "";
+  position: absolute;
+  left: 6px;
+  top: 2px;
+  width: 5px;
+  height: 10px;
+  border: solid var(--text-on-color, #ffffff);
+  border-width: 0 2px 2px 0;
+  transform: rotate(45deg);
+}
+
+.a11y-widget-biz input[type="radio"]:disabled,
+.a11y-widget-biz input[type="checkbox"]:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+.a11y-widget-biz input[type="radio"]:focus-visible,
+.a11y-widget-biz input[type="checkbox"]:focus-visible {
+  outline: 2px solid var(--interactive, #0f62fe);
+  outline-offset: 2px;
 }
 
 /* Three sizes, and no others.
@@ -104,7 +183,7 @@
   border-radius: 14px;
   background: var(--a11y-bg, #ffffff);
   font-size: var(--a11y-text-body);
-  line-height: 1.5;
+  line-height: 1.2;
 }
 
 .a11y-shell-header {
@@ -112,14 +191,6 @@
   display: flex;
   align-items: center;
   margin-bottom: 24px;
-}
-
-.a11y-shell-title {
-  font-size: var(--a11y-text-label);
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.04em;
-  color: var(--a11y-muted, #57606a);
 }
 
 /* ==========================================================================
@@ -252,7 +323,7 @@
 .a11y-intro {
   margin: 0 0 24px;
   font-size: var(--a11y-text-body);
-  line-height: 1.6;
+  line-height: 1.2;
   color: var(--a11y-muted, #57606a);
 }
 
@@ -481,7 +552,7 @@ label.a11y-ai-toggle {
 .a11y-section-desc {
   margin: 0 0 16px;
   font-size: var(--a11y-text-body);
-  line-height: 1.5;
+  line-height: 1.2;
   color: var(--a11y-muted, #57606a);
 }
 
@@ -522,7 +593,7 @@ label.a11y-ai-toggle {
 .a11y-score-summary {
   margin: 0;
   font-size: var(--a11y-text-body);
-  line-height: 1.5;
+  line-height: 1.2;
 }
 
 .a11y-score-breakdown {
@@ -560,7 +631,7 @@ label.a11y-ai-toggle {
 .a11y-score-caveat {
   margin: 16px 0 0;
   font-size: var(--a11y-text-body);
-  line-height: 1.5;
+  line-height: 1.2;
   color: var(--a11y-muted, #57606a);
   max-width: 62ch;
 }
@@ -661,13 +732,13 @@ label.a11y-ai-toggle {
 .a11y-undecided-head {
   margin: 0;
   font-size: var(--a11y-text-body);
-  line-height: 1.5;
+  line-height: 1.2;
 }
 
 .a11y-undecided-do {
   margin: 8px 0 0;
   font-size: var(--a11y-text-body);
-  line-height: 1.5;
+  line-height: 1.2;
   color: var(--a11y-muted, #57606a);
 }
 
@@ -792,7 +863,6 @@ label.a11y-ai-toggle {
   padding: 2px 8px;
   border-radius: 999px;
   font-size: var(--a11y-text-body);
-  font-weight: 500;
   color: var(--a11y-text, #1f2328);
   background: var(--a11y-surface, #f6f8fa);
   border: 1px solid var(--a11y-border, #d0d7de);
@@ -839,7 +909,6 @@ label.a11y-ai-toggle {
   background: var(--a11y-bg, #ffffff);
   color: var(--a11y-accent, #0969da);
   font-size: var(--a11y-text-body);
-  font-weight: 500;
   cursor: pointer;
   transition: border-color 0.15s ease, background-color 0.15s ease, transform 0.1s ease;
 }
@@ -906,7 +975,7 @@ label.a11y-ai-toggle {
   flex: 1;
   min-width: 0;
   font-size: var(--a11y-text-body);
-  line-height: 1.45;
+  line-height: 1.2;
   word-break: break-word;
   color: var(--a11y-text, #1f2328);
 }
@@ -990,7 +1059,20 @@ label.a11y-ai-toggle {
 
 .a11y-finding-details p {
   margin: 8px 0;
-  line-height: 1.5;
+  line-height: 1.2;
+}
+
+/* Overrides the page-wide 34rem reading-measure cap (`.a11y-widget-inner
+   p`, further down this file): that cap exists so loose running prose
+   doesn't stretch past a comfortable line length, but this text already
+   lives inside the expand panel's own bounded table-cell column — the
+   cap just wasted the width the table had already given it, leaving the
+   callout's grey background trailing off into empty space past where
+   the text wrapped. Doubled class to match the specificity of the rule
+   it overrides, which otherwise wins on being the more specific
+   selector regardless of source order. */
+.a11y-widget-biz.a11y-widget-biz .a11y-finding-details p {
+  max-width: none;
 }
 
 .a11y-finding-impact {
@@ -1160,7 +1242,7 @@ label.a11y-ai-toggle {
   background: var(--a11y-bg, #ffffff);
   border: 1px solid var(--a11y-border, #d0d7de);
   font-size: var(--a11y-text-body);
-  line-height: 1.4;
+  line-height: 1.2;
   word-break: break-word;
 }
 
@@ -1279,7 +1361,7 @@ label.a11y-ai-toggle {
   flex: 1;
   min-width: 0;
   font-size: var(--a11y-text-body);
-  line-height: 1.5;
+  line-height: 1.2;
   color: var(--a11y-text, #1f2328);
   word-break: break-word;
 }
@@ -1360,6 +1442,19 @@ label.a11y-ai-toggle {
   }
 }
 
+/* One tile per row at phone width. auto-fit still finds room for two
+   140px tracks here, but a tile is a number beside a two-line caption —
+   at half a 390px screen the caption breaks after every word or two and
+   the row reads as a ragged block rather than a figure. Three stacked
+   full-width tiles cost more scrolling and are legible. Later than the
+   700px rule above on purpose: equal specificity, so source order is
+   what decides it. */
+@container a11y-panel (max-width: 560px) {
+  .a11y-conf-tiles {
+    grid-template-columns: 1fr;
+  }
+}
+
 .a11y-conf-tile {
   min-width: 0;
   display: flex;
@@ -1414,7 +1509,7 @@ label.a11y-ai-toggle {
   border-radius: 0 8px 8px 0;
   background: var(--a11y-surface, #f6f8fa);
   font-size: var(--a11y-text-body);
-  line-height: 1.55;
+  line-height: 1.2;
 }
 
 /* Short paragraphs rather than one dense block — the same readability this
@@ -1555,7 +1650,7 @@ label.a11y-ai-toggle {
 .a11y-sim-note {
   margin: 0 0 12px;
   font-size: var(--a11y-text-body);
-  line-height: 1.55;
+  line-height: 1.2;
   color: var(--a11y-text, #1f2328);
 }
 
@@ -1591,7 +1686,6 @@ label.a11y-ai-toggle {
   flex: 1 1 180px;
   font: inherit;
   font-size: var(--a11y-text-body);
-  font-weight: 500;
   text-align: left;
   padding: 12px 16px;
   border: 1px solid var(--a11y-border, #d0d7de);
@@ -1798,6 +1892,14 @@ label.a11y-ai-toggle {
   color: var(--a11y-text, #1f2328);
 }
 
+/* The kit's DataTable defaults to body size, right for a table of findings
+   but too large for a plain field/value reference lookup — "Prepared for",
+   "Website", six short rows nobody reads as prose. Label size, the same
+   scale step every other table header/badge in this report already uses. */
+.a11y-widget-biz.a11y-widget-biz .a11y-stmt table {
+  font-size: var(--a11y-text-label, 0.875rem);
+}
+
 .a11y-stmt-actions {
   display: flex;
   flex-wrap: wrap;
@@ -1816,7 +1918,7 @@ label.a11y-ai-toggle {
   background: var(--a11y-surface, #f6f8fa);
   font-family: inherit; /* no monospace in this system: surface + border mark code */
   font-size: var(--a11y-text-body);
-  line-height: 1.6;
+  line-height: 1.2;
   white-space: pre-wrap;
   word-break: break-word;
 }
@@ -1998,7 +2100,7 @@ label.a11y-ai-toggle {
 .a11y-login-note {
   margin: 0 0 12px;
   font-size: var(--a11y-text-body);
-  line-height: 1.5;
+  line-height: 1.2;
   color: var(--a11y-muted, #57606a);
 }
 
@@ -2025,13 +2127,13 @@ label.a11y-ai-toggle {
   margin: 0 0 12px;
   font-size: var(--a11y-text-body);
   font-weight: 500;
-  line-height: 1.5;
+  line-height: 1.2;
 }
 
 .a11y-blocked-body {
   margin: 0 0 12px;
   font-size: var(--a11y-text-body);
-  line-height: 1.55;
+  line-height: 1.2;
   color: var(--a11y-muted, #57606a);
 }
 
@@ -2039,7 +2141,7 @@ label.a11y-ai-toggle {
   margin: 0;
   padding-left: 24px;
   font-size: var(--a11y-text-body);
-  line-height: 1.6;
+  line-height: 1.2;
 }
 
 .a11y-blocked-list li {
@@ -2279,7 +2381,7 @@ label.a11y-ai-toggle {
    sizes — Carbon specifies it per step rather than leaving it at normal. */
 .a11y-widget-inner {
   font-size: var(--a11y-text-body);   /* body-02 */
-  line-height: 1.5;
+  line-height: 1.2;
   letter-spacing: 0;
   padding: 32px;     /* spacing-07 */
   border: 1px solid var(--a11y-border, #e0e0e0);
@@ -2288,8 +2390,9 @@ label.a11y-ai-toggle {
 .a11y-section-title,
 .a11y-principle-title {
   font-size: var(--a11y-text-title);   /* heading-03 */
-  line-height: 1.4;
-  font-weight: 400;  /* Carbon headings are regular weight, not bold */
+  /* Larger text can carry more room between lines than body copy —
+     120%, not the 110% baseline every other size uses. */
+  line-height: 1.2;
   letter-spacing: 0;
 }
 
@@ -2297,7 +2400,7 @@ label.a11y-ai-toggle {
 .a11y-principle-desc,
 .a11y-intro {
   font-size: var(--a11y-text-body);   /* body-01 */
-  line-height: 1.43;
+  line-height: 1.2;
   letter-spacing: 0.16px;
 }
 
@@ -2308,7 +2411,6 @@ label.a11y-ai-toggle {
   min-height: 48px;
   padding: 0 16px;
   font-size: var(--a11y-text-body);
-  font-weight: 400;
   letter-spacing: 0.16px;
   background: var(--a11y-accent, #0f62fe);
   transition: background-color 0.11s cubic-bezier(0.2, 0, 0.38, 0.9);
@@ -2377,7 +2479,6 @@ label.a11y-ai-toggle {
 .a11y-severity-badge {
   padding: 2px 8px;
   font-size: var(--a11y-text-body);
-  font-weight: 400;
   letter-spacing: 0.32px;
 }
 
@@ -2558,6 +2659,18 @@ label.a11y-ai-toggle {
   white-space: nowrap;
 }
 
+/* Even alone, on its own full-width line, "Screen reader preview (16
+   announcements)" doesn't fit inside a real phone panel at this size —
+   nowrap above stopped meaning "don't wrap yet, there's room" and started
+   meaning "run off the edge of the screen," which forced the whole page
+   to scroll sideways to reach the rest of the title. Two lines is the
+   right trade at this width; a phrase running off-screen is not. */
+@container a11y-panel (max-width: 480px) {
+  .a11y-accordion-head > span:first-child {
+    white-space: normal;
+  }
+}
+
 .a11y-accordion-chevron {
   flex-shrink: 0;
   width: 16px;
@@ -2592,8 +2705,7 @@ label.a11y-ai-toggle {
    isn't a heading, and at 15px/600 it was competing with the body copy. */
 .a11y-url-label {
   font-size: var(--a11y-text-body);
-  font-weight: 400;
-  line-height: 1.33;
+  line-height: 1.2;
   letter-spacing: 0.32px;
   color: var(--a11y-muted, #525252);
   margin-bottom: 8px;
@@ -2680,7 +2792,7 @@ label.a11y-ai-toggle {
    browser default, and its label is body-compact-01. */
 .a11y-ai-toggle {
   font-size: var(--a11y-text-body);
-  line-height: 1.29;
+  line-height: 1.2;
   letter-spacing: 0.16px;
   color: var(--a11y-text, #161616);
 }
@@ -2818,7 +2930,7 @@ label.a11y-ai-toggle {
 .a11y-colour-fix-note {
   margin: 8px 0 0;
   font-size: var(--a11y-text-body);
-  line-height: 1.4;
+  line-height: 1.2;
   color: var(--a11y-muted, #525252);
 }
 
@@ -2831,7 +2943,7 @@ label.a11y-ai-toggle {
   background: var(--a11y-accent-faint, #edf5ff);
   border-left: 3px solid var(--a11y-accent, #0f62fe);
   font-size: var(--a11y-text-body);
-  line-height: 1.5;
+  line-height: 1.2;
 }
 
 .a11y-fix-once code {
@@ -2861,13 +2973,13 @@ label.a11y-ai-toggle {
 .a11y-doc-verdict {
   margin: 0 0 8px;
   font-size: var(--a11y-text-title);
-  line-height: 1.4;
+  line-height: 1.2;
 }
 
 .a11y-doc-meta {
   margin: 0;
   font-size: var(--a11y-text-body);
-  line-height: 1.5;
+  line-height: 1.2;
   color: var(--a11y-muted, #525252);
 }
 
@@ -2899,6 +3011,13 @@ label.a11y-ai-toggle {
     --a11y-surface: #262626;       /* layer-01 */
     --a11y-border: #393939;        /* border-subtle-01 */
     --a11y-accent: #78a9ff;        /* link-primary dark — 6.9:1 on #161616 */
+    /* The active-nav-link wash: never redeclared for dark, so the active
+       sidebar item kept the light theme's near-white fill (#edf5ff) under
+       this theme's light-blue text — light on light, 2.1:1. A translucent
+       tint of the accent itself (rather than a fixed hex) stays dark
+       regardless of what sits behind it, so the light accent text reads
+       against it in both themes. */
+    --a11y-accent-faint: rgba(120, 169, 255, 0.18);
     --a11y-score-bad: #ff8389;     /* support-error dark */
     --a11y-score-warn: #ffb784;
     --a11y-score-good: #42be65;
@@ -3267,7 +3386,7 @@ label.a11y-ai-toggle {
   border-radius: 999px;
   font-size: var(--a11y-text-body);
   font-weight: 500;
-  line-height: 1.4;
+  line-height: 1.2;
   color: var(--a11y-text, #161616);
   background: transparent;
 }
@@ -3460,6 +3579,7 @@ label.a11y-ai-toggle {
 .a11y-results-title {
   margin: 0 0 8px;
   font-size: var(--a11y-text-title, 1.75rem);
+  line-height: 1.2;
   font-weight: 500;
   letter-spacing: -0.01em;
   overflow-wrap: anywhere;
@@ -3536,16 +3656,28 @@ label.a11y-ai-toggle {
    shrinks "Places" and "Design fix" until they wrap letter by letter
    rather than giving that room to the column that needs it. */
 .a11y-undecided-table {
-  /* Same escape hatch as .a11y-pro-table: without a real floor under it,
-     `width: 100%` alone has no lower bound, and the browser will crush
-     "What we couldn't decide" down to a sliver instead of scrolling once
-     the panel gets narrower than this table wants to be. */
+  /* Escape hatch, not the fix: below the panel widths the folded badge
+     (see .a11y-undecided-cell) already handles, "What we couldn't
+     decide" can still outgrow a genuinely tiny host — this is the floor
+     under that, not something normal phone widths should ever reach. */
   overflow-x: auto;
 }
 
 .a11y-undecided-table table {
-  min-width: 36rem;
   width: 100%;
+  /* Same flattening as .a11y-findings-table: no second frame drawn
+     around content that already sits inside its own report section. */
+  border: 0 !important;
+}
+
+.a11y-undecided-table thead tr {
+  background: transparent !important;
+}
+
+@media (hover: none) {
+  .a11y-undecided-table tbody tr {
+    background: transparent !important;
+  }
 }
 
 /* Same reasoning as .a11y-findings-table: the fix badge shouldn't float at
@@ -3554,15 +3686,18 @@ label.a11y-ai-toggle {
   vertical-align: top !important;
 }
 
-.a11y-undecided-table th:nth-child(1),
-.a11y-undecided-table th:nth-child(3),
-.a11y-undecided-table tbody td:nth-child(1),
-.a11y-undecided-table tbody td:nth-child(3) {
+/* Who-fixes-this folds into the issue cell now (see UndecidedChecks.tsx)
+   rather than holding a column of its own, so :first-child is "What we
+   couldn't decide" and :last-child is "Places" — the one column left
+   that's still a short, non-wrapping value. */
+.a11y-undecided-table th:last-child,
+.a11y-undecided-table tbody td:last-child {
   white-space: nowrap;
+  font-variant-numeric: tabular-nums;
 }
 
-.a11y-undecided-table tbody td:nth-child(3) {
-  font-variant-numeric: tabular-nums;
+.a11y-undecided-table td:has(.a11y-undecided-cell) {
+  min-width: 12rem;
 }
 
 /* .a11y-method-badge normally wraps its own text as a last resort against
@@ -3589,6 +3724,30 @@ label.a11y-ai-toggle {
      into a scrollbar instead of a layout break. */
   min-width: 100%;
   width: auto;
+  /* The kit frames every table with a 1px border by default — a second
+     box drawn around content that already sits inside the report's own
+     section, on top of the divider each row already carries. !important
+     beats the inline style the same as everywhere else in this file. */
+  border: 0 !important;
+}
+
+/* And the header row's own fill, same reasoning: a grey band behind
+   "Issue" reads as its own box floating above the rows, not as part of
+   one flat table. */
+.a11y-findings-table thead tr {
+  background: transparent !important;
+}
+
+/* The kit drives its row-hover fill from React state set on
+   onMouseEnter/onMouseLeave, not real CSS :hover — on a touchscreen a tap
+   can fire mouseenter (to make the row respond at all) with no matching
+   mouseleave ever following, so the last row someone tapped stays
+   permanently grey. hover: none is true only on devices with no real
+   hover capability, so a mouse pointer keeps the intended highlight. */
+@media (hover: none) {
+  .a11y-findings-table tbody tr {
+    background: transparent !important;
+  }
 }
 
 /* The kit's DataTable centers every cell vertically (an inline style,
@@ -3602,15 +3761,15 @@ label.a11y-ai-toggle {
 }
 
 /* The kit's DataTable indents the expand row's content 48px inline —
-   enough to clear the arrow column alone, which lines the detail up
-   under the Severity badge instead of the Issue column it's actually
-   elaborating on. Measured against the header row: the Issue column
-   starts ~197px from the table's own left edge (arrow + Severity's
-   combined width), the same across every table built on this
-   component since they all share the one severity-badge measure —
-   !important to beat the inline style, same as the vertical-align
-   fix above. */
-.a11y-findings-table tbody td[colspan],
+   enough to clear the arrow column alone, which is exactly where this
+   table's Issue column now starts too, since Severity folds into the
+   Issue cell (above the title) instead of holding a column of its own —
+   so the default already lines the detail up correctly and needs no
+   override here.
+
+   The professional table still carries Severity as its own dedicated
+   column, so its Issue column starts further over — ~197px (arrow +
+   Severity's combined width) — !important to beat the inline style. */
 .a11y-pro-table tbody td[colspan] {
   padding-left: 197px !important;
 }
@@ -3618,11 +3777,19 @@ label.a11y-ai-toggle {
 .a11y-finding-issue {
   display: flex;
   flex-direction: column;
+  /* Without this, flex's default "stretch" pulls the Severity badge
+     (the folded-in first child, see findingRow in FindingGroup.tsx) out
+     to the cell's full width instead of leaving it its own natural
+     pill size. */
+  align-items: flex-start;
   gap: 4px;
 }
 
+/* Regular, not medium: this is the finding's own sentence — the main
+   text of the row, not a label on it — and the severity badge folded
+   above it already marks where the row starts. */
 .a11y-finding-title {
-  font-weight: 500;
+  font-weight: 400;
 }
 
 .a11y-finding-meta-line {
@@ -3663,19 +3830,20 @@ label.a11y-ai-toggle {
    it onto one line was what starved the Issue column down to a
    letter-per-line sliver — it wraps like Issue does instead. nth-child
    positions assume the arrow column is always first (every row has an
-   expand panel): 4 = WCAG, 5 = fix. The asNotes shape has neither column,
-   so these simply match nothing there. */
+   expand panel), and Severity folds into the Issue cell rather than
+   holding a column of its own: 3 = WCAG, 4 = fix. The asNotes shape has
+   neither column, so these simply match nothing there. */
+.a11y-findings-table th:nth-child(3),
 .a11y-findings-table th:nth-child(4),
-.a11y-findings-table th:nth-child(5),
-.a11y-findings-table tbody td:nth-child(4),
-.a11y-findings-table tbody td:nth-child(5) {
+.a11y-findings-table tbody td:nth-child(3),
+.a11y-findings-table tbody td:nth-child(4) {
   white-space: nowrap;
 }
 
 /* The one column that must always keep real room, whichever position it
-   lands in across this table's two shapes (with or without severity/WCAG/
-   fix/level columns) — :has() finds it by what it contains rather than by
-   position, which position-based nth-child can't do across both shapes. */
+   lands in across this table's two shapes (with or without WCAG/fix/level
+   columns) — :has() finds it by what it contains rather than by position,
+   which position-based nth-child can't do across both shapes. */
 .a11y-findings-table td:has(.a11y-finding-issue) {
   min-width: 12rem;
 }
@@ -3683,9 +3851,9 @@ label.a11y-ai-toggle {
 /* Level (e.g. "Required by law in most places (Level AA)") is a phrase,
    not a label — same reasoning as leaving it out of the nowrap rule above.
    Left with no minimum it got compressed to its longest unbreakable word,
-   which is unreadable at any width. nth-child(6): arrow, severity, issue,
-   WCAG, fix, level — only present in the shape that has a fix column. */
-.a11y-findings-table tbody td:nth-child(6) {
+   which is unreadable at any width. nth-child(5): arrow, issue, WCAG, fix,
+   level — only present in the shape that has a fix column. */
+.a11y-findings-table tbody td:nth-child(5) {
   min-width: 10rem;
 }
 
@@ -3697,32 +3865,52 @@ label.a11y-ai-toggle {
   white-space: nowrap;
 }
 
-/* At a genuinely narrow panel, Severity's badge (~150px), Issue's own
-   12rem floor and the arrow column alone already run past what's left —
-   WCAG and Who-fixes-this can't fit at any reasonable width without
+/* At a genuinely narrow panel, Issue's own 12rem floor and the arrow
+   column alone still run past what's left once an Instances column joins
+   in — WCAG and Who-fixes-this can't fit at any reasonable width without
    forcing horizontal scroll, the exact thing this table was built to
    avoid. Both stay reachable in the expand panel (every row already
    carries them there); dropping them from the compact view is what
-   actually lets Severity, Issue and Instances render without a
-   scrollbar. Issue's own floor also drops here, from 12rem to 8rem —
-   still real room for a title, not the letter-per-line crush the 12rem
-   minimum exists to prevent, and the last few pixels needed to clear
-   the arrow column and Severity's badge without scrolling. */
+   actually lets Issue and Instances render without a scrollbar. Severity
+   no longer competes for this space at all — it's folded above the title
+   inside the Issue cell rather than holding a column of its own — so
+   Issue's floor only drops from 12rem to 8rem here, not the 6rem this
+   needed back when Severity's own badge was still claiming width too. */
 @container a11y-panel (max-width: 480px) {
+  /* nth-child(5) — Level, when the table has one — needs the same
+     treatment: its own 10rem floor overflows this width on its own,
+     dev-fixture testing missed it because the dark-pattern table this
+     rule was built against never carries a Level column, but every
+     accessibility-category findings table can. Same fallback as WCAG
+     and Who-fixes-this: stays in the expand panel, drops from the row. */
+  .a11y-findings-table th:nth-child(3),
   .a11y-findings-table th:nth-child(4),
   .a11y-findings-table th:nth-child(5),
+  .a11y-findings-table tbody td:nth-child(3),
   .a11y-findings-table tbody td:nth-child(4),
   .a11y-findings-table tbody td:nth-child(5) {
     display: none;
   }
 
   .a11y-findings-table td:has(.a11y-finding-issue) {
-    /* 6rem, not the usual 12 — the arrow column and Severity's own badge
-       (~150px, not further compressible) already claim most of a panel
-       this narrow. A long word can still break here (rare — most issue
-       titles are short phrases), which reads better than the scrollbar
-       any larger floor forces at this width. */
-    min-width: 6rem;
+    min-width: 8rem;
+  }
+
+  /* The kit's own cell padding is 1rem left/right (--space-05) — on top
+     of the panel's already-tightened 20px page gutter, that reads as a
+     second margin nobody asked for at this width. 8px keeps the columns
+     visually separated without spending more of a 390px screen on
+     whitespace than the panel's own edge already does. */
+  .a11y-findings-table td,
+  .a11y-findings-table th {
+    padding-left: 8px !important;
+    padding-right: 8px !important;
+  }
+
+  .a11y-undecided-table td,
+  .a11y-undecided-table th {
+    padding-left: 8px !important;
+    padding-right: 8px !important;
   }
 }
 
@@ -4127,7 +4315,7 @@ label.a11y-ai-toggle {
    — emphasis stays at the face's Medium — Hochuli's restraint, and the
      face has nothing heavier anyway. */
 .a11y-widget-biz.a11y-widget-biz .a11y-widget-inner {
-  line-height: 1.55;
+  line-height: 1.2;
 }
 
 .a11y-widget-biz .a11y-widget-inner p,
@@ -4159,7 +4347,7 @@ label.a11y-ai-toggle {
 .a11y-widget-biz.a11y-widget-biz .a11y-rule-chip,
 .a11y-widget-biz.a11y-widget-biz .a11y-meta-row > span,
 .a11y-widget-biz.a11y-widget-biz button {
-  line-height: 1.3;
+  line-height: 1.2;
 }
 
 .a11y-pro-summary h3,
@@ -4167,7 +4355,7 @@ label.a11y-ai-toggle {
 .a11y-pro-summary dt,
 .a11y-pro-summary dd,
 .a11y-issues-line {
-  line-height: 1.3;
+  line-height: 1.2;
 }
 
 .a11y-widget-biz.a11y-widget-biz .a11y-score-breakdown div {
@@ -4179,7 +4367,7 @@ label.a11y-ai-toggle {
    1.55 → 1.24, UI 1.3 → 1.05, headings 1.2 → 1.0 (the floor a line box
    allows without clipping this face). */
 .a11y-widget-biz.a11y-widget-biz .a11y-widget-inner {
-  line-height: 1.24;
+  line-height: 1.2;
 }
 
 /* The kit's DataTable sets line-height: var(--type-body-lh) inline on
@@ -4189,7 +4377,7 @@ label.a11y-ai-toggle {
    shares this one component, so the fix has to too. */
 .a11y-widget-biz .a11y-widget-inner table td,
 .a11y-widget-biz .a11y-widget-inner table th {
-  line-height: 1.24 !important;
+  line-height: 1.2 !important;
 }
 
 /* 36rem (576px), measured directly against rendered text rather than
@@ -4212,7 +4400,7 @@ label.a11y-ai-toggle {
 .a11y-pro-summary dt,
 .a11y-pro-summary dd,
 .a11y-issues-line {
-  line-height: 1.05;
+  line-height: 1.2;
 }
 
 .a11y-widget-biz.a11y-widget-biz .a11y-section-title,
@@ -4279,6 +4467,34 @@ label.a11y-ai-toggle {
   margin-inline: 0;
   padding: 24px 32px;
   padding-left: 25px;
+}
+
+/* 20px gutters at phone width. The desktop 32/25px pair is a comfortable
+   margin on a wide column and an expensive one on a 390px screen, where
+   it costs the content the better part of a word per line. Keyed on the
+   shell container (the widget's own outer width) rather than the panel,
+   since this is the panel's own padding being set. */
+@container a11y-shell (max-width: 560px) {
+  .a11y-widget-biz.a11y-widget-biz .a11y-widget-inner {
+    padding: 20px;
+  }
+
+  /* Titles at 70% of their desktop size. The 28px scale was set for a
+     wide column; on a 390px screen the same size wraps most headings to
+     two or three lines and reads as shouting relative to the 18px body
+     text beside it. Redeclaring the token here (rather than every
+     selector that reads it) rescales every title-sized element in the
+     report in one place, headings and the score/count numerals alike.
+
+     On .a11y-widget-inner, not .a11y-widget-biz: the latter is the
+     element that establishes the a11y-shell container itself, and a
+     container query can never restyle the element whose own size
+     defines it — only its descendants (same rule this file's own
+     earlier comments already document for container-type/-name). */
+  .a11y-widget-biz.a11y-widget-biz .a11y-widget-inner {
+    --a11y-text-title: 1.225rem;   /* 19.6px — 70% of 28px */
+    --a11y-text-display: 1.225rem;
+  }
 }
 
 /* Carbon's 16-column ruler lives at the section level, not here: every
@@ -4457,7 +4673,7 @@ label.a11y-ai-toggle {
   margin-top: 4px;
   font-size: var(--a11y-text-label, 0.875rem);
   color: var(--a11y-muted, #525252);
-  line-height: 1.33;
+  line-height: 1.2;
 }
 
 .a11y-form-footer {
@@ -4477,14 +4693,28 @@ label.a11y-ai-toggle {
   margin: 0;
 }
 
+/* No grey card fill/frame around these sections — flat, on the page,
+   like every other top-level section. This was the rule actually
+   winning the cascade (later than the earlier flat-pass attempt at the
+   same selector), which is why the box kept coming back. */
 .a11y-widget-biz.a11y-widget-biz .a11y-conf,
 .a11y-widget-biz.a11y-widget-biz .a11y-w22,
 .a11y-widget-biz.a11y-widget-biz .a11y-stmt {
-  background: #f4f4f4;
-  border: 1px solid var(--a11y-border, #e0e0e0);
-  border-radius: 2px;
-  border-top-width: 1px;
-  padding: 24px;
+  background: transparent;
+  border: 0;
+  border-radius: 0;
+  padding: 0;
+}
+
+/* The verdict and the sentence it introduces, stacked — see the note in
+   ConformanceView on why they share one cell rather than sitting in two
+   columns. align-items keeps the verdict its own width instead of
+   stretching it the full cell. */
+.a11y-conf-cell {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 4px;
 }
 
 .a11y-conf-result {
@@ -4492,6 +4722,21 @@ label.a11y-ai-toggle {
   align-items: center;
   gap: 8px;
   font-weight: 500;
+}
+
+.a11y-conf-meaning {
+  color: var(--a11y-muted, #525252);
+}
+
+/* Never got the min-width protection every other table's narrow column
+   has — inherited overflow-wrap: anywhere from the kit's DataTable cells
+   had nothing to push back against, so at a real phone width "We
+   checked, found nothing" broke as "We/che/cke/d,/foun/d/noth/ing"
+   instead of wrapping at word boundaries. No arrow column on this
+   table's rows (none of them expand), so the Result column really is
+   :first-child. */
+.a11y-conf table tbody td:first-child {
+  min-width: 9rem;
 }
 
 .a11y-conf-result-fail { color: #da1e28; }
@@ -4539,6 +4784,23 @@ label.a11y-ai-toggle {
   .a11y-widget-biz .a11y-conf-result-fail { color: #ff8389; }
   .a11y-widget-biz .a11y-conf-result-pass { color: #42be65; }
   .a11y-widget-biz .a11y-conf-result-minor { color: #c6c6c6; }
+}
+
+/* No card frame at phone width. The fill and hairline exist to mark the
+   form off from the page around it — at this width the form IS the page,
+   edge to edge, so the box only spends horizontal room the fields need
+   and reads as a grey slab behind the content. Placed after the dark
+   block above deliberately: that block re-fills the same selector at the
+   same specificity, so an earlier rule here would lose the tie in dark
+   mode and the slab would come back on exactly the theme the complaint
+   came from. */
+@container a11y-panel (max-width: 560px) {
+  .a11y-widget-biz.a11y-widget-biz .a11y-url-form {
+    background: transparent;
+    border: 0;
+    border-radius: 0;
+    padding: 0;
+  }
 }
 
 /* The NewScan section header, per the kit: heading then a muted one-line
@@ -4798,6 +5060,21 @@ label.a11y-ai-toggle {
 .a11y-url-row > button {
   flex-shrink: 0;
   white-space: nowrap;
+}
+
+/* At phone width the two stop sharing a line at all. Side by side they
+   both fit, but only by squeezing the field to a few characters — an
+   address is the longest thing anyone types here, and it deserves the
+   full width more than the button does. 100% on the field forces the
+   wrap the flex basis above only allows. */
+@container a11y-panel (max-width: 560px) {
+  .a11y-url-row input {
+    flex: 1 1 100%;
+  }
+
+  .a11y-url-row > button {
+    width: 100%;
+  }
 }
 
 /* ==========================================================================
@@ -5176,11 +5453,13 @@ label.a11y-ai-toggle {
    sits below on the card's plain surface, under real column labels,
    inside one shared card border rather than loose on the page.
    ========================================================================== */
+/* No outer frame — the red tint below is already its own box (a box
+   inside this one just doubled the enclosure), so the section sits
+   directly on the page and the tint is the only boundary the eye needs. */
 .a11y-widget-biz.a11y-widget-biz .a11y-section-redflag {
-  background: var(--a11y-layer-2, #ffffff);
-  border: 1px solid var(--a11y-border, #e0e0e0);
-  border-top: 1px solid var(--a11y-border, #e0e0e0);
-  border-radius: 2px;
+  background: transparent;
+  border: 0;
+  border-radius: 0;
   padding: 0;
 }
 

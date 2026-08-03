@@ -675,6 +675,14 @@ export function findingRow(
 
   const issueCell = (
     <span className="a11y-finding-issue">
+      {/* Severity used to be its own table column — on a narrow phone, its
+          badge plus the Issue text plus the arrow column already exceeded
+          the viewport, forcing horizontal scroll before a reader reached
+          the row's actual content. Folded here, above the title, so the
+          table never needs a column for it at all. */}
+      {!asNotes && (
+        <SeverityTag key="sev" severity={rep.severity} label={severityLabel[rep.severity]} />
+      )}
       <span className="a11y-finding-title">{title}</span>
       {(keyboardCheck || fromAi) && (
         <span className="a11y-finding-meta-line">
@@ -703,7 +711,6 @@ export function findingRow(
     cells: asNotes
       ? [issueCell, ...(showCount ? [count > 1 ? `${count} ×` : ""] : [])]
       : [
-          <SeverityTag key="sev" severity={rep.severity} label={severityLabel[rep.severity]} />,
           issueCell,
           criterion,
           <span key="fix" className={`a11y-method-badge a11y-fix-${fix.key}`}>

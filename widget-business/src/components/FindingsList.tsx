@@ -83,7 +83,6 @@ export function FindingsList({
                       : []),
                   ]
                 : [
-                    { key: "severity", label: "Severity", width: "1%" },
                     { key: "issue", label: "Issue" },
                     { key: "wcag", label: "WCAG", width: "1%" },
                     { key: "fix", label: "Who fixes this", width: "1%" },

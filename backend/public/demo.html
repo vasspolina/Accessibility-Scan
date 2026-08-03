@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Accessibility checker — demo</title>
+    <title>Accessibility scan — demo</title>
     <style>
       body {
         /* PP Telegraf arrives via the widget's injected @font-face; the
@@ -55,13 +55,6 @@
         margin-inline: 32px;
       }
       h1 { font-size: 28px; line-height: 36px; margin: 0 0 8px; font-weight: 400; }
-      /* margin-top/bottom only, not the margin shorthand: p.lede and
-         .page > p tie at equal specificity (one class + one element each),
-         so a plain "margin" here would win the tie-break by coming later
-         and silently cancel the horizontal gutter .page > p sets — this
-         paragraph would sit flush against the edge while every sibling
-         stayed indented. */
-      p.lede { font-size: 16px; line-height: 1.5; color: #525252; margin-top: 0; margin-bottom: 32px; }
       .try-title { font-size: 18px; font-weight: 500; margin: 40px 0 0; }
       .try { font-size: 14px; line-height: 1.5; color: #525252; margin: 8px 0 0; }
       /* Buttons, not decorated text: our own scan flagged the previous
@@ -91,7 +84,7 @@
          ramp the design system uses. */
       @media (prefers-color-scheme: dark) {
         body { background: #161616; color: #f4f4f4; }
-        p.lede, .try { color: #c6c6c6; }
+        .try { color: #c6c6c6; }
         .try-list button {
           background: #262626; border-color: #6f6f6f; color: #f4f4f4;
         }
@@ -105,11 +98,7 @@
       <span class="wordmark">Accessibility scan</span>
     </header>
     <main class="page">
-      <h1>Accessibility checker</h1>
-      <p class="lede">
-        Enter any public web address to scan it. The widget below is the
-        embeddable one, running against this service.
-      </p>
+      <h1>Accessibility scan</h1>
 
       <!-- Both major sections carry a heading: the self-scan flagged a page
            where the examples had one and the checker itself did not. -->

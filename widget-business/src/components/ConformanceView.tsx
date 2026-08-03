@@ -63,43 +63,55 @@ export function ConformanceView({
           table — glyph + words + count + meaning, never colour alone. */}
       <DataTable
         caption={`Automated check results against the ${conformance.standard} checklist of ${conformance.total} items`}
+        // Two columns, not three: the verdict and what it means used to sit
+        // side by side, which left "What it means" a sliver that broke its
+        // own sentences mid-word on a phone. The verdict folds on top of the
+        // text it introduces instead — one column with room to wrap, and the
+        // count beside it.
         headers={[
           { key: "result", label: "Result" },
           { key: "items", label: "Items", align: "right", width: "90px" },
-          { key: "meaning", label: "What it means" },
         ]}
         rows={[
           {
             id: "failed",
             background: "var(--severity-critical-bg, #fff1f1)",
             cells: [
-              <span key="r" className="a11y-conf-result a11y-conf-result-fail">
-                <span aria-hidden="true">!</span> We found problems
+              <span key="r" className="a11y-conf-cell">
+                <span className="a11y-conf-result a11y-conf-result-fail">
+                  <span aria-hidden="true">!</span> We found problems
+                </span>
+                <span className="a11y-conf-meaning">
+                  {`${conformance.failedByLevel.A} at level A, ${conformance.failedByLevel.AA} at AA`}
+                </span>
               </span>,
               String(conformance.failed),
-              `${conformance.failedByLevel.A} at level A, ${conformance.failedByLevel.AA} at AA`,
             ],
           },
           {
             id: "clean",
             background: "var(--severity-pass-bg, #defbe6)",
             cells: [
-              <span key="r" className="a11y-conf-result a11y-conf-result-pass">
-                <span aria-hidden="true">✓</span> We checked, found nothing
+              <span key="r" className="a11y-conf-cell">
+                <span className="a11y-conf-result a11y-conf-result-pass">
+                  <span aria-hidden="true">✓</span> We checked, found nothing
+                </span>
+                <span className="a11y-conf-meaning">Still worth a human look</span>
               </span>,
               String(conformance.noIssuesFound),
-              "Still worth a human look",
             ],
           },
           {
             id: "manual",
             background: "var(--severity-minor-bg, #f4f4f4)",
             cells: [
-              <span key="r" className="a11y-conf-result a11y-conf-result-minor">
-                <span aria-hidden="true">i</span> We couldn't check
+              <span key="r" className="a11y-conf-cell">
+                <span className="a11y-conf-result a11y-conf-result-minor">
+                  <span aria-hidden="true">i</span> We couldn't check
+                </span>
+                <span className="a11y-conf-meaning">Only a person can judge these</span>
               </span>,
               String(conformance.needsReview),
-              "Only a person can judge these",
             ],
           },
         ]}

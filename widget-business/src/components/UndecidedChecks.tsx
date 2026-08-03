@@ -40,7 +40,6 @@ export function UndecidedChecks({
         <DataTable
           caption="What the checker couldn't decide"
           headers={[
-            { key: "fix", label: "Who fixes this", width: "1%" },
             { key: "issue", label: "What we couldn't decide" },
             { key: "places", label: "Places", align: "right", width: "1%" },
           ]}
@@ -50,10 +49,14 @@ export function UndecidedChecks({
             return {
               id: r.ruleId,
               cells: [
-                <span key="fix" className={`a11y-method-badge a11y-fix-${fix.key}`}>
-                  {fix.label}
-                </span>,
                 <div key="issue" className="a11y-undecided-cell">
+                  {/* Who-fixes-this used to be its own column — at phone
+                      width the badge, the arrow-free but still narrow
+                      "Places" column, and this column's own text floor
+                      already ran past the viewport, forcing the same
+                      horizontal scroll the findings table had before
+                      Severity folded the same way. */}
+                  <span className={`a11y-method-badge a11y-fix-${fix.key}`}>{fix.label}</span>
                   <p className="a11y-undecided-what">{e ? e.what : r.help}</p>
                   {e && (
                     <p className="a11y-undecided-ask">
