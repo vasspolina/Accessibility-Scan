@@ -55,6 +55,16 @@
   --a11y-text-label: 0.875rem; /* 14px — tags, badges, table headers */
 }
 
+.a11y-widget-biz {
+  /* The outer container for the shell's own responsive collapse. Lives on
+     this wrapper (a real ancestor of `.a11y-widget-inner`, its own mount
+     point — see shadowMount.ts) rather than on `.a11y-widget-inner`
+     itself: a container query can't restyle the very element whose size
+     defines it, only that element's descendants. */
+  container-type: inline-size;
+  container-name: a11y-shell;
+}
+
 .a11y-widget-inner {
   /* Fluid up to a content-derived cap, centred — not half the screen.
    *
@@ -69,20 +79,175 @@
    * along. */
   width: min(100%, 48rem);
   margin-inline: auto;
-  /* A size container, so everything inside adapts to the panel's own width.
-     The narrow-layout rules below used to be viewport media queries, and the
-     half-width change above broke their premise: at a 1000px window this
-     panel is 500px wide — narrower than the 560px "mobile" breakpoint — and
-     no narrow rule fired. Found on the site-audit rows, whose text wrapped at
-     twenty characters a line inside a card built for a full-width panel. */
-  container-type: inline-size;
-  container-name: a11y-panel;
+  /* The app shell's own grid — header across the top, sidebar and content
+     below it. `.a11y-shell-content` (not this element) is the size
+     container the narrow-layout rules below key off of: it's the actual
+     content column, and the sidebar shouldn't count toward what "narrow"
+     means for it. When there's no report yet, AppShell renders no sidebar
+     at all, so the `nav` area's row is simply never occupied — no
+     fallback rule needed for that case. Below `a11y-shell` breaks (see the
+     collapse rule further down) the same two rows go single-column. */
+  display: grid;
+  grid-template-areas:
+    "header header"
+    "nav content";
+  grid-template-columns: minmax(0, auto) minmax(0, 1fr);
+  column-gap: 32px;
   padding: 32px;
   border: 1px solid var(--a11y-border, #d0d7de);
   border-radius: 14px;
   background: var(--a11y-bg, #ffffff);
   font-size: var(--a11y-text-body);
   line-height: 1.5;
+}
+
+.a11y-shell-header {
+  grid-area: header;
+  display: flex;
+  align-items: center;
+  margin-bottom: 24px;
+}
+
+.a11y-shell-title {
+  font-size: var(--a11y-text-label);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--a11y-muted, #57606a);
+}
+
+/* ==========================================================================
+   Material Design 3 nav rail — a deliberate one-off
+   ==========================================================================
+   Everything else in this report reads Carbon: square corners, hairline
+   borders, layer-01 fills. This one region is Google's Material language
+   instead, by request, modelled on Google Drive's own sidebar — no
+   surface fill or border of its own (sits directly on the page, per the
+   "no grey background" correction), the current item carried by a full
+   pill fill rather than Carbon's square card + left-border accent. The
+   tokens below are scoped to `.a11y-shell-nav-material` so none of it
+   leaks into (or fights with) the Carbon custom properties the rest of
+   the file reads. Approximate values for Google's own M3 color roles —
+   primary-container, on-primary-container etc. — checked against 4.5:1
+   the same as every other pairing in this file. No Google Fonts CDN: the
+   font stack names Roboto/Google Sans for machines that already have them
+   installed and falls back to system UI otherwise, same as the self-hosted-
+   only rule PP Telegraf follows elsewhere in this file. */
+.a11y-shell-nav-material {
+  --md-font: "Google Sans", Roboto, "Segoe UI", Arial, sans-serif;
+  --md-on-surface: #1f1f1f;
+  --md-on-surface-variant: #444746;
+  --md-primary-container: #c2e7ff;
+  --md-on-primary-container: #041e49;
+  --md-state-hover: rgba(31, 31, 31, 0.08);
+}
+
+@media (prefers-color-scheme: dark) {
+  .a11y-shell-nav-material {
+    --md-on-surface: #e3e3e3;
+    --md-on-surface-variant: #c4c7c5;
+    --md-primary-container: #004a77;
+    --md-on-primary-container: #c2e7ff;
+    --md-state-hover: rgba(227, 227, 227, 0.1);
+  }
+}
+
+.a11y-shell-nav {
+  grid-area: nav;
+  align-self: start;
+  /* Sticks alongside the content as it scrolls, the way a persistent shell
+     sidebar reads — the header's own height plus a little air. */
+  position: sticky;
+  top: 24px;
+}
+
+.a11y-shell-nav ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 12rem;
+}
+
+/* A Material "navigation-drawer item": full pill shape (radius = half the
+   row height), generous inline padding, medium-weight label. Real <a>
+   elements rather than a Material Button, since nothing in this app's
+   Button forwards `href`, `aria-current`, or a ref — it can't be a real
+   link, can't carry current-section state, and isn't a valid
+   `document.activeElement` target for the click handler's focus
+   management. Doubled class beats the report's blanket link rule
+   (`.a11y-widget-biz.a11y-widget-biz a` — underlined, regular weight, for
+   links inside prose), which sits at the same specificity and would
+   otherwise win by source order. */
+.a11y-widget-biz.a11y-widget-biz .a11y-shell-nav-link {
+  display: flex;
+  align-items: center;
+  height: 48px;
+  padding: 0 24px;
+  border-radius: 24px;
+  color: var(--md-on-surface-variant, #444746);
+  font-family: var(--md-font, inherit);
+  font-size: 0.875rem;
+  font-weight: 500;
+  text-decoration: none;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  transition: background 150ms cubic-bezier(0.2, 0, 0, 1),
+    color 150ms cubic-bezier(0.2, 0, 0, 1);
+}
+
+.a11y-shell-nav-link:hover {
+  background: var(--md-state-hover, rgba(31, 31, 31, 0.08));
+}
+
+/* Material has no left-border convention to draw on for "current" — the
+   pill fill itself is the shape change, and the weight bump on top of it
+   is this report's own rule that colour never carries state alone. */
+.a11y-widget-biz.a11y-widget-biz .a11y-shell-nav-link[aria-current="true"] {
+  background: var(--md-primary-container, #c2e7ff);
+  color: var(--md-on-primary-container, #041e49);
+  font-weight: 700;
+}
+
+.a11y-widget-biz.a11y-widget-biz .a11y-shell-nav-link[aria-current="true"]:hover {
+  background: var(--md-primary-container, #c2e7ff);
+}
+
+.a11y-shell-content {
+  grid-area: content;
+  min-width: 0;
+  /* The size container the narrow-layout `@container a11y-panel` rules
+     below key off of — moved here from `.a11y-widget-inner` itself so a
+     sidebar eating horizontal space narrows what "the panel" means for
+     them, same as it would for a reader. */
+  container-type: inline-size;
+  container-name: a11y-panel;
+}
+
+/* Below this, the sidebar has nowhere left to earn its keep — collapse to
+   a single column and let the nav flow above the content instead of beside
+   it. 700px matches the breakpoint already used elsewhere in this file. */
+@container a11y-shell (max-width: 700px) {
+  .a11y-widget-inner {
+    grid-template-areas:
+      "header"
+      "nav"
+      "content";
+    grid-template-columns: 1fr;
+  }
+
+  .a11y-shell-nav {
+    position: static;
+  }
+
+  .a11y-shell-nav ul {
+    flex-direction: row;
+    flex-wrap: wrap;
+    min-width: 0;
+  }
 }
 
 /* Anything that is a run of sentences. Capped at a measure the same report
@@ -1683,9 +1848,16 @@ label.a11y-ai-toggle {
     padding: 0;
     border: 0;
     font-size: 11pt;
+    /* The shell chrome (header, nav) is hidden below, which would otherwise
+       leave the grid still reserving their tracks — reset to one column so
+       the report stands alone on paper, exactly as it did before the
+       shell existed. */
+    grid-template-areas: "content";
+    grid-template-columns: 1fr;
   }
 
-  /* Controls can't be used on paper. */
+  /* Controls can't be used on paper, and neither can a jump-to-section
+     sidebar. */
   .a11y-url-form,
   .a11y-pro-actions,
   .a11y-print-row,
@@ -1695,7 +1867,9 @@ label.a11y-ai-toggle {
   .a11y-stmt-fields,
   .a11y-show-all,
   .a11y-conf-filter,
-  .a11y-mode {
+  .a11y-mode,
+  .a11y-shell-header,
+  .a11y-shell-nav {
     display: none !important;
   }
 
@@ -2396,6 +2570,13 @@ label.a11y-ai-toggle {
 .a11y-accordion-head .a11y-sr-issue-count {
   flex-shrink: 0;
   margin: 0;
+}
+
+/* Standalone use — not nested in a heading here, so it needs its own gap
+   from whatever sits above it (WhatsNextPanel's own bottom edge). */
+.a11y-w22-toggle {
+  margin-top: 8px;
+  justify-content: space-between;
 }
 
 /* Carbon form area --------------------------------------------------------
@@ -3286,17 +3467,25 @@ label.a11y-ai-toggle {
 
 /* The table scrolls inside its own section on a narrow panel rather than
    widening the page — the reflow rule this product enforces on others.
-   The panel is already keyboard-reachable: the imported Tabs gives it
-   tabindex and a label. The min-width keeps the columns readable instead
-   of letting them crush; below it, the panel scrolls. */
-.a11y-pro-table [role="tabpanel"] {
+   The section itself is the scroll container: DataTable renders its
+   <table> as a direct child, with no [role="tabpanel"] wrapper the way
+   an earlier version of this rule assumed, which meant the rule below
+   never matched anything and the table had no escape from squeezing
+   (see the min-width comment on the table rule just below). */
+.a11y-pro-table {
   overflow-x: auto;
 }
 
 .a11y-pro-table table {
-  /* No side-scroll (columns squeeze and wrap); the outer hairline is the
-     component's own and the reference shows it, so it stays. */
-  min-width: 0;
+  /* Same 44rem floor the widget's own outer cap was measured against
+     (see .a11y-widget-inner's comment on the 48rem panel cap). Without
+     it, `width: 100%` alone has no lower bound, and table-layout: auto
+     will squeeze the Issue column to a letter-per-line sliver rather
+     than trigger the overflow-x: auto scroll above the moment the
+     content column gets narrower than the table wants to be — the
+     sidebar taking a share of that column's width made this the common
+     case rather than a rare narrow-host edge case. */
+  min-width: 44rem;
   width: 100%;
 }
 
@@ -3427,6 +3616,17 @@ label.a11y-ai-toggle {
 .a11y-findings-table tbody td:last-child {
   white-space: nowrap;
   font-variant-numeric: tabular-nums;
+}
+
+/* The expand row's <td colspan> is its row's only cell, so it's also
+   trivially :last-child and inherited the nowrap above along with it —
+   `white-space` is inherited, and it beat every max-width already set on
+   the prose inside (the colour-fix note, "who fixes this", etc.), which
+   is a width limit with nothing stopping it from being ignored once the
+   text refuses to break at all. That let long sentences run straight off
+   the table's edge instead of wrapping inside it. */
+.a11y-findings-table tbody td[colspan] {
+  white-space: normal;
 }
 
 /* WCAG and who-fixes-this are their own columns now, not badges folded
@@ -4406,9 +4606,13 @@ label.a11y-ai-toggle {
 }
 
 @media (prefers-color-scheme: dark) {
-  .a11y-widget-biz .a11y-url-form input[type="text"],
-  .a11y-widget-biz .a11y-url-form input[type="password"],
-  .a11y-widget-biz .a11y-url-form select {
+  /* Doubled class: the base rule above is doubled too (0,4,1), and this
+     was single (0,3,1) — lower specificity always loses regardless of
+     which comes later in the file, so the field rendered its light-mode
+     #f4f4f4 fill even in dark mode. */
+  .a11y-widget-biz.a11y-widget-biz .a11y-url-form input[type="text"],
+  .a11y-widget-biz.a11y-widget-biz .a11y-url-form input[type="password"],
+  .a11y-widget-biz.a11y-widget-biz .a11y-url-form select {
     background: #262626;
     color: #f4f4f4;
   }
@@ -4942,6 +5146,17 @@ label.a11y-ai-toggle {
 
 .a11y-widget-biz.a11y-widget-biz .a11y-section-redflag .a11y-section-desc {
   margin: 0;
+}
+
+/* The findings table sits on the card's plain surface below the tint (see
+   the redflag-variant comment above), but with no padding of its own its
+   content started flush with the card's outer edge — 16px left of where
+   the tint's own inset text sits, so the claim above and the evidence
+   below didn't line up. Same 16px the tint uses, plus room above so the
+   table doesn't start flush against the tint's bottom edge either. */
+.a11y-widget-biz.a11y-widget-biz .a11y-section-redflag .a11y-findings-table {
+  padding: 0 16px 16px;
+  margin-top: 16px;
 }
 
 .a11y-widget-biz.a11y-widget-biz .a11y-findings-columns {

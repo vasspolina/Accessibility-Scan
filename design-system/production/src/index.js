@@ -19,3 +19,4 @@ export { SeverityTag } from "./SeverityTag.jsx";
 export { IssueRow } from "./IssueRow.jsx";
 export { ScoreDial } from "./ScoreDial.jsx";
 export { SkipLink } from "./SkipLink.jsx";
+export { WhatsNextPanel } from "./WhatsNextPanel.jsx";

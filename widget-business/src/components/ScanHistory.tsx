@@ -70,7 +70,7 @@ export function ScanHistory({
   if (cleared) {
     return (
       <section className="a11y-section a11y-hist" aria-labelledby="a11y-hist-heading">
-        <h2 className="a11y-section-title" id="a11y-hist-heading">Since last time</h2>
+        <h2 className="a11y-section-title" id="a11y-hist-heading" data-nav-label="Since last time">Since last time</h2>
         <p className="a11y-section-desc" role="status" tabIndex={-1} ref={(el) => el?.focus()}>
           Scan history deleted from this browser.
         </p>
@@ -91,7 +91,7 @@ export function ScanHistory({
 
   return (
     <section className="a11y-section a11y-hist" aria-labelledby="a11y-hist-heading">
-      <h2 className="a11y-section-title" id="a11y-hist-heading">
+      <h2 className="a11y-section-title" id="a11y-hist-heading" data-nav-label="Since last time">
         Since last time{" "}
         <span className="a11y-section-count">
           {previous.length === 1 ? "1 earlier scan" : `${previous.length} earlier scans`}

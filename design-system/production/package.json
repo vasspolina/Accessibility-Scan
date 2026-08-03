@@ -1,7 +1,7 @@
 {
   "name": "@verify/design-system",
   "version": "1.0.0",
-  "description": "Verify accessibility-checker design system — Carbon-derived tokens + 21 accessible React components",
+  "description": "Verify accessibility-checker design system — Carbon-derived tokens + 22 accessible React components",
   "type": "module",
   "main": "src/index.js",
   "types": "src/index.d.ts",

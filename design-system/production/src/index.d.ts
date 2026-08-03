@@ -19,3 +19,4 @@ export * from "./SeverityTag";
 export * from "./IssueRow";
 export * from "./ScoreDial";
 export * from "./SkipLink";
+export * from "./WhatsNextPanel";

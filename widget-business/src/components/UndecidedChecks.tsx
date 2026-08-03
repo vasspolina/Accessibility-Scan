@@ -23,7 +23,7 @@ export function UndecidedChecks({
   return (
     <section className="a11y-section" aria-labelledby="a11y-undecided-heading">
       {/* h2: this is a top-level section of the report, same as its siblings. */}
-      <h2 className="a11y-section-title" id="a11y-undecided-heading">
+      <h2 className="a11y-section-title" id="a11y-undecided-heading" data-nav-label="For your designer and developer">
         For your designer and developer{" "}
         <span className="a11y-section-count">({total})</span>
       </h2>

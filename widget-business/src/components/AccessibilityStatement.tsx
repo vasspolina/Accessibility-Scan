@@ -211,7 +211,12 @@ export function AccessibilityStatement({ report }: { report: AccessibilityReport
 
   return (
     <section className="a11y-section a11y-stmt" aria-labelledby="a11y-stmt-heading">
-      <SectionHeader eyebrow="European law" title="Your accessibility statement" id="a11y-stmt-heading" />
+      <SectionHeader
+        eyebrow="European law"
+        title="Your accessibility statement"
+        id="a11y-stmt-heading"
+        navLabel="Accessibility statement"
+      />
       <p className="a11y-section-desc">
         European law asks for one if you serve EU customers, and this check already knows most of
         the answers. Add your details and the draft writes itself.

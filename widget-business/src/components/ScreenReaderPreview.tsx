@@ -105,7 +105,7 @@ export function ScreenReaderPreview({ script }: { script: ScreenReaderScript }) 
           unpredictably, so the two are siblings in one row and the rule that
           closes the header belongs to the row. */}
       <div className="a11y-accordion-row">
-        <h2 className="a11y-section-title a11y-accordion-title" id="a11y-sr-heading">
+        <h2 className="a11y-section-title a11y-accordion-title" id="a11y-sr-heading" data-nav-label="Screen reader preview">
           <button
             type="button"
             className="a11y-accordion-head"

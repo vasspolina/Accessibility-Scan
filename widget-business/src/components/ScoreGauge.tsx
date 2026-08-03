@@ -116,7 +116,7 @@ export function ScoreGauge({
       {/* Professional mode gets an explicit results header in this slot
           (App.tsx); business mode had none, which left heading navigation
           with no way to jump straight to the score at all. */}
-      <h2 className="a11y-section-title">Your score</h2>
+      <h2 className="a11y-section-title" id="a11y-score-heading" data-nav-label="Score">Your score</h2>
       {/* The scan-app dashboard's stat row: the dial in its own labelled
           card, then the worst of what it found beside it — the kit's own
           dial-plus-list composition, in place of a row of count tiles that

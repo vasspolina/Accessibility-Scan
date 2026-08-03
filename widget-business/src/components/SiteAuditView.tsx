@@ -24,7 +24,7 @@ export function SiteAuditView({ audit }: { audit: SiteAudit }) {
   return (
     <div className="a11y-report">
       <section className="a11y-section a11y-audit-head" aria-labelledby="a11y-audit-head-heading">
-        <h2 className="a11y-section-title" id="a11y-audit-head-heading">Site audit</h2>
+        <h2 className="a11y-section-title" id="a11y-audit-head-heading" data-nav-label="Site audit">Site audit</h2>
         <p className="a11y-section-desc">
           {audit.pagesScanned} page{audit.pagesScanned === 1 ? "" : "s"} checked
           {audit.pagesFailed > 0 && `, ${audit.pagesFailed} couldn't be reached`}. We pick the pages
@@ -57,7 +57,7 @@ export function SiteAuditView({ audit }: { audit: SiteAudit }) {
 
       {audit.siteWide.length > 0 && (
         <section className="a11y-section a11y-section-redflag" aria-labelledby="a11y-audit-siteWide-heading">
-          <h2 className="a11y-section-title" id="a11y-audit-siteWide-heading">
+          <h2 className="a11y-section-title" id="a11y-audit-siteWide-heading" data-nav-label="Fix once, fix everywhere">
             Fix once, fix everywhere{" "}
             <span className="a11y-section-count">({audit.siteWide.length})</span>
           </h2>
@@ -96,7 +96,7 @@ export function SiteAuditView({ audit }: { audit: SiteAudit }) {
       <ConformanceView conformance={audit.conformance} showBfsgNote={!professional} />
 
       <section className="a11y-section" aria-labelledby="a11y-audit-pages-heading">
-        <h2 className="a11y-section-title" id="a11y-audit-pages-heading">Page by page</h2>
+        <h2 className="a11y-section-title" id="a11y-audit-pages-heading" data-nav-label="Page by page">Page by page</h2>
         <p className="a11y-section-desc">
           Scan a page on its own for the full detail.
         </p>

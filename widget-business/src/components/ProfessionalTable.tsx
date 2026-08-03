@@ -132,7 +132,7 @@ export function ProfessionalTable({
     );
 
   return (
-    <section id="a11y-pro-findings" className="a11y-section a11y-pro-table" aria-label="Findings">
+    <section id="a11y-pro-findings" className="a11y-section a11y-pro-table" aria-label="Findings" data-nav-label="Findings">
       {view === "issues" ? issuesTable : cleanList}
     </section>
   );

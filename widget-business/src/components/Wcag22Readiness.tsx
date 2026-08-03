@@ -1,6 +1,5 @@
 import { useId, useState } from "react";
-import { DataTable } from "@verify/design-system";
-import { StatusChip } from "./SectionHeader";
+import { DataTable, WhatsNextPanel } from "@verify/design-system";
 import type { Wcag22Readiness as Readiness } from "../api/scanClient";
 
 // The law is going to move, and an owner should see it coming rather than
@@ -28,41 +27,39 @@ export function Wcag22Readiness({ readiness }: { readiness: Readiness }) {
   return (
     <section className="a11y-section a11y-w22" aria-labelledby="a11y-w22-heading">
       <span className="a11y-section-eyebrow">What's next</span>
-      <div className="a11y-accordion-row">
-        <h2 className="a11y-section-title a11y-accordion-title" id="a11y-w22-heading">
-          <button
-            type="button"
-            className="a11y-accordion-head"
-            aria-expanded={open}
-            aria-controls={panelId}
-            onClick={() => setOpen((v) => !v)}
-          >
-            <span>
-              Ready for the next version?{" "}
-              <span className="a11y-section-count">WCAG 2.2, expected {readiness.expectedFrom}</span>
-            </span>
-            {alreadyFailing > 0 && (
-              <StatusChip>
-                {alreadyFailing === 1 ? "1 would fail today" : `${alreadyFailing} would fail today`}
-              </StatusChip>
-            )}
-            <svg
-              className="a11y-accordion-chevron"
-              viewBox="0 0 16 16"
-              aria-hidden="true"
-              focusable="false"
-            >
-              <path d="M8 11L3 6l.7-.7L8 9.6l4.3-4.3L13 6z" fill="currentColor" />
-            </svg>
-          </button>
-        </h2>
-      </div>
+      <h2 className="a11y-section-title" id="a11y-w22-heading" data-nav-label="WCAG 2.2 readiness">
+        Ready for the next version?
+      </h2>
 
-      <p className="a11y-section-desc">
-        The standard European law points at will change. Nothing here is required yet. These are
-        the {total} new items that become Level A or AA when it lands, so you can fix them on your own
-        schedule rather than someone else's.
-      </p>
+      {/* The kit's own readiness summary — standard, expected date, how many
+          already fail, and the plain-language line underneath. Everything
+          past this (the per-criterion status, found counts, "needs a
+          person" caveat, the parsing note) stays in the disclosure below:
+          denser detail than the panel's own shape holds. */}
+      <WhatsNextPanel
+        standard={`WCAG 2.2, expected ${readiness.expectedFrom}`}
+        failCount={alreadyFailing}
+        description={`The standard European law points at will change. Nothing here is required yet. These are the ${total} new items that become Level A or AA when it lands, so you can fix them on your own schedule rather than someone else's.`}
+        style={{ marginTop: 12 }}
+      />
+
+      <button
+        type="button"
+        className="a11y-accordion-head a11y-w22-toggle"
+        aria-expanded={open}
+        aria-controls={panelId}
+        onClick={() => setOpen((v) => !v)}
+      >
+        <span>{open ? "Hide the technical breakdown" : "Show the technical breakdown"}</span>
+        <svg
+          className="a11y-accordion-chevron"
+          viewBox="0 0 16 16"
+          aria-hidden="true"
+          focusable="false"
+        >
+          <path d="M8 11L3 6l.7-.7L8 9.6l4.3-4.3L13 6z" fill="currentColor" />
+        </svg>
+      </button>
 
       {/* Hidden rather than unrendered, so aria-controls always points at a
           real element. */}

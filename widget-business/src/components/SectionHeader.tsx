@@ -24,6 +24,7 @@ export function SectionHeader({
   chip,
   action,
   id,
+  navLabel,
 }: {
   eyebrow?: string;
   title: ReactNode;
@@ -33,12 +34,17 @@ export function SectionHeader({
   chip?: ReactNode;
   action?: ReactNode;
   id?: string;
+  /** Short label for the app-shell sidebar, when this heading is one of its
+      jump targets. `title` is often a full sentence with a live count baked
+      in ("Issues that could turn away users (2)") — the nav wants the
+      plain, stable name instead. */
+  navLabel?: string;
 }) {
   return (
     <div className="a11y-section-head">
       <div className="a11y-section-head-text">
         {eyebrow && <span className="a11y-section-eyebrow">{eyebrow}</span>}
-        <h2 className="a11y-section-title" id={id}>
+        <h2 className="a11y-section-title" id={id} data-nav-label={navLabel}>
           {title}
           {qualifier && <span className="a11y-section-count"> {qualifier}</span>}
         </h2>

@@ -53,7 +53,7 @@ export function AcrDraft({ report }: { report: AccessibilityReport }) {
   return (
     <section className="a11y-section a11y-acr" aria-labelledby="a11y-acr-heading">
       <div className="a11y-accordion-row">
-        <h2 className="a11y-section-title a11y-accordion-title" id="a11y-acr-heading">
+        <h2 className="a11y-section-title a11y-accordion-title" id="a11y-acr-heading" data-nav-label="Conformance report">
           <button
             type="button"
             className="a11y-accordion-head"

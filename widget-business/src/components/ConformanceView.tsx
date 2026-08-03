@@ -49,7 +49,7 @@ export function ConformanceView({
 
   return (
     <section className="a11y-section a11y-conf" aria-labelledby="a11y-conf-heading">
-      <h2 className="a11y-section-title" id="a11y-conf-heading">
+      <h2 className="a11y-section-title" id="a11y-conf-heading" data-nav-label="Legal standard">
         Do you meet the legal standard?{" "}
         <span className="a11y-section-count">{conformance.standard}</span>
       </h2>

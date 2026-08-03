@@ -3,6 +3,9 @@ import type { RefObject } from "react";
 import { flushSync } from "react-dom";
 import { UrlForm, type ScanMode } from "./components/UrlForm";
 import { ScoreGauge } from "./components/ScoreGauge";
+import { AppShell } from "./components/AppShell";
+import type { NavSection } from "./components/SideNav";
+import { useActiveSection } from "./lib/useActiveSection";
 import { DocumentSummary } from "./components/DocumentSummary";
 import { ReportSection } from "./components/ReportSection";
 import { PrincipleGroup } from "./components/PrincipleGroup";
@@ -175,6 +178,30 @@ export function App({ apiBase, cta }: { apiBase: string; cta?: CtaConfig }) {
     formRef.current?.scrollIntoView({ block: "start" });
     formRef.current?.querySelector<HTMLInputElement>("#a11y-url-input")?.focus();
   };
+
+  // The shell sidebar's section list, built by watching the content the
+  // report actually renders rather than re-deriving its many conditionals
+  // (audit/report/isDocument/professional/etc.) a second time here — every
+  // `[data-nav-label]` element already carries the id and label it needs.
+  const shellContentRef: RefObject<HTMLDivElement> = useRef(null);
+  const [sections, setSections] = useState<NavSection[]>([]);
+  useEffect(() => {
+    const root = shellContentRef.current;
+    if (!root) return;
+    const collect = () => {
+      const els = Array.from(root.querySelectorAll<HTMLElement>("[data-nav-label]"));
+      setSections(
+        els
+          .filter((el) => el.id)
+          .map((el) => ({ id: el.id, el, label: el.dataset.navLabel ?? "" }))
+      );
+    };
+    collect();
+    const observer = new MutationObserver(collect);
+    observer.observe(root, { childList: true, subtree: true });
+    return () => observer.disconnect();
+  }, []);
+  const activeSectionId = useActiveSection(sections);
   useEffect(() => {
     const before = () => {
       printFilterRestore.current = fixFilter;
@@ -264,7 +291,11 @@ export function App({ apiBase, cta }: { apiBase: string; cta?: CtaConfig }) {
     // <section aria-label> rather than <main>: the widget is a guest on
     // somebody else's page, and that page's own <main> is not ours to claim.
     <>
-    <section className="a11y-widget-inner" aria-label="Website accessibility check">
+    <section
+      className={`a11y-widget-inner${sections.length > 0 ? " a11y-shell-with-nav" : ""}`}
+      aria-label="Website accessibility check"
+    >
+    <AppShell sections={sections} activeId={activeSectionId} contentRef={shellContentRef}>
       <p className="a11y-intro">
         A door that only opens for some people isn't a broken door. It's a badly designed one. The
         same goes for websites. This check follows the{" "}
@@ -388,7 +419,7 @@ export function App({ apiBase, cta }: { apiBase: string; cta?: CtaConfig }) {
         <div className="a11y-report">
           {/* The kit's results header: what was scanned, said plainly. */}
           {professional && (
-            <h2 className="a11y-results-title">
+            <h2 className="a11y-results-title" id="a11y-score-heading" data-nav-label="Score">
               {hostnameOf(report.url)} — scan results
             </h2>
           )}
@@ -523,7 +554,7 @@ export function App({ apiBase, cta }: { apiBase: string; cta?: CtaConfig }) {
             {/* h2 like every other top-level section — as an h3 it sat at the
                 same level as the principle headings inside it, so the outline
                 had children at their parent's level. */}
-            <h2 className="a11y-section-title" id="a11y-accessibility-heading">
+            <h2 className="a11y-section-title" id="a11y-accessibility-heading" data-nav-label="What people can't use">
               What people can't use{" "}
               <span className="a11y-section-count">({findingsByCategory.accessibility.length})</span>
             </h2>
@@ -589,6 +620,7 @@ export function App({ apiBase, cta }: { apiBase: string; cta?: CtaConfig }) {
         </div>
         </ReportViewProvider>
       )}
+    </AppShell>
     </section>
     {/* A portal target for anything that must escape .a11y-widget-inner —
         so far, just the delete-history confirmation dialog, which needs to
