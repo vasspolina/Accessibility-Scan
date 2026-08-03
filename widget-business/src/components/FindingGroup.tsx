@@ -669,9 +669,13 @@ export function findingRow(
     </span>
   );
 
+  // Best-practice rules with no numbered criterion arrive as the literal
+  // string "WCAG (see rule help)" — the column header already says "WCAG",
+  // so showing that fallback verbatim reads as "WCAG" twice.
   const criterion =
     rep.wcagCriterion && rep.wcagCriterion !== "N/A"
-      ? (rep.wcagCriterion.match(/^\d\.\d+\.\d+/)?.[0] ?? rep.wcagCriterion)
+      ? (rep.wcagCriterion.match(/^\d\.\d+\.\d+/)?.[0] ??
+          rep.wcagCriterion.replace(/^WCAG\s*/i, ""))
       : "";
 
   return {
@@ -760,9 +764,18 @@ export function FindingGroup({
         )}
         <span className="a11y-finding-desc">
           {title}
+          {/* Best-practice rules with no numbered criterion arrive as the
+              literal string "WCAG (see rule help)" — matching that against
+              the numeric pattern falls through to rep.wcagCriterion itself,
+              which already starts with "WCAG", so the literal prefix below
+              used to double it into "WCAG WCAG (see rule help)". Stripping
+              a leading "WCAG" from the fallback keeps the prefix singular
+              either way. */}
           {!professional && rep.wcagCriterion && rep.wcagCriterion !== "N/A" && (
             <span className="a11y-finding-criterion">
-              WCAG {rep.wcagCriterion.match(/^\d\.\d+\.\d+/)?.[0] ?? rep.wcagCriterion}
+              WCAG{" "}
+              {rep.wcagCriterion.match(/^\d\.\d+\.\d+/)?.[0] ??
+                rep.wcagCriterion.replace(/^WCAG\s*/i, "")}
             </span>
           )}
         </span>

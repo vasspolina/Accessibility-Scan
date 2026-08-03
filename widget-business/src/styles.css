@@ -3919,6 +3919,16 @@ label.a11y-ai-toggle {
   line-height: 1.24;
 }
 
+/* The kit's DataTable sets line-height: var(--type-body-lh) inline on
+   every cell — 1.5, the pre-"20% tighter" body value — which is why
+   every table's text reads looser than the rest of the report around it.
+   !important is what beats an inline style; every table in the app
+   shares this one component, so the fix has to too. */
+.a11y-widget-biz .a11y-widget-inner table td,
+.a11y-widget-biz .a11y-widget-inner table th {
+  line-height: 1.24 !important;
+}
+
 /* 36rem (576px), measured directly against rendered text rather than
    calculated: at 25rem full lines were landing at 8-10 words, short of
    the 11-14 a line should hold. 36rem is where PP Telegraf's running

@@ -136,9 +136,16 @@ export function ScoreGauge({
                 const rep = group[0];
                 const plain = plainForRule(rep.ruleId);
                 const title = plain?.plain ?? rep.title ?? rep.description;
+                // Best-practice rules with no numbered criterion arrive as
+                // the literal string "WCAG (see rule help)" — matching that
+                // against the numeric pattern falls through to the string
+                // itself, which already starts with "WCAG", so the literal
+                // prefix below used to double it into "WCAG WCAG (see rule
+                // help)". Stripping a leading "WCAG" keeps it singular.
                 const criterion =
                   rep.wcagCriterion && rep.wcagCriterion !== "N/A"
-                    ? (rep.wcagCriterion.match(/^\d\.\d+\.\d+/)?.[0] ?? rep.wcagCriterion)
+                    ? (rep.wcagCriterion.match(/^\d\.\d+\.\d+/)?.[0] ??
+                        rep.wcagCriterion.replace(/^WCAG\s*/i, ""))
                     : null;
                 return (
                   <li key={rep.id} className="a11y-score-preview-row">
