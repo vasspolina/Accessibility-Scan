@@ -688,12 +688,14 @@ export function findingRow(
   );
 
   // Best-practice rules with no numbered criterion arrive as the literal
-  // string "WCAG (see rule help)" — the column header already says "WCAG",
-  // so showing that fallback verbatim reads as "WCAG" twice.
+  // string "WCAG (see rule help)". Used to strip a leading "WCAG" and show
+  // the rest — "(see rule help)" — which just traded one confusing string
+  // for another: a reader has no way to know what that parenthetical means
+  // sitting alone in the WCAG column. Nothing has the same effect as
+  // nothing: leave the cell blank, same as any other row with no criterion.
   const criterion =
     rep.wcagCriterion && rep.wcagCriterion !== "N/A"
-      ? (rep.wcagCriterion.match(/^\d\.\d+\.\d+/)?.[0] ??
-          rep.wcagCriterion.replace(/^WCAG\s*/i, ""))
+      ? (rep.wcagCriterion.match(/^\d\.\d+\.\d+/)?.[0] ?? "")
       : "";
 
   return {
@@ -791,17 +793,13 @@ export function FindingGroup({
         <span className="a11y-finding-desc">
           {title}
           {/* Best-practice rules with no numbered criterion arrive as the
-              literal string "WCAG (see rule help)" — matching that against
-              the numeric pattern falls through to rep.wcagCriterion itself,
-              which already starts with "WCAG", so the literal prefix below
-              used to double it into "WCAG WCAG (see rule help)". Stripping
-              a leading "WCAG" from the fallback keeps the prefix singular
-              either way. */}
-          {!professional && rep.wcagCriterion && rep.wcagCriterion !== "N/A" && (
+              literal string "WCAG (see rule help)" — there's no criterion
+              number to show for those, and "WCAG (see rule help)" isn't
+              one either, so the badge is skipped entirely rather than
+              printing a fragment that means nothing on its own. */}
+          {!professional && rep.wcagCriterion?.match(/^\d\.\d+\.\d+/)?.[0] && (
             <span className="a11y-finding-criterion">
-              WCAG{" "}
-              {rep.wcagCriterion.match(/^\d\.\d+\.\d+/)?.[0] ??
-                rep.wcagCriterion.replace(/^WCAG\s*/i, "")}
+              WCAG {rep.wcagCriterion.match(/^\d\.\d+\.\d+/)![0]}
             </span>
           )}
         </span>
