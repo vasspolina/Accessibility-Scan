@@ -450,6 +450,8 @@ export function App({ apiBase, cta }: { apiBase: string; cta?: CtaConfig }) {
               score={report.score}
               seed={report.scannedAt}
               findings={findingsByCategory.accessibility}
+              url={report.url}
+              allFindings={report.findings}
             />
           )}
 

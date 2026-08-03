@@ -644,6 +644,10 @@ label.a11y-ai-toggle {
   max-width: 62ch;
 }
 
+.a11y-score-copy {
+  margin-top: 16px;
+}
+
 /* Audience-mode extras. The filter chips reuse the segmented-control look;
    the rule chip and pro block surface data the drawer used to hold. */
 .a11y-filter {

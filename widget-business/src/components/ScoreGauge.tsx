@@ -1,5 +1,5 @@
 import { Card, ScoreDial, SeverityTag } from "@verify/design-system";
-import type { CSSProperties } from "react";
+import { useState, type CSSProperties } from "react";
 import type { AccessibilityFinding } from "../api/scanClient";
 import { groupFindings } from "./FindingsList";
 import { plainForRule } from "../lib/wcagPlain";
@@ -95,10 +95,58 @@ export const SCORE_CAVEAT =
   "keyboard and a screen reader. Useful to track whether the site improves " +
   "over time. Not a statement that it meets the law.";
 
+// A plain-text version of the same verdict, for pasting into an email or
+// a message to whoever owns the fix — no HTML, no table, nothing that
+// depends on this widget's own rendering to make sense. groupFindings and
+// SEVERITY_LABEL are the same ones the score preview above uses, so the
+// two can never say something different about the same finding.
+export function buildPlainSummary({
+  url,
+  seed,
+  score,
+  allFindings,
+}: {
+  url: string;
+  seed: string;
+  score: number;
+  allFindings: AccessibilityFinding[];
+}): string {
+  const grouped = groupFindings(allFindings);
+  const scannedAt = new Date(seed).toLocaleDateString("en-GB", {
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+  });
+  const lines = [
+    `Accessibility scan: ${url}`,
+    `Scanned ${scannedAt}`,
+    "",
+    `Score: ${score}/100`,
+    scoreSummary(score, seed),
+    "",
+  ];
+  if (grouped.length === 0) {
+    lines.push("Nothing found that needs a fix.");
+  } else {
+    lines.push("Issues found, most severe first:");
+    for (const group of grouped) {
+      const rep = group[0];
+      const plain = plainForRule(rep.ruleId);
+      const title = plain?.plain ?? rep.title ?? rep.description;
+      const count = group.length > 1 ? ` (${group.length}×)` : "";
+      lines.push(`- [${SEVERITY_LABEL[rep.severity]}] ${title}${count}`);
+    }
+  }
+  lines.push("", SCORE_CAVEAT);
+  return lines.join("\n");
+}
+
 export function ScoreGauge({
   score,
   seed,
   findings,
+  url,
+  allFindings,
 }: {
   score: number;
   // The scan timestamp. Fixes which line this report gets, so it stays put
@@ -109,8 +157,27 @@ export function ScoreGauge({
   // source of truth — this is a glance at what it holds, not a second
   // copy of it, so it carries no selector and no disclosure of its own.
   findings: AccessibilityFinding[];
+  // For the plain-text copy button: the scanned address, and every
+  // category of finding (not just accessibility) — a summary meant to be
+  // pasted to a colleague undersells the report if it silently drops the
+  // dark-pattern and design-clarity findings the page below still shows.
+  url: string;
+  allFindings: AccessibilityFinding[];
 }) {
+  const [copied, setCopied] = useState(false);
   const preview = groupFindings(findings).slice(0, PREVIEW_LIMIT);
+
+  async function copySummary() {
+    try {
+      await navigator.clipboard.writeText(buildPlainSummary({ url, seed, score, allFindings }));
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    } catch {
+      // Clipboard blocked — nothing to fall back to here since this
+      // button has no visible text field the way the statement's does;
+      // failure is silent rather than throwing.
+    }
+  }
   return (
     <div className="a11y-score">
       {/* Professional mode gets an explicit results header in this slot
@@ -173,6 +240,15 @@ export function ScoreGauge({
           with a keyboard and a screen reader. A reader who takes 100 to mean
           "accessible" has been misled by us, not by their own optimism. */}
       <p className="a11y-score-caveat">{SCORE_CAVEAT}</p>
+      {/* Plain text, not the report's own HTML: the point is to leave the
+          widget entirely — an email or a Slack message to whoever owns
+          the fix, not a screenshot of this card. */}
+      <button type="button" className="a11y-show-all a11y-score-copy" onClick={copySummary}>
+        {copied ? "Copied" : "Copy summary as plain text"}
+      </button>
+      <span className="a11y-sr-only" role="status">
+        {copied ? "Summary copied to the clipboard." : ""}
+      </span>
     </div>
   );
 }
