@@ -148,6 +148,20 @@ Annex V also asks for a general description of the service in accessible formats
 `;
 }
 
+// Field, then its value on the next line — one column instead of a
+// Field/Value pair sitting side by side, which crushed short labels like
+// "Website" into a letter-per-line sliver at phone width while the value
+// beside it (a URL, a standard name) was the thing that actually needed
+// the room.
+function stmtRow(field: string, value: string) {
+  return (
+    <span className="a11y-undecided-cell">
+      <span className="a11y-stmt-field-label">{field}</span>
+      <span>{value}</span>
+    </span>
+  );
+}
+
 export function AccessibilityStatement({ report }: { report: AccessibilityReport }) {
   const [organisation, setOrganisation] = useState("");
   const [contactEmail, setContactEmail] = useState("");
@@ -246,31 +260,34 @@ export function AccessibilityStatement({ report }: { report: AccessibilityReport
       </div>
 
       {/* The statement's declared facts, as the kit's table — the same
-          numbers the prose below commits to, checkable at a glance. */}
+          numbers the prose below commits to, checkable at a glance.
+          Field folds above Value in one column rather than sitting beside
+          it in a second: a short label ("Website") forced into its own
+          column crushed it to a letter-per-line sliver on a phone, while
+          Value (a URL, a standard name) needed the room. */}
       <DataTable
         caption="What this statement declares"
-        headers={[
-          { key: "field", label: "Field" },
-          { key: "value", label: "Value" },
-        ]}
+        headers={[{ key: "field", label: "What this statement says" }]}
         rows={[
-          { id: "org", cells: ["Prepared for", organisation.trim() || "[Your organisation]"] },
-          { id: "site", cells: ["Website", report.url] },
-          { id: "std", cells: ["Checked against", "EN 301 549 · WCAG 2.1 AA"] },
+          { id: "org", cells: [stmtRow("Prepared for", organisation.trim() || "[Your organisation]")] },
+          { id: "site", cells: [stmtRow("Website", report.url)] },
+          { id: "std", cells: [stmtRow("Checked against", "EN 301 549 · WCAG 2.1 AA")] },
           {
             id: "pos",
             cells: [
-              "Position",
-              position === "partially" ? "Partially conformant" : "Non-conformant",
+              stmtRow(
+                "Position",
+                position === "partially" ? "Partially conformant" : "Non-conformant"
+              ),
             ],
           },
           {
             id: "issues",
             cells: [
-              "Problems disclosed",
-              knownIssues.length === 0
-                ? "None the scan can detect"
-                : String(knownIssues.length),
+              stmtRow(
+                "Problems disclosed",
+                knownIssues.length === 0 ? "None the scan can detect" : String(knownIssues.length)
+              ),
             ],
           },
         ]}

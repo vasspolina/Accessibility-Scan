@@ -61,12 +61,18 @@
   border-radius: 50%;
 }
 
-/* The dot is the border closing inward, not a second element: one
-   property to animate, and it can never drift off-centre the way an
-   absolutely-positioned pseudo-element can at odd zoom levels. */
+/* A ring with a gap, then a solid dot at the centre — Carbon's actual
+   radio anatomy, not a single fat ring standing in for it. The ring is
+   the border; the gap and the dot both come from one inset box-shadow,
+   painted in the page's own background colour just inside the border
+   and leaving the accent fill (set unconditionally above) showing
+   through as the centre dot — no second element, so it can't drift
+   off-centre at odd zoom levels the way an absolutely-positioned one can. */
 .a11y-widget-biz input[type="radio"]:checked {
-  border-width: 6px;
+  border-width: 2px;
   border-color: var(--interactive, #0f62fe);
+  background: var(--interactive, #0f62fe);
+  box-shadow: inset 0 0 0 3px var(--background, #ffffff);
 }
 
 .a11y-widget-biz input[type="checkbox"] {
@@ -1906,6 +1912,19 @@ label.a11y-ai-toggle {
    scale step every other table header/badge in this report already uses. */
 .a11y-widget-biz.a11y-widget-biz .a11y-stmt table {
   font-size: var(--a11y-text-label, 0.875rem);
+  /* Same flattening as every other table in this report: no second
+     frame, no header-row fill — !important beats the kit's inline
+     styles the same way it does everywhere else in this file. */
+  border: 0 !important;
+}
+
+.a11y-widget-biz.a11y-widget-biz .a11y-stmt table thead tr {
+  background: transparent !important;
+}
+
+.a11y-stmt-field-label {
+  display: block;
+  font-weight: 500;
 }
 
 .a11y-stmt-actions {
@@ -3925,6 +3944,10 @@ label.a11y-ai-toggle {
 .a11y-undecided-cell {
   display: flex;
   flex-direction: column;
+  /* Same fix as .a11y-finding-issue: without this, flex's default
+     "stretch" pulls the fix-kind badge (the first child) out to the
+     cell's full width instead of leaving it its own natural pill size. */
+  align-items: flex-start;
   gap: 8px;
 }
 
@@ -4397,6 +4420,24 @@ label.a11y-ai-toggle {
   line-height: 1.2 !important;
 }
 
+/* Same flattening as the tables that got it individually further up this
+   file, applied once here for every table the kit's DataTable renders —
+   no second frame drawn around content that already sits in its own
+   report section, and no grey fill on the header row floating above it
+   like a box of its own. Table-wide rather than per-table selector: this
+   component is shared by every table in the report, so the fix is too.
+
+   Scoped to thead only — tbody rows keep their own backgrounds, since a
+   few tables (the conformance checklist) tint rows red/green/grey to
+   carry real meaning, and that has to survive this. */
+.a11y-widget-biz .a11y-widget-inner table {
+  border: 0 !important;
+}
+
+.a11y-widget-biz .a11y-widget-inner table thead tr {
+  background: transparent !important;
+}
+
 /* 36rem (576px), measured directly against rendered text rather than
    calculated: at 25rem full lines were landing at 8-10 words, short of
    the 11-14 a line should hold. 36rem is where PP Telegraf's running
@@ -4792,11 +4833,14 @@ label.a11y-ai-toggle {
     background: #262626;
   }
 
-  .a11y-widget-biz.a11y-widget-biz .a11y-conf,
-  .a11y-widget-biz.a11y-widget-biz .a11y-w22,
-  .a11y-widget-biz.a11y-widget-biz .a11y-stmt {
-    background: #262626;
-  }
+  /* .a11y-conf/.a11y-w22/.a11y-stmt used to get the same dark card fill
+     here, from before those three were flattened to transparent (see
+     the later rules earlier in this file). Media queries add no
+     specificity of their own, so this block — being later in the file
+     — was winning the tie against the flattening rules and quietly
+     re-greying all three, in dark mode only. Removed rather than
+     flattened in place: the selector now matches nothing, which is
+     correct, since there's nothing left for it to theme. */
 
   .a11y-widget-biz .a11y-conf-result-fail { color: #ff8389; }
   .a11y-widget-biz .a11y-conf-result-pass { color: #42be65; }

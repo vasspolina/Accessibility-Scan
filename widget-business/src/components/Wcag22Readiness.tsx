@@ -36,11 +36,16 @@ export function Wcag22Readiness({ readiness }: { readiness: Readiness }) {
           past this (the per-criterion status, found counts, "needs a
           person" caveat, the parsing note) stays in the disclosure below:
           denser detail than the panel's own shape holds. */}
+      {/* Flat, not a card: the kit's own panel fills itself grey by
+          default, the same box-around-content this report has been
+          stripped of everywhere else it appeared. The style prop reaches
+          the component's inline styles directly (it spreads `...style`
+          onto them), so no CSS override is needed here. */}
       <WhatsNextPanel
         standard={`WCAG 2.2, expected ${readiness.expectedFrom}`}
         failCount={alreadyFailing}
         description={`The standard European law points at will change. Nothing here is required yet. These are the ${total} new items that become Level A or AA when it lands, so you can fix them on your own schedule rather than someone else's.`}
-        style={{ marginTop: 12 }}
+        style={{ marginTop: 12, background: "transparent", border: 0, padding: 0 }}
       />
 
       <button
