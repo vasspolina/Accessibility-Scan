@@ -58,6 +58,11 @@ export function FindingsList({
   // row is worse than no column, so it's dropped for the whole table
   // rather than left in place empty.
   const showLevel = grouped.some((group) => Boolean(group[0].wcagLevel));
+  // Same rule for Instances: it only ever shows a number once a rule fires
+  // more than once, so a table where every group is singular (dark-pattern
+  // findings almost always are) would otherwise print a header over a
+  // column of nothing.
+  const showCount = grouped.some((group) => group.length > 1);
 
   return (
     <>
@@ -73,7 +78,9 @@ export function FindingsList({
               asNotes
                 ? [
                     { key: "issue", label: "Note" },
-                    { key: "count", label: "Instances", align: "right", width: "1%" },
+                    ...(showCount
+                      ? [{ key: "count", label: "Instances", align: "right" as const, width: "1%" }]
+                      : []),
                   ]
                 : [
                     { key: "severity", label: "Severity", width: "1%" },
@@ -81,10 +88,12 @@ export function FindingsList({
                     { key: "wcag", label: "WCAG", width: "1%" },
                     { key: "fix", label: "Who fixes this", width: "1%" },
                     ...(showLevel ? [{ key: "level", label: "Level" }] : []),
-                    { key: "count", label: "Instances", align: "right", width: "1%" },
+                    ...(showCount
+                      ? [{ key: "count", label: "Instances", align: "right" as const, width: "1%" }]
+                      : []),
                   ]
             }
-            rows={grouped.map((group) => findingRow(group, { asNotes, showLevel }))}
+            rows={grouped.map((group) => findingRow(group, { asNotes, showLevel, showCount }))}
           />
         </div>
       )}

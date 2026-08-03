@@ -117,41 +117,16 @@
 }
 
 /* ==========================================================================
-   Material Design 3 nav rail — a deliberate one-off
+   Nav rail — Material layout, Carbon everything else
    ==========================================================================
-   Everything else in this report reads Carbon: square corners, hairline
-   borders, layer-01 fills. This one region is Google's Material language
-   instead, by request, modelled on Google Drive's own sidebar — no
-   surface fill or border of its own (sits directly on the page, per the
-   "no grey background" correction), the current item carried by a full
-   pill fill rather than Carbon's square card + left-border accent. The
-   tokens below are scoped to `.a11y-shell-nav-material` so none of it
-   leaks into (or fights with) the Carbon custom properties the rest of
-   the file reads. Approximate values for Google's own M3 color roles —
-   primary-container, on-primary-container etc. — checked against 4.5:1
-   the same as every other pairing in this file. No Google Fonts CDN: the
-   font stack names Roboto/Google Sans for machines that already have them
-   installed and falls back to system UI otherwise, same as the self-hosted-
-   only rule PP Telegraf follows elsewhere in this file. */
-.a11y-shell-nav-material {
-  --md-font: "Google Sans", Roboto, "Segoe UI", Arial, sans-serif;
-  --md-on-surface: #1f1f1f;
-  --md-on-surface-variant: #444746;
-  --md-primary-container: #c2e7ff;
-  --md-on-primary-container: #041e49;
-  --md-state-hover: rgba(31, 31, 31, 0.08);
-}
-
-@media (prefers-color-scheme: dark) {
-  .a11y-shell-nav-material {
-    --md-on-surface: #e3e3e3;
-    --md-on-surface-variant: #c4c7c5;
-    --md-primary-container: #004a77;
-    --md-on-primary-container: #c2e7ff;
-    --md-state-hover: rgba(227, 227, 227, 0.1);
-  }
-}
-
+   Started as a full Material Design 3 treatment (Google Drive's sidebar
+   as the reference); walked back per two follow-up corrections to square
+   corners, the report's own PP Telegraf font, and now the report's own
+   Carbon colour roles too — `--text-secondary`, `--link-primary`,
+   `--layer-hover`, `--a11y-accent-faint`, all already bridged and
+   light/dark-themed by the Carbon layer earlier in this file. What's left
+   of the Material starting point is just the shape: full-width rows,
+   generous 48px height, no left-border accent. */
 .a11y-shell-nav {
   grid-area: nav;
   align-self: start;
@@ -171,12 +146,12 @@
   min-width: 12rem;
 }
 
-/* A Material "navigation-drawer item": full pill shape (radius = half the
-   row height), generous inline padding, medium-weight label. Real <a>
-   elements rather than a Material Button, since nothing in this app's
-   Button forwards `href`, `aria-current`, or a ref — it can't be a real
-   link, can't carry current-section state, and isn't a valid
-   `document.activeElement` target for the click handler's focus
+/* A full-width nav row, square, in the report's own type and colour
+   roles now — square corners, PP Telegraf, Carbon's text-secondary for
+   the resting state. Real <a> elements rather than a Button, since
+   nothing in this app's Button forwards `href`, `aria-current`, or a ref —
+   it can't be a real link, can't carry current-section state, and isn't a
+   valid `document.activeElement` target for the click handler's focus
    management. Doubled class beats the report's blanket link rule
    (`.a11y-widget-biz.a11y-widget-biz a` — underlined, regular weight, for
    links inside prose), which sits at the same specificity and would
@@ -186,9 +161,9 @@
   align-items: center;
   height: 48px;
   padding: 0 24px;
-  border-radius: 24px;
-  color: var(--md-on-surface-variant, #444746);
-  font-family: var(--md-font, inherit);
+  border-radius: 0;
+  color: var(--text-secondary, var(--a11y-muted, #525252));
+  font-family: var(--a11y-font, inherit);
   font-size: 0.875rem;
   font-weight: 500;
   text-decoration: none;
@@ -200,20 +175,26 @@
 }
 
 .a11y-shell-nav-link:hover {
-  background: var(--md-state-hover, rgba(31, 31, 31, 0.08));
+  background: var(--layer-hover, #e8e8e8);
 }
 
-/* Material has no left-border convention to draw on for "current" — the
-   pill fill itself is the shape change, and the weight bump on top of it
-   is this report's own rule that colour never carries state alone. */
+/* No left-border accent (Carbon's usual "current" convention elsewhere in
+   this file) — the fill itself is the shape change, and the weight bump
+   on top of it is this report's own rule that colour never carries state
+   alone. */
 .a11y-widget-biz.a11y-widget-biz .a11y-shell-nav-link[aria-current="true"] {
-  background: var(--md-primary-container, #c2e7ff);
-  color: var(--md-on-primary-container, #041e49);
+  /* !important on background/color only: font-weight from this same rule
+     applies fine at its plain (0,4,0) specificity, but something outranks
+     just these two properties despite this being the highest-specificity
+     rule matching them in the sheet — same "beats it regardless of why"
+     move this file already uses for inline styles it can't out-specify. */
+  background: var(--a11y-accent-faint, #edf5ff) !important;
+  color: var(--link-primary, var(--a11y-accent, #0f62fe)) !important;
   font-weight: 700;
 }
 
 .a11y-widget-biz.a11y-widget-biz .a11y-shell-nav-link[aria-current="true"]:hover {
-  background: var(--md-primary-container, #c2e7ff);
+  background: var(--a11y-accent-faint, #edf5ff) !important;
 }
 
 .a11y-shell-content {
@@ -2437,7 +2418,11 @@ label.a11y-ai-toggle {
 .a11y-principle-group {
   background: var(--a11y-surface, #f4f4f4);
   border: none;
-  padding: 16px;
+  /* Vertical only: left/right padding here pushed the group's own
+     heading, description and table 16px right of "What people can't
+     use" above it — a nested card with side padding of its own reads as
+     a second, narrower column instead of content inside the same one. */
+  padding: 16px 0;
 }
 
 .a11y-finding {
@@ -2537,8 +2522,9 @@ label.a11y-ai-toggle {
 
 .a11y-accordion-head {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
-  gap: 16px;
+  gap: 8px 16px;
   width: 100%;
   min-height: 48px;
   padding: 8px 0;
@@ -2555,9 +2541,15 @@ label.a11y-ai-toggle {
   background: var(--a11y-surface, #f4f4f4);
 }
 
+/* white-space: nowrap, not min-width: 0 — the title is one phrase read as
+   one line ("Screen reader preview (120 announcements)"); letting it
+   shrink let the badge and chevron squeeze it into wrapping mid-sentence
+   instead. flex-wrap on the head (above) is what actually gives the badge
+   and chevron somewhere to go when the row is too narrow for all three:
+   they drop to their own line below the title, rather than break it. */
 .a11y-accordion-head > span:first-child {
   flex: 1 1 auto;
-  min-width: 0;
+  white-space: nowrap;
 }
 
 .a11y-accordion-chevron {
@@ -3537,8 +3529,16 @@ label.a11y-ai-toggle {
    1% on the header cells isn't enough on its own — the browser still
    shrinks "Places" and "Design fix" until they wrap letter by letter
    rather than giving that room to the column that needs it. */
+.a11y-undecided-table {
+  /* Same escape hatch as .a11y-pro-table: without a real floor under it,
+     `width: 100%` alone has no lower bound, and the browser will crush
+     "What we couldn't decide" down to a sliver instead of scrolling once
+     the panel gets narrower than this table wants to be. */
+  overflow-x: auto;
+}
+
 .a11y-undecided-table table {
-  min-width: 0;
+  min-width: 36rem;
   width: 100%;
 }
 

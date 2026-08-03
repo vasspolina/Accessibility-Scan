@@ -659,7 +659,11 @@ function FindingDetails({
 // the section above already said otherwise.
 export function findingRow(
   findings: AccessibilityFinding[],
-  { asNotes = false, showLevel = true }: { asNotes?: boolean; showLevel?: boolean } = {}
+  {
+    asNotes = false,
+    showLevel = true,
+    showCount = true,
+  }: { asNotes?: boolean; showLevel?: boolean; showCount?: boolean } = {}
 ): { id: string; cells: ReactNode[]; expand: ReactNode } {
   const rep = findings[0];
   const count = findings.length;
@@ -695,7 +699,7 @@ export function findingRow(
   return {
     id: rep.id,
     cells: asNotes
-      ? [issueCell, count > 1 ? `${count} ×` : ""]
+      ? [issueCell, ...(showCount ? [count > 1 ? `${count} ×` : ""] : [])]
       : [
           <SeverityTag key="sev" severity={rep.severity} label={severityLabel[rep.severity]} />,
           issueCell,
@@ -708,7 +712,11 @@ export function findingRow(
           // column, and best-practice rules (no numbered criterion) never
           // carry one.
           ...(showLevel ? [rep.wcagLevel ? LEVEL_FRAMING[rep.wcagLevel] : ""] : []),
-          count > 1 ? `${count} ×` : "",
+          // Same reasoning as Level: a group of dark-pattern or notes
+          // findings is almost always singular, so "Instances" reads
+          // blank on every row — drop the whole column rather than ship
+          // an empty one.
+          ...(showCount ? [count > 1 ? `${count} ×` : ""] : []),
         ],
     expand: <FindingDetails findings={findings} asNotes={asNotes} />,
   };
