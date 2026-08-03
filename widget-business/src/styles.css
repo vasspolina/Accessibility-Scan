@@ -597,6 +597,13 @@ label.a11y-ai-toggle {
   border: 1px solid var(--a11y-border, #d0d7de);
   padding: 1px 8px;
   border-radius: 6px;
+  /* overflow-wrap is inherited, and the kit's DataTable sets it to
+     "anywhere" on every cell to stop long titles overrunning their
+     column — inherited into this chip too, which let the browser snap
+     "image-alt" in half rather than drop the whole tag to the next
+     line. A tag is one unit; it should fold as one, not mid-word. */
+  overflow-wrap: normal;
+  white-space: nowrap;
 }
 
 .a11y-pro-block {
@@ -3586,6 +3593,20 @@ label.a11y-ai-toggle {
    keeps them level with where the title starts, whatever it wraps to. */
 .a11y-findings-table td {
   vertical-align: top !important;
+}
+
+/* The kit's DataTable indents the expand row's content 48px inline —
+   enough to clear the arrow column alone, which lines the detail up
+   under the Severity badge instead of the Issue column it's actually
+   elaborating on. Measured against the header row: the Issue column
+   starts ~197px from the table's own left edge (arrow + Severity's
+   combined width), the same across every table built on this
+   component since they all share the one severity-badge measure —
+   !important to beat the inline style, same as the vertical-align
+   fix above. */
+.a11y-findings-table tbody td[colspan],
+.a11y-pro-table tbody td[colspan] {
+  padding-left: 197px !important;
 }
 
 .a11y-finding-issue {
