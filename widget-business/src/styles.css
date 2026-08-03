@@ -83,15 +83,21 @@
      below it. `.a11y-shell-content` (not this element) is the size
      container the narrow-layout rules below key off of: it's the actual
      content column, and the sidebar shouldn't count toward what "narrow"
-     means for it. When there's no report yet, AppShell renders no sidebar
-     at all, so the `nav` area's row is simply never occupied — no
-     fallback rule needed for that case. Below `a11y-shell` breaks (see the
-     collapse rule further down) the same two rows go single-column. */
+     means for it. The nav column is a fixed 12rem — matching the nav
+     list's own min-width — rather than sized to its content, so the
+     column is there whether or not AppShell has rendered a sidebar into
+     it yet. A content-sized column collapses to 0 with nothing in it and
+     only claims its width once the sidebar appears after a scan
+     completes, which visibly shoves the form/report sideways at the
+     exact moment someone's looking at the result — reserving the space
+     up front keeps the content column's width constant throughout.
+     Below `a11y-shell` breaks (see the collapse rule further down) the
+     same two rows go single-column. */
   display: grid;
   grid-template-areas:
     "header header"
     "nav content";
-  grid-template-columns: minmax(0, auto) minmax(0, 1fr);
+  grid-template-columns: 12rem minmax(0, 1fr);
   column-gap: 32px;
   padding: 32px;
   border: 1px solid var(--a11y-border, #d0d7de);
