@@ -439,6 +439,14 @@ function FindingDetails({
   const cluster = dominantComponent(findings);
   const summarize = entries.length > SUMMARY_THRESHOLD;
   const visibleEntries = summarize && !showAll ? entries.slice(0, SUMMARY_THRESHOLD) : entries;
+  // A picture only for some entries reads as broken unless it's said out
+  // loud: the scan budgets one picture per rule rather than one per
+  // occurrence, so it can spend its limited capture budget across every
+  // rule on the page instead of one rule with twenty instances eating the
+  // whole thing. Worth saying only when the split is actually visible —
+  // all-pictured and all-unpictured both need no explanation.
+  const somePictured = entries.some((e) => e.rep.elementScreenshot);
+  const someUnpictured = entries.some((e) => !e.rep.elementScreenshot);
 
   return (
     <>
@@ -528,6 +536,12 @@ function FindingDetails({
         <p className="a11y-affected-label">
           <strong>{count > 1 ? `Affected elements (${count}):` : "Affected element:"}</strong>
         </p>
+        {somePictured && someUnpictured && (
+          <p className="a11y-occurrence-note">
+            One picture per issue, so the scan can spend its time across every issue on the page
+            rather than one with many instances. The rest are named by where they are instead.
+          </p>
+        )}
         <ul className="a11y-occurrence-list">
           {visibleEntries.map((e) => (
             <Occurrence key={e.rep.id} finding={e.rep} label={e.label} repeatCount={e.count} />

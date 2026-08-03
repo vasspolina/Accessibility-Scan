@@ -959,6 +959,13 @@ label.a11y-ai-toggle {
   font-style: italic;
 }
 
+.a11y-occurrence-note {
+  margin: 0 0 12px;
+  font-size: var(--a11y-text-body);
+  color: var(--a11y-muted, #57606a);
+  font-style: italic;
+}
+
 .a11y-method-hint {
   margin: 0 0 12px;
   font-size: var(--a11y-text-body);
