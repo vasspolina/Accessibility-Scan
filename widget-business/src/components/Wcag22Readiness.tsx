@@ -104,20 +104,24 @@ export function Wcag22Readiness({ readiness }: { readiness: Readiness }) {
                   </strong>
                   <span className="a11y-conf-plain">Officially: {c.name}</span>
                   {c.whyManual && <span className="a11y-conf-plain">{c.whyManual}</span>}
-                  <span
-                    className={`a11y-conf-result ${
-                      c.status === "already-failing"
-                        ? "a11y-conf-result-fail"
-                        : c.status === "no-issues-found"
-                          ? "a11y-conf-result-pass"
-                          : "a11y-conf-result-minor"
-                    }`}
-                  >
-                    <span aria-hidden="true">
-                      {c.status === "already-failing" ? "!" : c.status === "no-issues-found" ? "✓" : "i"}
-                    </span>{" "}
-                    {STATUS_LABEL[c.status]}
-                  </span>
+                  {/* "Needs a person" is left unstated here on purpose —
+                      the caveat paragraph right below this table already
+                      says so once, for every row this status covers.
+                      Repeating it on each of them added nothing a reader
+                      didn't already know from the row above it; the badge
+                      only earns its place where it tells you something
+                      the caveat doesn't — that this one either already
+                      fails or is already clean. */}
+                  {c.status !== "needs-review" && (
+                    <span
+                      className={`a11y-conf-result ${
+                        c.status === "already-failing" ? "a11y-conf-result-fail" : "a11y-conf-result-pass"
+                      }`}
+                    >
+                      <span aria-hidden="true">{c.status === "already-failing" ? "!" : "✓"}</span>{" "}
+                      {STATUS_LABEL[c.status]}
+                    </span>
+                  )}
                 </span>,
                 c.findingCount > 0 ? `${c.findingCount} ×` : "—",
               ],
