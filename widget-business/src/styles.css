@@ -677,6 +677,14 @@ label.a11y-ai-toggle {
   overflow-wrap: anywhere;
 }
 
+/* Same override as .a11y-finding-details p / .a11y-undecided-cell p: this
+   text lives inside the professional table's own expand-row column,
+   already bounded by the table, so the page-wide 34rem reading-measure
+   cap only wasted the width the row had given it. */
+.a11y-widget-biz.a11y-widget-biz .a11y-pro-line {
+  max-width: none;
+}
+
 .a11y-pro-snippet {
   margin: 8px 0;
   padding: 10px 12px;
@@ -3922,6 +3930,15 @@ label.a11y-ai-toggle {
 
 .a11y-undecided-cell p {
   margin: 0;
+}
+
+/* Same override as .a11y-finding-details p, same reason: the page-wide
+   34rem reading-measure cap doesn't know this text already lives inside
+   the table's own bounded column, so it was capping the paragraph well
+   short of the room the cell actually had, leaving the row's background
+   trailing off into empty space past where the text wrapped. */
+.a11y-widget-biz.a11y-widget-biz .a11y-undecided-cell p {
+  max-width: none;
 }
 
 .a11y-undecided-ask {
