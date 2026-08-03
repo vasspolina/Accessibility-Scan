@@ -242,17 +242,19 @@
 .a11y-widget-biz.a11y-widget-biz .a11y-shell-nav-link {
   display: flex;
   align-items: center;
-  height: 48px;
-  padding: 0 24px;
+  /* min-height, not a fixed height: several section labels ("Issues that
+     could turn away users") don't fit this rail's 12rem width on one
+     line, and clipping them with an ellipsis hid words the row's own
+     label needed to say — the row grows to fit two lines instead. */
+  min-height: 48px;
+  padding: 8px 24px;
   border-radius: 0;
   color: var(--text-secondary, var(--a11y-muted, #525252));
   font-family: var(--a11y-font, inherit);
   font-size: 0.875rem;
   font-weight: 500;
+  line-height: 1.2;
   text-decoration: none;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
   transition: background 150ms cubic-bezier(0.2, 0, 0, 1),
     color 150ms cubic-bezier(0.2, 0, 0, 1);
 }
