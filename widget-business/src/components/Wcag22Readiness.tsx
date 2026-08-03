@@ -26,10 +26,10 @@ export function Wcag22Readiness({ readiness }: { readiness: Readiness }) {
   const { alreadyFailing, needsReview, total, criteria, parsingNoLongerCounts } = readiness;
 
   return (
-    <section className="a11y-section a11y-w22">
+    <section className="a11y-section a11y-w22" aria-labelledby="a11y-w22-heading">
       <span className="a11y-section-eyebrow">What's next</span>
       <div className="a11y-accordion-row">
-        <h2 className="a11y-section-title a11y-accordion-title">
+        <h2 className="a11y-section-title a11y-accordion-title" id="a11y-w22-heading">
           <button
             type="button"
             className="a11y-accordion-head"

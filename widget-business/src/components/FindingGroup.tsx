@@ -588,7 +588,7 @@ export function FindingGroup({
           {rep.helpUrl && (
             <p>
               <a className="a11y-learn-more" href={rep.helpUrl} target="_blank" rel="noopener noreferrer">
-                Learn more about this issue ↗
+                Learn more about this issue <span aria-hidden="true">↗</span>
               </a>
             </p>
           )}
@@ -675,7 +675,7 @@ export function FindingGroup({
                     {rep.helpUrl && (
                       <p className="a11y-pro-line">
                         <a className="a11y-learn-more" href={rep.helpUrl} target="_blank" rel="noopener noreferrer">
-                          Fix technique ↗
+                          Fix technique <span aria-hidden="true">↗</span>
                         </a>
                       </p>
                     )}

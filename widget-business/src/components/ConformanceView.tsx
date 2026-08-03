@@ -48,8 +48,8 @@ export function ConformanceView({
   const isFilteredOut = (status: CriterionResult["status"]) => onlyFailing && status !== "failed";
 
   return (
-    <section className="a11y-section a11y-conf">
-      <h2 className="a11y-section-title">
+    <section className="a11y-section a11y-conf" aria-labelledby="a11y-conf-heading">
+      <h2 className="a11y-section-title" id="a11y-conf-heading">
         Do you meet the legal standard?{" "}
         <span className="a11y-section-count">{conformance.standard}</span>
       </h2>

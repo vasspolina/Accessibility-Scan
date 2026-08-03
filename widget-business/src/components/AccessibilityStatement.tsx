@@ -210,8 +210,8 @@ export function AccessibilityStatement({ report }: { report: AccessibilityReport
   }
 
   return (
-    <section className="a11y-section a11y-stmt">
-      <SectionHeader eyebrow="European law" title="Your accessibility statement" />
+    <section className="a11y-section a11y-stmt" aria-labelledby="a11y-stmt-heading">
+      <SectionHeader eyebrow="European law" title="Your accessibility statement" id="a11y-stmt-heading" />
       <p className="a11y-section-desc">
         European law asks for one if you serve EU customers, and this check already knows most of
         the answers. Add your details and the draft writes itself.
@@ -222,6 +222,7 @@ export function AccessibilityStatement({ report }: { report: AccessibilityReport
           Organisation name
           <input
             type="text"
+            autoComplete="organization"
             value={organisation}
             onChange={(e) => setOrganisation(e.target.value)}
             placeholder="Acme Ltd"
@@ -231,6 +232,7 @@ export function AccessibilityStatement({ report }: { report: AccessibilityReport
           Contact email for accessibility issues
           <input
             type="email"
+            autoComplete="email"
             value={contactEmail}
             onChange={(e) => setContactEmail(e.target.value)}
             placeholder="access@example.com"

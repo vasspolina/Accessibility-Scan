@@ -65,6 +65,12 @@ export function ProSummary({
           </p>
         </Card>
         <Tabs
+          // The tabpanel's own content is only a one-line count — the
+          // findings/clean-criteria list a tab actually switches lives lower
+          // on the page (ProfessionalTable), past a filter-chip row that
+          // isn't part of this relationship. aria-owns tells assistive tech
+          // the two are still linked, since DOM position can't say so.
+          panelOwns="a11y-pro-findings"
           items={[
             {
               id: "issues",

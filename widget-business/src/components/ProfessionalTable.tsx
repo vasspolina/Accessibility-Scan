@@ -86,7 +86,7 @@ export function ProfessionalTable({
           {rep.helpUrl && (
             <p>
               <a className="a11y-learn-more" href={rep.helpUrl} target="_blank" rel="noopener noreferrer">
-                Fix technique ↗
+                Fix technique <span aria-hidden="true">↗</span>
               </a>
             </p>
           )}
@@ -132,7 +132,7 @@ export function ProfessionalTable({
     );
 
   return (
-    <section className="a11y-section a11y-pro-table" aria-label="Findings">
+    <section id="a11y-pro-findings" className="a11y-section a11y-pro-table" aria-label="Findings">
       {view === "issues" ? issuesTable : cleanList}
     </section>
   );

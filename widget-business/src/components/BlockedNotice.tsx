@@ -6,10 +6,13 @@
 // Every route below reaches the site through access the person already has,
 // or through the owner choosing to let the scanner in.
 
+// Not a live region: it mounts already carrying its full text, which
+// assistive tech treats as no change and never announces. The scan
+// outcome is spoken by App's persistent status paragraph instead.
 export function BlockedNotice({ message }: { message: string }) {
   return (
-    <section className="a11y-blocked" role="status">
-      <p className="a11y-blocked-lead">{message}</p>
+    <section className="a11y-blocked">
+      <p id="a11y-blocked-lead" className="a11y-blocked-lead">{message}</p>
       <p className="a11y-blocked-body">
         This isn't something to work around. The site guards itself on purpose, and we won't
         try to slip past that. A few honest ways in:

@@ -51,9 +51,9 @@ export function AcrDraft({ report }: { report: AccessibilityReport }) {
   }
 
   return (
-    <section className="a11y-section a11y-acr">
+    <section className="a11y-section a11y-acr" aria-labelledby="a11y-acr-heading">
       <div className="a11y-accordion-row">
-        <h2 className="a11y-section-title a11y-accordion-title">
+        <h2 className="a11y-section-title a11y-accordion-title" id="a11y-acr-heading">
           <button
             type="button"
             className="a11y-accordion-head"
@@ -117,6 +117,7 @@ export function AcrDraft({ report }: { report: AccessibilityReport }) {
               Contact for accessibility questions
               <input
                 type="email"
+                autoComplete="email"
                 value={contact}
                 onChange={(e) => setContact(e.target.value)}
                 placeholder="access@example.com"

@@ -80,8 +80,8 @@ export function VisionSimulator({ pagePreview, url }: { pagePreview: string; url
   const [active, setActive] = useState(CONDITIONS[0]);
 
   return (
-    <section className="a11y-section a11y-sim">
-      <h2 className="a11y-section-title">Your page, through other eyes</h2>
+    <section className="a11y-section a11y-sim" aria-labelledby="a11y-sim-heading">
+      <h2 className="a11y-section-title" id="a11y-sim-heading">Your page, through other eyes</h2>
       <p className="a11y-section-desc">
         One man in twelve is colour blind. Switch between views and watch what your page loses.
         Close approximations. Nobody's sight is exactly this.
@@ -102,6 +102,13 @@ export function VisionSimulator({ pagePreview, url }: { pagePreview: string; url
         ))}
       </div>
 
+      {/* aria-pressed changing on the button pressed is the only feedback a
+          screen reader gets by default — the note that actually explains the
+          condition, which is the whole point of this control, is a plain
+          paragraph nothing announces. */}
+      <span className="a11y-sr-only" role="status">
+        {active.label}. {active.note}
+      </span>
       <p className="a11y-sim-note">{active.note}</p>
 
       {/* One hidden SVG holding every colour matrix; the image references the

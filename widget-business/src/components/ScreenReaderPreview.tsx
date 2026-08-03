@@ -29,6 +29,10 @@ export function ScreenReaderPreview({ script }: { script: ScreenReaderScript }) 
   // advancing playback — cancel() fires onend just like a natural finish.
   const stoppedRef = useRef(false);
   const supported = useMemo(speechSupported, []);
+  // Where "Skip the transcript" sends focus — the show-all/show-fewer
+  // toggle just past the table, rather than every per-line play button in
+  // between, which on a normal page numbers over a hundred.
+  const showAllRef = useRef<HTMLButtonElement>(null);
 
   const lines = script.lines;
   const issueCount = useMemo(() => lines.filter((l) => l.issue).length, [lines]);
@@ -87,7 +91,7 @@ export function ScreenReaderPreview({ script }: { script: ScreenReaderScript }) 
   const visible = expanded ? filtered : filtered.slice(0, 12);
 
   return (
-    <section className="a11y-section a11y-sr">
+    <section className="a11y-section a11y-sr" aria-labelledby="a11y-sr-heading">
       {/* Carbon accordion. This section is the longest thing in the report by
           a wide margin — 120 rows on a normal page — and it is supplementary:
           you open it to hear a problem, not to read it end to end. Collapsed
@@ -101,7 +105,7 @@ export function ScreenReaderPreview({ script }: { script: ScreenReaderScript }) 
           unpredictably, so the two are siblings in one row and the rule that
           closes the header belongs to the row. */}
       <div className="a11y-accordion-row">
-        <h2 className="a11y-section-title a11y-accordion-title">
+        <h2 className="a11y-section-title a11y-accordion-title" id="a11y-sr-heading">
           <button
             type="button"
             className="a11y-accordion-head"
@@ -141,7 +145,15 @@ export function ScreenReaderPreview({ script }: { script: ScreenReaderScript }) 
               speakFrom(current ?? 0);
             }}
           >
-            {playing ? "■ Stop" : "▶ Play the page aloud"}
+            {playing ? (
+              <>
+                <span aria-hidden="true">■</span> Stop
+              </>
+            ) : (
+              <>
+                <span aria-hidden="true">▶</span> Play the page aloud
+              </>
+            )}
           </button>
         )}
       </div>
@@ -170,7 +182,11 @@ export function ScreenReaderPreview({ script }: { script: ScreenReaderScript }) 
             The status span stays mounted while empty — a live region that
             appears already carrying text announces unreliably. */}
         {supported ? (
-          <span className="a11y-sr-status" role="status">
+          /* Not a live region: the utterance itself is the audio feedback,
+             and announcing every line here would talk over it. The row
+             highlight below (current === i) carries the same progress for
+             sighted users. */
+          <span className="a11y-sr-status">
             {playing ? `On line ${(current ?? 0) + 1} of ${lines.length}` : ""}
           </span>
         ) : (
@@ -196,6 +212,20 @@ export function ScreenReaderPreview({ script }: { script: ScreenReaderScript }) 
           </label>
         )}
       </div>
+
+      {/* A row-by-row transcript is exactly the kind of block WCAG 2.4.1
+          exists for: on a normal page it's over a hundred consecutive tab
+          stops, one per play button, with nothing letting a keyboard user
+          get past it in fewer presses than that. */}
+      {filtered.length > 12 && (
+        <button
+          type="button"
+          className="a11y-skip-link"
+          onClick={() => showAllRef.current?.focus()}
+        >
+          Skip the {visible.length}-row transcript
+        </button>
+      )}
 
       {/* The walkthrough as the kit's table: order, what you would hear,
           and the note. Issue rows wear the critical tint; the row currently
@@ -237,6 +267,7 @@ export function ScreenReaderPreview({ script }: { script: ScreenReaderScript }) 
           user at the top of the page. */}
       {filtered.length > 12 && (
         <button
+          ref={showAllRef}
           type="button"
           className="a11y-show-all"
           aria-expanded={expanded}

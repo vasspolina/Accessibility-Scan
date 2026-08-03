@@ -13,6 +13,8 @@ export function UrlForm({
   audience,
   onAudienceChange,
   hasReport,
+  scanError,
+  scanBlocked,
 }: {
   onSubmit: (
     url: string,
@@ -29,6 +31,14 @@ export function UrlForm({
   // Save as PDF has nothing to export before a scan exists — the button
   // only earns its place in the footer once one does.
   hasReport: boolean;
+  // A scan-level failure from the last submit (bad/unreachable URL, timeout,
+  // backend error). Announced separately by App; here it only has to point
+  // the field at where that text already lives, so a user who tabs back to
+  // fix their typo lands on a field that says why it failed.
+  scanError?: string | null;
+  // Same idea for a bot-protection/CAPTCHA block — not the field's fault,
+  // but still worth being discoverable from the field itself.
+  scanBlocked?: string | null;
 }) {
   const [value, setValue] = useState("");
   const [mode, setMode] = useState<ScanMode>("page");
@@ -64,11 +74,16 @@ export function UrlForm({
       {/* The kit's NewScan opens with its own heading and one-line
           subtitle before the card. The kit's sentence says WCAG 2.2; ours
           says what this scan actually measures. */}
-      <h2 className="a11y-section-title a11y-newscan-title">New scan</h2>
+      <h2 className="a11y-section-title a11y-newscan-title" id="a11y-newscan-title">New scan</h2>
       <p className="a11y-newscan-sub">
         We audit the page against WCAG 2.1 AA and explain what to fix.
       </p>
-    <form className="a11y-url-form" onSubmit={handleSubmit} noValidate>
+    <form
+      className="a11y-url-form"
+      onSubmit={handleSubmit}
+      noValidate
+      aria-labelledby="a11y-newscan-title"
+    >
       {/* The kit's NewScan composition: a quiet card, two columns, and the
           actions gathered in a hairline-topped footer. Our content and our
           contracts (persistent error region, described-by hints, login
@@ -76,7 +91,7 @@ export function UrlForm({
       <div className="a11y-form-grid">
         <div className="a11y-form-col">
           <label className="a11y-url-label" htmlFor="a11y-url-input">
-            Your website address
+            Your website address (required)
           </label>
           {/* The submit button rejoins the field as one row — the kit's own
               search-plus-action pattern — rather than waiting in the
@@ -95,8 +110,16 @@ export function UrlForm({
               }}
               disabled={loading}
               required
-              aria-invalid={showEmptyError || undefined}
-              aria-describedby={showEmptyError ? "a11y-url-error" : "a11y-url-hint"}
+              aria-invalid={showEmptyError || Boolean(scanError) || undefined}
+              aria-describedby={
+                showEmptyError
+                  ? "a11y-url-error"
+                  : scanError
+                    ? "a11y-scan-error"
+                    : scanBlocked
+                      ? "a11y-blocked-lead"
+                      : "a11y-url-hint"
+              }
             />
             <Button type="submit" disabled={loading}>
               {loading ? "One moment…" : mode === "site" ? "Audit my site" : "Check my site"}

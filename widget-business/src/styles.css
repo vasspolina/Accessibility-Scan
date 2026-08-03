@@ -861,14 +861,19 @@
    that changes what the reader can do next — that whole group can be checked
    by hand, today, with nothing installed. */
 .a11y-method-badge {
-  flex-shrink: 0;
+  /* Same fix as .a11y-level-badge just below: nowrap + flex-shrink: 0 is
+     what let a badge run past the card's edge and get clipped by its
+     overflow: hidden at narrow widths, instead of wrapping. */
+  flex-shrink: 1;
+  min-width: 0;
   padding: 2px 8px;
   border: 1px solid var(--a11y-border, #d0d7de);
   border-radius: 999px;
   font-size: var(--a11y-text-body);
   font-weight: 400;
   color: var(--a11y-muted, #57606a);
-  white-space: nowrap;
+  white-space: normal;
+  overflow-wrap: break-word;
 }
 
 /* The keyboard mark is the only one given colour: it is the one group the
@@ -1951,6 +1956,31 @@
   border: 0;
 }
 
+/* A bypass link for the screen-reader transcript: off-screen until it takes
+   keyboard focus, the same convention every skip-nav link uses, so it costs
+   nothing for anyone not tabbing through the page. */
+.a11y-skip-link {
+  position: absolute;
+  left: -9999px;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  padding: 0;
+  border: 1px solid var(--a11y-accent, #0f62fe);
+  background: var(--a11y-bg, #ffffff);
+  color: var(--a11y-accent, #0f62fe);
+  font-size: var(--a11y-text-body);
+  cursor: pointer;
+}
+
+.a11y-skip-link:focus {
+  position: static;
+  width: auto;
+  height: auto;
+  padding: 8px 16px;
+  overflow: visible;
+}
+
 /* Every focusable thing gets a visible ring, whatever it is — including the
    ones no specific rule below names (accordion heads, copy buttons, links,
    the focusable statement region, the details summary). Sits before the
@@ -2281,7 +2311,9 @@
 /* Carbon's motion tokens: fast-02 with the productive easing curve. Still
    removed entirely for anyone who asked for less motion. */
 @media (prefers-reduced-motion: reduce) {
-  .a11y-widget-biz * {
+  .a11y-widget-biz *,
+  .a11y-widget-biz *::before,
+  .a11y-widget-biz *::after {
     transition: none !important;
     animation: none !important;
   }
@@ -4272,6 +4304,12 @@
   flex-wrap: wrap;
   align-items: center;
   flex-basis: 100%;
+  /* A flex item's default min-width is its content's min-content size, not
+     0 — so without this, "flex-shrink: 1" on the badges inside never gets
+     the chance to run: the row itself refuses to shrink narrower than its
+     widest badge, and just overflows past the card at narrow widths
+     instead of wrapping. */
+  min-width: 0;
   gap: 8px 16px;
   margin-top: 4px;
   margin-left: 184px;

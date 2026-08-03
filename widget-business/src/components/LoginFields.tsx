@@ -52,6 +52,21 @@ export function LoginFields({
     toggleRef.current?.focus();
   }
 
+  // A form that's some-but-not-all filled in is silently treated as "no
+  // auth" (see the comment in update() above) — that's the right call for
+  // what gets sent, but saying nothing left a visitor who filled in two of
+  // three fields believing the scan would sign in when it never would.
+  function readinessMessage(): string {
+    if (auth) return "Ready. The scan will sign in first.";
+    const missing: string[] = [];
+    if (!loginUrl.trim()) missing.push("the login page address");
+    if (!username.trim()) missing.push("a username or email");
+    if (!password) missing.push("a password");
+    if (missing.length === 0 || missing.length === 3) return "";
+    const what = missing.length === 1 ? missing[0] : "the rest";
+    return `Add ${what} to sign in during the scan, or clear the other fields to scan without signing in.`;
+  }
+
   return (
     <div>
       <button
@@ -119,7 +134,7 @@ export function LoginFields({
               someone who can't see the text appear. Mounted while open, empty
               until true. */}
           <p className="a11y-login-ready" role="status">
-            {auth ? "Ready. The scan will sign in first." : ""}
+            {readinessMessage()}
           </p>
 
           <button

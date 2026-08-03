@@ -125,6 +125,18 @@ export function App({ apiBase, cta }: { apiBase: string; cta?: CtaConfig }) {
   // that keeps counting is the difference between waiting and wondering.
   const [elapsed, setElapsed] = useState(0);
   const [tookSeconds, setTookSeconds] = useState<number | null>(null);
+  // The ticking "12s" is reassurance, not essential status — the words
+  // beside it carry the real information, and elapsed itself keeps driving
+  // those words and the progress bar either way. WCAG 2.2.2 asks for a way
+  // to stop content like this that starts on its own; the same preference
+  // already freezes the spinner in styles.css, so honour it here too rather
+  // than adding a separate control just for this one number.
+  const reducedMotion = useMemo(
+    () =>
+      typeof window !== "undefined" &&
+      window.matchMedia?.("(prefers-reduced-motion: reduce)").matches,
+    []
+  );
 
   // A PDF is checked for a handful of structural things, not crawled as a
   // page, so several sections of the report simply do not apply to it.
@@ -272,12 +284,18 @@ export function App({ apiBase, cta }: { apiBase: string; cta?: CtaConfig }) {
           setFixFilter("all");
         }}
         hasReport={!!report}
+        scanError={error}
+        scanBlocked={blocked}
       />
       </div>
 
       {blocked && <BlockedNotice message={blocked} />}
 
-      {error && <p className="a11y-error">{error}</p>}
+      {error && (
+        <p id="a11y-scan-error" className="a11y-error">
+          {error}
+        </p>
+      )}
 
       {/* The announcement lives here, not on the visible paragraph above. A
           live region mounted together with its message is the classic way to
@@ -320,9 +338,11 @@ export function App({ apiBase, cta }: { apiBase: string; cta?: CtaConfig }) {
               reassurance of a moving number; everyone else gets an update
               when there is genuinely something new to say. */}
           <span>{waitingMessage(mode, aiRequested, elapsed)}</span>{" "}
-          <span className="a11y-elapsed" aria-hidden="true">
-            {elapsed}s
-          </span>
+          {!reducedMotion && (
+            <span className="a11y-elapsed" aria-hidden="true">
+              {elapsed}s
+            </span>
+          )}
         </p>
       )}
 
@@ -339,15 +359,17 @@ export function App({ apiBase, cta }: { apiBase: string; cta?: CtaConfig }) {
       <p className="a11y-sr-only" role="status">
         {loading
           ? waitingMessage(mode, aiRequested, elapsed)
-          : report
-            ? `Check complete in ${tookSeconds ?? 0} seconds. Score ${report.score} out of 100, ${
-                report.summary.total
-              } ${report.summary.total === 1 ? "issue" : "issues"} found. The full report follows.`
-            : audit
-              ? `Site audit complete. ${audit.pagesScanned} ${
-                  audit.pagesScanned === 1 ? "page" : "pages"
-                } checked, average score ${audit.averageScore} out of 100. The full report follows.`
-              : ""}
+          : blocked
+            ? blocked
+            : report
+              ? `Check complete in ${tookSeconds ?? 0} seconds. Score ${report.score} out of 100, ${
+                  report.summary.total
+                } ${report.summary.total === 1 ? "issue" : "issues"} found. The full report follows.`
+              : audit
+                ? `Site audit complete. ${audit.pagesScanned} ${
+                    audit.pagesScanned === 1 ? "page" : "pages"
+                  } checked, average score ${audit.averageScore} out of 100. The full report follows.`
+                : ""}
       </p>
 
       {audit && (
@@ -493,14 +515,15 @@ export function App({ apiBase, cta }: { apiBase: string; cta?: CtaConfig }) {
             description="Places your site nudges people rather than leaves the choice to them. These don't move the score. They move how much you're trusted."
             variant={findingsByCategory.darkPattern.length > 0 ? "redflag" : "default"}
             findings={findingsByCategory.darkPattern}
+            id="a11y-trust-heading"
           />
           )}
 
-          <section className="a11y-section">
+          <section className="a11y-section" aria-labelledby="a11y-accessibility-heading">
             {/* h2 like every other top-level section — as an h3 it sat at the
                 same level as the principle headings inside it, so the outline
                 had children at their parent's level. */}
-            <h2 className="a11y-section-title">
+            <h2 className="a11y-section-title" id="a11y-accessibility-heading">
               What people can't use{" "}
               <span className="a11y-section-count">({findingsByCategory.accessibility.length})</span>
             </h2>
@@ -527,6 +550,7 @@ export function App({ apiBase, cta }: { apiBase: string; cta?: CtaConfig }) {
             variant="default"
             findings={findingsByCategory.designClarity}
             asNotes
+            id="a11y-notes-heading"
           />
           )}
           </div>

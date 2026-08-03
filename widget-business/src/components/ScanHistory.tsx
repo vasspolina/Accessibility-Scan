@@ -44,10 +44,13 @@ export function ScanHistory({
   // leaving it nested inside this section) makes it possible to inert
   // everything else with one line instead of walking every ancestor's
   // siblings, which is what the loop below does while the dialog is open.
-  useEffect(() => {
+  function widgetInnerEl(): HTMLElement | null {
     const root = anchorRef.current?.getRootNode();
-    const contentEl =
-      root instanceof ShadowRoot ? root.querySelector<HTMLElement>(".a11y-widget-inner") : null;
+    return root instanceof ShadowRoot ? root.querySelector<HTMLElement>(".a11y-widget-inner") : null;
+  }
+
+  useEffect(() => {
+    const contentEl = widgetInnerEl();
     if (!contentEl) return;
     contentEl.inert = confirmOpen;
     return () => {
@@ -66,8 +69,8 @@ export function ScanHistory({
   // reader. A confirmation stays where the section was.
   if (cleared) {
     return (
-      <section className="a11y-section a11y-hist">
-        <h2 className="a11y-section-title">Since last time</h2>
+      <section className="a11y-section a11y-hist" aria-labelledby="a11y-hist-heading">
+        <h2 className="a11y-section-title" id="a11y-hist-heading">Since last time</h2>
         <p className="a11y-section-desc" role="status" tabIndex={-1} ref={(el) => el?.focus()}>
           Scan history deleted from this browser.
         </p>
@@ -87,8 +90,8 @@ export function ScanHistory({
   const comparable = scoresComparable(last, current);
 
   return (
-    <section className="a11y-section a11y-hist">
-      <h2 className="a11y-section-title">
+    <section className="a11y-section a11y-hist" aria-labelledby="a11y-hist-heading">
+      <h2 className="a11y-section-title" id="a11y-hist-heading">
         Since last time{" "}
         <span className="a11y-section-count">
           {previous.length === 1 ? "1 earlier scan" : `${previous.length} earlier scans`}
@@ -209,7 +212,17 @@ export function ScanHistory({
             primaryLabel="Delete"
             danger
             secondaryLabel="Cancel"
-            onClose={() => setConfirmOpen(false)}
+            onClose={() => {
+              setConfirmOpen(false);
+              // The effect above only clears .inert once it re-runs after
+              // this render commits — which hasn't happened yet at this
+              // point in the same click. An inert subtree can't take focus,
+              // so anchorRef.current.focus() would silently do nothing
+              // without clearing it here first.
+              const contentEl = widgetInnerEl();
+              if (contentEl) contentEl.inert = false;
+              anchorRef.current?.focus();
+            }}
             onPrimary={() => {
               clearHistory();
               setCleared(true);

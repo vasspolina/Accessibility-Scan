@@ -1,5 +1,5 @@
 import React from "react";
-export function Tabs({ items = [], defaultId, onChange, style }) {
+export function Tabs({ items = [], defaultId, onChange, style, panelOwns }) {
   const [active, setActive] = React.useState(defaultId || (items[0] && items[0].id));
   const refs = React.useRef({});
   const go = (id) => { setActive(id); onChange && onChange(id); };
@@ -27,6 +27,7 @@ export function Tabs({ items = [], defaultId, onChange, style }) {
         ))}
       </div>
       {cur && <div role="tabpanel" id={"panel-" + cur.id} aria-labelledby={"tab-" + cur.id} tabIndex={0}
+        aria-owns={panelOwns || undefined}
         style={{ padding: "var(--space-05) 0", color: "var(--text-primary)", fontSize: "var(--type-body-size)" }}>{cur.panel}</div>}
     </div>
   );

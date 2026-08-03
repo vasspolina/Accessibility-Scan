@@ -20,9 +20,9 @@ export function UndecidedChecks({
 }) {
   const total = rows.reduce((n, r) => n + r.count, 0);
   return (
-    <section className="a11y-section">
+    <section className="a11y-section" aria-labelledby="a11y-undecided-heading">
       {/* h2: this is a top-level section of the report, same as its siblings. */}
-      <h2 className="a11y-section-title">
+      <h2 className="a11y-section-title" id="a11y-undecided-heading">
         For your designer and developer{" "}
         <span className="a11y-section-count">({total})</span>
       </h2>
@@ -72,7 +72,7 @@ export function UndecidedChecks({
                       target="_blank"
                       rel="noopener noreferrer"
                     >
-                      Learn more about this check ↗
+                      Learn more about this check <span aria-hidden="true">↗</span>
                     </a>
                   </p>
                 )}

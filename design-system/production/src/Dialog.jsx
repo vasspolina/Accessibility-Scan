@@ -3,8 +3,31 @@ export function Dialog({ open, title, children, primaryLabel, onPrimary, seconda
   const ref = React.useRef(null);
   React.useEffect(() => { if (open && ref.current) ref.current.focus(); }, [open]);
   if (!open) return null;
+
+  function trapTab(e) {
+    if (e.key === "Escape") { if (onClose) onClose(); return; }
+    if (e.key !== "Tab" || !ref.current) return;
+    const focusable = ref.current.querySelectorAll(
+      'button:not([disabled]), [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+    );
+    if (focusable.length === 0) return;
+    const first = focusable[0];
+    const last = focusable[focusable.length - 1];
+    // document.activeElement stops at the shadow host once focus is inside an
+    // open shadow root — the node's own root is what actually knows what's
+    // focused within it.
+    const active = ref.current.getRootNode().activeElement;
+    if (e.shiftKey && active === first) {
+      e.preventDefault();
+      last.focus();
+    } else if (!e.shiftKey && active === last) {
+      e.preventDefault();
+      first.focus();
+    }
+  }
+
   return (
-    <div onKeyDown={(e) => { if (e.key === "Escape" && onClose) onClose(); }}
+    <div onKeyDown={trapTab}
       style={{ position: "fixed", inset: 0, background: "rgba(22,22,22,0.5)", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 50 }}>
       <div role="dialog" aria-modal="true" aria-labelledby="dlg-title" ref={ref} tabIndex={-1}
         style={{ width: 420, maxWidth: "90%", background: "var(--layer-02)", border: "1px solid var(--border-subtle)",
