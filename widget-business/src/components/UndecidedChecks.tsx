@@ -1,3 +1,4 @@
+import { DataTable } from "@verify/design-system";
 import { undecidedExplanation } from "../lib/wcagPlain";
 import { fixKindForRule } from "../lib/testMethod";
 
@@ -35,52 +36,50 @@ export function UndecidedChecks({
         score, and some of it will turn out to be perfectly fine.
       </p>
       {rows.length > 0 && (
-        <div className="a11y-findings-columns" aria-hidden="true">
-          <span>What we couldn&rsquo;t decide</span>
+        <div className="a11y-undecided-table">
+        <DataTable
+          caption="What the checker couldn't decide"
+          headers={[
+            { key: "fix", label: "Who fixes this", width: "1%" },
+            { key: "issue", label: "What we couldn't decide" },
+            { key: "places", label: "Places", align: "right", width: "1%" },
+          ]}
+          rows={rows.map((r) => {
+            const e = undecidedExplanation(r.ruleId);
+            const fix = fixKindForRule(r.ruleId);
+            return {
+              id: r.ruleId,
+              cells: [
+                <span key="fix" className={`a11y-method-badge a11y-fix-${fix.key}`}>
+                  {fix.label}
+                </span>,
+                <div key="issue" className="a11y-undecided-cell">
+                  <p className="a11y-undecided-what">{e ? e.what : r.help}</p>
+                  {e && (
+                    <p className="a11y-undecided-ask">
+                      <strong>What to ask for:</strong> {e.ask}
+                    </p>
+                  )}
+                  {r.helpUrl && (
+                    <p>
+                      <a
+                        className="a11y-learn-more"
+                        href={r.helpUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
+                        Learn more about this check <span aria-hidden="true">↗</span>
+                      </a>
+                    </p>
+                  )}
+                </div>,
+                String(r.count),
+              ],
+            };
+          })}
+        />
         </div>
       )}
-      <ul className="a11y-undecided-list a11y-findings-list">
-        {rows.map((r) => {
-          const e = undecidedExplanation(r.ruleId);
-          const fix = fixKindForRule(r.ruleId);
-          return (
-            <li key={r.ruleId} className="a11y-undecided">
-              {/* A kicker over the row's own content, not a column beside it:
-                  unlike severity, "who fixes this" isn't a value worth
-                  scanning down on its own — it belongs to the sentence it
-                  labels. */}
-              <span className={`a11y-method-badge a11y-fix-${fix.key} a11y-undecided-fix`}>
-                {fix.label}
-              </span>
-              <div className="a11y-undecided-body">
-                <p className="a11y-undecided-head">
-                  <strong>
-                    {r.count} {r.count === 1 ? "place" : "places"}
-                  </strong>{" "}
-                  — {e ? e.what : r.help}
-                </p>
-                {e && (
-                  <p className="a11y-undecided-do">
-                    <strong>What to ask for:</strong> {e.ask}
-                  </p>
-                )}
-                {r.helpUrl && (
-                  <p>
-                    <a
-                      className="a11y-learn-more"
-                      href={r.helpUrl}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                    >
-                      Learn more about this check <span aria-hidden="true">↗</span>
-                    </a>
-                  </p>
-                )}
-              </div>
-            </li>
-          );
-        })}
-      </ul>
     </section>
   );
 }

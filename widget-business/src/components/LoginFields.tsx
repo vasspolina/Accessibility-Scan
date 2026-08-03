@@ -64,7 +64,7 @@ export function LoginFields({
     if (!password) missing.push("a password");
     if (missing.length === 0 || missing.length === 3) return "";
     const what = missing.length === 1 ? missing[0] : "the rest";
-    return `Add ${what} to sign in during the scan, or clear the other fields to scan without signing in.`;
+    return `Add ${what} to sign in during the scan, or clear the other fields to scan without a login.`;
   }
 
   return (

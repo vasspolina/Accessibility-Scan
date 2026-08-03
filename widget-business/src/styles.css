@@ -237,6 +237,19 @@
   cursor: pointer;
 }
 
+/* Two shapes share this class: a wrapper div with its own nested label
+   (the rule above, used where a hint line follows outside the label) and
+   a checkbox with nothing else to say, where the class sits on the label
+   itself. That second shape never matched the rule above — descendant
+   selectors don't match the element they're written on — so its checkbox
+   and text sat flush against each other with no gap. */
+label.a11y-ai-toggle {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+}
+
 .a11y-ai-toggle input[type="checkbox"] {
   margin: 0;
   cursor: pointer;
@@ -1767,7 +1780,6 @@
   font-style: normal;
   font-size: var(--a11y-text-body);
   font-weight: 400;
-  text-transform: uppercase;
   letter-spacing: 0.05em;
   color: var(--a11y-muted, #57606a);
 }
@@ -3316,6 +3328,163 @@
   margin: 8px 0;
 }
 
+/* Same shape as .a11y-pro-table just above: content-sized first and last
+   columns (a badge, a number) so "What we couldn't decide" is the one
+   column actually asked to flex. Without white-space: nowrap here, width:
+   1% on the header cells isn't enough on its own — the browser still
+   shrinks "Places" and "Design fix" until they wrap letter by letter
+   rather than giving that room to the column that needs it. */
+.a11y-undecided-table table {
+  min-width: 0;
+  width: 100%;
+}
+
+/* Same reasoning as .a11y-findings-table: the fix badge shouldn't float at
+   the vertical centre of a cell whose paragraphs run to several lines. */
+.a11y-undecided-table td {
+  vertical-align: top !important;
+}
+
+.a11y-undecided-table th:nth-child(1),
+.a11y-undecided-table th:nth-child(3),
+.a11y-undecided-table tbody td:nth-child(1),
+.a11y-undecided-table tbody td:nth-child(3) {
+  white-space: nowrap;
+}
+
+.a11y-undecided-table tbody td:nth-child(3) {
+  font-variant-numeric: tabular-nums;
+}
+
+/* .a11y-method-badge normally wraps its own text as a last resort against
+   the finding cards' overflow (see that rule's own comment) — wrong here,
+   where the column is already reserved just for it and wrapping only
+   produces a two-line "Design/fix" for no reason. */
+.a11y-undecided-table .a11y-method-badge {
+  white-space: nowrap;
+}
+
+/* The findings table: severity, issue, count, same shape as every other
+   table here. No side-scroll on a narrow panel — columns squeeze and wrap
+   instead. */
+.a11y-findings-table {
+  overflow-x: auto;
+}
+
+.a11y-findings-table table {
+  /* min-width, not width: a table pinned to exactly the wrapper's width
+     has nowhere to put a genuinely wide row except crush it — every column
+     shrinks to fit, including the ones this file just gave a real minimum.
+     Letting the table grow past the wrapper is what makes that minimum
+     mean anything; the wrapper's own overflow-x: auto is what turns that
+     into a scrollbar instead of a layout break. */
+  min-width: 100%;
+  width: auto;
+}
+
+/* The kit's DataTable centers every cell vertically (an inline style,
+   which is why this needs !important to win) — correct when every cell
+   in a row holds one line, wrong the moment a long title wraps to two:
+   the arrow and severity pill then float at the row's new vertical
+   centre instead of sitting beside the title's first line. Top-aligning
+   keeps them level with where the title starts, whatever it wraps to. */
+.a11y-findings-table td {
+  vertical-align: top !important;
+}
+
+.a11y-finding-issue {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.a11y-finding-title {
+  font-weight: 500;
+}
+
+.a11y-finding-meta-line {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px 12px;
+  font-size: var(--a11y-text-label, 0.875rem);
+  color: var(--a11y-muted, #57606a);
+}
+
+/* Same fix as the other tables' narrow columns, again: no width hint alone
+   is enough to stop "Instances" wrapping letter by letter. :last-child
+   rather than nth-child, since this table has two different shapes (with
+   and without a severity column) and the count is always the last one
+   either way. */
+.a11y-findings-table th:last-child,
+.a11y-findings-table tbody td:last-child {
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}
+
+/* WCAG and who-fixes-this are their own columns now, not badges folded
+   under the title — same wrapping problem as every other narrow column in
+   this file, same fix. Level is deliberately left out: its text ("Required
+   by law in most places (Level AA)") is a phrase, not a label, and forcing
+   it onto one line was what starved the Issue column down to a
+   letter-per-line sliver — it wraps like Issue does instead. nth-child
+   positions assume the arrow column is always first (every row has an
+   expand panel): 4 = WCAG, 5 = fix. The asNotes shape has neither column,
+   so these simply match nothing there. */
+.a11y-findings-table th:nth-child(4),
+.a11y-findings-table th:nth-child(5),
+.a11y-findings-table tbody td:nth-child(4),
+.a11y-findings-table tbody td:nth-child(5) {
+  white-space: nowrap;
+}
+
+/* The one column that must always keep real room, whichever position it
+   lands in across this table's two shapes (with or without severity/WCAG/
+   fix/level columns) — :has() finds it by what it contains rather than by
+   position, which position-based nth-child can't do across both shapes. */
+.a11y-findings-table td:has(.a11y-finding-issue) {
+  min-width: 12rem;
+}
+
+/* Level (e.g. "Required by law in most places (Level AA)") is a phrase,
+   not a label — same reasoning as leaving it out of the nowrap rule above.
+   Left with no minimum it got compressed to its longest unbreakable word,
+   which is unreadable at any width. nth-child(6): arrow, severity, issue,
+   WCAG, fix, level — only present in the shape that has a fix column. */
+.a11y-findings-table tbody td:nth-child(6) {
+  min-width: 10rem;
+}
+
+/* Same override as .a11y-undecided-table, same reason: the fix badge's own
+   white-space: normal (set for the finding cards' overflow fix) would
+   otherwise wrap "Code fix" onto two lines inside its own dedicated column,
+   where there's no crowding to wrap away from in the first place. */
+.a11y-findings-table .a11y-method-badge {
+  white-space: nowrap;
+}
+
+.a11y-undecided-cell {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.a11y-undecided-cell p {
+  margin: 0;
+}
+
+.a11y-undecided-ask {
+  color: var(--a11y-muted, #57606a);
+}
+
+/* Same fix, same reason, for the WCAG 2.2 readiness table: "Status" had no
+   width hint at all, so "Needs a person" wrapped to two lines instead of
+   giving its room to the criterion column that actually needs it. */
+.a11y-w22 th:nth-child(2),
+.a11y-w22 tbody td:nth-child(2) {
+  white-space: nowrap;
+}
+
 .a11y-clean-list {
   margin: 0;
   padding-left: 24px;
@@ -3745,18 +3914,20 @@
 
 /* "20% tighter" line height, taken at its word, role by role — body
    1.55 → 1.24, UI 1.3 → 1.05, headings 1.2 → 1.0 (the floor a line box
-   allows without clipping this face). Tighter leading demands shorter
-   lines — Hochuli's trade, and the widget's own leading-for-measure
-   check enforces exactly that pairing — so the prose measure narrows to
-   ~50 characters (25rem) where 1.24 is legitimate. */
+   allows without clipping this face). */
 .a11y-widget-biz.a11y-widget-biz .a11y-widget-inner {
   line-height: 1.24;
 }
 
+/* 36rem (576px), measured directly against rendered text rather than
+   calculated: at 25rem full lines were landing at 8-10 words, short of
+   the 11-14 a line should hold. 36rem is where PP Telegraf's running
+   text at 18px consistently fills 11-14 without leaving an orphaned
+   word on its own line. */
 .a11y-widget-biz .a11y-widget-inner p,
 .a11y-widget-biz .a11y-widget-inner li,
 .a11y-widget-biz .a11y-widget-inner dd {
-  max-width: 25rem;
+  max-width: 36rem;
 }
 
 .a11y-widget-biz.a11y-widget-biz .a11y-severity-badge,
@@ -4035,7 +4206,6 @@
 
 .a11y-widget-biz.a11y-widget-biz .a11y-conf,
 .a11y-widget-biz.a11y-widget-biz .a11y-w22,
-.a11y-widget-biz.a11y-widget-biz .a11y-sr,
 .a11y-widget-biz.a11y-widget-biz .a11y-stmt {
   background: #f4f4f4;
   border: 1px solid var(--a11y-border, #e0e0e0);
@@ -4089,7 +4259,6 @@
 
   .a11y-widget-biz.a11y-widget-biz .a11y-conf,
   .a11y-widget-biz.a11y-widget-biz .a11y-w22,
-  .a11y-widget-biz.a11y-widget-biz .a11y-sr,
   .a11y-widget-biz.a11y-widget-biz .a11y-stmt {
     background: #262626;
   }
@@ -4110,51 +4279,30 @@
   color: var(--a11y-muted, #525252);
 }
 
-/* The scan-app dashboard's stat row: dial card plus severity tiles —
-   count over tag, layer-01 fill, hairline, the kit's own anatomy.
-
-   On the 16-column grid at a comfortable width: the dial gets a 4-span,
-   the preview card the other 12 — explicit track math rather than an
-   equal-fraction guess, same as every other multi-column region on the
-   page.
-
-   Below a panel width where that stops leaving the dial's own card
-   enough room (16 columns plus 15 gutters at 2rem each is a lot of
-   fixed gutter to spend on a narrow panel), auto-fit against a floor
-   width takes over: each card claims a full row of its own rather than
-   being squeezed to a sliver beside the other. */
+/* The scan-app dashboard's stat row: the dial card sized to its own
+   content (the score circle, nothing else needs the room a 4-column
+   span was giving it) and the preview card taking whatever is left,
+   starting right where the dial card ends rather than at a fixed
+   column boundary. flex-wrap is the narrow-panel fallback for free —
+   once the dial's hug width plus the preview card's 16rem floor no
+   longer fit side by side, the preview card drops to its own row
+   below, the same outcome the old grid's @container query spent a
+   second breakpoint reaching. */
 .a11y-stat-row {
-  display: grid;
-  grid-template-columns: repeat(16, minmax(0, 1fr));
+  display: flex;
+  flex-wrap: wrap;
+  align-items: stretch;
   column-gap: 2rem;
   row-gap: 16px;
-  align-items: stretch;
-  margin-bottom: 16px;
 }
 
 .a11y-stat-row > :first-child {
-  grid-column: span 4;
+  flex: 0 0 auto;
 }
 
 .a11y-stat-row > :not(:first-child) {
-  grid-column: span 12;
-}
-
-@container a11y-panel (max-width: 960px) {
-  .a11y-stat-row {
-    /* Wider floor than a severity pill needs: the second card holds a
-       list of finding rows now, and a title that wraps to one word a
-       line before the row's own badges even get involved is the same
-       failure the pill floor existed to prevent, just for text instead
-       of a tag. */
-    grid-template-columns: repeat(auto-fit, minmax(16rem, 1fr));
-    column-gap: 16px;
-  }
-
-  .a11y-stat-row > :first-child,
-  .a11y-stat-row > :not(:first-child) {
-    grid-column: auto;
-  }
+  flex: 1 1 16rem;
+  min-width: 0;
 }
 
 .a11y-stat-label {
@@ -4315,6 +4463,18 @@
   margin-left: 184px;
 }
 
+/* One badge alone doesn't need its own indented row — there is nothing
+   beside it to misalign. Dark-pattern findings never carry a WCAG level,
+   a keyboard-test mark or an AI-review mark, so their meta is always just
+   the fix-kind badge by itself; this is what lets it trail the title on
+   one line while a POUR row's two-or-more badges still fold for the
+   cross-row alignment the grid above depends on. */
+.a11y-widget-biz.a11y-widget-biz .a11y-finding-meta:has(> :only-child) {
+  flex-basis: auto;
+  margin-top: 0;
+  margin-left: 0;
+}
+
 .a11y-finding-criterion {
   display: block;
   margin-top: 2px;
@@ -4396,15 +4556,14 @@
   flex-shrink: 0;
 }
 
-/* The eyebrow: label size, medium, secondary, tracked and uppercased —
-   the same treatment .a11y-principle-term already gave the POUR sections,
-   which is where the kit's pattern was already half-implemented. */
+/* The eyebrow: label size, medium, secondary, tracked — the same treatment
+   .a11y-principle-term already gave the POUR sections, which is where the
+   kit's pattern was already half-implemented. */
 .a11y-section-eyebrow {
   font-size: var(--a11y-text-label, 0.875rem);
   font-weight: 500;
   color: var(--a11y-muted, #525252);
   letter-spacing: 0.04em;
-  text-transform: uppercase;
 }
 
 /* Square, not a pill: the kit reserves pills for severity tags, so a
@@ -4686,16 +4845,16 @@
   max-width: none;
 }
 
-/* Prose runs to half the content width — 8 of the 16 grid columns above,
-   not a bare 50%. Half of a 16-column row spanning the full width is 8
-   columns plus 7 of the gutters between them, which comes out to 50% of
-   the row minus half one gutter (the gutter the two halves would have
-   split). Never narrower than the old 25rem, so a small panel is
-   unaffected. The scan form is untouched — it is a two-column card, not
-   running text. */
+/* A fixed 36rem, not a share of the panel: letting prose run to 50% of
+   the row read fine at the widths it was checked against, but on a wide
+   panel that 50% keeps growing with no ceiling, and lines were landing
+   at 20+ words instead of the 11-14 a line should hold. A flat cap holds
+   the same measure at every panel width — same value the .a11y-widget-
+   inner li rule above uses, so paragraphs and list rows read at one
+   consistent line length rather than two. */
 .a11y-widget-biz .a11y-widget-inner p,
 .a11y-widget-biz .a11y-widget-inner dd {
-  max-width: max(25rem, calc(50% - 1rem));
+  max-width: 36rem;
 }
 
 /* The accordion heads had a hover all along — on --a11y-surface, which the

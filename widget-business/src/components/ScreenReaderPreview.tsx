@@ -223,7 +223,7 @@ export function ScreenReaderPreview({ script }: { script: ScreenReaderScript }) 
           className="a11y-skip-link"
           onClick={() => showAllRef.current?.focus()}
         >
-          Skip the {visible.length}-row transcript
+          Skip the transcript
         </button>
       )}
 

@@ -123,11 +123,11 @@ export function ScoreGauge({
           repeated the summary line below without saying what any of it
           actually was. */}
       <div className="a11y-stat-row">
-        <Card style={{ ...TILE, alignItems: "center" }}>
+        <Card style={{ ...TILE, background: "transparent" }}>
           <span className="a11y-stat-label">Accessibility score</span>
           <ScoreDial score={score} size={110} />
         </Card>
-        <Card style={{ flex: "1 1 320px", minWidth: 0 }}>
+        <Card style={{ background: "transparent" }}>
           {preview.length === 0 ? (
             <p className="a11y-score-clean">Nothing here needs a fix.</p>
           ) : (

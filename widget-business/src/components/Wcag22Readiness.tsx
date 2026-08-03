@@ -81,7 +81,7 @@ export function Wcag22Readiness({ readiness }: { readiness: Readiness }) {
             caption={`The ${total} new WCAG 2.2 items, checked where software can`}
             headers={[
               { key: "criterion", label: "Criterion" },
-              { key: "status", label: "Status" },
+              { key: "status", label: "Status", width: "1%" },
               { key: "found", label: "Found", align: "right", width: "90px" },
             ]}
             rows={criteria.map((c) => ({

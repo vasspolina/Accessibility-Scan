@@ -1,5 +1,5 @@
 import { SeverityTag } from "@verify/design-system";
-import { useState } from "react";
+import { useState, type ReactNode } from "react";
 import { dominantComponent, describeComponent } from "../lib/componentCluster";
 import type { AccessibilityFinding } from "../api/scanClient";
 import { LEVEL_FRAMING, plainForRule, plainFixForRule } from "../lib/wcagPlain";
@@ -408,6 +408,290 @@ function devElementRefs(findings: AccessibilityFinding[]): string[] {
 // shared explanation (why it matters, one clean instruction, learn-more) is
 // shown once; below it, the specific elements affected are listed so the
 // owner knows exactly what to fix.
+// Everything about a group beyond its one-line summary: why it matters, one
+// clean instruction, which elements are affected, and (in professional mode)
+// the hand-off detail. Shared by the print-only card below and the on-screen
+// table row's expand panel — one source for content that must appear
+// wherever the group does, collapsed or on paper.
+function FindingDetails({
+  findings,
+  asNotes = false,
+}: {
+  findings: AccessibilityFinding[];
+  asNotes?: boolean;
+}) {
+  const [showAll, setShowAll] = useState(false);
+  const { professional, criterionNames } = useReportView();
+
+  const rep = findings[0];
+  const count = findings.length;
+  const plain = plainForRule(rep.ruleId);
+  const title = plain?.plain ?? rep.title ?? rep.description;
+  const fix = fixKindForFinding(rep);
+  const keyboardCheck = isKeyboardCheck(rep);
+  const fromAi = isAiFinding(rep);
+  const whatToDo = plainFixForRule(rep.ruleId) ?? rep.suggestedFix;
+  const entries = dedupeOccurrences(findings);
+  const measured = whatWeFound(rep, plain, entries.length, title);
+  const locatesSomething = entries.some(
+    (e) => labelNamesSomething(e.label) || e.rep.elementScreenshot
+  );
+  const cluster = dominantComponent(findings);
+  const summarize = entries.length > SUMMARY_THRESHOLD;
+  const visibleEntries = summarize && !showAll ? entries.slice(0, SUMMARY_THRESHOLD) : entries;
+
+  return (
+    <>
+      {/* What was actually measured on this page. It used to sit inside
+          the technical drawer, two clicks from view, which left the
+          summary above saying a ring was "too pale" and never how pale or
+          on how many controls — the numbers are the most useful sentence
+          in the finding. Skipped when there is no plain-language title,
+          because then the description is already the heading. */}
+      <p className="a11y-method-hint">
+        <strong>Who fixes this:</strong> {fix.hint}
+        {keyboardCheck && ` ${KEYBOARD_HINT}`}
+        {fromAi && ` ${AI_HINT}`}
+      </p>
+      {!rep.elementScreenshot && rep.pictureNote && (
+        <p className="a11y-picture-note">{rep.pictureNote}</p>
+      )}
+      {/* The rule's own account of what was found where it has one, and
+          the finding's description otherwise. axe supplies a requirement
+          rather than a finding — "Links must have discernible text" — and
+          that read as a category error under this heading.
+
+          This used to require a plain-language entry, on the reasoning
+          that without one the description was already serving as the
+          heading. True for axe findings, false for every AI one: those
+          write a short headline of their own and put the substance in the
+          description. So the substance went to the technical drawer, two
+          clicks down, and where a finding had neither rule id nor
+          criterion the drawer never rendered and the description was not
+          shown anywhere at all. Measured across the European sweep: 32 of
+          80 AI findings arrived as a headline and three badges. */}
+      {measured && (
+        <p className="a11y-finding-measured">
+          <strong>What we found:</strong> <CodeText text={measured} />
+        </p>
+      )}
+      {/* Its own line, not folded into the text above: rules with a
+          plain-language account replace the description entirely, which
+          made the first of these notes invisible on the very rule it
+          attached to. */}
+      {rep.ageNote && (
+        <p className="a11y-finding-measured">
+          <strong>Past sixty:</strong> <CodeText text={rep.ageNote} />
+        </p>
+      )}
+      {/* Shared explanation — shown once for the whole group */}
+      {plain && (
+        <p className="a11y-finding-impact">
+          <strong>Why this matters:</strong> <CodeText text={plain.impact} />
+        </p>
+      )}
+      {/* Curated, hand-verified research context — never generated per
+          scan, which is how invented statistics happen. */}
+      {plain?.research && (
+        <p className="a11y-finding-research">
+          <strong>What the research shows:</strong> <CodeText text={plain.research} />
+        </p>
+      )}
+      <p>
+        <strong>What to do:</strong> <CodeText text={whatToDo} />
+      </p>
+      {rep.helpUrl && (
+        <p>
+          <a className="a11y-learn-more" href={rep.helpUrl} target="_blank" rel="noopener noreferrer">
+            Learn more about this issue <span aria-hidden="true">↗</span>
+          </a>
+        </p>
+      )}
+
+      {cluster && (
+        <p className="a11y-fix-once">
+          <strong>Fix once, fixes {cluster.count}.</strong> These all come from the same
+          component, <code>{describeComponent(cluster.signature)}</code>
+          {cluster.share < 1 ? " (most of them)" : ""}. Change it where it is defined and every
+          one of them is done.
+        </p>
+      )}
+
+      {/* Which specific elements are affected.
+          Dropped entirely when not one row would name anything: a list
+          whose only entry is the word "Heading" tells the reader less
+          than the sentence above it already did, while looking like it
+          is about to be useful. The count is on the header badge and the
+          selector is in the technical drawer, so nothing is lost. */}
+      {locatesSomething && (
+      <div className="a11y-affected">
+        <p className="a11y-affected-label">
+          <strong>{count > 1 ? `Affected elements (${count}):` : "Affected element:"}</strong>
+        </p>
+        <ul className="a11y-occurrence-list">
+          {visibleEntries.map((e) => (
+            <Occurrence key={e.rep.id} finding={e.rep} label={e.label} repeatCount={e.count} />
+          ))}
+        </ul>
+        {/* A toggle, not a self-removing button: a control that vanishes
+            under the keyboard focus that just pressed it strands the
+            user. */}
+        {summarize && (
+          <button
+            type="button"
+            className="a11y-show-all"
+            aria-expanded={showAll}
+            onClick={() => setShowAll((v) => !v)}
+          >
+            {showAll ? "Show fewer" : `Show all ${entries.length} kinds of element`}
+          </button>
+        )}
+      </div>
+      )}
+
+      {/* Professional mode: the hand-off detail open on the card, not
+          two clicks down. Criterion cited by number, name and level from
+          the same table the conformance section renders; the EN 301 549
+          clause derived mechanically (chapter 9 maps one-to-one onto
+          WCAG 2.1 A/AA) and never claimed for AAA or N/A. */}
+      {professional && (
+        <div className="a11y-pro-block">
+          {(() => {
+            const num = rep.wcagCriterion?.match(/^(\d\.\d+\.\d+)/)?.[1];
+            const known = num ? criterionNames[num] : undefined;
+            const en = enClauseFor(rep.wcagCriterion, rep.wcagLevel);
+            return (
+              <>
+                {num && (
+                  <p className="a11y-pro-line">
+                    <strong>WCAG:</strong> {num}
+                    {known ? ` ${known.name} (${known.level})` : rep.wcagLevel ? ` (${rep.wcagLevel})` : ""}
+                    {en ? <span className="a11y-pro-en"> · {en}</span> : null}
+                  </p>
+                )}
+                <p className="a11y-pro-line">
+                  <strong>Selector:</strong> <code>{rep.selector}</code>
+                </p>
+                {rep.elementSnippet && (
+                  /* Scrolls horizontally, so it must be reachable by
+                     keyboard — our own scan flags scrollable regions a
+                     Tab press cannot enter. role="group", not "region":
+                     a region is a landmark, and one per card would fill
+                     the landmark list with identical entries. */
+                  <pre
+                    className="a11y-pro-snippet"
+                    tabIndex={0}
+                    role="group"
+                    aria-label="Element markup"
+                  >
+                    <code>{rep.elementSnippet}</code>
+                  </pre>
+                )}
+                {rep.helpUrl && (
+                  <p className="a11y-pro-line">
+                    <a className="a11y-learn-more" href={rep.helpUrl} target="_blank" rel="noopener noreferrer">
+                      Fix technique <span aria-hidden="true">↗</span>
+                    </a>
+                  </p>
+                )}
+              </>
+            );
+          })()}
+        </div>
+      )}
+
+      {/* Developer hand-off — the rule reference, shown once. Redundant
+          in professional mode, where the block above is already open. */}
+      {!professional && (rep.ruleId || rep.wcagCriterion) && (
+        <details className="a11y-tech-details">
+          <summary>The technical version</summary>
+          {/* Only when it was not already shown in the open part of the
+              card above. It nearly always is now. */}
+          {!measured && rep.description && (
+            <p>
+              <strong>What we found:</strong> <CodeText text={rep.description} />
+            </p>
+          )}
+          {rep.wcagCriterion && rep.wcagCriterion !== "N/A" && (
+            <p>
+              <strong>WCAG criterion:</strong> {rep.wcagCriterion}
+            </p>
+          )}
+          {rep.ruleId && (
+            <p>
+              <strong>Rule:</strong> <code>{rep.ruleId}</code>
+            </p>
+          )}
+          <p>
+            <strong>Affected {count > 1 ? "elements" : "element"}:</strong>
+          </p>
+          <ul className="a11y-tech-elements">
+            {devElementRefs(findings).map((ref, i) => (
+              <li key={i}>
+                <code>{ref}</code>
+              </li>
+            ))}
+          </ul>
+        </details>
+      )}
+    </>
+  );
+}
+
+// One DataTable row for a group: severity, title plus its WCAG/fix-kind
+// context, and the occurrence count. asNotes drops the severity cell — a
+// remark on the design isn't ranked the way a defect is, and wearing "Fix
+// first"/"Minor polish" made these read as scored findings however plainly
+// the section above already said otherwise.
+export function findingRow(
+  findings: AccessibilityFinding[],
+  { asNotes = false }: { asNotes?: boolean } = {}
+): { id: string; cells: ReactNode[]; expand: ReactNode } {
+  const rep = findings[0];
+  const count = findings.length;
+  const plain = plainForRule(rep.ruleId);
+  const title = plain?.plain ?? rep.title ?? rep.description;
+  const fix = fixKindForFinding(rep);
+  const keyboardCheck = isKeyboardCheck(rep);
+  const fromAi = isAiFinding(rep);
+
+  const issueCell = (
+    <span className="a11y-finding-issue">
+      <span className="a11y-finding-title">{title}</span>
+      {(keyboardCheck || fromAi) && (
+        <span className="a11y-finding-meta-line">
+          {keyboardCheck && (
+            <span className="a11y-method-badge a11y-method-keyboard">Keyboard test</span>
+          )}
+          {fromAi && <span className="a11y-method-badge a11y-method-ai">AI review</span>}
+        </span>
+      )}
+    </span>
+  );
+
+  const criterion =
+    rep.wcagCriterion && rep.wcagCriterion !== "N/A"
+      ? (rep.wcagCriterion.match(/^\d\.\d+\.\d+/)?.[0] ?? rep.wcagCriterion)
+      : "";
+
+  return {
+    id: rep.id,
+    cells: asNotes
+      ? [issueCell, count > 1 ? `${count} ×` : ""]
+      : [
+          <SeverityTag key="sev" severity={rep.severity} label={severityLabel[rep.severity]} />,
+          issueCell,
+          criterion,
+          <span key="fix" className={`a11y-method-badge a11y-fix-${fix.key}`}>
+            {fix.label}
+          </span>,
+          rep.wcagLevel ? LEVEL_FRAMING[rep.wcagLevel] : "",
+          count > 1 ? `${count} ×` : "",
+        ],
+    expand: <FindingDetails findings={findings} asNotes={asNotes} />,
+  };
+}
+
 export function FindingGroup({
   findings,
   asNotes = false,
@@ -420,8 +704,7 @@ export function FindingGroup({
   asNotes?: boolean;
 }) {
   const [expanded, setExpanded] = useState(false);
-  const [showAll, setShowAll] = useState(false);
-  const { professional, criterionNames } = useReportView();
+  const { professional } = useReportView();
 
   const rep = findings[0]; // most severe (list is pre-sorted by severity)
   const count = findings.length;
@@ -437,27 +720,15 @@ export function FindingGroup({
   const keyboardCheck = isKeyboardCheck(rep);
   const fromAi = isAiFinding(rep);
 
-  // One clean instruction for the whole group — a plain rewrite when we have
-  // one, otherwise the finding's own (already-plain) suggested fix.
-  const whatToDo = plainFixForRule(rep.ruleId) ?? rep.suggestedFix;
-
-  const entries = dedupeOccurrences(findings);
-
-  // What was actually found on this page, in whatever form we have it.
-  const measured = whatWeFound(rep, plain, entries.length, title);
-  // Worth showing only if some row points at a particular thing, or carries a
-  // picture of one.
-  const locatesSomething = entries.some(
-    (e) => labelNamesSomething(e.label) || e.rep.elementScreenshot
-  );
-  // When most of a long list is one component repeated, say so. A reader shown
-  // thirteen rows reasonably concludes there are thirteen things to do.
-  const cluster = dominantComponent(findings);
-  const summarize = entries.length > SUMMARY_THRESHOLD;
-  const visibleEntries = summarize && !showAll ? entries.slice(0, SUMMARY_THRESHOLD) : entries;
-
   return (
-    /* asNotes marks the advisory rows so the stylesheet can give them the
+    /* This card is the printed report's own copy — see FindingsList, which
+       renders it always-in-the-DOM and print-only, and a live DataTable for
+       the screen. A page of bare titles with no "why this matters", no fix
+       and no affected elements is not a report, and a table's expand state
+       cannot be forced open from CSS, so print gets a form that can hold
+       everything open on its own.
+
+       asNotes marks the advisory rows so the stylesheet can give them the
        kit's DesignNotes anatomy — flat dividers rather than cards, and the
        evidence given real room, because for a remark like "text too tight"
        the screenshot IS the argument and a thumbnail too small to read it
@@ -527,198 +798,7 @@ export function FindingGroup({
           And aria-controls above pointed at an element that did not exist
           while collapsed, which is exactly what that attribute must not do. */}
       <div id={detailsId} className="a11y-finding-details" hidden={!expanded}>
-          {/* What was actually measured on this page. It used to sit inside
-              the technical drawer, two clicks from view, which left the
-              summary above saying a ring was "too pale" and never how pale or
-              on how many controls — the numbers are the most useful sentence
-              in the finding. Skipped when there is no plain-language title,
-              because then the description is already the heading. */}
-          <p className="a11y-method-hint">
-            <strong>Who fixes this:</strong> {fix.hint}
-            {keyboardCheck && ` ${KEYBOARD_HINT}`}
-            {fromAi && ` ${AI_HINT}`}
-          </p>
-          {!rep.elementScreenshot && rep.pictureNote && (
-            <p className="a11y-picture-note">{rep.pictureNote}</p>
-          )}
-          {/* The rule's own account of what was found where it has one, and
-              the finding's description otherwise. axe supplies a requirement
-              rather than a finding — "Links must have discernible text" — and
-              that read as a category error under this heading.
-
-              This used to require a plain-language entry, on the reasoning
-              that without one the description was already serving as the
-              heading. True for axe findings, false for every AI one: those
-              write a short headline of their own and put the substance in the
-              description. So the substance went to the technical drawer, two
-              clicks down, and where a finding had neither rule id nor
-              criterion the drawer never rendered and the description was not
-              shown anywhere at all. Measured across the European sweep: 32 of
-              80 AI findings arrived as a headline and three badges. */}
-          {measured && (
-            <p className="a11y-finding-measured">
-              <strong>What we found:</strong> <CodeText text={measured} />
-            </p>
-          )}
-          {/* Its own line, not folded into the text above: rules with a
-              plain-language account replace the description entirely, which
-              made the first of these notes invisible on the very rule it
-              attached to. */}
-          {rep.ageNote && (
-            <p className="a11y-finding-measured">
-              <strong>Past sixty:</strong> <CodeText text={rep.ageNote} />
-            </p>
-          )}
-          {/* Shared explanation — shown once for the whole group */}
-          {plain && (
-            <p className="a11y-finding-impact">
-              <strong>Why this matters:</strong> <CodeText text={plain.impact} />
-            </p>
-          )}
-          {/* Curated, hand-verified research context — never generated per
-              scan, which is how invented statistics happen. */}
-          {plain?.research && (
-            <p className="a11y-finding-research">
-              <strong>What the research shows:</strong> <CodeText text={plain.research} />
-            </p>
-          )}
-          <p>
-            <strong>What to do:</strong> <CodeText text={whatToDo} />
-          </p>
-          {rep.helpUrl && (
-            <p>
-              <a className="a11y-learn-more" href={rep.helpUrl} target="_blank" rel="noopener noreferrer">
-                Learn more about this issue <span aria-hidden="true">↗</span>
-              </a>
-            </p>
-          )}
-
-          {cluster && (
-            <p className="a11y-fix-once">
-              <strong>Fix once, fixes {cluster.count}.</strong> These all come from the same
-              component, <code>{describeComponent(cluster.signature)}</code>
-              {cluster.share < 1 ? " (most of them)" : ""}. Change it where it is defined and every
-              one of them is done.
-            </p>
-          )}
-
-          {/* Which specific elements are affected.
-              Dropped entirely when not one row would name anything: a list
-              whose only entry is the word "Heading" tells the reader less
-              than the sentence above it already did, while looking like it
-              is about to be useful. The count is on the header badge and the
-              selector is in the technical drawer, so nothing is lost. */}
-          {locatesSomething && (
-          <div className="a11y-affected">
-            <p className="a11y-affected-label">
-              <strong>{count > 1 ? `Affected elements (${count}):` : "Affected element:"}</strong>
-            </p>
-            <ul className="a11y-occurrence-list">
-              {visibleEntries.map((e) => (
-                <Occurrence key={e.rep.id} finding={e.rep} label={e.label} repeatCount={e.count} />
-              ))}
-            </ul>
-            {/* A toggle, not a self-removing button: a control that vanishes
-                under the keyboard focus that just pressed it strands the
-                user. */}
-            {summarize && (
-              <button
-                type="button"
-                className="a11y-show-all"
-                aria-expanded={showAll}
-                onClick={() => setShowAll((v) => !v)}
-              >
-                {showAll ? "Show fewer" : `Show all ${entries.length} kinds of element`}
-              </button>
-            )}
-          </div>
-          )}
-
-          {/* Professional mode: the hand-off detail open on the card, not
-              two clicks down. Criterion cited by number, name and level from
-              the same table the conformance section renders; the EN 301 549
-              clause derived mechanically (chapter 9 maps one-to-one onto
-              WCAG 2.1 A/AA) and never claimed for AAA or N/A. */}
-          {professional && (
-            <div className="a11y-pro-block">
-              {(() => {
-                const num = rep.wcagCriterion?.match(/^(\d\.\d+\.\d+)/)?.[1];
-                const known = num ? criterionNames[num] : undefined;
-                const en = enClauseFor(rep.wcagCriterion, rep.wcagLevel);
-                return (
-                  <>
-                    {num && (
-                      <p className="a11y-pro-line">
-                        <strong>WCAG:</strong> {num}
-                        {known ? ` ${known.name} (${known.level})` : rep.wcagLevel ? ` (${rep.wcagLevel})` : ""}
-                        {en ? <span className="a11y-pro-en"> · {en}</span> : null}
-                      </p>
-                    )}
-                    <p className="a11y-pro-line">
-                      <strong>Selector:</strong> <code>{rep.selector}</code>
-                    </p>
-                    {rep.elementSnippet && (
-                      /* Scrolls horizontally, so it must be reachable by
-                         keyboard — our own scan flags scrollable regions a
-                         Tab press cannot enter. role="group", not "region":
-                         a region is a landmark, and one per card would fill
-                         the landmark list with identical entries. */
-                      <pre
-                        className="a11y-pro-snippet"
-                        tabIndex={0}
-                        role="group"
-                        aria-label="Element markup"
-                      >
-                        <code>{rep.elementSnippet}</code>
-                      </pre>
-                    )}
-                    {rep.helpUrl && (
-                      <p className="a11y-pro-line">
-                        <a className="a11y-learn-more" href={rep.helpUrl} target="_blank" rel="noopener noreferrer">
-                          Fix technique <span aria-hidden="true">↗</span>
-                        </a>
-                      </p>
-                    )}
-                  </>
-                );
-              })()}
-            </div>
-          )}
-
-          {/* Developer hand-off — the rule reference, shown once. Redundant
-              in professional mode, where the block above is already open. */}
-          {!professional && (rep.ruleId || rep.wcagCriterion) && (
-            <details className="a11y-tech-details">
-              <summary>The technical version</summary>
-              {/* Only when it was not already shown in the open part of the
-                  card above. It nearly always is now. */}
-              {!measured && rep.description && (
-                <p>
-                  <strong>What we found:</strong> <CodeText text={rep.description} />
-                </p>
-              )}
-              {rep.wcagCriterion && rep.wcagCriterion !== "N/A" && (
-                <p>
-                  <strong>WCAG criterion:</strong> {rep.wcagCriterion}
-                </p>
-              )}
-              {rep.ruleId && (
-                <p>
-                  <strong>Rule:</strong> <code>{rep.ruleId}</code>
-                </p>
-              )}
-              <p>
-                <strong>Affected {count > 1 ? "elements" : "element"}:</strong>
-              </p>
-              <ul className="a11y-tech-elements">
-                {devElementRefs(findings).map((ref, i) => (
-                  <li key={i}>
-                    <code>{ref}</code>
-                  </li>
-                ))}
-              </ul>
-            </details>
-          )}
+        <FindingDetails findings={findings} asNotes={asNotes} />
       </div>
     </li>
   );

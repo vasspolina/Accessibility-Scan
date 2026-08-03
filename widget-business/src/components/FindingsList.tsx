@@ -1,5 +1,7 @@
+import { DataTable } from "@verify/design-system";
 import type { AccessibilityFinding } from "../api/scanClient";
-import { FindingGroup } from "./FindingGroup";
+import { FindingGroup, findingRow } from "./FindingGroup";
+import { useReportView } from "./ReportViewContext";
 
 const severityRank: Record<AccessibilityFinding["severity"], number> = {
   critical: 0,
@@ -44,6 +46,8 @@ export function FindingsList({
   findings: AccessibilityFinding[];
   asNotes?: boolean;
 }) {
+  const { professional } = useReportView();
+
   if (findings.length === 0) {
     return <p className="a11y-empty">Nothing found here.</p>;
   }
@@ -52,18 +56,37 @@ export function FindingsList({
 
   return (
     <>
-      {/* The kit's table anatomy — a label row over the two columns every
-          row actually carries, severity and the issue itself. Skipped for
-          notes: those rows carry no severity tag (a remark isn't ranked
-          the way a defect is), so a "Severity" label over nothing would be
-          a header for a column that doesn't exist. */}
-      {!asNotes && (
-        <div className="a11y-findings-columns" aria-hidden="true">
-          <span className="a11y-findings-col-severity">Severity</span>
-          <span>Issue</span>
+      {/* The live, on-screen view. Professional mode skips it — its own
+          screen is ProfessionalTable, and this would just be the same
+          findings a second time; there, the cards below are this section's
+          only rendering, kept for print (see FindingGroup's own comment). */}
+      {!professional && (
+        <div className="a11y-findings-table">
+          <DataTable
+            caption={asNotes ? "Notes on the design" : "Findings, most severe first"}
+            headers={
+              asNotes
+                ? [
+                    { key: "issue", label: "Note" },
+                    { key: "count", label: "Instances", align: "right", width: "1%" },
+                  ]
+                : [
+                    { key: "severity", label: "Severity", width: "1%" },
+                    { key: "issue", label: "Issue" },
+                    { key: "wcag", label: "WCAG", width: "1%" },
+                    { key: "fix", label: "Who fixes this", width: "1%" },
+                    { key: "level", label: "Level" },
+                    { key: "count", label: "Instances", align: "right", width: "1%" },
+                  ]
+            }
+            rows={grouped.map((group) => findingRow(group, { asNotes }))}
+          />
         </div>
       )}
-      <ul className="a11y-findings-list">
+      {/* The printed report's own copy, always in the DOM, hidden on screen —
+          see FindingGroup's comment for why a table's expand state can't
+          stand in for it. */}
+      <ul className="a11y-findings-list a11y-print-cards">
         {grouped.map((group) => (
           <FindingGroup key={group[0].id} findings={group} asNotes={asNotes} />
         ))}
