@@ -76,6 +76,21 @@ export function Wcag22Readiness({ readiness }: { readiness: Readiness }) {
             {readiness.expectedFrom}. Until then, the checklist above is the one that counts.
           </p>
 
+          {/* Moved ahead of the table it explains: most of these rows carry
+              no per-row status badge at all (see the comment inside the
+              DataTable below), on the reasoning that this paragraph says
+              "needs a person" for all of them once — which only holds if a
+              reader reaches this sentence before those blank-looking rows,
+              not after them. */}
+          <p className="a11y-conf-caveat">
+            <strong>Only one of these can be checked by software.</strong> {needsReview} of the{" "}
+            {total} depend on things a machine cannot judge: whether a sticky header covers what you
+            have tabbed to, whether a drag has a simpler alternative, whether help sits in the same
+            place on every page, whether a form asks twice, and whether a login can be done
+            without a puzzle. That is the same honesty as the checklist below, and the same answer:
+            these need a person.
+          </p>
+
           {/* The kit's tinted-row table, as the legal-standard section has
               it: result ink + word, never colour alone; the criterion cell
               carries the plain sentence with the official name beneath.
@@ -102,8 +117,14 @@ export function Wcag22Readiness({ readiness }: { readiness: Readiness }) {
                   <strong>
                     {c.id} ({c.level}) — {c.status === "already-failing" ? c.failing : c.plain}
                   </strong>
-                  <span className="a11y-conf-plain">Officially: {c.name}</span>
+                  {/* whyManual answers the plain-language question right
+                      above it — without a per-row "Needs a person" badge
+                      to close that loop (see below), leaving the jargon
+                      name in between broke that question/answer pairing
+                      into three disconnected lines. The official name is
+                      a footnote now, last, not a wedge between them. */}
                   {c.whyManual && <span className="a11y-conf-plain">{c.whyManual}</span>}
+                  <span className="a11y-conf-plain">Officially: {c.name}</span>
                   {/* "Needs a person" is left unstated here on purpose —
                       the caveat paragraph right below this table already
                       says so once, for every row this status covers.
@@ -127,15 +148,6 @@ export function Wcag22Readiness({ readiness }: { readiness: Readiness }) {
               ],
             }))}
           />
-
-          <p className="a11y-conf-caveat">
-            <strong>Only one of these can be checked by software.</strong> {needsReview} of the{" "}
-            {total} depend on things a machine cannot judge: whether a sticky header covers what you
-            have tabbed to, whether a drag has a simpler alternative, whether help sits in the same
-            place on every page, whether a form asks twice, and whether a login can be done
-            without a puzzle. That is the same honesty as the checklist above, and the same answer:
-            these need a person.
-          </p>
 
           {parsingNoLongerCounts && (
             <p className="a11y-notice">

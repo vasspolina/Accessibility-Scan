@@ -4447,6 +4447,16 @@ label.a11y-ai-toggle {
   background: transparent !important;
 }
 
+/* .a11y-pro-table is the one exception: its header fill is Carbon's own
+   data-table spec ($layer-accent on column headers), not a leftover box
+   like every other table's — this extra class is what restores it,
+   since the blanket rule just above has higher specificity than the
+   original .a11y-pro-table thead tr rule further up the file and was
+   quietly winning the cascade and erasing it regardless of source order. */
+.a11y-widget-biz .a11y-widget-inner .a11y-pro-table table thead tr {
+  background: var(--a11y-layer-accent, #e0e0e0) !important;
+}
+
 /* 36rem (576px), measured directly against rendered text rather than
    calculated: at 25rem full lines were landing at 8-10 words, short of
    the 11-14 a line should hold. 36rem is where PP Telegraf's running

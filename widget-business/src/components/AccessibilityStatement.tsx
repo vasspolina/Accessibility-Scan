@@ -152,12 +152,15 @@ Annex V also asks for a general description of the service in accessible formats
 // Field/Value pair sitting side by side, which crushed short labels like
 // "Website" into a letter-per-line sliver at phone width while the value
 // beside it (a URL, a standard name) was the thing that actually needed
-// the room.
-function stmtRow(field: string, value: string) {
+// the room. gloss is optional plain-language cover for a value that's
+// standards jargon on its own — a standard's name or a conformance
+// term, neither of which means anything to the reader without it.
+function stmtRow(field: string, value: string, gloss?: string) {
   return (
     <span className="a11y-undecided-cell">
       <span className="a11y-stmt-field-label">{field}</span>
       <span>{value}</span>
+      {gloss && <span className="a11y-conf-plain">{gloss}</span>}
     </span>
   );
 }
@@ -271,13 +274,25 @@ export function AccessibilityStatement({ report }: { report: AccessibilityReport
         rows={[
           { id: "org", cells: [stmtRow("Prepared for", organisation.trim() || "[Your organisation]")] },
           { id: "site", cells: [stmtRow("Website", report.url)] },
-          { id: "std", cells: [stmtRow("Checked against", "EN 301 549 · WCAG 2.1 AA")] },
+          {
+            id: "std",
+            cells: [
+              stmtRow(
+                "Checked against",
+                "EN 301 549 · WCAG 2.1 AA",
+                "The EU's technical standard for digital accessibility"
+              ),
+            ],
+          },
           {
             id: "pos",
             cells: [
               stmtRow(
                 "Position",
-                position === "partially" ? "Partially conformant" : "Non-conformant"
+                position === "partially" ? "Partially conformant" : "Non-conformant",
+                position === "partially"
+                  ? "Meets most requirements, not all of them"
+                  : "Doesn't yet meet the standard"
               ),
             ],
           },
