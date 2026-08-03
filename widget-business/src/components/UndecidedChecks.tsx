@@ -39,10 +39,7 @@ export function UndecidedChecks({
         <div className="a11y-undecided-table">
         <DataTable
           caption="What the checker couldn't decide"
-          headers={[
-            { key: "issue", label: "What we couldn't decide" },
-            { key: "places", label: "Places", align: "right", width: "1%" },
-          ]}
+          headers={[{ key: "issue", label: "What we couldn't decide" }]}
           rows={rows.map((r) => {
             const e = undecidedExplanation(r.ruleId);
             const fix = fixKindForRule(r.ruleId);
@@ -55,8 +52,17 @@ export function UndecidedChecks({
                       "Places" column, and this column's own text floor
                       already ran past the viewport, forcing the same
                       horizontal scroll the findings table had before
-                      Severity folded the same way. */}
-                  <span className={`a11y-method-badge a11y-fix-${fix.key}`}>{fix.label}</span>
+                      Severity folded the same way. Places itself folds in
+                      beside the badge now rather than holding a column of
+                      its own — the same count, just read next to the
+                      thing it's counting instead of off at the row's far
+                      edge. */}
+                  <span className="a11y-undecided-badge-row">
+                    <span className={`a11y-method-badge a11y-fix-${fix.key}`}>{fix.label}</span>
+                    <span className="a11y-undecided-places">
+                      {r.count} {r.count === 1 ? "place" : "places"}
+                    </span>
+                  </span>
                   <p className="a11y-undecided-what">{e ? e.what : r.help}</p>
                   {e && (
                     <p className="a11y-undecided-ask">
@@ -76,7 +82,6 @@ export function UndecidedChecks({
                     </p>
                   )}
                 </div>,
-                String(r.count),
               ],
             };
           })}

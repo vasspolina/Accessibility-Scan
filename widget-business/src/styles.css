@@ -3650,6 +3650,23 @@ label.a11y-ai-toggle {
   width: 100%;
 }
 
+/* At a genuinely narrow panel, this floor is exactly what forces the
+   horizontal scroll the business-mode table was built to avoid —
+   Severity no longer needs the room (folded above the title instead of
+   holding its own column), so Criterion is what goes here: it stays
+   reachable in the expand panel (see ProfessionalTable.tsx), and
+   dropping it from the row is what lets the floor drop too. */
+@container a11y-panel (max-width: 480px) {
+  .a11y-pro-table th:nth-child(3),
+  .a11y-pro-table tbody td:nth-child(3) {
+    display: none;
+  }
+
+  .a11y-pro-table table {
+    min-width: 0;
+  }
+}
+
 /* Carbon's data table, measured from its style spec rather than guessed:
    column headers on $layer-accent (the vendored component paints layer-01;
    !important is what beats an inline style), content-sized severity and
@@ -3660,17 +3677,32 @@ label.a11y-ai-toggle {
   background: var(--a11y-layer-accent, #e0e0e0) !important;
 }
 
-.a11y-pro-table tbody td:nth-child(2),
-.a11y-pro-table tbody td:nth-child(5) {
+/* nth-child positions: arrow (1), issue (2, folds Severity above the
+   title now — see findingRow's equivalent fold — so it needs to wrap,
+   not nowrap, which this rule wrongly did to it until Severity's own
+   column was removed shifted every position after it left by one). */
+.a11y-pro-table th:nth-child(4),
+.a11y-pro-table tbody td:nth-child(4) {
   white-space: nowrap;
 }
 
-.a11y-pro-table tbody td:nth-child(5) {
+.a11y-pro-table tbody td:nth-child(4) {
   font-variant-numeric: tabular-nums;
 }
 
-.a11y-pro-table tbody td:nth-child(4) {
+.a11y-pro-table tbody td:nth-child(3) {
   color: var(--a11y-muted, #525252);
+}
+
+/* Severity stacks above the title instead of running into it — same
+   layout as .a11y-finding-issue's fold, same reason: without
+   flex-direction: column the badge and title just sit inline as one
+   run of text with no break between them. */
+.a11y-pro-title-cell {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 4px;
 }
 
 .a11y-table-detail {
@@ -3975,6 +4007,32 @@ label.a11y-ai-toggle {
 
 .a11y-undecided-ask {
   color: var(--a11y-muted, #57606a);
+}
+
+.a11y-undecided-badge-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.a11y-undecided-places {
+  font-size: var(--a11y-text-label, 0.875rem);
+  color: var(--a11y-muted, #525252);
+  font-variant-numeric: tabular-nums;
+}
+
+/* Mobile only: this card's body text runs to the panel's true edges
+   instead of sitting inset inside the 20px mobile gutter a second time
+   — the same bleed-to-edge pattern used elsewhere in this file, applied
+   here because a dense paragraph of "what to ask for" advice reads
+   better with the little extra width a phone screen can spare than
+   boxed in in the middle of it. Desktop keeps the normal inset: a 32px
+   gutter isn't the same tight trade a 20px one is. */
+@container a11y-shell (max-width: 560px) {
+  .a11y-widget-biz.a11y-widget-biz .a11y-undecided-what,
+  .a11y-widget-biz.a11y-widget-biz .a11y-undecided-ask {
+    margin-inline: -20px;
+  }
 }
 
 /* Same fix, same reason, for the WCAG 2.2 readiness table: "Status" had no

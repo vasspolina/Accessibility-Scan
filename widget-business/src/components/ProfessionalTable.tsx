@@ -54,21 +54,35 @@ export function ProfessionalTable({
     return {
       id: rep.id,
       cells: [
-        <SeverityTag key="sev" severity={rep.severity} label={severityWord[rep.severity]} />,
-        <span key="title">
-          {title}
-          {rep.ruleId && (
-            <>
-              {" "}
-              <code className="a11y-rule-chip">{rep.ruleId}</code>
-            </>
-          )}
+        // Severity folds above the title instead of holding its own
+        // column — same fix as the business-mode findings table: the
+        // badge, the rule-id chip, and the issue text together already
+        // ran past a phone's width with Severity as a separate column,
+        // forcing horizontal scroll before a reader reached the row.
+        <span key="title" className="a11y-pro-title-cell">
+          <SeverityTag severity={rep.severity} label={severityWord[rep.severity]} />
+          <span>
+            {title}
+            {rep.ruleId && (
+              <>
+                {" "}
+                <code className="a11y-rule-chip">{rep.ruleId}</code>
+              </>
+            )}
+          </span>
         </span>,
         criterionLine(rep),
         `${group.length} ×`,
       ],
       expand: (
         <div className="a11y-table-detail">
+          {/* Criterion is dropped from the row at narrow widths (see the
+              @container rule in styles.css) — it stays reachable here so
+              hiding the column there doesn't lose the information, only
+              its own dedicated column. */}
+          <p className="a11y-pro-detail-criterion">
+            <strong>Criterion:</strong> {criterionLine(rep)}
+          </p>
           <p>{rep.description}</p>
           {rep.suggestedFix && (
             <p>
@@ -103,13 +117,13 @@ export function ProfessionalTable({
     ) : (
       <DataTable
         /* Carbon's width rule: columns size to their content and only need
-           the 16px spacing between them. Severity and Instances shrink to
-           fit (1% + nowrap in the stylesheet), the issue statement takes
-           the room that remains — it is the row's point — and the
-           criterion holds a fixed 24% metadata share — measured so the issue
-           column stays the widest text column at every panel width. */
+           the 16px spacing between them. Instances shrinks to fit (1% +
+           nowrap in the stylesheet), the issue statement takes the room
+           that remains — it is the row's point, and now carries Severity
+           folded above it rather than in a column of its own — and the
+           criterion holds a fixed 24% metadata share — measured so the
+           issue column stays the widest text column at every panel width. */
         headers={[
-          { key: "severity", label: "Severity", width: "1%" },
           { key: "issue", label: "Issue" },
           { key: "criterion", label: "Criterion", width: "24%" },
           { key: "count", label: "Instances", align: "right", width: "1%" },

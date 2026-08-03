@@ -57,15 +57,39 @@ export function UrlForm({
   // says what is missing, in a message the input points at and a live region
   // announces.
   const [showEmptyError, setShowEmptyError] = useState(false);
+  // Separate from showEmptyError: this field is non-empty but isn't a
+  // website address either — "jargon name" trimmed and non-empty passes
+  // the empty-field check, gets a protocol stapled on, and used to be
+  // handed straight to the scanner as https://jargon name, which isn't
+  // even a syntactically valid URL. Caught here instead, before it ever
+  // reaches onSubmit.
+  const [showInvalidError, setShowInvalidError] = useState(false);
 
   function handleSubmit(e: FormEvent) {
     e.preventDefault();
     const trimmed = value.trim();
     if (!trimmed) {
       setShowEmptyError(true);
+      setShowInvalidError(false);
       return;
     }
     const withProtocol = /^https?:\/\//i.test(trimmed) ? trimmed : `https://${trimmed}`;
+    let hostname: string;
+    try {
+      hostname = new URL(withProtocol).hostname;
+    } catch {
+      setShowInvalidError(true);
+      return;
+    }
+    // A hostname needs at least one dot to be a real domain — "jargon
+    // name" parses to a URL object without throwing (spaces become %20,
+    // and a hostname with no dot is technically legal), so the actual
+    // check has to be this, not just whether `new URL` accepted it.
+    if (!hostname.includes(".")) {
+      setShowInvalidError(true);
+      return;
+    }
+    setShowInvalidError(false);
     onSubmit(withProtocol, includeAiReview, mode, maxPages, auth);
   }
 
@@ -107,12 +131,13 @@ export function UrlForm({
               onChange={(e) => {
                 setValue(e.target.value);
                 if (e.target.value.trim()) setShowEmptyError(false);
+                setShowInvalidError(false);
               }}
               disabled={loading}
               required
-              aria-invalid={showEmptyError || Boolean(scanError) || undefined}
+              aria-invalid={showEmptyError || showInvalidError || Boolean(scanError) || undefined}
               aria-describedby={
-                showEmptyError
+                showEmptyError || showInvalidError
                   ? "a11y-url-error"
                   : scanError
                     ? "a11y-scan-error"
@@ -134,7 +159,11 @@ export function UrlForm({
           {/* Persistent and empty until filled — a live region mounted with
               its message already inside never announces. */}
           <p id="a11y-url-error" className="a11y-error a11y-url-error" role="alert">
-            {showEmptyError ? "Enter a website address first. For example: example.com." : ""}
+            {showEmptyError
+              ? "Enter a website address first. For example: example.com."
+              : showInvalidError
+                ? "That doesn't look like a website address. For example: example.com."
+                : ""}
           </p>
 
           <fieldset className="a11y-radio-group">
