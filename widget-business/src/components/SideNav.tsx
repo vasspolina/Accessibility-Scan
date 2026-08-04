@@ -1,3 +1,4 @@
+import { useId, useState } from "react";
 import type { NavTarget } from "../lib/useActiveSection";
 
 export interface NavSection extends NavTarget {
@@ -23,10 +24,23 @@ export interface NavSection extends NavTarget {
  * (and `document.getElementById` can't even see the target), so the click
  * handler scrolls the element it already has a reference to — the same
  * scroll-then-focus pattern App.tsx's own `focusForm` already uses.
+ *
+ * Below the shell's mobile breakpoint, this collapses to a hamburger
+ * toggle instead of a persistent list — a phone-width column had no room
+ * to keep every section label on screen at once, and letting them wrap
+ * or fall back to a row of pills (both tried earlier) still cost more
+ * vertical space above the report than a report on a phone can spare.
+ * The `open` state only matters at that width; the CSS for the toggle
+ * button and the collapse is itself scoped to the same breakpoint, so
+ * this component doesn't need to know which width it's currently at.
  */
 export function SideNav({ sections, activeId }: { sections: NavSection[]; activeId: string | null }) {
+  const [open, setOpen] = useState(false);
+  const listId = useId();
+
   const go = (target: HTMLElement) => (e: React.MouseEvent) => {
     e.preventDefault();
+    setOpen(false);
     target.scrollIntoView({ behavior: "smooth", block: "start" });
     if (!target.hasAttribute("tabindex")) target.setAttribute("tabindex", "-1");
     target.focus({ preventScroll: true });
@@ -34,7 +48,19 @@ export function SideNav({ sections, activeId }: { sections: NavSection[]; active
 
   return (
     <nav className="a11y-shell-nav a11y-shell-nav-material" aria-label="Report sections">
-      <ul>
+      <button
+        type="button"
+        className="a11y-shell-nav-toggle"
+        aria-expanded={open}
+        aria-controls={listId}
+        onClick={() => setOpen((v) => !v)}
+      >
+        <svg aria-hidden="true" focusable="false" viewBox="0 0 20 20" width="20" height="20">
+          <path d="M2 5h16M2 10h16M2 15h16" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
+        </svg>
+        Sections
+      </button>
+      <ul id={listId} data-open={open}>
         {sections.map((s) => (
           <li key={s.id}>
             <a

@@ -1,4 +1,4 @@
-import { useState, type ChangeEvent, type FormEvent } from "react";
+import { useState, type ChangeEvent, type FormEvent, type ReactNode } from "react";
 import { Button, Radio, Select } from "@verify/design-system";
 import { LoginFields } from "./LoginFields";
 import { PrintButton } from "./PrintButton";
@@ -15,6 +15,7 @@ export function UrlForm({
   hasReport,
   scanError,
   scanBlocked,
+  progress,
 }: {
   onSubmit: (
     url: string,
@@ -39,6 +40,12 @@ export function UrlForm({
   // Same idea for a bot-protection/CAPTCHA block — not the field's fault,
   // but still worth being discoverable from the field itself.
   scanBlocked?: string | null;
+  // The progress bar and its status line, rendered by App (it owns the
+  // elapsed-time state that drives them) but placed here, directly under
+  // the search bar rather than below the whole form — Report style, Scan
+  // scope and the rest keep their place even while a scan is running,
+  // instead of the bar landing after all of them.
+  progress?: ReactNode;
 }) {
   const [value, setValue] = useState("");
   const [mode, setMode] = useState<ScanMode>("page");
@@ -150,6 +157,9 @@ export function UrlForm({
               {loading ? "One moment…" : mode === "site" ? "Audit my site" : "Check my site"}
             </Button>
           </div>
+          {/* Directly under the search bar rather than below the whole
+              form — see the `progress` prop's own comment above. */}
+          {progress}
           {/* The kit's helper line under the field, kept true per scope. */}
           <span id="a11y-url-hint" className="a11y-group-hint">
             {mode === "site"

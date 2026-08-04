@@ -675,13 +675,17 @@ export function findingRow(
 
   const issueCell = (
     <span className="a11y-finding-issue">
-      {/* Severity used to be its own table column — on a narrow phone, its
+      {/* Severity's own column (below) is hidden at phone width — its
           badge plus the Issue text plus the arrow column already exceeded
-          the viewport, forcing horizontal scroll before a reader reached
-          the row's actual content. Folded here, above the title, so the
-          table never needs a column for it at all. */}
+          the viewport there, forcing horizontal scroll before a reader
+          reached the row's actual content — and folds in here instead,
+          above the title. a11y-finding-sev-fold is itself hidden by
+          default and only shown at that same narrow width, so wide
+          screens see Severity in its column, not doubled up. */}
       {!asNotes && (
-        <SeverityTag key="sev" severity={rep.severity} label={severityLabel[rep.severity]} />
+        <span className="a11y-finding-sev-fold">
+          <SeverityTag severity={rep.severity} label={severityLabel[rep.severity]} />
+        </span>
       )}
       <span className="a11y-finding-title">{title}</span>
       {(keyboardCheck || fromAi) && (
@@ -711,6 +715,12 @@ export function findingRow(
     cells: asNotes
       ? [issueCell, ...(showCount ? [count > 1 ? `${count} ×` : ""] : [])]
       : [
+          // Severity's own column — hidden at phone width by CSS
+          // (a11y-finding-sev-col), where the folded copy inside
+          // issueCell takes over instead.
+          <span key="sev" className="a11y-finding-sev-col">
+            <SeverityTag severity={rep.severity} label={severityLabel[rep.severity]} />
+          </span>,
           issueCell,
           criterion,
           <span key="fix" className={`a11y-method-badge a11y-fix-${fix.key}`}>

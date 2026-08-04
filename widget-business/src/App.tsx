@@ -317,6 +317,50 @@ export function App({ apiBase, cta }: { apiBase: string; cta?: CtaConfig }) {
         hasReport={!!report}
         scanError={error}
         scanBlocked={blocked}
+        progress={
+          loading && (
+            <>
+              {/* The system's own scanning UX: a determinate bar driven by
+                  elapsed time against an honest expectation (a page scan
+                  usually lands inside forty seconds; AI adds about thirty;
+                  audits scale with pages), held at 95% until the real result
+                  arrives — the words below stay the live region, the bar is
+                  the picture. Rendered by UrlForm directly under the search
+                  bar rather than below the whole form, so the radio groups
+                  and options don't shift position while a scan runs. */}
+              <ProgressBar
+                label="In progress"
+                value={Math.min(
+                  95,
+                  Math.round(
+                    (elapsed /
+                      ((mode === "site" ? 75 : 40) + (aiRequested ? 30 : 0))) *
+                      100
+                  )
+                )}
+              />
+              <p className="a11y-loading">
+                {/* Two parts, deliberately. The words are a live region and
+                    change only at milestones; the seconds tick outside it
+                    and are hidden from assistive technology.
+
+                    A counter inside a live region announces itself every
+                    second, which would make this tool's own waiting screen
+                    the most irritating thing a screen reader user met all
+                    day — on a product whose entire subject is not doing
+                    that. Sighted users get the reassurance of a moving
+                    number; everyone else gets an update when there is
+                    genuinely something new to say. */}
+                <span>{waitingMessage(mode, aiRequested, elapsed)}</span>{" "}
+                {!reducedMotion && (
+                  <span className="a11y-elapsed" aria-hidden="true">
+                    {elapsed}s
+                  </span>
+                )}
+              </p>
+            </>
+          )
+        }
       />
       </div>
 
@@ -337,45 +381,6 @@ export function App({ apiBase, cta }: { apiBase: string; cta?: CtaConfig }) {
       <div className="a11y-sr-only" role="alert">
         {error ?? ""}
       </div>
-
-      {loading && (
-        /* The system's own scanning UX: a determinate bar driven by elapsed
-           time against an honest expectation (a page scan usually lands
-           inside forty seconds; AI adds about thirty; audits scale with
-           pages), held at 95% until the real result arrives — the words
-           below stay the live region, the bar is the picture. */
-        <ProgressBar
-          label="In progress"
-          value={Math.min(
-            95,
-            Math.round(
-              (elapsed /
-                ((mode === "site" ? 75 : 40) + (aiRequested ? 30 : 0))) *
-                100
-            )
-          )}
-        />
-      )}
-      {loading && (
-        <p className="a11y-loading">
-          {/* Two parts, deliberately. The words are a live region and change
-              only at milestones; the seconds tick outside it and are hidden
-              from assistive technology.
-
-              A counter inside a live region announces itself every second,
-              which would make this tool's own waiting screen the most
-              irritating thing a screen reader user met all day — on a product
-              whose entire subject is not doing that. Sighted users get the
-              reassurance of a moving number; everyone else gets an update
-              when there is genuinely something new to say. */}
-          <span>{waitingMessage(mode, aiRequested, elapsed)}</span>{" "}
-          {!reducedMotion && (
-            <span className="a11y-elapsed" aria-hidden="true">
-              {elapsed}s
-            </span>
-          )}
-        </p>
-      )}
 
       {/* Announces the outcome to anyone not watching the screen.
           The loading paragraph above is a live region too, but it is unmounted

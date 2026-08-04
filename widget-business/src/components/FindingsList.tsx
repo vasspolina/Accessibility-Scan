@@ -83,6 +83,9 @@ export function FindingsList({
                       : []),
                   ]
                 : [
+                    // Hidden at phone width by CSS (see .a11y-finding-sev-col)
+                    // — Severity folds into the Issue cell there instead.
+                    { key: "severity", label: "Severity", width: "1%" },
                     { key: "issue", label: "Issue" },
                     { key: "wcag", label: "WCAG", width: "1%" },
                     { key: "fix", label: "Who fixes this", width: "1%" },

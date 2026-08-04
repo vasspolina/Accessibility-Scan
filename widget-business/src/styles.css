@@ -182,7 +182,11 @@
   grid-template-areas:
     "header header"
     "nav content";
-  grid-template-columns: 12rem minmax(0, 1fr);
+  /* 15rem, not the 12rem this used to be: the longest section label
+     ("Issues that could turn away users") was wrapping to two lines at
+     the narrower column, on every screen this wide enough to show the
+     sidebar at all — not a phone-width problem, a column-too-narrow one. */
+  grid-template-columns: 15rem minmax(0, 1fr);
   column-gap: 32px;
   padding: 32px;
   border: 1px solid var(--a11y-border, #d0d7de);
@@ -226,7 +230,14 @@
   display: flex;
   flex-direction: column;
   gap: 4px;
-  min-width: 12rem;
+  min-width: 15rem;
+}
+
+/* Hidden until the mobile breakpoint below turns it into a real toggle —
+   the desktop rail is a persistent list with nothing to expand or
+   collapse, so this button has no job to do at that width. */
+.a11y-shell-nav-toggle {
+  display: none;
 }
 
 /* A full-width nav row, square, in the report's own type and colour
@@ -295,7 +306,15 @@
 
 /* Below this, the sidebar has nowhere left to earn its keep — collapse to
    a single column and let the nav flow above the content instead of beside
-   it. 700px matches the breakpoint already used elsewhere in this file. */
+   it. 700px matches the breakpoint already used elsewhere in this file.
+
+   The list itself collapses further, into a hamburger toggle: a
+   persistent list of every section label, whether stacked (tried first)
+   or wrapped into a row of pills (tried after that), still cost more
+   vertical space above the report than a phone screen can spare before a
+   reader reaches any actual content. Closed by default; opens as a
+   dropdown that overlays the content below it rather than pushing it
+   down, so opening the menu doesn't itself cause a layout jump. */
 @container a11y-shell (max-width: 700px) {
   .a11y-widget-inner {
     grid-template-areas:
@@ -306,13 +325,46 @@
   }
 
   .a11y-shell-nav {
-    position: static;
+    /* Not static: the open dropdown positions itself absolutely against
+       this element, so it needs to be the positioning context — without
+       it the menu would anchor to the widget's outer container instead
+       of sitting directly under the toggle button. */
+    position: relative;
+  }
+
+  .a11y-shell-nav-toggle {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    width: 100%;
+    min-height: 48px;
+    padding: 0 16px;
+    border: 1px solid var(--a11y-border, #d0d7de);
+    border-radius: 4px;
+    background: var(--a11y-bg, #ffffff);
+    color: var(--a11y-text, #1f2328);
+    font-family: var(--a11y-font, inherit);
+    font-size: 0.875rem;
+    font-weight: 500;
+    cursor: pointer;
   }
 
   .a11y-shell-nav ul {
-    flex-direction: row;
-    flex-wrap: wrap;
+    display: none;
+    position: absolute;
+    z-index: 10;
+    width: 100%;
+    margin-top: 4px;
+    padding: 8px;
+    border: 1px solid var(--a11y-border, #d0d7de);
+    border-radius: 4px;
+    background: var(--a11y-bg, #ffffff);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
     min-width: 0;
+  }
+
+  .a11y-shell-nav ul[data-open="true"] {
+    display: flex;
   }
 }
 
@@ -3705,8 +3757,17 @@ label.a11y-ai-toggle {
 .a11y-pro-title-cell {
   display: flex;
   flex-direction: column;
-  align-items: flex-start;
+  /* align-items stays the flex default (stretch) — the title text below
+     needs to fill the column's width to wrap correctly. Only the badge
+     (the first child, the imported SeverityTag) wants its own natural
+     size instead of stretching, so that one opts out on its own below. */
   gap: 4px;
+  /* Same min-width: 0 fix as .a11y-undecided-cell/.a11y-finding-issue. */
+  min-width: 0;
+}
+
+.a11y-pro-title-cell > :first-child {
+  align-self: flex-start;
 }
 
 .a11y-table-detail {
@@ -3737,6 +3798,16 @@ label.a11y-ai-toggle {
 
 .a11y-undecided-table table {
   width: 100%;
+  /* table-layout: auto (the default) sizes a column to its content's
+     unwrapped preferred width first, and only shrinks it if that leaves
+     no room at all — for a single-column table holding a paragraph of
+     real prose, that preferred width is the length of its longest
+     unbroken line, which stretched this table (and the page under it,
+     before overflow-x: auto caught it) far past the viewport instead of
+     just wrapping the text. Fixed layout skips that computation
+     entirely: the one column is simply 100% of the table, and content
+     wraps inside it like anywhere else on the page. */
+  table-layout: fixed;
   /* Same flattening as .a11y-findings-table: no second frame drawn
      around content that already sits inside its own report section. */
   border: 0 !important;
@@ -3758,15 +3829,14 @@ label.a11y-ai-toggle {
   vertical-align: top !important;
 }
 
-/* Who-fixes-this folds into the issue cell now (see UndecidedChecks.tsx)
-   rather than holding a column of its own, so :first-child is "What we
-   couldn't decide" and :last-child is "Places" — the one column left
-   that's still a short, non-wrapping value. */
-.a11y-undecided-table th:last-child,
-.a11y-undecided-table tbody td:last-child {
-  white-space: nowrap;
-  font-variant-numeric: tabular-nums;
-}
+/* Places used to be its own last column, with this rule keeping its short
+   numeric value from wrapping — both Who-fixes-this and Places fold into
+   the issue cell now (see UndecidedChecks.tsx), leaving this table with
+   exactly one column. :last-child and :first-child now both mean that
+   same cell, so this rule was quietly forcing the entire paragraph onto
+   one unbroken line instead of the few narrow characters it was written
+   for — the count itself keeps its own nowrap directly, in
+   .a11y-undecided-places. */
 
 .a11y-undecided-table td:has(.a11y-undecided-cell) {
   min-width: 12rem;
@@ -3833,28 +3903,38 @@ label.a11y-ai-toggle {
 }
 
 /* The kit's DataTable indents the expand row's content 48px inline —
-   enough to clear the arrow column alone, which is exactly where this
-   table's Issue column now starts too, since Severity folds into the
-   Issue cell (above the title) instead of holding a column of its own —
-   so the default already lines the detail up correctly and needs no
-   override here.
-
-   The professional table still carries Severity as its own dedicated
-   column, so its Issue column starts further over — ~197px (arrow +
-   Severity's combined width) — !important to beat the inline style. */
-.a11y-pro-table tbody td[colspan] {
+   enough to clear the arrow column alone. Both tables carry Severity as
+   its own dedicated column on desktop, so their Issue column actually
+   starts further over — ~197px (arrow + Severity's combined width) —
+   !important to beat the inline style. Findings-table's own Severity
+   column is hidden at phone width (see the @container rule above), so
+   its indent drops back to the 48px default there — the override below
+   undoes itself rather than needing a separate narrow-width rule. */
+.a11y-pro-table tbody td[colspan],
+.a11y-findings-table tbody td[colspan] {
   padding-left: 197px !important;
+}
+
+@container a11y-panel (max-width: 480px) {
+  .a11y-findings-table tbody td[colspan] {
+    padding-left: 48px !important;
+  }
 }
 
 .a11y-finding-issue {
   display: flex;
   flex-direction: column;
-  /* Without this, flex's default "stretch" pulls the Severity badge
-     (the folded-in first child, see findingRow in FindingGroup.tsx) out
-     to the cell's full width instead of leaving it its own natural
-     pill size. */
-  align-items: flex-start;
+  /* align-items stays the flex default (stretch): the title below needs
+     to fill the column's width to wrap instead of growing to its
+     unwrapped line's width. Only a11y-finding-sev-fold (the folded
+     Severity badge, when shown) wants its own natural size — it opts out
+     with align-self on its own rule instead of applying flex-start here,
+     which used to pull every child out of stretching, title included. */
   gap: 4px;
+  /* Same min-width: 0 fix as .a11y-undecided-cell — a flex item's default
+     min-width is its content's unwrapped width, not the space actually
+     on offer, which is exactly backwards for a title meant to wrap. */
+  min-width: 0;
 }
 
 /* Regular, not medium: this is the finding's own sentence — the main
@@ -3895,20 +3975,21 @@ label.a11y-ai-toggle {
   white-space: normal;
 }
 
-/* WCAG and who-fixes-this are their own columns now, not badges folded
-   under the title — same wrapping problem as every other narrow column in
-   this file, same fix. Level is deliberately left out: its text ("Required
-   by law in most places (Level AA)") is a phrase, not a label, and forcing
-   it onto one line was what starved the Issue column down to a
-   letter-per-line sliver — it wraps like Issue does instead. nth-child
-   positions assume the arrow column is always first (every row has an
-   expand panel), and Severity folds into the Issue cell rather than
-   holding a column of its own: 3 = WCAG, 4 = fix. The asNotes shape has
-   neither column, so these simply match nothing there. */
-.a11y-findings-table th:nth-child(3),
+/* WCAG and who-fixes-this are their own columns — same wrapping problem
+   as every other narrow column in this file, same fix. Level is
+   deliberately left out: its text ("Required by law in most places
+   (Level AA)") is a phrase, not a label, and forcing it onto one line
+   was what starved the Issue column down to a letter-per-line sliver —
+   it wraps like Issue does instead. nth-child positions assume the
+   arrow column is always first (every row has an expand panel): 2 =
+   Severity, 4 = WCAG, 5 = fix. The asNotes shape has none of these
+   columns, so these simply match nothing there. */
+.a11y-findings-table th:nth-child(2),
 .a11y-findings-table th:nth-child(4),
-.a11y-findings-table tbody td:nth-child(3),
-.a11y-findings-table tbody td:nth-child(4) {
+.a11y-findings-table th:nth-child(5),
+.a11y-findings-table tbody td:nth-child(2),
+.a11y-findings-table tbody td:nth-child(4),
+.a11y-findings-table tbody td:nth-child(5) {
   white-space: nowrap;
 }
 
@@ -3923,9 +4004,9 @@ label.a11y-ai-toggle {
 /* Level (e.g. "Required by law in most places (Level AA)") is a phrase,
    not a label — same reasoning as leaving it out of the nowrap rule above.
    Left with no minimum it got compressed to its longest unbreakable word,
-   which is unreadable at any width. nth-child(5): arrow, issue, WCAG, fix,
-   level — only present in the shape that has a fix column. */
-.a11y-findings-table tbody td:nth-child(5) {
+   which is unreadable at any width. nth-child(6): arrow, severity, issue,
+   WCAG, fix, level — only present in the shape that has a fix column. */
+.a11y-findings-table tbody td:nth-child(6) {
   min-width: 10rem;
 }
 
@@ -3937,30 +4018,53 @@ label.a11y-ai-toggle {
   white-space: nowrap;
 }
 
+/* Severity's own column and the folded-in copy inside the Issue cell are
+   both always in the DOM — only one is ever visible. Desktop shows the
+   column (Severity reads fine as its own row of space here, same as WCAG
+   and Who-fixes-this); the @container rule below flips which one shows
+   at phone width, where a dedicated column doesn't fit. */
+.a11y-finding-sev-fold {
+  display: none;
+  /* Its own natural size, not stretched to the title's full width —
+     .a11y-finding-issue's align-items is the flex default (stretch) now,
+     needed so the title text itself wraps instead of growing to its
+     unwrapped width, so this one has to opt out on its own. */
+  align-self: flex-start;
+}
+
 /* At a genuinely narrow panel, Issue's own 12rem floor and the arrow
    column alone still run past what's left once an Instances column joins
-   in — WCAG and Who-fixes-this can't fit at any reasonable width without
-   forcing horizontal scroll, the exact thing this table was built to
-   avoid. Both stay reachable in the expand panel (every row already
-   carries them there); dropping them from the compact view is what
-   actually lets Issue and Instances render without a scrollbar. Severity
-   no longer competes for this space at all — it's folded above the title
-   inside the Issue cell rather than holding a column of its own — so
-   Issue's floor only drops from 12rem to 8rem here, not the 6rem this
-   needed back when Severity's own badge was still claiming width too. */
+   in — Severity, WCAG and Who-fixes-this can't all fit at any reasonable
+   width without forcing horizontal scroll, the exact thing this table
+   was built to avoid. All three stay reachable — Severity folds into the
+   Issue cell itself rather than the expand panel, since it's the one
+   piece of information here that matters enough to show without a tap;
+   WCAG and Who-fixes-this are already in every row's expand panel too.
+   Dropping them from the compact view is what actually lets Issue and
+   Instances render without a scrollbar. */
 @container a11y-panel (max-width: 480px) {
-  /* nth-child(5) — Level, when the table has one — needs the same
+  .a11y-finding-sev-col {
+    display: none;
+  }
+
+  .a11y-finding-sev-fold {
+    display: block;
+  }
+
+  /* nth-child(6) — Level, when the table has one — needs the same
      treatment: its own 10rem floor overflows this width on its own,
      dev-fixture testing missed it because the dark-pattern table this
      rule was built against never carries a Level column, but every
      accessibility-category findings table can. Same fallback as WCAG
      and Who-fixes-this: stays in the expand panel, drops from the row. */
-  .a11y-findings-table th:nth-child(3),
+  .a11y-findings-table th:nth-child(2),
   .a11y-findings-table th:nth-child(4),
   .a11y-findings-table th:nth-child(5),
-  .a11y-findings-table tbody td:nth-child(3),
+  .a11y-findings-table th:nth-child(6),
+  .a11y-findings-table tbody td:nth-child(2),
   .a11y-findings-table tbody td:nth-child(4),
-  .a11y-findings-table tbody td:nth-child(5) {
+  .a11y-findings-table tbody td:nth-child(5),
+  .a11y-findings-table tbody td:nth-child(6) {
     display: none;
   }
 
@@ -3989,11 +4093,20 @@ label.a11y-ai-toggle {
 .a11y-undecided-cell {
   display: flex;
   flex-direction: column;
-  /* Same fix as .a11y-finding-issue: without this, flex's default
-     "stretch" pulls the fix-kind badge (the first child) out to the
-     cell's full width instead of leaving it its own natural pill size. */
-  align-items: flex-start;
+  /* align-items stays the flex default (stretch) — the paragraphs below
+     need to fill the column's width to wrap, and flex-start here used to
+     stop them from doing that along with the badge row it was meant
+     for. a11y-undecided-badge-row opts out of stretching on its own. */
   gap: 8px;
+  /* Flex items default to min-width: auto — their content's unwrapped
+     max-content width, not the space actually available. Paired with
+     max-width: none on the paragraph below (needed so the page-wide
+     reading-measure cap doesn't apply here), that let the paragraph
+     grow to the width of its longest unbroken line instead of wrapping,
+     dragging the whole table wider than the viewport on desktop. This
+     is what tells the flex item it's allowed to shrink below that and
+     wrap normally. */
+  min-width: 0;
 }
 
 .a11y-undecided-cell p {
@@ -4017,27 +4130,27 @@ label.a11y-ai-toggle {
   display: flex;
   align-items: center;
   gap: 12px;
+  /* Its own natural size, not stretched to the column's full width — see
+     the align-items comment on .a11y-undecided-cell. */
+  align-self: flex-start;
 }
 
 .a11y-undecided-places {
   font-size: var(--a11y-text-label, 0.875rem);
   color: var(--a11y-muted, #525252);
   font-variant-numeric: tabular-nums;
+  white-space: nowrap;
 }
 
-/* Mobile only: this card's body text runs to the panel's true edges
-   instead of sitting inset inside the 20px mobile gutter a second time
-   — the same bleed-to-edge pattern used elsewhere in this file, applied
-   here because a dense paragraph of "what to ask for" advice reads
-   better with the little extra width a phone screen can spare than
-   boxed in in the middle of it. Desktop keeps the normal inset: a 32px
-   gutter isn't the same tight trade a 20px one is. */
-@container a11y-shell (max-width: 560px) {
-  .a11y-widget-biz.a11y-widget-biz .a11y-undecided-what,
-  .a11y-widget-biz.a11y-widget-biz .a11y-undecided-ask {
-    margin-inline: -20px;
-  }
-}
+/* A full-bleed version of this rule was tried here — negative margins
+   pulling this card's text out to the panel's true edges on mobile — but
+   .a11y-undecided-table wraps its content in its own overflow-x: auto
+   scroll container, and a negative margin inside a scroll container
+   doesn't bleed past it the way it does inside a plain block: it just
+   makes the scrollable area wider than the visible one, so the view sat
+   scrolled slightly off-centre by default and clipped a few characters
+   off both edges of every line. Contained and fully readable beats a
+   few extra millimetres of width. */
 
 /* Same fix, same reason, for the WCAG 2.2 readiness table: "Status" had no
    width hint at all, so "Needs a person" wrapped to two lines instead of
@@ -4852,8 +4965,13 @@ label.a11y-ai-toggle {
 .a11y-conf-cell {
   display: flex;
   flex-direction: column;
-  align-items: flex-start;
+  /* align-items stays the flex default (stretch) — same reasoning as
+     .a11y-finding-issue/.a11y-undecided-cell: the meaning text below
+     needs to fill the column's width to wrap. a11y-conf-result opts out
+     of stretching on its own below. */
   gap: 4px;
+  /* Same min-width: 0 fix as .a11y-undecided-cell/.a11y-finding-issue. */
+  min-width: 0;
 }
 
 .a11y-conf-result {
@@ -4861,6 +4979,9 @@ label.a11y-ai-toggle {
   align-items: center;
   gap: 8px;
   font-weight: 500;
+  /* Its own natural size, not stretched to the column's full width —
+     see the align-items comment on .a11y-conf-cell. */
+  align-self: flex-start;
 }
 
 /* Only when it follows the criterion's own text (Wcag22Readiness, folded
