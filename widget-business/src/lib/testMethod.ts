@@ -36,7 +36,7 @@ export const FIX_KINDS: Record<FixOwner, FixKind> = {
     // "Markup or the stylesheet" is two pieces of jargon in one sentence, on
     // a report written for the person who owns the site rather than the one
     // who builds it. They do not need the names of the files.
-    hint: "This is a change in the site's own code, so it goes to whoever builds or maintains the site for you.",
+    hint: "This is a change in the site's own code. It goes to whoever builds or maintains the site for you.",
   },
   content: {
     key: "content",
@@ -51,12 +51,12 @@ export const FIX_KINDS: Record<FixOwner, FixKind> = {
     // targets bigger" has to invent a size, a colour or a spacing, which is
     // not their decision to make. The decision comes first and belongs to
     // whoever owns how the page looks.
-    hint: "This is a decision about how the page looks — a size, a colour, a spacing — so it belongs with whoever designs the site. Someone will change a stylesheet afterwards, but the choice comes first.",
+    hint: "This is a decision about how the page looks: a size, a colour, a spacing. It belongs with whoever designs the site. Someone will change a stylesheet afterwards, but the choice comes first.",
   },
   document: {
     key: "document",
     label: "Document fix",
-    hint: "The fault is inside the PDF, not the website. Fix it in the original — Word, InDesign, Acrobat — and export again; editing the site will not help.",
+    hint: "The fault is inside the PDF, not the website. Fix it in the original file (Word, InDesign, Acrobat) and export again. Editing the site will not help.",
   },
 };
 
@@ -171,10 +171,10 @@ export function isAiFinding(finding: AccessibilityFinding): boolean {
 }
 
 export const AI_HINT =
-  "Raised by the AI review, which reads the page the way a person might rather than checking a rule. It catches things no rule can express, and it is the one part of this report that can be confidently wrong — worth a second look before acting.";
+  "Raised by the AI review, which reads the page the way a person might rather than checking a rule. It catches things no rule can express. It is also the one part of this report that can be confidently wrong. Take a second look before acting.";
 
 export const KEYBOARD_HINT =
-  "You can confirm this one yourself in a few minutes, with nothing installed: put the mouse aside and move through the page using Tab, Enter and Escape.";
+  "You can confirm this one yourself in a few minutes, with nothing installed. Put the mouse aside and move through the page using Tab, Enter and Escape.";
 
 export function isKeyboardCheck(finding: AccessibilityFinding): boolean {
   return KEYBOARD_CHECKS.has(finding.ruleId ?? "");

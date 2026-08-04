@@ -97,7 +97,7 @@ describe("the ACR draft", () => {
     );
     // Plain language, not axe's "Images must have alternative text": this
     // document is read by a procurement team, not by the developer fixing it.
-    expect(text).toMatch(/Images have no text description behind them\. \(3 instances\)|Images have no text description behind them \(3 instances\)/);
+    expect(text).toMatch(/Images have no description\.? \(3 instances\)/);
     expect(text).not.toMatch(/must have alternative text/i);
   });
 
