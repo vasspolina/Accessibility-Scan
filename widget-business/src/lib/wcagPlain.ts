@@ -413,8 +413,13 @@ export const PLAIN_RULE_EXPLANATIONS: Record<string, PlainRule> = {
   },
   "typo-leading-for-measure": {
     plain: "Lines this long need more room between them.",
-    found: (n) =>
-      `${n === 1 ? "A block of text sets" : `${n} blocks of text set`} long lines close together. The spacing would be comfortable in a narrow column and is tight at this width.`,
+    // No canned `found` here on purpose — unlike most rules, this one's
+    // own finding.description already carries the actual measurement
+    // (characters per line, the leading ratio, the comfortable value),
+    // computed per block by analyzeTypography.ts. A generic line like
+    // "the spacing would be comfortable in a narrow column and is tight
+    // at this width" said less than the number already sitting in the
+    // finding, so whatWeFound() falls through to it instead.
     impact:
       "The eye doesn't glide along a line, it jumps — and the hardest jump is back to the start of the next one. The further left it travels, the more space it needs to land on the right line — get it wrong and you reread the line you just finished, or skip one.",
   },
