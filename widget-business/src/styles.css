@@ -1146,6 +1146,32 @@ label.a11y-ai-toggle {
   }
 }
 
+/* Phone width: even the shrunken 168px crop leaves the label a column too
+   narrow to hold a word, so "Cookies Settings" came down the page a
+   syllable at a time. The picture takes its own row and the label reads
+   across the full width underneath.
+
+   align-items goes back to normal (stretch) rather than staying centre:
+   in a column flex, centre sizes each child to its own content width,
+   which is exactly what stops the label wrapping. The image opts out with
+   align-self instead, so it keeps its size rather than stretching. */
+@container a11y-panel (max-width: 480px) {
+  .a11y-occurrence-head {
+    flex-direction: column;
+    align-items: normal;
+    gap: 8px;
+  }
+
+  .a11y-occurrence-thumb {
+    align-self: flex-start;
+    max-width: 100%;
+  }
+
+  .a11y-occurrence-label {
+    flex: none;
+  }
+}
+
 .a11y-finding-thumb-large {
   display: block;
   max-width: 100%;
@@ -1212,6 +1238,22 @@ label.a11y-ai-toggle {
    reads as fact, then why it matters, then what to change. */
 .a11y-finding-measured {
   margin: 0 0 12px;
+}
+
+/* The WCAG and Level columns, folded into the expand panel for the widths
+   where those columns are dropped. Same shape as .a11y-finding-sev-fold:
+   always in the DOM, hidden until the container query below asks for it,
+   so a wide screen never shows the criterion twice. */
+.a11y-finding-level-fold {
+  display: none;
+  margin: 0 0 12px;
+  color: var(--a11y-muted, #57606a);
+}
+
+@container a11y-panel (max-width: 480px) {
+  .a11y-finding-level-fold {
+    display: block;
+  }
 }
 
 /* How the finding was found. An outline tag rather than a filled one: it is
@@ -4065,9 +4107,20 @@ label.a11y-ai-toggle {
    is enough to stop "Instances" wrapping letter by letter. :last-child
    rather than nth-child, since this table has two different shapes (with
    and without a severity column) and the count is always the last one
-   either way. */
+   either way.
+
+   Except when there is no Instances column at all — a notes table whose
+   every note fired once drops it, which makes the note's own prose the
+   last cell and left it refusing to wrap. Matching on what the cell
+   holds excludes it whatever position it lands in.
+
+   [colspan] is excluded here rather than being overridden below. Adding
+   the :not() raises this selector's specificity, and the expand row's
+   cell is trivially :last-child too — so the rule that hands it
+   white-space: normal quietly stopped winning, and the prose in every
+   expanded panel ran off the table's edge. */
 .a11y-findings-table th:last-child,
-.a11y-findings-table tbody td:last-child {
+.a11y-findings-table tbody td:last-child:not([colspan]):not(:has(.a11y-finding-issue)) {
   white-space: nowrap;
   font-variant-numeric: tabular-nums;
 }
@@ -4090,14 +4143,15 @@ label.a11y-ai-toggle {
    was what starved the Issue column down to a letter-per-line sliver —
    it wraps like Issue does instead. nth-child positions assume the
    arrow column is always first (every row has an expand panel): 2 =
-   Severity, 4 = WCAG, 5 = fix. The asNotes shape has none of these
-   columns, so these simply match nothing there. */
-.a11y-findings-table th:nth-child(2),
-.a11y-findings-table th:nth-child(4),
-.a11y-findings-table th:nth-child(5),
-.a11y-findings-table tbody td:nth-child(2),
-.a11y-findings-table tbody td:nth-child(4),
-.a11y-findings-table tbody td:nth-child(5) {
+   Severity, 4 = WCAG, 5 = fix. Excluded on the notes shape, where those
+   positions mean something else entirely — there, 2 is the note's own
+   text, and nowrap on it forced the whole table to scroll sideways. */
+.a11y-findings-table:not(.a11y-notes-table) th:nth-child(2),
+.a11y-findings-table:not(.a11y-notes-table) th:nth-child(4),
+.a11y-findings-table:not(.a11y-notes-table) th:nth-child(5),
+.a11y-findings-table:not(.a11y-notes-table) tbody td:nth-child(2),
+.a11y-findings-table:not(.a11y-notes-table) tbody td:nth-child(4),
+.a11y-findings-table:not(.a11y-notes-table) tbody td:nth-child(5) {
   white-space: nowrap;
 }
 
@@ -4114,7 +4168,7 @@ label.a11y-ai-toggle {
    Left with no minimum it got compressed to its longest unbreakable word,
    which is unreadable at any width. nth-child(6): arrow, severity, issue,
    WCAG, fix, level — only present in the shape that has a fix column. */
-.a11y-findings-table tbody td:nth-child(6) {
+.a11y-findings-table:not(.a11y-notes-table) tbody td:nth-child(6) {
   min-width: 10rem;
 }
 
@@ -4164,15 +4218,20 @@ label.a11y-ai-toggle {
      dev-fixture testing missed it because the dark-pattern table this
      rule was built against never carries a Level column, but every
      accessibility-category findings table can. Same fallback as WCAG
-     and Who-fixes-this: stays in the expand panel, drops from the row. */
-  .a11y-findings-table th:nth-child(2),
-  .a11y-findings-table th:nth-child(4),
-  .a11y-findings-table th:nth-child(5),
-  .a11y-findings-table th:nth-child(6),
-  .a11y-findings-table tbody td:nth-child(2),
-  .a11y-findings-table tbody td:nth-child(4),
-  .a11y-findings-table tbody td:nth-child(5),
-  .a11y-findings-table tbody td:nth-child(6) {
+     and Who-fixes-this: stays in the expand panel, drops from the row.
+
+     :not(.a11y-notes-table) is load-bearing, not tidiness. The notes
+     table's columns are arrow, note, instances — so nth-child(2) is the
+     note itself, and this rule hid the text of every design note on a
+     phone, leaving a table of bare expand arrows. */
+  .a11y-findings-table:not(.a11y-notes-table) th:nth-child(2),
+  .a11y-findings-table:not(.a11y-notes-table) th:nth-child(4),
+  .a11y-findings-table:not(.a11y-notes-table) th:nth-child(5),
+  .a11y-findings-table:not(.a11y-notes-table) th:nth-child(6),
+  .a11y-findings-table:not(.a11y-notes-table) tbody td:nth-child(2),
+  .a11y-findings-table:not(.a11y-notes-table) tbody td:nth-child(4),
+  .a11y-findings-table:not(.a11y-notes-table) tbody td:nth-child(5),
+  .a11y-findings-table:not(.a11y-notes-table) tbody td:nth-child(6) {
     display: none;
   }
 
@@ -5297,6 +5356,42 @@ label.a11y-ai-toggle {
   font-size: var(--a11y-text-label, 0.875rem);
   font-weight: 400;
   color: var(--a11y-muted, #525252);
+}
+
+/* Phone width: the row is severity badge, then title with its criterion
+   under it, then the instance count. Wrapping put that count on a line of
+   its own at the far left, under the severity badge, where it read as a
+   stray number belonging to nothing. A grid puts it under the criterion
+   instead — in the same column as the text it counts.
+
+   Two columns and two rows, assigned explicitly rather than left to
+   auto-placement: the count is optional markup, and without a fixed
+   position a row that has no count would leave a hole where it would
+   have been. */
+@container a11y-panel (max-width: 480px) {
+  .a11y-score-preview-row {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+    align-items: start;
+    gap: 4px 16px;
+  }
+
+  .a11y-score-preview-row > .verify-severity-tag,
+  .a11y-score-preview-row > :first-child {
+    grid-column: 1;
+    grid-row: 1;
+  }
+
+  .a11y-score-preview-desc {
+    grid-column: 2;
+    grid-row: 1;
+  }
+
+  .a11y-score-preview-row .a11y-count-badge {
+    grid-column: 2;
+    grid-row: 2;
+    justify-self: start;
+  }
 }
 
 .a11y-score-clean {

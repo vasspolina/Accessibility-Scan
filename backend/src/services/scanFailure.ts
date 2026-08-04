@@ -66,6 +66,26 @@ export function describeScanFailure(err: unknown): ScanFailure {
       logLevel: "info",
     };
   }
+  // The guard catches a non-resolving hostname before a browser is ever
+  // opened, so this is the backstop for the case it cannot see: a redirect
+  // that lands on a host with no DNS record. Same words as the guard's, so
+  // the reader gets one answer however far in the scan got.
+  if (/ERR_NAME_NOT_RESOLVED|ERR_NAME_RESOLUTION_FAILED/i.test(String(err))) {
+    return {
+      message: "We couldn't find a site at that address. Check the spelling and try again.",
+      status: 400,
+      logLevel: "info",
+    };
+  }
+  // The address exists but nothing answered on it. A different sentence from
+  // the one above, because a typo is not the likely cause here.
+  if (/ERR_CONNECTION_REFUSED|ERR_CONNECTION_RESET|ERR_ADDRESS_UNREACHABLE/i.test(String(err))) {
+    return {
+      message: "That address exists, but the site did not answer. It may be down right now.",
+      status: 502,
+      logLevel: "info",
+    };
+  }
   // A crashed tab is the browser running out of memory on a heavy page, not
   // anything wrong with the site.
   if (/target crashed|page crashed|browser has been closed/i.test(String(err))) {

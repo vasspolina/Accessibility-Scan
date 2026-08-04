@@ -77,7 +77,13 @@ export async function assertSafeUrl(rawUrl: string): Promise<URL> {
     const results = await dns.lookup(hostname, { all: true });
     addresses = results.map((r) => r.address);
   } catch {
-    throw new UnsafeUrlError("Could not resolve host");
+    // Shown to whoever typed the address, so it says what happened and what
+    // to do about it. "Could not resolve host" named a DNS step the reader
+    // has no reason to know, and read as a fault in the checker rather than
+    // a typo in the box.
+    throw new UnsafeUrlError(
+      "We couldn't find a site at that address. Check the spelling and try again."
+    );
   }
 
   if (addresses.length === 0 || addresses.some(isPrivateOrReservedIp)) {

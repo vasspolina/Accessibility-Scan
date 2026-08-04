@@ -447,6 +447,13 @@ function FindingDetails({
   // all-pictured and all-unpictured both need no explanation.
   const somePictured = entries.some((e) => e.rep.elementScreenshot);
   const someUnpictured = entries.some((e) => !e.rep.elementScreenshot);
+  // Same derivation as the row's WCAG cell, and blank on the same terms:
+  // best-practice rules arrive as "WCAG (see rule help)", which names no
+  // criterion a reader could look up.
+  const criterion =
+    rep.wcagCriterion && rep.wcagCriterion !== "N/A"
+      ? (rep.wcagCriterion.match(/^\d\.\d+\.\d+/)?.[0] ?? "")
+      : "";
 
   return (
     <>
@@ -508,6 +515,23 @@ function FindingDetails({
       <p>
         <strong>What to do:</strong> <CodeText text={whatToDo} />
       </p>
+      {/* The WCAG and Level columns fold in here at phone width, the same
+          way Severity folds into the Issue cell. The CSS that drops those
+          columns said they stayed reachable in this panel; they didn't —
+          nothing here carried them, so a phone reader lost the criterion
+          and, more to the point, the sentence saying the item is required
+          by law. Hidden above that width, where both columns show. */}
+      {!asNotes && (criterion || rep.wcagLevel) && (
+        <p className="a11y-finding-level-fold">
+          {criterion && (
+            <>
+              <strong>WCAG:</strong> {criterion}
+              {rep.wcagLevel ? " · " : ""}
+            </>
+          )}
+          {rep.wcagLevel && LEVEL_FRAMING[rep.wcagLevel]}
+        </p>
+      )}
       {rep.helpUrl && (
         <p>
           <a className="a11y-learn-more" href={rep.helpUrl} target="_blank" rel="noopener noreferrer">

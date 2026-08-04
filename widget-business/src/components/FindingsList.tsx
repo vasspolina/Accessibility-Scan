@@ -71,7 +71,11 @@ export function FindingsList({
           findings a second time; there, the cards below are this section's
           only rendering, kept for print (see FindingGroup's own comment). */}
       {!professional && (
-        <div className="a11y-findings-table">
+        // The notes shape carries its own class because the table's column
+        // rules are position-based: nth-child(2) is Severity in the full
+        // shape and the note's own text in this one. Without the marker the
+        // phone-width rule that drops Severity dropped every note.
+        <div className={`a11y-findings-table${asNotes ? " a11y-notes-table" : ""}`}>
           <DataTable
             caption={asNotes ? "Notes on the design" : "Findings, most severe first"}
             headers={
