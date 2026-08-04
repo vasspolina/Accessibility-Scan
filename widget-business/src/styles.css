@@ -342,34 +342,54 @@
     position: relative;
   }
 
+  /* The report's tertiary control, same as "Show the checklist" and every
+     other disclosure here: transparent, a 1px accent hairline, accent
+     text, Carbon's 2px corner rather than the 4px this had. It used to be
+     a white full-width box with a subtle grey border, which read as an
+     empty card rather than a button — and it sat flush against the
+     heading below with no space of its own. Sized to its content and
+     given a space-06 gap under it. */
   .a11y-shell-nav-toggle {
-    display: flex;
+    display: inline-flex;
     align-items: center;
-    gap: 8px;
-    width: 100%;
+    gap: var(--space-03, 0.5rem);
+    width: auto;
     min-height: 48px;
-    padding: 0 16px;
-    border: 1px solid var(--a11y-border, #d0d7de);
-    border-radius: 4px;
-    background: var(--a11y-bg, #ffffff);
-    color: var(--a11y-text, #1f2328);
+    margin-bottom: var(--space-06, 1.5rem);
+    padding: 0 var(--space-05, 1rem);
+    border: 1px solid var(--a11y-accent, #1948f4);
+    border-radius: var(--radius-sm, 2px);
+    background: transparent;
+    color: var(--a11y-accent, #1948f4);
     font-family: var(--a11y-font, inherit);
-    font-size: 0.875rem;
-    font-weight: 500;
+    font-size: var(--a11y-text-body, 1.125rem);
+    font-weight: 400;
+    letter-spacing: 0.16px;
     cursor: pointer;
+    transition: background-color 0.11s cubic-bezier(0.2, 0, 0.38, 0.9);
   }
 
+  /* Fills on hover, white text — the same inversion .a11y-show-all uses. */
+  .a11y-shell-nav-toggle:hover {
+    background: var(--a11y-accent, #1948f4);
+    color: #ffffff;
+  }
+
+  /* The open menu as Carbon's overlay: layer-02 above the page, a subtle
+     hairline, the system's own overlay shadow, and its 2px corner. Sits
+     under the toggle rather than pushing the report down. */
   .a11y-shell-nav ul {
     display: none;
     position: absolute;
+    top: 48px;
+    left: 0;
     z-index: 10;
     width: 100%;
-    margin-top: 4px;
-    padding: 8px;
-    border: 1px solid var(--a11y-border, #d0d7de);
-    border-radius: 4px;
-    background: var(--a11y-bg, #ffffff);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    padding: var(--space-03, 0.5rem) 0;
+    border: 1px solid var(--a11y-border, #e0e0e0);
+    border-radius: var(--radius-sm, 2px);
+    background: var(--a11y-layer-2, #ffffff);
+    box-shadow: var(--shadow-overlay, 0 2px 6px rgba(0, 0, 0, 0.2));
     min-width: 0;
   }
 
@@ -2819,6 +2839,44 @@ label.a11y-ai-toggle {
 .a11y-w22-toggle {
   margin-top: 8px;
   justify-content: space-between;
+}
+
+/* The kit's WhatsNextPanel draws its own disclosure with a 2px border in
+   the *focus* colour, permanently — so it read as a focused control that
+   never lost focus, and as the only blue-outlined box on the page it
+   pulled rank over the section heading above it. It also laid its parts
+   out in a nowrap row, which at phone width squeezed "WCAG 2.2 expected
+   October 2026" into a four-line column beside the pill.
+
+   Restyled to the report's own accordion anatomy (.a11y-accordion-head):
+   flat, borderless, the chevron carrying the affordance. !important
+   because the component sets these inline and takes no className.
+   :not([class]) picks out the kit's own button — the section's other
+   toggle carries classes and must keep its styling. */
+.a11y-widget-biz.a11y-widget-biz .a11y-w22 button[aria-expanded]:not([class]) {
+  flex-wrap: wrap !important;
+  gap: 8px 16px !important;
+  min-height: 48px;
+  padding: var(--space-03, 0.5rem) 0 !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+}
+
+/* At phone width the standard's name takes the whole row and the pill
+   drops below it. Sharing one row, the name had to wrap to three lines
+   in the sliver the pill left it — "WCAG 2.2 / expected / October 2026"
+   stacked as a column beside a badge, which is the same crowding the
+   findings tables were folded to avoid. */
+@container a11y-panel (max-width: 480px) {
+  .a11y-widget-biz.a11y-widget-biz
+    .a11y-w22
+    button[aria-expanded]:not([class])
+    > span:first-child {
+    /* !important because the component sets `flex: 1` inline, and that
+       shorthand's own flex-basis: 0% would otherwise win. */
+    flex-basis: 100% !important;
+  }
 }
 
 /* Carbon form area --------------------------------------------------------
