@@ -64,7 +64,7 @@ export function LoginFields({
     if (!password) missing.push("a password");
     if (missing.length === 0 || missing.length === 3) return "";
     const what = missing.length === 1 ? missing[0] : "the rest";
-    return `Add ${what} to sign in during the scan, or clear the other fields to scan without a login.`;
+    return `Add ${what} to sign in during the scan. Or clear the other fields to scan without a login.`;
   }
 
   return (
@@ -90,7 +90,7 @@ export function LoginFields({
 
           <p className="a11y-login-note">
             Use a test account, not your own. We sign in and scan the page, then throw the session away.
-            Nothing is saved. The page we photograph will show whatever that account can see.
+            We save nothing. The page we photograph will show whatever that account can see.
           </p>
 
           <div className="a11y-stmt-fields">

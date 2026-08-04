@@ -50,7 +50,7 @@ const CONDITIONS: Condition[] = [
     id: "tritanopia",
     label: "Tritanopia",
     prevalence: "rare",
-    note: "Reduced sensitivity to blue. Blues and yellows are confused.",
+    note: "Reduced sensitivity to blue. Blues and yellows become hard to tell apart.",
     matrix: "1.256 -0.077 -0.179 0 0  -0.078 0.931 0.148 0 0  0.005 0.691 0.304 0 0  0 0 0 1 0",
   },
   {
@@ -64,7 +64,7 @@ const CONDITIONS: Condition[] = [
     id: "lowvision",
     label: "Low vision",
     prevalence: "~1 in 30 people",
-    note: "Reduced acuity, far more common than total blindness. Small text and thin type lose their edges.",
+    note: "Reduced sharpness of sight, far more common than total blindness. Small text and thin type lose their edges.",
     cssFilter: "blur(2.2px)",
   },
   {

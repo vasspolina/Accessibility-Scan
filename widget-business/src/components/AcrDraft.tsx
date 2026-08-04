@@ -88,10 +88,10 @@ export function AcrDraft({ report }: { report: AccessibilityReport }) {
           <p className="a11y-conf-caveat">
             <strong>This fills in the failures, not the whole form.</strong> The template allows four
             answers: Supports, Partially Supports, Does Not Support, Not Applicable. A scan can find
-            failures but can never establish conformance, so the rows it can evidence are completed
-            and the rest are left blank on purpose. Put "Supports" in every row and the document
-            looks finished but claims something nobody checked, which in a procurement report is
-            the version with legal consequences.
+            failures but can never establish conformance. The draft completes the rows it can
+            evidence and leaves the rest blank on purpose. Put "Supports" in every row and the
+            document looks finished but claims something nobody checked. In a procurement report,
+            that is the version with legal consequences.
           </p>
 
           <div className="a11y-stmt-fields">

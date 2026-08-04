@@ -100,7 +100,7 @@ export async function markupFindingsFromHtml(html: string): Promise<Accessibilit
       selector: "html",
       description: `The page's HTML has ${messages.length} markup validity issue${messages.length === 1 ? "" : "s"}. For example: ${examples}. Invalid markup forces browsers and assistive technology to guess at the page structure, and different ones guess differently.`,
       suggestedFix:
-        "Run the page through the W3C markup validator and fix the reported errors — start with unclosed or misnested elements and duplicate attributes.",
+        "Run the page through the W3C markup validator and fix the reported errors. Start with unclosed or misnested elements and duplicate attributes.",
       ruleId: "markup-validation",
       helpUrl: "https://validator.w3.org/",
     },

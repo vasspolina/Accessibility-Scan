@@ -102,10 +102,10 @@ export function ScanHistory({
         {!comparable && (
           <>
             {" "}
-            How scores are worked out has changed since that scan — some checks that used to
-            sit outside the number now count towards it — so the two scores are
-            not a fair comparison and no change is claimed. What was fixed and
-            what appeared is unaffected, and is shown below.
+            We have changed how we work out the score since that scan. Some checks that used to
+            sit outside the number now count towards it. The two scores are
+            not a fair comparison, so we claim no change. What was fixed and
+            what appeared is unaffected, and both lists are below.
           </>
         )}
       </p>
@@ -122,15 +122,15 @@ export function ScanHistory({
           <span className="a11y-conf-cap">
             {comparable ? (
               <>
-                <strong>{flat ? "score unchanged" : up ? "score is up" : "score is down"}</strong>
+                <strong>{flat ? "Score unchanged" : up ? "Score is up" : "Score is down"}</strong>
                 <em>
                   {last.score} then, {current.score} now
                 </em>
               </>
             ) : (
               <>
-                <strong>not comparable</strong>
-                <em>the earlier scan was scored by different rules</em>
+                <strong>Not comparable</strong>
+                <em>we scored the earlier scan by different rules</em>
               </>
             )}
           </span>
@@ -138,14 +138,14 @@ export function ScanHistory({
         <div className="a11y-conf-tile">
           <span className="a11y-conf-num">{diff.fixed.length}</span>
           <span className="a11y-conf-cap">
-            <strong>problems gone</strong>
+            <strong>Problems gone</strong>
             <em>not found this time</em>
           </span>
         </div>
         <div className={`a11y-conf-tile${diff.appeared.length > 0 ? " a11y-conf-tile-fail" : ""}`}>
           <span className="a11y-conf-num">{diff.appeared.length}</span>
           <span className="a11y-conf-cap">
-            <strong>new problems</strong>
+            <strong>New problems</strong>
             <em>weren't there before</em>
           </span>
         </div>
@@ -229,7 +229,7 @@ export function ScanHistory({
               setConfirmOpen(false);
             }}
           >
-            This can&rsquo;t be undone. Every past scan of this page, kept
+            You can&rsquo;t undo this. Every past scan of this page, kept
             only in this browser, will be gone — including the comparison
             above.
           </Dialog>,

@@ -42,7 +42,7 @@ export function Wcag22Readiness({ readiness }: { readiness: Readiness }) {
         standard="WCAG 2.2"
         expected={`expected ${readiness.expectedFrom}`}
         failCount={alreadyFailing}
-        description={`The standard European law points at will change. Nothing here is required yet. These are the ${total} new items that become Level A or AA when it lands, so you can fix them on your own schedule rather than someone else's.`}
+        description={`The standard European law points at will change. Nothing here is required yet. These are the ${total} new items that become Level A or AA when it lands. You can fix them on your own schedule rather than someone else's.`}
         items={criteria.map((c) => ({ criterion: c.id, title: c.plain, level: c.level }))}
         style={{ marginTop: 12 }}
       />
@@ -71,7 +71,7 @@ export function Wcag22Readiness({ readiness }: { readiness: Readiness }) {
           <p className="a11y-conf-caveat">
             <strong>What actually changes.</strong> The European Accessibility Act points at a
             standard called EN 301 549, which today adopts WCAG 2.1. The next version of that
-            standard adopts WCAG 2.2 and is expected to be published in the EU's Official Journal in{" "}
+            standard adopts WCAG 2.2. It is expected in the EU's Official Journal in{" "}
             {readiness.expectedFrom}. Until then, the checklist above is the one that counts.
           </p>
 
@@ -82,11 +82,11 @@ export function Wcag22Readiness({ readiness }: { readiness: Readiness }) {
               reader reaches this sentence before those blank-looking rows,
               not after them. */}
           <p className="a11y-conf-caveat">
-            <strong>Only one of these can be checked by software.</strong> {needsReview} of the{" "}
-            {total} depend on things a machine cannot judge: whether a sticky header covers what you
-            have tabbed to, whether a drag has a simpler alternative, whether help sits in the same
-            place on every page, whether a form asks twice, and whether a login can be done
-            without a puzzle. That is the same honesty as the checklist below, and the same answer:
+            <strong>Software can check only one of these.</strong> {needsReview} of the{" "}
+            {total} depend on things a machine cannot judge. Does a sticky header cover what you
+            have tabbed to? Does a drag have a simpler alternative? Does help sit in the same
+            place on every page? Does a form ask twice? Can you log in without solving a puzzle?
+            That is the same honesty as the checklist below, and the same answer:
             these need a person.
           </p>
 

@@ -106,7 +106,7 @@ export function evaluateComponents(dom: DomSignals): AccessibilityFinding[] {
       makeFinding(
         "component-form-autocomplete",
         worst.selector,
-        `Form fields that collect personal details (${missingAutocomplete.length} field${missingAutocomplete.length === 1 ? "" : "s"}, e.g. the ${purpose.label} field) have no autocomplete attribute. Browsers and password managers then can't offer to fill them in — extra typing for everyone, and a real barrier for people with motor or cognitive disabilities.`,
+        `Form fields that collect personal details (${missingAutocomplete.length} field${missingAutocomplete.length === 1 ? "" : "s"}, e.g. the ${purpose.label} field) have no autocomplete attribute. Browsers and password managers then can't offer to fill them in. That means extra typing for everyone, and a real barrier for people with motor or cognitive disabilities.`,
         `Add the matching autocomplete token to each field — e.g. autocomplete="${purpose.token}" on the ${purpose.label} field. This is a one-line change per field that makes forms far faster to complete.`,
         "https://www.w3.org/WAI/WCAG21/Understanding/identify-input-purpose.html"
       )
@@ -126,8 +126,8 @@ export function evaluateComponents(dom: DomSignals): AccessibilityFinding[] {
       makeFinding(
         "component-input-type",
         wrongInputType[0].selector,
-        `Email or phone fields are set to a plain text input (${wrongInputType.length} field${wrongInputType.length === 1 ? "" : "s"}) instead of the matching input type. On phones this means visitors get the generic keyboard instead of one with "@" or the number pad, making the form fiddlier to fill.`,
-        'Use type="email" for email fields and type="tel" for phone fields — mobile devices then show the right keyboard, and the browser can validate the format.',
+        `Email or phone fields are set to a plain text input (${wrongInputType.length} field${wrongInputType.length === 1 ? "" : "s"}) instead of the matching input type. On phones this means visitors get the generic keyboard instead of one with "@" or the number pad. That makes the form fiddlier to fill.`,
+        'Use type="email" for email fields and type="tel" for phone fields. Mobile devices then show the right keyboard, and the browser can validate the format.',
         "https://www.w3.org/WAI/tutorials/forms/"
       )
     );
@@ -147,7 +147,7 @@ export function evaluateComponents(dom: DomSignals): AccessibilityFinding[] {
           "component-required-cue",
           unmarkedRequired[0].selector,
           `${unmarkedRequired.length} required field${unmarkedRequired.length === 1 ? " is" : "s are"} marked required only in code, with nothing in the visible label to say so. Visitors don't find out a field was mandatory until the form rejects them.`,
-          'Add a visible cue to the label of each required field (e.g. "Email (required)" or an asterisk with a "* required" key) in addition to the required attribute, so people know before they submit.',
+          'Add a visible cue to the label of each required field, in addition to the required attribute. "Email (required)" works, or an asterisk with a "* required" key. People then know before they submit.',
           "https://www.w3.org/WAI/tutorials/forms/validation/"
         )
       );
@@ -168,8 +168,8 @@ export function evaluateComponents(dom: DomSignals): AccessibilityFinding[] {
         makeFinding(
           "component-submit-clarity",
           firstForm.selector,
-          "This form doesn't appear to have a clearly-labelled submit button. A button that just says \"Go\" or shows only an icon — or a form submitted by pressing Enter with no visible button — leaves people unsure how to complete it.",
-          'Give the form a real <button type="submit"> with descriptive text that names the action ("Create account", "Send message"), not a generic "Submit" or an icon alone.',
+          "This form doesn't appear to have a clearly-labelled submit button. A button that just says \"Go\" or shows only an icon leaves people unsure how to complete the form. So does a form you can only submit by pressing Enter, with no visible button.",
+          'Give the form a real <button type="submit"> with text that names the action: "Create account", "Send message". Avoid a generic "Submit" or an icon alone.',
           "https://www.w3.org/WAI/ARIA/apg/patterns/button/"
         )
       );
@@ -186,8 +186,8 @@ export function evaluateComponents(dom: DomSignals): AccessibilityFinding[] {
       makeFinding(
         "component-nav-labels",
         unlabelledNavs[0].selector,
-        `The page has ${navs.length} separate navigation menus, and ${unlabelledNavs.length} of them have no label. Someone using a screen reader hears each one announced only as "navigation" and can't tell the main menu from the footer links or breadcrumbs.`,
-        'Give each navigation an aria-label describing its purpose — aria-label="Main menu", aria-label="Footer", aria-label="Breadcrumb" — so they\'re distinguishable when listed.',
+        `The page has ${navs.length} separate navigation menus, and ${unlabelledNavs.length} of them have no label. Someone using a screen reader hears each one announced only as "navigation". They can't tell the main menu from the footer links or breadcrumbs.`,
+        'Give each navigation an aria-label describing its purpose: aria-label="Main menu", aria-label="Footer", aria-label="Breadcrumb". They\'re then distinguishable when listed.',
         "https://www.w3.org/WAI/ARIA/apg/patterns/landmarks/examples/navigation.html",
         "accessibility"
       )
@@ -206,8 +206,8 @@ export function evaluateComponents(dom: DomSignals): AccessibilityFinding[] {
       makeFinding(
         "component-skip-link",
         navs[0].selector,
-        "There's no \"skip to main content\" link. Keyboard and screen-reader users have to tab through the entire navigation menu on every single page before they can reach the actual content.",
-        'Add a skip link as the very first focusable element: a link to #main-content that\'s visually hidden until focused. It\'s a small addition that saves keyboard users dozens of key presses per page.',
+        "There's no \"skip to main content\" link. Keyboard and screen-reader users have to tab through the entire navigation menu before they reach the content. That happens on every single page.",
+        'Add a skip link as the very first thing the Tab key reaches. Point it at #main-content and keep it visually hidden until the Tab key lands on it. It\'s a small addition that saves keyboard users dozens of key presses per page.',
         "https://www.w3.org/WAI/WCAG21/Understanding/bypass-blocks.html",
         "accessibility"
       )

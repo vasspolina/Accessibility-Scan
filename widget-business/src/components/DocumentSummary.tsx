@@ -33,7 +33,7 @@ function verdict(report: AccessibilityReport): { line: string; tone: "bad" | "wa
     };
   }
   return {
-    line: "Nothing found in the checks that can be made automatically.",
+    line: "Nothing found in the checks we can run automatically.",
     tone: "good",
   };
 }
@@ -51,9 +51,9 @@ export function DocumentSummary({ report }: { report: AccessibilityReport }) {
         {count === 0
           ? "No problems found."
           : `${count} ${count === 1 ? "problem" : "problems"} found.`}{" "}
-        A document is checked for structure, title, language, readable text and image descriptions.
-        Those are the things that decide whether it can be read aloud at all, and they are not the
-        whole of what a person would check.
+        We check a document for structure, title, language, readable text and image descriptions.
+        Those are the things that decide whether a screen reader can read it aloud at all. They are
+        not the whole of what a person would check.
       </p>
     </div>
   );

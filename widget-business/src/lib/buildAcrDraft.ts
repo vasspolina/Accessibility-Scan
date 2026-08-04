@@ -102,20 +102,20 @@ export function buildAcrDraft(opts: AcrOptions): string {
 **This is an unfinished draft. Do not publish it as it stands.**
 
 An Accessibility Conformance Report is a formal claim relied on by the people
-who buy your product. This draft was produced by an automated scan, which can
-find failures but can never establish conformance. Every row it could evidence
-is filled in below. Every other row is deliberately blank, because the only
+who buy your product. An automated scan produced this draft. A scan can find
+failures but can never establish conformance. The scan has filled in every row
+it could evidence in the tables below. Every other row is deliberately blank, because the only
 honest alternative would be to assert something nobody has checked.
 
-A qualified evaluator needs to complete the blank rows, confirm the ones filled
-in here, and take responsibility for the result.
+A qualified evaluator needs to complete the blank rows and confirm the ones
+filled in here. The evaluator takes responsibility for the result.
 
 **Name of Product/Version:** ${name} ${version}
 **Report Date:** ${date}
 **Product Description:** Web content at ${siteUrl}
 **Contact Information:** ${email}
 **Notes:** Draft generated from an automated accessibility scan of a single page (${siteUrl}). Automated testing covers roughly a third of WCAG success criteria. ${conformance.needsReview} of the ${conformance.total} criteria in this report cannot be assessed by software at all.
-**Evaluation Methods Used:** Automated testing with axe-core and additional rule based checks, in headless Chromium at 1280x900 and at 390px width. None of manual testing, testing with assistive technology, or testing with disabled users was carried out.
+**Evaluation Methods Used:** Automated testing with axe-core and additional rule based checks, in headless Chromium at 1280x900 and at 390px width. None of manual testing, testing with assistive technology, or testing with people with disabilities was carried out.
 
 ## Applicable Standards/Guidelines
 
@@ -129,7 +129,7 @@ in here, and take responsibility for the result.
 
 ## Terms
 
-The terms used in the Conformance Level column are defined by VPAT 2.5:
+VPAT 2.5 defines the terms used in the Conformance Level column:
 
 - **Supports:** the functionality of the product has at least one method that meets the criterion without known defects, or meets it with equivalent facilitation.
 - **Partially Supports:** some functionality of the product does not meet the criterion.
@@ -149,8 +149,8 @@ ${table("AA", conformance, findings)}
 
 ## What is still missing
 
-- EN 301 549 contains requirements beyond Chapter 9 that a website may still be subject to, including documentation and support services. None of them are covered here.
-- Nobody has tested this with real assistive technology or with disabled users. That is the part that finds what automated testing cannot.
+- EN 301 549 contains requirements beyond Chapter 9, including documentation and support services. A website may still be subject to them. This report covers none of them.
+- Nobody has tested this with real assistive technology or with people with disabilities. That is the part that finds what automated testing cannot.
 - Every blank row above needs a human judgement before this document can be used.
 `;
 }

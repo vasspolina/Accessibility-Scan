@@ -35,20 +35,20 @@ export function SiteAuditView({ audit }: { audit: SiteAudit }) {
           <div className="a11y-conf-tile">
             <span className="a11y-conf-num">{audit.averageScore}</span>
             <span className="a11y-conf-cap">
-              average score<em>across {audit.pagesScanned} pages</em>
+              Average score<em>across {audit.pagesScanned} pages</em>
             </span>
           </div>
           <div className="a11y-conf-tile a11y-conf-tile-fail">
             <span className="a11y-conf-num">{audit.siteWide.length}</span>
             <span className="a11y-conf-cap">
-              site wide issues<em>one fix each, everywhere</em>
+              Site-wide issues<em>one fix each, everywhere</em>
             </span>
           </div>
           {worst && (
             <div className="a11y-conf-tile">
               <span className="a11y-conf-num">{worst.score}</span>
               <span className="a11y-conf-cap">
-                worst page<em>{worst.label}</em>
+                Worst page<em>{worst.label}</em>
               </span>
             </div>
           )}

@@ -130,7 +130,7 @@ export function evaluateReadability(signals: ReadabilitySignals): AccessibilityF
       selector: "main",
       description: `The writing on this page needs about ${years} years of schooling to read comfortably — roughly first-year university. Measured over ${score.words} words, averaging ${Math.round(score.words / score.sentences)} words a sentence. Nobody reads a page like this closely: people scan it, miss things, and some give up. It is not a legal requirement, and it is the change with the widest reach of anything in this report.`,
       suggestedFix:
-        "Shorten sentences first — one idea each, and around 15 to 20 words. Then swap the longest words for ordinary ones where an ordinary one exists. Put what the reader needs to do at the top rather than after the background. GOV.UK writes at about a nine-year-old's reading age on purpose, and it is not a simple site; it is a well-written one.",
+        "Shorten sentences first — one idea each, and around 15 to 20 words. Then swap the longest words for ordinary ones where an ordinary one exists. Put what the reader needs to do at the top rather than after the background. GOV.UK writes at about a nine-year-old's reading age on purpose. It is not a simple site; it is a well-written one.",
       ruleId: "readability-dense-prose",
       helpUrl: "https://www.w3.org/WAI/WCAG21/Understanding/reading-level.html",
     },

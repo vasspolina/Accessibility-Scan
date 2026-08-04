@@ -116,7 +116,7 @@ export function UrlForm({
           Web Content Accessibility Guidelines (WCAG)
         </a>{" "}
         2.1 AA and explain what to fix. It's the standard nearly every
-        accessibility law is built on.
+        accessibility law builds on.
       </p>
     <form
       className="a11y-url-form"
@@ -232,7 +232,7 @@ export function UrlForm({
               disabled={loading}
             />
             <span className="a11y-group-hint">
-              This page takes about 15 seconds; whole site finds what repeats
+              This page takes twenty to forty seconds; whole site finds what repeats
               on every page.
             </span>
           </fieldset>

@@ -33,8 +33,8 @@ export function evaluateReadingOrder(signals: ReadingOrderSignals): Accessibilit
     wcagCriterion: "2.4.3",
     wcagLevel: "A" as const,
     selector: row.selector,
-    description: `On this row the keyboard reaches "${row.firstInDom}" first, but "${row.firstOnScreen}" is the one that appears first on screen. They have been reordered by CSS (${row.reason}), which moves them visually without moving them in the page's code — and the Tab key follows the code. Someone working down the page by keyboard, or listening to a screen reader, gets these in the opposite order to everyone else.`,
-    suggestedFix: `Put the elements in the document in the order they should be read, and let the layout follow, rather than writing them in one order and rearranging with ${row.reason}. Where the visual order genuinely has to differ — a design that changes at different screen widths, most often — that is what the CSS reading-flow property is being added for, though browser support is not there yet. Until it is, matching the source order to the visual one is the only reliable fix.`,
+    description: `On this row the keyboard reaches "${row.firstInDom}" first, but "${row.firstOnScreen}" is the one that appears first on screen. CSS (${row.reason}) has reordered them: it moves them on screen without moving them in the page's code. The Tab key follows the code. Someone moving through by keyboard, or with a screen reader, gets them in the opposite order to everyone else.`,
+    suggestedFix: `Put the elements in the document in the order they should be read, and let the layout follow. Avoid writing them in one order and rearranging with ${row.reason}. Sometimes the visual order genuinely has to differ, most often in a design that changes at different screen widths. That is what the CSS reading-flow property is being added for, though browser support is not there yet. Until it is, matching the source order to the visual one is the only reliable fix.`,
     ruleId: "reading-order-mismatch",
     helpUrl: FOCUS_ORDER_URL,
   }));

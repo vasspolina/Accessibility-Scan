@@ -320,9 +320,9 @@ export function collectReflow320InPage(): NonNullable<MobileSignals["reflow320"]
 }
 
 const FIX_HSCROLL =
-  "Make the layout fit the screen: put max-width:100% on images, videos, and tables, avoid fixed pixel widths wider than the screen, and let content wrap. Test the page at 320px wide.";
+  "Make the layout fit the screen. Put max-width:100% on images, videos, and tables. Avoid fixed pixel widths wider than the screen, and let content wrap. Test the page at 320px wide.";
 const FIX_TAP =
-  "Make tap targets at least 24×24px (44×44px is more comfortable), with a little space between them — add padding to the element rather than shrinking it.";
+  "Make tap targets at least 24×24px, with a little space between them (44×44px is more comfortable). Add padding to the element rather than shrinking it.";
 
 function makeFinding(
   ruleId: string,
@@ -398,8 +398,8 @@ export function evaluateMobile(m: MobileSignals): AccessibilityFinding[] {
           c.selector,
           c.snippet,
           failed320
-            ? `At the 320px width WCAG defines for reflow, this element extends about ${c.overflowPx}px past the edge, so the whole page scrolls sideways${both ? ` — and it still scrolls at a typical ${m.viewportWidth}px phone width (${m.documentScrollWidth}px wide)` : ""}.`
-            : `On a ${width}px-wide phone screen this element extends about ${c.overflowPx}px past the edge, so the whole page scrolls sideways (it renders ${m.documentScrollWidth}px wide). It does fit at the 320px width WCAG measures reflow at, so this is a real-phone problem rather than a conformance failure.`,
+            ? `At the 320px width WCAG defines for reflow, this element extends about ${c.overflowPx}px past the edge. The whole page scrolls sideways${both ? `, and it still scrolls at a typical ${m.viewportWidth}px phone width (${m.documentScrollWidth}px wide)` : ""}.`
+            : `On a ${width}px-wide phone screen this element extends about ${c.overflowPx}px past the edge. The whole page scrolls sideways (it renders ${m.documentScrollWidth}px wide). It does fit at the 320px width WCAG measures reflow at. So this is a real-phone problem rather than a conformance failure.`,
           FIX_HSCROLL,
           "https://www.w3.org/WAI/WCAG21/Understanding/reflow.html",
           failed320 ? "accessibility" : "design-clarity"
@@ -431,7 +431,7 @@ export function evaluateMobile(m: MobileSignals): AccessibilityFinding[] {
         "AAA",
         t.selector,
         t.snippet,
-        `On a phone this tap target is only ${t.width}×${t.height}px, so it's easy to miss or to tap the wrong thing. That is below the 24×24px floor WCAG 2.2 sets as a requirement. WCAG 2.1, which this report measures against, only covers target size at Level AAA, where the bar is higher still at 44×44px.`,
+        `On a phone this tap target is only ${t.width}×${t.height}px, so it's easy to miss or to tap the wrong thing. That is below the 24×24px minimum WCAG 2.2 sets as a requirement. WCAG 2.1, which this report measures against, only covers target size at Level AAA. There the requirement is stricter still, at 44×44px.`,
         FIX_TAP,
         "https://www.w3.org/WAI/WCAG21/Understanding/target-size.html"
       )
@@ -451,7 +451,7 @@ export function evaluateMobile(m: MobileSignals): AccessibilityFinding[] {
       category: "design-clarity",
       selector: pair.selector,
       elementSnippet: pair.snippet,
-      description: `Two tap targets sit only ${pair.gapPx}px apart on a phone. Each is big enough on its own; together they leave no room to miss — a thumb aiming for one lands on the other.`,
+      description: `Two tap targets sit only ${pair.gapPx}px apart on a phone. Each is big enough on its own. Together they leave no room to miss: a thumb aiming for one lands on the other.`,
       suggestedFix:
         "Put at least 8px between neighbouring tap targets — margin between them, or padding inside each. The controls can stay the same visual size.",
       ruleId: "mobile-target-spacing",
@@ -472,9 +472,9 @@ export function evaluateMobile(m: MobileSignals): AccessibilityFinding[] {
       category: "design-clarity",
       selector: sc.elements[0].selector,
       elementSnippet: sc.elements[0].snippet,
-      description: `Bars pinned to the screen take up about ${pct}% of a phone display (${sc.totalPx}px of ${sc.viewportHeight}px, across ${sc.elements.length} element${sc.elements.length === 1 ? "" : "s"}). Every pinned pixel is one the visitor cannot read the page through, and anything the keyboard focuses can end up hidden behind it — which WCAG 2.2 makes a requirement (2.4.11 Focus Not Obscured).`,
+      description: `Bars pinned to the screen take up about ${pct}% of a phone display (${sc.totalPx}px of ${sc.viewportHeight}px, across ${sc.elements.length} element${sc.elements.length === 1 ? "" : "s"}). Every pinned pixel is one the visitor cannot read the page through. Anything the keyboard focuses can end up hidden behind them. WCAG 2.2 makes keeping focus visible a requirement (2.4.11 Focus Not Obscured).`,
       suggestedFix:
-        "Slim the pinned bars on phone widths, or let them scroll away and return. Keep their combined height well under a third of the screen, and set scroll-margin-top on content so focused elements land clear of them.",
+        "Slim the pinned bars on phone widths, or let them scroll away and return. Keep their combined height well under a third of the screen. Set scroll-margin-top on content so focused elements land clear of them.",
       ruleId: "mobile-sticky-coverage",
       helpUrl: "https://www.w3.org/WAI/WCAG22/Understanding/focus-not-obscured-minimum.html",
     });

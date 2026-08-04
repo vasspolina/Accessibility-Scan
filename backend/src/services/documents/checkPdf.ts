@@ -85,7 +85,7 @@ export async function checkPdfDocument(url: string): Promise<PdfCheckResult> {
       signal: controller.signal,
       headers: { accept: "application/pdf,*/*" },
     });
-    if (!res.ok) throw new PdfFetchError(`The document could not be downloaded (HTTP ${res.status}).`);
+    if (!res.ok) throw new PdfFetchError(`We could not download the document (HTTP ${res.status}).`);
     const buf = await res.arrayBuffer();
     if (buf.byteLength > MAX_BYTES) {
       throw new PdfFetchError("That document is too large for this check (over 20MB).");
@@ -93,7 +93,7 @@ export async function checkPdfDocument(url: string): Promise<PdfCheckResult> {
     bytes = new Uint8Array(buf);
   } catch (err) {
     if (err instanceof PdfFetchError) throw err;
-    throw new PdfFetchError("The document could not be downloaded.");
+    throw new PdfFetchError("We could not download the document.");
   } finally {
     clearTimeout(timer);
   }
@@ -102,7 +102,7 @@ export async function checkPdfDocument(url: string): Promise<PdfCheckResult> {
   // fonts it cannot substitute, which is noise: we read structure and text, and
   // never render a pixel, so font substitution is irrelevant here.
   const doc = await getDocument({ data: bytes, useSystemFonts: false, verbosity: 0 }).promise.catch(() => {
-    throw new PdfFetchError("That file could not be read as a PDF.");
+    throw new PdfFetchError("We could not read that file as a PDF.");
   });
 
   const findings: AccessibilityFinding[] = [];
@@ -141,8 +141,8 @@ export async function checkPdfDocument(url: string): Promise<PdfCheckResult> {
         "critical",
         "1.3.1",
         "A",
-        "This PDF has no tags, so its structure exists only visually. A screen reader has no headings to navigate by, no reading order it can rely on, and no way to tell a heading from a caption.",
-        "Re-export it from the original document with tagging turned on. In Word or Google Docs that means using real heading styles and exporting as a tagged PDF, not printing to PDF. Retagging an existing PDF by hand in Acrobat is possible but far slower than fixing the source.",
+        "This PDF has no tags, so its structure exists only visually. A screen reader has no headings to navigate by and no reading order it can rely on. It cannot tell a heading from a caption.",
+        "Re-export it from the original document with tagging turned on. In Word or Google Docs, use real heading styles and export as a tagged PDF rather than printing to PDF. Retagging an existing PDF by hand in Acrobat is possible but far slower than fixing the source.",
         "https://www.w3.org/WAI/WCAG21/Techniques/pdf/PDF9"
       )
     );
@@ -156,7 +156,7 @@ export async function checkPdfDocument(url: string): Promise<PdfCheckResult> {
         "critical",
         "1.1.1",
         "A",
-        "There is no readable text in this document. The pages appear to be images, most likely a scan, so screen readers and search have nothing to work with at all.",
+        "There is no readable text in this document. The pages appear to be images, most likely a scan. Screen readers and search have nothing to work with at all.",
         "Run optical character recognition over it, or better, publish the original document it was scanned from. A scan with OCR is readable; a scan without it is a picture of words.",
         "https://www.w3.org/WAI/WCAG21/Techniques/pdf/PDF7"
       )
@@ -170,7 +170,7 @@ export async function checkPdfDocument(url: string): Promise<PdfCheckResult> {
         "serious",
         "2.4.2",
         "A",
-        "This document has no title set, so it is announced by its filename. Someone with several documents open hears something like \"final-v3-web.pdf\" instead of what it is.",
+        "This document has no title set, so screen readers announce it by its filename. Someone with several documents open hears something like \"final-v3-web.pdf\" instead of what it is.",
         "Set the document title in the file's properties, and set it to display in place of the filename. In Acrobat that is File, Properties, Description, and then Initial View, Show, Document Title.",
         "https://www.w3.org/WAI/WCAG21/Techniques/pdf/PDF18"
       )
@@ -184,7 +184,7 @@ export async function checkPdfDocument(url: string): Promise<PdfCheckResult> {
         "serious",
         "3.1.1",
         "A",
-        "This document does not say what language it is written in, so a screen reader reads it in whatever voice it happens to be set to. English read in a Dutch voice is close to unintelligible.",
+        "This document does not say what language it is written in. A screen reader reads it in whatever voice it happens to be set to. English read in a Dutch voice is close to unintelligible.",
         "Set the document language in the file's properties. In Acrobat that is File, Properties, Advanced, Reading Options, Language.",
         "https://www.w3.org/WAI/WCAG21/Techniques/pdf/PDF16"
       )
@@ -202,8 +202,8 @@ export async function checkPdfDocument(url: string): Promise<PdfCheckResult> {
         "serious",
         "1.1.1",
         "A",
-        `${missing} of the ${figures.total} images in this document have no description. Anyone using a screen reader is told an image is there and nothing about what it shows.`,
-        "Add alternate text to each image in the source document before exporting, or in Acrobat's reading order tool. Images that are purely decorative should be marked as artifacts instead, so they are skipped rather than announced.",
+        `${missing} of the ${figures.total} images in this document have no description. Anyone using a screen reader hears that an image is there, and nothing about what it shows.`,
+        "Add alternate text to each image in the source document before exporting, or in Acrobat's reading order tool. Mark purely decorative images as artifacts instead, so screen readers skip them rather than announcing them.",
         "https://www.w3.org/WAI/WCAG21/Techniques/pdf/PDF1"
       )
     );

@@ -670,7 +670,7 @@ export const PLAIN_RULE_EXPLANATIONS: Record<string, PlainRule> = {
   },
   "typo-typeface-count": {
     plain: "Too many typefaces",
-    impact: "More than two or three typefaces reads as visual noise and makes the page feel less trustworthy.",
+    impact: "More than two or three typefaces looks cluttered and makes the page feel less trustworthy.",
   },
 
   // Readability / neurodiversity checks — grounded in GOV.UK's accessibility

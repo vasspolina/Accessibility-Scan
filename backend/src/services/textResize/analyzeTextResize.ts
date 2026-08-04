@@ -154,7 +154,7 @@ function makeFinding(
 }
 
 const FIX_CLIPPING =
-  "Let the box grow with its text: use min-height instead of a fixed height, and avoid overflow:hidden on anything containing copy. Sizing text areas in rem rather than px lets them scale with the reader's settings.";
+  "Let the box grow with its text: use min-height instead of a fixed height. Avoid overflow:hidden on anything containing copy. Sizing text areas in rem rather than px lets them scale with the reader's settings.";
 
 /**
  * Pure and deterministic. Reports only elements that break *because of* the
@@ -180,8 +180,8 @@ export function evaluateTextResize(signals: TextResizeSignals): AccessibilityFin
         worst,
         signals.spacing.snippets[worst],
         signals.spacing.shots?.[worst],
-        "Text gets cut off when a reader increases spacing",
-        `${spacingBroken.length} element${spacingBroken.length === 1 ? "" : "s"} on this page cut text off when a visitor applies the line and letter spacing WCAG requires pages to tolerate. Many people with dyslexia rely on exactly these settings to read at all — and instead of reflowing, the words disappear behind a fixed-height box.`,
+        "Text cut off when spacing increases",
+        `${spacingBroken.length} element${spacingBroken.length === 1 ? " cuts" : "s cut"} text off on this page when a visitor increases line and letter spacing. WCAG requires pages to tolerate these settings, and many people with dyslexia rely on them to read at all. Instead of reflowing, the words disappear behind a fixed-height box.`,
         FIX_CLIPPING,
         HELP_SPACING
       )
@@ -202,8 +202,8 @@ export function evaluateTextResize(signals: TextResizeSignals): AccessibilityFin
         worst,
         signals.zoom.snippets[worst],
         signals.zoom.shots?.[worst],
-        "Text gets cut off at larger font sizes",
-        `${zoomBroken.length} element${zoomBroken.length === 1 ? "" : "s"} cut text off when the reader's font size is doubled — the container keeps its size while the words grow, so the overflow is simply hidden. Raising the default font size is the most common adjustment people with low vision make, well ahead of any assistive software.`,
+        "Text cut off at larger font sizes",
+        `${zoomBroken.length} element${zoomBroken.length === 1 ? " cuts" : "s cut"} text off when the reader doubles their font size. The container keeps its size while the words grow, and hides the extra text. Raising the default font size is the most common adjustment people with low vision make. It is far more common than any assistive software.`,
         FIX_CLIPPING,
         HELP_RESIZE
       )
@@ -223,8 +223,8 @@ export function evaluateTextResize(signals: TextResizeSignals): AccessibilityFin
         undefined,
         signals.zoom.viewportShot,
         "Enlarging text makes the page scroll sideways",
-        `At double the font size the page becomes about ${zoomOverflow}px wider than the window, so reading means scrolling left and right on every line. The layout is holding a fixed width instead of reflowing around the larger text.`,
-        "Let the layout reflow: use max-width with percentage or rem-based widths rather than fixed pixel widths, and allow long words to wrap.",
+        `At double the font size the page becomes about ${zoomOverflow}px wider than the window. Reading then means scrolling left and right on every line. The layout is holding a fixed width instead of reflowing around the larger text.`,
+        "Let the layout reflow: use max-width with percentage or rem-based widths rather than fixed pixel widths. Allow long words to wrap.",
         HELP_RESIZE
       )
     );

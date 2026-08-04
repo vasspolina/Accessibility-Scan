@@ -65,7 +65,7 @@ export function evaluateMotion(
         "motion-marquee",
         "serious",
         marquees[0].selector,
-        `Text scrolls continuously in a moving ticker (<marquee>, ${marquees.length} place${marquees.length === 1 ? "" : "s"}) with no way to pause it. Moving text is hard to read for everyone and can be unusable for people with attention or vestibular disabilities.`,
+        `Text scrolls continuously in a moving ticker (<marquee>, ${marquees.length} place${marquees.length === 1 ? "" : "s"}) with no way to pause it. Moving text is hard to read for everyone and can be unusable for people with attention or balance disorders.`,
         "Remove the <marquee> element and present the text statically, or provide a visible pause/stop control."
       )
     );
@@ -81,7 +81,7 @@ export function evaluateMotion(
         "motion-autoplay-media",
         "serious",
         autoplayNoControls[0].selector,
-        `Media starts playing automatically with no visible controls to pause or stop it (${autoplayNoControls.length} element${autoplayNoControls.length === 1 ? "" : "s"}). Visitors can't stop the motion or sound, which is disorienting and drowns out screen readers.`,
+        `Media starts playing automatically with no visible controls to pause or stop it (${autoplayNoControls.length} element${autoplayNoControls.length === 1 ? "" : "s"}). Visitors can't stop the motion or sound, which is disorienting and plays over what a screen reader says.`,
         "Remove autoplay, or add visible player controls (the controls attribute) so visitors can pause or stop playback."
       )
     );
@@ -111,7 +111,7 @@ export function evaluateMotion(
             "motion-infinite-no-reduced-motion",
             "moderate",
             stillMoving[0].selector,
-            `${stillMoving.length} element${stillMoving.length === 1 ? "" : "s"} on this page animate without stopping, and they carry on even when the visitor has asked their system to reduce motion — this was checked by turning that setting on and watching. Perpetual movement makes text hard to read, and for people with vestibular disorders it causes real nausea.`,
+            `${stillMoving.length} element${stillMoving.length === 1 ? " animates" : "s animate"} on this page without stopping. The movement carries on even when the visitor has asked their system to reduce motion. We checked by turning that setting on and watching. Perpetual movement makes text hard to read, and for people with balance disorders it causes real nausea.`,
             "Wrap the animation in @media (prefers-reduced-motion: no-preference), or stop it after a few seconds, or add a pause control. Note that having such a rule somewhere in your stylesheets is not enough — it has to cover these particular animations."
           )
         );
@@ -122,8 +122,8 @@ export function evaluateMotion(
           "motion-infinite-no-reduced-motion",
           "moderate",
           infinite[0].selector,
-          `Content animates non-stop (${infinite.length} element${infinite.length === 1 ? "" : "s"} with infinite animations), and no stylesheet on this page mentions the visitor's "reduce motion" setting at all. Perpetual motion distracts from reading and can trigger nausea for people with vestibular disorders.`,
-          "Wrap the animations in an @media (prefers-reduced-motion: no-preference) block, or stop them after a few seconds, or add a pause control."
+          `Content animates non-stop (${infinite.length} element${infinite.length === 1 ? "" : "s"} with infinite animations). No stylesheet on this page mentions the visitor's "reduce motion" setting at all. Perpetual motion distracts from reading and can trigger nausea for people with balance disorders.`,
+          "Wrap the animations in @media (prefers-reduced-motion: no-preference), or stop them after a few seconds, or add a pause control."
         )
       );
     }

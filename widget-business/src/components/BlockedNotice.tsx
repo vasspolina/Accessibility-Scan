@@ -23,14 +23,14 @@ export function BlockedNotice({ message }: { message: string }) {
           the same code, so the report is the same.
         </li>
         <li>
-          <strong>Allow the scanner through.</strong> In your firewall or WAF (Cloudflare, Akamai
+          <strong>Allow the scanner through.</strong> In your firewall or bot protection (Cloudflare, Akamai
           and the rest), allow the user agent <code>A11yCheckerBot</code>, or our IP. A few minutes,
           and it's the sanctioned way for a testing tool to get in.
         </li>
         <li>
           <strong>Sign in with a session.</strong> If you can already reach the page in your own
-          browser, use the login option above to hand the scanner your session. It arrives past the
-          wall, never through it.
+          browser, use the login option above. The scanner signs in with access you already have,
+          not by defeating the block.
         </li>
       </ul>
     </section>

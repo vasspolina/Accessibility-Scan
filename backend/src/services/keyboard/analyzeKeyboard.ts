@@ -209,12 +209,12 @@ export function evaluateKeyboardNav(nav: KeyboardNavResult): AccessibilityFindin
         // to know something on their page cannot be reached, and why. The
         // exact element is named in the technical version and shown in the
         // picture; whoever fixes it will not be short of detail.
-        `${c.label ? `"${c.label}"` : "A control on this page"} responds when you click it, but pressing Tab never reaches it. It was built as an ordinary piece of the page rather than as a button or a link, and only buttons and links can be reached by keyboard. So this is not merely awkward to get to without a mouse — there is no way to get to it at all.`,
+        `${c.label ? `"${c.label}"` : "A control on this page"} responds when you click it, but pressing Tab never reaches it. It is an ordinary piece of the page, not a button or a link. The keyboard only reaches buttons and links. So this is not just awkward without a mouse: there is no way to reach it at all.`,
         // Plain instruction first, because that is the one the owner can act
         // on — brief their developer, or check it was done. The specifics
         // follow, addressed to whoever writes the code, so the technical
         // half is clearly not homework for the reader.
-        "Rebuild it as a real button, or as a link if it takes you somewhere. That alone fixes it, with no extra code: the keyboard reaches buttons and links by default, which is the whole reason to use them.\n\nIf it genuinely has to stay as it is, your developer needs three things on it — `tabindex=\"0\"` so it can take focus, `role=\"button\"` so it is announced as a button, and a keydown handler firing on Enter and Space. That last one is the part most often missed: a click handler alone never runs for someone using a keyboard.",
+        "Rebuild it as a real button, or as a link if it takes you somewhere. That alone fixes it, with no extra code. The keyboard reaches buttons and links by default, which is the whole reason to use them.\n\nIf it genuinely has to stay as it is, your developer needs three things on it. Add `tabindex=\"0\"` so it can take focus. Add `role=\"button\"` so a screen reader announces it as a button. Add a keydown handler firing on Enter and Space. That last one is the part most often missed: a click handler alone never runs for someone using a keyboard.",
         c.snippet
       )
     );
@@ -246,8 +246,8 @@ export function evaluateKeyboardNav(nav: KeyboardNavResult): AccessibilityFindin
         "A",
         "https://www.w3.org/WAI/WCAG21/Understanding/no-keyboard-trap.html",
         trappedSelector,
-        "Keyboard focus gets stuck: pressing Tab repeatedly leaves focus on the same element, so keyboard users cannot move past it to reach the rest of the page.",
-        "Ensure every focusable element passes focus on when Tab is pressed — check for JavaScript that cancels keydown events or re-focuses the element."
+        "Keyboard focus gets stuck: pressing Tab repeatedly leaves focus on the same element. Keyboard users cannot move past it to reach the rest of the page.",
+        "Make sure every element the Tab key reaches passes focus on when you press Tab. Check for JavaScript that cancels keydown events or re-focuses the element."
       )
     );
   }
@@ -269,7 +269,7 @@ export function evaluateKeyboardNav(nav: KeyboardNavResult): AccessibilityFindin
         "AA",
         "https://www.w3.org/WAI/WCAG21/Understanding/focus-visible.html",
         invisible[0].selector,
-        `Moving through the page with the Tab key gives no visible sign of where you are: ${invisible.length} of ${comparable.length} keyboard stops show no focus outline, highlight, or any other visual change. Sighted keyboard users are navigating blind.`,
+        `Moving through the page with the Tab key gives no visible sign of where you are. ${invisible.length} of ${comparable.length} keyboard stops show no focus outline, highlight, or any other visual change. Sighted keyboard users have no way to see their place on the page.`,
         "Remove `outline: none` (or provide a replacement) so every interactive element shows a clear focus indicator — e.g. `:focus-visible { outline: 2px solid; outline-offset: 2px; }`."
       )
     );
@@ -327,8 +327,8 @@ export function evaluateKeyboardNav(nav: KeyboardNavResult): AccessibilityFindin
         // matters", which already covers why a faint ring survives testing,
         // and saying it twice in consecutive paragraphs was the exact fault
         // this report gets criticised for elsewhere.
-        `${faint.length} of the ${comparable.length} places the Tab key stops draw a focus ring at roughly ${ratio.toFixed(1)}:1 against what sits behind it. Three to one is the minimum for an indicator to count as visible.`,
-        "Two changes: a stronger colour and more weight. Pick a focus colour at least three times as light or dark as whatever sits behind it — in practice a firm dark tone or your brand colour, not a pale grey — and draw it at 2px or more. Add `outline-offset: 2px` so the ring sits just off the control instead of merging into its own border. A 1px line in a light grey reads as a rendering glitch rather than as “you are here”, which is why it survives testing and still fails in use."
+        `At ${faint.length} of the ${comparable.length} keyboard stops, the focus ring measures roughly ${ratio.toFixed(1)}:1 against what sits behind it. Three to one is the minimum for an indicator to count as visible.`,
+        "Two changes: a stronger colour and more weight. Pick a focus colour at least three times as light or dark as whatever sits behind it. In practice that means a firm dark tone or your brand colour, not a pale grey. Draw it at 2px or more. Add `outline-offset: 2px` so the ring sits just off the control instead of merging into its own border. A 1px line in a light grey is easy to mistake for a rendering glitch. That is why it survives testing and still fails in use."
       )
     );
   }

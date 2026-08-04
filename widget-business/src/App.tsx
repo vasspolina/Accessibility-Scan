@@ -468,7 +468,7 @@ export function App({ apiBase, cta }: { apiBase: string; cta?: CtaConfig }) {
                  error below. */
               <Notification
                 kind="info"
-                title="The AI review wasn't included in this check"
+                title="This check ran without the AI review"
                 subtitle={
                   (report.meta.aiReviewStatus === "skipped_no_key"
                     ? "Not set up yet."
@@ -546,7 +546,7 @@ export function App({ apiBase, cta }: { apiBase: string; cta?: CtaConfig }) {
           <ReportSection
             title="Issues that could turn away users"
             eyebrow="Dark pattern findings"
-            description="Places your site nudges people rather than leaves the choice to them. These don't move the score. They move how much you're trusted."
+            description="Places your site nudges people rather than leaves the choice to them. These don't move the score. They move how much people trust you."
             variant={findingsByCategory.darkPattern.length > 0 ? "redflag" : "default"}
             findings={findingsByCategory.darkPattern}
             id="a11y-trust-heading"
@@ -564,7 +564,7 @@ export function App({ apiBase, cta }: { apiBase: string; cta?: CtaConfig }) {
             <p className="a11y-section-desc">
               {isDocument
                 ? "What a screen reader cannot read aloud in this document, grouped by the four questions the standard asks. More at "
-                : "Grouped by the four questions the standard asks: can people see it, use it, understand it, and will it still work. More at "}
+                : "Grouped by the standard's four questions: can people see it, use it, understand it, and will it still work. More at "}
               <a href={WCAG_LINK} target="_blank" rel="noopener noreferrer">
                 w3.org/WAI
               </a>
@@ -580,7 +580,7 @@ export function App({ apiBase, cta }: { apiBase: string; cta?: CtaConfig }) {
           {!isDocument && (
           <ReportSection
             title="Notes on the design"
-            description="Remarks rather than faults. None of this counts towards the score, and the reason is worth a mention: every one of them is judgement rather than measurement, with no rule underneath it to point at. Mostly type that works against the reader — cramped, or shouting in capitals. It still costs you readers, and dyslexic ones first."
+            description="Remarks rather than faults. None of this counts towards the score, and the reason is worth a mention. Every one is judgement rather than measurement, with no rule underneath it to point at. Mostly type that works against the reader — cramped, or set in capitals. It still costs you readers, and dyslexic ones first."
             variant="default"
             findings={findingsByCategory.designClarity}
             asNotes

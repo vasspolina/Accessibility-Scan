@@ -251,7 +251,7 @@ export function evaluateTypography(blocks: TypographyBlock[]): AccessibilityFind
         "typo-negative-letterspacing",
         "moderate",
         longest(negativeSpacing).selector,
-        `Text is tracked so tightly that letters can touch (${negativeSpacing.length} place${negativeSpacing.length === 1 ? "" : "s"}, letter-spacing below -0.4px).`,
+        `Text is spaced so tightly that letters can touch (${negativeSpacing.length} place${negativeSpacing.length === 1 ? "" : "s"}, letter-spacing below -0.4px).`,
         "Remove the negative letter-spacing, or keep it above roughly -0.02em."
       )
     );
@@ -350,8 +350,8 @@ export function evaluateTypography(blocks: TypographyBlock[]): AccessibilityFind
         "typo-leading-for-measure",
         "minor",
         worst.selector,
-        `Lines here run about ${cpl} characters long and sit ${ratio} times the text size apart (${underLedForMeasure.length} block${underLedForMeasure.length === 1 ? "" : "s"}). That spacing would be comfortable on a narrower column, but long lines need more room between them than short ones: the hardest move in reading is the jump back to the start of the next line, and the further left it has to travel, the more likely it lands on the wrong one. At this length about ${needed} would be comfortable.`,
-        `Two fixes work and you only need one. Raise line-height to about ${needed} on this text, or narrow the column so the lines are shorter — a max-width of around 65 characters is the usual way.`
+        `Lines here run about ${cpl} characters long and sit ${ratio} times the text size apart (${underLedForMeasure.length} block${underLedForMeasure.length === 1 ? "" : "s"}). That spacing would be comfortable on a narrower column. Long lines need more room between them than short ones. The hardest move in reading is the jump back to the start of the next line. The further left the eye travels, the more likely it lands on the wrong line. At this length about ${needed} would be comfortable.`,
+        `Two fixes work and you only need one. Raise line-height to about ${needed} on this text, or narrow the column so the lines are shorter. A max-width of around 65 characters is the usual way.`
       )
     );
   }
@@ -368,7 +368,7 @@ export function evaluateTypography(blocks: TypographyBlock[]): AccessibilityFind
         "moderate",
         longest(justifiedNoHyphens).selector,
         `Text is justified without hyphenation (${justifiedNoHyphens.length} block${justifiedNoHyphens.length === 1 ? "" : "s"}). Justification stretches word spaces to fill each line; without hyphenation this creates uneven gaps and distracting "rivers" of white space.`,
-        'Either switch to left-aligned (ragged-right) text, or enable hyphenation (hyphens: auto with a lang attribute) wherever text-align: justify is used.'
+        'Either switch to left-aligned (ragged-right) text, or enable hyphenation (hyphens: auto with a lang attribute) wherever you set text-align: justify.'
       )
     );
   }
@@ -402,7 +402,7 @@ export function evaluateTypography(blocks: TypographyBlock[]): AccessibilityFind
         "typo-underline-nonlink",
         "minor",
         longest(underlinedNonLink).selector,
-        `Text that isn't a link is underlined (${underlinedNonLink.length} place${underlinedNonLink.length === 1 ? "" : "s"}). Underlines read as links — confusing for everyone — and the line cutting through letters' descenders slows dyslexic readers.`,
+        `Text that isn't a link is underlined (${underlinedNonLink.length} place${underlinedNonLink.length === 1 ? "" : "s"}). Underlines read as links, confusing for everyone, and the line cutting through letters' descenders slows dyslexic readers.`,
         "Reserve underlines for links. Use bold, colour, or spacing to emphasise other text."
       )
     );
@@ -419,7 +419,7 @@ export function evaluateTypography(blocks: TypographyBlock[]): AccessibilityFind
         "typo-italic-body",
         "minor",
         longest(italicBody).selector,
-        `Whole passages of body text are set in italics (${italicBody.length} block${italicBody.length === 1 ? "" : "s"}). Slanted, distorted letterforms are noticeably harder to read for people with dyslexia and low vision over more than a few words.`,
+        `Whole passages of body text are set in italics (${italicBody.length} block${italicBody.length === 1 ? "" : "s"}). Slanted, distorted letterforms are noticeably harder for people with dyslexia and low vision to read beyond a few words.`,
         "Keep italics for short emphasis only. Set running text upright; emphasise with weight or colour instead."
       )
     );
@@ -436,8 +436,8 @@ export function evaluateTypography(blocks: TypographyBlock[]): AccessibilityFind
         "typo-allcaps-block",
         "minor",
         longest(allCapsBlocks).selector,
-        `A long passage is set in ALL CAPITALS (${allCapsBlocks.length} block${allCapsBlocks.length === 1 ? "" : "s"}). Capitals form uniform rectangles that strip out the word shapes people read by, so long all-caps text is slow and tiring — especially for dyslexic readers.`,
-        "Use normal sentence case for anything longer than a short label or heading; emphasise with weight or size instead of capitals."
+        `A long passage is set in ALL CAPITALS (${allCapsBlocks.length} block${allCapsBlocks.length === 1 ? "" : "s"}). Capitals form uniform rectangles that strip out the word shapes people read by. Long all-caps text is slow and tiring, especially for dyslexic readers.`,
+        "Use normal sentence case for anything longer than a short label or heading. Emphasise with weight or size instead of capitals."
       )
     );
   }
@@ -457,7 +457,7 @@ export function evaluateTypography(blocks: TypographyBlock[]): AccessibilityFind
         "typo-thin-weight",
         "minor",
         worst.selector,
-        `Body text is set in a very thin (hairline) weight — font-weight ${worst.fontWeight} (${thinBody.length} block${thinBody.length === 1 ? "" : "s"} at 200 or lighter). Thin strokes fade out on cheaper screens, in bright light, and for readers with low vision, even when the colour contrast passes.`,
+        `Body text is set in a very thin (hairline) weight — font-weight ${worst.fontWeight} (${thinBody.length} block${thinBody.length === 1 ? "" : "s"} at 200 or lighter). Thin strokes fade out on cheaper screens, in bright light, and for readers with low vision. This happens even when the colour contrast passes.`,
         "Use a regular weight (around 400) for running text. Reserve hairline weights for large display headings, not paragraphs."
       )
     );
@@ -471,7 +471,7 @@ export function evaluateTypography(blocks: TypographyBlock[]): AccessibilityFind
         "typo-typeface-count",
         "minor",
         "body",
-        `The page mixes ${families.size} different typefaces (${Array.from(families).slice(0, 6).join(", ")}${families.size > 6 ? ", …" : ""}). More than two or three families reads as visual noise.`,
+        `The page mixes ${families.size} different typefaces (${Array.from(families).slice(0, 6).join(", ")}${families.size > 6 ? ", …" : ""}). More than two or three families makes the page look cluttered.`,
         "Consolidate to one or two typeface families and use weights/sizes for hierarchy."
       )
     );

@@ -75,7 +75,7 @@ ${
     ? `We are aware of the following problems and aim to resolve them:
 
 ${knownIssues.map((i) => `- ${i}`).join("\n")}`
-    : `An automated check found no failures it is able to detect. That does not mean the site is fully accessible — see "Preparation of this statement" below.`
+    : `An automated check found no failures it is able to detect. That does not mean the site is fully accessible — see "How we assessed this site" below.`
 }
 
 ### Disproportionate burden
@@ -86,7 +86,7 @@ ${knownIssues.map((i) => `- ${i}`).join("\n")}`
 
 ### Content outside the scope of the legislation
 
-[List here anything on the site that the accessibility rules do not cover — for example third party content you neither fund nor control, archived material, or office file formats published before the relevant date. Where an accessible alternative exists, say so. Delete this section if it does not apply.]`;
+[List here anything on the site that the accessibility rules do not cover. Examples: third party content you neither fund nor control, archived material, or office file formats published before the relevant date. Where an accessible alternative exists, say so. Delete this section if it does not apply.]`;
 
   // "Method used to prepare the statement" is a required element of the model
   // (Implementing Decision (EU) 2018/1523, and Art. 3(1) on assessment
@@ -95,9 +95,9 @@ ${knownIssues.map((i) => `- ${i}`).join("\n")}`
   const assessmentNote = conformance
     ? `**Method used:** self assessment, carried out by the site owner with an automated accessibility checker. It was not a third party evaluation.
 
-This statement is based on an automated check carried out on ${date}, which covers the ${conformance.total} Level A and AA success criteria in WCAG 2.1.
+This statement is based on an automated check carried out on ${date}. The check covers the ${conformance.total} Level A and AA success criteria in WCAG 2.1.
 
-An automated check has real limits, and we would rather state them than imply a completeness we cannot evidence. ${conformance.needsReview} of those criteria cannot be assessed by software at all. They depend on human judgement, such as whether video captions are accurate or whether a form that times out can be extended. Where the check reports no issue, that means no issue was detected, not that the criterion has been verified as met.
+An automated check has real limits, and we would rather state them than imply a completeness we cannot evidence. ${conformance.needsReview} of those criteria cannot be assessed by software at all. They depend on human judgement. For example: whether video captions are accurate, or whether a form that times out can be extended. Where the check reports no issue, that means no issue was detected. It does not mean a person has verified the criterion as met.
 
 We have not yet carried out a full manual audit or testing with assistive technology users.`
     : `This statement is based on an automated check carried out on ${date}.`;
@@ -118,13 +118,13 @@ ${assessmentNote}
 
 ## Feedback and contact information
 
-If you find an accessibility problem on this site, or need information from it in a different format, please contact us at ${email}. We aim to respond within 10 business days.
+If you find an accessibility problem on this site, contact us at ${email}. Contact us too if you need information from the site in a different format. We aim to respond within 10 business days.
 
 ## Enforcement procedure
 
-If you contact us with a complaint and are not satisfied with our response, you can escalate it to the body responsible for enforcement in your country.
+If our response to a complaint does not satisfy you, you can escalate. Take it to the body responsible for enforcement in your country.
 
-[Name the enforcement body that applies to you, and link to its complaints procedure. Each EU member state designates its own — for the European Accessibility Act these are the market surveillance authorities, and for public sector bodies it is the authority named in your country's transposition of Directive (EU) 2016/2102.]
+[Name the enforcement body that applies to you, and link to its complaints procedure. Each EU member state designates its own. For the European Accessibility Act, these are the market surveillance authorities. For public sector bodies, it is the authority named in your country's transposition of Directive (EU) 2016/2102.]
 
 ## Preparation of this statement
 
@@ -136,15 +136,19 @@ We review this statement at least once a year, and whenever the site changes sub
 
 The European Accessibility Act (Article 13(2) and Annex V) asks for more than a page like this one. Two things are worth a check:
 
-- **Where it lives.** Annex V says the assessment of how the service meets the accessibility requirements belongs in your general terms and conditions, or an equivalent document. A published page like this one is a good start; it does not on its own satisfy that.
-- **What format it is in.** The information has to be available *in written and oral format*, and in a way that people with disabilities can use. In practice that means this page must itself be accessible, and there must be a way to get the same information from a person directly.
+- **Where it lives.** Annex V says the assessment belongs in your general terms and conditions, or an equivalent document. That assessment explains how the service meets the accessibility requirements. A published page like this one is a good start; it does not on its own satisfy that.
+- **What format it is in.** The information has to be available *in written and oral format*. It must also be in a form people with disabilities can use. In practice that means this page must itself be accessible. There must also be a way to get the same information from a person directly.
 
-Annex V also asks for a general description of the service in accessible formats, whatever explanation is needed to understand how the service works, and a description of how it meets the requirements in Annex I. [Add or link to those here.]
+Annex V also asks for the following. [Add or link to them here.]
+
+- a general description of the service in accessible formats
+- whatever explanation is needed to understand how the service works
+- a description of how the service meets the requirements in Annex I
 
 ---
-*Draft generated from an automated accessibility check. It follows the structure of the model statement in Commission Implementing Decision (EU) 2018/1523, which is the template the Web Accessibility Directive prescribes for public sector bodies and the closest formal model for everyone else.*
+*Draft generated from an automated accessibility check. It follows the structure of the model statement in Commission Implementing Decision (EU) 2018/1523. The Web Accessibility Directive prescribes that template for public sector bodies. It is also the closest formal model for everyone else.*
 
-*Complete anything in brackets and have it checked before you publish. Two of the three "non-accessible content" headings above are declarations only you can make, and a statement is a public, dated, formal declaration — under the European Accessibility Act an inaccurate one is its own exposure.*
+*Complete anything in brackets and have it checked before you publish. Two of the three "non-accessible content" headings above are declarations only you can make. A statement is a public, dated, formal declaration. Under the European Accessibility Act, an inaccurate one is its own exposure.*
 `;
 }
 

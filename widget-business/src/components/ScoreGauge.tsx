@@ -91,7 +91,7 @@ export function scoreSummary(score: number, seed: string): string {
 export const SCORE_CAVEAT =
   "This is what an automated scan found, weighted by how much each problem " +
   "costs a visitor. A scan of this kind reaches somewhere between a third " +
-  "and a half of accessibility problems — the rest need a person with a " +
+  "and a half of accessibility problems. The rest need a person with a " +
   "keyboard and a screen reader. Useful to track whether the site improves " +
   "over time. Not a statement that it meets the law.";
 

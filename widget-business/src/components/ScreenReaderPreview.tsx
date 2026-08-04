@@ -280,7 +280,7 @@ export function ScreenReaderPreview({ script }: { script: ScreenReaderScript }) 
       )}
       {script.truncated && (
         <p className="a11y-sr-note">
-          Only the first part of the page is shown. Long pages are cut short to keep this readable.
+          This shows only the first part of the page. We cut long pages short to keep them readable.
         </p>
       )}
       </div>

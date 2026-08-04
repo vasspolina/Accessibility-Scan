@@ -1598,6 +1598,21 @@ label.a11y-ai-toggle {
   margin: 0 0 12px;
 }
 
+/* The sample of questions no software can answer, in the caveat above the
+   checklist. A real bulleted list rather than a run-on sentence: these are
+   separate questions and read as such, and the marker is what stops them
+   running together at a glance. */
+.a11y-widget-biz.a11y-widget-biz .a11y-conf-examples {
+  margin: 0 0 12px;
+  padding-left: 20px;
+  list-style: disc;
+  color: var(--a11y-muted, #525252);
+}
+
+.a11y-widget-biz.a11y-widget-biz .a11y-conf-examples li {
+  margin: 4px 0;
+}
+
 .a11y-conf-list {
   list-style: none;
   margin: 0 0 12px;

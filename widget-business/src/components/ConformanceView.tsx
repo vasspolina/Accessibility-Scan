@@ -27,8 +27,14 @@ export function ConformanceView({
   showBfsgNote?: boolean;
 }) {
   const [expanded, setExpanded] = useState(false);
-  const [onlyFailing, setOnlyFailing] = useState(true);
+  // Three states, not the boolean this used to be. "We couldn't check" is
+  // the largest row in the table above and was also the hardest to act on:
+  // the reader saw a count of 22 and had no way to reach the 22 without
+  // clearing a filter that defaulted to failures-only. Naming that group as
+  // a filter of its own is what makes the count answerable.
+  const [filter, setFilter] = useState<"failed" | "needs-review" | "all">("failed");
   const panelId = useId();
+  const filterName = useId();
   // The toggle stays mounted whichever state we're in, so keyboard focus
   // never evaporates when the panel opens or closes. The convenience "hide"
   // at the bottom of a long checklist hands focus back up here.
@@ -38,6 +44,14 @@ export function ConformanceView({
     () => conformance.criteria.filter((c) => c.status === "failed"),
     [conformance.criteria]
   );
+  // The criteria behind the "We couldn't check" count. Naming a few of them
+  // in the caveat below beats the two hardcoded examples that used to stand
+  // in for the whole group: those were written once and could describe a
+  // set that no longer contains them.
+  const needsPerson = useMemo(
+    () => conformance.criteria.filter((c) => c.status === "needs-review"),
+    [conformance.criteria]
+  );
   // Every criterion is rendered; the filter hides rather than removes. On
   // screen that is identical. On paper it is the difference between a record
   // of what was checked and a list of what went wrong — a printed compliance
@@ -45,7 +59,8 @@ export function ConformanceView({
   // honest part of the report. Filtering by not rendering put those rows
   // beyond the reach of the print stylesheet entirely.
   const shown = conformance.criteria;
-  const isFilteredOut = (status: CriterionResult["status"]) => onlyFailing && status !== "failed";
+  const isFilteredOut = (status: CriterionResult["status"]) =>
+    filter !== "all" && status !== filter;
 
   return (
     <section className="a11y-section a11y-conf" aria-labelledby="a11y-conf-heading">
@@ -56,7 +71,7 @@ export function ConformanceView({
       <p className="a11y-section-desc">
         The checklist of {conformance.total} items European accessibility law measures sites against.
         {showBfsgNote &&
-          " In Germany this is the standard the BFSG points at — the law that implements the European Accessibility Act, in force since June 2025."}
+          " In Germany this is the standard the BFSG points at. That law implements the European Accessibility Act and has been in force since June 2025."}
       </p>
 
       {/* The kit's LegalStandard screen: the three tiles as a tinted-row
@@ -109,7 +124,15 @@ export function ConformanceView({
                 <span className="a11y-conf-result a11y-conf-result-minor">
                   <span aria-hidden="true">i</span> We couldn't check
                 </span>
-                <span className="a11y-conf-meaning">Only a person can judge these</span>
+                <span className="a11y-conf-meaning">
+                  Only a person can judge these.
+                  {/* Claimed only when the checklist really does hold all of
+                      them. The backend builds criteria and this count from
+                      the same array so they agree in practice — but a
+                      summary number that outran the list it points at would
+                      make this sentence a lie, and it is cheap to not say. */}
+                  {needsPerson.length === conformance.needsReview && " Every one is named below."}
+                </span>
               </span>,
               String(conformance.needsReview),
             ],
@@ -122,10 +145,29 @@ export function ConformanceView({
           <strong>What this tells you.</strong> What your site gets wrong, not what it gets right.
         </p>
         <p>
-          {conformance.needsReview} of the {conformance.total} items need a person. No software can
-          judge whether your captions are correct or your forms are fast enough to finish. That's
-          true of every automated check.
+          {conformance.needsReview} of the {conformance.total} items need a person. That's true of
+          every automated check, not just this one.
         </p>
+        {/* The questions themselves, taken from the criteria actually in
+            this state rather than from two examples written once and left
+            to drift. Three is what fits before the list stops being read;
+            the rest are one click away in the checklist below. */}
+        {needsPerson.length > 0 && (
+          <>
+            <p>Questions no software can answer, for example:</p>
+            <ul className="a11y-conf-examples">
+              {needsPerson.slice(0, 3).map((c) => (
+                <li key={c.id}>{c.plain}</li>
+              ))}
+            </ul>
+            {needsPerson.length > 3 && (
+              <p>
+                The other {needsPerson.length - 3} are in the checklist below. Choose{" "}
+                <strong>Needs a person</strong> to see them.
+              </p>
+            )}
+          </>
+        )}
         <p>
           So <strong>&ldquo;nothing found&rdquo; is not a pass.</strong>
         </p>
@@ -154,24 +196,35 @@ export function ConformanceView({
           expand it first. The print stylesheet can reveal a hidden element;
           it cannot reveal one React never rendered. */}
       <div id={panelId} className="a11y-conf-panel" hidden={!expanded}>
-          <div className="a11y-conf-filter">
-            <label className="a11y-ai-toggle">
-              <input
-                type="checkbox"
-                checked={onlyFailing}
-                onChange={(e) => setOnlyFailing(e.target.checked)}
-              />
-              {/* The counts belong here rather than on the button that opens
-                  this panel. That button used to promise "Show all 50 items"
-                  and then show three, because this filter is on by default —
-                  it was describing the checklist's length while the reader
-                  got the filtered view. Here the number moves with the
-                  checkbox and is true either way. */}
-              Show only the failures ({failing.length} of {conformance.total})
-            </label>
-          </div>
+          {/* The counts belong here rather than on the button that opens
+              this panel. That button used to promise "Show all 50 items"
+              and then show three, because a filter was on by default — it
+              described the checklist's length while the reader got the
+              filtered view. Here each number sits on the option it
+              selects, so every one of them is true. */}
+          <fieldset className="a11y-radio-group a11y-conf-filter">
+            <legend>Show</legend>
+            {(
+              [
+                ["failed", `Failures (${failing.length})`],
+                ["needs-review", `Needs a person (${needsPerson.length})`],
+                ["all", `Everything (${conformance.total})`],
+              ] as const
+            ).map(([value, label]) => (
+              <label key={value} className="a11y-radio">
+                <input
+                  type="radio"
+                  name={filterName}
+                  value={value}
+                  checked={filter === value}
+                  onChange={() => setFilter(value)}
+                />
+                <span>{label}</span>
+              </label>
+            ))}
+          </fieldset>
 
-          {failing.length === 0 && onlyFailing ? (
+          {failing.length === 0 && filter === "failed" ? (
             <p className="a11y-conf-caveat">Nothing on this page fails.</p>
           ) : (
             <ul className="a11y-conf-list">
