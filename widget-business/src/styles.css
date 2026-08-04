@@ -112,7 +112,7 @@
   outline-offset: 2px;
 }
 
-/* Three sizes, and no others.
+/* Four sizes, and no others.
  *
  * The report had eight — 12, 14, 15, 16, 18, 20, 28, 32 — and 77 of its 99
  * size declarations were 12 or 14px. A checker that flags body text under 13px
@@ -122,6 +122,15 @@
  * So the floor is 16px and nothing sits below it. Meta text, badges, counts
  * and captions are all body size now; they are distinguished by colour and
  * weight, which cost the reader nothing, rather than by being small.
+ *
+ * Three was one too few. "What people can't use" is a section; the four
+ * principle groups inside it ("Can people see and hear it?") are its
+ * children — and with only one heading size between them they rendered
+ * identically, so a group read as a new top-level section and its parent
+ * read as a heading with nothing under it. A level of nesting the report
+ * genuinely has needs a size of its own to show it. Carbon's own scale
+ * already has the step: heading-03 at 20px, between heading-04's 28 and
+ * body's 18.
  *
  * Sizes are in rem so they follow the browser's own text setting. A visitor
  * who has set 20px as their default gets a report scaled to it, which px
@@ -135,8 +144,9 @@
      sits above the scanner's own 13px small-text line, so the checker
      still passes its own scan. */
   --a11y-text-body: 1.125rem;  /* 18px — body and controls */
+  --a11y-text-subtitle: 1.25rem; /* 20px — Carbon heading-03, nested groups */
   --a11y-text-title: 1.75rem;  /* 28px — section and card headings */
-  --a11y-text-display: 1.75rem; /* the score too: three sizes means three */
+  --a11y-text-display: 1.75rem; /* the score shares the title size */
   --a11y-text-label: 0.875rem; /* 14px — tags, badges, table headers */
 }
 
@@ -817,7 +827,12 @@ label.a11y-ai-toggle {
 .a11y-principle-groups {
   display: flex;
   flex-direction: column;
-  gap: 24px;
+  /* space-07 (32px) between groups: more than the space inside a group,
+     less than the space-08 (40px) that opens a new section — so the
+     three levels of the report read as three levels. This gap is the
+     only thing separating groups; their heading carries no top margin
+     (see .a11y-principle-title). */
+  gap: var(--space-07, 2rem);
 }
 
 .a11y-principle-group {
@@ -3388,6 +3403,11 @@ label.a11y-ai-toggle {
   --space-04: 0.75rem;
   --space-05: 1rem;
   --space-06: 1.5rem;
+  /* The rest of Carbon's 2x scale, so the report's own vertical rhythm
+     can be written in the system's steps rather than in loose pixels. */
+  --space-07: 2rem;
+  --space-08: 2.5rem;
+  --space-09: 3rem;
   --space-11: 5rem;
   /* The redesigned WhatsNextPanel and the new FindingDetail/Statement
      components read these directly — text-primary for their own ink,
@@ -4580,17 +4600,38 @@ label.a11y-ai-toggle {
   max-width: 34rem;
 }
 
+/* Vertical rhythm on the system's own spacing scale, and it carries the
+   hierarchy as much as the type sizes do. A top-level section opens on
+   space-08 (40px) — the largest gap in the report, which is what marks a
+   new section as new. A principle group inside one opens on space-06
+   (24px): enough to separate it from the group above, visibly less than
+   the gap that introduced their shared parent, so it reads as belonging
+   to that parent rather than competing with it. */
 .a11y-widget-biz.a11y-widget-biz .a11y-section-title,
-.a11y-widget-biz.a11y-widget-biz .a11y-principle-title,
 .a11y-widget-biz.a11y-widget-biz .a11y-results-title {
   line-height: 1.2;
-  margin-top: 32px;
-  margin-bottom: 8px;
+  margin-top: var(--space-08, 2.5rem);
+  margin-bottom: var(--space-03, 0.5rem);
+}
+
+.a11y-widget-biz.a11y-widget-biz .a11y-principle-title {
+  /* 20px, not the section's 28 — see the type-scale note at the top of
+     this file. This is the size that makes the nesting visible. */
+  font-size: var(--a11y-text-subtitle, 1.25rem);
+  line-height: 1.2;
+  /* No top margin at all: this heading is always the first child of its
+     group, and the groups are a flex column with a gap of their own. A
+     margin here does not collapse into that gap — it adds to it, which
+     is what opened the space that made a section look empty. The gap
+     alone does the separating. */
+  margin-top: 0;
+  margin-bottom: var(--space-03, 0.5rem);
 }
 
 .a11y-widget-biz.a11y-widget-biz .a11y-section > .a11y-section-title:first-child {
   margin-top: 0;
 }
+
 
 /* The last grey goes — the summary Cards keep only their hairline. And
    proper leading for this face where text stands alone: 1.55 is running-
@@ -4685,10 +4726,13 @@ label.a11y-ai-toggle {
   line-height: 1.2;
 }
 
+/* 1.2, not the 1 this carried from an earlier tight-leading pass: the
+   report's rule is 120% on every size, and a heading set solid was the
+   one place still opting out of it. */
 .a11y-widget-biz.a11y-widget-biz .a11y-section-title,
 .a11y-widget-biz.a11y-widget-biz .a11y-principle-title,
 .a11y-widget-biz.a11y-widget-biz .a11y-results-title {
-  line-height: 1;
+  line-height: 1.2;
 }
 
 /* The reference's summary card: grey, borderless, quiet. */
@@ -4776,6 +4820,15 @@ label.a11y-ai-toggle {
   .a11y-widget-biz.a11y-widget-biz .a11y-widget-inner {
     --a11y-text-title: 1.225rem;   /* 19.6px — 70% of 28px */
     --a11y-text-display: 1.225rem;
+    /* Body size on a phone, not a fourth step. The section title is
+       already down to 19.6px here against 18px body, so there is no room
+       for a size between them — anything smaller than the title lands
+       under the body text it introduces and inverts the hierarchy. So
+       the nesting is carried by weight instead, which is Carbon's own
+       answer at the bottom of its scale (heading-01 is body-sized and
+       semibold). The 500 this heading already carries against body's 400
+       is what does it — no extra rule needed. */
+    --a11y-text-subtitle: var(--a11y-text-body, 1.125rem);
   }
 }
 
