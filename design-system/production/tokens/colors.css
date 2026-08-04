@@ -15,12 +15,12 @@
   --gray-100: #161616;
   --white: #ffffff;
 
-  /* Accent (Carbon Blue) */
-  --blue-40: #78a9ff;
-  --blue-50: #4589ff;
-  --blue-60: #0f62fe;
-  --blue-70: #0043ce;
-  --blue-80: #002d9c;
+  /* Accent (indigo-leaning blue) */
+  --blue-40: #7d9afa;
+  --blue-50: #4c74f8;
+  --blue-60: #1948f4;
+  --blue-70: #082dc6;
+  --blue-80: #061d96;
 
   /* Status ramps */
   --red-40: #ff8389;

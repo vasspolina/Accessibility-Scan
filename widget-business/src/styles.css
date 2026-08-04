@@ -70,8 +70,8 @@
    off-centre at odd zoom levels the way an absolutely-positioned one can. */
 .a11y-widget-biz input[type="radio"]:checked {
   border-width: 2px;
-  border-color: var(--interactive, #0f62fe);
-  background: var(--interactive, #0f62fe);
+  border-color: var(--interactive, #1948f4);
+  background: var(--interactive, #1948f4);
   box-shadow: inset 0 0 0 3px var(--background, #ffffff);
 }
 
@@ -84,8 +84,8 @@
 }
 
 .a11y-widget-biz input[type="checkbox"]:checked {
-  background: var(--interactive, #0f62fe);
-  border-color: var(--interactive, #0f62fe);
+  background: var(--interactive, #1948f4);
+  border-color: var(--interactive, #1948f4);
 }
 
 .a11y-widget-biz input[type="checkbox"]:checked::after {
@@ -108,7 +108,7 @@
 
 .a11y-widget-biz input[type="radio"]:focus-visible,
 .a11y-widget-biz input[type="checkbox"]:focus-visible {
-  outline: 2px solid var(--interactive, #0f62fe);
+  outline: 2px solid var(--interactive, #1948f4);
   outline-offset: 2px;
 }
 
@@ -285,7 +285,7 @@
      rule matching them in the sheet — same "beats it regardless of why"
      move this file already uses for inline styles it can't out-specify. */
   background: var(--a11y-accent-faint, #edf5ff) !important;
-  color: var(--link-primary, var(--a11y-accent, #0f62fe)) !important;
+  color: var(--link-primary, var(--a11y-accent, #1948f4)) !important;
   font-weight: 700;
 }
 
@@ -455,7 +455,7 @@
 }
 
 .a11y-url-row button:hover:not(:disabled) {
-  background: var(--a11y-accent-strong, #0757ba);
+  background: var(--a11y-accent-strong, #082dc6);
   box-shadow: 0 2px 8px rgba(9, 105, 218, 0.3);
 }
 
@@ -1205,8 +1205,8 @@ label.a11y-ai-toggle {
 /* The keyboard mark is the only one given colour: it is the one group the
    owner can verify unaided, so it is the one worth catching the eye. */
 .a11y-method-keyboard {
-  border-color: #0f62fe;
-  color: #0043ce;
+  border-color: #1948f4;
+  color: #082dc6;
 }
 
 /* Where the fix is made. Neutral by default because "Code fix" is true of
@@ -2347,9 +2347,9 @@ label.a11y-ai-toggle {
   height: 1px;
   overflow: hidden;
   padding: 0;
-  border: 1px solid var(--a11y-accent, #0f62fe);
+  border: 1px solid var(--a11y-accent, #1948f4);
   background: var(--a11y-bg, #ffffff);
-  color: var(--a11y-accent, #0f62fe);
+  color: var(--a11y-accent, #1948f4);
   font-size: var(--a11y-text-body);
   cursor: pointer;
 }
@@ -2369,7 +2369,7 @@ label.a11y-ai-toggle {
    keeping their inset double ring where they define one. 2px accent clears
    3:1 against the white background and the grey layer fills. */
 .a11y-widget-biz :is(a, button, input, select, textarea, summary, [tabindex]):focus-visible {
-  outline: 2px solid var(--a11y-accent, #0f62fe);
+  outline: 2px solid var(--a11y-accent, #1948f4);
   outline-offset: 2px;
 }
 
@@ -2377,9 +2377,9 @@ label.a11y-ai-toggle {
    UA default, which ignores the theme. Small tertiary, same as alt-copy. */
 .a11y-copy-btn {
   padding: 4px 12px;
-  border: 1px solid var(--a11y-accent, #0f62fe);
+  border: 1px solid var(--a11y-accent, #1948f4);
   background: transparent;
-  color: var(--a11y-accent, #0f62fe);
+  color: var(--a11y-accent, #1948f4);
   font: inherit;
   font-size: var(--a11y-text-body);
   cursor: pointer;
@@ -2441,9 +2441,11 @@ label.a11y-ai-toggle {
   --a11y-bg: #ffffff;          /* background */
   --a11y-surface: #f4f4f4;     /* layer-01 */
   --a11y-border: #e0e0e0;      /* border-subtle-01 */
-  --a11y-accent: #0f62fe;      /* interactive / link-primary — 4.6:1 on white */
-  --a11y-accent-strong: #0353e9; /* button-primary-hover */
-  --a11y-accent-faint: #edf5ff;  /* blue-10 */
+  /* The design system's indigo-leaning accent (its blue-60/70), adopted
+     when the upstream palette moved off Carbon Blue — 6.0:1 on white. */
+  --a11y-accent: #1948f4;      /* interactive / link-primary */
+  --a11y-accent-strong: #082dc6; /* button-primary-hover (blue-70) */
+  --a11y-accent-faint: #edf0fe;  /* the accent at a wash, on white */
   --a11y-score-bad: #da1e28;     /* support-error — 4.8:1 on white */
   --a11y-score-warn: #8a3800;    /* orange-70: Carbon's warning yellow is a status
                                     fill, never text — as text it fails badly */
@@ -2504,12 +2506,12 @@ label.a11y-ai-toggle {
   padding: 0 16px;
   font-size: var(--a11y-text-body);
   letter-spacing: 0.16px;
-  background: var(--a11y-accent, #0f62fe);
+  background: var(--a11y-accent, #1948f4);
   transition: background-color 0.11s cubic-bezier(0.2, 0, 0.38, 0.9);
 }
 
 .a11y-url-row button:hover:not(:disabled) {
-  background: var(--a11y-accent-strong, #0353e9);
+  background: var(--a11y-accent-strong, #082dc6);
   box-shadow: none;
   transform: none;
 }
@@ -2523,7 +2525,7 @@ label.a11y-ai-toggle {
 .a11y-show-all:focus-visible,
 .a11y-finding-header:focus-visible,
 .a11y-mode-btn:focus-visible {
-  outline: 2px solid var(--a11y-accent, #0f62fe);
+  outline: 2px solid var(--a11y-accent, #1948f4);
   outline-offset: -2px;
   box-shadow: inset 0 0 0 1px #ffffff;
 }
@@ -2541,7 +2543,7 @@ label.a11y-ai-toggle {
 }
 
 .a11y-url-row input:focus-visible {
-  outline: 2px solid var(--a11y-accent, #0f62fe);
+  outline: 2px solid var(--a11y-accent, #1948f4);
   outline-offset: -2px;
 }
 
@@ -2549,9 +2551,9 @@ label.a11y-ai-toggle {
 .a11y-show-all {
   min-height: 40px;
   padding: 0 16px;
-  border: 1px solid var(--a11y-accent, #0f62fe);
+  border: 1px solid var(--a11y-accent, #1948f4);
   background: transparent;
-  color: var(--a11y-accent, #0f62fe);
+  color: var(--a11y-accent, #1948f4);
   font-size: var(--a11y-text-body);
   font-weight: 400;
   letter-spacing: 0.16px;
@@ -2559,7 +2561,7 @@ label.a11y-ai-toggle {
 }
 
 .a11y-show-all:hover {
-  background: var(--a11y-accent, #0f62fe);
+  background: var(--a11y-accent, #1948f4);
   color: #ffffff;
   transform: none;
 }
@@ -2674,7 +2676,7 @@ label.a11y-ai-toggle {
 
 .a11y-notice {
   background: #edf5ff;              /* blue-10 */
-  border-left: 3px solid var(--a11y-accent, #0f62fe);
+  border-left: 3px solid var(--a11y-accent, #1948f4);
   color: var(--a11y-text, #161616);
   padding: 16px;
   font-size: var(--a11y-text-body);
@@ -2688,8 +2690,8 @@ label.a11y-ai-toggle {
 }
 
 .a11y-mode-btn-active {
-  background: var(--a11y-accent, #0f62fe);
-  border-color: var(--a11y-accent, #0f62fe);
+  background: var(--a11y-accent, #1948f4);
+  border-color: var(--a11y-accent, #1948f4);
 }
 
 /* Carbon's motion tokens: fast-02 with the productive easing curve. Still
@@ -2853,8 +2855,8 @@ label.a11y-ai-toggle {
 .a11y-mode-btn-active,
 .a11y-mode-btn-active:hover {
   background: var(--a11y-bg, #ffffff);
-  border-color: var(--a11y-accent, #0f62fe);
-  box-shadow: inset 0 0 0 2px var(--a11y-accent, #0f62fe);
+  border-color: var(--a11y-accent, #1948f4);
+  box-shadow: inset 0 0 0 2px var(--a11y-accent, #1948f4);
   color: var(--a11y-text, #161616);
   position: relative;
   padding-right: 40px;
@@ -2871,7 +2873,7 @@ label.a11y-ai-toggle {
   right: 14px;
   font-size: var(--a11y-text-body);
   line-height: 1;
-  color: var(--a11y-accent, #0f62fe);
+  color: var(--a11y-accent, #1948f4);
 }
 
 /* The description inside the selected tile goes back to ordinary secondary
@@ -2897,13 +2899,13 @@ label.a11y-ai-toggle {
 .a11y-ai-toggle input[type="checkbox"] {
   flex-shrink: 0;
   margin-top: 2px;
-  accent-color: var(--a11y-accent, #0f62fe);
+  accent-color: var(--a11y-accent, #1948f4);
 }
 
 /* Links: Carbon's link-primary, underlined so they are not identified by
    colour alone, and regular weight rather than bold. */
 .a11y-widget-biz.a11y-widget-biz a {
-  color: var(--a11y-accent, #0f62fe);
+  color: var(--a11y-accent, #1948f4);
   text-decoration: underline;
   font-weight: 400;
 }
@@ -2933,9 +2935,9 @@ label.a11y-ai-toggle {
   flex-shrink: 0;
   min-height: 40px;
   padding: 0 16px;
-  border: 1px solid var(--a11y-accent, #0f62fe);
+  border: 1px solid var(--a11y-accent, #1948f4);
   background: transparent;
-  color: var(--a11y-accent, #0f62fe);
+  color: var(--a11y-accent, #1948f4);
   font: inherit;
   font-size: var(--a11y-text-body);
   letter-spacing: 0.16px;
@@ -2944,12 +2946,12 @@ label.a11y-ai-toggle {
 }
 
 .a11y-accordion-row .a11y-sr-play:hover {
-  background: var(--a11y-accent, #0f62fe);
+  background: var(--a11y-accent, #1948f4);
   color: #ffffff;
 }
 
 .a11y-accordion-row .a11y-sr-play:focus-visible {
-  outline: 2px solid var(--a11y-accent, #0f62fe);
+  outline: 2px solid var(--a11y-accent, #1948f4);
   outline-offset: -2px;
   box-shadow: inset 0 0 0 1px #ffffff;
 }
@@ -2994,7 +2996,7 @@ label.a11y-ai-toggle {
   margin-top: 12px;
   padding: 12px;
   background: var(--a11y-surface, #f4f4f4);
-  border-left: 3px solid var(--a11y-accent, #0f62fe);
+  border-left: 3px solid var(--a11y-accent, #1948f4);
   font-size: var(--a11y-text-body);
 }
 
@@ -3033,7 +3035,7 @@ label.a11y-ai-toggle {
   margin: 0 0 12px;
   padding: 12px;
   background: var(--a11y-accent-faint, #edf5ff);
-  border-left: 3px solid var(--a11y-accent, #0f62fe);
+  border-left: 3px solid var(--a11y-accent, #1948f4);
   font-size: var(--a11y-text-body);
   line-height: 1.2;
 }
@@ -3089,7 +3091,7 @@ label.a11y-ai-toggle {
    highlighter). Every pairing checked against 4.5:1 for text and 3:1 for
    UI parts, same as the light theme.
 
-   Solid blue fills are pinned back to #0f62fe: in dark themes Carbon
+   Solid blue fills are pinned back to #1948f4: in dark themes Carbon
    brightens *links* to blue-40 for contrast against the dark page, but a
    white-on-blue-40 button would drop to 2.3:1 — the fill colour and the
    link colour have to part ways here.
@@ -3102,14 +3104,14 @@ label.a11y-ai-toggle {
     --a11y-bg: #161616;            /* background */
     --a11y-surface: #262626;       /* layer-01 */
     --a11y-border: #393939;        /* border-subtle-01 */
-    --a11y-accent: #78a9ff;        /* link-primary dark — 6.9:1 on #161616 */
+    --a11y-accent: #7d9afa;        /* link-primary dark (the system's blue-40) */
     /* The active-nav-link wash: never redeclared for dark, so the active
        sidebar item kept the light theme's near-white fill (#edf5ff) under
        this theme's light-blue text — light on light, 2.1:1. A translucent
        tint of the accent itself (rather than a fixed hex) stays dark
        regardless of what sits behind it, so the light accent text reads
        against it in both themes. */
-    --a11y-accent-faint: rgba(120, 169, 255, 0.18);
+    --a11y-accent-faint: rgba(125, 154, 250, 0.18);
     --a11y-score-bad: #ff8389;     /* support-error dark */
     --a11y-score-warn: #ffb784;
     --a11y-score-good: #42be65;
@@ -3120,7 +3122,7 @@ label.a11y-ai-toggle {
   .a11y-widget-biz .a11y-sr-play,
   .a11y-widget-biz .a11y-alt-copy,
   .a11y-widget-biz .a11y-sim-btn-active {
-    background: #0f62fe;
+    background: #1948f4;
     color: #ffffff;
   }
 
@@ -3134,13 +3136,13 @@ label.a11y-ai-toggle {
   }
 
   .a11y-widget-biz .a11y-sim-btn-active {
-    border-color: #0f62fe;
+    border-color: #1948f4;
   }
 
   /* Tertiary buttons fill on hover; white text needs the darker blue. */
   .a11y-widget-biz .a11y-show-all:hover,
   .a11y-widget-biz .a11y-accordion-row .a11y-sr-play:hover {
-    background: #0f62fe;
+    background: #1948f4;
     color: #ffffff;
   }
 
@@ -3326,7 +3328,7 @@ label.a11y-ai-toggle {
   /* Focus tokens: blue ring with a white inner line in light, white ring
      with a dark inner line in dark — the inner line is what keeps the ring
      visible when it lands on a surface the same colour as the ring. */
-  --a11y-focus: #0f62fe;
+  --a11y-focus: #1948f4;
   --a11y-focus-inset: #ffffff;
   /* The system's two surface levels, named so a card can hand the next one
      down. layer-1 is what --a11y-surface already was; layer-2 is the step
@@ -3362,10 +3364,23 @@ label.a11y-ai-toggle {
   --type-heading-size: var(--a11y-text-title, 1.75rem);
   --type-body-size: var(--a11y-text-body, 1.125rem);
   --type-label-size: var(--a11y-text-label, 0.875rem);
-  --type-body-lh: 1.5;
+  /* 1.2, matching the report's own 120% line-height rule — the kit's
+     token moved to 1.275 upstream, but inside this widget every kit
+     component should sit on the same rhythm as the text around it. */
+  --type-body-lh: 1.2;
+  --type-heading-lh: 1.2;
   --space-03: 0.5rem;
   --space-04: 0.75rem;
   --space-05: 1rem;
+  --space-06: 1.5rem;
+  --space-11: 5rem;
+  /* The redesigned WhatsNextPanel and the new FindingDetail/Statement
+     components read these directly — text-primary for their own ink,
+     focus for the panel's disclosure border. Routed through the
+     widget's themed tokens so dark mode flips them automatically. */
+  --text-primary: var(--a11y-text, #161616);
+  --focus: var(--a11y-focus, #1948f4);
+  --focus-inset: var(--a11y-focus-inset, #ffffff);
   --background: var(--a11y-bg, #ffffff);
   --layer-01: var(--a11y-layer-1, #f4f4f4);
   --layer-02: #ffffff;
@@ -3378,9 +3393,9 @@ label.a11y-ai-toggle {
      button sweep found earlier. */
   --field: #f4f4f4;
   --shadow-overlay: 0 2px 6px rgba(0, 0, 0, 0.2);
-  --interactive: var(--a11y-accent, #0f62fe);
+  --interactive: var(--a11y-accent, #1948f4);
   --text-secondary: var(--a11y-muted, #525252);
-  --link-primary: var(--a11y-accent, #0f62fe);
+  --link-primary: var(--a11y-accent, #1948f4);
   --support-error: var(--a11y-score-bad, #da1e28);
   --support-success: var(--a11y-score-good, #198038);
   --severity-critical-bg: #fff1f1;
@@ -3402,7 +3417,7 @@ label.a11y-ai-toggle {
      for LINK contrast, and white text on blue-40 is 2.35:1 — the dark
      sweep caught exactly that on Run scan. The system's own dark theme
      keeps solid buttons at blue-60/red-60 with white text. */
-  --button-primary: #0f62fe;
+  --button-primary: #1948f4;
   --button-danger: #da1e28;
   --text-on-color: #ffffff;
   --duration-fast-02: 110ms;
@@ -3515,7 +3530,7 @@ label.a11y-ai-toggle {
    specific rules above (Carbon's double ring on primary buttons) still win
    their ties — this is the default, not the override. */
 .a11y-widget-biz :is(a, button, input, select, textarea, summary, [tabindex]):focus-visible {
-  outline: 2px solid var(--a11y-focus, #0f62fe);
+  outline: 2px solid var(--a11y-focus, #1948f4);
   outline-offset: 1px;
   box-shadow: inset 0 0 0 1px var(--a11y-focus-inset, #ffffff);
 }
@@ -4843,7 +4858,7 @@ label.a11y-ai-toggle {
   width: 20px;
   height: 20px;
   margin: 2px 0 0;
-  accent-color: var(--a11y-accent, #0f62fe);
+  accent-color: var(--a11y-accent, #1948f4);
   flex-shrink: 0;
 }
 
@@ -4862,7 +4877,7 @@ label.a11y-ai-toggle {
 .a11y-widget-biz.a11y-widget-biz .a11y-ai-toggle input[type="checkbox"] {
   width: 20px;
   height: 20px;
-  accent-color: var(--a11y-accent, #0f62fe);
+  accent-color: var(--a11y-accent, #1948f4);
 }
 
 /* ==========================================================================
@@ -5559,8 +5574,8 @@ label.a11y-ai-toggle {
 }
 
 .a11y-widget-biz.a11y-widget-biz .a11y-fix-document {
-  border-color: #0f62fe;
-  color: #0043ce;
+  border-color: #1948f4;
+  color: #082dc6;
 }
 
 .a11y-widget-biz.a11y-widget-biz .a11y-method-keyboard,

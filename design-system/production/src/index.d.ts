@@ -20,3 +20,5 @@ export * from "./IssueRow";
 export * from "./ScoreDial";
 export * from "./SkipLink";
 export * from "./WhatsNextPanel";
+export * from "./FindingDetail";
+export * from "./AccessibilityStatementBuilder";

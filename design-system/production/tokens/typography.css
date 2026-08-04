@@ -4,13 +4,14 @@
   --weight-regular: 400;
   --weight-medium: 500;
 
-  /* THREE type sizes only. Hierarchy comes from weight, color and space. */
+  /* THREE type sizes only. Hierarchy comes from weight, color and space.
+     Line-heights reduced 15% per user request (were 1.25 / 1.5 / 1.33). */
   --type-heading-size: 1.75rem;  /* 28px — page and section headings */
-  --type-heading-lh: 1.25;
+  --type-heading-lh: 1.0625;
   --type-body-size: 1.125rem;    /* 18px — all body, controls, tables */
-  --type-body-lh: 1.5;
+  --type-body-lh: 1.275;
   --type-label-size: 0.875rem;   /* 14px — labels, captions, metadata */
-  --type-label-lh: 1.33;
+  --type-label-lh: 1.13;
 
   /* Aliases — every legacy name resolves to one of the three sizes. */
   --type-display-size: var(--type-heading-size);
@@ -24,7 +25,7 @@
   --type-helper-size: var(--type-label-size);
 
   --tracking-tight: -0.01em;
-  --tracking-normal: 0.01em;
+  --tracking-normal: 0.02em;
   --tracking-caps: 0.04em;
 
   --measure-max: 66ch;
@@ -34,3 +35,7 @@
 body {
   letter-spacing: var(--tracking-normal);
 }
+
+body { margin: 0; background: var(--background); color: var(--text-primary); font: var(--weight-regular) var(--type-body-size)/var(--type-body-lh) var(--font-sans); }
+a { color: var(--link-primary); }
+a:hover { color: var(--link-primary-hover); }

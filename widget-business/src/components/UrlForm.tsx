@@ -4,6 +4,7 @@ import { LoginFields } from "./LoginFields";
 import { PrintButton } from "./PrintButton";
 import type { AuthConfig } from "../api/scanClient";
 import type { AudienceMode } from "../lib/audienceMode";
+import { WCAG_LINK } from "../lib/wcagPlain";
 
 export type ScanMode = "page" | "site";
 
@@ -104,10 +105,18 @@ export function UrlForm({
     <>
       {/* The kit's NewScan opens with its own heading and one-line
           subtitle before the card. The kit's sentence says WCAG 2.2; ours
-          says what this scan actually measures. */}
+          says what this scan actually measures — and names the standard
+          with its link, which used to live in a separate intro paragraph
+          above this form until that read as filler in front of the
+          scanner rather than a reason to run it. */}
       <h2 className="a11y-section-title a11y-newscan-title" id="a11y-newscan-title">New scan</h2>
       <p className="a11y-newscan-sub">
-        We audit the page against WCAG 2.1 AA and explain what to fix.
+        We audit the page against the{" "}
+        <a href={WCAG_LINK} target="_blank" rel="noopener noreferrer">
+          Web Content Accessibility Guidelines (WCAG)
+        </a>{" "}
+        2.1 AA and explain what to fix. It's the standard nearly every
+        accessibility law is built on.
       </p>
     <form
       className="a11y-url-form"

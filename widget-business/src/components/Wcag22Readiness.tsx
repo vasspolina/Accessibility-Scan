@@ -26,26 +26,25 @@ export function Wcag22Readiness({ readiness }: { readiness: Readiness }) {
 
   return (
     <section className="a11y-section a11y-w22" aria-labelledby="a11y-w22-heading">
-      <span className="a11y-section-eyebrow">What's next</span>
       <h2 className="a11y-section-title" id="a11y-w22-heading" data-nav-label="WCAG 2.2 readiness">
         Ready for the next version?
       </h2>
 
-      {/* The kit's own readiness summary — standard, expected date, how many
-          already fail, and the plain-language line underneath. Everything
-          past this (the per-criterion status, found counts, "needs a
-          person" caveat, the parsing note) stays in the disclosure below:
-          denser detail than the panel's own shape holds. */}
-      {/* Flat, not a card: the kit's own panel fills itself grey by
-          default, the same box-around-content this report has been
-          stripped of everywhere else it appeared. The style prop reaches
-          the component's inline styles directly (it spreads `...style`
-          onto them), so no CSS override is needed here. */}
+      {/* The kit's readiness panel, as redesigned upstream (4 Aug): it now
+          carries the "What's next" eyebrow itself, and its own disclosure
+          opens the list of the new criteria — so the separate eyebrow span
+          this section used to render, and the flattening style override
+          from the previous panel shape, are both gone. The technical
+          breakdown below stays this component's own toggle: statuses,
+          found counts and the caveats are denser detail than the panel's
+          item list holds. */}
       <WhatsNextPanel
-        standard={`WCAG 2.2, expected ${readiness.expectedFrom}`}
+        standard="WCAG 2.2"
+        expected={`expected ${readiness.expectedFrom}`}
         failCount={alreadyFailing}
         description={`The standard European law points at will change. Nothing here is required yet. These are the ${total} new items that become Level A or AA when it lands, so you can fix them on your own schedule rather than someone else's.`}
-        style={{ marginTop: 12, background: "transparent", border: 0, padding: 0 }}
+        items={criteria.map((c) => ({ criterion: c.id, title: c.plain, level: c.level }))}
+        style={{ marginTop: 12 }}
       />
 
       <button

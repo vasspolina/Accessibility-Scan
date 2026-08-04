@@ -296,15 +296,11 @@ export function App({ apiBase, cta }: { apiBase: string; cta?: CtaConfig }) {
       aria-label="Website accessibility check"
     >
     <AppShell sections={sections} activeId={activeSectionId} contentRef={shellContentRef}>
-      <p className="a11y-intro">
-        A door that only opens for some people isn't a broken door. It's a badly designed one. The
-        same goes for websites. This check follows the{" "}
-        <a href={WCAG_LINK} target="_blank" rel="noopener noreferrer">
-          Web Content Accessibility Guidelines (WCAG)
-        </a>
-        , the standard nearly every accessibility law is built on.
-      </p>
-
+      {/* No standalone intro paragraph — the door metaphor said little the
+          scanner's own subtitle couldn't say better, and the one useful
+          claim it carried (what standard this follows, and why that
+          matters) now sits directly on top of the scanner in UrlForm,
+          where a reader deciding whether to run a scan actually looks. */}
       <div ref={formRef}>
       <UrlForm
         onSubmit={handleScan}
