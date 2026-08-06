@@ -146,6 +146,15 @@ export interface DomSignals {
      hovered onto to read a long one, and never appears at all for somebody
      using a keyboard or a touchscreen. */
   titleTooltips: number;
+  /* Passages written in an alphabet the page's declared language does not
+     use, carrying no language of their own — WCAG 3.1.2.
+
+     Script is not language, and this deliberately claims only the part that
+     is provable: a run of Cyrillic on a page declaring English is in some
+     language, and it is not the one declared. A French passage on an
+     English page shares the Latin alphabet and is invisible here — that
+     half of the criterion still needs a person. */
+  unmarkedScripts: number;
   // Every same-document link with its text — used by the crawler to pick
   // which pages to audit. Separate from interactiveElements, which is capped
   // at 60 and mixes in buttons: a nav-heavy page would truncate the link list
@@ -709,6 +718,57 @@ function extractDomSignalsInPage(): DomSignals {
     return text.length > 0 || labelled;
   }).length;
 
+  const SCRIPTS: Array<[string, RegExp]> = [
+    ["latin", /[A-Za-z\u00C0-\u024F]/],
+    ["cyrillic", /[\u0400-\u04FF]/],
+    ["greek", /[\u0370-\u03FF]/],
+    ["arabic", /[\u0600-\u06FF]/],
+    ["hebrew", /[\u0590-\u05FF]/],
+    ["cjk", /[\u4E00-\u9FFF\u3040-\u30FF\uAC00-\uD7AF]/],
+    ["devanagari", /[\u0900-\u097F]/],
+  ];
+  const LANG_SCRIPT: Record<string, string> = {
+    en: "latin", fr: "latin", de: "latin", es: "latin", it: "latin", pt: "latin",
+    nl: "latin", pl: "latin", sv: "latin", da: "latin", no: "latin", fi: "latin",
+    cs: "latin", tr: "latin", vi: "latin", id: "latin", ms: "latin", ro: "latin",
+    ru: "cyrillic", uk: "cyrillic", bg: "cyrillic", sr: "cyrillic",
+    el: "greek", ar: "arabic", fa: "arabic", ur: "arabic", he: "hebrew",
+    zh: "cjk", ja: "cjk", ko: "cjk", hi: "devanagari", mr: "devanagari",
+  };
+  const pageLang = (document.documentElement.getAttribute("lang") ?? "")
+    .slice(0, 2)
+    .toLowerCase();
+  const expected = LANG_SCRIPT[pageLang];
+
+  let unmarkedScripts = 0;
+  if (expected) {
+    const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT);
+    const seen = new Set<Element>();
+    let node: Node | null;
+    while ((node = walker.nextNode())) {
+      const text = (node.textContent ?? "").trim();
+      // Short runs are names, codes and stray glyphs, not passages.
+      if (text.length < 12) continue;
+      const el = node.parentElement;
+      if (!el || seen.has(el)) continue;
+      // Already declared — the page is doing the right thing here.
+      if (el.closest("[lang]") !== document.documentElement) continue;
+      // The dominant script of the run, by how many letters each matches.
+      let best = ""; let bestCount = 0;
+      for (const [name, re] of SCRIPTS) {
+        const g = new RegExp(re.source, "g");
+        const n = (text.match(g) ?? []).length;
+        if (n > bestCount) { bestCount = n; best = name; }
+      }
+      // Half the run has to be in the other script, so a quoted word or a
+      // brand name does not make a passage foreign.
+      if (best && best !== expected && bestCount >= text.length / 2) {
+        seen.add(el);
+        unmarkedScripts += 1;
+      }
+    }
+  }
+
   let respectsReducedMotion = false;
   try {
     for (const sheet of Array.from(document.styleSheets)) {
@@ -875,6 +935,7 @@ function extractDomSignalsInPage(): DomSignals {
     liveRegions,
     orientationLock,
     titleTooltips,
+    unmarkedScripts,
     pageLinks,
     dialogs,
   };

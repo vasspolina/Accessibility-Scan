@@ -15,6 +15,8 @@ const ORIENTATION_URL =
   "https://www.w3.org/WAI/WCAG21/Understanding/orientation.html";
 const HOVER_FOCUS_URL =
   "https://www.w3.org/WAI/WCAG21/Understanding/content-on-hover-or-focus.html";
+const LANG_OF_PARTS_URL =
+  "https://www.w3.org/WAI/WCAG21/Understanding/language-of-parts.html";
 const POINTER_CANCEL_URL =
   "https://www.w3.org/WAI/WCAG21/Understanding/pointer-cancellation.html";
 
@@ -48,6 +50,7 @@ export function evaluateInteraction(
     hasControls: boolean;
     orientationLock?: boolean;
     titleTooltips?: number;
+    unmarkedScripts?: number;
   }
 ): UndecidedRow[] {
   const rows: UndecidedRow[] = [];
@@ -92,6 +95,20 @@ export function evaluateInteraction(
       count: status.titleTooltips,
       help: "Tooltips only a mouse can see",
       helpUrl: HOVER_FOCUS_URL,
+    });
+  }
+
+  /* 3.1.2 Language of Parts. Claims only the provable half: a passage in an
+     alphabet the declared language does not use is in some other language,
+     whatever that language turns out to be. A French passage on an English
+     page shares the Latin alphabet and is invisible to this — that half
+     still needs a person, and the copy says so. */
+  if (status?.unmarkedScripts) {
+    rows.push({
+      ruleId: "interaction-unmarked-language",
+      count: status.unmarkedScripts,
+      help: "Passages in another alphabet, unmarked",
+      helpUrl: LANG_OF_PARTS_URL,
     });
   }
 

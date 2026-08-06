@@ -813,6 +813,10 @@ export const UNDECIDED_EXPLANATIONS: Record<string, { what: string; ask: string 
     what: "The page watches for key presses across the whole screen. Where a plain letter is a shortcut, anyone speaking to their computer sets it off by talking.",
     ask: "Ask your developer whether any shortcut is a single letter or number on its own. Each one needs to be switchable off, changeable, or only active while the control is focused.",
   },
+  "interaction-unmarked-language": {
+    what: "Passages written in a different alphabet from the rest of the page, with nothing marking what language they are. A screen reader reads them with the wrong pronunciation, which can make them unintelligible.",
+    ask: "Ask your developer to mark each passage with its language. Only a change of alphabet can be spotted automatically, so ask about passages in another language that shares ours too.",
+  },
   "interaction-title-tooltip": {
     what: "Tooltips built from the title attribute. They appear only on hover, so a keyboard or touchscreen visitor never sees them. They also cannot be dismissed, and vanish if you move towards them to finish reading.",
     ask: "Ask your developer whether anything important is hidden in these. If it is, put it on the page, or build a tooltip that stays put and closes with Escape.",
