@@ -1,5 +1,5 @@
 import { useState, type ChangeEvent, type FormEvent, type ReactNode } from "react";
-import { Radio, Select } from "@verify/design-system";
+import { Radio, Select } from "./FormControls";
 import { LoginFields } from "./LoginFields";
 import { PrintButton } from "./PrintButton";
 import type { AuthConfig } from "../api/scanClient";

@@ -994,6 +994,43 @@ label.a11y-ai-toggle {
      on other people's sites. Dropping Issues frees the width on its own. */
 }
 
+/* The radio row and the select, now owned here. The controls themselves
+   keep the platform's own rendering and the accent colour the kit gave
+   them; these rules only place them. */
+.a11y-radio-row {
+  display: flex;
+  align-items: center;
+  gap: var(--space-03, 0.5rem);
+  min-height: 24px;
+}
+
+.a11y-radio-row input[type="radio"] {
+  width: 20px;
+  height: 20px;
+  margin: 0;
+  accent-color: var(--interactive, var(--a11y-accent, #1948f4));
+}
+
+.a11y-radio-row-disabled {
+  opacity: 0.5;
+}
+
+.a11y-select {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-03, 0.5rem);
+}
+
+.a11y-select > label,
+.a11y-select-help {
+  font-size: var(--a11y-text-label, 0.875rem);
+  color: var(--text-secondary, var(--a11y-muted, #525252));
+}
+
+.a11y-select > label {
+  font-weight: 500;
+}
+
 /* The score dial, now owned here. Layout only — every colour on it comes
    from the component, because the tone is computed from the score. */
 .a11y-dial {
