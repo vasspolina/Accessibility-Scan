@@ -51,6 +51,23 @@ describe("evaluateInteraction", () => {
     expect(rows).toHaveLength(4);
   });
 
+  it("asks about status messages only where there is something to operate", () => {
+    // A page with no controls produces no updates to announce, so asking it
+    // about live regions would be asking about something that cannot happen.
+    expect(ids(evaluateInteraction(base, { liveRegions: 0, hasControls: false }))).toEqual([]);
+    expect(ids(evaluateInteraction(base, { liveRegions: 0, hasControls: true }))).toEqual([
+      "interaction-no-status-region",
+    ]);
+  });
+
+  it("says nothing when the page already has a live region", () => {
+    expect(ids(evaluateInteraction(base, { liveRegions: 2, hasControls: true }))).toEqual([]);
+  });
+
+  it("skips the status question entirely when not given the signal", () => {
+    expect(ids(evaluateInteraction(base))).toEqual([]);
+  });
+
   it("gives every row a help URL, since none of them is self-explanatory", () => {
     const rows = evaluateInteraction({
       motion: true,

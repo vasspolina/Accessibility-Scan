@@ -130,6 +130,12 @@ export interface DomSignals {
     // uninvited. So this reports the shape, never the behaviour.
     actsOnChange: string[];
   };
+  /* Places the page has set aside for announcing something that changes
+     without a page load — WCAG 4.1.3. A live region is the only mechanism
+     a screen reader has for hearing an update it did not cause, and its
+     absence is the one half of this criterion that is visible from the
+     markup. */
+  liveRegions: number;
   // Every same-document link with its text — used by the crawler to pick
   // which pages to audit. Separate from interactiveElements, which is capped
   // at 60 and mixes in buttons: a nav-heavy page would truncate the link list
@@ -640,6 +646,14 @@ function extractDomSignalsInPage(): DomSignals {
     actsOnChange: Array.from(actsOnChangeSet).slice(0, 20),
   };
 
+  // aria-live="off" is an explicit opt-out and is not a place anything gets
+  // announced, so it does not count.
+  const liveRegions = Array.from(
+    document.querySelectorAll(
+      '[aria-live]:not([aria-live="off"]), [role="status"], [role="alert"], [role="log"], output'
+    )
+  ).length;
+
   let respectsReducedMotion = false;
   try {
     for (const sheet of Array.from(document.styleSheets)) {
@@ -803,6 +817,7 @@ function extractDomSignalsInPage(): DomSignals {
     mediaEmbeds,
     navigation,
     listeners,
+    liveRegions,
     pageLinks,
     dialogs,
   };

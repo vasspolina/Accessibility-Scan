@@ -468,7 +468,12 @@ export async function scanUrlToReport(
       summariseUndecided(renderResult.axe),
       [
         ...evaluateMedia(renderResult.domSignals.mediaElements, renderResult.domSignals.mediaEmbeds),
-        ...evaluateInteraction(renderResult.domSignals.listeners),
+        ...evaluateInteraction(renderResult.domSignals.listeners, {
+          liveRegions: renderResult.domSignals.liveRegions,
+          hasControls:
+            renderResult.domSignals.interactiveElements.length > 0 ||
+            renderResult.domSignals.forms.length > 0,
+        }),
       ]
     ),
     pagePreview: await downscalePreview(renderResult.screenshotBase64),

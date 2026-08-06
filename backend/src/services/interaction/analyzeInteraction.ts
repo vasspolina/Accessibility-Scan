@@ -9,13 +9,15 @@ const KEY_SHORTCUT_URL =
   "https://www.w3.org/WAI/WCAG21/Understanding/character-key-shortcuts.html";
 const ON_INPUT_URL =
   "https://www.w3.org/WAI/WCAG21/Understanding/on-input.html";
+const STATUS_MESSAGE_URL =
+  "https://www.w3.org/WAI/WCAG21/Understanding/status-messages.html";
 const POINTER_CANCEL_URL =
   "https://www.w3.org/WAI/WCAG21/Understanding/pointer-cancellation.html";
 
 /**
- * Four criteria about how the page responds to being used.
+ * Five criteria about how the page responds to being used.
  *
- * None of them leaves a trace in the markup, which is why all three sat at
+ * None of them leaves a trace in the markup, which is why they sat at
  * "a person must check" with nothing said about them. The probe in
  * browserPool.ts patches addEventListener before any page script runs, so
  * the listeners are at least visible now.
@@ -33,9 +35,28 @@ const POINTER_CANCEL_URL =
  * uninvited. So it reads the markup's shape instead and says so.
  */
 export function evaluateInteraction(
-  listeners: DomSignals["listeners"]
+  listeners: DomSignals["listeners"],
+  /* Live regions and whether the page has anything to operate. Optional so
+     an older caller still compiles; absent means the question is skipped
+     rather than answered wrongly. */
+  status?: { liveRegions: number; hasControls: boolean }
 ): UndecidedRow[] {
   const rows: UndecidedRow[] = [];
+
+  /* 4.1.3 Status Messages. Only asked of a page that has controls: a page
+     with nothing to operate produces no updates to announce, and asking it
+     about live regions would be asking about something that cannot happen.
+     Where there are controls and no live region at all, the question is
+     worth putting — but it is still a question, because plenty of pages
+     change nothing without a reload, and this cannot tell which. */
+  if (status && status.hasControls && status.liveRegions === 0) {
+    rows.push({
+      ruleId: "interaction-no-status-region",
+      count: 1,
+      help: "Nothing set aside to announce updates",
+      helpUrl: STATUS_MESSAGE_URL,
+    });
+  }
 
   if (listeners.motion) {
     rows.push({

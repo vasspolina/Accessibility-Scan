@@ -813,6 +813,10 @@ export const UNDECIDED_EXPLANATIONS: Record<string, { what: string; ask: string 
     what: "The page watches for key presses across the whole screen. Where a plain letter is a shortcut, anyone speaking to their computer sets it off by talking.",
     ask: "Ask your developer whether any shortcut is a single letter or number on its own. Each one needs to be switchable off, changeable, or only active while the control is focused.",
   },
+  "interaction-no-status-region": {
+    what: "Nothing on this page is set aside for announcing a change. Pages update without reloading all the time: a filter narrows a list, a form says it saved. Somebody using a screen reader hears that only if the page has somewhere to say it.",
+    ask: "Ask your developer whether anything here updates without a page load. If it does, that update needs a live region so it is spoken as well as shown.",
+  },
   "interaction-acts-on-change": {
     what: "Menus or tick boxes that look like they act the moment you set them, rather than waiting for a button. We read this from the code and did not try it: setting controls on your live site could place a real order.",
     ask: "Ask your developer whether choosing an option here submits or moves the page. If it does, add a button that does it instead, or warn people before the control that it will.",
