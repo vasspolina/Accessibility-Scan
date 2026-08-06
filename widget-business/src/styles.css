@@ -957,6 +957,64 @@ label.a11y-ai-toggle {
   outline-offset: -2px;
 }
 
+/* The tone chip and the count badge, now owned here.
+
+   Same move as the severity chip: the kit set these inline so it could work
+   without a stylesheet, and this package has one. The tones are the kit's
+   own, pointing at the same tokens it used, so nothing about the palette
+   changes — only where the rules live.
+
+   currentColor on the border again, for the same reason: the outline stays
+   the ink whatever a theme does to the fill. */
+.a11y-tag {
+  display: inline-flex;
+  align-items: center;
+  min-height: 24px;
+  padding: 0 var(--space-03, 0.5rem);
+  border: 1px solid currentColor;
+  border-radius: 999px;
+  font-size: var(--a11y-text-label, 0.875rem);
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.a11y-tag-gray {
+  color: var(--text-secondary, var(--a11y-muted, #525252));
+  background: var(--layer-01, var(--a11y-surface, #f4f4f4));
+}
+
+.a11y-tag-blue {
+  color: var(--link-primary, var(--a11y-accent-text, #1948f4));
+  background: transparent;
+}
+
+.a11y-tag-red {
+  color: var(--support-error, var(--a11y-score-bad, #a2191f));
+  background: var(--severity-critical-bg, #fff1f1);
+}
+
+.a11y-tag-green {
+  color: var(--support-success, #0e6027);
+  background: var(--severity-pass-bg, #defbe6);
+}
+
+/* The count chip. Solid rather than outlined, because it is a number rather
+   than a label and needs to read as one at a glance. Its accessible name
+   spells out what the number counts — see the component. */
+.a11y-count-chip {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 24px;
+  min-height: 24px;
+  padding: 0 var(--space-02, 0.25rem);
+  border-radius: 999px;
+  background: var(--a11y-text, #161616);
+  color: var(--a11y-bg, #ffffff);
+  font-size: var(--a11y-text-label, 0.875rem);
+  font-weight: 500;
+}
+
 /* The severity chip, now that this package owns the component.
 
    The rules below this one are the older shape, where the severity lived on
