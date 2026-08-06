@@ -4529,6 +4529,56 @@ label.a11y-ai-toggle {
   border-spacing: 0 var(--space-03, 0.5rem) !important;
 }
 
+/* The three conformance results as cards, side by side.
+
+   Same move as the undecided notes below, and the same caveat: a grid
+   display takes these out of the accessibility tree as a table. It matters
+   less here — the row was already carrying its meaning in words and a
+   glyph, never in the tint alone — but it is the same stylesheet-level
+   semantics change and is recorded as such.
+
+   The tint stays on the row, where the kit writes it, so the card keeps
+   the colour it had. The header goes: "Result" and "Items" label columns,
+   and there are no columns any more. */
+.a11y-widget-biz.a11y-widget-biz .a11y-conf table {
+  display: block;
+}
+
+.a11y-widget-biz.a11y-widget-biz .a11y-conf thead {
+  display: none;
+}
+
+.a11y-widget-biz.a11y-widget-biz .a11y-conf tbody {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(16rem, 1fr));
+  gap: var(--space-04, 0.75rem);
+}
+
+.a11y-widget-biz.a11y-widget-biz .a11y-conf tbody tr {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-03, 0.5rem);
+  height: 100%;
+  padding: var(--space-05, 1rem);
+  border-radius: 16px;
+}
+
+/* The cells are just the card's two lines now — the count sits under the
+   words it counts rather than off at a column edge. */
+.a11y-widget-biz.a11y-widget-biz .a11y-conf tbody td {
+  display: block;
+  padding: 0 !important;
+  background: transparent !important;
+  border: 0 !important;
+  text-align: left !important;
+}
+
+.a11y-widget-biz.a11y-widget-biz .a11y-conf tbody td:last-child {
+  font-size: var(--a11y-text-display, 3rem);
+  line-height: 1;
+  letter-spacing: -0.02em;
+}
+
 /* These sit beside each other rather than stacking. Each row is one short
    self-contained note, so a single column left most of the width empty and
    made a list of five reads like a long document.
