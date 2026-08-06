@@ -4516,6 +4516,43 @@ label.a11y-ai-toggle {
   overflow-x: auto;
 }
 
+/* The undecided rows as cards, matching the findings tables above. This is
+   a single-column table, so each row is one cell and the card is simply
+   that cell — no end-cap corners to work out.
+
+   Same two mechanics as the findings cards: border-spacing for the gap
+   (which needs border-collapse: separate, and the kit sets collapse
+   inline), and an explicit grey rather than --a11y-surface, which is white
+   by the time this rule is read. */
+.a11y-widget-biz.a11y-widget-biz .a11y-undecided-table table {
+  border-collapse: separate !important;
+  border-spacing: 0 var(--space-03, 0.5rem) !important;
+}
+
+.a11y-widget-biz.a11y-widget-biz .a11y-undecided-table tbody td {
+  padding: var(--space-05, 1rem) !important;
+  background: #f4f4f4;
+  border-bottom: 0 !important;
+  border-radius: 16px;
+}
+
+.a11y-widget-biz.a11y-widget-biz .a11y-undecided-table thead th {
+  border-bottom: 0 !important;
+}
+
+@media (prefers-color-scheme: dark) {
+  .a11y-widget-biz.a11y-widget-biz .a11y-undecided-table tbody td {
+    background: #262626;
+  }
+}
+
+@media print {
+  .a11y-widget-biz.a11y-widget-biz .a11y-undecided-table tbody td {
+    background: transparent;
+    border: 1px solid #000;
+  }
+}
+
 .a11y-undecided-table table {
   width: 100%;
   /* table-layout: auto (the default) sizes a column to its content's
