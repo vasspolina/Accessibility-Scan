@@ -1,10 +1,10 @@
-import { Tabs } from "@verify/design-system";
 import type { ReactNode } from "react";
 import type { AccessibilityReport } from "../api/scanClient";
 import { SCORE_POINTS } from "./ScoreGauge";
 import { Tag, Badge } from "./Tag";
 import { Card } from "./Card";
 import { Button } from "./Button";
+import { Tabs } from "./Tabs";
 
 export type ProView = "issues" | "clean";
 

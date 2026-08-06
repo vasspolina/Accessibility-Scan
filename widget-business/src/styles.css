@@ -994,6 +994,38 @@ label.a11y-ai-toggle {
      on other people's sites. Dropping Issues frees the width on its own. */
 }
 
+/* The tab strip, now owned here. The active tab is marked by weight and a
+   rule beneath it as well as colour — one more place the report follows
+   its own no-colour-alone rule. */
+.a11y-tablist {
+  display: flex;
+  border-bottom: 1px solid var(--border-subtle, var(--a11y-border, #e0e0e0));
+}
+
+.a11y-tab {
+  min-height: 40px;
+  padding: 0 var(--space-05, 1rem);
+  margin-bottom: -1px;
+  background: transparent;
+  border: 0;
+  border-bottom: 2px solid transparent;
+  font: inherit;
+  font-size: var(--a11y-text-body);
+  color: var(--text-secondary, var(--a11y-muted, #525252));
+  cursor: pointer;
+}
+
+.a11y-tab[aria-selected="true"] {
+  font-weight: 500;
+  color: var(--a11y-text, #161616);
+  border-bottom-color: var(--interactive, var(--a11y-accent, #1948f4));
+}
+
+.a11y-tabpanel {
+  padding: var(--space-05, 1rem) 0;
+  color: var(--a11y-text, #161616);
+}
+
 /* The readiness panel, now owned here. */
 .a11y-next {
   background: var(--layer-01, var(--a11y-surface, #f4f4f4));
