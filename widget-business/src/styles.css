@@ -4363,10 +4363,13 @@ label.a11y-ai-toggle {
    and 1.4.11 asks for 3:1 from whatever tells you a control is there —
    #8d8d8d gives 3.1:1, so it stays as the boundary while the fill and the
    radius do the looking. */
+/* White, now that the form around it is the grey panel. A filled field on
+   a filled panel of the same value is not a field — it was the ground and
+   the control at 1:1. The strong bottom rule still carries the boundary. */
 .a11y-widget-biz.a11y-widget-biz .a11y-url-row input,
 .a11y-widget-biz.a11y-widget-biz .a11y-login input,
 .a11y-widget-biz.a11y-widget-biz .a11y-ai-toggle select {
-  background: var(--a11y-surface, #f4f4f4);
+  background: #ffffff;
   border: 1px solid transparent;
   border-bottom: 1px solid #8d8d8d;   /* border-strong, both themes */
   border-radius: 12px;
@@ -5808,11 +5811,51 @@ label.a11y-ai-toggle {
    actions gathered in a hairline-topped footer. LegalStandard: the
    conformance section as a card again (the kit is ground truth), its
    three tiles now a tinted-row table, results as glyph + word + colour. */
+/* The scan form as the reference's builder panel: one generously rounded
+   card with real room inside, rather than a near-square box with a hairline
+   round it. It is the first thing on the page and the only thing anybody
+   has to fill in, so it gets the largest radius and the most padding in the
+   report. */
 .a11y-widget-biz.a11y-widget-biz .a11y-url-form {
-  background: #ffffff;
+  /* Explicit grey, not --a11y-surface. That token is redeclared to white
+     further down this file for the layered cards, and reaching for it here
+     made the panel and the white option groups inside it the same colour —
+     the fifth time this file has caught that. Anything that needs to sit
+     *behind* a white card states its own value. */
+  background: #f4f4f4;
+  border: 1px solid transparent;
+  border-radius: 20px;
+  padding: var(--space-07, 2rem);
+}
+
+/* The option groups inside it read as their own blocks on that ground, the
+   way the reference stacks its licence rows — each a white card with the
+   choices in it, rather than four label/legend pairs floating in one box. */
+.a11y-widget-biz.a11y-widget-biz .a11y-url-form .a11y-radio-group,
+.a11y-widget-biz.a11y-widget-biz .a11y-url-form .a11y-ai-toggle {
+  padding: var(--space-05, 1rem);
+  background: var(--a11y-bg, #ffffff);
   border: 1px solid var(--a11y-border, #e0e0e0);
-  border-radius: 2px;
-  padding: 24px;
+  border-radius: 16px;
+}
+
+@media (prefers-color-scheme: dark) {
+  .a11y-widget-biz.a11y-widget-biz .a11y-url-form {
+    background: #262626;
+  }
+
+  .a11y-widget-biz.a11y-widget-biz .a11y-url-form .a11y-radio-group,
+  .a11y-widget-biz.a11y-widget-biz .a11y-url-form .a11y-ai-toggle {
+    background: #161616;
+    border-color: #393939;
+  }
+}
+
+@media print {
+  .a11y-widget-biz.a11y-widget-biz .a11y-url-form {
+    background: transparent;
+    border-color: #000;
+  }
 }
 
 /* On the Carbon grid: 16 tracks, 2rem gutter, each column spanning 8 —
@@ -6186,13 +6229,20 @@ label.a11y-ai-toggle {
 .a11y-widget-biz.a11y-widget-biz .a11y-url-form input[type="password"],
 .a11y-widget-biz.a11y-widget-biz .a11y-url-form select {
   width: 100%;
-  height: 40px;
+  /* min-height, not height: 40px was below the 44px this report asks of a
+     target on other people's sites. */
+  min-height: 48px;
+  height: auto;
   padding: 0 16px;
-  background: #f4f4f4;
+  /* White on the grey panel. This rule is the last word on the scan form's
+     fields — the earlier, less specific one was being overridden here, so
+     the panel and the field came out the same value and the field stopped
+     looking like one. */
+  background: #ffffff;
   color: var(--a11y-text, #161616);
-  border: 0;
+  border: 1px solid transparent;
   border-bottom: 1px solid #8d8d8d;
-  border-radius: 0;
+  border-radius: 12px;
   font: inherit;
   font-size: var(--a11y-text-body, 1.125rem);
 }
