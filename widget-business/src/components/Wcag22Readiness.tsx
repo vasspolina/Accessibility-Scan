@@ -1,5 +1,6 @@
 import { useId, useState } from "react";
-import { DataTable, WhatsNextPanel } from "@verify/design-system";
+import { DataTable } from "@verify/design-system";
+import { WhatsNextPanel } from "./WhatsNextPanel";
 import type { Wcag22Readiness as Readiness } from "../api/scanClient";
 
 // The law is going to move, and an owner should see it coming rather than

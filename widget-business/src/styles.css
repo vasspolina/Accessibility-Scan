@@ -994,6 +994,105 @@ label.a11y-ai-toggle {
      on other people's sites. Dropping Issues frees the width on its own. */
 }
 
+/* The readiness panel, now owned here. */
+.a11y-next {
+  background: var(--layer-01, var(--a11y-surface, #f4f4f4));
+  border: 1px solid var(--border-subtle, var(--a11y-border, #e0e0e0));
+  overflow: hidden;
+  color: var(--a11y-text, #161616);
+}
+
+.a11y-widget-biz.a11y-widget-biz .a11y-next {
+  border-radius: var(--radius-sm, 12px);
+}
+
+.a11y-next-eyebrow {
+  padding: var(--space-05, 1rem) var(--space-05, 1rem) 0;
+  font-size: var(--a11y-text-label, 0.875rem);
+  color: var(--text-secondary, var(--a11y-muted, #525252));
+}
+
+.a11y-next-toggle {
+  display: flex;
+  align-items: center;
+  gap: var(--space-05, 1rem);
+  flex-wrap: wrap;
+  width: calc(100% - (2 * var(--space-05, 1rem)));
+  margin: var(--space-04, 0.75rem) var(--space-05, 1rem) 0;
+  padding: var(--space-05, 1rem);
+  background: transparent;
+  border: 0;
+  border-top: 1px solid var(--border-subtle, var(--a11y-border, #e0e0e0));
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.a11y-next-standard {
+  flex: 1 1 100%;
+  min-width: 0;
+}
+
+/* The one place this panel borrows a status colour: the count describes
+   today rather than the future, so it is allowed to look like it. */
+.a11y-next-count {
+  flex-shrink: 0;
+  white-space: nowrap;
+  padding: var(--space-02, 0.25rem) var(--space-04, 0.75rem);
+  border-radius: 999px;
+  background: var(--severity-critical-bg, #fff1f1);
+  color: var(--severity-critical, #a2191f);
+  font-size: var(--a11y-text-label, 0.875rem);
+  font-weight: 500;
+}
+
+.a11y-next-chevron {
+  flex-shrink: 0;
+  transition: transform var(--duration-fast-02, 110ms)
+    var(--ease-productive-standard, cubic-bezier(0.2, 0, 0.38, 0.9));
+}
+
+.a11y-next-chevron[data-open="true"] {
+  transform: rotate(180deg);
+}
+
+.a11y-next-desc {
+  margin: var(--space-05, 1rem) var(--space-05, 1rem) var(--space-05, 1rem);
+  color: var(--text-secondary, var(--a11y-muted, #525252));
+}
+
+.a11y-next-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  border-top: 1px solid var(--border-subtle, var(--a11y-border, #e0e0e0));
+}
+
+.a11y-next-list li {
+  display: flex;
+  gap: var(--space-05, 1rem);
+  align-items: baseline;
+  padding: var(--space-04, 0.75rem) var(--space-05, 1rem);
+  border-bottom: 1px solid var(--border-subtle, var(--a11y-border, #e0e0e0));
+  font-size: var(--a11y-text-label, 0.875rem);
+}
+
+.a11y-next-list li:last-child {
+  border-bottom: 0;
+}
+
+.a11y-next-crit {
+  flex-shrink: 0;
+  min-width: 64px;
+  color: var(--text-secondary, var(--a11y-muted, #525252));
+}
+
+.a11y-next-level {
+  margin-left: auto;
+  flex-shrink: 0;
+  color: var(--text-secondary, var(--a11y-muted, #525252));
+}
+
 /* The radio row and the select, now owned here. The controls themselves
    keep the platform's own rendering and the accent colour the kit gave
    them; these rules only place them. */
