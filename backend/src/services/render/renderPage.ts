@@ -136,6 +136,11 @@ export interface DomSignals {
      absence is the one half of this criterion that is visible from the
      markup. */
   liveRegions: number;
+  /* Whether a stylesheet answers an orientation with a rotation or by
+     hiding the page — WCAG 1.3.4. Somebody with a phone mounted to a
+     wheelchair cannot turn it, so a page that only works one way up is a
+     page they cannot use. */
+  orientationLock: boolean;
   // Every same-document link with its text — used by the crawler to pick
   // which pages to audit. Separate from interactiveElements, which is capped
   // at 60 and mixes in buttons: a nav-heavy page would truncate the link list
@@ -654,6 +659,34 @@ function extractDomSignalsInPage(): DomSignals {
     )
   ).length;
 
+  // The lock has a shape: an orientation media query whose body rotates the
+  // page back, or hides it and shows a "please rotate" panel instead. A
+  // query that merely adjusts a layout is the normal, good use of one, so
+  // the rule text has to say more than "orientation" to count.
+  let orientationLock = false;
+  try {
+    for (const sheet of Array.from(document.styleSheets)) {
+      try {
+        for (const rule of Array.from(sheet.cssRules ?? [])) {
+          if (!(rule instanceof CSSMediaRule)) continue;
+          if (!/orientation\s*:/i.test(rule.conditionText ?? "")) continue;
+          const body = Array.from(rule.cssRules ?? [])
+            .map((r) => r.cssText)
+            .join(" ");
+          if (/transform\s*:[^;]*rotate|display\s*:\s*none/i.test(body)) {
+            orientationLock = true;
+            break;
+          }
+        }
+      } catch {
+        // Cross-origin sheet — unreadable, and not ours to judge.
+      }
+      if (orientationLock) break;
+    }
+  } catch {
+    orientationLock = false;
+  }
+
   let respectsReducedMotion = false;
   try {
     for (const sheet of Array.from(document.styleSheets)) {
@@ -818,6 +851,7 @@ function extractDomSignalsInPage(): DomSignals {
     navigation,
     listeners,
     liveRegions,
+    orientationLock,
     pageLinks,
     dialogs,
   };

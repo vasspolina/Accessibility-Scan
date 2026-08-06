@@ -813,6 +813,10 @@ export const UNDECIDED_EXPLANATIONS: Record<string, { what: string; ask: string 
     what: "The page watches for key presses across the whole screen. Where a plain letter is a shortcut, anyone speaking to their computer sets it off by talking.",
     ask: "Ask your developer whether any shortcut is a single letter or number on its own. Each one needs to be switchable off, changeable, or only active while the control is focused.",
   },
+  "interaction-orientation-lock": {
+    what: "A stylesheet here rotates the page back, or hides it, when the phone is turned. That is the shape of a page locked to one orientation. It can also be a deliberate landscape view for something wide.",
+    ask: "Ask your developer whether the page works both ways up. Somebody whose phone is fixed to a wheelchair or a stand cannot turn it to suit the site.",
+  },
   "interaction-no-status-region": {
     what: "Nothing on this page is set aside for announcing a change. Pages update without reloading all the time: a filter narrows a list, a form says it saved. Somebody using a screen reader hears that only if the page has somewhere to say it.",
     ask: "Ask your developer whether anything here updates without a page load. If it does, that update needs a live region so it is spoken as well as shown.",

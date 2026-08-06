@@ -473,6 +473,7 @@ export async function scanUrlToReport(
           hasControls:
             renderResult.domSignals.interactiveElements.length > 0 ||
             renderResult.domSignals.forms.length > 0,
+          orientationLock: renderResult.domSignals.orientationLock,
         }),
       ]
     ),

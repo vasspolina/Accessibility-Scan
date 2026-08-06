@@ -11,6 +11,8 @@ const ON_INPUT_URL =
   "https://www.w3.org/WAI/WCAG21/Understanding/on-input.html";
 const STATUS_MESSAGE_URL =
   "https://www.w3.org/WAI/WCAG21/Understanding/status-messages.html";
+const ORIENTATION_URL =
+  "https://www.w3.org/WAI/WCAG21/Understanding/orientation.html";
 const POINTER_CANCEL_URL =
   "https://www.w3.org/WAI/WCAG21/Understanding/pointer-cancellation.html";
 
@@ -39,7 +41,7 @@ export function evaluateInteraction(
   /* Live regions and whether the page has anything to operate. Optional so
      an older caller still compiles; absent means the question is skipped
      rather than answered wrongly. */
-  status?: { liveRegions: number; hasControls: boolean }
+  status?: { liveRegions: number; hasControls: boolean; orientationLock?: boolean }
 ): UndecidedRow[] {
   const rows: UndecidedRow[] = [];
 
@@ -55,6 +57,19 @@ export function evaluateInteraction(
       count: 1,
       help: "Nothing set aside to announce updates",
       helpUrl: STATUS_MESSAGE_URL,
+    });
+  }
+
+  /* 1.3.4 Orientation. A stylesheet that answers an orientation by rotating
+     the page back, or by hiding it behind "please rotate", is the shape of a
+     lock. Not proof of one: the same rule can be a legitimate landscape
+     treatment for a game or a chart. */
+  if (status?.orientationLock) {
+    rows.push({
+      ruleId: "interaction-orientation-lock",
+      count: 1,
+      help: "The page may only work one way up",
+      helpUrl: ORIENTATION_URL,
     });
   }
 
