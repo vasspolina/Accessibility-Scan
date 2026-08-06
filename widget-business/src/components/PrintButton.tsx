@@ -1,3 +1,4 @@
+import { Button } from "./Button";
 // "Save as PDF" via the browser's own print dialog.
 //
 // Deliberately not a server-rendered PDF: that would mean a second Playwright
@@ -10,7 +11,6 @@
 // injected into the document head. The widget's own print styling stays in
 // styles.css where it belongs.
 
-import { Button } from "@verify/design-system";
 
 const HOST_PRINT_STYLE_ID = "a11y-widget-host-print-style";
 

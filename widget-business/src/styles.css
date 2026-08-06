@@ -994,6 +994,57 @@ label.a11y-ai-toggle {
      on other people's sites. Dropping Issues frees the width on its own. */
 }
 
+/* The button, now owned here. Heights are the kit's, and 48px on the large
+   size is what the report's own tap-target rule asks of everybody else. */
+.a11y-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-03, 0.5rem);
+  padding: 0 var(--space-05, 1rem);
+  font-family: inherit;
+  font-size: var(--a11y-text-body);
+  font-weight: 500;
+  cursor: pointer;
+  transition: background var(--duration-fast-02, 110ms)
+    var(--ease-productive-standard, cubic-bezier(0.2, 0, 0.38, 0.9));
+}
+
+.a11y-btn-sm { min-height: 32px; }
+.a11y-btn-md { min-height: 40px; }
+.a11y-btn-lg { min-height: 48px; }
+
+.a11y-btn-primary {
+  background: var(--button-primary, var(--a11y-accent, #1948f4));
+  color: var(--button-primary-text, var(--a11y-accent-on, #ffffff));
+  border: 1px solid transparent;
+}
+
+.a11y-btn-secondary {
+  background: transparent;
+  color: var(--a11y-text, #161616);
+  border: 1px solid var(--border-strong, #8d8d8d);
+}
+
+.a11y-btn-ghost {
+  background: transparent;
+  color: var(--link-primary, var(--a11y-accent-text, #1948f4));
+  border: 1px solid transparent;
+}
+
+.a11y-btn-danger {
+  background: var(--button-danger, var(--a11y-score-bad, #a2191f));
+  color: var(--a11y-accent-on, #ffffff);
+  border: 1px solid transparent;
+}
+
+/* The real disabled attribute does the work — out of the tab order and
+   unclickable. This only says so visually. */
+.a11y-btn:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
 /* The progress bar and the notification, now owned here. Same tokens the
    kit read, so neither changes appearance — only where the rules live. */
 .a11y-progress-head {

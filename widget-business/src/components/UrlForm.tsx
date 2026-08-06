@@ -1,10 +1,11 @@
 import { useState, type ChangeEvent, type FormEvent, type ReactNode } from "react";
-import { Button, Radio, Select } from "@verify/design-system";
+import { Radio, Select } from "@verify/design-system";
 import { LoginFields } from "./LoginFields";
 import { PrintButton } from "./PrintButton";
 import type { AuthConfig } from "../api/scanClient";
 import type { AudienceMode } from "../lib/audienceMode";
 import { WCAG_LINK } from "../lib/wcagPlain";
+import { Button } from "./Button";
 
 export type ScanMode = "page" | "site";
 
