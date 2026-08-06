@@ -249,6 +249,13 @@ export const accessibilityReportSchema = z.object({
    * already the conformance table's word for a WCAG criterion nothing decided.
    * Two different questions, and they should not share a name.
    */
+  // The menu as it appeared, in order. Carried per page purely so the
+  // crawler can compare pages against each other for WCAG 3.2.3 and 3.2.4 —
+  // a single page cannot be inconsistent with itself, so the widget shows
+  // nothing from this on a one-page scan.
+  navigation: z
+    .array(z.object({ text: z.string(), href: z.string() }))
+    .optional(),
   undecidedChecks: z
     .array(
       z.object({

@@ -2,6 +2,7 @@ import { DataTable } from "@verify/design-system";
 import type { AccessibilityFinding } from "../api/scanClient";
 import { FindingGroup, findingRow } from "./FindingGroup";
 import { useReportView } from "./ReportViewContext";
+import { expandRowOnClick } from "../lib/rowExpand";
 
 const severityRank: Record<AccessibilityFinding["severity"], number> = {
   critical: 0,
@@ -75,7 +76,10 @@ export function FindingsList({
         // rules are position-based: nth-child(2) is Severity in the full
         // shape and the note's own text in this one. Without the marker the
         // phone-width rule that drops Severity dropped every note.
-        <div className={`a11y-findings-table${asNotes ? " a11y-notes-table" : ""}`}>
+        <div
+          className={`a11y-findings-table${asNotes ? " a11y-notes-table" : ""}`}
+          onClick={expandRowOnClick}
+        >
           <DataTable
             caption={asNotes ? "Notes on the design" : "Findings, most severe first"}
             headers={

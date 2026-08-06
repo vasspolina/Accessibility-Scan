@@ -783,6 +783,44 @@ export const UNDECIDED_EXPLANATIONS: Record<string, { what: string; ask: string 
     what: "A video the checker can see and cannot watch. It has no way to tell whether captions exist, or whether they are any good.",
     ask: "Ask whoever made the video whether it carries captions and whether a person corrected them. Auto-generated captions on their own do not count.",
   },
+  // The four media rows. Each says what was counted and what to ask,
+  // because the checker cannot watch or listen to any of it — the count and
+  // the location are the whole of what it can offer.
+  "media-video-captions": {
+    what: "Video on the page carrying no captions file. That is not proof it needs one: a silent clip needs nothing, and captions burned into the picture count but leave no file behind.",
+    ask: "Ask whoever made each video whether anyone speaks in it. Where somebody does, it needs captions, corrected by a person. Auto-generated captions on their own do not count.",
+  },
+  "media-video-descriptions": {
+    what: "Captioned video with nothing describing what is on screen. Captions carry the words; they do not carry the picture.",
+    ask: "Ask whether anything in these videos is shown rather than said — a chart, a demonstration, text on screen. If so, that content needs describing in the audio or written out on the page.",
+  },
+  "media-audio-transcript": {
+    what: "Audio on the page. A transcript is ordinary page text, so the checker has no way to tell whether one is here.",
+    ask: "Check each recording has its words written out on the page near the player, and that the writing covers everything said.",
+  },
+  "media-embedded-player": {
+    what: "Video played through another company's player. The video lives on their site, so the checker cannot look inside it.",
+    ask: "Open each one and turn captions on. If the option is missing or the captions are wrong, fix them where the video is hosted.",
+  },
+  // Three rows about what the page listens for. A listener leaves no mark on
+  // the page, so the checker can say one is there and nothing about what it
+  // does when it fires.
+  "interaction-motion-actuation": {
+    what: "The page responds to the phone being tilted or shaken. Somebody who keeps their phone in a stand, or whose hands shake, cannot do that.",
+    ask: "Ask your developer whether every action that needs a tilt or a shake can also be done by tapping something on screen.",
+  },
+  "interaction-key-shortcuts": {
+    what: "The page watches for key presses across the whole screen. Where a plain letter is a shortcut, anyone speaking to their computer sets it off by talking.",
+    ask: "Ask your developer whether any shortcut is a single letter or number on its own. Each one needs to be switchable off, changeable, or only active while the control is focused.",
+  },
+  "interaction-acts-on-change": {
+    what: "Menus or tick boxes that look like they act the moment you set them, rather than waiting for a button. We read this from the code and did not try it: setting controls on your live site could place a real order.",
+    ask: "Ask your developer whether choosing an option here submits or moves the page. If it does, add a button that does it instead, or warn people before the control that it will.",
+  },
+  "interaction-pointer-cancellation": {
+    what: "Controls that act the moment they are pressed rather than when released. Press one by mistake and there is no way to slide off it and let go.",
+    ask: "Ask your developer to make these act on release instead. Anyone whose hand slips, or who takes a moment to aim, can then move away before lifting.",
+  },
   "aria-valid-attr-value": {
     what: "Code labels that point at another part of the page. The checker cannot always tell whether the thing they point at is really there.",
     ask: "Ask your developer to confirm every id referenced by an aria attribute exists on the page. None should sit inside a block that gets hidden or removed.",

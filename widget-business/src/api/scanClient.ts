@@ -179,6 +179,17 @@ export interface SiteWideIssue {
   helpUrl?: string;
 }
 
+// Where two pages disagree with each other. Only a crawl can produce these:
+// WCAG 3.2.3 and 3.2.4 are about the relationship between pages, and one page
+// is trivially consistent with itself.
+export interface ConsistencyIssue {
+  criterion: "3.2.3" | "3.2.4";
+  ruleId: string;
+  title: string;
+  description: string;
+  pages: string[];
+}
+
 export interface SiteAudit {
   entryUrl: string;
   scannedAt: string;
@@ -189,6 +200,8 @@ export interface SiteAudit {
   pages: PageSummary[];
   siteWide: SiteWideIssue[];
   conformance: ConformanceSummary;
+  // Optional so a report from an older backend still parses.
+  consistency?: ConsistencyIssue[];
 }
 
 // Sign-in details for scanning a page behind a login. Sent with one scan and

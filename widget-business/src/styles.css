@@ -4103,6 +4103,23 @@ label.a11y-ai-toggle {
   color: var(--a11y-muted, #57606a);
 }
 
+/* The whole summary row opens its panel, so it has to look like it does.
+   :has() picks exactly the rows that carry a toggle — the open detail panel
+   below them is for reading and stays a normal cursor.
+
+   The arrow keeps its own hover state and remains the only control the
+   keyboard and a screen reader ever see; this is pointer affordance for a
+   24px target sitting at the far left of a full-width row. */
+.a11y-findings-table tbody tr:has(button[aria-expanded]),
+.a11y-pro-table tbody tr:has(button[aria-expanded]) {
+  cursor: pointer;
+}
+
+/* Text inside the row still selects normally — nothing here opts out of
+   selection, because a reader copying a finding into an email is a thing
+   this report is for. The click handler checks for a live selection before
+   it opens anything. */
+
 /* Same fix as the other tables' narrow columns, again: no width hint alone
    is enough to stop "Instances" wrapping letter by letter. :last-child
    rather than nth-child, since this table has two different shapes (with

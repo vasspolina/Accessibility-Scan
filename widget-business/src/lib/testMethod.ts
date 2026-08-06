@@ -69,7 +69,15 @@ const CONTENT_RULES = new Set([
   "readability-dense-prose",
 ]);
 
-const CONTENT_PREFIXES = ["dark-"];
+// media- joins dark- here because captioning a video is not a code change.
+// It is done by whoever made the recording, or in the account of whichever
+// site hosts it — a developer handed "add captions" has nothing to edit.
+const CONTENT_PREFIXES = ["dark-", "media-"];
+
+// interaction- is the opposite case to media-: what a page listens for, and
+// what it does when the event fires, is decided in code and nowhere else.
+// It falls to the code default below, which is stated here because the
+// prefix sits next to one that deliberately does not.
 
 // Decisions about how the page looks: a size, a colour, a spacing, a weight.
 // These do end in a stylesheet, and that is not the useful thing to say about

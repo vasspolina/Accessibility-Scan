@@ -258,6 +258,12 @@
       },
       undecidedChecks: [
         { ruleId: "color-contrast", count: 12, help: "Contrast could not be measured over an image background.", helpUrl: "https://dequeuniversity.com/rules/axe/4.10/color-contrast" },
+        { ruleId: "media-video-captions", count: 3, help: "Video with no captions track", helpUrl: "https://www.w3.org/WAI/WCAG21/Understanding/captions-prerecorded.html" },
+        { ruleId: "media-embedded-player", count: 2, help: "Video embedded from another site", helpUrl: "https://www.w3.org/WAI/WCAG21/Understanding/captions-prerecorded.html" },
+        { ruleId: "interaction-key-shortcuts", count: 1, help: "The page listens for key presses everywhere", helpUrl: "https://www.w3.org/WAI/WCAG21/Understanding/character-key-shortcuts.html" },
+        { ruleId: "interaction-acts-on-change", count: 2, help: "Controls that may act as soon as you set them", helpUrl: "https://www.w3.org/WAI/WCAG21/Understanding/on-input.html" },
+        { ruleId: "interaction-pointer-cancellation", count: 4, help: "Controls that act the moment they are pressed", helpUrl: "https://www.w3.org/WAI/WCAG21/Understanding/pointer-cancellation.html" },
+        { ruleId: "media-audio-transcript", count: 1, help: "Audio with no transcript we can see", helpUrl: "https://www.w3.org/WAI/WCAG21/Understanding/audio-only-and-video-only-prerecorded.html" },
       ],
       pagePreview: TINY_JPEG,
       meta: {
@@ -284,6 +290,22 @@
         { url: url, label: "Home", score: 78, findingCount: 6 },
         { url: url + "/contact", label: "Contact", score: 54, findingCount: 12 },
         { url: url + "/legal", label: "Legal", score: 0, findingCount: 0, error: "The page took too long to load." },
+      ],
+      consistency: [
+        {
+          criterion: "3.2.3",
+          ruleId: "nav-order-inconsistent",
+          title: "The menu is in a different order on some pages",
+          description: "The menu on the home page lists its links in one order, and 2 other pages list the same links in a different one. People who navigate by position \u2014 by memory, by keyboard, or with a screen magnifier showing part of the screen at a time \u2014 have to find the menu again on every page.",
+          pages: ["https://example.com/", "https://example.com/about", "https://example.com/shop"],
+        },
+        {
+          criterion: "3.2.4",
+          ruleId: "nav-name-inconsistent",
+          title: "The same link is called different things",
+          description: "One link goes to the same place under more than one name \u2014 for example \u201cbasket\u201d on one page and \u201ccart\u201d on another. Anyone who learned the first name has to work out that the second one is the same thing.",
+          pages: ["https://example.com/", "https://example.com/shop"],
+        },
       ],
       siteWide: [
         { ruleId: "image-alt", title: "Images have no descriptions", severity: "critical", pageCount: 3, totalOccurrences: 9, wcagCriterion: "1.1.1" },

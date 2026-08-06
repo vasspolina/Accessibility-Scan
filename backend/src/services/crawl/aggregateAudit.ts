@@ -1,5 +1,6 @@
 import type { AccessibilityReport, Severity } from "../../types/report.js";
 import { buildConformance, type ConformanceSummary } from "../conformance/buildConformance.js";
+import { compareNavigation, type ConsistencyIssue } from "./consistency.js";
 
 // Rolls several page reports into one site-level audit.
 //
@@ -48,6 +49,10 @@ export interface SiteAudit {
   // Conformance across the whole site: a criterion fails site-wide if it
   // fails anywhere, since conformance is a property of the site as a whole.
   conformance: ConformanceSummary;
+  // Where pages disagree with each other — WCAG 3.2.3 and 3.2.4. Only ever
+  // populated here: these are the two criteria a single-page scan cannot
+  // speak to at all.
+  consistency: ConsistencyIssue[];
 }
 
 export interface PageOutcome {
@@ -151,5 +156,14 @@ export function aggregateAudit(entryUrl: string, outcomes: PageOutcome[]): SiteA
     pages,
     siteWide,
     conformance: buildConformance(allFindings),
+    // Pages that failed to render carry no menu, and a page with no menu is
+    // silently skipped rather than counted as one that changed it.
+    consistency: compareNavigation(
+      scanned.map((o) => ({
+        url: o.url,
+        label: o.label,
+        navigation: o.report!.navigation ?? [],
+      }))
+    ),
   };
 }

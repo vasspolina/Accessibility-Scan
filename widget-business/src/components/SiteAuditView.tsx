@@ -55,6 +55,47 @@ export function SiteAuditView({ audit }: { audit: SiteAudit }) {
         </div>
       </section>
 
+      {(audit.consistency ?? []).length > 0 && (
+        <section className="a11y-section" aria-labelledby="a11y-audit-consistency-heading">
+          <h2
+            className="a11y-section-title"
+            id="a11y-audit-consistency-heading"
+            data-nav-label="Pages that disagree"
+          >
+            Pages that disagree{" "}
+            <span className="a11y-section-count">({(audit.consistency ?? []).length})</span>
+          </h2>
+          <p className="a11y-section-desc">
+            Found by comparing your pages against each other, which is the only
+            way these show up — one page on its own always looks fine. A menu
+            that moves, or a link that changes its name, makes people learn your
+            site again on every page.
+          </p>
+          <ul className="a11y-audit-list">
+            {(audit.consistency ?? []).map((issue) => (
+              <li key={issue.ruleId} className="a11y-audit-row">
+                <span className="a11y-audit-body">
+                  <strong>
+                    {issue.title}
+                    {professional && (
+                      <>
+                        {" "}
+                        <code className="a11y-rule-chip">{issue.criterion}</code>
+                      </>
+                    )}
+                  </strong>
+                  <span className="a11y-conf-plain">{issue.description}</span>
+                </span>
+                <span className="a11y-audit-count">
+                  {issue.pages.length}
+                  <em>pages</em>
+                </span>
+              </li>
+            ))}
+          </ul>
+        </section>
+      )}
+
       {audit.siteWide.length > 0 && (
         <section className="a11y-section a11y-section-redflag" aria-labelledby="a11y-audit-siteWide-heading">
           <h2 className="a11y-section-title" id="a11y-audit-siteWide-heading" data-nav-label="Fix once, fix everywhere">

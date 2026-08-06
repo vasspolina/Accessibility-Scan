@@ -117,12 +117,75 @@ const CLICK_LISTENER_PROBE = `(() => {
   const seen = new WeakSet();
   const tracked = [];
   window.__a11yClickTargets = tracked;
+
+  // Which event types the page listens for, and on what. Three criteria turn
+  // on this and nothing else could answer them: a listener is invisible in
+  // the DOM, and getEventListeners() is a DevTools facility the page cannot
+  // call. Patching addEventListener before any page script runs is the only
+  // vantage point from which these are observable at all.
+  //
+  //   2.5.4  Motion Actuation      — devicemotion / deviceorientation
+  //   2.1.4  Character Key Shortcuts — key handlers bound document-wide
+  //   2.5.2  Pointer Cancellation  — a press that acts without a release
+  //
+  // None of it proves a failure: a devicemotion listener may well have a
+  // button beside it, and a keydown handler may only ever fire on Escape.
+  // The presence of the listener is the fact; what it does with the event is
+  // not visible from here, and the report says so.
+  const DOWN = { mousedown: 1, touchstart: 1, pointerdown: 1 };
+  const UP = { mouseup: 1, touchend: 1, pointerup: 1, click: 1 };
+  const GLOBAL_WATCH = {
+    devicemotion: 1, deviceorientation: 1,
+    keydown: 1, keypress: 1, keyup: 1,
+  };
+  const globals = {};
+  // WeakMap for the lookup, array for the enumeration. A linear scan here
+  // would run on every addEventListener call a page makes — thousands on a
+  // heavy site — and this probe must never be the reason a scan is slow.
+  const pointerMap = new WeakMap();
+  const pointerTargets = [];
+  // Controls that react when their value changes. On its own this says very
+  // little — a filter dropdown that repaints a list is ordinary and fine —
+  // so it is never reported alone. renderPage pairs it with the shape that
+  // makes it a 3.2.2 risk: a select in a form with nothing to submit it,
+  // which is the classic auto-submit-on-change menu.
+  const changeSeen = new WeakSet();
+  const changeTargets = [];
+  window.__a11yListeners = { globals, pointerTargets, changeTargets };
+
   const original = EventTarget.prototype.addEventListener;
   EventTarget.prototype.addEventListener = function (type, ...rest) {
     try {
       if (type === "click" && this instanceof Element && !seen.has(this) && tracked.length < MAX_TRACKED) {
         seen.add(this);
         tracked.push(this);
+      }
+      // Bound on window, document or body — the scope that makes a bare
+      // letter a page-wide shortcut, or a tilt gesture the only way to act.
+      const isGlobal = this === window || this === document || this === document.body;
+      if (isGlobal && GLOBAL_WATCH[type]) globals[type] = (globals[type] || 0) + 1;
+
+      if (
+        type === "change" &&
+        this instanceof Element &&
+        !changeSeen.has(this) &&
+        changeTargets.length < MAX_TRACKED
+      ) {
+        changeSeen.add(this);
+        changeTargets.push(this);
+      }
+
+      if (this instanceof Element && (DOWN[type] || UP[type])) {
+        let entry = pointerMap.get(this);
+        if (!entry && pointerTargets.length < MAX_TRACKED) {
+          entry = { el: this, down: false, up: false };
+          pointerMap.set(this, entry);
+          pointerTargets.push(entry);
+        }
+        if (entry) {
+          if (DOWN[type]) entry.down = true;
+          if (UP[type]) entry.up = true;
+        }
       }
     } catch (e) {
       // Never let bookkeeping break the page's own event wiring.

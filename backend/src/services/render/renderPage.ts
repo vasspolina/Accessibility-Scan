@@ -81,6 +81,55 @@ export interface DomSignals {
     hasPauseControls: boolean;
   }>;
   respectsReducedMotion: boolean;
+  // Audio and video on the page, and third-party players embedded in an
+  // iframe. WCAG 1.2.1-1.2.5 are the only criteria this scan had no signal
+  // for at all — the renderer looked at media once, for autoplay, and never
+  // asked whether any of it carried captions.
+  //
+  // Nothing here proves a failure and none of it is scored. Whether a video
+  // needs captions depends on whether it carries speech, which cannot be
+  // read off the DOM: a silent background loop needs none, and captions
+  // burned into the picture satisfy the criterion while leaving no <track>
+  // behind. What this does is turn "somebody must check your video" into
+  // "you have three, here they are".
+  mediaElements: Array<{
+    selector: string;
+    tag: "video" | "audio";
+    // A <track> is the only caption mechanism visible to us. Kinds are kept
+    // verbatim rather than reduced to a boolean so the analyzer can tell a
+    // captions track from a descriptions or metadata one.
+    trackKinds: string[];
+    muted: boolean;
+    hasControls: boolean;
+    // A named video is far easier for the reader to go and find than a
+    // selector, so the label is carried when the markup offers one.
+    label: string;
+  }>;
+  mediaEmbeds: Array<{ selector: string; provider: string; title: string }>;
+  // The navigation, in the order it appears. Meaningless on its own — a
+  // single page cannot be inconsistent with itself — and collected purely so
+  // the crawler can compare one page against another. WCAG 3.2.3 and 3.2.4
+  // are the two criteria that cannot be judged from one page at all, which
+  // is why they sat at "needs a person" while the crawler rendered several
+  // pages and compared none of them.
+  navigation: Array<{ text: string; href: string }>;
+  // What the page listens for, recorded by the probe in browserPool.ts.
+  // Listeners are invisible in markup, so this is the only evidence behind
+  // 2.5.4, 2.1.4 and 2.5.2. Presence is all it establishes — see the probe's
+  // own comment for why that stops short of a failure.
+  listeners: {
+    motion: boolean;
+    keyboardGlobal: boolean;
+    // Elements that act on the press without also handling the release, so
+    // there is nothing to move away from before letting go.
+    pressWithoutRelease: string[];
+    // Controls that look like they act the moment their value changes —
+    // WCAG 3.2.2. Read from the markup only: testing this properly would
+    // mean changing form values on somebody's live site, which can submit a
+    // form or fire a real action, and is not a thing a scan may do
+    // uninvited. So this reports the shape, never the behaviour.
+    actsOnChange: string[];
+  };
   // Every same-document link with its text — used by the crawler to pick
   // which pages to audit. Separate from interactiveElements, which is capped
   // at 60 and mixes in buttons: a nav-heavy page would truncate the link list
@@ -440,6 +489,141 @@ function extractDomSignalsInPage(): DomSignals {
       };
     });
 
+  // Capped like every other list collected here. A page with more than
+  // twenty players has a pattern, not twenty separate problems, and the
+  // analyzer reports the count either way.
+  const mediaElements = Array.from(document.querySelectorAll("video, audio"))
+    .slice(0, 20)
+    .map((el) => {
+      const media = el as HTMLMediaElement;
+      return {
+        selector: cssPath(el),
+        tag: el.tagName.toLowerCase() as "video" | "audio",
+        trackKinds: Array.from(el.querySelectorAll("track")).map(
+          (t) => t.getAttribute("kind") ?? "subtitles" // the HTML default
+        ),
+        muted: media.hasAttribute("muted") || media.muted,
+        hasControls: el.hasAttribute("controls"),
+        label:
+          el.getAttribute("aria-label") ??
+          el.getAttribute("title") ??
+          "",
+      };
+    });
+
+  // Players that live inside an iframe. We cannot see whether the video
+  // playing in one has captions — the document belongs to the provider, not
+  // the page — so these are counted and named, never judged.
+  const EMBED_HOSTS: Array<[RegExp, string]> = [
+    [/(?:^|\.)youtube(?:-nocookie)?\.com$|(?:^|\.)youtu\.be$/i, "YouTube"],
+    [/(?:^|\.)vimeo\.com$/i, "Vimeo"],
+    [/(?:^|\.)wistia\.(?:com|net)$/i, "Wistia"],
+    [/(?:^|\.)loom\.com$/i, "Loom"],
+    [/(?:^|\.)dailymotion\.com$/i, "Dailymotion"],
+    [/(?:^|\.)brightcove\.(?:com|net)$/i, "Brightcove"],
+    [/(?:^|\.)soundcloud\.com$/i, "SoundCloud"],
+    [/(?:^|\.)spotify\.com$/i, "Spotify"],
+  ];
+  const mediaEmbeds = Array.from(document.querySelectorAll("iframe[src]"))
+    .map((el) => {
+      let host = "";
+      try {
+        host = new URL((el as HTMLIFrameElement).src, location.href).hostname;
+      } catch {
+        return null;
+      }
+      const match = EMBED_HOSTS.find(([re]) => re.test(host));
+      if (!match) return null;
+      return {
+        selector: cssPath(el),
+        provider: match[1],
+        title: el.getAttribute("title") ?? "",
+      };
+    })
+    .filter((e): e is { selector: string; provider: string; title: string } => e !== null)
+    .slice(0, 20);
+
+  // Navigation landmarks first, header only as a fallback: a great many
+  // sites still wrap their menu in a bare <header> with no nav landmark, and
+  // skipping those would leave this check silent on exactly the templates
+  // most likely to be inconsistent.
+  const navScopes = Array.from(
+    document.querySelectorAll('nav, [role="navigation"]')
+  );
+  const scopes = navScopes.length > 0 ? navScopes : Array.from(document.querySelectorAll("header"));
+  const navSeen = new Set<string>();
+  const navigation: Array<{ text: string; href: string }> = [];
+  for (const scope of scopes) {
+    for (const a of Array.from(scope.querySelectorAll("a[href]"))) {
+      if (navigation.length >= 40) break;
+      const link = a as HTMLAnchorElement;
+      // The resolved URL, minus the fragment: /about and /about#top are the
+      // same destination, and a menu that differs only by anchor is not an
+      // inconsistency anybody experiences.
+      let href = "";
+      try {
+        const u = new URL(link.href, location.href);
+        u.hash = "";
+        href = u.toString();
+      } catch {
+        continue;
+      }
+      const text = (link.getAttribute("aria-label") ?? link.textContent ?? "")
+        .replace(/\s+/g, " ")
+        .trim();
+      if (!text || navSeen.has(href)) continue;
+      navSeen.add(href);
+      navigation.push({ text, href });
+    }
+  }
+
+  const probe = (window as unknown as {
+    __a11yListeners?: {
+      globals: Record<string, number>;
+      pointerTargets: Array<{ el: Element; down: boolean; up: boolean }>;
+      changeTargets: Element[];
+    };
+  }).__a11yListeners;
+
+  // Two signals, both narrow on purpose. 3.2.2 is about a control that
+  // changes your context the instant you set its value, and the honest
+  // trouble is that most controls reacting to change are perfectly ordinary
+  // — a filter that repaints a list below it breaks nothing. Reporting every
+  // select with a change handler would put a row on nearly every site and
+  // teach the reader to skip this one.
+  const actsOnChangeSet = new Set<string>();
+
+  // 1. The handler says so itself. An inline onchange that submits, or sets
+  //    location, is the behaviour written down in the markup — no inference.
+  const ACTS = /\b(submit|location|\.href|window\.open|\.click\(\))/i;
+  for (const el of Array.from(document.querySelectorAll("[onchange], [oninput]"))) {
+    const code = (el.getAttribute("onchange") ?? "") + ";" + (el.getAttribute("oninput") ?? "");
+    if (ACTS.test(code)) actsOnChangeSet.add(cssPath(el));
+  }
+
+  // 2. A select that reacts to change, inside a form with no way to submit
+  //    it. The missing submit button is what makes this the auto-submit
+  //    menu rather than an ordinary filter: if choosing an option is the
+  //    only way to send the form, choosing one must be sending it.
+  for (const el of probe?.changeTargets ?? []) {
+    if (!el.isConnected || el.tagName !== "SELECT") continue;
+    const form = (el as HTMLSelectElement).form;
+    if (!form) continue;
+    if (form.querySelector('button:not([type="button"]), input[type="submit"], input[type="image"]')) {
+      continue;
+    }
+    actsOnChangeSet.add(cssPath(el));
+  }
+  const listeners = {
+    motion: Boolean(probe?.globals.devicemotion || probe?.globals.deviceorientation),
+    keyboardGlobal: Boolean(probe?.globals.keydown || probe?.globals.keypress),
+    pressWithoutRelease: (probe?.pointerTargets ?? [])
+      .filter((e) => e.down && !e.up && e.el.isConnected)
+      .slice(0, 20)
+      .map((e) => cssPath(e.el)),
+    actsOnChange: Array.from(actsOnChangeSet).slice(0, 20),
+  };
+
   let respectsReducedMotion = false;
   try {
     for (const sheet of Array.from(document.styleSheets)) {
@@ -599,6 +783,10 @@ function extractDomSignalsInPage(): DomSignals {
     focusOrderSample,
     animatedElements,
     respectsReducedMotion,
+    mediaElements,
+    mediaEmbeds,
+    navigation,
+    listeners,
     pageLinks,
     dialogs,
   };

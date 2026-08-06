@@ -18,6 +18,8 @@ import {
 } from "./merge/mergeFindings.js";
 import { evaluateTypography } from "./typography/analyzeTypography.js";
 import { evaluateMotion } from "./motion/analyzeMotion.js";
+import { evaluateMedia } from "./media/analyzeMedia.js";
+import { evaluateInteraction } from "./interaction/analyzeInteraction.js";
 import { evaluateKeyboardNav } from "./keyboard/analyzeKeyboard.js";
 import { evaluateComponents } from "./components/analyzeComponents.js";
 import { evaluateDialogs } from "./dialog/analyzeDialogs.js";
@@ -248,6 +250,21 @@ export function summariseUndecided(axe: AxeRunResult): AccessibilityReport["unde
 }
 
 /**
+ * Axe's undecided rows and our own, in one list, biggest first.
+ *
+ * Kept sorted the same way the axe-only list already was, so a page whose
+ * largest open question is its videos leads with them rather than filing
+ * them under whatever axe happened to return last.
+ */
+export function mergeUndecided(
+  fromAxe: AccessibilityReport["undecidedChecks"],
+  extra: Array<NonNullable<AccessibilityReport["undecidedChecks"]>[number]>
+): AccessibilityReport["undecidedChecks"] {
+  const rows = [...(fromAxe ?? []), ...extra].sort((a, b) => b.count - a.count);
+  return rows.length > 0 ? rows : undefined;
+}
+
+/**
  * The full single-URL scan: render + all deterministic finding layers +
  * optional AI review, merged into one AccessibilityReport. Extracted from
  * routes/scan.ts so the crawler (routes/audit.ts) runs the identical
@@ -441,7 +458,19 @@ export async function scanUrlToReport(
     screenReaderScript: renderResult.screenReaderScript,
     conformance,
     wcag22,
-    undecidedChecks: summariseUndecided(renderResult.axe),
+    // Only used by the crawler, which compares it across pages.
+    navigation: renderResult.domSignals.navigation,
+    // Media joins axe's own undecided rows rather than forming a section of
+    // its own: to the reader they are the same kind of thing — something the
+    // checker found and will not rule on — and a second list of them would
+    // only ask where to look.
+    undecidedChecks: mergeUndecided(
+      summariseUndecided(renderResult.axe),
+      [
+        ...evaluateMedia(renderResult.domSignals.mediaElements, renderResult.domSignals.mediaEmbeds),
+        ...evaluateInteraction(renderResult.domSignals.listeners),
+      ]
+    ),
     pagePreview: await downscalePreview(renderResult.screenshotBase64),
     meta: {
       axeVersion: renderResult.axe.testEngine?.version ?? "unknown",

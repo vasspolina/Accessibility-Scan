@@ -1,5 +1,6 @@
 import { DataTable, SeverityTag } from "@verify/design-system";
 import type { ProView } from "./ProSummary";
+import { expandRowOnClick } from "../lib/rowExpand";
 import type { AccessibilityFinding, ConformanceSummary } from "../api/scanClient";
 import { plainForRule } from "../lib/wcagPlain";
 import { enClauseFor } from "../lib/audienceMode";
@@ -146,7 +147,13 @@ export function ProfessionalTable({
     );
 
   return (
-    <section id="a11y-pro-findings" className="a11y-section a11y-pro-table" aria-label="Findings" data-nav-label="Findings">
+    <section
+      id="a11y-pro-findings"
+      className="a11y-section a11y-pro-table"
+      aria-label="Findings"
+      data-nav-label="Findings"
+      onClick={expandRowOnClick}
+    >
       {view === "issues" ? issuesTable : cleanList}
     </section>
   );
