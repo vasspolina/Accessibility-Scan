@@ -21,6 +21,15 @@ import type { AccessibilityReport } from "../../types/report.js";
  * So the job here is smaller and honest: count the media, say where it is,
  * and name the question. "Somebody must check your videos" becomes "you have
  * three, here they are, here is what to ask about each one".
+ *
+ * One limitation worth knowing, measured rather than assumed. This sees the
+ * page as it loads, and a player injected when somebody presses play is not
+ * there yet. Checked against bbc.co.uk/news, a site full of video: at load it
+ * has no <video>, no <audio>, and four iframes that are an A/B testing tool
+ * and a cookie manager — while carrying 37 elements whose class says media or
+ * player. Those are placeholders. Reaching that video would mean pressing
+ * play on a stranger's page, so a site built this way reports no media, and
+ * the count is a floor rather than a total.
  */
 
 const CAPTIONS_URL =

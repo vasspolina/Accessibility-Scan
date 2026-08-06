@@ -533,7 +533,23 @@ function extractDomSignalsInPage(): DomSignals {
         return null;
       }
       const match = EMBED_HOSTS.find(([re]) => re.test(host));
-      if (!match) return null;
+      // A named provider, or a player this page hosts itself. The list above
+      // covers the big eight and missed every broadcaster and publisher
+      // running its own player — measured on bbc.co.uk/news, which is full
+      // of video and reported none.
+      //
+      // The fallback keys on the permissions an iframe asks for rather than
+      // its URL. A video player requests fullscreen or autoplay; the embeds
+      // that would otherwise be swept up here — maps, posts, comment
+      // widgets — ask for neither, and a map reported as an uncaptioned
+      // video is worse than the video being missed.
+      if (!match) {
+        const allow = (el.getAttribute("allow") ?? "").toLowerCase();
+        const fullscreen =
+          /fullscreen|autoplay/.test(allow) || el.hasAttribute("allowfullscreen");
+        if (!fullscreen) return null;
+        return { selector: cssPath(el), provider: host, title: el.getAttribute("title") ?? "" };
+      }
       return {
         selector: cssPath(el),
         provider: match[1],
