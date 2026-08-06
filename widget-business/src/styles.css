@@ -976,6 +976,24 @@ label.a11y-ai-toggle {
   white-space: nowrap;
 }
 
+/* Holding three columns to their content leaves Page whatever remains, and
+   on a phone that came to 97px — enough to break a URL across three lines.
+   Issues goes at that width: it is the one column whose number is already
+   implied by the score beside it, and Page is the column somebody actually
+   reads. Measured, not guessed: 97px before, and the URL wraps mid-word at
+   any width below about 220. */
+@container a11y-panel (max-width: 480px) {
+  .a11y-pages-table th:nth-child(3),
+  .a11y-pages-table tbody td:nth-child(3) {
+    display: none;
+  }
+
+  /* No min-width on Page. Setting one pushed the table past its container,
+     which turned the wrapper into a scrollable region no keyboard could
+     enter — axe's scrollable-region-focusable, a rule this scanner reports
+     on other people's sites. Dropping Issues frees the width on its own. */
+}
+
 /* The card, now owned here. Same tokens the kit read, so the surface, the
    border and the radius are unchanged — and --radius-sm is this package's
    own 12px rather than Carbon's 2px, which is where the reference's rounding
