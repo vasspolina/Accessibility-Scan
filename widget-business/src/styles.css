@@ -4579,80 +4579,42 @@ label.a11y-ai-toggle {
   letter-spacing: -0.02em;
 }
 
-/* These sit beside each other rather than stacking. Each row is one short
-   self-contained note, so a single column left most of the width empty and
-   made a list of five reads like a long document.
-
-   This does change what they are: giving table elements a grid display
-   takes them out of the accessibility tree as a table, so a screen reader
-   stops announcing "table, 1 column" and reads them as the run of blocks
-   they now look like. For a one-column table of prose that is arguably the
-   truer description — but it is a semantics change made from a stylesheet,
-   which is worth knowing about rather than discovering. The caption still
-   names the group either way. */
-.a11y-widget-biz.a11y-widget-biz .a11y-undecided-table table {
-  display: block;
-}
-
-.a11y-widget-biz.a11y-widget-biz .a11y-undecided-table tbody {
+/* The notes as a grid of cards. A real <ul> now, so this is plain layout
+   with nothing to undo: the table-display overrides that used to live here
+   existed only to make a one-column table behave like a list, and the list
+   behaves like one on its own. */
+.a11y-widget-biz.a11y-widget-biz .a11y-undecided-table {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(22rem, 1fr));
   gap: var(--space-04, 0.75rem);
+  margin: 0;
+  padding: 0;
+  list-style: none;
 }
 
-.a11y-widget-biz.a11y-widget-biz .a11y-undecided-table tbody tr {
-  display: block;
-}
-
-.a11y-widget-biz.a11y-widget-biz .a11y-undecided-table tbody td {
-  display: block;
+.a11y-widget-biz.a11y-widget-biz .a11y-undecided-table > li {
   height: 100%;
-}
-
-.a11y-widget-biz.a11y-widget-biz .a11y-undecided-table tbody td {
-  padding: var(--space-05, 1rem) !important;
+  padding: var(--space-05, 1rem);
   background: #f4f4f4;
-  border-bottom: 0 !important;
   border-radius: 16px;
 }
 
-.a11y-widget-biz.a11y-widget-biz .a11y-undecided-table thead th {
-  border-bottom: 0 !important;
-}
-
 @media (prefers-color-scheme: dark) {
-  .a11y-widget-biz.a11y-widget-biz .a11y-undecided-table tbody td {
+  .a11y-widget-biz.a11y-widget-biz .a11y-undecided-table > li {
     background: #262626;
   }
 }
 
 @media print {
-  .a11y-widget-biz.a11y-widget-biz .a11y-undecided-table tbody td {
+  .a11y-widget-biz.a11y-widget-biz .a11y-undecided-table > li {
     background: transparent;
     border: 1px solid #000;
   }
 }
 
-.a11y-undecided-table table {
-  width: 100%;
-  /* table-layout: auto (the default) sizes a column to its content's
-     unwrapped preferred width first, and only shrinks it if that leaves
-     no room at all — for a single-column table holding a paragraph of
-     real prose, that preferred width is the length of its longest
-     unbroken line, which stretched this table (and the page under it,
-     before overflow-x: auto caught it) far past the viewport instead of
-     just wrapping the text. Fixed layout skips that computation
-     entirely: the one column is simply 100% of the table, and content
-     wraps inside it like anywhere else on the page. */
-  table-layout: fixed;
-  /* Same flattening as .a11y-findings-table: no second frame drawn
-     around content that already sits inside its own report section. */
-  border: 0 !important;
-}
+/* The table-era rules for this section are gone with the table: it is a
+   <ul> now, and the grid above is all the layout it needs. */
 
-.a11y-undecided-table thead tr {
-  background: transparent !important;
-}
 
 @media (hover: none) {
   .a11y-undecided-table tbody tr {

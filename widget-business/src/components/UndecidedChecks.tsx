@@ -1,4 +1,3 @@
-import { DataTable } from "@verify/design-system";
 import { undecidedExplanation } from "../lib/wcagPlain";
 import { fixKindForRule } from "../lib/testMethod";
 
@@ -36,57 +35,47 @@ export function UndecidedChecks({
         score, and some of it will turn out to be perfectly fine.
       </p>
       {rows.length > 0 && (
-        <div className="a11y-undecided-table">
-        <DataTable
-          caption="What the checker couldn't decide"
-          headers={[{ key: "issue", label: "What we couldn't decide" }]}
-          rows={rows.map((r) => {
+        /* A list, not a table. It was a one-column DataTable, which meant
+           the cards it renders as could only be laid out side by side by
+           giving table elements a grid display — and that quietly took the
+           table role out of the accessibility tree. A <ul> is what this
+           always was: a set of notes in no particular relation to each
+           other. Now the semantics and the layout agree instead of one
+           being undone by the other. */
+        <ul className="a11y-undecided-table" aria-label="What the checker couldn't decide">
+          {rows.map((r) => {
             const e = undecidedExplanation(r.ruleId);
             const fix = fixKindForRule(r.ruleId);
-            return {
-              id: r.ruleId,
-              cells: [
-                <div key="issue" className="a11y-undecided-cell">
-                  {/* Who-fixes-this used to be its own column — at phone
-                      width the badge, the arrow-free but still narrow
-                      "Places" column, and this column's own text floor
-                      already ran past the viewport, forcing the same
-                      horizontal scroll the findings table had before
-                      Severity folded the same way. Places itself folds in
-                      beside the badge now rather than holding a column of
-                      its own — the same count, just read next to the
-                      thing it's counting instead of off at the row's far
-                      edge. */}
-                  <span className="a11y-undecided-badge-row">
-                    <span className={`a11y-method-badge a11y-fix-${fix.key}`}>{fix.label}</span>
-                    <span className="a11y-undecided-places">
-                      {r.count} {r.count === 1 ? "place" : "places"}
-                    </span>
+            return (
+              <li key={r.ruleId} className="a11y-undecided-cell">
+                <span className="a11y-undecided-badge-row">
+                  <span className={`a11y-method-badge a11y-fix-${fix.key}`}>{fix.label}</span>
+                  <span className="a11y-undecided-places">
+                    {r.count} {r.count === 1 ? "place" : "places"}
                   </span>
-                  <p className="a11y-undecided-what">{e ? e.what : r.help}</p>
-                  {e && (
-                    <p className="a11y-undecided-ask">
-                      <strong>What to ask for:</strong> {e.ask}
-                    </p>
-                  )}
-                  {r.helpUrl && (
-                    <p>
-                      <a
-                        className="a11y-learn-more"
-                        href={r.helpUrl}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                      >
-                        Learn more about this check <span aria-hidden="true">↗</span>
-                      </a>
-                    </p>
-                  )}
-                </div>,
-              ],
-            };
+                </span>
+                <p className="a11y-undecided-what">{e ? e.what : r.help}</p>
+                {e && (
+                  <p className="a11y-undecided-ask">
+                    <strong>What to ask for:</strong> {e.ask}
+                  </p>
+                )}
+                {r.helpUrl && (
+                  <p>
+                    <a
+                      className="a11y-learn-more"
+                      href={r.helpUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      Learn more about this check <span aria-hidden="true">↗</span>
+                    </a>
+                  </p>
+                )}
+              </li>
+            );
           })}
-        />
-        </div>
+        </ul>
       )}
     </section>
   );
