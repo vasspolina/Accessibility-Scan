@@ -994,6 +994,103 @@ label.a11y-ai-toggle {
      on other people's sites. Dropping Issues frees the width on its own. */
 }
 
+/* The progress bar and the notification, now owned here. Same tokens the
+   kit read, so neither changes appearance — only where the rules live. */
+.a11y-progress-head {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: var(--space-03, 0.5rem);
+}
+
+.a11y-progress-label,
+.a11y-progress-pct {
+  font-size: var(--a11y-text-label, 0.875rem);
+  color: var(--text-secondary, var(--a11y-muted, #525252));
+}
+
+.a11y-progress-label {
+  font-weight: 500;
+}
+
+.a11y-progress-track {
+  height: 8px;
+  background: var(--layer-01, var(--a11y-surface, #f4f4f4));
+  border: 1px solid var(--border-subtle, var(--a11y-border, #e0e0e0));
+}
+
+.a11y-progress-fill {
+  height: 100%;
+  background: var(--interactive, var(--a11y-accent, #1948f4));
+  transition: width 240ms var(--ease-productive-standard, cubic-bezier(0.2, 0, 0.38, 0.9));
+}
+
+/* The reduced-motion rule elsewhere in this file reaches this through the
+   universal selector, so a filling bar stops animating with everything
+   else. */
+
+.a11y-note {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-04, 0.75rem);
+  padding: var(--space-04, 0.75rem) var(--space-05, 1rem);
+  background: var(--layer-01, var(--a11y-surface, #f4f4f4));
+  border: 1px solid var(--border-subtle, var(--a11y-border, #e0e0e0));
+  border-left-width: 3px;
+  color: var(--a11y-text, #161616);
+}
+
+.a11y-note-glyph {
+  width: 16px;
+  text-align: center;
+  font-weight: 500;
+}
+
+.a11y-note-body {
+  flex: 1;
+}
+
+.a11y-note-title {
+  font-weight: 500;
+}
+
+.a11y-note-sub {
+  color: var(--text-secondary, var(--a11y-muted, #525252));
+}
+
+/* The kind is carried by the left rule and the glyph, never by the fill —
+   the same no-colour-alone rule the severity chips follow. */
+.a11y-note-error {
+  border-left-color: var(--support-error, var(--a11y-score-bad, #a2191f));
+}
+
+.a11y-note-error .a11y-note-glyph {
+  color: var(--support-error, var(--a11y-score-bad, #a2191f));
+}
+
+.a11y-note-success {
+  border-left-color: var(--support-success, #0e6027);
+}
+
+.a11y-note-success .a11y-note-glyph {
+  color: var(--support-success, #0e6027);
+}
+
+.a11y-note-warning {
+  border-left-color: var(--severity-moderate, #8a3800);
+}
+
+.a11y-note-warning .a11y-note-glyph {
+  color: var(--severity-moderate, #8a3800);
+}
+
+.a11y-note-info {
+  border-left-color: var(--support-info, var(--a11y-accent, #1948f4));
+}
+
+.a11y-note-info .a11y-note-glyph {
+  color: var(--support-info, var(--a11y-accent, #1948f4));
+}
+
 /* The card, now owned here. Same tokens the kit read, so the surface, the
    border and the radius are unchanged — and --radius-sm is this package's
    own 12px rather than Carbon's 2px, which is where the reference's rounding

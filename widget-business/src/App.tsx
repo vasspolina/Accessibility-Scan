@@ -14,7 +14,7 @@ import { UndecidedChecks } from "./components/UndecidedChecks";
 import { ReportViewProvider, type ReportView } from "./components/ReportViewContext";
 import { ProfessionalTable } from "./components/ProfessionalTable";
 import { ProSummary, type ProView } from "./components/ProSummary";
-import { Notification, ProgressBar } from "@verify/design-system";
+import { Notification, ProgressBar } from "./components/Feedback";
 import { groupFindings } from "./components/FindingsList";
 
 function hostnameOf(url: string): string {
