@@ -20,6 +20,7 @@ import { evaluateTypography } from "./typography/analyzeTypography.js";
 import { evaluateMotion } from "./motion/analyzeMotion.js";
 import { evaluateMedia } from "./media/analyzeMedia.js";
 import { evaluateInteraction } from "./interaction/analyzeInteraction.js";
+import { evaluateTiming } from "./interaction/analyzeTiming.js";
 import { evaluateKeyboardNav } from "./keyboard/analyzeKeyboard.js";
 import { evaluateComponents } from "./components/analyzeComponents.js";
 import { evaluateDialogs } from "./dialog/analyzeDialogs.js";
@@ -377,6 +378,7 @@ export async function scanUrlToReport(
       renderResult.userPreferences
     )
   );
+  deterministic.push(...evaluateTiming(renderResult.domSignals));
   deterministic.push(...evaluateKeyboardNav(renderResult.keyboardNav));
   deterministic.push(...evaluateComponents(renderResult.domSignals));
   deterministic.push(...evaluateDialogs(renderResult.domSignals.dialogs, renderResult.dialogKeyboard));

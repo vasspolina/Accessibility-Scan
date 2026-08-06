@@ -102,6 +102,11 @@ export interface PlainRule {
 }
 
 export const PLAIN_RULE_EXPLANATIONS: Record<string, PlainRule> = {
+  "timing-meta-refresh": {
+    plain: "The page reloads on a timer",
+    impact:
+      "Anyone still reading, or part way through the form, is thrown back to the start with no warning. Reading slowly is not a fault, and this punishes it.",
+  },
   "aria-allowed-role": {
     plain: "Elements labelled as what they aren't",
     found: (n) =>

@@ -155,6 +155,11 @@ export interface DomSignals {
      English page shares the Latin alphabet and is invisible here — that
      half of the criterion still needs a person. */
   unmarkedScripts: number;
+  /* Seconds on a <meta http-equiv="refresh">, or null where there is none.
+     A timed refresh reloads or redirects the page out from under whoever is
+     reading it, and offers no way to turn it off, extend it, or adjust it —
+     which is the whole of WCAG 2.2.1. */
+  metaRefreshSeconds: number | null;
   // Every same-document link with its text — used by the crawler to pick
   // which pages to audit. Separate from interactiveElements, which is capped
   // at 60 and mixes in buttons: a nav-heavy page would truncate the link list
@@ -769,6 +774,17 @@ function extractDomSignalsInPage(): DomSignals {
     }
   }
 
+  let metaRefreshSeconds: number | null = null;
+  {
+    const meta = document.querySelector('meta[http-equiv="refresh" i][content]');
+    const raw = meta?.getAttribute("content") ?? "";
+    const secs = Number.parseFloat(raw.split(";")[0].trim());
+    // Zero is an immediate redirect, which is a routing decision rather than
+    // a time limit anybody experiences — there is nothing to extend. Only a
+    // delay somebody could be reading through counts.
+    if (Number.isFinite(secs) && secs > 0) metaRefreshSeconds = secs;
+  }
+
   let respectsReducedMotion = false;
   try {
     for (const sheet of Array.from(document.styleSheets)) {
@@ -936,6 +952,7 @@ function extractDomSignalsInPage(): DomSignals {
     orientationLock,
     titleTooltips,
     unmarkedScripts,
+    metaRefreshSeconds,
     pageLinks,
     dialogs,
   };

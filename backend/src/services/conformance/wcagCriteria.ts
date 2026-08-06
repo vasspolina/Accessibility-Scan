@@ -61,7 +61,7 @@ export const WCAG_21_AA_CRITERIA: WcagCriterion[] = [
   { id: "2.1.1", name: "Keyboard", level: "A", coverage: "partial", plain: "Does everything work without a mouse?", failing: "Parts of the page only work with a mouse" },
   { id: "2.1.2", name: "No Keyboard Trap", level: "A", coverage: "automated", plain: "Can keyboard users always tab back out again?", failing: "Keyboard users get stuck and can't tab back out" },
   { id: "2.1.4", name: "Character Key Shortcuts", level: "A", coverage: "manual", plain: "Can single-key shortcuts be turned off?", failing: "Single-key shortcuts can't be turned off, so speech users trigger them by accident" },
-  { id: "2.2.1", name: "Timing Adjustable", level: "A", coverage: "manual", plain: "Can a time limit be extended or turned off?", failing: "A time limit can't be extended or turned off" },
+  { id: "2.2.1", name: "Timing Adjustable", level: "A", coverage: "partial", plain: "Can a time limit be extended or turned off?", failing: "A time limit can't be extended or turned off" },
   { id: "2.2.2", name: "Pause, Stop, Hide", level: "A", coverage: "automated", plain: "Can moving content be stopped?", failing: "Moving content can't be stopped" },
   { id: "2.3.1", name: "Three Flashes or Below Threshold", level: "A", coverage: "manual", plain: "Is anything flashing fast enough to trigger a seizure?", failing: "Something flashes fast enough to trigger a seizure" },
   { id: "2.4.1", name: "Bypass Blocks", level: "A", coverage: "automated", plain: "Is there a way to jump past the menu to the main content?", failing: "There's no way to jump past the menu to the main content" },
