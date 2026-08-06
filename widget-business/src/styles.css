@@ -957,6 +957,25 @@ label.a11y-ai-toggle {
   outline-offset: -2px;
 }
 
+/* The page-by-page table's narrow columns.
+
+   Score, Issues and Status are declared at width: 1%, which asks the
+   browser to size them to their content — but a column with no nowrap
+   answers that by wrapping every character onto its own line, so "Score"
+   came down the page as S-c-o-r-e and 78 as 7-8. The width hint alone has
+   never been enough in this file; it needs the pair.
+
+   Page keeps wrapping: it holds a title and a URL and is the column that
+   should absorb the remaining width. */
+.a11y-pages-table th:nth-child(2),
+.a11y-pages-table th:nth-child(3),
+.a11y-pages-table th:nth-child(4),
+.a11y-pages-table tbody td:nth-child(2),
+.a11y-pages-table tbody td:nth-child(3),
+.a11y-pages-table tbody td:nth-child(4) {
+  white-space: nowrap;
+}
+
 /* The card, now owned here. Same tokens the kit read, so the surface, the
    border and the radius are unchanged — and --radius-sm is this package's
    own 12px rather than Carbon's 2px, which is where the reference's rounding
@@ -4360,16 +4379,12 @@ label.a11y-ai-toggle {
   border: 1px solid currentColor;
 }
 
-.a11y-severity-badge::before {
-  content: "! ";
-  content: "! " / "";
-  font-weight: 500;
-}
-
-.a11y-severity-minor .a11y-severity-badge::before {
-  content: "i ";
-  content: "i " / "";
-}
+/* The glyph used to be added here, because the chip's markup did not carry
+   one. The component does now — as a real <span aria-hidden>, which is
+   better than a pseudo-element: it needs no alt-text trick to stay out of
+   the accessible name, and it cannot be lost when a stylesheet fails to
+   load. Both rules rendering at once was what put "! ! Fix first" on the
+   site audit. */
 
 .a11y-severity-critical .a11y-severity-badge {
   background: #fff1f1;

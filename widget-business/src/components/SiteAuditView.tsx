@@ -147,7 +147,11 @@ export function SiteAuditView({ audit }: { audit: SiteAudit }) {
              the report's honesty line: findings are evidenced failures, so
              "Fails" is earned; their absence is only "No issues found",
              never "Passes". */
-          <div className="a11y-pro-table">
+          /* Its own class as well as the shared one: this table's columns are
+             page/score/issues/status, where the findings tables start with
+             an expand arrow, so the position-based rules written for those
+             do not describe this one. */
+          <div className="a11y-pro-table a11y-pages-table">
             <DataTable
               headers={[
                 { key: "page", label: "Page" },
