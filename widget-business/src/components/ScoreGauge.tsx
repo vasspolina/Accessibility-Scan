@@ -1,4 +1,4 @@
-import { ScoreDial } from "@verify/design-system";
+import { ScoreDial } from "./ScoreDial";
 import { useState, type CSSProperties } from "react";
 import { SeverityTag } from "./SeverityTag";
 import type { AccessibilityFinding } from "../api/scanClient";

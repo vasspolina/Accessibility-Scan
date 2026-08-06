@@ -994,6 +994,35 @@ label.a11y-ai-toggle {
      on other people's sites. Dropping Issues frees the width on its own. */
 }
 
+/* The score dial, now owned here. Layout only — every colour on it comes
+   from the component, because the tone is computed from the score. */
+.a11y-dial {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-03, 0.5rem);
+}
+
+.a11y-dial-ring {
+  position: relative;
+}
+
+.a11y-dial-number {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: var(--a11y-text-title);
+  font-weight: 500;
+  color: var(--a11y-text, #161616);
+}
+
+.a11y-dial-word {
+  font-size: var(--a11y-text-label, 0.875rem);
+  font-weight: 500;
+}
+
 /* The button, now owned here. Heights are the kit's, and 48px on the large
    size is what the report's own tap-target rule asks of everybody else. */
 .a11y-btn {
