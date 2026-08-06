@@ -957,13 +957,53 @@ label.a11y-ai-toggle {
   outline-offset: -2px;
 }
 
+/* The severity chip, now that this package owns the component.
+
+   The rules below this one are the older shape, where the severity lived on
+   an ancestor (.a11y-severity-critical .a11y-severity-badge) and the chip
+   was a solid fill with white text. The component sets the severity class on
+   the chip itself, so these self-classed rules are what actually paint it —
+   the descendant ones stay for the card markup that still nests that way.
+
+   Tinted fill with the matching ink on top, and a border in currentColor,
+   which is what keeps the outline legible whatever a theme does to the
+   fill. */
 .a11y-severity-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
   flex-shrink: 0;
   padding: 4px 12px;
+  border: 1px solid currentColor;
   border-radius: 999px;
-  font-size: var(--a11y-text-body);
+  font-size: var(--a11y-text-label, 0.875rem);
   font-weight: 500;
-  color: #ffffff;
+  white-space: nowrap;
+}
+
+.a11y-severity-badge.a11y-severity-critical {
+  color: var(--severity-critical, #a2191f);
+  background: var(--severity-critical-bg, #fff1f1);
+}
+
+.a11y-severity-badge.a11y-severity-serious {
+  color: var(--severity-serious, #ba4e00);
+  background: var(--severity-serious-bg, #fff2e8);
+}
+
+.a11y-severity-badge.a11y-severity-moderate {
+  color: var(--severity-moderate, #8a3800);
+  background: var(--severity-moderate-bg, #fcf4d6);
+}
+
+.a11y-severity-badge.a11y-severity-minor {
+  color: var(--severity-minor, #525252);
+  background: var(--severity-minor-bg, #f4f4f4);
+}
+
+.a11y-severity-badge.a11y-severity-pass {
+  color: var(--severity-pass, #0e6027);
+  background: var(--severity-pass-bg, #defbe6);
 }
 
 .a11y-severity-critical .a11y-severity-badge {

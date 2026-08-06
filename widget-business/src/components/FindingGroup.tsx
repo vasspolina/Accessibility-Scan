@@ -1,6 +1,6 @@
-import { SeverityTag } from "@verify/design-system";
 import { useState, type ReactNode } from "react";
 import { dominantComponent, describeComponent } from "../lib/componentCluster";
+import { SeverityTag } from "./SeverityTag";
 import type { AccessibilityFinding } from "../api/scanClient";
 import { LEVEL_FRAMING, plainForRule, plainFixForRule } from "../lib/wcagPlain";
 import { whatWeFound } from "../lib/findingText";

@@ -1,5 +1,6 @@
-import { Card, ScoreDial, SeverityTag } from "@verify/design-system";
+import { Card, ScoreDial } from "@verify/design-system";
 import { useState, type CSSProperties } from "react";
+import { SeverityTag } from "./SeverityTag";
 import type { AccessibilityFinding } from "../api/scanClient";
 import { groupFindings } from "./FindingsList";
 import { plainForRule } from "../lib/wcagPlain";

@@ -1,4 +1,4 @@
-import { DataTable, SeverityTag } from "@verify/design-system";
+import { DataTable } from "@verify/design-system";
 import type { ProView } from "./ProSummary";
 import { expandRowOnClick } from "../lib/rowExpand";
 import type { AccessibilityFinding, ConformanceSummary } from "../api/scanClient";
@@ -6,6 +6,7 @@ import { plainForRule } from "../lib/wcagPlain";
 import { enClauseFor } from "../lib/audienceMode";
 import { groupFindings } from "./FindingsList";
 import { useReportView } from "./ReportViewContext";
+import { SeverityTag } from "./SeverityTag";
 
 const severityWord: Record<AccessibilityFinding["severity"], string> = {
   critical: "Fix first",
