@@ -474,6 +474,7 @@ export async function scanUrlToReport(
             renderResult.domSignals.interactiveElements.length > 0 ||
             renderResult.domSignals.forms.length > 0,
           orientationLock: renderResult.domSignals.orientationLock,
+          titleTooltips: renderResult.domSignals.titleTooltips,
         }),
       ]
     ),

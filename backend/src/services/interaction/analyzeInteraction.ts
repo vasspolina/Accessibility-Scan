@@ -13,6 +13,8 @@ const STATUS_MESSAGE_URL =
   "https://www.w3.org/WAI/WCAG21/Understanding/status-messages.html";
 const ORIENTATION_URL =
   "https://www.w3.org/WAI/WCAG21/Understanding/orientation.html";
+const HOVER_FOCUS_URL =
+  "https://www.w3.org/WAI/WCAG21/Understanding/content-on-hover-or-focus.html";
 const POINTER_CANCEL_URL =
   "https://www.w3.org/WAI/WCAG21/Understanding/pointer-cancellation.html";
 
@@ -41,7 +43,12 @@ export function evaluateInteraction(
   /* Live regions and whether the page has anything to operate. Optional so
      an older caller still compiles; absent means the question is skipped
      rather than answered wrongly. */
-  status?: { liveRegions: number; hasControls: boolean; orientationLock?: boolean }
+  status?: {
+    liveRegions: number;
+    hasControls: boolean;
+    orientationLock?: boolean;
+    titleTooltips?: number;
+  }
 ): UndecidedRow[] {
   const rows: UndecidedRow[] = [];
 
@@ -70,6 +77,21 @@ export function evaluateInteraction(
       count: 1,
       help: "The page may only work one way up",
       helpUrl: ORIENTATION_URL,
+    });
+  }
+
+  /* 1.4.13 Content on Hover or Focus. The browser's own title tooltip fails
+     all three of the criterion's requirements at once: it cannot be
+     dismissed with Escape, it cannot be hovered onto to finish reading, and
+     it does not persist. It also never appears for anybody using a keyboard
+     or a touchscreen, which is the part that costs a reader the content
+     outright rather than merely making it awkward. */
+  if (status?.titleTooltips) {
+    rows.push({
+      ruleId: "interaction-title-tooltip",
+      count: status.titleTooltips,
+      help: "Tooltips only a mouse can see",
+      helpUrl: HOVER_FOCUS_URL,
     });
   }
 

@@ -141,6 +141,11 @@ export interface DomSignals {
      wheelchair cannot turn it, so a page that only works one way up is a
      page they cannot use. */
   orientationLock: boolean;
+  /* Elements whose only tooltip is a title attribute — WCAG 1.4.13. The
+     browser's own tooltip cannot be dismissed with Escape, cannot be
+     hovered onto to read a long one, and never appears at all for somebody
+     using a keyboard or a touchscreen. */
+  titleTooltips: number;
   // Every same-document link with its text — used by the crawler to pick
   // which pages to audit. Separate from interactiveElements, which is capped
   // at 60 and mixes in buttons: a nav-heavy page would truncate the link list
@@ -687,6 +692,23 @@ function extractDomSignalsInPage(): DomSignals {
     orientationLock = false;
   }
 
+  // iframe and frame are excluded: there, title is the accessible name and
+  // the right thing to have. Same for anything where the title is doing the
+  // naming because nothing else does — flagging those would be telling a
+  // page to remove the only name an element has.
+  const titleTooltips = Array.from(document.querySelectorAll("[title]")).filter((el) => {
+    const tag = el.tagName.toLowerCase();
+    if (tag === "iframe" || tag === "frame" || tag === "svg" || tag === "title") return false;
+    const title = (el.getAttribute("title") ?? "").trim();
+    if (!title) return false;
+    // A title that duplicates the element's own text is a tooltip, not a
+    // name. A title on an element with no text at all is carrying the name.
+    const text = (el.textContent ?? "").trim();
+    const labelled =
+      el.hasAttribute("aria-label") || el.hasAttribute("aria-labelledby");
+    return text.length > 0 || labelled;
+  }).length;
+
   let respectsReducedMotion = false;
   try {
     for (const sheet of Array.from(document.styleSheets)) {
@@ -852,6 +874,7 @@ function extractDomSignalsInPage(): DomSignals {
     listeners,
     liveRegions,
     orientationLock,
+    titleTooltips,
     pageLinks,
     dialogs,
   };
