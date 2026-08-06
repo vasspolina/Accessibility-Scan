@@ -4672,6 +4672,20 @@ label.a11y-ai-toggle {
   display: block;
 }
 
+/* A <caption> is display: table-caption, which sizes itself against the
+   table it captions. Give that table a block display and there is no table
+   to size against, so it shrinks to fit and the sentence comes down the
+   page a word at a time — measured at 74px wide. It becomes a block of its
+   own width instead.
+
+   Same fix applies to any other table given a grid or block display; the
+   undecided notes escaped it only because they are a list now and have no
+   caption at all. */
+.a11y-widget-biz.a11y-widget-biz .a11y-conf caption {
+  display: block;
+  width: 100%;
+}
+
 .a11y-widget-biz.a11y-widget-biz .a11y-conf thead {
   display: none;
 }
