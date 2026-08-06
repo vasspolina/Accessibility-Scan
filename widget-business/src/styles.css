@@ -957,6 +957,32 @@ label.a11y-ai-toggle {
   outline-offset: -2px;
 }
 
+/* The card, now owned here. Same tokens the kit read, so the surface, the
+   border and the radius are unchanged — and --radius-sm is this package's
+   own 12px rather than Carbon's 2px, which is where the reference's rounding
+   entered the kit components in the first place. */
+.a11y-card {
+  padding: var(--space-05, 1rem);
+  background: var(--layer-01, var(--a11y-surface, #f4f4f4));
+  border: 1px solid var(--border-subtle, var(--a11y-border, #e0e0e0));
+  color: var(--a11y-text, #161616);
+}
+
+/* The radius needs the doubled class to clear the blanket square rule,
+   which matches every element at (0,2,0) and beats a plain class. Fourth
+   component in a row to need this; it is the shape of the file. */
+.a11y-widget-biz.a11y-widget-biz .a11y-card {
+  border-radius: var(--radius-sm, 12px);
+}
+
+/* Fixed at h3: the call sites put these under their section's own h2, and
+   heading order is the one thing this component can break. */
+.a11y-card-title {
+  margin: 0 0 var(--space-04, 0.75rem);
+  font-size: var(--a11y-text-body);
+  font-weight: 500;
+}
+
 /* The tone chip and the count badge, now owned here.
 
    Same move as the severity chip: the kit set these inline so it could work

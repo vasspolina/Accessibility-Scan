@@ -1,9 +1,10 @@
-import { Card, ScoreDial } from "@verify/design-system";
+import { ScoreDial } from "@verify/design-system";
 import { useState, type CSSProperties } from "react";
 import { SeverityTag } from "./SeverityTag";
 import type { AccessibilityFinding } from "../api/scanClient";
 import { groupFindings } from "./FindingsList";
 import { plainForRule } from "../lib/wcagPlain";
+import { Card } from "./Card";
 
 /* The stat tiles ARE the Card component's anatomy — layer-01 fill, subtle
    hairline, 2px corner, 16px padding — so they use it rather than a div
