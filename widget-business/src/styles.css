@@ -4529,6 +4529,36 @@ label.a11y-ai-toggle {
   border-spacing: 0 var(--space-03, 0.5rem) !important;
 }
 
+/* These sit beside each other rather than stacking. Each row is one short
+   self-contained note, so a single column left most of the width empty and
+   made a list of five reads like a long document.
+
+   This does change what they are: giving table elements a grid display
+   takes them out of the accessibility tree as a table, so a screen reader
+   stops announcing "table, 1 column" and reads them as the run of blocks
+   they now look like. For a one-column table of prose that is arguably the
+   truer description — but it is a semantics change made from a stylesheet,
+   which is worth knowing about rather than discovering. The caption still
+   names the group either way. */
+.a11y-widget-biz.a11y-widget-biz .a11y-undecided-table table {
+  display: block;
+}
+
+.a11y-widget-biz.a11y-widget-biz .a11y-undecided-table tbody {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(22rem, 1fr));
+  gap: var(--space-04, 0.75rem);
+}
+
+.a11y-widget-biz.a11y-widget-biz .a11y-undecided-table tbody tr {
+  display: block;
+}
+
+.a11y-widget-biz.a11y-widget-biz .a11y-undecided-table tbody td {
+  display: block;
+  height: 100%;
+}
+
 .a11y-widget-biz.a11y-widget-biz .a11y-undecided-table tbody td {
   padding: var(--space-05, 1rem) !important;
   background: #f4f4f4;
