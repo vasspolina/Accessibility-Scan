@@ -15,7 +15,7 @@
 .a11y-widget-biz {
   all: initial;
   font-family: var(--a11y-font, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif);
-  color: var(--a11y-text, #1f2328);
+  color: var(--a11y-text, #161616);
   /* 120% across every text size in the report, desktop and mobile alike
      — the baseline every element inherits unless it declares its own
      (score/count numerals keep line-height: 1, set on their own rules,
@@ -145,9 +145,30 @@
      still passes its own scan. */
   --a11y-text-body: 1.125rem;  /* 18px — body and controls */
   --a11y-text-subtitle: 1.25rem; /* 20px — Carbon heading-03, nested groups */
-  --a11y-text-title: 1.75rem;  /* 28px — section and card headings */
-  --a11y-text-display: 1.75rem; /* the score shares the title size */
+  /* Headings carry the reference's confidence: it opens at 80px/800 and
+     sets its section heads at 60px/600, and the jump from body to heading
+     is most of what the page feels like. Not taken literally — 80px in an
+     embedded panel is a different object from 80px on a full-bleed marketing
+     page — but the step is widened well past the old 28px, and the weight
+     with it.
+
+     Deliberately NOT taken: the reference sets leading equal to size (80px
+     on 80px). Cramped leading is a thing this report files as a finding
+     against other people's sites, so headings stay at 1.2. It is the one
+     trait of the reference that could not survive the product it is being
+     applied to. */
+  --a11y-text-title: 2.25rem;  /* 36px — section headings */
+  --a11y-text-display: 3rem;   /* 48px — the score, the one number to see */
   --a11y-text-label: 0.875rem; /* 14px — tags, badges, table headers */
+
+  /* Weight is the half of the reference's voice that cannot be borrowed.
+     It sets its display type at 600-800; PP Telegraf ships Regular and
+     Medium and nothing else (see backend/public/fonts), so anything above
+     500 is a browser-synthesized bold, which smears at exactly the sizes
+     this is meant to make confident. Tried at 700 and backed out.
+
+     So the weight stays at the face's own maximum and the size carries the
+     emphasis instead — which is why the step above is as large as it is. */
 }
 
 .a11y-widget-biz {
@@ -188,16 +209,16 @@
      up front keeps the content column's width constant throughout.
      Below `a11y-shell` breaks (see the collapse rule further down) the
      same two rows go single-column. */
+  /* Nav on top, not beside. The reference runs its sections as one
+     horizontal bar across the head of the page, and moving to it frees the
+     15rem column the rail was holding — which the report's own tables and
+     the new card rows all wanted. Three stacked rows now, one column. */
   display: grid;
   grid-template-areas:
-    "header header"
-    "nav content";
-  /* 15rem, not the 12rem this used to be: the longest section label
-     ("Issues that could turn away users") was wrapping to two lines at
-     the narrower column, on every screen this wide enough to show the
-     sidebar at all — not a phone-width problem, a column-too-narrow one. */
-  grid-template-columns: 15rem minmax(0, 1fr);
-  column-gap: 32px;
+    "header"
+    "nav"
+    "content";
+  grid-template-columns: minmax(0, 1fr);
   padding: 32px;
   border: 1px solid var(--a11y-border, #d0d7de);
   border-radius: 14px;
@@ -227,10 +248,16 @@
 .a11y-shell-nav {
   grid-area: nav;
   align-self: start;
-  /* Sticks alongside the content as it scrolls, the way a persistent shell
-     sidebar reads — the header's own height plus a little air. */
+  /* Sticks to the top of the viewport as the report scrolls under it, the
+     way the reference's own bar does. Backed by the page colour so the
+     content does not show through it while passing beneath. */
   position: sticky;
-  top: 24px;
+  top: 0;
+  z-index: 2;
+  margin-bottom: var(--space-06, 1.5rem);
+  padding: var(--space-03, 0.5rem) 0;
+  background: var(--a11y-bg, #ffffff);
+  border-bottom: 1px solid var(--a11y-border, #e0e0e0);
 }
 
 .a11y-shell-nav ul {
@@ -238,9 +265,11 @@
   margin: 0;
   padding: 0;
   display: flex;
-  flex-direction: column;
-  gap: 4px;
-  min-width: 15rem;
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-02, 0.25rem) var(--space-03, 0.5rem);
+  min-width: 0;
 }
 
 /* Hidden until the mobile breakpoint below turns it into a real toggle —
@@ -267,9 +296,13 @@
      could turn away users") don't fit this rail's 12rem width on one
      line, and clipping them with an ellipsis hid words the row's own
      label needed to say — the row grows to fit two lines instead. */
-  min-height: 48px;
-  padding: 8px 24px;
-  border-radius: 0;
+  min-height: 44px;
+  /* Pills in a row, not rows in a rail. The reference's bar sets each
+     section as its own rounded chip with generous side padding and tight
+     vertical, which is what lets ten of them sit on one line. */
+  padding: 8px 16px;
+  border-radius: 999px;
+  white-space: nowrap;
   color: var(--text-secondary, var(--a11y-muted, #525252));
   font-family: var(--a11y-font, inherit);
   font-size: 0.875rem;
@@ -294,13 +327,18 @@
      just these two properties despite this being the highest-specificity
      rule matching them in the sheet — same "beats it regardless of why"
      move this file already uses for inline styles it can't out-specify. */
-  background: var(--a11y-accent-faint, #edf5ff) !important;
-  color: var(--link-primary, var(--a11y-accent, #1948f4)) !important;
-  font-weight: 700;
+  background: var(--a11y-accent-faint, #edf0fe) !important;
+  /* The text cousin, not the fill. This link sits ON the accent's own wash,
+     where the fill colour measures 3.3:1 — the one place the two tokens
+     were still crossed after the palette change, and the self-scan caught
+     it. font-weight is 500 because that is the face's maximum; see the
+     type scale for why nothing here asks for bold. */
+  color: var(--a11y-accent-text, #1948f4) !important;
+  font-weight: 500;
 }
 
 .a11y-widget-biz.a11y-widget-biz .a11y-shell-nav-link[aria-current="true"]:hover {
-  background: var(--a11y-accent-faint, #edf5ff) !important;
+  background: var(--a11y-accent-faint, #edf0fe) !important;
 }
 
 .a11y-shell-content {
@@ -360,7 +398,7 @@
     border: 1px solid var(--a11y-accent, #1948f4);
     border-radius: var(--radius-sm, 2px);
     background: transparent;
-    color: var(--a11y-accent, #1948f4);
+    color: var(--a11y-accent-text, #1948f4);
     font-family: var(--a11y-font, inherit);
     font-size: var(--a11y-text-body, 1.125rem);
     font-weight: 400;
@@ -372,7 +410,7 @@
   /* Fills on hover, white text — the same inversion .a11y-show-all uses. */
   .a11y-shell-nav-toggle:hover {
     background: var(--a11y-accent, #1948f4);
-    color: #ffffff;
+    color: var(--a11y-accent-on, #ffffff);
   }
 
   /* The open menu as Carbon's overlay: layer-02 above the page, a subtle
@@ -420,7 +458,7 @@
 .a11y-intro a,
 .a11y-section-desc a,
 .a11y-learn-more {
-  color: var(--a11y-accent, #0969da);
+  color: var(--a11y-accent-text, #1948f4);
 }
 
 .a11y-learn-more {
@@ -434,7 +472,7 @@
   font-size: var(--a11y-text-body);
   font-weight: 500;
   margin-bottom: 8px;
-  color: var(--a11y-text, #1f2328);
+  color: var(--a11y-text, #161616);
 }
 
 .a11y-url-row {
@@ -456,12 +494,12 @@
   border: 1px solid var(--a11y-border, #d0d7de);
   border-radius: 8px;
   font-size: var(--a11y-text-body);
-  color: var(--a11y-text, #1f2328);
+  color: var(--a11y-text, #161616);
   background: var(--a11y-bg, #ffffff);
 }
 
 .a11y-url-row input:focus-visible {
-  outline: 2px solid var(--a11y-accent, #0969da);
+  outline: 2px solid var(--a11y-accent, #1948f4);
   outline-offset: 1px;
 }
 
@@ -472,8 +510,8 @@
   padding: 12px 24px;
   border: none;
   border-radius: 8px;
-  background: var(--a11y-accent, #0969da);
-  color: #ffffff;
+  background: var(--a11y-accent, #1948f4);
+  color: var(--a11y-accent-on, #ffffff);
   font-size: var(--a11y-text-body);
   font-weight: 500;
   cursor: pointer;
@@ -485,7 +523,7 @@
 }
 
 .a11y-url-row button:hover:not(:disabled) {
-  background: var(--a11y-accent-strong, #082dc6);
+  background: var(--a11y-accent-strong, #1948f4);
   box-shadow: 0 2px 8px rgba(9, 105, 218, 0.3);
 }
 
@@ -530,7 +568,7 @@
 }
 
 .a11y-url-row button:focus-visible {
-  outline: 2px solid var(--a11y-text, #1f2328);
+  outline: 2px solid var(--a11y-text, #161616);
   outline-offset: 2px;
 }
 
@@ -800,15 +838,15 @@ label.a11y-ai-toggle {
 .a11y-cta-link {
   display: inline-block;
   padding: 14px 28px;
-  background: var(--a11y-accent, #0969da);
-  color: #ffffff;
+  background: var(--a11y-accent, #1948f4);
+  color: var(--a11y-accent-on, #ffffff);
   font-weight: 500;
   text-decoration: none;
   border-radius: 8px;
 }
 
 .a11y-cta-link:focus-visible {
-  outline: 2px solid var(--a11y-text, #1f2328);
+  outline: 2px solid var(--a11y-text, #161616);
   outline-offset: 2px;
 }
 
@@ -911,11 +949,11 @@ label.a11y-ai-toggle {
   font-size: var(--a11y-text-body);
   /* Buttons don't inherit colour — the UA paints them buttontext (black),
      which is invisible in a light theme and unreadable in a dark one. */
-  color: var(--a11y-text, #1f2328);
+  color: var(--a11y-text, #161616);
 }
 
 .a11y-finding-header:focus-visible {
-  outline: 2px solid var(--a11y-accent, #0969da);
+  outline: 2px solid var(--a11y-accent, #1948f4);
   outline-offset: -2px;
 }
 
@@ -970,7 +1008,7 @@ label.a11y-ai-toggle {
   padding: 2px 8px;
   border-radius: 999px;
   font-size: var(--a11y-text-body);
-  color: var(--a11y-text, #1f2328);
+  color: var(--a11y-text, #161616);
   background: var(--a11y-surface, #f6f8fa);
   border: 1px solid var(--a11y-border, #d0d7de);
   white-space: nowrap;
@@ -1014,15 +1052,15 @@ label.a11y-ai-toggle {
   border: 1px solid var(--a11y-border, #d0d7de);
   border-radius: 8px;
   background: var(--a11y-bg, #ffffff);
-  color: var(--a11y-accent, #0969da);
+  color: var(--a11y-accent-text, #1948f4);
   font-size: var(--a11y-text-body);
   cursor: pointer;
   transition: border-color 0.15s ease, background-color 0.15s ease, transform 0.1s ease;
 }
 
 .a11y-show-all:hover {
-  border-color: var(--a11y-accent, #0969da);
-  background: var(--a11y-accent-faint, #f2f7fd);
+  border-color: var(--a11y-accent-text, #1948f4);
+  background: var(--a11y-accent-faint, #edf0fe);
 }
 
 .a11y-show-all:active {
@@ -1084,7 +1122,7 @@ label.a11y-ai-toggle {
   font-size: var(--a11y-text-body);
   line-height: 1.2;
   word-break: break-word;
-  color: var(--a11y-text, #1f2328);
+  color: var(--a11y-text, #161616);
 }
 
 .a11y-occurrence-count {
@@ -1187,7 +1225,7 @@ label.a11y-ai-toggle {
   padding: 12px 16px 16px;
   border-top: 1px solid var(--a11y-border, #d0d7de);
   font-size: var(--a11y-text-body);
-  color: var(--a11y-text, #1f2328);
+  color: var(--a11y-text, #161616);
 }
 
 .a11y-finding-details p {
@@ -1212,7 +1250,7 @@ label.a11y-ai-toggle {
   padding: 8px 12px;
   border-radius: 8px;
   background: var(--a11y-surface, #f6f8fa);
-  border-left: 3px solid var(--a11y-accent, #0969da);
+  border-left: 3px solid var(--a11y-accent, #1948f4);
 }
 
 /* Code spans inside advice text, and the existing ones for rule ids and
@@ -1400,8 +1438,8 @@ label.a11y-ai-toggle {
   padding: 8px 16px;
   border: none;
   border-radius: 6px;
-  background: var(--a11y-accent, #0969da);
-  color: #ffffff;
+  background: var(--a11y-accent, #1948f4);
+  color: var(--a11y-accent-on, #ffffff);
   font-size: var(--a11y-text-body);
   font-weight: 500;
   cursor: pointer;
@@ -1450,8 +1488,8 @@ label.a11y-ai-toggle {
 .a11y-sr-play {
   font: inherit;
   font-weight: 500;
-  color: #ffffff;
-  background: var(--a11y-accent, #0969da);
+  color: var(--a11y-accent-on, #ffffff);
+  background: var(--a11y-accent, #1948f4);
   border: 1px solid transparent;
   border-radius: 8px;
   padding: 8px 16px;
@@ -1502,7 +1540,7 @@ label.a11y-ai-toggle {
 }
 
 .a11y-sr-line-current {
-  outline: 2px solid var(--a11y-accent, #0969da);
+  outline: 2px solid var(--a11y-accent, #1948f4);
   outline-offset: 1px;
 }
 
@@ -1511,7 +1549,7 @@ label.a11y-ai-toggle {
   min-width: 0;
   font-size: var(--a11y-text-body);
   line-height: 1.2;
-  color: var(--a11y-text, #1f2328);
+  color: var(--a11y-text, #161616);
   word-break: break-word;
 }
 
@@ -1654,7 +1692,7 @@ label.a11y-ai-toggle {
 .a11y-conf-caveat {
   margin: 0 0 16px;
   padding: 12px 16px;
-  border-left: 3px solid var(--a11y-accent, #0969da);
+  border-left: 3px solid var(--a11y-accent, #1948f4);
   border-radius: 0 8px 8px 0;
   background: var(--a11y-surface, #f6f8fa);
   font-size: var(--a11y-text-body);
@@ -1788,7 +1826,7 @@ label.a11y-ai-toggle {
   border: 1px solid var(--a11y-border, #d0d7de);
   border-radius: 999px;
   background: var(--a11y-bg, #ffffff);
-  color: var(--a11y-text, #1f2328);
+  color: var(--a11y-text, #161616);
   cursor: pointer;
 }
 
@@ -1800,9 +1838,9 @@ label.a11y-ai-toggle {
 }
 
 .a11y-sim-btn-active {
-  border-color: var(--a11y-accent, #0969da);
-  background: var(--a11y-accent, #0969da);
-  color: #ffffff;
+  border-color: var(--a11y-accent-text, #1948f4);
+  background: var(--a11y-accent, #1948f4);
+  color: var(--a11y-accent-on, #ffffff);
 }
 
 .a11y-sim-btn-active em {
@@ -1815,7 +1853,7 @@ label.a11y-ai-toggle {
   margin: 0 0 12px;
   font-size: var(--a11y-text-body);
   line-height: 1.2;
-  color: var(--a11y-text, #1f2328);
+  color: var(--a11y-text, #161616);
 }
 
 .a11y-sim-frame {
@@ -1855,7 +1893,7 @@ label.a11y-ai-toggle {
   border: 1px solid var(--a11y-border, #d0d7de);
   border-radius: 10px;
   background: var(--a11y-bg, #ffffff);
-  color: var(--a11y-text, #1f2328);
+  color: var(--a11y-text, #161616);
   cursor: pointer;
 }
 
@@ -1868,9 +1906,9 @@ label.a11y-ai-toggle {
 }
 
 .a11y-mode-btn-active {
-  border-color: var(--a11y-accent, #0969da);
-  background: var(--a11y-accent, #0969da);
-  color: #ffffff;
+  border-color: var(--a11y-accent-text, #1948f4);
+  background: var(--a11y-accent, #1948f4);
+  color: var(--a11y-accent-on, #ffffff);
 }
 
 .a11y-mode-btn-active em {
@@ -1886,11 +1924,11 @@ label.a11y-ai-toggle {
   border: 1px solid var(--a11y-border, #d0d7de);
   border-radius: 8px;
   background: var(--a11y-bg, #ffffff);
-  color: var(--a11y-text, #1f2328);
+  color: var(--a11y-text, #161616);
 }
 
 .a11y-audit-head {
-  border-left-color: var(--a11y-accent, #0969da);
+  border-left-color: var(--a11y-accent-text, #1948f4);
 }
 
 .a11y-audit-list {
@@ -1996,7 +2034,7 @@ label.a11y-ai-toggle {
   gap: 4px;
   font-size: var(--a11y-text-body);
   font-weight: 500;
-  color: var(--a11y-text, #1f2328);
+  color: var(--a11y-text, #161616);
 }
 
 @container a11y-panel (max-width: 560px) {
@@ -2053,7 +2091,7 @@ label.a11y-ai-toggle {
   border: 1px solid var(--a11y-border, #d0d7de);
   border-radius: 8px;
   background: var(--a11y-bg, #ffffff);
-  color: var(--a11y-text, #1f2328);
+  color: var(--a11y-text, #161616);
 }
 
 /* The kit's DataTable defaults to body size, right for a table of findings
@@ -2092,14 +2130,360 @@ label.a11y-ai-toggle {
   margin: 0 0 12px;
 }
 
+/* Numbered steps, from the reference's licence builder: a filled disc
+   carrying the number, the step's heading beside it.
+
+   The disc is aria-hidden and the heading does the announcing, so the
+   number is a visual aid and never a thing a screen reader has to sit
+   through before hearing what the step is. */
+.a11y-stmt-step {
+  margin: var(--space-07, 2rem) 0 var(--space-04, 0.75rem);
+}
+
+.a11y-stmt-step-head {
+  display: flex;
+  align-items: center;
+  gap: var(--space-04, 0.75rem);
+  margin: 0;
+  font-size: var(--a11y-text-subtitle, 1.25rem);
+  font-weight: 500;
+  line-height: 1.2;
+  letter-spacing: -0.01em;
+}
+
+.a11y-widget-biz.a11y-widget-biz .a11y-stmt-step-num {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 2rem;
+  height: 2rem;
+  border-radius: 999px;
+  background: var(--a11y-accent, #1948f4);
+  color: var(--a11y-accent-on, #ffffff);
+  font-size: var(--a11y-text-label, 0.875rem);
+  font-weight: 500;
+  /* The face has no bold and a number in a small disc is the one place
+     that reads as weak — the tabular figure and the fill carry it. */
+  font-variant-numeric: tabular-nums;
+}
+
+/* The report's lead line, given the reference's editorial panel: a tinted
+   full-width block with the sentence set large inside it.
+
+   This is the one line the whole report leads with, and it was a notice
+   strip the same size as everything around it. The tint is the accent's own
+   wash, which the ink reads on at 17:1 — the pairing that failed on the
+   score card was a status red on this ground, not this. */
+.a11y-widget-biz.a11y-widget-biz .a11y-score-callout {
+  max-width: none;
+  margin: var(--space-06, 1.5rem) 0;
+  padding: var(--space-06, 1.5rem);
+  border: 0;
+  border-radius: 16px;
+  background: var(--a11y-accent-faint, #edf0fe);
+  color: var(--a11y-text, #161616);
+  font-size: var(--a11y-text-subtitle, 1.25rem);
+  line-height: 1.3;
+  letter-spacing: -0.01em;
+}
+
+/* Ink, not a fill, on paper. */
+@media print {
+  .a11y-widget-biz.a11y-widget-biz .a11y-score-callout {
+    background: transparent;
+    border: 1px solid #000;
+  }
+}
+
+/* Fields, from the reference's contact form: a soft filled ground, a
+   generous radius and real room inside, instead of a boxed outline.
+
+   Two things it does that this form will not. Its labels live in the
+   placeholder, which disappears the moment somebody types and leaves a
+   filled field nobody can identify — the visible labels here stay. And its
+   fields have no boundary at all, which for a control is not a style
+   choice: a filled grey on white is 1.05:1, and WCAG 1.4.11 wants 3:1 for
+   the thing that tells you where a control begins. So the fill and the
+   radius are taken and a real border is kept underneath them.
+
+   Written as one element-based rule rather than a class list so a field
+   added later gets the shape without anybody remembering to ask for it. */
+.a11y-widget-biz.a11y-widget-biz input[type="text"],
+.a11y-widget-biz.a11y-widget-biz input[type="url"],
+.a11y-widget-biz.a11y-widget-biz input[type="email"],
+.a11y-widget-biz.a11y-widget-biz input[type="password"],
+.a11y-widget-biz.a11y-widget-biz input[type="search"],
+.a11y-widget-biz.a11y-widget-biz select,
+.a11y-widget-biz.a11y-widget-biz textarea {
+  min-height: 48px;
+  padding: var(--space-03, 0.5rem) var(--space-05, 1rem);
+  border: 1px solid var(--a11y-border, #e0e0e0);
+  border-radius: 12px;
+  background: var(--a11y-surface, #f4f4f4);
+  color: var(--a11y-text, #161616);
+  font: inherit;
+  font-size: var(--a11y-text-body);
+}
+
+.a11y-widget-biz.a11y-widget-biz textarea {
+  min-height: 8rem;
+  padding: var(--space-05, 1rem);
+}
+
+/* The placeholder is supporting text, not the label, so it may sit at the
+   muted colour — but it still has to be readable, which the reference's own
+   near-white placeholder is not. */
+.a11y-widget-biz.a11y-widget-biz ::placeholder {
+  color: var(--a11y-muted, #525252);
+  opacity: 1;
+}
+
+/* The embedder's plans, above everything. Deliberately reads as a strip
+   rather than as part of the report: full-width, its own rule beneath it,
+   and no card shapes borrowed from the sections below, so nobody mistakes
+   a price for a finding. A screen reader gets "Advertisement" before any
+   of it (see PlansBar). */
+.a11y-plans-bar {
+  width: 100%;
+  padding-bottom: var(--space-04, 0.75rem);
+  border-bottom: 1px solid var(--a11y-border, #e0e0e0);
+}
+
+.a11y-plans-list {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-04, 0.75rem) var(--space-06, 1.5rem);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.a11y-plan {
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-03, 0.5rem);
+}
+
+.a11y-plan-name {
+  font-weight: 500;
+}
+
+.a11y-plan-price {
+  color: var(--a11y-muted, #525252);
+}
+
+.a11y-plan-note {
+  font-size: var(--a11y-text-label, 0.875rem);
+}
+
+/* The one filled control in the strip, and it carries black on the accent
+   like every other filled thing in this report. */
+.a11y-widget-biz.a11y-widget-biz .a11y-plan-buy {
+  display: inline-flex;
+  align-items: center;
+  min-height: 36px;
+  padding: 0 var(--space-05, 1rem);
+  border-radius: 999px;
+  background: var(--a11y-accent, #1948f4);
+  color: var(--a11y-accent-on, #ffffff);
+  font-size: var(--a11y-text-label, 0.875rem);
+  font-weight: 500;
+  text-decoration: none;
+}
+
+/* The lifted plan, as the reference lifts one tier — an outline rather than
+   a second fill, so two filled pills never compete in the same strip. */
+.a11y-plan-featured .a11y-plan-name {
+  padding: 2px var(--space-03, 0.5rem);
+  border: 1px solid var(--a11y-accent, #1948f4);
+  border-radius: 999px;
+}
+
+/* Never printed: a report filed as evidence should not carry somebody's
+   price list into the record. */
+@media print {
+  .a11y-plans-bar {
+    display: none;
+  }
+}
+
+/* The reference's card shelf, applied to the report's own top section.
+
+   Its pricing row is three rounded grey cards with one lifted out — tinted
+   ground, accent border, the same content in all three. The report's top
+   section is the same shape: the dial in one card, what it found in
+   another. So the two cards here take that treatment, and the score card
+   is the lifted one, because the number is what the section is for.
+
+   The kit's Card sets its own inline background, which is why these pass
+   `background: transparent` in the markup and take their fill from here. */
+.a11y-stat-row > * {
+  padding: var(--space-05, 1rem);
+  /* radius needs the same !important as the fill below: the kit writes all
+     three inline, and forcing two of them left square corners on a card
+     that had already taken its colour from here. */
+  border-radius: 16px !important;
+  /* !important because the kit's Card writes its background, border and
+     radius as inline styles, which no selector in this file can outrank.
+     Same move this file already makes everywhere it has to reach inside a
+     vendored component. */
+  background: #f4f4f4 !important;
+  border: 1px solid transparent !important;
+}
+
+.a11y-widget-biz.a11y-widget-biz .a11y-stat-row > * {
+  border-radius: 16px;
+}
+
+/* The lifted card. A tint of the accent rather than the accent itself: this
+   one holds the dial and its own label, both of which have to stay readable,
+   and the full fill is a text background this report cannot use (3.6:1 for
+   anything but black). The border carries the emphasis instead — 3.6:1
+   against the page, which is the 3:1 a non-text boundary needs. */
+/* The lifted card is marked by its border alone, not by a tint.
+
+   It carried the accent wash first, and the dial's verdict word — the kit
+   styles it inline from --severity-critical — landed at 4.4:1 on it. The
+   word is the most important text in the section, the tint was decoration,
+   and only one of those was negotiable. The border still separates this
+   card from its neighbour at 3.9:1 against the page, which is what 1.4.11
+   asks of a boundary. */
+.a11y-stat-row > *:first-child {
+  border-color: var(--a11y-accent, #1948f4) !important;
+}
+
+/* Bulleted context, used under the score and in the two document sections.
+   A marker in the accent, because it is the one place a small dot of the
+   fill colour is doing no work that contrast rules govern. */
+.a11y-score-points,
+.a11y-plain-points {
+  margin: 0 0 var(--space-05, 1rem);
+  padding-left: 1.25em;
+  list-style: none;
+}
+
+.a11y-score-points li,
+.a11y-plain-points li {
+  position: relative;
+  margin-bottom: var(--space-03, 0.5rem);
+  line-height: 1.35;
+}
+
+.a11y-score-points li::before,
+.a11y-plain-points li::before {
+  content: "";
+  position: absolute;
+  left: -1em;
+  /* Centred on the first line whatever the line-height, rather than pinned
+     to a magic top offset that drifts when the text wraps. */
+  top: 0.55em;
+  width: 0.4em;
+  height: 0.4em;
+  border-radius: 999px;
+  background: var(--a11y-accent, #1948f4);
+}
+
+.a11y-score-points {
+  font-size: var(--a11y-text-body);
+  color: var(--a11y-muted, #525252);
+}
+
+/* The spec sheet, borrowed from the reference's own specification block: a
+   row of cards, each a small label over a large value, the first one filled
+   with the accent.
+
+   auto-fit with a 15rem floor rather than a fixed column count — the widget
+   is embedded at whatever width a host page gives it, so the number of
+   columns has to fall out of the space rather than be declared. Five cards
+   sit in a row on a wide screen and stack on a phone with nothing to
+   configure. */
+.a11y-spec-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr));
+  gap: var(--space-04, 0.75rem);
+  margin: 0 0 var(--space-06, 1.5rem);
+}
+
+.a11y-spec-card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-03, 0.5rem);
+  padding: var(--space-05, 1rem);
+  /* Its own grey rather than --a11y-surface. That token is redeclared to
+     pure white further down the file for the layered card treatment, and a
+     white card on a #fafafa ground is a card you cannot see. The reference's
+     own unfilled spec cards are a definite grey against its near-white
+     page, and that separation is the point of the layout. */
+  background: #f4f4f4;
+  /* The reference rounds these generously — they read as cards rather than
+     table cells, which is the whole difference between a spec sheet and a
+     grid of data. This is a container, so it is exempt from the pill rule
+     that covers controls, and it is one of the few containers the square
+     rule bends for. */
+  border-radius: 16px;
+}
+
+.a11y-widget-biz.a11y-widget-biz .a11y-spec-card {
+  border-radius: 16px;
+}
+
+.a11y-spec-card-lead {
+  background: var(--a11y-accent, #1948f4);
+  color: var(--a11y-accent-on, #ffffff);
+}
+
+/* The label is small and set in the heavier of the two weights the face
+   has; the value is the thing you read across the room. Same relationship
+   the reference uses, at the sizes this panel can afford. */
+.a11y-spec-label {
+  margin: 0;
+  font-size: var(--a11y-text-label, 0.875rem);
+  font-weight: 500;
+  line-height: 1.2;
+}
+
+.a11y-spec-value {
+  margin: 0;
+  font-size: var(--a11y-text-subtitle, 1.25rem);
+  font-weight: 500;
+  line-height: 1.2;
+  letter-spacing: -0.01em;
+  /* A URL is one long unbreakable token and will otherwise push the card
+     wider than its column. */
+  overflow-wrap: anywhere;
+}
+
+.a11y-spec-gloss {
+  display: block;
+  margin-top: var(--space-03, 0.5rem);
+  font-size: var(--a11y-text-label, 0.875rem);
+  font-weight: 400;
+  line-height: 1.3;
+  color: var(--a11y-muted, #525252);
+}
+
+/* The gloss on the filled card cannot use the muted grey — 2.4:1 on the
+   accent. It stays black and steps back by size and weight instead, which
+   is the same distinction made without colour. */
+.a11y-spec-card-lead .a11y-spec-gloss {
+  color: inherit;
+}
+
 .a11y-stmt-text {
   max-height: 320px;
   overflow: auto;
   margin: 0 0 16px;
-  padding: 16px;
+  /* The reference sets its long prose in a black panel with light type —
+     the one place on that page where the ground inverts, and it is exactly
+     this: a block of document text that wants to read as a document rather
+     than as part of the interface around it. */
+  padding: var(--space-06, 1.5rem);
   border: 1px solid var(--a11y-border, #d0d7de);
-  border-radius: 10px;
-  background: var(--a11y-surface, #f6f8fa);
+  border-radius: 16px;
+  background: #161616;
+  color: #f4f4f4;
   font-family: inherit; /* no monospace in this system: surface + border mark code */
   font-size: var(--a11y-text-body);
   line-height: 1.2;
@@ -2205,9 +2589,23 @@ label.a11y-ai-toggle {
     border: 1px solid #000;
   }
 
+  /* On paper the panel inverts back. A full-bleed black block is most of a
+     toner cartridge, and the statement is the part of this report most
+     likely to actually be printed and filed. */
   .a11y-stmt-text {
     max-height: none;
     overflow: visible;
+    background: transparent !important;
+    color: #000 !important;
+    border: 1px solid #000;
+  }
+
+  /* Same reasoning for the spec cards: rules, not fills. */
+  .a11y-spec-card,
+  .a11y-spec-card-lead {
+    background: transparent !important;
+    color: #000 !important;
+    border: 1px solid #000;
   }
 
   /* Ink: the professional hand-off block prints as a rule-off box, not a
@@ -2251,7 +2649,7 @@ label.a11y-ai-toggle {
   font: inherit;
   font-size: var(--a11y-text-body);
   font-weight: 500;
-  color: var(--a11y-accent, #0969da);
+  color: var(--a11y-accent-text, #1948f4);
   background: none;
   border: 0;
   padding: 0;
@@ -2302,7 +2700,7 @@ label.a11y-ai-toggle {
   margin-top: 16px;
   padding: 16px;
   border: 1px solid var(--a11y-border, #d0d7de);
-  border-left: 3px solid var(--a11y-accent, #0969da);
+  border-left: 3px solid var(--a11y-accent, #1948f4);
   border-radius: 0 10px 10px 0;
   background: var(--a11y-surface, #f6f8fa);
 }
@@ -2441,7 +2839,7 @@ label.a11y-ai-toggle {
   padding: 0;
   border: 1px solid var(--a11y-accent, #1948f4);
   background: var(--a11y-bg, #ffffff);
-  color: var(--a11y-accent, #1948f4);
+  color: var(--a11y-accent-text, #1948f4);
   font-size: var(--a11y-text-body);
   cursor: pointer;
 }
@@ -2471,14 +2869,14 @@ label.a11y-ai-toggle {
   padding: 4px 12px;
   border: 1px solid var(--a11y-accent, #1948f4);
   background: transparent;
-  color: var(--a11y-accent, #1948f4);
+  color: var(--a11y-accent-text, #1948f4);
   font: inherit;
   font-size: var(--a11y-text-body);
   cursor: pointer;
 }
 
 .a11y-copy-btn:hover {
-  background: var(--a11y-accent-faint, #edf5ff);
+  background: var(--a11y-accent-faint, #edf0fe);
 }
 
 /* The sign-in group. A fieldset so the legend is announced as context on
@@ -2527,20 +2925,70 @@ label.a11y-ai-toggle {
      theme; the dark block below flips this with the tokens. */
   color-scheme: light;
 
-  /* Carbon White theme */
+  /* Carbon White theme. The layout borrows the reference's shapes — cards,
+     pills, the spec sheet — and none of its colour: this palette is the
+     design system's and stays that way. */
   --a11y-text: #161616;        /* text-primary */
-  --a11y-muted: #525252;       /* text-secondary — 7.4:1 on white, 6.9:1 on layer-01 */
+  --a11y-muted: #525252;       /* text-secondary — 7.0:1 on the off-white ground */
   --a11y-bg: #ffffff;          /* background */
   --a11y-surface: #f4f4f4;     /* layer-01 */
   --a11y-border: #e0e0e0;      /* border-subtle-01 */
-  /* The design system's indigo-leaning accent (its blue-60/70), adopted
-     when the upstream palette moved off Carbon Blue — 6.0:1 on white. */
-  --a11y-accent: #1948f4;      /* interactive / link-primary */
-  --a11y-accent-strong: #082dc6; /* button-primary-hover (blue-70) */
-  --a11y-accent-faint: #edf0fe;  /* the accent at a wash, on white */
-  --a11y-score-bad: #da1e28;     /* support-error — 4.8:1 on white */
+
+  /* Two accent tokens, kept even though Carbon's blue does not need them.
+
+     They exist because the fill and the text colour are different jobs, and
+     on a palette where they diverge the difference is not optional — a
+     saturated fill can be fine behind white type and fail outright as text
+     on the page. Carbon's blue is 6.0:1 either way, so both tokens point at
+     it and white sits on the fill.
+
+     Left in place because the split costs nothing here and is the thing
+     that has to be got right first on any palette that replaces this one. */
+  --a11y-accent: #1948f4;         /* interactive / link-primary */
+  --a11y-accent-on: #ffffff;      /* what sits on the fill — 6.0:1 */
+  --a11y-accent-text: #1948f4;    /* the accent as text — the same, here */
+  --a11y-accent-strong: #082dc6;  /* button-primary-hover (blue-70) */
+  --a11y-accent-faint: #edf0fe;   /* the accent at a wash, on the ground */
+  /* red-70, not red-60. The verdict word now sits on the accent wash inside
+     the lifted score card, where red-60 measures 4.4:1 — under the line, and
+     found by the self-scan. red-70 clears every ground this word lands on. */
+  --a11y-score-bad: #a2191f;
   --a11y-score-warn: #8a3800;    /* orange-70: Carbon's warning yellow is a status
                                     fill, never text — as text it fails badly */
+
+  /* ------------------------------------------------------------------
+     The kit's own token names, defined here rather than inherited.
+
+     Fourteen of these were being read straight out of the vendored design
+     system: --interactive, --layer-01, --severity-critical and the rest.
+     That is the coupling that mattered — not the imports, but the fact
+     that this widget's colours were only correct while somebody else's
+     stylesheet happened to be loaded and happened to agree with ours.
+
+     They are still the kit's names, because the kit's components write
+     them into inline styles and will keep doing so until each component is
+     replaced. What changes is where the values come from: every one now
+     resolves to this file's own token, so the look is this widget's to
+     decide and a change upstream cannot silently restyle the report.
+     ------------------------------------------------------------------ */
+  --background: var(--a11y-bg, #ffffff);
+  --layer-01: var(--a11y-surface, #f4f4f4);
+  --layer-hover: #e8e8e8;
+  --border-strong: #8d8d8d;
+  --text-secondary: var(--a11y-muted, #525252);
+  --text-on-color: var(--a11y-accent-on, #ffffff);
+  --interactive: var(--a11y-accent, #1948f4);
+  --link-primary: var(--a11y-accent-text, #1948f4);
+  --button-primary: var(--a11y-accent, #1948f4);
+  --button-primary-text: var(--a11y-accent-on, #ffffff);
+  --severity-critical: var(--a11y-score-bad, #a2191f);
+  --severity-critical-bg: #fff1f1;
+  /* The reference rounds everything; the kit's "small" radius was 2px. */
+  --radius-sm: 12px;
+  --shadow-overlay: 0 2px 6px rgba(0, 0, 0, 0.2);
+  --type-body-lh: 1.3;
+  --duration-fast-02: 110ms;
+  --ease-productive-standard: cubic-bezier(0.2, 0, 0.38, 0.9);
 
   /* PP Telegraf is the design system's typeface, self-hosted next to the
      widget bundle — the request goes to the same origin that served the
@@ -2562,6 +3010,54 @@ label.a11y-ai-toggle {
   border-radius: 0;
 }
 
+/* The document panel and the spec cards keep their radius: both are the
+   reference's own shapes, and both are containers, so they need lifting
+   over the universal square rule below (which wins at (0,2,0) against a
+   plain class). */
+.a11y-widget-biz.a11y-widget-biz .a11y-stmt-text {
+  border-radius: 16px;
+}
+
+/* Square containers, pill controls — the reference's actual shape rule, and
+   the reconciliation with the square-corner decision above.
+
+   Look at the Palma page and the two are not in tension: its panels, images
+   and tables all run to hard edges, and only the things you press are
+   rounded — buttons at a full pill, the small status tags at 999px. So the
+   Carbon rule keeps every container square and this exempts the controls,
+   which is what makes a button read as pressable at a glance rather than as
+   another box of text.
+
+   Scoped to real controls by element and role, not to a class list, so a
+   control added later inherits the shape without anybody remembering to. */
+.a11y-widget-biz.a11y-widget-biz button,
+.a11y-widget-biz.a11y-widget-biz [role="button"],
+.a11y-widget-biz.a11y-widget-biz .a11y-method-badge,
+.a11y-widget-biz.a11y-widget-biz .a11y-count-badge,
+.a11y-widget-biz.a11y-widget-biz .a11y-severity-badge,
+.a11y-widget-biz.a11y-widget-biz .a11y-level-badge,
+.a11y-widget-biz.a11y-widget-biz .a11y-rule-chip,
+.a11y-widget-biz.a11y-widget-biz .a11y-section-count {
+  border-radius: 999px;
+}
+
+/* Except the ones that are not really buttons. A disclosure arrow inside a
+   table row, and the row-expanding toggles, are 44px squares carrying a
+   glyph — a pill around those reads as a stray lozenge in the middle of a
+   table, which is the opposite of what the reference does with its tables. */
+.a11y-widget-biz.a11y-widget-biz td button,
+.a11y-widget-biz.a11y-widget-biz th button,
+.a11y-widget-biz.a11y-widget-biz summary,
+.a11y-widget-biz.a11y-widget-biz .a11y-shell-nav button {
+  border-radius: 0;
+}
+
+/* The nav's own links stay pills — they are the bar's chips, and the rule
+   above only means to flatten the disclosure toggle. */
+.a11y-widget-biz.a11y-widget-biz .a11y-shell-nav-link {
+  border-radius: 999px;
+}
+
 /* Type: Carbon's scale. body-02 for reading, body-01 for supporting text,
    heading-03 for section titles. Letter-spacing matters in Plex at small
    sizes — Carbon specifies it per step rather than leaving it at normal. */
@@ -2580,6 +3076,11 @@ label.a11y-ai-toggle {
      120%, not the 110% baseline every other size uses. */
   line-height: 1.2;
   letter-spacing: 0;
+  /* Tight tracking, which is available where extra weight is not — the
+     reference's headings are both, and this is the half that survives.
+     Negative tracking only at this size: it tidies a large heading and
+     closes up a small one, which is why body copy keeps its own. */
+  letter-spacing: -0.02em;
 }
 
 .a11y-section-desc,
@@ -2603,7 +3104,7 @@ label.a11y-ai-toggle {
 }
 
 .a11y-url-row button:hover:not(:disabled) {
-  background: var(--a11y-accent-strong, #082dc6);
+  background: var(--a11y-accent-strong, #1948f4);
   box-shadow: none;
   transform: none;
 }
@@ -2645,7 +3146,7 @@ label.a11y-ai-toggle {
   padding: 0 16px;
   border: 1px solid var(--a11y-accent, #1948f4);
   background: transparent;
-  color: var(--a11y-accent, #1948f4);
+  color: var(--a11y-accent-text, #1948f4);
   font-size: var(--a11y-text-body);
   font-weight: 400;
   letter-spacing: 0.16px;
@@ -2654,7 +3155,7 @@ label.a11y-ai-toggle {
 
 .a11y-show-all:hover {
   background: var(--a11y-accent, #1948f4);
-  color: #ffffff;
+  color: var(--a11y-accent-on, #ffffff);
   transform: none;
 }
 
@@ -2783,7 +3284,7 @@ label.a11y-ai-toggle {
 
 .a11y-mode-btn-active {
   background: var(--a11y-accent, #1948f4);
-  border-color: var(--a11y-accent, #1948f4);
+  border-color: var(--a11y-accent-text, #1948f4);
 }
 
 /* Carbon's motion tokens: fast-02 with the productive easing curve. Still
@@ -2985,7 +3486,7 @@ label.a11y-ai-toggle {
 .a11y-mode-btn-active,
 .a11y-mode-btn-active:hover {
   background: var(--a11y-bg, #ffffff);
-  border-color: var(--a11y-accent, #1948f4);
+  border-color: var(--a11y-accent-text, #1948f4);
   box-shadow: inset 0 0 0 2px var(--a11y-accent, #1948f4);
   color: var(--a11y-text, #161616);
   position: relative;
@@ -3003,7 +3504,7 @@ label.a11y-ai-toggle {
   right: 14px;
   font-size: var(--a11y-text-body);
   line-height: 1;
-  color: var(--a11y-accent, #1948f4);
+  color: var(--a11y-accent-text, #1948f4);
 }
 
 /* The description inside the selected tile goes back to ordinary secondary
@@ -3029,13 +3530,22 @@ label.a11y-ai-toggle {
 .a11y-ai-toggle input[type="checkbox"] {
   flex-shrink: 0;
   margin-top: 2px;
-  accent-color: var(--a11y-accent, #1948f4);
+  accent-color: var(--a11y-accent-text, #1948f4);
 }
 
 /* Links: Carbon's link-primary, underlined so they are not identified by
    colour alone, and regular weight rather than bold. */
+/* The call-to-action is an <a> dressed as a filled button, so the generic
+   link colour below would paint the accent's text cousin onto the accent's
+   own fill — 1.6:1, the worst pairing in the file. It carries black like
+   every other filled control. Written at the same doubled-class specificity
+   the rule below uses, or it loses. */
+.a11y-widget-biz.a11y-widget-biz a.a11y-cta-link {
+  color: var(--a11y-accent-on, #ffffff);
+}
+
 .a11y-widget-biz.a11y-widget-biz a {
-  color: var(--a11y-accent, #1948f4);
+  color: var(--a11y-accent-text, #1948f4);
   text-decoration: underline;
   font-weight: 400;
 }
@@ -3067,7 +3577,7 @@ label.a11y-ai-toggle {
   padding: 0 16px;
   border: 1px solid var(--a11y-accent, #1948f4);
   background: transparent;
-  color: var(--a11y-accent, #1948f4);
+  color: var(--a11y-accent-text, #1948f4);
   font: inherit;
   font-size: var(--a11y-text-body);
   letter-spacing: 0.16px;
@@ -3077,7 +3587,7 @@ label.a11y-ai-toggle {
 
 .a11y-accordion-row .a11y-sr-play:hover {
   background: var(--a11y-accent, #1948f4);
-  color: #ffffff;
+  color: var(--a11y-accent-on, #ffffff);
 }
 
 .a11y-accordion-row .a11y-sr-play:focus-visible {
@@ -3164,7 +3674,7 @@ label.a11y-ai-toggle {
 .a11y-fix-once {
   margin: 0 0 12px;
   padding: 12px;
-  background: var(--a11y-accent-faint, #edf5ff);
+  background: var(--a11y-accent-faint, #edf0fe);
   border-left: 3px solid var(--a11y-accent, #1948f4);
   font-size: var(--a11y-text-body);
   line-height: 1.2;
@@ -3221,7 +3731,7 @@ label.a11y-ai-toggle {
    highlighter). Every pairing checked against 4.5:1 for text and 3:1 for
    UI parts, same as the light theme.
 
-   Solid blue fills are pinned back to #1948f4: in dark themes Carbon
+   Solid fills are pinned back to the accent: in dark themes Carbon
    brightens *links* to blue-40 for contrast against the dark page, but a
    white-on-blue-40 button would drop to 2.3:1 — the fill colour and the
    link colour have to part ways here.
@@ -3234,7 +3744,13 @@ label.a11y-ai-toggle {
     --a11y-bg: #161616;            /* background */
     --a11y-surface: #262626;       /* layer-01 */
     --a11y-border: #393939;        /* border-subtle-01 */
-    --a11y-accent: #7d9afa;        /* link-primary dark (the system's blue-40) */
+    /* Dark mode lightens the accent for text, as it did before: blue-60 is
+       too dark to read on this ground, blue-40 clears it. The fill keeps a
+       colour white can sit on. */
+    --a11y-accent: #1948f4;
+    --a11y-accent-on: #ffffff;
+    --a11y-accent-text: #7d9afa;
+    --a11y-accent-strong: #4c74f8;
     /* The active-nav-link wash: never redeclared for dark, so the active
        sidebar item kept the light theme's near-white fill (#edf5ff) under
        this theme's light-blue text — light on light, 2.1:1. A translucent
@@ -3247,6 +3763,34 @@ label.a11y-ai-toggle {
     --a11y-score-good: #42be65;
   }
 
+  /* The document panel is an inverted block against a light page; against a
+     dark one there is nothing to invert, so it drops below the background
+     instead and keeps a visible edge. Same idea, opposite direction. */
+  .a11y-widget-biz .a11y-stmt-text {
+    background: #000000;
+    border-color: #393939;
+  }
+
+  /* The spec cards' unfilled ground has to lift off the page here rather
+     than sit on it. The filled one is unchanged — it is the accent in both
+     themes and carries black in both. */
+  /* :not(-lead) is load-bearing. Without it this also repaints the filled
+     card, which keeps its black text and lands at 1.4:1 — caught by the
+     self-scan in dark mode after light mode passed clean. */
+  .a11y-widget-biz .a11y-spec-card:not(.a11y-spec-card-lead) {
+    background: #262626;
+  }
+
+  /* The stat cards need the same, and not having it was the same mistake
+     twice: a light grey hardcoded for one theme with nothing said about the
+     other, so the cards stayed pale under light-on-dark text at 1.6:1.
+     !important matches the light rule's, which exists to beat the kit's
+     inline background. */
+  .a11y-widget-biz .a11y-stat-row > * {
+    background: #262626 !important;
+  }
+
+
   /* Solid primary actions keep the light-theme fill (see note above). */
   .a11y-widget-biz .a11y-url-row button:not(:disabled),
   .a11y-widget-biz .a11y-sr-play,
@@ -3257,7 +3801,7 @@ label.a11y-ai-toggle {
   }
 
   .a11y-widget-biz .a11y-url-row button:hover:not(:disabled) {
-    background: #0353e9;
+    background: #4c74f8;
   }
 
   .a11y-widget-biz .a11y-url-row button:disabled {
@@ -3269,7 +3813,9 @@ label.a11y-ai-toggle {
     border-color: #1948f4;
   }
 
-  /* Tertiary buttons fill on hover; white text needs the darker blue. */
+  /* Tertiary buttons fill on hover, and the fill carries black — white on
+     it is 3.7:1. This comment used to say the opposite, from when the fill
+     was blue and white was correct. */
   .a11y-widget-biz .a11y-show-all:hover,
   .a11y-widget-biz .a11y-accordion-row .a11y-sr-play:hover {
     background: #1948f4;
@@ -3486,7 +4032,10 @@ label.a11y-ai-toggle {
      --severity-moderate is #8e6a00 exactly — the project's readme calls it
      a source-exact value and says not to snap it to a neighbouring ramp
      step, which is why it is not our --a11y-score-warn. */
-  --severity-critical: #da1e28;
+  /* Points at the widget's own token now rather than restating a hex —
+     the value lives in one place (see the kit-token block above) and this
+     is the later declaration that was quietly winning. */
+  --severity-critical: var(--a11y-score-bad, #a2191f);
   --severity-serious: #ba4e00;
   --severity-moderate: #8e6a00;
   --severity-minor: #525252;
@@ -3543,7 +4092,9 @@ label.a11y-ai-toggle {
      literal light value in both schemes. */
   --severity-minor-bg: #f4f4f4;
   --radius-pill: 999px;
-  --radius-sm: 2px;
+  /* 12px, not Carbon's 2px: the reference rounds everything, and this is
+     the declaration that was overriding the block above. */
+  --radius-sm: 12px;
   --space-02: 0.25rem;
   --gray-100: #161616;
   --white: #ffffff;
@@ -3714,7 +4265,14 @@ label.a11y-ai-toggle {
 
 /* 2px where a hairline needs softening — inputs and cards, nothing else.
    The doubled class beats the square-rule reset the Carbon layer set. */
-.a11y-widget-biz.a11y-widget-biz .a11y-url-row input,
+/* The field takes the reference's radius (see the field rule below); the
+   blocks beside it keep Carbon's near-square 2px. !important because the
+   blanket square rule reaches every element and this is one of the four
+   places allowed to opt out of it. */
+.a11y-widget-biz.a11y-widget-biz .a11y-url-row input {
+  border-radius: 12px !important;
+}
+
 .a11y-widget-biz.a11y-widget-biz .a11y-finding,
 .a11y-widget-biz.a11y-widget-biz .a11y-pro-block,
 .a11y-widget-biz.a11y-widget-biz .a11y-pro-snippet {
@@ -3796,13 +4354,22 @@ label.a11y-ai-toggle {
 
 /* Kit fields: the field shares the card's fill and a 1px underline does
    the boundary work — the focus ring supplies the strong state. */
+/* Carbon's field was a transparent box with a single strong rule under it.
+   The reference fills its fields instead and rounds them hard, and this is
+   the rule that decides the shape, so the change belongs here rather than
+   in a later override fighting it.
+
+   The bottom rule survives the redesign. A filled grey on white is 1.05:1,
+   and 1.4.11 asks for 3:1 from whatever tells you a control is there —
+   #8d8d8d gives 3.1:1, so it stays as the boundary while the fill and the
+   radius do the looking. */
 .a11y-widget-biz.a11y-widget-biz .a11y-url-row input,
 .a11y-widget-biz.a11y-widget-biz .a11y-login input,
 .a11y-widget-biz.a11y-widget-biz .a11y-ai-toggle select {
-  background: transparent;
-  border: 0;
+  background: var(--a11y-surface, #f4f4f4);
+  border: 1px solid transparent;
   border-bottom: 1px solid #8d8d8d;   /* border-strong, both themes */
-  border-radius: 0;
+  border-radius: 12px;
 }
 
 /* The summary chips: our words in the kit's severity tags, count after. */
@@ -4151,6 +4718,158 @@ label.a11y-ai-toggle {
    the table's edge instead of wrapping inside it. */
 .a11y-findings-table tbody td[colspan] {
   white-space: normal;
+}
+
+/* Every finding row as its own card, which is what the reference does with
+   a collection: a filled, rounded block per item with air between them,
+   instead of rows sharing one ruled grid.
+
+   border-collapse: separate plus border-spacing is the only way a <tr> gets
+   space around it — rows take no margin — and the radius has to be applied
+   to the end cells, because a row cannot be rounded either. So the first
+   cell rounds its left corners, the last cell its right, and the fill goes
+   on every cell to make the strip read as one block.
+
+   :has(button[aria-expanded]) picks the summary rows only. The open detail
+   row underneath is already its own card (below) and must not be given a
+   second set of corners halfway down. */
+.a11y-widget-biz.a11y-widget-biz .a11y-findings-table table,
+.a11y-widget-biz.a11y-widget-biz .a11y-pro-table table {
+  /* !important on both: the kit sets border-collapse: collapse inline on
+     its own table, and with it collapsed border-spacing is ignored outright
+     — the cards got their fill and corners and sat flush against each other
+     with no gap at all. */
+  border-collapse: separate !important;
+  border-spacing: 0 var(--space-03, 0.5rem) !important;
+}
+
+.a11y-widget-biz.a11y-widget-biz .a11y-findings-table tbody tr:has(button[aria-expanded]) td,
+.a11y-widget-biz.a11y-widget-biz .a11y-pro-table tbody tr:has(button[aria-expanded]) td {
+  background: #f4f4f4;
+  /* The kit draws a rule under every cell; inside a card it reads as a line
+     through the middle of the block. */
+  border-bottom: 0 !important;
+  padding-top: var(--space-04, 0.75rem) !important;
+  padding-bottom: var(--space-04, 0.75rem) !important;
+}
+
+.a11y-widget-biz.a11y-widget-biz .a11y-findings-table tbody tr:has(button[aria-expanded]) td:first-child,
+.a11y-widget-biz.a11y-widget-biz .a11y-pro-table tbody tr:has(button[aria-expanded]) td:first-child {
+  border-radius: 16px 0 0 16px;
+}
+
+.a11y-widget-biz.a11y-widget-biz .a11y-findings-table tbody tr:has(button[aria-expanded]) td:last-child,
+.a11y-widget-biz.a11y-widget-biz .a11y-pro-table tbody tr:has(button[aria-expanded]) td:last-child {
+  border-radius: 0 16px 16px 0;
+}
+
+/* The header sits above cards now, not on top of a grid, so its own rule
+   would float unattached. */
+.a11y-widget-biz.a11y-widget-biz .a11y-findings-table thead th,
+.a11y-widget-biz.a11y-widget-biz .a11y-pro-table thead th {
+  border-bottom: 0 !important;
+}
+
+@media (prefers-color-scheme: dark) {
+  .a11y-widget-biz.a11y-widget-biz .a11y-findings-table tbody tr:has(button[aria-expanded]) td,
+  .a11y-widget-biz.a11y-widget-biz .a11y-pro-table tbody tr:has(button[aria-expanded]) td {
+    background: #262626;
+  }
+}
+
+@media print {
+  .a11y-widget-biz.a11y-widget-biz .a11y-findings-table tbody tr:has(button[aria-expanded]) td,
+  .a11y-widget-biz.a11y-widget-biz .a11y-pro-table tbody tr:has(button[aria-expanded]) td {
+    background: transparent;
+  }
+}
+
+/* Inside the open panel, the blocks that are objects in their own right —
+   an affected element, the technical drawer — read as cards on the panel's
+   ground rather than as white strips run to its edges.
+
+   They already had a fill, a border and a radius. All three were being
+   undone: --a11y-surface is redeclared to white further down the file, so
+   the fill matched the page; and the blanket square rule flattened the
+   corners. Hence the explicit colour and the doubled class here. */
+.a11y-widget-biz.a11y-widget-biz .a11y-findings-table td[colspan] .a11y-occurrence,
+.a11y-widget-biz.a11y-widget-biz .a11y-findings-table td[colspan] details,
+.a11y-widget-biz.a11y-widget-biz .a11y-pro-table td[colspan] .a11y-occurrence,
+.a11y-widget-biz.a11y-widget-biz .a11y-pro-table td[colspan] details {
+  padding: var(--space-05, 1rem);
+  background: #ffffff;
+  border: 1px solid var(--a11y-border, #e0e0e0);
+  border-radius: 12px;
+}
+
+/* The drawer's own summary sits inside that card, so it keeps no second
+   frame of its own. */
+.a11y-widget-biz.a11y-widget-biz .a11y-findings-table td[colspan] details summary,
+.a11y-widget-biz.a11y-widget-biz .a11y-pro-table td[colspan] details summary {
+  padding: 0;
+  background: transparent;
+  border: 0;
+}
+
+@media (prefers-color-scheme: dark) {
+  .a11y-widget-biz.a11y-widget-biz .a11y-findings-table td[colspan] .a11y-occurrence,
+  .a11y-widget-biz.a11y-widget-biz .a11y-findings-table td[colspan] details,
+  .a11y-widget-biz.a11y-widget-biz .a11y-pro-table td[colspan] .a11y-occurrence,
+  .a11y-widget-biz.a11y-widget-biz .a11y-pro-table td[colspan] details {
+    background: #161616;
+    border-color: #393939;
+  }
+}
+
+@media print {
+  .a11y-widget-biz.a11y-widget-biz .a11y-findings-table td[colspan] .a11y-occurrence,
+  .a11y-widget-biz.a11y-widget-biz .a11y-findings-table td[colspan] details {
+    background: transparent;
+    border: 1px solid #000;
+  }
+}
+
+/* The open panel, as a card rather than as more table.
+
+   The reference's collection cards are the shape: a filled, generously
+   rounded block with real room inside and its content set well away from
+   the edges. That is exactly what this panel is — a detail sheet about one
+   finding — and as bare table rows the panels ran edge to edge and read as
+   a continuation of the row above rather than as its contents.
+
+   The cell itself is the card, not its children. Written as `> *` first,
+   which turned every paragraph inside the panel into its own card — the
+   panel holds a dozen of them. And the fill is an explicit grey rather than
+   --a11y-surface, which is redeclared to white further down the file for
+   the layered cards and would have made this invisible. */
+.a11y-widget-biz.a11y-widget-biz .a11y-findings-table tbody td[colspan],
+.a11y-widget-biz.a11y-widget-biz .a11y-pro-table tbody td[colspan] {
+  /* !important to match the padding-left rule above, which already uses it
+     to beat the kit's inline cell padding — without it the card had 16px
+     of left indent and no room top or bottom. */
+  padding-top: var(--space-06, 1.5rem) !important;
+  padding-bottom: var(--space-06, 1.5rem) !important;
+  padding-right: var(--space-06, 1.5rem) !important;
+  background: #f4f4f4;
+  border-radius: 16px;
+}
+
+@media (prefers-color-scheme: dark) {
+  /* Same pairing the stat and spec cards needed: a light ground declared
+     once is a light ground in both themes unless this says otherwise. */
+  .a11y-widget-biz.a11y-widget-biz .a11y-findings-table tbody td[colspan],
+  .a11y-widget-biz.a11y-widget-biz .a11y-pro-table tbody td[colspan] {
+    background: #262626;
+  }
+}
+
+/* On paper the card is a rule, not a fill. */
+@media print {
+  .a11y-widget-biz.a11y-widget-biz .a11y-findings-table tbody td[colspan],
+  .a11y-widget-biz.a11y-widget-biz .a11y-pro-table tbody td[colspan] {
+    background: transparent;
+    border: 1px solid #000;
+  }
 }
 
 /* WCAG and who-fixes-this are their own columns — same wrapping problem
@@ -5060,7 +5779,7 @@ label.a11y-ai-toggle {
   width: 20px;
   height: 20px;
   margin: 2px 0 0;
-  accent-color: var(--a11y-accent, #1948f4);
+  accent-color: var(--a11y-accent-text, #1948f4);
   flex-shrink: 0;
 }
 
@@ -5079,7 +5798,7 @@ label.a11y-ai-toggle {
 .a11y-widget-biz.a11y-widget-biz .a11y-ai-toggle input[type="checkbox"] {
   width: 20px;
   height: 20px;
-  accent-color: var(--a11y-accent, #1948f4);
+  accent-color: var(--a11y-accent-text, #1948f4);
 }
 
 /* ==========================================================================
@@ -5317,9 +6036,23 @@ label.a11y-ai-toggle {
 .a11y-stat-row {
   display: flex;
   flex-wrap: wrap;
-  align-items: stretch;
+  /* start, not stretch: the dial card was being pulled to the height of the
+     issue list beside it, which left a short card with a long empty tail.
+     Each card is now the height of what is in it, which is what makes a row
+     of them read as cards rather than as two columns of a layout. */
+  align-items: flex-start;
   column-gap: 2rem;
   row-gap: 16px;
+}
+
+/* The issue list is a container of cards, so it is not a card itself. It
+   had a fill and a radius of its own, which put white cards on a grey box
+   on the page's ground — three levels of nesting to say one thing. The
+   cards inside it carry the look; this just holds them. */
+.a11y-widget-biz.a11y-widget-biz .a11y-stat-row > :nth-child(2) {
+  padding: 0 !important;
+  background: transparent !important;
+  border: 0 !important;
 }
 
 .a11y-stat-row > :first-child {
@@ -5385,6 +6118,28 @@ label.a11y-ai-toggle {
    auto-placement: the count is optional markup, and without a fixed
    position a row that has no count would leave a hole where it would
    have been. */
+/* One issue, one card. The three worst findings were three rows of a list
+   sharing one box, which made the section read as a paragraph of problems
+   rather than as three separate things each with its own next step. The
+   reference gives every plan its own card for the same reason.
+
+   The list keeps its <ul>/<li> semantics — this is a list, and cards are
+   how it looks, not what it is. */
+.a11y-score-preview {
+  display: grid;
+  gap: var(--space-04, 0.75rem);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.a11y-widget-biz.a11y-widget-biz .a11y-score-preview-row {
+  padding: var(--space-05, 1rem);
+  background: var(--a11y-bg, #ffffff);
+  border: 1px solid var(--a11y-border, #e0e0e0);
+  border-radius: 16px;
+}
+
 @container a11y-panel (max-width: 480px) {
   .a11y-score-preview-row {
     display: grid;

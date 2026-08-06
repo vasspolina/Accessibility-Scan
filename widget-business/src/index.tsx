@@ -9,6 +9,11 @@ export interface MountOptions {
   // both text and link come from the embedder, so the offer is theirs, not
   // ours. Absent means no block at all: the public demo carries none.
   cta?: { text: string; href: string };
+  /* Plans shown as a bar above the report. Entirely the embedder's: every
+     name, price and link comes from here, and no plans means no bar. The
+     widget never supplies a default, because a default price would be a
+     figure invented on somebody else's site. */
+  plans?: Array<{ name: string; price: string; href: string; featured?: boolean; note?: string }>;
 }
 
 // @font-face is ignored inside shadow-root stylesheets, so the faces are
@@ -16,6 +21,24 @@ export interface MountOptions {
 // one host-page rule. The design system's PP Telegraf, served alongside the
 // widget bundle; font-display swap keeps text readable while it loads, and
 // every rule keeps a full system-font fallback stack.
+function parsePlans(raw: string | undefined): MountOptions["plans"] {
+  if (!raw) return undefined;
+  try {
+    const parsed = JSON.parse(raw);
+    if (!Array.isArray(parsed)) return undefined;
+    // Every field the bar renders must actually be there. A plan missing
+    // its price or its link renders as a button that says nothing and goes
+    // nowhere, so it is dropped rather than shown half-built.
+    const plans = parsed.filter(
+      (p) =>
+        p && typeof p.name === "string" && typeof p.price === "string" && typeof p.href === "string"
+    );
+    return plans.length > 0 ? plans : undefined;
+  } catch {
+    return undefined;
+  }
+}
+
 function injectFonts(apiBase: string) {
   const id = "a11y-widget-fonts";
   if (document.getElementById(id)) return;
@@ -58,7 +81,7 @@ export function mount(target: string | HTMLElement, options: MountOptions) {
   const root = createRoot(mountPoint);
   root.render(
     <React.StrictMode>
-      <App apiBase={options.apiBase} cta={options.cta} />
+      <App apiBase={options.apiBase} cta={options.cta} plans={options.plans} />
     </React.StrictMode>
   );
 }
@@ -72,10 +95,14 @@ function autoInit() {
   try {
     const el = document.getElementById("a11y-widget-business-root");
     if (el?.dataset.apiBase) {
-      const { ctaText, ctaHref } = el.dataset;
+      const { ctaText, ctaHref, plans } = el.dataset;
       mount(el, {
         apiBase: el.dataset.apiBase,
         cta: ctaText && ctaHref ? { text: ctaText, href: ctaHref } : undefined,
+        // data-plans holds JSON. Parsed defensively and dropped entirely on
+        // anything malformed: a broken attribute must not take the report
+        // down with it, and a half-parsed price is worse than no bar.
+        plans: parsePlans(plans),
       });
     }
   } catch (err) {

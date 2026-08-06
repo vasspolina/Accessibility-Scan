@@ -88,12 +88,27 @@ export function scoreSummary(score: number, seed: string): string {
 /* The score caveat is a honesty fixture — single-sourced so the business
    card and the professional summary can never drift apart on what the
    number means. */
-export const SCORE_CAVEAT =
-  "This is what an automated scan found, weighted by how much each problem " +
-  "costs a visitor. A scan of this kind reaches somewhere between a third " +
-  "and a half of accessibility problems. The rest need a person with a " +
-  "keyboard and a screen reader. Useful to track whether the site improves " +
-  "over time. Not a statement that it meets the law.";
+/* The five things a reader has to know about the number, as five things
+   rather than as one paragraph.
+
+   It was a five-sentence block sitting under the score, which is the worst
+   place in the report for dense prose: it is the first thing anybody reads,
+   and every sentence in it is a separate fact that changes what the number
+   means. Split, each one can be taken in on its own — and the last two, the
+   ones that stop somebody quoting 87 as proof of compliance, stop being the
+   tail of a paragraph nobody finished. */
+export const SCORE_POINTS = [
+  "It counts what an automated scan can prove, weighted by how much each problem costs a visitor.",
+  "A scan of this kind reaches somewhere between a third and a half of accessibility problems.",
+  "The rest need a person with a keyboard and a screen reader.",
+  "It is useful for tracking whether the site improves over time.",
+  "It is not a statement that the site meets the law.",
+];
+
+/* The same words as one string, for the plain-text summary — one source, so
+   the copied text and the screen can never disagree about what the score
+   means. */
+export const SCORE_CAVEAT = SCORE_POINTS.join(" ");
 
 // A plain-text version of the same verdict, for pasting into an email or
 // a message to whoever owns the fix — no HTML, no table, nothing that
@@ -239,7 +254,11 @@ export function ScoreGauge({
           third and a half of accessibility problems; the rest needs a person
           with a keyboard and a screen reader. A reader who takes 100 to mean
           "accessible" has been misled by us, not by their own optimism. */}
-      <p className="a11y-score-caveat">{SCORE_CAVEAT}</p>
+      <ul className="a11y-score-points">
+        {SCORE_POINTS.map((point) => (
+          <li key={point}>{point}</li>
+        ))}
+      </ul>
       {/* Plain text, not the report's own HTML: the point is to leave the
           widget entirely — an email or a Slack message to whoever owns
           the fix, not a screenshot of this card. */}

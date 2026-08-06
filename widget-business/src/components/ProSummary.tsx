@@ -1,7 +1,7 @@
 import { Badge, Button, Card, Tabs, Tag } from "@verify/design-system";
 import type { ReactNode } from "react";
 import type { AccessibilityReport } from "../api/scanClient";
-import { SCORE_CAVEAT } from "./ScoreGauge";
+import { SCORE_POINTS } from "./ScoreGauge";
 
 export type ProView = "issues" | "clean";
 
@@ -88,7 +88,11 @@ export function ProSummary({
         />
       </div>
 
-      <p className="a11y-score-caveat">{SCORE_CAVEAT}</p>
+      <ul className="a11y-score-points">
+        {SCORE_POINTS.map((point) => (
+          <li key={point}>{point}</li>
+        ))}
+      </ul>
     </>
   );
 }

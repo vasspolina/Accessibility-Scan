@@ -4,6 +4,7 @@ import { flushSync } from "react-dom";
 import { UrlForm, type ScanMode } from "./components/UrlForm";
 import { ScoreGauge } from "./components/ScoreGauge";
 import { AppShell } from "./components/AppShell";
+import type { Plan } from "./components/PlansBar";
 import type { NavSection } from "./components/SideNav";
 import { useActiveSection } from "./lib/useActiveSection";
 import { DocumentSummary } from "./components/DocumentSummary";
@@ -93,7 +94,15 @@ export interface CtaConfig {
   href: string;
 }
 
-export function App({ apiBase, cta }: { apiBase: string; cta?: CtaConfig }) {
+export function App({
+  apiBase,
+  cta,
+  plans,
+}: {
+  apiBase: string;
+  cta?: CtaConfig;
+  plans?: Plan[];
+}) {
   const [report, setReport] = useState<AccessibilityReport | null>(null);
   const [audit, setAudit] = useState<SiteAudit | null>(null);
   const [loading, setLoading] = useState(false);
@@ -295,7 +304,12 @@ export function App({ apiBase, cta }: { apiBase: string; cta?: CtaConfig }) {
       className={`a11y-widget-inner${sections.length > 0 ? " a11y-shell-with-nav" : ""}`}
       aria-label="Website accessibility check"
     >
-    <AppShell sections={sections} activeId={activeSectionId} contentRef={shellContentRef}>
+    <AppShell
+      sections={sections}
+      activeId={activeSectionId}
+      plans={plans}
+      contentRef={shellContentRef}
+    >
       {/* No standalone intro paragraph — the door metaphor said little the
           scanner's own subtitle couldn't say better, and the one useful
           claim it carried (what standard this follows, and why that

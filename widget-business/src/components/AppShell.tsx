@@ -1,5 +1,6 @@
 import type { ReactNode, RefObject } from "react";
 import { SideNav, type NavSection } from "./SideNav";
+import { PlansBar, type Plan } from "./PlansBar";
 
 /**
  * The app-shell's header/nav/content, laid into the grid areas
@@ -11,11 +12,16 @@ import { SideNav, type NavSection } from "./SideNav";
 export function AppShell({
   sections,
   activeId,
+  plans,
   contentRef,
   children,
 }: {
   sections: NavSection[];
   activeId: string | null;
+  /* The embedder's plans, if they configured any. Rendered above the nav
+     and nowhere else, so the report below it stays one continuous
+     document. */
+  plans?: Plan[];
   // The content wrapper App.tsx queries for `[data-nav-label]` headings
   // after each render, to build `sections` above.
   contentRef: RefObject<HTMLDivElement>;
@@ -24,7 +30,9 @@ export function AppShell({
   const hasNav = sections.length > 0;
   return (
     <>
-      <header className="a11y-shell-header" />
+      <header className="a11y-shell-header">
+        <PlansBar plans={plans} />
+      </header>
       {hasNav && <SideNav sections={sections} activeId={activeId} />}
       <div className="a11y-shell-content" ref={contentRef}>
         {children}

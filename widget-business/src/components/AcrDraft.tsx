@@ -85,14 +85,51 @@ export function AcrDraft({ report }: { report: AccessibilityReport }) {
       {/* Hidden rather than unrendered, so aria-controls always points at a
           real element. */}
       <div id={panelId} hidden={!open}>
-          <p className="a11y-conf-caveat">
-            <strong>This fills in the failures, not the whole form.</strong> The template allows four
-            answers: Supports, Partially Supports, Does Not Support, Not Applicable. A scan can find
-            failures but can never establish conformance. The draft completes the rows it can
-            evidence and leaves the rest blank on purpose. Put "Supports" in every row and the
-            document looks finished but claims something nobody checked. In a procurement report,
-            that is the version with legal consequences.
-          </p>
+          {/* Five separate warnings, and the last one is the one that
+              matters — it was previously the final clause of a six-line
+              paragraph, which is where a reader in a hurry stops. */}
+          <div className="a11y-conf-caveat">
+            <p>
+              <strong>This fills in the failures, not the whole form.</strong>
+            </p>
+            <ul className="a11y-plain-points">
+              <li>The template allows four answers: Supports, Partially Supports, Does Not Support, Not Applicable.</li>
+              <li>A scan can find failures. It can never establish conformance.</li>
+              <li>The draft completes the rows it can evidence and leaves the rest blank on purpose.</li>
+              <li>Put &ldquo;Supports&rdquo; in every row and the document looks finished while claiming something nobody checked.</li>
+              <li>In a procurement report, that is the version with legal consequences.</li>
+            </ul>
+          </div>
+
+          {/* What the draft declares, in the same spec-sheet shape the
+              accessibility statement uses — the two documents are read by
+              the same person for the same reason. */}
+          <dl className="a11y-spec-grid" aria-label="What this draft declares">
+            <div className="a11y-spec-card a11y-spec-card-lead">
+              <dt className="a11y-spec-label">Product</dt>
+              <dd className="a11y-spec-value">{productName.trim() || "[Your product]"}</dd>
+            </div>
+            <div className="a11y-spec-card">
+              <dt className="a11y-spec-label">Version</dt>
+              <dd className="a11y-spec-value">{productVersion.trim() || "[Version]"}</dd>
+            </div>
+            <div className="a11y-spec-card">
+              <dt className="a11y-spec-label">Checked against</dt>
+              <dd className="a11y-spec-value">
+                {report.conformance.standard}
+                <span className="a11y-spec-gloss">The standard a buyer will ask you about</span>
+              </dd>
+            </div>
+            <div className="a11y-spec-card">
+              <dt className="a11y-spec-label">Rows the scan can evidence</dt>
+              <dd className="a11y-spec-value">
+                {report.conformance.failed}
+                <span className="a11y-spec-gloss">
+                  of {report.conformance.total}; the rest need a person
+                </span>
+              </dd>
+            </div>
+          </dl>
 
           <div className="a11y-stmt-fields">
             <label className="a11y-stmt-field">

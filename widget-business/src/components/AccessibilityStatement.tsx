@@ -1,6 +1,5 @@
 import { useMemo, useState } from "react";
 import { SectionHeader } from "./SectionHeader";
-import { DataTable } from "@verify/design-system";
 import type { AccessibilityReport, ConformanceSummary } from "../api/scanClient";
 
 // Generates a draft accessibility statement.
@@ -159,13 +158,27 @@ Annex V also asks for the following. [Add or link to them here.]
 // the room. gloss is optional plain-language cover for a value that's
 // standards jargon on its own — a standard's name or a conformance
 // term, neither of which means anything to the reader without it.
-function stmtRow(field: string, value: string, gloss?: string) {
+function SpecCard({
+  field,
+  value,
+  gloss,
+  lead = false,
+}: {
+  field: string;
+  value: string;
+  gloss?: string;
+  /* The first card carries the accent, as the reference's spec sheet does.
+     Black on the fill, like every other filled thing here — 5.7:1. */
+  lead?: boolean;
+}) {
   return (
-    <span className="a11y-undecided-cell">
-      <span className="a11y-stmt-field-label">{field}</span>
-      <span>{value}</span>
-      {gloss && <span className="a11y-conf-plain">{gloss}</span>}
-    </span>
+    <div className={`a11y-spec-card${lead ? " a11y-spec-card-lead" : ""}`}>
+      <dt className="a11y-spec-label">{field}</dt>
+      <dd className="a11y-spec-value">
+        {value}
+        {gloss && <span className="a11y-spec-gloss">{gloss}</span>}
+      </dd>
+    </div>
   );
 }
 
@@ -243,6 +256,22 @@ export function AccessibilityStatement({ report }: { report: AccessibilityReport
         the answers. Add your details and the draft writes itself.
       </p>
 
+      {/* Numbered steps, from the reference's licence builder. This section
+          has always been a two-step job — say who it is for, then take the
+          text — and it read as a form followed by an unrelated block of
+          prose. The numbers say there are two things to do and that you are
+          on the first, which is most of what that layout is for.
+
+          The numbers are decoration: each step already has a real heading
+          the marker sits beside, so a screen reader hears the heading and
+          not "one, two". */}
+      <div className="a11y-stmt-step">
+        <h3 className="a11y-stmt-step-head">
+          <span className="a11y-stmt-step-num" aria-hidden="true">1</span>
+          Tell us who this is for
+        </h3>
+      </div>
+
       <div className="a11y-stmt-fields">
         <label className="a11y-stmt-field">
           Organisation name
@@ -266,51 +295,45 @@ export function AccessibilityStatement({ report }: { report: AccessibilityReport
         </label>
       </div>
 
-      {/* The statement's declared facts, as the kit's table — the same
-          numbers the prose below commits to, checkable at a glance.
-          Field folds above Value in one column rather than sitting beside
-          it in a second: a short label ("Website") forced into its own
-          column crushed it to a letter-per-line sliver on a phone, while
-          Value (a URL, a standard name) needed the room. */}
-      <DataTable
-        caption="What this statement declares"
-        headers={[{ key: "field", label: "What this statement says" }]}
-        rows={[
-          { id: "org", cells: [stmtRow("Prepared for", organisation.trim() || "[Your organisation]")] },
-          { id: "site", cells: [stmtRow("Website", report.url)] },
-          {
-            id: "std",
-            cells: [
-              stmtRow(
-                "Checked against",
-                "EN 301 549 · WCAG 2.1 AA",
-                "The EU's technical standard for digital accessibility"
-              ),
-            ],
-          },
-          {
-            id: "pos",
-            cells: [
-              stmtRow(
-                "Position",
-                position === "partially" ? "Partially conformant" : "Non-conformant",
-                position === "partially"
-                  ? "Meets most requirements, not all of them"
-                  : "Doesn't yet meet the standard"
-              ),
-            ],
-          },
-          {
-            id: "issues",
-            cells: [
-              stmtRow(
-                "Problems disclosed",
-                knownIssues.length === 0 ? "None the scan can detect" : String(knownIssues.length)
-              ),
-            ],
-          },
-        ]}
-      />
+      {/* The statement's declared facts as a spec sheet — the same shape the
+          reference uses for a typeface's own specification: a small label
+          over a large value, one card per fact, the first one filled.
+
+          A <dl>, not a table. These are name/value pairs and always were —
+          the table had a single column and a header reading "What this
+          statement says", which is a list wearing a table's clothes. A
+          definition list says the same thing to a screen reader in fewer
+          words, and it is what lets the facts sit side by side on a wide
+          screen and stack on a narrow one without a scrollbar. */}
+      <dl className="a11y-spec-grid" aria-label="What this statement declares">
+        <SpecCard field="Prepared for" value={organisation.trim() || "[Your organisation]"} lead />
+        <SpecCard field="Website" value={report.url} />
+        <SpecCard
+          field="Checked against"
+          value="EN 301 549 · WCAG 2.1 AA"
+          gloss="The EU's technical standard for digital accessibility"
+        />
+        <SpecCard
+          field="Position"
+          value={position === "partially" ? "Partially conformant" : "Non-conformant"}
+          gloss={
+            position === "partially"
+              ? "Meets most requirements, not all of them"
+              : "Doesn't yet meet the standard"
+          }
+        />
+        <SpecCard
+          field="Problems disclosed"
+          value={knownIssues.length === 0 ? "None the scan can detect" : String(knownIssues.length)}
+        />
+      </dl>
+
+      <div className="a11y-stmt-step">
+        <h3 className="a11y-stmt-step-head">
+          <span className="a11y-stmt-step-num" aria-hidden="true">2</span>
+          Take the statement
+        </h3>
+      </div>
 
       <div className="a11y-stmt-actions">
         <button type="button" className="a11y-sr-play" onClick={copy}>
