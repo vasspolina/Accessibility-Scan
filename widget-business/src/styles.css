@@ -7673,3 +7673,65 @@ label.a11y-ai-toggle {
 .a11y-widget-biz.a11y-widget-biz .a11y-undecided-ask {
   color: var(--content-secondary);
 }
+
+/* ==========================================================================
+   Checker dashboard — the filter pills
+   ==========================================================================
+   From ui_kits/scan-app/checker.prompt.md: "Active pill is a black fill;
+   counts sit beside the label in muted type."
+
+   The fix filter was a row of bordered rectangles at 10px radius, sized to a
+   180px minimum so five of them wrapped into a block. Pills size to their own
+   label and read as a filter strip rather than a second set of buttons
+   competing with the actions above them.
+
+   Safe to invert the active one, by the rule the rest of this migration
+   follows: a pill owns its only child, which is its own label. */
+.a11y-widget-biz.a11y-widget-biz .a11y-filter-btn {
+  flex: 0 0 auto;
+  min-width: 0;
+  padding: var(--space-2) var(--space-4);
+  border: var(--border-width) solid var(--border-default);
+  border-radius: var(--radius-round);
+  background: var(--surface-raised);
+  color: var(--content-primary);
+  font-size: var(--text-label);
+  font-weight: 500;
+  line-height: 1;
+  min-height: var(--target-min);
+  text-align: center;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: background var(--motion-exit) var(--ease-standard);
+}
+
+.a11y-widget-biz.a11y-widget-biz .a11y-filter-btn.a11y-mode-btn-active {
+  background: var(--surface-inverse);
+  border-color: var(--surface-inverse);
+  color: var(--content-on-inverse);
+}
+
+/* The count beside the label, in muted type — and it has to follow the pill
+   into the inversion or it lands at 2.2:1 on the black, which is the failure
+   SpecList shipped this morning from exactly this oversight. */
+.a11y-widget-biz.a11y-widget-biz .a11y-filter-btn em {
+  display: inline;
+  margin-left: var(--space-2);
+  font-style: normal;
+  font-weight: 400;
+  color: var(--content-secondary);
+}
+
+.a11y-widget-biz.a11y-widget-biz .a11y-filter-btn.a11y-mode-btn-active em {
+  color: var(--content-on-inverse-secondary);
+}
+
+/* The active pill carries a fill AND a border change, never colour alone —
+   but a fill is not a text cue, so the filter row still relies on
+   aria-pressed for anyone who cannot see it. That is already in the markup;
+   this rule only makes sure the visible state is unambiguous. */
+.a11y-widget-biz.a11y-widget-biz .a11y-filter {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
