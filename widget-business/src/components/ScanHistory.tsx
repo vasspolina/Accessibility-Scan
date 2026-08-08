@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
-import { Dialog } from "@verify/design-system";
+import { Dialog } from "./Dialog";
 import { clearHistory, diffScans, scoresComparable, type HistoryEntry } from "../lib/scanHistory";
 import { plainForRule } from "../lib/wcagPlain";
 
