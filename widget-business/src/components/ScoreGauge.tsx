@@ -207,11 +207,18 @@ export function ScoreGauge({
           repeated the summary line below without saying what any of it
           actually was. */}
       <div className="a11y-stat-row">
-        <Card style={{ ...TILE, background: "transparent" }}>
-          <span className="a11y-stat-label">Accessibility score</span>
-          <ScoreDial score={score} size={110} />
-        </Card>
-        <Card style={{ background: "transparent" }}>
+        {/* ScoreDial stands alone now. It used to be a small ring inside a
+            Card that supplied the label and the fill; the ported dial IS a
+            card — black ground, its own "Accessibility score" heading, the
+            number and the meter — so the wrapper was drawing a card around a
+            card and printing the label twice. Nesting cards for hierarchy is
+            also the anti-pattern Card's own annotation names. */}
+        <ScoreDial score={score} />
+        {/* A real card, not a transparent one. The pair used to be see-
+            through because the tiles were drawn by .a11y-stat-row rather
+            than by Card; that row now only says where they sit, so the card
+            can be a card. */}
+        <Card>
           {preview.length === 0 ? (
             <p className="a11y-score-clean">Nothing here needs a fix.</p>
           ) : (
