@@ -8,6 +8,31 @@ The source of truth is the Claude Design export ("Accessible Scan Design
 System"), and the sync is one way: design → code. Never edit the export from
 here. `.design-sync/NOTES.md` says the same thing and means it.
 
+## Which layer is the target
+
+**Foundations v2 is the token layer. `accessible-scan.css` is not.**
+
+The design project ships two complete and mutually exclusive systems, and
+picking the wrong one is a day of work in the wrong direction:
+
+| | accessible-scan.css | Foundations v2 |
+|---|---|---|
+| Body | 1.125rem (18px) | 1rem (16px) |
+| Page | #ffffff | #faf8f5 |
+| Ink | #161616 | #211e1a |
+| Accent | #d92600 | #b32200 |
+| Names | --gray-100, --layer-01 | --surface-inverse, --content-secondary |
+
+`accessible-scan.css` is a good stylesheet — self-contained, every value a
+token, every component as an `as-` class — and it is the OLD Carbon-derived
+set. Importing it would take the app back to the cool palette and 18px body.
+Confirmed as the target: v2. Do not import accessible-scan.css.
+
+Where the two disagree on design rather than tokens, the component source
+wins over both: `.as-head` puts the section index at label size, while
+`SectionHead.jsx` puts it at heading size, and the component is the
+specification.
+
 ## Where things live
 
 - **Tokens:** `widget-business/src/styles/tokens.css` — Foundations v2, ported

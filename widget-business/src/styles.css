@@ -7271,13 +7271,19 @@ label.a11y-ai-toggle {
    and 1.05 at 20px sets the two lines almost touching. The system's own
    --type-title-lh is 1.2 for exactly this size, and the report failing its
    own leading rule is the fault it opened this session with. */
+/* SectionHead, from components/display/SectionHead.jsx.
+   Supersedes the 20px title this block used to set. That came from the
+   redesign demo page, where every section title is a quiet label; the
+   component itself is the real specification and sets the title at heading
+   size with an index numeral above it. The two readings disagreed and the
+   component wins. */
 .a11y-widget-biz.a11y-widget-biz h2.a11y-section-title,
 .a11y-widget-biz.a11y-widget-biz .a11y-section-title {
   margin: 0;
-  font-size: var(--type-title-size, 1.25rem);
-  line-height: var(--type-title-lh, 1.2);
-  font-weight: var(--weight-medium, 500);
-  letter-spacing: var(--tracking-tight, -0.03em);
+  font-size: var(--text-heading);
+  line-height: var(--leading-heading);
+  font-weight: 500;
+  letter-spacing: var(--tracking-tight);
 }
 
 /* The count and the eyebrow are metadata, set at label size in the secondary
@@ -7601,4 +7607,156 @@ label.a11y-ai-toggle {
   border-color: var(--content-on-inverse);
   background: var(--content-on-inverse);
   box-shadow: inset 0 0 0 3px var(--surface-inverse);
+}
+
+
+/* ==========================================================================
+   SectionHead — the index numeral and the lead
+   ==========================================================================
+   The index is a CSS counter rather than markup, and that is the faithful
+   choice rather than a shortcut: the source marks it aria-hidden, so it is
+   decorative by the component's own decision. Generated content is not in
+   the accessibility tree, which is the same outcome by a cheaper route — and
+   it means twelve section components need no edit.
+
+   The counter lives on .a11y-widget-inner and increments per section, so the
+   numbers run in document order across the whole report. That is the
+   annotation's one hard rule: "Anti-pattern: an index numeral that restarts
+   per screen. Correct: indices run in document order across the report."
+   A counter scoped to the report root cannot restart per section, which is
+   exactly the guarantee wanted. */
+.a11y-widget-biz.a11y-widget-biz .a11y-widget-inner {
+  counter-reset: a11y-section;
+}
+
+.a11y-widget-biz.a11y-widget-biz .a11y-section {
+  counter-increment: a11y-section;
+}
+
+.a11y-widget-biz.a11y-widget-biz .a11y-section-title::before {
+  content: counter(a11y-section, decimal-leading-zero);
+  display: block;
+  margin-bottom: var(--space-3);
+  font-size: var(--text-heading);
+  line-height: 1;
+  font-weight: 500;
+  letter-spacing: var(--tracking-tight);
+  /* --gray-60 in the source; --content-muted is its v2 role. Quiet enough to
+     order the sections without competing with the title under it. 5.34:1 on
+     the page, so it stays legible rather than becoming decoration nobody can
+     read. */
+  color: var(--content-muted);
+}
+
+/* The masthead carries no index, and is not counted either.
+   :first-of-type was wrong here and quietly so: the report's sections do not
+   share one parent, so it matched the first section within EACH parent —
+   stripping the numeral from "Since last time" while leaving one on the
+   masthead, the exact inverse of the intent. Naming the masthead by its own
+   class is unambiguous whatever the DOM does around it.
+   counter-increment: none as well, so the first real chapter is 01 rather
+   than 02 — the masthead is not a chapter that happens to be unnumbered. */
+.a11y-widget-biz.a11y-widget-biz .a11y-section:has(.a11y-newscan-title) {
+  counter-increment: none;
+}
+
+.a11y-widget-biz.a11y-widget-biz .a11y-newscan-title::before,
+.a11y-widget-biz.a11y-widget-biz .a11y-results-title::before {
+  content: none;
+}
+
+/* The lead. The source sets --type-body-lh-medium, which Foundations v2 does
+   not have — its leading tokens run narrow (1.32), body (1.5) and label, with
+   no 1.4 between them. FLAG: the gap is real. --leading-body is used because
+   the lead is capped at the full 66ch measure, and v2's own rule is that
+   leading follows the measure; a 66ch line at 1.32 would be tight by the
+   system's own reckoning. */
+.a11y-widget-biz.a11y-widget-biz .a11y-section-desc {
+  margin: 0;
+  max-width: var(--measure-max);
+  line-height: var(--leading-body);
+  color: var(--content-secondary);
+}
+
+/* ==========================================================================
+   SpecList — read-only metadata under the numbers
+   ==========================================================================
+   From components/display/SpecList.jsx. Label, value, optional note, each
+   column opening with a hairline rule above it.
+
+   The rule is the whole device: it is what makes a row of these read as a
+   spec sheet rather than four stray captions. No box, no fill — the line
+   does the separating, which is the same argument the DataTable annotation
+   makes about spacing over dividers.
+
+   The app already renders this shape (dl / dt / dd with a gloss), so this is
+   the design applied to existing markup rather than a new component. */
+.a11y-widget-biz.a11y-widget-biz .a11y-spec-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr));
+  gap: var(--space-5) var(--space-6);
+  margin: 0 0 var(--space-5);
+}
+
+.a11y-widget-biz.a11y-widget-biz .a11y-spec-grid > div {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  padding-top: var(--space-3);
+  border-top: 1px solid var(--border-subtle);
+}
+
+.a11y-widget-biz.a11y-widget-biz .a11y-spec-label {
+  margin: 0;
+  font-size: var(--text-label);
+  line-height: var(--leading-label);
+  font-weight: 500;
+  color: var(--content-secondary);
+}
+
+/* FLAG: the source sets --type-title-lh-narrow (1.1) and Foundations v2 has
+   no narrow title leading — its scale is display, heading, title, body,
+   body-narrow, label. --leading-title (1.2) is the nearest real token. On a
+   value that is usually one line the difference never shows; on a wrapping
+   one it is 2px. Not worth inventing a token for, worth recording. */
+.a11y-widget-biz.a11y-widget-biz .a11y-spec-value {
+  margin: 0;
+  font-size: var(--text-title);
+  line-height: var(--leading-title);
+  font-weight: 500;
+  letter-spacing: var(--tracking-tight);
+  color: var(--content-primary);
+  /* A URL is one long unbreakable token and would otherwise push the column
+     wider than its share of the grid. */
+  overflow-wrap: anywhere;
+}
+
+/* The note. --leading-body-narrow stands in for the source's
+   --type-label-lh-narrow, the same gap FactCard hit: v2 has no narrow label
+   leading, and a spec column is exactly the narrow measure that token
+   describes. */
+.a11y-widget-biz.a11y-widget-biz .a11y-spec-gloss {
+  display: block;
+  margin-top: 0;
+  font-size: var(--text-label);
+  line-height: var(--leading-body-narrow);
+  font-weight: 400;
+  color: var(--content-secondary);
+}
+
+/* On an inverted surface the rule cannot be --border-subtle, which is a
+   light-ground hairline and vanishes. The source uses a white wash at 24%,
+   which reads as a rule on any dark fill rather than only on one. */
+.a11y-widget-biz.a11y-widget-biz .a11y-card-invert .a11y-spec-grid > div,
+.a11y-widget-biz.a11y-widget-biz .a11y-section-tint .a11y-spec-grid > div {
+  border-top-color: rgba(255, 255, 255, 0.24);
+}
+
+.a11y-widget-biz.a11y-widget-biz .a11y-card-invert .a11y-spec-label,
+.a11y-widget-biz.a11y-widget-biz .a11y-card-invert .a11y-spec-gloss {
+  color: var(--content-on-inverse-secondary);
+}
+
+.a11y-widget-biz.a11y-widget-biz .a11y-card-invert .a11y-spec-value {
+  color: var(--content-on-inverse);
 }
