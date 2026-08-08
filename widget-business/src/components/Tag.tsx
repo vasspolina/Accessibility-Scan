@@ -13,7 +13,22 @@ import type { ReactNode } from "react";
  * empty one — an aria-label of "12 " would be worse than none.
  */
 
-export type TagTone = "gray" | "blue" | "red" | "green";
+/* All nine tones the annotation lists. Four — magenta, purple, cyan, teal —
+   had no equivalent here before; their token pairs were already bridged, so
+   only the names were missing. A tone the design system has and the code does
+   not is how the two drift apart, even when nothing reaches for it yet.
+   "accent" is the odd one out: white on the ember fill at 6.68:1, and the
+   only tone that is not a Carbon tag pair. */
+export type TagTone =
+  | "gray"
+  | "red"
+  | "magenta"
+  | "purple"
+  | "blue"
+  | "cyan"
+  | "teal"
+  | "green"
+  | "accent";
 
 export function Tag({ tone = "gray", children }: { tone?: TagTone; children: ReactNode }) {
   return <span className={`a11y-tag a11y-tag-${tone}`}>{children}</span>;

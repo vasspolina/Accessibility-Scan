@@ -637,13 +637,48 @@ label.a11y-ai-toggle {
   height: 16px;
 }
 
+/* Onto Foundations v2, following components/feedback/Notification.jsx: a
+   neutral panel, not a pink one, with the danger colour carried by a marker
+   rather than by the message text.
+
+   The old rule set the whole message in red on a pink tint. The system does
+   the opposite deliberately — the text stays --content-primary at 14.46:1
+   and only the marker is red — and it is the better answer for the same
+   reason this report gives other sites: an error that is red text on a red
+   ground is legible to fewer people than black text with a red flag beside
+   it, and it leans on colour to carry the meaning.
+
+   The left rule and the "!" replace the system's "Error" pill. Both say the
+   same thing in the same place; the bar is what this app already used, and
+   changing the shape of every inline error was not what "the design changed"
+   asked for. */
 .a11y-error {
-  margin-top: 16px;
-  padding: 12px 16px;
-  border-radius: 8px;
-  background: #fff0ef;
-  color: var(--a11y-score-bad, #cf222e);
-  font-size: var(--a11y-text-body);
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-3);
+  margin-top: var(--space-4);
+  padding: var(--space-3) var(--space-4);
+  border-radius: var(--radius-soft);
+  border-left: 3px solid var(--status-danger);
+  background: var(--surface-sunken);
+  color: var(--content-primary);
+  font-size: var(--text-body);
+  line-height: var(--leading-body);
+}
+
+/* The marker. aria-hidden is not available from CSS, so this is a
+   ::before rather than markup — generated content is not announced by the
+   screen readers that matter here, and the message itself already says what
+   went wrong. --status-danger on --surface-sunken is 5.6:1. */
+.a11y-error::before {
+  content: "!";
+  flex: 0 0 auto;
+  font-weight: 500;
+  color: var(--status-danger);
+}
+
+.a11y-error:empty::before {
+  content: none;
 }
 
 .a11y-loading,
@@ -1023,78 +1058,17 @@ label.a11y-ai-toggle {
      on other people's sites. Dropping Issues frees the width on its own. */
 }
 
-/* The table, now owned here. These are the rules the kit used to write as
-   inline styles on every cell — the report's own table rules further down
-   this file still layer on top exactly as they did, because the DOM shape
-   is unchanged. */
-.a11y-datatable {
-  width: 100%;
-  border-collapse: collapse;
-  font-size: var(--a11y-text-body);
-  color: var(--a11y-text, #161616);
-  border: 1px solid var(--border-subtle, var(--a11y-border, #e0e0e0));
-}
 
-.a11y-datatable caption {
-  text-align: left;
-  padding: 0 0 var(--space-04, 0.75rem);
-  font-size: var(--a11y-text-label, 0.875rem);
-  color: var(--text-secondary, var(--a11y-muted, #525252));
-}
 
-.a11y-datatable thead tr {
-  background: var(--layer-01, var(--a11y-surface, #f4f4f4));
-}
 
 .a11y-datatable thead th,
-.a11y-datatable thead .a11y-dt-spacer {
-  border-bottom: 1px solid var(--border-strong, #8d8d8d);
-}
 
-.a11y-datatable thead th {
-  padding: var(--space-04, 0.75rem) var(--space-05, 1rem);
-  font-size: var(--a11y-text-label, 0.875rem);
-  font-weight: 500;
-  overflow-wrap: anywhere;
-}
 
-.a11y-dt-spacer {
-  width: 48px;
-}
 
-.a11y-datatable tbody td {
-  padding: var(--space-04, 0.75rem) var(--space-05, 1rem);
-  border-bottom: 1px solid var(--border-subtle, var(--a11y-border, #e0e0e0));
-  vertical-align: middle;
-  line-height: 1.35;
-  overflow-wrap: anywhere;
-}
 
-.a11y-dt-toggle-cell {
-  padding: 0 !important;
-  text-align: center;
-}
 
-/* 44px square: the tap-target size this report asks of everybody else. */
-.a11y-dt-toggle {
-  width: 44px;
-  height: 44px;
-  background: transparent;
-  border: 0;
-  cursor: pointer;
-  color: inherit;
-  font: inherit;
-}
 
-.a11y-dt-toggle span {
-  display: inline-block;
-  transition: transform var(--duration-fast-02, 110ms)
-    var(--ease-productive-standard, cubic-bezier(0.2, 0, 0.38, 0.9));
-}
 
-.a11y-dt-toggle span[data-open="true"] {
-  transform: rotate(90deg);
-}
 
 /* The modal, now owned here. */
 .a11y-dialog-scrim {
@@ -1338,90 +1312,15 @@ label.a11y-ai-toggle {
   font-weight: 500;
 }
 
-/* The button, now owned here. Heights are the kit's, and 48px on the large
-   size is what the report's own tap-target rule asks of everybody else. */
-.a11y-btn {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: var(--space-03, 0.5rem);
-  /* space-06, not space-05: the system's Button sets 0 1.5rem, and at
-     space-05 the pill sat too tight around its own label. */
-  padding: 0 var(--space-06, 1.5rem);
-  border-radius: var(--radius-pill, 999px);
-  font-family: inherit;
-  font-size: var(--a11y-text-body);
-  font-weight: 500;
-  letter-spacing: var(--tracking-normal, 0.01em);
-  white-space: nowrap;
-  cursor: pointer;
-  transition: background var(--duration-fast-02, 110ms)
-    var(--ease-productive-standard, cubic-bezier(0.2, 0, 0.38, 0.9));
-}
 
-.a11y-btn-sm { height: 32px; min-height: 32px; }
-.a11y-btn-md { height: 40px; min-height: 40px; }
-.a11y-btn-lg { height: 48px; min-height: 48px; }
 
-/* Red, not black. The system's Button makes "primary" the accent-red fill
-   and keeps black as its own "black" variant — the two are different jobs,
-   and I had collapsed them by making everything follow --button-primary.
-   colors.css is explicit that this red is for submit and marketing CTAs,
-   which is what Run scan is. White on #d92600 is 4.97:1. */
-.a11y-btn-primary {
-  background: var(--accent-red-fill, #d92600);
-  color: #ffffff;
-  border: 1px solid var(--accent-red-fill, #d92600);
-}
 
-.a11y-btn-primary:hover:not(:disabled) {
-  background: var(--accent-red-fill-hover, #b31f00);
-  border-color: var(--accent-red-fill-hover, #b31f00);
-}
 
-/* The system's "black" variant, which its Dialog uses for the confirming
-   action — the page's ink, inverted. */
-.a11y-btn-black {
-  background: var(--a11y-accent, #161616);
-  color: var(--a11y-accent-on, #ffffff);
-  border: 1px solid var(--a11y-accent, #161616);
-}
 
-/* 2px, per the system: a secondary sits beside a filled primary and a
-   hairline loses that contest. */
-.a11y-btn-secondary {
-  background: transparent;
-  color: var(--a11y-text, #161616);
-  border: 2px solid var(--a11y-text, #161616);
-}
 
-/* Ghost carries the page's own ink and an underline that appears on hover,
-   rather than a colour standing in for a link. */
-.a11y-btn-ghost {
-  background: transparent;
-  color: var(--a11y-text, #161616);
-  border: 1px solid transparent;
-  text-decoration: underline;
-  text-decoration-color: transparent;
-  text-underline-offset: 3px;
-}
 
-.a11y-btn-ghost:hover:not(:disabled) {
-  text-decoration-color: currentColor;
-}
 
-.a11y-btn-danger {
-  background: var(--button-danger, var(--a11y-score-bad, #a2191f));
-  color: var(--a11y-accent-on, #ffffff);
-  border: 1px solid transparent;
-}
 
-/* The real disabled attribute does the work — out of the tab order and
-   unclickable. This only says so visually. */
-.a11y-btn:disabled {
-  cursor: not-allowed;
-  opacity: 0.5;
-}
 
 /* The progress bar and the notification, now owned here. Same tokens the
    kit read, so neither changes appearance — only where the rules live. */
@@ -1524,38 +1423,11 @@ label.a11y-ai-toggle {
    border and the radius are unchanged — and --radius-sm is this package's
    own 12px rather than Carbon's 2px, which is where the reference's rounding
    entered the kit components in the first place. */
-/* To the system's own Card: a tinted panel with no border at all, 2rem of
-   padding and the large radius. The border came off deliberately — the tint
-   is what separates the card from the page, and a border on top of a tint
-   reads as two separations doing one job. */
-.a11y-card {
-  padding: var(--space-07, 2rem);
-  background: var(--layer-01, var(--a11y-surface, #f4f4f4));
-  border: 0;
-  border-radius: var(--radius-lg, 20px);
-  color: var(--a11y-text, #161616);
-  display: flex;
-  flex-direction: column;
-}
 
-/* The system's inverted tone: the page's ink as the ground. */
-.a11y-card-invert {
-  background: var(--a11y-text, #161616);
-  color: var(--a11y-bg, #ffffff);
-}
 
 /* The doubled-class rule that used to be needed here is gone with the
    blanket square rule it existed to beat. */
 
-/* Fixed at h3: the call sites put these under their section's own h2, and
-   heading order is the one thing this component can break. */
-.a11y-card-title {
-  margin: 0 0 var(--space-04, 0.75rem);
-  font-size: var(--a11y-text-subtitle, 1.25rem);
-  line-height: var(--a11y-leading-heading, 1.2);
-  font-weight: 500;
-  letter-spacing: var(--tracking-tight, -0.03em);
-}
 
 /* The tone chip and the count badge, now owned here.
 
@@ -1618,71 +1490,15 @@ label.a11y-ai-toggle {
   font-weight: 500;
 }
 
-/* The severity chip, now that this package owns the component.
 
-   The rules below this one are the older shape, where the severity lived on
-   an ancestor (.a11y-severity-critical .a11y-severity-badge) and the chip
-   was a solid fill with white text. The component sets the severity class on
-   the chip itself, so these self-classed rules are what actually paint it —
-   the descendant ones stay for the card markup that still nests that way.
 
-   Tinted fill with the matching ink on top, and a border in currentColor,
-   which is what keeps the outline legible whatever a theme does to the
-   fill. */
-.a11y-severity-badge {
-  display: inline-flex;
-  align-items: center;
-  gap: var(--space-02, 0.25rem);
-  flex-shrink: 0;
-  min-height: 24px;
-  padding: 2px var(--space-04, 0.75rem);
-  border: 1px solid currentColor;
-  border-radius: var(--radius-pill, 999px);
-  font-size: var(--a11y-text-label, 0.875rem);
-  font-weight: 500;
-  white-space: nowrap;
-}
 
-.a11y-severity-badge.a11y-severity-critical {
-  color: var(--severity-critical, #a2191f);
-  background: var(--severity-critical-bg, #fff1f1);
-}
 
-.a11y-severity-badge.a11y-severity-serious {
-  color: var(--severity-serious, #ba4e00);
-  background: var(--severity-serious-bg, #fff2e8);
-}
 
-.a11y-severity-badge.a11y-severity-moderate {
-  color: var(--severity-moderate, #8a3800);
-  background: var(--severity-moderate-bg, #fcf4d6);
-}
 
-.a11y-severity-badge.a11y-severity-minor {
-  color: var(--severity-minor, #525252);
-  background: var(--severity-minor-bg, #f4f4f4);
-}
 
-.a11y-severity-badge.a11y-severity-pass {
-  color: var(--severity-pass, #0e6027);
-  background: var(--severity-pass-bg, #defbe6);
-}
 
-.a11y-severity-critical .a11y-severity-badge {
-  background: var(--a11y-score-bad, #cf222e);
-}
 
-.a11y-severity-serious .a11y-severity-badge {
-  background: #bc4c00;
-}
-
-.a11y-severity-moderate .a11y-severity-badge {
-  background: var(--a11y-score-warn, #9a6700);
-}
-
-.a11y-severity-minor .a11y-severity-badge {
-  background: var(--a11y-muted, #57606a);
-}
 
 .a11y-finding-desc {
   /* The basis is the point: the title claims a readable measure before
@@ -3021,24 +2837,18 @@ label.a11y-ai-toggle {
 
    The kit's Card sets its own inline background, which is why these pass
    `background: transparent` in the markup and take their fill from here. */
+/* Layout only.
+   This block used to force padding, radius, background and border with
+   !important, and the comments explained why: the vendored Card wrote all
+   three as inline styles, which no selector could outrank. That Card is gone
+   — the ported one carries no inline styles at all — so the !important is
+   obsolete, and worse than obsolete: it was still painting #f4f4f4 and a
+   16px radius over a component that had already been moved to Foundations
+   v2, so the port looked like it had not taken.
+   Surface, radius, border and padding now belong to Card. This row says only
+   where the cards sit. */
 .a11y-stat-row > * {
-  padding: var(--space-05, 1rem);
-  /* radius needs the same !important as the fill below: the kit writes all
-     three inline, and forcing two of them left square corners on a card
-     that had already taken its colour from here. */
-  border-radius: 16px !important;
-  /* !important because the kit's Card writes its background, border and
-     radius as inline styles, which no selector in this file can outrank.
-     Same move this file already makes everywhere it has to reach inside a
-     vendored component. */
-  background: #f4f4f4 !important;
-  border: 1px solid transparent !important;
-}
-
-.a11y-widget-biz.a11y-widget-biz .a11y-stat-row > * {
-  /* --radius-lg, so the stat cards match every other card rather than
-     sitting 4px off the system's scale. */
-  border-radius: var(--radius-lg, 20px);
+  min-width: 0;
 }
 
 /* The lifted card. A tint of the accent rather than the accent itself: this
@@ -3287,11 +3097,6 @@ label.a11y-ai-toggle {
     background: transparent !important;
   }
 
-  .a11y-severity-badge {
-    color: #000 !important;
-    background: transparent !important;
-    border: 1px solid #000;
-  }
 
   /* On paper the panel inverts back. A full-bleed black block is most of a
      toner cartridge, and the statement is the part of this report most
@@ -3736,7 +3541,12 @@ label.a11y-ai-toggle {
 
    Scoped to real controls by element and role, not to a class list, so a
    control added later inherits the shape without anybody remembering to. */
-.a11y-widget-biz.a11y-widget-biz button,
+/* :not() excludes the ported components. This blanket rule makes every
+     button a pill, at (0,2,1), which outranks a component's own class — it
+     silently turned IssueRow's 10px card into a lozenge. The rule still
+     serves every button this migration has not reached yet, so it stays;
+     ported components opt out by name. Each port adds itself here. */
+  .a11y-widget-biz.a11y-widget-biz button:not(.a11y-issue-row),
 .a11y-widget-biz.a11y-widget-biz [role="button"],
 .a11y-widget-biz.a11y-widget-biz .a11y-method-badge,
 .a11y-widget-biz.a11y-widget-biz .a11y-count-badge,
@@ -3867,35 +3677,10 @@ label.a11y-ai-toggle {
   transform: none;
 }
 
-/* Severity as Carbon tags: pale fill, dark text of the same hue. The solid
-   pills they replace were heavier than anything else on the page and pulled
-   the eye away from the finding itself, which is the thing to read. Each pair
-   is a Carbon tag colour and clears 6:1. */
-.a11y-severity-badge {
-  padding: 2px 8px;
-  font-size: var(--a11y-text-body);
-  letter-spacing: 0.32px;
-}
 
-.a11y-severity-critical .a11y-severity-badge {
-  background: #ffd7d9;   /* red-10  */
-  color: #a2191f;        /* red-70  — 6.1:1 */
-}
 
-.a11y-severity-serious .a11y-severity-badge {
-  background: #ffd6e8;   /* magenta-10 */
-  color: #9f1853;        /* magenta-70 — 6.4:1 */
-}
 
-.a11y-severity-moderate .a11y-severity-badge {
-  background: #e8daff;   /* purple-10 */
-  color: #6929c4;        /* purple-70 — 6.6:1 */
-}
 
-.a11y-severity-minor .a11y-severity-badge {
-  background: #dde1e6;   /* cool-gray-20 */
-  color: #121619;        /* cool-gray-100 */
-}
 
 .a11y-count-badge {
   padding: 2px 8px;
@@ -3932,38 +3717,8 @@ label.a11y-ai-toggle {
   border: 1px solid var(--a11y-border, #e0e0e0);
 }
 
-/* A highlighter down the findings that stop somebody completely, using the
-   same inline-notification shape as .a11y-error and .a11y-notice below: a 3px
-   bar down the left edge and a pale wash of the same hue. Carbon's
-   support-warning yellow.
 
-   Must come after the .a11y-finding rule above, which sets the `border`
-   shorthand. Both selectors are a single class, so the later one wins and an
-   earlier border-left here was silently reset to the grey 1px — the stripe
-   simply did not appear.
 
-   Applied by severity rather than to one rule, so anything else that blocks a
-   person is marked without another edit here.
-
-   The stripe is emphasis and carries no meaning of its own: the "Fix first"
-   tag and the finding's own words already say it. That is deliberate. A tool
-   that marked its most serious findings by colour alone would be failing
-   1.4.1 Use of Color, which is a rule it reports other people for breaking.
-   It also survives Windows High Contrast, where the wash is dropped for
-   system colours — forced-colors keeps borders, and the tag keeps its text. */
-.a11y-severity-critical {
-  border-left: 3px solid #f1c21b;   /* yellow-30, Carbon support-warning */
-}
-
-.a11y-severity-critical .a11y-finding-header {
-  background: #fcf4d6;              /* yellow-10 — 17:1 behind body text */
-}
-
-/* Open, the stripe stays but the wash goes, so the explanation is read on
-   plain white like every other finding. */
-.a11y-severity-critical .a11y-finding-header[aria-expanded="true"] {
-  background: var(--a11y-bg, #ffffff);
-}
 
 /* Inline notification: Carbon marks status with a 3px bar down the left edge
    and a tinted fill, rather than a coloured box. */
@@ -4581,35 +4336,11 @@ label.a11y-ai-toggle {
     color: #42be65;
   }
 
-  /* Severity tags: Carbon's dark tags invert the pair — deep fill, pale text. */
-  .a11y-widget-biz .a11y-severity-critical .a11y-severity-badge {
-    background: #a2191f;
-    color: #ffd7d9;
-  }
+  
 
-  .a11y-widget-biz .a11y-severity-serious .a11y-severity-badge {
-    background: #9f1853;
-    color: #ffd6e8;
-  }
 
-  .a11y-widget-biz .a11y-severity-moderate .a11y-severity-badge {
-    background: #6929c4;
-    color: #e8daff;
-  }
 
-  .a11y-widget-biz .a11y-severity-minor .a11y-severity-badge {
-    background: #393939;
-    color: #f4f4f4;
-  }
-
-  /* The critical-finding highlighter. */
-  .a11y-widget-biz .a11y-severity-critical .a11y-finding-header {
-    background: rgba(241, 194, 27, 0.1);
-  }
-
-  .a11y-widget-biz .a11y-severity-critical .a11y-finding-header[aria-expanded="true"] {
-    background: var(--a11y-bg, #161616);
-  }
+  
 
   .a11y-widget-biz .a11y-w22-already-failing {
     background: rgba(241, 194, 27, 0.08);
@@ -4812,9 +4543,6 @@ label.a11y-ai-toggle {
 
 .a11y-url-row button,
 .a11y-cta-link,
-.a11y-severity-badge {
-  font-weight: 500;
-}
 
 /* Selection on the option cards, done the way the system's own rule
    demands — "status is always encoded by an icon and a text label as well
@@ -4890,43 +4618,10 @@ label.a11y-ai-toggle {
   box-shadow: inset 0 0 0 1px var(--a11y-focus-inset, #ffffff);
 }
 
-/* Severity: the system's tag — tinted fill, matching text, hairline
-   currentColor border, pill, and the fixed glyph the SeverityTag spec
-   pairs with every word ("!" for the urgent three, "i" minor). The words
-   stay ours ("Fix first", not "Critical"): the vocabulary is the report's,
-   the clothing is the system's. Glyph alternative text is empty — the
-   word already says it. Every pair meets 4.5:1 on its tint, both themes. */
-.a11y-widget-biz.a11y-widget-biz .a11y-severity-badge {
-  border-radius: 999px;
-  border: 1px solid currentColor;
-}
 
-/* The glyph used to be added here, because the chip's markup did not carry
-   one. The component does now — as a real <span aria-hidden>, which is
-   better than a pseudo-element: it needs no alt-text trick to stay out of
-   the accessible name, and it cannot be lost when a stylesheet fails to
-   load. Both rules rendering at once was what put "! ! Fix first" on the
-   site audit. */
 
-.a11y-severity-critical .a11y-severity-badge {
-  background: #fff1f1;
-  color: #a2191f;
-}
 
-.a11y-severity-serious .a11y-severity-badge {
-  background: #fff2e8;
-  color: #8a3800;
-}
 
-.a11y-severity-moderate .a11y-severity-badge {
-  background: #fcf4d6;
-  color: #6f5500;
-}
-
-.a11y-severity-minor .a11y-severity-badge {
-  background: #f4f4f4;
-  color: #525252;
-}
 
 /* 2px where a hairline needs softening — inputs and cards, nothing else.
    The doubled class beats the square-rule reset the Carbon layer set. */
@@ -4972,27 +4667,9 @@ label.a11y-ai-toggle {
     --layer-02: #393939;
   }
 
-  /* Severity hues lift one ramp step in dark to hold contrast, on the
-     system's dark tint pairs. */
-  .a11y-widget-biz .a11y-severity-critical .a11y-severity-badge {
-    background: #520408;
-    color: #ff8389;
-  }
+  
 
-  .a11y-widget-biz .a11y-severity-serious .a11y-severity-badge {
-    background: #4b2400;
-    color: #ff832b;
-  }
 
-  .a11y-widget-biz .a11y-severity-moderate .a11y-severity-badge {
-    background: #3d3000;
-    color: #f1c21b;
-  }
-
-  .a11y-widget-biz .a11y-severity-minor .a11y-severity-badge {
-    background: #393939;
-    color: #c6c6c6;
-  }
 }
 
 /* ---- The composed UI kit's screens, applied -----------------------------
@@ -5062,11 +4739,6 @@ label.a11y-ai-toggle {
   overflow-wrap: anywhere;
 }
 
-.a11y-pro-table {
-  border-left: 0;
-  padding-left: 0;
-}
-
 /* The table scrolls inside its own section on a narrow panel rather than
    widening the page — the reflow rule this product enforces on others.
    The section itself is the scroll container: DataTable renders its
@@ -5106,16 +4778,6 @@ label.a11y-ai-toggle {
   .a11y-pro-table table {
     min-width: 0;
   }
-}
-
-/* Carbon's data table, measured from its style spec rather than guessed:
-   column headers on $layer-accent (the vendored component paints layer-01;
-   !important is what beats an inline style), content-sized severity and
-   instances columns, right-aligned tabular numerals, criterion as
-   secondary-colour metadata, and the expanded panel's 16/24 vertical
-   rhythm. */
-.a11y-pro-table thead tr {
-  background: var(--a11y-layer-accent, #e0e0e0) !important;
 }
 
 /* nth-child positions: arrow (1), issue (2, folds Severity above the
@@ -5159,9 +4821,6 @@ label.a11y-ai-toggle {
   padding: 16px 0 8px;   /* + the cell's own 16px = Carbon's 24px bottom */
 }
 
-.a11y-pro-table .a11y-severity-badge {
-  white-space: nowrap;
-}
 
 .a11y-table-detail p {
   margin: 8px 0;
@@ -5179,19 +4838,6 @@ label.a11y-ai-toggle {
      decide" can still outgrow a genuinely tiny host — this is the floor
      under that, not something normal phone widths should ever reach. */
   overflow-x: auto;
-}
-
-/* The undecided rows as cards, matching the findings tables above. This is
-   a single-column table, so each row is one cell and the card is simply
-   that cell — no end-cap corners to work out.
-
-   Same two mechanics as the findings cards: border-spacing for the gap
-   (which needs border-collapse: separate, and the kit sets collapse
-   inline), and an explicit grey rather than --a11y-surface, which is white
-   by the time this rule is read. */
-.a11y-widget-biz.a11y-widget-biz .a11y-undecided-table table {
-  border-collapse: separate !important;
-  border-spacing: 0 var(--space-03, 0.5rem) !important;
 }
 
 /* The three conformance results as cards, side by side.
@@ -5230,16 +4876,23 @@ label.a11y-ai-toggle {
 .a11y-widget-biz.a11y-widget-biz .a11y-conf tbody {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(16rem, 1fr));
-  gap: var(--space-04, 0.75rem);
+  gap: var(--space-3);
 }
 
+/* The conformance section is a card grid, not a row table — deliberately,
+   and it is the one place the DataTable card-row look does not apply. The
+   padding and radius live on the row because the row IS the card here.
+   Brought onto the v2 scale: --space-5 (24px) and --radius-panel (20px),
+   so these cards match every other card rather than sitting on 16px and a
+   1rem pad from the old token set. */
 .a11y-widget-biz.a11y-widget-biz .a11y-conf tbody tr {
   display: flex;
   flex-direction: column;
-  gap: var(--space-03, 0.5rem);
+  gap: var(--space-2);
   height: 100%;
-  padding: var(--space-05, 1rem);
-  border-radius: 16px;
+  padding: var(--space-5);
+  border-radius: var(--radius-panel);
+  background: var(--surface-raised);
 }
 
 /* The cells are just the card's two lines now — the count sits under the
@@ -5258,37 +4911,10 @@ label.a11y-ai-toggle {
   letter-spacing: -0.02em;
 }
 
-/* The notes as a grid of cards. A real <ul> now, so this is plain layout
-   with nothing to undo: the table-display overrides that used to live here
-   existed only to make a one-column table behave like a list, and the list
-   behaves like one on its own. */
-.a11y-widget-biz.a11y-widget-biz .a11y-undecided-table {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(22rem, 1fr));
-  gap: var(--space-04, 0.75rem);
-  margin: 0;
-  padding: 0;
-  list-style: none;
-}
-
-.a11y-widget-biz.a11y-widget-biz .a11y-undecided-table > li {
-  height: 100%;
-  padding: var(--space-05, 1rem);
-  background: #f4f4f4;
-  border-radius: 16px;
-}
-
 @media (prefers-color-scheme: dark) {
-  .a11y-widget-biz.a11y-widget-biz .a11y-undecided-table > li {
-    background: #262626;
-  }
 }
 
 @media print {
-  .a11y-widget-biz.a11y-widget-biz .a11y-undecided-table > li {
-    background: transparent;
-    border: 1px solid #000;
-  }
 }
 
 /* The table-era rules for this section are gone with the table: it is a
@@ -5296,9 +4922,6 @@ label.a11y-ai-toggle {
 
 
 @media (hover: none) {
-  .a11y-undecided-table tbody tr {
-    background: transparent !important;
-  }
 }
 
 /* Same reasoning as .a11y-findings-table: the fix badge shouldn't float at
@@ -5335,29 +4958,6 @@ label.a11y-ai-toggle {
   overflow-x: auto;
 }
 
-.a11y-findings-table table {
-  /* min-width, not width: a table pinned to exactly the wrapper's width
-     has nowhere to put a genuinely wide row except crush it — every column
-     shrinks to fit, including the ones this file just gave a real minimum.
-     Letting the table grow past the wrapper is what makes that minimum
-     mean anything; the wrapper's own overflow-x: auto is what turns that
-     into a scrollbar instead of a layout break. */
-  min-width: 100%;
-  width: auto;
-  /* The kit frames every table with a 1px border by default — a second
-     box drawn around content that already sits inside the report's own
-     section, on top of the divider each row already carries. !important
-     beats the inline style the same as everywhere else in this file. */
-  border: 0 !important;
-}
-
-/* And the header row's own fill, same reasoning: a grey band behind
-   "Issue" reads as its own box floating above the rows, not as part of
-   one flat table. */
-.a11y-findings-table thead tr {
-  background: transparent !important;
-}
-
 /* The kit drives its row-hover fill from React state set on
    onMouseEnter/onMouseLeave, not real CSS :hover — on a touchscreen a tap
    can fire mouseenter (to make the row respond at all) with no matching
@@ -5365,9 +4965,6 @@ label.a11y-ai-toggle {
    permanently grey. hover: none is true only on devices with no real
    hover capability, so a mouse pointer keeps the intended highlight. */
 @media (hover: none) {
-  .a11y-findings-table tbody tr {
-    background: transparent !important;
-  }
 }
 
 /* The kit's DataTable centers every cell vertically (an inline style,
@@ -5380,23 +4977,7 @@ label.a11y-ai-toggle {
   vertical-align: top !important;
 }
 
-/* The kit's DataTable indents the expand row's content 48px inline —
-   enough to clear the arrow column alone. Both tables carry Severity as
-   its own dedicated column on desktop, so their Issue column actually
-   starts further over — ~197px (arrow + Severity's combined width) —
-   !important to beat the inline style. Findings-table's own Severity
-   column is hidden at phone width (see the @container rule above), so
-   its indent drops back to the 48px default there — the override below
-   undoes itself rather than needing a separate narrow-width rule. */
-.a11y-pro-table tbody td[colspan],
-.a11y-findings-table tbody td[colspan] {
-  padding-left: 197px !important;
-}
-
 @container a11y-panel (max-width: 480px) {
-  .a11y-findings-table tbody td[colspan] {
-    padding-left: 48px !important;
-  }
 }
 
 .a11y-finding-issue {
@@ -5481,156 +5062,23 @@ label.a11y-ai-toggle {
   white-space: normal;
 }
 
-/* Every finding row as its own card, which is what the reference does with
-   a collection: a filled, rounded block per item with air between them,
-   instead of rows sharing one ruled grid.
-
-   border-collapse: separate plus border-spacing is the only way a <tr> gets
-   space around it — rows take no margin — and the radius has to be applied
-   to the end cells, because a row cannot be rounded either. So the first
-   cell rounds its left corners, the last cell its right, and the fill goes
-   on every cell to make the strip read as one block.
-
-   :has(button[aria-expanded]) picks the summary rows only. The open detail
-   row underneath is already its own card (below) and must not be given a
-   second set of corners halfway down. */
-.a11y-widget-biz.a11y-widget-biz .a11y-findings-table table,
-.a11y-widget-biz.a11y-widget-biz .a11y-pro-table table {
-  /* !important on both: the kit sets border-collapse: collapse inline on
-     its own table, and with it collapsed border-spacing is ignored outright
-     — the cards got their fill and corners and sat flush against each other
-     with no gap at all. */
-  border-collapse: separate !important;
-  border-spacing: 0 var(--space-03, 0.5rem) !important;
-}
-
-.a11y-widget-biz.a11y-widget-biz .a11y-findings-table tbody tr:has(button[aria-expanded]) td,
-.a11y-widget-biz.a11y-widget-biz .a11y-pro-table tbody tr:has(button[aria-expanded]) td {
-  background: #f4f4f4;
-  /* The kit draws a rule under every cell; inside a card it reads as a line
-     through the middle of the block. */
-  border-bottom: 0 !important;
-  padding-top: var(--space-04, 0.75rem) !important;
-  padding-bottom: var(--space-04, 0.75rem) !important;
-}
-
-.a11y-widget-biz.a11y-widget-biz .a11y-findings-table tbody tr:has(button[aria-expanded]) td:first-child,
-.a11y-widget-biz.a11y-widget-biz .a11y-pro-table tbody tr:has(button[aria-expanded]) td:first-child {
-  border-radius: 16px 0 0 16px;
-}
-
-.a11y-widget-biz.a11y-widget-biz .a11y-findings-table tbody tr:has(button[aria-expanded]) td:last-child,
-.a11y-widget-biz.a11y-widget-biz .a11y-pro-table tbody tr:has(button[aria-expanded]) td:last-child {
-  border-radius: 0 16px 16px 0;
-}
-
-/* The header sits above cards now, not on top of a grid, so its own rule
-   would float unattached. */
-.a11y-widget-biz.a11y-widget-biz .a11y-findings-table thead th,
-.a11y-widget-biz.a11y-widget-biz .a11y-pro-table thead th {
-  border-bottom: 0 !important;
-}
-
 @media (prefers-color-scheme: dark) {
-  .a11y-widget-biz.a11y-widget-biz .a11y-findings-table tbody tr:has(button[aria-expanded]) td,
-  .a11y-widget-biz.a11y-widget-biz .a11y-pro-table tbody tr:has(button[aria-expanded]) td {
-    background: #262626;
-  }
 }
 
 @media print {
-  .a11y-widget-biz.a11y-widget-biz .a11y-findings-table tbody tr:has(button[aria-expanded]) td,
-  .a11y-widget-biz.a11y-widget-biz .a11y-pro-table tbody tr:has(button[aria-expanded]) td {
-    background: transparent;
-  }
-}
-
-/* Inside the open panel, the blocks that are objects in their own right —
-   an affected element, the technical drawer — read as cards on the panel's
-   ground rather than as white strips run to its edges.
-
-   They already had a fill, a border and a radius. All three were being
-   undone: --a11y-surface is redeclared to white further down the file, so
-   the fill matched the page; and the blanket square rule flattened the
-   corners. Hence the explicit colour and the doubled class here. */
-.a11y-widget-biz.a11y-widget-biz .a11y-findings-table td[colspan] .a11y-occurrence,
-.a11y-widget-biz.a11y-widget-biz .a11y-findings-table td[colspan] details,
-.a11y-widget-biz.a11y-widget-biz .a11y-pro-table td[colspan] .a11y-occurrence,
-.a11y-widget-biz.a11y-widget-biz .a11y-pro-table td[colspan] details {
-  padding: var(--space-05, 1rem);
-  background: #ffffff;
-  border: 1px solid var(--a11y-border, #e0e0e0);
-  border-radius: 12px;
-}
-
-/* The drawer's own summary sits inside that card, so it keeps no second
-   frame of its own. */
-.a11y-widget-biz.a11y-widget-biz .a11y-findings-table td[colspan] details summary,
-.a11y-widget-biz.a11y-widget-biz .a11y-pro-table td[colspan] details summary {
-  padding: 0;
-  background: transparent;
-  border: 0;
 }
 
 @media (prefers-color-scheme: dark) {
-  .a11y-widget-biz.a11y-widget-biz .a11y-findings-table td[colspan] .a11y-occurrence,
-  .a11y-widget-biz.a11y-widget-biz .a11y-findings-table td[colspan] details,
-  .a11y-widget-biz.a11y-widget-biz .a11y-pro-table td[colspan] .a11y-occurrence,
-  .a11y-widget-biz.a11y-widget-biz .a11y-pro-table td[colspan] details {
-    background: #161616;
-    border-color: #393939;
-  }
 }
 
 @media print {
-  .a11y-widget-biz.a11y-widget-biz .a11y-findings-table td[colspan] .a11y-occurrence,
-  .a11y-widget-biz.a11y-widget-biz .a11y-findings-table td[colspan] details {
-    background: transparent;
-    border: 1px solid #000;
-  }
-}
-
-/* The open panel, as a card rather than as more table.
-
-   The reference's collection cards are the shape: a filled, generously
-   rounded block with real room inside and its content set well away from
-   the edges. That is exactly what this panel is — a detail sheet about one
-   finding — and as bare table rows the panels ran edge to edge and read as
-   a continuation of the row above rather than as its contents.
-
-   The cell itself is the card, not its children. Written as `> *` first,
-   which turned every paragraph inside the panel into its own card — the
-   panel holds a dozen of them. And the fill is an explicit grey rather than
-   --a11y-surface, which is redeclared to white further down the file for
-   the layered cards and would have made this invisible. */
-.a11y-widget-biz.a11y-widget-biz .a11y-findings-table tbody td[colspan],
-.a11y-widget-biz.a11y-widget-biz .a11y-pro-table tbody td[colspan] {
-  /* !important to match the padding-left rule above, which already uses it
-     to beat the kit's inline cell padding — without it the card had 16px
-     of left indent and no room top or bottom. */
-  padding-top: var(--space-06, 1.5rem) !important;
-  padding-bottom: var(--space-06, 1.5rem) !important;
-  padding-right: var(--space-06, 1.5rem) !important;
-  background: #f4f4f4;
-  border-radius: 16px;
 }
 
 @media (prefers-color-scheme: dark) {
-  /* Same pairing the stat and spec cards needed: a light ground declared
-     once is a light ground in both themes unless this says otherwise. */
-  .a11y-widget-biz.a11y-widget-biz .a11y-findings-table tbody td[colspan],
-  .a11y-widget-biz.a11y-widget-biz .a11y-pro-table tbody td[colspan] {
-    background: #262626;
-  }
 }
 
 /* On paper the card is a rule, not a fill. */
 @media print {
-  .a11y-widget-biz.a11y-widget-biz .a11y-findings-table tbody td[colspan],
-  .a11y-widget-biz.a11y-widget-biz .a11y-pro-table tbody td[colspan] {
-    background: transparent;
-    border: 1px solid #000;
-  }
 }
 
 /* WCAG and who-fixes-this are their own columns — same wrapping problem
@@ -5734,23 +5182,6 @@ label.a11y-ai-toggle {
 
   .a11y-findings-table td:has(.a11y-finding-issue) {
     min-width: 8rem;
-  }
-
-  /* The kit's own cell padding is 1rem left/right (--space-05) — on top
-     of the panel's already-tightened 20px page gutter, that reads as a
-     second margin nobody asked for at this width. 8px keeps the columns
-     visually separated without spending more of a 390px screen on
-     whitespace than the panel's own edge already does. */
-  .a11y-findings-table td,
-  .a11y-findings-table th {
-    padding-left: 8px !important;
-    padding-right: 8px !important;
-  }
-
-  .a11y-undecided-table td,
-  .a11y-undecided-table th {
-    padding-left: 8px !important;
-    padding-right: 8px !important;
   }
 }
 
@@ -6126,9 +5557,6 @@ label.a11y-ai-toggle {
   --a11y-layer-accent: transparent;
 }
 
-.a11y-severity-minor .a11y-severity-badge {
-  background: transparent;
-}
 
 @media (prefers-color-scheme: dark) {
   .a11y-widget-biz {
@@ -6137,9 +5565,6 @@ label.a11y-ai-toggle {
     --a11y-layer-2: #161616;
   }
 
-  .a11y-widget-biz .a11y-severity-minor .a11y-severity-badge {
-    background: transparent;
-  }
 }
 
 /* The rendered reference ("this is how it should look") settles where
@@ -6307,16 +5732,6 @@ label.a11y-ai-toggle {
   background: transparent !important;
 }
 
-/* .a11y-pro-table is the one exception: its header fill is Carbon's own
-   data-table spec ($layer-accent on column headers), not a leftover box
-   like every other table's — this extra class is what restores it,
-   since the blanket rule just above has higher specificity than the
-   original .a11y-pro-table thead tr rule further up the file and was
-   quietly winning the cascade and erasing it regardless of source order. */
-.a11y-widget-biz .a11y-widget-inner .a11y-pro-table table thead tr {
-  background: var(--a11y-layer-accent, #e0e0e0) !important;
-}
-
 /* 36rem (576px), measured directly against rendered text rather than
    calculated: at 25rem full lines were landing at 8-10 words, short of
    the 11-14 a line should hold. 36rem is where PP Telegraf's running
@@ -6463,34 +5878,9 @@ label.a11y-ai-toggle {
    conformance tiles), and each of those defines and resets its own
    16-column grid at the width it's actually laid out at. */
 
-/* ==========================================================================
-   Accessible Scan Design System (2 Aug update)
-   ==========================================================================
-   The rebuilt project's deltas: the severity chip inks snap to the
-   token-exact values (ours had drifted one ramp step darker; the
-   tokens' pairs are the AA-checked ones).
 
-   Carbon's filled-field style (gray-10, no border) was tried here too,
-   but a resting gray belongs to status — a wash of it under every field
-   whether or not anything is wrong reads as a page's worth of quiet
-   alerts. Left on the base rule's plain white-with-border instead, so
-   gray on this page means one thing. */
 
-.a11y-severity-critical .a11y-severity-badge {
-  color: #da1e28;
-}
 
-.a11y-severity-serious .a11y-severity-badge {
-  color: #ba4e00;
-}
-
-.a11y-severity-moderate .a11y-severity-badge {
-  color: #8e6a00;
-}
-
-.a11y-severity-minor .a11y-severity-badge {
-  color: #525252;
-}
 
 @media (prefers-color-scheme: dark) {
   .a11y-widget-biz .a11y-url-row input,
@@ -7573,17 +6963,6 @@ label.a11y-ai-toggle {
   margin: 0;
 }
 
-/* The findings table sits on the card's plain surface below the tint (see
-   the redflag-variant comment above), but with no padding of its own its
-   content started flush with the card's outer edge — 16px left of where
-   the tint's own inset text sits, so the claim above and the evidence
-   below didn't line up. Same 16px the tint uses, plus room above so the
-   table doesn't start flush against the tint's bottom edge either. */
-.a11y-widget-biz.a11y-widget-biz .a11y-section-redflag .a11y-findings-table {
-  padding: 0 16px 16px;
-  margin-top: 16px;
-}
-
 .a11y-widget-biz.a11y-widget-biz .a11y-findings-columns {
   display: flex;
   gap: 12px;
@@ -7834,4 +7213,392 @@ label.a11y-ai-toggle {
    weight and colour together rather than colour alone. */
 .a11y-widget-biz.a11y-widget-biz .a11y-url-row input[aria-invalid="true"] {
   border-bottom: 2px solid var(--support-error, #da1e28) !important;
+}
+
+/* ==========================================================================
+   Editorial layout — from "Accessible Scan · Redesigned Components"
+   ==========================================================================
+   The redesign's page system, which is a different argument about hierarchy
+   than this file had been making.
+
+   It had every section heading at 40px, so twelve sections shouted equally
+   and none of them led. The redesign gives the page ONE loud voice — the
+   masthead — and makes every section quiet: a 20px title, tracked tight, sat
+   on a full-strength rule in the text colour. The rule does the separating,
+   so the type does not have to. Sections then read as a run of chapters
+   rather than a stack of competing banners.
+
+   Note the rule is --text-primary, not --border-subtle, and it sits ABOVE
+   the section rather than under its heading. A hairline grey under a heading
+   is a heading with an underline; a full-ink rule above a block is a
+   masthead device, and that is the one borrowed here.
+
+   Doubled classes because these have to beat the older section rules still
+   in this file; they go when those do. */
+
+.a11y-widget-biz.a11y-widget-biz .a11y-section {
+  padding-top: var(--space-06, 1.5rem);
+  margin-top: var(--space-07, 2rem);
+  border-top: 1px solid var(--text-primary, #161616);
+}
+
+/* The first section carries no rule: a rule at the very top of the report
+   reads as a fragment of something above it that isn't there. */
+.a11y-widget-biz.a11y-widget-biz .a11y-section:first-of-type {
+  border-top: 0;
+  margin-top: 0;
+  padding-top: 0;
+}
+
+/* Title left, count/aside right, both on the same baseline — the redesign's
+   .head row. Baseline rather than centre: two type sizes centred on each
+   other look accidental, aligned on their baseline they look set. */
+.a11y-widget-biz.a11y-widget-biz .a11y-section-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--space-05, 1rem);
+  flex-wrap: wrap;
+  padding-bottom: 0;
+  margin-bottom: var(--space-06, 1.5rem);
+  border-bottom: 0;
+}
+
+/* The h2 qualifier is load-bearing. Without it the earlier
+   `.a11y-widget-inner h2` rule wins on its element selector and hands these
+   1.05 — the display leading — to a 20px title. Several of these wrap
+   ("Do you meet the legal standard?", "Issues that could turn away users"),
+   and 1.05 at 20px sets the two lines almost touching. The system's own
+   --type-title-lh is 1.2 for exactly this size, and the report failing its
+   own leading rule is the fault it opened this session with. */
+.a11y-widget-biz.a11y-widget-biz h2.a11y-section-title,
+.a11y-widget-biz.a11y-widget-biz .a11y-section-title {
+  margin: 0;
+  font-size: var(--type-title-size, 1.25rem);
+  line-height: var(--type-title-lh, 1.2);
+  font-weight: var(--weight-medium, 500);
+  letter-spacing: var(--tracking-tight, -0.03em);
+}
+
+/* The count and the eyebrow are metadata, set at label size in the secondary
+   ink — the redesign's `.head span`. */
+.a11y-widget-biz.a11y-widget-biz .a11y-section-count,
+.a11y-widget-biz.a11y-widget-biz .a11y-section-eyebrow {
+  font-size: var(--type-label-size, 0.875rem);
+  line-height: var(--type-label-lh, 1.4);
+  color: var(--text-secondary, #525252);
+  font-weight: var(--weight-regular, 400);
+  letter-spacing: normal;
+}
+
+/* The one loud voice. clamp so it holds its presence on a wide panel and
+   still fits a phone, and 0.95 leading because at this size the lines want
+   to lock up rather than drift apart — the display end of the same Hochuli
+   rule that opens body text to 1.5. */
+.a11y-widget-biz.a11y-widget-biz .a11y-newscan-title,
+.a11y-widget-biz.a11y-widget-biz .a11y-results-title {
+  font-size: clamp(2.5rem, 6vw, 4.5rem);
+  line-height: 0.95;
+  font-weight: var(--weight-medium, 500);
+  letter-spacing: var(--tracking-tight, -0.03em);
+  margin: 0 0 var(--space-05, 1rem);
+}
+
+/* The two-up grid the redesign uses for paired cards: auto-fit rather than a
+   fixed pair, so a narrow panel drops to one column with no breakpoint. */
+.a11y-widget-biz.a11y-widget-biz .a11y-spec-grid,
+.a11y-widget-biz.a11y-widget-biz .a11y-stat-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: var(--space-06, 1.5rem);
+  align-items: start;
+}
+
+/* ==========================================================================
+   IssueRow and WhatsNextPanel — from the redesigned components
+   ==========================================================================
+   The signature device in this redesign is inversion. A finding row sits on
+   the light layer until you touch it, then flips to solid black and takes
+   the on-dark token pairs with it; a criterion that would fail is inverted
+   permanently. It is doing the job a hover tint or a red border usually
+   does, but at the strength of a printed reversal, and it is the reason the
+   severity tag carries an --onDark variant at all.
+
+   Inversion is also why --text-on-invert exists as its own token rather than
+   reusing --text-secondary: on a black row the secondary ink has to stay
+   readable whatever the page theme is doing, so it is fixed to the surface
+   instead of following the theme. */
+
+/* The findings-row inversion from the redesign is NOT here, deliberately.
+
+   The device is right and the rest of this block uses it: a row flips to
+   solid black and takes the on-dark token pairs with it. On these rows it
+   could not be landed safely. The row reversed, but each cell kept painting
+   its own --layer-01 on top, so white text sat on #f4f4f4 at 1.10:1 — worse
+   than no hover state at all. `background: transparent` on the cells did not
+   take: that rule is the only background rule matching the cell, and the
+   cell still computes #f4f4f4, so the paint arrives from somewhere a
+   stylesheet rule cannot override — most likely inline, from the table these
+   rows are rendered by.
+
+   Two things this is waiting on, both cheap once the migration reaches them:
+   the table needs to stop setting cell backgrounds inline, and then the
+   reversal is four lines. Shipping it before that means shipping a hover
+   state at 1.10:1 in an accessibility report, which is not a trade worth
+   making for a visual flourish. axe cannot catch it either — it does not
+   evaluate hover — so it would have gone out silently.
+
+   The inversion IS live on the readiness panel below, where the items are
+   ours and nothing paints over them. */
+
+/* The count, set as a display numeral rather than body text — 1.75rem, solid
+   leading, tracked tight, with the multiplication sign kept small beside it.
+   A number that means "fourteen times" should read as a quantity at a
+   glance, not as another word in the row. */
+.a11y-widget-biz.a11y-widget-biz .a11y-count-chip,
+.a11y-widget-biz.a11y-widget-biz .a11y-occurrence-count {
+  font-size: 1.75rem;
+  line-height: 1;
+  font-weight: var(--weight-medium, 500);
+  letter-spacing: var(--tracking-tight, -0.03em);
+  font-variant-numeric: tabular-nums;
+  background: transparent;
+  padding: 0;
+}
+
+/* WhatsNextPanel: a tinted panel, its standard set as display type, and the
+   count of failures worn as an accent-red pill rather than stated in prose. */
+.a11y-widget-biz.a11y-widget-biz .a11y-next {
+  background: var(--layer-01, #f4f4f4);
+  border: 0;
+  border-radius: var(--radius-lg, 20px);
+  overflow: hidden;
+}
+
+.a11y-widget-biz.a11y-widget-biz .a11y-next-eyebrow {
+  font-size: var(--type-label-size, 0.875rem);
+  font-weight: var(--weight-medium, 500);
+  letter-spacing: var(--tracking-tight, -0.03em);
+}
+
+/* "1 would fail today". White on --accent-red-fill is 4.97:1; --accent-red
+   itself is the display-only value and would fail under text this size,
+   which is the distinction the system's own comment draws. */
+.a11y-widget-biz.a11y-widget-biz .a11y-next-crit {
+  display: inline-block;
+  white-space: nowrap;
+  padding: 0.15em var(--space-04, 0.75rem) 0.25em;
+  border-radius: var(--radius-pill, 999px);
+  background: var(--accent-red-fill, #d92600);
+  color: #ffffff;
+  font-size: var(--type-label-size, 0.875rem);
+  font-weight: var(--weight-medium, 500);
+}
+
+.a11y-widget-biz.a11y-widget-biz .a11y-next-standard {
+  font-size: clamp(2.25rem, 5.5vw, 4.5rem);
+  line-height: 0.95;
+  font-weight: var(--weight-medium, 500);
+  letter-spacing: var(--tracking-tight, -0.03em);
+  text-wrap: balance;
+  margin: 0 0 var(--space-05, 1rem);
+}
+
+.a11y-widget-biz.a11y-widget-biz .a11y-next-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: var(--space-04, 0.75rem);
+}
+
+.a11y-widget-biz.a11y-widget-biz .a11y-next-list > li {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-04, 0.75rem);
+  padding: var(--space-05, 1rem);
+  border-radius: var(--radius-md, 12px);
+  background: var(--layer-02, #ffffff);
+}
+
+/* A criterion that would fail today is inverted permanently — the same
+   reversal the findings rows use on hover, here as a standing state. */
+.a11y-widget-biz.a11y-widget-biz .a11y-next-list > li.a11y-next-crit-item {
+  background: var(--gray-100, #161616);
+  color: var(--text-on-invert, #ffffff);
+}
+
+.a11y-widget-biz.a11y-widget-biz .a11y-next-level {
+  flex-shrink: 0;
+  font-size: var(--type-label-size, 0.875rem);
+  font-weight: var(--weight-medium, 500);
+  color: var(--accent-red-fill, #d92600);
+}
+
+.a11y-widget-biz.a11y-widget-biz .a11y-next-crit-item .a11y-next-level {
+  color: var(--severity-critical-ondark-text, #ffd7d9);
+}
+
+/* ==========================================================================
+   New scan — the numbered-step form
+   ==========================================================================
+   From ui_kits/scan-app/NewScan.jsx. The design's argument, in its own
+   annotation: "Anti-pattern: a wall of fields with a scroll-away submit.
+   Correct: numbered steps, each answering one question."
+
+   The form was a two-column grid, which is exactly the wall the annotation
+   names — four controls side by side with no order to read them in. It goes
+   to one column of numbered steps.
+
+   The numbers come from a CSS counter rather than markup. UrlForm carries
+   the error association, the required cue and the login disclosure, and none
+   of that is worth disturbing to insert three <span>s. They are also
+   decorative — the step's own heading already says what it asks — so a
+   counter, which is invisible to assistive technology, is the right place
+   for them rather than text a screen reader would read as "zero one". */
+
+.a11y-widget-biz.a11y-widget-biz .a11y-form-grid {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-7);
+  counter-reset: a11y-step;
+}
+
+.a11y-widget-biz.a11y-widget-biz .a11y-form-col {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-7);
+}
+
+/* Each fieldset becomes a step: the number in the margin, the legend as its
+   heading. */
+/* The counter increments on the fieldset but PRINTS on the legend. A legend
+   renders in the fieldset's border area, not in its content box, so a
+   ::before pinned to the fieldset's top-left landed beside the box while the
+   question sat above it — the number and its question on two different
+   lines. Putting the marker on the legend keeps them on one. */
+.a11y-widget-biz.a11y-widget-biz .a11y-form-grid .a11y-radio-group,
+.a11y-widget-biz.a11y-widget-biz .a11y-form-grid .a11y-url-label {
+  counter-increment: a11y-step;
+}
+
+.a11y-widget-biz.a11y-widget-biz .a11y-form-grid .a11y-radio-group > legend,
+.a11y-widget-biz.a11y-widget-biz .a11y-form-grid .a11y-url-label {
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-5);
+}
+
+.a11y-widget-biz.a11y-widget-biz .a11y-form-grid .a11y-radio-group > legend::before,
+.a11y-widget-biz.a11y-widget-biz .a11y-form-grid .a11y-url-label::before {
+  content: counter(a11y-step, decimal-leading-zero);
+  flex: 0 0 auto;
+  font-size: var(--text-heading);
+  line-height: 1;
+  font-weight: 500;
+  letter-spacing: var(--tracking-tight);
+  /* A quiet grey: the number orders the steps, it does not compete with the
+     question. The source uses --gray-40, whose v2 equivalent is the muted
+     content role. */
+  color: var(--content-muted);
+}
+
+/* The step's question, set at heading size. */
+.a11y-widget-biz.a11y-widget-biz .a11y-radio-group > legend,
+.a11y-widget-biz.a11y-widget-biz .a11y-url-label {
+  font-size: var(--text-heading);
+  line-height: var(--leading-heading);
+  font-weight: 500;
+  letter-spacing: var(--tracking-tight);
+  color: var(--content-primary);
+}
+
+/* The address field is the loudest control on the screen, because it is the
+   one thing the visitor has to supply. 72px tall, heading-size text, and a
+   2px rule rather than the 1px the smaller fields use. */
+.a11y-widget-biz.a11y-widget-biz .a11y-url-row input {
+  height: 72px !important;
+  font-size: var(--text-heading) !important;
+  font-weight: 500;
+  letter-spacing: var(--tracking-tight);
+  border-bottom: 2px solid var(--content-primary) !important;
+}
+
+/* Scope and audience become option cards: a sunken panel each, side by side,
+   collapsing to one column when there is no room. */
+.a11y-widget-biz.a11y-widget-biz .a11y-radio-group {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: var(--space-3);
+  /* !important: an earlier rule draws this fieldset as a rounded bordered
+     panel, which under the step treatment reads as a box around a box. */
+  border: 0 !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  padding: 0;
+  margin: 0;
+}
+
+.a11y-widget-biz.a11y-widget-biz .a11y-radio-group > legend {
+  grid-column: 1 / -1;
+  padding: 0;
+  margin-bottom: var(--space-2);
+}
+
+.a11y-widget-biz.a11y-widget-biz .a11y-radio-row {
+  background: var(--surface-sunken);
+  border-radius: var(--radius-panel);
+  padding: var(--space-4) var(--space-5);
+  border-bottom: 0;
+  margin: 0;
+}
+
+/* The hint under a group belongs to the group, not to a card, so it spans. */
+.a11y-widget-biz.a11y-widget-biz .a11y-radio-group > .a11y-group-hint {
+  grid-column: 1 / -1;
+  font-size: var(--text-label);
+  color: var(--content-secondary);
+}
+
+/* ==========================================================================
+   OptionCard — the selectable card
+   ==========================================================================
+   From components/forms/OptionCard.jsx, applied to the report-style and
+   scope choices. The design's point is that the chosen card INVERTS: not a
+   tinted row with a dot, a black card — so the choice reads from across the
+   screen rather than by hunting for a filled radio.
+
+   :has(input:checked) rather than a class, so no markup changes and the
+   state cannot fall out of step with the input: the card's appearance is
+   derived from the control rather than mirrored from it. */
+.a11y-widget-biz.a11y-widget-biz .a11y-radio-row:has(input:checked) {
+  background: var(--surface-inverse);
+  color: var(--content-on-inverse);
+}
+
+.a11y-widget-biz.a11y-widget-biz .a11y-radio-row:has(input:checked) label,
+.a11y-widget-biz.a11y-widget-biz .a11y-radio-row:has(input:checked) span {
+  color: var(--content-on-inverse);
+}
+
+/* Only the description drops to the secondary ink. 14.77:1 for the label,
+   9.67:1 for the description, both on this surface. */
+.a11y-widget-biz.a11y-widget-biz .a11y-radio-row:has(input:checked) .a11y-group-hint,
+.a11y-widget-biz.a11y-widget-biz .a11y-radio-row:has(input:checked) small {
+  color: var(--content-on-inverse-secondary);
+}
+
+/* The source sets the radio's accent-color to --interactive, which in
+   Foundations v2 resolves to --content-primary — very nearly the same black
+   the chosen card is filled with, so the control would disappear into its
+   own card at the moment it matters most. On a chosen card the accent
+   inverts with everything else.
+   Worth reporting upstream: same class of defect as FactCard's note colour. */
+.a11y-widget-biz.a11y-widget-biz .a11y-radio-row:has(input:checked) input[type="radio"] {
+  accent-color: var(--content-on-inverse);
+  border-color: var(--content-on-inverse);
+  background: var(--content-on-inverse);
+  box-shadow: inset 0 0 0 3px var(--surface-inverse);
 }

@@ -1,0 +1,309 @@
+/* ==========================================================================
+   Design tokens — Foundations v2
+   ==========================================================================
+   Ported verbatim from "Foundations v2.html" in the design-system export.
+   That file is the source of truth and is never edited from here; the sync
+   runs design → code only (see .design-sync/NOTES.md). Values below were
+   extracted programmatically rather than retyped, so they cannot drift by
+   transcription.
+
+   Two structural changes from the source, both forced by where this runs:
+
+   1. Scoped to .a11y-widget-biz, not :root. The widget mounts into a shadow
+      root inside someone else's page. Tokens on :root would neither reach
+      inside the shadow boundary nor stay out of the host page's way.
+
+   2. Dark theme responds to BOTH the system setting and an explicit
+      [data-theme="dark"]. The source uses the attribute alone, which is
+      right for a design tool where a switch flips it. An embedded widget has
+      no switch: it has to follow the reader's own OS preference, which is
+      also what the report's own accessibility rules would demand of anyone
+      else. The attribute is kept so a host page can still force a theme.
+
+   ---- Flagged, per the brief: not normalised, just named ------------------
+
+   Values used by exactly one token (18). These are deliberate one-offs in
+   the source, not strays — every status surface is its own tint, and the
+   three elevation shadows are each unique by construction. Listed so a
+   future edit knows it is touching a value nothing else shares:
+
+     --surface-page, --surface-sunken, --content-muted, --content-on-inverse,
+     --content-on-inverse-secondary, --border-subtle, --border-default,
+     --status-success, --status-success-surface, --status-warning,
+     --status-warning-surface, --status-danger, --status-danger-surface,
+     --status-info, --status-info-surface, and the three --elevation-* values.
+
+   Near-neighbour pairs — distinct values close enough to read as a mistake
+   (RGB distance in brackets). All are kept exactly as the source has them:
+
+     #211e1a --content-primary      vs #23201d --surface-inverse        [4.1]
+       The page's ink is very slightly darker than the inverted surface it
+       sits opposite. Intentional: text needs the extra depth, a large field
+       of it does not.
+     #ccc5b8 --border-default       vs #cfc7ba --content-on-inverse-sec  [4.1]
+       Two different jobs — a hairline and a secondary ink on black — that
+       happen to land near each other. Merging them would couple a border
+       colour to a text colour.
+     #faf8f5 --surface-page         vs #f7f4ef --content-on-inverse      [7.8]
+     #f2efe9 --surface-sunken       vs #f7f4ef --content-on-inverse      [9.3]
+     #f7f4ef --content-on-inverse   vs #fdeceb --status-danger-surface  [10.8]
+     #f2efe9 --surface-sunken       vs #fdeceb --status-danger-surface  [11.6]
+     #faf8f5 --surface-page         vs #ffffff --surface-raised         [13.2]
+       This last one is the system working as designed: a raised surface is
+       distinguished from the page by being pure white against a warm off-
+       white. It is a small difference doing real work, and flattening it
+       would remove the only cue that a card is raised.
+
+   ---- Contrast, measured -------------------------------------------------
+
+   Every foreground/background pair the semantic names imply was computed
+   before porting. All meet WCAG AA (4.5:1) except one:
+
+     --content-disabled on --surface-page = 3.58:1
+
+   That is expected, not a fault: WCAG 1.4.3 exempts disabled controls. It is
+   recorded here so nobody "fixes" it into a value that makes disabled text
+   look enabled. Lowest passing pair is --content-muted on --surface-sunken
+   at 4.94:1, so the palette has little headroom to spare — a new tint that
+   is not checked will most likely fail.
+   ========================================================================== */
+
+.a11y-widget-biz {
+  --_sand-00: #ffffff;
+  --_sand-05: #faf8f5;
+  --_sand-10: #f2efe9;
+  --_sand-20: #e8e2d8;
+  --_sand-25: #e0d9cd;
+  --_sand-30: #ccc5b8;
+  --_sand-40: #a9a193;
+  --_sand-50: #8a8275;
+  --_sand-60: #6e6659;
+  --_sand-70: #5c554b;
+  --_sand-80: #3a352e;
+  --_sand-90: #23201d;
+  --_sand-95: #1a1815;
+  --_sand-100: #211e1a;
+  --_ember-30: #ffb9a3;
+  --_ember-40: #ff8a66;
+  --_ember-50: #ff6a3d;
+  --_ember-60: #d92600;
+  --_ember-65: #b32200;
+  --_ember-70: #8f1b00;
+  --_moss-40: #6ecf8e;
+  --_moss-60: #1f6b3a;
+  --_moss-70: #17542d;
+  --_honey-40: #f2c14e;
+  --_honey-60: #7a5200;
+  --_honey-70: #5e3f00;
+  --_clay-40: #ff9a92;
+  --_clay-60: #b3261e;
+  --_clay-70: #8c1c16;
+  --_ink-40: #9db9ff;
+  --_ink-60: #1a4fbf;
+  --_dark-surface: #1a1815;
+  --_dark-raised: #232019;
+  --_dark-sunken: #131110;
+  --_dark-line: #3a352e;
+  --_dark-line-strong: #7d7568;
+  --_dark-content: #f4f0e9;
+  --_dark-content-2: #b9b0a2;
+  --surface-page: var(--_sand-05);
+  --surface-raised: var(--_sand-00);
+  --surface-sunken: var(--_sand-10);
+  --surface-inverse: var(--_sand-90);
+  --surface-accent: var(--_ember-65);
+  --surface-disabled: var(--_sand-20);
+  --content-primary: var(--_sand-100);
+  --content-secondary: var(--_sand-70);
+  --content-muted: var(--_sand-60);
+  --content-on-inverse: #f7f4ef;
+  --content-on-inverse-secondary: #cfc7ba;
+  --content-on-accent: #ffffff;
+  --content-disabled: var(--_sand-50);
+  --content-link: var(--_ember-65);
+  --content-link-hover: var(--_ember-70);
+  --border-subtle: var(--_sand-25);
+  --border-default: var(--_sand-30);
+  --border-strong: var(--_sand-50);
+  --border-inverse: var(--_sand-70);
+  --action-primary: var(--_ember-65);
+  --action-primary-hover: var(--_ember-70);
+  --action-primary-active: var(--_ember-70);
+  --action-secondary: transparent;
+  --action-secondary-border: var(--content-primary);
+  --action-neutral: var(--_sand-90);
+  --action-disabled: var(--_sand-20);
+  --status-success: var(--_moss-60);
+  --status-success-surface: #e4f4e9;
+  --status-warning: var(--_honey-60);
+  --status-warning-surface: #faf0d8;
+  --status-danger: var(--_clay-60);
+  --status-danger-surface: #fdeceb;
+  --status-info: var(--_ink-60);
+  --status-info-surface: #e7eeff;
+  --focus-ring-color: var(--content-primary);
+  --focus-ring-inner: var(--surface-raised);
+  --focus-ring-width: 3px;
+  --focus-ring-offset: 2px;
+  --focus-ring: var(--focus-ring-width) solid var(--focus-ring-color);
+  --font-core: "PP Telegraf","Helvetica Neue",Helvetica,Arial,sans-serif;
+  --font-code: ui-monospace,"SFMono-Regular",Menlo,Consolas,monospace;
+  --weight-regular: 400;
+  --weight-medium: 500;
+  --text-label: 0.875rem;
+  --text-body: 1rem;
+  --text-body-lg: 1.25rem;
+  --text-title: 1.5625rem;
+  --text-heading: 1.953rem;
+  --text-heading-lg: 2.441rem;
+  --text-display-sm: 3.052rem;
+  --text-display: 3.815rem;
+  --text-display-lg: 4.768rem;
+  --leading-display: 0.95;
+  --leading-heading: 1.08;
+  --leading-title: 1.2;
+  --leading-body: 1.5;
+  --leading-body-narrow: 1.32;
+  --leading-label: 1.4;
+  --tracking-display: -0.03em;
+  --tracking-tight: -0.015em;
+  --tracking-normal: 0;
+  --measure-max: 66ch;
+  --measure-narrow: 44ch;
+  --space-base: 4px;
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 24px;
+  --space-6: 32px;
+  --space-7: 48px;
+  --space-8: 64px;
+  --space-9: 96px;
+  --space-10: 128px;
+  --radius-sharp: 0;
+  --radius-soft: 10px;
+  --radius-panel: 20px;
+  --radius-round: 999px;
+  --elevation-flat: none;
+  --elevation-raised: 0 1px 2px rgba(33,30,26,.06),0 2px 8px rgba(33,30,26,.05);
+  --elevation-overlay: 0 4px 12px rgba(33,30,26,.10),0 12px 32px rgba(33,30,26,.10);
+  --elevation-modal: 0 24px 64px rgba(33,30,26,.22);
+  --motion-enter: 180ms;
+  --motion-exit: 120ms;
+  --motion-emphasis: 320ms;
+  --motion-ambient: 600ms;
+  --ease-enter: cubic-bezier(0,0,.2,1);
+  --ease-exit: cubic-bezier(.4,0,1,1);
+  --ease-standard: cubic-bezier(.2,0,.38,1);
+  --ease-spring: cubic-bezier(.2,1.2,.3,1);
+  --target-min: 24px;
+  --target-comfortable: 44px;
+  --target-gap: 8px;}
+
+/* The system setting first — an embedded widget follows the reader, since
+   there is no theme switch in someone else's page for them to reach. */
+@media (prefers-color-scheme: dark) {
+  .a11y-widget-biz:not([data-theme="light"]) {
+    --surface-page: var(--_dark-surface);
+    --surface-raised: var(--_dark-raised);
+    --surface-sunken: var(--_dark-sunken);
+    --surface-inverse: var(--_sand-05);
+    --surface-accent: var(--_ember-50);
+    --surface-disabled: #2b2721;
+    --content-primary: var(--_dark-content);
+    --content-secondary: var(--_dark-content-2);
+    --content-muted: #a49a8c;
+    --content-on-inverse: var(--_sand-100);
+    --content-on-inverse-secondary: var(--_sand-70);
+    --content-on-accent: var(--_sand-95);
+    --content-disabled: #7d7568;
+    --content-link: var(--_ember-40);
+    --content-link-hover: var(--_ember-30);
+    --border-subtle: var(--_dark-line);
+    --border-default: #4a443b;
+    --border-strong: var(--_dark-line-strong);
+    --border-inverse: var(--_sand-30);
+    --action-primary: var(--_ember-50);
+    --action-primary-hover: var(--_ember-40);
+    --action-primary-active: var(--_ember-30);
+    --action-secondary-border: var(--content-primary);
+    --action-neutral: var(--_sand-05);
+    --action-disabled: #2b2721;
+    --status-success: var(--_moss-40);
+    --status-success-surface: #12301d;
+    --status-warning: var(--_honey-40);
+    --status-warning-surface: #332600;
+    --status-danger: var(--_clay-40);
+    --status-danger-surface: #3a1210;
+    --status-info: var(--_ink-40);
+    --status-info-surface: #131f3d;
+    --focus-ring-color: var(--content-primary);
+    --focus-ring-inner: var(--surface-page);
+    --elevation-raised: 0 1px 2px rgba(0,0,0,.5);
+    --elevation-overlay: 0 12px 32px rgba(0,0,0,.55);
+    --elevation-modal: 0 24px 64px rgba(0,0,0,.65);  }
+}
+
+/* An explicit attribute still wins, so a host page can pin the theme. */
+.a11y-widget-biz[data-theme="dark"] {
+  --surface-page: var(--_dark-surface);
+  --surface-raised: var(--_dark-raised);
+  --surface-sunken: var(--_dark-sunken);
+  --surface-inverse: var(--_sand-05);
+  --surface-accent: var(--_ember-50);
+  --surface-disabled: #2b2721;
+  --content-primary: var(--_dark-content);
+  --content-secondary: var(--_dark-content-2);
+  --content-muted: #a49a8c;
+  --content-on-inverse: var(--_sand-100);
+  --content-on-inverse-secondary: var(--_sand-70);
+  --content-on-accent: var(--_sand-95);
+  --content-disabled: #7d7568;
+  --content-link: var(--_ember-40);
+  --content-link-hover: var(--_ember-30);
+  --border-subtle: var(--_dark-line);
+  --border-default: #4a443b;
+  --border-strong: var(--_dark-line-strong);
+  --border-inverse: var(--_sand-30);
+  --action-primary: var(--_ember-50);
+  --action-primary-hover: var(--_ember-40);
+  --action-primary-active: var(--_ember-30);
+  --action-secondary-border: var(--content-primary);
+  --action-neutral: var(--_sand-05);
+  --action-disabled: #2b2721;
+  --status-success: var(--_moss-40);
+  --status-success-surface: #12301d;
+  --status-warning: var(--_honey-40);
+  --status-warning-surface: #332600;
+  --status-danger: var(--_clay-40);
+  --status-danger-surface: #3a1210;
+  --status-info: var(--_ink-40);
+  --status-info-surface: #131f3d;
+  --focus-ring-color: var(--content-primary);
+  --focus-ring-inner: var(--surface-page);
+  --elevation-raised: 0 1px 2px rgba(0,0,0,.5);
+  --elevation-overlay: 0 12px 32px rgba(0,0,0,.55);
+  --elevation-modal: 0 24px 64px rgba(0,0,0,.65);}
+
+/* Reduced motion, from the source: the durations collapse AND animations are
+   stopped outright. The blanket rule is scoped to the widget so it can never
+   reach the host page's own animations. */
+@media (prefers-reduced-motion: reduce) {
+  .a11y-widget-biz {
+    --motion-enter: 1ms;
+    --motion-exit: 1ms;
+    --motion-emphasis: 1ms;
+    --motion-ambient: 1ms;
+  }
+
+  .a11y-widget-biz,
+  .a11y-widget-biz *,
+  .a11y-widget-biz *::before,
+  .a11y-widget-biz *::after {
+    animation-duration: 1ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 1ms !important;
+    scroll-behavior: auto !important;
+  }
+}

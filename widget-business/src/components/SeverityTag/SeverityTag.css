@@ -1,0 +1,128 @@
+/* ==========================================================================
+   SeverityTag
+   ==========================================================================
+   Ported from components/scan/SeverityTag.jsx.
+
+   A solid pill carrying the severity as a word. Replaces this package's
+   previous chip, and the change is visible on every finding in the report:
+
+     - the glyph is gone. The old chip put "!" or "i" before the word as a
+       second channel, so severity was never carried by colour alone. A solid
+       fill with the word written on it satisfies the same rule — the word IS
+       the second channel — so the glyph was doing nothing the label wasn't.
+       The annotation is explicit about this: "the pill names the severity;
+       color is reinforcement (1.4.1)".
+     - the fill is solid rather than a tint with a currentColor outline.
+
+   ---- Why these five fills are hex and not tokens -------------------------
+
+   Deliberate, and the source says so at the top of the file: white label
+   text is verified AA on each fill, and a theme token would flip lighter
+   under the dark theme, which breaks that pair. A fixed fill keeps the
+   verified combination intact in both themes.
+
+   Measured here rather than trusted:
+
+     critical #da1e28  5.00:1     serious  #ba4e00  5.03:1
+     moderate #8e6a00  4.99:1     minor    #525252  7.81:1
+     pass     #198038  5.02:1
+
+   All clear AA. The annotation quotes 4.6 / 5.1 / 4.9 / 7.4 / 4.6 — every
+   figure conservative by up to 0.4, which is the safe direction to be wrong
+   in, but worth correcting in the source so nobody trims a fill toward what
+   they think is the real margin.
+
+   This is the one place in the port where literal colours are correct, and
+   the reason is written above so the ban on literals is not quietly
+   forgotten here. The on-dark pairs below DO use tokens, because those only
+   ever appear on a known inverted surface.
+   ========================================================================== */
+
+.a11y-sev {
+  display: inline-flex;
+  align-items: center;
+  min-height: var(--target-min);
+  white-space: nowrap;
+  padding: 0.15em var(--space-3) 0.25em;
+  border-radius: var(--radius-round);
+  border: 0;
+  font-family: var(--font-core);
+  font-size: var(--text-label);
+  font-weight: 500;
+  letter-spacing: var(--tracking-tight);
+  color: #ffffff;
+}
+
+.a11y-sev-critical { background: #da1e28; }
+.a11y-sev-serious  { background: #ba4e00; }
+.a11y-sev-moderate { background: #8e6a00; }
+.a11y-sev-minor    { background: #525252; }
+.a11y-sev-pass     { background: #198038; }
+
+/* On an inverted surface the solid fills would sit as five bright blocks on
+   black. The Carbon dark tag pairs are used instead — 30-level text on a
+   70-level fill — which measure 5.81:1 to 7.10:1. */
+.a11y-sev-ondark.a11y-sev-critical {
+  background: var(--severity-critical-ondark-bg);
+  color: var(--severity-critical-ondark-text);
+}
+
+.a11y-sev-ondark.a11y-sev-serious {
+  background: var(--severity-serious-ondark-bg);
+  color: var(--severity-serious-ondark-text);
+}
+
+.a11y-sev-ondark.a11y-sev-moderate {
+  background: var(--severity-moderate-ondark-bg);
+  color: var(--severity-moderate-ondark-text);
+}
+
+.a11y-sev-ondark.a11y-sev-minor {
+  background: var(--severity-minor-ondark-bg);
+  color: var(--severity-minor-ondark-text);
+}
+
+.a11y-sev-ondark.a11y-sev-pass {
+  background: var(--severity-pass-ondark-bg);
+  color: var(--severity-pass-ondark-text);
+}
+
+/* ==========================================================================
+   Tag — accent tone
+   ==========================================================================
+   The system's Tag has a ninth tone the app's Tag did not carry: `accent`,
+   white on the ember fill. It is what the "New" pill on an inverted card
+   uses, and it is the only Tag tone that is not a Carbon tag pair.
+
+   White on --action-primary is 6.68:1, so it is safe on the light ground and
+   on the inverted card alike — the fill is opaque, so the card beneath it
+   does not enter the calculation. */
+.a11y-widget-biz.a11y-widget-biz .a11y-tag-accent {
+  background: var(--action-primary);
+  color: var(--content-on-accent);
+}
+
+/* The four Tag tones this package never carried. Carbon tag pairs, already
+   bridged in tokens.css — 70-level text on a 20-level tint in light, the
+   inverse in dark, every pair at or above 4.5:1.
+   The annotation's anti-pattern: a red Tag standing in for a severity. Tag
+   is for neutral facts; SeverityTag carries the verified fill pairs. */
+.a11y-widget-biz.a11y-widget-biz .a11y-tag-magenta {
+  color: var(--tag-magenta-text);
+  background: var(--tag-magenta-bg);
+}
+
+.a11y-widget-biz.a11y-widget-biz .a11y-tag-purple {
+  color: var(--tag-purple-text);
+  background: var(--tag-purple-bg);
+}
+
+.a11y-widget-biz.a11y-widget-biz .a11y-tag-cyan {
+  color: var(--tag-cyan-text);
+  background: var(--tag-cyan-bg);
+}
+
+.a11y-widget-biz.a11y-widget-biz .a11y-tag-teal {
+  color: var(--tag-teal-text);
+  background: var(--tag-teal-bg);
+}

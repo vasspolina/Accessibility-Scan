@@ -1,0 +1,211 @@
+/* ==========================================================================
+   DataTable
+   ==========================================================================
+   Ported from components/display/DataTable.jsx.
+
+   The design: header labels floating above a spaced set of card rows, no
+   dividers and no zebra. The annotation is firm about this — "Anti-pattern:
+   hairline dividers plus zebra plus borders on the same table. Correct:
+   spacing does the separating." border-spacing does the work, and the first
+   and last cell of each row carry the radius so the row reads as one card.
+
+   ---- Two things from the source deliberately NOT ported ------------------
+
+   1. The row hover inversion.
+      The source flips each row to black on hover. In THIS app a findings row
+      contains a severity pill, a rule chip, a WCAG link and a level badge,
+      every one of them coloured for a light ground. Inverting the row means
+      each of those needs an on-dark treatment or it fails contrast — and
+      earlier this session exactly that shipped for a moment and left white
+      text on #f4f4f4 at 1.10:1, which axe cannot catch because axe does not
+      evaluate hover.
+      IssueRow has the inversion and is safe there: it owns every child it
+      renders. A table whose cells are filled by eight different callers does
+      not. A --layer-hover tint does the highlighting here instead.
+
+   2. The black full-bleed expand panel with display-size text.
+      The source's `expand` is one sentence, so setting it at
+      clamp(1.5rem, 3.5vw, 2.5rem) on black reads as an editorial pull quote.
+      This app's `expand` is a whole finding — who fixes it, what was found,
+      numbered steps, a technical disclosure. At 2.5rem that is a wall, and
+      on black every nested component loses its contrast guarantee.
+      The panel keeps the app's own treatment.
+
+   Both are the same lesson: a design-system component styles what it owns,
+   and this one is a shell around other people's content.
+   ========================================================================== */
+
+.a11y-datatable-frame {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  padding: var(--space-5);
+  border-radius: var(--radius-panel);
+  background: var(--surface-sunken);
+  box-sizing: border-box;
+}
+
+.a11y-datatable-filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+
+.a11y-datatable-filter {
+  padding: var(--space-2) var(--space-4);
+  border-radius: var(--radius-round);
+  border: 0;
+  cursor: pointer;
+  background: var(--surface-raised);
+  color: var(--content-primary);
+  font-family: var(--font-core);
+  font-size: var(--text-label);
+  min-height: var(--target-min);
+  white-space: nowrap;
+}
+
+/* The selected pill inverts. Safe here — unlike a table row, a pill owns its
+   only child, which is its own label. */
+.a11y-datatable-filter[aria-pressed="true"] {
+  background: var(--surface-inverse);
+  color: var(--content-on-inverse);
+}
+
+.a11y-datatable {
+  width: 100%;
+  /* separate + border-spacing is what makes the rows read as cards. */
+  border-collapse: separate;
+  border-spacing: 0 var(--space-2);
+  font-family: var(--font-core);
+  font-size: var(--text-body);
+  color: var(--content-primary);
+}
+
+.a11y-datatable caption {
+  text-align: left;
+  padding: 0 0 var(--space-3);
+  font-size: var(--text-label);
+  color: var(--content-secondary);
+}
+
+/* Labels float above the rows: regular weight, secondary ink, no rule under
+   them. They are a key to the columns, not a heading. */
+/* No header band. The design floats the labels above the rows, and a
+   leftover fill from the old table was still painting a mid-grey behind
+   them — #5c554b on #8b8b8b, 2.15:1, which the app's own axe run caught the
+   moment the legacy rules came out. !important because the rule that paints
+   it is an older one written to reach inside a vendored table. */
+.a11y-datatable thead tr,
+.a11y-datatable thead th,
+.a11y-datatable thead td {
+  background: transparent !important;
+}
+
+.a11y-datatable thead th {
+  padding: 0 var(--space-5);
+  font-size: var(--text-label);
+  font-weight: 400;
+  color: var(--content-secondary);
+  text-align: left;
+}
+
+.a11y-datatable .a11y-dt-spacer {
+  width: 48px;
+}
+
+/* !important on the surface and the padding, and not by preference. The app
+   still carries its own card-row rules —
+   `.a11y-findings-table tbody tr:has(button[aria-expanded]) td` and the
+   pro-table equivalent — which set a #f4f4f4 fill and a padding-top that is
+   itself !important. Until those go the component cannot paint its own
+   cells: the rows rendered transparent with zero padding, so the card shape
+   was in the CSS and invisible on the page.
+   This is the migration's standing rule inverted for one step: normally the
+   legacy rule is deleted, but these two also carry findings-specific layout
+   that has not been ported yet, so the component asserts only the two
+   properties it must own and leaves their layout alone. */
+.a11y-datatable tbody td {
+  padding: var(--space-5) !important;
+  vertical-align: middle;
+  line-height: var(--leading-body);
+  background: var(--surface-raised) !important;
+  transition: background var(--motion-exit) var(--ease-standard);
+}
+
+/* The expand panel is the exception: it is one full-width cell holding the
+   app's own detail markup, and it must not take the row fill. */
+.a11y-datatable tbody tr.a11y-dt-expand-row > td {
+  padding: 0 !important;
+  background: transparent !important;
+}
+
+/* The row's card shape, carried by its outer cells. */
+.a11y-datatable tbody tr > td:first-child {
+  border-top-left-radius: var(--radius-soft);
+  border-bottom-left-radius: var(--radius-soft);
+}
+
+.a11y-datatable tbody tr > td:last-child {
+  border-top-right-radius: var(--radius-soft);
+  border-bottom-right-radius: var(--radius-soft);
+}
+
+/* A tint, not an inversion — see the note at the top. */
+.a11y-datatable tbody tr:hover > td,
+.a11y-datatable tbody tr:focus-within > td {
+  background: var(--layer-hover);
+}
+
+/* The first column is the row's subject, so it takes title size. */
+.a11y-datatable tbody td:first-of-type {
+  font-size: var(--text-title);
+  letter-spacing: var(--tracking-tight);
+}
+
+/* Right-aligned columns are counts. Set as numerals: 2rem, solid leading,
+   tabular so a column of them lines up on its digits.
+   FLAG: 2rem has no token — v2 steps --text-heading (1.953rem) then
+   --text-heading-lg (2.441rem). --text-heading is within a hair of 2rem and
+   is used instead, which is the one place here a value was moved rather than
+   kept, because the difference is 0.75px and inventing a token was worse. */
+.a11y-datatable tbody td[data-numeric="true"] {
+  font-size: var(--text-heading);
+  line-height: 1;
+  letter-spacing: var(--tracking-tight);
+  font-variant-numeric: tabular-nums;
+  text-align: right;
+}
+
+/* The toggle: a 44px ringed target, which is above the 24px WCAG 2.2
+   minimum and at the comfortable size the same criterion recommends. */
+.a11y-datatable .a11y-dt-toggle-cell {
+  padding: 0;
+  text-align: center;
+}
+
+.a11y-datatable .a11y-dt-toggle {
+  width: 44px;
+  height: 44px;
+  border-radius: var(--radius-round);
+  background: transparent;
+  border: 1px solid var(--border-strong);
+  cursor: pointer;
+  color: inherit;
+  font-family: inherit;
+  line-height: 1;
+}
+
+.a11y-datatable .a11y-dt-toggle [data-open="true"] {
+  transform: rotate(90deg);
+}
+
+.a11y-datatable .a11y-dt-toggle span {
+  display: inline-block;
+  transition: transform var(--motion-exit) var(--ease-standard);
+}
+
+/* The expand panel keeps this app's own light treatment; see note 2. */
+.a11y-datatable tbody tr.a11y-dt-expand-row > td {
+  padding: 0;
+  background: transparent;
+}

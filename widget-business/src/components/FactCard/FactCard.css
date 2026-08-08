@@ -1,0 +1,116 @@
+/* ==========================================================================
+   FactCard
+   ==========================================================================
+   Ported from components/display/FactCard.jsx.
+
+   A label, one display-size number, and an optional note. Three tones:
+   default (sunken panel), accent (the ember fill), invert (the dark panel).
+
+   ---- One deviation from the source, and it is a bug fix ------------------
+
+   The source paints the note with --text-on-invert-secondary on BOTH the
+   invert and the accent tone. On the dark panel that measures 9.67:1 and is
+   fine. On the ember fill it measures 3.98:1, which is under AA — a caption
+   that fails contrast, in the component whose whole job is to state a fact
+   about accessibility.
+
+   The note on an accent card therefore uses --content-on-inverse (6.09:1)
+   rather than the secondary. It stays a step softer than the pure-white
+   label above it (6.68:1), so the hierarchy the source wanted survives; it
+   just survives above the line instead of below it. Both values are existing
+   v2 tokens — nothing invented here.
+
+   This wants fixing in the design system. Reported, not silently absorbed.
+
+   ---- Values with no token in Foundations v2 ------------------------------
+
+   Flagged rather than rounded, per the brief:
+
+   1. min-height 220px. The space scale stops at --space-10 (128px) and there
+      is no card-height token. 220 is what makes a row of these square-ish at
+      the widths they are used; halving it to 128 would change the design.
+
+   2. The fluid display size. The old token set had
+      --type-display-size-fluid: clamp(3rem, 8vw, 9rem); v2 ships fixed
+      display sizes only. The clamp is rebuilt from v2's own tokens so the
+      number still shrinks with its column — a fixed 3.815rem overflows a
+      narrow card. The 8vw rate is the one un-tokenised value, and it is a
+      rate rather than a size, which is why it has no token to belong to.
+
+   3. font-weight 500. Same gap as Button: v2 names two font families and no
+      weights, and PP Telegraf ships only Regular and Medium.
+
+   ---- One value that moved -----------------------------------------------
+
+   Display leading was 0.88 in the old set; v2's --leading-display is 0.95.
+   This follows v2, since v2 is the target. Numbers set at this size will sit
+   very slightly further apart than the source's screenshots show.
+   ========================================================================== */
+
+.a11y-fact {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  padding: var(--space-5);
+  border-radius: var(--radius-panel);
+  font-family: var(--font-core);
+  background: var(--surface-sunken);
+  color: var(--content-primary);
+
+  /* FLAG: no token — see note 1 above. */
+  min-height: 220px;
+}
+
+.a11y-fact-accent {
+  background: var(--action-primary);
+  color: var(--content-on-accent);
+}
+
+.a11y-fact-invert {
+  background: var(--surface-inverse);
+  color: var(--content-on-inverse);
+}
+
+.a11y-fact-label {
+  font-size: var(--text-label);
+  line-height: var(--leading-label);
+  font-weight: 500;
+  color: inherit;
+}
+
+/* The number. Pushed to the bottom of the card so a row of these aligns on
+   its numerals rather than on its labels — the labels vary in length, the
+   numbers are what the reader is comparing. */
+.a11y-fact-value-row {
+  flex: 1;
+  display: flex;
+  align-items: flex-end;
+}
+
+.a11y-fact-value {
+  /* FLAG: clamp rebuilt from v2 tokens — see note 2 above. */
+  font-size: clamp(var(--text-heading-lg), 8vw, var(--text-display));
+  line-height: var(--leading-display);
+  font-weight: 500;
+  letter-spacing: var(--tracking-display);
+  font-variant-numeric: tabular-nums;
+}
+
+.a11y-fact-note {
+  font-size: var(--text-label);
+  /* v2 has no narrow leading for labels, only --leading-body-narrow. A fact
+     card is a narrow column, which is the condition that token describes, so
+     it stands in here rather than letting the note open up to full label
+     leading. Flagged: the ideal is a --leading-label-narrow in Foundations. */
+  line-height: var(--leading-body-narrow);
+  color: var(--content-secondary);
+}
+
+.a11y-fact-invert .a11y-fact-note {
+  color: var(--content-on-inverse-secondary);
+}
+
+/* The deviation. --content-on-inverse-secondary here would be 3.98:1. */
+.a11y-fact-accent .a11y-fact-note {
+  color: var(--content-on-inverse);
+}

@@ -38,8 +38,23 @@
   /* Narrow-measure leading, for card columns of roughly 25–35 characters.
      The figures above assume the full 66ch measure. */
   --type-title-lh-narrow: 1.1;
-  --type-body-lh-narrow: 1.35;
+  --type-body-lh-narrow: 1.3;
   --type-label-lh-narrow: 1.3;
+  /* Between the narrow and the full measure — card columns that run wider
+     than 35 characters but short of the full 66. */
+  --type-body-lh-medium: 1.4;
+
+  /* The editorial display tier: hero and marketing contexts only, never
+     dense UI. The fluid form is what the system now ships; the fixed 9rem
+     stays as the value it clamps to. */
+  --type-display-size: 9rem;
+  --type-display-size-fluid: clamp(3rem, 8vw, 9rem);
+  --type-display-lh: 0.88;
+
+  /* Paragraph marking: space between paragraphs OR a first-line indent,
+     never both. This report uses the space. */
+  --paragraph-indent: 1em;
+  --type-body-compact-size: var(--type-body-size);
 
   --paragraph-space: 0.75em;
   --tracking-tight: -0.03em;
@@ -55,11 +70,14 @@
   --gray-100: #161616; --white: #ffffff;
 
   --red-40: #ff8389;   --red-60: #da1e28;   --red-70: #a2191f;
+  --orange-40: #ff832b;
   --blue-40: #7d9afa;
   --orange-60: #ba4e00;
   --yellow-30: #f1c21b;
   --green-40: #42be65; --green-60: #198038;
-  --blue-60: #1948f4;
+  --blue-50: #4c74f8;  --blue-60: #1948f4;  --blue-70: #082dc6;  --blue-80: #061d96;
+  --red-50: #fa4d56;   --magenta-60: #d02670;
+  --green-50: #24a148; --teal-50: #009d9a;  --purple-60: #8a3ffc;
 
   /* Semantic — light. Note --interactive and --link-primary resolve to the
      page's ink, not to blue: this system is deliberately desaturated, and
@@ -85,6 +103,13 @@
 
   /* Severity. Never colour alone — every use pairs this with a glyph and a
      word, which is the report's own rule applied to itself. */
+  /* red-70, where the system says red-60. This is the only value in this
+     file that does not match the design system, and it is deliberate: the
+     verdict word sits on the accent wash inside the lifted score card, and
+     there red-60 measures 4.4:1 — under the line. The app's own scan found
+     it. red-70 clears every ground this word lands on.
+     Worth correcting in the design system rather than here; until then this
+     divergence is the safe direction, since it can only raise contrast. */
   --severity-critical: var(--red-70);
   --severity-serious: var(--orange-60);
   --severity-moderate: #8e6a00;
@@ -115,6 +140,28 @@
   --tag-red-text: #a2191f;   --tag-red-bg: #ffd7d9;
   --tag-blue-text: #0043ce;  --tag-blue-bg: #d0e2ff;
   --tag-green-text: #0e6027; --tag-green-bg: #a7f0ba;
+  --tag-magenta-text: #9f1853; --tag-magenta-bg: #ffd6e8;
+  --tag-purple-text: #6929c4;  --tag-purple-bg: #e8daff;
+  --tag-cyan-text: #00539a;    --tag-cyan-bg: #bae6ff;
+  --tag-teal-text: #005d5d;    --tag-teal-bg: #9ef0f0;
+
+  --button-primary-hover: var(--gray-70);
+  --button-primary-active: var(--gray-90);
+  --button-danger-hover: var(--red-70);
+  --accent-red-hover: #d92600;
+  --accent-red-active: #b31f00;
+  --text-on-invert: #ffffff;
+  --text-on-invert-secondary: #c6c6c6;
+  --text-on-invert-tertiary: #a8a8a8;
+
+  /* Severity tags on inverted (black) surfaces — Carbon dark tag pairs,
+     30-level text on 70-level fill. Ported whole rather than as-needed, so
+     the next inverted surface does not silently fall back to a light value. */
+  --severity-critical-ondark-text: #ffd7d9;  --severity-critical-ondark-bg: #a2191f;
+  --severity-serious-ondark-text: #ffd9be;   --severity-serious-ondark-bg: #8a3800;
+  --severity-moderate-ondark-text: #fddc69;  --severity-moderate-ondark-bg: #684e00;
+  --severity-minor-ondark-text: #f4f4f4;     --severity-minor-ondark-bg: #525252;
+  --severity-pass-ondark-text: #a7f0ba;      --severity-pass-ondark-bg: #0e6027;
 
   --focus: var(--text-primary);
   --focus-inset: var(--white);
@@ -148,6 +195,7 @@
   --ease-standard: cubic-bezier(0.2, 0, 0.38, 0.9);
   --ease-entrance: cubic-bezier(0, 0, 0.38, 0.9);
   --ease-exit: cubic-bezier(0.2, 0, 1, 0.9);
+  --ease-emphasis: cubic-bezier(0.4, 0.14, 0.3, 1);
   --duration-fast: 70ms;
   --duration-quick: 110ms;
   --duration-base: 150ms;
@@ -178,8 +226,8 @@
     --interactive: var(--text-primary);
     --button-primary: var(--text-primary);
 
-    --severity-critical: #ff8389;
-    --severity-serious: #ff832b;
+    --severity-critical: var(--red-40);
+    --severity-serious: var(--orange-40);
     --severity-moderate: var(--yellow-30);
     --severity-minor: var(--gray-30);
     --severity-pass: var(--green-40);
@@ -197,7 +245,26 @@
     --support-warning: var(--yellow-30);
     --support-info: var(--blue-40);
 
+    /* The rest of the system's dark block, ported verbatim. The tag tones
+       beyond the four this report uses are here so a fifth does not silently
+       fall back to its light value the first time someone reaches for it —
+       which is exactly how the danger button ended up at 3.61:1. */
+    --text-on-color: var(--white);
+    --button-primary-hover: var(--gray-30);
+    --button-primary-active: var(--gray-50);
+    --button-danger: var(--red-60);
+    --button-danger-hover: #ba1b23;
+
+    --accent-red: #ff2f00;
+    --accent-red-fill: #d92600;
+    --accent-red-hover: #ff5c33;
+    --accent-red-active: #ff8266;
     --accent-red-fill-hover: #ff5c33;
+
+    --tag-magenta-text: #ffd6e8;  --tag-magenta-bg: #9f1853;
+    --tag-purple-text: #e8daff;   --tag-purple-bg: #6929c4;
+    --tag-cyan-text: #bae6ff;     --tag-cyan-bg: #00539a;
+    --tag-teal-text: #9ef0f0;     --tag-teal-bg: #005d5d;
 
     /* Dark tags invert: 30-level text on 70-level fill. */
     --tag-gray-text: #f4f4f4;  --tag-gray-bg: #525252;
@@ -314,103 +381,18 @@
    Components — from the system's own .jsx components
    ========================================================================== */
 
-/* Button. "primary" is the accent-red submit CTA and "black" is the page's
-   ink used as a fill; they are separate variants answering separate
-   questions, not two names for one thing. */
-.a11y-widget-biz .a11y-btn {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: var(--space-03);
-  height: var(--target-comfortable);
-  white-space: nowrap;
-  padding: 0 var(--space-06);
-  border-radius: var(--radius-pill);
-  font-size: var(--type-body-size);
-  font-weight: var(--weight-medium);
-  letter-spacing: var(--tracking-normal);
-  cursor: pointer;
-  transition: background var(--duration-quick) var(--ease-standard),
-    opacity var(--duration-quick) var(--ease-standard);
-}
 
-.a11y-widget-biz .a11y-btn-sm { height: 32px; }
-.a11y-widget-biz .a11y-btn-md { height: var(--target-comfortable); }
-.a11y-widget-biz .a11y-btn-lg { height: var(--target-touch); }
 
-.a11y-widget-biz .a11y-btn-primary {
-  background: var(--accent-red-fill);
-  color: #ffffff;
-  border: 1px solid var(--accent-red-fill);
-}
 
-.a11y-widget-biz .a11y-btn-primary:hover:not(:disabled) {
-  background: var(--accent-red-fill-hover);
-  border-color: var(--accent-red-fill-hover);
-}
 
-.a11y-widget-biz .a11y-btn-black {
-  background: var(--text-primary);
-  color: var(--background);
-  border: 1px solid var(--text-primary);
-}
 
-.a11y-widget-biz .a11y-btn-secondary {
-  background: transparent;
-  color: var(--text-primary);
-  border: var(--border-width-strong) solid var(--text-primary);
-}
 
-.a11y-widget-biz .a11y-btn-ghost {
-  background: transparent;
-  color: var(--text-primary);
-  border: 1px solid transparent;
-  text-decoration: underline;
-  text-decoration-color: transparent;
-  text-underline-offset: 3px;
-}
 
-.a11y-widget-biz .a11y-btn-ghost:hover:not(:disabled) {
-  text-decoration-color: currentColor;
-}
 
-.a11y-widget-biz .a11y-btn-danger {
-  background: var(--button-danger);
-  color: var(--text-on-color);
-  border: 1px solid var(--button-danger);
-}
 
-/* The real disabled attribute does the work — out of the tab order and
-   unclickable. This only says so visually. */
-.a11y-widget-biz .a11y-btn:disabled {
-  cursor: not-allowed;
-  opacity: 0.5;
-}
 
-/* Card. A tinted panel with no border: the tint is the separation, and a
-   border on top of a tint is two things doing one job. */
-.a11y-widget-biz .a11y-card {
-  display: flex;
-  flex-direction: column;
-  padding: var(--space-07);
-  background: var(--layer-01);
-  border: 0;
-  border-radius: var(--radius-lg);
-  color: var(--text-primary);
-}
 
-.a11y-widget-biz .a11y-card-invert {
-  background: var(--text-primary);
-  color: var(--background);
-}
 
-.a11y-widget-biz .a11y-card-title {
-  margin: 0 0 var(--space-04);
-  font-size: var(--type-title-size);
-  line-height: var(--type-title-lh);
-  font-weight: var(--weight-medium);
-  letter-spacing: var(--tracking-tight);
-}
 
 /* Tag — filled chips, no border. */
 .a11y-widget-biz .a11y-tag {
@@ -430,29 +412,7 @@
 .a11y-widget-biz .a11y-tag-blue  { color: var(--tag-blue-text);  background: var(--tag-blue-bg); }
 .a11y-widget-biz .a11y-tag-green { color: var(--tag-green-text); background: var(--tag-green-bg); }
 
-/* SeverityTag. The glyph is aria-hidden and repeats what the word says: it is
-   the second channel, so severity is never carried by colour alone. The
-   border is currentColor so the chip stays legible when a theme swaps the
-   fill out from under it. */
-.a11y-widget-biz .a11y-severity-badge {
-  display: inline-flex;
-  align-items: center;
-  gap: var(--space-02);
-  flex-shrink: 0;
-  min-height: var(--target-min);
-  padding: 2px var(--space-04);
-  white-space: nowrap;
-  border: 1px solid currentColor;
-  border-radius: var(--radius-pill);
-  font-size: var(--type-label-size);
-  font-weight: var(--weight-medium);
-}
 
-.a11y-widget-biz .a11y-severity-critical { color: var(--severity-critical); background: var(--severity-critical-bg); }
-.a11y-widget-biz .a11y-severity-serious  { color: var(--severity-serious);  background: var(--severity-serious-bg); }
-.a11y-widget-biz .a11y-severity-moderate { color: var(--severity-moderate); background: var(--severity-moderate-bg); }
-.a11y-widget-biz .a11y-severity-minor    { color: var(--severity-minor);    background: var(--severity-minor-bg); }
-.a11y-widget-biz .a11y-severity-pass     { color: var(--severity-pass);     background: var(--severity-pass-bg); }
 
 /* Input — an underline field: no box, no fill, the label above carrying the
    naming and the rule beneath carrying the affordance. */
