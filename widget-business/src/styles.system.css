@@ -461,39 +461,8 @@
   transition: width var(--duration-moderate) var(--ease-standard);
 }
 
-/* Dialog. The system's own version has no focus trap, does not restore focus
-   on close, and hardcodes id="dlg-title" — which produces a duplicate id when
-   two dialogs exist, a fault this very report flags on other sites. The
-   behaviour stays with the component in this package; only the look is taken
-   from here. */
-.a11y-widget-biz .a11y-dialog-scrim {
-  position: fixed;
-  inset: 0;
-  background: rgba(22, 22, 22, 0.5);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 50;
-}
 
-.a11y-widget-biz .a11y-dialog {
-  width: 420px;
-  max-width: 90%;
-  background: var(--layer-02);
-  border: 1px solid var(--border-subtle);
-  border-radius: var(--radius-lg);
-  overflow: hidden;
-  box-shadow: var(--shadow-overlay);
-  color: var(--text-primary);
-}
 
-.a11y-widget-biz .a11y-dialog-actions {
-  display: flex;
-  justify-content: flex-end;
-  gap: var(--space-03);
-  padding: var(--space-04) var(--space-05);
-  border-top: 1px solid var(--border-subtle);
-}
 
 /* ==========================================================================
    The app's own token names, aliased onto the system

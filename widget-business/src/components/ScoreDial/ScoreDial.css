@@ -1,0 +1,146 @@
+/* ==========================================================================
+   ScoreDial
+   ==========================================================================
+   Ported from components/scan/ScoreDial.jsx.
+
+   This is the first port that changes markup rather than styling it. The app
+   drew a ring — an SVG circle with a stroke-dashoffset — and the design is a
+   black card with the score set large, a linear meter beneath it, and a band
+   pill overlapping the corner. Ring and card-with-bar are not the same
+   drawing, so the CSS-only approach every other port used does not reach.
+
+   The meter is the better instrument for what this number is. A ring shows a
+   proportion; the score's meaning is where it falls against two thresholds,
+   and a bar can carry those thresholds as ticks and say "Needs work at 70 ·
+   Good at 90" underneath. The ring could only imply them.
+
+   ---- What did not change --------------------------------------------------
+
+   The accessibility contract, which both versions already agreed on and
+   which is the whole reason this component is safe to rewrite: the dial is a
+   picture of a number, so it is announced once as a sentence via role="img"
+   and an aria-label, and every part of the drawing is aria-hidden. Left
+   visible, a screen reader would read the number, then the verdict, then a
+   label containing both.
+
+   The thresholds (90 / 70) and the words (Good / Needs work / Failing) are
+   unchanged. They appear in the report's copy elsewhere, and moving them
+   would change what the widget says rather than how it looks.
+   ========================================================================== */
+
+.a11y-dial {
+  position: relative;
+  /* Room for the pill to overhang the card's top edge. */
+  margin-top: 14px;
+  min-width: 240px;
+  font-family: var(--font-core);
+}
+
+/* The band pill. Its fills are literal hex for the same verified reason as
+   SeverityTag: white on each is checked (Good 5.02:1, Needs work 4.99:1,
+   Failing 5.00:1) and a theme token would flip lighter in dark mode and
+   break the pair. */
+.a11y-dial-word {
+  position: absolute;
+  top: -14px;
+  right: var(--space-4);
+  z-index: 1;
+  padding: var(--space-2) var(--space-4);
+  border-radius: var(--radius-round);
+  color: #ffffff;
+  font-size: var(--text-label);
+  font-weight: 500;
+  letter-spacing: var(--tracking-tight);
+  white-space: nowrap;
+}
+
+.a11y-dial-word[data-band="good"] { background: #198038; }
+.a11y-dial-word[data-band="needs-work"] { background: #8e6a00; }
+.a11y-dial-word[data-band="failing"] { background: #da1e28; }
+
+.a11y-dial-card {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: var(--space-6);
+  min-height: 300px;
+  padding: var(--space-5);
+  border-radius: var(--radius-panel);
+  box-sizing: border-box;
+  background: var(--surface-inverse);
+  color: var(--content-on-inverse);
+}
+
+.a11y-dial-head {
+  font-size: var(--text-label);
+  line-height: var(--leading-body);
+}
+
+.a11y-dial-head strong {
+  display: block;
+  font-weight: 500;
+}
+
+.a11y-dial-head span {
+  display: block;
+  color: var(--content-on-inverse-secondary);
+}
+
+.a11y-dial-number {
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-2);
+  margin-bottom: var(--space-4);
+}
+
+.a11y-dial-number b {
+  font-size: clamp(4rem, 16vw, 7rem);
+  line-height: 0.78;
+  font-weight: 500;
+  letter-spacing: var(--tracking-tight);
+  font-variant-numeric: tabular-nums;
+}
+
+.a11y-dial-number span {
+  font-size: var(--text-label);
+  color: var(--content-on-inverse-secondary);
+}
+
+/* The meter. The source draws its track with --gray-90 on --gray-100, two
+   near-identical blacks. A white wash is used instead so the track reads on
+   whatever the inverted surface turns out to be, rather than only on the one
+   black it was picked against. */
+.a11y-dial-meter {
+  position: relative;
+  height: 6px;
+  background: rgba(255, 255, 255, 0.16);
+  overflow: hidden;
+}
+
+.a11y-dial-fill {
+  height: 100%;
+}
+
+.a11y-dial-fill[data-band="good"] { background: var(--severity-pass); }
+.a11y-dial-fill[data-band="needs-work"] { background: var(--severity-moderate); }
+.a11y-dial-fill[data-band="failing"] { background: var(--severity-critical); }
+
+/* The two thresholds, drawn on the track. These are the reason a bar beats a
+   ring here: 70 and 90 are where the verdict changes, and the ring had
+   nowhere to put them. */
+.a11y-dial-tick {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 1px;
+  background: rgba(255, 255, 255, 0.42);
+}
+
+.a11y-dial-scale {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--space-3);
+  margin-top: var(--space-2);
+  font-size: var(--text-label);
+  color: var(--content-on-inverse-secondary);
+}

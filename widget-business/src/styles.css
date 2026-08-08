@@ -1070,50 +1070,11 @@ label.a11y-ai-toggle {
 
 
 
-/* The modal, now owned here. */
-.a11y-dialog-scrim {
-  position: fixed;
-  inset: 0;
-  z-index: 50;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: rgba(22, 22, 22, 0.5);
-}
 
-.a11y-dialog {
-  width: 420px;
-  max-width: 90%;
-  background: var(--layer-02, var(--a11y-bg, #ffffff));
-  border: 1px solid var(--border-subtle, var(--a11y-border, #e0e0e0));
-  box-shadow: var(--shadow-overlay, 0 2px 6px rgba(0, 0, 0, 0.2));
-  color: var(--a11y-text, #161616);
-}
 
-.a11y-widget-biz.a11y-widget-biz .a11y-dialog {
-  border-radius: var(--radius-sm, 12px);
-}
 
-.a11y-dialog-title {
-  margin: 0;
-  padding: var(--space-05, 1rem);
-  font-size: var(--a11y-text-subtitle, 1.25rem);
-  font-weight: 500;
-  line-height: 1.2;
-}
 
-.a11y-dialog-body {
-  padding: 0 var(--space-05, 1rem) var(--space-05, 1rem);
-  line-height: 1.35;
-}
 
-.a11y-dialog-actions {
-  display: flex;
-  justify-content: flex-end;
-  gap: var(--space-03, 0.5rem);
-  padding: var(--space-04, 0.75rem) var(--space-05, 1rem);
-  border-top: 1px solid var(--border-subtle, var(--a11y-border, #e0e0e0));
-}
 
 /* The tab strip, now owned here. The active tab is marked by weight and a
    rule beneath it as well as colour — one more place the report follows
@@ -1283,34 +1244,9 @@ label.a11y-ai-toggle {
   font-weight: 500;
 }
 
-/* The score dial, now owned here. Layout only — every colour on it comes
-   from the component, because the tone is computed from the score. */
-.a11y-dial {
-  display: inline-flex;
-  flex-direction: column;
-  align-items: center;
-  gap: var(--space-03, 0.5rem);
-}
 
-.a11y-dial-ring {
-  position: relative;
-}
 
-.a11y-dial-number {
-  position: absolute;
-  inset: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: var(--a11y-text-title);
-  font-weight: 500;
-  color: var(--a11y-text, #161616);
-}
 
-.a11y-dial-word {
-  font-size: var(--a11y-text-label, 0.875rem);
-  font-weight: 500;
-}
 
 
 
@@ -7747,16 +7683,28 @@ label.a11y-ai-toggle {
 /* On an inverted surface the rule cannot be --border-subtle, which is a
    light-ground hairline and vanishes. The source uses a white wash at 24%,
    which reads as a rule on any dark fill rather than only on one. */
+/* .a11y-spec-card-lead is the third inverted surface, and missing it was a
+   real regression that shipped: the statement builder's lead card is dark,
+   and this port put light-ground ink on it — the label at 2.46:1 and the
+   value at 1.09:1, which is invisible rather than merely low.
+   The on-dark rules were written against the two inverted surfaces I could
+   name, and a class I had not met was enough to defeat them. Any new dark
+   surface has to be added here, which is fragile; the durable fix is for the
+   inverted surfaces to share one class. Recorded rather than papered over. */
 .a11y-widget-biz.a11y-widget-biz .a11y-card-invert .a11y-spec-grid > div,
-.a11y-widget-biz.a11y-widget-biz .a11y-section-tint .a11y-spec-grid > div {
+.a11y-widget-biz.a11y-widget-biz .a11y-section-tint .a11y-spec-grid > div,
+.a11y-widget-biz.a11y-widget-biz .a11y-spec-card-lead .a11y-spec-grid > div {
   border-top-color: rgba(255, 255, 255, 0.24);
 }
 
 .a11y-widget-biz.a11y-widget-biz .a11y-card-invert .a11y-spec-label,
-.a11y-widget-biz.a11y-widget-biz .a11y-card-invert .a11y-spec-gloss {
+.a11y-widget-biz.a11y-widget-biz .a11y-card-invert .a11y-spec-gloss,
+.a11y-widget-biz.a11y-widget-biz .a11y-spec-card-lead .a11y-spec-label,
+.a11y-widget-biz.a11y-widget-biz .a11y-spec-card-lead .a11y-spec-gloss {
   color: var(--content-on-inverse-secondary);
 }
 
-.a11y-widget-biz.a11y-widget-biz .a11y-card-invert .a11y-spec-value {
+.a11y-widget-biz.a11y-widget-biz .a11y-card-invert .a11y-spec-value,
+.a11y-widget-biz.a11y-widget-biz .a11y-spec-card-lead .a11y-spec-value {
   color: var(--content-on-inverse);
 }
