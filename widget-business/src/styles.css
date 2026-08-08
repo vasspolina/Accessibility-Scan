@@ -7280,7 +7280,22 @@ label.a11y-ai-toggle {
   counter-increment: a11y-section;
 }
 
-.a11y-widget-biz.a11y-widget-biz .a11y-section-title::before {
+/* The counter prints on the SECTION, not on the heading — which is where
+   the source puts it, and the reason is accessibility rather than layout.
+
+   accname's "name from content" includes CSS generated content, and both
+   Chrome and Firefox implement that. With the ::before on .a11y-section-title
+   the numeral sat INSIDE the <h2>, so every section announced "01 Your
+   score" instead of "Your score" — noise on every heading, and worse for
+   anyone navigating by heading. The source renders its index as a sibling of
+   the h2 and marks it aria-hidden; a ::before on the section is a sibling
+   too, and generated content there joins no heading's name.
+
+   This is the second time today a decorative numeral needed care: the New
+   scan step numbers are also counters, and they are fine because they print
+   on a <legend>'s ::before inside a fieldset, which names a group rather
+   than a heading. Same technique, different consequence. */
+.a11y-widget-biz.a11y-widget-biz .a11y-section::before {
   content: counter(a11y-section, decimal-leading-zero);
   display: block;
   margin-bottom: var(--space-3);
@@ -7307,8 +7322,8 @@ label.a11y-ai-toggle {
   counter-increment: none;
 }
 
-.a11y-widget-biz.a11y-widget-biz .a11y-newscan-title::before,
-.a11y-widget-biz.a11y-widget-biz .a11y-results-title::before {
+.a11y-widget-biz.a11y-widget-biz .a11y-section:has(.a11y-newscan-title)::before,
+.a11y-widget-biz.a11y-widget-biz .a11y-section:has(.a11y-results-title)::before {
   content: none;
 }
 
