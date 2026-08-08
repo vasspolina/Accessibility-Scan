@@ -71,8 +71,8 @@ export function Wcag22Readiness({ readiness }: { readiness: Readiness }) {
       <div id={panelId} hidden={!open}>
           <p className="a11y-conf-caveat">
             <strong>What actually changes.</strong> The European Accessibility Act points at a
-            standard called EN 301 549, which today adopts WCAG 2.1. The next version of that
-            standard adopts WCAG 2.2. It is expected in the EU's Official Journal in{" "}
+            standard called EN 301 549, which today adopts WCAG 2.1. The next version adopts
+            WCAG 2.2, expected in the EU's Official Journal in{" "}
             {readiness.expectedFrom}. Until then, the checklist above is the one that counts.
           </p>
 
@@ -84,11 +84,21 @@ export function Wcag22Readiness({ readiness }: { readiness: Readiness }) {
               not after them. */}
           <p className="a11y-conf-caveat">
             <strong>Software can check only one of these.</strong> {needsReview} of the{" "}
-            {total} depend on things a machine cannot judge. Does a sticky header cover what you
-            have tabbed to? Does a drag have a simpler alternative? Does help sit in the same
-            place on every page? Does a form ask twice? Can you log in without solving a puzzle?
-            That is the same honesty as the checklist below, and the same answer:
-            these need a person.
+            {total} depend on things a machine cannot judge:
+          </p>
+          {/* These were five questions in a row inside a seventy-six word
+              paragraph. They are a list — each one is a separate thing to go
+              and look at — and running them together as prose meant a reader
+              had to hold all five while working out where each began. */}
+          <ul className="a11y-question-list">
+            <li>Does a sticky header cover what you have tabbed to?</li>
+            <li>Does a drag have a simpler alternative?</li>
+            <li>Does help sit in the same place on every page?</li>
+            <li>Does a form ask twice?</li>
+            <li>Can you log in without solving a puzzle?</li>
+          </ul>
+          <p>
+            These need a person, which is the same answer the checklist below gives.
           </p>
 
           {/* The kit's tinted-row table, as the legal-standard section has

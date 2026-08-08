@@ -33,9 +33,18 @@ export function AppShell({
       <header className="a11y-shell-header">
         <PlansBar plans={plans} />
       </header>
-      {hasNav && <SideNav sections={sections} activeId={activeId} />}
-      <div className="a11y-shell-content" ref={contentRef}>
-        {children}
+      {/* Nav and content share one grid area rather than taking a row each.
+          A sticky element can only travel inside its containing block, and
+          for a grid item that block is its own grid area — a nav in its own
+          row is exactly as tall as itself, so `position: sticky` had nowhere
+          to go and the bar scrolled away like any other element. Inside this
+          wrapper its containing block is the whole report, which is the
+          distance it was always meant to travel. */}
+      <div className="a11y-shell-main">
+        {hasNav && <SideNav sections={sections} activeId={activeId} />}
+        <div className="a11y-shell-content" ref={contentRef}>
+          {children}
+        </div>
       </div>
     </>
   );

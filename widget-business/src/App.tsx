@@ -594,7 +594,7 @@ export function App({
           {!isDocument && (
           <ReportSection
             title="Notes on the design"
-            description="Remarks rather than faults. None of this counts towards the score, and the reason is worth a mention. Every one is judgement rather than measurement, with no rule underneath it to point at. Mostly type that works against the reader — cramped, or set in capitals. It still costs you readers, and dyslexic ones first."
+            description="Remarks rather than faults, and none of it counts towards the score. Every one is judgement rather than measurement, with no rule underneath to point at. Mostly type that works against the reader, and it still costs you readers."
             variant="default"
             findings={findingsByCategory.designClarity}
             asNotes

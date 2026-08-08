@@ -181,7 +181,7 @@ export function evaluateTextResize(signals: TextResizeSignals): AccessibilityFin
         signals.spacing.snippets[worst],
         signals.spacing.shots?.[worst],
         "Text cut off when spacing increases",
-        `${spacingBroken.length} element${spacingBroken.length === 1 ? " cuts" : "s cut"} text off on this page when a visitor increases line and letter spacing. WCAG requires pages to tolerate these settings, and many people with dyslexia rely on them to read at all. Instead of reflowing, the words disappear behind a fixed-height box.`,
+        `${spacingBroken.length} element${spacingBroken.length === 1 ? " cuts" : "s cut"} text off when a visitor increases line and letter spacing. Instead of reflowing, the words disappear behind a fixed-height box.`,
         FIX_CLIPPING,
         HELP_SPACING
       )
@@ -203,7 +203,7 @@ export function evaluateTextResize(signals: TextResizeSignals): AccessibilityFin
         signals.zoom.snippets[worst],
         signals.zoom.shots?.[worst],
         "Text cut off at larger font sizes",
-        `${zoomBroken.length} element${zoomBroken.length === 1 ? " cuts" : "s cut"} text off when the reader doubles their font size. The container keeps its size while the words grow, and hides the extra text. Raising the default font size is the most common adjustment people with low vision make. It is far more common than any assistive software.`,
+        `${zoomBroken.length} element${zoomBroken.length === 1 ? " cuts" : "s cut"} text off when the reader doubles their font size. The container keeps its size while the words grow, and hides the rest.`,
         FIX_CLIPPING,
         HELP_RESIZE
       )

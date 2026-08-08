@@ -111,7 +111,7 @@ export function evaluateMotion(
             "motion-infinite-no-reduced-motion",
             "moderate",
             stillMoving[0].selector,
-            `${stillMoving.length} element${stillMoving.length === 1 ? " animates" : "s animate"} on this page without stopping. The movement carries on even when the visitor has asked their system to reduce motion. We checked by turning that setting on and watching. Perpetual movement makes text hard to read, and for people with balance disorders it causes real nausea.`,
+            `${stillMoving.length} element${stillMoving.length === 1 ? " animates" : "s animate"} on this page without stopping, even though the visitor has asked their system to reduce motion. We checked by turning that setting on and watching.`,
             "Wrap the animation in @media (prefers-reduced-motion: no-preference), or stop it after a few seconds, or add a pause control. Note that having such a rule somewhere in your stylesheets is not enough — it has to cover these particular animations."
           )
         );
@@ -122,7 +122,7 @@ export function evaluateMotion(
           "motion-infinite-no-reduced-motion",
           "moderate",
           infinite[0].selector,
-          `Content animates non-stop (${infinite.length} element${infinite.length === 1 ? "" : "s"} with infinite animations). No stylesheet on this page mentions the visitor's "reduce motion" setting at all. Perpetual motion distracts from reading and can trigger nausea for people with balance disorders.`,
+          `Content animates non-stop (${infinite.length} element${infinite.length === 1 ? "" : "s"} with infinite animations). No stylesheet on this page mentions the visitor's "reduce motion" setting at all.`,
           "Wrap the animations in @media (prefers-reduced-motion: no-preference), or stop them after a few seconds, or add a pause control."
         )
       );

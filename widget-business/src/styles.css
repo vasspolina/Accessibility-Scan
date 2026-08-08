@@ -157,9 +157,30 @@
      against other people's sites, so headings stay at 1.2. It is the one
      trait of the reference that could not survive the product it is being
      applied to. */
-  --a11y-text-title: 2.25rem;  /* 36px — section headings */
+  --a11y-text-title: 2.5rem;   /* 40px — section headings, per the system */
   --a11y-text-display: 3rem;   /* 48px — the score, the one number to see */
   --a11y-text-label: 0.875rem; /* 14px — tags, badges, table headers */
+
+  /* Leading, from the same model the scan applies to other people's sites
+     (backend/src/services/typography/analyzeTypography.ts). Reporting a
+     site for tight leading while setting our own body text at 1.2 across a
+     64-character measure was indefensible, and it was what we were doing:
+     the check asks about 1.43 there and we set 1.2.
+
+     Hochuli's two dependencies, both of them: the longer the line the more
+     leading it needs, and the larger the type the less. So these are not
+     one ratio applied everywhere — each is the model's answer for that
+     size at the measure that size is actually set to.
+
+     These now defer to the design system's own figures rather than carrying
+     a second set derived the same way. Both were Hochuli-derived and they
+     landed within a few hundredths of each other, which is reassuring but
+     not a reason to keep two. The system's numbers win because it is the
+     source of record. */
+  --a11y-leading-prose: 1.5;    /* --type-body-lh, at the full 66ch measure */
+  --a11y-leading-heading: 1.2;  /* --type-title-lh, 20px */
+  --a11y-leading-title: 1.05;   /* --type-heading-lh, 40px */
+  --a11y-leading-label: 1.4;    /* --type-label-lh, 14px */
 
   /* Weight is the half of the reference's voice that cannot be borrowed.
      It sets its display type at 600-800; PP Telegraf ships Regular and
@@ -216,7 +237,6 @@
   display: grid;
   grid-template-areas:
     "header"
-    "nav"
     "content";
   grid-template-columns: minmax(0, 1fr);
   padding: 32px;
@@ -245,9 +265,14 @@
    light/dark-themed by the Carbon layer earlier in this file. What's left
    of the Material starting point is just the shape: full-width rows,
    generous 48px height, no left-border accent. */
+/* The grid area the nav and the report share — see AppShell's own note on
+   why the nav can't be a grid row of its own and still stick. */
+.a11y-shell-main {
+  grid-area: content;
+  min-width: 0;
+}
+
 .a11y-shell-nav {
-  grid-area: nav;
-  align-self: start;
   /* Sticks to the top of the viewport as the report scrolls under it, the
      way the reference's own bar does. Backed by the page colour so the
      content does not show through it while passing beneath. */
@@ -367,17 +392,20 @@
   .a11y-widget-inner {
     grid-template-areas:
       "header"
-      "nav"
       "content";
     grid-template-columns: 1fr;
   }
 
   .a11y-shell-nav {
-    /* Not static: the open dropdown positions itself absolutely against
-       this element, so it needs to be the positioning context — without
-       it the menu would anchor to the widget's outer container instead
-       of sitting directly under the toggle button. */
-    position: relative;
+    /* Deliberately NOT `position: relative`, which is what this said and
+       what quietly cost the phone its sticky bar: relative overrode the
+       sticky set on the desktop rule, so the menu scrolled away and the
+       only way back to the sections was to scroll the whole report up.
+       Sticky is itself a positioned element, so it is already the
+       containing block the open dropdown anchors against — it does both
+       jobs, and relative was only ever needed for the second. */
+    position: sticky;
+    top: 0;
   }
 
   /* The report's tertiary control, same as "Show the checklist" and every
@@ -490,12 +518,18 @@
      shrinking. Allowing it to shrink is what makes the wrap above work. */
   flex: 1 1 12rem;
   min-width: 0;
-  padding: 12px 16px;
-  border: 1px solid var(--a11y-border, #d0d7de);
-  border-radius: 8px;
+  /* The system's Input is an underline field: no box, no fill, 44px tall,
+     with the page's own ink as the rule beneath. I changed a later copy of
+     this rule first and nothing moved — this earlier one is the one that
+     applies, because the later copy sits inside a container query. */
+  height: 44px;
+  padding: 0;
+  border: 0;
+  border-bottom: 1px solid var(--a11y-text, #161616);
+  border-radius: 0;
   font-size: var(--a11y-text-body);
   color: var(--a11y-text, #161616);
-  background: var(--a11y-bg, #ffffff);
+  background: transparent;
 }
 
 .a11y-url-row input:focus-visible {
@@ -503,17 +537,12 @@
   outline-offset: 1px;
 }
 
+/* Layout only. Fill, height, radius and type come from .a11y-btn and its
+   variant — see the note on the later .a11y-url-row button block. */
 .a11y-url-row button {
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  padding: 12px 24px;
-  border: none;
-  border-radius: 8px;
-  background: var(--a11y-accent, #1948f4);
-  color: var(--a11y-accent-on, #ffffff);
-  font-size: var(--a11y-text-body);
-  font-weight: 500;
   cursor: pointer;
   white-space: nowrap;
   /* The button had no hover or press state at all, so it read as a picture of
@@ -1316,35 +1345,69 @@ label.a11y-ai-toggle {
   align-items: center;
   justify-content: center;
   gap: var(--space-03, 0.5rem);
-  padding: 0 var(--space-05, 1rem);
+  /* space-06, not space-05: the system's Button sets 0 1.5rem, and at
+     space-05 the pill sat too tight around its own label. */
+  padding: 0 var(--space-06, 1.5rem);
+  border-radius: var(--radius-pill, 999px);
   font-family: inherit;
   font-size: var(--a11y-text-body);
   font-weight: 500;
+  letter-spacing: var(--tracking-normal, 0.01em);
+  white-space: nowrap;
   cursor: pointer;
   transition: background var(--duration-fast-02, 110ms)
     var(--ease-productive-standard, cubic-bezier(0.2, 0, 0.38, 0.9));
 }
 
-.a11y-btn-sm { min-height: 32px; }
-.a11y-btn-md { min-height: 40px; }
-.a11y-btn-lg { min-height: 48px; }
+.a11y-btn-sm { height: 32px; min-height: 32px; }
+.a11y-btn-md { height: 40px; min-height: 40px; }
+.a11y-btn-lg { height: 48px; min-height: 48px; }
 
+/* Red, not black. The system's Button makes "primary" the accent-red fill
+   and keeps black as its own "black" variant — the two are different jobs,
+   and I had collapsed them by making everything follow --button-primary.
+   colors.css is explicit that this red is for submit and marketing CTAs,
+   which is what Run scan is. White on #d92600 is 4.97:1. */
 .a11y-btn-primary {
-  background: var(--button-primary, var(--a11y-accent, #1948f4));
-  color: var(--button-primary-text, var(--a11y-accent-on, #ffffff));
-  border: 1px solid transparent;
+  background: var(--accent-red-fill, #d92600);
+  color: #ffffff;
+  border: 1px solid var(--accent-red-fill, #d92600);
 }
 
+.a11y-btn-primary:hover:not(:disabled) {
+  background: var(--accent-red-fill-hover, #b31f00);
+  border-color: var(--accent-red-fill-hover, #b31f00);
+}
+
+/* The system's "black" variant, which its Dialog uses for the confirming
+   action — the page's ink, inverted. */
+.a11y-btn-black {
+  background: var(--a11y-accent, #161616);
+  color: var(--a11y-accent-on, #ffffff);
+  border: 1px solid var(--a11y-accent, #161616);
+}
+
+/* 2px, per the system: a secondary sits beside a filled primary and a
+   hairline loses that contest. */
 .a11y-btn-secondary {
   background: transparent;
   color: var(--a11y-text, #161616);
-  border: 1px solid var(--border-strong, #8d8d8d);
+  border: 2px solid var(--a11y-text, #161616);
 }
 
+/* Ghost carries the page's own ink and an underline that appears on hover,
+   rather than a colour standing in for a link. */
 .a11y-btn-ghost {
   background: transparent;
-  color: var(--link-primary, var(--a11y-accent-text, #1948f4));
+  color: var(--a11y-text, #161616);
   border: 1px solid transparent;
+  text-decoration: underline;
+  text-decoration-color: transparent;
+  text-underline-offset: 3px;
+}
+
+.a11y-btn-ghost:hover:not(:disabled) {
+  text-decoration-color: currentColor;
 }
 
 .a11y-btn-danger {
@@ -1461,26 +1524,37 @@ label.a11y-ai-toggle {
    border and the radius are unchanged — and --radius-sm is this package's
    own 12px rather than Carbon's 2px, which is where the reference's rounding
    entered the kit components in the first place. */
+/* To the system's own Card: a tinted panel with no border at all, 2rem of
+   padding and the large radius. The border came off deliberately — the tint
+   is what separates the card from the page, and a border on top of a tint
+   reads as two separations doing one job. */
 .a11y-card {
-  padding: var(--space-05, 1rem);
+  padding: var(--space-07, 2rem);
   background: var(--layer-01, var(--a11y-surface, #f4f4f4));
-  border: 1px solid var(--border-subtle, var(--a11y-border, #e0e0e0));
+  border: 0;
+  border-radius: var(--radius-lg, 20px);
   color: var(--a11y-text, #161616);
+  display: flex;
+  flex-direction: column;
 }
 
-/* The radius needs the doubled class to clear the blanket square rule,
-   which matches every element at (0,2,0) and beats a plain class. Fourth
-   component in a row to need this; it is the shape of the file. */
-.a11y-widget-biz.a11y-widget-biz .a11y-card {
-  border-radius: var(--radius-sm, 12px);
+/* The system's inverted tone: the page's ink as the ground. */
+.a11y-card-invert {
+  background: var(--a11y-text, #161616);
+  color: var(--a11y-bg, #ffffff);
 }
+
+/* The doubled-class rule that used to be needed here is gone with the
+   blanket square rule it existed to beat. */
 
 /* Fixed at h3: the call sites put these under their section's own h2, and
    heading order is the one thing this component can break. */
 .a11y-card-title {
   margin: 0 0 var(--space-04, 0.75rem);
-  font-size: var(--a11y-text-body);
+  font-size: var(--a11y-text-subtitle, 1.25rem);
+  line-height: var(--a11y-leading-heading, 1.2);
   font-weight: 500;
+  letter-spacing: var(--tracking-tight, -0.03em);
 }
 
 /* The tone chip and the count badge, now owned here.
@@ -1492,36 +1566,39 @@ label.a11y-ai-toggle {
 
    currentColor on the border again, for the same reason: the outline stays
    the ink whatever a theme does to the fill. */
+/* The system draws these as filled chips with no border at all. Ours were
+   outlined, with the fill left transparent on some tones — which read as a
+   different component beside the system's own. */
 .a11y-tag {
   display: inline-flex;
   align-items: center;
   min-height: 24px;
-  padding: 0 var(--space-03, 0.5rem);
-  border: 1px solid currentColor;
-  border-radius: 999px;
+  padding: 2px var(--space-04, 0.75rem);
+  border: 0;
+  border-radius: var(--radius-pill, 999px);
   font-size: var(--a11y-text-label, 0.875rem);
   font-weight: 500;
   white-space: nowrap;
 }
 
 .a11y-tag-gray {
-  color: var(--text-secondary, var(--a11y-muted, #525252));
-  background: var(--layer-01, var(--a11y-surface, #f4f4f4));
+  color: var(--tag-gray-text, #161616);
+  background: var(--tag-gray-bg, #e0e0e0);
 }
 
 .a11y-tag-blue {
-  color: var(--link-primary, var(--a11y-accent-text, #1948f4));
-  background: transparent;
+  color: var(--tag-blue-text, #0043ce);
+  background: var(--tag-blue-bg, #d0e2ff);
 }
 
 .a11y-tag-red {
-  color: var(--support-error, var(--a11y-score-bad, #a2191f));
-  background: var(--severity-critical-bg, #fff1f1);
+  color: var(--tag-red-text, #a2191f);
+  background: var(--tag-red-bg, #ffd7d9);
 }
 
 .a11y-tag-green {
-  color: var(--support-success, #0e6027);
-  background: var(--severity-pass-bg, #defbe6);
+  color: var(--tag-green-text, #0e6027);
+  background: var(--tag-green-bg, #a7f0ba);
 }
 
 /* The count chip. Solid rather than outlined, because it is a number rather
@@ -1555,11 +1632,12 @@ label.a11y-ai-toggle {
 .a11y-severity-badge {
   display: inline-flex;
   align-items: center;
-  gap: 4px;
+  gap: var(--space-02, 0.25rem);
   flex-shrink: 0;
-  padding: 4px 12px;
+  min-height: 24px;
+  padding: 2px var(--space-04, 0.75rem);
   border: 1px solid currentColor;
-  border-radius: 999px;
+  border-radius: var(--radius-pill, 999px);
   font-size: var(--a11y-text-label, 0.875rem);
   font-weight: 500;
   white-space: nowrap;
@@ -2958,7 +3036,9 @@ label.a11y-ai-toggle {
 }
 
 .a11y-widget-biz.a11y-widget-biz .a11y-stat-row > * {
-  border-radius: 16px;
+  /* --radius-lg, so the stat cards match every other card rather than
+     sitting 4px off the system's scale. */
+  border-radius: var(--radius-lg, 20px);
 }
 
 /* The lifted card. A tint of the accent rather than the accent itself: this
@@ -3552,11 +3632,6 @@ label.a11y-ai-toggle {
   /* Carbon White theme. The layout borrows the reference's shapes — cards,
      pills, the spec sheet — and none of its colour: this palette is the
      design system's and stays that way. */
-  --a11y-text: #161616;        /* text-primary */
-  --a11y-muted: #525252;       /* text-secondary — 7.0:1 on the off-white ground */
-  --a11y-bg: #ffffff;          /* background */
-  --a11y-surface: #f4f4f4;     /* layer-01 */
-  --a11y-border: #e0e0e0;      /* border-subtle-01 */
 
   /* Two accent tokens, kept even though Carbon's blue does not need them.
 
@@ -3568,17 +3643,25 @@ label.a11y-ai-toggle {
 
      Left in place because the split costs nothing here and is the thing
      that has to be got right first on any palette that replaces this one. */
-  --a11y-accent: #1948f4;         /* interactive / link-primary */
-  --a11y-accent-on: #ffffff;      /* what sits on the fill — 6.0:1 */
-  --a11y-accent-text: #1948f4;    /* the accent as text — the same, here */
-  --a11y-accent-strong: #082dc6;  /* button-primary-hover (blue-70) */
-  --a11y-accent-faint: #edf0fe;   /* the accent at a wash, on the ground */
+  /* Black, not blue, and this is the token every rule in this file actually
+     reads — changing --interactive alone left the Run scan button blue,
+     because nothing consumes --interactive directly.
+     The design system resolves --interactive, --link-primary and
+     --button-primary to --text-primary, keeping blue-60 for --support-info
+     alone. White on #161616 is 17.9:1 against the 6.0:1 the blue gave, so
+     every pairing this token feeds gets safer, not tighter. Links keep an
+     underline, so losing the colour costs no distinguishability. */
+  /* The accent red, from the system's colors.css. Two values on purpose:
+     --accent-red is for large display type and decorative blocks and is NOT
+     safe under small text; --accent-red-fill is the darker one that carries
+     white at 4.97:1, which is what a button needs. Using the wrong one of
+     these is exactly the mistake the system's own comment warns about. */
+  /* The system's tag palette, which this bridge never carried — the tones
+     were being improvised from --a11y-* tokens and came out as outlined
+     chips rather than the filled ones the system draws. */
   /* red-70, not red-60. The verdict word now sits on the accent wash inside
      the lifted score card, where red-60 measures 4.4:1 — under the line, and
      found by the self-scan. red-70 clears every ground this word lands on. */
-  --a11y-score-bad: #a2191f;
-  --a11y-score-warn: #8a3800;    /* orange-70: Carbon's warning yellow is a status
-                                    fill, never text — as text it fails badly */
 
   /* ------------------------------------------------------------------
      The kit's own token names, defined here rather than inherited.
@@ -3595,22 +3678,18 @@ label.a11y-ai-toggle {
      resolves to this file's own token, so the look is this widget's to
      decide and a change upstream cannot silently restyle the report.
      ------------------------------------------------------------------ */
-  --background: var(--a11y-bg, #ffffff);
-  --layer-01: var(--a11y-surface, #f4f4f4);
-  --layer-hover: #e8e8e8;
-  --border-strong: #8d8d8d;
-  --text-secondary: var(--a11y-muted, #525252);
-  --text-on-color: var(--a11y-accent-on, #ffffff);
-  --interactive: var(--a11y-accent, #1948f4);
-  --link-primary: var(--a11y-accent-text, #1948f4);
-  --button-primary: var(--a11y-accent, #1948f4);
+  /* Black, not blue. The design system resolves --interactive, --link-primary
+     and --button-primary all to --text-primary, and keeps blue-60 for
+     --support-info alone. That is a deliberate, desaturated register: links
+     carry an underline rather than a colour, which is also the stronger
+     accessibility answer since colour is then never the only cue. */
   --button-primary-text: var(--a11y-accent-on, #ffffff);
-  --severity-critical: var(--a11y-score-bad, #a2191f);
-  --severity-critical-bg: #fff1f1;
-  /* The reference rounds everything; the kit's "small" radius was 2px. */
-  --radius-sm: 12px;
-  --shadow-overlay: 0 2px 6px rgba(0, 0, 0, 0.2);
-  --type-body-lh: 1.3;
+  /* The design system's own scale, verbatim (tokens/spacing.css). "sm" is
+     8px there, not the 12px this file had been carrying — 12px is "md". */
+  /* 1.5 at the full 66ch measure, which is the design system's own Hochuli
+     figure. It comfortably clears what this app's own scanner asks of other
+     people's sites at that measure (1.45), so the report passes its own
+     check rather than merely claiming to. */
   --duration-fast-02: 110ms;
   --ease-productive-standard: cubic-bezier(0.2, 0, 0.38, 0.9);
 
@@ -3619,20 +3698,23 @@ label.a11y-ai-toggle {
      script, so no third party learns who visited (the objection that kept
      this widget off font CDNs). Full system fallback behind it, and
      font-display swap in the @font-face, so text never waits on the font. */
-  --a11y-font: "PP Telegraf", "IBM Plex Sans", "Helvetica Neue", -apple-system, BlinkMacSystemFont, Arial, sans-serif;
 }
 
-/* Carbon is square. The radius is the single most recognisable thing about the
-   system, and half-measures read as neither one thing nor the other.
-   The class is doubled to raise specificity to (0,2,0): rules above are
-   element-qualified, like ".a11y-url-row button" at (0,1,1), and a plain
-   ".a11y-widget-biz *" at (0,1,0) loses to them. Measured, not assumed — the
-   submit button kept its 8px until this was doubled. */
-.a11y-widget-biz.a11y-widget-biz *,
-.a11y-widget-biz.a11y-widget-biz *::before,
-.a11y-widget-biz.a11y-widget-biz *::after {
-  border-radius: 0;
-}
+/* The square rule that used to sit here is gone, and its removal is the
+   single biggest thing in this file.
+   It set border-radius: 0 on every element and pseudo-element at (0,2,0),
+   on the reasoning that Carbon is square. The design system this app is
+   built from says the opposite in as many words — tokens/spacing.css calls
+   its scale "Rounded corners, no Carbon-flat squareness" — and its own Card
+   component draws itself with --radius-lg. Tokens and shipped component
+   agree, so they win.
+   (guidelines/radius-borders.html in that project still shows 0/2px/4px
+   swatches and calls them "Carbon-flat". It hardcodes those values inline
+   and references no radius token, so it is stale documentation rather than
+   a second opinion. Worth correcting there.)
+   Nothing replaces it: with the blanket gone, every component falls back to
+   the radius its own rule or the kit's own inline style asks for, which is
+   what the design system intends. */
 
 /* The document panel and the spec cards keep their radius: both are the
    reference's own shapes, and both are containers, so they need lifting
@@ -3715,26 +3797,23 @@ label.a11y-ai-toggle {
   letter-spacing: 0.16px;
 }
 
-/* Buttons: Carbon primary. 48px tall (field-02), square, no shadow, and the
-   focus ring is the double ring Carbon uses — 2px blue outside, 1px white
-   inside — so it stays visible against both the button and the page. */
+/* This block used to set the submit button's fill, height and padding by
+   context. It predates the Button component, and being element-qualified it
+   quietly outranked .a11y-btn-primary — so the design system's accent-red
+   primary was applied, verified in the tokens, and still rendered black,
+   because this rule was painting over it two thousand lines later.
+   Only the things Button does not own are left. One component, one source. */
 .a11y-url-row button {
-  min-height: 48px;
-  padding: 0 16px;
-  font-size: var(--a11y-text-body);
-  letter-spacing: 0.16px;
-  background: var(--a11y-accent, #1948f4);
-  transition: background-color 0.11s cubic-bezier(0.2, 0, 0.38, 0.9);
+  transition: background-color var(--duration-quick, 110ms)
+    var(--ease-standard, cubic-bezier(0.2, 0, 0.38, 0.9));
 }
 
 .a11y-url-row button:hover:not(:disabled) {
-  background: var(--a11y-accent-strong, #1948f4);
   box-shadow: none;
   transform: none;
 }
 
 .a11y-url-row button:active:not(:disabled) {
-  background: #002d9c;  /* button-primary-active */
   transform: none;
 }
 
@@ -3751,10 +3830,15 @@ label.a11y-ai-toggle {
    no box — the bottom border is what carries the affordance. */
 .a11y-url-row input {
   min-height: 48px;
-  padding: 0 16px;
-  background: var(--a11y-surface, #f4f4f4);
+  padding: 0;
+  /* Transparent on the page, with the page's own ink as the rule beneath it.
+     The system's Input is an underline field: no box, no fill, the label
+     carrying the naming and the line carrying the affordance. Ours had a
+     grey fill and a mid-grey rule, which is a Carbon field wearing an
+     underline rather than the system's own control. */
+  background: transparent;
   border: none;
-  border-bottom: 1px solid #8d8d8d;  /* border-strong-01 */
+  border-bottom: 1px solid var(--a11y-text, #161616);
   font-size: var(--a11y-text-body);
   letter-spacing: 0.16px;
 }
@@ -4367,28 +4451,19 @@ label.a11y-ai-toggle {
 @media (prefers-color-scheme: dark) {
   .a11y-widget-biz {
     color-scheme: dark;
-    --a11y-text: #f4f4f4;          /* text-primary */
-    --a11y-muted: #c6c6c6;         /* text-secondary — 9:1 on #262626 */
-    --a11y-bg: #161616;            /* background */
-    --a11y-surface: #262626;       /* layer-01 */
-    --a11y-border: #393939;        /* border-subtle-01 */
     /* Dark mode lightens the accent for text, as it did before: blue-60 is
        too dark to read on this ground, blue-40 clears it. The fill keeps a
        colour white can sit on. */
-    --a11y-accent: #1948f4;
-    --a11y-accent-on: #ffffff;
-    --a11y-accent-text: #7d9afa;
-    --a11y-accent-strong: #4c74f8;
+    /* The system's dark --text-primary, which its --interactive follows.
+       #f4f4f4 on #161616 is 16.9:1; the fill takes the page colour back as
+       its label, so both directions stay far clear of the minimum. */
+    /* Dark tags invert: 30-level text on 70-level fill. */
     /* The active-nav-link wash: never redeclared for dark, so the active
        sidebar item kept the light theme's near-white fill (#edf5ff) under
        this theme's light-blue text — light on light, 2.1:1. A translucent
        tint of the accent itself (rather than a fixed hex) stays dark
        regardless of what sits behind it, so the light accent text reads
        against it in both themes. */
-    --a11y-accent-faint: rgba(125, 154, 250, 0.18);
-    --a11y-score-bad: #ff8389;     /* support-error dark */
-    --a11y-score-warn: #ffb784;
-    --a11y-score-good: #42be65;
   }
 
   /* The document panel is an inverted block against a light page; against a
@@ -4419,17 +4494,23 @@ label.a11y-ai-toggle {
   }
 
 
-  /* Solid primary actions keep the light-theme fill (see note above). */
+  /* These used to pin the light-theme blue fill here, because the accent
+     lifted to blue-40 in dark and white on blue-40 is 2.35:1. With a black
+     accent that reasoning inverts: the accent is now #f4f4f4 in dark and
+     #161616 in light, and its label colour inverts with it, so the theme
+     token is right in both directions and the pin is what breaks it.
+     It was still winning as a literal after the accent changed — Run scan
+     stayed blue on a dark page while every token around it read #f4f4f4. */
   .a11y-widget-biz .a11y-url-row button:not(:disabled),
   .a11y-widget-biz .a11y-sr-play,
   .a11y-widget-biz .a11y-alt-copy,
   .a11y-widget-biz .a11y-sim-btn-active {
-    background: #1948f4;
-    color: #ffffff;
+    background: var(--a11y-accent, #f4f4f4);
+    color: var(--a11y-accent-on, #161616);
   }
 
   .a11y-widget-biz .a11y-url-row button:hover:not(:disabled) {
-    background: #4c74f8;
+    background: #c6c6c6;
   }
 
   .a11y-widget-biz .a11y-url-row button:disabled {
@@ -4632,13 +4713,9 @@ label.a11y-ai-toggle {
   /* Focus tokens: blue ring with a white inner line in light, white ring
      with a dark inner line in dark — the inner line is what keeps the ring
      visible when it lands on a surface the same colour as the ring. */
-  --a11y-focus: #1948f4;
-  --a11y-focus-inset: #ffffff;
   /* The system's two surface levels, named so a card can hand the next one
      down. layer-1 is what --a11y-surface already was; layer-2 is the step
      above it (white in light, gray-80 in dark). */
-  --a11y-layer-1: #f4f4f4;
-  --a11y-layer-2: #ffffff;
 
   /* Token bridge for components imported from @verify/design-system. The
      package's components consume the system's own token names; the shadow
@@ -4646,9 +4723,6 @@ label.a11y-ai-toggle {
      the names are mapped onto our tokens instead. Values stay ours — dark
      mode flips them through the same dark block as everything else, and
      the label size lands on body, where the 16px floor keeps it. */
-  --font-sans: var(--a11y-font);
-  --text-primary: var(--a11y-text, #161616);
-  --border-subtle: var(--a11y-border, #e0e0e0);
   /* The full severity ramp, both inks and tints, at the design system's
      own values. Three of the ten used to be bridged and the rest fell
      through — invisible while our CSS painted the pills, immediately
@@ -4663,26 +4737,14 @@ label.a11y-ai-toggle {
   /* Points at the widget's own token now rather than restating a hex —
      the value lives in one place (see the kit-token block above) and this
      is the later declaration that was quietly winning. */
-  --severity-critical: var(--a11y-score-bad, #a2191f);
-  --severity-serious: #ba4e00;
-  --severity-moderate: #8e6a00;
-  --severity-minor: #525252;
-  --severity-pass: #198038;
-  --type-heading-size: var(--a11y-text-title, 1.75rem);
-  --type-body-size: var(--a11y-text-body, 1.125rem);
-  --type-label-size: var(--a11y-text-label, 0.875rem);
   /* 1.2, matching the report's own 120% line-height rule — the kit's
      token moved to 1.275 upstream, but inside this widget every kit
      component should sit on the same rhythm as the text around it. */
-  --type-body-lh: 1.2;
-  --type-heading-lh: 1.2;
   --space-03: 0.5rem;
-  --space-04: 0.75rem;
   --space-05: 1rem;
   --space-06: 1.5rem;
   /* The rest of Carbon's 2x scale, so the report's own vertical rhythm
      can be written in the system's steps rather than in loose pixels. */
-  --space-07: 2rem;
   --space-08: 2.5rem;
   --space-09: 3rem;
   --space-11: 5rem;
@@ -4690,55 +4752,34 @@ label.a11y-ai-toggle {
      components read these directly — text-primary for their own ink,
      focus for the panel's disclosure border. Routed through the
      widget's themed tokens so dark mode flips them automatically. */
-  --text-primary: var(--a11y-text, #161616);
-  --focus: var(--a11y-focus, #1948f4);
-  --focus-inset: var(--a11y-focus-inset, #ffffff);
-  --background: var(--a11y-bg, #ffffff);
-  --layer-01: var(--a11y-layer-1, #f4f4f4);
-  --layer-02: #ffffff;
-  --layer-hover: #e8e8e8;
-  --border-strong: #8d8d8d;
-  --border-subtle: var(--a11y-border, #e0e0e0);
   /* The imported Select and Dialog both needed a field/layer-02 token
      this bridge never carried — Select's background resolved to nothing
      and rendered transparent, the exact class of gap the dark-mode
      button sweep found earlier. */
-  --field: #f4f4f4;
-  --shadow-overlay: 0 2px 6px rgba(0, 0, 0, 0.2);
-  --interactive: var(--a11y-accent, #1948f4);
-  --text-secondary: var(--a11y-muted, #525252);
-  --link-primary: var(--a11y-accent, #1948f4);
-  --support-error: var(--a11y-score-bad, #da1e28);
-  --support-success: var(--a11y-score-good, #198038);
-  --severity-critical-bg: #fff1f1;
-  --severity-serious-bg: #fff2e8;
-  --severity-moderate-bg: #fcf4d6;
-  --severity-pass-bg: #defbe6;
+  /* Black, per the design system: --interactive, --link-primary and
+     --button-primary all resolve to --text-primary there. This is the
+     declaration that wins, so it is the one that has to say so. */
   /* The third tint the LegalStandard-style tables use ("we couldn't
      check") — bridged for the same reason as the two above; it was
      simply left out when they were added, so it fell back to its
      literal light value in both schemes. */
-  --severity-minor-bg: #f4f4f4;
-  --radius-pill: 999px;
-  /* 12px, not Carbon's 2px: the reference rounds everything, and this is
-     the declaration that was overriding the block above. */
-  --radius-sm: 12px;
+  /* The design system's scale, and this is the copy that actually applies —
+     the block earlier in this file was being overridden from here. */
   --space-02: 0.25rem;
-  --gray-100: #161616;
   --white: #ffffff;
-  /* The imported Button's palette and motion. Literal fills, deliberately
-     not routed through --a11y-accent: that token lifts to blue-40 in dark
-     for LINK contrast, and white text on blue-40 is 2.35:1 — the dark
-     sweep caught exactly that on Run scan. The system's own dark theme
-     keeps solid buttons at blue-60/red-60 with white text. */
-  --button-primary: #1948f4;
-  --button-danger: #da1e28;
-  --text-on-color: #ffffff;
+  /* Routed through --a11y-accent again, and this time it has to be.
+     These were literals because the old blue accent lifted to blue-40 in
+     dark mode and white on blue-40 is 2.35:1 — a real trap, correctly
+     avoided. With a black accent the literal becomes the trap instead:
+     #161616 is also the dark page colour, so a fixed black button
+     disappeared into the background the moment dark mode came on. Measured,
+     not reasoned about — the dark sweep found it on Run scan.
+     --a11y-accent is theme-aware (#161616 light, #f4f4f4 dark) and
+     --a11y-accent-on inverts with it, so both directions stay at 17.9:1. */
   --duration-fast-02: 110ms;
   --ease-productive-standard: cubic-bezier(0.2, 0, 0.38, 0.9);
   /* Carbon's column-header surface — one step past the layer the table
      sits on ($layer-accent-01 light, its gray-80 counterpart dark). */
-  --a11y-layer-accent: #e0e0e0;
 }
 
 /* The system's Card: a layer-01 rectangle with a hairline border and no
@@ -7626,4 +7667,171 @@ label.a11y-ai-toggle {
   .a11y-widget-biz .a11y-section-redflag {
     background: var(--a11y-layer-2, #262626);
   }
+}
+
+
+/* ==========================================================================
+   Leading, applied by role
+   ==========================================================================
+   The report's own type, set by the rule the report applies to everyone
+   else. It reads as a bigger change than it is: only running text moves,
+   because only running text was wrong. A heading is one or two lines at a
+   short measure and a score is a single numeral — neither has a return
+   sweep to make easier, which is the whole thing leading buys.
+
+   Deliberately last in the file. The 1.2 that has to be beaten is set in
+   forty-odd component rules, and matching each of their selectors would
+   mean forty more rules that all say the same thing and drift apart the
+   first time one is edited. */
+.a11y-widget-biz.a11y-widget-biz .a11y-widget-inner p,
+.a11y-widget-biz.a11y-widget-biz .a11y-widget-inner li,
+.a11y-widget-biz.a11y-widget-biz .a11y-widget-inner dd,
+.a11y-widget-biz.a11y-widget-biz .a11y-widget-inner blockquote,
+.a11y-widget-biz.a11y-widget-biz .a11y-widget-inner figcaption,
+.a11y-widget-biz.a11y-widget-biz .a11y-widget-inner td {
+  line-height: var(--a11y-leading-prose, 1.43);
+}
+
+/* Headings keep their own, tapered by size. A 36px title at 1.43 would
+   open a gap you read as a paragraph break inside a single heading. */
+.a11y-widget-biz.a11y-widget-biz .a11y-widget-inner h1,
+.a11y-widget-biz.a11y-widget-biz .a11y-widget-inner h2 {
+  line-height: var(--a11y-leading-title, 1.15);
+}
+
+.a11y-widget-biz.a11y-widget-biz .a11y-widget-inner h3,
+.a11y-widget-biz.a11y-widget-biz .a11y-widget-inner h4,
+.a11y-widget-biz.a11y-widget-biz .a11y-widget-inner h5,
+.a11y-widget-biz.a11y-widget-biz .a11y-widget-inner h6 {
+  line-height: var(--a11y-leading-heading, 1.25);
+}
+
+/* Chips, badges and table headers: small type, but a measure of two or
+   three words. Nearly always one line, so this shows up only when one of
+   them wraps — which is exactly when it matters. */
+.a11y-widget-biz.a11y-widget-biz .a11y-tag,
+.a11y-widget-biz.a11y-widget-biz .a11y-severity-badge,
+.a11y-widget-biz.a11y-widget-biz .a11y-rule-chip,
+.a11y-widget-biz.a11y-widget-biz .a11y-widget-inner th {
+  line-height: var(--a11y-leading-label, 1.3);
+}
+
+/* ==========================================================================
+   What to do, as steps
+   ==========================================================================
+   The advice used to be a paragraph however many actions were in it. Four
+   things to do, set as running prose, asks the reader to find the seams
+   themselves and to hold the whole list in their head while they do it.
+
+   Numbers rather than dots: these are things to do, they are given in an
+   order, and a reader who wants to say "we did the first two" needs
+   something to point at. The blanket square rule strips list markers along
+   with everything else, so the counter is drawn here rather than left to
+   list-style, which is also what lets the number carry the accent colour
+   without tinting the text beside it. */
+.a11y-widget-biz.a11y-widget-biz .a11y-finding-steps > p {
+  margin-bottom: var(--space-03, 0.5rem);
+}
+
+.a11y-widget-biz.a11y-widget-biz .a11y-finding-steps ul {
+  counter-reset: a11y-step;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-03, 0.5rem);
+}
+
+.a11y-widget-biz.a11y-widget-biz .a11y-finding-steps li {
+  counter-increment: a11y-step;
+  position: relative;
+  /* Room for the number, which sits in the margin so the step's own text
+     stays aligned to the same left edge as the prose above it. */
+  padding-left: 2rem;
+  max-width: 36rem;
+  line-height: var(--a11y-leading-prose, 1.43);
+}
+
+.a11y-widget-biz.a11y-widget-biz .a11y-finding-steps li::before {
+  content: counter(a11y-step);
+  position: absolute;
+  left: 0;
+  /* Aligned to the first line's own text, whatever the leading — top: 0
+     would ride high the moment a step wraps. */
+  top: 0;
+  width: 1.5rem;
+  color: var(--a11y-accent-text, #1948f4);
+  font-variant-numeric: tabular-nums;
+  font-weight: 500;
+  line-height: var(--a11y-leading-prose, 1.43);
+}
+
+/* A plain bulleted list, for prose that was a list all along.
+   list-style is not used: the blanket square rule strips markers along with
+   every other shape in this report, so the dot is drawn here where it can
+   also take the accent colour without tinting the text beside it. */
+.a11y-widget-biz.a11y-widget-biz .a11y-question-list {
+  list-style: none;
+  margin: 0 0 var(--space-05, 1rem);
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-03, 0.5rem);
+}
+
+.a11y-widget-biz.a11y-widget-biz .a11y-question-list li {
+  position: relative;
+  padding-left: 2rem;
+  max-width: 36rem;
+  line-height: var(--a11y-leading-prose, 1.43);
+}
+
+.a11y-widget-biz.a11y-widget-biz .a11y-question-list li::before {
+  content: "";
+  position: absolute;
+  left: 0.5rem;
+  /* Centred on the first line's own text rather than the box, so the dot
+     stays level with the words when a question wraps to two lines. */
+  top: calc(var(--a11y-leading-prose, 1.43) * 0.5em);
+  transform: translateY(-50%);
+  width: 6px;
+  height: 6px;
+  background: var(--a11y-accent-text, #1948f4);
+}
+
+/* ==========================================================================
+   The URL field, as the design system's Input
+   ==========================================================================
+   Fourth attempt at this one, and the note is the useful part: this file has
+   at least three rules for this input, in three different scopes (a plain
+   rule, one inside a container query, one inside a media query). Editing any
+   single one moved nothing, because another always won. The doubled class at
+   the end of the file is the idiom this stylesheet already uses for exactly
+   this, and it is what finally holds.
+
+   The system's Input: no box, no fill, 44px tall, the page's own ink as the
+   rule beneath, and the label above carrying the naming. */
+/* !important on every line, and not by preference. The rule this has to
+   beat is itself a doubled class with !important on the radius, and three
+   more rules in three scopes set the same properties. Equal specificity and
+   later source order was not enough — measured four times. The neighbouring
+   rule already reaches for !important for exactly this reason; matching it
+   is honest about what this stylesheet has become rather than pretending a
+   cleaner mechanism is available. */
+.a11y-widget-biz.a11y-widget-biz .a11y-url-row input {
+  height: 44px !important;
+  padding: 0 !important;
+  border: 0 !important;
+  border-bottom: 1px solid var(--a11y-text, #161616) !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  color: var(--a11y-text, #161616);
+  font-size: var(--a11y-text-body);
+}
+
+/* Invalid takes the system's 2px error rule, so the state is carried by
+   weight and colour together rather than colour alone. */
+.a11y-widget-biz.a11y-widget-biz .a11y-url-row input[aria-invalid="true"] {
+  border-bottom: 2px solid var(--support-error, #da1e28) !important;
 }

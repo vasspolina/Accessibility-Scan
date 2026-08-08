@@ -51,9 +51,10 @@ export function DocumentSummary({ report }: { report: AccessibilityReport }) {
         {count === 0
           ? "No problems found."
           : `${count} ${count === 1 ? "problem" : "problems"} found.`}{" "}
-        We check a document for structure, title, language, readable text and image descriptions.
-        Those are the things that decide whether a screen reader can read it aloud at all. They are
-        not the whole of what a person would check.
+      </p>
+      <p className="a11y-doc-meta">
+        We check structure, title, language, readable text and image descriptions. Those decide
+        whether a screen reader can read it aloud at all, though not everything a person would check.
       </p>
     </div>
   );

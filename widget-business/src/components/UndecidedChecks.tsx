@@ -27,13 +27,20 @@ export function UndecidedChecks({
         For your designer and developer{" "}
         <span className="a11y-section-count">({total})</span>
       </h2>
+      {/* Two paragraphs, not one. This was a single seventy-one word block of
+          five sentences, which is the longest thing in the report and sits at
+          the top of a section — the worst place to ask someone to work for it.
+          The split is where the subject changes: what the checker did, then
+          what it means for the reader. */}
       <p className="a11y-section-desc">
         The checker could not settle {total === 1 ? "this one" : `these ${total}`}{" "}
-        on its own, and that is deliberate. It reports a problem only where it
-        can prove one. Anything that needs judgement comes here rather than
-        a guess either way. Each is a decision for somebody on your
-        side — the mark on every one says whose. None of it counts against the
-        score, and some of it will turn out to be perfectly fine.
+        on its own. It reports a problem only where it can prove one, so
+        anything needing judgement comes here rather than a guess either way.
+      </p>
+      <p className="a11y-section-desc">
+        Each is a decision for someone on your side, and the mark on each one
+        says whose. None of it counts against the score, and some will turn out
+        to be perfectly fine.
       </p>
       {rows.length > 0 && (
         /* A list, not a table. It was a one-column DataTable, which meant

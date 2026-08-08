@@ -464,11 +464,25 @@ function FindingDetails({
           on how many controls — the numbers are the most useful sentence
           in the finding. Skipped when there is no plain-language title,
           because then the description is already the heading. */}
+      {/* Three hints, three paragraphs. They used to be concatenated into one
+          with spaces, which produced a sixty-seven word block under a label
+          that promised to answer one question and then answered three. Each
+          of these answers something different — who does the work, whether
+          you can check it without them, and where the finding came from — so
+          each gets its own line and its own label. */}
       <p className="a11y-method-hint">
         <strong>Who fixes this:</strong> {fix.hint}
-        {keyboardCheck && ` ${KEYBOARD_HINT}`}
-        {fromAi && ` ${AI_HINT}`}
       </p>
+      {keyboardCheck && (
+        <p className="a11y-method-hint">
+          <strong>Check it yourself:</strong> {KEYBOARD_HINT}
+        </p>
+      )}
+      {fromAi && (
+        <p className="a11y-method-hint">
+          <strong>Where this came from:</strong> {AI_HINT}
+        </p>
+      )}
       {!rep.elementScreenshot && rep.pictureNote && (
         <p className="a11y-picture-note">{rep.pictureNote}</p>
       )}
@@ -513,9 +527,27 @@ function FindingDetails({
           <strong>What the research shows:</strong> <CodeText text={plain.research} />
         </p>
       )}
-      <p>
-        <strong>What to do:</strong> <CodeText text={whatToDo} />
-      </p>
+      {/* Steps get a list; a single action stays a sentence. Both carry the
+          same "What to do" label, so the reader is never hunting for where
+          the advice starts. */}
+      {Array.isArray(whatToDo) ? (
+        <div className="a11y-finding-steps">
+          <p>
+            <strong>What to do:</strong>
+          </p>
+          <ul>
+            {whatToDo.map((step) => (
+              <li key={step}>
+                <CodeText text={step} />
+              </li>
+            ))}
+          </ul>
+        </div>
+      ) : (
+        <p>
+          <strong>What to do:</strong> <CodeText text={whatToDo} />
+        </p>
+      )}
       {/* The WCAG and Level columns fold in here at phone width, the same
           way Severity folds into the Issue cell. The CSS that drops those
           columns said they stayed reachable in this panel; they didn't —

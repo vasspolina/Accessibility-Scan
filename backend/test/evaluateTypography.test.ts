@@ -126,8 +126,27 @@ describe("evaluateTypography", () => {
   });
 
   it("flags tight leading", () => {
-    const findings = evaluateTypography([cleanParagraph({ lineHeightPx: 17.6 })]); // 1.1
-    expect(rulesOf(findings)).toContain("typo-leading-tight");
+    const findings = evaluateTypography([cleanParagraph({ lineHeightPx: 17.6 })]); // 1.1 at 16px
+    expect(rulesOf(findings)).toContain("typo-leading-for-measure");
+  });
+
+  // The reported false positive, and the reason the two leading rules became
+  // one. 1.10 is tight for 16px body text and unremarkable at 40px, and the
+  // old absolute floor could not tell those apart because it never looked at
+  // the size. Same ratio as the case above; opposite verdict.
+  it("accepts at a display size the ratio it rejects at a body size", () => {
+    const findings = evaluateTypography([
+      cleanParagraph({ fontSizePx: 40, lineHeightPx: 44, textLength: 300, lineCount: 6 }),
+    ]);
+    expect(rulesOf(findings)).not.toContain("typo-leading-for-measure");
+  });
+
+  // The taper has a floor: no size makes overlapping lines acceptable.
+  it("still flags display type set below solid", () => {
+    const findings = evaluateTypography([
+      cleanParagraph({ fontSizePx: 40, lineHeightPx: 36, textLength: 300, lineCount: 6 }),
+    ]);
+    expect(rulesOf(findings)).toContain("typo-leading-for-measure");
   });
 
   it("ignores line-height 'normal' (null) rather than guessing", () => {
@@ -201,13 +220,16 @@ describe("evaluateTypography — leading against measure", () => {
     );
   });
 
-  // One fault, one card. A block under the floor is the other rule's finding.
-  it("leaves genuinely tight leading to the rule that owns it", () => {
+  // One fault, one card — and now literally one rule. Leading used to be
+  // checked twice, by an absolute floor and by this measure-aware rule, which
+  // meant a block could be reported for the same fault under two names.
+  it("reports a badly-led block once", () => {
     const findings = evaluateTypography([
       cleanParagraph({ textLength: 850, lineCount: 10, lineHeightPx: 18, fontSizePx: 16 }),
     ]);
-    expect(rulesOf(findings)).toContain("typo-leading-tight");
-    expect(rulesOf(findings)).not.toContain("typo-leading-for-measure");
+    expect(rulesOf(findings).filter((r) => r.startsWith("typo-leading"))).toEqual([
+      "typo-leading-for-measure",
+    ]);
   });
 
   // Runs from this project's existing floor at 50 characters to WCAG 1.4.8's

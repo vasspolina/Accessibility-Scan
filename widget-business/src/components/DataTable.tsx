@@ -14,8 +14,12 @@ import type { CSSProperties, ReactNode } from "react";
  *
  * What it owns that the platform does not:
  *
- *   One row open at a time. Opening a second closes the first, which is
- *   what keeps a twenty-row table from becoming a wall of open panels.
+ *   Independent open state per row. Opening a second row does not close the
+ *   first: these panels are read side by side — two findings compared, a
+ *   fix checked against the one above it — and a table that closed the
+ *   thing you were reading because you opened the next one took that away.
+ *   The accordion behaviour it replaces is a space-saving convention, and
+ *   the space it saves is the reader's to spend.
  *
  *   The toggle's accessible name changes with its state — "Expand details"
  *   / "Collapse details" — so it is never just an arrow to a screen reader.
@@ -56,7 +60,7 @@ export function DataTable({
   headers: TableHeader[];
   rows: TableRow[];
 }) {
-  const [open, setOpen] = useState<string | null>(null);
+  const [open, setOpen] = useState<ReadonlySet<string>>(() => new Set());
   const [hover, setHover] = useState<string | null>(null);
   const expandable = rows.some((r) => r.expand);
 
@@ -81,7 +85,7 @@ export function DataTable({
       </thead>
       <tbody>
         {rows.map((r) => {
-          const isOpen = open === r.id;
+          const isOpen = open.has(r.id);
           const rowStyle: CSSProperties =
             r.expand && hover === r.id
               ? { background: "var(--layer-hover, #e8e8e8)" }
@@ -103,7 +107,13 @@ export function DataTable({
                         className="a11y-dt-toggle"
                         aria-expanded={isOpen}
                         aria-label={`${isOpen ? "Collapse" : "Expand"} details`}
-                        onClick={() => setOpen(isOpen ? null : r.id)}
+                        onClick={() =>
+                          setOpen((prev) => {
+                            const next = new Set(prev);
+                            if (!next.delete(r.id)) next.add(r.id);
+                            return next;
+                          })
+                        }
                       >
                         <span aria-hidden="true" data-open={isOpen}>
                           ▸

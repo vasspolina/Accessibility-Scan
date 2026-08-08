@@ -126,7 +126,6 @@ const HELP_URLS: Record<string, string> = {
   "typo-negative-letterspacing": "https://www.w3.org/WAI/WCAG21/Understanding/text-spacing.html",
   "typo-line-length-long": "https://www.w3.org/WAI/WCAG21/Understanding/visual-presentation.html",
   "typo-line-length-short": "https://www.w3.org/WAI/WCAG21/Understanding/visual-presentation.html",
-  "typo-leading-tight": "https://www.w3.org/WAI/WCAG21/Understanding/visual-presentation.html",
   "typo-leading-for-measure": "https://www.w3.org/WAI/WCAG21/Understanding/visual-presentation.html",
   "typo-justified-no-hyphens": "https://www.w3.org/WAI/WCAG21/Understanding/visual-presentation.html",
   "typo-font-size-small": "https://www.w3.org/WAI/WCAG21/Understanding/resize-text.html",
@@ -141,40 +140,68 @@ const HELP_URLS: Record<string, string> = {
 };
 
 /**
- * The leading a line of this length needs, as a multiple of the font size.
+ * The leading a block of text needs, as a multiple of its font size.
  *
- * Hochuli states the interdependence plainly: the longer the line, the more
- * linespacing it needs, and he takes it from Tinker, who measured it. The
- * reason is in how reading actually works — the eye does not glide along a
- * line, it lands in fixations of a fifth to two fifths of a second and jumps
- * between them, and the hardest jump of all is the one back to the start of
- * the next line. The further left that return sweep has to travel, the more
- * vertical separation it needs to land on the right line rather than the one
- * above or below. Land wrong and the reader makes a regression: a backwards
- * jump to work out where they are.
+ * Hochuli names two dependencies and this models both. A single ratio models
+ * neither, which is why the first version of this rule flagged large type set
+ * at 1.10 — a setting that is not merely acceptable there but conventional.
  *
- * So a single floor cannot be right for every measure. The scale runs from
- * 1.25 at 50 characters to 1.5 at 70, and stays at 1.5 beyond that.
+ * Measure. The longer the line, the more linespacing it needs; Hochuli takes
+ * this from Tinker, who measured it. The reason is in how reading works: the
+ * eye does not glide along a line, it lands in fixations and jumps between
+ * them, and the hardest jump is the one back to the start of the next line.
+ * The further left that return sweep travels, the more vertical separation it
+ * needs to land on the right line. Land wrong and the reader regresses.
  *
- * Both ends are borrowed rather than invented. The top is WCAG 1.4.8, which
- * asks for 1.5 within paragraphs; by 70 characters a line is long enough that
- * its concern plainly applies. The bottom is this project's existing floor,
- * below which a setting is dense at any width.
+ * Size. Leading need falls as type grows, and falls faster than the size
+ * rises. The return sweep is a physical movement across a physical distance;
+ * set the same words larger and the line gets longer in millimetres but
+ * shorter in characters, and the gap between lines grows in millimetres
+ * without the ratio changing at all. This is why display type can be set
+ * solid and still read, and why a rule that asks 1.25 of a 40px line asks
+ * for something no typographer would set.
  *
- * The useful half is the bottom. A blanket 1.5 would flag a 40-character
- * column set at 1.3, which reads perfectly well and is a common, deliberate
- * choice in a narrow card. Asking less of narrow measures is what makes this
- * a rule about the relationship rather than a second demand for 1.5.
+ * So: the measure fixes the requirement, and the size tapers it. Body sizes
+ * carry the full requirement; by display sizes it has fallen to roughly a
+ * tenth above solid.
+ *
+ * The measure scale runs 1.25 at 50 characters to 1.5 at 70, then holds. The
+ * top is WCAG 1.4.8, which asks 1.5 within paragraphs; by 70 characters its
+ * concern plainly applies. The bottom is the floor below which a body-sized
+ * setting is dense at any width.
+ *
+ * x-height is the third dependency Hochuli names and this does not model it:
+ * a large x-height needs more leading than a small one at the same size. It
+ * is not readable from computed styles without measuring glyphs, so the rule
+ * is silent about it rather than guessing.
  */
 const LEADING_FLOOR = 1.25;
 const LEADING_CEILING = 1.5;
 const MEASURE_AT_FLOOR = 50;
 const MEASURE_AT_CEILING = 70;
 
-export function leadingNeededFor(charsPerLine: number): number {
+/* Where the taper starts and ends. Up to 20px is body text and carries the
+   full requirement. By 36px the requirement has fallen to 40% of what it
+   was — at a 50-character measure that is 1.10, which is what the reported
+   false positive was set at. */
+const SIZE_FULL_UP_TO = 20;
+const SIZE_TAPERED_FROM = 36;
+const TAPER_FLOOR = 0.4;
+
+export function leadingNeededFor(charsPerLine: number, fontSizePx = 16): number {
   const slope = (LEADING_CEILING - LEADING_FLOOR) / (MEASURE_AT_CEILING - MEASURE_AT_FLOOR);
-  const needed = LEADING_FLOOR + (charsPerLine - MEASURE_AT_FLOOR) * slope;
-  return Math.min(LEADING_CEILING, Math.max(LEADING_FLOOR, needed));
+  const byMeasure = Math.min(
+    LEADING_CEILING,
+    Math.max(LEADING_FLOOR, LEADING_FLOOR + (charsPerLine - MEASURE_AT_FLOOR) * slope)
+  );
+
+  // The taper applies to the requirement above solid, not to the ratio
+  // itself: 1.0 is the floor of the thing being asked for, and no amount of
+  // size makes lines overlapping acceptable.
+  const span = SIZE_TAPERED_FROM - SIZE_FULL_UP_TO;
+  const over = Math.min(Math.max(fontSizePx - SIZE_FULL_UP_TO, 0), span);
+  const factor = 1 - (over / span) * (1 - TAPER_FLOOR);
+  return 1 + (byMeasure - 1) * factor;
 }
 
 function makeFinding(
@@ -293,64 +320,34 @@ export function evaluateTypography(blocks: TypographyBlock[]): AccessibilityFind
     );
   }
 
-  // Leading: multi-line text set tighter than ~1.25 becomes dense and hard
-  // to track. (WCAG 1.4.8 recommends at least 1.5 for body text.)
-  const tightLeading = bodyBlocks.filter(
-    (b) =>
-      b.lineCount !== null &&
-      b.lineCount >= 3 &&
-      b.lineHeightPx !== null &&
-      b.fontSizePx > 0 &&
-      b.lineHeightPx / b.fontSizePx < 1.25
-  );
-  if (tightLeading.length > 0) {
-    const worst = tightLeading.reduce((a, b) =>
-      (b.lineHeightPx ?? 0) / b.fontSizePx < (a.lineHeightPx ?? 0) / a.fontSizePx ? b : a
-    );
-    const ratio = ((worst.lineHeightPx ?? 0) / worst.fontSizePx).toFixed(2);
-    findings.push(
-      makeFinding(
-        "typo-leading-tight",
-        "moderate",
-        worst.selector,
-        `Lines of body text sit too close together — line-height is ${ratio}× the font size (${tightLeading.length} block${tightLeading.length === 1 ? "" : "s"} under 1.25). Dense settings make it easy to reread or skip lines.`,
-        "Raise line-height on body text to roughly 1.4–1.6 (WCAG's visual-presentation guidance suggests 1.5)."
-      )
-    );
-  }
-
-  // Leading that is fine in itself, and not fine for lines this long.
+  // Leading, as one rule rather than two.
   //
-  // The rule above is an absolute floor: below 1.25 the setting is dense at
-  // any measure. This one is the interdependence — a paragraph at 1.3 passes
-  // that floor and passes the line-length rule at 85 characters, and is still
-  // under-led, because the return sweep to the start of the next line is that
-  // much longer. Neither existing rule can see it; only the two together can.
-  const underLedForMeasure = bodyBlocks.filter((b) => {
+  // There used to be an absolute floor at 1.25 alongside the measure-aware
+  // rule, and the floor was wrong: it flagged large type set at 1.10, which
+  // is conventional at that size and not a fault. A ratio means nothing on
+  // its own — it has to be read against the measure and the size together,
+  // which is what leadingNeededFor now does.
+  const underLed = bodyBlocks.filter((b) => {
     if (b.lineCount === null || b.lineCount < 3) return false;
     if (b.lineHeightPx === null || b.fontSizePx <= 0) return false;
-    const ratio = b.lineHeightPx / b.fontSizePx;
-    // Below the floor is the other rule's finding. Reporting both would be
-    // one fault printed twice.
-    if (ratio < 1.25) return false;
     const cpl = charsPerLine(b);
-    return cpl !== null && ratio < leadingNeededFor(cpl);
+    if (cpl === null) return false;
+    return b.lineHeightPx / b.fontSizePx < leadingNeededFor(cpl, b.fontSizePx);
   });
-  if (underLedForMeasure.length > 0) {
-    const worst = underLedForMeasure.reduce((a, b) => {
-      const deficit = (x: TypographyBlock) =>
-        leadingNeededFor(charsPerLine(x) ?? 0) - (x.lineHeightPx ?? 0) / x.fontSizePx;
-      return deficit(b) > deficit(a) ? b : a;
-    });
+  if (underLed.length > 0) {
+    const deficit = (x: TypographyBlock) =>
+      leadingNeededFor(charsPerLine(x) ?? 0, x.fontSizePx) - (x.lineHeightPx ?? 0) / x.fontSizePx;
+    const worst = underLed.reduce((a, b) => (deficit(b) > deficit(a) ? b : a));
     const cpl = Math.round(charsPerLine(worst) ?? 0);
     const ratio = ((worst.lineHeightPx ?? 0) / worst.fontSizePx).toFixed(2);
-    const needed = leadingNeededFor(cpl).toFixed(2);
+    const needed = leadingNeededFor(cpl, worst.fontSizePx).toFixed(2);
+    const size = Math.round(worst.fontSizePx);
     findings.push(
       makeFinding(
         "typo-leading-for-measure",
         "minor",
         worst.selector,
-        `Lines here run about ${cpl} characters long and sit ${ratio} times the text size apart (${underLedForMeasure.length} block${underLedForMeasure.length === 1 ? "" : "s"}). That spacing would be comfortable on a narrower column. Long lines need more room between them than short ones. The hardest move in reading is the jump back to the start of the next line. The further left the eye travels, the more likely it lands on the wrong line. At this length about ${needed} would be comfortable.`,
+        `Lines here are ${size}px, run about ${cpl} characters long, and sit ${ratio} times the text size apart (${underLed.length} block${underLed.length === 1 ? "" : "s"}). At this size and length about ${needed} would be comfortable.`,
         `Two fixes work and you only need one. Raise line-height to about ${needed} on this text, or narrow the column so the lines are shorter. A max-width of around 65 characters is the usual way.`
       )
     );

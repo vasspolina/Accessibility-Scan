@@ -431,7 +431,7 @@ export function evaluateMobile(m: MobileSignals): AccessibilityFinding[] {
         "AAA",
         t.selector,
         t.snippet,
-        `On a phone this tap target is only ${t.width}×${t.height}px, so it's easy to miss or to tap the wrong thing. That is below the 24×24px minimum WCAG 2.2 sets as a requirement. WCAG 2.1, which this report measures against, only covers target size at Level AAA. There the requirement is stricter still, at 44×44px.`,
+        `On a phone this tap target is only ${t.width}×${t.height}px, so it is easy to miss or to tap the wrong thing. That is under the 24×24px WCAG 2.2 asks for, and target size is Level AAA in the WCAG 2.1 version this report measures.`,
         FIX_TAP,
         "https://www.w3.org/WAI/WCAG21/Understanding/target-size.html"
       )

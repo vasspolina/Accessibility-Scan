@@ -191,7 +191,7 @@ export const PLAIN_RULE_EXPLANATIONS: Record<string, PlainRule> = {
   },
   "color-contrast": {
     research:
-      "WebAIM checks a million homepages every year. Low-contrast text is the most common failure it finds, year after year. The World Health Organization estimates about one in six people worldwide lives with significant disability. Far more see less sharply than a design team's monitors assume.",
+      "WebAIM checks a million homepages every year. Low-contrast text is the most common failure it finds, year after year. Far more people see less sharply than a design team's monitors assume.",
     plain: "Text too faint to read",
     found: (n) =>
       `${n} ${n === 1 ? "piece" : "pieces"} of text on this page ${n === 1 ? "sits" : "sit"} too close in colour to the background behind ${n === 1 ? "it" : "them"}. ${n === 1 ? "It is" : "Each one is"} listed below, and the technical version gives the measured ratio.`,
@@ -227,7 +227,7 @@ export const PLAIN_RULE_EXPLANATIONS: Record<string, PlainRule> = {
     found: (n) =>
       `${n} ${n === 1 ? "link has" : "links have"} no readable text inside — no words, no label, nothing to announce. ${n === 1 ? "Usually this is an icon, arrow or image used as a link." : "Usually these are icons, arrows or images used as links."} The picture carries the meaning and the code carries none of it.`,
     impact:
-      "Screen reader users rarely read a page top to bottom. They pull up a list of every link and pick from it, the way you scan a menu. A link with no text appears in that list as the single word \"link\": no destination, no clue. Several of them turn the list into \"link, link, link\". The only way through is to open each one and see where it lands.",
+      "Screen reader users often pull up a list of every link and pick from it. A link with no text appears there as the single word \"link\". Several of them turn the list into \"link, link, link\".",
   },
   "link-text-vague": {
     plain: "Links say only \"read more\"",
@@ -414,10 +414,10 @@ export const PLAIN_RULE_EXPLANATIONS: Record<string, PlainRule> = {
   "readability-dense-prose": {
     plain: "The writing needs university-level reading",
     impact:
-      "Not a legal requirement, and the change with the widest reach in this whole report. It helps people with cognitive disabilities and anyone who reads in a second language. GOV.UK deliberately writes at roughly the reading age of a nine year old. That isn't a simple site; it's one that's well written.",
+      "Not a legal requirement, and the change with the widest reach in this report. It helps people with cognitive disabilities and anyone reading in a second language. GOV.UK writes for a reading age of about nine, and it is not a simple site.",
   },
   "typo-leading-for-measure": {
-    plain: "Long lines set too close together",
+    plain: "Lines set too close together",
     // No canned `found` here on purpose — unlike most rules, this one's
     // own finding.description already carries the actual measurement
     // (characters per line, the leading ratio, the comfortable value),
@@ -425,12 +425,12 @@ export const PLAIN_RULE_EXPLANATIONS: Record<string, PlainRule> = {
     // than the number already sitting in the finding, so whatWeFound()
     // falls through to it instead.
     impact:
-      "The eye doesn't glide along a line, it jumps. The hardest jump is back to the start of the next one. The longer the line, the more room the eye needs to land on the right one. Get it wrong and you reread a line, or skip one.",
+      "The eye does not glide along a line, it jumps. The hardest jump is back to the start of the next one. The longer the line, the easier it is to land on the wrong one.",
   },
   "reading-order-mismatch": {
     plain: "Tab order contradicts the visible order",
     impact:
-      "CSS moved them on screen without moving them in the page's code, and the Tab key follows the code. It bites hardest on a pair like Cancel and Submit. The button under your cursor is not the one the keyboard is on. Screen reader users get the same mismatch — they are read the code order too.",
+      "The page moved things on screen without moving them in its own code, and the Tab key follows the code. On a pair like Cancel and Submit, the button under your cursor is not the one the keyboard is on.",
   },
 
   // Forced Colors Mode — Windows High Contrast. Checked by switching the mode
@@ -438,7 +438,7 @@ export const PLAIN_RULE_EXPLANATIONS: Record<string, PlainRule> = {
   "forced-colors-focus-lost": {
     plain: "Focus marker vanishes in High Contrast",
     impact:
-      "High contrast mode is for people who can't make out detail at low contrast. It strips away the shadows and colours most focus highlights are drawn with. So the people who most need to see where they are see nothing. Your page looks perfect until that mode is switched on.",
+      "High contrast mode strips away the shadows and colours most focus highlights are drawn with. The people who most need to see where they are see nothing, on a page that looks perfect until that mode is on.",
   },
   "forced-colors-icon-lost": {
     plain: "Icon button vanishes in High Contrast",
@@ -451,7 +451,7 @@ export const PLAIN_RULE_EXPLANATIONS: Record<string, PlainRule> = {
     // paragraph below is where it gets explained.
     plain: "Keyboard marker too faint to see",
     impact:
-      "Tab moves an invisible cursor from one control to the next. The outline is the only thing that shows where it has got to. Too faint, and a keyboard user cannot tell what they are about to activate. So they press Enter and hope, or start again from the top. It slips through testing easily, because there genuinely is an outline there. It only shows up when you put the mouse down and try the page yourself.",
+      "Tab moves an invisible cursor, and the outline is the only thing showing where it has reached. Too faint, and a keyboard user cannot tell what they are about to activate. It slips through testing because there genuinely is an outline there.",
   },
   "keyboard-focus-trap": {
     plain: "Keyboard focus gets stuck",
@@ -578,7 +578,7 @@ export const PLAIN_RULE_EXPLANATIONS: Record<string, PlainRule> = {
   "dialog-keyboard-trap": {
     plain: "A pop-up traps keyboard users",
     impact:
-      "Someone using only a keyboard hits this pop-up and stops there. Escape doesn't close it. Tab just cycles around the buttons inside, so they can't reach the page or leave the pop-up. Closing the tab is the only way out. If this is your cookie banner, it happens before they have seen anything at all.",
+      "Someone using only a keyboard reaches this pop-up and stops. Escape does not close it, and Tab only cycles around inside it. Closing the tab is the only way out. On a cookie banner, that happens before they have seen anything at all.",
   },
   "dialog-no-escape": {
     plain: "Pop-up ignores the Escape key",
@@ -660,10 +660,6 @@ export const PLAIN_RULE_EXPLANATIONS: Record<string, PlainRule> = {
     plain: "Lines chopped too short",
     impact: "When almost every phrase breaks onto a new line, reading rhythm falls apart. The content feels harder than it is.",
   },
-  "typo-leading-tight": {
-    plain: "Lines set too close together",
-    impact: "Cramped lines make it easy to reread or skip one. Tiring for everyone, a real barrier for dyslexic readers.",
-  },
   "typo-justified-no-hyphens": {
     plain: "Justified text without hyphenation",
     impact:
@@ -713,51 +709,345 @@ export function plainForRule(ruleId: string | undefined): PlainRule | undefined 
 // for the whole group. Our own deterministic layers (keyboard/component/
 // dialog/typography/motion) already write plain fixes, so they aren't here
 // and fall back to their own suggestedFix.
-export const PLAIN_RULE_FIXES: Record<string, string> = {
-  "aria-allowed-role": "Remove the role attribute, or use an element that genuinely is that thing. A <button> for a button, a <nav> for navigation.",
+export const PLAIN_RULE_FIXES: Record<string, string | string[]> = {
+  // ── Written for the business report, not for the person who will type the
+  // code. Every one of these rules used to fall through to the engineer's own
+  // remediation text, which is how a site owner ended up reading "add
+  // role='dialog' and aria-modal='true'" under a heading that promised to
+  // tell them what to do. The code for each of these still exists and is
+  // still exact; it lives in "The technical version" on the same card, which
+  // is where the person doing the work will look.
+  //
+  // Steps, not paragraphs, wherever the fix has more than one action in it.
+  //
+  // Deliberately absent: the four typographic rules whose engine text carries
+  // a number worked out from this page (the leading, line-length and
+  // font-size checks). A general sentence here would replace "raise it to
+  // about 1.43" with "make it bigger", which is a worse answer.
+  "keyboard-mouse-only": [
+    "Make it a real button or link, so the keyboard reaches it like everything else.",
+    "Test it by putting the mouse aside and pressing Tab through the page.",
+  ],
+  "keyboard-faint-focus": [
+    "Make the keyboard outline darker and thicker, so it stands out on the page behind it.",
+    "Check it against every background it lands on, not just the white ones.",
+  ],
+  "timing-meta-refresh": [
+    "Take the automatic reload off the page.",
+    "If it has to refresh, give people a button and let them choose when.",
+  ],
+  "aria-prohibited-attr": [
+    "Put the wording inside the element itself, where it will be read.",
+    "Where that is not possible, use an element built to carry a label.",
+  ],
+  "aria-required-parent": [
+    "Move each part back inside the control it belongs to.",
+    "A menu item on its own is never announced as part of a menu.",
+  ],
+  "landmark-no-duplicate-main": [
+    "Keep one main content area per page.",
+    "Mark the others as ordinary sections.",
+  ],
+  "landmark-banner-is-top-level":
+    "Move the site header out to the top level, beside the main content rather than inside it.",
+  "svg-img-alt": [
+    "Write a short description for each icon that carries meaning.",
+    "Hide the purely decorative ones from screen readers instead.",
+  ],
+  "meta-viewport-large": [
+    "Remove the setting that blocks zooming.",
+    "Let the page enlarge to at least five times its normal size.",
+  ],
+  "aria-dialog-name": "Give the pop-up a name that says what it is for, so it is announced when it opens.",
+  "nested-interactive": [
+    "Take the inner control out, so one thing is clickable rather than two.",
+    "Where both are needed, put them side by side instead of one inside the other.",
+  ],
+  "presentation-role-conflict": [
+    "Remove the marking that calls this decoration.",
+    "It is a working control, so let it be announced as one.",
+  ],
+  "keyboard-no-visible-focus": [
+    "Show a clear outline around whatever the keyboard is currently on.",
+    "Make it thick enough and bright enough to find on a busy page.",
+    "Never take an outline away without putting a stronger one in its place.",
+  ],
+  "readability-dense-prose": [
+    "Shorten sentences to around fifteen to twenty words.",
+    "Swap technical words for everyday ones.",
+    "Break long paragraphs up, and use headings and lists.",
+  ],
+  "reading-order-mismatch": [
+    "Put the page's underlying order back in step with what people see.",
+    "Move the content itself rather than nudging the tab order to compensate.",
+  ],
+  "forced-colors-focus-lost": [
+    "Test the page in Windows High Contrast mode.",
+    "Let the focus outline take the system's own colour rather than a fixed one.",
+  ],
+  "forced-colors-icon-lost": [
+    "Test the page in Windows High Contrast mode.",
+    "Give icon-only buttons a real border or text so they survive it.",
+  ],
+  "keyboard-focus-trap": [
+    "Make sure Tab can always move on, and Escape always gets out.",
+    "Test it by putting the mouse aside and using the keyboard alone.",
+  ],
+  "component-form-autocomplete":
+    "Label each field with what it collects, so browsers and password managers can fill it in.",
+  "component-input-type": [
+    "Tell the page which fields hold an email address, a phone number or a date.",
+    "Phones then show the right keyboard instead of a plain one.",
+  ],
+  "component-required-cue": [
+    "Mark required fields visibly, not only in the code.",
+    "The word \"required\" next to the label is enough.",
+  ],
+  "component-submit-clarity":
+    "Give the form one clearly labelled button that says what it does, such as \"Send enquiry\".",
+  "component-nav-labels": [
+    "Name each menu for what it holds, such as \"Main menu\" or \"Footer links\".",
+    "Several unnamed menus are announced identically, so nobody can tell them apart.",
+  ],
+  "component-skip-link": [
+    "Add a link at the very top that jumps straight to the main content.",
+    "Show it when it receives keyboard focus, so people know it is there.",
+  ],
+  "mobile-target-spacing":
+    "Put a little space between buttons and links, so a thumb cannot hit two at once.",
+  "mobile-sticky-coverage": [
+    "Shrink the bars pinned to the top and bottom on phones.",
+    "Leave most of the screen for the content people came to read.",
+  ],
+  "mobile-horizontal-scroll": [
+    "Let the content reflow to the width of the screen.",
+    "Look for a fixed width or an oversized image forcing the page wider.",
+  ],
+  "mobile-tap-target":
+    "Make buttons and links at least as big as a fingertip, and give them room around the edge.",
+  "text-spacing-clipped": [
+    "Let boxes grow with the text inside them.",
+    "A fixed height is usually what cuts the words off.",
+  ],
+  "text-zoom-clipped": [
+    "Let containers grow when the reader enlarges the text.",
+    "Check the page at twice its normal text size.",
+  ],
+  "text-zoom-horizontal-scroll": [
+    "Let the page reflow when text is enlarged, rather than running off to the side.",
+    "Reading a line by scrolling sideways for every word is what this avoids.",
+  ],
+  "dark-consent-no-reject": "Put a refuse option on the cookie banner, as easy to find as the accept one.",
+  "dark-consent-asymmetry": [
+    "Give accept and refuse the same size, style and prominence.",
+    "The choice is only real when both options look equally available.",
+  ],
+  "dark-preselected-optin": [
+    "Leave marketing and sharing boxes unticked.",
+    "Let people opt in themselves rather than opting out.",
+  ],
+  "dark-confirmshaming": "Word the decline option plainly, such as \"No thanks\", with nothing that scolds.",
+  "dark-fake-scarcity": [
+    "Show stock and demand figures only where they are true and current.",
+    "Take down any number that is not read from real data.",
+  ],
+  "dark-fake-urgency": [
+    "Run countdowns only where the deadline is real.",
+    "Take down any timer that resets itself when the page reloads.",
+  ],
+  "dialog-close-unlabeled": "Give the close button a name, so it is announced as \"Close\" and not just a cross.",
+  "dialog-keyboard-trap": [
+    "Let Tab cycle within the pop-up while it is open.",
+    "Let Escape close it and return to the page.",
+  ],
+  "dialog-no-escape": [
+    "Let the Escape key close the pop-up.",
+    "It is the first key people reach for.",
+  ],
+  "dialog-focus-not-moved": "Move the cursor into the pop-up when it opens, so keyboard users start inside it.",
+  "dialog-focus-lost-on-close": [
+    "Put the cursor back on whatever opened the pop-up when it closes.",
+    "Otherwise people are returned to the top and have to find their place again.",
+  ],
+  "dialog-no-close": [
+    "Give every pop-up a visible close button.",
+    "Let Escape close it as well.",
+  ],
+  "dialog-missing-role": [
+    "Mark the overlay as a dialog, so it is announced when it opens.",
+    "Give it a name that says what it is for.",
+    "Keep the keyboard inside it while it is open, and return it on close.",
+  ],
+  "dialog-missing-name": "Give the pop-up a heading or name that says what it is for.",
+  "markup-validation": [
+    "Run the page through the W3C validator and clear what it reports.",
+    "Broken markup is guesswork for screen readers, and they guess differently.",
+  ],
+  "motion-marquee": [
+    "Replace the scrolling ticker with text that stays still.",
+    "If it has to move, give people a way to pause it.",
+  ],
+  "motion-autoplay-media": [
+    "Stop audio and video starting on their own.",
+    "If something must play, keep it under three seconds or add a stop button.",
+  ],
+  "motion-infinite-no-reduced-motion": [
+    "Honour the setting people use to ask for less movement.",
+    "Animations should stop, or become a simple fade, when it is turned on.",
+  ],
+  "typo-caps-letterspacing":
+    "Add a little space between letters in capitalised headings, so the words keep their shape.",
+  "typo-lowercase-letterspaced":
+    [
+    "Take the extra letter spacing off ordinary text.",
+    "It pulls words apart and slows reading down.",
+  ],
+  "typo-negative-letterspacing":
+    [
+    "Stop squeezing the letters together.",
+    "Letters that touch each other are read as one shape.",
+  ],
+  "typo-justified-no-hyphens": [
+    "Set the text ranged left rather than justified.",
+    "If it must be justified, turn hyphenation on so the word gaps stay even.",
+  ],
+  "typo-typeface-count": [
+    "Settle on two typefaces, or three at most.",
+    "Use weight and size for variety instead of another typeface.",
+  ],
+  "typo-underline-nonlink": [
+    "Keep underlining for links only.",
+    "Use bold or italic where you want emphasis.",
+  ],
+  "typo-italic-body": [
+    "Set long passages upright, and keep italics for a phrase at a time.",
+    "Italics are harder to read at length, especially on screen.",
+  ],
+  "typo-allcaps-block": [
+    "Set long passages in ordinary sentence case.",
+    "Capitals remove the word shapes people read by, so keep them for short labels.",
+  ],
+  "typo-thin-weight": [
+    "Set body text in a regular weight.",
+    "Hairline weights disappear on ordinary screens and in bright light.",
+  ],
+
+  "aria-allowed-role": [
+    "Use an element that genuinely is the thing it claims to be.",
+    "A button for a button, a navigation block for navigation.",
+  ],
   "aria-allowed-attr": "Remove the aria-* attributes that do not apply to this element, or change the element to one that supports them.",
-  "aria-required-children": "Give the component the child elements its role requires, e.g. a role=\"list\" needs role=\"listitem\" children.",
-  "landmark-unique": "Give each area a distinct aria-label, so \"Main menu\" and \"Footer links\" are told apart.",
-  "landmark-no-duplicate-banner": "Keep one <header> at the top level of the page and turn the others into plain containers.",
-  "landmark-no-duplicate-contentinfo": "Keep one <footer> at the top level of the page and turn the others into plain containers.",
-  "landmark-contentinfo-is-top-level": "Move the <footer> out so it is a direct child of <body>, not nested inside another region.",
-  "skip-link": "Point the skip link at an id that exists on the main content. Make sure that target can take keyboard focus.",
+  "aria-required-children": [
+    "Give the component the parts its own type requires.",
+    "A list needs list items inside it, not loose text.",
+  ],
+  "landmark-unique": [
+    "Name each area for what it holds, such as \"Main menu\" or \"Footer links\".",
+    "Areas with the same name are announced identically, so nobody can tell them apart.",
+  ],
+  "landmark-no-duplicate-banner": [
+    "Keep one site header, at the top level of the page.",
+    "Turn the others into ordinary containers.",
+  ],
+  "landmark-no-duplicate-contentinfo": [
+    "Keep one site footer, at the top level of the page.",
+    "Turn the others into ordinary containers.",
+  ],
+  "landmark-contentinfo-is-top-level": "Move the site footer out so it sits at the top level of the page, not inside another area.",
+  "skip-link": [
+    "Point the skip link at the main content, and check that target exists.",
+    "Make sure the keyboard lands there when the link is used.",
+  ],
   "image-redundant-alt": "Give the image an empty alt (alt=\"\") when the text beside it already says the same thing.",
   "color-contrast":
-    "Darken the text or lighten its background until they contrast strongly. Aim for 4.5:1 for normal text and 3:1 for large text. Large means about 24px, or 19px if it is bold.",
-  "image-alt":
-    'Add an alt attribute to each image describing what it shows. Use empty alt (alt="") only for purely decorative images.',
-  "input-image-alt": 'Add an alt attribute to the image button describing its action (e.g. alt="Search").',
+    [
+    "Darken the text, or lighten what sits behind it.",
+    "Ordinary text needs a contrast ratio of at least 4.5 to 1.",
+    "Large text, about 24px or 19px bold, needs 3 to 1.",
+  ],
+  "image-alt": [
+    "Write a short description for each image that carries meaning.",
+    "Say what it shows, not that it is a picture.",
+    "Leave the description empty for images that are purely decorative.",
+  ],
+  "input-image-alt": "Describe what the image button does, such as \"Search\", rather than what it looks like.",
   "link-name":
-    "Put readable words inside the link. For an icon or image link, add `aria-label` on the link, or alt text on the image. Describe the destination rather than the picture: `aria-label=\"Major partnerships\"` says where you are going, `aria-label=\"arrow\"` says nothing. Write it to read on its own, because in that list of links it will.\n\nWhere the link already shows words, keep those words inside the label. A label replaces the visible text for software instead of adding to it. Someone using voice control says what they can see. A label that says something else gives them no response at all.",
+    [
+    "Put readable words inside every link.",
+    "For an icon link, add a label naming where it goes, not what it looks like.",
+    "Where the link already shows words, keep those exact words in the label.",
+    "Voice control users say what they see, so the two have to match.",
+  ],
   "link-text-vague":
-    "Write link text that makes sense on its own: \"Read the 2026 fee changes\", not \"Read more\". To keep the short version on screen, add the full wording with aria-label.",
+    [
+    "Write link text that makes sense read on its own.",
+    "\"Read the 2026 fee changes\" rather than \"Read more\".",
+    "To keep the short version on screen, add the full wording as a label.",
+  ],
   "button-name":
-    "Give each button a clear label: visible text inside it, or an `aria-label` describing what it does.\n\nOne trap if the button already shows words: an `aria-label` replaces them for software rather than adding to them. The visible words must appear inside the label. Someone using voice control says what they can see — \"click Send\". If the label underneath says something else, nothing happens, with no way to find out why.",
-  label: "Connect a visible <label> to each field (the label's for matches the field's id), or add an aria-label.",
-  "select-name": "Add a <label> tied to the dropdown, or an aria-label describing what it selects.",
-  "document-title": "Add a <title> in the page's <head> that describes the page.",
-  "html-has-lang": 'Add a lang attribute to the <html> tag (e.g. <html lang="en">).',
-  "html-lang-valid": 'Set the <html> lang attribute to a valid language code (e.g. "en", "de", "fr").',
-  "heading-order": "Use headings in order without skipping levels. Don't jump from <h2> straight to <h4>.",
+    [
+    "Give every button words that say what it does.",
+    "For an icon button, add a label describing the action.",
+    "Where the button already shows words, keep those exact words in the label.",
+    "Voice control users say what they see, so the two have to match.",
+  ],
+  label: [
+    "Give every field a visible label saying what goes in it.",
+    "Make sure clicking the label puts the cursor in its field.",
+  ],
+  "select-name": [
+    "Give the dropdown a visible label saying what it chooses.",
+    "Where there is no room for one, add a name for screen readers instead.",
+  ],
+  "document-title": "Give the page a title that describes it. It is what shows in the browser tab and in search results.",
+  "html-has-lang": "Tell the page which language it is written in, so screen readers use the right voice.",
+  "html-lang-valid": "Correct the page's language setting to a real language code, such as English or German.",
+  "heading-order": [
+    "Use headings in order, without skipping a level.",
+    "Do not jump from a second-level heading straight to a fourth.",
+  ],
   "page-has-heading-one": "Add one <h1> near the top that states what the page is about.",
   "empty-heading": "Put text in the heading, or remove the empty heading tag.",
   "link-in-text-block": "Give in-text links a second visual cue besides colour, usually an underline.",
   "meta-viewport": "Remove user-scalable=no and any maximum-scale limit from the viewport meta tag so people can zoom.",
-  "frame-title": 'Add a title attribute to each <iframe> describing its content (e.g. title="Location map").',
-  "duplicate-id-active": "Make every id on the page unique. No two elements should share the same id.",
-  list: "Wrap the items in a proper <ul> or <ol>, with only <li> as direct children.",
-  listitem: "Put each <li> inside a <ul> or <ol> parent.",
-  "aria-required-attr": "Add the ARIA attributes this component's role requires. See the Learn more link for the exact set.",
+  "frame-title": "Give each embedded frame a name saying what it holds, such as \"Location map\".",
+  "duplicate-id-active": "Make every id on the page unique. No two elements should share one.",
+  list: [
+    "Mark real lists up as lists, with each item inside the same list.",
+    "Screen readers then announce how many items there are.",
+  ],
+  listitem: "Put every list item inside a list, rather than leaving it on its own.",
+  "aria-required-attr": [
+    "Add the attributes this component's type requires.",
+    "The Learn more link lists the exact set.",
+  ],
   "aria-hidden-focus":
-    'Remove aria-hidden from anything reachable with the Tab key, or take it out of the tab order with tabindex="-1".',
-  region: "Wrap page content in named sections: <header>, <nav>, <main>, <footer>, so nothing sits outside one.",
-  "landmark-one-main": "Wrap the primary content of the page in a single <main> element.",
+    [
+    "Anything hidden from screen readers should not be reachable by keyboard.",
+    "Either unhide it, or take it out of the tab order as well.",
+  ],
+  region: [
+    "Put every part of the page inside a named area: header, navigation, main content, footer.",
+    "Content sitting outside them is skipped by readers jumping between sections.",
+  ],
+  "landmark-one-main": "Mark the primary content of the page as its main area, and use only one per page.",
   tabindex: 'Remove positive tabindex values (tabindex="1" or higher) and let the natural page order set focus order.',
   "scrollable-region-focusable": 'Add tabindex="0" to the scrollable container so keyboard users can scroll it.',
 };
 
-export function plainFixForRule(ruleId: string | undefined): string | undefined {
+/**
+ * What the reader should do, as steps rather than a paragraph.
+ *
+ * A fix with more than one action in it was being set as running prose, and
+ * a business owner reading "add this, then label it, then move focus, then
+ * put focus back" in one block has to hold four things in their head and
+ * work out where each one starts. As a list they can count them, and they
+ * can stop after the first if that is all they were checking.
+ *
+ * A single-step fix stays a sentence — a one-item bullet list is a paragraph
+ * wearing a dot, and it makes a small fix look like a project.
+ */
+export function plainFixForRule(ruleId: string | undefined): string | string[] | undefined {
   return ruleId ? PLAIN_RULE_FIXES[ruleId] : undefined;
 }
 

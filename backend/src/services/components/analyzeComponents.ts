@@ -106,7 +106,7 @@ export function evaluateComponents(dom: DomSignals): AccessibilityFinding[] {
       makeFinding(
         "component-form-autocomplete",
         worst.selector,
-        `Form fields that collect personal details (${missingAutocomplete.length} field${missingAutocomplete.length === 1 ? "" : "s"}, e.g. the ${purpose.label} field) have no autocomplete attribute. Browsers and password managers then can't offer to fill them in. That means extra typing for everyone, and a real barrier for people with motor or cognitive disabilities.`,
+        `Form fields that collect personal details (${missingAutocomplete.length} field${missingAutocomplete.length === 1 ? "" : "s"}, e.g. the ${purpose.label} field) are not labelled with what they collect. Browsers and password managers then cannot offer to fill them in.`,
         `Add the matching autocomplete token to each field — e.g. autocomplete="${purpose.token}" on the ${purpose.label} field. This is a one-line change per field that makes forms far faster to complete.`,
         "https://www.w3.org/WAI/WCAG21/Understanding/identify-input-purpose.html"
       )
@@ -126,7 +126,7 @@ export function evaluateComponents(dom: DomSignals): AccessibilityFinding[] {
       makeFinding(
         "component-input-type",
         wrongInputType[0].selector,
-        `Email or phone fields are set to a plain text input (${wrongInputType.length} field${wrongInputType.length === 1 ? "" : "s"}) instead of the matching input type. On phones this means visitors get the generic keyboard instead of one with "@" or the number pad. That makes the form fiddlier to fill.`,
+        `Email or phone fields are set as plain text boxes (${wrongInputType.length} field${wrongInputType.length === 1 ? "" : "s"}) instead of the matching type. On phones that means the generic keyboard, not one with "@" or a number pad.`,
         'Use type="email" for email fields and type="tel" for phone fields. Mobile devices then show the right keyboard, and the browser can validate the format.',
         "https://www.w3.org/WAI/tutorials/forms/"
       )

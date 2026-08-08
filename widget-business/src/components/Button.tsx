@@ -21,7 +21,11 @@ import type { ReactNode } from "react";
  * trap this report flags on other sites.
  */
 
-export type ButtonVariant = "primary" | "secondary" | "ghost" | "danger";
+/* "black" comes from the design system's own Button, where it sits beside
+   "primary" rather than replacing it: primary is the accent-red submit CTA,
+   black is the page's ink used as a fill (the system's Dialog confirms with
+   it). Both exist because they answer different questions. */
+export type ButtonVariant = "primary" | "secondary" | "ghost" | "danger" | "black";
 export type ButtonSize = "sm" | "md" | "lg";
 
 export function Button({

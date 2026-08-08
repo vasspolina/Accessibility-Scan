@@ -100,7 +100,7 @@ describe("qa-layers.html: the layers written for this project", () => {
 
   const expected = [
     "motion-infinite-no-reduced-motion",
-    "typo-leading-tight",
+    "typo-leading-for-measure",
     "typo-negative-letterspacing",
     "typo-font-size-small",
     "typo-allcaps-block",
@@ -122,6 +122,48 @@ describe("qa-layers.html: the layers written for this project", () => {
       expect(rules.has(rule)).toBe(true);
     });
   }
+
+  // Length, measured on real findings rather than on the source strings, so
+  // the interpolated counts and measurements are in place exactly as a reader
+  // sees them.
+  //
+  // The business report shows this text under "What we found" for any rule
+  // with no plain-language override, and several had grown to eighty-odd
+  // words by re-explaining the harm that "Why this matters" states two
+  // paragraphs further down. What we found should say what we found.
+  //
+  // Forty-five words is about three lines at the report's measure. The cap is
+  // deliberately on the same number the widget's own copy test uses, since a
+  // reader cannot tell which side of the wire a paragraph came from.
+  it("states each finding in about three lines", () => {
+    const long = findings
+      .map((f) => ({ id: f.ruleId, n: f.description.split(/\s+/).filter(Boolean).length }))
+      .filter((f) => f.n > 45);
+    expect(long, `over-long descriptions: ${long.map((f) => `${f.id} (${f.n}w)`).join(", ")}`).toEqual(
+      []
+    );
+  });
+
+  // The same for the advice, but measured per paragraph rather than per
+  // string. Several fixes deliberately carry a technical half after a blank
+  // line, addressed to whoever writes the code and shown only in the
+  // professional view; capping the whole string would have marked that
+  // structure as bloat. What is being caught here is the run-on — one
+  // paragraph carrying four instructions with no line between them.
+  it("keeps each paragraph of a fix to about three lines", () => {
+    const long = findings
+      .filter((f) => f.suggestedFix)
+      .flatMap((f) =>
+        f.suggestedFix!.split(/\n{2,}/).map((para) => ({
+          id: f.ruleId,
+          n: para.split(/\s+/).filter(Boolean).length,
+        }))
+      )
+      .filter((f) => f.n > 45);
+    expect(long, `over-long fix paragraphs: ${long.map((f) => `${f.id} (${f.n}w)`).join(", ")}`).toEqual(
+      []
+    );
+  });
 
   // The browser's own focus ring is exempt from the contrast requirement —
   // 1.4.11 says so outright. The fixture leaves two elements with the default

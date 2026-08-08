@@ -209,12 +209,12 @@ export function evaluateKeyboardNav(nav: KeyboardNavResult): AccessibilityFindin
         // to know something on their page cannot be reached, and why. The
         // exact element is named in the technical version and shown in the
         // picture; whoever fixes it will not be short of detail.
-        `${c.label ? `"${c.label}"` : "A control on this page"} responds when you click it, but pressing Tab never reaches it. It is an ordinary piece of the page, not a button or a link. The keyboard only reaches buttons and links. So this is not just awkward without a mouse: there is no way to reach it at all.`,
+        `${c.label ? `"${c.label}"` : "A control on this page"} responds when you click it, but pressing Tab never reaches it. It is an ordinary piece of the page, not a button or a link, and the keyboard only reaches those.`,
         // Plain instruction first, because that is the one the owner can act
         // on — brief their developer, or check it was done. The specifics
         // follow, addressed to whoever writes the code, so the technical
         // half is clearly not homework for the reader.
-        "Rebuild it as a real button, or as a link if it takes you somewhere. That alone fixes it, with no extra code. The keyboard reaches buttons and links by default, which is the whole reason to use them.\n\nIf it genuinely has to stay as it is, your developer needs three things on it. Add `tabindex=\"0\"` so it can take focus. Add `role=\"button\"` so a screen reader announces it as a button. Add a keydown handler firing on Enter and Space. That last one is the part most often missed: a click handler alone never runs for someone using a keyboard.",
+        "Rebuild it as a real button, or as a link if it takes you somewhere. That alone fixes it, with no extra code. The keyboard reaches buttons and links by default, which is the whole reason to use them.\n\nIf it genuinely has to stay as it is, your developer needs three things on it. Add `tabindex=\"0\"` so it can take focus. Add `role=\"button\"` so a screen reader announces it as a button. Add a keydown handler firing on Enter and Space.\n\nThat last one is the part most often missed: a click handler alone never runs for someone using a keyboard.",
         c.snippet
       )
     );
@@ -269,7 +269,7 @@ export function evaluateKeyboardNav(nav: KeyboardNavResult): AccessibilityFindin
         "AA",
         "https://www.w3.org/WAI/WCAG21/Understanding/focus-visible.html",
         invisible[0].selector,
-        `Moving through the page with the Tab key gives no visible sign of where you are. ${invisible.length} of ${comparable.length} keyboard stops show no focus outline, highlight, or any other visual change. Sighted keyboard users have no way to see their place on the page.`,
+        `Moving through the page with the Tab key gives no visible sign of where you are. ${invisible.length} of ${comparable.length} keyboard stops show no outline, highlight or other visual change.`,
         "Remove `outline: none` (or provide a replacement) so every interactive element shows a clear focus indicator — e.g. `:focus-visible { outline: 2px solid; outline-offset: 2px; }`."
       )
     );
@@ -328,7 +328,7 @@ export function evaluateKeyboardNav(nav: KeyboardNavResult): AccessibilityFindin
         // and saying it twice in consecutive paragraphs was the exact fault
         // this report gets criticised for elsewhere.
         `At ${faint.length} of the ${comparable.length} keyboard stops, the focus ring measures roughly ${ratio.toFixed(1)}:1 against what sits behind it. Three to one is the minimum for an indicator to count as visible.`,
-        "Two changes: a stronger colour and more weight. Pick a focus colour at least three times as light or dark as whatever sits behind it. In practice that means a firm dark tone or your brand colour, not a pale grey. Draw it at 2px or more. Add `outline-offset: 2px` so the ring sits just off the control instead of merging into its own border. A 1px line in a light grey is easy to mistake for a rendering glitch. That is why it survives testing and still fails in use."
+        "Two changes: a stronger colour and more weight. Pick a focus colour at least three times as light or dark as whatever sits behind it, which in practice means a firm dark tone or your brand colour, not a pale grey.\n\nDraw it at 2px or more, and add `outline-offset: 2px` so the ring sits just off the control rather than merging into its own border.\n\nA 1px line in a light grey is easy to mistake for a rendering glitch. That is why it survives testing and still fails in use."
       )
     );
   }

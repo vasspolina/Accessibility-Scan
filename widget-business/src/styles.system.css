@@ -1,0 +1,588 @@
+/* ==========================================================================
+   Accessible Scan — the design system, ported
+   ==========================================================================
+   Source: claude.ai/design project 64839af2 ("Accessible Scan Design System"),
+   files tokens/ and components/ (the .css token files and the .jsx components). Direction is design → code only,
+   per .design-sync/NOTES.md.
+
+   This file is step one of replacing styles.css. It carries what the design
+   system actually specifies — the six token files and the components built
+   from them — and nothing else. It is deliberately NOT yet imported: the
+   ~250 app-specific classes (findings tables, conformance tiles, the shell
+   grid, print, container queries) have no counterpart in the system and must
+   be rebuilt on top of this before the old file can go. Wiring this in first
+   would leave the report unstyled.
+
+   Everything is scoped under .a11y-widget-biz rather than :root, because the
+   widget mounts into a shadow root inside someone else's page and must not
+   leak tokens outward.
+   ========================================================================== */
+
+.a11y-widget-biz {
+  /* ---- tokens/fonts.css + typography.css ------------------------------- */
+  --font-sans: "PP Telegraf", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  --weight-regular: 400;
+  --weight-medium: 500;
+
+  /* Leading after Hochuli: it grows with the measure and shrinks as the type
+     grows. A 66ch body needs open leading; display sizes need almost none. */
+  --type-heading-size: 2.5rem;
+  --type-heading-lh: 1.05;
+  --type-body-size: 1.125rem;
+  --type-body-lh: 1.5;
+  --type-label-size: 0.875rem;
+  --type-label-lh: 1.4;
+  --type-title-size: 1.25rem;
+  --type-title-lh: 1.2;
+
+  /* Narrow-measure leading, for card columns of roughly 25–35 characters.
+     The figures above assume the full 66ch measure. */
+  --type-title-lh-narrow: 1.1;
+  --type-body-lh-narrow: 1.35;
+  --type-label-lh-narrow: 1.3;
+
+  --paragraph-space: 0.75em;
+  --tracking-tight: -0.03em;
+  --tracking-normal: 0.01em;
+  --tracking-caps: 0.1em;
+  --measure-max: 66ch;
+  --min-body-size: 1.125rem;
+
+  /* ---- tokens/colors.css: neutral ramp --------------------------------- */
+  --gray-10: #f4f4f4;  --gray-20: #e0e0e0;  --gray-30: #c6c6c6;
+  --gray-40: #a8a8a8;  --gray-50: #8d8d8d;  --gray-60: #6f6f6f;
+  --gray-70: #525252;  --gray-80: #393939;  --gray-90: #262626;
+  --gray-100: #161616; --white: #ffffff;
+
+  --red-40: #ff8389;   --red-60: #da1e28;   --red-70: #a2191f;
+  --blue-40: #7d9afa;
+  --orange-60: #ba4e00;
+  --yellow-30: #f1c21b;
+  --green-40: #42be65; --green-60: #198038;
+  --blue-60: #1948f4;
+
+  /* Semantic — light. Note --interactive and --link-primary resolve to the
+     page's ink, not to blue: this system is deliberately desaturated, and
+     links are marked by an underline rather than a colour. Blue survives
+     only as --support-info. */
+  --background: var(--white);
+  --layer-01: var(--gray-10);
+  --layer-02: var(--white);
+  --layer-hover: #e8e8e8;
+  --field: var(--gray-10);
+  --border-subtle: var(--gray-20);
+  --border-strong: var(--gray-50);
+  --text-primary: var(--gray-100);
+  --text-secondary: var(--gray-70);
+  --text-placeholder: var(--gray-60);
+  --text-on-color: var(--white);
+  --text-inverse: var(--white);
+  --link-primary: var(--text-primary);
+  --link-primary-hover: var(--gray-70);
+  --interactive: var(--text-primary);
+  --button-primary: var(--text-primary);
+  --button-danger: var(--red-60);
+
+  /* Severity. Never colour alone — every use pairs this with a glyph and a
+     word, which is the report's own rule applied to itself. */
+  --severity-critical: var(--red-70);
+  --severity-serious: var(--orange-60);
+  --severity-moderate: #8e6a00;
+  --severity-minor: var(--gray-70);
+  --severity-pass: var(--green-60);
+  --severity-critical-bg: #fff1f1;
+  --severity-serious-bg: #fff2e8;
+  --severity-moderate-bg: #fcf4d6;
+  --severity-minor-bg: var(--gray-10);
+  --severity-pass-bg: #defbe6;
+
+  --support-error: var(--red-60);
+  --support-success: var(--green-60);
+  --support-warning: var(--yellow-30);
+  --support-info: var(--blue-60);
+
+  /* The accent red. Two values, and using the wrong one is the mistake the
+     system's own comment warns about: --accent-red is for large display type
+     and decorative blocks and is NOT safe under small text; --accent-red-fill
+     is the darker one that carries white at 4.97:1, which is what a button
+     needs. */
+  --accent-red: #ff2f00;
+  --accent-red-fill: #d92600;
+  --accent-red-fill-hover: #b31f00;
+
+  /* Carbon tag pairs: 70-level text on 20-level tint. All ≥ 4.5:1. */
+  --tag-gray-text: #161616;  --tag-gray-bg: #e0e0e0;
+  --tag-red-text: #a2191f;   --tag-red-bg: #ffd7d9;
+  --tag-blue-text: #0043ce;  --tag-blue-bg: #d0e2ff;
+  --tag-green-text: #0e6027; --tag-green-bg: #a7f0ba;
+
+  --focus: var(--text-primary);
+  --focus-inset: var(--white);
+
+  /* ---- tokens/spacing.css ---------------------------------------------- */
+  --space-01: 0.125rem; --space-02: 0.25rem; --space-03: 0.5rem;
+  --space-04: 0.75rem;  --space-05: 1rem;    --space-06: 1.5rem;
+  --space-07: 2rem;     --space-08: 2.5rem;  --space-09: 3rem;
+  --space-10: 4rem;     --space-11: 5rem;    --space-12: 6rem;
+
+  /* Rounded, not Carbon-flat. The system says this in as many words, and its
+     Card draws itself with --radius-lg. */
+  --radius-none: 0;
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 20px;
+  --radius-pill: 999px;
+
+  --border-width: 1px;
+  --border-width-strong: 2px;
+
+  /* WCAG 2.2 target size: 24px minimum, 44px preferred. */
+  --target-min: 24px;
+  --target-comfortable: 40px;
+  --target-touch: 48px;
+
+  --shadow-overlay: 0 2px 6px rgba(0, 0, 0, 0.2);
+  --shadow-raised: 0 1px 2px rgba(0, 0, 0, 0.12);
+
+  /* ---- tokens/motion.css ----------------------------------------------- */
+  --ease-standard: cubic-bezier(0.2, 0, 0.38, 0.9);
+  --ease-entrance: cubic-bezier(0, 0, 0.38, 0.9);
+  --ease-exit: cubic-bezier(0.2, 0, 1, 0.9);
+  --duration-fast: 70ms;
+  --duration-quick: 110ms;
+  --duration-base: 150ms;
+  --duration-moderate: 240ms;
+  --duration-slow: 400ms;
+
+  /* ---- tokens/a11y.css -------------------------------------------------- */
+  --focus-ring-width: 2px;
+  --focus-ring-offset: 1px;
+  --focus-ring: var(--focus-ring-width) solid var(--focus);
+}
+
+@media (prefers-color-scheme: dark) {
+  .a11y-widget-biz {
+    --background: var(--gray-100);
+    --layer-01: var(--gray-90);
+    --layer-02: var(--gray-80);
+    --layer-hover: #333333;
+    --field: var(--gray-90);
+    --border-subtle: var(--gray-80);
+    --border-strong: var(--gray-50);
+    --text-primary: #f4f4f4;
+    --text-secondary: var(--gray-30);
+    --text-placeholder: var(--gray-50);
+    --text-inverse: var(--gray-100);
+    --link-primary: var(--text-primary);
+    --link-primary-hover: var(--gray-30);
+    --interactive: var(--text-primary);
+    --button-primary: var(--text-primary);
+
+    --severity-critical: #ff8389;
+    --severity-serious: #ff832b;
+    --severity-moderate: var(--yellow-30);
+    --severity-minor: var(--gray-30);
+    --severity-pass: var(--green-40);
+    --severity-critical-bg: #520408;
+    --severity-serious-bg: #4b2400;
+    --severity-moderate-bg: #3d3000;
+    --severity-minor-bg: var(--gray-80);
+    --severity-pass-bg: #044317;
+
+    /* The support ramp lifts in dark, and leaving it out was a real bug: the
+       danger button kept red-60 on #161616 at 3.61:1 and the self-scan
+       caught it. These are the system's own dark values. */
+    --support-error: var(--red-40);
+    --support-success: var(--green-40);
+    --support-warning: var(--yellow-30);
+    --support-info: var(--blue-40);
+
+    --accent-red-fill-hover: #ff5c33;
+
+    /* Dark tags invert: 30-level text on 70-level fill. */
+    --tag-gray-text: #f4f4f4;  --tag-gray-bg: #525252;
+    --tag-red-text: #ffd7d9;   --tag-red-bg: #a2191f;
+    --tag-blue-text: #d0e2ff;  --tag-blue-bg: #0043ce;
+    --tag-green-text: #a7f0ba; --tag-green-bg: #0e6027;
+
+    --focus: var(--text-primary);
+    --focus-inset: var(--gray-100);
+  }
+}
+
+/* Reduced motion zeroes the durations at the token, so every transition that
+   reads them stops at once rather than each needing its own override. */
+@media (prefers-reduced-motion: reduce) {
+  .a11y-widget-biz {
+    --duration-fast: 0ms;   --duration-quick: 0ms;  --duration-base: 0ms;
+    --duration-moderate: 0ms; --duration-slow: 0ms;
+  }
+}
+
+/* ==========================================================================
+   Base
+   ========================================================================== */
+.a11y-widget-biz {
+  background: var(--background);
+  color: var(--text-primary);
+  font: var(--weight-regular) var(--type-body-size) / var(--type-body-lh) var(--font-sans);
+  /* Hochuli: never letterspace running lowercase text. Tracking is for
+     display sizes only, and is applied there by name. */
+  letter-spacing: normal;
+}
+
+.a11y-widget-biz *,
+.a11y-widget-biz *::before,
+.a11y-widget-biz *::after {
+  box-sizing: border-box;
+  font-family: inherit;
+}
+
+.a11y-widget-biz p {
+  margin: 0 0 var(--paragraph-space);
+  max-width: var(--measure-max);
+  text-wrap: pretty;
+}
+
+.a11y-widget-biz p:last-child { margin-bottom: 0; }
+
+.a11y-widget-biz a {
+  color: var(--link-primary);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.a11y-widget-biz a:hover { color: var(--link-primary-hover); }
+
+/* A visible, high-contrast focus indicator everywhere, with an inner contrast
+   line so it survives on any surface — including one whose colour it happens
+   to match. */
+.a11y-widget-biz :where(a, button, input, select, textarea, summary, [tabindex]):focus-visible {
+  outline: var(--focus-ring);
+  outline-offset: var(--focus-ring-offset);
+  box-shadow: inset 0 0 0 1px var(--focus-inset);
+}
+
+.a11y-widget-biz .a11y-sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+}
+
+.a11y-widget-biz .a11y-skip-link {
+  position: absolute;
+  left: var(--space-05);
+  top: -100%;
+  z-index: 100;
+  padding: var(--space-04) var(--space-05);
+  background: var(--button-primary);
+  color: var(--text-on-color);
+  font: var(--weight-medium) var(--type-body-size) / 1.3 var(--font-sans);
+  text-decoration: none;
+}
+
+.a11y-widget-biz .a11y-skip-link:focus { top: var(--space-05); }
+
+/* ==========================================================================
+   Type
+   ========================================================================== */
+.a11y-widget-biz h1,
+.a11y-widget-biz h2 {
+  font-size: var(--type-heading-size);
+  line-height: var(--type-heading-lh);
+  font-weight: var(--weight-medium);
+  letter-spacing: var(--tracking-tight);
+  margin: 0 0 var(--space-05);
+}
+
+.a11y-widget-biz h3,
+.a11y-widget-biz h4 {
+  font-size: var(--type-title-size);
+  line-height: var(--type-title-lh);
+  font-weight: var(--weight-medium);
+  letter-spacing: var(--tracking-tight);
+  margin: 0 0 var(--space-04);
+}
+
+/* ==========================================================================
+   Components — from the system's own .jsx components
+   ========================================================================== */
+
+/* Button. "primary" is the accent-red submit CTA and "black" is the page's
+   ink used as a fill; they are separate variants answering separate
+   questions, not two names for one thing. */
+.a11y-widget-biz .a11y-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-03);
+  height: var(--target-comfortable);
+  white-space: nowrap;
+  padding: 0 var(--space-06);
+  border-radius: var(--radius-pill);
+  font-size: var(--type-body-size);
+  font-weight: var(--weight-medium);
+  letter-spacing: var(--tracking-normal);
+  cursor: pointer;
+  transition: background var(--duration-quick) var(--ease-standard),
+    opacity var(--duration-quick) var(--ease-standard);
+}
+
+.a11y-widget-biz .a11y-btn-sm { height: 32px; }
+.a11y-widget-biz .a11y-btn-md { height: var(--target-comfortable); }
+.a11y-widget-biz .a11y-btn-lg { height: var(--target-touch); }
+
+.a11y-widget-biz .a11y-btn-primary {
+  background: var(--accent-red-fill);
+  color: #ffffff;
+  border: 1px solid var(--accent-red-fill);
+}
+
+.a11y-widget-biz .a11y-btn-primary:hover:not(:disabled) {
+  background: var(--accent-red-fill-hover);
+  border-color: var(--accent-red-fill-hover);
+}
+
+.a11y-widget-biz .a11y-btn-black {
+  background: var(--text-primary);
+  color: var(--background);
+  border: 1px solid var(--text-primary);
+}
+
+.a11y-widget-biz .a11y-btn-secondary {
+  background: transparent;
+  color: var(--text-primary);
+  border: var(--border-width-strong) solid var(--text-primary);
+}
+
+.a11y-widget-biz .a11y-btn-ghost {
+  background: transparent;
+  color: var(--text-primary);
+  border: 1px solid transparent;
+  text-decoration: underline;
+  text-decoration-color: transparent;
+  text-underline-offset: 3px;
+}
+
+.a11y-widget-biz .a11y-btn-ghost:hover:not(:disabled) {
+  text-decoration-color: currentColor;
+}
+
+.a11y-widget-biz .a11y-btn-danger {
+  background: var(--button-danger);
+  color: var(--text-on-color);
+  border: 1px solid var(--button-danger);
+}
+
+/* The real disabled attribute does the work — out of the tab order and
+   unclickable. This only says so visually. */
+.a11y-widget-biz .a11y-btn:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+/* Card. A tinted panel with no border: the tint is the separation, and a
+   border on top of a tint is two things doing one job. */
+.a11y-widget-biz .a11y-card {
+  display: flex;
+  flex-direction: column;
+  padding: var(--space-07);
+  background: var(--layer-01);
+  border: 0;
+  border-radius: var(--radius-lg);
+  color: var(--text-primary);
+}
+
+.a11y-widget-biz .a11y-card-invert {
+  background: var(--text-primary);
+  color: var(--background);
+}
+
+.a11y-widget-biz .a11y-card-title {
+  margin: 0 0 var(--space-04);
+  font-size: var(--type-title-size);
+  line-height: var(--type-title-lh);
+  font-weight: var(--weight-medium);
+  letter-spacing: var(--tracking-tight);
+}
+
+/* Tag — filled chips, no border. */
+.a11y-widget-biz .a11y-tag {
+  display: inline-flex;
+  align-items: center;
+  min-height: var(--target-min);
+  padding: 2px var(--space-04);
+  white-space: nowrap;
+  border: 0;
+  border-radius: var(--radius-pill);
+  font-size: var(--type-label-size);
+  font-weight: var(--weight-medium);
+}
+
+.a11y-widget-biz .a11y-tag-gray  { color: var(--tag-gray-text);  background: var(--tag-gray-bg); }
+.a11y-widget-biz .a11y-tag-red   { color: var(--tag-red-text);   background: var(--tag-red-bg); }
+.a11y-widget-biz .a11y-tag-blue  { color: var(--tag-blue-text);  background: var(--tag-blue-bg); }
+.a11y-widget-biz .a11y-tag-green { color: var(--tag-green-text); background: var(--tag-green-bg); }
+
+/* SeverityTag. The glyph is aria-hidden and repeats what the word says: it is
+   the second channel, so severity is never carried by colour alone. The
+   border is currentColor so the chip stays legible when a theme swaps the
+   fill out from under it. */
+.a11y-widget-biz .a11y-severity-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-02);
+  flex-shrink: 0;
+  min-height: var(--target-min);
+  padding: 2px var(--space-04);
+  white-space: nowrap;
+  border: 1px solid currentColor;
+  border-radius: var(--radius-pill);
+  font-size: var(--type-label-size);
+  font-weight: var(--weight-medium);
+}
+
+.a11y-widget-biz .a11y-severity-critical { color: var(--severity-critical); background: var(--severity-critical-bg); }
+.a11y-widget-biz .a11y-severity-serious  { color: var(--severity-serious);  background: var(--severity-serious-bg); }
+.a11y-widget-biz .a11y-severity-moderate { color: var(--severity-moderate); background: var(--severity-moderate-bg); }
+.a11y-widget-biz .a11y-severity-minor    { color: var(--severity-minor);    background: var(--severity-minor-bg); }
+.a11y-widget-biz .a11y-severity-pass     { color: var(--severity-pass);     background: var(--severity-pass-bg); }
+
+/* Input — an underline field: no box, no fill, the label above carrying the
+   naming and the rule beneath carrying the affordance. */
+.a11y-widget-biz .a11y-field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-03);
+}
+
+.a11y-widget-biz .a11y-field label {
+  font-size: var(--type-label-size);
+  font-weight: var(--weight-medium);
+  color: var(--text-secondary);
+}
+
+.a11y-widget-biz .a11y-field input,
+.a11y-widget-biz .a11y-field textarea,
+.a11y-widget-biz .a11y-field select {
+  height: 44px;
+  padding: 0;
+  background: transparent;
+  color: var(--text-primary);
+  border: 0;
+  border-bottom: 1px solid var(--text-primary);
+  border-radius: 0;
+  font-size: var(--type-body-size);
+}
+
+/* Invalid is carried by weight and colour together, never colour alone. */
+.a11y-widget-biz .a11y-field input[aria-invalid="true"] {
+  border-bottom: var(--border-width-strong) solid var(--support-error);
+}
+
+/* ProgressBar */
+.a11y-widget-biz .a11y-progress-track {
+  height: var(--space-03);
+  background: var(--layer-01);
+  border-radius: var(--radius-pill);
+  overflow: hidden;
+}
+
+.a11y-widget-biz .a11y-progress-fill {
+  height: 100%;
+  background: var(--text-primary);
+  border-radius: var(--radius-pill);
+  transition: width var(--duration-moderate) var(--ease-standard);
+}
+
+/* Dialog. The system's own version has no focus trap, does not restore focus
+   on close, and hardcodes id="dlg-title" — which produces a duplicate id when
+   two dialogs exist, a fault this very report flags on other sites. The
+   behaviour stays with the component in this package; only the look is taken
+   from here. */
+.a11y-widget-biz .a11y-dialog-scrim {
+  position: fixed;
+  inset: 0;
+  background: rgba(22, 22, 22, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 50;
+}
+
+.a11y-widget-biz .a11y-dialog {
+  width: 420px;
+  max-width: 90%;
+  background: var(--layer-02);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  box-shadow: var(--shadow-overlay);
+  color: var(--text-primary);
+}
+
+.a11y-widget-biz .a11y-dialog-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--space-03);
+  padding: var(--space-04) var(--space-05);
+  border-top: 1px solid var(--border-subtle);
+}
+
+/* ==========================================================================
+   The app's own token names, aliased onto the system
+   ==========================================================================
+   Every rule in styles.css reads --a11y-* names. Rather than rewrite ~250
+   rules to use the system's names — a change with no visible result and a
+   large surface for typos — the two vocabularies are joined here, once.
+
+   This is what lets the old token bridges be deleted. They were duplicated
+   across two blocks two thousand lines apart, each redeclaring the same
+   names with different values, and the later one silently won: three
+   separate times today a change was applied, verified in the source, and had
+   no effect on the page because of it. One definition, one place. */
+.a11y-widget-biz {
+  --a11y-bg: var(--background);
+  --a11y-surface: var(--layer-01);
+  --a11y-layer-1: var(--layer-01);
+  --a11y-layer-2: var(--layer-02);
+  --a11y-layer-accent: var(--border-subtle);
+  --a11y-text: var(--text-primary);
+  --a11y-muted: var(--text-secondary);
+  --a11y-border: var(--border-subtle);
+  --a11y-font: var(--font-sans);
+
+  /* The accent is the page's ink here, not a colour: the system resolves
+     --interactive and --link-primary to --text-primary and keeps blue for
+     --support-info alone. */
+  --a11y-accent: var(--interactive);
+  --a11y-accent-text: var(--link-primary);
+  --a11y-accent-on: var(--background);
+  --a11y-accent-strong: var(--link-primary-hover);
+  --a11y-accent-faint: var(--layer-01);
+
+  --a11y-focus: var(--focus);
+  --a11y-focus-inset: var(--focus-inset);
+
+  --a11y-score-good: var(--support-success);
+  --a11y-score-warn: var(--severity-moderate);
+  --a11y-score-bad: var(--support-error);
+
+  --a11y-text-body: var(--type-body-size);
+  --a11y-text-label: var(--type-label-size);
+  --a11y-text-subtitle: var(--type-title-size);
+  --a11y-text-title: var(--type-heading-size);
+  --a11y-text-display: 3rem;
+
+  /* Leading, named for what it is set on rather than for its size. */
+  --a11y-leading-prose: var(--type-body-lh);
+  --a11y-leading-heading: var(--type-title-lh);
+  --a11y-leading-title: var(--type-heading-lh);
+  --a11y-leading-label: var(--type-label-lh);
+}
