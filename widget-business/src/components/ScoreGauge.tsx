@@ -182,7 +182,44 @@ export function ScoreGauge({
   allFindings: AccessibilityFinding[];
 }) {
   const [copied, setCopied] = useState(false);
-  const preview = groupFindings(findings).slice(0, PREVIEW_LIMIT);
+  const grouped = groupFindings(findings);
+  const preview = grouped.slice(0, PREVIEW_LIMIT);
+
+  /* "Do this first" — the one fix that settles the most at once.
+   *
+   * From ui_kits/scan-app/checker.prompt.md: "Anti-pattern: opening on a list
+   * of 34 findings with no order of attack. Correct: the band states what one
+   * fix settles."
+   *
+   * The claim has to be provable, because this report's own rule is that a
+   * statement is unhedged only when it is true by construction. It is: a
+   * group here is ONE fault with N instances — groupFindings keys on ruleId —
+   * so fixing it does resolve all N. That is a weaker claim than the design's
+   * "the shared header", which groups by component and needs selector
+   * analysis in the scanner; this one needs nothing the widget does not
+   * already have, and it does not overstate.
+   *
+   * Only critical and serious count. "Do this first" is advice about order of
+   * attack, and a minor issue is never the thing to do first however many
+   * times it occurs.
+   */
+  const worstFirst = grouped.filter(
+    (g) => g[0].severity === "critical" || g[0].severity === "serious"
+  );
+  const topGroup = worstFirst.length > 0
+    ? worstFirst.reduce((a, b) => (b.length > a.length ? b : a))
+    : null;
+  /* Suppressed at one instance, deliberately. "Fixing this settles 1 of 1"
+   * is noise, and the anti-pattern the band exists to prevent — a list with
+   * no order of attack — does not arise when there is one thing to do. */
+  const doFirst =
+    topGroup && topGroup.length > 1
+      ? {
+          title: plainForRule(topGroup[0].ruleId)?.plain ?? topGroup[0].title ?? "",
+          settles: topGroup.length,
+          outOf: worstFirst.reduce((n, g) => n + g.length, 0),
+        }
+      : null;
 
   async function copySummary() {
     try {
@@ -197,6 +234,17 @@ export function ScoreGauge({
   }
   return (
     <div className="a11y-score">
+      {/* The band sits above the score, because it is the one thing worth
+          reading before the number. */}
+      {doFirst && (
+        <div className="a11y-dofirst">
+          <span className="a11y-dofirst-eyebrow">Do this first</span>
+          <p className="a11y-dofirst-statement">
+            Fixing <strong>{doFirst.title.toLowerCase()}</strong> settles{" "}
+            {doFirst.settles} of the {doFirst.outOf} most serious findings at once.
+          </p>
+        </div>
+      )}
       {/* Professional mode gets an explicit results header in this slot
           (App.tsx); business mode had none, which left heading navigation
           with no way to jump straight to the score at all. */}

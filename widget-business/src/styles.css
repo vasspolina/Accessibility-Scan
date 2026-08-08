@@ -7735,3 +7735,49 @@ label.a11y-ai-toggle {
   flex-wrap: wrap;
   gap: var(--space-2);
 }
+
+/* ==========================================================================
+   "Do this first"
+   ==========================================================================
+   From the Checker dashboard: a black band naming the single highest-leverage
+   fix, above everything else. Its annotation is the sharpest argument in the
+   design system — "opening on a list of 34 findings with no order of attack"
+   is the anti-pattern, and the band is the answer.
+
+   Inverted, and safe to invert by the rule the rest of this migration
+   follows: the band owns both its children, an eyebrow and a sentence, and
+   nothing a caller supplies lands on the black. */
+.a11y-widget-biz.a11y-widget-biz .a11y-dofirst {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  margin-bottom: var(--space-5);
+  padding: var(--space-5);
+  border-radius: var(--radius-panel);
+  background: var(--surface-inverse);
+  color: var(--content-on-inverse);
+}
+
+.a11y-widget-biz.a11y-widget-biz .a11y-dofirst-eyebrow {
+  font-size: var(--text-label);
+  font-weight: 500;
+  letter-spacing: var(--tracking-tight);
+  color: var(--content-on-inverse-secondary);
+}
+
+/* Title size, not display size. The band is one sentence and it sits above
+   the score, which is the loudest thing on the screen — setting this at
+   display size would make two things compete to be read first, which is the
+   problem the band exists to solve rather than one to add to. */
+.a11y-widget-biz.a11y-widget-biz .a11y-dofirst-statement {
+  margin: 0;
+  max-width: var(--measure-max);
+  font-size: var(--text-title);
+  line-height: var(--leading-title);
+  letter-spacing: var(--tracking-tight);
+  color: var(--content-on-inverse);
+}
+
+.a11y-widget-biz.a11y-widget-biz .a11y-dofirst-statement strong {
+  font-weight: 500;
+}
