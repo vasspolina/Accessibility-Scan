@@ -1,7 +1,6 @@
 import { useId, useState } from "react";
 import { WhatsNextPanel } from "./WhatsNextPanel";
 import type { Wcag22Readiness as Readiness } from "../api/scanClient";
-import { DataTable } from "./DataTable";
 
 // The law is going to move, and an owner should see it coming rather than
 // discover it. EN 301 549 v3.2.1 adopts WCAG 2.1, which is what the rest of
@@ -101,63 +100,53 @@ export function Wcag22Readiness({ readiness }: { readiness: Readiness }) {
             These need a person, which is the same answer the checklist below gives.
           </p>
 
-          {/* The kit's tinted-row table, as the legal-standard section has
-              it: result ink + word, never colour alone; the criterion cell
-              carries the plain sentence with the official name beneath.
-              Status sits under that text rather than in its own column —
-              a narrow "Status" column and a long criterion sentence beside
-              it left the sentence with no room, crushing it letter by
-              letter on a phone. */}
-          <DataTable
-            caption={`The ${total} new WCAG 2.2 items, checked where software can`}
-            headers={[
-              { key: "criterion", label: "Criterion" },
-              { key: "found", label: "Found", align: "right", width: "90px" },
-            ]}
-            rows={criteria.map((c) => ({
-              id: c.id,
-              background:
-                c.status === "already-failing"
-                  ? "var(--severity-critical-bg, #fff1f1)"
-                  : c.status === "no-issues-found"
-                    ? "var(--severity-pass-bg, #defbe6)"
-                    : "var(--severity-minor-bg, #f4f4f4)",
-              cells: [
-                <span key="c">
-                  <strong>
-                    {c.id} ({c.level}) — {c.status === "already-failing" ? c.failing : c.plain}
-                  </strong>
-                  {/* whyManual answers the plain-language question right
-                      above it — without a per-row "Needs a person" badge
-                      to close that loop (see below), leaving the jargon
-                      name in between broke that question/answer pairing
-                      into three disconnected lines. The official name is
-                      a footnote now, last, not a wedge between them. */}
-                  {c.whyManual && <span className="a11y-conf-plain">{c.whyManual}</span>}
-                  <span className="a11y-conf-plain">Officially: {c.name}</span>
-                  {/* "Needs a person" is left unstated here on purpose —
-                      the caveat paragraph right below this table already
-                      says so once, for every row this status covers.
-                      Repeating it on each of them added nothing a reader
-                      didn't already know from the row above it; the badge
-                      only earns its place where it tells you something
-                      the caveat doesn't — that this one either already
-                      fails or is already clean. */}
-                  {c.status !== "needs-review" && (
-                    <span
-                      className={`a11y-conf-result ${
-                        c.status === "already-failing" ? "a11y-conf-result-fail" : "a11y-conf-result-pass"
-                      }`}
-                    >
-                      <span aria-hidden="true">{c.status === "already-failing" ? "!" : "✓"}</span>{" "}
-                      {STATUS_LABEL[c.status]}
+          {/* The design system's item grid, not a table.
+              WhatsNextPanel renders these as cards in an auto-fit grid, with
+              `fails` inverting an item to black — and that inversion is the
+              point: everything in this section is a FUTURE requirement, so
+              the only items allowed any weight are the ones that would fail
+              today. The annotation is explicit that presenting future
+              criteria as current failures is the anti-pattern.
+
+              This replaces a tinted-row DataTable. The tint said the same
+              thing with less force and needed three background colours to do
+              it; one inversion says it with one.
+
+              The content is unchanged — plain sentence, the reason a person
+              is needed, the official name, the count. The design's own item
+              carries less than this, and dropping any of it would be a
+              content change wearing a design change's clothes. */}
+          <ul className="a11y-next-list" aria-label={`The ${total} new WCAG 2.2 items, checked where software can`}>
+            {criteria.map((c) => {
+              const fails = c.status === "already-failing";
+              return (
+                <li key={c.id} className={fails ? "a11y-next-crit-item" : undefined}>
+                  <span className="a11y-next-main">
+                    <span className="a11y-next-title">
+                      {fails ? c.failing : c.plain}
                     </span>
+                    <span className="a11y-next-meta">
+                      {c.id} · Level {c.level}
+                    </span>
+                    {c.whyManual && <span className="a11y-next-meta">{c.whyManual}</span>}
+                    <span className="a11y-next-meta">Officially: {c.name}</span>
+                    {/* Only where it says something the caveat above does
+                        not — that this one already fails, or is already
+                        clean. "Needs a person" is stated once, up there. */}
+                    {c.status !== "needs-review" && (
+                      <span className="a11y-next-status">
+                        <span aria-hidden="true">{fails ? "!" : "✓"}</span>{" "}
+                        {STATUS_LABEL[c.status]}
+                      </span>
+                    )}
+                  </span>
+                  {c.findingCount > 0 && (
+                    <span className="a11y-next-level">{c.findingCount} ×</span>
                   )}
-                </span>,
-                c.findingCount > 0 ? `${c.findingCount} ×` : "—",
-              ],
-            }))}
-          />
+                </li>
+              );
+            })}
+          </ul>
 
           {parsingNoLongerCounts && (
             <p className="a11y-notice">

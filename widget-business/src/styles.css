@@ -1108,104 +1108,19 @@ label.a11y-ai-toggle {
   color: var(--a11y-text, #161616);
 }
 
-/* The readiness panel, now owned here. */
-.a11y-next {
-  background: var(--layer-01, var(--a11y-surface, #f4f4f4));
-  border: 1px solid var(--border-subtle, var(--a11y-border, #e0e0e0));
-  overflow: hidden;
-  color: var(--a11y-text, #161616);
-}
 
-.a11y-widget-biz.a11y-widget-biz .a11y-next {
-  border-radius: var(--radius-sm, 12px);
-}
 
-.a11y-next-eyebrow {
-  padding: var(--space-05, 1rem) var(--space-05, 1rem) 0;
-  font-size: var(--a11y-text-label, 0.875rem);
-  color: var(--text-secondary, var(--a11y-muted, #525252));
-}
 
-.a11y-next-toggle {
-  display: flex;
-  align-items: center;
-  gap: var(--space-05, 1rem);
-  flex-wrap: wrap;
-  width: calc(100% - (2 * var(--space-05, 1rem)));
-  margin: var(--space-04, 0.75rem) var(--space-05, 1rem) 0;
-  padding: var(--space-05, 1rem);
-  background: transparent;
-  border: 0;
-  border-top: 1px solid var(--border-subtle, var(--a11y-border, #e0e0e0));
-  font: inherit;
-  text-align: left;
-  cursor: pointer;
-}
 
-.a11y-next-standard {
-  flex: 1 1 100%;
-  min-width: 0;
-}
 
-/* The one place this panel borrows a status colour: the count describes
-   today rather than the future, so it is allowed to look like it. */
-.a11y-next-count {
-  flex-shrink: 0;
-  white-space: nowrap;
-  padding: var(--space-02, 0.25rem) var(--space-04, 0.75rem);
-  border-radius: 999px;
-  background: var(--severity-critical-bg, #fff1f1);
-  color: var(--severity-critical, #a2191f);
-  font-size: var(--a11y-text-label, 0.875rem);
-  font-weight: 500;
-}
 
-.a11y-next-chevron {
-  flex-shrink: 0;
-  transition: transform var(--duration-fast-02, 110ms)
-    var(--ease-productive-standard, cubic-bezier(0.2, 0, 0.38, 0.9));
-}
 
-.a11y-next-chevron[data-open="true"] {
-  transform: rotate(180deg);
-}
 
-.a11y-next-desc {
-  margin: var(--space-05, 1rem) var(--space-05, 1rem) var(--space-05, 1rem);
-  color: var(--text-secondary, var(--a11y-muted, #525252));
-}
 
-.a11y-next-list {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-  border-top: 1px solid var(--border-subtle, var(--a11y-border, #e0e0e0));
-}
 
-.a11y-next-list li {
-  display: flex;
-  gap: var(--space-05, 1rem);
-  align-items: baseline;
-  padding: var(--space-04, 0.75rem) var(--space-05, 1rem);
-  border-bottom: 1px solid var(--border-subtle, var(--a11y-border, #e0e0e0));
-  font-size: var(--a11y-text-label, 0.875rem);
-}
 
-.a11y-next-list li:last-child {
-  border-bottom: 0;
-}
 
-.a11y-next-crit {
-  flex-shrink: 0;
-  min-width: 64px;
-  color: var(--text-secondary, var(--a11y-muted, #525252));
-}
 
-.a11y-next-level {
-  margin-left: auto;
-  flex-shrink: 0;
-  color: var(--text-secondary, var(--a11y-muted, #525252));
-}
 
 /* The radio row and the select, now owned here. The controls themselves
    keep the platform's own rendering and the accent colour the kit gave
@@ -7308,80 +7223,14 @@ label.a11y-ai-toggle {
   padding: 0;
 }
 
-/* WhatsNextPanel: a tinted panel, its standard set as display type, and the
-   count of failures worn as an accent-red pill rather than stated in prose. */
-.a11y-widget-biz.a11y-widget-biz .a11y-next {
-  background: var(--layer-01, #f4f4f4);
-  border: 0;
-  border-radius: var(--radius-lg, 20px);
-  overflow: hidden;
-}
 
-.a11y-widget-biz.a11y-widget-biz .a11y-next-eyebrow {
-  font-size: var(--type-label-size, 0.875rem);
-  font-weight: var(--weight-medium, 500);
-  letter-spacing: var(--tracking-tight, -0.03em);
-}
 
-/* "1 would fail today". White on --accent-red-fill is 4.97:1; --accent-red
-   itself is the display-only value and would fail under text this size,
-   which is the distinction the system's own comment draws. */
-.a11y-widget-biz.a11y-widget-biz .a11y-next-crit {
-  display: inline-block;
-  white-space: nowrap;
-  padding: 0.15em var(--space-04, 0.75rem) 0.25em;
-  border-radius: var(--radius-pill, 999px);
-  background: var(--accent-red-fill, #d92600);
-  color: #ffffff;
-  font-size: var(--type-label-size, 0.875rem);
-  font-weight: var(--weight-medium, 500);
-}
 
-.a11y-widget-biz.a11y-widget-biz .a11y-next-standard {
-  font-size: clamp(2.25rem, 5.5vw, 4.5rem);
-  line-height: 0.95;
-  font-weight: var(--weight-medium, 500);
-  letter-spacing: var(--tracking-tight, -0.03em);
-  text-wrap: balance;
-  margin: 0 0 var(--space-05, 1rem);
-}
 
-.a11y-widget-biz.a11y-widget-biz .a11y-next-list {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-  gap: var(--space-04, 0.75rem);
-}
 
-.a11y-widget-biz.a11y-widget-biz .a11y-next-list > li {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: var(--space-04, 0.75rem);
-  padding: var(--space-05, 1rem);
-  border-radius: var(--radius-md, 12px);
-  background: var(--layer-02, #ffffff);
-}
 
-/* A criterion that would fail today is inverted permanently — the same
-   reversal the findings rows use on hover, here as a standing state. */
-.a11y-widget-biz.a11y-widget-biz .a11y-next-list > li.a11y-next-crit-item {
-  background: var(--gray-100, #161616);
-  color: var(--text-on-invert, #ffffff);
-}
 
-.a11y-widget-biz.a11y-widget-biz .a11y-next-level {
-  flex-shrink: 0;
-  font-size: var(--type-label-size, 0.875rem);
-  font-weight: var(--weight-medium, 500);
-  color: var(--accent-red-fill, #d92600);
-}
 
-.a11y-widget-biz.a11y-widget-biz .a11y-next-crit-item .a11y-next-level {
-  color: var(--severity-critical-ondark-text, #ffd7d9);
-}
 
 /* ==========================================================================
    New scan — the numbered-step form
@@ -7707,4 +7556,180 @@ label.a11y-ai-toggle {
 .a11y-widget-biz.a11y-widget-biz .a11y-card-invert .a11y-spec-value,
 .a11y-widget-biz.a11y-widget-biz .a11y-spec-card-lead .a11y-spec-value {
   color: var(--content-on-inverse);
+}
+
+/* ==========================================================================
+   WhatsNextPanel — readiness for an upcoming standard
+   ==========================================================================
+   From components/scan/WhatsNextPanel.jsx. Replaces two competing sets of
+   rules: the app's original, and an earlier pass of mine that used the
+   pre-v2 token names and so drifted the moment the token layer moved.
+
+   The panel's job is stated in its annotation, and it is a content rule
+   before it is a visual one: "Anti-pattern: presenting future criteria as
+   current failures. Correct: the copy states nothing is required yet, and
+   only `fails` items are marked." So the panel is quiet — a grey ground, a
+   question set large, and only the items that would actually fail today
+   carrying any weight. */
+.a11y-widget-biz.a11y-widget-biz .a11y-next {
+  background: var(--surface-sunken);
+  border: 0;
+  border-radius: var(--radius-panel);
+  padding: var(--space-5);
+  overflow: hidden;
+}
+
+.a11y-widget-biz.a11y-widget-biz .a11y-next-eyebrow {
+  font-size: var(--text-label);
+  font-weight: 500;
+  letter-spacing: var(--tracking-tight);
+}
+
+/* "1 would fail today". White on --action-primary is 6.68:1. This is the one
+   loud thing in the panel, and it is loud because it is the only part that
+   describes today rather than a future standard. */
+.a11y-widget-biz.a11y-widget-biz .a11y-next-crit {
+  display: inline-block;
+  white-space: nowrap;
+  padding: 0.15em var(--space-3) 0.25em;
+  border-radius: var(--radius-round);
+  background: var(--action-primary);
+  color: var(--content-on-accent);
+  font-size: var(--text-label);
+  font-weight: 500;
+}
+
+.a11y-widget-biz.a11y-widget-biz .a11y-next-count {
+  font-size: var(--text-label);
+  line-height: var(--leading-label);
+  color: var(--content-secondary);
+  background: transparent;
+  padding: 0;
+}
+
+/* The question, as display type. It is the only heading in the report that
+   is a question, and setting it large is what makes the section read as an
+   invitation rather than another list of faults. */
+.a11y-widget-biz.a11y-widget-biz .a11y-next-standard {
+  margin: var(--space-5) 0 var(--space-4);
+  font-size: clamp(2.25rem, 5.5vw, 4.5rem);
+  line-height: 0.95;
+  font-weight: 500;
+  letter-spacing: var(--tracking-tight);
+  text-wrap: balance;
+}
+
+.a11y-widget-biz.a11y-widget-biz .a11y-next-desc {
+  margin: 0 0 var(--space-5);
+  max-width: var(--measure-max);
+  font-size: var(--text-body);
+  line-height: var(--leading-body);
+  color: var(--content-secondary);
+}
+
+/* The toggle: an outlined pill, deliberately not a filled button. Opening a
+   list of criteria that are not required yet is not the panel's primary
+   action, and a filled button would claim it is. */
+.a11y-widget-biz.a11y-widget-biz .a11y-next-toggle {
+  white-space: nowrap;
+  padding: var(--space-2) var(--space-4);
+  border-radius: var(--radius-round);
+  border: var(--border-width) solid var(--content-primary);
+  background: transparent;
+  color: var(--content-primary);
+  font-size: var(--text-label);
+  min-height: var(--target-min);
+  cursor: pointer;
+}
+
+.a11y-widget-biz.a11y-widget-biz .a11y-next-chevron {
+  display: inline-block;
+  transition: transform var(--motion-exit) var(--ease-standard);
+}
+
+.a11y-widget-biz.a11y-widget-biz .a11y-next-chevron[data-open="true"] {
+  transform: rotate(90deg);
+}
+
+.a11y-widget-biz.a11y-widget-biz .a11y-next-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: var(--space-3);
+}
+
+.a11y-widget-biz.a11y-widget-biz .a11y-next-list > li {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  padding: var(--space-4);
+  border: 0;
+  border-radius: var(--radius-soft);
+  background: var(--surface-raised);
+  color: var(--content-primary);
+}
+
+/* Only a criterion that would fail today is inverted. Everything else in
+   this panel is a future requirement and is drawn as one — which is the
+   annotation's rule made visible. */
+.a11y-widget-biz.a11y-widget-biz .a11y-next-list > li.a11y-next-crit-item {
+  background: var(--surface-inverse);
+  color: var(--content-on-inverse);
+}
+
+.a11y-widget-biz.a11y-widget-biz .a11y-next-level {
+  flex-shrink: 0;
+  font-size: var(--text-label);
+  font-weight: 500;
+  color: var(--action-primary);
+}
+
+/* On the inverted item the ember would sit at 2.6:1. The dark severity pair
+   is what that surface is for. */
+.a11y-widget-biz.a11y-widget-biz .a11y-next-crit-item .a11y-next-level {
+  color: var(--severity-critical-ondark-text);
+}
+
+.a11y-widget-biz.a11y-widget-biz .a11y-next-title {
+  font-size: var(--text-body);
+  line-height: var(--leading-title);
+}
+
+/* The readiness item's inner parts. The design's own item carries a title
+   and one meta line; this app's carries the plain sentence, the criterion,
+   the reason a person is needed, the official name and a status — more, and
+   all of it load-bearing, so the item stacks rather than sitting on one
+   line. */
+.a11y-widget-biz.a11y-widget-biz .a11y-next-main {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  min-width: 0;
+}
+
+.a11y-widget-biz.a11y-widget-biz .a11y-next-meta {
+  display: block;
+  font-size: var(--text-label);
+  line-height: var(--leading-body-narrow);
+  color: var(--content-secondary);
+}
+
+.a11y-widget-biz.a11y-widget-biz .a11y-next-crit-item .a11y-next-meta {
+  color: var(--content-on-inverse-secondary);
+}
+
+/* The status is the one part that is never colour alone: a glyph, then the
+   word. On the inverted item both take the on-dark ink. */
+.a11y-widget-biz.a11y-widget-biz .a11y-next-status {
+  display: block;
+  margin-top: var(--space-1);
+  font-size: var(--text-label);
+  font-weight: 500;
+}
+
+.a11y-widget-biz.a11y-widget-biz .a11y-next-crit-item .a11y-next-status {
+  color: var(--severity-critical-ondark-text);
 }
