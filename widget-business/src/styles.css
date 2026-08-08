@@ -472,9 +472,6 @@
 .a11y-score-caveat,
 .a11y-notice,
 .a11y-undecided-head,
-.a11y-undecided-do {
-  max-width: 76ch;
-}
 
 .a11y-intro {
   margin: 0 0 24px;
@@ -914,37 +911,9 @@ label.a11y-ai-toggle {
   outline-offset: 2px;
 }
 
-.a11y-undecided-list {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-}
 
-.a11y-undecided {
-  border: 1px solid var(--a11y-border, #d0d7de);
-  border-left: 4px solid var(--a11y-muted, #57606a);
-  padding: 16px;
-  /* --a11y-bg, not the never-defined --a11y-card: the stray token fell back
-     to white in every theme, which put light text on a white card in dark
-     mode. */
-  background: var(--a11y-bg, #fff);
-}
 
-.a11y-undecided-head {
-  margin: 0;
-  font-size: var(--a11y-text-body);
-  line-height: 1.2;
-}
 
-.a11y-undecided-do {
-  margin: 8px 0 0;
-  font-size: var(--a11y-text-body);
-  line-height: 1.2;
-  color: var(--a11y-muted, #57606a);
-}
 
 .a11y-principle-groups {
   display: flex;
@@ -4677,19 +4646,6 @@ label.a11y-ai-toggle {
   margin: 8px 0;
 }
 
-/* Same shape as .a11y-pro-table just above: content-sized first and last
-   columns (a badge, a number) so "What we couldn't decide" is the one
-   column actually asked to flex. Without white-space: nowrap here, width:
-   1% on the header cells isn't enough on its own — the browser still
-   shrinks "Places" and "Design fix" until they wrap letter by letter
-   rather than giving that room to the column that needs it. */
-.a11y-undecided-table {
-  /* Escape hatch, not the fix: below the panel widths the folded badge
-     (see .a11y-undecided-cell) already handles, "What we couldn't
-     decide" can still outgrow a genuinely tiny host — this is the floor
-     under that, not something normal phone widths should ever reach. */
-  overflow-x: auto;
-}
 
 /* The three conformance results as cards, side by side.
 
@@ -4775,32 +4731,8 @@ label.a11y-ai-toggle {
 @media (hover: none) {
 }
 
-/* Same reasoning as .a11y-findings-table: the fix badge shouldn't float at
-   the vertical centre of a cell whose paragraphs run to several lines. */
-.a11y-undecided-table td {
-  vertical-align: top !important;
-}
 
-/* Places used to be its own last column, with this rule keeping its short
-   numeric value from wrapping — both Who-fixes-this and Places fold into
-   the issue cell now (see UndecidedChecks.tsx), leaving this table with
-   exactly one column. :last-child and :first-child now both mean that
-   same cell, so this rule was quietly forcing the entire paragraph onto
-   one unbroken line instead of the few narrow characters it was written
-   for — the count itself keeps its own nowrap directly, in
-   .a11y-undecided-places. */
 
-.a11y-undecided-table td:has(.a11y-undecided-cell) {
-  min-width: 12rem;
-}
-
-/* .a11y-method-badge normally wraps its own text as a last resort against
-   the finding cards' overflow (see that rule's own comment) — wrong here,
-   where the column is already reserved just for it and wrapping only
-   produces a two-line "Design/fix" for no reason. */
-.a11y-undecided-table .a11y-method-badge {
-  white-space: nowrap;
-}
 
 /* The findings table: severity, issue, count, same shape as every other
    table here. No side-scroll on a narrow panel — columns squeeze and wrap
@@ -5036,57 +4968,11 @@ label.a11y-ai-toggle {
   }
 }
 
-.a11y-undecided-cell {
-  display: flex;
-  flex-direction: column;
-  /* align-items stays the flex default (stretch) — the paragraphs below
-     need to fill the column's width to wrap, and flex-start here used to
-     stop them from doing that along with the badge row it was meant
-     for. a11y-undecided-badge-row opts out of stretching on its own. */
-  gap: 8px;
-  /* Flex items default to min-width: auto — their content's unwrapped
-     max-content width, not the space actually available. Paired with
-     max-width: none on the paragraph below (needed so the page-wide
-     reading-measure cap doesn't apply here), that let the paragraph
-     grow to the width of its longest unbroken line instead of wrapping,
-     dragging the whole table wider than the viewport on desktop. This
-     is what tells the flex item it's allowed to shrink below that and
-     wrap normally. */
-  min-width: 0;
-}
 
-.a11y-undecided-cell p {
-  margin: 0;
-}
 
-/* Same override as .a11y-finding-details p, same reason: the page-wide
-   34rem reading-measure cap doesn't know this text already lives inside
-   the table's own bounded column, so it was capping the paragraph well
-   short of the room the cell actually had, leaving the row's background
-   trailing off into empty space past where the text wrapped. */
-.a11y-widget-biz.a11y-widget-biz .a11y-undecided-cell p {
-  max-width: none;
-}
 
-.a11y-undecided-ask {
-  color: var(--a11y-muted, #57606a);
-}
 
-.a11y-undecided-badge-row {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  /* Its own natural size, not stretched to the column's full width — see
-     the align-items comment on .a11y-undecided-cell. */
-  align-self: flex-start;
-}
 
-.a11y-undecided-places {
-  font-size: var(--a11y-text-label, 0.875rem);
-  color: var(--a11y-muted, #525252);
-  font-variant-numeric: tabular-nums;
-  white-space: nowrap;
-}
 
 /* A full-bleed version of this rule was tried here — negative margins
    pulling this card's text out to the panel's true edges on mobile — but
@@ -6862,36 +6748,12 @@ label.a11y-ai-toggle {
   padding: 0 0 8px;
 }
 
-/* The undecided-checks table: a hairline between rows and hover, like every
-   other table here, but one column rather than two — "who fixes this" reads
-   as a kicker over the row's own paragraphs, not a value worth a column of
-   its own the way severity is. */
-.a11y-widget-biz.a11y-widget-biz .a11y-undecided {
-  display: block;
-  border: 0;
-  border-top: 1px solid var(--a11y-border, #e0e0e0);
-  padding: 12px 16px;
-  background: transparent;
-}
 
-.a11y-widget-biz.a11y-widget-biz .a11y-undecided:hover {
-  background: var(--layer-hover, #e8e8e8);
-}
 
 @media (prefers-color-scheme: dark) {
-  .a11y-widget-biz.a11y-widget-biz .a11y-undecided:hover {
-    background: #333333;
-  }
 }
 
-.a11y-widget-biz.a11y-widget-biz .a11y-undecided-fix {
-  display: inline-flex;
-  margin-bottom: 8px;
-}
 
-.a11y-widget-biz.a11y-widget-biz .a11y-undecided-body {
-  min-width: 0;
-}
 
 @media (prefers-color-scheme: dark) {
   .a11y-widget-biz .a11y-section-redflag {
@@ -7732,4 +7594,67 @@ label.a11y-ai-toggle {
 
 .a11y-widget-biz.a11y-widget-biz .a11y-next-crit-item .a11y-next-status {
   color: var(--severity-critical-ondark-text);
+}
+
+/* ==========================================================================
+   Undecided checks — the judgement calls
+   ==========================================================================
+   These are already the design's shape: a set of cards, each with a fix-kind
+   pill, a count, what was found, and what to ask for. So this is the CSS
+   route legitimately — the markup and the design agree, which is the
+   condition under which styling around it works. Where they disagree, the
+   markup gets replaced instead; the readiness items and the score dial went
+   that way today.
+
+   A <ul>, not a table, and deliberately: this was a one-column DataTable,
+   and laying its cards out side by side meant giving table elements a grid
+   display, which quietly removed the table role from the accessibility tree.
+   A list is what this always was — notes in no particular relation to each
+   other — so the semantics and the layout now agree. */
+.a11y-widget-biz.a11y-widget-biz .a11y-undecided-table {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(20rem, 1fr));
+  gap: var(--space-3);
+}
+
+.a11y-widget-biz.a11y-widget-biz .a11y-undecided-cell {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  padding: var(--space-5);
+  border: 0;
+  border-radius: var(--radius-panel);
+  background: var(--surface-sunken);
+  color: var(--content-primary);
+}
+
+.a11y-widget-biz.a11y-widget-biz .a11y-undecided-badge-row {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  flex-wrap: wrap;
+}
+
+.a11y-widget-biz.a11y-widget-biz .a11y-undecided-places {
+  font-size: var(--text-label);
+  color: var(--content-secondary);
+}
+
+/* The finding itself, and the ask. Both are prose at the card's own measure,
+   which is narrower than the page's — hence body-narrow rather than the full
+   1.5, by the system's own rule that leading follows the measure. */
+.a11y-widget-biz.a11y-widget-biz .a11y-undecided-what,
+.a11y-widget-biz.a11y-widget-biz .a11y-undecided-ask {
+  margin: 0;
+  font-size: var(--text-body);
+  line-height: var(--leading-body-narrow);
+  color: var(--content-primary);
+  max-width: none;
+}
+
+.a11y-widget-biz.a11y-widget-biz .a11y-undecided-ask {
+  color: var(--content-secondary);
 }
