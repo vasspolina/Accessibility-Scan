@@ -3366,7 +3366,7 @@ label.a11y-ai-toggle {
      silently turned IssueRow's 10px card into a lozenge. The rule still
      serves every button this migration has not reached yet, so it stays;
      ported components opt out by name. Each port adds itself here. */
-  .a11y-widget-biz.a11y-widget-biz button:not(.a11y-issue-row),
+  .a11y-widget-biz.a11y-widget-biz button:not(.a11y-issue-row):not(.a11y-related-card),
 .a11y-widget-biz.a11y-widget-biz [role="button"],
 .a11y-widget-biz.a11y-widget-biz .a11y-method-badge,
 .a11y-widget-biz.a11y-widget-biz .a11y-count-badge,

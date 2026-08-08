@@ -1,0 +1,116 @@
+/* ==========================================================================
+   RelatedChecks
+   ==========================================================================
+   Ported from components/scan/RelatedChecks.jsx. A title and a grid of cards,
+   each one a whole criterion: its number and level, its name, why it is
+   related, and a way in. The annotation puts it at the end of a section —
+   "closes the section with two to four onward links, each with a reason."
+
+   The reason matters more than the link. A list of criterion numbers is a
+   list of homework; "Often fails wherever contrast does" is why you would
+   open it. `why` is optional in the API and should not be.
+
+   ---- The inversion is CSS here, not React state ---------------------------
+
+   Same change as IssueRow, and it fixes the same bug. The source tracks a
+   `hot` boolean through onMouseEnter/Leave/Focus/Blur; onFocus fires when the
+   card is CLICKED, so a mouse user leaves it inverted after the pointer moves
+   away, because blur has not happened. :focus-visible does not fire for a
+   pointer click, and :hover covers the mouse.
+
+   Safe to invert at all — unlike the findings table — because this card owns
+   every child it renders. Nothing a caller supplies lands on the black.
+   ========================================================================== */
+
+.a11y-related {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  font-family: var(--font-core);
+}
+
+.a11y-related-title {
+  margin: 0;
+  font-size: var(--text-title);
+  line-height: var(--leading-title);
+  font-weight: 500;
+  letter-spacing: var(--tracking-tight);
+  color: var(--content-primary);
+}
+
+.a11y-related-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: var(--space-4);
+}
+
+/* FLAG: min-height 220px has no token — the space scale stops at --space-10
+   (128px) and there is no card-height token. Same gap FactCard hit, and the
+   same decision: 220 is what makes a row of these square-ish at the widths
+   they are used, and halving it to 128 would change the design. */
+.a11y-related-card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  min-height: 220px;
+  padding: var(--space-5);
+  box-sizing: border-box;
+  border: 0;
+  border-radius: var(--radius-panel);
+  background: var(--surface-sunken);
+  color: var(--content-primary);
+  text-align: left;
+  cursor: pointer;
+  font-family: inherit;
+  transition: background var(--motion-exit) var(--ease-standard);
+}
+
+.a11y-related-card:hover,
+.a11y-related-card:focus-visible {
+  background: var(--surface-inverse);
+  color: var(--content-on-inverse);
+}
+
+.a11y-related-meta {
+  font-size: var(--text-label);
+  color: var(--content-secondary);
+}
+
+/* FLAG: the source sets --type-title-lh-narrow (1.1); v2 has no narrow title
+   leading. --leading-title (1.2) is the nearest real token — the same
+   substitution SpecList made, for the same missing token. */
+.a11y-related-name {
+  font-size: var(--text-title);
+  line-height: var(--leading-title);
+  font-weight: 500;
+  letter-spacing: var(--tracking-tight);
+}
+
+/* --leading-body-narrow stands in for --type-label-lh-narrow. A card column
+   is the narrow measure that token describes. */
+.a11y-related-why {
+  font-size: var(--text-label);
+  line-height: var(--leading-body-narrow);
+  color: var(--content-secondary);
+}
+
+/* Pushes the link to the foot of the card so a row of them aligns on their
+   links rather than on however long each reason happens to run. */
+.a11y-related-spacer {
+  flex: 1;
+}
+
+.a11y-related-open {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+/* Every muted part follows the card into the inversion. Leaving any of them
+   on --content-secondary would put #5c554b on #23201d at 1.8:1 — the exact
+   failure SpecList shipped, from missing one surface. */
+.a11y-related-card:hover .a11y-related-meta,
+.a11y-related-card:focus-visible .a11y-related-meta,
+.a11y-related-card:hover .a11y-related-why,
+.a11y-related-card:focus-visible .a11y-related-why {
+  color: var(--content-on-inverse-secondary);
+}
