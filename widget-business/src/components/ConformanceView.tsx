@@ -1,6 +1,6 @@
 import { useId, useMemo, useRef, useState } from "react";
-import { DataTable } from "@verify/design-system";
 import type { ConformanceSummary, CriterionResult } from "../api/scanClient";
+import { DataTable } from "./DataTable";
 
 // Answers the question the 0-100 score can't: "are we compliant?"
 //

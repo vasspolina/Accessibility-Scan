@@ -1,8 +1,8 @@
-import { DataTable } from "@verify/design-system";
 import type { AccessibilityFinding } from "../api/scanClient";
 import { FindingGroup, findingRow } from "./FindingGroup";
 import { useReportView } from "./ReportViewContext";
 import { expandRowOnClick } from "../lib/rowExpand";
+import { DataTable } from "./DataTable";
 
 const severityRank: Record<AccessibilityFinding["severity"], number> = {
   critical: 0,

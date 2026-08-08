@@ -6,6 +6,7 @@ import { LEVEL_FRAMING, plainForRule, plainFixForRule } from "../lib/wcagPlain";
 import { whatWeFound } from "../lib/findingText";
 import { useReportView } from "./ReportViewContext";
 import { enClauseFor } from "../lib/audienceMode";
+import { DataTable } from "./DataTable";
 import {
   fixKindForFinding,
   isKeyboardCheck,

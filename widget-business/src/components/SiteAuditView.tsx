@@ -1,10 +1,10 @@
-import { DataTable } from "@verify/design-system";
 import type { SiteAudit } from "../api/scanClient";
 import { ConformanceView } from "./ConformanceView";
 import { plainForRule } from "../lib/wcagPlain";
 import { useReportView } from "./ReportViewContext";
 import { SeverityTag } from "./SeverityTag";
 import { Tag } from "./Tag";
+import { DataTable } from "./DataTable";
 
 const severityLabel = {
   critical: "Fix first",

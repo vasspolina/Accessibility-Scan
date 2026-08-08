@@ -1,5 +1,6 @@
 import { undecidedExplanation } from "../lib/wcagPlain";
 import { fixKindForRule } from "../lib/testMethod";
+import { DataTable } from "./DataTable";
 
 /**
  * What the engine checked and could not settle.

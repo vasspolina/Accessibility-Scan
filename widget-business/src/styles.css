@@ -994,6 +994,79 @@ label.a11y-ai-toggle {
      on other people's sites. Dropping Issues frees the width on its own. */
 }
 
+/* The table, now owned here. These are the rules the kit used to write as
+   inline styles on every cell — the report's own table rules further down
+   this file still layer on top exactly as they did, because the DOM shape
+   is unchanged. */
+.a11y-datatable {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: var(--a11y-text-body);
+  color: var(--a11y-text, #161616);
+  border: 1px solid var(--border-subtle, var(--a11y-border, #e0e0e0));
+}
+
+.a11y-datatable caption {
+  text-align: left;
+  padding: 0 0 var(--space-04, 0.75rem);
+  font-size: var(--a11y-text-label, 0.875rem);
+  color: var(--text-secondary, var(--a11y-muted, #525252));
+}
+
+.a11y-datatable thead tr {
+  background: var(--layer-01, var(--a11y-surface, #f4f4f4));
+}
+
+.a11y-datatable thead th,
+.a11y-datatable thead .a11y-dt-spacer {
+  border-bottom: 1px solid var(--border-strong, #8d8d8d);
+}
+
+.a11y-datatable thead th {
+  padding: var(--space-04, 0.75rem) var(--space-05, 1rem);
+  font-size: var(--a11y-text-label, 0.875rem);
+  font-weight: 500;
+  overflow-wrap: anywhere;
+}
+
+.a11y-dt-spacer {
+  width: 48px;
+}
+
+.a11y-datatable tbody td {
+  padding: var(--space-04, 0.75rem) var(--space-05, 1rem);
+  border-bottom: 1px solid var(--border-subtle, var(--a11y-border, #e0e0e0));
+  vertical-align: middle;
+  line-height: 1.35;
+  overflow-wrap: anywhere;
+}
+
+.a11y-dt-toggle-cell {
+  padding: 0 !important;
+  text-align: center;
+}
+
+/* 44px square: the tap-target size this report asks of everybody else. */
+.a11y-dt-toggle {
+  width: 44px;
+  height: 44px;
+  background: transparent;
+  border: 0;
+  cursor: pointer;
+  color: inherit;
+  font: inherit;
+}
+
+.a11y-dt-toggle span {
+  display: inline-block;
+  transition: transform var(--duration-fast-02, 110ms)
+    var(--ease-productive-standard, cubic-bezier(0.2, 0, 0.38, 0.9));
+}
+
+.a11y-dt-toggle span[data-open="true"] {
+  transform: rotate(90deg);
+}
+
 /* The modal, now owned here. */
 .a11y-dialog-scrim {
   position: fixed;

@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useId, useMemo, useRef, useState } from "react";
 import { StatusChip } from "./SectionHeader";
-import { DataTable } from "@verify/design-system";
 import type { ScreenReaderScript } from "../api/scanClient";
+import { DataTable } from "./DataTable";
 
 // Lets an owner hear their own page the way a screen-reader user does. Reading
 // a list of violations is abstract; hearing "button, unlabelled" where your

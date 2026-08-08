@@ -1,7 +1,7 @@
 import { useId, useState } from "react";
-import { DataTable } from "@verify/design-system";
 import { WhatsNextPanel } from "./WhatsNextPanel";
 import type { Wcag22Readiness as Readiness } from "../api/scanClient";
+import { DataTable } from "./DataTable";
 
 // The law is going to move, and an owner should see it coming rather than
 // discover it. EN 301 549 v3.2.1 adopts WCAG 2.1, which is what the rest of
