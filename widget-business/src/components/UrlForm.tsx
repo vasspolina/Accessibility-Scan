@@ -228,6 +228,12 @@ export function UrlForm({
               value="page"
               label="This page"
               description="One page, end to end"
+              /* Both badges are the design's own copy. "Fastest" is a fact
+                 about this scan — one page against many. "Most chosen" is a
+                 claim about what other people pick, and nothing here measures
+                 that; it is carried because the design asks for it, not
+                 because the app can support it. */
+              meta="Fastest"
               checked={mode === "page"}
               onChange={() => setMode("page")}
               disabled={loading}
@@ -261,6 +267,7 @@ export function UrlForm({
               value="business"
               label="For business owners"
               description="Plain-language summary and costs"
+              meta="Most chosen"
               checked={audience === "business"}
               onChange={() => onAudienceChange("business")}
             />

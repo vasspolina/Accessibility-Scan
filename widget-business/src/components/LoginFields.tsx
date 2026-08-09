@@ -86,6 +86,18 @@ export function LoginFields({
             one group, and the legend is what a screen reader repeats as
             context when focus lands on any of them. */}
         <fieldset className="a11y-login-fieldset">
+          {/* Closes the panel and hands focus back to the trigger, which is
+              what close() already does for Cancel — so Escape, Cancel and this
+              all land in the same place. The glyph is aria-hidden; the button's
+              own name carries the meaning. */}
+          <button
+            type="button"
+            className="a11y-login-close"
+            onClick={close}
+            aria-label="Close the sign-in panel"
+          >
+            <span aria-hidden="true">&times;</span>
+          </button>
           <legend className="a11y-login-legend">Sign the scanner in</legend>
 
           <p className="a11y-login-note">

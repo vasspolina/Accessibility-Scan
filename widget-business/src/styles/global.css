@@ -487,3 +487,929 @@
     transition-duration: 1ms !important; animation-duration: 1ms !important;
   }
 }
+
+/* ==========================================================================
+   Surfaces the port missed
+   ==========================================================================
+   The rebuilt layer came out 12KB smaller than the one it replaced, and this
+   is where some of that went: rules that existed before and were not carried
+   across. Found by looking at a rendered page, not by diffing.
+   ========================================================================== */
+
+/* The concern band had colour but no surface, so it ran edge to edge with its
+   text against the panel border. .as-band gives it both. */
+.a11y-widget-biz .a11y-section-concern .a11y-section-tint {
+  padding: var(--space-06);
+  border-radius: var(--radius-lg);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-04);
+}
+
+/* A pill sitting inline with text needs a gap, or it butts straight against
+   the first word — "Fix eventuallyA countdown". These rows are flex now, so
+   the gap belongs to the row rather than to a margin on the pill. */
+.a11y-widget-biz .a11y-finding-header,
+.a11y-widget-biz .a11y-trust-row-head,
+.a11y-widget-biz .a11y-occurrence-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: var(--space-03) var(--space-04);
+  width: 100%;
+  text-align: left;
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+}
+
+/* The findings table: caption left, headers and cells aligned, rows as spaced
+   cards on a frame — .as-table, which the port applied to .a11y-datatable but
+   not to the findings tables that use their own class. */
+.a11y-widget-biz .a11y-findings-table,
+.a11y-widget-biz .a11y-notes-table,
+.a11y-widget-biz .a11y-undecided-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0 var(--space-03);
+  table-layout: fixed;
+}
+
+.a11y-widget-biz .a11y-findings-table caption,
+.a11y-widget-biz .a11y-notes-table caption,
+.a11y-widget-biz .a11y-undecided-table caption {
+  text-align: left;
+  padding-bottom: var(--space-04);
+  font-size: 15px;
+  font-weight: 500;
+  color: var(--text-secondary);
+}
+
+.a11y-widget-biz .a11y-findings-table th,
+.a11y-widget-biz .a11y-notes-table th,
+.a11y-widget-biz .a11y-undecided-table th {
+  text-align: left;
+  padding: 0 var(--space-05);
+  font-size: 15px;
+  font-weight: 400;
+  color: var(--text-secondary);
+}
+
+.a11y-widget-biz .a11y-findings-table td,
+.a11y-widget-biz .a11y-notes-table td,
+.a11y-widget-biz .a11y-undecided-table td {
+  padding: var(--space-05);
+  background: var(--layer-01);
+  vertical-align: top;
+  overflow-wrap: anywhere;
+}
+
+.a11y-widget-biz .a11y-findings-table tbody td:first-child,
+.a11y-widget-biz .a11y-notes-table tbody td:first-child,
+.a11y-widget-biz .a11y-undecided-table tbody td:first-child {
+  border-start-start-radius: var(--radius-md);
+  border-end-start-radius: var(--radius-md);
+}
+.a11y-widget-biz .a11y-findings-table tbody td:last-child,
+.a11y-widget-biz .a11y-notes-table tbody td:last-child,
+.a11y-widget-biz .a11y-undecided-table tbody td:last-child {
+  border-start-end-radius: var(--radius-md);
+  border-end-end-radius: var(--radius-md);
+}
+
+/* The disclosure toggle was an unstyled bordered box. */
+.a11y-widget-biz .a11y-dt-toggle,
+.a11y-widget-biz .a11y-accordion-row > button {
+  min-height: var(--target-min);
+  padding: var(--space-02) var(--space-03);
+  border: 0;
+  border-radius: var(--radius-sm);
+  background: transparent;
+  color: inherit;
+  cursor: pointer;
+}
+
+/* ==========================================================================
+   Sections are ONE column
+   ==========================================================================
+   The two-column head-beside-content grid is withdrawn. It cost 360px plus a
+   40px gutter, and the content column that was left could not carry a seven-
+   column findings table: the cells wrapped a character at a time — "Ima ges
+   have no desc ripti on" — and the fix-kind pills wrapped inside their own
+   radius.
+
+   The template's grid assumes a page with no nav rail. Ours has one, and the
+   report's widest content is tables, not prose. Head above content, full
+   width, is the arrangement this content actually wants.
+
+   Overrides the earlier rules rather than deleting them, so the two-column
+   version stays visible in the file for whoever revisits it.
+   ========================================================================== */
+
+.a11y-widget-biz .a11y-section,
+.a11y-widget-biz .a11y-section:has(> .a11y-section-head),
+.a11y-widget-biz .a11y-section:has(> .a11y-section-title) {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: var(--space-05);
+}
+
+.a11y-widget-biz .a11y-section > *,
+.a11y-widget-biz .a11y-section > .a11y-section-head,
+.a11y-widget-biz .a11y-section > .a11y-section-title,
+.a11y-widget-biz .a11y-section > .a11y-section-eyebrow,
+.a11y-widget-biz .a11y-section > .a11y-section-desc {
+  grid-column: auto;
+  position: static;
+}
+
+.a11y-widget-biz .a11y-section-head {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-04);
+}
+
+/* Full width means the tables can size their own columns again. `fixed` was
+   there to stop a table bursting a 525px track; there is no track now, and
+   `fixed` is what forced seven equal columns into whatever was left. */
+.a11y-widget-biz .a11y-findings-table,
+.a11y-widget-biz .a11y-notes-table,
+.a11y-widget-biz .a11y-undecided-table,
+.a11y-widget-biz .a11y-datatable { table-layout: auto; }
+
+/* A pill must never wrap inside its own radius. It may shrink the cell it
+   sits in instead. */
+.a11y-widget-biz .a11y-tag,
+.a11y-widget-biz .a11y-sev,
+.a11y-widget-biz .a11y-method-badge,
+.a11y-widget-biz .a11y-finding-criterion { white-space: nowrap; max-width: none; }
+
+.a11y-widget-biz .a11y-findings-table td,
+.a11y-widget-biz .a11y-notes-table td,
+.a11y-widget-biz .a11y-undecided-table td { overflow-wrap: normal; }
+
+/* ==========================================================================
+   Score section — more rules the port missed
+   ==========================================================================
+   Same fault as the concern band and the findings tables: these classes had
+   rules before and did not get them back, so the pills butt straight against
+   the text — "Fix firstImages have no descriptionWCAG 1.1.12x" — and the band
+   word sits on the numeral.
+   ========================================================================== */
+
+.a11y-widget-biz .a11y-score {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-06);
+}
+
+/* The number and its verdict share a baseline with a gap between them. */
+.a11y-widget-biz .a11y-dial {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-03);
+}
+.a11y-widget-biz .a11y-dial-figure {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: var(--space-04);
+  margin: 0;
+}
+
+/* The preview is a list of findings, not a bulleted paragraph. Each row is a
+   pill, the finding, and its count — three columns, never run together. */
+.a11y-widget-biz .a11y-score-preview {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.a11y-widget-biz .a11y-score-preview-row {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: baseline;
+  gap: var(--space-04);
+  padding: var(--space-04) 0;
+  border-top: 1px solid var(--border-subtle);
+}
+.a11y-widget-biz .a11y-score-preview-row:first-child { border-top: 0; padding-top: 0; }
+
+/* The criterion goes under the finding, not on from the end of its last word. */
+.a11y-widget-biz .a11y-score-preview-desc {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-02);
+  min-width: 0;
+}
+.a11y-widget-biz .a11y-score-preview-meta { font-size: 15px; color: var(--text-secondary); }
+.a11y-widget-biz .a11y-count-badge {
+  padding: 2px 10px;
+  border-radius: var(--radius-pill);
+  background: var(--layer-01);
+  font-size: 15px;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.a11y-widget-biz .a11y-score-points {
+  margin: 0;
+  padding-left: 1.2em;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-03);
+  color: var(--text-secondary);
+}
+.a11y-widget-biz .a11y-score-callout { margin: 0; font-size: 20px; }
+
+/* The note's glyph is a marker beside the title, not a column of its own. */
+.a11y-widget-biz .a11y-note-glyph { flex: 0 0 auto; font-size: 20px; font-weight: 500; }
+.a11y-widget-biz .a11y-note-sub { margin-top: var(--space-02); color: var(--text-secondary); }
+
+/* ==========================================================================
+   Finding detail and the undecided cards
+   ==========================================================================
+   Two more sets of rules the port dropped.
+   ========================================================================== */
+
+/* Each block is a labelled paragraph: the label leads, then the text. Without
+   a rule they run together as one wall — "Who fixes this This is a decision
+   about how the page looks". Spaced apart, and the label carries its own
+   weight rather than the sentence starting bold. */
+.a11y-widget-biz .a11y-finding-measured,
+.a11y-widget-biz .a11y-finding-impact,
+.a11y-widget-biz .a11y-finding-research,
+.a11y-widget-biz .a11y-finding-todo,
+.a11y-widget-biz .a11y-finding-steps > p,
+.a11y-widget-biz .a11y-undecided-ask,
+.a11y-widget-biz .a11y-undecided-what {
+  margin: 0 0 var(--space-05);
+  max-width: var(--measure);
+}
+
+.a11y-widget-biz .a11y-finding-measured > strong:first-child,
+.a11y-widget-biz .a11y-finding-impact > strong:first-child,
+.a11y-widget-biz .a11y-finding-research > strong:first-child,
+.a11y-widget-biz .a11y-finding-todo > strong:first-child,
+.a11y-widget-biz .a11y-finding-steps > p > strong:first-child,
+.a11y-widget-biz .a11y-undecided-ask > strong:first-child {
+  display: block;
+  margin-bottom: var(--space-02);
+  font-size: 15px;
+  font-weight: 500;
+  color: var(--text-secondary);
+}
+
+.a11y-widget-biz .a11y-finding-details,
+.a11y-widget-biz .a11y-finding-steps {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-05);
+}
+
+/* "What we couldn't decide" — a card per kind, two across, each opening with
+   its fix-kind pill and a count. */
+.a11y-widget-biz .a11y-undecided-table,
+.a11y-widget-biz .a11y-undecided-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 320px), 1fr));
+  gap: var(--space-05);
+  align-items: start;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  border-collapse: separate;
+}
+
+.a11y-widget-biz .a11y-undecided-cell,
+.a11y-widget-biz .a11y-undecided-item {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-04);
+  padding: var(--space-06);
+  border-radius: var(--radius-lg);
+  background: var(--layer-01);
+}
+
+.a11y-widget-biz .a11y-undecided-badge-row {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: var(--space-04);
+}
+
+.a11y-widget-biz .a11y-undecided-places { font-size: 20px; font-weight: 500; }
+
+/* The link that closes each card. */
+.a11y-widget-biz .a11y-learn-more {
+  display: inline-block;
+  margin-top: var(--space-04);
+  font-size: 15px;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+/* ==========================================================================
+   Scan form
+   ==========================================================================
+   Labels and their descriptions were running together — "This pageOne page,
+   end to end" — because both are spans with no rule. The fieldsets were
+   showing their UA border and legend. The step numerals were stacking above
+   their questions instead of sitting beside them.
+   ========================================================================== */
+
+.a11y-widget-biz .a11y-form-single {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-08);
+}
+
+/* Numeral beside the question, body indented to meet it. */
+.a11y-widget-biz .a11y-step-group {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-06);
+}
+.a11y-widget-biz .a11y-step-num {
+  flex: 0 0 auto;
+  min-width: 1.4em;
+  font-size: 40px;
+  line-height: 1;
+  font-weight: 500;
+  color: var(--gray-60);
+}
+.a11y-widget-biz .a11y-step-body {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-04);
+}
+.a11y-widget-biz .a11y-step-head {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: var(--space-04);
+}
+.a11y-widget-biz .a11y-step-q { font-size: 40px; line-height: 1; font-weight: 500; margin: 0; }
+.a11y-widget-biz .a11y-step-note { font-size: 15px; font-weight: 400; color: var(--text-secondary); }
+
+/* The fieldset is grouping semantics, not a visible box, and its legend names
+   the group for a screen reader while the step question names it on screen. */
+.a11y-widget-biz .a11y-radio-group {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 260px), 1fr));
+  gap: var(--space-04);
+  border: 0;
+  padding: 0;
+  margin: 0;
+}
+.a11y-widget-biz .a11y-radio-group > legend {
+  position: absolute; width: 1px; height: 1px; margin: -1px;
+  overflow: hidden; clip-path: inset(50%); white-space: nowrap;
+}
+
+/* A label and its description are two lines, never one run-on. */
+.a11y-widget-biz .a11y-optioncard-label,
+.a11y-widget-biz .a11y-ai-card-title,
+.a11y-widget-biz .a11y-switch-label { display: block; font-size: 18px; font-weight: 400; }
+.a11y-widget-biz .a11y-optioncard-desc,
+.a11y-widget-biz .a11y-ai-hint,
+.a11y-widget-biz .a11y-group-hint,
+.a11y-widget-biz .a11y-input-help { display: block; font-size: 15px; color: var(--text-secondary); }
+.a11y-widget-biz .a11y-optioncard-desc { margin-top: var(--space-02); }
+
+.a11y-widget-biz .a11y-ai-card {
+  display: flex; align-items: center; flex-wrap: wrap; gap: var(--space-06);
+  padding: var(--space-05) var(--space-06);
+  border-radius: var(--radius-lg); background: var(--layer-01);
+}
+.a11y-widget-biz .a11y-ai-card-text { flex: 1 1 16rem; min-width: 0; }
+
+/* The login trigger is a link, not a bordered default button. */
+.a11y-widget-biz .a11y-login-toggle {
+  border: 0; padding: 0; background: transparent; color: inherit;
+  font-size: 15px; text-decoration: underline; text-underline-offset: 3px; cursor: pointer;
+}
+
+.a11y-widget-biz .a11y-url-helper-row {
+  display: flex; flex-wrap: wrap; align-items: baseline; gap: var(--space-03);
+}
+.a11y-widget-biz .a11y-url-helper-row > div { display: contents; }
+
+.a11y-widget-biz .a11y-url-submit {
+  display: flex; align-items: center; flex-wrap: wrap; gap: var(--space-06);
+}
+.a11y-widget-biz .a11y-url-submit-note { font-size: 15px; color: var(--text-secondary); }
+
+/* ==========================================================================
+   Scan form, matching the reference
+   ========================================================================== */
+
+/* The address is the display line of this screen, not a form field. */
+.a11y-widget-biz .a11y-url-form .a11y-input-shell {
+  display: flex;
+  align-items: center;
+  border: 0;
+  border-bottom: 2px solid var(--text-primary);
+  background: transparent;
+}
+.a11y-widget-biz .a11y-url-form .a11y-input-display > input,
+.a11y-widget-biz .a11y-url-form .a11y-input-shell > input {
+  flex: 1;
+  min-width: 0;
+  height: auto;
+  padding: var(--space-03) 0;
+  border: 0;
+  font-size: 40px;
+  line-height: 1.25;
+  font-weight: 500;
+}
+.a11y-widget-biz .a11y-url-form .a11y-input-shell > input:focus-visible { outline: 0; }
+.a11y-widget-biz .a11y-url-form .a11y-input-label {
+  font-size: 15px; font-weight: 500; color: var(--text-primary);
+}
+
+/* Option cards: radio, then label over description. */
+.a11y-widget-biz .a11y-optioncard {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-04);
+  padding: var(--space-05) var(--space-06);
+}
+.a11y-widget-biz .a11y-optioncard > input[type="radio"] { margin-top: 2px; }
+
+/* The submit is the one filled action on the screen. */
+.a11y-widget-biz .a11y-url-submit .a11y-btn {
+  min-height: 48px;
+  padding: 0 var(--space-06);
+  border: 0;
+  border-radius: var(--radius-pill);
+  background: var(--button-primary);
+  color: var(--white);
+  font-size: 18px;
+  font-weight: 500;
+}
+.a11y-widget-biz .a11y-url-submit .a11y-btn::after { content: " \2192"; }
+.a11y-widget-biz .a11y-url-submit .a11y-btn:hover:not(:disabled) { background: var(--text-primary); }
+
+/* The switch sits at the end of the AI row with its state word beside it. */
+.a11y-widget-biz .a11y-ai-card .a11y-switch,
+.a11y-widget-biz .a11y-switch-controls {
+  display: flex; align-items: center; gap: var(--space-04); margin-left: auto;
+}
+.a11y-widget-biz .a11y-switch-word { font-size: 18px; color: var(--text-secondary); }
+
+/* The display line lost to .a11y-section-title: the h2 carries BOTH classes,
+   both rules are (0,2,0), and section-title came later so it won at 40px. The
+   display line is 144. Ordering decided this, not intent — so it is stated
+   explicitly rather than left to whichever rule lands last. */
+.a11y-widget-biz .a11y-newscan-title.a11y-section-title,
+.a11y-widget-biz .a11y-newscan-title {
+  font-size: 144px;
+  line-height: 0.88;
+  font-weight: 500;
+}
+
+/* The card label leads its description, so it takes the medium weight. */
+.a11y-widget-biz .a11y-optioncard-label { font-weight: 500; }
+
+/* Controls take the brand ink, not the browser's blue. .as-check sets
+   accent-color: var(--gray-100) and the rebuild dropped it, so every radio and
+   checkbox was rendering in the UA accent. */
+.a11y-widget-biz input[type="radio"],
+.a11y-widget-biz input[type="checkbox"] {
+  accent-color: var(--text-primary);
+  width: 24px;
+  height: 24px;
+  margin: 0;
+  flex-shrink: 0;
+}
+
+/* The corner badge on an option card: a pill that overhangs the top edge and
+   sits in from the right, so it reads as attached to the card rather than
+   inside it. */
+.a11y-widget-biz .a11y-optioncard { position: relative; }
+.a11y-widget-biz .a11y-optioncard-meta {
+  position: absolute;
+  top: -12px;
+  right: var(--space-05);
+  z-index: 1;
+  padding: 2px 12px;
+  border-radius: var(--radius-pill);
+  background: var(--button-primary);
+  color: var(--white);          /* 4.6:1 */
+  font-size: 15px;
+  font-weight: 500;
+  white-space: nowrap;
+}
+/* Clear the badge so it never sits on the label. */
+.a11y-widget-biz .a11y-optioncard:has(> .a11y-optioncard-meta) { margin-top: 12px; }
+
+/* The form runs the full content width — no measure cap on it. The 60ch cap
+   belongs to prose, not to a two-card row that is meant to fill the column. */
+.a11y-widget-biz .a11y-url-form,
+.a11y-widget-biz .a11y-form-single,
+.a11y-widget-biz .a11y-step-body,
+.a11y-widget-biz .a11y-radio-group,
+.a11y-widget-biz .a11y-ai-card,
+.a11y-widget-biz .a11y-optioncard { max-width: none; width: 100%; }
+
+/* The intro keeps its measure — it is prose. */
+.a11y-widget-biz .a11y-newscan-sub { max-width: var(--measure); }
+
+/* The error line is a form message, not prose, so the 60ch measure does not
+   apply to it — it was the one child of a step body narrower than its
+   siblings, at 746 against their 884. */
+.a11y-widget-biz .a11y-error,
+.a11y-widget-biz .a11y-url-error { max-width: none; width: 100%; }
+
+/* ==========================================================================
+   Sign-the-scanner-in panel
+   ==========================================================================
+   Had no rules at all, so it rendered as a UA fieldset: visible border, legend
+   notched into it, and the three fields laid out inline with their labels.
+   The design makes it an inverted block on the accent, with the fields as
+   white pills stacked under their labels.
+   ========================================================================== */
+
+.a11y-widget-biz .a11y-login { flex-basis: 100%; width: 100%; }
+
+.a11y-widget-biz .a11y-login-fieldset {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-05);
+  margin: var(--space-06) 0 0;
+  padding: var(--space-08) var(--space-07) var(--space-07);
+  border: 0;
+  border-radius: var(--radius-lg);
+  background: #d9662b;              /* accent block */
+  color: var(--gray-100);           /* 8.1:1 on this ground */
+}
+
+/* Caps, centred, tracked out — the panel names itself. */
+.a11y-widget-biz .a11y-login-legend {
+  float: none;
+  width: 100%;
+  padding: 0;
+  text-align: center;
+  font-size: 15px;
+  font-weight: 500;
+  letter-spacing: var(--tracking-caps, 0.1em);
+  text-transform: uppercase;
+}
+
+.a11y-widget-biz .a11y-login-note {
+  max-width: 60ch;
+  margin: 0 auto;
+  text-align: center;
+  font-size: 18px;
+  line-height: 1.5;
+}
+
+/* Label above its field, field as a white pill. */
+.a11y-widget-biz .a11y-login-fieldset .a11y-stmt-fields {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-05);
+}
+.a11y-widget-biz .a11y-login-fieldset .a11y-stmt-field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-03);
+}
+.a11y-widget-biz .a11y-login-fieldset label {
+  font-size: 15px;
+  font-weight: 500;
+}
+.a11y-widget-biz .a11y-login-fieldset input {
+  width: 100%;
+  height: 56px;
+  padding: 0 var(--space-06);
+  border: 0;
+  border-radius: var(--radius-pill);
+  background: var(--white);
+  color: var(--gray-100);
+  font-size: 18px;
+}
+
+.a11y-widget-biz .a11y-login-ready { font-size: 15px; }
+
+/* The panel's own actions: one filled, the rest quiet. */
+.a11y-widget-biz .a11y-login-fieldset .a11y-btn,
+.a11y-widget-biz .a11y-login-fieldset button:not(.a11y-login-toggle) {
+  align-self: center;
+  min-height: 44px;
+  padding: 0 var(--space-06);
+  border: 0;
+  border-radius: var(--radius-pill);
+  background: var(--white);
+  color: var(--gray-100);
+  font-size: 15px;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+/* The trigger stays visible while the panel is open — it is the control that
+   closes it, so hiding it strands the panel with no way back. */
+.a11y-widget-biz .a11y-login-toggle { display: inline; }
+
+/* The option pair fills its row. auto-fill keeps every track it can fit, so
+   two cards in a 1740px row sat in the first two of six and stopped at ~290px
+   each while the AI card below ran the full width. This is a PAIR, not an
+   open-ended set: two equal columns, and one below the panel breakpoint. */
+.a11y-widget-biz .a11y-url-form .a11y-radio-group {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+@container a11y-panel (max-width: 620px) {
+  .a11y-widget-biz .a11y-url-form .a11y-radio-group { grid-template-columns: 1fr; }
+}
+
+/* A <legend> is painted into the fieldset's border by the UA, which is why the
+   heading was sitting on the top edge. Floating it with a full width drops it
+   into normal flow as the panel's first line. */
+.a11y-widget-biz .a11y-login-legend {
+  float: left;
+  width: 100%;
+  margin: 0 0 var(--space-06);
+}
+
+/* The panel belongs to step 01's body, not to the panel edge — it was running
+   full bleed because .a11y-login is a display:contents escapee of the helper
+   row. Keep it inside, and give its contents a readable measure instead of
+   letting 1100px-wide pill fields stretch the whole column. */
+.a11y-widget-biz .a11y-login { width: 100%; }
+
+.a11y-widget-biz .a11y-login-fieldset > * { max-width: 640px; margin-inline: auto; width: 100%; }
+.a11y-widget-biz .a11y-login-legend { max-width: none; }
+
+/* The quiet action is a pill on the block, not a bare underlined link. */
+.a11y-widget-biz .a11y-login-fieldset a,
+.a11y-widget-biz .a11y-login-fieldset .a11y-login-cancel,
+.a11y-widget-biz .a11y-login-fieldset button {
+  align-self: center;
+  width: auto;
+  max-width: none;
+  min-height: 44px;
+  padding: 0 var(--space-06);
+  border: 0;
+  border-radius: var(--radius-pill);
+  background: var(--white);
+  color: var(--gray-100);
+  font-size: 15px;
+  font-weight: 500;
+  text-decoration: none;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Three times the space between the intro and the first step. The intro ends
+   the page's opening statement and step 01 begins the form — a bigger break
+   than the 40px that separates one step from the next. */
+.a11y-widget-biz .a11y-form-single { margin-top: 120px; }
+
+/* Panel geometry from the reference: a softer, larger corner than a card, and
+   the actions gathered in a centred row at the foot. */
+.a11y-widget-biz .a11y-login-fieldset {
+  border-radius: 40px;
+  padding: var(--space-09) var(--space-07) var(--space-08);
+}
+
+.a11y-widget-biz .a11y-login-legend {
+  font-size: 20px;
+  letter-spacing: 0.02em;
+}
+
+/* Fields keep a rounded rectangle rather than a full pill — at 56px tall a
+   999px radius turns the ends into semicircles, which is not what the
+   reference shows. */
+.a11y-widget-biz .a11y-login-fieldset input { border-radius: var(--radius-md); }
+
+/* Secondary actions sit side by side and centred, in the panel's quiet grey. */
+.a11y-widget-biz .a11y-login-actions,
+.a11y-widget-biz .a11y-login-fieldset > .a11y-login-ready + * {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: var(--space-04);
+}
+
+.a11y-widget-biz .a11y-login-fieldset button,
+.a11y-widget-biz .a11y-login-fieldset a {
+  background: var(--gray-10);
+  color: var(--gray-100);        /* 16.4:1 */
+}
+
+/* The badge clearance belongs to the ROW, not to the badged card. As a margin
+   on the card it pushed only that one down, so the pair started at different
+   heights and ended level — leaving them visibly unequal. */
+.a11y-widget-biz .a11y-url-form .a11y-radio-group { padding-top: 12px; align-items: stretch; }
+.a11y-widget-biz .a11y-optioncard:has(> .a11y-optioncard-meta) { margin-top: 0; }
+.a11y-widget-biz .a11y-optioncard { height: 100%; }
+
+/* The close control: a dark pill straddling the panel's top edge, centred.
+   Top padding drops from 48 to 16 — a third — so the panel's own margin above
+   the heading no longer doubles up with the button's overhang. */
+.a11y-widget-biz .a11y-login-fieldset {
+  position: relative;
+  padding-top: var(--space-05);
+}
+
+.a11y-widget-biz .a11y-login-close {
+  position: absolute;
+  top: -20px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: auto;
+  min-width: 64px;
+  min-height: 40px;
+  padding: 0 var(--space-05);
+  border: 0;
+  border-radius: var(--radius-pill);
+  background: var(--gray-100);
+  color: var(--white);          /* 16.4:1 */
+  font-size: 18px;
+  line-height: 1;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* The legend clears the button rather than sitting under it. */
+.a11y-widget-biz .a11y-login-legend { margin-top: var(--space-06); }
+
+/* The close control is the one dark thing on this panel. A later, more generic
+   `.a11y-login-fieldset button` rule was painting it the quiet grey — same
+   specificity, later in the file, so it won. Stated after it, and scoped, so
+   ordering cannot take it again. */
+.a11y-widget-biz .a11y-login-fieldset .a11y-login-close {
+  background: var(--gray-100);
+  color: var(--white);            /* 16.4:1 */
+}
+
+/* The note reads at the same leading as the page's intro — both are body prose
+   at 18px, so both are 1.5. */
+.a11y-widget-biz .a11y-login-note,
+.a11y-widget-biz .a11y-newscan-sub {
+  font-size: 18px;
+  line-height: 1.5;
+}
+
+/* Still white after the last attempt: `button:not(.a11y-login-toggle)` is
+   (0,3,1), because :not() contributes its argument's specificity — so it beat
+   a plain (0,3,0). Matching type + two classes to tie, and landing later. */
+.a11y-widget-biz .a11y-login-fieldset button.a11y-login-close {
+  background: var(--gray-100);
+  color: var(--white);
+}
+
+/* Black pill, white cross at three times the size. The glyph drives the
+   button's height, so the pill grows with it rather than clipping. */
+.a11y-widget-biz .a11y-login-fieldset button.a11y-login-close {
+  background: var(--gray-100);
+  color: var(--white);
+  min-height: 72px;
+  min-width: 104px;
+  padding: 0 var(--space-06);
+  font-size: 54px;              /* 3x the 18 it was */
+  line-height: 1;
+  top: -36px;                   /* half its height, so it straddles the edge */
+}
+
+.a11y-widget-biz .a11y-login-close > span {
+  display: block;
+  font-size: 54px;
+  line-height: 1;
+  /* The multiplication sign sits high in its em box; nudging it down centres
+     the glyph in the pill rather than the box. */
+  margin-top: -0.08em;
+}
+
+/* A third of the side margin. 50 was set so the shell's 212px nav rail had
+   room to breathe; the form wants more of the width than that leaves it. */
+.a11y-widget-biz .a11y-widget-inner { padding-inline: 17px; }
+
+@container a11y-panel (max-width: 620px) {
+  .a11y-widget-biz .a11y-widget-inner { padding-inline: 17px; }
+}
+
+/* Half the pill, and a cross drawn rather than typed. A text × takes its
+   stroke weight from the font, so 1.2px is not reachable that way — two
+   rotated 1.2px rules are. The glyph stays in the DOM but is hidden: the
+   button's accessible name comes from its aria-label, not from the character,
+   so nothing is lost from the name. */
+.a11y-widget-biz .a11y-login-fieldset button.a11y-login-close {
+  position: absolute;
+  width: 52px;
+  min-width: 52px;
+  height: 36px;
+  min-height: 36px;
+  padding: 0;
+  top: -18px;                    /* half its height, still straddling the edge */
+  font-size: 0;
+}
+
+.a11y-widget-biz .a11y-login-close > span { display: none; }
+
+.a11y-widget-biz .a11y-login-close::before,
+.a11y-widget-biz .a11y-login-close::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 14px;
+  height: 1.2px;
+  background: currentColor;
+}
+.a11y-widget-biz .a11y-login-close::before { transform: translate(-50%, -50%) rotate(45deg); }
+.a11y-widget-biz .a11y-login-close::after  { transform: translate(-50%, -50%) rotate(-45deg); }
+
+/* The panel is a block in the middle of the column, not a full-width band —
+   it sits over the form rather than replacing it. Its contents already cap at
+   640, so the panel itself takes that plus its own padding. */
+.a11y-widget-biz .a11y-login-fieldset {
+  max-width: 720px;
+  margin-inline: auto;
+}
+
+/* The quiet actions read at body size, not label size — they are buttons a
+   reader chooses between, not metadata. */
+.a11y-widget-biz .a11y-login-fieldset button:not(.a11y-login-close) {
+  min-height: 48px;
+  padding: 0 var(--space-07);
+  font-size: 18px;
+}
+
+/* The note takes the page intro's leading exactly — 18px / 1.5. I had set 1.4
+   from the stylesheet's leading-by-measure rule, since the note sets a shorter
+   line than the intro. That is the general rule and this is a deliberate
+   exception: the two read as the same voice on the page, so they get the same
+   leading regardless of measure. */
+/* 26px, one less than the 27 that 1.5 resolves to at 18px. Written as a
+   literal because that is what it is — a chosen value, not a ratio. */
+.a11y-widget-biz .a11y-login-note { line-height: 26px; }
+
+/* The cancel button carries almost no margin of its own — the panel's padding
+   already sets it off from the edge, and the field stack above it provides the
+   separation. 2px keeps it from touching anything without adding a gap. */
+.a11y-widget-biz .a11y-login-fieldset button:not(.a11y-login-close) { margin: 2px; }
+
+/* 21px inside the sign-in panel — its labels, fields and placeholders.
+   NOTE: 21 is not a size CLAUDE.md permits. That doc says the floor is 14 and
+   small body is 15 or 18 only, and every other size in this stylesheet obeys
+   it. This is a deliberate exception on the panel, made on instruction, and it
+   is the one place the type scale is broken. Worth revisiting: 20 is already
+   in the system (--type-title-size) and is a pixel away. */
+.a11y-widget-biz .a11y-login-fieldset label,
+.a11y-widget-biz .a11y-login-fieldset input,
+.a11y-widget-biz .a11y-login-fieldset input::placeholder {
+  font-size: 21px;
+}
+
+/* 24px for what is typed into the white fields — the value the reader is
+   entering, larger than the label naming it. Same exception as the 21 above:
+   neither is a size CLAUDE.md permits, and this panel is now the only place
+   in the stylesheet that departs from the scale. */
+.a11y-widget-biz .a11y-login-fieldset input,
+.a11y-widget-biz .a11y-login-fieldset input::placeholder {
+  font-size: 24px;
+}
+
+/* The label sits tight to its field. line-height: 1 is the tightest that does
+   not clip — at 21px it makes the label box 21px instead of ~29, closing the
+   gap by 8. A literal 3px would collapse the box to 3px and paint the text
+   over its neighbours, so the space between label and field is set here
+   instead, which is what that gap actually is. */
+.a11y-widget-biz .a11y-login-fieldset label { line-height: 1; }
+.a11y-widget-biz .a11y-login-fieldset .a11y-stmt-field { gap: 3px; }
+
+/* The do-first band stacks: the label names the block, the statement is the
+   block. As a flex ROW the statement started after the label and hung off its
+   own indent. */
+.a11y-widget-biz .a11y-dofirst {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--space-03);
+}
+.a11y-widget-biz .a11y-dofirst-eyebrow { font-size: 15px; font-weight: 500; color: var(--text-secondary); }
+.a11y-widget-biz .a11y-dofirst-statement { margin: 0; max-width: var(--measure); }
+
+/* The print button and its explanation are a row with a gap, not a button with
+   text jammed against it. */
+.a11y-widget-biz .a11y-print-row,
+.a11y-widget-biz .a11y-form-footer {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-05);
+}
+.a11y-widget-biz .a11y-print-note { font-size: 15px; color: var(--text-secondary); }
