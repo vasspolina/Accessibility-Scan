@@ -63,7 +63,11 @@
      grid is proportioned for. At 1000 the shell nav left 700 for content, the
      280px column floor clamped, and the 5:7 ratio distorted to 280/380. */
   --content: 1240px;             /* kit: ReportSections maxWidth */
-  --pad-x: 24px;                 /* kit: main is padded 48px 24px */
+  /* 50px. The kit pads its own page 24, but that assumes the page IS the
+     viewport. This widget is embedded and the shell puts a 212px nav rail
+     inside the same box, so 24 left the rail hard against the edge and its
+     labels clipped once the panel narrowed. */
+  --pad-x: 50px;
   --r-card: 20px;                /* kit: measured 20, was 13 */
   --r-field: 4px;
   --r-pill: 999px;
@@ -1755,3 +1759,14 @@
 .a11y-widget-biz .a11y-finding-thumb,
 .a11y-widget-biz .a11y-finding-thumb img,
 .a11y-widget-biz .a11y-occurrence-thumb img { max-width: 100%; height: auto; }
+
+/* The panel must never be wider than what it is given. max-width alone does
+   not stop a grid child with a fixed 212px track from pushing it past the
+   edge, which is what clipped the nav labels. */
+.a11y-widget-biz .a11y-widget-inner { width: 100%; box-sizing: border-box; }
+
+/* Below the shell breakpoint the padding comes down too — 50px each side of a
+   360px screen is most of the screen. */
+@container a11y-panel (max-width: 620px) {
+  .a11y-widget-biz .a11y-widget-inner { padding-inline: var(--gap-2); }
+}
