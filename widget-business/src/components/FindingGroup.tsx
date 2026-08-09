@@ -471,16 +471,16 @@ function FindingDetails({
           you can check it without them, and where the finding came from — so
           each gets its own line and its own label. */}
       <p className="a11y-method-hint">
-        <strong>Who fixes this:</strong> {fix.hint}
+        <strong>Who fixes this</strong> {fix.hint}
       </p>
       {keyboardCheck && (
         <p className="a11y-method-hint">
-          <strong>Check it yourself:</strong> {KEYBOARD_HINT}
+          <strong>Check it yourself</strong> {KEYBOARD_HINT}
         </p>
       )}
       {fromAi && (
         <p className="a11y-method-hint">
-          <strong>Where this came from:</strong> {AI_HINT}
+          <strong>Where this came from</strong> {AI_HINT}
         </p>
       )}
       {!rep.elementScreenshot && rep.pictureNote && (
@@ -502,7 +502,7 @@ function FindingDetails({
           80 AI findings arrived as a headline and three badges. */}
       {measured && (
         <p className="a11y-finding-measured">
-          <strong>What we found:</strong> <CodeText text={measured} />
+          <strong>What we found</strong> <CodeText text={measured} />
         </p>
       )}
       {/* Its own line, not folded into the text above: rules with a
@@ -511,20 +511,20 @@ function FindingDetails({
           attached to. */}
       {rep.ageNote && (
         <p className="a11y-finding-measured">
-          <strong>Past sixty:</strong> <CodeText text={rep.ageNote} />
+          <strong>Past sixty</strong> <CodeText text={rep.ageNote} />
         </p>
       )}
       {/* Shared explanation — shown once for the whole group */}
       {plain && (
         <p className="a11y-finding-impact">
-          <strong>Why this matters:</strong> <CodeText text={plain.impact} />
+          <strong>Why this matters</strong> <CodeText text={plain.impact} />
         </p>
       )}
       {/* Curated, hand-verified research context — never generated per
           scan, which is how invented statistics happen. */}
       {plain?.research && (
         <p className="a11y-finding-research">
-          <strong>What the research shows:</strong> <CodeText text={plain.research} />
+          <strong>What the research shows</strong> <CodeText text={plain.research} />
         </p>
       )}
       {/* Steps get a list; a single action stays a sentence. Both carry the
@@ -533,7 +533,7 @@ function FindingDetails({
       {Array.isArray(whatToDo) ? (
         <div className="a11y-finding-steps">
           <p>
-            <strong>What to do:</strong>
+            <strong>What to do</strong>
           </p>
           <ul>
             {whatToDo.map((step) => (
@@ -544,8 +544,8 @@ function FindingDetails({
           </ul>
         </div>
       ) : (
-        <p>
-          <strong>What to do:</strong> <CodeText text={whatToDo} />
+        <p className="a11y-finding-todo">
+          <strong>What to do</strong> <CodeText text={whatToDo} />
         </p>
       )}
       {/* The WCAG and Level columns fold in here at phone width, the same
@@ -591,7 +591,7 @@ function FindingDetails({
       {locatesSomething && (
       <div className="a11y-affected">
         <p className="a11y-affected-label">
-          <strong>{count > 1 ? `Affected elements (${count}):` : "Affected element:"}</strong>
+          <strong>{count > 1 ? `Affected elements (${count})` : "Affected element"}</strong>
         </p>
         {somePictured && someUnpictured && (
           <p className="a11y-occurrence-note">

@@ -195,6 +195,20 @@
   line-height: 1;
 }
 
+/* Open rows swap the ring for a square. The gallery's expanded-row shot shows
+   the control change SHAPE when it opens, not just rotate — a closed row keeps
+   the ring, an open one is a box with the caret turned down. Worth keeping
+   because it carries the state a second way: rotation alone is a 90° turn on a
+   small glyph, which is easy to miss and impossible to see for anyone who has
+   turned motion off, and this component honours prefers-reduced-motion by
+   collapsing --motion-exit to 1ms.
+   FLAG: the shot reads tighter than 10px and v2 steps 0 → 10 → 20, so
+   --radius-soft is the nearest real token; 0 would be the only alternative and
+   reads harsh beside 20px cards. */
+.a11y-datatable .a11y-dt-toggle[aria-expanded="true"] {
+  border-radius: var(--radius-soft);
+}
+
 .a11y-datatable .a11y-dt-toggle [data-open="true"] {
   transform: rotate(90deg);
 }

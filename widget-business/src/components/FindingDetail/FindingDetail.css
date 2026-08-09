@@ -1,0 +1,313 @@
+/* ==========================================================================
+   FindingDetail
+   ==========================================================================
+   Ported from components/scan/FindingDetail.jsx. The row-expansion shape:
+   plain language first, technical detail behind a nested disclosure.
+
+   Two shapes from one component, switched by whether a metadata header exists:
+
+   - PLAIN  — labelled answers stacked, "what to do" at title size, the affected
+              element in a black code block, technical version nested below.
+   - BAND   — a wrapping metadata header (criterion, severity, one-line finding,
+              place count) with an action pill pushed to the right, and "what to
+              do" set as DISPLAY TYPE beneath it. tone="invert" puts it on black.
+
+   The annotations are the spec for both:
+     "Metadata header, the fix set as display type, action pill at the right.
+      tone=invert puts it on black."
+     "Row-expansion shape: labelled answers, black code block, nested technical
+      disclosure."
+     "Plain language first; technical detail behind the nested disclosure."
+
+   ---- The muted-on-inverted trap, mapped up rather than guessed -------------
+
+   The source reaches for --text-on-invert-tertiary for every muted part of the
+   band. Foundations v2 has no tertiary on-inverse ink — it stops at
+   --content-on-inverse-secondary. Substituting a *light-ground* muted token
+   here is exactly the mistake that shipped SpecList at 1.09:1 earlier in this
+   session, so every muted part of the band maps UP to the secondary on-inverse
+   ink instead of down to a grey.
+
+   Measured on the light theme's inverted surfaces:
+     #cfc7ba --content-on-inverse-secondary on #23201d --surface-inverse   9.7:1
+     #f7f4ef --content-on-inverse           on #23201d --surface-inverse  14.8:1
+     #cfc7ba on the 8%-white inset (#35322f, computed)                     7.6:1
+     #f7f4ef on the 8%-white inset (#35322f, computed)                    11.6:1
+   Dark theme remaps both tokens together, so the inversion flips as a pair.
+   ========================================================================== */
+
+.a11y-fd {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+  box-sizing: border-box;
+  font-family: var(--font-core);
+  color: var(--content-primary);
+}
+
+/* Only the band takes a surface of its own. The plain shape is content inside
+   whatever already holds it — a table row's expand cell — and painting it
+   would put a card inside a card, which Card's own annotation calls the
+   anti-pattern. */
+.a11y-fd.a11y-fd-invert {
+  padding: var(--space-5);
+  border-radius: var(--radius-panel);
+  background: var(--surface-inverse);
+  color: var(--content-on-inverse);
+}
+
+/* ---- Metadata header ---------------------------------------------------- */
+
+.a11y-fd-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  column-gap: var(--space-5);
+  row-gap: var(--space-3);
+  font-size: var(--text-label);
+  line-height: var(--leading-label);
+}
+
+.a11y-fd-ident {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  flex-wrap: wrap;
+}
+
+.a11y-fd-eyebrow {
+  font-weight: 500;
+}
+
+/* The string form of `badge`. A ReactNode badge (SeverityTag) brings its own
+   colour and never reaches this rule — see the note in the .tsx. */
+.a11y-fd-badge {
+  white-space: nowrap;
+  padding: 0.15em var(--space-4) 0.25em;
+  border-radius: var(--radius-round);
+  background: var(--surface-accent);
+  color: var(--content-on-accent);
+  font-weight: 500;
+}
+
+.a11y-fd-found {
+  flex: 1 1 12rem;
+  min-width: 0;
+  color: var(--content-secondary);
+}
+
+.a11y-fd-meta {
+  flex: 0 1 auto;
+  color: var(--content-secondary);
+}
+
+.a11y-fd-invert .a11y-fd-found,
+.a11y-fd-invert .a11y-fd-meta {
+  color: var(--content-on-inverse-secondary);
+}
+
+/* The action pill. On the band it is the one white element, which is what
+   makes it read as the way out of the panel. */
+.a11y-fd-action {
+  flex: 0 0 auto;
+  margin-left: auto;
+  white-space: nowrap;
+  min-height: var(--target-comfortable);
+  padding: var(--space-2) var(--space-4);
+  border-radius: var(--radius-round);
+  border: 1px solid var(--content-primary);
+  background: transparent;
+  color: var(--content-primary);
+  cursor: pointer;
+  font-family: inherit;
+  font-size: var(--text-label);
+}
+
+.a11y-fd-invert .a11y-fd-action {
+  border: 0;
+  background: var(--content-on-inverse);
+  color: var(--surface-inverse);
+}
+
+/* ---- What to do --------------------------------------------------------- */
+
+/* Plain shape: title size, normal measure. */
+.a11y-fd-todo {
+  margin: 0;
+  max-width: var(--measure-max);
+  font-size: var(--text-title);
+  line-height: var(--leading-title);
+  font-weight: 500;
+  letter-spacing: var(--tracking-tight);
+  text-wrap: balance;
+}
+
+/* Band: the fix becomes the display type of the panel. 22ch is what keeps it
+   to the two or three lines the design shows rather than one long ribbon.
+   FLAG: the clamp and the 0.98 leading are the source's literal values. v2's
+   display steps are fixed sizes, and none of them is fluid, so substituting a
+   token here would change the design at every width but one. */
+.a11y-fd-band .a11y-fd-todo {
+  max-width: 22ch;
+  font-size: clamp(1.75rem, 4vw, 3.25rem);
+  line-height: 0.98;
+}
+
+/* ---- Labelled answers --------------------------------------------------- */
+
+.a11y-fd-row {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+
+.a11y-fd-row-label {
+  font-size: var(--text-label);
+  line-height: var(--leading-label);
+  color: var(--content-secondary);
+}
+
+/* The source sets label and answer to the SAME ink in the plain tone, which
+   leaves nothing separating them but size. The gallery shot plainly shows the
+   answer darker than its label, and in the invert tone the source itself
+   separates them (tertiary label, secondary value) — so the plain tone is the
+   odd one out. The answer takes primary ink in both tones here. */
+.a11y-fd-row-value {
+  max-width: var(--measure-max);
+  font-size: var(--text-body);
+  line-height: var(--leading-body-narrow);
+  color: var(--content-primary);
+}
+
+.a11y-fd-row-value > p {
+  margin: 0;
+}
+
+.a11y-fd-invert .a11y-fd-row-label {
+  color: var(--content-on-inverse-secondary);
+}
+
+.a11y-fd-invert .a11y-fd-row-value {
+  color: var(--content-on-inverse);
+}
+
+/* ---- Affected element --------------------------------------------------- */
+
+/* Dark in BOTH shapes, which is the source's behaviour and the annotation's
+   words — "black code block". On the plain shape it is the one dark thing on a
+   light card; on the band it lifts 8% off the black so it still separates. */
+.a11y-fd-affected {
+  border-radius: var(--radius-soft);
+  background: var(--surface-inverse);
+  color: var(--content-on-inverse);
+  box-sizing: border-box;
+  overflow: hidden;
+}
+
+.a11y-fd-invert .a11y-fd-affected {
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.a11y-fd-affected-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-4);
+  padding: var(--space-3) var(--space-3) var(--space-3) var(--space-5);
+}
+
+.a11y-fd-affected-label {
+  font-size: var(--text-label);
+  line-height: var(--leading-label);
+  color: var(--content-on-inverse-secondary);
+}
+
+.a11y-fd-copy {
+  flex-shrink: 0;
+  min-height: var(--target-comfortable);
+  padding: var(--space-1) var(--space-4);
+  border-radius: var(--radius-round);
+  border: 0;
+  background: rgba(255, 255, 255, 0.14);
+  color: var(--content-on-inverse);
+  font-family: inherit;
+  font-size: var(--text-label);
+  cursor: pointer;
+}
+
+/* The selector itself. Monospace is doing real work here — it is the one place
+   in the report where the exact characters matter. */
+.a11y-fd-affected-value {
+  padding: 0 var(--space-5) var(--space-4);
+  font-family: var(--font-mono, ui-monospace, SFMono-Regular, Menlo, monospace);
+  font-size: var(--text-title);
+  line-height: 1.35;
+  overflow-x: auto;
+}
+
+/* ---- Technical disclosure ----------------------------------------------- */
+
+.a11y-fd-tech {
+  border: 0;
+  border-radius: var(--radius-soft);
+  background: var(--surface-sunken);
+  overflow: hidden;
+  box-sizing: border-box;
+}
+
+.a11y-fd-invert .a11y-fd-tech {
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.a11y-fd-tech-toggle {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  min-height: 56px;
+  padding: var(--space-3) var(--space-5);
+  background: transparent;
+  border: 0;
+  cursor: pointer;
+  text-align: left;
+  font-family: inherit;
+  font-size: var(--text-title);
+  letter-spacing: var(--tracking-tight);
+  color: var(--content-primary);
+}
+
+.a11y-fd-invert .a11y-fd-tech-toggle {
+  color: var(--content-on-inverse);
+}
+
+.a11y-fd-tech-caret {
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  font-size: 1.5rem;
+  transition: transform var(--motion-exit) var(--ease-standard);
+}
+
+.a11y-fd-tech-toggle[aria-expanded="true"] .a11y-fd-tech-caret {
+  transform: rotate(90deg);
+}
+
+.a11y-fd-tech-body {
+  margin: 0 var(--space-5);
+  padding-top: var(--space-4);
+  padding-bottom: var(--space-5);
+  border-top: 1px solid var(--border-subtle);
+  max-width: var(--measure-max);
+  font-size: var(--text-body);
+  line-height: var(--leading-body-narrow);
+  color: var(--content-secondary);
+}
+
+.a11y-fd-invert .a11y-fd-tech-body {
+  border-top-color: rgba(255, 255, 255, 0.14);
+  color: var(--content-on-inverse-secondary);
+}
