@@ -178,7 +178,16 @@
   --red-10: #fff1f1;   --red-60: #da1e28;   --red-70: #a2191f;  --red-100: #2d0709;
   --orange-10: #fff2e8; --orange-70: #8a3800; --orange-100: #231000;
   --blue-10: #edf5ff;  --blue-60: #0f62fe;  --blue-70: #0043ce;  --blue-100: #001141;
+  /* The report-actions panel's ground and its pdf tag. purple-60 (#8a3ffc)
+     is the kit's ramp value and clears AA on white at 5.00:1; kept rather
+     than darkened so the tag matches the design exactly. */
+  --purple-10: #f6f2ff; --purple-60: #8a3ffc;
   --green-10: #defbe6; --green-60: #198038;
+  /* Not in the kit's ramp — the design system has no brown. Placed at the
+     -60 slot's role (a filled surface carrying white text) but darker than
+     the ramp's ~5:1, because a brown light enough to sit at 5:1 reads as tan.
+     7.4:1 on white, measured. */
+  --brown-10: #f4ece2; --brown-60: #7a4a1d;
 
   --background: var(--white);
   --layer-01: var(--gray-10);
@@ -188,7 +197,7 @@
   --text-on-invert: var(--white);
   --text-on-invert-secondary: var(--gray-30);   /* 10.6:1 on gray-100 */
   --border-subtle: var(--gray-20);
-  --button-primary: var(--green-60);
+  --button-primary: var(--brown-60);
   --focus: var(--text-primary);
 
   --severity-critical: var(--red-60);   --severity-critical-bg: var(--red-10);
@@ -211,7 +220,7 @@
 .a11y-widget-biz .a11y-shell-nav { background: var(--layer-01); }
 .a11y-widget-biz .a11y-shell-nav-link[aria-current]:not([aria-current="false"]) {
   background: var(--green-10);
-  color: #071908;
+  color: var(--text-primary);
 }
 
 /* Severity carried by a tint AND a word, never the tint alone. Each card takes
@@ -243,9 +252,15 @@
   background: var(--gray-100);
   color: var(--text-on-invert);
 }
-.a11y-widget-biz .a11y-section-concern .a11y-section-eyebrow,
-.a11y-widget-biz .a11y-section-concern .a11y-section-desc,
-.a11y-widget-biz .a11y-section-concern .a11y-section-count {
+/* Scoped to inside the tint, which is the only place the dark ground exists.
+   Unqualified, it painted on-invert grey onto anything under .a11y-section-
+   concern — and SiteAuditView uses that class with no tint wrapper, so its
+   "Fix once, fix everywhere" heading count and description were #c6c6c6 on
+   white at 1.7:1. The seventh on-invert mapping fault in this repo, and the
+   first where the ground was simply absent rather than mis-mapped. */
+.a11y-widget-biz .a11y-section-tint .a11y-section-eyebrow,
+.a11y-widget-biz .a11y-section-tint .a11y-section-desc,
+.a11y-widget-biz .a11y-section-tint .a11y-section-count {
   color: var(--text-on-invert-secondary);
 }
 
@@ -459,7 +474,7 @@
   padding: var(--space-05) var(--space-06); border: 2px solid transparent;
   border-radius: var(--radius-lg); background: var(--layer-01); cursor: pointer;
 }
-.a11y-widget-biz .a11y-optioncard:has(> input:checked) { background: var(--green-10); border-color: var(--button-primary); }
+.a11y-widget-biz .a11y-optioncard:has(> input:checked) { background: var(--green-10); border-color: var(--green-60); }
 .a11y-widget-biz .a11y-optioncard > input[type="radio"] { width: 24px; height: 24px; margin: 0; flex-shrink: 0; }
 
 /* .as-progress ---------------------------------------------------------- */
@@ -1000,8 +1015,11 @@
   z-index: 1;
   padding: 2px 12px;
   border-radius: var(--radius-pill);
-  background: var(--button-primary);
-  color: var(--white);          /* 4.6:1 */
+  /* Green, not --button-primary: this marks the selected option, and the
+     selection tint under it is green. Following the button token made the
+     pill brown against a green card. 5.02:1 on white. */
+  background: var(--green-60);
+  color: var(--white);          /* 5.0:1 */
   font-size: 15px;
   font-weight: 500;
   white-space: nowrap;
@@ -1413,3 +1431,598 @@
   gap: var(--space-05);
 }
 .a11y-widget-biz .a11y-print-note { font-size: 15px; color: var(--text-secondary); }
+
+/* Inside a finding card the fix-kind is the card's action, filled in that
+   card's own severity colour — Perceivable.jsx renders it as
+   <Button style={{ background: t.chip, color: white }}>. The pastel pills came
+   from DesignerDeveloper.jsx, where the fix kind is a legend entry rather than
+   an action; both are the kit's, and this is the one that belongs here.
+   White on each chip: 4.6 / 7.9 / 5.0 / 7.4. */
+.a11y-widget-biz .a11y-finding .a11y-method-badge {
+  min-height: 40px;
+  padding: 0 var(--space-06);
+  border-radius: var(--radius-pill);
+  font-size: 18px;
+  font-weight: 500;
+  color: var(--white);
+}
+
+.a11y-widget-biz .a11y-severity-critical .a11y-method-badge { background: var(--red-60); }
+.a11y-widget-biz .a11y-severity-serious  .a11y-method-badge { background: var(--orange-70); }
+.a11y-widget-biz .a11y-severity-moderate .a11y-method-badge { background: var(--blue-60); }
+.a11y-widget-biz .a11y-severity-minor    .a11y-method-badge { background: var(--gray-70); }
+
+/* The severity tag leads the card, above the title. */
+.a11y-widget-biz .a11y-finding .a11y-sev { align-self: flex-start; order: -1; }
+
+/* Button and note on one row, the note reading beside the action rather than
+   over it. DOM order matches: button, then the line that qualifies it. */
+.a11y-widget-biz .a11y-url-submit {
+  flex-direction: row;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+/* Half the gap between the helper line and the action beneath it. The step
+   body's 12px gap plus the submit row's own 12 stacked into more air than the
+   pair needs now that the button sits with the field it acts on. */
+.a11y-widget-biz .a11y-url-submit { gap: 6px; margin-top: 6px; }
+
+/* Beside, not above. */
+.a11y-widget-biz .a11y-url-submit {
+  flex-direction: row;
+  align-items: center;
+  gap: var(--space-05);
+}
+
+/* The empty error region costs a flex gap even at zero height, which is most
+   of the air between the helper line and the action. Out of flow while empty:
+   it stays in the DOM and in the accessibility tree, so the live region still
+   announces when it fills — display:none would have removed it from both. */
+.a11y-widget-biz .a11y-url-error:empty {
+  position: absolute;
+  margin: 0;
+  padding: 0;
+  height: 0;
+}
+
+.a11y-widget-biz .a11y-url-submit { margin-top: 0; }
+
+/* ── The visually-hidden utility ─────────────────────────────────────────
+   .a11y-sr-only is applied in 14 places across 10 components and had NO rule
+   anywhere in this stylesheet — not here, not in 0d4611a before the strip. So
+   28 elements of screen-reader-only text were rendering to everyone: the plan
+   names "— Starter/— Business/— Agency", "the suggested alt text", the
+   run-status sentence. check-styles.mjs never caught it because its ALLOW
+   list exempts sr-only by name, on the reasoning that utilities are "applied
+   by name, not styled per use" — which is exactly the assumption that let a
+   utility with no definition survive.
+
+   The clip-rect recipe rather than display:none or visibility:hidden: those
+   remove the element from the accessibility tree too, which defeats the whole
+   point. Not width/height:0 either — some screen readers skip zero-size text. */
+.a11y-widget-biz .a11y-sr-only {
+  position: absolute !important;
+  width: 1px; height: 1px;
+  margin: -1px; padding: 0; border: 0;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+/* ── Report actions ──────────────────────────────────────────────────────
+   The design's tinted panel: two exports, the run status, the "Do this
+   first" callout, and the jump to it. White pills on a tint, one radius. */
+.a11y-widget-biz .a11y-report-actions {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-05);
+  padding: var(--space-06);
+  border-radius: var(--radius-lg);
+  background: var(--purple-10);
+  margin-bottom: var(--space-07);
+}
+.a11y-widget-biz .a11y-ra-row {
+  display: grid;
+  /* min(100%, …) so a narrow embed collapses instead of overflowing — the
+     bare minmax(260px, 1fr) never shrinks below its own minimum. */
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 260px), 1fr));
+  gap: var(--space-04);
+}
+.a11y-widget-biz .a11y-ra-item {
+  display: flex; align-items: center; gap: var(--space-04);
+  min-height: 56px;
+  margin: 0;
+  padding: 0 var(--space-05);
+  border: 2px solid transparent;
+  border-radius: var(--radius-pill);
+  background: var(--white);
+  font-size: 18px;
+  letter-spacing: inherit;
+}
+.a11y-widget-biz .a11y-ra-label { flex: 1 1 auto; text-align: left; }
+.a11y-widget-biz .a11y-ra-action {
+  cursor: pointer;
+  color: var(--text-primary);
+  text-decoration: none;
+  font: inherit;
+  font-size: 18px;
+  letter-spacing: inherit;
+}
+/* The design marks the PDF export as the outlined one and email as filled. */
+.a11y-widget-biz .a11y-ra-pdf { border-color: var(--text-primary); }
+.a11y-widget-biz .a11y-ra-dot {
+  flex: 0 0 auto;
+  width: 24px; height: 24px;
+  border-radius: var(--radius-pill);
+  background: var(--text-primary);
+}
+.a11y-widget-biz .a11y-ra-action:hover { background: var(--brown-10); }
+
+/* Tags. Each tint carries a word as well, never the tint alone. */
+.a11y-widget-biz .a11y-ra-tag {
+  flex: 0 0 auto;
+  padding: 4px var(--space-04);
+  border-radius: var(--radius-pill);
+  font-size: 15px;
+  font-weight: 500;
+  letter-spacing: inherit;
+}
+.a11y-widget-biz .a11y-ra-tag-email  { background: var(--blue-10);   color: var(--blue-100); }
+.a11y-widget-biz .a11y-ra-tag-pdf    { background: transparent;      color: var(--purple-60); }
+.a11y-widget-biz .a11y-ra-tag-time   { background: var(--green-10);  color: #0b2916; }
+.a11y-widget-biz .a11y-ra-tag-issues { background: var(--red-10);    color: var(--red-100); }
+.a11y-widget-biz .a11y-ra-tag-first  { background: var(--orange-10); color: var(--orange-100); }
+
+.a11y-widget-biz .a11y-ra-note {
+  margin: 0;
+  padding: 0 var(--space-05);
+  font-size: 15px;
+  line-height: 1.5;
+  color: var(--text-primary);
+}
+
+/* The callout is the one item that carries two lines, so it aligns to the
+   top rather than centring the tag against a two-line block. */
+.a11y-widget-biz .a11y-ra-dofirst {
+  align-items: flex-start;
+  padding: var(--space-05);
+  border-radius: var(--radius-lg);
+}
+.a11y-widget-biz .a11y-ra-dofirst-text { flex: 1 1 auto; }
+.a11y-widget-biz .a11y-ra-dofirst-title {
+  margin: 0;
+  font-size: 18px; font-weight: 500;
+}
+.a11y-widget-biz .a11y-ra-dofirst-statement {
+  margin: 2px 0 0;
+  font-size: 15px; line-height: 1.5;
+  color: var(--text-secondary);
+}
+
+.a11y-widget-biz .a11y-ra-foot { display: flex; justify-content: flex-end; }
+.a11y-widget-biz .a11y-ra-jump { min-height: 48px; }
+.a11y-widget-biz .a11y-ra-jump::after { content: " \2192"; }
+
+/* Chrome, not report: the exports and the jump have nothing to do on paper. */
+@media print {
+  .a11y-widget-biz .a11y-ra-row:has(.a11y-ra-action),
+  .a11y-widget-biz .a11y-ra-note,
+  .a11y-widget-biz .a11y-ra-foot { display: none; }
+  .a11y-widget-biz .a11y-report-actions { background: none; padding: 0; }
+}
+
+/* ── Accordion heads ─────────────────────────────────────────────────────
+   .a11y-accordion-head / -title / -chevron are used by Wcag22Readiness,
+   ScreenReaderPreview and AcrDraft, and none of the three had a rule. The
+   visible symptom was the chevron: an inline SVG with a viewBox but no
+   width/height and no CSS has no intrinsic size, so it took the full width
+   of the button and scaled its height to match — a ~1200px arrow. */
+.a11y-widget-biz .a11y-accordion-head {
+  display: flex; align-items: center; gap: var(--space-04);
+  width: 100%;
+  min-height: 48px;
+  padding: var(--space-04) var(--space-05);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  background: var(--layer-01);
+  color: var(--text-primary);
+  cursor: pointer;
+  text-align: left;
+  font-size: 18px; font-weight: 500;
+  letter-spacing: inherit;
+}
+.a11y-widget-biz .a11y-accordion-head:hover { background: var(--brown-10); }
+.a11y-widget-biz .a11y-accordion-title { flex: 1 1 auto; }
+/* First child that isn't the chevron takes the slack, so a head with a chip
+   between the label and the arrow still pushes the arrow to the end. */
+.a11y-widget-biz .a11y-accordion-head > span:first-child { flex: 1 1 auto; }
+.a11y-widget-biz .a11y-accordion-chevron {
+  flex: 0 0 auto;
+  width: 16px; height: 16px;
+  transition: transform var(--motion-fast, 120ms) ease;
+}
+.a11y-widget-biz .a11y-accordion-head[aria-expanded="true"] .a11y-accordion-chevron {
+  transform: rotate(180deg);
+}
+@media (prefers-reduced-motion: reduce) {
+  .a11y-widget-biz .a11y-accordion-chevron { transition: none; }
+}
+
+/* ── Vision simulator ────────────────────────────────────────────────────
+   .a11y-sim-defs holds only <defs> — the colour-matrix filters the preview
+   applies. An SVG with no rule falls back to the replaced-element default
+   of 300x150, so it was reserving a blank block for content that never
+   paints. Not display:none: Safari drops filter references inside a hidden
+   SVG, which would take the simulation with it. */
+.a11y-widget-biz .a11y-sim-defs {
+  position: absolute;
+  width: 0; height: 0;
+  overflow: hidden;
+}
+
+/* The panel sat flush against the form's last card — measured 0px. 14px is a
+   literal rather than a token because the scale has no 14 (--space-04 is 12,
+   --space-05 is 16); asked for explicitly. */
+.a11y-widget-biz .a11y-report-actions { margin-top: 14px; }
+
+/* ── Site audit ──────────────────────────────────────────────────────────
+   SiteAuditView had rules for 5 of its 27 classes, so it was rendering as
+   browser defaults: bulleted lists, and every span running into the next
+   one — "71Average scoreacross 3 pages", "The menu is in a different order
+   on some pages 3.2.3The menu on the home page…". The markup is already
+   right; it is the block/flex structure that was never written.
+
+   Styled in the professional dashboard's language: one dark stat card
+   carrying the number that matters, the rest as rounded rows with the count
+   held to the right edge. */
+
+/* Stat tiles. .a11y-conf-tiles already has the shared card grid above; this
+   is the tile itself. */
+.a11y-widget-biz .a11y-conf-tile {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-03);
+  padding: var(--space-06);
+  border-radius: var(--radius-lg);
+  background: var(--layer-01);
+}
+/* The site-wide count is the one figure the audit exists to produce — a
+   single-page scan cannot draw this distinction at all — so it takes the
+   inverted card the design gives the headline stat. */
+.a11y-widget-biz .a11y-conf-tile-fail {
+  background: var(--text-primary);
+  color: var(--text-on-invert);
+}
+.a11y-widget-biz .a11y-conf-num {
+  display: block;
+  font-size: 40px;
+  font-weight: 500;
+  line-height: 1;
+}
+.a11y-widget-biz .a11y-conf-cap {
+  display: block;
+  font-size: 15px;
+  font-weight: 500;
+}
+/* The <em> is the qualifier under the label, not an emphasis — it reads as a
+   caption, so it drops the italic and takes the muted ink. */
+.a11y-widget-biz .a11y-conf-cap em,
+.a11y-widget-biz .a11y-audit-count em {
+  display: block;
+  margin-top: var(--space-02);
+  font-style: normal;
+  font-size: 15px;
+  font-weight: 400;
+  color: var(--text-secondary);
+}
+.a11y-widget-biz .a11y-conf-tile-fail .a11y-conf-cap em {
+  color: var(--text-on-invert-secondary);
+}
+
+/* Rows. */
+.a11y-widget-biz .a11y-audit-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-04);
+  margin: var(--space-05) 0 0;
+  padding: 0;
+  list-style: none;
+}
+.a11y-widget-biz .a11y-audit-row {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-05);
+  padding: var(--space-05) var(--space-06);
+  border-radius: var(--radius-lg);
+  background: var(--layer-01);
+}
+.a11y-widget-biz .a11y-audit-body {
+  flex: 1 1 auto;
+  min-width: 0;
+  display: block;
+  font-size: 18px;
+}
+.a11y-widget-biz .a11y-audit-body > strong { display: block; font-weight: 500; }
+/* The plain-language line under every title, shared with the page table. */
+.a11y-widget-biz .a11y-conf-plain {
+  display: block;
+  margin-top: var(--space-02);
+  font-size: 15px;
+  line-height: 1.5;
+  color: var(--text-secondary);
+  overflow-wrap: anywhere;   /* page rows carry raw URLs */
+}
+.a11y-widget-biz .a11y-audit-count {
+  flex: 0 0 auto;
+  text-align: right;
+  font-size: 18px;
+  font-weight: 500;
+}
+/* The per-page score, at the head of the row where the severity tag sits on
+   the other lists. */
+.a11y-widget-biz .a11y-audit-score {
+  flex: 0 0 auto;
+  min-width: 48px;
+  font-size: 40px;
+  font-weight: 500;
+  line-height: 1;
+}
+.a11y-widget-biz .a11y-audit-score-err {
+  font-size: 18px;
+  color: var(--text-secondary);
+}
+.a11y-widget-biz .a11y-audit-err {
+  display: block;
+  margin-top: var(--space-02);
+  font-size: 15px;
+  color: var(--red-70);
+}
+/* Professional mode only: the rule id / criterion beside the title. Mono is
+   allowed here — CLAUDE.md permits it for meta and labels. */
+.a11y-widget-biz .a11y-rule-chip {
+  display: inline-block;
+  padding: 0 var(--space-03);
+  border-radius: var(--radius-sm);
+  background: var(--background);
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 15px;
+  font-weight: 400;
+  letter-spacing: 0;
+}
+.a11y-widget-biz .a11y-pages-table { margin-top: var(--space-05); }
+
+/* Each export and its note as one grid cell, so the note sits under the pill
+   it explains rather than spanning both. */
+.a11y-widget-biz .a11y-ra-cell {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-04);
+}
+.a11y-widget-biz .a11y-ra-cell .a11y-ra-item { width: 100%; }
+
+/* ── Professional scan-results panel ─────────────────────────────────────
+   The design's dashboard: host + actions on one bar, the score as an
+   inverted card beside the severity breakdown, the score's qualifications
+   as numbered cards below. One tinted ground holds the lot. */
+.a11y-widget-biz .a11y-pro-panel {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-06);
+  padding: var(--space-07);
+  border-radius: var(--radius-lg);
+  background: var(--purple-10);
+  margin-bottom: var(--space-07);
+}
+.a11y-widget-biz .a11y-pro-bar {
+  display: flex; align-items: center; gap: var(--space-05);
+  flex-wrap: wrap;
+}
+.a11y-widget-biz .a11y-pro-host {
+  padding: var(--space-04) var(--space-06);
+  border-radius: var(--radius-pill);
+  background: var(--white);
+  font-size: 18px; font-weight: 500;
+}
+.a11y-widget-biz .a11y-pro-bar .a11y-pro-actions {
+  display: flex; align-items: center; gap: var(--space-04);
+  margin-left: auto;
+  flex-wrap: wrap;
+}
+.a11y-widget-biz .a11y-pro-titlerow {
+  display: flex; align-items: baseline; gap: var(--space-05);
+  flex-wrap: wrap;
+}
+.a11y-widget-biz .a11y-pro-titlerow .a11y-results-title { margin: 0; flex: 1 1 auto; }
+.a11y-widget-biz .a11y-pro-count {
+  margin: 0;
+  font-size: 18px;
+  color: var(--text-primary);
+}
+
+.a11y-widget-biz .a11y-pro-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr));
+  gap: var(--space-06);
+  align-items: start;
+}
+
+/* Section labels. Uppercase and small — the design's own eyebrow. Tracking
+   stays 0.01em per CLAUDE.md; uppercase carries the distinction on its own. */
+.a11y-widget-biz .a11y-pro-eyebrow {
+  margin: 0 0 var(--space-04);
+  font-size: 15px; font-weight: 500;
+  text-transform: uppercase;
+  color: var(--purple-60);            /* 5.00:1 on the tint, measured */
+}
+.a11y-widget-biz .a11y-pro-eyebrow-invert { color: var(--text-on-invert-secondary); }
+.a11y-widget-biz .a11y-pro-lists .a11y-pro-eyebrow:not(:first-child) {
+  margin-top: var(--space-06);
+}
+
+/* The score card. */
+.a11y-widget-biz .a11y-pro-scorecard {
+  display: flex; flex-direction: column;
+  gap: var(--space-05);
+  padding: var(--space-06);
+  border-radius: var(--radius-lg);
+  background: var(--text-primary);
+  color: var(--text-on-invert);
+}
+.a11y-widget-biz .a11y-pro-score {
+  display: flex; align-items: baseline; gap: var(--space-04);
+  margin: 0;
+  flex-wrap: wrap;
+}
+.a11y-widget-biz .a11y-pro-score-num { font-size: 96px; font-weight: 500; line-height: 1; }
+.a11y-widget-biz .a11y-pro-score-of  { font-size: 18px; color: var(--text-on-invert-secondary); }
+.a11y-widget-biz .a11y-pro-chips { display: flex; flex-wrap: wrap; gap: var(--space-03); }
+.a11y-widget-biz .a11y-pro-chip {
+  padding: var(--space-03) var(--space-05);
+  border-radius: var(--radius-pill);
+  background: var(--gray-80, #393939);
+  color: var(--text-on-invert);
+  font-size: 15px;
+}
+.a11y-widget-biz .a11y-pro-jump {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: var(--space-04);
+  margin-top: auto;
+  min-height: 56px;
+  padding: 0 var(--space-06);
+  border: 0; border-radius: var(--radius-pill);
+  background: var(--white);
+  color: var(--text-primary);
+  cursor: pointer;
+  font-size: 18px; font-weight: 500;
+  letter-spacing: inherit;
+}
+.a11y-widget-biz .a11y-pro-jump:hover { background: var(--gray-10); }
+
+/* The two lists. */
+.a11y-widget-biz .a11y-pro-rows {
+  display: flex; flex-direction: column; gap: var(--space-04);
+  margin: 0; padding: 0; list-style: none;
+}
+.a11y-widget-biz .a11y-pro-row {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: var(--space-05);
+  min-height: 56px;
+  padding: 0 var(--space-06);
+  border-radius: var(--radius-pill);
+  background: var(--white);
+  font-size: 18px;
+}
+.a11y-widget-biz .a11y-pro-row-num  { font-weight: 500; color: var(--purple-60); }
+/* Green is this report's "nothing found", not "conforms" — the word beside
+   it does that work; the colour only agrees with it. 5.02:1 on white. */
+.a11y-widget-biz .a11y-pro-row-pass { font-weight: 500; color: var(--green-60); }
+.a11y-widget-biz .a11y-pro-empty { margin: 0; font-size: 18px; color: var(--text-secondary); }
+
+/* What the score counts. */
+.a11y-widget-biz .a11y-pro-points {
+  display: flex; flex-direction: column; gap: var(--space-04);
+  margin: 0; padding: 0; list-style: none;
+  counter-reset: none;
+}
+.a11y-widget-biz .a11y-pro-point {
+  display: flex; align-items: flex-start; gap: var(--space-05);
+  padding: var(--space-05) var(--space-06);
+  border-radius: var(--radius-lg);
+  background: var(--white);
+  font-size: 18px; line-height: 1.5;
+}
+.a11y-widget-biz .a11y-pro-point-num {
+  flex: 0 0 auto;
+  font-size: 15px; font-weight: 500;
+  color: var(--purple-60);
+}
+
+/* On paper the panel is a report head, not a dashboard: the run controls do
+   nothing and the tint costs ink. */
+@media print {
+  .a11y-widget-biz .a11y-pro-panel { background: none; padding: 0; }
+  .a11y-widget-biz .a11y-pro-bar,
+  .a11y-widget-biz .a11y-pro-jump { display: none; }
+}
+
+/* ── Shell nav ───────────────────────────────────────────────────────────
+   Three faults compounding, all from dropped rules:
+
+   1. The <ul> had no list reset, so every item carried a bullet.
+   2. .a11y-shell-nav-toggle had no rule at all, so the hamburger rendered at
+      every width — and its collapse (ul[data-open]) never applied either, so
+      the button was inert chrome above a list that was always open.
+   3. The rail was static, so an 8-item list competed for page height with a
+      22,000px report and pushed the whole column down.
+
+   Sticky is the fix for (3) and the reason this is now cheap rather than a
+   trade: the rail costs zero page height however many sections there are,
+   and it follows the reader instead of scrolling away. It needs
+   align-items: start on the shell grid, which .a11y-shell-with-nav already
+   sets — without it the grid item stretches and sticky has nothing to
+   stick within. */
+.a11y-widget-biz .a11y-shell-nav {
+  position: sticky;
+  top: var(--space-05);
+  align-self: start;
+  max-height: calc(100vh - var(--space-07));
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding: var(--space-04);
+  border-radius: var(--radius-lg);
+}
+.a11y-widget-biz .a11y-shell-nav ul {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.a11y-widget-biz .a11y-shell-nav-link {
+  padding: var(--space-03) var(--space-04);
+  border-radius: var(--radius-sm);
+  /* 15px, not 18: this is a label, and at 18 half the section names wrapped
+     to three lines in a 212px rail. The report's own copy is unchanged —
+     shortening the labels would have been an editorial decision, and this
+     is a typographic one. */
+  font-size: 15px;
+  line-height: 1.35;
+}
+.a11y-widget-biz .a11y-shell-nav-link:hover { background: var(--white); }
+/* The current item carries a rule as well as a tint, so it survives being
+   read without colour. */
+.a11y-widget-biz .a11y-shell-nav-link[aria-current]:not([aria-current="false"]) {
+  box-shadow: inset 2px 0 0 var(--text-primary);
+}
+
+/* The toggle belongs to the collapsed width only. Above it the list is
+   always shown and the button would be a control for nothing. */
+.a11y-widget-biz .a11y-shell-nav-toggle { display: none; }
+
+@container a11y-panel (max-width: 760px) {
+  .a11y-widget-biz .a11y-shell-nav {
+    position: static;
+    max-height: none;
+    overflow: visible;
+  }
+  .a11y-widget-biz .a11y-shell-nav-toggle {
+    display: flex; align-items: center; gap: var(--space-03);
+    min-height: 44px;
+    padding: 0 var(--space-05);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-pill);
+    background: var(--white);
+    color: var(--text-primary);
+    cursor: pointer;
+    font-size: 15px; font-weight: 500;
+    letter-spacing: inherit;
+  }
+  .a11y-widget-biz .a11y-shell-nav ul[data-open="false"] { display: none; }
+  .a11y-widget-biz .a11y-shell-nav ul[data-open="true"] { margin-top: var(--space-04); }
+}
+
+/* A nav is a way to move around a page; paper has none. */
+@media print { .a11y-widget-biz .a11y-shell-nav { display: none; } }

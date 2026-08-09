@@ -3,6 +3,7 @@ import type { RefObject } from "react";
 import { flushSync } from "react-dom";
 import { UrlForm, type ScanMode } from "./components/UrlForm";
 import { ScoreGauge } from "./components/ScoreGauge";
+import { ReportActions } from "./components/ReportActions";
 import { AppShell } from "./components/AppShell";
 import type { Plan } from "./components/PlansBar";
 import type { NavSection } from "./components/SideNav";
@@ -14,6 +15,7 @@ import { UndecidedChecks } from "./components/UndecidedChecks";
 import { ReportViewProvider, type ReportView } from "./components/ReportViewContext";
 import { ProfessionalTable } from "./components/ProfessionalTable";
 import { ProSummary, type ProView } from "./components/ProSummary";
+import { Tabs } from "./components/Tabs";
 import { Notification, ProgressBar } from "./components/Feedback";
 import { groupFindings } from "./components/FindingsList";
 
@@ -186,6 +188,16 @@ export function App({
   const focusForm = () => {
     formRef.current?.scrollIntoView({ block: "start" });
     formRef.current?.querySelector<HTMLInputElement>("#a11y-url-input")?.focus();
+  };
+
+  /* "See the N findings" — scroll AND move focus, the same pairing focusForm
+     uses. A bare href="#id" does not reliably scroll from inside a shadow
+     root, and scrolling without moving focus leaves a keyboard user's next
+     Tab back at the panel they just left. */
+  const focusFindings = (id = "a11y-accessibility-heading") => {
+    const target = shellContentRef.current?.querySelector<HTMLElement>(`#${id}`);
+    target?.scrollIntoView({ block: "start" });
+    target?.focus();
   };
 
   // The shell sidebar's section list, built by watching the content the
@@ -433,11 +445,6 @@ export function App({
         <ReportViewProvider value={reportView}>
         <div className="a11y-report">
           {/* The kit's results header: what was scanned, said plainly. */}
-          {professional && (
-            <h2 className="a11y-results-title" id="a11y-score-heading" data-nav-label="Score">
-              {hostnameOf(report.url)} — scan results
-            </h2>
-          )}
           {/* Printing lives in the form footer (business) and the report
               action row (professional) now — nothing here. */}
           {isDocument ? (
@@ -451,6 +458,7 @@ export function App({
               onViewChange={setProView}
               actions={<PrintButton label="Export report" compact />}
               onNewScan={focusForm}
+              onSeeFindings={() => focusFindings("a11y-pro-findings")}
               onRunScan={() =>
                 handleScan(
                   report.url,
@@ -461,13 +469,25 @@ export function App({
               }
             />
           ) : (
-            <ScoreGauge
-              score={report.score}
-              seed={report.scannedAt}
-              findings={findingsByCategory.accessibility}
-              url={report.url}
-              allFindings={report.findings}
-            />
+            <>
+              <ReportActions
+                url={report.url}
+                seed={report.scannedAt}
+                score={report.score}
+                total={report.summary.total}
+                tookSeconds={tookSeconds}
+                allFindings={report.findings}
+                findings={findingsByCategory.accessibility}
+                onSeeFindings={() => focusFindings()}
+              />
+              <ScoreGauge
+                score={report.score}
+                seed={report.scannedAt}
+                findings={findingsByCategory.accessibility}
+                url={report.url}
+                allFindings={report.findings}
+              />
+            </>
           )}
 
           {/* Only flag it when the AI review was wanted but didn't happen.
@@ -496,7 +516,7 @@ export function App({
               three identical scans scored 4, 24 and 24, purely because the
               keyboard and phone-layout checks gave up on two of them. Saying so
               is the difference between a number and a trustworthy number. */}
-          {report.meta.incompleteChecks && report.meta.incompleteChecks.length > 0 && (
+          {!professional && report.meta.incompleteChecks && report.meta.incompleteChecks.length > 0 && (
             <Notification
               kind="warning"
               title={`Some checks didn't finish this time: ${report.meta.incompleteChecks.join(", ")}.`}
@@ -530,6 +550,30 @@ export function App({
                 </button>
               ))}
             </div>
+          )}
+
+          {/* The switch for the table below, now next to it. It used to sit in
+              ProSummary at the top of the panel, which needed aria-owns to
+              tell assistive tech that its panel was somewhere else entirely;
+              beside the region it controls, the relationship is just true. */}
+          {professional && !isDocument && (
+            <Tabs
+              panelOwns="a11y-pro-findings"
+              items={[
+                {
+                  id: "issues",
+                  label: `Issues (${proIssueGroups})`,
+                  panel: `${proIssueGroups} finding${proIssueGroups === 1 ? "" : "s"}`,
+                },
+                {
+                  id: "clean",
+                  label: `No issues found (${proCleanCount})`,
+                  panel: `${proCleanCount} criteria with nothing found`,
+                },
+              ]}
+              defaultId={proView}
+              onChange={(id: string) => setProView(id as ProView)}
+            />
           )}
 
           {professional && !isDocument && (
@@ -571,7 +615,7 @@ export function App({
             {/* h2 like every other top-level section — as an h3 it sat at the
                 same level as the principle headings inside it, so the outline
                 had children at their parent's level. */}
-            <h2 className="a11y-section-title" id="a11y-accessibility-heading" data-nav-label="What people can't use">
+            <h2 className="a11y-section-title" id="a11y-accessibility-heading" tabIndex={-1} data-nav-label="What people can't use">
               What people can't use{" "}
               <span className="a11y-section-count">({findingsByCategory.accessibility.length})</span>
             </h2>

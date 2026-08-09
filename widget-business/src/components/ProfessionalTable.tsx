@@ -151,6 +151,9 @@ export function ProfessionalTable({
     <section
       id="a11y-pro-findings"
       className="a11y-section a11y-pro-table"
+      /* Focusable so the score card's "See the N findings" can land here —
+         scrolling without moving focus leaves the next Tab back at the top. */
+      tabIndex={-1}
       aria-label="Findings"
       data-nav-label="Findings"
       onClick={expandRowOnClick}

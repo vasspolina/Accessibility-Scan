@@ -9,7 +9,6 @@ import { Input } from "./Input";
 import { OptionCard } from "./OptionCard";
 import { Switch } from "./Switch";
 import { LoginFields } from "./LoginFields";
-import { PrintButton } from "./PrintButton";
 import type { AuthConfig } from "../api/scanClient";
 import type { AudienceMode } from "../lib/audienceMode";
 import { WCAG_LINK } from "../lib/wcagPlain";
@@ -206,6 +205,23 @@ export function UrlForm({
                 ? "That doesn't look like a website address. For example: example.com."
                 : ""}
           </p>
+
+          {/* The action sits with the address it acts on. It used to end the
+              form, three steps below the only field that is required — so the
+              scan could be started from step 01 without scrolling past scope
+              and report style, both of which have defaults. */}
+          <div className="a11y-url-submit">
+            {/* The note comes first in the DOM because it now reads first on
+                screen. Doing this with flex-direction rather than in the markup
+                would leave a screen reader hearing the button before the line
+                that explains it. */}
+            <Button type="submit" size="lg" disabled={loading}>
+              {loading ? "One moment\u2026" : "Start the scan"}
+            </Button>
+            <span className="a11y-url-submit-note">
+              Keep this page open — the scan runs here.
+            </span>
+          </div>
           </div>
           </div>
 
@@ -318,27 +334,14 @@ export function UrlForm({
           </div>
           </div>
 
-          {/* Back at the numerals' left edge, outside the step groups — the
-              kit does not indent the action to the content column. */}
-          <div className="a11y-url-submit">
-            <Button type="submit" size="lg" disabled={loading}>
-              {loading ? "One moment\u2026" : "Start the scan"}
-            </Button>
-            <span className="a11y-url-submit-note">
-              Keep this page open — the scan runs here.
-            </span>
-          </div>
+
       </div>
 
-      {/* The footer now holds only Save as PDF, and only once a scan
-          exists to export — nothing to print before that, and an empty
-          hairline-topped row would be a divider to nowhere. Professionals
-          print from the report's own action row instead. */}
-      {hasReport && audience === "business" && (
-        <div className="a11y-form-footer">
-          <PrintButton />
-        </div>
-      )}
+      {/* Save as PDF used to sit here in business mode. It moved into the
+          report-actions panel, which the design groups the exports into —
+          leaving it here as well printed the same button and the same
+          "opens your print dialog" sentence twice on one page.
+          Professionals still print from the report's own action row. */}
     </form>
     </>
   );

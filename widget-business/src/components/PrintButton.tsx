@@ -25,7 +25,7 @@ const HOST_PRINT_CSS = `
 }
 `;
 
-function ensureHostPrintStyle() {
+export function ensureHostPrintStyle() {
   if (typeof document === "undefined") return;
   if (document.getElementById(HOST_PRINT_STYLE_ID)) return;
   const style = document.createElement("style");
