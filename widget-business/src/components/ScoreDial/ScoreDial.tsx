@@ -26,11 +26,14 @@
 
 type Band = "good" | "needs-work" | "failing";
 
-/** The source's bands, in its own order — first match wins. */
-const BANDS: Array<{ min: number; band: Band; word: string }> = [
-  { min: 90, band: "good", word: "Good" },
-  { min: 70, band: "needs-work", word: "Needs work" },
-  { min: 0, band: "failing", word: "Failing" },
+/** The source's bands, in its own order — first match wins.
+ *  `from` is where each band starts on the meter, which the fill needs: the
+ *  design paints the current band solid from its own start to the score, not
+ *  from zero, so the track keeps showing all three bands underneath. */
+const BANDS: Array<{ min: number; band: Band; word: string; range: string }> = [
+  { min: 90, band: "good", word: "Good", range: "is 90 and up." },
+  { min: 70, band: "needs-work", word: "Needs work", range: "is 70 to 89." },
+  { min: 0, band: "failing", word: "Failing", range: "is under 70." },
 ];
 
 export function ScoreDial({
@@ -44,31 +47,62 @@ export function ScoreDial({
    *  future one is not misled into thinking it does something. */
   size?: number;
 }) {
-  const { band, word } = BANDS.find((b) => score >= b.min) ?? BANDS[2];
+  const { band, word, range, min } = BANDS.find((b) => score >= b.min) ?? BANDS[2];
   /* Clamped for the drawing only — a score outside 0–100 would otherwise
      paint a bar wider than its track. The label still reports the real
      number, because hiding a bad value is how it survives. */
   const pct = Math.max(0, Math.min(100, score));
 
   return (
-    <div className="a11y-dial" role="img" aria-label={`${label}: ${score} out of 100 — ${word}`}>
+    <div
+      className="a11y-dial"
+      data-band={band}
+      role="img"
+      aria-label={`${label}: ${score} out of 100 — ${word}`}
+    >
       {/* Everything below is aria-hidden and repeats the label above, which is
           the arrangement this component has always had: the drawing is
           announced once, as a sentence.
 
-          The card, the "/100" line, the meter and the 70/90 scale are gone —
-          the reference sets the score as a label, a number and the verdict
-          word, and nothing else. Two of those four were also rendering as
-          run-together text ("Accessibility scoreScored out of 100", "Good at
-          90100") because their two children had no rule to separate them.
+          The card, the "/100", the meter and the scale are back — they were
+          cut against an earlier reference that set the score as a label, a
+          number and the word alone. They had also been rendering as
+          run-together text ("Accessibility scoreScored out of 100") because
+          their children had no rule to separate them, which was a reason to
+          write the rules rather than to delete the markup.
 
-          Colour moved off the number and onto the word. The number stays ink
-          at 16.4:1; the word carries the band, and it is a WORD, so the result
-          never depends on hue. */}
-      <span className="a11y-dial-label" aria-hidden="true">{label}</span>
+          Colour still never carries the verdict alone: the band is a WORD in
+          a pill, and the tint underneath only agrees with it. */}
+      <div className="a11y-dial-head" aria-hidden="true">
+        <span className="a11y-dial-labels">
+          <span className="a11y-dial-label">{label}</span>
+          <span className="a11y-dial-sub">Scored out of 100</span>
+        </span>
+        <span className="a11y-dial-band">{word}</span>
+      </div>
+
       <p className="a11y-dial-figure" aria-hidden="true">
         <span className="a11y-dial-number">{score}</span>
-        <span className="a11y-dial-word" data-band={band}>{word}</span>
+        <span className="a11y-dial-of">/100</span>
+      </p>
+
+      {/* The track shows all three bands; the solid run and the tick show
+          where this score sits inside its own. */}
+      <div className="a11y-dial-meter" aria-hidden="true">
+        <span
+          className="a11y-dial-meter-fill"
+          style={{ left: `${min}%`, width: `${Math.max(0, pct - min)}%` }}
+        />
+        <span className="a11y-dial-meter-tick" style={{ left: `${pct}%` }} />
+      </div>
+      <p className="a11y-dial-scale" aria-hidden="true">
+        <span>0</span>
+        <span>100</span>
+      </p>
+
+      <p className="a11y-dial-note" aria-hidden="true">
+        <strong>{word}</strong> {range}
+        {band !== "good" && " Good starts at 90."}
       </p>
     </div>
   );

@@ -12,12 +12,16 @@ import { PlansBar, type Plan } from "./PlansBar";
 export function AppShell({
   sections,
   activeId,
+  navMeta,
   plans,
   contentRef,
   children,
 }: {
   sections: NavSection[];
   activeId: string | null;
+  /* "hostname · date" for the nav's footer. Optional: before a report
+     exists there is nothing to name. */
+  navMeta?: string;
   /* The embedder's plans, if they configured any. Rendered above the nav
      and nowhere else, so the report below it stays one continuous
      document. */
@@ -41,7 +45,7 @@ export function AppShell({
           wrapper its containing block is the whole report, which is the
           distance it was always meant to travel. */}
       <div className="a11y-shell-main">
-        {hasNav && <SideNav sections={sections} activeId={activeId} />}
+        {hasNav && <SideNav sections={sections} activeId={activeId} meta={navMeta} />}
         <div className="a11y-shell-content" ref={contentRef}>
           {children}
         </div>

@@ -34,9 +34,21 @@ export interface NavSection extends NavTarget {
  * button and the collapse is itself scoped to the same breakpoint, so
  * this component doesn't need to know which width it's currently at.
  */
-export function SideNav({ sections, activeId }: { sections: NavSection[]; activeId: string | null }) {
-  const [open, setOpen] = useState(false);
+export function SideNav({
+  sections,
+  activeId,
+  meta,
+}: {
+  sections: NavSection[];
+  activeId: string | null;
+  /* What was scanned and when — "stedelijk.nl · 8 Aug 2026". Footed under
+     the list because the rail is the one thing on screen at every scroll
+     position, so it is where "which report am I in" belongs. */
+  meta?: string;
+}) {
+  const [open, setOpen] = useState(true);
   const listId = useId();
+  const headingId = useId();
 
   const go = (target: HTMLElement) => (e: React.MouseEvent) => {
     e.preventDefault();
@@ -47,19 +59,37 @@ export function SideNav({ sections, activeId }: { sections: NavSection[]; active
   };
 
   return (
-    <nav className="a11y-shell-nav a11y-shell-nav-material" aria-label="Report sections">
-      <button
-        type="button"
-        className="a11y-shell-nav-toggle"
-        aria-expanded={open}
-        aria-controls={listId}
-        onClick={() => setOpen((v) => !v)}
-      >
-        <svg aria-hidden="true" focusable="false" viewBox="0 0 20 20" width="20" height="20">
-          <path d="M2 5h16M2 10h16M2 15h16" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
-        </svg>
-        Sections
-      </button>
+    /* Labelled BY the visible heading rather than with aria-label: the
+       heading is on screen now, and a landmark whose name matches what a
+       sighted user reads is one fewer thing that can drift apart. */
+    <nav className="a11y-shell-nav a11y-shell-nav-material" aria-labelledby={headingId}>
+      {/* The card's header IS the disclosure control — there is no separate
+          toggle pill. A tinted card whose only content was a white pill was
+          a bubble inside a bubble, and at narrow widths that pill was the
+          whole nav.
+
+          Heading wraps button, which is the disclosure pattern: the button
+          carries the state, the h2 keeps the section in the heading order.
+          Open by default, and the same control at every width — a list you
+          can put away is useful on a wide screen too, and one behaviour is
+          easier to trust than two. */}
+      <h2 className="a11y-shell-nav-head">
+        <button
+          type="button"
+          className="a11y-shell-nav-toggle"
+          aria-expanded={open}
+          aria-controls={listId}
+          onClick={() => setOpen((v) => !v)}
+        >
+          <span className="a11y-shell-nav-heading" id={headingId}>
+            Sections
+          </span>
+          <span className="a11y-shell-nav-count">
+            {sections.length} {sections.length === 1 ? "section" : "sections"} in
+            this report
+          </span>
+        </button>
+      </h2>
       <ul id={listId} data-open={open}>
         {sections.map((s) => (
           <li key={s.id}>
@@ -74,6 +104,7 @@ export function SideNav({ sections, activeId }: { sections: NavSection[]; active
           </li>
         ))}
       </ul>
+      {meta && <p className="a11y-shell-nav-meta">{meta}</p>}
     </nav>
   );
 }

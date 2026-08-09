@@ -30,7 +30,7 @@ export function UndecidedChecks({
           a single grid item, so the two columns flow independently. */}
       <div className="a11y-section-head">
       {/* h2: this is a top-level section of the report, same as its siblings. */}
-      <h2 className="a11y-section-title" id="a11y-undecided-heading" data-nav-label="For your designer and developer">
+      <h2 className="a11y-section-title" id="a11y-undecided-heading" data-nav-label="Designer and developer">
         For your designer and developer{" "}
         <span className="a11y-section-count">({total})</span>
       </h2>

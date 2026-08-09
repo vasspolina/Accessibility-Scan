@@ -317,6 +317,13 @@ export function App({
       aria-label="Website accessibility check"
     >
     <AppShell
+      navMeta={
+        report
+          ? `${hostnameOf(report.url)} \u00b7 ${new Date(report.scannedAt).toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" })}`
+          : audit
+            ? `${hostnameOf(audit.pages[0]?.url ?? "")} \u00b7 ${audit.pagesScanned} pages`
+            : undefined
+      }
       sections={sections}
       activeId={activeSectionId}
       plans={plans}
@@ -602,7 +609,7 @@ export function App({
           <div className={professional && !isDocument ? "a11y-print-cards" : undefined}>
           {!isDocument && (
           <ReportSection
-            title="Issues that could turn away users"
+            title="What costs you trust"
             eyebrow="Dark pattern findings"
             description="Places your site nudges people rather than leaves the choice to them. These don't move the score. They move how much people trust you."
             variant={findingsByCategory.darkPattern.length > 0 ? "redflag" : "default"}

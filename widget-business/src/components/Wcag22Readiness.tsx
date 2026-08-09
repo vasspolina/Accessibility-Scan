@@ -26,8 +26,8 @@ export function Wcag22Readiness({ readiness }: { readiness: Readiness }) {
 
   return (
     <section className="a11y-section a11y-w22" aria-labelledby="a11y-w22-heading">
-      <h2 className="a11y-section-title" id="a11y-w22-heading" data-nav-label="WCAG 2.2 readiness">
-        Ready for the next version?
+      <h2 className="a11y-section-title" id="a11y-w22-heading" data-nav-label="WCAG 2.2">
+        Ready for WCAG 2.2?
       </h2>
 
       {/* The kit's readiness panel, as redesigned upstream (4 Aug): it now

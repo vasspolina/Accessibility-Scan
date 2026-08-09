@@ -231,7 +231,12 @@ export function UrlForm({
           {/* The note is a sibling of the heading, not a child of it: inside,
               it became part of the heading's accessible name. */}
           <div className="a11y-step-head">
-            <h3 className="a11y-step-q">How much?</h3>
+            {/* Not "How much?" — that reads as price, and this step is
+                about scope: one page or the whole site. "of it" chains back
+                to the site named in 01, the way 03's "it" already does, so
+                the three steps read as one continuing question rather than
+                three unrelated ones. */}
+            <h3 className="a11y-step-q">How much of it?</h3>
             <span className="a11y-step-note">
               {mode === "site" ? "A whole site takes a few minutes" : "This page takes about 15 seconds"}
             </span>
