@@ -6,10 +6,24 @@ empty and is the only stylesheet wired in (via `utils/shadowMount.ts`, inlined
 into the shadow root; a plain component import would land in `document.head`
 and never cross the boundary).
 
-Four visual layers have been built and removed here. None needs rebuilding
-from scratch if any is worth reusing: the Foundations-v2 component sheets in
-`dadf555`, the Pangram-direction system in `c5a2640`, and the reference-matched
-scan form in `92b5a9b`.
+Five visual layers have been built and removed here. None needs rebuilding
+from scratch if any is worth reusing:
+
+| commit | what it was |
+|---|---|
+| `0d4611a` | the fullest one. Built from the design system's OWN stylesheet and component sources rather than from screenshots: the 12/24/48 spacing scale, the project type rules (literal px, 15/18 body, 0.01em tracking), ports of `.as-card` / `.as-head` / `.as-table` / `.as-row` / `.as-band` / `.as-pill` / `.as-sev`, the severity tone ramp, and the report sections' 5fr/7fr grid |
+| `dadf555` | Foundations-v2 component sheets |
+| `c5a2640` | the Pangram-direction system |
+| `92b5a9b` | the reference-matched scan form |
+
+**Take values from `reference/accessible-scan.css`, not from a screenshot.** It
+is the design system's real stylesheet — 30KB, greppable, exact. Its companion
+`reference/ui-kit.html` is 1.5MB, generates its strings at runtime so grep finds
+nothing in it, and scales every page to `transform: scale(0)` until scrolled
+into view, so readings taken at the wrong moment come back as zeros. Use the
+HTML for composition and the CSS for values. Component sources are readable
+through the design project itself, which is how the two screens that crash in
+the exported HTML (`Perceivable`, `ReportSections`) were recovered.
 
 **The webfont lives at document level, not in `global.css`.** `src/index.tsx`
 injects two `@font-face` declarations for PP Telegraf 400/500 into
@@ -154,11 +168,14 @@ elements.
 `span={2|3|6}` becomes `.a11y-fixcard-span2/3/6`. The six-column rhythm is baked
 into each call site, so re-proportioning the grid means editing every card.
 
-**3. `DataTable` is a real `<table>`.** Correctly so — it is tabular data and the
-semantics carry the accessibility. But the design system's own DataTable draws
-rows as spaced cards, which a `<table>` can only approximate with
-`border-spacing`. Reflowing to a card list at narrow widths is not reachable
-from CSS without losing the table semantics. Decide this one deliberately.
+**3. RESOLVED — `DataTable` as spaced cards.** This entry used to say the
+card-row pattern was "not reachable from CSS without losing the table
+semantics". That is wrong and was disproved: `border-collapse: separate` with
+`border-spacing: 0 8px` and radii on the first and last cells gives exactly it,
+and nothing semantic is given up. One further thing the next layer will need —
+a `<table>` does not shrink below its min-content inside a grid track, so it
+needs `table-layout: fixed` or it bursts its column. Measured: 823px inside a
+525px column.
 
 Lesser: `ScoreDial` positions its 70/90 threshold ticks with inline `left`
 percentages, and `TrustIssues` splits its band into two fixed children
@@ -192,3 +209,70 @@ Styling both halves of these wastes work:
   screen-reader rows (`issue`/`current`/`pass`, was an inline `background`
   carrying a dead token and a hardcoded `#fff1f1`). Style these; do not
   reintroduce colours as props.
+
+
+## New since the last strip
+
+**Section heads are wrapped, and the wrapper is load-bearing.**
+`.a11y-section-head` groups a section's title and lead. It is not decoration:
+the report sections are a two-column grid, grid rows are shared between columns,
+and with the head as loose siblings one tall content item pushed the lead
+paragraphs below it — measured at 2,200px below their own heading. Ten of the
+twelve sections now carry it. The two that do not are correct: the concern band
+is full-width by design, and the CTA has no title to place.
+
+**Steps are grouped the same way.** `.a11y-step-group` wraps a numeral and
+`.a11y-step-body` in the scan form, so the body's left edge derives from the
+numeral rather than a fixed gutter guess.
+
+**`.a11y-widget-inner` is a container-query container** (`a11y-panel`). This is
+not appearance and must survive: the widget is embedded at whatever width the
+host gives it, so layout has to respond to that box and not to the viewport. A
+media query would collapse a card pair on a phone and leave it squashed in a
+400px sidebar on a desktop, which is the case that actually breaks.
+
+## A checker, because selectors fail silently
+
+`widget-business/scripts/check-styles.mjs` reports two things:
+
+    dead      a selector in the stylesheet that no markup produces
+    unstyled  a class in the markup that no rule matches
+
+Run it with `node widget-business/scripts/check-styles.mjs`. It reports and
+exits 0 — it does not gate.
+
+It exists because four selectors shipped or nearly shipped in one session
+matching nothing at all: `[data-band="middling"]`, `.a11y-notification`,
+`.a11y-filter-row`, `.a11y-fix-none`. None errored. A selector that matches
+nothing is silent and the page looks plausible without it.
+
+Against the stripped tree everything reads as unstyled, which is correct and
+expected. It becomes useful as the new layer lands: the number should fall, and
+anything still listed should be a decision rather than a surprise.
+
+## How to verify the new layer, and how not to
+
+The mistakes worth not repeating, all from one session:
+
+- **A synthetic probe is not verification.** Injecting a section into the shadow
+  root and measuring it confirmed the grid rules parsed. Three real defects
+  survived that check — a 274px table overflow, a 226px image overhang, and the
+  2,200px displacement above — because the probe had one short content item and
+  never produced a tall row. Verify against a rendered report.
+- **Check the box you mean.** A clip check compared children against the panel's
+  border box while they sit inside its padding, and reported 521 overflowing
+  elements. A misalignment check measured a `hidden` panel whose rect is zero
+  and reported −12,242px. Both were confident numbers about the wrong box.
+- **Screenshots produce precise, wrong values.** A 13px radius, a 64px card gap
+  and a 40px section numeral all came from reading images. This system has no
+  13px radius; the real gap is 12; the numeral is 15 in the component.
+- **`document.fonts.ready` resolves while faces are `unloaded`**, so canvas
+  silently measures a fallback. `await document.fonts.load()` and print a
+  real-vs-fallback width beside anything you intend to trust.
+- **The screenshot tool emits at a fixed width regardless of viewport.** Measure
+  with `getBoundingClientRect`, never by reading the image.
+- **The dev fixture pins the audience from the URL.** `?fixture=report` is the
+  business view and `&audience=professional` the pro view, deterministically.
+  They have different roots — `.a11y-score` and `.a11y-pro-summary` — so a check
+  keyed on the wrong one reports "the scan never ran" against a perfectly good
+  report.
