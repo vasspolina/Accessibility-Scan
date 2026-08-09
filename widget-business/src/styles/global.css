@@ -59,7 +59,10 @@
   --gap-2: 24px;
   --gap-3: 48px;
 
-  --content: 1000px;             /* kit: #root-NewScan is 1000 wide */
+  /* 1240 — ReportSections.jsx sets maxWidth 1240, and that is the width its
+     grid is proportioned for. At 1000 the shell nav left 700 for content, the
+     280px column floor clamped, and the 5:7 ratio distorted to 280/380. */
+  --content: 1240px;             /* kit: ReportSections maxWidth */
   --pad-x: 24px;                 /* kit: main is padded 48px 24px */
   --r-card: 20px;                /* kit: measured 20, was 13 */
   --r-field: 4px;
@@ -1653,4 +1656,76 @@
   .a11y-widget-biz .a11y-section-concern .a11y-section-title,
   .a11y-widget-biz .a11y-section-concern .a11y-section-eyebrow,
   .a11y-widget-biz .a11y-section-concern .a11y-section-desc { grid-column: 1; }
+}
+
+/* ==========================================================================
+   Report sections — the two-column grid
+   ==========================================================================
+   From ui_kits/scan-app/ReportSections.jsx, read as source:
+
+     gridTemplateColumns: "minmax(280px, 5fr) minmax(0, 7fr)"
+     gap: var(--space-08)            // 40
+     head is sticky at var(--space-06)
+
+   That reconciles exactly with the 396.66 / 555.34 of 992 measured off the
+   rendered screen at cebc4d3, so the reading was right — this is the
+   expression behind it, and it no longer depends on an old commit.
+
+   OUR SECTIONS HAVE NO HEAD WRAPPER. The kit's are [head | content], two
+   elements. Ours carry .a11y-section-title and .a11y-section-desc as loose
+   siblings of the content. So the head is assembled here by placing those
+   parts in column 1 rather than by selecting a wrapper — a first pass looked
+   for .a11y-section-header/-head/-tint, matched nothing, and left column 1 as
+   an empty 280px gutter down eleven sections while measuring as correct.
+
+   `dense` is what lets the content start at row 1 beside the title instead of
+   below the lead. Visual order and DOM order diverge by design in any
+   head-beside-content layout, and reading order still follows the DOM.
+
+   The floor is the kit's own 280, which works now that --content is 1240 like
+   the source's. At the old 1000 the shell nav left 700 for content, 280
+   clamped, and the ratio came out 280/380 instead of 5:7.
+   ========================================================================== */
+
+.a11y-widget-biz .a11y-section:not(.a11y-section-concern):has(> .a11y-section-title) {
+  display: grid;
+  grid-template-columns: minmax(280px, 5fr) minmax(0, 7fr);  /* kit */
+  grid-auto-flow: row dense;
+  gap: var(--gap-2) 40px;        /* kit: --space-08 between the columns */
+  align-items: start;
+}
+
+/* The head: the parts that describe the section, gathered into column 1. */
+.a11y-widget-biz .a11y-section:not(.a11y-section-concern):has(> .a11y-section-title) > .a11y-section-title,
+.a11y-widget-biz .a11y-section:not(.a11y-section-concern):has(> .a11y-section-title) > .a11y-section-eyebrow,
+.a11y-widget-biz .a11y-section:not(.a11y-section-concern):has(> .a11y-section-title) > .a11y-section-desc {
+  grid-column: 1;
+}
+
+/* Everything else is the content. */
+.a11y-widget-biz .a11y-section:not(.a11y-section-concern):has(> .a11y-section-title)
+  > *:not(.a11y-section-title):not(.a11y-section-eyebrow):not(.a11y-section-desc) {
+  grid-column: 2;
+}
+
+/* Sticky so the title and lead stay with their rows while those scroll past —
+   the source sets this on its own SectionHead. */
+.a11y-widget-biz .a11y-section:not(.a11y-section-concern):has(> .a11y-section-title) > .a11y-section-title {
+  position: sticky;
+  top: var(--gap-2);             /* kit --space-06 */
+}
+
+/* Below this the head would leave the rows too narrow to read. Measured
+   against the panel, not the viewport — this widget is embedded and the column
+   it sits in is what matters. */
+@container a11y-panel (max-width: 760px) {
+  .a11y-widget-biz .a11y-section:not(.a11y-section-concern):has(> .a11y-section-title) {
+    grid-template-columns: 1fr;
+  }
+  .a11y-widget-biz .a11y-section:not(.a11y-section-concern):has(> .a11y-section-title) > * {
+    grid-column: 1;
+  }
+  .a11y-widget-biz .a11y-section:not(.a11y-section-concern):has(> .a11y-section-title) > .a11y-section-title {
+    position: static;
+  }
 }
