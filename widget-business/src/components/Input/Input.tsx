@@ -25,7 +25,6 @@ import type { CSSProperties, ReactNode } from "react";
  *    words, which a disc cannot carry. So the slot holds a real button and the
  *    caller supplies it.
  *
- * Input.css is not imported here; see src/styles/components.css.
  */
 
 export function Input({

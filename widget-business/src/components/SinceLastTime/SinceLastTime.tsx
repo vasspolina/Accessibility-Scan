@@ -17,7 +17,6 @@ import type { ReactNode } from "react";
  * Not yet wired. The app's ScanHistory owns the real comparison data — this is
  * the shape it should take, not a replacement for it.
  *
- * SinceLastTime.css is not imported here; see src/styles/components.css.
  */
 
 export function Stat({

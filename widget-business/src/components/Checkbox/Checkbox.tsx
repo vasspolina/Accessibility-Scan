@@ -9,7 +9,6 @@ import type { CSSProperties, InputHTMLAttributes, ReactNode } from "react";
  * 24px hit area while the label keeps its own — a wrapping label would make the
  * gap between them clickable too, which is fine for a card and wrong for a row.
  *
- * Checkbox.css is not imported here; see src/styles/components.css.
  */
 
 export function Checkbox({

@@ -1,13 +1,13 @@
-// One stylesheet, currently empty. The visual layer was removed in full so the
-// next one could be built without inheriting it; styles/global.css is where it
-// goes, and it is inlined here rather than imported by a component because a
-// plain import lands in document.head, which cannot reach inside the shadow
+// One stylesheet, currently empty. styles/global.css is where the next visual
+// system goes; it is inlined here rather than imported by a component because
+// a plain import lands in document.head, which cannot reach inside the shadow
 // boundary and does leak onto the host page.
 //
-// The shadow root itself is kept, and it is not a visual decision: it is what
-// stops the HOST page's CSS reaching in. Without it the widget would not render
-// as browser defaults, it would inherit whatever the embedding page sets — a
-// different thing, and a useless baseline to rebuild from.
+// The shadow root itself is kept and is NOT a visual decision: it is what stops
+// the HOST page's CSS reaching in. Remove it and this would not render at
+// browser defaults, it would inherit whatever the embedding page sets.
+//
+// Recoverable from c5a2640, the commit the visual layer landed in.
 
 import globalStyles from "../styles/global.css?inline";
 

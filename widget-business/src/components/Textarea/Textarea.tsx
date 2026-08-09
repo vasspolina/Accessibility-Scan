@@ -7,7 +7,6 @@ import type { CSSProperties, ReactNode } from "react";
  * multi-line answer needs its extent shown before it is typed into, which a
  * single rule cannot do. The Forms card draws it the same way.
  *
- * Textarea.css is not imported here; see src/styles/components.css.
  */
 
 export function Textarea({

@@ -21,7 +21,6 @@ import type { CSSProperties, ReactNode } from "react";
  * than beside it. That is the source's shape and the reason a 44px minimum
  * height is enough to satisfy the target-size criterion here.
  *
- * Radio.css is not imported here; see src/styles/components.css.
  */
 
 export function Radio({

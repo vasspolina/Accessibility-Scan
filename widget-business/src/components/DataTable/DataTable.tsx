@@ -34,7 +34,6 @@ import type { ReactNode } from "react";
  * worse than not having it. Mounting every panel permanently would put the
  * whole report in the DOM at once, a real cost for thirty findings.
  *
- * DataTable.css is not imported here; see src/styles/components.css.
  */
 
 export interface TableHeader {

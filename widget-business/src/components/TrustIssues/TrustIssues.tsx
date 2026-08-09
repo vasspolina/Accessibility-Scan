@@ -16,7 +16,6 @@ import type { Severity } from "../SeverityTag";
  * the caller supplies the action so this component does not decide what
  * opening a finding means.
  *
- * TrustIssues.css is not imported here; see src/styles/components.css.
  */
 
 export interface TrustFinding {

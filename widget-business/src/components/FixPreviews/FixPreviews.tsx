@@ -23,7 +23,6 @@ import type { ReactNode } from "react";
  * distinction — it demonstrates a failure to a stakeholder; the pass/fail
  * decision comes from measured contrast, not from the demonstration.
  *
- * FixPreviews.css is not imported here; see src/styles/components.css.
  */
 
 export type FixTone = "purple" | "magenta" | "blue" | "teal" | "cyan" | "green";

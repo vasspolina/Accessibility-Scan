@@ -16,8 +16,6 @@ import type { CSSProperties, ReactNode } from "react";
  * "none". Narrowing it here would make the component less useful than the
  * one it was ported from.
  *
- * FactCard.css is not imported here; see src/styles/components.css for why a
- * component inside a shadow root cannot import its own stylesheet.
  */
 
 /**

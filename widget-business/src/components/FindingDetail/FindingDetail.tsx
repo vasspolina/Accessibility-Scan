@@ -18,7 +18,6 @@ import { useState, type CSSProperties, type ReactNode } from "react";
  * child it renders, so nothing a caller supplies lands on the black. The one
  * exception is `badge` — see below.
  *
- * FindingDetail.css is not imported here; see src/styles/components.css.
  */
 
 export interface FindingDetailProps {

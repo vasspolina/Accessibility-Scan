@@ -17,8 +17,6 @@ import type { CSSProperties, ReactNode } from "react";
  * tile width, a transparent fill — and rewriting those screens is not what
  * this stage is for.
  *
- * Card.css is not imported here; see src/styles/components.css for why a
- * component in a shadow root cannot import its own stylesheet.
  */
 
 /**
@@ -56,7 +54,7 @@ export function Card({
 }) {
   return (
     <section
-      className={`a11y-card${tone === "invert" ? " a11y-card-invert" : ""}`}
+      className={`a11y-card${tone === "invert" ? " a11y-card-emphasis" : ""}`}
       style={style}
     >
       {eyebrow && <div className="a11y-card-eyebrow">{eyebrow}</div>}

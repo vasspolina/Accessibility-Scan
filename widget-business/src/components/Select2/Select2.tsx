@@ -12,7 +12,6 @@ import type { CSSProperties, ReactNode } from "react";
  * rather than here: "Radio or OptionCard at four options or fewer." A select
  * holding three choices should be OptionCards instead.
  *
- * Select2.css is not imported here; see src/styles/components.css.
  */
 
 export type SelectOption = string | { value: string; label: string };

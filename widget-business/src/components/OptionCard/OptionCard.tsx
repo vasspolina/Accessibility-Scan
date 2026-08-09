@@ -13,7 +13,6 @@ import type { CSSProperties, ReactNode } from "react";
  *
  * Annotation: "Two or three per row, never more than four."
  *
- * OptionCard.css is not imported here; see src/styles/components.css.
  */
 
 export function OptionCard({

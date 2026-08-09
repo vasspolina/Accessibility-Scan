@@ -15,7 +15,6 @@ import type { CSSProperties, ReactNode } from "react";
  * to the right, so a wrapping <label> would make the entire row a click
  * target, including the empty space between them.
  *
- * Switch.css is not imported here; see src/styles/components.css.
  */
 
 export function Switch({

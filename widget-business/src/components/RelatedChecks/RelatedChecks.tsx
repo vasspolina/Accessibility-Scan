@@ -15,7 +15,6 @@ import type { CSSProperties } from "react";
  * The hover/focus inversion lives in RelatedChecks.css rather than in state
  * here; the reason, including a bug it fixes in the source, is written there.
  *
- * RelatedChecks.css is not imported here; see src/styles/components.css.
  */
 
 export interface RelatedCheckItem {

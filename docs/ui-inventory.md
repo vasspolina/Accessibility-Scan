@@ -1,16 +1,23 @@
 # UI inventory
 
 Every distinct element `widget-business` renders, for whoever builds the next
-visual layer. Written immediately after the strip, against a tree with **no CSS
-at all** — `src/styles/global.css` is empty and is the only stylesheet wired in
-(via `utils/shadowMount.ts`, inlined into the shadow root; a plain component
-import would land in `document.head` and never cross the boundary).
+visual layer. Written against a tree with **no CSS at all** — `src/styles/global.css` is
+empty and is the only stylesheet wired in (via `utils/shadowMount.ts`, inlined
+into the shadow root; a plain component import would land in `document.head`
+and never cross the boundary).
+
+Two visual layers have been built and removed here. Neither needs rebuilding
+from scratch if any of it is worth reusing: the Foundations-v2-based layer is
+in `dadf555`, the Pangram-direction layer in `c5a2640`.
 
 Two things to know before styling anything:
 
-- **Class names are role-based already.** 412 distinct names, and an audit found
-  only two describing position rather than role — both renamed. Style the names
-  as they are; do not invent parallel appearance classes.
+- **Class names are role-based already.** 453 distinct names, audited twice.
+  Five described appearance or position rather than role and were renamed:
+  `-band-left`/`-band-right` → `-band-heading`/`-band-summary`,
+  `card-invert` → `card-emphasis`, `section-redflag` → `section-concern`,
+  `sev-ondark` → `sev-on-emphasis`. Style the names as they are; do not invent
+  parallel appearance classes.
 - **The app passes an axe audit with zero CSS.** Landmarks, labels, heading
   order and control names all live in the markup. That is the baseline; a
   redesign that introduces contrast or target-size failures has regressed
@@ -110,26 +117,28 @@ preserves interaction — see below.
 
 ## Layout that lives in the markup
 
-Four places where a layout decision is fixed in JSX, so CSS alone cannot change
+Three places where a layout decision is fixed in JSX, so CSS alone cannot change
 it. Each one constrains the redesign.
 
-**1. `UrlForm.tsx:140` — the scan form is a two-column grid in markup.**
-`.a11y-form-grid` wraps two hard-coded `.a11y-form-col` divs, and which control
-sits in which column is decided in JSX. A one-column or three-column form needs
-the component edited, not restyled. This is the most likely thing a redesign
-will want to move.
+**RESOLVED — `UrlForm`'s two-column grid.** `.a11y-form-grid` and its two
+`.a11y-form-col` children were replaced by a single `.a11y-form-single` column
+in the markup, in DOM order: address → scope → report style → extras → submit.
+Done in JSX rather than with CSS `order`, because reordering visually would
+have left tab order following the DOM and put the submit button ahead of the
+scan options. Kept here as the worked example: this is what resolving one of
+these looks like.
 
-**2. `AppShell.tsx:33-45` — header / nav / content are three fixed siblings.**
+**1. `AppShell.tsx:33-45` — header / nav / content are three fixed siblings.**
 `.a11y-shell-header`, `.a11y-shell-main`, `.a11y-shell-content`, plus
 `App.tsx:304` toggling `.a11y-shell-with-nav` when sections exist. The grid can
 be re-drawn in CSS, but nav-below-content or a top tab bar means moving
 elements.
 
-**3. `FixPreviews.tsx` — grid spans are chosen per card in JSX.**
+**2. `FixPreviews.tsx` — grid spans are chosen per card in JSX.**
 `span={2|3|6}` becomes `.a11y-fixcard-span2/3/6`. The six-column rhythm is baked
 into each call site, so re-proportioning the grid means editing every card.
 
-**4. `DataTable` is a real `<table>`.** Correctly so — it is tabular data and the
+**3. `DataTable` is a real `<table>`.** Correctly so — it is tabular data and the
 semantics carry the accessibility. But the design system's own DataTable draws
 rows as spaced cards, which a `<table>` can only approximate with
 `border-spacing`. Reflowing to a card list at narrow widths is not reachable
@@ -161,3 +170,9 @@ Styling both halves of these wastes work:
   `#a11y-widget-business-root` (`index.tsx:96`), `[data-nav-label]`
   (`App.tsx:201`). Grep before renaming any of them.
 - **The shadow root**, which is isolation and not appearance.
+- **Data attributes that replaced style decisions**, kept because the rule is
+  convert-not-delete: `data-align` on table cells (90 in a rendered report,
+  was an inline `textAlign`) and `data-row-state` on conformance and
+  screen-reader rows (`issue`/`current`/`pass`, was an inline `background`
+  carrying a dead token and a hardcoded `#fff1f1`). Style these; do not
+  reintroduce colours as props.

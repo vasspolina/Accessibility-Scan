@@ -36,7 +36,7 @@ export function ReportSection({
   // the evidence for it.
   if (variant === "redflag") {
     return (
-      <section className="a11y-section a11y-section-redflag" aria-labelledby={id}>
+      <section className="a11y-section a11y-section-concern" aria-labelledby={id}>
         <div className="a11y-section-tint">
           <h2 className="a11y-section-title" id={id} data-nav-label={title}>
             {title} <span className="a11y-section-count">({findings.length})</span>

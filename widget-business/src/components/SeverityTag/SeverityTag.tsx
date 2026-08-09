@@ -18,7 +18,6 @@ import type { AccessibilityFinding } from "../../api/scanClient";
  * appears on inverted surfaces — IssueRow flips to black on hover, and the
  * five solid fills would otherwise sit on it as bright blocks.
  *
- * SeverityTag.css is not imported here; see src/styles/components.css.
  */
 
 /** "pass" is not a finding severity — nothing is ever reported as passing —
@@ -60,7 +59,7 @@ export function SeverityTag({
 
   return (
     <span
-      className={`a11y-sev a11y-sev-${key}${onDark ? " a11y-sev-ondark" : ""}`}
+      className={`a11y-sev a11y-sev-${key}${onDark ? " a11y-sev-on-emphasis" : ""}`}
       style={style}
     >
       {label || WORD[key]}

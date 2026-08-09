@@ -22,7 +22,6 @@
  * what the widget says, and this change is meant to move the drawing without
  * moving the meaning.
  *
- * ScoreDial.css is not imported here; see src/styles/components.css.
  */
 
 type Band = "good" | "needs-work" | "failing";

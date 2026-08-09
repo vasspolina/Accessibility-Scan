@@ -26,13 +26,6 @@ import type { ReactNode } from "react";
  * can render without a stylesheet; this package has one, and a class is what
  * lets the responsive and print rules reach the control.
  *
- * Button.css is deliberately NOT imported here. This widget renders inside a
- * shadow root, and a plain `import "./Button.css"` would do two wrong things
- * at once: Vite injects it into document.head, where it can never cross the
- * shadow boundary inward, and where it does leak onto the host page — the
- * exact thing the shadow root exists to prevent. Component stylesheets are
- * collected by src/styles/components.css and inlined into the root at mount.
- * See .claude/rules/design-system.md.
  */
 
 /**
