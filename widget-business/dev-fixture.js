@@ -369,6 +369,23 @@
   var params = new URLSearchParams(location.search);
   var mode = params.get("fixture");
 
+  // Pin the audience BEFORE the app mounts. App persists the last choice in
+  // localStorage, so once ?audience=professional had been opened, every later
+  // ?fixture=report rendered the professional view from the stored value — the
+  // report was built, just not the one the URL asked for.
+  //
+  // That cost real time: the business view has .a11y-score and the pro view
+  // has .a11y-pro-summary, so a check keyed on the wrong one reads as "the
+  // scan never ran". It looked intermittent only because the two variants were
+  // being opened alternately. A fixture that inherits state from the last run
+  // is not a fixture.
+  try {
+    localStorage.setItem(
+      "a11y-audience-mode",
+      params.get("audience") === "professional" ? "professional" : "business"
+    );
+  } catch (e) { /* private mode — the click below still covers it */ }
+
   if (mode === "report" || mode === "error" || mode === "blocked") {
     // The stub branches on the address, so the state is chosen by what we type.
     var address = mode === "report" ? "example.com" : "example.com/" + mode;
@@ -381,7 +398,7 @@
     }, function (sr) {
       // Options first — they have to be set before the submit that reads them.
       if (params.get("scope") === "site") click(sr, "#a11y-scope-site");
-      if (params.get("audience") === "professional") click(sr, "#a11y-aud-pro");
+      click(sr, params.get("audience") === "professional" ? "#a11y-aud-pro" : "#a11y-aud-biz");
 
       var input = sr.querySelector("#a11y-url-input");
       // React tracks the previous value on the DOM node, so assigning .value
