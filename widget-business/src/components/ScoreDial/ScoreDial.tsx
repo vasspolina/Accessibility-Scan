@@ -52,31 +52,24 @@ export function ScoreDial({
 
   return (
     <div className="a11y-dial" role="img" aria-label={`${label}: ${score} out of 100 — ${word}`}>
-      <span className="a11y-dial-word" data-band={band} aria-hidden="true">
-        {word}
-      </span>
-      <div className="a11y-dial-card">
-        <div className="a11y-dial-head" aria-hidden="true">
-          <strong>{label}</strong>
-          <span>Scored out of 100</span>
-        </div>
-        <div aria-hidden="true">
-          <div className="a11y-dial-number">
-            <b>{score}</b>
-            <span>/100</span>
-          </div>
-          <div className="a11y-dial-meter">
-            <div className="a11y-dial-fill" data-band={band} style={{ width: `${pct}%` }} />
-            {/* The thresholds, at the positions they actually sit at. */}
-            <div className="a11y-dial-tick" style={{ left: "70%" }} />
-            <div className="a11y-dial-tick" style={{ left: "90%" }} />
-          </div>
-          <div className="a11y-dial-scale">
-            <span>Needs work at 70 · Good at 90</span>
-            <span>100</span>
-          </div>
-        </div>
-      </div>
+      {/* Everything below is aria-hidden and repeats the label above, which is
+          the arrangement this component has always had: the drawing is
+          announced once, as a sentence.
+
+          The card, the "/100" line, the meter and the 70/90 scale are gone —
+          the reference sets the score as a label, a number and the verdict
+          word, and nothing else. Two of those four were also rendering as
+          run-together text ("Accessibility scoreScored out of 100", "Good at
+          90100") because their two children had no rule to separate them.
+
+          Colour moved off the number and onto the word. The number stays ink
+          at 16.4:1; the word carries the band, and it is a WORD, so the result
+          never depends on hue. */}
+      <span className="a11y-dial-label" aria-hidden="true">{label}</span>
+      <p className="a11y-dial-figure" aria-hidden="true">
+        <span className="a11y-dial-number">{score}</span>
+        <span className="a11y-dial-word" data-band={band}>{word}</span>
+      </p>
     </div>
   );
 }

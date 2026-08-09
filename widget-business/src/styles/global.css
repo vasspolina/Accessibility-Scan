@@ -16,7 +16,7 @@
   --ink: #161616;                /* kit: rgb(22,22,22) */
   --ground: #ffffff;
   --ink-muted: #525252;          /* kit: rgb(82,82,82), 7.4:1 */
-  --field: #f1f1ee;
+  --field: #f4f4f4;             /* kit: rgb(244,244,244) — was #f1f1ee, sampled from a screenshot */
   --hairline: #c9c7c0;
   --accent: #198038;             /* kit: rgb(25,128,56) */
   --accent-ink: #ffffff;
@@ -29,19 +29,40 @@
   --t-body:    16px;             /* kit: AI card title 16/500 */
   --t-label:   15px;             /* kit: field label 15/500 */
   --t-desc:    15px;             /* kit: card desc 15/400 */
-  --t-card:    15px;             /* kit: card label 15/400 — SAME as the
-                                    description. Hierarchy is carried by
-                                    colour alone, not size or weight. */
+  --t-card:    18px;             /* kit: card label 18/400. Measured — the old
+                                    15px, and the note that it matched the
+                                    description exactly, both came from a
+                                    screenshot read. Size AND colour separate
+                                    them; weight does not. */
 
   --w-regular: 400;
   --w-medium:  500;
 
-  /* (read) 880px content column, 36px between blocks */
+  /* ---- The spacing scale ------------------------------------------------
+     Measured with getBoundingClientRect against reference/ui-kit.html, fonts
+     confirmed loaded first (the string "Which site?" measures 550.2 in PP
+     Telegraf against 474.8 in the fallback, so these are real metrics and not
+     a silently-substituted face).
+
+     Every gap in the kit's NewScan screen is one of three values:
+
+       12   inside a step; between the two cards of a pair; radio -> its text
+       24   numeral -> its content column; button -> its note; card padding-x
+       48   step -> step; intro -> form; last step -> submit
+
+     This replaces ten one-off numbers — 3, 13.6, 14.3, 17.4, 28, 29.7, 33,
+     46.5, 52.7, 64 — each solved from a screenshot at an assumed scale factor.
+     None of them was a design decision; they were all noise around this scale.
+     The screenshots produced precise, confident, wrong numbers because the
+     arithmetic was exact and the input never was.
+     ---------------------------------------------------------------------- */
+  --gap-1: 12px;
+  --gap-2: 24px;
+  --gap-3: 48px;
+
   --content: 1000px;             /* kit: #root-NewScan is 1000 wide */
-  --gap-block: 36px;
-  --card-pad-y: 14px;
-  --card-pad-x: 24px;
-  --r-card: 12px;
+  --pad-x: 24px;                 /* kit: main is padded 48px 24px */
+  --r-card: 20px;                /* kit: measured 20, was 13 */
   --r-field: 4px;
   --r-pill: 999px;
 
@@ -64,7 +85,15 @@
 .a11y-widget-biz .a11y-widget-inner {
   max-width: var(--content);
   margin-inline: auto;
-  padding: 0 0 var(--gap-block);
+  padding: 0 var(--pad-x) var(--gap-3);
+
+  /* The widget mounts at whatever width the host page gives it, so layout has
+     to respond to THIS box and not to the viewport. Container queries are the
+     only thing that can read that width; a media query here would collapse the
+     card pair on a phone but leave it squashed in a 400px sidebar on a
+     desktop, which is the case that actually breaks. */
+  container-type: inline-size;
+  container-name: a11y-panel;
 }
 
 /* ---- Head --------------------------------------------------------------- */
@@ -78,7 +107,10 @@
 }
 
 .a11y-widget-biz .a11y-newscan-sub {
-  margin: var(--gap-block) 0 0;
+  /* Measured 16, not 12 — the display line and its subtitle are tighter than
+     anything inside the form. Left as its own literal rather than rounded into
+     the scale below, because it really is a fourth value. */
+  margin: 16px 0 0;
   max-width: 58ch;
   font-size: var(--t-body);
   line-height: 1.5;
@@ -87,8 +119,34 @@
 .a11y-widget-biz .a11y-form-single {
   display: flex;
   flex-direction: column;
-  gap: 14px;                     /* solved 13.6 cards -> AI card */
-  margin-top: 53px;              /* renders 52.7 intro -> step 01 */
+  gap: var(--gap-3);             /* kit: 48 between steps */
+  margin-top: var(--gap-3);      /* kit: 48 from the intro */
+}
+
+/* A step is a numeral and a body, side by side. The old scheme indented every
+   child of the form by a fixed 72px and let the numeral overhang into that
+   space; this is the kit's own structure, so the body's left edge is derived
+   from the numeral rather than guessed to match it. */
+.a11y-widget-biz .a11y-step-group {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--gap-2);             /* kit: 24, numeral -> body */
+}
+
+.a11y-widget-biz .a11y-step-body {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap-1);             /* kit: 12 between everything in a step */
+}
+
+/* The question and its optional note share a baseline. */
+.a11y-widget-biz .a11y-step-head {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: var(--gap-1);             /* kit: 12, question -> note */
 }
 
 /* ---- Address field ------------------------------------------------------ */
@@ -106,7 +164,6 @@
 .a11y-widget-biz .a11y-url-form .a11y-input-shell {
   display: flex;
   align-items: center;
-  margin-top: 28px;              /* renders 29.7 */
   padding: 0 6px;
   border: 2px solid transparent;
   border-bottom-color: var(--ink);
@@ -132,8 +189,7 @@
 .a11y-widget-biz .a11y-url-form .a11y-input-shell > input:focus-visible { outline: 0; }
 
 .a11y-widget-biz .a11y-url-form .a11y-input-help,
-.a11y-widget-biz .a11y-form-single > .a11y-group-hint {
-  margin-top: 14px;              /* solved 14.3 rule -> helper */
+.a11y-widget-biz .a11y-step-body > .a11y-group-hint {
   font-size: var(--t-label);
   color: var(--ink-muted);
   letter-spacing: 0;
@@ -142,11 +198,21 @@
 
 /* ---- Option cards ------------------------------------------------------- */
 
+/* Two equal columns, 12px apart. Both numbers are measured: the pair is
+   430.3 + 12 + 430.3 = 872.6, exactly the body width. The old rule said
+   `auto-fit, minmax(240px, 1fr)` with `gap: 28px 64px` — the 64 was read off a
+   screenshot and is five times the real gap. */
 .a11y-widget-biz .a11y-url-form .a11y-radio-group {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-  gap: 28px 64px;               /* kit: 64px between the card pair */
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--gap-1);
   border: 0; padding: 0; margin: 0;
+}
+
+/* Below this the pair stops being a pair. Measured against the panel, not the
+   viewport, so an embed in a narrow column collapses too. */
+@container a11y-panel (max-width: 620px) {
+  .a11y-widget-biz .a11y-url-form .a11y-radio-group { grid-template-columns: 1fr; }
 }
 
 .a11y-widget-biz .a11y-url-form .a11y-radio-group > legend {
@@ -158,20 +224,29 @@
 
 .a11y-widget-biz .a11y-url-form .a11y-optioncard {
   display: flex;
-  align-items: center;
-  gap: 8px;                      /* renders 11px to the label, measured 11.4 */
-  padding: 14px 20px;            /* 72px box, solved 72.5 */
-  border: 0;
-  border-radius: 13px;           /* measured 12.7 */
+  align-items: flex-start;
+  gap: var(--gap-1);             /* kit: 12, radio -> text */
+  padding: 16px var(--gap-2);    /* kit */
+  /* The kit's cards carry a 2px border at rest as well as when selected — the
+     label sits 26px in from a card padded 24. Transparent here so selecting
+     one does not shift its contents by 2px. */
+  border: 2px solid transparent;
+  border-radius: var(--r-card);  /* kit: 20 */
   background: var(--field);
+}
+
+.a11y-widget-biz .a11y-url-form .a11y-optioncard:has(> input:checked) {
+  background: #defbe6;           /* kit */
+  border-color: var(--accent);
 }
 
 .a11y-widget-biz .a11y-url-form .a11y-optioncard > input[type="radio"] {
   width: 24px; height: 24px;     /* kit */ flex-shrink: 0; accent-color: var(--ink);
+  margin: 0;
 }
 
 .a11y-widget-biz .a11y-url-form .a11y-optioncard-label {
-  display: block; font-size: var(--t-card); font-weight: var(--w-medium);
+  display: block; font-size: var(--t-card); font-weight: var(--w-regular);
 }
 
 .a11y-widget-biz .a11y-url-form .a11y-optioncard-desc {
@@ -182,9 +257,9 @@
 /* ---- AI card ------------------------------------------------------------ */
 
 .a11y-widget-biz .a11y-ai-card {
-  display: flex; align-items: center; gap: 24px; flex-wrap: wrap;
-  padding: 16px 20px;
-  border-radius: 13px;
+  display: flex; align-items: center; gap: var(--gap-2); flex-wrap: wrap;
+  padding: 16px var(--gap-2);    /* kit */
+  border-radius: var(--r-card);  /* kit: 20 */
   background: var(--field);
 }
 
@@ -192,30 +267,26 @@
 .a11y-widget-biz .a11y-ai-card-title { display: block; font-size: var(--t-body); font-weight: var(--w-medium); }
 .a11y-widget-biz .a11y-ai-card .a11y-ai-hint { display: block; font-size: var(--t-desc); color: var(--ink-muted); }
 .a11y-widget-biz .a11y-ai-card .a11y-switch-label {
-  font-size: var(--t-body); letter-spacing: 0; text-transform: none; color: var(--ink);
+  font-size: 20px;               /* kit */
+  letter-spacing: 0; text-transform: none; color: var(--ink);
 }
 
 .a11y-widget-biz .a11y-switch-track {
-  width: 59px; height: 32px; padding: 3px; border: 0;   /* measured 59.1 x 31.8 */
-  border-radius: var(--r-pill); background: var(--hairline);
+  width: 72px; height: 40px; padding: 4px; border: 0;   /* kit */
+  border-radius: var(--r-pill); background: #e8e8e8;    /* kit */
   display: flex; align-items: center; justify-content: flex-start; cursor: pointer;
 }
 .a11y-widget-biz .a11y-switch-track[aria-checked="true"] {
   background: var(--ink); justify-content: flex-end;
 }
-.a11y-widget-biz .a11y-switch-knob { width: 26px; height: 26px; border-radius: var(--r-pill); background: var(--ground); }   /* measured 25.4 */
+.a11y-widget-biz .a11y-switch-knob { width: 32px; height: 32px; border-radius: var(--r-pill); background: var(--ground); }   /* kit */
 .a11y-widget-biz .a11y-switch-word { min-width: 3ch; font-size: var(--t-label); color: var(--ink-muted); }
 
 /* ---- Submit ------------------------------------------------------------- */
 
 .a11y-widget-biz .a11y-url-submit {
-  display: flex; align-items: center; gap: 20px; flex-wrap: wrap;
-  margin-top: 33px;              /* 14 + 33 = 47, solved 46.5 AI -> submit */
+  display: flex; align-items: center; gap: var(--gap-2); flex-wrap: wrap;
 }
-
-/* 28 + 9 = 37 from the helper line to the first card row. */
-/* solved 17.4 from the step question down to its cards */
-.a11y-widget-biz .a11y-form-single > fieldset { margin-top: 3px; }
 
 .a11y-widget-biz .a11y-url-submit .a11y-btn {
   border: 0; border-radius: var(--r-pill);
@@ -352,37 +423,26 @@
    section headings, for the same reason.
    ========================================================================== */
 
-/* The numeral sits in a left gutter and the question starts the content
-   column; every control in the step aligns to the question, not to the
-   numeral. Measured: 67px gutter. */
-.a11y-widget-biz {
-  --step-gutter: 72px;           /* kit: measured */
-}
+/* The numeral's own width sets where the body starts — it is a flex item, not
+   a fixed 72px column the numeral happens to fit inside.
 
-.a11y-widget-biz .a11y-step {
-  display: flex;
-  align-items: baseline;
-  gap: 0;
-  margin: 0;
-  font-weight: var(--w-medium);
-}
+   The kit's numerals are proportional, so its "01" is 47.8 wide against "02"
+   at 55.4, and its three step bodies start at 95.8 / 103.4 / 102.3 — a 7.6px
+   stagger between sibling steps. That is what proportional digits do, not a
+   decision anyone made, so the numerals are boxed to a common width here and
+   the three steps line up.
 
-.a11y-widget-biz .a11y-step-num {
-  width: var(--step-gutter);
-}
-
-/* Everything after a step heading is indented to meet the question. */
-.a11y-widget-biz .a11y-form-single > *:not(.a11y-step) {
-  margin-left: var(--step-gutter);
-}
-
+   font-variant-numeric: tabular-nums does NOT do it — measured with it set,
+   the numerals were still 45.4 / 53 / 51.9. PP Telegraf ships no tnum feature,
+   so the width has to come from the box. 1.4em covers the widest at any size,
+   which a pixel min-width would not. */
 .a11y-widget-biz .a11y-step-num {
   flex: 0 0 auto;
-  flex: 0 0 auto;
+  min-width: 1.4em;
   font-size: 40px;               /* kit */
   line-height: 1;
   letter-spacing: -0.02em;
-  font-variant-numeric: tabular-nums;
+  font-weight: var(--w-medium);
   /* #6f6f6f is the kit's OWN numeral colour on its report screens, and it
      measures 5.24:1. The NewScan screen uses #a8a8a8 (2.5:1, fails AA); the
      report screens do not. Taking the passing one means this is a kit value
@@ -391,9 +451,11 @@
 }
 
 .a11y-widget-biz .a11y-step-q {
+  margin: 0;
   font-size: 40px;               /* kit */
   line-height: 1;
   letter-spacing: -0.025em;
+  font-weight: var(--w-medium);
   color: var(--ink);
 }
 
@@ -403,17 +465,6 @@
   font-weight: var(--w-regular);
   line-height: 1;
   color: var(--ink-muted);
-}
-
-/* A step heading opens a group, so it needs air above it and little below —
-   its own controls follow immediately. */
-.a11y-widget-biz .a11y-form-single > .a11y-step {
-  margin-top: 42px;              /* renders 52.7 */
-  margin-bottom: 0;
-}
-
-.a11y-widget-biz .a11y-form-single > .a11y-step:first-child {
-  margin-top: 0;
 }
 
 
@@ -436,15 +487,16 @@
   margin-block: 72px;
 }
 
-/* Title and its numeral share a baseline, numeral in the same 72px gutter the
-   scan form's steps use. */
+/* The numeral sits ABOVE the title here, unlike the scan form's steps, which
+   set it beside the question. Measured on #root-ReportSections: a flex column,
+   16px between the numeral, the heading and the lead paragraph. */
 .a11y-widget-biz .a11y-section-header,
 .a11y-widget-biz .a11y-section-head {
   display: flex;
-  align-items: baseline;
-  gap: 0;
-  flex-wrap: wrap;
-  margin-bottom: 24px;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 16px;                     /* kit */
+  margin-bottom: var(--gap-2);
 }
 
 .a11y-widget-biz .a11y-section-title,
@@ -460,7 +512,6 @@
 
 .a11y-widget-biz .a11y-section-eyebrow,
 .a11y-widget-biz .a11y-section-count {
-  flex: 0 0 var(--step-gutter);
   font-size: 40px;
   line-height: 1;
   letter-spacing: 0.4px;
@@ -567,7 +618,6 @@
 }
 
 .a11y-widget-biz .a11y-fact-value,
-.a11y-widget-biz .a11y-dial-number,
 .a11y-widget-biz .a11y-conf-num {
   font-size: 40px;
   line-height: 1.05;
@@ -577,7 +627,6 @@
 }
 
 .a11y-widget-biz .a11y-fact-label,
-.a11y-widget-biz .a11y-dial-word,
 .a11y-widget-biz .a11y-related-meta {
   font-size: 15px;
   color: var(--ink-muted);
@@ -597,6 +646,40 @@
    aria-current already carries the state for assistive tech; the fill and the
    weight are the visible half, and the weight is what survives greyscale.
    ========================================================================== */
+
+/* The rail and the report sit side by side. .a11y-shell-main carried no
+   display at all, so a 212px nav and a full-width content column stacked and
+   the nav became a long list above the report rather than a rail beside it.
+
+   Measured on the kit's #root-App: rail 212, content starting at 252.9 — a
+   40px gutter, the same one the report sections use between their columns. */
+.a11y-widget-biz .a11y-shell-main {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 40px;                     /* kit */
+}
+
+.a11y-widget-biz .a11y-shell-with-nav .a11y-shell-main {
+  grid-template-columns: 212px minmax(0, 1fr);
+  align-items: start;
+}
+
+/* The rail needs its own height to stay put while the report scrolls past. */
+.a11y-widget-biz .a11y-shell-with-nav .a11y-shell-main > .a11y-shell-nav {
+  position: sticky;
+  top: var(--gap-2);
+}
+
+/* Below this the rail would leave the report too narrow to read, so it goes
+   back above it as a plain list. */
+@container a11y-panel (max-width: 720px) {
+  .a11y-widget-biz .a11y-shell-with-nav .a11y-shell-main {
+    grid-template-columns: 1fr;
+  }
+  .a11y-widget-biz .a11y-shell-with-nav .a11y-shell-main > .a11y-shell-nav {
+    position: static;
+  }
+}
 
 .a11y-widget-biz .a11y-shell-nav {
   width: 212px;
@@ -656,46 +739,215 @@
    readable without relying on hue.
    ========================================================================== */
 
+.a11y-widget-biz .a11y-dial {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;                      /* kit: --space-03 */
+}
+
+.a11y-widget-biz .a11y-dial-label {
+  font-size: var(--t-label);
+  font-weight: var(--w-medium);
+  color: var(--ink-muted);
+}
+
+.a11y-widget-biz .a11y-dial-figure {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: var(--gap-1);             /* kit: --space-04 */
+  margin: 0;
+}
+
 .a11y-widget-biz .a11y-dial-number {
-  font-size: 112px;
-  line-height: 0.78;
-  letter-spacing: 1.12px;
+  /* The kit writes clamp(3rem, 8vw, 9rem). vw is the wrong unit here: this
+     widget is embedded, so a 400px column on a 1920px page would set the
+     number at 144px and blow the column apart. cqi reads the panel that
+     actually contains it — same intent, correct reference box. */
+  font-size: clamp(3rem, 8cqi, 9rem);
+  line-height: 0.88;             /* kit */
+  letter-spacing: -0.03em;       /* kit: --tracking-tight */
+  font-weight: var(--w-medium);
+  color: var(--ink);
+}
+
+/* 20px is below the large-text threshold, so each of these needs 4.5:1 on
+   white and each was measured, not assumed: 5.02 / 7.94 / 5.00. */
+.a11y-widget-biz .a11y-dial-word {
+  font-size: 20px;               /* kit: --type-title-size */
+  font-weight: var(--w-regular);
+  color: var(--ink-muted);
+}
+.a11y-widget-biz .a11y-dial-word[data-band="good"]       { color: #198038; }
+.a11y-widget-biz .a11y-dial-word[data-band="needs-work"] { color: #8a3800; }
+.a11y-widget-biz .a11y-dial-word[data-band="failing"]    { color: #da1e28; }
+
+/* The score and what it found, side by side — the reference's own proportions.
+   The old rule sat the dial in a card beside a second card. */
+.a11y-widget-biz .a11y-stat-row {
+  display: grid;
+  grid-template-columns: minmax(280px, 4fr) minmax(0, 8fr);
+  gap: 64px;                     /* kit: --space-09 */
+  align-items: center;
+}
+
+@container a11y-panel (max-width: 620px) {
+  .a11y-widget-biz .a11y-stat-row { grid-template-columns: 1fr; gap: var(--gap-2); }
+}
+
+/* ==========================================================================
+   The score section
+   ==========================================================================
+   Everything below the number had NO rule at all — not one .a11y-score-*,
+   .a11y-dofirst* or .a11y-count-badge selector existed. That is why the
+   section rendered as run-together text: "Accessibility scoreScored out of
+   100", "Good at 90100", "…separated from their controlWCAG 1.3.16×". Each of
+   those is two inline elements with nothing between them, not a copy bug.
+
+   Measured on the updated kit's #root-App:
+
+     do-first band   #f4f4f4, radius 12, padding 16 24, gap 12/16, align start
+     its title       20 / 500 / #161616        (16.5:1)
+     its statement   16 / 400 / #525252        (7.1:1)
+     severity pill   15 / 500, padding 2px 10px, radius 999
+
+   The band's radius really is 12 where the cards are 20 — measured twice, and
+   left as the kit has it rather than harmonised.
+   ========================================================================== */
+
+.a11y-widget-biz .a11y-score {
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap-3);
+}
+
+/* ---- Do this first ------------------------------------------------------ */
+
+.a11y-widget-biz .a11y-dofirst {
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap-1);
+  padding: 16px var(--gap-2);    /* kit */
+  border-radius: 12px;           /* kit — not --r-card, see above */
+  background: var(--field);
+}
+
+.a11y-widget-biz .a11y-dofirst-eyebrow {
+  font-size: 20px;               /* kit */
+  font-weight: var(--w-medium);
+  letter-spacing: 0.2px;         /* kit */
+  color: var(--ink);
+}
+
+.a11y-widget-biz .a11y-dofirst-statement {
+  margin: 0;
+  font-size: var(--t-body);
+  line-height: 1.5;
+  color: var(--ink-muted);
+}
+
+/* The one word worth emphasising is the finding's own name. */
+.a11y-widget-biz .a11y-dofirst-statement strong {
+  font-weight: var(--w-medium);
+  color: var(--ink);
+}
+
+/* ---- What it found, beside the score ------------------------------------ */
+
+.a11y-widget-biz .a11y-score-preview {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+/* Hairline-separated rows, the kit's ReportSections rhythm. The severity tag,
+   the finding, and its count each get their own column so none of them can
+   butt up against another. */
+.a11y-widget-biz .a11y-score-preview-row {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: baseline;
+  gap: var(--gap-1) 16px;
+  padding: var(--gap-1) 0;
+  border-top: 1px solid var(--hairline);
+}
+
+.a11y-widget-biz .a11y-score-preview-row:first-child {
+  border-top: 0;
+  padding-top: 0;
+}
+
+/* Stacked, so the criterion sits UNDER the finding instead of running on from
+   the end of its last word. */
+.a11y-widget-biz .a11y-score-preview-desc {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.a11y-widget-biz .a11y-score-preview-meta {
+  font-size: var(--t-label);
+  color: var(--ink-muted);
+}
+
+.a11y-widget-biz .a11y-count-badge {
+  padding: 2px 10px;             /* kit pill */
+  border-radius: var(--r-pill);
+  background: var(--field);
+  font-size: var(--t-label);
   font-weight: var(--w-medium);
   font-variant-numeric: tabular-nums;
+  color: var(--ink-muted);       /* 7.1:1 on --field */
+  white-space: nowrap;
 }
 
-.a11y-widget-biz .a11y-dial-number[data-band="middling"] { color: #8a3800; }
+.a11y-widget-biz .a11y-score-clean {
+  margin: 0;
+  font-size: var(--t-body);
+  color: var(--ink-muted);
+}
 
-.a11y-widget-biz .a11y-dial-word {
-  font-size: 15px;
+/* ---- The line under it all ---------------------------------------------- */
+
+.a11y-widget-biz .a11y-notice {
+  margin: 0;
+  font-size: 20px;               /* kit: --type-title-size */
+  line-height: 1.4;
+  color: var(--ink);
+}
+
+.a11y-widget-biz .a11y-score-points {
+  margin: 0;
+  padding-left: 1.2em;
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap-1);
+  font-size: var(--t-body);
+  line-height: 1.5;
+  color: var(--ink-muted);
+  max-width: 62ch;
+}
+
+/* ---- Secondary action ---------------------------------------------------
+   Shared with ScreenReaderPreview, ConformanceView, FindingGroup and
+   ScanHistory, so this one rule covers five call sites. The kit's secondary
+   button is the primary's shape with a border instead of a fill. */
+
+.a11y-widget-biz .a11y-show-all {
+  align-self: flex-start;
+  min-height: 48px;              /* kit */
+  padding: 0 var(--gap-2);       /* kit */
+  border: 2px solid var(--ink);
+  border-radius: var(--r-pill);  /* kit */
+  background: transparent;
+  font-size: 18px;               /* kit */
   font-weight: var(--w-medium);
-  color: var(--ink-muted);
+  color: var(--ink);
+  cursor: pointer;
 }
 
-.a11y-widget-biz .a11y-dial-meter {
-  position: relative;
-  height: 7px;
-  margin: 24px 0 12px;
-  border-radius: 999px;
-  background: var(--field);
-  overflow: hidden;
-}
-
-.a11y-widget-biz .a11y-dial-fill {
-  height: 100%;
-  border-radius: 999px;
+.a11y-widget-biz .a11y-show-all:hover {
   background: var(--ink);
-}
-
-.a11y-widget-biz .a11y-dial-tick {
-  position: absolute;
-  top: 0;
-  width: 1px;
-  height: 100%;
-  background: var(--ground);
-}
-
-.a11y-widget-biz .a11y-dial-scale {
-  font-size: 15px;
-  color: var(--ink-muted);
+  color: var(--ground);
 }

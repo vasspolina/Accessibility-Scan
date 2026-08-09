@@ -30,15 +30,12 @@ export type FixTone = "purple" | "magenta" | "blue" | "teal" | "cyan" | "green";
 export function FixCard({
   label,
   tone = "purple",
-  span = 2,
   summary,
   before,
   after,
 }: {
   label: string;
   tone?: FixTone;
-  /** Grid columns out of six, as the kit lays them out. */
-  span?: 2 | 3 | 6;
   /** What the picture shows, in words. Required — see the note above. */
   summary: string;
   before: ReactNode;
@@ -46,7 +43,7 @@ export function FixCard({
 }) {
   return (
     <section
-      className={`a11y-fixcard a11y-fixcard-span${span}`}
+      className="a11y-fixcard"
       aria-label={`${label}. ${summary}`}
     >
       <span className={`a11y-fixcard-tag a11y-fixcard-tone-${tone}`}>{label}</span>

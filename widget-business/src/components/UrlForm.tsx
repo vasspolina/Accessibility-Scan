@@ -149,10 +149,12 @@ export function UrlForm({
               rather than left to the component: this field's description is
               one of four ids depending on the error state, which the
               component's own ${id}-help cannot express. */}
-          <h3 className="a11y-step">
-            <span className="a11y-step-num" aria-hidden="true">01</span>
-            <span className="a11y-step-q">Which site?</span>
-          </h3>
+          <div className="a11y-step-group">
+          <span className="a11y-step-num" aria-hidden="true">01</span>
+          <div className="a11y-step-body">
+          <div className="a11y-step-head">
+            <h3 className="a11y-step-q">Which site?</h3>
+          </div>
           <Input
             id="a11y-url-input"
             size="display"
@@ -193,13 +195,31 @@ export function UrlForm({
             <LoginFields auth={auth} onChange={setAuth} disabled={loading} />
           </div>
 
-          <h3 className="a11y-step">
-            <span className="a11y-step-num" aria-hidden="true">02</span>
-            <span className="a11y-step-q">How much?</span>
+          {/* The empty-submit / malformed-address message, beside the field it
+              is about rather than at the foot of the form. Persistent and empty
+              until filled — a live region mounted with its message already
+              inside never announces. */}
+          <p id="a11y-url-error" className="a11y-error a11y-url-error" role="alert">
+            {showEmptyError
+              ? "Enter a website address first. For example: example.com."
+              : showInvalidError
+                ? "That doesn't look like a website address. For example: example.com."
+                : ""}
+          </p>
+          </div>
+          </div>
+
+          <div className="a11y-step-group">
+          <span className="a11y-step-num" aria-hidden="true">02</span>
+          <div className="a11y-step-body">
+          {/* The note is a sibling of the heading, not a child of it: inside,
+              it became part of the heading's accessible name. */}
+          <div className="a11y-step-head">
+            <h3 className="a11y-step-q">How much?</h3>
             <span className="a11y-step-note">
               {mode === "site" ? "A whole site takes a few minutes" : "This page takes about 15 seconds"}
             </span>
-          </h3>
+          </div>
           <fieldset className="a11y-radio-group a11y-optioncard-grid">
             <legend>Scan scope</legend>
             <OptionCard
@@ -224,10 +244,15 @@ export function UrlForm({
             />
           </fieldset>
 
-          <h3 className="a11y-step">
-            <span className="a11y-step-num" aria-hidden="true">03</span>
-            <span className="a11y-step-q">Who reads it?</span>
-          </h3>
+          </div>
+          </div>
+
+          <div className="a11y-step-group">
+          <span className="a11y-step-num" aria-hidden="true">03</span>
+          <div className="a11y-step-body">
+          <div className="a11y-step-head">
+            <h3 className="a11y-step-q">Who reads it?</h3>
+          </div>
           <fieldset className="a11y-radio-group a11y-optioncard-grid">
             <legend>Report style</legend>
             <OptionCard
@@ -283,8 +308,11 @@ export function UrlForm({
             </div>
           )}
 
-          {/* Below the field, beside its reassurance — the Checker screen's
-              arrangement. */}
+          </div>
+          </div>
+
+          {/* Back at the numerals' left edge, outside the step groups — the
+              kit does not indent the action to the content column. */}
           <div className="a11y-url-submit">
             <Button type="submit" size="lg" disabled={loading}>
               {loading ? "One moment\u2026" : "Start the scan"}
@@ -293,16 +321,6 @@ export function UrlForm({
               Keep this page open — the scan runs here.
             </span>
           </div>
-
-          {/* Persistent and empty until filled — a live region mounted with
-              its message already inside never announces. */}
-          <p id="a11y-url-error" className="a11y-error a11y-url-error" role="alert">
-            {showEmptyError
-              ? "Enter a website address first. For example: example.com."
-              : showInvalidError
-                ? "That doesn't look like a website address. For example: example.com."
-                : ""}
-          </p>
       </div>
 
       {/* The footer now holds only Save as PDF, and only once a scan
