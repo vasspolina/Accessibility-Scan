@@ -24,7 +24,7 @@ import type { AccessibilityFinding } from "../../api/scanClient";
 /** "pass" is not a finding severity — nothing is ever reported as passing —
  *  but the conformance tables render a passing row, so the scale carries it
  *  exactly as the source does. */
-type Severity = AccessibilityFinding["severity"] | "pass";
+export type Severity = AccessibilityFinding["severity"] | "pass";
 
 /**
  * The source's own words, kept as the fallback when no label is passed.

@@ -1,4 +1,10 @@
-// The strangler finished. There is no legacy sheet left to strangle.
+// Tokens only, for now.
+//
+// The UI kit's screens are being ported one at a time, and each one's var()
+// calls are rewritten from the design system's older names to Foundations v2 as
+// it lands — no alias layer, so v2 stays the only vocabulary in the tree.
+// Tokens have to exist for that to mean anything; component stylesheets come
+// back as each screen is ported.
 //
 // What used to load here was four files in a deliberate order — tokens, then
 // the 7,988-line legacy sheet as the floor, then a system base, then the ported

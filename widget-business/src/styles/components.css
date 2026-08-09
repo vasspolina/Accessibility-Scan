@@ -1,31 +1,3 @@
-/* ==========================================================================
-   Component stylesheets
-   ==========================================================================
-   One @import per ported component, in the order they should cascade.
-
-   This file exists because of the shadow root. A component cannot import its
-   own CSS: Vite would inject it into document.head, where it can never reach
-   inside the shadow boundary, and where it would leak onto the host page —
-   which is the one thing the shadow root is there to prevent. So the
-   stylesheets are gathered here and the mount inlines this file as a string.
-
-   Adding a component means adding one line here. Forgetting to is the
-   failure mode: the component renders unstyled and nothing errors.
-   ========================================================================== */
-
-@import "../components/Button/Button.css";
-@import "../components/Card/Card.css";
-@import "../components/FactCard/FactCard.css";
-@import "../components/SeverityTag/SeverityTag.css";
-@import "../components/IssueRow/IssueRow.css";
-@import "../components/DataTable/DataTable.css";
-@import "../components/ScoreDial/ScoreDial.css";
-@import "../components/RelatedChecks/RelatedChecks.css";
-@import "../components/FindingDetail/FindingDetail.css";
-@import "../components/Radio/Radio.css";
-@import "../components/Input/Input.css";
-@import "../components/OptionCard/OptionCard.css";
-@import "../components/Switch/Switch.css";
-@import "../components/Checkbox/Checkbox.css";
-@import "../components/Textarea/Textarea.css";
-@import "../components/Select2/Select2.css";
+@import "../components/SinceLastTime/SinceLastTime.css";
+@import "../components/TrustIssues/TrustIssues.css";
+@import "../components/FixPreviews/FixPreviews.css";
