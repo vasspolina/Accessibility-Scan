@@ -603,7 +603,16 @@
   font-weight: var(--w-medium);
 }
 
-/* ---- Cards: no radius above the kit's, no shadow ------------------------ */
+/* ---- Cards -------------------------------------------------------------
+   .as-card from reference/accessible-scan.css. The radius was 13px, which
+   this system does not contain — its scale is 8 / 12 / 20 / 999. 13 was read
+   off a screenshot back when that was the only reference.
+
+   The kit has two paddings and the old rule had one: .as-card is --space-07
+   (32) and .as-card--flush is --space-06 (24). Card proper takes the full
+   padding; the denser cards that share this rule take flush, which is what
+   they were already doing without a name for it.
+   ------------------------------------------------------------------------ */
 
 .a11y-widget-biz .a11y-card,
 .a11y-widget-biz .a11y-fact-card,
@@ -611,10 +620,62 @@
 .a11y-widget-biz .a11y-slt-stat,
 .a11y-widget-biz .a11y-trust-row,
 .a11y-widget-biz .a11y-fixcard {
-  padding: 24px;
-  border-radius: 13px;
-  background: var(--field);
+  padding: 24px;                 /* .as-card--flush */
+  border-radius: var(--r-card);  /* kit --radius-lg */
+  background: var(--field);      /* kit --layer-01 */
   border: 0;
+  color: var(--ink);
+}
+
+.a11y-widget-biz .a11y-card { padding: 32px; }   /* .as-card, --space-07 */
+
+/* .as-card__eyebrow — the small line above the title. */
+.a11y-widget-biz .a11y-card-eyebrow {
+  margin: 0 0 var(--gap-1);
+  font-size: var(--t-label);
+  font-weight: var(--w-medium);
+  color: var(--ink-muted);
+}
+
+/* .as-card__title — 20/1.2, the system's title size, not a heading size. */
+.a11y-widget-biz .a11y-card-title {
+  margin: 0 0 var(--gap-1);
+  font-size: 20px;
+  line-height: 1.2;
+  font-weight: var(--w-medium);
+  letter-spacing: 0.01em;        /* kit --tracking-tight */
+}
+
+.a11y-widget-biz .a11y-card-meta {
+  margin: 0 0 var(--gap-1);
+  font-size: var(--t-label);
+  color: var(--ink-muted);
+}
+
+.a11y-widget-biz .a11y-card-body > :first-child { margin-top: 0; }
+.a11y-widget-biz .a11y-card-body > :last-child { margin-bottom: 0; }
+
+.a11y-widget-biz .a11y-card-link {
+  display: inline-block;
+  margin-top: var(--gap-2);
+  color: inherit;
+  text-underline-offset: 3px;
+}
+
+/* .as-card--invert. The app's name for it is -emphasis, kept: it says what
+   the card is for rather than which way round it is drawn. */
+.a11y-widget-biz .a11y-card-emphasis {
+  background: var(--ink);        /* kit --gray-100 */
+  color: var(--ground);
+}
+
+/* .as-card--invert .as-card__eyebrow — --text-on-invert-tertiary, which is
+   gray-40. Measured on the inverted ground: 7.61:1. Mapping an on-invert
+   tertiary DOWN to a light-ground grey is the mistake this repo has made
+   six times; #a8a8a8 here is the kit's own value and passes. */
+.a11y-widget-biz .a11y-card-emphasis .a11y-card-eyebrow,
+.a11y-widget-biz .a11y-card-emphasis .a11y-card-meta {
+  color: #a8a8a8;
 }
 
 .a11y-widget-biz .a11y-fact-value,
@@ -951,3 +1012,208 @@
   background: var(--ink);
   color: var(--ground);
 }
+
+/* ==========================================================================
+   Professional summary
+   ==========================================================================
+   Ported from reference/accessible-scan.css — the design system's own
+   stylesheet, so these are its declarations rather than readings taken off a
+   rendered screen. Its class is named beside each rule.
+
+   The whole section had no CSS: .a11y-pro-actions, .a11y-meta-row,
+   .a11y-pro-summary, .a11y-issues-line, .a11y-sum-score, .a11y-pro-findings,
+   .a11y-tabs and the filter pills were all browser defaults. That is why the
+   tag row read as "Checked against WCAG 2.1 AA1 page2 fix first9" — four
+   separate tags with nothing between them.
+   ========================================================================== */
+
+/* .as-btn — 40 tall, pill, body size, medium. Variants below. */
+.a11y-widget-biz .a11y-pro-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--gap-1);
+  align-items: center;
+}
+
+.a11y-widget-biz .a11y-pro-actions .a11y-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 40px;                        /* .as-btn */
+  padding: 0 var(--gap-2);
+  border: 1px solid transparent;
+  border-radius: var(--r-pill);
+  white-space: nowrap;
+  font-size: 18px;                         /* kit --type-body-size */
+  font-weight: var(--w-medium);
+  line-height: 1;
+  cursor: pointer;
+}
+
+/* .as-btn--black: the kit's neutral primary. The scan form's green submit is
+   --button-primary and stays as it is; this row is not that button. */
+.a11y-widget-biz .a11y-pro-actions .a11y-btn-primary {
+  background: var(--ink);
+  border-color: var(--ink);
+  color: var(--ground);
+}
+
+.a11y-widget-biz .a11y-pro-actions .a11y-btn-secondary {
+  background: transparent;
+  border: 2px solid var(--ink);            /* .as-btn--secondary */
+  color: var(--ink);
+}
+
+/* .as-btn--ghost — an underline that only appears on hover, so the row does
+   not read as three equal buttons. */
+.a11y-widget-biz .a11y-pro-actions .a11y-btn-ghost {
+  background: transparent;
+  color: var(--ink);
+  text-decoration: underline;
+  text-decoration-color: transparent;
+  text-underline-offset: 3px;
+}
+.a11y-widget-biz .a11y-pro-actions .a11y-btn-ghost:hover { text-decoration-color: currentColor; }
+
+/* .as-tag / .as-badge — the row that was running together. */
+.a11y-widget-biz .a11y-meta-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;                                /* kit --space-03 */
+  margin-top: var(--gap-2);
+}
+
+.a11y-widget-biz .a11y-meta-row .a11y-tag {
+  display: inline-flex;
+  align-items: center;
+  min-height: 24px;                        /* kit --target-min */
+  padding: 0.15em var(--gap-1) 0.25em;     /* .as-tag */
+  border: 0;
+  border-radius: var(--r-pill);
+  background: #e0e0e0;                     /* kit --tag-gray-bg (gray-20) */
+  color: var(--ink);                       /* 14.5:1 */
+  font-size: var(--t-label);
+  font-weight: var(--w-medium);
+}
+
+/* .as-badge — the count, filled rather than tinted so it reads as a total. */
+.a11y-widget-biz .a11y-meta-row .a11y-count-chip {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 24px;
+  height: 24px;
+  padding: 0 4px;
+  border-radius: var(--r-pill);
+  background: var(--ink);
+  color: var(--ground);
+  font-size: var(--t-label);
+  font-weight: var(--w-medium);
+}
+
+/* .as-card — layer-01 at radius-lg, padded --space-07. */
+.a11y-widget-biz .a11y-pro-summary {
+  margin-top: var(--gap-2);
+  padding: 32px;                           /* kit --space-07 */
+  border: 0;
+  border-radius: var(--r-card);
+  background: var(--field);
+}
+
+.a11y-widget-biz .a11y-sum-score {
+  font-size: 20px;                         /* kit --type-title-size */
+  font-weight: var(--w-medium);
+  line-height: 1.2;
+}
+
+.a11y-widget-biz .a11y-issues-line {
+  margin: var(--gap-1) 0 0;
+  color: var(--ink-muted);
+}
+
+.a11y-widget-biz .a11y-pro-findings {
+  margin-top: var(--gap-2);
+  font-size: var(--t-label);
+  color: var(--ink-muted);
+}
+
+/* .as-pills / .as-pill — tabs and filters are the same control in this
+   system, so one rule serves both. Selected is a fill, not a colour shift,
+   which is what makes it survive greyscale. */
+.a11y-widget-biz .a11y-tablist,
+.a11y-widget-biz .a11y-filter {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: var(--gap-2);
+  border: 0;
+}
+
+.a11y-widget-biz .a11y-tab,
+.a11y-widget-biz .a11y-filter-btn {
+  min-height: 24px;                        /* kit --target-min */
+  padding: 8px 16px;                       /* .as-pill */
+  border: 0;
+  border-radius: var(--r-pill);
+  background: var(--ground);
+  color: var(--ink);
+  font-size: var(--t-label);
+  font-weight: var(--w-medium);
+  line-height: 1;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+/* An unselected pill on white needs an edge, or the row reads as loose text.
+   The kit sets --layer-02 (white) on a --layer-01 (grey) page; this section
+   sits on white, so the pill's own fill cannot be what separates it. Both the
+   tabs and the filters need this — giving it to only one left the filter row
+   as white boxes on white. */
+.a11y-widget-biz .a11y-tab,
+.a11y-widget-biz .a11y-filter-btn { border: 1px solid var(--hairline); }
+
+.a11y-widget-biz .a11y-tab[aria-selected="true"],
+.a11y-widget-biz .a11y-filter-btn[aria-pressed="true"] {
+  background: var(--ink);
+  border-color: var(--ink);
+  color: var(--ground);
+}
+
+/* .as-note — the incomplete-checks warning. */
+.a11y-widget-biz .a11y-note {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  gap: var(--gap-1) 16px;
+  margin-top: var(--gap-2);
+  padding: 16px var(--gap-2);              /* .as-note */
+  border-radius: 12px;                     /* kit --radius-md */
+  background: var(--field);
+  color: var(--ink);
+}
+
+.a11y-widget-biz .a11y-note-title {
+  font-size: 20px;                         /* .as-note__title */
+  font-weight: var(--w-medium);
+  line-height: 1.2;
+}
+
+.a11y-widget-biz .a11y-note-sub {
+  margin-top: 4px;
+  color: var(--ink-muted);
+}
+
+/* The kit's .as-note has no glyph; this one does, and it is aria-hidden — the
+   kind is already in the title, so this is the sighted reader's second
+   channel and must not become a third thing announced. Sized to the title it
+   sits beside so the two share a baseline. */
+.a11y-widget-biz .a11y-note-glyph {
+  flex: 0 0 auto;
+  font-size: 20px;
+  font-weight: var(--w-medium);
+  line-height: 1.2;
+}
+
+.a11y-widget-biz .a11y-note-body { flex: 1 1 14rem; min-width: 0; }

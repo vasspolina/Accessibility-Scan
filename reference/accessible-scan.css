@@ -1,0 +1,525 @@
+/* Accessible Scan — Design System
+   Single-file stylesheet: tokens (light + dark) + component classes.
+   Font binaries live in assets/fonts/; adjust the @font-face src paths if you move this file.
+*/
+
+/* ===== tokens/fonts.css ===== */
+/* PP Telegraf — brand font, binaries in assets/fonts/ (extracted from provided card) */
+@font-face { font-family: "PP Telegraf"; src: url("../assets/fonts/PPTelegraf-Regular.otf") format("opentype"); font-weight: 400; font-style: normal; font-display: swap; }
+@font-face { font-family: "PP Telegraf"; src: url("../assets/fonts/PPTelegraf-Medium.otf") format("opentype"); font-weight: 500; font-style: normal; font-display: swap; }
+
+/* ===== tokens/colors.css ===== */
+/* Colour layer built on the IBM Carbon colour system (carbondesignsystem.com/elements/color/tokens).
+   Ramps below are Carbon's, unchanged. Semantic tokens use Carbon's names and values, with two
+   deliberate brand deviations, marked BRAND: interactive/link/focus/button-primary are black rather
+   than Blue 60, and --accent-red is this system's own display red.
+   Light theme (Carbon White) on :root, dark theme (Carbon Gray 100) on [data-theme="dark"].
+   Every text/background pair below meets WCAG 2.2 AA (4.5:1) or better. */
+:root {
+  /* ── Carbon ramps ─────────────────────────────────────────── */
+  --white: #ffffff;
+  --gray-10: #f4f4f4; --gray-20: #e0e0e0; --gray-30: #c6c6c6; --gray-40: #a8a8a8; --gray-50: #8d8d8d;
+  --gray-60: #6f6f6f; --gray-70: #525252; --gray-80: #393939; --gray-90: #262626; --gray-100: #161616;
+
+  --blue-10: #edf5ff; --blue-20: #d0e2ff; --blue-30: #a6c8ff; --blue-40: #78a9ff; --blue-50: #4589ff;
+  --blue-60: #0f62fe; --blue-70: #0043ce; --blue-80: #002d9c; --blue-90: #001d6c; --blue-100: #001141;
+
+  --red-10: #fff1f1; --red-20: #ffd7d9; --red-30: #ffb3b8; --red-40: #ff8389; --red-50: #fa4d56;
+  --red-60: #da1e28; --red-70: #a2191f; --red-80: #750e13; --red-90: #520408; --red-100: #2d0709;
+
+  --green-10: #defbe6; --green-20: #a7f0ba; --green-30: #6fdc8c; --green-40: #42be65; --green-50: #24a148;
+  --green-60: #198038; --green-70: #0e6027; --green-80: #044317; --green-90: #022d0d; --green-100: #071908;
+
+  --orange-10: #fff2e8; --orange-20: #ffd9be; --orange-30: #ffb784; --orange-40: #ff832b; --orange-50: #eb6200;
+  --orange-60: #ba4e00; --orange-70: #8a3800; --orange-80: #5e2900; --orange-90: #3e1a00; --orange-100: #231000;
+
+  --yellow-10: #fcf4d6; --yellow-20: #fddc69; --yellow-30: #f1c21b; --yellow-40: #d2a106; --yellow-50: #b28600;
+  --yellow-60: #8e6a00; --yellow-70: #684e00; --yellow-80: #483700; --yellow-90: #302400; --yellow-100: #1c1500;
+
+  --magenta-10: #fff0f7; --magenta-20: #ffd6e8; --magenta-30: #ffafd2; --magenta-40: #ff7eb6; --magenta-50: #ee5396;
+  --magenta-60: #d02670; --magenta-70: #9f1853; --magenta-80: #740937; --magenta-90: #510224; --magenta-100: #2a0a18;
+
+  --purple-10: #f6f2ff; --purple-20: #e8daff; --purple-30: #d4bbff; --purple-40: #be95ff; --purple-50: #a56eff;
+  --purple-60: #8a3ffc; --purple-70: #6929c4; --purple-80: #491d8b; --purple-90: #31135e; --purple-100: #1c0f30;
+
+  --cyan-10: #e5f6ff; --cyan-20: #bae6ff; --cyan-30: #82cfff; --cyan-40: #33b1ff; --cyan-50: #1192e8;
+  --cyan-60: #0072c3; --cyan-70: #00539a; --cyan-80: #003a6d; --cyan-90: #012749; --cyan-100: #061727;
+
+  --teal-10: #d9fbfb; --teal-20: #9ef0f0; --teal-30: #3ddbd9; --teal-40: #08bdba; --teal-50: #009d9a;
+  --teal-60: #007d79; --teal-70: #005d5d; --teal-80: #004144; --teal-90: #022b30; --teal-100: #081a1c;
+
+  /* ── Carbon semantic — White theme ────────────────────────── */
+  --background: var(--white);
+  --background-hover: #e8e8e8;
+  --background-inverse: var(--gray-100);
+  --layer-01: var(--gray-10);
+  --layer-02: var(--white);
+  --layer-03: var(--gray-10);
+  --layer-accent-01: var(--gray-20);
+  --layer-hover: #e8e8e8;
+  --field-01: var(--gray-10);
+  --field-02: var(--white);
+  --field: var(--field-01);
+  --border-subtle-01: var(--gray-20);
+  --border-subtle-02: var(--gray-20);
+  --border-strong-01: var(--gray-50);
+  --border-interactive: var(--blue-60);
+  --border-subtle: var(--border-subtle-01);
+  --border-strong: var(--border-strong-01);
+  --text-primary: var(--gray-100);
+  --text-secondary: var(--gray-70);
+  --text-placeholder: var(--gray-60);
+  --text-helper: var(--gray-60);
+  --text-error: var(--red-60);
+  --text-on-color: var(--white);
+  --text-inverse: var(--white);
+  --icon-primary: var(--gray-100);
+  --icon-secondary: var(--gray-70);
+  --overlay: rgba(22, 22, 22, 0.5);
+  --skeleton-background: #e8e8e8;
+  --skeleton-element: var(--gray-30);
+
+  /* BRAND: Carbon puts Blue 60 here; this system uses black for interactive, links and focus. */
+  --link-primary: var(--text-primary);
+  --link-primary-hover: var(--gray-70);
+  --link-visited: var(--purple-70);
+  --interactive: var(--text-primary);
+  --button-primary: var(--green-60);
+  --button-primary-hover: var(--green-70);
+  --button-primary-active: var(--green-80);
+  --button-brown: var(--orange-80);
+  --button-brown-hover: var(--orange-90);
+  --button-brown-active: var(--orange-100);
+  --button-danger: var(--red-60);
+  --button-danger-hover: var(--red-70);
+  --focus: var(--text-primary);
+  --focus-inset: var(--white);
+
+  --support-error: var(--red-60);
+  --support-success: var(--green-60);
+  --support-warning: var(--yellow-30);
+  --support-info: var(--blue-70);
+
+  /* Severity — accessibility findings (never colour-only; pair with icon + label) */
+  --severity-critical: var(--red-60);
+  --severity-serious: var(--orange-60);
+  --severity-moderate: var(--yellow-60);
+  --severity-minor: var(--gray-70);
+  --severity-pass: var(--green-60);
+  --severity-critical-bg: var(--red-10);
+  --severity-serious-bg: var(--orange-10);
+  --severity-moderate-bg: var(--yellow-10);
+  --severity-minor-bg: var(--gray-10);
+  --severity-pass-bg: var(--green-10);
+
+  /* BRAND accent red — marketing/submit CTAs and display blocks, distinct from severity-critical.
+     --accent-red is for large display type and decorative blocks (no small text on it).
+     --accent-red-fill is the AA-safe fill behind white label text (4.97:1) and for accent text on white. */
+  --accent-red: #ff2f00;
+  --accent-red-fill: #d92600;
+  --accent-red-fill-hover: #b31f00;
+  --accent-red-hover: #d92600;
+  --accent-red-active: #b31f00;
+
+  /* Text on inverted (black) surfaces, whatever the theme — fixed so it survives the dark-theme flip. */
+  --text-on-invert: var(--white);
+  --text-on-invert-secondary: var(--gray-30);  /* 9.9:1 on #161616 */
+  --text-on-invert-tertiary: var(--gray-40);   /* 7.6:1 on #161616 */
+
+  /* Severity tags on inverted surfaces — Carbon dark tag pairs: 20-level text on 70/80-level fill. */
+  --severity-critical-ondark-text: var(--red-20);     --severity-critical-ondark-bg: var(--red-70);
+  --severity-serious-ondark-text: var(--orange-20);   --severity-serious-ondark-bg: var(--orange-70);
+  --severity-moderate-ondark-text: var(--yellow-20);  --severity-moderate-ondark-bg: var(--yellow-70);
+  --severity-minor-ondark-text: var(--gray-10);       --severity-minor-ondark-bg: var(--gray-70);
+  --severity-pass-ondark-text: var(--green-20);       --severity-pass-ondark-bg: var(--green-70);
+
+  /* Carbon tag palette — 70-level text on 20-level tint, no border. All ≥ 4.5:1. */
+  --tag-gray-text: var(--gray-100);      --tag-gray-bg: var(--gray-20);
+  --tag-red-text: var(--red-70);         --tag-red-bg: var(--red-20);
+  --tag-magenta-text: var(--magenta-70); --tag-magenta-bg: var(--magenta-20);
+  --tag-purple-text: var(--purple-70);   --tag-purple-bg: var(--purple-20);
+  --tag-blue-text: var(--blue-70);       --tag-blue-bg: var(--blue-20);
+  --tag-cyan-text: var(--cyan-70);       --tag-cyan-bg: var(--cyan-20);
+  --tag-teal-text: var(--teal-70);       --tag-teal-bg: var(--teal-20);
+  --tag-green-text: var(--green-70);     --tag-green-bg: var(--green-20);
+}
+
+/* ── Carbon semantic — Gray 100 theme ───────────────────────── */
+[data-theme="dark"] {
+  --background: var(--gray-100);
+  --background-hover: #333333;
+  --background-inverse: var(--gray-10);
+  --layer-01: var(--gray-90);
+  --layer-02: var(--gray-80);
+  --layer-03: var(--gray-70);
+  --layer-accent-01: var(--gray-80);
+  --layer-hover: #333333;
+  --field-01: var(--gray-90);
+  --field-02: var(--gray-80);
+  --field: var(--field-01);
+  --border-subtle-01: var(--gray-80);
+  --border-subtle-02: var(--gray-70);
+  --border-strong-01: var(--gray-50);
+  --border-interactive: var(--blue-50);
+  --border-subtle: var(--border-subtle-01);
+  --border-strong: var(--border-strong-01);
+  --text-primary: var(--gray-10);
+  --text-secondary: var(--gray-30);
+  --text-placeholder: var(--gray-50);
+  --text-helper: var(--gray-40);
+  --text-error: var(--red-40);
+  --text-on-color: var(--white);
+  --text-inverse: var(--gray-100);
+  --icon-primary: var(--gray-10);
+  --icon-secondary: var(--gray-30);
+  --overlay: rgba(0, 0, 0, 0.65);
+  --skeleton-background: #333333;
+  --skeleton-element: var(--gray-70);
+
+  --link-primary: var(--text-primary);
+  --link-primary-hover: var(--gray-30);
+  --link-visited: var(--purple-40);
+  --interactive: var(--text-primary);
+  --button-primary: var(--green-60);
+  --button-primary-hover: var(--green-50);
+  --button-primary-active: var(--green-70);
+  --button-brown: var(--orange-70);
+  --button-brown-hover: var(--orange-60);
+  --button-brown-active: var(--orange-80);
+  --button-danger: var(--red-60);
+  --button-danger-hover: #ba1b23;
+  --focus: var(--text-primary);
+  --focus-inset: var(--gray-100);
+
+  --support-error: var(--red-40);
+  --support-success: var(--green-40);
+  --support-warning: var(--yellow-30);
+  --support-info: var(--blue-40);
+
+  --severity-critical: var(--red-40);
+  --severity-serious: var(--orange-40);
+  --severity-moderate: var(--yellow-30);
+  --severity-minor: var(--gray-30);
+  --severity-pass: var(--green-40);
+  --severity-critical-bg: var(--red-90);
+  --severity-serious-bg: var(--orange-90);
+  --severity-moderate-bg: var(--yellow-90);
+  --severity-minor-bg: var(--gray-80);
+  --severity-pass-bg: var(--green-90);
+
+  --accent-red: #ff2f00;
+  --accent-red-fill: #d92600;
+  --accent-red-fill-hover: #ff5c33;
+  --accent-red-hover: #ff5c33;
+  --accent-red-active: #ff8266;
+
+  /* Carbon dark tags: 20-level text on 70-level fill. */
+  --tag-gray-text: var(--gray-10);       --tag-gray-bg: var(--gray-70);
+  --tag-red-text: var(--red-20);         --tag-red-bg: var(--red-70);
+  --tag-magenta-text: var(--magenta-20); --tag-magenta-bg: var(--magenta-70);
+  --tag-purple-text: var(--purple-20);   --tag-purple-bg: var(--purple-70);
+  --tag-blue-text: var(--blue-20);       --tag-blue-bg: var(--blue-70);
+  --tag-cyan-text: var(--cyan-20);       --tag-cyan-bg: var(--cyan-70);
+  --tag-teal-text: var(--teal-20);       --tag-teal-bg: var(--teal-70);
+  --tag-green-text: var(--green-20);     --tag-green-bg: var(--green-70);
+}
+
+/* ===== tokens/typography.css ===== */
+:root {
+  --font-sans: "PP Telegraf", "Helvetica Neue", Helvetica, Arial, sans-serif;
+
+  --weight-regular: 400;
+  --weight-medium: 500;
+
+  /* Line spacing after Hochuli: leading grows with the measure and the x-height,
+     and shrinks as the type grows. A 66ch body needs open leading; display sizes need almost none. */
+  --type-heading-size: 40px;   /* page and section headings */
+  --type-heading-lh: 1.05;
+  --type-body-size: 18px;      /* all body, controls, tables */
+  --type-body-lh: 1.5;
+  --type-label-size: 15px;     /* labels, captions, metadata — the smallest size in the system */
+  --type-label-lh: 1.4;
+
+  /* Card/product title — 20px, matches the reference grid cards */
+  --type-body-lg: 20px;   /* lede / pull quote */
+  --type-title-size: 20px;
+  --type-title-lh: 1.2;
+
+  /* Leading by measure (Hochuli: the shorter the line, the less leading it needs).
+     Pick the token that matches the column, not the component:
+       up to ~35 characters  → -narrow   (1.3)
+       ~35–55 characters     → -medium   (1.4)
+       ~55–75 characters     → --type-body-lh (1.5, the full 66ch measure) */
+  --type-title-lh-narrow: 1.1;
+  --type-body-lh-narrow: 1.3;
+  --type-body-lh-medium: 1.4;
+  --type-label-lh-narrow: 1.3;
+
+  /* Paragraph marking — space between paragraphs OR a first-line indent, never both. */
+  --paragraph-space: 0.75em;
+  --paragraph-indent: 1em;
+
+  /* Aliases — every legacy name resolves to one of the three sizes. */
+  --type-body-compact-size: var(--type-body-size);
+
+  --tracking-tight: 0.01em;  /* house style: one tracking value, +1%, at every size */
+  --tracking-normal: 0.01em;
+  --tracking-caps: 0.1em;
+
+  /* Editorial display tier — hero/marketing contexts only, never dense UI.
+     Pangram Pangram-inspired: oversized type, tight leading. */
+  --type-display-size: 144px;
+  --type-display-lh: 0.88;
+  /* Display numerals inside multi-column card rows — shrinks with the column, never below 48px. */
+  --type-display-size-fluid: clamp(48px, 8vw, 144px);
+
+  --measure-max: 66ch;
+  --min-body-size: 18px;
+}
+
+/* One tracking value across the system: +1%. Sizes are literal px, 14px is the floor. */
+body {
+  letter-spacing: var(--tracking-normal);
+}
+
+p { margin: 0 0 var(--paragraph-space); text-wrap: pretty; }
+p:last-child { margin-bottom: 0; }
+
+body { margin: 0; background: var(--background); color: var(--text-primary); font: var(--weight-regular) var(--type-body-size)/var(--type-body-lh) var(--font-sans); }
+a { color: var(--link-primary); }
+a:hover { color: var(--link-primary-hover); }
+
+/* ===== tokens/spacing.css ===== */
+:root {
+  /* Spacing scale */
+  --space-01: 0.125rem;
+  --space-02: 0.25rem;
+  --space-03: 0.5rem;
+  --space-04: 0.75rem;
+  --space-05: 1rem;
+  --space-06: 1.5rem;
+  --space-07: 2rem;
+  --space-08: 2.5rem;
+  --space-09: 3rem;
+  --space-10: 4rem;
+  --space-11: 5rem;
+  --space-12: 6rem;
+
+  /* Rounded corners, no Carbon-flat squareness */
+  --radius-none: 0;
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 20px;
+  --radius-pill: 999px;
+
+  --border-width: 1px;
+  --border-width-strong: 2px;
+
+  /* Target sizes — WCAG 2.2 target size (minimum) 24px; 44px preferred */
+  --target-min: 24px;
+  --target-comfortable: 40px;
+  --target-touch: 48px;
+
+  --shadow-overlay: 0 2px 6px rgba(0, 0, 0, 0.2);
+  --shadow-raised: 0 1px 2px rgba(0, 0, 0, 0.12);
+}
+
+/* ===== tokens/motion.css ===== */
+:root {
+  /* Easing curves — brisk, no bounce or overshoot */
+  --ease-standard: cubic-bezier(0.2, 0, 0.38, 0.9); /* @kind other */
+  --ease-entrance: cubic-bezier(0, 0, 0.38, 0.9); /* @kind other */
+  --ease-exit: cubic-bezier(0.2, 0, 1, 0.9); /* @kind other */
+  --ease-emphasis: cubic-bezier(0.4, 0.14, 0.3, 1); /* @kind other */
+
+  --duration-fast: 70ms; /* @kind other */
+  --duration-quick: 110ms; /* @kind other */
+  --duration-base: 150ms; /* @kind other */
+  --duration-moderate: 240ms; /* @kind other */
+  --duration-slow: 400ms; /* @kind other */
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --duration-fast: 0ms; /* @kind other */
+    --duration-quick: 0ms; /* @kind other */
+    --duration-base: 0ms; /* @kind other */
+    --duration-moderate: 0ms; /* @kind other */
+    --duration-slow: 0ms; /* @kind other */
+  }
+}
+
+/* ===== tokens/a11y.css ===== */
+:root {
+  --focus-ring-width: 2px;
+  --focus-ring-offset: 1px;
+  --focus-ring: var(--focus-ring-width) solid var(--focus);
+}
+
+/* Accessibility-first default: a visible, high-contrast focus indicator
+   everywhere, with an inner contrast line so it survives on any surface. */
+:where(a, button, input, select, textarea, summary, [tabindex]):focus-visible {
+  outline: var(--focus-ring);
+  outline-offset: var(--focus-ring-offset);
+  box-shadow: inset 0 0 0 1px var(--focus-inset);
+}
+
+.a11y-skip-link {
+  position: absolute;
+  left: var(--space-05);
+  top: -100%;
+  z-index: 100;
+  padding: var(--space-04) var(--space-05);
+  background: var(--button-primary);
+  color: var(--text-on-color);
+  font: var(--weight-medium) var(--type-body-compact-size) / 1.3 var(--font-sans);
+  text-decoration: none;
+}
+
+.a11y-skip-link:focus {
+  top: var(--space-05);
+}
+
+.a11y-visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+}
+
+:where(input, textarea)::placeholder { color: var(--text-placeholder); opacity: 1; }
+
+/* ============================================================
+   COMPONENTS — class equivalents of the React components.
+   Every value is a token; no raw hex, no magic numbers.
+   ============================================================ */
+
+/* Buttons ---------------------------------------------------- */
+.as-btn{display:inline-flex;align-items:center;justify-content:center;gap:var(--space-03);height:40px;min-height:40px;padding:0 var(--space-06);border-radius:var(--radius-pill);white-space:nowrap;font:var(--weight-medium) var(--type-body-size)/1 var(--font-sans);cursor:pointer;border:1px solid transparent;transition:background var(--duration-quick) var(--ease-standard)}
+.as-btn--sm{height:32px;min-height:32px}
+.as-btn--lg{height:48px;min-height:48px}
+.as-btn--primary{background:var(--accent-red-fill);border-color:var(--accent-red-fill);color:#fff}
+.as-btn--primary:hover{background:var(--accent-red-fill-hover);border-color:var(--accent-red-fill-hover)}
+.as-btn--secondary{background:transparent;border:2px solid var(--text-primary);color:var(--text-primary)}
+.as-btn--ghost{background:transparent;color:var(--text-primary);text-decoration:underline;text-decoration-color:transparent;text-underline-offset:3px}
+.as-btn--ghost:hover{text-decoration-color:currentColor}
+.as-btn--danger{background:var(--button-danger);border-color:var(--button-danger);color:var(--text-on-color)}
+.as-btn--black{background:var(--text-primary);border-color:var(--text-primary);color:var(--background)}
+.as-btn--white{background:var(--white);border-color:var(--white);color:var(--gray-100)}
+.as-btn[disabled]{opacity:.5;cursor:not-allowed}
+.as-iconbtn{display:inline-flex;align-items:center;justify-content:center;width:40px;height:40px;border-radius:var(--radius-pill);border:1px solid var(--text-primary);background:transparent;color:var(--text-primary);font-size:var(--type-body-size);cursor:pointer}
+
+/* Surfaces --------------------------------------------------- */
+.as-card{background:var(--layer-01);border:0;border-radius:var(--radius-lg);padding:var(--space-07);color:var(--text-primary)}
+.as-card--flush{padding:var(--space-06)}
+.as-card--invert{background:var(--gray-100);color:var(--text-on-invert)}
+.as-card--accent{background:var(--accent-red-fill);color:#fff}
+.as-card__eyebrow{margin:0 0 var(--space-04);font-size:var(--type-label-size);font-weight:var(--weight-medium);color:var(--text-secondary)}
+.as-card--invert .as-card__eyebrow{color:var(--text-on-invert-tertiary)}
+.as-card__title{margin:0 0 var(--space-04);font-size:var(--type-title-size);line-height:var(--type-title-lh);font-weight:var(--weight-medium);letter-spacing:var(--tracking-tight)}
+
+/* Corner badge (card design) --------------------------------- */
+.as-badged{position:relative;margin-top:12px}
+.as-badged__badge{position:absolute;top:-12px;right:var(--space-05);z-index:1;white-space:nowrap;padding:.15em var(--space-04) .25em;border-radius:var(--radius-pill);background:var(--accent-red-fill);color:#fff;font-size:var(--type-label-size);font-weight:var(--weight-medium);letter-spacing:var(--tracking-tight)}
+
+/* Band — metadata header + display statement ----------------- */
+.as-band{box-sizing:border-box;padding:var(--space-06);border-radius:var(--radius-lg);background:var(--layer-01);color:var(--text-primary)}
+.as-band--invert{background:var(--gray-100);color:var(--text-on-invert)}
+.as-band__head{display:flex;flex-wrap:wrap;align-items:flex-start;column-gap:var(--space-06);row-gap:var(--space-04);font-size:var(--type-label-size)}
+.as-band__name{flex:0 0 auto;font-weight:var(--weight-medium);letter-spacing:var(--tracking-tight)}
+.as-band__desc{flex:1 1 12rem;min-width:0;color:var(--text-secondary)}
+.as-band--invert .as-band__desc,.as-band--invert .as-band__meta{color:var(--text-on-invert-tertiary)}
+.as-band__meta{flex:0 1 auto;color:var(--text-secondary)}
+.as-band__action{flex:0 0 auto;margin-left:auto}
+.as-band__statement{margin:var(--space-07) 0 0;font-size:clamp(2.25rem,5.5vw,4.5rem);line-height:.94;font-weight:var(--weight-medium);letter-spacing:var(--tracking-tight);text-wrap:balance}
+
+/* Tags, badges, severity ------------------------------------- */
+.as-tag{display:inline-flex;align-items:center;min-height:24px;padding:.15em var(--space-04) .25em;border-radius:var(--radius-pill);border:0;background:var(--tag-gray-bg);color:var(--tag-gray-text);font-size:var(--type-label-size);font-weight:var(--weight-medium)}
+.as-tag--accent{background:var(--accent-red-fill);color:#fff}
+.as-badge{display:inline-flex;align-items:center;justify-content:center;min-width:24px;height:24px;padding:0 var(--space-02);border-radius:var(--radius-pill);background:var(--gray-100);color:var(--white);font-size:var(--type-label-size);font-weight:var(--weight-medium)}
+.as-sev{display:inline-flex;align-items:center;min-height:24px;white-space:nowrap;padding:.15em var(--space-04) .25em;border-radius:var(--radius-pill);border:0;color:#fff;font-size:var(--type-label-size);font-weight:var(--weight-medium);letter-spacing:var(--tracking-tight)}
+.as-sev--critical{background:#da1e28}  /* white 4.6:1 */
+.as-sev--serious{background:#ba4e00}   /* white 5.1:1 */
+.as-sev--moderate{background:#8e6a00}  /* white 4.9:1 */
+.as-sev--minor{background:#525252}     /* white 7.4:1 */
+.as-sev--pass{background:#198038}      /* white 4.6:1 */
+
+/* Issue row -------------------------------------------------- */
+.as-row{display:flex;flex-wrap:wrap;align-items:center;gap:var(--space-04) var(--space-05);width:100%;min-height:var(--target-min);padding:var(--space-05);box-sizing:border-box;border:0;border-radius:var(--radius-md);background:var(--layer-01);color:var(--text-primary);text-align:left;cursor:pointer;transition:background var(--duration-quick) var(--ease-standard)}
+.as-row:hover,.as-row:focus-visible{background:var(--gray-100);color:var(--text-on-invert)}
+.as-row__body{flex:1 1 12rem;min-width:0}
+.as-row__title{display:block;font-size:var(--type-title-size);line-height:var(--type-title-lh);font-weight:var(--weight-medium);letter-spacing:var(--tracking-tight)}
+.as-row__meta{display:block;margin-top:var(--space-02);font-size:var(--type-label-size);color:var(--text-secondary)}
+.as-row:hover .as-row__meta,.as-row:focus-visible .as-row__meta{color:var(--text-on-invert-secondary)}
+.as-row__count{flex:0 0 auto;margin-left:auto;display:flex;align-items:baseline;gap:var(--space-02);white-space:nowrap;font-size:1.75rem;line-height:1;font-weight:var(--weight-medium);letter-spacing:var(--tracking-tight)}
+
+/* Table ------------------------------------------------------ */
+.as-table{width:100%;border-collapse:separate;border-spacing:0 var(--space-03);font-size:var(--type-body-size);color:var(--text-primary)}
+.as-table th{text-align:left;padding:0 var(--space-06);font-size:var(--type-label-size);font-weight:var(--weight-regular);color:var(--text-secondary)}
+.as-table td{padding:var(--space-06);background:var(--layer-02);vertical-align:middle;line-height:var(--type-body-lh);transition:background var(--duration-quick) var(--ease-standard)}
+.as-table tbody tr:hover td{background:var(--gray-100);color:var(--text-on-invert)}
+.as-table tbody tr td:first-child{border-top-left-radius:var(--radius-md);border-bottom-left-radius:var(--radius-md);font-size:var(--type-title-size);letter-spacing:var(--tracking-tight)}
+.as-table tbody tr td:last-child{border-top-right-radius:var(--radius-md);border-bottom-right-radius:var(--radius-md)}
+.as-table .as-num{text-align:right;font-size:2rem;line-height:1;letter-spacing:var(--tracking-tight);font-variant-numeric:tabular-nums}
+.as-table__frame{padding:var(--space-06);border-radius:var(--radius-lg);background:var(--layer-01);box-sizing:border-box}
+
+/* Pills — filters and tabs ----------------------------------- */
+.as-pills{display:flex;flex-wrap:wrap;gap:var(--space-03)}
+.as-pill{min-height:var(--target-min);padding:var(--space-03) var(--space-05);border:0;border-radius:var(--radius-pill);background:var(--layer-02);color:var(--text-primary);font:var(--weight-medium) var(--type-label-size)/1 var(--font-sans);white-space:nowrap;cursor:pointer;transition:background var(--duration-quick) var(--ease-standard)}
+.as-pill[aria-pressed="true"],.as-pill[aria-selected="true"]{background:var(--gray-100);color:var(--text-on-invert)}
+
+/* Forms ------------------------------------------------------ */
+.as-field{display:flex;flex-direction:column;gap:var(--space-03)}
+.as-field__label{font-size:var(--type-label-size);font-weight:var(--weight-medium);color:var(--text-secondary)}
+.as-input{height:44px;padding:0;background:transparent;color:var(--text-primary);border:0;border-bottom:1px solid var(--text-primary);font:var(--weight-regular) var(--type-body-size)/1.2 var(--font-sans)}
+.as-input[aria-invalid="true"]{border-bottom:2px solid var(--support-error)}
+.as-textarea{padding:var(--space-04);background:transparent;color:var(--text-primary);border:1px solid var(--text-primary);border-radius:var(--radius-md);resize:vertical;font:var(--weight-regular) var(--type-body-size)/var(--type-body-lh) var(--font-sans)}
+.as-help{font-size:var(--type-label-size);color:var(--text-secondary)}
+.as-help--error{color:var(--support-error)}
+.as-check{display:flex;align-items:center;gap:var(--space-04);min-height:44px}
+.as-check input{width:24px;height:24px;margin:0;flex-shrink:0;accent-color:var(--gray-100)}
+.as-switch{width:72px;height:40px;padding:4px;box-sizing:border-box;border:0;border-radius:var(--radius-pill);background:var(--layer-hover);display:flex;align-items:center;justify-content:flex-start;cursor:pointer;transition:background var(--duration-quick) var(--ease-standard)}
+.as-switch[aria-checked="true"]{background:var(--gray-100);justify-content:flex-end}
+.as-switch__knob{width:32px;height:32px;border-radius:var(--radius-pill);background:var(--layer-02);box-shadow:0 1px 2px rgba(22,22,22,.28)}
+.as-switch[aria-checked="true"] .as-switch__knob{background:var(--white)}
+.as-optioncard{display:flex;align-items:flex-start;gap:var(--space-04);padding:var(--space-05) var(--space-06);border-radius:var(--radius-lg);background:var(--layer-01);color:var(--text-primary);box-sizing:border-box;cursor:pointer}
+.as-optioncard:has(input:checked){background:var(--gray-100);color:var(--text-on-invert)}
+
+/* Feedback --------------------------------------------------- */
+.as-note{display:flex;flex-wrap:wrap;align-items:flex-start;gap:var(--space-04) var(--space-05);padding:var(--space-05) var(--space-06);border-radius:var(--radius-md);background:var(--layer-01);color:var(--text-primary);box-sizing:border-box}
+.as-note__body{flex:1 1 14rem;min-width:0}
+.as-note__title{font-size:var(--type-title-size);line-height:var(--type-title-lh);font-weight:var(--weight-medium);letter-spacing:var(--tracking-tight)}
+.as-note__sub{margin-top:var(--space-02);color:var(--text-secondary)}
+.as-note__dismiss{flex-shrink:0;margin-left:auto;align-self:flex-start;min-height:var(--target-min);padding:var(--space-03) var(--space-05);border:0;border-radius:var(--radius-pill);background:var(--layer-02);color:var(--text-primary);font:var(--weight-regular) var(--type-label-size)/1 var(--font-sans);cursor:pointer}
+.as-toast{width:320px;box-sizing:border-box;padding:var(--space-05);border-radius:var(--radius-md);background:var(--layer-02);box-shadow:var(--shadow-overlay);color:var(--text-primary)}
+.as-progress__track{height:10px;border-radius:var(--radius-pill);background:var(--layer-hover);overflow:hidden}
+.as-progress__fill{height:100%;border-radius:var(--radius-pill);background:var(--gray-100);transition:width var(--duration-base) var(--ease-standard)}
+.as-progress__value{font-size:clamp(2.5rem,7vw,4rem);line-height:.82;font-weight:var(--weight-medium);letter-spacing:var(--tracking-tight);font-variant-numeric:tabular-nums}
+.as-dialog{width:420px;max-width:90%;border:0;border-radius:var(--radius-lg);background:var(--layer-02);box-shadow:var(--shadow-overlay);color:var(--text-primary)}
+.as-scrim{position:fixed;inset:0;background:rgba(22,22,22,.5);display:flex;align-items:center;justify-content:center;z-index:50}
+.as-tooltip{padding:var(--space-02) var(--space-03);border-radius:var(--radius-sm);background:var(--gray-100);color:var(--white);font-size:var(--type-label-size);box-shadow:var(--shadow-overlay)}
+
+/* Section head ----------------------------------------------- */
+.as-head{display:flex;flex-direction:column;align-items:flex-start;gap:var(--space-04);padding-top:var(--space-04);border-top:1px solid var(--text-primary)}
+.as-head__index{font-size:var(--type-label-size);font-weight:var(--weight-medium);letter-spacing:var(--tracking-tight);color:var(--text-secondary)}
+.as-head__title{margin:0;font-size:var(--type-heading-size);line-height:var(--type-heading-lh);font-weight:var(--weight-medium);letter-spacing:var(--tracking-tight);text-wrap:balance}
+.as-head__lead{margin:0;max-width:var(--measure-max);line-height:var(--type-body-lh-medium);color:var(--text-secondary)}
+
+/* Score panel ------------------------------------------------ */
+.as-score{display:flex;flex-direction:column;gap:var(--space-05);min-width:240px;padding:var(--space-06);border-radius:var(--radius-lg);background:var(--gray-100);color:var(--text-on-invert);box-sizing:border-box}
+.as-score__value{font-size:clamp(4rem,16vw,7rem);line-height:.78;font-weight:var(--weight-medium);letter-spacing:var(--tracking-tight)}
+.as-score__meter{position:relative;height:6px;background:var(--gray-90);overflow:hidden}
+.as-score__fill{height:100%}
+
+/* Code block ------------------------------------------------- */
+.as-code{background:var(--gray-100);color:var(--text-on-invert);border-radius:var(--radius-md);padding:var(--space-05) var(--space-06);font-family:monospace;font-size:var(--type-body-size);overflow-x:auto}
+
+/* Layout helpers --------------------------------------------- */
+.as-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:var(--space-05);align-items:start}
+.as-stack{display:flex;flex-direction:column;gap:var(--space-03)}
+.as-measure{max-width:var(--measure-max)}
