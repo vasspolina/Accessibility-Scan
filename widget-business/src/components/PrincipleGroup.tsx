@@ -34,14 +34,18 @@ export function PrincipleGroup({ findings }: { findings: AccessibilityFinding[] 
         const info = classifyWcag(groupFindings[0].wcagCriterion);
         return (
           <div className="a11y-principle-group" key={principle}>
+            {/* Before the heading, not after it. The kit's section head reads
+                index -> title -> lead, and this is the index. It stays OUTSIDE
+                the h3 for the original reason — inside, "Perceivable" would
+                join the heading's accessible name and restate the category the
+                heading already asks about — but a sibling ahead of it is read
+                once, in the order it is seen. Moving it in the DOM rather than
+                with CSS order keeps reading order and visual order together. */}
+            {info && <span className="a11y-principle-term">{principle}</span>}
             <h3 className="a11y-principle-title">
               {info?.plainTitle ?? principle}{" "}
               <span className="a11y-section-count">({groupFindings.length})</span>
             </h3>
-            {/* Outside the heading on purpose: "Perceivable" restates the
-                category the heading already asks about, so a screen reader
-                reading the h3 should not have to hear it twice. */}
-            {info && <span className="a11y-principle-term">{principle}</span>}
             {info && <p className="a11y-principle-desc">{info.plainDescription}</p>}
             <FindingsList findings={groupFindings} />
           </div>
