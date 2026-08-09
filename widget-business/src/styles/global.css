@@ -528,8 +528,7 @@
 }
 
 .a11y-widget-biz .a11y-section-title,
-.a11y-widget-biz .a11y-section-header h2,
-.a11y-widget-biz .a11y-report-section h2 {
+.a11y-widget-biz .a11y-section-header h2 {
   margin: 0;
   font-size: 40px;
   line-height: 1.05;
@@ -1260,8 +1259,7 @@
 /* .as-head__title — text-wrap: balance so a two-line heading breaks evenly
    rather than leaving one word alone on the second line. */
 .a11y-widget-biz .a11y-section-title,
-.a11y-widget-biz .a11y-section-header h2,
-.a11y-widget-biz .a11y-report-section h2 {
+.a11y-widget-biz .a11y-section-header h2 {
   text-wrap: balance;
 }
 
