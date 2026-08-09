@@ -26,3 +26,123 @@
      - The shadow root is isolation, not appearance. Without it this inherits
        whatever the embedding page sets.
    ========================================================================= */
+
+/* ==========================================================================
+   LAYOUT — the first layer, from the design system's templates
+   ==========================================================================
+   Values from reference/templates/scan-summary/Summary.jsx and the tokens in
+   reference/accessible-scan.css. Layout only: no colour, type or ornament yet.
+
+   The template CHANGED the section grid. ReportSections.jsx had
+   minmax(280px, 5fr) minmax(0, 7fr), which lets the head column grow with the
+   page. Summary.jsx caps it: minmax(260px, 360px) minmax(0, 1fr). The head
+   stops at 360 and the content takes the rest, so a wide window widens the
+   reading column rather than the label beside it. Taking the newer one.
+   ========================================================================== */
+
+.a11y-widget-biz {
+  --space-03: 8px;
+  --space-04: 12px;
+  --space-06: 24px;
+  --space-07: 32px;
+  --space-08: 40px;
+  --space-09: 48px;
+
+  --measure: 60ch;               /* template: maxWidth on prose */
+  --head-col: minmax(260px, 360px);
+  --content-col: minmax(0, 1fr);
+
+  box-sizing: border-box;
+}
+
+.a11y-widget-biz *,
+.a11y-widget-biz *::before,
+.a11y-widget-biz *::after { box-sizing: inherit; }
+
+/* The page box. The widget is embedded, so it responds to the box it is given
+   and not to the viewport — a media query would collapse a column on a phone
+   and leave it squashed in a narrow sidebar on a desktop. */
+.a11y-widget-biz .a11y-widget-inner {
+  width: 100%;
+  padding: var(--space-09) var(--space-06);   /* template */
+  container-type: inline-size;
+  container-name: a11y-panel;
+}
+
+/* Shell: nav rail beside the report. */
+.a11y-widget-biz .a11y-shell-main {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--space-08);
+}
+
+.a11y-widget-biz .a11y-shell-with-nav .a11y-shell-main {
+  grid-template-columns: 212px minmax(0, 1fr);
+  align-items: start;
+}
+
+/* Section: head beside content. Needs .a11y-section-head to group the head —
+   grid rows are shared between columns, so loose head siblings get pushed
+   below a tall content item. */
+.a11y-widget-biz .a11y-section:has(> .a11y-section-head),
+.a11y-widget-biz .a11y-section:has(> .a11y-section-title) {
+  display: grid;
+  grid-template-columns: var(--head-col) var(--content-col);
+  grid-auto-flow: row dense;
+  gap: var(--space-06) var(--space-08);
+  align-items: start;
+}
+
+.a11y-widget-biz .a11y-section > .a11y-section-head,
+.a11y-widget-biz .a11y-section > .a11y-section-title,
+.a11y-widget-biz .a11y-section > .a11y-section-eyebrow,
+.a11y-widget-biz .a11y-section > .a11y-section-desc { grid-column: 1; }
+
+.a11y-widget-biz .a11y-section:has(> .a11y-section-head) > *:not(.a11y-section-head),
+.a11y-widget-biz .a11y-section:has(> .a11y-section-title)
+  > *:not(.a11y-section-head):not(.a11y-section-title):not(.a11y-section-eyebrow):not(.a11y-section-desc) {
+  grid-column: 2;
+}
+
+/* Card grids. */
+.a11y-widget-biz .a11y-findings-list,
+.a11y-widget-biz .a11y-conf-tiles {
+  display: grid;
+  /* The template says minmax(300px, 1fr), but its page has no nav rail and no
+     head column, so its content area is far wider than ours. Here the panel
+     gives 1216, the rail takes 212 + 40 and the section head 360 + 40, leaving
+     564 — and two 300px cards need 624. Every list was stacking one per row.
+     260 pairs them up at this width and still reads as a card, not a strip.
+
+     auto-FILL, not auto-fit: auto-fit collapses the empty tracks and lets a
+     lone card stretch across the whole column, which is what a single finding
+     was doing at 964px wide. auto-fill keeps the track, so one card stays a
+     card. */
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: var(--space-06);
+  align-items: start;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+/* Prose measure. */
+.a11y-widget-biz .a11y-section-desc,
+.a11y-widget-biz p { max-width: var(--measure); }
+
+/* A grid item does not shrink below its min-content unless told to, and a
+   table of selectors has a wide one. */
+.a11y-widget-biz .a11y-section > * { min-width: 0; }
+.a11y-widget-biz .a11y-datatable { table-layout: fixed; width: 100%; }
+.a11y-widget-biz img { max-width: 100%; height: auto; }
+
+/* One column when the panel is too narrow to carry two. */
+@container a11y-panel (max-width: 760px) {
+  .a11y-widget-biz .a11y-shell-with-nav .a11y-shell-main,
+  .a11y-widget-biz .a11y-section:has(> .a11y-section-head),
+  .a11y-widget-biz .a11y-section:has(> .a11y-section-title) {
+    grid-template-columns: 1fr;
+  }
+  .a11y-widget-biz .a11y-section > * { grid-column: 1; }
+  .a11y-widget-biz .a11y-widget-inner { padding: var(--space-07) var(--space-06); }
+}
