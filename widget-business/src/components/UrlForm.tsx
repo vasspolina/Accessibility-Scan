@@ -1,5 +1,13 @@
 import { useState, type ChangeEvent, type FormEvent, type ReactNode } from "react";
-import { Radio, Select } from "./FormControls";
+// The ported Select, not FormControls' — same API, so this is an import
+// change and nothing else. FormControls' Select still serves its other
+// callers until they move across too.
+import { Select } from "./Select2";
+// The ported Radio, not FormControls' — it carries the per-option description
+// the design puts on each choice instead of one hint under both.
+import { Input } from "./Input";
+import { OptionCard } from "./OptionCard";
+import { Switch } from "./Switch";
 import { LoginFields } from "./LoginFields";
 import { PrintButton } from "./PrintButton";
 import type { AuthConfig } from "../api/scanClient";
@@ -131,43 +139,43 @@ export function UrlForm({
           fields) ride inside it. */}
       <div className="a11y-form-grid">
         <div className="a11y-form-col">
-          <label className="a11y-url-label" htmlFor="a11y-url-input">
-            Your website address (required)
-          </label>
+
           {/* The submit button rejoins the field as one row — the kit's own
               search-plus-action pattern — rather than waiting in the
               footer below two columns of options. */}
-          <div className="a11y-url-row">
-            <input
-              id="a11y-url-input"
-              type="text"
-              inputMode="url"
-              autoComplete="url"
-              placeholder="example.com"
-              value={value}
-              onChange={(e) => {
-                setValue(e.target.value);
-                if (e.target.value.trim()) setShowEmptyError(false);
-                setShowInvalidError(false);
-              }}
-              disabled={loading}
-              required
-              aria-invalid={showEmptyError || showInvalidError || Boolean(scanError) || undefined}
-              aria-describedby={
-                showEmptyError || showInvalidError
-                  ? "a11y-url-error"
-                  : scanError
-                    ? "a11y-scan-error"
-                    : scanBlocked
-                      ? "a11y-blocked-lead"
-                      : "a11y-url-hint"
-              }
-            />
-            <Button type="submit" disabled={loading}>
-              {loading ? "One moment…" : mode === "site" ? "Audit my site" : "Check my site"}
-            </Button>
-          </div>
-          {/* Directly under the search bar rather than below the whole
+          {/* The ported Input at display size. The submit button does NOT ride
+              inside the field: the Checker screen puts the address full width
+              on its rule and the button below it, which is what the design
+              shows and the opposite of the search-plus-action row this used
+              to be. describedBy is passed through
+              rather than left to the component: this field's description is
+              one of four ids depending on the error state, which the
+              component's own ${id}-help cannot express. */}
+          <Input
+            id="a11y-url-input"
+            size="display"
+            label="Your website address (required)"
+            placeholder="example.com"
+            value={value}
+            onChange={(e) => {
+              setValue(e.target.value);
+              if (e.target.value.trim()) setShowEmptyError(false);
+              setShowInvalidError(false);
+            }}
+            disabled={loading}
+            invalid={showEmptyError || showInvalidError || Boolean(scanError)}
+            inputProps={{ inputMode: "url", autoComplete: "url", required: true }}
+            describedBy={
+              showEmptyError || showInvalidError
+                ? "a11y-url-error"
+                : scanError
+                  ? "a11y-scan-error"
+                  : scanBlocked
+                    ? "a11y-blocked-lead"
+                    : "a11y-url-hint"
+            }
+          />
+          {/* Directly under the field rather than below the whole
               form — see the `progress` prop's own comment above. */}
           {progress}
           {/* The kit's helper line under the field, kept true per scope. */}
@@ -176,6 +184,18 @@ export function UrlForm({
               ? "We scan every page we can reach."
               : "We scan this one page and everything visible on it."}
           </span>
+
+          {/* Below the field, beside its reassurance — the Checker screen's
+              arrangement. */}
+          <div className="a11y-url-submit">
+            <Button type="submit" size="lg" disabled={loading}>
+              {loading ? "One moment\u2026" : mode === "site" ? "Audit my site" : "Check my site"}
+            </Button>
+            <span className="a11y-url-submit-note">
+              No account needed for a single page.
+            </span>
+          </div>
+
           {/* Persistent and empty until filled — a live region mounted with
               its message already inside never announces. */}
           <p id="a11y-url-error" className="a11y-error a11y-url-error" role="alert">
@@ -186,56 +206,52 @@ export function UrlForm({
                 : ""}
           </p>
 
-          <fieldset className="a11y-radio-group">
+          <fieldset className="a11y-radio-group a11y-optioncard-grid">
             <legend>Report style</legend>
-            <Radio
+            <OptionCard
               id="a11y-aud-biz"
               name="a11y-audience"
               value="business"
               label="For business owners"
+              description="A plain language summary"
               checked={audience === "business"}
               onChange={() => onAudienceChange("business")}
             />
-            <Radio
+            <OptionCard
               id="a11y-aud-pro"
               name="a11y-audience"
               value="professional"
               label="For professionals"
+              description="A WCAG mapped technical report"
               checked={audience === "professional"}
               onChange={() => onAudienceChange("professional")}
             />
-            <span className="a11y-group-hint">
-              Business owners get a plain language summary; professionals get a
-              WCAG mapped technical report.
-            </span>
           </fieldset>
         </div>
 
         <div className="a11y-form-col">
-          <fieldset className="a11y-radio-group">
+          <fieldset className="a11y-radio-group a11y-optioncard-grid">
             <legend>Scan scope</legend>
-            <Radio
+            <OptionCard
               id="a11y-scope-page"
               name="a11y-scan-mode"
               value="page"
               label="This page"
+              description="Twenty to forty seconds"
               checked={mode === "page"}
               onChange={() => setMode("page")}
               disabled={loading}
             />
-            <Radio
+            <OptionCard
               id="a11y-scope-site"
               name="a11y-scan-mode"
               value="site"
               label="Whole site"
+              description="Finds what repeats on every page"
               checked={mode === "site"}
               onChange={() => setMode("site")}
               disabled={loading}
             />
-            <span className="a11y-group-hint">
-              This page takes twenty to forty seconds; whole site finds what repeats
-              on every page.
-            </span>
           </fieldset>
 
           {mode === "site" && (
@@ -253,21 +269,21 @@ export function UrlForm({
           )}
 
           {mode === "page" && (
-            <div className="a11y-ai-toggle">
-              <label>
-                <input
-                  type="checkbox"
-                  checked={includeAiReview}
-                  onChange={(e) => setIncludeAiReview(e.target.checked)}
-                  disabled={loading}
-                  aria-describedby="a11y-ai-hint"
-                />
-                Include AI review
-              </label>
-              <span id="a11y-ai-hint" className="a11y-ai-hint">
-                Catches design and marketing issues automated tools miss. Adds
-                about half a minute.
+            <div className="a11y-ai-card">
+              <span className="a11y-ai-card-text">
+                <span className="a11y-ai-card-title">Add an AI review</span>
+                <span id="a11y-ai-hint" className="a11y-ai-hint">
+                  Catches design and marketing issues automated tools miss. Adds
+                  about half a minute.
+                </span>
               </span>
+              <Switch
+                id="a11y-ai"
+                label="AI review"
+                checked={includeAiReview}
+                onChange={setIncludeAiReview}
+                disabled={loading}
+              />
             </div>
           )}
 

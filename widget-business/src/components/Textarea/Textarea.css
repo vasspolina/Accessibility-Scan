@@ -1,0 +1,63 @@
+/* ==========================================================================
+   Textarea
+   ==========================================================================
+   Ported from components/forms/Textarea.jsx.
+     --layer-01 → --surface-sunken · --radius-lg → --radius-panel
+     --support-error → --status-danger · --type-body-lh → --leading-body
+
+   As with Input, the source's `outline: none` is not carried over — it strips
+   the focus ring from a text field and puts nothing back.
+   ========================================================================== */
+
+.a11y-textarea {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  font-family: var(--font-core);
+}
+
+.a11y-textarea-label {
+  font-size: var(--text-label);
+  line-height: var(--leading-label);
+  font-weight: 500;
+  color: var(--content-secondary);
+}
+
+.a11y-textarea > textarea {
+  padding: var(--space-4) var(--space-5);
+  background: var(--surface-sunken);
+  color: var(--content-primary);
+  /* vertical only: horizontal resizing breaks the measure the leading was
+     chosen for, and the Hochuli rule this system uses ties the two together. */
+  resize: vertical;
+  border: 0;
+  border-radius: var(--radius-panel);
+  box-sizing: border-box;
+  font-family: inherit;
+  font-size: var(--text-body);
+  line-height: var(--leading-body);
+}
+
+.a11y-textarea > textarea:focus-visible {
+  outline: 2px solid var(--content-primary);
+  outline-offset: 2px;
+}
+
+/* An inset ring, so becoming invalid does not change the box's size. */
+.a11y-textarea-invalid {
+  box-shadow: inset 0 0 0 2px var(--status-danger);
+}
+
+.a11y-textarea > textarea:disabled {
+  opacity: 0.5;
+}
+
+.a11y-textarea-help {
+  font-size: var(--text-label);
+  line-height: var(--leading-label);
+  color: var(--content-secondary);
+}
+
+.a11y-textarea-help-invalid {
+  color: var(--status-danger);
+}

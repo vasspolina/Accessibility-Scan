@@ -2,11 +2,6 @@ import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import { mountShadowRoot } from "./utils/shadowMount";
 import { Gallery } from "./gallery/Gallery";
-// The page chrome, inlined rather than imported for its side effect: Vite
-// would put a plain import into document.head, which cannot reach inside the
-// shadow boundary. Same constraint the components live under — see the note
-// in src/styles/components.css.
-import galleryStyles from "./gallery/gallery.css?inline";
 
 /**
  * Dev-only entry for /gallery.html. Nothing in the widget imports this, so it
@@ -22,10 +17,6 @@ const host = document.getElementById("gallery-root");
 if (!host) throw new Error("#gallery-root missing from gallery.html");
 
 const mountPoint = mountShadowRoot(host);
-
-const style = document.createElement("style");
-style.textContent = galleryStyles;
-mountPoint.getRootNode().appendChild(style);
 
 createRoot(mountPoint).render(
   <StrictMode>

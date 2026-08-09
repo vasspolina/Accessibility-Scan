@@ -1,0 +1,84 @@
+/* ==========================================================================
+   Radio
+   ==========================================================================
+   Ported from components/forms/Radio.jsx.
+
+   Named .a11y-radio2 rather than .a11y-radio on purpose, and only for as long
+   as it takes to migrate: FormControls.tsx still renders .a11y-radio-row and
+   .a11y-radio, and the last time a port reused a legacy class name the two
+   fought over the cascade in a way that took a browser measurement to see.
+   A distinct name means both can exist while call sites move across one at a
+   time, which is the same reason the ported components load after everything
+   else rather than replacing anything in place.
+
+   Token mapping from the source's older names:
+     --gray-100        → --content-primary   (the accent on the control itself)
+     --text-primary    → --content-primary
+     --text-secondary  → --content-secondary
+     --type-body-size  → --text-body
+     --type-label-size → --text-label
+     --font-sans       → --font-core
+   ========================================================================== */
+
+.a11y-radio2 {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  /* 44px, not the 24px WCAG 2.2 minimum. The same criterion names 44 as the
+     comfortable size, and a row that carries a description is taller than that
+     anyway — this floor is for the bare ones. */
+  min-height: var(--target-comfortable);
+  font-family: var(--font-core);
+  font-size: var(--text-body);
+  color: var(--content-primary);
+  cursor: pointer;
+}
+
+.a11y-radio2-disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* The control. accent-color paints the dot without replacing the native
+   widget, so the focus ring, the keyboard behaviour and the forced-colors
+   rendering all stay the browser's — which is worth more than matching a
+   swatch exactly. */
+.a11y-radio2 > input[type="radio"] {
+  width: 24px;
+  height: 24px;
+  margin: 0;
+  flex-shrink: 0;
+  accent-color: var(--content-primary);
+}
+
+.a11y-radio2-text {
+  flex: 1;
+  min-width: 0;
+}
+
+.a11y-radio2-label {
+  display: block;
+}
+
+.a11y-radio2-desc {
+  display: block;
+  font-size: var(--text-label);
+  line-height: var(--leading-label);
+  color: var(--content-secondary);
+}
+
+/* Pinned right and never wrapped: it is a count, and a count that wraps stops
+   reading as one. */
+.a11y-radio2-meta {
+  flex-shrink: 0;
+  white-space: nowrap;
+  color: var(--content-primary);
+}
+
+/* A row with something under its label gets air and a rule; a bare one gets
+   neither. Without the branch a plain list of two options grows dividers it
+   never asked for. */
+.a11y-radio2-roomy {
+  padding: var(--space-3) 0;
+  border-bottom: 1px solid var(--border-subtle);
+}

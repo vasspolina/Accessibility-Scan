@@ -1,41 +1,42 @@
-// The design system, then the app. Order is the migration: everything the
-// system specifies (tokens, base, its own components) is the floor, and
-// styles.css sits on top carrying what is still only defined there — this
-// app's own layout, which no design system describes.
+// The strangler finished. There is no legacy sheet left to strangle.
 //
-// Sections are being deleted from styles.css one at a time as the floor
-// takes over. While a section still exists in both, the app file wins by
-// source order, so every step of the migration is a no-op until the old
-// rules are actually removed. That is the point: nothing breaks halfway.
-// Foundations v2 tokens first: every ported component resolves against them,
-// so they have to exist before any component rule is read.
+// What used to load here was four files in a deliberate order — tokens, then
+// the 7,988-line legacy sheet as the floor, then a system base, then the ported
+// components on top. Two of those are gone for good: styles.css and
+// styles.system.css were deleted, not emptied, and they are not coming back.
+//
+// That leaves exactly what the design system itself ships. Worth being precise
+// about what that is, because it is less than it sounds: the design project's
+// own styles.css is six @import lines and no rules at all — a token gatherer.
+// The system is TOKENS PLUS COMPONENTS. It has no global base sheet, so there
+// is none to adopt, and anything this app needs beyond a component's own
+// stylesheet has nowhere to live but that component.
+//
+// Order still matters, but only two layers deep now:
+//   tokens          every component resolves its colours and spacing here
+//   componentStyles the ported components, gathered by styles/components.css
+//
+// Tokens are Foundations v2 rather than the project's tokens/*.css. Those two
+// disagree on names — v2 says --surface-sunken and --content-primary where the
+// older files say --layer-01 and --text-primary — and every ported component
+// is written against v2, which is the target set for this migration.
+//
+// Not styles, and so not loaded here: inline style={{…}} props in 8 components,
+// SVG presentation attributes (ScoreDial's meter), and index.html's <head>
+// styles, which belong to the demo host page.
 import tokens from "../styles/tokens.css?inline";
-// Then the ported components, gathered by that file — see the note in it for
-// why a component cannot import its own stylesheet here.
 import componentStyles from "../styles/components.css?inline";
-import systemStyles from "../styles.system.css?inline";
-import styles from "../styles.css?inline";
 
-// Mounts into a Shadow DOM root instead of directly into the container so
-// the host page's global CSS can never leak in, and the widget's own styles
-// can never leak out onto the host page.
+/**
+ * Mounts into a Shadow DOM root so the host page's global CSS cannot leak in,
+ * and this widget's cannot leak out.
+ */
 export function mountShadowRoot(container: HTMLElement): HTMLElement {
   const shadowRoot = container.shadowRoot ?? container.attachShadow({ mode: "open" });
   shadowRoot.innerHTML = "";
 
   const styleEl = document.createElement("style");
-  // Order is the migration, and it just flipped.
-  //
-  // Until now the legacy sheet loaded LAST, so it outranked every ported
-  // component and the new design was invisible on the page — six components
-  // ported and the app still looked unchanged, because styles.css won every
-  // tie by source order.
-  //
-  // Now the legacy sheet is the floor and the ported components sit on top.
-  // Anything already ported wins; anything not yet ported still gets its old
-  // rules, so nothing is unstyled. That is the whole point of a strangler —
-  // the old file keeps the lights on while it empties out.
-  styleEl.textContent = [tokens, styles, systemStyles, componentStyles].join("\n");
+  styleEl.textContent = [tokens, componentStyles].join("\n");
   shadowRoot.appendChild(styleEl);
 
   const mountPoint = document.createElement("div");

@@ -1,0 +1,145 @@
+/* ==========================================================================
+   Switch
+   ==========================================================================
+   Ported from components/forms/Switch.jsx. 72×40 track, 32px knob, and the
+   word beside it.
+
+   The track is a button, so it keeps the browser's focus ring. The source
+   sets no outline rule at all, which means it inherits whatever the page has
+   — fine in a gallery, not something to leave to chance in the widget.
+
+   Token mapping:
+     --gray-100        → --surface-inverse
+     --layer-hover     → --layer-hover
+     --layer-02        → --surface-raised
+     --white           → #ffffff
+     --radius-pill     → --radius-round
+     --type-title-size → --text-title
+     --duration-quick  → --motion-exit
+   ========================================================================== */
+
+.a11y-switch {
+  display: flex;
+  align-items: center;
+  gap: var(--space-5);
+  min-height: var(--target-comfortable);
+  flex-wrap: wrap;
+  font-family: var(--font-core);
+}
+
+.a11y-switch-disabled {
+  opacity: 0.5;
+}
+
+.a11y-switch-label {
+  font-size: var(--text-title);
+  line-height: var(--leading-title);
+  letter-spacing: var(--tracking-tight);
+  color: var(--content-primary);
+}
+
+/* margin-left:auto is what pins the control to the right edge of whatever row
+   it is dropped into, which is how the AI-review card is arranged. */
+.a11y-switch-controls {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-3);
+  margin-left: auto;
+}
+
+.a11y-switch-track {
+  width: 72px;
+  height: 40px;
+  padding: 4px;
+  box-sizing: border-box;
+  border: 0;
+  border-radius: var(--radius-round);
+  background: var(--layer-hover);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  transition: background var(--motion-exit) var(--ease-standard);
+}
+
+.a11y-switch-track[aria-checked="true"] {
+  background: var(--surface-inverse);
+  justify-content: flex-end;
+}
+
+.a11y-switch-track:disabled {
+  cursor: not-allowed;
+}
+
+.a11y-switch-knob {
+  width: 32px;
+  height: 32px;
+  border-radius: var(--radius-round);
+  background: var(--surface-raised);
+  box-shadow: 0 1px 2px rgba(22, 22, 22, 0.28);
+  transition: transform var(--motion-exit) var(--ease-standard);
+}
+
+.a11y-switch-track[aria-checked="true"] .a11y-switch-knob {
+  background: #ffffff;
+}
+
+/* 3ch so the row does not jump a pixel when "Off" becomes "On". */
+.a11y-switch-word {
+  min-width: 3ch;
+  font-size: var(--text-label);
+  font-weight: 500;
+  letter-spacing: var(--tracking-tight);
+  color: var(--content-secondary);
+}
+
+.a11y-switch-lg .a11y-switch-track {
+  width: 92px;
+  height: 52px;
+}
+
+.a11y-switch-lg .a11y-switch-knob {
+  width: 42px;
+  height: 42px;
+}
+
+/* The AI-review row: a card holding an explanation on the left and the Switch
+   pushed to the right. Lives here rather than with the form because the
+   Switch's own margin-left:auto is what does the pushing — the card is just
+   the surface it sits on. */
+.a11y-ai-card {
+  display: flex;
+  align-items: center;
+  gap: var(--space-5);
+  flex-wrap: wrap;
+  padding: var(--space-4) var(--space-5);
+  box-sizing: border-box;
+  border-radius: var(--radius-panel);
+  background: var(--surface-sunken);
+}
+
+.a11y-ai-card-text {
+  flex: 1;
+  min-width: 240px;
+}
+
+.a11y-ai-card-title {
+  display: block;
+  font-weight: 500;
+  color: var(--content-primary);
+}
+
+.a11y-ai-card .a11y-ai-hint {
+  display: block;
+  font-size: var(--text-label);
+  line-height: var(--leading-label);
+  color: var(--content-secondary);
+}
+
+/* The Switch's label is a title-size word in the design's own gallery, but in
+   this row the card already carries the heading — a second one at title size
+   beside it competes. Held to label size here. */
+.a11y-ai-card .a11y-switch-label {
+  font-size: var(--text-label);
+  color: var(--content-secondary);
+}
