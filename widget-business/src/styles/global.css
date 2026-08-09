@@ -1,42 +1,41 @@
 /* ==========================================================================
-   Accessible Scan — scan form
+   Accessible Scan
    ==========================================================================
-   Copied from the Checker reference. Type sizes were SOLVED, not estimated:
-   measure the reference string's pixel width, measure the same string in
-   PP Telegraf at 100px, scale. The title solved to 114.4 from two different
-   screenshots independently, which is why it is 114 and not the 116 guessed
-   earlier.
+   TYPE IS NOT TOKENISED HERE, AND THAT IS THE RULE.
 
-   Reads of x-coordinates carry a consistent 2–4% short bias, so solved values
-   are rounded UP to the nearest real size. Values marked (read) come from
-   measuring the image directly and are ±3px.
+   CLAUDE.md: font size, weight and tracking are literal px in the code, never
+   tokens or CSS variables. Colour, spacing, radius and motion still are. So
+   there are no --t-* or --w-* names below, and adding one back is a
+   regression rather than a tidy-up.
+
+   The sizes this system permits:
+
+     14   the floor, nothing smaller
+     15   small body, labels, captions, metadata
+     18   body
+     20   card and note titles
+     40   section headings
+     66   the progress numeral
+     144  the display line
+     clamp(48px, 8cqi, 144px)   the score, fluid against the panel
+
+   16px and 17px are NOT permitted sizes and were both in use here until this
+   pass. Tracking is 0.01em at every size — one value, no exceptions. The
+   negatives that were here came from the older ui_kits tokens, where
+   --tracking-tight meant -0.03em; in the real stylesheet the same name means
+   +0.01em.
    ========================================================================== */
 
 .a11y-widget-biz {
   --ink: #161616;                /* kit: rgb(22,22,22) */
   --ground: #ffffff;
   --ink-muted: #525252;          /* kit: rgb(82,82,82), 7.4:1 */
-  --field: #f4f4f4;             /* kit: rgb(244,244,244) — was #f1f1ee, sampled from a screenshot */
+  --field: #f4f4f4;              /* kit --layer-01: rgb(244,244,244) */
   --hairline: #c9c7c0;
   --accent: #198038;             /* kit: rgb(25,128,56) */
   --accent-ink: #ffffff;
 
   --font: "PP Telegraf", "Helvetica Neue", Helvetica, Arial, sans-serif;
-
-  /* solved */
-  --t-display: 144px;            /* kit: 144 / lh .88 / track 1.44px */
-  --t-address: 40px;             /* kit: matches the step question */
-  --t-body:    16px;             /* kit: AI card title 16/500 */
-  --t-label:   15px;             /* kit: field label 15/500 */
-  --t-desc:    15px;             /* kit: card desc 15/400 */
-  --t-card:    18px;             /* kit: card label 18/400. Measured — the old
-                                    15px, and the note that it matched the
-                                    description exactly, both came from a
-                                    screenshot read. Size AND colour separate
-                                    them; weight does not. */
-
-  --w-regular: 400;
-  --w-medium:  500;
 
   /* ---- The spacing scale ------------------------------------------------
      Measured with getBoundingClientRect against reference/ui-kit.html, fonts
@@ -69,15 +68,37 @@
   color: var(--ink);
   background: var(--ground);
   font-family: var(--font);
-  font-size: var(--t-body);
+  font-size: 18px;
   line-height: 1.5;
+  /* Set here so it INHERITS. Putting 0.01em on individual rules covered only
+     the 15 elements that had a letter-spacing declaration; everything else
+     rendered at `normal`, which is not what "0.01em everywhere" means. */
+  letter-spacing: 0.01em;
 }
+
+/* No heading may fall back to a browser default. At an 18px base those compute
+   to 27px (h2) and 21.06px (h3) — neither is a size this system contains, and
+   eight elements were rendering at them. Anything with its own rule still
+   wins on specificity; this is only the floor. */
+.a11y-widget-biz h1,
+.a11y-widget-biz h2 { font-size: 40px; line-height: 1.05; font-weight: 500; }
+
+.a11y-widget-biz h3,
+.a11y-widget-biz h4,
+.a11y-widget-biz h5,
+.a11y-widget-biz h6 { font-size: 20px; line-height: 1.2; font-weight: 500; }
 
 .a11y-widget-biz *, .a11y-widget-biz *::before, .a11y-widget-biz *::after { box-sizing: border-box; }
 
+/* `font: inherit` does NOT carry letter-spacing — it is not part of the font
+   shorthand, and the UA stylesheet stops form controls inheriting it. Without
+   the explicit line, 40 buttons and 6 inputs rendered at `normal`, and so did
+   the 46 spans nested inside them. That is 114 elements missing the one
+   tracking value the system has. */
 .a11y-widget-biz button, .a11y-widget-biz input,
 .a11y-widget-biz select, .a11y-widget-biz textarea {
   background: transparent; color: inherit; font: inherit;
+  letter-spacing: inherit;
 }
 
 .a11y-widget-biz :focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
@@ -100,10 +121,10 @@
 
 .a11y-widget-biz .a11y-newscan-title {
   margin: 0;
-  font-size: var(--t-display);
+  font-size: 144px;
   line-height: 0.88;             /* kit */
   letter-spacing: 0.01em;        /* kit: +1.44px at 144, not negative */
-  font-weight: var(--w-medium);
+  font-weight: 500;
 }
 
 .a11y-widget-biz .a11y-newscan-sub {
@@ -112,7 +133,7 @@
      the scale below, because it really is a fourth value. */
   margin: 16px 0 0;
   max-width: 58ch;
-  font-size: var(--t-body);
+  font-size: 18px;
   line-height: 1.5;
 }
 
@@ -152,9 +173,9 @@
 /* ---- Address field ------------------------------------------------------ */
 
 .a11y-widget-biz .a11y-url-form .a11y-input-label {
-  font-size: var(--t-label);
-  font-weight: var(--w-medium);
-  letter-spacing: 0;
+  font-size: 15px;
+  font-weight: 500;
+  letter-spacing: 0.01em;
   text-transform: none;
   color: var(--ink);
 }
@@ -180,19 +201,19 @@
   min-width: 0;
   border: 0;
   padding: 12px 0;
-  font-size: var(--t-address);
+  font-size: 40px;
   line-height: 1.25;
-  letter-spacing: -0.015em;
-  font-weight: var(--w-medium);
+  letter-spacing: 0.01em;
+  font-weight: 500;
 }
 
 .a11y-widget-biz .a11y-url-form .a11y-input-shell > input:focus-visible { outline: 0; }
 
 .a11y-widget-biz .a11y-url-form .a11y-input-help,
 .a11y-widget-biz .a11y-step-body > .a11y-group-hint {
-  font-size: var(--t-label);
+  font-size: 15px;
   color: var(--ink-muted);
-  letter-spacing: 0;
+  letter-spacing: 0.01em;
   text-transform: none;
 }
 
@@ -246,12 +267,12 @@
 }
 
 .a11y-widget-biz .a11y-url-form .a11y-optioncard-label {
-  display: block; font-size: var(--t-card); font-weight: var(--w-regular);
+  display: block; font-size: 18px; font-weight: 400;
 }
 
 .a11y-widget-biz .a11y-url-form .a11y-optioncard-desc {
-  display: block; font-size: var(--t-desc); color: var(--ink-muted);
-  letter-spacing: 0; text-transform: none;
+  display: block; font-size: 15px; color: var(--ink-muted);
+  letter-spacing: 0.01em; text-transform: none;
 }
 
 /* ---- AI card ------------------------------------------------------------ */
@@ -264,11 +285,11 @@
 }
 
 .a11y-widget-biz .a11y-ai-card-text { flex: 1; min-width: 240px; }
-.a11y-widget-biz .a11y-ai-card-title { display: block; font-size: var(--t-body); font-weight: var(--w-medium); }
-.a11y-widget-biz .a11y-ai-card .a11y-ai-hint { display: block; font-size: var(--t-desc); color: var(--ink-muted); }
+.a11y-widget-biz .a11y-ai-card-title { display: block; font-size: 18px; font-weight: 500; }
+.a11y-widget-biz .a11y-ai-card .a11y-ai-hint { display: block; font-size: 15px; color: var(--ink-muted); }
 .a11y-widget-biz .a11y-ai-card .a11y-switch-label {
   font-size: 20px;               /* kit */
-  letter-spacing: 0; text-transform: none; color: var(--ink);
+  letter-spacing: 0.01em; text-transform: none; color: var(--ink);
 }
 
 .a11y-widget-biz .a11y-switch-track {
@@ -280,7 +301,7 @@
   background: var(--ink); justify-content: flex-end;
 }
 .a11y-widget-biz .a11y-switch-knob { width: 32px; height: 32px; border-radius: var(--r-pill); background: var(--ground); }   /* kit */
-.a11y-widget-biz .a11y-switch-word { min-width: 3ch; font-size: var(--t-label); color: var(--ink-muted); }
+.a11y-widget-biz .a11y-switch-word { min-width: 3ch; font-size: 15px; color: var(--ink-muted); }
 
 /* ---- Submit ------------------------------------------------------------- */
 
@@ -294,12 +315,12 @@
   min-height: 48px;              /* kit: 48 tall, 190 wide */
   background: var(--accent); color: var(--accent-ink);
   font-size: 18px;               /* kit: submit is 18/500 */
-  font-weight: var(--w-medium); cursor: pointer;
+  font-weight: 500; cursor: pointer;
 }
 .a11y-widget-biz .a11y-url-submit .a11y-btn:hover:not(:disabled) { background: var(--ink); }
 .a11y-widget-biz .a11y-url-submit .a11y-btn:disabled { opacity: 0.5; cursor: not-allowed; }
 .a11y-widget-biz .a11y-url-submit .a11y-btn::after { content: "→"; margin-left: 8px; }
-.a11y-widget-biz .a11y-url-submit-note { font-size: var(--t-label); color: var(--ink-muted); }
+.a11y-widget-biz .a11y-url-submit-note { font-size: 15px; color: var(--ink-muted); }
 
 /* ---- Helper line, carrying the login trigger inline --------------------- */
 
@@ -321,7 +342,7 @@
   border: 0;
   padding: 0;
   font: inherit;
-  font-size: var(--t-label);
+  font-size: 15px;
   color: var(--ink);
   text-decoration: underline;
   text-underline-offset: 3px;
@@ -363,7 +384,7 @@
 }
 
 .a11y-widget-biz .a11y-progress-detail {
-  font-size: 14px;
+  font-size: 15px;
   color: var(--ink-muted);
   white-space: nowrap;
 }
@@ -382,14 +403,14 @@
 .a11y-widget-biz .a11y-progress-num {
   font-size: 66px;
   line-height: 0.8;
-  letter-spacing: -0.03em;
+  letter-spacing: 0.01em;
   font-variant-numeric: tabular-nums;
 }
 
 /* The unit sits at roughly a quarter of the numeral and rides its baseline,
    which is what keeps "74%" reading as one value rather than two. */
 .a11y-widget-biz .a11y-progress-unit {
-  font-size: 17px;
+  font-size: 18px;
   line-height: 1;
 }
 
@@ -441,8 +462,8 @@
   min-width: 1.4em;
   font-size: 40px;               /* kit */
   line-height: 1;
-  letter-spacing: -0.02em;
-  font-weight: var(--w-medium);
+  letter-spacing: 0.01em;
+  font-weight: 500;
   /* #6f6f6f is the kit's OWN numeral colour on its report screens, and it
      measures 5.24:1. The NewScan screen uses #a8a8a8 (2.5:1, fails AA); the
      report screens do not. Taking the passing one means this is a kit value
@@ -454,15 +475,15 @@
   margin: 0;
   font-size: 40px;               /* kit */
   line-height: 1;
-  letter-spacing: -0.025em;
-  font-weight: var(--w-medium);
+  letter-spacing: 0.01em;
+  font-weight: 500;
   color: var(--ink);
 }
 
 /* Sits beside the question, not under it — small, muted, baseline-aligned. */
 .a11y-widget-biz .a11y-step-note {
-  font-size: var(--t-label);
-  font-weight: var(--w-regular);
+  font-size: 15px;
+  font-weight: 400;
   line-height: 1;
   color: var(--ink-muted);
 }
@@ -505,8 +526,8 @@
   margin: 0;
   font-size: 40px;
   line-height: 1.05;
-  letter-spacing: 0.4px;
-  font-weight: var(--w-medium);
+  letter-spacing: 0.01em;
+  font-weight: 500;
   color: var(--ink);
 }
 
@@ -514,15 +535,15 @@
 .a11y-widget-biz .a11y-section-count {
   font-size: 40px;
   line-height: 1;
-  letter-spacing: 0.4px;
-  font-weight: var(--w-medium);
+  letter-spacing: 0.01em;
+  font-weight: 500;
   color: #6f6f6f;
 }
 
 .a11y-widget-biz .a11y-section-desc,
 .a11y-widget-biz .a11y-section-qualifier {
   margin: 0;
-  font-size: 16px;
+  font-size: 18px;
   line-height: 1.5;
   color: var(--ink-muted);
 }
@@ -536,7 +557,7 @@
 .a11y-widget-biz .a11y-finding-todo,
 .a11y-widget-biz .a11y-finding-steps > p {
   margin: 0 0 24px;
-  font-size: 16px;
+  font-size: 18px;
   line-height: 1.5;
   color: var(--ink);
 }
@@ -551,7 +572,7 @@
   display: block;
   margin-bottom: 4px;
   font-size: 15px;
-  font-weight: var(--w-medium);
+  font-weight: 500;
   color: var(--ink-muted);
 }
 
@@ -566,7 +587,7 @@
   text-align: left;
   padding: 12px 12px 12px 0;
   font-size: 15px;
-  font-weight: var(--w-medium);
+  font-weight: 500;
   color: var(--ink-muted);
   border-bottom: 1px solid var(--ink);
 }
@@ -600,7 +621,7 @@
   padding: 2px 12px;
   border-radius: 999px;
   font-size: 15px;
-  font-weight: var(--w-medium);
+  font-weight: 500;
 }
 
 /* ---- Cards -------------------------------------------------------------
@@ -632,8 +653,8 @@
 /* .as-card__eyebrow — the small line above the title. */
 .a11y-widget-biz .a11y-card-eyebrow {
   margin: 0 0 var(--gap-1);
-  font-size: var(--t-label);
-  font-weight: var(--w-medium);
+  font-size: 15px;
+  font-weight: 500;
   color: var(--ink-muted);
 }
 
@@ -642,13 +663,13 @@
   margin: 0 0 var(--gap-1);
   font-size: 20px;
   line-height: 1.2;
-  font-weight: var(--w-medium);
+  font-weight: 500;
   letter-spacing: 0.01em;        /* kit --tracking-tight */
 }
 
 .a11y-widget-biz .a11y-card-meta {
   margin: 0 0 var(--gap-1);
-  font-size: var(--t-label);
+  font-size: 15px;
   color: var(--ink-muted);
 }
 
@@ -682,8 +703,8 @@
 .a11y-widget-biz .a11y-conf-num {
   font-size: 40px;
   line-height: 1.05;
-  letter-spacing: 0.4px;
-  font-weight: var(--w-medium);
+  letter-spacing: 0.01em;
+  font-weight: 500;
   font-variant-numeric: tabular-nums;
 }
 
@@ -758,7 +779,7 @@
   display: block;
   padding: 12px 16px;
   font-size: 18px;
-  font-weight: var(--w-regular);
+  font-weight: 400;
   color: var(--ink);
   text-decoration: none;
   background: transparent;
@@ -773,7 +794,7 @@
 .a11y-widget-biz .a11y-shell-nav-link[aria-current]:not([aria-current="false"]) {
   background: #defbe6;
   color: #071908;
-  font-weight: var(--w-medium);
+  font-weight: 500;
 }
 
 .a11y-widget-biz .a11y-shell-nav-toggle {
@@ -807,8 +828,8 @@
 }
 
 .a11y-widget-biz .a11y-dial-label {
-  font-size: var(--t-label);
-  font-weight: var(--w-medium);
+  font-size: 15px;
+  font-weight: 500;
   color: var(--ink-muted);
 }
 
@@ -825,10 +846,10 @@
      widget is embedded, so a 400px column on a 1920px page would set the
      number at 144px and blow the column apart. cqi reads the panel that
      actually contains it — same intent, correct reference box. */
-  font-size: clamp(3rem, 8cqi, 9rem);
+  font-size: clamp(48px, 8cqi, 144px);
   line-height: 0.88;             /* kit */
-  letter-spacing: -0.03em;       /* kit: --tracking-tight */
-  font-weight: var(--w-medium);
+  letter-spacing: 0.01em;       /* kit: --tracking-tight */
+  font-weight: 500;
   color: var(--ink);
 }
 
@@ -836,7 +857,7 @@
    white and each was measured, not assumed: 5.02 / 7.94 / 5.00. */
 .a11y-widget-biz .a11y-dial-word {
   font-size: 20px;               /* kit: --type-title-size */
-  font-weight: var(--w-regular);
+  font-weight: 400;
   color: var(--ink-muted);
 }
 .a11y-widget-biz .a11y-dial-word[data-band="good"]       { color: #198038; }
@@ -895,21 +916,21 @@
 
 .a11y-widget-biz .a11y-dofirst-eyebrow {
   font-size: 20px;               /* kit */
-  font-weight: var(--w-medium);
-  letter-spacing: 0.2px;         /* kit */
+  font-weight: 500;
+  letter-spacing: 0.01em;         /* kit */
   color: var(--ink);
 }
 
 .a11y-widget-biz .a11y-dofirst-statement {
   margin: 0;
-  font-size: var(--t-body);
+  font-size: 18px;
   line-height: 1.5;
   color: var(--ink-muted);
 }
 
 /* The one word worth emphasising is the finding's own name. */
 .a11y-widget-biz .a11y-dofirst-statement strong {
-  font-weight: var(--w-medium);
+  font-weight: 500;
   color: var(--ink);
 }
 
@@ -948,7 +969,7 @@
 }
 
 .a11y-widget-biz .a11y-score-preview-meta {
-  font-size: var(--t-label);
+  font-size: 15px;
   color: var(--ink-muted);
 }
 
@@ -956,8 +977,8 @@
   padding: 2px 10px;             /* kit pill */
   border-radius: var(--r-pill);
   background: var(--field);
-  font-size: var(--t-label);
-  font-weight: var(--w-medium);
+  font-size: 15px;
+  font-weight: 500;
   font-variant-numeric: tabular-nums;
   color: var(--ink-muted);       /* 7.1:1 on --field */
   white-space: nowrap;
@@ -965,7 +986,7 @@
 
 .a11y-widget-biz .a11y-score-clean {
   margin: 0;
-  font-size: var(--t-body);
+  font-size: 18px;
   color: var(--ink-muted);
 }
 
@@ -984,7 +1005,7 @@
   display: flex;
   flex-direction: column;
   gap: var(--gap-1);
-  font-size: var(--t-body);
+  font-size: 18px;
   line-height: 1.5;
   color: var(--ink-muted);
   max-width: 62ch;
@@ -1003,7 +1024,7 @@
   border-radius: var(--r-pill);  /* kit */
   background: transparent;
   font-size: 18px;               /* kit */
-  font-weight: var(--w-medium);
+  font-weight: 500;
   color: var(--ink);
   cursor: pointer;
 }
@@ -1046,7 +1067,7 @@
   border-radius: var(--r-pill);
   white-space: nowrap;
   font-size: 18px;                         /* kit --type-body-size */
-  font-weight: var(--w-medium);
+  font-weight: 500;
   line-height: 1;
   cursor: pointer;
 }
@@ -1094,8 +1115,8 @@
   border-radius: var(--r-pill);
   background: #e0e0e0;                     /* kit --tag-gray-bg (gray-20) */
   color: var(--ink);                       /* 14.5:1 */
-  font-size: var(--t-label);
-  font-weight: var(--w-medium);
+  font-size: 15px;
+  font-weight: 500;
 }
 
 /* .as-badge — the count, filled rather than tinted so it reads as a total. */
@@ -1109,8 +1130,8 @@
   border-radius: var(--r-pill);
   background: var(--ink);
   color: var(--ground);
-  font-size: var(--t-label);
-  font-weight: var(--w-medium);
+  font-size: 15px;
+  font-weight: 500;
 }
 
 /* .as-card — layer-01 at radius-lg, padded --space-07. */
@@ -1124,7 +1145,7 @@
 
 .a11y-widget-biz .a11y-sum-score {
   font-size: 20px;                         /* kit --type-title-size */
-  font-weight: var(--w-medium);
+  font-weight: 500;
   line-height: 1.2;
 }
 
@@ -1135,7 +1156,7 @@
 
 .a11y-widget-biz .a11y-pro-findings {
   margin-top: var(--gap-2);
-  font-size: var(--t-label);
+  font-size: 15px;
   color: var(--ink-muted);
 }
 
@@ -1159,8 +1180,8 @@
   border-radius: var(--r-pill);
   background: var(--ground);
   color: var(--ink);
-  font-size: var(--t-label);
-  font-weight: var(--w-medium);
+  font-size: 15px;
+  font-weight: 500;
   line-height: 1;
   white-space: nowrap;
   cursor: pointer;
@@ -1196,7 +1217,7 @@
 
 .a11y-widget-biz .a11y-note-title {
   font-size: 20px;                         /* .as-note__title */
-  font-weight: var(--w-medium);
+  font-weight: 500;
   line-height: 1.2;
 }
 
@@ -1212,7 +1233,7 @@
 .a11y-widget-biz .a11y-note-glyph {
   flex: 0 0 auto;
   font-size: 20px;
-  font-weight: var(--w-medium);
+  font-weight: 500;
   line-height: 1.2;
 }
 
