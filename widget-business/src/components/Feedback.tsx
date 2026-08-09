@@ -22,21 +22,30 @@ export function ProgressBar({
   value = 0,
   max = 100,
   label,
+  detail,
 }: {
   value?: number;
   max?: number;
   label: string;
+  /** Right of the label, e.g. "31 of 42 pages". Optional — the bar reads
+   *  correctly without it, and not every scan knows its page count. */
+  detail?: string;
 }) {
   const pct = Math.round((value / max) * 100);
   return (
     <div className="a11y-progress">
       <div className="a11y-progress-head">
         <span className="a11y-progress-label">{label}</span>
-        {/* aria-hidden: aria-valuenow below already carries this number. */}
-        <span className="a11y-progress-pct" aria-hidden="true">
-          {pct}%
-        </span>
+        {detail && <span className="a11y-progress-detail">{detail}</span>}
       </div>
+      {/* The percentage is its own block beneath the head row, set large, with
+          the unit at a fraction of the numeral's size. aria-hidden because
+          aria-valuenow on the track below already carries the number — a
+          screen reader should hear it once, not twice. */}
+      <p className="a11y-progress-pct" aria-hidden="true">
+        <span className="a11y-progress-num">{pct}</span>
+        <span className="a11y-progress-unit">%</span>
+      </p>
       <div
         className="a11y-progress-track"
         role="progressbar"

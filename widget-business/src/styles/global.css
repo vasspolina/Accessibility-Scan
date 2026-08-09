@@ -263,3 +263,77 @@
     transition-duration: 1ms !important; animation-duration: 1ms !important;
   }
 }
+
+/* ==========================================================================
+   Progress
+   ==========================================================================
+   Head row (label left, page count right), the percentage set large beneath
+   it, then the bar. Sizes solved from the reference at 1.83x:
+     label 15.2 -> 15 · count 14.2 -> 14 · numeral 66 · bar 6.6 -> 7
+   ========================================================================== */
+
+.a11y-widget-biz .a11y-progress {
+  display: flex;
+  flex-direction: column;
+}
+
+.a11y-widget-biz .a11y-progress-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.a11y-widget-biz .a11y-progress-label {
+  font-size: 15px;
+  color: var(--ink-muted);
+}
+
+.a11y-widget-biz .a11y-progress-detail {
+  font-size: 14px;
+  color: var(--ink-muted);
+  white-space: nowrap;
+}
+
+/* 21px above and below, measured 20.8 / 21.9. */
+.a11y-widget-biz .a11y-progress-pct {
+  display: flex;
+  align-items: baseline;
+  gap: 2px;
+  margin: 21px 0;
+  max-width: none;
+  line-height: 1;
+  color: var(--ink);
+}
+
+.a11y-widget-biz .a11y-progress-num {
+  font-size: 66px;
+  line-height: 0.8;
+  letter-spacing: -0.03em;
+  font-variant-numeric: tabular-nums;
+}
+
+/* The unit sits at roughly a quarter of the numeral and rides its baseline,
+   which is what keeps "74%" reading as one value rather than two. */
+.a11y-widget-biz .a11y-progress-unit {
+  font-size: 17px;
+  line-height: 1;
+}
+
+.a11y-widget-biz .a11y-progress-track {
+  height: 7px;
+  border-radius: 999px;
+  background: var(--field);
+  overflow: hidden;
+}
+
+.a11y-widget-biz .a11y-progress-fill {
+  height: 100%;
+  border-radius: 999px;
+  background: var(--ink);
+  transition: width 260ms cubic-bezier(0.22, 0.61, 0.36, 1);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .a11y-widget-biz .a11y-progress-fill { transition: none; }
+}
