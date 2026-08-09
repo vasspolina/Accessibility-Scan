@@ -13,6 +13,15 @@ the only vocabulary in this tree.
 Counts below are how often each name appears across the kit's 14 screens, so
 the top of the table is where the work is.
 
+## The README is not a source for type
+
+Foundations v2 (`styles/tokens.css`) is authoritative for every token value.
+The design project's `readme.md` names different type sizes — body 18px, title
+20px, heading 40px, display 9rem — and those are **to be ignored**, not
+reconciled. Decided 9 Aug 2026, after the question was raised four times. Take
+values from v2; take content rules (sentence case, "you/we" never "I", numbers
+first, buttons as verbs) from the README as before.
+
 ## Direct substitutions
 
 | kit | uses | v2 |
