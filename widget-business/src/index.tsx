@@ -16,11 +16,10 @@ export interface MountOptions {
   plans?: Array<{ name: string; price: string; href: string; featured?: boolean; note?: string }>;
 }
 
-// @font-face is ignored inside shadow-root stylesheets, so the faces are
-// declared once at document level — same route PrintButton takes for its
-// one host-page rule. The design system's PP Telegraf, served alongside the
-// widget bundle; font-display swap keeps text readable while it loads, and
-// every rule keeps a full system-font fallback stack.
+// @font-face is IGNORED inside a shadow-root stylesheet, so the faces are
+// declared once at document level. The design system's PP Telegraf, served
+// beside the widget bundle; only 400 and 500 exist. font-display swap keeps
+// text readable while it loads, and every rule keeps a system fallback.
 function parsePlans(raw: string | undefined): MountOptions["plans"] {
   if (!raw) return undefined;
   try {
@@ -71,12 +70,13 @@ export function mount(target: string | HTMLElement, options: MountOptions) {
     return;
   }
 
+  injectFonts(options.apiBase);
+
   if (!options?.apiBase) {
     console.error("[A11yWidgetBusiness] mount() requires { apiBase } pointing at your scanner backend");
     return;
   }
 
-  injectFonts(options.apiBase);
   const mountPoint = mountShadowRoot(container);
   const root = createRoot(mountPoint);
   root.render(

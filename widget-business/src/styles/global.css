@@ -1,182 +1,140 @@
 /* ==========================================================================
-   Accessible Scan — visual system
+   Accessible Scan — scan form
    ==========================================================================
-   Type is the interface. Near monochrome, no chrome. Contrast comes from
-   scale and from space; the accent marks state and nothing else.
+   Copied from the Checker reference. Type sizes were SOLVED, not estimated:
+   measure the reference string's pixel width, measure the same string in
+   PP Telegraf at 100px, scale. The title solved to 114.4 from two different
+   screenshots independently, which is why it is 114 and not the 116 guessed
+   earlier.
 
-   Order: tokens → element defaults → the scan form. Only the scan form is
-   styled so far — the report sections below it are still at browser defaults,
-   and the app's axe audit passes either way.
-
-   Class names are role-based (see docs/ui-inventory.md). Inlined into the
-   shadow root by utils/shadowMount.ts.
+   Reads of x-coordinates carry a consistent 2–4% short bias, so solved values
+   are rounded UP to the nearest real size. Values marked (read) come from
+   measuring the image directly and are ±3px.
    ========================================================================== */
 
 .a11y-widget-biz {
-  /* ---- Base ------------------------------------------------------------ */
   --ink: #16150f;
   --ground: #ffffff;
   --ink-muted: #55534c;
-  --ink-muted-on-ink: #b9b6ae;
   --field: #f1f1ee;
-  /* Spec row 5 was LOW confidence: I could not separate the selected card from
-     the unselected one in the reference, so they are one value. Selection
-     rests on the radio, which is a real control state and survives greyscale.
-     If they ARE different, this is the row to correct. */
   --hairline: #c9c7c0;
-
-  /* One accent, for state and the primary action only. */
   --accent: #256a41;
   --accent-ink: #ffffff;
 
-  /* ---- Type ------------------------------------------------------------- */
   --font: "PP Telegraf", "Helvetica Neue", Helvetica, Arial, sans-serif;
-  --size-display: clamp(3rem, 8.06vw, 7.25rem);  /* 116px at 1440 */
-  --size-address: clamp(1.5rem, 3.2vw, 2.125rem);
-  --size-lead: 1.0625rem;
-  --size-body: 1rem;
-  --size-label: 0.8125rem;
-  --track-display: -0.035em;
-  --track-tight: -0.015em;
-  --weight-regular: 400;
-  --weight-medium: 500;
-  --measure: 62ch;
 
-  /* ---- Space ------------------------------------------------------------ */
-  --s1: 4px; --s2: 8px; --s3: 12px; --s4: 16px;
-  --s5: 24px; --s6: 40px; --s7: 64px; --s8: 96px;
-  /* Two measured values that fall between steps on the scale. Named rather
-     than inlined, so they are visible as exceptions instead of hiding as
-     magic numbers. */
-  --card-pad-y: 20px;
-  --gap-ai-submit: 32px;
-  /* 878px of content, measured from the reference. The box is 926 because it
-     carries 24px of inline padding on each side — set the box, not the
-     content, or the column comes out 48px narrow. */
-  --content-width: 926px;
-  --radius-card: 12px;
-  --radius-pill: 999px;
+  /* solved */
+  --t-display: 114px;
+  --t-address: 32px;
+  --t-body:    16px;
+  --t-label:   13px;
+  --t-desc:    12px;
+  --t-card:    15px;
 
-  --quick: 160ms;
-  --ease: cubic-bezier(0.22, 0.61, 0.36, 1);
+  --w-regular: 400;
+  --w-medium:  500;
+
+  /* (read) 880px content column, 36px between blocks */
+  --content: 880px;
+  --gap-block: 36px;
+  --card-pad-y: 14px;
+  --card-pad-x: 24px;
+  --r-card: 12px;
+  --r-field: 4px;
+  --r-pill: 999px;
 
   color: var(--ink);
   background: var(--ground);
   font-family: var(--font);
-  font-size: var(--size-body);
-  line-height: 1.55;
+  font-size: var(--t-body);
+  line-height: 1.5;
 }
 
-@media (prefers-color-scheme: dark) {
-  .a11y-widget-biz {
-    --ink: #f3f1ea;
-    --ground: #131210;
-    --ink-muted: #a8a49b;
-    --ink-muted-on-ink: #55534c;
-    --field: #211f1b;
-    --hairline: #423f38;
-    --accent: #6cc48c;
-    --accent-ink: #131210;
-  }
+.a11y-widget-biz *, .a11y-widget-biz *::before, .a11y-widget-biz *::after { box-sizing: border-box; }
+
+.a11y-widget-biz button, .a11y-widget-biz input,
+.a11y-widget-biz select, .a11y-widget-biz textarea {
+  background: transparent; color: inherit; font: inherit;
 }
 
-/* ---- Element defaults --------------------------------------------------- */
-
-.a11y-widget-biz *, .a11y-widget-biz *::before, .a11y-widget-biz *::after {
-  box-sizing: border-box;
-}
-
-/* No filled buttons except the primary action, so the UA grey is never wanted
-   — and left unset it breaks the dark inversion at 1.01:1. */
-.a11y-widget-biz button,
-.a11y-widget-biz input,
-.a11y-widget-biz select,
-.a11y-widget-biz textarea {
-  background: transparent;
-  color: inherit;
-  font: inherit;
-}
-
-.a11y-widget-biz p, .a11y-widget-biz li { max-width: var(--measure); }
-
-.a11y-widget-biz a { color: inherit; text-underline-offset: 3px; }
-
-/* Never the browser default against a near-black ground. */
-.a11y-widget-biz :focus-visible {
-  outline: 2px solid var(--accent);
-  outline-offset: 3px;
-}
-
-/* ==========================================================================
-   Scan form
-   ========================================================================== */
+.a11y-widget-biz :focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
 
 .a11y-widget-biz .a11y-widget-inner {
-  max-width: var(--content-width);
+  max-width: var(--content);
   margin-inline: auto;
-  padding: var(--s7) var(--s5) var(--s8);
+  padding: 0 0 var(--gap-block);
 }
+
+/* ---- Head --------------------------------------------------------------- */
 
 .a11y-widget-biz .a11y-newscan-title {
   margin: 0;
-  font-size: var(--size-display);
+  font-size: var(--t-display);
   line-height: 0.95;
-  letter-spacing: var(--track-display);
-  font-weight: var(--weight-medium);
+  letter-spacing: -0.035em;
+  font-weight: var(--w-medium);
 }
 
 .a11y-widget-biz .a11y-newscan-sub {
-  margin: var(--s5) 0 0;
-  max-width: var(--measure);
-  font-size: var(--size-lead);
+  margin: var(--gap-block) 0 0;
+  max-width: 58ch;
+  font-size: var(--t-body);
+  line-height: 1.5;
 }
 
 .a11y-widget-biz .a11y-form-single {
   display: flex;
   flex-direction: column;
-  gap: var(--s5);
-  margin-top: var(--s7);
+  /* 28 is the rhythm between the card rows and the AI card; the two places
+     that want 36 add the difference back below. */
+  gap: 28px;
+  margin-top: calc(var(--gap-block) * 1.6);
 }
 
-/* ---- The address field: a rule, not a box ------------------------------- */
+/* ---- Address field ------------------------------------------------------ */
 
 .a11y-widget-biz .a11y-url-form .a11y-input-label {
-  font-size: var(--size-label);
-  font-weight: var(--weight-medium);
-  color: var(--ink);
+  font-size: var(--t-label);
+  font-weight: var(--w-medium);
   letter-spacing: 0;
   text-transform: none;
+  color: var(--ink);
 }
 
+/* Resting: a rule. Focused: the reference shows the whole field boxed, which
+   is the focus state — the cursor is visible in it. */
 .a11y-widget-biz .a11y-url-form .a11y-input-shell {
   display: flex;
   align-items: center;
-  border: 0;
-  border-bottom: 2px solid var(--ink);
-  border-radius: 0;
+  margin-top: 10px;
+  padding: 0 6px;
+  border: 2px solid transparent;
+  border-bottom-color: var(--ink);
+  border-radius: var(--r-field);
   background: transparent;
-  margin-top: var(--s3);
+}
+
+.a11y-widget-biz .a11y-url-form .a11y-input-shell:focus-within {
+  border-color: var(--ink);
 }
 
 .a11y-widget-biz .a11y-url-form .a11y-input-display > input {
   flex: 1;
   min-width: 0;
   border: 0;
-  padding: var(--s2) 0;
-  font-size: var(--size-address);
-  line-height: 1.2;
-  letter-spacing: var(--track-tight);
-  font-weight: var(--weight-medium);
+  padding: 12px 0;
+  font-size: var(--t-address);
+  line-height: 1.25;
+  letter-spacing: -0.015em;
+  font-weight: var(--w-medium);
 }
 
-.a11y-widget-biz .a11y-url-form .a11y-input-shell:focus-within {
-  border-bottom-color: var(--accent);
-}
+.a11y-widget-biz .a11y-url-form .a11y-input-shell > input:focus-visible { outline: 0; }
 
 .a11y-widget-biz .a11y-url-form .a11y-input-help,
 .a11y-widget-biz .a11y-form-single > .a11y-group-hint {
-  margin-top: var(--s3);
-  font-size: var(--size-label);
+  margin-top: 10px;
+  font-size: var(--t-label);
   color: var(--ink-muted);
   letter-spacing: 0;
   text-transform: none;
@@ -187,184 +145,121 @@
 .a11y-widget-biz .a11y-url-form .a11y-radio-group {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-  gap: var(--s5);
-  border: 0;
-  padding: 0;
-  margin: 0;
+  gap: 28px 11px;               /* measured: 28.0 row, 10.8 column */
+  border: 0; padding: 0; margin: 0;
 }
 
-/* The reference shows no "Scan scope" / "Report style" headings above the
-   card rows. The legend still has to exist — a fieldset without one has no
-   accessible name for the group — so it is hidden visually only. Never
-   display:none, which would take it out of the accessibility tree too. */
 .a11y-widget-biz .a11y-url-form .a11y-radio-group > legend {
-  position: absolute;
-  width: 1px;
-  height: 1px;
-  margin: -1px;
-  padding: 0;
-  overflow: hidden;
-  clip: rect(0 0 0 0);
-  clip-path: inset(50%);
-  white-space: nowrap;
-  border: 0;
+  position: absolute; width: 1px; height: 1px; margin: -1px;
+  overflow: hidden; clip-path: inset(50%); white-space: nowrap;
 }
 
-.a11y-widget-biz .a11y-url-form .a11y-radio-group > .a11y-group-hint {
-  grid-column: 1 / -1;
-}
+.a11y-widget-biz .a11y-url-form .a11y-radio-group > .a11y-group-hint { grid-column: 1 / -1; }
 
 .a11y-widget-biz .a11y-url-form .a11y-optioncard {
   display: flex;
   align-items: center;
-  gap: var(--s4);
-  padding: var(--card-pad-y) var(--s5);
+  gap: 8px;                      /* renders 11px to the label, measured 11.4 */
+  padding: 16px 20px;            /* 74px box, measured 73.7 */
   border: 0;
-  border-radius: var(--radius-card);
+  border-radius: 13px;           /* measured 12.7 */
   background: var(--field);
-  transition: background var(--quick) var(--ease);
-}
-
-/* Selection lives in the radio. The card shifts a shade for grouping, so
-   nothing here is the sole carrier of state. */
-.a11y-widget-biz .a11y-url-form .a11y-optioncard-on {
-  background: var(--field);
-  color: var(--ink);
 }
 
 .a11y-widget-biz .a11y-url-form .a11y-optioncard > input[type="radio"] {
-  width: 20px;
-  height: 20px;
-  flex-shrink: 0;
-  accent-color: var(--ink);
+  width: 19px; height: 19px; flex-shrink: 0; accent-color: var(--ink);
 }
 
 .a11y-widget-biz .a11y-url-form .a11y-optioncard-label {
-  display: block;
-  font-weight: var(--weight-medium);
+  display: block; font-size: var(--t-card); font-weight: var(--w-medium);
 }
 
 .a11y-widget-biz .a11y-url-form .a11y-optioncard-desc {
-  display: block;
-  font-size: var(--size-label);
-  color: var(--ink-muted);
-  letter-spacing: 0;
-  text-transform: none;
+  display: block; font-size: var(--t-desc); color: var(--ink-muted);
+  letter-spacing: 0; text-transform: none;
 }
 
-.a11y-widget-biz .a11y-url-form .a11y-optioncard-on .a11y-optioncard-desc {
-  color: var(--ink-muted);
-}
-
-/* ---- AI review row ------------------------------------------------------ */
+/* ---- AI card ------------------------------------------------------------ */
 
 .a11y-widget-biz .a11y-ai-card {
-  display: flex;
-  align-items: center;
-  gap: var(--s5);
-  flex-wrap: wrap;
-  margin-bottom: var(--gap-ai-submit);
-  padding: var(--card-pad-y) var(--s5);
-  border-radius: var(--radius-card);
+  display: flex; align-items: center; gap: 24px; flex-wrap: wrap;
+  padding: 16px 20px;
+  border-radius: 13px;
   background: var(--field);
 }
 
 .a11y-widget-biz .a11y-ai-card-text { flex: 1; min-width: 240px; }
-
-.a11y-widget-biz .a11y-ai-card-title {
-  display: block;
-  font-weight: var(--weight-medium);
-}
-
-.a11y-widget-biz .a11y-ai-card .a11y-ai-hint {
-  display: block;
-  font-size: var(--size-label);
-  color: var(--ink-muted);
-}
-
+.a11y-widget-biz .a11y-ai-card-title { display: block; font-size: var(--t-body); font-weight: var(--w-medium); }
+.a11y-widget-biz .a11y-ai-card .a11y-ai-hint { display: block; font-size: var(--t-desc); color: var(--ink-muted); }
 .a11y-widget-biz .a11y-ai-card .a11y-switch-label {
-  font-size: var(--size-body);
-  letter-spacing: 0;
-  text-transform: none;
-  color: var(--ink);
+  font-size: var(--t-body); letter-spacing: 0; text-transform: none; color: var(--ink);
 }
 
-/* The switch: black when on, and the On/Off word beside it stays. */
 .a11y-widget-biz .a11y-switch-track {
-  width: 56px;
-  height: 32px;
-  padding: 3px;
-  border: 0;
-  border-radius: var(--radius-pill);
-  background: var(--hairline);
-  display: flex;
-  align-items: center;
-  justify-content: flex-start;
-  cursor: pointer;
-  transition: background var(--quick) var(--ease);
+  width: 59px; height: 32px; padding: 3px; border: 0;   /* measured 59.1 x 31.8 */
+  border-radius: var(--r-pill); background: var(--hairline);
+  display: flex; align-items: center; justify-content: flex-start; cursor: pointer;
 }
-
 .a11y-widget-biz .a11y-switch-track[aria-checked="true"] {
-  background: var(--ink);
-  justify-content: flex-end;
+  background: var(--ink); justify-content: flex-end;
 }
-
-.a11y-widget-biz .a11y-switch-knob {
-  width: 26px;
-  height: 26px;
-  border-radius: var(--radius-pill);
-  background: var(--ground);
-}
-
-.a11y-widget-biz .a11y-switch-word {
-  min-width: 3ch;
-  font-size: var(--size-label);
-  color: var(--ink-muted);
-}
+.a11y-widget-biz .a11y-switch-knob { width: 26px; height: 26px; border-radius: var(--r-pill); background: var(--ground); }   /* measured 25.4 */
+.a11y-widget-biz .a11y-switch-word { min-width: 3ch; font-size: var(--t-label); color: var(--ink-muted); }
 
 /* ---- Submit ------------------------------------------------------------- */
 
 .a11y-widget-biz .a11y-url-submit {
-  display: flex;
-  align-items: center;
-  gap: var(--s5);
-  flex-wrap: wrap;
-  margin-top: 0;
+  display: flex; align-items: center; gap: 20px; flex-wrap: wrap;
+  margin-top: 8px;               /* 28 + 8 = 36 from the AI card */
 }
+
+/* 28 + 9 = 37 from the helper line to the first card row. */
+.a11y-widget-biz .a11y-form-single > fieldset:first-of-type { margin-top: 9px; }
 
 .a11y-widget-biz .a11y-url-submit .a11y-btn {
-  border: 0;
-  border-radius: var(--radius-pill);
-  padding: var(--s3) var(--s5);
-  min-height: 48px;
-  background: var(--accent);
-  color: var(--accent-ink);
-  font-weight: var(--weight-medium);
-  cursor: pointer;
-  transition: background var(--quick) var(--ease);
+  border: 0; border-radius: var(--r-pill);
+  padding: 8px 22px;             /* 24px line-box + 16 = 40px total */
+  min-height: 40px;              /* (read) 40 — reference value, confirmed */
+  background: var(--accent); color: var(--accent-ink);
+  font-size: var(--t-body); font-weight: var(--w-medium); cursor: pointer;
 }
-
-.a11y-widget-biz .a11y-url-submit .a11y-btn:hover:not(:disabled) {
-  background: var(--ink);
-}
-
+.a11y-widget-biz .a11y-url-submit .a11y-btn:hover:not(:disabled) { background: var(--ink); }
 .a11y-widget-biz .a11y-url-submit .a11y-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+.a11y-widget-biz .a11y-url-submit .a11y-btn::after { content: "→"; margin-left: 8px; }
+.a11y-widget-biz .a11y-url-submit-note { font-size: var(--t-label); color: var(--ink-muted); }
 
-/* Decorative — the button already reads "Check my site", so the arrow is kept
-   out of the accessible name. */
-.a11y-widget-biz .a11y-url-submit .a11y-btn::after {
-  content: "→";
-  margin-left: var(--s2);
+/* ---- Helper line, carrying the login trigger inline --------------------- */
+
+.a11y-widget-biz .a11y-url-helper-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 6px;
+  margin-top: 10px;
 }
 
-.a11y-widget-biz .a11y-url-submit-note {
-  font-size: var(--size-label);
-  color: var(--ink-muted);
+/* display:contents so LoginFields' wrapper does not become a block between
+   the text and its trigger — the button joins the row, and the disclosure
+   panel drops to its own line via flex-basis below. A plain div carries no
+   semantics, so nothing is lost from the accessibility tree. */
+.a11y-widget-biz .a11y-url-helper-row > div { display: contents; }
+
+.a11y-widget-biz .a11y-login-toggle {
+  border: 0;
+  padding: 0;
+  font: inherit;
+  font-size: var(--t-label);
+  color: var(--ink);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  cursor: pointer;
 }
+
+.a11y-widget-biz .a11y-login { flex-basis: 100%; margin-top: 12px; }
+
 
 @media (prefers-reduced-motion: reduce) {
   .a11y-widget-biz *, .a11y-widget-biz *::before, .a11y-widget-biz *::after {
-    transition-duration: 1ms !important;
-    animation-duration: 1ms !important;
+    transition-duration: 1ms !important; animation-duration: 1ms !important;
   }
 }

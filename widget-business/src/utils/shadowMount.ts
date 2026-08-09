@@ -3,11 +3,9 @@
 // a plain import lands in document.head, which cannot reach inside the shadow
 // boundary and does leak onto the host page.
 //
-// The shadow root itself is kept and is NOT a visual decision: it is what stops
-// the HOST page's CSS reaching in. Remove it and this would not render at
-// browser defaults, it would inherit whatever the embedding page sets.
-//
-// Recoverable from c5a2640, the commit the visual layer landed in.
+// The shadow root is kept and is NOT a visual decision: it is what stops the
+// HOST page's CSS reaching in. Remove it and this would not render at browser
+// defaults, it would inherit whatever the embedding page sets.
 
 import globalStyles from "../styles/global.css?inline";
 

@@ -6,13 +6,22 @@ empty and is the only stylesheet wired in (via `utils/shadowMount.ts`, inlined
 into the shadow root; a plain component import would land in `document.head`
 and never cross the boundary).
 
-Two visual layers have been built and removed here. Neither needs rebuilding
-from scratch if any of it is worth reusing: the Foundations-v2-based layer is
-in `dadf555`, the Pangram-direction layer in `c5a2640`.
+Four visual layers have been built and removed here. None needs rebuilding
+from scratch if any is worth reusing: the Foundations-v2 component sheets in
+`dadf555`, the Pangram-direction system in `c5a2640`, and the reference-matched
+scan form in `92b5a9b`.
+
+**The webfont is gone too.** `src/index.tsx` used to inject two `@font-face`
+declarations for PP Telegraf 400/500 into `document.head`. That route is not
+optional: `@font-face` is **ignored inside a shadow-root stylesheet**, so a
+webfont cannot live in `global.css` — it has to go to document level. The OTF
+files are still served from `backend/public/fonts/`. Only 400 and 500 exist;
+there is no other weight to reach for.
 
 Two things to know before styling anything:
 
-- **Class names are role-based already.** 453 distinct names, audited twice.
+- **Class names are role-based already.** 453 distinct names, audited after
+  every strip.
   Five described appearance or position rather than role and were renamed:
   `-band-left`/`-band-right` → `-band-heading`/`-band-summary`,
   `card-invert` → `card-emphasis`, `section-redflag` → `section-concern`,

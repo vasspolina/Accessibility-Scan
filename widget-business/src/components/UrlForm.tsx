@@ -177,12 +177,18 @@ export function UrlForm({
 
           {progress}
 
-          {/* The kit's helper line under the field, kept true per scope. */}
-          <span id="a11y-url-hint" className="a11y-group-hint">
-            {mode === "site"
-              ? "We scan every page we can reach."
-              : "We scan this one page and everything visible on it."}
-          </span>
+          {/* The helper line carries the login trigger inline, which is where
+              the reference puts it — not as a block between the AI card and
+              the submit button. LoginFields still owns its own disclosure
+              panel; that drops below this row when opened. */}
+          <div className="a11y-url-helper-row">
+            <span id="a11y-url-hint" className="a11y-group-hint">
+              {mode === "site"
+                ? "We scan every page we can reach."
+                : "We scan this one page and everything visible on it."}
+            </span>
+            <LoginFields auth={auth} onChange={setAuth} disabled={loading} />
+          </div>
 
           <fieldset className="a11y-radio-group a11y-optioncard-grid">
             <legend>Scan scope</legend>
@@ -262,8 +268,6 @@ export function UrlForm({
               />
             </div>
           )}
-
-          <LoginFields auth={auth} onChange={setAuth} disabled={loading} />
 
           {/* Below the field, beside its reassurance — the Checker screen's
               arrangement. */}
