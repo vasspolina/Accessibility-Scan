@@ -10,6 +10,12 @@
 //
 // Special URLs: scan anything containing "error" for the error state, or
 // "blocked" for the bot-wall state.
+//
+// ?fixture on its own stops at the form. To render a state that only exists
+// after a submit, name it — ?fixture=report, ?fixture=error, ?fixture=blocked,
+// with &audience=professional and &scope=site to pick the report variant, and
+// &at=score (or &at=<element-id>) to park that section at the top of the
+// viewport once it exists. See the auto-run block at the foot of this file.
 (function () {
   if (!location.search.includes("fixture")) return;
 
@@ -341,4 +347,96 @@
       }, 1500);
     });
   };
+
+  // ---- Auto-run, so report states can be rendered without an interaction ---
+  //
+  // ?fixture alone stops at the form: the report only exists after a submit.
+  // That is fine for driving the widget by hand, and useless for anything that
+  // renders the page fresh and then looks at it — a screenshot tool, a visual
+  // diff, an axe run in CI. Those all get a form, or a blank band where they
+  // scrolled to a report that was never built.
+  //
+  //   ?fixture=report                       a finished report
+  //   ?fixture=report&audience=professional the pro view
+  //   ?fixture=report&scope=site            a whole-site run
+  //   ?fixture=error                        the scan-failed state
+  //   ?fixture=blocked                      the bot-wall state
+  //
+  // It drives the real form rather than seeding state, because the state
+  // belongs to App and nothing outside it can set it — and because a fixture
+  // that takes a different path through the code proves less than one that
+  // does not.
+  var params = new URLSearchParams(location.search);
+  var mode = params.get("fixture");
+
+  if (mode === "report" || mode === "error" || mode === "blocked") {
+    // The stub branches on the address, so the state is chosen by what we type.
+    var address = mode === "report" ? "example.com" : "example.com/" + mode;
+
+    waitFor(function () {
+      var host = document.getElementById("a11y-widget-business-root");
+      var sr = host && host.shadowRoot;
+      var input = sr && sr.querySelector("#a11y-url-input");
+      return input && sr.querySelector("form") ? sr : null;
+    }, function (sr) {
+      // Options first — they have to be set before the submit that reads them.
+      if (params.get("scope") === "site") click(sr, "#a11y-scope-site");
+      if (params.get("audience") === "professional") click(sr, "#a11y-aud-pro");
+
+      var input = sr.querySelector("#a11y-url-input");
+      // React tracks the previous value on the DOM node, so assigning .value
+      // directly is swallowed as a no-op change. Go through the native setter
+      // and then announce it.
+      var setValue = Object.getOwnPropertyDescriptor(
+        window.HTMLInputElement.prototype, "value"
+      ).set;
+      setValue.call(input, address);
+      input.dispatchEvent(new Event("input", { bubbles: true, composed: true }));
+
+      sr.querySelector("form").requestSubmit();
+
+      // &at=<id> parks a section at the top of the viewport once the report
+      // exists. Scrolling from outside cannot be relied on: anything that
+      // renders the page fresh — a screenshot tool, a visual diff — starts at
+      // the top and races this auto-run, so it captures a short page and a
+      // blank band where the section had not been built yet. Doing it here
+      // means the scroll happens after the report does, every time.
+      var at = params.get("at");
+      if (at) {
+        var id = at === "score" ? "a11y-score-heading" : at;
+        waitFor(function () {
+          return sr.getElementById(id);
+        }, function (el) {
+          // The heading, not its section: a section can start above its own
+          // title wherever a band is stacked in front of it.
+          el.scrollIntoView({ block: "start", behavior: "instant" });
+          window.scrollBy(0, -24);
+        });
+      }
+    });
+  }
+
+  function click(sr, selector) {
+    var el = sr.querySelector(selector);
+    if (el) el.click();
+  }
+
+  // Polls rather than using MutationObserver: the widget mounts once, this
+  // runs once, and a wrong answer here should be a warning in the console and
+  // not a hang with no explanation.
+  function waitFor(read, then) {
+    var waited = 0;
+    var tick = setInterval(function () {
+      var found = read();
+      if (found) { clearInterval(tick); then(found); return; }
+      waited += 50;
+      if (waited >= 10000) {
+        clearInterval(tick);
+        console.warn(
+          "[dev-fixture] gave up waiting for the widget to mount; " +
+          "?fixture=" + mode + " did not run."
+        );
+      }
+    }, 50);
+  }
 })();
