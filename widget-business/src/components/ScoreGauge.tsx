@@ -1,5 +1,5 @@
 import { ScoreDial } from "./ScoreDial";
-import { useState, type CSSProperties } from "react";
+import { useState } from "react";
 import { SeverityTag } from "./SeverityTag";
 import type { AccessibilityFinding } from "../api/scanClient";
 import { groupFindings } from "./FindingsList";
@@ -13,13 +13,6 @@ import { Card } from "./Card";
    compose it. One quiet win: Card reads --layer-01, already bridged and
    scheme-aware, which retires the hardcoded #262626 dark overrides these
    tiles used to need. */
-const TILE: CSSProperties = {
-  display: "flex",
-  flexDirection: "column",
-  alignItems: "flex-start",
-  gap: 12,
-};
-
 const SEVERITY_LABEL: Record<AccessibilityFinding["severity"], string> = {
   critical: "Fix first",
   serious: "Fix soon",

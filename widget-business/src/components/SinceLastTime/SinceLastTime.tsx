@@ -32,6 +32,7 @@ export function Stat({
   caption?: ReactNode;
   badge?: ReactNode;
   /** Any CSS colour. Defaults to the accent surface, as the kit does. */
+  /** A tone NAME (e.g. "better", "worse"), never a colour. */
   badgeTone?: string;
   invert?: boolean;
 }) {
@@ -42,7 +43,12 @@ export function Stat({
         {badge && (
           <span
             className="a11y-slt-stat-badge"
-            style={badgeTone ? { background: badgeTone } : undefined}
+            /* Converted, not deleted: this was an inline background taking a
+               colour straight from a prop, which is the reintroduce-colours-
+               as-props anti-pattern the earlier strips removed elsewhere. The
+               tone is a NAME now and the stylesheet decides what it looks
+               like. Same treatment as data-row-state and data-align. */
+            data-tone={badgeTone}
           >
             {badge}
           </span>
