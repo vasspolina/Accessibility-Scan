@@ -9,14 +9,14 @@
    --text-on-invert-tertiary  → --content-on-inverse-secondary. v2 has no
      tertiary on-inverse ink; mapped UP. #cfc7ba on #211e1a measures 9.9:1.
    --type-title-lh-narrow     → --leading-title. No narrow title leading in v2;
-     1.2 is the nearest real value and is what the README specifies for titles.
+     --leading-title (1.2) is the nearest real token.
    --type-body-lh-medium      → --leading-body-narrow. A card column is the
      narrow measure that token describes.
 
-   The band's ground is --content-primary, not --surface-inverse. That is the
-   kit's own choice (background: var(--text-primary)) and it is the right one
-   here: this section sits inside a light report and the band is a slab of the
-   text colour, not the app's inverted surface.
+   The band's ground is --content-primary, not --surface-inverse. The kit paints
+   it with the text colour rather than the inverted surface, and that is right
+   here: this section sits inside a light report, so the band reads as a slab of
+   the ink rather than as the app's dark theme leaking in.
    ========================================================================== */
 
 .a11y-trust {
@@ -70,7 +70,9 @@
   color: var(--content-on-inverse-secondary);
 }
 
-/* 0.88 is the kit's literal, and the README's display leading. Kept. */
+/* 0.88 is the kit's literal. Kept rather than swapped for --leading-display
+   (0.95): this numeral is set far larger than the display step, and leading
+   tightens as type grows. */
 .a11y-trust-count {
   font-size: var(--text-display);
   line-height: 0.88;

@@ -89,12 +89,26 @@ token matches at exactly one viewport width and misses everywhere else.
 3. Move every inline style into the `.css`, rewriting tokens per the table.
 4. Add one `@import` line to `styles/components.css`.
 5. Grep the port for leftovers before claiming it is done:
-   `grep -E "var\(--(gray-|text-|type-|space-0|radius-(lg|pill)|layer-01|font-sans|accent-red-fill|background|white))" components/<Name>/*`
-   It must return nothing.
+   ```bash
+   grep -rnE 'var\(--(gray-[0-9]|text-(primary|secondary|on-invert)|type-|space-0|radius-(lg|pill)|layer-0|font-sans|accent-red-fill|background|white)' components/<Name>/
+   ```
+   It must return nothing. Comments count: if the port quotes a kit token to
+   explain a substitution, either reword it or accept the hit knowingly — a
+   check you have taught yourself to ignore is not a check.
 6. Verify: `npx tsc -b`, `npx vitest run`, and axe in the browser. Measure any
    inverted surface — do not assume it inherited correctly.
 
 ## Ported so far
 
-`SinceLastTime` — the pattern reference. Not yet wired; the app's ScanHistory
-owns the real comparison data.
+Three of the kit's fourteen screens. None are wired yet — each needs the app's
+real data passed in, and until then they are dead code.
+
+| screen | note |
+|---|---|
+| `SinceLastTime` | The pattern reference. ScanHistory already owns the real comparison data. |
+| `TrustIssues` | Dark-pattern findings. Band ground is `--content-primary`, not `--surface-inverse` — the kit's own choice, and right for a slab of text colour inside a light report. |
+| `FixPreviews` | Before/after samples are `aria-hidden` with a written `summary`, because every "before" fails on purpose. The six pastel fix-kind pills are new values, measured at 8.46–9.09:1. |
+
+Remaining eleven: `App`, `Checker`, `NewScan`, `Perceivable`, `ReportSections`,
+`ThroughOtherEyes`, `LegalStandard`, `DesignNotes`, `DesignerDeveloper`,
+`CriteriaBrowser`, `ReadabilitySampler`, plus the mobile pair.
