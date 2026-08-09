@@ -38,11 +38,29 @@ function parsePlans(raw: string | undefined): MountOptions["plans"] {
   }
 }
 
-/* injectFonts removed with the visual layer: a webfont is a visual decision.
-   It lived here rather than in the stylesheet for a reason worth keeping if it
-   ever returns — @font-face is IGNORED inside a shadow-root stylesheet, so the
-   faces had to go into document.head. The OTFs are still served from
-   backend/public/fonts/, and only 400 and 500 exist. */
+function injectFonts(apiBase: string) {
+  const id = "a11y-widget-fonts";
+  if (document.getElementById(id)) return;
+  const base = apiBase.replace(/\/+$/, "");
+  const style = document.createElement("style");
+  style.id = id;
+  style.textContent = `
+@font-face {
+  font-family: "PP Telegraf";
+  src: url("${base}/fonts/PPTelegraf-Regular.otf") format("opentype");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "PP Telegraf";
+  src: url("${base}/fonts/PPTelegraf-Medium.otf") format("opentype");
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}`;
+  document.head.appendChild(style);
+}
 
 export function mount(target: string | HTMLElement, options: MountOptions) {
   const container = typeof target === "string" ? document.querySelector<HTMLElement>(target) : target;
@@ -51,6 +69,8 @@ export function mount(target: string | HTMLElement, options: MountOptions) {
     console.error(`[A11yWidgetBusiness] mount target not found: ${target}`);
     return;
   }
+
+  injectFonts(options.apiBase);
 
   if (!options?.apiBase) {
     console.error("[A11yWidgetBusiness] mount() requires { apiBase } pointing at your scanner backend");

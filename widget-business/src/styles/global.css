@@ -118,7 +118,11 @@
      lone card stretch across the whole column, which is what a single finding
      was doing at 964px wide. auto-fill keeps the track, so one card stays a
      card. */
-  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  /* min(100%, 260px), not 260px: a bare minimum in minmax() never shrinks
+     below itself, so in a column narrower than 260 the track keeps its size
+     and the cards burst the panel — 101 elements, up to 175px past it, at a
+     narrow width. The min() lets the track fall back to the container. */
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 260px), 1fr));
   gap: var(--space-06);
   align-items: start;
   list-style: none;
@@ -137,12 +141,349 @@
 .a11y-widget-biz img { max-width: 100%; height: auto; }
 
 /* One column when the panel is too narrow to carry two. */
-@container a11y-panel (max-width: 760px) {
-  .a11y-widget-biz .a11y-shell-with-nav .a11y-shell-main,
+/* The section grid gives up FIRST, and much earlier than the shell. Two
+   columns there cost 360 for the head plus a 40 gutter on top of the rail's
+   212 + 40, so at an 825px panel the content column was left with about 125px
+   and everything in it burst the panel. Below 1040 the head goes above its
+   content; the rail survives further down because it only costs 252. */
+@container a11y-panel (max-width: 1040px) {
   .a11y-widget-biz .a11y-section:has(> .a11y-section-head),
   .a11y-widget-biz .a11y-section:has(> .a11y-section-title) {
     grid-template-columns: 1fr;
   }
   .a11y-widget-biz .a11y-section > * { grid-column: 1; }
+}
+
+@container a11y-panel (max-width: 760px) {
+  .a11y-widget-biz .a11y-shell-with-nav .a11y-shell-main {
+    grid-template-columns: 1fr;
+  }
+  .a11y-widget-biz .a11y-section > * { grid-column: 1; }
   .a11y-widget-biz .a11y-widget-inner { padding: var(--space-07) var(--space-06); }
+}
+
+/* ==========================================================================
+   COLOUR — second layer
+   ==========================================================================
+   Semantic names from reference/accessible-scan.css, which builds on Carbon's
+   ramps. Colour IS tokenised (CLAUDE.md: "colour, spacing, radius, motion
+   still use tokens"). Only type is not.
+   ========================================================================== */
+
+.a11y-widget-biz {
+  --white: #ffffff;
+  --gray-10: #f4f4f4;  --gray-20: #e0e0e0;  --gray-30: #c6c6c6;
+  --gray-60: #6f6f6f;  --gray-70: #525252;  --gray-100: #161616;
+
+  --red-10: #fff1f1;   --red-60: #da1e28;   --red-70: #a2191f;  --red-100: #2d0709;
+  --orange-10: #fff2e8; --orange-70: #8a3800; --orange-100: #231000;
+  --blue-10: #edf5ff;  --blue-60: #0f62fe;  --blue-70: #0043ce;  --blue-100: #001141;
+  --green-10: #defbe6; --green-60: #198038;
+
+  --background: var(--white);
+  --layer-01: var(--gray-10);
+  --layer-02: var(--white);
+  --text-primary: var(--gray-100);      /* 16.4:1 on white  */
+  --text-secondary: var(--gray-70);     /*  7.1:1 on white  */
+  --text-on-invert: var(--white);
+  --text-on-invert-secondary: var(--gray-30);   /* 10.6:1 on gray-100 */
+  --border-subtle: var(--gray-20);
+  --button-primary: var(--green-60);
+  --focus: var(--text-primary);
+
+  --severity-critical: var(--red-60);   --severity-critical-bg: var(--red-10);
+  --severity-serious: var(--orange-70); --severity-serious-bg: var(--orange-10);
+  --severity-moderate: var(--blue-60);  --severity-moderate-bg: var(--blue-10);
+  --severity-minor: var(--gray-70);     --severity-minor-bg: var(--gray-10);
+
+  color: var(--text-primary);
+  background: var(--background);
+}
+
+.a11y-widget-biz a { color: inherit; }
+.a11y-widget-biz :focus-visible { outline: 2px solid var(--focus); outline-offset: 1px; }
+
+.a11y-widget-biz .a11y-section-desc,
+.a11y-widget-biz .a11y-section-eyebrow,
+.a11y-widget-biz .a11y-finding-criterion,
+.a11y-widget-biz .a11y-issue-row-meta { color: var(--text-secondary); }
+
+.a11y-widget-biz .a11y-shell-nav { background: var(--layer-01); }
+.a11y-widget-biz .a11y-shell-nav-link[aria-current]:not([aria-current="false"]) {
+  background: var(--green-10);
+  color: #071908;
+}
+
+/* Severity carried by a tint AND a word, never the tint alone. Each card takes
+   its own hue's darkest step so it is tinted throughout — the pairing from
+   Perceivable.jsx, measured 16.4-16.7 title and 7.1 muted. */
+.a11y-widget-biz .a11y-finding { background: var(--layer-01); }
+.a11y-widget-biz .a11y-severity-critical { background: var(--red-10);    color: var(--red-100); }
+.a11y-widget-biz .a11y-severity-serious  { background: var(--orange-10); color: var(--orange-100); }
+.a11y-widget-biz .a11y-severity-moderate { background: var(--blue-10);   color: var(--blue-100); }
+.a11y-widget-biz .a11y-severity-minor    { background: var(--gray-10);   color: var(--text-primary); }
+
+.a11y-widget-biz .a11y-severity-critical .a11y-level-badge { color: var(--red-70); }
+.a11y-widget-biz .a11y-severity-serious  .a11y-level-badge { color: var(--orange-70); }
+.a11y-widget-biz .a11y-severity-moderate .a11y-level-badge { color: var(--blue-70); }
+.a11y-widget-biz .a11y-severity-minor    .a11y-level-badge { color: var(--text-secondary); }
+
+.a11y-widget-biz .a11y-card,
+.a11y-widget-biz .a11y-pro-summary,
+.a11y-widget-biz .a11y-note,
+.a11y-widget-biz .a11y-dofirst { background: var(--layer-01); }
+
+.a11y-widget-biz .a11y-datatable td { background: var(--layer-02); }
+.a11y-widget-biz .a11y-datatable th { color: var(--text-secondary); }
+
+/* The one inverted surface in the report. Its index would be 2.32:1 inherited,
+   so it is set explicitly — the on-invert mapping this repo got wrong six
+   times. */
+.a11y-widget-biz .a11y-section-concern .a11y-section-tint {
+  background: var(--gray-100);
+  color: var(--text-on-invert);
+}
+.a11y-widget-biz .a11y-section-concern .a11y-section-eyebrow,
+.a11y-widget-biz .a11y-section-concern .a11y-section-desc,
+.a11y-widget-biz .a11y-section-concern .a11y-section-count {
+  color: var(--text-on-invert-secondary);
+}
+
+/* ==========================================================================
+   TYPE — third layer
+   ==========================================================================
+   CLAUDE.md: sizes, weights and tracking are LITERAL px, never tokens. Colour,
+   spacing, radius and motion stay var(). Two faces only, 400 and 500. Minimum
+   14; small body is 15 or 18 and nothing between.
+   ========================================================================== */
+
+.a11y-widget-biz {
+  font-family: "PP Telegraf", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-size: 18px;
+  line-height: 1.5;
+  letter-spacing: 0.01em;        /* set here so it INHERITS */
+}
+
+/* font: inherit does not carry letter-spacing, and the UA stylesheet stops
+   controls inheriting it — 40 buttons and 6 inputs read `normal` without this. */
+.a11y-widget-biz button, .a11y-widget-biz input,
+.a11y-widget-biz select, .a11y-widget-biz textarea {
+  font: inherit; letter-spacing: inherit; color: inherit; background: transparent;
+}
+
+/* No heading may fall back to a browser default: at 18px those compute to 27
+   and 21.06, neither of which this system contains. */
+.a11y-widget-biz h1, .a11y-widget-biz h2 { font-size: 40px; line-height: 1.05; font-weight: 500; margin: 0; }
+.a11y-widget-biz h3, .a11y-widget-biz h4,
+.a11y-widget-biz h5, .a11y-widget-biz h6 { font-size: 20px; line-height: 1.2;  font-weight: 500; margin: 0; }
+
+.a11y-widget-biz .a11y-newscan-title { font-size: 144px; line-height: 0.88; font-weight: 500; }
+.a11y-widget-biz .a11y-section-title  { font-size: 40px; line-height: 1.05; font-weight: 500; text-wrap: balance; }
+.a11y-widget-biz .a11y-section-eyebrow,
+.a11y-widget-biz .a11y-section-count  { font-size: 15px; line-height: 1.4;  font-weight: 500; }
+.a11y-widget-biz .a11y-section-desc   { font-size: 18px; line-height: 1.4;  font-weight: 400; }
+
+.a11y-widget-biz .a11y-finding-title,
+.a11y-widget-biz .a11y-issue-row-title,
+.a11y-widget-biz .a11y-note-title     { font-size: 20px; line-height: 1.1;  font-weight: 500; }
+.a11y-widget-biz .a11y-level-badge,
+.a11y-widget-biz .a11y-finding-criterion,
+.a11y-widget-biz .a11y-input-label,
+.a11y-widget-biz .a11y-tag            { font-size: 15px; line-height: 1.3;  font-weight: 500; }
+.a11y-widget-biz .a11y-dial-number    { font-size: clamp(48px, 8cqi, 144px); line-height: 0.78; font-weight: 500; }
+.a11y-widget-biz .a11y-dial-word      { font-size: 20px; font-weight: 400; }
+.a11y-widget-biz .a11y-dial-label     { font-size: 15px; font-weight: 500; color: var(--text-secondary); }
+
+/* ==========================================================================
+   COMPONENT SURFACES — fourth layer
+   ==========================================================================
+   Ported from reference/accessible-scan.css. Its class is named beside each
+   rule so the next reader can check the port instead of trusting it. Radius,
+   spacing and colour are tokens; sizes and weights are literal, per CLAUDE.md.
+   ========================================================================== */
+
+.a11y-widget-biz {
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 20px;
+  --radius-pill: 999px;
+  --space-02: 4px;
+  --space-05: 16px;
+  --target-min: 24px;
+}
+
+/* .as-btn ---------------------------------------------------------------- */
+.a11y-widget-biz .a11y-btn {
+  display: inline-flex; align-items: center; justify-content: center;
+  gap: var(--space-03);
+  min-height: 40px; padding: 0 var(--space-06);
+  border: 1px solid transparent; border-radius: var(--radius-pill);
+  white-space: nowrap; cursor: pointer;
+  font-size: 18px; font-weight: 500; line-height: 1;
+}
+.a11y-widget-biz .a11y-btn-lg { min-height: 48px; }        /* .as-btn--lg */
+.a11y-widget-biz .a11y-btn-sm { min-height: 32px; }        /* .as-btn--sm */
+.a11y-widget-biz .a11y-btn-primary {
+  background: var(--button-primary); border-color: var(--button-primary); color: var(--white);
+}
+.a11y-widget-biz .a11y-btn-secondary {                     /* .as-btn--secondary */
+  background: transparent; border: 2px solid var(--text-primary); color: var(--text-primary);
+}
+.a11y-widget-biz .a11y-btn-ghost {                         /* .as-btn--ghost */
+  background: transparent; color: var(--text-primary);
+  text-decoration: underline; text-decoration-color: transparent; text-underline-offset: 3px;
+}
+.a11y-widget-biz .a11y-btn-ghost:hover { text-decoration-color: currentColor; }
+.a11y-widget-biz .a11y-btn:disabled { opacity: .5; cursor: not-allowed; }
+
+/* .as-btn--secondary, shared by five call sites */
+.a11y-widget-biz .a11y-show-all {
+  align-self: flex-start; min-height: 48px; padding: 0 var(--space-06);
+  border: 2px solid var(--text-primary); border-radius: var(--radius-pill);
+  background: transparent; color: var(--text-primary);
+  font-size: 18px; font-weight: 500; cursor: pointer;
+}
+
+/* .as-card / .as-card--flush -------------------------------------------- */
+.a11y-widget-biz .a11y-card { padding: var(--space-07); border-radius: var(--radius-lg); border: 0; }
+.a11y-widget-biz .a11y-fact-card,
+.a11y-widget-biz .a11y-related-card,
+.a11y-widget-biz .a11y-trust-row,
+.a11y-widget-biz .a11y-finding,
+.a11y-widget-biz .a11y-pro-summary { padding: var(--space-05); border-radius: var(--radius-lg); border: 0; }
+.a11y-widget-biz .a11y-card-eyebrow { margin: 0 0 var(--space-04); font-size: 15px; font-weight: 500; color: var(--text-secondary); }
+.a11y-widget-biz .a11y-card-title   { margin: 0 0 var(--space-04); font-size: 20px; line-height: 1.2; font-weight: 500; }
+
+/* .as-tag / .as-badge / .as-sev ----------------------------------------- */
+.a11y-widget-biz .a11y-tag,
+.a11y-widget-biz .a11y-sev,
+.a11y-widget-biz .a11y-finding-criterion,
+.a11y-widget-biz .a11y-method-badge {
+  display: inline-flex; align-items: center; align-self: flex-start;
+  min-height: var(--target-min); padding: 2px 12px;
+  border: 0; border-radius: var(--radius-pill);
+  font-size: 15px; font-weight: 500; white-space: nowrap;
+  /* A pill may not be wider than what holds it. nowrap keeps the short ones on
+     one line, but without this a long label just spills — a fix-kind badge was
+     hanging 23px past the panel in a narrow column. */
+  max-width: 100%;
+}
+
+/* The fix-kind badge carries the longest labels of the set ("Content fix"), so
+   it wraps instead of spilling when the column will not take it. The others
+   are short enough that nowrap always fits. */
+.a11y-widget-biz .a11y-method-badge { white-space: normal; overflow-wrap: anywhere; }
+
+.a11y-widget-biz .a11y-tag { background: var(--gray-20); color: var(--text-primary); }
+.a11y-widget-biz .a11y-count-chip {
+  display: inline-flex; align-items: center; justify-content: center;
+  min-width: var(--target-min); height: var(--target-min); padding: 0 var(--space-02);
+  border-radius: var(--radius-pill); background: var(--text-primary); color: var(--white);
+  font-size: 15px; font-weight: 500;
+}
+/* white on each of these: 4.6 / 5.1 / 4.9 / 7.4, documented in the source */
+.a11y-widget-biz .a11y-sev-critical, .a11y-widget-biz .a11y-severity-critical .a11y-finding-criterion { background: var(--severity-critical); color: var(--white); }
+.a11y-widget-biz .a11y-sev-serious,  .a11y-widget-biz .a11y-severity-serious  .a11y-finding-criterion { background: var(--severity-serious);  color: var(--white); }
+.a11y-widget-biz .a11y-sev-moderate, .a11y-widget-biz .a11y-severity-moderate .a11y-finding-criterion { background: var(--severity-moderate); color: var(--white); }
+.a11y-widget-biz .a11y-sev-minor,    .a11y-widget-biz .a11y-severity-minor    .a11y-finding-criterion { background: var(--severity-minor);    color: var(--white); }
+/* fix kinds, from DesignerDeveloper.jsx: 5.87 / 5.94 / 5.94 / 13.71 */
+.a11y-widget-biz .a11y-fix-design   { background: #ffd6e8; color: #9f1853; }
+.a11y-widget-biz .a11y-fix-code     { background: #d0e2ff; color: #0043ce; }
+.a11y-widget-biz .a11y-fix-content  { background: #9ef0f0; color: #005d5d; }
+.a11y-widget-biz .a11y-fix-document { background: var(--gray-20); color: var(--text-primary); }
+
+/* .as-pill — tabs and filters are one control here ---------------------- */
+.a11y-widget-biz .a11y-tablist,
+.a11y-widget-biz .a11y-filter { display: flex; flex-wrap: wrap; gap: var(--space-03); border: 0; }
+.a11y-widget-biz .a11y-tab,
+.a11y-widget-biz .a11y-filter-btn {
+  min-height: var(--target-min); padding: var(--space-03) var(--space-05);
+  border: 1px solid var(--border-subtle); border-radius: var(--radius-pill);
+  background: var(--layer-02); color: var(--text-primary);
+  font-size: 15px; font-weight: 500; line-height: 1; cursor: pointer;
+}
+.a11y-widget-biz .a11y-tab[aria-selected="true"],
+.a11y-widget-biz .a11y-filter-btn[aria-pressed="true"] {
+  background: var(--text-primary); border-color: var(--text-primary); color: var(--white);
+}
+
+/* .as-table — rows as spaced cards -------------------------------------- */
+.a11y-widget-biz .a11y-datatable { border-collapse: separate; border-spacing: 0 var(--space-03); }
+.a11y-widget-biz .a11y-datatable th { text-align: left; padding: 0 var(--space-06); font-size: 15px; font-weight: 400; }
+.a11y-widget-biz .a11y-datatable td { padding: var(--space-06); vertical-align: middle; }
+.a11y-widget-biz .a11y-datatable tbody tr td:first-child { border-start-start-radius: var(--radius-md); border-end-start-radius: var(--radius-md); font-size: 20px; }
+.a11y-widget-biz .a11y-datatable tbody tr td:last-child  { border-start-end-radius: var(--radius-md);   border-end-end-radius: var(--radius-md); }
+.a11y-widget-biz .a11y-datatable-frame { padding: var(--space-06); border-radius: var(--radius-lg); background: var(--layer-01); }
+
+/* .as-row --------------------------------------------------------------- */
+.a11y-widget-biz .a11y-issue-row {
+  display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-04) var(--space-05);
+  width: 100%; min-height: var(--target-min); padding: var(--space-05);
+  border: 0; border-radius: var(--radius-md);
+  background: var(--layer-01); color: var(--text-primary); text-align: left; cursor: pointer;
+}
+.a11y-widget-biz .a11y-issue-row:hover,
+.a11y-widget-biz .a11y-issue-row:focus-visible { background: var(--text-primary); color: var(--white); }
+/* 10.6:1 inverted. Muted grey here would be 1.6:1 — the fault this report
+   files against other sites. */
+.a11y-widget-biz .a11y-issue-row:hover .a11y-issue-row-meta,
+.a11y-widget-biz .a11y-issue-row:focus-visible .a11y-issue-row-meta { color: var(--text-on-invert-secondary); }
+.a11y-widget-biz .a11y-issue-row-main { flex: 1 1 12rem; min-width: 0; }
+.a11y-widget-biz .a11y-issue-row-count { margin-left: auto; font-size: 28px; line-height: 1; font-weight: 500; }
+
+/* .as-note -------------------------------------------------------------- */
+.a11y-widget-biz .a11y-note,
+.a11y-widget-biz .a11y-dofirst {
+  display: flex; flex-wrap: wrap; align-items: flex-start; gap: var(--space-04) var(--space-05);
+  padding: var(--space-05) var(--space-06); border-radius: var(--radius-md);
+}
+.a11y-widget-biz .a11y-note-body { flex: 1 1 14rem; min-width: 0; }
+
+/* Forms — .as-field / .as-input / .as-switch / .as-optioncard ------------ */
+.a11y-widget-biz .a11y-input,
+.a11y-widget-biz .a11y-textarea-field { display: flex; flex-direction: column; gap: var(--space-03); }
+.a11y-widget-biz .a11y-input-shell > input,
+.a11y-widget-biz .a11y-input input {
+  height: 44px; padding: 0; border: 0; border-bottom: 1px solid var(--text-primary);
+  background: transparent; font-size: 18px; line-height: 1.2;
+}
+.a11y-widget-biz .a11y-input input[aria-invalid="true"] { border-bottom: 2px solid var(--severity-critical); }
+.a11y-widget-biz .a11y-switch-track {
+  width: 72px; height: 40px; padding: 4px; border: 0; border-radius: var(--radius-pill);
+  background: #e8e8e8; display: flex; align-items: center; justify-content: flex-start; cursor: pointer;
+}
+.a11y-widget-biz .a11y-switch-track[aria-checked="true"] { background: var(--text-primary); justify-content: flex-end; }
+.a11y-widget-biz .a11y-switch-knob { width: 32px; height: 32px; border-radius: var(--radius-pill); background: var(--layer-02); }
+.a11y-widget-biz .a11y-optioncard {
+  display: flex; align-items: flex-start; gap: var(--space-04);
+  padding: var(--space-05) var(--space-06); border: 2px solid transparent;
+  border-radius: var(--radius-lg); background: var(--layer-01); cursor: pointer;
+}
+.a11y-widget-biz .a11y-optioncard:has(> input:checked) { background: var(--green-10); border-color: var(--button-primary); }
+.a11y-widget-biz .a11y-optioncard > input[type="radio"] { width: 24px; height: 24px; margin: 0; flex-shrink: 0; }
+
+/* .as-progress ---------------------------------------------------------- */
+.a11y-widget-biz .a11y-progress-track { height: 10px; border-radius: var(--radius-pill); background: #e8e8e8; overflow: hidden; }
+.a11y-widget-biz .a11y-progress-fill  { height: 100%; border-radius: var(--radius-pill); background: var(--text-primary); }
+
+/* .as-skip-link --------------------------------------------------------- */
+.a11y-widget-biz .a11y-skip-link {
+  position: absolute; left: var(--space-05); top: -100%; z-index: 100;
+  padding: var(--space-04) var(--space-05);
+  background: var(--button-primary); color: var(--white);
+  font-size: 18px; font-weight: 500; text-decoration: none;
+}
+.a11y-widget-biz .a11y-skip-link:focus { top: var(--space-05); }
+
+/* Shell nav ------------------------------------------------------------- */
+.a11y-widget-biz .a11y-shell-nav-link {
+  display: block; padding: var(--space-04) var(--space-05);
+  font-size: 18px; font-weight: 400; color: var(--text-primary); text-decoration: none;
+}
+.a11y-widget-biz .a11y-shell-nav-link[aria-current]:not([aria-current="false"]) { font-weight: 500; }
+
+@media (prefers-reduced-motion: reduce) {
+  .a11y-widget-biz *, .a11y-widget-biz *::before, .a11y-widget-biz *::after {
+    transition-duration: 1ms !important; animation-duration: 1ms !important;
+  }
 }
