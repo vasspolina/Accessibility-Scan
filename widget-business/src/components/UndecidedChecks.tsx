@@ -22,6 +22,13 @@ export function UndecidedChecks({
   const total = rows.reduce((n, r) => n + r.count, 0);
   return (
     <section className="a11y-section" aria-labelledby="a11y-undecided-heading">
+      {/* The head is wrapped, and that wrapper is load-bearing. The section is
+          a two-column grid, and grid rows are shared between columns: with the
+          title and these paragraphs as loose siblings, one tall item in the
+          content column made row 1 tall and pushed the paragraphs below it —
+          measured at 2,200px below their own heading. A wrapper makes the head
+          a single grid item, so the two columns flow independently. */}
+      <div className="a11y-section-head">
       {/* h2: this is a top-level section of the report, same as its siblings. */}
       <h2 className="a11y-section-title" id="a11y-undecided-heading" data-nav-label="For your designer and developer">
         For your designer and developer{" "}
@@ -42,6 +49,7 @@ export function UndecidedChecks({
         says whose. None of it counts against the score, and some will turn out
         to be perfectly fine.
       </p>
+      </div>
       {rows.length > 0 && (
         /* A list, not a table. It was a one-column DataTable, which meant
            the cards it renders as could only be laid out side by side by

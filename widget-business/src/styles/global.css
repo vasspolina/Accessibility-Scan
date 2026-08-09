@@ -1685,7 +1685,7 @@
    clamped, and the ratio came out 280/380 instead of 5:7.
    ========================================================================== */
 
-.a11y-widget-biz .a11y-section:not(.a11y-section-concern):has(> .a11y-section-title) {
+.a11y-widget-biz .a11y-section:not(.a11y-section-concern):has(> .a11y-section-title, > .a11y-section-head) {
   display: grid;
   grid-template-columns: minmax(280px, 5fr) minmax(0, 7fr);  /* kit */
   grid-auto-flow: row dense;
@@ -1694,21 +1694,23 @@
 }
 
 /* The head: the parts that describe the section, gathered into column 1. */
-.a11y-widget-biz .a11y-section:not(.a11y-section-concern):has(> .a11y-section-title) > .a11y-section-title,
-.a11y-widget-biz .a11y-section:not(.a11y-section-concern):has(> .a11y-section-title) > .a11y-section-eyebrow,
-.a11y-widget-biz .a11y-section:not(.a11y-section-concern):has(> .a11y-section-title) > .a11y-section-desc {
+.a11y-widget-biz .a11y-section:not(.a11y-section-concern):has(> .a11y-section-title, > .a11y-section-head) > .a11y-section-head,
+.a11y-widget-biz .a11y-section:not(.a11y-section-concern):has(> .a11y-section-title, > .a11y-section-head) > .a11y-section-title,
+.a11y-widget-biz .a11y-section:not(.a11y-section-concern):has(> .a11y-section-title, > .a11y-section-head) > .a11y-section-eyebrow,
+.a11y-widget-biz .a11y-section:not(.a11y-section-concern):has(> .a11y-section-title, > .a11y-section-head) > .a11y-section-desc {
   grid-column: 1;
 }
 
 /* Everything else is the content. */
-.a11y-widget-biz .a11y-section:not(.a11y-section-concern):has(> .a11y-section-title)
-  > *:not(.a11y-section-title):not(.a11y-section-eyebrow):not(.a11y-section-desc) {
+.a11y-widget-biz .a11y-section:not(.a11y-section-concern):has(> .a11y-section-title, > .a11y-section-head)
+  > *:not(.a11y-section-head):not(.a11y-section-title):not(.a11y-section-eyebrow):not(.a11y-section-desc) {
   grid-column: 2;
 }
 
 /* Sticky so the title and lead stay with their rows while those scroll past —
    the source sets this on its own SectionHead. */
-.a11y-widget-biz .a11y-section:not(.a11y-section-concern):has(> .a11y-section-title) > .a11y-section-title {
+.a11y-widget-biz .a11y-section:not(.a11y-section-concern):has(> .a11y-section-title, > .a11y-section-head) > .a11y-section-head,
+.a11y-widget-biz .a11y-section:not(.a11y-section-concern):has(> .a11y-section-title, > .a11y-section-head) > .a11y-section-title {
   position: sticky;
   top: var(--gap-2);             /* kit --space-06 */
 }
@@ -1717,13 +1719,39 @@
    against the panel, not the viewport — this widget is embedded and the column
    it sits in is what matters. */
 @container a11y-panel (max-width: 760px) {
-  .a11y-widget-biz .a11y-section:not(.a11y-section-concern):has(> .a11y-section-title) {
+  .a11y-widget-biz .a11y-section:not(.a11y-section-concern):has(> .a11y-section-title, > .a11y-section-head) {
     grid-template-columns: 1fr;
   }
-  .a11y-widget-biz .a11y-section:not(.a11y-section-concern):has(> .a11y-section-title) > * {
+  .a11y-widget-biz .a11y-section:not(.a11y-section-concern):has(> .a11y-section-title, > .a11y-section-head) > * {
     grid-column: 1;
   }
-  .a11y-widget-biz .a11y-section:not(.a11y-section-concern):has(> .a11y-section-title) > .a11y-section-title {
+  .a11y-widget-biz .a11y-section:not(.a11y-section-concern):has(> .a11y-section-title, > .a11y-section-head) > .a11y-section-title {
     position: static;
   }
 }
+
+/* A grid item does not shrink below its min-content unless told to, and a
+   <table> full of selectors has a wide one — measured 823px inside a 525px
+   column, overflowing the panel by 274. min-width: 0 lets the track win; the
+   frame scrolls rather than the page. */
+.a11y-widget-biz .a11y-section > * { min-width: 0; }
+
+/* overflow-x does not create a scroll box on display: table, and setting
+   display: block to force one changes how the table is exposed. table-layout:
+   fixed keeps it a table and makes the columns honour the track instead; long
+   selectors then wrap rather than widening it. */
+.a11y-widget-biz .a11y-datatable {
+  table-layout: fixed;
+  width: 100%;
+}
+
+.a11y-widget-biz .a11y-datatable th,
+.a11y-widget-biz .a11y-datatable td { overflow-wrap: anywhere; }
+
+/* The finding thumbnail is a screenshot at its natural size and overhung the
+   panel by 226px, which is what was still scrolling the page sideways after
+   the table was contained. Pre-existing — the grid only made it visible by
+   giving the content a narrower column to sit in. */
+.a11y-widget-biz .a11y-finding-thumb,
+.a11y-widget-biz .a11y-finding-thumb img,
+.a11y-widget-biz .a11y-occurrence-thumb img { max-width: 100%; height: auto; }
