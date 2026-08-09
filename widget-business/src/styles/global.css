@@ -511,12 +511,16 @@
 /* The numeral sits ABOVE the title here, unlike the scan form's steps, which
    set it beside the question. Measured on #root-ReportSections: a flex column,
    16px between the numeral, the heading and the lead paragraph. */
+/* .as-head — a hairline rule, then index, title, lead in a column. The rule is
+   the section divider in this system; nothing else draws one. */
 .a11y-widget-biz .a11y-section-header,
 .a11y-widget-biz .a11y-section-head {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  gap: 16px;                     /* kit */
+  gap: var(--gap-1);             /* .as-head, --space-04 */
+  padding-top: var(--gap-1);
+  border-top: 1px solid var(--ink);
   margin-bottom: var(--gap-2);
 }
 
@@ -531,13 +535,17 @@
   color: var(--ink);
 }
 
+/* .as-head__index — 15px, NOT the 40px this had. The numeral is a label above
+   the heading, not a second heading beside it. #525252 is the kit's
+   --text-secondary and measures 7.1:1, where the old #6f6f6f was 5.24:1, so
+   this is smaller and better contrasted at once. */
 .a11y-widget-biz .a11y-section-eyebrow,
 .a11y-widget-biz .a11y-section-count {
-  font-size: 40px;
-  line-height: 1;
+  font-size: 15px;
+  line-height: 1.4;
   letter-spacing: 0.01em;
   font-weight: 500;
-  color: #6f6f6f;
+  color: var(--ink-muted);
 }
 
 .a11y-widget-biz .a11y-section-desc,
@@ -1238,3 +1246,158 @@
 }
 
 .a11y-widget-biz .a11y-note-body { flex: 1 1 14rem; min-width: 0; }
+
+/* ==========================================================================
+   Kit layout components
+   ==========================================================================
+   .as-head, .as-table, .as-row and .as-measure from
+   reference/accessible-scan.css. DataTable and IssueRow had no CSS at all.
+   ========================================================================== */
+
+/* .as-head__title — text-wrap: balance so a two-line heading breaks evenly
+   rather than leaving one word alone on the second line. */
+.a11y-widget-biz .a11y-section-title,
+.a11y-widget-biz .a11y-section-header h2,
+.a11y-widget-biz .a11y-report-section h2 {
+  text-wrap: balance;
+}
+
+/* .as-head__lead / .as-measure — 66ch is the measure this system reads at. */
+.a11y-widget-biz .a11y-section-desc,
+.a11y-widget-biz .a11y-section-qualifier {
+  max-width: 66ch;
+  line-height: 1.4;              /* kit --type-body-lh-medium */
+}
+
+/* ---- .as-table ----------------------------------------------------------
+   Rows as spaced cards: separate borders, an 8px gap between rows, white
+   rows with their outer corners rounded. This is the pattern docs/ui-inventory
+   flagged as unreachable from a real <table> — it is reachable, with
+   border-spacing, and the table semantics survive intact.
+   ------------------------------------------------------------------------ */
+
+.a11y-widget-biz .a11y-datatable {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0 8px;         /* kit --space-03 */
+  font-size: 18px;
+  color: var(--ink);
+}
+
+.a11y-widget-biz .a11y-datatable th {
+  text-align: left;
+  padding: 0 var(--gap-2);
+  font-size: 15px;
+  font-weight: 400;              /* kit: headers are regular, not bold */
+  color: var(--ink-muted);
+}
+
+.a11y-widget-biz .a11y-datatable td {
+  padding: var(--gap-2);
+  background: var(--ground);     /* kit --layer-02 */
+  vertical-align: middle;
+  line-height: 1.5;
+}
+
+/* The whole row lifts on hover — 16.4:1 inverted, and the meta line goes to
+   --text-on-invert-secondary at 10.6:1 rather than staying muted grey on
+   black, which would be 1.6:1. */
+.a11y-widget-biz .a11y-datatable tbody tr:hover td {
+  background: var(--ink);
+  color: var(--ground);
+}
+
+.a11y-widget-biz .a11y-datatable tbody tr td:first-child {
+  border-top-left-radius: 12px;
+  border-bottom-left-radius: 12px;
+  font-size: 20px;
+}
+
+.a11y-widget-biz .a11y-datatable tbody tr td:last-child {
+  border-top-right-radius: 12px;
+  border-bottom-right-radius: 12px;
+}
+
+.a11y-widget-biz .a11y-datatable [data-align="right"] {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+/* .as-table__frame */
+.a11y-widget-biz .a11y-datatable-frame {
+  padding: var(--gap-2);
+  border-radius: var(--r-card);
+  background: var(--field);
+}
+
+/* ---- .as-row ------------------------------------------------------------ */
+
+.a11y-widget-biz .a11y-issue-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--gap-1) 16px;
+  width: 100%;
+  min-height: 24px;              /* kit --target-min */
+  padding: 16px;
+  border: 0;
+  border-radius: 12px;           /* kit --radius-md */
+  background: var(--field);
+  color: var(--ink);
+  text-align: left;
+  cursor: pointer;
+}
+
+.a11y-widget-biz .a11y-issue-row:hover,
+.a11y-widget-biz .a11y-issue-row:focus-visible {
+  background: var(--ink);
+  color: var(--ground);
+}
+
+.a11y-widget-biz .a11y-issue-row-main { flex: 1 1 12rem; min-width: 0; }
+
+.a11y-widget-biz .a11y-issue-row-title {
+  display: block;
+  font-size: 20px;
+  line-height: 1.2;
+  font-weight: 500;
+}
+
+.a11y-widget-biz .a11y-issue-row-meta {
+  display: block;
+  margin-top: 4px;
+  font-size: 15px;
+  color: var(--ink-muted);
+}
+
+/* 10.6:1 inverted. Leaving the muted grey here would be 1.6:1 on black — the
+   exact fault this report files against other sites. */
+.a11y-widget-biz .a11y-issue-row:hover .a11y-issue-row-meta,
+.a11y-widget-biz .a11y-issue-row:focus-visible .a11y-issue-row-meta {
+  color: #c6c6c6;                /* kit --text-on-invert-secondary */
+}
+
+.a11y-widget-biz .a11y-issue-row-count {
+  flex: 0 0 auto;
+  margin-left: auto;
+  display: flex;
+  align-items: baseline;
+  gap: 4px;
+  white-space: nowrap;
+  font-size: 28px;               /* kit 1.75rem */
+  line-height: 1;
+  font-weight: 500;
+  font-variant-numeric: tabular-nums;
+}
+
+.a11y-widget-biz .a11y-issue-row-number {
+  flex: 0 0 auto;
+  font-size: 15px;
+  color: var(--ink-muted);
+  font-variant-numeric: tabular-nums;
+}
+
+.a11y-widget-biz .a11y-issue-row:hover .a11y-issue-row-number,
+.a11y-widget-biz .a11y-issue-row:focus-visible .a11y-issue-row-number {
+  color: #c6c6c6;
+}
