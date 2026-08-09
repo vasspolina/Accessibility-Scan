@@ -1475,7 +1475,7 @@
    to a long one does not stretch to match it. */
 .a11y-widget-biz .a11y-findings-list {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));  /* kit */
   gap: 16px;                     /* kit --space-05 */
   align-items: start;
   margin-top: var(--gap-1);
@@ -1483,40 +1483,56 @@
   padding: 0;
 }
 
-/* .as-card, tinted. Every tint is the --severity-*-bg ramp; ink on all four is
-   15:1 or better, and the severity's own text colour on its own tint is the
-   kit's pairing, measured: 4.55 / 4.58 / 4.52 / 7.1. */
+/* The finding card, from ui_kits/scan-app/Perceivable.jsx — the screen that
+   crashes in the one-file kit, read as source through the design project
+   instead. Its TONES map is the authority and it corrects an earlier guess
+   here on four counts:
+
+     tint     --{hue}-10   as before
+     ink      --{hue}-100  NOT --ink. Each card's text is the darkest step of
+                           its own hue, so the card is tinted throughout.
+     muted    --{hue}-70   NOT --ink-muted, same reason.
+     padding  --space-05   16, not 24.
+
+   MODERATE IS BLUE. I said blue "isn't a severity in this system" and used the
+   yellow ramp. The source maps moderate to --blue-10 / --blue-100 / --blue-70,
+   which is what the reference showed and I talked myself out of. Yellow is not
+   in this screen at all.
+
+   minor has no tone in the source — that screen shows three. It takes the
+   neutral ramp, which is the only unused one and the one --severity-minor
+   already points at.
+   ------------------------------------------------------------------------ */
 .a11y-widget-biz .a11y-finding {
   display: flex;
   flex-direction: column;
-  gap: var(--gap-1);
-  padding: var(--gap-2);
+  gap: 16px;                     /* kit --space-05 */
+  padding: 16px;                 /* kit --space-05 */
   border: 0;
-  border-radius: var(--r-card);
+  border-radius: var(--r-card);  /* kit --radius-lg */
   background: var(--field);
   color: var(--ink);
 }
 
-.a11y-widget-biz .a11y-finding.a11y-severity-critical { background: #fff1f1; }  /* red-10 */
-.a11y-widget-biz .a11y-finding.a11y-severity-serious  { background: #fff2e8; }  /* orange-10 */
-.a11y-widget-biz .a11y-finding.a11y-severity-moderate { background: #fcf4d6; }  /* yellow-10 */
-.a11y-widget-biz .a11y-finding.a11y-severity-minor    { background: #f4f4f4; }  /* gray-10 */
+.a11y-widget-biz .a11y-finding.a11y-severity-critical { background: #fff1f1; color: #2d0709; }
+.a11y-widget-biz .a11y-finding.a11y-severity-serious  { background: #fff2e8; color: #231000; }
+.a11y-widget-biz .a11y-finding.a11y-severity-moderate { background: #edf5ff; color: #001141; }
+.a11y-widget-biz .a11y-finding.a11y-severity-minor    { background: #f4f4f4; color: #161616; }
 
 .a11y-widget-biz .a11y-finding-title {
   display: block;
   font-size: 20px;
-  line-height: 1.2;
+  line-height: 1.1;              /* kit */
   font-weight: 500;
 }
 
-/* .as-sev — the criterion as a filled pill in the severity's own colour. The
-   stylesheet documents white on each of these: 4.6 / 5.1 / 4.9 / 7.4. */
+/* The criterion pill takes the tone's chip colour with white on it. */
 .a11y-widget-biz .a11y-finding-criterion {
   display: inline-flex;
   align-items: center;
   align-self: flex-start;
   min-height: 24px;
-  padding: 0.15em var(--gap-1) 0.25em;
+  padding: 2px 10px;             /* kit */
   border-radius: var(--r-pill);
   background: var(--ink);
   color: var(--ground);
@@ -1525,21 +1541,22 @@
   white-space: nowrap;
 }
 
-.a11y-widget-biz .a11y-severity-critical .a11y-finding-criterion { background: #da1e28; }
-.a11y-widget-biz .a11y-severity-serious  .a11y-finding-criterion { background: #ba4e00; }
-.a11y-widget-biz .a11y-severity-moderate .a11y-finding-criterion { background: #8e6a00; }
-.a11y-widget-biz .a11y-severity-minor    .a11y-finding-criterion { background: #525252; }
+.a11y-widget-biz .a11y-severity-critical .a11y-finding-criterion { background: #da1e28; }  /* red-60 */
+.a11y-widget-biz .a11y-severity-serious  .a11y-finding-criterion { background: #8a3800; }  /* orange-70 */
+.a11y-widget-biz .a11y-severity-moderate .a11y-finding-criterion { background: #0f62fe; }  /* blue-60 */
+.a11y-widget-biz .a11y-severity-minor    .a11y-finding-criterion { background: #525252; }  /* gray-70 */
 
-/* The level line, in the severity's text colour on its own tint. */
+/* The level line rides the tone's muted step, not a neutral grey. */
 .a11y-widget-biz .a11y-level-badge {
   font-size: 15px;
+  line-height: 1.3;
   color: var(--ink-muted);
 }
 
-.a11y-widget-biz .a11y-severity-critical .a11y-level-badge { color: #da1e28; }  /* 4.55:1 */
-.a11y-widget-biz .a11y-severity-serious  .a11y-level-badge { color: #ba4e00; }  /* 4.58:1 */
-.a11y-widget-biz .a11y-severity-moderate .a11y-level-badge { color: #8e6a00; }  /* 4.52:1 */
-.a11y-widget-biz .a11y-severity-minor    .a11y-level-badge { color: #525252; }  /* 7.1:1  */
+.a11y-widget-biz .a11y-severity-critical .a11y-level-badge { color: #a2191f; }  /* red-70 */
+.a11y-widget-biz .a11y-severity-serious  .a11y-level-badge { color: #8a3800; }  /* orange-70 */
+.a11y-widget-biz .a11y-severity-moderate .a11y-level-badge { color: #0043ce; }  /* blue-70 */
+.a11y-widget-biz .a11y-severity-minor    .a11y-level-badge { color: #525252; }  /* gray-70 */
 
 /* The fix-kind badge. I had said the kit has no fix-kind component and no
    colour for one, and shipped ink-on-white on that basis. It has both — they
