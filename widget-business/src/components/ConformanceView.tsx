@@ -90,7 +90,7 @@ export function ConformanceView({
         rows={[
           {
             id: "failed",
-            background: "var(--severity-critical-bg, #fff1f1)",
+            state: "issue" as const,
             cells: [
               <span key="r" className="a11y-conf-cell">
                 <span className="a11y-conf-result a11y-conf-result-fail">
@@ -105,7 +105,6 @@ export function ConformanceView({
           },
           {
             id: "clean",
-            background: "var(--severity-pass-bg, #defbe6)",
             cells: [
               <span key="r" className="a11y-conf-cell">
                 <span className="a11y-conf-result a11y-conf-result-pass">
@@ -118,7 +117,6 @@ export function ConformanceView({
           },
           {
             id: "manual",
-            background: "var(--severity-minor-bg, #f4f4f4)",
             cells: [
               <span key="r" className="a11y-conf-cell">
                 <span className="a11y-conf-result a11y-conf-result-minor">

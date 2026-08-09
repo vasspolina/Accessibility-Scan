@@ -137,12 +137,11 @@ export function UrlForm({
           actions gathered in a hairline-topped footer. Our content and our
           contracts (persistent error region, described-by hints, login
           fields) ride inside it. */}
-      <div className="a11y-form-grid">
-        <div className="a11y-form-col">
-
-          {/* The submit button rejoins the field as one row — the kit's own
-              search-plus-action pattern — rather than waiting in the
-              footer below two columns of options. */}
+      {/* One column, in the order the design lays it out: address, scope,
+          report style, the optional extras, then the action. DOM order IS
+          visual order — reordering this with CSS `order` would leave tab
+          order following the markup while the eye follows the layout. */}
+      <div className="a11y-form-single">
           {/* The ported Input at display size. The submit button does NOT ride
               inside the field: the Checker screen puts the address full width
               on its rule and the button below it, which is what the design
@@ -175,9 +174,9 @@ export function UrlForm({
                     : "a11y-url-hint"
             }
           />
-          {/* Directly under the field rather than below the whole
-              form — see the `progress` prop's own comment above. */}
+
           {progress}
+
           {/* The kit's helper line under the field, kept true per scope. */}
           <span id="a11y-url-hint" className="a11y-group-hint">
             {mode === "site"
@@ -185,51 +184,6 @@ export function UrlForm({
               : "We scan this one page and everything visible on it."}
           </span>
 
-          {/* Below the field, beside its reassurance — the Checker screen's
-              arrangement. */}
-          <div className="a11y-url-submit">
-            <Button type="submit" size="lg" disabled={loading}>
-              {loading ? "One moment\u2026" : mode === "site" ? "Audit my site" : "Check my site"}
-            </Button>
-            <span className="a11y-url-submit-note">
-              No account needed for a single page.
-            </span>
-          </div>
-
-          {/* Persistent and empty until filled — a live region mounted with
-              its message already inside never announces. */}
-          <p id="a11y-url-error" className="a11y-error a11y-url-error" role="alert">
-            {showEmptyError
-              ? "Enter a website address first. For example: example.com."
-              : showInvalidError
-                ? "That doesn't look like a website address. For example: example.com."
-                : ""}
-          </p>
-
-          <fieldset className="a11y-radio-group a11y-optioncard-grid">
-            <legend>Report style</legend>
-            <OptionCard
-              id="a11y-aud-biz"
-              name="a11y-audience"
-              value="business"
-              label="For business owners"
-              description="A plain language summary"
-              checked={audience === "business"}
-              onChange={() => onAudienceChange("business")}
-            />
-            <OptionCard
-              id="a11y-aud-pro"
-              name="a11y-audience"
-              value="professional"
-              label="For professionals"
-              description="A WCAG mapped technical report"
-              checked={audience === "professional"}
-              onChange={() => onAudienceChange("professional")}
-            />
-          </fieldset>
-        </div>
-
-        <div className="a11y-form-col">
           <fieldset className="a11y-radio-group a11y-optioncard-grid">
             <legend>Scan scope</legend>
             <OptionCard
@@ -251,6 +205,28 @@ export function UrlForm({
               checked={mode === "site"}
               onChange={() => setMode("site")}
               disabled={loading}
+            />
+          </fieldset>
+
+          <fieldset className="a11y-radio-group a11y-optioncard-grid">
+            <legend>Report style</legend>
+            <OptionCard
+              id="a11y-aud-biz"
+              name="a11y-audience"
+              value="business"
+              label="For business owners"
+              description="A plain language summary"
+              checked={audience === "business"}
+              onChange={() => onAudienceChange("business")}
+            />
+            <OptionCard
+              id="a11y-aud-pro"
+              name="a11y-audience"
+              value="professional"
+              label="For professionals"
+              description="A WCAG mapped technical report"
+              checked={audience === "professional"}
+              onChange={() => onAudienceChange("professional")}
             />
           </fieldset>
 
@@ -287,10 +263,28 @@ export function UrlForm({
             </div>
           )}
 
-          {mode === "page" && (
-            <LoginFields auth={auth} onChange={setAuth} disabled={loading} />
-          )}
-        </div>
+          <LoginFields auth={auth} onChange={setAuth} disabled={loading} />
+
+          {/* Below the field, beside its reassurance — the Checker screen's
+              arrangement. */}
+          <div className="a11y-url-submit">
+            <Button type="submit" size="lg" disabled={loading}>
+              {loading ? "One moment\u2026" : mode === "site" ? "Audit my site" : "Check my site"}
+            </Button>
+            <span className="a11y-url-submit-note">
+              No account needed for a single page.
+            </span>
+          </div>
+
+          {/* Persistent and empty until filled — a live region mounted with
+              its message already inside never announces. */}
+          <p id="a11y-url-error" className="a11y-error a11y-url-error" role="alert">
+            {showEmptyError
+              ? "Enter a website address first. For example: example.com."
+              : showInvalidError
+                ? "That doesn't look like a website address. For example: example.com."
+                : ""}
+          </p>
       </div>
 
       {/* The footer now holds only Save as PDF, and only once a scan

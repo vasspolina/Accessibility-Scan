@@ -1,5 +1,5 @@
 import { Fragment, useState } from "react";
-import type { CSSProperties, ReactNode } from "react";
+import type { ReactNode } from "react";
 
 /**
  * The results table, ported from components/display/DataTable.jsx.
@@ -47,8 +47,9 @@ export interface TableRow {
   id: string;
   cells: ReactNode[];
   expand?: ReactNode;
-  /** Row tint, used by the conformance results. */
-  background?: string;
+  /** Row state as a NAME, not a colour. Styling lives in the stylesheet;
+   *  callers say what a row IS, never what it should look like. */
+  state?: "issue" | "current" | "pass";
 }
 
 /**
@@ -127,13 +128,13 @@ export function DataTable({
       <tbody>
         {rows.map((r) => {
           const isOpen = open.has(r.id);
-          /* The row tint stays inline: it is per-row data from the
-             conformance results, not a design decision this component can
-             make. Everything else is in the stylesheet. */
-          const rowStyle: CSSProperties = r.background ? { background: r.background } : {};
+          /* Row state is a name, never a colour — the stylesheet decides
+             what "issue" looks like. It used to be an inline background
+             carrying a dead token and a hardcoded #fff1f1 fallback. */
           return (
             <Fragment key={r.id}>
-              <tr style={rowStyle}>
+              <tr
+                data-row-state={r.state}>
                 {expandable ? (
                   <td className="a11y-dt-toggle-cell">
                     {r.expand ? (

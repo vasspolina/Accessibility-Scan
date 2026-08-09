@@ -1,29 +1,1166 @@
 /* ==========================================================================
-   Accessible Scan — global stylesheet
+   Accessible Scan — visual system
    ==========================================================================
-   Intentionally empty. The previous visual layer was removed in full so this
-   one could be built without inheriting it; the app currently renders at
-   browser defaults and its accessibility audit passes with zero CSS, which is
-   the baseline to keep.
+   Type is the interface. Near monochrome, no chrome: no shadows, no gradients,
+   no rounded containers, no filled buttons. Contrast comes from scale and from
+   space, colour enters only through content.
 
-   This file is the single entry point for the new system. It is inlined into
-   the shadow root by utils/shadowMount.ts — do not add a plain `import
-   "./global.css"` to a component: Vite would put it in document.head, where it
-   can never reach inside the shadow boundary and where it would leak onto the
-   host page, which is the one thing the shadow root exists to prevent.
+   Order: tokens → element defaults → patterns. Everything below resolves
+   against the tokens, so they are defined first.
 
-   Where things go
-   ---------------
-   Tokens first, then element defaults, then components. Everything resolves
-   against the tokens, so they have to be defined before any rule reads them.
-
-   Naming
-   ------
-   Class names describe ROLE, not appearance: .a11y-finding-row, not
-   .a11y-grey-box. See docs/ui-inventory.md for the full element list and the
-   markup-layout constraints that will shape this file.
-
-   Before writing rules, read docs/ui-inventory.md § "Layout that lives in the
-   markup" — four places currently hard-code layout in JSX, and each one limits
-   what CSS can change without a component edit.
+   Scoped to .a11y-widget-biz, not :root — this renders in a shadow root, and
+   the class is the mount point.
    ========================================================================== */
+
+.a11y-widget-biz {
+  /* ---- Base: two values ------------------------------------------------ */
+  /* Warm near-black and warm off-white. The warmth is what stops a monochrome
+     system reading as a wireframe. */
+  --ink: #17140f;
+  --ground: #faf7f2;
+
+  /* Derived inks. --ink-muted is the small-label voice and the riskiest value
+     in the system: wide letter spacing at 13px is where this design language
+     usually drops below AA, so it is set well clear rather than at the line. */
+  --ink-muted: #56504a;
+  /* Muted ink for anything sitting ON --ink. Without it, --ink-muted on an
+     inverted ground measures 2.3:1 — the exact substitution that has produced
+     six contrast faults in this repo. It exists so the wrong one is never
+     the convenient one. */
+  --ink-muted-on-ink: #b8b1a7;
+  /* Raised from a near-invisible 1.34:1. Hairlines here separate rows in a
+     real <table>, so the structure is carried by semantics and WCAG 1.4.11
+     does not bind — but a rule you cannot see is not doing the job the design
+     gives it. ~2.4:1 reads as a rule without becoming chrome. */
+  --hairline: #c4bcb0;
+
+  /* ---- Accent: one, for state and the active item only ----------------- */
+  /* Never decorative. Themed rather than fixed: a single value cannot be AA on
+     both a light and a dark ground, and "one accent" is a design rule about
+     restraint, not a licence to ship 3:1 text. */
+  --accent: #a8331a;
+  --accent-ink: #ffffff;
+
+  /* ---- Type ------------------------------------------------------------- */
+  --font: "PP Telegraf", "Helvetica Neue", Helvetica, Arial, sans-serif;
+
+  /* Aggressive display scale. The top two steps are fluid — they have to hold
+     their proportion against the viewport, not against a fixed step. */
+  --size-display: clamp(3rem, 9vw, 7rem);
+  --size-title: clamp(2rem, 5vw, 3.5rem);
+  --size-section: clamp(1.5rem, 3vw, 2.25rem);
+  --size-lead: 1.25rem;
+  --size-body: 1rem;
+  --size-label: 0.8125rem;
+
+  --leading-display: 0.95;
+  --leading-title: 1;
+  --leading-section: 1.05;
+  --leading-body: 1.55;
+  --leading-label: 1.3;
+
+  /* Negative tracking on the biggest sizes only. Never on running lowercase —
+     it damages word shape and slows reading. */
+  --track-display: -0.03em;
+  --track-title: -0.02em;
+  --track-label: 0.08em;
+
+  --weight-regular: 400;
+  --weight-medium: 500;
+
+  /* ~60 characters. */
+  --measure: 60ch;
+
+  /* ---- Space: one scale ------------------------------------------------- */
+  --s1: 4px;
+  --s2: 8px;
+  --s3: 12px;
+  --s4: 16px;
+  --s5: 24px;
+  --s6: 40px;
+  --s7: 64px;
+  --s8: 96px;
+  --s9: 144px;
+
+  --edge: clamp(var(--s5), 5vw, var(--s8));
+  --container: 1240px;
+
+  /* ---- Motion ----------------------------------------------------------- */
+  --quick: 160ms;
+  --settle: 260ms;
+  --ease: cubic-bezier(0.22, 0.61, 0.36, 1);
+
+  color: var(--ink);
+  background: var(--ground);
+  font-family: var(--font);
+  font-size: var(--size-body);
+  line-height: var(--leading-body);
+}
+
+/* ---- Dark inversion: the same two values, swapped ---------------------- */
+
+@media (prefers-color-scheme: dark) {
+  .a11y-widget-biz {
+    --ink: #f2ede5;
+    --ground: #14120f;
+    --ink-muted: #a9a199;
+    --ink-muted-on-ink: #55504a;
+    --hairline: #4a443c;
+    /* Lifted so it stays AA on the dark ground. Same hue, same role. */
+    --accent: #ff7a5c;
+    --accent-ink: #14120f;
+  }
+}
+
+.a11y-widget-biz[data-theme="dark"] {
+  --ink: #f2ede5;
+  --ground: #14120f;
+  --ink-muted: #a9a199;
+  --ink-muted-on-ink: #55504a;
+  --hairline: #4a443c;
+  --accent: #ff7a5c;
+  --accent-ink: #14120f;
+}
+
+/* ==========================================================================
+   Element defaults
+   ========================================================================== */
+
+.a11y-widget-biz *,
+.a11y-widget-biz *::before,
+.a11y-widget-biz *::after {
+  box-sizing: border-box;
+}
+
+/* No filled buttons anywhere in this system, so the UA's grey is never
+   wanted. Left unset it also breaks the dark inversion: the button keeps
+   #efefef while the ink flips light, which measured 1.01:1. */
+.a11y-widget-biz button,
+.a11y-widget-biz select,
+.a11y-widget-biz input,
+.a11y-widget-biz textarea {
+  background: transparent;
+  color: inherit;
+  font: inherit;
+}
+
+.a11y-widget-biz p,
+.a11y-widget-biz li,
+.a11y-widget-biz dd {
+  max-width: var(--measure);
+}
+
+.a11y-widget-biz h1,
+.a11y-widget-biz h2,
+.a11y-widget-biz h3,
+.a11y-widget-biz h4 {
+  margin: 0;
+  font-weight: var(--weight-medium);
+  text-wrap: balance;
+}
+
+.a11y-widget-biz h1 {
+  font-size: var(--size-title);
+  line-height: var(--leading-title);
+  letter-spacing: var(--track-title);
+}
+
+.a11y-widget-biz h2 {
+  font-size: var(--size-section);
+  line-height: var(--leading-section);
+  letter-spacing: var(--track-title);
+}
+
+.a11y-widget-biz h3 {
+  font-size: var(--size-lead);
+  line-height: 1.2;
+}
+
+/* Links underline left-to-right on hover. background-size animates where
+   text-decoration cannot. */
+.a11y-widget-biz a {
+  color: inherit;
+  text-decoration: none;
+  background-image: linear-gradient(currentColor, currentColor);
+  background-repeat: no-repeat;
+  background-position: 0 100%;
+  background-size: 100% 1px;
+  transition: background-size var(--quick) var(--ease);
+}
+
+.a11y-widget-biz a:hover {
+  background-size: 0 1px;
+  background-position: 100% 100%;
+}
+
+/* ---- Focus: never the browser default against near-black ---------------- */
+/* Two-tone ring so it is visible on either base value regardless of which
+   surface it lands on. */
+.a11y-widget-biz :focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+  box-shadow: 0 0 0 4px var(--ground);
+}
+
+/* ==========================================================================
+   Patterns
+   ========================================================================== */
+
+/* ---- The small label voice: metadata, counts, tags, eyebrows ------------ */
+.a11y-widget-biz .a11y-group-hint,
+.a11y-widget-biz .a11y-input-label,
+.a11y-widget-biz .a11y-textarea-label,
+.a11y-widget-biz .a11y-select2-label,
+.a11y-widget-biz .a11y-fd-row-label,
+.a11y-widget-biz .a11y-method-hint > strong:first-child,
+.a11y-widget-biz .a11y-finding-measured > strong:first-child,
+.a11y-widget-biz .a11y-finding-impact > strong:first-child,
+.a11y-widget-biz .a11y-finding-research > strong:first-child,
+.a11y-widget-biz .a11y-finding-todo > strong:first-child,
+.a11y-widget-biz .a11y-affected-label > strong,
+.a11y-widget-biz .a11y-result-count {
+  display: block;
+  font-size: var(--size-label);
+  line-height: var(--leading-label);
+  letter-spacing: var(--track-label);
+  text-transform: uppercase;
+  font-weight: var(--weight-medium);
+  color: var(--ink-muted);
+}
+
+/* ---- Shell -------------------------------------------------------------- */
+
+.a11y-widget-biz .a11y-widget-inner {
+  max-width: var(--container);
+  margin-inline: auto;
+  padding: var(--s7) var(--edge) var(--s9);
+}
+
+/* Sticky, compacting after the first threshold. */
+.a11y-widget-biz .a11y-shell-header {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  display: flex;
+  align-items: baseline;
+  gap: var(--s4);
+  padding: var(--s5) 0;
+  background: var(--ground);
+  border-bottom: 1px solid var(--hairline);
+  transition: padding var(--quick) var(--ease);
+}
+
+/* Sections separated by space, not rules or fills. */
+.a11y-widget-biz .a11y-section,
+.a11y-widget-biz .a11y-report-section {
+  margin-block: var(--s8);
+}
+
+/* Section header band: title left, plain text link far right. */
+.a11y-widget-biz .a11y-section-header {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--s5);
+  flex-wrap: wrap;
+  margin-bottom: var(--s5);
+}
+
+/* ---- Buttons: text-with-underline, or a hairline rectangle -------------- */
+
+.a11y-widget-biz .a11y-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--s2);
+  min-height: 44px;
+  padding: var(--s2) var(--s4);
+  border: 1px solid var(--ink);
+  border-radius: 2px;
+  background: transparent;
+  color: var(--ink);
+  font: inherit;
+  font-weight: var(--weight-medium);
+  cursor: pointer;
+  transition: background var(--quick) var(--ease), color var(--quick) var(--ease);
+}
+
+.a11y-widget-biz .a11y-btn:hover:not(:disabled) {
+  background: var(--ink);
+  color: var(--ground);
+}
+
+.a11y-widget-biz .a11y-btn:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+/* ---- Forms: bottom border only, label above ---------------------------- */
+
+.a11y-widget-biz .a11y-input-shell,
+.a11y-widget-biz .a11y-select2-field {
+  border: 0;
+  border-bottom: 1px solid var(--ink);
+  border-radius: 0;
+  background: transparent;
+  transition: border-color var(--quick) var(--ease);
+}
+
+.a11y-widget-biz .a11y-input-shell:focus-within {
+  border-bottom-color: var(--accent);
+}
+
+.a11y-widget-biz .a11y-textarea > textarea {
+  border: 1px solid var(--hairline);
+  border-radius: 0;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  padding: var(--s3);
+}
+
+/* ---- Rows: hairline separation where it is needed ---------------------- */
+
+.a11y-widget-biz .a11y-datatable tbody td,
+.a11y-widget-biz .a11y-conf-row,
+.a11y-widget-biz .a11y-occurrence-list > li {
+  border-bottom: 1px solid var(--hairline);
+}
+
+.a11y-widget-biz .a11y-datatable {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.a11y-widget-biz .a11y-datatable th {
+  text-align: left;
+  font-size: var(--size-label);
+  letter-spacing: var(--track-label);
+  text-transform: uppercase;
+  font-weight: var(--weight-medium);
+  color: var(--ink-muted);
+  padding: var(--s3) var(--s3) var(--s3) 0;
+  border-bottom: 1px solid var(--ink);
+}
+
+.a11y-widget-biz .a11y-datatable td {
+  padding: var(--s4) var(--s3) var(--s4) 0;
+  vertical-align: top;
+}
+
+.a11y-widget-biz .a11y-datatable td[data-align="right"],
+.a11y-widget-biz .a11y-datatable th[data-align="right"] {
+  text-align: right;
+}
+
+/* ---- State: the accent, and never colour alone ------------------------- */
+
+/* aria-pressed / aria-current carry the state; the accent only marks it. The
+   underline is what a greyscale reader sees. */
+.a11y-widget-biz [aria-pressed="true"],
+.a11y-widget-biz [aria-current]:not([aria-current="false"]) {
+  color: var(--accent);
+  text-decoration: underline;
+  text-underline-offset: 4px;
+  text-decoration-thickness: 2px;
+}
+
+/* Severity keeps a word, so the pill is a hairline outline rather than a fill —
+   nothing in this system is a coloured block, and the word already carries the
+   meaning without relying on hue. */
+.a11y-widget-biz .a11y-sev {
+  display: inline-block;
+  padding: 2px var(--s2);
+  border: 1px solid currentColor;
+  border-radius: 2px;
+  font-size: var(--size-label);
+  letter-spacing: var(--track-label);
+  text-transform: uppercase;
+  font-weight: var(--weight-medium);
+  background: transparent;
+  color: var(--ink);
+}
+
+/* ---- Reveal on scroll: once, never on scroll back ----------------------- */
+
+@media (prefers-reduced-motion: no-preference) {
+  .a11y-widget-biz [data-reveal="pending"] {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+
+  .a11y-widget-biz [data-reveal="shown"] {
+    opacity: 1;
+    transform: none;
+    transition: opacity var(--settle) var(--ease), transform var(--settle) var(--ease);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .a11y-widget-biz *,
+  .a11y-widget-biz *::before,
+  .a11y-widget-biz *::after {
+    animation-duration: 1ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 1ms !important;
+    scroll-behavior: auto !important;
+  }
+
+  /* Reveals become instant rather than animated-fast, so nothing is ever
+     mid-fade when motion is off. */
+  .a11y-widget-biz [data-reveal] {
+    opacity: 1 !important;
+    transform: none !important;
+  }
+}
+
+/* ==========================================================================
+   Report sections
+   ==========================================================================
+   Rhythm comes from the space scale; separation from hairlines and from the
+   type ramp. No section gets a background fill or a card border — the
+   direction is explicit that sections are separated by space, not by colour
+   changes or dividers.
+   ========================================================================== */
+
+/* ---- Section heads ------------------------------------------------------ */
+
+.a11y-widget-biz .a11y-section {
+  margin-block: var(--s8);
+}
+
+/* Title left, action far right, on one baseline. No boxed button here. */
+.a11y-widget-biz .a11y-section-head,
+.a11y-widget-biz .a11y-section-header {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--s5);
+  flex-wrap: wrap;
+  margin-bottom: var(--s5);
+  padding-bottom: var(--s3);
+  border-bottom: 1px solid var(--ink);
+}
+
+.a11y-widget-biz .a11y-section-title,
+.a11y-widget-biz .a11y-newscan-title {
+  font-size: var(--size-section);
+  line-height: var(--leading-section);
+  letter-spacing: var(--track-title);
+  font-weight: var(--weight-medium);
+}
+
+.a11y-widget-biz .a11y-section-eyebrow,
+.a11y-widget-biz .a11y-section-qualifier,
+.a11y-widget-biz .a11y-section-count,
+.a11y-widget-biz .a11y-section-chip {
+  font-size: var(--size-label);
+  letter-spacing: var(--track-label);
+  text-transform: uppercase;
+  font-weight: var(--weight-medium);
+  color: var(--ink-muted);
+}
+
+.a11y-widget-biz .a11y-section-desc,
+.a11y-widget-biz .a11y-newscan-sub {
+  max-width: var(--measure);
+  color: var(--ink-muted);
+}
+
+/* ---- Findings prose ----------------------------------------------------- */
+
+.a11y-widget-biz .a11y-method-hint,
+.a11y-widget-biz .a11y-finding-measured,
+.a11y-widget-biz .a11y-finding-impact,
+.a11y-widget-biz .a11y-finding-research,
+.a11y-widget-biz .a11y-finding-todo,
+.a11y-widget-biz .a11y-finding-steps > p {
+  margin: 0 0 var(--s5);
+  max-width: var(--measure);
+}
+
+.a11y-widget-biz .a11y-finding-steps ul {
+  margin: 0;
+  padding-left: var(--s5);
+}
+
+.a11y-widget-biz .a11y-finding-steps li {
+  margin-bottom: var(--s2);
+}
+
+/* The affected-element list: hairline rows, monospace values. */
+.a11y-widget-biz .a11y-occurrence-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.a11y-widget-biz .a11y-occurrence-list > li {
+  padding: var(--s3) 0;
+  border-bottom: 1px solid var(--hairline);
+}
+
+.a11y-widget-biz code,
+.a11y-widget-biz .a11y-fd-affected-value {
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 0.9375em;
+}
+
+/* ---- FindingDetail ------------------------------------------------------ */
+
+.a11y-widget-biz .a11y-fd {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s5);
+}
+
+.a11y-widget-biz .a11y-fd-todo {
+  font-size: var(--size-lead);
+  line-height: 1.2;
+  letter-spacing: var(--track-title);
+  font-weight: var(--weight-medium);
+  max-width: var(--measure);
+}
+
+/* The band inverts — it is the one emphasis moment in a finding, and the
+   direction allows inversion for the active/emphasis item. */
+.a11y-widget-biz .a11y-fd-invert {
+  padding: var(--s6);
+  background: var(--ink);
+  color: var(--ground);
+}
+
+.a11y-widget-biz .a11y-fd-invert .a11y-fd-row-label,
+.a11y-widget-biz .a11y-fd-invert .a11y-fd-found,
+.a11y-widget-biz .a11y-fd-invert .a11y-fd-meta {
+  color: var(--ink-muted-on-ink);
+}
+
+.a11y-widget-biz .a11y-fd-band .a11y-fd-todo {
+  font-size: var(--size-title);
+  line-height: var(--leading-title);
+  letter-spacing: var(--track-display);
+  max-width: 22ch;
+}
+
+.a11y-widget-biz .a11y-fd-affected {
+  padding: var(--s4);
+  border: 1px solid var(--hairline);
+}
+
+.a11y-widget-biz .a11y-fd-invert .a11y-fd-affected {
+  border-color: var(--ink-muted-on-ink);
+}
+
+/* ---- Conformance list --------------------------------------------------- */
+
+.a11y-widget-biz .a11y-conf-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.a11y-widget-biz .a11y-conf-row {
+  display: flex;
+  align-items: baseline;
+  gap: var(--s4);
+  flex-wrap: wrap;
+  padding: var(--s4) 0;
+  border-bottom: 1px solid var(--hairline);
+}
+
+.a11y-widget-biz .a11y-conf-id {
+  flex: 0 0 auto;
+  min-width: 7ch;
+  font-variant-numeric: tabular-nums;
+  font-weight: var(--weight-medium);
+}
+
+.a11y-widget-biz .a11y-conf-id em {
+  font-style: normal;
+  font-size: var(--size-label);
+  letter-spacing: var(--track-label);
+  text-transform: uppercase;
+  color: var(--ink-muted);
+}
+
+/* Result words carry the meaning; the accent only marks the failing one. */
+.a11y-widget-biz .a11y-conf-result {
+  flex: 0 0 auto;
+  font-size: var(--size-label);
+  letter-spacing: var(--track-label);
+  text-transform: uppercase;
+  font-weight: var(--weight-medium);
+  color: var(--ink-muted);
+}
+
+.a11y-widget-biz .a11y-conf-result-fail {
+  color: var(--accent);
+}
+
+.a11y-widget-biz .a11y-conf-tiles {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: var(--s5);
+  margin-bottom: var(--s6);
+}
+
+.a11y-widget-biz .a11y-conf-num {
+  display: block;
+  font-size: var(--size-title);
+  line-height: var(--leading-title);
+  letter-spacing: var(--track-title);
+  font-weight: var(--weight-medium);
+  font-variant-numeric: tabular-nums;
+}
+
+/* ---- Score dial --------------------------------------------------------- */
+
+.a11y-widget-biz .a11y-dial-number {
+  font-size: var(--size-display);
+  line-height: var(--leading-display);
+  letter-spacing: var(--track-display);
+  font-weight: var(--weight-medium);
+  font-variant-numeric: tabular-nums;
+}
+
+.a11y-widget-biz .a11y-dial-word {
+  font-size: var(--size-label);
+  letter-spacing: var(--track-label);
+  text-transform: uppercase;
+  font-weight: var(--weight-medium);
+  color: var(--ink-muted);
+}
+
+/* A rule, not a coloured bar. The fill is ink; the band word carries meaning
+   so the meter never encodes it in colour alone. */
+.a11y-widget-biz .a11y-dial-meter {
+  position: relative;
+  height: 2px;
+  margin: var(--s4) 0;
+  background: var(--hairline);
+}
+
+.a11y-widget-biz .a11y-dial-fill {
+  height: 100%;
+  background: var(--ink);
+}
+
+.a11y-widget-biz .a11y-dial-tick {
+  position: absolute;
+  top: -3px;
+  width: 1px;
+  height: 8px;
+  background: var(--ink-muted);
+}
+
+.a11y-widget-biz .a11y-dial-scale {
+  font-size: var(--size-label);
+  letter-spacing: var(--track-label);
+  text-transform: uppercase;
+  color: var(--ink-muted);
+}
+
+/* ---- Progress ----------------------------------------------------------- */
+
+.a11y-widget-biz .a11y-progress-track {
+  height: 2px;
+  background: var(--hairline);
+}
+
+.a11y-widget-biz .a11y-progress-fill {
+  height: 100%;
+  background: var(--ink);
+  transition: width var(--settle) var(--ease);
+}
+
+/* ---- Accordions and disclosures ----------------------------------------- */
+
+.a11y-widget-biz .a11y-accordion-row {
+  border-bottom: 1px solid var(--hairline);
+}
+
+.a11y-widget-biz .a11y-accordion-head,
+.a11y-widget-biz summary {
+  display: flex;
+  align-items: center;
+  gap: var(--s3);
+  width: 100%;
+  min-height: 44px;
+  padding: var(--s3) 0;
+  background: transparent;
+  border: 0;
+  color: inherit;
+  font: inherit;
+  font-weight: var(--weight-medium);
+  text-align: left;
+  cursor: pointer;
+}
+
+.a11y-widget-biz .a11y-accordion-chevron,
+.a11y-widget-biz .a11y-next-chevron {
+  transition: transform var(--quick) var(--ease);
+}
+
+.a11y-widget-biz [aria-expanded="true"] .a11y-accordion-chevron,
+.a11y-widget-biz [aria-expanded="true"] .a11y-next-chevron {
+  transform: rotate(90deg);
+}
+
+/* ---- Dialog: a scrim, and a panel on the ground ------------------------- */
+
+.a11y-widget-biz .a11y-dialog-scrim {
+  position: fixed;
+  inset: 0;
+  /* A guaranteed contrast layer, not a tint — the panel must never be read
+     against whatever happens to be behind it. */
+  background: rgb(0 0 0 / 0.6);
+}
+
+.a11y-widget-biz .a11y-dialog {
+  position: relative;
+  max-width: 34rem;
+  margin: auto;
+  padding: var(--s6);
+  background: var(--ground);
+  color: var(--ink);
+  border: 1px solid var(--ink);
+}
+
+.a11y-widget-biz .a11y-dialog-actions {
+  display: flex;
+  gap: var(--s3);
+  flex-wrap: wrap;
+  margin-top: var(--s5);
+}
+
+/* ---- Side nav ----------------------------------------------------------- */
+
+.a11y-widget-biz .a11y-shell-nav-link {
+  display: block;
+  padding: var(--s2) 0;
+  font-size: var(--size-label);
+  letter-spacing: var(--track-label);
+  text-transform: uppercase;
+  color: var(--ink-muted);
+  background-image: none;
+}
+
+/* aria-current carries it; the accent and the rule only mark it. */
+.a11y-widget-biz .a11y-shell-nav-link[aria-current]:not([aria-current="false"]) {
+  color: var(--accent);
+  font-weight: var(--weight-medium);
+}
+
+/* ---- Cards: no radius, no fill, hairline only --------------------------- */
+
+.a11y-widget-biz .a11y-card,
+.a11y-widget-biz .a11y-fact-card,
+.a11y-widget-biz .a11y-related-card,
+.a11y-widget-biz .a11y-slt-stat,
+.a11y-widget-biz .a11y-trust-row,
+.a11y-widget-biz .a11y-fixcard {
+  padding: var(--s5);
+  border: 1px solid var(--hairline);
+  border-radius: 0;
+  background: transparent;
+}
+
+.a11y-widget-biz .a11y-fact-value,
+.a11y-widget-biz .a11y-slt-stat-n,
+.a11y-widget-biz .a11y-trust-count {
+  font-size: var(--size-title);
+  line-height: var(--leading-title);
+  letter-spacing: var(--track-title);
+  font-weight: var(--weight-medium);
+  font-variant-numeric: tabular-nums;
+}
+
+.a11y-widget-biz .a11y-fact-label,
+.a11y-widget-biz .a11y-slt-stat-caption,
+.a11y-widget-biz .a11y-trust-eyebrow,
+.a11y-widget-biz .a11y-related-meta {
+  font-size: var(--size-label);
+  letter-spacing: var(--track-label);
+  text-transform: uppercase;
+  color: var(--ink-muted);
+}
+
+/* Hover reveals in place, by inverting the row rather than tinting it. Safe
+   on these two because each owns every child it renders. */
+.a11y-widget-biz .a11y-related-card:hover,
+.a11y-widget-biz .a11y-related-card:focus-visible,
+.a11y-widget-biz .a11y-issue-row:hover,
+.a11y-widget-biz .a11y-issue-row:focus-visible {
+  background: var(--ink);
+  color: var(--ground);
+  border-color: var(--ink);
+}
+
+.a11y-widget-biz .a11y-related-card:hover .a11y-related-meta,
+.a11y-widget-biz .a11y-related-card:hover .a11y-related-why {
+  color: var(--ink-muted-on-ink);
+}
+
+/* ---- Screen-reader preview and vision simulator ------------------------- */
+
+.a11y-widget-biz .a11y-sr-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.a11y-widget-biz .a11y-sr-line {
+  display: flex;
+  gap: var(--s4);
+  padding: var(--s2) 0;
+  border-bottom: 1px solid var(--hairline);
+}
+
+.a11y-widget-biz .a11y-sr-role {
+  flex: 0 0 12ch;
+  font-size: var(--size-label);
+  letter-spacing: var(--track-label);
+  text-transform: uppercase;
+  color: var(--ink-muted);
+}
+
+/* A silent line is the finding. It gets the accent AND the word, never the
+   accent alone. */
+.a11y-widget-biz .a11y-sr-line-issue .a11y-sr-text {
+  color: var(--accent);
+  font-weight: var(--weight-medium);
+}
+
+.a11y-widget-biz .a11y-sim-frame {
+  border: 1px solid var(--hairline);
+  padding: var(--s5);
+}
+
+/* ---- Row state ----------------------------------------------------------
+   Replaces three inline backgrounds that carried dead token references and
+   hardcoded fallbacks (#fff1f1, #defbe6, #f4f4f4) — a tint from the old
+   design surviving the strip inside a prop.
+
+   A left rule rather than a fill: this system has no coloured blocks, and a
+   full-width tint behind a row of text is the surest way to lose contrast on
+   whatever the row happens to contain. Every one of these rows also states
+   its condition in words ("We found problems", "We checked, found nothing"),
+   so the mark is never the only carrier. */
+.a11y-widget-biz .a11y-datatable tbody tr[data-row-state] > td:first-child {
+  box-shadow: inset 2px 0 0 var(--ink-muted);
+}
+
+.a11y-widget-biz .a11y-datatable tbody tr[data-row-state="issue"] > td:first-child {
+  box-shadow: inset 2px 0 0 var(--accent);
+}
+
+/* The line being spoken. aria-current on the row carries it for assistive
+   tech; this is the visible half. */
+.a11y-widget-biz .a11y-datatable tbody tr[data-row-state="current"] > td {
+  background: color-mix(in srgb, var(--ink) 6%, transparent);
+}
+
+/* ==========================================================================
+   Scan form — the foundry contact-form treatment
+   ==========================================================================
+   A deliberate, SCOPED exception to two of this system's own rules. The
+   reference for this screen is the foundry's contact form, which uses filled
+   large-radius fields and a filled pill submit — the opposite of the
+   bottom-border, no-fill, 2px-radius rules that govern everywhere else.
+
+   Confined to .a11y-url-form so it reads as one composed screen rather than
+   as the system contradicting itself. Nothing below leaks past the form.
+
+   NOT copied from the reference: placeholder-as-label. The reference has no
+   visible labels; its placeholders disappear the moment you type. This app
+   reports that as a defect on other people's sites, and the brief itself says
+   "label above". Labels stay, in the small-label voice.
+   ========================================================================== */
+
+.a11y-widget-biz .a11y-url-form {
+  --field-fill: color-mix(in srgb, var(--ink) 7%, transparent);
+  --field-radius: 999px;
+
+  display: flex;
+  flex-direction: column;
+  gap: var(--s5);
+  margin-top: var(--s7);
+}
+
+/* The headline sits at display scale, with the lead beneath in a narrow
+   measure — the reference's left column. */
+.a11y-widget-biz .a11y-newscan-title {
+  font-size: var(--size-title);
+  line-height: var(--leading-title);
+  letter-spacing: var(--track-display);
+}
+
+.a11y-widget-biz .a11y-newscan-sub {
+  max-width: var(--measure);
+  margin-top: var(--s4);
+}
+
+/* Two-up where there is room, stacking cleanly at one column. */
+.a11y-widget-biz .a11y-form-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: var(--s5);
+}
+
+.a11y-widget-biz .a11y-form-col {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s5);
+  min-width: 0;
+}
+
+/* ---- Fields: filled, large radius, no border --------------------------- */
+
+.a11y-widget-biz .a11y-url-form .a11y-input-shell,
+.a11y-widget-biz .a11y-url-form .a11y-select2-field {
+  border: 0;
+  border-radius: var(--field-radius);
+  background: var(--field-fill);
+  padding: 0 var(--s5);
+  min-height: 64px;
+}
+
+.a11y-widget-biz .a11y-url-form .a11y-textarea > textarea {
+  border: 0;
+  border-radius: var(--s5);
+  background: var(--field-fill);
+  padding: var(--s4) var(--s5);
+}
+
+/* The address field is the one thing the visitor must supply, so it keeps the
+   display size the Checker screen gives it. */
+.a11y-widget-biz .a11y-url-form .a11y-input-display > input {
+  font-size: var(--size-section);
+  line-height: 1.1;
+  letter-spacing: var(--track-title);
+  font-weight: var(--weight-medium);
+}
+
+/* Focus has to read against a filled ground, not just an outline. */
+.a11y-widget-biz .a11y-url-form .a11y-input-shell:focus-within {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+.a11y-widget-biz .a11y-url-form .a11y-input-shell:focus-within > input:focus-visible {
+  outline: 0;
+  box-shadow: none;
+}
+
+/* ---- Submit: the one filled control in the app ------------------------- */
+
+.a11y-widget-biz .a11y-url-submit {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: var(--s5);
+  flex-wrap: wrap-reverse;
+  margin-top: var(--s3);
+}
+
+.a11y-widget-biz .a11y-url-submit .a11y-btn {
+  border: 0;
+  border-radius: var(--field-radius);
+  padding: var(--s4) var(--s6);
+  background: var(--accent);
+  color: var(--accent-ink);
+  font-weight: var(--weight-medium);
+}
+
+.a11y-widget-biz .a11y-url-submit .a11y-btn:hover:not(:disabled) {
+  background: var(--ink);
+  color: var(--ground);
+}
+
+/* The arrow is the reference's submit affordance. Decorative — the button
+   already reads "Check my site" — so it is hidden from the accessible name. */
+.a11y-widget-biz .a11y-url-submit .a11y-btn::after {
+  content: "→";
+  margin-left: var(--s3);
+}
+
+.a11y-widget-biz .a11y-url-submit-note {
+  margin-right: auto;
+  max-width: 40ch;
+}
+
+/* ---- Option cards: the reference's row cards, scoped to the form ------- */
+
+.a11y-widget-biz .a11y-url-form .a11y-optioncard {
+  border: 0;
+  border-radius: var(--s5);
+  background: var(--field-fill);
+  padding: var(--s4) var(--s5);
+}
+
+/* Selected inverts. It is state, which this system does allow to fill. */
+.a11y-widget-biz .a11y-url-form .a11y-optioncard-on {
+  background: var(--ink);
+  color: var(--ground);
+}
+
+.a11y-widget-biz .a11y-url-form .a11y-optioncard-on .a11y-optioncard-desc,
+.a11y-widget-biz .a11y-url-form .a11y-optioncard-on .a11y-optioncard-meta {
+  color: var(--ink-muted-on-ink);
+}
+
+.a11y-widget-biz .a11y-url-form .a11y-radio-group {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: var(--s3);
+  border: 0;
+  padding: 0;
+  margin: 0;
+}
+
+.a11y-widget-biz .a11y-url-form .a11y-radio-group > legend,
+.a11y-widget-biz .a11y-url-form .a11y-radio-group > .a11y-group-hint {
+  grid-column: 1 / -1;
+}
+
+.a11y-widget-biz .a11y-ai-card {
+  display: flex;
+  align-items: center;
+  gap: var(--s5);
+  flex-wrap: wrap;
+  padding: var(--s4) var(--s5);
+  border-radius: var(--s5);
+  background: var(--field-fill);
+}
+
+.a11y-widget-biz .a11y-ai-card-text {
+  flex: 1;
+  min-width: 240px;
+}
+
+/* ==========================================================================
+   Scan form — corrected against the design system's own NewScan screen
+   ==========================================================================
+   The previous block took its cues from the foundry CONTACT form. The scan
+   form is a different screen in the same system and does three things
+   differently. Where they disagree, this one wins: it is the actual screen.
+
+     1. The address field is a bottom RULE, not a filled pill. It is the one
+        thing the visitor must supply, and an underline at display size reads
+        as a place to write rather than as another grey lozenge among four.
+     2. Labels here are SENTENCE CASE. The uppercase wide-tracked voice stays
+        for report metadata — counts, criteria, column heads — but a form label
+        is an instruction to a person, and shouting it adds nothing.
+     3. The selected option card does NOT invert. The filled radio carries the
+        state, which is the control's own affordance and survives greyscale
+        without a black slab.
+   ========================================================================== */
+
+/* ---- The address field: a rule, not a pill ----------------------------- */
+
+.a11y-widget-biz .a11y-url-form .a11y-input-shell {
+  border: 0;
+  border-bottom: 2px solid var(--ink);
+  border-radius: 0;
+  background: transparent;
+  padding: 0;
+  min-height: 0;
+}
+
+.a11y-widget-biz .a11y-url-form .a11y-input-display > input {
+  font-size: clamp(1.75rem, 4vw, 2.5rem);
+  line-height: 1.15;
+  letter-spacing: var(--track-title);
+  font-weight: var(--weight-medium);
+  height: auto;
+  padding: var(--s2) 0;
+}
+
+.a11y-widget-biz .a11y-url-form .a11y-input-shell:focus-within {
+  border-bottom-color: var(--accent);
+  outline: 0;
+}
+
+/* ---- Form labels speak, they do not shout ------------------------------ */
+
+.a11y-widget-biz .a11y-url-form .a11y-input-label,
+.a11y-widget-biz .a11y-url-form .a11y-select2-label,
+.a11y-widget-biz .a11y-url-form .a11y-textarea-label,
+.a11y-widget-biz .a11y-url-form legend,
+.a11y-widget-biz .a11y-ai-card .a11y-switch-label {
+  font-size: var(--size-label);
+  letter-spacing: 0;
+  text-transform: none;
+  font-weight: var(--weight-medium);
+  color: var(--ink);
+}
+
+.a11y-widget-biz .a11y-url-form .a11y-group-hint {
+  font-size: var(--size-label);
+  letter-spacing: 0;
+  text-transform: none;
+  font-weight: var(--weight-regular);
+  color: var(--ink-muted);
+}
+
+/* The helper line sits tight under the rule and carries an inline link. */
+.a11y-widget-biz .a11y-url-form .a11y-input-help,
+.a11y-widget-biz .a11y-url-form > .a11y-form-grid .a11y-group-hint {
+  margin-top: var(--s2);
+}
+
+/* ---- Option cards: grey, softly rounded, never inverted ---------------- */
+
+.a11y-widget-biz .a11y-url-form .a11y-optioncard {
+  border-radius: 14px;
+  background: var(--field-fill);
+  padding: var(--s4) var(--s5);
+  align-items: center;
+  gap: var(--s4);
+  transition: background var(--quick) var(--ease);
+}
+
+/* Selection lives in the radio, not in a slab. A shade of separation only —
+   and because the control itself is checked, nothing here is the sole
+   carrier of the state. */
+.a11y-widget-biz .a11y-url-form .a11y-optioncard-on {
+  background: color-mix(in srgb, var(--ink) 12%, transparent);
+  color: var(--ink);
+}
+
+.a11y-widget-biz .a11y-url-form .a11y-optioncard-on .a11y-optioncard-desc,
+.a11y-widget-biz .a11y-url-form .a11y-optioncard-on .a11y-optioncard-meta {
+  color: var(--ink-muted);
+}
+
+.a11y-widget-biz .a11y-url-form .a11y-optioncard-label {
+  font-weight: var(--weight-medium);
+}
+
+.a11y-widget-biz .a11y-url-form .a11y-optioncard-desc {
+  text-transform: none;
+  letter-spacing: 0;
+}
+
+.a11y-widget-biz .a11y-ai-card {
+  border-radius: 14px;
+}
+
+/* ---- Single column ------------------------------------------------------
+   .a11y-form-grid and its two .a11y-form-col children are gone from the
+   markup: the design lays this screen out as one column, and matching that
+   with CSS `order` would have left tab order following the DOM while the eye
+   followed the layout — a 1.3.2 failure, and not one to ship in this app.
+   DOM order is now visual order. */
+.a11y-widget-biz .a11y-form-single {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s5);
+  max-width: 60rem;
+}
+
+/* The intro paragraph keeps the reading measure; the controls below are
+   allowed the fuller width the option-card pairs need. */
+.a11y-widget-biz .a11y-form-single > .a11y-group-hint {
+  max-width: var(--measure);
+}

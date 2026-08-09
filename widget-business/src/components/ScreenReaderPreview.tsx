@@ -240,11 +240,7 @@ export function ScreenReaderPreview({ script }: { script: ScreenReaderScript }) 
         ]}
         rows={visible.map(({ line, index: i }) => ({
           id: `${line.selector}-${i}`,
-          background: line.issue
-            ? "var(--severity-critical-bg, #fff1f1)"
-            : current === i
-              ? "var(--a11y-accent-faint, #edf5ff)"
-              : undefined,
+          state: line.issue ? ("issue" as const) : current === i ? ("current" as const) : undefined,
           cells: [
             String(i + 1),
             <span key="t" className="a11y-sr-text">
