@@ -262,11 +262,18 @@ export function ScoreGauge({
             card and printing the label twice. Nesting cards for hierarchy is
             also the anti-pattern Card's own annotation names. */}
         <ScoreDial score={score} />
-        {/* A real card, not a transparent one. The pair used to be see-
-            through because the tiles were drawn by .a11y-stat-row rather
-            than by Card; that row now only says where they sit, so the card
-            can be a card. */}
-        <Card>
+        {/* Not a Card, and this is the second time round on it. Making it
+            one seemed right — a bare div beside a card looks unfinished —
+            but it holds a LIST of finding cards, and Card's own annotation
+            names the anti-pattern: "nesting cards inside cards for
+            hierarchy. Correct: one card, sections inside it separated by
+            space." White cards on a grey box on the page's ground is three
+            levels of nesting to say one thing.
+            The stylesheet had been forcing this flush with three
+            !important declarations; a plain div needs none of them, and the
+            conformance pass stops reporting a Card that does not look like
+            one because it should not be one. */}
+        <div className="a11y-score-list">
           {preview.length === 0 ? (
             <p className="a11y-score-clean">Nothing here needs a fix.</p>
           ) : (
@@ -297,7 +304,7 @@ export function ScoreGauge({
               })}
             </ul>
           )}
-        </Card>
+        </div>
       </div>
 
       {/* The kit's callout slot, carrying the line this report has always

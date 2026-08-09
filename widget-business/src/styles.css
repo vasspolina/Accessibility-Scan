@@ -1409,8 +1409,19 @@ label.a11y-ai-toggle {
   margin: 16px 0;
 }
 
+/* Same stacked label as its neighbours — this one heads a list rather than a
+   sentence, but it is the same kind of thing and reading it as a different kind
+   was the only reason it looked different. */
 .a11y-affected-label {
-  margin: 0 0 8px;
+  margin: 0 0 var(--space-2);
+}
+
+.a11y-widget-biz.a11y-widget-biz .a11y-affected-label > strong {
+  display: block;
+  font-size: var(--text-label);
+  line-height: var(--leading-label);
+  font-weight: 400;
+  color: var(--content-secondary);
 }
 
 .a11y-occurrence-list {
@@ -1584,11 +1595,16 @@ label.a11y-ai-toggle {
   max-width: none;
 }
 
+/* The tinted panel with an accent bar down its left edge is gone. Two rules
+   from the design system rule it out: "One card treatment: flat --layer-01
+   fill, no border, 20px radius", and accent colour is CTA-only. A 3px accent
+   rule beside a paragraph is neither a card nor a CTA. The paragraph now takes
+   the same labelled-answer shape as its neighbours below. */
 .a11y-finding-impact {
-  padding: 8px 12px;
-  border-radius: 8px;
-  background: var(--a11y-surface, #f6f8fa);
-  border-left: 3px solid var(--a11y-accent, #1948f4);
+  padding: 0;
+  border-radius: 0;
+  background: transparent;
+  border-left: 0;
 }
 
 /* Code spans inside advice text, and the existing ones for rule ids and
@@ -1732,10 +1748,46 @@ label.a11y-ai-toggle {
   font-style: italic;
 }
 
-.a11y-method-hint {
-  margin: 0 0 12px;
-  font-size: var(--a11y-text-body);
-  color: var(--a11y-muted, #57606a);
+/* ==========================================================================
+   Labelled answers in the finding panel — the FindingDetail shape
+   ==========================================================================
+   The design system's FindingDetail stacks a small grey label over its answer.
+   An earlier iteration of that component ran the label inline and bold, which
+   is exactly how this panel was built; the design abandoned it within eight
+   minutes and settled on the stack. These blocks were already label-plus-
+   answer, so styling reaches the design and no markup had to move — only the
+   trailing colons went, because "Who fixes this:" reads as a run-in label and
+   "Who fixes this" reads as a heading for the line beneath it.
+
+   Doubled class for the 0,2,0 specificity the widget uses to beat the legacy
+   rules that still set --a11y-* values on these same paragraphs. */
+.a11y-widget-biz.a11y-widget-biz .a11y-method-hint,
+.a11y-widget-biz.a11y-widget-biz .a11y-finding-measured,
+.a11y-widget-biz.a11y-widget-biz .a11y-finding-impact,
+.a11y-widget-biz.a11y-widget-biz .a11y-finding-research,
+.a11y-widget-biz.a11y-widget-biz .a11y-finding-todo,
+.a11y-widget-biz.a11y-widget-biz .a11y-finding-steps > p {
+  margin: 0 0 var(--space-5);
+  max-width: var(--measure-max);
+  font-size: var(--text-body);
+  line-height: var(--leading-body-narrow);
+  color: var(--content-primary);
+}
+
+.a11y-widget-biz.a11y-widget-biz .a11y-method-hint > strong:first-child,
+.a11y-widget-biz.a11y-widget-biz .a11y-finding-measured > strong:first-child,
+.a11y-widget-biz.a11y-widget-biz .a11y-finding-impact > strong:first-child,
+.a11y-widget-biz.a11y-widget-biz .a11y-finding-research > strong:first-child,
+.a11y-widget-biz.a11y-widget-biz .a11y-finding-todo > strong:first-child,
+.a11y-widget-biz.a11y-widget-biz .a11y-finding-steps > p > strong:first-child {
+  display: block;
+  margin-bottom: var(--space-1);
+  font-size: var(--text-label);
+  line-height: var(--leading-label);
+  /* 400, not bold. PP Telegraf ships 400/500 only and the design system is
+     explicit that there is no bold; the label separates by size and ink. */
+  font-weight: 400;
+  color: var(--content-secondary);
 }
 
 .a11y-alt-suggestion {
@@ -2140,78 +2192,15 @@ label.a11y-ai-toggle {
   color: var(--a11y-muted, #57606a);
 }
 
-/* ---- Vision simulators -------------------------------------------------- */
 
-.a11y-sim-defs {
-  position: absolute;
-  width: 0;
-  height: 0;
-  overflow: hidden;
-}
 
-.a11y-sim-controls {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-  margin: 0 0 12px;
-}
 
-.a11y-sim-btn {
-  font: inherit;
-  font-size: var(--a11y-text-body);
-  text-align: left;
-  padding: 8px 12px;
-  border: 1px solid var(--a11y-border, #d0d7de);
-  border-radius: 999px;
-  background: var(--a11y-bg, #ffffff);
-  color: var(--a11y-text, #161616);
-  cursor: pointer;
-}
 
-.a11y-sim-btn em {
-  display: block;
-  font-style: normal;
-  font-size: var(--a11y-text-body);
-  color: var(--a11y-muted, #57606a);
-}
 
-.a11y-sim-btn-active {
-  border-color: var(--a11y-accent-text, #1948f4);
-  background: var(--a11y-accent, #1948f4);
-  color: var(--a11y-accent-on, #ffffff);
-}
 
-.a11y-sim-btn-active em {
-  /* Full white, not rgba(255,255,255,0.85): the faded version measured 4.2:1
-     on the accent blue, under the 4.5:1 this product flags other sites for. */
-  color: #ffffff;
-}
 
-.a11y-sim-note {
-  margin: 0 0 12px;
-  font-size: var(--a11y-text-body);
-  line-height: 1.2;
-  color: var(--a11y-text, #161616);
-}
 
-.a11y-sim-frame {
-  border: 1px solid var(--a11y-border, #d0d7de);
-  border-radius: 10px;
-  overflow: hidden;
-  background: var(--a11y-surface, #f6f8fa);
-}
 
-.a11y-sim-img {
-  display: block;
-  width: 100%;
-  height: auto;
-}
-
-.a11y-sim-caption {
-  margin: 8px 0 0;
-  font-size: var(--a11y-text-body);
-  color: var(--a11y-muted, #57606a);
-}
 
 /* ---- Scan mode + site audit -------------------------------------------- */
 
@@ -3366,7 +3355,8 @@ label.a11y-ai-toggle {
      silently turned IssueRow's 10px card into a lozenge. The rule still
      serves every button this migration has not reached yet, so it stays;
      ported components opt out by name. Each port adds itself here. */
-  .a11y-widget-biz.a11y-widget-biz button:not(.a11y-issue-row):not(.a11y-related-card),
+  .a11y-widget-biz.a11y-widget-biz
+    button:not(.a11y-issue-row):not(.a11y-related-card):not(.a11y-dt-toggle),
 .a11y-widget-biz.a11y-widget-biz [role="button"],
 .a11y-widget-biz.a11y-widget-biz .a11y-method-badge,
 .a11y-widget-biz.a11y-widget-biz .a11y-count-badge,
@@ -3380,9 +3370,12 @@ label.a11y-ai-toggle {
 /* Except the ones that are not really buttons. A disclosure arrow inside a
    table row, and the row-expanding toggles, are 44px squares carrying a
    glyph — a pill around those reads as a stray lozenge in the middle of a
-   table, which is the opposite of what the reference does with its tables. */
-.a11y-widget-biz.a11y-widget-biz td button,
-.a11y-widget-biz.a11y-widget-biz th button,
+   table, which is the opposite of what the reference does with its tables.
+   .a11y-dt-toggle is exempt: the DataTable port supersedes this. The design
+   rings the closed control and squares it open, so the component owns both
+   states and a blanket 0 here would flatten the ring the design asks for. */
+.a11y-widget-biz.a11y-widget-biz td button:not(.a11y-dt-toggle),
+.a11y-widget-biz.a11y-widget-biz th button:not(.a11y-dt-toggle),
 .a11y-widget-biz.a11y-widget-biz summary,
 .a11y-widget-biz.a11y-widget-biz .a11y-shell-nav button {
   border-radius: 0;
@@ -4079,10 +4072,6 @@ label.a11y-ai-toggle {
   .a11y-widget-biz .a11y-url-row button:not(:disabled),
   .a11y-widget-biz .a11y-sr-play,
   .a11y-widget-biz .a11y-alt-copy,
-  .a11y-widget-biz .a11y-sim-btn-active {
-    background: var(--a11y-accent, #f4f4f4);
-    color: var(--a11y-accent-on, #161616);
-  }
 
   .a11y-widget-biz .a11y-url-row button:hover:not(:disabled) {
     background: #c6c6c6;
@@ -4093,9 +4082,6 @@ label.a11y-ai-toggle {
     color: #8d8d8d;
   }
 
-  .a11y-widget-biz .a11y-sim-btn-active {
-    border-color: #1948f4;
-  }
 
   /* Tertiary buttons fill on hover, and the fill carries black — white on
      it is 3.7:1. This comment used to say the opposite, from when the fill
@@ -4208,8 +4194,7 @@ label.a11y-ai-toggle {
      backing keeps them legible instead of dissolving into the dark theme. */
   .a11y-widget-biz .a11y-occurrence-thumb,
   .a11y-widget-biz .a11y-finding-thumb,
-  .a11y-widget-biz .a11y-finding-thumb-large,
-  .a11y-widget-biz .a11y-sim-frame {
+  .a11y-widget-biz .a11y-finding-thumb-large {
     background: #ffffff;
   }
 }
@@ -4449,7 +4434,7 @@ label.a11y-ai-toggle {
    blocks beside it keep Carbon's near-square 2px. !important because the
    blanket square rule reaches every element and this is one of the four
    places allowed to opt out of it. */
-.a11y-widget-biz.a11y-widget-biz .a11y-url-row input {
+.a11y-widget-biz.a11y-widget-biz .a11y-url-form .a11y-url-row input {
   border-radius: 12px !important;
 }
 
@@ -4528,9 +4513,9 @@ label.a11y-ai-toggle {
 /* White, now that the form around it is the grey panel. A filled field on
    a filled panel of the same value is not a field — it was the ground and
    the control at 1:1. The strong bottom rule still carries the boundary. */
-.a11y-widget-biz.a11y-widget-biz .a11y-url-row input,
+.a11y-widget-biz.a11y-widget-biz .a11y-url-form .a11y-url-row input,
 .a11y-widget-biz.a11y-widget-biz .a11y-login input,
-.a11y-widget-biz.a11y-widget-biz .a11y-ai-toggle select {
+.a11y-widget-biz.a11y-widget-biz .a11y-url-form .a11y-ai-toggle select {
   background: #ffffff;
   border: 1px solid transparent;
   border-bottom: 1px solid #8d8d8d;   /* border-strong, both themes */
@@ -5683,7 +5668,7 @@ label.a11y-ai-toggle {
 }
 
 /* The AI checkbox joins the reference's control style. */
-.a11y-widget-biz.a11y-widget-biz .a11y-ai-toggle input[type="checkbox"] {
+.a11y-widget-biz.a11y-widget-biz .a11y-url-form .a11y-ai-toggle input[type="checkbox"] {
   width: 20px;
   height: 20px;
   accent-color: var(--a11y-accent-text, #1948f4);
@@ -5973,15 +5958,19 @@ label.a11y-ai-toggle {
   row-gap: 16px;
 }
 
-/* The issue list is a container of cards, so it is not a card itself. It
-   had a fill and a radius of its own, which put white cards on a grey box
-   on the page's ground — three levels of nesting to say one thing. The
-   cards inside it carry the look; this just holds them. */
-.a11y-widget-biz.a11y-widget-biz .a11y-stat-row > :nth-child(2) {
-  padding: 0 !important;
-  background: transparent !important;
-  border: 0 !important;
-}
+/* The rule that sat here forced `padding: 0 !important; background:
+   transparent !important; border: 0 !important` on the stat row's second
+   child. It was written when that child was a bare wrapper whose contents
+   supplied their own cards, so the wrapper had to be flush.
+
+   It is obsolete now and was the last conformance gap: the child is a real
+   Card, and this rule painted over its surface and padding while leaving
+   border-radius alone — which is exactly the signature that showed up in the
+   conformance pass, radius conforming at 20px while background and padding
+   did not. Same class of thing as the `.a11y-stat-row > *` !important
+   removed when Card was ported: an override written to beat a component
+   that no longer behaves that way, still winning long after its reason
+   expired. */
 
 .a11y-stat-row > :first-child {
   flex: 0 0 auto;
@@ -6911,7 +6900,7 @@ label.a11y-ai-toggle {
    rule already reaches for !important for exactly this reason; matching it
    is honest about what this stylesheet has become rather than pretending a
    cleaner mechanism is available. */
-.a11y-widget-biz.a11y-widget-biz .a11y-url-row input {
+.a11y-widget-biz.a11y-widget-biz .a11y-url-form .a11y-url-row input {
   height: 44px !important;
   padding: 0 !important;
   border: 0 !important;
@@ -6924,7 +6913,7 @@ label.a11y-ai-toggle {
 
 /* Invalid takes the system's 2px error rule, so the state is carried by
    weight and colour together rather than colour alone. */
-.a11y-widget-biz.a11y-widget-biz .a11y-url-row input[aria-invalid="true"] {
+.a11y-widget-biz.a11y-widget-biz .a11y-url-form .a11y-url-row input[aria-invalid="true"] {
   border-bottom: 2px solid var(--support-error, #da1e28) !important;
 }
 
@@ -7159,7 +7148,7 @@ label.a11y-ai-toggle {
 }
 
 /* The step's question, set at heading size. */
-.a11y-widget-biz.a11y-widget-biz .a11y-radio-group > legend,
+.a11y-widget-biz.a11y-widget-biz .a11y-url-form .a11y-radio-group > legend,
 .a11y-widget-biz.a11y-widget-biz .a11y-url-label {
   font-size: var(--text-heading);
   line-height: var(--leading-heading);
@@ -7171,7 +7160,7 @@ label.a11y-ai-toggle {
 /* The address field is the loudest control on the screen, because it is the
    one thing the visitor has to supply. 72px tall, heading-size text, and a
    2px rule rather than the 1px the smaller fields use. */
-.a11y-widget-biz.a11y-widget-biz .a11y-url-row input {
+.a11y-widget-biz.a11y-widget-biz .a11y-url-form .a11y-url-row input {
   height: 72px !important;
   font-size: var(--text-heading) !important;
   font-weight: 500;
@@ -7181,7 +7170,7 @@ label.a11y-ai-toggle {
 
 /* Scope and audience become option cards: a sunken panel each, side by side,
    collapsing to one column when there is no room. */
-.a11y-widget-biz.a11y-widget-biz .a11y-radio-group {
+.a11y-widget-biz.a11y-widget-biz .a11y-url-form .a11y-radio-group {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
   gap: var(--space-3);
@@ -7209,7 +7198,7 @@ label.a11y-ai-toggle {
 }
 
 /* The hint under a group belongs to the group, not to a card, so it spans. */
-.a11y-widget-biz.a11y-widget-biz .a11y-radio-group > .a11y-group-hint {
+.a11y-widget-biz.a11y-widget-biz .a11y-url-form .a11y-radio-group > .a11y-group-hint {
   grid-column: 1 / -1;
   font-size: var(--text-label);
   color: var(--content-secondary);
@@ -7780,4 +7769,220 @@ label.a11y-ai-toggle {
 
 .a11y-widget-biz.a11y-widget-biz .a11y-dofirst-statement strong {
   font-weight: 500;
+}
+
+/* ==========================================================================
+   Vision simulator
+   ==========================================================================
+   The last section still on the old design: bordered rectangles, a 10px
+   radius, and the retired blue for the active control.
+
+   The controls are the design system's pill strip — the same shape the fix
+   filter and the DataTable filters take, and for the same reason: they are a
+   set of mutually exclusive views, and a row of pills reads as one control
+   rather than four buttons. Active inverts, which is safe here because a
+   pill owns its only child.
+
+   The frame is a card holding an image, so it is a card: --surface-sunken at
+   --radius-panel with no border. The image inside keeps its own edge, and a
+   border around a tint would be two separations doing one job. */
+.a11y-widget-biz.a11y-widget-biz .a11y-sim-controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  margin-bottom: var(--space-4);
+}
+
+.a11y-widget-biz.a11y-widget-biz .a11y-sim-btn {
+  padding: var(--space-2) var(--space-4);
+  border: var(--border-width) solid var(--border-default);
+  border-radius: var(--radius-round);
+  background: var(--surface-raised);
+  color: var(--content-primary);
+  font-size: var(--text-label);
+  font-weight: 500;
+  line-height: 1;
+  min-height: var(--target-min);
+  white-space: nowrap;
+  cursor: pointer;
+  transition: background var(--motion-exit) var(--ease-standard);
+}
+
+/* The name of the condition, beside the label. Follows the pill into the
+   inversion — the fourth place today this has needed saying, and the number
+   is the same each time: left muted it lands at 2.2:1 on the black. */
+.a11y-widget-biz.a11y-widget-biz .a11y-sim-btn em {
+  display: inline;
+  margin-left: var(--space-2);
+  font-style: normal;
+  font-weight: 400;
+  color: var(--content-secondary);
+}
+
+.a11y-widget-biz.a11y-widget-biz .a11y-sim-btn-active {
+  background: var(--surface-inverse);
+  border-color: var(--surface-inverse);
+  color: var(--content-on-inverse);
+}
+
+.a11y-widget-biz.a11y-widget-biz .a11y-sim-btn-active em {
+  color: var(--content-on-inverse-secondary);
+}
+
+.a11y-widget-biz.a11y-widget-biz .a11y-sim-frame {
+  border: 0;
+  border-radius: var(--radius-panel);
+  background: var(--surface-sunken);
+  padding: var(--space-4);
+  overflow: hidden;
+}
+
+.a11y-widget-biz.a11y-widget-biz .a11y-sim-img {
+  display: block;
+  width: 100%;
+  border-radius: var(--radius-soft);
+}
+
+.a11y-widget-biz.a11y-widget-biz .a11y-sim-caption,
+.a11y-widget-biz.a11y-widget-biz .a11y-sim-note {
+  margin: var(--space-3) 0 0;
+  font-size: var(--text-label);
+  line-height: var(--leading-body-narrow);
+  color: var(--content-secondary);
+}
+
+/* ==========================================================================
+   Scan form — the kit's Checker screen
+   ==========================================================================
+   From ui_kits/scan-app/Checker.jsx. The markup already matched the kit's
+   shape — label, field, scope and audience groups, AI row, submit — so this is
+   styling, not a rewrite.
+
+   Appended at the end on purpose. Four earlier rules in this file already set
+   `.a11y-url-row input` (503, 3454, 3726, 6252) at the same specificity, so
+   source order is what actually decides the winner. Adding a fifth higher up
+   would have lost to the ones below it.
+
+   Three things change:
+
+   1. THE FIELD BECOMES THE HEADLINE. The kit sets the URL input at heading
+      size on a 2px bottom rule with no box — 72px tall, medium weight. It is
+      the only thing on the screen the visitor must supply, and the design
+      makes it look like it. This is the same underlined-not-boxed treatment
+      the Forms card uses, at the largest step.
+   2. EACH CHOICE BECOMES A CARD. The kit renders scope and report style as
+      OptionCards in a two-column grid rather than a stack of radios under one
+      shared hint.
+   3. THE AI ROW BECOMES A CARD, with its explanation beside the title and the
+      control pushed to the right edge.
+   ========================================================================== */
+
+.a11y-widget-biz.a11y-widget-biz .a11y-url-form .a11y-url-row input {
+  width: 100%;
+  height: 72px;
+  padding: 0;
+  background: transparent;
+  color: var(--content-primary);
+  border: 0;
+  border-bottom: 2px solid var(--content-primary);
+  border-radius: 0;
+  font-family: inherit;
+  font-size: var(--text-heading);
+  font-weight: 500;
+  letter-spacing: var(--tracking-tight);
+}
+
+/* The rule is the field's whole visible boundary, so the focus ring cannot be
+   an outline on a box that is not drawn. Thickening the rule and adding an
+   offset ring keeps the 2px-with-inner-contrast-line the brand rules ask for. */
+.a11y-widget-biz.a11y-widget-biz .a11y-url-form .a11y-url-row input:focus-visible {
+  outline: 2px solid var(--content-primary);
+  outline-offset: 4px;
+}
+
+.a11y-widget-biz.a11y-widget-biz .a11y-url-form .a11y-url-row input:disabled {
+  opacity: 0.5;
+}
+
+/* ---- Scope and report style as OptionCards ------------------------------ */
+
+.a11y-widget-biz.a11y-widget-biz .a11y-url-form .a11y-radio-group {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-4);
+  border: 0;
+  padding: 0;
+  margin: 0;
+}
+
+/* A legend is not a grid item in any engine that matters, but saying so costs
+   nothing and stops the layout depending on that quirk. */
+.a11y-widget-biz.a11y-widget-biz .a11y-url-form .a11y-radio-group > legend,
+.a11y-widget-biz.a11y-widget-biz .a11y-url-form .a11y-radio-group > .a11y-group-hint {
+  grid-column: 1 / -1;
+}
+
+.a11y-widget-biz.a11y-widget-biz .a11y-url-form .a11y-radio-group > .a11y-radio-row {
+  margin: 0;
+  padding: var(--space-4) var(--space-5);
+  box-sizing: border-box;
+  border-radius: var(--radius-panel);
+  background: var(--surface-sunken);
+}
+
+/* The label is part of the target — the Forms card is explicit about it — so
+   the label fills the card rather than sitting as a word beside the dot. */
+.a11y-widget-biz.a11y-widget-biz .a11y-url-form .a11y-radio-group > .a11y-radio-row > label {
+  flex: 1;
+  cursor: pointer;
+}
+
+/* At one column the two cards stack, which is the kit's own behaviour at
+   narrow widths and needs no separate treatment beyond the column count. */
+@container a11y-panel (max-width: 34rem) {
+  .a11y-widget-biz.a11y-widget-biz .a11y-url-form .a11y-radio-group {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ---- The AI review row -------------------------------------------------- */
+
+.a11y-widget-biz.a11y-widget-biz .a11y-url-form .a11y-ai-toggle {
+  display: flex;
+  align-items: center;
+  gap: var(--space-5);
+  flex-wrap: wrap;
+  padding: var(--space-4) var(--space-5);
+  box-sizing: border-box;
+  border-radius: var(--radius-panel);
+  background: var(--surface-sunken);
+}
+
+.a11y-widget-biz.a11y-widget-biz .a11y-url-form .a11y-ai-toggle > label {
+  flex: 1;
+  min-width: 240px;
+  font-weight: 500;
+}
+
+.a11y-widget-biz.a11y-widget-biz .a11y-url-form .a11y-ai-toggle .a11y-ai-hint {
+  flex-basis: 100%;
+  margin: 0;
+  font-size: var(--text-label);
+  line-height: var(--leading-label);
+  color: var(--content-secondary);
+}
+
+/* The selected card stays inverted. The app already sets light TEXT on the
+   checked row; the card background rule above was painting that same row light
+   as well, which left #f7f4ef on #f2efe9 at 1.04:1 — the surface token and the
+   ink token disagreeing, which is the same failure mode as the SpecList bug and
+   just as invisible until measured.
+   :has() rather than a class because the checked state lives on the input and
+   nothing writes it to the row; the table rules in this file already rely on
+   :has for the same reason. */
+.a11y-widget-biz.a11y-widget-biz
+  .a11y-url-form
+  .a11y-radio-group
+  > .a11y-radio-row:has(input:checked) {
+  background: var(--surface-inverse);
 }
