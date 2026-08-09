@@ -1541,20 +1541,99 @@
 .a11y-widget-biz .a11y-severity-moderate .a11y-level-badge { color: #8e6a00; }  /* 4.52:1 */
 .a11y-widget-biz .a11y-severity-minor    .a11y-level-badge { color: #525252; }  /* 7.1:1  */
 
-/* The fix-kind badge. The kit has no fix-kind component and no colour for one,
-   so this stays ink-on-white rather than four invented hues — the label is a
-   word, so nothing is riding on colour here anyway. */
+/* The fix-kind badge. I had said the kit has no fix-kind component and no
+   colour for one, and shipped ink-on-white on that basis. It has both — they
+   are on #root-DesignerDeveloper, a screen I had not measured. These are its
+   values, and the contrast beside each is measured, not derived:
+
+     Design fix   #ffd6e8 / #9f1853   5.87:1
+     Code fix     #d0e2ff / #0043ce   5.94:1
+     Content fix  #9ef0f0 / #005d5d   5.94:1
+     Won't fix    #e0e0e0 / #161616  13.71:1
+
+   Four kinds, which is the number this report is allowed. */
 .a11y-widget-biz .a11y-method-badge {
   display: inline-flex;
   align-items: center;
   align-self: flex-start;
   min-height: 24px;
-  padding: 8px 16px;
+  padding: 2px 12px;             /* kit */
   border: 0;
   border-radius: var(--r-pill);
-  background: var(--ground);
+  background: #e0e0e0;
   color: var(--ink);
   font-size: 15px;
   font-weight: 500;
-  line-height: 1;
+}
+
+.a11y-widget-biz .a11y-fix-design  { background: #ffd6e8; color: #9f1853; }
+.a11y-widget-biz .a11y-fix-code    { background: #d0e2ff; color: #0043ce; }
+.a11y-widget-biz .a11y-fix-content { background: #9ef0f0; color: #005d5d; }
+/* The app's four kinds are code / content / design / document, not the kit's
+   code / content / design / won't-fix. Three map one to one; document takes
+   the remaining pill, the neutral grey. Checked against testMethod.ts rather
+   than assumed — a first pass here wrote .a11y-fix-none and .a11y-fix-wont,
+   which match nothing, and left document with no rule at all. */
+.a11y-widget-biz .a11y-fix-document { background: #e0e0e0; color: var(--ink); }
+
+/* ==========================================================================
+   The concern section, as a band
+   ==========================================================================
+   Measured from #root-DesignerDeveloper's band, which — unlike Perceivable —
+   renders: two equal columns, 40px gutter, 40px padding, radius 20 on
+   --gray-100, statement 40/500 white, prose --text-on-invert-secondary.
+
+   It is the same shape as the reference list-view row: a metadata line and a
+   large statement on a dark slab. The kit calls it .as-band--invert.
+
+   Trust is what this section is about, so it gets the one inverted surface in
+   the report rather than another tinted card.
+   ========================================================================== */
+
+.a11y-widget-biz .a11y-section-concern .a11y-section-tint {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 40px;
+  padding: 40px;
+  border-radius: var(--r-card);
+  background: var(--ink);
+  color: var(--ground);
+}
+
+.a11y-widget-biz .a11y-section-concern .a11y-section-title {
+  grid-column: 1;
+  align-self: start;
+  color: var(--ground);
+}
+
+.a11y-widget-biz .a11y-section-concern .a11y-section-eyebrow,
+.a11y-widget-biz .a11y-section-concern .a11y-section-desc {
+  grid-column: 2;
+  /* --text-on-invert-secondary, 10.6:1. The section index is #525252 on light
+     grounds, which on this one would be 2.32:1 — the on-invert mapping this
+     repo has got wrong six times. Not a seventh. */
+  color: #c6c6c6;
+}
+
+.a11y-widget-biz .a11y-section-concern .a11y-section-desc {
+  /* The kit sets 16px here. 16 is not a size this project permits, so this is
+     18 — a stated divergence, not an oversight. */
+  font-size: 18px;
+  max-width: 66ch;
+}
+
+.a11y-widget-biz .a11y-section-concern .a11y-section-count {
+  color: #c6c6c6;
+}
+
+/* Two columns need width. Below this the statement and its prose stack. */
+@container a11y-panel (max-width: 720px) {
+  .a11y-widget-biz .a11y-section-concern .a11y-section-tint {
+    grid-template-columns: 1fr;
+    gap: var(--gap-2);
+    padding: var(--gap-2);
+  }
+  .a11y-widget-biz .a11y-section-concern .a11y-section-title,
+  .a11y-widget-biz .a11y-section-concern .a11y-section-eyebrow,
+  .a11y-widget-biz .a11y-section-concern .a11y-section-desc { grid-column: 1; }
 }
