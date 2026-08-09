@@ -13,29 +13,31 @@
    ========================================================================== */
 
 .a11y-widget-biz {
-  --ink: #16150f;
+  --ink: #161616;                /* kit: rgb(22,22,22) */
   --ground: #ffffff;
-  --ink-muted: #55534c;
+  --ink-muted: #525252;          /* kit: rgb(82,82,82), 7.4:1 */
   --field: #f1f1ee;
   --hairline: #c9c7c0;
-  --accent: #256a41;
+  --accent: #198038;             /* kit: rgb(25,128,56) */
   --accent-ink: #ffffff;
 
   --font: "PP Telegraf", "Helvetica Neue", Helvetica, Arial, sans-serif;
 
   /* solved */
-  --t-display: 134px;            /* solved 134.1 */
-  --t-address: 38px;             /* solved 37.9 */
-  --t-body:    15px;             /* intro 15.1 */
-  --t-label:   13px;             /* field label 13.1, helper 13.1 */
-  --t-desc:    13px;             /* card desc 13.2 */
-  --t-card:    17px;             /* card label 16.7 */
+  --t-display: 144px;            /* kit: 144 / lh .88 / track 1.44px */
+  --t-address: 40px;             /* kit: matches the step question */
+  --t-body:    16px;             /* kit: AI card title 16/500 */
+  --t-label:   15px;             /* kit: field label 15/500 */
+  --t-desc:    15px;             /* kit: card desc 15/400 */
+  --t-card:    15px;             /* kit: card label 15/400 — SAME as the
+                                    description. Hierarchy is carried by
+                                    colour alone, not size or weight. */
 
   --w-regular: 400;
   --w-medium:  500;
 
   /* (read) 880px content column, 36px between blocks */
-  --content: 880px;
+  --content: 1000px;             /* kit: #root-NewScan is 1000 wide */
   --gap-block: 36px;
   --card-pad-y: 14px;
   --card-pad-x: 24px;
@@ -70,8 +72,8 @@
 .a11y-widget-biz .a11y-newscan-title {
   margin: 0;
   font-size: var(--t-display);
-  line-height: 0.95;
-  letter-spacing: -0.035em;
+  line-height: 0.88;             /* kit */
+  letter-spacing: 0.01em;        /* kit: +1.44px at 144, not negative */
   font-weight: var(--w-medium);
 }
 
@@ -143,7 +145,7 @@
 .a11y-widget-biz .a11y-url-form .a11y-radio-group {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-  gap: 28px 11px;               /* measured: 28.0 row, 10.8 column */
+  gap: 28px 64px;               /* kit: 64px between the card pair */
   border: 0; padding: 0; margin: 0;
 }
 
@@ -165,7 +167,7 @@
 }
 
 .a11y-widget-biz .a11y-url-form .a11y-optioncard > input[type="radio"] {
-  width: 19px; height: 19px; flex-shrink: 0; accent-color: var(--ink);
+  width: 24px; height: 24px;     /* kit */ flex-shrink: 0; accent-color: var(--ink);
 }
 
 .a11y-widget-biz .a11y-url-form .a11y-optioncard-label {
@@ -217,10 +219,11 @@
 
 .a11y-widget-biz .a11y-url-submit .a11y-btn {
   border: 0; border-radius: var(--r-pill);
-  padding: 8px 22px;             /* 24px line-box + 16 = 40px total */
-  min-height: 40px;              /* (read) 40 — reference value, confirmed */
+  padding: 0 24px;               /* kit */
+  min-height: 48px;              /* kit: 48 tall, 190 wide */
   background: var(--accent); color: var(--accent-ink);
-  font-size: var(--t-body); font-weight: var(--w-medium); cursor: pointer;
+  font-size: 18px;               /* kit: submit is 18/500 */
+  font-weight: var(--w-medium); cursor: pointer;
 }
 .a11y-widget-biz .a11y-url-submit .a11y-btn:hover:not(:disabled) { background: var(--ink); }
 .a11y-widget-biz .a11y-url-submit .a11y-btn:disabled { opacity: 0.5; cursor: not-allowed; }
@@ -353,7 +356,7 @@
    column; every control in the step aligns to the question, not to the
    numeral. Measured: 67px gutter. */
 .a11y-widget-biz {
-  --step-gutter: 65px;           /* solved 65.1 */
+  --step-gutter: 72px;           /* kit: measured */
 }
 
 .a11y-widget-biz .a11y-step {
@@ -376,7 +379,7 @@
 .a11y-widget-biz .a11y-step-num {
   flex: 0 0 auto;
   flex: 0 0 auto;
-  font-size: 38px;               /* solved 37.9 */
+  font-size: 40px;               /* kit */
   line-height: 1;
   letter-spacing: -0.02em;
   font-variant-numeric: tabular-nums;
@@ -388,7 +391,7 @@
 }
 
 .a11y-widget-biz .a11y-step-q {
-  font-size: 38px;               /* solved 37.7 */
+  font-size: 40px;               /* kit */
   line-height: 1;
   letter-spacing: -0.025em;
   color: var(--ink);
