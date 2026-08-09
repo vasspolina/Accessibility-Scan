@@ -234,7 +234,7 @@ export function ScreenReaderPreview({ script }: { script: ScreenReaderScript }) 
       <DataTable
         caption="What a screen reader announces, in reading order"
         headers={[
-          { key: "n", label: "#", align: "right", width: "56px" },
+          { key: "n", label: "#", align: "right" },
           { key: "text", label: "What you'd hear" },
           { key: "note", label: "Note" },
         ]}

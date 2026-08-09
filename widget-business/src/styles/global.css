@@ -1,0 +1,29 @@
+/* ==========================================================================
+   Accessible Scan — global stylesheet
+   ==========================================================================
+   Intentionally empty. The previous visual layer was removed in full so this
+   one could be built without inheriting it; the app currently renders at
+   browser defaults and its accessibility audit passes with zero CSS, which is
+   the baseline to keep.
+
+   This file is the single entry point for the new system. It is inlined into
+   the shadow root by utils/shadowMount.ts — do not add a plain `import
+   "./global.css"` to a component: Vite would put it in document.head, where it
+   can never reach inside the shadow boundary and where it would leak onto the
+   host page, which is the one thing the shadow root exists to prevent.
+
+   Where things go
+   ---------------
+   Tokens first, then element defaults, then components. Everything resolves
+   against the tokens, so they have to be defined before any rule reads them.
+
+   Naming
+   ------
+   Class names describe ROLE, not appearance: .a11y-finding-row, not
+   .a11y-grey-box. See docs/ui-inventory.md for the full element list and the
+   markup-layout constraints that will shape this file.
+
+   Before writing rules, read docs/ui-inventory.md § "Layout that lives in the
+   markup" — four places currently hard-code layout in JSX, and each one limits
+   what CSS can change without a component edit.
+   ========================================================================== */

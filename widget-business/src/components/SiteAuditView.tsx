@@ -155,9 +155,9 @@ export function SiteAuditView({ audit }: { audit: SiteAudit }) {
             <DataTable
               headers={[
                 { key: "page", label: "Page" },
-                { key: "score", label: "Score", align: "right", width: "1%" },
-                { key: "issues", label: "Issues", align: "right", width: "1%" },
-                { key: "status", label: "Status", width: "1%" },
+                { key: "score", label: "Score", align: "right" },
+                { key: "issues", label: "Issues", align: "right" },
+                { key: "status", label: "Status" },
               ]}
               rows={audit.pages.map((page) => ({
                 id: page.url,

@@ -41,7 +41,6 @@ export interface TableHeader {
   key: string;
   label: string;
   align?: "left" | "right" | "center";
-  width?: string;
 }
 
 export interface TableRow {
@@ -118,7 +117,7 @@ export function DataTable({
             <th
               key={h.key}
               scope="col"
-              style={{ textAlign: h.align || "left", width: h.width }}
+              data-align={h.align || "left"}
             >
               {h.label}
             </th>
@@ -165,7 +164,7 @@ export function DataTable({
                        CSS. A right-aligned column in this report is always a
                        count, which is why alignment can imply it. */
                     data-numeric={headers[i].align === "right" ? "true" : undefined}
-                    style={{ textAlign: headers[i].align || "left" }}
+                    data-align={headers[i].align || "left"}
                   >
                     {cell}
                   </td>

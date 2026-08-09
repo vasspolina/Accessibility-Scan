@@ -44,7 +44,6 @@ export function Wcag22Readiness({ readiness }: { readiness: Readiness }) {
         failCount={alreadyFailing}
         description={`The standard European law points at will change. Nothing here is required yet. These are the ${total} new items that become Level A or AA when it lands. You can fix them on your own schedule rather than someone else's.`}
         items={criteria.map((c) => ({ criterion: c.id, title: c.plain, level: c.level }))}
-        style={{ marginTop: 12 }}
       />
 
       <button

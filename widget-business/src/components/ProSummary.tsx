@@ -61,7 +61,7 @@ export function ProSummary({
             the CSS this replaced. Borderless because the reference draws
             this one as a flat grey block: grey on white is already an
             edge, and a hairline on top of it reads as a second one. */}
-        <Card title="Issues by severity" style={{ border: 0 }}>
+        <Card title="Issues by severity">
           <p className="a11y-sum-score">Score {report.score} out of 100</p>
           <p className="a11y-issues-line">
             {total} {total === 1 ? "issue" : "issues"} on 1 page

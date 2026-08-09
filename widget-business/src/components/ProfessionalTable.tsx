@@ -127,8 +127,8 @@ export function ProfessionalTable({
            issue column stays the widest text column at every panel width. */
         headers={[
           { key: "issue", label: "Issue" },
-          { key: "criterion", label: "Criterion", width: "24%" },
-          { key: "count", label: "Instances", align: "right", width: "1%" },
+          { key: "criterion", label: "Criterion" },
+          { key: "count", label: "Instances", align: "right" },
         ]}
         rows={rows}
       />

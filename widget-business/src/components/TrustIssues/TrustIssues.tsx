@@ -56,11 +56,11 @@ export function TrustIssues({
     <div className="a11y-trust">
       <section className="a11y-trust-band">
         <div className="a11y-trust-band-inner">
-          <div className="a11y-trust-band-left">
+          <div className="a11y-trust-band-heading">
             <span className="a11y-trust-eyebrow">{eyebrow}</span>
             <h2 className="a11y-trust-title">{title}</h2>
           </div>
-          <div className="a11y-trust-band-right">
+          <div className="a11y-trust-band-summary">
             {lead && <p className="a11y-trust-lead">{lead}</p>}
             <span className="a11y-trust-count">{count}</span>
           </div>

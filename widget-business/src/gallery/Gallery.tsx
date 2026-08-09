@@ -79,7 +79,7 @@ function TableDemo() {
       headers={[
         { key: "issue", label: "What we found" },
         { key: "criterion", label: "Criterion" },
-        { key: "count", label: "Places", align: "right", width: "120px" },
+        { key: "count", label: "Places", align: "right" },
       ]}
       rows={[
         {
@@ -161,7 +161,7 @@ export function Gallery() {
           </Cd>
           <Cd name="Card" note="Flat panel. Use tone=invert for one emphasis card per screen.">
             <Card title="What this tells you">
-              <span style={{ color: "var(--content-secondary)" }}>
+              <span>
                 What your site gets wrong, not what it gets right.
               </span>
             </Card>

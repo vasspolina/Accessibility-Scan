@@ -85,7 +85,7 @@ export function ConformanceView({
         // count beside it.
         headers={[
           { key: "result", label: "Result" },
-          { key: "items", label: "Items", align: "right", width: "90px" },
+          { key: "items", label: "Items", align: "right" },
         ]}
         rows={[
           {

@@ -42,7 +42,7 @@ export function IssueRow({
 }) {
   return (
     <button type="button" className="a11y-issue-row" onClick={onClick} style={style}>
-      <SeverityTag severity={severity} style={{ flex: "0 0 auto" }} />
+      <SeverityTag severity={severity} />
       <span className="a11y-issue-row-main">
         <span className="a11y-issue-row-title">{title}</span>
         <span className="a11y-issue-row-meta">
