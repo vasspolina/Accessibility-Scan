@@ -11,12 +11,19 @@ from scratch if any is worth reusing: the Foundations-v2 component sheets in
 `dadf555`, the Pangram-direction system in `c5a2640`, and the reference-matched
 scan form in `92b5a9b`.
 
-**The webfont is gone too.** `src/index.tsx` used to inject two `@font-face`
-declarations for PP Telegraf 400/500 into `document.head`. That route is not
-optional: `@font-face` is **ignored inside a shadow-root stylesheet**, so a
-webfont cannot live in `global.css` — it has to go to document level. The OTF
-files are still served from `backend/public/fonts/`. Only 400 and 500 exist;
-there is no other weight to reach for.
+**The webfont lives at document level, not in `global.css`.** `src/index.tsx`
+injects two `@font-face` declarations for PP Telegraf 400/500 into
+`document.head`, and that route is not optional: `@font-face` is **ignored
+inside a shadow-root stylesheet**. The OTFs are served from
+`backend/public/fonts/`. Only 400 and 500 exist — there is no other weight to
+reach for, so a design calling for light or bold cannot be matched.
+
+**Measuring against a screenshot: two traps.** `document.fonts.ready` resolves
+even while faces are `unloaded`, so canvas will silently measure a *fallback*
+and return confident, wrong numbers — always `await document.fonts.load()` and
+print a real-vs-fallback width check beside anything you intend to trust. And
+the screenshot tool emits at 800px regardless of viewport, so measure with
+`getBoundingClientRect`, never by reading the image.
 
 Two things to know before styling anything:
 

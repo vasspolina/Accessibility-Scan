@@ -120,12 +120,11 @@ export function UrlForm({
           scanner rather than a reason to run it. */}
       <h2 className="a11y-section-title a11y-newscan-title" id="a11y-newscan-title">New scan</h2>
       <p className="a11y-newscan-sub">
-        We audit the page against the{" "}
+        We audit every page we can reach against the{" "}
         <a href={WCAG_LINK} target="_blank" rel="noopener noreferrer">
           Web Content Accessibility Guidelines (WCAG)
         </a>{" "}
-        2.1 AA and explain what to fix. It's the standard nearly every
-        accessibility law builds on.
+        2.2 and explain what to fix, in the order worth fixing it.
       </p>
     <form
       className="a11y-url-form"
@@ -150,6 +149,10 @@ export function UrlForm({
               rather than left to the component: this field's description is
               one of four ids depending on the error state, which the
               component's own ${id}-help cannot express. */}
+          <h3 className="a11y-step">
+            <span className="a11y-step-num" aria-hidden="true">01</span>
+            <span className="a11y-step-q">Which site?</span>
+          </h3>
           <Input
             id="a11y-url-input"
             size="display"
@@ -184,12 +187,19 @@ export function UrlForm({
           <div className="a11y-url-helper-row">
             <span id="a11y-url-hint" className="a11y-group-hint">
               {mode === "site"
-                ? "We scan every page we can reach."
-                : "We scan this one page and everything visible on it."}
+                ? "Public pages only."
+                : "Public pages only."}
             </span>
             <LoginFields auth={auth} onChange={setAuth} disabled={loading} />
           </div>
 
+          <h3 className="a11y-step">
+            <span className="a11y-step-num" aria-hidden="true">02</span>
+            <span className="a11y-step-q">How much?</span>
+            <span className="a11y-step-note">
+              {mode === "site" ? "A whole site takes a few minutes" : "This page takes about 15 seconds"}
+            </span>
+          </h3>
           <fieldset className="a11y-radio-group a11y-optioncard-grid">
             <legend>Scan scope</legend>
             <OptionCard
@@ -197,7 +207,7 @@ export function UrlForm({
               name="a11y-scan-mode"
               value="page"
               label="This page"
-              description="Twenty to forty seconds"
+              description="One page, end to end"
               checked={mode === "page"}
               onChange={() => setMode("page")}
               disabled={loading}
@@ -207,13 +217,17 @@ export function UrlForm({
               name="a11y-scan-mode"
               value="site"
               label="Whole site"
-              description="Finds what repeats on every page"
+              description="Finds what repeats everywhere"
               checked={mode === "site"}
               onChange={() => setMode("site")}
               disabled={loading}
             />
           </fieldset>
 
+          <h3 className="a11y-step">
+            <span className="a11y-step-num" aria-hidden="true">03</span>
+            <span className="a11y-step-q">Who reads it?</span>
+          </h3>
           <fieldset className="a11y-radio-group a11y-optioncard-grid">
             <legend>Report style</legend>
             <OptionCard
@@ -221,7 +235,7 @@ export function UrlForm({
               name="a11y-audience"
               value="business"
               label="For business owners"
-              description="A plain language summary"
+              description="Plain-language summary and costs"
               checked={audience === "business"}
               onChange={() => onAudienceChange("business")}
             />
@@ -230,7 +244,7 @@ export function UrlForm({
               name="a11y-audience"
               value="professional"
               label="For professionals"
-              description="A WCAG mapped technical report"
+              description="WCAG-mapped technical findings"
               checked={audience === "professional"}
               onChange={() => onAudienceChange("professional")}
             />
@@ -273,10 +287,10 @@ export function UrlForm({
               arrangement. */}
           <div className="a11y-url-submit">
             <Button type="submit" size="lg" disabled={loading}>
-              {loading ? "One moment\u2026" : mode === "site" ? "Audit my site" : "Check my site"}
+              {loading ? "One moment\u2026" : "Start the scan"}
             </Button>
             <span className="a11y-url-submit-note">
-              No account needed for a single page.
+              Keep this page open — the scan runs here.
             </span>
           </div>
 

@@ -24,12 +24,12 @@
   --font: "PP Telegraf", "Helvetica Neue", Helvetica, Arial, sans-serif;
 
   /* solved */
-  --t-display: 114px;
-  --t-address: 32px;
-  --t-body:    16px;
-  --t-label:   13px;
-  --t-desc:    12px;
-  --t-card:    15px;
+  --t-display: 134px;            /* solved 134.1 */
+  --t-address: 38px;             /* solved 37.9 */
+  --t-body:    15px;             /* intro 15.1 */
+  --t-label:   13px;             /* field label 13.1, helper 13.1 */
+  --t-desc:    13px;             /* card desc 13.2 */
+  --t-card:    17px;             /* card label 16.7 */
 
   --w-regular: 400;
   --w-medium:  500;
@@ -85,10 +85,8 @@
 .a11y-widget-biz .a11y-form-single {
   display: flex;
   flex-direction: column;
-  /* 28 is the rhythm between the card rows and the AI card; the two places
-     that want 36 add the difference back below. */
-  gap: 28px;
-  margin-top: calc(var(--gap-block) * 1.6);
+  gap: 14px;                     /* solved 13.6 cards -> AI card */
+  margin-top: 53px;              /* renders 52.7 intro -> step 01 */
 }
 
 /* ---- Address field ------------------------------------------------------ */
@@ -106,7 +104,7 @@
 .a11y-widget-biz .a11y-url-form .a11y-input-shell {
   display: flex;
   align-items: center;
-  margin-top: 10px;
+  margin-top: 28px;              /* renders 29.7 */
   padding: 0 6px;
   border: 2px solid transparent;
   border-bottom-color: var(--ink);
@@ -133,7 +131,7 @@
 
 .a11y-widget-biz .a11y-url-form .a11y-input-help,
 .a11y-widget-biz .a11y-form-single > .a11y-group-hint {
-  margin-top: 10px;
+  margin-top: 14px;              /* solved 14.3 rule -> helper */
   font-size: var(--t-label);
   color: var(--ink-muted);
   letter-spacing: 0;
@@ -160,7 +158,7 @@
   display: flex;
   align-items: center;
   gap: 8px;                      /* renders 11px to the label, measured 11.4 */
-  padding: 16px 20px;            /* 74px box, measured 73.7 */
+  padding: 14px 20px;            /* 72px box, solved 72.5 */
   border: 0;
   border-radius: 13px;           /* measured 12.7 */
   background: var(--field);
@@ -210,11 +208,12 @@
 
 .a11y-widget-biz .a11y-url-submit {
   display: flex; align-items: center; gap: 20px; flex-wrap: wrap;
-  margin-top: 8px;               /* 28 + 8 = 36 from the AI card */
+  margin-top: 33px;              /* 14 + 33 = 47, solved 46.5 AI -> submit */
 }
 
 /* 28 + 9 = 37 from the helper line to the first card row. */
-.a11y-widget-biz .a11y-form-single > fieldset:first-of-type { margin-top: 9px; }
+/* solved 17.4 from the step question down to its cards */
+.a11y-widget-biz .a11y-form-single > fieldset { margin-top: 3px; }
 
 .a11y-widget-biz .a11y-url-submit .a11y-btn {
   border: 0; border-radius: var(--r-pill);
@@ -235,7 +234,7 @@
   flex-wrap: wrap;
   align-items: baseline;
   gap: 6px;
-  margin-top: 10px;
+  margin-top: 0;                 /* stacks with input-help; renders 14.3 */
 }
 
 /* display:contents so LoginFields' wrapper does not become a block between
@@ -336,4 +335,80 @@
 
 @media (prefers-reduced-motion: reduce) {
   .a11y-widget-biz .a11y-progress-fill { transition: none; }
+}
+
+/* ==========================================================================
+   Numbered steps
+   ==========================================================================
+   "01 Which site?" — grey numeral, black question, an optional note riding
+   the question's baseline.
+
+   The numeral is aria-hidden. Without it every heading announces "zero one
+   which site", and the number carries no meaning a listener needs: the
+   headings are already in order. Same fault this repo fixed in the report
+   section headings, for the same reason.
+   ========================================================================== */
+
+/* The numeral sits in a left gutter and the question starts the content
+   column; every control in the step aligns to the question, not to the
+   numeral. Measured: 67px gutter. */
+.a11y-widget-biz {
+  --step-gutter: 65px;           /* solved 65.1 */
+}
+
+.a11y-widget-biz .a11y-step {
+  display: flex;
+  align-items: baseline;
+  gap: 0;
+  margin: 0;
+  font-weight: var(--w-medium);
+}
+
+.a11y-widget-biz .a11y-step-num {
+  width: var(--step-gutter);
+}
+
+/* Everything after a step heading is indented to meet the question. */
+.a11y-widget-biz .a11y-form-single > *:not(.a11y-step) {
+  margin-left: var(--step-gutter);
+}
+
+.a11y-widget-biz .a11y-step-num {
+  flex: 0 0 auto;
+  flex: 0 0 auto;
+  font-size: 38px;               /* solved 37.9 */
+  line-height: 1;
+  letter-spacing: -0.02em;
+  font-variant-numeric: tabular-nums;
+  /* 4.74:1 on white, measured. It is aria-hidden and decorative, so the rule
+     is arguable — but this product reports contrast failures on other people's
+     sites, and shipping visible text at 2.5:1 in its own form is not a line
+     worth arguing. The reference's lighter grey does not pass. */
+  color: #767369;
+}
+
+.a11y-widget-biz .a11y-step-q {
+  font-size: 38px;               /* solved 37.7 */
+  line-height: 1;
+  letter-spacing: -0.025em;
+  color: var(--ink);
+}
+
+/* Sits beside the question, not under it — small, muted, baseline-aligned. */
+.a11y-widget-biz .a11y-step-note {
+  font-size: var(--t-label);
+  font-weight: var(--w-regular);
+  line-height: 1;
+  color: var(--ink-muted);
+}
+
+/* A step heading opens a group, so it needs air above it and little below —
+   its own controls follow immediately. */
+.a11y-widget-biz .a11y-form-single > .a11y-step {
+  margin-top: 42px;              /* renders 52.7 */
+  margin-bottom: 0;
+}
+
+.a11y-widget-biz .a11y-form-single > .a11y-step:first-child {
+  margin-top: 0;
 }
