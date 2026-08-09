@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Accessible Scan — Component cards</title>
+    <style>
+      /* The host page holds nothing but the mount. Everything the gallery
+         looks like lives inside the shadow root, which is the only way this
+         page can prove what the widget actually renders. */
+      html,
+      body {
+        margin: 0;
+        background: #f2efe9;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="gallery-root"></div>
+    <!-- axe-core, so the gallery can audit itself. An accessibility product's
+         own component gallery failing an audit would be the worst possible
+         place to find out. Dev-only, like the page. -->
+    <script src="/axe.dev.js"></script>
+    <script type="module" src="/src/gallery.tsx"></script>
+  </body>
+</html>
