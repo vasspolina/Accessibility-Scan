@@ -104,6 +104,11 @@ export function ScreenReaderPreview({ script }: { script: ScreenReaderScript }) 
           button in a button is invalid HTML and assistive tech handles it
           unpredictably, so the two are siblings in one row and the rule that
           closes the header belongs to the row. */}
+      {/* The accordion row and the lead are the section head, wrapped so the
+          two-column grid treats them as one item. Grid rows are shared between
+          columns, so loose head siblings get pushed below a tall content item
+          — 2,200px, in the section where that was measured. */}
+      <div className="a11y-section-head">
       <div className="a11y-accordion-row">
         <h2 className="a11y-section-title a11y-accordion-title" id="a11y-sr-heading" data-nav-label="Screen reader preview">
           <button
@@ -169,6 +174,7 @@ export function ScreenReaderPreview({ script }: { script: ScreenReaderScript }) 
         &ldquo;says nothing useful&rdquo; are where a listener learns nothing. Close to a real
         screen reader, not a recording.
       </p>
+      </div>
 
       {/* Hidden rather than unrendered: the accordion button's aria-controls
           points here, and it must never point at an element that does not

@@ -52,6 +52,11 @@ export function AcrDraft({ report }: { report: AccessibilityReport }) {
 
   return (
     <section className="a11y-section a11y-acr" aria-labelledby="a11y-acr-heading">
+      {/* The accordion row and the lead are the section head, wrapped so the
+          two-column grid treats them as one item. Grid rows are shared between
+          columns, so loose head siblings get pushed below a tall content item
+          — 2,200px, in the section where that was measured. */}
+      <div className="a11y-section-head">
       <div className="a11y-accordion-row">
         <h2 className="a11y-section-title a11y-accordion-title" id="a11y-acr-heading" data-nav-label="Conformance report">
           <button
@@ -81,6 +86,7 @@ export function AcrDraft({ report }: { report: AccessibilityReport }) {
         If a public body or a large customer wants to buy from you, they will ask for one of these. It
         is the document a procurement team reads instead of your website.
       </p>
+      </div>
 
       {/* Hidden rather than unrendered, so aria-controls always points at a
           real element. */}
