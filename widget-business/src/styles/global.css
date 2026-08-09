@@ -582,3 +582,120 @@
   font-size: 15px;
   color: var(--ink-muted);
 }
+
+/* ==========================================================================
+   Shell nav
+   ==========================================================================
+   Measured from the kit's #root-App, which is the only screen carrying a nav:
+
+     rail      212px wide, #f4f4f4, no padding
+     item      18 / 400 / #161616, padding 0 16px, no radius, no underline
+     current   18 / 500 on #defbe6 with #071908
+
+   Contrast measured, not assumed: item 16.45:1, current 16.54:1.
+
+   aria-current already carries the state for assistive tech; the fill and the
+   weight are the visible half, and the weight is what survives greyscale.
+   ========================================================================== */
+
+.a11y-widget-biz .a11y-shell-nav {
+  width: 212px;
+  padding: 0;
+  background: #f4f4f4;
+}
+
+.a11y-widget-biz .a11y-shell-nav ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.a11y-widget-biz .a11y-shell-nav-link {
+  display: block;
+  padding: 12px 16px;
+  font-size: 18px;
+  font-weight: var(--w-regular);
+  color: var(--ink);
+  text-decoration: none;
+  background: transparent;
+  background-image: none;
+  border-radius: 0;
+}
+
+.a11y-widget-biz .a11y-shell-nav-link:hover {
+  background: #eaeaea;
+}
+
+.a11y-widget-biz .a11y-shell-nav-link[aria-current]:not([aria-current="false"]) {
+  background: #defbe6;
+  color: #071908;
+  font-weight: var(--w-medium);
+}
+
+.a11y-widget-biz .a11y-shell-nav-toggle {
+  padding: 12px 16px;
+  font-size: 18px;
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+}
+
+/* ==========================================================================
+   Score
+   ==========================================================================
+   The kit does NOT draw a ring or a gauge. The score is large type coloured by
+   its band — 112 / lh 0.78 / +1.12px / 500, measured at #8a3800 (7.94:1) for
+   the middling band.
+
+   Only that one band appears in the kit, so the good/poor colours below stay
+   as the app already had them rather than being invented to match. The size,
+   leading and tracking are the kit's and apply to every band.
+
+   The meter bar is kept beneath the numeral: the number alone encodes the
+   result in colour, and the band WORD plus the ticks are what make it
+   readable without relying on hue.
+   ========================================================================== */
+
+.a11y-widget-biz .a11y-dial-number {
+  font-size: 112px;
+  line-height: 0.78;
+  letter-spacing: 1.12px;
+  font-weight: var(--w-medium);
+  font-variant-numeric: tabular-nums;
+}
+
+.a11y-widget-biz .a11y-dial-number[data-band="middling"] { color: #8a3800; }
+
+.a11y-widget-biz .a11y-dial-word {
+  font-size: 15px;
+  font-weight: var(--w-medium);
+  color: var(--ink-muted);
+}
+
+.a11y-widget-biz .a11y-dial-meter {
+  position: relative;
+  height: 7px;
+  margin: 24px 0 12px;
+  border-radius: 999px;
+  background: var(--field);
+  overflow: hidden;
+}
+
+.a11y-widget-biz .a11y-dial-fill {
+  height: 100%;
+  border-radius: 999px;
+  background: var(--ink);
+}
+
+.a11y-widget-biz .a11y-dial-tick {
+  position: absolute;
+  top: 0;
+  width: 1px;
+  height: 100%;
+  background: var(--ground);
+}
+
+.a11y-widget-biz .a11y-dial-scale {
+  font-size: 15px;
+  color: var(--ink-muted);
+}
