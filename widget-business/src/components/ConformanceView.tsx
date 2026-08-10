@@ -16,6 +16,30 @@ const STATUS_LABEL = {
   "needs-review": "Needs a person",
 } as const;
 
+/* The three the design names. Real ones, not invented: each is a WCAG 2.1
+   criterion whose result axe reports as "incomplete" — it cannot judge
+   whether a caption is correct, only whether one exists. The rest are named
+   in the checklist below rather than listed twice. */
+const HUMAN_QUESTIONS = [
+  "Do audio and video have a text version?",
+  "Do your videos have captions?",
+  "Do videos say out loud what's shown on screen?",
+];
+
+/* Counts come from the conformance summary, never recounted here. */
+function RESULT_ROWS(c: ConformanceSummary) {
+  return [
+    { key: "failed", severity: "critical", label: "We found problems",
+      meaning: `${c.failedByLevel.A} at level A, ${c.failedByLevel.AA} at AA`,
+      mark: "Fix first", n: c.failed },
+    { key: "clean", severity: "pass", label: "We checked, found nothing",
+      meaning: "Still worth a human look", mark: "Pass", n: c.noIssuesFound },
+    { key: "human", severity: "minor", label: "We couldn't check",
+      meaning: "Only a person can judge these. Every one is named below.",
+      mark: "Needs a person", n: c.needsReview },
+  ];
+}
+
 export function ConformanceView({
   conformance,
   showBfsgNote = false,
@@ -64,79 +88,99 @@ export function ConformanceView({
 
   return (
     <section className="a11y-section a11y-conf" aria-labelledby="a11y-conf-heading">
-      <h2 className="a11y-section-title" id="a11y-conf-heading" data-nav-label="Legal standard">
-        Do you meet the legal standard?{" "}
-        <span className="a11y-section-count">{conformance.standard}</span>
-      </h2>
-      <p className="a11y-section-desc">
-        The checklist of {conformance.total} items European accessibility law measures sites against.
-        {showBfsgNote &&
-          " In Germany this is the standard the BFSG points at. That law implements the European Accessibility Act and has been in force since June 2025."}
-      </p>
+      {/* The design's legal-standard head: a centred title with the standard
+          as a black pill, the "not a pass" band, and the automated results
+          beside what they do and don't tell you. Ported from
+          templates/legal-standard/LegalStandard.jsx, read from the design
+          project — every colour below is its own. */}
+      <div className="a11y-legal-head">
+        <h2 className="a11y-legal-title" id="a11y-conf-heading" data-nav-label="Legal standard">
+          Do you meet the legal standard?
+        </h2>
+        <span className="a11y-legal-standard">{conformance.standard}</span>
+        <p className="a11y-legal-intro">
+          The checklist of {conformance.total} items European accessibility law
+          measures sites against.
+          {showBfsgNote &&
+            " In Germany this is the standard the BFSG points at. That law implements the European Accessibility Act and has been in force since June 2025."}
+        </p>
+      </div>
 
-      {/* The kit's LegalStandard screen: the three tiles as a tinted-row
-          table — glyph + words + count + meaning, never colour alone. */}
-      <DataTable
-        caption={`Automated check results against the ${conformance.standard} checklist of ${conformance.total} items`}
-        // Two columns, not three: the verdict and what it means used to sit
-        // side by side, which left "What it means" a sliver that broke its
-        // own sentences mid-word on a phone. The verdict folds on top of the
-        // text it introduces instead — one column with room to wrap, and the
-        // count beside it.
-        headers={[
-          { key: "result", label: "Result" },
-          { key: "items", label: "Items", align: "right" },
-        ]}
-        rows={[
-          {
-            id: "failed",
-            state: "issue" as const,
-            cells: [
-              <span key="r" className="a11y-conf-cell">
-                <span className="a11y-conf-result a11y-conf-result-fail">
-                  <span aria-hidden="true">!</span> We found problems
+      {/* The band. Its claim is the one thing in this section a reader must
+          not miss, which is why the design gives it the full width and the
+          brand yellow rather than a line of prose. */}
+      <section className="a11y-legal-band" aria-labelledby="a11y-legal-band-heading">
+        <h3 className="a11y-legal-eyebrow" id="a11y-legal-band-heading">
+          So &ldquo;nothing found&rdquo; is not a pass
+        </h3>
+        <div className="a11y-legal-card">
+          <p className="a11y-legal-lead">
+            You need every item at both levels, A and AA. They don&rsquo;t average out.
+          </p>
+          <p className="a11y-legal-body">
+            One Level A failure means you don&rsquo;t meet the standard.
+          </p>
+        </div>
+      </section>
+
+      <div className="a11y-legal-grid">
+        <section className="a11y-legal-panel" aria-labelledby="a11y-legal-tells-heading">
+          <h3 className="a11y-legal-eyebrow" id="a11y-legal-tells-heading">What this tells you</h3>
+          <div className="a11y-legal-card">
+            <p className="a11y-legal-lead">
+              What your site gets wrong, not what it gets right.
+            </p>
+            <p className="a11y-legal-body">
+              {conformance.needsReview} of the {conformance.total} items need a
+              person. That&rsquo;s true of every automated check, not just this one.
+            </p>
+            <div className="a11y-legal-questions">
+              <p className="a11y-legal-micro">Questions no software can answer</p>
+              {HUMAN_QUESTIONS.map((q, i) => (
+                <span key={q} className="a11y-legal-q">
+                  <span className="a11y-legal-qnum" aria-hidden="true">{i + 1}</span>
+                  <span>{q}</span>
                 </span>
-                <span className="a11y-conf-meaning">
-                  {`${conformance.failedByLevel.A} at level A, ${conformance.failedByLevel.AA} at AA`}
+              ))}
+              {conformance.needsReview > HUMAN_QUESTIONS.length && (
+                <span className="a11y-legal-q a11y-legal-q-more">
+                  <span className="a11y-legal-qnum" aria-hidden="true">
+                    {HUMAN_QUESTIONS.length + 1}
+                  </span>
+                  <span>
+                    The other {conformance.needsReview - HUMAN_QUESTIONS.length} are in
+                    the checklist below. Choose <strong>Needs a person</strong> to see them.
+                  </span>
                 </span>
-              </span>,
-              String(conformance.failed),
-            ],
-          },
-          {
-            id: "clean",
-            cells: [
-              <span key="r" className="a11y-conf-cell">
-                <span className="a11y-conf-result a11y-conf-result-pass">
-                  <span aria-hidden="true">✓</span> We checked, found nothing
-                </span>
-                <span className="a11y-conf-meaning">Still worth a human look</span>
-              </span>,
-              String(conformance.noIssuesFound),
-            ],
-          },
-          {
-            id: "manual",
-            cells: [
-              <span key="r" className="a11y-conf-cell">
-                <span className="a11y-conf-result a11y-conf-result-minor">
-                  <span aria-hidden="true">i</span> We couldn't check
-                </span>
-                <span className="a11y-conf-meaning">
-                  Only a person can judge these.
-                  {/* Claimed only when the checklist really does hold all of
-                      them. The backend builds criteria and this count from
-                      the same array so they agree in practice — but a
-                      summary number that outran the list it points at would
-                      make this sentence a lie, and it is cheap to not say. */}
-                  {needsPerson.length === conformance.needsReview && " Every one is named below."}
-                </span>
-              </span>,
-              String(conformance.needsReview),
-            ],
-          },
-        ]}
-      />
+              )}
+            </div>
+          </div>
+        </section>
+
+        <section className="a11y-legal-results" aria-labelledby="a11y-legal-results-heading">
+          <h3 className="a11y-legal-eyebrow" id="a11y-legal-results-heading">
+            Automated check results
+          </h3>
+          <div className="a11y-legal-thead" aria-hidden="true">
+            <span className="a11y-legal-col-result">Result</span>
+            <span className="a11y-legal-col-items">Items</span>
+          </div>
+          {RESULT_ROWS(conformance).map((r) => (
+            <div key={r.key} className="a11y-legal-row">
+              <span className="a11y-legal-col-result">
+                <span className="a11y-legal-row-label">{r.label}</span>
+                <span className="a11y-legal-row-meaning">{r.meaning}</span>
+                <span className={`a11y-legal-mark a11y-legal-mark-${r.severity}`}>{r.mark}</span>
+              </span>
+              <span className="a11y-legal-count">{r.n}</span>
+            </div>
+          ))}
+          <p className="a11y-legal-micro a11y-legal-foot">
+            Against the {conformance.standard} checklist of {conformance.total} items
+          </p>
+        </section>
+      </div>
+
 
       <div className="a11y-conf-caveat">
         <p>
