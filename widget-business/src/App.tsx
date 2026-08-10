@@ -522,21 +522,15 @@ export function App({
             />
           ) : (
             <>
-              <ReportActions
-                score={report.score}
-                total={report.summary.total}
-                tookSeconds={tookSeconds}
-                findings={findingsByCategory.accessibility}
-                report={report}
-                apiBase={apiBase}
-                onSeeFindings={() => focusFindings()}
-              />
+              <ReportActions report={report} apiBase={apiBase} />
               <ScoreGauge
                 score={report.score}
                 seed={report.scannedAt}
                 findings={findingsByCategory.accessibility}
                 url={report.url}
                 allFindings={report.findings}
+                total={report.summary.total}
+                tookSeconds={tookSeconds}
               />
             </>
           )}

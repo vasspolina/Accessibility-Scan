@@ -1,5 +1,6 @@
 import { ScoreDial } from "./ScoreDial";
 import { useState } from "react";
+import type { ReactNode } from "react";
 import { SeverityTag } from "./SeverityTag";
 import type { AccessibilityFinding } from "../api/scanClient";
 import { groupFindings } from "./FindingsList";
@@ -194,14 +195,56 @@ export function computeDoFirst(
   };
 }
 
+/* The second line under the verdict. The evocative line varies by band and
+   by scan — scoreSummary picks from a set — while this one never does,
+   because it is the qualification rather than the mood. */
+const VERDICT_CAVEAT =
+  "A scan proves what a machine can see. The rest needs someone to sit down with the site.";
+
+const BAND_WORD = (score: number) =>
+  score >= 90 ? "good" : score >= 70 ? "middling" : "failing";
+
+/* The dial's arc. r=42 in a 100-unit viewBox, so the circumference is
+   2·π·42 = 263.89 — the design's own "15.8 248.1" dash for a score of 6 is
+   that same arithmetic, and computing it keeps every OTHER score honest
+   rather than only the one the template happened to draw. */
+const DIAL_R = 42;
+const DIAL_C = 2 * Math.PI * DIAL_R;
+
+/* A titled purple panel wrapping a white card — the design's repeated left
+   column unit. The eyebrow is an h3 rather than a styled span so the three
+   panels are reachable as headings. */
+function SumPanel({
+  title,
+  grow = false,
+  children,
+}: {
+  title: string;
+  grow?: boolean;
+  children: ReactNode;
+}) {
+  return (
+    <section className={`a11y-sum-panel${grow ? " a11y-sum-grow" : ""}`}>
+      <h3 className="a11y-sum-eyebrow">{title}</h3>
+      <div className="a11y-sum-card">{children}</div>
+    </section>
+  );
+}
+
 export function ScoreGauge({
   score,
   seed,
   findings,
   url,
   allFindings,
+  total,
+  tookSeconds,
 }: {
   score: number;
+  /* For the run pills beside the dial: how many issues, and how long it
+     took. Both come from the report rather than being recounted here. */
+  total: number;
+  tookSeconds: number | null;
   // The scan timestamp. Fixes which line this report gets, so it stays put
   // across re-renders and changes for the next scan.
   seed: string;
@@ -220,6 +263,9 @@ export function ScoreGauge({
   const [copied, setCopied] = useState(false);
   const grouped = groupFindings(findings);
   const preview = grouped.slice(0, PREVIEW_LIMIT);
+  /* The same answer the report-actions panel gets, from the same shared
+     helper — computing it twice would be two places to disagree. */
+  const doFirst = computeDoFirst(findings);
 
   /* "Do this first" — the one fix that settles the most at once.
    *
@@ -253,97 +299,152 @@ export function ScoreGauge({
   }
   return (
     <div className="a11y-score">
-      {/* "Do this first" used to sit here, above the score. It moved into the
-          report-actions panel, which the design groups it with — and one
-          fault stated once is this report's own rule. computeDoFirst above
-          is what both would have shared. */}
       {/* Professional mode gets an explicit results header in this slot
           (App.tsx); business mode had none, which left heading navigation
           with no way to jump straight to the score at all. */}
       <h2 className="a11y-section-title" id="a11y-score-heading" data-nav-label="Score">Your score</h2>
-      {/* The scan-app dashboard's stat row: the dial in its own labelled
-          card, then the worst of what it found beside it — the kit's own
-          dial-plus-list composition, in place of a row of count tiles that
-          repeated the summary line below without saying what any of it
-          actually was. */}
-      <div className="a11y-stat-row">
-        {/* ScoreDial stands alone now. It used to be a small ring inside a
-            Card that supplied the label and the fill; the ported dial IS a
-            card — black ground, its own "Accessibility score" heading, the
-            number and the meter — so the wrapper was drawing a card around a
-            card and printing the label twice. Nesting cards for hierarchy is
-            also the anti-pattern Card's own annotation names. */}
-        <ScoreDial score={score} />
-        {/* Not a Card, and this is the second time round on it. Making it
-            one seemed right — a bare div beside a card looks unfinished —
-            but it holds a LIST of finding cards, and Card's own annotation
-            names the anti-pattern: "nesting cards inside cards for
-            hierarchy. Correct: one card, sections inside it separated by
-            space." White cards on a grey box on the page's ground is three
-            levels of nesting to say one thing.
-            The stylesheet had been forcing this flush with three
-            !important declarations; a plain div needs none of them, and the
-            conformance pass stops reporting a Card that does not look like
-            one because it should not be one. */}
-        <div className="a11y-score-list">
-          {preview.length === 0 ? (
-            <p className="a11y-score-clean">Nothing here needs a fix.</p>
-          ) : (
-            <ul className="a11y-score-preview">
-              {preview.map((group) => {
-                const rep = group[0];
-                const plain = plainForRule(rep.ruleId);
-                const title = plain?.plain ?? rep.title ?? rep.description;
-                // Best-practice rules with no numbered criterion arrive as
-                // the literal string "WCAG (see rule help)" — not a
-                // criterion number, and not meaningful on its own next to
-                // the literal "WCAG" prefix below, so it's treated the same
-                // as having no criterion at all rather than displayed.
-                const criterion =
-                  rep.wcagCriterion && rep.wcagCriterion !== "N/A"
-                    ? (rep.wcagCriterion.match(/^\d\.\d+\.\d+/)?.[0] ?? null)
-                    : null;
-                return (
-                  <li key={rep.id} className="a11y-score-preview-row">
-                    <SeverityTag severity={rep.severity} label={SEVERITY_LABEL[rep.severity]} />
-                    <span className="a11y-score-preview-desc">
-                      {title}
-                      {criterion && <span className="a11y-score-preview-meta">WCAG {criterion}</span>}
-                    </span>
-                    {group.length > 1 && <span className="a11y-count-badge">{group.length}×</span>}
-                  </li>
-                );
-              })}
-            </ul>
+
+      {/* The design's scan-summary template: three titled panels down the
+          left, the run and its worst findings on the right. Ported from
+          templates/scan-summary/Summary.jsx in the design project — read
+          from there rather than from a screenshot, which is how the arc
+          arithmetic and every token below are the design's own. */}
+      <div className="a11y-sum-grid">
+        <div className="a11y-sum-col">
+          {doFirst && (
+            <SumPanel title="Do this first">
+              <p className="a11y-sum-lead">
+                Fixing {doFirst.title.toLowerCase()} settles {doFirst.settles} of
+                the {doFirst.outOf} most serious findings at once.
+              </p>
+            </SumPanel>
           )}
+
+          <SumPanel title={`What a ${BAND_WORD(score)} score means`}>
+            <p className="a11y-sum-lead">{scoreSummary(score, seed)}</p>
+            <p className="a11y-sum-body">{VERDICT_CAVEAT}</p>
+          </SumPanel>
+
+          <SumPanel title="What the score counts" grow>
+            {SCORE_POINTS.map((point, i) => (
+              <p key={point} className="a11y-sum-point">
+                <span className="a11y-sum-point-num" aria-hidden="true">
+                  {String(i + 1).padStart(2, "0")}
+                </span>
+                <span>{point}</span>
+              </p>
+            ))}
+          </SumPanel>
+        </div>
+
+        <div className="a11y-sum-col">
+          <section className="a11y-sum-run" aria-labelledby="a11y-sum-run-heading">
+            <h3 className="a11y-sum-eyebrow" id="a11y-sum-run-heading">Scan summary</h3>
+            <p className="a11y-sum-micro">This run</p>
+
+            <div className="a11y-sum-dial-card">
+              {/* One label carries the whole thing, and every part of the
+                  drawing is hidden — the arc, the numeral and the pills all
+                  repeat it. Announced once, as a sentence. */}
+              <div
+                className="a11y-sum-dial"
+                role="img"
+                aria-label={`Score ${score} out of 100 — ${BAND_WORD(score)}. ${total} ${
+                  total === 1 ? "issue" : "issues"
+                } found${tookSeconds != null ? `, in ${tookSeconds} seconds` : ""}.`}
+              >
+                <svg viewBox="0 0 100 100" aria-hidden="true" focusable="false">
+                  <circle cx="50" cy="50" r={DIAL_R} fill="none"
+                    stroke="var(--orange-20)" strokeWidth="9" />
+                  <circle cx="50" cy="50" r={DIAL_R} fill="none"
+                    stroke="var(--orange-50)" strokeWidth="9" strokeLinecap="round"
+                    strokeDasharray={`${(Math.max(0, Math.min(100, score)) / 100) * DIAL_C} ${DIAL_C}`}
+                    transform="rotate(-90 50 50)" />
+                </svg>
+                <span className="a11y-sum-dial-face" aria-hidden="true">
+                  <span className="a11y-sum-dial-num">{score}</span>
+                  <span className="a11y-sum-dial-of">out of 100</span>
+                </span>
+              </div>
+              <div className="a11y-sum-pills" aria-hidden="true">
+                <span className="a11y-sum-pill a11y-sum-pill-band">{scoreBandLabel(score)}</span>
+                <span className="a11y-sum-pill">
+                  {total} {total === 1 ? "issue" : "issues"}
+                </span>
+                {tookSeconds != null && (
+                  <span className="a11y-sum-pill">{tookSeconds} sec</span>
+                )}
+              </div>
+            </div>
+
+            {preview.length === 0 ? (
+              <p className="a11y-score-clean">Nothing here needs a fix.</p>
+            ) : (
+              <div className="a11y-sum-table">
+                <div className="a11y-sum-thead" aria-hidden="true">
+                  <span className="a11y-sum-cell-no">No</span>
+                  <span className="a11y-sum-cell-item">Item</span>
+                  <span className="a11y-sum-cell-count">Instances</span>
+                </div>
+                <ul className="a11y-sum-rows">
+                  {preview.map((group, i) => {
+                    const rep = group[0];
+                    const plain = plainForRule(rep.ruleId);
+                    const title = plain?.plain ?? rep.title ?? rep.description;
+                    /* Best-practice rules with no numbered criterion arrive
+                       as the literal "WCAG (see rule help)" — not a criterion
+                       and not meaningful beside the "WCAG" prefix, so it is
+                       treated as having none rather than displayed. */
+                    const criterion =
+                      rep.wcagCriterion && rep.wcagCriterion !== "N/A"
+                        ? (rep.wcagCriterion.match(/^\d\.\d+\.\d+/)?.[0] ?? null)
+                        : null;
+                    return (
+                      <li key={rep.id} className="a11y-sum-row">
+                        <span className="a11y-sum-cell-no" aria-hidden="true">{i + 1}</span>
+                        <span className="a11y-sum-cell-item">
+                          <span className="a11y-sum-row-title">{title}</span>
+                          <span className="a11y-sum-row-marks">
+                            {criterion && (
+                              <span className="a11y-sum-chip">WCAG {criterion}</span>
+                            )}
+                            <SeverityTag
+                              severity={rep.severity}
+                              label={SEVERITY_LABEL[rep.severity]}
+                            />
+                          </span>
+                        </span>
+                        <span className="a11y-sum-cell-count">
+                          {group.length}&#8202;&times;
+                        </span>
+                      </li>
+                    );
+                  })}
+                </ul>
+              </div>
+            )}
+          </section>
+
+          {/* Plain text, not the report's own HTML: the point is to leave the
+              widget entirely — an email or a Slack message to whoever owns
+              the fix, not a screenshot of this card. */}
+          <div className="a11y-sum-actions">
+            <button type="button" className="a11y-show-all a11y-score-copy" onClick={copySummary}>
+              {copied ? "Copied" : "Copy summary as plain text"}
+            </button>
+            <span className="a11y-sr-only" role="status">
+              {copied ? "Summary copied to the clipboard." : ""}
+            </span>
+          </div>
         </div>
       </div>
-
-      {/* The kit's callout slot, carrying the line this report has always
-          led with. */}
-      <p className="a11y-notice a11y-score-callout">{scoreSummary(score, seed)}</p>
-      {/* What the number is, next to the number.
-
-          An aggregate score is fine for tracking whether a site is getting
-          better and is not a conformance claim, and this one was presented
-          without saying so. Automated testing reaches somewhere between a
-          third and a half of accessibility problems; the rest needs a person
-          with a keyboard and a screen reader. A reader who takes 100 to mean
-          "accessible" has been misled by us, not by their own optimism. */}
-      <ul className="a11y-score-points">
-        {SCORE_POINTS.map((point) => (
-          <li key={point}>{point}</li>
-        ))}
-      </ul>
-      {/* Plain text, not the report's own HTML: the point is to leave the
-          widget entirely — an email or a Slack message to whoever owns
-          the fix, not a screenshot of this card. */}
-      <button type="button" className="a11y-show-all a11y-score-copy" onClick={copySummary}>
-        {copied ? "Copied" : "Copy summary as plain text"}
-      </button>
-      <span className="a11y-sr-only" role="status">
-        {copied ? "Summary copied to the clipboard." : ""}
-      </span>
     </div>
   );
+}
+
+/* Kept out of the render: the pill says the band in a word, and the same
+   thresholds already live in BAND_WORD, so this is the one place that turns
+   them into the capitalised label the design shows. */
+function scoreBandLabel(score: number): string {
+  return score >= 90 ? "Good" : score >= 70 ? "Needs work" : "Failing";
 }

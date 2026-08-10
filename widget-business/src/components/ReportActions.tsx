@@ -3,10 +3,9 @@
  * scattered between the form footer, a hidden live region and the score.
  */
 import { useId, useState } from "react";
-import { computeDoFirst } from "./ScoreGauge";
 import { ensureHostPrintStyle } from "./PrintButton";
 import { emailReport, type EmailReportResult } from "../api/scanClient";
-import type { AccessibilityFinding, AccessibilityReport } from "../api/scanClient";
+import type { AccessibilityReport } from "../api/scanClient";
 
 /* Sending the report.
  *
@@ -33,24 +32,13 @@ const RESULT_MESSAGE: Record<EmailReportResult, string> = {
 };
 
 export function ReportActions({
-  score,
-  total,
-  tookSeconds,
-  findings,
   report,
   apiBase,
-  onSeeFindings,
 }: {
-  score: number;
-  total: number;
-  tookSeconds: number | null;
-  findings: AccessibilityFinding[];
   /* The whole report, because that is what gets sent. */
   report: AccessibilityReport;
   apiBase: string;
-  onSeeFindings: () => void;
 }) {
-  const doFirst = computeDoFirst(findings);
   const emailId = useId();
   const [address, setAddress] = useState("");
   const [sending, setSending] = useState(false);
@@ -127,45 +115,10 @@ export function ReportActions({
         </div>
       </div>
 
-      <div className="a11y-ra-row">
-        <p className="a11y-ra-item a11y-ra-stat">
-          <span className="a11y-ra-label">Check complete</span>
-          <span className="a11y-ra-tag a11y-ra-tag-time">
-            {tookSeconds ?? 0} sec
-          </span>
-        </p>
-        <p className="a11y-ra-item a11y-ra-stat">
-          <span className="a11y-ra-label">Score {score} out of 100</span>
-          <span className="a11y-ra-tag a11y-ra-tag-issues">
-            {total} {total === 1 ? "issue" : "issues"}
-          </span>
-        </p>
-      </div>
-
-      {doFirst && (
-        <div className="a11y-ra-item a11y-ra-dofirst">
-          <div className="a11y-ra-dofirst-text">
-            <p className="a11y-ra-dofirst-title">{doFirst.title.toLowerCase()}</p>
-            <p className="a11y-ra-dofirst-statement">
-              Fixing it settles {doFirst.settles} of the {doFirst.outOf} most
-              serious findings at once.
-            </p>
-          </div>
-          <span className="a11y-ra-tag a11y-ra-tag-first">Do this first</span>
-        </div>
-      )}
-
-      {doFirst && (
-        <div className="a11y-ra-foot">
-          <button
-            type="button"
-            className="a11y-btn a11y-btn-primary a11y-ra-jump"
-            onClick={onSeeFindings}
-          >
-            See the {doFirst.settles} findings
-          </button>
-        </div>
-      )}
+      {/* The run stats, "Do this first" and the jump to the findings all
+          moved into the scan-summary panel, which is where the design puts
+          them. Saying them twice on one screen is the duplication this
+          report keeps having to undo. */}
     </section>
   );
 }

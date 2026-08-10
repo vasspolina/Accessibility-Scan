@@ -50,3 +50,50 @@ layer over the earlier Carbon layer) — not a component library, and not
 syncable as one. See `design-system/README.md` for how the system is
 applied and which two divergences from it are deliberate (label size,
 theme mechanism).
+
+---
+
+## Re-verified 10 August 2026 — conclusion unchanged
+
+`/design-sync` was invoked again. Checked rather than assumed, and the
+decision above still stands:
+
+- No Storybook, no `*.stories.*`, no `dist/`. The skill would take the
+  package shape and find nothing to build from.
+- `design-system/production/` is still a vendored copy — its own README
+  calls itself "vendored source of truth".
+- The project's `uploads/` holds screenshots from **that same day**, so it
+  is in active use. The reconciliation delete would have run against a live
+  project.
+
+The one thing that HAS changed since 2 August: the file the note points at
+is now `widget-business/src/styles/global.css`, not `styles.css`.
+
+## Drift, design → repo (the direction that is real)
+
+Measured 10 August by listing the project against `production/`:
+
+- **Components: 24 vendored, 43 upstream.** Missing: BeforeAfter, FactCard,
+  IndexList, Panel, SectionHead, SpecList, StatCard, StepList, OptionCard,
+  Segmented, SelectableTile, Slider, Textarea, RelatedChecks,
+  ScreenReaderPreview, SiteAudit, VisionSimulator, HelperNote, **ShellNav**.
+- **Tokens:** `space-fluid.css`, `type-scale.css`, `type-semantic.css`
+  missing locally; `grid.css` exists locally and not upstream — almost
+  certainly a leftover from the superseded "Verify" project.
+
+Several of the missing ones duplicate work done by hand in the widget's
+stylesheet — ShellNav most of all, which was rebuilt from scratch as the
+Sections rail. Worth pulling before building any more of them.
+
+## A contrast fault in the design system's own template
+
+`templates/scan-summary/Summary.jsx` sets the "Failing" pill as white on
+`--orange-50` (#eb6200): **3.34:1**, below AA. The port in
+`widget-business` keeps `--orange-50` for the dial arc, which is
+aria-hidden and whose value the label carries, and uses
+`--severity-serious-fill` (#ba4e00, 5.03:1) for the pill. Worth fixing
+upstream — it is the kind of thing this product exists to catch.
+
+Also from that read: `--purple-20` is **#e8daff**. The widget had been
+carrying `--purple-15: #ebe2fb`, sampled from a screenshot. Replaced with
+the real token.

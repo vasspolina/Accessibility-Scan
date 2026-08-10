@@ -188,14 +188,22 @@
   /* The report-actions panel's ground and its pdf tag. purple-60 (#8a3ffc)
      is the kit's ramp value and clears AA on white at 5.00:1; kept rather
      than darkened so the tag matches the design exactly. */
-  --purple-10: #f6f2ff; --purple-60: #8a3ffc; --purple-70: #6929c4;
-  /* Not a ramp step. The design's panel ground is a clearly-purple lavender,
-     and --purple-10 (#f6f2ff) is so close to white it reads as no tint at
-     all — the difference was visible enough to be asked about twice. Sampled
-     from the design and checked: text-primary 14.5:1 on it, text-secondary
-     6.3:1, purple-70 6.2:1. --purple-60 does NOT clear AA here (4.0:1),
-     which is why the eyebrows below take -70. */
-  --purple-15: #ebe2fb;
+  /* Real ramp values, read from the design system's own tokens/colors.css
+     rather than sampled. --purple-20 #e8daff is the panel ground the earlier
+     --purple-15 #ebe2fb was guessing at from a screenshot; the guess is gone. */
+  --purple-10: #f6f2ff; --purple-20: #e8daff; --purple-60: #8a3ffc;
+  --purple-70: #6929c4; --purple-100: #1c0f30;
+  --orange-20: #ffd9be; --orange-50: #eb6200;
+  /* Brand yellow and its tint — marks and count tiles. 14.96:1 and 16.66:1
+     with gray-100. */
+  --yellow-brand: #ffed00; --yellow-brand-tint: #fff9a3;
+  /* The severity ramp's fills, for pills carrying white labels.
+     Measured: 5.00 / 5.03 / 4.99 / 7.81 / 5.02 with white. */
+  --severity-critical-fill: #da1e28; --severity-serious-fill: #ba4e00;
+  --severity-moderate-fill: #8e6a00; --severity-minor-fill: #525252;
+  --severity-pass-fill: #198038;
+  /* The score dial's ground, a literal in the design's own template. */
+  --dial-cream: #f7f2e8;
   --green-10: #defbe6; --green-60: #198038;
   /* Not in the kit's ramp — the design system has no brown. Placed at the
      -60 slot's role (a filled surface carrying white text) but darker than
@@ -1545,7 +1553,7 @@
   gap: var(--space-05);
   padding: var(--space-06);
   border-radius: var(--radius-lg);
-  background: var(--purple-15);
+  background: var(--purple-20);
   margin-bottom: var(--space-07);
 }
 .a11y-widget-biz .a11y-ra-row {
@@ -1837,7 +1845,7 @@
   gap: var(--space-06);
   padding: var(--space-07);
   border-radius: var(--radius-lg);
-  background: var(--purple-15);
+  background: var(--purple-20);
   margin-bottom: var(--space-07);
 }
 .a11y-widget-biz .a11y-pro-bar {
@@ -2065,7 +2073,7 @@
 }
 .a11y-widget-biz .a11y-shell-nav {
   padding: var(--space-06);
-  background: var(--purple-15);
+  background: var(--purple-20);
   border-radius: var(--radius-lg);
 }
 .a11y-widget-biz .a11y-shell-nav-head { margin-bottom: var(--space-06); }
@@ -2121,7 +2129,7 @@
   }
   .a11y-widget-biz .a11y-shell-nav:has(ul[data-open="true"]) {
     padding: var(--space-04);
-    background: var(--purple-15);
+    background: var(--purple-20);
     border-radius: var(--radius-lg);
   }
   /* A 40px heading above a hidden list is a heading for nothing. */
@@ -2313,7 +2321,7 @@
      anywhere, so the narrow overrides that stripped them come back off. */
   .a11y-widget-biz .a11y-shell-nav {
     padding: var(--space-06);
-    background: var(--purple-15);
+    background: var(--purple-20);
     border-radius: var(--radius-lg);
   }
   .a11y-widget-biz .a11y-shell-nav-head { display: block; }
@@ -2597,4 +2605,168 @@
 .a11y-widget-biz .a11y-pro-snippet code {
   white-space: pre-wrap;
   overflow-wrap: anywhere;
+}
+
+/* ── Scan summary ────────────────────────────────────────────────────────
+   Ported from templates/scan-summary/Summary.jsx in the design project —
+   read from the project itself, so the arc arithmetic, the panel ground and
+   every colour below are the design's own values rather than sampled ones.
+
+   One deliberate departure, and it is a contrast fault in the template:
+   its "Failing" pill puts white on --orange-50 (#eb6200), which measures
+   3.34:1 and does not clear AA. The arc keeps that colour — it is
+   aria-hidden and the label carries the value — but the pill takes
+   --severity-serious-fill (#ba4e00, 5.03:1). Reported upstream. */
+.a11y-widget-biz .a11y-sum-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 420px), 1fr));
+  gap: var(--space-06);
+  align-items: stretch;
+}
+.a11y-widget-biz .a11y-sum-col {
+  display: flex; flex-direction: column;
+  gap: var(--space-06);
+  min-width: 0;
+}
+
+/* A titled purple panel wrapping a white card. */
+.a11y-widget-biz .a11y-sum-panel {
+  display: flex; flex-direction: column;
+  flex: 0 0 auto;
+  padding: var(--space-05);
+  border-radius: var(--radius-lg);
+  background: var(--purple-20);
+  color: var(--purple-100);          /* 13.71:1 on the ground */
+}
+.a11y-widget-biz .a11y-sum-grow { flex: 1; }
+.a11y-widget-biz .a11y-sum-eyebrow {
+  margin: 0;
+  padding: var(--space-02) 0 var(--space-04);
+  text-align: center;
+  font-size: 15px; font-weight: 500;
+  text-transform: uppercase;
+}
+.a11y-widget-biz .a11y-sum-card {
+  flex: 1;
+  display: flex; flex-direction: column; gap: var(--space-04);
+  padding: var(--space-06);
+  border-radius: var(--radius-lg);
+  background: var(--white);
+  color: var(--text-primary);
+}
+.a11y-widget-biz .a11y-sum-lead  { margin: 0; font-size: 24px; line-height: 1.2; font-weight: 500; }
+.a11y-widget-biz .a11y-sum-body  { margin: 0; font-size: 18px; line-height: 1.2; }
+.a11y-widget-biz .a11y-sum-point {
+  margin: 0; display: flex; align-items: baseline; gap: var(--space-05);
+}
+.a11y-widget-biz .a11y-sum-point-num {
+  flex: 0 0 2rem;
+  font-size: 15px; font-weight: 500; color: var(--text-secondary);
+}
+.a11y-widget-biz .a11y-sum-point > span:last-child {
+  flex: 1; min-width: 0; font-size: 18px; line-height: 1.2;
+}
+
+/* The run panel. */
+.a11y-widget-biz .a11y-sum-run {
+  flex: 1;
+  display: flex; flex-direction: column; gap: var(--space-06);
+  padding: var(--space-05);
+  border-radius: var(--radius-lg);
+  background: var(--layer-01);
+}
+.a11y-widget-biz .a11y-sum-micro {
+  margin: 0; padding: 0 var(--space-06);
+  font-size: 15px; font-weight: 500; color: var(--text-secondary);
+}
+.a11y-widget-biz .a11y-sum-dial-card {
+  display: flex; flex-direction: column; align-items: center;
+  gap: var(--space-05);
+  padding: var(--space-07) var(--space-06);
+  border-radius: var(--radius-lg);
+  background: var(--dial-cream);
+}
+.a11y-widget-biz .a11y-sum-dial { position: relative; width: 220px; height: 220px; }
+.a11y-widget-biz .a11y-sum-dial svg { width: 220px; height: 220px; display: block; }
+.a11y-widget-biz .a11y-sum-dial-face {
+  position: absolute; inset: 0;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  gap: 2px;
+}
+.a11y-widget-biz .a11y-sum-dial-num {
+  font-size: 68px; line-height: 1; font-weight: 500;
+  color: var(--purple-70);           /* 6.93:1 on the cream */
+}
+.a11y-widget-biz .a11y-sum-dial-of {
+  font-size: 15px; font-weight: 500; color: var(--purple-70);
+}
+.a11y-widget-biz .a11y-sum-pills {
+  display: flex; gap: var(--space-03); flex-wrap: wrap; justify-content: center;
+}
+.a11y-widget-biz .a11y-sum-pill {
+  padding: 4px 14px; border-radius: var(--radius-pill);
+  background: var(--purple-20); color: var(--purple-100);
+  font-size: 15px; font-weight: 500; white-space: nowrap;
+}
+.a11y-widget-biz .a11y-sum-pill-band {
+  background: var(--severity-serious-fill); color: var(--white);
+}
+
+/* The instances table. */
+.a11y-widget-biz .a11y-sum-table { display: flex; flex-direction: column; gap: var(--space-02); }
+.a11y-widget-biz .a11y-sum-thead,
+.a11y-widget-biz .a11y-sum-row {
+  display: flex; gap: var(--space-05);
+  padding: 0 var(--space-06);
+}
+.a11y-widget-biz .a11y-sum-thead {
+  font-size: 15px; font-weight: 500; color: var(--text-secondary);
+}
+.a11y-widget-biz .a11y-sum-rows {
+  display: flex; flex-direction: column; gap: var(--space-02);
+  margin: 0; padding: 0; list-style: none;
+}
+.a11y-widget-biz .a11y-sum-row {
+  align-items: flex-start;
+  padding: var(--space-05) var(--space-06);
+  border-radius: var(--radius-lg);
+  background: var(--white);
+}
+.a11y-widget-biz .a11y-sum-cell-no { flex: 0 0 2rem; font-size: 20px; color: var(--text-secondary); }
+.a11y-widget-biz .a11y-sum-cell-item {
+  flex: 1 1 0; min-width: 0;
+  display: flex; flex-direction: column; gap: var(--space-03); align-items: flex-start;
+}
+.a11y-widget-biz .a11y-sum-row-title { font-size: 20px; font-weight: 500; }
+.a11y-widget-biz .a11y-sum-row-marks { display: flex; gap: var(--space-03); flex-wrap: wrap; }
+.a11y-widget-biz .a11y-sum-chip {
+  padding: 4px 14px; border-radius: var(--radius-pill);
+  background: var(--layer-01); color: var(--text-primary);
+  font-size: 15px; font-weight: 500; white-space: nowrap;
+}
+/* The count as the design's yellow tile. Yellow is reserved for marks and
+   counts here — never for severity, which owns the red/orange/olive ramp. */
+.a11y-widget-biz .a11y-sum-cell-count {
+  flex: 0 0 4.5rem;
+  display: flex; align-items: center; justify-content: center;
+  padding: var(--space-04) 0;
+  border-radius: var(--radius-md);
+  background: var(--yellow-brand-tint);
+  color: var(--text-primary);        /* 16.66:1 */
+  font-size: 32px; font-weight: 500; line-height: 1;
+}
+.a11y-widget-biz .a11y-sum-thead .a11y-sum-cell-count {
+  background: none; padding: 0; font-size: 15px; font-weight: 500;
+  color: var(--text-secondary); display: block;
+}
+.a11y-widget-biz .a11y-sum-actions {
+  display: flex; justify-content: center; gap: var(--space-04); flex-wrap: wrap;
+}
+
+/* On paper the tint and the dial cost ink for nothing the text does not say. */
+@media print {
+  .a11y-widget-biz .a11y-sum-panel,
+  .a11y-widget-biz .a11y-sum-run,
+  .a11y-widget-biz .a11y-sum-dial-card { background: none; padding: 0; }
+  .a11y-widget-biz .a11y-sum-actions { display: none; }
 }
