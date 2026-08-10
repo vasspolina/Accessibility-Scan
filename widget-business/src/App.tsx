@@ -195,9 +195,26 @@ export function App({
      from inside a shadow root, and scrolling without moving focus leaves a
      keyboard user's next Tab back where they started. */
   const jumpTo = (target: HTMLElement) => {
-    target.scrollIntoView({ behavior: "smooth", block: "start" });
+    /* Smooth only when motion is welcome. reducedMotion is the same value
+       that already freezes the spinner and the elapsed ticker — read once,
+       so the three cannot disagree. */
+    const smooth = !reducedMotion;
+    const before = window.scrollY;
+    target.scrollIntoView({ behavior: smooth ? "smooth" : "auto", block: "start" });
     if (!target.hasAttribute("tabindex")) target.setAttribute("tabindex", "-1");
     target.focus({ preventScroll: true });
+    /* Observed: some embedding contexts accept behavior:"smooth" and then
+       never animate, so the page stays put while focus lands somewhere the
+       reader cannot see — the worst of both. If nothing has moved shortly
+       after, jump instantly instead. A target already in view scrolls to
+       itself, which costs nothing. */
+    if (smooth) {
+      setTimeout(() => {
+        if (Math.abs(window.scrollY - before) < 2) {
+          target.scrollIntoView({ block: "start" });
+        }
+      }, 300);
+    }
   };
 
   /* "See the N findings" — scroll AND move focus, the same pairing focusForm

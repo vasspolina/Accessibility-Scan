@@ -36,6 +36,12 @@
         padding: 0 32px;
         background: #161616;
       }
+      /* The widget's contract for host chrome: how far down the viewport the
+         host stops covering things. Its own sticky rail pins below this, and
+         its nav jumps leave this much clear, so neither lands under the 48px
+         shell above. Custom properties inherit through the shadow boundary,
+         so setting it here reaches inside the widget. 48 + 16 of air. */
+      :root { --a11y-sticky-top: 64px; }
       /* The wordmark rule: "Accessibility scan" in PP Telegraf regular at
          heading size, tight tracking, never a graphic mark. */
       .shell .wordmark {

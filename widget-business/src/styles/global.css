@@ -2447,3 +2447,26 @@
 
 /* Top bar 2px shorter: 12px of padding each side becomes 11. */
 .a11y-widget-biz .a11y-topnav { padding: 11px var(--space-04); }
+
+/* ── Host page chrome ────────────────────────────────────────────────────
+   The widget is embedded, so anything sticky inside it has to clear
+   whatever the HOST page has pinned above it. demo.html has a 48px sticky
+   product header; the rail stuck at 16px and slid underneath, and every nav
+   jump scrolled its heading to viewport top — behind that header.
+
+   --a11y-sticky-top is the host's contract: the distance from the top of
+   the viewport to the first pixel the host is not covering. Deliberately
+   NOT defined anywhere in this stylesheet, only referenced with a fallback,
+   because a definition here would win over the host's and custom properties
+   inherit straight through the shadow boundary. A host with no fixed chrome
+   sets nothing and gets the 16px default. */
+.a11y-widget-biz .a11y-shell-nav {
+  top: var(--a11y-sticky-top, var(--space-05));
+  max-height: calc(100vh - var(--a11y-sticky-top, var(--space-05)) - var(--space-05));
+}
+/* Every jump target clears it too, or the nav lands its heading under the
+   host's header and the reader sees the paragraph after it. */
+.a11y-widget-biz [data-nav-label],
+.a11y-widget-biz #a11y-pro-findings {
+  scroll-margin-top: calc(var(--a11y-sticky-top, var(--space-05)) + var(--space-04));
+}
