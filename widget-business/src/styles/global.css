@@ -3443,3 +3443,75 @@
   .a11y-widget-biz .a11y-hist { background: none; padding: 0; }
   .a11y-widget-biz .a11y-hist .a11y-section-desc { background: none; padding: 0; text-align: left; font-size: 18px; }
 }
+
+/* 60px between the report's sections. Set on the container as a gap rather
+   than as margins on each section: margins collapse against a section's own
+   first child, and several sections here are tinted grounds whose padding
+   would have swallowed part of it. */
+.a11y-widget-biz .a11y-report {
+  display: flex;
+  flex-direction: column;
+  gap: 60px;
+}
+
+/* The title fits on one line at any width the report actually gets — the
+   20ch cap the template carried was forcing a break at 40px. No nowrap:
+   that would reintroduce the 320px reflow failure fixed two commits ago,
+   so at genuinely narrow widths it still wraps, which is correct. */
+.a11y-widget-biz .a11y-legal-title { max-width: none; }
+
+/* Margins from before .a11y-report had a gap. They now stack on top of it —
+   the actions panel measured 92px to the score instead of 60. The gap is
+   the single source of section spacing; these go.
+
+   That includes the 30px above "Your score", which was asked for when there
+   was no section gap at all and would now read as 90. */
+.a11y-widget-biz .a11y-report > .a11y-report-actions,
+.a11y-widget-biz .a11y-report > .a11y-pro-panel { margin-bottom: 0; }
+.a11y-widget-biz .a11y-score .a11y-section-title { margin-top: 0; }
+
+/* The filter chip row keeps a 16px margin from before the gap existed, which
+   made the one seam in professional mode 76 instead of 60. */
+.a11y-widget-biz .a11y-report > .a11y-filter { margin-bottom: 0; }
+
+/* ── Two renderings of every finding were showing at once ────────────────
+   Both are dropped rules, and both components say in their own comments
+   exactly what the missing rule was meant to do.
+
+   1. .a11y-print-cards is the PRINT rendering — the full plain-language
+      cards, so a printed report stands alone without the table's expand
+      state. It had no rule at all, so it drew on screen as well: every
+      finding appeared twice, once as a table row and again as a card
+      below it. FindingsList and App both mark it; neither could hide it.
+
+   2. .a11y-finding-sev-fold is the severity badge folded into the Issue
+      cell for phone width, where the badge plus the issue text plus the
+      arrow column would otherwise force horizontal scroll. FindingGroup's
+      comment reads: "a11y-finding-sev-fold is itself hidden by default and
+      only shown at that same narrow width, so wide screens see Severity in
+      its column, not doubled up." It had no rule, so it was never hidden
+      and every row showed the badge twice — the doubling its own comment
+      predicted. */
+.a11y-widget-biz .a11y-print-cards { display: none; }
+.a11y-widget-biz .a11y-finding-sev-fold { display: none; }
+
+.a11y-widget-biz .a11y-finding-issue {
+  display: flex; flex-direction: column; gap: var(--space-02);
+  min-width: 0;
+}
+.a11y-widget-biz .a11y-finding-title { font-weight: 500; }
+
+/* At phone width the column goes and the fold takes over — one badge, not
+   none and not two. */
+@container a11y-panel (max-width: 400px) {
+  .a11y-widget-biz .a11y-finding-sev-col { display: none; }
+  .a11y-widget-biz .a11y-finding-sev-fold { display: block; }
+}
+
+/* On paper it is the reverse: the cards are the report, and the table's
+   collapsed rows would print as headings with nothing under them. */
+@media print {
+  .a11y-widget-biz .a11y-print-cards { display: grid; }
+  .a11y-widget-biz .a11y-pro-table,
+  .a11y-widget-biz .a11y-findings-table { display: none; }
+}
