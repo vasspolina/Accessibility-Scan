@@ -45,6 +45,21 @@ const envSchema = z.object({
   // MAX_QUEUE_WAIT_MS before being told the scanners are busy. Worse than an
   // instant scan, better than an error halfway through somebody else's.
   MAX_CONCURRENT_RENDERS: z.coerce.number().default(2),
+  // Emailing a report. Absent by default: the feature is built, and without
+  // these it reports itself as not set up rather than failing silently — the
+  // same contract the AI review already uses for a missing ANTHROPIC_API_KEY.
+  //
+  // MAIL_API_KEY is a Resend key; the send is a plain HTTPS POST to their
+  // API, so there is no SDK and no new dependency. MAIL_FROM must be an
+  // address on a domain verified with the provider, or every send is
+  // rejected at their end.
+  MAIL_API_KEY: z.string().optional(),
+  MAIL_FROM: z.string().optional(),
+  // Deliberately far below the global limit. This route sends mail to an
+  // address the caller chooses, which is the one endpoint here that can be
+  // turned into a spam relay, so it gets its own much tighter budget.
+  MAIL_RATE_LIMIT_MAX: z.coerce.number().default(3),
+  MAIL_RATE_LIMIT_WINDOW_MS: z.coerce.number().default(600_000),
 });
 
 const parsed = envSchema.safeParse(process.env);
@@ -57,6 +72,10 @@ if (!parsed.success) {
 export const env = parsed.data;
 
 export const hasAnthropicKey = Boolean(env.ANTHROPIC_API_KEY && env.ANTHROPIC_API_KEY.length > 0);
+
+export const hasMailProvider = Boolean(
+  env.MAIL_API_KEY && env.MAIL_API_KEY.length > 0 && env.MAIL_FROM && env.MAIL_FROM.length > 0
+);
 
 if (!hasAnthropicKey) {
   console.warn(

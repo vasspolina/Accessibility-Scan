@@ -523,13 +523,12 @@ export function App({
           ) : (
             <>
               <ReportActions
-                url={report.url}
-                seed={report.scannedAt}
                 score={report.score}
                 total={report.summary.total}
                 tookSeconds={tookSeconds}
-                allFindings={report.findings}
                 findings={findingsByCategory.accessibility}
+                report={report}
+                apiBase={apiBase}
                 onSeeFindings={() => focusFindings()}
               />
               <ScoreGauge

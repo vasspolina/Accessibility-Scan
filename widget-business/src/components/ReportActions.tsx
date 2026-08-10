@@ -2,65 +2,68 @@
  * and the "Do this first" callout, grouped on one tinted ground instead of
  * scattered between the form footer, a hidden live region and the score.
  */
-import { buildPlainSummary, computeDoFirst } from "./ScoreGauge";
+import { useId, useState } from "react";
+import { computeDoFirst } from "./ScoreGauge";
 import { ensureHostPrintStyle } from "./PrintButton";
-import type { AccessibilityFinding } from "../api/scanClient";
+import { emailReport, type EmailReportResult } from "../api/scanClient";
+import type { AccessibilityFinding, AccessibilityReport } from "../api/scanClient";
 
-/* Email, without a mail server.
+/* Sending the report.
  *
- * The design shows "email me this report" as a filled control, which reads as
- * "type an address, we send it." This widget cannot do that: the backend has
- * no mail provider and no job queue to hand a send off to, and the report
- * itself promises the scan is kept in this browser — posting it to a mail
- * service to be delivered would break that promise, not just add a feature.
+ * The visitor types an address and the service sends it there. The report
+ * travels with the request — nothing is stored server-side yet, so there is
+ * no id to send instead — and the server renders the message from it after
+ * validation, never from anything written here.
  *
- * A mailto: hands the report to the visitor's own mail client, already
- * written, addressed to whoever they choose. Nothing is transmitted by us,
- * so the promise holds, and the control does what its label says today
- * rather than after a provider is bought and keys are set.
+ * This replaces a mailto: link, which was the honest thing to build before
+ * there was a provider but did not do what its own label said: "Email me
+ * this report" opened the visitor's composer with an empty To field and
+ * nothing sent, and on a machine with no mail client registered it did
+ * nothing at all, silently.
  *
- * The body is buildPlainSummary — the same text the copy button puts on the
- * clipboard, so the mailed report and the pasted one can never disagree.
- * Long reports are the known limit: mail clients cut the URL somewhere past
- * a couple of thousand characters, so the summary is trimmed with a pointer
- * back rather than silently truncated mid-finding.
+ * Every outcome is a sentence, because they are genuinely different things
+ * to be told: the scanner has no mail set up, the address was refused, the
+ * provider failed. "Something went wrong" would collapse all three.
  */
-const BODY_LIMIT = 1800;
-
-function mailtoHref(summary: string, url: string): string {
-  let body = summary;
-  if (body.length > BODY_LIMIT) {
-    const cut = body.lastIndexOf("\n", BODY_LIMIT);
-    body =
-      body.slice(0, cut > 0 ? cut : BODY_LIMIT) +
-      `\n\n(Trimmed to fit an email. The full report is on the scan page for ${url}.)`;
-  }
-  return `mailto:?subject=${encodeURIComponent(
-    `Accessibility scan: ${url}`
-  )}&body=${encodeURIComponent(body)}`;
-}
+const RESULT_MESSAGE: Record<EmailReportResult, string> = {
+  sent: "Sent. Check your inbox — it may take a minute.",
+  not_configured: "Email isn't set up on this scanner yet. Save as PDF instead.",
+  rejected: "That address was refused. Check it and try again.",
+  failed: "The report couldn't be sent just now. Please try again shortly.",
+};
 
 export function ReportActions({
-  url,
-  seed,
   score,
   total,
   tookSeconds,
-  allFindings,
   findings,
+  report,
+  apiBase,
   onSeeFindings,
 }: {
-  url: string;
-  seed: string;
   score: number;
   total: number;
   tookSeconds: number | null;
-  allFindings: AccessibilityFinding[];
   findings: AccessibilityFinding[];
+  /* The whole report, because that is what gets sent. */
+  report: AccessibilityReport;
+  apiBase: string;
   onSeeFindings: () => void;
 }) {
   const doFirst = computeDoFirst(findings);
-  const summary = buildPlainSummary({ url, seed, score, allFindings });
+  const emailId = useId();
+  const [address, setAddress] = useState("");
+  const [sending, setSending] = useState(false);
+  const [result, setResult] = useState<EmailReportResult | null>(null);
+
+  async function send(e: React.FormEvent) {
+    e.preventDefault();
+    if (sending) return;
+    setSending(true);
+    setResult(null);
+    setResult(await emailReport(apiBase, address.trim(), report));
+    setSending(false);
+  }
 
   return (
     <section className="a11y-report-actions" aria-labelledby="a11y-ra-heading">
@@ -72,22 +75,39 @@ export function ReportActions({
           that explains a control sits under that control rather than in one
           run-on paragraph the reader has to split apart themselves. */}
       <div className="a11y-ra-row">
-        <div className="a11y-ra-cell">
-          {/* An anchor, not a button: it navigates to a mail client, and
-              middle-click/⌘-click should behave the way they do on a link. */}
-          <a
-            className="a11y-ra-item a11y-ra-action a11y-ra-email"
-            href={mailtoHref(summary, url)}
-          >
+        <form className="a11y-ra-cell a11y-ra-email-form" onSubmit={send}>
+          <div className="a11y-ra-item a11y-ra-email">
             <span className="a11y-ra-dot" aria-hidden="true" />
-            <span className="a11y-ra-label">Email me this report</span>
-            <span className="a11y-ra-tag a11y-ra-tag-email">email</span>
-          </a>
-          <p className="a11y-ra-note">
-            Opens your own mail app with the report already written. Nothing is
-            sent by us.
+            <label className="a11y-ra-email-label" htmlFor={emailId}>
+              Email me this report
+            </label>
+            <input
+              id={emailId}
+              className="a11y-ra-email-input"
+              type="email"
+              /* The browser's own suggestion list is the fastest correct way
+                 for someone to enter their own address, and typos here cost
+                 the whole feature. */
+              autoComplete="email"
+              inputMode="email"
+              required
+              placeholder="you@example.com"
+              value={address}
+              onChange={(ev) => setAddress(ev.target.value)}
+              disabled={sending}
+            />
+            <button type="submit" className="a11y-ra-tag a11y-ra-send" disabled={sending}>
+              {sending ? "Sending\u2026" : "Send"}
+            </button>
+          </div>
+          {/* role="status" rather than a bare paragraph: the outcome arrives
+              after a wait, so it has to be announced, not just drawn. */}
+          <p className="a11y-ra-note" role="status">
+            {result
+              ? RESULT_MESSAGE[result]
+              : "We send it once, to this address. Nothing is stored."}
           </p>
-        </div>
+        </form>
         <div className="a11y-ra-cell">
           <button
             type="button"

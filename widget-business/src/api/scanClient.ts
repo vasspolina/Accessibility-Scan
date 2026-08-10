@@ -355,3 +355,45 @@ export async function auditSite(
 
   return response.json();
 }
+
+/** What happened when we asked the service to email a report. */
+export type EmailReportResult = "sent" | "not_configured" | "rejected" | "failed";
+
+/**
+ * Ask the service to email a report to an address the visitor typed.
+ *
+ * The report travels with the request because nothing is stored server-side
+ * yet — there is no id to send instead. The server renders the message from
+ * this report after validating it, and never from anything the client
+ * writes, so what arrives cannot be steered from here.
+ *
+ * Never throws. Every outcome is one of four words the caller can put in
+ * front of a person: a thrown error here would surface as "something went
+ * wrong", and "email isn't set up on this scanner" is a different sentence
+ * from "that address was refused".
+ */
+export async function emailReport(
+  apiBase: string,
+  to: string,
+  report: AccessibilityReport
+): Promise<EmailReportResult> {
+  const endpoint = `${apiBase.replace(/\/$/, "")}/api/report/email`;
+  let response: Response;
+  try {
+    response = await fetchWithDeadline(
+      endpoint,
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ to, report }),
+      },
+      30_000
+    );
+  } catch {
+    return "failed";
+  }
+  if (response.ok) return "sent";
+  if (response.status === 503) return "not_configured";
+  if (response.status === 400) return "rejected";
+  return "failed";
+}
