@@ -43,6 +43,7 @@ import { AcrDraft } from "./components/AcrDraft";
 import { BlockedNotice } from "./components/BlockedNotice";
 import { ScanHistory } from "./components/ScanHistory";
 import { PrintButton } from "./components/PrintButton";
+import { Button } from "./components/Button";
 import { WCAG_LINK } from "./lib/wcagPlain";
 import {
   recordScan,
@@ -190,10 +191,17 @@ export function App({
     formRef.current?.querySelector<HTMLInputElement>("#a11y-url-input")?.focus();
   };
 
+  /* The one jump both navs use. A bare href="#id" does not reliably scroll
+     from inside a shadow root, and scrolling without moving focus leaves a
+     keyboard user's next Tab back where they started. */
+  const jumpTo = (target: HTMLElement) => {
+    target.scrollIntoView({ behavior: "smooth", block: "start" });
+    if (!target.hasAttribute("tabindex")) target.setAttribute("tabindex", "-1");
+    target.focus({ preventScroll: true });
+  };
+
   /* "See the N findings" — scroll AND move focus, the same pairing focusForm
-     uses. A bare href="#id" does not reliably scroll from inside a shadow
-     root, and scrolling without moving focus leaves a keyboard user's next
-     Tab back at the panel they just left. */
+     uses. */
   const focusFindings = (id = "a11y-accessibility-heading") => {
     const target = shellContentRef.current?.querySelector<HTMLElement>(`#${id}`);
     target?.scrollIntoView({ block: "start" });
@@ -317,6 +325,36 @@ export function App({
       aria-label="Website accessibility check"
     >
     <AppShell
+      onJump={jumpTo}
+      /* The run controls live in the top bar now, for both audiences.
+         "Export report" is professional-only: business mode already has
+         Save as PDF in the report-actions panel, with the sentence that
+         explains what the print dialog is, and two routes to the same
+         export is the duplication this report keeps having to undo. */
+      topActions={
+        report || audit ? (
+          <>
+            {report && (
+              <Button
+                onClick={() =>
+                  handleScan(
+                    report.url,
+                    report.meta.aiReviewStatus === "completed",
+                    "page",
+                    5
+                  )
+                }
+              >
+                Run scan
+              </Button>
+            )}
+            {professional && <PrintButton label="Export report" compact />}
+            <Button variant="ghost" onClick={focusForm}>
+              New scan
+            </Button>
+          </>
+        ) : undefined
+      }
       navMeta={
         report
           ? `${hostnameOf(report.url)} \u00b7 ${new Date(report.scannedAt).toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" })}`
@@ -463,17 +501,7 @@ export function App({
               cleanCount={proCleanCount}
               view={proView}
               onViewChange={setProView}
-              actions={<PrintButton label="Export report" compact />}
-              onNewScan={focusForm}
               onSeeFindings={() => focusFindings("a11y-pro-findings")}
-              onRunScan={() =>
-                handleScan(
-                  report.url,
-                  report.meta.aiReviewStatus === "completed",
-                  "page",
-                  5
-                )
-              }
             />
           ) : (
             <>

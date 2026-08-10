@@ -1,5 +1,6 @@
 import type { ReactNode, RefObject } from "react";
 import { SideNav, type NavSection } from "./SideNav";
+import { TopNav } from "./TopNav";
 import { PlansBar, type Plan } from "./PlansBar";
 
 /**
@@ -13,6 +14,8 @@ export function AppShell({
   sections,
   activeId,
   navMeta,
+  topActions,
+  onJump,
   plans,
   contentRef,
   children,
@@ -22,6 +25,10 @@ export function AppShell({
   /* "hostname · date" for the nav's footer. Optional: before a report
      exists there is nothing to name. */
   navMeta?: string;
+  /* The top bar's run controls. */
+  topActions?: ReactNode;
+  /* Shared with SideNav so the two navs cannot scroll or focus differently. */
+  onJump: (el: HTMLElement) => void;
   /* The embedder's plans, if they configured any. Rendered above the nav
      and nowhere else, so the report below it stays one continuous
      document. */
@@ -35,6 +42,12 @@ export function AppShell({
   return (
     <>
       <header className="a11y-shell-header">
+        <TopNav
+          sections={sections}
+          activeId={activeId}
+          actions={topActions}
+          onJump={onJump}
+        />
         <PlansBar plans={plans} />
       </header>
       {/* Nav and content share one grid area rather than taking a row each.
@@ -45,7 +58,14 @@ export function AppShell({
           wrapper its containing block is the whole report, which is the
           distance it was always meant to travel. */}
       <div className="a11y-shell-main">
-        {hasNav && <SideNav sections={sections} activeId={activeId} meta={navMeta} />}
+        {hasNav && (
+          <SideNav
+            sections={sections}
+            activeId={activeId}
+            meta={navMeta}
+            onJump={onJump}
+          />
+        )}
         <div className="a11y-shell-content" ref={contentRef}>
           {children}
         </div>

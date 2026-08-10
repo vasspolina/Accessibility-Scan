@@ -1,7 +1,5 @@
-import type { ReactNode } from "react";
 import type { AccessibilityReport, AccessibilityFinding } from "../api/scanClient";
 import { SCORE_POINTS } from "./ScoreGauge";
-import { Button } from "./Button";
 import { Notification } from "./Feedback";
 
 export type ProView = "issues" | "clean";
@@ -40,9 +38,6 @@ export function ProSummary({
   report,
   issueCount,
   cleanCount,
-  actions,
-  onNewScan,
-  onRunScan,
   onSeeFindings,
 }: {
   report: AccessibilityReport;
@@ -50,9 +45,6 @@ export function ProSummary({
   cleanCount: number;
   view: ProView;
   onViewChange: (v: ProView) => void;
-  actions?: ReactNode;
-  onNewScan?: () => void;
-  onRunScan?: () => void;
   onSeeFindings?: () => void;
 }) {
   const total = report.summary.total;
@@ -64,19 +56,9 @@ export function ProSummary({
 
   return (
     <section className="a11y-pro-panel" aria-labelledby="a11y-score-heading">
-      <div className="a11y-pro-bar">
-        <span className="a11y-pro-host">{host}</span>
-        <div className="a11y-pro-actions">
-          {onRunScan && <Button onClick={onRunScan}>Run scan</Button>}
-          {actions}
-          {onNewScan && (
-            <Button variant="ghost" onClick={onNewScan}>
-              New scan
-            </Button>
-          )}
-        </div>
-      </div>
-
+      {/* The host pill and the run controls moved to the shell's top bar,
+          which is where the design puts them and where they are reachable
+          from every section rather than only from the top of this panel. */}
       <div className="a11y-pro-titlerow">
         <h2 className="a11y-results-title" id="a11y-score-heading" data-nav-label="Score">
           {host} — scan results

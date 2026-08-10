@@ -38,9 +38,12 @@ export function SideNav({
   sections,
   activeId,
   meta,
+  onJump,
 }: {
   sections: NavSection[];
   activeId: string | null;
+  /* Shared with TopNav, so a jump from either lands the same way. */
+  onJump: (el: HTMLElement) => void;
   /* What was scanned and when — "stedelijk.nl · 8 Aug 2026". Footed under
      the list because the rail is the one thing on screen at every scroll
      position, so it is where "which report am I in" belongs. */
@@ -52,10 +55,7 @@ export function SideNav({
 
   const go = (target: HTMLElement) => (e: React.MouseEvent) => {
     e.preventDefault();
-    setOpen(false);
-    target.scrollIntoView({ behavior: "smooth", block: "start" });
-    if (!target.hasAttribute("tabindex")) target.setAttribute("tabindex", "-1");
-    target.focus({ preventScroll: true });
+    onJump(target);
   };
 
   return (

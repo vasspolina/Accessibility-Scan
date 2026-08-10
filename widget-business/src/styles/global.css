@@ -718,7 +718,10 @@
   padding: var(--space-04) 0;
   border-top: 1px solid var(--border-subtle);
 }
-.a11y-widget-biz .a11y-score-preview-row:first-child { border-top: 0; padding-top: 0; }
+/* Dead since these rows became separate tinted cards rather than a
+   hairline-separated list. It outranks the card rule that follows (0,3,0
+   against 0,2,0), so it was knocking the top padding off the first row and
+   pinning its text to the card's own edge. */
 
 /* The criterion goes under the finding, not on from the end of its last word. */
 .a11y-widget-biz .a11y-score-preview-desc {
@@ -2300,3 +2303,147 @@
   }
   .a11y-widget-biz .a11y-shell-nav-head { display: block; }
 }
+
+/* ── Top bar ─────────────────────────────────────────────────────────────
+   The product as a pill, four primary destinations, and the run controls,
+   on one sunken bar. Same pill vocabulary as the Sections card so the two
+   navs read as one system. */
+.a11y-widget-biz .a11y-topnav {
+  display: flex; align-items: center;
+  gap: var(--space-05);
+  flex-wrap: wrap;
+  padding: var(--space-04);
+  border-radius: var(--radius-pill);
+  background: var(--layer-01);
+  margin-bottom: var(--space-05);
+}
+.a11y-widget-biz .a11y-topnav-brand {
+  flex: 0 0 auto;
+  padding: var(--space-04) var(--space-06);
+  border-radius: var(--radius-pill);
+  background: var(--white);
+  font-size: 18px; font-weight: 500;
+  white-space: nowrap;
+}
+.a11y-widget-biz .a11y-topnav-links {
+  display: flex; align-items: center;
+  gap: var(--space-05);
+  flex-wrap: wrap;
+}
+.a11y-widget-biz .a11y-topnav-link {
+  padding: var(--space-03) var(--space-02);
+  color: var(--text-primary);
+  text-decoration: none;
+  font-size: 18px;
+  border-radius: var(--radius-sm);
+}
+.a11y-widget-biz .a11y-topnav-link:hover { text-decoration: underline; text-underline-offset: 3px; }
+/* Current carries weight as well as hue, so it never rests on colour.
+   purple-70 is 7.35:1 on --layer-01. */
+.a11y-widget-biz .a11y-topnav-link[aria-current]:not([aria-current="false"]) {
+  color: var(--purple-70);
+  font-weight: 500;
+}
+.a11y-widget-biz .a11y-topnav-actions {
+  display: flex; align-items: center;
+  gap: var(--space-04);
+  margin-left: auto;
+  flex-wrap: wrap;
+}
+
+/* The fix-kind filter, as the design's chip row. */
+.a11y-widget-biz .a11y-filter {
+  display: flex; flex-wrap: wrap;
+  gap: var(--space-04);
+  margin-bottom: var(--space-05);
+}
+.a11y-widget-biz .a11y-filter-btn {
+  min-height: 40px;
+  padding: 0 var(--space-05);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-pill);
+  background: var(--white);
+  color: var(--text-primary);
+  cursor: pointer;
+  font-size: 18px;
+  letter-spacing: inherit;
+}
+.a11y-widget-biz .a11y-filter-btn:hover { background: var(--layer-01); }
+/* Also resets the ground: these buttons carry .a11y-mode-btn-active as well,
+   which fills them dark, and setting only the ink put purple on black at
+   2.33:1. The design marks the current chip with an outline, not a fill.
+   purple-70 on white is 7.74:1. */
+.a11y-widget-biz .a11y-filter-btn[aria-pressed="true"] {
+  background: var(--white);
+  border-color: var(--purple-70);
+  color: var(--purple-70);
+  font-weight: 500;
+}
+
+/* Chrome, not report. */
+@media print {
+  .a11y-widget-biz .a11y-topnav,
+  .a11y-widget-biz .a11y-filter { display: none; }
+}
+
+/* The score card and the findings list were sharing the width evenly, which
+   left the rows 317px and broke "Images have no description" across two
+   lines with the count stranded. The card holds one number and a short
+   note; the rows hold sentences. Measured, not guessed: at a 1000px panel
+   the list goes 317 → 620. */
+.a11y-widget-biz .a11y-stat-row {
+  grid-template-columns: minmax(260px, 340px) minmax(0, 1fr);
+}
+@container a11y-panel (max-width: 700px) {
+  .a11y-widget-biz .a11y-stat-row { grid-template-columns: 1fr; }
+}
+
+/* Top bar at 14px — the type floor, and a menu is labels, not body text.
+   It also puts the bar back on one row: at 18px the actions wrapped below
+   the links. */
+.a11y-widget-biz .a11y-topnav-brand,
+.a11y-widget-biz .a11y-topnav-link { font-size: 14px; }
+.a11y-widget-biz .a11y-topnav-brand { padding: var(--space-03) var(--space-05); }
+.a11y-widget-biz .a11y-topnav-actions .a11y-btn {
+  min-height: 36px;
+  padding: 0 var(--space-05);
+  font-size: 14px;
+}
+
+/* ── The content column as its own container ─────────────────────────────
+   container-name: a11y-panel sits on .a11y-widget-inner, which is the whole
+   widget — nav rail included. So every @container a11y-panel rule has been
+   measuring 1008px while the content it styles had 650px, and breakpoints
+   fired 358px late. That is why the score row kept two columns at a width
+   where the findings list was narrower than the card beside it.
+
+   A SECOND container rather than re-pointing a11y-panel: about a dozen
+   rules already read that name, and several were written against the wrong
+   box, so their thresholds may have been tuned to compensate. Moving it
+   would silently re-tune all of them. New rules measure the right box; the
+   old ones keep the behaviour they were verified with. */
+.a11y-widget-biz .a11y-shell-content {
+  container-type: inline-size;
+  container-name: a11y-content;
+}
+
+@container a11y-content (max-width: 700px) {
+  .a11y-widget-biz .a11y-stat-row { grid-template-columns: 1fr; }
+}
+
+/* 30px above the section's title. */
+.a11y-widget-biz .a11y-score .a11y-section-title { margin-top: 30px; }
+
+/* The Sections pills at the same 14px as the top bar — both are menus, and
+   two navigation surfaces at different sizes read as two systems. */
+.a11y-widget-biz .a11y-shell-nav-link { font-size: 14px; }
+
+/* Pills 5px less tall — 12px of padding each side became 9.5 — and the rail
+   30px narrower, which the 14px labels leave room for. */
+.a11y-widget-biz .a11y-shell-nav-link { padding: 9.5px var(--space-05); }
+.a11y-widget-biz .a11y-shell-with-nav .a11y-shell-main {
+  grid-template-columns: 254px minmax(0, 1fr);
+}
+
+/* Top bar 2px shorter: 12px of padding each side becomes 11. */
+.a11y-widget-biz .a11y-topnav { padding: 11px var(--space-04); }
