@@ -66,7 +66,11 @@
   width: 100%;
   padding: var(--space-09) var(--space-06);   /* template */
   container-type: inline-size;
-  container-name: a11y-panel;
+  /* The WHOLE widget, nav rail included. Rules about the shell — the rail,
+     the outer padding, the two-column shell grid — belong here, because
+     those things live outside the content column and a container on the
+     content could never see them. */
+  container-name: a11y-shell;
 }
 
 /* Shell: nav rail beside the report. */
@@ -146,7 +150,10 @@
    212 + 40, so at an 825px panel the content column was left with about 125px
    and everything in it burst the panel. Below 1040 the head goes above its
    content; the rail survives further down because it only costs 252. */
-@container a11y-panel (max-width: 1040px) {
+/* 712, not 1040. Same moment, restated: a11y-panel used to measure the whole
+   widget, and 1040 there was 712 of content once the rail (254), its gutter
+   (40) and the outer padding (34) came off. Measured, not derived twice. */
+@container a11y-panel (max-width: 712px) {
   .a11y-widget-biz .a11y-section:has(> .a11y-section-head),
   .a11y-widget-biz .a11y-section:has(> .a11y-section-title) {
     grid-template-columns: 1fr;
@@ -154,7 +161,7 @@
   .a11y-widget-biz .a11y-section > * { grid-column: 1; }
 }
 
-@container a11y-panel (max-width: 760px) {
+@container a11y-shell (max-width: 760px) {
   .a11y-widget-biz .a11y-shell-with-nav .a11y-shell-main {
     grid-template-columns: 1fr;
   }
@@ -1154,7 +1161,9 @@
   grid-template-columns: repeat(2, minmax(0, 1fr));
 }
 
-@container a11y-panel (max-width: 620px) {
+/* 586, not 620: below the shell's own breakpoint the rail is gone, so the
+   only difference between the two boxes is the 34px of outer padding. */
+@container a11y-panel (max-width: 586px) {
   .a11y-widget-biz .a11y-url-form .a11y-radio-group { grid-template-columns: 1fr; }
 }
 
@@ -1325,7 +1334,7 @@
    room to breathe; the form wants more of the width than that leaves it. */
 .a11y-widget-biz .a11y-widget-inner { padding-inline: 17px; }
 
-@container a11y-panel (max-width: 620px) {
+@container a11y-shell (max-width: 620px) {
   .a11y-widget-biz .a11y-widget-inner { padding-inline: 17px; }
 }
 
@@ -1493,7 +1502,13 @@
   position: absolute;
   margin: 0;
   padding: 0;
+  /* Both axes. Height alone left an absolutely-positioned box at its
+     containing block's full width — measured 1400px, reaching 105px past
+     the viewport and giving the host page a horizontal scrollbar for an
+     element with nothing in it. */
+  width: 0;
   height: 0;
+  overflow: hidden;
 }
 
 .a11y-widget-biz .a11y-url-submit { margin-top: 0; }
@@ -2012,7 +2027,7 @@
    always shown and the button would be a control for nothing. */
 .a11y-widget-biz .a11y-shell-nav-toggle { display: none; }
 
-@container a11y-panel (max-width: 760px) {
+@container a11y-shell (max-width: 760px) {
   .a11y-widget-biz .a11y-shell-nav {
     position: static;
     max-height: none;
@@ -2094,7 +2109,7 @@
   overflow-wrap: anywhere;
 }
 
-@container a11y-panel (max-width: 760px) {
+@container a11y-shell (max-width: 760px) {
   /* Collapsed, the nav IS the toggle: no card, because a tinted card whose
      only content is a white pill is a bubble inside a bubble. The card
      comes back when the list is open, where it has something to hold — and
@@ -2293,7 +2308,7 @@
 .a11y-widget-biz .a11y-shell-nav ul[data-open="false"] ~ .a11y-shell-nav-meta { display: none; }
 .a11y-widget-biz .a11y-shell-nav ul[data-open="true"] { margin-top: 0; }
 
-@container a11y-panel (max-width: 760px) {
+@container a11y-shell (max-width: 760px) {
   /* No longer a special case: the card and its header are the same here as
      anywhere, so the narrow overrides that stripped them come back off. */
   .a11y-widget-biz .a11y-shell-nav {
@@ -2394,9 +2409,7 @@
 .a11y-widget-biz .a11y-stat-row {
   grid-template-columns: minmax(260px, 340px) minmax(0, 1fr);
 }
-@container a11y-panel (max-width: 700px) {
-  .a11y-widget-biz .a11y-stat-row { grid-template-columns: 1fr; }
-}
+
 
 /* Top bar at 14px — the type floor, and a menu is labels, not body text.
    It also puts the bar back on one row: at 18px the actions wrapped below
@@ -2424,10 +2437,13 @@
    old ones keep the behaviour they were verified with. */
 .a11y-widget-biz .a11y-shell-content {
   container-type: inline-size;
-  container-name: a11y-content;
+  /* a11y-panel now resolves HERE, which is what every rule reading it
+     already meant by "the panel" — the column its content actually gets.
+     On .a11y-widget-inner it was measuring 1008 while this measured 650. */
+  container-name: a11y-panel;
 }
 
-@container a11y-content (max-width: 700px) {
+@container a11y-panel (max-width: 700px) {
   .a11y-widget-biz .a11y-stat-row { grid-template-columns: 1fr; }
 }
 
@@ -2511,3 +2527,74 @@
 
 /* Nothing to send on paper, and a field printed empty is a puzzle. */
 @media print { .a11y-widget-biz .a11y-ra-email-form { display: none; } }
+
+/* ── The shell collapse, restated last ───────────────────────────────────
+   The rule that drops the shell to one column below 760 lives near the top
+   of this file. Two later blocks then set the rail's width on the same
+   selector — 284px, then 254px — at equal specificity, so source order
+   handed them the win and the collapse stopped happening at any width.
+
+   Measured before this: at a 560px widget the rail still took 254px and the
+   content column was left with 232. A phone-width embed had a report in a
+   232px gutter.
+
+   Restated here, after both, so the collapse is the last word. */
+@container a11y-shell (max-width: 760px) {
+  .a11y-widget-biz .a11y-shell-with-nav .a11y-shell-main {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* A <table> will not shrink below its own min-content width, so in a grid
+   track narrower than that it simply hangs out of the column — measured 92px
+   past the content edge at a 666px column. table-layout: fixed makes the
+   columns take the width they are given instead of the width they want.
+   Not overflow-x on the table: overflow does not create a scroll box on
+   display: table, which is the trap this repo has hit before. */
+.a11y-widget-biz .a11y-datatable { table-layout: fixed; }
+.a11y-widget-biz .a11y-datatable td,
+.a11y-widget-biz .a11y-datatable th { overflow-wrap: anywhere; }
+
+/* The statement and the ACR draft are <pre> so their line breaks survive
+   being copied. white-space: pre also means they never wrap, and the
+   longest line here measured 4770px inside a 1056px column — which every
+   ancestor inherits as scrollWidth, all the way up to the HOST page's
+   document. An embedded widget handing its host a horizontal scrollbar is
+   the worst version of this bug, because the host did nothing wrong and
+   cannot see why.
+
+   pre-wrap, not pre: the newlines that matter are still honoured, and only
+   the over-long lines fold. anywhere for the URLs, which have no space to
+   break at. */
+.a11y-widget-biz .a11y-stmt-text,
+.a11y-widget-biz .a11y-acr-text {
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+/* A pill cannot shrink below its own label, so at narrow widths the fix-kind
+   badge hung out of the column. 620, not the 460 tried first: measured, it
+   still overflowed at content widths of 526 and 572, which 460 never
+   reached. The threshold came from where it actually breaks, not from where
+   a phone-sized guess put it. */
+@container a11y-panel (max-width: 620px) {
+  .a11y-widget-biz .a11y-method-badge { white-space: normal; }
+}
+
+/* Selectors and element snippets are single unbreakable tokens — `<a
+   href="/about" class="muted">` has nowhere a normal line break may go, so
+   the <code> holding it kept its full width and hung out of the column,
+   measured 35px past it. anywhere lets the break land mid-token, which for
+   a selector is the readable choice and for a URL the only one. */
+.a11y-widget-biz code { overflow-wrap: anywhere; }
+
+/* The professional snippet is a <pre>, so white-space: pre wins and the
+   overflow-wrap above does nothing — wrapping is not permitted at all under
+   `pre`, whatever the wrap rule says. These are element snippets, not
+   aligned code: no column matters, so pre-wrap costs nothing and stops a
+   639px line hanging 381px out of a 572px column. */
+.a11y-widget-biz .a11y-pro-snippet,
+.a11y-widget-biz .a11y-pro-snippet code {
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
