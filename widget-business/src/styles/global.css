@@ -191,6 +191,10 @@
   /* Real ramp values, read from the design system's own tokens/colors.css
      rather than sampled. --purple-20 #e8daff is the panel ground the earlier
      --purple-15 #ebe2fb was guessing at from a screenshot; the guess is gone. */
+  /* The step tones' soft/ink pairs, from the same ramps. Measured on the
+     selected card: 13.71 / 13.73 / 13.84. */
+  --green-20: #a7f0ba; --green-100: #071908;
+  --blue-20: #d0e2ff;
   --purple-10: #f6f2ff; --purple-20: #e8daff; --purple-60: #8a3ffc;
   --purple-70: #6929c4; --purple-100: #1c0f30;
   --orange-20: #ffd9be; --orange-50: #eb6200;
@@ -2769,4 +2773,90 @@
   .a11y-widget-biz .a11y-sum-run,
   .a11y-widget-biz .a11y-sum-dial-card { background: none; padding: 0; }
   .a11y-widget-biz .a11y-sum-actions { display: none; }
+}
+
+/* ── The scan form, as the design's NewScan screen ───────────────────────
+   Ported from ui_kits/scan-app/NewScan.jsx, read out of the design project.
+   Its idea is one tone per step — violet, green, blue — carried by the
+   numeral, the aside pill, the selected card and that step's own bar. Each
+   tone is soft / strong / ink from one ramp, so a selected card is always
+   ink-on-soft and its tag always white-on-strong.
+
+   Measured before shipping: ink on soft 13.71 / 13.73 / 13.84, white on
+   strong 7.74 / 5.02 / 5.00, numerals on white 7.74 / 5.02 / 5.00. */
+.a11y-widget-biz .a11y-tone-violet { --tone-soft: var(--purple-20); --tone-strong: var(--purple-70); --tone-ink: var(--purple-100); }
+.a11y-widget-biz .a11y-tone-green  { --tone-soft: var(--green-20);  --tone-strong: var(--green-60);  --tone-ink: var(--green-100); }
+.a11y-widget-biz .a11y-tone-blue   { --tone-soft: var(--blue-20);   --tone-strong: var(--blue-60);   --tone-ink: var(--blue-100); }
+
+.a11y-widget-biz .a11y-step-num { color: var(--tone-strong, var(--text-secondary)); }
+/* The aside beside the heading — "This page takes about 15 seconds". */
+.a11y-widget-biz .a11y-step-note {
+  padding: 4px 14px;
+  border-radius: var(--radius-pill);
+  background: var(--tone-soft, var(--layer-01));
+  color: var(--tone-ink, var(--text-primary));
+  font-size: 15px; font-weight: 500;
+}
+
+/* Option cards become pills, and the meta badge moves inside the card at
+   its right end rather than straddling the top edge. */
+.a11y-widget-biz .a11y-optioncard {
+  border-radius: var(--radius-pill);
+  border: 1px solid transparent;
+  background: var(--layer-01);
+  padding: var(--space-05) var(--space-06);
+}
+.a11y-widget-biz .a11y-optioncard:has(> input:checked) {
+  background: var(--tone-soft, var(--green-20));
+  border-color: var(--tone-strong, var(--green-60));
+  color: var(--tone-ink, var(--green-100));
+}
+.a11y-widget-biz .a11y-optioncard-meta {
+  position: static;
+  align-self: center;
+  margin: 0;
+  background: transparent;
+  color: var(--text-secondary);
+}
+.a11y-widget-biz .a11y-optioncard:has(> input:checked) .a11y-optioncard-meta {
+  background: var(--tone-strong, var(--green-60));
+  color: var(--white);
+}
+/* The badge no longer overhangs, so the row above needs no clearance. */
+.a11y-widget-biz .a11y-optioncard:has(> .a11y-optioncard-meta) { margin-top: 0; }
+
+/* The address field: one pill holding the input and the login trigger. */
+.a11y-widget-biz .a11y-url-helper-row { align-items: center; }
+
+/* The action bar: note at the left, black submit at the right end. */
+.a11y-widget-biz .a11y-url-submit {
+  align-items: center;
+  gap: var(--space-04);
+  flex-wrap: wrap;
+  padding: var(--space-03);
+  border-radius: var(--radius-pill);
+  background: var(--purple-20);
+}
+.a11y-widget-biz .a11y-url-submit-note {
+  flex: 1 1 240px; min-width: 0;
+  padding: 0 var(--space-05);
+  font-size: 15px;
+  color: var(--purple-100);          /* 13.71:1 */
+}
+.a11y-widget-biz .a11y-url-submit .a11y-btn {
+  min-height: 56px;
+  padding: 0 var(--space-07);
+  border-radius: var(--radius-pill);
+  background: var(--text-primary);
+  color: var(--text-on-invert);
+  font-size: 20px;
+}
+.a11y-widget-biz .a11y-url-submit .a11y-btn:hover:not(:disabled) { background: var(--gray-80, #393939); }
+
+/* The AI row takes step 03's blue. */
+.a11y-widget-biz .a11y-ai-card {
+  border-radius: var(--radius-pill);
+  background: var(--blue-20);
+  color: var(--blue-100);            /* 13.84:1 */
+  padding: var(--space-05) var(--space-06);
 }

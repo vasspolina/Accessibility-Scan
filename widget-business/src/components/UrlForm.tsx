@@ -148,7 +148,7 @@ export function UrlForm({
               rather than left to the component: this field's description is
               one of four ids depending on the error state, which the
               component's own ${id}-help cannot express. */}
-          <div className="a11y-step-group">
+          <div className="a11y-step-group a11y-tone-violet">
           <span className="a11y-step-num" aria-hidden="true">01</span>
           <div className="a11y-step-body">
           <div className="a11y-step-head">
@@ -210,22 +210,22 @@ export function UrlForm({
               form, three steps below the only field that is required — so the
               scan could be started from step 01 without scrolling past scope
               and report style, both of which have defaults. */}
+          {/* The design's tinted action bar: the note on the left, the black
+              submit at the right end. The note leads in the DOM because it
+              reads first on screen — doing that with flex order would leave a
+              screen reader hearing the button before its explanation. */}
           <div className="a11y-url-submit">
-            {/* The note comes first in the DOM because it now reads first on
-                screen. Doing this with flex-direction rather than in the markup
-                would leave a screen reader hearing the button before the line
-                that explains it. */}
-            <Button type="submit" size="lg" disabled={loading}>
-              {loading ? "One moment\u2026" : "Start the scan"}
-            </Button>
             <span className="a11y-url-submit-note">
               Keep this page open — the scan runs here.
             </span>
+            <Button type="submit" size="lg" disabled={loading}>
+              {loading ? "One moment\u2026" : "Start the scan"}
+            </Button>
           </div>
           </div>
           </div>
 
-          <div className="a11y-step-group">
+          <div className="a11y-step-group a11y-tone-green">
           <span className="a11y-step-num" aria-hidden="true">02</span>
           <div className="a11y-step-body">
           {/* The note is a sibling of the heading, not a child of it: inside,
@@ -274,7 +274,7 @@ export function UrlForm({
           </div>
           </div>
 
-          <div className="a11y-step-group">
+          <div className="a11y-step-group a11y-tone-blue">
           <span className="a11y-step-num" aria-hidden="true">03</span>
           <div className="a11y-step-body">
           <div className="a11y-step-head">
