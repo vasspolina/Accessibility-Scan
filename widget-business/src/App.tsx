@@ -4,6 +4,7 @@ import { flushSync } from "react-dom";
 import { UrlForm, type ScanMode } from "./components/UrlForm";
 import { ScoreGauge } from "./components/ScoreGauge";
 import { ReportActions } from "./components/ReportActions";
+import { ScanSettings } from "./components/ScanSettings";
 import { AppShell } from "./components/AppShell";
 import type { Plan } from "./components/PlansBar";
 import type { NavSection } from "./components/SideNav";
@@ -343,6 +344,30 @@ export function App({
     >
     <AppShell
       onJump={jumpTo}
+      /* The run's settings live in the rail once there is a run to describe.
+         Report style flips in place; the other two re-run the scan, which is
+         why they are buttons that name the cost rather than switches. */
+      navSettings={
+        report || audit ? (
+          <ScanSettings
+            audience={audience}
+            onAudienceChange={setAudience}
+            aiIncluded={report?.meta.aiReviewStatus === "completed"}
+            scope={mode}
+            busy={loading}
+            onRerun={({ ai, scope }) => {
+              const url = report?.url ?? audit?.pages[0]?.url;
+              if (!url) return;
+              handleScan(
+                url,
+                ai ?? report?.meta.aiReviewStatus === "completed",
+                scope ?? mode,
+                5
+              );
+            }}
+          />
+        ) : undefined
+      }
       /* The run controls live in the top bar now, for both audiences.
          "Export report" is professional-only: business mode already has
          Save as PDF in the report-actions panel, with the sentence that

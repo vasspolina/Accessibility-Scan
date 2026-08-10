@@ -38,10 +38,13 @@ export function SideNav({
   sections,
   activeId,
   meta,
+  settings,
   onJump,
 }: {
   sections: NavSection[];
   activeId: string | null;
+  /* The run's settings, rendered under the section list. */
+  settings?: React.ReactNode;
   /* Shared with TopNav, so a jump from either lands the same way. */
   onJump: (el: HTMLElement) => void;
   /* What was scanned and when — "stedelijk.nl · 8 Aug 2026". Footed under
@@ -104,6 +107,7 @@ export function SideNav({
           </li>
         ))}
       </ul>
+      {settings}
       {meta && <p className="a11y-shell-nav-meta">{meta}</p>}
     </nav>
   );

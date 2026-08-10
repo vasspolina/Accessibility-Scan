@@ -14,6 +14,7 @@ export function AppShell({
   sections,
   activeId,
   navMeta,
+  navSettings,
   topActions,
   onJump,
   plans,
@@ -25,6 +26,8 @@ export function AppShell({
   /* "hostname · date" for the nav's footer. Optional: before a report
      exists there is nothing to name. */
   navMeta?: string;
+  /* The run's settings, shown in the rail under the section list. */
+  navSettings?: ReactNode;
   /* The top bar's run controls. */
   topActions?: ReactNode;
   /* Shared with SideNav so the two navs cannot scroll or focus differently. */
@@ -63,6 +66,7 @@ export function AppShell({
             sections={sections}
             activeId={activeId}
             meta={navMeta}
+            settings={navSettings}
             onJump={onJump}
           />
         )}

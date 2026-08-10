@@ -972,7 +972,18 @@
   line-height: 1.25;
   font-weight: 500;
 }
+/* The input's own ring is suppressed because the FIELD is the shell — the
+   underlined row, not the bare text box — so the indicator belongs there.
+   It was suppressed without ever being moved, which left the widget's single
+   most important control with no visible focus at all: WCAG 2.4.7, failed in
+   Chromium, Firefox and WebKit alike, by the tool that reports 2.4.7 on
+   other people's sites. :focus-within puts it on the shell. */
 .a11y-widget-biz .a11y-url-form .a11y-input-shell > input:focus-visible { outline: 0; }
+.a11y-widget-biz .a11y-url-form .a11y-input-shell:focus-within {
+  outline: 2px solid var(--focus);
+  outline-offset: 4px;
+  border-radius: 2px;
+}
 .a11y-widget-biz .a11y-url-form .a11y-input-label {
   font-size: 15px; font-weight: 500; color: var(--text-primary);
 }
@@ -1176,7 +1187,11 @@
 /* 586, not 620: below the shell's own breakpoint the rail is gone, so the
    only difference between the two boxes is the 34px of outer padding. */
 @container a11y-panel (max-width: 586px) {
-  .a11y-widget-biz .a11y-url-form .a11y-radio-group { grid-template-columns: 1fr; }
+  /* minmax(0, 1fr), NOT 1fr. Plain 1fr is minmax(auto, 1fr), and auto is
+     min-content, so the track cannot shrink below the widest card — which at
+     375px was 290px in a 245px column, 45px out, and gave the HOST page a
+     20px horizontal scrollbar. Caught in all three engines at phone width. */
+  .a11y-widget-biz .a11y-url-form .a11y-radio-group { grid-template-columns: minmax(0, 1fr); }
 }
 
 /* A <legend> is painted into the fieldset's border by the UA, which is why the
@@ -2860,3 +2875,238 @@
   color: var(--blue-100);            /* 13.84:1 */
   padding: var(--space-05) var(--space-06);
 }
+
+/* The radio sits on the card's centre line, not at the top of it. Two
+   earlier blocks set align-items: flex-start and nudged the input down 2px
+   — right when the card was a top-aligned box, wrong now it is a pill whose
+   description can run to two lines, which left the dot floating high. The
+   design's own card is align-items: center. */
+.a11y-widget-biz .a11y-optioncard { align-items: center; }
+.a11y-widget-biz .a11y-optioncard > input[type="radio"] { margin-top: 0; }
+
+/* And the card's own text has to be allowed to shrink, or the track's
+   min-content floor just moves inside the card: a flex child defaults to
+   min-width:auto, so the label held the row open at its own width while the
+   nowrap meta pill added 116px beside it. */
+.a11y-widget-biz .a11y-optioncard-text { min-width: 0; }
+.a11y-widget-biz .a11y-optioncard > * { min-width: 0; }
+
+/* ── The four families the style check kept reporting ────────────────────
+   All the same fault: adjacent inline spans with no rule to separate them,
+   so each rendered as run-together text — "629 Aug 2026" for a score and a
+   date, "Starter£19 a monthBuy now" for a plan, "We found problems1 at
+   level A" for a result and its breakdown. The markup was always right; the
+   rules were never written. */
+
+/* Scan history. */
+.a11y-widget-biz .a11y-hist-head {
+  margin: var(--space-06) 0 var(--space-04);
+  font-size: 18px; font-weight: 500;
+}
+.a11y-widget-biz .a11y-hist-list,
+.a11y-widget-biz .a11y-hist-runs {
+  display: flex; flex-direction: column; gap: var(--space-03);
+  margin: 0; padding: 0; list-style: none;
+}
+.a11y-widget-biz .a11y-hist-list > li {
+  padding: var(--space-04) var(--space-05);
+  border-radius: var(--radius-md);
+  background: var(--layer-01);
+  font-size: 18px;
+}
+.a11y-widget-biz .a11y-hist-fixed { border-left: 3px solid var(--green-60); }
+.a11y-widget-biz .a11y-hist-new   { border-left: 3px solid var(--red-60); }
+/* The run rows: score, date, and an optional "just now". */
+.a11y-widget-biz .a11y-hist-runs > li {
+  display: flex; align-items: baseline; gap: var(--space-05);
+  padding: var(--space-03) var(--space-05);
+  border-radius: var(--radius-md);
+  background: var(--layer-01);
+  font-size: 18px;
+}
+.a11y-widget-biz .a11y-hist-score {
+  flex: 0 0 3rem;
+  font-size: 24px; font-weight: 500;
+}
+.a11y-widget-biz .a11y-hist-runs > li > span:not(.a11y-hist-score) {
+  flex: 1 1 auto; color: var(--text-secondary);
+}
+.a11y-widget-biz .a11y-hist-runs em {
+  flex: 0 0 auto;
+  font-style: normal; font-size: 15px; color: var(--text-secondary);
+}
+
+/* Plans. */
+.a11y-widget-biz .a11y-plans-bar { margin-bottom: var(--space-05); }
+.a11y-widget-biz .a11y-plans-list {
+  display: flex; flex-wrap: wrap; gap: var(--space-04);
+  margin: 0; padding: 0; list-style: none;
+}
+.a11y-widget-biz .a11y-plan {
+  display: flex; align-items: center; gap: var(--space-04);
+  padding: var(--space-04) var(--space-05);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-pill);
+  background: var(--white);
+  font-size: 15px;
+}
+.a11y-widget-biz .a11y-plan-featured { border-color: var(--text-primary); }
+.a11y-widget-biz .a11y-plan-name  { font-weight: 500; }
+.a11y-widget-biz .a11y-plan-price { color: var(--text-secondary); }
+.a11y-widget-biz .a11y-plan-note  { color: var(--text-secondary); }
+.a11y-widget-biz .a11y-plan-buy {
+  padding: var(--space-02) var(--space-04);
+  border-radius: var(--radius-pill);
+  background: var(--button-primary);
+  color: var(--white);
+  text-decoration: none;
+  font-weight: 500;
+}
+
+/* The conformance table's result cell: a verdict and, under it, what the
+   verdict is made of. */
+.a11y-widget-biz .a11y-conf-cell {
+  display: flex; flex-direction: column; gap: var(--space-02);
+}
+.a11y-widget-biz .a11y-conf-result { font-weight: 500; }
+.a11y-widget-biz .a11y-conf-result-fail { color: var(--red-70); }   /* 7.09:1 */
+.a11y-widget-biz .a11y-conf-result-pass { color: var(--green-70); } /* 6.61:1 */
+.a11y-widget-biz .a11y-conf-meaning { font-size: 15px; color: var(--text-secondary); }
+
+/* ── The address field, as the design's pill ─────────────────────────────
+   Values from ui_kits/scan-app/NewScan.jsx: the field is a lavender pill
+   with a 2px purple edge, the input sits transparent inside it at 32px, and
+   the login trigger is an outlined pill INSIDE the field at its right end —
+   not a separate line underneath. */
+.a11y-widget-biz .a11y-url-form .a11y-input-shell {
+  gap: var(--space-04);
+  padding: var(--space-03) var(--space-03) var(--space-03) var(--space-06);
+  border: 2px solid var(--purple-70);
+  border-radius: var(--radius-pill);
+  background: var(--purple-10);
+}
+.a11y-widget-biz .a11y-url-form .a11y-input-display > input,
+.a11y-widget-biz .a11y-url-form .a11y-input-shell > input {
+  height: 64px;
+  padding: 0;
+  background: transparent;
+  font-size: 32px;
+}
+/* The focus ring follows the field's new shape — it was a square outline
+   around a pill. */
+.a11y-widget-biz .a11y-url-form .a11y-input-shell:focus-within {
+  outline-offset: 3px;
+  border-radius: var(--radius-pill);
+}
+/* Invalid still has to read without colour: the edge thickens AND the
+   helper text below states the problem. */
+.a11y-widget-biz .a11y-url-form .a11y-input-invalid {
+  border-color: var(--severity-critical);
+}
+
+/* The trigger, inside the field. */
+.a11y-widget-biz .a11y-url-form .a11y-login-toggle {
+  flex: 0 0 auto;
+  display: inline-flex; align-items: center;
+  min-height: 48px;
+  padding: 0 var(--space-05);
+  border: 2px solid var(--purple-70);
+  border-radius: var(--radius-pill);
+  background: var(--white);
+  color: var(--purple-70);           /* 7.74:1 on white */
+  cursor: pointer;
+  text-decoration: none;
+  white-space: nowrap;
+  font-size: 15px; font-weight: 500;
+  letter-spacing: inherit;
+}
+.a11y-widget-biz .a11y-url-form .a11y-login-toggle:hover { background: var(--purple-10); }
+
+/* Below the shell's narrow breakpoint the trigger cannot share the row with
+   a 32px address without one of them overflowing — the field wraps instead,
+   and the trigger takes the full width under it. */
+@container a11y-panel (max-width: 586px) {
+  .a11y-widget-biz .a11y-url-form .a11y-input-shell {
+    flex-wrap: wrap;
+    border-radius: var(--radius-lg);
+    padding: var(--space-04);
+  }
+  .a11y-widget-biz .a11y-url-form .a11y-input-shell > input { font-size: 24px; height: 48px; }
+  .a11y-widget-biz .a11y-url-form .a11y-login-toggle { width: 100%; justify-content: center; }
+  .a11y-widget-biz .a11y-url-form .a11y-input-shell:focus-within { border-radius: var(--radius-lg); }
+}
+
+/* ── This scan: the run's settings, in the rail ──────────────────────────
+   Styled to the rail it lives in — white pills on the tinted card — rather
+   than to the reference's mono-and-green look, which was asked for as
+   behaviour rather than appearance. */
+.a11y-widget-biz .a11y-settings {
+  display: flex; flex-direction: column; gap: var(--space-04);
+  margin-top: var(--space-05);
+  padding-top: var(--space-05);
+  border-top: 1px solid var(--border-subtle);
+}
+.a11y-widget-biz .a11y-settings-heading {
+  margin: 0;
+  font-size: 15px; font-weight: 500;
+  text-transform: uppercase;
+  color: var(--text-secondary);
+}
+.a11y-widget-biz .a11y-settings-row {
+  display: flex; flex-direction: column; gap: var(--space-02);
+  padding: var(--space-04);
+  border-radius: var(--radius-md);
+  background: var(--white);
+}
+.a11y-widget-biz .a11y-settings-label {
+  font-size: 14px; font-weight: 500;
+}
+.a11y-widget-biz .a11y-settings-state {
+  font-size: 14px; color: var(--text-secondary);
+}
+
+/* The one free switch. */
+.a11y-widget-biz .a11y-settings-switch { display: flex; gap: 2px; margin-top: var(--space-02); }
+.a11y-widget-biz .a11y-settings-opt {
+  flex: 1 1 0; min-width: 0;
+  min-height: 32px;
+  padding: 0 var(--space-03);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-pill);
+  background: var(--white);
+  color: var(--text-primary);
+  cursor: pointer;
+  font-size: 14px;
+  letter-spacing: inherit;
+}
+/* Current takes a fill AND a weight, so it never rests on colour alone. */
+.a11y-widget-biz .a11y-settings-opt[aria-pressed="true"] {
+  background: var(--text-primary);
+  border-color: var(--text-primary);
+  color: var(--text-on-invert);
+  font-weight: 500;
+}
+
+/* The two that cost a scan. Underlined like a link rather than filled like a
+   switch: it starts something, it does not flip something. */
+.a11y-widget-biz .a11y-settings-rerun {
+  margin-top: var(--space-02);
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--text-primary);
+  cursor: pointer;
+  text-align: left;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  font-size: 14px; font-weight: 500;
+  letter-spacing: inherit;
+}
+.a11y-widget-biz .a11y-settings-rerun:disabled {
+  opacity: .5; cursor: not-allowed; text-decoration: none;
+}
+.a11y-widget-biz .a11y-settings-cost {
+  font-weight: 400; color: var(--text-secondary);
+}
+
+@media print { .a11y-widget-biz .a11y-settings { display: none; } }

@@ -1,4 +1,4 @@
-import { useState, type ChangeEvent, type FormEvent, type ReactNode } from "react";
+import { useId, useRef, useState, type ChangeEvent, type FormEvent, type ReactNode } from "react";
 // The ported Select, not FormControls' — same API, so this is an import
 // change and nothing else. FormControls' Select still serves its other
 // callers until they move across too.
@@ -72,6 +72,11 @@ export function UrlForm({
   // of why or what to do. Now the button always works and an empty submit
   // says what is missing, in a message the input points at and a live region
   // announces.
+  /* The login disclosure's state lives here because its trigger sits inside
+     the address field and its panel below — see LoginFields. */
+  const [loginOpen, setLoginOpen] = useState(false);
+  const loginPanelId = useId();
+  const loginToggleRef = useRef<HTMLButtonElement>(null);
   const [showEmptyError, setShowEmptyError] = useState(false);
   // Separate from showEmptyError: this field is non-empty but isn't a
   // website address either — "jargon name" trimmed and non-empty passes
@@ -168,6 +173,22 @@ export function UrlForm({
             disabled={loading}
             invalid={showEmptyError || showInvalidError || Boolean(scanError)}
             inputProps={{ inputMode: "url", autoComplete: "url", required: true }}
+            action={
+              /* Inside the field, where the design puts it. It stays mounted
+                 whether the panel is open or shut, so keyboard focus always
+                 has somewhere to live. */
+              <button
+                ref={loginToggleRef}
+                type="button"
+                className="a11y-login-toggle"
+                aria-expanded={loginOpen}
+                aria-controls={loginPanelId}
+                onClick={() => setLoginOpen(!loginOpen)}
+                disabled={loading}
+              >
+                Behind a login
+              </button>
+            }
             describedBy={
               showEmptyError || showInvalidError
                 ? "a11y-url-error"
@@ -191,7 +212,15 @@ export function UrlForm({
                 ? "Public pages only."
                 : "Public pages only."}
             </span>
-            <LoginFields auth={auth} onChange={setAuth} disabled={loading} />
+            <LoginFields
+              auth={auth}
+              onChange={setAuth}
+              disabled={loading}
+              open={loginOpen}
+              setOpen={setLoginOpen}
+              panelId={loginPanelId}
+              toggleRef={loginToggleRef}
+            />
           </div>
 
           {/* The empty-submit / malformed-address message, beside the field it

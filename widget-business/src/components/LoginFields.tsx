@@ -1,4 +1,4 @@
-import { useId, useRef, useState } from "react";
+import { useState } from "react";
 import type { AuthConfig } from "../api/scanClient";
 
 // Lets someone scan the pages that sit behind a login. Checkout, account
@@ -12,24 +12,32 @@ import type { AuthConfig } from "../api/scanClient";
 // knowingly, which is why the advice to use a throwaway test account is given
 // prominence rather than buried.
 
+/* The trigger and the panel are rendered in two different places now — the
+   design puts the trigger INSIDE the address field and the panel below it —
+   so the open state, the panel's id and the trigger's ref are lifted to the
+   caller and handed back here. Splitting them any other way (a popover, a
+   portal) would have taken the panel out of flow and floated it over the
+   submit bar. */
 export function LoginFields({
   auth,
   onChange,
   disabled,
+  open,
+  setOpen,
+  panelId,
+  toggleRef,
 }: {
   auth: AuthConfig | undefined;
   onChange: (auth: AuthConfig | undefined) => void;
   disabled: boolean;
+  open: boolean;
+  setOpen: (v: boolean) => void;
+  panelId: string;
+  toggleRef: React.RefObject<HTMLButtonElement | null>;
 }) {
-  const [open, setOpen] = useState(false);
   const [loginUrl, setLoginUrl] = useState("");
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  const panelId = useId();
-  // The toggle stays mounted whether the panel is open or closed, so keyboard
-  // focus has somewhere to live across both states. The old version swapped
-  // the button for the panel, which dropped focus to <body> on every open.
-  const toggleRef = useRef<HTMLButtonElement>(null);
 
   function update(next: { loginUrl?: string; username?: string; password?: string }) {
     const merged = {
@@ -69,18 +77,6 @@ export function LoginFields({
 
   return (
     <div>
-      <button
-        ref={toggleRef}
-        type="button"
-        className="a11y-login-toggle"
-        aria-expanded={open}
-        aria-controls={panelId}
-        onClick={() => (open ? close() : setOpen(true))}
-        disabled={disabled}
-      >
-        Scan a page behind a login
-      </button>
-
       <div id={panelId} className="a11y-login" hidden={!open}>
         {/* fieldset/legend rather than a styled heading: the three fields are
             one group, and the legend is what a screen reader repeats as
