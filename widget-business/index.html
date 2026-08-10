@@ -12,6 +12,11 @@
          transparent body), following the visitor's colour-scheme setting so
          the host page and the widget agree in dark mode. */
       body {
+        /* The UA default is 8px, which production does not have (demo.html
+           resets it). Left in, the harness reported a 24px horizontal
+           scrollbar at 320px that the real embed never had — a false signal
+           that cost a round of chasing. */
+        margin: 0;
         background: #ffffff;
         color: #161616;
       }

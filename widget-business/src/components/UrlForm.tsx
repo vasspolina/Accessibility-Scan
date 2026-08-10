@@ -7,6 +7,7 @@ import { Select } from "./Select2";
 // the design puts on each choice instead of one hint under both.
 import { Input } from "./Input";
 import { OptionCard } from "./OptionCard";
+import { SCAN_DURATION } from "../lib/scanDuration";
 import { Switch } from "./Switch";
 import { LoginFields } from "./LoginFields";
 import type { AuthConfig } from "../api/scanClient";
@@ -267,7 +268,9 @@ export function UrlForm({
                 three unrelated ones. */}
             <h3 className="a11y-step-q">How much of it?</h3>
             <span className="a11y-step-note">
-              {mode === "site" ? "A whole site takes a few minutes" : "This page takes about 15 seconds"}
+              {mode === "site"
+                ? `A whole site takes ${SCAN_DURATION.site}`
+                : `This page takes ${SCAN_DURATION.page}`}
             </span>
           </div>
           <fieldset className="a11y-radio-group a11y-optioncard-grid">
@@ -351,8 +354,8 @@ export function UrlForm({
               <span className="a11y-ai-card-text">
                 <span className="a11y-ai-card-title">Add an AI review</span>
                 <span id="a11y-ai-hint" className="a11y-ai-hint">
-                  Catches design and marketing issues automated tools miss. Adds
-                  about half a minute.
+                  Catches design and marketing issues automated tools miss.{" "}
+                  Adds {SCAN_DURATION.aiAdds}.
                 </span>
               </span>
               <Switch

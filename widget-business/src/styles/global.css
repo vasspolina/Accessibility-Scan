@@ -2804,7 +2804,8 @@
 .a11y-widget-biz .a11y-tone-blue   { --tone-soft: var(--blue-20);   --tone-strong: var(--blue-60);   --tone-ink: var(--blue-100); }
 
 .a11y-widget-biz .a11y-step-num { color: var(--tone-strong, var(--text-secondary)); }
-/* The aside beside the heading — "This page takes about 15 seconds". */
+/* The aside beside the heading — the scan duration, from
+   lib/scanDuration.ts. */
 .a11y-widget-biz .a11y-step-note {
   padding: 4px 14px;
   border-radius: var(--radius-pill);
@@ -3110,3 +3111,66 @@
 }
 
 @media print { .a11y-widget-biz .a11y-settings { display: none; } }
+
+/* ── Reflow at 320px — WCAG 1.4.10 ───────────────────────────────────────
+   At a 320px viewport the content column is 270px, and the step numeral was
+   holding its own 88px column, leaving the body 182px. The submit button's
+   min-content is 222px and the AI switch's is 178, so both hung out and the
+   HOST page got a 24px horizontal scrollbar. Failed in all three engines.
+
+   1.4.10 is a Level AA criterion this product reports on other people's
+   sites, so it does not get to fail it. The fix is structural rather than
+   two patches: below the narrow breakpoint the numeral stops holding a
+   column and sits above its heading, which returns all 88px to the content
+   and fixes both overflows at their source. */
+@container a11y-panel (max-width: 586px) {
+  .a11y-widget-biz .a11y-step-group {
+    display: block;
+  }
+  .a11y-widget-biz .a11y-step-num {
+    display: block;
+    margin-bottom: var(--space-02);
+    font-size: 24px;
+  }
+  /* The action bar's button can then take the full width instead of being
+     squeezed against a nowrap label. */
+  .a11y-widget-biz .a11y-url-submit { flex-direction: column; align-items: stretch; }
+  .a11y-widget-biz .a11y-url-submit .a11y-btn {
+    width: 100%;
+    padding: 0 var(--space-05);
+    font-size: 18px;
+  }
+  .a11y-widget-biz .a11y-url-submit-note { padding: 0 var(--space-04); }
+  /* And the switch row stacks rather than forcing its own min-content. */
+  .a11y-widget-biz .a11y-switch { flex-wrap: wrap; gap: var(--space-03); }
+  .a11y-widget-biz .a11y-switch-controls { flex-wrap: wrap; }
+}
+
+/* At 320px the display heading and the meta pill each overflowed their own
+   box and propagated that up as scrollWidth — which is how the HOST page
+   ended up with a 16px horizontal scrollbar while no element's border box
+   crossed the viewport. Neither was visible as an overflowing element; both
+   showed only as scrollWidth on their ancestors.
+
+   1.4.10 asks for reflow at 320 CSS px, so the display size has to come
+   down there. Literal px per CLAUDE.md, not a token. */
+@container a11y-panel (max-width: 400px) {
+  /* Matches the (0,3,0) of the .a11y-newscan-title.a11y-section-title rule
+     above — a single class would lose to it on specificity and silently do
+     nothing, which is the trap that has bitten this stylesheet repeatedly. */
+  .a11y-widget-biz .a11y-newscan-title.a11y-section-title,
+  .a11y-widget-biz .a11y-newscan-title { font-size: 56px; line-height: 1.05; }
+  /* And the pill wraps rather than holding its nowrap width. */
+  .a11y-widget-biz .a11y-optioncard-meta { white-space: normal; }
+}
+
+/* At 320px the findings table gives its severity column 41-57px while the
+   pill inside needs 94-137 nowrap, so the label spilled across its
+   neighbour. Wrapping is the fix that loses nothing: "Fix eventually" over
+   two lines is ugly and legible, where a scroll region would hide the
+   severity — the column a reader scans first — behind a gesture. */
+@container a11y-panel (max-width: 400px) {
+  .a11y-widget-biz .a11y-finding-sev-col,
+  .a11y-widget-biz .a11y-sev,
+  .a11y-widget-biz .a11y-method-badge { white-space: normal; }
+}

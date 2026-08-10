@@ -19,6 +19,7 @@ import { ProSummary, type ProView } from "./components/ProSummary";
 import { Tabs } from "./components/Tabs";
 import { Notification, ProgressBar } from "./components/Feedback";
 import { groupFindings } from "./components/FindingsList";
+import { SCAN_DURATION } from "./lib/scanDuration";
 
 function hostnameOf(url: string): string {
   try {
@@ -70,15 +71,15 @@ import {
  * second. Changing only at milestones means an update arrives when there is
  * actually news.
  *
- * The thresholds come from measurement rather than optimism. A light page
- * finishes in about twenty seconds, moma.org takes forty, and the Guardian
- * has taken eighty. "About 15 seconds" was true of the fixtures and of
- * nothing else, and a promise that expires while the user watches is worse
- * than no promise.
+ * The thresholds come from measurement rather than optimism — see
+ * lib/scanDuration.ts, which now holds the durations themselves so the form
+ * and this message cannot tell a visitor two different things. They did for
+ * months: the form said fifteen seconds, this said twenty to forty, and a
+ * reader saw one before pressing the button and the other straight after.
  */
 export function waitingMessage(mode: ScanMode, aiRequested: boolean, elapsed: number): string {
   if (mode === "site") {
-    return "Site audit under way. Each page in turn, so this takes a few minutes…";
+    return `Site audit under way. Each page in turn, so this takes ${SCAN_DURATION.site}…`;
   }
   if (elapsed >= 60) {
     return "Still at it. This one is unusually heavy — a page of large images can take a while to load and measure.";
@@ -90,7 +91,7 @@ export function waitingMessage(mode: ScanMode, aiRequested: boolean, elapsed: nu
   }
   return aiRequested
     ? "We check your site, including the AI review. That usually takes about a minute…"
-    : "We check your site. Most pages take twenty to forty seconds…";
+    : `We check your site. Most pages take ${SCAN_DURATION.page}…`;
 }
 
 export interface CtaConfig {
