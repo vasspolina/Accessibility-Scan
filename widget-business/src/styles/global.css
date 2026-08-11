@@ -3042,6 +3042,250 @@
   overflow-wrap: anywhere;
 }
 
+/* ---- The accessibility statement ----------------------------------------
+   Fourteen classes with no rules, and the damage showed in the words:
+   "1Tell us who this is for", labels welded to their inputs, the spec
+   sheet at a UA <dl>'s indent reading "EN 301 549 · WCAG 2.1 AAThe EU's
+   technical standard". Nothing here is a copy fix — every one of those is
+   two elements with no rule to separate them.
+
+   The design: a quiet panel, the steps labelled in mono, the facts as
+   rows, the draft on a dark card with its own Copy, and the warning in
+   amber at the end. */
+.a11y-widget-biz .a11y-stmt {
+  padding: var(--space-09) var(--space-07);
+  border-radius: var(--radius-lg);
+  background: var(--layer-01);
+}
+/* Title and eyebrow on one centred line, the eyebrow as the accent pill.
+   `order` moves the pill after the title visually while the DOM keeps
+   eyebrow-then-title — the one place in this file that separates the two,
+   and it is two halves of the same label rather than a reading order that
+   could mislead. */
+.a11y-widget-biz .a11y-stmt .a11y-section-head-text {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  gap: var(--space-04);
+  text-align: center;
+}
+.a11y-widget-biz .a11y-stmt .a11y-section-eyebrow {
+  order: 2;
+  padding: 6px 20px;
+  border-radius: var(--radius-pill);
+  background: var(--green-40, #42be65);
+  color: var(--gray-100);              /* 7.57:1, measured */
+  font-size: 24px;
+  font-weight: 500;
+  text-transform: none;
+  letter-spacing: 0.01em;
+}
+.a11y-widget-biz .a11y-stmt .a11y-section-desc {
+  margin: var(--space-05) auto 0;
+  max-width: 46ch;
+  text-align: center;
+  color: var(--text-secondary);
+}
+
+/* The step label, in mono. It is a marker on the page, not prose — and
+   mono is what tells the eye it is one. */
+.a11y-widget-biz .a11y-stmt-step { margin-top: var(--space-08); }
+.a11y-widget-biz .a11y-stmt-step-head {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1ch;
+  margin: 0 0 var(--space-05);
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 15px;
+  font-weight: 400;
+  color: var(--text-primary);
+}
+.a11y-widget-biz .a11y-stmt-step-num { font-weight: 400; }
+
+/* Step 1's card: the pair of fields under one heading. */
+.a11y-widget-biz .a11y-stmt-fields {
+  display: grid;
+  /* Two tracks, not auto-fit. auto-fit opened a third at 1280 and left the
+     pair hugging the left of a card the design fills across. Measured:
+     fieldsCols came back 3. One track below 586, in the query at the end. */
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-05);
+  padding: var(--space-07) var(--space-06);
+  border-radius: var(--radius-lg);
+  background: var(--white);
+}
+.a11y-widget-biz .a11y-stmt-fields-head {
+  grid-column: 1 / -1;
+  margin: 0;
+  max-width: none;
+  text-align: center;
+  text-transform: uppercase;
+  font-size: 15px;
+  letter-spacing: 0.01em;
+  color: var(--text-primary);
+}
+.a11y-widget-biz .a11y-stmt-field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-03);
+  min-width: 0;
+  font-size: 15px;
+  color: var(--text-secondary);
+}
+.a11y-widget-biz .a11y-stmt-field input {
+  width: 100%;
+  min-width: 0;
+  padding: 14px 20px;
+  border: 1px solid transparent;
+  border-radius: var(--radius-pill);
+  background: var(--layer-01);
+  color: var(--text-primary);
+  font: inherit;
+  font-size: 18px;
+}
+.a11y-widget-biz .a11y-stmt-field input::placeholder { color: var(--text-secondary); }
+.a11y-widget-biz .a11y-stmt-field input:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 2px;
+}
+
+/* The declared facts. One row per fact: label, then value with its gloss
+   beneath. A <dl>, so each row is a <div> holding the dt/dd pair. */
+.a11y-widget-biz .a11y-spec-grid {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-04);
+  margin: var(--space-05) 0 0;
+}
+.a11y-widget-biz .a11y-spec-card {
+  display: grid;
+  grid-template-columns: minmax(9ch, 22%) minmax(0, 1fr);
+  align-items: baseline;
+  gap: var(--space-03) var(--space-05);
+  padding: var(--space-05) var(--space-06);
+  border-radius: var(--radius-pill);
+  background: var(--white);
+}
+.a11y-widget-biz .a11y-spec-label {
+  margin: 0;
+  font-size: 15px;
+  color: var(--text-secondary);        /* 7.1:1 */
+}
+.a11y-widget-biz .a11y-spec-value {
+  margin: 0;
+  min-width: 0;
+  font-size: 18px;
+  font-weight: 500;
+  /* A URL has no space to break at and this row has a fixed left column. */
+  overflow-wrap: anywhere;
+}
+/* The gloss is a second line, not a continuation of the value — this is
+   what "WCAG 2.1 AAThe EU's technical standard" was. */
+.a11y-widget-biz .a11y-spec-gloss {
+  display: block;
+  margin-top: 2px;
+  font-size: 15px;
+  font-weight: 400;
+  color: var(--text-secondary);
+}
+@container a11y-panel (max-width: 586px) {
+  /* The label goes above its value rather than holding a column that
+     leaves the value 9ch of room. */
+  .a11y-widget-biz .a11y-spec-card {
+    grid-template-columns: minmax(0, 1fr);
+    border-radius: var(--radius-lg);
+  }
+}
+
+/* Step 2's card: the draft, its label and its Copy. */
+.a11y-widget-biz .a11y-stmt-card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-05);
+  padding: var(--space-07) var(--space-06);
+  border-radius: var(--radius-lg);
+  background: var(--white);
+}
+.a11y-widget-biz .a11y-stmt-card-title {
+  margin: 0;
+  font-size: 32px;
+  line-height: 1.1;
+  font-weight: 500;
+  letter-spacing: 0.01em;
+}
+.a11y-widget-biz .a11y-stmt-code {
+  border-radius: var(--radius-md);
+  background: var(--gray-100);
+  color: var(--text-on-invert);
+  padding: var(--space-05);
+}
+.a11y-widget-biz .a11y-stmt-code-bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-04);
+  margin-bottom: var(--space-04);
+}
+.a11y-widget-biz .a11y-stmt-code-label {
+  font-size: 15px;
+  color: var(--text-on-invert-secondary);   /* 10.6:1 on gray-100 */
+}
+.a11y-widget-biz .a11y-stmt-code .a11y-sr-play {
+  padding: 6px 18px;
+  border: 1px solid var(--text-on-invert-secondary);
+  border-radius: var(--radius-pill);
+  background: transparent;
+  color: var(--text-on-invert);
+  font-size: 15px;
+  font-weight: 500;
+  cursor: pointer;
+}
+.a11y-widget-biz .a11y-stmt-code .a11y-sr-play:hover {
+  background: var(--text-on-invert);
+  color: var(--gray-100);
+}
+/* --focus is the report's ink, invisible on this card. */
+.a11y-widget-biz .a11y-stmt-code .a11y-sr-play:focus-visible,
+.a11y-widget-biz .a11y-stmt-text:focus-visible {
+  outline: 2px solid var(--white);
+  outline-offset: 3px;
+}
+.a11y-widget-biz .a11y-stmt-code .a11y-stmt-text {
+  margin: 0;
+  max-height: 420px;
+  overflow: auto;
+  font-size: 15px;
+  line-height: 1.6;
+  color: var(--text-on-invert);        /* 18.1:1 */
+}
+.a11y-widget-biz .a11y-stmt-card .a11y-sr-status {
+  margin: 0;
+  font-size: 15px;
+  color: var(--text-secondary);
+}
+
+/* The warning, last and in amber. It is the one thing here a reader must
+   not skip: this section produces a public, dated legal declaration. */
+.a11y-widget-biz .a11y-stmt .a11y-conf-caveat {
+  margin: var(--space-06) 0 0;
+  max-width: none;
+  padding: var(--space-06);
+  border-radius: var(--radius-lg);
+  background: #e8b33c;
+  color: var(--gray-100);              /* 9.6:1 */
+  font-size: 18px;
+  line-height: 1.5;
+}
+
+@container a11y-panel (max-width: 586px) {
+  .a11y-widget-biz .a11y-stmt { padding: var(--space-07) var(--space-05); }
+  .a11y-widget-biz .a11y-stmt .a11y-section-eyebrow { font-size: 18px; }
+  .a11y-widget-biz .a11y-stmt-card-title { font-size: 24px; }
+  .a11y-widget-biz .a11y-stmt-fields { grid-template-columns: minmax(0, 1fr); }
+}
+
 /* A pill cannot shrink below its own label, so at narrow widths the fix-kind
    badge hung out of the column. 620, not the 460 tried first: measured, it
    still overflowed at content widths of 526 and 572, which 460 never

@@ -267,12 +267,18 @@ export function AccessibilityStatement({ report }: { report: AccessibilityReport
           not "one, two". */}
       <div className="a11y-stmt-step">
         <h3 className="a11y-stmt-step-head">
-          <span className="a11y-stmt-step-num" aria-hidden="true">1</span>
+          <span className="a11y-stmt-step-num" aria-hidden="true">Step 1:</span>
           Tell us who this is for
         </h3>
       </div>
 
       <div className="a11y-stmt-fields">
+        {/* Names the pair of fields on screen. aria-hidden because both
+            fields already carry their own <label>, and a screen reader
+            reading this line as well would announce the group twice. */}
+        <p className="a11y-stmt-fields-head" aria-hidden="true">
+          The statement is prepared for
+        </p>
         <label className="a11y-stmt-field">
           Organisation name
           <input
@@ -330,41 +336,52 @@ export function AccessibilityStatement({ report }: { report: AccessibilityReport
 
       <div className="a11y-stmt-step">
         <h3 className="a11y-stmt-step-head">
-          <span className="a11y-stmt-step-num" aria-hidden="true">2</span>
+          <span className="a11y-stmt-step-num" aria-hidden="true">Step 2:</span>
           Take the statement
         </h3>
       </div>
 
-      <div className="a11y-stmt-actions">
-        <button type="button" className="a11y-sr-play" onClick={copy}>
-          {copied ? "Copied" : "Copy the statement"}
-        </button>
+      {/* The draft, its label and its Copy on one card, the way the design
+          draws it. Copy used to sit in a row above the text with no visible
+          tie to it; on the bar it is unmistakably the control for the block
+          it sits on. */}
+      <div className="a11y-stmt-card">
+        <h4 className="a11y-stmt-card-title">The statement</h4>
+        <div className="a11y-stmt-code">
+          <div className="a11y-stmt-code-bar">
+            <span className="a11y-stmt-code-label" aria-hidden="true">
+              Generated statement
+            </span>
+            <button type="button" className="a11y-sr-play" onClick={copy}>
+              {copied ? "Copied" : "Copy"}
+            </button>
+          </div>
+          {/* Focusable on purpose. The block scrolls (overflow: auto), and a
+              scrollable box that can't be focused is unreachable by keyboard —
+              you can see there's more text and have no way to get to it. Giving
+              it tabindex="0" puts it in the tab order so arrow keys work, and the
+              role plus label mean it's announced as something worth entering
+              rather than an unnamed stop. This is WCAG 2.1.1, which the checker
+              flags on other people's sites. */}
+          <pre
+            className="a11y-stmt-text"
+            tabIndex={0}
+            role="region"
+            aria-label="Draft accessibility statement"
+          >
+            {statement}
+          </pre>
+        </div>
         {/* The button's own text changing is not reliably announced;
             this mounted status region is. */}
         <span className="a11y-sr-only" role="status">
           {copied ? "Statement copied to the clipboard." : ""}
         </span>
-        <span className="a11y-sr-status">
+        <p className="a11y-sr-status">
           Says <strong>{position === "partially" ? "partially conformant" : "non-conformant"}</strong>,
           based on {failing} failed {failing === 1 ? "criterion" : "criteria"}.
-        </span>
+        </p>
       </div>
-
-      {/* Focusable on purpose. The block scrolls (overflow: auto), and a
-          scrollable box that can't be focused is unreachable by keyboard —
-          you can see there's more text and have no way to get to it. Giving
-          it tabindex="0" puts it in the tab order so arrow keys work, and the
-          role plus label mean it's announced as something worth entering
-          rather than an unnamed stop. This is WCAG 2.1.1, which the checker
-          flags on other people's sites. */}
-      <pre
-        className="a11y-stmt-text"
-        tabIndex={0}
-        role="region"
-        aria-label="Draft accessibility statement"
-      >
-        {statement}
-      </pre>
 
       <p className="a11y-conf-caveat">
         <strong>Read it before you publish.</strong> This is a public, dated declaration. The draft
