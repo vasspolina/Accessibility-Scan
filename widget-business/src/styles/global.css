@@ -4837,3 +4837,71 @@
   outline: 2px solid var(--focus);
   outline-offset: -2px;
 }
+
+/* ── The WCAG 2.2 readiness list ──────────────────────────────────────────
+   Eleven classes here had no rule, and the row read as one run-on string:
+   "…is it still visible?2.4.11 · Level AAIt depends on where a sticky bar
+   sits…Officially: Focus Not Obscured". Four elements, no rule between
+   any of them.
+
+   FOURTH instance of that fault today, after "1.1.1 ADo images have a
+   description", "WCAG 2.1 AAThe EU's technical standard" and
+   "Deuteranopia~6% of men". It is never the copy.
+
+   The design's full card grid — a purple panel of white two-up cards with
+   the status as a pill — is not built here. This is the separation the
+   rows need to be readable at all, which is the defect; the panel is a
+   design change on top of it. */
+.a11y-widget-biz .a11y-next-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 320px), 1fr));
+  gap: var(--space-04);
+  list-style: none;
+  margin: var(--space-05) 0 0;
+  padding: 0;
+}
+.a11y-widget-biz .a11y-next-list > li {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  gap: var(--space-03) var(--space-05);
+  padding: var(--space-05) var(--space-06);
+  border-radius: var(--radius-lg);
+  background: var(--white);
+}
+.a11y-widget-biz .a11y-next-main {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-02);
+  flex: 1 1 14ch;
+  min-width: 0;
+}
+.a11y-widget-biz .a11y-next-title { font-size: 18px; font-weight: 500; }
+/* Each meta on its own line, which is what "no rule between them" cost. */
+.a11y-widget-biz .a11y-next-meta {
+  font-size: 15px;
+  color: var(--text-secondary);        /* 7.1:1 on white */
+}
+/* The verdict, as a pill at the row's end. */
+.a11y-widget-biz .a11y-next-status {
+  flex: none;
+  margin-left: auto;
+  min-width: min-content;
+  padding: 4px 14px;
+  border: 1px solid currentColor;
+  border-radius: var(--radius-pill);
+  font-size: 15px;
+  font-weight: 500;
+  white-space: normal;
+  color: var(--text-secondary);
+}
+.a11y-widget-biz .a11y-next-crit-item .a11y-next-status {
+  background: var(--green-10);
+  color: var(--green-70, #0e6027);
+}
+.a11y-widget-biz .a11y-next-level {
+  flex: none;
+  font-size: 15px;
+  color: var(--text-secondary);
+  font-variant-numeric: tabular-nums;
+}
