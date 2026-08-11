@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { Fragment, useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { Dialog } from "./Dialog";
 import { clearHistory, diffScans, scoresComparable, type HistoryEntry } from "../lib/scanHistory";
@@ -19,6 +19,28 @@ function formatDate(iso: string): string {
 
 function ruleLabel(ruleId: string): string {
   return plainForRule(ruleId)?.plain ?? ruleId;
+}
+
+/**
+ * The runs, newest first, grouped under the year they happened in.
+ *
+ * Two scans on the same day are common — someone fixes something and runs
+ * it again — and a column that says "10 Aug 2026" twice with no other
+ * difference is a column the reader has to distrust. The newest carries
+ * "just now"; the one below it carries "earlier", which is true of every
+ * same-day run and claims no more precision than the date already does.
+ */
+function groupByYear(
+  entries: { scannedAt: string; score: number; note?: string }[]
+): { year: string; runs: { scannedAt: string; score: number; note?: string }[] }[] {
+  const out: { year: string; runs: typeof entries }[] = [];
+  for (const e of entries) {
+    const year = String(new Date(e.scannedAt).getFullYear());
+    const last = out[out.length - 1];
+    if (last && last.year === year) last.runs.push(e);
+    else out.push({ year, runs: [e] });
+  }
+  return out;
 }
 
 export function ScanHistory({
@@ -64,6 +86,17 @@ export function ScanHistory({
 
   if (previous.length === 0) return null;
 
+  const sameDayAsCurrent = (iso: string) =>
+    new Date(iso).toDateString() === new Date(current.scannedAt).toDateString();
+  const runsByYear = groupByYear([
+    { scannedAt: current.scannedAt, score: current.score, note: "just now" },
+    ...previous.map((e) => ({
+      scannedAt: e.scannedAt,
+      score: e.score,
+      note: sameDayAsCurrent(e.scannedAt) ? "earlier" : undefined,
+    })),
+  ]);
+
   // The section doesn't vanish under the person who just pressed Delete —
   // that would drop keyboard focus to <body> and say nothing to a screen
   // reader. A confirmation stays where the section was.
@@ -91,118 +124,98 @@ export function ScanHistory({
 
   return (
     <section className="a11y-section a11y-hist" aria-labelledby="a11y-hist-heading">
-      <h2 className="a11y-section-title" id="a11y-hist-heading" data-nav-label="Since last time">
-        Since last time{" "}
-        <span className="a11y-section-count">
-          {previous.length === 1 ? "1 earlier scan" : `${previous.length} earlier scans`}
-        </span>
+      {/* The design titles the whole panel and moves "Since last time" down
+          to be one of three pill heads inside it. The heading keeps the
+          word "scans" — CSS uppercases it, so the accessible name stays
+          sentence case, and a landmark called only "Previous" says less
+          than it should. */}
+      <h2 className="a11y-section-title a11y-hist-title" id="a11y-hist-heading" data-nav-label="Since last time">
+        Previous scans
       </h2>
-      <p className="a11y-section-desc">
-        Compared with {formatDate(last.scannedAt)}. Kept in this browser only, never sent anywhere.
-        {!comparable && (
-          <>
-            {" "}
-            We have changed how we work out the score since that scan. Some checks that used to
-            sit outside the number now count towards it. The two scores are
-            not a fair comparison, so we claim no change. What was fixed and
-            what appeared is unaffected, and both lists are below.
-          </>
-        )}
-      </p>
 
-      <div className="a11y-conf-tiles">
-        <div className={`a11y-conf-tile${comparable && up ? " a11y-hist-up" : ""}`}>
-          <span className="a11y-conf-num">
-            {!comparable
-              ? current.score
-              : flat
-                ? current.score
-                : `${up ? "+" : ""}${diff.scoreChange}`}
-          </span>
-          <span className="a11y-conf-cap">
-            {comparable ? (
-              <>
-                <strong>{flat ? "Score unchanged" : up ? "Score is up" : "Score is down"}</strong>
-                <em>
+      <div className="a11y-hist-cols">
+        <div className="a11y-hist-col">
+          <h3 className="a11y-hist-head">Every scan of this page</h3>
+          {/* Grouped by year, because a bare column of dates makes the
+              reader parse four digits on every line to find the boundary.
+              The year is a real <li> rather than a heading between lists:
+              one list of runs is one list, and splitting it per year would
+              tell a screen reader "list of 4" then "list of 3" for what is
+              one sequence. */}
+          <ul className="a11y-hist-runs">
+            {runsByYear.map(({ year, runs }) => (
+              <Fragment key={year}>
+                <li className="a11y-hist-year">{year}</li>
+                {runs.map((e) => (
+                  <li key={e.scannedAt}>
+                    {formatDate(e.scannedAt)} &mdash;{" "}
+                    <span className="a11y-hist-score">{e.score} / 100</span>
+                    {e.note ? <em>, {e.note}</em> : null}
+                  </li>
+                ))}
+              </Fragment>
+            ))}
+          </ul>
+        </div>
+
+        <div className="a11y-hist-col">
+          <h3 className="a11y-hist-head">Since last time</h3>
+          {/* The three numbers used to be stat tiles. As lines they read as
+              the sentences they always were, and the score line can say
+              "not comparable" without a tile having to show a number it
+              does not believe. */}
+          <ul className="a11y-hist-facts">
+            <li>
+              {comparable ? (
+                <>
+                  {flat ? "Score unchanged" : up ? "Score is up" : "Score is down"} &mdash;{" "}
                   {last.score} then, {current.score} now
-                </em>
-              </>
-            ) : (
-              <>
-                <strong>Not comparable</strong>
-                <em>we scored the earlier scan by different rules</em>
-              </>
-            )}
-          </span>
-        </div>
-        <div className="a11y-conf-tile">
-          <span className="a11y-conf-num">{diff.fixed.length}</span>
-          <span className="a11y-conf-cap">
-            <strong>Problems gone</strong>
-            <em>not found this time</em>
-          </span>
-        </div>
-        <div className={`a11y-conf-tile${diff.appeared.length > 0 ? " a11y-conf-tile-fail" : ""}`}>
-          <span className="a11y-conf-num">{diff.appeared.length}</span>
-          <span className="a11y-conf-cap">
-            <strong>New problems</strong>
-            <em>weren't there before</em>
-          </span>
+                </>
+              ) : (
+                <>
+                  Not comparable &mdash; we scored the earlier scan by different rules. Some
+                  checks that used to sit outside the number now count towards it, so the two
+                  are not a fair comparison and we claim no change.
+                </>
+              )}
+            </li>
+            <li>
+              Problems gone &mdash;{" "}
+              {diff.fixed.length === 0
+                ? "none found this time"
+                : diff.fixed.map(ruleLabel).join(", ")}
+            </li>
+            {/* "none weren't there before" is a double negative, and the
+                design's own copy has it. Said the way round it means. */}
+            <li>
+              New problems &mdash;{" "}
+              {diff.appeared.length === 0
+                ? "none appeared"
+                : diff.appeared.map(ruleLabel).join(", ")}
+            </li>
+          </ul>
+
+          <h3 className="a11y-hist-head">Where this lives</h3>
+          <ul className="a11y-hist-facts">
+            <li>Kept in this browser only, never sent anywhere.</li>
+            <li>
+              Delete it whenever you like &mdash; nothing here is needed to run another scan.
+            </li>
+          </ul>
+          {/* The design writes "Delete this history at any time" as a line
+              of prose. It is the one genuinely destructive action here, so
+              it stays a real control with its confirmation, sitting under
+              the sentence that promises it. */}
+          <button
+            ref={anchorRef}
+            type="button"
+            className="a11y-show-all a11y-danger-btn"
+            onClick={() => setConfirmOpen(true)}
+          >
+            Delete this history
+          </button>
         </div>
       </div>
-
-      {diff.fixed.length > 0 && (
-        <>
-          <h3 className="a11y-hist-head">Fixed since {formatDate(last.scannedAt)}</h3>
-          <ul className="a11y-hist-list">
-            {diff.fixed.map((r) => (
-              <li key={r} className="a11y-hist-fixed">
-                {ruleLabel(r)}
-              </li>
-            ))}
-          </ul>
-        </>
-      )}
-
-      {diff.appeared.length > 0 && (
-        <>
-          <h3 className="a11y-hist-head">New since then</h3>
-          <ul className="a11y-hist-list">
-            {diff.appeared.map((r) => (
-              <li key={r} className="a11y-hist-new">
-                {ruleLabel(r)}
-              </li>
-            ))}
-          </ul>
-        </>
-      )}
-
-      <h3 className="a11y-hist-head">Every scan of this page</h3>
-      <ul className="a11y-hist-runs">
-        <li>
-          <span className="a11y-hist-score">{current.score}</span>
-          <span>{formatDate(current.scannedAt)}</span>
-          <em>just now</em>
-        </li>
-        {previous.map((e) => (
-          <li key={e.scannedAt}>
-            <span className="a11y-hist-score">{e.score}</span>
-            <span>{formatDate(e.scannedAt)}</span>
-          </li>
-        ))}
-      </ul>
-
-      {/* The master's danger variant, on the checker's one genuinely
-          destructive action — now gated by the imported Dialog rather than
-          firing on one click. */}
-      <button
-        ref={anchorRef}
-        type="button"
-        className="a11y-show-all a11y-danger-btn"
-        onClick={() => setConfirmOpen(true)}
-      >
-        Delete this history
-      </button>
 
       {portalTarget &&
         createPortal(
