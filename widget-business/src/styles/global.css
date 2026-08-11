@@ -952,6 +952,167 @@
   display: block;
 }
 
+/* ---- The WCAG checklist --------------------------------------------------
+   Nine classes, no rules: the panel rendered as a UA fieldset with the
+   radios overlapping their own labels, the criteria as a bulleted <ul> at
+   a 40px indent, and "1.1.1", the level and the question run together as
+   "1.1.1 ADo images have a description…" because nothing separated them.
+
+   The design makes it a purple panel holding white cards, two across. */
+.a11y-widget-biz .a11y-conf-panel {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-06);
+  margin-top: var(--space-06);
+  padding: var(--space-07) var(--space-06);
+  border-radius: var(--radius-lg);
+  background: var(--purple-60);        /* white on it: 5.00:1 */
+}
+
+/* The filter. The native radios stay — they are what makes this a radio
+   group to a keyboard and a screen reader — but they are taken out of the
+   visual and the label becomes the pill. Selected is the dark one, and it
+   is never colour alone: the selected pill is also the only one whose
+   ground is dark, and it keeps a focus ring of its own. */
+.a11y-widget-biz .a11y-conf-filter {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: var(--space-03);
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+.a11y-widget-biz .a11y-conf-filter legend { /* "Show" — named for the group, not drawn */
+  position: absolute; width: 1px; height: 1px;
+  overflow: hidden; clip-path: inset(50%); white-space: nowrap;
+}
+.a11y-widget-biz .a11y-conf-filter .a11y-radio {
+  display: inline-flex;
+  align-items: center;
+  padding: 6px 16px;
+  border-radius: var(--radius-pill);
+  background: var(--gray-20);
+  color: var(--text-primary);          /* 12.6:1 */
+  font-size: 15px;
+  font-weight: 500;
+  cursor: pointer;
+}
+.a11y-widget-biz .a11y-conf-filter .a11y-radio input {
+  position: absolute;
+  width: 1px; height: 1px;
+  overflow: hidden; clip-path: inset(50%);
+}
+.a11y-widget-biz .a11y-conf-filter .a11y-radio:has(input:checked) {
+  background: var(--text-primary);
+  color: var(--text-on-invert);        /* 16.4:1 */
+}
+/* The input is off-screen, so the ring has to be drawn by the label. */
+.a11y-widget-biz .a11y-conf-filter .a11y-radio:has(input:focus-visible) {
+  outline: 2px solid var(--white);
+  outline-offset: 3px;
+}
+
+/* The criteria, two across on white cards. */
+.a11y-widget-biz .a11y-conf-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 300px), 1fr));
+  align-items: start;
+  gap: var(--space-05);
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.a11y-widget-biz .a11y-conf-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-03) var(--space-05);
+  padding: var(--space-06);
+  border-radius: var(--radius-lg);
+  background: var(--white);
+}
+/* The number and its level. Mono is allowed for meta, and this is the one
+   place it earns itself: a column of criterion numbers only reads as a
+   column when the digits line up. The <em> holding the level is not
+   emphasis — reset the italic and let the spacing do the separating,
+   which is what was missing when this read "1.1.1 ADo images…". */
+.a11y-widget-biz .a11y-conf-id {
+  display: inline-flex;
+  align-items: baseline;
+  gap: var(--space-03);
+  flex: none;
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 15px;
+  color: var(--text-secondary);
+}
+.a11y-widget-biz .a11y-conf-id em { font-style: normal; font-weight: 500; }
+
+.a11y-widget-biz .a11y-conf-body {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-02);
+  flex: 1 1 12ch;
+  min-width: 0;
+  font-size: 18px;
+}
+.a11y-widget-biz .a11y-conf-body > strong { font-weight: 500; }
+.a11y-widget-biz .a11y-conf-plain {
+  font-size: 15px;
+  color: var(--text-secondary);        /* 7.1:1 */
+}
+
+/* The verdict, as one pill. The label and its count are two elements in
+   the markup and read as one phrase — "Fails 6 places" — so the pill is
+   the thing that holds them together. */
+.a11y-widget-biz .a11y-conf-status {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 0.35em;
+  flex: none;
+  min-width: min-content;
+  margin-left: auto;
+  padding: 4px 14px;
+  border-radius: var(--radius-pill);
+  border: 1px solid currentColor;
+  font-size: 15px;
+  font-weight: 500;
+  color: var(--text-secondary);
+}
+.a11y-widget-biz .a11y-conf-status em { font-style: normal; }
+.a11y-widget-biz .a11y-conf-failed .a11y-conf-status {
+  background: var(--red-10);
+  color: var(--red-70);                /* 7.1:1 on red-10 */
+}
+.a11y-widget-biz .a11y-conf-no-issues-found .a11y-conf-status {
+  background: var(--green-10);
+  color: var(--green-70, #0e6027);
+}
+.a11y-widget-biz .a11y-conf-needs-review .a11y-conf-status {
+  background: var(--layer-01);
+  color: var(--text-secondary);
+}
+
+/* "Nothing on this page fails." — on the purple, so it cannot inherit the
+   report's ink. */
+.a11y-widget-biz .a11y-conf-panel .a11y-conf-caveat {
+  margin: 0;
+  color: var(--text-on-invert);
+  font-size: 18px;
+}
+/* The panel's own dismiss, centred under the cards as the design draws it. */
+.a11y-widget-biz .a11y-conf-panel .a11y-show-all {
+  align-self: center;
+  padding: 10px 28px;
+  border: 0;
+  border-radius: var(--radius-pill);
+  background: var(--white);
+  color: var(--text-primary);
+  font-size: 18px;
+  font-weight: 500;
+  cursor: pointer;
+}
+
 /* ---- The four POUR sections ---------------------------------------------
    Every one of these classes was in the markup with no rule behind it, so
    the section rendered as an unstyled stack: no ground, no divider, the
