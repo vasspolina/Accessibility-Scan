@@ -4594,7 +4594,7 @@
    two-column reading survives auto-placement; the affected-elements block
    was moved above "Fix once" in the markup so it lands in the right
    column rather than below the full-width bar. */
-.a11y-widget-biz .a11y-principle-group .a11y-fd {
+.a11y-widget-biz .a11y-fd {
   display: grid;
   /* One column by default, two only where the panel can hold them.
      The kit writes repeat(auto-fit, minmax(320px, 1fr)); neither half of
@@ -4618,12 +4618,12 @@
    longer exists. */
 
 /* The section titles inside the panel: centred, uppercase, 18px. */
-.a11y-widget-biz .a11y-principle-group .a11y-finding-measured > strong:first-child,
-.a11y-widget-biz .a11y-principle-group .a11y-finding-impact > strong:first-child,
-.a11y-widget-biz .a11y-principle-group .a11y-finding-research > strong:first-child,
-.a11y-widget-biz .a11y-principle-group .a11y-finding-steps > p > strong:first-child,
-.a11y-widget-biz .a11y-principle-group .a11y-finding-todo > strong:first-child,
-.a11y-widget-biz .a11y-principle-group .a11y-affected-label > strong {
+.a11y-widget-biz .a11y-fd .a11y-finding-measured > strong:first-child,
+.a11y-widget-biz .a11y-fd .a11y-finding-impact > strong:first-child,
+.a11y-widget-biz .a11y-fd .a11y-finding-research > strong:first-child,
+.a11y-widget-biz .a11y-fd .a11y-finding-steps > p > strong:first-child,
+.a11y-widget-biz .a11y-fd .a11y-finding-todo > strong:first-child,
+.a11y-widget-biz .a11y-fd .a11y-affected-label > strong {
   display: block;
   margin-bottom: var(--space-04);
   text-align: center;
@@ -4634,12 +4634,12 @@
 }
 
 /* "What to do" — one green pill per step. */
-.a11y-widget-biz .a11y-principle-group .a11y-finding-steps > ul {
+.a11y-widget-biz .a11y-fd .a11y-finding-steps > ul {
   gap: var(--space-03);
   padding: 0;
   list-style: none;
 }
-.a11y-widget-biz .a11y-principle-group .a11y-finding-steps > ul > li {
+.a11y-widget-biz .a11y-fd .a11y-finding-steps > ul > li {
   padding: var(--space-04) var(--space-05);
   border-radius: var(--radius-pill);
   background: var(--green-10);
@@ -4648,11 +4648,11 @@
 }
 
 /* Affected elements — one blue row each, name left, count right. */
-.a11y-widget-biz .a11y-principle-group .a11y-occurrence-list {
+.a11y-widget-biz .a11y-fd .a11y-occurrence-list {
   gap: var(--space-03);
   margin: 0;
 }
-.a11y-widget-biz .a11y-principle-group .a11y-occurrence-list > li {
+.a11y-widget-biz .a11y-fd .a11y-occurrence-list > li {
   padding: var(--space-04) var(--space-05);
   border: 0;
   border-radius: var(--radius-pill);
@@ -4662,7 +4662,7 @@
 }
 
 /* "Fix once, fixes 4." — the panel's own ground, on the white card. */
-.a11y-widget-biz .a11y-principle-group .a11y-fix-once {
+.a11y-widget-biz .a11y-fd .a11y-fix-once {
   margin: 0;
   max-width: none;
   padding: var(--space-05) var(--space-06);
@@ -4673,7 +4673,7 @@
 }
 
 /* "The technical version" — a quiet grey pill, not a bare summary marker. */
-.a11y-widget-biz .a11y-principle-group .a11y-tech-details > summary {
+.a11y-widget-biz .a11y-fd .a11y-tech-details > summary {
   display: inline-flex;
   align-items: center;
   gap: var(--space-03);
@@ -4685,13 +4685,13 @@
   cursor: pointer;
   list-style: none;
 }
-.a11y-widget-biz .a11y-principle-group .a11y-tech-details > summary::-webkit-details-marker {
+.a11y-widget-biz .a11y-fd .a11y-tech-details > summary::-webkit-details-marker {
   display: none;
 }
 
 /* The expanded cell keeps table formatting — only its inner wrapper is a
    grid. Padding and ground move here so the white card still spans the row. */
-.a11y-widget-biz .a11y-principle-group .a11y-dt-expand-row > td {
+.a11y-widget-biz .a11y-fd .a11y-dt-expand-row > td {
   padding: 0;
   background: transparent;
   border-top: var(--space-03) solid transparent;
@@ -4709,7 +4709,7 @@
    left a zero-width first track — measured as "0px 150px". That is the
    fourth time today the same tie has decided a layout. */
 @container a11y-panel (min-width: 680px) {
-  .a11y-widget-biz .a11y-principle-group .a11y-fd {
+  .a11y-widget-biz .a11y-fd {
     grid-template-columns: repeat(2, minmax(0, 1fr));
     /* dense, or the right column starts level with the LAST item of the
        left one. Auto-placement is sparse by default: it never moves its
@@ -4719,25 +4719,25 @@
        row its own column is free in. */
     grid-auto-flow: row dense;
   }
-  .a11y-widget-biz .a11y-principle-group .a11y-fd > .a11y-method-hint,
-  .a11y-widget-biz .a11y-principle-group .a11y-fd > .a11y-finding-measured,
-  .a11y-widget-biz .a11y-principle-group .a11y-fd > .a11y-finding-impact,
-  .a11y-widget-biz .a11y-principle-group .a11y-fd > .a11y-finding-research,
-  .a11y-widget-biz .a11y-principle-group .a11y-fd > .a11y-picture-note {
+  .a11y-widget-biz .a11y-fd > .a11y-method-hint,
+  .a11y-widget-biz .a11y-fd > .a11y-finding-measured,
+  .a11y-widget-biz .a11y-fd > .a11y-finding-impact,
+  .a11y-widget-biz .a11y-fd > .a11y-finding-research,
+  .a11y-widget-biz .a11y-fd > .a11y-picture-note {
     grid-column: 1;
     margin: 0;
   }
-  .a11y-widget-biz .a11y-principle-group .a11y-fd > .a11y-finding-steps,
-  .a11y-widget-biz .a11y-principle-group .a11y-fd > .a11y-finding-todo,
-  .a11y-widget-biz .a11y-principle-group .a11y-fd > .a11y-affected,
-  .a11y-widget-biz .a11y-principle-group .a11y-fd > .a11y-finding-level-fold,
-  .a11y-widget-biz .a11y-principle-group .a11y-fd > .a11y-fd-learn {
+  .a11y-widget-biz .a11y-fd > .a11y-finding-steps,
+  .a11y-widget-biz .a11y-fd > .a11y-finding-todo,
+  .a11y-widget-biz .a11y-fd > .a11y-affected,
+  .a11y-widget-biz .a11y-fd > .a11y-finding-level-fold,
+  .a11y-widget-biz .a11y-fd > .a11y-fd-learn {
     grid-column: 2;
     margin: 0;
   }
-  .a11y-widget-biz .a11y-principle-group .a11y-fd > .a11y-fix-once,
-  .a11y-widget-biz .a11y-principle-group .a11y-fd > .a11y-pro-block,
-  .a11y-widget-biz .a11y-principle-group .a11y-fd > .a11y-tech-details {
+  .a11y-widget-biz .a11y-fd > .a11y-fix-once,
+  .a11y-widget-biz .a11y-fd > .a11y-pro-block,
+  .a11y-widget-biz .a11y-fd > .a11y-tech-details {
     grid-column: 1 / -1;
   }
 }
