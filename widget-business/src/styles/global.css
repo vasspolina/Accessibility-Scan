@@ -4316,14 +4316,12 @@
 .a11y-widget-biz .a11y-hist .a11y-hist-head {
   align-self: center;
   margin: 0;
-  padding: 8px 22px;
-  border-radius: var(--radius-pill);
-  /* Dashed, as the reference draws it and as the design card's own
-     description says — "dashed pill section heads". Built solid first;
-     the dash is the whole character of the mark. */
-  border: 2px dashed var(--gray-100);
-  background: var(--purple-20);
-  color: var(--gray-100);              /* measured below */
+  /* Just the title. The dashed pill went in from the reference and came
+     straight back out: a section head that is one short phrase does not
+     need a border and a fill to be found — the air around it and the
+     centring already say it opens a block. */
+  padding: 0;
+  color: var(--text-on-invert);        /* 18.1:1 on the black field */
   font-size: 18px;
   font-weight: 500;
   text-align: center;
@@ -4706,4 +4704,43 @@
   .a11y-widget-biz .a11y-principle-group .a11y-fd > .a11y-tech-details {
     grid-column: 1 / -1;
   }
+}
+
+/* ── The findings table below 480px ───────────────────────────────────────
+   The table never overflowed; its CELLS did. table-layout: fixed splits
+   the columns evenly whatever is in them, so on a 286px panel each of the
+   five got 57px, and 32px of that is padding — 25px of content for a
+   severity pill needing 33. Squeezing them further cannot help; the fix
+   is to carry fewer.
+
+   Severity already folds into the Issue cell here (a11y-finding-sev-fold),
+   so its column is pure duplication at this width. WCAG, Fix type and
+   Level are dropped as COLUMNS, not as information: every one of them is
+   in the row's own expanded panel, which is one press away and is where
+   this width sends a reader anyway. Issue and Instances remain, which is
+   the row's point and its count.
+
+   Keyed on data-col, so the <th> goes with its <td> and the table simply
+   has fewer columns rather than a ragged one. */
+@container a11y-panel (max-width: 480px) {
+  .a11y-widget-biz .a11y-findings-table th[data-col="severity"],
+  .a11y-widget-biz .a11y-findings-table td[data-col="severity"],
+  .a11y-widget-biz .a11y-findings-table th[data-col="wcag"],
+  .a11y-widget-biz .a11y-findings-table td[data-col="wcag"],
+  .a11y-widget-biz .a11y-findings-table th[data-col="fix"],
+  .a11y-widget-biz .a11y-findings-table td[data-col="fix"],
+  .a11y-widget-biz .a11y-findings-table th[data-col="level"],
+  .a11y-widget-biz .a11y-findings-table td[data-col="level"],
+  .a11y-widget-biz .a11y-pro-table th[data-col="criterion"],
+  .a11y-widget-biz .a11y-pro-table td[data-col="criterion"] { display: none; }
+
+  /* 16px of padding each side on a 57px cell is more padding than content. */
+  .a11y-widget-biz .a11y-findings-table th,
+  .a11y-widget-biz .a11y-findings-table td,
+  .a11y-widget-biz .a11y-pro-table th,
+  .a11y-widget-biz .a11y-pro-table td { padding: var(--space-04) var(--space-03); }
+
+  /* The count tile is 64px here; the Issue column takes what is left. */
+  .a11y-widget-biz .a11y-findings-table th[data-col="count"],
+  .a11y-widget-biz .a11y-findings-table td[data-col="count"] { width: 60px; }
 }
