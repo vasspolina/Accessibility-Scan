@@ -191,9 +191,89 @@ for (let i = 0; i < rules.length; i++) {
   }
 }
 
+/* ── 3. welded inline siblings ───────────────────────────────────────
+   Two inline elements written on separate lines in JSX render with NO
+   space between them: JSX strips whitespace that contains a newline. So
+   the markup looks spaced and the page reads "1.1.1 ADo images have a
+   description". Four separate components shipped that fault in one day —
+   also "WCAG 2.1 AAThe EU's technical standard", "Deuteranopia~6% of
+   men", and "…is it still visible?2.4.11 · Level AA".
+
+   It always reads as a copywriting bug and it never is. The separation
+   has to come from CSS, so a pair is flagged when NEITHER side declares
+   anything that would provide it. */
+const SEPARATES = /^(display|margin|padding|gap|float|position)/;
+const givesSeparation = (cls) => {
+  for (const r of rules) {
+    if (!r.selector.includes("." + cls)) continue;
+    for (const d of r.decls) {
+      if (!SEPARATES.test(d)) continue;
+      /* display only counts when it takes the box out of the inline flow. */
+      if (d === "display") {
+        const v = (r.body.match(/display:\s*([a-z-]+)/) || [])[1] || "";
+        if (/^(block|flex|grid|inline-block|inline-flex|table|list-item|none)$/.test(v)) return true;
+        continue;
+      }
+      return true;
+    }
+  }
+  return false;
+};
+
+/* Does a rule on their shared-prefix parent lay them out with a gap? */
+const parentGaps = (a, b) => {
+  const parts = a.split("-");
+  for (let i = parts.length - 1; i >= 2; i--) {
+    const prefix = parts.slice(0, i).join("-");
+    if (!b.startsWith(prefix)) continue;
+    for (const r of rules) {
+      if (!r.selector.includes("." + prefix)) continue;
+      const body = r.body;
+      const disp = (body.match(/display:\s*([a-z-]+)/) || [])[1] || "";
+      if (!/flex|grid/.test(disp)) continue;
+      if (/(^|[;\s])(gap|column-gap)\s*:/.test(body)) return true;
+      if (/justify-content:\s*space-between/.test(body)) return true;
+    }
+  }
+  return false;
+};
+
+/* An element immediately followed by another, whitespace only between. */
+const INLINE_TAG = /^(span|em|code|strong|b|i|small|abbr|a)$/;
+(function walkJsx(dir) {
+  for (const e of fs.readdirSync(dir, { withFileTypes: true })) {
+    const p = path.join(dir, e.name);
+    if (e.isDirectory()) { walkJsx(p); continue; }
+    if (!/\.tsx$/.test(e.name)) continue;
+    const src = fs.readFileSync(p, "utf8");
+    const re = /<\/(\w+)>\s*\n\s*<(\w+)\s[^>]*className=(?:"([^"]*)"|\{`([^`]*)`\})/g;
+    for (const m of src.matchAll(re)) {
+      const [, closeTag, openTag, q, tpl] = m;
+      if (!INLINE_TAG.test(closeTag) || !INLINE_TAG.test(openTag)) continue;
+      const after = ((q || tpl || "").match(/a11y-[\w-]+/) || [])[0];
+      /* The class on the element that just closed, read backwards. */
+      const before = [...src.slice(0, m.index).matchAll(/className=(?:"([^"]*)"|\{`([^`]*)`\})/g)]
+        .map((x) => ((x[1] || x[2] || "").match(/a11y-[\w-]+/) || [])[0]).filter(Boolean).pop();
+      if (!after || !before) continue;
+      if (givesSeparation(before) || givesSeparation(after)) continue;
+      /* Or the parent lays them out. The parent's class is not in this
+         match, but this file names children after them —
+         a11y-count-pill-n inside a11y-count-pill — so the longest shared
+         prefix is the parent, and a flex or grid rule on it with a gap
+         separates the pair without either child saying anything. */
+      if (parentGaps(before, after)) continue;
+      problems.push({
+        kind: "welded-siblings",
+        detail: `${path.basename(p)}: <${closeTag} class="${before}"> immediately followed by <${openTag} class="${after}">`,
+        why: "JSX drops the newline between them, so they render with no space and neither class declares any separation",
+      });
+    }
+  }
+})(SRC);
+
 /* ── report ─────────────────────────────────────────────────────────── */
 const byKind = (k) => problems.filter((p) => p.kind === k);
-for (const kind of ["undefined-var", "specificity-tie"]) {
+for (const kind of ["undefined-var", "welded-siblings", "specificity-tie"]) {
   const list = byKind(kind);
   console.log(`\n${kind}: ${list.length}`);
   for (const p of list) console.log(`  - ${p.detail}\n      ${p.why}`);
