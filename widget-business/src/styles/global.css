@@ -201,6 +201,11 @@
   /* Brand yellow and its tint — marks and count tiles. 14.96:1 and 16.66:1
      with gray-100. */
   --yellow-brand: #ffed00; --yellow-brand-tint: #fff9a3;
+  /* The Instances tile, literals from the design's own layer. The fill is
+     1.02:1 against the white row it sits on, so the tile is legible only
+     because of its border — the two travel together and neither is
+     decorative. gray-100 on the fill is 17.8:1. */
+  --count-tile-fill: #fcffe8; --count-tile-border: #ababab;
   /* The severity ramp's fills, for pills carrying white labels.
      Measured: 5.00 / 5.03 / 4.99 / 7.81 / 5.02 with white. */
   --severity-critical-fill: #da1e28; --severity-serious-fill: #ba4e00;
@@ -759,6 +764,64 @@
   white-space: nowrap;
 }
 
+/* The Instances tile in the findings table, to the design's measurements:
+   7px/5px padding, 13px radius, a 0.8px hairline and the pale yellow fill.
+   24px is what makes the content box the design's 31px tall — it is the
+   size the tile was drawn around, not a size chosen for it. */
+.a11y-widget-biz .a11y-count-pill {
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  padding: 7px 5px;
+  border-radius: 13px;
+  border: 0.8px solid var(--count-tile-border);
+  background: var(--count-tile-fill);
+  color: var(--text-primary);
+  font-size: 24px;
+  /* 24 × 1.3 = 31.2, which is the design's 31px content box. The font's
+     normal leading gives 36 and a tile 5px taller than drawn. */
+  line-height: 1.3;
+  letter-spacing: 0.01em;
+  /* Tabular figures so a column of tiles lines up on the digits rather
+     than drifting by whatever width the numerals happen to be. */
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+/* The Instances column has to be given a width. Every one of these tables
+   is table-layout: fixed, so a column takes a proportional share of the
+   row — at 320px that left this one a 9px content box, and a tile that
+   cannot wrap hung outside the table and pushed the HOST PAGE sideways by
+   8px. Measured, not guessed: without the tile the same cell reported no
+   overflow at all, so this width is the tile's own bill.
+   Keyed on data-col="count", not on right-alignment: five other columns
+   are right-aligned (a site audit's Score and Issues, the screen-reader
+   transcript's "#"), none of them carry a tile, and a 116px "#" column
+   would be absurd. */
+.a11y-widget-biz th[data-col="count"],
+.a11y-widget-biz td[data-col="count"] { width: 116px; }
+
+@container a11y-panel (max-width: 586px) {
+  /* 116px of a 286px panel is a third of the row spent on a count, so the
+     tile steps down and takes its gutters with it. The design drew this
+     for a desktop table; shrinking it keeps the count visible, which
+     dropping the column the way Severity does would not — nothing else in
+     the row carries it. */
+  .a11y-widget-biz .a11y-count-pill {
+    gap: 6px;
+    padding: 5px 6px;
+    border-radius: 10px;
+    font-size: 18px;
+    line-height: 1.3;
+  }
+  .a11y-widget-biz th[data-col="count"],
+  .a11y-widget-biz td[data-col="count"] {
+    width: 64px;
+    padding-left: var(--space-03);
+    padding-right: var(--space-03);
+  }
+}
+
 .a11y-widget-biz .a11y-score-points {
   margin: 0;
   padding-left: 1.2em;
@@ -812,6 +875,55 @@
   display: flex;
   flex-direction: column;
   gap: var(--space-05);
+}
+
+/* ---- The finding dropdown, to the design's own layout -------------------
+   Label/body pairs where the label is a small grey line of its own, one
+   bold lead-in that stays on its sentence, then the steps as a plain
+   bulleted list. The pairs above already had their rule; these are the
+   parts of the same panel that never got one. */
+
+/* Every <strong> here at 500. Measured in the browser: only two faces are
+   loaded — PP Telegraf 400 and 500 — and these were computing to 700, so
+   the browser was synthesising a fake bold. That is the one weight this
+   project forbids by name, and it was showing on every open finding. */
+.a11y-widget-biz .a11y-finding-details strong,
+.a11y-widget-biz .a11y-table-detail strong {
+  font-weight: 500;
+}
+
+/* "Who fixes this" answers its question in one breath, so it stays on the
+   line with its sentence rather than becoming a grey label like the pairs
+   below. Without any rule it took the UA's 1em margins and sat unevenly
+   among siblings that all carry margin: 0 0 space-05. */
+.a11y-widget-biz .a11y-method-hint {
+  margin: 0 0 var(--space-05);
+  max-width: var(--measure);
+  font-size: 18px;
+  line-height: 1.5;
+}
+
+/* The steps list. Bullets and an indent, which is what the design draws —
+   the gap is what stops three one-line steps reading as a paragraph. */
+.a11y-widget-biz .a11y-finding-steps > ul {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-03);
+  margin: 0;
+  padding-left: var(--space-06);
+  max-width: var(--measure);
+  font-size: 18px;
+  line-height: 1.5;
+}
+
+/* "Affected elements (9)" opens the list of places rather than continuing
+   the prose, so it gets a heading's air above it. */
+.a11y-widget-biz .a11y-affected-label {
+  margin: var(--space-06) 0 0;
+  font-size: 18px;
+}
+.a11y-widget-biz .a11y-affected-label > strong {
+  display: block;
 }
 
 /* "What we couldn't decide" — a card per kind, two across, each opening with

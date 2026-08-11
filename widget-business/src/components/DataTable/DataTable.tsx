@@ -117,6 +117,12 @@ export function DataTable({
             <th
               key={h.key}
               scope="col"
+              /* The column's own name, so a stylesheet can size one column
+                 without having to guess it from alignment. These tables are
+                 table-layout: fixed, where the header row decides every
+                 column width — so a width meant for a body cell has to be
+                 set here or it does nothing. */
+              data-col={h.key}
               data-align={h.align || "left"}
             >
               {h.label}
@@ -164,6 +170,7 @@ export function DataTable({
                        CSS. A right-aligned column in this report is always a
                        count, which is why alignment can imply it. */
                     data-numeric={headers[i].align === "right" ? "true" : undefined}
+                    data-col={headers[i].key}
                     data-align={headers[i].align || "left"}
                   >
                     {cell}

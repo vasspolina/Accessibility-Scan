@@ -709,6 +709,28 @@ function FindingDetails({
   );
 }
 
+/* The Instances cell. The count used to be the bare string "3 ×" in a
+   table cell, which put a number and a floating multiplication sign in a
+   column with nothing to hold them — the design gives them a bordered
+   tile instead, and the border is doing real work here: the fill is a
+   hair off white (1.02:1 against the row) and would otherwise be
+   invisible.
+   Number and mark are two flex children because the design's 10px gap is
+   between them, not inside a string. The mark is aria-hidden and carries
+   no replacement text: the column header already says "Instances", so a
+   screen reader hears "Instances, 3" and adding "3 places" here would
+   say the same thing twice. */
+export function CountPill({ count }: { count: number }) {
+  return (
+    <span className="a11y-count-pill">
+      <span className="a11y-count-pill-n">{count}</span>
+      <span className="a11y-count-pill-x" aria-hidden="true">
+        &times;
+      </span>
+    </span>
+  );
+}
+
 // One DataTable row for a group: severity, title plus its WCAG/fix-kind
 // context, and the occurrence count. asNotes drops the severity cell — a
 // remark on the design isn't ranked the way a defect is, and wearing "Fix
@@ -770,7 +792,7 @@ export function findingRow(
   return {
     id: rep.id,
     cells: asNotes
-      ? [issueCell, ...(showCount ? [count > 1 ? `${count} ×` : ""] : [])]
+      ? [issueCell, ...(showCount ? [count > 1 ? <CountPill key="n" count={count} /> : ""] : [])]
       : [
           // Severity's own column — hidden at phone width by CSS
           // (a11y-finding-sev-col), where the folded copy inside
@@ -792,7 +814,7 @@ export function findingRow(
           // findings is almost always singular, so "Instances" reads
           // blank on every row — drop the whole column rather than ship
           // an empty one.
-          ...(showCount ? [count > 1 ? `${count} ×` : ""] : []),
+          ...(showCount ? [count > 1 ? <CountPill key="n" count={count} /> : ""] : []),
         ],
     expand: <FindingDetails findings={findings} asNotes={asNotes} />,
   };

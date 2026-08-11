@@ -4,6 +4,7 @@ import type { AccessibilityFinding, ConformanceSummary } from "../api/scanClient
 import { plainForRule } from "../lib/wcagPlain";
 import { enClauseFor } from "../lib/audienceMode";
 import { groupFindings } from "./FindingsList";
+import { CountPill } from "./FindingGroup";
 import { useReportView } from "./ReportViewContext";
 import { SeverityTag } from "./SeverityTag";
 import { DataTable } from "./DataTable";
@@ -74,7 +75,7 @@ export function ProfessionalTable({
           </span>
         </span>,
         criterionLine(rep),
-        `${group.length} ×`,
+        <CountPill key="n" count={group.length} />,
       ],
       expand: (
         <div className="a11y-table-detail">
