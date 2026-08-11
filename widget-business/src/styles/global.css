@@ -945,13 +945,23 @@
   display: inline-flex;
   justify-content: center;
   align-items: center;
+  /* The kit's measurements, which you confirmed win over the layer panel
+     I built this from first: a 2px edge, a 9px corner, and the numeral in
+     purple with the mark left grey beside it. 18px, not 24 — the tile sits
+     in a row beside 20px titles and was overpowering them. */
   gap: 10px;
-  padding: 7px 5px;
-  border-radius: 13px;
-  border: 0.8px solid var(--count-tile-border);
+  padding: 2px 5px;
+  border-radius: 9px;
+  border: 2px solid var(--count-tile-border);
   background: var(--count-tile-fill);
-  color: var(--text-primary);
-  font-size: 24px;
+  color: var(--purple-60);
+  /* No min-width and no content-box. Both went in from the kit, and both
+     made the tile 64px inside a 48px cell at every width below 768 —
+     and the narrow-width release could not undo them, because the base
+     rule sits LATER in this file at the same specificity. Deleting them
+     is the fix; another rule to counter them would have been the fifth
+     ordering collision today. The tile takes what its digits need. */
+  font-size: 18px;
   /* 24 × 1.3 = 31.2, which is the design's 31px content box. The font's
      normal leading gives 36 and a tile 5px taller than drawn. */
   line-height: 1.2;
@@ -1728,7 +1738,7 @@
   text-align: center;
   font-size: 15px;
   font-weight: 500;
-  letter-spacing: var(--tracking-caps, 0.1em);
+  letter-spacing: 0.01em;   /* CLAUDE.md: 0.01em everywhere, and never a token for tracking */
   text-transform: uppercase;
 }
 
@@ -1859,7 +1869,7 @@
 
 .a11y-widget-biz .a11y-login-legend {
   font-size: 20px;
-  letter-spacing: 0.02em;
+  letter-spacing: 0.01em;
 }
 
 /* Fields keep a rounded rectangle rather than a full pill — at 56px tall a
@@ -2453,7 +2463,7 @@
   background: var(--background);
   font-size: 15px;
   font-weight: 400;
-  letter-spacing: 0;
+  letter-spacing: 0.01em;
 }
 .a11y-widget-biz .a11y-pages-table { margin-top: var(--space-05); }
 
@@ -4744,3 +4754,6 @@
   .a11y-widget-biz .a11y-findings-table th[data-col="count"],
   .a11y-widget-biz .a11y-findings-table td[data-col="count"] { width: 60px; }
 }
+
+/* The numeral carries the accent; the mark stays quiet beside it. */
+.a11y-widget-biz .a11y-count-pill-x { color: var(--text-secondary); }
