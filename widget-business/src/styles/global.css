@@ -703,6 +703,23 @@
 .a11y-widget-biz .a11y-method-badge,
 .a11y-widget-biz .a11y-finding-criterion { white-space: nowrap; max-width: none; }
 
+/* But nowrap inside a fixed-layout table cell clips rather than overflows
+   visibly, and these badges were losing their own text at every width
+   below 1280 — "Fix first", "Code fix", "Design fix", measured in all
+   three engines. Established by A/B: stripping the POUR panel's padding
+   left the identical list, so this predates it.
+   min-content is the floor, exactly as on the option cards' badge: the
+   pill gives up width down to its longest word and wraps onto a second
+   line instead of cutting the word in half. */
+.a11y-widget-biz .a11y-datatable .a11y-sev,
+.a11y-widget-biz .a11y-datatable .a11y-method-badge,
+.a11y-widget-biz .a11y-findings-table .a11y-sev,
+.a11y-widget-biz .a11y-findings-table .a11y-method-badge {
+  white-space: normal;
+  min-width: min-content;
+  text-wrap: balance;
+}
+
 .a11y-widget-biz .a11y-findings-table td,
 .a11y-widget-biz .a11y-notes-table td,
 .a11y-widget-biz .a11y-undecided-table td { overflow-wrap: normal; }
@@ -933,6 +950,95 @@
 }
 .a11y-widget-biz .a11y-affected-label > strong {
   display: block;
+}
+
+/* ---- The four POUR sections ---------------------------------------------
+   Every one of these classes was in the markup with no rule behind it, so
+   the section rendered as an unstyled stack: no ground, no divider, the
+   principle name as body text and the question at a browser h3.
+
+   The design gives each principle its own tinted panel with a centred
+   head — the principle as a dark pill, its count as a round badge beside
+   it, then the question set large and uppercased, then the lead. */
+.a11y-widget-biz .a11y-principle-groups {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-09);
+}
+.a11y-widget-biz .a11y-principle-group {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-05);
+  padding: var(--space-09) var(--space-07);
+  border-radius: var(--radius-lg);
+  background: var(--purple-10);
+}
+.a11y-widget-biz .a11y-principle-head {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: var(--space-03);
+  margin: 0;
+  max-width: none;
+}
+.a11y-widget-biz .a11y-principle-term {
+  padding: 4px 14px;
+  border-radius: var(--radius-pill);
+  background: var(--text-primary);
+  color: var(--text-on-invert);        /* 16.4:1 */
+  font-size: 15px;
+  font-weight: 500;
+}
+/* A round badge, so it has to be as tall as it is wide whatever number is
+   in it — hence the min-width rather than symmetric padding, which would
+   make "12" an oval. */
+.a11y-widget-biz .a11y-principle-count {
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  min-width: 28px;
+  height: 28px;
+  padding: 0 var(--space-03);
+  border-radius: var(--radius-pill);
+  background: var(--white);
+  color: var(--text-primary);
+  font-size: 15px;
+  font-weight: 500;
+  font-variant-numeric: tabular-nums;
+}
+/* The question, centred and uppercased. text-wrap: balance so a
+   three-word line does not leave one word alone underneath. */
+.a11y-widget-biz .a11y-principle-title {
+  margin: 0;
+  text-align: center;
+  text-transform: uppercase;
+  text-wrap: balance;
+  font-size: 32px;
+  line-height: 1.1;
+  font-weight: 500;
+  letter-spacing: 0.01em;
+}
+/* The lead, centred under it and held to a readable measure rather than
+   the panel's full width. */
+.a11y-widget-biz .a11y-principle-desc {
+  margin: 0 auto;
+  max-width: 48ch;
+  text-align: center;
+  font-size: 15px;
+  line-height: 1.5;
+  color: var(--text-primary);
+}
+/* The panel's generous side padding is a desktop measurement. At 320px it
+   took 64 of the 286 available and the findings table inside it burst —
+   the title cell, the severity fold and the toggle column all overflowed
+   in all three engines. The ground is worth keeping at every width; the
+   inset is not. */
+@container a11y-panel (max-width: 586px) {
+  .a11y-widget-biz .a11y-principle-group {
+    padding: var(--space-07) var(--space-04);
+    gap: var(--space-04);
+  }
+  .a11y-widget-biz .a11y-principle-title { font-size: 24px; }
 }
 
 /* The list of places. It had no rule, so it drew the UA's hollow circles
@@ -3006,7 +3112,27 @@
 .a11y-widget-biz .a11y-optioncard-meta {
   position: static;
   align-self: center;
-  margin: 0;
+  /* Pushed to the card's right end, which is where the design puts it.
+     This rule turned the badge from an absolutely-placed tab straddling
+     the card's top edge into an inline one, but nothing then moved it:
+     it sat against the description with the rest of the card empty to
+     its right — 278px of it on a 577px card, measured. */
+  margin: 0 0 0 auto;
+  /* It shrinks to its longest word and no further, and wraps rather than
+     clips. The card sets min-width: 0 on every child so the label stops
+     holding the row open — right for the text, wrong for a nowrap badge,
+     which given less width than its text does not wrap, it clips:
+     measured, "Most chosen" was handed 69px for 104px of text between
+     roughly 700 and 900px of panel, losing a third of the word with
+     nothing to show it had.
+     Refusing to shrink at all just moves the squeeze — at 700px the card
+     then left "Business" 73px for 76px of word, and a label with no break
+     opportunity inside it overflowed instead. min-content is the floor
+     that satisfies both: the badge gives up width down to its widest
+     word, wrapping onto a second line, and stops there. */
+  flex: 0 1 auto;
+  min-width: min-content;
+  white-space: normal;
   background: transparent;
   color: var(--text-secondary);
 }
@@ -3066,7 +3192,11 @@
    min-width:auto, so the label held the row open at its own width while the
    nowrap meta pill added 116px beside it. */
 .a11y-widget-biz .a11y-optioncard-text { min-width: 0; }
-.a11y-widget-biz .a11y-optioncard > * { min-width: 0; }
+/* Not the badge. It carries min-width: min-content of its own so it wraps
+   instead of clipping, and this rule sits later in the file at the same
+   specificity — so without the :not() it silently won and the badge lost
+   five pixels of "Most chosen" in a narrow band around 640px. */
+.a11y-widget-biz .a11y-optioncard > *:not(.a11y-optioncard-meta) { min-width: 0; }
 
 /* ── The four families the style check kept reporting ────────────────────
    All the same fault: adjacent inline spans with no rule to separate them,

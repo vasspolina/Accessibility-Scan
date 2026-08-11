@@ -163,7 +163,7 @@ export function UrlForm({
           <Input
             id="a11y-url-input"
             size="display"
-            label="Your website address (required)"
+            label="Website address (required)"
             placeholder="example.com"
             value={value}
             onChange={(e) => {
@@ -318,7 +318,10 @@ export function UrlForm({
               id="a11y-aud-biz"
               name="a11y-audience"
               value="business"
-              label="For business owners"
+              /* The design's own words. "For business owners" put the
+                 preposition inside every card, where the question above
+                 already supplies it: "Who reads it? — Business owners". */
+              label="Business owners"
               description="Plain-language summary and costs"
               meta="Most chosen"
               checked={audience === "business"}
@@ -328,7 +331,7 @@ export function UrlForm({
               id="a11y-aud-pro"
               name="a11y-audience"
               value="professional"
-              label="For professionals"
+              label="Professionals"
               description="WCAG-mapped technical findings"
               checked={audience === "professional"}
               onChange={() => onAudienceChange("professional")}
