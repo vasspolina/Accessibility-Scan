@@ -4,7 +4,7 @@ import type { AccessibilityFinding, ConformanceSummary } from "../api/scanClient
 import { plainForRule } from "../lib/wcagPlain";
 import { enClauseFor } from "../lib/audienceMode";
 import { groupFindings } from "./FindingsList";
-import { CountPill } from "./FindingGroup";
+import { CountPill, FindingDetails } from "./FindingGroup";
 import { useReportView } from "./ReportViewContext";
 import { SeverityTag } from "./SeverityTag";
 import { DataTable } from "./DataTable";
@@ -77,38 +77,26 @@ export function ProfessionalTable({
         criterionLine(rep),
         <CountPill key="n" count={group.length} />,
       ],
-      expand: (
-        <div className="a11y-table-detail">
-          {/* Criterion is dropped from the row at narrow widths (see the
-              @container rule in styles.css) — it stays reachable here so
-              hiding the column there doesn't lose the information, only
-              its own dedicated column. */}
-          <p className="a11y-pro-detail-criterion">
-            <strong>Criterion:</strong> {criterionLine(rep)}
-          </p>
-          <p>{rep.description}</p>
-          {rep.suggestedFix && (
-            <p>
-              <strong>Fix:</strong> {rep.suggestedFix}
-            </p>
-          )}
-          <p>
-            <strong>Selector:</strong> <code>{rep.selector}</code>
-          </p>
-          {rep.elementSnippet && (
-            <pre className="a11y-pro-snippet" tabIndex={0} role="group" aria-label="Element markup">
-              <code>{rep.elementSnippet}</code>
-            </pre>
-          )}
-          {rep.helpUrl && (
-            <p>
-              <a className="a11y-learn-more" href={rep.helpUrl} target="_blank" rel="noopener noreferrer">
-                Fix technique <span aria-hidden="true">↗</span>
-              </a>
-            </p>
-          )}
-        </div>
-      ),
+      /* The same panel the business table opens, which is the one the
+         design draws — labelled sections, the steps as a list, the
+         affected elements named.
+
+         This used to be a second, hand-written panel: criterion, the raw
+         description, Fix, Selector, snippet, link. Every one of those is
+         already in FindingDetails, and its professional block puts WCAG,
+         the selector and the snippet open on the card rather than in the
+         drawer — so nothing a professional reader had is lost, and what
+         they were missing arrives: why it matters, what the research
+         says, what to do, and which elements.
+
+         The duplicate was also why this dropdown had none of the design's
+         typography. It was not styled badly; it was different markup that
+         no rule targeted. Deleting it is the fix, not restyling it.
+
+         Criterion stays reachable at narrow widths, which was the old
+         panel's stated reason for repeating it — the professional block's
+         WCAG line carries the number, the name and the level. */
+      expand: <FindingDetails findings={group} />,
     };
   });
 

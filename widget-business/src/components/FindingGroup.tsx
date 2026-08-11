@@ -414,7 +414,7 @@ function devElementRefs(findings: AccessibilityFinding[]): string[] {
 // the hand-off detail. Shared by the print-only card below and the on-screen
 // table row's expand panel — one source for content that must appear
 // wherever the group does, collapsed or on paper.
-function FindingDetails({
+export function FindingDetails({
   findings,
   asNotes = false,
 }: {

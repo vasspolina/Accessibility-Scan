@@ -138,6 +138,18 @@
 .a11y-widget-biz .a11y-section-desc,
 .a11y-widget-biz p { max-width: var(--measure); }
 
+/* <strong> is 500, everywhere in the widget.
+   Only two faces are served — PP Telegraf 400 and 500 — so the UA's
+   default `bold` asks for a 700 that does not exist and the browser
+   synthesises it, smearing the letterforms. Counted in the browser
+   against document.fonts: 41 visible elements in the business report and
+   34 in the professional one were being faked, every one a <strong>. It
+   is a one-line fix that no amount of reading the stylesheet would have
+   found, because the fault is in what the UA supplies, not in what any
+   rule here says. */
+.a11y-widget-biz strong,
+.a11y-widget-biz b { font-weight: 500; }
+
 /* A grid item does not shrink below its min-content unless told to, and a
    table of selectors has a wide one. */
 .a11y-widget-biz .a11y-section > * { min-width: 0; }
@@ -883,14 +895,11 @@
    bulleted list. The pairs above already had their rule; these are the
    parts of the same panel that never got one. */
 
-/* Every <strong> here at 500. Measured in the browser: only two faces are
-   loaded — PP Telegraf 400 and 500 — and these were computing to 700, so
-   the browser was synthesising a fake bold. That is the one weight this
-   project forbids by name, and it was showing on every open finding. */
-.a11y-widget-biz .a11y-finding-details strong,
-.a11y-widget-biz .a11y-table-detail strong {
-  font-weight: 500;
-}
+/* Every <strong> in the widget at 500 — see the rule near the top of the
+   type section. Scoping this to the dropdown was the first attempt and it
+   was wrong twice over: FindingDetails returns a fragment, so no
+   .a11y-finding-details element exists in a table's expanded row at all,
+   and the fake bold was never confined to findings anyway. */
 
 /* "Who fixes this" answers its question in one breath, so it stays on the
    line with its sentence rather than becoming a grey label like the pairs
@@ -924,6 +933,61 @@
 }
 .a11y-widget-biz .a11y-affected-label > strong {
   display: block;
+}
+
+/* The list of places. It had no rule, so it drew the UA's hollow circles
+   at a 40px indent — the finding says "Affected elements (9)" and then
+   hands the reader a bulleted list of selectors. Rows with a hairline
+   between them instead, which is how every other list of records in this
+   report is set. */
+.a11y-widget-biz .a11y-occurrence-list {
+  list-style: none;
+  margin: var(--space-04) 0 0;
+  padding: 0;
+  font-size: 18px;
+}
+.a11y-widget-biz .a11y-occurrence-list > li {
+  padding: var(--space-04) 0;
+  border-bottom: 1px solid var(--border-subtle);
+}
+.a11y-widget-biz .a11y-occurrence-list > li:last-child { border-bottom: 0; }
+
+/* The professional block — WCAG, the selector, the element's markup —
+   open on the card rather than in the drawer. Both classes have been in
+   the markup unstyled the whole time: professional mode opened a
+   different, hand-written panel, so this one only ever rendered into the
+   print cards, which are display:none on screen. */
+.a11y-widget-biz .a11y-pro-block {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-04);
+  margin-top: var(--space-06);
+  padding-top: var(--space-05);
+  border-top: 1px solid var(--border-subtle);
+}
+.a11y-widget-biz .a11y-pro-line {
+  margin: 0;
+  max-width: var(--measure);
+  font-size: 18px;
+  line-height: 1.5;
+  /* A selector has no spaces to break at and will happily run out of the
+     panel. */
+  overflow-wrap: anywhere;
+}
+/* The EN clause qualifies the WCAG number rather than standing beside it
+   as an equal, so it is set quieter. 7.1:1. */
+.a11y-widget-biz .a11y-pro-en { color: var(--text-secondary); }
+
+/* The element's markup. mono is allowed here — this is the one place the
+   text IS code rather than prose about it. */
+.a11y-widget-biz .a11y-pro-snippet {
+  margin: 0;
+  padding: var(--space-04);
+  border-radius: var(--radius-sm);
+  background: var(--layer-01);
+  font-size: 15px;
+  line-height: 1.5;
+  max-width: var(--measure);
 }
 
 /* "What we couldn't decide" — a card per kind, two across, each opening with
