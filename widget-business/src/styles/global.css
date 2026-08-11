@@ -200,7 +200,13 @@
   --gray-60: #6f6f6f;  --gray-70: #525252;  --gray-100: #161616;
 
   --red-10: #fff1f1;   --red-60: #da1e28;   --red-70: #a2191f;  --red-100: #2d0709;
-  --orange-10: #fff2e8; --orange-70: #8a3800; --orange-100: #231000;
+  --orange-10: #fff2e8; --orange-60: #ba4e00; --orange-70: #8a3800; --orange-100: #231000;
+  /* The yellow ramp steps the severity tokens need. Referencing
+     --yellow-60 before defining it left the moderate pill with NO
+     fill at all: an undefined custom property resolves to nothing,
+     so white text sat on the black panel behind it and measured
+     21:1 — which looks like a pass and is a missing pill. */
+  --yellow-10: #fcf4d6; --yellow-60: #8e6a00;
   --blue-10: #edf5ff;  --blue-60: #0f62fe;  --blue-70: #0043ce;  --blue-100: #001141;
   /* The report-actions panel's ground and its pdf tag. purple-60 (#8a3ffc)
      is the kit's ramp value and clears AA on white at 5.00:1; kept rather
@@ -228,9 +234,16 @@
      because of its border — the two travel together and neither is
      decorative. gray-100 on the fill is 17.8:1. */
   --count-tile-fill: #fcffe8; --count-tile-border: #ababab;
-  /* The severity ramp's fills, for pills carrying white labels.
-     Measured: 5.00 / 5.03 / 4.99 / 7.81 / 5.02 with white. */
-  --severity-critical-fill: #da1e28; --severity-serious-fill: #ba4e00;
+  /* The severity ramp's fills, for pills carrying white labels — the
+     design system's own values, from tokens/colors.css.
+     Critical was #da1e28 here, which is --red-60: the ramp step, not the
+     fill. The design system's fill is red-70, and its comment says why
+     these are written as fixed hex rather than as var(--red-70): "they
+     must not flip lighter under the dark theme, which would break the
+     white-on-fill pair." The other four already matched.
+     Measured with white after the change: 7.51 / 5.03 / 4.99 / 7.81 /
+     5.02. Critical was 4.83 and is the one that moved. */
+  --severity-critical-fill: #a2191f; --severity-serious-fill: #ba4e00;
   --severity-moderate-fill: #8e6a00; --severity-minor-fill: #525252;
   --severity-pass-fill: #198038;
   /* The score dial's ground, a literal in the design's own template. */
@@ -253,10 +266,22 @@
   --button-primary: var(--brown-60);
   --focus: var(--text-primary);
 
-  --severity-critical: var(--red-60);   --severity-critical-bg: var(--red-10);
-  --severity-serious: var(--orange-70); --severity-serious-bg: var(--orange-10);
-  --severity-moderate: var(--blue-60);  --severity-moderate-bg: var(--blue-10);
-  --severity-minor: var(--gray-70);     --severity-minor-bg: var(--gray-10);
+  /* These, not the -fill tokens above, are what the visible pills use —
+     .a11y-sev-* paints with var(--severity-critical) and friends. Two had
+     drifted from the design system's tokens/colors.css:
+
+       serious   was orange-70, the design says orange-60
+       moderate  was BLUE-60, the design says yellow-60 — a blue pill for
+                 "Fix eventually" in a ramp that runs red/orange/yellow/grey,
+                 which read as a fourth category rather than a third step
+
+     Both still clear AA on white after the change: 5.03 and 4.99, measured.
+     Serious gives up contrast doing it — 7.94 down to 5.03 — which is the
+     cost of the design system's value being the one that ships. */
+  --severity-critical: var(--red-60);    --severity-critical-bg: var(--red-10);
+  --severity-serious: var(--orange-60);  --severity-serious-bg: var(--orange-10);
+  --severity-moderate: var(--yellow-60); --severity-moderate-bg: var(--yellow-10);
+  --severity-minor: var(--gray-70);      --severity-minor-bg: var(--gray-10);
 
   color: var(--text-primary);
   background: var(--background);
@@ -324,6 +349,14 @@
    spacing, radius and motion stay var(). Two faces only, 400 and 500. Minimum
    14; small body is 15 or 18 and nothing between.
    ========================================================================== */
+
+/* The hidden attribute has to beat any display we set, or it stops
+   hiding. The checklist filter marks rows hidden={isFilteredOut(...)},
+   and .a11y-conf-row was given display: grid this session — which
+   overrode it and left every row visible whatever the filter said.
+   !important because that is what the UA rule this replaces uses, and
+   anything less loses to the next display declaration someone adds. */
+.a11y-widget-biz [hidden] { display: none !important; }
 
 .a11y-widget-biz {
   font-family: "PP Telegraf", sans-serif;
@@ -3801,7 +3834,7 @@
 }
 .a11y-widget-biz .a11y-conf-result { font-weight: 500; }
 .a11y-widget-biz .a11y-conf-result-fail { color: var(--red-70); }   /* 7.09:1 */
-.a11y-widget-biz .a11y-conf-result-pass { color: var(--green-70); } /* 6.61:1 */
+.a11y-widget-biz .a11y-conf-result-pass { color: var(--green-70, #0e6027); } /* 6.61:1 */
 .a11y-widget-biz .a11y-conf-meaning { font-size: 15px; color: var(--text-secondary); }
 
 /* ── The address field, as the design's pill ─────────────────────────────
@@ -4217,8 +4250,12 @@
   margin: 0;
   padding: 8px 22px;
   border-radius: var(--radius-pill);
-  background: var(--gray-10);
-  color: var(--text-primary);          /* 16.0:1 */
+  /* Dashed, as the reference draws it and as the design card's own
+     description says — "dashed pill section heads". Built solid first;
+     the dash is the whole character of the mark. */
+  border: 2px dashed var(--gray-100);
+  background: var(--purple-20);
+  color: var(--gray-100);              /* measured below */
   font-size: 18px;
   font-weight: 500;
   text-align: center;
