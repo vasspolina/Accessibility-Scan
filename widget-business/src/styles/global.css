@@ -832,21 +832,18 @@
   gap: var(--space-04);
 }
 
-/* Full width means the tables can size their own columns again. `fixed` was
-   there to stop a table bursting a 525px track; there is no track now, and
-   `fixed` is what forced seven equal columns into whatever was left. */
-/* .a11y-datatable is no longer in this group. It is declared fixed above
-   and fixed again below with nothing conditional between, so this `auto`
-   never once applied to it — the linter's duplicate report, confirmed by
-   walking the file for every table-layout declaration and the at-rule
-   context each sits in.
-   The line itself stays, because the other three are still in it. They
-   are the WRAPPER divs, where table-layout does nothing at all, so this
-   is inert rather than load-bearing — but that is a separate cleanup and
-   not what was asked for here. */
-.a11y-widget-biz .a11y-findings-table,
-.a11y-widget-biz .a11y-notes-table,
-.a11y-widget-biz .a11y-undecided-table { table-layout: auto; }
+/* A table-layout: auto rule stood here and did nothing at all.
+   It named four selectors. .a11y-datatable left it in the commit before
+   this one, because that one IS a table and was declared fixed on both
+   sides of it. The three that remained are not tables:
+   .a11y-findings-table and .a11y-notes-table are one <div> wrapper, and
+   .a11y-undecided-table is a <ul> set to display: grid. table-layout
+   applies only to display: table and inline-table, and no rule in this
+   file gives any of them either — the only display ever declared on them
+   is none, on the print path.
+   So the rule was inert on every selector it had left. The comment above
+   it explained a decision about column sizing that no element was ever
+   subject to, which is worse than no comment. */
 
 /* A pill must never wrap inside its own radius. It may shrink the cell it
    sits in instead. */
@@ -960,7 +957,7 @@
   gap: 10px;
   padding: 2px 5px;
   border-radius: 9px;
-  border: 2px solid var(--count-tile-border);
+  border: 1px solid var(--count-tile-border);
   background: var(--count-tile-fill);
   color: var(--purple-60);
   /* No min-width and no content-box. Both went in from the kit, and both
@@ -4334,12 +4331,14 @@
 .a11y-widget-biz .a11y-hist .a11y-hist-head {
   align-self: center;
   margin: 0;
-  /* Just the title. The dashed pill went in from the reference and came
-     straight back out: a section head that is one short phrase does not
-     need a border and a fill to be found — the air around it and the
-     centring already say it opens a block. */
-  padding: 0;
-  color: var(--text-on-invert);        /* 18.1:1 on the black field */
+  /* A solid light pill. The DASHED one was the thing that came out — the
+     dash was the reference's, not this design's — but the pill itself is
+     how the target draws these heads, so the fill and the radius come
+     back and the border stays gone. */
+  padding: 8px 22px;
+  border-radius: var(--radius-pill);
+  background: var(--gray-10);
+  color: var(--text-primary);          /* 16.0:1 on gray-10 */
   font-size: 18px;
   font-weight: 500;
   text-align: center;
@@ -4528,11 +4527,23 @@
    It is the table's <caption>, so the rule is drawn by a pseudo-element
    rather than a sibling: a caption can hold one, and cannot hold a box. */
 .a11y-widget-biz .a11y-principle-group .a11y-datatable > caption {
+  /* KNOWN NOT WORKING, and left honest rather than left looking solved.
+     The design puts this label on one line with a rule running to the
+     right of it. display: flex on a <caption> does not get the box the
+     table's width — measured at 129px against a 904px table, in all
+     three engines — so the label wraps to two lines and the rule never
+     draws. caption-side and width: 100% do not change it: a caption is
+     sized by the table algorithm, and taking it out of table-caption
+     display leaves it sized by its own content.
+     The fix is a markup one: keep <caption> for the table's accessible
+     name, visually hidden, and render the visible label as a sibling
+     above the table where flex works normally. Not done here. */
   display: flex;
   align-items: center;
   gap: var(--space-05);
   margin-bottom: var(--space-05);
   text-align: left;
+  white-space: nowrap;
   font-size: 15px;
   font-weight: 500;
   color: var(--purple-70);              /* 6.1:1 on purple-20 */
@@ -4555,7 +4566,7 @@
 /* Every row is a white pill. It is a real <table>, so the pill is made by
    rounding the first and last cell rather than the row — border-radius on
    a <tr> does nothing in any engine. */
-.a11y-widget-biz .a11y-principle-group .a11y-datatable td {
+.a11y-widget-biz .a11y-principle-group .a11y-datatable tbody td {
   background: var(--white);
   border-top: var(--space-03) solid transparent;
   background-clip: padding-box;
@@ -4700,6 +4711,13 @@
 @container a11y-panel (min-width: 680px) {
   .a11y-widget-biz .a11y-principle-group .a11y-fd {
     grid-template-columns: repeat(2, minmax(0, 1fr));
+    /* dense, or the right column starts level with the LAST item of the
+       left one. Auto-placement is sparse by default: it never moves its
+       cursor backwards, so after four blocks claimed column 1 rows 1-4,
+       the first column-2 block landed on row 4 with three empty rows
+       above it. dense makes each item look from the top for the first
+       row its own column is free in. */
+    grid-auto-flow: row dense;
   }
   .a11y-widget-biz .a11y-principle-group .a11y-fd > .a11y-method-hint,
   .a11y-widget-biz .a11y-principle-group .a11y-fd > .a11y-finding-measured,
@@ -4765,3 +4783,57 @@
 
 /* The numeral carries the accent; the mark stays quiet beside it. */
 .a11y-widget-biz .a11y-count-pill-x { color: var(--text-secondary); }
+
+/* ── The vision simulator's condition list ────────────────────────────────
+   Eight classes here had no rule at all, so the controls rendered as raw
+   UA buttons and the condition ran into its prevalence: "Deuteranopia~6%
+   of men". Third time today the same fault — a label and an <em> with
+   nothing between them — after "1.1.1 ADo images…" and "WCAG 2.1 AAThe
+   EU's technical standard". It is never bad copy; it is always two
+   elements and no rule.
+
+   The design lists them as rows: name at the left, prevalence quiet at
+   the right, the chosen one on a tinted ground. */
+.a11y-widget-biz .a11y-sim-controls {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-02);
+  padding: var(--space-05);
+  border-radius: var(--radius-lg);
+  background: var(--white);
+}
+.a11y-widget-biz .a11y-sim-btn {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-05);
+  width: 100%;
+  padding: var(--space-04) var(--space-05);
+  border: 0;
+  border-radius: var(--radius-pill);
+  background: transparent;
+  color: var(--text-primary);
+  font-size: 18px;
+  text-align: left;
+  cursor: pointer;
+}
+/* The prevalence is a qualifier on the name, not a second label. */
+.a11y-widget-biz .a11y-sim-btn em {
+  flex: none;
+  font-style: normal;
+  font-size: 15px;
+  color: var(--text-secondary);        /* 7.1:1 on white */
+}
+.a11y-widget-biz .a11y-sim-btn:hover { background: var(--layer-01); }
+/* Chosen. aria-pressed is the source of truth, so the rule reads from it
+   rather than from the class beside it — one state, one place. */
+.a11y-widget-biz .a11y-sim-btn[aria-pressed="true"] {
+  background: var(--purple-20);
+  color: var(--purple-100);            /* 13.6:1 */
+  font-weight: 500;
+}
+.a11y-widget-biz .a11y-sim-btn[aria-pressed="true"] em { color: var(--purple-100); }
+.a11y-widget-biz .a11y-sim-btn:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: -2px;
+}
