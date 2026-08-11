@@ -4957,3 +4957,58 @@
   font-size: 18px;
   line-height: 1.2;
 }
+
+/* ── "The six new items" panel ────────────────────────────────────────────
+   The design puts the toggle, the breakdown and the six cards on a purple
+   panel, with the section's own title and intro left on the report's
+   ground above it. */
+.a11y-widget-biz .a11y-w22-panel {
+  margin-top: var(--space-06);
+  padding: var(--space-07) var(--space-06);
+  border-radius: var(--radius-lg);
+  background: var(--purple-60);        /* white on it: 5.00:1 */
+  color: var(--text-on-invert);
+}
+.a11y-widget-biz .a11y-w22-panel-title {
+  margin: 0 0 var(--space-05);
+  text-align: center;
+  text-transform: uppercase;
+  font-size: 24px;
+  line-height: 1.2;
+  font-weight: 500;
+  letter-spacing: 0.01em;
+  color: var(--text-on-invert);
+}
+.a11y-widget-biz .a11y-w22-panel-lead {
+  margin: 0 auto var(--space-06);
+  max-width: var(--measure);
+  text-align: center;
+  font-size: 18px;
+  color: var(--text-on-invert);        /* 5.00:1 */
+}
+/* The toggle is the one white pill on the panel. */
+.a11y-widget-biz .a11y-w22-panel .a11y-w22-toggle {
+  width: 100%;
+  border: 0;
+  border-radius: var(--radius-pill);
+  background: var(--white);
+  color: var(--text-primary);
+}
+/* The two caveats read as the panel's own columns rather than as amber
+   notes floating on purple. */
+.a11y-widget-biz .a11y-w22-panel .a11y-conf-caveat {
+  padding: 0;
+  border-radius: 0;
+  background: transparent;
+  color: var(--text-on-invert);
+}
+.a11y-widget-biz .a11y-w22-panel .a11y-question-list {
+  list-style: none;
+  padding: 0;
+  color: var(--text-on-invert);
+}
+/* --focus is the report's ink and vanishes on purple. */
+.a11y-widget-biz .a11y-w22-panel .a11y-w22-toggle:focus-visible {
+  outline: 2px solid var(--white);
+  outline-offset: 3px;
+}

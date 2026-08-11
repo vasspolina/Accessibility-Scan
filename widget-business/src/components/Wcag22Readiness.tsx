@@ -46,6 +46,17 @@ export function Wcag22Readiness({ readiness }: { readiness: Readiness }) {
         items={criteria.map((c) => ({ criterion: c.id, title: c.plain, level: c.level }))}
       />
 
+      {/* The design puts everything from here down on a purple panel and
+          heads it "The six new items" — the section's own title and intro
+          stay on the report's ground above it. A wrapper is the only way
+          to draw that: the toggle and the region it controls are siblings
+          of the heading, not children of anything. */}
+      <div className="a11y-w22-panel">
+        <h3 className="a11y-w22-panel-title">The six new items</h3>
+        <p className="a11y-w22-panel-lead">
+          These need a person, which is the same answer the checklist below
+          gives. Nothing here counts against today&rsquo;s score.
+        </p>
       <button
         type="button"
         className="a11y-accordion-head a11y-w22-toggle"
@@ -154,6 +165,7 @@ export function Wcag22Readiness({ readiness }: { readiness: Readiness }) {
               simply no longer counts.
             </p>
           )}
+      </div>
       </div>
     </section>
   );
