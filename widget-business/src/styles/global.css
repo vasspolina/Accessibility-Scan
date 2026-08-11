@@ -4905,3 +4905,55 @@
   color: var(--text-secondary);
   font-variant-numeric: tabular-nums;
 }
+
+/* ── The waiting view's progress bar ──────────────────────────────────────
+   Seven classes, none with a rule, so the one thing a visitor looks at
+   during every scan was 18px of body text: the percentage read "64%" at
+   the same size as the label beside it, and the numeral and its unit
+   rendered welded — the lint's welded-siblings check names this exact
+   pair, and it is the only one of the seven it finds that ships.
+
+   These rules existed before the stylesheet was stripped and are restored
+   with their tokens translated: --ink is --text-primary now, --ink-muted
+   is --text-secondary. The leadings are 1.2 rather than the original
+   0.8 and 1, per CLAUDE.md. */
+.a11y-widget-biz .a11y-progress {
+  display: flex;
+  flex-direction: column;
+}
+.a11y-widget-biz .a11y-progress-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--space-05);
+}
+.a11y-widget-biz .a11y-progress-label {
+  font-size: 15px;
+  color: var(--text-secondary);        /* 7.1:1 */
+}
+.a11y-widget-biz .a11y-progress-detail {
+  font-size: 15px;
+  color: var(--text-secondary);
+  white-space: nowrap;
+}
+/* The gap is what unwelds the numeral from its unit. Set on the parent
+   rather than as a margin on the unit, because they are one figure and
+   the flex row is what makes them sit on a shared baseline. */
+.a11y-widget-biz .a11y-progress-pct {
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-02);
+  margin: var(--space-05) 0;
+  max-width: none;
+  color: var(--text-primary);
+}
+.a11y-widget-biz .a11y-progress-num {
+  font-size: 66px;
+  line-height: 1.2;
+  letter-spacing: 0.01em;
+  font-variant-numeric: tabular-nums;
+}
+.a11y-widget-biz .a11y-progress-unit {
+  font-size: 18px;
+  line-height: 1.2;
+}
