@@ -457,7 +457,12 @@ export function FindingDetails({
       : "";
 
   return (
-    <>
+    /* A real element, not a fragment. The two-column layout has to live on
+       a box inside the expanded cell: setting display:grid on the <td>
+       itself takes the cell out of table formatting, its colspan stops
+       applying, and the cell collapsed to 33px with both columns inside
+       it — measured, in all three engines. */
+    <div className="a11y-fd">
       {/* What was actually measured on this page. It used to sit inside
           the technical drawer, two clicks from view, which left the
           summary above saying a ring was "too pale" and never how pale or
@@ -566,28 +571,13 @@ export function FindingDetails({
         </p>
       )}
       {rep.helpUrl && (
-        <p>
+        <p className="a11y-fd-learn">
           <a className="a11y-learn-more" href={rep.helpUrl} target="_blank" rel="noopener noreferrer">
             Learn more about this issue <span aria-hidden="true">↗</span>
           </a>
         </p>
       )}
 
-      {cluster && (
-        <p className="a11y-fix-once">
-          <strong>Fix once, fixes {cluster.count}.</strong> These all come from the same
-          component, <code>{describeComponent(cluster.signature)}</code>
-          {cluster.share < 1 ? " (most of them)" : ""}. Change it where it is defined and every
-          one of them is done.
-        </p>
-      )}
-
-      {/* Which specific elements are affected.
-          Dropped entirely when not one row would name anything: a list
-          whose only entry is the word "Heading" tells the reader less
-          than the sentence above it already did, while looking like it
-          is about to be useful. The count is on the header badge and the
-          selector is in the technical drawer, so nothing is lost. */}
       {locatesSomething && (
       <div className="a11y-affected">
         <p className="a11y-affected-label">
@@ -620,6 +610,21 @@ export function FindingDetails({
       </div>
       )}
 
+      {cluster && (
+        <p className="a11y-fix-once">
+          <strong>Fix once, fixes {cluster.count}.</strong> These all come from the same
+          component, <code>{describeComponent(cluster.signature)}</code>
+          {cluster.share < 1 ? " (most of them)" : ""}. Change it where it is defined and every
+          one of them is done.
+        </p>
+      )}
+
+      {/* Which specific elements are affected.
+          Dropped entirely when not one row would name anything: a list
+          whose only entry is the word "Heading" tells the reader less
+          than the sentence above it already did, while looking like it
+          is about to be useful. The count is on the header badge and the
+          selector is in the technical drawer, so nothing is lost. */}
       {/* Professional mode: the hand-off detail open on the card, not
           two clicks down. Criterion cited by number, name and level from
           the same table the conformance section renders; the EN 301 549
@@ -705,7 +710,7 @@ export function FindingDetails({
           </ul>
         </details>
       )}
-    </>
+    </div>
   );
 }
 

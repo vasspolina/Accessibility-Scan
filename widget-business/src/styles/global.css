@@ -212,6 +212,11 @@
      selected card: 13.71 / 13.73 / 13.84. */
   --green-20: #a7f0ba; --green-100: #071908;
   --blue-20: #d0e2ff;
+  /* Read from the design system's own tokens/colors.css, not sampled.
+     purple-30 is the hairline beside "Findings, most severe first";
+     orange-80 is --button-brown, the kit's CTA fill, and its comment is
+     explicit that it is "deliberately not a severity colour". */
+  --purple-30: #d4bbff; --orange-80: #5e2900;
   --purple-10: #f6f2ff; --purple-20: #e8daff; --purple-60: #8a3ffc;
   --purple-70: #6929c4; --purple-100: #1c0f30;
   --orange-20: #ffd9be; --orange-50: #eb6200;
@@ -1186,10 +1191,13 @@
 .a11y-widget-biz .a11y-principle-group {
   display: flex;
   flex-direction: column;
-  gap: var(--space-05);
-  padding: var(--space-09) var(--space-07);
+  gap: var(--space-06);
+  padding: var(--space-07) var(--space-06);
   border-radius: var(--radius-lg);
-  background: var(--purple-10);
+  /* The kit's own ground and ink, read from ui_kits/scan-app/Perceivable.jsx
+     rather than sampled off a screenshot. */
+  background: var(--purple-20);
+  color: var(--purple-100);
 }
 .a11y-widget-biz .a11y-principle-head {
   display: flex;
@@ -1202,9 +1210,9 @@
 .a11y-widget-biz .a11y-principle-term {
   padding: 4px 14px;
   border-radius: var(--radius-pill);
-  background: var(--text-primary);
-  color: var(--text-on-invert);        /* 16.4:1 */
-  font-size: 15px;
+  background: var(--gray-100);
+  color: var(--white);                 /* 18.1:1 */
+  font-size: 18px;
   font-weight: 500;
 }
 /* A round badge, so it has to be as tall as it is wide whatever number is
@@ -1220,7 +1228,7 @@
   border-radius: var(--radius-pill);
   background: var(--white);
   color: var(--text-primary);
-  font-size: 15px;
+  font-size: 18px;
   font-weight: 500;
   font-variant-numeric: tabular-nums;
 }
@@ -1230,21 +1238,26 @@
   margin: 0;
   text-align: center;
   text-transform: uppercase;
+  /* The kit sets white-space: nowrap here. NOT copied: it is a full-width
+     screen and this is an embedded widget, where a nowrap 40px heading
+     bursts the panel at 320px — the 1.4.10 failure fixed twice today.
+     balance gives the kit's single-line look wherever there is room. */
   text-wrap: balance;
-  font-size: 32px;
+  font-size: 40px;
   line-height: 1.2;
   font-weight: 500;
   letter-spacing: 0.01em;
+  color: var(--purple-100);
 }
 /* The lead, centred under it and held to a readable measure rather than
    the panel's full width. */
 .a11y-widget-biz .a11y-principle-desc {
   margin: 0 auto;
-  max-width: 48ch;
+  max-width: var(--measure);
   text-align: center;
-  font-size: 15px;
+  font-size: 18px;
   line-height: 1.2;
-  color: var(--text-primary);
+  color: var(--purple-100);
 }
 /* The panel's generous side padding is a desktop measurement. At 320px it
    took 64 of the 286 available and the findings table inside it burst —
@@ -4377,4 +4390,215 @@
   .a11y-widget-biz .a11y-print-cards { display: grid; }
   .a11y-widget-biz .a11y-pro-table,
   .a11y-widget-biz .a11y-findings-table { display: none; }
+}
+
+/* ==========================================================================
+   The Perceivable panel — built from ui_kits/scan-app/Perceivable.jsx
+   ==========================================================================
+   Values read from the design project, not sampled: the panel is purple-20
+   on purple-100, the caption and column heads are purple-70, the rule
+   beside the caption is purple-30, "what to do" is green-10/green-100,
+   affected elements are blue-10/blue-100, "Fix once" is purple-20 on
+   white, and the CTA is orange-80 — which the token file names
+   --button-brown and marks "deliberately not a severity colour".
+   ========================================================================== */
+
+/* "Findings, most severe first" with its hairline running to the right.
+   It is the table's <caption>, so the rule is drawn by a pseudo-element
+   rather than a sibling: a caption can hold one, and cannot hold a box. */
+.a11y-widget-biz .a11y-principle-group .a11y-datatable > caption {
+  display: flex;
+  align-items: center;
+  gap: var(--space-05);
+  margin-bottom: var(--space-05);
+  text-align: left;
+  font-size: 15px;
+  font-weight: 500;
+  color: var(--purple-70);              /* 6.1:1 on purple-20 */
+}
+.a11y-widget-biz .a11y-principle-group .a11y-datatable > caption::after {
+  content: "";
+  flex: 1;
+  height: 2px;
+  background: var(--purple-30);
+}
+
+/* The column heads. */
+.a11y-widget-biz .a11y-principle-group .a11y-datatable th {
+  padding-bottom: var(--space-03);
+  font-size: 15px;
+  font-weight: 500;
+  color: var(--purple-70);
+}
+
+/* Every row is a white pill. It is a real <table>, so the pill is made by
+   rounding the first and last cell rather than the row — border-radius on
+   a <tr> does nothing in any engine. */
+.a11y-widget-biz .a11y-principle-group .a11y-datatable td {
+  background: var(--white);
+  border-top: var(--space-03) solid transparent;
+  background-clip: padding-box;
+}
+.a11y-widget-biz .a11y-principle-group .a11y-datatable tbody tr > td:first-child {
+  border-top-left-radius: var(--radius-pill);
+  border-bottom-left-radius: var(--radius-pill);
+  padding-left: var(--space-05);
+}
+.a11y-widget-biz .a11y-principle-group .a11y-datatable tbody tr > td:last-child {
+  border-top-right-radius: var(--radius-pill);
+  border-bottom-right-radius: var(--radius-pill);
+  padding-right: var(--space-05);
+}
+/* The finding itself, at the kit's 20px. */
+.a11y-widget-biz .a11y-principle-group .a11y-finding-title {
+  font-size: 20px;
+  font-weight: 500;
+}
+
+/* ---- The expanded detail, two columns ---------------------------------
+   FindingDetails returns a fragment, so its blocks land directly in the
+   expanded row's <td> — which means the <td> can be the grid and no
+   wrapper element is needed. Each block names its own column, so the
+   two-column reading survives auto-placement; the affected-elements block
+   was moved above "Fix once" in the markup so it lands in the right
+   column rather than below the full-width bar. */
+.a11y-widget-biz .a11y-principle-group .a11y-fd {
+  display: grid;
+  /* One column by default, two only where the panel can hold them.
+     The kit writes repeat(auto-fit, minmax(320px, 1fr)); neither half of
+     that survives here. The bare 320px floor burst the table, the widget
+     and the HOST PAGE — 138px of scroll on someone else's site, measured.
+     And auto-fit does not collapse reliably inside a table-layout: fixed
+     cell: with min(100%, 320px) it still reported two ~127px tracks at
+     320, and every paragraph in them overflowed. A container query says
+     what auto-fit only implies. */
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--space-06) var(--space-07);
+  align-items: start;
+  min-width: 0;
+  padding: var(--space-06);
+  border-radius: var(--radius-lg);
+  background: var(--white);
+}
+/* One column below the kit's own 320px minmax — the grid collapses on its
+   own, but the explicit columns above would still hold, so they are
+   released here or the right-hand blocks would sit in a track that no
+   longer exists. */
+
+/* The section titles inside the panel: centred, uppercase, 18px. */
+.a11y-widget-biz .a11y-principle-group .a11y-finding-measured > strong:first-child,
+.a11y-widget-biz .a11y-principle-group .a11y-finding-impact > strong:first-child,
+.a11y-widget-biz .a11y-principle-group .a11y-finding-research > strong:first-child,
+.a11y-widget-biz .a11y-principle-group .a11y-finding-steps > p > strong:first-child,
+.a11y-widget-biz .a11y-principle-group .a11y-finding-todo > strong:first-child,
+.a11y-widget-biz .a11y-principle-group .a11y-affected-label > strong {
+  display: block;
+  margin-bottom: var(--space-04);
+  text-align: center;
+  text-transform: uppercase;
+  font-size: 18px;
+  font-weight: 500;
+  color: var(--text-primary);
+}
+
+/* "What to do" — one green pill per step. */
+.a11y-widget-biz .a11y-principle-group .a11y-finding-steps > ul {
+  gap: var(--space-03);
+  padding: 0;
+  list-style: none;
+}
+.a11y-widget-biz .a11y-principle-group .a11y-finding-steps > ul > li {
+  padding: var(--space-04) var(--space-05);
+  border-radius: var(--radius-pill);
+  background: var(--green-10);
+  color: var(--green-100);             /* 15.9:1 */
+  font-size: 18px;
+}
+
+/* Affected elements — one blue row each, name left, count right. */
+.a11y-widget-biz .a11y-principle-group .a11y-occurrence-list {
+  gap: var(--space-03);
+  margin: 0;
+}
+.a11y-widget-biz .a11y-principle-group .a11y-occurrence-list > li {
+  padding: var(--space-04) var(--space-05);
+  border: 0;
+  border-radius: var(--radius-pill);
+  background: var(--blue-10);
+  color: var(--blue-100);              /* 15.4:1 */
+  font-size: 18px;
+}
+
+/* "Fix once, fixes 4." — the panel's own ground, on the white card. */
+.a11y-widget-biz .a11y-principle-group .a11y-fix-once {
+  margin: 0;
+  max-width: none;
+  padding: var(--space-05) var(--space-06);
+  border-radius: var(--radius-lg);
+  background: var(--purple-20);
+  color: var(--purple-100);            /* 13.6:1 */
+  font-size: 18px;
+}
+
+/* "The technical version" — a quiet grey pill, not a bare summary marker. */
+.a11y-widget-biz .a11y-principle-group .a11y-tech-details > summary {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-03);
+  padding: var(--space-03) var(--space-05);
+  border-radius: var(--radius-pill);
+  background: var(--layer-01);
+  color: var(--text-primary);
+  font-size: 18px;
+  cursor: pointer;
+  list-style: none;
+}
+.a11y-widget-biz .a11y-principle-group .a11y-tech-details > summary::-webkit-details-marker {
+  display: none;
+}
+
+/* The expanded cell keeps table formatting — only its inner wrapper is a
+   grid. Padding and ground move here so the white card still spans the row. */
+.a11y-widget-biz .a11y-principle-group .a11y-dt-expand-row > td {
+  padding: 0;
+  background: transparent;
+  border-top: var(--space-03) solid transparent;
+  background-clip: padding-box;
+}
+
+/* Two columns, and the placements that only mean anything inside them.
+   680px because the rail leaves the panel 734 at a 768 viewport and 702 at
+   1030 — measured — and the kit's own column minimum is 320.
+
+   The placements live INSIDE the query rather than being released by a
+   narrower one outside it. Released from outside they lost: a release on
+   `.a11y-fd > *` is (0,3,0) and each placement names its own class at
+   (0,4,0), so grid-column: 2 survived into the single-column layout and
+   left a zero-width first track — measured as "0px 150px". That is the
+   fourth time today the same tie has decided a layout. */
+@container a11y-panel (min-width: 680px) {
+  .a11y-widget-biz .a11y-principle-group .a11y-fd {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .a11y-widget-biz .a11y-principle-group .a11y-fd > .a11y-method-hint,
+  .a11y-widget-biz .a11y-principle-group .a11y-fd > .a11y-finding-measured,
+  .a11y-widget-biz .a11y-principle-group .a11y-fd > .a11y-finding-impact,
+  .a11y-widget-biz .a11y-principle-group .a11y-fd > .a11y-finding-research,
+  .a11y-widget-biz .a11y-principle-group .a11y-fd > .a11y-picture-note {
+    grid-column: 1;
+    margin: 0;
+  }
+  .a11y-widget-biz .a11y-principle-group .a11y-fd > .a11y-finding-steps,
+  .a11y-widget-biz .a11y-principle-group .a11y-fd > .a11y-finding-todo,
+  .a11y-widget-biz .a11y-principle-group .a11y-fd > .a11y-affected,
+  .a11y-widget-biz .a11y-principle-group .a11y-fd > .a11y-finding-level-fold,
+  .a11y-widget-biz .a11y-principle-group .a11y-fd > .a11y-fd-learn {
+    grid-column: 2;
+    margin: 0;
+  }
+  .a11y-widget-biz .a11y-principle-group .a11y-fd > .a11y-fix-once,
+  .a11y-widget-biz .a11y-principle-group .a11y-fd > .a11y-pro-block,
+  .a11y-widget-biz .a11y-principle-group .a11y-fd > .a11y-tech-details {
+    grid-column: 1 / -1;
+  }
 }
