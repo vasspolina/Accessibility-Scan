@@ -585,12 +585,77 @@
   background: transparent; font-size: 18px; line-height: 1.2;
 }
 .a11y-widget-biz .a11y-input input[aria-invalid="true"] { border-bottom: 2px solid var(--severity-critical); }
+/* The switch, in the design's purple.
+   Off is an outline — a pale ground inside a purple edge, with the knob
+   ringed to match. On is the edge filled in. The state is never carried
+   by the colour alone: the word beside it says On or Off, which is what
+   makes the pair readable to anyone who cannot separate the two purples. */
 .a11y-widget-biz .a11y-switch-track {
-  width: 72px; height: 40px; padding: 4px; border: 0; border-radius: var(--radius-pill);
-  background: #e8e8e8; display: flex; align-items: center; justify-content: flex-start; cursor: pointer;
+  width: 72px; height: 40px; padding: 3px; border-radius: var(--radius-pill);
+  border: 2px solid var(--purple-60);
+  background: var(--purple-10);
+  display: flex; align-items: center; justify-content: flex-start; cursor: pointer;
 }
-.a11y-widget-biz .a11y-switch-track[aria-checked="true"] { background: var(--text-primary); justify-content: flex-end; }
-.a11y-widget-biz .a11y-switch-knob { width: 32px; height: 32px; border-radius: var(--radius-pill); background: var(--layer-02); }
+.a11y-widget-biz .a11y-switch-knob {
+  width: 30px; height: 30px; border-radius: var(--radius-pill);
+  border: 2px solid var(--purple-60);
+  background: var(--white);
+  box-sizing: border-box;
+}
+.a11y-widget-biz .a11y-switch-track[aria-checked="true"] {
+  border-color: var(--purple-70);
+  background: var(--purple-70);        /* white knob on it: 7.7:1 */
+  justify-content: flex-end;
+}
+.a11y-widget-biz .a11y-switch-track[aria-checked="true"] .a11y-switch-knob {
+  border-color: var(--white);
+}
+/* The word takes the accent once the switch is on, so the two read as one
+   control rather than a control and a caption. */
+.a11y-widget-biz .a11y-switch:has([aria-checked="true"]) .a11y-switch-word {
+  color: var(--purple-70);             /* 7.7:1 on white */
+  font-weight: 500;
+}
+
+/* The radio, as the design draws it: a rounded square, not a circle, with
+   a filled square inside when chosen. appearance:none because no UA will
+   draw that, and the native control's own dot cannot be restyled. */
+.a11y-widget-biz .a11y-optioncard > input[type="radio"],
+.a11y-widget-biz .a11y-radio-row input[type="radio"] {
+  appearance: none;
+  -webkit-appearance: none;
+  flex: none;
+  width: 24px; height: 24px;
+  margin: 0;
+  border: 2px solid var(--gray-60);
+  border-radius: 8px;
+  background: var(--white);
+  display: inline-grid;
+  place-content: center;
+  cursor: pointer;
+}
+.a11y-widget-biz .a11y-optioncard > input[type="radio"]::before,
+.a11y-widget-biz .a11y-radio-row input[type="radio"]::before {
+  content: "";
+  width: 12px; height: 12px;
+  border-radius: 3px;
+  background: var(--gray-100);
+  transform: scale(0);
+}
+.a11y-widget-biz .a11y-optioncard > input[type="radio"]:checked,
+.a11y-widget-biz .a11y-radio-row input[type="radio"]:checked {
+  border-color: var(--gray-100);
+}
+.a11y-widget-biz .a11y-optioncard > input[type="radio"]:checked::before,
+.a11y-widget-biz .a11y-radio-row input[type="radio"]:checked::before {
+  transform: scale(1);
+}
+/* appearance:none takes the UA focus ring with it. */
+.a11y-widget-biz .a11y-optioncard > input[type="radio"]:focus-visible,
+.a11y-widget-biz .a11y-radio-row input[type="radio"]:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 3px;
+}
 .a11y-widget-biz .a11y-optioncard {
   display: flex; align-items: flex-start; gap: var(--space-04);
   padding: var(--space-05) var(--space-06); border: 2px solid transparent;
@@ -3162,8 +3227,11 @@
 .a11y-widget-biz .a11y-conf-caveat {
   margin: var(--space-05) 0 0;
   max-width: none;
-  padding: var(--space-05) var(--space-06);
-  border-radius: var(--radius-md);
+  /* The design gives this note a lot of air — it is a slab of qualifying
+     prose, not an inline aside, and it reads as one because of the room
+     around it. */
+  padding: var(--space-07) var(--space-08);
+  border-radius: var(--radius-lg);
   background: var(--orange-10);
   color: var(--text-primary);          /* 15.3:1 on orange-10 */
   font-size: 18px;
