@@ -1095,9 +1095,15 @@
 
 /* "Nothing on this page fails." — on the purple, so it cannot inherit the
    report's ink. */
+/* Inside the purple checklist panel the note sits on the panel's own
+   ground, so it drops the tinted note's fill — and therefore has to state
+   its ink, or it would inherit the report's dark one onto purple. */
 .a11y-widget-biz .a11y-conf-panel .a11y-conf-caveat {
   margin: 0;
-  color: var(--text-on-invert);
+  padding: 0;
+  border-radius: 0;
+  background: transparent;
+  color: var(--text-on-invert);        /* on purple-60: 5.00:1 */
   font-size: 18px;
 }
 /* The panel's own dismiss, centred under the cards as the design draws it. */
@@ -3040,6 +3046,80 @@
 .a11y-widget-biz .a11y-acr-text {
   white-space: pre-wrap;
   overflow-wrap: anywhere;
+}
+
+/* ---- Four shared classes with no base rule -------------------------------
+   Found by checking the ACR draft after building the statement: it shares
+   .a11y-spec-* and .a11y-stmt-field* and picked those up, but these four
+   had nothing behind them anywhere. .a11y-sr-play in particular is the
+   Copy button here AND the play control in the screen-reader preview, and
+   both were rendering as raw UA buttons — 1px 6px of padding, square
+   corners, no ground. */
+
+/* The caveat, in six places: the ACR's caution block, the statement's
+   warning, two in the conformance view and two in the 2.2 readiness list.
+   All six qualify something the reader has just been told, so all six get
+   the same tinted note. The statement's amber and the purple panel's
+   version are more specific and still win. */
+.a11y-widget-biz .a11y-conf-caveat {
+  margin: var(--space-05) 0 0;
+  max-width: none;
+  padding: var(--space-05) var(--space-06);
+  border-radius: var(--radius-md);
+  background: var(--orange-10);
+  color: var(--text-primary);          /* 15.3:1 on orange-10 */
+  font-size: 18px;
+  line-height: 1.5;
+}
+/* (The purple panel's override for this lives with the checklist's own
+   rules further up, so the two are read together rather than one being
+   found later and quietly winning.) */
+
+/* Copy, and Play. A bordered pill, which reads as a control on white and
+   on the tinted note alike. The statement's dark card overrides it. */
+.a11y-widget-biz .a11y-sr-play {
+  padding: 10px 22px;
+  border: 1px solid var(--text-primary);
+  border-radius: var(--radius-pill);
+  background: transparent;
+  color: var(--text-primary);
+  font: inherit;
+  font-size: 15px;
+  font-weight: 500;
+  cursor: pointer;
+}
+.a11y-widget-biz .a11y-sr-play:hover {
+  background: var(--text-primary);
+  color: var(--text-on-invert);
+}
+
+/* The ACR's own points list — bullets and a 40px UA indent until now. */
+.a11y-widget-biz .a11y-plain-points {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-03);
+  list-style: none;
+  margin: var(--space-04) 0 0;
+  padding: 0;
+  font-size: 18px;
+}
+.a11y-widget-biz .a11y-plain-points > li {
+  display: grid;
+  grid-template-columns: 1.2em 1fr;
+  gap: var(--space-03);
+}
+.a11y-widget-biz .a11y-plain-points > li::before {
+  content: "\2014";                    /* an em dash, not a bullet glyph */
+  color: var(--text-secondary);
+}
+
+/* The row holding Copy and whatever it says about itself. */
+.a11y-widget-biz .a11y-stmt-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-04);
+  margin-top: var(--space-05);
 }
 
 /* ---- The accessibility statement ----------------------------------------
