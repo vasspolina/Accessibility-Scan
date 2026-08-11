@@ -835,10 +835,18 @@
 /* Full width means the tables can size their own columns again. `fixed` was
    there to stop a table bursting a 525px track; there is no track now, and
    `fixed` is what forced seven equal columns into whatever was left. */
+/* .a11y-datatable is no longer in this group. It is declared fixed above
+   and fixed again below with nothing conditional between, so this `auto`
+   never once applied to it — the linter's duplicate report, confirmed by
+   walking the file for every table-layout declaration and the at-rule
+   context each sits in.
+   The line itself stays, because the other three are still in it. They
+   are the WRAPPER divs, where table-layout does nothing at all, so this
+   is inert rather than load-bearing — but that is a separate cleanup and
+   not what was asked for here. */
 .a11y-widget-biz .a11y-findings-table,
 .a11y-widget-biz .a11y-notes-table,
-.a11y-widget-biz .a11y-undecided-table,
-.a11y-widget-biz .a11y-datatable { table-layout: auto; }
+.a11y-widget-biz .a11y-undecided-table { table-layout: auto; }
 
 /* A pill must never wrap inside its own radius. It may shrink the cell it
    sits in instead. */
