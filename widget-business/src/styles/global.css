@@ -207,6 +207,10 @@
      so white text sat on the black panel behind it and measured
      21:1 — which looks like a pass and is a missing pill. */
   --yellow-10: #fcf4d6; --yellow-60: #8e6a00;
+  /* The notes band. Bright enough to read as a marker pen rather than a
+     tint, and #161616 on it is 15.4:1 — the band carries real text, so it
+     had to clear AA on its own rather than lean on the card inside it. */
+  --yellow-30: #f9e94e;
   --blue-10: #edf5ff;  --blue-60: #0f62fe;  --blue-70: #0043ce;  --blue-100: #001141;
   /* The report-actions panel's ground and its pdf tag. purple-60 (#8a3ffc)
      is the kit's ramp value and clears AA on white at 5.00:1; kept rather
@@ -5011,4 +5015,242 @@
 .a11y-widget-biz .a11y-w22-panel .a11y-w22-toggle:focus-visible {
   outline: 2px solid var(--white);
   outline-offset: 3px;
+}
+
+/* The WCAG 2.2 header's welded qualifier — "WCAG 2.2 expected late
+   20261 would fail today", the year and the count fused into 20261 —
+   is NOT fixed here, and the rules that tried to were removed rather
+   than left dead.
+
+   They were scoped to .a11y-w22 .a11y-section-*, and that header is not
+   SectionHeader at all: Wcag22Readiness renders WhatsNextPanel, passing
+   standard, expected and failCount. Nothing the rules named exists in
+   that subtree, which is why a probe found zero elements — and then
+   reported 9/9, because every assertion was satisfied by nulls.
+
+   The fix belongs in WhatsNextPanel: .a11y-next-standard beside whatever
+   carries failCount. Fifth instance of the welding fault, and the worst,
+   because 20261 reads as a date rather than as untidy spacing. */
+
+/* ── Notes on the design ───────────────────────────────────────────────
+   The design's shape: a yellow band carrying the heading and the lead,
+   then a black panel holding the note titles with one open beneath them.
+
+   Replaces the DataTable render. A note has no severity, no criterion and
+   no level, so three of that table's columns were empty on every row —
+   which is how it came to show an empty header cell over half the report's
+   width with the note titles pushed to the right of it. */
+
+.a11y-widget-biz .a11y-dn-band {
+  background: var(--yellow-30);
+  border-radius: var(--radius-lg);
+  padding: var(--space-05);
+  display: grid;
+  gap: var(--space-05);
+}
+
+.a11y-widget-biz .a11y-dn-band-eyebrow {
+  margin: 0;
+  text-align: center;
+  text-transform: uppercase;
+  font-size: 15px;
+  font-weight: 500;
+  letter-spacing: 0.01em;
+  color: var(--gray-100);
+}
+
+.a11y-widget-biz .a11y-dn-card {
+  background: #ffffff;
+  border-radius: var(--radius-lg);
+  padding: var(--space-07);
+  display: grid;
+  gap: var(--space-05);
+}
+
+/* 40px is the design's size and it holds from 680px up. Below that the
+   heading is wider than the column it sits in — at 320px the card is 254px
+   and "design" alone sets 168px of it. */
+.a11y-widget-biz .a11y-dn-title {
+  margin: 0;
+  font-size: 28px;
+  font-weight: 500;
+  line-height: 1.2;
+  letter-spacing: 0.01em;
+  color: var(--gray-100);
+}
+
+@container a11y-panel (min-width: 680px) {
+  .a11y-widget-biz .a11y-dn-title { font-size: 40px; }
+}
+
+/* Not a heading level of its own — it is the count in the heading, set
+   back so the four words stay the thing you read first. */
+.a11y-widget-biz .a11y-dn-count {
+  font-size: 24px;
+  font-weight: 400;
+  letter-spacing: 0.01em;
+  color: var(--gray-60);
+}
+
+.a11y-widget-biz .a11y-dn-lead {
+  display: grid;
+  gap: var(--space-06);
+}
+
+.a11y-widget-biz .a11y-dn-lead p {
+  margin: 0;
+  font-size: 18px;
+  line-height: 1.5;
+  letter-spacing: 0.01em;
+  color: var(--gray-100);
+}
+
+/* ── the black panel ───────────────────────────────────────────────── */
+
+.a11y-widget-biz .a11y-dn-panel {
+  background: var(--gray-100);
+  border-radius: var(--radius-lg);
+  padding: var(--space-06) var(--space-05) var(--space-05);
+  margin-top: var(--space-06);
+  display: grid;
+  gap: var(--space-05);
+}
+
+.a11y-widget-biz .a11y-dn-panel-eyebrow {
+  margin: 0;
+  text-align: center;
+  text-transform: uppercase;
+  font-size: 15px;
+  font-weight: 400;
+  letter-spacing: 0.01em;
+  color: #ffffff;
+}
+
+.a11y-widget-biz .a11y-dn-kinds {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--gap-element);
+  justify-content: center;
+}
+
+/* Dashed, because it labels the notes rather than acting on them — a solid
+   pill in this report is a control or a severity, and this is neither. */
+.a11y-widget-biz .a11y-dn-kind {
+  display: inline-block;
+  background: #ffffff;
+  color: var(--gray-100);
+  border: 1px dashed var(--gray-60);
+  border-radius: var(--radius-pill);
+  padding: var(--space-03) var(--space-06);
+  font-size: 15px;
+  letter-spacing: 0.01em;
+}
+
+/* Two fixed columns, not auto-fit. auto-fit collapses its empty tracks, so
+   a report with one note gave that note the full 920px — an underlined
+   title running the width of the panel. The design's pair of columns is a
+   measure as much as a layout. */
+.a11y-widget-biz .a11y-dn-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--gap-element) var(--space-06);
+}
+
+@container a11y-panel (min-width: 680px) {
+  .a11y-widget-biz .a11y-dn-list {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+.a11y-widget-biz .a11y-dn-link {
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-04);
+  width: 100%;
+  background: none;
+  border: 0;
+  padding: var(--space-03) 0;
+  text-align: left;
+  color: #ffffff;
+  font-size: 18px;
+  font-weight: 500;
+  line-height: 1.2;
+  letter-spacing: 0.01em;
+  cursor: pointer;
+}
+
+.a11y-widget-biz .a11y-dn-link-text { text-decoration: underline; }
+
+.a11y-widget-biz .a11y-dn-mark {
+  flex: none;
+  font-size: 18px;
+  line-height: 1.2;
+}
+
+/* appearance:none on the button above would take the UA ring with it, so
+   the ring is stated here — same fault that cost the URL field its focus
+   indicator under 2.4.7. White on black, offset so it clears the text. */
+.a11y-widget-biz .a11y-dn-link:focus-visible {
+  outline: 2px solid #ffffff;
+  outline-offset: 2px;
+  border-radius: var(--radius-sm);
+}
+
+/* The open note, sitting in the panel as its own white card. */
+.a11y-widget-biz .a11y-dn-detail {
+  background: #ffffff;
+  border-radius: var(--radius-lg);
+  padding: var(--space-07);
+  container-type: inline-size;
+  container-name: a11y-panel;
+}
+
+.a11y-widget-biz .a11y-dn-detail-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--space-05);
+  margin-bottom: var(--space-06);
+}
+
+.a11y-widget-biz .a11y-dn-detail-title {
+  margin: 0;
+  font-size: 24px;
+  font-weight: 500;
+  line-height: 1.2;
+  letter-spacing: 0.01em;
+  color: var(--gray-100);
+}
+
+.a11y-widget-biz .a11y-dn-pills {
+  margin: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--gap-element);
+}
+
+.a11y-widget-biz .a11y-dn-pill {
+  border-radius: var(--radius-pill);
+  padding: var(--space-02) var(--space-04);
+  font-size: 15px;
+  letter-spacing: 0.01em;
+  color: var(--gray-100);
+}
+
+.a11y-widget-biz .a11y-dn-pill-kind { background: var(--yellow-30); }
+.a11y-widget-biz .a11y-dn-pill-note { background: var(--gray-20); }
+
+/* Print takes the cards, not the panel — one open note is a screen
+   affordance, and a printed report that drops the rest is not the report. */
+@media print {
+  .a11y-widget-biz .a11y-dn-panel { display: none; }
+  .a11y-widget-biz .a11y-dn-band { background: none; padding: 0; }
+  .a11y-widget-biz .a11y-dn-card { padding: 0; }
 }

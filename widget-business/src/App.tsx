@@ -11,6 +11,7 @@ import type { NavSection } from "./components/SideNav";
 import { useActiveSection } from "./lib/useActiveSection";
 import { DocumentSummary } from "./components/DocumentSummary";
 import { ReportSection } from "./components/ReportSection";
+import { DesignNotesPanel } from "./components/DesignNotesPanel";
 import { PrincipleGroup } from "./components/PrincipleGroup";
 import { UndecidedChecks } from "./components/UndecidedChecks";
 import { ReportViewProvider, type ReportView } from "./components/ReportViewContext";
@@ -706,15 +707,11 @@ export function App({
             <UndecidedChecks rows={report.undecidedChecks} />
           )}
 
+          {/* Carries its own heading, lead and id — the notes are the one
+              section whose shape is not a ReportSection, so wrapping it in
+              one would print the heading and the lead twice. */}
           {!isDocument && (
-          <ReportSection
-            title="Notes on the design"
-            description="Remarks rather than faults, and none of it counts towards the score. Every one is judgement rather than measurement, with no rule underneath to point at. Mostly type that works against the reader, and it still costs you readers."
-            variant="default"
-            findings={findingsByCategory.designClarity}
-            asNotes
-            id="a11y-notes-heading"
-          />
+            <DesignNotesPanel findings={findingsByCategory.designClarity} />
           )}
           </div>
 
