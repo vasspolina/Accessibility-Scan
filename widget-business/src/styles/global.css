@@ -5055,20 +5055,35 @@
   outline-offset: 3px;
 }
 
-/* The WCAG 2.2 header's welded qualifier — "WCAG 2.2 expected late
-   20261 would fail today", the year and the count fused into 20261 —
-   is NOT fixed here, and the rules that tried to were removed rather
-   than left dead.
+/* "WCAG 2.2 expected October 20261 would fail today" — the year and the
+   fail count fused into 20261, which reads as a date rather than as
+   untidy spacing. Measured: same line, gap 0px.
 
-   They were scoped to .a11y-w22 .a11y-section-*, and that header is not
-   SectionHeader at all: Wcag22Readiness renders WhatsNextPanel, passing
-   standard, expected and failCount. Nothing the rules named exists in
-   that subtree, which is why a probe found zero elements — and then
-   reported 9/9, because every assertion was satisfied by nulls.
+   The cause is the toggle being inline-block, so its three spans flowed
+   as inline boxes with nothing between them; JSX drops the whitespace
+   between two elements on separate source lines, so there was no text
+   node to separate them either. Making the button a flex row gives every
+   gap a declared width instead of one inherited from the markup's
+   formatting, which is what a layout should depend on.
 
-   The fix belongs in WhatsNextPanel: .a11y-next-standard beside whatever
-   carries failCount. Fifth instance of the welding fault, and the worst,
-   because 20261 reads as a date rather than as untidy spacing. */
+   An earlier attempt at this was scoped to .a11y-w22 .a11y-section-*.
+   That header is not SectionHeader — Wcag22Readiness renders
+   WhatsNextPanel — so nothing those rules named existed, the probe found
+   zero elements, and it reported 9/9 because every assertion was
+   satisfied by nulls. Hence the geometry check above rather than a
+   reading of the CSS. */
+.a11y-widget-biz .a11y-next-toggle {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: var(--space-03) var(--space-05);
+  width: 100%;
+  text-align: left;
+}
+
+/* Pushed to the end of the row rather than trailing the count, so the
+   affordance sits where the row ends at any width. */
+.a11y-widget-biz .a11y-next-toggle .a11y-next-chevron { margin-left: auto; }
 
 /* ── Notes on the design ───────────────────────────────────────────────
    The design's shape: a yellow band carrying the heading and the lead,
