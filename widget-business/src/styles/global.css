@@ -5386,3 +5386,32 @@
     width: 20%;
   }
 }
+
+/* The four section labels, centred and uppercase, matching the kit:
+     sectionTitle = { textAlign: "center", textTransform: "uppercase",
+                      fontSize: "18px", fontWeight: 500 }
+   described there as "a section title that introduces an explanation".
+
+   display: block is what makes it work without touching the reading
+   order. Three of the four are inline <strong> at the head of their own
+   paragraph — "Why this matters Screen readers…" is one sentence in the
+   markup — so centring them as inline text would have centred the body
+   with them. As a block the label takes its own line and the prose below
+   stays left, which is what the kit draws.
+
+   "Who fixes this" is deliberately not in this set: the kit keeps that
+   one inline bold inside the body paragraph, and so do we. */
+.a11y-widget-biz .a11y-fd-title,
+.a11y-widget-biz .a11y-affected-label > strong {
+  display: block;
+  text-align: center;
+  text-transform: uppercase;
+  font-size: 18px;
+  font-weight: 500;
+  letter-spacing: 0.01em;
+  margin-bottom: var(--space-04);
+}
+
+/* The affected-elements label is already alone in its <p>, so the <p>
+   must not keep a left-aligned box narrower than the column. */
+.a11y-widget-biz .a11y-affected-label { text-align: center; }

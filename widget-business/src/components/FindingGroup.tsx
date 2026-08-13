@@ -507,7 +507,7 @@ export function FindingDetails({
           80 AI findings arrived as a headline and three badges. */}
       {measured && (
         <p className="a11y-finding-measured">
-          <strong>What we found</strong> <CodeText text={measured} />
+          <strong className="a11y-fd-title">What we found</strong> <CodeText text={measured} />
         </p>
       )}
       {/* Its own line, not folded into the text above: rules with a
@@ -522,7 +522,7 @@ export function FindingDetails({
       {/* Shared explanation — shown once for the whole group */}
       {plain && (
         <p className="a11y-finding-impact">
-          <strong>Why this matters</strong> <CodeText text={plain.impact} />
+          <strong className="a11y-fd-title">Why this matters</strong> <CodeText text={plain.impact} />
         </p>
       )}
       {/* Curated, hand-verified research context — never generated per
@@ -538,7 +538,7 @@ export function FindingDetails({
       {Array.isArray(whatToDo) ? (
         <div className="a11y-finding-steps">
           <p>
-            <strong>What to do</strong>
+            <strong className="a11y-fd-title">What to do</strong>
           </p>
           <ul>
             {whatToDo.map((step) => (
@@ -550,7 +550,7 @@ export function FindingDetails({
         </div>
       ) : (
         <p className="a11y-finding-todo">
-          <strong>What to do</strong> <CodeText text={whatToDo} />
+          <strong className="a11y-fd-title">What to do</strong> <CodeText text={whatToDo} />
         </p>
       )}
       {/* The WCAG and Level columns fold in here at phone width, the same
