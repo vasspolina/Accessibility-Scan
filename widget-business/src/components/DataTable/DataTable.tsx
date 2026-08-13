@@ -108,8 +108,23 @@ export function DataTable({
   const expandable = rows.some((r) => r.expand);
 
   const table = (
-    <table className="a11y-datatable">
-      {caption ? <caption>{caption}</caption> : null}
+    <>
+      {/* The same words as the <caption>, as a sibling the table algorithm
+          does not size. A caption is sized by that algorithm, so any
+          `display` set on it drops it out of table formatting and it
+          shrinks to its own content — 131px against a 952px table, which
+          is how the purple panel's label came to sit clipped over the row
+          above it. Styling that needs a real box goes here; the caption
+          below stays the table's accessible name and is hidden from sight
+          wherever this is shown, so the words are never announced twice.
+          Hidden by default — only the purple panel opts in. */}
+      {caption ? (
+        <p className="a11y-dt-label" aria-hidden="true">
+          {caption}
+        </p>
+      ) : null}
+      <table className="a11y-datatable">
+        {caption ? <caption className="a11y-dt-caption">{caption}</caption> : null}
       <thead>
         <tr>
           {expandable ? <td aria-hidden="true" className="a11y-dt-spacer" /> : null}
@@ -186,7 +201,8 @@ export function DataTable({
           );
         })}
       </tbody>
-    </table>
+      </table>
+    </>
   );
 
   if (!filters && !framed) return table;

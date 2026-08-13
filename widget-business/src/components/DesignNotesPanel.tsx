@@ -46,15 +46,22 @@ function noteTitle(group: AccessibilityFinding[]): string {
 export function DesignNotesPanel({ findings }: { findings: AccessibilityFinding[] }) {
   const { professional } = useReportView();
   const groups = groupFindings(findings);
-  // The first note is open on arrival. An empty black panel under a heading
-  // that promises notes reads as a loading state that never finished.
-  const [openIndex, setOpenIndex] = useState<number | null>(0);
+  // Keyed by the note's own id, not its position. A filter changes what is
+  // at index 0, so an index would have quietly re-pointed at a different
+  // note the moment a pill was pressed.
+  const [openId, setOpenId] = useState<string | null>(() => findings[0]?.id ?? null);
+  const [kind, setKind] = useState<string | null>(null);
 
   if (groups.length === 0) return null;
 
   // One pill per distinct kind, in the order the notes appear.
   const kinds = [...new Set(groups.map((g) => noteKind(g[0])))];
-  const open = openIndex === null ? null : groups[openIndex];
+  const visible = kind ? groups.filter((g) => noteKind(g[0]) === kind) : groups;
+
+  // The open note is whichever visible one carries the open id. Filtering to
+  // a kind the open note is not in closes it rather than leaving a detail
+  // card under a list that no longer contains its title.
+  const open = visible.find((g) => g[0].id === openId) ?? null;
 
   return (
     <section className="a11y-section a11y-dn" aria-labelledby="a11y-notes-heading">
@@ -93,24 +100,44 @@ export function DesignNotesPanel({ findings }: { findings: AccessibilityFinding[
         <div className="a11y-dn-panel">
           <p className="a11y-dn-panel-eyebrow">The notes</p>
 
-          <ul className="a11y-dn-kinds">
+          {/* Toggles, not labels. Pressing one narrows the list to that
+              kind; pressing it again clears it, so there is no separate
+              "All" pill to keep in step with the others. */}
+          <ul className="a11y-dn-kinds" aria-label="Filter notes by kind">
             {kinds.map((k) => (
               <li key={k}>
-                <span className="a11y-dn-kind">{k}</span>
+                <button
+                  type="button"
+                  className="a11y-dn-kind"
+                  aria-pressed={kind === k}
+                  onClick={() => setKind(kind === k ? null : k)}
+                >
+                  {k}
+                </button>
               </li>
             ))}
           </ul>
 
+          {/* Says what the filter did. Without it the only feedback is a
+              list getting shorter, which a screen reader never sees. */}
+          <p className="a11y-dn-status" role="status">
+            {kind
+              ? `Showing ${visible.length} of ${groups.length} notes: ${kind}.`
+              : `Showing all ${groups.length} notes.`}
+          </p>
+
           <ul className="a11y-dn-list">
-            {groups.map((group, i) => (
+            {visible.map((group) => (
               <li key={group[0].id}>
                 <button
                   type="button"
                   className="a11y-dn-link"
-                  id={`a11y-dn-note-${i}`}
-                  aria-expanded={openIndex === i}
+                  id={`a11y-dn-note-${group[0].id}`}
+                  aria-expanded={open?.[0].id === group[0].id}
                   aria-controls="a11y-dn-detail"
-                  onClick={() => setOpenIndex(openIndex === i ? null : i)}
+                  onClick={() =>
+                    setOpenId(open?.[0].id === group[0].id ? null : group[0].id)
+                  }
                 >
                   {/* The design's bullet. It is a mark, not a close button,
                       so it never reaches the accessible name. */}
@@ -128,7 +155,7 @@ export function DesignNotesPanel({ findings }: { findings: AccessibilityFinding[
               className="a11y-dn-detail"
               id="a11y-dn-detail"
               role="region"
-              aria-labelledby={`a11y-dn-note-${openIndex}`}
+              aria-labelledby={`a11y-dn-note-${open[0].id}`}
             >
               <div className="a11y-dn-detail-head">
                 <h3 className="a11y-dn-detail-title">{noteTitle(open)}</h3>

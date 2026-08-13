@@ -146,6 +146,41 @@
         confidence: "high",
         helpUrl: undefined,
       }),
+      // Two more notes so the kind filter has something to filter. One note
+      // produced one pill, which cannot show that pressing it excludes
+      // anything — the state looked right and proved nothing.
+      finding({
+        id: "f7b",
+        source: "ai-review",
+        severity: "minor",
+        category: "design-clarity",
+        ruleId: undefined,
+        wcagCriterion: "N/A",
+        wcagLevel: undefined,
+        selector: ".cookie-bar",
+        title: "Pinned bars crowd the phone screen",
+        description:
+          "A cookie bar and a header are both fixed to the viewport, leaving little of the page visible on a phone.",
+        suggestedFix: "Let one of the two scroll away with the page.",
+        confidence: "medium",
+        helpUrl: undefined,
+      }),
+      finding({
+        id: "f7c",
+        source: "ai-review",
+        severity: "minor",
+        category: "design-clarity",
+        ruleId: undefined,
+        wcagCriterion: "N/A",
+        wcagLevel: undefined,
+        selector: ".teaser__kicker",
+        title: "Buttons look the same as plain sentences",
+        description:
+          "Several controls carry no border, fill or underline, so nothing marks them as things you can press.",
+        suggestedFix: "Give every control a visible boundary.",
+        confidence: "medium",
+        helpUrl: undefined,
+      }),
       finding({
         id: "f8",
         severity: "moderate",
@@ -233,7 +268,7 @@
       scannedAt: new Date().toISOString(),
       score: 62,
       summary: { critical: 2, serious: 4, moderate: 2, minor: 1, total: 9 },
-      categorySummary: { accessibility: 7, designClarity: 1, darkPattern: 1 },
+      categorySummary: { accessibility: 7, designClarity: 3, darkPattern: 1 },
       findings: findings,
       screenReaderScript: { lines: srLines, truncated: true },
       conformance: conformance,

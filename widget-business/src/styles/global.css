@@ -729,6 +729,24 @@
   cursor: pointer;
 }
 
+/* The element screenshot. It had no rule of its own, which left it an
+   unsized <img> in a baseline-aligned flex row — and an image has no
+   baseline, so it sits on the text's, dropping the label onto the
+   picture. Same fault as the progress figures earlier: baseline aligns
+   text, not boxes. Capped, centred on its own axis, and shrinkable, so a
+   wide capture cannot push the label out of the pill. */
+.a11y-widget-biz .a11y-occurrence-thumb {
+  align-self: center;
+  flex: 0 1 auto;
+  min-width: 0;
+  max-width: 160px;
+  max-height: 72px;
+  object-fit: cover;
+  object-position: left top;
+  border-radius: var(--radius-sm);
+  background: #ffffff;
+}
+
 /* The findings table: caption left, headers and cells aligned, rows as spaced
    cards on a frame — .as-table, which the port applied to .a11y-datatable but
    not to the findings tables that use their own class. */
@@ -4530,33 +4548,53 @@
 /* "Findings, most severe first" with its hairline running to the right.
    It is the table's <caption>, so the rule is drawn by a pseudo-element
    rather than a sibling: a caption can hold one, and cannot hold a box. */
-.a11y-widget-biz .a11y-principle-group .a11y-datatable > caption {
-  /* KNOWN NOT WORKING, and left honest rather than left looking solved.
-     The design puts this label on one line with a rule running to the
-     right of it. display: flex on a <caption> does not get the box the
-     table's width — measured at 129px against a 904px table, in all
-     three engines — so the label wraps to two lines and the rule never
-     draws. caption-side and width: 100% do not change it: a caption is
-     sized by the table algorithm, and taking it out of table-caption
-     display leaves it sized by its own content.
-     The fix is a markup one: keep <caption> for the table's accessible
-     name, visually hidden, and render the visible label as a sibling
-     above the table where flex works normally. Not done here. */
+/* The visible label is opt-in. Every other table in the report shows its
+   <caption> the ordinary way, and a second copy of the words under each
+   of them would be a duplicate heading — exactly what the notes section
+   had before it stopped going through this component. */
+.a11y-widget-biz .a11y-dt-label { display: none; }
+
+/* The label the design draws, now on the sibling <p> rather than the
+   <caption>. Fixed: the caption was set display:flex to lay the rule out
+   beside it, which took it out of table formatting and left it sized by
+   its own content — 131px against a 952px table, so the label sat clipped
+   over the row above and the rule never drew. A caption is sized by the
+   table algorithm and cannot be talked out of it; the box had to move. */
+.a11y-widget-biz .a11y-principle-group .a11y-dt-label {
   display: flex;
   align-items: center;
   gap: var(--space-05);
-  margin-bottom: var(--space-05);
+  margin: 0 0 var(--space-05);
+  /* It is a <p>, so it inherited the report's prose measure and stopped
+     643px short of the 904px table — the rule drew, just not to the edge.
+     A measure is for reading; this is a label with a rule to the margin. */
+  max-width: none;
   text-align: left;
   white-space: nowrap;
   font-size: 15px;
   font-weight: 500;
+  letter-spacing: 0.01em;
   color: var(--purple-70);              /* 6.1:1 on purple-20 */
 }
-.a11y-widget-biz .a11y-principle-group .a11y-datatable > caption::after {
+.a11y-widget-biz .a11y-principle-group .a11y-dt-label::after {
   content: "";
   flex: 1;
   height: 2px;
   background: var(--purple-30);
+}
+
+/* The caption stays as the table's accessible name and stops being seen,
+   because the <p> above now says the same words. Clip rather than
+   display:none — a hidden caption is no accessible name at all. */
+.a11y-widget-biz .a11y-principle-group .a11y-datatable > .a11y-dt-caption {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
 }
 
 /* The column heads. */
@@ -5136,8 +5174,10 @@
   justify-content: center;
 }
 
-/* Dashed, because it labels the notes rather than acting on them — a solid
-   pill in this report is a control or a severity, and this is neither. */
+/* A filter. Dashed while off, solid and filled while on — the state has to
+   read without colour, which is the same thing this report asks of every
+   page it scans. The dashes closing up is the cue; the yellow only
+   confirms it. */
 .a11y-widget-biz .a11y-dn-kind {
   display: inline-block;
   background: #ffffff;
@@ -5146,7 +5186,35 @@
   border-radius: var(--radius-pill);
   padding: var(--space-03) var(--space-06);
   font-size: 15px;
+  font-weight: 400;
   letter-spacing: 0.01em;
+  cursor: pointer;
+}
+
+.a11y-widget-biz .a11y-dn-kind[aria-pressed="true"] {
+  background: var(--yellow-30);
+  border: 2px solid var(--gray-100);
+  font-weight: 500;
+  /* The 2px border would otherwise make the pressed pill a pixel taller
+     than its neighbours and shunt the row. */
+  padding: calc(var(--space-03) - 1px) calc(var(--space-06) - 1px);
+}
+
+.a11y-widget-biz .a11y-dn-kind:focus-visible {
+  outline: 2px solid #ffffff;
+  outline-offset: 3px;
+}
+
+/* Read aloud, not shown — the pills and the list already say it on screen. */
+.a11y-widget-biz .a11y-dn-status {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
 }
 
 /* Two fixed columns, not auto-fit. auto-fit collapses its empty tracks, so
