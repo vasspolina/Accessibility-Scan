@@ -3174,7 +3174,10 @@
   font-size: 18px;
 }
 .a11y-widget-biz .a11y-ra-email-input {
-  flex: 1 1 140px;
+  /* The basis must hold the placeholder: "you@example.com" needs 156px
+     with the padding, and at 140 a tight grid cell served it clipped to
+     "you@example.co" — which reads as a typo in our own interface. */
+  flex: 1 1 160px;
   min-width: 0;
   min-height: 40px;
   padding: 0 var(--space-04);
@@ -4825,9 +4828,15 @@
   .a11y-widget-biz .a11y-pro-table th,
   .a11y-widget-biz .a11y-pro-table td { padding: var(--space-04) var(--space-03); }
 
-  /* The count tile is 64px here; the Issue column takes what is left. */
+  /* Wide enough for its own header. At 60px the word "Instances" broke
+     over three lines above a column of two-digit numbers — the header
+     needs 82px at 15px type, the tile itself only 60. The column is
+     sized by the widest thing in it, and that is the word. */
   .a11y-widget-biz .a11y-findings-table th[data-col="count"],
-  .a11y-widget-biz .a11y-findings-table td[data-col="count"] { width: 60px; }
+  .a11y-widget-biz .a11y-findings-table td[data-col="count"] {
+    width: 88px;
+    white-space: nowrap;
+  }
 }
 
 /* The numeral carries the accent; the mark stays quiet beside it. */
