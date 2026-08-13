@@ -753,8 +753,7 @@
    cards on a frame — .as-table, which the port applied to .a11y-datatable but
    not to the findings tables that use their own class. */
 .a11y-widget-biz .a11y-findings-table,
-.a11y-widget-biz .a11y-notes-table,
-.a11y-widget-biz .a11y-undecided-table {
+.a11y-widget-biz .a11y-notes-table {
   width: 100%;
   border-collapse: separate;
   border-spacing: 0 var(--space-03);
@@ -762,8 +761,7 @@
 }
 
 .a11y-widget-biz .a11y-findings-table caption,
-.a11y-widget-biz .a11y-notes-table caption,
-.a11y-widget-biz .a11y-undecided-table caption {
+.a11y-widget-biz .a11y-notes-table caption caption {
   text-align: left;
   padding-bottom: var(--space-04);
   font-size: 15px;
@@ -772,8 +770,7 @@
 }
 
 .a11y-widget-biz .a11y-findings-table th,
-.a11y-widget-biz .a11y-notes-table th,
-.a11y-widget-biz .a11y-undecided-table th {
+.a11y-widget-biz .a11y-notes-table th th {
   text-align: left;
   padding: 0 var(--space-05);
   font-size: 15px;
@@ -782,8 +779,7 @@
 }
 
 .a11y-widget-biz .a11y-findings-table td,
-.a11y-widget-biz .a11y-notes-table td,
-.a11y-widget-biz .a11y-undecided-table td {
+.a11y-widget-biz .a11y-notes-table td td {
   padding: var(--space-05);
   background: var(--layer-01);
   vertical-align: top;
@@ -791,14 +787,12 @@
 }
 
 .a11y-widget-biz .a11y-findings-table tbody td:first-child,
-.a11y-widget-biz .a11y-notes-table tbody td:first-child,
-.a11y-widget-biz .a11y-undecided-table tbody td:first-child {
+.a11y-widget-biz .a11y-notes-table tbody td:first-child tbody td:first-child {
   border-start-start-radius: var(--radius-md);
   border-end-start-radius: var(--radius-md);
 }
 .a11y-widget-biz .a11y-findings-table tbody td:last-child,
-.a11y-widget-biz .a11y-notes-table tbody td:last-child,
-.a11y-widget-biz .a11y-undecided-table tbody td:last-child {
+.a11y-widget-biz .a11y-notes-table tbody td:last-child tbody td:last-child {
   border-start-end-radius: var(--radius-md);
   border-end-end-radius: var(--radius-md);
 }
@@ -894,8 +888,7 @@
 }
 
 .a11y-widget-biz .a11y-findings-table td,
-.a11y-widget-biz .a11y-notes-table td,
-.a11y-widget-biz .a11y-undecided-table td { overflow-wrap: normal; }
+.a11y-widget-biz .a11y-notes-table td td { overflow-wrap: normal; }
 
 /* ==========================================================================
    Score section — more rules the port missed
@@ -1464,36 +1457,16 @@
   max-width: var(--measure);
 }
 
-/* "What we couldn't decide" — a card per kind, two across, each opening with
-   its fix-kind pill and a count. */
-.a11y-widget-biz .a11y-undecided-table,
-.a11y-widget-biz .a11y-undecided-list {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(min(100%, 320px), 1fr));
-  gap: var(--space-05);
-  align-items: start;
-  list-style: none;
-  margin: 0;
-  padding: 0;
-  border-collapse: separate;
-}
-
-.a11y-widget-biz .a11y-undecided-cell,
-.a11y-widget-biz .a11y-undecided-item {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-04);
-  padding: var(--space-06);
-  border-radius: var(--radius-lg);
-  background: var(--layer-01);
-}
-
-.a11y-widget-biz .a11y-undecided-badge-row {
-  display: flex;
-  align-items: baseline;
-  flex-wrap: wrap;
-  gap: var(--space-04);
-}
+/* The card-per-kind grid that used to live here is gone, and it was not
+   dead when it went: the ledger's own rule sets display and gap but never
+   grid-template-columns, so this block's auto-fill columns survived the
+   cascade and laid the LEDGER ROWS four across on a wide screen, the
+   four-column cells fighting for 320px each — one word per line, columns
+   overlapping. Measured from the live screenshot that reported it. The
+   probe that approved the ledger checked every new property and never
+   that rows stack, which is how a superseded rule stayed load-bearing.
+   .a11y-undecided-list, -item and -badge-row went with it: no markup
+   renders any of them. */
 
 .a11y-widget-biz .a11y-undecided-places { font-size: 20px; font-weight: 500; }
 
@@ -5673,6 +5646,10 @@
   padding: 0;
   list-style: none;
   display: grid;
+  /* Stated, not inherited. Leaving the template unset is what let the
+     retired card grid donate auto-fill columns to this list and lay the
+     rows four across. */
+  grid-template-columns: minmax(0, 1fr);
   gap: var(--gap-element);
 }
 
