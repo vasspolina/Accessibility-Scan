@@ -5339,3 +5339,38 @@
   .a11y-widget-biz .a11y-dn-band { background: none; padding: 0; }
   .a11y-widget-biz .a11y-dn-card { padding: 0; }
 }
+
+/* The expand column's header cell. It carried no rule of its own, so
+   table-layout: fixed handed it an equal share of the table — 131px of a
+   904px table — and it took the header's grey fill with it. The result was
+   an empty grey box sitting where a column name should be, holding open a
+   seventh of the width for a chevron.
+
+   The kit's own row spec makes this an empty 20px span. Here it has to
+   clear the disclosure triangle in the body cells beneath it, so 44px —
+   the header row is what sets every column width under table-layout:
+   fixed, so this cannot be set on the body cell. */
+.a11y-widget-biz .a11y-datatable .a11y-dt-spacer {
+  width: 44px;
+  padding: 0;
+  border: 0;
+  background: none;
+}
+
+/* The Issue column. It was taking 149px of a 904px table while Level took
+   room enough for "Basic requirement (Level A)" on one line — so the
+   finding titles, the thing you actually read, broke over three lines and
+   the requirement did not. The kit gives Finding `flex: 1 1 16rem` against
+   Requirement's `flex: 0 1 22rem`: the title has a floor and grows, the
+   requirement may shrink. This is the table equivalent.
+
+   Only above the panel's 680px breakpoint. Below it the existing rules
+   drop columns, and a width set here would fight them. */
+@container a11y-panel (min-width: 680px) {
+  .a11y-widget-biz .a11y-principle-group .a11y-datatable th[data-col="issue"] {
+    width: 32%;
+  }
+  .a11y-widget-biz .a11y-principle-group .a11y-datatable th[data-col="level"] {
+    width: 20%;
+  }
+}
