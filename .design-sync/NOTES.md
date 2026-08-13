@@ -94,6 +94,34 @@ aria-hidden and whose value the label carries, and uses
 `--severity-serious-fill` (#ba4e00, 5.03:1) for the pill. Worth fixing
 upstream — it is the kind of thing this product exists to catch.
 
+### Resolved upstream, re-checked 13 August 2026
+
+Already fixed in the project, and nothing was written to fix it. The
+"Failing" pill is now white on `--red-70` (#a2191f) at **7.79:1**, and
+`--orange-50` no longer appears anywhere in the file. Every foreground
+and background pair in both `templates/scan-summary/Summary.jsx` and
+`ui_kits/scan-app/Summary.jsx` was computed against the project's own
+`tokens/colors.css` and every one passes:
+
+| pair | ratio | needs |
+|---|---|---|
+| "Failing" pill (white on red-70) | 7.79:1 | 4.5 |
+| score figure on the cream dial ground | 6.98:1 | 4.5 |
+| severity pill, critical | 7.09:1 | 4.5 |
+| **severity pill, serious** | **4.58:1** | 4.5 |
+| instance count tile (32px) | 4.91:1 | 3.0 |
+| "text too faint to read" on gray-90 (40px) | 6.15:1 | 3.0 |
+
+The serious severity pill is the tightest at 4.58:1 — `#ba4e00` on
+`--orange-10`. It passes, with 0.08 to spare, so any future darkening of
+the tint or lightening of the fill breaks it. Worth knowing before
+either is touched.
+
+The lesson is about this file rather than about the design system: a
+recorded fault is a claim with a date on it, and this one had been fixed
+in between. Re-measure before acting on an entry here — a stale note
+sends you to write a fix that would have made a passing pill worse.
+
 Also from that read: `--purple-20` is **#e8daff**. The widget had been
 carrying `--purple-15: #ebe2fb`, sampled from a screenshot. Replaced with
 the real token.
