@@ -463,6 +463,15 @@ export function FindingDetails({
        applying, and the cell collapsed to 33px with both columns inside
        it — measured, in all three engines. */
     <div className="a11y-fd">
+      {/* Two real column boxes, the kit's own composition. The children
+          used to sit flat in the grid with grid-column rules assigning
+          each to a side — which row-locked them: a grid row is as tall as
+          its tallest cell across BOTH columns, so a 65px hint beside a
+          262px steps list carried 196px of dead space, and the affected
+          list opposite a short research note carried 403px. Measured
+          grid-template-rows: 261px 129px 129px 557px. Columns that flow
+          independently cannot do that. */}
+      <div className="a11y-fd-col">
       {/* What was actually measured on this page. It used to sit inside
           the technical drawer, two clicks from view, which left the
           summary above saying a ring was "too pale" and never how pale or
@@ -532,6 +541,9 @@ export function FindingDetails({
           <strong>What the research shows</strong> <CodeText text={plain.research} />
         </p>
       )}
+      </div>
+
+      <div className="a11y-fd-col">
       {/* Steps get a list; a single action stays a sentence. Both carry the
           same "What to do" label, so the reader is never hunting for where
           the advice starts. */}
@@ -609,6 +621,7 @@ export function FindingDetails({
         )}
       </div>
       )}
+      </div>
 
       {cluster && (
         <p className="a11y-fix-once">

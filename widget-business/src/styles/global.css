@@ -4752,32 +4752,28 @@
    (0,4,0), so grid-column: 2 survived into the single-column layout and
    left a zero-width first track — measured as "0px 150px". That is the
    fourth time today the same tie has decided a layout. */
+/* Each column is a real box that flows on its own. The children used to
+   sit flat in the grid, one grid-column rule per class — and a grid row
+   is as tall as its tallest cell across both columns, so every short
+   block was held to the height of whatever sat beside it: 196px of dead
+   space under "Who fixes this", 403px under the research note, measured
+   as grid-template-rows: 261px 129px 129px 557px. A flex column has no
+   rows to lock to. This is also the kit's own composition — Perceivable's
+   Detail puts two flex columns in the grid, not nine items. */
+.a11y-widget-biz .a11y-fd > .a11y-fd-col {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-06);
+  min-width: 0;
+}
+.a11y-widget-biz .a11y-fd > .a11y-fd-col > * { margin: 0; }
+
 @container a11y-panel (min-width: 680px) {
   .a11y-widget-biz .a11y-fd {
     grid-template-columns: repeat(2, minmax(0, 1fr));
-    /* dense, or the right column starts level with the LAST item of the
-       left one. Auto-placement is sparse by default: it never moves its
-       cursor backwards, so after four blocks claimed column 1 rows 1-4,
-       the first column-2 block landed on row 4 with three empty rows
-       above it. dense makes each item look from the top for the first
-       row its own column is free in. */
-    grid-auto-flow: row dense;
-  }
-  .a11y-widget-biz .a11y-fd > .a11y-method-hint,
-  .a11y-widget-biz .a11y-fd > .a11y-finding-measured,
-  .a11y-widget-biz .a11y-fd > .a11y-finding-impact,
-  .a11y-widget-biz .a11y-fd > .a11y-finding-research,
-  .a11y-widget-biz .a11y-fd > .a11y-picture-note {
-    grid-column: 1;
-    margin: 0;
-  }
-  .a11y-widget-biz .a11y-fd > .a11y-finding-steps,
-  .a11y-widget-biz .a11y-fd > .a11y-finding-todo,
-  .a11y-widget-biz .a11y-fd > .a11y-affected,
-  .a11y-widget-biz .a11y-fd > .a11y-finding-level-fold,
-  .a11y-widget-biz .a11y-fd > .a11y-fd-learn {
-    grid-column: 2;
-    margin: 0;
+    /* dense is gone with the per-child placement: the only grid children
+       now are the two columns and the full-width tail, which place
+       themselves in source order. */
   }
   .a11y-widget-biz .a11y-fd > .a11y-fix-once,
   .a11y-widget-biz .a11y-fd > .a11y-pro-block,
@@ -5465,4 +5461,42 @@
   font-size: 15px;
   font-weight: 400;
   letter-spacing: 0.01em;
+}
+
+/* The six criteria, as white pill rows on the purple field. The design
+   draws the badges as outline only — the fill was doing the same job as
+   the border and made the row read as coloured rather than neutral. */
+/* Every row, not only the failing one. Scoping this to
+   .a11y-next-crit-item painted 1 of the 6 white and left 5 on the purple
+   — the class is carried only by the already-failing row, which a probe
+   counting 6 rows by their text had hidden. */
+.a11y-widget-biz .a11y-w22-panel .a11y-next-list > li {
+  background: #ffffff;
+  color: var(--gray-100);
+  border-radius: var(--radius-pill);
+  padding: var(--space-05) var(--space-06);
+}
+
+/* Outline, no fill. Black for the ones a person has to judge, green only
+   for the single one software can check — so the colour marks the
+   exception rather than shading every row. Both are on white, so both
+   clear AA: #161616 at 18.1:1 and #0e6027 at 7.4:1. */
+.a11y-widget-biz .a11y-w22-panel .a11y-next-crit-item .a11y-next-status {
+  background: none;
+  color: var(--gray-100);
+  border: 1px solid currentColor;
+}
+.a11y-widget-biz .a11y-w22-panel .a11y-next-crit-item[data-coverage="automated"] .a11y-next-status,
+.a11y-widget-biz .a11y-w22-panel .a11y-next-crit-item .a11y-next-status[data-can-check="true"] {
+  color: var(--green-70, #0e6027);
+}
+
+/* Both eyebrows are <p>s, so they inherited the report's prose measure —
+   a 622px box inside a 1592px panel, with text-align: center centring
+   inside the box, not the panel. Measured 469px left of centre on a wide
+   host. Same fault as the findings-table label; same reason: a measure
+   is for reading, and these are labels. */
+.a11y-widget-biz .a11y-dn-band-eyebrow,
+.a11y-widget-biz .a11y-dn-panel-eyebrow {
+  max-width: none;
 }
