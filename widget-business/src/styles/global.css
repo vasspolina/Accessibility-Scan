@@ -5366,6 +5366,18 @@
 
    Only above the panel's 680px breakpoint. Below it the existing rules
    drop columns, and a width set here would fight them. */
+/* Issue takes whatever the fixed-width columns leave. Without a width of
+   its own the column was unpinned, and expanding a row collapsed it from
+   252px to 50px at phone width — the header cell itself changed, not just
+   the body cell, because table-layout: fixed distributes unspecified
+   columns and the expand row's colspan="7" is part of that distribution.
+   width: 100% clamps to the space remaining after the 44px toggle column
+   and the 60px count, which is what the column was already getting; the
+   difference is that it now keeps it when a row opens. */
+.a11y-widget-biz .a11y-principle-group .a11y-datatable th[data-col="issue"] {
+  width: 100%;
+}
+
 @container a11y-panel (min-width: 680px) {
   .a11y-widget-biz .a11y-principle-group .a11y-datatable th[data-col="issue"] {
     width: 32%;
