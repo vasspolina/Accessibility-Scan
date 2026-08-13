@@ -5081,11 +5081,27 @@
   gap: var(--space-03) var(--space-05);
   width: 100%;
   text-align: left;
+  /* It is a <button> that had never been styled, so it carried the UA's
+     2px outset border and transparent fill. While it was inline-block
+     that read as a small bordered button and passed unnoticed; widening
+     it to a full row turned the same border into what looks like a
+     native <select> — a bordered box the width of the column with a
+     chevron parked at the far right. The border was always wrong; the
+     width only made it obvious. */
+  border: 0;
+  padding: 0;
+  background: none;
+  color: inherit;
+  font: inherit;
+  letter-spacing: inherit;
+  cursor: pointer;
 }
 
-/* Pushed to the end of the row rather than trailing the count, so the
-   affordance sits where the row ends at any width. */
-.a11y-widget-biz .a11y-next-toggle .a11y-next-chevron { margin-left: auto; }
+/* The chevron sits with the words it belongs to. margin-left: auto put it
+   against the right edge, which is where a form control puts one — and
+   between that and the UA border the row stopped reading as a heading you
+   can open. The gap above still keeps it clear of the count. */
+.a11y-widget-biz .a11y-next-toggle .a11y-next-chevron { margin-left: 0; }
 
 /* ── Notes on the design ───────────────────────────────────────────────
    The design's shape: a yellow band carrying the heading and the lead,
@@ -5415,3 +5431,38 @@
 /* The affected-elements label is already alone in its <p>, so the <p>
    must not keep a left-aligned box narrower than the column. */
 .a11y-widget-biz .a11y-affected-label { text-align: center; }
+
+/* The technical breakdown, as the design draws it: two columns, each led
+   by a dashed pill rather than a bold run-in.
+
+   Same device as the finding-detail labels — display: block turns an
+   inline <strong> into its own line without touching the reading order,
+   so "What actually changes The European Accessibility Act…" stays one
+   sentence in the markup and reads as a heading over prose on screen.
+   Dashed, because it labels rather than acts, matching the notes
+   panel's kind pills. */
+.a11y-widget-biz .a11y-w22-cols {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--space-06) var(--space-07);
+  align-items: start;
+}
+
+@container a11y-panel (min-width: 680px) {
+  .a11y-widget-biz .a11y-w22-cols { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+
+.a11y-widget-biz .a11y-w22-lead {
+  display: block;
+  width: fit-content;
+  margin: 0 auto var(--space-05);
+  padding: var(--space-03) var(--space-06);
+  border: 1px dashed var(--gray-60);
+  border-radius: var(--radius-pill);
+  background: var(--gray-10);
+  color: var(--gray-100);
+  text-align: center;
+  font-size: 15px;
+  font-weight: 400;
+  letter-spacing: 0.01em;
+}

@@ -78,8 +78,10 @@ export function Wcag22Readiness({ readiness }: { readiness: Readiness }) {
       {/* Hidden rather than unrendered, so aria-controls always points at a
           real element. */}
       <div id={panelId} hidden={!open}>
+          <div className="a11y-w22-cols">
+          <div>
           <p className="a11y-conf-caveat">
-            <strong>What actually changes.</strong> The European Accessibility Act points at a
+            <strong className="a11y-w22-lead">What actually changes</strong> The European Accessibility Act points at a
             standard called EN 301 549, which today adopts WCAG 2.1. The next version adopts
             WCAG 2.2, expected in the EU's Official Journal in{" "}
             {readiness.expectedFrom}. Until then, the checklist above is the one that counts.
@@ -91,8 +93,10 @@ export function Wcag22Readiness({ readiness }: { readiness: Readiness }) {
               "needs a person" for all of them once — which only holds if a
               reader reaches this sentence before those blank-looking rows,
               not after them. */}
+          </div>
+          <div>
           <p className="a11y-conf-caveat">
-            <strong>Software can check only one of these.</strong> {needsReview} of the{" "}
+            <strong className="a11y-w22-lead">Software can check only one</strong> {needsReview} of the{" "}
             {total} depend on things a machine cannot judge:
           </p>
           {/* These were five questions in a row inside a seventy-six word
@@ -106,6 +110,8 @@ export function Wcag22Readiness({ readiness }: { readiness: Readiness }) {
             <li>Does a form ask twice?</li>
             <li>Can you log in without solving a puzzle?</li>
           </ul>
+          </div>
+          </div>
           <p>
             These need a person, which is the same answer the checklist below gives.
           </p>
