@@ -207,10 +207,12 @@
      so white text sat on the black panel behind it and measured
      21:1 — which looks like a pass and is a missing pill. */
   --yellow-10: #fcf4d6; --yellow-60: #8e6a00;
-  /* The notes band. Bright enough to read as a marker pen rather than a
-     tint, and #161616 on it is 15.4:1 — the band carries real text, so it
-     had to clear AA on its own rather than lean on the card inside it. */
-  --yellow-30: #f9e94e;
+  /* The notes band uses --yellow-brand, defined with the rest of the ramp
+     below. It was briefly a new --yellow-30: #f9e94e sampled off a
+     screenshot — wrong twice over. The design system already defines
+     --yellow-30 as Carbon's #f1c21b, so the name carried two values; and
+     --yellow-brand: #ffed00 was already here, already in use, already
+     measured. Sample a colour only after grepping for the token. */
   --blue-10: #edf5ff;  --blue-60: #0f62fe;  --blue-70: #0043ce;  --blue-100: #001141;
   /* The report-actions panel's ground and its pdf tag. purple-60 (#8a3ffc)
      is the kit's ramp value and clears AA on white at 5.00:1; kept rather
@@ -5095,7 +5097,7 @@
    width with the note titles pushed to the right of it. */
 
 .a11y-widget-biz .a11y-dn-band {
-  background: var(--yellow-30);
+  background: var(--yellow-brand);
   border-radius: var(--radius-lg);
   padding: var(--space-05);
   display: grid;
@@ -5207,7 +5209,7 @@
 }
 
 .a11y-widget-biz .a11y-dn-kind[aria-pressed="true"] {
-  background: var(--yellow-30);
+  background: var(--yellow-brand);
   border: 2px solid var(--gray-100);
   font-weight: 500;
   /* The 2px border would otherwise make the pressed pill a pixel taller
@@ -5327,7 +5329,7 @@
   color: var(--gray-100);
 }
 
-.a11y-widget-biz .a11y-dn-pill-kind { background: var(--yellow-30); }
+.a11y-widget-biz .a11y-dn-pill-kind { background: var(--yellow-brand); }
 .a11y-widget-biz .a11y-dn-pill-note { background: var(--gray-20); }
 
 /* Print takes the cards, not the panel — one open note is a screen
