@@ -240,17 +240,18 @@ export function UrlForm({
               form, three steps below the only field that is required — so the
               scan could be started from step 01 without scrolling past scope
               and report style, both of which have defaults. */}
-          {/* The design's tinted action bar: the note on the left, the black
-              submit at the right end. The note leads in the DOM because it
-              reads first on screen — doing that with flex order would leave a
-              screen reader hearing the button before its explanation. */}
+          {/* The tinted action bar, button leading. It was note-left,
+              button-right; the swap keeps the rule that mattered in the old
+              arrangement — DOM order and visual order agree — so it is done
+              by moving the element, never with flex order. A listener hears
+              the action, then the line that qualifies it. */}
           <div className="a11y-url-submit">
-            <span className="a11y-url-submit-note">
-              Keep this page open — the scan runs here.
-            </span>
             <Button type="submit" size="lg" disabled={loading}>
               {loading ? "One moment\u2026" : "Start the scan"}
             </Button>
+            <span className="a11y-url-submit-note">
+              Keep this page open — the scan runs here.
+            </span>
           </div>
           </div>
           </div>
