@@ -1,7 +1,6 @@
 import { useCallback, useEffect, useId, useMemo, useRef, useState } from "react";
 import { StatusChip } from "./SectionHeader";
 import type { ScreenReaderScript } from "../api/scanClient";
-import { DataTable } from "./DataTable";
 
 // Lets an owner hear their own page the way a screen-reader user does. Reading
 // a list of violations is abstract; hearing "button, unlabelled" where your
@@ -233,36 +232,50 @@ export function ScreenReaderPreview({ script }: { script: ScreenReaderScript }) 
         </button>
       )}
 
-      {/* The walkthrough as the kit's table: order, what you would hear,
-          and the note. Issue rows wear the critical tint; the row currently
-          being read aloud wears the accent wash. The play-from-here button
-          stays the line itself, its purpose in the accessible name. */}
-      <DataTable
-        caption="What a screen reader announces, in reading order"
-        headers={[
-          { key: "n", label: "#", align: "right" },
-          { key: "text", label: "What you'd hear" },
-          { key: "note", label: "Note" },
-        ]}
-        rows={visible.map(({ line, index: i }) => ({
-          id: `${line.selector}-${i}`,
-          state: line.issue ? ("issue" as const) : current === i ? ("current" as const) : undefined,
-          cells: [
-            String(i + 1),
-            <span key="t" className="a11y-sr-text">
+      {/* The design's transcript: a black panel, each announcement a row you
+          can play from, the line being read aloud inverted to white. It was
+          a DataTable before — but a transcript is a reading order, not a
+          record set, and three of the table's affordances (sortable-looking
+          headers, a caption, column semantics) promised structure the
+          content doesn't have. The kit's own ScreenReaderPreview is this
+          panel, and the row markup keeps every behaviour the table had:
+          play-from-here is still the line itself, purpose in the accessible
+          name, current row marked aria-current. */}
+      <div className="a11y-sr-panel">
+        <p className="a11y-sr-panel-head">
+          <strong>What a screen reader announces</strong>
+          <span className="a11y-sr-panel-meta">reading order, not visual order</span>
+          <span className="a11y-sr-panel-meta a11y-sr-panel-pos">
+            {playing && current !== null ? `${current + 1} of ${lines.length}` : ""}
+          </span>
+        </p>
+        <ol className="a11y-sr-list" aria-label="Announcement order">
+          {visible.map(({ line, index: i }) => (
+            <li key={`${line.selector}-${i}`}>
               {supported ? (
-                <button type="button" className="a11y-sr-line-play" onClick={() => speakFrom(i)}>
-                  {line.text}
+                <button
+                  type="button"
+                  className="a11y-sr-row"
+                  aria-current={current === i ? "true" : undefined}
+                  data-issue={line.issue ? "true" : undefined}
+                  onClick={() => speakFrom(i)}
+                >
+                  <span className="a11y-sr-num" aria-hidden="true">{i + 1}</span>
+                  <span className="a11y-sr-line-text">{line.text}</span>
                   <span className="a11y-sr-only"> — play aloud from this line</span>
+                  {line.issue && <span className="a11y-sr-issue">{line.issue}</span>}
                 </button>
               ) : (
-                line.text
+                <p className="a11y-sr-row" data-issue={line.issue ? "true" : undefined}>
+                  <span className="a11y-sr-num" aria-hidden="true">{i + 1}</span>
+                  <span className="a11y-sr-line-text">{line.text}</span>
+                  {line.issue && <span className="a11y-sr-issue">{line.issue}</span>}
+                </p>
               )}
-            </span>,
-            line.issue ? <span key="n" className="a11y-sr-issue">{line.issue}</span> : "",
-          ],
-        }))}
-      />
+            </li>
+          ))}
+        </ol>
+      </div>
 
       {/* A toggle rather than a button that removes itself: a control that
           disappears under the keyboard focus that just used it strands the

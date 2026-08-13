@@ -411,7 +411,7 @@
    controls inheriting it — 40 buttons and 6 inputs read `normal` without this. */
 .a11y-widget-biz button, .a11y-widget-biz input,
 .a11y-widget-biz select, .a11y-widget-biz textarea {
-  font: inherit; letter-spacing: inherit; color: inherit; background: transparent;
+  font: inherit; letter-spacing: 0.01em; color: inherit; background: transparent;
 }
 
 /* No heading may fall back to a browser default: at 18px those compute to 27
@@ -2241,7 +2241,7 @@
   border-radius: var(--radius-pill);
   background: var(--white);
   font-size: 18px;
-  letter-spacing: inherit;
+  letter-spacing: 0.01em;
 }
 .a11y-widget-biz .a11y-ra-label { flex: 1 1 auto; text-align: left; }
 .a11y-widget-biz .a11y-ra-action {
@@ -2250,7 +2250,7 @@
   text-decoration: none;
   font: inherit;
   font-size: 18px;
-  letter-spacing: inherit;
+  letter-spacing: 0.01em;
 }
 /* The design marks the PDF export as the outlined one and email as filled. */
 .a11y-widget-biz .a11y-ra-pdf { border-color: var(--text-primary); }
@@ -2269,7 +2269,7 @@
   border-radius: var(--radius-pill);
   font-size: 15px;
   font-weight: 500;
-  letter-spacing: inherit;
+  letter-spacing: 0.01em;
 }
 .a11y-widget-biz .a11y-ra-tag-email  { background: var(--blue-10);   color: var(--blue-100); }
 .a11y-widget-biz .a11y-ra-tag-pdf    { background: transparent;      color: var(--purple-60); }
@@ -2333,7 +2333,7 @@
   cursor: pointer;
   text-align: left;
   font-size: 18px; font-weight: 500;
-  letter-spacing: inherit;
+  letter-spacing: 0.01em;
 }
 .a11y-widget-biz .a11y-accordion-head:hover { background: var(--brown-10); }
 .a11y-widget-biz .a11y-accordion-title { flex: 1 1 auto; }
@@ -2599,7 +2599,7 @@
   color: var(--text-primary);
   cursor: pointer;
   font-size: 18px; font-weight: 500;
-  letter-spacing: inherit;
+  letter-spacing: 0.01em;
 }
 .a11y-widget-biz .a11y-pro-jump:hover { background: var(--gray-10); }
 
@@ -2721,7 +2721,7 @@
     color: var(--text-primary);
     cursor: pointer;
     font-size: 15px; font-weight: 500;
-    letter-spacing: inherit;
+    letter-spacing: 0.01em;
   }
   .a11y-widget-biz .a11y-shell-nav ul[data-open="false"] { display: none; }
   .a11y-widget-biz .a11y-shell-nav ul[data-open="true"] { margin-top: var(--space-04); }
@@ -2967,7 +2967,7 @@
   color: var(--text-primary);
   cursor: pointer;
   text-align: left;
-  letter-spacing: inherit;
+  letter-spacing: 0.01em;
 }
 .a11y-widget-biz .a11y-shell-nav-heading {
   font-size: 40px;
@@ -3059,7 +3059,7 @@
   color: var(--text-primary);
   cursor: pointer;
   font-size: 18px;
-  letter-spacing: inherit;
+  letter-spacing: 0.01em;
 }
 .a11y-widget-biz .a11y-filter-btn:hover { background: var(--layer-01); }
 /* Also resets the ground: these buttons carry .a11y-mode-btn-active as well,
@@ -3186,7 +3186,7 @@
      inherit` does not carry it either — it has to be said. */
   font: inherit;
   font-size: 15px;
-  letter-spacing: inherit;
+  letter-spacing: 0.01em;
 }
 .a11y-widget-biz .a11y-ra-email-input::placeholder { color: var(--text-secondary); }
 .a11y-widget-biz .a11y-ra-send {
@@ -3199,7 +3199,7 @@
   cursor: pointer;
   font-size: 15px;
   font-weight: 500;
-  letter-spacing: inherit;
+  letter-spacing: 0.01em;
 }
 .a11y-widget-biz .a11y-ra-send:disabled { opacity: .6; cursor: not-allowed; }
 
@@ -3989,7 +3989,7 @@
   text-decoration: none;
   white-space: nowrap;
   font-size: 15px; font-weight: 500;
-  letter-spacing: inherit;
+  letter-spacing: 0.01em;
 }
 .a11y-widget-biz .a11y-url-form .a11y-login-toggle:hover { background: var(--purple-10); }
 
@@ -4048,7 +4048,7 @@
   color: var(--text-primary);
   cursor: pointer;
   font-size: 14px;
-  letter-spacing: inherit;
+  letter-spacing: 0.01em;
 }
 /* Current takes a fill AND a weight, so it never rests on colour alone. */
 .a11y-widget-biz .a11y-settings-opt[aria-pressed="true"] {
@@ -4071,7 +4071,7 @@
   text-decoration: underline;
   text-underline-offset: 3px;
   font-size: 14px; font-weight: 500;
-  letter-spacing: inherit;
+  letter-spacing: 0.01em;
 }
 .a11y-widget-biz .a11y-settings-rerun:disabled {
   opacity: .5; cursor: not-allowed; text-decoration: none;
@@ -4521,9 +4521,11 @@
 }
 .a11y-widget-biz .a11y-finding-title { font-weight: 500; }
 
-/* At phone width the column goes and the fold takes over — one badge, not
-   none and not two. */
-@container a11y-panel (max-width: 400px) {
+/* Below the two-column breakpoint the column goes and the fold takes
+   over — one badge, not none and not two. 680 rather than the 400 it was:
+   the drop block below moved to 680, and the two must move together or
+   the band between them shows the badge twice or not at all. */
+@container a11y-panel (width < 680px) {
   .a11y-widget-biz .a11y-finding-sev-col { display: none; }
   .a11y-widget-biz .a11y-finding-sev-fold { display: block; }
 }
@@ -4782,7 +4784,7 @@
   }
 }
 
-/* ── The findings table below 480px ───────────────────────────────────────
+/* ── The findings table below 680px ───────────────────────────────────────
    The table never overflowed; its CELLS did. table-layout: fixed splits
    the columns evenly whatever is in them, so on a 286px panel each of the
    five got 57px, and 32px of that is padding — 25px of content for a
@@ -4798,7 +4800,14 @@
 
    Keyed on data-col, so the <th> goes with its <td> and the table simply
    has fewer columns rather than a ragged one. */
-@container a11y-panel (max-width: 480px) {
+/* 680, not the 480 it shipped at. The Issue column's width:100% pin is
+   the base rule, so between 481 and 679 all six columns rendered while
+   Issue claimed the whole table — the pills got one character of width
+   and set vertically, a letter per line, over the titles. Measured from
+   the screenshot that reported it. 680 is also where the detail panel,
+   the notes list and the breakdown all change shape, so the table now
+   carries fewer columns exactly where everything else goes single-column. */
+@container a11y-panel (width < 680px) {
   .a11y-widget-biz .a11y-findings-table th[data-col="severity"],
   .a11y-widget-biz .a11y-findings-table td[data-col="severity"],
   .a11y-widget-biz .a11y-findings-table th[data-col="wcag"],
@@ -5089,7 +5098,7 @@
   background: none;
   color: inherit;
   font: inherit;
-  letter-spacing: inherit;
+  letter-spacing: 0.01em;
   cursor: pointer;
 }
 
@@ -5499,4 +5508,125 @@
 .a11y-widget-biz .a11y-dn-band-eyebrow,
 .a11y-widget-biz .a11y-dn-panel-eyebrow {
   max-width: none;
+}
+
+
+/* CLAUDE.md says 0.01em everywhere, and the file believed it had said so —
+   but letter-spacing inherits as a COMPUTED length, not as the em
+   expression. Declared once on the root at 18px, every heading inherited
+   0.18px: a 40px section title carried a fifth of the tracking it claimed,
+   and the 144px display title a fourteenth. Measured across the rendered
+   report: 24 visible elements, 47 rules with 20px+ type and no tracking of
+   their own. The universal selector makes every element compute 0.01em
+   against its own size — legal because a sweep of the file found no other
+   value anywhere: 24 declarations of 0.01em, 15 of inherit (now 0.01em),
+   nothing else. */
+.a11y-widget-biz, .a11y-widget-biz * { letter-spacing: 0.01em; }
+
+/* ── The screen reader transcript, as the kit draws it ─────────────────
+   A black panel; each announcement a row you can play from; the line
+   being read aloud inverted to white. On-dark inks are the fixed
+   on-invert tokens, which survive the dark-theme flip — gray-30 is 9.9:1
+   on this ground, gray-40 7.6:1. */
+.a11y-widget-biz .a11y-sr-panel {
+  background: var(--gray-100);
+  color: var(--text-on-invert);
+  border-radius: var(--radius-lg);
+  padding: var(--space-06);
+  display: grid;
+  gap: var(--space-05);
+  min-width: 0;
+}
+
+.a11y-widget-biz .a11y-sr-panel-head {
+  margin: 0;
+  max-width: none;   /* a label, not prose — the measure has clipped three of these */
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: var(--space-03) var(--space-05);
+  font-size: 15px;
+}
+.a11y-widget-biz .a11y-sr-panel-head > strong { font-weight: 500; }
+.a11y-widget-biz .a11y-sr-panel-meta { color: var(--text-on-invert-secondary); }
+.a11y-widget-biz .a11y-sr-panel-pos { margin-left: auto; }
+
+/* The kit caps the list and lets it scroll — 120 rows of transcript must
+   not be 120 rows of page. A scrollable region a Tab press cannot enter
+   is a finding this product raises, so the rows themselves being buttons
+   is what keeps it reachable. */
+.a11y-widget-biz .a11y-sr-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-02);
+  max-height: 480px;
+  overflow-y: auto;
+}
+
+.a11y-widget-biz .a11y-sr-row {
+  width: 100%;
+  min-height: 44px;
+  margin: 0;
+  max-width: none;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: var(--space-03) var(--space-04);
+  padding: var(--space-04) var(--space-05);
+  border: 0;
+  border-radius: var(--radius-md);
+  background: none;
+  color: var(--text-on-invert);
+  text-align: left;
+  font-size: 18px;
+  font-weight: 500;
+  line-height: 1.2;
+  letter-spacing: 0.01em;
+  cursor: pointer;
+}
+.a11y-widget-biz p.a11y-sr-row { cursor: default; }
+
+.a11y-widget-biz .a11y-sr-row[aria-current="true"] {
+  background: #ffffff;
+  color: var(--gray-100);
+}
+
+/* White on black needs a ring that is not the ink it sits on. */
+.a11y-widget-biz .a11y-sr-row:focus-visible {
+  outline: 2px solid #ffffff;
+  outline-offset: -2px;
+}
+.a11y-widget-biz .a11y-sr-row[aria-current="true"]:focus-visible {
+  outline-color: var(--gray-100);
+}
+
+.a11y-widget-biz .a11y-sr-num {
+  flex: 0 0 2rem;
+  font-size: 15px;
+  font-weight: 400;
+  color: var(--text-on-invert-secondary);
+}
+.a11y-widget-biz .a11y-sr-row[aria-current="true"] .a11y-sr-num {
+  color: var(--text-secondary);
+}
+
+.a11y-widget-biz .a11y-sr-line-text {
+  flex: 1 1 14rem;
+  min-width: 0;
+}
+
+/* The fault marker, in the on-dark severity pair Carbon reserves for
+   exactly this ground: red-20 ink on red-70 fill. */
+.a11y-widget-biz .a11y-sr-panel .a11y-sr-issue {
+  flex: 0 0 auto;
+  margin-left: auto;
+  padding: 2px 10px;
+  border-radius: var(--radius-pill);
+  background: var(--severity-critical-ondark-bg, #a2191f);
+  color: var(--severity-critical-ondark-text, #ffd7d9);
+  font-size: 15px;
+  font-weight: 400;
 }
