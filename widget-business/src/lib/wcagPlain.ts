@@ -1068,7 +1068,7 @@ export const PRINCIPLE_ORDER: Principle[] = ["Perceivable", "Operable", "Underst
 export const UNDECIDED_EXPLANATIONS: Record<string, { what: string; ask: string }> = {
   "color-contrast": {
     what: "Text sitting on a photograph, a video or a gradient. The checker can read the colour of the text. There is no single colour behind it to measure against, so it will not guess.",
-    ask: "Ask your designer to check each one against the picture behind it, at its lightest and at its darkest. Where the words get lost, add a solid panel, a dark wash over the image, or move the text.",
+    ask: "Ask your designer to look at each one against the picture behind it, at the lightest and darkest that picture gets. Where the words are lost, they need a solid panel behind them, a dark wash over the image, or a different position.",
   },
   "link-in-text-block": {
     what: "Links inside a paragraph that may be marked only by their colour. The checker cannot tell whether the difference is strong enough to stand on its own.",
@@ -1121,7 +1121,7 @@ export const UNDECIDED_EXPLANATIONS: Record<string, { what: string; ask: string 
     ask: "Ask your developer whether the page works both ways up. Somebody whose phone is fixed to a wheelchair or a stand cannot turn it to suit the site.",
   },
   "interaction-no-status-region": {
-    what: "Nothing on this page is set aside for announcing a change. Pages update without reloading all the time: a filter narrows a list, a form says it saved. Somebody using a screen reader hears that only if the page has somewhere to say it.",
+    what: "Pages update without reloading — a filter narrows a list, a form says it saved. Nothing on this page is marked as the place where such a change is spoken. A screen reader stays silent while the page moves under it.",
     ask: "Ask your developer whether anything here updates without a page load. If it does, that update needs a live region so it is spoken as well as shown.",
   },
   "interaction-acts-on-change": {

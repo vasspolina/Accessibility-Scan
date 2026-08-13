@@ -5639,3 +5639,88 @@
   font-size: 15px;
   font-weight: 400;
 }
+
+/* ── The undecided checks, as the design's ledger ──────────────────────
+   Numbered rows under NO / WHAT THE CHECKER SAW / WHAT TO ASK FOR / CALL.
+   The rows are white pills; the call column stacks the fix-kind pill,
+   the count and the learn-more link. */
+.a11y-widget-biz .a11y-undecided-ledger {
+  display: grid;
+  gap: var(--gap-element);
+  min-width: 0;
+}
+
+.a11y-widget-biz .a11y-undecided-heads,
+.a11y-widget-biz .a11y-undecided-cell {
+  display: grid;
+  grid-template-columns: 2.5rem minmax(0, 1.1fr) minmax(0, 1.1fr) minmax(7.5rem, auto);
+  gap: var(--space-04) var(--space-06);
+  align-items: start;
+}
+
+.a11y-widget-biz .a11y-undecided-heads {
+  margin: 0;
+  max-width: none;
+  padding: 0 var(--space-06);
+  text-transform: uppercase;
+  font-size: 15px;
+  font-weight: 500;
+  color: var(--text-secondary);
+}
+
+.a11y-widget-biz .a11y-undecided-table {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: var(--gap-element);
+}
+
+.a11y-widget-biz .a11y-undecided-cell {
+  background: var(--white);
+  border-radius: var(--radius-lg);
+  padding: var(--space-06);
+}
+
+.a11y-widget-biz .a11y-undecided-no {
+  font-size: 20px;
+  color: var(--text-secondary);
+}
+
+.a11y-widget-biz .a11y-undecided-call {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--space-03);
+}
+
+/* The design's yellow marker on the check with the most places — the
+   brand yellow, which is what colours.css says it is for. */
+.a11y-widget-biz .a11y-undecided-most {
+  padding: 4px var(--space-04);
+  border-radius: var(--radius-pill);
+  background: var(--yellow-brand);
+  color: var(--gray-100);
+  font-size: 15px;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+/* One column below the panel breakpoint: four columns of prose cannot
+   share 400px. The number and call fold inline; the header strip goes,
+   because each cell carries its own labels for a listener anyway. */
+@container a11y-panel (width < 680px) {
+  .a11y-widget-biz .a11y-undecided-heads { display: none; }
+  .a11y-widget-biz .a11y-undecided-cell {
+    grid-template-columns: 2rem minmax(0, 1fr);
+  }
+  .a11y-widget-biz .a11y-undecided-cell > .a11y-undecided-ask,
+  .a11y-widget-biz .a11y-undecided-cell > .a11y-undecided-call {
+    grid-column: 2;
+  }
+  .a11y-widget-biz .a11y-undecided-call {
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: baseline;
+  }
+}

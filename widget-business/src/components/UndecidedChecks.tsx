@@ -58,40 +58,62 @@ export function UndecidedChecks({
            always was: a set of notes in no particular relation to each
            other. Now the semantics and the layout agree instead of one
            being undone by the other. */
-        <ul className="a11y-undecided-table" aria-label="What the checker couldn't decide">
-          {rows.map((r) => {
-            const e = undecidedExplanation(r.ruleId);
-            const fix = fixKindForRule(r.ruleId);
-            return (
-              <li key={r.ruleId} className="a11y-undecided-cell">
-                <span className="a11y-undecided-badge-row">
-                  <span className={`a11y-method-badge a11y-fix-${fix.key}`}>{fix.label}</span>
-                  <span className="a11y-undecided-places">
-                    {r.count} {r.count === 1 ? "place" : "places"}
+        /* The design's ledger: numbered rows under NO / WHAT THE CHECKER SAW /
+           WHAT TO ASK FOR / CALL. An <ol>, because the design numbers the
+           rows and an order implies an <ol> — the numbers are drawn by us so
+           the column header can sit over them, but the semantics agree. The
+           header strip is aria-hidden: a list has no real columns, and each
+           cell carries its own label for a listener. */
+        <div className="a11y-undecided-ledger">
+          <p className="a11y-undecided-heads" aria-hidden="true">
+            <span>No</span>
+            <span>What the checker saw</span>
+            <span>What to ask for</span>
+            <span>Call</span>
+          </p>
+          <ol className="a11y-undecided-table" aria-label="What the checker couldn't decide">
+            {rows.map((r, i) => {
+              const e = undecidedExplanation(r.ruleId);
+              const fix = fixKindForRule(r.ruleId);
+              const most =
+                rows.length > 1 && r.count === Math.max(...rows.map((x) => x.count)) && r.count > 1;
+              return (
+                <li key={r.ruleId} className="a11y-undecided-cell">
+                  <span className="a11y-undecided-no" aria-hidden="true">
+                    {i + 1}
                   </span>
-                </span>
-                <p className="a11y-undecided-what">{e ? e.what : r.help}</p>
-                {e && (
-                  <p className="a11y-undecided-ask">
-                    <strong>What to ask for:</strong> {e.ask}
-                  </p>
-                )}
-                {r.helpUrl && (
-                  <p>
-                    <a
-                      className="a11y-learn-more"
-                      href={r.helpUrl}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                    >
-                      Learn more about this check <span aria-hidden="true">↗</span>
-                    </a>
-                  </p>
-                )}
-              </li>
-            );
-          })}
-        </ul>
+                  <p className="a11y-undecided-what">{e ? e.what : r.help}</p>
+                  {e ? (
+                    <p className="a11y-undecided-ask">
+                      <strong className="a11y-sr-only">What to ask for: </strong>
+                      {e.ask}
+                    </p>
+                  ) : (
+                    <span className="a11y-undecided-ask" />
+                  )}
+                  <span className="a11y-undecided-call">
+                    <span className={`a11y-method-badge a11y-fix-${fix.key}`}>{fix.label}</span>
+                    {most && <span className="a11y-undecided-most">Most places</span>}
+                    <span className="a11y-undecided-places">
+                      {r.count} {r.count === 1 ? "place" : "places"}
+                    </span>
+                    {r.helpUrl && (
+                      <a
+                        className="a11y-learn-more"
+                        href={r.helpUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
+                        Learn more <span aria-hidden="true">↗</span>
+                        <span className="a11y-sr-only"> about this check</span>
+                      </a>
+                    )}
+                  </span>
+                </li>
+              );
+            })}
+          </ol>
+        </div>
       )}
     </section>
   );
