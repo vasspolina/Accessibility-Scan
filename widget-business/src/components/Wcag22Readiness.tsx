@@ -112,9 +112,11 @@ export function Wcag22Readiness({ readiness }: { readiness: Readiness }) {
           </ul>
           </div>
           </div>
-          <p>
-            These need a person, which is the same answer the checklist below gives.
-          </p>
+          {/* The closing "these need a person" sentence is gone, not moved.
+              It said exactly what the panel's lead already says above the
+              rows — and after the breakdown became two columns it trailed
+              the whole panel, pointing "below" at nothing. One sentence,
+              said once, above the things it describes. */}
 
           {/* The design system's item grid, not a table.
               WhatsNextPanel renders these as cards in an auto-fit grid, with

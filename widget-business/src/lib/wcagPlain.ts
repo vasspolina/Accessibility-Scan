@@ -194,7 +194,7 @@ export const PLAIN_RULE_EXPLANATIONS: Record<string, PlainRule> = {
       "WebAIM checks a million homepages every year. Low-contrast text is the most common failure it finds, year after year. Far more people see less sharply than a design team's monitors assume.",
     plain: "Text too faint to read",
     found: (n) =>
-      `${n} ${n === 1 ? "piece" : "pieces"} of text on this page ${n === 1 ? "sits" : "sit"} too close in colour to the background behind ${n === 1 ? "it" : "them"}. ${n === 1 ? "It is" : "Each one is"} listed below, and the technical version gives the measured ratio.`,
+      `${n} ${n === 1 ? "piece" : "pieces"} of text on this page ${n === 1 ? "sits" : "sit"} too close in colour to the background behind ${n === 1 ? "it" : "them"}. ${n === 1 ? "It is" : "Each one is"} listed under Affected elements, and the technical version gives the measured ratio.`,
     impact:
       "Hard to read in bright light, on a cheap screen, or with imperfect eyesight. Your message doesn't land.",
   },
