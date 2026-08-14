@@ -5715,3 +5715,28 @@
     align-items: baseline;
   }
 }
+
+/* The export action, the design's black pill. Hidden in print with the
+   rest of the interactive chrome — a printed report cannot click. */
+.a11y-widget-biz .a11y-undecided-export {
+  justify-self: start;
+  min-height: 48px;
+  padding: 0 var(--space-06);
+  border: 0;
+  border-radius: var(--radius-pill);
+  background: var(--text-primary);
+  color: var(--text-on-invert);
+  font-size: 18px;
+  font-weight: 500;
+  letter-spacing: 0.01em;
+  cursor: pointer;
+}
+.a11y-widget-biz .a11y-undecided-export:hover { background: var(--gray-80, #393939); }
+.a11y-widget-biz .a11y-undecided-export:focus-visible {
+  outline: 2px solid var(--focus, var(--text-primary));
+  outline-offset: 3px;
+}
+
+@media print {
+  .a11y-widget-biz .a11y-undecided-export { display: none; }
+}

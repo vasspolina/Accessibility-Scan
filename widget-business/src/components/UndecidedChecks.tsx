@@ -2,6 +2,28 @@ import { undecidedExplanation } from "../lib/wcagPlain";
 import { fixKindForRule } from "../lib/testMethod";
 import { DataTable } from "./DataTable";
 
+/* The design's "Export the list" made real. A CSV, because this section is
+   the one the owner hands to someone else: it opens in whatever spreadsheet
+   the designer or developer already lives in, one row per check, and the
+   columns are the ledger's own. The leading BOM is for Excel, which
+   otherwise reads UTF-8 as Latin-1 and mangles the em dashes. */
+function exportCsv(rows: Array<{ ruleId: string; count: number; help: string }>) {
+  const cell = (s: string) => `"${s.replace(/"/g, '""')}"`;
+  const lines = [["No", "What the checker saw", "What to ask for", "Call", "Places"]];
+  rows.forEach((r, i) => {
+    const e = undecidedExplanation(r.ruleId);
+    const fix = fixKindForRule(r.ruleId);
+    lines.push([String(i + 1), e ? e.what : r.help, e ? e.ask : "", fix.label, String(r.count)]);
+  });
+  const csv = "﻿" + lines.map((row) => row.map(cell).join(",")).join("\r\n");
+  const url = URL.createObjectURL(new Blob([csv], { type: "text/csv;charset=utf-8" }));
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = "for-your-designer-and-developer.csv";
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
 /**
  * What the engine checked and could not settle.
  *
@@ -113,6 +135,15 @@ export function UndecidedChecks({
               );
             })}
           </ol>
+          {/* Below the rows it exports, like the design draws it. The arrow
+              is decorative; the words are the name. */}
+          <button
+            type="button"
+            className="a11y-undecided-export"
+            onClick={() => exportCsv(rows)}
+          >
+            Export the list <span aria-hidden="true">{"\u2192"}</span>
+          </button>
         </div>
       )}
     </section>
