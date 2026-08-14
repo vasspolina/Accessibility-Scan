@@ -183,11 +183,33 @@ for (let i = 0; i < rules.length; i++) {
         (eb2.startsWith(ea2 + "-") || ea2.startsWith(eb2 + "-"))) continue;
     const shared = a.decls.filter((d) => b.decls.includes(d));
     if (!shared.length) continue;
-    problems.push({
-      kind: "specificity-tie",
-      detail: `${a.selector}${a.at ? `  [${a.at}]` : ""}\n      vs  ${b.selector}${b.at ? `  [${b.at}]` : ""}`,
-      why: `both (${specKey(a.selector)}), both set ${shared.join(", ")} — the later one wins on source order alone`,
-    });
+    /* A tie is only a hazard when the values DIVERGE — then source order
+       is silently choosing one meaning over another. When both rules set
+       the property to the identical value, order cannot change what
+       renders; the repeat may still be worth merging one day, but it is
+       housekeeping, not a fault, and burying 100+ of those in the same
+       count as the real conflicts is how the real ones went untriaged
+       for a week. (Deleting the "identical" ones is NOT safe — one may
+       be re-asserting after an at-rule override — which is why they are
+       counted apart rather than removed.) */
+    const valueOf = (r, prop) => {
+      const m = [...r.body.matchAll(new RegExp(String.raw`(?:^|;)\s*${prop}\s*:\s*([^;]+)`, "g"))];
+      return m.length ? m[m.length - 1][1].trim() : "";
+    };
+    const divergent = shared.filter((d) => valueOf(a, d) !== valueOf(b, d));
+    if (divergent.length) {
+      problems.push({
+        kind: "specificity-tie",
+        detail: `${a.selector}${a.at ? `  [${a.at}]` : ""}\n      vs  ${b.selector}${b.at ? `  [${b.at}]` : ""}`,
+        why: `both (${specKey(a.selector)}) — ${divergent.map((d) => `${d}: "${valueOf(a, d)}" vs "${valueOf(b, d)}"`).join("; ")} — the later wins on source order alone`,
+      });
+    } else {
+      problems.push({
+        kind: "specificity-tie-benign",
+        detail: `${a.selector}  =  ${b.selector}`,
+        why: `same value for ${shared.join(", ")}`,
+      });
+    }
   }
 }
 
