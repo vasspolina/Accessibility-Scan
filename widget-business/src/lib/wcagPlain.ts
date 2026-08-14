@@ -239,7 +239,7 @@ export const PLAIN_RULE_EXPLANATIONS: Record<string, PlainRule> = {
       "Unlabelled buttons sit near the top of WebAIM's annual survey of a million homepages, year after year. Usually they are icon-only controls that were obvious to whoever designed them.",
     plain: "Buttons have no label",
     found: (n) =>
-      `${n} ${n === 1 ? "button has" : "buttons have"} no label of any kind: no words inside, no aria-label. Nearly always an icon button, where the symbol carries the meaning and the code carries none of it.`,
+      `${n} ${n === 1 ? "button has" : "buttons have"} no label of any kind: no words inside and no name in the code. Nearly always an icon button, where the symbol carries the meaning and the code carries none of it.`,
     impact: "Nobody can tell what it does before clicking. A common reason people give up.",
   },
   label: {
@@ -936,7 +936,7 @@ export const PLAIN_RULE_FIXES: Record<string, string | string[]> = {
     "Use an element that genuinely is the thing it claims to be.",
     "A button for a button, a navigation block for navigation.",
   ],
-  "aria-allowed-attr": "Remove the aria-* attributes that do not apply to this element, or change the element to one that supports them.",
+  "aria-allowed-attr": "Remove the settings that do not belong on this kind of element, or change it to one they fit.",
   "aria-required-children": [
     "Give the component the parts its own type requires.",
     "A list needs list items inside it, not loose text.",
@@ -1009,7 +1009,7 @@ export const PLAIN_RULE_FIXES: Record<string, string | string[]> = {
   "page-has-heading-one": "Add one <h1> near the top that states what the page is about.",
   "empty-heading": "Put text in the heading, or remove the empty heading tag.",
   "link-in-text-block": "Give in-text links a second visual cue besides colour, usually an underline.",
-  "meta-viewport": "Remove user-scalable=no and any maximum-scale limit from the viewport meta tag so people can zoom.",
+  "meta-viewport": "Remove the setting that blocks zooming, so the page can grow to whatever size a reader needs.",
   "frame-title": "Give each embedded frame a name saying what it holds, such as \"Location map\".",
   "duplicate-id-active": "Make every id on the page unique. No two elements should share one.",
   list: [

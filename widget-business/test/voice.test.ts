@@ -61,6 +61,22 @@ describe("titles", () => {
   });
 });
 
+// The jargon tiers, at file scope because two corpora share them: the copy
+// maps below, and the JSX paragraphs at the foot of this file.
+const JARGON_EVERYWHERE =
+  /\bprogrammatically\b|\baccessible name\b|\blandmark region|\bDOM\b|\bmetadata\b|\bsemantic/i;
+const JARGON_OWNER = new RegExp(
+  [
+    JARGON_EVERYWHERE.source,
+    String.raw`\baria[-\s*]`,
+    String.raw`\bfocusable\b`,
+    String.raw`\bviewport\b`,
+    String.raw`\blive region\b`,
+    String.raw`\bassistive technolog`,
+  ].join("|"),
+  "i"
+);
+
 describe("all reader-facing copy", () => {
   // "Em dashes may replace parentheses, but never more than once per finding
   // block." Counted per string, which is stricter than per block and easier
@@ -82,10 +98,19 @@ describe("all reader-facing copy", () => {
   // term. Rule ids are keys, not copy, so they are never scanned here —
   // "scrollable-region-focusable" the id is fine; "focusable" the word in a
   // sentence a site owner reads is not.
+  //
+  // Two tiers, split on who the sentence is for. The undecided ASK is the
+  // sentence an owner relays to their developer, so naming the technical
+  // thing there is its job — "needs a live region" is precisely what to
+  // ask for. Everything else is read by the owner directly and gets the
+  // full list. Deliberately NOT banned anywhere: "markup" and "alt text",
+  // which the design project's own copy uses, and "contrast ratio", which
+  // is the product's subject and taught by the report itself.
   it("never ships untranslated jargon", () => {
-    const jargon = /\bprogrammatically\b|\baccessible name\b|\blandmark region/i;
     for (const [id, text] of allCopy()) {
-      expect(text, `${id} ships untranslated jargon`).not.toMatch(jargon);
+      const isAsk = id.startsWith("undecided:") && id.endsWith(".ask");
+      const banned = isAsk ? JARGON_EVERYWHERE : JARGON_OWNER;
+      expect(text, `${id} ships untranslated jargon`).not.toMatch(banned);
     }
   });
 
@@ -261,6 +286,14 @@ describe("prose typed straight into components", () => {
     // a different element, say — this test fails loudly instead of passing
     // silently while checking an empty list.
     expect(jsxParagraphs().length).toBeGreaterThan(20);
+  });
+
+  it("avoids jargon, same as the copy maps", () => {
+    for (const [file, text] of jsxParagraphs()) {
+      expect(text, `${file} ships untranslated jargon: "${text.slice(0, 60)}"`).not.toMatch(
+        JARGON_OWNER
+      );
+    }
   });
 
   it("keeps them to about three lines, same as everything else", () => {
