@@ -106,6 +106,25 @@ describe("all reader-facing copy", () => {
   // full list. Deliberately NOT banned anywhere: "markup" and "alt text",
   // which the design project's own copy uses, and "contrast ratio", which
   // is the product's subject and taught by the report itself.
+  // The professional-writing rubric's mechanical subset. Only the two
+  // categories that automate without judgement are here: the stock-vocab
+  // cluster and vague authorities. Negative parallelism ("not just X") is
+  // deliberately NOT encoded — a sweep found three uses and all three were
+  // the rubric's own allowed case, concrete distinctions ("not just the
+  // white ones"), so a ban would only ever flag legitimate sentences.
+  // "landscape" is likewise absent from the vocab list: in this product it
+  // is a screen orientation, not a metaphor.
+  it("never reaches for stock vocabulary or a vague authority", () => {
+    const stock =
+      /\bdelve\b|\bpivotal\b|\brobust\b|\btapestry\b|\bunderscores?\b|\bshowcases?\b|\bfosters?\b|\bintricate\b|\btestament\b|\bvibrant\b|\bseamless\b|\bleverages?\b|\bempowers?\b|\bunlocks?\b|\bgateway\b|\btransforms?\b|\belevates?\b|\bjourney\b|\bgame.chang/i;
+    const authority =
+      /\bexperts? (say|note|argue|agree)|\bobservers note\b|\bscholars\b|\bstudies (show|suggest)\b|\bmany believe\b/i;
+    for (const [id, text] of allCopy()) {
+      expect(text, `${id} reaches for stock vocabulary`).not.toMatch(stock);
+      expect(text, `${id} cites a vague authority`).not.toMatch(authority);
+    }
+  });
+
   it("never ships untranslated jargon", () => {
     for (const [id, text] of allCopy()) {
       const isAsk = id.startsWith("undecided:") && id.endsWith(".ask");
