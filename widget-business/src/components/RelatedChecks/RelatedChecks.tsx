@@ -57,7 +57,7 @@ export function RelatedChecks({
           >
             <span className="a11y-related-meta">
               {it.id} · Level {it.level}
-            </span>
+            </span>{" "}
             <span className="a11y-related-name">{it.name}</span>
             {/* `why` is what makes this a recommendation rather than a list
                 of homework — "Often fails wherever contrast does" is the

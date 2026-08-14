@@ -55,7 +55,7 @@ export function Stat({
         )}
       </div>
       <span>
-        <span className="a11y-slt-stat-n">{n}</span>
+        <span className="a11y-slt-stat-n">{n}</span>{" "}
         <span className="a11y-slt-stat-title">{title}</span>
       </span>
     </div>
@@ -82,8 +82,8 @@ export function SinceLastTime({
     <div className="a11y-slt">
       <section className="a11y-slt-band">
         <div className="a11y-slt-meta">
-          <span className="a11y-slt-eyebrow">Since last time</span>
-          <span className="a11y-slt-compared">{comparedWith}</span>
+          <span className="a11y-slt-eyebrow">Since last time</span>{" "}
+          <span className="a11y-slt-compared">{comparedWith}</span>{" "}
           <span className="a11y-slt-earlier">{earlierScans}</span>
           {onCompareAnother && (
             <button type="button" className="a11y-slt-action" onClick={onCompareAnother}>

@@ -48,8 +48,8 @@ export function FixCard({
     >
       <span className={`a11y-fixcard-tag a11y-fixcard-tone-${tone}`}>{label}</span>
       <div className="a11y-fixcard-stage" aria-hidden="true">
-        <span className="a11y-fixcard-before">{before}</span>
-        <span className="a11y-fixcard-arrow">→</span>
+        <span className="a11y-fixcard-before">{before}</span>{" "}
+        <span className="a11y-fixcard-arrow">→</span>{" "}
         <span className="a11y-fixcard-after">{after}</span>
       </div>
     </section>
