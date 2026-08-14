@@ -5673,3 +5673,87 @@
 @media print {
   .a11y-widget-biz .a11y-undecided-export { display: none; }
 }
+
+/* ── The principle-panel head, as the design card draws it ─────────────
+   Meta pills and the title on the left, the next-category chip on the
+   right, everything left-aligned — the centred arrangement it replaces
+   was ours, not the design's. */
+.a11y-widget-biz .a11y-pg-head {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: var(--space-05) var(--space-07);
+  align-items: start;
+}
+
+.a11y-widget-biz .a11y-pg-head .a11y-principle-head {
+  justify-content: flex-start;
+  margin: 0 0 var(--space-04);
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-03);
+}
+
+/* 14px is the sanctioned label size; --tone-ink on white is the tone's
+   own 100-step, 13.7:1 at its lightest (blue-100 on white). */
+.a11y-widget-biz .a11y-pg-pill {
+  padding: 3px var(--space-04);
+  border-radius: var(--radius-pill);
+  background: #ffffff;
+  color: var(--tone-ink, var(--text-primary));
+  font-size: 14px;
+  font-weight: 500;
+  letter-spacing: 0.01em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.a11y-widget-biz .a11y-pg-head .a11y-principle-title,
+.a11y-widget-biz .a11y-pg-head .a11y-principle-desc {
+  text-align: left;
+  margin-left: 0;
+  margin-right: 0;
+}
+.a11y-widget-biz .a11y-pg-head .a11y-principle-title { outline: none; }
+.a11y-widget-biz .a11y-pg-head .a11y-principle-title:focus-visible {
+  outline: 2px solid var(--tone-ink, var(--text-primary));
+  outline-offset: 4px;
+}
+
+.a11y-widget-biz .a11y-pg-links { margin: 0; }
+
+.a11y-widget-biz .a11y-pg-chip {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 2px;
+  padding: var(--space-04) var(--space-05);
+  border: 0;
+  border-radius: var(--radius-md);
+  background: #ffffff;
+  color: var(--tone-ink, var(--text-primary));
+  text-align: left;
+  font-size: 15px;
+  font-weight: 500;
+  letter-spacing: 0.01em;
+  cursor: pointer;
+}
+.a11y-widget-biz .a11y-pg-chip-eyebrow {
+  font-size: 14px;
+  font-weight: 500;
+  text-transform: uppercase;
+  color: var(--tone-strong, var(--text-secondary));
+}
+.a11y-widget-biz .a11y-pg-chip:focus-visible {
+  outline: 2px solid var(--tone-ink, var(--text-primary));
+  outline-offset: 2px;
+}
+
+/* One column below the panel breakpoint; the chip follows the titles. */
+@container a11y-panel (width < 680px) {
+  .a11y-widget-biz .a11y-pg-head { grid-template-columns: minmax(0, 1fr); }
+}
+
+/* A chip is a control; a printed report cannot press it. */
+@media print {
+  .a11y-widget-biz .a11y-pg-links { display: none; }
+}
