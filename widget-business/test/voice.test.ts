@@ -138,6 +138,34 @@ describe("all reader-facing copy", () => {
     }
   });
 
+  // The framing rubric's mechanical subset. "below is" is deliberately
+  // absent: the sweep's one hit was "the transcript below is read only",
+  // a positional reference the pattern cannot tell from a
+  // meta-announcement, so the pattern goes rather than the sentence.
+  it("never frames, announces or concludes for the sake of it", () => {
+    const framing =
+      /\bbefore (getting started|we begin|diving in)\b|\bit is important to understand\b|\bwhen it comes to\b|\bin today'?s\b|\bas you can see\b|\blet'?s (take a look|dive|explore)\b|\bin conclusion\b|\bin summary\b|\bto summari[sz]e\b|\boverall,|\bultimately,|\bat the end of the day\b|\bcan help (you|organi[sz]ations|teams)\b/i;
+    for (const [id, text] of allCopy()) {
+      expect(text, `${id} frames or concludes emptily`).not.toMatch(framing);
+    }
+  });
+
+  // No sentence said twice inside one string. Cross-card repetition is by
+  // design — every card is read standalone, so two video checks may both
+  // say what counts as captions — but a sentence repeated within a single
+  // block is the copy-paste artefact the framing rubric names.
+  it("never repeats a sentence inside one string", () => {
+    for (const [id, text] of allCopy()) {
+      const seen = new Set<string>();
+      for (const sent of text.split(/(?<=[.?!])\s+/)) {
+        const k = sent.trim().toLowerCase();
+        if (k.split(/\s+/).length < 6) continue;
+        expect(seen.has(k), `${id} repeats: "${sent.trim().slice(0, 60)}"`).toBe(false);
+        seen.add(k);
+      }
+    }
+  });
+
   it("never ships untranslated jargon", () => {
     for (const [id, text] of allCopy()) {
       const isAsk = id.startsWith("undecided:") && id.endsWith(".ask");
