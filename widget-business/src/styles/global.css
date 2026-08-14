@@ -5461,11 +5461,17 @@
    .a11y-next-crit-item painted 1 of the 6 white and left 5 on the purple
    — the class is carried only by the already-failing row, which a probe
    counting 6 rows by their text had hidden. */
+/* radius-lg, not the pill it shipped with. The pill was right while
+   these were one-line rows; on the live scan each carries a whyManual
+   paragraph, and a 999px radius on a card that tall curves the sides
+   into an egg with the title and the "Officially" line sitting on the
+   arc. A 20px radius reads the same on one line and on eight. Padding
+   up a step for the same reason: card content, not row content. */
 .a11y-widget-biz .a11y-w22-panel .a11y-next-list > li {
   background: #ffffff;
   color: var(--gray-100);
-  border-radius: var(--radius-pill);
-  padding: var(--space-05) var(--space-06);
+  border-radius: var(--radius-lg);
+  padding: var(--space-06);
 }
 
 /* Outline, no fill. Black for the ones a person has to judge, green only
