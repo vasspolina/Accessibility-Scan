@@ -222,7 +222,7 @@ export const PLAIN_RULE_EXPLANATIONS: Record<string, PlainRule> = {
   },
   "link-name": {
     research:
-      "Empty links are among the most common failures in WebAIM's annual survey of a million homepages. Screen reader users navigate by pulling up a list of links. One silent link costs more than it looks.",
+      "Empty links are among the most common failures in WebAIM's annual survey of a million homepages. Screen reader users navigate by pulling up a list of links. An empty link appears in that list as the word 'link' and nothing else.",
     plain: "Links have no readable text",
     found: (n) =>
       `${n} ${n === 1 ? "link has" : "links have"} no readable text inside — no words, no label, nothing to announce. ${n === 1 ? "Usually this is an icon, arrow or image used as a link." : "Usually these are icons, arrows or images used as links."} The picture carries the meaning and the code carries none of it.`,
@@ -265,7 +265,7 @@ export const PLAIN_RULE_EXPLANATIONS: Record<string, PlainRule> = {
   },
   "html-has-lang": {
     research:
-      "A missing document language is one of the few failures WebAIM finds on a majority of the web. It stays common largely because nobody notices it working badly.",
+      "A missing document language is one of the few failures WebAIM finds on a majority of the web. It stays common because the failure is silent: the page looks right, and only someone hearing it in the wrong voice meets the fault.",
     plain: "The page declares no language",
     found: () => `The page does not declare what language it is written in.`,
     impact: "People hear your content in the wrong accent, which is hard to follow.",

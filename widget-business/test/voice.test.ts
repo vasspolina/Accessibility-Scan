@@ -125,6 +125,19 @@ describe("all reader-facing copy", () => {
     }
   });
 
+  // The wordiness rubric's mechanical subset — hedges, bureaucratese and
+  // filler, none of which has a legitimate use in this register. The
+  // indirect-construction family ("reads as", "acts as") is not encoded:
+  // those phrases carry real meaning often enough that a ban would flag
+  // good sentences. Zero hits across the corpus when this was written.
+  it("never hedges, pads or goes bureaucratic", () => {
+    const wordy =
+      /\bmay potentially\b|\bit may be (worth|advisable)\b|\bcould possibly\b|\bit is (important|worth) (to note|noting)\b|\bit should be noted\b|\bin order to\b|\bat this point in time\b|\bcommence\b|\butili[sz]e\b|\bfacilitate\b|\bprior to\b|\bin the event that\b|\bstakeholders?\b|\bwith regard to\b|\bbasically\b|\bessentially\b|\bneedless to say\b/i;
+    for (const [id, text] of allCopy()) {
+      expect(text, `${id} hedges or pads`).not.toMatch(wordy);
+    }
+  });
+
   it("never ships untranslated jargon", () => {
     for (const [id, text] of allCopy()) {
       const isAsk = id.startsWith("undecided:") && id.endsWith(".ask");
