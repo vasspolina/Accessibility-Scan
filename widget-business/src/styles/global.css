@@ -5757,3 +5757,25 @@
 @media print {
   .a11y-widget-biz .a11y-pg-links { display: none; }
 }
+
+/* ── The open row joins its detail card ────────────────────────────────
+   Reported as "white circles behind paragraphs": with the row a full
+   pill and the card below it rounded, the table's row-gap ran purple
+   between two curved white edges — quarter-circle slivers down the
+   panel's flanks. An accordion join: while a row is open its bottom
+   corners square off, and the card's top corners square to meet it, so
+   the pair reads as one white slab with a straight seam. */
+.a11y-widget-biz .a11y-principle-group tbody tr:has(.a11y-dt-toggle[aria-expanded="true"]) > td:first-child {
+  border-end-start-radius: 0;
+}
+.a11y-widget-biz .a11y-principle-group tbody tr:has(.a11y-dt-toggle[aria-expanded="true"]) > td:last-child {
+  border-end-end-radius: 0;
+}
+.a11y-widget-biz .a11y-principle-group tbody tr:has(.a11y-dt-toggle[aria-expanded="true"]) > td {
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
+}
+.a11y-widget-biz .a11y-principle-group .a11y-dt-expand-row .a11y-fd {
+  border-start-start-radius: 0;
+  border-start-end-radius: 0;
+}
