@@ -169,6 +169,21 @@ const coOccur = new Set();
 const canMatchSameElement = (a, b) => {
   const ka = lastKey(a.selector), kb = lastKey(b.selector);
   const ca = classesOf(a.selector), cb = classesOf(b.selector);
+  /* Attribute variants are alternatives, not companions: [data-band="good"]
+     and [data-band="failing"] name states one element holds one at a time,
+     the same way the severity classes do. Same attribute, different value,
+     anywhere in the pair: disjoint. */
+  const attrsOf = (sel) => {
+    const m = {};
+    for (const a2 of sel.match(/\[([a-z-]+)="([^"]*)"\]/g) ?? []) {
+      const [, name, val] = a2.match(/\[([a-z-]+)="([^"]*)"\]/);
+      m[name] = val;
+    }
+    return m;
+  };
+  const aa2 = attrsOf(a.selector), ab2 = attrsOf(b.selector);
+  for (const name of Object.keys(aa2))
+    if (name in ab2 && aa2[name] !== ab2[name]) return false;
   if (ka === kb && ka.startsWith(".")) {
     /* Same class tail is not enough on its own: the ancestor contexts
        have to be compatible too. .a11y-severity-critical .a11y-method-badge
@@ -195,7 +210,27 @@ const canMatchSameElement = (a, b) => {
   }
   const ea = ca[ca.length - 1], eb = cb[cb.length - 1];
   if (!ea || !eb || ea === eb) return false;
-  return coOccur.has([ea, eb].sort().join("|"));
+  if (!coOccur.has([ea, eb].sort().join("|"))) return false;
+  /* Two refinements the newscan compound and the history button taught:
+     every class in a selector's FINAL compound must co-occur with the
+     other side's tail (markup that never puts .a11y-newscan-title on a
+     .a11y-hist-title element cannot produce the collision) — and
+     different-tail pairs get the same disjoint-ancestor test the
+     same-tail path has, so .a11y-conf-panel's button never collides
+     with .a11y-hist's. */
+  const tailClasses = (sel) => {
+    const tail = sel.split(/[\s>+~]+/).filter(Boolean).pop() || "";
+    return (tail.match(/\.([\w-]+)/g) ?? []).map((c) => c.slice(1));
+  };
+  for (const t of tailClasses(a.selector))
+    if (t !== eb && !coOccur.has([t, eb].sort().join("|"))) return false;
+  for (const t of tailClasses(b.selector))
+    if (t !== ea && !coOccur.has([t, ea].sort().join("|"))) return false;
+  const anc2 = (sel) => classesOf(sel).slice(0, -1);
+  const xa = anc2(a.selector).filter((c) => !anc2(b.selector).includes(c));
+  const xb = anc2(b.selector).filter((c) => !anc2(a.selector).includes(c));
+  if (xa.length && xb.length) return false;
+  return true;
 };
 
 for (let i = 0; i < rules.length; i++) {

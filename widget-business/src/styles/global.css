@@ -1605,8 +1605,7 @@
    both rules are (0,2,0), and section-title came later so it won at 40px. The
    display line is 144. Ordering decided this, not intent — so it is stated
    explicitly rather than left to whichever rule lands last. */
-.a11y-widget-biz .a11y-newscan-title.a11y-section-title,
-.a11y-widget-biz .a11y-newscan-title {
+.a11y-widget-biz .a11y-newscan-title.a11y-section-title {
   font-size: 144px;
   line-height: 1.2;
   font-weight: 500;
@@ -3064,7 +3063,9 @@
 /* The email row is a form now: a label, a field, and a send button inside
    the same pill the other actions use. */
 .a11y-widget-biz .a11y-ra-email-form { margin: 0; }
-.a11y-widget-biz .a11y-ra-email { flex-wrap: wrap; gap: var(--space-03); }
+/* Compound: the element is always .a11y-ra-item too, and the modifier
+   should beat the base by weight, not by which rule the file states last. */
+.a11y-widget-biz .a11y-ra-item.a11y-ra-email { flex-wrap: wrap; gap: var(--space-03); }
 .a11y-widget-biz .a11y-ra-email-label {
   flex: 0 0 auto;
   font-size: 18px;
@@ -3088,7 +3089,7 @@
   letter-spacing: 0.01em;
 }
 .a11y-widget-biz .a11y-ra-email-input::placeholder { color: var(--text-secondary); }
-.a11y-widget-biz .a11y-ra-send {
+.a11y-widget-biz .a11y-ra-tag.a11y-ra-send {
   flex: 0 0 auto;
   min-height: 40px;
   padding: 0 var(--space-05);
@@ -3527,7 +3528,7 @@
   background: var(--purple-20);
   color: var(--purple-100);          /* 13.71:1 on the ground */
 }
-.a11y-widget-biz .a11y-sum-grow { flex: 1; }
+.a11y-widget-biz .a11y-sum-panel.a11y-sum-grow { flex: 1; }
 .a11y-widget-biz .a11y-sum-eyebrow {
   margin: 0;
   padding: var(--space-02) 0 var(--space-04);
@@ -4027,8 +4028,7 @@
   /* Matches the (0,3,0) of the .a11y-newscan-title.a11y-section-title rule
      above — a single class would lose to it on specificity and silently do
      nothing, which is the trap that has bitten this stylesheet repeatedly. */
-  .a11y-widget-biz .a11y-newscan-title.a11y-section-title,
-  .a11y-widget-biz .a11y-newscan-title { font-size: 56px; line-height: 1.2; }
+  .a11y-widget-biz .a11y-newscan-title.a11y-section-title { font-size: 56px; line-height: 1.2; }
   /* And the pill wraps rather than holding its nowrap width. */
   .a11y-widget-biz .a11y-optioncard-meta { white-space: normal; }
 }
@@ -4199,7 +4199,7 @@
   color: var(--purple-60);        /* 4.91:1 */
   font-size: 32px; font-weight: 500; line-height: 1.2;
 }
-.a11y-widget-biz .a11y-legal-foot { padding: 0 var(--space-06); text-transform: none; }
+.a11y-widget-biz .a11y-legal-micro.a11y-legal-foot { padding: 0 var(--space-06); text-transform: none; }
 
 @media print {
   .a11y-widget-biz .a11y-legal-band,
