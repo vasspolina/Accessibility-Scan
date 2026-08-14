@@ -289,7 +289,6 @@
 
 .a11y-widget-biz .a11y-shell-nav {  }
 .a11y-widget-biz .a11y-shell-nav-link[aria-current]:not([aria-current="false"]) {
-  
 }
 
 /* Severity carried by a tint AND a word, never the tint alone. Each card takes
@@ -562,6 +561,10 @@
 /* .as-note -------------------------------------------------------------- */
 .a11y-widget-biz .a11y-note,
 .a11y-widget-biz .a11y-dofirst {
+  /* The gap stays: the lint pairs this against a later space-03 rule and
+     calls it dead, but the snapshot gate measured the note rows losing
+     their 12x16 the moment it was removed — the later rule does not
+     reach these elements. The gate outranks the lint. */
   display: flex; flex-wrap: wrap; align-items: flex-start; gap: var(--space-04) var(--space-05);
   padding: var(--space-05) var(--space-06); border-radius: var(--radius-md);
 }
@@ -648,7 +651,6 @@
   outline-offset: 3px;
 }
 .a11y-widget-biz .a11y-optioncard {
-   
     cursor: pointer;
 }
 .a11y-widget-biz .a11y-optioncard:has(> input:checked) {   }
@@ -892,24 +894,19 @@
 
 /* The number and its verdict share a baseline with a gap between them. */
 .a11y-widget-biz .a11y-dial {
-  
 }
 .a11y-widget-biz .a11y-dial-figure {
-  
   flex-wrap: wrap;
-  
 }
 
 /* The preview is a list of findings, not a bulleted paragraph. Each row is a
    pill, the finding, and its count — three columns, never run together. */
 .a11y-widget-biz .a11y-score-preview {
   
-  
 }
 
 .a11y-widget-biz .a11y-score-preview-row {
   grid-template-columns: auto minmax(0, 1fr) auto;
-  
   border-top: 1px solid var(--border-subtle);
 }
 /* Dead since these rows became separate tinted cards rather than a
@@ -1522,7 +1519,6 @@
 
 .a11y-widget-biz .a11y-ai-card {
   display: flex; align-items: center; flex-wrap: wrap; gap: var(--space-06);
-   
 }
 .a11y-widget-biz .a11y-ai-card-text { flex: 1 1 16rem; min-width: 0; }
 
@@ -1556,7 +1552,6 @@
 .a11y-widget-biz .a11y-url-form .a11y-input-shell > input {
   flex: 1;
   min-width: 0;
-  
   border: 0;
   line-height: 1.2;
   font-weight: 500;
@@ -1570,7 +1565,6 @@
 .a11y-widget-biz .a11y-url-form .a11y-input-shell > input:focus-visible { outline: 0; }
 .a11y-widget-biz .a11y-url-form .a11y-input-shell:focus-within {
   outline: 2px solid var(--focus);
-  
 }
 .a11y-widget-biz .a11y-url-form .a11y-input-label {
   font-size: 15px; font-weight: 500; color: var(--text-primary);
@@ -1585,9 +1579,7 @@
 
 /* The submit is the one filled action on the screen. */
 .a11y-widget-biz .a11y-url-submit .a11y-btn {
-  
   border: 0;
-  
   
   font-weight: 500;
 }
@@ -1687,7 +1679,6 @@
 
 /* Caps, centred, tracked out — the panel names itself. */
 .a11y-widget-biz .a11y-login-legend {
-  
   padding: 0;
   text-align: center;
   font-weight: 500;
@@ -1713,7 +1704,6 @@
   flex-direction: column;
 }
 .a11y-widget-biz .a11y-login-fieldset label {
-  font-size: 15px;
   font-weight: 500;
 }
 .a11y-widget-biz .a11y-login-fieldset input {
@@ -1723,7 +1713,6 @@
   border: 0;
   background: var(--white);
   color: var(--gray-100);
-  font-size: 18px;
 }
 
 .a11y-widget-biz .a11y-login-ready { font-size: 15px; }
@@ -1902,7 +1891,6 @@
    (0,3,1), because :not() contributes its argument's specificity — so it beat
    a plain (0,3,0). Matching type + two classes to tie, and landing later. */
 .a11y-widget-biz .a11y-login-fieldset button.a11y-login-close {
-  
 }
 
 /* Black pill, white cross at three times the size. The glyph drives the
@@ -1910,7 +1898,6 @@
 .a11y-widget-biz .a11y-login-fieldset button.a11y-login-close {
   background: var(--gray-100);
   color: var(--white);
-  
                 /* 3x the 18 it was */
   line-height: 1.2;
                      /* half its height, so it straddles the edge */
@@ -2071,7 +2058,6 @@
 /* Button and note on one row, the note reading beside the action rather than
    over it. DOM order matches: button, then the line that qualifies it. */
 .a11y-widget-biz .a11y-url-submit {
-  
 }
 
 /* Half the gap between the helper line and the action beneath it. The step
@@ -2082,7 +2068,6 @@
 /* Beside, not above. */
 .a11y-widget-biz .a11y-url-submit {
   flex-direction: row;
-  
 }
 
 /* The empty error region costs a flex gap even at zero height, which is most
@@ -2585,7 +2570,6 @@
   align-self: start;
   overflow-y: auto;
   overscroll-behavior: contain;
-  
 }
 .a11y-widget-biz .a11y-shell-nav ul {
   display: flex;
@@ -2595,12 +2579,10 @@
   list-style: none;
 }
 .a11y-widget-biz .a11y-shell-nav-link {
-  
   /* 15px, not 18: this is a label, and at 18 half the section names wrapped
      to three lines in a 212px rail. The report's own copy is unchanged —
      shortening the labels would have been an editorial decision, and this
      is a typographic one. */
-  
 }
 .a11y-widget-biz .a11y-shell-nav-link:hover {  }
 /* The current item carries a rule as well as a tint, so it survives being
@@ -2655,10 +2637,8 @@
 .a11y-widget-biz .a11y-shell-nav-head { margin-bottom: var(--space-06); }
 .a11y-widget-biz .a11y-shell-nav-heading {
   margin: 0;
-  
 }
 .a11y-widget-biz .a11y-shell-nav-count {
-  
 }
 .a11y-widget-biz .a11y-shell-nav ul { gap: var(--space-03); }
 .a11y-widget-biz .a11y-shell-nav-link {
@@ -2693,7 +2673,6 @@
      comes back when the list is open, where it has something to hold — and
      where the white pills need a ground to read against. */
   .a11y-widget-biz .a11y-shell-nav {
-    
   }
   .a11y-widget-biz .a11y-shell-nav:has(ul[data-open="true"]) {
     padding: var(--space-04);
@@ -2909,8 +2888,7 @@
 .a11y-widget-biz .a11y-topnav-brand {
   flex: 0 0 auto;
   border-radius: var(--radius-pill);
-  background: var(--white);
-  font-size: 18px; font-weight: 500;
+  background: var(--white); font-weight: 500;
   white-space: nowrap;
 }
 .a11y-widget-biz .a11y-topnav-links {
@@ -2922,7 +2900,6 @@
   padding: var(--space-03) var(--space-02);
   color: var(--text-primary);
   text-decoration: none;
-  font-size: 18px;
   border-radius: var(--radius-sm);
 }
 .a11y-widget-biz .a11y-topnav-link:hover { text-decoration: underline; text-underline-offset: 3px; }
@@ -4954,13 +4931,21 @@
   font-size: 18px;
   color: var(--text-on-invert);        /* 5.00:1 */
 }
-/* The toggle is the one white pill on the panel. */
-.a11y-widget-biz .a11y-w22-panel .a11y-w22-toggle {
+/* The toggle is the one white pill on the panel. Compounded with the
+   accordion class its element also carries, because the generic
+   accordion hover (brown-10) tied with this white at equal weight and
+   lost on order — which silently killed the toggle's hover feedback.
+   At (0,4,0) the base wins by weight, and the hover below restores the
+   feedback the tie had eaten. */
+.a11y-widget-biz .a11y-w22-panel .a11y-accordion-head.a11y-w22-toggle {
   width: 100%;
   border: 0;
   border-radius: var(--radius-pill);
   background: var(--white);
   color: var(--text-primary);
+}
+.a11y-widget-biz .a11y-w22-panel .a11y-accordion-head.a11y-w22-toggle:hover {
+  background: var(--brown-10);
 }
 /* The two caveats read as the panel's own columns rather than as amber
    notes floating on purple. */
