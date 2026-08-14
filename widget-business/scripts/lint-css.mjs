@@ -25,6 +25,23 @@
  *          values carrying more than one a11y- class
  *
  * Run: npm run lint:css
+ *
+ * On the remaining specificity ties (41 at this writing): an automated
+ * cross-group surgery was attempted twice on 14 Aug 2026 — split the comma
+ * groups a tied selector shares, then delete earlier-occurrence shadowed
+ * declarations — and rejected twice by its own gate. Verdict for whoever
+ * tries next: (1) the computed-style snapshot found a deterministic 2-diff
+ * on .a11y-shell-nav-toggle at 600/414 that four hypotheses failed to
+ * explain, and an unexplained diff in a "provable" transform means the
+ * implementation diverges from the proof; (2) even at zero diffs the
+ * output mutilates this file — comments triplicated into split copies,
+ * prose orphaned from deleted declarations — and the comments here are
+ * load-bearing; (3) deleting emptied rules by regex risks mis-splices
+ * that CSS Nesting now parses SILENTLY instead of erroring, which matches
+ * the failure signature exactly. The 41 want hands, not a codemod: each
+ * entry prints its two values, and the snapshot harness
+ * (style-snapshot pattern: computed styles only, never geometry, clean
+ * server start per side) is the gate any hand-batch must pass.
  */
 import fs from "node:fs";
 import path from "node:path";
