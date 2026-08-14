@@ -152,7 +152,25 @@ const coOccur = new Set();
 const canMatchSameElement = (a, b) => {
   const ka = lastKey(a.selector), kb = lastKey(b.selector);
   const ca = classesOf(a.selector), cb = classesOf(b.selector);
-  if (ka === kb && ka.startsWith(".")) return true;
+  if (ka === kb && ka.startsWith(".")) {
+    /* Same class tail is not enough on its own: the ancestor contexts
+       have to be compatible too. .a11y-severity-critical .a11y-method-badge
+       and .a11y-severity-moderate .a11y-method-badge share a tail and can
+       never share an element — a row carries one severity — and
+       .a11y-stmt .a11y-conf-caveat never sits inside .a11y-w22-panel.
+       When both sides carry ancestor classes and the sets share nothing,
+       the pair is treated as disjoint. This errs toward silence for that
+       one shape: nested sections could in principle make such a pair
+       real, but every flagged instance of it in this file was a variant
+       or a sibling section, and nine phantom conflicts buried the real
+       list. Same-tail pairs with NO differing ancestors still flag. */
+    const anc = (sel) => classesOf(sel).slice(0, -1);
+    const aa = anc(a.selector), ab = anc(b.selector);
+    const onlyA = aa.filter((c) => !ab.includes(c));
+    const onlyB = ab.filter((c) => !aa.includes(c));
+    if (onlyA.length && onlyB.length) return false;
+    return true;
+  }
   if (ka === kb) {
     /* Same element tail: only if neither carries a class the other lacks,
        i.e. one context contains the other. */
