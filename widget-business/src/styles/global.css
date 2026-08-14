@@ -89,28 +89,24 @@
   align-items: start;
 }
 
-/* Section: head beside content. Needs .a11y-section-head to group the head —
-   grid rows are shared between columns, so loose head siblings get pushed
-   below a tall content item. */
-.a11y-widget-biz .a11y-section:has(> .a11y-section-head),
-.a11y-widget-biz .a11y-section:has(> .a11y-section-title) {
-  display: grid;
-  grid-template-columns: var(--head-col) var(--content-col);
-  grid-auto-flow: row dense;
-  gap: var(--space-06) var(--space-08);
-  align-items: start;
-}
+/* Section: head beside content — the two-column grid, PRESERVED AS
+   REFERENCE, no longer in the cascade. Its successor (the flex section
+   further down) said "overrides the earlier rules rather than deleting
+   them, so the two-column version stays visible"; measured 14 Aug 2026,
+   every section renders flex, so the visible copy moved into this
+   comment and the dead rules left the cascade. The shape, should it
+   return:
 
-.a11y-widget-biz .a11y-section > .a11y-section-head,
-.a11y-widget-biz .a11y-section > .a11y-section-title,
-.a11y-widget-biz .a11y-section > .a11y-section-eyebrow,
-.a11y-widget-biz .a11y-section > .a11y-section-desc { grid-column: 1; }
-
-.a11y-widget-biz .a11y-section:has(> .a11y-section-head) > *:not(.a11y-section-head),
-.a11y-widget-biz .a11y-section:has(> .a11y-section-title)
-  > *:not(.a11y-section-head):not(.a11y-section-title):not(.a11y-section-eyebrow):not(.a11y-section-desc) {
-  grid-column: 2;
-}
+   .a11y-section:has(> .a11y-section-head),
+   .a11y-section:has(> .a11y-section-title) {
+     display: grid;
+     grid-template-columns: var(--head-col) var(--content-col);
+     grid-auto-flow: row dense;
+     gap: var(--space-06) var(--space-08);
+     align-items: start;
+   }
+   head/title/eyebrow/desc { grid-column: 1; } everything else { grid-column: 2; }
+   collapsing to 1fr at a11y-panel <= 712px. */
 
 /* Card grids. */
 .a11y-widget-biz .a11y-findings-list,
@@ -169,18 +165,10 @@
 /* 712, not 1040. Same moment, restated: a11y-panel used to measure the whole
    widget, and 1040 there was 712 of content once the rail (254), its gutter
    (40) and the outer padding (34) came off. Measured, not derived twice. */
-@container a11y-panel (max-width: 712px) {
-  .a11y-widget-biz .a11y-section:has(> .a11y-section-head),
-  .a11y-widget-biz .a11y-section:has(> .a11y-section-title) {
-    grid-template-columns: 1fr;
-  }
-  .a11y-widget-biz .a11y-section > * { grid-column: 1; }
-}
+/* (The 712px collapse of that grid lived here; it moved into the
+   reference comment with the rules it overrode.) */
 
 @container a11y-shell (max-width: 760px) {
-  .a11y-widget-biz .a11y-shell-with-nav .a11y-shell-main {
-  }
-  .a11y-widget-biz .a11y-section > * { grid-column: 1; }
   .a11y-widget-biz .a11y-widget-inner { padding: var(--space-07) var(--space-06); }
 }
 
@@ -417,7 +405,9 @@
 .a11y-widget-biz h3, .a11y-widget-biz h4,
 .a11y-widget-biz h5, .a11y-widget-biz h6 { font-size: 20px; line-height: 1.2;  font-weight: 500; margin: 0; }
 
-.a11y-widget-biz .a11y-newscan-title { font-size: 144px; line-height: 1.2; font-weight: 500; }
+/* Compound, so the display size beats .a11y-section-title (the element
+   carries both classes) by specificity rather than by file position. */
+.a11y-widget-biz .a11y-newscan-title.a11y-section-title { font-size: 144px; line-height: 1.2; font-weight: 500; }
 .a11y-widget-biz .a11y-section-title  { font-size: 40px; line-height: 1.2; font-weight: 500; text-wrap: balance; }
 .a11y-widget-biz .a11y-section-eyebrow,
 .a11y-widget-biz .a11y-section-count  { font-size: 15px; line-height: 1.2;  font-weight: 500; }
@@ -502,17 +492,15 @@
   display: inline-flex; align-items: center; align-self: flex-start;
   min-height: var(--target-min); padding: 2px 12px;
   border: 0; border-radius: var(--radius-pill);
-  font-size: 15px; font-weight: 500; white-space: nowrap;
-  /* A pill may not be wider than what holds it. nowrap keeps the short ones on
-     one line, but without this a long label just spills — a fix-kind badge was
-     hanging 23px past the panel in a narrow column. */
-  max-width: 100%;
+  font-size: 15px; font-weight: 500;
+  /* Wrapping and width live with the later pill group ("a pill must never
+     wrap inside its own radius") and the table-scoped min-content rule —
+     this block once said nowrap and max-width: 100% too, and losing that
+     argument to the later rules by source order was a tie the lint kept
+     reporting. The box stays here; the fitting policy lives in one place. */
 }
 
-/* The fix-kind badge carries the longest labels of the set ("Content fix"), so
-   it wraps instead of spilling when the column will not take it. The others
-   are short enough that nowrap always fits. */
-.a11y-widget-biz .a11y-method-badge { white-space: normal; overflow-wrap: anywhere; }
+.a11y-widget-biz .a11y-method-badge { overflow-wrap: anywhere; }
 
 .a11y-widget-biz .a11y-tag { background: var(--gray-20); color: var(--text-primary); }
 .a11y-widget-biz .a11y-count-chip {
@@ -817,8 +805,10 @@
    report's widest content is tables, not prose. Head above content, full
    width, is the arrangement this content actually wants.
 
-   Overrides the earlier rules rather than deleting them, so the two-column
-   version stays visible in the file for whoever revisits it.
+   The two-column version it replaced is preserved as a commented
+   reference where it stood ("Section: head beside content"), out of the
+   cascade since 14 Aug 2026 — it had been dead under these rules, and a
+   dead rule that still parses is a specificity tie waiting to mislead.
    ========================================================================== */
 
 .a11y-widget-biz .a11y-section,
@@ -4421,7 +4411,13 @@
       its column, not doubled up." It had no rule, so it was never hidden
       and every row showed the badge twice — the doubling its own comment
       predicted. */
-.a11y-widget-biz .a11y-print-cards { display: none; }
+/* The class doubled against itself: same elements matched — App.tsx
+   carries the bare class on professional mode's screen-hidden wrapper,
+   so compounding with .a11y-findings-list broke that one (the gate
+   caught business content surfacing inside the professional view) — but
+   specificity rises to (0,3,0), so this and the print rule below beat
+   the findings-list grid by weight rather than by file position. */
+.a11y-widget-biz .a11y-print-cards.a11y-print-cards { display: none; }
 .a11y-widget-biz .a11y-finding-sev-fold { display: none; }
 
 .a11y-widget-biz .a11y-finding-issue {
@@ -4442,7 +4438,7 @@
 /* On paper it is the reverse: the cards are the report, and the table's
    collapsed rows would print as headings with nothing under them. */
 @media print {
-  .a11y-widget-biz .a11y-print-cards { display: grid; }
+  .a11y-widget-biz .a11y-print-cards.a11y-print-cards { display: grid; }
   .a11y-widget-biz .a11y-pro-table,
   .a11y-widget-biz .a11y-findings-table { display: none; }
 }
