@@ -5512,38 +5512,47 @@
    nothing else. */
 .a11y-widget-biz, .a11y-widget-biz * { letter-spacing: 0.01em; }
 
-/* ── The screen reader transcript, as the kit draws it ─────────────────
-   A black panel; each announcement a row you can play from; the line
-   being read aloud inverted to white. On-dark inks are the fixed
-   on-invert tokens, which survive the dark-theme flip — gray-30 is 9.9:1
-   on this ground, gray-40 7.6:1. */
-.a11y-widget-biz .a11y-sr-panel {
-  background: var(--gray-100);
-  color: var(--text-on-invert);
+/* ── The screen reader log, as the design's light card ─────────────────
+   Supersedes the black kit panel: the design project's later "Screen
+   reader panel" card draws the transcript as an announcement log on the
+   report's own ground — a grey card, white pill rows, the silent lines
+   tinted purple with their note inline, and the reading-order caveat as
+   the card's foot. Play is the black pill of the control pair; the
+   filter is the outlined chip beside it, a real checkbox under a pill
+   skin so the semantics stay a checkbox while the skin joins the
+   report's toggle language. */
+.a11y-widget-biz .a11y-sr-log-title {
+  margin: 0 0 var(--space-04);
+  max-width: none;   /* a label, not prose */
+  font-size: 18px;
+  font-weight: 500;
+}
+
+.a11y-widget-biz .a11y-sr-log {
+  background: var(--layer-01);
   border-radius: var(--radius-lg);
-  padding: var(--space-06);
+  padding: var(--space-05);
   display: grid;
-  gap: var(--space-05);
+  gap: var(--space-03);
   min-width: 0;
 }
 
-.a11y-widget-biz .a11y-sr-panel-head {
+.a11y-widget-biz .a11y-sr-log-heads {
   margin: 0;
-  max-width: none;   /* a label, not prose — the measure has clipped three of these */
-  display: flex;
-  flex-wrap: wrap;
-  align-items: baseline;
-  gap: var(--space-03) var(--space-05);
-  font-size: 15px;
+  max-width: none;
+  display: grid;
+  grid-template-columns: 2.5rem minmax(0, 1fr) auto;
+  gap: var(--space-04);
+  padding: 0 var(--space-05);
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text-secondary);
 }
-.a11y-widget-biz .a11y-sr-panel-head > strong { font-weight: 500; }
-.a11y-widget-biz .a11y-sr-panel-meta { color: var(--text-on-invert-secondary); }
-.a11y-widget-biz .a11y-sr-panel-pos { margin-left: auto; }
 
-/* The kit caps the list and lets it scroll — 120 rows of transcript must
-   not be 120 rows of page. A scrollable region a Tab press cannot enter
-   is a finding this product raises, so the rows themselves being buttons
-   is what keeps it reachable. */
+/* The kit capped the list and let it scroll — 120 rows of transcript
+   must not be 120 rows of page. The rows being buttons is what keeps a
+   scrollable region reachable by keyboard, a finding this product
+   raises on other people's pages. */
 .a11y-widget-biz .a11y-sr-list {
   margin: 0;
   padding: 0;
@@ -5560,17 +5569,17 @@
   min-height: 44px;
   margin: 0;
   max-width: none;
-  display: flex;
-  flex-wrap: wrap;
+  display: grid;
+  grid-template-columns: 2.5rem minmax(0, 1fr) auto;
   align-items: baseline;
-  gap: var(--space-03) var(--space-04);
-  padding: var(--space-04) var(--space-05);
+  gap: var(--space-04);
+  padding: var(--space-03) var(--space-05);
   border: 0;
-  border-radius: var(--radius-md);
-  background: none;
-  color: var(--text-on-invert);
+  border-radius: var(--radius-pill);
+  background: var(--white);
+  color: var(--text-primary);
   text-align: left;
-  font-size: 18px;
+  font-size: 15px;
   font-weight: 500;
   line-height: 1.2;
   letter-spacing: 0.01em;
@@ -5578,46 +5587,99 @@
 }
 .a11y-widget-biz p.a11y-sr-row { cursor: default; }
 
-.a11y-widget-biz .a11y-sr-row[aria-current="true"] {
-  background: #ffffff;
-  color: var(--gray-100);
+/* The silent line wears the tint, its note beside it — never the tint
+   alone: the note text is the non-colour cue. purple-100 on purple-20
+   is 13.71:1. :not(aria-current) states the precedence outright: a
+   silent line being read aloud is playing first, by rule rather than by
+   which block the file happens to state last. */
+.a11y-widget-biz .a11y-sr-row[data-issue]:not([aria-current="true"]) {
+  background: var(--purple-20);
+  color: var(--purple-100);
 }
 
-/* White on black needs a ring that is not the ink it sits on. */
-.a11y-widget-biz .a11y-sr-row:focus-visible {
-  outline: 2px solid #ffffff;
-  outline-offset: -2px;
+/* The line being read aloud inverts, matching the play pill. */
+.a11y-widget-biz .a11y-sr-row[aria-current="true"] {
+  background: var(--text-primary);
+  color: var(--text-on-invert);
 }
-.a11y-widget-biz .a11y-sr-row[aria-current="true"]:focus-visible {
-  outline-color: var(--gray-100);
+
+.a11y-widget-biz .a11y-sr-row:focus-visible {
+  outline: 2px solid var(--focus, var(--text-primary));
+  outline-offset: 2px;
 }
 
 .a11y-widget-biz .a11y-sr-num {
-  flex: 0 0 2rem;
-  font-size: 15px;
+  font-size: 14px;
   font-weight: 400;
+  color: var(--text-secondary);
+}
+.a11y-widget-biz .a11y-sr-row[data-issue]:not([aria-current="true"]) .a11y-sr-num { color: var(--purple-100); }
+.a11y-widget-biz .a11y-sr-row[aria-current="true"] .a11y-sr-num {
   color: var(--text-on-invert-secondary);
 }
-.a11y-widget-biz .a11y-sr-row[aria-current="true"] .a11y-sr-num {
+
+.a11y-widget-biz .a11y-sr-line-text { min-width: 0; }
+
+.a11y-widget-biz .a11y-sr-issue {
+  justify-self: end;
+  font-size: 14px;
+  font-weight: 400;
+}
+
+.a11y-widget-biz .a11y-sr-log-foot {
+  margin: 0;
+  max-width: none;
+  padding: var(--space-02) var(--space-05) 0;
+  font-size: 14px;
   color: var(--text-secondary);
 }
 
-.a11y-widget-biz .a11y-sr-line-text {
-  flex: 1 1 14rem;
-  min-width: 0;
+/* The control pair. Play fills black; its outlined base elsewhere is
+   untouched (the statement section keeps its own variant). */
+.a11y-widget-biz .a11y-sr .a11y-sr-play {
+  border-color: var(--text-primary);
+  background: var(--text-primary);
+  color: var(--text-on-invert);
+}
+.a11y-widget-biz .a11y-sr .a11y-sr-play:hover {
+  background: var(--gray-80, #393939);
+  color: var(--text-on-invert);
 }
 
-/* The fault marker, in the on-dark severity pair Carbon reserves for
-   exactly this ground: red-20 ink on red-70 fill. */
-.a11y-widget-biz .a11y-sr-panel .a11y-sr-issue {
-  flex: 0 0 auto;
-  margin-left: auto;
-  padding: 2px 10px;
+/* The filter chip. The native checkbox stays in the tree — clipped, not
+   display:none, so it keeps its role and its keyboard — and the label
+   is the pill. Checked fills black like Play: fill plus weight, never
+   colour alone. */
+.a11y-widget-biz .a11y-sr .a11y-ai-toggle {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  min-height: 40px;
+  padding: 0 var(--space-05);
+  border: 1px solid var(--gray-60);
   border-radius: var(--radius-pill);
-  background: var(--severity-critical-ondark-bg, #a2191f);
-  color: var(--severity-critical-ondark-text, #ffd7d9);
+  background: var(--white);
+  color: var(--text-primary);
   font-size: 15px;
-  font-weight: 400;
+  font-weight: 500;
+  cursor: pointer;
+}
+.a11y-widget-biz .a11y-sr .a11y-ai-toggle > input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: 0;
+  opacity: 0;
+  pointer-events: none;
+}
+.a11y-widget-biz .a11y-sr .a11y-ai-toggle:has(> input:checked) {
+  border-color: var(--text-primary);
+  background: var(--text-primary);
+  color: var(--text-on-invert);
+}
+.a11y-widget-biz .a11y-sr .a11y-ai-toggle:has(> input:focus-visible) {
+  outline: 2px solid var(--focus, var(--text-primary));
+  outline-offset: 2px;
 }
 
 /* ── The undecided checks, as the design's ledger ──────────────────────

@@ -232,22 +232,21 @@ export function ScreenReaderPreview({ script }: { script: ScreenReaderScript }) 
         </button>
       )}
 
-      {/* The design's transcript: a black panel, each announcement a row you
-          can play from, the line being read aloud inverted to white. It was
-          a DataTable before — but a transcript is a reading order, not a
-          record set, and three of the table's affordances (sortable-looking
-          headers, a caption, column semantics) promised structure the
-          content doesn't have. The kit's own ScreenReaderPreview is this
-          panel, and the row markup keeps every behaviour the table had:
-          play-from-here is still the line itself, purpose in the accessible
-          name, current row marked aria-current. */}
-      <div className="a11y-sr-panel">
-        <p className="a11y-sr-panel-head">
-          <strong>What a screen reader announces</strong>
-          <span className="a11y-sr-panel-meta">reading order, not visual order</span>
-          <span className="a11y-sr-panel-meta a11y-sr-panel-pos">
-            {playing && current !== null ? `${current + 1} of ${lines.length}` : ""}
-          </span>
+      {/* The design's announcement log: a light card on the report's own
+          ground, white pill rows, the silent lines tinted purple with
+          their note inline. Supersedes the black kit panel — the design
+          project's later "Screen reader panel" card is the current
+          reference. Every behaviour of the panel it replaces survives:
+          play-from-here is still the row itself with its purpose in the
+          accessible name, aria-current marks the line being read, and
+          the header strip is aria-hidden because a list has no columns
+          for a listener. */}
+      <p className="a11y-sr-log-title">What a screen reader announces, in reading order</p>
+      <div className="a11y-sr-log">
+        <p className="a11y-sr-log-heads" aria-hidden="true">
+          <span>#</span>
+          <span>What you&rsquo;d hear</span>
+          <span>Note</span>
         </p>
         <ol className="a11y-sr-list" aria-label="Announcement order">
           {visible.map(({ line, index: i }) => (
@@ -275,6 +274,7 @@ export function ScreenReaderPreview({ script }: { script: ScreenReaderScript }) 
             </li>
           ))}
         </ol>
+        <p className="a11y-sr-log-foot">Reading order, not visual order.</p>
       </div>
 
       {/* A toggle rather than a button that removes itself: a control that
