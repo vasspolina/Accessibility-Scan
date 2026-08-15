@@ -520,19 +520,34 @@
 .a11y-widget-biz .a11y-fix-document { background: var(--gray-20); color: var(--text-primary); }
 
 /* .as-pill — tabs and filters are one control here ---------------------- */
-.a11y-widget-biz .a11y-tablist,
-.a11y-widget-biz .a11y-filter { display: flex; flex-wrap: wrap; gap: var(--space-03); border: 0; }
-.a11y-widget-biz .a11y-tab,
-.a11y-widget-biz .a11y-filter-btn {
+.a11y-widget-biz .a11y-tablist { display: flex; flex-wrap: wrap; gap: var(--space-03); border: 0; }
+/* Same box as the tablist, but the filter's gap lives with the fix-kind
+   chip row further down (--space-04), which always won it by source order. */
+.a11y-widget-biz .a11y-filter { display: flex; flex-wrap: wrap; border: 0; }
+.a11y-widget-biz .a11y-tab {
   min-height: var(--target-min); padding: var(--space-03) var(--space-05);
   border: 1px solid var(--border-subtle); border-radius: var(--radius-pill);
   background: var(--layer-02); color: var(--text-primary);
   font-size: 15px; font-weight: 500; line-height: 1.2; cursor: pointer;
 }
-.a11y-widget-biz .a11y-tab[aria-selected="true"],
-.a11y-widget-biz .a11y-filter-btn[aria-pressed="true"] {
+/* Split from the .a11y-tab body above. The chip row ("The fix-kind
+   filter, as the design's chip row") re-cuts the filter's box at the same
+   specificity later — 40px min-height, flat padding, white ground, 18px —
+   so those four were dead here and source order was deciding. What stays
+   is what that rule does not set: the pill skeleton, and the 500 weight
+   and 1.2 line-height the chips still take from this block. */
+.a11y-widget-biz .a11y-filter-btn {
+  border: 1px solid var(--border-subtle); border-radius: var(--radius-pill);
+  color: var(--text-primary);
+  font-weight: 500; line-height: 1.2; cursor: pointer;
+}
+.a11y-widget-biz .a11y-tab[aria-selected="true"] {
   background: var(--text-primary); border-color: var(--text-primary); color: var(--white);
 }
+/* The pressed filter chip left this group: the later chip-row rule sets all
+   three of these on it (white ground, purple-70 outline) at the same
+   specificity, so this body was losing on source order alone. Its pressed
+   state lives with the chip row now; tabs keep the fill. */
 
 /* .as-table — rows as spaced cards -------------------------------------- */
 .a11y-widget-biz .a11y-datatable { border-collapse: separate; border-spacing: 0 var(--space-03); }
@@ -559,13 +574,21 @@
 .a11y-widget-biz .a11y-issue-row-count { margin-left: auto; font-size: 28px; line-height: 1.2; font-weight: 500; }
 
 /* .as-note -------------------------------------------------------------- */
-.a11y-widget-biz .a11y-note,
-.a11y-widget-biz .a11y-dofirst {
-  /* The gap stays: the lint pairs this against a later space-03 rule and
-     calls it dead, but the snapshot gate measured the note rows losing
-     their 12x16 the moment it was removed — the later rule does not
-     reach these elements. The gate outranks the lint. */
+.a11y-widget-biz .a11y-note {
+  /* The gap stays: the lint pairs it against the do-first space-03 rule
+     further down, but that rule selects only .a11y-dofirst and never
+     reaches a note — which is why the snapshot gate measured the note
+     rows losing their 12x16 the moment the gap left the old shared body.
+     Hence the split: the note keeps its gap here, and the do-first copy
+     below carries none. */
   display: flex; flex-wrap: wrap; align-items: flex-start; gap: var(--space-04) var(--space-05);
+  padding: var(--space-05) var(--space-06); border-radius: var(--radius-md);
+}
+/* Split from the .a11y-note group above; body identical minus the gap. A
+   gap here would be dead on arrival: the do-first band's own rule further
+   down sets gap: var(--space-03) at the same specificity, later in source. */
+.a11y-widget-biz .a11y-dofirst {
+  display: flex; flex-wrap: wrap; align-items: flex-start;
   padding: var(--space-05) var(--space-06); border-radius: var(--radius-md);
 }
 .a11y-widget-biz .a11y-note-body { flex: 1 1 14rem; min-width: 0; }
@@ -1508,7 +1531,10 @@
 }
 
 /* A label and its description are two lines, never one run-on. */
-.a11y-widget-biz .a11y-optioncard-label,
+/* The optioncard label is split from its former group siblings below: it
+   never takes their 400 — its weight is the medium, set once by the "leads
+   its description" rule further down. */
+.a11y-widget-biz .a11y-optioncard-label { display: block; font-size: 18px; }
 .a11y-widget-biz .a11y-ai-card-title,
 .a11y-widget-biz .a11y-switch-label { display: block; font-size: 18px; font-weight: 400; }
 .a11y-widget-biz .a11y-optioncard-desc,
@@ -1772,9 +1798,53 @@
 .a11y-widget-biz .a11y-login-fieldset > * { max-width: 640px; margin-inline: auto; width: 100%; }
 .a11y-widget-biz .a11y-login-legend { max-width: none; }
 
-/* The quiet action is a pill on the block, not a bare underlined link. */
-.a11y-widget-biz .a11y-login-fieldset a,
-.a11y-widget-biz .a11y-login-fieldset .a11y-login-cancel,
+/* The quiet action is a pill on the block, not a bare underlined link.
+   The anchor is split from the group so it stops stating a white ground that
+   existed only to lose — at the same (0,2,1) — to the quiet-grey rule further
+   down. Its background is stated once, there. The cancel and button keep the
+   group's body exactly as it was. */
+.a11y-widget-biz .a11y-login-fieldset a {
+  align-self: center;
+  width: auto;
+  max-width: none;
+  min-height: 44px;
+  padding: 0 var(--space-06);
+  border: 0;
+  border-radius: var(--radius-pill);
+  color: var(--gray-100);
+  font-size: 15px;
+  font-weight: 500;
+  text-decoration: none;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.a11y-widget-biz .a11y-login-fieldset .a11y-login-cancel {
+  align-self: center;
+  width: auto;
+  max-width: none;
+  min-height: 44px;
+  padding: 0 var(--space-06);
+  border: 0;
+  border-radius: var(--radius-pill);
+  /* The cancel keeps its white by weight: this class rule is (0,3,0) and
+     the quiet-grey element rule further down is (0,2,1), so no order
+     decides it. */
+  background: var(--white);
+  color: var(--gray-100);
+  font-size: 15px;
+  font-weight: 500;
+  text-decoration: none;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+/* Split from the cancel above, minus the background: the bare button's
+   ground is the quiet grey stated once, further down — the white here
+   existed only to lose to it on source order. */
 .a11y-widget-biz .a11y-login-fieldset button {
   align-self: center;
   width: auto;
@@ -1783,7 +1853,6 @@
   padding: 0 var(--space-06);
   border: 0;
   border-radius: var(--radius-pill);
-  background: var(--white);
   color: var(--gray-100);
   font-size: 15px;
   font-weight: 500;
@@ -1980,22 +2049,25 @@
    separation. 2px keeps it from touching anything without adding a gap. */
 .a11y-widget-biz .a11y-login-fieldset button:not(.a11y-login-close) { margin: 2px; }
 
-/* 21px inside the sign-in panel — its labels, fields and placeholders.
+/* 21px for the sign-in panel's labels. The fields and placeholders were listed
+   here too, but the 24px rule below matches them with identical selectors and
+   later order, so those two entries never won — this rule now names only the
+   label it actually sizes.
    NOTE: 21 is not a size CLAUDE.md permits. That doc says the floor is 14 and
    small body is 15 or 18 only, and every other size in this stylesheet obeys
    it. This is a deliberate exception on the panel, made on instruction, and it
    is the one place the type scale is broken. Worth revisiting: 20 is already
    in the system (--type-title-size) and is a pixel away. */
-.a11y-widget-biz .a11y-login-fieldset label,
-.a11y-widget-biz .a11y-login-fieldset input,
-.a11y-widget-biz .a11y-login-fieldset input::placeholder {
+.a11y-widget-biz .a11y-login-fieldset label {
   font-size: 21px;
 }
 
 /* 24px for what is typed into the white fields — the value the reader is
-   entering, larger than the label naming it. Same exception as the 21 above:
-   neither is a size CLAUDE.md permits, and this panel is now the only place
-   in the stylesheet that departs from the scale. */
+   entering, larger than the label naming it. The placeholder previews that
+   value, so it reads at the value's size, not the label's — this is the one
+   rule that sizes it. Same exception as the 21 above: neither is a size
+   CLAUDE.md permits, and this panel is now the only place in the stylesheet
+   that departs from the scale. */
 .a11y-widget-biz .a11y-login-fieldset input,
 .a11y-widget-biz .a11y-login-fieldset input::placeholder {
   font-size: 24px;
@@ -2934,10 +3006,11 @@
   letter-spacing: 0.01em;
 }
 .a11y-widget-biz .a11y-filter-btn:hover { background: var(--layer-01); }
-/* Also resets the ground: these buttons carry .a11y-mode-btn-active as well,
-   which fills them dark, and setting only the ink put purple on black at
-   2.33:1. The design marks the current chip with an outline, not a fill.
-   purple-70 on white is 7.74:1. */
+/* The ground stays explicit: the shared .as-pill pressed state used to fill
+   these dark, and setting only the ink put purple on black at 2.33:1. That
+   fill is tab-only now, but the design marks the current chip with an
+   outline, not a fill, so the white stays declared. purple-70 on white is
+   7.74:1. */
 .a11y-widget-biz .a11y-filter-btn[aria-pressed="true"] {
   background: var(--white);
   border-color: var(--purple-70);
@@ -3581,10 +3654,14 @@
 
 /* The instances table. */
 .a11y-widget-biz .a11y-sum-table { display: flex; flex-direction: column; gap: var(--space-02); }
-.a11y-widget-biz .a11y-sum-thead,
-.a11y-widget-biz .a11y-sum-row {
+.a11y-widget-biz .a11y-sum-thead {
   display: flex; gap: var(--space-05);
   padding: 0 var(--space-06);
+}
+/* No padding here on purpose: the row is a card, and the card rule below
+   owns its padding. */
+.a11y-widget-biz .a11y-sum-row {
+  display: flex; gap: var(--space-05);
 }
 .a11y-widget-biz .a11y-sum-thead {
   font-size: 15px; font-weight: 500; color: var(--text-secondary);
@@ -4052,16 +4129,18 @@
 }
 
 /* The band and the panels share one shape: a yellow ground carrying a
-   centred uppercase eyebrow over a white card. */
+   centred uppercase eyebrow over a white card. Only the space above them
+   differs: the band spaces itself off the intro, while the panel sits in
+   .a11y-legal-grid, whose own margin and gap do that work. */
 .a11y-widget-biz .a11y-legal-band,
 .a11y-widget-biz .a11y-legal-panel {
   display: flex; flex-direction: column;
-  margin-top: var(--space-06);
   padding: var(--space-05);
   border-radius: var(--radius-lg);
   background: var(--yellow-brand);
   color: var(--gray-100);          /* 14.96:1 */
 }
+.a11y-widget-biz .a11y-legal-band { margin-top: var(--space-06); }
 .a11y-widget-biz .a11y-legal-panel { margin-top: 0; flex: 1; }
 .a11y-widget-biz .a11y-legal-eyebrow {
   margin: 0;
