@@ -148,13 +148,22 @@ export function Wcag22Readiness({ readiness }: { readiness: Readiness }) {
                     </span>
                     {c.whyManual && <span className="a11y-next-meta">{c.whyManual}</span>}
                     <span className="a11y-next-meta">Officially: {c.name}</span>
-                    {/* Only where it says something the caveat above does
-                        not — that this one already fails, or is already
-                        clean. "Needs a person" is stated once, up there. */}
-                    {c.status !== "needs-review" && (
+                    {/* Every card carries its call, per the design. The
+                        earlier omission — "Needs a person is stated once,
+                        up there" — was reasoned against short rows a reader
+                        met after the caveat; now each card is a standalone
+                        whyManual block met in any order, and a card without
+                        its call reads as unclassified rather than covered.
+                        Already-failing and already-clean keep their status
+                        chip; the rest are called by coverage. */}
+                    {c.status !== "needs-review" ? (
                       <span className="a11y-next-status">
                         <span aria-hidden="true">{fails ? "!" : "✓"}</span>{" "}
                         {STATUS_LABEL[c.status]}
+                      </span>
+                    ) : (
+                      <span className="a11y-next-status" data-call={c.coverage}>
+                        {c.coverage === "automated" ? "Software can check it" : "Needs a person"}
                       </span>
                     )}
                   </span>

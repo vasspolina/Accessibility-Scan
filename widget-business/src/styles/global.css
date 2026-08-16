@@ -5901,3 +5901,15 @@
   border-start-start-radius: 0;
   border-start-end-radius: 0;
 }
+
+/* The six cards' calls, as the design draws them: outline only, no fill.
+   Black for the ones a person has to judge, green for the one software
+   can check — the colour marks the exception, and the words carry it
+   regardless. On white: gray-100 at 18.1:1, green-70 at 7.4:1. */
+.a11y-widget-biz .a11y-w22-panel .a11y-next-status[data-call] {
+  background: none;
+  color: var(--gray-100);
+}
+.a11y-widget-biz .a11y-w22-panel .a11y-next-status[data-call="automated"] {
+  color: var(--green-70, #0e6027);
+}
