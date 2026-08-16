@@ -85,6 +85,18 @@ Several of the missing ones duplicate work done by hand in the widget's
 stylesheet — ShellNav most of all, which was rebuilt from scratch as the
 Sections rail. Worth pulling before building any more of them.
 
+### Pulled 15 August 2026 — drift closed
+
+All nineteen missing components and all three token files are vendored:
+`design-system/production/src/` now carries 43 exports against 43
+upstream, and `tokens/` gained space-fluid, type-scale and
+type-semantic. Direction was design → repo throughout (get_file only;
+nothing written upstream). Every file verified after the pull: jsx/d.ts
+pairs present, one named export each, no truncation, no stray
+formatting. `grid.css` remains local-only, still presumed a leftover
+from the superseded "Verify" project — kept until someone confirms
+nothing references it.
+
 ## A contrast fault in the design system's own template
 
 `templates/scan-summary/Summary.jsx` sets the "Failing" pill as white on
