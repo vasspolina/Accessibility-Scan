@@ -58,10 +58,12 @@ export function DesignNotesPanel({ findings }: { findings: AccessibilityFinding[
   const kinds = [...new Set(groups.map((g) => noteKind(g[0])))];
   const visible = kind ? groups.filter((g) => noteKind(g[0]) === kind) : groups;
 
-  // The open note is whichever visible one carries the open id. Filtering to
-  // a kind the open note is not in closes it rather than leaving a detail
-  // card under a list that no longer contains its title.
-  const open = visible.find((g) => g[0].id === openId) ?? null;
+  // The open note is whichever visible one carries the open id, and there
+  // is always one: filtering to a kind the chosen note is not in falls back
+  // to the first visible note. This used to close the note instead, which
+  // left a list of bare titles whose explanations were nowhere on the page
+  // — a note with no body under it reads as a note with nothing to say.
+  const open = visible.find((g) => g[0].id === openId) ?? visible[0] ?? null;
 
   return (
     <section className="a11y-section a11y-dn" aria-labelledby="a11y-notes-heading">
@@ -129,15 +131,17 @@ export function DesignNotesPanel({ findings }: { findings: AccessibilityFinding[
           <ul className="a11y-dn-list">
             {visible.map((group) => (
               <li key={group[0].id}>
+                {/* Opens, never toggles closed. The panel always shows one
+                    note, so "close" could only mean "open a different one" —
+                    and with a single visible note it would reopen itself, a
+                    button that appears to do nothing. */}
                 <button
                   type="button"
                   className="a11y-dn-link"
                   id={`a11y-dn-note-${group[0].id}`}
                   aria-expanded={open?.[0].id === group[0].id}
                   aria-controls="a11y-dn-detail"
-                  onClick={() =>
-                    setOpenId(open?.[0].id === group[0].id ? null : group[0].id)
-                  }
+                  onClick={() => setOpenId(group[0].id)}
                 >
                   {/* The design's bullet. It is a mark, not a close button,
                       so it never reaches the accessible name. */}

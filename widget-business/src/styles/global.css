@@ -897,6 +897,19 @@
   text-wrap: balance;
 }
 
+/* The fold is the exception to the exception. It is a block of its own
+   inside the Issue cell, not a squeezed column — the pill has a whole row
+   to sit on. But the fold rides as a flex item beside the title, and the
+   table rule above made its minimum the longest word, so a long title
+   squeezed it to 68px and "Fix eventually" wrapped into a two-line egg.
+   Nowrap makes the pill's width its minimum: the title gives way instead.
+   (0,4,0) so this beats the table rule by rank, not source order. */
+.a11y-widget-biz .a11y-datatable .a11y-finding-sev-fold .a11y-sev,
+.a11y-widget-biz .a11y-findings-table .a11y-finding-sev-fold .a11y-sev {
+  white-space: nowrap;
+  min-width: max-content;
+}
+
 .a11y-widget-biz .a11y-findings-table td,
 .a11y-widget-biz .a11y-notes-table td td { overflow-wrap: normal; }
 
