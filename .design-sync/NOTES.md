@@ -97,6 +97,16 @@ formatting. `grid.css` remains local-only, still presumed a leftover
 from the superseded "Verify" project — kept until someone confirms
 nothing references it.
 
+**Confirmed later the same day, and resolved.** The one reference turned
+out to be `production/styles.css` itself — which was stale, still
+carrying the superseded project's import list. Upstream's `styles.css`
+imports nine token files and no grid.css; the pull had brought the three
+new token files but not the stylesheet that imports them. The local copy
+now matches upstream verbatim, and `grid.css` is deleted. Nothing in the
+widget or the vendored components used `.cds-grid` or any `--grid-*`
+token, and nothing imports `production/styles.css` at build time, so
+both changes are inert for the shipped bundle.
+
 ## A contrast fault in the design system's own template
 
 `templates/scan-summary/Summary.jsx` sets the "Failing" pill as white on

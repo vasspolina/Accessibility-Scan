@@ -148,6 +148,17 @@ export function Wcag22Readiness({ readiness }: { readiness: Readiness }) {
                     </span>
                     {c.whyManual && <span className="a11y-next-meta">{c.whyManual}</span>}
                     <span className="a11y-next-meta">Officially: {c.name}</span>
+                    {/* The count rides as a sentence with the rest of the
+                        meta, not as a corner "1 ×" mark: only a failing card
+                        ever has one, and a bare glyph on one card in six
+                        reads as clutter, not as information. */}
+                    {c.findingCount > 0 && (
+                      <span className="a11y-next-meta">
+                        {c.findingCount === 1
+                          ? "1 finding in this report"
+                          : `${c.findingCount} findings in this report`}
+                      </span>
+                    )}
                     {/* Every card carries its call, per the design. The
                         earlier omission — "Needs a person is stated once,
                         up there" — was reasoned against short rows a reader
@@ -167,9 +178,6 @@ export function Wcag22Readiness({ readiness }: { readiness: Readiness }) {
                       </span>
                     )}
                   </span>
-                  {c.findingCount > 0 && (
-                    <span className="a11y-next-level">{c.findingCount} ×</span>
-                  )}
                 </li>
               );
             })}

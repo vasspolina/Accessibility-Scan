@@ -1,7 +1,13 @@
-@import "./tokens/fonts.css";
-@import "./tokens/colors.css";
-@import "./tokens/typography.css";
-@import "./tokens/spacing.css";
-@import "./tokens/grid.css";
-@import "./tokens/motion.css";
-@import "./tokens/a11y.css";
+@import "tokens/fonts.css";
+@import "tokens/colors.css";
+@import "tokens/typography.css";
+@import "tokens/type-scale.css";
+@import "tokens/type-semantic.css";
+@import "tokens/spacing.css";
+@import "tokens/space-fluid.css";
+@import "tokens/motion.css";
+@import "tokens/a11y.css";
+
+/* Global leading: 120% everywhere unless a component sets its own. */
+html{line-height:1.2}
+body{line-height:1.2}

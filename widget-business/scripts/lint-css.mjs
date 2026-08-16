@@ -365,7 +365,7 @@ const INLINE_TAG = /^(span|em|code|strong|b|i|small|abbr|a)$/;
 
 /* ── report ─────────────────────────────────────────────────────────── */
 const byKind = (k) => problems.filter((p) => p.kind === k);
-for (const kind of ["undefined-var", "welded-siblings", "specificity-tie"]) {
+for (const kind of ["undefined-var", "welded-siblings", "specificity-tie", "specificity-tie-benign"]) {
   const list = byKind(kind);
   console.log(`\n${kind}: ${list.length}`);
   for (const p of list) console.log(`  - ${p.detail}\n      ${p.why}`);
@@ -374,8 +374,14 @@ console.log(
   `\nchecked ${rules.length} rules, ${used.size} custom properties, ` +
     `${coOccur.size} class pairs from the markup`
 );
-if (problems.length) {
-  console.log(`\n${problems.length} problem(s).`);
+/* The benign kind is counted and listed for visibility, but it does not
+   fail the run: its own comment above says these are housekeeping, not
+   faults, and an exit code that reddens on housekeeping teaches people
+   to ignore the red — the exact burial the value split exists to end. */
+const faults = problems.filter((p) => p.kind !== "specificity-tie-benign");
+if (faults.length) {
+  console.log(`\n${faults.length} problem(s).`);
   process.exit(1);
 }
-console.log("\nclean.");
+const benign = problems.length - faults.length;
+console.log(benign ? `\nclean — ${benign} identical-value repeat(s) noted, not faults.` : "\nclean.");

@@ -3724,6 +3724,14 @@
 
    Measured before shipping: ink on soft 13.71 / 13.73 / 13.84, white on
    strong 7.74 / 5.02 / 5.00, numerals on white 7.74 / 5.02 / 5.00. */
+/* Paper cannot run a scan: the whole New scan section — heading, one-line
+   subtitle and the form — is chrome for the living page only. */
+@media print {
+  .a11y-widget-biz .a11y-newscan-title,
+  .a11y-widget-biz .a11y-newscan-sub,
+  .a11y-widget-biz .a11y-url-form { display: none; }
+}
+
 .a11y-widget-biz .a11y-tone-violet { --tone-soft: var(--purple-20); --tone-strong: var(--purple-70); --tone-ink: var(--purple-100); }
 .a11y-widget-biz .a11y-tone-green  { --tone-soft: var(--green-20);  --tone-strong: var(--green-60);  --tone-ink: var(--green-100); }
 .a11y-widget-biz .a11y-tone-blue   { --tone-soft: var(--blue-20);   --tone-strong: var(--blue-60);   --tone-ink: var(--blue-100); }
@@ -5680,6 +5688,14 @@
 .a11y-widget-biz .a11y-sr .a11y-ai-toggle:has(> input:focus-visible) {
   outline: 2px solid var(--focus, var(--text-primary));
   outline-offset: 2px;
+}
+
+/* A printed transcript cannot be played: the play pill (both its homes —
+   the SR panel and the statement's code block) and the voice toggle are
+   listening chrome. The log rows stay — they ARE the transcript. */
+@media print {
+  .a11y-widget-biz .a11y-sr-play,
+  .a11y-widget-biz .a11y-sr .a11y-ai-toggle { display: none; }
 }
 
 /* ── The undecided checks, as the design's ledger ──────────────────────
