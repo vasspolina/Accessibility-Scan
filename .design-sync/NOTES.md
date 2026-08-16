@@ -85,7 +85,7 @@ Several of the missing ones duplicate work done by hand in the widget's
 stylesheet — ShellNav most of all, which was rebuilt from scratch as the
 Sections rail. Worth pulling before building any more of them.
 
-### Pulled 15 August 2026 — drift closed
+### Pulled 16 August 2026 — drift closed
 
 All nineteen missing components and all three token files are vendored:
 `design-system/production/src/` now carries 43 exports against 43
