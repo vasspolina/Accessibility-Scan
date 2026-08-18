@@ -352,7 +352,8 @@
   font-family: "PP Telegraf", sans-serif;
   font-size: 18px;
   line-height: 1.2;
-  letter-spacing: 0.01em;        /* set here so it INHERITS */
+  /* letter-spacing lives with the universal tracking rule far below — it
+     names this selector too, so a value here was the same value twice. */
 }
 
 /* One face, and nothing quietly opting out of it.
@@ -404,9 +405,6 @@
 .a11y-widget-biz h3, .a11y-widget-biz h4,
 .a11y-widget-biz h5, .a11y-widget-biz h6 { font-size: 20px; line-height: 1.2;  font-weight: 500; margin: 0; }
 
-/* Compound, so the display size beats .a11y-section-title (the element
-   carries both classes) by specificity rather than by file position. */
-.a11y-widget-biz .a11y-newscan-title.a11y-section-title { font-size: 144px; line-height: 1.2; font-weight: 500; }
 .a11y-widget-biz .a11y-section-title  { font-size: 40px; line-height: 1.2; font-weight: 500; text-wrap: balance; }
 .a11y-widget-biz .a11y-section-eyebrow,
 .a11y-widget-biz .a11y-section-count  { font-size: 15px; line-height: 1.2;  font-weight: 500; }
@@ -523,7 +521,7 @@
 .a11y-widget-biz .a11y-tablist { display: flex; flex-wrap: wrap; gap: var(--space-03); border: 0; }
 /* Same box as the tablist, but the filter's gap lives with the fix-kind
    chip row further down (--space-04), which always won it by source order. */
-.a11y-widget-biz .a11y-filter { display: flex; flex-wrap: wrap; border: 0; }
+.a11y-widget-biz .a11y-filter { border: 0; }
 .a11y-widget-biz .a11y-tab {
   min-height: var(--target-min); padding: var(--space-03) var(--space-05);
   border: 1px solid var(--border-subtle); border-radius: var(--radius-pill);
@@ -532,14 +530,11 @@
 }
 /* Split from the .a11y-tab body above. The chip row ("The fix-kind
    filter, as the design's chip row") re-cuts the filter's box at the same
-   specificity later — 40px min-height, flat padding, white ground, 18px —
-   so those four were dead here and source order was deciding. What stays
-   is what that rule does not set: the pill skeleton, and the 500 weight
-   and 1.2 line-height the chips still take from this block. */
+   specificity later — box, skeleton and cursor included, measured
+   identical — so only what that rule does not say survives here: the 500
+   weight and the 1.2 line-height the chips still take from this block. */
 .a11y-widget-biz .a11y-filter-btn {
-  border: 1px solid var(--border-subtle); border-radius: var(--radius-pill);
-  color: var(--text-primary);
-  font-weight: 500; line-height: 1.2; cursor: pointer;
+  font-weight: 500; line-height: 1.2;
 }
 .a11y-widget-biz .a11y-tab[aria-selected="true"] {
   background: var(--text-primary); border-color: var(--text-primary); color: var(--white);
@@ -588,7 +583,7 @@
    gap here would be dead on arrival: the do-first band's own rule further
    down sets gap: var(--space-03) at the same specificity, later in source. */
 .a11y-widget-biz .a11y-dofirst {
-  display: flex; flex-wrap: wrap; align-items: flex-start;
+  flex-wrap: wrap;
   padding: var(--space-05) var(--space-06); border-radius: var(--radius-md);
 }
 .a11y-widget-biz .a11y-note-body { flex: 1 1 14rem; min-width: 0; }
@@ -677,7 +672,7 @@
     cursor: pointer;
 }
 .a11y-widget-biz .a11y-optioncard:has(> input:checked) {   }
-.a11y-widget-biz .a11y-optioncard > input[type="radio"] { width: 24px; height: 24px; margin: 0; flex-shrink: 0; }
+.a11y-widget-biz .a11y-optioncard > input[type="radio"] { flex-shrink: 0; }
 
 /* .as-progress ---------------------------------------------------------- */
 .a11y-widget-biz .a11y-progress-track { height: 10px; border-radius: var(--radius-pill); background: #e8e8e8; overflow: hidden; }
@@ -1129,9 +1124,6 @@
 .a11y-widget-biz .a11y-affected-label {
   margin: var(--space-06) 0 0;
   font-size: 18px;
-}
-.a11y-widget-biz .a11y-affected-label > strong {
-  display: block;
 }
 
 /* ---- The WCAG checklist --------------------------------------------------
@@ -1739,7 +1731,6 @@
   max-width: 60ch;
   margin: 0 auto;
   text-align: center;
-  font-size: 18px;
 }
 
 /* Label above its field, field as a white pill. */
@@ -1834,7 +1825,6 @@
   padding: 0 var(--space-06);
   border: 0;
   border-radius: var(--radius-pill);
-  color: var(--gray-100);
   font-size: 15px;
   font-weight: 500;
   text-decoration: none;
@@ -1876,7 +1866,6 @@
   padding: 0 var(--space-06);
   border: 0;
   border-radius: var(--radius-pill);
-  color: var(--gray-100);
   font-size: 15px;
   font-weight: 500;
   text-decoration: none;
@@ -2063,9 +2052,6 @@
    line than the intro. That is the general rule and this is a deliberate
    exception: the two read as the same voice on the page, so they get the same
    leading regardless of measure. */
-/* 26px, one less than the 27 that 1.5 resolves to at 18px. Written as a
-   literal because that is what it is — a chosen value, not a ratio. */
-.a11y-widget-biz .a11y-login-note { line-height: 1.2; }
 
 /* The cancel button carries almost no margin of its own — the panel's padding
    already sets it off from the edge, and the field stack above it provides the
@@ -4532,7 +4518,6 @@
   display: flex; flex-direction: column; gap: var(--space-02);
   min-width: 0;
 }
-.a11y-widget-biz .a11y-finding-title { font-weight: 500; }
 
 /* Below the two-column breakpoint the column goes and the fold takes
    over — one badge, not none and not two. 680 rather than the 400 it was:
