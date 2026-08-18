@@ -1477,7 +1477,12 @@
 
 /* The link that closes each card. */
 .a11y-widget-biz .a11y-learn-more {
-  display: inline-block;
+  /* inline-flex with a 24px floor, not the inline-block it was: at 18px
+     tall this link passed WCAG 2.5.8 only by the spacing exception, which
+     is a poor look for the tool that flags other sites' small targets. */
+  display: inline-flex;
+  align-items: center;
+  min-height: 24px;
   margin-top: var(--space-04);
   font-size: 15px;
   text-decoration: underline;
@@ -1712,6 +1717,11 @@
   gap: var(--space-05);
   margin: var(--space-06) 0 0;
   border: 0;
+  /* Fieldsets refuse to shrink below min-content by UA default, and this
+     one's inputs made that 390px — wider than a 320px phone. It was the
+     one element dragging every state into page-level horizontal scroll,
+     measured in all six fixture states. */
+  min-width: 0;
   background: #d9662b;              /* accent block */
   color: var(--gray-100);           /* 8.1:1 on this ground */
 }
@@ -2521,7 +2531,7 @@
   display: flex; align-items: baseline; gap: var(--space-05);
   flex-wrap: wrap;
 }
-.a11y-widget-biz .a11y-pro-titlerow .a11y-results-title { margin: 0; flex: 1 1 auto; }
+.a11y-widget-biz .a11y-pro-titlerow .a11y-results-title { margin: 0; flex: 1 1 auto; min-width: 0; overflow-wrap: anywhere; }
 .a11y-widget-biz .a11y-pro-count {
   margin: 0;
   font-size: 18px;
@@ -3720,6 +3730,20 @@
   display: flex; justify-content: center; gap: var(--space-04); flex-wrap: wrap;
 }
 
+/* At a 320px panel the row's fixed pieces — 32px numeral, 72px count tile,
+   two 24px gaps, 48px card padding — left the item cell 70px while
+   "Keyboard" needs 97: the word painted under the yellow tile. Measured.
+   The tile narrows, the gaps tighten, the title steps to 18, and a break
+   point inside long words is the last resort rather than the plan. The
+   thead moves with the rows so the labels stay over their columns. */
+@container a11y-panel (max-width: 400px) {
+  .a11y-widget-biz .a11y-sum-row,
+  .a11y-widget-biz .a11y-sum-thead { gap: var(--space-04); }
+  .a11y-widget-biz .a11y-sum-cell-count { flex-basis: 3.25rem; }
+  .a11y-widget-biz .a11y-sum-row-title { font-size: 18px; }
+  .a11y-widget-biz .a11y-sum-cell-item { overflow-wrap: break-word; }
+}
+
 /* On paper the tint and the dial cost ink for nothing the text does not say. */
 @media print {
   .a11y-widget-biz .a11y-sum-panel,
@@ -3763,7 +3787,11 @@
 /* Option cards become pills, and the meta badge moves inside the card at
    its right end rather than straddling the top edge. */
 .a11y-widget-biz .a11y-optioncard {
-  border-radius: var(--radius-pill);
+  /* radius-lg, not the pill it shipped with: the vendored OptionCard sets
+     borderRadius: var(--radius-lg), and these cards run three to seven
+     lines — a filled capsule around multi-line text is the egg shape this
+     project has now removed six times. The design component was right. */
+  border-radius: var(--radius-lg);
   border: 1px solid transparent;
   background: var(--layer-01);
   padding: var(--space-05) var(--space-06);
@@ -4039,6 +4067,9 @@
   margin-top: var(--space-02);
   padding: 0;
   border: 0;
+  /* 16.8px tall without it — under the 24px this product tells other
+     sites to meet. The text keeps its size; the target grows. */
+  min-height: 24px;
   background: none;
   color: var(--text-primary);
   cursor: pointer;
@@ -5089,6 +5120,7 @@
   align-items: baseline;
   gap: var(--space-03) var(--space-05);
   width: 100%;
+  min-height: 24px;   /* 21.6px without it — the 2.5.8 floor, met outright */
   text-align: left;
   /* It is a <button> that had never been styled, so it carried the UA's
      2px outset border and transparent fill. While it was inline-block
@@ -5410,6 +5442,17 @@
   .a11y-widget-biz .a11y-principle-group .a11y-datatable th[data-col="level"] {
     width: 20%;
   }
+}
+
+/* The pin above is scoped to the principle groups, but the trust table is
+   the same DataTable outside one — and without a pin, its hidden thead
+   cells kept their fixed-layout share below 680: the Issue column got 84px
+   of a 380px table, and the severity pill folded into it painted 53px into
+   the void beside it while the title wrapped a letter at a time. Measured
+   at 414 and 320. Below 680 every issue-led datatable takes the width its
+   dropped columns leave, principle group or not. */
+@container a11y-panel (width < 680px) {
+  .a11y-widget-biz .a11y-datatable th[data-col="issue"] { width: 100%; }
 }
 
 /* The four section labels, centred and uppercase, matching the kit:
@@ -5941,4 +5984,102 @@
 }
 .a11y-widget-biz .a11y-w22-panel .a11y-next-status[data-call="automated"] {
   color: var(--green-70, #0e6027);
+}
+
+/* The consultation link never had a rule, so it rendered 21.6px tall —
+   under the 24px target floor this product holds other sites to. */
+.a11y-widget-biz .a11y-cta-link {
+  display: inline-flex;
+  align-items: center;
+  min-height: 24px;
+}
+
+/* ── Print: the remaining screen-only chrome, found by measuring ─────────
+   A print-emulation sweep counted 46 interactive controls still visible on
+   paper. The ones that carry report content stay — a finding's header row
+   and the transcript lines ARE the report, and their being <button>s is a
+   DOM fact paper renders as text. What goes is pure interaction: the
+   vision-simulator's filter pills, the tab bar (its panels are force-shown
+   in print), the show/hide disclosure toggles whose printed labels ask the
+   reader to click, the transcript skip control, the clipboard buttons, and
+   the site audit's "Save the audit as PDF" — which printed on the paper it
+   produces. Statement fields flatten to their values: the text is the
+   content, the input chrome is not. */
+@media print {
+  .a11y-widget-biz .a11y-sim-controls,
+  .a11y-widget-biz .a11y-tablist,
+  .a11y-widget-biz .a11y-skip-link,
+  .a11y-widget-biz .a11y-alt-copy,
+  .a11y-widget-biz .a11y-copy-btn,
+  .a11y-widget-biz .a11y-show-all,
+  .a11y-widget-biz .a11y-accordion-head,
+  .a11y-widget-biz .a11y-print-row { display: none; }
+  .a11y-widget-biz .a11y-next-toggle { display: none; }
+  .a11y-widget-biz .a11y-stmt-field input {
+    border: 0;
+    background: none;
+    padding: 0;
+  }
+}
+
+/* ── Capsules that wrap at narrow widths ─────────────────────────────────
+   A pill radius is a single-line shape. Below 680 these four run to two
+   lines and more — transcript rows to three, the AI card to six — and a
+   filled capsule around wrapped text is an egg. Each steps down to the
+   radius its height reads as; the wide single-line state keeps its pill. */
+@container a11y-panel (width < 680px) {
+  .a11y-widget-biz .a11y-sr-row { border-radius: var(--radius-md); }
+  .a11y-widget-biz .a11y-ra-item,
+  .a11y-widget-biz .a11y-ai-card,
+  .a11y-widget-biz .a11y-url-submit,
+  .a11y-widget-biz .a11y-error { border-radius: var(--radius-lg); }
+}
+
+/* The top bar and the pricing plans sit outside .a11y-shell-content, so
+   the a11y-panel container never answers for them — these key on the
+   shell, at the widths where each starts wrapping. */
+@container a11y-shell (max-width: 760px) {
+  .a11y-widget-biz .a11y-topnav { border-radius: var(--radius-lg); }
+}
+@container a11y-shell (max-width: 480px) {
+  .a11y-widget-biz .a11y-plan { border-radius: var(--radius-lg); }
+  .a11y-widget-biz .a11y-plan-buy { border-radius: var(--radius-md); }
+}
+
+/* ── The 320px squeeze, measured piece by piece ──────────────────────────
+   Every entry here is a specific element that painted past its box at a
+   320px panel, found by a scrollWidth sweep over all six fixture states.
+   Labels may drop to 14px here — the floor — but body text does not. */
+@container a11y-panel (max-width: 400px) {
+  /* The summary rows' chips: "WCAG 2.4.7" at 15px/14px-side padding needed
+     113px of a 98px cell. 14px and 8px sides brings the widest to 92. */
+  .a11y-widget-biz .a11y-sum-chip { padding: 4px 8px; font-size: 14px; }
+  /* Same arithmetic for the legal band's "Needs a person" mark: 129px in a
+     118px column at 15px; 14px and trimmed sides fits with room. */
+  .a11y-widget-biz .a11y-legal-mark { padding: 6px; font-size: 14px; }
+  /* The login trigger's nowrap lives at (0,3,0) in the url-form scope, so
+     the release has to match it there. Once the label may break, the pill
+     becomes two lines, so the radius steps down with it. */
+  .a11y-widget-biz .a11y-url-form .a11y-login-toggle {
+    white-space: normal;
+    border-radius: var(--radius-md);
+  }
+  /* The capsules of the pre-scan chrome and the disclosure heads all run
+     to two lines at this width — same egg, same step-down. */
+  .a11y-widget-biz .a11y-plan { border-radius: var(--radius-lg); }
+  .a11y-widget-biz .a11y-step-note,
+  .a11y-widget-biz .a11y-optioncard-meta,
+  .a11y-widget-biz .a11y-show-all,
+  .a11y-widget-biz .a11y-w22-lead,
+  .a11y-widget-biz .a11y-fd .a11y-tech-details > summary { border-radius: var(--radius-md); }
+  /* The W22 toggle's pill lives on a (0,4,0) compound, so the step-down
+     names the same compound. The other accordion heads are 12px already. */
+  .a11y-widget-biz .a11y-w22-panel .a11y-accordion-head.a11y-w22-toggle {
+    border-radius: var(--radius-md);
+  }
+  /* The audit row is severity, body, count on one line; at this width the
+     body was down to 58px and "description" painted into the count. The
+     row wraps and the body takes a line of its own. */
+  .a11y-widget-biz .a11y-audit-row { flex-wrap: wrap; }
+  .a11y-widget-biz .a11y-audit-body { flex-basis: 100%; }
 }
