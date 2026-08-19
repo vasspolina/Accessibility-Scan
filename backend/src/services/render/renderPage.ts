@@ -3079,7 +3079,10 @@ export async function renderAndScan(
               ({ sel, frameOrigin }) => {
                 const style = document.createElement("style");
                 style.id = "__a11y_behind_consent";
-                const rules: string[] = ["[data-a11y-behind-consent] { display: none !important; }"];
+                const rules: string[] = [
+                  "[data-a11y-behind-consent] { display: none !important; }",
+                  "[data-a11y-behind-consent-unblur] { filter: none !important; backdrop-filter: none !important; }",
+                ];
                 if (sel) rules.unshift(`${sel} { display: none !important; }`);
                 for (const el of Array.from(document.querySelectorAll("div, iframe"))) {
                   const cs = getComputedStyle(el);
@@ -3094,6 +3097,24 @@ export async function renderAndScan(
                     el.setAttribute("data-a11y-behind-consent", "");
                   }
                 }
+                // Consent walls that blur the page do it with a filter on the
+                // content itself, not a scrim — corriere's preview came back
+                // wall-free but fuzzy. Clear blur filters near the top of the
+                // tree; three levels is where content wrappers live.
+                const unblur = (node: Element, depth: number): void => {
+                  if (depth > 3) return;
+                  for (const child of Array.from(node.children)) {
+                    const ccs = getComputedStyle(child);
+                    if (
+                      (ccs.filter && ccs.filter.includes("blur(")) ||
+                      (ccs.backdropFilter && ccs.backdropFilter.includes("blur("))
+                    ) {
+                      child.setAttribute("data-a11y-behind-consent-unblur", "");
+                    }
+                    unblur(child, depth + 1);
+                  }
+                };
+                unblur(document.body, 0);
                 style.textContent = rules.join("\n");
                 document.head.appendChild(style);
               },
@@ -3115,6 +3136,9 @@ export async function renderAndScan(
                 document
                   .querySelectorAll("[data-a11y-behind-consent]")
                   .forEach((e) => e.removeAttribute("data-a11y-behind-consent"));
+                document
+                  .querySelectorAll("[data-a11y-behind-consent-unblur]")
+                  .forEach((e) => e.removeAttribute("data-a11y-behind-consent-unblur"));
               })
               .catch(() => {});
           }
