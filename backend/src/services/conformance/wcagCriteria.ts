@@ -39,7 +39,7 @@ export const WCAG_21_AA_CRITERIA: WcagCriterion[] = [
   { id: "1.1.1", name: "Non-text Content", level: "A", coverage: "automated", plain: "Do images have a description for people who can't see them?", failing: "Images are missing a description for people who can't see them" },
   { id: "1.2.1", name: "Audio-only and Video-only (Prerecorded)", level: "A", coverage: "manual", plain: "Do audio and video have a text version?", failing: "Audio and video have no text version" },
   { id: "1.2.2", name: "Captions (Prerecorded)", level: "A", coverage: "manual", plain: "Do your videos have captions?", failing: "Videos play without captions" },
-  { id: "1.2.3", name: "Audio Description or Media Alternative", level: "A", coverage: "manual", plain: "Do videos say out loud what's shown on screen?", failing: "Videos never say out loud what's on screen" },
+  { id: "1.2.3", name: "Audio Description or Media Alternative (Prerecorded)", level: "A", coverage: "manual", plain: "Do videos say out loud what's shown on screen?", failing: "Videos never say out loud what's on screen" },
   { id: "1.2.4", name: "Captions (Live)", level: "AA", coverage: "manual", plain: "Does live video have live captions?", failing: "Live video runs with no captions" },
   { id: "1.2.5", name: "Audio Description (Prerecorded)", level: "AA", coverage: "manual", plain: "Do videos have a spoken description of what's on screen?", failing: "Videos have no spoken description of what's on screen" },
   { id: "1.3.1", name: "Info and Relationships", level: "A", coverage: "automated", plain: "Do your lists and headings exist in the code, not just in the design?", failing: "Lists and headings look right on screen but the code doesn't say what they are" },

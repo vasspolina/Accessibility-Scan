@@ -134,7 +134,9 @@ export function Wcag22Readiness({ readiness }: { readiness: Readiness }) {
               is needed, the official name, the count. The design's own item
               carries less than this, and dropping any of it would be a
               content change wearing a design change's clothes. */}
-          <ul className="a11y-next-list" aria-label={`The ${total} new WCAG 2.2 items, checked where software can`}>
+          {/* "Level A and AA" is load-bearing: WCAG 2.2 adds nine criteria,
+              and six is the count of the A/AA subset this section shows. */}
+          <ul className="a11y-next-list" aria-label={`The ${total} new Level A and AA items in WCAG 2.2, checked where software can`}>
             {criteria.map((c) => {
               const fails = c.status === "already-failing";
               return (

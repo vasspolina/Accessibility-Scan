@@ -129,7 +129,7 @@ export function UrlForm({
         <a href={WCAG_LINK} target="_blank" rel="noopener noreferrer">
           Web Content Accessibility Guidelines (WCAG)
         </a>{" "}
-        2.2 and explain what to fix, in the order worth fixing it.
+        2.1 and explain what to fix, in the order worth fixing it.
       </p>
     <form
       className="a11y-url-form"

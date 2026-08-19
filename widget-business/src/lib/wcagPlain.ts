@@ -307,7 +307,7 @@ export const PLAIN_RULE_EXPLANATIONS: Record<string, PlainRule> = {
   "meta-viewport-large": {
     plain: "Zooming is capped",
     found: () =>
-      `Zooming works, but the page caps it below the 500% that people with low vision are entitled to reach.`,
+      `Zooming works, but the page caps it below 500%, and the people who need the strongest magnification stop at the cap.`,
     impact:
       "Milder than blocking zoom outright, and it fails the same people. Anyone who needs very large text gets to the cap and no further.",
   },
@@ -505,7 +505,7 @@ export const PLAIN_RULE_EXPLANATIONS: Record<string, PlainRule> = {
     found: () =>
       `Pinned headers, banners or toolbars hold more than a third of the screen at phone width.`,
     impact:
-      "Every pinned pixel is one the visitor cannot read the page through. Anything the keyboard focuses can end up hidden behind the bars. The next version of the standard, WCAG 2.2, makes exactly that a requirement.",
+      "Every pinned pixel is one the visitor cannot read the page through. Anything the keyboard focuses can end up hidden behind the bars. WCAG 2.2 already makes exactly that a requirement; the law just does not point at it yet.",
   },
   "mobile-horizontal-scroll": {
     plain: "The page scrolls sideways on phones",
@@ -1087,7 +1087,7 @@ export const UNDECIDED_EXPLANATIONS: Record<string, { what: string; ask: string 
   },
   "media-video-descriptions": {
     what: "Captioned video with nothing describing what is on screen. Captions carry the words; they do not carry the picture.",
-    ask: "Ask whether anything in these videos is shown rather than said — a chart, a demonstration, text on screen. If so, that content needs describing in the audio or written out on the page.",
+    ask: "Ask whether anything in these videos is shown rather than said — a chart, a demonstration, text on screen. If so, the audio itself needs to describe it. A written version on the page covers only the lowest level of the standard.",
   },
   "media-audio-transcript": {
     what: "Audio on the page. A transcript is ordinary page text, so the checker has no way to tell whether one is here.",
@@ -1102,7 +1102,7 @@ export const UNDECIDED_EXPLANATIONS: Record<string, { what: string; ask: string 
   // does when it fires.
   "interaction-motion-actuation": {
     what: "The page responds to the phone being tilted or shaken. Somebody who keeps their phone in a stand, or whose hands shake, cannot do that.",
-    ask: "Ask your developer whether every action that needs a tilt or a shake can also be done by tapping something on screen.",
+    ask: "Ask your developer whether every tilt or shake action can also be done by tapping something on screen. Then ask whether the motion response can be switched off, so a shaking hand cannot fire it by accident.",
   },
   "interaction-key-shortcuts": {
     what: "The page watches for key presses across the whole screen. Where a plain letter is a shortcut, anyone speaking to their computer sets it off by talking.",

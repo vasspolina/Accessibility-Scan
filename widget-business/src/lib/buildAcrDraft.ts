@@ -4,11 +4,12 @@ import { plainForRule } from "./wcagPlain";
 // A pre-filled draft of an Accessibility Conformance Report (a completed
 // VPAT), for the procurement conversations the EU statement does not cover.
 //
-// The honest shape of this is decided by the template itself. VPAT 2.5 offers
-// exactly four conformance levels — Supports, Partially Supports, Does Not
-// Support, Not Applicable — and "Not Evaluated" is not among them. A scan can
-// never justify "Supports": no automated tool can establish conformance, only
-// find failures. So this does not fill every row.
+// The honest shape of this is decided by the template itself. VPAT 2.5 has
+// five conformance terms; the four this draft can ever use are Supports,
+// Partially Supports, Does Not Support and Not Applicable — the fifth,
+// "Not Evaluated", is reserved for Level AAA rows, and this draft renders
+// only A and AA. A scan can never justify "Supports": no automated tool can
+// establish conformance, only find failures. So this does not fill every row.
 //
 // What it does is the part that actually takes the time. An evaluator
 // completing a VPAT spends most of it hunting for the failures; those arrive

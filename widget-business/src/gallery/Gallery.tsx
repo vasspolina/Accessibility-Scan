@@ -277,7 +277,7 @@ export function Gallery() {
           >
             <FindingDetail
               tone="invert"
-              eyebrow="WCAG 3.2.5"
+              eyebrow="Dark pattern"
               badge={<SeverityTag severity="serious" onDark />}
               meta="1 place · homepage"
               whatFound="A countdown implies the offer expires, and it resets on reload."

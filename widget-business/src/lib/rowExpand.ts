@@ -4,11 +4,11 @@ import type { MouseEvent } from "react";
  * Lets a whole table row open its own detail panel.
  *
  * The arrow is a 24px target at the far left of a row whose text runs the
- * width of the screen — on a phone it is the hardest thing in the report to
- * hit, and everything beside it looks tappable and is not. Which is its own
- * accessibility problem: WCAG 2.5.8 is about exactly this, and a report that
- * ships an undersized target while reporting undersized targets is not one
- * to take seriously.
+ * width of the screen — the bare minimum WCAG 2.5.8 asks for, where every
+ * deliberate control in this report gets 44. On a phone it is the hardest
+ * thing in the report to hit, and everything beside it looks tappable and
+ * is not. Meeting the letter of the target-size rule while being the report's
+ * worst target is not a look this product can afford.
  *
  * Deliberately a pointer convenience and nothing more. The row does not
  * become a button: the real <button aria-expanded> the kit renders stays the
