@@ -591,6 +591,18 @@ describe("consent-blocks-fixture.html: the banner that blocks the reader", () =>
     expect(behind).not.toEqual(lastRender!.screenshotBase64);
   });
 
+  it("detects the verbose pay-or-consent wall the old 2000-char cap skipped", async () => {
+    // The corriere.it shape: a fixed wall whose consent prose runs past
+    // 2000 characters. Production captured that wall in the screenshot
+    // while detecting no banner at all — the overlay allowance is what
+    // makes this fixture produce consent checks instead of silence.
+    const findings = await scanFixture("consent-verbose-fixture.html");
+    const consent = findings.filter((f) => (f.ruleId ?? "").includes("consent"));
+    expect(consent.length).toBeGreaterThan(0);
+    expect(lastRender?.darkPatternSignals.consentBanner).toBeTruthy();
+    expect(lastRender?.screenshotBehindConsentBase64).toBeTruthy();
+  }, 120_000);
+
   it("folds axe's per-element echoes into the one card that names the cause", () => {
     // axe fires aria-hidden-focus on the hidden links; after the merge the
     // banner finding owns the fault and the echoes are gone.

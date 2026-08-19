@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="it">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Consent fixture — the verbose pay-or-consent wall</title>
+</head>
+<body>
+  <main>
+    <h1>Il Quotidiano di Prova</h1>
+    <p>
+      Un giornale immaginario, costruito per un test: articoli inventati,
+      prezzi in una valuta che non esiste, e abbastanza testo visibile da
+      far sembrare la pagina una pagina vera. Le notizie del giorno non
+      esistono, ma la loro impaginazione sì.
+    </p>
+    <p><a href="#a">Cronaca</a> <a href="#b">Economia</a> <a href="#c">Sport</a> <a href="#d">Cultura</a></p>
+  </main>
+
+  <!-- The corriere.it shape, distilled: a fixed, centred pay-or-consent
+       wall whose explanatory text runs well past the detector's old
+       2000-character wrapper cap. Before the overlay allowance, this whole
+       wall was silently skipped — no banner, no dark-consent checks, no
+       screen-reader facts — while the screenshot showed nothing but the
+       wall. The accept button is prominent; refusal is plain text tied to
+       a subscription. -->
+  <div style="position: fixed; inset: 0; background: rgba(22,22,22,0.5); display: flex; align-items: center; justify-content: center;">
+    <div style="background: #ffffff; max-width: 640px; padding: 32px; max-height: 80vh; overflow: auto;">
+      <p><strong>Il Quotidiano di Prova</strong> si impegna quotidianamente a fornirti informazione di qualità attraverso il lavoro immaginario di centinaia di giornalisti, grafici e tecnici inventati per questo test. Per garantire un'informazione libera e accessibile facciamo ricorso a pubblicità profilata che copre i costi della navigazione così da permetterti di usufruire di una parte dei contenuti gratuitamente. Senza la pubblicità l'accesso ai nostri servizi avviene previo pagamento a pacchetti di abbonamento crescenti per contenuti e costo. Scegli se accedere al servizio di base permettendoci di erogare pubblicità personalizzata o aderendo a un piano di abbonamento equivalente.</p>
+      <p>Come indicato nella cookie policy, noi e terze parti facciamo uso di tecnologie, quali i cookie, per raccogliere ed elaborare dati personali dai dispositivi, ad esempio l'indirizzo IP, tracciamenti precisi dei dispositivi e della posizione geografica. Per installare i cookie che garantiscono le funzionalità tecniche, non è necessario il tuo consenso. Con il tuo consenso, noi e alcune tra milleduecento terze parti presenti in questa lista — inserzionisti nonché intermediari del mercato pubblicitario di volta in volta coinvolti — potremo archiviare informazioni sul tuo dispositivo e accedervi, utilizzare dati di geolocalizzazione precisi e di identificazione attraverso la scansione del dispositivo, mostrarti pubblicità e contenuti personalizzati e misurarne la performance, effettuare ricerche di mercato e sviluppare i nostri prodotti e servizi.</p>
+      <p>Puoi liberamente conferire, rifiutare o revocare il consenso a tutti o alcuni dei trattamenti facendo click sul pulsante Preferenze, sempre raggiungibile anche attraverso la nostra cookie policy. In caso di rifiuto integrale o delle singole finalità necessarie all'erogazione di pubblicità e di contenuti personalizzati, potrai scegliere di aderire a un piano di abbonamento. Le tue scelte sui cookie si applicano a questo sito immaginario e a nessun altro, perché nessun altro sito esiste in questo file. Puoi acconsentire direttamente all'uso delle tecnologie sopra menzionate facendo click su Accetta e continua, o rifiutarne l'uso e abbonarti facendo click su Rifiuta e abbonati.</p>
+      <button type="button" style="display: block; width: 100%; background: #0b3d6e; color: #ffffff; border: 0; padding: 14px; font-weight: 700;">Accetta e continua</button>
+      <p style="text-align: right; margin-top: 12px;"><a href="#abbonati">Rifiuta e abbonati</a></p>
+    </div>
+  </div>
+</body>
+</html>

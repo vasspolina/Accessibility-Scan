@@ -227,7 +227,26 @@ export function collectDarkPatternSignalsInPage(): DarkPatternSignals {
     try {
       if (!isVisible(el)) continue;
       const text = textOf(el);
-      if (text.length < 20 || text.length > 2000) continue;
+      // The 2000-char cap is the wrapper guard — a whole page about cookies
+      // must not read as a banner. But pay-or-consent walls are essays:
+      // corriere.it's runs past 2000 and lemonde.fr's further still, and the
+      // cap was silently excusing exactly the walls that treat readers
+      // worst (found when a production scan captured corriere's wall in the
+      // screenshot while detecting no banner at all). An overlay gets more
+      // rope: fixed or sticky, a dialog, or covering 40% of the viewport is
+      // not a page wrapper, whatever its word count.
+      const overlayLike = (node: Element): boolean => {
+        if (node.tagName === "DIALOG" || node.getAttribute("role") === "dialog") return true;
+        const cs = getComputedStyle(node);
+        if (cs.position === "fixed" || cs.position === "sticky") return true;
+        const r = node.getBoundingClientRect();
+        return r.width * r.height >= window.innerWidth * window.innerHeight * 0.4;
+      };
+      const withinBannerLength = (node: Element): boolean => {
+        const len = textOf(node).length;
+        return len >= 20 && len <= (overlayLike(node) ? 6000 : 2000);
+      };
+      if (!withinBannerLength(el)) continue;
       if (!CONSENT_RE.test(text)) continue;
       const controls = Array.from(el.querySelectorAll(clickableSelector)).filter(isVisible);
       if (controls.length === 0 || controls.length > 12) continue;
@@ -251,12 +270,17 @@ export function collectDarkPatternSignalsInPage(): DarkPatternSignals {
             const t = accessibleText(c);
             return !!t && (ACCEPT_RE.test(t) || REJECT_RE.test(t));
           });
+      // The descendant must clear the SAME length gate the candidate pass
+      // applies, or the skip orphans the banner: a fixed scrim yields to its
+      // inner card, the card then flunks its own length check, and nothing
+      // is reported at all — the bundesregierung.de trap in a new coat,
+      // measured again on the verbose-wall fixture.
       const hasQualifyingDescendant = bannerCandidates.some(
         (other) =>
           other !== el &&
           el.contains(other) &&
           CONSENT_RE.test(textOf(other)) &&
-          textOf(other).length >= 20 &&
+          withinBannerLength(other) &&
           carriesChoice(other)
       );
       if (hasQualifyingDescendant) continue;
