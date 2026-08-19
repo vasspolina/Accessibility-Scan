@@ -33,6 +33,24 @@ export interface DarkPatternSignals {
     // where to look.
     frameUrl?: string;
   } | null;
+  // What a screen reader meets while the banner is up — measured in the same
+  // pass as the banner itself so the two always describe the same element.
+  // Null when no banner was found. tabsSampled/tabsInBanner arrive later,
+  // from the keyboard probe in renderPage: a page function cannot press Tab.
+  consentA11y: {
+    // role on the banner root or its closest dialog descendant; null when
+    // the layer never says what it is.
+    role: string | null;
+    accessibleName: boolean;
+    // Share of the page's visible text OUTSIDE the banner that is hidden
+    // from assistive tech (aria-hidden/inert on an ancestor). High + focus
+    // elsewhere is the "screen reader hears silence" state.
+    bgHiddenPct: number;
+    sampledChars: number;
+    focusInBanner: boolean;
+    tabsSampled?: number;
+    tabsInBanner?: number;
+  } | null;
   // Decline/dismiss controls worded to make the user feel bad for declining.
   confirmshaming: Array<{ selector: string; snippet: string; text: string }>;
   // Opt-in checkboxes ticked by default in the markup.
@@ -200,6 +218,7 @@ export function collectDarkPatternSignalsInPage(): DarkPatternSignals {
   );
 
   let consentBanner: DarkPatternSignals["consentBanner"] = null;
+  let bannerEl: HTMLElement | null = null;
   const bannerCandidates = Array.from(
     document.querySelectorAll<HTMLElement>('div, section, aside, dialog, [role="dialog"], form')
   );
@@ -266,6 +285,7 @@ export function collectDarkPatternSignalsInPage(): DarkPatternSignals {
         rejectControls: reject,
         manageControls: manage,
       };
+      bannerEl = el;
     } catch {
       // skip a bad candidate
     }
@@ -388,7 +408,67 @@ export function collectDarkPatternSignalsInPage(): DarkPatternSignals {
     }
   }
 
-  return { consentBanner, confirmshaming, preCheckedOptIns, urgencyClaims };
+  // ---- What a screen reader meets while the banner is up ------------------
+  // Measured here, beside the banner detection, because both must describe
+  // the same element. An EU-site sweep (18 Aug 2026) found the two failure
+  // shapes these facts separate: a layer that aria-hides the whole page while
+  // focus never enters it (the reader hears silence), and a layer with no
+  // role, no name and no focus (the reader never learns the wall exists).
+  let consentA11y: DarkPatternSignals["consentA11y"] = null;
+  if (bannerEl) {
+    try {
+      const dlg =
+        bannerEl.matches('[role="dialog"], [role="alertdialog"], dialog')
+          ? bannerEl
+          : bannerEl.querySelector('[role="dialog"], [role="alertdialog"], dialog') ?? bannerEl;
+      const role =
+        dlg.getAttribute("role") ?? (dlg.tagName === "DIALOG" ? "dialog" : null);
+      const accessibleName = !!(
+        dlg.getAttribute("aria-label") || dlg.getAttribute("aria-labelledby")
+      );
+      // Walk the page's visible text outside the banner and count how much
+      // of it assistive tech is told to skip. Character-weighted, capped, so
+      // a heavy page cannot stall the scan.
+      const chain = new Set<Element>();
+      for (let n: Element | null = bannerEl; n; n = n.parentElement) chain.add(n);
+      const atHidden = (start: Element): boolean => {
+        for (let a: Element | null = start; a && a !== document.documentElement; a = a.parentElement) {
+          if (chain.has(a)) return false;
+          if (a.getAttribute("aria-hidden") === "true" || a.hasAttribute("inert")) return true;
+        }
+        return false;
+      };
+      let total = 0;
+      let hidden = 0;
+      let seen = 0;
+      const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT);
+      let t: Node | null;
+      while ((t = walker.nextNode()) && seen < 3000) {
+        const txt = (t.textContent ?? "").trim();
+        if (!txt) continue;
+        const p = t.parentElement;
+        if (!p || bannerEl.contains(p)) continue;
+        const cs = getComputedStyle(p);
+        if (cs.display === "none" || cs.visibility === "hidden") continue;
+        seen++;
+        total += txt.length;
+        if (atHidden(p)) hidden += txt.length;
+      }
+      consentA11y = {
+        role,
+        accessibleName,
+        bgHiddenPct: total ? Math.round((hidden / total) * 100) : 0,
+        sampledChars: total,
+        focusInBanner: document.activeElement
+          ? bannerEl.contains(document.activeElement)
+          : false,
+      };
+    } catch {
+      // best-effort: a broken measurement must not cost the banner finding
+    }
+  }
+
+  return { consentBanner, consentA11y, confirmshaming, preCheckedOptIns, urgencyClaims };
 }
 
 const HELP = {

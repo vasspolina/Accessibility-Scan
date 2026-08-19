@@ -269,7 +269,26 @@ export function mergeFindings(
 ): AccessibilityFinding[] {
   // v1: concatenate. Dedup between layers is primarily handled upstream by
   // instructing Claude to skip axe-covered selectors (see buildPrompt.ts).
-  return applyHeadingSeverityFloor([...automated, ...aiReview]);
+  return applyHeadingSeverityFloor(
+    dropBannerShadowedAriaHiddenFocus([...automated, ...aiReview])
+  );
+}
+
+/**
+ * One fault, one card. When consent-blocks-reader fired, the page's
+ * aria-hidden state IS the consent banner's doing — and axe's
+ * aria-hidden-focus then reports the same fault element-by-element:
+ * focusable controls inside the content the banner hid. Both cards would
+ * tell the owner to fix the same thing, so the per-element echoes yield to
+ * the finding that names the cause. Pure and deterministic. Exported for
+ * testing.
+ */
+export function dropBannerShadowedAriaHiddenFocus(
+  findings: AccessibilityFinding[]
+): AccessibilityFinding[] {
+  const bannerOwnsIt = findings.some((f) => f.ruleId === "consent-blocks-reader");
+  if (!bannerOwnsIt) return findings;
+  return findings.filter((f) => f.ruleId !== "aria-hidden-focus");
 }
 
 // Claims about consent-button styling that the page's own measurements

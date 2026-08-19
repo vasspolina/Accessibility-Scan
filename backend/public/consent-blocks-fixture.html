@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Consent fixture — the banner that blocks the reader</title>
+</head>
+<body>
+  <!-- The booking.com shape, distilled: the whole page is aria-hidden while
+       the consent banner is up, the banner itself never takes focus, and the
+       hidden content keeps its focusable links — so Tab wanders through
+       elements a screen reader is told do not exist. evaluateConsentA11y
+       must flag this page with consent-blocks-reader; axe will separately
+       fire aria-hidden-focus on the links, which the merge must fold into
+       the one banner finding. -->
+  <div aria-hidden="true">
+    <main>
+      <h1>The Fixture Emporium</h1>
+      <p>
+        Welcome to a shop that exists to be measured. Our catalogue covers
+        garden tools, kitchen scales, reading lamps and forty-one varieties
+        of cable tidy, each described at length so this page carries enough
+        visible text for the sampler to treat it as a real page rather than
+        a stub. Delivery is imaginary and returns are instant.
+      </p>
+      <nav>
+        <a href="#a">Garden tools</a> <a href="#b">Kitchen scales</a>
+        <a href="#c">Reading lamps</a> <a href="#d">Cable tidies</a>
+        <a href="#e">Delivery</a> <a href="#f">Returns</a>
+        <a href="#g">About us</a> <a href="#h">Contact</a>
+        <a href="#i">Careers</a> <a href="#j">Press</a>
+      </nav>
+      <p>
+        Every product on this page was invented for a test harness, and the
+        prices are in a currency that does not exist. What matters is that
+        the text nodes are plentiful, the links are focusable, and all of it
+        sits inside a container marked hidden for assistive technology while
+        the consent layer below decides the visitor's fate.
+      </p>
+    </main>
+  </div>
+
+  <div style="position: fixed; left: 0; right: 0; bottom: 0; background: #ffffff; border-top: 2px solid #161616; padding: 16px;">
+    <p>We use cookies to improve your experience and to measure our imaginary traffic.</p>
+    <button type="button">Accept all</button>
+    <button type="button">Settings</button>
+  </div>
+</body>
+</html>

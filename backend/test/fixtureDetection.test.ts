@@ -12,6 +12,8 @@ import { evaluateReadingOrder } from "../src/services/readingOrder/analyzeReadin
 import { evaluateMobile } from "../src/services/mobile/analyzeMobile.js";
 import { evaluateDarkPatterns } from "../src/services/darkPatterns/analyzeDarkPatterns.js";
 import { evaluateTextResize } from "../src/services/textResize/analyzeTextResize.js";
+import { evaluateConsentA11y } from "../src/services/consentA11y/evaluateConsentA11y.js";
+import { mergeFindings } from "../src/services/merge/mergeFindings.js";
 import type { AccessibilityFinding } from "../src/types/report.js";
 
 // The two QA fixtures, run as a test rather than by hand.
@@ -47,6 +49,7 @@ async function scanFixture(name: string): Promise<AccessibilityFinding[]> {
   findings.push(...evaluateReadingOrder(r.readingOrder));
   findings.push(...evaluateMobile(r.mobileSignals));
   findings.push(...evaluateDarkPatterns(r.darkPatternSignals));
+  findings.push(...evaluateConsentA11y(r.darkPatternSignals));
   findings.push(...evaluateTextResize(r.textResizeSignals));
   return findings;
 }
@@ -551,5 +554,35 @@ describe("qa-mobile-good.html: phone-width done right", () => {
   it("stays silent about every correct pattern", () => {
     const mobile = findings.filter((f) => f.ruleId?.startsWith("mobile-"));
     expect(mobile.map((f) => f.ruleId)).toEqual([]);
+  });
+});
+
+// The booking.com shape, end to end: the whole page aria-hidden behind a
+// consent banner that never takes focus. This exercises the entire chain the
+// unit tests fake — the in-page collector measuring the banner, the render
+// pass's Tab probe walking into hidden links, the evaluator's verdict, and
+// the merge folding axe's per-element aria-hidden-focus echoes into the one
+// finding that names the cause.
+describe("consent-blocks-fixture.html: the banner that blocks the reader", () => {
+  let findings: AccessibilityFinding[];
+  beforeAll(async () => {
+    findings = await scanFixture("consent-blocks-fixture.html");
+  }, 120_000);
+
+  it("flags the banner, at the top severity, on the Level A contract", () => {
+    const hits = findings.filter((f) => f.ruleId === "consent-blocks-reader");
+    expect(hits).toHaveLength(1);
+    expect(hits[0].severity).toBe("critical");
+    expect(hits[0].wcagLevel).toBe("A");
+    expect(hits[0].category).toBe("accessibility");
+  });
+
+  it("folds axe's per-element echoes into the one card that names the cause", () => {
+    // axe fires aria-hidden-focus on the hidden links; after the merge the
+    // banner finding owns the fault and the echoes are gone.
+    expect(findings.some((f) => f.ruleId === "aria-hidden-focus")).toBe(true);
+    const merged = mergeFindings(findings, []);
+    expect(merged.some((f) => f.ruleId === "consent-blocks-reader")).toBe(true);
+    expect(merged.some((f) => f.ruleId === "aria-hidden-focus")).toBe(false);
   });
 });

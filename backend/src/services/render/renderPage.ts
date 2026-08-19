@@ -1690,6 +1690,7 @@ const MAX_FRAMES_SCANNED = 12;
 async function collectDarkPatternsAcrossFrames(page: Page): Promise<DarkPatternSignals> {
   const merged: DarkPatternSignals = {
     consentBanner: null,
+    consentA11y: null,
     confirmshaming: [],
     preCheckedOptIns: [],
     urgencyClaims: [],
@@ -1702,6 +1703,10 @@ async function collectDarkPatternsAcrossFrames(page: Page): Promise<DarkPatternS
       );
       if (!merged.consentBanner && signals.consentBanner) {
         merged.consentBanner = signals.consentBanner;
+        // The screen-reader facts travel with the banner they were measured
+        // beside — a later frame's banner must not pair with an earlier
+        // frame's measurements.
+        merged.consentA11y = signals.consentA11y;
         // Remember where it was found. Its selector is a path through this
         // frame's document, and the capture pass runs against the host page
         // unless it is told otherwise.
@@ -3089,6 +3094,38 @@ export async function renderAndScan(
       const keyboardNav = await timed("keyboard", () =>
         captureKeyboardNavigation(page, renderDeadline)
       );
+
+      // Where Tab goes while a consent banner is up. Eight presses from the
+      // top of the document, each checked for landing inside the banner —
+      // enough to tell "focus never reaches the layer" from "focus cycles
+      // inside it". Sits here with the other keyboard pass for the same
+      // reason it does: Tab disturbs scroll and :focus styles, so it must
+      // follow every screenshot. Main-frame banners only — a cross-origin
+      // consent iframe cannot be probed from the host page.
+      if (darkPatternSignals.consentBanner && !darkPatternSignals.consentBanner.frameUrl && darkPatternSignals.consentA11y) {
+        await timed("consentTabProbe", async () => {
+          try {
+            const sel = darkPatternSignals.consentBanner!.selector;
+            await page.evaluate(() => (document.activeElement as HTMLElement | null)?.blur?.());
+            const SAMPLE = 8;
+            let inBanner = 0;
+            for (let i = 0; i < SAMPLE; i++) {
+              await page.keyboard.press("Tab");
+              const inside = await page.evaluate((s) => {
+                const root = document.querySelector(s);
+                return !!root && !!document.activeElement && root.contains(document.activeElement);
+              }, sel);
+              if (inside) inBanner++;
+            }
+            darkPatternSignals.consentA11y!.tabsSampled = SAMPLE;
+            darkPatternSignals.consentA11y!.tabsInBanner = inBanner;
+            await page.evaluate(() => (document.activeElement as HTMLElement | null)?.blur?.());
+          } catch {
+            // best-effort: a failed probe leaves the tab fields unset, and
+            // the evaluator treats unset as unmeasured rather than as zero.
+          }
+        });
+      }
 
       // Visual-versus-source order. Geometry only, so it changes nothing and
       // has to run at desktop width, before the mobile pass reflows the page.

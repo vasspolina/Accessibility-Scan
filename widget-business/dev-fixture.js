@@ -67,6 +67,22 @@
 
   function makeReport(url) {
     var findings = [
+      // The consent-banner screen-reader check, in its flag state: the
+      // booking.com shape the 18 Aug 2026 EU sweep measured.
+      finding({
+        id: "f0-consent",
+        severity: "critical",
+        ruleId: "consent-blocks-reader",
+        wcagCriterion: "4.1.2",
+        wcagLevel: "A",
+        selector: "#consent-layer",
+        elementSnippet: '<div id="consent-layer" class="cookie-banner">',
+        description:
+          "While the cookie banner is up, 97% of the page's text is marked hidden for assistive technology, and keyboard focus never lands inside the banner.",
+        suggestedFix:
+          "Move focus into the banner when it opens and keep it there until a choice is made — or stop hiding the page behind it.",
+        helpUrl: "https://www.w3.org/WAI/ARIA/apg/patterns/dialog-modal/",
+      }),
       finding({
         id: "f1",
         severity: "serious",
@@ -299,6 +315,7 @@
       },
       undecidedChecks: [
         { ruleId: "color-contrast", count: 12, help: "Contrast could not be measured over an image background.", helpUrl: "https://dequeuniversity.com/rules/axe/4.10/color-contrast" },
+        { ruleId: "consent-layer-unheralded", count: 1, help: "The cookie layer has no dialog role, no name, and keyboard focus never reaches it.", helpUrl: "https://www.w3.org/WAI/ARIA/apg/patterns/dialog-modal/" },
         { ruleId: "media-video-captions", count: 3, help: "Video with no captions track", helpUrl: "https://www.w3.org/WAI/WCAG21/Understanding/captions-prerecorded.html" },
         { ruleId: "media-embedded-player", count: 2, help: "Video embedded from another site", helpUrl: "https://www.w3.org/WAI/WCAG21/Understanding/captions-prerecorded.html" },
         { ruleId: "interaction-key-shortcuts", count: 1, help: "The page listens for key presses everywhere", helpUrl: "https://www.w3.org/WAI/WCAG21/Understanding/character-key-shortcuts.html" },

@@ -19,6 +19,7 @@ import {
 import { evaluateTypography } from "./typography/analyzeTypography.js";
 import { evaluateMotion } from "./motion/analyzeMotion.js";
 import { evaluateMedia } from "./media/analyzeMedia.js";
+import { evaluateConsentA11y, consentA11yUndecided } from "./consentA11y/evaluateConsentA11y.js";
 import { evaluateInteraction } from "./interaction/analyzeInteraction.js";
 import { evaluateTiming } from "./interaction/analyzeTiming.js";
 import { evaluateKeyboardNav } from "./keyboard/analyzeKeyboard.js";
@@ -389,6 +390,11 @@ export async function scanUrlToReport(
   deterministic.push(...evaluateReadability(renderResult.readability));
   deterministic.push(...evaluateMobile(renderResult.mobileSignals));
   deterministic.push(...evaluateDarkPatterns(renderResult.darkPatternSignals));
+  // The consent banner's screen-reader mechanics — a separate layer from the
+  // dark-pattern checks on the same banner: those judge the fairness of the
+  // choice, this judges whether a screen reader user can perceive and
+  // operate the layer at all.
+  deterministic.push(...evaluateConsentA11y(renderResult.darkPatternSignals));
   deterministic.push(...evaluateTextResize(renderResult.textResizeSignals));
   deterministic.push(...(await validateMarkup(renderResult.finalUrl)));
 
@@ -469,6 +475,7 @@ export async function scanUrlToReport(
     undecidedChecks: mergeUndecided(
       summariseUndecided(renderResult.axe),
       [
+        ...consentA11yUndecided(renderResult.darkPatternSignals),
         ...evaluateMedia(renderResult.domSignals.mediaElements, renderResult.domSignals.mediaEmbeds),
         ...evaluateInteraction(renderResult.domSignals.listeners, {
           liveRegions: renderResult.domSignals.liveRegions,

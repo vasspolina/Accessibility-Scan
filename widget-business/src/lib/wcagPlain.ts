@@ -500,6 +500,13 @@ export const PLAIN_RULE_EXPLANATIONS: Record<string, PlainRule> = {
     impact:
       "A thumb is not a cursor. A finger that aims for one control and lands on its neighbour taps or buys the wrong thing. People with tremors or larger fingers meet it first.",
   },
+  "consent-blocks-reader": {
+    plain: "The cookie banner blocks screen readers",
+    found: () =>
+      `The consent layer marks the whole page behind it as hidden for screen readers, and keyboard focus never lands in the layer itself.`,
+    impact:
+      "A screen reader user hears silence where the page should be. They cannot read the page, and they cannot find the banner to clear it.",
+  },
   "mobile-sticky-coverage": {
     plain: "Pinned bars crowd the phone screen",
     found: () =>
@@ -815,6 +822,11 @@ export const PLAIN_RULE_FIXES: Record<string, string | string[]> = {
   ],
   "mobile-target-spacing":
     "Put a little space between buttons and links, so a thumb cannot hit two at once.",
+  "consent-blocks-reader": [
+    "Move keyboard focus into the banner the moment it opens.",
+    "Keep it there until a choice is made — that is what makes hiding the page behind it correct.",
+    "Or stop hiding the page: a banner that just sits at the bottom needs none of it.",
+  ],
   "mobile-sticky-coverage": [
     "Shrink the bars pinned to the top and bottom on phones.",
     "Leave most of the screen for the content people came to read.",
@@ -1100,6 +1112,17 @@ export const UNDECIDED_EXPLANATIONS: Record<string, { what: string; ask: string 
   // Three rows about what the page listens for. A listener leaves no mark on
   // the page, so the checker can say one is there and nothing about what it
   // does when it fires.
+  // Two rows about the cookie layer's manners. Both are real screen-reader
+  // harm and neither is a provable violation — a banner div without a dialog
+  // role is legal markup — so they sit here for a person to rule on.
+  "consent-layer-unheralded": {
+    what: "A cookie layer that never introduces itself. It carries no dialog role and no name, and keyboard focus never reaches it.",
+    ask: "Have someone try the page with a screen reader. If the layer is never announced, it needs a dialog role, a name, and focus moved into it when it opens.",
+  },
+  "consent-trap-unnamed": {
+    what: "Keyboard focus stays inside the cookie layer, but the layer never says what it is. No dialog role, no name.",
+    ask: "Ask your developer to mark the layer as a dialog and name it. A trap with no label leaves a screen reader user stuck in something nameless.",
+  },
   "interaction-motion-actuation": {
     what: "The page responds to the phone being tilted or shaken. Somebody who keeps their phone in a stand, or whose hands shake, cannot do that.",
     ask: "Ask your developer whether every tilt or shake action can also be done by tapping something on screen. Then ask whether the motion response can be switched off, so a shaking hand cannot fire it by accident.",
