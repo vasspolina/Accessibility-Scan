@@ -26,6 +26,16 @@ interface Condition {
   cssFilter?: string;
 }
 
+/* The normal-vision note claims "as most visitors see it" — which is false
+   when the stage shows the page with its cookie banner set aside. The note
+   tells the truth for whichever image is actually on the stage. */
+function noteFor(c: Condition, behindConsent: boolean): string {
+  if (c.id === "none" && behindConsent) {
+    return "Your page with the cookie banner set aside, so every view here shows the page itself.";
+  }
+  return c.note;
+}
+
 const CONDITIONS: Condition[] = [
   {
     id: "none",
@@ -76,7 +86,18 @@ const CONDITIONS: Condition[] = [
   },
 ];
 
-export function VisionSimulator({ pagePreview, url }: { pagePreview: string; url: string }) {
+export function VisionSimulator({
+  pagePreview,
+  url,
+  behindConsent = false,
+}: {
+  pagePreview: string;
+  url: string;
+  // True when the stage shows the page with its cookie banner hidden — the
+  // simulations are then about the page, not the wall, and the normal-vision
+  // note says so rather than claiming this is what visitors land on.
+  behindConsent?: boolean;
+}) {
   const [active, setActive] = useState(CONDITIONS[0]);
 
   return (
@@ -107,9 +128,9 @@ export function VisionSimulator({ pagePreview, url }: { pagePreview: string; url
           condition, which is the whole point of this control, is a plain
           paragraph nothing announces. */}
       <span className="a11y-sr-only" role="status">
-        {active.label}. {active.note}
+        {active.label}. {noteFor(active, behindConsent)}
       </span>
-      <p className="a11y-sim-note">{active.note}</p>
+      <p className="a11y-sim-note">{noteFor(active, behindConsent)}</p>
 
       {/* One hidden SVG holding every colour matrix; the image references the
           active one by id. Cheaper than rebuilding a filter on each change,

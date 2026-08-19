@@ -489,6 +489,9 @@ export async function scanUrlToReport(
       ]
     ),
     pagePreview: await downscalePreview(renderResult.screenshotBase64),
+    pagePreviewBehindConsent: renderResult.screenshotBehindConsentBase64
+      ? await downscalePreview(renderResult.screenshotBehindConsentBase64)
+      : undefined,
     meta: {
       axeVersion: renderResult.axe.testEngine?.version ?? "unknown",
       renderTimeMs: renderResult.renderTimeMs,

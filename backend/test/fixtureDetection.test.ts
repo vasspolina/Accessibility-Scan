@@ -29,9 +29,14 @@ import type { AccessibilityFinding } from "../src/types/report.js";
 // guard refuses localhost over HTTP and is right to; a file URL never opens a
 // socket, so nothing is weakened to make this run.
 
+/* The consent describe below also needs render-level facts (the behind-
+   banner screenshot), so the last render is kept beside the findings. */
+let lastRender: Awaited<ReturnType<typeof renderAndScan>> | undefined;
+
 async function scanFixture(name: string): Promise<AccessibilityFinding[]> {
   const url = "file://" + path.resolve(`public/${name}`);
   const r = await renderAndScan(url, undefined, 90_000);
+  lastRender = r;
   const findings = axeToFindings(r.axe);
   findings.push(...evaluateTypography(r.typographyBlocks));
   findings.push(
@@ -575,6 +580,15 @@ describe("consent-blocks-fixture.html: the banner that blocks the reader", () =>
     expect(hits[0].severity).toBe("critical");
     expect(hits[0].wcagLevel).toBe("A");
     expect(hits[0].category).toBe("accessibility");
+  });
+
+  it("captures the page behind the banner as a second screenshot", () => {
+    // The hide-and-capture pass: present, non-trivial, and distinct in size
+    // from the with-banner shot (the banner occupies real pixels).
+    const behind = lastRender?.screenshotBehindConsentBase64;
+    expect(behind, "behind-consent screenshot missing").toBeTruthy();
+    expect(behind!.length).toBeGreaterThan(1000);
+    expect(behind).not.toEqual(lastRender!.screenshotBase64);
   });
 
   it("folds axe's per-element echoes into the one card that names the cause", () => {

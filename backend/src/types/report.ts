@@ -268,6 +268,10 @@ export const accessibilityReportSchema = z.object({
     )
     .optional(),
   pagePreview: z.string().optional(),
+  // The same preview with the consent layer hidden — present only when a
+  // banner was detected, so the report can show the page rather than the
+  // wall wherever that is the honest choice (the vision simulator).
+  pagePreviewBehindConsent: z.string().optional(),
   meta: z.object({
     axeVersion: z.string(),
     renderTimeMs: z.number(),

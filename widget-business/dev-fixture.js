@@ -324,6 +324,9 @@
         { ruleId: "media-audio-transcript", count: 1, help: "Audio with no transcript we can see", helpUrl: "https://www.w3.org/WAI/WCAG21/Understanding/audio-only-and-video-only-prerecorded.html" },
       ],
       pagePreview: TINY_JPEG,
+      // The fixture report carries a consent finding, so it also carries the
+      // behind-the-banner preview that ships with one.
+      pagePreviewBehindConsent: TINY_JPEG,
       meta: {
         axeVersion: "4.10.2",
         renderTimeMs: 1234,

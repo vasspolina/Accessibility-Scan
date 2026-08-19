@@ -140,6 +140,9 @@ export interface AccessibilityReport {
   // Checks the engine ran and could not settle — a person decides these.
   undecidedChecks?: Array<{ ruleId: string; count: number; help: string; helpUrl?: string }>;
   pagePreview?: string;
+  // The preview with the consent layer hidden — present only when the scan
+  // found a cookie banner covering the page.
+  pagePreviewBehindConsent?: string;
   meta: {
     axeVersion: string;
     renderTimeMs: number;

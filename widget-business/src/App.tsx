@@ -732,7 +732,11 @@ export function App({
               it the way a museum ends on the gift shop: worth a look, after
               everything that matters. */}
           {report.pagePreview && (
-            <VisionSimulator pagePreview={report.pagePreview} url={report.url} />
+            <VisionSimulator
+              pagePreview={report.pagePreviewBehindConsent ?? report.pagePreview}
+              url={report.url}
+              behindConsent={!!report.pagePreviewBehindConsent}
+            />
           )}
 
           {/* One call to action, configured by the embedder, rendered only

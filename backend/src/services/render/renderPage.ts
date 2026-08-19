@@ -291,6 +291,10 @@ export interface RenderResult {
   // confusing layouts are fundamentally perceptual and don't show up in a
   // DOM-only summary.
   screenshotBase64: string;
+  // The same viewport with the consent layer hidden — only when a consent
+  // banner was detected. The page a visitor meets is a wall; this is the
+  // page. Style-only hide, reverted immediately after capture.
+  screenshotBehindConsentBase64?: string;
   // Full-page JPEG buffer used server-side only to crop small per-finding
   // thumbnails (see services/render/cropThumbnail.ts) — not sent to Claude
   // directly (the viewport screenshot above covers that) and not returned
@@ -3059,6 +3063,64 @@ export async function renderAndScan(
           .catch(() => null)
       );
 
+      // The page BEHIND the consent banner. When a consent layer covers the
+      // page, "your page as visitors see it" is a wall — the vision
+      // simulator and the preview want the page itself too. Hide the layer,
+      // any full-viewport textless scrim, and any iframe from the consent
+      // frame's origin for one frame, capture, restore. Style-only and
+      // reverted in a finally: nothing is clicked, no consent is given, and
+      // every later pass sees the original state.
+      let behindConsentShot: Buffer | null = null;
+      if (darkPatternSignals.consentBanner) {
+        await timed("behindConsentShot", async () => {
+          const banner = darkPatternSignals.consentBanner!;
+          try {
+            await page.evaluate(
+              ({ sel, frameOrigin }) => {
+                const style = document.createElement("style");
+                style.id = "__a11y_behind_consent";
+                const rules: string[] = ["[data-a11y-behind-consent] { display: none !important; }"];
+                if (sel) rules.unshift(`${sel} { display: none !important; }`);
+                for (const el of Array.from(document.querySelectorAll("div, iframe"))) {
+                  const cs = getComputedStyle(el);
+                  if (cs.display === "none" || cs.position !== "fixed") continue;
+                  const r = el.getBoundingClientRect();
+                  const cover = (r.width * r.height) / (innerWidth * innerHeight);
+                  const isFrame = el.tagName === "IFRAME";
+                  const textless = !isFrame && (el.textContent ?? "").trim().length < 40;
+                  const consentFrame =
+                    isFrame && !!frameOrigin && (el as HTMLIFrameElement).src.startsWith(frameOrigin);
+                  if ((cover > 0.85 && textless) || consentFrame) {
+                    el.setAttribute("data-a11y-behind-consent", "");
+                  }
+                }
+                style.textContent = rules.join("\n");
+                document.head.appendChild(style);
+              },
+              {
+                sel: banner.frameUrl ? null : banner.selector,
+                frameOrigin: banner.frameUrl ? new URL(banner.frameUrl).origin : null,
+              }
+            );
+            await page.waitForTimeout(120);
+            behindConsentShot = await page
+              .screenshot({ type: "jpeg", quality: 70, animations: "disabled" })
+              .catch(() => null);
+          } catch {
+            // best-effort: no behind-banner shot beats a failed scan
+          } finally {
+            await page
+              .evaluate(() => {
+                document.getElementById("__a11y_behind_consent")?.remove();
+                document
+                  .querySelectorAll("[data-a11y-behind-consent]")
+                  .forEach((e) => e.removeAttribute("data-a11y-behind-consent"));
+              })
+              .catch(() => {});
+          }
+        });
+      }
+
       // Element-specific selectors from the deterministic non-axe layers, so
       // their findings get the same reliable precise capture as axe findings.
       // This precise path scrolls each element into view before shooting, so
@@ -3312,6 +3374,9 @@ export async function renderAndScan(
         renderTimeMs: Date.now() - start,
         phaseMs,
         screenshotBase64: screenshotBuffer.toString("base64"),
+        screenshotBehindConsentBase64: behindConsentShot
+          ? (behindConsentShot as Buffer).toString("base64")
+          : undefined,
         fullPageScreenshot,
         boundingBoxes,
         elementScreenshots: mergedElementScreenshots,
