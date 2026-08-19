@@ -80,8 +80,20 @@ function makeFinding(
 // 2026 fee changes" is a perfectly good link, and only a bare "Read more"
 // isn't. Arrows and ellipses are here because they are common as "link text"
 // and say even less than the words do.
-const VAGUE_LINK_TEXT =
-  /^(read\s*more|more|learn\s*more|click\s*here|here|find\s*out\s*more|see\s*more|view\s*more|details|more\s*details|continue|continue\s*reading|go|link|this\s*link|full\s*story|read\s*on|next|previous|…|\.\.\.|>|>>|→|»)$/i;
+const VAGUE_LINK_TEXT = new RegExp(
+  "^(read\\s*more|more|learn\\s*more|click\\s*here|here|find\\s*out\\s*more|see\\s*more|view\\s*more|details|more\\s*details|continue|continue\\s*reading|go|link|this\\s*link|full\\s*story|read\\s*on|next|previous" +
+    "|mehr|mehr\\s*erfahren|mehr\\s*lesen|weiterlesen|weiter|hier|hier\\s*klicken|mehr\\s*dazu|mehr\\s*infos|erfahren\\s*sie\\s*mehr|zum\\s*artikel" + // de
+    "|en\\s*savoir\\s*plus|lire\\s*la\\s*suite|lire\\s*plus|cliquez\\s*ici|ici|plus\\s*d'infos|plus\\s*d'informations|voir\\s*plus|suite|continuer|détails" + // fr
+    "|lees\\s*meer|meer|meer\\s*lezen|klik\\s*hier|meer\\s*info|meer\\s*informatie|verder\\s*lezen|bekijk\\s*meer|verder" + // nl
+    "|leer\\s*más|más|más\\s*información|haz\\s*clic\\s*aquí|clic\\s*aquí|aquí|ver\\s*más|seguir\\s*leyendo|continuar|detalles" + // es
+    "|leggi\\s*di\\s*più|scopri\\s*di\\s*più|clicca\\s*qui|qui|per\\s*saperne\\s*di\\s*più|maggiori\\s*informazioni|vedi\\s*di\\s*più|continua|dettagli|altro" + // it
+    "|leia\\s*mais|saiba\\s*mais|clique\\s*aqui|aqui|ver\\s*mais|mais\\s*informações|mais|detalhes" + // pt
+    "|czytaj\\s*więcej|więcej|kliknij\\s*tutaj|tutaj|dowiedz\\s*się\\s*więcej|zobacz\\s*więcej|dalej|szczegóły|więcej\\s*informacji" + // pl
+    "|läs\\s*mer|mer|klicka\\s*här|här|mer\\s*info|mer\\s*information|se\\s*mer|fortsätt|visa\\s*mer" + // sv
+    "|læs\\s*mere|mere|klik\\s*her|her|mere\\s*info|se\\s*mere|fortsæt|vis\\s*mere" + // da
+    "|…|\\.\\.\\.|>|>>|→|»)$",
+  "i"
+);
 
 // Nothing to say about a link that says nothing yet — axe's link-name rule
 // already reports those, and reporting them twice helps nobody.
@@ -172,7 +184,11 @@ export function evaluateComponents(dom: DomSignals): AccessibilityFinding[] {
   const anyRequired = allFields.some((f) => f.required);
   if (anyRequired) {
     const unmarkedRequired = allFields.filter(
-      (f) => f.required && !/\*|\(required\)|\brequired\b/i.test(f.accessibleLabel ?? "")
+      (f) =>
+        f.required &&
+        !/\*|\(required\)|\brequired\b|\bpflichtfeld\b|\berforderlich\b|\bobligatoire\b|\brequis\b|\bverplicht\b|\bobligatorio\b|\bobbligatorio\b|\bobrigatório\b|\bwymagane\b|\bobligatorisk\b|\bpåkrævet\b/i.test(
+          f.accessibleLabel ?? ""
+        )
     );
     if (unmarkedRequired.length > 0) {
       findings.push(
@@ -191,7 +207,8 @@ export function evaluateComponents(dom: DomSignals): AccessibilityFinding[] {
   //    interactive elements — heuristic: there's a form, but no button/link
   //    whose accessible name reads like a submit action.
   if (dom.forms.length > 0) {
-    const submitRe = /\b(submit|sign\s*up|sign\s*in|log\s*in|register|subscribe|send|continue|create account|get started|join)\b/i;
+    const submitRe =
+      /\b(submit|sign\s*up|sign\s*in|log\s*in|register|subscribe|send|continue|create account|get started|join|senden|absenden|abschicken|anmelden|registrieren|envoyer|valider|s'inscrire|connexion|versturen|verzenden|aanmelden|enviar|registrarse|invia|iscriviti|wyślij|zarejestruj|skicka|registrera|tilmeld)\b/i;
     const hasSubmit = dom.interactiveElements.some(
       (el) => el.type === "button" && submitRe.test(el.accessibleName)
     );

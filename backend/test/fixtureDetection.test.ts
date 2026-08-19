@@ -562,6 +562,41 @@ describe("qa-mobile-good.html: phone-width done right", () => {
   });
 });
 
+// The detectors, auf Deutsch: every text heuristic outside the consent
+// banner was English-only on a product built for EU sites — the coverage
+// audit's sharpest product mismatch. This fixture proves the scored
+// vague-link check and three dark-pattern detectors fire on German and
+// French wording, and that a DATED German deadline stays unflagged: the
+// MoMA false positive must not recur in translation.
+describe("i18n-fixture.html: the detectors speak the market's languages", () => {
+  let findings: AccessibilityFinding[];
+  beforeAll(async () => {
+    findings = await scanFixture("i18n-fixture.html");
+  }, 120_000);
+
+  it("flags the bare 'Mehr erfahren' link", () => {
+    const vague = findings.filter((f) => f.ruleId === "link-text-vague");
+    expect(vague.length).toBeGreaterThan(0);
+  });
+
+  it("catches the German confirmshaming decline", () => {
+    expect(findings.some((f) => f.ruleId === "dark-confirmshaming")).toBe(true);
+  });
+
+  it("catches the pre-ticked German marketing checkbox", () => {
+    expect(findings.some((f) => f.ruleId === "dark-preselected-optin")).toBe(true);
+  });
+
+  it("flags undated urgency and the French scarcity claim, and spares the dated deadline", () => {
+    const urgency = findings.filter(
+      (f) => f.ruleId === "dark-fake-urgency" || f.ruleId === "dark-fake-scarcity"
+    );
+    const text = urgency.map((f) => `${f.description} ${f.elementSnippet ?? ""}`).join(" | ");
+    expect(urgency.length).toBeGreaterThan(0);
+    expect(text).not.toMatch(/9\.\s*August/);
+  });
+});
+
 // The booking.com shape, end to end: the whole page aria-hidden behind a
 // consent banner that never takes focus. This exercises the entire chain the
 // unit tests fake — the in-page collector measuring the banner, the render

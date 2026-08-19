@@ -318,10 +318,42 @@ export function collectDarkPatternSignalsInPage(): DarkPatternSignals {
   // ---- Confirmshaming -----------------------------------------------------
   // Guilt-tripping decline wording: a refusal phrased in the first person so
   // the user has to "admit" something ("No thanks, I don't want to save money").
+  // One structural idea per language: a refusal ("no/nein/non…") joined to a
+  // first-person admission ("I don't want / I'd rather pay full price").
+  // English-only until the coverage audit found four of five dark-pattern
+  // detectors silent on the German, French and Dutch sites this product is
+  // for — the same miss the consent regexes fixed after bundesregierung.de.
   const SHAME_RES = [
     /\bno\b[^.!?]{0,60}\b(i|i'?m|i'?ll|we)\b[^.!?]{0,60}\b(don'?t|do not|hate|prefer|rather|like)\b/i,
     /\bi\b[^.!?]{0,40}\b(don'?t|do not)\b[^.!?]{0,40}\b(want|need|care|like|deserve)\b/i,
     /\b(i'?ll|i will|i'd rather)\b[^.!?]{0,40}\b(pay|miss|risk|stay|remain)\b/i,
+    // de
+    /\bnein\b[^.!?]{0,60}\b(ich|wir)\b[^.!?]{0,60}\b(möchte|will|brauche|mag|verzichte)\b/i,
+    /\bich\b[^.!?]{0,40}\b(verzichte|möchte (kein|nicht)|will (kein|nicht)|brauche (kein|nicht))/i,
+    /\b(zahle|verpasse) lieber\b/i,
+    // fr
+    /\bnon\b[^.!?]{0,60}\bje\b[^.!?]{0,60}\b(ne|n'|préfère|veux)\b/i,
+    /\bje préfère (payer|rater|perdre)\b/i,
+    // nl
+    /\bnee\b[^.!?]{0,60}\bik\b[^.!?]{0,60}\b(wil|hoef|liever)\b/i,
+    /\bik (wil|hoef) (geen|niet)\b/i,
+    // es
+    /\bno\b[^.!?]{0,40}\b(quiero|necesito|me interesa)\b/i,
+    /\bprefiero (pagar|perder)\b/i,
+    // it
+    /\bnon (voglio|mi interessa|ne ho bisogno)\b/i,
+    /\bpreferisco (pagare|perdere)\b/i,
+    // pt
+    /\bnão (quero|preciso|me interessa)\b/i,
+    /\bprefiro (pagar|perder)\b/i,
+    // pl
+    /\bnie,? (chcę|potrzebuję)\b/i,
+    /\bwolę (płacić|przepłacać|stracić)\b/i,
+    // sv
+    /\bnej\b[^.!?]{0,60}\bjag\b[^.!?]{0,60}\b(vill|behöver|föredrar)\b/i,
+    /\bjag vill inte\b/i,
+    // da
+    /\bnej\b[^.!?]{0,60}\bjeg\b[^.!?]{0,60}\b(vil|behøver|foretrækker)\b/i,
   ];
   const confirmshaming: DarkPatternSignals["confirmshaming"] = [];
   for (const el of Array.from(document.querySelectorAll(clickableSelector))) {
@@ -339,8 +371,20 @@ export function collectDarkPatternSignalsInPage(): DarkPatternSignals {
   }
 
   // ---- Pre-ticked opt-ins -------------------------------------------------
-  const OPTIN_RE =
-    /\b(newsletter|subscribe|subscription|marketing|promotion|promotional|offers|deals|updates|third[- ]part|partners|share (my|your)|email me|sign me up|keep me posted|mailing list)\b/i;
+  const OPTIN_RE = new RegExp(
+    "\\b(newsletter|subscribe|subscription|marketing|promotion|promotional|offers|deals|updates|third[- ]part|partners|share (my|your)|email me|sign me up|keep me posted|mailing list" +
+      "|angebote|werbung|neuigkeiten|partnern?|dritte|informiert|abonnieren" + // de
+      "|offres|promotions|actualités|partenaires|publicité|abonner|informé" + // fr
+      "|aanbiedingen|nieuwsbrief|reclame|op de hoogte" + // nl
+      "|ofertas|promociones|boletín|publicidad|socios|novedades" + // es
+      "|offerte|promozioni|novità|pubblicità|aggiornamenti" + // it
+      "|promoções|boletim|publicidade|parceiros|novidades" + // pt
+      "|oferty|promocje|biuletyn|reklam|partnerów|nowości" + // pl
+      "|erbjudanden|nyhetsbrev|uppdateringar" + // sv
+      "|tilbud|nyhedsbrev|opdateringer" + // da
+      ")\\b",
+    "i"
+  );
   const preCheckedOptIns: DarkPatternSignals["preCheckedOptIns"] = [];
   for (const el of Array.from(document.querySelectorAll<HTMLInputElement>('input[type="checkbox"]'))) {
     if (preCheckedOptIns.length >= 8) break;
@@ -373,24 +417,63 @@ export function collectDarkPatternSignalsInPage(): DarkPatternSignals {
   //
   // So deadline wording is only reported when no date accompanies it. "Hurry,
   // offer ends soon" stays a finding; "Ends 31 December" does not.
-  const DEADLINE_RE =
-    /\b(hurry|act now|don'?t miss out|limited time|offer ends|ends (in|soon)|expires? (in|soon)|while stocks last|last chance|final call|closing soon)\b/i;
+  const DEADLINE_RE = new RegExp(
+    "\\b(hurry|act now|don'?t miss out|limited time|offer ends|ends (in|soon)|expires? (in|soon)|while stocks last|last chance|final call|closing soon" +
+      "|beeil|nur für kurze zeit|angebot endet|endet bald|läuft bald ab|solange der vorrat reicht|letzte chance|nicht verpassen" + // de
+      "|dépêchez|offre limitée|durée limitée|l'offre se termine|se termine bientôt|dernière chance|jusqu'à épuisement|ne (manquez|ratez) pas" + // fr
+      "|haast je|beperkte tijd|aanbieding eindigt|eindigt binnenkort|laatste kans|zolang de voorraad strekt|mis het niet" + // nl
+      "|date prisa|tiempo limitado|la oferta termina|termina pronto|última oportunidad|hasta agotar existencias|no te lo pierdas" + // es
+      "|affrettati|tempo limitato|l'offerta scade|scade presto|ultima occasione|fino ad esaurimento|non perdere" + // it
+      "|última chance|oferta termina|termina em breve|até esgotar|não perca" + // pt
+      "|pospiesz się|ograniczony czas|oferta kończy|kończy się wkrótce|ostatnia szansa|do wyczerpania zapasów|nie przegap" + // pl
+      "|skynda|begränsad tid|erbjudandet (slutar|går ut)|sista chansen|så länge lagret räcker|missa inte" + // sv
+      "|skynd dig|begrænset tid|tilbuddet (slutter|udløber)|sidste chance|så længe lager haves|gå ikke glip" + // da
+      ")\\b",
+    "i"
+  );
   const URGENCY_PATTERNS: Array<{ kind: string; re: RegExp }> = [
     { kind: "scarcity", re: /\bonly \d+ (left|remaining|in stock|spots?|seats?|rooms?|tickets?)\b/i },
     { kind: "scarcity", re: /\b\d+ (people|others|customers|guests) (are )?(viewing|looking|booked|bought)\b/i },
     // Still quantity claims: no date makes "almost sold out" verifiable.
     { kind: "scarcity", re: /\b(almost (gone|sold out)|selling fast|going fast)\b/i },
+    // The same two quantity shapes per language — "only N left" and
+    // "N people are viewing" — kept to the highest-precision forms.
+    { kind: "scarcity", re: /\bnur noch \d+ (verfügbar|übrig|auf lager|stück|plätze|zimmer)\b/i }, // de
+    { kind: "scarcity", re: /\b\d+ (personen|andere) (sehen|schauen)\b|\bfast ausverkauft\b/i }, // de
+    { kind: "scarcity", re: /\b(plus que|il ne reste que) \d+\b|\bpresque épuisé\b/i }, // fr
+    { kind: "scarcity", re: /\b\d+ personnes (regardent|consultent)\b/i }, // fr
+    { kind: "scarcity", re: /\bnog (maar |slechts )?\d+ (beschikbaar|op voorraad|over|kamers|plekken)\b|\bbijna uitverkocht\b/i }, // nl
+    { kind: "scarcity", re: /\b(solo |sólo )?quedan? \d+\b|\bcasi agotado\b/i }, // es
+    { kind: "scarcity", re: /\bsolo \d+ (rimast|disponibil)\w*\b|\bquasi esaurito\b/i }, // it
+    { kind: "scarcity", re: /\bapenas \d+ (restante|disponíve)\w*\b|\bquase esgotado\b/i }, // pt
+    { kind: "scarcity", re: /\bzostał[oy]? (tylko )?\d+\b|\bprawie wyprzedane\b/i }, // pl
+    { kind: "scarcity", re: /\b(endast|bara) \d+ kvar\b|\bnästan slutsåld\b/i }, // sv
+    { kind: "scarcity", re: /\bkun \d+ tilbage\b|\bnæsten udsolgt\b/i }, // da
     { kind: "urgency", re: DEADLINE_RE },
   ];
   // A specific day. Deliberately not matching "soon", "today" or a bare
   // weekday — those are the vague ones the pattern is about.
-  const MONTHS = "jan|feb|mar|apr|may|jun|jul|aug|sep|sept|oct|nov|dec";
+  // Month stems across the languages the detectors above speak, so "bis
+  // 9. August" or "jusqu'au 31 décembre" counts as a dated claim — without
+  // these, the MoMA-class false positive (a truthful published deadline
+  // reported as manufactured urgency) simply recurs in translation. Stems,
+  // because the regexes below append [a-z]* for the suffix.
+  const MONTHS =
+    "jan|feb|mar|apr|may|jun|jul|aug|sep|sept|oct|nov|dec" +
+    "|märz|mai|okt|dez" + // de (jan/feb/apr/jun/jul/aug/sep/nov share stems)
+    "|fév|avr|juin|juil|août|aout|déc" + // fr
+    "|maart|mei|augustus" + // nl
+    "|ene|abr|mayo|ago|dic" + // es
+    "|gen|mag|giu|lug|set|ott" + // it
+    "|fev|out|dez" + // pt
+    "|sty|lut|kwi|maj|cze|lip|sie|wrz|paź|lis|gru" + // pl
+    "|okt|dec"; // sv/da share the rest
   const HAS_DATE = new RegExp(
     "\\b(" +
       "\\d{4}-\\d{2}-\\d{2}" + // 2026-08-09
       "|\\d{1,2}[/.]\\d{1,2}(?:[/.]\\d{2,4})?" + // 9/8 or 09.08.2026
       `|(?:${MONTHS})[a-z]*\\.?\\s+\\d{1,2}` + // Aug 9 / August 9
-      `|\\d{1,2}\\s+(?:${MONTHS})[a-z]*` + // 9 Aug / 9 August
+      `|\\d{1,2}\\.?\\s+(?:${MONTHS})[a-z]*` + // 9 Aug / 9 August / 9. August (de ordinal)
       ")\\b",
     "i"
   );

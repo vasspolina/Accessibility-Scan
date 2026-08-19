@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>i18n fixture — dark patterns and vague links, auf Deutsch</title>
+</head>
+<body>
+  <main>
+    <h1>Der Prüfladen</h1>
+    <p>
+      Ein erfundener Shop für einen Test: die Angebote sind unecht, die
+      Dringlichkeit ist gespielt, und genau das soll der Scanner auf
+      Deutsch und Französisch genauso erkennen wie auf Englisch.
+    </p>
+
+    <!-- The scored 2.4.4 check: a bare "Mehr erfahren" says nothing about
+         where it goes, exactly like a bare "Read more". -->
+    <p><a href="/angebot">Mehr erfahren</a></p>
+
+    <!-- Confirmshaming, German shape: refusal + first-person admission. -->
+    <p>
+      <button type="button">Jetzt sparen und anmelden</button>
+      <button type="button">Nein, ich möchte kein Geld sparen</button>
+    </p>
+
+    <!-- Pre-ticked opt-in with a German marketing label. -->
+    <form action="/kasse" method="post">
+      <label>E-Mail <input type="email" name="email" autocomplete="email"></label>
+      <label>
+        <input type="checkbox" name="werbung" checked>
+        Ja, ich möchte den Newsletter und Angebote per E-Mail erhalten
+      </label>
+      <button type="submit">Absenden</button>
+    </form>
+
+    <!-- Undated urgency, German — must flag. -->
+    <p>Nur für kurze Zeit — nicht verpassen!</p>
+
+    <!-- DATED deadline, German — must NOT flag: "bis 9. August" names a
+         day, and a date is either true or it is not. The MoMA guard, in
+         translation. -->
+    <p>Letzte Chance — nur bis 9. August</p>
+
+    <!-- Scarcity, French quantity claim — must flag. -->
+    <p lang="fr">Plus que 3 disponibles !</p>
+  </main>
+</body>
+</html>
