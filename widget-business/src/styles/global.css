@@ -6157,6 +6157,51 @@
   height: auto;
 }
 
+/* ── The stop-press ──────────────────────────────────────────────────────
+   Rendered first in the report when the scan proved a screen reader user
+   cannot get past the cookie banner. It borrows the notification kind
+   stripe's language at full width and the critical red, because it is the
+   one fact that outranks the score. White on red-60 measures 4.6:1; the
+   body stays ink-on-wash for reading, with the red carried by the stripe
+   and the title. */
+.a11y-widget-biz .a11y-blockflag {
+  padding: var(--space-05) var(--space-06);
+  border-left: 4px solid var(--red-60);
+  border-radius: var(--radius-md);
+  background: var(--red-10);
+  color: var(--text-primary);
+}
+.a11y-widget-biz .a11y-blockflag-title {
+  margin: 0 0 var(--space-03);
+  font-size: 20px;
+  font-weight: 500;
+  color: var(--red-70); /* 7.0:1 on the red-10 wash */
+}
+.a11y-widget-biz .a11y-blockflag-body {
+  margin: 0 0 var(--space-04);
+  font-size: 18px;
+  max-width: var(--measure);
+}
+.a11y-widget-biz .a11y-blockflag-jump {
+  display: inline-flex;
+  align-items: center;
+  min-height: 24px;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--red-70);
+  font-size: 15px;
+  font-weight: 500;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  cursor: pointer;
+}
+/* Paper keeps the warning — it is report content — but sheds the control. */
+@media print {
+  .a11y-widget-biz .a11y-blockflag { background: none; }
+  .a11y-widget-biz .a11y-blockflag-jump { display: none; }
+}
+
 /* RelatedChecks — its component comment promises "the hover/focus
    inversion lives in RelatedChecks.css", a file that never landed, so the
    gallery rendered the cards as raw UA buttons. The app itself never

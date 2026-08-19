@@ -533,6 +533,31 @@ export function App({
       {report && (
         <ReportViewProvider value={reportView}>
         <div className="a11y-report">
+          {/* The stop-press. When the scan proves a screen reader user
+              cannot get past the cookie banner, that fact outranks the
+              score — nothing below it is reachable for them. First in the
+              report's DOM on purpose, in every audience: a screen reader
+              reading THIS report hears it before anything else, which is
+              the point. role=alert announces it once, on render. */}
+          {report.findings.some((f) => f.ruleId === "consent-blocks-reader") && (
+            <div className="a11y-blockflag" role="alert">
+              <p className="a11y-blockflag-title">
+                Start here: a screen reader cannot get past your cookie banner
+              </p>
+              <p className="a11y-blockflag-body">
+                The banner hides the page from screen readers and never takes
+                focus. Until that is fixed, everything below this line is what
+                a screen reader user never reaches.
+              </p>
+              <button
+                type="button"
+                className="a11y-blockflag-jump"
+                onClick={() => focusFindings("a11y-accessibility-heading")}
+              >
+                See the finding
+              </button>
+            </div>
+          )}
           {/* The kit's results header: what was scanned, said plainly. */}
           {/* Printing lives in the form footer (business) and the report
               action row (professional) now — nothing here. */}
