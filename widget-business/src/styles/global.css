@@ -482,8 +482,11 @@
 
 /* .as-card / .as-card--flush -------------------------------------------- */
 .a11y-widget-biz .a11y-card { padding: var(--space-07); border-radius: var(--radius-lg); border: 0; }
+/* .a11y-related-card left this group: its complete spec now lives with
+   the RelatedChecks block near the end of the file, and membership here
+   was a divergent tie the lint caught — space-05/radius-lg losing to
+   space-06/radius-md on source order alone. */
 .a11y-widget-biz .a11y-fact-card,
-.a11y-widget-biz .a11y-related-card,
 .a11y-widget-biz .a11y-trust-row,
 .a11y-widget-biz .a11y-finding,
 .a11y-widget-biz .a11y-pro-summary { padding: var(--space-05); border-radius: var(--radius-lg); border: 0; }
