@@ -6154,6 +6154,54 @@
   height: auto;
 }
 
+/* RelatedChecks — its component comment promises "the hover/focus
+   inversion lives in RelatedChecks.css", a file that never landed, so the
+   gallery rendered the cards as raw UA buttons. The app itself never
+   mounts this component (FindingGroup's own panel does that job); these
+   rules exist so the gallery tells the truth about the vendored spec:
+   auto-fit card grid, layer-01 cards, full inversion on hover and focus. */
+.a11y-widget-biz .a11y-related {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-05);
+}
+.a11y-widget-biz .a11y-related-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 240px), 1fr));
+  gap: var(--space-05);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.a11y-widget-biz .a11y-related-card {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--space-03);
+  padding: var(--space-06);
+  border: 0;
+  border-radius: var(--radius-md);
+  background: var(--layer-01);
+  color: var(--text-primary);
+  text-align: left;
+  cursor: pointer;
+}
+.a11y-widget-biz .a11y-related-card:hover,
+.a11y-widget-biz .a11y-related-card:focus-visible {
+  background: var(--gray-100);
+  color: var(--text-on-invert);
+}
+.a11y-widget-biz .a11y-related-card:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 2px;
+}
+.a11y-widget-biz .a11y-related-meta { font-size: 15px; color: var(--text-secondary); }
+.a11y-widget-biz .a11y-related-card:hover .a11y-related-meta,
+.a11y-widget-biz .a11y-related-card:focus-visible .a11y-related-meta {
+  color: var(--text-on-invert-secondary);
+}
+.a11y-widget-biz .a11y-related-name { font-size: 18px; font-weight: 500; }
+
 /* ── The 320px squeeze, measured piece by piece ──────────────────────────
    Every entry here is a specific element that painted past its box at a
    320px panel, found by a scrollWidth sweep over all six fixture states.
