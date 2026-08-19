@@ -461,6 +461,15 @@
   text-decoration: underline; text-decoration-color: transparent; text-underline-offset: 3px;
 }
 .a11y-widget-biz .a11y-btn-ghost:hover { text-decoration-color: currentColor; }
+/* Dialog.tsx builds this class in a template literal — "a11y-btn-" +
+   ("danger" | "primary") — which is why a grep for the literal never finds
+   it and why it shipped unstyled: the delete-history confirm rendered its
+   destructive action as bare text beside an outlined Cancel. The vendored
+   Button's danger variant: filled red, white ink (4.6:1). */
+.a11y-widget-biz .a11y-btn-danger {
+  background: var(--red-60); border-color: var(--red-60); color: var(--white);
+}
+.a11y-widget-biz .a11y-btn-danger:hover { background: var(--red-70); border-color: var(--red-70); }
 .a11y-widget-biz .a11y-btn:disabled { opacity: .5; cursor: not-allowed; }
 
 /* .as-btn--secondary, shared by five call sites */
@@ -675,7 +684,10 @@
 .a11y-widget-biz .a11y-optioncard > input[type="radio"] { flex-shrink: 0; }
 
 /* .as-progress ---------------------------------------------------------- */
-.a11y-widget-biz .a11y-progress-track { height: 10px; border-radius: var(--radius-pill); background: #e8e8e8; overflow: hidden; }
+/* Track ground per the vendored ProgressBar (layer-01 with a subtle line)
+   — the #e8e8e8 it replaces matched no token at all. The near-black fill
+   stays: global.css documents it as the kit waiting-screen's own ink. */
+.a11y-widget-biz .a11y-progress-track { height: 10px; border-radius: var(--radius-pill); border: 1px solid var(--border-subtle); background: var(--layer-01); overflow: hidden; }
 .a11y-widget-biz .a11y-progress-fill  { height: 100%; border-radius: var(--radius-pill); background: var(--text-primary); }
 
 /* .as-skip-link --------------------------------------------------------- */
@@ -2409,7 +2421,7 @@
 .a11y-widget-biz .a11y-audit-list {
   display: flex;
   flex-direction: column;
-  gap: var(--space-04);
+  gap: var(--space-03);   /* the vendored SiteAudit's row rhythm */
   margin: var(--space-05) 0 0;
   padding: 0;
   list-style: none;
@@ -2418,8 +2430,11 @@
   display: flex;
   align-items: flex-start;
   gap: var(--space-05);
-  padding: var(--space-05) var(--space-06);
-  border-radius: var(--radius-lg);
+  /* Padding and radius per the vendored SiteAudit page row; alignment
+     stays flex-start against its `center` — these rows run to three
+     lines at phone width and centred wrapping reads as scattered. */
+  padding: var(--space-05);
+  border-radius: var(--radius-md);
   background: var(--layer-01);
 }
 .a11y-widget-biz .a11y-audit-body {
@@ -2721,7 +2736,7 @@
 }
 .a11y-widget-biz .a11y-shell-nav-count {
 }
-.a11y-widget-biz .a11y-shell-nav ul { gap: var(--space-03); }
+.a11y-widget-biz .a11y-shell-nav ul { gap: var(--space-02); } /* the vendored ShellNav's rail spacing */
 .a11y-widget-biz .a11y-shell-nav-link {
   border-radius: var(--radius-pill);
   background: var(--white);
@@ -2742,7 +2757,7 @@
 .a11y-widget-biz .a11y-shell-nav-meta {
   margin: var(--space-05) 0 0;
   padding-top: var(--space-05);
-  border-top: 1px solid var(--border-subtle);
+  border-top: 1px solid var(--purple-30); /* the vendored ShellNav's light-rail hairline */
   font-size: 15px;
   color: var(--text-secondary);
   overflow-wrap: anywhere;
@@ -6029,6 +6044,114 @@
 @container a11y-shell (max-width: 480px) {
   .a11y-widget-biz .a11y-plan { border-radius: var(--radius-lg); }
   .a11y-widget-biz .a11y-plan-buy { border-radius: var(--radius-md); }
+}
+
+/* ══ Component gaps, closed against the vendored library ══════════════════
+   An audit of all 43 design-system/production components against this file
+   found five places where the widget EMITS a component's classes but never
+   wrote their rules — markup running on UA defaults. Each block below is
+   the vendored component's own spec, translated to this file's tokens and
+   type rules. (Where the widget deliberately diverges from the library —
+   solid severity pills, the purple switch, pill tabs, the cream dial —
+   those decisions stand; they port LATER design artifacts and say so at
+   their own rules.) */
+
+/* Dialog — ScanHistory's compare dialog rendered UNPOSITIONED: the scrim,
+   panel, title, body and actions classes had no rules at all, so the
+   "modal" sat in normal flow at the bottom of the page. Spec from
+   Dialog.jsx: fixed full-viewport scrim at half-black, centred panel,
+   actions right-aligned over a hairline. House radius and spacing. */
+.a11y-widget-biz .a11y-dialog-scrim {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-05);
+  background: rgba(22, 22, 22, 0.5);
+}
+.a11y-widget-biz .a11y-dialog {
+  width: min(100%, 34rem);
+  max-height: 85vh;
+  overflow-y: auto;
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+  background: var(--layer-02);
+}
+.a11y-widget-biz .a11y-dialog-title {
+  margin: 0;
+  padding: var(--space-06) var(--space-06) var(--space-04);
+  font-size: 20px;
+  font-weight: 500;
+}
+.a11y-widget-biz .a11y-dialog-body { padding: 0 var(--space-06) var(--space-06); }
+.a11y-widget-biz .a11y-dialog-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--space-03);
+  padding: var(--space-05) var(--space-06);
+  border-top: 1px solid var(--border-subtle);
+}
+
+/* Notification kinds — Feedback.tsx emits a11y-note-error/success/warning/
+   info and NOTHING styled them: the kind was carried by no colour anywhere.
+   The vendored Notification keys each kind with a 3px left stripe and a
+   toned glyph; the box itself keeps this file's radius and padding. */
+.a11y-widget-biz .a11y-note-error   { border-left: 3px solid var(--red-60); }
+.a11y-widget-biz .a11y-note-success { border-left: 3px solid var(--green-60); }
+.a11y-widget-biz .a11y-note-warning { border-left: 3px solid var(--yellow-60); }
+.a11y-widget-biz .a11y-note-info    { border-left: 3px solid var(--blue-60); }
+.a11y-widget-biz .a11y-note-error   .a11y-note-glyph { color: var(--red-60); }
+.a11y-widget-biz .a11y-note-success .a11y-note-glyph { color: var(--green-60); }
+.a11y-widget-biz .a11y-note-warning .a11y-note-glyph { color: var(--yellow-60); }
+.a11y-widget-biz .a11y-note-info    .a11y-note-glyph { color: var(--blue-60); }
+
+/* Input's invalid help — Input.tsx emits a11y-input-help-invalid with no
+   rule, so error help read in the same quiet grey as ordinary hints. The
+   vendored spec says support-error; red-70 is this file's error ink
+   (7.79:1 against white, measured for the Failing pill). */
+.a11y-widget-biz .a11y-input-help-invalid { color: var(--red-70); }
+
+/* Select — the ported Select2 renders live in the scan form and had no
+   rules at all: a raw UA <select> beside styled fields. The vendored
+   Select's shape (stacked label, filled field, hairline base), on this
+   file's tokens and type. */
+.a11y-widget-biz .a11y-select2 {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-02);
+}
+.a11y-widget-biz .a11y-select2-label { font-size: 15px; font-weight: 500; }
+.a11y-widget-biz .a11y-select2-field {
+  min-height: 44px;
+  padding: 0 var(--space-04);
+  border: 0;
+  border-bottom: 1px solid var(--gray-60);
+  border-radius: 0;
+  background: var(--layer-01);
+  color: var(--text-primary);
+  font-size: 18px;
+  cursor: pointer;
+}
+.a11y-widget-biz .a11y-select2-field:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 2px;
+}
+.a11y-widget-biz .a11y-select2-help { font-size: 15px; color: var(--text-secondary); }
+
+/* The simulator's stage — a11y-sim-frame and a11y-sim-img had no rules, so
+   the filtered screenshot sat unclipped on the section ground. Vendored
+   VisionSimulator: rounded, clipped stage. */
+.a11y-widget-biz .a11y-sim-frame {
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  background: var(--layer-02);
+}
+.a11y-widget-biz .a11y-sim-img {
+  display: block;
+  width: 100%;
+  height: auto;
 }
 
 /* ── The 320px squeeze, measured piece by piece ──────────────────────────
