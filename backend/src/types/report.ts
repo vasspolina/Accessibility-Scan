@@ -275,6 +275,10 @@ export const accessibilityReportSchema = z.object({
   meta: z.object({
     axeVersion: z.string(),
     renderTimeMs: z.number(),
+    // Per-phase render timings. The field these come from carries a comment
+    // promising that a 79-second render "should be able to say where they
+    // went" — measured on every scan, and until now consumed by nothing.
+    renderPhaseMs: z.record(z.string(), z.number()).optional(),
     aiReviewTimeMs: z.number(),
     aiReviewStatus: aiReviewStatusSchema,
     // Checks that did not finish on this run. Present so the reader can tell a

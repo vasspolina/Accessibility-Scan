@@ -1101,6 +1101,10 @@ export const UNDECIDED_EXPLANATIONS: Record<string, { what: string; ask: string 
     what: "Captioned video with nothing describing what is on screen. Captions carry the words; they do not carry the picture.",
     ask: "Ask whether anything in these videos is shown rather than said — a chart, a demonstration, text on screen. If so, the audio itself needs to describe it. A written version on the page covers only the lowest level of the standard.",
   },
+  "form-error-association": {
+    what: "Form error messages that are not tied to their field in the code. A screen reader announces the field, but not the error sitting beside it.",
+    ask: "Ask your developer to connect each message to its field with aria-describedby. The reader then hears the problem at the moment it hears the field.",
+  },
   "media-audio-transcript": {
     what: "Audio on the page. A transcript is ordinary page text, so the checker has no way to tell whether one is here.",
     ask: "Check each recording has its words written out on the page near the player, and that the writing covers everything said.",
@@ -1115,6 +1119,10 @@ export const UNDECIDED_EXPLANATIONS: Record<string, { what: string; ask: string 
   // Two rows about the cookie layer's manners. Both are real screen-reader
   // harm and neither is a provable violation — a banner div without a dialog
   // role is legal markup — so they sit here for a person to rule on.
+  "consent-layer-in-frame": {
+    what: "The consent layer arrives from another company's website, inside a frame. The scan cannot reach into it to judge what a screen reader meets there.",
+    ask: "Have someone try the banner with a screen reader. Ask whether it is announced, whether focus reaches it, and whether refusing is as easy as accepting.",
+  },
   "consent-layer-unheralded": {
     what: "A cookie layer that never introduces itself. It carries no dialog role and no name, and keyboard focus never reaches it.",
     ask: "Have someone try the page with a screen reader. If the layer is never announced, it needs a dialog role, a name, and focus moved into it when it opens.",
@@ -1126,6 +1134,10 @@ export const UNDECIDED_EXPLANATIONS: Record<string, { what: string; ask: string 
   "interaction-motion-actuation": {
     what: "The page responds to the phone being tilted or shaken. Somebody who keeps their phone in a stand, or whose hands shake, cannot do that.",
     ask: "Ask your developer whether every tilt or shake action can also be done by tapping something on screen. Then ask whether the motion response can be switched off, so a shaking hand cannot fire it by accident.",
+  },
+  "interaction-gesture-listeners": {
+    what: "The page listens for swipes or drags. Somebody with a tremor, or steering a pointer by voice or switch, may not be able to draw one.",
+    ask: "Ask your developer whether every swipe or drag can also be done by tapping — arrows beside a carousel, a button beside a slider.",
   },
   "interaction-key-shortcuts": {
     what: "The page watches for key presses across the whole screen. Where a plain letter is a shortcut, anyone speaking to their computer sets it off by talking.",

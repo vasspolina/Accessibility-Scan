@@ -138,7 +138,14 @@ const CLICK_LISTENER_PROBE = `(() => {
     devicemotion: 1, deviceorientation: 1,
     keydown: 1, keypress: 1, keyup: 1,
   };
-  const globals = {};
+  // 2.5.1 Pointer Gestures — the one criterion of this probe's family that
+  // had no signal. A touchmove/pointermove listener is the presence evidence
+  // for path-based gestures (swipes, drags, carousels); counted anywhere,
+  // not just globally, because gesture handlers bind on the element they
+  // drag. A counter, not a target list: the fact is enough for an undecided
+  // row, and this probe must never be the reason a scan is slow.
+  const GESTURE_WATCH = { touchmove: 1, pointermove: 1 };
+  const globals = { gestureListeners: 0 };
   // WeakMap for the lookup, array for the enumeration. A linear scan here
   // would run on every addEventListener call a page makes — thousands on a
   // heavy site — and this probe must never be the reason a scan is slow.
@@ -164,6 +171,7 @@ const CLICK_LISTENER_PROBE = `(() => {
       // letter a page-wide shortcut, or a tilt gesture the only way to act.
       const isGlobal = this === window || this === document || this === document.body;
       if (isGlobal && GLOBAL_WATCH[type]) globals[type] = (globals[type] || 0) + 1;
+      if (GESTURE_WATCH[type]) globals.gestureListeners += 1;
 
       if (
         type === "change" &&

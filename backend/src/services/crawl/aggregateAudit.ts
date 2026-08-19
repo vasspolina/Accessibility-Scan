@@ -1,6 +1,7 @@
 import type { AccessibilityReport, Severity } from "../../types/report.js";
 import { buildConformance, type ConformanceSummary } from "../conformance/buildConformance.js";
 import { compareNavigation, type ConsistencyIssue } from "./consistency.js";
+import type { AccessibilityFinding } from "../../types/report.js";
 
 // Rolls several page reports into one site-level audit.
 //
@@ -146,6 +147,16 @@ export function aggregateAudit(entryUrl: string, outcomes: PageOutcome[]): SiteA
   // any one page fails for the site.
   const allFindings = scanned.flatMap((o) => o.report!.findings);
 
+  // Pages that failed to render carry no menu, and a page with no menu is
+  // silently skipped rather than counted as one that changed it.
+  const consistency = compareNavigation(
+    scanned.map((o) => ({
+      url: o.url,
+      label: o.label,
+      navigation: o.report!.navigation ?? [],
+    }))
+  );
+
   return {
     entryUrl,
     scannedAt: new Date().toISOString(),
@@ -155,15 +166,35 @@ export function aggregateAudit(entryUrl: string, outcomes: PageOutcome[]): SiteA
     worstPage,
     pages,
     siteWide,
-    conformance: buildConformance(allFindings),
-    // Pages that failed to render carry no menu, and a page with no menu is
-    // silently skipped rather than counted as one that changed it.
-    consistency: compareNavigation(
-      scanned.map((o) => ({
-        url: o.url,
-        label: o.label,
-        navigation: o.report!.navigation ?? [],
-      }))
+    conformance: buildConformance(
+      [
+        ...allFindings,
+        // The measured 3.2.3/3.2.4 failures, counted into their conformance
+        // rows. Without this the same audit showed a proven "the menu moves
+        // around" failure in .consistency while the checklist said we never
+        // looked — the two halves of one response contradicting each other.
+        // These minimal findings exist only for this count; the reader's
+        // copy of the evidence stays in .consistency below.
+        ...consistency.map(
+          (issue): AccessibilityFinding => ({
+            id: `consistency-${issue.ruleId}-${issue.criterion}`,
+            source: "automated",
+            severity: "moderate",
+            category: "accessibility",
+            wcagCriterion: issue.criterion,
+            wcagLevel: "AA",
+            selector: "nav",
+            description: issue.description,
+            suggestedFix: issue.title,
+            ruleId: issue.ruleId,
+          })
+        ),
+      ],
+      // The crawl runs pages with the AI review off by default; rows whose
+      // only coverage is an AI prompt item must not read "no-issues-found"
+      // on a scan where it never ran.
+      { aiRan: scanned.some((o) => o.report!.meta.aiReviewStatus === "completed") }
     ),
+    consistency,
   };
 }

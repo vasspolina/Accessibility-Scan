@@ -23,6 +23,12 @@ export interface WcagCriterion {
   name: string;
   level: CriterionLevel;
   coverage: CriterionCoverage;
+  // True when the criterion's "partial" coverage exists only in the AI
+  // review layer (a prompt item, not a deterministic check). When a scan
+  // runs with the AI off, these rows have no evidence behind them at all,
+  // and buildConformance downgrades them to needs-review rather than
+  // letting "no-issues-found" stand on a check that never ran.
+  aiAssisted?: boolean;
   // Plain-language question the criterion asks, written for a business owner
   // rather than quoting the standard at them. Used for rows we found nothing
   // wrong with and rows a person still has to check.
@@ -46,8 +52,12 @@ export const WCAG_21_AA_CRITERIA: WcagCriterion[] = [
   { id: "1.3.2", name: "Meaningful Sequence", level: "A", coverage: "partial", plain: "Do screen readers read the page in a sensible order?", failing: "Screen readers read parts of the page out of order" },
   { id: "1.3.3", name: "Sensory Characteristics", level: "A", coverage: "manual", plain: "Do instructions work without seeing shape, size or position?", failing: "Instructions rely on seeing shape, size or position" },
   { id: "1.3.4", name: "Orientation", level: "AA", coverage: "manual", plain: "Does the page work held sideways?", failing: "The page doesn't work when the phone is held sideways" },
-  { id: "1.3.5", name: "Identify Input Purpose", level: "AA", coverage: "automated", plain: "Do form fields say what they're for, so browsers can fill them in?", failing: "Form fields don't say what they're for, so browsers can't fill them in" },
-  { id: "1.4.1", name: "Use of Color", level: "A", coverage: "partial", plain: "Is anything shown by colour alone?", failing: "Colour alone carries the meaning, so colour-blind visitors miss it" },
+  // partial, not automated: axe's autocomplete-valid fires only on syntactically
+  // invalid tokens. The commoner failure — identity fields with NO token — is
+  // detected by component-form-autocomplete, which is deliberately filed as
+  // design-clarity advice and so never reaches this table.
+  { id: "1.3.5", name: "Identify Input Purpose", level: "AA", coverage: "partial", plain: "Do form fields say what they're for, so browsers can fill them in?", failing: "Form fields don't say what they're for, so browsers can't fill them in" },
+  { id: "1.4.1", name: "Use of Color", level: "A", coverage: "partial", aiAssisted: true, plain: "Is anything shown by colour alone?", failing: "Colour alone carries the meaning, so colour-blind visitors miss it" },
   { id: "1.4.2", name: "Audio Control", level: "A", coverage: "automated", plain: "Can sound that starts on its own be turned off?", failing: "Sound starts on its own and can't be turned off" },
   { id: "1.4.3", name: "Contrast (Minimum)", level: "AA", coverage: "automated", plain: "Is text dark enough to read against its background?", failing: "Text is too pale to read against its background" },
   { id: "1.4.4", name: "Resize Text", level: "AA", coverage: "automated", plain: "Does text stay readable when someone makes it bigger?", failing: "Text gets cut off when someone makes it bigger" },
@@ -68,12 +78,18 @@ export const WCAG_21_AA_CRITERIA: WcagCriterion[] = [
   { id: "2.4.2", name: "Page Titled", level: "A", coverage: "automated", plain: "Does the browser tab say what this page is?", failing: "The browser tab doesn't say what this page is" },
   { id: "2.4.3", name: "Focus Order", level: "A", coverage: "partial", plain: "Does tabbing move through the page in the order it reads?", failing: "Tabbing jumps around the page in a confusing order" },
   { id: "2.4.4", name: "Link Purpose (In Context)", level: "A", coverage: "automated", plain: "Does every link say where it goes?", failing: "Links don't say where they go" },
-  { id: "2.4.5", name: "Multiple Ways", level: "AA", coverage: "partial", plain: "Is there more than one way to reach a page?", failing: "Pages can only be reached one way" },
-  { id: "2.4.6", name: "Headings and Labels", level: "AA", coverage: "partial", plain: "Do headings and labels describe what's under them?", failing: "Headings and labels don't describe what's under them" },
+  // manual: no layer checks this — "partial" claimed failure modes we catch,
+  // and there were none.
+  { id: "2.4.5", name: "Multiple Ways", level: "AA", coverage: "manual", plain: "Is there more than one way to reach a page?", failing: "Pages can only be reached one way" },
+  { id: "2.4.6", name: "Headings and Labels", level: "AA", coverage: "partial", aiAssisted: true, plain: "Do headings and labels describe what's under them?", failing: "Headings and labels don't describe what's under them" },
   { id: "2.4.7", name: "Focus Visible", level: "AA", coverage: "automated", plain: "Can you see where you are while tabbing through?", failing: "You can't see where you are while tabbing through" },
   { id: "2.5.1", name: "Pointer Gestures", level: "A", coverage: "manual", plain: "Is there a simpler way to do anything needing a swipe or pinch?", failing: "A swipe or pinch is the only way to do something" },
   { id: "2.5.2", name: "Pointer Cancellation", level: "A", coverage: "manual", plain: "Can someone who taps the wrong thing slide their finger off to undo it?", failing: "Tapping the wrong thing can't be undone by sliding your finger off it" },
-  { id: "2.5.3", name: "Label in Name", level: "A", coverage: "automated", plain: "Does a button's spoken name match the words on it?", failing: "A button's spoken name doesn't match the words on it" },
+  // manual, not automated: axe's only 2.5.3 rule (label-content-name-mismatch)
+  // is experimental, so its results go to the undecided channel for a person
+  // to judge — same treatment as css-orientation-lock for 1.3.4. Nothing can
+  // fail this row mechanically, and "automated" was claiming otherwise.
+  { id: "2.5.3", name: "Label in Name", level: "A", coverage: "manual", plain: "Does a button's spoken name match the words on it?", failing: "A button's spoken name doesn't match the words on it" },
   { id: "2.5.4", name: "Motion Actuation", level: "A", coverage: "manual", plain: "Is there a normal control for anything worked by shaking or tilting?", failing: "An action only works by shaking or tilting the device" },
 
   // ---- Understandable ---------------------------------------------------
@@ -83,13 +99,17 @@ export const WCAG_21_AA_CRITERIA: WcagCriterion[] = [
   { id: "3.2.2", name: "On Input", level: "A", coverage: "manual", plain: "Does filling in a field change the page unexpectedly?", failing: "Filling in a field changes the page unexpectedly" },
   { id: "3.2.3", name: "Consistent Navigation", level: "AA", coverage: "manual", plain: "Does the menu stay in the same place on every page?", failing: "The menu moves around from page to page" },
   { id: "3.2.4", name: "Consistent Identification", level: "AA", coverage: "manual", plain: "Is the same thing called the same name everywhere?", failing: "The same thing is called different names in different places" },
-  { id: "3.3.1", name: "Error Identification", level: "A", coverage: "partial", plain: "Do form errors say which field is wrong?", failing: "Form errors don't say which field is wrong" },
+  { id: "3.3.1", name: "Error Identification", level: "A", coverage: "partial", aiAssisted: true, plain: "Do form errors say which field is wrong?", failing: "Form errors don't say which field is wrong" },
   { id: "3.3.2", name: "Labels or Instructions", level: "A", coverage: "automated", plain: "Do form fields say what to type?", failing: "Form fields don't say what to type" },
-  { id: "3.3.3", name: "Error Suggestion", level: "AA", coverage: "partial", plain: "Do error messages say how to fix the problem?", failing: "Error messages don't say how to fix the problem" },
+  { id: "3.3.3", name: "Error Suggestion", level: "AA", coverage: "partial", aiAssisted: true, plain: "Do error messages say how to fix the problem?", failing: "Error messages don't say how to fix the problem" },
   { id: "3.3.4", name: "Error Prevention (Legal, Financial, Data)", level: "AA", coverage: "manual", plain: "Can important submissions be checked or undone?", failing: "Important submissions can't be checked or undone" },
 
   // ---- Robust -----------------------------------------------------------
-  { id: "4.1.1", name: "Parsing", level: "A", coverage: "automated", plain: "Is the page's code free of mistakes that confuse screen readers?", failing: "The page's code has mistakes that can confuse screen readers" },
+  // manual: axe's 4.1.1 rules are deprecated (WCAG 2.2 removed the criterion),
+  // and the markup validator's output is a design-clarity note by design.
+  // Nothing maps findings here, so "automated" promised a check with no
+  // failure path.
+  { id: "4.1.1", name: "Parsing", level: "A", coverage: "manual", plain: "Is the page's code free of mistakes that confuse screen readers?", failing: "The page's code has mistakes that can confuse screen readers" },
   { id: "4.1.2", name: "Name, Role, Value", level: "A", coverage: "automated", plain: "Do buttons and menus tell screen readers what they are?", failing: "Buttons and menus don't tell screen readers what they are" },
   { id: "4.1.3", name: "Status Messages", level: "AA", coverage: "manual", plain: "Are updates like 'added to basket' announced out loud?", failing: "Updates like 'added to basket' aren't announced out loud" },
 ];

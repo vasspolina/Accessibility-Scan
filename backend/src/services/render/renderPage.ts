@@ -120,6 +120,10 @@ export interface DomSignals {
   listeners: {
     motion: boolean;
     keyboardGlobal: boolean;
+    // Any touchmove/pointermove listener on the page — presence evidence for
+    // path-based gestures (2.5.1). Presence only: what the handler does with
+    // the gesture is not visible from here, and the report says so.
+    gestures: boolean;
     // Elements that act on the press without also handling the release, so
     // there is nothing to move away from before letting go.
     pressWithoutRelease: string[];
@@ -667,6 +671,7 @@ function extractDomSignalsInPage(): DomSignals {
   const listeners = {
     motion: Boolean(probe?.globals.devicemotion || probe?.globals.deviceorientation),
     keyboardGlobal: Boolean(probe?.globals.keydown || probe?.globals.keypress),
+    gestures: Boolean(probe?.globals.gestureListeners),
     pressWithoutRelease: (probe?.pointerTargets ?? [])
       .filter((e) => e.down && !e.up && e.el.isConnected)
       .slice(0, 20)
@@ -2124,8 +2129,21 @@ async function captureKeyboardNavigation(
   // prevent, so an empty walk counts as one.
   if (stops.length === 0) failed = true;
 
+  // The cap is a truncation too. Exiting at MAX_TAB_STOPS without wrapping
+  // means the verdicts describe the first stops of a longer page — the
+  // header, the nav, the cookie banner — and the reader must be told, the
+  // same as when the time budget cuts the walk short.
+  if (!reachedEnd && !failed && stops.length >= MAX_TAB_STOPS - 1) truncated = true;
+
   const mouseOnly = await collectMouseOnlyControls(page);
-  return { stops, reachedEnd, failed, truncated, mouseOnly };
+  return {
+    stops,
+    reachedEnd,
+    failed,
+    truncated,
+    mouseOnly: mouseOnly ?? [],
+    mouseOnlyFailed: mouseOnly === null,
+  };
 }
 
 /**
@@ -2158,7 +2176,7 @@ async function captureKeyboardNavigation(
  * pagination bullets, clickable, with no role and no tabindex, so the slide
  * controls cannot be reached by keyboard at all.
  */
-async function collectMouseOnlyControls(page: Page): Promise<MouseOnlyControl[]> {
+async function collectMouseOnlyControls(page: Page): Promise<MouseOnlyControl[] | null> {
   try {
     return (await page.evaluate(String.raw`(() => {
       const __name = (fn) => fn;
@@ -2241,7 +2259,9 @@ async function collectMouseOnlyControls(page: Page): Promise<MouseOnlyControl[]>
     })()`)) as MouseOnlyControl[];
   } catch (err) {
     logger.warn({ err }, "Mouse-only control probe failed — reporting without it");
-    return [];
+    // null, not [] — a crashed probe must not read as a clean page. The
+    // caller records the failure and incompleteChecks discloses it.
+    return null;
   }
 }
 
@@ -2796,8 +2816,10 @@ export async function renderAndScan(
     };
     if (auth) {
       // Before the target navigation, so the session is live when we arrive.
-      // Throws AuthError, which the route surfaces as a clear message.
-      await authenticate(page, auth);
+      // Throws AuthError, which the route surfaces as a clear message. The
+      // target url rides along: cookie domains must default to the site
+      // being scanned, not to page.url(), which is still about:blank here.
+      await authenticate(page, auth, url);
     }
     // assertSafeUrl() (routes/scan.ts) resolves DNS once before this call
     // and rejects private/internal IPs — but that's a check against a
@@ -3287,15 +3309,17 @@ export async function renderAndScan(
           await page.waitForTimeout(200);
         }).catch(() => {});
 
-        // Orientation lock (1.3.4) — axe's css-orientation-lock rule, which
-        // is experimental and off by default. Experimental rules cry wolf,
-        // so its results go to the undecided channel for a person to judge
-        // rather than into the findings as confident claims.
+        // Experimental axe rules, run explicitly because they are off by
+        // default: css-orientation-lock (1.3.4) and label-content-name-mismatch
+        // (2.5.3 — before this, nothing anywhere tested Label in Name while
+        // its conformance row claimed "automated"). Experimental rules cry
+        // wolf, so their results go to the undecided channel for a person to
+        // judge rather than into the findings as confident claims.
         await timed("orientationLock", async () => {
           const lock = (await page.evaluate(() =>
             (window as unknown as { axe: { run: (c: unknown, o: unknown) => Promise<unknown> } }).axe.run(
               document,
-              { runOnly: { type: "rule", values: ["css-orientation-lock"] } }
+              { runOnly: { type: "rule", values: ["css-orientation-lock", "label-content-name-mismatch"] } }
             )
           )) as AxeRunResult;
           for (const v of lock.violations) {
@@ -3413,6 +3437,7 @@ export async function renderAndScan(
         textResizeSignals,
         incompleteChecks: [
           ...(keyboardNav.failed || keyboardNav.truncated ? ["keyboard navigation"] : []),
+          ...(keyboardNav.mouseOnlyFailed ? ["mouse-only controls"] : []),
           ...(mobileFailed ? ["phone layout"] : []),
           ...(textResizeSignals.failed ? ["text resizing"] : []),
           ...(userPreferences.failed ? ["display preferences"] : []),

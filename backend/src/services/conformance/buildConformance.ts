@@ -55,7 +55,16 @@ export interface ConformanceSummary {
  * design-clarity and dark-pattern findings are deliberately outside WCAG and
  * must not appear as conformance failures.
  */
-export function buildConformance(findings: AccessibilityFinding[]): ConformanceSummary {
+export function buildConformance(
+  findings: AccessibilityFinding[],
+  opts?: {
+    // False when the AI review did not run (disabled, failed, or the crawl's
+    // default). Criteria whose only coverage is an AI prompt item then have
+    // no evidence at all, and their empty rows must read needs-review, not
+    // no-issues-found — a claim of evidence that was never gathered.
+    aiRan?: boolean;
+  }
+): ConformanceSummary {
   const countByCriterion = new Map<string, number>();
   for (const finding of findings) {
     if (finding.category !== "accessibility") continue;
@@ -71,6 +80,9 @@ export function buildConformance(findings: AccessibilityFinding[]): ConformanceS
       status = "failed";
     } else if (c.coverage === "manual") {
       // We never looked, so we have nothing to say about it.
+      status = "needs-review";
+    } else if (c.aiAssisted && opts?.aiRan === false) {
+      // The only check behind this row is the AI review, and it did not run.
       status = "needs-review";
     } else {
       status = "no-issues-found";

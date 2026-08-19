@@ -94,10 +94,12 @@ describe("consent banner screen-reader checks", () => {
     expect(consentA11yUndecided(s)).toHaveLength(0);
   });
 
-  it("says nothing about an iframe banner it could not probe (Sourcepoint shape)", () => {
+  it("files an iframe banner as an open question rather than saying nothing", () => {
     const s = signals({ bgHiddenPct: 98 }, { frameUrl: "https://cmp.example/msg" });
     expect(evaluateConsentA11y(s)).toHaveLength(0);
-    expect(consentA11yUndecided(s)).toHaveLength(0);
+    const rows = consentA11yUndecided(s);
+    expect(rows).toHaveLength(1);
+    expect(rows[0].ruleId).toBe("consent-layer-in-frame");
   });
 });
 

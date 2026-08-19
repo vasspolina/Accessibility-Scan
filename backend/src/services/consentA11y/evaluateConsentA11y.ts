@@ -100,7 +100,21 @@ type UndecidedRow = NonNullable<AccessibilityReport["undecidedChecks"]>[number];
 export function consentA11yUndecided(signals: DarkPatternSignals): UndecidedRow[] {
   const banner = signals.consentBanner;
   const a = signals.consentA11y;
-  if (!banner || banner.frameUrl || !a) return [];
+  // A consent layer in a cross-origin iframe cannot be probed from the host
+  // page — and saying NOTHING was the wrong kind of honesty: everywhere
+  // else, "saw it, cannot rule" becomes an undecided row, and an EU sweep
+  // found four of forty-four banners living in exactly this shape.
+  if (banner?.frameUrl) {
+    return [
+      {
+        ruleId: "consent-layer-in-frame",
+        count: 1,
+        help: "The consent layer arrives from another website in a frame, where this scan cannot judge what a screen reader meets.",
+        helpUrl: "https://www.w3.org/WAI/ARIA/apg/patterns/dialog-modal/",
+      },
+    ];
+  }
+  if (!banner || !a) return [];
   if (evaluateConsentA11y(signals).length > 0) return [];
 
   const rows: UndecidedRow[] = [];

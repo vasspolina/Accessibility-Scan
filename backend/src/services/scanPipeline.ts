@@ -23,7 +23,7 @@ import { evaluateConsentA11y, consentA11yUndecided } from "./consentA11y/evaluat
 import { evaluateInteraction } from "./interaction/analyzeInteraction.js";
 import { evaluateTiming } from "./interaction/analyzeTiming.js";
 import { evaluateKeyboardNav } from "./keyboard/analyzeKeyboard.js";
-import { evaluateComponents } from "./components/analyzeComponents.js";
+import { evaluateComponents, formErrorAssociationUndecided } from "./components/analyzeComponents.js";
 import { evaluateDialogs } from "./dialog/analyzeDialogs.js";
 import { evaluateForcedColors } from "./forcedColors/analyzeForcedColors.js";
 import { evaluateReadingOrder } from "./readingOrder/analyzeReadingOrder.js";
@@ -453,7 +453,9 @@ export async function scanUrlToReport(
   // move a number that claims to describe A/AA conformance — see scoreFindings.
   const score = scoreFindings(findings);
   const categorySummary = summarizeCategories(findings);
-  const conformance = buildConformance(findings);
+  const conformance = buildConformance(findings, {
+    aiRan: aiReview.status === "completed",
+  });
   const wcag22 = buildWcag22Readiness(findings);
 
   return {
@@ -476,6 +478,7 @@ export async function scanUrlToReport(
       summariseUndecided(renderResult.axe),
       [
         ...consentA11yUndecided(renderResult.darkPatternSignals),
+        ...formErrorAssociationUndecided(renderResult.domSignals.forms),
         ...evaluateMedia(renderResult.domSignals.mediaElements, renderResult.domSignals.mediaEmbeds),
         ...evaluateInteraction(renderResult.domSignals.listeners, {
           liveRegions: renderResult.domSignals.liveRegions,
@@ -495,6 +498,7 @@ export async function scanUrlToReport(
     meta: {
       axeVersion: renderResult.axe.testEngine?.version ?? "unknown",
       renderTimeMs: renderResult.renderTimeMs,
+      renderPhaseMs: renderResult.phaseMs,
       aiReviewTimeMs: aiReview.aiReviewTimeMs,
       aiReviewStatus: aiReview.status,
       incompleteChecks: renderResult.incompleteChecks.length

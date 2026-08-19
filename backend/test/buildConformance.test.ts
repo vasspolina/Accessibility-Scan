@@ -159,4 +159,18 @@ describe("criterion phrasing", () => {
     expect(quiet.status).toBe("no-issues-found");
     expect(quiet.plain).toMatch(/\?$/);
   });
+
+  it("downgrades AI-only rows to needs-review when the AI review never ran", () => {
+    // 1.4.1's only coverage is an AI prompt item. With the AI off, an empty
+    // row is a claim of evidence that was never gathered — it must read
+    // needs-review, and a deterministic row like 1.4.3 must be unaffected.
+    const off = buildConformance([], { aiRan: false });
+    expect(off.criteria.find((x) => x.id === "1.4.1")!.status).toBe("needs-review");
+    expect(off.criteria.find((x) => x.id === "1.4.3")!.status).toBe("no-issues-found");
+    const on = buildConformance([], { aiRan: true });
+    expect(on.criteria.find((x) => x.id === "1.4.1")!.status).toBe("no-issues-found");
+    // A finding still beats the downgrade: failed is failed.
+    const withFinding = buildConformance([finding({ wcagCriterion: "1.4.1" })], { aiRan: false });
+    expect(withFinding.criteria.find((x) => x.id === "1.4.1")!.status).toBe("failed");
+  });
 });

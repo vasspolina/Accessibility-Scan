@@ -20,20 +20,25 @@ function makeFinding(
   severity: AccessibilityFinding["severity"],
   selector: string,
   description: string,
-  suggestedFix: string
+  suggestedFix: string,
+  // 2.2.2 for moving content; 1.4.2 for sound that starts on its own. The
+  // single hardcoded 2.2.2 left the Audio Control row permanently clean
+  // while its core failure was detected and credited elsewhere.
+  wcagCriterion: string = "2.2.2",
+  helpUrl: string = PAUSE_STOP_HIDE_URL
 ): AccessibilityFinding {
   return {
     id: randomUUID(),
     source: "automated",
     severity,
     category: "accessibility",
-    wcagCriterion: "2.2.2",
+    wcagCriterion,
     wcagLevel: "A",
     selector,
     description,
     suggestedFix,
     ruleId,
-    helpUrl: PAUSE_STOP_HIDE_URL,
+    helpUrl,
   };
 }
 
@@ -72,16 +77,35 @@ export function evaluateMotion(
   }
 
   // Media that starts playing by itself with no visible controls to stop it.
+  // Split by element: an <audio> tag's failure is 1.4.2 Audio Control (sound
+  // with no off switch); a <video>'s is 2.2.2 (moving content) — its sound,
+  // if any, would also be 1.4.2, but muted state is not captured, and 2.2.2
+  // holds for autoplaying video regardless.
   const autoplayNoControls = animatedElements.filter(
     (a) => a.isAutoplayMedia && !a.hasPauseControls
   );
-  if (autoplayNoControls.length > 0 && !existingRuleIds.has("no-autoplay-audio")) {
+  const autoplayAudio = autoplayNoControls.filter((a) => a.tag === "audio");
+  const autoplayVisual = autoplayNoControls.filter((a) => a.tag !== "audio");
+  if (autoplayAudio.length > 0 && !existingRuleIds.has("no-autoplay-audio")) {
+    findings.push(
+      makeFinding(
+        "motion-autoplay-audio",
+        "serious",
+        autoplayAudio[0].selector,
+        `Sound starts playing automatically with no visible controls to pause or stop it (${autoplayAudio.length} element${autoplayAudio.length === 1 ? "" : "s"}). It plays over what a screen reader says, and the visitor cannot turn it off.`,
+        "Remove autoplay, or add visible player controls (the controls attribute) so visitors can stop the sound.",
+        "1.4.2",
+        "https://www.w3.org/WAI/WCAG21/Understanding/audio-control.html"
+      )
+    );
+  }
+  if (autoplayVisual.length > 0 && !existingRuleIds.has("no-autoplay-audio")) {
     findings.push(
       makeFinding(
         "motion-autoplay-media",
         "serious",
-        autoplayNoControls[0].selector,
-        `Media starts playing automatically with no visible controls to pause or stop it (${autoplayNoControls.length} element${autoplayNoControls.length === 1 ? "" : "s"}). Visitors can't stop the motion or sound, which is disorienting and plays over what a screen reader says.`,
+        autoplayVisual[0].selector,
+        `Media starts playing automatically with no visible controls to pause or stop it (${autoplayVisual.length} element${autoplayVisual.length === 1 ? "" : "s"}). Visitors can't stop the motion or sound, which is disorienting and plays over what a screen reader says.`,
         "Remove autoplay, or add visible player controls (the controls attribute) so visitors can pause or stop playback."
       )
     );

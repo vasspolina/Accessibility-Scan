@@ -121,6 +121,18 @@ export function evaluateInteraction(
     });
   }
 
+  // 2.5.1 Pointer Gestures — same shape as its siblings above: the listener
+  // is the observable fact, what it does with the gesture is not, so this is
+  // an open question for a person, never a finding.
+  if (listeners.gestures) {
+    rows.push({
+      ruleId: "interaction-gesture-listeners",
+      count: 1,
+      help: "The page listens for swipes or drags",
+      helpUrl: "https://www.w3.org/WAI/WCAG21/Understanding/pointer-gestures.html",
+    });
+  }
+
   if (listeners.keyboardGlobal) {
     rows.push({
       ruleId: "interaction-key-shortcuts",

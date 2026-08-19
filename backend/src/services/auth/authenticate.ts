@@ -106,10 +106,14 @@ async function firstMatching(page: Page, selectors: string[]): Promise<string | 
  * Throws AuthError with a message safe to show a user — never containing the
  * credentials themselves.
  */
-export async function authenticate(page: Page, auth: AuthConfig): Promise<void> {
+export async function authenticate(page: Page, auth: AuthConfig, target?: string): Promise<void> {
   if (auth.kind === "cookies") {
     // No password involved at all, which is why this is the recommended path.
-    const targetUrl = new URL(page.url() === "about:blank" ? "https://example.com" : page.url());
+    // The target URL comes from the caller: authentication runs BEFORE
+    // page.goto, when page.url() is still about:blank — the old fallback
+    // quietly set every domainless cookie for example.com, so the session
+    // never reached the site and the "logged-in" scan scanned logged out.
+    const targetUrl = new URL(target ?? (page.url() === "about:blank" ? "https://example.com" : page.url()));
     await page.context().addCookies(
       auth.cookies.map((c) => ({
         name: c.name,

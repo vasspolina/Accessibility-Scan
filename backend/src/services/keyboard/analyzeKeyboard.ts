@@ -48,10 +48,14 @@ export interface KeyboardNavResult {
   stops: TabStop[];
   /**
    * Elements carrying a click handler that no amount of tabbing will reach.
-   * Empty when the probe could not run, which is indistinguishable here from
-   * a clean page — the same known limitation as `failed` below.
    */
   mouseOnly: MouseOnlyControl[];
+  /**
+   * True when the mouse-only probe itself threw. It guards this layer's only
+   * critical-severity rule, so a crashed probe must be distinguishable from
+   * a clean page — the render pass surfaces it in incompleteChecks.
+   */
+  mouseOnlyFailed?: boolean;
   // True when tabbing wrapped back to <body> before the cap — we saw the
   // whole tab cycle, not just a prefix of it.
   reachedEnd: boolean;
@@ -236,6 +240,20 @@ export function evaluateKeyboardNav(nav: KeyboardNavResult): AccessibilityFindin
     } else {
       runLength = 1;
     }
+  }
+  // The two-element trap: A→B→A→B… never reaching the rest of the page. The
+  // same-selector run above only catches focus that cannot move at all; the
+  // short repeating cycle is the commoner widget trap, and the recorded stop
+  // sequence already carries the evidence. Judged only at the END of a walk
+  // that never wrapped — a mid-page A,B,A,B that later escapes is a tab
+  // order quirk, not a trap.
+  if (!trappedSelector && !nav.reachedEnd && nav.stops.length >= 6) {
+    const t = nav.stops.slice(-6).map((s) => s.selector);
+    const twoCycle =
+      t[0] === t[2] && t[2] === t[4] &&
+      t[1] === t[3] && t[3] === t[5] &&
+      t[0] !== t[1];
+    if (twoCycle) trappedSelector = t[4];
   }
   if (trappedSelector) {
     findings.push(

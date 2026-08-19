@@ -49,13 +49,21 @@ function makeFinding(
   // Most of this layer is advice about clarity. A few of its rules are about
   // whether somebody can get through the page at all, and those belong with
   // the findings that count.
-  category: AccessibilityFinding["category"] = "design-clarity"
+  category: AccessibilityFinding["category"] = "design-clarity",
+  // Without these, an accessibility-category finding never reaches its
+  // conformance row: normalizeCriterionId(undefined) drops it, and the row
+  // reads "no-issues-found" while its failure sits in the findings list.
+  // That is how 2.4.1 shipped as a row that could never fail.
+  wcagCriterion?: string,
+  wcagLevel?: AccessibilityFinding["wcagLevel"]
 ): AccessibilityFinding {
   return {
     id: randomUUID(),
     source: "automated",
     severity: "minor",
     category,
+    wcagCriterion,
+    wcagLevel,
     selector,
     description,
     suggestedFix,
@@ -93,6 +101,31 @@ function looksVague(name: string): boolean {
  * Pure and deterministic — one grouped suggestion per rule, consistent with
  * the typography/motion layers.
  */
+/**
+ * Form error messages that are visible but not programmatically tied to a
+ * field — the renderer measures isAssociatedWithField on every one, and until
+ * now nothing deterministic read it: the signal fed only the AI layer, so
+ * 3.3.1's coverage silently dropped to zero whenever the AI was off. An
+ * undecided row, not a finding: an error visible at load may be a template
+ * placeholder, so a person confirms before anyone is told to fix it.
+ */
+export function formErrorAssociationUndecided(
+  forms: DomSignals["forms"]
+): Array<{ ruleId: string; count: number; help: string; helpUrl: string }> {
+  const unassociated = forms
+    .flatMap((f) => f.errorMessages)
+    .filter((m) => !m.isAssociatedWithField && m.text.trim().length > 0);
+  if (unassociated.length === 0) return [];
+  return [
+    {
+      ruleId: "form-error-association",
+      count: unassociated.length,
+      help: "Form error messages that are not tied to their field in the code",
+      helpUrl: "https://www.w3.org/WAI/WCAG21/Understanding/error-identification.html",
+    },
+  ];
+}
+
 export function evaluateComponents(dom: DomSignals): AccessibilityFinding[] {
   const findings: AccessibilityFinding[] = [];
   const allFields = dom.forms.flatMap((f) => f.fields);
@@ -209,7 +242,9 @@ export function evaluateComponents(dom: DomSignals): AccessibilityFinding[] {
         "There's no \"skip to main content\" link. Keyboard and screen-reader users have to tab through the entire navigation menu before they reach the content. That happens on every single page.",
         'Add a skip link as the very first thing the Tab key reaches. Point it at #main-content and keep it visually hidden until the Tab key lands on it. It\'s a small addition that saves keyboard users dozens of key presses per page.',
         "https://www.w3.org/WAI/WCAG21/Understanding/bypass-blocks.html",
-        "accessibility"
+        "accessibility",
+        "2.4.1",
+        "A"
       )
     );
   }
