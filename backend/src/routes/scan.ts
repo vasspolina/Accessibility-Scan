@@ -41,6 +41,10 @@ const scanBodySchema = z.object({
   // Lets the embedder opt out of the AI judgment layer per-scan (faster,
   // cheaper — automated axe-core findings only). Defaults to on.
   includeAiReview: z.boolean().optional().default(true),
+  // The report's language ("en" | "de" | "es" | "fr"; anything else
+  // falls back to English). Only reader-facing sentences move — criterion
+  // numbers, official names and levels are the standard's own.
+  language: z.string().optional(),
 });
 
 export async function scanRoutes(app: FastifyInstance) {
@@ -78,7 +82,9 @@ export async function scanRoutes(app: FastifyInstance) {
       report = await scanUrlToReport(
         parsedBody.data.url,
         parsedBody.data.includeAiReview,
-        parsedBody.data.auth
+        parsedBody.data.auth,
+        true,
+        parsedBody.data.language
       );
     } catch (err) {
       // Every branch of this used to live here, and the crawler had its own

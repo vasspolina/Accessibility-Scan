@@ -1,3 +1,5 @@
+import { getLang } from "../lib/i18n";
+
 export type Severity = "critical" | "serious" | "moderate" | "minor";
 export type FindingSource = "automated" | "ai-review";
 export type FindingCategory = "accessibility" | "design-clarity" | "dark-pattern";
@@ -267,7 +269,9 @@ export async function scanUrl(
   auth?: AuthConfig
 ): Promise<AccessibilityReport> {
   const endpoint = `${apiBase.replace(/\/$/, "")}/api/scan`;
-  const body = JSON.stringify({ url, includeAiReview, ...(auth ? { auth } : {}) });
+  // The language rides with the request: the conformance checklist is
+  // translated server-side so the emailed and printed copies carry it too.
+  const body = JSON.stringify({ url, includeAiReview, language: getLang(), ...(auth ? { auth } : {}) });
 
   for (let attempt = 1; attempt <= MAX_ATTEMPTS; attempt++) {
     let response: Response;
@@ -332,7 +336,7 @@ export async function auditSite(
   maxPages: number
 ): Promise<SiteAudit> {
   const endpoint = `${apiBase.replace(/\/$/, "")}/api/audit`;
-  const body = JSON.stringify({ url, maxPages });
+  const body = JSON.stringify({ url, maxPages, language: getLang() });
 
   // No retry loop here, unlike scanUrl: an audit is minutes of server work,
   // so silently firing a second one on a blip would be expensive and could

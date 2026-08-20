@@ -34,6 +34,7 @@ import { evaluateTextResize } from "./textResize/analyzeTextResize.js";
 import { validateMarkup } from "./markup/validateMarkup.js";
 import { summarizeSeverity, scoreFindings, summarizeCategories } from "./merge/scoring.js";
 import { buildConformance } from "./conformance/buildConformance.js";
+import { normalizeReportLang } from "./conformance/criteriaText.js";
 import { buildWcag22Readiness } from "./conformance/wcag22Readiness.js";
 import { checkPdfDocument } from "./documents/checkPdf.js";
 import { downscalePreview } from "./render/downscalePreview.js";
@@ -329,7 +330,12 @@ export async function scanUrlToReport(
   // and returns no screenshots at all, so for a crawl this is pure cost:
   // cropping per finding, a second page visit, and one AI call per page, all
   // of it discarded. Off by default for callers that say so.
-  captureEvidence = true
+  captureEvidence = true,
+  // The report's language. Applied to the conformance checklist here rather
+  // than at render time because the checklist travels — report, email and
+  // PDF all carry it, and a translation applied last would leave two of the
+  // three in English.
+  language?: string
 ): Promise<AccessibilityReport> {
   const safeUrl = await assertSafeUrl(rawUrl);
 
@@ -455,6 +461,7 @@ export async function scanUrlToReport(
   const categorySummary = summarizeCategories(findings);
   const conformance = buildConformance(findings, {
     aiRan: aiReview.status === "completed",
+    lang: normalizeReportLang(language),
   });
   const wcag22 = buildWcag22Readiness(findings);
 

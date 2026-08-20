@@ -26,6 +26,8 @@ const auditBodySchema = z.object({
   // would dominate the time budget and multiply the per-audit cost by the
   // page count. The deterministic layers are what make a site audit useful.
   includeAiReview: z.boolean().optional().default(false),
+  // Same contract as a single scan — see scanBodySchema.
+  language: z.string().optional(),
 });
 
 export async function auditRoutes(app: FastifyInstance) {
@@ -91,7 +93,8 @@ export async function auditRoutes(app: FastifyInstance) {
             page.url,
             parsed.data.includeAiReview,
             undefined,
-            false
+            false,
+            parsed.data.language
           );
           outcomes.push({ ...page, report });
         } catch (err) {
@@ -117,6 +120,6 @@ export async function auditRoutes(app: FastifyInstance) {
     const order = new Map(pages.map((p, i) => [p.url, i]));
     outcomes.sort((a, b) => (order.get(a.url) ?? 0) - (order.get(b.url) ?? 0));
 
-    return aggregateAudit(resolvedEntry, outcomes);
+    return aggregateAudit(resolvedEntry, outcomes, parsed.data.language);
   });
 }

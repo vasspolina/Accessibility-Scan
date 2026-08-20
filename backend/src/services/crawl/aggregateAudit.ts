@@ -2,6 +2,7 @@ import type { AccessibilityReport, Severity } from "../../types/report.js";
 import { buildConformance, type ConformanceSummary } from "../conformance/buildConformance.js";
 import { compareNavigation, type ConsistencyIssue } from "./consistency.js";
 import type { AccessibilityFinding } from "../../types/report.js";
+import { normalizeReportLang } from "../conformance/criteriaText.js";
 
 // Rolls several page reports into one site-level audit.
 //
@@ -75,7 +76,12 @@ const SEVERITY_ORDER: Record<Severity, number> = {
  * view. Kept free of I/O so the aggregation logic can be tested without
  * running a browser.
  */
-export function aggregateAudit(entryUrl: string, outcomes: PageOutcome[]): SiteAudit {
+export function aggregateAudit(
+  entryUrl: string,
+  outcomes: PageOutcome[],
+  // The site-level checklist follows the same language as its pages.
+  language?: string
+): SiteAudit {
   const pages: PageSummary[] = outcomes.map((o) => ({
     url: o.url,
     label: o.label,
@@ -193,7 +199,10 @@ export function aggregateAudit(entryUrl: string, outcomes: PageOutcome[]): SiteA
       // The crawl runs pages with the AI review off by default; rows whose
       // only coverage is an AI prompt item must not read "no-issues-found"
       // on a scan where it never ran.
-      { aiRan: scanned.some((o) => o.report!.meta.aiReviewStatus === "completed") }
+      {
+        aiRan: scanned.some((o) => o.report!.meta.aiReviewStatus === "completed"),
+        lang: normalizeReportLang(language),
+      }
     ),
     consistency,
   };

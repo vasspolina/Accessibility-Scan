@@ -5,6 +5,7 @@ import {
   type CriterionCoverage,
   type CriterionLevel,
 } from "./wcagCriteria.js";
+import { criterionText, type ReportLang } from "./criteriaText.js";
 
 // Builds the conformance view: WCAG 2.1 A/AA criterion by criterion, which is
 // the standard EN 301 549 points at and therefore what the European
@@ -63,8 +64,13 @@ export function buildConformance(
     // no evidence at all, and their empty rows must read needs-review, not
     // no-issues-found — a claim of evidence that was never gathered.
     aiRan?: boolean;
+    // The report's language. Only the plain question and the failing
+    // statement move; numbers, official names and levels are the standard's
+    // own and stay put in every language.
+    lang?: ReportLang;
   }
 ): ConformanceSummary {
+  const lang = opts?.lang ?? "en";
   const countByCriterion = new Map<string, number>();
   for (const finding of findings) {
     if (finding.category !== "accessibility") continue;
@@ -87,7 +93,8 @@ export function buildConformance(
     } else {
       status = "no-issues-found";
     }
-    return { ...c, status, findingCount };
+    const localised = criterionText(c.id, lang);
+    return { ...c, ...(localised ?? {}), status, findingCount };
   });
 
   const failedByLevel = { A: 0, AA: 0 };

@@ -1,4 +1,5 @@
 import { describe, it, expect } from "vitest";
+import { normalizeReportLang } from "../src/services/conformance/criteriaText.js";
 import { buildConformance } from "../src/services/conformance/buildConformance.js";
 import { normalizeCriterionId, WCAG_21_AA_CRITERIA } from "../src/services/conformance/wcagCriteria.js";
 import type { AccessibilityFinding } from "../src/types/report.js";
@@ -172,5 +173,35 @@ describe("criterion phrasing", () => {
     // A finding still beats the downgrade: failed is failed.
     const withFinding = buildConformance([finding({ wcagCriterion: "1.4.1" })], { aiRan: false });
     expect(withFinding.criteria.find((x) => x.id === "1.4.1")!.status).toBe("failed");
+  });
+});
+
+describe("report language", () => {
+  it("normalises anything to a supported language", () => {
+    expect(normalizeReportLang("de-DE")).toBe("de");
+    expect(normalizeReportLang("FR")).toBe("fr");
+    expect(normalizeReportLang("es_MX")).toBe("es");
+    expect(normalizeReportLang("ja")).toBe("en");
+    expect(normalizeReportLang(undefined)).toBe("en");
+  });
+
+  it("keeps the standard's own numbers, names and levels in every language", () => {
+    // Only the reader-facing sentences move. An auditor searching for
+    // "1.4.3 Contrast (Minimum)" must find it whatever language the report
+    // is in — and a row must never lose its level or its status to a
+    // translation.
+    const en = buildConformance([], { lang: "en" });
+    const de = buildConformance([], { lang: "de" });
+    expect(de.criteria).toHaveLength(en.criteria.length);
+    for (let i = 0; i < en.criteria.length; i++) {
+      expect(de.criteria[i].id).toBe(en.criteria[i].id);
+      expect(de.criteria[i].name).toBe(en.criteria[i].name);
+      expect(de.criteria[i].level).toBe(en.criteria[i].level);
+      expect(de.criteria[i].status).toBe(en.criteria[i].status);
+      // Falls back per id: an untranslated row is the English sentence,
+      // never an empty one.
+      expect(de.criteria[i].plain.length).toBeGreaterThan(0);
+      expect(de.criteria[i].failing.length).toBeGreaterThan(0);
+    }
   });
 });
