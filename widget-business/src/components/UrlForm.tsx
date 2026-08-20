@@ -1,3 +1,4 @@
+import { t } from "../lib/strings";
 import { useId, useRef, useState, type ChangeEvent, type FormEvent, type ReactNode } from "react";
 // The ported Select, not FormControls' — same API, so this is an import
 // change and nothing else. FormControls' Select still serves its other
@@ -123,7 +124,7 @@ export function UrlForm({
           with its link, which used to live in a separate intro paragraph
           above this form until that read as filler in front of the
           scanner rather than a reason to run it. */}
-      <h2 className="a11y-section-title a11y-newscan-title" id="a11y-newscan-title">New scan</h2>
+      <h2 className="a11y-section-title a11y-newscan-title" id="a11y-newscan-title">{t("New scan")}</h2>
       <p className="a11y-newscan-sub">
         We audit every page we can reach against the{" "}
         <a href={WCAG_LINK} target="_blank" rel="noopener noreferrer">

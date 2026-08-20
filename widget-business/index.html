@@ -66,6 +66,17 @@
       ></div>
     </main>
 
+    <!-- Dev-only: ?lang=de|es|fr renders the report in that language, the
+         same way an embedder's data-language does. Runs before the bundle,
+         so the widget reads it at mount like any other embed. Absent, the
+         widget follows the browser as it does in production. -->
+    <script>
+      (function () {
+        var lang = new URLSearchParams(location.search).get("lang");
+        if (lang) document.getElementById("a11y-widget-business-root").dataset.language = lang;
+      })();
+    </script>
+
     <!-- Dev-only test harness: no-op without ?fixture in the URL. Stubs the
          scan API with canned reports and loads axe-core so every view can be
          rendered and audited without a backend. -->

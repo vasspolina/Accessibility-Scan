@@ -724,7 +724,7 @@ export function App({
                 same level as the principle headings inside it, so the outline
                 had children at their parent's level. */}
             <h2 className="a11y-section-title" id="a11y-accessibility-heading" tabIndex={-1} data-nav-label={t("What people can't use")}>
-              What people can't use{" "}
+              {t("What people can't use")}{" "}
               <span className="a11y-section-count">({findingsByCategory.accessibility.length})</span>
             </h2>
             <p className="a11y-section-desc">

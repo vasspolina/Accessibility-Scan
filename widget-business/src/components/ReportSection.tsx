@@ -1,3 +1,4 @@
+import { t } from "../lib/strings";
 import type { AccessibilityFinding } from "../api/scanClient";
 import { FindingsList } from "./FindingsList";
 import { SectionHeader } from "./SectionHeader";
@@ -38,8 +39,8 @@ export function ReportSection({
     return (
       <section className="a11y-section a11y-section-concern" aria-labelledby={id}>
         <div className="a11y-section-tint">
-          <h2 className="a11y-section-title" id={id} data-nav-label={title}>
-            {title} <span className="a11y-section-count">({findings.length})</span>
+          <h2 className="a11y-section-title" id={id} data-nav-label={t(title)}>
+            {t(title)} <span className="a11y-section-count">({findings.length})</span>
           </h2>
           {eyebrow && <span className="a11y-section-eyebrow">{eyebrow}</span>}
           <p className="a11y-section-desc">{description}</p>
