@@ -159,12 +159,12 @@ export function UrlForm({
           <span className="a11y-step-num" aria-hidden="true">01</span>
           <div className="a11y-step-body">
           <div className="a11y-step-head">
-            <h3 className="a11y-step-q">Which site?</h3>
+            <h3 className="a11y-step-q">{t("Which site?")}</h3>
           </div>
           <Input
             id="a11y-url-input"
             size="display"
-            label="Website address (required)"
+            label={t("Website address (required)")}
             placeholder="example.com"
             value={value}
             onChange={(e) => {
@@ -188,7 +188,7 @@ export function UrlForm({
                 onClick={() => setLoginOpen(!loginOpen)}
                 disabled={loading}
               >
-                Behind a login
+                {t("Behind a login")}
               </button>
             }
             describedBy={
@@ -211,8 +211,8 @@ export function UrlForm({
           <div className="a11y-url-helper-row">
             <span id="a11y-url-hint" className="a11y-group-hint">
               {mode === "site"
-                ? "Public pages only."
-                : "Public pages only."}
+                ? t("Public pages only.")
+                : t("Public pages only.")}
             </span>
             <LoginFields
               auth={auth}
@@ -248,10 +248,10 @@ export function UrlForm({
               the action, then the line that qualifies it. */}
           <div className="a11y-url-submit">
             <Button type="submit" size="lg" disabled={loading}>
-              {loading ? "One moment\u2026" : "Start the scan"}
+              {loading ? t("One moment\u2026") : t("Start the scan")}
             </Button>
             <span className="a11y-url-submit-note">
-              Keep this page open — the scan runs here.
+              {t("Keep this page open — the scan runs here.")}
             </span>
           </div>
           </div>
@@ -268,7 +268,7 @@ export function UrlForm({
                 to the site named in 01, the way 03's "it" already does, so
                 the three steps read as one continuing question rather than
                 three unrelated ones. */}
-            <h3 className="a11y-step-q">How much of it?</h3>
+            <h3 className="a11y-step-q">{t("How much of it?")}</h3>
             <span className="a11y-step-note">
               {mode === "site"
                 ? `A whole site takes ${SCAN_DURATION.site}`
@@ -276,19 +276,19 @@ export function UrlForm({
             </span>
           </div>
           <fieldset className="a11y-radio-group a11y-optioncard-grid">
-            <legend>Scan scope</legend>
+            <legend>{t("Scan scope")}</legend>
             <OptionCard
               id="a11y-scope-page"
               name="a11y-scan-mode"
               value="page"
-              label="This page"
-              description="One page, end to end"
+              label={t("This page")}
+              description={t("One page, end to end")}
               /* Both badges are the design's own copy. "Fastest" is a fact
                  about this scan — one page against many. "Most chosen" is a
                  claim about what other people pick, and nothing here measures
                  that; it is carried because the design asks for it, not
                  because the app can support it. */
-              meta="Fastest"
+              meta={t("Fastest")}
               checked={mode === "page"}
               onChange={() => setMode("page")}
               disabled={loading}
@@ -297,8 +297,8 @@ export function UrlForm({
               id="a11y-scope-site"
               name="a11y-scan-mode"
               value="site"
-              label="Whole site"
-              description="Finds what repeats everywhere"
+              label={t("Whole site")}
+              description={t("Finds what repeats everywhere")}
               checked={mode === "site"}
               onChange={() => setMode("site")}
               disabled={loading}
@@ -312,10 +312,10 @@ export function UrlForm({
           <span className="a11y-step-num" aria-hidden="true">03</span>
           <div className="a11y-step-body">
           <div className="a11y-step-head">
-            <h3 className="a11y-step-q">Who reads it?</h3>
+            <h3 className="a11y-step-q">{t("Who reads it?")}</h3>
           </div>
           <fieldset className="a11y-radio-group a11y-optioncard-grid">
-            <legend>Report style</legend>
+            <legend>{t("Report style")}</legend>
             <OptionCard
               id="a11y-aud-biz"
               name="a11y-audience"
@@ -323,9 +323,9 @@ export function UrlForm({
               /* The design's own words. "For business owners" put the
                  preposition inside every card, where the question above
                  already supplies it: "Who reads it? — Business owners". */
-              label="Business owners"
-              description="Plain-language summary and costs"
-              meta="Most chosen"
+              label={t("Business owners")}
+              description={t("Plain-language summary and costs")}
+              meta={t("Most chosen")}
               checked={audience === "business"}
               onChange={() => onAudienceChange("business")}
             />
@@ -333,8 +333,8 @@ export function UrlForm({
               id="a11y-aud-pro"
               name="a11y-audience"
               value="professional"
-              label="Professionals"
-              description="WCAG-mapped technical findings"
+              label={t("Professionals")}
+              description={t("WCAG-mapped technical findings")}
               checked={audience === "professional"}
               onChange={() => onAudienceChange("professional")}
             />
@@ -343,7 +343,7 @@ export function UrlForm({
           {mode === "site" && (
             <Select
               id="a11y-pages"
-              label="Pages to check"
+              label={t("Pages to check")}
               value={String(maxPages)}
               onChange={(e: ChangeEvent<HTMLSelectElement>) => setMaxPages(Number(e.target.value))}
               disabled={loading}
@@ -357,7 +357,7 @@ export function UrlForm({
           {mode === "page" && (
             <div className="a11y-ai-card">
               <span className="a11y-ai-card-text">
-                <span className="a11y-ai-card-title">Add an AI review</span>
+                <span className="a11y-ai-card-title">{t("Add an AI review")}</span>
                 <span id="a11y-ai-hint" className="a11y-ai-hint">
                   Catches design and marketing issues automated tools miss.{" "}
                   Adds {SCAN_DURATION.aiAdds}.
@@ -365,7 +365,7 @@ export function UrlForm({
               </span>
               <Switch
                 id="a11y-ai"
-                label="AI review"
+                label={t("AI review")}
                 checked={includeAiReview}
                 onChange={setIncludeAiReview}
                 disabled={loading}

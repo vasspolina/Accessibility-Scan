@@ -1,3 +1,4 @@
+import { t } from "../lib/strings";
 import { useState } from "react";
 import type { AuthConfig } from "../api/scanClient";
 
@@ -151,7 +152,7 @@ export function LoginFields({
             onClick={close}
             disabled={disabled}
           >
-            Cancel — scan without a login
+            {t("Cancel — scan without a login")}
           </button>
         </fieldset>
       </div>

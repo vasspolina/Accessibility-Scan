@@ -105,4 +105,18 @@ export const CHROME_KEYS: string[] = [
   "Email me this report",
   "Copy summary as plain text",
   "Reading order, not visual order.",
+  /* The scan form — the first thing anyone reads, and until the
+     languages landed the one part that stayed English in all of
+     them. */
+  "Cancel \u2014 scan without a login",
+  "Fastest",
+  "Finds what repeats everywhere",
+  "Keep this page open \u2014 the scan runs here.",
+  "Most chosen",
+  "One moment\u2026",
+  "One page, end to end",
+  "Pages to check",
+  "Plain-language summary and costs",
+  "Scan scope",
+  "WCAG-mapped technical findings",
 ];
