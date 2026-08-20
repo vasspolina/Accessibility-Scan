@@ -2,9 +2,15 @@ import React from "react";
 import { createRoot } from "react-dom/client";
 import { App } from "./App";
 import { mountShadowRoot } from "./utils/shadowMount";
+import { setLang, detectLang } from "./lib/i18n";
 
 export interface MountOptions {
   apiBase: string;
+  // Report language: "en", "de", "es" or "fr". Absent means the visitor's
+  // browser language, falling back to English. Content the backend writes
+  // per scan (finding descriptions) stays in English for now; everything
+  // the widget itself says follows this.
+  language?: string;
   // Optional call-to-action rendered at the end of a business-mode report —
   // both text and link come from the embedder, so the offer is theirs, not
   // ours. Absent means no block at all: the public demo carries none.
@@ -77,6 +83,8 @@ export function mount(target: string | HTMLElement, options: MountOptions) {
     return;
   }
 
+  setLang(detectLang(options.language));
+
   const mountPoint = mountShadowRoot(container);
   const root = createRoot(mountPoint);
   root.render(
@@ -98,6 +106,7 @@ function autoInit() {
       const { ctaText, ctaHref, plans } = el.dataset;
       mount(el, {
         apiBase: el.dataset.apiBase,
+        language: el.dataset.language,
         cta: ctaText && ctaHref ? { text: ctaText, href: ctaHref } : undefined,
         // data-plans holds JSON. Parsed defensively and dropped entirely on
         // anything malformed: a broken attribute must not take the report

@@ -705,8 +705,68 @@ export const PLAIN_RULE_EXPLANATIONS: Record<string, PlainRule> = {
   },
 };
 
+/* Per-language dictionaries. Fallback is per KEY, not per language: a rule
+   the German file has not translated yet renders in English rather than
+   vanishing, so translation coverage can grow without ever breaking a
+   report. */
+import { getLang, type Lang } from "./i18n";
+import { PLAIN_DE, FIXES_DE, UNDECIDED_DE, PRINCIPLES_DE, LEVEL_FRAMING_DE } from "./wcagPlain.de";
+import { PLAIN_ES, FIXES_ES, UNDECIDED_ES, PRINCIPLES_ES, LEVEL_FRAMING_ES } from "./wcagPlain.es";
+import { PLAIN_FR, FIXES_FR, UNDECIDED_FR, PRINCIPLES_FR, LEVEL_FRAMING_FR } from "./wcagPlain.fr";
+
+const PLAIN_BY_LANG: Partial<Record<Lang, Record<string, PlainRule>>> = {
+  de: PLAIN_DE, es: PLAIN_ES, fr: PLAIN_FR,
+};
+const FIXES_BY_LANG: Partial<Record<Lang, Record<string, string | string[]>>> = {
+  de: FIXES_DE, es: FIXES_ES, fr: FIXES_FR,
+};
+const UNDECIDED_BY_LANG: Partial<Record<Lang, Record<string, { what: string; ask: string }>>> = {
+  de: UNDECIDED_DE, es: UNDECIDED_ES, fr: UNDECIDED_FR,
+};
+const PRINCIPLES_BY_LANG: Partial<
+  Record<Lang, Record<string, { principleLabel: string; plainTitle: string; plainDescription: string }>>
+> = { de: PRINCIPLES_DE, es: PRINCIPLES_ES, fr: PRINCIPLES_FR };
+const LEVEL_FRAMING_BY_LANG: Partial<Record<Lang, Partial<Record<"A" | "AA" | "AAA", string>>>> = {
+  de: LEVEL_FRAMING_DE, es: LEVEL_FRAMING_ES, fr: LEVEL_FRAMING_FR,
+};
+
 export function plainForRule(ruleId: string | undefined): PlainRule | undefined {
-  return ruleId ? PLAIN_RULE_EXPLANATIONS[ruleId] : undefined;
+  if (!ruleId) return undefined;
+  const lang = getLang();
+  if (lang !== "en") {
+    const hit = PLAIN_BY_LANG[lang]?.[ruleId];
+    if (hit) return hit;
+  }
+  return PLAIN_RULE_EXPLANATIONS[ruleId];
+}
+
+/** The level's framing line, in the report's language. */
+export function levelFraming(level: "A" | "AA" | "AAA"): string {
+  const lang = getLang();
+  if (lang !== "en") {
+    const hit = LEVEL_FRAMING_BY_LANG[lang]?.[level];
+    if (hit) return hit;
+  }
+  return LEVEL_FRAMING[level];
+}
+
+/** Localised principle heading parts for a classified criterion. */
+export function principleText(info: PrincipleInfo): {
+  principleLabel: string;
+  plainTitle: string;
+  plainDescription: string;
+} {
+  const lang = getLang();
+  if (lang !== "en") {
+    const key = Object.keys(PRINCIPLES).find((k) => PRINCIPLES[k] === info);
+    const hit = key ? PRINCIPLES_BY_LANG[lang]?.[key] : undefined;
+    if (hit) return hit;
+  }
+  return {
+    principleLabel: info.principle,
+    plainTitle: info.plainTitle,
+    plainDescription: info.plainDescription,
+  };
 }
 
 // One clean, plain-English "what to do" per automated (axe) rule. axe's own
@@ -1060,7 +1120,13 @@ export const PLAIN_RULE_FIXES: Record<string, string | string[]> = {
  * wearing a dot, and it makes a small fix look like a project.
  */
 export function plainFixForRule(ruleId: string | undefined): string | string[] | undefined {
-  return ruleId ? PLAIN_RULE_FIXES[ruleId] : undefined;
+  if (!ruleId) return undefined;
+  const lang = getLang();
+  if (lang !== "en") {
+    const hit = FIXES_BY_LANG[lang]?.[ruleId];
+    if (hit) return hit;
+  }
+  return PLAIN_RULE_FIXES[ruleId];
 }
 
 export const WCAG_LINK = "https://www.w3.org/WAI/standards-guidelines/wcag/";
@@ -1190,5 +1256,10 @@ export const UNDECIDED_EXPLANATIONS: Record<string, { what: string; ask: string 
 };
 
 export function undecidedExplanation(ruleId: string) {
+  const lang = getLang();
+  if (lang !== "en") {
+    const hit = UNDECIDED_BY_LANG[lang]?.[ruleId];
+    if (hit) return hit;
+  }
   return UNDECIDED_EXPLANATIONS[ruleId];
 }

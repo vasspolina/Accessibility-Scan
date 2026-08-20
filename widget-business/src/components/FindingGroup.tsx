@@ -2,7 +2,7 @@ import { useState, type ReactNode } from "react";
 import { dominantComponent, describeComponent } from "../lib/componentCluster";
 import { SeverityTag } from "./SeverityTag";
 import type { AccessibilityFinding } from "../api/scanClient";
-import { LEVEL_FRAMING, plainForRule, plainFixForRule } from "../lib/wcagPlain";
+import { levelFraming, plainForRule, plainFixForRule } from "../lib/wcagPlain";
 import { whatWeFound } from "../lib/findingText";
 import { useReportView } from "./ReportViewContext";
 import { enClauseFor } from "../lib/audienceMode";
@@ -579,7 +579,7 @@ export function FindingDetails({
               {rep.wcagLevel ? " · " : ""}
             </>
           )}
-          {rep.wcagLevel && LEVEL_FRAMING[rep.wcagLevel]}
+          {rep.wcagLevel && levelFraming(rep.wcagLevel)}
         </p>
       )}
       {rep.helpUrl && (
@@ -827,7 +827,7 @@ export function findingRow(
           // table has a level at all — an empty column is worse than no
           // column, and best-practice rules (no numbered criterion) never
           // carry one.
-          ...(showLevel ? [rep.wcagLevel ? LEVEL_FRAMING[rep.wcagLevel] : ""] : []),
+          ...(showLevel ? [rep.wcagLevel ? levelFraming(rep.wcagLevel) : ""] : []),
           // Same reasoning as Level: a group of dark-pattern or notes
           // findings is almost always singular, so "Instances" reads
           // blank on every row — drop the whole column rather than ship
@@ -930,7 +930,7 @@ export function FindingGroup({
           {fromAi && <span className="a11y-method-badge a11y-method-ai">AI review</span>}
           <span className={`a11y-method-badge a11y-fix-${fix.key}`}>{fix.label}</span>
           {rep.wcagLevel && (
-            <span className="a11y-level-badge">{LEVEL_FRAMING[rep.wcagLevel]}</span>
+            <span className="a11y-level-badge">{levelFraming(rep.wcagLevel)}</span>
           )}
           {professional && rep.ruleId && <code className="a11y-rule-chip">{rep.ruleId}</code>}
         </span>
