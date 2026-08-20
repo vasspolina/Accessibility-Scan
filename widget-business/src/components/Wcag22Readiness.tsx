@@ -1,4 +1,5 @@
 import { useId, useState } from "react";
+import { t } from "../lib/strings";
 import { WhatsNextPanel } from "./WhatsNextPanel";
 import type { Wcag22Readiness as Readiness } from "../api/scanClient";
 
@@ -26,9 +27,7 @@ export function Wcag22Readiness({ readiness }: { readiness: Readiness }) {
 
   return (
     <section className="a11y-section a11y-w22" aria-labelledby="a11y-w22-heading">
-      <h2 className="a11y-section-title" id="a11y-w22-heading" data-nav-label="WCAG 2.2">
-        Ready for WCAG 2.2?
-      </h2>
+      <h2 className="a11y-section-title" id="a11y-w22-heading" data-nav-label={t("WCAG 2.2")}>{t("Ready for WCAG 2.2?")}</h2>
 
       {/* The kit's readiness panel, as redesigned upstream (4 Aug): it now
           carries the "What's next" eyebrow itself, and its own disclosure

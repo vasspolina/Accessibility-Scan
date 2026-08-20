@@ -1,4 +1,5 @@
 import type { AccessibilityReport, AccessibilityFinding } from "../api/scanClient";
+import { t } from "../lib/strings";
 import { SCORE_POINTS } from "./ScoreGauge";
 import { Notification } from "./Feedback";
 
@@ -60,7 +61,7 @@ export function ProSummary({
           which is where the design puts them and where they are reachable
           from every section rather than only from the top of this panel. */}
       <div className="a11y-pro-titlerow">
-        <h2 className="a11y-results-title" id="a11y-score-heading" data-nav-label="Score">
+        <h2 className="a11y-results-title" id="a11y-score-heading" data-nav-label={t("Score")}>
           {host} — scan results
         </h2>
         <p className="a11y-pro-count">

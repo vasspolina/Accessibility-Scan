@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useId, useMemo, useRef, useState } from "react";
+import { t } from "../lib/strings";
 import { StatusChip } from "./SectionHeader";
 import type { ScreenReaderScript } from "../api/scanClient";
 
@@ -109,7 +110,7 @@ export function ScreenReaderPreview({ script }: { script: ScreenReaderScript }) 
           — 2,200px, in the section where that was measured. */}
       <div className="a11y-section-head">
       <div className="a11y-accordion-row">
-        <h2 className="a11y-section-title a11y-accordion-title" id="a11y-sr-heading" data-nav-label="Screen reader preview">
+        <h2 className="a11y-section-title a11y-accordion-title" id="a11y-sr-heading" data-nav-label={t("Screen reader preview")}>
           <button
             type="button"
             className="a11y-accordion-head"

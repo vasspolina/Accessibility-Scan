@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from "react";
+import { t } from "./lib/strings";
 import type { RefObject } from "react";
 import { flushSync } from "react-dom";
 import { UrlForm, type ScanMode } from "./components/UrlForm";
@@ -542,12 +543,12 @@ export function App({
           {report.findings.some((f) => f.ruleId === "consent-blocks-reader") && (
             <div className="a11y-blockflag" role="alert">
               <p className="a11y-blockflag-title">
-                Start here: a screen reader cannot get past your cookie banner
+                {t("Start here: a screen reader cannot get past your cookie banner")}
               </p>
               <p className="a11y-blockflag-body">
-                The banner hides the page from screen readers and never takes
-                focus. Until that is fixed, everything below this line is what
-                a screen reader user never reaches.
+                {t(
+                  "The banner hides the page from screen readers and never takes focus. Until that is fixed, everything below this line is what a screen reader user never reaches."
+                )}
               </p>
               {/* The professional view hides the card sections behind the
                   print-only wrapper, so the business anchor exists there but
@@ -564,7 +565,7 @@ export function App({
                   )
                 }
               >
-                See the finding
+                {t("See the finding")}
               </button>
             </div>
           )}
@@ -722,7 +723,7 @@ export function App({
             {/* h2 like every other top-level section — as an h3 it sat at the
                 same level as the principle headings inside it, so the outline
                 had children at their parent's level. */}
-            <h2 className="a11y-section-title" id="a11y-accessibility-heading" tabIndex={-1} data-nav-label="What people can't use">
+            <h2 className="a11y-section-title" id="a11y-accessibility-heading" tabIndex={-1} data-nav-label={t("What people can't use")}>
               What people can't use{" "}
               <span className="a11y-section-count">({findingsByCategory.accessibility.length})</span>
             </h2>

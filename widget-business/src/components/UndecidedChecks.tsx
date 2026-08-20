@@ -1,4 +1,5 @@
 import { undecidedExplanation } from "../lib/wcagPlain";
+import { t } from "../lib/strings";
 import { fixKindForRule } from "../lib/testMethod";
 import { DataTable } from "./DataTable";
 
@@ -52,7 +53,7 @@ export function UndecidedChecks({
           a single grid item, so the two columns flow independently. */}
       <div className="a11y-section-head">
       {/* h2: this is a top-level section of the report, same as its siblings. */}
-      <h2 className="a11y-section-title" id="a11y-undecided-heading" data-nav-label="Designer and developer">
+      <h2 className="a11y-section-title" id="a11y-undecided-heading" data-nav-label={t("Designer and developer")}>
         For your designer and developer{" "}
         <span className="a11y-section-count">({total})</span>
       </h2>

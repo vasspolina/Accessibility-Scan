@@ -1,4 +1,5 @@
 import { Fragment, useEffect, useRef, useState } from "react";
+import { t } from "../lib/strings";
 import { createPortal } from "react-dom";
 import { Dialog } from "./Dialog";
 import { clearHistory, diffScans, scoresComparable, type HistoryEntry } from "../lib/scanHistory";
@@ -103,7 +104,7 @@ export function ScanHistory({
   if (cleared) {
     return (
       <section className="a11y-section a11y-hist" aria-labelledby="a11y-hist-heading">
-        <h2 className="a11y-section-title" id="a11y-hist-heading" data-nav-label="Since last time">Since last time</h2>
+        <h2 className="a11y-section-title" id="a11y-hist-heading" data-nav-label={t("Since last time")}>{t("Since last time")}</h2>
         <p className="a11y-section-desc" role="status" tabIndex={-1} ref={(el) => el?.focus()}>
           Scan history deleted from this browser.
         </p>
@@ -129,7 +130,7 @@ export function ScanHistory({
           word "scans" — CSS uppercases it, so the accessible name stays
           sentence case, and a landmark called only "Previous" says less
           than it should. */}
-      <h2 className="a11y-section-title a11y-hist-title" id="a11y-hist-heading" data-nav-label="Since last time">
+      <h2 className="a11y-section-title a11y-hist-title" id="a11y-hist-heading" data-nav-label={t("Since last time")}>
         Previous scans
       </h2>
 

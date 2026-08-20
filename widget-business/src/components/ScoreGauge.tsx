@@ -1,4 +1,5 @@
 import { ScoreDial } from "./ScoreDial";
+import { t } from "../lib/strings";
 import { useState } from "react";
 import type { ReactNode } from "react";
 import { SeverityTag } from "./SeverityTag";
@@ -302,7 +303,7 @@ export function ScoreGauge({
       {/* Professional mode gets an explicit results header in this slot
           (App.tsx); business mode had none, which left heading navigation
           with no way to jump straight to the score at all. */}
-      <h2 className="a11y-section-title" id="a11y-score-heading" data-nav-label="Score">Your score</h2>
+      <h2 className="a11y-section-title" id="a11y-score-heading" data-nav-label={t("Score")}>{t("Your score")}</h2>
 
       {/* The design's scan-summary template: three titled panels down the
           left, the run and its worst findings on the right. Ported from

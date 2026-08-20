@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { t } from "../lib/strings";
 import type { AccessibilityFinding } from "../api/scanClient";
 import { FindingGroup, FindingDetails } from "./FindingGroup";
 import { groupFindings } from "./FindingsList";
@@ -79,7 +80,7 @@ export function DesignNotesPanel({ findings }: { findings: AccessibilityFinding[
           <h2
             className="a11y-dn-title"
             id="a11y-notes-heading"
-            data-nav-label="Notes on the design"
+            data-nav-label={t("Notes on the design")}
           >
             Notes on the design{" "}
             <span className="a11y-dn-count">({groups.length})</span>

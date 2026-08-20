@@ -1,4 +1,5 @@
 import type { ProView } from "./ProSummary";
+import { t } from "../lib/strings";
 import { expandRowOnClick } from "../lib/rowExpand";
 import type { AccessibilityFinding, ConformanceSummary } from "../api/scanClient";
 import { plainForRule } from "../lib/wcagPlain";
@@ -144,7 +145,7 @@ export function ProfessionalTable({
          scrolling without moving focus leaves the next Tab back at the top. */
       tabIndex={-1}
       aria-label="Findings"
-      data-nav-label="Findings"
+      data-nav-label={t("Findings")}
       onClick={expandRowOnClick}
     >
       {view === "issues" ? issuesTable : cleanList}

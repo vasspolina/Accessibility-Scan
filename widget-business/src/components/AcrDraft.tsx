@@ -1,4 +1,5 @@
 import { useId, useMemo, useState } from "react";
+import { t } from "../lib/strings";
 import type { AccessibilityReport } from "../api/scanClient";
 import { buildAcrDraft } from "../lib/buildAcrDraft";
 
@@ -58,7 +59,7 @@ export function AcrDraft({ report }: { report: AccessibilityReport }) {
           — 2,200px, in the section where that was measured. */}
       <div className="a11y-section-head">
       <div className="a11y-accordion-row">
-        <h2 className="a11y-section-title a11y-accordion-title" id="a11y-acr-heading" data-nav-label="Conformance report">
+        <h2 className="a11y-section-title a11y-accordion-title" id="a11y-acr-heading" data-nav-label={t("Conformance report")}>
           <button
             type="button"
             className="a11y-accordion-head"

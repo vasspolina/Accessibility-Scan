@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { t } from "../lib/strings";
 
 // Shows the owner their own page as some of their visitors see it. Reading
 // "contrast is too low" is abstract; watching your call-to-action vanish into
@@ -102,7 +103,7 @@ export function VisionSimulator({
 
   return (
     <section className="a11y-section a11y-sim" aria-labelledby="a11y-sim-heading">
-      <h2 className="a11y-section-title" id="a11y-sim-heading" data-nav-label="Through other eyes">Your page, through other eyes</h2>
+      <h2 className="a11y-section-title" id="a11y-sim-heading" data-nav-label={t("Through other eyes")}>{t("Your page, through other eyes")}</h2>
       <p className="a11y-section-desc">
         One man in twelve is colour blind. Switch between views and watch what your page loses.
         Close approximations. Nobody's sight is exactly this.

@@ -1,4 +1,5 @@
 import { useId, useMemo, useRef, useState } from "react";
+import { t } from "../lib/strings";
 import type { ConformanceSummary, CriterionResult } from "../api/scanClient";
 import { DataTable } from "./DataTable";
 
@@ -94,7 +95,7 @@ export function ConformanceView({
           templates/legal-standard/LegalStandard.jsx, read from the design
           project — every colour below is its own. */}
       <div className="a11y-legal-head">
-        <h2 className="a11y-legal-title" id="a11y-conf-heading" data-nav-label="Legal standard">
+        <h2 className="a11y-legal-title" id="a11y-conf-heading" data-nav-label={t("Legal standard")}>
           Do you meet the legal standard?
         </h2>
         <span className="a11y-legal-standard">{conformance.standard}</span>
