@@ -51,7 +51,10 @@
      between one element and the next, 100 between one section and the
      next. The gap says which of the two you are crossing. */
   --gap-element: 10px;
-  --gap-section: 100px;
+  /* 0 on instruction (20 Aug 2026): the vertical space between the report's
+     sections is deleted. Sections keep their own internal padding, so panels
+     sit flush without content welding. Was 100px. */
+  --gap-section: 0px;
 
   --measure: 60ch;               /* template: maxWidth on prose */
   --head-col: minmax(260px, 360px);
@@ -2364,7 +2367,11 @@
    --space-05 is 16); asked for explicitly. */
 /* The report's actions begin a different job from the form above them, so
    they get twice the form's own step. */
-.a11y-widget-biz .a11y-report-actions { margin-top: var(--gap-section); }
+/* The margin-top this rule carried was a relic of report-actions leading the
+   report; once the stop-press band could render first, it stacked onto the
+   column gap and doubled the space (measured at 200px). The column's gap is
+   the one source of section rhythm now. */
+.a11y-widget-biz .a11y-report-actions { }
 
 /* ── Site audit ──────────────────────────────────────────────────────────
    SiteAuditView had rules for 5 of its 27 classes, so it was rendering as
