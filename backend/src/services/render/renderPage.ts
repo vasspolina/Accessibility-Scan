@@ -3106,13 +3106,37 @@ export async function renderAndScan(
                   "[data-a11y-behind-consent-unblur] { filter: none !important; backdrop-filter: none !important; }",
                 ];
                 if (sel) rules.unshift(`${sel} { display: none !important; }`);
+                const bannerEl = sel ? document.querySelector(sel) : null;
+                const bannerTextLen = bannerEl ? (bannerEl.textContent ?? "").trim().length : 0;
+                // The wall's own wrappers: the innermost-wins detection picks
+                // the card, but pay-or-consent walls wrap it in a fixed
+                // viewport-covering scrim that carries the dim — corriere's
+                // preview came back banner-free but darkened. Every fixed or
+                // absolute viewport-covering ANCESTOR of the banner is part
+                // of the wall.
+                for (let a = bannerEl?.parentElement ?? null; a && a !== document.body; a = a.parentElement) {
+                  const cs = getComputedStyle(a);
+                  const r = a.getBoundingClientRect();
+                  const cover = (r.width * r.height) / (innerWidth * innerHeight);
+                  if ((cs.position === "fixed" || cs.position === "absolute") && cover > 0.85) {
+                    a.setAttribute("data-a11y-behind-consent", "");
+                  }
+                }
                 for (const el of Array.from(document.querySelectorAll("div, iframe"))) {
                   const cs = getComputedStyle(el);
                   if (cs.display === "none" || cs.position !== "fixed") continue;
                   const r = el.getBoundingClientRect();
                   const cover = (r.width * r.height) / (innerWidth * innerHeight);
                   const isFrame = el.tagName === "IFRAME";
-                  const textless = !isFrame && (el.textContent ?? "").trim().length < 40;
+                  // A scrim's own text is near nothing — but a wrapper that
+                  // CONTAINS the banner aggregates the banner's essay into
+                  // textContent, which is how corriere's dim survived the
+                  // first version of this pass. Judge the candidate on its
+                  // text minus the banner's.
+                  const ownTextLen =
+                    (el.textContent ?? "").trim().length -
+                    (bannerEl && el.contains(bannerEl) ? bannerTextLen : 0);
+                  const textless = !isFrame && ownTextLen < 40;
                   const consentFrame =
                     isFrame && !!frameOrigin && (el as HTMLIFrameElement).src.startsWith(frameOrigin);
                   if ((cover > 0.85 && textless) || consentFrame) {

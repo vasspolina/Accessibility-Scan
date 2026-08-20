@@ -636,6 +636,21 @@ describe("consent-blocks-fixture.html: the banner that blocks the reader", () =>
     expect(consent.length).toBeGreaterThan(0);
     expect(lastRender?.darkPatternSignals.consentBanner).toBeTruthy();
     expect(lastRender?.screenshotBehindConsentBase64).toBeTruthy();
+
+    // The behind-banner shot must actually shed the wall's DIM, not only
+    // its card: the fixture wraps the card in a half-black fixed scrim —
+    // the exact shape whose dim survived on corriere. With the scrim gone
+    // the white page must read bright: mean luminance well above the
+    // half-black composite, and brighter than the with-banner shot.
+    const sharp = (await import("sharp")).default;
+    const lum = async (b64: string) => {
+      const stats = await sharp(Buffer.from(b64, "base64")).stats();
+      return (stats.channels[0].mean + stats.channels[1].mean + stats.channels[2].mean) / 3;
+    };
+    const behind = await lum(lastRender!.screenshotBehindConsentBase64!);
+    const withBanner = await lum(lastRender!.screenshotBase64);
+    expect(behind).toBeGreaterThan(160);
+    expect(behind).toBeGreaterThan(withBanner + 20);
   }, 120_000);
 
   it("folds axe's per-element echoes into the one card that names the cause", () => {
