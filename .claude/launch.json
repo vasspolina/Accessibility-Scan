@@ -37,6 +37,18 @@
         "/Users/polinavasilyeva/a11y-checker/accessible-web-design/server.js"
       ],
       "port": 5175
+    },
+    {
+      "name": "portfolio",
+      "runtimeExecutable": "python3",
+      "runtimeArgs": [
+        "-m",
+        "http.server",
+        "4173",
+        "-d",
+        "/Users/polinavasilyeva/portfolio-site"
+      ],
+      "port": 4173
     }
   ]
 }

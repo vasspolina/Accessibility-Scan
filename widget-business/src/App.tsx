@@ -549,10 +549,20 @@ export function App({
                 focus. Until that is fixed, everything below this line is what
                 a screen reader user never reaches.
               </p>
+              {/* The professional view hides the card sections behind the
+                  print-only wrapper, so the business anchor exists there but
+                  is invisible — the jump scrolled to nothing. Each audience
+                  jumps to the findings surface it actually shows. */}
               <button
                 type="button"
                 className="a11y-blockflag-jump"
-                onClick={() => focusFindings("a11y-accessibility-heading")}
+                onClick={() =>
+                  focusFindings(
+                    professional && !isDocument
+                      ? "a11y-pro-findings"
+                      : "a11y-accessibility-heading"
+                  )
+                }
               >
                 See the finding
               </button>
