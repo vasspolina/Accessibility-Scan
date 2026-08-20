@@ -1,3 +1,4 @@
+import { t } from "../lib/strings";
 import type { ReactNode } from "react";
 
 /**
@@ -43,9 +44,14 @@ export function SectionHeader({
   return (
     <div className="a11y-section-head">
       <div className="a11y-section-head-text">
-        {eyebrow && <span className="a11y-section-eyebrow">{eyebrow}</span>}
-        <h2 className="a11y-section-title" id={id} data-nav-label={navLabel}>
-          {title}
+        {/* Translated here rather than at each call site: every section that
+            uses this header gets its language for free, and the heading and
+            its rail label resolve through the same dictionary, so the two
+            can never end up in different languages. `title` may be JSX —
+            only a plain string can be looked up. */}
+        {eyebrow && <span className="a11y-section-eyebrow">{t(eyebrow)}</span>}
+        <h2 className="a11y-section-title" id={id} data-nav-label={navLabel ? t(navLabel) : undefined}>
+          {typeof title === "string" ? t(title) : title}
           {qualifier && <span className="a11y-section-count"> {qualifier}</span>}
         </h2>
       </div>
