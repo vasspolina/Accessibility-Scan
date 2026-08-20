@@ -75,4 +75,17 @@ export const STRINGS_FR: Record<string, string> = {
   "Email me this report": "M'envoyer ce rapport par courriel",
   "Copy summary as plain text": "Copier le résumé en texte brut",
   "Reading order, not visual order.": "Ordre de lecture, pas ordre visuel.",
+  // The scan form
+  "Cancel — scan without a login": "Annuler — analyser sans connexion",
+  Fastest: "Le plus rapide",
+  "Finds what repeats everywhere": "Trouve ce qui se répète partout",
+  "Keep this page open — the scan runs here.":
+    "Gardez cette page ouverte — l'analyse se déroule ici.",
+  "Most chosen": "Le plus choisi",
+  "One moment…": "Un instant…",
+  "One page, end to end": "Une page, de bout en bout",
+  "Pages to check": "Pages à analyser",
+  "Plain-language summary and costs": "Résumé en langage clair et coûts",
+  "Scan scope": "Étendue de l'analyse",
+  "WCAG-mapped technical findings": "Constats techniques par critère WCAG",
 };
