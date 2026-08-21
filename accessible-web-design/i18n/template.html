@@ -1,0 +1,300 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>{{meta.title}}</title>
+<meta name="description" content="{{meta.description}}" />
+<meta property="og:title" content="{{meta.ogTitle}}" />
+<meta property="og:description" content="{{meta.ogDescription}}" />
+{{__ALTERNATES__}}
+<link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+
+<a class="skip-link" href="#main-content">{{nav.skipToContent}}</a>
+
+<div id="page-root">
+
+<header class="site-header">
+  <div class="container">
+    <a href="#" class="logo">{{nav.logo}}</a>
+    <nav class="main-nav" aria-label="{{nav.primaryLabel}}">
+      <a href="#services">{{nav.services}}</a><span class="sep">,</span>
+      <a href="#about">{{nav.about}}</a><span class="sep">,</span>
+      <a href="#contact" class="link-accent">{{nav.contact}}</a><span class="sep">,</span>
+{{__LANG_SELECTOR__}}
+    </nav>
+  </div>
+</header>
+
+<aside class="banner-wrap container" aria-label="{{banner.label}}">
+  <div class="banner" id="banner">
+    <p style="margin:0">{{banner.eaa}}</p>
+    <button class="banner-close" id="bannerClose">{{banner.close}}</button>
+  </div>
+</aside>
+
+<section class="hero container" aria-label="{{hero.label}}">
+  <h1>{{hero.headline}}</h1>
+  <a href="#contact" class="hero-link">{{hero.cta}}</a>
+</section>
+
+<hr class="top-divider" />
+
+<div class="container">
+  <div class="layout">
+
+    <nav class="toc" aria-label="Table of contents">
+      <p class="toc-label">{{toc.label}}</p>
+      <ul class="toc-list">
+        <li><a href="#accessibility">{{toc.accessibility}}</a></li>
+        <li><a href="#legal-landscape">{{toc.legalLandscape}}</a></li>
+        <li><a href="#whos-affected">{{toc.whosAffected}}</a></li>
+        <li><a href="#our-approach">{{toc.ourApproach}}</a></li>
+        <li class="no-rule">
+          <a href="#important-details">{{toc.importantDetails}}</a>
+          <ul class="toc-sublist">
+            <li><a href="#whos-affected">{{affected.heading}}</a></li>
+            <li><a href="#does-this-apply">{{toc.canIUseAi}}</a></li>
+            <li><a href="#benefits">{{toc.benefits}}</a></li>
+            <li><a href="#our-approach">{{toc.whatYouGet}}</a></li>
+          </ul>
+        </li>
+        <li><a href="#accessibility">{{toc.accessibility}}</a></li>
+      </ul>
+    </nav>
+
+    <div class="layout-rule" aria-hidden="true"></div>
+
+    <main class="content" id="main-content">
+
+      <section id="eaa-intro">
+        <h2>{{eaa.heading}}</h2>
+        <p>{{eaa.body}}</p>
+        <p>{{eaa.notSure}}</p>
+        <p><a href="#contact" class="link">{{eaa.auditLink}}</a></p>
+        <p>{{eaa.doorLine}}</p>
+
+        <style>
+          /* Themes the embedded checker to match this site's palette. These
+             are plain inherited CSS custom properties — the widget's Shadow
+             DOM reads them from its ancestors, so no changes to the widget
+             itself are needed beyond it opting into this var() pattern. */
+          #a11y-checker {
+            --a11y-bg: var(--bg);
+            --a11y-text: var(--body-text);
+            --a11y-muted: var(--muted-text);
+            --a11y-accent: var(--blue);
+            --a11y-border: var(--border-soft);
+            --a11y-surface: rgba(255, 255, 255, 0.06);
+            --a11y-score-good: var(--teal);
+            --a11y-score-warn: var(--gold);
+            --a11y-score-bad: #ff6b6b;
+            --a11y-font: "PP Telegraf", "Helvetica Neue", Arial, sans-serif;
+          }
+        </style>
+        <div id="a11y-checker" style="margin-top:2em">
+          <div id="a11y-widget-business-root" data-api-base="https://a11y-checker-backend-production.up.railway.app"></div>
+          <script src="https://a11y-checker-backend-production.up.railway.app/widget-business.js" defer></script>
+        </div>
+      </section>
+
+      <hr class="divider" />
+
+      <section id="important-details">
+        <p class="eyebrow">{{details.eyebrow}}</p>
+        <h3>{{details.heading}}</h3>
+        <p class="tinted-teal">{{details.body}}</p>
+      </section>
+
+      <hr class="divider" />
+
+      <section id="whos-affected">
+        <div class="def-row">
+          <h3 class="def-term" style="margin:0">{{affected.heading}}</h3>
+          <ul class="inline-list">
+            <li>{{affected.software}}</li>
+            <li>{{affected.fintech}}</li>
+            <li>{{affected.ecommerce}}</li>
+            <li>{{affected.education}}</li>
+            <li>{{affected.agencies}}</li>
+            <li>{{affected.architecture}}</li>
+            <li>{{affected.hospitality}}</li>
+          </ul>
+        </div>
+
+        <p>{{affected.exempt}}</p>
+
+        <p>{{affected.exceptionIntro}}<br />
+        {{affected.exceptionWeb}}<br />
+        {{affected.exceptionDevices}}</p>
+      </section>
+
+      <hr class="divider" />
+
+      <section id="accessibility">
+        <h2 class="accent-teal">{{a11y.heading}}</h2>
+
+        <p class="lede">{{a11y.lede}}</p>
+
+        <p>{{a11y.online}}</p>
+
+        <p>{{a11y.houseLine}}</p>
+
+        <p class="eyebrow" id="benefits" style="margin-top:2em">{{a11y.benefitsEyebrow}}</p>
+
+        <p>{{a11y.captions}}</p>
+
+        <p>{{a11y.curbCuts}}</p>
+
+        <p>{{a11y.closing}}</p>
+      </section>
+
+      <hr class="divider teal" />
+
+      <section id="legal-landscape">
+        <p class="eyebrow">{{legal.eyebrow}}</p>
+
+        <p>{{legal.body}} {{legal.standard}}</p>
+
+        <p>{{legal.enforcement}}</p>
+      </section>
+
+      <hr class="divider teal" />
+
+      <section id="who-needs-accessibility">
+        <h2 class="accent-green">{{who.heading}}</h2>
+
+        <p>{{who.intro}}</p>
+
+        <div class="def-list">
+          <div class="def-row">
+            <p class="def-term" style="margin:0">{{who.motorTerm}}</p>
+            <p class="def-desc" style="margin:0">{{who.motorDesc}}</p>
+          </div>
+          <div class="def-row">
+            <p class="def-term" style="margin:0">{{who.visualTerm}}</p>
+            <p class="def-desc" style="margin:0">{{who.visualDesc}}</p>
+          </div>
+          <div class="def-row">
+            <p class="def-term" style="margin:0">{{who.auditoryTerm}}</p>
+            <p class="def-desc" style="margin:0">{{who.auditoryDesc}}</p>
+          </div>
+          <div class="def-row">
+            <p class="def-term" style="margin:0">{{who.cognitiveTerm}}</p>
+            <p class="def-desc" style="margin:0">{{who.cognitiveDesc}}</p>
+          </div>
+        </div>
+
+        <p>{{who.closing}}</p>
+      </section>
+
+      <hr class="divider white" />
+
+      <section id="what-makes-accessible">
+        <h2 class="accent-teal">{{what.heading}}</h2>
+
+        <p>{{what.intro}}</p>
+
+        <div class="def-list">
+          <div class="def-row">
+            <p class="def-term" style="margin:0">{{what.perceivableTerm}}</p>
+            <p class="def-desc" style="margin:0">{{what.perceivableDesc}}</p>
+          </div>
+          <div class="def-row">
+            <p class="def-term accent-teal" style="margin:0">{{what.operableTerm}}</p>
+            <p class="def-desc" style="margin:0">{{what.operableDesc}}</p>
+          </div>
+          <div class="def-row">
+            <p class="def-term accent-blue" style="margin:0">{{what.understandableTerm}}</p>
+            <p class="def-desc" style="margin:0">{{what.understandableDesc}}</p>
+          </div>
+          <div class="def-row">
+            <p class="def-term" style="margin:0">{{what.robustTerm}}</p>
+            <p class="def-desc" style="margin:0">{{what.robustDesc}}</p>
+          </div>
+        </div>
+      </section>
+
+      <hr class="divider" />
+
+      <section id="does-this-apply">
+        <h2 class="accent-teal">{{apply.heading}}</h2>
+
+        <p>{{apply.short}}</p>
+
+        <p>{{apply.intro}}</p>
+
+        <ul class="dot-list">
+          <li><span class="dot teal"></span>{{apply.sells}}</li>
+          <li><span class="dot green"></span>{{apply.books}}</li>
+          <li><span class="dot"></span>{{apply.services}}</li>
+          <li><span class="dot"></span>{{apply.updated}}</li>
+        </ul>
+
+        <p>{{apply.includes}}</p>
+
+        <p>{{apply.exemption}}</p>
+
+        <p>{{apply.smallBiz}}</p>
+
+        <p>{{apply.notSureLead}} <a href="#contact" class="link">{{apply.notSureLink}}</a> {{apply.notSureTail}}</p>
+      </section>
+
+      <hr class="divider" />
+
+      <section id="services">
+        <h2 class="accent-teal">{{services.heading}}</h2>
+
+        <p>{{services.body}}</p>
+
+        <p>{{services.doorMetaphor}} {{services.goodDesign}}</p>
+      </section>
+
+      <hr class="divider" />
+
+      <section id="our-approach">
+        <p class="eyebrow">{{approach.eyebrow}}</p>
+      </section>
+
+      <hr class="divider teal" />
+
+      <div class="def-list ruled">
+        <div class="def-row">
+          <p class="def-term" style="margin:0">{{approach.focusedTerm}}</p>
+          <p class="def-desc" style="margin:0">{{approach.focusedDesc}}</p>
+        </div>
+        <div class="def-row">
+          <p class="def-term" style="margin:0">{{approach.userCenteredTerm}}</p>
+          <p class="def-desc" style="margin:0">{{approach.userCenteredDesc}}</p>
+        </div>
+        <div class="def-row">
+          <p class="def-term" style="margin:0">{{approach.futureProofTerm}}</p>
+          <p class="def-desc" style="margin:0">{{approach.futureProofDesc}}</p>
+        </div>
+      </div>
+
+      <hr class="divider" />
+
+      <p>{{closing.wcag}}</p>
+
+    </main>
+  </div>
+</div>
+
+</div>
+
+<button type="button" id="magnifierToggle" class="magnifier-toggle" aria-pressed="false">
+  <span aria-hidden="true">&#128269;</span> {{magnifier.toggle}}
+</button>
+<div id="magnifierLens" class="magnifier-lens" hidden aria-hidden="true">
+  <div class="magnifier-viewport">
+    <div class="magnifier-inner" id="magnifierInner"></div>
+  </div>
+  <button type="button" class="magnifier-close" id="magnifierClose" aria-label="{{magnifier.close}}">&times;</button>
+</div>
+
+<script src="app.js"></script>
+</body>
+</html>

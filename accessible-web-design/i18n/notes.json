@@ -1,0 +1,58 @@
+{
+  "_readme": "Where each string appears, and what a translator must know before touching it. voice: 'metaphor' or 'humour' means recreate the idea, never translate the sentence — if the image has no local equivalent, propose a replacement and flag it rather than rendering it literally. These are the strings that must never reach a machine-translation queue unflagged.",
+
+  "meta.title": { "where": "<title>, every page", "note": "Under 60 characters or search results truncate it." },
+  "meta.description": { "where": "meta description and OG", "note": "Under 155 characters." },
+
+  "nav.contact": { "where": "primary nav", "note": "Also the hero call to action. Plain verb, no urgency theatre." },
+  "nav.skipToContent": { "where": "skip link, first focusable element", "note": "Must be translated: it is the first thing a keyboard user meets." },
+
+  "lang.en": { "where": "language selector", "note": "ENDONYM. 'English' stays English in every locale, 'Deutsch' stays German. Never translate an endonym, never use a flag: a flag is a country, not a language." },
+  "lang.de": { "where": "language selector", "note": "Endonym — see lang.en." },
+  "lang.changed": { "where": "live region, announced when the locale changes", "note": "Announced by a screen reader, so it is written in the language being switched TO." },
+
+  "banner.eaa": { "where": "dismissable banner, top of page", "note": "Date in long European form. Never numeric." },
+
+  "hero.headline": { "where": "h1", "note": "Berlin is the studio's actual city — keep it, it is not decoration." },
+
+  "eaa.doorLine": {
+    "where": "end of the EAA intro section",
+    "voice": "metaphor",
+    "note": "The door metaphor, and one of the two the tone doc names. Recreate the idea in the target language rather than translating the words. A German version must not become a rhetorical question if that reads as advertising — dry statement is safer."
+  },
+
+  "a11y.houseLine": {
+    "where": "accessibility section",
+    "voice": "metaphor",
+    "note": "The house-and-door image. Same instruction as eaa.doorLine: recreate, don't translate."
+  },
+
+  "a11y.captions": { "where": "accessibility section", "voice": "humour", "note": "Dry list of everyday moments. The humour is in the recognition, not in any joke — if a locale's version needs a wink, cut it." },
+
+  "a11y.curbCuts": { "where": "accessibility section", "note": "'Curb cut' is a term of art in accessibility (Bordsteinabsenkung). Use the local term, not a description." },
+
+  "legal.body": { "where": "legal landscape", "note": "BFSG, European Accessibility Act and Equality Act 2010 are official names — see glossary.md. Never translate them." },
+  "legal.standard": { "where": "legal landscape", "note": "WCAG 2.1 Level AA is what EN 301 549 currently adopts. Do not 'update' it to 2.2 without checking which version the law cites." },
+  "legal.enforcement": { "where": "legal landscape", "note": "Deliberately does NOT name a fine amount. The tone doc bans fear-based urgency, and the German brief singles out fear-selling as the sharpest difference from competitors. Do not reintroduce a number here." },
+
+  "who.motorDesc": { "where": "who-needs-accessibility list", "note": "Everyday situations, not medical conditions. Keep them ordinary." },
+
+  "what.perceivableTerm": { "where": "POUR list", "note": "The four WCAG principles. Use the W3C Authorized Translation's terms where one exists — for German: Wahrnehmbar, Bedienbar, Verständlich, Robust." },
+  "what.operableTerm": { "where": "POUR list", "note": "See what.perceivableTerm." },
+  "what.understandableTerm": { "where": "POUR list", "note": "See what.perceivableTerm." },
+  "what.robustTerm": { "where": "POUR list", "note": "See what.perceivableTerm." },
+
+  "apply.exemption": { "where": "does-this-apply section", "note": "{threshold} is formatted by Intl.NumberFormat as EUR in the locale's own convention — €2 million in en, 2 Mio. € in de. Never hard-code the symbol or its position." },
+  "affected.exempt": { "where": "who's-affected section", "note": "See apply.exemption." },
+
+  "services.doorMetaphor": {
+    "where": "services section",
+    "voice": "metaphor",
+    "note": "IMPERIAL MEASUREMENT. {height} is 5'10\" in en and MUST be a metric height in every other locale — 1,78 m in de. The German brief says never carry an imperial measurement into a German sentence. The build supplies the value per locale; a translator must not hard-code it."
+  },
+
+  "approach.futureProofTerm": { "where": "our-approach list", "note": "Was 'Future-proof' — changed because the tone doc lists it as marketing fluff. Keep the replacement plain in every locale." },
+
+  "magnifier.toggle": { "where": "floating magnifier button", "note": "1.5× uses the multiplication sign, not the letter x." },
+  "magnifier.close": { "where": "magnifier close button, aria-label", "note": "An accessible name — invisible, and still governed by the voice rules." }
+}
