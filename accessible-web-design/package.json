@@ -9,7 +9,8 @@
     "build:strict": "node i18n/build.mjs --strict --pseudo",
     "check:axe": "node i18n/axe-locales.mjs",
     "check:expansion": "node i18n/expansion-check.mjs",
-    "check": "npm run build:strict && npm run check:axe && npm run check:expansion"
+    "check": "npm run build:strict && npm run check:axe && npm run check:expansion",
+    "check:voice-de": "node i18n/voice-de.mjs"
   },
   "devDependencies": {
     "axe-core": "^4.10.2",

@@ -9,6 +9,7 @@ npm run build:strict     # …and fail if a primary locale has an absent key
 npm run check:axe        # axe-core over every built page, in every locale
 npm run check:expansion  # containers that cannot absorb German's extra 35%
 npm run check            # all of the above, in the order CI runs them
+npm run check:voice-de   # the German voice rules over the German catalogue
 ```
 
 `npm run check` is what
@@ -84,6 +85,25 @@ this build's business:
   is published there. `check:expansion` skips inside `#a11y-checker` — the
   widget answers for its own layout — but a stale bundle can still break
   this page, and has: an old build overflowed a 320 px viewport by 98 px.
+
+## The German voice rules
+
+`npm run check:voice-de` applies the German brief to the German catalogue —
+Sie and never du, no exclamation points, sentences under twenty words, the
+spaced en dash, long-form dates, no imperial measurement, the four banned
+vocabularies, and every ICU placeholder still present. It also enforces one
+term per concept for the two collisions a human review found by counting:
+the site is always `Website` and never `Seite`, and `Prüfung` is reserved
+for the audit this studio sells. Both are allowlisted by key, because both
+words are ordinary German — using them for a *second* concept is the fault.
+
+It reports without failing, because `de.draft.json` is under review and
+expected to carry open findings. Wire it into `npm run check` and let it
+fail once `de.json` is filled.
+
+Open questions for the German reviewer live in
+[`de-draft-review.md`](de-draft-review.md) — including the ones no check can
+settle, like whether a recreated metaphor lands in German.
 
 ## What is not in the catalogue, on purpose
 
