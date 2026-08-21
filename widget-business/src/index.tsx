@@ -11,6 +11,10 @@ export interface MountOptions {
   // per scan (finding descriptions) stays in English for now; everything
   // the widget itself says follows this.
   language?: string;
+  /* "dark" or "light" pins the theme; absent follows the visitor's system
+     setting. An embedder whose page is dark can say so rather than hoping
+     the visitor's OS agrees with their design. */
+  theme?: "dark" | "light";
   // Optional call-to-action rendered at the end of a business-mode report —
   // both text and link come from the embedder, so the offer is theirs, not
   // ours. Absent means no block at all: the public demo carries none.
@@ -86,6 +90,13 @@ export function mount(target: string | HTMLElement, options: MountOptions) {
   setLang(detectLang(options.language));
 
   const mountPoint = mountShadowRoot(container);
+  /* Stamped on the mount point, which is where the token blocks are scoped.
+     Nothing is stamped when the embedder says nothing — that is the state
+     prefers-color-scheme answers, and stamping a default would override the
+     visitor's own system setting. */
+  if (options.theme === "dark" || options.theme === "light") {
+    mountPoint.dataset.theme = options.theme;
+  }
   const root = createRoot(mountPoint);
   root.render(
     <React.StrictMode>
@@ -107,6 +118,7 @@ function autoInit() {
       mount(el, {
         apiBase: el.dataset.apiBase,
         language: el.dataset.language,
+        theme: el.dataset.theme === "dark" || el.dataset.theme === "light" ? el.dataset.theme : undefined,
         cta: ctaText && ctaHref ? { text: ctaText, href: ctaHref } : undefined,
         // data-plans holds JSON. Parsed defensively and dropped entirely on
         // anything malformed: a broken attribute must not take the report

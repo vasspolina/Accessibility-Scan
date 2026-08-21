@@ -72,8 +72,13 @@
          widget follows the browser as it does in production. -->
     <script>
       (function () {
-        var lang = new URLSearchParams(location.search).get("lang");
-        if (lang) document.getElementById("a11y-widget-business-root").dataset.language = lang;
+        var q = new URLSearchParams(location.search);
+        var el = document.getElementById("a11y-widget-business-root");
+        var lang = q.get("lang");
+        if (lang) el.dataset.language = lang;
+        /* ?theme=dark|light pins the theme the way an embedder does. */
+        var theme = q.get("theme");
+        if (theme) el.dataset.theme = theme;
       })();
     </script>
 
