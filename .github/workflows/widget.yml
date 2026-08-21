@@ -1,0 +1,47 @@
+# The widget's own tests, and the accessibility criterion it sells.
+#
+# 174 unit tests cover the report's logic and its German voice rules. The
+# reflow check renders every fixture state in a real browser and measures it
+# against WCAG 1.4.10, because a tool that sells accessibility should survive
+# the criteria it reports on.
+name: Widget
+
+on:
+  push:
+    paths:
+      - "widget-business/**"
+      - ".github/workflows/widget.yml"
+  pull_request:
+    paths:
+      - "widget-business/**"
+      - ".github/workflows/widget.yml"
+
+jobs:
+  widget:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: widget-business
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+          cache-dependency-path: widget-business/package-lock.json
+
+      - run: npm ci
+
+      # Types first: a type error makes every later failure harder to read.
+      - run: npx tsc -b
+
+      - run: npm test
+
+      - run: npx playwright install --with-deps chromium
+
+      # Boots its own dev server and reads vite's chosen port from its output.
+      - run: npm run check:reflow
+
+      # Dead selectors and unstyled classes — neither errors at runtime.
+      - run: npm run lint:css
