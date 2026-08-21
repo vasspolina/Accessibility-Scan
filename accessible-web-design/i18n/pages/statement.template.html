@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>{{statement.title}} — {{nav.logo}}</title>
+<meta name="description" content="{{statement.metaDescription}}" />
+{{__ALTERNATES_STATEMENT__}}
+<link rel="stylesheet" href="../styles.css" />
+</head>
+<body>
+<a class="skip-link" href="#main-content">{{nav.skipToContent}}</a>
+
+<header class="site-header">
+  <div class="container">
+    <a href="./" class="logo">{{nav.logo}}</a>
+    <nav class="main-nav" aria-label="{{nav.primaryLabel}}">
+      <a href="./">{{statement.backToSite}}</a>
+{{__LANG_SELECTOR_STATEMENT__}}
+    </nav>
+  </div>
+</header>
+
+<div class="container">
+  <main class="content" id="main-content">
+    <h1>{{statement.title}}</h1>
+
+    <p class="lede">{{statement.intro}}</p>
+
+    <h2>{{statement.statusHeading}}</h2>
+    <p>{{statement.status}}</p>
+
+    <h2>{{statement.nonAccessibleHeading}}</h2>
+    <p>{{statement.nonAccessibleIntro}}</p>
+    <ul>
+      <li>{{statement.nonAccessibleItem1}}</li>
+      <li>{{statement.nonAccessibleItem2}}</li>
+    </ul>
+
+    <h2>{{statement.preparedHeading}}</h2>
+    <p>{{statement.prepared}}</p>
+    <p>{{statement.method}}</p>
+
+    <h2>{{statement.feedbackHeading}}</h2>
+    <p>{{statement.feedbackIntro}}</p>
+    <p><a href="mailto:{{statement.feedbackEmail}}">{{statement.feedbackEmail}}</a></p>
+    <p>{{statement.feedbackResponse}}</p>
+
+    <h2>{{statement.enforcementHeading}}</h2>
+    <p>{{statement.enforcementIntro}}</p>
+    <p>{{statement.enforcementBody}}</p>
+
+    <hr class="divider" />
+    <p><a href="{{statement.legalHref}}">{{statement.legalLink}}</a></p>
+  </main>
+</div>
+</body>
+</html>

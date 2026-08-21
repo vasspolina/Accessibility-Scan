@@ -89,7 +89,7 @@ function pseudo(s) {
   return `⟦${accented}${pad}⟧`;
 }
 
-function languageSelector(current, locales) {
+function languageSelector(current, locales, page = "") {
   /* A reference implementation, because prospects will screenshot it.
      - endonyms, never flags: a flag is a country, not a language
      - real links, so it works without JS and each locale is a real URL
@@ -98,7 +98,7 @@ function languageSelector(current, locales) {
   const items = locales.map((l) => {
     const active = l === current;
     return `        <li>
-          <a href="/${l}/" hreflang="${l}" lang="${l}"${active ? ' aria-current="true"' : ""} class="lang-option${active ? " is-current" : ""}">${ENDONYM[l] ?? l}</a>
+          <a href="/${l}/${page}" hreflang="${l}" lang="${l}"${active ? ' aria-current="true"' : ""} class="lang-option${active ? " is-current" : ""}">${ENDONYM[l] ?? l}</a>
         </li>`;
   }).join("\n");
   return `      <nav class="lang-switch" aria-label="{{lang.label}}">
@@ -109,10 +109,22 @@ ${items}
       <p class="visually-hidden" role="status">{{lang.changed}}</p>`;
 }
 
-function alternates(locales) {
-  const links = locales.map((l) => `<link rel="alternate" hreflang="${l}" href="${SITE}/${l}/" />`);
-  links.push(`<link rel="alternate" hreflang="x-default" href="${SITE}/en/" />`);
+function alternates(locales, page = "") {
+  const links = locales.map((l) => `<link rel="alternate" hreflang="${l}" href="${SITE}/${l}/${page}" />`);
+  links.push(`<link rel="alternate" hreflang="x-default" href="${SITE}/en/${page}" />`);
   return links.map((l) => "  " + l).join("\n");
+}
+
+function renderPage(locale, templateFile, outName, ctx) {
+  /* Extra pages — the accessibility statement today — go through the same
+     catalogue, the same fallback and the same lang stamping as the index.
+     A statement that was not translated is worse than none: it is the one
+     page a regulator reads. */
+  const file = path.join(HERE, "pages", templateFile);
+  if (!fs.existsSync(file)) return;
+  const html = fs.readFileSync(file, "utf8");
+  const out = renderInto(html, locale, ctx, { statement: true });
+  fs.writeFileSync(path.join(OUT, locale, outName), out);
 }
 
 function render(locale, { strict, template, base }) {
@@ -132,6 +144,8 @@ function render(locale, { strict, template, base }) {
   // The language selector and hreflang block are generated, not authored.
   html = html.replace("{{__LANG_SELECTOR__}}", languageSelector(locale === "en-XA" ? "en" : locale, PRIMARY));
   html = html.replace("{{__ALTERNATES__}}", alternates(PRIMARY));
+  html = html.replace("{{__LANG_SELECTOR_STATEMENT__}}", languageSelector(locale === "en-XA" ? "en" : locale, PRIMARY, "statement.html"));
+  html = html.replace("{{__ALTERNATES_STATEMENT__}}", alternates(PRIMARY, "statement.html"));
 
   html = html.replace(/\{\{([\w.]+)\}\}/g, (_, key) => {
     let value = messages?.[key];
@@ -155,6 +169,24 @@ function render(locale, { strict, template, base }) {
   const dir = path.join(OUT, locale);
   fs.mkdirSync(dir, { recursive: true });
   fs.writeFileSync(path.join(dir, "index.html"), html);
+
+  // Extra pages, rendered with the same substitution the index just used.
+  {
+    const file = path.join(HERE, "pages", "statement.template.html");
+    if (fs.existsSync(file)) {
+      let page = fs.readFileSync(file, "utf8");
+      page = page.replace("{{__LANG_SELECTOR_STATEMENT__}}", languageSelector(locale === "en-XA" ? "en" : locale, PRIMARY, "statement.html"));
+      page = page.replace("{{__ALTERNATES_STATEMENT__}}", alternates(PRIMARY, "statement.html"));
+      page = page.replace(/\{\{([\w.]+)\}\}/g, (_, key) => {
+        let v = messages?.[key];
+        if (v === undefined) { missing.push(key); v = base[key] ?? ""; }
+        else if (v === "") { untranslated.push(key); v = base[key] ?? ""; }
+        return icu(isPseudo ? pseudo(String(v)) : String(v), vars, data.tag);
+      });
+      page = page.replace('<html lang="en">', `<html lang="${data.tag}" dir="${data.dir}">`);
+      fs.writeFileSync(path.join(dir, "statement.html"), page);
+    }
+  }
 
   const status = missing.length ? "ABSENT KEYS" : untranslated.length ? `${untranslated.length} untranslated` : "complete";
   console.log(`  /${locale}/  ${status}`);
