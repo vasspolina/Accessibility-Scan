@@ -3105,8 +3105,29 @@ export async function renderAndScan(
                   "[data-a11y-behind-consent] { display: none !important; }",
                   "[data-a11y-behind-consent-unblur] { filter: none !important; backdrop-filter: none !important; }",
                 ];
-                if (sel) rules.unshift(`${sel} { display: none !important; }`);
-                const bannerEl = sel ? document.querySelector(sel) : null;
+                // Mark the ONE element the selector resolves to — never inject
+                // the selector as a CSS rule. cssPath only stops climbing when
+                // it meets an id, so a banner buried in anonymous divs yields
+                // something like "div > div > div > div > div > div", which is
+                // a perfectly good path to one element and a catastrophic
+                // stylesheet: on dr.dk it matches 1143 of them. As a rule it
+                // blanked the entire article grid and left only the header,
+                // which is shallower than the chain — the preview came back
+                // showing an empty page and the feature looked broken.
+                // querySelector takes the first match, so the banner still
+                // goes; nothing else does.
+                let bannerEl: Element | null = null;
+                if (sel) {
+                  // A path built from a live DOM can still be invalid CSS by
+                  // the time it is used. It used to throw here and take the
+                  // whole pass with it, silently — no preview, no reason.
+                  try {
+                    bannerEl = document.querySelector(sel);
+                  } catch {
+                    bannerEl = null;
+                  }
+                }
+                if (bannerEl) bannerEl.setAttribute("data-a11y-behind-consent", "");
                 const bannerTextLen = bannerEl ? (bannerEl.textContent ?? "").trim().length : 0;
                 // The wall's own wrappers: the innermost-wins detection picks
                 // the card, but pay-or-consent walls wrap it in a fixed
@@ -3173,8 +3194,15 @@ export async function renderAndScan(
             behindConsentShot = await page
               .screenshot({ type: "jpeg", quality: 70, animations: "disabled" })
               .catch(() => null);
-          } catch {
-            // best-effort: no behind-banner shot beats a failed scan
+          } catch (err) {
+            // Best-effort: no behind-banner shot beats a failed scan. But it
+            // stays best-effort out loud — this swallowed every failure in
+            // silence, so a preview that never appeared looked identical to a
+            // site that has no banner, and the reason was unrecoverable.
+            logger.warn(
+              { err, selector: banner.selector, frameUrl: banner.frameUrl },
+              "behind-consent preview failed"
+            );
           } finally {
             await page
               .evaluate(() => {
