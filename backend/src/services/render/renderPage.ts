@@ -3097,6 +3097,19 @@ export async function renderAndScan(
         await timed("behindConsentShot", async () => {
           const banner = darkPatternSignals.consentBanner!;
           try {
+            /* Dev-only shim, and the reason this feature shipped broken.
+               The function below is the one in-page probe with named inner
+               helpers, and esbuild's keepNames rewrites those as
+               `__name(fn, "fn")`. tsx compiles with keepNames on, so under
+               `npm run dev` every call threw "__name is not defined" in the
+               page context and the whole pass was lost — silently, until the
+               catch below started reporting. Compiled builds (tsc, which is
+               what production runs) never had it.
+               Passed as a STRING so no bundler can transform it, and written
+               so it defines nothing where the helper already exists. */
+            await page.evaluate(
+              "window.__name = window.__name || function (f) { return f; };"
+            );
             await page.evaluate(
               ({ sel, frameOrigin }) => {
                 const style = document.createElement("style");
