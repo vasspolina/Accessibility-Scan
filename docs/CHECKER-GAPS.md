@@ -1,6 +1,6 @@
 # What the checker is missing
 
-An audit of this product's own detection coverage, run on 21 August 2026
+An audit of this product's own detection coverage, run overnight on 21–22 August 2026
 against commit `ba03ef6`.
 
 ## How this was produced, and how much to trust it
