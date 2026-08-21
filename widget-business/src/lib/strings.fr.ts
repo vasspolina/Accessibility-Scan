@@ -47,7 +47,7 @@ export const STRINGS_FR: Record<string, string> = {
   "How much of it?": "Quelle étendue ?",
   "Who reads it?": "Qui le lit ?",
   "Report style": "Style du rapport",
-  "Business owners": "Chefs d'entreprise",
+  "For everyone": "Pour tout le monde",
   Professionals: "Professionnels",
   "Add an AI review": "Ajouter une relecture par IA",
   "AI review": "Relecture par IA",

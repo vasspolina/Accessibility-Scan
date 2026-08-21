@@ -77,7 +77,7 @@ export const CHROME_KEYS: string[] = [
   "How much of it?",
   "Who reads it?",
   "Report style",
-  "Business owners",
+  "For everyone",
   "Professionals",
   "Add an AI review",
   "AI review",

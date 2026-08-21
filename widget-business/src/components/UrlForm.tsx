@@ -320,10 +320,12 @@ export function UrlForm({
               id="a11y-aud-biz"
               name="a11y-audience"
               value="business"
-              /* The design's own words. "For business owners" put the
-                 preposition inside every card, where the question above
-                 already supplies it: "Who reads it? — Business owners". */
-              label={t("Business owners")}
+              /* Not "Business owners". This report is written for whoever has
+                 to act on it — an owner, a marketer, a designer, the person
+                 who inherited the site — and naming one of them told the rest
+                 they were in the wrong place. The pair it sits in carries the
+                 distinction already: everyone, or professionals. */
+              label={t("For everyone")}
               description={t("Plain-language summary and costs")}
               meta={t("Most chosen")}
               checked={audience === "business"}

@@ -55,7 +55,7 @@ export function ScanSettings({
             aria-pressed={audience === "business"}
             onClick={() => onAudienceChange("business")}
           >
-            Business
+            For everyone
           </button>
           <button
             type="button"

@@ -44,7 +44,7 @@ export const STRINGS_DE: Record<string, string> = {
   "How much of it?": "Wie viel davon?",
   "Who reads it?": "Wer liest ihn?",
   "Report style": "Art des Berichts",
-  "Business owners": "Unternehmer",
+  "For everyone": "Für alle",
   Professionals: "Fachleute",
   "Add an AI review": "KI-Prüfung hinzufügen",
   "AI review": "KI-Prüfung",
