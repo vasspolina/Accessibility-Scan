@@ -26,10 +26,8 @@ export const STRINGS_DE: Record<string, string> = {
   Findings: "Befunde",
   Sections: "Abschnitte",
   // Die Eilmeldung
-  "Start here: a screen reader cannot get past your cookie banner":
-    "Hier anfangen: Ein Screenreader kommt an Ihrem Cookie-Banner nicht vorbei",
-  "The banner hides the page from screen readers and never takes focus. Until that is fixed, everything below this line is what a screen reader user never reaches.":
-    "Das Banner versteckt die Seite vor Screenreadern und nimmt nie den Fokus. Bis das behoben ist, ist alles unter dieser Linie das, was Screenreader-Nutzer nie erreichen.",
+  "Start here: a screen reader cannot get past your cookie banner": "Hier anfangen: Ein Screenreader kommt an Ihrem Cookie-Banner nicht vorbei",
+  "The banner hides the page from screen readers and never takes focus. Until that is fixed, everything below this line is what a screen reader user never reaches.": "Das Banner versteckt die Seite vor Screenreadern und nimmt nie den Fokus. Bis das behoben ist, ist alles unter dieser Linie das, was Screenreader-Nutzer nie erreichen.",
   "See the finding": "Zum Befund",
   // Bedienelemente und Beschriftungen
   "Show the checklist": "Checkliste zeigen",
@@ -75,11 +73,10 @@ export const STRINGS_DE: Record<string, string> = {
   "Copy summary as plain text": "Zusammenfassung als Text kopieren",
   "Reading order, not visual order.": "Lesereihenfolge, nicht die sichtbare Reihenfolge.",
   // Das Scan-Formular
-  "Cancel \u2014 scan without a login": "Abbrechen — ohne Login scannen",
+  "Cancel \u2014 scan without a login": "Abbrechen – ohne Login scannen",
   Fastest: "Am schnellsten",
   "Finds what repeats everywhere": "Findet, was sich überall wiederholt",
-  "Keep this page open \u2014 the scan runs here.":
-    "Lassen Sie diese Seite offen — der Scan läuft hier.",
+  "Keep this page open \u2014 the scan runs here.": "Lassen Sie diese Seite offen – der Scan läuft hier.",
   "Most chosen": "Am häufigsten gewählt",
   "One moment\u2026": "Einen Moment…",
   "One page, end to end": "Eine Seite, von A bis Z",

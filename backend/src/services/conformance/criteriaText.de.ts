@@ -93,8 +93,7 @@ export const CRITERIA_DE: Record<string, { plain: string; failing: string }> = {
   },
   "2.1.4": {
     plain: "Lassen sich Kürzel aus einer einzelnen Taste abschalten?",
-    failing:
-      "Kürzel aus einer einzelnen Taste lassen sich nicht abschalten, also lösen sie beim Sprechen versehentlich aus",
+    failing: "Kürzel aus einer einzelnen Taste lassen sich nicht abschalten, also lösen sie beim Sprechen versehentlich aus",
   },
   "2.2.1": {
     plain: "Lässt sich ein Zeitlimit verlängern oder abschalten?",

@@ -5,15 +5,13 @@ import type { PlainRule } from "./wcagPlain";
 export const PLAIN_DE: Record<string, PlainRule> = {
   "timing-meta-refresh": {
     plain: "Die Seite lädt automatisch neu",
-    impact:
-      "Wer noch liest oder mitten im Formular steckt, landet ohne Warnung wieder am Anfang. Langsam zu lesen ist kein Fehler, und das hier bestraft es.",
+    impact: "Wer noch liest oder mitten im Formular steckt, landet ohne Warnung wieder am Anfang. Langsam zu lesen ist kein Fehler, und das hier bestraft es.",
   },
   "aria-allowed-role": {
     plain: "Elemente sind falsch ausgezeichnet",
     found: (n) =>
       `${n} ${n === 1 ? "Element ist" : "Elemente sind"} im Code als etwas ausgezeichnet, das ${n === 1 ? "es nicht sein kann" : "sie nicht sein können"}. Die Rolle passt nicht zu dieser Art von Tag.`,
-    impact:
-      "Screenreader sagen das Falsche an. Man hört „Schaltfläche“, wo ein Link steht, oder „Überschrift“, wo eine Liste steht.",
+    impact: "Screenreader sagen das Falsche an. Man hört „Schaltfläche“, wo ein Link steht, oder „Überschrift“, wo eine Liste steht.",
   },
   "aria-allowed-attr": {
     plain: "Code-Angaben am falschen Element",
@@ -25,8 +23,7 @@ export const PLAIN_DE: Record<string, PlainRule> = {
     plain: "Eine Beschriftung, die der Code verwirft",
     found: (n) =>
       `${n} ${n === 1 ? "Element trägt" : "Elemente tragen"} eine Beschriftung, die der Code bei dieser Art von Tag nicht zulässt. Die Beschriftung wird weggeworfen statt vorgelesen.`,
-    impact:
-      "Im Quelltext sieht das Element benannt aus, also fällt niemandem etwas auf. Screenreader ignorieren die Beschriftung und lesen vor, was im Element steht — oft nichts.",
+    impact: "Im Quelltext sieht das Element benannt aus, also fällt niemandem etwas auf. Screenreader ignorieren die Beschriftung und lesen vor, was im Element steht – oft nichts.",
   },
   "aria-required-children": {
     plain: "Menüs oder Listen ohne Einträge",
@@ -38,8 +35,7 @@ export const PLAIN_DE: Record<string, PlainRule> = {
     plain: "Teile eines Bedienelements stehen allein",
     found: (n) =>
       `${n} ${n === 1 ? "Element ist als Teil eines größeren Bedienelements ausgezeichnet: ein Reiter, ein Menüpunkt, eine Listenoption. Es steht nicht in dem Bedienelement, zu dem es gehört." : "Elemente sind als Teile eines größeren Bedienelements ausgezeichnet: Reiter, Menüpunkte, Listenoptionen. Keines steht in dem Bedienelement, zu dem es gehört."}`,
-    impact:
-      "Ein Reiter außerhalb seiner Reiterleiste ist kein Reiter. Screenreader können nicht sagen, der wievielte von wie vielen er ist. Und die Pfeiltasten, mit denen man durch solche Elemente geht, haben nichts, wodurch sie gehen könnten.",
+    impact: "Ein Reiter außerhalb seiner Reiterleiste ist kein Reiter. Screenreader können nicht sagen, der wievielte von wie vielen er ist. Und die Pfeiltasten, mit denen man durch solche Elemente geht, haben nichts, wodurch sie gehen könnten.",
   },
   "landmark-unique": {
     plain: "Zwei Seitenbereiche heißen gleich",
@@ -81,8 +77,7 @@ export const PLAIN_DE: Record<string, PlainRule> = {
     plain: "Der Sprunglink führt ins Leere",
     found: (n) =>
       `${n} ${n === 1 ? "Sprunglink zeigt" : "Sprunglinks zeigen"} auf etwas, das es auf der Seite nicht gibt. Wer ${n === 1 ? "ihn" : "sie"} benutzt, bewegt sich keinen Schritt.`,
-    impact:
-      "An der Tastatur drückt man ihn und bleibt genau da, wo man war — und tabbt dann doch durch das ganze Menü.",
+    impact: "An der Tastatur drückt man ihn und bleibt genau da, wo man war. Und tabbt dann doch durch das ganze Menü.",
   },
   "image-redundant-alt": {
     plain: "Bildbeschreibung wiederholt den Text daneben",
@@ -91,29 +86,24 @@ export const PLAIN_DE: Record<string, PlainRule> = {
     impact: "Wer einen Screenreader nutzt, hört dasselbe zweimal und verliert Zeit ohne Gewinn.",
   },
   "color-contrast": {
-    research:
-      "WebAIM prüft jedes Jahr eine Million Startseiten. Zu blasser Text ist Jahr für Jahr der häufigste Fehler, den WebAIM dabei findet. Weit mehr Menschen sehen schlechter, als die Monitore eines Design-Teams vermuten lassen.",
+    research: "WebAIM prüft jedes Jahr eine Million Startseiten. Zu blasser Text ist Jahr für Jahr der häufigste Fehler, den WebAIM dabei findet. Weit mehr Menschen sehen schlechter, als die Monitore eines Design-Teams vermuten lassen.",
     plain: "Text zu blass zum Lesen",
     found: (n) =>
       `${n} ${n === 1 ? "Textstelle auf dieser Seite liegt farblich zu nah am Hintergrund dahinter. Sie steht" : "Textstellen auf dieser Seite liegen farblich zu nah am Hintergrund dahinter. Jede steht"} unter „Betroffene Elemente“, und die technische Fassung nennt das gemessene Verhältnis.`,
-    impact:
-      "Schwer zu lesen bei hellem Licht, auf einem billigen Bildschirm oder mit nicht perfekten Augen. Ihre Botschaft kommt nicht an.",
+    impact: "Schwer zu lesen bei hellem Licht, auf einem billigen Bildschirm oder mit nicht perfekten Augen. Ihre Botschaft kommt nicht an.",
   },
   "image-alt": {
-    research:
-      "WebAIM prüft jedes Jahr eine Million Startseiten. Bilder ohne Beschreibung gehören Jahr für Jahr zu den häufigsten Fehlern. Und es ist einer der einfachsten, die sich beheben lassen.",
+    research: "WebAIM prüft jedes Jahr eine Million Startseiten. Bilder ohne Beschreibung gehören Jahr für Jahr zu den häufigsten Fehlern. Und es ist einer der einfachsten, die sich beheben lassen.",
     plain: "Bilder ohne Beschreibung",
     found: (n) =>
       `${n} ${n === 1 ? "Bild hat" : "Bilder haben"} gar keinen Alt-Text — nicht einmal einen leeren, der ${n === 1 ? "es" : "sie"} als Schmuck kennzeichnet. Ein Screenreader liest dann den Dateinamen vor oder übergeht ${n === 1 ? "es" : "sie"} stumm.`,
-    impact:
-      "Wer einen Screenreader nutzt, hört zu diesen Bildern nichts, und Suchmaschinen wissen nicht, was darauf zu sehen ist. Das kostet Sie beides: Zugänglichkeit und Auffindbarkeit.",
+    impact: "Wer einen Screenreader nutzt, hört zu diesen Bildern nichts, und Suchmaschinen wissen nicht, was darauf zu sehen ist. Das kostet Sie beides: Zugänglichkeit und Auffindbarkeit.",
   },
   "svg-img-alt": {
     plain: "Symbole ohne Beschreibung",
     found: (n) =>
       `${n} ${n === 1 ? "Symbol ist im Code als Bild gekennzeichnet, sagt aber mit keinem Wort, was es zeigt." : "Symbole sind im Code als Bilder gekennzeichnet, sagen aber mit keinem Wort, was sie zeigen."}`,
-    impact:
-      "Oft ist das Symbol die einzige Beschriftung: eine Lupe für die Suche, ein Korb für den Warenkorb. Ein Screenreader kommt dort an und hat nichts anzusagen.",
+    impact: "Oft ist das Symbol die einzige Beschriftung: eine Lupe für die Suche, ein Korb für den Warenkorb. Ein Screenreader kommt dort an und hat nichts anzusagen.",
   },
   "input-image-alt": {
     plain: "Bild-Schaltfläche ohne Beschreibung",
@@ -122,35 +112,29 @@ export const PLAIN_DE: Record<string, PlainRule> = {
     impact: "Wer einen Screenreader nutzt, erfährt nicht, was die Schaltfläche tut, und kommt nicht ans Ziel.",
   },
   "link-name": {
-    research:
-      "Leere Links gehören zu den häufigsten Fehlern in der jährlichen WebAIM-Untersuchung von einer Million Startseiten. Wer einen Screenreader nutzt, lässt sich oft eine Liste aller Links geben. Ein leerer Link steht dort nur als das Wort „Link“ und sonst nichts.",
+    research: "Leere Links gehören zu den häufigsten Fehlern in der jährlichen WebAIM-Untersuchung von einer Million Startseiten. Wer einen Screenreader nutzt, lässt sich oft eine Liste aller Links geben. Ein leerer Link steht dort nur als das Wort „Link“ und sonst nichts.",
     plain: "Links ohne lesbaren Text",
     found: (n) =>
       `${n} ${n === 1 ? "Link enthält" : "Links enthalten"} keinen lesbaren Text — keine Wörter, keine Beschriftung, nichts zum Ansagen. ${n === 1 ? "Meist ist es ein Symbol, ein Pfeil oder ein Bild, das als Link dient." : "Meist sind es Symbole, Pfeile oder Bilder, die als Links dienen."} Das Bild trägt die Bedeutung, der Code trägt nichts davon.`,
-    impact:
-      "Wer einen Screenreader nutzt, lässt sich oft eine Liste aller Links geben und wählt daraus. Ein Link ohne Text steht dort nur als das Wort „Link“. Mehrere davon machen aus der Liste „Link, Link, Link“.",
+    impact: "Wer einen Screenreader nutzt, lässt sich oft eine Liste aller Links geben und wählt daraus. Ein Link ohne Text steht dort nur als das Wort „Link“. Mehrere davon machen aus der Liste „Link, Link, Link“.",
   },
   "link-text-vague": {
     plain: "Links heißen nur „Mehr erfahren“",
-    impact:
-      "Wer einen Screenreader nutzt, kann sich eine Liste aller Links geben lassen. Wenn alle gleich heißen, hilft diese Liste überhaupt nicht.",
+    impact: "Wer einen Screenreader nutzt, kann sich eine Liste aller Links geben lassen. Wenn alle gleich heißen, hilft diese Liste überhaupt nicht.",
   },
   "button-name": {
-    research:
-      "Schaltflächen ohne Beschriftung stehen Jahr für Jahr weit oben in der jährlichen WebAIM-Untersuchung von einer Million Startseiten. Meist sind es reine Symbol-Schaltflächen, die für ihre Gestalter selbsterklärend waren.",
+    research: "Schaltflächen ohne Beschriftung stehen Jahr für Jahr weit oben in der jährlichen WebAIM-Untersuchung von einer Million Startseiten. Meist sind es reine Symbol-Schaltflächen, die für ihre Gestalter selbsterklärend waren.",
     plain: "Schaltflächen ohne Beschriftung",
     found: (n) =>
       `${n} ${n === 1 ? "Schaltfläche hat" : "Schaltflächen haben"} gar keine Beschriftung: keine Wörter darin und keinen Namen im Code. Fast immer sind es Symbol-Schaltflächen, bei denen das Zeichen die Bedeutung trägt und der Code nichts davon.`,
     impact: "Niemand weiß vor dem Klick, was passiert. Ein häufiger Grund, aufzugeben.",
   },
   label: {
-    research:
-      "Fehlende Feldbeschriftungen stehen weit oben in der jährlichen WebAIM-Untersuchung von einer Million Startseiten. In der britischen Click-Away-Pound-Studie verließen die meisten Käufer, die auf so eine Hürde stießen, den Shop wortlos. Ihr Geld gaben sie woanders aus.",
+    research: "Fehlende Feldbeschriftungen stehen weit oben in der jährlichen WebAIM-Untersuchung von einer Million Startseiten. In der britischen Click-Away-Pound-Studie verließen die meisten Käufer, die auf so eine Hürde stießen, den Shop wortlos. Ihr Geld gaben sie woanders aus.",
     plain: "Formularfelder ohne Beschriftung",
     found: (n) =>
       `${n} ${n === 1 ? "Formularfeld ist" : "Formularfelder sind"} im Code nicht mit einer Beschriftung verbunden. Auf dem Bildschirm stehen die Wörter vielleicht direkt daneben, aber nichts verknüpft beides. Ein Screenreader sagt das Feld an, ohne zu wissen, wofür es da ist.`,
-    impact:
-      "Wer einen Screenreader nutzt, weiß nicht, was in welches Feld gehört. Formulare bleiben liegen, die Kasse eingeschlossen.",
+    impact: "Wer einen Screenreader nutzt, weiß nicht, was in welches Feld gehört. Formulare bleiben liegen, die Kasse eingeschlossen.",
   },
   "select-name": {
     plain: "Ein Auswahlfeld ohne Beschriftung",
@@ -165,8 +149,7 @@ export const PLAIN_DE: Record<string, PlainRule> = {
     impact: "Tabs, Lesezeichen und Suchergebnisse zeigen nichts Brauchbares.",
   },
   "html-has-lang": {
-    research:
-      "Eine fehlende Sprachangabe ist einer der wenigen Fehler, die WebAIM auf der Mehrheit des Web findet. Er bleibt häufig, weil er lautlos ist: Die Seite sieht richtig aus, und nur wer sie in der falschen Stimme hört, merkt etwas.",
+    research: "Eine fehlende Sprachangabe ist einer der wenigen Fehler, die WebAIM auf der Mehrheit des Web findet. Er bleibt häufig, weil er lautlos ist: Die Seite sieht richtig aus, und nur wer sie in der falschen Stimme hört, merkt etwas.",
     plain: "Die Seite nennt keine Sprache",
     found: () => `Die Seite gibt nicht an, in welcher Sprache sie geschrieben ist.`,
     impact: "Ihre Inhalte werden mit dem falschen Akzent vorgelesen, und das ist schwer zu verstehen.",
@@ -209,8 +192,7 @@ export const PLAIN_DE: Record<string, PlainRule> = {
     plain: "Zoomen ist gedeckelt",
     found: () =>
       `Zoomen geht, aber die Seite deckelt es unter 500%, und wer die stärkste Vergrößerung braucht, kommt nicht über den Deckel hinaus.`,
-    impact:
-      "Milder, als das Zoomen ganz zu sperren, und es trifft dieselben Menschen. Wer sehr große Schrift braucht, kommt bis zum Deckel und keinen Schritt weiter.",
+    impact: "Milder, als das Zoomen ganz zu sperren, und es trifft dieselben Menschen. Wer sehr große Schrift braucht, kommt bis zum Deckel und keinen Schritt weiter.",
   },
   "frame-title": {
     plain: "Ein eingebetteter Rahmen ohne Titel",
@@ -252,22 +234,19 @@ export const PLAIN_DE: Record<string, PlainRule> = {
     plain: "Ein Pop-up ohne Namen",
     found: (n) =>
       `${n} ${n === 1 ? "Pop-up trägt nichts, was es benennt. Es wird als „Dialog“ angesagt und sonst nichts." : "Pop-ups tragen nichts, was sie benennt. Sie werden als „Dialog“ angesagt und sonst nichts."}`,
-    impact:
-      "Angesagt wird „Dialog“ und sonst nichts. Etwas hat den Bildschirm übernommen, und es gibt keine Möglichkeit zu hören, was.",
+    impact: "Angesagt wird „Dialog“ und sonst nichts. Etwas hat den Bildschirm übernommen, und es gibt keine Möglichkeit zu hören, was.",
   },
   "nested-interactive": {
     plain: "Ein Bedienelement im anderen",
     found: (n) =>
       `${n} ${n === 1 ? "Bedienelement enthält ein weiteres Bedienelement." : "Bedienelemente enthalten jeweils ein weiteres Bedienelement."} Was wie eine Sache zum Klicken aussieht, sind zwei ineinander.`,
-    impact:
-      "Screenreader sagen das äußere an und verbergen das innere, das damit unerreichbar wird. Welches von beiden ein Klick oder ein Tastendruck auslöst, weiß niemand.",
+    impact: "Screenreader sagen das äußere an und verbergen das innere, das damit unerreichbar wird. Welches von beiden ein Klick oder ein Tastendruck auslöst, weiß niemand.",
   },
   "presentation-role-conflict": {
     plain: "Ein echtes Bedienelement gilt als Schmuck",
     found: (n) =>
       `${n} ${n === 1 ? "Element ist als zu ignorieren gekennzeichnet und bleibt trotzdem erreichbar und bedienbar. Der Code widerspricht sich selbst darüber, ob es existiert." : "Elemente sind als zu ignorieren gekennzeichnet und bleiben trotzdem erreichbar und bedienbar. Der Code widerspricht sich selbst darüber, ob es sie gibt."}`,
-    impact:
-      "Der Code sagt: ignorieren. Das Element sagt: benutzen. Screenreader lösen das unterschiedlich auf, und manche finden es deshalb nie.",
+    impact: "Der Code sagt: ignorieren. Das Element sagt: benutzen. Screenreader lösen das unterschiedlich auf, und manche finden es deshalb nie.",
   },
   region: {
     plain: "Seitenbereiche ohne Namen im Code",
@@ -295,236 +274,192 @@ export const PLAIN_DE: Record<string, PlainRule> = {
   },
 
   "keyboard-mouse-only": {
-    research:
-      "Jahrzehnte an Usability-Forschung, vieles davon von der Nielsen Norman Group, kommen immer wieder zum selben Schluss. Tastaturbedienung nützt geübten Nutzern genauso wie Menschen, die keine Maus halten können.",
+    research: "Jahrzehnte an Usability-Forschung, vieles davon von der Nielsen Norman Group, kommen immer wieder zum selben Schluss. Tastaturbedienung nützt geübten Nutzern genauso wie Menschen, die keine Maus halten können.",
     plain: "Ein Bedienelement, das die Tastatur nicht erreicht",
-    impact:
-      "Hier gibt es keinen Umweg. Wer keine Maus benutzen kann, kann nicht tun, was dieses Element tut. Ist es der Kaufen-Knopf oder ein Formularschritt, endet der Besuch hier.",
+    impact: "Hier gibt es keinen Umweg. Wer keine Maus benutzen kann, kann nicht tun, was dieses Element tut. Ist es der Kaufen-Knopf oder ein Formularschritt, endet der Besuch hier.",
   },
   "keyboard-no-visible-focus": {
     plain: "Nichts zeigt, wo die Tastatur steht",
-    impact:
-      "Viele Menschen fassen nie eine Maus an. Ohne sichtbare Markierung navigieren sie blind, und sie geben auf.",
+    impact: "Viele Menschen fassen nie eine Maus an. Ohne sichtbare Markierung navigieren sie blind, und sie geben auf.",
   },
   "readability-dense-prose": {
     plain: "Der Text verlangt Lesen auf Hochschulniveau",
-    impact:
-      "Keine gesetzliche Pflicht, und trotzdem die Änderung mit der größten Wirkung in diesem Bericht. Sie hilft Menschen mit kognitiven Einschränkungen und allen, die in einer zweiten Sprache lesen. GOV.UK schreibt für ein Lesealter von etwa neun Jahren, und das ist keine einfache Website.",
+    impact: "Keine gesetzliche Pflicht, und trotzdem die Änderung mit der größten Wirkung in diesem Bericht. Sie hilft Menschen mit kognitiven Einschränkungen und allen, die in einer zweiten Sprache lesen. GOV.UK schreibt für ein Lesealter von etwa neun Jahren, und das ist keine einfache Website.",
   },
   "typo-leading-for-measure": {
     plain: "Zeilen stehen zu eng übereinander",
-    impact:
-      "Das Auge gleitet nicht über eine Zeile, es springt. Der schwerste Sprung geht zurück an den Anfang der nächsten. Je länger die Zeile, desto leichter landet man in der falschen.",
+    impact: "Das Auge gleitet nicht über eine Zeile, es springt. Der schwerste Sprung geht zurück an den Anfang der nächsten. Je länger die Zeile, desto leichter landet man in der falschen.",
   },
   "reading-order-mismatch": {
     plain: "Tab-Reihenfolge widerspricht dem Sichtbaren",
-    impact:
-      "Die Seite hat Dinge auf dem Bildschirm verschoben, im eigenen Code aber nicht, und die Tab-Taste folgt dem Code. Bei einem Paar wie Abbrechen und Senden ist der Knopf unter dem Zeiger nicht der, auf dem die Tastatur steht.",
+    impact: "Die Seite hat Dinge auf dem Bildschirm verschoben, im eigenen Code aber nicht, und die Tab-Taste folgt dem Code. Bei einem Paar wie Abbrechen und Senden ist der Knopf unter dem Zeiger nicht der, auf dem die Tastatur steht.",
   },
 
   "forced-colors-focus-lost": {
     plain: "Fokusmarkierung verschwindet im hohen Kontrast",
-    impact:
-      "Der Modus für hohen Kontrast entfernt die Schatten und Farben, mit denen die meisten Fokusmarkierungen gezeichnet sind. Wer am dringendsten sehen muss, wo er steht, sieht nichts — auf einer Seite, die bis dahin perfekt aussieht.",
+    impact: "Der Modus für hohen Kontrast entfernt die Schatten und Farben, mit denen die meisten Fokusmarkierungen gezeichnet sind. Wer am dringendsten sehen muss, wo er steht, sieht nichts – auf einer Seite, die bis dahin perfekt aussieht.",
   },
   "forced-colors-icon-lost": {
     plain: "Symbol-Schaltfläche verschwindet im hohen Kontrast",
-    impact:
-      "Das Symbol ist ein Hintergrundbild, und dieser Modus entfernt Hintergrundbilder. Die Schaltfläche funktioniert weiter, erscheint aber als leerer Kasten: kein Bild, keine Beschriftung, kein Hinweis, dass es eine Schaltfläche ist.",
+    impact: "Das Symbol ist ein Hintergrundbild, und dieser Modus entfernt Hintergrundbilder. Die Schaltfläche funktioniert weiter, erscheint aber als leerer Kasten: kein Bild, keine Beschriftung, kein Hinweis, dass es eine Schaltfläche ist.",
   },
   "keyboard-faint-focus": {
     plain: "Tastaturmarkierung zu blass zum Sehen",
-    impact:
-      "Die Tab-Taste bewegt einen unsichtbaren Zeiger, und nur der Rahmen zeigt, wo er angekommen ist. Ist er zu blass, weiß man an der Tastatur nicht, was man gleich auslöst. Beim Testen rutscht das durch, weil ja wirklich ein Rahmen da ist.",
+    impact: "Die Tab-Taste bewegt einen unsichtbaren Zeiger, und nur der Rahmen zeigt, wo er angekommen ist. Ist er zu blass, weiß man an der Tastatur nicht, was man gleich auslöst. Beim Testen rutscht das durch, weil ja wirklich ein Rahmen da ist.",
   },
   "keyboard-focus-trap": {
     plain: "Der Tastaturfokus bleibt hängen",
-    impact:
-      "Wer mit der Tastatur bis hierher kommt, kommt nicht weiter. Einer der schlimmsten Fehler, die eine Website haben kann.",
+    impact: "Wer mit der Tastatur bis hierher kommt, kommt nicht weiter. Einer der schlimmsten Fehler, die eine Website haben kann.",
   },
 
   "component-form-autocomplete": {
     plain: "Formularfelder blockieren das Ausfüllen",
-    impact:
-      "Alle tippen Name, E-Mail und Adresse wieder von Hand. Langsam für alle, für manche eine echte Hürde.",
+    impact: "Alle tippen Name, E-Mail und Adresse wieder von Hand. Langsam für alle, für manche eine echte Hürde.",
   },
   "component-input-type": {
     plain: "Normale Felder für E-Mail und Telefon",
-    impact:
-      "Auf dem Handy erscheint die gewöhnliche Tastatur statt einer mit „@“ oder einem Ziffernblock. Mehr Tipper, mehr Fehler.",
+    impact: "Auf dem Handy erscheint die gewöhnliche Tastatur statt einer mit „@“ oder einem Ziffernblock. Mehr Tipper, mehr Fehler.",
   },
   "component-required-cue": {
     plain: "Pflichtfelder sind nicht sichtbar markiert",
-    impact:
-      "Niemand erfährt, dass ein Feld Pflicht war, bis das Formular ablehnt. Anmeldungen scheitern.",
+    impact: "Niemand erfährt, dass ein Feld Pflicht war, bis das Formular ablehnt. Anmeldungen scheitern.",
   },
   "component-submit-clarity": {
     plain: "Kein klar beschrifteter Absenden-Knopf",
-    impact:
-      "Ein Knopf, auf dem nur „Los“ steht, der nur ein Symbol zeigt oder ganz fehlt, lässt Leute im Unklaren, wie sie fertig werden. Also werden sie es nicht.",
+    impact: "Ein Knopf, auf dem nur „Los“ steht, der nur ein Symbol zeigt oder ganz fehlt: Leute wissen nicht, wie sie fertig werden. Also werden sie es nicht.",
   },
   "component-nav-labels": {
     plain: "Mehrere Menüs, keines benannt",
-    impact:
-      "Im Screenreader hört man „Navigation … Navigation …“, ohne das Hauptmenü von den Links in der Fußzeile unterscheiden zu können. Der Weg durch Ihre Website wird zum Raten.",
+    impact: "Im Screenreader hört man „Navigation … Navigation …“, ohne das Hauptmenü von den Links in der Fußzeile unterscheiden zu können. Der Weg durch Ihre Website wird zum Raten.",
   },
   "component-skip-link": {
     plain: "Kein Link „Zum Inhalt springen“",
-    impact:
-      "An der Tastatur tabbt man auf jeder Seite durch Ihr komplettes Menü. Dutzende zusätzliche Tastendrücke pro Besuch.",
+    impact: "An der Tastatur tabbt man auf jeder Seite durch Ihr komplettes Menü. Dutzende zusätzliche Tastendrücke pro Besuch.",
   },
 
   "mobile-target-spacing": {
     plain: "Tippziele liegen zu dicht beieinander",
     found: (n) =>
       `${n} ${n === 1 ? "Paar von Bedienelementen liegt" : "Paare von Bedienelementen liegen"} in Handy-Breite weniger als 8px auseinander. Einzeln ist jedes groß genug; zusammen lassen sie keinen Platz zum Danebentippen.`,
-    impact:
-      "Ein Daumen ist kein Mauszeiger. Ein Finger, der ein Element anpeilt und beim Nachbarn landet, tippt oder kauft das Falsche. Menschen mit Zittern oder größeren Fingern trifft es zuerst.",
+    impact: "Ein Daumen ist kein Mauszeiger. Ein Finger, der ein Element anpeilt und beim Nachbarn landet, tippt oder kauft das Falsche. Menschen mit Zittern oder größeren Fingern trifft es zuerst.",
   },
   "consent-blocks-reader": {
     plain: "Das Cookie-Banner blockiert Screenreader",
     found: () =>
       `Die Zustimmungsebene markiert die ganze Seite dahinter als für Screenreader versteckt, und der Tastaturfokus landet nie in der Ebene selbst.`,
-    impact:
-      "Wer einen Screenreader nutzt, hört Stille, wo die Seite sein sollte. Man kann die Seite nicht lesen und findet das Banner nicht, um es wegzuräumen.",
+    impact: "Wer einen Screenreader nutzt, hört Stille, wo die Seite sein sollte. Man kann die Seite nicht lesen und findet das Banner nicht, um es wegzuräumen.",
   },
   "mobile-sticky-coverage": {
     plain: "Fixierte Leisten füllen den Handy-Bildschirm",
     found: () =>
       `Fixierte Kopfzeilen, Banner oder Werkzeugleisten belegen in Handy-Breite mehr als ein Drittel des Bildschirms.`,
-    impact:
-      "Jedes fixierte Pixel ist eines, durch das niemand die Seite lesen kann. Was die Tastatur fokussiert, kann hinter den Leisten verschwinden. WCAG 2.2 macht genau das schon zur Pflicht; das Gesetz verweist nur noch nicht darauf.",
+    impact: "Jedes fixierte Pixel ist eines, durch das niemand die Seite lesen kann. Was die Tastatur fokussiert, kann hinter den Leisten verschwinden. WCAG 2.2 macht genau das schon zur Pflicht; das Gesetz verweist nur noch nicht darauf.",
   },
   "mobile-horizontal-scroll": {
     plain: "Die Seite scrollt auf dem Handy seitwärts",
-    impact:
-      "Die meisten Besucher sind am Handy. Für jede Zeile seitwärts wischen zu müssen, treibt sie weg.",
+    impact: "Die meisten Besucher sind am Handy. Für jede Zeile seitwärts wischen zu müssen, treibt sie weg.",
   },
   "mobile-tap-target": {
     plain: "Tippziele zu klein",
-    impact:
-      "Tipper gehen daneben, und der Ärger wächst. Am schlimmsten bei größeren Fingern, Zittern oder unruhigen Händen. Das kostet Sie Umsatz.",
+    impact: "Tipper gehen daneben, und der Ärger wächst. Am schlimmsten bei größeren Fingern, Zittern oder unruhigen Händen. Das kostet Sie Umsatz.",
   },
 
   "text-spacing-clipped": {
     plain: "Text wird bei größeren Abständen abgeschnitten",
-    impact:
-      "Viele Menschen mit Legasthenie vergrößern die Abstände, um überhaupt lesen zu können. Hier fließt der Text nicht neu um. Die Wörter verschwinden hinter einem festen Kasten.",
+    impact: "Viele Menschen mit Legasthenie vergrößern die Abstände, um überhaupt lesen zu können. Hier fließt der Text nicht neu um. Die Wörter verschwinden hinter einem festen Kasten.",
   },
   "text-zoom-clipped": {
     plain: "Text wird bei größerer Schrift abgeschnitten",
-    impact:
-      "Größere Schrift ist das häufigste Mittel bei schwachen Augen, viel häufiger als ein Screenreader. Ihre Kästen bleiben, wie sie sind, und die Wörter verschwinden.",
+    impact: "Größere Schrift ist das häufigste Mittel bei schwachen Augen, viel häufiger als ein Screenreader. Ihre Kästen bleiben, wie sie sind, und die Wörter verschwinden.",
   },
   "text-zoom-horizontal-scroll": {
     plain: "Vergrößerter Text scrollt seitwärts",
-    impact:
-      "Jede Zeile zwingt zum Wischen zur Seite. Das ist anstrengend, und die meisten geben auf.",
+    impact: "Jede Zeile zwingt zum Wischen zur Seite. Das ist anstrengend, und die meisten geben auf.",
   },
 
   "dark-consent-no-reject": {
     plain: "Cookie-Banner ohne Ablehnen",
-    impact:
-      "Nach der DSGVO muss Ablehnen so leicht sein wie Zustimmen. So eingeholte Einwilligungen können ungültig sein. Ein fehlender „Ablehnen“-Knopf wirkt auf Besucher wie ein Trick.",
+    impact: "Nach der DSGVO muss Ablehnen so leicht sein wie Zustimmen. So eingeholte Einwilligungen können ungültig sein. Ein fehlender „Ablehnen“-Knopf wirkt auf Besucher wie ein Trick.",
   },
   "dark-consent-asymmetry": {
     plain: "Cookie-Banner drängt „Ablehnen“ zurück",
-    impact:
-      "Eine Option als Knopf, die andere als bloßer Text — das drängt zum Zustimmen. Aufsichtsbehörden achten darauf.",
+    impact: "Eine Option als Knopf, die andere als bloßer Text – das drängt zum Zustimmen. Aufsichtsbehörden achten darauf.",
   },
   "dark-preselected-optin": {
     plain: "Werbe-Häkchen ist schon gesetzt",
-    impact:
-      "Nach der DSGVO ist ein vorangehaktes Kästchen keine Einwilligung. Wer es übersieht, fühlt sich angemeldet, ohne zugestimmt zu haben.",
+    impact: "Nach der DSGVO ist ein vorangehaktes Kästchen keine Einwilligung. Wer es übersieht, fühlt sich angemeldet, ohne zugestimmt zu haben.",
   },
   "dark-confirmshaming": {
     plain: "„Nein danke“ ist beschämend formuliert",
-    impact:
-      "„Nein danke, ich möchte kein Geld sparen“ bleibt aus den falschen Gründen im Kopf. Es liest sich als Manipulation.",
+    impact: "„Nein danke, ich möchte kein Geld sparen“ bleibt aus den falschen Gründen im Kopf. Es liest sich als Manipulation.",
   },
   "dark-fake-scarcity": {
     plain: "Knappheit, die zu prüfen wäre",
-    impact:
-      "Behörden gehen gegen erfundene Knappheit vor. Käufer haben gelernt, ihr zu misstrauen. Erfundene Zahlen kosten mehr Verkäufe, als sie bringen.",
+    impact: "Behörden gehen gegen erfundene Knappheit vor. Käufer haben gelernt, ihr zu misstrauen. Erfundene Zahlen kosten mehr Verkäufe, als sie bringen.",
   },
   "dark-fake-urgency": {
     plain: "Zeitdruck, der zu prüfen wäre",
-    impact:
-      "Countdowns, die beim Neuladen wieder von vorn beginnen, sind eine irreführende Praxis. Ist das einmal aufgefallen, glaubt niemand mehr, was Sie sonst behaupten.",
+    impact: "Countdowns, die beim Neuladen wieder von vorn beginnen, sind eine irreführende Praxis. Ist das einmal aufgefallen, glaubt niemand mehr, was Sie sonst behaupten.",
   },
 
   "dialog-close-unlabeled": {
     plain: "Schließen-Knopf ohne Beschriftung",
-    impact:
-      "Im Screenreader hört man nur „Schaltfläche“ und erfährt nicht, wie sich das Pop-up schließen lässt. Das hält Leute fest, und viele verlassen Ihre Website einfach.",
+    impact: "Im Screenreader hört man nur „Schaltfläche“ und erfährt nicht, wie sich das Pop-up schließen lässt. Das hält Leute fest, und viele verlassen Ihre Website einfach.",
   },
   "dialog-keyboard-trap": {
     plain: "Ein Pop-up hält die Tastatur fest",
-    impact:
-      "Wer nur die Tastatur nutzt, kommt an diesem Pop-up nicht vorbei. Escape schließt es nicht, und Tab dreht sich nur darin im Kreis. Nur das Schließen des Tabs führt hinaus. Bei einem Cookie-Banner passiert das, bevor man überhaupt etwas gesehen hat.",
+    impact: "Wer nur die Tastatur nutzt, kommt an diesem Pop-up nicht vorbei. Escape schließt es nicht, und Tab dreht sich nur darin im Kreis. Nur das Schließen des Tabs führt hinaus. Bei einem Cookie-Banner passiert das, bevor man überhaupt etwas gesehen hat.",
   },
   "dialog-no-escape": {
     plain: "Pop-up ignoriert die Escape-Taste",
-    impact:
-      "Escape ist die Taste, nach der alle zuerst greifen. Festhängen kann hier niemand, denn man kann weitertabben. Aber alle an der Tastatur probieren es, und nichts passiert.",
+    impact: "Escape ist die Taste, nach der alle zuerst greifen. Festhängen kann hier niemand, denn man kann weitertabben. Aber alle an der Tastatur probieren es, und nichts passiert.",
   },
   "dialog-focus-not-moved": {
     plain: "Das Pop-up bekommt den Fokus nie",
-    impact:
-      "Wer einen Screenreader nutzt, erfährt nie, dass es sich geöffnet hat. An der Tastatur muss man erst durch die ganze Seite darunter tabben, um an das zu kommen, was den Bildschirm nun bedeckt.",
+    impact: "Wer einen Screenreader nutzt, erfährt nie, dass es sich geöffnet hat. An der Tastatur muss man erst durch die ganze Seite darunter tabben. Erst dann erreicht man, was den Bildschirm nun bedeckt.",
   },
   "dialog-focus-lost-on-close": {
     plain: "Beim Schließen geht die Stelle verloren",
-    impact:
-      "Wer sich bis zur Mitte durchgetabbt hatte, muss wieder ganz von vorn anfangen.",
+    impact: "Wer sich bis zur Mitte durchgetabbt hatte, muss wieder ganz von vorn anfangen.",
   },
   "dialog-no-close": {
     plain: "Kein sichtbarer Schließen-Knopf",
-    impact:
-      "Wenn der Klick daneben der einzige Ausweg ist, hängen Tastaturnutzer dahinter fest.",
+    impact: "Wenn der Klick daneben der einzige Ausweg ist, hängen Tastaturnutzer dahinter fest.",
   },
   "dialog-missing-role": {
     plain: "Einblendung nicht als Dialog gekennzeichnet",
-    impact:
-      "Screenreader sagen nicht an, dass sie sich geöffnet hat, und man tabbt direkt in die verdeckte Seite dahinter.",
+    impact: "Screenreader sagen nicht an, dass sie sich geöffnet hat, und man tabbt direkt in die verdeckte Seite dahinter.",
   },
   "dialog-missing-name": {
     plain: "Das Pop-up sagt nicht, wozu es da ist",
-    impact:
-      "Beim Öffnen sagt ein Screenreader nur „Dialog“. Der Besucher weiß nicht, was gefragt wird und warum.",
+    impact: "Beim Öffnen sagt ein Screenreader nur „Dialog“. Der Besucher weiß nicht, was gefragt wird und warum.",
   },
 
   "markup-validation": {
     plain: "Fehler im Code der Seite",
-    impact:
-      "Browser raten stillschweigend, wie sie das reparieren, und jeder rät anders. Ihre Seite funktioniert vielleicht nicht so, wie Sie denken.",
+    impact: "Browser raten stillschweigend, wie sie das reparieren, und jeder rät anders. Ihre Seite funktioniert vielleicht nicht so, wie Sie denken.",
   },
 
   "motion-marquee": {
     plain: "Laufschrift ohne Pause",
-    impact:
-      "Bewegter Text ist für alle schwer zu lesen. Mit Problemen bei Aufmerksamkeit oder Gleichgewicht ist er unbrauchbar.",
+    impact: "Bewegter Text ist für alle schwer zu lesen. Mit Problemen bei Aufmerksamkeit oder Gleichgewicht ist er unbrauchbar.",
   },
   "motion-autoplay-media": {
     plain: "Medien starten von selbst",
-    impact:
-      "Niemand kann es stoppen. Das verwirrt, und es übertönt Screenreader.",
+    impact: "Niemand kann es stoppen. Das verwirrt, und es übertönt Screenreader.",
   },
   "motion-infinite-no-reduced-motion": {
     plain: "Animation ignoriert die Einstellung für weniger Bewegung",
-    impact:
-      "Dauernde Bewegung zieht die Aufmerksamkeit von Ihrem Inhalt ab. Bei Gleichgewichtsstörungen kann sie Schwindel oder Übelkeit auslösen.",
+    impact: "Dauernde Bewegung zieht die Aufmerksamkeit von Ihrem Inhalt ab. Bei Gleichgewichtsstörungen kann sie Schwindel oder Übelkeit auslösen.",
   },
 
   "typo-caps-letterspacing": {
     plain: "Großbuchstaben ohne zusätzlichen Abstand",
-    impact:
-      "Großbuchstaben bilden gleichförmige Blöcke. Ohne etwas mehr Abstand dazwischen werden Überschriften und Beschriftungen schwer zu überfliegen.",
+    impact: "Großbuchstaben bilden gleichförmige Blöcke. Ohne etwas mehr Abstand dazwischen werden Überschriften und Beschriftungen schwer zu überfliegen.",
   },
   "typo-lowercase-letterspaced": {
     plain: "Zusätzlicher Abstand zwischen den Buchstaben",
-    impact:
-      "Zusätzlicher Abstand zwischen Kleinbuchstaben zerbricht die Wortbilder, die wir erkennen, und das bremst alle.",
+    impact: "Zusätzlicher Abstand zwischen Kleinbuchstaben zerbricht die Wortbilder, die wir erkennen, und das bremst alle.",
   },
   "typo-negative-letterspacing": {
     plain: "Buchstaben berühren sich vor Enge",
@@ -532,8 +467,7 @@ export const PLAIN_DE: Record<string, PlainRule> = {
   },
   "typo-line-length-long": {
     plain: "Zeilen sind zu lang",
-    impact:
-      "Ab etwa 75 Zeichen pro Zeile verliert das Auge beim Zurückspringen die Stelle.",
+    impact: "Ab etwa 75 Zeichen pro Zeile verliert das Auge beim Zurückspringen die Stelle.",
   },
   "typo-line-length-short": {
     plain: "Zeilen sind zu kurz abgehackt",
@@ -541,8 +475,7 @@ export const PLAIN_DE: Record<string, PlainRule> = {
   },
   "typo-justified-no-hyphens": {
     plain: "Blocksatz ohne Silbentrennung",
-    impact:
-      "Blocksatz dehnt die Wortabstände, damit jede Zeile voll wird. Die ungleichen Lücken bilden störende weiße „Flüsse“, die die Seite hinunterlaufen.",
+    impact: "Blocksatz dehnt die Wortabstände, damit jede Zeile voll wird. Die ungleichen Lücken bilden störende weiße „Flüsse“, die die Seite hinunterlaufen.",
   },
   "typo-font-size-small": {
     plain: "Fließtext sehr klein gesetzt",
@@ -555,23 +488,19 @@ export const PLAIN_DE: Record<string, PlainRule> = {
 
   "typo-underline-nonlink": {
     plain: "Unterstrichener Text, der kein Link ist",
-    impact:
-      "Unterstreichungen wirken wie Links, also klicken Leute auf Text, der nirgendwohin führt.",
+    impact: "Unterstreichungen wirken wie Links, also klicken Leute auf Text, der nirgendwohin führt.",
   },
   "typo-italic-body": {
     plain: "Ganze Absätze in Kursiv",
-    impact:
-      "Schräge Buchstaben werden nach ein paar Wörtern anstrengend. Mit Legasthenie oder schwachen Augen eine echte Hürde.",
+    impact: "Schräge Buchstaben werden nach ein paar Wörtern anstrengend. Mit Legasthenie oder schwachen Augen eine echte Hürde.",
   },
   "typo-allcaps-block": {
     plain: "Lange Passagen in GROSSBUCHSTABEN",
-    impact:
-      "Großbuchstaben nehmen die Wortbilder weg, an denen wir uns beim Lesen orientieren. Langsam und ermüdend, am schlimmsten bei Legasthenie.",
+    impact: "Großbuchstaben nehmen die Wortbilder weg, an denen wir uns beim Lesen orientieren. Langsam und ermüdend, am schlimmsten bei Legasthenie.",
   },
   "typo-thin-weight": {
     plain: "Fließtext in sehr dünner Schrift",
-    impact:
-      "Dünne Striche verblassen auf billigen Bildschirmen, in der Sonne und bei schwachen Augen. Auch dann, wenn der Kontrast reicht.",
+    impact: "Dünne Striche verblassen auf billigen Bildschirmen, in der Sonne und bei schwachen Augen. Auch dann, wenn der Kontrast reicht.",
   },
 };
 
@@ -600,8 +529,7 @@ export const FIXES_DE: Record<string, string | string[]> = {
     "Behalten Sie einen Hauptbereich pro Seite.",
     "Kennzeichnen Sie die anderen als gewöhnliche Abschnitte.",
   ],
-  "landmark-banner-is-top-level":
-    "Setzen Sie den Seitenkopf auf die oberste Ebene, neben den Hauptinhalt statt hinein.",
+  "landmark-banner-is-top-level": "Setzen Sie den Seitenkopf auf die oberste Ebene, neben den Hauptinhalt statt hinein.",
   "svg-img-alt": [
     "Schreiben Sie zu jedem Symbol mit Bedeutung eine kurze Beschreibung.",
     "Rein schmückende Symbole verstecken Sie stattdessen vor Screenreadern.",
@@ -645,8 +573,7 @@ export const FIXES_DE: Record<string, string | string[]> = {
     "Sorgen Sie dafür, dass Tab immer weiterkommt und Escape immer herausführt.",
     "Prüfen Sie es, indem Sie die Maus beiseitelegen und nur die Tastatur nutzen.",
   ],
-  "component-form-autocomplete":
-    "Kennzeichnen Sie jedes Feld mit dem, was es erfasst, damit Browser und Passwortmanager es ausfüllen können.",
+  "component-form-autocomplete": "Kennzeichnen Sie jedes Feld mit dem, was es erfasst, damit Browser und Passwortmanager es ausfüllen können.",
   "component-input-type": [
     "Sagen Sie der Seite, welche Felder eine E-Mail-Adresse, eine Telefonnummer oder ein Datum enthalten.",
     "Handys zeigen dann die passende Tastatur statt einer einfachen.",
@@ -655,8 +582,7 @@ export const FIXES_DE: Record<string, string | string[]> = {
     "Markieren Sie Pflichtfelder sichtbar, nicht nur im Code.",
     "Das Wort „Pflichtfeld“ neben der Beschriftung reicht.",
   ],
-  "component-submit-clarity":
-    "Geben Sie dem Formular einen klar beschrifteten Knopf, der sagt, was er tut, etwa „Anfrage senden“.",
+  "component-submit-clarity": "Geben Sie dem Formular einen klar beschrifteten Knopf, der sagt, was er tut, etwa „Anfrage senden“.",
   "component-nav-labels": [
     "Benennen Sie jedes Menü nach dem, was darin steht, etwa „Hauptmenü“ oder „Links in der Fußzeile“.",
     "Mehrere unbenannte Menüs werden gleich angesagt, also kann sie niemand unterscheiden.",
@@ -665,8 +591,7 @@ export const FIXES_DE: Record<string, string | string[]> = {
     "Setzen Sie ganz oben einen Link, der direkt zum Hauptinhalt springt.",
     "Zeigen Sie ihn, sobald er den Tastaturfokus bekommt, damit die Leute von ihm wissen.",
   ],
-  "mobile-target-spacing":
-    "Lassen Sie etwas Platz zwischen Knöpfen und Links, damit ein Daumen nicht zwei auf einmal trifft.",
+  "mobile-target-spacing": "Lassen Sie etwas Platz zwischen Knöpfen und Links, damit ein Daumen nicht zwei auf einmal trifft.",
   "consent-blocks-reader": [
     "Setzen Sie den Tastaturfokus in das Banner, sobald es erscheint.",
     "Halten Sie ihn dort, bis eine Wahl getroffen ist — erst das macht es richtig, die Seite dahinter zu verstecken.",
@@ -680,8 +605,7 @@ export const FIXES_DE: Record<string, string | string[]> = {
     "Lassen Sie den Inhalt auf die Breite des Bildschirms umbrechen.",
     "Suchen Sie nach einer festen Breite oder einem zu großen Bild, das die Seite auseinanderzieht.",
   ],
-  "mobile-tap-target":
-    "Machen Sie Knöpfe und Links mindestens so groß wie eine Fingerkuppe und lassen Sie Platz am Rand.",
+  "mobile-tap-target": "Machen Sie Knöpfe und Links mindestens so groß wie eine Fingerkuppe und lassen Sie Platz am Rand.",
   "text-spacing-clipped": [
     "Lassen Sie Kästen mit dem Text darin wachsen.",
     "Meist ist eine feste Höhe das, was die Wörter abschneidet.",
@@ -752,8 +676,7 @@ export const FIXES_DE: Record<string, string | string[]> = {
     "Achten Sie auf die Einstellung, mit der Leute weniger Bewegung verlangen.",
     "Animationen sollten stoppen oder zu einer einfachen Blende werden, wenn sie eingeschaltet ist.",
   ],
-  "typo-caps-letterspacing":
-    "Geben Sie den Buchstaben in Überschriften aus Großbuchstaben etwas mehr Abstand, damit die Wörter ihre Form behalten.",
+  "typo-caps-letterspacing": "Geben Sie den Buchstaben in Überschriften aus Großbuchstaben etwas mehr Abstand, damit die Wörter ihre Form behalten.",
   "typo-lowercase-letterspaced": [
     "Nehmen Sie den zusätzlichen Buchstabenabstand aus gewöhnlichem Text.",
     "Er zieht Wörter auseinander und bremst das Lesen.",
@@ -791,7 +714,7 @@ export const FIXES_DE: Record<string, string | string[]> = {
     "Nehmen Sie ein Element, das wirklich das ist, was es zu sein behauptet.",
     "Einen Knopf für einen Knopf, einen Navigationsblock für die Navigation.",
   ],
-  "aria-allowed-attr": "Entfernen Sie die Angaben, die zu dieser Art von Element nicht gehören, oder wechseln Sie zu einem, zu dem sie passen.",
+  "aria-allowed-attr": "Entfernen Sie die Angaben, die zu dieser Art von Element nicht gehören. Oder wechseln Sie zu einem, zu dem sie passen.",
   "aria-required-children": [
     "Geben Sie dem Element die Teile, die sein Typ verlangt.",
     "Eine Liste braucht Listeneinträge darin, keinen losen Text.",
@@ -888,7 +811,7 @@ export const FIXES_DE: Record<string, string | string[]> = {
 export const UNDECIDED_DE: Record<string, { what: string; ask: string }> = {
   "color-contrast": {
     what: "Text auf einem Foto, einem Video oder einem Farbverlauf. Die Prüfung kann die Farbe des Textes lesen. Dahinter liegt aber keine einzelne Farbe zum Messen, und geraten wird nicht.",
-    ask: "Bitten Sie Ihren Designer, jede Stelle gegen das Bild dahinter zu prüfen, an der hellsten und der dunkelsten Stelle des Bildes. Wo die Wörter untergehen, brauchen sie eine feste Fläche dahinter, einen dunklen Schleier über dem Bild oder eine andere Position.",
+    ask: "Bitten Sie Ihren Designer, jede Stelle gegen das Bild dahinter zu prüfen. Einmal an der hellsten Stelle des Bildes, einmal an der dunkelsten. Wo die Wörter untergehen, brauchen sie eine feste Fläche dahinter, einen dunklen Schleier über dem Bild oder eine andere Position.",
   },
   "link-in-text-block": {
     what: "Links in einem Absatz, die möglicherweise nur durch ihre Farbe gekennzeichnet sind. Die Prüfung kann nicht sagen, ob der Unterschied für sich allein stark genug ist.",
@@ -904,7 +827,7 @@ export const UNDECIDED_DE: Record<string, { what: string; ask: string }> = {
   },
   "media-video-descriptions": {
     what: "Video mit Untertiteln, aber ohne Beschreibung dessen, was zu sehen ist. Untertitel tragen die Wörter; das Bild tragen sie nicht.",
-    ask: "Fragen Sie, ob in diesen Videos etwas gezeigt statt gesagt wird — ein Diagramm, eine Vorführung, Text im Bild. Wenn ja, muss der Ton es selbst beschreiben. Eine schriftliche Fassung auf der Seite deckt nur die unterste Stufe des Standards ab.",
+    ask: "Fragen Sie, ob in diesen Videos etwas gezeigt statt gesagt wird – ein Diagramm, eine Vorführung, Text im Bild. Wenn ja, muss der Ton es selbst beschreiben. Eine schriftliche Fassung auf der Seite deckt nur die unterste Stufe des Standards ab.",
   },
   "form-error-association": {
     what: "Fehlermeldungen im Formular, die im Code nicht mit ihrem Feld verbunden sind. Ein Screenreader sagt das Feld an, aber nicht den Fehler daneben.",
@@ -912,7 +835,7 @@ export const UNDECIDED_DE: Record<string, { what: string; ask: string }> = {
   },
   "media-audio-transcript": {
     what: "Ton auf der Seite. Ein Transkript ist gewöhnlicher Seitentext, also kann die Prüfung nicht feststellen, ob eines vorhanden ist.",
-    ask: "Prüfen Sie, ob zu jeder Aufnahme der Wortlaut nahe beim Abspieler auf der Seite steht und ob dieser Text alles Gesagte abdeckt.",
+    ask: "Prüfen Sie, ob zu jeder Aufnahme der Wortlaut auf der Seite steht, nahe beim Abspieler. Und ob dieser Text alles Gesagte abdeckt.",
   },
   "media-embedded-player": {
     what: "Video, das über den Abspieler eines anderen Anbieters läuft. Das Video liegt auf dessen Seite, also kann die Prüfung nicht hineinsehen.",
@@ -936,7 +859,7 @@ export const UNDECIDED_DE: Record<string, { what: string; ask: string }> = {
   },
   "interaction-gesture-listeners": {
     what: "Die Seite horcht auf Wisch- und Ziehbewegungen. Wer zittert oder den Zeiger per Sprache oder Schalter steuert, bringt so eine Bewegung vielleicht nicht zustande.",
-    ask: "Fragen Sie Ihren Entwickler, ob sich jedes Wischen und Ziehen auch durch Tippen erledigen lässt — Pfeile neben einem Karussell, ein Knopf neben einem Schieberegler.",
+    ask: "Fragen Sie Ihren Entwickler, ob sich jedes Wischen und Ziehen auch durch Tippen erledigen lässt. Pfeile neben einem Karussell, ein Knopf neben einem Schieberegler.",
   },
   "interaction-key-shortcuts": {
     what: "Die Seite achtet auf Tastendrücke im ganzen Fenster. Wo ein einzelner Buchstabe ein Kürzel ist, löst ihn jeder aus, der mit seinem Computer spricht.",
@@ -955,7 +878,7 @@ export const UNDECIDED_DE: Record<string, { what: string; ask: string }> = {
     ask: "Fragen Sie Ihren Entwickler, ob die Seite in beiden Lagen funktioniert. Wer sein Handy oder Tablet am Rollstuhl befestigt hat, kann es nicht drehen.",
   },
   "interaction-no-status-region": {
-    what: "Seiten aktualisieren sich ohne Neuladen — ein Filter kürzt eine Liste, ein Formular meldet, dass es gespeichert hat. Auf dieser Seite ist keine Stelle als der Ort gekennzeichnet, an dem so eine Änderung gesprochen wird. Der Screenreader schweigt, während sich die Seite unter ihm bewegt.",
+    what: "Seiten aktualisieren sich ohne Neuladen – ein Filter kürzt eine Liste, ein Formular meldet, dass es gespeichert hat. Auf dieser Seite ist keine Stelle als der Ort gekennzeichnet, an dem so eine Änderung gesprochen wird. Der Screenreader schweigt, während sich die Seite unter ihm bewegt.",
     ask: "Fragen Sie Ihren Entwickler, ob sich hier etwas ohne Neuladen ändert. Wenn ja, braucht diese Änderung einen Live-Bereich, damit sie nicht nur gezeigt, sondern auch gesprochen wird.",
   },
   "interaction-acts-on-change": {
@@ -992,26 +915,22 @@ export const PRINCIPLES_DE: Record<string, { principleLabel: string; plainTitle:
   "1": {
     principleLabel: "Wahrnehmbar",
     plainTitle: "Können Menschen es sehen und hören?",
-    plainDescription:
-      "Alles, was Menschen nicht sehen oder hören können: Text, der zu blass zum Lesen ist, Bilder ohne ein Wort dazu und Videos ohne Untertitel.",
+    plainDescription: "Alles, was Menschen nicht sehen oder hören können: Text, der zu blass zum Lesen ist, Bilder ohne ein Wort dazu und Videos ohne Untertitel.",
   },
   "2": {
     principleLabel: "Bedienbar",
     plainTitle: "Können Menschen es benutzen?",
-    plainDescription:
-      "Ob jemand wirklich durch Ihre Website kommt — mit der Tastatur statt der Maus, auf dem Handy oder ohne feine Kontrolle über die Hände.",
+    plainDescription: "Ob jemand wirklich durch Ihre Website kommt: mit der Tastatur statt der Maus, auf dem Handy oder ohne feine Kontrolle über die Hände.",
   },
   "3": {
     principleLabel: "Verständlich",
     plainTitle: "Können Menschen ihr folgen?",
-    plainDescription:
-      "Ob Ihre Formulierungen und Ihr Aufbau Sinn ergeben und ob sich die Seite so verhält, wie man es erwartet.",
+    plainDescription: "Ob Ihre Formulierungen und Ihr Aufbau Sinn ergeben und ob sich die Seite so verhält, wie man es erwartet.",
   },
   "4": {
     principleLabel: "Robust",
     plainTitle: "Wird es weiter funktionieren?",
-    plainDescription:
-      "Ob Ihre Website auch in anderen Browsern, auf anderen Geräten und mit der Software läuft, mit der blinde Besucher sie sich vorlesen lassen.",
+    plainDescription: "Ob Ihre Website auch in anderen Browsern und auf anderen Geräten läuft. Und mit dem Screenreader, der sie blinden Besuchern vorliest.",
   },
 };
 
