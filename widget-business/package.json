@@ -8,17 +8,19 @@
     "build": "tsc -b && vite build",
     "preview": "vite preview",
     "test": "vitest run",
-    "lint:css": "node scripts/lint-css.mjs"
+    "lint:css": "node scripts/lint-css.mjs",
+    "check:reflow": "node scripts/reflow-check.mjs"
   },
   "dependencies": {
+    "@verify/design-system": "file:../design-system/production",
     "react": "^18.3.1",
-    "react-dom": "^18.3.1",
-    "@verify/design-system": "file:../design-system/production"
+    "react-dom": "^18.3.1"
   },
   "devDependencies": {
     "@types/react": "^18.3.12",
     "@types/react-dom": "^18.3.1",
     "@vitejs/plugin-react": "^4.3.3",
+    "playwright": "^1.61.1",
     "typescript": "^5.6.3",
     "vite": "^5.4.10",
     "vitest": "^4.1.10"
