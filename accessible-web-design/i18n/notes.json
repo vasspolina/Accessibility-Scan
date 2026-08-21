@@ -11,6 +11,8 @@
   "lang.de": { "where": "language selector", "note": "Endonym — see lang.en." },
   "lang.changed": { "where": "live region, announced when the locale changes", "note": "Announced by a screen reader, so it is written in the language being switched TO." },
 
+  "meta.separator": { "where": "page <title>, between the page name and the site name", "note": "TYPOGRAPHY, not copy. Decided by the locale's rules and pre-filled for every locale: en takes the em dash, de the spaced en dash. Not a string for a translator to improvise." },
+
   "banner.eaa": { "where": "dismissable banner, top of page", "note": "Date in long European form. Never numeric." },
 
   "hero.headline": { "where": "h1", "note": "Berlin is the studio's actual city — keep it, it is not decoration." },
@@ -42,7 +44,7 @@
   "what.understandableTerm": { "where": "POUR list", "note": "See what.perceivableTerm." },
   "what.robustTerm": { "where": "POUR list", "note": "See what.perceivableTerm." },
 
-  "apply.exemption": { "where": "does-this-apply section", "note": "{threshold} is formatted by Intl.NumberFormat as EUR in the locale's own convention — €2 million in en, 2 Mio. € in de. Never hard-code the symbol or its position." },
+  "apply.exemption": { "where": "does-this-apply section", "note": "{threshold} is formatted by Intl.NumberFormat as EUR in the locale's own convention — €2,000,000 in en, 2.000.000 € in de. Never hard-code the symbol or its position." },
   "affected.exempt": { "where": "who's-affected section", "note": "See apply.exemption." },
 
   "services.doorMetaphor": {
