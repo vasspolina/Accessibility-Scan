@@ -179,6 +179,10 @@ describe("all reader-facing copy", () => {
   // thirty-word constructions that used to accrete. Splits only where a
   // sentence end is followed by a capital, digit or quote, so "e.g. a" and
   // decimal values never count as boundaries.
+  /* 20, not the 24 this carried for months. The tone doc governing every
+     string says "short sentences — under 20 words", and a house test that
+     is more lenient than its own authority quietly licenses the drift it
+     exists to prevent. Reading the doc is what turned this up. */
   it("keeps sentences readable", () => {
     for (const [id, text] of allCopy()) {
       const sentences = text.split(/(?<=[.?!])\s+(?=["'(A-Z0-9])/);
@@ -187,7 +191,7 @@ describe("all reader-facing copy", () => {
         expect(
           words.length,
           `${id} has a ${words.length}-word sentence: "${sentence}"`
-        ).toBeLessThanOrEqual(24);
+        ).toBeLessThanOrEqual(20);
       }
     }
   });

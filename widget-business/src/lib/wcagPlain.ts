@@ -27,13 +27,13 @@ const PRINCIPLES: Record<string, PrincipleInfo> = {
     principle: "Perceivable",
     plainTitle: "Can people see and hear it?",
     plainDescription:
-      "Anything people can't see or hear: text too faint to read, images with nothing written about them, and video with no captions.",
+      "Anything people can't see or hear. Text too faint to read, images with nothing written about them, video with no captions.",
   },
   "2": {
     principle: "Operable",
     plainTitle: "Can people use it?",
     plainDescription:
-      "Whether someone can actually get through your site, with a keyboard instead of a mouse, on a phone, or without fine control of their hands.",
+      "Whether someone can actually get through your site. With a keyboard instead of a mouse, on a phone, or without fine control of their hands.",
   },
   "3": {
     principle: "Understandable",
@@ -45,7 +45,7 @@ const PRINCIPLES: Record<string, PrincipleInfo> = {
     principle: "Robust",
     plainTitle: "Will it keep working?",
     plainDescription:
-      "Whether your site still works properly in other browsers, on other devices, and with the software blind visitors use to read it aloud.",
+      "Whether your site still works in other browsers and on other devices. And with the software that reads it aloud to blind visitors.",
   },
 };
 
@@ -149,13 +149,13 @@ export const PLAIN_RULE_EXPLANATIONS: Record<string, PlainRule> = {
   "landmark-no-duplicate-banner": {
     plain: "More than one page header",
     found: () =>
-      `The page marks more than one area as its header, so a list of regions offers several and none of them is the header.`,
+      `The page marks more than one area as its header. A list of regions then offers several, and none of them is the header.`,
     impact: "Screen readers list several headers, so nobody can tell which is the real one.",
   },
   "landmark-no-duplicate-contentinfo": {
     plain: "More than one page footer",
     found: () =>
-      `The page marks more than one area as its footer, so there is no single place to jump to for contact details or terms.`,
+      `The page marks more than one area as its footer. There is then no single place to jump to for contact details or terms.`,
     impact: "Screen readers list several footers, and people cannot tell which is which.",
   },
   "landmark-no-duplicate-main": {
@@ -265,7 +265,7 @@ export const PLAIN_RULE_EXPLANATIONS: Record<string, PlainRule> = {
   },
   "html-has-lang": {
     research:
-      "A missing document language is one of the few failures WebAIM finds on a majority of the web. It stays common because the failure is silent: the page looks right, and only someone hearing it in the wrong voice meets the fault.",
+      "A missing document language is one of the few failures WebAIM finds on a majority of the web. It stays common because the failure is silent. The page looks right, and only someone hearing it in the wrong voice meets the fault.",
     plain: "The page declares no language",
     found: () => `The page does not declare what language it is written in.`,
     impact: "People hear your content in the wrong accent, which is hard to follow.",
@@ -307,7 +307,7 @@ export const PLAIN_RULE_EXPLANATIONS: Record<string, PlainRule> = {
   "meta-viewport-large": {
     plain: "Zooming is capped",
     found: () =>
-      `Zooming works, but the page caps it below 500%, and the people who need the strongest magnification stop at the cap.`,
+      `Zooming works, but the page caps it below 500%. The people who need the strongest magnification stop there.`,
     impact:
       "Milder than blocking zoom outright, and it fails the same people. Anyone who needs very large text gets to the cap and no further.",
   },
@@ -438,12 +438,12 @@ export const PLAIN_RULE_EXPLANATIONS: Record<string, PlainRule> = {
   "forced-colors-focus-lost": {
     plain: "Focus marker vanishes in High Contrast",
     impact:
-      "High contrast mode strips away the shadows and colours most focus highlights are drawn with. The people who most need to see where they are see nothing, on a page that looks perfect until that mode is on.",
+      "High contrast mode strips away the shadows and colours most focus highlights are drawn with. The people who most need to see where they are see nothing. The page looks perfect until that mode is on.",
   },
   "forced-colors-icon-lost": {
     plain: "Icon button vanishes in High Contrast",
     impact:
-      "The icon is drawn as a background image, and that mode removes background images. The button still works, but renders as an empty box: no picture, no label, no hint that it is a button.",
+      "The icon is drawn as a background image, and that mode removes background images. The button still works, but renders as an empty box. No picture, no label, no hint that it is a button.",
   },
   "keyboard-faint-focus": {
     // "The outline" assumed the reader already knew which outline was meant.
@@ -503,7 +503,7 @@ export const PLAIN_RULE_EXPLANATIONS: Record<string, PlainRule> = {
   "consent-blocks-reader": {
     plain: "The cookie banner blocks screen readers",
     found: () =>
-      `The consent layer marks the whole page behind it as hidden for screen readers, and keyboard focus never lands in the layer itself.`,
+      `The consent layer marks the whole page behind it as hidden for screen readers. Keyboard focus never lands in the layer itself.`,
     impact:
       "A screen reader user hears silence where the page should be. They cannot read the page, and they cannot find the banner to clear it.",
   },
@@ -1146,7 +1146,7 @@ export const PRINCIPLE_ORDER: Principle[] = ["Perceivable", "Operable", "Underst
 export const UNDECIDED_EXPLANATIONS: Record<string, { what: string; ask: string }> = {
   "color-contrast": {
     what: "Text sitting on a photograph, a video or a gradient. The checker can read the colour of the text. There is no single colour behind it to measure against, so it will not guess.",
-    ask: "Ask your designer to look at each one against the picture behind it, at the lightest and darkest that picture gets. Where the words are lost, they need a solid panel behind them, a dark wash over the image, or a different position.",
+    ask: "Ask your designer to check each one against the picture behind it, at its lightest and its darkest. Where the words are lost, they need a solid panel behind them. A dark wash over the image works too, or a different position.",
   },
   "link-in-text-block": {
     what: "Links inside a paragraph that may be marked only by their colour. The checker cannot tell whether the difference is strong enough to stand on its own.",
@@ -1160,7 +1160,7 @@ export const UNDECIDED_EXPLANATIONS: Record<string, { what: string; ask: string 
   // because the checker cannot watch or listen to any of it — the count and
   // the location are the whole of what it can offer.
   "media-video-captions": {
-    what: "Video on the page carrying no captions file. That is not proof it needs one: a silent clip needs nothing, and captions burned into the picture count but leave no file behind.",
+    what: "Video on the page carrying no captions file. That is not proof it needs one. A silent clip needs nothing, and captions burned into the picture leave no file behind.",
     ask: "Ask whoever made each video whether anyone speaks in it. Where somebody does, it needs captions, corrected by a person. Auto-generated captions on their own do not count.",
   },
   "media-video-descriptions": {
@@ -1173,7 +1173,7 @@ export const UNDECIDED_EXPLANATIONS: Record<string, { what: string; ask: string 
   },
   "media-audio-transcript": {
     what: "Audio on the page. A transcript is ordinary page text, so the checker has no way to tell whether one is here.",
-    ask: "Check each recording has its words written out on the page near the player, and that the writing covers everything said.",
+    ask: "Check each recording has its words written out near the player. And that the writing covers everything said.",
   },
   "media-embedded-player": {
     what: "Video played through another company's player. The video lives on their site, so the checker cannot look inside it.",
@@ -1191,7 +1191,7 @@ export const UNDECIDED_EXPLANATIONS: Record<string, { what: string; ask: string 
   },
   "consent-layer-unheralded": {
     what: "A cookie layer that never introduces itself. It carries no dialog role and no name, and keyboard focus never reaches it.",
-    ask: "Have someone try the page with a screen reader. If the layer is never announced, it needs a dialog role, a name, and focus moved into it when it opens.",
+    ask: "Have someone try the page with a screen reader. If the layer is never announced, it needs a dialog role and a name. And focus moved into it when it opens.",
   },
   "consent-trap-unnamed": {
     what: "Keyboard focus stays inside the cookie layer, but the layer never says what it is. No dialog role, no name.",
@@ -1203,7 +1203,7 @@ export const UNDECIDED_EXPLANATIONS: Record<string, { what: string; ask: string 
   },
   "interaction-gesture-listeners": {
     what: "The page listens for swipes or drags. Somebody with a tremor, or steering a pointer by voice or switch, may not be able to draw one.",
-    ask: "Ask your developer whether every swipe or drag can also be done by tapping — arrows beside a carousel, a button beside a slider.",
+    ask: "Ask your developer whether every swipe or drag can also be done by tapping. Arrows beside a carousel, a button beside a slider.",
   },
   "interaction-key-shortcuts": {
     what: "The page watches for key presses across the whole screen. Where a plain letter is a shortcut, anyone speaking to their computer sets it off by talking.",
@@ -1226,7 +1226,7 @@ export const UNDECIDED_EXPLANATIONS: Record<string, { what: string; ask: string 
     ask: "Ask your developer whether anything here updates without a page load. If it does, that update needs a live region so it is spoken as well as shown.",
   },
   "interaction-acts-on-change": {
-    what: "Menus or tick boxes that look like they act the moment you set them, rather than waiting for a button. We read this from the code and did not try it: setting controls on your live site could place a real order.",
+    what: "Menus or tick boxes that look like they act the moment you set them, rather than waiting for a button. We read this from the code and did not try it. Setting controls on your live site could place a real order.",
     ask: "Ask your developer whether choosing an option here submits or moves the page. If it does, add a button that does it instead, or warn people before the control that it will.",
   },
   "interaction-pointer-cancellation": {
