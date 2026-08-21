@@ -1,0 +1,54 @@
+# Every locale of the public site, audited before it ships.
+#
+# The site is the proof of the service: a prospect will run an accessibility
+# checker over it, so it is checked here first — in each language, because a
+# translation can break a name, a lang attribute, a contrast ratio or a
+# container that fitted the English string and not the German one.
+name: Site — locales
+
+on:
+  push:
+    paths:
+      - "accessible-web-design/**"
+      - ".github/workflows/site-i18n.yml"
+  pull_request:
+    paths:
+      - "accessible-web-design/**"
+      - ".github/workflows/site-i18n.yml"
+
+jobs:
+  locales:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: accessible-web-design
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+          cache-dependency-path: accessible-web-design/package-lock.json
+
+      - run: npm ci
+
+      # Only Chromium: these checks measure layout and run axe, neither of
+      # which needs three engines. --with-deps because the runner is bare.
+      - run: npx playwright install --with-deps chromium
+
+      # Builds every locale (strict: a primary locale may not be missing a
+      # key), audits each built page with axe-core, then measures the
+      # pseudolocale for containers that cannot absorb German's extra 35%.
+      - run: npm run check
+
+      # The built locales, so a failure can be inspected rather than guessed at.
+      - if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: built-locales
+          path: |
+            accessible-web-design/en/
+            accessible-web-design/de/
+            accessible-web-design/en-XA/
+          retention-days: 7

@@ -115,18 +115,6 @@ function alternates(locales, page = "") {
   return links.map((l) => "  " + l).join("\n");
 }
 
-function renderPage(locale, templateFile, outName, ctx) {
-  /* Extra pages — the accessibility statement today — go through the same
-     catalogue, the same fallback and the same lang stamping as the index.
-     A statement that was not translated is worse than none: it is the one
-     page a regulator reads. */
-  const file = path.join(HERE, "pages", templateFile);
-  if (!fs.existsSync(file)) return;
-  const html = fs.readFileSync(file, "utf8");
-  const out = renderInto(html, locale, ctx, { statement: true });
-  fs.writeFileSync(path.join(OUT, locale, outName), out);
-}
-
 function render(locale, { strict, template, base }) {
   const messages = load(locale);
   const data = LOCALE_DATA[locale] ?? LOCALE_DATA.en;
@@ -144,6 +132,10 @@ function render(locale, { strict, template, base }) {
   // The language selector and hreflang block are generated, not authored.
   html = html.replace("{{__LANG_SELECTOR__}}", languageSelector(locale === "en-XA" ? "en" : locale, PRIMARY));
   html = html.replace("{{__ALTERNATES__}}", alternates(PRIMARY));
+  /* The embedded widget speaks the page's language, not the visitor browser's.
+     A German page that embeds an English widget is the same mistake as a
+     German page with an English <html lang>, only harder to notice. */
+  html = html.replaceAll("{{__WIDGET_LANG__}}", data.tag);
   html = html.replace("{{__LANG_SELECTOR_STATEMENT__}}", languageSelector(locale === "en-XA" ? "en" : locale, PRIMARY, "statement.html"));
   html = html.replace("{{__ALTERNATES_STATEMENT__}}", alternates(PRIMARY, "statement.html"));
 

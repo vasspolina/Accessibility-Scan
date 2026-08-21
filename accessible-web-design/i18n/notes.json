@@ -13,6 +13,8 @@
 
   "meta.separator": { "where": "page <title>, between the page name and the site name", "note": "TYPOGRAPHY, not copy. Decided by the locale's rules and pre-filled for every locale: en takes the em dash, de the spaced en dash. Not a string for a translator to improvise." },
 
+  "toc.canIUseAi": { "where": "NOWHERE YET — parked", "note": "Good copy with no section to point at. Its link used to go to does-this-apply, which is a different question, so the label was corrected and this string was left unused rather than deleted. Give the AI question its own section and this key has a home again. Until then it is deliberately orphaned, not forgotten." },
+
   "banner.eaa": { "where": "dismissable banner, top of page", "note": "Date in long European form. Never numeric." },
 
   "hero.headline": { "where": "h1", "note": "Berlin is the studio's actual city — keep it, it is not decoration." },

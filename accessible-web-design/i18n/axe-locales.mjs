@@ -7,8 +7,16 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 const HERE = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.resolve(HERE, "..");
+/* This package declares axe-core itself, so the check runs from where it
+   lives — in CI as well as here. The backend copy stays as a fallback for a
+   working tree that has not installed this package yet. */
 const axeSrc = fs.readFileSync(
-  path.resolve(ROOT, "../backend/node_modules/axe-core/axe.min.js"), "utf8");
+  [
+    path.resolve(ROOT, "node_modules/axe-core/axe.min.js"),
+    path.resolve(ROOT, "../backend/node_modules/axe-core/axe.min.js"),
+  ].find((p) => fs.existsSync(p)) ?? "axe-core not installed — run npm install",
+  "utf8"
+);
 /* Every built page, not only each locale's index: the statement is the page
    a regulator reads, and the legal page is the one nobody re-checks. */
 const PAGES = [
