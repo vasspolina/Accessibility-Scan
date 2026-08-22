@@ -630,7 +630,7 @@ export function evaluateDarkPatterns(signals: DarkPatternSignals): Accessibility
           banner.snippet,
           viaManage
             ? "Your cookie banner lets people accept in one click. Refusing means going into a settings screen first. Making refusal slower than acceptance is the most-cited consent dark pattern. Regulators in the EU and UK treat it as invalid consent."
-            : "Your cookie banner offers a way to accept, but no visible way to refuse at all. Consent that can't be declined as easily as it's given isn't valid under GDPR/PECR. To visitors, it reads as a trick.",
+            : "Your cookie banner offers a way to accept, but no visible way to refuse at all. Consent that can't be declined as easily as it's given isn't valid under GDPR or the UK's cookie rules. To visitors, it reads as a trick.",
           'Put a "Reject all" (or "Only necessary") control directly on the banner. Give it the same level and visual weight as "Accept all" — one click each way.',
           HELP.consent
         )
@@ -647,7 +647,7 @@ export function evaluateDarkPatterns(signals: DarkPatternSignals): Accessibility
             banner.rejectControls[0].selector,
             banner.snippet,
             `Your cookie banner styles "accept" as a solid button while the refuse option (“${banner.rejectControls[0].text}”) stays plain text. Weighting one choice visually is a recognised nudge — people click the prominent option without really choosing.`,
-            "Give the accept and reject controls equal visual weight: same size, same button style, side by side. The choice is then genuinely free.",
+            "Give the accept and reject controls equal visual weight — the same size and button style, sitting side by side. The choice is then genuinely free.",
             HELP.consent
           )
         );
@@ -680,7 +680,7 @@ export function evaluateDarkPatterns(signals: DarkPatternSignals): Accessibility
         shame.selector,
         shame.snippet,
         `This page words its decline option to make the visitor feel bad for choosing it: “${shame.text.slice(0, 100)}”. This is confirmshaming — the decline reads as an admission rather than a neutral choice.`,
-        'Word the decline neutrally ("No thanks", "Not now", "Close") with the same tone as the accept option. Let people say no without the page making them feel foolish.',
+        'Word the decline neutrally ("No thanks", "Not now") with the same tone as the accept option. Let people say no without the page making them feel foolish.',
         HELP.confirmshaming
       )
     );
@@ -695,7 +695,7 @@ export function evaluateDarkPatterns(signals: DarkPatternSignals): Accessibility
         claim.selector,
         claim.snippet,
         isScarcity
-          ? `This page shows a scarcity claim: “${claim.text.slice(0, 100)}”. Worth checking it reflects real stock or real activity. Invented scarcity is a deceptive practice regulators (FTC, EU UCPD) actively pursue. Shoppers increasingly distrust it.`
+          ? `This page shows a scarcity claim: “${claim.text.slice(0, 100)}”. Worth checking it reflects real stock or real activity. Invented scarcity is a deceptive practice regulators in the US and EU pursue. Shoppers increasingly distrust it.`
           : `This page applies time pressure: “${claim.text.slice(0, 100)}”. Worth checking the deadline is real. Countdowns that reset on reload, or offers that never actually expire, are a deceptive practice. They erode trust when noticed.`,
         isScarcity
           ? "Only show stock or activity counts that come from real data, and drop them where they don't. If the number is real, say where it comes from."

@@ -124,7 +124,7 @@ export function consentA11yUndecided(signals: DarkPatternSignals): UndecidedRow[
     rows.push({
       ruleId: "consent-layer-unheralded",
       count: 1,
-      help: "The cookie layer has no dialog role, no name, and keyboard focus never reaches it — a screen reader user may never learn it exists.",
+      help: "The cookie layer has no dialog role or name, and keyboard focus never reaches it — a screen reader user may never learn it exists.",
       helpUrl: DIALOG_PATTERN_URL,
     });
   } else if (

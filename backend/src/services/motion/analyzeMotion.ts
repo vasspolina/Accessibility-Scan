@@ -70,7 +70,7 @@ export function evaluateMotion(
         "motion-marquee",
         "serious",
         marquees[0].selector,
-        `Text scrolls continuously in a moving ticker (<marquee>, ${marquees.length} place${marquees.length === 1 ? "" : "s"}) with no way to pause it. Moving text is hard to read for everyone and can be unusable for people with attention or balance disorders.`,
+        `Text scrolls continuously in a ticker (<marquee>, ${marquees.length} place${marquees.length === 1 ? "" : "s"}) with no way to pause it. Moving text is hard to read for everyone and can be unusable for people with attention or balance disorders.`,
         "Remove the <marquee> element and present the text statically, or provide a visible pause/stop control."
       )
     );
@@ -136,7 +136,7 @@ export function evaluateMotion(
             "moderate",
             stillMoving[0].selector,
             `${stillMoving.length} element${stillMoving.length === 1 ? " animates" : "s animate"} on this page without stopping, even though the visitor has asked their system to reduce motion. We checked by turning that setting on and watching.`,
-            "Wrap the animation in @media (prefers-reduced-motion: no-preference), or stop it after a few seconds, or add a pause control. Note that having such a rule somewhere in your stylesheets is not enough — it has to cover these particular animations."
+            "Wrap the animation in @media (prefers-reduced-motion: no-preference), or stop it after a few seconds. A visible pause control also passes. Note that having such a rule somewhere in your stylesheets is not enough — it has to cover these particular animations."
           )
         );
       }
@@ -147,7 +147,7 @@ export function evaluateMotion(
           "moderate",
           infinite[0].selector,
           `Content animates non-stop (${infinite.length} element${infinite.length === 1 ? "" : "s"} with infinite animations). No stylesheet on this page mentions the visitor's "reduce motion" setting at all.`,
-          "Wrap the animations in @media (prefers-reduced-motion: no-preference), or stop them after a few seconds, or add a pause control."
+          "Wrap the animations in @media (prefers-reduced-motion: no-preference), or stop them after a few seconds. A visible pause control also passes."
         )
       );
     }

@@ -273,7 +273,7 @@ export function evaluateComponents(dom: DomSignals): AccessibilityFinding[] {
         "component-nav-labels",
         unlabelledNavs[0].selector,
         `The page has ${navs.length} separate navigation menus, and ${unlabelledNavs.length} of them have no label. Someone using a screen reader hears each one announced only as "navigation". They can't tell the main menu from the footer links or breadcrumbs.`,
-        'Give each navigation an aria-label describing its purpose: aria-label="Main menu", aria-label="Footer", aria-label="Breadcrumb". They\'re then distinguishable when listed.',
+        'Give each navigation an aria-label describing its purpose: aria-label="Main menu", aria-label="Footer links". They\'re then distinguishable when listed.',
         "https://www.w3.org/WAI/ARIA/apg/patterns/landmarks/examples/navigation.html",
         "accessibility"
       )
@@ -322,14 +322,14 @@ export function evaluateComponents(dom: DomSignals): AccessibilityFinding[] {
         ? makeFinding(
             "component-skip-link",
             navs[0].selector,
-            "There's no \"skip to main content\" link. The main landmark gives screen-reader users a way past the menu, so this meets the letter of the law. A sighted keyboard user can't jump to a landmark, and still tabs through the menu on every page.",
+            "There's no \"skip to main content\" link. The page marks where its main content starts, and screen readers can jump there, so this meets the letter of the law. A sighted keyboard user has no shortcut, and still tabs through the menu on every page.",
             'Add a skip link as the very first thing the Tab key reaches. Point it at #main-content and keep it visually hidden until the Tab key lands on it. It\'s a small addition that saves keyboard users dozens of key presses per page.',
             "https://www.w3.org/WAI/WCAG21/Understanding/bypass-blocks.html"
           )
         : makeFinding(
             "component-skip-link",
             navs[0].selector,
-            "There's no \"skip to main content\" link and no main landmark. Keyboard and screen-reader users have to tab through the entire navigation menu before they reach the content. That happens on every single page.",
+            "There's no \"skip to main content\" link, and nothing in the code marks where the main content starts. Keyboard and screen-reader users have to tab through the entire navigation menu before they reach the content. That happens on every page.",
             'Add a skip link as the very first thing the Tab key reaches. Point it at #main-content and keep it visually hidden until the Tab key lands on it. It\'s a small addition that saves keyboard users dozens of key presses per page.',
             "https://www.w3.org/WAI/WCAG21/Understanding/bypass-blocks.html",
             "accessibility",

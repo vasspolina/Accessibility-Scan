@@ -510,7 +510,7 @@ export function evaluateScreenReaderScript(
     "AA",
     (n, ex) =>
       `${n === 1 ? "A button is announced" : `${n} buttons are announced`} with ${n === 1 ? "a name" : "names"} that ${n === 1 ? "doesn't" : "don't"} say what ${n === 1 ? "it does" : "they do"} — e.g. ${ex.text}. A listener hears the label with no icon and no position to lean on, so "×" or ">" carries nothing.`,
-    "Label each button with its action: \"Close\", \"Next slide\", \"Search\". If the visible design wants only an icon, put the words in an aria-label — the screen reader gets the label, the design keeps the icon.",
+    "Label each button with its action: \"Close\", \"Next slide\", \"Search\", \"Play\". If the visible design wants only an icon, put the words in an aria-label — the screen reader gets the label, the design keeps the icon.",
     "https://www.w3.org/WAI/WCAG21/Understanding/headings-and-labels.html"
   );
 

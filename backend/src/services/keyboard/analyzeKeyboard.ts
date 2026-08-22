@@ -233,7 +233,7 @@ export function evaluateKeyboardNav(nav: KeyboardNavResult): AccessibilityFindin
         // on — brief their developer, or check it was done. The specifics
         // follow, addressed to whoever writes the code, so the technical
         // half is clearly not homework for the reader.
-        "Rebuild it as a real button, or as a link if it takes you somewhere. That alone fixes it, with no extra code. The keyboard reaches buttons and links by default, which is the whole reason to use them.\n\nIf it genuinely has to stay as it is, your developer needs three things on it. Add `tabindex=\"0\"` so it can take focus. Add `role=\"button\"` so a screen reader announces it as a button. Add a keydown handler firing on Enter and Space.\n\nThat last one is the part most often missed: a click handler alone never runs for someone using a keyboard.",
+        "Rebuild it as a real button, or as a link if it takes you somewhere. That alone fixes it, with no extra code. The keyboard reaches buttons and links by default, which is the whole reason to use them.\n\nIf it genuinely has to stay as it is, your developer needs two changes. Add `tabindex=\"0\"` and `role=\"button\"`, so the keyboard can reach it and a screen reader announces it as a button. Then add a keydown handler firing on Enter and Space.\n\nThat last one is the part most often missed: a click handler alone never runs for someone using a keyboard.",
         c.snippet
       )
     );
@@ -258,7 +258,7 @@ export function evaluateKeyboardNav(nav: KeyboardNavResult): AccessibilityFindin
         "AA",
         "https://www.w3.org/WAI/WCAG22/Understanding/focus-not-obscured-minimum.html",
         first.selector,
-        `${obscuredStops.length === 1 ? "One tab stop is" : `${obscuredStops.length} tab stops are`} completely hidden behind ${first.obscured!.coveredBy} at the moment ${obscuredStops.length === 1 ? "it takes" : "they take"} focus. A keyboard user's place on the page simply vanishes: they are somewhere, and nothing on screen shows where.`,
+        `${obscuredStops.length === 1 ? "One tab stop is" : `${obscuredStops.length} tab stops are`} completely hidden behind ${first.obscured!.coveredBy} at the moment ${obscuredStops.length === 1 ? "it takes" : "they take"} focus. A keyboard user's place on the page vanishes: they are somewhere, and nothing on screen shows where.`,
         "Give the page's scroll position room under the pinned bar — scroll-padding on the page, or a smaller bar. The element the keyboard lands on has to be at least partly visible while it has focus."
       )
     );

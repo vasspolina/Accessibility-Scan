@@ -248,7 +248,7 @@ export function evaluateTypography(blocks: TypographyBlock[]): AccessibilityFind
         "minor",
         longest(capsNoSpacing).selector,
         `Text set in ALL CAPITALS has no extra letterspacing (${capsNoSpacing.length} place${capsNoSpacing.length === 1 ? "" : "s"}). Capital letters form uniform rectangles and need slight extra spacing to stay comfortably readable.`,
-        "Add letter-spacing of roughly 0.05em–0.1em to uppercase text (headings, labels, buttons)."
+        "Add letter-spacing of roughly 0.05em–0.1em to uppercase text (headings, labels, buttons, badges)."
       )
     );
   }
@@ -314,7 +314,7 @@ export function evaluateTypography(blocks: TypographyBlock[]): AccessibilityFind
         "typo-line-length-short",
         "minor",
         longest(shortLines).selector,
-        `Body text is squeezed into very short lines — under 25 characters per line (${shortLines.length} block${shortLines.length === 1 ? "" : "s"}). Reading becomes choppy when almost every phrase breaks.`,
+        `Body text is squeezed into lines of under 25 characters (${shortLines.length} block${shortLines.length === 1 ? "" : "s"}). Reading becomes choppy when almost every phrase breaks.`,
         "Widen the text column or reduce the font size slightly so lines carry more words."
       )
     );
@@ -379,7 +379,7 @@ export function evaluateTypography(blocks: TypographyBlock[]): AccessibilityFind
         "typo-font-size-small",
         "moderate",
         worst.selector,
-        `Body text is set very small — ${Math.round(worst.fontSizePx)}px (${smallText.length} block${smallText.length === 1 ? "" : "s"} under 13px). Small settings that work in print are hard to read on screens.`,
+        `Body text is set at ${Math.round(worst.fontSizePx)}px (${smallText.length} block${smallText.length === 1 ? "" : "s"} under 13px). Small settings that work in print are hard to read on screens.`,
         "Raise body text to at least 14–16px."
       )
     );
@@ -400,7 +400,7 @@ export function evaluateTypography(blocks: TypographyBlock[]): AccessibilityFind
         "minor",
         longest(underlinedNonLink).selector,
         `Text that isn't a link is underlined (${underlinedNonLink.length} place${underlinedNonLink.length === 1 ? "" : "s"}). Underlines read as links, confusing for everyone, and the line cutting through letters' descenders slows dyslexic readers.`,
-        "Reserve underlines for links. Use bold, colour, or spacing to emphasise other text."
+        "Reserve underlines for links. Use bold or colour to emphasise other text."
       )
     );
   }
@@ -454,7 +454,7 @@ export function evaluateTypography(blocks: TypographyBlock[]): AccessibilityFind
         "typo-thin-weight",
         "minor",
         worst.selector,
-        `Body text is set in a very thin (hairline) weight — font-weight ${worst.fontWeight} (${thinBody.length} block${thinBody.length === 1 ? "" : "s"} at 200 or lighter). Thin strokes fade out on cheaper screens, in bright light, and for readers with low vision. This happens even when the colour contrast passes.`,
+        `Body text is set in a very thin (hairline) weight — font-weight ${worst.fontWeight} (${thinBody.length} block${thinBody.length === 1 ? "" : "s"} at 200 or lighter). Thin strokes fade out on cheaper screens and in bright light, and readers with low vision lose them first. This happens even when the colour contrast passes.`,
         "Use a regular weight (around 400) for running text. Reserve hairline weights for large display headings, not paragraphs."
       )
     );

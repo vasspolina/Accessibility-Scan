@@ -320,7 +320,7 @@ export function collectReflow320InPage(): NonNullable<MobileSignals["reflow320"]
 }
 
 const FIX_HSCROLL =
-  "Make the layout fit the screen. Put max-width:100% on images, videos, and tables. Avoid fixed pixel widths wider than the screen, and let content wrap. Test the page at 320px wide.";
+  "Make the layout fit the screen. Put max-width:100% on images, videos, tables, and embedded frames. Avoid fixed pixel widths wider than the screen, and let content wrap. Test the page at 320px wide.";
 const FIX_TAP =
   "Make tap targets at least 24×24px, with a little space between them (44×44px is more comfortable). Add padding to the element rather than shrinking it.";
 

@@ -66,7 +66,7 @@ function evaluateDialogKeyboard(results: DialogKeyboardResult[]): AccessibilityF
           "critical",
           "accessibility",
           r.selector,
-          `${what} gives you no way out with the keyboard. We checked this directly. Pressing Escape did not close it, and fifteen Tab presses never moved focus back out to the page.`,
+          `${what} gives you no way out with the keyboard: pressing Escape did not close it, and fifteen Tab presses never moved focus back out to the page.`,
           "Two changes, and it needs both. First, listen for the Escape key and close the dialog. Second, when it closes, put focus back on the page. Use the control that opened the dialog, or the main heading if it opened by itself. Holding focus inside an open dialog is correct and should stay. The fault is only that there is no way out. If a third party supplies this consent or newsletter banner, the bug is in their code, not yours. Send them this finding: it is their fix to make.",
           { criterion: "2.1.2", level: "A" }
         )
