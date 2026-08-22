@@ -14,6 +14,7 @@ import { evaluateDarkPatterns } from "../src/services/darkPatterns/analyzeDarkPa
 import { evaluateTextResize } from "../src/services/textResize/analyzeTextResize.js";
 import { evaluateConsentA11y } from "../src/services/consentA11y/evaluateConsentA11y.js";
 import { evaluateScreenReaderScript } from "../src/services/screenReader/analyzeScreenReader.js";
+import { evaluateControlContrast } from "../src/services/contrast/analyzeControlContrast.js";
 import { dropBannerShadowedAriaHiddenFocus, mergeFindings } from "../src/services/merge/mergeFindings.js";
 import type { AccessibilityFinding } from "../src/types/report.js";
 
@@ -58,6 +59,7 @@ async function scanFixture(name: string): Promise<AccessibilityFinding[]> {
   findings.push(...evaluateConsentA11y(r.darkPatternSignals));
   findings.push(...evaluateTextResize(r.textResizeSignals));
   findings.push(...evaluateScreenReaderScript(r.screenReaderScript));
+  findings.push(...evaluateControlContrast(r.controlBoundaries));
   return findings;
 }
 
@@ -125,6 +127,7 @@ describe("qa-layers.html: the layers written for this project", () => {
     "component-skip-link",
     "keyboard-mouse-only",
     "keyboard-faint-focus",
+    "control-faint-boundary",
   ];
 
   for (const rule of expected) {

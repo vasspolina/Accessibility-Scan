@@ -70,6 +70,7 @@ const CHECK_TO_CRITERIA: Record<string, string[]> = {
   // userPreferences feeds evaluateMotion and evaluateForcedColors.
   "display preferences": ["1.4.2", "2.2.2", "2.4.7"],
   "reading order": ["1.3.2", "2.4.3"],
+  "control boundaries": ["1.4.11"],
 };
 
 export interface ConformanceSummary {

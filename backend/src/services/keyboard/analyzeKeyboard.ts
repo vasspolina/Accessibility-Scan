@@ -150,7 +150,7 @@ function ringContrast(focused: FocusStyles): number {
  * `outline: solid transparent` and let a box-shadow do the visible work, and
  * smashingmagazine.com layers `rgba(0, 0, 0, 0.15)` over its red banner.
  */
-function alphaOf(colour: string): number {
+export function alphaOf(colour: string): number {
   const s = colour.trim().toLowerCase();
   if (s === "transparent") return 0;
   const m = /^rgba\(\s*[\d.]+[\s,]+[\d.]+[\s,]+[\d.]+[\s,/]+([\d.]+)\s*\)$/.exec(s);
@@ -160,7 +160,7 @@ function alphaOf(colour: string): number {
 }
 
 /** Flattens a translucent colour onto an opaque one, as the screen does. */
-function composite(fg: Rgb, alpha: number, bg: Rgb): Rgb {
+export function composite(fg: Rgb, alpha: number, bg: Rgb): Rgb {
   if (alpha >= 1) return fg;
   return {
     r: fg.r * alpha + bg.r * (1 - alpha),

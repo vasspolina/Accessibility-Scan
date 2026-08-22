@@ -22,6 +22,7 @@ import {
   collectScreenReaderScriptInPage,
   condenseScreenReaderScript,
 } from "../screenReader/analyzeScreenReader.js";
+import { collectControlBoundariesInPage, type ControlBoundarySample } from "../contrast/analyzeControlContrast.js";
 import {
   measureTextClippingInPage,
   TEXT_SPACING_CSS,
@@ -284,6 +285,9 @@ export interface RenderResult {
   // CDP API) — complementary to the hand-extracted domSignals below.
   ariaSnapshot: string;
   domSignals: DomSignals;
+  /** Border colours of visible form controls, for the 1.4.11 boundary check.
+   *  undefined when the probe failed. */
+  controlBoundaries?: ControlBoundarySample[];
   renderTimeMs: number;
   /**
    * Milliseconds spent in each named phase of the render.
@@ -3093,6 +3097,14 @@ export async function renderAndScan(
           .evaluate<TypographyBlock[]>(toBrowserScript(collectTypographyBlocksInPage))
           .catch(() => [] as TypographyBlock[])
       );
+      // Control boundaries for 1.4.11, read in the same desktop state.
+      // undefined on failure, never [] — an empty list must mean "measured,
+      // nothing bordered", not "the probe died".
+      const controlBoundaries = await timed("controlBoundaries", () =>
+        page
+          .evaluate<ControlBoundarySample[]>(toBrowserScript(collectControlBoundariesInPage))
+          .catch(() => undefined)
+      );
       // Collected while the page is in its initial desktop state, before the
       // keyboard walk-through and mobile pass mutate it — consent banners and
       // opt-in forms are exactly what those later passes disturb.
@@ -3634,6 +3646,7 @@ export async function renderAndScan(
         mobileSignals,
         darkPatternSignals,
         frameSelectors,
+        controlBoundaries,
         screenReaderScript,
         textResizeSignals,
         incompleteChecks: [
@@ -3649,6 +3662,7 @@ export async function renderAndScan(
           // ran. Anything that could not run says so here.
           ...(readingOrder.failed ? ["reading order"] : []),
           ...(readability.failed ? ["reading level"] : []),
+          ...(controlBoundaries === undefined ? ["control boundaries"] : []),
         ],
       };
     } finally {
