@@ -172,8 +172,14 @@ export const criterionResultSchema = z.object({
   coverage: z.enum(["automated", "partial", "manual"]),
   plain: z.string(),
   failing: z.string(),
-  status: z.enum(["failed", "no-issues-found", "needs-review"]),
+  status: z.enum(["failed", "no-issues-found", "needs-review", "not-measured"]),
   findingCount: z.number(),
+  // Present only on "not-measured": the checks that were meant to decide this
+  // row and did not, in the render's own words.
+  notMeasured: z.array(z.string()).optional(),
+  // 4.1.1 Parsing only: listed for completeness, never assessed, and not a
+  // question for a human either. See wcagCriteria.
+  alwaysSatisfied: z.boolean().optional(),
 });
 
 // What changes when EN 301 549 adopts WCAG 2.2, expected in the Official
@@ -207,6 +213,7 @@ export const conformanceSummarySchema = z.object({
   failed: z.number(),
   noIssuesFound: z.number(),
   needsReview: z.number(),
+  notMeasured: z.number(),
   total: z.number(),
   failedByLevel: z.object({ A: z.number(), AA: z.number() }),
   criteria: z.array(criterionResultSchema),

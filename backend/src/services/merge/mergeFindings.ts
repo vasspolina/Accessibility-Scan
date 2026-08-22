@@ -11,7 +11,7 @@ const impactToSeverity: Record<string, Severity> = {
   minor: "minor",
 };
 
-function wcagTagsToLabel(tags: string[]): string {
+export function wcagTagsToLabel(tags: string[]): string {
   const scTag = tags.find((t) => /^wcag\d{3,4}$/.test(t));
   if (scTag) {
     const digits = scTag.replace("wcag", "");
@@ -269,9 +269,13 @@ export function mergeFindings(
 ): AccessibilityFinding[] {
   // v1: concatenate. Dedup between layers is primarily handled upstream by
   // instructing Claude to skip axe-covered selectors (see buildPrompt.ts).
-  return applyHeadingSeverityFloor(
-    dropBannerShadowedAriaHiddenFocus([...automated, ...aiReview])
-  );
+  //
+  // dropBannerShadowedAriaHiddenFocus used to run here — before the caller
+  // had pushed the deterministic findings, which is where consent-blocks-reader
+  // actually lives. Its guard was therefore always false and the dedup was
+  // dead code from the day it landed. It now runs in scanPipeline, on the
+  // complete list.
+  return applyHeadingSeverityFloor([...automated, ...aiReview]);
 }
 
 /**

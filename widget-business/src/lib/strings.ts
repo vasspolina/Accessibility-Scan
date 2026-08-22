@@ -94,6 +94,7 @@ export const CHROME_KEYS: string[] = [
   "Needs a person",
   "Would fail today",
   "Nothing found",
+  "Not measured",
   "Software can check it",
   "Fix first",
   "Fix soon",

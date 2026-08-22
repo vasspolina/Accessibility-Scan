@@ -264,8 +264,9 @@
     var conformance = {
       standard: "WCAG 2.1 AA",
       failed: 2,
-      noIssuesFound: 26,
+      noIssuesFound: 25,
       needsReview: 22,
+      notMeasured: 1,
       total: 50,
       failedByLevel: { A: 1, AA: 1 },
       criteria: [
@@ -274,6 +275,12 @@
         crit("2.1.1", "Keyboard", "A", "no-issues-found", "Does everything work with a keyboard?", "", 0),
         crit("2.4.7", "Focus Visible", "AA", "no-issues-found", "Can you see where the keyboard is?", "", 0),
         crit("1.2.2", "Captions (Prerecorded)", "A", "needs-review", "Do videos have captions?", "", 0),
+        // The check-fell-over state. Real reports carry which check broke;
+        // the fixture names one so the row renders the way production would.
+        Object.assign(
+          crit("1.4.10", "Reflow", "AA", "not-measured", "Does the page work at phone width without sideways scrolling?", "", 0),
+          { notMeasured: ["phone layout"] }
+        ),
         crit("3.1.5", "Reading Level", "AAA", "needs-review", "Is the wording plain enough?", "", 0),
       ],
     };

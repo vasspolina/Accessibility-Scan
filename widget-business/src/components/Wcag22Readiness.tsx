@@ -171,7 +171,7 @@ export function Wcag22Readiness({ readiness }: { readiness: Readiness }) {
                     {c.status !== "needs-review" ? (
                       <span className="a11y-next-status">
                         <span aria-hidden="true">{fails ? "!" : "✓"}</span>{" "}
-                        {STATUS_LABEL[c.status]}
+                        {t(STATUS_LABEL[c.status])}
                       </span>
                     ) : (
                       <span className="a11y-next-status" data-call={c.coverage}>

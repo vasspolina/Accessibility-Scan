@@ -64,6 +64,7 @@ export const STRINGS_FR: Record<string, string> = {
   "Needs a person": "À vérifier par une personne",
   "Would fail today": "Échouerait aujourd'hui",
   "Nothing found": "Rien trouvé",
+  "Not measured": "Non mesuré",
   "Software can check it": "Un logiciel peut le vérifier",
   "Fix first": "À corriger en premier",
   "Fix soon": "À corriger bientôt",

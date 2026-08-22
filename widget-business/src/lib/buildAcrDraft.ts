@@ -74,9 +74,14 @@ function table(
       const conformanceLevel = failing ? "Does Not Support" : "";
       const remarks = failing
         ? criterionRemarks(c.id, findings) || c.failing
-        : c.coverage === "manual"
-          ? "Not assessed by the automated scan. This criterion cannot be evaluated by software and needs a person."
-          : "Automated testing found no failures. That is not evidence of conformance and a person must confirm it.";
+        : c.status === "not-measured"
+          ? // Without this branch a criterion whose check crashed was written
+            // up as "automated testing found no failures" — in a document
+            // whose whole purpose is to be signed and handed to a buyer.
+            "Not assessed: the automated check for this criterion did not finish on this scan. Re-run the scan or assess manually."
+          : c.coverage === "manual"
+            ? "Not assessed by the automated scan. This criterion cannot be evaluated by software and needs a person."
+            : "Automated testing found no failures. That is not evidence of conformance and a person must confirm it.";
       return `| ${c.id} ${c.name} | ${conformanceLevel} | ${remarks} |`;
     });
 

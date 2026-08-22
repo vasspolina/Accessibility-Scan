@@ -253,7 +253,7 @@
   /* The legal marks' ink. Separate from the -fill tokens because those are
      pill GROUNDS carrying white text: one token cannot be both the ground
      a white label sits on and the ink on a tint. */
-  --mark-critical-ink: #a2191f;  --mark-pass-ink: #198038;  --mark-minor-ink: #525252;
+  --mark-critical-ink: #a2191f;  --mark-pass-ink: #198038;  --mark-minor-ink: #525252;  --mark-serious-ink: #8a3800;
   --green-40: #42be65;   /* a fixed pale-green pill; its ink is --ink-on-pale */
   /* 'pass' as INK, split from --green-60, which is a ground under white
      text in the scan form and cannot move with it. */
@@ -392,7 +392,7 @@
     --pass-ink: #42be65;   /* 8.3:1 on the dark surfaces */
     --count-ink: #161616;  /* the purple cannot carry the cream in dark */
     /* Mark ink on the deep tints. */
-    --mark-critical-ink: #ff8389;  --mark-pass-ink: #42be65;  --mark-minor-ink: #c6c6c6;
+    --mark-critical-ink: #ff8389;  --mark-pass-ink: #42be65;  --mark-minor-ink: #c6c6c6;  --mark-serious-ink: #ff832b;
     /* Pale fixed grounds keep dark ink in both themes. */
     --ink-on-pale: #161616;
     --purple-60: #be95ff;   /* ink on dark grounds; the chip keeps --purple-filled */
@@ -503,7 +503,7 @@
     --pass-ink: #42be65;   /* 8.3:1 on the dark surfaces */
     --count-ink: #161616;  /* the purple cannot carry the cream in dark */
     /* Mark ink on the deep tints. */
-    --mark-critical-ink: #ff8389;  --mark-pass-ink: #42be65;  --mark-minor-ink: #c6c6c6;
+    --mark-critical-ink: #ff8389;  --mark-pass-ink: #42be65;  --mark-minor-ink: #c6c6c6;  --mark-serious-ink: #ff832b;
     /* Pale fixed grounds keep dark ink in both themes. */
     --ink-on-pale: #161616;
     --purple-60: #be95ff;   /* ink on dark grounds; the chip keeps --purple-filled */
@@ -1564,6 +1564,17 @@
 .a11y-widget-biz .a11y-conf-needs-review .a11y-conf-status {
   background: var(--layer-01);
   color: var(--text-secondary);
+}
+/* A check that fell over. Amber, not red — it is not the page's fault — and
+   not green or grey, because "we didn't look" must never dress as "we looked
+   and found nothing". The dashed border is the non-colour cue. */
+.a11y-widget-biz .a11y-conf-not-measured .a11y-conf-status {
+  background: var(--severity-serious-bg);
+  /* --severity-serious is a pill GROUND carrying white text, not an ink —
+     using it here put dark orange on dark orange in dark mode, measured at
+     the fixture. --mark-serious-ink is the ink for this tint, both themes. */
+  color: var(--mark-serious-ink);
+  border-style: dashed;
 }
 
 /* "Nothing on this page fails." — on the purple, so it cannot inherit the
@@ -4585,6 +4596,12 @@
 .a11y-widget-biz .a11y-legal-mark-minor {
   background: var(--severity-minor-tint, var(--gray-10));
   color: var(--mark-minor-ink); border: 1px solid var(--mark-minor-ink);
+}
+/* The "a check didn't finish" row — see .a11y-conf-not-measured for why
+   amber and why dashed. */
+.a11y-widget-biz .a11y-legal-mark-serious {
+  background: var(--severity-serious-bg);
+  color: var(--mark-serious-ink); border: 1px dashed var(--mark-serious-ink);
 }
 .a11y-widget-biz .a11y-legal-count {
   flex: 0 0 auto;

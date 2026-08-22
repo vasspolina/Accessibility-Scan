@@ -61,6 +61,7 @@ export const STRINGS_DE: Record<string, string> = {
   "Needs a person": "Braucht einen Menschen",
   "Would fail today": "Würde heute durchfallen",
   "Nothing found": "Nichts gefunden",
+  "Not measured": "Nicht gemessen",
   "Software can check it": "Software kann das prüfen",
   "Fix first": "Zuerst beheben",
   "Fix soon": "Bald beheben",

@@ -85,8 +85,11 @@ export interface CriterionResult {
   coverage: "automated" | "partial" | "manual";
   plain: string;
   failing: string;
-  status: "failed" | "no-issues-found" | "needs-review";
+  status: "failed" | "no-issues-found" | "needs-review" | "not-measured";
   findingCount: number;
+  // Present only on "not-measured": which checks were meant to decide this
+  // row and did not finish, in the report's own words.
+  notMeasured?: string[];
 }
 
 export interface ConformanceSummary {
@@ -94,6 +97,10 @@ export interface ConformanceSummary {
   failed: number;
   noIssuesFound: number;
   needsReview: number;
+  // Criteria whose deciding check did not run or did not finish. Optional
+  // because reports written before this field existed are still loadable
+  // from history.
+  notMeasured?: number;
   total: number;
   failedByLevel: { A: number; AA: number };
   criteria: CriterionResult[];

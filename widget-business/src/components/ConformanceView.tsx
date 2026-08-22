@@ -15,6 +15,10 @@ const STATUS_LABEL = {
   failed: "Fails",
   "no-issues-found": "Nothing found",
   "needs-review": "Needs a person",
+  // Not the same as needs-review: a person was never going to be required
+  // here — our check was, and it did not finish. Without this state a
+  // crashed probe rendered the same row as a clean page.
+  "not-measured": "Not measured",
 } as const;
 
 /* The three the design names. Real ones, not invented: each is a WCAG 2.1
@@ -38,6 +42,14 @@ function RESULT_ROWS(c: ConformanceSummary) {
     { key: "human", severity: "minor", label: "We couldn't check",
       meaning: "Only a person can judge these. Every one is named below.",
       mark: "Needs a person", n: c.needsReview },
+    // Only present when it happened. A permanent zero row would teach readers
+    // to skip it; when a check breaks, this is the row that keeps the clean
+    // count honest.
+    ...((c.notMeasured ?? 0) > 0
+      ? [{ key: "not-measured", severity: "serious", label: "A check didn't finish",
+          meaning: "These weren't examined this time. A second run usually completes them.",
+          mark: "Not measured", n: c.notMeasured ?? 0 }]
+      : []),
   ];
 }
 
@@ -57,7 +69,7 @@ export function ConformanceView({
   // the reader saw a count of 22 and had no way to reach the 22 without
   // clearing a filter that defaulted to failures-only. Naming that group as
   // a filter of its own is what makes the count answerable.
-  const [filter, setFilter] = useState<"failed" | "needs-review" | "all">("failed");
+  const [filter, setFilter] = useState<"failed" | "needs-review" | "not-measured" | "all">("failed");
   const panelId = useId();
   const filterName = useId();
   // The toggle stays mounted whichever state we're in, so keyboard focus
@@ -75,6 +87,10 @@ export function ConformanceView({
   // set that no longer contains them.
   const needsPerson = useMemo(
     () => conformance.criteria.filter((c) => c.status === "needs-review"),
+    [conformance.criteria]
+  );
+  const notMeasured = useMemo(
+    () => conformance.criteria.filter((c) => c.status === "not-measured"),
     [conformance.criteria]
   );
   // Every criterion is rendered; the filter hides rather than removes. On
@@ -251,6 +267,11 @@ export function ConformanceView({
               [
                 ["failed", `Failures (${failing.length})`],
                 ["needs-review", `Needs a person (${needsPerson.length})`],
+                // The chip exists only when the state does — an always-empty
+                // filter would be a control that never does anything.
+                ...(notMeasured.length > 0
+                  ? ([["not-measured", `Not measured (${notMeasured.length})`]] as const)
+                  : []),
                 ["all", `Everything (${conformance.total})`],
               ] as const
             ).map(([value, label]) => (
@@ -289,9 +310,17 @@ export function ConformanceView({
                     <span className="a11y-conf-plain">
                       Officially: {c.name}
                     </span>
+                    {/* Say which check broke, or "not measured" is just a
+                        shrug. The names are the report's own, the same ones
+                        the warning banner above uses. */}
+                    {c.status === "not-measured" && c.notMeasured && c.notMeasured.length > 0 && (
+                      <span className="a11y-conf-plain">
+                        The {c.notMeasured.join(" and ")} check{c.notMeasured.length > 1 ? "s" : ""} didn&rsquo;t finish this scan
+                      </span>
+                    )}
                   </span>
                   <span className="a11y-conf-status">
-                    {STATUS_LABEL[c.status]}
+                    {t(STATUS_LABEL[c.status])}
                     {/* "(13)" leaves the reader to guess thirteen of what.
                         Say it: thirteen places on this page. */}
                     {c.findingCount > 0 && (

@@ -15,6 +15,8 @@ import {
   dropDuplicateConsentClaims,
   applyAgeEnrichments,
   dropSpeculativeFindings,
+  dropBannerShadowedAriaHiddenFocus,
+  wcagTagsToLabel,
 } from "./merge/mergeFindings.js";
 import { evaluateTypography } from "./typography/analyzeTypography.js";
 import { evaluateMotion } from "./motion/analyzeMotion.js";
@@ -252,6 +254,43 @@ export function summariseUndecided(axe: AxeRunResult): AccessibilityReport["unde
   return rows.length > 0 ? rows : undefined;
 }
 
+/* Axe rules whose fault one of our own probes also proves, keyed by the
+   probe's ruleId. When both fire, the axe row goes: same fault, and ours
+   carries the plain language and the fix. The axe row survives whenever our
+   probe did not fire — this is an echo filter, not a disable list. */
+const AXE_ECHOES: Record<string, string> = {
+  "timing-meta-refresh": "meta-refresh",
+};
+
+export function dropAxeEchoes(findings: AccessibilityFinding[]): AccessibilityFinding[] {
+  const present = new Set(findings.map((f) => f.ruleId));
+  const drop = new Set(
+    Object.entries(AXE_ECHOES)
+      .filter(([ours]) => present.has(ours))
+      .map(([, axeRule]) => axeRule)
+  );
+  return drop.size ? findings.filter((f) => !drop.has(f.ruleId ?? "")) : findings;
+}
+
+/**
+ * Criteria carrying at least one axe result axe could not decide.
+ *
+ * Same source as summariseUndecided, and the same frame-tested exclusion: that
+ * one is a fact about the scan reaching an iframe, not about the page, so it
+ * must not turn a criterion into "not measured".
+ */
+export function axeIncompleteCriteria(axe: AxeRunResult): string[] {
+  const ids = new Set<string>();
+  for (const r of axe.incomplete ?? []) {
+    if (r.id === "frame-tested" || r.nodes.length === 0) continue;
+    const label = wcagTagsToLabel(r.tags ?? []);
+    // wcagTagsToLabel returns prose when a rule carries no numbered tag;
+    // normalizeCriterionId downstream drops anything that is not an id.
+    if (/^\d+\.\d+\.\d+$/.test(label)) ids.add(label);
+  }
+  return [...ids];
+}
+
 /**
  * Axe's undecided rows and our own, in one list, biggest first.
  *
@@ -263,7 +302,14 @@ export function mergeUndecided(
   fromAxe: AccessibilityReport["undecidedChecks"],
   extra: Array<NonNullable<AccessibilityReport["undecidedChecks"]>[number]>
 ): AccessibilityReport["undecidedChecks"] {
-  const rows = [...(fromAxe ?? []), ...extra].sort((a, b) => b.count - a.count);
+  // One video, one open question. axe's video-caption incomplete and our
+  // media-video-captions row ask the reader the same thing about the same
+  // element; the axe row yields to the one written in this report's words.
+  const ourRules = new Set(extra.map((r) => r.ruleId));
+  const axeRows = (fromAxe ?? []).filter(
+    (r) => !(r.ruleId === "video-caption" && ourRules.has("media-video-captions"))
+  );
+  const rows = [...axeRows, ...extra].sort((a, b) => b.count - a.count);
   return rows.length > 0 ? rows : undefined;
 }
 
@@ -426,8 +472,15 @@ export async function scanUrlToReport(
       deterministic
     )
   );
-  const findings = mergeFindings(automatedFindings, aiFindings);
-  findings.push(...deterministic);
+  const merged = mergeFindings(automatedFindings, aiFindings);
+  merged.push(...deterministic);
+  // One fault, one card — applied to the COMPLETE list, now that
+  // consent-blocks-reader is actually in it. And where axe and one of our
+  // own probes prove the same fault, the echo yields to the card written in
+  // this report's voice: a meta refresh produced axe's meta-refresh at
+  // critical and our timing-meta-refresh at serious, two cards and a double
+  // score penalty for one tag.
+  const findings = dropAxeEchoes(dropBannerShadowedAriaHiddenFocus(merged));
   // Age-inclusive notes attach to the measured findings they describe, after
   // everything that could still drop or reorder a finding has run.
   const ageStats = applyAgeEnrichments(findings, aiReview.enrichments);
@@ -462,6 +515,11 @@ export async function scanUrlToReport(
   const conformance = buildConformance(findings, {
     aiRan: aiReview.status === "completed",
     lang: normalizeReportLang(language),
+    // The two evidence-quality signals the conformance table used to ignore.
+    // Without them a probe that threw and a page with nothing wrong produced
+    // the same row, which is the overclaim buildConformance exists to refuse.
+    incompleteChecks: renderResult.incompleteChecks,
+    axeIncompleteCriteria: axeIncompleteCriteria(renderResult.axe),
   });
   const wcag22 = buildWcag22Readiness(findings);
 

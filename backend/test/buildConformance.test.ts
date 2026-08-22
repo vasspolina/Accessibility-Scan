@@ -205,3 +205,77 @@ describe("report language", () => {
     }
   });
 });
+
+describe("not-measured: a check that did not run must not read as a pass", () => {
+  // The defect this guards against: buildConformance decided every row from
+  // findings.length alone, and a probe that threw produced no findings — so
+  // a crashed keyboard walk printed the same row as a clean page. Three scans
+  // of one site scored 4, 24 and 24 for exactly this reason.
+
+  it("marks a criterion not-measured when its probe is in incompleteChecks", () => {
+    const c = buildConformance([], { incompleteChecks: ["keyboard navigation"] });
+    const row = c.criteria.find((x) => x.id === "2.4.7")!;
+    expect(row.status).toBe("not-measured");
+    expect(row.notMeasured).toEqual(["keyboard navigation"]);
+    // 1.4.11's only emitter is the keyboard walk, so it goes too.
+    expect(c.criteria.find((x) => x.id === "1.4.11")!.status).toBe("not-measured");
+    expect(c.notMeasured).toBeGreaterThan(0);
+  });
+
+  it("maps every incompleteChecks label renderPage can emit", () => {
+    // The map's keys are strings renderPage builds by hand. If one is renamed
+    // there, the mapping dies silently — this pins the contract.
+    const labels = [
+      "keyboard navigation",
+      "mouse-only controls",
+      "phone layout",
+      "text resizing",
+      "display preferences",
+      "reading order",
+    ];
+    for (const label of labels) {
+      const c = buildConformance([], { incompleteChecks: [label] });
+      expect(
+        c.criteria.some((x) => x.status === "not-measured"),
+        `"${label}" maps to no criterion — renamed in renderPage?`
+      ).toBe(true);
+    }
+  });
+
+  it("a real finding outranks a dead probe", () => {
+    const c = buildConformance([finding({ wcagCriterion: "2.4.7" })], {
+      incompleteChecks: ["keyboard navigation"],
+    });
+    expect(c.criteria.find((x) => x.id === "2.4.7")!.status).toBe("failed");
+  });
+
+  it("axe incompletes mark their criteria not-measured", () => {
+    const c = buildConformance([], { axeIncompleteCriteria: ["1.4.3"] });
+    expect(c.criteria.find((x) => x.id === "1.4.3")!.status).toBe("not-measured");
+  });
+
+  it("does not touch manual or AI-degraded rows", () => {
+    const c = buildConformance([], { aiRan: false, incompleteChecks: ["keyboard navigation"] });
+    // Manual stays needs-review — a person was always required there.
+    expect(c.criteria.find((x) => x.id === "1.2.2")!.status).toBe("needs-review");
+    // aiAssisted with no AI run stays needs-review too.
+    expect(c.criteria.find((x) => x.id === "3.3.1")!.status).toBe("needs-review");
+  });
+
+  it("a clean scan has no not-measured rows and the old counts still add up", () => {
+    const c = buildConformance([]);
+    expect(c.notMeasured).toBe(0);
+    expect(c.failed + c.noIssuesFound + c.needsReview + c.notMeasured).toBe(c.total);
+  });
+});
+
+describe("4.1.1 Parsing is satisfied by definition, not queued for a human", () => {
+  it("reads no-issues-found, never needs-review", () => {
+    // WCAG 2.2 removed the criterion and W3C's 2023 erratum marks it always
+    // satisfied for 2.0/2.1. It used to read needs-review, which asked every
+    // reader to hand-audit something that can no longer be failed.
+    const row = buildConformance([]).criteria.find((x) => x.id === "4.1.1")!;
+    expect(row.status).toBe("no-issues-found");
+    expect(row.alwaysSatisfied).toBe(true);
+  });
+});

@@ -623,8 +623,12 @@ export function App({
               over can look better than a complete one. Measured on a real site:
               three identical scans scored 4, 24 and 24, purely because the
               keyboard and phone-layout checks gave up on two of them. Saying so
-              is the difference between a number and a trustworthy number. */}
-          {!professional && report.meta.incompleteChecks && report.meta.incompleteChecks.length > 0 && (
+              is the difference between a number and a trustworthy number.
+
+              Both audiences. This was gated to the business view, which meant
+              the reader most likely to act on "the keyboard check fell over"
+              — the professional — was the one never told. */}
+          {report.meta.incompleteChecks && report.meta.incompleteChecks.length > 0 && (
             <Notification
               kind="warning"
               title={`Some checks didn't finish this time: ${report.meta.incompleteChecks.join(", ")}.`}

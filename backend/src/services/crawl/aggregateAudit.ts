@@ -202,6 +202,16 @@ export function aggregateAudit(
       {
         aiRan: scanned.some((o) => o.report!.meta.aiReviewStatus === "completed"),
         lang: normalizeReportLang(language),
+        // Union across pages: a check that fell over on any scanned page
+        // leaves its criteria not fully measured for the site, and "no
+        // issues found" over five pages is only true if the check ran on
+        // all five. One flaky page turns the row amber rather than green,
+        // which is the direction this report is allowed to be wrong in.
+        // (axe incompletes are page-level rows and stay in each page's own
+        // report; the site table takes only the probe unions.)
+        incompleteChecks: [
+          ...new Set(scanned.flatMap((o) => o.report!.meta.incompleteChecks ?? [])),
+        ],
       }
     ),
     consistency,
