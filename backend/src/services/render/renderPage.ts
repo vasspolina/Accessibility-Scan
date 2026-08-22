@@ -2013,9 +2013,52 @@ async function captureKeyboardNavigation(
         }
         bgNode = bgNode.parentElement;
       }
+      // 2.4.11 Focus Not Obscured, measured at the only honest moment: while
+      // the element actually holds focus, with the page scrolled wherever
+      // the browser scrolled it. The walk used to visit every stop and read
+      // seven style properties without ever asking whether the stop was
+      // visible. Entirely-hidden is the AA bar, so the threshold is full
+      // coverage, confirmed by elementFromPoint so a pinned bar sitting
+      // BELOW the element in the stacking order does not count.
+      let obscured: { coveredBy: string } | null = null;
+      try {
+        const w = window as unknown as { __a11yPinned?: Element[] };
+        if (!w.__a11yPinned) {
+          w.__a11yPinned = Array.from(document.querySelectorAll("*")).filter((e) => {
+            const pos = getComputedStyle(e).position;
+            return (pos === "fixed" || pos === "sticky") && e.getClientRects().length > 0;
+          });
+        }
+        const rect = el.getBoundingClientRect();
+        if (rect.width > 0 && rect.height > 0) {
+          for (const pin of w.__a11yPinned) {
+            if (pin === el || pin.contains(el) || el.contains(pin)) continue;
+            const pr = pin.getBoundingClientRect();
+            const ix = Math.max(0, Math.min(rect.right, pr.right) - Math.max(rect.left, pr.left));
+            const iy = Math.max(0, Math.min(rect.bottom, pr.bottom) - Math.max(rect.top, pr.top));
+            if (ix * iy < rect.width * rect.height * 0.995) continue;
+            const atPoint = document.elementFromPoint(
+              rect.left + rect.width / 2,
+              rect.top + rect.height / 2
+            );
+            if (atPoint && (atPoint === pin || pin.contains(atPoint))) {
+              let pinSel = pin.tagName.toLowerCase();
+              if (pin.id) pinSel = "#" + CSS.escape(pin.id);
+              else if (pin.className && typeof pin.className === "string" && pin.className.trim()) {
+                pinSel += "." + pin.className.trim().split(/\s+/)[0];
+              }
+              obscured = { coveredBy: pinSel };
+              break;
+            }
+          }
+        }
+      } catch {
+        // Geometry is extra evidence; a failure here must not cost the stop.
+      }
       return {
         selector: parts.join(" > "),
         tag: el.tagName.toLowerCase(),
+        obscured,
         styles: {
           outlineStyle: cs.outlineStyle,
           outlineWidth: cs.outlineWidth,
@@ -2057,7 +2100,7 @@ async function captureKeyboardNavigation(
     });
 
     const deadline = Math.min(Date.now() + KEYBOARD_BUDGET_MS, hardDeadline);
-    let pending: { selector: string; tag: string; styles: FocusStyles } | null = null;
+    let pending: { selector: string; tag: string; styles: FocusStyles; obscured: { coveredBy: string } | null } | null = null;
 
     for (let i = 0; i < MAX_TAB_STOPS; i++) {
       if (Date.now() > deadline) {
@@ -2077,6 +2120,7 @@ async function captureKeyboardNavigation(
           tag: pending.tag,
           focused: pending.styles,
           unfocused: await readUnfocused(pending.selector),
+          obscured: pending.obscured,
         });
         pending = null;
       }
@@ -2115,14 +2159,14 @@ async function captureKeyboardNavigation(
       if (pending && active.selector === pending.selector) {
         // Focus did not move — record the repeat so the evaluator can
         // detect a trap (unfocused styles are unknowable while stuck).
-        stops.push({ selector: active.selector, tag: active.tag, focused: active.styles, unfocused: null });
+        stops.push({ selector: active.selector, tag: active.tag, focused: active.styles, unfocused: null, obscured: active.obscured });
       } else {
         pending = active;
       }
     }
 
     if (pending) {
-      stops.push({ selector: pending.selector, tag: pending.tag, focused: pending.styles, unfocused: null });
+      stops.push({ selector: pending.selector, tag: pending.tag, focused: pending.styles, unfocused: null, obscured: pending.obscured });
     }
   } catch (err) {
     logger.warn({ err }, "Keyboard walk-through failed — reporting without keyboard findings");
@@ -2147,9 +2191,52 @@ async function captureKeyboardNavigation(
   // same as when the time budget cuts the walk short.
   if (!reachedEnd && !failed && stops.length >= MAX_TAB_STOPS - 1) truncated = true;
 
+  // The tab sequence was recorded and, until now, never compared to
+  // anything. Positive tabindex — the textbook 2.4.3 failure — and pairs of
+  // consecutive stops whose focus order contradicts document order are both
+  // decidable from the selectors already in hand, one evaluate after the
+  // walk. Best-effort: the walk's own verdicts stand whether or not this
+  // extra reading succeeds.
+  let orderAnomalies: KeyboardNavResult["orderAnomalies"];
+  if (!failed && stops.length > 1) {
+    try {
+      orderAnomalies = await page.evaluate((sels: string[]) => {
+        const els = sels.map((sel) => {
+          try {
+            return document.querySelector(sel);
+          } catch {
+            return null;
+          }
+        });
+        const positiveTabindex: Array<{ selector: string; tabindex: number }> = [];
+        els.forEach((el, i) => {
+          if (!el) return;
+          const t = parseInt(el.getAttribute("tabindex") ?? "", 10);
+          if (Number.isFinite(t) && t >= 1) positiveTabindex.push({ selector: sels[i], tabindex: t });
+        });
+        const domInversions: Array<{ earlierStop: string; laterStop: string }> = [];
+        for (let i = 0; i + 1 < els.length; i++) {
+          const a = els[i];
+          const b = els[i + 1];
+          if (!a || !b || a === b) continue;
+          // compareDocumentPosition across shadow roots reports disconnected;
+          // only same-root pairs are judged.
+          if (a.getRootNode() !== b.getRootNode()) continue;
+          if (a.compareDocumentPosition(b) & Node.DOCUMENT_POSITION_PRECEDING) {
+            domInversions.push({ earlierStop: sels[i], laterStop: sels[i + 1] });
+          }
+        }
+        return { positiveTabindex, domInversions };
+      }, stops.map((st) => st.selector));
+    } catch (err) {
+      logger.warn({ err }, "Tab-order comparison failed — walk verdicts stand without it");
+    }
+  }
+
   const mouseOnly = await collectMouseOnlyControls(page);
   return {
     stops,
+    orderAnomalies,
     reachedEnd,
     failed,
     truncated,

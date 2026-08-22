@@ -62,7 +62,7 @@ export interface CriterionResult {
  */
 const CHECK_TO_CRITERIA: Record<string, string[]> = {
   // analyzeKeyboard emits all four, and is the ONLY emitter of 1.4.11.
-  "keyboard navigation": ["1.4.11", "2.1.1", "2.1.2", "2.4.7"],
+  "keyboard navigation": ["1.4.11", "2.1.1", "2.1.2", "2.4.3", "2.4.7"],
   "mouse-only controls": ["2.1.1"],
   // analyzeMobile's other id, 2.5.5, is AAA.
   "phone layout": ["1.4.10"],

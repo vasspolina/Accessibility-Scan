@@ -98,18 +98,29 @@ function contrastSuggestionFor(node: {
   };
 }
 
+/* axe rules whose tags carry no numbered WCAG criterion, retagged locally to
+ * the criterion their failure evidences. axe files `tabindex` under
+ * best-practice, so it lowered the score while mapping to no conformance
+ * row — positive tabindex is W3C failure technique F44 for 2.4.3, and the
+ * row should know. Only rules whose firing proves the criterion belong
+ * here; that is the registry's own standard. */
+const AXE_CRITERION_OVERRIDES: Record<string, { criterion: string; level: "A" | "AA" }> = {
+  tabindex: { criterion: "2.4.3", level: "A" },
+};
+
 export function axeToFindings(axe: AxeRunResult): AccessibilityFinding[] {
   const findings: AccessibilityFinding[] = [];
   for (const violation of axe.violations) {
     const severity = violation.impact ? impactToSeverity[violation.impact] : "minor";
+    const override = AXE_CRITERION_OVERRIDES[violation.id];
     for (const node of violation.nodes) {
       findings.push({
         id: randomUUID(),
         source: "automated",
         severity,
         category: "accessibility",
-        wcagCriterion: wcagTagsToLabel(violation.tags),
-        wcagLevel: wcagLevelFromTags(violation.tags),
+        wcagCriterion: override?.criterion ?? wcagTagsToLabel(violation.tags),
+        wcagLevel: override?.level ?? wcagLevelFromTags(violation.tags),
         selector: axeTargetToSelector(node.target),
         elementSnippet: compactHtml(node.html, 300),
         description: violation.help,

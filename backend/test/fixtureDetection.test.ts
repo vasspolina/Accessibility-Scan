@@ -717,3 +717,25 @@ describe("qa-sr-names.html: names that exist and help nobody", () => {
     expect(axeNameRules).toEqual([]);
   });
 });
+
+describe("qa-focus-order.html: the comparisons the walk now makes", () => {
+  let findings: Awaited<ReturnType<typeof scanFixture>>;
+  beforeAll(async () => {
+    findings = await scanFixture("qa-focus-order.html");
+  }, 180_000);
+
+  it("cards the positive tabindex as the cause, with the jumps as evidence", () => {
+    const f = findings.find((x) => x.ruleId === "keyboard-positive-tabindex")!;
+    expect(f).toBeTruthy();
+    expect(f.wcagCriterion).toBe("2.4.3");
+    // Cause outranks symptom: no separate inversions card.
+    expect(findings.find((x) => x.ruleId === "keyboard-focus-order")).toBeUndefined();
+  });
+
+  it("cards the link buried under the pinned curtain as 2.4.11", () => {
+    const f = findings.find((x) => x.ruleId === "keyboard-focus-obscured")!;
+    expect(f).toBeTruthy();
+    expect(f.wcagCriterion).toBe("2.4.11");
+    expect(f.description).toContain("curtain");
+  });
+});

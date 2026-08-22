@@ -261,6 +261,9 @@ export function summariseUndecided(axe: AxeRunResult): AccessibilityReport["unde
    probe did not fire — this is an echo filter, not a disable list. */
 const AXE_ECHOES: Record<string, string> = {
   "timing-meta-refresh": "meta-refresh",
+  // Positive tabindex: our card names the cause and the measured jumps;
+  // axe's names each attribute. Same fault.
+  "keyboard-positive-tabindex": "tabindex",
 };
 
 export function dropAxeEchoes(findings: AccessibilityFinding[]): AccessibilityFinding[] {

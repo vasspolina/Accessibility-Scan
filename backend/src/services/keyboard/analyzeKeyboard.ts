@@ -22,6 +22,9 @@ export interface TabStop {
   // Same styles re-read after focus moved on; null when the element could
   // not be re-resolved (detached, re-rendered) — those stops are skipped.
   unfocused: FocusStyles | null;
+  // Set when the element was entirely covered by pinned chrome at the
+  // moment it held focus — the 2.4.11 failure, measured directly.
+  obscured?: { coveredBy: string } | null;
 }
 
 export interface FocusStyles {
@@ -50,6 +53,12 @@ export interface MouseOnlyControl {
 
 export interface KeyboardNavResult {
   stops: TabStop[];
+  /** The recorded tab sequence compared against document order — the
+   *  comparison the walk collected the data for and never made. */
+  orderAnomalies?: {
+    positiveTabindex: Array<{ selector: string; tabindex: number }>;
+    domInversions: Array<{ earlierStop: string; laterStop: string }>;
+  };
   /**
    * Elements carrying a click handler that no amount of tabbing will reach.
    */
@@ -231,6 +240,63 @@ export function evaluateKeyboardNav(nav: KeyboardNavResult): AccessibilityFindin
   }
 
   if (nav.stops.length === 0) return findings;
+
+  // 2.4.11 Focus Not Obscured, from the walk's own geometry: stops that were
+  // entirely covered by pinned chrome at the moment they held focus. One
+  // card — a sticky bar that swallows one stop swallows its neighbours too.
+  // Criterion 2.4.11 is WCAG 2.2, so this surfaces through the readiness
+  // block and stays out of the 2.1 score — a duty that has not started yet
+  // must not move a number that claims to measure the current one.
+  const obscuredStops = nav.stops.filter((st) => st.obscured);
+  if (obscuredStops.length > 0) {
+    const first = obscuredStops[0];
+    findings.push(
+      makeFinding(
+        "keyboard-focus-obscured",
+        "serious",
+        "2.4.11",
+        "AA",
+        "https://www.w3.org/WAI/WCAG22/Understanding/focus-not-obscured-minimum.html",
+        first.selector,
+        `${obscuredStops.length === 1 ? "One tab stop is" : `${obscuredStops.length} tab stops are`} completely hidden behind ${first.obscured!.coveredBy} at the moment ${obscuredStops.length === 1 ? "it takes" : "they take"} focus. A keyboard user's place on the page simply vanishes: they are somewhere, and nothing on screen shows where.`,
+        "Give the page's scroll position room under the pinned bar — scroll-padding on the page, or a smaller bar. The element the keyboard lands on has to be at least partly visible while it has focus."
+      )
+    );
+  }
+
+  // 2.4.3 Focus Order, from the comparison the walk now actually makes.
+  // Positive tabindex is the cause and the inversions are its symptom, so
+  // when both are present only the cause is carded — one fault, one card.
+  const anomalies = nav.orderAnomalies;
+  if (anomalies && anomalies.positiveTabindex.length > 0) {
+    const first = anomalies.positiveTabindex[0];
+    findings.push(
+      makeFinding(
+        "keyboard-positive-tabindex",
+        "moderate",
+        "2.4.3",
+        "A",
+        "https://www.w3.org/WAI/WCAG21/Understanding/focus-order.html",
+        first.selector,
+        `${anomalies.positiveTabindex.length === 1 ? "A control uses" : `${anomalies.positiveTabindex.length} controls use`} a positive tabindex (${first.tabindex}), which yanks ${anomalies.positiveTabindex.length === 1 ? "it" : "them"} out of the page's natural tab order${anomalies.domInversions.length > 0 ? ` — the walk measured ${anomalies.domInversions.length} place${anomalies.domInversions.length === 1 ? "" : "s"} where focus jumps backwards through the page` : ""}. Everything without a number then comes after everything with one, in an order no one chose.`,
+        "Remove the positive tabindex values and let the DOM order carry the tab order. If the visual order is the problem, reorder the markup — a tabindex number is a patch that breaks somewhere else."
+      )
+    );
+  } else if (anomalies && anomalies.domInversions.length > 0) {
+    const first = anomalies.domInversions[0];
+    findings.push(
+      makeFinding(
+        "keyboard-focus-order",
+        "moderate",
+        "2.4.3",
+        "A",
+        "https://www.w3.org/WAI/WCAG21/Understanding/focus-order.html",
+        first.laterStop,
+        `Tabbing through this page jumps backwards ${anomalies.domInversions.length === 1 ? "once" : `${anomalies.domInversions.length} times`}: focus lands on an element that sits EARLIER in the page than the one before it. A keyboard user's sense of where they are breaks at each jump.`,
+        "Make the tab order follow the page order. The usual causes are CSS that visually reorders content and scripts that move focus — reorder the markup instead."
+      )
+    );
+  }
 
   // Focus trap / stuck focus: the same element stays focused across three
   // or more consecutive Tab presses.

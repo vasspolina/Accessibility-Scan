@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="en">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Focus order and focus visibility</title>
+<style>
+  body { font-family: sans-serif; margin: 0; font-size: 18px; }
+  main { padding: 5rem 2rem 60rem; }
+  a, button { display: inline-block; margin: .5rem; padding: .5rem 1rem; }
+  /* EXPECTED keyboard-focus-obscured: a full-height fixed overlay sitting on
+     top of the last link. Not a header — headers contain their own links —
+     but the shape of a botched interstitial: pinned, opaque, and covering
+     the control the keyboard lands on. */
+  .curtain {
+    position: fixed; left: 0; right: 0; bottom: 0; height: 140px;
+    background: #123; color: #fff; z-index: 50; padding: 1rem;
+  }
+  .under-curtain { position: fixed; bottom: 40px; left: 2rem; z-index: 1; }
+</style>
+</head>
+<body>
+<main>
+  <h1>Tab order test page</h1>
+
+  <!-- EXPECTED keyboard-positive-tabindex (and DOM inversions as its
+       symptom): the third link in the markup carries tabindex="1", so the
+       keyboard visits it first and then jumps BACK to the top of the page. -->
+  <a href="#a">First in the markup</a>
+  <a href="#b">Second in the markup</a>
+  <a href="#c" tabindex="1">Visited first against the page order</a>
+
+  <!-- Fine: natural order. -->
+  <button type="button">An ordinary button</button>
+
+  <!-- The link the curtain hides. Focusable, on-screen coordinates, and
+       entirely behind the fixed layer at the moment it takes focus. -->
+  <a href="#d" class="under-curtain">Buried link</a>
+</main>
+<div class="curtain" aria-hidden="true">A pinned curtain with no controls of its own</div>
+</body>
+</html>

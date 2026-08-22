@@ -38,7 +38,7 @@ export const WCAG_22_NEW_AA: Wcag22Criterion[] = [
     plain: "When something is tabbed to, is it still visible?",
     failing: "A sticky header or footer hides the thing you have just tabbed to",
     whyManual:
-      "It depends on where a sticky bar sits at the moment a particular control takes focus, which needs a person tabbing through and watching. The scan does measure how much of a phone screen pinned bars hold, which is where this failure usually starts.",
+      "The keyboard walk now measures this directly at each stop it visits — a stop entirely hidden at the moment of focus is reported as failing. A person is still needed for the stops beyond the walk's reach, and for judging partial overlap.",
   },
   {
     id: "2.5.7",
@@ -106,6 +106,10 @@ export const WCAG_22_NEW_AA: Wcag22Criterion[] = [
 // exactly that.
 const RULES_EVIDENCING: Record<string, string[]> = {
   "2.5.8": ["mobile-tap-target"],
+  // Unlike mobile-sticky-coverage (see above), this rule's firing proves
+  // exactly the criterion: a focused element measured entirely covered by
+  // pinned chrome at the moment it held focus, confirmed by stacking order.
+  "2.4.11": ["keyboard-focus-obscured"],
 };
 
 export type ReadinessStatus = "already-failing" | "no-issues-found" | "needs-review";

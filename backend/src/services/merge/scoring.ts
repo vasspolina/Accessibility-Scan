@@ -1,4 +1,5 @@
 import type { AccessibilityFinding, CategorySummary, Severity, SeveritySummary } from "../../types/report.js";
+import { normalizeCriterionId } from "../conformance/wcagCriteria.js";
 
 const WEIGHTS: Record<Severity, number> = { critical: 10, serious: 5, moderate: 2, minor: 1 };
 // Per-severity penalty caps prevent a large pile of low-severity findings
@@ -79,8 +80,23 @@ export function computeScore(summary: SeveritySummary): number {
  * The findings stay in the report and in the triage counts, which is why the
  * summary total can exceed what the score was computed from.
  */
+/* Criteria that exist only in WCAG 2.2. The score line names WCAG 2.1 AA,
+   and EN 301 549 has not adopted 2.2 yet, so a 2.2-only finding moving the
+   number would hold the site to a standard it is not being held to — the
+   same reasoning as the AAA filter beside it. These findings surface
+   through the WCAG 2.2 readiness block instead. */
+const WCAG22_ONLY = new Set(["2.4.11", "2.4.12", "2.4.13", "2.5.7", "2.5.8", "3.2.6", "3.3.7", "3.3.8"]);
+
 export function scoreFindings(findings: AccessibilityFinding[]): number {
-  return computeScore(summarizeSeverity(findings.filter((f) => f.wcagLevel !== "AAA")));
+  return computeScore(
+    summarizeSeverity(
+      findings.filter((f) => {
+        if (f.wcagLevel === "AAA") return false;
+        const id = normalizeCriterionId(f.wcagCriterion);
+        return !(id && WCAG22_ONLY.has(id));
+      })
+    )
+  );
 }
 
 export function summarizeCategories(findings: AccessibilityFinding[]): CategorySummary {
