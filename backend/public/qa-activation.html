@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="en">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Disclosure activation</title>
+<style>body{font-family:sans-serif;margin:2rem;font-size:18px} [hidden]{display:none}
+button{padding:.5rem 1rem;border:1px solid #444;background:#fff}</style>
+</head>
+<body>
+<main>
+  <h1>Announced state versus real state</h1>
+
+  <!-- EXPECTED activation-stale-state: pressing the button opens the panel
+       and never touches aria-expanded. The announced state lies. -->
+  <button id="broken" aria-expanded="false" aria-controls="p1">Broken disclosure</button>
+  <div id="p1" hidden>Panel one content, revealed without telling anyone.</div>
+
+  <!-- Correct: the handler flips the attribute with the panel. Must stay silent. -->
+  <button id="good" aria-expanded="false" aria-controls="p2">Working disclosure</button>
+  <div id="p2" hidden>Panel two content.</div>
+
+  <!-- Correct native disclosure. The browser manages open; must stay silent. -->
+  <details><summary>A native details element</summary><p>Native content.</p></details>
+</main>
+<script>
+  document.getElementById("broken").addEventListener("click", function () {
+    var p = document.getElementById("p1");
+    p.hidden = !p.hidden; // panel moves, attribute never does
+  });
+  document.getElementById("good").addEventListener("click", function () {
+    var p = document.getElementById("p2");
+    p.hidden = !p.hidden;
+    this.setAttribute("aria-expanded", p.hidden ? "false" : "true");
+  });
+</script>
+</body>
+</html>

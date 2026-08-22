@@ -24,6 +24,7 @@ import { evaluateMedia } from "./media/analyzeMedia.js";
 import { evaluateConsentA11y, consentA11yUndecided } from "./consentA11y/evaluateConsentA11y.js";
 import { evaluateScreenReaderScript } from "./screenReader/analyzeScreenReader.js";
 import { evaluateControlContrast } from "./contrast/analyzeControlContrast.js";
+import { evaluateActivation } from "./interaction/analyzeActivation.js";
 import { evaluateInteraction } from "./interaction/analyzeInteraction.js";
 import { evaluateTiming } from "./interaction/analyzeTiming.js";
 import { evaluateKeyboardNav } from "./keyboard/analyzeKeyboard.js";
@@ -457,6 +458,8 @@ export async function scanUrlToReport(
   deterministic.push(...evaluateScreenReaderScript(renderResult.screenReaderScript));
   // Faint control borders — the 1.4.11 subject the row always claimed.
   deterministic.push(...evaluateControlContrast(renderResult.controlBoundaries));
+  // What actually happened when disclosure controls were pressed.
+  deterministic.push(...evaluateActivation(renderResult.activation));
   deterministic.push(...evaluateTextResize(renderResult.textResizeSignals));
   deterministic.push(...(await validateMarkup(renderResult.finalUrl)));
 

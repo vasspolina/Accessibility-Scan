@@ -15,6 +15,7 @@ import { evaluateTextResize } from "../src/services/textResize/analyzeTextResize
 import { evaluateConsentA11y } from "../src/services/consentA11y/evaluateConsentA11y.js";
 import { evaluateScreenReaderScript } from "../src/services/screenReader/analyzeScreenReader.js";
 import { evaluateControlContrast } from "../src/services/contrast/analyzeControlContrast.js";
+import { evaluateActivation } from "../src/services/interaction/analyzeActivation.js";
 import { dropBannerShadowedAriaHiddenFocus, mergeFindings } from "../src/services/merge/mergeFindings.js";
 import type { AccessibilityFinding } from "../src/types/report.js";
 
@@ -60,6 +61,7 @@ async function scanFixture(name: string): Promise<AccessibilityFinding[]> {
   findings.push(...evaluateTextResize(r.textResizeSignals));
   findings.push(...evaluateScreenReaderScript(r.screenReaderScript));
   findings.push(...evaluateControlContrast(r.controlBoundaries));
+  findings.push(...evaluateActivation(r.activation));
   return findings;
 }
 
@@ -740,5 +742,28 @@ describe("qa-focus-order.html: the comparisons the walk now makes", () => {
     expect(f).toBeTruthy();
     expect(f.wcagCriterion).toBe("2.4.11");
     expect(f.description).toContain("curtain");
+  });
+});
+
+describe("qa-activation.html: pressing the controls the page claims are disclosures", () => {
+  let findings: Awaited<ReturnType<typeof scanFixture>>;
+  beforeAll(async () => {
+    findings = await scanFixture("qa-activation.html");
+  }, 180_000);
+
+  it("cards the button whose panel opens while aria-expanded stays false", () => {
+    const f = findings.find((x) => x.ruleId === "activation-stale-state")!;
+    expect(f).toBeTruthy();
+    expect(f.wcagCriterion).toBe("4.1.2");
+    expect(f.selector).toContain("broken");
+  });
+
+  it("stays silent about the working disclosure and the native details", () => {
+    const stale = findings.filter((x) => x.ruleId === "activation-stale-state");
+    expect(stale).toHaveLength(1);
+  });
+
+  it("left every panel the way it found it", () => {
+    expect(lastRender!.activation?.results.every((r) => r.restored)).toBe(true);
   });
 });

@@ -288,6 +288,9 @@ export interface RenderResult {
   /** Border colours of visible form controls, for the 1.4.11 boundary check.
    *  undefined when the probe failed. */
   controlBoundaries?: ControlBoundarySample[];
+  /** What happened when disclosure controls were actually activated.
+   *  undefined when the pass failed. */
+  activation?: DisclosureActivation;
   renderTimeMs: number;
   /**
    * Milliseconds spent in each named phase of the render.
@@ -2788,6 +2791,123 @@ export interface DialogKeyboardResult {
   focusLostAfterClose: boolean;
 }
 
+export interface DisclosureActivation {
+  /** Controls activated and cleanly restored, with what happened. */
+  results: Array<{
+    selector: string;
+    tag: string;
+    /** aria-expanded (or <details> open) before, after, and after restore. */
+    before: string;
+    after: string;
+    /** Whether anything in the document changed size when activated. */
+    domChanged: boolean;
+    restored: boolean;
+  }>;
+  /** True when a control navigated and the pass had to go back and stop. */
+  navigated: boolean;
+}
+
+/**
+ * Presses Enter on up to five provably-inert disclosure controls and reads
+ * whether their announced state follows. See the call site for why the scope
+ * is exactly <summary> and button[aria-expanded][aria-controls] outside
+ * forms, and nothing else.
+ */
+async function probeDisclosureActivation(page: Page): Promise<DisclosureActivation> {
+  const urlBefore = page.url();
+  const results: DisclosureActivation["results"] = [];
+  let navigated = false;
+
+  const targets = await page.evaluate(() => {
+    const found: Array<{ selector: string; tag: string }> = [];
+    const push = (el: Element) => {
+      if (found.length >= 5) return;
+      const cs = getComputedStyle(el);
+      if (cs.display === "none" || cs.visibility === "hidden") return;
+      if (el.closest("form")) return;
+      const parts: string[] = [];
+      let node: Element | null = el;
+      while (node && node.nodeType === 1 && parts.length < 6) {
+        if (node.id) {
+          parts.unshift("#" + CSS.escape(node.id));
+          break;
+        }
+        let sel = node.tagName.toLowerCase();
+        const parent: Element | null = node.parentElement;
+        if (parent) {
+          const tag = node.tagName;
+          const siblings = Array.from(parent.children).filter((c: Element) => c.tagName === tag);
+          if (siblings.length > 1) sel += ":nth-of-type(" + (siblings.indexOf(node) + 1) + ")";
+        }
+        parts.unshift(sel);
+        node = parent;
+      }
+      found.push({ selector: parts.join(" > "), tag: el.tagName.toLowerCase() });
+    };
+    for (const el of Array.from(document.querySelectorAll("summary"))) push(el);
+    for (const el of Array.from(
+      document.querySelectorAll("button[aria-expanded][aria-controls]")
+    )) {
+      push(el);
+    }
+    return found;
+  });
+
+  for (const t of targets) {
+    const read = () =>
+      page.evaluate((sel: string) => {
+        const el = document.querySelector(sel);
+        if (!el) return null;
+        const state =
+          el.tagName.toLowerCase() === "summary"
+            ? String((el.closest("details") as HTMLDetailsElement | null)?.open ?? false)
+            : (el.getAttribute("aria-expanded") ?? "");
+        return { state, domSize: document.body.innerHTML.length };
+      }, t.selector);
+
+    try {
+      const before = await read();
+      if (!before) continue;
+      await page.evaluate((sel: string) => {
+        (document.querySelector(sel) as HTMLElement | null)?.focus();
+      }, t.selector);
+      await page.keyboard.press("Enter");
+      await page.waitForTimeout(250);
+      if (page.url() !== urlBefore) {
+        // A "disclosure" that navigates. Undo it and stop pressing things.
+        navigated = true;
+        await page.goBack({ waitUntil: "domcontentloaded" }).catch(() => {});
+        await page.waitForTimeout(500);
+        break;
+      }
+      const after = await read();
+      if (!after) continue;
+      let restored = false;
+      if (after.state !== before.state) {
+        await page.keyboard.press("Enter");
+        await page.waitForTimeout(200);
+        const back = await read();
+        restored = back?.state === before.state;
+      } else {
+        restored = true; // nothing changed, nothing to restore
+      }
+      results.push({
+        selector: t.selector,
+        tag: t.tag,
+        before: before.state,
+        after: after.state,
+        domChanged: after.domSize !== before.domSize,
+        restored,
+      });
+    } catch {
+      // One bad control must not cost the pass.
+    }
+  }
+  await page.evaluate(() => (document.activeElement as HTMLElement | null)?.blur?.());
+  return { results, navigated };
+}
+
+
 async function probeDialogKeyboard(
   page: Page,
   dialogs: Array<{ selector: string; hasFocusInside: boolean }>
@@ -3448,6 +3568,24 @@ export async function renderAndScan(
         });
       }
 
+      // The activation pass: 4.1.2's dynamic half, measured for the first
+      // time. Everything before this observes; nothing ever pressed Enter on
+      // a control, so an aria-expanded that never flips — the announced
+      // state lying about the visible one — was unreachable by construction.
+      //
+      // The scope is drawn by the same principle analyzeInteraction states
+      // for a stranger's live site: never take an action that could submit,
+      // order, or navigate. So: <summary> (a native disclosure the browser
+      // toggles itself) and buttons carrying BOTH aria-expanded and
+      // aria-controls (the disclosure contract), never inside a form (Enter
+      // submits forms), capped at five, each restored by a second press. A
+      // URL watcher aborts the pass and goes back if a control navigates
+      // after all — the page must be the same page for every probe after
+      // this one.
+      const activation = await timed("activation", () =>
+        probeDisclosureActivation(page).catch(() => undefined)
+      );
+
       // Visual-versus-source order. Geometry only, so it changes nothing and
       // has to run at desktop width, before the mobile pass reflows the page.
       //
@@ -3647,6 +3785,7 @@ export async function renderAndScan(
         darkPatternSignals,
         frameSelectors,
         controlBoundaries,
+        activation,
         screenReaderScript,
         textResizeSignals,
         incompleteChecks: [
