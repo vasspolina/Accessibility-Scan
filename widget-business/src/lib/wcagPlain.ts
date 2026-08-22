@@ -820,7 +820,7 @@ export const PLAIN_RULE_FIXES: Record<string, string | string[]> = {
   ],
   "keyboard-faint-focus": [
     "Make the keyboard outline darker and thicker, so it stands out on the page behind it.",
-    "Check it against every background it lands on, not just the white ones.",
+    "Check it against every background it lands on.",
   ],
   "timing-meta-refresh": [
     "Take the automatic reload off the page.",
@@ -966,7 +966,7 @@ export const PLAIN_RULE_FIXES: Record<string, string | string[]> = {
     "Run countdowns only where the deadline is real.",
     "Take down any timer that resets itself when the page reloads.",
   ],
-  "dialog-close-unlabeled": "Give the close button a name, so it is announced as \"Close\" and not just a cross.",
+  "dialog-close-unlabeled": "Give the close button a name, so it is announced as \"Close\" rather than as a bare cross.",
   "dialog-keyboard-trap": [
     "Let Tab cycle within the pop-up while it is open.",
     "Let Escape close it and return to the page.",

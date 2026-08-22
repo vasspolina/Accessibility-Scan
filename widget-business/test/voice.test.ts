@@ -116,7 +116,7 @@ describe("all reader-facing copy", () => {
   // is a screen orientation, not a metaphor.
   it("never reaches for stock vocabulary or a vague authority", () => {
     const stock =
-      /\bdelve\b|\bpivotal\b|\brobust\b|\btapestry\b|\bunderscores?\b|\bshowcases?\b|\bfosters?\b|\bintricate\b|\btestament\b|\bvibrant\b|\bseamless\b|\bleverages?\b|\bempowers?\b|\bunlocks?\b|\bgateway\b|\btransforms?\b|\belevates?\b|\bjourney\b|\bgame.chang/i;
+      /\bdelve\b|\bpivotal\b|\brobust\b|\btapestry\b|\bunderscores?\b|\bshowcases?\b|\bfosters?\b|\bintricate\b|\btestament\b|\bvibrant\b|\bseamless\b|\bleverages?\b|\bempowers?\b|\bunlocks?\b|\bgateway\b|\btransforms?\b|\belevates?\b|\bjourney\b|\bgame.chang|\bcomprehensive\b|\bholistic\b|\bcutting.edge\b|\bpowerful\b|\bcrucial\b|\butili[sz]e\b|\bnot just\b|\bat its core\b|\bmay potentially\b|\bcould possibly\b/i;
     const authority =
       /\bexperts? (say|note|argue|agree)|\bobservers note\b|\bscholars\b|\bstudies (show|suggest)\b|\bmany believe\b/i;
     for (const [id, text] of allCopy()) {

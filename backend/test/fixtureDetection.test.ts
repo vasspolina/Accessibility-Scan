@@ -66,6 +66,39 @@ async function scanFixture(name: string): Promise<AccessibilityFinding[]> {
   return findings;
 }
 
+/* The audit-copy rules (docs/AUDIT-COPY.md), applied to every finding a
+   fixture materialises — the rendered surface, not the source strings, so
+   interpolated counts and joined fragments are judged as a reader sees
+   them. Only the mechanically decidable half lives here; triads, sentence
+   rhythm and the self-check questions stay a human's job. */
+function expectAuditCopyClean(findings: AccessibilityFinding[]) {
+  const BANNED =
+    /\b(seamless|comprehensive|holistic|cutting.edge|powerful|crucial|vital|delve|leverag\w*|utili[sz]\w*|empower\w*|foster\w*|not just\b|isn't merely|at its core|testament to|worth noting|in today's|digital landscape|in conclusion|may potentially|could possibly|might possibly)\b/i;
+  for (const f of findings) {
+    for (const [part, text] of [
+      ["description", f.description],
+      ["fix", f.suggestedFix],
+      ["title", f.title ?? ""],
+    ] as const) {
+      if (!text) continue;
+      // Everything in the report is held to the rules, axe's help text
+      // included — the reader cannot tell who wrote a sentence, so the
+      // rules cannot either. (An axe upgrade that ships a banned word
+      // fails here on purpose: that is a decision point, not noise.)
+      if (!f.ruleId) continue;
+      const hit = text.match(BANNED);
+      expect(hit, `${f.ruleId} ${part} uses banned phrasing: "${hit?.[0]}"`).toBeNull();
+      // Findings state; they do not ask. The criterion table's questions
+      // are a different surface with a different job.
+      expect(text.includes("?"), `${f.ruleId} ${part} asks a rhetorical question`).toBe(false);
+      for (const para of text.split(/\n\n+/)) {
+        const dashes = (para.match(/—/g) ?? []).length;
+        expect(dashes <= 1, `${f.ruleId} ${part} uses ${dashes} em dashes in one paragraph`).toBe(true);
+      }
+    }
+  }
+}
+
 describe("qa-fixture.html: the rules axe owns", () => {
   let rules: Set<string>;
   let findings: AccessibilityFinding[];
@@ -73,6 +106,11 @@ describe("qa-fixture.html: the rules axe owns", () => {
     findings = await scanFixture("qa-fixture.html");
     rules = new Set(findings.map((f) => f.ruleId).filter(Boolean) as string[]);
   }, 180_000);
+
+  it("writes its findings inside the audit-copy rules", () => {
+    expectAuditCopyClean(findings);
+  });
+
 
   const expected: Array<[string, string[]]> = [
     ["image with no alt", ["image-alt"]],
@@ -112,6 +150,11 @@ describe("qa-layers.html: the layers written for this project", () => {
     findings = await scanFixture("qa-layers.html");
     rules = new Set(findings.map((f) => f.ruleId).filter(Boolean) as string[]);
   }, 180_000);
+
+  it("writes its findings inside the audit-copy rules", () => {
+    expectAuditCopyClean(findings);
+  });
+
 
   const expected = [
     "motion-infinite-no-reduced-motion",
@@ -697,6 +740,11 @@ describe("qa-sr-names.html: names that exist and help nobody", () => {
     findings = await scanFixture("qa-sr-names.html");
   }, 180_000);
 
+  it("writes its findings inside the audit-copy rules", () => {
+    expectAuditCopyClean(findings);
+  });
+
+
   it("cards the filename alts, the vague links and the punctuation button", () => {
     const by = new Map(findings.filter((f) => f.ruleId?.startsWith("sr-")).map((f) => [f.ruleId, f]));
     expect(by.get("sr-filename-alt")?.wcagCriterion).toBe("1.1.1");
@@ -730,6 +778,11 @@ describe("qa-focus-order.html: the comparisons the walk now makes", () => {
     findings = await scanFixture("qa-focus-order.html");
   }, 180_000);
 
+  it("writes its findings inside the audit-copy rules", () => {
+    expectAuditCopyClean(findings);
+  });
+
+
   it("cards the positive tabindex as the cause, with the jumps as evidence", () => {
     const f = findings.find((x) => x.ruleId === "keyboard-positive-tabindex")!;
     expect(f).toBeTruthy();
@@ -751,6 +804,11 @@ describe("qa-activation.html: pressing the controls the page claims are disclosu
   beforeAll(async () => {
     findings = await scanFixture("qa-activation.html");
   }, 180_000);
+
+  it("writes its findings inside the audit-copy rules", () => {
+    expectAuditCopyClean(findings);
+  });
+
 
   it("cards the button whose panel opens while aria-expanded stays false", () => {
     const f = findings.find((x) => x.ruleId === "activation-stale-state")!;
@@ -781,6 +839,11 @@ describe("qa-scheme-contrast.html: contrast in the states one axe run never sees
       })
     );
   }, 180_000);
+
+  it("writes its findings inside the audit-copy rules", () => {
+    expectAuditCopyClean(findings);
+  });
+
 
   it("cards the dark theme's muted text, which the light run passes", () => {
     const f = findings.find((x) => x.ruleId === "color-contrast-dark")!;

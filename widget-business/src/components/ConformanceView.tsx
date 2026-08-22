@@ -149,7 +149,7 @@ export function ConformanceView({
             </p>
             <p className="a11y-legal-body">
               {conformance.needsReview} of the {conformance.total} items need a
-              person. That&rsquo;s true of every automated check, not just this one.
+              person. That&rsquo;s true of every automated check, this one included.
             </p>
             <div className="a11y-legal-questions">
               <p className="a11y-legal-micro">Questions no software can answer</p>
@@ -205,7 +205,7 @@ export function ConformanceView({
         </p>
         <p>
           {conformance.needsReview} of the {conformance.total} items need a person. That's true of
-          every automated check, not just this one.
+          every automated check, this one included.
         </p>
         {/* The questions themselves, taken from the criteria actually in
             this state rather than from two examples written once and left
