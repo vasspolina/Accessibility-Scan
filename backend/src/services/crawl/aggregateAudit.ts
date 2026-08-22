@@ -1,5 +1,6 @@
 import type { AccessibilityReport, Severity } from "../../types/report.js";
 import { buildConformance, type ConformanceSummary } from "../conformance/buildConformance.js";
+import { buildWcag22Readiness, type Wcag22Readiness } from "../conformance/wcag22Readiness.js";
 import { compareNavigation, type ConsistencyIssue } from "./consistency.js";
 import type { AccessibilityFinding } from "../../types/report.js";
 import { normalizeReportLang } from "../conformance/criteriaText.js";
@@ -55,6 +56,10 @@ export interface SiteAudit {
   // populated here: these are the two criteria a single-page scan cannot
   // speak to at all.
   consistency: ConsistencyIssue[];
+  // WCAG 2.2 readiness over the whole crawl. This block existed only in
+  // single-page reports — absent in exactly the mode where 3.2.6 Consistent
+  // Help and 3.3.7 Redundant Entry are answerable at all.
+  wcag22: Wcag22Readiness;
 }
 
 export interface PageOutcome {
@@ -212,8 +217,14 @@ export function aggregateAudit(
         incompleteChecks: [
           ...new Set(scanned.flatMap((o) => o.report!.meta.incompleteChecks ?? [])),
         ],
+        // The consistency pass compared these across every scanned page, so
+        // the site table may say "no issues found" where a single page must
+        // say "needs a person". Only meaningful with two or more pages — a
+        // one-page crawl compared nothing.
+        measuredDespiteManual: scanned.length >= 2 ? ["3.2.3", "3.2.4"] : [],
       }
     ),
     consistency,
+    wcag22: buildWcag22Readiness(allFindings),
   };
 }

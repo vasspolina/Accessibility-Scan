@@ -104,7 +104,10 @@ export const WCAG_21_AA_CRITERIA: WcagCriterion[] = [
 
   // ---- Understandable ---------------------------------------------------
   { id: "3.1.1", name: "Language of Page", level: "A", coverage: "automated", plain: "Does the page say what language it's in?", failing: "The page doesn't say what language it's in, so screen readers mispronounce it" },
-  { id: "3.1.2", name: "Language of Parts", level: "AA", coverage: "manual", plain: "Are words in another language marked as such?", failing: "Words in another language aren't marked, so they're read out wrong" },
+  // partial, not manual: axe's valid-lang rule runs on every scan and really
+  // can fail this row (a lang attribute that names no real language). What
+  // stays for a person is the passage nobody marked up at all.
+  { id: "3.1.2", name: "Language of Parts", level: "AA", coverage: "partial", plain: "Are words in another language marked as such?", failing: "Words in another language aren't marked, so they're read out wrong" },
   { id: "3.2.1", name: "On Focus", level: "A", coverage: "manual", plain: "Does anything change just from tabbing onto it?", failing: "Tabbing onto something changes the page" },
   { id: "3.2.2", name: "On Input", level: "A", coverage: "manual", plain: "Does filling in a field change the page unexpectedly?", failing: "Filling in a field changes the page unexpectedly" },
   { id: "3.2.3", name: "Consistent Navigation", level: "AA", coverage: "manual", plain: "Does the menu stay in the same place on every page?", failing: "The menu moves around from page to page" },

@@ -279,3 +279,25 @@ describe("4.1.1 Parsing is satisfied by definition, not queued for a human", () 
     expect(row.alwaysSatisfied).toBe(true);
   });
 });
+
+describe("the crawl can vouch for criteria a single page cannot", () => {
+  it("3.2.3/3.2.4 read no-issues-found when the consistency pass compared pages", () => {
+    const c = buildConformance([], { measuredDespiteManual: ["3.2.3", "3.2.4"] });
+    expect(c.criteria.find((x) => x.id === "3.2.3")!.status).toBe("no-issues-found");
+    expect(c.criteria.find((x) => x.id === "3.2.4")!.status).toBe("no-issues-found");
+    // Every other manual row is untouched.
+    expect(c.criteria.find((x) => x.id === "1.2.2")!.status).toBe("needs-review");
+  });
+
+  it("stay needs-review on a single-page scan, where nothing compared anything", () => {
+    const c = buildConformance([]);
+    expect(c.criteria.find((x) => x.id === "3.2.3")!.status).toBe("needs-review");
+  });
+
+  it("a measured consistency failure still fails the row", () => {
+    const c = buildConformance([finding({ wcagCriterion: "3.2.3" })], {
+      measuredDespiteManual: ["3.2.3", "3.2.4"],
+    });
+    expect(c.criteria.find((x) => x.id === "3.2.3")!.status).toBe("failed");
+  });
+});

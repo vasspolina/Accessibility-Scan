@@ -109,6 +109,12 @@ export function buildConformance(
     // Criteria carrying at least one axe result that came back "incomplete".
     // axe saying it could not decide is not axe finding nothing.
     axeIncompleteCriteria?: string[];
+    // Criteria this RUN measured even though the registry calls them manual.
+    // The crawl's consistency pass genuinely tests 3.2.3 and 3.2.4 across
+    // pages — a single-page scan cannot — and its clean result deserved
+    // better than "needs a person", which told the reader nobody looked
+    // at the two criteria the crawl exists to look at.
+    measuredDespiteManual?: string[];
     // The report's language. Only the plain question and the failing
     // statement move; numbers, official names and levels are the standard's
     // own and stay put in every language.
@@ -153,7 +159,7 @@ export function buildConformance(
     } else if (c.alwaysSatisfied) {
       // Nothing to measure and nothing to ask a person — see wcagCriteria.
       status = "no-issues-found";
-    } else if (c.coverage === "manual") {
+    } else if (c.coverage === "manual" && !opts?.measuredDespiteManual?.includes(c.id)) {
       // We never looked, so we have nothing to say about it.
       status = "needs-review";
     } else if (c.aiAssisted && opts?.aiRan === false) {

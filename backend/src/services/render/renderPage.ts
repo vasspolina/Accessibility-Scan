@@ -291,6 +291,11 @@ export interface RenderResult {
   /** What happened when disclosure controls were actually activated.
    *  undefined when the pass failed. */
   activation?: DisclosureActivation;
+  /** axe color-contrast violations under the page's own dark theme.
+   *  undefined when the page has no dark palette or the pass failed. */
+  darkContrast?: AxeRunResult["violations"];
+  /** axe color-contrast violations at phone width. */
+  mobileContrast?: AxeRunResult["violations"];
   renderTimeMs: number;
   /**
    * Milliseconds spent in each named phase of the render.
@@ -3568,6 +3573,40 @@ export async function renderAndScan(
         });
       }
 
+      // Contrast in the page's own dark theme. The main axe run measures one
+      // state of one palette; a site whose dark tokens were never checked
+      // ships white-on-white to every dark-mode visitor and this scan said
+      // nothing. Gated on the page actually having a dark palette — body
+      // colours that do not move under emulation mean no dark styles, and
+      // re-running axe would only duplicate the light findings.
+      let darkContrast: AxeRunResult["violations"] | undefined;
+      await timed("darkContrast", async () => {
+        const look = () =>
+          page.evaluate(() => {
+            const cs = getComputedStyle(document.body);
+            return `${cs.backgroundColor}|${cs.color}`;
+          });
+        const lightLook = await look();
+        await page.emulateMedia({ colorScheme: "dark" });
+        await page.waitForTimeout(200);
+        try {
+          if ((await look()) !== lightLook) {
+            const run = (await page.evaluate(() =>
+              (window as unknown as { axe: { run: (c: unknown, o: unknown) => Promise<unknown> } }).axe.run(
+                document,
+                { runOnly: { type: "rule", values: ["color-contrast"] } }
+              )
+            )) as AxeRunResult;
+            darkContrast = run.violations;
+          }
+        } finally {
+          // null resets the emulation to the context default; every probe
+          // after this one measures the light page again.
+          await page.emulateMedia({ colorScheme: null });
+          await page.waitForTimeout(150);
+        }
+      }).catch(() => {});
+
       // The activation pass: 4.1.2's dynamic half, measured for the first
       // time. Everything before this observes; nothing ever pressed Enter on
       // a control, so an aria-expanded that never flips — the announced
@@ -3618,6 +3657,7 @@ export async function renderAndScan(
       // captureMobileElementScreenshots). Merged over the desktop captures so
       // a mobile-only element is pictured as it actually renders on a phone.
       let mobileFailed = false;
+      let mobileContrast: AxeRunResult["violations"] | undefined;
       let mobileElementScreenshots: Record<string, string> = {};
       let mobileSelectors: string[] = [];
       try {
@@ -3676,6 +3716,18 @@ export async function renderAndScan(
           for (const v of lock.violations) {
             if (v.nodes.length > 0) (axe.incomplete ?? (axe.incomplete = [])).push(v);
           }
+        }).catch(() => {});
+
+        // Contrast at phone width. Media queries swap palettes and grounds at
+        // breakpoints, and the desktop-only run never saw them.
+        await timed("mobileContrast", async () => {
+          const run = (await page.evaluate(() =>
+            (window as unknown as { axe: { run: (c: unknown, o: unknown) => Promise<unknown> } }).axe.run(
+              document,
+              { runOnly: { type: "rule", values: ["color-contrast"] } }
+            )
+          )) as AxeRunResult;
+          mobileContrast = run.violations;
         }).catch(() => {});
         // Breakout (overflow) elements first — they're large regions that crop
         // into a useful picture on their own.
@@ -3786,6 +3838,8 @@ export async function renderAndScan(
         frameSelectors,
         controlBoundaries,
         activation,
+        darkContrast,
+        mobileContrast,
         screenReaderScript,
         textResizeSignals,
         incompleteChecks: [

@@ -16,6 +16,7 @@ import { evaluateConsentA11y } from "../src/services/consentA11y/evaluateConsent
 import { evaluateScreenReaderScript } from "../src/services/screenReader/analyzeScreenReader.js";
 import { evaluateControlContrast } from "../src/services/contrast/analyzeControlContrast.js";
 import { evaluateActivation } from "../src/services/interaction/analyzeActivation.js";
+import { evaluateSchemeContrast } from "../src/services/contrast/analyzeSchemeContrast.js";
 import { dropBannerShadowedAriaHiddenFocus, mergeFindings } from "../src/services/merge/mergeFindings.js";
 import type { AccessibilityFinding } from "../src/types/report.js";
 
@@ -765,5 +766,32 @@ describe("qa-activation.html: pressing the controls the page claims are disclosu
 
   it("left every panel the way it found it", () => {
     expect(lastRender!.activation?.results.every((r) => r.restored)).toBe(true);
+  });
+});
+
+describe("qa-scheme-contrast.html: contrast in the states one axe run never sees", () => {
+  let findings: Awaited<ReturnType<typeof scanFixture>>;
+  beforeAll(async () => {
+    findings = await scanFixture("qa-scheme-contrast.html");
+    findings.push(
+      ...evaluateSchemeContrast({
+        light: lastRender!.axe,
+        dark: lastRender!.darkContrast,
+        mobile: lastRender!.mobileContrast,
+      })
+    );
+  }, 180_000);
+
+  it("cards the dark theme's muted text, which the light run passes", () => {
+    const f = findings.find((x) => x.ruleId === "color-contrast-dark")!;
+    expect(f).toBeTruthy();
+    expect(f.wcagCriterion).toBe("1.4.3");
+    expect(findings.filter((x) => x.ruleId === "color-contrast").length).toBe(0);
+  });
+
+  it("cards the phone-only banner the desktop layout never shows", () => {
+    const f = findings.find((x) => x.ruleId === "color-contrast-mobile")!;
+    expect(f).toBeTruthy();
+    expect(f.description).toContain("phone width");
   });
 });

@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="en">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Contrast beyond one state</title>
+<style>
+  body { font-family: sans-serif; margin: 2rem; font-size: 18px; background: #fff; color: #1a1a1a; }
+  /* EXPECTED color-contrast-dark: a dark palette whose muted text was never
+     checked — #777 on #222 is about 2.7:1. The light palette is clean. */
+  @media (prefers-color-scheme: dark) {
+    body { background: #222; color: #eee; }
+    .muted { color: #777; }
+  }
+  .muted { color: #595959; } /* 7:1 on white — clean in light */
+  /* EXPECTED color-contrast-mobile: the phone breakpoint swaps in a pale
+     banner the desktop layout never shows. #9a9a9a on #fff is ~2.6:1. */
+  .phone-note { display: none; }
+  @media (max-width: 420px) {
+    .phone-note { display: block; color: #9a9a9a; background: #fff; }
+  }
+</style>
+</head>
+<body>
+<main>
+  <h1>Two palettes, one checked</h1>
+  <p class="muted">Muted text: readable in the light theme, lost in the dark one.</p>
+  <p class="phone-note">A note only phones see, in a grey only phones fail.</p>
+  <p>Ordinary text that passes everywhere.</p>
+</main>
+</body>
+</html>

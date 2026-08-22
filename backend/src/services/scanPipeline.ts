@@ -25,6 +25,7 @@ import { evaluateConsentA11y, consentA11yUndecided } from "./consentA11y/evaluat
 import { evaluateScreenReaderScript } from "./screenReader/analyzeScreenReader.js";
 import { evaluateControlContrast } from "./contrast/analyzeControlContrast.js";
 import { evaluateActivation } from "./interaction/analyzeActivation.js";
+import { evaluateSchemeContrast } from "./contrast/analyzeSchemeContrast.js";
 import { evaluateInteraction } from "./interaction/analyzeInteraction.js";
 import { evaluateTiming } from "./interaction/analyzeTiming.js";
 import { evaluateKeyboardNav } from "./keyboard/analyzeKeyboard.js";
@@ -460,6 +461,14 @@ export async function scanUrlToReport(
   deterministic.push(...evaluateControlContrast(renderResult.controlBoundaries));
   // What actually happened when disclosure controls were pressed.
   deterministic.push(...evaluateActivation(renderResult.activation));
+  // Contrast in the states the main axe run never sees.
+  deterministic.push(
+    ...evaluateSchemeContrast({
+      light: renderResult.axe,
+      dark: renderResult.darkContrast,
+      mobile: renderResult.mobileContrast,
+    })
+  );
   deterministic.push(...evaluateTextResize(renderResult.textResizeSignals));
   deterministic.push(...(await validateMarkup(renderResult.finalUrl)));
 
