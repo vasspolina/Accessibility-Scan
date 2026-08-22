@@ -142,6 +142,34 @@ export function evaluateComponents(dom: DomSignals): AccessibilityFinding[] {
   const findings: AccessibilityFinding[] = [];
   const allFields = dom.forms.flatMap((f) => f.fields);
 
+  // 0. Fields labelled only by their placeholder (WCAG 3.3.2). Scoped with
+  //    care to the case every other check provably misses: axe's label rule
+  //    ACCEPTS a placeholder or a title as a name, so a placeholder-only
+  //    form is clean on both its rows — while the placeholder vanishes the
+  //    moment you type, the one moment you need the label. Fields with no
+  //    label of any kind are left to axe, which already cards them; carding
+  //    them here too would be two cards for one fault. hasProgrammaticLabel
+  //    was collected by the render from the day it landed, and this is its
+  //    first reader.
+  const placeholderOnly = allFields.filter(
+    (f) => f.visible && !f.hasProgrammaticLabel && !f.title && (f.placeholder ?? "").trim()
+  );
+  if (placeholderOnly.length > 0) {
+    const worst = placeholderOnly[0];
+    findings.push(
+      makeFinding(
+        "form-field-placeholder-label",
+        worst.selector,
+        `${placeholderOnly.length === 1 ? "A form field relies" : `${placeholderOnly.length} form fields rely`} on placeholder text as ${placeholderOnly.length === 1 ? "its" : "their"} only label — e.g. "${(worst.placeholder ?? "").trim().slice(0, 40)}". The placeholder disappears the moment someone starts typing, which is exactly when they need to be reminded what the field asks for.`,
+        `Give each field a visible <label> tied to it with for/id. Keep the placeholder for an example of the format if you like — as a hint it is fine, as the only label it is not.`,
+        "https://www.w3.org/WAI/WCAG21/Understanding/labels-or-instructions.html",
+        "accessibility",
+        "3.3.2",
+        "A"
+      )
+    );
+  }
+
   // 1. Personal-detail fields missing an autocomplete attribute (WCAG 1.3.5).
   const missingAutocomplete = allFields.filter((f) => fieldPurpose(f) && !f.autocomplete);
   if (missingAutocomplete.length > 0) {

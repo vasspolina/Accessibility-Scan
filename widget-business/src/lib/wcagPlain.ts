@@ -461,6 +461,29 @@ export const PLAIN_RULE_EXPLANATIONS: Record<string, PlainRule> = {
 
   // Component design suggestions (forms, menus) — from the ARIA Authoring
   // Practices. Framed as "here's a better way to build this."
+  // The screen-reader name-quality rules. Each is one grouped card whose
+  // count lives in the backend's description, so no found() here — the
+  // fallback shows that description verbatim.
+  "sr-filename-alt": {
+    plain: "Image descriptions are filenames",
+    impact:
+      "A screen reader reads the filename aloud, digits and punctuation included. The visitor hears noise where the image's meaning should be.",
+  },
+  "sr-vague-link-name": {
+    plain: "Links named \"click here\"",
+    impact:
+      "Screen reader users pull up all links as a list. A list of \"click here\" and \"read more\" gives them nothing to choose by.",
+  },
+  "sr-vague-button-name": {
+    plain: "Buttons announced as punctuation",
+    impact:
+      "A sighted visitor sees the × in the corner and knows. A listener hears \"times, button\" with no corner to lean on.",
+  },
+  "form-field-placeholder-label": {
+    plain: "Placeholders doing a label's job",
+    impact:
+      "The hint vanishes the moment someone types. Anyone who pauses mid-form returns to a row of filled boxes with no way to check what went where.",
+  },
   "component-form-autocomplete": {
     plain: "Form fields block autofill",
     impact:
@@ -859,6 +882,22 @@ export const PLAIN_RULE_FIXES: Record<string, string | string[]> = {
   "keyboard-focus-trap": [
     "Make sure Tab can always move on, and Escape always gets out.",
     "Test it by putting the mouse aside and using the keyboard alone.",
+  ],
+  "sr-filename-alt": [
+    "Replace each filename with a sentence saying what the image shows.",
+    "Mark purely decorative images with an empty alt so screen readers skip them.",
+  ],
+  "sr-vague-link-name": [
+    "Name each link for its destination — \"View pricing\", not \"click here\".",
+    "The visible words can stay short — your developer can attach the fuller name invisibly, for screen readers only.",
+  ],
+  "sr-vague-button-name": [
+    "Label each button with its action: \"Close\", \"Next slide\", \"Search\".",
+    "The icon-only look can stay: the words go on invisibly, for screen readers only.",
+  ],
+  "form-field-placeholder-label": [
+    "Give each field a visible label tied to it with for and id.",
+    "Keep the placeholder as a format example, never as the only label.",
   ],
   "component-form-autocomplete":
     "Label each field with what it collects, so browsers and password managers can fill it in.",

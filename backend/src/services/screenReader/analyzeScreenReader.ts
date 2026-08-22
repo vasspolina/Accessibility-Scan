@@ -16,7 +16,8 @@
 // Types live in types/report.ts because they're part of the API response.
 // Type-only imports are erased at compile time, so this doesn't break the
 // self-containment the in-page collector needs.
-import type { ScreenReaderLine, ScreenReaderScript } from "../../types/report.js";
+import { randomUUID } from "node:crypto";
+import type { AccessibilityFinding, ScreenReaderLine, ScreenReaderScript } from "../../types/report.js";
 
 export type { ScreenReaderLine, ScreenReaderScript };
 
@@ -257,6 +258,7 @@ export function collectScreenReaderScriptInPage(): ScreenReaderScript {
         kind: "heading",
         selector,
         issue: name ? undefined : "Announced, but says nothing.",
+        issueKind: name ? undefined : "missing",
       });
       continue;
     }
@@ -272,6 +274,7 @@ export function collectScreenReaderScriptInPage(): ScreenReaderScript {
         issue: !name
           ? "A listener has no idea where this goes."
           : unhelpfulNameReason(name, "link"),
+        issueKind: !name ? "missing" : unhelpfulNameReason(name, "link") ? "unhelpful" : undefined,
       });
       continue;
     }
@@ -291,6 +294,7 @@ export function collectScreenReaderScriptInPage(): ScreenReaderScript {
         issue: !name
           ? "A listener has no idea what this does."
           : unhelpfulNameReason(name, "button"),
+        issueKind: !name ? "missing" : unhelpfulNameReason(name, "button") ? "unhelpful" : undefined,
       });
       continue;
     }
@@ -311,6 +315,7 @@ export function collectScreenReaderScriptInPage(): ScreenReaderScript {
           : looksLikeFilename(name)
             ? "A filename read aloud describes nothing."
             : undefined,
+        issueKind: !name ? "missing" : looksLikeFilename(name) ? "unhelpful" : undefined,
       });
       continue;
     }
@@ -333,6 +338,7 @@ export function collectScreenReaderScriptInPage(): ScreenReaderScript {
         issue: name
           ? undefined
           : "A listener hears the field type, but not what to type.",
+        issueKind: name ? undefined : "missing",
       });
       continue;
     }
@@ -345,6 +351,7 @@ export function collectScreenReaderScriptInPage(): ScreenReaderScript {
         kind: "frame",
         selector,
         issue: name ? undefined : "Its purpose isn't announced.",
+        issueKind: name ? undefined : "missing",
       });
       continue;
     }
@@ -423,4 +430,89 @@ export function condenseScreenReaderScript(script: ScreenReaderScript): ScreenRe
   if (repeats > 0 && last) last.text = `${last.text} (repeated ${repeats + 1} times)`;
 
   return { lines: lines.slice(0, MAX_LINES), truncated: script.truncated || lines.length > MAX_LINES };
+}
+
+/**
+ * The lines whose names exist and help nobody, turned into findings.
+ *
+ * unhelpfulNameReason and looksLikeFilename above have detected these since
+ * this module landed, and until now their only consumer was the preview
+ * panel — so alt="IMG_4821.jpg" on every image left 1.1.1 reading "no
+ * issues found", with the evidence sitting one section away. Only
+ * issueKind "unhelpful" becomes a finding: the "missing" lines are axe's
+ * (image-alt, link-name, button-name, label), and carding them here too
+ * would be two cards for one fault.
+ *
+ * One card per kind, because a page with forty filename alts has one
+ * problem forty times, not forty problems.
+ */
+export function evaluateScreenReaderScript(
+  script: ScreenReaderScript | undefined
+): AccessibilityFinding[] {
+  if (!script) return [];
+  const unhelpful = (kind: ScreenReaderLine["kind"]) =>
+    script.lines.filter((l) => l.issueKind === "unhelpful" && l.kind === kind);
+
+  const findings: AccessibilityFinding[] = [];
+  const card = (
+    lines: ScreenReaderLine[],
+    ruleId: string,
+    severity: AccessibilityFinding["severity"],
+    criterion: string,
+    level: "A" | "AA",
+    description: (n: number, example: ScreenReaderLine) => string,
+    suggestedFix: string,
+    helpUrl: string
+  ) => {
+    if (lines.length === 0) return;
+    findings.push({
+      id: randomUUID(),
+      source: "automated",
+      severity,
+      category: "accessibility",
+      wcagCriterion: criterion,
+      wcagLevel: level,
+      ruleId,
+      selector: lines[0].selector,
+      description: description(lines.length, lines[0]),
+      suggestedFix,
+      helpUrl,
+    });
+  };
+
+  card(
+    unhelpful("image"),
+    "sr-filename-alt",
+    "serious",
+    "1.1.1",
+    "A",
+    (n, ex) =>
+      `${n === 1 ? "An image describes itself" : `${n} images describe themselves`} to screen-reader users with ${n === 1 ? "a filename" : "filenames"} — e.g. ${ex.text}. A filename read aloud is punctuation and digits, not a description, so the image's content is lost even though an "images have alt text" check passes.`,
+    "Write alt text that says what the image shows or does, in a short sentence. If an image is decoration, mark it so with an empty alt attribute and screen readers will skip it.",
+    "https://www.w3.org/WAI/WCAG21/Understanding/non-text-content.html"
+  );
+  card(
+    unhelpful("link"),
+    "sr-vague-link-name",
+    "moderate",
+    "2.4.4",
+    "A",
+    (n, ex) =>
+      `${n === 1 ? "A link is announced" : `${n} links are announced`} with ${n === 1 ? "a name" : "names"} that ${n === 1 ? "says" : "say"} nothing about where ${n === 1 ? "it goes" : "they go"} — e.g. ${ex.text}. Screen-reader users often pull up all links as a list, and every one of these is a mystery there.`,
+    "Name each link for its destination — \"View pricing\" rather than \"click here\", the document's title rather than a raw address. The name can come from visible text or an aria-label.",
+    "https://www.w3.org/WAI/WCAG21/Understanding/link-purpose-in-context.html"
+  );
+  card(
+    unhelpful("button"),
+    "sr-vague-button-name",
+    "moderate",
+    "2.4.6",
+    "AA",
+    (n, ex) =>
+      `${n === 1 ? "A button is announced" : `${n} buttons are announced`} with ${n === 1 ? "a name" : "names"} that ${n === 1 ? "doesn't" : "don't"} say what ${n === 1 ? "it does" : "they do"} — e.g. ${ex.text}. A listener hears the label with no icon and no position to lean on, so "×" or ">" carries nothing.`,
+    "Label each button with its action: \"Close\", \"Next slide\", \"Search\". If the visible design wants only an icon, put the words in an aria-label — the screen reader gets the label, the design keeps the icon.",
+    "https://www.w3.org/WAI/WCAG21/Understanding/headings-and-labels.html"
+  );
+
+  return findings;
 }

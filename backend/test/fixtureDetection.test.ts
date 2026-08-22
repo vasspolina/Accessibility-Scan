@@ -13,6 +13,7 @@ import { evaluateMobile } from "../src/services/mobile/analyzeMobile.js";
 import { evaluateDarkPatterns } from "../src/services/darkPatterns/analyzeDarkPatterns.js";
 import { evaluateTextResize } from "../src/services/textResize/analyzeTextResize.js";
 import { evaluateConsentA11y } from "../src/services/consentA11y/evaluateConsentA11y.js";
+import { evaluateScreenReaderScript } from "../src/services/screenReader/analyzeScreenReader.js";
 import { dropBannerShadowedAriaHiddenFocus, mergeFindings } from "../src/services/merge/mergeFindings.js";
 import type { AccessibilityFinding } from "../src/types/report.js";
 
@@ -56,6 +57,7 @@ async function scanFixture(name: string): Promise<AccessibilityFinding[]> {
   findings.push(...evaluateDarkPatterns(r.darkPatternSignals));
   findings.push(...evaluateConsentA11y(r.darkPatternSignals));
   findings.push(...evaluateTextResize(r.textResizeSignals));
+  findings.push(...evaluateScreenReaderScript(r.screenReaderScript));
   return findings;
 }
 
@@ -680,5 +682,38 @@ describe("consent-blocks-fixture.html: the banner that blocks the reader", () =>
     const deduped = dropBannerShadowedAriaHiddenFocus(findings);
     expect(deduped.some((f) => f.ruleId === "consent-blocks-reader")).toBe(true);
     expect(deduped.some((f) => f.ruleId === "aria-hidden-focus")).toBe(false);
+  });
+});
+
+describe("qa-sr-names.html: names that exist and help nobody", () => {
+  let findings: Awaited<ReturnType<typeof scanFixture>>;
+  beforeAll(async () => {
+    findings = await scanFixture("qa-sr-names.html");
+  }, 180_000);
+
+  it("cards the filename alts, the vague links and the punctuation button", () => {
+    const by = new Map(findings.filter((f) => f.ruleId?.startsWith("sr-")).map((f) => [f.ruleId, f]));
+    expect(by.get("sr-filename-alt")?.wcagCriterion).toBe("1.1.1");
+    expect(by.get("sr-filename-alt")?.description).toContain("2 images");
+    expect(by.get("sr-vague-link-name")?.wcagCriterion).toBe("2.4.4");
+    expect(by.get("sr-vague-button-name")?.wcagCriterion).toBe("2.4.6");
+  });
+
+  it("stays silent about the correct image, link and button", () => {
+    const text = findings
+      .filter((f) => f.ruleId?.startsWith("sr-"))
+      .map((f) => f.description)
+      .join(" ");
+    expect(text).not.toContain("red kite");
+    expect(text).not.toContain("View pricing");
+    expect(text).not.toContain("Close the panel");
+  });
+
+  it("axe's own missing-name rules did not fire — these names all exist", () => {
+    // The point of the whole feature: every planted fault passes axe.
+    const axeNameRules = findings.filter((f) =>
+      ["image-alt", "link-name", "button-name"].includes(f.ruleId ?? "")
+    );
+    expect(axeNameRules).toEqual([]);
   });
 });

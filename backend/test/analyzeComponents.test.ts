@@ -11,6 +11,9 @@ function field(overrides: Partial<DomSignals["forms"][number]["fields"][number]>
     name: null,
     autocomplete: null,
     required: false,
+    title: null,
+    placeholder: null,
+    visible: true,
     ...overrides,
   };
 }
@@ -280,5 +283,44 @@ describe("what counts towards the score", () => {
     const byRule = Object.fromEntries(findings.map((f) => [f.ruleId, f.category]));
     expect(byRule["component-nav-labels"]).toBe("accessibility");
     expect(byRule["component-skip-link"]).toBe("accessibility");
+  });
+});
+
+describe("3.3.2: a placeholder is not a label", () => {
+  const forms = (fields: ReturnType<typeof field>[]) =>
+    dom({ forms: [{ selector: "form", fields, errorMessages: [] }] });
+  const find = (fields: ReturnType<typeof field>[]) =>
+    evaluateComponents(forms(fields)).find((f) => f.ruleId === "form-field-placeholder-label");
+
+  it("flags a visible field whose only label is its placeholder", () => {
+    const f = find([field({ hasProgrammaticLabel: false, placeholder: "Your email" })])!;
+    expect(f).toBeTruthy();
+    expect(f.category).toBe("accessibility");
+    expect(f.wcagCriterion).toBe("3.3.2");
+    expect(f.wcagLevel).toBe("A");
+    expect(f.description).toContain("Your email");
+  });
+
+  it("one card for many fields, naming the count", () => {
+    const f = find([
+      field({ selector: "input.a", hasProgrammaticLabel: false, placeholder: "Name" }),
+      field({ selector: "input.b", hasProgrammaticLabel: false, placeholder: "Email" }),
+    ])!;
+    expect(f.description).toContain("2 form fields");
+  });
+
+  it("stays silent for a properly labelled field with a placeholder hint", () => {
+    expect(find([field({ hasProgrammaticLabel: true, placeholder: "e.g. jane@example.com" })])).toBeUndefined();
+  });
+
+  it("stays silent for a title-labelled field — discouraged but conforming", () => {
+    expect(find([field({ hasProgrammaticLabel: false, title: "Search", placeholder: "Search…" })])).toBeUndefined();
+  });
+
+  it("stays silent for hidden fields and leaves label-less fields to axe", () => {
+    // Hidden: not judged. No placeholder at all: axe's label rule already
+    // cards it — carding it here too would be two cards for one fault.
+    expect(find([field({ hasProgrammaticLabel: false, placeholder: "Step 2", visible: false })])).toBeUndefined();
+    expect(find([field({ hasProgrammaticLabel: false })])).toBeUndefined();
   });
 });

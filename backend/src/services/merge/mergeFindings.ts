@@ -1,4 +1,5 @@
 import { randomUUID } from "node:crypto";
+import { normalizeCriterionId } from "../conformance/wcagCriteria.js";
 import type { AxeRunResult } from "../render/renderPage.js";
 import { axeTargetToSelector } from "../render/renderPage.js";
 import type { AccessibilityFinding, AiFinding, Severity } from "../../types/report.js";
@@ -194,19 +195,53 @@ export function replaceLongDashes(text: string): string {
   );
 }
 
+/* The criteria the AI review may claim: the ones its prompt asks it to cite,
+ * plus the ones the conformance registry marks aiAssisted — those rows
+ * depend on this layer for their evidence, so stripping them would blind
+ * the registry's own design.
+ *
+ * A claim outside this set keeps its finding and loses its criterion. The
+ * model's criterion string used to pass through unchecked, which let a
+ * review flip ANY conformance row to "failed" — including 2.3.1 Three
+ * Flashes, judged from a single still screenshot of a page it watched for
+ * zero seconds, and 4.1.3, which this product itself classifies as beyond
+ * automated judgement. The observation may well be worth reading; the row
+ * flip is an overclaim, and the row is what a buyer acts on.
+ *
+ * 2.3.1 is deliberately absent even though the prompt mentions flashing:
+ * three flashes within one second cannot be evidenced by one frame. */
+const AI_CLAIMABLE_CRITERIA = new Set([
+  "1.1.1", // alt quality, from the screenshot
+  "1.3.1", // structure vs presentation, from the aria snapshot
+  "1.3.2", // reading order, from the aria snapshot (registry: aiAssisted)
+  "1.4.1", // use of colour, from the screenshot (registry: aiAssisted)
+  "1.4.3", // contrast in context the automated pass could not judge
+  "2.2.2", // autoplaying motion with no pause, from animatedElements
+  "2.4.4", // link purpose, from the links list
+  "2.4.6", // headings and labels describing content (registry: aiAssisted)
+  "3.3.1", // error identification (registry: aiAssisted)
+  "3.3.3", // error suggestion (registry: aiAssisted)
+  "4.1.2", // name/role/value judged from the aria snapshot
+]);
+
 export function aiToFindings(aiFindings: AiFinding[]): AccessibilityFinding[] {
-  return aiFindings.map((f) => ({
+  return aiFindings.map((f) => {
+    const claimed = normalizeCriterionId(f.wcagCriterion);
+    const criterion =
+      claimed && AI_CLAIMABLE_CRITERIA.has(claimed) ? (f.wcagCriterion as string) : "N/A";
+    return {
     id: randomUUID(),
     source: "ai-review" as const,
     severity: f.severity,
     category: f.category,
-    wcagCriterion: f.category === "accessibility" ? (f.wcagCriterion ?? "N/A") : undefined,
+    wcagCriterion: f.category === "accessibility" ? criterion : undefined,
     selector: f.selector,
     title: f.title ? replaceLongDashes(stripScreenshotReferences(f.title)) : undefined,
     description: replaceLongDashes(stripScreenshotReferences(f.description)),
     suggestedFix: replaceLongDashes(stripScreenshotReferences(f.suggestedFix)),
     confidence: f.confidence,
-  }));
+    };
+  });
 }
 
 // axe rules that are precisely about heading structure. An exact set rather

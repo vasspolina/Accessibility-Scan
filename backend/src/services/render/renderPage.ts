@@ -64,6 +64,12 @@ export interface DomSignals {
       name: string | null;
       autocomplete: string | null;
       required: boolean;
+      // The three facts 3.3.2 turns on and the label signal alone can't
+      // carry: a title is a (discouraged but conforming) label, a
+      // placeholder is not one, and a hidden field is not judged.
+      title: string | null;
+      placeholder: string | null;
+      visible: boolean;
     }>;
     errorMessages: Array<{ selector: string; text: string; isAssociatedWithField: boolean }>;
   }>;
@@ -475,6 +481,12 @@ function extractDomSignalsInPage(): DomSignals {
         name: field.getAttribute("name"),
         autocomplete: field.getAttribute("autocomplete"),
         required: field.hasAttribute("required") || field.getAttribute("aria-required") === "true",
+        title: field.getAttribute("title"),
+        placeholder: field.getAttribute("placeholder"),
+        visible:
+          field.getClientRects().length > 0 &&
+          getComputedStyle(field).visibility !== "hidden" &&
+          field.getAttribute("type") !== "hidden",
       };
     });
 

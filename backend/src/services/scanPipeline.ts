@@ -22,6 +22,7 @@ import { evaluateTypography } from "./typography/analyzeTypography.js";
 import { evaluateMotion } from "./motion/analyzeMotion.js";
 import { evaluateMedia } from "./media/analyzeMedia.js";
 import { evaluateConsentA11y, consentA11yUndecided } from "./consentA11y/evaluateConsentA11y.js";
+import { evaluateScreenReaderScript } from "./screenReader/analyzeScreenReader.js";
 import { evaluateInteraction } from "./interaction/analyzeInteraction.js";
 import { evaluateTiming } from "./interaction/analyzeTiming.js";
 import { evaluateKeyboardNav } from "./keyboard/analyzeKeyboard.js";
@@ -447,6 +448,9 @@ export async function scanUrlToReport(
   // choice, this judges whether a screen reader user can perceive and
   // operate the layer at all.
   deterministic.push(...evaluateConsentA11y(renderResult.darkPatternSignals));
+  // Names that exist and help nobody — filename alts, "click here", "×".
+  // Detected since the screen-reader preview landed, findings only now.
+  deterministic.push(...evaluateScreenReaderScript(renderResult.screenReaderScript));
   deterministic.push(...evaluateTextResize(renderResult.textResizeSignals));
   deterministic.push(...(await validateMarkup(renderResult.finalUrl)));
 

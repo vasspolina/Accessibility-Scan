@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="en">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Names that exist and help nobody</title>
+<style>body{font-family:sans-serif;margin:2rem;font-size:18px} img{width:120px;height:80px}</style>
+</head>
+<body>
+<main>
+  <h1>Screen-reader name quality</h1>
+
+  <!-- EXPECTED sr-filename-alt: alt text present, and it is a filename.
+       Passes every "has alt" check including axe's image-alt. -->
+  <img src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" alt="IMG_4821.jpg">
+  <img src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" alt="hero_banner-2.png">
+
+  <!-- EXPECTED sr-vague-link-name: named, and the name says nothing. -->
+  <p>Our pricing has changed. <a href="/pricing">Click here</a> to see the details,
+     or <a href="/docs">read more</a>.</p>
+
+  <!-- EXPECTED sr-vague-button-name: a name of pure punctuation. -->
+  <button type="button">×</button>
+
+  <!-- Correct patterns that must stay silent: a described image, a link
+       named for its destination, a button named for its action. -->
+  <img src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" alt="A red kite over the harbour at dusk">
+  <a href="/pricing">View pricing</a>
+  <button type="button">Close the panel</button>
+
+  <a href="#main" class="skip">Skip to content</a>
+</main>
+</body>
+</html>

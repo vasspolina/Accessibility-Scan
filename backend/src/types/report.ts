@@ -153,6 +153,12 @@ export const screenReaderLineSchema = z.object({
   ]),
   selector: z.string(),
   issue: z.string().optional(),
+  // "missing": no accessible name at all — axe already cards those, so the
+  // preview shows them and the findings list does not (one fault, one card).
+  // "unhelpful": a name exists and tells the listener nothing — a filename
+  // alt, "click here", "×". axe passes every one of these, so these lines
+  // are the ONLY evidence, and the emitter turns them into findings.
+  issueKind: z.enum(["missing", "unhelpful"]).optional(),
 });
 export type ScreenReaderLine = z.infer<typeof screenReaderLineSchema>;
 

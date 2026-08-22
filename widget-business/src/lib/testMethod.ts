@@ -67,6 +67,12 @@ const CONTENT_RULES = new Set([
   "video-caption",
   "component-submit-clarity",
   "readability-dense-prose",
+  // Naming an image, a link or a button is a wording decision. A developer
+  // handed "describe the image" has to invent the description, which is
+  // somebody else's call — same reasoning as link-text-vague above.
+  "sr-filename-alt",
+  "sr-vague-link-name",
+  "sr-vague-button-name",
 ]);
 
 // media- joins dark- here because captioning a video is not a code change.
