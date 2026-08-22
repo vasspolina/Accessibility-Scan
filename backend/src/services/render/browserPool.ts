@@ -158,6 +158,14 @@ const CLICK_LISTENER_PROBE = `(() => {
   // which is the classic auto-submit-on-change menu.
   const changeSeen = new WeakSet();
   const changeTargets = [];
+  // Elements with their own key handler. A WeakSet on purpose: the mouse-only
+  // probe only ever asks has(el) while walking an ancestor chain, and a
+  // WeakSet holds no strong references to detached nodes. Without this,
+  // <div tabindex="0"> with a click handler and no keydown — the single most
+  // common 2.1.1 failure — was indistinguishable from a correctly built
+  // custom button, and the probe skipped both.
+  const keyTargets = new WeakSet();
+  window.__a11yKeyTargets = keyTargets;
   window.__a11yListeners = { globals, pointerTargets, changeTargets };
 
   const original = EventTarget.prototype.addEventListener;
@@ -171,6 +179,9 @@ const CLICK_LISTENER_PROBE = `(() => {
       // letter a page-wide shortcut, or a tilt gesture the only way to act.
       const isGlobal = this === window || this === document || this === document.body;
       if (isGlobal && GLOBAL_WATCH[type]) globals[type] = (globals[type] || 0) + 1;
+      if ((type === "keydown" || type === "keyup" || type === "keypress") && this instanceof Element) {
+        keyTargets.add(this);
+      }
       if (GESTURE_WATCH[type]) globals.gestureListeners += 1;
 
       if (

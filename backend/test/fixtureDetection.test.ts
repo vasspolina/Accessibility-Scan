@@ -13,7 +13,7 @@ import { evaluateMobile } from "../src/services/mobile/analyzeMobile.js";
 import { evaluateDarkPatterns } from "../src/services/darkPatterns/analyzeDarkPatterns.js";
 import { evaluateTextResize } from "../src/services/textResize/analyzeTextResize.js";
 import { evaluateConsentA11y } from "../src/services/consentA11y/evaluateConsentA11y.js";
-import { mergeFindings } from "../src/services/merge/mergeFindings.js";
+import { dropBannerShadowedAriaHiddenFocus, mergeFindings } from "../src/services/merge/mergeFindings.js";
 import type { AccessibilityFinding } from "../src/types/report.js";
 
 // The two QA fixtures, run as a test rather than by hand.
@@ -208,14 +208,26 @@ describe("qa-layers.html: the layers written for this project", () => {
   // element on a modern page has a click handler somewhere above it, and the
   // rule is only useful if it can tell the two genuine faults in the fixture
   // apart from the five correct patterns sitting beside them.
-  it("finds both mouse-only controls and neither of the correct ones", () => {
+  it("finds all four mouse-only controls and none of the correct ones", () => {
     const flagged = findings
       .filter((f) => f.ruleId === "keyboard-mouse-only")
       .map((f) => f.selector);
 
-    expect(flagged).toHaveLength(2);
+    // The original two, plus the two halves of the tabindex trap: a
+    // focusable div whose Enter does nothing, and a tabindex="-1" div the
+    // keyboard cannot reach. Both were silently excused when any [tabindex]
+    // counted as keyboard-usable.
+    expect(flagged).toHaveLength(4);
     expect(flagged.join(" ")).toContain("div");
     expect(flagged.join(" ")).toContain("span");
+
+    // The two new findings tell the reader different things.
+    const texts = findings
+      .filter((f) => f.ruleId === "keyboard-mouse-only")
+      .map((f) => f.description)
+      .join(" ");
+    expect(texts).toContain("Enter or Space there does nothing");
+    expect(texts).toContain("pressing Tab never reaches it");
 
     // A real button, a div with role+tabindex, a wrapper around a link, a span
     // inside a link, and a full-page backdrop. Each is reachable or
@@ -654,11 +666,19 @@ describe("consent-blocks-fixture.html: the banner that blocks the reader", () =>
   }, 120_000);
 
   it("folds axe's per-element echoes into the one card that names the cause", () => {
-    // axe fires aria-hidden-focus on the hidden links; after the merge the
-    // banner finding owns the fault and the echoes are gone.
+    // axe fires aria-hidden-focus on the hidden links; the banner finding
+    // owns the fault and the echoes go.
+    //
+    // The dedup is asserted at the seam the pipeline actually uses. This
+    // test used to route through mergeFindings — which happened to work
+    // here because this harness hands the consent finding in as input, an
+    // arrangement production never had: there, consent-blocks-reader was
+    // pushed AFTER mergeFindings ran, its guard never saw it, and the dedup
+    // was dead code while this test stayed green. A test of behaviour the
+    // product does not have is worse than no test.
     expect(findings.some((f) => f.ruleId === "aria-hidden-focus")).toBe(true);
-    const merged = mergeFindings(findings, []);
-    expect(merged.some((f) => f.ruleId === "consent-blocks-reader")).toBe(true);
-    expect(merged.some((f) => f.ruleId === "aria-hidden-focus")).toBe(false);
+    const deduped = dropBannerShadowedAriaHiddenFocus(findings);
+    expect(deduped.some((f) => f.ruleId === "consent-blocks-reader")).toBe(true);
+    expect(deduped.some((f) => f.ruleId === "aria-hidden-focus")).toBe(false);
   });
 });

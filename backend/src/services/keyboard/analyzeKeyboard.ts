@@ -42,6 +42,10 @@ export interface MouseOnlyControl {
   tag: string;
   /** Visible text, used to name the control in the finding. */
   label: string;
+  /** True when Tab reaches it (a tabindex made it focusable) but no key
+   *  handler exists — pressing Enter does nothing. False when the keyboard
+   *  cannot reach it at all. Two different sentences for the reader. */
+  focusable: boolean;
 }
 
 export interface KeyboardNavResult {
@@ -213,7 +217,9 @@ export function evaluateKeyboardNav(nav: KeyboardNavResult): AccessibilityFindin
         // to know something on their page cannot be reached, and why. The
         // exact element is named in the technical version and shown in the
         // picture; whoever fixes it will not be short of detail.
-        `${c.label ? `"${c.label}"` : "A control on this page"} responds when you click it, but pressing Tab never reaches it. It is an ordinary piece of the page, not a button or a link, and the keyboard only reaches those.`,
+        c.focusable
+          ? `${c.label ? `"${c.label}"` : "A control on this page"} responds when you click it, and the Tab key does reach it — but pressing Enter or Space there does nothing. For anyone working by keyboard it is a button that ignores the press.`
+          : `${c.label ? `"${c.label}"` : "A control on this page"} responds when you click it, but pressing Tab never reaches it. It is an ordinary piece of the page, not a button or a link, and the keyboard only reaches those.`,
         // Plain instruction first, because that is the one the owner can act
         // on — brief their developer, or check it was done. The specifics
         // follow, addressed to whoever writes the code, so the technical

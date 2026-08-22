@@ -2180,7 +2180,32 @@ async function collectMouseOnlyControls(page: Page): Promise<MouseOnlyControl[] 
   try {
     return (await page.evaluate(String.raw`(() => {
       const __name = (fn) => fn;
-      const FOCUSABLE = 'a[href],button,input:not([type="hidden"]),select,textarea,summary,details,[tabindex],[contenteditable=""],[contenteditable="true"]';
+      // Split in two, because "reachable" and "usable" are different claims.
+      // NATIVE elements get keyboard activation from the browser. A bare
+      // [tabindex] gets focus and nothing else — Enter runs no click handler
+      // on a div — so it only counts as keyboard-usable when a key handler
+      // exists on it or an ancestor. The old single list said [tabindex],
+      // which classified <div tabindex="0" onclick> as fine (the commonest
+      // 2.1.1 failure on the modern web) and tabindex="-1" as fine (which
+      // the keyboard cannot reach at all).
+      const NATIVE = 'a[href],button,input:not([type="hidden"]),select,textarea,summary,details,[contenteditable=""],[contenteditable="true"]';
+      const TABBABLE = '[tabindex]:not([tabindex="-1"])';
+      const keyTargets = window.__a11yKeyTargets;
+      const hasKeyEvidence = (node) => {
+        // Walks to body: delegation bound on a container or on body counts.
+        // Handlers on document/window do not — they are almost always an
+        // Escape handler for a dialog, not activation for this control, and
+        // counting them would put the probe back to sleep on every site
+        // that has a modal.
+        if (!keyTargets) return false;
+        for (let n = node; n; n = n.parentElement) if (keyTargets.has(n)) return true;
+        return false;
+      };
+      const keyboardUsable = (node) => {
+        if (node.matches(NATIVE)) return true;
+        if (node.matches(TABBABLE)) return hasKeyEvidence(node);
+        return false;
+      };
       const MAX_REPORTED = 8;
       const tracked = window.__a11yClickTargets;
       if (!Array.isArray(tracked)) return [];
@@ -2233,12 +2258,21 @@ async function collectMouseOnlyControls(page: Page): Promise<MouseOnlyControl[] 
           if (!el.isConnected) continue; // detached by a re-render
           const tag = el.tagName.toLowerCase();
           if (tag === "body" || tag === "html") continue;
-          if (el.matches(FOCUSABLE)) continue;
-          // parentElement first because closest() starts at the element
-          // itself, which the line above already covers — walking from the
-          // parent keeps the two filters independent and separately testable.
-          if (el.parentElement?.closest(FOCUSABLE)) continue;
-          if (el.querySelector(FOCUSABLE)) continue;
+          if (keyboardUsable(el)) continue;
+          // parentElement first because the element itself is covered above —
+          // walking from the parent keeps the two filters independent and
+          // separately testable.
+          let ancestorUsable = false;
+          for (let a = el.parentElement; a; a = a.parentElement) {
+            if (keyboardUsable(a)) { ancestorUsable = true; break; }
+          }
+          if (ancestorUsable) continue;
+          if (el.querySelector(NATIVE)) continue;
+          let childUsable = false;
+          for (const c of el.querySelectorAll(TABBABLE)) {
+            if (keyboardUsable(c)) { childUsable = true; break; }
+          }
+          if (childUsable) continue;
           const cs = getComputedStyle(el);
           if (cs.display === "none" || cs.visibility === "hidden" || cs.pointerEvents === "none") continue;
           if (parseFloat(cs.opacity) === 0) continue;
@@ -2250,6 +2284,9 @@ async function collectMouseOnlyControls(page: Page): Promise<MouseOnlyControl[] 
             snippet: snippetOf(el),
             tag,
             label: (el.textContent || "").replace(/\s+/g, " ").trim().slice(0, 60),
+            // Tab reaches it and Enter does nothing, versus Tab never
+            // reaches it — the finding states which.
+            focusable: el.matches(TABBABLE),
           });
         } catch (e) {
           // skip a bad element

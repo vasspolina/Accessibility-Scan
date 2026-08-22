@@ -148,8 +148,17 @@
   <span class="fake-close">Dismiss</span>
 
   <!-- Controls: all five are correct and must stay silent. They are the
-       patterns the check has to tell apart from the two above. -->
+       patterns the check has to tell apart from the failures around them. -->
   <div role="button" tabindex="0" class="real-custom-button">Proper custom button</div>
+
+  <!-- EXPECTED keyboard-mouse-only ×2: the two halves of the tabindex trap.
+       The first is the commonest 2.1.1 failure on the modern web — Tab
+       reaches it, Enter does nothing, because tabindex grants focus and
+       nothing else. The second cannot be reached at all: tabindex="-1" is
+       for programmatic focus only. Both used to be silently excused by a
+       filter that treated any [tabindex] as keyboard-usable. -->
+  <div role="button" tabindex="0" class="half-button">Focusable, but Enter does nothing</div>
+  <div role="button" tabindex="-1" class="unreachable-button">Click-only, Tab skips it</div>
   <button type="button" class="real-button">Real button</button>
   <div class="click-wrapper"><a href="#main">Wrapper listening for its own link</a></div>
   <a href="#main" class="card-link"><span class="card-inner">Handler on a span inside a link</span></a>
@@ -160,9 +169,14 @@
   // Attached with addEventListener, not an onclick attribute, because that is
   // how every framework does it and the check has to find these.
   for (const sel of [".fake-button", ".fake-close", ".real-custom-button",
+                     ".half-button", ".unreachable-button",
                      ".real-button", ".click-wrapper", ".card-inner", ".backdrop"]) {
     document.querySelector(sel).addEventListener("click", function () {});
   }
+  // What makes the proper custom button proper: it also answers the keys.
+  // Without this line it is the same failure as .half-button — which is
+  // exactly what this fixture used to certify as correct.
+  document.querySelector(".real-custom-button").addEventListener("keydown", function () {});
 </script>
 
 <!-- EXPECTED component-skip-link: nothing that skips to the content -->
