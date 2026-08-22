@@ -52,14 +52,32 @@ describe("evaluateComponents", () => {
     expect(rules(d)).not.toContain("component-form-autocomplete");
   });
 
-  it("all component findings are design-clarity suggestions, never score hits", () => {
+  it("accessibility-category findings always carry the criterion that lets them count", () => {
+    // The rule this layer keeps getting wrong, twice now in its own history
+    // (2.4.1, then 1.3.5): an accessibility-category finding without a
+    // criterion never reaches its conformance row, and a design-clarity
+    // finding with one is a failure hidden from the checklist. Either every
+    // finding is design-clarity, or it names its criterion and level.
     const d = dom({
       forms: [{ selector: "form", fields: [field({ name: "email", accessibleLabel: "Email" })], errorMessages: [] }],
     });
     for (const f of evaluateComponents(d)) {
-      expect(f.category).toBe("design-clarity");
       expect(f.helpUrl).toBeTruthy();
+      if (f.category === "accessibility") {
+        expect(f.wcagCriterion, `${f.ruleId} counts but names no criterion`).toBeTruthy();
+        expect(f.wcagLevel, `${f.ruleId} counts but names no level`).toBeTruthy();
+      }
     }
+  });
+
+  it("missing autocomplete on an identity field is a 1.3.5 failure, not advice", () => {
+    const d = dom({
+      forms: [{ selector: "form", fields: [field({ name: "email", accessibleLabel: "Email" })], errorMessages: [] }],
+    });
+    const f = evaluateComponents(d).find((x) => x.ruleId === "component-form-autocomplete")!;
+    expect(f.category).toBe("accessibility");
+    expect(f.wcagCriterion).toBe("1.3.5");
+    expect(f.wcagLevel).toBe("AA");
   });
 
   it("flags an email field using type=text", () => {
@@ -143,6 +161,39 @@ describe("evaluateComponents", () => {
       ],
     });
     expect(rules(d)).not.toContain("component-skip-link");
+  });
+
+  it("recognises a skip link in the page's own language", () => {
+    // The row used to be decided by /\bskip\b/i alone — a Level A criterion
+    // failed by every German, French and Dutch page that does it right.
+    for (const name of ["Zum Inhalt springen", "Aller au contenu", "Naar de inhoud", "Saltar al contenido"]) {
+      const d = dom({
+        landmarks: [{ role: "nav", label: "Main", selector: "nav" }],
+        interactiveElements: [
+          { type: "link", selector: "a.skip", accessibleName: name, href: "#main", hasVisibleText: true },
+          { type: "link", selector: "a", accessibleName: "Home", href: "/", hasVisibleText: true },
+        ],
+      });
+      expect(rules(d), `"${name}" not recognised as a skip link`).not.toContain("component-skip-link");
+    }
+  });
+
+  it("a main landmark demotes the missing skip link from failure to advice", () => {
+    // A landmark is a sufficient 2.4.1 technique (ARIA11) — the page
+    // conforms, so no Level A failure may be claimed. The advice stays,
+    // as design-clarity, because a sighted keyboard user cannot jump to
+    // a landmark.
+    const d = dom({
+      landmarks: [
+        { role: "nav", label: "Main", selector: "nav" },
+        { role: "main", label: null, selector: "main" },
+      ],
+      interactiveElements: [{ type: "link", selector: "a", accessibleName: "Home", href: "/", hasVisibleText: true }],
+    });
+    const f = evaluateComponents(d).find((x) => x.ruleId === "component-skip-link")!;
+    expect(f).toBeTruthy();
+    expect(f.category).toBe("design-clarity");
+    expect(f.wcagCriterion).toBeUndefined();
   });
 });
 

@@ -153,7 +153,15 @@ export function evaluateComponents(dom: DomSignals): AccessibilityFinding[] {
         worst.selector,
         `Form fields that collect personal details (${missingAutocomplete.length} field${missingAutocomplete.length === 1 ? "" : "s"}, e.g. the ${purpose.label} field) are not labelled with what they collect. Browsers and password managers then cannot offer to fill them in.`,
         `Add the matching autocomplete token to each field — e.g. autocomplete="${purpose.token}" on the ${purpose.label} field. This is a one-line change per field that makes forms far faster to complete.`,
-        "https://www.w3.org/WAI/WCAG21/Understanding/identify-input-purpose.html"
+        "https://www.w3.org/WAI/WCAG21/Understanding/identify-input-purpose.html",
+        // The comment on makeFinding names this exact defect, and this call
+        // shipped with it anyway: detected precisely, filed as design-clarity,
+        // and the 1.3.5 row read "no issues found" while the failure sat one
+        // section down. It is the criterion's textbook failure — an identity
+        // field with no autocomplete token — so it counts.
+        "accessibility",
+        "1.3.5",
+        "AA"
       )
     );
   }
@@ -247,22 +255,59 @@ export function evaluateComponents(dom: DomSignals): AccessibilityFinding[] {
   // 6. No skip link: a keyboard user has to Tab through the whole menu on
   //    every page before reaching the content (WCAG 2.4.1 Bypass Blocks).
   //    Heuristic: none of the first several links is a "skip to…" anchor.
+  //
+  //    The name is matched in the page's own language, whatever language the
+  //    report is in. /\bskip\b/i alone failed "Zum Inhalt springen", "Aller
+  //    au contenu" and "Naar de inhoud" — a Level A row decided by an
+  //    English-only regex, on a product that ships a German site. The list
+  //    covers the conventional skip-link phrasings of the EU languages this
+  //    product is likely to scan; a language it misses fails toward a false
+  //    finding, which the landmark check below then usually clears.
+  const SKIP_LINK_RE = new RegExp(
+    [
+      "\\bskip\\b", // en
+      "springen|überspringen|zum inhalt|zum hauptinhalt", // de
+      "aller au contenu|passer au contenu|contenu principal", // fr
+      "saltar|ir al contenido|contenido principal", // es
+      "salta il|vai al contenuto", // it
+      "naar de inhoud|overslaan|direct naar", // nl
+      "pular para|ir para o conteúdo", // pt
+      "przejdź do treści|pomiń", // pl
+      "hoppa till|hopp til|spring til|gå til indhold", // sv/no/da
+    ].join("|"),
+    "i"
+  );
   const earlyLinks = dom.interactiveElements.filter((el) => el.type === "link").slice(0, 6);
   const hasSkipLink = earlyLinks.some(
-    (el) => /\bskip\b/i.test(el.accessibleName) && (el.href?.startsWith("#") ?? false)
+    (el) => SKIP_LINK_RE.test(el.accessibleName) && (el.href?.startsWith("#") ?? false)
   );
+  // A skip link is one sufficient technique for 2.4.1, not the only one: a
+  // main landmark is another (ARIA11), and axe's own bypass rule accepts it.
+  // A page that conforms via its landmark must not be told it "Fails 2.4.1" —
+  // that is a false failure on a Level A row. The advice is still worth
+  // giving, so the finding survives as design-clarity: true for keyboard
+  // users without assistive technology, who cannot jump to a landmark.
+  const hasMainLandmark = dom.landmarks.some((l) => l.role === "main");
   if (navs.length > 0 && earlyLinks.length > 0 && !hasSkipLink) {
     findings.push(
-      makeFinding(
-        "component-skip-link",
-        navs[0].selector,
-        "There's no \"skip to main content\" link. Keyboard and screen-reader users have to tab through the entire navigation menu before they reach the content. That happens on every single page.",
-        'Add a skip link as the very first thing the Tab key reaches. Point it at #main-content and keep it visually hidden until the Tab key lands on it. It\'s a small addition that saves keyboard users dozens of key presses per page.',
-        "https://www.w3.org/WAI/WCAG21/Understanding/bypass-blocks.html",
-        "accessibility",
-        "2.4.1",
-        "A"
-      )
+      hasMainLandmark
+        ? makeFinding(
+            "component-skip-link",
+            navs[0].selector,
+            "There's no \"skip to main content\" link. The main landmark gives screen-reader users a way past the menu, so this meets the letter of the law. A sighted keyboard user can't jump to a landmark, and still tabs through the menu on every page.",
+            'Add a skip link as the very first thing the Tab key reaches. Point it at #main-content and keep it visually hidden until the Tab key lands on it. It\'s a small addition that saves keyboard users dozens of key presses per page.',
+            "https://www.w3.org/WAI/WCAG21/Understanding/bypass-blocks.html"
+          )
+        : makeFinding(
+            "component-skip-link",
+            navs[0].selector,
+            "There's no \"skip to main content\" link and no main landmark. Keyboard and screen-reader users have to tab through the entire navigation menu before they reach the content. That happens on every single page.",
+            'Add a skip link as the very first thing the Tab key reaches. Point it at #main-content and keep it visually hidden until the Tab key lands on it. It\'s a small addition that saves keyboard users dozens of key presses per page.',
+            "https://www.w3.org/WAI/WCAG21/Understanding/bypass-blocks.html",
+            "accessibility",
+            "2.4.1",
+            "A"
+          )
     );
   }
 

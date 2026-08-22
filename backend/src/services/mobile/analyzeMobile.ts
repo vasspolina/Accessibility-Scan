@@ -371,9 +371,18 @@ export function evaluateMobile(m: MobileSignals): AccessibilityFinding[] {
   const failed390 = m.documentScrollWidth > m.viewportWidth + 5;
   if (failed320 || failed390) {
     const at320 = failed320 ? m.reflow320! : undefined;
+    /* Each measurement names only its own culprits. The 320 collector applies
+       the criterion's 2D-content exception; the 390 collector does not. The
+       old fallback reached for the 390 list whenever the 320 list came back
+       empty — so elements the criterion explicitly exempts were emitted as
+       serious Level AA failures, labelled 320px, carrying overflow numbers
+       measured at 390. When the page fails at 320 and no culprit survived
+       the exception filter, the honest statement is one row on body: the
+       page scrolls sideways and we could not name the element. */
+    const measured = at320 ? at320.overflowingElements : m.overflowingElements;
     const culprits =
-      (at320?.overflowingElements.length ? at320.overflowingElements : m.overflowingElements).length > 0
-        ? (at320?.overflowingElements.length ? at320.overflowingElements : m.overflowingElements)
+      measured.length > 0
+        ? measured
         : [
             {
               selector: "body",

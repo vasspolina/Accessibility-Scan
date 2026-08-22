@@ -239,3 +239,45 @@ describe("the 390-only reflow case", () => {
     expect(f.category).toBe("design-clarity");
   });
 });
+
+describe("1.4.10: each measurement names only its own culprits", () => {
+  it("does not borrow the 390 list when the 320 exception filtered everything", () => {
+    // The fabrication bug this pins: page fails at 320, every 320 culprit
+    // was exempt 2D content, and the old fallback emitted the 390px list —
+    // collected WITHOUT the criterion's exception — as serious 320px
+    // failures carrying overflow numbers measured at 390.
+    const findings = evaluateMobile(
+      signals({
+        documentScrollWidth: 500,
+        overflowingElements: [
+          { selector: "table.data", snippet: "<table>", overflowPx: 110 },
+          { selector: "div.chart", snippet: "<div>", overflowPx: 80 },
+        ],
+        reflow320: { viewportWidth: 320, documentScrollWidth: 400, overflowingElements: [] },
+      })
+    );
+    const scroll = findings.filter((f) => f.ruleId === "mobile-horizontal-scroll");
+    expect(scroll).toHaveLength(1);
+    expect(scroll[0].selector).toBe("body");
+    expect(scroll[0].wcagCriterion).toBe("1.4.10");
+    // The number is the 320 measurement's own: 400 − 320, not anything from 390.
+    expect(scroll[0].description).toContain("80px");
+  });
+
+  it("still prefers the 320 culprits when the 320 collector found them", () => {
+    const findings = evaluateMobile(
+      signals({
+        documentScrollWidth: 500,
+        overflowingElements: [{ selector: "div.wide390", snippet: "", overflowPx: 110 }],
+        reflow320: {
+          viewportWidth: 320,
+          documentScrollWidth: 400,
+          overflowingElements: [{ selector: "img.hero", snippet: "<img>", overflowPx: 60 }],
+        },
+      })
+    );
+    const scroll = findings.filter((f) => f.ruleId === "mobile-horizontal-scroll");
+    expect(scroll).toHaveLength(1);
+    expect(scroll[0].selector).toBe("img.hero");
+  });
+});
