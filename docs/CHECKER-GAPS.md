@@ -403,3 +403,94 @@ Worth stating plainly, because these are expensive things competitors do badly a
 4. **Guided manual testing (3.6)** — the largest differentiated opportunity, and the thing that would finally let the VPAT draft be finished.
 5. **Scheduled scans + monitoring + regression alerts (1.1, 1.3)** — the subscription.
 6. Component/design-system mode (3.9) and the browser extension (3.3) as the two strategic bets.
+---
+
+# Re-audit, 23–24 August 2026
+
+Nine fix commits landed after the audit above (74d4dd0..7a30dd1). This
+re-audit asked two questions: did the fixes buy what they claimed, and what
+did they break. Method: four hostile reviewers over the fix commits, four
+adversarial refuters, and a fresh coverage judgement — with one honesty
+caveat: the Perceivable and Operable judges died at a usage limit and were
+re-judged by the author of the fixes, against the same file-and-symbol
+standard but without independence. Understandable and Robust carry
+independent agent judgements. 26 findings survived refutation; the three
+high-severity ones were then verified by hand against HEAD.
+
+## What moved
+
+- **1.3.5 Identify Input Purpose: absent → tested.** The one-line category
+  fix means `component-form-autocomplete` now flips the row
+  (`analyzeComponents.ts:191`).
+- **3.3.2 Labels or Instructions: absent-in-effect → partial.**
+  `form-field-placeholder-label` is the first reader `hasProgrammaticLabel`
+  ever had; label-less fields stay axe's by one-fault-one-card. The registry
+  still says "automated", which still overclaims.
+- **2.4.3 Focus Order: undecided-only → partial.** Positive tabindex and
+  measured DOM inversions card it; axe's `tabindex` rule is retagged. Kept
+  partial, not tested, because the positive-tabindex-alone claim is itself
+  contested (see findings).
+- **1.4.11 Non-text Contrast: overclaimed-partial → real partial.**
+  `control-faint-boundary` measures the criterion's subject and caught
+  Wikipedia's language button at 2.37:1 live, independently verified. Top
+  border only, 40-control cap.
+- **4.1.2: the dynamic half is measured for the first time** (activation
+  pass), narrowly scoped by the product's consent ethics. Static half
+  unchanged.
+- **4.1.1 out of the needs-review pile; 3.2.3/3.2.4 crawl-provable;
+  3.1.2 relabelled partial; 1.4.3 widened** to dark scheme and phone width,
+  with axe incompletes finally turning rows amber instead of green.
+- **Tested count on the 50-row registry: 4 → 5.** Most movement is
+  partial-getting-wider and dishonesty-getting-disclosed rather than class
+  jumps — which matches what the fixes claimed to be.
+
+## What the fixes broke — verified by hand
+
+1. **Name-quality promotion overclaims** (`analyzeScreenReader.ts:176,161`).
+   `name.length <= 2` and the filename heuristic were written for a preview
+   panel and now produce scored A/AA failures: pagination links "1" "2" "3",
+   an "OK" or "Ja" button, alt="iPhone15" — each a false failed row on a
+   conformant page.
+2. **The same vague link is carded twice** — per-link `link-text-vague`
+   plus the grouped `sr-vague-link-name`, both against 2.4.4, breaking the
+   one-fault-one-card rule the same commit enforces elsewhere. No dedup
+   connects them.
+3. **The activation pass proves causality with a page-global
+   `innerHTML.length` delta over 250ms** (`renderPage.ts:2870`). On an
+   ad-rotating page, an Enter-inert button plus unrelated DOM churn reads
+   as a serious 4.1.2 failure. The `aria-controls` id is in hand and never
+   consulted — the precise fix.
+
+## Where the honesty machinery still leaks
+
+- The **WCAG 2.2 readiness block** has the exact defect the 2.1 table just
+  fixed: no not-measured status, so a dead mobile pass prints 2.5.8
+  "no-issues-found" (`wcag22Readiness.ts:115,156`).
+- The **crawl table omits axe incompletes**, and the comment justifying it
+  is wrong — the per-page reports never leave the server
+  (`aggregateAudit.ts:207-225`, `routes/audit.ts`).
+- The crawl's `aiRan` is any-page, the opposite of the union rule beside it.
+- N/A-stripped AI findings **still lower the score**; the stripped card
+  also keeps the model's raw criterion string on allow-listed claims.
+- The professional summary still prints the literal word **"Pass"**
+  (`ProSummary.tsx:125`) against the module's own no-pass rule.
+- `notMeasured` is required in the report schema, so pre-fix reports fail
+  the email endpoint's validation.
+- The activation and dark/mobile-contrast passes have **no incompleteChecks
+  entries** — a crashed pass reverts silently to less coverage.
+
+Thirteen further low-severity findings (skip-link phrases still missed,
+the 1.15 contrast floor making detection non-monotonic, inline-handler
+blindness in the 2.1.1 evidence, a drifted label-contract test, an
+editorial edit that dropped the 19px-bold threshold from the English
+color-contrast fix while three translations keep it) are recorded in the
+session transcript and are each under an hour's work.
+
+## Verdict
+
+The fixes did what they claimed: the false-pass machinery is closed on the
+main table, the score is guarded, and five criteria have detection they
+lacked. The re-audit's real finding is that two of the nine commits shipped
+the same class of bug they were fixing — heuristics promoted to verdicts
+without tightening, and a causality proof that isn't one. The pattern to
+keep: every claim class needs its own skeptic before it ships, not after.
