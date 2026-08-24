@@ -299,7 +299,7 @@
         standard: "WCAG 2.2",
         expectedFrom: "October 2026",
         alreadyFailing: 1,
-        needsReview: 5,
+        needsReview: 4,
         total: 6,
         parsingNoLongerCounts: true,
         criteria: [
@@ -314,7 +314,9 @@
             findingCount: 2,
           },
           { id: "2.5.7", name: "Dragging Movements", level: "AA", coverage: "manual", plain: "Can every drag be done another way?", failing: "", whyManual: "Only a person can try the drag.", status: "needs-review", findingCount: 0 },
-          { id: "2.5.8", name: "Target Size (Minimum)", level: "AA", coverage: "manual", plain: "Are tap targets big enough?", failing: "Some things you tap are under 24 pixels and packed close together.", status: "already-failing", findingCount: 15 },
+          // The check-fell-over state, renderable without a broken backend:
+          // an "automated" 2.2 criterion whose evidence pass died this scan.
+          { id: "2.5.8", name: "Target Size (Minimum)", level: "AA", coverage: "automated", plain: "Are tap targets big enough?", failing: "Some things you tap are under 24 pixels and packed close together.", status: "not-measured", findingCount: 0 },
           { id: "3.2.6", name: "Consistent Help", level: "A", coverage: "manual", plain: "Is help in the same place on every page?", failing: "", status: "needs-review", findingCount: 0 },
           { id: "3.3.7", name: "Redundant Entry", level: "A", coverage: "manual", plain: "Does a form ask for the same thing twice?", failing: "", status: "needs-review", findingCount: 0 },
           { id: "3.3.8", name: "Accessible Authentication", level: "AA", coverage: "manual", plain: "Can you sign in without solving a puzzle?", failing: "", status: "needs-review", findingCount: 0 },

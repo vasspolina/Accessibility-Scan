@@ -6293,6 +6293,15 @@
 .a11y-widget-biz .a11y-w22-panel .a11y-next-status[data-call="automated"] {
   color: var(--green-70, #0e6027);
 }
+/* The block's own not-measured chip — same amber and dashed non-colour cue
+   as the conformance table's. AFTER the [data-call] pair above on purpose:
+   same specificity, so source order decides, and two earlier placements
+   lost exactly that race (measured at the fixture both times). */
+.a11y-widget-biz .a11y-w22-panel .a11y-next-status[data-call="not-measured"] {
+  background: var(--severity-serious-bg);
+  color: var(--mark-serious-ink);
+  border: 1px dashed var(--mark-serious-ink);
+}
 
 /* The consultation link never had a rule, so it rendered 21.6px tall —
    under the 24px target floor this product holds other sites to. */

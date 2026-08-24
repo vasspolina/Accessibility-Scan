@@ -118,7 +118,7 @@ export interface Wcag22Criterion {
   plain: string;
   failing: string;
   whyManual?: string;
-  status: "already-failing" | "no-issues-found" | "needs-review";
+  status: "already-failing" | "no-issues-found" | "needs-review" | "not-measured";
   findingCount: number;
 }
 

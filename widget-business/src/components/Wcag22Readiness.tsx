@@ -17,6 +17,7 @@ const STATUS_LABEL: Record<Readiness["criteria"][number]["status"], string> = {
   "already-failing": "Would fail today",
   "no-issues-found": "Nothing found",
   "needs-review": "Needs a person",
+  "not-measured": "Not measured",
 };
 
 export function Wcag22Readiness({ readiness }: { readiness: Readiness }) {
@@ -168,7 +169,15 @@ export function Wcag22Readiness({ readiness }: { readiness: Readiness }) {
                         its call reads as unclassified rather than covered.
                         Already-failing and already-clean keep their status
                         chip; the rest are called by coverage. */}
-                    {c.status !== "needs-review" ? (
+                    {c.status === "not-measured" ? (
+                      /* No tick and no cross: the check that decides this row
+                         died on this scan. A "✓" here — which the old
+                         status!=="needs-review" branch would have drawn — is
+                         the exact overclaim this block refuses elsewhere. */
+                      <span className="a11y-next-status" data-call="not-measured">
+                        {t(STATUS_LABEL[c.status])}
+                      </span>
+                    ) : c.status !== "needs-review" ? (
                       <span className="a11y-next-status">
                         <span aria-hidden="true">{fails ? "!" : "✓"}</span>{" "}
                         {t(STATUS_LABEL[c.status])}
