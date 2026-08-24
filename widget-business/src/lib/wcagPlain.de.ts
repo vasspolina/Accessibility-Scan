@@ -575,7 +575,7 @@ export const FIXES_DE: Record<string, string | string[]> = {
   ],
   "component-form-autocomplete": "Kennzeichnen Sie jedes Feld mit dem, was es erfasst, damit Browser und Passwortmanager es ausfüllen können.",
   "component-input-type": [
-    "Sagen Sie der Seite, welche Felder eine E-Mail-Adresse, eine Telefonnummer oder ein Datum enthalten.",
+    "Sagen Sie der Seite, welche Felder eine E-Mail-Adresse enthalten und welche eine Telefonnummer.",
     "Handys zeigen dann die passende Tastatur statt einer einfachen.",
   ],
   "component-required-cue": [
@@ -792,8 +792,9 @@ export const FIXES_DE: Record<string, string | string[]> = {
   ],
   listitem: "Setzen Sie jeden Listeneintrag in eine Liste, statt ihn allein stehen zu lassen.",
   "aria-required-attr": [
-    "Ergänzen Sie die Attribute, die der Typ dieses Elements verlangt.",
-    "Der Link „Mehr zu diesem Problem erfahren“ nennt die genaue Liste.",
+    "Geben Sie dem Element den Zustand, den es für sich beansprucht.",
+    "Sagen Sie im Code, ob es an- oder abgewählt ist, geöffnet oder geschlossen.",
+    "Ein Element, das einen Wert auf einer Skala meldet, muss auch den Wert nennen.",
   ],
   "aria-hidden-focus": [
     "Was vor Screenreadern versteckt ist, sollte auch mit der Tastatur nicht erreichbar sein.",

@@ -125,10 +125,14 @@ export function evaluateControlContrast(
     const ownAlpha = alphaOf(s.backgroundColor);
     if (own && ownAlpha > 0) surfaces.push(composite(own, ownAlpha, surface));
     const best = Math.max(...surfaces.map((sf) => contrastRatio(drawn, sf)));
-    // 3:1 is the criterion's own number. 1.15 floors out borders that match
-    // their surface on purpose (a flat design's same-colour border is the
-    // no-boundary case wearing a border property).
-    return best < 3 && best > 1.15;
+    // 3:1 is the criterion's own number. The lower bound is a same-colour
+    // tolerance, nothing more: at or below ~1.05 the border IS its surface
+    // (a flat design's border property with the surface's colour), which is
+    // the no-boundary case this module deliberately does not judge. The
+    // first version put the bar at 1.15 and the re-audit caught what that
+    // does: a 1.10:1 border — the faintest, worst instance of the exact
+    // fault — escaped while 1.2:1 was carded. Detection is monotonic now.
+    return best < 3 && best > 1.05;
   });
   if (faint.length === 0) return [];
   const worst = faint[0];

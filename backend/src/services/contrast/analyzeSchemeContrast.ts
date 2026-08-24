@@ -9,6 +9,10 @@ import { axeTargetToSelector } from "../render/renderPage.js";
 // only for elements the desktop-light run did not already card, because the
 // same bad colour pair failing everywhere is still one fault.
 
+// Known limit: the dedupe keys on axe-generated selectors captured minutes
+// apart, and a page that re-renders between runs can defeat it — the same
+// element then counts as "fresh" in the dark or phone run. The cost is an
+// inflated count inside one grouped card, never a second card; accepted.
 function selectorsOf(violations: AxeRunResult["violations"], ruleId: string): Set<string> {
   const out = new Set<string>();
   for (const v of violations) {

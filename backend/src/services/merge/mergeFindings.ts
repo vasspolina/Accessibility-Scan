@@ -335,6 +335,12 @@ export function mergeFindings(
  * the finding that names the cause. Pure and deterministic. Exported for
  * testing.
  */
+// Known limit, accepted on purpose: the drop is page-wide. When the banner
+// fires it has aria-hidden the ENTIRE page, so every aria-hidden-focus row
+// is its doing — except the rare page whose banner itself contains an
+// aria-hidden focusable, which this drop also swallows. Scoping by selector
+// containment is not decidable from CSS-path strings at merge time; the
+// re-audit weighed the trade and kept the breadth.
 export function dropBannerShadowedAriaHiddenFocus(
   findings: AccessibilityFinding[]
 ): AccessibilityFinding[] {

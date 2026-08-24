@@ -280,6 +280,10 @@ describe("qa-layers.html: the layers written for this project", () => {
     expect(texts).toContain("Enter or Space there does nothing");
     expect(texts).toContain("pressing Tab never reaches it");
 
+    // The inline-handler variant is correct and must not be among them —
+    // the re-audit found the evidence check blind to on* bindings.
+    expect(flagged.join(" ")).not.toContain("inline-key-button");
+
     // A real button, a div with role+tabindex, a wrapper around a link, a span
     // inside a link, and a full-page backdrop. Each is reachable or
     // dismissable by keyboard, so reporting any would be a false alarm. Each

@@ -651,7 +651,7 @@ export const FIXES_FR: Record<string, string | string[]> = {
   "component-form-autocomplete":
     "Indiquez pour chaque champ ce qu'il recueille, pour que navigateurs et gestionnaires de mots de passe le remplissent.",
   "component-input-type": [
-    "Dites à la page quels champs contiennent un courriel, un numéro de téléphone ou une date.",
+    "Dites à la page quels champs contiennent un courriel et lesquels un numéro de téléphone.",
     "Les téléphones affichent alors le bon clavier au lieu d'un clavier ordinaire.",
   ],
   "component-required-cue": [
@@ -886,8 +886,9 @@ export const FIXES_FR: Record<string, string | string[]> = {
   ],
   listitem: "Mettez chaque entrée de liste dans une liste, plutôt que de la laisser toute seule.",
   "aria-required-attr": [
-    "Ajoutez les attributs que le type de ce composant exige.",
-    "Le lien En savoir plus en donne la liste exacte.",
+    "Donnez au composant l'état qu'il prétend avoir.",
+    "Indiquez dans le code s'il est coché ou non, ouvert ou fermé.",
+    "Un composant qui annonce une valeur sur une échelle doit aussi indiquer cette valeur.",
   ],
   "aria-hidden-focus": [
     "Ce qui est masqué aux lecteurs d'écran ne doit pas être atteignable au clavier.",

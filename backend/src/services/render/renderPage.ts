@@ -2323,8 +2323,16 @@ async function collectMouseOnlyControls(page: Page): Promise<MouseOnlyControl[] 
         // Escape handler for a dialog, not activation for this control, and
         // counting them would put the probe back to sleep on every site
         // that has a modal.
-        if (!keyTargets) return false;
-        for (let n = node; n; n = n.parentElement) if (keyTargets.has(n)) return true;
+        //
+        // Three binding styles, because the re-audit found the first version
+        // seeing only addEventListener: an inline onkeydown= attribute and a
+        // node.onkeydown = fn assignment are keyboard handling too, and a
+        // correctly built control using either was carded as mouse-only.
+        for (let n = node; n; n = n.parentElement) {
+          if (keyTargets && keyTargets.has(n)) return true;
+          if (n.hasAttribute && (n.hasAttribute("onkeydown") || n.hasAttribute("onkeyup") || n.hasAttribute("onkeypress"))) return true;
+          if (typeof n.onkeydown === "function" || typeof n.onkeyup === "function" || typeof n.onkeypress === "function") return true;
+        }
         return false;
       };
       const keyboardUsable = (node) => {

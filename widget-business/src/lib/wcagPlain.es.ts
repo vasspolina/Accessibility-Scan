@@ -649,7 +649,7 @@ export const FIXES_ES: Record<string, string | string[]> = {
   "component-form-autocomplete":
     "Indique en cada campo qué recoge, para que los navegadores y los gestores de contraseñas puedan rellenarlo.",
   "component-input-type": [
-    "Diga a la página qué campos llevan un correo, un teléfono o una fecha.",
+    "Diga a la página qué campos llevan un correo y cuáles un teléfono.",
     "Los móviles muestran entonces el teclado adecuado en vez de uno normal.",
   ],
   "component-required-cue": [
@@ -870,8 +870,9 @@ export const FIXES_ES: Record<string, string | string[]> = {
   ],
   listitem: "Ponga cada elemento de lista dentro de una lista, en vez de dejarlo suelto.",
   "aria-required-attr": [
-    "Añada los atributos que exige el tipo de este componente.",
-    "El enlace Saber más enumera el conjunto exacto.",
+    "Dé al control el estado que dice tener.",
+    "Indique en el código si está marcado o sin marcar, abierto o cerrado.",
+    "Un control que informa de un valor en una escala también debe indicar el valor.",
   ],
   "aria-hidden-focus": [
     "Lo que está oculto a los lectores de pantalla no debería alcanzarse con el teclado.",

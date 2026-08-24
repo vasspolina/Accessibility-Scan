@@ -160,6 +160,10 @@ export function buildWcag22Readiness(
   for (const finding of findings) {
     if (finding.category !== "accessibility") continue;
     if (finding.ruleId) countByRule.set(finding.ruleId, (countByRule.get(finding.ruleId) ?? 0) + 1);
+    // Permanently false since the AI criterion allow-list: no emitter of a
+    // 4.1.1 finding exists anywhere, and the allow-list strips any AI claim
+    // to "N/A". Kept because the schema carries the field and an older
+    // report replayed from history may still contain one.
     if (normalizeCriterionId(finding.wcagCriterion) === "4.1.1") parsingFailing = true;
   }
 

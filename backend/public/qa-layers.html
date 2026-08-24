@@ -159,6 +159,12 @@
        filter that treated any [tabindex] as keyboard-usable. -->
   <div role="button" tabindex="0" class="half-button">Focusable, but Enter does nothing</div>
   <div role="button" tabindex="-1" class="unreachable-button">Click-only, Tab skips it</div>
+
+  <!-- Correct, and the re-audit's blind spot: keyboard handling bound as an
+       inline attribute rather than addEventListener. The listener patch
+       cannot see it, so the probe reads the attribute itself. Must stay
+       silent. -->
+  <div role="button" tabindex="0" class="inline-key-button" onkeydown="void(0)">Proper button, inline handler</div>
   <button type="button" class="real-button">Real button</button>
   <div class="click-wrapper"><a href="#main">Wrapper listening for its own link</a></div>
   <a href="#main" class="card-link"><span class="card-inner">Handler on a span inside a link</span></a>
@@ -187,7 +193,7 @@
   // Attached with addEventListener, not an onclick attribute, because that is
   // how every framework does it and the check has to find these.
   for (const sel of [".fake-button", ".fake-close", ".real-custom-button",
-                     ".half-button", ".unreachable-button",
+                     ".half-button", ".unreachable-button", ".inline-key-button",
                      ".real-button", ".click-wrapper", ".card-inner", ".backdrop"]) {
     document.querySelector(sel).addEventListener("click", function () {});
   }
