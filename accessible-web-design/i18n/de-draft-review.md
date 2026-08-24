@@ -8,6 +8,13 @@ form is consistent, no exclamation points, no fear-selling, no
 official names (BFSG, European Accessibility Act, WCAG 2.1 Level AA,
 Equality Act 2010) are intact everywhere.
 
+**Status, 24 August 2026:** the six verified corrections — findings 1, 2,
+3, 4, 4b and the `Prüfung` half of 5 — are now APPLIED in the draft, which
+passes every mechanical rule in `voice-de.mjs` (three problems to zero).
+The quotes in those findings show the draft as it stood when reviewed, not
+as it stands now. What remains for you: findings 6 and 7 below, marked one
+reader's opinion; and everything under "needs a native ear".
+
 Eight points follow. Four survived an adversarial pass that tried to knock
 them down, one was found afterwards by `voice-de.mjs`, and three were never
 contested — those three are marked, and are one reader's opinion rather than
