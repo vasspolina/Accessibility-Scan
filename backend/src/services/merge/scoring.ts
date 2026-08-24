@@ -93,7 +93,13 @@ export function scoreFindings(findings: AccessibilityFinding[]): number {
       findings.filter((f) => {
         if (f.wcagLevel === "AAA") return false;
         const id = normalizeCriterionId(f.wcagCriterion);
-        return !(id && WCAG22_ONLY.has(id));
+        if (id && WCAG22_ONLY.has(id)) return false;
+        // An AI observation whose criterion claim the allow-list stripped is
+        // a card worth reading and not a WCAG 2.1 duty the score may bill.
+        // The re-audit found these still lowering a number that names the
+        // standard they no longer cite.
+        if (f.source === "ai-review" && f.wcagCriterion === "N/A") return false;
+        return true;
       })
     )
   );

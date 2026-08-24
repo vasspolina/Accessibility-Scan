@@ -45,8 +45,17 @@ export function collectControlBoundariesInPage(): ControlBoundarySample[] {
     if (cs.display === "none" || cs.visibility === "hidden") continue;
     const r = el.getBoundingClientRect();
     if (r.width < 8 || r.height < 8) continue;
-    const bw = parseFloat(cs.borderTopWidth) || 0;
-    if (bw < 1 || cs.borderTopStyle === "none" || cs.borderTopStyle === "hidden") continue;
+    // The widest drawn side, because a bottom-only border — the material
+    // text-field look — is the commonest control boundary of all, and the
+    // first version read only the top and skipped every one of them.
+    const sides = [
+      { w: parseFloat(cs.borderTopWidth) || 0, style: cs.borderTopStyle, color: cs.borderTopColor },
+      { w: parseFloat(cs.borderBottomWidth) || 0, style: cs.borderBottomStyle, color: cs.borderBottomColor },
+      { w: parseFloat(cs.borderLeftWidth) || 0, style: cs.borderLeftStyle, color: cs.borderLeftColor },
+      { w: parseFloat(cs.borderRightWidth) || 0, style: cs.borderRightStyle, color: cs.borderRightColor },
+    ].filter((b) => b.w >= 1 && b.style !== "none" && b.style !== "hidden");
+    if (sides.length === 0) continue;
+    const side = sides.reduce((a, b) => (b.w > a.w ? b : a));
     // The surface the border is seen against: first opaque ancestor bg.
     let surface = "rgb(255, 255, 255)";
     let node: Element | null = el.parentElement;
@@ -79,8 +88,8 @@ export function collectControlBoundariesInPage(): ControlBoundarySample[] {
       selector: parts.join(" > "),
       snippet: (el.outerHTML || "").slice(0, 200),
       tag: el.tagName.toLowerCase(),
-      borderColor: cs.borderTopColor,
-      borderWidth: bw,
+      borderColor: side.color,
+      borderWidth: side.w,
       backgroundColor: cs.backgroundColor,
       surfaceColor: surface,
       // Disabled controls are exempt from 1.4.11 by the criterion's own text.

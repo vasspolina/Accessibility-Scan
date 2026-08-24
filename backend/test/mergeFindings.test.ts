@@ -53,8 +53,11 @@ describe("the AI review may not flip rows it has no evidence for", () => {
     wcagCriterion,
   });
 
-  it("keeps a claim its prompt and the registry stand behind", () => {
-    expect(aiToFindings([ai("1.4.1 Use of Color (A)")])[0].wcagCriterion).toBe("1.4.1 Use of Color (A)");
+  it("keeps a claim its prompt and the registry stand behind, as the canonical id", () => {
+    // The re-audit's finding: the raw model string used to pass through, so
+    // the reader saw whatever spelling the model chose. Allow-listed claims
+    // now collapse to the standard's own number.
+    expect(aiToFindings([ai("1.4.1 Use of Color (A)")])[0].wcagCriterion).toBe("1.4.1");
     expect(aiToFindings([ai("3.3.1")])[0].wcagCriterion).toBe("3.3.1");
   });
 

@@ -112,7 +112,11 @@ const RULES_EVIDENCING: Record<string, string[]> = {
   "2.4.11": ["keyboard-focus-obscured"],
 };
 
-export type ReadinessStatus = "already-failing" | "no-issues-found" | "needs-review";
+// "not-measured" joined after the re-audit found this block carrying the
+// exact defect the 2.1 table had just fixed: a dead mobile pass printed
+// 2.5.8 "no-issues-found" — a measurement that never happened, on the
+// criterion the readiness section exists to warn about.
+export type ReadinessStatus = "already-failing" | "no-issues-found" | "needs-review" | "not-measured";
 
 export interface Wcag22CriterionResult extends Wcag22Criterion {
   status: ReadinessStatus;
@@ -140,7 +144,17 @@ export interface Wcag22Readiness {
  * can evidence, and says plainly that the rest needs a person — the same rule
  * the main checklist follows.
  */
-export function buildWcag22Readiness(findings: AccessibilityFinding[]): Wcag22Readiness {
+/* Which probe failure leaves which 2.2 criterion unmeasured. One entry,
+   because only 2.5.8 has coverage "automated" — everything else already
+   degrades to needs-review by coverage. */
+const CHECK_TO_22: Record<string, string[]> = {
+  "phone layout": ["2.5.8"],
+};
+
+export function buildWcag22Readiness(
+  findings: AccessibilityFinding[],
+  opts?: { incompleteChecks?: string[] }
+): Wcag22Readiness {
   const countByRule = new Map<string, number>();
   let parsingFailing = false;
   for (const finding of findings) {
@@ -149,11 +163,20 @@ export function buildWcag22Readiness(findings: AccessibilityFinding[]): Wcag22Re
     if (normalizeCriterionId(finding.wcagCriterion) === "4.1.1") parsingFailing = true;
   }
 
+  const unmeasured = new Set(
+    (opts?.incompleteChecks ?? []).flatMap((check) => CHECK_TO_22[check] ?? [])
+  );
   const criteria = WCAG_22_NEW_AA.map((c) => {
     const rules = RULES_EVIDENCING[c.id] ?? [];
     const findingCount = rules.reduce((n, rule) => n + (countByRule.get(rule) ?? 0), 0);
     const status: ReadinessStatus =
-      findingCount > 0 ? "already-failing" : c.coverage === "manual" ? "needs-review" : "no-issues-found";
+      findingCount > 0
+        ? "already-failing"
+        : unmeasured.has(c.id)
+          ? "not-measured"
+          : c.coverage === "manual"
+            ? "needs-review"
+            : "no-issues-found";
     return { ...c, status, findingCount };
   });
 

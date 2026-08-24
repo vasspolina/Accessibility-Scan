@@ -161,6 +161,16 @@ export function collectScreenReaderScriptInPage(): ScreenReaderScript {
     return /^[\w-]+$/.test(s) && /[_\d]/.test(s) && !/\s/.test(s);
   }
 
+  // The half of looksLikeFilename that may score. An image extension proves
+  // a filename; so does the underscore-plus-digit shape ("IMG_4821",
+  // "hero_banner-2"). A bare word with a digit does not — "iPhone15" and
+  // "DR1" are product names, and the re-audit found them carded as missing
+  // descriptions. Those stay preview commentary.
+  function scoreableFilename(s: string): boolean {
+    if (/\.(jpe?g|png|gif|webp|svg|avif|bmp)\b/i.test(s)) return true;
+    return /^[\w-]+$/.test(s) && /_/.test(s) && /\d/.test(s) && !/\s/.test(s);
+  }
+
   // One place deciding whether a control's name is useful, so links and
   // buttons are judged consistently — a name that's unhelpful on a link is
   // just as unhelpful on a button. All of these pass an automated
@@ -181,6 +191,27 @@ export function collectScreenReaderScriptInPage(): ScreenReaderScript {
       return `Out of context this says nothing about ${purpose}.`;
     }
     return undefined;
+  }
+
+  // Which of those observations may become a SCORED finding. The preview may
+  // editorialise; a WCAG failure claim may not — and the re-audit caught the
+  // difference the hard way: promoting every branch to a finding made
+  // pagination links "1" "2" "3", an "OK" button and a Danish "Ja" into
+  // failed Level A rows on conformant pages.
+  //
+  //   symbol-only  — provable: pure punctuation names nothing. Scored.
+  //   raw URL      — provable for links, and link-text-vague does not cover
+  //                  it. Scored for links.
+  //   phrase list  — real, but for links it is link-text-vague's territory
+  //                  (a curated ten-language list, one card per link), and
+  //                  carding it here too was the re-audit's double-card bug.
+  //                  Scored for buttons only, where nothing else owns it.
+  //   length <= 2  — NOT provable: "OK", "Ja", a pagination "2" are complete
+  //                  names. Preview commentary only.
+  function scoreableName(name: string, what: "link" | "button"): boolean {
+    if (isSymbolOnly(name)) return true;
+    if (what === "link") return /^(https?:\/\/|www\.)/i.test(name);
+    return /^(click here|read more|more|here|learn more|link|continue|details|view|go)$/i.test(name);
   }
 
   const lines: ScreenReaderLine[] = [];
@@ -274,7 +305,7 @@ export function collectScreenReaderScriptInPage(): ScreenReaderScript {
         issue: !name
           ? "A listener has no idea where this goes."
           : unhelpfulNameReason(name, "link"),
-        issueKind: !name ? "missing" : unhelpfulNameReason(name, "link") ? "unhelpful" : undefined,
+        issueKind: !name ? "missing" : scoreableName(name, "link") ? "unhelpful" : undefined,
       });
       continue;
     }
@@ -294,7 +325,7 @@ export function collectScreenReaderScriptInPage(): ScreenReaderScript {
         issue: !name
           ? "A listener has no idea what this does."
           : unhelpfulNameReason(name, "button"),
-        issueKind: !name ? "missing" : unhelpfulNameReason(name, "button") ? "unhelpful" : undefined,
+        issueKind: !name ? "missing" : scoreableName(name, "button") ? "unhelpful" : undefined,
       });
       continue;
     }
@@ -315,7 +346,7 @@ export function collectScreenReaderScriptInPage(): ScreenReaderScript {
           : looksLikeFilename(name)
             ? "A filename read aloud describes nothing."
             : undefined,
-        issueKind: !name ? "missing" : looksLikeFilename(name) ? "unhelpful" : undefined,
+        issueKind: !name ? "missing" : scoreableFilename(name) ? "unhelpful" : undefined,
       });
       continue;
     }

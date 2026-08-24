@@ -268,7 +268,7 @@ export function evaluateKeyboardNav(nav: KeyboardNavResult): AccessibilityFindin
   // Positive tabindex is the cause and the inversions are its symptom, so
   // when both are present only the cause is carded — one fault, one card.
   const anomalies = nav.orderAnomalies;
-  if (anomalies && anomalies.positiveTabindex.length > 0) {
+  if (anomalies && anomalies.positiveTabindex.length > 0 && anomalies.domInversions.length > 0) {
     const first = anomalies.positiveTabindex[0];
     findings.push(
       makeFinding(
@@ -282,6 +282,25 @@ export function evaluateKeyboardNav(nav: KeyboardNavResult): AccessibilityFindin
         "Remove the positive tabindex values and let the DOM order carry the tab order. If the visual order is the problem, reorder the markup — a tabindex number is a patch that breaks somewhere else."
       )
     );
+  } else if (anomalies && anomalies.positiveTabindex.length > 0) {
+    // Positive tabindex with NO measured jump: the walk saw a meaningful
+    // order despite the attribute. F44 makes the attribute a failure when
+    // it disorders the page, and the re-audit judged the attribute-alone
+    // claim an overclaim — so without corroboration this is advice, not a
+    // Level A failure, and it stays out of the conformance table.
+    const first = anomalies.positiveTabindex[0];
+    findings.push({
+      id: randomUUID(),
+      source: "automated",
+      severity: "minor",
+      category: "design-clarity",
+      selector: first.selector,
+      ruleId: "keyboard-positive-tabindex-advisory",
+      description: `${anomalies.positiveTabindex.length === 1 ? "A control uses" : `${anomalies.positiveTabindex.length} controls use`} a positive tabindex (${first.tabindex}). The walk measured no broken order this time, but every new focusable element added to the page will land after the numbered ones, in an order nobody chose.`,
+      suggestedFix:
+        "Remove the positive tabindex values and let the page order carry the tab order — the number is a patch that breaks the moment the page changes.",
+      helpUrl: "https://www.w3.org/WAI/WCAG21/Understanding/focus-order.html",
+    });
   } else if (anomalies && anomalies.domInversions.length > 0) {
     const first = anomalies.domInversions[0];
     findings.push(

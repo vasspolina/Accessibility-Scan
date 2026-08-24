@@ -238,8 +238,10 @@ const AI_CLAIMABLE_CRITERIA = new Set([
 export function aiToFindings(aiFindings: AiFinding[]): AccessibilityFinding[] {
   return aiFindings.map((f) => {
     const claimed = normalizeCriterionId(f.wcagCriterion);
-    const criterion =
-      claimed && AI_CLAIMABLE_CRITERIA.has(claimed) ? (f.wcagCriterion as string) : "N/A";
+    // The canonical id, never the model's raw string — "1.4.1 Use of Color
+    // (A)" and every fuzzier variant collapse to "1.4.1", so downstream
+    // reads one spelling and the reader sees the standard's own number.
+    const criterion = claimed && AI_CLAIMABLE_CRITERIA.has(claimed) ? claimed : "N/A";
     return {
     id: randomUUID(),
     source: "ai-review" as const,

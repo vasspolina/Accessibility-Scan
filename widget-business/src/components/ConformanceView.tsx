@@ -38,7 +38,7 @@ function RESULT_ROWS(c: ConformanceSummary) {
       meaning: `${c.failedByLevel.A} at level A, ${c.failedByLevel.AA} at AA`,
       mark: "Fix first", n: c.failed },
     { key: "clean", severity: "pass", label: "We checked, found nothing",
-      meaning: "Still worth a human look", mark: "Pass", n: c.noIssuesFound },
+      meaning: "Still worth a human look", mark: "Nothing found", n: c.noIssuesFound },
     { key: "human", severity: "minor", label: "We couldn't check",
       meaning: "Only a person can judge these. Every one is named below.",
       mark: "Needs a person", n: c.needsReview },

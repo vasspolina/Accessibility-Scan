@@ -200,7 +200,7 @@ export const wcag22CriterionSchema = z.object({
   plain: z.string(),
   failing: z.string(),
   whyManual: z.string().optional(),
-  status: z.enum(["already-failing", "no-issues-found", "needs-review"]),
+  status: z.enum(["already-failing", "no-issues-found", "needs-review", "not-measured"]),
   findingCount: z.number(),
 });
 
@@ -219,7 +219,9 @@ export const conformanceSummarySchema = z.object({
   failed: z.number(),
   noIssuesFound: z.number(),
   needsReview: z.number(),
-  notMeasured: z.number(),
+  // Optional so reports produced before the field existed still parse at
+  // the email endpoint — the widget's own wire type always said optional.
+  notMeasured: z.number().optional(),
   total: z.number(),
   failedByLevel: z.object({ A: z.number(), AA: z.number() }),
   criteria: z.array(criterionResultSchema),
@@ -297,6 +299,9 @@ export const accessibilityReportSchema = z.object({
     // Checks that did not finish on this run. Present so the reader can tell a
     // clean result from an incomplete one — the score only counts what ran.
     incompleteChecks: z.array(z.string()).optional(),
+    // Criteria carrying axe results axe could not decide, for the crawl's
+    // site-level union. Optional: absent means none, or an older report.
+    axeIncomplete: z.array(z.string()).optional(),
     // Set when the thing checked was a document rather than a web page.
     documentKind: z.literal("pdf").optional(),
     documentPages: z.number().optional(),

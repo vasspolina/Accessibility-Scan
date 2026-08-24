@@ -232,6 +232,10 @@ describe("not-measured: a check that did not run must not read as a pass", () =>
       "text resizing",
       "display preferences",
       "reading order",
+      "control boundaries",
+      "state changes",
+      "dark-scheme contrast",
+      "phone-width contrast",
     ];
     for (const label of labels) {
       const c = buildConformance([], { incompleteChecks: [label] });

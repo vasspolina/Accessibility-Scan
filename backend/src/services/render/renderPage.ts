@@ -71,6 +71,7 @@ export interface DomSignals {
       title: string | null;
       placeholder: string | null;
       visible: boolean;
+      hasAdjacentText: boolean;
     }>;
     errorMessages: Array<{ selector: string; text: string; isAssociatedWithField: boolean }>;
   }>;
@@ -495,6 +496,20 @@ function extractDomSignalsInPage(): DomSignals {
         required: field.hasAttribute("required") || field.getAttribute("aria-required") === "true",
         title: field.getAttribute("title"),
         placeholder: field.getAttribute("placeholder"),
+        // Visible text right before the field — a designer's label that was
+        // never wired up with for/id. 3.3.2 asks for labels or instructions
+        // to EXIST; a visible one satisfies it even while 1.3.1 and 4.1.2
+        // rightly complain about the missing programmatic tie. Without this
+        // fact the placeholder rule failed 3.3.2 on forms whose labels were
+        // there for everyone to see.
+        hasAdjacentText: (() => {
+          const prev = field.previousElementSibling;
+          const prevText = prev ? (prev.textContent ?? "").trim() : "";
+          if (prevText.length >= 2 && prevText.length <= 60) return true;
+          const parentPrev = field.parentElement?.previousElementSibling;
+          const ppText = parentPrev ? (parentPrev.textContent ?? "").trim() : "";
+          return ppText.length >= 2 && ppText.length <= 60;
+        })(),
         visible:
           field.getClientRects().length > 0 &&
           getComputedStyle(field).visibility !== "hidden" &&
@@ -2867,7 +2882,27 @@ async function probeDisclosureActivation(page: Page): Promise<DisclosureActivati
           el.tagName.toLowerCase() === "summary"
             ? String((el.closest("details") as HTMLDetailsElement | null)?.open ?? false)
             : (el.getAttribute("aria-expanded") ?? "");
-        return { state, domSize: document.body.innerHTML.length };
+        // Causality is judged on the CONTROLLED panel, not on the page. The
+        // first version compared body.innerHTML.length before and after, so
+        // an ad rotating anywhere in the 250ms window made an Enter-inert
+        // button read as "the panel opened and the state lied" — a serious
+        // 4.1.2 claim manufactured by an unrelated ticker. aria-controls
+        // names the panel; only its own visibility and size count.
+        let panelSignature: string | null = null;
+        const controls = (el.getAttribute("aria-controls") ?? "").trim();
+        if (controls) {
+          panelSignature = controls
+            .split(/\s+/)
+            .map((id) => {
+              const panel = document.getElementById(id);
+              if (!panel) return id + ":absent";
+              const r = panel.getBoundingClientRect();
+              const cs = getComputedStyle(panel);
+              return `${id}:${panel.hidden}:${cs.display}:${cs.visibility}:${Math.round(r.width)}x${Math.round(r.height)}`;
+            })
+            .join("|");
+        }
+        return { state, panelSignature };
       }, t.selector);
 
     try {
@@ -2901,7 +2936,13 @@ async function probeDisclosureActivation(page: Page): Promise<DisclosureActivati
         tag: t.tag,
         before: before.state,
         after: after.state,
-        domChanged: after.domSize !== before.domSize,
+        // Null signatures (no aria-controls resolved — only <summary> gets
+        // here without one) make no causal claim, and the evaluator treats
+        // that as such rather than guessing from page-level churn.
+        domChanged:
+          before.panelSignature !== null &&
+          after.panelSignature !== null &&
+          after.panelSignature !== before.panelSignature,
         restored,
       });
     } catch {
@@ -3580,6 +3621,7 @@ export async function renderAndScan(
       // colours that do not move under emulation mean no dark styles, and
       // re-running axe would only duplicate the light findings.
       let darkContrast: AxeRunResult["violations"] | undefined;
+      let darkContrastFailed = false;
       await timed("darkContrast", async () => {
         const look = () =>
           page.evaluate(() => {
@@ -3598,6 +3640,10 @@ export async function renderAndScan(
               )
             )) as AxeRunResult;
             darkContrast = run.violations;
+          } else {
+            // Measured: the page has no dark palette. An empty list, so a
+            // died pass (undefined) stays distinguishable and disclosable.
+            darkContrast = [];
           }
         } finally {
           // null resets the emulation to the context default; every probe
@@ -3605,7 +3651,9 @@ export async function renderAndScan(
           await page.emulateMedia({ colorScheme: null });
           await page.waitForTimeout(150);
         }
-      }).catch(() => {});
+      }).catch(() => {
+        darkContrastFailed = true;
+      });
 
       // The activation pass: 4.1.2's dynamic half, measured for the first
       // time. Everything before this observes; nothing ever pressed Enter on
@@ -3658,6 +3706,7 @@ export async function renderAndScan(
       // a mobile-only element is pictured as it actually renders on a phone.
       let mobileFailed = false;
       let mobileContrast: AxeRunResult["violations"] | undefined;
+      let mobileContrastFailed = false;
       let mobileElementScreenshots: Record<string, string> = {};
       let mobileSelectors: string[] = [];
       try {
@@ -3728,7 +3777,9 @@ export async function renderAndScan(
             )
           )) as AxeRunResult;
           mobileContrast = run.violations;
-        }).catch(() => {});
+        }).catch(() => {
+          mobileContrastFailed = true;
+        });
         // Breakout (overflow) elements first — they're large regions that crop
         // into a useful picture on their own.
         //
@@ -3856,6 +3907,11 @@ export async function renderAndScan(
           ...(readingOrder.failed ? ["reading order"] : []),
           ...(readability.failed ? ["reading level"] : []),
           ...(controlBoundaries === undefined ? ["control boundaries"] : []),
+          // The re-audit's rule, applied to the re-audit's own passes: a
+          // check that dies says so, or its silence reads as coverage.
+          ...(activation === undefined ? ["state changes"] : []),
+          ...(darkContrastFailed ? ["dark-scheme contrast"] : []),
+          ...(mobileContrastFailed ? ["phone-width contrast"] : []),
         ],
       };
     } finally {

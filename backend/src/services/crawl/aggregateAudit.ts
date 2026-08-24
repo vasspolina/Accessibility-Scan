@@ -205,15 +205,17 @@ export function aggregateAudit(
       // only coverage is an AI prompt item must not read "no-issues-found"
       // on a scan where it never ran.
       {
-        aiRan: scanned.some((o) => o.report!.meta.aiReviewStatus === "completed"),
+        // every(), not some(): "no issues found" over five pages is only
+        // true if the evidence was gathered on all five — the same union
+        // rule the incompleteChecks below already follow. An AI review that
+        // completed on one page of five leaves four pages unexamined.
+        aiRan: scanned.length > 0 && scanned.every((o) => o.report!.meta.aiReviewStatus === "completed"),
         lang: normalizeReportLang(language),
         // Union across pages: a check that fell over on any scanned page
         // leaves its criteria not fully measured for the site, and "no
         // issues found" over five pages is only true if the check ran on
         // all five. One flaky page turns the row amber rather than green,
         // which is the direction this report is allowed to be wrong in.
-        // (axe incompletes are page-level rows and stay in each page's own
-        // report; the site table takes only the probe unions.)
         incompleteChecks: [
           ...new Set(scanned.flatMap((o) => o.report!.meta.incompleteChecks ?? [])),
         ],
@@ -222,9 +224,17 @@ export function aggregateAudit(
         // say "needs a person". Only meaningful with two or more pages — a
         // one-page crawl compared nothing.
         measuredDespiteManual: scanned.length >= 2 ? ["3.2.3", "3.2.4"] : [],
+        // Union of every page's axe incompletes. The comment that used to
+        // stand here said they "stay in each page's own report" — which was
+        // false for the audit reader, who only ever receives this aggregate.
+        axeIncompleteCriteria: [
+          ...new Set(scanned.flatMap((o) => o.report!.meta.axeIncomplete ?? [])),
+        ],
       }
     ),
     consistency,
-    wcag22: buildWcag22Readiness(allFindings),
+    wcag22: buildWcag22Readiness(allFindings, {
+      incompleteChecks: [...new Set(scanned.flatMap((o) => o.report!.meta.incompleteChecks ?? []))],
+    }),
   };
 }

@@ -745,12 +745,26 @@ describe("qa-sr-names.html: names that exist and help nobody", () => {
   });
 
 
-  it("cards the filename alts, the vague links and the punctuation button", () => {
+  it("cards the filename alts, the raw-URL link and the punctuation button", () => {
     const by = new Map(findings.filter((f) => f.ruleId?.startsWith("sr-")).map((f) => [f.ruleId, f]));
     expect(by.get("sr-filename-alt")?.wcagCriterion).toBe("1.1.1");
     expect(by.get("sr-filename-alt")?.description).toContain("2 images");
     expect(by.get("sr-vague-link-name")?.wcagCriterion).toBe("2.4.4");
     expect(by.get("sr-vague-button-name")?.wcagCriterion).toBe("2.4.6");
+  });
+
+  it("one vague link, one card — the phrase cases belong to link-text-vague", () => {
+    // The re-audit's double-carding finding, pinned. "Click here" and
+    // "read more" card per-link under the component pass's curated list;
+    // the screen-reader pass scores only what nothing else owns (raw URLs,
+    // punctuation names), so no link appears in both.
+    const phraseCards = findings.filter((f) => f.ruleId === "link-text-vague");
+    expect(phraseCards.length).toBeGreaterThanOrEqual(2);
+    const srCard = findings.find((f) => f.ruleId === "sr-vague-link-name")!;
+    expect(srCard.description).toContain("example.com");
+    for (const c of phraseCards) {
+      expect(srCard.description.includes(c.elementSnippet ?? "∅")).toBe(false);
+    }
   });
 
   it("stays silent about the correct image, link and button", () => {
@@ -820,6 +834,17 @@ describe("qa-activation.html: pressing the controls the page claims are disclosu
   it("stays silent about the working disclosure and the native details", () => {
     const stale = findings.filter((x) => x.ruleId === "activation-stale-state");
     expect(stale).toHaveLength(1);
+  });
+
+  it("does not blame an inert button for a ticker's churn", () => {
+    // The re-audit's finding: page-global DOM deltas manufactured causality.
+    // The fixture's #inert button does nothing on Enter while a 100ms ticker
+    // mutates the page; judged on its own aria-controls panel it is silent.
+    const stale = findings.filter((x) => x.ruleId === "activation-stale-state");
+    expect(stale.some((f) => f.selector.includes("inert"))).toBe(false);
+    const r = lastRender!.activation?.results.find((x) => x.selector.includes("inert"));
+    expect(r, "the inert button was activated and measured").toBeTruthy();
+    expect(r!.domChanged).toBe(false);
   });
 
   it("left every panel the way it found it", () => {

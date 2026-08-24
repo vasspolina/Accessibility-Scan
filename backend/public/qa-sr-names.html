@@ -13,9 +13,17 @@
   <img src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" alt="IMG_4821.jpg">
   <img src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" alt="hero_banner-2.png">
 
-  <!-- EXPECTED sr-vague-link-name: named, and the name says nothing. -->
+  <!-- EXPECTED link-text-vague (per link): named, and the name says
+       nothing. These belong to the component pass's curated list — the
+       screen-reader pass deliberately does not card them too, which was the
+       re-audit's double-carding finding. -->
   <p>Our pricing has changed. <a href="/pricing">Click here</a> to see the details,
      or <a href="/docs">read more</a>.</p>
+
+  <!-- EXPECTED sr-vague-link-name: the case only the screen-reader pass
+       owns — a raw address as the link's name, read out character by
+       character. -->
+  <p>Full policy at <a href="https://example.com/policy">https://example.com/policy</a>.</p>
 
   <!-- EXPECTED sr-vague-button-name: a name of pure punctuation. -->
   <button type="button">×</button>

@@ -71,6 +71,12 @@ const CHECK_TO_CRITERIA: Record<string, string[]> = {
   "display preferences": ["1.4.2", "2.2.2", "2.4.7"],
   "reading order": ["1.3.2", "2.4.3"],
   "control boundaries": ["1.4.11"],
+  // The activation pass owns 4.1.2's dynamic half; axe keeps the static
+  // half either way, so amber here means "not FULLY measured" — the same
+  // reading "keyboard navigation" already gives 2.1.1.
+  "state changes": ["4.1.2"],
+  "dark-scheme contrast": ["1.4.3"],
+  "phone-width contrast": ["1.4.3"],
 };
 
 export interface ConformanceSummary {

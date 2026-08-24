@@ -79,8 +79,14 @@ function table(
             // up as "automated testing found no failures" — in a document
             // whose whole purpose is to be signed and handed to a buyer.
             "Not assessed: the automated check for this criterion did not finish on this scan. Re-run the scan or assess manually."
-          : c.coverage === "manual"
-            ? "Not assessed by the automated scan. This criterion cannot be evaluated by software and needs a person."
+          : c.status === "needs-review"
+            ? // Status decides, coverage then picks the words: "software can
+              // never judge this" and "this scan did not gather the evidence"
+              // are different sentences, and the old coverage-only branch
+              // wrote the second group up as "found no failures".
+              c.coverage === "manual"
+              ? "Not assessed by the automated scan. This criterion cannot be evaluated by software and needs a person."
+              : "Not assessed on this scan. This criterion needs evidence the automated run did not gather."
             : "Automated testing found no failures. That is not evidence of conformance and a person must confirm it.";
       return `| ${c.id} ${c.name} | ${conformanceLevel} | ${remarks} |`;
     });

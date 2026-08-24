@@ -543,7 +543,7 @@ export async function scanUrlToReport(
     incompleteChecks: renderResult.incompleteChecks,
     axeIncompleteCriteria: axeIncompleteCriteria(renderResult.axe),
   });
-  const wcag22 = buildWcag22Readiness(findings);
+  const wcag22 = buildWcag22Readiness(findings, { incompleteChecks: renderResult.incompleteChecks });
 
   return {
     url: safeUrl.toString(),
@@ -591,6 +591,14 @@ export async function scanUrlToReport(
       incompleteChecks: renderResult.incompleteChecks.length
         ? renderResult.incompleteChecks
         : undefined,
+      // The per-page axe incompletes, so a crawl can union them into ITS
+      // conformance table. The re-audit found the site-level table printing
+      // "Nothing found" on criteria axe could not decide, while the per-page
+      // disclosure never left the server.
+      axeIncomplete: (() => {
+        const ids = axeIncompleteCriteria(renderResult.axe);
+        return ids.length ? ids : undefined;
+      })(),
       aiReviewErrorKind: aiReview.errorKind,
       model: aiReview.model,
     },

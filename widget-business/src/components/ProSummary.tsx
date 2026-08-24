@@ -122,7 +122,9 @@ export function ProSummary({
               {clean.map((c) => (
                 <li key={c.id} className="a11y-pro-row">
                   <span>{c.name}</span>
-                  <span className="a11y-pro-row-pass">pass</span>
+                  {/* Never "pass": a scan evidences failure, not conformance —
+                      the module's own rule, which this literal broke. */}
+                  <span className="a11y-pro-row-pass">{t("Nothing found")}</span>
                 </li>
               ))}
             </ul>

@@ -20,6 +20,16 @@ button{padding:.5rem 1rem;border:1px solid #444;background:#fff}</style>
 
   <!-- Correct native disclosure. The browser manages open; must stay silent. -->
   <details><summary>A native details element</summary><p>Native content.</p></details>
+
+  <!-- The re-audit's trap, planted: a button whose handler ignores the
+       keyboard entirely, on a page whose ticker mutates the DOM every 100ms.
+       The first causality test — a page-global DOM-size delta — carded this
+       as a serious 4.1.2 failure: the ticker changed the page, the attribute
+       never moved, and the two were read as cause and effect. Judged on its
+       own aria-controls panel, which never changes, it must stay silent. -->
+  <button id="inert" aria-expanded="false" aria-controls="p3">Enter-inert button beside a ticker</button>
+  <div id="p3" hidden>Panel three: never opened by anything.</div>
+  <p id="ticker" aria-hidden="true">tick</p>
 </main>
 <script>
   document.getElementById("broken").addEventListener("click", function () {
@@ -31,6 +41,14 @@ button{padding:.5rem 1rem;border:1px solid #444;background:#fff}</style>
     p.hidden = !p.hidden;
     this.setAttribute("aria-expanded", p.hidden ? "false" : "true");
   });
+  // The inert button listens for mousedown only — Enter fires click, which
+  // it ignores. The ticker keeps the page's DOM size moving the whole time.
+  document.getElementById("inert").addEventListener("mousedown", function () {});
+  var n = 0;
+  setInterval(function () {
+    n += 1;
+    document.getElementById("ticker").textContent = "tick " + n + " " + "x".repeat(n % 40);
+  }, 100);
 </script>
 </body>
 </html>

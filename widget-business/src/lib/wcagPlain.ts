@@ -1073,7 +1073,8 @@ export const PLAIN_RULE_FIXES: Record<string, string | string[]> = {
   "color-contrast":
     [
     "Darken the text, or lighten what sits behind it.",
-    "Ordinary text needs at least 4.5 to 1; large text, from about 24px, needs 3 to 1.",
+    "Ordinary text needs at least 4.5 to 1.",
+    "Large text, about 24px or 19px bold, needs 3 to 1.",
   ],
   "image-alt": [
     "Describe what each meaningful image shows — the content, not the fact that it is a picture.",

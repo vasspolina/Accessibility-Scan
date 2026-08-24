@@ -152,7 +152,15 @@ export function evaluateComponents(dom: DomSignals): AccessibilityFinding[] {
   //    was collected by the render from the day it landed, and this is its
   //    first reader.
   const placeholderOnly = allFields.filter(
-    (f) => f.visible && !f.hasProgrammaticLabel && !f.title && (f.placeholder ?? "").trim()
+    (f) =>
+      f.visible &&
+      !f.hasProgrammaticLabel &&
+      !f.title &&
+      // Visible adjacent text is a label 3.3.2 accepts, however unwired.
+      // The re-audit caught this rule failing Level A on forms whose labels
+      // were on screen the whole time.
+      !f.hasAdjacentText &&
+      (f.placeholder ?? "").trim()
   );
   if (placeholderOnly.length > 0) {
     const worst = placeholderOnly[0];
@@ -293,7 +301,7 @@ export function evaluateComponents(dom: DomSignals): AccessibilityFinding[] {
   //    finding, which the landmark check below then usually clears.
   const SKIP_LINK_RE = new RegExp(
     [
-      "\\bskip\\b", // en
+      "\\bskip\\b|\\bjump to\\b", // en
       "springen|überspringen|zum inhalt|zum hauptinhalt", // de
       "aller au contenu|passer au contenu|contenu principal", // fr
       "saltar|ir al contenido|contenido principal", // es
@@ -360,6 +368,9 @@ export function evaluateComponents(dom: DomSignals): AccessibilityFinding[] {
       selector: link.selector,
       ruleId: "link-text-vague",
       wcagCriterion: "2.4.4",
+      // The baseline audit found this level missing, which hid the finding
+      // from the score's AAA filter. 2.4.4 Link Purpose (In Context) is A.
+      wcagLevel: "A",
       description: `This link reads only “${text}”, so it gives no clue where it goes.`,
       suggestedFix:
         "Write link text that makes sense read on its own: “Read the 2026 fee changes” rather than “Read more”. Where the design needs the short version, keep the visible text and add the full wording with aria-label.",
