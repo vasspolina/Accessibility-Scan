@@ -2824,10 +2824,15 @@ export interface DisclosureActivation {
   results: Array<{
     selector: string;
     tag: string;
-    /** aria-expanded (or <details> open) before, after, and after restore. */
+    /** Which ARIA state the control claims: expanded, pressed, checked, or
+     *  a <details> open flag. Named so a finding can say which one lied. */
+    stateName: string;
+    /** That state's value before and after activation. */
     before: string;
     after: string;
-    /** Whether anything in the document changed size when activated. */
+    /** Whether the thing this control governs visibly changed — the panel
+     *  named by aria-controls, or, for a toggle, the control's own rendered
+     *  state. Never a page-global measurement: see the read function. */
     domChanged: boolean;
     restored: boolean;
   }>;
@@ -2836,23 +2841,61 @@ export interface DisclosureActivation {
 }
 
 /**
- * Presses Enter on up to five provably-inert disclosure controls and reads
- * whether their announced state follows. See the call site for why the scope
- * is exactly <summary> and button[aria-expanded][aria-controls] outside
- * forms, and nothing else.
+ * Presses Enter (then Space) on up to eight provably-inert controls that
+ * announce a state, and reads whether the announcement follows.
+ *
+ * Two families, because they prove causality differently:
+ *
+ *   DISCLOSURES — <summary>, and buttons carrying aria-expanded. When
+ *   aria-controls names a panel, that panel's own visibility and size are
+ *   the evidence. Without it there is nothing this pass can honestly point
+ *   at, so the control is still activated and restored but makes no claim.
+ *
+ *   TOGGLES — role="switch", role="checkbox", aria-pressed, aria-checked.
+ *   A toggle IS its own panel: the thing that should change is the control,
+ *   so its own rendered signature is the evidence and no aria-controls is
+ *   needed. This is the family the first version could not reach at all.
+ *
+ * Space follows Enter because for a switch or checkbox Space is the
+ * conventional key and Enter is not required — concluding "dead control"
+ * from Enter alone would fail correctly built toggles.
+ *
+ * Native inputs are excluded: the browser owns their state, and a checkbox
+ * that does not toggle is a browser bug, not a page's. Forms are excluded
+ * because Enter submits them. Disabled controls are excluded because they
+ * are supposed to do nothing.
  */
-async function probeDisclosureActivation(page: Page): Promise<DisclosureActivation> {
+/* Its own budget, measured rather than guessed. Widening the pass from five
+   disclosures to eight controls with a Space fallback took dr.dk's activation
+   phase from 3ms to 3,991ms — real money against a 40s render. Six seconds is
+   above the worst case seen and still small enough that a slow page loses the
+   tail of this pass rather than the whole scan; the hard deadline wins
+   whenever the render is already late. */
+const ACTIVATION_BUDGET_MS = 6_000;
+
+async function probeDisclosureActivation(
+  page: Page,
+  hardDeadline: number
+): Promise<DisclosureActivation> {
   const urlBefore = page.url();
   const results: DisclosureActivation["results"] = [];
   let navigated = false;
+  const deadline = Math.min(Date.now() + ACTIVATION_BUDGET_MS, hardDeadline);
 
   const targets = await page.evaluate(() => {
     const found: Array<{ selector: string; tag: string }> = [];
+    const seen = new Set<Element>();
     const push = (el: Element) => {
-      if (found.length >= 5) return;
+      if (found.length >= 8 || seen.has(el)) return;
       const cs = getComputedStyle(el);
       if (cs.display === "none" || cs.visibility === "hidden") return;
       if (el.closest("form")) return;
+      // A disabled control doing nothing is correct behaviour, not a lie.
+      if ((el as HTMLButtonElement).disabled === true) return;
+      if (el.getAttribute("aria-disabled") === "true") return;
+      // The browser owns a native input's state.
+      if (el.tagName === "INPUT" || el.tagName === "SELECT" || el.tagName === "TEXTAREA") return;
+      seen.add(el);
       const parts: string[] = [];
       let node: Element | null = el;
       while (node && node.nodeType === 1 && parts.length < 6) {
@@ -2872,24 +2915,52 @@ async function probeDisclosureActivation(page: Page): Promise<DisclosureActivati
       }
       found.push({ selector: parts.join(" > "), tag: el.tagName.toLowerCase() });
     };
-    for (const el of Array.from(document.querySelectorAll("summary"))) push(el);
+    // Toggles first: they are the family that proves itself, so they get the
+    // cap's places before the disclosures that may turn out to have nothing
+    // to point at.
     for (const el of Array.from(
-      document.querySelectorAll("button[aria-expanded][aria-controls]")
+      document.querySelectorAll('[role="switch"], [role="checkbox"], [aria-pressed], [aria-checked]')
     )) {
       push(el);
     }
+    for (const el of Array.from(document.querySelectorAll("summary"))) push(el);
+    for (const el of Array.from(document.querySelectorAll("button[aria-expanded]"))) push(el);
     return found;
   });
 
   for (const t of targets) {
+    // Out of time rather than out of controls. Every result already gathered
+    // stands; the untouched ones simply were not measured, which is the same
+    // shape as any other probe running short.
+    if (Date.now() > deadline) break;
     const read = () =>
       page.evaluate((sel: string) => {
         const el = document.querySelector(sel);
         if (!el) return null;
-        const state =
-          el.tagName.toLowerCase() === "summary"
-            ? String((el.closest("details") as HTMLDetailsElement | null)?.open ?? false)
-            : (el.getAttribute("aria-expanded") ?? "");
+        // Which state this control claims. A <details> keeps its truth in a
+        // property rather than an attribute; everything else names one.
+        let stateName = "aria-expanded";
+        let state: string;
+        if (el.tagName.toLowerCase() === "summary") {
+          stateName = "open";
+          state = String((el.closest("details") as HTMLDetailsElement | null)?.open ?? false);
+        } else if (el.hasAttribute("aria-expanded")) {
+          state = el.getAttribute("aria-expanded") ?? "";
+        } else if (el.hasAttribute("aria-pressed")) {
+          stateName = "aria-pressed";
+          state = el.getAttribute("aria-pressed") ?? "";
+        } else {
+          stateName = "aria-checked";
+          state = el.getAttribute("aria-checked") ?? "";
+        }
+
+        // A toggle is its own panel: the thing that should visibly change is
+        // the control. Its rendered signature is therefore the evidence, and
+        // needs no aria-controls — which is what put every switch, checkbox
+        // and pressed-button beyond the first version's reach.
+        const r = el.getBoundingClientRect();
+        const ecs = getComputedStyle(el);
+        const selfSignature = `${el.innerHTML.length}:${Math.round(r.width)}x${Math.round(r.height)}:${ecs.backgroundColor}:${ecs.borderTopColor}:${ecs.color}`;
         // Causality is judged on the CONTROLLED panel, not on the page. The
         // first version compared body.innerHTML.length before and after, so
         // an ad rotating anywhere in the 250ms window made an Enter-inert
@@ -2910,7 +2981,7 @@ async function probeDisclosureActivation(page: Page): Promise<DisclosureActivati
             })
             .join("|");
         }
-        return { state, panelSignature };
+        return { stateName, state, panelSignature, selfSignature };
       }, t.selector);
 
     try {
@@ -2919,20 +2990,51 @@ async function probeDisclosureActivation(page: Page): Promise<DisclosureActivati
       await page.evaluate((sel: string) => {
         (document.querySelector(sel) as HTMLElement | null)?.focus();
       }, t.selector);
-      await page.keyboard.press("Enter");
-      await page.waitForTimeout(250);
-      if (page.url() !== urlBefore) {
-        // A "disclosure" that navigates. Undo it and stop pressing things.
+      const navigatedAway = async () => {
+        if (page.url() === urlBefore) return false;
+        // A "control" that navigates. Undo it and stop pressing things.
         navigated = true;
         await page.goBack({ waitUntil: "domcontentloaded" }).catch(() => {});
         await page.waitForTimeout(500);
-        break;
-      }
-      const after = await read();
+        return true;
+      };
+
+      await page.keyboard.press("Enter");
+      await page.waitForTimeout(250);
+      if (await navigatedAway()) break;
+      let after = await read();
       if (!after) continue;
+
+      // Space, when Enter moved nothing. For a switch or checkbox Space is
+      // the conventional activation key and Enter is not required, so a
+      // correctly built toggle would be called dead on the Enter press
+      // alone. Skipped whenever Enter already worked, which is the common
+      // case and keeps the pass's cost where it was.
+      let usedKey = "Enter";
+      // "Enter did nothing" means nothing moved — the state, the control,
+      // AND the panel it names. Testing only the first two pressed Space on
+      // a control whose panel had just opened, which clicked it shut again
+      // and erased the very evidence the pass came for: the fixture's
+      // aria-expanded liar went undetected until this condition matched the
+      // sentence above it.
+      const nothingMoved =
+        after.state === before.state &&
+        after.selfSignature === before.selfSignature &&
+        after.panelSignature === before.panelSignature;
+      if (nothingMoved) {
+        await page.keyboard.press(" ");
+        await page.waitForTimeout(250);
+        if (await navigatedAway()) break;
+        const afterSpace = await read();
+        if (afterSpace) {
+          after = afterSpace;
+          usedKey = " ";
+        }
+      }
+
       let restored = false;
       if (after.state !== before.state) {
-        await page.keyboard.press("Enter");
+        await page.keyboard.press(usedKey);
         await page.waitForTimeout(200);
         const back = await read();
         restored = back?.state === before.state;
@@ -2942,15 +3044,18 @@ async function probeDisclosureActivation(page: Page): Promise<DisclosureActivati
       results.push({
         selector: t.selector,
         tag: t.tag,
+        stateName: before.stateName,
         before: before.state,
         after: after.state,
-        // Null signatures (no aria-controls resolved — only <summary> gets
-        // here without one) make no causal claim, and the evaluator treats
-        // that as such rather than guessing from page-level churn.
+        // Two evidence paths, both scoped to what this control governs: the
+        // panel it names, or — for a toggle, which IS its own panel — its
+        // own rendered signature. A disclosure with no resolvable panel
+        // makes no claim at all rather than guessing from page churn.
         domChanged:
-          before.panelSignature !== null &&
-          after.panelSignature !== null &&
-          after.panelSignature !== before.panelSignature,
+          (before.panelSignature !== null &&
+            after.panelSignature !== null &&
+            after.panelSignature !== before.panelSignature) ||
+          after.selfSignature !== before.selfSignature,
         restored,
       });
     } catch {
@@ -3678,7 +3783,7 @@ export async function renderAndScan(
       // after all — the page must be the same page for every probe after
       // this one.
       const activation = await timed("activation", () =>
-        probeDisclosureActivation(page).catch(() => undefined)
+        probeDisclosureActivation(page, renderDeadline).catch(() => undefined)
       );
 
       // Visual-versus-source order. Geometry only, so it changes nothing and

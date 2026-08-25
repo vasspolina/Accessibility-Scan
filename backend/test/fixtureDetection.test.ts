@@ -829,15 +829,40 @@ describe("qa-activation.html: pressing the controls the page claims are disclosu
 
 
   it("cards the button whose panel opens while aria-expanded stays false", () => {
-    const f = findings.find((x) => x.ruleId === "activation-stale-state")!;
+    const f = findings.find(
+      (x) => x.ruleId === "activation-stale-state" && x.description.includes("aria-expanded")
+    )!;
     expect(f).toBeTruthy();
     expect(f.wcagCriterion).toBe("4.1.2");
     expect(f.selector).toContain("broken");
   });
 
-  it("stays silent about the working disclosure and the native details", () => {
+  it("cards the lying switch and the lying toggle as their own states", () => {
+    // The toggle family, which the pass could not reach before it learned
+    // that a switch IS its own panel. One card per state family, each
+    // naming the attribute a developer must go and update.
     const stale = findings.filter((x) => x.ruleId === "activation-stale-state");
-    expect(stale).toHaveLength(1);
+    const text = stale.map((f) => f.description).join(" ");
+    expect(text).toContain("aria-checked");
+    expect(text).toContain("aria-pressed");
+    for (const f of stale) expect(f.wcagCriterion).toBe("4.1.2");
+  });
+
+  it("stays silent about every correctly built control", () => {
+    // Three cards: one per lying state family (expanded, checked, pressed).
+    // The Space-answering switch, the Enter-answering toggle, the working
+    // disclosure, the native details and the disabled switch are all correct.
+    const stale = findings.filter((x) => x.ruleId === "activation-stale-state");
+    expect(stale).toHaveLength(3);
+    const sels = stale.map((f) => f.selector).join(" ");
+    for (const good of ["good-switch", "good-toggle", "off-switch"]) {
+      expect(sels, `${good} was carded`).not.toContain(good);
+    }
+    // And the Space-only switch really was exercised, not skipped.
+    const r = lastRender!.activation?.results.find((x) => x.selector.includes("good-switch"));
+    expect(r, "the Space-answering switch was never activated").toBeTruthy();
+    expect(r!.before).not.toBe(r!.after);
+    expect(r!.restored).toBe(true);
   });
 
   it("does not blame an inert button for a ticker's churn", () => {

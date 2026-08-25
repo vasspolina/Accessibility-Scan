@@ -3,7 +3,10 @@
 <head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Disclosure activation</title>
 <style>body{font-family:sans-serif;margin:2rem;font-size:18px} [hidden]{display:none}
-button{padding:.5rem 1rem;border:1px solid #444;background:#fff}</style>
+button{padding:.5rem 1rem;border:1px solid #444;background:#fff}
+/* The visible half of a toggle: what changes for a sighted user, and the
+   evidence the pass reads when there is no aria-controls to point at. */
+.sw[data-on="1"]{background:#123;color:#fff;border-color:#123}</style>
 </head>
 <body>
 <main>
@@ -30,6 +33,27 @@ button{padding:.5rem 1rem;border:1px solid #444;background:#fff}</style>
   <button id="inert" aria-expanded="false" aria-controls="p3">Enter-inert button beside a ticker</button>
   <div id="p3" hidden>Panel three: never opened by anything.</div>
   <p id="ticker" aria-hidden="true">tick</p>
+
+  <!-- The toggle family, which the first activation pass could not reach at
+       all: a switch and a pressed-button ARE their own panels, so no
+       aria-controls is needed to prove causality. -->
+
+  <!-- EXPECTED activation-stale-state (aria-checked): the knob moves, the
+       colour changes, and the announced state never does. -->
+  <button id="lying-switch" role="switch" aria-checked="false" class="sw">Night mode</button>
+
+  <!-- EXPECTED activation-stale-state (aria-pressed): same lie, different
+       attribute, so it must be its own card with its own wording. -->
+  <button id="lying-toggle" aria-pressed="false" class="sw">Pin this</button>
+
+  <!-- Correct, and both must stay silent. The switch answers Space (the
+       conventional key — Enter alone would call it dead), and the toggle
+       answers Enter. -->
+  <button id="good-switch" role="switch" aria-checked="false" class="sw">Sound</button>
+  <button id="good-toggle" aria-pressed="false" class="sw">Bookmark</button>
+
+  <!-- Correct: a disabled toggle that does nothing is behaving. -->
+  <button id="off-switch" role="switch" aria-checked="false" class="sw" disabled>Unavailable</button>
 </main>
 <script>
   document.getElementById("broken").addEventListener("click", function () {
@@ -44,6 +68,28 @@ button{padding:.5rem 1rem;border:1px solid #444;background:#fff}</style>
   // The inert button listens for mousedown only — Enter fires click, which
   // it ignores. The ticker keeps the page's DOM size moving the whole time.
   document.getElementById("inert").addEventListener("mousedown", function () {});
+
+  // The two liars: the visible state moves, the announced state never does.
+  for (const id of ["lying-switch", "lying-toggle"]) {
+    document.getElementById(id).addEventListener("click", function () {
+      this.dataset.on = this.dataset.on === "1" ? "" : "1";
+    });
+  }
+  // The switch answers Space only, which is the conventional key for it —
+  // the pass has to try Space before calling a toggle dead.
+  document.getElementById("good-switch").addEventListener("keydown", function (e) {
+    if (e.key !== " ") return;
+    e.preventDefault();
+    const on = this.getAttribute("aria-checked") === "true";
+    this.setAttribute("aria-checked", on ? "false" : "true");
+    this.dataset.on = on ? "" : "1";
+  });
+  // The toggle answers click, which Enter produces.
+  document.getElementById("good-toggle").addEventListener("click", function () {
+    const on = this.getAttribute("aria-pressed") === "true";
+    this.setAttribute("aria-pressed", on ? "false" : "true");
+    this.dataset.on = on ? "" : "1";
+  });
   var n = 0;
   setInterval(function () {
     n += 1;
