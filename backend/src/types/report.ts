@@ -228,7 +228,30 @@ export const conformanceSummarySchema = z.object({
 });
 export type ConformanceSummaryReport = z.infer<typeof conformanceSummarySchema>;
 
+/**
+ * A person's recorded decision on a criterion the scan could not settle.
+ *
+ * Carried on the report so the conformance report the widget builds can be
+ * finished. Attached only for a caller who identified themselves — verdicts
+ * belong to an account, and an anonymous scan of somebody else's site must
+ * never surface what they decided about it.
+ */
+export const reportVerdictSchema = z.object({
+  criterion: z.string(),
+  status: z.enum(["supports", "partially-supports", "does-not-support", "not-applicable", "unresolved"]),
+  note: z.string().nullable(),
+  decidedBy: z.string(),
+  decidedAt: z.string(),
+});
+export type ReportVerdict = z.infer<typeof reportVerdictSchema>;
+
 export const accessibilityReportSchema = z.object({
+  // See reportVerdictSchema. Absent for anonymous scans and for a site
+  // nobody has answered a question about yet.
+  verdicts: z.array(reportVerdictSchema).optional(),
+  // Present only when the scan was saved: the caller sent an API key and
+  // storage is configured. Absent for anonymous scans, which is the default.
+  savedAs: z.string().optional(),
   url: z.string(),
   scannedAt: z.string(),
   score: z.number(),

@@ -35,7 +35,11 @@ const finding = (o: Partial<AccessibilityFinding>): AccessibilityFinding => ({
   ...o,
 });
 
-const draft = (criteria: CriterionResult[], findings: AccessibilityFinding[] = []) =>
+const draft = (
+  criteria: CriterionResult[],
+  findings: AccessibilityFinding[] = [],
+  extra: Partial<Parameters<typeof buildAcrDraft>[0]> = {}
+) =>
   buildAcrDraft({
     productName: "Acme Shop",
     productVersion: "2026.1",
@@ -44,6 +48,7 @@ const draft = (criteria: CriterionResult[], findings: AccessibilityFinding[] = [
     date: "1 July 2026",
     conformance: conformance(criteria),
     findings,
+    ...extra,
   });
 
 describe("the ACR draft", () => {
@@ -153,5 +158,50 @@ describe("the ACR draft", () => {
     const tableA = text.slice(text.indexOf("Table 1"), text.indexOf("Table 2"));
     expect(tableA).toContain("1.1.1");
     expect(tableA).not.toContain("1.4.3");
+  });
+});
+
+describe("recorded verdicts complete the document a scan never could", () => {
+  it("fills the Conformance Level from a human verdict, and says who decided", () => {
+    // The audit's central point about guided manual testing: buildAcrDraft
+    // leaves this column blank for every non-failing row because a scan can
+    // never justify "Supports" — so the ACR could never be finished inside
+    // the product, however much human work was done.
+    const text = draft([criterion({ id: "1.2.2", coverage: "manual", status: "needs-review" })], [], {
+      verdicts: [
+        {
+          criterion: "1.2.2",
+          status: "not-applicable",
+          note: "The site has no video content.",
+          decidedBy: "Polina V",
+          decidedAt: "2026-08-24T10:00:00.000Z",
+        },
+      ],
+    });
+    expect(text).toContain("Not Applicable");
+    expect(text).toContain("The site has no video content.");
+    expect(text).toContain("Assessed by Polina V, 2026-08-24");
+  });
+
+  it("a measured failure outranks a verdict claiming otherwise", () => {
+    const text = draft([criterion({ id: "1.1.1", status: "failed" })], [], {
+      verdicts: [
+        { criterion: "1.1.1", status: "supports", note: null, decidedBy: "Optimist", decidedAt: "2026-08-24T10:00:00.000Z" },
+      ],
+    });
+    // The row the scan proved failing stays failing: a recorded opinion does
+    // not un-break what the scanner is looking at.
+    expect(text).toContain("Does Not Support");
+    expect(text).not.toContain("Assessed by Optimist");
+  });
+
+  it("leaves the column blank for an unresolved verdict rather than inventing a term", () => {
+    const text = draft([criterion({ id: "1.2.2", coverage: "manual", status: "needs-review" })], [], {
+      verdicts: [
+        { criterion: "1.2.2", status: "unresolved", note: "Waiting on the video team.", decidedBy: "Polina V", decidedAt: "2026-08-24T10:00:00.000Z" },
+      ],
+    });
+    expect(text).toContain("Waiting on the video team.");
+    expect(text).not.toMatch(/\|\s*Unresolved\s*\|/);
   });
 });

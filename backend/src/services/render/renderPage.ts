@@ -3197,7 +3197,12 @@ export async function renderAndScan(
   auth?: AuthConfig,
   // Times the render itself. Passed down so the clock starts once a page
   // exists rather than when the request arrived — see withPage.
-  budgetMs?: number
+  budgetMs?: number,
+  /* Disables the DNS-rebinding guard below. Set ONLY by the CLI, where the
+     operator owns both the machine and the URL — see scanUrlToReport's
+     trustPrivateHosts for the full reasoning. Over HTTP this is always
+     false, and the guard stands. */
+  trustPrivateHosts = false
 ): Promise<RenderResult> {
 
 
@@ -3262,7 +3267,7 @@ export async function renderAndScan(
       // everything else below was one bad response away from taking down
       // the whole server on any scan.
       try {
-        if (rebindingDetected) return;
+        if (rebindingDetected || trustPrivateHosts) return;
         const addr = await response.serverAddr().catch(() => null);
         if (addr && isPrivateOrReservedIp(addr.ipAddress)) {
           rebindingDetected = new RebindingDetectedError(new URL(response.url()).hostname, addr.ipAddress);

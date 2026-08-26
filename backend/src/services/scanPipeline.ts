@@ -388,9 +388,18 @@ export async function scanUrlToReport(
   // than at render time because the checklist travels — report, email and
   // PDF all carry it, and a translation applied last would leave two of the
   // three in English.
-  language?: string
+  language?: string,
+  /* Skips the private-address guard. ONLY the CLI passes this, and the
+     reason it may is that the guard exists against a confused deputy: over
+     HTTP a stranger names a URL and the SERVER fetches it, so localhost and
+     the private ranges must be refused. A CLI has no stranger — the person
+     typing the URL owns the machine doing the fetching, exactly like curl —
+     and refusing them localhost would block the PR previews and VPN-side
+     staging hosts that are the only reason to run a scan locally. Never
+     reachable from routes/scan.ts or routes/audit.ts. */
+  trustPrivateHosts = false
 ): Promise<AccessibilityReport> {
-  const safeUrl = await assertSafeUrl(rawUrl);
+  const safeUrl = trustPrivateHosts ? new URL(rawUrl) : await assertSafeUrl(rawUrl);
 
   // A PDF is not a page. Rendering one in Chromium and running axe over the
   // viewer produced "Could not load or scan the page", which told the reader
@@ -418,7 +427,8 @@ export async function scanUrlToReport(
     //
     // Signing in costs a page load of its own before the scan starts.
     env.RENDER_TIMEOUT_MS + (auth ? 55_000 : 35_000)
-  );
+  ,
+    trustPrivateHosts);
 
   const context = extractContext(safeUrl.toString(), renderResult);
   // Started but deliberately not awaited yet: the AI review is the single
@@ -470,7 +480,7 @@ export async function scanUrlToReport(
     })
   );
   deterministic.push(...evaluateTextResize(renderResult.textResizeSignals));
-  deterministic.push(...(await validateMarkup(renderResult.finalUrl)));
+  deterministic.push(...(await validateMarkup(renderResult.finalUrl, trustPrivateHosts)));
 
   // Everything above ran while the AI review was in flight; collect it now.
   const aiReview = await aiReviewPromise;

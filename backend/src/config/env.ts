@@ -58,6 +58,29 @@ const envSchema = z.object({
   // Deliberately far below the global limit. This route sends mail to an
   // address the caller chooses, which is the one endpoint here that can be
   // turned into a spam relay, so it gets its own much tighter budget.
+  // Storage. Absent by default, the same contract MAIL_API_KEY set: the
+  // feature is built, and without this it reports itself as not set up
+  // rather than failing silently. Anonymous scanning is unchanged either
+  // way — this only adds accounts, history and recorded verdicts.
+  //
+  // DB_DURABLE is the deployer's own statement that DB_PATH points inside a
+  // mounted volume. It cannot be detected from in here: a path on a
+  // container filesystem and a path on a volume look identical, and the one
+  // difference — that the first is erased on every deploy — only shows up
+  // after the data is gone. So the deployer says, and the API repeats it.
+  DB_PATH: z.string().optional(),
+  // NOT z.coerce.boolean(), which is String()-truthiness and would read
+  // DB_DURABLE=false as TRUE. Of all the settings here that is the worst one
+  // to get backwards: the deployer would have said "this is not durable" and
+  // the API would answer everyone that it is. Only the words below turn it
+  // on; anything else, including a typo, leaves it off.
+  DB_DURABLE: z
+    .string()
+    .optional()
+    .transform((v) => ["1", "true", "yes", "on"].includes((v ?? "").trim().toLowerCase())),
+  // Gate on creating accounts and minting keys. Without it those routes are
+  // closed entirely rather than open to anyone who finds them.
+  ADMIN_TOKEN: z.string().optional(),
   MAIL_RATE_LIMIT_MAX: z.coerce.number().default(3),
   MAIL_RATE_LIMIT_WINDOW_MS: z.coerce.number().default(600_000),
 });

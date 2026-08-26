@@ -1,10 +1,13 @@
 import type { FastifyInstance } from "fastify";
 import { z } from "zod";
+import { accountForKey, bearerFrom } from "../storage/accounts.js";
+import { saveScan } from "../storage/scans.js";
+import { verdictsForSite } from "../storage/verdicts.js";
 import { logger } from "../utils/logger.js";
 import { describeScanFailure } from "../services/scanFailure.js";
 import { memorySnapshot, trackPeakMemory } from "../utils/memory.js";
 import { scanUrlToReport } from "../services/scanPipeline.js";
-import type { AccessibilityReport } from "../types/report.js";
+import type { AccessibilityReport, ReportVerdict } from "../types/report.js";
 
 // Sign-in details for scanning pages behind a login. Accepted per request,
 // held in memory for one scan, and never stored, logged, or included in the
@@ -126,6 +129,39 @@ export async function scanRoutes(app: FastifyInstance) {
       },
       "Memory around a completed scan"
     );
-    return reply.send(report);
+    // Saved only for a caller who identified themselves. Anonymous scanning
+    // is the default and is unchanged: no key, no row, no behaviour
+    // difference. A storage failure never costs the caller their report —
+    // the scan is the product, history is an addition to it.
+    let savedAs: string | null = null;
+    // The answers this account has already given about this site. They are
+    // what lets the conformance report be completed rather than handed over
+    // full of blanks: a scan can evidence a failure and nothing else, so
+    // every "Supports" in that document has to come from a person.
+    let verdicts: ReportVerdict[] = [];
+    const account = accountForKey(bearerFrom(request.headers.authorization));
+    if (account) {
+      try {
+        savedAs = saveScan(account.id, report);
+      } catch (err) {
+        logger.warn({ err, url: report.url }, "scan completed but could not be saved");
+      }
+      try {
+        verdicts = verdictsForSite(account.id, report.url).map((v) => ({
+          criterion: v.criterion,
+          status: v.status,
+          note: v.note,
+          decidedBy: v.decidedBy,
+          decidedAt: v.decidedAt,
+        }));
+      } catch (err) {
+        logger.warn({ err, url: report.url }, "could not read verdicts for this site");
+      }
+    }
+    return reply.send({
+      ...report,
+      ...(savedAs ? { savedAs } : {}),
+      ...(verdicts.length ? { verdicts } : {}),
+    });
   });
 }

@@ -112,9 +112,15 @@ export async function markupFindingsFromHtml(html: string): Promise<Accessibilit
  * any failure (unreachable, redirect, non-HTML, oversized, validator error)
  * just means no markup finding — never a failed scan.
  */
-export async function validateMarkup(finalUrl: string): Promise<AccessibilityFinding[]> {
+export async function validateMarkup(
+  finalUrl: string,
+  /* See scanUrlToReport's trustPrivateHosts. Without this the CLI's whole
+     reason for existing — scanning localhost — lost its markup check to a
+     guard written for a threat a local operator does not face. */
+  trustPrivateHosts = false
+): Promise<AccessibilityFinding[]> {
   try {
-    await assertSafeUrl(finalUrl);
+    if (!trustPrivateHosts) await assertSafeUrl(finalUrl);
     const res = await fetch(finalUrl, {
       redirect: "error",
       signal: AbortSignal.timeout(FETCH_TIMEOUT_MS),

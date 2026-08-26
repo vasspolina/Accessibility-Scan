@@ -132,7 +132,21 @@ export interface Wcag22Readiness {
   parsingNoLongerCounts: boolean;
 }
 
+/** A person's recorded decision on a criterion the scan could not settle.
+ *  Sent only when the scan was made with an API key — see the backend's
+ *  reportVerdictSchema. */
+export interface RecordedVerdict {
+  criterion: string;
+  status: "supports" | "partially-supports" | "does-not-support" | "not-applicable" | "unresolved";
+  note: string | null;
+  decidedBy: string;
+  decidedAt: string;
+}
+
 export interface AccessibilityReport {
+  // Absent for an anonymous scan, and for a site nobody has answered a
+  // question about yet.
+  verdicts?: RecordedVerdict[];
   url: string;
   scannedAt: string;
   score: number;

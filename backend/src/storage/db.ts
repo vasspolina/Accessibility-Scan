@@ -1,0 +1,174 @@
+import { DatabaseSync } from "node:sqlite";
+import { mkdirSync } from "node:fs";
+import { dirname } from "node:path";
+import { env } from "../config/env.js";
+import { logger } from "../utils/logger.js";
+
+/**
+ * Storage, opt-in and self-declaring.
+ *
+ * The product has run without a database since it started, and a great deal
+ * of its design assumes that: the scan pipeline is pure, the widget is
+ * anonymous, and a report is a value returned once. Persistence is added
+ * WITHOUT breaking that — every route below works exactly as before when no
+ * database is configured, and the features that need one say so rather than
+ * pretending.
+ *
+ * That contract is the one MAIL_API_KEY already established: "absent by
+ * default: the feature is built, and without these it reports itself as not
+ * set up rather than failing silently."
+ *
+ * Why SQLite, and why node:sqlite. The scale this serves is two concurrent
+ * renders and a scan every few minutes, which is three orders of magnitude
+ * below where Postgres starts earning its operational cost. node:sqlite is
+ * in Node itself since 22.5, so there is no native module to compile in the
+ * Playwright base image and no dependency to keep in step with it. Every
+ * query lives behind the small functions in this directory, so swapping the
+ * engine later is a change here and nowhere else.
+ *
+ * DURABILITY IS THE DEPLOYER'S JOB, and this module refuses to pretend
+ * otherwise. A container filesystem is erased on every deploy. Setting
+ * DB_PATH to a path inside a mounted volume makes the data durable; setting
+ * it to an ordinary container path gives you storage that works perfectly
+ * and vanishes at the next deploy. `storageStatus()` reports which of those
+ * you have, and the API says it out loud.
+ */
+
+let db: DatabaseSync | null = null;
+let initError: string | null = null;
+
+const SCHEMA = `
+CREATE TABLE IF NOT EXISTS accounts (
+  id          TEXT PRIMARY KEY,
+  email       TEXT NOT NULL UNIQUE,
+  label       TEXT,
+  created_at  TEXT NOT NULL
+);
+
+-- Keys are stored as a SHA-256 hash and never in the clear: a database that
+-- leaks must not hand over the keys with it. The prefix is kept so a person
+-- can recognise which key a row refers to without being able to use it.
+CREATE TABLE IF NOT EXISTS api_keys (
+  id           TEXT PRIMARY KEY,
+  account_id   TEXT NOT NULL REFERENCES accounts(id),
+  name         TEXT NOT NULL,
+  key_hash     TEXT NOT NULL UNIQUE,
+  prefix       TEXT NOT NULL,
+  created_at   TEXT NOT NULL,
+  last_used_at TEXT,
+  revoked_at   TEXT
+);
+CREATE INDEX IF NOT EXISTS api_keys_account ON api_keys(account_id);
+
+-- One row per scan, with the full report kept as JSON. Deliberately not
+-- normalised into findings tables: the report's shape is owned by
+-- types/report.ts and validated by zod there, and a second schema mirroring
+-- it would be a second place to update every time a probe changes.
+CREATE TABLE IF NOT EXISTS scans (
+  id          TEXT PRIMARY KEY,
+  account_id  TEXT NOT NULL REFERENCES accounts(id),
+  url         TEXT NOT NULL,
+  origin      TEXT NOT NULL,
+  scanned_at  TEXT NOT NULL,
+  score       INTEGER NOT NULL,
+  report_json TEXT NOT NULL
+);
+CREATE INDEX IF NOT EXISTS scans_account_time ON scans(account_id, scanned_at DESC);
+CREATE INDEX IF NOT EXISTS scans_origin_time ON scans(account_id, origin, scanned_at DESC);
+
+-- Guided manual testing: a person's answer to a question the scan cannot
+-- decide. Keyed by ORIGIN rather than by scan, because that is what makes it
+-- worth recording — answer "do your videos have captions" once and it holds
+-- for every later scan of the same site until someone changes it.
+CREATE TABLE IF NOT EXISTS verdicts (
+  id          TEXT PRIMARY KEY,
+  account_id  TEXT NOT NULL REFERENCES accounts(id),
+  origin      TEXT NOT NULL,
+  criterion   TEXT NOT NULL,
+  status      TEXT NOT NULL,
+  note        TEXT,
+  evidence    TEXT,
+  decided_by  TEXT NOT NULL,
+  decided_at  TEXT NOT NULL,
+  supersedes  TEXT
+);
+CREATE INDEX IF NOT EXISTS verdicts_lookup ON verdicts(account_id, origin, criterion, decided_at DESC);
+`;
+
+function open(): DatabaseSync | null {
+  if (db || initError) return db;
+  if (!env.DB_PATH) return null;
+  try {
+    if (env.DB_PATH !== ":memory:") mkdirSync(dirname(env.DB_PATH), { recursive: true });
+    const handle = new DatabaseSync(env.DB_PATH);
+    // WAL keeps a reader from blocking the writer, which matters because a
+    // scan holds its transaction open only briefly but several may land at
+    // once behind the render queue.
+    handle.exec("PRAGMA journal_mode = WAL");
+    handle.exec("PRAGMA foreign_keys = ON");
+    handle.exec(SCHEMA);
+    db = handle;
+    logger.info({ path: env.DB_PATH, durable: env.DB_DURABLE }, "storage ready");
+  } catch (err) {
+    // A broken database must not take the scanner down with it: scanning is
+    // the product, and history is an addition to it.
+    initError = err instanceof Error ? err.message : String(err);
+    logger.error({ err, path: env.DB_PATH }, "storage unavailable — scans still run, nothing is saved");
+  }
+  return db;
+}
+
+/** The handle, or null when no storage is configured or it failed to open. */
+export function getDb(): DatabaseSync | null {
+  return open();
+}
+
+/**
+ * Closes the handle. The next call to getDb() opens a fresh one.
+ *
+ * Used on shutdown, and by the tests to prove that what was written is on
+ * disk rather than in this process's memory — a persistence layer that only
+ * works while the process lives is not one.
+ */
+export function closeDb(): void {
+  if (db) {
+    db.close();
+    db = null;
+  }
+}
+
+export interface StorageStatus {
+  configured: boolean;
+  /** True only when the deployer has said the path is on a mounted volume. */
+  durable: boolean;
+  error?: string;
+  /** What to tell a caller who asked for a stored feature and cannot have it. */
+  reason?: string;
+}
+
+export function storageStatus(): StorageStatus {
+  open();
+  if (initError) {
+    return { configured: false, durable: false, error: initError, reason: "Storage is configured but could not be opened." };
+  }
+  if (!env.DB_PATH) {
+    return { configured: false, durable: false, reason: "Storage is not set up. Set DB_PATH to enable accounts, history and verdicts." };
+  }
+  return {
+    configured: true,
+    durable: env.DB_DURABLE,
+    ...(env.DB_DURABLE
+      ? {}
+      : {
+          reason:
+            "Storage is working but not marked durable. A container filesystem is erased on deploy — mount a volume and set DB_DURABLE=true once DB_PATH points inside it.",
+        }),
+  };
+}
+
+/** Test seam: drops the handle so a new DB_PATH takes effect. */
+export function resetDbForTests(): void {
+  db?.close();
+  db = null;
+  initError = null;
+}

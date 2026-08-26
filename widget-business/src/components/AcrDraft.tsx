@@ -36,6 +36,9 @@ export function AcrDraft({ report }: { report: AccessibilityReport }) {
       }),
       conformance: report.conformance,
       findings: report.findings,
+      // The human half. Without these every non-failing row's Conformance
+      // Level stays blank, because a scan can never justify "Supports".
+      verdicts: report.verdicts,
     });
   }, [report, productName, productVersion, contact]);
 

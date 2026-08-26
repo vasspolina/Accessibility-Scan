@@ -22,6 +22,16 @@ import { plainForRule } from "./wcagPlain";
 // project refuses everywhere else, and in a procurement document it is the
 // version with legal consequences.
 
+/** A person's recorded answer to something the scan could not decide. The
+ *  shape the backend's /api/verdicts returns. */
+export interface AcrVerdict {
+  criterion: string;
+  status: "supports" | "partially-supports" | "does-not-support" | "not-applicable" | "unresolved";
+  note: string | null;
+  decidedBy: string;
+  decidedAt: string;
+}
+
 export interface AcrOptions {
   productName: string;
   productVersion: string;
@@ -30,7 +40,24 @@ export interface AcrOptions {
   date: string;
   conformance: ConformanceSummary;
   findings: AccessibilityFinding[];
+  /** Human verdicts on file for this site. Their whole purpose: a scan can
+   *  never justify "Supports", so without them this document could never be
+   *  completed inside the product however much human work was done. Each one
+   *  fills a Conformance Level the scan had to leave blank, and says who
+   *  decided it and when — which is what makes it a claim someone stands
+   *  behind rather than a machine's guess. */
+  verdicts?: AcrVerdict[];
 }
+
+const VERDICT_TERM: Record<AcrVerdict["status"], string> = {
+  supports: "Supports",
+  "partially-supports": "Partially Supports",
+  "does-not-support": "Does Not Support",
+  "not-applicable": "Not Applicable",
+  // Not one of the four permitted terms, so it stays blank in the column
+  // and explains itself in the remarks — an ACR term must never be invented.
+  unresolved: "",
+};
 
 function criterionRemarks(id: string, findings: AccessibilityFinding[]): string {
   const matching = findings.filter((f) => {
@@ -63,18 +90,29 @@ function criterionRemarks(id: string, findings: AccessibilityFinding[]): string 
 function table(
   level: "A" | "AA",
   conformance: ConformanceSummary,
-  findings: AccessibilityFinding[]
+  findings: AccessibilityFinding[],
+  verdicts: Map<string, AcrVerdict>
 ): string {
   const rows = conformance.criteria
     .filter((c) => c.level === level)
     .map((c) => {
       const failing = c.status === "failed";
-      // Deliberately blank rather than guessed. The four permitted terms have
-      // defined meanings and only one of them is evidenced by a scan.
-      const conformanceLevel = failing ? "Does Not Support" : "";
+      const verdict = verdicts.get(c.id);
+      // A measured failure outranks a verdict: someone recording "Supports"
+      // does not un-break the thing the scan is looking at, and an ACR that
+      // let it would be worse than one with blanks.
+      const conformanceLevel = failing
+        ? "Does Not Support"
+        : verdict
+          ? VERDICT_TERM[verdict.status]
+          : // Still blank when nobody has decided. The four permitted terms
+            // have defined meanings and only one is evidenced by a scan.
+            "";
       const remarks = failing
         ? criterionRemarks(c.id, findings) || c.failing
-        : c.status === "not-measured"
+        : verdict
+          ? `${verdict.note ? verdict.note + " " : ""}(Assessed by ${verdict.decidedBy}, ${verdict.decidedAt.slice(0, 10)}.)`
+          : c.status === "not-measured"
           ? // Without this branch a criterion whose check crashed was written
             // up as "automated testing found no failures" — in a document
             // whose whole purpose is to be signed and handed to a buyer.
@@ -102,6 +140,11 @@ function table(
 
 export function buildAcrDraft(opts: AcrOptions): string {
   const { productName, productVersion, contact, siteUrl, date, conformance, findings } = opts;
+  // Latest verdict per criterion. The backend already returns one row per
+  // criterion, but building the map here keeps this function pure and
+  // independent of that ordering guarantee.
+  const verdictMap = new Map<string, AcrVerdict>();
+  for (const v of opts.verdicts ?? []) verdictMap.set(v.criterion, v);
   const name = productName.trim() || "[Product name]";
   const version = productVersion.trim() || "[Version]";
   const email = contact.trim() || "[contact email]";
@@ -155,9 +198,9 @@ is not a claim of any kind.
 
 Summary from the automated scan: ${failedA} Level A and ${failedAA} Level AA criteria have evidenced failures.
 
-${table("A", conformance, findings)}
+${table("A", conformance, findings, verdictMap)}
 
-${table("AA", conformance, findings)}
+${table("AA", conformance, findings, verdictMap)}
 
 ## What is still missing
 

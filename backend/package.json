@@ -14,7 +14,8 @@
     "build:widgets": "npm run build:widget && npm run build:widget-business",
     "start": "node dist/server.js",
     "test": "vitest run",
-    "playwright:install": "playwright install --with-deps chromium"
+    "playwright:install": "playwright install --with-deps chromium",
+    "scan": "node dist/cli.js"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.112.3",
@@ -40,5 +41,8 @@
     "tsx": "^4.19.2",
     "typescript": "^5.6.3",
     "vitest": "^4.1.10"
+  },
+  "bin": {
+    "a11y-scan": "dist/cli.js"
   }
 }

@@ -13,6 +13,8 @@ import { healthRoutes } from "./routes/health.js";
 import { scanRoutes } from "./routes/scan.js";
 import { emailReportRoutes } from "./routes/emailReport.js";
 import { auditRoutes } from "./routes/audit.js";
+import { accountRoutes } from "./routes/account.js";
+import { historyRoutes } from "./routes/history.js";
 import { shutdownBrowserPool } from "./services/render/browserPool.js";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
@@ -66,6 +68,12 @@ await app.register(staticFiles, {
 app.setErrorHandler(errorHandler);
 
 await app.register(healthRoutes);
+// Storage-backed routes. Registered unconditionally: each answers 501 with
+// what to set when DB_PATH is absent, which tells a client the feature
+// exists and is switched off — better than a 404 that reads as "this
+// product does not do that".
+await app.register(accountRoutes);
+await app.register(historyRoutes);
 await app.register(scanRoutes);
 await app.register(auditRoutes);
 await app.register(emailReportRoutes);
