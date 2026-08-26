@@ -1,5 +1,6 @@
 import type { FastifyInstance, FastifyRequest, FastifyReply } from "fastify";
 import { z } from "zod";
+import { storedRouteLimit } from "./storedRouteLimit.js";
 import { env } from "../config/env.js";
 import { storageStatus } from "../storage/db.js";
 import {
@@ -63,9 +64,9 @@ const createBody = z.object({
 export async function accountRoutes(app: FastifyInstance) {
   /** What the deployer has switched on. Unauthenticated on purpose: a client
    *  needs to know whether history exists before it can offer it. */
-  app.get("/api/storage", async () => ({ storage: storageStatus() }));
+  app.get("/api/storage", { config: storedRouteLimit }, async () => ({ storage: storageStatus() }));
 
-  app.post("/api/accounts", async (request, reply) => {
+  app.post("/api/accounts", { config: storedRouteLimit }, async (request, reply) => {
     const status = storageStatus();
     if (!status.configured) {
       return reply.status(501).send({ error: "Not set up", detail: status.reason, storage: status });
@@ -98,13 +99,13 @@ export async function accountRoutes(app: FastifyInstance) {
     };
   });
 
-  app.get("/api/account", async (request, reply) => {
+  app.get("/api/account", { config: storedRouteLimit }, async (request, reply) => {
     const account = await requireAccount(request, reply);
     if (!account) return;
     return { account, keys: listApiKeys(account.id), storage: storageStatus() };
   });
 
-  app.post("/api/account/keys", async (request, reply) => {
+  app.post("/api/account/keys", { config: storedRouteLimit }, async (request, reply) => {
     const account = await requireAccount(request, reply);
     if (!account) return;
     const name = z.object({ name: z.string().max(120).default("default") }).safeParse(request.body ?? {});
@@ -112,7 +113,7 @@ export async function accountRoutes(app: FastifyInstance) {
     return { apiKey: key.key, apiKeyId: key.id, warning: "Copy this key now. It cannot be shown again." };
   });
 
-  app.delete("/api/account/keys/:id", async (request, reply) => {
+  app.delete("/api/account/keys/:id", { config: storedRouteLimit }, async (request, reply) => {
     const account = await requireAccount(request, reply);
     if (!account) return;
     const { id } = request.params as { id: string };

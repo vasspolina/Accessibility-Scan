@@ -78,6 +78,10 @@ const envSchema = z.object({
     .string()
     .optional()
     .transform((v) => ["1", "true", "yes", "on"].includes((v ?? "").trim().toLowerCase())),
+  // The budget for the storage-backed routes, which are SQLite reads rather
+  // than browser renders — see routes/storedRouteLimit.ts for why they do
+  // not share the scan's much tighter one.
+  STORED_RATE_LIMIT_MAX: z.coerce.number().default(120),
   // Gate on creating accounts and minting keys. Without it those routes are
   // closed entirely rather than open to anyone who finds them.
   ADMIN_TOKEN: z.string().optional(),

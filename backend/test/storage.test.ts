@@ -242,3 +242,28 @@ describe("verdicts — the human half of the report", () => {
     expect(verdicts.latestVerdict(mine.id, site, "1.2.2")).toBeNull();
   });
 });
+
+describe("the change since the previous scan", () => {
+  it("looks at the whole of a site's history, not just the page returned", () => {
+    const account = accounts.createAccount("window@test.invalid");
+    for (let i = 0; i < 5; i++) {
+      scans.saveScan(account.id, { ...report("https://w.test/p", 50 + i * 5), scannedAt: `2026-08-0${i + 1}T00:00:00.000Z` } as never);
+    }
+    // Every row in a short window still knows what came before it. This
+    // read as "the site's first scan" for the oldest row in the window,
+    // which with the default limit meant the fiftieth scan of a site.
+    expect(scans.listScans(account.id, { limit: 3 }).map((s) => s.scoreChange)).toEqual([5, 5, 5]);
+    // And the genuine first scan still carries no change at all.
+    expect(scans.listScans(account.id, {}).at(-1)!.scoreChange).toBeUndefined();
+  });
+
+  it("finds a site by any URL on it, not only by its origin", () => {
+    const account = accounts.createAccount("originfilter@test.invalid");
+    scans.saveScan(account.id, report("https://o.test/pricing", 44));
+    // The natural thing for a caller to hold is the URL they scanned. It
+    // returned nothing, because the column stores the origin.
+    expect(scans.listScans(account.id, { origin: "https://o.test/pricing" })).toHaveLength(1);
+    expect(scans.listScans(account.id, { origin: "https://o.test" })).toHaveLength(1);
+    expect(scans.listScans(account.id, { origin: "https://elsewhere.test" })).toHaveLength(0);
+  });
+});

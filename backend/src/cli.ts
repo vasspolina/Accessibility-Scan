@@ -22,7 +22,8 @@
  * With no thresholds it reports and exits 0: a first run should tell you
  * where you stand without failing your build on the day you add it.
  */
-import { writeFileSync, readFileSync, existsSync } from "node:fs";
+import { writeFileSync, readFileSync, existsSync, realpathSync } from "node:fs";
+import { fileURLToPath } from "node:url";
 import { scanUrlToReport } from "./services/scanPipeline.js";
 import type { AccessibilityFinding, AccessibilityReport, Severity } from "./types/report.js";
 
@@ -40,12 +41,29 @@ interface Options {
   ai: boolean;
 }
 
-function parseArgs(argv: string[]): Options | { error: string } {
+export function parseArgs(argv: string[]): Options | { error: string } {
   const positional: string[] = [];
   const opts: Partial<Options> = { writeBaseline: false, quiet: false, ai: false };
+  // A missing value is an error, never a silently-dropped option.
+  //
+  // It used to be the second thing. `--baseline` with nothing after it left
+  // baseline undefined, which reads identically to not asking for a gate at
+  // all — the run printed "no thresholds set" and exited 0. That is exactly
+  // how it fails in a real pipeline: `--baseline $BASELINE_FILE` with the
+  // variable unset expands to nothing, and the job goes green forever while
+  // gating nothing. A value starting with "-" is refused for the same
+  // reason: it is the next flag, not the argument.
+  let missing: string | null = null;
   for (let i = 0; i < argv.length; i++) {
     const a = argv[i];
-    const next = () => argv[++i];
+    const next = () => {
+      const v = argv[++i];
+      if (v === undefined || v === "" || v.startsWith("-")) {
+        missing ??= `${a} needs a value`;
+        return "";
+      }
+      return v;
+    };
     switch (a) {
       case "--min-score": {
         const v = Number(next());
@@ -77,7 +95,14 @@ function parseArgs(argv: string[]): Options | { error: string } {
         positional.push(a);
     }
   }
+  if (missing) return { error: missing };
   if (positional.length !== 1) return { error: "Give exactly one URL to scan." };
+  // --max-new only ever applied inside the baseline comparison, so on its
+  // own it was a threshold that quietly did nothing — the same green-forever
+  // failure as above, arrived at from the other direction.
+  if (opts.maxNew !== undefined && !opts.baseline && !opts.writeBaseline) {
+    return { error: "--max-new counts new findings against a baseline. Add --baseline <file>." };
+  }
   return { ...(opts as Options), url: positional[0] };
 }
 
@@ -273,9 +298,13 @@ async function main(): Promise<number> {
   return 0;
 }
 
-main()
-  .then((code) => process.exit(code))
-  .catch((err) => {
-    console.error(err);
-    process.exit(2);
-  });
+// Only when run as a command. Importing this file — which the argument
+// tests do — must not start a scan or exit the process.
+if (process.argv[1] && fileURLToPath(import.meta.url) === realpathSync(process.argv[1])) {
+  main()
+    .then((code) => process.exit(code))
+    .catch((err) => {
+      console.error(err);
+      process.exit(2);
+    });
+}

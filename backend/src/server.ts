@@ -50,7 +50,12 @@ await app.register(helmet, {
 });
 await app.register(cors, {
   origin: allowedOrigins,
-  methods: ["POST", "GET"],
+  // DELETE belongs here because two routes use it — removing a saved scan
+  // and revoking an API key. Without it the browser's preflight is answered
+  // "POST, GET" and both are unreachable from a page, however correct the
+  // handler is. Measured: the preflight returned 204 with
+  // access-control-allow-methods: POST, GET.
+  methods: ["POST", "GET", "DELETE"],
   credentials: false,
 });
 await app.register(sensible);

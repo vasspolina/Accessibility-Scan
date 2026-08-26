@@ -1,5 +1,6 @@
 import type { FastifyInstance } from "fastify";
 import { z } from "zod";
+import { storedRouteLimit } from "./storedRouteLimit.js";
 import { requireAccount } from "./account.js";
 import { deleteScan, getScan, listScans } from "../storage/scans.js";
 import { recordVerdict, verdictHistory, verdictsForSite, guidedQuestions, VERDICT_STATUSES } from "../storage/verdicts.js";
@@ -23,17 +24,23 @@ const verdictBody = z.object({
 });
 
 export async function historyRoutes(app: FastifyInstance) {
-  app.get("/api/scans", async (request, reply) => {
+  app.get("/api/scans", { config: storedRouteLimit }, async (request, reply) => {
     const account = await requireAccount(request, reply);
     if (!account) return;
     const q = z
-      .object({ origin: z.string().optional(), limit: z.coerce.number().optional() })
+      .object({ origin: z.string().optional(), limit: z.coerce.number().int().positive().optional() })
       .safeParse(request.query ?? {});
-    const scans = listScans(account.id, q.success ? q.data : {});
+    // A bad limit used to fall back to no options at all, which silently
+    // dropped the origin filter too — the caller asked about one site and
+    // got every site, with nothing saying so.
+    if (!q.success) {
+      return reply.status(400).send({ error: "Invalid query", details: q.error.flatten() });
+    }
+    const scans = listScans(account.id, q.data);
     return { scans, storage: storageStatus() };
   });
 
-  app.get("/api/scans/:id", async (request, reply) => {
+  app.get("/api/scans/:id", { config: storedRouteLimit }, async (request, reply) => {
     const account = await requireAccount(request, reply);
     if (!account) return;
     const { id } = request.params as { id: string };
@@ -42,7 +49,7 @@ export async function historyRoutes(app: FastifyInstance) {
     return report;
   });
 
-  app.delete("/api/scans/:id", async (request, reply) => {
+  app.delete("/api/scans/:id", { config: storedRouteLimit }, async (request, reply) => {
     const account = await requireAccount(request, reply);
     if (!account) return;
     const { id } = request.params as { id: string };
@@ -57,7 +64,7 @@ export async function historyRoutes(app: FastifyInstance) {
    * itself as the scanner learns to decide more — a criterion a new probe
    * can judge simply stops appearing.
    */
-  app.get("/api/verdicts/questions", async (request, reply) => {
+  app.get("/api/verdicts/questions", { config: storedRouteLimit }, async (request, reply) => {
     const account = await requireAccount(request, reply);
     if (!account) return;
     const q = z.object({ origin: z.string().min(1) }).safeParse(request.query ?? {});
@@ -99,7 +106,7 @@ export async function historyRoutes(app: FastifyInstance) {
     };
   });
 
-  app.get("/api/verdicts", async (request, reply) => {
+  app.get("/api/verdicts", { config: storedRouteLimit }, async (request, reply) => {
     const account = await requireAccount(request, reply);
     if (!account) return;
     const q = z.object({ origin: z.string().min(1), criterion: z.string().optional() }).safeParse(request.query ?? {});
@@ -109,7 +116,7 @@ export async function historyRoutes(app: FastifyInstance) {
       : { verdicts: verdictsForSite(account.id, q.data.origin) };
   });
 
-  app.post("/api/verdicts", async (request, reply) => {
+  app.post("/api/verdicts", { config: storedRouteLimit }, async (request, reply) => {
     const account = await requireAccount(request, reply);
     if (!account) return;
     const parsed = verdictBody.safeParse(request.body);

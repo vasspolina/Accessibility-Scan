@@ -39,25 +39,47 @@ export function saveScan(accountId: string, report: AccessibilityReport): string
   return id;
 }
 
+/**
+ * The list, newest first, each row carrying the change since the previous
+ * scan of the same site.
+ *
+ * The comparison is computed in SQL, over the whole of that site's history,
+ * and not by looking at the neighbouring row in the returned window. It was
+ * done the second way and it was wrong: the oldest row in any window
+ * reported NO previous scan, because there was none IN THE WINDOW. With the
+ * default limit that meant the fiftieth scan silently read as a site's
+ * first, which is the reading an absent scoreChange is supposed to carry.
+ * Measured with five scans and limit 3.
+ */
 export function listScans(accountId: string, opts?: { origin?: string; limit?: number }): StoredScanSummary[] {
   const db = getDb();
   if (!db) return [];
   const limit = Math.min(Math.max(opts?.limit ?? 50, 1), 200);
+  // Normalised the same way saveScan normalised it on the way in. A caller
+  // holding the URL they scanned — the natural thing to hold — was passing
+  // "https://example.com/pricing" and being told the site had no scans at
+  // all, because the column stores the origin.
+  const origin = opts?.origin ? originOf(opts.origin) : undefined;
+  const select = `SELECT id, url, origin, scanned_at, score, report_json, prev_score FROM (
+      SELECT id, url, origin, scanned_at, score, report_json, rowid,
+             LAG(score) OVER (PARTITION BY origin ORDER BY scanned_at, rowid) AS prev_score
+        FROM scans WHERE account_id = ?%s
+    ) ORDER BY scanned_at DESC, rowid DESC LIMIT ?`;
   const rows = (
-    opts?.origin
-      ? db
-          .prepare(
-            "SELECT id, url, origin, scanned_at, score, report_json FROM scans WHERE account_id = ? AND origin = ? ORDER BY scanned_at DESC, rowid DESC LIMIT ?"
-          )
-          .all(accountId, opts.origin, limit)
-      : db
-          .prepare(
-            "SELECT id, url, origin, scanned_at, score, report_json FROM scans WHERE account_id = ? ORDER BY scanned_at DESC, rowid DESC LIMIT ?"
-          )
-          .all(accountId, limit)
-  ) as Array<{ id: string; url: string; origin: string; scanned_at: string; score: number; report_json: string }>;
+    origin
+      ? db.prepare(select.replace("%s", " AND origin = ?")).all(accountId, origin, limit)
+      : db.prepare(select.replace("%s", "")).all(accountId, limit)
+  ) as Array<{
+    id: string;
+    url: string;
+    origin: string;
+    scanned_at: string;
+    score: number;
+    report_json: string;
+    prev_score: number | null;
+  }>;
 
-  return rows.map((r, i) => {
+  return rows.map((r) => {
     let findingCount = 0;
     try {
       findingCount = (JSON.parse(r.report_json).findings ?? []).length;
@@ -66,9 +88,6 @@ export function listScans(accountId: string, opts?: { origin?: string; limit?: n
       // unknown rather than zero-with-confidence, and the summary says 0
       // only because there is nothing honest to put there.
     }
-    // The previous scan OF THE SAME SITE, which is the only comparison that
-    // means anything — rows are newest-first, so it is the next one along.
-    const previous = rows.slice(i + 1).find((p) => p.origin === r.origin);
     return {
       id: r.id,
       url: r.url,
@@ -76,7 +95,8 @@ export function listScans(accountId: string, opts?: { origin?: string; limit?: n
       scannedAt: r.scanned_at,
       score: r.score,
       findingCount,
-      ...(previous ? { scoreChange: r.score - previous.score } : {}),
+      // Absent only when this really is the site's first scan.
+      ...(r.prev_score === null ? {} : { scoreChange: r.score - r.prev_score }),
     };
   });
 }
