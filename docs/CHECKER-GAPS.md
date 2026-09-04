@@ -494,3 +494,146 @@ lacked. The re-audit's real finding is that two of the nine commits shipped
 the same class of bug they were fixing — heuristics promoted to verdicts
 without tightening, and a causality proof that isn't one. The pattern to
 keep: every claim class needs its own skeptic before it ships, not after.
+
+---
+
+# Third audit, 26 August 2026 — after the system of record
+
+Eight commits landed after the re-audit (8d3091a..d8ae938): its three bugs
+and ten leaks fixed, the low pile cleared, the activation pass widened, and
+then the three things the first audit's ordering put first — persistence
+and accounts, a CLI, guided manual testing. This audit asks what those
+bought and what is missing now that they exist. Method: one auditor, every
+claim checked against HEAD by file and symbol, and measured where a
+measurement was cheap. No independent skeptic this time; weight it
+accordingly.
+
+## What moved
+
+- **The root constraint is gone.** `server.ts` registers accounts, history
+  and verdict routes; `storage/` holds a real schema. The first audit's
+  "stateless renderer" framing no longer describes the backend.
+- **Ordering item 1** (persistence + accounts) — done, without the job
+  queue. Item 3 (CLI) — done. Item 4 (guided manual testing) — done as an
+  API. Items 2, 5 and 6 untouched.
+- **Registry unchanged: 17 automated, 10 partial, 23 manual** of 50 rows
+  (`wcagCriteria.ts`). The 23 are now the input to guided testing rather
+  than dead weight, which changes what they cost but not what they are.
+- Eight bugs were found and fixed while building the three features. Six
+  of them were the same shape — a thing that reported success while doing
+  nothing — and none were caught by a test that existed before. That is
+  the audit's first finding.
+
+## The gaps now, in order of consequence
+
+### 1. The system of record has no front door
+`widget-business/src/api/scanClient.ts:302,369,415` — every request the
+widget makes sends `Content-Type` and nothing else. No path in the widget
+attaches an API key, so no widget user is ever identified, no scan made
+through the product is ever saved, and no verdict can be recorded from it.
+History, questions and verdicts are `curl` features. The widget still keeps
+its own history in `localStorage` (`scanHistory.ts`, `App.tsx:320`) beside
+the server's, so there are now two records that never meet. Guided manual
+testing — the largest differentiated thing this product has — currently has
+no screen. This is the whole of ordering item 4's payoff, unrealised.
+
+### 2. The CLI cannot be installed
+`docs/CLI.md` says `npx a11y-scan https://example.com`. `backend/package.json`
+is `"private": true`, named `a11y-checker-backend`, with no `prepare` step,
+so from a fresh checkout there is no `dist/cli.js` and from anywhere else
+there is no package at all. The workflow in the docs would fail at its
+first `npx`. It needs either a published package (with the Playwright
+install step it depends on) or a container image, and a smoke test that
+runs the documented command from outside the repo.
+
+### 3. The backend has no CI
+`.github/workflows/` holds `site-i18n.yml` and `widget.yml`. The 597 backend
+tests — including everything that guards the score, the conformance table,
+and the storage layer — run only when someone runs them on a laptop. The
+product now sells CI integration to other people.
+
+### 4. Six bugs, zero route tests
+`backend/test/` has no `app.inject()` anywhere. Every bug found this week
+lived at the route layer: CORS methods, the rate-limit budget, a query
+parse that silently dropped a filter, an unauthenticated endpoint's
+behaviour. The unit suites could not have seen any of them. A `buildApp()`
+that a test can inject into is a day's work and would have caught four of
+the six.
+
+### 5. Site audits are not part of the record
+`routes/audit.ts` neither authenticates nor saves; only `/api/scan` does. So
+history is a history of pages, and `guidedQuestions` builds a SITE's
+questions from one PAGE's conformance rows (`history.ts:73-98`) — a site
+whose only stored scan is its home page is asked nothing about video
+captions on its help pages. Verdicts are correctly per-site; the questions
+feeding them are not.
+
+### 6. Storage grows without bound and no one is told
+A stored report is 138 KB, 36 % of it base64 screenshots
+(`pageScreenshot`, `elementScreenshot`; measured on wikipedia.org). Nothing
+sets a retention limit, nothing VACUUMs, nothing reports the file size, and
+`accountForKey` writes `last_used_at` on every read (`accounts.ts:99`) —
+one write per request in a WAL database on a shared volume. A team scanning
+hourly stores a gigabyte a year per site. The honest `storageStatus()`
+says whether data survives a deploy; it should also say how much there is.
+
+### 7. No schema migration path
+`db.ts` runs `CREATE TABLE IF NOT EXISTS` and nothing else — no
+`PRAGMA user_version`, no migration list. The first column added to any
+table will fail on every existing deployment, silently, because the CREATE
+is a no-op and the INSERT then names a column that is not there. This is
+cheap now and expensive the day after the first paying account exists.
+
+### 8. No account lifecycle, and the product is sold on EU compliance
+`routes/account.ts` can create an account and revoke a key. It cannot list
+accounts, delete one, or export one's data. Articles 15 and 17 of the GDPR
+apply to the scan history and to `decided_by`, which is a person's name. A
+single shared `ADMIN_TOKEN` is the only operator identity, so every account
+creation is unattributable. Also absent: any email to the account on
+creation, so the key's one-time display has to be copied out of a terminal.
+
+### 9. A verdict is words, disconnected from what it decides
+`evidence TEXT` (`db.ts:90`) — a verdict can cite nothing but a sentence.
+It cannot attach a screenshot, link the undecided item it answers, or name
+the page it was checked on. It reaches the ACR draft (`buildAcrDraft.ts`)
+and nowhere else: the accessibility statement, the conformance table and
+the professional summary still show the criterion as "needs a person" after
+the person has decided. And the questions route refuses a site with no
+STORED scan (`history.ts:76`), so a CLI user — the one who scans most — can
+never be asked anything.
+
+### 10. Finding identity is still improvised at the edge
+The CLI fingerprints `ruleId|selector` (`cli.ts:139`); the server assigns
+nothing. So the audit-two gaps 1.4 (triage: ignore, false positive, fixed)
+and 2.3 (stable ids) are still open, now with a database that could hold
+them. The known per-page-card limit in the CLI comment is the symptom: an
+identity minted at the edge cannot be better than the card it is minted
+from.
+
+### 11. Scheduled scans and monitoring — absent, and now unblocked
+Ordering item 5. Nothing runs without a request. The subscription product
+— "tell me when it gets worse" — needs a scheduler, a queue for the 40–95 s
+renders, and a notification path; the mail route exists and could be it.
+
+### 12. Export is one CSV of undecided items
+`UndecidedChecks.tsx:20` writes a CSV for a designer. There is still no
+findings export, no issue-tracker payload, and — the one the CLI makes
+obvious — no SARIF. GitHub renders SARIF findings inline on the pull
+request; that is the moment a developer meets an accessibility failure, and
+the CLI already has everything the format needs.
+
+## Ordering
+
+1. **Route tests and a backend workflow (3, 4).** Half a day each. Nothing
+   else here should ship without them; the last two commits are the proof.
+2. **Make the CLI real (2)** — publish, document the Playwright step, smoke
+   test the documented command. It is the cheapest door into the developer
+   market and it is currently painted on the wall.
+3. **Migrations, retention, size in `storageStatus` (6, 7).** Before the
+   first account that matters, not after.
+4. **The front door (1)** — a key in the widget, history from the server,
+   and the questions screen. This is where guided testing starts existing.
+5. **Verdicts everywhere they belong (9), stable finding ids and triage
+   (10), site audits into the record (5).**
+6. **Account lifecycle (8)** before any European customer; **scheduling
+   (11)** and **SARIF (12)** as the two that turn features into a product.
