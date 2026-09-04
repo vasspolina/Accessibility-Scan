@@ -218,3 +218,34 @@ describe("the two budgets", () => {
     expect(Number(scan.headers["x-ratelimit-limit"])).toBe(5);
   });
 });
+
+describe("triage", () => {
+  it("records a decision and attaches it to the next scan of that site", async () => {
+    const key = await mintKey("triage@t.invalid");
+    const bad = await app.inject({ method: "POST", url: "/api/findings/state", headers: auth(key), payload: { origin: "https://tr.test", fingerprint: "nope", state: "ignored", decidedBy: "T" } });
+    expect(bad.statusCode).toBe(400);
+    const ok = await app.inject({ method: "POST", url: "/api/findings/state", headers: auth(key), payload: { origin: "https://tr.test", fingerprint: "0123456789abcdef", state: "false-positive", note: "Decorative.", decidedBy: "T" } });
+    expect(ok.statusCode).toBe(200);
+    const list = await app.inject({ method: "GET", url: "/api/findings/state?origin=https://tr.test/any/page", headers: auth(key) });
+    expect(list.json().states).toHaveLength(1);
+    expect(list.json().states[0].state).toBe("false-positive");
+  });
+});
+
+describe("schedules", () => {
+  it("refuses a private address, accepts a public one, and lists what it will do", async () => {
+    const key = await mintKey("sched@t.invalid");
+    const priv = await app.inject({ method: "POST", url: "/api/schedules", headers: auth(key), payload: { url: "http://127.0.0.1:3000", everyHours: 24 } });
+    expect(priv.statusCode).toBe(400);
+    const ok = await app.inject({ method: "POST", url: "/api/schedules", headers: auth(key), payload: { url: "https://example.com", everyHours: 24, notifyEmail: "o@t.invalid" } });
+    expect(ok.statusCode).toBe(200);
+    const id = ok.json().schedule.id;
+    const list = await app.inject({ method: "GET", url: "/api/schedules", headers: auth(key) });
+    expect(list.json().schedules).toHaveLength(1);
+    expect(list.json().scheduler).toHaveProperty("enabled");
+    const off = await app.inject({ method: "POST", url: `/api/schedules/${id}/enabled`, headers: auth(key), payload: { enabled: false } });
+    expect(off.json().schedule.enabled).toBe(false);
+    expect((await app.inject({ method: "DELETE", url: `/api/schedules/${id}`, headers: auth(key) })).statusCode).toBe(200);
+    expect((await app.inject({ method: "DELETE", url: `/api/schedules/${id}`, headers: auth(key) })).statusCode).toBe(404);
+  });
+});

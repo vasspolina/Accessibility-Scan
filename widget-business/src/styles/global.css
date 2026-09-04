@@ -6659,3 +6659,13 @@
 @media print {
   .a11y-widget-biz .a11y-manual-actions { display: none; }
 }
+
+/* Triage: the owner's mark on a finding. A quiet badge — the decision is
+   a fact about the owner, not about the fault, so it must not read as a
+   severity. Grey ground, primary ink, 7:1 and up in both schemes. */
+.a11y-widget-biz .a11y-triage-badge { background: var(--gray-20); color: var(--text-primary); }
+.a11y-widget-biz .a11y-triage { margin-top: var(--space-04); padding-top: var(--space-04); border-top: 1px solid var(--border-subtle); }
+.a11y-widget-biz .a11y-triage-current { margin: 0 0 var(--space-03); font-size: 15px; font-weight: 500; letter-spacing: 0.01em; }
+.a11y-widget-biz .a11y-triage-current em { font-style: normal; font-weight: 400; color: var(--text-secondary); }
+.a11y-widget-biz .a11y-triage-form { display: grid; gap: var(--space-03); max-width: 32rem; }
+@media print { .a11y-widget-biz .a11y-triage form, .a11y-widget-biz .a11y-triage .a11y-btn { display: none; } }

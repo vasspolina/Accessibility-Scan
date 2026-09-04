@@ -35,6 +35,12 @@ export function t(key: string): string {
 export const CHROME_KEYS: string[] = [
   // Manual checks (guided manual testing)
   "Manual checks",
+  "Checked by a person",
+  "Marked",
+  "Open",
+  "Ignored",
+  "False positive",
+  "Fixed",
   "Decided",
   "Meets it",
   "Partly",

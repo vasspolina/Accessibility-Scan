@@ -1,5 +1,6 @@
 import type { AccessibilityReport, AccessibilityFinding } from "../api/scanClient";
 import { t } from "../lib/strings";
+import { statusWord } from "./ManualChecks";
 import { SCORE_POINTS } from "./ScoreGauge";
 import { Notification } from "./Feedback";
 
@@ -54,6 +55,11 @@ export function ProSummary({
     (c) => c.status === "no-issues-found"
   );
   const incomplete = report.meta.incompleteChecks ?? [];
+  // A person's decisions, on the rows the scan left open. Listed under
+  // their own head rather than folded into "no issues found": the two are
+  // different kinds of evidence and the reader is owed the difference.
+  const decided = (report.verdicts ?? []).filter((v) => v.status !== "unresolved");
+  const nameOf = new Map((report.conformance?.criteria ?? []).map((c) => [c.id, c.name]));
 
   return (
     <section className="a11y-pro-panel" aria-labelledby="a11y-score-heading">
@@ -128,6 +134,24 @@ export function ProSummary({
                 </li>
               ))}
             </ul>
+          )}
+
+          {decided.length > 0 && (
+            <>
+              <h3 className="a11y-pro-eyebrow" id="a11y-pro-decided-heading">
+                {t("Checked by a person")} ({decided.length})
+              </h3>
+              <ul className="a11y-pro-rows" aria-labelledby="a11y-pro-decided-heading">
+                {decided.map((v) => (
+                  <li key={v.criterion} className="a11y-pro-row">
+                    <span>
+                      {v.criterion} {nameOf.get(v.criterion) ?? ""}
+                    </span>
+                    <span className="a11y-pro-row-pass">{statusWord(v.status)}</span>
+                  </li>
+                ))}
+              </ul>
+            </>
           )}
         </div>
       </div>

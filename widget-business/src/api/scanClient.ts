@@ -12,6 +12,8 @@ export type AiReviewStatus =
   | "skipped_error"
   | "disabled_by_request";
 
+export type TriageState = "open" | "ignored" | "false-positive" | "fixed";
+
 export interface AccessibilityFinding {
   id: string;
   source: FindingSource;
@@ -35,6 +37,10 @@ export interface AccessibilityFinding {
   description: string;
   suggestedFix: string;
   ruleId?: string;
+  // The finding's identity across scans — minted on the server.
+  fingerprint?: string;
+  // What the site's owner decided about this finding, for a signed-in scan.
+  triage?: { state: TriageState; note: string | null; decidedBy: string; decidedAt: string };
   // Link to the official explanation of the rule (axe help page or W3C
   // guidance), shown as a "Learn more" link.
   helpUrl?: string;
@@ -232,6 +238,8 @@ export interface SiteAudit {
   conformance: ConformanceSummary;
   // Optional so a report from an older backend still parses.
   consistency?: ConsistencyIssue[];
+  // Present when the audit was saved: the caller sent an API key.
+  savedAs?: string;
 }
 
 // Sign-in details for scanning a page behind a login. Sent with one scan and
@@ -514,3 +522,13 @@ export interface VerdictInput {
 
 export const recordVerdict = (apiBase: string, input: VerdictInput) =>
   authed<{ verdict: RecordedVerdict }>(apiBase, "/api/verdicts", { method: "POST", body: JSON.stringify(input) }).then((r) => r.verdict);
+
+export const setFindingState = (
+  apiBase: string,
+  input: { origin: string; fingerprint: string; state: TriageState; note?: string; decidedBy: string }
+) =>
+  authed<{ decision: { state: TriageState; note: string | null; decidedBy: string; decidedAt: string } }>(
+    apiBase,
+    "/api/findings/state",
+    { method: "POST", body: JSON.stringify(input) }
+  ).then((r) => r.decision);

@@ -1,7 +1,12 @@
-import { useState, type ReactNode } from "react";
+import { useId, useState, type ReactNode } from "react";
 import { dominantComponent, describeComponent } from "../lib/componentCluster";
 import { SeverityTag } from "./SeverityTag";
-import type { AccessibilityFinding } from "../api/scanClient";
+import { ScanError, setFindingState, type AccessibilityFinding, type TriageState } from "../api/scanClient";
+import { t } from "../lib/strings";
+import { getDecidedBy, setDecidedBy } from "../lib/apiKey";
+import { Select } from "./Select2";
+import { Input } from "./Input";
+import { Button } from "./Button";
 import { levelFraming, plainForRule, plainFixForRule } from "../lib/wcagPlain";
 import { whatWeFound } from "../lib/findingText";
 import { useReportView } from "./ReportViewContext";
@@ -723,6 +728,9 @@ export function FindingDetails({
           </ul>
         </details>
       )}
+      {/* The owner's mark, on every path a group's details render —
+          the card and the professional table's expand row alike. */}
+      {!asNotes && <TriageControl finding={rep} />}
     </div>
   );
 }
@@ -785,12 +793,17 @@ export function findingRow(
         </span>
       )}
       <span className="a11y-finding-title">{title}</span>
-      {(keyboardCheck || fromAi) && (
+      {(keyboardCheck || fromAi || (rep.triage && rep.triage.state !== "open")) && (
         <span className="a11y-finding-meta-line">
           {keyboardCheck && (
             <span className="a11y-method-badge a11y-method-keyboard">Keyboard test</span>
           )}
           {fromAi && <span className="a11y-method-badge a11y-method-ai">AI review</span>}
+          {rep.triage && rep.triage.state !== "open" && (
+            <span className={`a11y-method-badge a11y-triage-badge a11y-triage-${rep.triage.state}`}>
+              {t(TRIAGE_WORD[rep.triage.state])}
+            </span>
+          )}
         </span>
       )}
     </span>
@@ -928,6 +941,11 @@ export function FindingGroup({
             <span className="a11y-method-badge a11y-method-keyboard">Keyboard test</span>
           )}
           {fromAi && <span className="a11y-method-badge a11y-method-ai">AI review</span>}
+          {rep.triage && rep.triage.state !== "open" && (
+            <span className={`a11y-method-badge a11y-triage-badge a11y-triage-${rep.triage.state}`}>
+              {t(TRIAGE_WORD[rep.triage.state])}
+            </span>
+          )}
           <span className={`a11y-method-badge a11y-fix-${fix.key}`}>{fix.label}</span>
           {rep.wcagLevel && (
             <span className="a11y-level-badge">{levelFraming(rep.wcagLevel)}</span>
@@ -952,6 +970,112 @@ export function FindingGroup({
         <FindingDetails findings={findings} asNotes={asNotes} />
       </div>
     </li>
+  );
+}
+
+export const TRIAGE_WORD: Record<TriageState, string> = {
+  open: "Open",
+  ignored: "Ignored",
+  "false-positive": "False positive",
+  fixed: "Fixed",
+};
+
+/**
+ * "Mark as": the owner's decision about this finding, kept on the server
+ * per site. Offered only for a saved scan — a decision has to belong to
+ * somebody, and it is keyed by the fingerprint the server minted.
+ *
+ * What it does not do is remove the card or move the score. An ignored
+ * finding is still a measured fault; the mark says the owner has seen it
+ * and decided, and the CLI leaves marked findings out of its thresholds
+ * while saying how many it left out.
+ */
+function TriageControl({ finding }: { finding: AccessibilityFinding }) {
+  const { apiBase, siteUrl, signedIn } = useReportView();
+  const [state, setState] = useState<TriageState>(finding.triage?.state ?? "open");
+  const [note, setNote] = useState(finding.triage?.note ?? "");
+  const [name, setName] = useState(getDecidedBy());
+  const [saved, setSaved] = useState<{ state: TriageState; decidedBy: string; decidedAt: string } | null>(finding.triage ?? null);
+  const [busy, setBusy] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [open, setOpen] = useState(false);
+  const id = useId();
+  if (!signedIn || !apiBase || !siteUrl || !finding.fingerprint) return null;
+
+  async function save(e: React.FormEvent) {
+    e.preventDefault();
+    if (!name.trim()) {
+      setError("Sign the decision with your name.");
+      return;
+    }
+    setBusy(true);
+    setError(null);
+    try {
+      setDecidedBy(name);
+      const d = await setFindingState(apiBase!, {
+        origin: siteUrl!,
+        fingerprint: finding.fingerprint!,
+        state,
+        note: note.trim() || undefined,
+        decidedBy: name.trim(),
+      });
+      setSaved({ state: d.state, decidedBy: d.decidedBy, decidedAt: d.decidedAt });
+      setOpen(false);
+    } catch (err) {
+      setError(err instanceof ScanError ? err.message : "Could not save the decision.");
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  return (
+    <div className="a11y-triage">
+      {saved && saved.state !== "open" && (
+        <p className="a11y-triage-current">
+          {`${t("Marked")}: ${t(TRIAGE_WORD[saved.state])} `}
+          <em>
+            ({saved.decidedBy}, {saved.decidedAt.slice(0, 10)})
+          </em>
+        </p>
+      )}
+      {open ? (
+        <form className="a11y-triage-form" onSubmit={save} aria-label={`Mark finding ${finding.ruleId ?? ""}`}>
+          <Select
+            id={`${id}-state`}
+            label="Mark as"
+            options={[
+              { value: "open", label: t("Open") },
+              { value: "ignored", label: t("Ignored") },
+              { value: "false-positive", label: t("False positive") },
+              { value: "fixed", label: t("Fixed") },
+            ]}
+            value={state}
+            onChange={(e) => setState(e.target.value as TriageState)}
+          />
+          <Input id={`${id}-note`} label="Why, in a sentence" value={note} onChange={(e) => setNote(e.target.value)} />
+          <Input
+            id={`${id}-name`}
+            label="Your name"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            invalid={Boolean(error)}
+            invalidText={error ?? undefined}
+          />
+          <div className="a11y-manual-form-actions">
+            <Button variant="primary" size="sm" type="submit" disabled={busy}>
+              {busy ? "Saving…" : "Save"}
+            </Button>
+            <Button variant="ghost" size="sm" type="button" onClick={() => setOpen(false)} disabled={busy}>
+              Cancel
+            </Button>
+          </div>
+        </form>
+      ) : (
+        <Button variant="ghost" size="sm" onClick={() => setOpen(true)}>
+          {saved && saved.state !== "open" ? "Change the mark" : "Mark this finding"}
+        </Button>
+      )}
+    </div>
   );
 }
 

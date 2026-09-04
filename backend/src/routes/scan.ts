@@ -3,6 +3,7 @@ import { z } from "zod";
 import { accountForKey, bearerFrom } from "../storage/accounts.js";
 import { saveScan } from "../storage/scans.js";
 import { verdictsForSite } from "../storage/verdicts.js";
+import { findingStates } from "../storage/triage.js";
 import { logger } from "../utils/logger.js";
 import { describeScanFailure } from "../services/scanFailure.js";
 import { memorySnapshot, trackPeakMemory } from "../utils/memory.js";
@@ -158,8 +159,26 @@ export async function scanRoutes(app: FastifyInstance) {
         logger.warn({ err, url: report.url }, "could not read verdicts for this site");
       }
     }
+    // The owner's triage, on each finding it names. Attached here and not
+    // in the pipeline: the pipeline measures, and what an owner decided
+    // about a measurement is a different kind of fact.
+    let findings = report.findings;
+    if (account) {
+      try {
+        const states = findingStates(account.id, report.url);
+        if (states.size) {
+          findings = report.findings.map((f) => {
+            const d = f.fingerprint ? states.get(f.fingerprint) : undefined;
+            return d ? { ...f, triage: { state: d.state, note: d.note, decidedBy: d.decidedBy, decidedAt: d.decidedAt } } : f;
+          });
+        }
+      } catch (err) {
+        logger.warn({ err, url: report.url }, "could not read triage for this site");
+      }
+    }
     return reply.send({
       ...report,
+      findings,
       ...(savedAs ? { savedAs } : {}),
       ...(verdicts.length ? { verdicts } : {}),
     });

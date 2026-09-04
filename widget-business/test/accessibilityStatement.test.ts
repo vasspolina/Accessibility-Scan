@@ -96,3 +96,47 @@ describe("what it refuses to claim", () => {
     expect(statement()).toMatch(/Images are missing a description/);
   });
 });
+
+
+describe("the method paragraph and the manual work on file", () => {
+  const base = {
+    organisation: "Example Ltd",
+    contactEmail: "hello@example.com",
+    siteUrl: "https://example.com",
+    position: "partially" as const,
+    conformance: {
+      standard: "WCAG 2.1 Level AA (EN 301 549)",
+      failed: 3,
+      noIssuesFound: 25,
+      needsReview: 22,
+      total: 50,
+      failedByLevel: { A: 2, AA: 1 },
+      criteria: [],
+    },
+    knownIssues: [],
+    date: "1 July 2026",
+  };
+  const v = (criterion: string, status: "supports" | "not-applicable" | "does-not-support" | "unresolved") => ({
+    criterion, status, note: null, decidedBy: "Polina V", decidedAt: "2026-08-24T10:00:00.000Z",
+  });
+
+  it("says no manual audit has happened only while that is true", () => {
+    expect(buildStatement(base)).toContain("We have not yet carried out a full manual audit");
+    const text = buildStatement({ ...base, verdicts: [v("1.2.2", "not-applicable"), v("1.3.2", "supports"), v("2.4.5", "does-not-support")] });
+    expect(text).not.toContain("We have not yet carried out a full manual audit");
+    expect(text).toContain("3 of the criteria that need human judgement have been checked by a person: 1 met, 1 not met, 1 not applicable to this site.");
+    expect(text).toContain("19 have not yet been checked manually.");
+    // Still honest about what has not happened.
+    expect(text).toContain("not yet tested with assistive technology users");
+  });
+
+  it("counts, never names — the person who decided is not part of the declaration", () => {
+    const text = buildStatement({ ...base, verdicts: [v("1.2.2", "supports")] });
+    expect(text).not.toContain("Polina V");
+  });
+
+  it("does not count a verdict that decided nothing", () => {
+    const text = buildStatement({ ...base, verdicts: [v("1.2.2", "unresolved")] });
+    expect(text).toContain("We have not yet carried out a full manual audit");
+  });
+});

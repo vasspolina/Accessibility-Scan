@@ -15,6 +15,8 @@ import { emailReportRoutes } from "./routes/emailReport.js";
 import { auditRoutes } from "./routes/audit.js";
 import { accountRoutes } from "./routes/account.js";
 import { historyRoutes } from "./routes/history.js";
+import { triageRoutes } from "./routes/triage.js";
+import { scheduleRoutes } from "./routes/schedules.js";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
@@ -72,6 +74,8 @@ export async function buildApp() {
   // product does not do that".
   await app.register(accountRoutes);
   await app.register(historyRoutes);
+  await app.register(triageRoutes);
+  await app.register(scheduleRoutes);
   await app.register(scanRoutes);
   await app.register(auditRoutes);
   await app.register(emailReportRoutes);

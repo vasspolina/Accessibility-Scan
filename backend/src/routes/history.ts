@@ -3,6 +3,7 @@ import { z } from "zod";
 import { storedRouteLimit } from "./storedRouteLimit.js";
 import { requireAccount } from "./account.js";
 import { deleteScan, getScan, listScans, saveScan } from "../storage/scans.js";
+import { deleteAudit, getAudit, listAudits } from "../storage/audits.js";
 import { accessibilityReportSchema, type AccessibilityReport } from "../types/report.js";
 import { recordVerdict, verdictHistory, verdictsForSite, guidedQuestions, VERDICT_STATUSES } from "../storage/verdicts.js";
 import { storageStatus } from "../storage/db.js";
@@ -66,6 +67,33 @@ export async function historyRoutes(app: FastifyInstance) {
     return { savedAs, origin: new URL(report.url).origin };
   });
 
+  app.get("/api/audits", { config: storedRouteLimit }, async (request, reply) => {
+    const account = await requireAccount(request, reply);
+    if (!account) return;
+    const q = z
+      .object({ origin: z.string().optional(), limit: z.coerce.number().int().positive().optional() })
+      .safeParse(request.query ?? {});
+    if (!q.success) return reply.status(400).send({ error: "Invalid query", details: q.error.flatten() });
+    return { audits: listAudits(account.id, q.data) };
+  });
+
+  app.get("/api/audits/:id", { config: storedRouteLimit }, async (request, reply) => {
+    const account = await requireAccount(request, reply);
+    if (!account) return;
+    const { id } = request.params as { id: string };
+    const audit = getAudit(account.id, id);
+    if (!audit) return reply.status(404).send({ error: "No such audit." });
+    return audit;
+  });
+
+  app.delete("/api/audits/:id", { config: storedRouteLimit }, async (request, reply) => {
+    const account = await requireAccount(request, reply);
+    if (!account) return;
+    const { id } = request.params as { id: string };
+    if (!deleteAudit(account.id, id)) return reply.status(404).send({ error: "No such audit." });
+    return { deleted: id };
+  });
+
   app.get("/api/scans/:id", { config: storedRouteLimit }, async (request, reply) => {
     const account = await requireAccount(request, reply);
     if (!account) return;
@@ -97,14 +125,23 @@ export async function historyRoutes(app: FastifyInstance) {
     if (!q.success) return reply.status(400).send({ error: "origin is required" });
 
     const recent = listScans(account.id, { origin: q.data.origin, limit: 1 })[0];
-    if (!recent) {
+    // A site audit describes the site; a scan describes one page. When
+    // both exist the audit's rows are the ones to ask about, unless a scan
+    // is newer — the scanner may have learned to decide something since.
+    const recentAudit = listAudits(account.id, { origin: q.data.origin, limit: 1 })[0];
+    if (!recent && !recentAudit) {
       return reply.status(404).send({
         error: "No scan on file for that site",
         detail: "Scan the site with your API key first — the questions come from its own conformance rows.",
       });
     }
-    const report = getScan(account.id, recent.id);
-    const criteria = report?.conformance?.criteria ?? [];
+    const useAudit = recentAudit && (!recent || recentAudit.scannedAt >= recent.scannedAt);
+    const source = useAudit
+      ? { id: recentAudit.id, scannedAt: recentAudit.scannedAt, origin: recentAudit.origin, kind: "audit" as const }
+      : { id: recent!.id, scannedAt: recent!.scannedAt, origin: recent!.origin, kind: "scan" as const };
+    const criteria = useAudit
+      ? getAudit(account.id, recentAudit.id)?.conformance?.criteria ?? []
+      : getScan(account.id, recent!.id)?.conformance?.criteria ?? [];
     if (criteria.length === 0) {
       return reply.status(409).send({
         error: "That scan has no conformance table",
@@ -124,8 +161,8 @@ export async function historyRoutes(app: FastifyInstance) {
       }))
     );
     return {
-      origin: recent.origin,
-      fromScan: { id: recent.id, scannedAt: recent.scannedAt },
+      origin: source.origin,
+      fromScan: { id: source.id, scannedAt: source.scannedAt, kind: source.kind },
       answered: questions.filter((x) => x.answered).length,
       open: questions.filter((x) => !x.answered).length,
       questions,

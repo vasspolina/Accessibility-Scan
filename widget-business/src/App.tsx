@@ -184,8 +184,8 @@ export function App({
     for (const c of report?.conformance?.criteria ?? []) {
       criterionNames[c.id] = { name: c.name, level: c.level };
     }
-    return { professional, criterionNames };
-  }, [report, professional]);
+    return { professional, criterionNames, apiBase, siteUrl: report?.url, signedIn: signedIn && Boolean(report?.savedAs) };
+  }, [report, professional, apiBase, signedIn]);
 
   // Print must include every card whatever the on-screen filter shows — the
   // rule the conformance checklist already follows. The filter lives in React

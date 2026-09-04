@@ -137,6 +137,9 @@ export function deleteAccount(accountId: string): { scans: number; verdicts: num
   try {
     const scans = Number(db.prepare("DELETE FROM scans WHERE account_id = ?").run(accountId).changes);
     const verdicts = Number(db.prepare("DELETE FROM verdicts WHERE account_id = ?").run(accountId).changes);
+    db.prepare("DELETE FROM finding_states WHERE account_id = ?").run(accountId);
+    db.prepare("DELETE FROM audits WHERE account_id = ?").run(accountId);
+    db.prepare("DELETE FROM schedules WHERE account_id = ?").run(accountId);
     const keys = Number(db.prepare("DELETE FROM api_keys WHERE account_id = ?").run(accountId).changes);
     db.prepare("DELETE FROM accounts WHERE id = ?").run(accountId);
     db.exec("COMMIT");

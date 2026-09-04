@@ -9,6 +9,8 @@ import { describeScanFailure } from "../services/scanFailure.js";
 import { scanUrlToReport } from "../services/scanPipeline.js";
 import { selectPagesToAudit } from "../services/crawl/discoverPages.js";
 import { aggregateAudit, type PageOutcome } from "../services/crawl/aggregateAudit.js";
+import { accountForKey, bearerFrom } from "../storage/accounts.js";
+import { saveAudit } from "../storage/audits.js";
 
 // A site audit is several full scans, so it is bounded on every axis: how many
 // pages, how long in total, and how many run at once. An unbounded crawl on a
@@ -120,6 +122,19 @@ export async function auditRoutes(app: FastifyInstance) {
     const order = new Map(pages.map((p, i) => [p.url, i]));
     outcomes.sort((a, b) => (order.get(a.url) ?? 0) - (order.get(b.url) ?? 0));
 
-    return aggregateAudit(resolvedEntry, outcomes, parsed.data.language);
+    const audit = aggregateAudit(resolvedEntry, outcomes, parsed.data.language);
+    // Saved for a caller who identified themselves, like a scan. An audit
+    // is the better source of a SITE's open questions, so this is what
+    // makes guided manual testing ask about the site rather than a page.
+    const account = accountForKey(bearerFrom(request.headers.authorization));
+    if (account) {
+      try {
+        const savedAs = saveAudit(account.id, audit);
+        return { ...audit, savedAs };
+      } catch (err) {
+        logger.warn({ err, url: resolvedEntry }, "audit completed but could not be saved");
+      }
+    }
+    return audit;
   });
 }

@@ -1,6 +1,12 @@
 /* Deutsche Fassung der Rahmen-Texte. Schlüssel ist der englische String. */
 export const STRINGS_DE: Record<string, string> = {
   // Manuelle Prüfungen
+  "Marked": "Markiert",
+  "Open": "Offen",
+  "Ignored": "Ignoriert",
+  "False positive": "Fehlalarm",
+  "Fixed": "Behoben",
+  "Checked by a person": "Von einer Person geprüft",
   "Manual checks": "Manuelle Prüfungen",
   Decided: "Entschieden",
   "Meets it": "Erfüllt",

@@ -88,6 +88,13 @@ const envSchema = z.object({
   // pruned: they are the record.
   SCAN_RETENTION_DAYS: z.coerce.number().default(365),
   SCANS_PER_SITE_MAX: z.coerce.number().default(200),
+  // The scheduler runs due scheduled scans from inside this process. Turn
+  // it off on every instance but one when several share a database.
+  SCHEDULER_ENABLED: z
+    .string()
+    .optional()
+    .transform((v) => !["0", "false", "no", "off"].includes((v ?? "").trim().toLowerCase())),
+  SCHEDULER_TICK_SECONDS: z.coerce.number().default(60),
   // Gate on creating accounts and minting keys. Without it those routes are
   // closed entirely rather than open to anyone who finds them.
   ADMIN_TOKEN: z.string().optional(),

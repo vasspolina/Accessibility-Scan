@@ -670,7 +670,25 @@ Closed, each verified by measurement:
   be asked.
 - **12 Export** — `--sarif`, valid 2.1.0, checked in CI.
 
-Still open: **5** site audits into the record, **10** server-side finding
-identity and triage state, **11** scheduling and monitoring. And 9's last
-clause — the accessibility statement and the professional summary still
-do not read verdicts.
+Closed in the following pass, same standard:
+
+- **5 Site audits into the record** — saved for a signed-in caller,
+  listed at `/api/audits`, and the open questions come from whichever of
+  the site's audit or scan is newer.
+- **9, last clause** — the statement's method paragraph now counts the
+  manual work on file ("3 of the criteria that need human judgement have
+  been checked by a person: 1 met, 1 not met, 1 not applicable") and stops
+  claiming no manual audit has happened once one has; the professional
+  summary lists decisions under "Checked by a person". Counts, never names,
+  in the statement: it is a public declaration.
+- **10 Finding identity and triage** — `fingerprint` minted in the pipeline
+  and carried on every finding; a `finding_states` table; marks shown on
+  the card and settable from it on a saved scan; the CLI sets marked
+  findings aside from thresholds and says so. The score is never changed by
+  triage.
+- **11 Scheduling** — a `schedules` table and an in-process scheduler:
+  one scan at a time, due-now first run, failures recorded and
+  rescheduled, mail only when the score fell or a fingerprint appeared.
+  Tick tested with the scan and the mail injected.
+
+Open: nothing from this audit. Next audit should look at what these added.

@@ -8,6 +8,12 @@ import { createContext, useContext } from "react";
  */
 export interface ReportView {
   professional: boolean;
+  /** Where the scanner is, for the cards that can write back to it. */
+  apiBase?: string;
+  /** The scanned URL — triage is keyed by its site. */
+  siteUrl?: string;
+  /** A key is set, so a card may offer "mark as". */
+  signedIn?: boolean;
   /**
    * WCAG 2.1 A/AA criterion names and levels, keyed by number ("1.4.3"),
    * built from report.conformance.criteria — the same table the conformance

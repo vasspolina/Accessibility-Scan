@@ -155,3 +155,66 @@ those rows, each remark citing who decided and when. A
 criterion the scan proved failing stays "Does Not Support" whatever anyone
 recorded: an opinion does not un-break the thing the scanner is looking at.
 Rows nobody has answered stay blank, exactly as before.
+
+## Triage
+
+A scanner that cannot be told "this one is a false positive" reports the
+same thing every run until the owner stops reading it. Every finding now
+carries a `fingerprint` — rule plus selector, minted on the server, the same
+identity the CLI's baseline and SARIF use — and the owner can mark it:
+
+```bash
+curl -X POST https://your-scanner/api/findings/state \
+  -H "Authorization: Bearer ascan_…" -H "Content-Type: application/json" \
+  -d '{"origin":"https://example.com","fingerprint":"0123456789abcdef",
+       "state":"false-positive","note":"Decorative image.","decidedBy":"Alex Rahim"}'
+```
+
+`state` is `open`, `ignored`, `false-positive` or `fixed`. A mark belongs
+to the site and never overwrites — the history of who decided what is kept.
+Marked findings come back on the next signed-in scan with a `triage` field,
+the widget shows the mark on the card and offers **Mark this finding** on a
+saved scan, and the CLI leaves ignored and false-positive findings out of its
+thresholds while printing how many it left out.
+
+What triage does not do is change the score. A finding marked ignored is
+still a measured fault; the score's whole value is that it is not a record
+of what the owner felt like counting.
+
+## Site audits
+
+A site audit made with the key is saved like a scan (`savedAs` on the
+response) and listed at `GET /api/audits`. When a site has both, the open
+questions come from whichever is newer — an audit describes the site, a
+scan one page, and the site's questions are the right ones to ask.
+
+## Scheduled scans
+
+The standing instruction behind "tell me when it gets worse":
+
+```bash
+curl -X POST https://your-scanner/api/schedules \
+  -H "Authorization: Bearer ascan_…" -H "Content-Type: application/json" \
+  -d '{"url":"https://example.com","everyHours":24,"notifyEmail":"team@example.com"}'
+```
+
+The first run is due at once, so a wrong URL shows up in minutes rather
+than a day later. Each run is saved into the history; a run that fails is
+recorded with its error and rescheduled rather than retried every minute.
+"Worse" is measured: the score fell, or a finding appeared whose fingerprint
+the previous run did not have. Only then is the email sent — and only when
+`MAIL_API_KEY` and `MAIL_FROM` are set; `GET /api/schedules` reports whether
+mail is configured and what the scheduler last did.
+
+The scheduler runs inside the server, one scan at a time, on a tick of
+`SCHEDULER_TICK_SECONDS` (60). With several instances on one database, set
+`SCHEDULER_ENABLED=false` on all but one.
+
+```
+GET    /api/schedules              the list, with the scheduler's status
+POST   /api/schedules              create; the URL passes the same
+                                   private-address guard as a scan
+POST   /api/schedules/:id/run      make it due now
+POST   /api/schedules/:id/enabled  {"enabled": false} to pause
+DELETE /api/schedules/:id
+```

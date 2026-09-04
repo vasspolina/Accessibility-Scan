@@ -2,6 +2,12 @@
    the key per entry, so a missing line renders in English. */
 export const STRINGS_ES: Record<string, string> = {
   // Manual checks
+  "Marked": "Marcado",
+  "Open": "Abierto",
+  "Ignored": "Ignorado",
+  "False positive": "Falso positivo",
+  "Fixed": "Corregido",
+  "Checked by a person": "Comprobado por una persona",
   "Manual checks": "Comprobaciones manuales",
   Decided: "Decidido",
   "Meets it": "Lo cumple",

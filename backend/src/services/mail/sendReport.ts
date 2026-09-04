@@ -96,14 +96,17 @@ function renderText(report: AccessibilityReport): string {
 
 export async function sendReportEmail(
   to: string,
-  report: AccessibilityReport
+  report: AccessibilityReport,
+  /** A subject of the caller's own, for a mail that is about a change
+   *  rather than a scan — the scheduler's "got worse". */
+  subject?: string
 ): Promise<SendResult> {
   if (!env.MAIL_API_KEY || !env.MAIL_FROM) return { ok: false, reason: "not_configured" };
 
   const body = {
     from: env.MAIL_FROM,
     to: [to],
-    subject: `Accessibility scan: ${report.url} — ${report.score}/100`,
+    subject: subject ?? `Accessibility scan: ${report.url} — ${report.score}/100`,
     text: renderText(report),
   };
 

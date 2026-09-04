@@ -25,6 +25,7 @@
 import { writeFileSync, readFileSync, existsSync, realpathSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { scanUrlToReport } from "./services/scanPipeline.js";
+import { fingerprintFinding, legacyFingerprint } from "./services/merge/fingerprint.js";
 import type { AccessibilityFinding, AccessibilityReport, Severity } from "./types/report.js";
 
 const SEVERITY_ORDER: Severity[] = ["critical", "serious", "moderate", "minor"];
@@ -155,7 +156,10 @@ const HELP = `a11y-scan — accessibility scan for a pipeline
  *  (carded per page) does not. The count line below is what catches those,
  *  which is why it prints even when the fingerprints match. */
 function fingerprint(f: AccessibilityFinding): string {
-  return `${f.ruleId ?? f.wcagCriterion ?? "unknown"}|${f.selector ?? ""}`;
+  // The server mints it now (services/merge/fingerprint), so the CLI, the
+  // triage table and the baseline all mean the same thing by "the same
+  // finding". Computed here only for a report that somehow lacks it.
+  return f.fingerprint ?? fingerprintFinding(f);
 }
 
 function severityCounts(findings: AccessibilityFinding[]): Record<Severity, number> {
@@ -192,6 +196,23 @@ function summarise(report: AccessibilityReport, quiet: boolean): void {
     }
     if (acc.length > 10) console.log(`    …and ${acc.length - 10} more`);
     console.log("");
+  }
+}
+
+async function fetchTriage(
+  server: string,
+  apiKey: string,
+  url: string
+): Promise<{ ok: true; states: Map<string, string> } | { ok: false; error: string }> {
+  try {
+    const res = await fetch(new URL(`/api/findings/state?origin=${encodeURIComponent(url)}`, server), {
+      headers: { Authorization: `Bearer ${apiKey}` },
+    });
+    const body = (await res.json().catch(() => ({}))) as { states?: Array<{ fingerprint: string; state: string }>; error?: string };
+    if (!res.ok) return { ok: false, error: `${res.status} ${body.error ?? ""}`.trim() };
+    return { ok: true, states: new Map((body.states ?? []).map((s) => [s.fingerprint, s.state])) };
+  } catch (err) {
+    return { ok: false, error: err instanceof Error ? err.message : String(err) };
   }
 }
 
@@ -337,7 +358,28 @@ async function main(): Promise<number> {
     }
   }
 
-  const prints = report.findings.filter((f) => f.category === "accessibility").map(fingerprint);
+  // The owner's triage, when there is a server to ask. A finding marked
+  // ignored or a false positive is left out of the thresholds — and SAID,
+  // because a gate that quietly stopped counting things is the failure
+  // this command exists to refuse. The score is untouched: triage is what
+  // the owner decided, the score is what was measured.
+  let counted = report.findings.filter((f) => f.category === "accessibility");
+  if (opts.server && opts.apiKey) {
+    const triage = await fetchTriage(opts.server, opts.apiKey, report.url);
+    if (triage.ok) {
+      const setAside = counted.filter((f) => ["ignored", "false-positive"].includes(triage.states.get(fingerprint(f)) ?? ""));
+      if (setAside.length) {
+        counted = counted.filter((f) => !setAside.includes(f));
+        if (!opts.quiet) {
+          console.log(`  ${setAside.length} finding${setAside.length === 1 ? "" : "s"} set aside by the site's triage (ignored or false positive) — not counted against thresholds`);
+        }
+      }
+    } else if (!opts.quiet) {
+      console.log(`  NOTE: could not read the site's triage (${triage.error}) — every finding counts`);
+    }
+  }
+
+  const prints = counted.map(fingerprint);
   if (opts.writeBaseline) {
     const file = opts.baseline ?? ".a11y-baseline.json";
     writeFileSync(file, JSON.stringify({ url: report.url, createdAt: report.scannedAt, score: report.score, findings: prints }, null, 2));
@@ -353,7 +395,7 @@ async function main(): Promise<number> {
 
   if (opts.failOn) {
     const cutoff = SEVERITY_ORDER.indexOf(opts.failOn);
-    const counts = severityCounts(report.findings);
+    const counts = severityCounts(counted);
     const hit = SEVERITY_ORDER.slice(0, cutoff + 1).filter((s) => counts[s] > 0);
     if (hit.length) {
       failures.push(`found ${hit.map((s) => `${counts[s]} ${s}`).join(", ")} (--fail-on ${opts.failOn})`);
@@ -368,8 +410,13 @@ async function main(): Promise<number> {
     try {
       const saved = JSON.parse(readFileSync(opts.baseline, "utf8")) as { findings: string[] };
       const known = new Set(saved.findings ?? []);
-      const fresh = prints.filter((p) => !known.has(p));
-      const fixed = (saved.findings ?? []).filter((p) => !prints.includes(p));
+      // A baseline written before fingerprints were hashed holds the
+      // rule|selector form. Both are recognised, so an existing gate keeps
+      // working; --write-baseline rewrites it in the new form.
+      const legacy = new Map(counted.map((f) => [legacyFingerprint(f), fingerprint(f)]));
+      const currentForms = new Set([...prints, ...legacy.keys()]);
+      const fresh = counted.filter((f) => !known.has(fingerprint(f)) && !known.has(legacyFingerprint(f))).map(fingerprint);
+      const fixed = (saved.findings ?? []).filter((p) => !currentForms.has(p));
       const countMoved = prints.length - (saved.findings ?? []).length;
       if (!opts.quiet) {
         console.log(

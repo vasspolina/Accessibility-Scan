@@ -183,6 +183,12 @@ product — the same history, the same open questions, the same verdicts:
 A save that fails is printed as a warning and does not change the exit
 code: the scan completed and the thresholds still get their verdict.
 
+With a server the run also reads the site's triage. Findings the owner has
+marked ignored or false positive are left out of `--fail-on` and the
+baseline comparison, and the run prints how many it left out — a gate that
+quietly stopped counting things is the failure this command refuses. The
+score is never adjusted.
+
 Swap the baseline line for `--min-score 90 --fail-on serious` once the
 backlog is cleared and you want to hold a standard rather than a position.
 

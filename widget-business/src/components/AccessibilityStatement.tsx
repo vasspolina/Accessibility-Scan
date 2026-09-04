@@ -1,6 +1,6 @@
 import { useMemo, useState } from "react";
 import { SectionHeader } from "./SectionHeader";
-import type { AccessibilityReport, ConformanceSummary } from "../api/scanClient";
+import type { AccessibilityReport, ConformanceSummary, RecordedVerdict } from "../api/scanClient";
 
 // Generates a draft accessibility statement.
 //
@@ -37,6 +37,32 @@ import type { AccessibilityReport, ConformanceSummary } from "../api/scanClient"
 // offered: nothing this tool produces can support that claim.
 type Position = "partially" | "non";
 
+/**
+ * The manual half of the method paragraph, as far as the verdicts on file
+ * take it. Counts, never names: a statement is public and the person who
+ * decided is not part of the declaration — the ACR carries that.
+ */
+function manualNote(needsReview: number, verdicts: RecordedVerdict[]): string {
+  const decided = verdicts.filter((v) => v.status !== "unresolved");
+  if (decided.length === 0) {
+    return "We have not yet carried out a full manual audit or testing with assistive technology users.";
+  }
+  const n = (s: RecordedVerdict["status"]) => decided.filter((v) => v.status === s).length;
+  const parts: string[] = [];
+  if (n("supports")) parts.push(`${n("supports")} met`);
+  if (n("partially-supports")) parts.push(`${n("partially-supports")} partly met`);
+  if (n("does-not-support")) parts.push(`${n("does-not-support")} not met`);
+  if (n("not-applicable")) parts.push(`${n("not-applicable")} not applicable to this site`);
+  const remaining = Math.max(0, needsReview - decided.length);
+  return (
+    `${decided.length} of the criteria that need human judgement ${decided.length === 1 ? "has" : "have"} been checked by a person: ${parts.join(", ")}.` +
+    (remaining > 0
+      ? ` ${remaining} ${remaining === 1 ? "has" : "have"} not yet been checked manually.`
+      : " Every criterion that needs human judgement has been checked by a person.") +
+    " We have not yet tested with assistive technology users."
+  );
+}
+
 // Exported for testing. The mandatory structure of this document is set by
 // law, so it is checked against that structure rather than trusted to review.
 export function buildStatement(opts: {
@@ -47,8 +73,13 @@ export function buildStatement(opts: {
   conformance?: ConformanceSummary;
   knownIssues: string[];
   date: string;
+  /** A person's recorded decisions for this site. What turns "we have not
+   *  yet carried out a manual audit" into a sentence that is no longer
+   *  true — and a statement that keeps saying it after the work was done
+   *  is as wrong as one that claims work never done. */
+  verdicts?: RecordedVerdict[];
 }): string {
-  const { organisation, contactEmail, siteUrl, position, conformance, knownIssues, date } = opts;
+  const { organisation, contactEmail, siteUrl, position, conformance, knownIssues, date, verdicts = [] } = opts;
   const org = organisation.trim() || "[Your organisation]";
   const email = contactEmail.trim() || "[your contact email]";
 
@@ -98,7 +129,7 @@ This statement is based on an automated check carried out on ${date}. The check 
 
 An automated check has real limits, and we would rather state them than imply a completeness we cannot evidence. ${conformance.needsReview} of those criteria cannot be assessed by software at all. They depend on human judgement. For example: whether video captions are accurate, or whether a form that times out can be extended. Where the check reports no issue, that means no issue was detected. It does not mean a person has verified the criterion as met.
 
-We have not yet carried out a full manual audit or testing with assistive technology users.`
+${manualNote(conformance.needsReview, verdicts)}`
     : `This statement is based on an automated check carried out on ${date}.`;
 
   return `# Accessibility statement for ${siteUrl}
@@ -222,6 +253,7 @@ export function AccessibilityStatement({ report }: { report: AccessibilityReport
         position,
         conformance: report.conformance,
         knownIssues,
+        verdicts: report.verdicts,
         // en-GB, not the viewer's locale: house style is European dates
         // (28 June 2025), and that shouldn't change with who's reading.
         date: new Date(report.scannedAt).toLocaleDateString("en-GB", {

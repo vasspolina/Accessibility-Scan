@@ -44,6 +44,20 @@ export const accessibilityFindingSchema = z.object({
   description: z.string(),
   suggestedFix: z.string(),
   ruleId: z.string().optional(),
+  // The finding's identity across scans — see services/merge/fingerprint.
+  // Optional so older stored reports still parse.
+  fingerprint: z.string().optional(),
+  // What the site's owner decided about this finding, when a signed-in
+  // caller has said. Attached by the scan route from the triage table;
+  // never produced by the pipeline itself.
+  triage: z
+    .object({
+      state: z.enum(["open", "ignored", "false-positive", "fixed"]),
+      note: z.string().nullable(),
+      decidedBy: z.string(),
+      decidedAt: z.string(),
+    })
+    .optional(),
   // Link to an official explanation of the rule — axe findings get their
   // Deque University help page; other findings may link to relevant W3C
   // guidance. Rendered as a "Learn more" link in the widgets.

@@ -1,6 +1,7 @@
 import { env } from "./config/env.js";
 import { logger } from "./utils/logger.js";
 import { buildApp } from "./app.js";
+import { startScheduler, stopScheduler } from "./services/scheduler.js";
 import { shutdownBrowserPool } from "./services/render/browserPool.js";
 
 // Safety net: an unhandled rejection anywhere (e.g. a fire-and-forget
@@ -23,6 +24,7 @@ const app = await buildApp();
 
 async function shutdown(signal: string) {
   logger.info({ signal }, "Shutting down");
+  stopScheduler();
   await shutdownBrowserPool();
   await app.close();
   process.exit(0);
@@ -34,6 +36,8 @@ process.on("SIGTERM", () => void shutdown("SIGTERM"));
 try {
   await app.listen({ port: env.PORT, host: env.HOST });
   logger.info(`Accessibility checker backend listening on http://${env.HOST}:${env.PORT}`);
+  // After listen, so a slow first tick never delays the port opening.
+  startScheduler();
 } catch (err) {
   logger.error(err);
   process.exit(1);

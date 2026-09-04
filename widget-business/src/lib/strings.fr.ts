@@ -2,6 +2,12 @@
    here falls back to that English text rather than to a blank. */
 export const STRINGS_FR: Record<string, string> = {
   // Manual checks
+  "Marked": "Marqué",
+  "Open": "Ouvert",
+  "Ignored": "Ignoré",
+  "False positive": "Faux positif",
+  "Fixed": "Corrigé",
+  "Checked by a person": "Vérifié par une personne",
   "Manual checks": "Vérifications manuelles",
   Decided: "Décidé",
   "Meets it": "Conforme",

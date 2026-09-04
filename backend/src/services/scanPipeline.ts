@@ -1,4 +1,5 @@
 import { logger } from "../utils/logger.js";
+import { fingerprintFinding } from "./merge/fingerprint.js";
 import { env } from "../config/env.js";
 import { withTimeout } from "../utils/timeout.js";
 import { assertSafeUrl } from "../middleware/ssrfGuard.js";
@@ -561,7 +562,7 @@ export async function scanUrlToReport(
     score,
     summary,
     categorySummary,
-    findings,
+    findings: findings.map((f) => ({ ...f, fingerprint: fingerprintFinding(f) })),
     screenReaderScript: renderResult.screenReaderScript,
     conformance,
     wcag22,

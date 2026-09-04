@@ -96,6 +96,53 @@ CREATE TABLE IF NOT EXISTS verdicts (
   answers_check  TEXT
 );
 CREATE INDEX IF NOT EXISTS verdicts_lookup ON verdicts(account_id, origin, criterion, decided_at DESC);
+
+-- Triage: what an owner has decided about a finding — ignored, a false
+-- positive, fixed. Keyed by the finding's fingerprint (rule and selector),
+-- which is the identity a finding keeps across scans. Never overwrites,
+-- for the same reason verdicts never do.
+CREATE TABLE IF NOT EXISTS finding_states (
+  id          TEXT PRIMARY KEY,
+  account_id  TEXT NOT NULL REFERENCES accounts(id),
+  origin      TEXT NOT NULL,
+  fingerprint TEXT NOT NULL,
+  state       TEXT NOT NULL,
+  note        TEXT,
+  decided_by  TEXT NOT NULL,
+  decided_at  TEXT NOT NULL
+);
+CREATE INDEX IF NOT EXISTS finding_states_lookup ON finding_states(account_id, origin, fingerprint, decided_at DESC);
+
+-- Site audits, the multi-page counterpart of scans. Kept whole as JSON for
+-- the same reason scans are.
+CREATE TABLE IF NOT EXISTS audits (
+  id            TEXT PRIMARY KEY,
+  account_id    TEXT NOT NULL REFERENCES accounts(id),
+  entry_url     TEXT NOT NULL,
+  origin        TEXT NOT NULL,
+  scanned_at    TEXT NOT NULL,
+  average_score INTEGER NOT NULL,
+  audit_json    TEXT NOT NULL
+);
+CREATE INDEX IF NOT EXISTS audits_origin_time ON audits(account_id, origin, scanned_at DESC);
+
+-- Scheduled scans: the subscription. A row is a standing instruction; the
+-- scheduler runs whatever is due and writes back when it did.
+CREATE TABLE IF NOT EXISTS schedules (
+  id            TEXT PRIMARY KEY,
+  account_id    TEXT NOT NULL REFERENCES accounts(id),
+  url           TEXT NOT NULL,
+  every_hours   INTEGER NOT NULL,
+  notify_email  TEXT,
+  enabled       INTEGER NOT NULL DEFAULT 1,
+  next_run_at   TEXT NOT NULL,
+  last_run_at   TEXT,
+  last_score    INTEGER,
+  last_scan_id  TEXT,
+  last_error    TEXT,
+  created_at    TEXT NOT NULL
+);
+CREATE INDEX IF NOT EXISTS schedules_due ON schedules(enabled, next_run_at);
 `;
 
 /**
@@ -120,6 +167,9 @@ const MIGRATIONS: Array<{ version: number; sql: string }> = [
     sql: `ALTER TABLE verdicts ADD COLUMN page_url TEXT;
           ALTER TABLE verdicts ADD COLUMN answers_check TEXT;`,
   },
+  // 3: triage, site audits and schedules. New tables only, so the CREATE
+  //    IF NOT EXISTS in SCHEMA does the work; the entry records the step.
+  { version: 3, sql: "" },
 ];
 export const SCHEMA_VERSION = MIGRATIONS[MIGRATIONS.length - 1].version;
 
