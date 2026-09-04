@@ -82,6 +82,12 @@ const envSchema = z.object({
   // than browser renders — see routes/storedRouteLimit.ts for why they do
   // not share the scan's much tighter one.
   STORED_RATE_LIMIT_MAX: z.coerce.number().default(120),
+  // Retention. Stored reports are large — a third of each is screenshots —
+  // and nothing else bounds them. Scans older than this, or beyond this
+  // many per site, are pruned when a new one is saved. Verdicts are never
+  // pruned: they are the record.
+  SCAN_RETENTION_DAYS: z.coerce.number().default(365),
+  SCANS_PER_SITE_MAX: z.coerce.number().default(200),
   // Gate on creating accounts and minting keys. Without it those routes are
   // closed entirely rather than open to anyone who finds them.
   ADMIN_TOKEN: z.string().optional(),

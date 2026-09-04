@@ -1,5 +1,5 @@
 import { DatabaseSync } from "node:sqlite";
-import { mkdirSync } from "node:fs";
+import { mkdirSync, statSync } from "node:fs";
 import { dirname } from "node:path";
 import { env } from "../config/env.js";
 import { logger } from "../utils/logger.js";
@@ -90,10 +90,55 @@ CREATE TABLE IF NOT EXISTS verdicts (
   evidence    TEXT,
   decided_by  TEXT NOT NULL,
   decided_at  TEXT NOT NULL,
-  supersedes  TEXT
+  supersedes  TEXT,
+  -- Migration 2: what the decision was about, not only what it says.
+  page_url       TEXT,
+  answers_check  TEXT
 );
 CREATE INDEX IF NOT EXISTS verdicts_lookup ON verdicts(account_id, origin, criterion, decided_at DESC);
 `;
+
+/**
+ * Schema changes after the first release, in order. Each entry runs once,
+ * and PRAGMA user_version records how far a database has got.
+ *
+ * SCHEMA above creates the tables as they are NOW, for a new file. An
+ * existing file skips those CREATEs (IF NOT EXISTS) and needs the ALTERs
+ * here to catch up. Without this list the first column added to any table
+ * failed on every existing deployment, silently: the CREATE was a no-op and
+ * the next INSERT named a column that was not there. Add a migration for
+ * every change to SCHEMA; never edit an entry that has shipped.
+ */
+const MIGRATIONS: Array<{ version: number; sql: string }> = [
+  // 1: the tables as first shipped. A fresh database gets them from SCHEMA
+  //    and simply records the version.
+  { version: 1, sql: "" },
+  // 2: verdicts can name the page they were checked on and the undecided
+  //    item they answer, so a decision is tied to what it decided.
+  {
+    version: 2,
+    sql: `ALTER TABLE verdicts ADD COLUMN page_url TEXT;
+          ALTER TABLE verdicts ADD COLUMN answers_check TEXT;`,
+  },
+];
+export const SCHEMA_VERSION = MIGRATIONS[MIGRATIONS.length - 1].version;
+
+function migrate(handle: DatabaseSync): void {
+  const { user_version } = handle.prepare("PRAGMA user_version").get() as { user_version: number };
+  for (const m of MIGRATIONS) {
+    if (m.version <= user_version) continue;
+    handle.exec("BEGIN");
+    try {
+      if (m.sql) handle.exec(m.sql);
+      handle.exec(`PRAGMA user_version = ${m.version}`);
+      handle.exec("COMMIT");
+      logger.info({ version: m.version }, "storage migrated");
+    } catch (err) {
+      handle.exec("ROLLBACK");
+      throw err;
+    }
+  }
+}
 
 function open(): DatabaseSync | null {
   if (db || initError) return db;
@@ -106,7 +151,12 @@ function open(): DatabaseSync | null {
     // once behind the render queue.
     handle.exec("PRAGMA journal_mode = WAL");
     handle.exec("PRAGMA foreign_keys = ON");
+    const fresh = (handle.prepare("PRAGMA user_version").get() as { user_version: number }).user_version === 0;
     handle.exec(SCHEMA);
+    // A fresh file already has the current shape from SCHEMA; it only needs
+    // the version stamped. An older file walks the list.
+    if (fresh) handle.exec(`PRAGMA user_version = ${SCHEMA_VERSION}`);
+    else migrate(handle);
     db = handle;
     logger.info({ path: env.DB_PATH, durable: env.DB_DURABLE }, "storage ready");
   } catch (err) {
@@ -144,6 +194,33 @@ export interface StorageStatus {
   error?: string;
   /** What to tell a caller who asked for a stored feature and cannot have it. */
   reason?: string;
+  /** How much there is. A stored report is ~140 KB, a third of it
+   *  screenshots, and a team scanning hourly stores a gigabyte a year per
+   *  site — a fact the deployer needs before the disk tells them. */
+  size?: { bytes: number; scans: number; accounts: number; verdicts: number };
+  /** What is pruned, so the number above has a ceiling. */
+  retention?: { scanDays: number; scansPerSite: number };
+  schemaVersion?: number;
+}
+
+function sizeOf(handle: DatabaseSync): StorageStatus["size"] {
+  const count = (table: string) =>
+    Number((handle.prepare(`SELECT COUNT(*) AS n FROM ${table}`).get() as { n: number }).n);
+  let bytes = 0;
+  try {
+    if (env.DB_PATH && env.DB_PATH !== ":memory:") {
+      bytes = statSync(env.DB_PATH).size;
+      // WAL pages not yet checkpointed live beside the file.
+      try {
+        bytes += statSync(`${env.DB_PATH}-wal`).size;
+      } catch {
+        // No WAL file at the moment — nothing outstanding.
+      }
+    }
+  } catch {
+    // Unreadable size is reported as 0 with the counts still honest.
+  }
+  return { bytes, scans: count("scans"), accounts: count("accounts"), verdicts: count("verdicts") };
 }
 
 export function storageStatus(): StorageStatus {
@@ -157,6 +234,9 @@ export function storageStatus(): StorageStatus {
   return {
     configured: true,
     durable: env.DB_DURABLE,
+    size: db ? sizeOf(db) : undefined,
+    retention: { scanDays: env.SCAN_RETENTION_DAYS, scansPerSite: env.SCANS_PER_SITE_MAX },
+    schemaVersion: SCHEMA_VERSION,
     ...(env.DB_DURABLE
       ? {}
       : {

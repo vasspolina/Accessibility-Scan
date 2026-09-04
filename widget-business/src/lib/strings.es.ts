@@ -1,6 +1,14 @@
 /* Spanish chrome strings. The English string IS the key; t() falls back to
    the key per entry, so a missing line renders in English. */
 export const STRINGS_ES: Record<string, string> = {
+  // Manual checks
+  "Manual checks": "Comprobaciones manuales",
+  Decided: "Decidido",
+  "Meets it": "Lo cumple",
+  Partly: "En parte",
+  "Fails it": "No lo cumple",
+  "Does not apply": "No aplica",
+  Undecided: "Sin decidir",
   // Section titles and nav labels
   "Your score": "Su puntuación",
   Score: "Puntuación",

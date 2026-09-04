@@ -690,6 +690,7 @@
 .a11y-widget-biz .a11y-note-title     { font-size: 20px; line-height: 1.2;  font-weight: 500; }
 .a11y-widget-biz .a11y-level-badge,
 .a11y-widget-biz .a11y-finding-criterion,
+.a11y-widget-biz .a11y-textarea-label,
 .a11y-widget-biz .a11y-input-label,
 .a11y-widget-biz .a11y-tag            { font-size: 15px; line-height: 1.2;  font-weight: 500; }
 .a11y-widget-biz .a11y-dial-number    {    }
@@ -877,7 +878,23 @@
 
 /* Forms — .as-field / .as-input / .as-switch / .as-optioncard ------------ */
 .a11y-widget-biz .a11y-input,
-.a11y-widget-biz .a11y-textarea-field { display: flex; flex-direction: column; gap: var(--space-03); }
+.a11y-widget-biz .a11y-textarea { display: flex; flex-direction: column; gap: var(--space-03); }
+/* The ported Textarea emits a11y-textarea / -label / -help, and the rule
+   above was written against a name it never had (.a11y-textarea-field), so
+   the first use of the component rendered its helper text beside the box
+   rather than under it. Measured in the manual-checks answer form. The
+   field itself takes the Input's line treatment, which is the design the
+   two share. */
+.a11y-widget-biz .a11y-textarea textarea {
+  width: 100%; box-sizing: border-box; min-height: 88px; padding: var(--space-03) 0;
+  border: 0; border-bottom: 1px solid var(--text-primary); border-radius: 0;
+  background: transparent; color: var(--text-primary);
+  font-family: inherit; font-size: 18px; line-height: 1.4; letter-spacing: 0.01em;
+  resize: vertical;
+}
+.a11y-widget-biz .a11y-textarea textarea[aria-invalid="true"] { border-bottom: 2px solid var(--severity-critical); }
+.a11y-widget-biz .a11y-textarea-help { display: block; font-size: 15px; color: var(--text-secondary); }
+.a11y-widget-biz .a11y-textarea-help-invalid { color: var(--red-70); }
 .a11y-widget-biz .a11y-input-shell > input,
 .a11y-widget-biz .a11y-input input {
   height: 44px; padding: 0; border: 0; border-bottom: 1px solid var(--text-primary);
@@ -6600,4 +6617,45 @@
      row wraps and the body takes a line of its own. */
   .a11y-widget-biz .a11y-audit-row { flex-wrap: wrap; }
   .a11y-widget-biz .a11y-audit-body { flex-basis: 100%; }
+}
+
+
+/* ---------- Manual checks (guided manual testing) ----------
+   Rows reuse the conformance row's three columns — id, body, status —
+   because they are the same rows: these are the criteria the table above
+   marked "Needs a person", with somewhere to say what the person found. */
+.a11y-widget-biz .a11y-manual-list {
+  list-style: none; margin: 0; padding: 0;
+  display: grid; gap: var(--space-03);
+}
+.a11y-widget-biz .a11y-manual-row {
+  display: grid;
+  grid-template-columns: 5.5rem minmax(0, 1fr) minmax(12rem, 20rem);
+  gap: var(--space-04);
+  padding: var(--space-04) 0;
+  border-top: 1px solid var(--border-subtle);
+  align-items: start;
+}
+.a11y-widget-biz .a11y-manual-answered { background: var(--layer-01); }
+.a11y-widget-biz .a11y-manual-verdict {
+  display: block; margin-top: var(--space-02);
+  font-size: 15px; font-weight: 500; letter-spacing: 0.01em;
+  color: var(--text-primary);
+}
+.a11y-widget-biz .a11y-manual-verdict em {
+  font-style: normal; font-weight: 400; color: var(--text-secondary);
+}
+.a11y-widget-biz .a11y-manual-actions { display: flex; justify-content: flex-end; }
+.a11y-widget-biz .a11y-manual-form {
+  display: grid; gap: var(--space-03); width: 100%;
+}
+.a11y-widget-biz .a11y-manual-form-actions {
+  display: flex; gap: var(--space-03); flex-wrap: wrap;
+}
+@container a11y-panel (max-width: 44rem) {
+  .a11y-widget-biz .a11y-manual-row { grid-template-columns: 1fr; }
+  .a11y-widget-biz .a11y-manual-actions { justify-content: flex-start; }
+}
+@media print {
+  .a11y-widget-biz .a11y-manual-actions { display: none; }
 }

@@ -637,3 +637,40 @@ the CLI already has everything the format needs.
    (10), site audits into the record (5).**
 6. **Account lifecycle (8)** before any European customer; **scheduling
    (11)** and **SARIF (12)** as the two that turn features into a product.
+
+## Status, 26 August 2026 — after the fix pass
+
+Closed, each verified by measurement:
+
+- **1 The front door** — the widget has an Account row (key checked
+  against the server before it is kept), server history replaces the local
+  one for a saved scan, a Manual checks section lists the open questions
+  with an answer form, and decisions show on the conformance rows. Driven
+  end to end in Playwright: wrong key refused, unsigned answer refused,
+  27 open → 26 after one answer, the conformance row and the ACR both
+  carrying it. Axe over the whole document with the shadow root counted
+  (27 rows, 4 settings rows, 3 form controls): no violations. Found and
+  fixed on the way: the ported Textarea had never been styled — its CSS
+  was written against a class name it never had.
+- **2 The CLI** — `prepare` builds on install, `npm link` is the documented
+  path, and CI runs the documented command from a temporary directory and
+  checks all three exit codes. Publishing to npm is the user's action.
+- **3 Backend CI** — `.github/workflows/backend.yml`.
+- **4 Route tests** — `buildApp()` split from the listener; 12 `inject()`
+  cases covering CORS methods, both budgets, admin gating, the import
+  route, tenancy, and the full verdict loop.
+- **6 Storage growth** — retention by age and count on every save, size
+  and counts in `storageStatus()`, `last_used_at` written at most once a
+  minute per key.
+- **7 Migrations** — `PRAGMA user_version` with an ordered list; tested
+  against a hand-built version-1 file.
+- **8 Account lifecycle** — list, delete (with counts), export.
+- **9 Verdict context** — `pageUrl` and `answersCheck` stored; verdicts
+  reach the conformance table; the CLI can save a report so its user can
+  be asked.
+- **12 Export** — `--sarif`, valid 2.1.0, checked in CI.
+
+Still open: **5** site audits into the record, **10** server-side finding
+identity and triage state, **11** scheduling and monitoring. And 9's last
+clause — the accessibility statement and the professional summary still
+do not read verdicts.

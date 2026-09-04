@@ -21,6 +21,22 @@ is wiped on every deploy, and storage that works perfectly and then vanishes
 is worse than none, because people trust it first. Point `DB_PATH` inside a
 mounted volume and set `DB_DURABLE=true` to say so.
 
+`size` says how much is stored and `retention` what is pruned: scans older
+than `SCAN_RETENTION_DAYS` (365) or beyond `SCANS_PER_SITE_MAX` (200) per
+site go when a new one is saved. Verdicts are never pruned — they are the
+record. Schema changes are migrated in place on start (`PRAGMA
+user_version`), so an older database file catches up rather than failing on
+the first new column.
+
+## In the product
+
+The widget has an **Account** row in the run's settings. Paste a key there
+and it is checked against the server before it is kept; from then on every
+scan from that browser is saved, the "since last time" comparison comes
+from the server's history rather than this browser's, and a **Manual
+checks** section appears under the conformance table with the open
+questions and a form to answer each. Without a key nothing changes.
+
 ## Accounts
 
 There is no sign-up flow, no email verification and no billing. Inventing
@@ -42,6 +58,15 @@ Without `ADMIN_TOKEN` set, that route is closed rather than open. An operator
 endpoint that defaults to public is the kind of default that ends up in an
 incident report.
 
+```
+GET    /api/accounts          every account, with how much each holds
+DELETE /api/accounts/:id      remove one and everything it owns — the
+                              GDPR Article 17 answer; the counts come back
+GET    /api/account/export    everything this account holds, as one
+                              document — the Article 15 answer, and a
+                              backup a person can take without asking
+```
+
 ## History
 
 Send the key with a scan and it is kept:
@@ -57,7 +82,13 @@ The response gains `savedAs`. Without a key nothing changes and nothing is
 saved — anonymous scanning stays the default, and a storage failure never
 costs a caller their report.
 
+A report scanned elsewhere — by the CLI, which never passes through the
+hosted service — joins the same record through `POST /api/scans` with the
+report as the body. The CLI does this itself with `--server` and
+`--api-key`.
+
 ```
+POST   /api/scans                    save a report scanned elsewhere
 GET    /api/scans?origin=…&limit=…   the list, newest first, each with
                                      scoreChange against the previous scan
                                      of the same site
@@ -95,6 +126,9 @@ curl -X POST https://your-scanner/api/verdicts \
        "decidedBy":"Alex Rahim"}'
 ```
 
+`pageUrl` says which page it was checked on and `answersCheck` names the
+undecided item it answers; both optional, both kept.
+
 `status` is one of `supports`, `partially-supports`, `does-not-support`,
 `not-applicable` — the four terms an ACR permits — plus `unresolved`, which
 means looked at and not yet decided. That is a different fact from never
@@ -115,8 +149,9 @@ Three rules keep it honest:
 
 ### What it changes in the report
 
-Scan with the key again and the conformance report for buyers fills in the
-rows a person has answered, each remark citing who decided and when. A
+Scan with the key again and the conformance table shows each decision
+beside the row it answers, and the conformance report for buyers fills in
+those rows, each remark citing who decided and when. A
 criterion the scan proved failing stays "Does Not Support" whatever anyone
 recorded: an opinion does not un-break the thing the scanner is looking at.
 Rows nobody has answered stay blank, exactly as before.

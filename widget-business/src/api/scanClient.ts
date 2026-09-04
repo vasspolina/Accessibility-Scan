@@ -1,3 +1,4 @@
+import { getApiKey } from "../lib/apiKey";
 import { getLang } from "../lib/i18n";
 
 export type Severity = "critical" | "serious" | "moderate" | "minor";
@@ -147,6 +148,9 @@ export interface AccessibilityReport {
   // Absent for an anonymous scan, and for a site nobody has answered a
   // question about yet.
   verdicts?: RecordedVerdict[];
+  // Present only when the scan was saved: the caller sent an API key and
+  // the server has storage. Absent for anonymous scans.
+  savedAs?: string;
   url: string;
   scannedAt: string;
   score: number;
@@ -240,6 +244,13 @@ export type AuthConfig =
 // `blocked` is set when the site refused the scanner (bot protection, a
 // CAPTCHA challenge). It isn't a fault in the request, so the widget shows
 // guidance rather than a red error.
+/** The Authorization header when a key is set, and nothing when it is not:
+ *  an anonymous request must not carry an empty bearer. */
+export function authHeaders(): Record<string, string> {
+  const key = getApiKey();
+  return key ? { Authorization: `Bearer ${key}` } : {};
+}
+
 export class ScanError extends Error {
   blocked: boolean;
   constructor(message: string, blocked = false) {
@@ -299,7 +310,7 @@ export async function scanUrl(
     try {
       response = await fetchWithDeadline(
         endpoint,
-        { method: "POST", headers: { "Content-Type": "application/json" }, body },
+        { method: "POST", headers: { "Content-Type": "application/json", ...authHeaders() }, body },
         SCAN_TIMEOUT_MS
       );
     } catch (err) {
@@ -366,7 +377,7 @@ export async function auditSite(
   try {
     response = await fetchWithDeadline(
       endpoint,
-      { method: "POST", headers: { "Content-Type": "application/json" }, body },
+      { method: "POST", headers: { "Content-Type": "application/json", ...authHeaders() }, body },
       AUDIT_TIMEOUT_MS
     );
   } catch (err) {
@@ -425,3 +436,81 @@ export async function emailReport(
   if (response.status === 400) return "rejected";
   return "failed";
 }
+
+
+/** One open question of guided manual testing — the server's shape. */
+export interface GuidedQuestion {
+  criterion: string;
+  name: string;
+  level: "A" | "AA";
+  question: string;
+  whyAsking: string;
+  answered: RecordedVerdict | null;
+}
+
+export interface QuestionsResult {
+  origin: string;
+  fromScan: { id: string; scannedAt: string };
+  answered: number;
+  open: number;
+  questions: GuidedQuestion[];
+}
+
+/** A saved scan as the server lists it. */
+export interface StoredScanSummary {
+  id: string;
+  url: string;
+  origin: string;
+  scannedAt: string;
+  score: number;
+  findingCount: number;
+  scoreChange?: number;
+  ruleIds: string[];
+  severity: { critical: number; serious: number; moderate: number; minor: number };
+  conformanceFailed: number;
+}
+
+export interface StorageStatus {
+  configured: boolean;
+  durable: boolean;
+  reason?: string;
+}
+
+async function authed<T>(apiBase: string, path: string, init?: RequestInit): Promise<T> {
+  const res = await fetch(`${apiBase.replace(/\/$/, "")}${path}`, {
+    ...init,
+    headers: { "Content-Type": "application/json", ...authHeaders(), ...(init?.headers ?? {}) },
+  });
+  const body = (await res.json().catch(() => ({}))) as T & { error?: string; detail?: string };
+  if (!res.ok) {
+    // 501 is "the server has no storage", 401 is "this key is wrong" — the
+    // two things a person needs to be told apart.
+    throw new ScanError(body.detail ?? body.error ?? `Request failed with status ${res.status}`);
+  }
+  return body;
+}
+
+export const fetchStorage = (apiBase: string) =>
+  authed<{ storage: StorageStatus }>(apiBase, "/api/storage").then((r) => r.storage);
+
+/** Who the key belongs to — the check a pasted key gets before it is kept. */
+export const fetchAccount = (apiBase: string) =>
+  authed<{ account: { id: string; email: string; label: string | null } }>(apiBase, "/api/account").then((r) => r.account);
+
+export const fetchQuestions = (apiBase: string, origin: string) =>
+  authed<QuestionsResult>(apiBase, `/api/verdicts/questions?origin=${encodeURIComponent(origin)}`);
+
+export const fetchServerHistory = (apiBase: string, origin: string) =>
+  authed<{ scans: StoredScanSummary[] }>(apiBase, `/api/scans?origin=${encodeURIComponent(origin)}&limit=20`).then((r) => r.scans);
+
+export interface VerdictInput {
+  origin: string;
+  criterion: string;
+  status: RecordedVerdict["status"];
+  note?: string;
+  decidedBy: string;
+  pageUrl?: string;
+}
+
+export const recordVerdict = (apiBase: string, input: VerdictInput) =>
+  authed<{ verdict: RecordedVerdict }>(apiBase, "/api/verdicts", { method: "POST", body: JSON.stringify(input) }).then((r) => r.verdict);

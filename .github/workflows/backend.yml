@@ -1,0 +1,56 @@
+# The scanner's own tests, and the command it sells.
+#
+# 600-odd tests cover the score, the conformance table, every probe, the
+# storage layer and the HTTP routes. Then the documented CLI command runs
+# from OUTSIDE the repository directory against a real page, because a
+# tool whose docs say "npx a11y-scan" has to be shown doing it.
+name: Backend
+
+on:
+  push:
+    paths:
+      - "backend/**"
+      - ".github/workflows/backend.yml"
+  pull_request:
+    paths:
+      - "backend/**"
+      - ".github/workflows/backend.yml"
+
+jobs:
+  backend:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    defaults:
+      run:
+        working-directory: backend
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+          cache-dependency-path: backend/package-lock.json
+
+      - run: npm ci
+      - run: npx playwright install chromium --with-deps
+
+      # Types first: a type error makes every later failure harder to read.
+      - run: npx tsc --noEmit
+      - run: npm test
+      - run: npm run build
+
+      # The documented install path, from a directory that is not the repo.
+      # `npm link` is what `npm install -g` does without a registry; the
+      # smoke test proves the bin, the build and the Playwright browser
+      # all line up — exit 0 with no thresholds, exit 1 with one it cannot
+      # meet, exit 2 for a URL that is not one.
+      - name: CLI smoke test
+        run: |
+          npm link
+          cd "$(mktemp -d)"
+          a11y-scan https://example.com --quiet
+          if a11y-scan https://example.com --min-score 100 --quiet; then echo "expected exit 1"; exit 1; fi
+          if a11y-scan notaurl --quiet; then echo "expected exit 2"; exit 1; fi
+          a11y-scan https://example.com --sarif out.sarif --quiet
+          node -e "const s=JSON.parse(require('fs').readFileSync('out.sarif','utf8')); if(s.version!=='2.1.0'||!s.runs[0].results.length) process.exit(1)"

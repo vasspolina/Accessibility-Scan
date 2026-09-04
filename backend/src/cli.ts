@@ -35,7 +35,11 @@ interface Options {
   failOn?: Severity;
   maxNew?: number;
   json?: string;
+  sarif?: string;
   baseline?: string;
+  /** Save the report to a hosted instance's history. */
+  server?: string;
+  apiKey?: string;
   writeBaseline: boolean;
   quiet: boolean;
   ai: boolean;
@@ -84,6 +88,9 @@ export function parseArgs(argv: string[]): Options | { error: string } {
         break;
       }
       case "--json": opts.json = next(); break;
+      case "--sarif": opts.sarif = next(); break;
+      case "--server": opts.server = next(); break;
+      case "--api-key": opts.apiKey = next(); break;
       case "--baseline": opts.baseline = next(); break;
       case "--write-baseline": opts.writeBaseline = true; break;
       case "--quiet": opts.quiet = true; break;
@@ -96,6 +103,13 @@ export function parseArgs(argv: string[]): Options | { error: string } {
     }
   }
   if (missing) return { error: missing };
+  // The environment is the right place for a key in CI; a flag puts it in
+  // the job log.
+  opts.server ??= process.env.A11Y_SERVER || undefined;
+  opts.apiKey ??= process.env.A11Y_API_KEY || undefined;
+  if ((opts.server && !opts.apiKey) || (!opts.server && opts.apiKey)) {
+    return { error: "Saving needs both --server and --api-key (or A11Y_SERVER and A11Y_API_KEY)." };
+  }
   if (positional.length !== 1) return { error: "Give exactly one URL to scan." };
   // --max-new only ever applied inside the baseline comparison, so on its
   // own it was a threshold that quietly did nothing — the same green-forever
@@ -118,6 +132,10 @@ const HELP = `a11y-scan — accessibility scan for a pipeline
   --baseline <file>     compare against a saved baseline
   --write-baseline      write the baseline file from this run and exit 0
   --json <file>         write the full report as JSON
+  --sarif <file>        write the findings as SARIF 2.1.0 — GitHub shows
+                        these inline on the pull request
+  --server <url>        save the report to a hosted instance's history
+  --api-key <key>       ...with this key (or A11Y_SERVER / A11Y_API_KEY)
   --ai                  include the AI review (needs ANTHROPIC_API_KEY)
   --quiet               only print the verdict line
 
@@ -177,6 +195,73 @@ function summarise(report: AccessibilityReport, quiet: boolean): void {
   }
 }
 
+async function saveToServer(
+  server: string,
+  apiKey: string,
+  report: AccessibilityReport
+): Promise<{ ok: true; id: string } | { ok: false; error: string }> {
+  try {
+    const res = await fetch(new URL("/api/scans", server), {
+      method: "POST",
+      headers: { "Content-Type": "application/json", Authorization: `Bearer ${apiKey}` },
+      body: JSON.stringify(report),
+    });
+    const body = (await res.json().catch(() => ({}))) as { savedAs?: string; error?: string; detail?: string };
+    if (!res.ok || !body.savedAs) {
+      return { ok: false, error: `${res.status} ${body.error ?? ""} ${body.detail ?? ""}`.trim() };
+    }
+    return { ok: true, id: body.savedAs };
+  } catch (err) {
+    return { ok: false, error: err instanceof Error ? err.message : String(err) };
+  }
+}
+
+/**
+ * SARIF 2.1.0, the format GitHub code scanning reads.
+ *
+ * Uploaded from a workflow, each finding appears on the pull request as an
+ * annotation — which is where a developer meets it, rather than in a JSON
+ * file nobody opens. A web page has no file and line, so the location is
+ * the URL as an artifact and the CSS selector as its logical location;
+ * that is what the format allows for and what GitHub renders.
+ */
+export function toSarif(report: AccessibilityReport): unknown {
+  const findings = report.findings.filter((f) => f.category === "accessibility");
+  const ruleIds = [...new Set(findings.map((f) => f.ruleId ?? f.wcagCriterion ?? "finding"))];
+  const level = (s: Severity) => (s === "critical" || s === "serious" ? "error" : s === "moderate" ? "warning" : "note");
+  return {
+    $schema: "https://json.schemastore.org/sarif-2.1.0.json",
+    version: "2.1.0",
+    runs: [
+      {
+        tool: {
+          driver: {
+            name: "a11y-scan",
+            informationUri: "https://barrierfreeweb.de",
+            rules: ruleIds.map((id) => ({ id, shortDescription: { text: id } })),
+          },
+        },
+        results: findings.map((f) => ({
+          ruleId: f.ruleId ?? f.wcagCriterion ?? "finding",
+          level: level(f.severity),
+          message: { text: f.suggestedFix ? `${f.description} ${f.suggestedFix}` : f.description },
+          locations: [
+            {
+              physicalLocation: { artifactLocation: { uri: report.url } },
+              ...(f.selector ? { logicalLocations: [{ name: f.selector, kind: "element" }] } : {}),
+            },
+          ],
+          partialFingerprints: { primaryLocationLineHash: fingerprint(f) },
+          // Only a real criterion id. Some automated findings carry a
+          // placeholder string here rather than an id, and a property
+          // reading "WCAG (see rule help)" is noise in someone's dashboard.
+          ...(f.wcagCriterion && /^\d+\.\d+\.\d+$/.test(f.wcagCriterion) ? { properties: { wcag: f.wcagCriterion } } : {}),
+        })),
+      },
+    ],
+  };
+}
+
 async function main(): Promise<number> {
   const parsed = parseArgs(process.argv.slice(2));
   if ("error" in parsed) {
@@ -230,6 +315,26 @@ async function main(): Promise<number> {
   if (opts.json) {
     writeFileSync(opts.json, JSON.stringify(report, null, 2));
     if (!opts.quiet) console.log(`  report written to ${opts.json}`);
+  }
+
+  if (opts.sarif) {
+    writeFileSync(opts.sarif, JSON.stringify(toSarif(report), null, 2));
+    if (!opts.quiet) console.log(`  SARIF written to ${opts.sarif}`);
+  }
+
+  if (opts.server && opts.apiKey) {
+    // Saved before the thresholds are judged, so a failing run is in the
+    // history too — it is the one a person will want to look at.
+    const saved = await saveToServer(opts.server, opts.apiKey, report);
+    if (saved.ok) {
+      if (!opts.quiet) console.log(`  saved to ${opts.server} as ${saved.id}`);
+    } else {
+      // Said, never swallowed: a job that believes its history is being
+      // kept when it is not is the silent failure this command is built
+      // to refuse. Not exit 2 though — the scan itself was completed and
+      // the thresholds still deserve their verdict.
+      console.error(`  WARNING: could not save to ${opts.server}: ${saved.error}`);
+    }
   }
 
   const prints = report.findings.filter((f) => f.category === "accessibility").map(fingerprint);

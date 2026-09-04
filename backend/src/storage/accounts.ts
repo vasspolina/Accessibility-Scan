@@ -85,19 +85,66 @@ export function accountForKey(key: string | undefined): Account | null {
   const hash = hashKey(key);
   const row = db
     .prepare(
-      `SELECT a.id, a.email, a.label, a.created_at, k.id AS key_id, k.key_hash, k.revoked_at
+      `SELECT a.id, a.email, a.label, a.created_at, k.id AS key_id, k.key_hash, k.revoked_at, k.last_used_at
          FROM api_keys k JOIN accounts a ON a.id = k.account_id
         WHERE k.key_hash = ?`
     )
     .get(hash) as
-    | { id: string; email: string; label: string | null; created_at: string; key_id: string; key_hash: string; revoked_at: string | null }
+    | { id: string; email: string; label: string | null; created_at: string; key_id: string; key_hash: string; revoked_at: string | null; last_used_at: string | null }
     | undefined;
   if (!row || row.revoked_at) return null;
   const a = Buffer.from(hash, "hex");
   const b = Buffer.from(row.key_hash, "hex");
   if (a.length !== b.length || !timingSafeEqual(a, b)) return null;
-  db.prepare("UPDATE api_keys SET last_used_at = ? WHERE id = ?").run(new Date().toISOString(), row.key_id);
+  // last_used_at is a "when was this key last seen" for a person reviewing
+  // their keys, so minute resolution is plenty. Writing it on EVERY request
+  // was one write per read in a WAL database on a shared volume; now it is
+  // one write per key per minute at most.
+  const now = Date.now();
+  if (!row.last_used_at || now - Date.parse(row.last_used_at) > 60_000) {
+    db.prepare("UPDATE api_keys SET last_used_at = ? WHERE id = ?").run(new Date(now).toISOString(), row.key_id);
+  }
   return { id: row.id, email: row.email, label: row.label, createdAt: row.created_at };
+}
+
+/** Every account, for the operator. */
+export function listAccounts(): Array<Account & { keys: number; scans: number }> {
+  const db = getDb();
+  if (!db) return [];
+  return (
+    db
+      .prepare(
+        `SELECT a.id, a.email, a.label, a.created_at,
+                (SELECT COUNT(*) FROM api_keys k WHERE k.account_id = a.id AND k.revoked_at IS NULL) AS keys,
+                (SELECT COUNT(*) FROM scans s WHERE s.account_id = a.id) AS scans
+           FROM accounts a ORDER BY a.created_at DESC`
+      )
+      .all() as Array<{ id: string; email: string; label: string | null; created_at: string; keys: number; scans: number }>
+  ).map((r) => ({ id: r.id, email: r.email, label: r.label, createdAt: r.created_at, keys: Number(r.keys), scans: Number(r.scans) }));
+}
+
+/**
+ * Removes an account and everything it owns — the GDPR Article 17 answer.
+ * Explicit deletes rather than ON DELETE CASCADE so the order is visible
+ * and the count of each is returned to whoever asked.
+ */
+export function deleteAccount(accountId: string): { scans: number; verdicts: number; keys: number } | null {
+  const db = getDb();
+  if (!db) return null;
+  const exists = db.prepare("SELECT 1 FROM accounts WHERE id = ?").get(accountId);
+  if (!exists) return null;
+  db.exec("BEGIN");
+  try {
+    const scans = Number(db.prepare("DELETE FROM scans WHERE account_id = ?").run(accountId).changes);
+    const verdicts = Number(db.prepare("DELETE FROM verdicts WHERE account_id = ?").run(accountId).changes);
+    const keys = Number(db.prepare("DELETE FROM api_keys WHERE account_id = ?").run(accountId).changes);
+    db.prepare("DELETE FROM accounts WHERE id = ?").run(accountId);
+    db.exec("COMMIT");
+    return { scans, verdicts, keys };
+  } catch (err) {
+    db.exec("ROLLBACK");
+    throw err;
+  }
 }
 
 export function listApiKeys(accountId: string): Array<{ id: string; name: string; prefix: string; createdAt: string; lastUsedAt: string | null; revokedAt: string | null }> {

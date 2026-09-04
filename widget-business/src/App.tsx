@@ -46,10 +46,15 @@ import { AccessibilityStatement } from "./components/AccessibilityStatement";
 import { AcrDraft } from "./components/AcrDraft";
 import { BlockedNotice } from "./components/BlockedNotice";
 import { ScanHistory } from "./components/ScanHistory";
+import { ManualChecks } from "./components/ManualChecks";
+import { AccountKey } from "./components/AccountKey";
+import { getApiKey } from "./lib/apiKey";
+import { fetchServerHistory, type RecordedVerdict } from "./api/scanClient";
 import { PrintButton } from "./components/PrintButton";
 import { Button } from "./components/Button";
 import { WCAG_LINK } from "./lib/wcagPlain";
 import {
+  SCORING_VERSION,
   recordScan,
   getHistory,
   toHistoryEntry,
@@ -136,6 +141,10 @@ export function App({
   // Earlier scans of the page just checked, read before this one is recorded
   // so the current scan isn't compared against itself.
   const [history, setHistory] = useState<HistoryEntry[]>([]);
+  // Bumped when the account key changes, so anything read with it reloads.
+  const [accountVersion, setAccountVersion] = useState(0);
+  // Re-read when the key changes; getApiKey is a localStorage read.
+  const signedIn = useMemo(() => Boolean(getApiKey()), [accountVersion]);
   // Seconds since the scan began, and how long the last one took.
   //
   // Worth showing because the honest answer is "it depends". A light page
@@ -320,6 +329,34 @@ export function App({
         setHistory(getHistory(result.url, result.scannedAt));
         recordScan(result, Boolean(auth));
         setReport(result);
+        // A saved scan has a server-side history too, which follows the
+        // account rather than this browser. It replaces the local one when
+        // it exists; the local one stays the answer for anonymous scans.
+        if (result.savedAs) {
+          fetchServerHistory(apiBase, result.url)
+            .then((scans) =>
+              setHistory(
+                scans
+                  .filter((s) => s.id !== result.savedAs)
+                  .map((s) => ({
+                    url: s.url,
+                    scannedAt: s.scannedAt,
+                    score: s.score,
+                    critical: s.severity.critical,
+                    serious: s.severity.serious,
+                    moderate: s.severity.moderate,
+                    minor: s.severity.minor,
+                    conformanceFailed: s.conformanceFailed,
+                    ruleIds: s.ruleIds,
+                    scoringVersion: SCORING_VERSION,
+                  }))
+              )
+            )
+            .catch(() => {
+              // The local history is already showing; the server's is an
+              // improvement, not a requirement.
+            });
+        }
       }
     } catch (err) {
       if (err instanceof ScanError && err.blocked) {
@@ -352,6 +389,7 @@ export function App({
          why they are buttons that name the cost rather than switches. */
       navSettings={
         report || audit ? (
+          <>
           <ScanSettings
             audience={audience}
             onAudienceChange={setAudience}
@@ -369,6 +407,8 @@ export function App({
               );
             }}
           />
+          <AccountKey apiBase={apiBase} onChange={() => setAccountVersion((v) => v + 1)} />
+          </>
         ) : undefined
       }
       /* The run controls live in the top bar now, for both audiences.
@@ -703,7 +743,28 @@ export function App({
           <ScanHistory current={toHistoryEntry(report)} previous={history} />
 
           {report.conformance && (
-            <ConformanceView conformance={report.conformance} showBfsgNote={!professional} />
+            <ConformanceView
+              conformance={report.conformance}
+              showBfsgNote={!professional}
+              verdicts={report.verdicts}
+            />
+          )}
+
+          {/* Only for a saved scan: a verdict has to belong to somebody, and
+              the questions come from the server's copy of this site. */}
+          {report.savedAs && signedIn && (
+            <ManualChecks
+              key={accountVersion}
+              apiBase={apiBase}
+              pageUrl={report.url}
+              onVerdict={(v: RecordedVerdict) =>
+                setReport((r) =>
+                  r
+                    ? { ...r, verdicts: [...(r.verdicts ?? []).filter((x) => x.criterion !== v.criterion), v] }
+                    : r
+                )
+              }
+            />
           )}
 
           {report.wcag22 && <Wcag22Readiness readiness={report.wcag22} />}

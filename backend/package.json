@@ -4,7 +4,7 @@
   "private": true,
   "type": "module",
   "engines": {
-    "node": ">=20"
+    "node": ">=24"
   },
   "scripts": {
     "dev": "tsx watch src/server.ts",
@@ -15,7 +15,8 @@
     "start": "node dist/server.js",
     "test": "vitest run",
     "playwright:install": "playwright install --with-deps chromium",
-    "scan": "node dist/cli.js"
+    "scan": "node dist/cli.js",
+    "prepare": "tsc -p tsconfig.json"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.112.3",
@@ -44,5 +45,9 @@
   },
   "bin": {
     "a11y-scan": "dist/cli.js"
-  }
+  },
+  "files": [
+    "dist",
+    "public"
+  ]
 }

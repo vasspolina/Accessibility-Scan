@@ -1,6 +1,14 @@
 /* French chrome strings. The key is the English string itself; a key missing
    here falls back to that English text rather than to a blank. */
 export const STRINGS_FR: Record<string, string> = {
+  // Manual checks
+  "Manual checks": "Vérifications manuelles",
+  Decided: "Décidé",
+  "Meets it": "Conforme",
+  Partly: "En partie",
+  "Fails it": "Non conforme",
+  "Does not apply": "Sans objet",
+  Undecided: "Non tranché",
   // Section titles and nav labels
   "Your score": "Votre score",
   Score: "Score",

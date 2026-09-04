@@ -65,6 +65,10 @@ export interface Verdict {
   decidedBy: string;
   decidedAt: string;
   supersedes: string | null;
+  /** The page it was checked on, when the person said. */
+  pageUrl: string | null;
+  /** The undecided item (its check id) this answers, when it answers one. */
+  answersCheck: string | null;
 }
 
 export interface VerdictInput {
@@ -74,6 +78,8 @@ export interface VerdictInput {
   note?: string;
   evidence?: string;
   decidedBy: string;
+  pageUrl?: string;
+  answersCheck?: string;
 }
 
 function originOf(url: string): string {
@@ -118,10 +124,12 @@ export function recordVerdict(accountId: string, input: VerdictInput): { verdict
     decidedBy: input.decidedBy.trim(),
     decidedAt: new Date().toISOString(),
     supersedes: current?.id ?? null,
+    pageUrl: input.pageUrl?.trim() || null,
+    answersCheck: input.answersCheck?.trim() || null,
   };
   db.prepare(
-    `INSERT INTO verdicts (id, account_id, origin, criterion, status, note, evidence, decided_by, decided_at, supersedes)
-     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`
+    `INSERT INTO verdicts (id, account_id, origin, criterion, status, note, evidence, decided_by, decided_at, supersedes, page_url, answers_check)
+     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`
   ).run(
     verdict.id,
     accountId,
@@ -132,7 +140,9 @@ export function recordVerdict(accountId: string, input: VerdictInput): { verdict
     verdict.evidence,
     verdict.decidedBy,
     verdict.decidedAt,
-    verdict.supersedes
+    verdict.supersedes,
+    verdict.pageUrl,
+    verdict.answersCheck
   );
   return { verdict };
 }
@@ -147,6 +157,8 @@ function rowToVerdict(r: {
   decided_by: string;
   decided_at: string;
   supersedes: string | null;
+  page_url: string | null;
+  answers_check: string | null;
 }): Verdict {
   return {
     id: r.id,
@@ -158,6 +170,8 @@ function rowToVerdict(r: {
     decidedBy: r.decided_by,
     decidedAt: r.decided_at,
     supersedes: r.supersedes,
+    pageUrl: r.page_url,
+    answersCheck: r.answers_check,
   };
 }
 
@@ -166,7 +180,7 @@ export function latestVerdict(accountId: string, origin: string, criterion: stri
   if (!db) return null;
   const row = db
     .prepare(
-      `SELECT id, origin, criterion, status, note, evidence, decided_by, decided_at, supersedes
+      `SELECT id, origin, criterion, status, note, evidence, decided_by, decided_at, supersedes, page_url, answers_check
          FROM verdicts WHERE account_id = ? AND origin = ? AND criterion = ?
         ORDER BY decided_at DESC, rowid DESC LIMIT 1`
     )
@@ -180,7 +194,7 @@ export function verdictsForSite(accountId: string, origin: string): Verdict[] {
   if (!db) return [];
   const rows = db
     .prepare(
-      `SELECT id, origin, criterion, status, note, evidence, decided_by, decided_at, supersedes
+      `SELECT id, origin, criterion, status, note, evidence, decided_by, decided_at, supersedes, page_url, answers_check
          FROM verdicts WHERE account_id = ? AND origin = ?
         ORDER BY criterion, decided_at DESC, rowid DESC`
     )
@@ -197,11 +211,25 @@ export function verdictHistory(accountId: string, origin: string, criterion: str
   if (!db) return [];
   const rows = db
     .prepare(
-      `SELECT id, origin, criterion, status, note, evidence, decided_by, decided_at, supersedes
+      `SELECT id, origin, criterion, status, note, evidence, decided_by, decided_at, supersedes, page_url, answers_check
          FROM verdicts WHERE account_id = ? AND origin = ? AND criterion = ?
         ORDER BY decided_at DESC, rowid DESC`
     )
     .all(accountId, originOf(origin), criterion) as Array<Parameters<typeof rowToVerdict>[0]>;
+  return rows.map(rowToVerdict);
+}
+
+/** Every verdict ever recorded by an account, history included — the
+ *  export, not the current view. */
+export function allVerdicts(accountId: string): Verdict[] {
+  const db = getDb();
+  if (!db) return [];
+  const rows = db
+    .prepare(
+      `SELECT id, origin, criterion, status, note, evidence, decided_by, decided_at, supersedes, page_url, answers_check
+         FROM verdicts WHERE account_id = ? ORDER BY origin, criterion, decided_at DESC, rowid DESC`
+    )
+    .all(accountId) as Array<Parameters<typeof rowToVerdict>[0]>;
   return rows.map(rowToVerdict);
 }
 

@@ -2,7 +2,8 @@ import type { FastifyInstance } from "fastify";
 import { z } from "zod";
 import { storedRouteLimit } from "./storedRouteLimit.js";
 import { requireAccount } from "./account.js";
-import { deleteScan, getScan, listScans } from "../storage/scans.js";
+import { deleteScan, getScan, listScans, saveScan } from "../storage/scans.js";
+import { accessibilityReportSchema, type AccessibilityReport } from "../types/report.js";
 import { recordVerdict, verdictHistory, verdictsForSite, guidedQuestions, VERDICT_STATUSES } from "../storage/verdicts.js";
 import { storageStatus } from "../storage/db.js";
 
@@ -21,6 +22,8 @@ const verdictBody = z.object({
   note: z.string().max(2000).optional(),
   evidence: z.string().max(2000).optional(),
   decidedBy: z.string().min(1).max(200),
+  pageUrl: z.string().url().optional(),
+  answersCheck: z.string().max(200).optional(),
 });
 
 export async function historyRoutes(app: FastifyInstance) {
@@ -38,6 +41,29 @@ export async function historyRoutes(app: FastifyInstance) {
     }
     const scans = listScans(account.id, q.data);
     return { scans, storage: storageStatus() };
+  });
+
+  /**
+   * A report scanned elsewhere, saved here.
+   *
+   * The CLI runs the pipeline in its own process — that is the point of it,
+   * it reaches localhost and VPN-side staging — so its reports never pass
+   * through /api/scan and were never saved. This is how they join the
+   * record: the same history, the same questions, the same verdicts as a
+   * scan made through the hosted service. The report is validated against
+   * the full schema first; a body that is not a report is not stored.
+   */
+  app.post("/api/scans", { config: storedRouteLimit, bodyLimit: 8 * 1_048_576 }, async (request, reply) => {
+    const account = await requireAccount(request, reply);
+    if (!account) return;
+    const parsed = accessibilityReportSchema.safeParse(request.body);
+    if (!parsed.success) {
+      return reply.status(400).send({ error: "Not an accessibility report", details: parsed.error.flatten().fieldErrors });
+    }
+    // Never trust a client's word on what it decided about itself.
+    const { savedAs: _ignored, verdicts: _theirs, ...report } = parsed.data;
+    const savedAs = saveScan(account.id, report as AccessibilityReport);
+    return { savedAs, origin: new URL(report.url).origin };
   });
 
   app.get("/api/scans/:id", { config: storedRouteLimit }, async (request, reply) => {
@@ -130,6 +156,8 @@ export async function historyRoutes(app: FastifyInstance) {
       note: parsed.data.note,
       evidence: parsed.data.evidence,
       decidedBy: parsed.data.decidedBy,
+      pageUrl: parsed.data.pageUrl,
+      answersCheck: parsed.data.answersCheck,
     });
     if (error || !verdict) return reply.status(400).send({ error });
     return { verdict };

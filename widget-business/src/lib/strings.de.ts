@@ -1,5 +1,13 @@
 /* Deutsche Fassung der Rahmen-Texte. Schlüssel ist der englische String. */
 export const STRINGS_DE: Record<string, string> = {
+  // Manuelle Prüfungen
+  "Manual checks": "Manuelle Prüfungen",
+  Decided: "Entschieden",
+  "Meets it": "Erfüllt",
+  Partly: "Teilweise",
+  "Fails it": "Nicht erfüllt",
+  "Does not apply": "Trifft nicht zu",
+  Undecided: "Offen",
   // Abschnittstitel und Navigation
   "Your score": "Ihr Ergebnis",
   Score: "Ergebnis",

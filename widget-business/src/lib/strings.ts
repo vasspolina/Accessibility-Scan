@@ -33,6 +33,14 @@ export function t(key: string): string {
  * IS the key.
  */
 export const CHROME_KEYS: string[] = [
+  // Manual checks (guided manual testing)
+  "Manual checks",
+  "Decided",
+  "Meets it",
+  "Partly",
+  "Fails it",
+  "Does not apply",
+  "Undecided",
   // Section titles and nav labels
   "Your score",
   "Score",

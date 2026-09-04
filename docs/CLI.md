@@ -7,11 +7,26 @@ either. So the same pipeline runs as a command, in your own process, against
 whatever your network can reach.
 
 ```bash
-npx a11y-scan https://example.com
+a11y-scan https://example.com
 ```
 
-It needs Node 24 and a Chromium for Playwright (`npx playwright install
-chromium --with-deps`, once).
+## Installing
+
+It is not on the npm registry yet, so `a11y-scan` does not work — the
+earlier version of this page said it did. Until it is published, install
+from a checkout:
+
+```bash
+git clone git@github.com:vasspolina/Accessibility-Scan.git
+cd Accessibility-Scan/backend
+npm ci                                    # builds dist/ via the prepare step
+npx playwright install chromium --with-deps
+npm link                                  # puts `a11y-scan` on your PATH
+```
+
+Node 24 or later. The backend's own CI runs exactly this from a temporary
+directory and checks the three exit codes, so if that job is green the
+install path works.
 
 ## Exit codes
 
@@ -41,6 +56,9 @@ scanner as a clean site.
 | `--max-new <n>` | allow up to n new findings against that baseline (default 0) |
 | `--write-baseline` | write the baseline from this run and exit 0 |
 | `--json <file>` | write the full report as JSON |
+| `--sarif <file>` | write the findings as SARIF 2.1.0, which GitHub shows inline on the pull request |
+| `--server <url>` | save the report into a hosted instance's history |
+| `--api-key <key>` | with this key; or set `A11Y_SERVER` and `A11Y_API_KEY` in the environment |
 | `--ai` | include the AI review (needs `ANTHROPIC_API_KEY`) |
 | `--quiet` | print only the verdict line |
 
@@ -59,13 +77,13 @@ A team that already has failures does not want a score gate on day one — it
 wants "no worse than yesterday". That is the baseline:
 
 ```bash
-npx a11y-scan https://staging.example.com --write-baseline --baseline .a11y-baseline.json
+a11y-scan https://staging.example.com --write-baseline --baseline .a11y-baseline.json
 ```
 
 Commit that file. From then on:
 
 ```bash
-npx a11y-scan https://staging.example.com --baseline .a11y-baseline.json
+a11y-scan https://staging.example.com --baseline .a11y-baseline.json
 ```
 
 A finding's identity is its rule plus its selector, so re-ordering a page does
@@ -118,7 +136,7 @@ jobs:
 
       - name: Scan
         run: |
-          npx a11y-scan http://localhost:3000 \
+          a11y-scan http://localhost:3000 \
             --baseline .a11y-baseline.json \
             --json a11y-report.json
 
@@ -130,6 +148,40 @@ jobs:
           name: accessibility-report
           path: a11y-report.json
 ```
+
+### Findings on the pull request
+
+Add `--sarif a11y.sarif` to the scan line and upload it. Each finding then
+appears as an annotation on the pull request, which is where a developer
+actually meets it:
+
+```yaml
+      - if: always()
+        uses: github/codeql-action/upload-sarif@v3
+        with:
+          sarif_file: a11y.sarif
+```
+
+A web page has no file and line, so the location is the URL and the CSS
+selector. The fingerprint is the same rule-plus-selector the baseline uses,
+so GitHub keeps a finding's identity across runs the same way.
+
+### Into the hosted history
+
+A CLI report never passes through the hosted service, so on its own it is
+never saved. With a key it joins the same record as a scan made through the
+product — the same history, the same open questions, the same verdicts:
+
+```yaml
+      - name: Scan
+        env:
+          A11Y_SERVER: https://your-scanner
+          A11Y_API_KEY: ${{ secrets.A11Y_API_KEY }}
+        run: a11y-scan http://localhost:3000 --baseline .a11y-baseline.json
+```
+
+A save that fails is printed as a warning and does not change the exit
+code: the scan completed and the thresholds still get their verdict.
 
 Swap the baseline line for `--min-score 90 --fail-on serious` once the
 backlog is cleared and you want to hold a standard rather than a position.

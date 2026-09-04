@@ -1,6 +1,7 @@
 import { useId, useMemo, useRef, useState } from "react";
 import { t } from "../lib/strings";
-import type { ConformanceSummary, CriterionResult } from "../api/scanClient";
+import type { ConformanceSummary, CriterionResult, RecordedVerdict } from "../api/scanClient";
+import { statusWord } from "./ManualChecks";
 import { DataTable } from "./DataTable";
 
 // Answers the question the 0-100 score can't: "are we compliant?"
@@ -56,13 +57,19 @@ function RESULT_ROWS(c: ConformanceSummary) {
 export function ConformanceView({
   conformance,
   showBfsgNote = false,
+  verdicts = [],
 }: {
   conformance: ConformanceSummary;
+  /** A person's recorded answers for this site, shown on the rows the scan
+   *  could not decide. The row's status stays what the scan measured — a
+   *  decision is shown beside it, never in place of it. */
+  verdicts?: RecordedVerdict[];
   // One factual sentence naming the German law, shown to business readers who
   // asked what the score means for them legally. Once per report, no alarm,
   // no fine amounts — the same rules the AI layer's legal framing follows.
   showBfsgNote?: boolean;
 }) {
+  const verdictFor = useMemo(() => new Map(verdicts.map((v) => [v.criterion, v])), [verdicts]);
   const [expanded, setExpanded] = useState(false);
   // Three states, not the boolean this used to be. "We couldn't check" is
   // the largest row in the table above and was also the hardest to act on:
@@ -316,6 +323,19 @@ export function ConformanceView({
                     {c.status === "not-measured" && c.notMeasured && c.notMeasured.length > 0 && (
                       <span className="a11y-conf-plain">
                         The {c.notMeasured.join(" and ")} check{c.notMeasured.length > 1 ? "s" : ""} didn&rsquo;t finish this scan
+                      </span>
+                    )}
+                    {/* Only where the scan left the question open. A measured
+                        failure is not overruled by an opinion. */}
+                    {c.status !== "failed" && verdictFor.get(c.id) && (
+                      <span className="a11y-manual-verdict">
+                        {/* One text node ending in a space. As four adjacent
+                            nodes ("Decided", ": ", word, " ") the trailing
+                            space measured 0px wide and the em welded on. */}
+                        {`${t("Decided")}: ${statusWord(verdictFor.get(c.id)!.status)} `}
+                        <em>
+                          ({verdictFor.get(c.id)!.decidedBy}, {verdictFor.get(c.id)!.decidedAt.slice(0, 10)})
+                        </em>
                       </span>
                     )}
                   </span>

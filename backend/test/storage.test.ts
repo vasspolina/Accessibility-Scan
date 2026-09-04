@@ -267,3 +267,50 @@ describe("the change since the previous scan", () => {
     expect(scans.listScans(account.id, { origin: "https://elsewhere.test" })).toHaveLength(0);
   });
 });
+
+describe("an older database file", () => {
+  it("is migrated forward rather than failing on the first new column", async () => {
+    // A file at schema version 1: the verdicts table without the columns
+    // migration 2 adds. CREATE IF NOT EXISTS is a no-op on it, so without
+    // the migration list every INSERT that named page_url would fail — on
+    // every existing deployment, silently.
+    const { DatabaseSync } = await import("node:sqlite");
+    const oldPath = join(dir, "old.db");
+    const raw = new DatabaseSync(oldPath);
+    raw.exec(`
+      CREATE TABLE accounts (id TEXT PRIMARY KEY, email TEXT NOT NULL UNIQUE, label TEXT, created_at TEXT NOT NULL);
+      CREATE TABLE api_keys (id TEXT PRIMARY KEY, account_id TEXT NOT NULL REFERENCES accounts(id), name TEXT NOT NULL, key_hash TEXT NOT NULL UNIQUE, prefix TEXT NOT NULL, created_at TEXT NOT NULL, last_used_at TEXT, revoked_at TEXT);
+      CREATE TABLE scans (id TEXT PRIMARY KEY, account_id TEXT NOT NULL REFERENCES accounts(id), url TEXT NOT NULL, origin TEXT NOT NULL, scanned_at TEXT NOT NULL, score INTEGER NOT NULL, report_json TEXT NOT NULL);
+      CREATE TABLE verdicts (id TEXT PRIMARY KEY, account_id TEXT NOT NULL REFERENCES accounts(id), origin TEXT NOT NULL, criterion TEXT NOT NULL, status TEXT NOT NULL, note TEXT, evidence TEXT, decided_by TEXT NOT NULL, decided_at TEXT NOT NULL, supersedes TEXT);
+      PRAGMA user_version = 1;
+    `);
+    raw.close();
+
+    db.resetDbForTests();
+    process.env.DB_PATH = oldPath;
+    // env is parsed once at import; point the module at the old file by
+    // re-importing everything against the new path.
+    const { resetModules } = await import("vitest").then((m) => ({ resetModules: m.vi.resetModules }));
+    resetModules();
+    const db2 = await import("../src/storage/db.js");
+    const accounts2 = await import("../src/storage/accounts.js");
+    const verdicts2 = await import("../src/storage/verdicts.js");
+
+    expect(db2.storageStatus().schemaVersion).toBe(db2.SCHEMA_VERSION);
+    const account = accounts2.createAccount("migrated@test.invalid");
+    const { verdict, error } = verdicts2.recordVerdict(account.id, {
+      origin: "https://m.test",
+      criterion: "1.2.2",
+      status: "supports",
+      decidedBy: "T",
+      pageUrl: "https://m.test/about",
+    });
+    expect(error).toBeUndefined();
+    expect(verdict?.pageUrl).toBe("https://m.test/about");
+
+    // Put the rest of the file back on the original database.
+    db2.resetDbForTests();
+    process.env.DB_PATH = join(dir, "test.db");
+    resetModules();
+  });
+});
