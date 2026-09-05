@@ -314,3 +314,46 @@ describe("an older database file", () => {
     resetModules();
   });
 });
+
+describe("a database from the first storage release", () => {
+  it("has no user_version at all, and is migrated rather than mistaken for a fresh file", async () => {
+    // That release never set PRAGMA user_version, so its files read 0 —
+    // exactly like an empty file. Told apart by their tables, not their
+    // version. The earlier migration test wrote user_version = 1 by hand
+    // and so never exercised this, which is how the bug shipped.
+    const { DatabaseSync } = await import("node:sqlite");
+    const oldPath = join(dir, "first-release.db");
+    const raw = new DatabaseSync(oldPath);
+    raw.exec(`
+      CREATE TABLE accounts (id TEXT PRIMARY KEY, email TEXT NOT NULL UNIQUE, label TEXT, created_at TEXT NOT NULL);
+      CREATE TABLE api_keys (id TEXT PRIMARY KEY, account_id TEXT NOT NULL REFERENCES accounts(id), name TEXT NOT NULL, key_hash TEXT NOT NULL UNIQUE, prefix TEXT NOT NULL, created_at TEXT NOT NULL, last_used_at TEXT, revoked_at TEXT);
+      CREATE TABLE scans (id TEXT PRIMARY KEY, account_id TEXT NOT NULL REFERENCES accounts(id), url TEXT NOT NULL, origin TEXT NOT NULL, scanned_at TEXT NOT NULL, score INTEGER NOT NULL, report_json TEXT NOT NULL);
+      CREATE TABLE verdicts (id TEXT PRIMARY KEY, account_id TEXT NOT NULL REFERENCES accounts(id), origin TEXT NOT NULL, criterion TEXT NOT NULL, status TEXT NOT NULL, note TEXT, evidence TEXT, decided_by TEXT NOT NULL, decided_at TEXT NOT NULL, supersedes TEXT);
+    `);
+    raw.close();
+
+    db.resetDbForTests();
+    process.env.DB_PATH = oldPath;
+    const { vi } = await import("vitest");
+    vi.resetModules();
+    const db3 = await import("../src/storage/db.js");
+    const accounts3 = await import("../src/storage/accounts.js");
+    const verdicts3 = await import("../src/storage/verdicts.js");
+
+    const account = accounts3.createAccount("first@test.invalid");
+    const { verdict, error } = verdicts3.recordVerdict(account.id, {
+      origin: "https://f.test",
+      criterion: "1.2.2",
+      status: "supports",
+      decidedBy: "T",
+      pageUrl: "https://f.test/about",
+    });
+    expect(error).toBeUndefined();
+    expect(verdict?.pageUrl).toBe("https://f.test/about");
+    expect(db3.storageStatus().schemaVersion).toBe(db3.SCHEMA_VERSION);
+
+    db3.resetDbForTests();
+    process.env.DB_PATH = join(dir, "test.db");
+    vi.resetModules();
+  });
+});

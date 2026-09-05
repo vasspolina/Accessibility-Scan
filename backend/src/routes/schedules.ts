@@ -48,15 +48,33 @@ export async function scheduleRoutes(app: FastifyInstance) {
     }
     const { schedule, error } = createSchedule(account.id, { ...body.data, url: url.toString() });
     if (error || !schedule) return reply.status(400).send({ error });
-    return { schedule, scheduler: schedulerStatus() };
+    const status = schedulerStatus();
+    const warnings = [
+      ...(status.enabled ? [] : ["The scheduler is off on this server (SCHEDULER_ENABLED), so this will not run until it is on."]),
+      ...(body.data.notifyEmail && !status.mail ? ["Mail is not configured on this server, so nobody will be written to when the site gets worse."] : []),
+    ];
+    return { schedule, scheduler: status, ...(warnings.length ? { warnings } : {}) };
   });
 
   app.post("/api/schedules/:id/run", { config: storedRouteLimit }, async (request, reply) => {
     const account = await requireAccount(request, reply);
     if (!account) return;
     const { id } = request.params as { id: string };
-    if (!requestRun(account.id, id)) return reply.status(404).send({ error: "No such schedule." });
-    return { schedule: getSchedule(account.id, id), scheduler: schedulerStatus() };
+    const current = getSchedule(account.id, id);
+    if (!current) return reply.status(404).send({ error: "No such schedule." });
+    // Making a paused schedule due did nothing — the scheduler only picks
+    // enabled rows — and answered 200. A "run it now" that silently does
+    // not is the failure this codebase keeps finding in itself.
+    if (!current.enabled) {
+      return reply.status(409).send({ error: "This schedule is paused. Enable it first, then run it." });
+    }
+    requestRun(account.id, id);
+    const status = schedulerStatus();
+    return {
+      schedule: getSchedule(account.id, id),
+      scheduler: status,
+      ...(status.enabled ? {} : { warning: "The scheduler is off on this server, so nothing will run it." }),
+    };
   });
 
   app.post("/api/schedules/:id/enabled", { config: storedRouteLimit }, async (request, reply) => {

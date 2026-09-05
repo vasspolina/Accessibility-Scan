@@ -9,7 +9,7 @@ import { CountPill, FindingDetails } from "./FindingGroup";
 import { useReportView } from "./ReportViewContext";
 import { SeverityTag } from "./SeverityTag";
 import { DataTable } from "./DataTable";
-import { TRIAGE_WORD } from "./FindingGroup";
+import { TRIAGE_BADGE } from "./FindingGroup";
 
 const severityWord: Record<AccessibilityFinding["severity"], string> = {
   critical: "Fix first",
@@ -78,7 +78,7 @@ export function ProfessionalTable({
               <>
                 {" "}
                 <span className={`a11y-method-badge a11y-triage-badge a11y-triage-${rep.triage.state}`}>
-                  {t(TRIAGE_WORD[rep.triage.state])}
+                  {t(TRIAGE_BADGE[rep.triage.state])}
                 </span>
               </>
             )}

@@ -201,10 +201,19 @@ function open(): DatabaseSync | null {
     // once behind the render queue.
     handle.exec("PRAGMA journal_mode = WAL");
     handle.exec("PRAGMA foreign_keys = ON");
-    const fresh = (handle.prepare("PRAGMA user_version").get() as { user_version: number }).user_version === 0;
+    // Fresh means NO TABLES, not "no version". The first storage release
+    // never set user_version, so its files read 0 exactly like an empty
+    // file — and were stamped as current, skipped every migration, and
+    // failed on the first INSERT that named a newer column. Measured on a
+    // hand-built first-release file: "no such column: page_url". The
+    // migration test had hidden it by writing user_version = 1 by hand.
+    const fresh = !handle
+      .prepare("SELECT 1 FROM sqlite_master WHERE type = 'table' AND name = 'accounts'")
+      .get();
     handle.exec(SCHEMA);
     // A fresh file already has the current shape from SCHEMA; it only needs
-    // the version stamped. An older file walks the list.
+    // the version stamped. Anything else walks the list from wherever its
+    // version says it is — 0 for a first-release file.
     if (fresh) handle.exec(`PRAGMA user_version = ${SCHEMA_VERSION}`);
     else migrate(handle);
     db = handle;

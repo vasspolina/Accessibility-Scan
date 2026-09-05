@@ -692,3 +692,37 @@ Closed in the following pass, same standard:
   Tick tested with the scan and the mail injected.
 
 Open: nothing from this audit. Next audit should look at what these added.
+
+---
+
+# Fourth look, 26 August 2026 — what the fix passes added
+
+The rule from the re-audit held again: the fixes shipped one bug of the
+class they were fixing. Same method as the third audit — one auditor, HEAD
+by file and symbol, measured where cheap — over the storage layer, the
+scheduler, triage and the widget's new sections.
+
+1. **A first-release database file was mistaken for a fresh one.** The
+   first storage commit never set `PRAGMA user_version`, so its files read
+   0 exactly like an empty file; the opener stamped them as current,
+   skipped every migration, and the first verdict insert threw "no such
+   column: page_url". The migration test had hidden it by writing
+   `user_version = 1` by hand. Freshness is now "no tables", measured
+   against a hand-built first-release file before and after. No production
+   file was affected — `DB_PATH` is not yet set on the deployed service —
+   but any would have been.
+2. **"Run now" on a paused schedule answered 200 and did nothing.** The
+   scheduler only picks enabled rows. Now 409.
+3. **A schedule created on a server with the scheduler off, or with
+   `notifyEmail` on a server without mail, was accepted without a word.**
+   Both return `warnings` now.
+4. **The "Fixed" badge sat on findings the scan had just found.** The
+   badge only ever appears on a present finding, so a bare "Fixed" there
+   contradicted the report beside it. It reads "Marked fixed, still found",
+   and the CLI prints a line for the same case rather than folding it into
+   the count.
+
+Not found, checked: tenancy on every new table (route tests); the private-
+address guard on scheduled URLs; the scheduler's one-at-a-time and
+advance-on-failure rules (tick tests); account deletion cascading to the
+three new tables; the origin normalisation on every new lookup.

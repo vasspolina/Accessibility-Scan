@@ -249,3 +249,49 @@ describe("schedules", () => {
     expect((await app.inject({ method: "DELETE", url: `/api/schedules/${id}`, headers: auth(key) })).statusCode).toBe(404);
   });
 });
+
+describe("a site with both an audit and a scan", () => {
+  it("asks the questions from whichever is newer", async () => {
+    const key = await mintKey("both@t.invalid");
+    // The audit's table has one more open row than the page's.
+    await app.inject({ method: "POST", url: "/api/scans", headers: auth(key), payload: report("https://both.test/page") });
+    const { saveAudit } = await import("../src/storage/audits.js");
+    const me = await app.inject({ method: "GET", url: "/api/account", headers: auth(key) });
+    const r = report("https://both.test/") as ReturnType<typeof report>;
+    saveAudit(me.json().account.id, {
+      entryUrl: "https://both.test/",
+      scannedAt: new Date(Date.now() + 1000).toISOString(),
+      pagesScanned: 3,
+      pagesFailed: 0,
+      averageScore: 70,
+      pages: [],
+      siteWide: [],
+      consistency: [],
+      conformance: {
+        ...r.conformance,
+        needsReview: 2,
+        total: 3,
+        criteria: [
+          ...r.conformance.criteria,
+          { id: "1.4.5", name: "Images of Text", level: "AA", coverage: "manual", plain: "Is text real text?", failing: "f", status: "needs-review", findingCount: 0 },
+        ],
+      },
+    } as never);
+    const q = await app.inject({ method: "GET", url: "/api/verdicts/questions?origin=https://both.test", headers: auth(key) });
+    expect(q.json().fromScan.kind).toBe("audit");
+    expect(q.json().open).toBe(2);
+  });
+});
+
+describe("running a schedule by hand", () => {
+  it("refuses a paused schedule rather than answering 200 and doing nothing", async () => {
+    const key = await mintKey("paused@t.invalid");
+    const made = await app.inject({ method: "POST", url: "/api/schedules", headers: auth(key), payload: { url: "https://example.com", everyHours: 24, notifyEmail: "o@t.invalid" } });
+    const id = made.json().schedule.id;
+    // The server under test has no mail configured, and says so at creation.
+    expect(made.json().warnings?.some((w: string) => /Mail is not configured/.test(w))).toBe(true);
+    await app.inject({ method: "POST", url: `/api/schedules/${id}/enabled`, headers: auth(key), payload: { enabled: false } });
+    const run = await app.inject({ method: "POST", url: `/api/schedules/${id}/run`, headers: auth(key) });
+    expect(run.statusCode).toBe(409);
+  });
+});

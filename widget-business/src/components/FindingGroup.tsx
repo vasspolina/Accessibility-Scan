@@ -801,7 +801,7 @@ export function findingRow(
           {fromAi && <span className="a11y-method-badge a11y-method-ai">AI review</span>}
           {rep.triage && rep.triage.state !== "open" && (
             <span className={`a11y-method-badge a11y-triage-badge a11y-triage-${rep.triage.state}`}>
-              {t(TRIAGE_WORD[rep.triage.state])}
+              {t(TRIAGE_BADGE[rep.triage.state])}
             </span>
           )}
         </span>
@@ -943,7 +943,7 @@ export function FindingGroup({
           {fromAi && <span className="a11y-method-badge a11y-method-ai">AI review</span>}
           {rep.triage && rep.triage.state !== "open" && (
             <span className={`a11y-method-badge a11y-triage-badge a11y-triage-${rep.triage.state}`}>
-              {t(TRIAGE_WORD[rep.triage.state])}
+              {t(TRIAGE_BADGE[rep.triage.state])}
             </span>
           )}
           <span className={`a11y-method-badge a11y-fix-${fix.key}`}>{fix.label}</span>
@@ -978,6 +978,14 @@ export const TRIAGE_WORD: Record<TriageState, string> = {
   ignored: "Ignored",
   "false-positive": "False positive",
   fixed: "Fixed",
+};
+
+/** What the badge says. It only ever sits on a finding the scan has just
+ *  found, so a bare "Fixed" there would be a contradiction — the claim was
+ *  made and the scan disagrees, and the badge has to say so. */
+export const TRIAGE_BADGE: Record<TriageState, string> = {
+  ...TRIAGE_WORD,
+  fixed: "Marked fixed, still found",
 };
 
 /**

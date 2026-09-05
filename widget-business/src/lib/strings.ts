@@ -41,6 +41,7 @@ export const CHROME_KEYS: string[] = [
   "Ignored",
   "False positive",
   "Fixed",
+  "Marked fixed, still found",
   "Decided",
   "Meets it",
   "Partly",

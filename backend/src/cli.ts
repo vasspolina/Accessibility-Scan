@@ -367,6 +367,13 @@ async function main(): Promise<number> {
   if (opts.server && opts.apiKey) {
     const triage = await fetchTriage(opts.server, opts.apiKey, report.url);
     if (triage.ok) {
+      // "Fixed" is a claim the scan can test, and here it is being tested:
+      // a finding marked fixed that is still found is worth a line of its
+      // own, and still counts.
+      const stillFound = counted.filter((f) => triage.states.get(fingerprint(f)) === "fixed");
+      if (stillFound.length && !opts.quiet) {
+        console.log(`  ${stillFound.length} finding${stillFound.length === 1 ? "" : "s"} marked fixed ${stillFound.length === 1 ? "is" : "are"} still found — counted`);
+      }
       const setAside = counted.filter((f) => ["ignored", "false-positive"].includes(triage.states.get(fingerprint(f)) ?? ""));
       if (setAside.length) {
         counted = counted.filter((f) => !setAside.includes(f));

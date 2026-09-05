@@ -7,6 +7,7 @@ export const STRINGS_ES: Record<string, string> = {
   "Ignored": "Ignorado",
   "False positive": "Falso positivo",
   "Fixed": "Corregido",
+  "Marked fixed, still found": "Marcado como corregido, sigue apareciendo",
   "Checked by a person": "Comprobado por una persona",
   "Manual checks": "Comprobaciones manuales",
   Decided: "Decidido",
