@@ -152,7 +152,7 @@ export function ConformanceView({
           <h3 className="a11y-legal-eyebrow" id="a11y-legal-tells-heading">What this tells you</h3>
           <div className="a11y-legal-card">
             <p className="a11y-legal-lead">
-              What your site gets wrong, not what it gets right.
+              The scan lists where your site fails. It cannot confirm that anything meets the standard.
             </p>
             <p className="a11y-legal-body">
               {conformance.needsReview} of the {conformance.total} items need a
@@ -208,7 +208,7 @@ export function ConformanceView({
 
       <div className="a11y-conf-caveat">
         <p>
-          <strong>What this tells you.</strong> What your site gets wrong, not what it gets right.
+          <strong>What this tells you.</strong> The scan lists where your site fails. It cannot confirm that anything meets the standard.
         </p>
         <p>
           {conformance.needsReview} of the {conformance.total} items need a person. That's true of

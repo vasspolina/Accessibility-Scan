@@ -162,7 +162,7 @@ export function Gallery() {
           <Cd name="Card" note="Flat panel. Use tone=invert for one emphasis card per screen.">
             <Card title="What this tells you">
               <span>
-                What your site gets wrong, not what it gets right.
+                The scan lists where your site fails. It cannot confirm that anything meets the standard.
               </span>
             </Card>
           </Cd>

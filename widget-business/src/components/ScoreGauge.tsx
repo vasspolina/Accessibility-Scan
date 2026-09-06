@@ -43,27 +43,12 @@ const PREVIEW_LIMIT = 3;
 // tool is not entitled to make on the evidence it has. The good lines say what
 // was looked for and found clean, and stop there.
 export const SUMMARIES: Record<"good" | "middling" | "poor", string[]> = {
-  good: [
-    "Well built. What remains is craft, not repair.",
-    "Close to right. What's left is finish work, not repair.",
-    "Nothing left that a machine can find. Not the same as nothing left.",
-    "A good site. We had a whole speech prepared.",
-    "Few doors left closed. A scan cannot see all of them.",
-  ],
-  middling: [
-    "Adequate for most. Design is judged by the rest.",
-    "Broadly fine. Broadly carries a lot of weight there.",
-    "Mostly accessible, the way a bridge is mostly finished.",
-    "Works for most people. The others also have money.",
-    "Built for the average visitor. No such person has ever visited.",
-  ],
-  poor: [
-    "This shuts people out. Not deliberately, but by design.",
-    "It works perfectly, provided you can see and click.",
-    "Barriers throughout. To call them features would be brave.",
-    "Not one problem. A committee of them.",
-    "The door is locked. Nobody remembers who chose the lock.",
-  ],
+  // One plain line per band. The rotating quips this replaced read as
+  // slogans, and a verdict about somebody's site is not the place for one:
+  // it says what the scan found and what that does not cover, then stops.
+  good: ["The scan found little to fix. A person would still find more."],
+  middling: ["The scan found problems. Most visitors will not meet them. Some will."],
+  poor: ["The scan found problems that stop some people from using the site."],
 };
 
 /**

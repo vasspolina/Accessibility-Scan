@@ -275,7 +275,7 @@ export function ScreenReaderPreview({ script }: { script: ScreenReaderScript }) 
             </li>
           ))}
         </ol>
-        <p className="a11y-sr-log-foot">Reading order, not visual order.</p>
+        <p className="a11y-sr-log-foot">{t("This is the order a screen reader reads it in.")}</p>
       </div>
 
       {/* A toggle rather than a button that removes itself: a control that

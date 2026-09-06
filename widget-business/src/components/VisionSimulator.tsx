@@ -105,8 +105,8 @@ export function VisionSimulator({
     <section className="a11y-section a11y-sim" aria-labelledby="a11y-sim-heading">
       <h2 className="a11y-section-title" id="a11y-sim-heading" data-nav-label={t("Through other eyes")}>{t("Your page, through other eyes")}</h2>
       <p className="a11y-section-desc">
-        One man in twelve is colour blind. Switch between views and watch what your page loses.
-        Close approximations. Nobody's sight is exactly this.
+        About one man in twelve is colour blind. Switch between views to see what your page loses.
+        These are approximations. No one&rsquo;s sight matches them exactly.
       </p>
 
       <div className="a11y-sim-controls" role="group" aria-label="Vision condition">
@@ -119,7 +119,6 @@ export function VisionSimulator({
             onClick={() => setActive(c)}
           >
             {c.label}
-            {c.prevalence && <em>{c.prevalence}</em>}
           </button>
         ))}
       </div>
@@ -128,10 +127,16 @@ export function VisionSimulator({
           screen reader gets by default — the note that actually explains the
           condition, which is the whole point of this control, is a plain
           paragraph nothing announces. */}
+      {/* The prevalence moved here from the chips, so the seven labels fit
+          one line: it is a fact about the chosen condition, and this is
+          where the chosen condition is explained. */}
       <span className="a11y-sr-only" role="status">
-        {active.label}. {noteFor(active, behindConsent)}
+        {active.label}. {active.prevalence ? `${active.prevalence}. ` : ""}{noteFor(active, behindConsent)}
       </span>
-      <p className="a11y-sim-note">{noteFor(active, behindConsent)}</p>
+      <p className="a11y-sim-note">
+        {active.prevalence && <strong>{active.prevalence}. </strong>}
+        {noteFor(active, behindConsent)}
+      </p>
 
       {/* One hidden SVG holding every colour matrix; the image references the
           active one by id. Cheaper than rebuilding a filter on each change,

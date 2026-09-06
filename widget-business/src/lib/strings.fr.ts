@@ -94,7 +94,7 @@ export const STRINGS_FR: Record<string, string> = {
   "Save as PDF": "Enregistrer en PDF",
   "Email me this report": "M'envoyer ce rapport par courriel",
   "Copy summary as plain text": "Copier le résumé en texte brut",
-  "Reading order, not visual order.": "Ordre de lecture, pas ordre visuel.",
+  "This is the order a screen reader reads it in.": "C’est l’ordre dans lequel un lecteur d’écran lit la page.",
   // The scan form
   "Cancel — scan without a login": "Annuler — analyser sans connexion",
   Fastest: "Le plus rapide",

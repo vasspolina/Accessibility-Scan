@@ -14,7 +14,9 @@
         /* No body padding: the shell runs full-bleed; the page section
            carries its own gutters. */
         padding: 0 0 64px;
-        background: #f4f4f4;
+        /* White, not the grey layer: the Studio look is ink on paper, and a
+           grey page put the white panels back on a grey ground. */
+        background: #ffffff;
         color: #161616;
       }
       /* Full width. The widget sizes and centres itself against the viewport,
@@ -34,7 +36,11 @@
         gap: 12px;
         height: 48px;
         padding: 0 32px;
-        background: #161616;
+        /* The bar is paper with a rule under it rather than a dark slab —
+           the reference's chrome is a hairline, and a black band over a
+           white editorial page was the one thing on it still shouting. */
+        background: #ffffff;
+        border-bottom: 1px solid #161616;
       }
       /* The widget's contract for host chrome: how far down the viewport the
          host stops covering things. Its own sticky rail pins below this, and
@@ -45,7 +51,7 @@
       /* The wordmark rule: "Accessibility scan" in PP Telegraf regular at
          heading size, tight tracking, never a graphic mark. */
       .shell .wordmark {
-        color: #ffffff;
+        color: #161616;
         font-weight: 400;
         font-size: 28px;
         letter-spacing: -0.01em;
@@ -90,6 +96,8 @@
          ramp the design system uses. */
       @media (prefers-color-scheme: dark) {
         body { background: #161616; color: #f4f4f4; }
+        .shell { background: #161616; border-bottom-color: #f4f4f4; }
+        .shell .wordmark { color: #f4f4f4; }
         .try { color: #c6c6c6; }
         .try-list button {
           background: #262626; border-color: #6f6f6f; color: #f4f4f4;

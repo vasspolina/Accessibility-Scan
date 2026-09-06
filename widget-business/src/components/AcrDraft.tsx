@@ -100,7 +100,7 @@ export function AcrDraft({ report }: { report: AccessibilityReport }) {
               paragraph, which is where a reader in a hurry stops. */}
           <div className="a11y-conf-caveat">
             <p>
-              <strong>This fills in the failures, not the whole form.</strong>
+              <strong>This draft fills in the failures. The rest of the form is left for you.</strong>
             </p>
             <ul className="a11y-plain-points">
               <li>The template allows four answers: Supports, Partially Supports, Does Not Support, Not Applicable.</li>

@@ -124,7 +124,7 @@ export const CHROME_KEYS: string[] = [
   "Save as PDF",
   "Email me this report",
   "Copy summary as plain text",
-  "Reading order, not visual order.",
+  "This is the order a screen reader reads it in.",
   /* The scan form — the first thing anyone reads, and until the
      languages landed the one part that stayed English in all of
      them. */

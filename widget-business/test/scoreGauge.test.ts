@@ -10,12 +10,19 @@ describe("score summaries", () => {
     for (let i = 0; i < 20; i++) expect(scoreSummary(73, seed)).toBe(first);
   });
 
-  it("varies between scans", () => {
+  it("says the same plain thing for every scan in a band", () => {
+    // It used to rotate through quips. A verdict about somebody's site is
+    // not the place for one, so each band now has a single factual line
+    // and the seed no longer changes what a reader is told.
     const seen = new Set<string>();
     for (let m = 0; m < 40; m++) {
       seen.add(scoreSummary(73, `2026-07-01T10:${String(m).padStart(2, "0")}:00.000Z`));
     }
-    expect(seen.size).toBeGreaterThan(1);
+    expect(seen.size).toBe(1);
+    for (const band of Object.values(SUMMARIES)) for (const line of band) {
+      expect(line).not.toMatch(/, not /);
+      expect(line).not.toMatch(/;/);
+    }
   });
 
   it("never crosses a band, however it varies", () => {
