@@ -768,33 +768,10 @@ export function App({
 
           <ScanHistory current={toHistoryEntry(report)} previous={history} />
 
-          {report.conformance && (
-            <ConformanceView
-              conformance={report.conformance}
-              showBfsgNote={!professional}
-              verdicts={report.verdicts}
-            />
-          )}
-
-          {/* Only for a saved scan: a verdict has to belong to somebody, and
-              the questions come from the server's copy of this site. */}
-          {report.savedAs && signedIn && (
-            <ManualChecks
-              key={accountVersion}
-              apiBase={apiBase}
-              pageUrl={report.url}
-              onVerdict={(v: RecordedVerdict) =>
-                setReport((r) =>
-                  r
-                    ? { ...r, verdicts: [...(r.verdicts ?? []).filter((x) => x.criterion !== v.criterion), v] }
-                    : r
-                )
-              }
-            />
-          )}
-
-          {report.wcag22 && <Wcag22Readiness readiness={report.wcag22} />}
-
+          {/* The findings come before the law. A reader came for what is
+              wrong; the explanation of what a pass would mean follows it.
+              Measured before this change: the nine findings began ~5,500px
+              down, after four sections of legal framing. */}
           {/* In professional mode these card sections are print-only: the
               screen shows the kit's table above, but a printed report has
               to stand alone, and only the cards carry everything open. */}
@@ -829,7 +806,38 @@ export function App({
             </p>
             <PrincipleGroup findings={findingsByCategory.accessibility} />
           </section>
+          </div>
 
+
+          {report.conformance && (
+            <ConformanceView
+              conformance={report.conformance}
+              showBfsgNote={!professional}
+              verdicts={report.verdicts}
+            />
+          )}
+
+          {/* Only for a saved scan: a verdict has to belong to somebody, and
+              the questions come from the server's copy of this site. */}
+          {report.savedAs && signedIn && (
+            <ManualChecks
+              key={accountVersion}
+              apiBase={apiBase}
+              pageUrl={report.url}
+              onVerdict={(v: RecordedVerdict) =>
+                setReport((r) =>
+                  r
+                    ? { ...r, verdicts: [...(r.verdicts ?? []).filter((x) => x.criterion !== v.criterion), v] }
+                    : r
+                )
+              }
+            />
+          )}
+
+          {report.wcag22 && <Wcag22Readiness readiness={report.wcag22} />}
+
+          {/* Print-only in professional mode, like the cards above. */}
+          <div className={professional && !isDocument ? "a11y-print-cards" : undefined}>
           {report.undecidedChecks && report.undecidedChecks.length > 0 && (
             <UndecidedChecks rows={report.undecidedChecks} />
           )}
@@ -841,6 +849,7 @@ export function App({
             <DesignNotesPanel findings={findingsByCategory.designClarity} />
           )}
           </div>
+
 
           {/* The screen-reader walkthrough stays above the documents: it is
               evidence about this page, read once the findings are. */}

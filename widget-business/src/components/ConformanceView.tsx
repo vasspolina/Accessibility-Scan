@@ -133,7 +133,7 @@ export function ConformanceView({
       {/* The band. Its claim is the one thing in this section a reader must
           not miss, which is why the design gives it the full width and the
           brand yellow rather than a line of prose. */}
-      <section className="a11y-legal-band" aria-labelledby="a11y-legal-band-heading">
+      <div className="a11y-legal-band" aria-labelledby="a11y-legal-band-heading">
         <h3 className="a11y-legal-eyebrow" id="a11y-legal-band-heading">
           So &ldquo;nothing found&rdquo; is not a pass
         </h3>
@@ -145,10 +145,10 @@ export function ConformanceView({
             One Level A failure means you don&rsquo;t meet the standard.
           </p>
         </div>
-      </section>
+      </div>
 
       <div className="a11y-legal-grid">
-        <section className="a11y-legal-panel" aria-labelledby="a11y-legal-tells-heading">
+        <div className="a11y-legal-panel" aria-labelledby="a11y-legal-tells-heading">
           <h3 className="a11y-legal-eyebrow" id="a11y-legal-tells-heading">What this tells you</h3>
           <div className="a11y-legal-card">
             <p className="a11y-legal-lead">
@@ -179,9 +179,9 @@ export function ConformanceView({
               )}
             </div>
           </div>
-        </section>
+        </div>
 
-        <section className="a11y-legal-results" aria-labelledby="a11y-legal-results-heading">
+        <div className="a11y-legal-results" aria-labelledby="a11y-legal-results-heading">
           <h3 className="a11y-legal-eyebrow" id="a11y-legal-results-heading">
             Automated check results
           </h3>
@@ -202,48 +202,13 @@ export function ConformanceView({
           <p className="a11y-legal-micro a11y-legal-foot">
             Against the {conformance.standard} checklist of {conformance.total} items
           </p>
-        </section>
+        </div>
       </div>
 
 
-      <div className="a11y-conf-caveat">
-        <p>
-          <strong>What this tells you.</strong> The scan lists where your site fails. It cannot confirm that anything meets the standard.
-        </p>
-        <p>
-          {conformance.needsReview} of the {conformance.total} items need a person. That's true of
-          every automated check, this one included.
-        </p>
-        {/* The questions themselves, taken from the criteria actually in
-            this state rather than from two examples written once and left
-            to drift. Three is what fits before the list stops being read;
-            the rest are one click away in the checklist below. */}
-        {needsPerson.length > 0 && (
-          <>
-            <p>Questions no software can answer, for example:</p>
-            <ul className="a11y-conf-examples">
-              {needsPerson.slice(0, 3).map((c) => (
-                <li key={c.id}>{c.plain}</li>
-              ))}
-            </ul>
-            {needsPerson.length > 3 && (
-              <p>
-                The other {needsPerson.length - 3} are in the checklist below. Choose{" "}
-                <strong>Needs a person</strong> to see them.
-              </p>
-            )}
-          </>
-        )}
-        <p>
-          So <strong>&ldquo;nothing found&rdquo; is not a pass.</strong>
-        </p>
-        {conformance.failedByLevel.A > 0 && (
-          <p>
-            You need every item at both levels, A and AA. They don't average out. One Level A
-            failure means you don't meet the standard.
-          </p>
-        )}
-      </div>
+      {/* The plain-text repeat of the two panels above used to sit here —
+          seven sentences, twice each, in both audiences. The panels are
+          already text; a screen reader read them twice. */}
 
       <button
         ref={toggleRef}

@@ -6692,3 +6692,9 @@
 .a11y-widget-biz .a11y-newscan-head .a11y-select2 { min-width: 11rem; }
 
 .a11y-widget-biz .a11y-sim-note strong { font-weight: 500; }
+
+/* Undecided items beyond the first three, folded on screen only. Print
+   and export carry every row — the fold is a screen concern. */
+@media screen {
+  .a11y-widget-biz .a11y-undecided-folded { display: none; }
+}

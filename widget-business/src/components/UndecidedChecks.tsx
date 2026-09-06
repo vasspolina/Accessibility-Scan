@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { undecidedExplanation } from "../lib/wcagPlain";
 import { t } from "../lib/strings";
 import { fixKindForRule } from "../lib/testMethod";
@@ -43,6 +44,13 @@ export function UndecidedChecks({
   rows: Array<{ ruleId: string; count: number; help: string; helpUrl?: string }>;
 }) {
   const total = rows.reduce((n, r) => n + r.count, 0);
+  // Folded to the first three on screen: this section was 55 % of the
+  // report's words, aimed at the reader's designer rather than the reader.
+  // Every row stays in the DOM so the printed report and the export carry
+  // all of them; the fold is a screen-only class, never a conditional.
+  const FOLD = 3;
+  const [showAll, setShowAll] = useState(false);
+  const folded = !showAll && rows.length > FOLD;
   return (
     <section className="a11y-section" aria-labelledby="a11y-undecided-heading">
       {/* The head is wrapped, and that wrapper is load-bearing. The section is
@@ -100,8 +108,12 @@ export function UndecidedChecks({
               const fix = fixKindForRule(r.ruleId);
               const most =
                 rows.length > 1 && r.count === Math.max(...rows.map((x) => x.count)) && r.count > 1;
+              // The same guidance printed under every item of a kind was
+              // the report's largest source of repeated sentences. Said once,
+              // then pointed at.
+              const firstOfKind = e ? rows.findIndex((x) => undecidedExplanation(x.ruleId)?.ask === e.ask) : i;
               return (
-                <li key={r.ruleId} className="a11y-undecided-cell">
+                <li key={r.ruleId} className={`a11y-undecided-cell${folded && i >= FOLD ? " a11y-undecided-folded" : ""}`}>
                   <span className="a11y-undecided-no" aria-hidden="true">
                     {i + 1}
                   </span>
@@ -109,7 +121,7 @@ export function UndecidedChecks({
                   {e ? (
                     <p className="a11y-undecided-ask">
                       <strong className="a11y-sr-only">What to ask for: </strong>
-                      {e.ask}
+                      {firstOfKind === i ? e.ask : `Same as item ${firstOfKind + 1}.`}
                     </p>
                   ) : (
                     <span className="a11y-undecided-ask" />
@@ -136,6 +148,16 @@ export function UndecidedChecks({
               );
             })}
           </ol>
+          {rows.length > FOLD && (
+            <button
+              type="button"
+              className="a11y-show-all"
+              aria-expanded={showAll}
+              onClick={() => setShowAll((v) => !v)}
+            >
+              {showAll ? `Show the first ${FOLD} only` : `Show all ${rows.length}`}
+            </button>
+          )}
           {/* Below the rows it exports, like the design draws it. The arrow
               is decorative; the words are the name. */}
           <button

@@ -97,3 +97,31 @@ Sentence length and vocabulary (grade 4–6 is where a general audience
 reads comfortably); the plain-language glosses beside every standard's
 name; the "one fault, one card" rule; the collapsed-by-default documents
 at the end. The statement's grade is the law's wording, not ours.
+
+## Status, same day — restructured and re-measured
+
+Applied: findings moved ahead of the law; the legal section's three
+sub-panels are parts of it (headings kept, landmarks dropped) and its
+plain-text repeat is gone; "For your designer and developer" shows its
+first three items with a "Show all N" control, every row still in the DOM
+for print and export, and guidance printed once per kind with later items
+saying "Same as item N"; the professional findings table has a heading of
+its own.
+
+By the same measure as above, "For everyone":
+
+| | before | after |
+| --- | --- | --- |
+| visible words | 2,099 | 1,296 |
+| page height | 12,910px | 11,644px |
+| findings begin at | ~5,500px | 3,179px |
+| sentences appearing twice | 38 | 14 |
+| undecided rows open by default | 26 | 3 |
+
+Professional: 619 → 466 words, 8,813 → 8,439px, repeated sentences 7 → 0,
+and the findings table is now a named section second in the rail. Axe
+clean in both audiences, no skipped heading levels, no overflow at 320px.
+The remaining 14 repeats are the undecided items' own text counted at two
+nesting levels by the probe, not repeated copy.
+
+Not done, and deliberately: nothing to sentence length or vocabulary.

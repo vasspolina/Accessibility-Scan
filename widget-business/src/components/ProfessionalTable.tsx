@@ -154,10 +154,15 @@ export function ProfessionalTable({
       /* Focusable so the score card's "See the N findings" can land here —
          scrolling without moving focus leaves the next Tab back at the top. */
       tabIndex={-1}
-      aria-label="Findings"
+      aria-labelledby="a11y-pro-findings-heading"
       data-nav-label={t("Findings")}
       onClick={expandRowOnClick}
     >
+      {/* Its own heading: without one, heading navigation skipped the
+          table and the rail listed the section as nameless. */}
+      <h2 className="a11y-section-title" id="a11y-pro-findings-heading">
+        {t("Findings")} <span className="a11y-section-count">({findings.length})</span>
+      </h2>
       {view === "issues" ? issuesTable : cleanList}
     </section>
   );
