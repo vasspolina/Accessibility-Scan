@@ -103,10 +103,16 @@ when the panel contains focusable content.
   hides, focus stays on the button.
 
 ## Not covered here
-Screen-reader output itself (VoiceOver/NVDA transcripts), cognitive-load
-review of the copy beyond the slogan sweep already done, and the dialog
-that confirms clearing history — the fixture harness has no history to
-clear, so it was not reachable in this run.
+Screen-reader output itself (VoiceOver/NVDA transcripts), and a
+cognitive-load review of the copy beyond the slogan sweep already done.
+
+## The clear-history dialog, reached by seeding a history entry
+Measured after the audit above: `role="dialog"`, `aria-modal="true"`,
+named "Delete this history?" through `aria-labelledby`; focus lands inside
+on open and stays inside across six Tab presses; the rest of the widget is
+`inert` while it is open and released after; Escape closes it and returns
+focus to the "Delete this history" button; confirming clears storage and
+moves focus to a `role="status"` paragraph that says so. Nothing to fix.
 
 ## Status, same day — fixed and re-measured
 
