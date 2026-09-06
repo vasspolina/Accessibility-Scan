@@ -1,4 +1,6 @@
 import { t } from "../lib/strings";
+import { LanguageSelect } from "./LanguageSelect";
+import type { Lang } from "../lib/i18n";
 import { useId, useRef, useState, type ChangeEvent, type FormEvent, type ReactNode } from "react";
 // The ported Select, not FormControls' — same API, so this is an import
 // change and nothing else. FormControls' Select still serves its other
@@ -27,7 +29,11 @@ export function UrlForm({
   scanError,
   scanBlocked,
   progress,
+  language,
+  onLanguageChange,
 }: {
+  language: Lang;
+  onLanguageChange: (lang: Lang) => void;
   onSubmit: (
     url: string,
     includeAiReview: boolean,
@@ -124,7 +130,12 @@ export function UrlForm({
           with its link, which used to live in a separate intro paragraph
           above this form until that read as filler in front of the
           scanner rather than a reason to run it. */}
-      <h2 className="a11y-section-title a11y-newscan-title" id="a11y-newscan-title">{t("New scan")}</h2>
+      <div className="a11y-newscan-head">
+        <h2 className="a11y-section-title a11y-newscan-title" id="a11y-newscan-title">{t("New scan")}</h2>
+        {/* Before the scan, because the language rides with the request:
+            the checklist comes back written in it. */}
+        <LanguageSelect id="a11y-lang-form" value={language} onChange={onLanguageChange} />
+      </div>
       <p className="a11y-newscan-sub">
         We audit every page we can reach against the{" "}
         <a href={WCAG_LINK} target="_blank" rel="noopener noreferrer">

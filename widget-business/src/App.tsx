@@ -49,6 +49,7 @@ import { ScanHistory } from "./components/ScanHistory";
 import { ManualChecks } from "./components/ManualChecks";
 import { AccountKey } from "./components/AccountKey";
 import { getApiKey } from "./lib/apiKey";
+import { getLang, setLang, storeLang, type Lang } from "./lib/i18n";
 import { fetchServerHistory, type RecordedVerdict } from "./api/scanClient";
 import { PrintButton } from "./components/PrintButton";
 import { Button } from "./components/Button";
@@ -141,6 +142,14 @@ export function App({
   // Earlier scans of the page just checked, read before this one is recorded
   // so the current scan isn't compared against itself.
   const [history, setHistory] = useState<HistoryEntry[]>([]);
+  // The language, as state so a switch re-renders everything that reads
+  // it. The module value is the source the accessors read; this mirrors it.
+  const [lang, setLangState] = useState<Lang>(getLang());
+  const changeLang = (next: Lang) => {
+    setLang(next);
+    storeLang(next);
+    setLangState(next);
+  };
   // Bumped when the account key changes, so anything read with it reloads.
   const [accountVersion, setAccountVersion] = useState(0);
   // Re-read when the key changes; getApiKey is a localStorage read.
@@ -257,7 +266,10 @@ export function App({
     };
     collect();
     const observer = new MutationObserver(collect);
-    observer.observe(root, { childList: true, subtree: true });
+    // Attributes too: a language switch rewrites every data-nav-label in
+    // place, with no child added or removed, and the rail kept the old
+    // language until something else changed.
+    observer.observe(root, { childList: true, subtree: true, attributes: true, attributeFilter: ["data-nav-label"] });
     return () => observer.disconnect();
   }, []);
   const activeSectionId = useActiveSection(sections);
@@ -396,6 +408,8 @@ export function App({
             aiIncluded={report?.meta.aiReviewStatus === "completed"}
             scope={mode}
             busy={loading}
+            language={lang}
+            onLanguageChange={changeLang}
             onRerun={({ ai, scope }) => {
               const url = report?.url ?? audit?.pages[0]?.url;
               if (!url) return;
@@ -469,6 +483,8 @@ export function App({
         hasReport={!!report}
         scanError={error}
         scanBlocked={blocked}
+        language={lang}
+        onLanguageChange={changeLang}
         progress={
           loading && (
             <>

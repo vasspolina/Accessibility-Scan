@@ -1,3 +1,4 @@
+import { t } from "../lib/strings";
 import { useId, useState } from "react";
 import type { NavTarget } from "../lib/useActiveSection";
 
@@ -85,11 +86,10 @@ export function SideNav({
           onClick={() => setOpen((v) => !v)}
         >
           <span className="a11y-shell-nav-heading" id={headingId}>
-            Sections
+            {t("Sections")}
           </span>
           <span className="a11y-shell-nav-count">
-            {sections.length} {sections.length === 1 ? "section" : "sections"} in
-            this report
+            {sections.length} {t(sections.length === 1 ? "section in this report" : "sections in this report")}
           </span>
         </button>
       </h2>

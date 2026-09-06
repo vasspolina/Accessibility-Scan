@@ -1,5 +1,7 @@
 import type { AudienceMode } from "../lib/audienceMode";
 import type { ScanMode } from "./UrlForm";
+import { LanguageSelect } from "./LanguageSelect";
+import type { Lang } from "../lib/i18n";
 
 /**
  * The run's settings, in the rail, changeable without scrolling back to the
@@ -28,7 +30,11 @@ export function ScanSettings({
   scope,
   busy,
   onRerun,
+  language,
+  onLanguageChange,
 }: {
+  language: Lang;
+  onLanguageChange: (lang: Lang) => void;
   audience: AudienceMode;
   onAudienceChange: (m: AudienceMode) => void;
   aiIncluded: boolean;
@@ -66,6 +72,12 @@ export function ScanSettings({
             Professional
           </button>
         </div>
+      </div>
+
+      {/* Half free, half a scan: the report's copy switches now, the
+          checklist on the next run. The helper text says which. */}
+      <div className="a11y-settings-row">
+        <LanguageSelect id="a11y-lang-settings" value={language} onChange={onLanguageChange} afterScan />
       </div>
 
       {/* Costs a scan, so it states the cost and does not pretend to toggle. */}

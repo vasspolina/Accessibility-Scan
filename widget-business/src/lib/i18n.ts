@@ -2,8 +2,10 @@
  * The widget's language. One module-level value, set once at mount, read by
  * every accessor that serves reader-facing copy — the same shape as the
  * report's other cross-cutting state, and deliberately not React context:
- * the language never changes mid-session, and the dictionaries that consume
- * it live in plain modules (wcagPlain, strings), not in the tree.
+ * the dictionaries that consume it live in plain modules (wcagPlain,
+ * strings), not in the tree. It CAN change mid-session now — the switcher
+ * sets it and App re-renders — which works because every reader-facing
+ * accessor reads it at render time rather than caching it.
  *
  * Selection order: the embedder's explicit choice (data-language / the
  * `language` mount option), else the visitor's browser language, else
@@ -35,9 +37,40 @@ export function getLang(): Lang {
   return current;
 }
 
-/** Picks per the selection order documented above. */
+const STORAGE_KEY = "a11y-scan-lang";
+
+/** The visitor's own choice, made in the switcher, remembered in this
+ *  browser. Outranks the embedder: a person who picked Deutsch picked it. */
+export function loadStoredLang(): Lang | null {
+  try {
+    const raw = window.localStorage.getItem(STORAGE_KEY);
+    return raw && (SUPPORTED_LANGS as string[]).includes(raw) ? (raw as Lang) : null;
+  } catch {
+    return null;
+  }
+}
+
+export function storeLang(lang: Lang): void {
+  try {
+    window.localStorage.setItem(STORAGE_KEY, lang);
+  } catch {
+    // Blocked storage loses the preference, nothing else.
+  }
+}
+
+/** Picks per the selection order documented above, with one addition in
+ *  front: a choice the visitor made in the switcher. */
 export function detectLang(explicit: string | undefined): Lang {
+  const chosen = typeof window !== "undefined" ? loadStoredLang() : null;
+  if (chosen) return chosen;
   if (explicit) return normalizeLang(explicit);
   if (typeof navigator !== "undefined") return normalizeLang(navigator.language);
   return "en";
 }
+
+export const LANG_NAMES: Record<Lang, string> = {
+  en: "English",
+  de: "Deutsch",
+  es: "Español",
+  fr: "Français",
+};

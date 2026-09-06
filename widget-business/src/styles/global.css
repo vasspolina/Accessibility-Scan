@@ -6669,3 +6669,11 @@
 .a11y-widget-biz .a11y-triage-current em { font-style: normal; font-weight: 400; color: var(--text-secondary); }
 .a11y-widget-biz .a11y-triage-form { display: grid; gap: var(--space-03); max-width: 32rem; }
 @media print { .a11y-widget-biz .a11y-triage form, .a11y-widget-biz .a11y-triage .a11y-btn { display: none; } }
+
+/* The new-scan head: title on the left, the language switcher on the
+   right, wrapping under it at narrow widths. */
+.a11y-widget-biz .a11y-newscan-head {
+  display: flex; align-items: flex-end; justify-content: space-between;
+  gap: var(--space-04); flex-wrap: wrap;
+}
+.a11y-widget-biz .a11y-newscan-head .a11y-select2 { min-width: 11rem; }

@@ -34,6 +34,8 @@ export function t(key: string): string {
  */
 export const CHROME_KEYS: string[] = [
   // Manual checks (guided manual testing)
+  "Language",
+  "The checklist's wording changes on the next scan.",
   "Manual checks",
   "Checked by a person",
   "Marked",
@@ -73,6 +75,8 @@ export const CHROME_KEYS: string[] = [
   "Fix once, fix everywhere",
   "Findings",
   "Sections",
+  "section in this report",
+  "sections in this report",
   // The stop-press
   "Start here: a screen reader cannot get past your cookie banner",
   "The banner hides the page from screen readers and never takes focus. Until that is fixed, everything below this line is what a screen reader user never reaches.",
