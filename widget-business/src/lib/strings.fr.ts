@@ -13,6 +13,7 @@ export const STRINGS_FR: Record<string, string> = {
   "sections in this report": "sections dans ce rapport",
   "Language": "Langue",
   "The checklist's wording changes on the next scan.": "La formulation de la liste de contrôle change au prochain scan.",
+  "scan results": "résultats du scan",
   "Manual checks": "Vérifications manuelles",
   Decided: "Décidé",
   "Meets it": "Conforme",

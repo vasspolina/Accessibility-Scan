@@ -36,6 +36,7 @@ export const CHROME_KEYS: string[] = [
   // Manual checks (guided manual testing)
   "Language",
   "The checklist's wording changes on the next scan.",
+  "scan results",
   "Manual checks",
   "Checked by a person",
   "Marked",

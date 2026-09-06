@@ -12,6 +12,7 @@ export const STRINGS_DE: Record<string, string> = {
   "sections in this report": "Abschnitte in diesem Bericht",
   "Language": "Sprache",
   "The checklist's wording changes on the next scan.": "Die Formulierung der Checkliste ändert sich beim nächsten Scan.",
+  "scan results": "Scan-Ergebnisse",
   "Manual checks": "Manuelle Prüfungen",
   Decided: "Entschieden",
   "Meets it": "Erfüllt",

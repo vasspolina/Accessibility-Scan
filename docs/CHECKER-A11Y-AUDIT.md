@@ -107,3 +107,23 @@ Screen-reader output itself (VoiceOver/NVDA transcripts), cognitive-load
 review of the copy beyond the slogan sweep already done, and the dialog
 that confirms clearing history — the fixture harness has no history to
 clear, so it was not reachable in this run.
+
+## Status, same day — fixed and re-measured
+
+- **1 Language** — `lang` on the widget's root, following the switcher.
+  Measured: `en` before, `de` after switching, on the element itself.
+- **2 `aria-controls`** — set only on the tab whose panel is in the DOM.
+  Measured: the selected tab references an existing panel, the other has no
+  reference.
+- **3 Table name** — the professional findings table has the caption
+  "Findings, most severe first".
+- **4 Tab panel** — a tab stop only when it has nothing focusable of its
+  own; the panel measured here holds only the count line, so it keeps its
+  stop, which is the pattern's intent.
+- **Advisory: empty submit** — focus moves to the address field, which is
+  `aria-invalid` and described by the error.
+- **Advisory: professional title** — routed through the dictionary;
+  "Scan-Ergebnisse" under Deutsch.
+
+Axe over the form after an empty submit: 0 violations. Widget 180 tests,
+lint clean.

@@ -124,6 +124,7 @@ export function ProfessionalTable({
            folded above it rather than in a column of its own — and the
            criterion holds a fixed 24% metadata share — measured so the
            issue column stays the widest text column at every panel width. */
+        caption="Findings, most severe first"
         headers={[
           { key: "issue", label: "Issue" },
           { key: "criterion", label: "Criterion" },

@@ -393,6 +393,12 @@ export function App({
     <section
       className={`a11y-widget-inner${sections.length > 0 ? " a11y-shell-with-nav" : ""}`}
       aria-label="Website accessibility check"
+      /* The widget's language, declared where the widget starts. It is a
+         guest on a page marked with the host's language; once the visitor
+         switches to Deutsch every string inside is German, and without this
+         a screen reader read it with English pronunciation rules — WCAG
+         3.1.2, measured: no lang attribute anywhere in the tree. */
+      lang={lang}
     >
     <AppShell
       onJump={jumpTo}

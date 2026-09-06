@@ -100,6 +100,9 @@ export function UrlForm({
     if (!trimmed) {
       setShowEmptyError(true);
       setShowInvalidError(false);
+      // The error is associated and announced; focus goes to the field it
+      // is about, so the next keystroke is the correction.
+      (e.currentTarget as HTMLFormElement).querySelector<HTMLInputElement>("#a11y-url-input")?.focus();
       return;
     }
     const withProtocol = /^https?:\/\//i.test(trimmed) ? trimmed : `https://${trimmed}`;
@@ -108,6 +111,7 @@ export function UrlForm({
       hostname = new URL(withProtocol).hostname;
     } catch {
       setShowInvalidError(true);
+      (e.currentTarget as HTMLFormElement).querySelector<HTMLInputElement>("#a11y-url-input")?.focus();
       return;
     }
     // A hostname needs at least one dot to be a real domain — "jargon

@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import type { KeyboardEvent, ReactNode } from "react";
 
 /**
@@ -48,6 +48,13 @@ export function Tabs({
 }) {
   const [active, setActive] = useState(defaultId || (items[0] && items[0].id));
   const refs = useRef<Record<string, HTMLButtonElement | null>>({});
+  const panelRef = useRef<HTMLDivElement>(null);
+  const [panelHasFocusable, setPanelHasFocusable] = useState(false);
+  useEffect(() => {
+    setPanelHasFocusable(
+      Boolean(panelRef.current?.querySelector("a[href], button, input, select, textarea, [tabindex]:not([tabindex='-1'])"))
+    );
+  });
 
   const go = (id: string) => {
     setActive(id);
@@ -75,7 +82,11 @@ export function Tabs({
             id={`tab-${it.id}`}
             className="a11y-tab"
             aria-selected={it.id === active}
-            aria-controls={`panel-${it.id}`}
+            /* Only while the panel is in the DOM: the inactive panels are not
+               rendered, and a reference to an id that does not exist is a
+               reference to nothing — 4.1.2, measured in professional mode
+               on "No issues found". */
+            aria-controls={it.id === active ? `panel-${it.id}` : undefined}
             tabIndex={it.id === active ? 0 : -1}
             ref={(el) => {
               refs.current[it.id] = el;
@@ -89,11 +100,15 @@ export function Tabs({
       </div>
       {cur && (
         <div
+          ref={panelRef}
           role="tabpanel"
           id={`panel-${cur.id}`}
           className="a11y-tabpanel"
           aria-labelledby={`tab-${cur.id}`}
-          tabIndex={0}
+          /* A tab stop only when the panel has nothing focusable of its own.
+             With a table of buttons inside, the panel itself was one more
+             silent stop on the way to them. */
+          tabIndex={panelHasFocusable ? -1 : 0}
           aria-owns={panelOwns || undefined}
         >
           {cur.panel}
