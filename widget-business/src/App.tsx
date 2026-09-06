@@ -261,7 +261,11 @@ export function App({
       const els = Array.from(root.querySelectorAll<HTMLElement>("[data-nav-label]"));
       setSections(
         els
-          .filter((el) => el.id)
+          // Rendered ones only. In professional mode the card sections are
+          // print-only (display:none on screen), and the rail listed them
+          // anyway — two links that jumped to nothing visible. offsetParent
+          // is null under a display:none ancestor.
+          .filter((el) => el.id && el.offsetParent !== null)
           .map((el) => ({ id: el.id, el, label: el.dataset.navLabel ?? "" }))
       );
     };
@@ -270,7 +274,9 @@ export function App({
     // Attributes too: a language switch rewrites every data-nav-label in
     // place, with no child added or removed, and the rail kept the old
     // language until something else changed.
-    observer.observe(root, { childList: true, subtree: true, attributes: true, attributeFilter: ["data-nav-label"] });
+    // "class" too: the audience switch flips the print-only wrapper's class,
+    // which is what hides or shows those sections.
+    observer.observe(root, { childList: true, subtree: true, attributes: true, attributeFilter: ["data-nav-label", "class"] });
     return () => observer.disconnect();
   }, []);
   const activeSectionId = useActiveSection(sections);

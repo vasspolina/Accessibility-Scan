@@ -35,6 +35,26 @@ export interface NavSection extends NavTarget {
  * button and the collapse is itself scoped to the same breakpoint, so
  * this component doesn't need to know which width it's currently at.
  */
+/** Which of the five groups a section belongs to, by its heading id. An
+ *  id nothing here names falls into "Report", so a new section is never
+ *  dropped from the rail for want of a mapping. */
+const GROUP_ORDER = ["Score", "What to fix", "What the law asks", "For your team", "Documents and other views", "Report"] as const;
+const GROUP_OF: Array<[RegExp, (typeof GROUP_ORDER)[number]]> = [
+  [/^a11y-(score|hist|audit-head)/, "Score"],
+  [/^a11y-(pro-findings|trust|accessibility|audit-pages)/, "What to fix"],
+  [/^a11y-(conf|w22)-/, "What the law asks"],
+  [/^a11y-(undecided|dn|notes|sr|manual)-/, "For your team"],
+  [/^a11y-(stmt|acr|sim)-/, "Documents and other views"],
+];
+function groupSections(sections: NavSection[]): Array<{ label: (typeof GROUP_ORDER)[number]; items: NavSection[] }> {
+  const byGroup = new Map<string, NavSection[]>();
+  for (const s of sections) {
+    const label = GROUP_OF.find(([re]) => re.test(s.id))?.[1] ?? "Report";
+    byGroup.set(label, [...(byGroup.get(label) ?? []), s]);
+  }
+  return GROUP_ORDER.filter((g) => byGroup.has(g)).map((g) => ({ label: g, items: byGroup.get(g)! }));
+}
+
 export function SideNav({
   sections,
   activeId,
@@ -93,17 +113,33 @@ export function SideNav({
           </span>
         </button>
       </h2>
+      {/* Five groups, in the order a reader's questions come — the
+          readability audit's proposal, made visible. A group label is a
+          span, not a heading: the rail is one nav landmark and the report's
+          own headings are the outline. Order within a group follows the
+          page; groups follow GROUP_ORDER. */}
       <ul id={listId} data-open={open}>
-        {sections.map((s) => (
-          <li key={s.id}>
-            <a
-              href={`#${s.id}`}
-              className="a11y-shell-nav-link"
-              aria-current={activeId === s.id ? "true" : undefined}
-              onClick={go(s.el)}
-            >
-              {s.label}
-            </a>
+        {groupSections(sections).map((g) => (
+          <li key={g.label} className="a11y-shell-nav-group">
+            {/* No label over a group that is one link of the same name —
+                "Score" above "Score" said it twice. */}
+            {!(g.items.length === 1 && g.items[0].label === t(g.label)) && (
+              <span className="a11y-shell-nav-group-label" aria-hidden="true">{t(g.label)}</span>
+            )}
+            <ul aria-label={t(g.label)}>
+              {g.items.map((s) => (
+                <li key={s.id}>
+                  <a
+                    href={`#${s.id}`}
+                    className="a11y-shell-nav-link"
+                    aria-current={activeId === s.id ? "true" : undefined}
+                    onClick={go(s.el)}
+                  >
+                    {s.label}
+                  </a>
+                </li>
+              ))}
+            </ul>
           </li>
         ))}
       </ul>

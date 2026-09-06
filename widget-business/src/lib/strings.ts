@@ -77,6 +77,11 @@ export const CHROME_KEYS: string[] = [
   "Fix once, fix everywhere",
   "Findings",
   "Sections",
+  "What to fix",
+  "What the law asks",
+  "For your team",
+  "Documents and other views",
+  "Report",
   "section in this report",
   "sections in this report",
   // The stop-press
