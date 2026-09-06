@@ -155,7 +155,7 @@ export function UndecidedChecks({
               aria-expanded={showAll}
               onClick={() => setShowAll((v) => !v)}
             >
-              {showAll ? `Show the first ${FOLD} only` : `Show all ${rows.length}`}
+              {showAll ? t("Show the first 3 only") : `${t("Show all")} ${rows.length}`}
             </button>
           )}
           {/* Below the rows it exports, like the design draws it. The arrow

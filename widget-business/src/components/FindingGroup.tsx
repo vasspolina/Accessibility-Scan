@@ -1013,7 +1013,7 @@ function TriageControl({ finding }: { finding: AccessibilityFinding }) {
   async function save(e: React.FormEvent) {
     e.preventDefault();
     if (!name.trim()) {
-      setError("Sign the decision with your name.");
+      setError(t("Sign the decision with your name."));
       return;
     }
     setBusy(true);
@@ -1030,7 +1030,7 @@ function TriageControl({ finding }: { finding: AccessibilityFinding }) {
       setSaved({ state: d.state, decidedBy: d.decidedBy, decidedAt: d.decidedAt });
       setOpen(false);
     } catch (err) {
-      setError(err instanceof ScanError ? err.message : "Could not save the decision.");
+      setError(err instanceof ScanError ? err.message : t("Could not save the decision."));
     } finally {
       setBusy(false);
     }
@@ -1050,7 +1050,7 @@ function TriageControl({ finding }: { finding: AccessibilityFinding }) {
         <form className="a11y-triage-form" onSubmit={save} aria-label={`Mark finding ${finding.ruleId ?? ""}`}>
           <Select
             id={`${id}-state`}
-            label="Mark as"
+            label={t("Mark as")}
             options={[
               { value: "open", label: t("Open") },
               { value: "ignored", label: t("Ignored") },
@@ -1060,10 +1060,10 @@ function TriageControl({ finding }: { finding: AccessibilityFinding }) {
             value={state}
             onChange={(e) => setState(e.target.value as TriageState)}
           />
-          <Input id={`${id}-note`} label="Why, in a sentence" value={note} onChange={(e) => setNote(e.target.value)} />
+          <Input id={`${id}-note`} label={t("Why, in a sentence")} value={note} onChange={(e) => setNote(e.target.value)} />
           <Input
             id={`${id}-name`}
-            label="Your name"
+            label={t("Your name")}
             value={name}
             onChange={(e) => setName(e.target.value)}
             invalid={Boolean(error)}
@@ -1071,16 +1071,16 @@ function TriageControl({ finding }: { finding: AccessibilityFinding }) {
           />
           <div className="a11y-manual-form-actions">
             <Button variant="primary" size="sm" type="submit" disabled={busy}>
-              {busy ? "Saving…" : "Save"}
+              {busy ? t("Saving…") : t("Save")}
             </Button>
             <Button variant="ghost" size="sm" type="button" onClick={() => setOpen(false)} disabled={busy}>
-              Cancel
+              {t("Cancel")}
             </Button>
           </div>
         </form>
       ) : (
         <Button variant="ghost" size="sm" onClick={() => setOpen(true)}>
-          {saved && saved.state !== "open" ? "Change the mark" : "Mark this finding"}
+          {saved && saved.state !== "open" ? t("Change the mark") : t("Mark this finding")}
         </Button>
       )}
     </div>

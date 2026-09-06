@@ -31,11 +31,11 @@ import { getDecidedBy, setDecidedBy } from "../lib/apiKey";
  * this site, so it shrinks by itself as the scanner learns to decide more.
  */
 const STATUS_OPTIONS: Array<{ value: RecordedVerdict["status"]; label: string }> = [
-  { value: "supports", label: "Yes — it meets this" },
-  { value: "partially-supports", label: "Partly" },
-  { value: "does-not-support", label: "No — it fails this" },
-  { value: "not-applicable", label: "Does not apply to this site" },
-  { value: "unresolved", label: "Looked, could not decide yet" },
+  { value: "supports", label: t("Yes — it meets this") },
+  { value: "partially-supports", label: t("Partly") },
+  { value: "does-not-support", label: t("No — it fails this") },
+  { value: "not-applicable", label: t("Does not apply to this site") },
+  { value: "unresolved", label: t("Looked, could not decide yet") },
 ];
 
 const STATUS_WORD: Record<RecordedVerdict["status"], string> = {
@@ -71,7 +71,7 @@ export function ManualChecks({
         if (!cancelled) setData(r);
       })
       .catch((err) => {
-        if (!cancelled) setError(err instanceof ScanError ? err.message : "Could not load the open questions.");
+        if (!cancelled) setError(err instanceof ScanError ? err.message : t("Could not load the open questions."));
       });
     return () => {
       cancelled = true;
@@ -101,7 +101,7 @@ export function ManualChecks({
             Manual checks
           </h2>
         </div>
-        <Notification kind="warning" title="Could not load the open questions" subtitle={error} />
+        <Notification kind="warning" title={t("Could not load the open questions")} subtitle={error} />
       </section>
     );
   }
@@ -113,16 +113,14 @@ export function ManualChecks({
         <h2 className="a11y-section-title" id="a11y-manual-heading" data-nav-label={t("Manual checks")}>
           Manual checks{" "}
           <span className="a11y-section-count">
-            ({data.open} open, {data.answered} answered)
+            ({data.open} {t("open")}, {data.answered} {t("answered")})
           </span>
         </h2>
         <p className="a11y-section-desc">
-          No software can decide these. Each one is a question about your site,
-          not this page, so an answer holds for every later scan until you change it.
+          {t("No software can decide these. Each one is a question about your site, not this page, so an answer holds for every later scan until you change it.")}
         </p>
         <p className="a11y-section-desc">
-          Answers are signed and kept with their history. They fill the conformance
-          report for buyers, which a scan alone can never complete.
+          {t("Answers are signed and kept with their history. They fill the conformance report for buyers, which a scan alone can never complete.")}
         </p>
       </div>
       <ul className="a11y-manual-list">
@@ -133,7 +131,7 @@ export function ManualChecks({
             </span>
             <span className="a11y-conf-body">
               <strong>{q.question}</strong>
-              <span className="a11y-conf-plain">Officially: {q.name}</span>
+              <span className="a11y-conf-plain">{t("Officially:")} {q.name}</span>
               <span className="a11y-conf-plain">{q.whyAsking}</span>
               {q.answered && (
                 <span className="a11y-manual-verdict">
@@ -156,7 +154,7 @@ export function ManualChecks({
                 />
               ) : (
                 <Button variant={q.answered ? "ghost" : "secondary"} size="sm" onClick={() => setOpen(q.criterion)}>
-                  {q.answered ? "Change answer" : "Answer"}
+                  {q.answered ? t("Change answer") : t("Answer")}
                 </Button>
               )}
             </span>
@@ -192,7 +190,7 @@ function AnswerForm({
   async function save(e: React.FormEvent) {
     e.preventDefault();
     if (!name.trim()) {
-      setError("Sign the answer with your name. A decision nobody stands behind is not evidence.");
+      setError(t("Sign the answer with your name. A decision nobody stands behind is not evidence."));
       return;
     }
     setBusy(true);
@@ -209,7 +207,7 @@ function AnswerForm({
       });
       onDone(v);
     } catch (err) {
-      setError(err instanceof ScanError ? err.message : "Could not save the answer.");
+      setError(err instanceof ScanError ? err.message : t("Could not save the answer."));
     } finally {
       setBusy(false);
     }
@@ -219,22 +217,22 @@ function AnswerForm({
     <form className="a11y-manual-form" onSubmit={save} aria-label={`Answer for ${question.criterion}`}>
       <Select
         id={`${id}-status`}
-        label="Your answer"
+        label={t("Your answer")}
         options={STATUS_OPTIONS}
         value={status}
         onChange={(e) => setStatus(e.target.value as RecordedVerdict["status"])}
       />
       <Textarea
         id={`${id}-note`}
-        label="What you checked, in a sentence"
+        label={t("What you checked, in a sentence")}
         value={note}
         onChange={(e) => setNote(e.target.value)}
         rows={2}
-        helperText="Goes into the conformance report as the remark for this row."
+        helperText={t("Goes into the conformance report as the remark for this row.")}
       />
       <Input
         id={`${id}-name`}
-        label="Your name"
+        label={t("Your name")}
         value={name}
         onChange={(e) => setName(e.target.value)}
         invalid={Boolean(error)}
@@ -242,10 +240,10 @@ function AnswerForm({
       />
       <div className="a11y-manual-form-actions">
         <Button variant="primary" size="sm" type="submit" disabled={busy}>
-          {busy ? "Saving…" : "Save answer"}
+          {busy ? t("Saving…") : t("Save answer")}
         </Button>
         <Button variant="ghost" size="sm" type="button" onClick={onCancel} disabled={busy}>
-          Cancel
+          {t("Cancel")}
         </Button>
       </div>
     </form>

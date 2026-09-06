@@ -1,3 +1,4 @@
+import { t } from "../lib/strings";
 import { useId, useState } from "react";
 import { Input } from "./Input";
 import { Button } from "./Button";
@@ -35,7 +36,7 @@ export function AccountKey({
   async function keep() {
     setError(null);
     if (!looksLikeKey(draft)) {
-      setError("That is not an account key. One starts with ascan_ and is 70 characters long.");
+      setError(t("That is not an account key. One starts with ascan_ and is 70 characters long."));
       return;
     }
     setBusy(true);
@@ -48,7 +49,7 @@ export function AccountKey({
       onChange();
     } catch (err) {
       clearApiKey();
-      setError(err instanceof ScanError ? err.message : "The server did not accept that key.");
+      setError(err instanceof ScanError ? err.message : t("The server did not accept that key."));
     } finally {
       setBusy(false);
     }
@@ -64,26 +65,26 @@ export function AccountKey({
   return (
     <div className="a11y-settings-row">
       <span className="a11y-settings-label" id={`${id}-label`}>
-        Account
+        {t("Account")}
       </span>
       {key ? (
         <>
           <span className="a11y-settings-state">
-            {who ? `Signed in as ${who}. ` : "Key kept. "}
-            Scans from now on are saved, and the open questions can be answered.
+            {who ? `${t("Signed in as")} ${who}. ` : `${t("Key kept.")} `}
+            {t("Scans from now on are saved, and the open questions can be answered.")}
           </span>
           <Button variant="ghost" size="sm" onClick={forget}>
-            Forget this key
+            {t("Forget this key")}
           </Button>
         </>
       ) : (
         <>
           <span className="a11y-settings-state">
-            Not signed in. Nothing is saved, which is the default.
+            {t("Not signed in. Nothing is saved, which is the default.")}
           </span>
           <Input
             id={`${id}-key`}
-            label="Account key"
+            label={t("Account key")}
             type="password"
             value={draft}
             onChange={(e) => setDraft(e.target.value)}
@@ -94,7 +95,7 @@ export function AccountKey({
             inputProps={{ autoComplete: "off", spellCheck: false }}
           />
           <Button variant="secondary" size="sm" onClick={keep} disabled={busy || !draft}>
-            {busy ? "Checking…" : "Keep this key"}
+            {busy ? t("Checking…") : t("Keep this key")}
           </Button>
         </>
       )}

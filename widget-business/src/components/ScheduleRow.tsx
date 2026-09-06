@@ -27,9 +27,9 @@ import {
  * a schedule that looks alive and never does anything.
  */
 const EVERY: Array<{ value: string; label: string }> = [
-  { value: "24", label: "Every day" },
-  { value: "168", label: "Every week" },
-  { value: "6", label: "Every 6 hours" },
+  { value: "24", label: t("Every day") },
+  { value: "168", label: t("Every week") },
+  { value: "6", label: t("Every 6 hours") },
 ];
 
 function sameUrl(a: string, b: string): boolean {
@@ -58,7 +58,7 @@ export function ScheduleRow({ apiBase, url }: { apiBase: string; url: string }) 
       setAll(r.schedules);
       setStatus(r.scheduler);
     } catch (err) {
-      setError(err instanceof ScanError ? err.message : "Could not load the schedules.");
+      setError(err instanceof ScanError ? err.message : t("Could not load the schedules."));
     }
   }
   useEffect(() => {
@@ -77,7 +77,7 @@ export function ScheduleRow({ apiBase, url }: { apiBase: string; url: string }) 
       setWarnings(r.warnings ?? []);
       await load();
     } catch (err) {
-      setError(err instanceof ScanError ? err.message : "Could not create the schedule.");
+      setError(err instanceof ScanError ? err.message : t("Could not create the schedule."));
     } finally {
       setBusy(false);
     }
@@ -92,7 +92,7 @@ export function ScheduleRow({ apiBase, url }: { apiBase: string; url: string }) 
       await setScheduleEnabled(apiBase, mine.id, !mine.enabled);
       await load();
     } catch (err) {
-      setError(err instanceof ScanError ? err.message : "Could not change the schedule.");
+      setError(err instanceof ScanError ? err.message : t("Could not change the schedule."));
     } finally {
       setBusy(false);
     }
@@ -106,7 +106,7 @@ export function ScheduleRow({ apiBase, url }: { apiBase: string; url: string }) 
       setWarnings([]);
       await load();
     } catch (err) {
-      setError(err instanceof ScanError ? err.message : "Could not delete the schedule.");
+      setError(err instanceof ScanError ? err.message : t("Could not delete the schedule."));
     } finally {
       setBusy(false);
     }
@@ -124,36 +124,36 @@ export function ScheduleRow({ apiBase, url }: { apiBase: string; url: string }) 
           {error}
         </p>
       )}
-      {all === null && !error && <span className="a11y-settings-state">Loading…</span>}
+      {all === null && !error && <span className="a11y-settings-state">{t("Loading…")}</span>}
       {mine ? (
         <>
           <span className="a11y-settings-state">
-            {mine.enabled ? `Runs ${EVERY.find((o) => o.value === String(mine.everyHours))?.label.toLowerCase() ?? `every ${mine.everyHours} hours`}. ` : "Paused. "}
+            {mine.enabled ? `${t("Runs")} ${(EVERY.find((o) => o.value === String(mine.everyHours))?.label ?? `${mine.everyHours} h`).toLowerCase()}. ` : `${t("Paused.")} `}
             {mine.lastRunAt
-              ? `Last run ${when(mine.lastRunAt)}${mine.lastScore !== null ? `, score ${mine.lastScore}` : ""}. `
-              : "Not run yet. "}
-            {mine.enabled ? `Next ${when(mine.nextRunAt)}.` : ""}
-            {mine.lastError ? ` Last run failed: ${mine.lastError}` : ""}
-            {mine.notifyEmail ? ` Writes to ${mine.notifyEmail} if the score drops or a new finding appears.` : ""}
+              ? `${t("Last run")} ${when(mine.lastRunAt)}${mine.lastScore !== null ? `, ${t("score")} ${mine.lastScore}` : ""}. `
+              : `${t("Not run yet.")} `}
+            {mine.enabled ? `${t("Next")} ${when(mine.nextRunAt)}.` : ""}
+            {mine.lastError ? ` ${t("Last run failed:")} ${mine.lastError}` : ""}
+            {mine.notifyEmail ? ` ${t("Writes to")} ${mine.notifyEmail} ${t("if the score drops or a new finding appears.")}` : ""}
           </span>
-          {status && !status.enabled && <span className="a11y-settings-state">The scheduler is off on this server. This schedule will not run until it is on.</span>}
-          {status && mine.notifyEmail && !status.mail && <span className="a11y-settings-state">Mail is not set up on this server. No email will be sent.</span>}
+          {status && !status.enabled && <span className="a11y-settings-state">{t("The scheduler is off on this server. This schedule will not run until it is on.")}</span>}
+          {status && mine.notifyEmail && !status.mail && <span className="a11y-settings-state">{t("Mail is not set up on this server. No email will be sent.")}</span>}
           <div className="a11y-manual-form-actions">
             <Button variant="secondary" size="sm" onClick={toggle} disabled={busy}>
-              {mine.enabled ? "Pause" : "Resume"}
+              {mine.enabled ? t("Pause") : t("Resume")}
             </Button>
             <Button variant="ghost" size="sm" onClick={remove} disabled={busy}>
-              Delete the schedule
+              {t("Delete the schedule")}
             </Button>
           </div>
         </>
       ) : all !== null ? (
         <form className="a11y-manual-form" onSubmit={create} aria-labelledby={`${id}-label`}>
-          <span className="a11y-settings-state">Scan this page automatically. If the score drops or a new finding appears, you are told.</span>
-          <Select id={`${id}-every`} label="How often" options={EVERY} value={every} onChange={(e) => setEvery(e.target.value)} />
+          <span className="a11y-settings-state">{t("Scan this page automatically. If the score drops or a new finding appears, you are told.")}</span>
+          <Select id={`${id}-every`} label={t("How often")} options={EVERY} value={every} onChange={(e) => setEvery(e.target.value)} />
           <Input
             id={`${id}-email`}
-            label="Email for a worse result (optional)"
+            label={t("Email for a worse result (optional)")}
             type="email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
@@ -164,7 +164,7 @@ export function ScheduleRow({ apiBase, url }: { apiBase: string; url: string }) 
           ))}
           <div className="a11y-manual-form-actions">
             <Button variant="secondary" size="sm" type="submit" disabled={busy}>
-              {busy ? "Saving…" : "Schedule it"}
+              {busy ? t("Saving…") : t("Schedule it")}
             </Button>
           </div>
         </form>
