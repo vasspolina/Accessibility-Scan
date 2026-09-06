@@ -6709,3 +6709,9 @@
   padding: 0 var(--space-04);
 }
 .a11y-widget-biz .a11y-shell-nav-group > ul { display: flex; flex-direction: column; gap: var(--space-02); margin: 0; padding: 0; list-style: none; }
+
+/* Buttons in the rail's settings rows may wrap. A nowrap button carries
+   its whole label as a minimum width, and "Diesen Schlüssel behalten" at
+   276px plus the row's padding pushed the whole shell 21px past a 320px
+   viewport — measured in German only, which is how a nowrap fault hides. */
+.a11y-widget-biz .a11y-settings-row .a11y-btn { white-space: normal; text-align: left; height: auto; min-height: var(--target-min); }
