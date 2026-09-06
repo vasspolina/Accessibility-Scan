@@ -37,7 +37,7 @@ const STATES = [
   ["error", "?fixture=error"],
   ["blocked", "?fixture=blocked"],
 ];
-const LANGS = ["en", "de"];
+const LANGS = ["en", "de", "es", "fr"]; // every language the report ships — a nowrap fault hid in German once
 const WIDTHS = [320, 375];
 
 /* Vite picks its own port when the configured one is taken, so the port is
