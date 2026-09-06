@@ -248,7 +248,7 @@ export function ConformanceView({
       <button
         ref={toggleRef}
         type="button"
-        className="a11y-show-all"
+        className="a11y-show-all a11y-show-checklist"
         aria-expanded={expanded}
         aria-controls={panelId}
         onClick={() => setExpanded((v) => !v)}
@@ -355,7 +355,7 @@ export function ConformanceView({
           )}
           <button
             type="button"
-            className="a11y-show-all"
+            className="a11y-show-all a11y-show-checklist"
             onClick={() => {
               setExpanded(false);
               // This button is about to hide with the panel it lives in —

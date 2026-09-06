@@ -755,6 +755,16 @@
   background: transparent; color: var(--text-primary);
   font-size: 18px; font-weight: 500; cursor: pointer;
 }
+/* The checklist's own toggle, filled: it opens the 50-item list the section
+   is about, and as an outline it sat level with the copy around it. Only
+   that one — "Copy summary" and the history panel's delete share the base
+   class and stay outlined. The inverted pair keeps a readable ground in
+   both schemes (user's ask, 26 Aug 2026: "make the checklist buttons stand
+   out"). */
+.a11y-widget-biz .a11y-show-all.a11y-show-checklist {
+  border-color: var(--surface-inverse); background: var(--surface-inverse); color: var(--text-on-invert);
+}
+.a11y-widget-biz .a11y-show-all.a11y-show-checklist:hover { background: var(--gray-70); border-color: var(--gray-70); }
 
 /* .as-card / .as-card--flush -------------------------------------------- */
 .a11y-widget-biz .a11y-card { padding: var(--space-07); border-radius: var(--radius-lg); border: 0; }
@@ -5398,11 +5408,12 @@
   width: 100%;
   border: 0;
   border-radius: var(--radius-pill);
-  background: var(--layer-02);
-  color: var(--text-primary);
+  /* Filled like the checklist's own button, for the same reason. */
+  background: var(--surface-inverse);
+  color: var(--text-on-invert);
 }
 .a11y-widget-biz .a11y-w22-panel .a11y-accordion-head.a11y-w22-toggle:hover {
-  background: var(--brown-10);
+  background: var(--gray-70);
 }
 /* The two caveats read as the panel's own columns rather than as amber
    notes floating on purple. */

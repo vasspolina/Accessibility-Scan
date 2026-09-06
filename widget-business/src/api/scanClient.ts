@@ -487,7 +487,10 @@ export interface StorageStatus {
 async function authed<T>(apiBase: string, path: string, init?: RequestInit): Promise<T> {
   const res = await fetch(`${apiBase.replace(/\/$/, "")}${path}`, {
     ...init,
-    headers: { "Content-Type": "application/json", ...authHeaders(), ...(init?.headers ?? {}) },
+    // Content-Type only when there is a body. A DELETE that declared JSON
+    // and sent nothing was refused with "Body cannot be empty" — measured
+    // on the schedule row's delete.
+    headers: { ...(init?.body ? { "Content-Type": "application/json" } : {}), ...authHeaders(), ...(init?.headers ?? {}) },
   });
   const body = (await res.json().catch(() => ({}))) as T & { error?: string; detail?: string };
   if (!res.ok) {
@@ -532,3 +535,37 @@ export const setFindingState = (
     "/api/findings/state",
     { method: "POST", body: JSON.stringify(input) }
   ).then((r) => r.decision);
+
+/** A scheduled scan as the server keeps it. */
+export interface Schedule {
+  id: string;
+  url: string;
+  everyHours: number;
+  notifyEmail: string | null;
+  enabled: boolean;
+  nextRunAt: string;
+  lastRunAt: string | null;
+  lastScore: number | null;
+  lastScanId: string | null;
+  lastError: string | null;
+  createdAt: string;
+}
+export interface SchedulerStatus { enabled: boolean; mail: boolean }
+
+export const fetchSchedules = (apiBase: string) =>
+  authed<{ schedules: Schedule[]; scheduler: SchedulerStatus }>(apiBase, "/api/schedules");
+
+export const createSchedule = (apiBase: string, input: { url: string; everyHours: number; notifyEmail?: string }) =>
+  authed<{ schedule: Schedule; scheduler: SchedulerStatus; warnings?: string[] }>(apiBase, "/api/schedules", {
+    method: "POST",
+    body: JSON.stringify(input),
+  });
+
+export const setScheduleEnabled = (apiBase: string, id: string, enabled: boolean) =>
+  authed<{ schedule: Schedule }>(apiBase, `/api/schedules/${encodeURIComponent(id)}/enabled`, {
+    method: "POST",
+    body: JSON.stringify({ enabled }),
+  }).then((r) => r.schedule);
+
+export const deleteSchedule = (apiBase: string, id: string) =>
+  authed<{ deleted: string }>(apiBase, `/api/schedules/${encodeURIComponent(id)}`, { method: "DELETE" });

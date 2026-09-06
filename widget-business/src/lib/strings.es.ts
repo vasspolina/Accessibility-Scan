@@ -14,6 +14,7 @@ export const STRINGS_ES: Record<string, string> = {
   "Language": "Idioma",
   "The checklist's wording changes on the next scan.": "La redacción de la lista de comprobación cambia en el próximo análisis.",
   "scan results": "resultados del análisis",
+  "Scheduled scans": "Análisis programados",
   "Manual checks": "Comprobaciones manuales",
   Decided: "Decidido",
   "Meets it": "Lo cumple",

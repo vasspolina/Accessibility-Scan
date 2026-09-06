@@ -37,6 +37,7 @@ export const CHROME_KEYS: string[] = [
   "Language",
   "The checklist's wording changes on the next scan.",
   "scan results",
+  "Scheduled scans",
   "Manual checks",
   "Checked by a person",
   "Marked",

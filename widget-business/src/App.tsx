@@ -48,6 +48,7 @@ import { BlockedNotice } from "./components/BlockedNotice";
 import { ScanHistory } from "./components/ScanHistory";
 import { ManualChecks } from "./components/ManualChecks";
 import { AccountKey } from "./components/AccountKey";
+import { ScheduleRow } from "./components/ScheduleRow";
 import { getApiKey } from "./lib/apiKey";
 import { getLang, setLang, storeLang, type Lang } from "./lib/i18n";
 import { fetchServerHistory, type RecordedVerdict } from "./api/scanClient";
@@ -428,6 +429,9 @@ export function App({
             }}
           />
           <AccountKey apiBase={apiBase} onChange={() => setAccountVersion((v) => v + 1)} />
+          {/* Only for a saved scan: a schedule belongs to an account, and the
+              row needs the page it is about. */}
+          {report?.savedAs && signedIn && <ScheduleRow key={`${accountVersion}:${report.url}`} apiBase={apiBase} url={report.url} />}
           </>
         ) : undefined
       }
