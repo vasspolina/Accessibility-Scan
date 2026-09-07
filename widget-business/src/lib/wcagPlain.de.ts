@@ -8,19 +8,19 @@ export const PLAIN_DE: Record<string, PlainRule> = {
     impact: "Wer noch liest oder mitten im Formular steckt, landet ohne Warnung wieder am Anfang. Langsam zu lesen ist kein Fehler, und das hier bestraft es.",
   },
   "aria-allowed-role": {
-    plain: "Elemente sind falsch ausgezeichnet",
+    plain: "Eine Rolle, die das Element nicht haben kann",
     found: (n) =>
       `${n} ${n === 1 ? "Element ist" : "Elemente sind"} im Code als etwas ausgezeichnet, das ${n === 1 ? "es nicht sein kann" : "sie nicht sein können"}. Die Rolle passt nicht zu dieser Art von Tag.`,
     impact: "Screenreader sagen das Falsche an. Man hört „Schaltfläche“, wo ein Link steht, oder „Überschrift“, wo eine Liste steht.",
   },
   "aria-allowed-attr": {
-    plain: "Code-Angaben am falschen Element",
+    plain: "Eine Screenreader-Angabe am falschen Element",
     found: (n) =>
       `${n} ${n === 1 ? "Element trägt Angaben, die es als Tag dieser Art nicht haben darf" : "Elemente tragen Angaben, die sie als Tags dieser Art nicht haben dürfen"}. Browser und Screenreader sind sich nicht einig, was ${n === 1 ? "es ist" : "sie sind"}.`,
     impact: "Screenreader sagen Unsinn an oder überspringen das Element ganz.",
   },
   "aria-prohibited-attr": {
-    plain: "Eine Beschriftung, die der Code verwirft",
+    plain: "Eine Beschriftung, die Screenreader ignorieren müssen",
     found: (n) =>
       `${n} ${n === 1 ? "Element trägt" : "Elemente tragen"} eine Beschriftung, die der Code bei dieser Art von Tag nicht zulässt. Die Beschriftung wird weggeworfen statt vorgelesen.`,
     impact: "Im Quelltext sieht das Element benannt aus, also fällt niemandem etwas auf. Screenreader ignorieren die Beschriftung und lesen vor, was im Element steht. Oft nichts.",
@@ -32,7 +32,7 @@ export const PLAIN_DE: Record<string, PlainRule> = {
     impact: "Screenreader erkennen den Aufbau nicht, also kann niemand darin navigieren.",
   },
   "aria-required-parent": {
-    plain: "Teile eines Bedienelements stehen allein",
+    plain: "Listeneintrag außerhalb seiner Liste",
     found: (n) =>
       `${n} ${n === 1 ? "Element ist als Teil eines größeren Bedienelements ausgezeichnet: ein Reiter, ein Menüpunkt, eine Listenoption. Es steht nicht in dem Bedienelement, zu dem es gehört." : "Elemente sind als Teile eines größeren Bedienelements ausgezeichnet: Reiter, Menüpunkte, Listenoptionen. Keines steht in dem Bedienelement, zu dem es gehört."}`,
     impact: "Ein Reiter außerhalb seiner Reiterleiste ist kein Reiter. Screenreader können nicht sagen, der wievielte von wie vielen er ist. Und die Pfeiltasten, mit denen man durch solche Elemente geht, haben nichts, wodurch sie gehen könnten.",
@@ -189,7 +189,7 @@ export const PLAIN_DE: Record<string, PlainRule> = {
     impact: "Wer größere Schrift braucht, bekommt sie nicht. Auf dem Handy geht man dann einfach weg.",
   },
   "meta-viewport-large": {
-    plain: "Zoomen ist gedeckelt",
+    plain: "Zoom auf eine feste Stufe begrenzt",
     found: () =>
       `Zoomen geht, aber die Seite deckelt es unter 500%, und wer die stärkste Vergrößerung braucht, kommt nicht über den Deckel hinaus.`,
     impact: "Milder, als das Zoomen ganz zu sperren, und es trifft dieselben Menschen. Wer sehr große Schrift braucht, kommt bis zum Deckel und keinen Schritt weiter.",
@@ -219,7 +219,7 @@ export const PLAIN_DE: Record<string, PlainRule> = {
     impact: "Die Gruppierung geht verloren, und der Inhalt ergibt keinen Sinn mehr.",
   },
   "aria-required-attr": {
-    plain: "Einem Bedienelement fehlt sein Zustand",
+    plain: "Ein Bedienelement ohne den nötigen Zustand",
     found: (n) =>
       `${n} ${n === 1 ? "Bedienelement ist" : "Bedienelemente sind"} als etwas ausgezeichnet, das einen Zustand hat: angehakt, aufgeklappt, ein Wert auf einer Skala. ${n === 1 ? "Es sagt nie" : "Keines davon sagt"}, welcher Zustand das ist.`,
     impact: "Wer einen Screenreader nutzt, erfährt weder den Zustand noch, wie sich das Element bedienen lässt.",
@@ -237,7 +237,7 @@ export const PLAIN_DE: Record<string, PlainRule> = {
     impact: "Angesagt wird „Dialog“ und sonst nichts. Etwas hat den Bildschirm übernommen, und es gibt keine Möglichkeit zu hören, was.",
   },
   "nested-interactive": {
-    plain: "Ein Bedienelement im anderen",
+    plain: "Ein Bedienelement in einem anderen",
     found: (n) =>
       `${n} ${n === 1 ? "Bedienelement enthält ein weiteres Bedienelement." : "Bedienelemente enthalten jeweils ein weiteres Bedienelement."} Was wie eine Sache zum Klicken aussieht, sind zwei ineinander.`,
     impact: "Screenreader sagen das äußere an und verbergen das innere, das damit unerreichbar wird. Welches von beiden ein Klick oder ein Tastendruck auslöst, weiß niemand.",
@@ -317,7 +317,7 @@ export const PLAIN_DE: Record<string, PlainRule> = {
     impact: "Alle tippen Name, E-Mail und Adresse wieder von Hand. Langsam für alle, für manche eine echte Hürde.",
   },
   "component-input-type": {
-    plain: "Normale Felder für E-Mail und Telefon",
+    plain: "E-Mail-Felder als einfacher Text angelegt",
     impact: "Auf dem Handy erscheint die gewöhnliche Tastatur statt einer mit „@“ oder einem Ziffernblock. Mehr Tipper, mehr Fehler.",
   },
   "component-required-cue": {
@@ -394,11 +394,11 @@ export const PLAIN_DE: Record<string, PlainRule> = {
     impact: "„Nein danke, ich möchte kein Geld sparen“ bleibt aus den falschen Gründen im Kopf. Es liest sich als Manipulation.",
   },
   "dark-fake-scarcity": {
-    plain: "Knappheit, die zu prüfen wäre",
+    plain: "Knappheitsangaben als Druckmittel",
     impact: "Behörden gehen gegen erfundene Knappheit vor. Käufer haben gelernt, ihr zu misstrauen. Erfundene Zahlen kosten mehr Verkäufe, als sie bringen.",
   },
   "dark-fake-urgency": {
-    plain: "Zeitdruck, der zu prüfen wäre",
+    plain: "Fristen als Druckmittel",
     impact: "Countdowns, die beim Neuladen wieder von vorn beginnen, sind eine irreführende Praxis. Ist das einmal aufgefallen, glaubt niemand mehr, was Sie sonst behaupten.",
   },
 
@@ -415,7 +415,7 @@ export const PLAIN_DE: Record<string, PlainRule> = {
     impact: "Escape ist die Taste, nach der alle zuerst greifen. Festhängen kann hier niemand, denn man kann weitertabben. Aber alle an der Tastatur probieren es, und nichts passiert.",
   },
   "dialog-focus-not-moved": {
-    plain: "Das Pop-up bekommt den Fokus nie",
+    plain: "Pop-up öffnet, ohne den Fokus zu übernehmen",
     impact: "Wer einen Screenreader nutzt, erfährt nie, dass es sich geöffnet hat. An der Tastatur muss man erst durch die ganze Seite darunter tabben. Erst dann erreicht man, was den Bildschirm nun bedeckt.",
   },
   "dialog-focus-lost-on-close": {
@@ -436,7 +436,7 @@ export const PLAIN_DE: Record<string, PlainRule> = {
   },
 
   "markup-validation": {
-    plain: "Fehler im Code der Seite",
+    plain: "Ungültiges HTML auf der Seite",
     impact: "Browser raten stillschweigend, wie sie das reparieren, und jeder rät anders. Ihre Seite funktioniert vielleicht nicht so, wie Sie denken.",
   },
 

@@ -10,20 +10,20 @@ export const PLAIN_FR: Record<string, PlainRule> = {
       "Qui est encore en train de lire, ou au milieu du formulaire, est renvoyé au début sans prévenir. Lire lentement n'est pas un défaut, et ceci le punit.",
   },
   "aria-allowed-role": {
-    plain: "Des éléments annoncés pour ce qu'ils ne sont pas",
+    plain: "Un rôle que l’élément ne peut pas avoir",
     found: (n) =>
       `${n} ${n === 1 ? "élément est désigné" : "éléments sont désignés"} dans le code comme quelque chose ${n === 1 ? "qu'il ne peut pas être" : "qu'ils ne peuvent pas être"}. Ce rôle n'a pas sa place sur ce type de balise.`,
     impact:
       "Les lecteurs d'écran annoncent la mauvaise chose. On dit aux gens qu'ils ont atteint un bouton alors que c'est un lien, ou un titre alors que c'est une liste.",
   },
   "aria-allowed-attr": {
-    plain: "Des réglages de code sur le mauvais élément",
+    plain: "Un réglage de lecteur d’écran sur le mauvais élément",
     found: (n) =>
       `${n} ${n === 1 ? "élément porte des réglages que son" : "éléments portent des réglages que leur"} type de balise n'a pas le droit d'avoir. Le navigateur et le lecteur d'écran ne sont pas d'accord sur ce ${n === 1 ? "qu'il est" : "qu'ils sont"}.`,
     impact: "Les lecteurs d'écran peuvent annoncer n'importe quoi, ou sauter l'élément entièrement.",
   },
   "aria-prohibited-attr": {
-    plain: "Un libellé que le code jette",
+    plain: "Une étiquette que les lecteurs d’écran doivent ignorer",
     found: (n) =>
       `${n} ${n === 1 ? "élément porte" : "éléments portent"} un libellé que le code n'autorise pas sur ce type de balise. Le libellé est jeté au lieu d'être lu.`,
     impact:
@@ -36,7 +36,7 @@ export const PLAIN_FR: Record<string, PlainRule> = {
     impact: "Les lecteurs d'écran n'en déduisent pas la structure, donc personne ne peut y naviguer.",
   },
   "aria-required-parent": {
-    plain: "Des morceaux séparés de leur contrôle",
+    plain: "Élément de liste hors de sa liste",
     found: (n) =>
       `${n} ${n === 1 ? "élément est désigné comme un morceau" : "éléments sont désignés comme des morceaux"} d'un contrôle plus grand : un onglet, une entrée de menu, une option de liste. ${n === 1 ? "Il ne se trouve pas" : "Aucun ne se trouve"} dans le contrôle ${n === 1 ? "auquel il appartient" : "auquel ils appartiennent"}.`,
     impact:
@@ -207,7 +207,7 @@ export const PLAIN_FR: Record<string, PlainRule> = {
     impact: "Qui a besoin d'un texte plus gros ne l'obtient pas. Sur un téléphone, ils partent.",
   },
   "meta-viewport-large": {
-    plain: "Le zoom est plafonné",
+    plain: "Zoom limité à un niveau fixe",
     found: () =>
       `Le zoom fonctionne, mais la page le plafonne sous 500%, et les gens qui ont besoin du plus fort grossissement s'arrêtent au plafond.`,
     impact:
@@ -239,7 +239,7 @@ export const PLAIN_FR: Record<string, PlainRule> = {
     impact: "Les utilisateurs de lecteurs d'écran perdent le groupement, et le contenu cesse d'avoir du sens.",
   },
   "aria-required-attr": {
-    plain: "Un contrôle sans son état",
+    plain: "Un contrôle sans état obligatoire",
     found: (n) =>
       `${n} ${n === 1 ? "contrôle est désigné" : "contrôles sont désignés"} comme quelque chose qui a un état : coché, déplié, une valeur sur une échelle. ${n === 1 ? "Il ne dit jamais" : "Aucun ne dit"} quel est cet état.`,
     impact: "Les utilisateurs de lecteurs d'écran ne savent pas dans quel état il est, ni comment s'en servir.",
@@ -259,7 +259,7 @@ export const PLAIN_FR: Record<string, PlainRule> = {
       "Elle est annoncée comme « boîte de dialogue » et rien d'autre. Quelque chose a pris tout l'écran et il n'y a aucun moyen d'entendre ce que c'est.",
   },
   "nested-interactive": {
-    plain: "Un contrôle à l'intérieur d'un autre",
+    plain: "Un contrôle imbriqué dans un autre",
     found: (n) =>
       `${n} ${n === 1 ? "contrôle en contient un autre" : "contrôles en contiennent chacun un autre"}. Ce qui ressemble à une seule chose à cliquer en fait deux, l'une enroulée autour de l'autre.`,
     impact:
@@ -352,7 +352,7 @@ export const PLAIN_FR: Record<string, PlainRule> = {
       "Tout le monde retape son nom, son courriel et son adresse à la main. Lent pour tous, un vrai obstacle pour certains.",
   },
   "component-input-type": {
-    plain: "Des cases ordinaires pour courriel et téléphone",
+    plain: "Champs e-mail définis comme texte simple",
     impact:
       "Sur téléphone, les visiteurs ont le clavier générique au lieu de celui avec le « @ » ou le pavé numérique. Plus de frappes, plus d'erreurs.",
   },
@@ -446,12 +446,12 @@ export const PLAIN_FR: Record<string, PlainRule> = {
       "« Non merci, je ne veux pas économiser » marque les esprits pour de mauvaises raisons. Cela se lit comme de la manipulation.",
   },
   "dark-fake-scarcity": {
-    plain: "Rareté annoncée à vérifier",
+    plain: "Annonces de stock limité comme pression",
     impact:
       "Les autorités poursuivent la fausse rareté. Les acheteurs ont appris à s'en méfier. Les chiffres inventés coûtent plus de ventes qu'ils n'en rapportent.",
   },
   "dark-fake-urgency": {
-    plain: "Pression du temps à vérifier",
+    plain: "Délais utilisés comme pression",
     impact:
       "Un compte à rebours qui repart au rechargement est une pratique trompeuse. Une fois repéré, plus rien de ce que vous annoncez n'est cru.",
   },
@@ -472,7 +472,7 @@ export const PLAIN_FR: Record<string, PlainRule> = {
       "Échap est la touche que tout le monde essaie en premier. Personne n'est bloqué ici, puisqu'on peut encore tabuler ailleurs. Mais chaque utilisateur au clavier l'essaie, et rien ne se passe.",
   },
   "dialog-focus-not-moved": {
-    plain: "La fenêtre ne reçoit jamais le curseur",
+    plain: "La fenêtre s’ouvre sans prendre le focus",
     impact:
       "Quelqu'un qui se sert d'un lecteur d'écran n'apprend jamais qu'elle s'est ouverte. Un utilisateur au clavier doit parcourir toute la page en dessous avant d'atteindre ce qui couvre son écran.",
   },
@@ -496,7 +496,7 @@ export const PLAIN_FR: Record<string, PlainRule> = {
   },
 
   "markup-validation": {
-    plain: "Des erreurs dans le code de la page",
+    plain: "HTML non valide dans la page",
     impact:
       "Les navigateurs devinent en silence comment corriger, et chacun devine autrement. Votre page peut ne pas marcher comme vous le croyez.",
   },

@@ -100,3 +100,28 @@ carry the same keys and the same caveat.
 | This is the order a screen reader reads it in. | In dieser Reihenfolge liest ein Screenreader die Seite. |
 | Cancel \u2014 scan without a login | Abbrechen – ohne Login scannen |
 | Keep this page open \u2014 the scan runs here. | Lassen Sie diese Seite offen – der Scan läuft hier. |
+
+## Finding titles rewritten as faults, 26 August 2026 (evening)
+
+| English | German | Where |
+| --- | --- | --- |
+| A role the element cannot have | Eine Rolle, die das Element nicht haben kann | finding title |
+| Screen-reader setting on the wrong element | Eine Screenreader-Angabe am falschen Element | finding title |
+| A label screen readers must ignore | Eine Beschriftung, die Screenreader ignorieren müssen | finding title |
+| List item outside its list | Listeneintrag außerhalb seiner Liste | finding title |
+| A control missing a required state | Ein Bedienelement ohne den nötigen Zustand | finding title |
+| Zoom limited to a fixed level | Zoom auf eine feste Stufe begrenzt | finding title |
+| A control nested inside another | Ein Bedienelement in einem anderen | finding title |
+| Email fields typed as plain text | E-Mail-Felder als einfacher Text angelegt | finding title |
+| Low-stock claims used as pressure | Knappheitsangaben als Druckmittel | finding title |
+| Deadlines used as pressure | Fristen als Druckmittel | finding title |
+| Pop-up opens without taking focus | Pop-up öffnet, ohne den Fokus zu übernehmen | finding title |
+| Invalid HTML in the page | Ungültiges HTML auf der Seite | finding title |
+| Navigation menus with no names | Navigationsmenüs ohne Namen | finding title |
+| Keep this page open. The scan runs here. | Lassen Sie diese Seite offen. Der Scan läuft hier. | form |
+| Cancel. Scan without a login | Abbrechen. Ohne Login scannen | login panel |
+| Yes. It meets this / No. It fails this | Ja. Erfüllt / Nein. Nicht erfüllt | manual checks |
+
+Also: every " – " inside a German sentence in the dictionaries was replaced by
+a full stop and a capital, by rule (the user's "no dashes"). A native reader
+should check that none of those splits reads oddly.

@@ -108,20 +108,20 @@ export const PLAIN_RULE_EXPLANATIONS: Record<string, PlainRule> = {
       "Anyone still reading, or part way through the form, is thrown back to the start with no warning. Reading slowly is not a fault, and this punishes it.",
   },
   "aria-allowed-role": {
-    plain: "Elements labelled as what they aren't",
+    plain: "A role the element cannot have",
     found: (n) =>
       `${n} ${n === 1 ? "element is" : "elements are"} labelled in the code as something ${n === 1 ? "it" : "they"} cannot be. The role does not belong on that kind of tag.`,
     impact:
       "Screen readers announce the wrong thing. People are told they reached a button when it is a link, or a heading when it is a list.",
   },
   "aria-allowed-attr": {
-    plain: "Code settings on the wrong element",
+    plain: "Screen-reader setting on the wrong element",
     found: (n) =>
       `${n} ${n === 1 ? "element carries settings its" : "elements carry settings their"} kind of tag is not allowed to have. The browser and the screen reader disagree about what ${n === 1 ? "it is" : "they are"}.`,
     impact: "Screen readers can announce nonsense, or skip the element entirely.",
   },
   "aria-prohibited-attr": {
-    plain: "A label the code discards",
+    plain: "A label screen readers must ignore",
     found: (n) =>
       `${n} ${n === 1 ? "element carries" : "elements carry"} a label the code does not allow on that kind of tag. The label is thrown away rather than read out.`,
     impact:
@@ -134,7 +134,7 @@ export const PLAIN_RULE_EXPLANATIONS: Record<string, PlainRule> = {
     impact: "Screen readers cannot work out its structure, so people cannot navigate it.",
   },
   "aria-required-parent": {
-    plain: "Control parts separated from their control",
+    plain: "List item outside its list",
     found: (n) =>
       `${n} ${n === 1 ? "element is labelled as a piece" : "elements are labelled as pieces"} of a larger control: a tab, a menu item, an option, a row. ${n === 1 ? "It does not sit" : "None sits"} inside the control ${n === 1 ? "it belongs" : "they belong"} to.`,
     impact:
@@ -305,7 +305,7 @@ export const PLAIN_RULE_EXPLANATIONS: Record<string, PlainRule> = {
     impact: "Anyone who needs bigger text can't get it. On a phone, they just leave.",
   },
   "meta-viewport-large": {
-    plain: "Zooming is capped",
+    plain: "Zoom limited to a fixed level",
     found: () =>
       `Zooming works, but the page caps it below 500%. The people who need the strongest magnification stop there.`,
     impact:
@@ -336,7 +336,7 @@ export const PLAIN_RULE_EXPLANATIONS: Record<string, PlainRule> = {
     impact: "Screen reader users lose the grouping, so the content stops making sense.",
   },
   "aria-required-attr": {
-    plain: "A control missing its state",
+    plain: "A control missing a required state",
     found: (n) =>
       `${n} ${n === 1 ? "control is" : "controls are"} labelled as something with a state: checked, expanded, selected, a value on a scale. ${n === 1 ? "It never says" : "None of them says"} what that state is.`,
     impact: "Screen reader users can't tell what state it's in, or how to work it.",
@@ -355,7 +355,7 @@ export const PLAIN_RULE_EXPLANATIONS: Record<string, PlainRule> = {
       "It is announced as \"dialog\" and nothing else. Something has taken over the screen and there is no way to hear what it is.",
   },
   "nested-interactive": {
-    plain: "One control inside another",
+    plain: "A control nested inside another",
     found: (n) =>
       `${n} ${n === 1 ? "control contains another control" : "controls each contain another control"}. What looks like one thing to click is two wrapped around each other.`,
     impact:
@@ -475,12 +475,12 @@ export const PLAIN_RULE_EXPLANATIONS: Record<string, PlainRule> = {
       "Screen reader users pull up all links as a list. A list of \"click here\" and \"read more\" gives them nothing to choose by.",
   },
   "sr-vague-button-name": {
-    plain: "Buttons announced as punctuation",
+    plain: "Buttons named only with a symbol",
     impact:
       "A sighted visitor sees the × in the corner and knows. A listener hears \"times, button\" with no corner to lean on.",
   },
   "form-field-placeholder-label": {
-    plain: "Placeholders doing a label's job",
+    plain: "Fields labelled only by placeholders",
     impact:
       "The hint vanishes the moment someone types. Anyone who pauses mid-form returns to a row of filled boxes with no way to check what went where.",
   },
@@ -490,7 +490,7 @@ export const PLAIN_RULE_EXPLANATIONS: Record<string, PlainRule> = {
       "Everyone retypes their name, email, address and phone number by hand. Slow for all, a real barrier for some.",
   },
   "component-input-type": {
-    plain: "Plain boxes for email and phone",
+    plain: "Email fields typed as plain text",
     impact:
       "On phones, visitors get the generic keyboard instead of one with \"@\" or a number pad. More taps, more mistakes.",
   },
@@ -589,12 +589,12 @@ export const PLAIN_RULE_EXPLANATIONS: Record<string, PlainRule> = {
       "\"No thanks, I don't want to save money\" is memorable for the wrong reasons. It reads as manipulation.",
   },
   "dark-fake-scarcity": {
-    plain: "Scarcity claims worth verifying",
+    plain: "Low-stock claims used as pressure",
     impact:
       "Regulators pursue fake scarcity. Shoppers have learned to distrust it. Invented numbers cost more sales than they win.",
   },
   "dark-fake-urgency": {
-    plain: "Time pressure worth verifying",
+    plain: "Deadlines used as pressure",
     impact:
       "Countdowns that reset on reload are a deceptive practice. Once noticed, nothing else the site claims is believed.",
   },
@@ -616,7 +616,7 @@ export const PLAIN_RULE_EXPLANATIONS: Record<string, PlainRule> = {
       "Escape is the key everyone reaches for first. Nobody is stuck here, since Tab still moves focus away. But every keyboard user tries it, and nothing happens.",
   },
   "dialog-focus-not-moved": {
-    plain: "Pop-up never receives the cursor",
+    plain: "Pop-up opens without taking focus",
     impact:
       "Someone using a screen reader is never told it opened. A keyboard user has to tab through the entire page underneath before reaching the thing now covering their screen.",
   },
@@ -643,7 +643,7 @@ export const PLAIN_RULE_EXPLANATIONS: Record<string, PlainRule> = {
 
   // Raw-HTML markup validation.
   "markup-validation": {
-    plain: "Errors in the page's code",
+    plain: "Invalid HTML in the page",
     impact:
       "Browsers quietly guess how to fix it, and each one guesses differently. The page may not work the way it was designed to.",
   },

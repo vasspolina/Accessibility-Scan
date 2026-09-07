@@ -10,20 +10,20 @@ export const PLAIN_ES: Record<string, PlainRule> = {
       "Quien siga leyendo, o esté a mitad del formulario, vuelve al principio sin aviso. Leer despacio no es un defecto, y esto lo castiga.",
   },
   "aria-allowed-role": {
-    plain: "Elementos etiquetados como lo que no son",
+    plain: "Un rol que el elemento no puede tener",
     found: (n) =>
       `${n} ${n === 1 ? "elemento está etiquetado" : "elementos están etiquetados"} en el código como algo que no ${n === 1 ? "puede" : "pueden"} ser. Ese rol no corresponde a ese tipo de elemento.`,
     impact:
       "Los lectores de pantalla anuncian algo equivocado. A la gente se le dice que llegó a un botón cuando es un enlace, o a un encabezado cuando es una lista.",
   },
   "aria-allowed-attr": {
-    plain: "Ajustes de código en el elemento equivocado",
+    plain: "Un ajuste de lector de pantalla en el elemento equivocado",
     found: (n) =>
       `${n} ${n === 1 ? "elemento lleva ajustes" : "elementos llevan ajustes"} que su tipo de elemento no puede tener. El navegador y el lector de pantalla no coinciden en qué ${n === 1 ? "es" : "son"}.`,
     impact: "Los lectores de pantalla pueden anunciar disparates, o saltarse el elemento entero.",
   },
   "aria-prohibited-attr": {
-    plain: "Un nombre que el código descarta",
+    plain: "Una etiqueta que los lectores de pantalla deben ignorar",
     found: (n) =>
       `${n} ${n === 1 ? "elemento lleva" : "elementos llevan"} un nombre que el código no permite en ese tipo de elemento. El nombre se tira en vez de leerse en voz alta.`,
     impact:
@@ -36,7 +36,7 @@ export const PLAIN_ES: Record<string, PlainRule> = {
     impact: "Los lectores de pantalla no pueden deducir su estructura, así que nadie puede recorrerla.",
   },
   "aria-required-parent": {
-    plain: "Piezas separadas de su control",
+    plain: "Elemento de lista fuera de su lista",
     found: (n) =>
       `${n} ${n === 1 ? "elemento está etiquetado como pieza" : "elementos están etiquetados como piezas"} de un control mayor: una pestaña, una opción de menú, una opción de lista. ${n === 1 ? "No está" : "Ninguno está"} dentro del control al que ${n === 1 ? "pertenece" : "pertenecen"}.`,
     impact:
@@ -207,7 +207,7 @@ export const PLAIN_ES: Record<string, PlainRule> = {
     impact: "Quien necesita el texto más grande no puede tenerlo. En el móvil, simplemente se va.",
   },
   "meta-viewport-large": {
-    plain: "La ampliación está limitada",
+    plain: "Zoom limitado a un nivel fijo",
     found: () =>
       `Ampliar funciona, pero la página lo limita por debajo del 500%, y quien necesita el mayor aumento se queda en el tope.`,
     impact:
@@ -238,7 +238,7 @@ export const PLAIN_ES: Record<string, PlainRule> = {
     impact: "Quien usa un lector de pantalla pierde la agrupación, y el contenido deja de tener sentido.",
   },
   "aria-required-attr": {
-    plain: "Un control sin su estado",
+    plain: "Un control sin un estado obligatorio",
     found: (n) =>
       `${n} ${n === 1 ? "control está etiquetado" : "controles están etiquetados"} como algo que tiene estado: marcado, desplegado, un valor en una escala. ${n === 1 ? "Nunca dice" : "Ninguno dice"} cuál es ese estado.`,
     impact: "Quien usa un lector de pantalla no sabe en qué estado está, ni cómo manejarlo.",
@@ -257,7 +257,7 @@ export const PLAIN_ES: Record<string, PlainRule> = {
       "Se anuncia como \"diálogo\" y nada más. Algo se ha adueñado de la pantalla y no hay forma de oír qué es.",
   },
   "nested-interactive": {
-    plain: "Un control dentro de otro",
+    plain: "Un control anidado dentro de otro",
     found: (n) =>
       `${n} ${n === 1 ? "control contiene otro control" : "controles contienen cada uno otro control"}. Lo que parece una sola cosa que pulsar son dos, una envuelta en la otra.`,
     impact:
@@ -350,7 +350,7 @@ export const PLAIN_ES: Record<string, PlainRule> = {
       "Todo el mundo vuelve a escribir a mano su nombre, su correo y su dirección. Lento para todos, y una barrera real para algunos.",
   },
   "component-input-type": {
-    plain: "Casillas normales para el correo y el teléfono",
+    plain: "Campos de correo definidos como texto simple",
     impact:
       "En el móvil, la gente recibe el teclado genérico en vez de uno con \"@\" o con teclas numéricas. Más toques y más errores.",
   },
@@ -444,12 +444,12 @@ export const PLAIN_ES: Record<string, PlainRule> = {
       "\"No, gracias, no quiero ahorrar dinero\" se recuerda por los motivos equivocados. Se lee como manipulación.",
   },
   "dark-fake-scarcity": {
-    plain: "Afirmaciones de escasez que conviene verificar",
+    plain: "Avisos de pocas existencias como presión",
     impact:
       "Los reguladores persiguen la escasez falsa. Los compradores han aprendido a desconfiar. Los números inventados cuestan más ventas de las que ganan.",
   },
   "dark-fake-urgency": {
-    plain: "Presión de tiempo que conviene verificar",
+    plain: "Plazos usados como presión",
     impact:
       "Las cuentas atrás que se reinician al recargar son una práctica engañosa. En cuanto se nota, nada más de lo que usted diga se cree.",
   },
@@ -470,7 +470,7 @@ export const PLAIN_ES: Record<string, PlainRule> = {
       "Escape es la tecla que todo el mundo prueba primero. Aquí nadie se queda atrapado, porque aún se puede salir con el tabulador. Pero todos los que usan el teclado la prueban, y no pasa nada.",
   },
   "dialog-focus-not-moved": {
-    plain: "La ventana emergente nunca recibe el cursor",
+    plain: "La ventana emergente se abre sin tomar el foco",
     impact:
       "A quien usa un lector de pantalla nunca se le dice que se ha abierto. Quien usa el teclado tiene que recorrer con el tabulador toda la página de debajo antes de llegar a lo que ahora le tapa la pantalla.",
   },
@@ -496,7 +496,7 @@ export const PLAIN_ES: Record<string, PlainRule> = {
   },
 
   "markup-validation": {
-    plain: "Errores en el código de la página",
+    plain: "HTML no válido en la página",
     impact:
       "Los navegadores adivinan en silencio cómo arreglarlo, y cada uno adivina distinto. Su página puede no funcionar como usted cree.",
   },
