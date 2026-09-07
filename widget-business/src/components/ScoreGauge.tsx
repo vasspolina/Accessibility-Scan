@@ -46,9 +46,9 @@ export const SUMMARIES: Record<"good" | "middling" | "poor", string[]> = {
   // One plain line per band. The rotating quips this replaced read as
   // slogans, and a verdict about somebody's site is not the place for one:
   // it says what the scan found and what that does not cover, then stops.
-  good: ["The scan found little to fix. A person would still find more."],
-  middling: ["The scan found problems. Most visitors will not meet them. Some will."],
-  poor: ["The scan found problems that stop some people from using the site."],
+  good: ["90 or more. Little to fix. A person would still find more."],
+  middling: ["70 to 89. What the scan found stops some visitors. Most get through."],
+  poor: ["Under 70. What the scan found stops some people from using the site."],
 };
 
 /**
@@ -185,10 +185,12 @@ export function computeDoFirst(
    by scan — scoreSummary picks from a set — while this one never does,
    because it is the qualification rather than the mood. */
 const VERDICT_CAVEAT =
-  "A scan proves what a machine can see. The rest needs someone to sit down with the site.";
+  "A scan proves what a machine can see. The rest needs a person testing the site by hand.";
 
+/* The band as its range, not an adjective: "middling" told a reader
+   nothing about where the line sat (user's question, 26 Aug 2026). */
 const BAND_WORD = (score: number) =>
-  score >= 90 ? "good" : score >= 70 ? "middling" : "failing";
+  score >= 90 ? "90 or more" : score >= 70 ? "70 to 89" : "under 70";
 
 /* The dial's arc. r=42 in a 100-unit viewBox, so the circumference is
    2·π·42 = 263.89 — the design's own "15.8 248.1" dash for a score of 6 is
@@ -306,7 +308,7 @@ export function ScoreGauge({
             </SumPanel>
           )}
 
-          <SumPanel title={`What a ${BAND_WORD(score)} score means`}>
+          <SumPanel title={`What a score of ${BAND_WORD(score)} means`}>
             <p className="a11y-sum-lead">{scoreSummary(score, seed)}</p>
             <p className="a11y-sum-body">{VERDICT_CAVEAT}</p>
           </SumPanel>
@@ -335,7 +337,7 @@ export function ScoreGauge({
               <div
                 className="a11y-sum-dial"
                 role="img"
-                aria-label={`Score ${score} out of 100. ${BAND_WORD(score)}. ${total} ${
+                aria-label={`Score ${score} out of 100, ${BAND_WORD(score)}. ${total} ${
                   total === 1 ? "issue" : "issues"
                 } found${tookSeconds != null ? `, in ${tookSeconds} seconds` : ""}.`}
               >

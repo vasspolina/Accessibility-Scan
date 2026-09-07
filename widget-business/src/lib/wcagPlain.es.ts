@@ -85,6 +85,13 @@ export const PLAIN_ES: Record<string, PlainRule> = {
     impact:
       "Quien usa el teclado lo pulsa y se queda donde estaba, y luego recorre el menú entero con el tabulador igualmente.",
   },
+  "component-skip-link-dead": {
+    plain: "El enlace de salto no lleva a ninguna parte",
+    found: (n) =>
+      `${n} ${n === 1 ? "enlace de salto apunta" : "enlaces de salto apuntan"} a algo que no está en la página, así que pulsar${n === 1 ? "lo" : "los"} no lleva a nadie a ningún sitio.`,
+    impact:
+      "Quien usa el teclado lo pulsa y se queda donde estaba, y luego recorre el menú entero con el tabulador igualmente.",
+  },
   "image-redundant-alt": {
     plain: "La descripción repite el texto de al lado",
     found: (n) =>
@@ -819,6 +826,10 @@ export const FIXES_ES: Record<string, string | string[]> = {
   ],
   "landmark-contentinfo-is-top-level": "Saque el pie del sitio para que quede en el primer nivel de la página, y no dentro de otra zona.",
   "skip-link": [
+    "Apunte el enlace de salto al contenido principal, y compruebe que ese destino existe.",
+    "Asegúrese de que el teclado aterriza ahí cuando se usa el enlace.",
+  ],
+  "component-skip-link-dead": [
     "Apunte el enlace de salto al contenido principal, y compruebe que ese destino existe.",
     "Asegúrese de que el teclado aterriza ahí cuando se usa el enlace.",
   ],

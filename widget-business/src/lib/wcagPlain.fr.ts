@@ -86,6 +86,13 @@ export const PLAIN_FR: Record<string, PlainRule> = {
     impact:
       "Les utilisateurs au clavier l'activent et restent exactement où ils étaient, puis parcourent tout le menu quand même.",
   },
+  "component-skip-link-dead": {
+    plain: "Le lien d'évitement ne mène nulle part",
+    found: (n) =>
+      `${n} ${n === 1 ? "lien d'évitement pointe" : "liens d'évitement pointent"} vers quelque chose qui n'est pas sur la page : ${n === 1 ? "l'activer ne mène" : "les activer ne mène"} personne nulle part.`,
+    impact:
+      "Les utilisateurs au clavier l'activent et restent exactement où ils étaient, puis parcourent tout le menu quand même.",
+  },
   "image-redundant-alt": {
     plain: "La description d'image répète le texte voisin",
     found: (n) =>
@@ -827,6 +834,10 @@ export const FIXES_FR: Record<string, string | string[]> = {
   "landmark-contentinfo-is-top-level":
     "Sortez le pied de page pour qu'il soit au premier niveau de la page, et non dans une autre zone.",
   "skip-link": [
+    "Pointez le lien d'évitement vers le contenu principal, et vérifiez que cette cible existe.",
+    "Assurez-vous que le clavier y atterrit quand le lien est utilisé.",
+  ],
+  "component-skip-link-dead": [
     "Pointez le lien d'évitement vers le contenu principal, et vérifiez que cette cible existe.",
     "Assurez-vous que le clavier y atterrit quand le lien est utilisé.",
   ],

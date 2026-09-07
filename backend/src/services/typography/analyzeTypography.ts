@@ -79,7 +79,14 @@ export function collectTypographyBlocksInPage(): TypographyBlock[] {
     const hyphens =
       cs.hyphens || (cs as unknown as Record<string, string>)["webkitHyphens"] || "manual";
     const fontFamily = (cs.fontFamily.split(",")[0] ?? "").trim().replace(/^["']|["']$/g, "");
-    const lineCount = lineHeightPx ? Math.max(1, Math.round(rect.height / lineHeightPx)) : null;
+    // Estimated from the browser's default leading when line-height is
+    // "normal": a justified paragraph three lines deep was invisible to
+    // the justification rule because its line count was null, measured
+    // on a ground-truth page. lineHeightPx stays null so the leading rule
+    // keeps skipping default-leaded text, which is its own decision.
+    const lineCount = lineHeightPx
+      ? Math.max(1, Math.round(rect.height / lineHeightPx))
+      : Math.max(1, Math.round(rect.height / (fontSizePx * 1.2)));
 
     const lettersOnly = text.replace(/[^A-Za-zÀ-ž]/g, "");
     const isAllCapsText = lettersOnly.length >= 6 && lettersOnly === lettersOnly.toUpperCase();
@@ -371,7 +378,9 @@ export function evaluateTypography(blocks: TypographyBlock[]): AccessibilityFind
   }
 
   // Very small body text.
-  const smallText = bodyBlocks.filter((b) => b.textLength >= 120 && b.fontSizePx > 0 && b.fontSizePx < 13);
+  // 80 characters — a line and a half — not 120: a 90-character paragraph
+  // at 11px is body text, and it slipped under the old floor.
+  const smallText = bodyBlocks.filter((b) => b.textLength >= 80 && b.fontSizePx > 0 && b.fontSizePx < 13);
   if (smallText.length > 0) {
     const worst = smallText.reduce((a, b) => (b.fontSizePx < a.fontSizePx ? b : a));
     findings.push(

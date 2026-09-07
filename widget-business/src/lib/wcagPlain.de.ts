@@ -79,6 +79,12 @@ export const PLAIN_DE: Record<string, PlainRule> = {
       `${n} ${n === 1 ? "Sprunglink zeigt" : "Sprunglinks zeigen"} auf etwas, das es auf der Seite nicht gibt. Wer ${n === 1 ? "ihn" : "sie"} benutzt, bewegt sich keinen Schritt.`,
     impact: "An der Tastatur drückt man ihn und bleibt genau da, wo man war. Und tabbt dann doch durch das ganze Menü.",
   },
+  "component-skip-link-dead": {
+    plain: "Der Sprunglink führt ins Leere",
+    found: (n) =>
+      `${n} ${n === 1 ? "Sprunglink zeigt" : "Sprunglinks zeigen"} auf etwas, das es auf der Seite nicht gibt. Wer ${n === 1 ? "ihn" : "sie"} benutzt, bewegt sich keinen Schritt.`,
+    impact: "An der Tastatur drückt man ihn und bleibt genau da, wo man war. Und tabbt dann doch durch das ganze Menü.",
+  },
   "image-redundant-alt": {
     plain: "Bildbeschreibung wiederholt den Text daneben",
     found: (n) =>
@@ -741,6 +747,10 @@ export const FIXES_DE: Record<string, string | string[]> = {
   ],
   "landmark-contentinfo-is-top-level": "Setzen Sie den Seitenfuß auf die oberste Ebene der Seite, nicht in einen anderen Bereich.",
   "skip-link": [
+    "Richten Sie den Sprunglink auf den Hauptinhalt und prüfen Sie, ob es dieses Ziel gibt.",
+    "Sorgen Sie dafür, dass die Tastatur dort ankommt, wenn der Link benutzt wird.",
+  ],
+  "component-skip-link-dead": [
     "Richten Sie den Sprunglink auf den Hauptinhalt und prüfen Sie, ob es dieses Ziel gibt.",
     "Sorgen Sie dafür, dass die Tastatur dort ankommt, wenn der Link benutzt wird.",
   ],

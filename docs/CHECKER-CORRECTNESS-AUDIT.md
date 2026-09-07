@@ -111,3 +111,31 @@ planted faults caught, still no false alarm on the six controls.**
   the init script's tracked listeners with every element carrying an
   inline `onclick` attribute, the case the script could never see. Caught
   as `keyboard-mouse-only`, 2.1.1.
+
+## A second page, fifteen more faults
+
+A second ground-truth page: no `lang`, a timed refresh, focus rings
+removed, 11px body text, justified text without hyphenation, links marked
+by colour alone, a skip link pointing nowhere, an empty heading, an
+untitled iframe, an empty button, an unlabelled select, an autoplaying
+video, a marquee, an error message not tied to its field, and a link
+opening a new window without saying so. Two controls beside them.
+
+First pass: **12 of 15 caught, no false alarm** (the error message came
+back as an undecided item, which is the honest answer for a message
+whose association cannot be proved from markup alone). Three missed:
+
+- **11px body text** — the typography rule wanted 120 characters and the
+  paragraph had 90. The floor is 80 now, a line and a half.
+- **Justified text** — the paragraph had the browser's default leading, so
+  its line count was unknown and the rule, which wants three lines, never
+  saw it. Line count is estimated from the default leading now; the
+  leading rule keeps ignoring default-leaded text, which is its own call.
+- **Dead skip link** — axe's rule applies only to skip links hidden
+  offscreen; a visible one aiming at a missing id was "inapplicable". A
+  rule of our own now checks every early same-page link that reads like a
+  skip link for a target that exists. 2.4.1, Level A.
+
+Second pass: **15 of 15.** The new-window link is reported by nothing,
+on purpose: warning about a new window is a technique, not a Level A or
+AA requirement, and the report does not fail sites for it.

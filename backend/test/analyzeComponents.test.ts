@@ -21,6 +21,7 @@ function field(overrides: Partial<DomSignals["forms"][number]["fields"][number]>
 function dom(overrides: Partial<DomSignals> = {}): DomSignals {
   return {
     tables: [],
+    skipLinks: [],
     pageTitle: "Test",
     headingTree: [],
     landmarks: [],
@@ -342,5 +343,15 @@ describe("a data table with no header cells (1.3.1)", () => {
     expect(rules(dom({ tables: [table({ hasHeaderCells: true })] }))).not.toContain("component-table-no-headers");
     expect(rules(dom({ tables: [table({ rows: 1 })] }))).not.toContain("component-table-no-headers");
     expect(rules(dom({ tables: [table({ textCells: 2 })] }))).not.toContain("component-table-no-headers");
+  });
+});
+
+describe("a skip link that points nowhere (2.4.1)", () => {
+  it("is carded when the target id does not exist, and not when it does", () => {
+    const dead = evaluateComponents(dom({ skipLinks: [{ selector: "a.skip", href: "#nowhere", text: "Skip to content", targetExists: false }] }));
+    expect(dead.map((f) => f.ruleId)).toContain("component-skip-link-dead");
+    expect(dead.find((f) => f.ruleId === "component-skip-link-dead")?.wcagCriterion).toBe("2.4.1");
+    const live = evaluateComponents(dom({ skipLinks: [{ selector: "a.skip", href: "#main", text: "Skip to content", targetExists: true }] }));
+    expect(live.map((f) => f.ruleId)).not.toContain("component-skip-link-dead");
   });
 });

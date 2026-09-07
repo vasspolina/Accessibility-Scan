@@ -334,6 +334,24 @@ export function evaluateComponents(dom: DomSignals): AccessibilityFinding[] {
     ].join("|"),
     "i"
   );
+  // A skip link whose target does not exist (WCAG 2.4.1). axe's rule looks
+  // only at skip links hidden offscreen; a visible one aiming at a missing
+  // id was "inapplicable" to it, measured on a ground-truth page.
+  for (const l of (dom.skipLinks ?? []).filter((l) => !l.targetExists)) {
+    findings.push(
+      makeFinding(
+        "component-skip-link-dead",
+        l.selector,
+        `The skip link "${l.text}" points at "${l.href}", and nothing on the page has that id. Activating it does nothing, so the one shortcut keyboard users are offered fails.`,
+        `Give the main content an id and point the skip link at it, for example href="#main-content" on a link and id="main-content" on the main area. Make the target focusable if it is not a landmark.`,
+        "https://www.w3.org/WAI/WCAG21/Understanding/bypass-blocks.html",
+        "accessibility",
+        "2.4.1",
+        "A"
+      )
+    );
+    break;
+  }
   const earlyLinks = dom.interactiveElements.filter((el) => el.type === "link").slice(0, 6);
   const hasSkipLink = earlyLinks.some(
     (el) => SKIP_LINK_RE.test(el.accessibleName) && (el.href?.startsWith("#") ?? false)

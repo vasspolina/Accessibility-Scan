@@ -183,6 +183,13 @@ export const PLAIN_RULE_EXPLANATIONS: Record<string, PlainRule> = {
     impact:
       "Keyboard users press it and stay exactly where they were, then tab through the whole menu anyway.",
   },
+  "component-skip-link-dead": {
+    plain: "Skip link goes nowhere",
+    found: (n) =>
+      `${n} skip ${n === 1 ? "link points" : "links point"} at something that is not on the page, so pressing ${n === 1 ? "it" : "them"} moves nobody anywhere.`,
+    impact:
+      "Keyboard users press it and stay exactly where they were, then tab through the whole menu anyway.",
+  },
   "image-redundant-alt": {
     plain: "Image description repeats nearby text",
     found: (n) =>
@@ -1075,6 +1082,10 @@ export const PLAIN_RULE_FIXES: Record<string, string | string[]> = {
   ],
   "landmark-contentinfo-is-top-level": "Move the site footer out so it sits at the top level of the page, not inside another area.",
   "skip-link": [
+    "Point the skip link at the main content, and check that target exists.",
+    "Make sure the keyboard lands there when the link is used.",
+  ],
+  "component-skip-link-dead": [
     "Point the skip link at the main content, and check that target exists.",
     "Make sure the keyboard lands there when the link is used.",
   ],

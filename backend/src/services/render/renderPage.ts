@@ -52,6 +52,10 @@ export interface DomSignals {
      is one the screen reader cannot navigate by column or row. Layout
      tables (role presentation/none) are not data and are not listed. */
   tables: Array<{ selector: string; rows: number; cols: number; hasHeaderCells: boolean; hasCaption: boolean; textCells: number }>;
+  /* Same-page links near the top that read like skip links, and whether
+     their target exists. axe checks only skip links that are visually
+     offscreen; a visible one pointing at nothing was "inapplicable". */
+  skipLinks: Array<{ selector: string; href: string; text: string; targetExists: boolean }>;
   interactiveElements: Array<{
     type: string;
     selector: string;
@@ -464,6 +468,16 @@ function extractDomSignalsInPage(): DomSignals {
         hasCaption: t.querySelector("caption") !== null || t.hasAttribute("aria-label") || t.hasAttribute("aria-labelledby"),
         textCells: Array.from(t.querySelectorAll("td")).filter((c) => (c.textContent ?? "").trim().length > 0).length,
       };
+    });
+
+  const skipLinks = Array.from(document.querySelectorAll('a[href^="#"]'))
+    .slice(0, 8)
+    .filter((a) => /skip|jump|go to (main|content)|zum (inhalt|hauptinhalt)|aller au contenu|saltar/i.test((a.textContent ?? "") + " " + (a.getAttribute("aria-label") ?? "")))
+    .map((a) => {
+      const id = (a.getAttribute("href") ?? "").slice(1);
+      let targetExists = false;
+      try { targetExists = id.length > 0 && (document.getElementById(id) !== null || document.querySelector(`a[name="${CSS.escape(id)}"]`) !== null); } catch { targetExists = false; }
+      return { selector: cssPath(a), href: a.getAttribute("href") ?? "", text: (a.textContent ?? "").trim().slice(0, 60), targetExists };
     });
 
   const images = Array.from(document.querySelectorAll("img"))
@@ -1019,6 +1033,7 @@ function extractDomSignalsInPage(): DomSignals {
     landmarks,
     images,
     tables,
+    skipLinks,
     interactiveElements,
     forms,
     linkTexts,
