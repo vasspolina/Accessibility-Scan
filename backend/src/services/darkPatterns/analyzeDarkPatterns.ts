@@ -631,7 +631,7 @@ export function evaluateDarkPatterns(signals: DarkPatternSignals): Accessibility
           viaManage
             ? "Your cookie banner lets people accept in one click. Refusing means going into a settings screen first. Making refusal slower than acceptance is the most-cited consent dark pattern. Regulators in the EU and UK treat it as invalid consent."
             : "Your cookie banner offers a way to accept, but no visible way to refuse at all. Consent that can't be declined as easily as it's given isn't valid under GDPR or the UK's cookie rules. To visitors, it reads as a trick.",
-          'Put a "Reject all" (or "Only necessary") control directly on the banner. Give it the same level and visual weight as "Accept all" — one click each way.',
+          'Put a "Reject all" (or "Only necessary") control directly on the banner. Give it the same level and visual weight as "Accept all". One click each way.',
           HELP.consent
         )
       );
@@ -646,8 +646,8 @@ export function evaluateDarkPatterns(signals: DarkPatternSignals): Accessibility
             "moderate",
             banner.rejectControls[0].selector,
             banner.snippet,
-            `Your cookie banner styles "accept" as a solid button while the refuse option (“${banner.rejectControls[0].text}”) stays plain text. Weighting one choice visually is a recognised nudge — people click the prominent option without really choosing.`,
-            "Give the accept and reject controls equal visual weight — the same size and button style, sitting side by side. The choice is then genuinely free.",
+            `Your cookie banner styles "accept" as a solid button while the refuse option (“${banner.rejectControls[0].text}”) stays plain text. Weighting one choice visually is a recognised nudge. People click the prominent option without really choosing.`,
+            "Give the accept and reject controls equal visual weight, the same size and button style, sitting side by side. The choice is then genuinely free.",
             HELP.consent
           )
         );
@@ -679,7 +679,7 @@ export function evaluateDarkPatterns(signals: DarkPatternSignals): Accessibility
         "moderate",
         shame.selector,
         shame.snippet,
-        `This page words its decline option to make the visitor feel bad for choosing it: “${shame.text.slice(0, 100)}”. This is confirmshaming — the decline reads as an admission rather than a neutral choice.`,
+        `This page words its decline option to make the visitor feel bad for choosing it: “${shame.text.slice(0, 100)}”. This is confirmshaming. The decline reads as an admission rather than a neutral choice.`,
         'Word the decline neutrally ("No thanks", "Not now") with the same tone as the accept option. Let people say no without the page making them feel foolish.',
         HELP.confirmshaming
       )

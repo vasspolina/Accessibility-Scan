@@ -244,7 +244,7 @@ export function ScanHistory({
             }}
           >
             You can&rsquo;t undo this. Every past scan of this page, kept
-            only in this browser, will be gone — including the comparison
+            only in this browser, will be gone. Including the comparison
             above.
           </Dialog>,
           portalTarget

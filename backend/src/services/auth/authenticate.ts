@@ -168,7 +168,7 @@ export async function authenticate(page: Page, auth: AuthConfig, target?: string
     const stillOnLogin = (await page.locator('input[type="password"]').count()) > 0;
     if (stillOnLogin) {
       throw new AuthError(
-        "Signing in didn't seem to work — the login form is still showing. Check the details and try again."
+        "Signing in didn't seem to work. The login form is still showing. Check the details and try again."
       );
     }
   } catch (err) {

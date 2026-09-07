@@ -27,7 +27,7 @@ export const PLAIN_FR: Record<string, PlainRule> = {
     found: (n) =>
       `${n} ${n === 1 ? "élément porte" : "éléments portent"} un libellé que le code n'autorise pas sur ce type de balise. Le libellé est jeté au lieu d'être lu.`,
     impact:
-      "L'élément a l'air nommé dans votre source, donc personne ne remarque le problème. Les lecteurs d'écran ignorent le libellé et annoncent le texte qui se trouve dedans — souvent rien.",
+      "L'élément a l'air nommé dans votre source, donc personne ne remarque le problème. Les lecteurs d'écran ignorent le libellé et annoncent le texte qui se trouve dedans. Souvent rien.",
   },
   "aria-required-children": {
     plain: "Des menus ou des listes sans leurs entrées",
@@ -106,7 +106,7 @@ export const PLAIN_FR: Record<string, PlainRule> = {
       "WebAIM examine chaque année un million de pages d'accueil. Les images sans description comptent parmi les défauts les plus fréquents qu'il y trouve, année après année. C'est aussi l'un des plus simples à régler.",
     plain: "Les images n'ont pas de description",
     found: (n) =>
-      `${n} ${n === 1 ? "image n'a" : "images n'ont"} aucun texte alternatif — pas même un texte vide pour ${n === 1 ? "la marquer décorative" : "les marquer décoratives"}. Un lecteur d'écran se rabat sur la lecture du nom de fichier, ou ${n === 1 ? "la saute" : "les saute"} en silence.`,
+      `${n} ${n === 1 ? "image n'a" : "images n'ont"} aucun texte alternatif. Pas même un texte vide pour ${n === 1 ? "la marquer décorative" : "les marquer décoratives"}. Un lecteur d'écran se rabat sur la lecture du nom de fichier, ou ${n === 1 ? "la saute" : "les saute"} en silence.`,
     impact:
       "Les utilisateurs de lecteurs d'écran n'entendent rien pour ces images, et les moteurs de recherche ne savent pas ce qu'elles montrent. Cela vous coûte en accessibilité et en référencement.",
   },
@@ -367,7 +367,7 @@ export const PLAIN_FR: Record<string, PlainRule> = {
       "Un bouton qui dit seulement « OK », qui n'affiche qu'une icône, ou qui manque tout court, laisse les gens sans savoir comment finir. Alors ils ne finissent pas.",
   },
   "component-nav-labels": {
-    plain: "Plusieurs menus, aucun nommé",
+    plain: "Menus de navigation sans nom",
     impact:
       "Les utilisateurs de lecteurs d'écran entendent « navigation… navigation… » sans moyen de distinguer le menu principal des liens de pied de page. Se déplacer sur votre site devient une devinette.",
   },
@@ -672,7 +672,7 @@ export const FIXES_FR: Record<string, string | string[]> = {
     "Mettez un peu d'espace entre les boutons et les liens, pour qu'un pouce ne puisse pas en toucher deux à la fois.",
   "consent-blocks-reader": [
     "Amenez le focus clavier dans la bannière dès qu'elle s'ouvre.",
-    "Gardez-le là jusqu'à ce qu'un choix soit fait — c'est ce qui rend correct le masquage de la page derrière.",
+    "Gardez-le là jusqu'à ce qu'un choix soit fait. C'est ce qui rend correct le masquage de la page derrière.",
     "Ou cessez de masquer la page : une bannière posée en bas n'a besoin de rien de tout cela.",
   ],
   "mobile-sticky-coverage": [
@@ -925,7 +925,7 @@ export const UNDECIDED_FR: Record<string, { what: string; ask: string }> = {
   },
   "media-video-descriptions": {
     what: "Une vidéo sous-titrée sans rien qui décrive ce qui est à l'écran. Les sous-titres portent les paroles ; ils ne portent pas l'image.",
-    ask: "Demandez si quelque chose dans ces vidéos est montré plutôt que dit — un graphique, une démonstration, du texte à l'écran. Si oui, la bande son doit le décrire. Une version écrite sur la page ne couvre que le niveau le plus bas de la norme.",
+    ask: "Demandez si quelque chose dans ces vidéos est montré plutôt que dit. Un graphique, une démonstration, du texte à l'écran. Si oui, la bande son doit le décrire. Une version écrite sur la page ne couvre que le niveau le plus bas de la norme.",
   },
   "form-error-association": {
     what: "Des messages d'erreur de formulaire qui ne sont pas rattachés à leur champ dans le code. Un lecteur d'écran annonce le champ, mais pas l'erreur posée à côté.",
@@ -976,7 +976,7 @@ export const UNDECIDED_FR: Record<string, { what: string; ask: string }> = {
     ask: "Demandez à votre développeur si la page marche dans les deux sens. Quelqu'un dont le téléphone est fixé à un fauteuil roulant ou à un support ne peut pas le tourner pour s'adapter au site.",
   },
   "interaction-no-status-region": {
-    what: "Les pages se mettent à jour sans recharger — un filtre réduit une liste, un formulaire dit qu'il a enregistré. Rien sur cette page n'est marqué comme l'endroit où un tel changement est dit à voix haute. Un lecteur d'écran reste muet pendant que la page bouge.",
+    what: "Les pages se mettent à jour sans recharger. Un filtre réduit une liste, un formulaire dit qu'il a enregistré. Rien sur cette page n'est marqué comme l'endroit où un tel changement est dit à voix haute. Un lecteur d'écran reste muet pendant que la page bouge.",
     ask: "Demandez à votre développeur si quelque chose se met à jour ici sans chargement de page. Si oui, cette mise à jour a besoin d'une région vivante pour être dite autant que montrée.",
   },
   "interaction-acts-on-change": {

@@ -518,7 +518,7 @@ export function evaluateScreenReaderScript(
     "1.1.1",
     "A",
     (n, ex) =>
-      `${n === 1 ? "An image describes itself" : `${n} images describe themselves`} to screen-reader users with ${n === 1 ? "a filename" : "filenames"} — e.g. ${ex.text}. A filename read aloud is punctuation and digits, not a description, so the image's content is lost even though an "images have alt text" check passes.`,
+      `${n === 1 ? "An image describes itself" : `${n} images describe themselves`} to screen-reader users with ${n === 1 ? "a filename" : "filenames"}. For example, ${ex.text}. A filename read aloud is punctuation and digits, not a description, so the image's content is lost even though an "images have alt text" check passes.`,
     "Write alt text that says what the image shows or does, in a short sentence. If an image is decoration, mark it so with an empty alt attribute and screen readers will skip it.",
     "https://www.w3.org/WAI/WCAG21/Understanding/non-text-content.html"
   );
@@ -529,8 +529,8 @@ export function evaluateScreenReaderScript(
     "2.4.4",
     "A",
     (n, ex) =>
-      `${n === 1 ? "A link is announced" : `${n} links are announced`} with ${n === 1 ? "a name" : "names"} that ${n === 1 ? "says" : "say"} nothing about where ${n === 1 ? "it goes" : "they go"} — e.g. ${ex.text}. Screen-reader users often pull up all links as a list, and every one of these is a mystery there.`,
-    "Name each link for its destination — \"View pricing\" rather than \"click here\", the document's title rather than a raw address. The name can come from visible text or an aria-label.",
+      `${n === 1 ? "A link is announced" : `${n} links are announced`} with ${n === 1 ? "a name" : "names"} that ${n === 1 ? "says" : "say"} nothing about where ${n === 1 ? "it goes" : "they go"}. For example, ${ex.text}. Screen-reader users often pull up all links as a list, and every one of these is a mystery there.`,
+    "Name each link for its destination. \"View pricing\" rather than \"click here\", the document's title rather than a raw address. The name can come from visible text or an aria-label.",
     "https://www.w3.org/WAI/WCAG21/Understanding/link-purpose-in-context.html"
   );
   card(
@@ -540,8 +540,8 @@ export function evaluateScreenReaderScript(
     "2.4.6",
     "AA",
     (n, ex) =>
-      `${n === 1 ? "A button is announced" : `${n} buttons are announced`} with ${n === 1 ? "a name" : "names"} that ${n === 1 ? "doesn't" : "don't"} say what ${n === 1 ? "it does" : "they do"} — e.g. ${ex.text}. A listener hears the label with no icon and no position to lean on, so "×" or ">" carries nothing.`,
-    "Label each button with its action: \"Close\", \"Next slide\", \"Search\", \"Play\". If the visible design wants only an icon, put the words in an aria-label — the screen reader gets the label, the design keeps the icon.",
+      `${n === 1 ? "A button is announced" : `${n} buttons are announced`} with ${n === 1 ? "a name" : "names"} that ${n === 1 ? "doesn't" : "don't"} say what ${n === 1 ? "it does" : "they do"}. For example, ${ex.text}. A listener hears the label with no icon and no position to lean on, so "×" or ">" carries nothing.`,
+    "Label each button with its action: \"Close\", \"Next slide\", \"Search\", \"Play\". If the visible design wants only an icon, put the words in an aria-label. The screen reader gets the label, the design keeps the icon.",
     "https://www.w3.org/WAI/WCAG21/Understanding/headings-and-labels.html"
   );
 

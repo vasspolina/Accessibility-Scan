@@ -48,8 +48,8 @@ export const STRINGS_FR: Record<string, string> = {
   "Could not save the answer.": "La réponse n’a pas pu être enregistrée.",
   "Could not load the open questions.": "Les questions ouvertes n’ont pas pu être chargées.",
   "Could not load the open questions": "Les questions ouvertes n’ont pas pu être chargées",
-  "Yes — it meets this": "Oui, conforme",
-  "No — it fails this": "Non, non conforme",
+  "Yes. It meets this": "Oui, conforme",
+  "No. It fails this": "Non, non conforme",
   "Does not apply to this site": "Sans objet pour ce site",
   "Looked, could not decide yet": "Examiné, pas encore tranché",
   "Officially:": "Officiellement :",
@@ -170,11 +170,11 @@ export const STRINGS_FR: Record<string, string> = {
   "Copy summary as plain text": "Copier le résumé en texte brut",
   "This is the order a screen reader reads it in.": "C’est l’ordre dans lequel un lecteur d’écran lit la page.",
   // The scan form
-  "Cancel — scan without a login": "Annuler — analyser sans connexion",
+  "Cancel. Scan without a login": "Annuler. Analyser sans connexion",
   Fastest: "Le plus rapide",
   "Finds what repeats everywhere": "Trouve ce qui se répète partout",
-  "Keep this page open — the scan runs here.":
-    "Gardez cette page ouverte — l'analyse se déroule ici.",
+  "Keep this page open. The scan runs here.":
+    "Gardez cette page ouverte. L'analyse se déroule ici.",
   "Most chosen": "Le plus choisi",
   "One moment…": "Un instant…",
   "One page, end to end": "Une page, de bout en bout",

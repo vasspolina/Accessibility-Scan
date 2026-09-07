@@ -48,7 +48,7 @@ export function ScoreDial({
   size?: number;
 }) {
   const { band, word, range, min } = BANDS.find((b) => score >= b.min) ?? BANDS[2];
-  /* Clamped for the drawing only — a score outside 0–100 would otherwise
+  /* Clamped for the drawing only. A score outside 0–100 would otherwise
      paint a bar wider than its track. The label still reports the real
      number, because hiding a bad value is how it survives. */
   const pct = Math.max(0, Math.min(100, score));
@@ -58,7 +58,7 @@ export function ScoreDial({
       className="a11y-dial"
       data-band={band}
       role="img"
-      aria-label={`${label}: ${score} out of 100 — ${word}`}
+      aria-label={`${label}: ${score} out of 100. ${word}`}
     >
       {/* Everything below is aria-hidden and repeats the label above, which is
           the arrangement this component has always had: the drawing is

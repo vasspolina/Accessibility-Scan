@@ -31,9 +31,9 @@ import { getDecidedBy, setDecidedBy } from "../lib/apiKey";
  * this site, so it shrinks by itself as the scanner learns to decide more.
  */
 const STATUS_OPTIONS: Array<{ value: RecordedVerdict["status"]; label: string }> = [
-  { value: "supports", label: t("Yes — it meets this") },
+  { value: "supports", label: t("Yes. It meets this") },
   { value: "partially-supports", label: t("Partly") },
-  { value: "does-not-support", label: t("No — it fails this") },
+  { value: "does-not-support", label: t("No. It fails this") },
   { value: "not-applicable", label: t("Does not apply to this site") },
   { value: "unresolved", label: t("Looked, could not decide yet") },
 ];

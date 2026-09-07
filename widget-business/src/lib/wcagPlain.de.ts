@@ -23,7 +23,7 @@ export const PLAIN_DE: Record<string, PlainRule> = {
     plain: "Eine Beschriftung, die der Code verwirft",
     found: (n) =>
       `${n} ${n === 1 ? "Element trägt" : "Elemente tragen"} eine Beschriftung, die der Code bei dieser Art von Tag nicht zulässt. Die Beschriftung wird weggeworfen statt vorgelesen.`,
-    impact: "Im Quelltext sieht das Element benannt aus, also fällt niemandem etwas auf. Screenreader ignorieren die Beschriftung und lesen vor, was im Element steht – oft nichts.",
+    impact: "Im Quelltext sieht das Element benannt aus, also fällt niemandem etwas auf. Screenreader ignorieren die Beschriftung und lesen vor, was im Element steht. Oft nichts.",
   },
   "aria-required-children": {
     plain: "Menüs oder Listen ohne Einträge",
@@ -96,7 +96,7 @@ export const PLAIN_DE: Record<string, PlainRule> = {
     research: "WebAIM prüft jedes Jahr eine Million Startseiten. Bilder ohne Beschreibung gehören Jahr für Jahr zu den häufigsten Fehlern. Und es ist einer der einfachsten, die sich beheben lassen.",
     plain: "Bilder ohne Beschreibung",
     found: (n) =>
-      `${n} ${n === 1 ? "Bild hat" : "Bilder haben"} gar keinen Alt-Text — nicht einmal einen leeren, der ${n === 1 ? "es" : "sie"} als Schmuck kennzeichnet. Ein Screenreader liest dann den Dateinamen vor oder übergeht ${n === 1 ? "es" : "sie"} stumm.`,
+      `${n} ${n === 1 ? "Bild hat" : "Bilder haben"} gar keinen Alt-Text. Nicht einmal einen leeren, der ${n === 1 ? "es" : "sie"} als Schmuck kennzeichnet. Ein Screenreader liest dann den Dateinamen vor oder übergeht ${n === 1 ? "es" : "sie"} stumm.`,
     impact: "Wer einen Screenreader nutzt, hört zu diesen Bildern nichts, und Suchmaschinen wissen nicht, was darauf zu sehen ist. Das kostet Sie beides: Zugänglichkeit und Auffindbarkeit.",
   },
   "svg-img-alt": {
@@ -115,7 +115,7 @@ export const PLAIN_DE: Record<string, PlainRule> = {
     research: "Leere Links gehören zu den häufigsten Fehlern in der jährlichen WebAIM-Untersuchung von einer Million Startseiten. Wer einen Screenreader nutzt, lässt sich oft eine Liste aller Links geben. Ein leerer Link steht dort nur als das Wort „Link“ und sonst nichts.",
     plain: "Links ohne lesbaren Text",
     found: (n) =>
-      `${n} ${n === 1 ? "Link enthält" : "Links enthalten"} keinen lesbaren Text — keine Wörter, keine Beschriftung, nichts zum Ansagen. ${n === 1 ? "Meist ist es ein Symbol, ein Pfeil oder ein Bild, das als Link dient." : "Meist sind es Symbole, Pfeile oder Bilder, die als Links dienen."} Das Bild trägt die Bedeutung, der Code trägt nichts davon.`,
+      `${n} ${n === 1 ? "Link enthält" : "Links enthalten"} keinen lesbaren Text. Keine Wörter, keine Beschriftung, nichts zum Ansagen. ${n === 1 ? "Meist ist es ein Symbol, ein Pfeil oder ein Bild, das als Link dient." : "Meist sind es Symbole, Pfeile oder Bilder, die als Links dienen."} Das Bild trägt die Bedeutung, der Code trägt nichts davon.`,
     impact: "Wer einen Screenreader nutzt, lässt sich oft eine Liste aller Links geben und wählt daraus. Ein Link ohne Text steht dort nur als das Wort „Link“. Mehrere davon machen aus der Liste „Link, Link, Link“.",
   },
   "link-text-vague": {
@@ -162,7 +162,7 @@ export const PLAIN_DE: Record<string, PlainRule> = {
   "heading-order": {
     plain: "Überschriften überspringen Ebenen",
     found: (n) =>
-      `Die Überschriftenebenen springen, statt Stufe für Stufe zu gehen. An ${n} ${n === 1 ? "Stelle" : "Stellen"} fehlt eine Ebene — auf ein h2 folgt direkt ein h4, oder Ähnliches.`,
+      `Die Überschriftenebenen springen, statt Stufe für Stufe zu gehen. An ${n} ${n === 1 ? "Stelle" : "Stellen"} fehlt eine Ebene. Auf ein h2 folgt direkt ein h4, oder Ähnliches.`,
     impact: "Die meisten Screenreader-Nutzer navigieren über Überschriften. Sie verlieren den Faden.",
   },
   "page-has-heading-one": {
@@ -297,7 +297,7 @@ export const PLAIN_DE: Record<string, PlainRule> = {
 
   "forced-colors-focus-lost": {
     plain: "Fokusmarkierung verschwindet im hohen Kontrast",
-    impact: "Der Modus für hohen Kontrast entfernt die Schatten und Farben, mit denen die meisten Fokusmarkierungen gezeichnet sind. Wer am dringendsten sehen muss, wo er steht, sieht nichts – auf einer Seite, die bis dahin perfekt aussieht.",
+    impact: "Der Modus für hohen Kontrast entfernt die Schatten und Farben, mit denen die meisten Fokusmarkierungen gezeichnet sind. Wer am dringendsten sehen muss, wo er steht, sieht nichts. Auf einer Seite, die bis dahin perfekt aussieht.",
   },
   "forced-colors-icon-lost": {
     plain: "Symbol-Schaltfläche verschwindet im hohen Kontrast",
@@ -329,7 +329,7 @@ export const PLAIN_DE: Record<string, PlainRule> = {
     impact: "Ein Knopf, auf dem nur „Los“ steht, der nur ein Symbol zeigt oder ganz fehlt: Leute wissen nicht, wie sie fertig werden. Also werden sie es nicht.",
   },
   "component-nav-labels": {
-    plain: "Mehrere Menüs, keines benannt",
+    plain: "Navigationsmenüs ohne Namen",
     impact: "Im Screenreader hört man „Navigation … Navigation …“, ohne das Hauptmenü von den Links in der Fußzeile unterscheiden zu können. Der Weg durch Ihre Website wird zum Raten.",
   },
   "component-skip-link": {
@@ -383,7 +383,7 @@ export const PLAIN_DE: Record<string, PlainRule> = {
   },
   "dark-consent-asymmetry": {
     plain: "Cookie-Banner drängt „Ablehnen“ zurück",
-    impact: "Eine Option als Knopf, die andere als bloßer Text – das drängt zum Zustimmen. Aufsichtsbehörden achten darauf.",
+    impact: "Eine Option als Knopf, die andere als bloßer Text. Das drängt zum Zustimmen. Aufsichtsbehörden achten darauf.",
   },
   "dark-preselected-optin": {
     plain: "Werbe-Häkchen ist schon gesetzt",
@@ -594,7 +594,7 @@ export const FIXES_DE: Record<string, string | string[]> = {
   "mobile-target-spacing": "Lassen Sie etwas Platz zwischen Knöpfen und Links, damit ein Daumen nicht zwei auf einmal trifft.",
   "consent-blocks-reader": [
     "Setzen Sie den Tastaturfokus in das Banner, sobald es erscheint.",
-    "Halten Sie ihn dort, bis eine Wahl getroffen ist — erst das macht es richtig, die Seite dahinter zu verstecken.",
+    "Halten Sie ihn dort, bis eine Wahl getroffen ist. Erst das macht es richtig, die Seite dahinter zu verstecken.",
     "Oder verstecken Sie die Seite gar nicht: Ein Banner, das nur unten sitzt, braucht davon nichts.",
   ],
   "mobile-sticky-coverage": [
@@ -828,7 +828,7 @@ export const UNDECIDED_DE: Record<string, { what: string; ask: string }> = {
   },
   "media-video-descriptions": {
     what: "Video mit Untertiteln, aber ohne Beschreibung dessen, was zu sehen ist. Untertitel tragen die Wörter; das Bild tragen sie nicht.",
-    ask: "Fragen Sie, ob in diesen Videos etwas gezeigt statt gesagt wird – ein Diagramm, eine Vorführung, Text im Bild. Wenn ja, muss der Ton es selbst beschreiben. Eine schriftliche Fassung auf der Seite deckt nur die unterste Stufe des Standards ab.",
+    ask: "Fragen Sie, ob in diesen Videos etwas gezeigt statt gesagt wird. Ein Diagramm, eine Vorführung, Text im Bild. Wenn ja, muss der Ton es selbst beschreiben. Eine schriftliche Fassung auf der Seite deckt nur die unterste Stufe des Standards ab.",
   },
   "form-error-association": {
     what: "Fehlermeldungen im Formular, die im Code nicht mit ihrem Feld verbunden sind. Ein Screenreader sagt das Feld an, aber nicht den Fehler daneben.",
@@ -879,7 +879,7 @@ export const UNDECIDED_DE: Record<string, { what: string; ask: string }> = {
     ask: "Fragen Sie Ihren Entwickler, ob die Seite in beiden Lagen funktioniert. Wer sein Handy oder Tablet am Rollstuhl befestigt hat, kann es nicht drehen.",
   },
   "interaction-no-status-region": {
-    what: "Seiten aktualisieren sich ohne Neuladen – ein Filter kürzt eine Liste, ein Formular meldet, dass es gespeichert hat. Auf dieser Seite ist keine Stelle als der Ort gekennzeichnet, an dem so eine Änderung gesprochen wird. Der Screenreader schweigt, während sich die Seite unter ihm bewegt.",
+    what: "Seiten aktualisieren sich ohne Neuladen. Ein Filter kürzt eine Liste, ein Formular meldet, dass es gespeichert hat. Auf dieser Seite ist keine Stelle als der Ort gekennzeichnet, an dem so eine Änderung gesprochen wird. Der Screenreader schweigt, während sich die Seite unter ihm bewegt.",
     ask: "Fragen Sie Ihren Entwickler, ob sich hier etwas ohne Neuladen ändert. Wenn ja, braucht diese Änderung einen Live-Bereich, damit sie nicht nur gezeigt, sondern auch gesprochen wird.",
   },
   "interaction-acts-on-change": {

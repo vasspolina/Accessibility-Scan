@@ -31,7 +31,7 @@ async function getBrowser(): Promise<Browser> {
     try {
       const browser = await browserPromise;
       browser.on("disconnected", () => {
-        logger.warn("Chromium browser disconnected — will relaunch on next request");
+        logger.warn("Chromium browser disconnected. Will relaunch on next request");
         browserPromise = null;
       });
     } catch (err) {
@@ -124,9 +124,9 @@ const CLICK_LISTENER_PROBE = `(() => {
   // call. Patching addEventListener before any page script runs is the only
   // vantage point from which these are observable at all.
   //
-  //   2.5.4  Motion Actuation      — devicemotion / deviceorientation
-  //   2.1.4  Character Key Shortcuts — key handlers bound document-wide
-  //   2.5.2  Pointer Cancellation  — a press that acts without a release
+  //   2.5.4  Motion Actuation. Devicemotion / deviceorientation
+  //   2.1.4  Character Key Shortcuts. Key handlers bound document-wide
+  //   2.5.2  Pointer Cancellation. A press that acts without a release
   //
   // None of it proves a failure: a devicemotion listener may well have a
   // button beside it, and a keydown handler may only ever fire on Escape.
@@ -138,7 +138,7 @@ const CLICK_LISTENER_PROBE = `(() => {
     devicemotion: 1, deviceorientation: 1,
     keydown: 1, keypress: 1, keyup: 1,
   };
-  // 2.5.1 Pointer Gestures — the one criterion of this probe's family that
+  // 2.5.1 Pointer Gestures. The one criterion of this probe's family that
   // had no signal. A touchmove/pointermove listener is the presence evidence
   // for path-based gestures (swipes, drags, carousels); counted anywhere,
   // not just globally, because gesture handlers bind on the element they
@@ -147,13 +147,12 @@ const CLICK_LISTENER_PROBE = `(() => {
   const GESTURE_WATCH = { touchmove: 1, pointermove: 1 };
   const globals = { gestureListeners: 0 };
   // WeakMap for the lookup, array for the enumeration. A linear scan here
-  // would run on every addEventListener call a page makes — thousands on a
-  // heavy site — and this probe must never be the reason a scan is slow.
+  // would run on every addEventListener call a page makes. Thousands on a
+  // heavy site. And this probe must never be the reason a scan is slow.
   const pointerMap = new WeakMap();
   const pointerTargets = [];
   // Controls that react when their value changes. On its own this says very
-  // little — a filter dropdown that repaints a list is ordinary and fine —
-  // so it is never reported alone. renderPage pairs it with the shape that
+  // little. A filter dropdown that repaints a list is ordinary and fine. // so it is never reported alone. RenderPage pairs it with the shape that
   // makes it a 3.2.2 risk: a select in a form with nothing to submit it,
   // which is the classic auto-submit-on-change menu.
   const changeSeen = new WeakSet();
@@ -161,8 +160,8 @@ const CLICK_LISTENER_PROBE = `(() => {
   // Elements with their own key handler. A WeakSet on purpose: the mouse-only
   // probe only ever asks has(el) while walking an ancestor chain, and a
   // WeakSet holds no strong references to detached nodes. Without this,
-  // <div tabindex="0"> with a click handler and no keydown — the single most
-  // common 2.1.1 failure — was indistinguishable from a correctly built
+  // <div tabindex="0"> with a click handler and no keydown. The single most
+  // common 2.1.1 failure. Was indistinguishable from a correctly built
   // custom button, and the probe skipped both.
   const keyTargets = new WeakSet();
   window.__a11yKeyTargets = keyTargets;
@@ -175,7 +174,7 @@ const CLICK_LISTENER_PROBE = `(() => {
         seen.add(this);
         tracked.push(this);
       }
-      // Bound on window, document or body — the scope that makes a bare
+      // Bound on window, document or body. The scope that makes a bare
       // letter a page-wide shortcut, or a tilt gesture the only way to act.
       const isGlobal = this === window || this === document || this === document.body;
       if (isGlobal && GLOBAL_WATCH[type]) globals[type] = (globals[type] || 0) + 1;

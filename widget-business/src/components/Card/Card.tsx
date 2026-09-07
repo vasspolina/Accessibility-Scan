@@ -5,7 +5,7 @@ import type { CSSProperties, ReactNode } from "react";
  *
  * A <section>, as the source has it. A section with no accessible name is
  * not a landmark, so this adds nothing to the landmark list and needs no
- * label — changing it to a div would be a silent structural change for no
+ * label. Changing it to a div would be a silent structural change for no
  * gain.
  *
  * The optional title renders an <h3>, which is what the call sites expect to

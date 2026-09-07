@@ -89,7 +89,7 @@ export async function tick(
           scoreChange !== null && scoreChange < 0 ? `score ${due.lastScore} → ${report.score}` : null,
           fresh > 0 ? `${fresh} new finding${fresh === 1 ? "" : "s"}` : null,
         ].filter(Boolean).join(", ");
-        notified = (await mailer(due.notifyEmail, report, `Scheduled scan: ${report.url} got worse — ${what}`)).ok;
+        notified = (await mailer(due.notifyEmail, report, `Scheduled scan: ${report.url} got worse. ${what}`)).ok;
       }
       markRun(due.id, { scanId, score: report.score }, due.everyHours, now);
       outcome = { scheduleId: due.id, url: due.url, ok: true, score: report.score, scoreChange, newFindings: fresh, notified };

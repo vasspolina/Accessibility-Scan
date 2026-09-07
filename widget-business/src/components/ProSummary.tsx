@@ -68,7 +68,7 @@ export function ProSummary({
           from every section rather than only from the top of this panel. */}
       <div className="a11y-pro-titlerow">
         <h2 className="a11y-results-title" id="a11y-score-heading" data-nav-label={t("Score")}>
-          {host} — {t("scan results")}
+          {host}: {t("scan results")}
         </h2>
         <p className="a11y-pro-count">
           {total} {total === 1 ? "issue" : "issues"} on 1 page

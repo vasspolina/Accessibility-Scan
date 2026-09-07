@@ -81,7 +81,7 @@ export function UrlForm({
   // says what is missing, in a message the input points at and a live region
   // announces.
   /* The login disclosure's state lives here because its trigger sits inside
-     the address field and its panel below — see LoginFields. */
+     the address field and its panel below. See LoginFields. */
   const [loginOpen, setLoginOpen] = useState(false);
   const loginPanelId = useId();
   const loginToggleRef = useRef<HTMLButtonElement>(null);
@@ -266,7 +266,7 @@ export function UrlForm({
               {loading ? t("One moment\u2026") : t("Start the scan")}
             </Button>
             <span className="a11y-url-submit-note">
-              {t("Keep this page open — the scan runs here.")}
+              {t("Keep this page open. The scan runs here.")}
             </span>
           </div>
           </div>

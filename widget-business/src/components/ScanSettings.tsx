@@ -91,7 +91,7 @@ export function ScanSettings({
           onClick={() => onRerun({ ai: !aiIncluded })}
         >
           {aiIncluded ? "Run again without it" : "Run again with it"}
-          <span className="a11y-settings-cost"> — takes another scan</span>
+          <span className="a11y-settings-cost">. Takes another scan</span>
         </button>
       </div>
 
@@ -108,7 +108,7 @@ export function ScanSettings({
         >
           {scope === "site" ? "Scan this page only" : "Scan the whole site"}
           <span className="a11y-settings-cost">
-            {scope === "site" ? " — takes another scan" : " — takes a few minutes"}
+            {scope === "site" ? ". Takes another scan" : ". Takes a few minutes"}
           </span>
         </button>
       </div>

@@ -147,7 +147,7 @@ export function evaluateControlContrast(
       ruleId: "control-faint-boundary",
       selector: worst.selector,
       elementSnippet: worst.snippet,
-      description: `${faint.length === 1 ? "A form control draws its border" : `${faint.length} form controls draw their borders`} too faintly to make out — measured below the 3:1 contrast WCAG requires for a control's visible parts. In bright light the box edges disappear, and with them the sense of where to click and type.`,
+      description: `${faint.length === 1 ? "A form control draws its border" : `${faint.length} form controls draw their borders`} too faintly to make out. Measured below the 3:1 contrast WCAG requires for a control's visible parts. In bright light the box edges disappear, and with them the sense of where to click and type.`,
       suggestedFix:
         "Darken the borders until they reach 3:1 against the background they sit on. One shade change on the shared input style usually fixes every control at once.",
       helpUrl: "https://www.w3.org/WAI/WCAG21/Understanding/non-text-contrast.html",

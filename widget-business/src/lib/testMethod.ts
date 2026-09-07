@@ -41,7 +41,7 @@ export const FIX_KINDS: Record<FixOwner, FixKind> = {
   content: {
     key: "content",
     label: "Content fix",
-    hint: "No code needs to change — this is a decision about wording. It belongs with whoever writes the page rather than with a developer.",
+    hint: "No code needs to change. This is a decision about wording. It belongs with whoever writes the page rather than with a developer.",
   },
   design: {
     key: "design",
@@ -51,7 +51,7 @@ export const FIX_KINDS: Record<FixOwner, FixKind> = {
     // targets bigger" has to invent a size, a colour or a spacing, which is
     // not their decision to make. The decision comes first and belongs to
     // whoever owns how the page looks.
-    hint: "This is a decision about how the page looks: a size, a colour, a spacing. It belongs with whoever designs the site. Someone will change a stylesheet afterwards, but the choice comes first.",
+    hint: "This is a decision about how the page looks: a size, a colour, a spacing. The designer decides it. A developer then changes the stylesheet to match.",
   },
   document: {
     key: "document",

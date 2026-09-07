@@ -51,7 +51,7 @@ export function PlansBar({ plans }: { plans?: Plan[] }) {
               rel="noopener noreferrer"
             >
               Buy now
-              <span className="a11y-sr-only"> — {plan.name}</span>
+              <span className="a11y-sr-only">, {plan.name}</span>
             </a>
           </li>
         ))}

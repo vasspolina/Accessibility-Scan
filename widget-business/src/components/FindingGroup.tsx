@@ -466,7 +466,7 @@ export function FindingDetails({
        a box inside the expanded cell: setting display:grid on the <td>
        itself takes the cell out of table formatting, its colspan stops
        applying, and the cell collapsed to 33px with both columns inside
-       it — measured, in all three engines. */
+       it. Measured, in all three engines. */
     <div className="a11y-fd">
       {/* Two real column boxes, the kit's own composition. The children
           used to sit flat in the grid with grid-column rules assigning
@@ -825,7 +825,7 @@ export function findingRow(
     cells: asNotes
       ? [issueCell, ...(showCount ? [count > 1 ? <CountPill key="n" count={count} /> : ""] : [])]
       : [
-          // Severity's own column — hidden at phone width by CSS
+          // Severity's own column. Hidden at phone width by CSS
           // (a11y-finding-sev-col), where the folded copy inside
           // issueCell takes over instead.
           <span key="sev" className="a11y-finding-sev-col">

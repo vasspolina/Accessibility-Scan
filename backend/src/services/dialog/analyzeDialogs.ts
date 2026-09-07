@@ -99,7 +99,7 @@ function evaluateDialogKeyboard(results: DialogKeyboardResult[]): AccessibilityF
           "accessibility",
           r.selector,
           `${what} appeared, but focus did not move into it. Someone using a screen reader hears nothing about it. A keyboard user must tab through the whole page behind it to reach the thing now covering their screen.`,
-          "When the dialog opens, move focus to it — the dialog container itself, or the first control inside it. Remember where focus was, so you can put it back when the dialog closes."
+          "When the dialog opens, move focus to it. The dialog container itself, or the first control inside it. Remember where focus was, so you can put it back when the dialog closes."
         )
       );
     }
@@ -111,7 +111,7 @@ function evaluateDialogKeyboard(results: DialogKeyboardResult[]): AccessibilityF
           "serious",
           "accessibility",
           r.selector,
-          `${what} closed on Escape, but focus ended up nowhere — it fell back to the top of the document. The next Tab press starts again from the beginning of the page. Anyone who had worked their way down loses their place entirely.`,
+          `${what} closed on Escape, but focus ended up nowhere. It fell back to the top of the document. The next Tab press starts again from the beginning of the page. Anyone who had worked their way down loses their place entirely.`,
           "On close, put focus back on the control that opened the dialog. Where the dialog was open from the start and has no trigger, move focus to the main content instead. Its heading or first control is a sensible spot for tabbing to carry on from."
         )
       );
@@ -159,7 +159,7 @@ export function evaluateDialogs(
         "serious",
         "accessibility",
         pick(unlabelledClose),
-        `A pop-up's close button has no readable label — it's just an "×" or icon (${unlabelledClose.length} pop-up${unlabelledClose.length === 1 ? "" : "s"}). People using a screen reader hear only "button" and can't tell how to dismiss the pop-up, so it traps them.${unseen(unlabelledClose)}`,
+        `A pop-up's close button has no readable label. It's just an "×" or icon (${unlabelledClose.length} pop-up${unlabelledClose.length === 1 ? "" : "s"}). People using a screen reader hear only "button" and can't tell how to dismiss the pop-up, so it traps them.${unseen(unlabelledClose)}`,
         'Give the close control a label a screen reader can read out: aria-label="Close" on the button. A bare "×" glyph reads out as "multiplication sign", not "close".',
         { criterion: "4.1.2", level: "A" }
       )

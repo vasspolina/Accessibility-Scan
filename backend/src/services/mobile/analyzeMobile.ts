@@ -462,7 +462,7 @@ export function evaluateMobile(m: MobileSignals): AccessibilityFinding[] {
       elementSnippet: pair.snippet,
       description: `Two tap targets sit only ${pair.gapPx}px apart on a phone. Each is big enough on its own. Together they leave no room to miss: a thumb aiming for one lands on the other.`,
       suggestedFix:
-        "Put at least 8px between neighbouring tap targets — margin between them, or padding inside each. The controls can stay the same visual size.",
+        "Put at least 8px between neighbouring tap targets. Margin between them, or padding inside each. The controls can stay the same visual size.",
       ruleId: "mobile-target-spacing",
       helpUrl: "https://www.w3.org/WAI/WCAG22/Understanding/target-size-minimum.html",
     });

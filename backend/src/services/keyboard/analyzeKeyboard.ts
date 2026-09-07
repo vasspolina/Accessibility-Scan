@@ -227,7 +227,7 @@ export function evaluateKeyboardNav(nav: KeyboardNavResult): AccessibilityFindin
         // exact element is named in the technical version and shown in the
         // picture; whoever fixes it will not be short of detail.
         c.focusable
-          ? `${c.label ? `"${c.label}"` : "A control on this page"} responds when you click it, and the Tab key does reach it — but pressing Enter or Space there does nothing. For anyone working by keyboard it is a button that ignores the press.`
+          ? `${c.label ? `"${c.label}"` : "A control on this page"} responds when you click it, and the Tab key does reach it. But pressing Enter or Space there does nothing. For anyone working by keyboard it is a button that ignores the press.`
           : `${c.label ? `"${c.label}"` : "A control on this page"} responds when you click it, but pressing Tab never reaches it. It is an ordinary piece of the page, not a button or a link, and the keyboard only reaches those.`,
         // Plain instruction first, because that is the one the owner can act
         // on — brief their developer, or check it was done. The specifics
@@ -258,8 +258,8 @@ export function evaluateKeyboardNav(nav: KeyboardNavResult): AccessibilityFindin
         "AA",
         "https://www.w3.org/WAI/WCAG22/Understanding/focus-not-obscured-minimum.html",
         first.selector,
-        `${obscuredStops.length === 1 ? "One tab stop is" : `${obscuredStops.length} tab stops are`} completely hidden behind ${first.obscured!.coveredBy} at the moment ${obscuredStops.length === 1 ? "it takes" : "they take"} focus. A keyboard user's place on the page vanishes: they are somewhere, and nothing on screen shows where.`,
-        "Give the page's scroll position room under the pinned bar — scroll-padding on the page, or a smaller bar. The element the keyboard lands on has to be at least partly visible while it has focus."
+        `${obscuredStops.length === 1 ? "One control is" : `${obscuredStops.length} controls are`} hidden behind ${first.obscured!.coveredBy} when ${obscuredStops.length === 1 ? "it receives" : "they receive"} keyboard focus. The keyboard user cannot see which control is active.`,
+        "Give the page's scroll position room under the pinned bar. Scroll-padding on the page, or a smaller bar. The element the keyboard lands on has to be at least partly visible while it has focus."
       )
     );
   }
@@ -279,7 +279,7 @@ export function evaluateKeyboardNav(nav: KeyboardNavResult): AccessibilityFindin
         "https://www.w3.org/WAI/WCAG21/Understanding/focus-order.html",
         first.selector,
         `${anomalies.positiveTabindex.length === 1 ? "A control uses" : `${anomalies.positiveTabindex.length} controls use`} a positive tabindex (${first.tabindex}), which yanks ${anomalies.positiveTabindex.length === 1 ? "it" : "them"} out of the page's natural tab order${anomalies.domInversions.length > 0 ? ` — the walk measured ${anomalies.domInversions.length} place${anomalies.domInversions.length === 1 ? "" : "s"} where focus jumps backwards through the page` : ""}. Everything without a number then comes after everything with one, in an order no one chose.`,
-        "Remove the positive tabindex values and let the DOM order carry the tab order. If the visual order is the problem, reorder the markup — a tabindex number is a patch that breaks somewhere else."
+        "Remove the positive tabindex values and let the DOM order carry the tab order. If the visual order is the problem, reorder the markup. A tabindex number is a patch that breaks somewhere else."
       )
     );
   } else if (anomalies && anomalies.positiveTabindex.length > 0) {
@@ -298,7 +298,7 @@ export function evaluateKeyboardNav(nav: KeyboardNavResult): AccessibilityFindin
       ruleId: "keyboard-positive-tabindex-advisory",
       description: `${anomalies.positiveTabindex.length === 1 ? "A control uses" : `${anomalies.positiveTabindex.length} controls use`} a positive tabindex (${first.tabindex}). The walk measured no broken order this time, but every new focusable element added to the page will land after the numbered ones, in an order nobody chose.`,
       suggestedFix:
-        "Remove the positive tabindex values and let the page order carry the tab order — the number is a patch that breaks the moment the page changes.",
+        "Remove the positive tabindex values and let the page order carry the tab order. The number is a patch that breaks the moment the page changes.",
       helpUrl: "https://www.w3.org/WAI/WCAG21/Understanding/focus-order.html",
     });
   } else if (anomalies && anomalies.domInversions.length > 0) {
@@ -312,7 +312,7 @@ export function evaluateKeyboardNav(nav: KeyboardNavResult): AccessibilityFindin
         "https://www.w3.org/WAI/WCAG21/Understanding/focus-order.html",
         first.laterStop,
         `Tabbing through this page jumps backwards ${anomalies.domInversions.length === 1 ? "once" : `${anomalies.domInversions.length} times`}: focus lands on an element that sits EARLIER in the page than the one before it. A keyboard user's sense of where they are breaks at each jump.`,
-        "Make the tab order follow the page order. The usual causes are CSS that visually reorders content and scripts that move focus — reorder the markup instead."
+        "Make the tab order follow the page order. The usual causes are CSS that visually reorders content and scripts that move focus. Reorder the markup instead."
       )
     );
   }
@@ -379,7 +379,7 @@ export function evaluateKeyboardNav(nav: KeyboardNavResult): AccessibilityFindin
         "https://www.w3.org/WAI/WCAG21/Understanding/focus-visible.html",
         invisible[0].selector,
         `Moving through the page with the Tab key gives no visible sign of where you are. ${invisible.length} of ${comparable.length} keyboard stops show no outline, highlight or other visual change.`,
-        "Remove `outline: none` (or provide a replacement) so every interactive element shows a clear focus indicator — e.g. `:focus-visible { outline: 2px solid; outline-offset: 2px; }`."
+        "Remove `outline: none` (or provide a replacement) so every interactive element shows a clear focus indicator. For example, `:focus-visible { outline: 2px solid; outline-offset: 2px; }`."
       )
     );
   }

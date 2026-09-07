@@ -106,7 +106,7 @@ export async function sendReportEmail(
   const body = {
     from: env.MAIL_FROM,
     to: [to],
-    subject: subject ?? `Accessibility scan: ${report.url} — ${report.score}/100`,
+    subject: subject ?? `Accessibility scan: ${report.url}. ${report.score}/100`,
     text: renderText(report),
   };
 

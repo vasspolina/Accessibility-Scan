@@ -298,7 +298,7 @@ export function evaluateTypography(blocks: TypographyBlock[]): AccessibilityFind
         "typo-line-length-long",
         "moderate",
         worst.selector,
-        `Lines of body text run too long — about ${Math.round(charsPerLine(worst) ?? 0)} characters per line (${longLines.length} block${longLines.length === 1 ? "" : "s"} over 90). Comfortable reading is roughly 50–75 characters per line.`,
+        `Lines of body text run too long. About ${Math.round(charsPerLine(worst) ?? 0)} characters per line (${longLines.length} block${longLines.length === 1 ? "" : "s"} over 90). Comfortable reading is roughly 50–75 characters per line.`,
         "Constrain the text column, e.g. max-width: 65ch on paragraphs."
       )
     );
@@ -454,7 +454,7 @@ export function evaluateTypography(blocks: TypographyBlock[]): AccessibilityFind
         "typo-thin-weight",
         "minor",
         worst.selector,
-        `Body text is set in a very thin (hairline) weight — font-weight ${worst.fontWeight} (${thinBody.length} block${thinBody.length === 1 ? "" : "s"} at 200 or lighter). Thin strokes fade out on cheaper screens and in bright light, and readers with low vision lose them first. This happens even when the colour contrast passes.`,
+        `Body text is set in a very thin (hairline) weight. Font-weight ${worst.fontWeight} (${thinBody.length} block${thinBody.length === 1 ? "" : "s"} at 200 or lighter). Thin strokes fade out on cheaper screens and in bright light, and readers with low vision lose them first. This happens even when the colour contrast passes.`,
         "Use a regular weight (around 400) for running text. Reserve hairline weights for large display headings, not paragraphs."
       )
     );

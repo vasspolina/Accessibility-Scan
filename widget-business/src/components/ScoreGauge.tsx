@@ -171,8 +171,8 @@ export function computeDoFirst(
       ? worstFirst.reduce((a, b) => (b.length > a.length ? b : a))
       : null;
   /* Suppressed at one instance, deliberately. "Fixing this settles 1 of 1"
-   * is noise, and the anti-pattern the band exists to prevent — a list with
-   * no order of attack — does not arise when there is one thing to do. */
+   * is noise, and the anti-pattern the band exists to prevent. A list with
+   * no order of attack. Does not arise when there is one thing to do. */
   if (!topGroup || topGroup.length <= 1) return null;
   return {
     title: plainForRule(topGroup[0].ruleId)?.plain ?? topGroup[0].title ?? "",
@@ -335,7 +335,7 @@ export function ScoreGauge({
               <div
                 className="a11y-sum-dial"
                 role="img"
-                aria-label={`Score ${score} out of 100 — ${BAND_WORD(score)}. ${total} ${
+                aria-label={`Score ${score} out of 100. ${BAND_WORD(score)}. ${total} ${
                   total === 1 ? "issue" : "issues"
                 } found${tookSeconds != null ? `, in ${tookSeconds} seconds` : ""}.`}
               >

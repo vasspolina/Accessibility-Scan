@@ -3,6 +3,7 @@ import { createRoot } from "react-dom/client";
 import { App } from "./App";
 import { mountShadowRoot } from "./utils/shadowMount";
 import { setLang, detectLang } from "./lib/i18n";
+import { keepShortWordsAttached } from "./lib/typography";
 
 export interface MountOptions {
   apiBase: string;
@@ -98,6 +99,8 @@ export function mount(target: string | HTMLElement, options: MountOptions) {
     mountPoint.dataset.theme = options.theme;
   }
   const root = createRoot(mountPoint);
+  // Typesetting rule: no one- or two-letter word left at a line's end.
+  keepShortWordsAttached(mountPoint);
   root.render(
     <React.StrictMode>
       <App apiBase={options.apiBase} cta={options.cta} plans={options.plans} />

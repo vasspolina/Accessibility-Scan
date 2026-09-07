@@ -45,7 +45,7 @@ export function ProfessionalTable({
 
   const criterionLine = (rep: AccessibilityFinding): string => {
     const num = rep.wcagCriterion?.match(/^(\d\.\d+\.\d+)/)?.[1];
-    if (!num) return "—";
+    if (!num) return ". ";
     const known = criterionNames[num];
     const name = known ? `${num} ${known.name} (${known.level})` : (rep.wcagCriterion ?? num);
     const en = enClauseFor(rep.wcagCriterion, rep.wcagLevel);
@@ -88,14 +88,14 @@ export function ProfessionalTable({
         <CountPill key="n" count={group.length} />,
       ],
       /* The same panel the business table opens, which is the one the
-         design draws — labelled sections, the steps as a list, the
+         design draws. Labelled sections, the steps as a list, the
          affected elements named.
 
          This used to be a second, hand-written panel: criterion, the raw
          description, Fix, Selector, snippet, link. Every one of those is
          already in FindingDetails, and its professional block puts WCAG,
          the selector and the snippet open on the card rather than in the
-         drawer — so nothing a professional reader had is lost, and what
+         drawer. So nothing a professional reader had is lost, and what
          they were missing arrives: why it matters, what the research
          says, what to do, and which elements.
 
@@ -104,7 +104,7 @@ export function ProfessionalTable({
          no rule targeted. Deleting it is the fix, not restyling it.
 
          Criterion stays reachable at narrow widths, which was the old
-         panel's stated reason for repeating it — the professional block's
+         panel's stated reason for repeating it. The professional block's
          WCAG line carries the number, the name and the level. */
       expand: <FindingDetails findings={group} />,
     };

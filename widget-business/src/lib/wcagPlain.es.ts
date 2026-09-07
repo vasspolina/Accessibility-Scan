@@ -365,7 +365,7 @@ export const PLAIN_ES: Record<string, PlainRule> = {
       "Un botón que solo dice \"Ir\", que muestra solo un icono o que ni siquiera está deja a la gente sin saber cómo terminar. Así que no terminan.",
   },
   "component-nav-labels": {
-    plain: "Varios menús, ninguno con nombre",
+    plain: "Menús de navegación sin nombre",
     impact:
       "Quien usa un lector de pantalla oye \"navegación… navegación…\" sin forma de separar el menú principal de los enlaces del pie. Moverse por su sitio se vuelve una adivinanza.",
   },
@@ -670,7 +670,7 @@ export const FIXES_ES: Record<string, string | string[]> = {
     "Deje algo de espacio entre los botones y los enlaces, para que un pulgar no pueda dar en dos a la vez.",
   "consent-blocks-reader": [
     "Lleve el foco del teclado al aviso en cuanto se abra.",
-    "Manténgalo ahí hasta que se elija — eso es lo que hace correcto esconder la página de detrás.",
+    "Manténgalo ahí hasta que se elija. Eso es lo que hace correcto esconder la página de detrás.",
     "O deje de esconder la página: un aviso que solo se queda abajo no necesita nada de esto.",
   ],
   "mobile-sticky-coverage": [

@@ -69,7 +69,7 @@ export function SiteAuditView({ audit }: { audit: SiteAudit }) {
           </h2>
           <p className="a11y-section-desc">
             Found by comparing your pages against each other, which is the only
-            way these show up — one page on its own always looks fine. A menu
+            way these show up. One page on its own always looks fine. A menu
             that moves, or a link that changes its name, makes people learn your
             site again on every page.
           </p>
@@ -105,8 +105,7 @@ export function SiteAuditView({ audit }: { audit: SiteAudit }) {
             <span className="a11y-section-count">({audit.siteWide.length})</span>
           </h2>
           <p className="a11y-section-desc">
-            These show up on every page, so they live in the template rather than the content —
-            structural, not decorative. Start here.
+            These show up on every page, so they live in the template rather than the content. Structural, not decorative. Start here.
           </p>
           <ul className="a11y-audit-list">
             {audit.siteWide.map((issue) => {
@@ -169,7 +168,7 @@ export function SiteAuditView({ audit }: { audit: SiteAudit }) {
                     {page.error && <span className="a11y-audit-err">{page.error}</span>}
                   </span>,
                   page.error ? "n/a" : page.score,
-                  page.error ? "—" : page.findingCount,
+                  page.error ? ". " : page.findingCount,
                   <Tag
                     key="s"
                     tone={page.error ? "gray" : page.findingCount > 0 ? "red" : "green"}

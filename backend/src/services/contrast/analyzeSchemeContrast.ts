@@ -55,7 +55,7 @@ export function evaluateSchemeContrast(opts: {
       wcagLevel: "AA",
       ruleId,
       selector: fresh[0],
-      description: `${fresh.length === 1 ? "One piece of text falls" : `${fresh.length} pieces of text fall`} below the required contrast ${where} — and nowhere else, so the desktop check alone missed ${fresh.length === 1 ? "it" : "all of them"}.`,
+      description: `${fresh.length === 1 ? "One piece of text falls" : `${fresh.length} pieces of text fall`} below the required contrast ${where}. And nowhere else, so the desktop check alone missed ${fresh.length === 1 ? "it" : "all of them"}.`,
       suggestedFix: fix,
       helpUrl: "https://www.w3.org/WAI/WCAG21/Understanding/contrast-minimum.html",
     });

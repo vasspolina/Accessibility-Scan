@@ -187,17 +187,17 @@ const UNPICTURABLE_NOTES: Record<
   string
 > = {
   hidden:
-    "No picture: this was not visible on the page when it was scanned. It is revealed by something — opening a panel, or moving focus to it.",
+    "No picture: this was not visible on the page when it was scanned. It is revealed by something. Opening a panel, or moving focus to it.",
   offscreen:
     "No picture: this sits off the edge of the screen until it is used. Skip links are built this way on purpose, so nothing is necessarily wrong with it being there.",
   "no-usable-image":
-    "No picture: the element is there, but photographing it produced nothing worth showing — a blank rectangle, or whatever is sitting on top of it. The technical details for this finding identify the exact element.",
+    "No picture: the element is there, but photographing it produced nothing worth showing. A blank rectangle, or whatever is sitting on top of it. The technical details for this finding identify the exact element.",
   "too-large":
     "No picture: this covers a whole region of the page rather than one component, and a photograph of the entire section would not show you which part of it is at fault. The technical details for this finding identify the exact element.",
   missing:
     "No picture: the element was on the page when we judged it, and gone when we went back to photograph it. Banners that appear once per visitor do this.",
   "not-attempted":
-    "No picture: each scan photographs a limited number of elements, and this one was past that limit. Nothing about the element itself — scanning again may reach it.",
+    "No picture: each scan photographs a limited number of elements, and this one was past that limit. Nothing about the element itself. Scanning again may reach it.",
   unreachable:
     "No picture: this element could not be located again on the return visit. Pages that rebuild themselves on every load do this.",
 };

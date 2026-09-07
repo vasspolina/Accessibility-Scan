@@ -239,7 +239,7 @@
         selector: "sel-" + i,
         issue:
           i === 3
-            ? "A button with no name — the listener hears only 'button'."
+            ? "A button with no name. The listener hears only 'button'."
             : i === 7
               ? "Nine links on this page all announce 'Read more'."
               : i === 12

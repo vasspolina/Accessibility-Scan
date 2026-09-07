@@ -101,7 +101,7 @@ export async function attachAltTextSuggestions(
       "Alt-text suggestion"
     );
   } catch (err) {
-    logger.warn({ err }, "Alt-text suggestion failed — reporting findings without suggestions");
+    logger.warn({ err }, "Alt-text suggestion failed. Reporting findings without suggestions");
   }
 }
 

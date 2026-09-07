@@ -23,11 +23,11 @@ export interface NavSection extends NavTarget {
  *
  * A bare `href="#id"` doesn't reliably scroll inside a Shadow DOM fragment
  * (and `document.getElementById` can't even see the target), so the click
- * handler scrolls the element it already has a reference to — the same
+ * handler scrolls the element it already has a reference to, the same
  * scroll-then-focus pattern App.tsx's own `focusForm` already uses.
  *
  * Below the shell's mobile breakpoint, this collapses to a hamburger
- * toggle instead of a persistent list — a phone-width column had no room
+ * toggle instead of a persistent list. A phone-width column had no room
  * to keep every section label on screen at once, and letting them wrap
  * or fall back to a row of pills (both tried earlier) still cost more
  * vertical space above the report than a report on a phone can spare.

@@ -58,10 +58,10 @@ export function Input({
   invalidText?: ReactNode;
   disabled?: boolean;
   action?: ReactNode;
-  /** Overrides the internal help id — see note 1 above. */
+  /** Overrides the internal help id. See note 1 above. */
   describedBy?: string;
   variant?: "filled" | "line";
-  /** "display" sets the field at heading size — the Checker screen's address
+  /** "display" sets the field at heading size. The Checker screen's address
    *  field, where the one thing the visitor must supply is the headline. */
   size?: "default" | "display";
   /** Escape hatch for inputMode, autoComplete, required and friends. */

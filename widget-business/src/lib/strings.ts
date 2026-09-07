@@ -69,8 +69,8 @@ export const CHROME_KEYS: string[] = [
   "Could not save the answer.",
   "Could not load the open questions.",
   "Could not load the open questions",
-  "Yes — it meets this",
-  "No — it fails this",
+  "Yes. It meets this",
+  "No. It fails this",
   "Does not apply to this site",
   "Looked, could not decide yet",
   "Officially:",
@@ -202,10 +202,10 @@ export const CHROME_KEYS: string[] = [
   /* The scan form — the first thing anyone reads, and until the
      languages landed the one part that stayed English in all of
      them. */
-  "Cancel \u2014 scan without a login",
+  "Cancel. Scan without a login",
   "Fastest",
   "Finds what repeats everywhere",
-  "Keep this page open \u2014 the scan runs here.",
+  "Keep this page open. The scan runs here.",
   "Most chosen",
   "One moment\u2026",
   "One page, end to end",

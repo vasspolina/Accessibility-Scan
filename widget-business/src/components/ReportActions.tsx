@@ -25,7 +25,7 @@ import type { AccessibilityReport } from "../api/scanClient";
  * provider failed. "Something went wrong" would collapse all three.
  */
 const RESULT_MESSAGE: Record<EmailReportResult, string> = {
-  sent: "Sent. Check your inbox — it may take a minute.",
+  sent: "Sent. Check your inbox. It may take a minute.",
   not_configured: "Email isn't set up on this scanner yet. Save as PDF instead.",
   rejected: "That address was refused. Check it and try again.",
   failed: "The report couldn't be sent just now. Please try again shortly.",

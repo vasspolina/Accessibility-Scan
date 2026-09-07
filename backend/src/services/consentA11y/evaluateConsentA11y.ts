@@ -80,7 +80,7 @@ export function evaluateConsentA11y(signals: DarkPatternSignals): AccessibilityF
         `and keyboard focus never lands inside the banner. A screen reader user hears silence where the page should be, ` +
         `and cannot find the banner to clear it.`,
       suggestedFix:
-        'Move focus into the banner when it opens and keep it there until a choice is made — then the hiding is a correct modal. ' +
+        'Move focus into the banner when it opens and keep it there until a choice is made, then the hiding is a correct modal. ' +
         'Or stop hiding the page: a non-modal banner needs no aria-hidden at all.',
       ruleId: "consent-blocks-reader",
       helpUrl: DIALOG_PATTERN_URL,
@@ -124,7 +124,7 @@ export function consentA11yUndecided(signals: DarkPatternSignals): UndecidedRow[
     rows.push({
       ruleId: "consent-layer-unheralded",
       count: 1,
-      help: "The cookie layer has no dialog role or name, and keyboard focus never reaches it — a screen reader user may never learn it exists.",
+      help: "The cookie layer has no dialog role or name, and keyboard focus never reaches it. A screen reader user may never learn it exists.",
       helpUrl: DIALOG_PATTERN_URL,
     });
   } else if (
@@ -136,7 +136,7 @@ export function consentA11yUndecided(signals: DarkPatternSignals): UndecidedRow[
     rows.push({
       ruleId: "consent-trap-unnamed",
       count: 1,
-      help: "Keyboard focus stays inside the cookie layer, but the layer never says what it is — no dialog role, no accessible name.",
+      help: "Keyboard focus stays inside the cookie layer, but the layer never says what it is. No dialog role, no accessible name.",
       helpUrl: DIALOG_PATTERN_URL,
     });
   }

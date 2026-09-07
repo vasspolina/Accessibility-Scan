@@ -11,7 +11,7 @@ import type { ReactNode } from "react";
  *   ───────────────────────────────────────────────────
  *
  * Rendered as markup rather than imported, because the kit's `Section` is a
- * screen-local helper rather than a published component — there is nothing in
+ * screen-local helper rather than a published component, there is nothing in
  * `@verify/design-system` to import for it.
  *
  * The eyebrow is presentation, not structure: it names the category a reader

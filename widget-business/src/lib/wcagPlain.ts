@@ -125,7 +125,7 @@ export const PLAIN_RULE_EXPLANATIONS: Record<string, PlainRule> = {
     found: (n) =>
       `${n} ${n === 1 ? "element carries" : "elements carry"} a label the code does not allow on that kind of tag. The label is thrown away rather than read out.`,
     impact:
-      "The element looks named in the source code, so nobody notices anything wrong. Screen readers ignore the label and announce whatever text sits inside — often nothing.",
+      "The element looks named in the source code, so nobody notices anything wrong. Screen readers ignore the label and announce whatever text sits inside, often nothing.",
   },
   "aria-required-children": {
     plain: "Menus or lists missing their items",
@@ -203,7 +203,7 @@ export const PLAIN_RULE_EXPLANATIONS: Record<string, PlainRule> = {
       "WebAIM checks a million homepages every year. Images with no description sit among its most common failures, year after year. It is also one of the simplest to resolve.",
     plain: "Images have no description",
     found: (n) =>
-      `${n} ${n === 1 ? "image has" : "images have"} no alt text at all — not even an empty one to mark ${n === 1 ? "it" : "them"} decorative. A screen reader falls back to reading the filename aloud, or skips ${n === 1 ? "it" : "them"} in silence.`,
+      `${n} ${n === 1 ? "image has" : "images have"} no alt text at all, not even an empty one to mark ${n === 1 ? "it" : "them"} decorative. A screen reader falls back to reading the filename aloud, or skips ${n === 1 ? "it" : "them"} in silence.`,
     impact:
       "Screen reader users hear nothing for these images, and search engines can't tell what they show. It costs the site both accessibility and SEO.",
   },
@@ -225,7 +225,7 @@ export const PLAIN_RULE_EXPLANATIONS: Record<string, PlainRule> = {
       "Empty links are among the most common failures in WebAIM's annual survey of a million homepages. Screen reader users navigate by pulling up a list of links. An empty link appears in that list as the word 'link' and nothing else.",
     plain: "Links have no readable text",
     found: (n) =>
-      `${n} ${n === 1 ? "link has" : "links have"} no readable text inside — no words and no label, so nothing to announce. ${n === 1 ? "Usually this is an icon or an image used as a link." : "Usually these are icons or images used as links."} The picture carries the meaning and the code carries none of it.`,
+      `${n} ${n === 1 ? "link has" : "links have"} no readable text inside. No words and no label, so nothing to announce. ${n === 1 ? "Usually this is an icon or an image used as a link." : "Usually these are icons or images used as links."} The picture carries the meaning and the code carries none of it.`,
     impact:
       "Screen reader users often pull up a list of every link and pick from it. A link with no text appears there as the single word \"link\". Several of them turn the list into \"link, link, link\".",
   },
@@ -278,7 +278,7 @@ export const PLAIN_RULE_EXPLANATIONS: Record<string, PlainRule> = {
   "heading-order": {
     plain: "Headings skip levels",
     found: (n) =>
-      `The heading levels jump instead of stepping. In ${n} ${n === 1 ? "place" : "places"} a level is skipped — an h2 followed straight by an h4, or similar.`,
+      `The heading levels jump instead of stepping. In ${n} ${n === 1 ? "place" : "places"} a level is skipped. An h2 followed straight by an h4, or similar.`,
     impact: "Most screen reader users navigate by headings. They lose the thread.",
   },
   "page-has-heading-one": {
@@ -443,7 +443,7 @@ export const PLAIN_RULE_EXPLANATIONS: Record<string, PlainRule> = {
   "forced-colors-icon-lost": {
     plain: "Icon button vanishes in High Contrast",
     impact:
-      "The icon is drawn as a background image, and that mode removes background images. The button still works, but renders as an empty box — nothing left to say it is a button.",
+      "The icon is drawn as a background image, and that mode removes background images. The button still works, but renders as an empty box. Nothing left to say it is a button.",
   },
   "keyboard-faint-focus": {
     // "The outline" assumed the reader already knew which outline was meant.
@@ -502,10 +502,10 @@ export const PLAIN_RULE_EXPLANATIONS: Record<string, PlainRule> = {
   "component-submit-clarity": {
     plain: "No clearly labelled submit button",
     impact:
-      "A button that just says \"Go\" or shows only an icon leaves people unsure how to finish. Some forms have no button at all — so people don't finish.",
+      "A button that just says \"Go\" or shows only an icon leaves people unsure how to finish. Some forms have no button at all. So people don't finish.",
   },
   "component-nav-labels": {
-    plain: "Several menus, none labelled",
+    plain: "Navigation menus with no names",
     impact:
       "Screen reader users hear \"navigation… navigation…\" with no way to tell the main menu from the footer links. Getting around the site becomes guesswork.",
   },
@@ -888,8 +888,8 @@ export const PLAIN_RULE_FIXES: Record<string, string | string[]> = {
     "Mark purely decorative images with an empty alt so screen readers skip them.",
   ],
   "sr-vague-link-name": [
-    "Name each link for its destination — \"View pricing\", not \"click here\".",
-    "The visible words can stay short — your developer can attach the fuller name invisibly, for screen readers only.",
+    "Name each link for its destination. \"View pricing\", not \"click here\".",
+    "The visible words can stay short. Your developer can attach the fuller name invisibly, for screen readers only.",
   ],
   "sr-vague-button-name": [
     "Label each button with its action: \"Close\", \"Next slide\", \"Search\", \"Play\".",
@@ -923,7 +923,7 @@ export const PLAIN_RULE_FIXES: Record<string, string | string[]> = {
     "Put a little space between buttons and links, so a thumb cannot hit two at once.",
   "consent-blocks-reader": [
     "Move keyboard focus into the banner when it opens, and keep it there until a choice is made.",
-    "That is what justifies hiding the page — or stop hiding it: a bottom banner needs none of this.",
+    "That is what justifies hiding the page. Or stop hiding it: a bottom banner needs none of this.",
   ],
   "mobile-sticky-coverage": [
     "Shrink the bars pinned to the top and bottom on phones.",
@@ -1077,7 +1077,7 @@ export const PLAIN_RULE_FIXES: Record<string, string | string[]> = {
     "Large text, about 24px or 19px bold, needs 3 to 1.",
   ],
   "image-alt": [
-    "Describe what each meaningful image shows — the content, not the fact that it is a picture.",
+    "Describe what each meaningful image shows. The content, not the fact that it is a picture.",
     "Leave the description empty for images that are purely decorative.",
   ],
   "input-image-alt": "Describe what the image button does, such as \"Search\", rather than what it looks like.",
@@ -1090,7 +1090,7 @@ export const PLAIN_RULE_FIXES: Record<string, string | string[]> = {
   ],
   "link-text-vague":
     [
-    "Write link text that makes sense on its own — \"Read the 2026 fee changes\", not \"Read more\".",
+    "Write link text that makes sense on its own. \"Read the 2026 fee changes\", not \"Read more\".",
     "To keep the short version on screen, add the full wording as a label.",
   ],
   "button-name":
@@ -1203,7 +1203,7 @@ export const UNDECIDED_EXPLANATIONS: Record<string, { what: string; ask: string 
   },
   "media-video-descriptions": {
     what: "Captioned video with nothing describing what is on screen. Captions carry the words; they do not carry the picture.",
-    ask: "Ask whether anything in these videos is shown rather than said — a chart, a demonstration, a diagram, text on screen. If so, the audio itself needs to describe it. A written version on the page covers only the lowest level of the standard.",
+    ask: "Ask whether anything in these videos is shown rather than said. A chart, a demonstration, a diagram, text on screen. If so, the audio itself needs to describe it. A written version on the page covers only the lowest level of the standard.",
   },
   "form-error-association": {
     what: "Form error messages that are not tied to their field in the code. A screen reader announces the field, but not the error sitting beside it.",
@@ -1260,7 +1260,7 @@ export const UNDECIDED_EXPLANATIONS: Record<string, { what: string; ask: string 
     ask: "Ask your developer whether the page works both ways up. Somebody whose phone is fixed to a wheelchair or a stand cannot turn it to suit the site.",
   },
   "interaction-no-status-region": {
-    what: "Pages update without reloading — a filter narrows a list, a form says it saved. Nothing on this page is marked as the place where such a change is spoken. A screen reader stays silent while the page moves under it.",
+    what: "Pages update without reloading. A filter narrows a list, a form says it saved. Nothing on this page is marked as the place where such a change is spoken. A screen reader stays silent while the page moves under it.",
     ask: "Ask your developer whether anything here updates without a page load. If it does, that update needs a live region so it is spoken as well as shown.",
   },
   "interaction-acts-on-change": {

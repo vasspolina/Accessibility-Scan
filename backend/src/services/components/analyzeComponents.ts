@@ -168,8 +168,8 @@ export function evaluateComponents(dom: DomSignals): AccessibilityFinding[] {
       makeFinding(
         "form-field-placeholder-label",
         worst.selector,
-        `${placeholderOnly.length === 1 ? "A form field relies" : `${placeholderOnly.length} form fields rely`} on placeholder text as ${placeholderOnly.length === 1 ? "its" : "their"} only label — e.g. "${(worst.placeholder ?? "").trim().slice(0, 40)}". The placeholder disappears the moment someone starts typing, which is exactly when they need to be reminded what the field asks for.`,
-        `Give each field a visible <label> tied to it with for/id. Keep the placeholder for an example of the format if you like — as a hint it is fine, as the only label it is not.`,
+        `${placeholderOnly.length === 1 ? "A form field relies" : `${placeholderOnly.length} form fields rely`} on placeholder text as ${placeholderOnly.length === 1 ? "its" : "their"} only label. For example, "${(worst.placeholder ?? "").trim().slice(0, 40)}". The placeholder disappears the moment someone starts typing, which is exactly when they need to be reminded what the field asks for.`,
+        `Give each field a visible <label> tied to it with for/id. Keep the placeholder for an example of the format if you like. As a hint it is fine, as the only label it is not.`,
         "https://www.w3.org/WAI/WCAG21/Understanding/labels-or-instructions.html",
         "accessibility",
         "3.3.2",
@@ -188,7 +188,7 @@ export function evaluateComponents(dom: DomSignals): AccessibilityFinding[] {
         "component-form-autocomplete",
         worst.selector,
         `Form fields that collect personal details (${missingAutocomplete.length} field${missingAutocomplete.length === 1 ? "" : "s"}, e.g. the ${purpose.label} field) are not labelled with what they collect. Browsers and password managers then cannot offer to fill them in.`,
-        `Add the matching autocomplete token to each field — e.g. autocomplete="${purpose.token}" on the ${purpose.label} field. This is a one-line change per field that makes forms far faster to complete.`,
+        `Add the matching autocomplete token to each field. For example, autocomplete="${purpose.token}" on the ${purpose.label} field. This is a one-line change per field that makes forms far faster to complete.`,
         "https://www.w3.org/WAI/WCAG21/Understanding/identify-input-purpose.html",
         // The comment on makeFinding names this exact defect, and this call
         // shipped with it anyway: detected precisely, filed as design-clarity,

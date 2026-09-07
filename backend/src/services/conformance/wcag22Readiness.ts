@@ -38,7 +38,7 @@ export const WCAG_22_NEW_AA: Wcag22Criterion[] = [
     plain: "When something is tabbed to, is it still visible?",
     failing: "A sticky header or footer hides the thing you have just tabbed to",
     whyManual:
-      "The keyboard walk now measures this directly at each stop it visits — a stop entirely hidden at the moment of focus is reported as failing. A person is still needed for the stops beyond the walk's reach, and for judging partial overlap.",
+      "The keyboard walk now measures this directly at each stop it visits. A stop entirely hidden at the moment of focus is reported as failing. A person is still needed for the stops beyond the walk's reach, and for judging partial overlap.",
   },
   {
     id: "2.5.7",

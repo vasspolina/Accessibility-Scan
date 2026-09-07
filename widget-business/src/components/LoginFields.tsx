@@ -152,7 +152,7 @@ export function LoginFields({
             onClick={close}
             disabled={disabled}
           >
-            {t("Cancel — scan without a login")}
+            {t("Cancel. Scan without a login")}
           </button>
         </fieldset>
       </div>

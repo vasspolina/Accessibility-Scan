@@ -120,7 +120,7 @@ async function callClaude(
   // baffling "expected array, received string" — the symptom, not the cause.
   if (response.stop_reason === "max_tokens") {
     throw new Error(
-      "Claude response hit the max_tokens limit — the findings list was truncated mid-JSON"
+      "Claude response hit the max_tokens limit. The findings list was truncated mid-JSON"
     );
   }
 
@@ -136,7 +136,7 @@ async function callClaude(
     // describes the symptom ("expected array, received string") and gives no
     // way to tell which malformation produced it.
     throw new Error(
-      `Claude response failed schema validation: ${envelope.error.message} — received: ${describeToolInput(toolUse.input)}`
+      `Claude response failed schema validation: ${envelope.error.message}. Received: ${describeToolInput(toolUse.input)}`
     );
   }
 
@@ -201,7 +201,7 @@ export function normalizeToolInput(input: unknown): unknown {
     if (salvaged.length === 0) return input;
     logger.warn(
       { salvaged: salvaged.length, chars: text.length },
-      "findings string wouldn't parse — recovered the well-formed entries"
+      "findings string wouldn't parse. Recovered the well-formed entries"
     );
     return { ...record, findings: salvaged };
   }
@@ -283,7 +283,7 @@ export async function reviewPage(
     return { status: "completed", ...outcome, aiReviewTimeMs: Date.now() - start, model: CLAUDE_MODEL };
   } catch (err) {
     const status: AiReviewStatus = err instanceof TimeoutError ? "skipped_timeout" : "skipped_error";
-    logger.warn({ err, status }, "AI review layer failed — degrading to automated-only report");
+    logger.warn({ err, status }, "AI review layer failed. Degrading to automated-only report");
     return {
       status,
       errorKind: classifyReviewError(err),

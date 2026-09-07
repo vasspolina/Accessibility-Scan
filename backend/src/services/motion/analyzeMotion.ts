@@ -136,7 +136,7 @@ export function evaluateMotion(
             "moderate",
             stillMoving[0].selector,
             `${stillMoving.length} element${stillMoving.length === 1 ? " animates" : "s animate"} on this page without stopping, even though the visitor has asked their system to reduce motion. We checked by turning that setting on and watching.`,
-            "Wrap the animation in @media (prefers-reduced-motion: no-preference), or stop it after a few seconds. A visible pause control also passes. Note that having such a rule somewhere in your stylesheets is not enough — it has to cover these particular animations."
+            "Wrap the animation in @media (prefers-reduced-motion: no-preference), or stop it after a few seconds. A visible pause control also passes. Note that having such a rule somewhere in your stylesheets is not enough. It has to cover these particular animations."
           )
         );
       }

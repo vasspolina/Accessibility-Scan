@@ -60,7 +60,7 @@ export function evaluateActivation(
       wcagLevel: "A",
       ruleId: "activation-stale-state",
       selector: worst.selector,
-      description: `${group.length === 1 ? `A ${family.noun} was` : `${group.length} ${family.noun}s were`} activated by the scan and visibly changed — but ${family.state} stayed "${worst.before}". A screen reader keeps announcing the old state, so the listener is told the opposite of what is on screen.`,
+      description: `${group.length === 1 ? `A ${family.noun} was` : `${group.length} ${family.noun}s were`} activated by the scan and visibly changed. But ${family.state} stayed "${worst.before}". A screen reader keeps announcing the old state, so the listener is told the opposite of what is on screen.`,
       suggestedFix: family.fix,
       helpUrl: "https://www.w3.org/WAI/WCAG21/Understanding/name-role-value.html",
     });

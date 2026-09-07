@@ -84,14 +84,14 @@ export function UndecidedChecks({
       {rows.length > 0 && (
         /* A list, not a table. It was a one-column DataTable, which meant
            the cards it renders as could only be laid out side by side by
-           giving table elements a grid display — and that quietly took the
+           giving table elements a grid display. And that quietly took the
            table role out of the accessibility tree. A <ul> is what this
            always was: a set of notes in no particular relation to each
            other. Now the semantics and the layout agree instead of one
            being undone by the other. */
         /* The design's ledger: numbered rows under NO / WHAT THE CHECKER SAW /
            WHAT TO ASK FOR / CALL. An <ol>, because the design numbers the
-           rows and an order implies an <ol> — the numbers are drawn by us so
+           rows and an order implies an <ol>. The numbers are drawn by us so
            the column header can sit over them, but the semantics agree. The
            header strip is aria-hidden: a list has no real columns, and each
            cell carries its own label for a listener. */

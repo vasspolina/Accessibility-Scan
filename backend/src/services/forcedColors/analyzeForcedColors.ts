@@ -110,7 +110,7 @@ export function evaluateForcedColors(
         "serious",
         lost[0].selector,
         `In Windows High Contrast Mode this page shows no focus indicator on ${lost.length} of its ${comparable.length} keyboard stops. The highlight is drawn with a box-shadow or a colour swap, and that mode removes both.`,
-        "Add a real `outline` to your focus styles and keep the box-shadow alongside it for everyone else — `:focus-visible { outline: 2px solid; outline-offset: 2px; }`. An outline is the one indicator the mode preserves, and it recolours it to the user's chosen highlight. If the outline would clash with your design, `outline: 3px solid transparent` is invisible normally and becomes a real ring in forced colours. That is the standard idiom, not a hack.",
+        "Add a real `outline` to your focus styles and keep the box-shadow alongside it for everyone else. `:focus-visible { outline: 2px solid; outline-offset: 2px; }`. An outline is the one indicator the mode preserves, and it recolours it to the user's chosen highlight. If the outline would clash with your design, `outline: 3px solid transparent` is invisible normally and becomes a real ring in forced colours. That is the standard idiom, not a hack.",
         undefined,
         // 2.4.7 Focus Visible, and it genuinely is one: for this user there
         // is no visible focus indicator on any of these controls.

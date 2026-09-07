@@ -1059,12 +1059,17 @@
    text, not boxes. Capped, centred on its own axis, and shrinkable, so a
    wide capture cannot push the label out of the pill. */
 .a11y-widget-biz .a11y-occurrence-thumb {
-  align-self: center;
-  flex: 0 1 auto;
+  /* Column-wide, on its own line above the label (user's ask, 26 Aug
+     2026): a 160px crop of a cookie banner was unreadable. Height follows
+     the image; nothing is cropped away. */
+  align-self: stretch;
+  flex: 1 0 100%;
+  width: 100%;
   min-width: 0;
-  max-width: 160px;
-  max-height: 72px;
-  object-fit: cover;
+  max-width: 100%;
+  height: auto;
+  max-height: none;
+  object-fit: contain;
   object-position: left top;
   border-radius: var(--radius-sm);
   background: var(--layer-02);
@@ -2861,7 +2866,8 @@
 
 .a11y-widget-biz .a11y-pro-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr));
+  /* 480px, not 300: the numbered points ran three words a line at 1024. */
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 480px), 1fr));
   gap: var(--space-06);
   align-items: start;
 }
@@ -3903,7 +3909,9 @@
    --severity-serious-fill (#ba4e00, 5.03:1). Reported upstream. */
 .a11y-widget-biz .a11y-sum-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(min(100%, 420px), 1fr));
+  /* 480px, not 420: a 24px lead in a 384px column ran five words a line.
+     Below two 480px columns the panels stack. */
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 480px), 1fr));
   gap: var(--space-06);
   align-items: stretch;
 }
@@ -3938,7 +3946,7 @@
   background: var(--layer-02);
   color: var(--text-primary);
 }
-.a11y-widget-biz .a11y-sum-lead  { margin: 0; font-size: 24px; line-height: 1.2; font-weight: 500; }
+.a11y-widget-biz .a11y-sum-lead  { margin: 0; font-size: 20px; line-height: 1.3; font-weight: 500; } /* 20, not 24: six words a line in its column */
 .a11y-widget-biz .a11y-sum-body  { margin: 0; font-size: 18px; line-height: 1.2; }
 .a11y-widget-biz .a11y-sum-point {
   margin: 0; display: flex; align-items: baseline; gap: var(--space-05);
@@ -4530,7 +4538,7 @@
   background: var(--layer-02);
   color: var(--text-primary);
 }
-.a11y-widget-biz .a11y-legal-lead { margin: 0; font-size: 24px; line-height: 1.2; font-weight: 500; }
+.a11y-widget-biz .a11y-legal-lead { margin: 0; font-size: 20px; /* 20, not 24: six words a line in a 384px column */ line-height: 1.2; font-weight: 500; }
 .a11y-widget-biz .a11y-legal-body { margin: 0; font-size: 18px; line-height: 1.2; }
 
 .a11y-widget-biz .a11y-legal-grid {
@@ -6104,11 +6112,25 @@
 
 .a11y-widget-biz .a11y-undecided-heads,
 .a11y-widget-biz .a11y-undecided-cell {
-  display: grid;
-  grid-template-columns: 2.5rem minmax(0, 1.1fr) minmax(0, 1.1fr) minmax(7.5rem, auto);
+  /* Columns wrap by their content's width, not by a fixed grid (the
+     user's rule, 26 Aug 2026): each text column asks for at least 30ch —
+     six words at this size — and drops under the one before it when the
+     row cannot hold both. Everything stays top-aligned, and because every
+     row shares the same minimums, the columns line up across rows. */
+  display: flex;
+  flex-wrap: wrap;
   gap: var(--space-04) var(--space-06);
-  align-items: start;
+  align-items: flex-start;
 }
+/* The number is a marker in the cell's left margin, not a flex item: with
+   it in the flow, a wrapped "ask" column started under the number rather
+   than under "what". Everything that wraps now starts at the same left
+   edge, which is what keeps the columns aligned across rows. */
+.a11y-widget-biz .a11y-undecided-cell { position: relative; }
+.a11y-widget-biz .a11y-undecided-cell > .a11y-undecided-no { position: absolute; left: var(--space-06); top: var(--space-06); width: 2.5rem; }
+.a11y-widget-biz .a11y-undecided-cell > .a11y-undecided-what,
+.a11y-widget-biz .a11y-undecided-cell > .a11y-undecided-ask { flex: 1 1 30ch; min-width: min(30ch, 100%); }
+.a11y-widget-biz .a11y-undecided-cell > .a11y-undecided-call { flex: 0 1 7.5rem; }
 
 .a11y-widget-biz .a11y-undecided-heads {
   margin: 0;
@@ -6135,7 +6157,10 @@
 .a11y-widget-biz .a11y-undecided-cell {
   background: var(--layer-02);
   border-radius: var(--radius-lg);
-  padding: var(--space-06);
+  /* Left padding leaves room for the number marker (see the cell's layout
+     rule above); stated here because this later rule's shorthand was
+     resetting it, and the number sat on the first letter. */
+  padding: var(--space-06) var(--space-06) var(--space-06) calc(var(--space-06) + 2.5rem + var(--space-06));
 }
 
 .a11y-widget-biz .a11y-undecided-no {
@@ -6165,15 +6190,12 @@
 /* One column below the panel breakpoint: four columns of prose cannot
    share 400px. The number and call fold inline; the header strip goes,
    because each cell carries its own labels for a listener anyway. */
-@container a11y-panel (width < 680px) {
+/* The header strip only makes sense while the four columns sit on one
+   line; once they wrap it goes, and each cell carries its own labels for a
+   listener anyway. 1100px is where the two 30ch text columns plus the
+   number and the call stop fitting. */
+@container a11y-panel (width < 1100px) {
   .a11y-widget-biz .a11y-undecided-heads { display: none; }
-  .a11y-widget-biz .a11y-undecided-cell {
-    grid-template-columns: 2rem minmax(0, 1fr);
-  }
-  .a11y-widget-biz .a11y-undecided-cell > .a11y-undecided-ask,
-  .a11y-widget-biz .a11y-undecided-cell > .a11y-undecided-call {
-    grid-column: 2;
-  }
   .a11y-widget-biz .a11y-undecided-call {
     flex-direction: row;
     flex-wrap: wrap;
@@ -6715,3 +6737,8 @@
    276px plus the row's padding pushed the whole shell 21px past a 320px
    viewport — measured in German only, which is how a nowrap fault hides. */
 .a11y-widget-biz .a11y-settings-row .a11y-btn { white-space: normal; text-align: left; height: auto; min-height: var(--target-min); }
+
+/* Paragraph endings: the browser balances the last lines so a paragraph
+   does not end on a single word where it can help it. The short-word rule
+   (lib/typography.ts) covers line ends inside the paragraph. */
+.a11y-widget-biz p, .a11y-widget-biz li, .a11y-widget-biz dd, .a11y-widget-biz h2, .a11y-widget-biz h3 { text-wrap: pretty; }

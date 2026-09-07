@@ -26,10 +26,10 @@ export function ScreenReaderPreview({ script }: { script: ScreenReaderScript }) 
   const [onlyIssues, setOnlyIssues] = useState(false);
   const panelId = useId();
   // Guards against an utterance that finished because we cancelled it
-  // advancing playback — cancel() fires onend just like a natural finish.
+  // advancing playback. Cancel() fires onend just like a natural finish.
   const stoppedRef = useRef(false);
   const supported = useMemo(speechSupported, []);
-  // Where "Skip the transcript" sends focus — the show-all/show-fewer
+  // Where "Skip the transcript" sends focus. The show-all/show-fewer
   // toggle just past the table, rather than every per-line play button in
   // between, which on a normal page numbers over a hundred.
   const showAllRef = useRef<HTMLButtonElement>(null);
@@ -262,7 +262,7 @@ export function ScreenReaderPreview({ script }: { script: ScreenReaderScript }) 
                 >
                   <span className="a11y-sr-num" aria-hidden="true">{i + 1}</span>
                   <span className="a11y-sr-line-text">{line.text}</span>
-                  <span className="a11y-sr-only"> — play aloud from this line</span>
+                  <span className="a11y-sr-only">. Play aloud from this line</span>
                   {line.issue && <span className="a11y-sr-issue">{line.issue}</span>}
                 </button>
               ) : (

@@ -2196,7 +2196,7 @@ async function captureKeyboardNavigation(
       stops.push({ selector: pending.selector, tag: pending.tag, focused: pending.styles, unfocused: null, obscured: pending.obscured });
     }
   } catch (err) {
-    logger.warn({ err }, "Keyboard walk-through failed — reporting without keyboard findings");
+    logger.warn({ err }, "Keyboard walk-through failed. Reporting without keyboard findings");
     failed = true;
   }
 
@@ -2256,7 +2256,7 @@ async function captureKeyboardNavigation(
         return { positiveTabindex, domInversions };
       }, stops.map((st) => st.selector));
     } catch (err) {
-      logger.warn({ err }, "Tab-order comparison failed — walk verdicts stand without it");
+      logger.warn({ err }, "Tab-order comparison failed. Walk verdicts stand without it");
     }
   }
 
@@ -2308,8 +2308,8 @@ async function collectMouseOnlyControls(page: Page): Promise<MouseOnlyControl[] 
       const __name = (fn) => fn;
       // Split in two, because "reachable" and "usable" are different claims.
       // NATIVE elements get keyboard activation from the browser. A bare
-      // [tabindex] gets focus and nothing else — Enter runs no click handler
-      // on a div — so it only counts as keyboard-usable when a key handler
+      // [tabindex] gets focus and nothing else. Enter runs no click handler
+      // on a div. So it only counts as keyboard-usable when a key handler
       // exists on it or an ancestor. The old single list said [tabindex],
       // which classified <div tabindex="0" onclick> as fine (the commonest
       // 2.1.1 failure on the modern web) and tabindex="-1" as fine (which
@@ -2319,7 +2319,7 @@ async function collectMouseOnlyControls(page: Page): Promise<MouseOnlyControl[] 
       const keyTargets = window.__a11yKeyTargets;
       const hasKeyEvidence = (node) => {
         // Walks to body: delegation bound on a container or on body counts.
-        // Handlers on document/window do not — they are almost always an
+        // Handlers on document/window do not. They are almost always an
         // Escape handler for a dialog, not activation for this control, and
         // counting them would put the probe back to sleep on every site
         // that has a modal.
@@ -2363,8 +2363,7 @@ async function collectMouseOnlyControls(page: Page): Promise<MouseOnlyControl[] 
 
       // Unlike the other snippet builders here, this one keeps the class
       // attribute (truncated). These elements are the ones with no text, no
-      // href and no accessible name — that is what makes them findings — so
-      // stripping class leaves literally "<div></div>", which tells the
+      // href and no accessible name. That is what makes them findings. So // stripping class leaves literally "<div></div>", which tells the
       // developer nothing about which div is meant. Measured on moma.org,
       // where the offender is a carousel's pagination bullets and the class
       // "custom-swiper-pagination-clickable" is the entire identification.
@@ -2393,8 +2392,7 @@ async function collectMouseOnlyControls(page: Page): Promise<MouseOnlyControl[] 
           const tag = el.tagName.toLowerCase();
           if (tag === "body" || tag === "html") continue;
           if (keyboardUsable(el)) continue;
-          // parentElement first because the element itself is covered above —
-          // walking from the parent keeps the two filters independent and
+          // parentElement first because the element itself is covered above. // walking from the parent keeps the two filters independent and
           // separately testable.
           let ancestorUsable = false;
           for (let a = el.parentElement; a; a = a.parentElement) {
@@ -2419,7 +2417,7 @@ async function collectMouseOnlyControls(page: Page): Promise<MouseOnlyControl[] 
             tag,
             label: (el.textContent || "").replace(/\s+/g, " ").trim().slice(0, 60),
             // Tab reaches it and Enter does nothing, versus Tab never
-            // reaches it — the finding states which.
+            // reaches it. The finding states which.
             focusable: el.matches(TABBABLE),
           });
         } catch (e) {
@@ -2429,7 +2427,7 @@ async function collectMouseOnlyControls(page: Page): Promise<MouseOnlyControl[] 
       return out;
     })()`)) as MouseOnlyControl[];
   } catch (err) {
-    logger.warn({ err }, "Mouse-only control probe failed — reporting without it");
+    logger.warn({ err }, "Mouse-only control probe failed. Reporting without it");
     // null, not [] — a crashed probe must not read as a clean page. The
     // caller records the failure and incompleteChecks discloses it.
     return null;
@@ -2507,7 +2505,7 @@ async function collectReadability(page: Page): Promise<ReadabilitySignals> {
       };
     })()`)) as ReadabilitySignals;
   } catch (err) {
-    logger.warn({ err }, "Readability probe failed — reporting without it");
+    logger.warn({ err }, "Readability probe failed. Reporting without it");
     return { text: "", lang: "", failed: true };
   }
 }
@@ -2608,7 +2606,7 @@ async function collectReadingOrder(page: Page): Promise<ReadingOrderSignals> {
     })()`)) as ReadingOrderSignals["reorderedRows"];
     return { reorderedRows };
   } catch (err) {
-    logger.warn({ err }, "Reading-order probe failed — reporting without it");
+    logger.warn({ err }, "Reading-order probe failed. Reporting without it");
     return { reorderedRows: [], failed: true };
   }
 }
@@ -2783,7 +2781,7 @@ async function probeUserPreferences(
       iconLostInForcedColors: lostIcons as UserPreferenceSignals["iconLostInForcedColors"],
     };
   } catch (err) {
-    logger.warn({ err }, "User-preference probe failed — reporting without it");
+    logger.warn({ err }, "User-preference probe failed. Reporting without it");
     return { ...empty, failed: true };
   } finally {
     // Always hand the page back as it was found; the dialog probe runs next.
@@ -3273,7 +3271,7 @@ export async function renderAndScan(
           rebindingDetected = new RebindingDetectedError(new URL(response.url()).hostname, addr.ipAddress);
         }
       } catch (err) {
-        logger.warn({ err }, "SSRF response check failed — ignoring this response, scan continues");
+        logger.warn({ err }, "SSRF response check failed. Ignoring this response, scan continues");
       }
     };
     page.on("response", onResponse);
@@ -3314,7 +3312,7 @@ export async function renderAndScan(
       const status = mainResponse?.status() ?? 0;
       const host = new URL(page.url()).hostname;
       if (status === 403 || status === 429 || status === 503) {
-        throw new SiteBlockedError(host, `HTTP ${status} — automated-visitor protection`);
+        throw new SiteBlockedError(host, `HTTP ${status}. Automated-visitor protection`);
       }
       if (status >= 400) {
         throw new SiteBlockedError(host, `the page returned HTTP ${status}`);
@@ -3354,7 +3352,7 @@ export async function renderAndScan(
         )) as AxeRunResult;
       } catch (err) {
         if (!/execution context was destroyed|navigation/i.test(String(err))) throw err;
-        logger.info("Page navigated while injecting axe — waiting for it to settle and retrying");
+        logger.info("Page navigated while injecting axe. Waiting for it to settle and retrying");
         await page.waitForLoadState("load", { timeout: 15_000 }).catch(() => {});
         await page.waitForTimeout(800);
         await page.addScriptTag({ path: require.resolve("axe-core") });
@@ -3920,7 +3918,7 @@ export async function renderAndScan(
           );
         }
       } catch (err) {
-        logger.warn({ err }, "Mobile pass failed — reporting without mobile findings");
+        logger.warn({ err }, "Mobile pass failed. Reporting without mobile findings");
         mobileFailed = true;
       }
 
@@ -3974,7 +3972,7 @@ export async function renderAndScan(
           ));
         }
       } catch (err) {
-        logger.warn({ err }, "Dialog keyboard probe failed — reporting without it");
+        logger.warn({ err }, "Dialog keyboard probe failed. Reporting without it");
       }
 
       // Final check — a late subresource (lazy-loaded image, polling XHR)
