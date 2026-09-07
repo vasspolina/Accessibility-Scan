@@ -11,14 +11,20 @@ describe("evaluateScreenReaderScript: unhelpful names become findings", () => {
     issueKind,
   });
 
-  it("cards filename alts as 1.1.1, vague links as 2.4.4, vague buttons as 2.4.6", () => {
+  it("cards filename alts as 1.1.1, vague links as 2.4.4, symbol-named buttons as 4.1.2 and wordy vague ones as 2.4.6", () => {
+    // The helper's button says “×”: a symbol, so no usable name at all —
+    // 4.1.2 at Level A. A button with words that say nothing is a name
+    // that fails as a label — 2.4.6 at AA. One symptom, two criteria.
+    const wordy: ScreenReaderLine = { ...line("button", "unhelpful"), text: "button, “Go now”", selector: "button.y" };
     const out = evaluateScreenReaderScript({
-      lines: [line("image", "unhelpful"), line("link", "unhelpful"), line("button", "unhelpful")],
+      lines: [line("image", "unhelpful"), line("link", "unhelpful"), line("button", "unhelpful"), wordy],
       truncated: false,
     });
     const by = Object.fromEntries(out.map((f) => [f.ruleId, f]));
     expect(by["sr-filename-alt"].wcagCriterion).toBe("1.1.1");
     expect(by["sr-vague-link-name"].wcagCriterion).toBe("2.4.4");
+    expect(by["sr-symbol-button-name"].wcagCriterion).toBe("4.1.2");
+    expect(by["sr-symbol-button-name"].wcagLevel).toBe("A");
     expect(by["sr-vague-button-name"].wcagCriterion).toBe("2.4.6");
     for (const f of out) expect(f.category).toBe("accessibility");
   });

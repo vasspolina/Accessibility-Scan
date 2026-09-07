@@ -533,8 +533,29 @@ export function evaluateScreenReaderScript(
     "Name each link for its destination. \"View pricing\" rather than \"click here\", the document's title rather than a raw address. The name can come from visible text or an aria-label.",
     "https://www.w3.org/WAI/WCAG21/Understanding/link-purpose-in-context.html"
   );
+  // Two faults, two criteria. A button whose whole name is a symbol — "×",
+  // ">", an emoji — has no usable name at all: 4.1.2, Level A. A button
+  // with words that say nothing useful has a name that fails as a label:
+  // 2.4.6, Level AA. Filing both under 2.4.6 was the correctness audit's
+  // one debatable mapping.
+  const buttonLines = unhelpful("button");
+  // The line is the announcement — `button, “🔍”` — so the name is the
+  // quoted part; the role word before it always has letters.
+  const nameOf = (l: ScreenReaderLine) => l.text.match(/[“"]([^”"]*)[”"]/)?.[1] ?? l.text.replace(/^\w+,\s*/, "");
+  const hasLetters = (l: ScreenReaderLine) => /\p{L}/u.test(nameOf(l));
   card(
-    unhelpful("button"),
+    buttonLines.filter((l) => !hasLetters(l)),
+    "sr-symbol-button-name",
+    "serious",
+    "4.1.2",
+    "A",
+    (n, ex) =>
+      `${n === 1 ? "A button's only name is a symbol" : `${n} buttons have only a symbol for a name`}. For example, ${ex.text}. A screen reader announces the symbol or nothing, so the listener has no idea what pressing it does.`,
+    "Label each button with its action: \"Close\", \"Next slide\", \"Search\", \"Play\". If the visible design wants only an icon, put the words in an aria-label. The screen reader gets the label, the design keeps the icon.",
+    "https://www.w3.org/WAI/WCAG21/Understanding/name-role-value.html"
+  );
+  card(
+    buttonLines.filter(hasLetters),
     "sr-vague-button-name",
     "moderate",
     "2.4.6",

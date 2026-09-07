@@ -139,3 +139,14 @@ whose association cannot be proved from markup alone). Three missed:
 Second pass: **15 of 15.** The new-window link is reported by nothing,
 on purpose: warning about a new window is a technique, not a Level A or
 AA requirement, and the report does not fail sites for it.
+
+## Status, same day — the one debatable mapping settled
+
+A button whose whole name is a symbol — "×", ">", an emoji — now files as
+`sr-symbol-button-name` under 4.1.2 Name, Role, Value at Level A: it has
+no usable name at all. A button whose words say nothing useful keeps
+`sr-vague-button-name` under 2.4.6 at Level AA. The split reads the name
+out of the announcement rather than the announcement itself, because
+"button, “🔍”" always contains the letters of "button". Re-measured on
+page one: the emoji button lands under 4.1.2, serious, and the
+conformance table's 4.1.2 row fails on it.

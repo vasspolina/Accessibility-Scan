@@ -481,8 +481,13 @@ export const PLAIN_RULE_EXPLANATIONS: Record<string, PlainRule> = {
     impact:
       "Screen reader users pull up all links as a list. A list of \"click here\" and \"read more\" gives them nothing to choose by.",
   },
-  "sr-vague-button-name": {
+  "sr-symbol-button-name": {
     plain: "Buttons named only with a symbol",
+    impact:
+      "A screen reader announces the symbol or nothing at all. The listener cannot tell what pressing the button does.",
+  },
+  "sr-vague-button-name": {
+    plain: "Button names that say nothing",
     impact:
       "A sighted visitor sees the × in the corner and knows. A listener hears \"times, button\" with no corner to lean on.",
   },
@@ -902,6 +907,10 @@ export const PLAIN_RULE_FIXES: Record<string, string | string[]> = {
   "sr-vague-link-name": [
     "Name each link for its destination. \"View pricing\", not \"click here\".",
     "The visible words can stay short. Your developer can attach the fuller name invisibly, for screen readers only.",
+  ],
+  "sr-symbol-button-name": [
+    "Label each button with its action: \"Close\", \"Next slide\", \"Search\", \"Play\".",
+    "The icon-only look can stay: the words go on invisibly, for screen readers only.",
   ],
   "sr-vague-button-name": [
     "Label each button with its action: \"Close\", \"Next slide\", \"Search\", \"Play\".",

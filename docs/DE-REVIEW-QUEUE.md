@@ -125,3 +125,5 @@ carry the same keys and the same caveat.
 Also: every " – " inside a German sentence in the dictionaries was replaced by
 a full stop and a capital, by rule (the user's "no dashes"). A native reader
 should check that none of those splits reads oddly.
+| Buttons named only with a symbol | Schaltflächen nur mit einem Symbol benannt | finding title |
+| Button names that say nothing | Schaltflächennamen, die nichts aussagen | finding title |

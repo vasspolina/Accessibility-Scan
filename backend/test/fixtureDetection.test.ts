@@ -754,7 +754,8 @@ describe("qa-sr-names.html: names that exist and help nobody", () => {
     expect(by.get("sr-filename-alt")?.wcagCriterion).toBe("1.1.1");
     expect(by.get("sr-filename-alt")?.description).toContain("2 images");
     expect(by.get("sr-vague-link-name")?.wcagCriterion).toBe("2.4.4");
-    expect(by.get("sr-vague-button-name")?.wcagCriterion).toBe("2.4.6");
+    // "×" is a symbol, not a name: 4.1.2, Level A.
+    expect(by.get("sr-symbol-button-name")?.wcagCriterion).toBe("4.1.2");
   });
 
   it("one vague link, one card — the phrase cases belong to link-text-vague", () => {
