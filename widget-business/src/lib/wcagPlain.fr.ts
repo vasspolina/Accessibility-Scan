@@ -366,6 +366,10 @@ export const PLAIN_FR: Record<string, PlainRule> = {
     impact:
       "Un bouton qui dit seulement « OK », qui n'affiche qu'une icône, ou qui manque tout court, laisse les gens sans savoir comment finir. Alors ils ne finissent pas.",
   },
+  "component-table-no-headers": {
+    plain: "Un tableau sans cellules d’en-tête",
+    impact: "Un lecteur d’écran lit chaque cellule comme une valeur isolée, sans le nom de sa colonne ou de sa ligne. Les chiffres et les mots du tableau perdent leur sens.",
+  },
   "component-nav-labels": {
     plain: "Menus de navigation sans nom",
     impact:
@@ -660,6 +664,10 @@ export const FIXES_FR: Record<string, string | string[]> = {
   ],
   "component-submit-clarity":
     "Donnez au formulaire un seul bouton clairement libellé qui dit ce qu'il fait, comme « Envoyer la demande ».",
+  "component-table-no-headers": [
+    "Marquez la ligne du haut comme cellules d’en-tête, et la première colonne aussi si les lignes ont des noms.",
+    "Si le tableau ne sert qu’à la mise en page, marquez-le comme n’étant pas un tableau de données.",
+  ],
   "component-nav-labels": [
     "Nommez chaque menu d'après ce qu'il contient, comme « Menu principal » ou « Liens du pied de page ».",
     "Plusieurs menus sans nom sont annoncés à l'identique, donc personne ne les distingue.",

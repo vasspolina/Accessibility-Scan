@@ -90,3 +90,24 @@ criterion and fix kind right, every number consistent with the others,
 every legal and medical claim checked. What it misses is the concern:
 three of thirteen planted faults, each a common one, each with a known
 cause. Those three are the work.
+
+## Status, same day — the three misses closed
+
+Re-run against the same ground-truth page after the changes: **13 of 13
+planted faults caught, still no false alarm on the six controls.**
+
+- **Placeholder-only field** — two causes, both in the "adjacent text"
+  heuristic: a `<label for>` naming another field counted as this field's
+  label, and a neighbouring button whose only text was an emoji counted
+  because two code units passed the length test. Adjacent text now has to
+  be words, and a label for another control is that control's.
+- **Header-less data table** — a new rule, `component-table-no-headers`
+  (1.3.1, Level A): a visible table with two or more rows and columns, at
+  least three cells of text, no header cell or header role, and no
+  presentation role. Layout tables stay out by role; one card per page
+  with the count in it. Plain-language title, impact and fix in four
+  languages, written without markup because the voice suite refuses it.
+- **`div onclick` without tabindex** — the mouse-only evidence now unions
+  the init script's tracked listeners with every element carrying an
+  inline `onclick` attribute, the case the script could never see. Caught
+  as `keyboard-mouse-only`, 2.1.1.

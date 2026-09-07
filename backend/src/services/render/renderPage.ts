@@ -48,6 +48,10 @@ export interface DomSignals {
   headingTree: Array<{ level: number; text: string; selector: string }>;
   landmarks: Array<{ role: string; label: string | null; selector: string }>;
   images: Array<{ selector: string; alt: string | null; src: string }>;
+  /* Data tables, for 1.3.1: a grid of cells with no header cell anywhere
+     is one the screen reader cannot navigate by column or row. Layout
+     tables (role presentation/none) are not data and are not listed. */
+  tables: Array<{ selector: string; rows: number; cols: number; hasHeaderCells: boolean; hasCaption: boolean; textCells: number }>;
   interactiveElements: Array<{
     type: string;
     selector: string;
@@ -446,6 +450,22 @@ function extractDomSignalsInPage(): DomSignals {
   // Capped: real e-commerce pages can have hundreds of images/links in
   // product grids — uncapped arrays would bloat the Claude context payload
   // and blow up the number of element thumbnails captured per scan.
+  const tables = Array.from(document.querySelectorAll("table"))
+    .filter((t) => !/^(presentation|none)$/i.test(t.getAttribute("role") ?? "") && t.getClientRects().length > 0)
+    .slice(0, 20)
+    .map((t) => {
+      const rows = t.querySelectorAll("tr").length;
+      const cols = Math.max(0, ...Array.from(t.querySelectorAll("tr")).map((r) => r.children.length));
+      return {
+        selector: cssPath(t),
+        rows,
+        cols,
+        hasHeaderCells: t.querySelector("th, [role=columnheader], [role=rowheader]") !== null,
+        hasCaption: t.querySelector("caption") !== null || t.hasAttribute("aria-label") || t.hasAttribute("aria-labelledby"),
+        textCells: Array.from(t.querySelectorAll("td")).filter((c) => (c.textContent ?? "").trim().length > 0).length,
+      };
+    });
+
   const images = Array.from(document.querySelectorAll("img"))
     .slice(0, 40)
     .map((img) => ({
@@ -503,12 +523,24 @@ function extractDomSignalsInPage(): DomSignals {
         // fact the placeholder rule failed 3.3.2 on forms whose labels were
         // there for everyone to see.
         hasAdjacentText: (() => {
+          // A <label for> that names ANOTHER field is that field's label,
+          // not this one's — the ground-truth page put an unlabelled field
+          // beside a labelled one and the rule accepted the neighbour's
+          // label. Same for a label wrapping another control.
+          const isOthersLabel = (el: Element | null) =>
+            !!el && el.tagName === "LABEL" && (
+              (el.getAttribute("for") && el.getAttribute("for") !== field.id) ||
+              (!el.getAttribute("for") && el.querySelector("input, select, textarea") && !el.contains(field))
+            );
+          // Words, not characters: an emoji is two code units, and a "🔍"
+          // button beside the field passed as its label.
+          const isLabelText = (t: string) => /\p{L}{2,}/u.test(t) && t.length <= 60;
           const prev = field.previousElementSibling;
-          const prevText = prev ? (prev.textContent ?? "").trim() : "";
-          if (prevText.length >= 2 && prevText.length <= 60) return true;
+          const prevText = prev && !isOthersLabel(prev) ? (prev.textContent ?? "").trim() : "";
+          if (isLabelText(prevText)) return true;
           const parentPrev = field.parentElement?.previousElementSibling;
-          const ppText = parentPrev ? (parentPrev.textContent ?? "").trim() : "";
-          return ppText.length >= 2 && ppText.length <= 60;
+          const ppText = parentPrev && !isOthersLabel(parentPrev) ? (parentPrev.textContent ?? "").trim() : "";
+          return isLabelText(ppText);
         })(),
         visible:
           field.getClientRects().length > 0 &&
@@ -986,6 +1018,7 @@ function extractDomSignalsInPage(): DomSignals {
     headingTree,
     landmarks,
     images,
+    tables,
     interactiveElements,
     forms,
     linkTexts,
@@ -2341,8 +2374,17 @@ async function collectMouseOnlyControls(page: Page): Promise<MouseOnlyControl[] 
         return false;
       };
       const MAX_REPORTED = 8;
-      const tracked = window.__a11yClickTargets;
-      if (!Array.isArray(tracked)) return [];
+      // The init script's list, joined with every element carrying an
+      // inline onclick attribute. The script sees addEventListener and
+      // nothing else, and a <div onclick> with no tabindex — the plainest
+      // mouse-only control there is — was invisible to it. Measured on a
+      // ground-truth page: planted, missed. A Set keeps an element that
+      // appears in both from being carded twice.
+      const tracked = Array.from(new Set([
+        ...(Array.isArray(window.__a11yClickTargets) ? window.__a11yClickTargets : []),
+        ...document.querySelectorAll("[onclick]"),
+      ]));
+      if (tracked.length === 0) return [];
 
       const cssPath = (el) => {
         if (el.id) return "#" + CSS.escape(el.id);

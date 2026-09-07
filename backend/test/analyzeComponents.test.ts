@@ -20,6 +20,7 @@ function field(overrides: Partial<DomSignals["forms"][number]["fields"][number]>
 
 function dom(overrides: Partial<DomSignals> = {}): DomSignals {
   return {
+    tables: [],
     pageTitle: "Test",
     headingTree: [],
     landmarks: [],
@@ -322,5 +323,24 @@ describe("3.3.2: a placeholder is not a label", () => {
     // cards it — carding it here too would be two cards for one fault.
     expect(find([field({ hasProgrammaticLabel: false, placeholder: "Step 2", visible: false })])).toBeUndefined();
     expect(find([field({ hasProgrammaticLabel: false })])).toBeUndefined();
+  });
+});
+
+describe("a data table with no header cells (1.3.1)", () => {
+  const table = (o: Partial<DomSignals["tables"][number]> = {}) => ({
+    selector: "table", rows: 3, cols: 2, hasHeaderCells: false, hasCaption: false, textCells: 6, ...o,
+  });
+  it("is carded once, on the table, under 1.3.1", () => {
+    const out = evaluateComponents(dom({ tables: [table(), table({ selector: "table:nth-of-type(2)" })] }));
+    const hits = out.filter((f) => f.ruleId === "component-table-no-headers");
+    expect(hits).toHaveLength(1);
+    expect(hits[0].wcagCriterion).toBe("1.3.1");
+    expect(hits[0].category).toBe("accessibility");
+    expect(hits[0].description).toContain("3 rows and 2 columns");
+  });
+  it("leaves alone a table with headers, a one-row grid, and one with hardly any text", () => {
+    expect(rules(dom({ tables: [table({ hasHeaderCells: true })] }))).not.toContain("component-table-no-headers");
+    expect(rules(dom({ tables: [table({ rows: 1 })] }))).not.toContain("component-table-no-headers");
+    expect(rules(dom({ tables: [table({ textCells: 2 })] }))).not.toContain("component-table-no-headers");
   });
 });

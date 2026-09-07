@@ -364,6 +364,10 @@ export const PLAIN_ES: Record<string, PlainRule> = {
     impact:
       "Un botón que solo dice \"Ir\", que muestra solo un icono o que ni siquiera está deja a la gente sin saber cómo terminar. Así que no terminan.",
   },
+  "component-table-no-headers": {
+    plain: "Una tabla sin celdas de encabezado",
+    impact: "Un lector de pantalla lee cada celda como un valor suelto, sin el nombre de su columna o fila. Los números y palabras de la tabla pierden su sentido.",
+  },
   "component-nav-labels": {
     plain: "Menús de navegación sin nombre",
     impact:
@@ -658,6 +662,10 @@ export const FIXES_ES: Record<string, string | string[]> = {
   ],
   "component-submit-clarity":
     "Dé al formulario un solo botón bien etiquetado que diga lo que hace, como \"Enviar consulta\".",
+  "component-table-no-headers": [
+    "Marque la fila superior como celdas de encabezado, y también la primera columna si las filas tienen nombre.",
+    "Si la tabla solo sirve para maquetar, márquela como tabla sin datos.",
+  ],
   "component-nav-labels": [
     "Nombre cada menú por lo que contiene, como \"Menú principal\" o \"Enlaces del pie\".",
     "Varios menús sin nombre se anuncian igual, así que nadie los distingue.",

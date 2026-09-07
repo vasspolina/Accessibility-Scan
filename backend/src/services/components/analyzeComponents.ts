@@ -140,6 +140,27 @@ export function formErrorAssociationUndecided(
 
 export function evaluateComponents(dom: DomSignals): AccessibilityFinding[] {
   const findings: AccessibilityFinding[] = [];
+
+  // A data table with no header cell anywhere (WCAG 1.3.1). Two rows and
+  // two columns of text with no <th> is the commonest table fault there
+  // is, and nothing carded it: axe's table rules check headers that exist,
+  // not their absence. Layout tables are excluded by role upstream; a
+  // one-row or one-column grid is not a table in the sense that matters.
+  for (const t of (dom.tables ?? []).filter((t) => !t.hasHeaderCells && t.rows >= 2 && t.cols >= 2 && t.textCells >= 3)) {
+    findings.push(
+      makeFinding(
+        "component-table-no-headers",
+        t.selector,
+        `A table of ${t.rows} rows and ${t.cols} columns has no header cells. A screen reader reads each cell as a bare value with no column or row name attached, so the numbers and words lose their meaning.`,
+        `Mark the header row's cells as <th scope="col">, and the first column's cells as <th scope="row"> if the rows have names. If the table is only used for layout, give it role="presentation".`,
+        "https://www.w3.org/WAI/WCAG21/Understanding/info-and-relationships.html",
+        "accessibility",
+        "1.3.1",
+        "A"
+      )
+    );
+    break; // one card for the fault; the count is in the description
+  }
   const allFields = dom.forms.flatMap((f) => f.fields);
 
   // 0. Fields labelled only by their placeholder (WCAG 3.3.2). Scoped with

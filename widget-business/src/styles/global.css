@@ -2866,8 +2866,9 @@
 
 .a11y-widget-biz .a11y-pro-grid {
   display: grid;
-  /* 480px, not 300: the numbered points ran three words a line at 1024. */
-  grid-template-columns: repeat(auto-fit, minmax(min(100%, 480px), 1fr));
+  /* A column is at least six words wide (about 39ch at this size); below
+     two of them the panels stack. Content-based, not a breakpoint. */
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 39ch), 1fr));
   gap: var(--space-06);
   align-items: start;
 }
@@ -3909,9 +3910,9 @@
    --severity-serious-fill (#ba4e00, 5.03:1). Reported upstream. */
 .a11y-widget-biz .a11y-sum-grid {
   display: grid;
-  /* 480px, not 420: a 24px lead in a 384px column ran five words a line.
-     Below two 480px columns the panels stack. */
-  grid-template-columns: repeat(auto-fit, minmax(min(100%, 480px), 1fr));
+  /* A column is at least six words wide (about 39ch at this size); below
+     two of them the panels stack. Content-based, not a breakpoint. */
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 39ch), 1fr));
   gap: var(--space-06);
   align-items: stretch;
 }
@@ -6128,14 +6129,31 @@
    edge, which is what keeps the columns aligned across rows. */
 .a11y-widget-biz .a11y-undecided-cell { position: relative; }
 .a11y-widget-biz .a11y-undecided-cell > .a11y-undecided-no { position: absolute; left: var(--space-06); top: var(--space-06); width: 2.5rem; }
+/* The header strip is laid out exactly like a cell — same marker margin,
+   same column bases — so each label sits over its column, and when the
+   columns wrap the labels simply wrap with them. No breakpoint. */
+.a11y-widget-biz .a11y-undecided-heads { position: relative; }
+.a11y-widget-biz .a11y-undecided-heads > span:nth-child(1) { position: absolute; left: var(--space-06); top: 0; width: 2.5rem; }
+/* rem, not ch: ch follows the font, and the 15px strip and the 18px cells
+   got different minimums from the same "30ch" — so they wrapped at
+   different widths. 19rem is six words at the cell's size. */
+.a11y-widget-biz .a11y-undecided-heads > span:nth-child(2),
+.a11y-widget-biz .a11y-undecided-heads > span:nth-child(3) { flex: 1 1 19rem; min-width: min(19rem, 100%); }
+.a11y-widget-biz .a11y-undecided-heads > span:nth-child(4) { flex: 0 0 9rem; min-width: 9rem; }
+
 .a11y-widget-biz .a11y-undecided-cell > .a11y-undecided-what,
-.a11y-widget-biz .a11y-undecided-cell > .a11y-undecided-ask { flex: 1 1 30ch; min-width: min(30ch, 100%); }
-.a11y-widget-biz .a11y-undecided-cell > .a11y-undecided-call { flex: 0 1 7.5rem; }
+.a11y-widget-biz .a11y-undecided-cell > .a11y-undecided-ask { flex: 1 1 19rem; min-width: min(19rem, 100%); }
+/* A fixed basis the badges wrap inside, so a cell's call column and the
+   header strip's "Call" wrap at the same point — a shrinkable column with
+   unshrinkable badges wrapped a row earlier than its label. */
+.a11y-widget-biz .a11y-undecided-cell > .a11y-undecided-call { flex: 0 0 9rem; min-width: 9rem; }
 
 .a11y-widget-biz .a11y-undecided-heads {
   margin: 0;
   max-width: none;
-  padding: 0 var(--space-06);
+  /* The same left room as a cell, so each label starts over its column;
+     measured off by the marker's width until this shorthand carried it. */
+  padding: 0 var(--space-06) 0 calc(var(--space-06) + 2.5rem + var(--space-06));
   text-transform: uppercase;
   font-size: 15px;
   font-weight: 500;
@@ -6170,8 +6188,9 @@
 
 .a11y-widget-biz .a11y-undecided-call {
   display: flex;
-  flex-direction: column;
-  align-items: flex-start;
+  flex-direction: row; /* badges in a row that wraps; no width decides it */
+  flex-wrap: wrap;
+  align-items: baseline;
   gap: var(--space-03);
 }
 
@@ -6190,18 +6209,6 @@
 /* One column below the panel breakpoint: four columns of prose cannot
    share 400px. The number and call fold inline; the header strip goes,
    because each cell carries its own labels for a listener anyway. */
-/* The header strip only makes sense while the four columns sit on one
-   line; once they wrap it goes, and each cell carries its own labels for a
-   listener anyway. 1100px is where the two 30ch text columns plus the
-   number and the call stop fitting. */
-@container a11y-panel (width < 1100px) {
-  .a11y-widget-biz .a11y-undecided-heads { display: none; }
-  .a11y-widget-biz .a11y-undecided-call {
-    flex-direction: row;
-    flex-wrap: wrap;
-    align-items: baseline;
-  }
-}
 
 /* The export action, the design's black pill. Hidden in print with the
    rest of the interactive chrome — a printed report cannot click. */
@@ -6664,13 +6671,21 @@
   display: grid; gap: var(--space-03);
 }
 .a11y-widget-biz .a11y-manual-row {
-  display: grid;
-  grid-template-columns: 5.5rem minmax(0, 1fr) minmax(12rem, 20rem);
+  /* Content-based, not a breakpoint: the id keeps its width, the body asks
+     for six words (30ch) and the actions for their own width; whatever
+     the row cannot hold wraps under, top-aligned. */
+  display: flex;
+  flex-wrap: wrap;
   gap: var(--space-04);
   padding: var(--space-04) 0;
   border-top: 1px solid var(--border-subtle);
-  align-items: start;
+  align-items: flex-start;
 }
+.a11y-widget-biz .a11y-manual-row > .a11y-conf-id { flex: 0 0 5.5rem; }
+.a11y-widget-biz .a11y-manual-row > .a11y-conf-body { flex: 1 1 30ch; min-width: min(30ch, 100%); }
+/* margin-left: auto keeps the actions at the row's right while they share
+   the line, and lets them sit at the left once they have wrapped under. */
+.a11y-widget-biz .a11y-manual-row > .a11y-manual-actions { flex: 0 1 20rem; min-width: min(12rem, 100%); margin-left: auto; }
 .a11y-widget-biz .a11y-manual-answered { background: var(--layer-01); }
 .a11y-widget-biz .a11y-manual-verdict {
   display: block; margin-top: var(--space-02);
@@ -6686,10 +6701,6 @@
 }
 .a11y-widget-biz .a11y-manual-form-actions {
   display: flex; gap: var(--space-03); flex-wrap: wrap;
-}
-@container a11y-panel (max-width: 44rem) {
-  .a11y-widget-biz .a11y-manual-row { grid-template-columns: 1fr; }
-  .a11y-widget-biz .a11y-manual-actions { justify-content: flex-start; }
 }
 @media print {
   .a11y-widget-biz .a11y-manual-actions { display: none; }

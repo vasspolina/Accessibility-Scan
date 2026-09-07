@@ -504,6 +504,11 @@ export const PLAIN_RULE_EXPLANATIONS: Record<string, PlainRule> = {
     impact:
       "A button that just says \"Go\" or shows only an icon leaves people unsure how to finish. Some forms have no button at all. So people don't finish.",
   },
+  "component-table-no-headers": {
+    plain: "A table with no header cells",
+    impact:
+      "A screen reader reads every cell as a bare value with no column or row name attached. The numbers and words in the table lose their meaning for a listener.",
+  },
   "component-nav-labels": {
     plain: "Navigation menus with no names",
     impact:
@@ -911,6 +916,10 @@ export const PLAIN_RULE_FIXES: Record<string, string | string[]> = {
   ],
   "component-submit-clarity":
     "Give the form one clearly labelled button that says what it does, such as \"Send enquiry\".",
+  "component-table-no-headers": [
+    "Mark the top row as header cells, and the first column too if the rows have names.",
+    "If the table only arranges the layout, mark it as not a data table.",
+  ],
   "component-nav-labels": [
     "Name each menu for what it holds, such as \"Main menu\" or \"Footer links\".",
     "Several unnamed menus are announced identically, so nobody can tell them apart.",

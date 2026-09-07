@@ -328,6 +328,10 @@ export const PLAIN_DE: Record<string, PlainRule> = {
     plain: "Kein klar beschrifteter Absenden-Knopf",
     impact: "Ein Knopf, auf dem nur „Los“ steht, der nur ein Symbol zeigt oder ganz fehlt: Leute wissen nicht, wie sie fertig werden. Also werden sie es nicht.",
   },
+  "component-table-no-headers": {
+    plain: "Eine Tabelle ohne Kopfzellen",
+    impact: "Ein Screenreader liest jede Zelle als bloßen Wert, ohne Spalten- oder Zeilenname. Die Zahlen und Wörter verlieren für Zuhörende ihre Bedeutung.",
+  },
   "component-nav-labels": {
     plain: "Navigationsmenüs ohne Namen",
     impact: "Im Screenreader hört man „Navigation … Navigation …“, ohne das Hauptmenü von den Links in der Fußzeile unterscheiden zu können. Der Weg durch Ihre Website wird zum Raten.",
@@ -583,6 +587,10 @@ export const FIXES_DE: Record<string, string | string[]> = {
     "Das Wort „Pflichtfeld“ neben der Beschriftung reicht.",
   ],
   "component-submit-clarity": "Geben Sie dem Formular einen klar beschrifteten Knopf, der sagt, was er tut, etwa „Anfrage senden“.",
+  "component-table-no-headers": [
+    "Kennzeichnen Sie die oberste Zeile als Kopfzellen, und die erste Spalte ebenso, wenn die Zeilen Namen haben.",
+    "Dient die Tabelle nur dem Layout, kennzeichnen Sie sie als keine Datentabelle.",
+  ],
   "component-nav-labels": [
     "Benennen Sie jedes Menü nach dem, was darin steht, etwa „Hauptmenü“ oder „Links in der Fußzeile“.",
     "Mehrere unbenannte Menüs werden gleich angesagt, also kann sie niemand unterscheiden.",
