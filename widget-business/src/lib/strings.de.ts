@@ -169,13 +169,13 @@ export const STRINGS_DE: Record<string, string> = {
   // Das Scan-Formular
   "Cancel. Scan without a login": "Abbrechen. Ohne Login scannen",
   Fastest: "Am schnellsten",
-  "Finds what repeats everywhere": "Findet, was sich überall wiederholt",
+  "Up to five pages from this address. Lists what repeats across them": "Bis zu fünf Seiten ab dieser Adresse. Zeigt, was sich auf allen wiederholt",
   "Keep this page open. The scan runs here.": "Lassen Sie diese Seite offen. Der Scan läuft hier.",
   "Most chosen": "Am häufigsten gewählt",
   "One moment\u2026": "Einen Moment…",
-  "One page, end to end": "Eine Seite, von A bis Z",
+  "Only the page at this address": "Nur die Seite unter dieser Adresse",
   "Pages to check": "Zu prüfende Seiten",
-  "Plain-language summary and costs": "Verständliche Zusammenfassung und Kosten",
+  "What is wrong, who fixes it, and what it costs you, in plain words": "Was falsch ist, wer es behebt und was es Sie kostet, in einfachen Worten",
   "Scan scope": "Umfang des Scans",
-  "WCAG-mapped technical findings": "Technische Befunde nach WCAG",
+  "Each finding with its WCAG number, selector and code": "Jeder Befund mit WCAG-Nummer, Selektor und Code",
 };

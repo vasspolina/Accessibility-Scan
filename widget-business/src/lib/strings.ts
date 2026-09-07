@@ -204,13 +204,13 @@ export const CHROME_KEYS: string[] = [
      them. */
   "Cancel. Scan without a login",
   "Fastest",
-  "Finds what repeats everywhere",
+  "Up to five pages from this address. Lists what repeats across them",
   "Keep this page open. The scan runs here.",
   "Most chosen",
   "One moment\u2026",
-  "One page, end to end",
+  "Only the page at this address",
   "Pages to check",
-  "Plain-language summary and costs",
+  "What is wrong, who fixes it, and what it costs you, in plain words",
   "Scan scope",
-  "WCAG-mapped technical findings",
+  "Each finding with its WCAG number, selector and code",
 ];

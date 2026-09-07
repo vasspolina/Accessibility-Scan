@@ -172,14 +172,14 @@ export const STRINGS_ES: Record<string, string> = {
   // The scan form
   "Cancel. Scan without a login": "Cancelar. Analizar sin inicio de sesión",
   Fastest: "Más rápido",
-  "Finds what repeats everywhere": "Encuentra lo que se repite en todas partes",
+  "Up to five pages from this address. Lists what repeats across them": "Hasta cinco páginas desde esta dirección. Muestra lo que se repite en todas",
   "Keep this page open. The scan runs here.":
     "Mantenga esta página abierta. El análisis se hace aquí.",
   "Most chosen": "Lo más elegido",
   "One moment…": "Un momento…",
-  "One page, end to end": "Una página, de principio a fin",
+  "Only the page at this address": "Solo la página de esta dirección",
   "Pages to check": "Páginas a comprobar",
-  "Plain-language summary and costs": "Resumen en lenguaje sencillo y costes",
+  "What is wrong, who fixes it, and what it costs you, in plain words": "Qué está mal, quién lo corrige y qué le cuesta, en palabras sencillas",
   "Scan scope": "Alcance del análisis",
-  "WCAG-mapped technical findings": "Hallazgos técnicos vinculados a WCAG",
+  "Each finding with its WCAG number, selector and code": "Cada hallazgo con su número WCAG, selector y código",
 };

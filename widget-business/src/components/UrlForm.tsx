@@ -297,7 +297,7 @@ export function UrlForm({
               name="a11y-scan-mode"
               value="page"
               label={t("This page")}
-              description={t("One page, end to end")}
+              description={t("Only the page at this address")}
               /* Both badges are the design's own copy. "Fastest" is a fact
                  about this scan — one page against many. "Most chosen" is a
                  claim about what other people pick, and nothing here measures
@@ -313,7 +313,7 @@ export function UrlForm({
               name="a11y-scan-mode"
               value="site"
               label={t("Whole site")}
-              description={t("Finds what repeats everywhere")}
+              description={t("Up to five pages from this address. Lists what repeats across them")}
               checked={mode === "site"}
               onChange={() => setMode("site")}
               disabled={loading}
@@ -341,7 +341,7 @@ export function UrlForm({
                  they were in the wrong place. The pair it sits in carries the
                  distinction already: everyone, or professionals. */
               label={t("For everyone")}
-              description={t("Plain-language summary and costs")}
+              description={t("What is wrong, who fixes it, and what it costs you, in plain words")}
               meta={t("Most chosen")}
               checked={audience === "business"}
               onChange={() => onAudienceChange("business")}
@@ -351,7 +351,7 @@ export function UrlForm({
               name="a11y-audience"
               value="professional"
               label={t("Professionals")}
-              description={t("WCAG-mapped technical findings")}
+              description={t("Each finding with its WCAG number, selector and code")}
               checked={audience === "professional"}
               onChange={() => onAudienceChange("professional")}
             />
@@ -376,7 +376,7 @@ export function UrlForm({
               <span className="a11y-ai-card-text">
                 <span className="a11y-ai-card-title">{t("Add an AI review")}</span>
                 <span id="a11y-ai-hint" className="a11y-ai-hint">
-                  Catches design and marketing issues automated tools miss.{" "}
+                  A language model reads the page for design and wording faults no rule can catch. It can be wrong, so check before acting.{" "}
                   Adds {SCAN_DURATION.aiAdds}.
                 </span>
               </span>
