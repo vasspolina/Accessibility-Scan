@@ -49,6 +49,26 @@
         "/Users/polinavasilyeva/portfolio-site"
       ],
       "port": 4173
+    },
+    {
+      "name": "interview",
+      "runtimeExecutable": "/Users/polinavasilyeva/a11y-checker/.tools/node/bin/node",
+      "runtimeArgs": [
+        "/Users/polinavasilyeva/design-interview/server.mjs"
+      ],
+      "port": 4180
+    },
+    {
+      "name": "product-portfolio",
+      "runtimeExecutable": "python3",
+      "runtimeArgs": [
+        "-m",
+        "http.server",
+        "4174",
+        "-d",
+        "/Users/polinavasilyeva/product-portfolio"
+      ],
+      "port": 4174
     }
   ]
 }

@@ -11,3 +11,4 @@ dist/
 
 # 1.5MB serving copy of reference/ui-kit.html — see reference/README.md
 widget-business/public/ui-kit.html
+.tmp-upload/
