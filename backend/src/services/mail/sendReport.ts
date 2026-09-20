@@ -34,7 +34,7 @@ export type SendResult =
   | { ok: false; reason: "not_configured" | "rejected" | "failed" };
 
 function renderText(report: AccessibilityReport): string {
-  const scannedAt = new Date(report.scannedAt).toLocaleDateString("en-GB", {
+  const scannedAt = new Date(report.scannedAt).toLocaleDateString("en-US", {
     year: "numeric",
     month: "long",
     day: "numeric",
