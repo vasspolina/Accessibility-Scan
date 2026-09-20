@@ -3235,8 +3235,11 @@ export class SiteBlockedError extends Error {
 // page often keeps the site's ordinary title while the body says "Let's
 // confirm you are human" — that combination reported a museum site as having
 // zero failures when the scanner had never seen the site.
-const BLOCK_PAGE_PATTERNS =
-  /access denied|attention required|just a moment|pardon our interruption|request blocked|are you a robot|(?:verify|confirm|checking) (?:that )?you(?:'re| are)? (?:a )?human|checking your browser|enable javascript and cookies|additional security check|ddos protection|verifying you are human/i;
+//
+// Exported for the test that pins these phrases, so a rewording here has to
+// face the list of pages it must and must not match.
+export const BLOCK_PAGE_PATTERNS =
+  /access denied|attention required|just a moment|pardon our interruption|(?:the )?request (?:is |was )?blocked|are you a robot|(?:verify|confirm|checking) (?:that )?you(?:'re| are)? (?:a )?human|checking your browser|enable javascript and cookies|additional security check|ddos protection|verifying you are human/i;
 
 // A challenge page is characteristically tiny: a line of text, a widget, no
 // navigation. Requiring that alongside the wording keeps a real page that
