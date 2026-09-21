@@ -127,3 +127,12 @@ a full stop and a capital, by rule (the user's "no dashes"). A native reader
 should check that none of those splits reads oddly.
 | Buttons named only with a symbol | Schaltflächen nur mit einem Symbol benannt | finding title |
 | Button names that say nothing | Schaltflächennamen, die nichts aussagen | finding title |
+| Loading your page | Ihre Seite wird geladen | scan narration |
+| Running the automated rules | Die automatischen Regeln laufen | scan narration |
+| Reading the page as a screen reader announces it | Die Seite wird gelesen, wie ein Screenreader sie ansagt | scan narration |
+| Photographing the evidence | Die Belege werden fotografiert | scan narration |
+| Walking every Tab stop | Jeder Tab-Halt wird abgeschritten | scan narration |
+| Enlarging the text | Der Text wird vergrößert | scan narration |
+| Trying it at phone width | Die Seite wird in Handybreite geprüft | scan narration |
+| The AI review reads the page | Die KI-Durchsicht liest die Seite | scan narration |
+| Writing the report | Der Bericht wird geschrieben | scan narration |

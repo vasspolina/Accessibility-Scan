@@ -3260,7 +3260,12 @@ export async function renderAndScan(
      operator owns both the machine and the URL — see scanUrlToReport's
      trustPrivateHosts for the full reasoning. Over HTTP this is always
      false, and the guard stands. */
-  trustPrivateHosts = false
+  trustPrivateHosts = false,
+  /* Called as each named phase begins, with the phase's internal name.
+     The pipeline maps these to the reader-facing milestones the widget
+     narrates — see services/progress/milestones.ts. Progress only:
+     nothing here may change what the render does. */
+  onPhase?: (phase: string) => void
 ): Promise<RenderResult> {
 
 
@@ -3290,6 +3295,14 @@ export async function renderAndScan(
     // never changes what the call returns.
     const timed = async <T>(name: string, fn: () => Promise<T>): Promise<T> => {
       const began = Date.now();
+      // Announced on entry, not exit: the watcher wants to know what is
+      // happening, not what just stopped. A listener that throws must not
+      // take the render with it — progress is decoration on the scan.
+      try {
+        onPhase?.(name);
+      } catch {
+        /* a broken listener costs nothing but its own event */
+      }
       try {
         return await fn();
       } finally {
@@ -3405,6 +3418,11 @@ export async function renderAndScan(
       // settling and the render timeout should have the last word.
       let axeResult: AxeRunResult;
       const axeBegan = Date.now();
+      try {
+        onPhase?.("axe");
+      } catch {
+        /* progress only */
+      }
       try {
         await page.addScriptTag({ path: require.resolve("axe-core") });
         axeResult = (await page.evaluate(() =>

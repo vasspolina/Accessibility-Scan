@@ -182,4 +182,14 @@ export const STRINGS_ES: Record<string, string> = {
   "What is wrong, who fixes it, and what it costs you, in plain words": "Qué está mal, quién lo corrige y qué le cuesta, en palabras sencillas",
   "Scan scope": "Alcance del análisis",
   "Each finding with its WCAG number, selector and code": "Cada hallazgo con su número WCAG, selector y código",
+  // Scan narration
+  "Loading your page": "Cargando su página",
+  "Running the automated rules": "Ejecutando las reglas automáticas",
+  "Reading the page as a screen reader announces it": "Leyendo la página tal como la anuncia un lector de pantalla",
+  "Photographing the evidence": "Fotografiando las pruebas",
+  "Walking every Tab stop": "Recorriendo cada parada del tabulador",
+  "Enlarging the text": "Ampliando el texto",
+  "Trying it at phone width": "Probándola en ancho de móvil",
+  "The AI review reads the page": "La revisión con IA lee la página",
+  "Writing the report": "Redactando el informe",
 };

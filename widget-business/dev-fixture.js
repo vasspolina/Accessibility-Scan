@@ -385,6 +385,42 @@
     };
   }
 
+  // ---- The milestone stream, faked ----------------------------------------
+  // The widget opens EventSource(/api/scan/progress/:id) beside the POST and
+  // narrates what arrives. Here the itinerary plays on a timer inside the
+  // fetch delay, so the narration is drivable — and screenshotable — with no
+  // backend. ?fixture=noprogress silences it, which is the fallback path
+  // (an old backend, a refused stream) kept reachable for testing.
+  var RealEventSource = window.EventSource;
+  var MILESTONE_SEQUENCE = [
+    "load", "rules", "screen-reader", "photograph", "keyboard",
+    "text-resize", "phone", "ai-review", "report",
+  ];
+  function FakeScanEventSource(url) {
+    var self = this;
+    this.url = String(url);
+    this.readyState = 0;
+    this.onmessage = null;
+    this.onerror = null;
+    var step = 0;
+    this._timer = setInterval(function () {
+      self.readyState = 1;
+      if (step >= MILESTONE_SEQUENCE.length) return; // "done" comes with the report
+      if (self.onmessage) self.onmessage({ data: MILESTONE_SEQUENCE[step] });
+      step += 1;
+    }, 160);
+  }
+  FakeScanEventSource.prototype.close = function () {
+    this.readyState = 2;
+    clearInterval(this._timer);
+  };
+  if (!location.search.includes("noprogress")) {
+    window.EventSource = function (url) {
+      if (/\/api\/scan\/progress\//.test(String(url))) return new FakeScanEventSource(url);
+      return new RealEventSource(url);
+    };
+  }
+
   var realFetch = window.fetch.bind(window);
   window.fetch = function (input, init) {
     var target = typeof input === "string" ? input : input.url;

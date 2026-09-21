@@ -8,6 +8,12 @@ import { logger } from "../utils/logger.js";
 import { describeScanFailure } from "../services/scanFailure.js";
 import { memorySnapshot, trackPeakMemory } from "../utils/memory.js";
 import { scanUrlToReport } from "../services/scanPipeline.js";
+import {
+  publish as publishProgress,
+  finish as finishProgress,
+  subscribe as subscribeProgress,
+} from "../services/progress/registry.js";
+import { env } from "../config/env.js";
 import type { AccessibilityReport, ReportVerdict } from "../types/report.js";
 
 // Sign-in details for scanning pages behind a login. Accepted per request,
@@ -49,9 +55,67 @@ const scanBodySchema = z.object({
   // falls back to English). Only reader-facing sentences move — criterion
   // numbers, official names and levels are the standard's own.
   language: z.string().optional(),
+  // A channel id the widget invented, for watching the scan's milestones on
+  // GET /api/scan/progress/:id while this request runs. Shape-limited
+  // because it becomes a Map key: no user data, no URL, just a handle.
+  progressId: z
+    .string()
+    .regex(/^[A-Za-z0-9-]{8,64}$/)
+    .optional(),
 });
 
 export async function scanRoutes(app: FastifyInstance) {
+  // The scan's narration: milestones for the id the POST body named, as
+  // server-sent events. Hijacks the raw response, so the CORS header is set
+  // by hand — the cors plugin's hook never runs on a hijacked reply, and
+  // this stream is read by the same embedded widgets the wide-open policy
+  // exists for. Events are ids from a fixed list, never data.
+  app.get("/api/scan/progress/:id", (request, reply) => {
+    const { id } = request.params as { id: string };
+    if (!/^[A-Za-z0-9-]{8,64}$/.test(id)) {
+      return reply.status(400).send({ error: "Invalid progress id" });
+    }
+
+    const origin = request.headers.origin;
+    const allowOrigin =
+      env.ALLOWED_ORIGINS === "*"
+        ? "*"
+        : origin && env.ALLOWED_ORIGINS.split(",").map((o) => o.trim()).includes(origin)
+          ? origin
+          : null;
+
+    reply.hijack();
+    const res = reply.raw;
+    res.writeHead(200, {
+      "Content-Type": "text/event-stream",
+      "Cache-Control": "no-cache, no-transform",
+      Connection: "keep-alive",
+      // A proxy that buffers an event stream turns narration into a lump
+      // that arrives with the report. X-Accel-Buffering is the convention
+      // nginx-family proxies honour.
+      "X-Accel-Buffering": "no",
+      ...(allowOrigin ? { "Access-Control-Allow-Origin": allowOrigin } : {}),
+    });
+
+    const send = (event: string) => {
+      res.write(`data: ${event}\n\n`);
+      if (event === "done") {
+        clearInterval(heartbeat);
+        res.end();
+      }
+    };
+    // Keeps idle proxies from closing the stream between milestones — a
+    // heavy page can sit in one phase for half a minute.
+    const heartbeat = setInterval(() => res.write(": tick\n\n"), 15_000);
+    heartbeat.unref();
+
+    const unsubscribe = subscribeProgress(id, send);
+    request.raw.on("close", () => {
+      clearInterval(heartbeat);
+      unsubscribe();
+    });
+  });
+
   app.post("/api/scan", async (request, reply) => {
     const parsedBody = scanBodySchema.safeParse(request.body);
     if (!parsedBody.success) {
@@ -77,6 +141,8 @@ export async function scanRoutes(app: FastifyInstance) {
     const memBefore = await memorySnapshot();
     const peakTracker = trackPeakMemory();
 
+    const progressId = parsedBody.data.progressId;
+
     let report: AccessibilityReport;
     try {
       // One pipeline, shared with the crawler. It used to be duplicated here,
@@ -88,7 +154,9 @@ export async function scanRoutes(app: FastifyInstance) {
         parsedBody.data.includeAiReview,
         parsedBody.data.auth,
         true,
-        parsedBody.data.language
+        parsedBody.data.language,
+        false,
+        progressId ? (id) => publishProgress(progressId, id) : undefined
       );
     } catch (err) {
       // Every branch of this used to live here, and the crawler had its own
@@ -103,6 +171,7 @@ export async function scanRoutes(app: FastifyInstance) {
         },
         "Memory around a failed scan"
       );
+      if (progressId) finishProgress(progressId);
       const failure = describeScanFailure(err);
       if (failure.logLevel === "warn") {
         logger.warn({ err, url: parsedBody.data.url }, "Scan failed");
@@ -120,6 +189,10 @@ export async function scanRoutes(app: FastifyInstance) {
           : {}),
       });
     }
+
+    // The report is in hand; the last milestone and the stream's close go
+    // out before the (much larger) JSON body starts uploading.
+    if (progressId) finishProgress(progressId);
 
     logger.info(
       {

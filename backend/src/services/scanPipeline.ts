@@ -48,6 +48,7 @@ import { downscalePreview } from "./render/downscalePreview.js";
 import { attachElementScreenshots, selectorTargetsOneElement } from "./render/cropThumbnail.js";
 import type { AccessibilityFinding, AccessibilityReport } from "../types/report.js";
 import type { AuthConfig } from "./auth/authenticate.js";
+import { milestoneForPhase, type MilestoneId } from "./progress/milestones.js";
 
 /**
  * Attaches the pictures a human reader needs: a thumbnail per finding, and
@@ -398,7 +399,12 @@ export async function scanUrlToReport(
      and refusing them localhost would block the PR previews and VPN-side
      staging hosts that are the only reason to run a scan locally. Never
      reachable from routes/scan.ts or routes/audit.ts. */
-  trustPrivateHosts = false
+  trustPrivateHosts = false,
+  /* The scan's narration, one call per milestone the reader can watch —
+     see services/progress/milestones.ts for the list and the mapping from
+     the render's internal phase names. Progress only: it changes nothing
+     about the scan, and a missing listener costs nothing. */
+  onMilestone?: (id: MilestoneId) => void
 ): Promise<AccessibilityReport> {
   const safeUrl = trustPrivateHosts ? new URL(rawUrl) : await assertSafeUrl(rawUrl);
 
@@ -429,7 +435,14 @@ export async function scanUrlToReport(
     // Signing in costs a page load of its own before the scan starts.
     env.RENDER_TIMEOUT_MS + (auth ? 55_000 : 35_000)
   ,
-    trustPrivateHosts);
+    trustPrivateHosts,
+    // The render speaks phase names; the narration speaks milestones. The
+    // map is many-to-one and the registry de-duplicates, so crossing back
+    // into a phase family says nothing new.
+    onMilestone ? (phase) => {
+      const id = milestoneForPhase(phase);
+      if (id) onMilestone(id);
+    } : undefined);
 
   const context = extractContext(safeUrl.toString(), renderResult);
   // Started but deliberately not awaited yet: the AI review is the single
@@ -484,7 +497,11 @@ export async function scanUrlToReport(
   deterministic.push(...(await validateMarkup(renderResult.finalUrl, trustPrivateHosts)));
 
   // Everything above ran while the AI review was in flight; collect it now.
+  // The render is done; if the AI layer is still thinking, that wait is
+  // now the visible activity.
+  if (includeAiReview) onMilestone?.("ai-review");
   const aiReview = await aiReviewPromise;
+  onMilestone?.("report");
   // The model is told that matching accept/reject buttons are correct, and it
   // has still claimed the opposite. Where the page was measured, the
   // measurement decides.

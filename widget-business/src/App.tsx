@@ -22,6 +22,13 @@ import { Tabs } from "./components/Tabs";
 import { Notification, ProgressBar } from "./components/Feedback";
 import { groupFindings } from "./components/FindingsList";
 import { SCAN_DURATION } from "./lib/scanDuration";
+import {
+  NARRATION_STEPS,
+  narrationIndex,
+  narrationLabel,
+  newProgressId,
+  watchScanProgress,
+} from "./lib/scanNarration";
 
 function hostnameOf(url: string): string {
   try {
@@ -163,6 +170,12 @@ export function App({
   // that keeps counting is the difference between waiting and wondering.
   const [elapsed, setElapsed] = useState(0);
   const [tookSeconds, setTookSeconds] = useState<number | null>(null);
+  // The scan's own narration: milestone ids as the backend crosses them,
+  // in arrival order. Empty until the stream produces something, and the
+  // waiting screen falls back to the elapsed-time story when it stays so
+  // (an older backend, a proxy that refuses the stream) — the narration is
+  // an upgrade, never a dependency.
+  const [milestones, setMilestones] = useState<string[]>([]);
   // The ticking "12s" is reassurance, not essential status — the words
   // beside it carry the real information, and elapsed itself keeps driving
   // those words and the progress bar either way. WCAG 2.2.2 asks for a way
@@ -338,11 +351,22 @@ export function App({
     setReport(null);
     setAudit(null);
     setHistory([]);
+    setMilestones([]);
+    // The stream opens before the request: whichever side arrives first at
+    // the channel creates it, and a late subscriber gets the backlog anyway.
+    // Page scans only — the audit is many scans, and narrating one of them
+    // as if it were the whole would be a lie of the polite kind.
+    const progressId = mode === "site" ? undefined : newProgressId();
+    const closeProgress = progressId
+      ? watchScanProgress(apiBase, progressId, (id) =>
+          setMilestones((prev) => (prev.includes(id) ? prev : [...prev, id]))
+        )
+      : () => {};
     try {
       if (mode === "site") {
         setAudit(await auditSite(apiBase, url, maxPages));
       } else {
-        const result = await scanUrl(apiBase, url, includeAiReview, auth);
+        const result = await scanUrl(apiBase, url, includeAiReview, auth, progressId);
         // Read before recording, so "since last time" compares against the
         // previous run rather than this one.
         setHistory(getHistory(result.url, result.scannedAt));
@@ -386,6 +410,7 @@ export function App({
     } finally {
       setTookSeconds(Math.max(1, Math.round((Date.now() - startedAt) / 1000)));
       setLoading(false);
+      closeProgress();
     }
   }
 
@@ -514,28 +539,86 @@ export function App({
                   and options don't shift position while a scan runs. */}
               <ProgressBar
                 label="In progress"
-                value={Math.min(
-                  95,
-                  Math.round(
-                    (elapsed /
-                      ((mode === "site" ? 75 : 40) + (aiRequested ? 30 : 0))) *
-                      100
-                  )
-                )}
+                value={
+                  // Real steps beat estimated time: once the milestone
+                  // stream is talking, the bar reports how far along the
+                  // itinerary the scan actually is. Until (or unless) it
+                  // talks, the elapsed-time estimate stands.
+                  milestones.length > 0
+                    ? Math.min(
+                        95,
+                        Math.round(
+                          ((narrationIndex(milestones[milestones.length - 1]) + 1) /
+                            NARRATION_STEPS.length) *
+                            100
+                        )
+                      )
+                    : Math.min(
+                        95,
+                        Math.round(
+                          (elapsed /
+                            ((mode === "site" ? 75 : 40) + (aiRequested ? 30 : 0))) *
+                            100
+                        )
+                      )
+                }
               />
-              <p className="a11y-loading">
-                {/* Two parts, deliberately. The words are a live region and
-                    change only at milestones; the seconds tick outside it
-                    and are hidden from assistive technology.
+              {/* The itinerary, narrated in type. Every line is something
+                  the scanner is genuinely doing at that moment — the ids
+                  arrive from the pipeline as it crosses each boundary. The
+                  playfulness is scale and weight, not wording: done steps
+                  fall back to small struck text, the current step is set
+                  at display size, the ones ahead wait in small. Semantics
+                  ride on the list itself (aria-current marks the step);
+                  announcements come from the mounted status region below,
+                  which speaks each milestone once. */}
+              {milestones.length > 0 && (
+                <ol className="a11y-scan-itinerary">
+                  {NARRATION_STEPS.filter(
+                    (s) => s.id !== "ai-review" || aiRequested
+                  ).map((step, i) => {
+                    const currentId = milestones[milestones.length - 1];
+                    const currentIdx = narrationIndex(currentId);
+                    const state =
+                      step.id === currentId
+                        ? "now"
+                        : narrationIndex(step.id) < currentIdx
+                          ? "done"
+                          : "ahead";
+                    return (
+                      <li
+                        key={step.id}
+                        className={`a11y-scan-step a11y-scan-step-${state}`}
+                        aria-current={state === "now" ? "step" : undefined}
+                      >
+                        <span className="a11y-scan-step-num" aria-hidden="true">
+                          {String(i + 1).padStart(2, "0")}
+                        </span>{" "}
+                        {step.label()}
+                      </li>
+                    );
+                  })}
+                </ol>
+              )}
+              {/* The elapsed-time story, kept as the fallback: an older
+                  backend or a proxy that refuses the stream leaves the
+                  waiting screen exactly as it always was. Once the
+                  narration is on screen the sentence would repeat what the
+                  itinerary already says, so only the ticking seconds stay.
 
-                    A counter inside a live region announces itself every
-                    second, which would make this tool's own waiting screen
-                    the most irritating thing a screen reader user met all
-                    day — on a product whose entire subject is not doing
-                    that. Sighted users get the reassurance of a moving
-                    number; everyone else gets an update when there is
-                    genuinely something new to say. */}
-                <span>{waitingMessage(mode, aiRequested, elapsed)}</span>{" "}
+                  A counter inside a live region announces itself every
+                  second, which would make this tool's own waiting screen
+                  the most irritating thing a screen reader user met all
+                  day — on a product whose entire subject is not doing
+                  that. Sighted users get the reassurance of a moving
+                  number; everyone else gets an update when there is
+                  genuinely something new to say. */}
+              <p className="a11y-loading">
+                {milestones.length === 0 && (
+                  <>
+                    <span>{waitingMessage(mode, aiRequested, elapsed)}</span>{" "}
+                  </>
+                )}
                 {!reducedMotion && (
                   <span className="a11y-elapsed" aria-hidden="true">
                     {elapsed}s
@@ -578,7 +661,12 @@ export function App({
           users already have the score in front of them. */}
       <p className="a11y-sr-only" role="status">
         {loading
-          ? waitingMessage(mode, aiRequested, elapsed)
+          ? // The narration when it is talking — one announcement per
+            // milestone, which is exactly the "changes only at milestones"
+            // promise the elapsed-time story already kept.
+            (milestones.length > 0
+              ? narrationLabel(milestones[milestones.length - 1])
+              : waitingMessage(mode, aiRequested, elapsed))
           : blocked
             ? blocked
             : report

@@ -306,12 +306,15 @@ export async function scanUrl(
   apiBase: string,
   url: string,
   includeAiReview: boolean,
-  auth?: AuthConfig
+  auth?: AuthConfig,
+  // The channel the caller is watching on /api/scan/progress/:id, if any.
+  // A handle, never data - the widget invents it per scan.
+  progressId?: string
 ): Promise<AccessibilityReport> {
   const endpoint = `${apiBase.replace(/\/$/, "")}/api/scan`;
   // The language rides with the request: the conformance checklist is
   // translated server-side so the emailed and printed copies carry it too.
-  const body = JSON.stringify({ url, includeAiReview, language: getLang(), ...(auth ? { auth } : {}) });
+  const body = JSON.stringify({ url, includeAiReview, language: getLang(), ...(auth ? { auth } : {}), ...(progressId ? { progressId } : {}) });
 
   for (let attempt = 1; attempt <= MAX_ATTEMPTS; attempt++) {
     let response: Response;

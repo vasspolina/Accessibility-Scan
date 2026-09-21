@@ -29,8 +29,12 @@ export interface MountOptions {
 
 // @font-face is IGNORED inside a shadow-root stylesheet, so the faces are
 // declared once at document level. The design system's PP Telegraf, served
-// beside the widget bundle; only 400 and 500 exist. font-display swap keeps
-// text readable while it loads, and every rule keeps a system fallback.
+// beside the widget bundle; three faces since the Off-Type direction —
+// Light (300, display sizes only, at the user's word on 21 Sep 2026),
+// Regular (400) and Medium (500). font-display swap keeps text readable
+// while it loads, and every rule keeps a system fallback. A backend that
+// does not serve the Light file yet degrades to the 400 without
+// synthesis — browsers do not fake a lighter weight.
 function parsePlans(raw: string | undefined): MountOptions["plans"] {
   if (!raw) return undefined;
   try {
@@ -56,6 +60,13 @@ function injectFonts(apiBase: string) {
   const style = document.createElement("style");
   style.id = id;
   style.textContent = `
+@font-face {
+  font-family: "PP Telegraf";
+  src: url("${base}/fonts/PPTelegraf-Light.otf") format("opentype");
+  font-weight: 300;
+  font-style: normal;
+  font-display: swap;
+}
 @font-face {
   font-family: "PP Telegraf";
   src: url("${base}/fonts/PPTelegraf-Regular.otf") format("opentype");

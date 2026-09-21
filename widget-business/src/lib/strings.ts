@@ -213,4 +213,15 @@ export const CHROME_KEYS: string[] = [
   "What is wrong, who fixes it, and what it costs you, in plain words",
   "Scan scope",
   "Each finding with its WCAG number, selector and code",
+  // The scan's narration (lib/scanNarration.ts) — one flat sentence per
+  // milestone the pipeline crosses. Ids and order live with the backend.
+  "Loading your page",
+  "Running the automated rules",
+  "Reading the page as a screen reader announces it",
+  "Photographing the evidence",
+  "Walking every Tab stop",
+  "Enlarging the text",
+  "Trying it at phone width",
+  "The AI review reads the page",
+  "Writing the report",
 ];
