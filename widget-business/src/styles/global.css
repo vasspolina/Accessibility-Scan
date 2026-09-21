@@ -4546,8 +4546,12 @@
   text-align: center;
 }
 .a11y-widget-biz .a11y-legal-title {
-  margin: 0; 
-  font-size: 40px; line-height: 1.2; font-weight: 500;
+  margin: 0;
+  /* The one section title that was still black: it has its own class, so
+     the .a11y-section-title rule never reached it. Same spec as the rest
+     of the direction — thin, solid-set, accent (5.2:1 at 40px). */
+  font-size: 40px; line-height: 1.05; font-weight: 300;
+  color: var(--purple-60);
 }
 .a11y-widget-biz .a11y-legal-standard {
   padding: 4px 12px;
