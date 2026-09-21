@@ -73,6 +73,20 @@
 .a11y-widget-biz .a11y-widget-inner {
   width: 100%;
   padding: var(--space-09) var(--space-06);   /* template */
+  /* Off-Type direction: the reference's full-height column rules, drawn as
+     five 1px hairlines behind the content. Decorative — panels and cards
+     paint over them, and forced-colors mode drops backgrounds, so nothing
+     is said by them that isn't said elsewhere. axe reports text that sits
+     directly over a gradient as "unable to determine"; the hairline under
+     a glyph is under 2% of its area and the ink is measured against the
+     paper both sit on. */
+  background-image: repeating-linear-gradient(
+    to right,
+    transparent 0,
+    transparent calc(100% / 6 - 1px),
+    var(--gray-20) calc(100% / 6 - 1px),
+    var(--gray-20) calc(100% / 6)
+  );
   container-type: inline-size;
   /* The WHOLE widget, nav rail included. Rules about the shell — the rail,
      the outer padding, the two-column shell grid — belong here, because
@@ -185,7 +199,10 @@
 
 .a11y-widget-biz {
   --white: #ffffff;
-  --gray-10: #f4f4f4;  --gray-20: #e0e0e0;  --gray-30: #c6c6c6;
+  /* Off-Type direction (19 Sep 2026): the greys warm to sit on paper.
+     Every pairing re-measured — gray-70 ink on gray-10 is 6.9:1, gray-30
+     as ink on the inverted slab is 10.5:1. */
+  --gray-10: #f4efe4;  --gray-20: #e6e0d2;  --gray-30: #cbc5b6;
   --gray-60: #6f6f6f;  --gray-70: #525252;  --gray-100: #161616;
 
   --red-10: #fff1f1;   --red-60: #da1e28;   --red-70: #a2191f;  --red-100: #2d0709;
@@ -196,6 +213,11 @@
      so white text sat on the black panel behind it and measured
      21:1 — which looks like a pass and is a missing pill. */
   --yellow-10: #fcf4d6; --yellow-60: #8e6a00;
+  /* The warning glyph's ink. yellow-60 is tuned as a pill fill under white
+     text; as free-standing 20px ink on the warmed card it measured 4.35:1.
+     This step is 5.9:1 there, and the dark blocks lift it to a light
+     yellow so it survives the dark grounds too. */
+  --yellow-70: #755700;
   /* The notes band uses --yellow-brand, defined with the rest of the ramp
      below. It was briefly a new --yellow-30: #f9e94e sampled off a
      screenshot — wrong twice over. The design system already defines
@@ -217,9 +239,16 @@
      purple-30 is the hairline beside "Findings, most severe first";
      orange-80 is --button-brown, the kit's CTA fill, and its comment is
      explicit that it is "deliberately not a severity colour". */
-  --purple-30: #d4bbff; --orange-80: #5e2900;
-  --purple-10: #f6f2ff; --purple-20: #e8daff; --purple-60: #8a3ffc;
-  --purple-70: #6929c4; --purple-100: #1c0f30;
+  /* Off-Type direction: the --purple-* slots carry the vermilion ramp.
+     The NAMES stay — they are the kit's slots, and hundreds of rules plus
+     both dark blocks address them; the VALUES are the direction's, exactly
+     as dark mode already moves values under the same names. Measured on
+     paper (#fffdf6): purple-60 5.2:1, purple-70 7.0:1 — both clear 4.5:1
+     as small-text ink; the reference's own #ff3d00 is 3.5:1 and is used
+     nowhere as text below 24px. */
+  --purple-30: #f2b09a; --orange-80: #5e2900;
+  --purple-10: #faf3e3; --purple-20: #f6ead6; --purple-60: #cc2e00;
+  --purple-70: #a82600; --purple-100: #33130a;
   --orange-20: #ffd9be; --orange-50: #eb6200;
   /* Brand yellow and its tint — marks and count tiles. 14.96:1 and 16.66:1
      with gray-100. */
@@ -241,7 +270,7 @@
   /* The filled purple chip: a surface, where --purple-60 is mostly ink.
      Separating them lets the ink lighten for dark grounds while the
      chip keeps a fill dark enough for its white text. */
-  --purple-filled: #8a3ffc;
+  --purple-filled: #cc2e00;   /* white on it: 5.2:1, measured */
   /* The Instances tile, literals from the design's own layer. The fill is
      1.02:1 against the white row it sits on, so the tile is legible only
      because of its border — the two travel together and neither is
@@ -284,7 +313,9 @@
 
   --background: var(--layer-02);
   --layer-01: var(--gray-10);
-  --layer-02: var(--white);
+  /* Paper, not white — the Off-Type ground. --white stays true white: it
+     is ink on the inverted slabs and the dark focus ring. */
+  --layer-02: #fffdf6;
   /* The deliberately-inverted slab — a panel that inverts to carry weight
      (scan history, the notes panel, the transcript's current line). Its own
      token because in dark mode it cannot stay black: a black slab on a black
@@ -296,7 +327,11 @@
   --text-on-invert: var(--white);
   --text-on-invert-secondary: var(--gray-30);   /* 10.6:1 on gray-100 */
   --border-subtle: var(--gray-20);
-  --button-primary: var(--brown-60);
+  /* Off-Type direction: the CTA joins the accent. Was the kit's brown.
+     Via --purple-filled, NOT --purple-60: the -60 slot is ink and comes UP
+     the ramp in dark mode, where white labels on it measured 2.13:1. The
+     filled chip stays #cc2e00 in both themes — white on it is 5.2:1. */
+  --button-primary: var(--purple-filled);
   --focus: var(--text-primary);
 
   /* These, not the -fill tokens above, are what the visible pills use —
@@ -357,9 +392,10 @@
     --red-10: #3d0a0d;     --red-60: #ff8389;   --red-70: #ff8389;
     --orange-10: #2e1400;  --orange-60: #ff832b; --orange-70: #ff832b;
     --yellow-10: #2b2200;
+    --yellow-70: #d2a106;   /* the warning glyph on dark grounds: 6.3:1 */
     --green-10: #12261a;   --green-60: #42be65;
     --blue-10: #10203f;
-    --purple-10: #1f0f38;  --purple-20: #31135e;  --purple-30: #6929c4;
+    --purple-10: #33130a;  --purple-20: #4a1c0c;  --purple-30: #a82600;
     /* tone-soft's other two steps, or a green step card keeps a pale
        ground under light ink — green-20 landed on exactly the value the
        new green ink uses, 1:1. */
@@ -373,13 +409,13 @@
     --orange-100: #ffd9be;
     --green-100: #a7f0ba;
     --blue-100: #d0e2ff;
-    --purple-100: #e8daff;
+    --purple-100: #ffd6c7;
 
     /* Ink used ON the deep tints — severity fills serve as ink for the legal
        marks (checked: one 'color' use each, no background), and purple-30 is
        the rail's ink. All must come up the ramp. */
-    --purple-30: #be95ff;
-    --purple-70: #be95ff;   /* the rail's ink */
+    --purple-30: #ff9673;
+    --purple-70: #ff9673;   /* the rail's ink */
     /* Pill grounds carry white text, so they cannot follow their ramp steps
        up the way the ink did. Stated, not derived: white on each of these
        is 7.4 / 6.9 / 7.6 / 5.9:1. */
@@ -395,7 +431,7 @@
     --mark-critical-ink: #ff8389;  --mark-pass-ink: #42be65;  --mark-minor-ink: #c6c6c6;  --mark-serious-ink: #ff832b;
     /* Pale fixed grounds keep dark ink in both themes. */
     --ink-on-pale: #161616;
-    --purple-60: #be95ff;   /* ink on dark grounds; the chip keeps --purple-filled */
+    --purple-60: #ff9673;   /* ink on dark grounds — 7.1:1 on the card surface; the chip keeps --purple-filled */
     /* Fix-kind pills: deep grounds, light ink of the same hue. */
     --fix-design-bg: #510224;  --fix-design-ink: #ffafd2;
     --fix-code-bg: #002d9c;    --fix-code-ink: #d0e2ff;
@@ -468,9 +504,10 @@
     --red-10: #3d0a0d;     --red-60: #ff8389;   --red-70: #ff8389;
     --orange-10: #2e1400;  --orange-60: #ff832b; --orange-70: #ff832b;
     --yellow-10: #2b2200;
+    --yellow-70: #d2a106;   /* the warning glyph on dark grounds: 6.3:1 */
     --green-10: #12261a;   --green-60: #42be65;
     --blue-10: #10203f;
-    --purple-10: #1f0f38;  --purple-20: #31135e;  --purple-30: #6929c4;
+    --purple-10: #33130a;  --purple-20: #4a1c0c;  --purple-30: #a82600;
     /* tone-soft's other two steps, or a green step card keeps a pale
        ground under light ink — green-20 landed on exactly the value the
        new green ink uses, 1:1. */
@@ -484,13 +521,13 @@
     --orange-100: #ffd9be;
     --green-100: #a7f0ba;
     --blue-100: #d0e2ff;
-    --purple-100: #e8daff;
+    --purple-100: #ffd6c7;
 
     /* Ink used ON the deep tints — severity fills serve as ink for the legal
        marks (checked: one 'color' use each, no background), and purple-30 is
        the rail's ink. All must come up the ramp. */
-    --purple-30: #be95ff;
-    --purple-70: #be95ff;   /* the rail's ink */
+    --purple-30: #ff9673;
+    --purple-70: #ff9673;   /* the rail's ink */
     /* Pill grounds carry white text, so they cannot follow their ramp steps
        up the way the ink did. Stated, not derived: white on each of these
        is 7.4 / 6.9 / 7.6 / 5.9:1. */
@@ -506,7 +543,7 @@
     --mark-critical-ink: #ff8389;  --mark-pass-ink: #42be65;  --mark-minor-ink: #c6c6c6;  --mark-serious-ink: #ff832b;
     /* Pale fixed grounds keep dark ink in both themes. */
     --ink-on-pale: #161616;
-    --purple-60: #be95ff;   /* ink on dark grounds; the chip keeps --purple-filled */
+    --purple-60: #ff9673;   /* ink on dark grounds — 7.1:1 on the card surface; the chip keeps --purple-filled */
     /* Fix-kind pills: deep grounds, light ink of the same hue. */
     --fix-design-bg: #510224;  --fix-design-ink: #ffafd2;
     --fix-code-bg: #002d9c;    --fix-code-ink: #d0e2ff;
@@ -680,7 +717,10 @@
 .a11y-widget-biz h3, .a11y-widget-biz h4,
 .a11y-widget-biz h5, .a11y-widget-biz h6 { font-size: 20px; line-height: 1.2;  font-weight: 500; margin: 0; }
 
-.a11y-widget-biz .a11y-section-title  { font-size: 40px; line-height: 1.2; font-weight: 500; text-wrap: balance; }
+/* Off-Type direction: section titles take the accent at display leading.
+   40px, so the 4.5:1 the ink clears anyway is comfortably past the 3:1
+   large-text bar — and past 4.5 itself, at 5.2:1 on paper. */
+.a11y-widget-biz .a11y-section-title  { font-size: 40px; line-height: 1.05; font-weight: 500; text-wrap: balance; color: var(--purple-60); }
 .a11y-widget-biz .a11y-section-eyebrow,
 .a11y-widget-biz .a11y-section-count  { font-size: 15px; line-height: 1.2;  font-weight: 500; }
 .a11y-widget-biz .a11y-section-desc   { font-size: 18px; line-height: 1.2;  font-weight: 400; }
@@ -1160,6 +1200,10 @@
   flex-direction: column;
   align-items: stretch;
   gap: var(--space-05);
+  /* Off-Type direction: the reference's dotted specimen rule between
+     entries. Decorative — the section boundary is the heading. */
+  border-top: 1px dotted var(--purple-30);
+  padding-top: var(--space-07);
 }
 
 .a11y-widget-biz .a11y-section > *,
@@ -1968,8 +2012,12 @@
    explicitly rather than left to whichever rule lands last. */
 .a11y-widget-biz .a11y-newscan-title.a11y-section-title {
   font-size: 144px;
-  line-height: 1.2;
+  /* Off-Type direction: display type sets solid (the reference runs 1.0;
+     1.05 keeps descenders off the next line) and takes the accent —
+     5.2:1 at 144px, where 3:1 is the bar. */
+  line-height: 1.05;
   font-weight: 500;
+  color: var(--purple-60);
 }
 
 /* The card label leads its description, so it takes the medium weight. */
@@ -2900,7 +2948,7 @@
   margin: 0;
   flex-wrap: wrap;
 }
-.a11y-widget-biz .a11y-pro-score-num { font-size: 96px; font-weight: 500; line-height: 1.2; }
+.a11y-widget-biz .a11y-pro-score-num { font-size: 96px; font-weight: 500; line-height: 1.05; }
 .a11y-widget-biz .a11y-pro-score-of  { font-size: 18px; color: var(--text-on-invert-secondary); }
 .a11y-widget-biz .a11y-pro-chips { display: flex; flex-wrap: wrap; gap: var(--space-03); }
 .a11y-widget-biz .a11y-pro-chip {
@@ -3160,7 +3208,7 @@
   margin: 0;
 }
 .a11y-widget-biz .a11y-dial-number {
-  font-size: 96px; font-weight: 500; line-height: 1.2;
+  font-size: 96px; font-weight: 500; line-height: 1.05;
   color: var(--orange-70);
 }
 .a11y-widget-biz .a11y-dial[data-band="good"]    .a11y-dial-number { color: var(--green-60); }
@@ -3987,7 +4035,7 @@
   gap: 2px;
 }
 .a11y-widget-biz .a11y-sum-dial-num {
-  font-size: 68px; line-height: 1.2; font-weight: 500;
+  font-size: 68px; line-height: 1.05; font-weight: 500;
   color: var(--purple-70);           /* 6.93:1 on the cream */
 }
 .a11y-widget-biz .a11y-sum-dial-of {
@@ -4683,7 +4731,7 @@
      "Previous scans", which is what a heading list should read out. */
   text-transform: uppercase;
   font-size: 54px;
-  line-height: 1.2;
+  line-height: 1.05;
   font-weight: 400;
   letter-spacing: 0.01em;
   color: var(--text-on-invert);
@@ -5200,8 +5248,10 @@
   }
 }
 
-/* The numeral carries the accent; the mark stays quiet beside it. */
-.a11y-widget-biz .a11y-count-pill-x { color: var(--text-secondary); }
+/* The numeral carries the accent; the mark stays quiet beside it.
+   --ink-on-pale, not --text-secondary: the tile is cream in BOTH themes,
+   and the theme-following grey measured 1.68:1 on it in dark. */
+.a11y-widget-biz .a11y-count-pill-x { color: var(--ink-on-pale); }
 
 /* ── The vision simulator's condition list ────────────────────────────────
    Eight classes here had no rule at all, so the controls rendered as raw
@@ -5370,7 +5420,7 @@
 }
 .a11y-widget-biz .a11y-progress-num {
   font-size: 66px;
-  line-height: 1.2;
+  line-height: 1.05;
   letter-spacing: 0.01em;
   font-variant-numeric: tabular-nums;
 }
@@ -6480,7 +6530,7 @@
 .a11y-widget-biz .a11y-note-info    { border-left: 3px solid var(--blue-60); }
 .a11y-widget-biz .a11y-note-error   .a11y-note-glyph { color: var(--red-60); }
 .a11y-widget-biz .a11y-note-success .a11y-note-glyph { color: var(--green-60); }
-.a11y-widget-biz .a11y-note-warning .a11y-note-glyph { color: var(--yellow-60); }
+.a11y-widget-biz .a11y-note-warning .a11y-note-glyph { color: var(--yellow-70); }
 .a11y-widget-biz .a11y-note-info    .a11y-note-glyph { color: var(--blue-60); }
 
 /* Input's invalid help — Input.tsx emits a11y-input-help-invalid with no
