@@ -4,7 +4,7 @@ import { readFileSync, writeFileSync, appendFileSync, existsSync } from "node:fs
 import { scanUrlToReport } from "../../backend/dist/services/scanPipeline.js";
 
 const dir = new URL(".", import.meta.url).pathname;
-const domains = JSON.parse(readFileSync(dir + "domains.json", "utf8"));
+const domains = JSON.parse(readFileSync(dir + (process.env.DOMAINS || "domains.json"), "utf8"));
 const out = dir + "results.jsonl";
 const done = new Set(existsSync(out) ? readFileSync(out, "utf8").split("\n").filter(Boolean).map(l => JSON.parse(l).domain) : []);
 
@@ -23,8 +23,9 @@ async function one({ country, domain }) {
     const acc = r.findings.filter(f => f.category === "accessibility");
     const provable = acc.filter(f => f.wcagLevel === "A" || f.wcagLevel === "AA");
     const by = {};
-    for (const f of provable) by[f.severity] = (by[f.severity] || 0) + 1;
-    rec = { ...rec, ok: true, url: r.url, score: r.score, findings: acc.length, provable: provable.length, by,
+    const rules = {};
+    for (const f of provable) { by[f.severity] = (by[f.severity] || 0) + 1; rules[f.ruleId || f.wcagCriterion || "?"] = (rules[f.ruleId || f.wcagCriterion || "?"] || 0) + 1; }
+    rec = { ...rec, ok: true, url: r.url, score: r.score, findings: acc.length, provable: provable.length, by, rules,
       pass: provable.length === 0, incomplete: r.incomplete ?? null, ms: Date.now() - t0 };
   } catch (e) {
     rec = { ...rec, ok: false, error: String(e?.message || e).slice(0, 200), ms: Date.now() - t0 };
