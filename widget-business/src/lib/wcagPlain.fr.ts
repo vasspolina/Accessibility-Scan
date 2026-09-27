@@ -816,8 +816,8 @@ export const FIXES_FR: Record<string, string | string[]> = {
   "aria-allowed-attr":
     "Retirez les réglages qui n'ont pas leur place sur ce type d'élément, ou changez-le pour un élément qui les accepte.",
   "aria-required-children": [
-    "Donnez au composant les parties que son propre type exige.",
-    "Une liste a besoin d'entrées de liste à l'intérieur, pas de texte en vrac.",
+    "Placez à l'intérieur les éléments promis : une liste a besoin d'entrées de liste, un menu d'entrées de menu.",
+    "Si le contenu n'est pas vraiment une liste ou un menu, retirez ce marquage du conteneur.",
   ],
   "landmark-unique": [
     "Nommez chaque zone d'après ce qu'elle contient, comme « Menu principal » ou « Liens du pied de page ».",

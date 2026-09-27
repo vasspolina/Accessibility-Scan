@@ -809,8 +809,8 @@ export const FIXES_ES: Record<string, string | string[]> = {
   ],
   "aria-allowed-attr": "Quite los ajustes que no corresponden a este tipo de elemento, o cámbielo por uno al que sí correspondan.",
   "aria-required-children": [
-    "Dé al componente las partes que exige su propio tipo.",
-    "Una lista necesita elementos de lista dentro, no texto suelto.",
+    "Ponga dentro los elementos prometidos: una lista necesita elementos de lista, un menú necesita opciones de menú.",
+    "Si el contenido no es realmente una lista ni un menú, quite esa marca del contenedor.",
   ],
   "landmark-unique": [
     "Nombre cada zona por lo que contiene, como \"Menú principal\" o \"Enlaces del pie\".",

@@ -1074,8 +1074,8 @@ export const PLAIN_RULE_FIXES: Record<string, string | string[]> = {
   ],
   "aria-allowed-attr": "Remove the settings that do not belong on this kind of element, or change it to one they fit.",
   "aria-required-children": [
-    "Give the component the parts its own type requires.",
-    "A list needs list items inside it, not loose text.",
+    "Put the promised items inside: a list needs list items, a menu needs menu items.",
+    "If the content is not really a list or a menu, take that marking off the container.",
   ],
   "landmark-unique": [
     "Name each area for what it holds, such as \"Main menu\" or \"Footer links\".",

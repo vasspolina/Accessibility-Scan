@@ -730,8 +730,8 @@ export const FIXES_DE: Record<string, string | string[]> = {
   ],
   "aria-allowed-attr": "Entfernen Sie die Angaben, die zu dieser Art von Element nicht gehören. Oder wechseln Sie zu einem, zu dem sie passen.",
   "aria-required-children": [
-    "Geben Sie dem Element die Teile, die sein Typ verlangt.",
-    "Eine Liste braucht Listeneinträge darin, keinen losen Text.",
+    "Setzen Sie die versprochenen Einträge hinein: eine Liste braucht Listeneinträge, ein Menü braucht Menüeinträge.",
+    "Ist der Inhalt in Wahrheit keine Liste und kein Menü, nehmen Sie die Auszeichnung vom Container.",
   ],
   "landmark-unique": [
     "Benennen Sie jeden Bereich nach dem, was darin steht, etwa „Hauptmenü“ oder „Links in der Fußzeile“.",

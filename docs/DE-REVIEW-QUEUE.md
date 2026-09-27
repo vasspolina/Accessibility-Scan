@@ -136,3 +136,5 @@ should check that none of those splits reads oddly.
 | Trying it at phone width | Die Seite wird in Handybreite geprüft | scan narration |
 | The AI review reads the page | Die KI-Durchsicht liest die Seite | scan narration |
 | Writing the report | Der Bericht wird geschrieben | scan narration |
+| Put the promised items inside: a list needs list items, a menu needs menu items. | Setzen Sie die versprochenen Einträge hinein: eine Liste braucht Listeneinträge, ein Menü braucht Menüeinträge. | fix, aria-required-children |
+| If the content is not really a list or a menu, take that marking off the container. | Ist der Inhalt in Wahrheit keine Liste und kein Menü, nehmen Sie die Auszeichnung vom Container. | fix, aria-required-children |
