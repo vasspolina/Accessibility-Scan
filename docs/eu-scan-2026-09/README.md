@@ -7,7 +7,7 @@ project's automated layer (no AI review) in headless Chromium.
 - `domains.json` — the 405 domains, by country
 - `results.jsonl` — one line per site: score, provable A/AA fault count by severity, pass (= zero provable faults), or the error
 - `scan.json` — per-country aggregate (n, pass %, mean score, median faults, sites, unreachable)
-- `eu-a11y-map.html` + `eu.json` — the interactive map (published at https://claude.ai/artifact/K1osSL6WSxecZCupzPo6yn)
+- `eu-a11y-map.html` + `eu.json` — the interactive map, switchable between this scan, the Digital Trust Index 2026 (18 countries, % passing 61 automated tests) and the WebAIM Million 2026 (7 EU ccTLDs, errors per page) (published at https://claude.ai/artifact/K1osSL6WSxecZCupzPo6yn)
 - `batch.mjs`, `aggregate.py` — the runner and the aggregation
 
 Result: 295 of 405 scanned (110 blocked, bad cert, or never loaded in 60 s).

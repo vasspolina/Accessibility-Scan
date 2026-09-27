@@ -61,6 +61,11 @@ aside h2{font-size:15px;font-weight:500;margin:0 0 8px;text-transform:uppercase;
 .detail td:not(:first-child),.detail th:not(:first-child){text-align:right}
 .detail .meta{font-size:15px;color:var(--ink-2)}
 .rank li .i{white-space:nowrap}
+.src{display:flex;gap:0;margin:0 0 20px;border:1px solid var(--rule);width:max-content;max-width:100%;overflow-x:auto}
+.src button{font:inherit;font-size:15px;letter-spacing:.01em;background:none;border:0;border-right:1px solid var(--rule);padding:9px 16px;color:var(--ink-2);cursor:pointer;white-space:nowrap}
+.src button:last-child{border-right:0}
+.src button[aria-pressed="true"]{background:var(--ink);color:var(--paper)}
+.src button:focus-visible{outline:2px solid var(--accent);outline-offset:-2px}
 footer{margin-top:40px;border-top:1px solid var(--rule);padding-top:16px;color:var(--ink-2);font-size:15px;max-width:70ch}
 footer a{color:var(--ink)}
 @media (max-width:820px){main{grid-template-columns:1fr}header{grid-template-columns:1fr}.big{text-align:left}h1{font-size:36px}.big .n{font-size:48px}}
@@ -70,95 +75,156 @@ footer a{color:var(--ink)}
 <div class="wrap">
 <header>
   <div>
-    <p class="eyebrow">Accessible Scan · 295 homepages · 27 EU countries · scanned 26 Sep 2026</p>
-    <h1>How accessible are each EU country’s most-visited websites?</h1>
-    <p class="lede">We ran the 15 most-visited domains of every EU country’s ccTLD (Tranco ranking) through our own scanner. Colour is the <b>mean score out of 100</b>. Only <b>2 of 295</b> homepages had zero provable WCAG A/AA faults — and both are empty placeholder pages.</p>
+    <p class="eyebrow" id="eyebrow"></p>
+    <h1 id="h1"></h1>
+    <p class="lede" id="lede"></p>
   </div>
-  <div class="big"><div class="n" id="avg">–</div><div class="l">mean score across all 295 scanned homepages</div></div>
+  <div class="big"><div class="n" id="avg">–</div><div class="l" id="avgl"></div></div>
 </header>
+
+<div class="src" role="group" aria-label="Data source" id="src">
+  <button type="button" data-s="scan" aria-pressed="true">Accessible Scan · 27 countries</button>
+  <button type="button" data-s="dti" aria-pressed="false">Digital Trust Index 2026 · 18</button>
+  <button type="button" data-s="webaim" aria-pressed="false">WebAIM Million 2026 · 7</button>
+</div>
 
 <main>
   <div class="mapbox">
-    <svg id="map" viewBox="0 0 760 640" role="img" aria-label="Choropleth map of the EU: mean accessibility score of each country’s most-visited websites"></svg>
+    <svg id="map" viewBox="0 0 760 640" role="img" aria-label="Choropleth map of Europe: website accessibility by country"></svg>
     <div class="tip" id="tip" aria-hidden="true"></div>
     <div class="legend" id="legend"></div>
     <section id="detail" class="detail" hidden aria-live="polite"></section>
   </div>
   <aside>
-    <h2>Ranked by mean score</h2>
+    <h2 id="rankh"></h2>
     <ol class="rank" id="rank"></ol>
   </aside>
 </main>
 
-<footer>Method: for each EU member we took the first 15 registrable domains under its country TLD in the <a href="https://tranco-list.eu/">Tranco</a> top-1M list (URL shorteners, google/amazon mirrors and adult sites removed) and scanned the homepage with Accessible Scan’s automated layer (axe-core plus our own checks, no AI review) in headless Chromium on 26 Sep 2026. Score is the report’s 0–100 score, which counts only provable WCAG A/AA faults. “Faults” is the median count of those per country. 110 sites could not be scanned — bot-blocking (HTTP 403/511), invalid certificates, or pages that never finished loading in 60 s — and are excluded from the denominator; <i>n</i> shows how many were scanned. Fifteen sites a country is a small sample: read the map as a sketch, not a league table.</footer>
+<footer id="foot"></footer>
 </div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.9.0/d3.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/topojson/3.0.2/topojson.min.js"></script>
 <script>
 const SCAN={"Austria":{"n":10,"tried":15,"pass":0.0,"score":28.1,"faults":16.5,"sites":[{"d":"orf.at","s":64,"f":7},{"d":"heute.at","s":55,"f":4},{"d":"kurier.at","s":46,"f":16},{"d":"t-mobile.at","s":39,"f":11},{"d":"kriesi.at","s":39,"f":21},{"d":"derstandard.at","s":9,"f":15},{"d":"domaintechnik.at","s":9,"f":20},{"d":"wien.at","s":9,"f":17},{"d":"win2day.at","s":6,"f":32},{"d":"bergfex.at","s":5,"f":32}],"unreachable":["krone.at","willhaben.at","meinbezirk.at","ors.at","wko.at"]},"Belgium":{"n":10,"tried":15,"pass":0.0,"score":58,"faults":4.5,"sites":[{"d":"vrt.be","s":91,"f":3},{"d":"skynet.be","s":85,"f":1},{"d":"belgium.be","s":83,"f":2},{"d":"kuleuven.be","s":64,"f":7},{"d":"rtbf.be","s":56,"f":2},{"d":"ugent.be","s":56,"f":4},{"d":"proximus.be","s":53,"f":5},{"d":"hln.be","s":42,"f":113},{"d":"2dehands.be","s":42,"f":5},{"d":"sporza.be","s":8,"f":18}],"unreachable":["telenet.be","lesoir.be","nieuwsblad.be","sudinfo.be","dhnet.be"]},"Bulgaria":{"n":8,"tried":15,"pass":0.0,"score":16.9,"faults":44.0,"sites":[{"d":"24chasa.bg","s":44,"f":149},{"d":"nova.bg","s":42,"f":22},{"d":"netinfo.bg","s":18,"f":13},{"d":"sinoptik.bg","s":9,"f":31},{"d":"alo.bg","s":6,"f":24},{"d":"abv.bg","s":6,"f":57},{"d":"bazar.bg","s":5,"f":212},{"d":"mobile.bg","s":5,"f":74}],"unreachable":["btc-net.bg","emag.bg","sportal.bg","nic.bg","blitz.bg","government.bg","fakti.bg"]},"Croatia":{"n":7,"tried":15,"pass":0.0,"score":6.7,"faults":53,"sites":[{"d":"net.hr","s":10,"f":53},{"d":"tportal.hr","s":9,"f":133},{"d":"vecernji.hr","s":7,"f":62},{"d":"carnet.hr","s":6,"f":17},{"d":"index.hr","s":5,"f":156},{"d":"dnevnik.hr","s":5,"f":41},{"d":"meteo.hr","s":5,"f":35}],"unreachable":["jutarnji.hr","24sata.hr","slobodnadalmacija.hr","njuskalo.hr","dnevno.hr","srce.hr","hak.hr","supersport.hr"]},"Cyprus":{"n":5,"tried":15,"pass":0.0,"score":33.2,"faults":11,"sites":[{"d":"companiesregistry.cy","s":64,"f":6},{"d":"stylino.cy","s":45,"f":11},{"d":"index.cy","s":44,"f":11},{"d":"home.cy","s":7,"f":19},{"d":"infowatch.cy","s":6,"f":21}],"unreachable":["alvadi.cy","kotsovolos.cy","ubuy.cy","makeup.cy","rik.cy","fragstore.cy","eurobank.cy","electroline.cy","match.cy","devruntime.cy"]},"Czechia":{"n":9,"tried":15,"pass":0.0,"score":20.1,"faults":45,"sites":[{"d":"csfd.cz","s":79,"f":3},{"d":"novinky.cz","s":30,"f":70},{"d":"blesk.cz","s":30,"f":47},{"d":"livescore.cz","s":10,"f":10},{"d":"centrum.cz","s":9,"f":32},{"d":"idnes.cz","s":8,"f":20},{"d":"cukrarnauandela.cz","s":5,"f":45},{"d":"cuni.cz","s":5,"f":92},{"d":"nic.cz","s":5,"f":56}],"unreachable":["seznam.cz","wedos.cz","alza.cz","forpsi.cz","muni.cz","cra.cz"]},"Denmark":{"n":11,"tried":15,"pass":0.0,"score":38.6,"faults":15,"sites":[{"d":"tv2.dk","s":96,"f":1},{"d":"lectio.dk","s":70,"f":3},{"d":"aau.dk","s":67,"f":6},{"d":"dtu.dk","s":55,"f":8},{"d":"dr.dk","s":40,"f":39},{"d":"au.dk","s":38,"f":10},{"d":"bt.dk","s":36,"f":16},{"d":"ekstrabladet.dk","s":6,"f":15},{"d":"dandomain.dk","s":6,"f":22},{"d":"politiken.dk","s":6,"f":70},{"d":"webhosting.dk","s":5,"f":56}],"unreachable":["dba.dk","ku.dk","dmi.dk","sdu.dk"]},"Estonia":{"n":9,"tried":15,"pass":0.0,"score":18.3,"faults":27,"sites":[{"d":"tr.ee","s":44,"f":27},{"d":"postimees.ee","s":35,"f":12},{"d":"yanhh3d.ee","s":24,"f":16},{"d":"hhkungfu.ee","s":23,"f":22},{"d":"delfi.ee","s":17,"f":57},{"d":"elisa.ee","s":7,"f":14},{"d":"iha.ee","s":5,"f":120},{"d":"osta.ee","s":5,"f":76},{"d":"auto24.ee","s":5,"f":97}],"unreachable":["err.ee","ut.ee","telia.ee","estpak.ee","orb.ee","shp.ee"]},"Finland":{"n":11,"tried":15,"pass":0.0,"score":44.9,"faults":6,"sites":[{"d":"hs.fi","s":89,"f":3},{"d":"yandex.fi","s":78,"f":3},{"d":"is.fi","s":71,"f":6},{"d":"aalto.fi","s":68,"f":6},{"d":"funet.fi","s":65,"f":5},{"d":"helsinki.fi","s":55,"f":5},{"d":"veikkaus.fi","s":31,"f":9},{"d":"ilmatieteenlaitos.fi","s":16,"f":11},{"d":"ratkojat.fi","s":9,"f":20},{"d":"foreca.fi","s":7,"f":39},{"d":"oikotie.fi","s":5,"f":22}],"unreachable":["tori.fi","iltalehti.fi","yle.fi","s-cloud.fi"]},"Malta":{"n":9,"tried":15,"pass":0.0,"score":22.3,"faults":29,"sites":[{"d":"mbr.mt","s":56,"f":8},{"d":"starbucks.mt","s":48,"f":11},{"d":"heritagemalta.mt","s":28,"f":39},{"d":"lottery.mt","s":28,"f":14},{"d":"tvmi.mt","s":10,"f":11},{"d":"tvmnews.mt","s":9,"f":72},{"d":"diamondsinternational.mt","s":9,"f":32},{"d":"mfsa.mt","s":7,"f":32},{"d":"legislation.mt","s":6,"f":29}],"unreachable":["orienta.mt","gov.mt","parlament.mt","sportsdirect.mt","decathlon.mt","ubuy.mt"]},"France":{"n":10,"tried":15,"pass":0.0,"score":18.5,"faults":30.5,"sites":[{"d":"vinted.fr","s":85,"f":3},{"d":"doctolib.fr","s":36,"f":10},{"d":"free.fr","s":16,"f":11},{"d":"actu.fr","s":14,"f":12},{"d":"flashscore.fr","s":8,"f":357},{"d":"lemonde.fr","s":6,"f":35},{"d":"lefigaro.fr","s":5,"f":36},{"d":"orange.fr","s":5,"f":26},{"d":"ladepeche.fr","s":5,"f":125},{"d":"meteociel.fr","s":5,"f":69}],"unreachable":["ouest-france.fr","leboncoin.fr","lequipe.fr","leroymerlin.fr","leparisien.fr"]},"Germany":{"n":12,"tried":15,"pass":0.0,"score":23,"faults":25.0,"sites":[{"d":"markt.de","s":84,"f":3},{"d":"bund.de","s":79,"f":3},{"d":"kleinanzeigen.de","s":41,"f":10},{"d":"bild.de","s":20,"f":49},{"d":"t-online.de","s":10,"f":45},{"d":"focus.de","s":9,"f":19},{"d":"welt.de","s":6,"f":23},{"d":"spiegel.de","s":6,"f":27},{"d":"joyclub.de","s":6,"f":17},{"d":"otto.de","s":5,"f":41},{"d":"n-tv.de","s":5,"f":37},{"d":"wetteronline.de","s":5,"f":33}],"unreachable":["mobile.de","ebay.de","your-server.de"]},"Greece":{"n":11,"tried":15,"pass":9.1,"score":21.6,"faults":34,"sites":[{"d":"name-servers.gr","s":96,"f":0},{"d":"stoiximan.gr","s":65,"f":5},{"d":"sport24.gr","s":28,"f":16},{"d":"newsit.gr","s":10,"f":28},{"d":"iefimerida.gr","s":7,"f":268},{"d":"kathimerini.gr","s":6,"f":33},{"d":"gazzetta.gr","s":6,"f":105},{"d":"protothema.gr","s":5,"f":228},{"d":"in.gr","s":5,"f":48},{"d":"naftemporiki.gr","s":5,"f":141},{"d":"skai.gr","s":5,"f":34}],"unreachable":["grserver.gr","sch.gr","aade.gr","car.gr"]},"Hungary":{"n":12,"tried":15,"pass":0.0,"score":11.2,"faults":46.5,"sites":[{"d":"telekom.hu","s":47,"f":7},{"d":"hvg.hu","s":26,"f":26},{"d":"rosszlanyok.hu","s":9,"f":16},{"d":"atw.hu","s":8,"f":29},{"d":"blikk.hu","s":7,"f":24},{"d":"telex.hu","s":6,"f":239},{"d":"tippmix.hu","s":6,"f":130},{"d":"elte.hu","s":6,"f":52},{"d":"index.hu","s":5,"f":130},{"d":"portfolio.hu","s":5,"f":207},{"d":"idokep.hu","s":5,"f":113},{"d":"szerencsejatek.hu","s":5,"f":41}],"unreachable":["hasznaltauto.hu","dns24.hu","allegro.hu"]},"Ireland":{"n":13,"tried":15,"pass":0.0,"score":39.9,"faults":8,"sites":[{"d":"vinted.ie","s":83,"f":4},{"d":"tcd.ie","s":72,"f":4},{"d":"daft.ie","s":70,"f":4},{"d":"donedeal.ie","s":69,"f":4},{"d":"ucd.ie","s":53,"f":7},{"d":"ros.ie","s":50,"f":3},{"d":"mypurecloud.ie","s":41,"f":12},{"d":"ucc.ie","s":37,"f":8},{"d":"aib.ie","s":13,"f":10},{"d":"rufus.ie","s":10,"f":35},{"d":"rip.ie","s":9,"f":32},{"d":"rte.ie","s":7,"f":21},{"d":"thejournal.ie","s":5,"f":200}],"unreachable":["independent.ie","ebay.ie"]},"Italy":{"n":11,"tried":15,"pass":0.0,"score":12.4,"faults":35,"sites":[{"d":"poste.it","s":43,"f":11},{"d":"inps.it","s":27,"f":10},{"d":"libero.it","s":17,"f":206},{"d":"annunci69.it","s":9,"f":11},{"d":"repubblica.it","s":8,"f":161},{"d":"ilfattoquotidiano.it","s":6,"f":27},{"d":"ilmeteo.it","s":6,"f":51},{"d":"gazzetta.it","s":5,"f":35},{"d":"corriere.it","s":5,"f":62},{"d":"redd.it","s":5,"f":29},{"d":"diretta.it","s":5,"f":415}],"unreachable":["subito.it","idealista.it","immobiliare.it","skycdn.it"]},"Latvia":{"n":14,"tried":15,"pass":0.0,"score":20.1,"faults":33.5,"sites":[{"d":"lmt.lv","s":78,"f":4},{"d":"ss.lv","s":62,"f":5},{"d":"online.lv","s":55,"f":3},{"d":"mixnews.lv","s":13,"f":14},{"d":"gribu.lv","s":10,"f":180},{"d":"hostnet.lv","s":10,"f":49},{"d":"inbox.lv","s":9,"f":46},{"d":"bovada.lv","s":9,"f":39},{"d":"nic.lv","s":8,"f":20},{"d":"lsm.lv","s":6,"f":22},{"d":"jauns.lv","s":6,"f":160},{"d":"delfi.lv","s":6,"f":28},{"d":"la.lv","s":5,"f":120},{"d":"lu.lv","s":5,"f":50}],"unreachable":["nra.lv"]},"Lithuania":{"n":14,"tried":15,"pass":0.0,"score":15.8,"faults":33.0,"sites":[{"d":"vinted.lt","s":75,"f":5},{"d":"lrt.lt","s":33,"f":15},{"d":"draugas.lt","s":31,"f":16},{"d":"meteofor.lt","s":23,"f":17},{"d":"alegroforte.lt","s":9,"f":14},{"d":"skelbiu.lt","s":7,"f":45},{"d":"cvbankas.lt","s":7,"f":542},{"d":"delfi.lt","s":6,"f":27},{"d":"autoplius.lt","s":5,"f":48},{"d":"tv3.lt","s":5,"f":612},{"d":"15min.lt","s":5,"f":51},{"d":"autogidas.lt","s":5,"f":39},{"d":"lrytas.lt","s":5,"f":24},{"d":"aruodas.lt","s":5,"f":149}],"unreachable":["tld.lt"]},"Luxembourg":{"n":11,"tried":15,"pass":9.1,"score":40.7,"faults":16,"sites":[{"d":"dnx.lu","s":100,"f":0},{"d":"etat.lu","s":81,"f":3},{"d":"vinted.lu","s":78,"f":5},{"d":"gouvernement.lu","s":73,"f":3},{"d":"uni.lu","s":66,"f":8},{"d":"circl.lu","s":16,"f":109},{"d":"schoolido.lu","s":9,"f":95},{"d":"root.lu","s":9,"f":16},{"d":"audiobookbay.lu","s":6,"f":16},{"d":"rtl.lu","s":5,"f":211},{"d":"lessentiel.lu","s":5,"f":251}],"unreachable":["kinepolis.lu","wort.lu","kuku.lu","pt.lu"]},"Netherlands":{"n":14,"tried":15,"pass":0.0,"score":33.4,"faults":14.0,"sites":[{"d":"uu.nl","s":91,"f":2},{"d":"ziggo.nl","s":83,"f":3},{"d":"xs4all.nl","s":62,"f":6},{"d":"nos.nl","s":56,"f":7},{"d":"tudelft.nl","s":41,"f":21},{"d":"marktplaats.nl","s":32,"f":6},{"d":"cloud86.nl","s":28,"f":27},{"d":"caiway.nl","s":20,"f":12},{"d":"cwi.nl","s":17,"f":20},{"d":"nlnetlabs.nl","s":9,"f":15},{"d":"hostnet.nl","s":9,"f":13},{"d":"rtl.nl","s":7,"f":17},{"d":"nu.nl","s":6,"f":33},{"d":"telegraaf.nl","s":6,"f":60}],"unreachable":["zxcs.nl"]},"Poland":{"n":13,"tried":15,"pass":0.0,"score":24.1,"faults":36,"sites":[{"d":"home.pl","s":83,"f":4},{"d":"vinted.pl","s":80,"f":4},{"d":"gemius.pl","s":42,"f":12},{"d":"otomoto.pl","s":24,"f":12},{"d":"cyberfolks.pl","s":23,"f":54},{"d":"certum.pl","s":17,"f":42},{"d":"onet.pl","s":10,"f":37},{"d":"olx.pl","s":9,"f":12},{"d":"wp.pl","s":5,"f":43},{"d":"interia.pl","s":5,"f":96},{"d":"nazwa.pl","s":5,"f":36},{"d":"filmweb.pl","s":5,"f":188},{"d":"gazeta.pl","s":5,"f":26}],"unreachable":["allegro.pl","mediaexpert.pl"]},"Portugal":{"n":10,"tried":15,"pass":0.0,"score":11,"faults":46.0,"sites":[{"d":"seg-social.pt","s":33,"f":8},{"d":"ulisboa.pt","s":16,"f":13},{"d":"sapo.pt","s":14,"f":61},{"d":"cmjornal.pt","s":9,"f":33},{"d":"felizes.pt","s":9,"f":15},{"d":"ipma.pt","s":9,"f":63},{"d":"abola.pt","s":5,"f":162},{"d":"vodafone.pt","s":5,"f":55},{"d":"record.pt","s":5,"f":128},{"d":"publico.pt","s":5,"f":37}],"unreachable":["up.pt","idealista.pt","leroymerlin.pt","uc.pt","sl.pt"]},"Romania":{"n":15,"tried":15,"pass":0.0,"score":10.1,"faults":102,"sites":[{"d":"hotnews.ro","s":29,"f":32},{"d":"stirileprotv.ro","s":18,"f":102},{"d":"g4media.ro","s":16,"f":41},{"d":"olx.ro","s":15,"f":10},{"d":"emag.ro","s":9,"f":162},{"d":"publi24.ro","s":8,"f":105},{"d":"adevarul.ro","s":8,"f":29},{"d":"digi24.ro","s":7,"f":43},{"d":"libertatea.ro","s":7,"f":143},{"d":"dedeman.ro","s":7,"f":150},{"d":"gsp.ro","s":6,"f":118},{"d":"digisport.ro","s":6,"f":171},{"d":"sport.ro","s":6,"f":238},{"d":"antena3.ro","s":5,"f":31},{"d":"prosport.ro","s":5,"f":66}],"unreachable":[]},"Slovakia":{"n":12,"tried":15,"pass":0.0,"score":23.5,"faults":18.5,"sites":[{"d":"shmu.sk","s":64,"f":8},{"d":"cas.sk","s":44,"f":8},{"d":"profesia.sk","s":38,"f":9},{"d":"bazos.sk","s":33,"f":11},{"d":"azet.sk","s":30,"f":13},{"d":"cp.sk","s":28,"f":20},{"d":"pravda.sk","s":12,"f":78},{"d":"webhouse.sk","s":9,"f":64},{"d":"sme.sk","s":7,"f":21},{"d":"topky.sk","s":6,"f":17},{"d":"aktuality.sk","s":6,"f":73},{"d":"zoznam.sk","s":5,"f":20}],"unreachable":["z-library.sk","allegro.sk","dennikn.sk"]},"Slovenia":{"n":10,"tried":15,"pass":0.0,"score":33.1,"faults":31.5,"sites":[{"d":"bombuj.si","s":92,"f":1},{"d":"uni-lj.si","s":86,"f":2},{"d":"avant.si","s":50,"f":5},{"d":"freedns.si","s":32,"f":17},{"d":"rtvslo.si","s":27,"f":36},{"d":"zurnal24.si","s":16,"f":70},{"d":"delo.si","s":9,"f":96},{"d":"svet24.si","s":7,"f":79},{"d":"dnevnik.si","s":7,"f":27},{"d":"neoserv.si","s":5,"f":103}],"unreachable":["jit.si","demonii.si","arnes.si","ijs.si","gov.si"]},"Spain":{"n":11,"tried":15,"pass":0.0,"score":22,"faults":19,"sites":[{"d":"20minutos.es","s":62,"f":7},{"d":"juntadeandalucia.es","s":57,"f":9},{"d":"boe.es","s":54,"f":5},{"d":"larazon.es","s":24,"f":16},{"d":"elmundo.es","s":10,"f":31},{"d":"eltiempo.es","s":7,"f":15},{"d":"abc.es","s":7,"f":19},{"d":"aepd.es","s":6,"f":56},{"d":"sport.es","s":5,"f":24},{"d":"rtve.es","s":5,"f":69},{"d":"eldiario.es","s":5,"f":76}],"unreachable":["leroymerlin.es","eleconomista.es","tripadvisor.es","elcorteingles.es"]},"Sweden":{"n":13,"tried":15,"pass":0.0,"score":47.7,"faults":9,"sites":[{"d":"svt.se","s":92,"f":2},{"d":"uu.se","s":80,"f":3},{"d":"lu.se","s":74,"f":4},{"d":"liu.se","s":69,"f":5},{"d":"hemnet.se","s":65,"f":3},{"d":"dn.se","s":55,"f":9},{"d":"blocket.se","s":51,"f":7},{"d":"telenor.se","s":47,"f":9},{"d":"aftonbladet.se","s":39,"f":18},{"d":"netnod.se","s":24,"f":15},{"d":"expressen.se","s":9,"f":44},{"d":"hitta.se","s":8,"f":14},{"d":"di.se","s":7,"f":16}],"unreachable":["andersnoren.se","kth.se"]}};
-const EU=Object.keys(SCAN);
+const DTI={"Norway":[15.59,5105,1],"Finland":[14.56,5405],"Sweden":[14.06,9985],"Austria":[11.42,10905],"Germany":[9.92,79276],"Italy":[9.90,32617],"Denmark":[9.76,9014],"Belgium":[8.86,9577],"Netherlands":[8.23,38433],"Spain":[7.33,16980],"France":[7.28,31655],"Portugal":[6.10,6838],"Czechia":[5.71,12666],"Greece":[5.48,9124],"Poland":[5.36,24902],"Slovakia":[5.06,4962],"Hungary":[5.03,8237],"Romania":[4.24,10569]};
+const WEBAIM={"Netherlands":[45.5,12660,"nl"],"Germany":[46.3,28401,"de"],"France":[53.3,11335,"fr"],"Spain":[57.0,6401,"es"],"Italy":[59.5,11314,"it"],"Poland":[67.1,10203,"pl"],"Czechia":[73.2,5700,"cz"]};
 const css=v=>getComputedStyle(document.documentElement).getPropertyValue(v).trim();
-const steps=[0,10,20,30,40,50,100];
-const color=d3.scaleThreshold().domain(steps.slice(1,-1)).range(['--s5','--s4','--s3','--s2','--s1','--s0'].map(css));
-const all=Object.values(SCAN).flatMap(c=>c.sites);
-document.getElementById('avg').textContent=(all.reduce((a,s)=>a+s.s,0)/all.length).toFixed(1);
+const ramp=()=>['--s0','--s1','--s2','--s3','--s4','--s5'].map(css);
 
-const lg=document.getElementById('legend');
-color.range().forEach((c,i)=>{lg.insertAdjacentHTML('beforeend',`<span class="sw" style="background:${c}"></span><span class="lab">${i<5? steps[i]+'–'+steps[i+1] : '50+'}</span>`)});
-lg.insertAdjacentHTML('beforeend',`<span class="lab" style="margin-left:0">mean score / 100</span>`);
+const SOURCES={
+ scan:{
+  eyebrow:'Accessible Scan · 295 homepages · 27 EU countries · scanned 26 Sep 2026',
+  h1:'How accessible are each EU country\u2019s most-visited websites?',
+  lede:'We ran the 15 most-visited domains of every EU country\u2019s ccTLD (Tranco ranking) through our own scanner. Colour is the <b>mean score out of 100</b>. Only <b>2 of 295</b> homepages had zero provable WCAG A/AA faults \u2014 and both are empty placeholder pages.',
+  big:()=>{const a=Object.values(SCAN).flatMap(c=>c.sites);return (a.reduce((s,x)=>s+x.s,0)/a.length).toFixed(1)}, bigl:'mean score across all 295 scanned homepages',
+  rankh:'Ranked by mean score', unit:'/ 100', legendl:'mean score / 100',
+  steps:[0,10,20,30,40,50,100], higherBetter:true, barMax:60,
+  data:Object.fromEntries(Object.entries(SCAN).map(([k,v])=>[k,{v:v.score,n:v.n,fmt:x=>x.toFixed(0)}])),
+  tip:(k)=>{const d=SCAN[k];return `${d.n} of ${d.tried} scanned \u00b7 median ${d.faults} A/AA faults \u00b7 ${d.pass.toFixed(0)}% pass<br>best ${d.sites[0].d} (${d.sites[0].s})`},
+  detail:(k)=>{const d=SCAN[k];return `<h2>${k} \u00b7 ${d.n} homepages</h2><table><thead><tr><th>Site</th><th>Score</th><th>A/AA faults</th></tr></thead><tbody>${d.sites.map(s=>`<tr><td>${s.d}</td><td>${s.s}</td><td>${s.f}</td></tr>`).join('')}</tbody></table>${d.unreachable.length?`<p class="meta">Could not be scanned: ${d.unreachable.join(', ')}</p>`:''}`},
+  foot:'Method: for each EU member we took the first 15 registrable domains under its country TLD in the <a href="https://tranco-list.eu/">Tranco</a> top-1M list (URL shorteners, google/amazon mirrors and adult sites removed) and scanned the homepage with Accessible Scan\u2019s automated layer (axe-core plus our own checks, no AI review) in headless Chromium on 26 Sep 2026. Score is the report\u2019s 0\u2013100 score, which counts only provable WCAG A/AA faults. \u201cFaults\u201d is the median count per country. 110 sites could not be scanned \u2014 bot-blocking (HTTP 403/511), invalid certificates, or pages that never finished loading in 60 s \u2014 and are excluded; <i>n</i> shows how many were scanned. Fifteen sites a country is a small sample: read the map as a sketch, not a league table.',
+  nodata:k=>'Not in the EU \u2014 not scanned'
+ },
+ dti:{
+  eyebrow:'Digital Trust Index · 326,250 homepages · 18 countries · 2026',
+  h1:'Share of websites that pass automated WCAG checks, by country',
+  lede:'A homepage counts as passing when it clears all <b>61 automated tests</b> \u2014 colour contrast, link and image names, form labels. Automated checks catch roughly a third of WCAG criteria, so these are ceilings, not floors.',
+  big:()=>{const e=Object.values(DTI);return (e.reduce((a,[p,n])=>a+p*n,0)/e.reduce((a,[,n])=>a+n,0)).toFixed(1)+'%'}, bigl:'pass, weighted across all tested pages',
+  rankh:'Ranked by pass rate', unit:'% pass', legendl:'% of homepages passing',
+  steps:[4,6,8,10,12,14,16], higherBetter:true, barMax:16,
+  data:Object.fromEntries(Object.entries(DTI).map(([k,[p,n,eea]])=>[k,{v:p,n,eea,fmt:x=>x.toFixed(1)+'%'}])),
+  tip:(k)=>{const [p,n]=DTI[k];return `${n.toLocaleString('en')} homepages \u00b7 ${(100-p).toFixed(1)}% fail`},
+  detail:null,
+  foot:'Source: <a href="https://www.digitaltrustindex.eu/">Digital Trust Index 2026</a>, an automated scan of company homepages in 18 European countries. Norway is EEA, not EU, but is in the sample. Countries in grey were not scanned.',
+  nodata:k=>'Not in the 2026 sample'
+ },
+ webaim:{
+  eyebrow:'WebAIM Million · 1,000,000 homepages · February 2026',
+  h1:'Average detectable WCAG 2 errors per homepage, by country domain',
+  lede:'WebAIM\u2019s yearly WAVE analysis of the top million homepages: <b>95.9%</b> had detectable WCAG 2 failures, <b>56.1 errors</b> per page on average. It reports by top-level domain, so only the seven EU ccTLDs it lists can be mapped. <b>Lower is better.</b>',
+  big:()=>'56.1', bigl:'errors per homepage, all one million pages',
+  rankh:'Ranked by errors per page', unit:'errors / page', legendl:'errors per page (lower is better)',
+  steps:[0,45,50,55,60,70,120], higherBetter:false, barMax:80,
+  data:Object.fromEntries(Object.entries(WEBAIM).map(([k,[e,n,t]])=>[k,{v:e,n,tld:t,fmt:x=>x.toFixed(1)}])),
+  tip:(k)=>{const [e,n,t]=WEBAIM[k];return `.${t} \u00b7 ${n.toLocaleString('en')} homepages \u00b7 ${((e/56.1-1)*100).toFixed(0).replace(/^(\d)/,'+$1')}% vs the million-page average`},
+  detail:null,
+  foot:'Source: <a href="https://webaim.org/projects/million/">The WebAIM Million 2026</a>. Errors are WAVE-detected WCAG 2 failures on the homepage. WebAIM groups by TLD, not country: .com and .eu sites from EU companies are invisible here, and a .de site is not necessarily German. The other EU ccTLDs are not broken out in the report. Most common errors across the million: low-contrast text 83.9%, missing alt text 53.1%, missing form labels 51%, empty links 46.3%.',
+  nodata:k=>'ccTLD not broken out in the report'
+ }
+};
 
-const rank=document.getElementById('rank');
-const sorted=Object.entries(SCAN).sort((a,b)=>b[1].score-a[1].score);
-sorted.forEach(([k,v],i)=>{
-  rank.insertAdjacentHTML('beforeend',`<li data-c="${k}"><span class="i">${String(i+1).padStart(2,'0')}</span><span><span class="nm">${k}</span> <span class="i">n=${v.n}</span><div class="bar"><i style="width:${v.score/60*100}%"></i></div></span><span class="v">${v.score.toFixed(0)}</span></li>`);
-});
+let cur='scan', features=null;
+const $=id=>document.getElementById(id);
+const tip=$('tip'), box=document.querySelector('.mapbox'), rank=$('rank'), detail=$('detail');
 
-const tip=document.getElementById('tip'), box=document.querySelector('.mapbox');
+function colorFor(S){
+  const r=ramp(); if(S.higherBetter) r.reverse();
+  return d3.scaleThreshold().domain(S.steps.slice(1,-1)).range(r);
+}
+function render(){
+  const S=SOURCES[cur], color=colorFor(S);
+  $('eyebrow').textContent=S.eyebrow; $('h1').textContent=S.h1; $('lede').innerHTML=S.lede;
+  $('avg').textContent=S.big(); $('avgl').textContent=S.bigl; $('rankh').textContent=S.rankh; $('foot').innerHTML=S.foot;
+  detail.hidden=true; hide();
+  const lg=$('legend'); lg.innerHTML='';
+  color.range().forEach((c,i)=>{lg.insertAdjacentHTML('beforeend',`<span class="sw" style="background:${c}"></span><span class="lab">${i===0&&S.steps[0]===0?'< '+S.steps[1]: i===5? S.steps[5]+'+' : S.steps[i]+'\u2013'+S.steps[i+1]}</span>`)});
+  lg.insertAdjacentHTML('beforeend',`<span class="lab" style="margin-left:0">${S.legendl}</span>`);
+  rank.innerHTML='';
+  const sorted=Object.entries(S.data).sort((a,b)=>S.higherBetter?b[1].v-a[1].v:a[1].v-b[1].v);
+  sorted.forEach(([k,d],i)=>rank.insertAdjacentHTML('beforeend',`<li data-c="${k}" class="${d.eea?'eea':''}"><span class="i">${String(i+1).padStart(2,'0')}</span><span><span class="nm">${k}</span>${cur==='scan'?` <span class="i">n=${d.n}</span>`:''}<div class="bar"><i style="width:${Math.min(100,d.v/S.barMax*100)}%"></i></div></span><span class="v">${d.fmt(d.v)}</span></li>`));
+  if(!features) return;
+  const svg=d3.select('#map');
+  svg.selectAll('path.country').data(features).join('path')
+    .attr('class',d=>'country'+(S.data[d.properties.name]?'':' nodata'))
+    .attr('fill',d=>S.data[d.properties.name]?color(S.data[d.properties.name].v):null)
+    .attr('tabindex',d=>S.data[d.properties.name]?0:-1)
+    .attr('role',d=>S.data[d.properties.name]&&S.detail?'button':null)
+    .attr('aria-label',d=>S.data[d.properties.name]?`${d.properties.name}: ${S.data[d.properties.name].fmt(S.data[d.properties.name].v)} ${S.unit}`:d.properties.name);
+  const small=['Luxembourg','Malta','Cyprus','Slovenia','Belgium'];
+  svg.select('g.labels').selectAll('text').data(features.filter(d=>S.data[d.properties.name]&&!small.includes(d.properties.name))).join('text')
+    .attr('transform',d=>`translate(${window.__path.centroid(d)})`).attr('text-anchor','middle').attr('dy','.35em')
+    .attr('font-size',11).attr('font-family','JetBrains Mono,monospace').attr('pointer-events','none')
+    .attr('fill',d=>{const c=color(S.data[d.properties.name].v);return [css('--s3'),css('--s4'),css('--s5')].includes(c)?css('--paper'):css('--ink')})
+    .text(d=>S.data[d.properties.name].fmt(S.data[d.properties.name].v));
+}
 function show(name,ev){
-  const d=SCAN[name];
-  tip.innerHTML=d?`<div class="name">${name}</div><div class="pct">${d.score.toFixed(0)}<span class="meta"> / 100</span></div><div class="meta">${d.n} of ${d.tried} scanned · median ${d.faults} A/AA faults · ${d.pass.toFixed(0)}% pass</div><div class="meta">best ${d.sites[0].d} (${d.sites[0].s})</div>`
-    :`<div class="name">${name}</div><div class="meta">Not in the EU — not scanned</div>`;
+  const S=SOURCES[cur], d=S.data[name];
+  tip.innerHTML=d?`<div class="name">${name}${d.eea?' <span class="meta">EEA</span>':''}</div><div class="pct">${d.fmt(d.v)}<span class="meta"> ${S.unit}</span></div><div class="meta">${S.tip(name)}</div>`
+    :`<div class="name">${name}</div><div class="meta">${S.nodata(name)}</div>`;
   tip.classList.add('on');
-  if(ev){const r=box.getBoundingClientRect();let x=ev.clientX-r.left+16,y=ev.clientY-r.top+16;if(x+240>r.width)x-=260;tip.style.left=x+'px';tip.style.top=y+'px';}
+  if(ev){const r=box.getBoundingClientRect();let x=ev.clientX-r.left+16,y=ev.clientY-r.top+16;if(x+260>r.width)x-=280;tip.style.left=x+'px';tip.style.top=y+'px';}
 }
 function hide(){tip.classList.remove('on')}
 function hot(name,on){
-  d3.selectAll('.country').classed('hot',d=>on&&d.properties.name===name).classed('dim',d=>on&&d.properties.name!==name&&SCAN[d.properties.name]);
+  const S=SOURCES[cur];
+  d3.selectAll('.country').classed('hot',d=>on&&d.properties.name===name).classed('dim',d=>on&&d.properties.name!==name&&S.data[d.properties.name]);
   rank.querySelectorAll('li').forEach(li=>li.classList.toggle('hot',on&&li.dataset.c===name));
 }
-const detail=document.getElementById('detail');
 function select(name){
-  const d=SCAN[name]; if(!d) return;
-  detail.hidden=false;
-  detail.innerHTML=`<h2>${name} · ${d.n} homepages</h2><table><thead><tr><th>Site</th><th>Score</th><th>A/AA faults</th></tr></thead><tbody>${d.sites.map(s=>`<tr><td>${s.d}</td><td>${s.s}</td><td>${s.f}</td></tr>`).join('')}</tbody></table>${d.unreachable.length?`<p class="meta">Could not be scanned: ${d.unreachable.join(', ')}</p>`:''}`;
-  detail.scrollIntoView({behavior:'smooth',block:'nearest'});
+  const S=SOURCES[cur]; if(!S.detail||!S.data[name]) return;
+  detail.hidden=false; detail.innerHTML=S.detail(name); detail.scrollIntoView({behavior:'smooth',block:'nearest'});
 }
-rank.addEventListener('mouseover',e=>{const li=e.target.closest('li');if(li){hot(li.dataset.c,true)}});
+rank.addEventListener('mouseover',e=>{const li=e.target.closest('li');if(li)hot(li.dataset.c,true)});
 rank.addEventListener('mouseout',()=>hot(null,false));
 rank.addEventListener('click',e=>{const li=e.target.closest('li');if(li)select(li.dataset.c)});
+$('src').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;cur=b.dataset.s;$('src').querySelectorAll('button').forEach(x=>x.setAttribute('aria-pressed',x===b));render()});
 
+render();
 fetch('eu.json').then(r=>r.json()).then(topo=>{
-  const f=topojson.feature(topo,topo.objects.countries);
+  features=topojson.feature(topo,topo.objects.countries).features;
   const proj=d3.geoConicConformal().parallels([40,65]).rotate([-12,0]).center([0,54]).scale(1000).translate([380,320]);
-  const path=d3.geoPath(proj);
+  const path=window.__path=d3.geoPath(proj);
   const svg=d3.select('#map');
-  svg.append('g').selectAll('path').data(f.features).join('path')
-    .attr('class',d=>'country'+(SCAN[d.properties.name]?'':' nodata'))
-    .attr('d',path)
-    .attr('fill',d=>SCAN[d.properties.name]?color(SCAN[d.properties.name].score):null)
-    .attr('tabindex',d=>SCAN[d.properties.name]?0:-1)
-    .attr('role',d=>SCAN[d.properties.name]?'button':null)
-    .attr('aria-label',d=>SCAN[d.properties.name]?`${d.properties.name}: mean score ${SCAN[d.properties.name].score.toFixed(0)} of 100`:d.properties.name)
+  svg.append('g').attr('class','shapes').selectAll('path').data(features).join('path').attr('class','country nodata').attr('d',path)
     .on('mousemove',(e,d)=>{show(d.properties.name,e);hot(d.properties.name,true)})
     .on('mouseleave',()=>{hide();hot(null,false)})
     .on('click',(e,d)=>select(d.properties.name))
     .on('keydown',(e,d)=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();select(d.properties.name)}})
     .on('focus',(e,d)=>{const b=e.target.getBBox(),r=box.getBoundingClientRect(),s=r.width/760;tip.style.left=(b.x+b.width)*s+'px';tip.style.top=b.y*s+'px';show(d.properties.name);hot(d.properties.name,true)})
     .on('blur',()=>{hide();hot(null,false)});
-  svg.append('g').selectAll('text').data(f.features.filter(d=>SCAN[d.properties.name]&&!['Luxembourg','Malta','Cyprus','Slovenia','Belgium'].includes(d.properties.name))).join('text')
-    .attr('transform',d=>`translate(${path.centroid(d)})`).attr('text-anchor','middle').attr('dy','.35em')
-    .attr('font-size',11).attr('font-family','JetBrains Mono,monospace').attr('fill',d=>SCAN[d.properties.name].score<30?css('--paper'):css('--ink')).attr('pointer-events','none')
-    .text(d=>SCAN[d.properties.name].score.toFixed(0));
+  svg.append('g').attr('class','labels');
+  render();
 });
 </script>
