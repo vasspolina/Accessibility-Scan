@@ -188,4 +188,6 @@ export const STRINGS_DE: Record<string, string> = {
   "Trying it at phone width": "Die Seite wird in Handybreite geprüft",
   "The AI review reads the page": "Die KI-Durchsicht liest die Seite",
   "Writing the report": "Der Bericht wird geschrieben",
+  "What a designer would point out, not failures against a rule. None of it counts towards the score.": "Was ein Designer anmerken würde, keine Verstöße gegen eine Regel. Nichts davon zählt in den Wert.",
+  "Most notes are about type. Text set small, tight or in capitals loses readers before any rule is broken.": "Die meisten Hinweise betreffen die Typografie. Zu kleiner, zu enger oder durchgehend groß gesetzter Text kostet Leser, bevor eine Regel verletzt ist.",
 };

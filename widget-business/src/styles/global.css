@@ -5593,77 +5593,18 @@
 .a11y-widget-biz .a11y-next-toggle .a11y-next-chevron { margin-left: 0; }
 
 /* ── Notes on the design ───────────────────────────────────────────────
-   The design's shape: a yellow band carrying the heading and the lead,
-   then a black panel holding the note titles with one open beneath them.
+   A standard section head, then a black panel holding the note titles
+   with one open beneath them.
 
    Replaces the DataTable render. A note has no severity, no criterion and
    no level, so three of that table's columns were empty on every row —
    which is how it came to show an empty header cell over half the report's
    width with the note titles pushed to the right of it. */
 
-.a11y-widget-biz .a11y-dn-band {
-  background: var(--yellow-brand);
-  border-radius: var(--radius-lg);
-  padding: var(--space-05);
-  display: grid;
-  gap: var(--space-05);
-}
-
-.a11y-widget-biz .a11y-dn-band-eyebrow {
-  margin: 0;
-  text-align: center;
-  text-transform: uppercase;
-  font-size: 15px;
-  font-weight: 500;
-  letter-spacing: 0.01em;
-  color: var(--ink-on-brand);
-}
-
-.a11y-widget-biz .a11y-dn-card {
-  background: var(--layer-02);
-  border-radius: var(--radius-lg);
-  padding: var(--space-07);
-  display: grid;
-  gap: var(--space-05);
-}
-
-/* 40px is the design's size and it holds from 680px up. Below that the
-   heading is wider than the column it sits in — at 320px the card is 254px
-   and "design" alone sets 168px of it. */
-.a11y-widget-biz .a11y-dn-title {
-  margin: 0;
-  font-size: 28px;
-  font-weight: 500;
-  line-height: 1.2;
-  letter-spacing: 0.01em;
-  color: var(--gray-100);
-}
-
-@container a11y-panel (min-width: 680px) {
-  .a11y-widget-biz .a11y-dn-title { font-size: 40px; }
-}
-
-/* Not a heading level of its own — it is the count in the heading, set
-   back so the four words stay the thing you read first. */
-.a11y-widget-biz .a11y-dn-count {
-  font-size: 24px;
-  font-weight: 400;
-  letter-spacing: 0.01em;
-  color: var(--gray-60);
-}
-
-.a11y-widget-biz .a11y-dn-lead {
-  display: grid;
-  gap: var(--space-06);
-}
-
-.a11y-widget-biz .a11y-dn-lead p {
-  margin: 0;
-  font-size: 18px;
-  line-height: 1.5;
-  letter-spacing: 0.01em;
-  color: var(--gray-100);
-}
+/* The heading, lead and count take the report's standard section anatomy
+   (.a11y-section-title and friends) since the Off-Type pass — the kit's
+   yellow band, its centred eyebrow and the white card inside it are gone,
+   and their rules with them. */
 
 /* ── the black panel ───────────────────────────────────────────────── */
 
@@ -5842,8 +5783,6 @@
    affordance, and a printed report that drops the rest is not the report. */
 @media print {
   .a11y-widget-biz .a11y-dn-panel { display: none; }
-  .a11y-widget-biz .a11y-dn-band { background: none; padding: 0; }
-  .a11y-widget-biz .a11y-dn-card { padding: 0; }
 }
 
 /* The expand column's header cell. It carried no rule of its own, so
@@ -6007,7 +5946,6 @@
    inside the box, not the panel. Measured 469px left of centre on a wide
    host. Same fault as the findings-table label; same reason: a measure
    is for reading, and these are labels. */
-.a11y-widget-biz .a11y-dn-band-eyebrow,
 .a11y-widget-biz .a11y-dn-panel-eyebrow {
   max-width: none;
 }

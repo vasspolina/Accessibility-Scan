@@ -68,33 +68,29 @@ export function DesignNotesPanel({ findings }: { findings: AccessibilityFinding[
 
   return (
     <section className="a11y-section a11y-dn" aria-labelledby="a11y-notes-heading">
-      <div className="a11y-dn-band">
-        {/* Decorative repeat of the heading below it — the design's own
-            device. A screen reader would otherwise hear the same four words
-            twice before the lead. */}
-        <p className="a11y-dn-band-eyebrow" aria-hidden="true">
-          Notes on the design
-        </p>
-
-        <div className="a11y-dn-card">
-          <h2
-            className="a11y-dn-title"
-            id="a11y-notes-heading"
-            data-nav-label={t("Notes on the design")}
-          >
-            Notes on the design{" "}
-            <span className="a11y-dn-count">({groups.length})</span>
-          </h2>
-          <div className="a11y-dn-lead">
-            <p>Remarks rather than faults, and none of it counts towards the score.</p>
-            <p>
-              Every one is judgement rather than measurement, with no rule underneath to
-              point at. Mostly type that works against the reader, and it still costs you
-              readers.
-            </p>
-          </div>
-        </div>
-      </div>
+      {/* The same anatomy as every other section: title, lead, content.
+          The kit's yellow band with its decorative repeat of the heading
+          came along in the port and outlived the direction that once
+          justified it — one heading, said once, on the report's own paper. */}
+      <h2
+        className="a11y-section-title"
+        id="a11y-notes-heading"
+        data-nav-label={t("Notes on the design")}
+      >
+        Notes on the design{" "}
+        <span className="a11y-section-count">({groups.length})</span>
+      </h2>
+      {/* The lead used to be three clipped thoughts with no throughline —
+          "remarks rather than faults", "judgement rather than measurement" —
+          which read as random to the person it was written for. Now it says
+          what the section is, then why it matters, and it is translated,
+          which the old lead never was. */}
+      <p className="a11y-section-desc">
+        {t("What a designer would point out, not failures against a rule. None of it counts towards the score.")}
+      </p>
+      <p className="a11y-section-desc">
+        {t("Most notes are about type. Text set small, tight or in capitals loses readers before any rule is broken.")}
+      </p>
 
       {/* Professional mode gets the notes as cards only — the black panel is
           the business reading of them, and the pro screen already lists every

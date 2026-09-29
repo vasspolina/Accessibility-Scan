@@ -224,4 +224,7 @@ export const CHROME_KEYS: string[] = [
   "Trying it at phone width",
   "The AI review reads the page",
   "Writing the report",
+  // The design-notes lead (DesignNotesPanel).
+  "What a designer would point out, not failures against a rule. None of it counts towards the score.",
+  "Most notes are about type. Text set small, tight or in capitals loses readers before any rule is broken.",
 ];

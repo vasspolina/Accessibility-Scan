@@ -138,3 +138,5 @@ should check that none of those splits reads oddly.
 | Writing the report | Der Bericht wird geschrieben | scan narration |
 | Put the promised items inside: a list needs list items, a menu needs menu items. | Setzen Sie die versprochenen Einträge hinein: eine Liste braucht Listeneinträge, ein Menü braucht Menüeinträge. | fix, aria-required-children |
 | If the content is not really a list or a menu, take that marking off the container. | Ist der Inhalt in Wahrheit keine Liste und kein Menü, nehmen Sie die Auszeichnung vom Container. | fix, aria-required-children |
+| What a designer would point out, not failures against a rule. None of it counts towards the score. | Was ein Designer anmerken würde, keine Verstöße gegen eine Regel. Nichts davon zählt in den Wert. | design-notes lead |
+| Most notes are about type. Text set small, tight or in capitals loses readers before any rule is broken. | Die meisten Hinweise betreffen die Typografie. Zu kleiner, zu enger oder durchgehend groß gesetzter Text kostet Leser, bevor eine Regel verletzt ist. | design-notes lead |
