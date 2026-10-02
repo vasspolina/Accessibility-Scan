@@ -1956,13 +1956,16 @@
    ========================================================================== */
 
 /* The address is the display line of this screen, not a form field. */
-.a11y-widget-biz .a11y-url-form .a11y-input-shell {
+.a11y-widget-biz .a11y-url-form .a11y-input-shell,
+.a11y-widget-biz .a11y-chat-composer .a11y-input-shell {
   display: flex;
   align-items: center;
   border-bottom: 2px solid var(--text-primary);
 }
 .a11y-widget-biz .a11y-url-form .a11y-input-display > input,
-.a11y-widget-biz .a11y-url-form .a11y-input-shell > input {
+.a11y-widget-biz .a11y-url-form .a11y-input-shell > input,
+.a11y-widget-biz .a11y-chat-composer .a11y-input-display > input,
+.a11y-widget-biz .a11y-chat-composer .a11y-input-shell > input {
   flex: 1;
   min-width: 0;
   border: 0;
@@ -1975,11 +1978,14 @@
    most important control with no visible focus at all: WCAG 2.4.7, failed in
    Chromium, Firefox and WebKit alike, by the tool that reports 2.4.7 on
    other people's sites. :focus-within puts it on the shell. */
-.a11y-widget-biz .a11y-url-form .a11y-input-shell > input:focus-visible { outline: 0; }
-.a11y-widget-biz .a11y-url-form .a11y-input-shell:focus-within {
+.a11y-widget-biz .a11y-url-form .a11y-input-shell > input:focus-visible,
+.a11y-widget-biz .a11y-chat-composer .a11y-input-shell > input:focus-visible { outline: 0; }
+.a11y-widget-biz .a11y-url-form .a11y-input-shell:focus-within,
+.a11y-widget-biz .a11y-chat-composer .a11y-input-shell:focus-within {
   outline: 2px solid var(--focus);
 }
-.a11y-widget-biz .a11y-url-form .a11y-input-label {
+.a11y-widget-biz .a11y-url-form .a11y-input-label,
+.a11y-widget-biz .a11y-chat-composer .a11y-input-label {
   font-size: 15px; font-weight: 500; color: var(--text-primary);
 }
 
@@ -3498,10 +3504,19 @@
    NOT defined anywhere in this stylesheet, only referenced with a fallback,
    because a definition here would win over the host's and custom properties
    inherit straight through the shadow boundary. A host with no fixed chrome
-   sets nothing and gets the 16px default. */
-.a11y-widget-biz .a11y-shell-nav {
-  top: var(--a11y-sticky-top, var(--space-05));
-  max-height: calc(100vh - var(--a11y-sticky-top, var(--space-05)) - var(--space-05));
+   sets nothing and gets the 16px default.
+
+   Scoped to the wide shell, where the rail is sticky. Unscoped, this came
+   later in the file than the narrow layout's max-height: none and beat it
+   on source order, so the stacked rail at phone width kept a viewport-tall
+   cap with overflow visible — its settings and account key spilled out of
+   the card and painted over the report below it. Measured at 320px: a
+   768px box with content running 560px past its bottom edge. */
+@container a11y-shell (min-width: 761px) {
+  .a11y-widget-biz .a11y-shell-nav {
+    top: var(--a11y-sticky-top, var(--space-05));
+    max-height: calc(100vh - var(--a11y-sticky-top, var(--space-05)) - var(--space-05));
+  }
 }
 /* Every jump target clears it too, or the nav lands its heading under the
    host's header and the reader sees the paragraph after it. */
@@ -4332,7 +4347,8 @@
    with a 2px purple edge, the input sits transparent inside it at 32px, and
    the login trigger is an outlined pill INSIDE the field at its right end —
    not a separate line underneath. */
-.a11y-widget-biz .a11y-url-form .a11y-input-shell {
+.a11y-widget-biz .a11y-url-form .a11y-input-shell,
+.a11y-widget-biz .a11y-chat-composer .a11y-input-shell {
   gap: var(--space-04);
   padding: var(--space-03) var(--space-03) var(--space-03) var(--space-06);
   border: 2px solid var(--purple-70);
@@ -4340,7 +4356,9 @@
   background: var(--purple-10);
 }
 .a11y-widget-biz .a11y-url-form .a11y-input-display > input,
-.a11y-widget-biz .a11y-url-form .a11y-input-shell > input {
+.a11y-widget-biz .a11y-url-form .a11y-input-shell > input,
+.a11y-widget-biz .a11y-chat-composer .a11y-input-display > input,
+.a11y-widget-biz .a11y-chat-composer .a11y-input-shell > input {
   height: 64px;
   padding: 0;
   background: transparent;
@@ -4348,7 +4366,8 @@
 }
 /* The focus ring follows the field's new shape — it was a square outline
    around a pill. */
-.a11y-widget-biz .a11y-url-form .a11y-input-shell:focus-within {
+.a11y-widget-biz .a11y-url-form .a11y-input-shell:focus-within,
+.a11y-widget-biz .a11y-chat-composer .a11y-input-shell:focus-within {
   outline-offset: 3px;
   border-radius: var(--radius-pill);
 }
@@ -4380,14 +4399,17 @@
    a 32px address without one of them overflowing — the field wraps instead,
    and the trigger takes the full width under it. */
 @container a11y-panel (max-width: 586px) {
-  .a11y-widget-biz .a11y-url-form .a11y-input-shell {
+  .a11y-widget-biz .a11y-url-form .a11y-input-shell,
+  .a11y-widget-biz .a11y-chat-composer .a11y-input-shell {
     flex-wrap: wrap;
     border-radius: var(--radius-lg);
     padding: var(--space-04);
   }
-  .a11y-widget-biz .a11y-url-form .a11y-input-shell > input { font-size: 24px; height: 48px; }
+  .a11y-widget-biz .a11y-url-form .a11y-input-shell > input,
+  .a11y-widget-biz .a11y-chat-composer .a11y-input-shell > input { font-size: 24px; height: 48px; }
   .a11y-widget-biz .a11y-url-form .a11y-login-toggle { width: 100%; justify-content: center; }
-  .a11y-widget-biz .a11y-url-form .a11y-input-shell:focus-within { border-radius: var(--radius-lg); }
+  .a11y-widget-biz .a11y-url-form .a11y-input-shell:focus-within,
+  .a11y-widget-biz .a11y-chat-composer .a11y-input-shell:focus-within { border-radius: var(--radius-lg); }
 }
 
 /* ── This scan: the run's settings, in the rail ──────────────────────────
@@ -6793,3 +6815,98 @@
    does not end on a single word where it can help it. The short-word rule
    (lib/typography.ts) covers line ends inside the paragraph. */
 .a11y-widget-biz p, .a11y-widget-biz li, .a11y-widget-biz dd, .a11y-widget-biz h2, .a11y-widget-biz h3 { text-wrap: pretty; }
+
+/* ── The conversation ─────────────────────────────────────────────────────
+   The checker's front door since 1 Oct 2026. Flat Off-Type lines rather
+   than bubbles: each turn is a hairline-ruled entry with its speaker named
+   in text above it. The person's own words take the accent ink (5.2:1 on
+   paper); that is a second cue, never the only one — the speaker label
+   says who is talking whatever the colour does. */
+.a11y-widget-biz .a11y-chat-thread {
+  list-style: none;
+  margin: var(--space-07) 0 var(--space-06);
+  padding: 0;
+  display: grid;
+  gap: 0;
+  border-top: 1px dotted var(--purple-30);
+}
+
+.a11y-widget-biz .a11y-chat-turn {
+  padding: var(--space-06) 0;
+  border-bottom: 1px dotted var(--purple-30);
+}
+
+.a11y-widget-biz .a11y-chat-who {
+  margin: 0 0 var(--space-03);
+  font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  font-size: 14px;
+  line-height: 1.4;
+  letter-spacing: 0.01em;
+  color: var(--text-secondary);
+}
+
+.a11y-widget-biz .a11y-chat-url {
+  font-weight: 500;
+  color: var(--text-primary);
+  overflow-wrap: anywhere;
+}
+
+.a11y-widget-biz .a11y-chat-text {
+  max-width: var(--measure);
+}
+
+.a11y-widget-biz .a11y-chat-text p,
+.a11y-widget-biz .a11y-chat-text li {
+  margin: 0 0 var(--space-04);
+  font-size: 18px;
+  line-height: 1.5;
+  letter-spacing: 0.01em;
+}
+
+.a11y-widget-biz .a11y-chat-text p:last-child,
+.a11y-widget-biz .a11y-chat-text li:last-child {
+  margin-bottom: 0;
+}
+
+.a11y-widget-biz .a11y-chat-text ul {
+  margin: 0 0 var(--space-04);
+  padding-left: var(--space-06);
+}
+
+.a11y-widget-biz .a11y-chat-you .a11y-chat-text p {
+  color: var(--purple-60);
+}
+
+.a11y-widget-biz .a11y-chat-thinking {
+  font-size: 15px;
+  color: var(--text-secondary);
+}
+
+/* The running scan turn carries the progress block; give it room. */
+.a11y-widget-biz .a11y-chat-scan-running {
+  padding-bottom: var(--space-07);
+}
+
+.a11y-widget-biz .a11y-chat-composer {
+  margin-top: var(--space-06);
+}
+
+.a11y-widget-biz .a11y-chat-alt {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-03) var(--space-04);
+  margin: var(--space-05) 0 0;
+  max-width: none;
+}
+
+.a11y-widget-biz .a11y-chat-alt-note {
+  font-size: 15px;
+  letter-spacing: 0.01em;
+  color: var(--text-secondary);
+}
+
+/* The alternate-entry button wraps, as the settings row's do: its German
+   label ("Stattdessen das Formular nutzen") is wider than a 320px screen
+   on one line, and a nowrap button there scrolled the whole page sideways. */
+.a11y-widget-biz .a11y-chat-alt .a11y-btn { white-space: normal; text-align: left; height: auto; min-height: var(--target-min); }

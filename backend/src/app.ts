@@ -11,6 +11,7 @@ import { logger } from "./utils/logger.js";
 import { errorHandler } from "./middleware/errorHandler.js";
 import { healthRoutes } from "./routes/health.js";
 import { scanRoutes } from "./routes/scan.js";
+import { chatRoutes } from "./routes/chat.js";
 import { emailReportRoutes } from "./routes/emailReport.js";
 import { auditRoutes } from "./routes/audit.js";
 import { accountRoutes } from "./routes/account.js";
@@ -77,6 +78,7 @@ export async function buildApp() {
   await app.register(triageRoutes);
   await app.register(scheduleRoutes);
   await app.register(scanRoutes);
+  await app.register(chatRoutes);
   await app.register(auditRoutes);
   await app.register(emailReportRoutes);
   return app;

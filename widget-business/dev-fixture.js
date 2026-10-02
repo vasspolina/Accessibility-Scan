@@ -421,9 +421,95 @@
     };
   }
 
+  // ---- The assistant, faked ----------------------------------------------
+  // Streams server-sent events the way /api/chat does, from canned logic:
+  // an address starts a scan, a scan result gets a summary built from the
+  // digest, anything else gets an answer read off the digest. Not a model —
+  // a stand-in good enough to drive every state of the conversation.
+  // &nochat makes the server answer 503, the "no assistant" fallback.
+  var chatCalls = 0;
+  function chatStub(body) {
+    if (location.search.includes("nochat")) {
+      return Promise.resolve(new Response(JSON.stringify({ error: "chat_unavailable" }), { status: 503, headers: { "Content-Type": "application/json" } }));
+    }
+    var messages = (body && body.messages) || [];
+    var last = messages[messages.length - 1] || {};
+    var blocks = typeof last.content === "string" ? [{ type: "text", text: last.content }] : (last.content || []);
+    var toolResult = blocks.find(function (b) { return b.type === "tool_result"; });
+    var userText = blocks.filter(function (b) { return b.type === "text"; }).map(function (b) { return b.text; }).join(" ");
+
+    var digest = null;
+    messages.forEach(function (m) {
+      (Array.isArray(m.content) ? m.content : []).forEach(function (b) {
+        if (b.type === "tool_result" && !b.is_error) { try { digest = JSON.parse(b.content); } catch (e) {} }
+      });
+    });
+
+    var text, content, scan = null;
+    if (toolResult) {
+      if (toolResult.is_error) {
+        text = "The scan did not finish. " + String(toolResult.content).replace(/^The scan did not complete: /, "");
+      } else {
+        var d = JSON.parse(toolResult.content);
+        var first = (d.whatPeopleCantUse || []).filter(function (f) { return f.severity === "Fix first"; });
+        text = "The page scores " + d.score + ". " +
+          (first.length
+            ? "Start with the " + first.length + " findings marked Fix first:\n\n" + first.map(function (f) { return "- " + f.title; }).join("\n")
+            : "Nothing is marked Fix first.") +
+          "\n\nAsk me about any finding, or what to fix first.";
+      }
+      content = [{ type: "text", text: text }];
+    } else {
+      var addr = (userText.match(/\b((?:https?:\/\/)?(?:[a-z0-9-]+\.)+[a-z]{2,}(?:\/[^\s]*)?)/i) || [])[1];
+      if (addr) addr = addr.replace(/[.,;:!?)]+$/, "");
+      if (addr && !/fix|why|what|how/i.test(userText.replace(addr, ""))) {
+        chatCalls += 1;
+        var toolId = "toolu_fixture_" + chatCalls;
+        var wantsSite = /whole site|every page|site-wide/i.test(userText);
+        text = "Checking " + addr + " now.";
+        var input = { url: addr, scope: wantsSite ? "site" : "page", ai_review: /ai|design/i.test(userText) };
+        content = [{ type: "text", text: text }, { type: "tool_use", id: toolId, name: "start_scan", input: input }];
+        scan = { toolUseId: toolId, url: input.url, scope: input.scope, aiReview: input.ai_review };
+      } else if (digest) {
+        var top = (digest.whatPeopleCantUse || [])[0];
+        text = top
+          ? "Start with \"" + top.title + "\". " + (top.whatToDo || "") + " It goes to " + String(top.whoFixes).toLowerCase() + "."
+          : "The report has no findings to rank.";
+        content = [{ type: "text", text: text }];
+      } else {
+        text = "Which address should I check?";
+        content = [{ type: "text", text: text }];
+      }
+    }
+
+    var words = text.split(/(\s+)/);
+    var stream = new ReadableStream({
+      start: function (controller) {
+        var enc = new TextEncoder();
+        var i = 0;
+        var tick = setInterval(function () {
+          if (i < words.length) {
+            controller.enqueue(enc.encode("event: delta\ndata: " + JSON.stringify({ text: words.slice(i, i + 4).join("") }) + "\n\n"));
+            i += 4;
+            return;
+          }
+          clearInterval(tick);
+          controller.enqueue(enc.encode("event: done\ndata: " + JSON.stringify({ content: content, stopReason: scan ? "tool_use" : "end_turn", scan: scan }) + "\n\n"));
+          controller.close();
+        }, 40);
+      },
+    });
+    return Promise.resolve(new Response(stream, { status: 200, headers: { "Content-Type": "text/event-stream" } }));
+  }
+
   var realFetch = window.fetch.bind(window);
   window.fetch = function (input, init) {
     var target = typeof input === "string" ? input : input.url;
+    if (/\/api\/chat$/.test(target)) {
+      var chatBody = {};
+      try { chatBody = JSON.parse(init && init.body ? init.body : "{}"); } catch (e) { /* ignore */ }
+      return chatStub(chatBody);
+    }
     if (!/\/api\/(scan|audit)$/.test(target)) return realFetch(input, init);
 
     var body = {};
@@ -493,8 +579,17 @@
     waitFor(function () {
       var host = document.getElementById("a11y-widget-business-root");
       var sr = host && host.shadowRoot;
-      var input = sr && sr.querySelector("#a11y-url-input");
-      return input && sr.querySelector("form") ? sr : null;
+      if (!sr) return null;
+      // The conversation is the default entry since 1 Oct 2026; these states
+      // are built through the form, which is one button away.
+      if (!sr.querySelector("#a11y-url-input")) {
+        // By position, not by its words: the label is translated, and an
+        // English-only match left every non-English state stuck at the chat.
+        var toForm = sr.querySelector(".a11y-chat .a11y-chat-alt button");
+        if (toForm) toForm.click();
+        return null;
+      }
+      return sr.querySelector("form.a11y-url-form") ? sr : null;
     }, function (sr) {
       // Options first — they have to be set before the submit that reads them.
       if (params.get("scope") === "site") click(sr, "#a11y-scope-site");
@@ -510,7 +605,7 @@
       setValue.call(input, address);
       input.dispatchEvent(new Event("input", { bubbles: true, composed: true }));
 
-      sr.querySelector("form").requestSubmit();
+      sr.querySelector("form.a11y-url-form").requestSubmit();
 
       // &at=<id> parks a section at the top of the viewport once the report
       // exists. Scrolling from outside cannot be relied on: anything that
@@ -530,6 +625,22 @@
           window.scrollBy(0, -24);
         });
       }
+    });
+  }
+
+  //   ?fixture=chat           the conversation: asks to check example.com
+  //   ?fixture=chat&nochat    the same with no assistant on the server
+  if (mode === "chat") {
+    waitFor(function () {
+      var host = document.getElementById("a11y-widget-business-root");
+      var sr = host && host.shadowRoot;
+      return sr && sr.querySelector("#a11y-chat-input") ? sr : null;
+    }, function (sr) {
+      var input = sr.querySelector("#a11y-chat-input");
+      var setValue = Object.getOwnPropertyDescriptor(window.HTMLInputElement.prototype, "value").set;
+      setValue.call(input, "Can you check example.com for me?");
+      input.dispatchEvent(new Event("input", { bubbles: true, composed: true }));
+      setTimeout(function () { sr.querySelector("form.a11y-chat-composer").requestSubmit(); }, 50);
     });
   }
 

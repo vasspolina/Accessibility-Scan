@@ -227,4 +227,23 @@ export const CHROME_KEYS: string[] = [
   // The design-notes lead (DesignNotesPanel).
   "What a designer would point out, not failures against a rule. None of it counts towards the score.",
   "Most notes are about type. Text set small, tight or in capitals loses readers before any rule is broken.",
+  // The conversational front (ScanChat).
+  "Which site should I check?",
+  "Ask about the report, or name another site",
+  "An address is enough. Say if you want the whole site or the AI review.",
+  "Send",
+  "You",
+  "Checker",
+  "Conversation",
+  "Thinking…",
+  "Checking",
+  "Checked",
+  "Could not check",
+  "Scan finished.",
+  "The report is below.",
+  "The assistant is not available on this server. Paste an address and the scan still runs.",
+  "The assistant could not answer that.",
+  "Use the form instead",
+  "Needed for pages behind a login.",
+  "Back to the chat",
 ];

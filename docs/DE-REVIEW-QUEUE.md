@@ -140,3 +140,21 @@ should check that none of those splits reads oddly.
 | If the content is not really a list or a menu, take that marking off the container. | Ist der Inhalt in Wahrheit keine Liste und kein Menü, nehmen Sie die Auszeichnung vom Container. | fix, aria-required-children |
 | What a designer would point out, not failures against a rule. None of it counts towards the score. | Was ein Designer anmerken würde, keine Verstöße gegen eine Regel. Nichts davon zählt in den Wert. | design-notes lead |
 | Most notes are about type. Text set small, tight or in capitals loses readers before any rule is broken. | Die meisten Hinweise betreffen die Typografie. Zu kleiner, zu enger oder durchgehend groß gesetzter Text kostet Leser, bevor eine Regel verletzt ist. | design-notes lead |
+| Which site should I check? | Welche Website soll ich prüfen? | chat |
+| Ask about the report, or name another site | Fragen Sie zum Bericht, oder nennen Sie eine andere Website | chat |
+| An address is enough. Say if you want the whole site or the AI review. | Eine Adresse genügt. Sagen Sie, ob Sie die ganze Website oder die KI-Durchsicht möchten. | chat |
+| Send | Senden | chat |
+| You | Sie | chat |
+| Checker | Prüfer | chat |
+| Conversation | Gespräch | chat |
+| Thinking… | Denkt nach… | chat |
+| Checking | Prüfe | chat |
+| Checked | Geprüft | chat |
+| Could not check | Nicht prüfbar | chat |
+| Scan finished. | Scan abgeschlossen. | chat |
+| The report is below. | Der Bericht steht darunter. | chat |
+| The assistant is not available on this server. Paste an address and the scan still runs. | Der Assistent ist auf diesem Server nicht verfügbar. Fügen Sie eine Adresse ein, und der Scan läuft trotzdem. | chat |
+| The assistant could not answer that. | Darauf konnte der Assistent nicht antworten. | chat |
+| Use the form instead | Stattdessen das Formular nutzen | chat |
+| Needed for pages behind a login. | Nötig für Seiten hinter einem Login. | chat |
+| Back to the chat | Zurück zum Gespräch | chat |

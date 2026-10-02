@@ -22,6 +22,7 @@ import { Tabs } from "./components/Tabs";
 import { Notification, ProgressBar } from "./components/Feedback";
 import { groupFindings } from "./components/FindingsList";
 import { SCAN_DURATION } from "./lib/scanDuration";
+import { ScanChat, type ScanOutcome } from "./components/ScanChat";
 import {
   NARRATION_STEPS,
   narrationIndex,
@@ -176,6 +177,10 @@ export function App({
   // (an older backend, a proxy that refuses the stream) — the narration is
   // an upgrade, never a dependency.
   const [milestones, setMilestones] = useState<string[]>([]);
+  // How a scan starts: by conversation, or by the form. The form stays —
+  // it is the only way to scan behind a login, because a password typed
+  // into the chat would pass through the model.
+  const [entry, setEntry] = useState<"chat" | "form">("chat");
   // The ticking "12s" is reassurance, not essential status — the words
   // beside it carry the real information, and elapsed itself keeps driving
   // those words and the progress bar either way. WCAG 2.2.2 asks for a way
@@ -224,7 +229,7 @@ export function App({
   const formRef: RefObject<HTMLDivElement> = useRef(null);
   const focusForm = () => {
     formRef.current?.scrollIntoView({ block: "start" });
-    formRef.current?.querySelector<HTMLInputElement>("#a11y-url-input")?.focus();
+    formRef.current?.querySelector<HTMLInputElement>("#a11y-chat-input, #a11y-url-input")?.focus();
   };
 
   /* The one jump both navs use. A bare href="#id" does not reliably scroll
@@ -340,7 +345,8 @@ export function App({
     mode: ScanMode,
     maxPages: number,
     auth?: AuthConfig
-  ) {
+  ): Promise<ScanOutcome> {
+    let outcome: ScanOutcome = { kind: "error", message: "Something went wrong. Please try again." };
     setAiRequested(includeAiReview);
     setMode(mode);
     setLoading(true);
@@ -364,7 +370,9 @@ export function App({
       : () => {};
     try {
       if (mode === "site") {
-        setAudit(await auditSite(apiBase, url, maxPages));
+        const result = await auditSite(apiBase, url, maxPages);
+        setAudit(result);
+        outcome = { kind: "audit", audit: result };
       } else {
         const result = await scanUrl(apiBase, url, includeAiReview, auth, progressId);
         // Read before recording, so "since last time" compares against the
@@ -372,6 +380,7 @@ export function App({
         setHistory(getHistory(result.url, result.scannedAt));
         recordScan(result, Boolean(auth));
         setReport(result);
+        outcome = { kind: "report", report: result };
         // A saved scan has a server-side history too, which follows the
         // account rather than this browser. It replaces the local one when
         // it exists; the local one stays the answer for anonymous scans.
@@ -404,129 +413,23 @@ export function App({
     } catch (err) {
       if (err instanceof ScanError && err.blocked) {
         setBlocked(err.message);
+        outcome = { kind: "blocked", message: err.message };
       } else {
-        setError(err instanceof ScanError ? err.message : "Something went wrong. Please try again.");
+        const message = err instanceof ScanError ? err.message : "Something went wrong. Please try again.";
+        setError(message);
+        outcome = { kind: "error", message };
       }
     } finally {
       setTookSeconds(Math.max(1, Math.round((Date.now() - startedAt) / 1000)));
       setLoading(false);
       closeProgress();
     }
+    return outcome;
   }
 
-  return (
-    // A landmark, so everything the widget renders sits inside something a
-    // screen-reader user can find and skip. Without it our content counted as
-    // orphaned page content, which is a rule this product reports on others.
-    //
-    // <section aria-label> rather than <main>: the widget is a guest on
-    // somebody else's page, and that page's own <main> is not ours to claim.
-    <>
-    <section
-      className={`a11y-widget-inner${sections.length > 0 ? " a11y-shell-with-nav" : ""}`}
-      aria-label="Website accessibility check"
-      /* The widget's language, declared where the widget starts. It is a
-         guest on a page marked with the host's language; once the visitor
-         switches to Deutsch every string inside is German, and without this
-         a screen reader read it with English pronunciation rules — WCAG
-         3.1.2, measured: no lang attribute anywhere in the tree. */
-      lang={lang}
-    >
-    <AppShell
-      onJump={jumpTo}
-      /* The run's settings live in the rail once there is a run to describe.
-         Report style flips in place; the other two re-run the scan, which is
-         why they are buttons that name the cost rather than switches. */
-      navSettings={
-        report || audit ? (
-          <>
-          <ScanSettings
-            audience={audience}
-            onAudienceChange={setAudience}
-            aiIncluded={report?.meta.aiReviewStatus === "completed"}
-            scope={mode}
-            busy={loading}
-            language={lang}
-            onLanguageChange={changeLang}
-            onRerun={({ ai, scope }) => {
-              const url = report?.url ?? audit?.pages[0]?.url;
-              if (!url) return;
-              handleScan(
-                url,
-                ai ?? report?.meta.aiReviewStatus === "completed",
-                scope ?? mode,
-                5
-              );
-            }}
-          />
-          <AccountKey apiBase={apiBase} onChange={() => setAccountVersion((v) => v + 1)} />
-          {/* Only for a saved scan: a schedule belongs to an account, and the
-              row needs the page it is about. */}
-          {report?.savedAs && signedIn && <ScheduleRow key={`${accountVersion}:${report.url}`} apiBase={apiBase} url={report.url} />}
-          </>
-        ) : undefined
-      }
-      /* The run controls live in the top bar now, for both audiences.
-         "Export report" is professional-only: business mode already has
-         Save as PDF in the report-actions panel, with the sentence that
-         explains what the print dialog is, and two routes to the same
-         export is the duplication this report keeps having to undo. */
-      topActions={
-        report || audit ? (
-          <>
-            {report && (
-              <Button
-                onClick={() =>
-                  handleScan(
-                    report.url,
-                    report.meta.aiReviewStatus === "completed",
-                    "page",
-                    5
-                  )
-                }
-              >
-                Run scan
-              </Button>
-            )}
-            {professional && <PrintButton label="Export report" compact />}
-            <Button variant="ghost" onClick={focusForm}>
-              New scan
-            </Button>
-          </>
-        ) : undefined
-      }
-      navMeta={
-        report
-          ? `${hostnameOf(report.url)} \u00b7 ${new Date(report.scannedAt).toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" })}`
-          : audit
-            ? `${hostnameOf(audit.pages[0]?.url ?? "")} \u00b7 ${audit.pagesScanned} pages`
-            : undefined
-      }
-      sections={sections}
-      activeId={activeSectionId}
-      plans={plans}
-      contentRef={shellContentRef}
-    >
-      {/* No standalone intro paragraph — the door metaphor said little the
-          scanner's own subtitle couldn't say better, and the one useful
-          claim it carried (what standard this follows, and why that
-          matters) now sits directly on top of the scanner in UrlForm,
-          where a reader deciding whether to run a scan actually looks. */}
-      <div ref={formRef}>
-      <UrlForm
-        onSubmit={handleScan}
-        loading={loading}
-        audience={audience}
-        onAudienceChange={(m) => {
-          setAudience(m);
-          setFixFilter("all");
-        }}
-        hasReport={!!report}
-        scanError={error}
-        scanBlocked={blocked}
-        language={lang}
-        onLanguageChange={changeLang}
-        progress={
+  // The scan's progress — bar, narration, elapsed time. One node, shown
+  // inside the running scan turn of the chat or under the form's address.
+  const progressNode = (
           loading && (
             <>
               {/* The system's own scanning UX: a determinate bar driven by
@@ -627,8 +530,146 @@ export function App({
               </p>
             </>
           )
-        }
+  );
+
+  return (
+    // A landmark, so everything the widget renders sits inside something a
+    // screen-reader user can find and skip. Without it our content counted as
+    // orphaned page content, which is a rule this product reports on others.
+    //
+    // <section aria-label> rather than <main>: the widget is a guest on
+    // somebody else's page, and that page's own <main> is not ours to claim.
+    <>
+    <section
+      className={`a11y-widget-inner${sections.length > 0 ? " a11y-shell-with-nav" : ""}`}
+      aria-label="Website accessibility check"
+      /* The widget's language, declared where the widget starts. It is a
+         guest on a page marked with the host's language; once the visitor
+         switches to Deutsch every string inside is German, and without this
+         a screen reader read it with English pronunciation rules — WCAG
+         3.1.2, measured: no lang attribute anywhere in the tree. */
+      lang={lang}
+    >
+    <AppShell
+      onJump={jumpTo}
+      /* The run's settings live in the rail once there is a run to describe.
+         Report style flips in place; the other two re-run the scan, which is
+         why they are buttons that name the cost rather than switches. */
+      navSettings={
+        report || audit ? (
+          <>
+          <ScanSettings
+            audience={audience}
+            onAudienceChange={setAudience}
+            aiIncluded={report?.meta.aiReviewStatus === "completed"}
+            scope={mode}
+            busy={loading}
+            language={lang}
+            onLanguageChange={changeLang}
+            onRerun={({ ai, scope }) => {
+              const url = report?.url ?? audit?.pages[0]?.url;
+              if (!url) return;
+              handleScan(
+                url,
+                ai ?? report?.meta.aiReviewStatus === "completed",
+                scope ?? mode,
+                5
+              );
+            }}
+          />
+          <AccountKey apiBase={apiBase} onChange={() => setAccountVersion((v) => v + 1)} />
+          {/* Only for a saved scan: a schedule belongs to an account, and the
+              row needs the page it is about. */}
+          {report?.savedAs && signedIn && <ScheduleRow key={`${accountVersion}:${report.url}`} apiBase={apiBase} url={report.url} />}
+          </>
+        ) : undefined
+      }
+      /* The run controls live in the top bar now, for both audiences.
+         "Export report" is professional-only: business mode already has
+         Save as PDF in the report-actions panel, with the sentence that
+         explains what the print dialog is, and two routes to the same
+         export is the duplication this report keeps having to undo. */
+      topActions={
+        report || audit ? (
+          <>
+            {report && (
+              <Button
+                onClick={() =>
+                  handleScan(
+                    report.url,
+                    report.meta.aiReviewStatus === "completed",
+                    "page",
+                    5
+                  )
+                }
+              >
+                Run scan
+              </Button>
+            )}
+            {professional && <PrintButton label="Export report" compact />}
+            <Button variant="ghost" onClick={focusForm}>
+              New scan
+            </Button>
+          </>
+        ) : undefined
+      }
+      navMeta={
+        report
+          ? `${hostnameOf(report.url)} \u00b7 ${new Date(report.scannedAt).toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" })}`
+          : audit
+            ? `${hostnameOf(audit.pages[0]?.url ?? "")} \u00b7 ${audit.pagesScanned} pages`
+            : undefined
+      }
+      sections={sections}
+      activeId={activeSectionId}
+      plans={plans}
+      contentRef={shellContentRef}
+    >
+      {/* No standalone intro paragraph — the door metaphor said little the
+          scanner's own subtitle couldn't say better, and the one useful
+          claim it carried (what standard this follows, and why that
+          matters) now sits directly on top of the scanner in UrlForm,
+          where a reader deciding whether to run a scan actually looks. */}
+      <div ref={formRef}>
+      {entry === "chat" ? (
+        <ScanChat
+          apiBase={apiBase}
+          loading={loading}
+          progress={progressNode}
+          report={report}
+          audit={audit}
+          onScan={(url, scope, aiReview) => {
+            const full = /^https?:\/\//i.test(url) ? url : `https://${url}`;
+            return handleScan(full, aiReview, scope, 5);
+          }}
+          onUseForm={() => setEntry("form")}
+          language={lang}
+          onLanguageChange={changeLang}
+        />
+      ) : (
+      <>
+      <UrlForm
+        onSubmit={handleScan}
+        loading={loading}
+        audience={audience}
+        onAudienceChange={(m) => {
+          setAudience(m);
+          setFixFilter("all");
+        }}
+        hasReport={!!report}
+        scanError={error}
+        scanBlocked={blocked}
+        language={lang}
+        onLanguageChange={changeLang}
+        progress={progressNode}
       />
+      <p className="a11y-chat-alt">
+        <Button variant="ghost" onClick={() => setEntry("chat")}>
+          {t("Back to the chat")}
+        </Button>
+      </p>
+      </>
+      )}
       </div>
 
       {blocked && <BlockedNotice message={blocked} />}
