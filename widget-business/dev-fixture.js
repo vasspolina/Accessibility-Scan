@@ -445,7 +445,19 @@
       });
     });
 
-    var text, content, scan = null;
+    var text, content, scan = null, showReq = [];
+    function sectionAsked(t) {
+      var map = [
+        [/law|legal|checklist|comply|compliance/i, "checklist", "legal checklist"],
+        [/statement/i, "statement", "draft statement"],
+        [/vpat|procurement|buyer/i, "vpat", "conformance report"],
+        [/screen ?reader|sound/i, "screenreader", "screen reader preview"],
+        [/colou?r ?blind|vision|simulat/i, "simulator", "vision simulator"],
+        [/setting|report style/i, "settings", "settings"],
+      ];
+      for (var i = 0; i < map.length; i++) if (map[i][0].test(t)) return { key: map[i][1], label: map[i][2] };
+      return null;
+    }
     if (toolResult) {
       if (toolResult.is_error) {
         text = "The scan did not finish. " + String(toolResult.content).replace(/^The scan did not complete: /, "");
@@ -454,9 +466,9 @@
         var first = (d.whatPeopleCantUse || []).filter(function (f) { return f.severity === "Fix first"; });
         text = "The page scores " + d.score + ". " +
           (first.length
-            ? "Start with the " + first.length + " findings marked Fix first:\n\n" + first.map(function (f) { return "- " + f.title; }).join("\n")
+            ? "Start with " + first.slice(0, 2).map(function (f) { return "\"" + f.title + "\""; }).join(" and ") + "."
             : "Nothing is marked Fix first.") +
-          "\n\nAsk me about any finding, or what to fix first.";
+          " I can also show the legal checklist, a draft statement or the screen reader preview.";
       }
       content = [{ type: "text", text: text }];
     } else {
@@ -470,6 +482,13 @@
         var input = { url: addr, scope: wantsSite ? "site" : "page", ai_review: /ai|design/i.test(userText) };
         content = [{ type: "text", text: text }, { type: "tool_use", id: toolId, name: "start_scan", input: input }];
         scan = { toolUseId: toolId, url: input.url, scope: input.scope, aiReview: input.ai_review };
+      } else if (digest && sectionAsked(userText)) {
+        var section = sectionAsked(userText);
+        chatCalls += 1;
+        var showId = "toolu_fixture_show_" + chatCalls;
+        text = "Here is the " + section.label + ".";
+        content = [{ type: "text", text: text }, { type: "tool_use", id: showId, name: "show_section", input: { section: section.key } }];
+        showReq = [{ toolUseId: showId, section: section.key }];
       } else if (digest) {
         var top = (digest.whatPeopleCantUse || [])[0];
         text = top
@@ -494,7 +513,7 @@
             return;
           }
           clearInterval(tick);
-          controller.enqueue(enc.encode("event: done\ndata: " + JSON.stringify({ content: content, stopReason: scan ? "tool_use" : "end_turn", scan: scan }) + "\n\n"));
+          controller.enqueue(enc.encode("event: done\ndata: " + JSON.stringify({ content: content, stopReason: scan || showReq.length ? "tool_use" : "end_turn", scan: scan, show: showReq }) + "\n\n"));
           controller.close();
         }, 40);
       },

@@ -158,3 +158,12 @@ should check that none of those splits reads oddly.
 | Use the form instead | Stattdessen das Formular nutzen | chat |
 | Needed for pages behind a login. | Nötig für Seiten hinter einem Login. | chat |
 | Back to the chat | Zurück zum Gespräch | chat |
+| found | gefunden | chat transcript |
+| shown above. | steht weiter oben. | chat transcript |
+| Not available for this scan. | Für diesen Scan nicht verfügbar. | chat transcript |
+| Try one of these: | Versuchen Sie eines davon: | chat transcript |
+| Run a scan first: paste an address. | Starten Sie zuerst einen Scan: Fügen Sie eine Adresse ein. | chat transcript |
+| Show from the report | Aus dem Bericht anzeigen | chat transcript |
+| From an earlier scan. Run it again to see it. | Aus einem früheren Scan. Führen Sie ihn erneut aus, um ihn zu sehen. | chat transcript |
+| Type / and a section name to show it, for example /checklist. | Geben Sie / und einen Abschnittsnamen ein, um ihn anzuzeigen, zum Beispiel /checklist. | chat transcript |
+| Settings | Einstellungen | chat transcript |

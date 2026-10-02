@@ -21,7 +21,10 @@ export const CHAT_SYSTEM_PROMPT = `You are the assistant inside an accessibility
 
 What you can do:
 - Start a scan of a web address with the start_scan tool. The checker runs it and returns the report as the tool result.
+- Show a section of the report in the conversation with the show_section tool.
 - Answer questions about a report that is already in this conversation.
+
+The conversation is the whole interface. There is no report page: everything the person sees of the report appears in the conversation as a block. After a scan the findings block appears under your reply on its own, so do not list every finding.
 
 Before a scan:
 - If the person gives an address, start the scan straight away. Do not ask them to confirm.
@@ -32,6 +35,8 @@ Before a scan:
 - Say in one short sentence what you are about to check, then call the tool.
 
 After a scan:
+- Your first reply after a scan: the score, then the one to three findings to start with, then one line on what else you can show. Four sentences at most.
+- When the person asks about the legal standard, a statement, a procurement report, the screen reader, colour blindness, settings or anything else a section covers, show that section with show_section and add one sentence about what it holds.
 - Answer only from the report in this conversation. Use its finding titles, numbers and criteria exactly as written. Never invent a finding, a count, a criterion or a severity.
 - When the report cannot answer a question, say so plainly, and say what would answer it: a person testing by hand, or a scan of another page.
 - The score counts only what the scan can prove. Never say or imply the site is compliant, legal, or fully accessible. Automated scans reach between a third and a half of accessibility problems.
@@ -80,5 +85,43 @@ export const START_SCAN_TOOL: Anthropic.Beta.BetaTool = {
   strict: true,
   // Streamed as generated rather than buffered; the route validates the
   // finished input against the schema itself before anything acts on it.
+  eager_input_streaming: true,
+};
+
+/** Shows part of the report as a block in the conversation. The section
+ *  keys are the widget's (widget-business/src/lib/sections.ts); the two
+ *  lists must stay in step. */
+export const SHOW_SECTION_TOOL: Anthropic.Beta.BetaTool = {
+  name: "show_section",
+  description:
+    "Show one section of the current report as a block in the conversation. Use it whenever the person wants to see something a section covers. The block appears where the person can read it; you do not need to repeat its contents.",
+  input_schema: {
+    type: "object",
+    properties: {
+      section: {
+        type: "string",
+        enum: [
+          "score",
+          "findings",
+          "checklist",
+          "wcag22",
+          "team",
+          "notes",
+          "screenreader",
+          "statement",
+          "vpat",
+          "simulator",
+          "history",
+          "audit",
+          "settings",
+        ],
+        description:
+          "score: the score and what it means, with email and PDF. findings: every problem found, grouped. checklist: the 50-item legal standard (WCAG 2.1 AA, EN 301 549). wcag22: what changes with WCAG 2.2. team: checks that need a designer or developer to decide. notes: remarks on the design that do not count towards the score. screenreader: how the page sounds to a screen reader, with playback. statement: a draft accessibility statement. vpat: a draft conformance report for buyers (VPAT). simulator: the page as seen with colour blindness and low vision. history: how this page compares with earlier scans. audit: the whole-site results. settings: report style, re-run options, account key and schedule.",
+      },
+    },
+    required: ["section"],
+    additionalProperties: false,
+  },
+  strict: true,
   eager_input_streaming: true,
 };

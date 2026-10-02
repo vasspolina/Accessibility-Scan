@@ -4,7 +4,7 @@ import { z } from "zod";
 import { env } from "../config/env.js";
 import { logger } from "../utils/logger.js";
 import { getClaudeClient } from "../services/aiReview/claudeClient.js";
-import { CHAT_SYSTEM_PROMPT, START_SCAN_TOOL } from "../services/chat/chatPrompt.js";
+import { CHAT_SYSTEM_PROMPT, SHOW_SECTION_TOOL, START_SCAN_TOOL } from "../services/chat/chatPrompt.js";
 
 /**
  * The conversational front of the checker, as server-sent events.
@@ -43,6 +43,9 @@ const chatBodySchema = z.object({
     .min(1)
     .max(MAX_MESSAGES),
 });
+
+const SECTIONS = ["score", "findings", "checklist", "wcag22", "team", "notes", "screenreader", "statement", "vpat", "simulator", "history", "audit", "settings"] as const;
+const showInputSchema = z.object({ section: z.enum(SECTIONS) });
 
 const scanInputSchema = z.object({
   url: z.string().min(1).max(2_000),
@@ -112,7 +115,7 @@ export async function chatRoutes(app: FastifyInstance) {
       thinking: { type: "adaptive" },
       output_config: { effort: "medium" },
       system: [{ type: "text", text: CHAT_SYSTEM_PROMPT }],
-      tools: [START_SCAN_TOOL],
+      tools: [START_SCAN_TOOL, SHOW_SECTION_TOOL],
       // Caches the growing conversation, report digest included, so a
       // follow-up question re-reads the report from cache.
       cache_control: { type: "ephemeral" },
@@ -138,13 +141,19 @@ export async function chatRoutes(app: FastifyInstance) {
           content: [{ type: "text", text: "I cannot help with that here. I can check a page or answer questions about its report." }],
           stopReason: "refusal",
           scan: null,
+          show: [],
         });
         res.end();
         return;
       }
 
       let scan: { toolUseId: string; url: string; scope: "page" | "site"; aiReview: boolean } | null = null;
+      const show: Array<{ toolUseId: string; section: (typeof SECTIONS)[number] }> = [];
       for (const block of final.content) {
+        if (block.type === "tool_use" && block.name === "show_section") {
+          const input = showInputSchema.safeParse(block.input);
+          if (input.success) show.push({ toolUseId: block.id, section: input.data.section });
+        }
         if (block.type === "tool_use" && block.name === "start_scan") {
           // Streamed input is not validated by the API; it is checked here
           // before the widget is told to act on it.
@@ -160,7 +169,7 @@ export async function chatRoutes(app: FastifyInstance) {
         }
       }
 
-      send("done", { content: final.content, stopReason: final.stop_reason, scan });
+      send("done", { content: final.content, stopReason: final.stop_reason, scan, show });
       res.end();
     } catch (err) {
       if (stream.aborted) return;

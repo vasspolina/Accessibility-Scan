@@ -19,9 +19,17 @@ export interface ScanRequest {
   aiReview: boolean;
 }
 
+/** The assistant asked for a section of the report to be shown in the
+ *  thread. The section key is one of lib/sections.ts's. */
+export interface ShowRequest {
+  toolUseId: string;
+  section: string;
+}
+
 export interface ChatTurnResult {
   content: ChatBlock[];
   scan: ScanRequest | null;
+  show: ShowRequest[];
 }
 
 /** The server has no assistant: no API key, or the route is absent on an
@@ -85,7 +93,7 @@ export async function sendChatTurn(
       if (!event || !data) continue;
       const payload = JSON.parse(data);
       if (event === "delta") onDelta(payload.text);
-      else if (event === "done") result = { content: payload.content, scan: payload.scan };
+      else if (event === "done") result = { content: payload.content, scan: payload.scan, show: payload.show ?? [] };
       else if (event === "error") throw new ChatError(payload.error);
     }
   }

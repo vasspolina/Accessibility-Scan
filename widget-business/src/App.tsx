@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import { Fragment, useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import { t } from "./lib/strings";
 import type { RefObject } from "react";
 import { flushSync } from "react-dom";
@@ -23,6 +23,7 @@ import { Notification, ProgressBar } from "./components/Feedback";
 import { groupFindings } from "./components/FindingsList";
 import { SCAN_DURATION } from "./lib/scanDuration";
 import { ScanChat, type ScanOutcome } from "./components/ScanChat";
+import { PAGE_ORDER, type SectionKey } from "./lib/sections";
 import {
   NARRATION_STEPS,
   narrationIndex,
@@ -427,6 +428,321 @@ export function App({
     return outcome;
   }
 
+  // The run's settings: report style, the re-run switches, the account key
+  // and the schedule. The rail carries them in the page reading; the
+  // conversation shows them as a block when asked.
+  const settingsNode =
+    report || audit ? (
+      <>
+        <ScanSettings
+          audience={audience}
+          onAudienceChange={setAudience}
+          aiIncluded={report?.meta.aiReviewStatus === "completed"}
+          scope={mode}
+          busy={loading}
+          language={lang}
+          onLanguageChange={changeLang}
+          onRerun={({ ai, scope }) => {
+            const url = report?.url ?? audit?.pages[0]?.url;
+            if (!url) return;
+            handleScan(url, ai ?? report?.meta.aiReviewStatus === "completed", scope ?? mode, 5);
+          }}
+        />
+        <AccountKey apiBase={apiBase} onChange={() => setAccountVersion((v) => v + 1)} />
+        {/* Only for a saved scan: a schedule belongs to an account, and the
+            row needs the page it is about. */}
+        {report?.savedAs && signedIn && <ScheduleRow key={`${accountVersion}:${report.url}`} apiBase={apiBase} url={report.url} />}
+      </>
+    ) : null;
+
+  /**
+   * Every section of the report, by name. One source for both readings:
+   * the page (behind the form) renders them in PAGE_ORDER, and the
+   * conversation renders whichever the person or the assistant asks for,
+   * as a block in the thread.
+   */
+  function renderSection(key: SectionKey): ReactNode {
+    if (key === "audit") {
+      return audit ? (
+        <>
+          <PrintButton label="Save the audit as PDF" />
+          <SiteAuditView audit={audit} />
+        </>
+      ) : null;
+    }
+    if (key === "settings") return settingsNode;
+    if (!report) return null;
+
+    switch (key) {
+      case "stop":
+        /* The stop-press. When the scan proves a screen reader user cannot
+           get past the cookie banner, that fact outranks the score —
+           nothing else is reachable for them. role=alert announces it once,
+           on render. */
+        return report.findings.some((f) => f.ruleId === "consent-blocks-reader") ? (
+          <div className="a11y-blockflag" role="alert">
+            <p className="a11y-blockflag-title">
+              {t("Start here: a screen reader cannot get past your cookie banner")}
+            </p>
+            <p className="a11y-blockflag-body">
+              {t(
+                "The banner hides the page from screen readers and never takes focus. Until that is fixed, everything below this line is what a screen reader user never reaches."
+              )}
+            </p>
+            <button
+              type="button"
+              className="a11y-blockflag-jump"
+              onClick={() =>
+                focusFindings(professional && !isDocument ? "a11y-pro-findings" : "a11y-accessibility-heading")
+              }
+            >
+              {t("See the finding")}
+            </button>
+          </div>
+        ) : null;
+
+      case "score":
+        return (
+          <>
+            {isDocument ? (
+              <DocumentSummary report={report} />
+            ) : professional ? (
+              <ProSummary
+                report={report}
+                issueCount={proIssueGroups}
+                cleanCount={proCleanCount}
+                view={proView}
+                onViewChange={setProView}
+                onSeeFindings={() => focusFindings("a11y-pro-findings")}
+              />
+            ) : (
+              <>
+                <ReportActions report={report} apiBase={apiBase} />
+                <ScoreGauge
+                  score={report.score}
+                  seed={report.scannedAt}
+                  findings={findingsByCategory.accessibility}
+                  url={report.url}
+                  allFindings={report.findings}
+                  total={report.summary.total}
+                  tookSeconds={tookSeconds}
+                />
+              </>
+            )}
+            {/* Only when the AI review was wanted but did not happen;
+                "disabled_by_request" is the visitor's own choice. */}
+            {report.meta.aiReviewStatus !== "completed" && report.meta.aiReviewStatus !== "disabled_by_request" && (
+              <Notification
+                kind="info"
+                title="This check ran without the AI review"
+                subtitle={
+                  (report.meta.aiReviewStatus === "skipped_no_key" ? "Not set up yet." : "Temporarily unavailable.") +
+                  " These findings come from automated checks only."
+                }
+              />
+            )}
+            {/* The score only counts checks that ran, so a scan where some
+                fell over can look better than a complete one. Both audiences. */}
+            {report.meta.incompleteChecks && report.meta.incompleteChecks.length > 0 && (
+              <Notification
+                kind="warning"
+                title={`Some checks didn't finish this time: ${report.meta.incompleteChecks.join(", ")}.`}
+                subtitle="The score above only counts what ran, so it may look better than it should. A second run usually completes them."
+              />
+            )}
+          </>
+        );
+
+      case "protable":
+        /* The professional reading: filter by who fixes it, the
+           issues/no-issues switch, and the findings table. */
+        return professional && !isDocument ? (
+          <>
+            <div className="a11y-mode a11y-filter" role="group" aria-label="Show findings by fix type">
+              {(
+                [
+                  ["all", "All"],
+                  ["design", "Design"],
+                  ["code", "Code"],
+                  ["content", "Content"],
+                ] as const
+              ).map(([fkey, label]) => (
+                <button
+                  key={fkey}
+                  type="button"
+                  className={`a11y-mode-btn a11y-filter-btn${fixFilter === fkey ? " a11y-mode-btn-active" : ""}`}
+                  aria-pressed={fixFilter === fkey}
+                  onClick={() => setFixFilter(fkey)}
+                >
+                  {label}
+                </button>
+              ))}
+            </div>
+            <Tabs
+              panelOwns="a11y-pro-findings"
+              items={[
+                {
+                  id: "issues",
+                  label: `Issues (${proIssueGroups})`,
+                  panel: `${proIssueGroups} finding${proIssueGroups === 1 ? "" : "s"}`,
+                },
+                {
+                  id: "clean",
+                  label: `No issues found (${proCleanCount})`,
+                  panel: `${proCleanCount} criteria with nothing found`,
+                },
+              ]}
+              defaultId={proView}
+              onChange={(id: string) => setProView(id as ProView)}
+            />
+            <ProfessionalTable
+              findings={[
+                ...findingsByCategory.darkPattern,
+                ...findingsByCategory.accessibility,
+                ...findingsByCategory.designClarity,
+              ]}
+              conformance={report.conformance}
+              view={proView}
+            />
+          </>
+        ) : null;
+
+      case "history":
+        return <ScanHistory current={toHistoryEntry(report)} previous={history} />;
+
+      case "findings":
+        /* In professional mode these cards are print-only: the screen shows
+           the table, but a printed report has to stand alone. */
+        return (
+          <div className={professional && !isDocument ? "a11y-print-cards" : undefined}>
+            {!isDocument && (
+              <ReportSection
+                title="What costs you trust"
+                eyebrow="Dark pattern findings"
+                description="Places your site nudges people rather than leaves the choice to them. These don't move the score. They move how much people trust you."
+                variant={findingsByCategory.darkPattern.length > 0 ? "redflag" : "default"}
+                findings={findingsByCategory.darkPattern}
+                id="a11y-trust-heading"
+              />
+            )}
+            <section className="a11y-section" aria-labelledby="a11y-accessibility-heading">
+              <h2
+                className="a11y-section-title"
+                id="a11y-accessibility-heading"
+                tabIndex={-1}
+                data-nav-label={t("What people can't use")}
+              >
+                {t("What people can't use")}{" "}
+                <span className="a11y-section-count">({findingsByCategory.accessibility.length})</span>
+              </h2>
+              <p className="a11y-section-desc">
+                {isDocument
+                  ? "What a screen reader cannot read aloud in this document, grouped by the four questions the standard asks. More at "
+                  : "Grouped by the standard's four questions: can people see it, use it, understand it, and will it still work. More at "}
+                <a href={WCAG_LINK} target="_blank" rel="noopener noreferrer">
+                  w3.org/WAI
+                </a>
+                .
+              </p>
+              <PrincipleGroup findings={findingsByCategory.accessibility} />
+            </section>
+          </div>
+        );
+
+      case "checklist":
+        return (
+          <>
+            {report.conformance && (
+              <ConformanceView conformance={report.conformance} showBfsgNote={!professional} verdicts={report.verdicts} />
+            )}
+            {/* Only for a saved scan: a verdict has to belong to somebody. */}
+            {report.savedAs && signedIn && (
+              <ManualChecks
+                key={accountVersion}
+                apiBase={apiBase}
+                pageUrl={report.url}
+                onVerdict={(v: RecordedVerdict) =>
+                  setReport((r) =>
+                    r ? { ...r, verdicts: [...(r.verdicts ?? []).filter((x) => x.criterion !== v.criterion), v] } : r
+                  )
+                }
+              />
+            )}
+          </>
+        );
+
+      case "wcag22":
+        return report.wcag22 ? <Wcag22Readiness readiness={report.wcag22} /> : null;
+
+      case "team":
+        return report.undecidedChecks && report.undecidedChecks.length > 0 ? (
+          <div className={professional && !isDocument ? "a11y-print-cards" : undefined}>
+            <UndecidedChecks rows={report.undecidedChecks} />
+          </div>
+        ) : null;
+
+      case "notes":
+        return !isDocument ? (
+          <div className={professional && !isDocument ? "a11y-print-cards" : undefined}>
+            <DesignNotesPanel findings={findingsByCategory.designClarity} />
+          </div>
+        ) : null;
+
+      case "screenreader":
+        return report.screenReaderScript ? <ScreenReaderPreview script={report.screenReaderScript} /> : null;
+
+      case "statement":
+        return !isDocument ? <AccessibilityStatement report={report} /> : null;
+
+      case "vpat":
+        return !isDocument ? <AcrDraft report={report} /> : null;
+
+      case "simulator":
+        /* Last in the page on purpose: an empathy exercise, worth a look
+           after everything that matters. */
+        return report.pagePreview ? (
+          <VisionSimulator
+            pagePreview={report.pagePreviewBehindConsent ?? report.pagePreview}
+            url={report.url}
+            behindConsent={!!report.pagePreviewBehindConsent}
+          />
+        ) : null;
+
+      case "cta":
+        /* One call to action, configured by the embedder. Business only. */
+        return !professional && cta?.text && cta?.href ? (
+          <section className="a11y-section a11y-cta">
+            <a className="a11y-cta-link" href={cta.href} target="_blank" rel="noopener noreferrer">
+              {cta.text}
+            </a>
+          </section>
+        ) : null;
+
+      default:
+        return null;
+    }
+  }
+
+  // What the conversation can offer for this result. A section that would
+  // render nothing is not offered — a button that shows an empty block is
+  // a promise the report cannot keep.
+  const availableSections: SectionKey[] = (() => {
+    if (audit) return ["audit", "settings"];
+    if (!report) return [];
+    const out: SectionKey[] = ["score", "findings"];
+    if (report.conformance) out.push("checklist");
+    if (report.wcag22) out.push("wcag22");
+    if (report.undecidedChecks?.length) out.push("team");
+    if (!isDocument && findingsByCategory.designClarity.length) out.push("notes");
+    if (report.screenReaderScript) out.push("screenreader");
+    if (!isDocument) out.push("statement");
+    if (!isDocument && report.conformance) out.push("vpat");
+    if (report.pagePreview) out.push("simulator");
+    if (history.length) out.push("history");
+    out.push("settings");
+    return out;
+  })();
+
   // The scan's progress — bar, narration, elapsed time. One node, shown
   // inside the running scan turn of the chat or under the form's address.
   const progressNode = (
@@ -541,7 +857,7 @@ export function App({
     // somebody else's page, and that page's own <main> is not ours to claim.
     <>
     <section
-      className={`a11y-widget-inner${sections.length > 0 ? " a11y-shell-with-nav" : ""}`}
+      className={`a11y-widget-inner${entry === "form" && sections.length > 0 ? " a11y-shell-with-nav" : ""}`}
       aria-label="Website accessibility check"
       /* The widget's language, declared where the widget starts. It is a
          guest on a page marked with the host's language; once the visitor
@@ -555,35 +871,7 @@ export function App({
       /* The run's settings live in the rail once there is a run to describe.
          Report style flips in place; the other two re-run the scan, which is
          why they are buttons that name the cost rather than switches. */
-      navSettings={
-        report || audit ? (
-          <>
-          <ScanSettings
-            audience={audience}
-            onAudienceChange={setAudience}
-            aiIncluded={report?.meta.aiReviewStatus === "completed"}
-            scope={mode}
-            busy={loading}
-            language={lang}
-            onLanguageChange={changeLang}
-            onRerun={({ ai, scope }) => {
-              const url = report?.url ?? audit?.pages[0]?.url;
-              if (!url) return;
-              handleScan(
-                url,
-                ai ?? report?.meta.aiReviewStatus === "completed",
-                scope ?? mode,
-                5
-              );
-            }}
-          />
-          <AccountKey apiBase={apiBase} onChange={() => setAccountVersion((v) => v + 1)} />
-          {/* Only for a saved scan: a schedule belongs to an account, and the
-              row needs the page it is about. */}
-          {report?.savedAs && signedIn && <ScheduleRow key={`${accountVersion}:${report.url}`} apiBase={apiBase} url={report.url} />}
-          </>
-        ) : undefined
-      }
+      navSettings={entry === "form" ? settingsNode ?? undefined : undefined}
       /* The run controls live in the top bar now, for both audiences.
          "Export report" is professional-only: business mode already has
          Save as PDF in the report-actions panel, with the sentence that
@@ -620,7 +908,7 @@ export function App({
             ? `${hostnameOf(audit.pages[0]?.url ?? "")} \u00b7 ${audit.pagesScanned} pages`
             : undefined
       }
-      sections={sections}
+      sections={entry === "form" ? sections : []}
       activeId={activeSectionId}
       plans={plans}
       contentRef={shellContentRef}
@@ -635,9 +923,13 @@ export function App({
         <ScanChat
           apiBase={apiBase}
           loading={loading}
-          progress={progressNode}
+          milestones={milestones}
+          elapsed={elapsed}
+          reducedMotion={reducedMotion}
           report={report}
           audit={audit}
+          renderSection={(key) => <ReportViewProvider value={reportView}>{renderSection(key)}</ReportViewProvider>}
+          availableSections={availableSections}
           onScan={(url, scope, aiReview) => {
             const full = /^https?:\/\//i.test(url) ? url : `https://${url}`;
             return handleScan(full, aiReview, scope, 5);
@@ -672,9 +964,11 @@ export function App({
       )}
       </div>
 
-      {blocked && <BlockedNotice message={blocked} />}
+      {/* The page reading's notices. The conversation shows its own, in
+          the thread where the scan was asked for. */}
+      {entry === "form" && blocked && <BlockedNotice message={blocked} />}
 
-      {error && (
+      {entry === "form" && error && (
         <p id="a11y-scan-error" className="a11y-error">
           {error}
         </p>
@@ -708,7 +1002,9 @@ export function App({
             (milestones.length > 0
               ? narrationLabel(milestones[milestones.length - 1])
               : waitingMessage(mode, aiRequested, elapsed))
-          : blocked
+          : entry === "chat"
+            ? "" // the conversation announces its own outcome, once
+            : blocked
             ? blocked
             : report
               ? `Check complete in ${tookSeconds ?? 0} seconds. Score ${report.score} out of 100, ${
@@ -721,307 +1017,19 @@ export function App({
                 : ""}
       </p>
 
-      {audit && (
-        /* The same provider as the single-page report: the audit view shows
-           rule ids in professional mode and the BFSG sentence in business
-           mode. criterionNames stays empty here — the audit aggregates by
-           rule, not by criterion. */
-        <ReportViewProvider value={reportView}>
-          <PrintButton label="Save the audit as PDF" />
-          <SiteAuditView audit={audit} />
-        </ReportViewProvider>
+      {/* The page reading of the report — only behind the form. In the
+          conversation every one of these sections is a block in the thread,
+          rendered by the same renderSection, so the two can never differ. */}
+      {entry === "form" && audit && (
+        <ReportViewProvider value={reportView}>{renderSection("audit")}</ReportViewProvider>
       )}
-
-      {report && (
+      {entry === "form" && report && (
         <ReportViewProvider value={reportView}>
-        <div className="a11y-report">
-          {/* The stop-press. When the scan proves a screen reader user
-              cannot get past the cookie banner, that fact outranks the
-              score — nothing below it is reachable for them. First in the
-              report's DOM on purpose, in every audience: a screen reader
-              reading THIS report hears it before anything else, which is
-              the point. role=alert announces it once, on render. */}
-          {report.findings.some((f) => f.ruleId === "consent-blocks-reader") && (
-            <div className="a11y-blockflag" role="alert">
-              <p className="a11y-blockflag-title">
-                {t("Start here: a screen reader cannot get past your cookie banner")}
-              </p>
-              <p className="a11y-blockflag-body">
-                {t(
-                  "The banner hides the page from screen readers and never takes focus. Until that is fixed, everything below this line is what a screen reader user never reaches."
-                )}
-              </p>
-              {/* The professional view hides the card sections behind the
-                  print-only wrapper, so the business anchor exists there but
-                  is invisible — the jump scrolled to nothing. Each audience
-                  jumps to the findings surface it actually shows. */}
-              <button
-                type="button"
-                className="a11y-blockflag-jump"
-                onClick={() =>
-                  focusFindings(
-                    professional && !isDocument
-                      ? "a11y-pro-findings"
-                      : "a11y-accessibility-heading"
-                  )
-                }
-              >
-                {t("See the finding")}
-              </button>
-            </div>
-          )}
-          {/* The kit's results header: what was scanned, said plainly. */}
-          {/* Printing lives in the form footer (business) and the report
-              action row (professional) now — nothing here. */}
-          {isDocument ? (
-            <DocumentSummary report={report} />
-          ) : professional ? (
-            <ProSummary
-              report={report}
-              issueCount={proIssueGroups}
-              cleanCount={proCleanCount}
-              view={proView}
-              onViewChange={setProView}
-              onSeeFindings={() => focusFindings("a11y-pro-findings")}
-            />
-          ) : (
-            <>
-              <ReportActions report={report} apiBase={apiBase} />
-              <ScoreGauge
-                score={report.score}
-                seed={report.scannedAt}
-                findings={findingsByCategory.accessibility}
-                url={report.url}
-                allFindings={report.findings}
-                total={report.summary.total}
-                tookSeconds={tookSeconds}
-              />
-            </>
-          )}
-
-          {/* Only flag it when the AI review was wanted but didn't happen.
-              "disabled_by_request" is the visitor's own choice — reporting it
-              back as a shortfall would put a warning on every default scan. */}
-          {report.meta.aiReviewStatus !== "completed" &&
-            report.meta.aiReviewStatus !== "disabled_by_request" && (
-              /* Notification, whose role="status" is inert here on purpose:
-                 this notice mounts with the report and never changes, so the
-                 region has nothing to announce and competes with nothing.
-                 That is the whole reason it is safe here and not on the scan
-                 error below. */
-              <Notification
-                kind="info"
-                title="This check ran without the AI review"
-                subtitle={
-                  (report.meta.aiReviewStatus === "skipped_no_key"
-                    ? "Not set up yet."
-                    : "Temporarily unavailable.") + " These findings come from automated checks only."
-                }
-              />
-            )}
-
-          {/* The score only counts checks that ran, so a scan where some fell
-              over can look better than a complete one. Measured on a real site:
-              three identical scans scored 4, 24 and 24, purely because the
-              keyboard and phone-layout checks gave up on two of them. Saying so
-              is the difference between a number and a trustworthy number.
-
-              Both audiences. This was gated to the business view, which meant
-              the reader most likely to act on "the keyboard check fell over"
-              — the professional — was the one never told. */}
-          {report.meta.incompleteChecks && report.meta.incompleteChecks.length > 0 && (
-            <Notification
-              kind="warning"
-              title={`Some checks didn't finish this time: ${report.meta.incompleteChecks.join(", ")}.`}
-              subtitle="The score above only counts what ran, so it may look better than it should. A second run usually completes them."
-            />
-          )}
-
-          {/* The professional view filter. Chips partition by who makes the
-              change — the same tested mapping the fix badges use — so
-              "Design" pulls the visual decisions forward and "Code" the
-              markup work. A narrowed view is announced by the counts on the
-              section headings changing; the data underneath never narrows. */}
-          {professional && (
-            <div className="a11y-mode a11y-filter" role="group" aria-label="Show findings by fix type">
-              {(
-                [
-                  ["all", "All"],
-                  ["design", "Design"],
-                  ["code", "Code"],
-                  ["content", "Content"],
-                ] as const
-              ).map(([key, label]) => (
-                <button
-                  key={key}
-                  type="button"
-                  className={`a11y-mode-btn a11y-filter-btn${fixFilter === key ? " a11y-mode-btn-active" : ""}`}
-                  aria-pressed={fixFilter === key}
-                  onClick={() => setFixFilter(key)}
-                >
-                  {label}
-                </button>
-              ))}
-            </div>
-          )}
-
-          {/* The switch for the table below, now next to it. It used to sit in
-              ProSummary at the top of the panel, which needed aria-owns to
-              tell assistive tech that its panel was somewhere else entirely;
-              beside the region it controls, the relationship is just true. */}
-          {professional && !isDocument && (
-            <Tabs
-              panelOwns="a11y-pro-findings"
-              items={[
-                {
-                  id: "issues",
-                  label: `Issues (${proIssueGroups})`,
-                  panel: `${proIssueGroups} finding${proIssueGroups === 1 ? "" : "s"}`,
-                },
-                {
-                  id: "clean",
-                  label: `No issues found (${proCleanCount})`,
-                  panel: `${proCleanCount} criteria with nothing found`,
-                },
-              ]}
-              defaultId={proView}
-              onChange={(id: string) => setProView(id as ProView)}
-            />
-          )}
-
-          {professional && !isDocument && (
-            <ProfessionalTable
-              findings={[
-                ...findingsByCategory.darkPattern,
-                ...findingsByCategory.accessibility,
-                ...findingsByCategory.designClarity,
-              ]}
-              conformance={report.conformance}
-              view={proView}
-            />
-          )}
-
-          <ScanHistory current={toHistoryEntry(report)} previous={history} />
-
-          {/* The findings come before the law. A reader came for what is
-              wrong; the explanation of what a pass would mean follows it.
-              Measured before this change: the nine findings began ~5,500px
-              down, after four sections of legal framing. */}
-          {/* In professional mode these card sections are print-only: the
-              screen shows the kit's table above, but a printed report has
-              to stand alone, and only the cards carry everything open. */}
-          <div className={professional && !isDocument ? "a11y-print-cards" : undefined}>
-          {!isDocument && (
-          <ReportSection
-            title="What costs you trust"
-            eyebrow="Dark pattern findings"
-            description="Places your site nudges people rather than leaves the choice to them. These don't move the score. They move how much people trust you."
-            variant={findingsByCategory.darkPattern.length > 0 ? "redflag" : "default"}
-            findings={findingsByCategory.darkPattern}
-            id="a11y-trust-heading"
-          />
-          )}
-
-          <section className="a11y-section" aria-labelledby="a11y-accessibility-heading">
-            {/* h2 like every other top-level section — as an h3 it sat at the
-                same level as the principle headings inside it, so the outline
-                had children at their parent's level. */}
-            <h2 className="a11y-section-title" id="a11y-accessibility-heading" tabIndex={-1} data-nav-label={t("What people can't use")}>
-              {t("What people can't use")}{" "}
-              <span className="a11y-section-count">({findingsByCategory.accessibility.length})</span>
-            </h2>
-            <p className="a11y-section-desc">
-              {isDocument
-                ? "What a screen reader cannot read aloud in this document, grouped by the four questions the standard asks. More at "
-                : "Grouped by the standard's four questions: can people see it, use it, understand it, and will it still work. More at "}
-              <a href={WCAG_LINK} target="_blank" rel="noopener noreferrer">
-                w3.org/WAI
-              </a>
-              .
-            </p>
-            <PrincipleGroup findings={findingsByCategory.accessibility} />
-          </section>
+          <div className="a11y-report">
+            {PAGE_ORDER.map((key) => (
+              <Fragment key={key}>{renderSection(key)}</Fragment>
+            ))}
           </div>
-
-
-          {report.conformance && (
-            <ConformanceView
-              conformance={report.conformance}
-              showBfsgNote={!professional}
-              verdicts={report.verdicts}
-            />
-          )}
-
-          {/* Only for a saved scan: a verdict has to belong to somebody, and
-              the questions come from the server's copy of this site. */}
-          {report.savedAs && signedIn && (
-            <ManualChecks
-              key={accountVersion}
-              apiBase={apiBase}
-              pageUrl={report.url}
-              onVerdict={(v: RecordedVerdict) =>
-                setReport((r) =>
-                  r
-                    ? { ...r, verdicts: [...(r.verdicts ?? []).filter((x) => x.criterion !== v.criterion), v] }
-                    : r
-                )
-              }
-            />
-          )}
-
-          {report.wcag22 && <Wcag22Readiness readiness={report.wcag22} />}
-
-          {/* Print-only in professional mode, like the cards above. */}
-          <div className={professional && !isDocument ? "a11y-print-cards" : undefined}>
-          {report.undecidedChecks && report.undecidedChecks.length > 0 && (
-            <UndecidedChecks rows={report.undecidedChecks} />
-          )}
-
-          {/* Carries its own heading, lead and id — the notes are the one
-              section whose shape is not a ReportSection, so wrapping it in
-              one would print the heading and the lead twice. */}
-          {!isDocument && (
-            <DesignNotesPanel findings={findingsByCategory.designClarity} />
-          )}
-          </div>
-
-
-          {/* The screen-reader walkthrough stays above the documents: it is
-              evidence about this page, read once the findings are. */}
-          {report.screenReaderScript && (
-            <ScreenReaderPreview script={report.screenReaderScript} />
-          )}
-
-          {!isDocument && <AccessibilityStatement report={report} />}
-
-          {!isDocument && <AcrDraft report={report} />}
-
-          {/* Dead last, on purpose. The simulator is the one part of the
-              report that is neither a finding, evidence, nor a document — it
-              is an empathy exercise, and sitting above the statement and the
-              VPAT it read as more load-bearing than it is. The report ends on
-              it the way a museum ends on the gift shop: worth a look, after
-              everything that matters. */}
-          {report.pagePreview && (
-            <VisionSimulator
-              pagePreview={report.pagePreviewBehindConsent ?? report.pagePreview}
-              url={report.url}
-              behindConsent={!!report.pagePreviewBehindConsent}
-            />
-          )}
-
-          {/* One call to action, configured by the embedder, rendered only
-              when configured — the public demo carries none. Business mode
-              only: a professional reading selectors is not the person the
-              offer is for. */}
-          {!professional && cta?.text && cta?.href && (
-            <section className="a11y-section a11y-cta">
-              <a className="a11y-cta-link" href={cta.href} target="_blank" rel="noopener noreferrer">
-                {cta.text}
-              </a>
-            </section>
-          )}
-        </div>
         </ReportViewProvider>
       )}
     </AppShell>

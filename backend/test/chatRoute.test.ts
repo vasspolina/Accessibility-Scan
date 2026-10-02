@@ -76,3 +76,16 @@ describe("the chat contract", () => {
     expect(CHAT_SYSTEM_PROMPT).toMatch(/Never say or imply the site is compliant/);
   });
 });
+
+describe("show_section stays in step with the widget", () => {
+  it("offers exactly the sections the widget can show", async () => {
+    const { SHOW_SECTION_TOOL } = await import("../src/services/chat/chatPrompt.js");
+    const { readFileSync } = await import("node:fs");
+    const widget = readFileSync(new URL("../../widget-business/src/lib/sections.ts", import.meta.url), "utf8");
+    // The widget's SHOWABLE list: { key: "score", command: "score", ... }.
+    const widgetKeys = [...widget.matchAll(/\{ key: "([a-z0-9]+)", command:/g)].map((m) => m[1]).sort();
+    const schema = SHOW_SECTION_TOOL.input_schema as { properties: { section: { enum: string[] } } };
+    expect(widgetKeys.length).toBeGreaterThan(5);
+    expect([...schema.properties.section.enum].sort()).toEqual(widgetKeys);
+  });
+});

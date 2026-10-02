@@ -6910,3 +6910,164 @@
    label ("Stattdessen das Formular nutzen") is wider than a 320px screen
    on one line, and a nowrap button there scrolled the whole page sideways. */
 .a11y-widget-biz .a11y-chat-alt .a11y-btn { white-space: normal; text-align: left; height: auto; min-height: var(--target-min); }
+
+/* ── The transcript (since 2 Oct 2026) ────────────────────────────────────
+   The whole checker reads as one conversation, after a Claude Code
+   transcript: the scan is a tool block — a ⏺ header, ⎿ step lines, each
+   filled with what the report found there — and every section of the
+   report is a block in the thread. Tool lines are set in the mono the type
+   rules allow for meta and labels; the step in progress steps up to the
+   thin display size, as the narration always has. The marks are decoration
+   and hidden from assistive technology in the markup. */
+.a11y-widget-biz .a11y-chat-mark {
+  color: var(--purple-60);
+}
+
+.a11y-widget-biz .a11y-chat-toolhead {
+  margin: 0;
+  font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  font-size: 15px;
+  line-height: 1.5;
+  letter-spacing: 0.01em;
+  color: var(--text-primary);
+}
+
+.a11y-widget-biz .a11y-chat-elapsed {
+  color: var(--text-secondary);
+  font-variant-numeric: tabular-nums;
+}
+
+.a11y-widget-biz .a11y-chat-steps {
+  list-style: none;
+  margin: var(--space-03) 0 0;
+  padding: 0 0 0 var(--space-05);
+  display: grid;
+  gap: var(--space-02);
+}
+
+.a11y-widget-biz .a11y-chat-step {
+  font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  font-size: 15px;
+  line-height: 1.5;
+  letter-spacing: 0.01em;
+  color: var(--text-secondary);
+}
+
+.a11y-widget-biz .a11y-chat-step-result {
+  color: var(--text-primary);
+}
+
+/* The step in progress, at display size. 40px puts the accent past the
+   large-text bar: 5.2:1 on paper where 3:1 is required. */
+.a11y-widget-biz .a11y-chat-step.a11y-chat-step-now {
+  margin: var(--space-03) 0;
+  font-family: inherit;
+  font-size: 40px;
+  font-weight: 300;
+  line-height: 1.05;
+  letter-spacing: 0.01em;
+  color: var(--purple-60);
+  text-wrap: balance;
+}
+
+/* A report block: a native disclosure, open when it arrives. The summary is
+   the tool line; its own marker gives way to a written one. */
+.a11y-widget-biz .a11y-chat-block > details > summary {
+  display: flex;
+  align-items: center;
+  gap: var(--space-03);
+  min-height: 44px;
+  cursor: pointer;
+  list-style: none;
+}
+
+.a11y-widget-biz .a11y-chat-block > details > summary::-webkit-details-marker {
+  display: none;
+}
+
+.a11y-widget-biz .a11y-chat-block > details > summary::after {
+  content: "▸";
+  content: "▸" / "";
+  color: var(--text-secondary);
+}
+
+.a11y-widget-biz .a11y-chat-block > details[open] > summary::after {
+  content: "▾";
+  content: "▾" / "";
+}
+
+.a11y-widget-biz .a11y-chat-block > details > summary:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 2px;
+}
+
+.a11y-widget-biz .a11y-chat-blockbody {
+  margin-top: var(--space-05);
+}
+
+.a11y-widget-biz .a11y-chat-stale {
+  margin: 0;
+  font-size: 15px;
+  letter-spacing: 0.01em;
+  color: var(--text-secondary);
+}
+
+/* What the report can show next, as buttons. In flow, above the dock, so
+   it never adds to what the pinned composer covers. */
+.a11y-widget-biz .a11y-chat-suggest {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-03);
+  margin: var(--space-06) 0 0;
+}
+
+.a11y-widget-biz .a11y-chat-chip {
+  min-height: 44px;
+  padding: 0 var(--space-05);
+  border: 1px solid var(--purple-60);
+  border-radius: var(--radius-pill);
+  background: var(--layer-02);
+  color: var(--purple-60);
+  font: inherit;
+  font-size: 15px;
+  font-weight: 500;
+  letter-spacing: 0.01em;
+  cursor: pointer;
+}
+
+.a11y-widget-biz .a11y-chat-chip:hover {
+  background: var(--purple-10);
+}
+
+.a11y-widget-biz .a11y-chat-chip:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 2px;
+}
+
+/* The composer, pinned to the bottom of the screen. The paper ground is
+   what lets the thread scroll under it legibly; the hairline marks where
+   it starts. ScanChat scrolls anything that takes focus beneath it clear
+   (WCAG 2.4.11), because sticky elements cover what passes behind them. */
+.a11y-widget-biz .a11y-chat-dock {
+  position: sticky;
+  bottom: 0;
+  z-index: 2;
+  margin-top: var(--space-06);
+  padding: var(--space-04) 0 var(--space-03);
+  border-top: 1px dotted var(--purple-30);
+  background: var(--layer-02);
+}
+
+.a11y-widget-biz .a11y-chat-dock .a11y-chat-alt {
+  margin-top: var(--space-03);
+}
+
+@media print {
+  .a11y-widget-biz .a11y-chat-dock,
+  .a11y-widget-biz .a11y-chat-suggest {
+    display: none;
+  }
+  .a11y-widget-biz .a11y-chat-block > details > summary::after {
+    content: none;
+  }
+}
