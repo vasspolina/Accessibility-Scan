@@ -102,6 +102,12 @@ export async function chatRoutes(app: FastifyInstance) {
       "X-Accel-Buffering": "no",
       ...(allowOrigin ? { "Access-Control-Allow-Origin": allowOrigin } : {}),
     });
+    // Headers and a first comment frame go out now, before the model has
+    // said anything: a proxy that sees no bytes may hold the response, and
+    // a visitor whose browser sees no response cannot tell waiting from
+    // broken.
+    res.flushHeaders();
+    res.write(": open\n\n");
     const send = (event: string, data: unknown) => {
       res.write(`event: ${event}\ndata: ${JSON.stringify(data)}\n\n`);
     };
@@ -126,7 +132,14 @@ export async function chatRoutes(app: FastifyInstance) {
       fallbacks: [{ model: "claude-opus-4-8" }],
     });
 
-    request.raw.on("close", () => stream.abort());
+    // The RESPONSE closing, not the request: on a POST the request's
+    // "close" fires as soon as its body has been read, which Fastify does
+    // before this handler runs — listening there aborted every model call
+    // the moment it started, and the visitor waited on a response that
+    // was never going to end.
+    res.on("close", () => {
+      if (!res.writableEnded) stream.abort();
+    });
 
     try {
       for await (const event of stream) {
@@ -172,7 +185,8 @@ export async function chatRoutes(app: FastifyInstance) {
       send("done", { content: final.content, stopReason: final.stop_reason, scan, show });
       res.end();
     } catch (err) {
-      if (stream.aborted) return;
+      // The visitor left; there is nobody to tell.
+      if (stream.aborted && res.destroyed) return;
       logger.warn({ err: err instanceof Error ? err.message : String(err) }, "Chat turn failed");
       send("error", { error: "The assistant stopped responding. Try sending that again." });
       res.end();

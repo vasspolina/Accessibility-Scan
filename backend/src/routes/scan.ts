@@ -110,7 +110,9 @@ export async function scanRoutes(app: FastifyInstance) {
     heartbeat.unref();
 
     const unsubscribe = subscribeProgress(id, send);
-    request.raw.on("close", () => {
+    // The response closing, not the request — see the chat route: a
+    // request's "close" is about its body, and fires early on a POST.
+    res.on("close", () => {
       clearInterval(heartbeat);
       unsubscribe();
     });
