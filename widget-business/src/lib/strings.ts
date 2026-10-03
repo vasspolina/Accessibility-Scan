@@ -248,6 +248,7 @@ export const CHROME_KEYS: string[] = [
   // The transcript model (ScanChat blocks, /commands).
   "found",
   "shown above.",
+  "shown below.",
   "Not available for this scan.",
   "Try one of these:",
   "Run a scan first: paste an address.",

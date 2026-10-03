@@ -167,3 +167,4 @@ should check that none of those splits reads oddly.
 | From an earlier scan. Run it again to see it. | Aus einem früheren Scan. Führen Sie ihn erneut aus, um ihn zu sehen. | chat transcript |
 | Type / and a section name to show it, for example /checklist. | Geben Sie / und einen Abschnittsnamen ein, um ihn anzuzeigen, zum Beispiel /checklist. | chat transcript |
 | Settings | Einstellungen | chat transcript |
+| shown below. | steht unten. | chat transcript |

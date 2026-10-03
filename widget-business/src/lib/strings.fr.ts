@@ -220,4 +220,5 @@ export const STRINGS_FR: Record<string, string> = {
   "From an earlier scan. Run it again to see it.": "D'une analyse précédente. Relancez-la pour l'afficher.",
   "Type / and a section name to show it, for example /checklist.": "Tapez / et le nom d'une section pour l'afficher, par exemple /checklist.",
   "Settings": "Réglages",
+  "shown below.": "affiché ci-dessous.",
 };

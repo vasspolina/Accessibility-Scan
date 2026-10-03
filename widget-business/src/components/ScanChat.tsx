@@ -194,7 +194,14 @@ export function ScanChat({
    *  this result — takes the reader to it. One block per section per
    *  result: the sections carry fixed ids, and a second copy would
    *  duplicate every one of them. */
-  function showSection(key: SectionKey, resultKey: string | null = currentKeyRef.current, force = false): boolean {
+  function showSection(
+    key: SectionKey,
+    resultKey: string | null = currentKeyRef.current,
+    force = false,
+    // Off when the assistant said something in the same turn: its reply is
+    // the announcement, and this would talk over it.
+    announce = true
+  ): boolean {
     if (!resultKey || !(force || availableRef.current.includes(key))) return false;
     const existing = turnsRef.current.find((x) => x.who === "block" && x.section === key && x.resultKey === resultKey);
     if (existing) {
@@ -205,6 +212,9 @@ export function ScanChat({
       return true;
     }
     add({ id: nextId++, who: "block", section: key, resultKey });
+    // A block that arrives in silence is invisible to a screen reader user:
+    // nothing moved focus, and nothing said anything.
+    if (announce) setAnnouncement(`${sectionLabel(key)}: ${t("shown below.")}`);
     return true;
   }
 
@@ -269,7 +279,7 @@ export function ScanChat({
     if (result.show.length) {
       const results: ChatBlock[] = result.show.map((req) => {
         const key = req.section as SectionKey;
-        const shown = SHOWABLE.some((s) => s.key === key) && showSection(key);
+        const shown = SHOWABLE.some((s) => s.key === key) && showSection(key, undefined, false, !text.trim());
         return {
           type: "tool_result",
           tool_use_id: req.toolUseId,
