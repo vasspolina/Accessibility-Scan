@@ -9,6 +9,8 @@
  * text out of them for display and touches nothing else.
  */
 
+import { t } from "../lib/strings";
+
 export type ChatBlock = Record<string, unknown> & { type: string };
 export type ChatMessage = { role: "user" | "assistant"; content: string | ChatBlock[] };
 
@@ -37,7 +39,13 @@ export interface ChatTurnResult {
  *  given, and says so. */
 export class ChatUnavailableError extends Error {}
 
-export class ChatError extends Error {}
+export class ChatError extends Error {
+  /** The HTTP status when the server answered with one; 413 means the
+   *  conversation has outgrown the server's caps. */
+  constructor(message: string, readonly status?: number) {
+    super(message);
+  }
+}
 
 /** Display text of an assistant turn: its text blocks, in order. */
 export function textOf(content: ChatMessage["content"]): string {
@@ -64,13 +72,31 @@ export async function sendChatTurn(
     });
   } catch (err) {
     if (err instanceof DOMException && err.name === "AbortError") throw err;
-    throw new ChatUnavailableError("Could not reach the assistant.");
+    // A dropped connection is not the server saying it has no assistant:
+    // the next message asks again.
+    throw new ChatError(t("Could not reach the assistant. Try sending that again."));
   }
 
-  if (response.status === 503 || response.status === 404) throw new ChatUnavailableError("No assistant on this server.");
+  // Only the server's own word switches the assistant off: the route is
+  // absent on an older backend, or it answered 503 with its own body. A bare
+  // 503 from the proxy during a redeploy is a blip, not an answer — taking
+  // it as one switched the whole session to the fallback for good.
+  if (response.status === 404) throw new ChatUnavailableError("No assistant on this server.");
   if (!response.ok || !response.body) {
     const body = await response.json().catch(() => ({}) as { error?: string });
-    throw new ChatError(body.error ?? "The assistant could not answer that.");
+    if (response.status === 503 && body.error === "chat_unavailable") {
+      throw new ChatUnavailableError("No assistant on this server.");
+    }
+    // The server's wording is English and written for developers; the
+    // person reads the widget's own, in their language.
+    throw new ChatError(
+      response.status === 413
+        ? t("This conversation is too long to continue. Send your question again to start a new one.")
+        : response.status === 503
+          ? t("Could not reach the assistant. Try sending that again.")
+          : t("The assistant could not answer that."),
+      response.status
+    );
   }
 
   // Server-sent events over a POST, so EventSource cannot be used; the
@@ -94,12 +120,47 @@ export async function sendChatTurn(
       const payload = JSON.parse(data);
       if (event === "delta") onDelta(payload.text);
       else if (event === "done") result = { content: payload.content, scan: payload.scan, show: payload.show ?? [] };
-      else if (event === "error") throw new ChatError(payload.error);
+      else if (event === "error") throw new ChatError(t("The assistant stopped responding. Try sending that again."));
     }
   }
 
-  if (!result) throw new ChatError("The assistant stopped responding. Try sending that again.");
+  if (!result) throw new ChatError(t("The assistant stopped responding. Try sending that again."));
   return result;
+}
+
+/** The history with blocks added as the person's turn. Joined to a user
+ *  message already at the end rather than following it: tool results must
+ *  sit in the one message right after the assistant turn that called the
+ *  tools, ahead of anything else in it. Only the trailing user message is
+ *  ever rebuilt — assistant turns are never touched. */
+export function appendUser(history: ChatMessage[], blocks: ChatBlock[]): ChatMessage[] {
+  const last = history[history.length - 1];
+  if (!last || last.role !== "user") return [...history, { role: "user", content: blocks }];
+  const earlier: ChatBlock[] = typeof last.content === "string" ? [{ type: "text", text: last.content }] : last.content;
+  const all = [...earlier, ...blocks];
+  const results = all.filter((b) => b.type === "tool_result");
+  const rest = all.filter((b) => b.type !== "tool_result");
+  return [...history.slice(0, -1), { role: "user", content: [...results, ...rest] }];
+}
+
+/** Error results for every tool call in an assistant turn that nothing
+ *  else will answer: a second start_scan in one turn, or a call whose input
+ *  failed the server's check. Every tool_use needs its tool_result before
+ *  the next request, or every later request is refused — and the history
+ *  is append-only, so the gap could never be closed afterwards. */
+export function unansweredToolUses(content: ChatBlock[], answered: Iterable<string>): ChatBlock[] {
+  const done = new Set(answered);
+  return content
+    .filter((b) => b.type === "tool_use" && typeof b.id === "string" && !done.has(b.id))
+    .map((b) => ({
+      type: "tool_result",
+      tool_use_id: b.id as string,
+      is_error: true,
+      content:
+        b.name === "start_scan"
+          ? "One scan at a time. Ask for this address again once the first scan has finished."
+          : "The checker could not act on this call.",
+    }));
 }
 
 /** A best-guess address from free text, for when there is no assistant to

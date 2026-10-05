@@ -6817,9 +6817,10 @@
 .a11y-widget-biz p, .a11y-widget-biz li, .a11y-widget-biz dd, .a11y-widget-biz h2, .a11y-widget-biz h3 { text-wrap: pretty; }
 
 /* ── The conversation ─────────────────────────────────────────────────────
-   The checker's front door since 1 Oct 2026. Flat Off-Type lines rather
-   than bubbles: each turn is a hairline-ruled entry with its speaker named
-   in text above it. The person's own words take the accent ink (5.2:1 on
+   The checker's front door since 1 Oct 2026, and a plain assistant chat
+   since 3 Oct: no glyph marks and no monospace, at the user's word. Flat
+   Off-Type lines rather than bubbles: each turn is a hairline-ruled entry
+   with its speaker — You or Assistant — named in text above it. The person's own words take the accent ink (5.2:1 on
    paper); that is a second cue, never the only one — the speaker label
    says who is talking whatever the colour does. */
 .a11y-widget-biz .a11y-chat-thread {
@@ -6838,8 +6839,8 @@
 
 .a11y-widget-biz .a11y-chat-who {
   margin: 0 0 var(--space-03);
-  font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
-  font-size: 14px;
+  font-size: 15px;
+  font-weight: 500;
   line-height: 1.4;
   letter-spacing: 0.01em;
   color: var(--text-secondary);
@@ -6911,25 +6912,14 @@
    on one line, and a nowrap button there scrolled the whole page sideways. */
 .a11y-widget-biz .a11y-chat-alt .a11y-btn { white-space: normal; text-align: left; height: auto; min-height: var(--target-min); }
 
-/* ── The transcript (since 2 Oct 2026) ────────────────────────────────────
-   The whole checker reads as one conversation, after a Claude Code
-   transcript: the scan is a tool block — a ⏺ header, ⎿ step lines, each
-   filled with what the report found there — and every section of the
-   report is a block in the thread. Tool lines are set in the mono the type
-   rules allow for meta and labels; the step in progress steps up to the
-   thin display size, as the narration always has. The marks are decoration
-   and hidden from assistive technology in the markup. */
-.a11y-widget-biz .a11y-chat-mark {
-  color: var(--purple-60);
-}
-
-.a11y-widget-biz .a11y-chat-toolhead {
-  margin: 0;
-  font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
-  font-size: 15px;
-  line-height: 1.5;
-  letter-spacing: 0.01em;
-  color: var(--text-primary);
+/* ── The scan and the report, inside the conversation ─────────────────────
+   The scan is the assistant saying it is checking, then one line per step,
+   each filled with what the report found there; every section of the
+   report is a block in the thread. The step in progress steps up to the
+   thin display size, as the narration always has. The step dots are
+   decoration and hidden from assistive technology in the markup. */
+.a11y-widget-biz .a11y-chat-dot {
+  color: var(--text-secondary);
 }
 
 .a11y-widget-biz .a11y-chat-elapsed {
@@ -6946,7 +6936,6 @@
 }
 
 .a11y-widget-biz .a11y-chat-step {
-  font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
   font-size: 15px;
   line-height: 1.5;
   letter-spacing: 0.01em;
@@ -6961,7 +6950,6 @@
    large-text bar: 5.2:1 on paper where 3:1 is required. */
 .a11y-widget-biz .a11y-chat-step.a11y-chat-step-now {
   margin: var(--space-03) 0;
-  font-family: inherit;
   font-size: 40px;
   font-weight: 300;
   line-height: 1.05;
@@ -6970,8 +6958,8 @@
   text-wrap: balance;
 }
 
-/* A report block: a native disclosure, open when it arrives. The summary is
-   the tool line; its own marker gives way to a written one. */
+/* A report block: a native disclosure, open when it arrives. The summary
+   names the section; its own marker gives way to a written one. */
 .a11y-widget-biz .a11y-chat-block > details > summary {
   display: flex;
   align-items: center;
@@ -6979,21 +6967,29 @@
   min-height: 44px;
   cursor: pointer;
   list-style: none;
+  font-size: 18px;
+  font-weight: 500;
+  line-height: 1.4;
+  letter-spacing: 0.01em;
+  color: var(--text-primary);
 }
 
 .a11y-widget-biz .a11y-chat-block > details > summary::-webkit-details-marker {
   display: none;
 }
 
-.a11y-widget-biz .a11y-chat-block > details > summary::after {
-  content: "▸";
-  content: "▸" / "";
+/* The fold mark is in the markup (aria-hidden), one glyph per state. */
+.a11y-widget-biz .a11y-chat-fold {
   color: var(--text-secondary);
 }
 
-.a11y-widget-biz .a11y-chat-block > details[open] > summary::after {
-  content: "▾";
-  content: "▾" / "";
+.a11y-widget-biz .a11y-chat-block > details > summary .a11y-chat-fold-open,
+.a11y-widget-biz .a11y-chat-block > details[open] > summary .a11y-chat-fold-closed {
+  display: none;
+}
+
+.a11y-widget-biz .a11y-chat-block > details[open] > summary .a11y-chat-fold-open {
+  display: inline;
 }
 
 .a11y-widget-biz .a11y-chat-block > details > summary:focus-visible {
@@ -7067,7 +7063,7 @@
   .a11y-widget-biz .a11y-chat-suggest {
     display: none;
   }
-  .a11y-widget-biz .a11y-chat-block > details > summary::after {
-    content: none;
+  .a11y-widget-biz .a11y-chat-fold {
+    display: none;
   }
 }

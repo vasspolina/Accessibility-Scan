@@ -167,4 +167,12 @@ should check that none of those splits reads oddly.
 | From an earlier scan. Run it again to see it. | Aus einem früheren Scan. Führen Sie ihn erneut aus, um ihn zu sehen. | chat transcript |
 | Type / and a section name to show it, for example /checklist. | Geben Sie / und einen Abschnittsnamen ein, um ihn anzuzeigen, zum Beispiel /checklist. | chat transcript |
 | Settings | Einstellungen | chat transcript |
-| shown below. | steht unten. | chat transcript |
+| added above. | oben hinzugefügt. | chat transcript |
+| No reply came back. Ask again. | Keine Antwort erhalten. Bitte noch einmal fragen. | chat transcript |
+| Could not reach the assistant. Try sending that again. | Der Assistent war nicht erreichbar. Senden Sie die Nachricht noch einmal. | chat transcript |
+| This conversation is too long to continue. Send your question again to start a new one. | Dieses Gespräch ist zu lang, um es fortzusetzen. Senden Sie Ihre Frage noch einmal, dann beginnt ein neues. | chat transcript |
+| The assistant stopped responding. Try sending that again. | Der Assistent antwortet nicht mehr. Senden Sie die Nachricht noch einmal. | chat transcript |
+| Assistant | Assistent | chat |
+| Checking {url}. | Prüfe {url}. | chat |
+| Checked {url}. | {url} geprüft. | chat |
+| Could not check {url}. | {url} konnte nicht geprüft werden. | chat |

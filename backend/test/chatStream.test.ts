@@ -12,13 +12,26 @@ import type { FastifyInstance } from "fastify";
  * tests could not see that; only a test that waits for the end can.
  */
 
-const script = {
+const oneScan = {
   content: [
     { type: "text", text: "Checking example.com now." },
     { type: "tool_use", id: "toolu_1", name: "start_scan", input: { url: "example.com", scope: "page", ai_review: false } },
   ],
   stop_reason: "tool_use",
 };
+
+// Parallel tool use is on by default: "check a.com and b.org" can come back
+// as two start_scan calls in one turn.
+const twoScans = {
+  content: [
+    { type: "text", text: "Checking both." },
+    { type: "tool_use", id: "toolu_a", name: "start_scan", input: { url: "a.com", scope: "page", ai_review: false } },
+    { type: "tool_use", id: "toolu_b", name: "start_scan", input: { url: "b.org", scope: "page", ai_review: false } },
+  ],
+  stop_reason: "tool_use",
+};
+
+let script: typeof oneScan = oneScan;
 
 vi.mock("../src/services/aiReview/claudeClient.js", () => ({
   CLAUDE_MODEL: "test",
@@ -70,11 +83,35 @@ afterAll(async () => {
   rmSync(dir, { recursive: true, force: true });
 });
 
+let address: string;
+async function chat(): Promise<Response> {
+  address ??= await app.listen({ port: 0, host: "127.0.0.1" });
+  return fetch(`${address}/api/chat`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ messages: [{ role: "user", content: "Can you check example.com?" }] }),
+    signal: AbortSignal.timeout(8_000),
+  });
+}
+
 describe("POST /api/chat streaming", () => {
+  it("names the first of two scans asked for in one turn, and passes both calls back", async () => {
+    script = twoScans;
+    try {
+      const body = await (await chat()).text();
+      const payload = JSON.parse(/event: done\ndata: (.+)\n/.exec(body)![1]);
+      expect(payload.scan.toolUseId).toBe("toolu_a");
+      // The widget answers toolu_b itself; it can only do that if it sees it.
+      expect(payload.content.filter((b: { type: string }) => b.type === "tool_use")).toHaveLength(2);
+    } finally {
+      script = oneScan;
+    }
+  }, 15_000);
+
   it("streams the reply and ends with a done event carrying the scan request", async () => {
     // A real socket, not inject(): the fault lived in how a real
     // IncomingMessage emits "close", which inject's mock request does not.
-    const address = await app.listen({ port: 0, host: "127.0.0.1" });
+    address ??= await app.listen({ port: 0, host: "127.0.0.1" });
     const res = await fetch(`${address}/api/chat`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },

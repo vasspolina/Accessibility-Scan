@@ -47,9 +47,10 @@ describe("POST /api/chat guardrails", () => {
     expect(res.statusCode).toBe(400);
   });
 
-  it("refuses a conversation longer than sixty turns", async () => {
+  it("refuses a conversation longer than sixty turns as too long, not malformed", async () => {
+    // 413, like the size cap: the widget starts a new conversation on it.
     const messages = Array.from({ length: 61 }, (_, i) => ({ role: i % 2 ? "assistant" : "user", content: "a" }));
-    expect((await post({ messages })).statusCode).toBe(400);
+    expect((await post({ messages })).statusCode).toBe(413);
   });
 
   it("refuses roles other than user and assistant", async () => {

@@ -1,4 +1,4 @@
-import { useRef, useState, type FocusEvent, type FormEvent, type ReactNode } from "react";
+import { useRef, useState, type FocusEvent, type FormEvent, type MutableRefObject, type ReactNode } from "react";
 import { t } from "../lib/strings";
 import { Input } from "./Input";
 import { Button } from "./Button";
@@ -9,9 +9,12 @@ import { WCAG_LINK } from "../lib/wcagPlain";
 import type { AccessibilityReport, SiteAudit } from "../api/scanClient";
 import {
   addressIn,
+  appendUser,
+  ChatError,
   ChatUnavailableError,
   sendChatTurn,
   textOf,
+  unansweredToolUses,
   type ChatBlock,
   type ChatMessage,
 } from "../api/chatClient";
@@ -20,24 +23,27 @@ import { NARRATION_STEPS, narrationIndex, narrationLabel } from "../lib/scanNarr
 import { SHOWABLE, sectionForCommand, sectionLabel, type SectionKey } from "../lib/sections";
 
 /**
- * The whole checker, as one conversation — modelled on a Claude Code
- * transcript.
+ * The whole checker, as one conversation with an assistant.
  *
- * The person says what to check. The assistant starts the scan, which runs
- * as a tool block: a header, then one line per step as the pipeline
- * crosses it, each filled in with what the report found there once it
- * lands. Every part of the report — score, findings, legal checklist,
- * statement, VPAT, simulator, settings — is a block in the thread, shown
- * after a scan, when asked for, by its /command, or by its suggestion
- * button. There is no separate report page in this reading; the form keeps
- * that one, one button away, and stays the way to scan behind a login.
+ * The person says what to check. The assistant starts the scan and says so,
+ * with one line per step as the pipeline crosses it, each filled in with
+ * what the report found there once it lands. Every part of the report —
+ * score, findings, legal checklist, statement, VPAT, simulator, settings —
+ * appears in the conversation: after a scan, when asked for, or from the
+ * buttons under it. (Typing /checklist and the like still works; it is no
+ * longer advertised.) There is no separate report page in this reading; the
+ * form keeps that one, one button away, and stays the way to scan behind a
+ * login.
+ *
+ * A plain assistant chat, on purpose: no glyph marks and no monospace tool
+ * lines, at the user's word (3 Oct 2026).
  *
  * Accessibility, decided rather than defaulted:
  *  - The thread is a plain ordered list, not a live region; streamed text
  *    in one is re-announced on every chunk. A finished reply is announced
  *    once, through the status region at the end.
- *  - Speakers and tool lines are named in text. The ⏺ and ⎿ marks are
- *    decoration and hidden from assistive technology.
+ *  - Every message names its speaker in text. The step dots are decoration
+ *    and hidden from assistive technology.
  *  - Each report block is a native <details>, open by default.
  *  - The composer is pinned to the bottom of the screen, and anything that
  *    takes focus underneath it is scrolled clear (WCAG 2.4.11).
@@ -54,6 +60,20 @@ type Turn =
   | { id: number; who: "scan"; url: string; state: "running" | "done" | "failed"; steps: string[]; seconds?: number; resultKey?: string }
   | { id: number; who: "block"; section: SectionKey; resultKey: string }
   | { id: number; who: "notice"; message: string };
+
+/** What the rest of the widget may ask of the conversation: a re-run from
+ *  the settings block or the top bar arrives as a scan in the thread, and
+ *  the stop-press link can ask for the findings it points at. */
+export interface ChatApi {
+  rerun: (url: string, scope: "page" | "site", aiReview: boolean) => void;
+  show: (key: SectionKey) => void;
+}
+
+/** Past this, the next message starts a fresh API conversation seeded with
+ *  the latest report, rather than running into the server's caps (60
+ *  messages, 400k characters) mid-turn. The thread on screen is kept. */
+const MAX_HISTORY_MESSAGES = 50;
+const MAX_HISTORY_CHARS = 300_000;
 
 let nextId = 1;
 
@@ -141,6 +161,8 @@ export function ScanChat({
   availableSections,
   language,
   onLanguageChange,
+  hidden = false,
+  apiRef,
 }: {
   apiBase: string;
   loading: boolean;
@@ -156,6 +178,11 @@ export function ScanChat({
   availableSections: SectionKey[];
   language: Lang;
   onLanguageChange: (lang: Lang) => void;
+  /** Behind the form. Stays mounted, so the thread and the history survive
+   *  the trip and a turn in flight lands where it belongs, but renders
+   *  nothing — its blocks carry the same ids as the page reading. */
+  hidden?: boolean;
+  apiRef?: MutableRefObject<ChatApi | null>;
 }) {
   const [turns, setTurns] = useState<Turn[]>([]);
   const [draft, setDraft] = useState("");
@@ -182,6 +209,22 @@ export function ScanChat({
   availableRef.current = availableSections;
   const focusInput = () => rootRef.current?.querySelector<HTMLInputElement>("#a11y-chat-input")?.focus();
 
+  /** Back to the composer after a turn — unless focus has gone somewhere on
+   *  purpose since: a block the reader was taken to, something they tabbed
+   *  to during a minute-long scan, or the host page around the widget. */
+  function returnFocus() {
+    const root = rootRef.current;
+    if (!root) return;
+    const scope = root.getRootNode() as Document | ShadowRoot;
+    if (scope instanceof ShadowRoot) {
+      const outer = document.activeElement;
+      if (outer && outer !== document.body && outer !== scope.host) return;
+    }
+    const active = scope.activeElement;
+    if (active && active !== document.body && !dockRef.current?.contains(active)) return;
+    focusInput();
+  }
+
   const setAll = (next: Turn[]) => {
     turnsRef.current = next;
     setTurns(next);
@@ -196,15 +239,23 @@ export function ScanChat({
    *  duplicate every one of them. */
   function showSection(
     key: SectionKey,
-    resultKey: string | null = currentKeyRef.current,
-    force = false,
-    // Off when the assistant said something in the same turn: its reply is
-    // the announcement, and this would talk over it.
-    announce = true
+    {
+      resultKey = currentKeyRef.current,
+      // Past the available list: findings and the audit exist for every
+      // result, before the render that would list them has happened.
+      force = false,
+      // Off when something else is already the announcement — the
+      // assistant's reply in the same turn — so this does not talk over it.
+      announce = true,
+      // Off when the widget shows a block on its own account (after a
+      // scan): taking the reader to it would pull focus out from under them.
+      focusExisting = true,
+    }: { resultKey?: string | null; force?: boolean; announce?: boolean; focusExisting?: boolean } = {}
   ): boolean {
     if (!resultKey || !(force || availableRef.current.includes(key))) return false;
     const existing = turnsRef.current.find((x) => x.who === "block" && x.section === key && x.resultKey === resultKey);
     if (existing) {
+      if (!focusExisting) return true;
       const summary = rootRef.current?.querySelector<HTMLElement>(`#a11y-chat-block-${existing.id} > summary`);
       summary?.scrollIntoView({ block: "start" });
       summary?.focus();
@@ -213,8 +264,9 @@ export function ScanChat({
     }
     add({ id: nextId++, who: "block", section: key, resultKey });
     // A block that arrives in silence is invisible to a screen reader user:
-    // nothing moved focus, and nothing said anything.
-    if (announce) setAnnouncement(`${sectionLabel(key)}: ${t("shown below.")}`);
+    // nothing moved focus, and nothing said anything. "Above" because the
+    // reader is in the composer, which every block sits above.
+    if (announce) setAnnouncement(`${sectionLabel(key)}: ${t("added above.")}`);
     return true;
   }
 
@@ -246,10 +298,11 @@ export function ScanChat({
 
   /** The block a finished scan opens with: the findings, or the audit. */
   function showResult(outcome: ScanOutcome) {
-    // Forced: these exist for every report and every audit, and the render
-    // that would list them as available may not have happened yet.
-    if (outcome.kind === "report") showSection("findings", resultKeyOf(outcome.report), true);
-    if (outcome.kind === "audit") showSection("audit", resultKeyOf(outcome.audit), true);
+    // Silent: the reply or the outcome line before it is what gets read
+    // out, and announcing the block would replace it in the same render.
+    const quiet = { force: true, announce: false, focusExisting: false };
+    if (outcome.kind === "report") showSection("findings", { ...quiet, resultKey: resultKeyOf(outcome.report) });
+    if (outcome.kind === "audit") showSection("audit", { ...quiet, resultKey: resultKeyOf(outcome.audit) });
   }
 
   /** One assistant turn, and the tools it calls. A scan gets a second turn
@@ -267,6 +320,14 @@ export function ScanChat({
     );
 
     history.current = [...messages, { role: "assistant", content: result.content }];
+    // Calls the route did not hand over — a second scan in one turn, or
+    // input that failed its check — are answered here, or the next request
+    // is refused for good.
+    const unanswered = unansweredToolUses(result.content, [
+      ...result.show.map((r) => r.toolUseId),
+      ...(result.scan ? [result.scan.toolUseId] : []),
+    ]);
+    if (unanswered.length) history.current = appendUser(history.current, unanswered);
     const text = textOf(result.content);
     if (text.trim()) {
       patch(turnId, { text, streaming: false });
@@ -277,9 +338,11 @@ export function ScanChat({
     }
 
     if (result.show.length) {
+      let shownAny = false;
       const results: ChatBlock[] = result.show.map((req) => {
         const key = req.section as SectionKey;
-        const shown = SHOWABLE.some((s) => s.key === key) && showSection(key, undefined, false, !text.trim());
+        const shown = SHOWABLE.some((s) => s.key === key) && showSection(key, { announce: !text.trim() });
+        shownAny = shownAny || shown;
         return {
           type: "tool_result",
           tool_use_id: req.toolUseId,
@@ -287,30 +350,43 @@ export function ScanChat({
           ...(shown ? {} : { is_error: true }),
         };
       });
-      history.current = [...history.current, { role: "user", content: results }];
+      history.current = appendUser(history.current, results);
+      // The assistant asked for a section this scan does not have. The
+      // tool result tells the model, but no turn follows a shown section,
+      // so the person would see nothing — and, if the assistant said
+      // nothing either, hear "Thinking…" as the last word.
+      if (!shownAny) {
+        add({ id: nextId++, who: "checker", text: t("Not available for this scan.") });
+        if (!text.trim()) setAnnouncement(t("Not available for this scan."));
+      }
+    } else if (!text.trim() && !result.scan) {
+      // Nothing said, shown or started. Rare, but "Thinking…" cannot be
+      // left standing over an empty turn.
+      add({ id: nextId++, who: "checker", text: t("No reply came back. Ask again.") });
+      setAnnouncement(t("No reply came back. Ask again."));
     }
 
     if (result.scan) {
       const outcome = await runScan(result.scan.url, result.scan.scope, result.scan.aiReview);
       const failed = outcome.kind === "blocked" || outcome.kind === "error";
-      const toolResult: ChatMessage = {
-        role: "user",
-        content: [
-          {
-            type: "tool_result",
-            tool_use_id: result.scan.toolUseId,
-            content: failed
-              ? `The scan did not complete: ${outcomeLine(outcome)}`
-              : JSON.stringify(outcome.kind === "report" ? digestReport(outcome.report) : digestAudit(outcome.audit)),
-            ...(failed ? { is_error: true } : {}),
-          },
-        ],
+      const toolResult: ChatBlock = {
+        type: "tool_result",
+        tool_use_id: result.scan.toolUseId,
+        content: failed
+          ? `The scan did not complete: ${outcomeLine(outcome)}`
+          : JSON.stringify(outcome.kind === "report" ? digestReport(outcome.report) : digestAudit(outcome.audit)),
+        ...(failed ? { is_error: true } : {}),
       };
       // Committed before the next request, success or not: a tool call
       // without its result would make every later turn invalid.
-      history.current = [...history.current, toolResult];
-      await assistantTurn(history.current);
-      if (!failed) showResult(outcome);
+      history.current = appendUser(history.current, [toolResult]);
+      try {
+        await assistantTurn(history.current);
+      } finally {
+        // The block is the scan's, not the reply's: it is shown whether or
+        // not the assistant managed to say anything about it.
+        if (!failed) showResult(outcome);
+      }
     }
   }
 
@@ -345,6 +421,30 @@ export function ScanChat({
     setAnnouncement(line);
   }
 
+  /** A re-run asked for outside the thread — the settings block, the top
+   *  bar. It runs as a scan turn like any other; the assistant did not start
+   *  it, so the next message carries the result, as a form scan does. */
+  async function rerun(url: string, scope: "page" | "site", aiReview: boolean) {
+    if (busy || loading) return;
+    setBusy(true);
+    try {
+      const outcome = await runScan(url, scope, aiReview);
+      sharedScan.current = null;
+      const line = outcomeLine(outcome);
+      add({ id: nextId++, who: "checker", text: line });
+      setAnnouncement(line);
+      showResult(outcome);
+    } finally {
+      setBusy(false);
+    }
+  }
+  if (apiRef) {
+    apiRef.current = {
+      rerun: (url, scope, aiReview) => void rerun(url, scope, aiReview),
+      show: (key) => void showSection(key, { force: true, announce: false, focusExisting: false }),
+    };
+  }
+
   async function send(e: FormEvent) {
     e.preventDefault();
     const text = draft.trim();
@@ -364,28 +464,39 @@ export function ScanChat({
         await fallbackTurn(text);
         return;
       }
-      // A result the assistant has not seen — one from the form — rides
-      // along with this message, once.
+      // A long conversation starts over before the server's caps refuse it.
+      // Nothing is edited: the old history is set aside whole, and the new
+      // one opens with the latest report, below.
+      if (
+        history.current.length >= MAX_HISTORY_MESSAGES ||
+        JSON.stringify(history.current).length > MAX_HISTORY_CHARS
+      ) {
+        history.current = [];
+        sharedScan.current = null;
+      }
+      // A result the assistant has not seen — from the form, a re-run, or
+      // before a fresh start — rides along with this message, once.
       const blocks: ChatBlock[] = [];
       const currentKey = currentKeyRef.current;
       if (currentKey && sharedScan.current !== currentKey) {
         blocks.push({
           type: "text",
-          text: `Report of a scan the person ran from the form:\n${JSON.stringify(
+          text: `The latest scan's report, which this conversation has not seen yet:\n${JSON.stringify(
             report ? digestReport(report) : digestAudit(audit!)
           )}`,
         });
         sharedScan.current = currentKey;
       }
-      const userMessage: ChatMessage = {
-        role: "user",
-        content: blocks.length ? [...blocks, { type: "text", text }] : text,
-      };
       const before = history.current;
       try {
-        await assistantTurn([...before, userMessage]);
+        await assistantTurn(appendUser(before, [...blocks, { type: "text", text }]));
       } catch (err) {
-        if (err instanceof ChatUnavailableError) {
+        // "No assistant" only when nothing of this turn reached one. After a
+        // turn was committed — the reply after a scan — a failure is a
+        // dropped connection: the history already ends in the scan's
+        // result, so the next message resumes from there. Falling back here
+        // scanned the same page again and switched the assistant off.
+        if (err instanceof ChatUnavailableError && history.current === before) {
           assistantDown.current = true;
           setAll(turnsRef.current.filter((x) => !(x.who === "checker" && x.streaming)));
           await fallbackTurn(text);
@@ -394,6 +505,11 @@ export function ScanChat({
         // The failed turn leaves the history as it was before it, so
         // sending again does not stack two copies of the same question.
         if (history.current === before && blocks.length) sharedScan.current = null;
+        // Too long for the server: the next message starts a new one.
+        if (err instanceof ChatError && err.status === 413) {
+          history.current = [];
+          sharedScan.current = null;
+        }
         const message = err instanceof Error ? err.message : t("The assistant could not answer that.");
         setAll(
           turnsRef.current.map((x) =>
@@ -404,7 +520,7 @@ export function ScanChat({
       }
     } finally {
       setBusy(false);
-      focusInput();
+      returnFocus();
     }
   }
 
@@ -419,6 +535,8 @@ export function ScanChat({
   }
 
   const offered = SHOWABLE.filter((s) => availableSections.includes(s.key));
+
+  if (hidden) return null;
 
   return (
     <div className="a11y-chat" ref={rootRef} onFocus={keepFocusClear}>
@@ -437,26 +555,38 @@ export function ScanChat({
       </p>
 
       {turns.length > 0 && (
-        <ol className="a11y-chat-thread" aria-label={t("Conversation")}>
+        // role="list" said out loud: WebKit drops the list role from a list
+        // drawn without markers, and the label with it.
+        // eslint-disable-next-line jsx-a11y/no-redundant-roles
+        <ol className="a11y-chat-thread" role="list" aria-label={t("Conversation")}>
           {turns.map((turn) => {
             if (turn.who === "scan") {
               const running = turn.state === "running";
               const steps = running ? milestones : turn.steps;
               const current = running ? steps[steps.length - 1] : null;
               const fresh = turn.resultKey && turn.resultKey === currentKey && report;
+              // One sentence per state, translated whole; the address is
+              // set into it rather than stitched onto a fragment.
+              const [before, after] = t(
+                running ? "Checking {url}." : turn.state === "done" ? "Checked {url}." : "Could not check {url}."
+              ).split("{url}");
               return (
                 <li key={turn.id} className={`a11y-chat-turn a11y-chat-tool a11y-chat-scan-${turn.state}`}>
-                  <p className="a11y-chat-toolhead">
-                    <span className="a11y-chat-mark" aria-hidden="true">⏺</span>{" "}
-                    {running ? t("Checking") : turn.state === "done" ? t("Checked") : t("Could not check")}{" "}
-                    <span className="a11y-chat-url">{turn.url}</span>
-                    {running && !reducedMotion && (
-                      <span className="a11y-chat-elapsed" aria-hidden="true"> ({elapsed}s)</span>
-                    )}
-                    {!running && turn.seconds ? <span className="a11y-chat-elapsed"> ({turn.seconds}s)</span> : null}
-                  </p>
+                  <p className="a11y-chat-who">{t("Assistant")}</p>
+                  <div className="a11y-chat-text">
+                    <p>
+                      {before}
+                      <span className="a11y-chat-url">{turn.url}</span>
+                      {/* Beside the address, inside the sentence. */}
+                      {running && !reducedMotion && (
+                        <span className="a11y-chat-elapsed" aria-hidden="true"> ({elapsed}s)</span>
+                      )}
+                      {!running && turn.seconds ? <span className="a11y-chat-elapsed"> ({turn.seconds}s)</span> : null}
+                      {after}
+                    </p>
+                  </div>
                   {steps.length > 0 && (
-                    <ol className="a11y-chat-steps">
+                    <ol className="a11y-chat-steps" role="list">
                       {NARRATION_STEPS.filter((s) => steps.includes(s.id))
                         .sort((a, b) => narrationIndex(a.id) - narrationIndex(b.id))
                         .map((s) => {
@@ -467,9 +597,9 @@ export function ScanChat({
                               className={`a11y-chat-step${s.id === current ? " a11y-chat-step-now" : ""}`}
                               aria-current={s.id === current ? "step" : undefined}
                             >
-                              <span className="a11y-chat-mark" aria-hidden="true">⎿</span>{" "}
+                              <span className="a11y-chat-dot" aria-hidden="true">·</span>{" "}
                               {narrationLabel(s.id)}
-                              {result && <span className="a11y-chat-step-result"> · {result}</span>}
+                              {result && <span className="a11y-chat-step-result"> — {result}</span>}
                             </li>
                           );
                         })}
@@ -492,8 +622,15 @@ export function ScanChat({
               return (
                 <li key={turn.id} className="a11y-chat-turn a11y-chat-block">
                   <details id={`a11y-chat-block-${turn.id}`} open={fresh}>
-                    <summary className="a11y-chat-toolhead">
-                      <span className="a11y-chat-mark" aria-hidden="true">⏺</span> {sectionLabel(turn.section)}
+                    <summary className="a11y-chat-blockhead">
+                      {sectionLabel(turn.section)}
+                      {/* In the markup and hidden, not drawn by CSS: generated
+                          content joins the summary's name wherever the
+                          alt-text syntax for `content` is not supported. */}
+                      <span className="a11y-chat-fold" aria-hidden="true">
+                        <span className="a11y-chat-fold-closed">▸</span>
+                        <span className="a11y-chat-fold-open">▾</span>
+                      </span>
                     </summary>
                     <div className="a11y-chat-blockbody">
                       {fresh ? (
@@ -522,14 +659,7 @@ export function ScanChat({
                 className={`a11y-chat-turn a11y-chat-${turn.who}`}
                 aria-busy={turn.who === "checker" && turn.streaming ? true : undefined}
               >
-                <p className="a11y-chat-who">
-                  {turn.who === "checker" && (
-                    <>
-                      <span className="a11y-chat-mark" aria-hidden="true">⏺</span>{" "}
-                    </>
-                  )}
-                  {turn.who === "you" ? t("You") : t("Checker")}
-                </p>
+                <p className="a11y-chat-who">{turn.who === "you" ? t("You") : t("Assistant")}</p>
                 <div className="a11y-chat-text">
                   {turn.who === "checker" ? (
                     turn.text ? (
@@ -567,9 +697,7 @@ export function ScanChat({
             value={draft}
             onChange={(e) => setDraft(e.target.value)}
             helperText={
-              currentKey
-                ? t("Type / and a section name to show it, for example /checklist.")
-                : t("An address is enough. Say if you want the whole site or the AI review.")
+              currentKey ? undefined : t("An address is enough. Say if you want the whole site or the AI review.")
             }
             inputProps={{ autoComplete: "off", enterKeyHint: "send" }}
             action={

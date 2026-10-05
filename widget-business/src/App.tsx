@@ -22,7 +22,7 @@ import { Tabs } from "./components/Tabs";
 import { Notification, ProgressBar } from "./components/Feedback";
 import { groupFindings } from "./components/FindingsList";
 import { SCAN_DURATION } from "./lib/scanDuration";
-import { ScanChat, type ScanOutcome } from "./components/ScanChat";
+import { ScanChat, type ChatApi, type ScanOutcome } from "./components/ScanChat";
 import { PAGE_ORDER, type SectionKey } from "./lib/sections";
 import {
   NARRATION_STEPS,
@@ -222,6 +222,8 @@ export function App({
   // the print and returns afterwards. flushSync because the browser takes its
   // snapshot as soon as the beforeprint handlers return.
   const printFilterRestore = useRef<FixFilter>("all");
+  // The conversation, for re-runs and jumps asked for outside its thread.
+  const chatApi = useRef<ChatApi | null>(null);
   // Which region the professional tabs show; the tabs live in the summary
   // grid (the reference's layout), the region renders full-width below.
   const [proView, setProView] = useState<ProView>("issues");
@@ -262,7 +264,19 @@ export function App({
   /* "See the N findings" — scroll AND move focus, the same pairing focusForm
      uses. */
   const focusFindings = (id = "a11y-accessibility-heading") => {
-    const target = shellContentRef.current?.querySelector<HTMLElement>(`#${id}`);
+    const find = () => shellContentRef.current?.querySelector<HTMLElement>(`#${id}`);
+    let target = find();
+    // In the conversation the findings are a block that may not be in the
+    // thread yet: the stop-press arrives with the scan, the findings after
+    // the reply. Asked for now, and rendered before the focus moves.
+    if (!target && entry === "chat" && chatApi.current) {
+      flushSync(() => chatApi.current!.show("findings"));
+      target = find();
+    }
+    // A folded block hides its heading from focus.
+    for (let el = target?.parentElement; el; el = el.parentElement) {
+      if (el instanceof HTMLDetailsElement) el.open = true;
+    }
     target?.scrollIntoView({ block: "start" });
     target?.focus();
   };
@@ -351,13 +365,20 @@ export function App({
     setAiRequested(includeAiReview);
     setMode(mode);
     setLoading(true);
-    setTookSeconds(null);
     const startedAt = Date.now();
     setError(null);
     setBlocked(null);
-    setReport(null);
-    setAudit(null);
-    setHistory([]);
+    // The page reading shows one result at a time: the old one goes as the
+    // new scan starts, and a failure leaves only the notice. The
+    // conversation keeps the earlier result until a new one lands — its
+    // blocks are keyed to it and the assistant still holds its digest, so a
+    // scan that fails or is blocked must not take it away.
+    if (entry === "form") {
+      setTookSeconds(null);
+      setReport(null);
+      setAudit(null);
+      setHistory([]);
+    }
     setMilestones([]);
     // The stream opens before the request: whichever side arrives first at
     // the channel creates it, and a late subscriber gets the backlog anyway.
@@ -372,7 +393,10 @@ export function App({
     try {
       if (mode === "site") {
         const result = await auditSite(apiBase, url, maxPages);
+        setReport(null);
+        setHistory([]);
         setAudit(result);
+        setTookSeconds(Math.max(1, Math.round((Date.now() - startedAt) / 1000)));
         outcome = { kind: "audit", audit: result };
       } else {
         const result = await scanUrl(apiBase, url, includeAiReview, auth, progressId);
@@ -380,7 +404,9 @@ export function App({
         // previous run rather than this one.
         setHistory(getHistory(result.url, result.scannedAt));
         recordScan(result, Boolean(auth));
+        setAudit(null);
         setReport(result);
+        setTookSeconds(Math.max(1, Math.round((Date.now() - startedAt) / 1000)));
         outcome = { kind: "report", report: result };
         // A saved scan has a server-side history too, which follows the
         // account rather than this browser. It replaces the local one when
@@ -421,7 +447,6 @@ export function App({
         outcome = { kind: "error", message };
       }
     } finally {
-      setTookSeconds(Math.max(1, Math.round((Date.now() - startedAt) / 1000)));
       setLoading(false);
       closeProgress();
     }
@@ -445,7 +470,10 @@ export function App({
           onRerun={({ ai, scope }) => {
             const url = report?.url ?? audit?.pages[0]?.url;
             if (!url) return;
-            handleScan(url, ai ?? report?.meta.aiReviewStatus === "completed", scope ?? mode, 5);
+            const aiOn = ai ?? report?.meta.aiReviewStatus === "completed";
+            // In the conversation the re-run is a turn in the thread.
+            if (entry === "chat" && chatApi.current) chatApi.current.rerun(url, scope ?? mode, aiOn);
+            else handleScan(url, aiOn, scope ?? mode, 5);
           }}
         />
         <AccountKey apiBase={apiBase} onChange={() => setAccountVersion((v) => v + 1)} />
@@ -883,12 +911,9 @@ export function App({
             {report && (
               <Button
                 onClick={() =>
-                  handleScan(
-                    report.url,
-                    report.meta.aiReviewStatus === "completed",
-                    "page",
-                    5
-                  )
+                  entry === "chat" && chatApi.current
+                    ? chatApi.current.rerun(report.url, "page", report.meta.aiReviewStatus === "completed")
+                    : handleScan(report.url, report.meta.aiReviewStatus === "completed", "page", 5)
                 }
               >
                 Run scan
@@ -919,8 +944,11 @@ export function App({
           matters) now sits directly on top of the scanner in UrlForm,
           where a reader deciding whether to run a scan actually looks. */}
       <div ref={formRef}>
-      {entry === "chat" ? (
-        <ScanChat
+      {/* Mounted in both readings: behind the form it renders nothing but
+          keeps its thread and history. */}
+      <ScanChat
+          hidden={entry !== "chat"}
+          apiRef={chatApi}
           apiBase={apiBase}
           loading={loading}
           milestones={milestones}
@@ -938,7 +966,7 @@ export function App({
           language={lang}
           onLanguageChange={changeLang}
         />
-      ) : (
+      {entry === "form" && (
       <>
       <UrlForm
         onSubmit={handleScan}
@@ -981,7 +1009,9 @@ export function App({
           This one is always in the DOM; the error text arriving is the
           change. */}
       <div className="a11y-sr-only" role="alert">
-        {error ?? ""}
+        {/* The page reading only: the conversation says what went wrong in
+            its own reply, and both at once read the error twice. */}
+        {entry === "form" ? error ?? "" : ""}
       </div>
 
       {/* Announces the outcome to anyone not watching the screen.

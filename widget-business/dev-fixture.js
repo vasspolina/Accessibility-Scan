@@ -435,7 +435,9 @@
     var messages = (body && body.messages) || [];
     var last = messages[messages.length - 1] || {};
     var blocks = typeof last.content === "string" ? [{ type: "text", text: last.content }] : (last.content || []);
-    var toolResult = blocks.find(function (b) { return b.type === "tool_result"; });
+    // The scan's result only: a shown section's result can share the message
+    // with the person's next words (the widget joins them, as the API wants).
+    var toolResult = blocks.find(function (b) { return b.type === "tool_result" && /^toolu_fixture_\d+$/.test(b.tool_use_id); });
     var userText = blocks.filter(function (b) { return b.type === "text"; }).map(function (b) { return b.text; }).join(" ");
 
     var digest = null;
@@ -454,6 +456,9 @@
         [/screen ?reader|sound/i, "screenreader", "screen reader preview"],
         [/colou?r ?blind|vision|simulat/i, "simulator", "vision simulator"],
         [/setting|report style/i, "settings", "settings"],
+        // Needs an account, which the fixture never has: the way to see
+        // what a section this scan cannot show looks like.
+        [/history|since last time/i, "history", "history"],
       ];
       for (var i = 0; i < map.length; i++) if (map[i][0].test(t)) return { key: map[i][1], label: map[i][2] };
       return null;
@@ -486,8 +491,15 @@
         var section = sectionAsked(userText);
         chatCalls += 1;
         var showId = "toolu_fixture_show_" + chatCalls;
-        text = "Here is the " + section.label + ".";
-        content = [{ type: "text", text: text }, { type: "tool_use", id: showId, name: "show_section", input: { section: section.key } }];
+        // A message that opens with "show" gets the tool call alone, as a
+        // real model often answers one: no sentence beside the block.
+        // The person's own words are the last text block; a report the
+        // widget attaches comes before them.
+        var ownWords = blocks.filter(function (b) { return b.type === "text"; }).map(function (b) { return b.text; }).pop() || "";
+        var bare = /^\s*show\b/i.test(ownWords);
+        text = bare ? "" : "Here is the " + section.label + ".";
+        var showUse = { type: "tool_use", id: showId, name: "show_section", input: { section: section.key } };
+        content = bare ? [showUse] : [{ type: "text", text: text }, showUse];
         showReq = [{ toolUseId: showId, section: section.key }];
       } else if (digest) {
         var top = (digest.whatPeopleCantUse || [])[0];

@@ -37,11 +37,11 @@ const MAX_BODY_CHARS = 400_000;
 
 const textOrBlocks = z.union([z.string().max(MAX_BODY_CHARS), z.array(z.record(z.string(), z.unknown())).max(50)]);
 
+// No .max here: a conversation over the cap is not malformed, it is too
+// long, and it gets the same 413 as one over the size cap — the widget
+// starts a new conversation on that status.
 const chatBodySchema = z.object({
-  messages: z
-    .array(z.object({ role: z.enum(["user", "assistant"]), content: textOrBlocks }))
-    .min(1)
-    .max(MAX_MESSAGES),
+  messages: z.array(z.object({ role: z.enum(["user", "assistant"]), content: textOrBlocks })).min(1),
 });
 
 const SECTIONS = ["score", "findings", "checklist", "wcag22", "team", "notes", "screenreader", "statement", "vpat", "simulator", "history", "audit", "settings"] as const;
@@ -70,6 +70,9 @@ export async function chatRoutes(app: FastifyInstance) {
     const parsed = chatBodySchema.safeParse(request.body);
     if (!parsed.success || userTextTooLong(parsed.data.messages)) {
       return reply.status(400).send({ error: "Invalid conversation" });
+    }
+    if (parsed.data.messages.length > MAX_MESSAGES) {
+      return reply.status(413).send({ error: "The conversation is too long to continue. Start a new one." });
     }
     const last = parsed.data.messages[parsed.data.messages.length - 1];
     if (last.role !== "user") {
@@ -169,9 +172,11 @@ export async function chatRoutes(app: FastifyInstance) {
         }
         if (block.type === "tool_use" && block.name === "start_scan") {
           // Streamed input is not validated by the API; it is checked here
-          // before the widget is told to act on it.
+          // before the widget is told to act on it. One scan per turn, the
+          // first asked for: the widget answers any other call with an
+          // error result, so the history stays valid.
           const input = scanInputSchema.safeParse(block.input);
-          if (input.success) {
+          if (input.success && !scan) {
             scan = {
               toolUseId: block.id,
               url: input.data.url,
