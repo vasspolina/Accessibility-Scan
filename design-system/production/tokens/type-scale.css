@@ -1,0 +1,19 @@
+/* TYPE SCALE — one global scale. No value here ever changes with viewport.
+   Ratio 1.125 from base 16. The top three sit outside the ratio on purpose:
+   the empty interval between 32.44 and 40 is what produces the oversized effect.
+   Never add a token inside that gap.
+   House deviation: size-xs is floored at 14px (project minimum), not 12.64. */
+:root {
+  --size-xs: 0.875rem;      /* 14px    — floored, off-ratio */
+  --size-s: 0.889rem;       /* 14.22px */
+  --size-base: 1rem;        /* 16px    */
+  --size-m: 1.125rem;       /* 18px    */
+  --size-l: 1.266rem;       /* 20.25px */
+  --size-xl: 1.424rem;      /* 22.78px */
+  --size-2xl: 1.602rem;     /* 25.63px */
+  --size-3xl: 1.802rem;     /* 28.83px */
+  --size-4xl: 2.028rem;     /* 32.44px */
+  --size-huge: 2.5rem;      /* 40px    — ratio breaks here */
+  --size-enormous: 4.25rem; /* 68px    */
+  --size-gigantic: 5.75rem; /* 92px    */
+}

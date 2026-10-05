@@ -1,0 +1,80 @@
+/* SEMANTIC TYPE — two modes, compact and wide. The swap is one media query at 768.
+   No size token changes; only which size token a role points at.
+   Body, label and meta hold one value everywhere, which is why there are two modes
+   and not five.
+   House deviations from the source brief: weights 530 and 600 both map to 500
+   (PP Telegraf ships Regular and Medium only). Letter-spacing stays at the house
+   +1% rather than normal — one tracking value at every size, no display exception. */
+:root {
+  /* compact — below 768 */
+  --display-01-size: var(--size-huge);
+  --display-02-size: var(--size-huge);
+  --heading-01-size: var(--size-3xl);
+  --heading-02-size: var(--size-xl);
+  --heading-03-size: var(--size-l);
+  --body-lead-size: var(--size-m);
+  --body-01-size: var(--size-m);
+  --body-02-size: var(--size-base);
+  --label-01-size: var(--size-s);
+  --meta-01-size: var(--size-xs);
+
+  /* line height — constant across modes */
+  --display-01-lh: 1;     /* @kind font */
+  --display-02-lh: 1;     /* @kind font */
+  --heading-01-lh: 1.2;   /* @kind font */
+  --heading-02-lh: 1.2;  /* @kind font */
+  --heading-03-lh: 1.2;   /* @kind font */
+  --body-lead-lh: 1.2;    /* @kind font */
+  --body-01-lh: 1.2;      /* @kind font */
+  --body-02-lh: 1.2;      /* @kind font */
+  --label-01-lh: 1.2;     /* @kind font */
+  --meta-01-lh: 1.2;      /* @kind font */
+
+  /* weight — constant across modes */
+  --display-01-weight: 500;
+  --display-02-weight: 500;
+  --heading-01-weight: 500;
+  --heading-02-weight: 500;
+  --heading-03-weight: 500;
+  --body-lead-weight: 400;
+  --body-01-weight: 400;
+  --body-02-weight: 400;
+  --label-01-weight: 500;
+  --meta-01-weight: 400;
+}
+
+@media (min-width: 768px) {
+  :root {
+    /* wide — the only five tokens that move */
+    --display-01-size: var(--size-gigantic);
+    --display-02-size: var(--size-enormous);
+    --heading-01-size: var(--size-4xl);
+    --heading-02-size: var(--size-2xl);
+    --heading-03-size: var(--size-xl);
+    --body-lead-size: var(--size-l);
+  }
+}
+
+/* Roles. Apply the class, never the raw size. */
+.display-01 { font: var(--display-01-weight) var(--display-01-size)/var(--display-01-lh) var(--font-sans); letter-spacing: var(--tracking-normal); max-width: 20ch; margin: 0; }
+.display-02 { font: var(--display-02-weight) var(--display-02-size)/var(--display-02-lh) var(--font-sans); letter-spacing: var(--tracking-normal); max-width: 20ch; margin: 0; }
+.heading-01 { font: var(--heading-01-weight) var(--heading-01-size)/var(--heading-01-lh) var(--font-sans); letter-spacing: var(--tracking-normal); max-width: 20ch; margin: 0; }
+.heading-02 { font: var(--heading-02-weight) var(--heading-02-size)/var(--heading-02-lh) var(--font-sans); letter-spacing: var(--tracking-normal); max-width: 20ch; margin: 0; }
+.heading-03 { font: var(--heading-03-weight) var(--heading-03-size)/var(--heading-03-lh) var(--font-sans); letter-spacing: var(--tracking-normal); max-width: 20ch; margin: 0; }
+.body-lead { font: var(--body-lead-weight) var(--body-lead-size)/var(--body-lead-lh) var(--font-sans); letter-spacing: var(--tracking-normal); }
+.body-01 { font: var(--body-01-weight) var(--body-01-size)/var(--body-01-lh) var(--font-sans); letter-spacing: var(--tracking-normal); }
+.body-02 { font: var(--body-02-weight) var(--body-02-size)/var(--body-02-lh) var(--font-sans); letter-spacing: var(--tracking-normal); }
+.label-01 { font: var(--label-01-weight) var(--label-01-size)/var(--label-01-lh) var(--font-sans); letter-spacing: var(--tracking-normal); }
+.meta-01 { font: var(--meta-01-weight) var(--meta-01-size)/var(--meta-01-lh) var(--font-sans); letter-spacing: var(--tracking-normal); }
+
+/* MEASURE — a 66-character line on every paragraph container, active from 640 up.
+   NOT written as 66ch. The ch unit is the width of the zero glyph, and in PP Telegraf
+   that is 0.691em — so 66ch renders 820px, about 118 characters per line, which is
+   longer than the uncontrolled reference this system exists to correct.
+   Measured: 1ch = 12.436px at 18px. 66 characters ≈ 41ch ≈ 509px at body-01. */
+:root {
+  --measure: 41ch; /* @kind spacing */
+}
+@media (min-width: 640px) {
+  .measure, .body-lead, .body-01, .body-02 { max-width: var(--measure); }
+}

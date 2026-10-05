@@ -1,0 +1,23 @@
+:root {
+  /* Carbon motion curves */
+  --ease-productive-standard: cubic-bezier(0.2, 0, 0.38, 0.9);
+  --ease-productive-entrance: cubic-bezier(0, 0, 0.38, 0.9);
+  --ease-productive-exit: cubic-bezier(0.2, 0, 1, 0.9);
+  --ease-expressive-standard: cubic-bezier(0.4, 0.14, 0.3, 1);
+
+  --duration-fast-01: 70ms;
+  --duration-fast-02: 110ms;
+  --duration-moderate-01: 150ms;
+  --duration-moderate-02: 240ms;
+  --duration-slow-01: 400ms;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --duration-fast-01: 0ms;
+    --duration-fast-02: 0ms;
+    --duration-moderate-01: 0ms;
+    --duration-moderate-02: 0ms;
+    --duration-slow-01: 0ms;
+  }
+}

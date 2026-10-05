@@ -1,0 +1,32 @@
+:root {
+  /* Carbon 2x grid */
+  --space-01: 0.125rem;
+  --space-02: 0.25rem;
+  --space-03: 0.5rem;
+  --space-04: 0.75rem;
+  --space-05: 1rem;
+  --space-06: 1.5rem;
+  --space-07: 2rem;
+  --space-08: 2.5rem;
+  --space-09: 3rem;
+  --space-10: 4rem;
+  --space-11: 5rem;
+  --space-12: 6rem;
+
+  /* Minimal, near-square corners — Carbon-flat */
+  --radius-none: 0;
+  --radius-sm: 2px;
+  --radius-md: 4px;
+  --radius-pill: 999px;
+
+  --border-width: 1px;
+  --border-width-strong: 2px;
+
+  /* Target sizes — WCAG 2.2 target size (minimum) 24px; 44px preferred */
+  --target-min: 24px;
+  --target-comfortable: 40px;
+  --target-touch: 48px;
+
+  --shadow-overlay: 0 2px 6px rgba(0, 0, 0, 0.2);
+  --shadow-raised: 0 1px 2px rgba(0, 0, 0, 0.12);
+}

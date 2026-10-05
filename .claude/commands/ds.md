@@ -3,21 +3,23 @@ Build UI in this repo from what already exists. Do not invent UI.
 ## Read first, before writing a line
 
 1. `CLAUDE.md` — the type rules. They override anything you infer from the code.
-2. `widget-business/src/styles/global.css`, the `:root` block — every legal token value.
-3. The component you are about to touch, in `widget-business/src/components/`.
+2. `.claude/rules/kit-token-map.md` — the kit speaks an older token vocabulary than this tree. Every `var()` gets rewritten on port; there is no alias layer.
+3. `widget-business/src/styles/global.css`, the `:root` block — every legal token value.
+4. The component you are about to touch, in `widget-business/src/components/`.
 
 Quote the rules that bear on this task back to me before you start, so I know you read them rather than pattern-matched.
 
 ## Where things live
 
 - App components: `widget-business/src/components/*.tsx`, imported directly — `import { FindingGroup } from "./components/FindingGroup"`.
-- Components with a directory of their own: `widget-business/src/components/<Name>/` with an `index.ts` — Button, Card, Checkbox, DataTable, FactCard, FindingDetail, FixPreviews, Input, IssueRow, OptionCard, Radio, RelatedChecks, ScoreDial, Select2.
+- Ported kit components: `widget-business/src/components/<Name>/` with an `index.ts` — Button, Card, Checkbox, DataTable, FactCard, FindingDetail, FixPreviews, Input, IssueRow, OptionCard, Radio, RelatedChecks, ScoreDial, Select2.
 - There is **no** top-level `src/components/index.ts`. Do not import from a barrel that does not exist.
 - One stylesheet: `widget-business/src/styles/global.css`, inlined into the shadow root by `shadowMount.ts`. Components do not import their own CSS.
+- Design sources are read-only, fetched from the claude.ai/design project via DesignSync. `.design-sync/NOTES.md`: this repo is **not** a sync source — the direction is design → code, one way.
 
 ## Hard rules
 
-- Reach for an existing component before writing markup. A raw `<button>`/`<input>`/`<table>` in a report section is almost always a component that already exists; inside those components themselves, primitives are the point.
+- Reach for an existing component before writing markup. A raw `<button>`/`<input>`/`<table>` in a report section is almost always a component that already exists; inside the kit components themselves, primitives are the point.
 - **Type is literal px in the markup — never a token or custom property for size, weight or tracking.** Minimum 14px. Small body text is 15px or 18px, nothing between. Letter-spacing 0.01em everywhere. Only PP Telegraf 400 and 500 — `<strong>` needs an explicit 500 or the browser fakes a 700.
 - Colour, spacing, radius and motion **do** use tokens: `var(--space-*)`, `var(--radius-*)`, `var(--gray-*)`, `var(--purple-*)`, `var(--severity-*)`. There is no `--ds-*` prefix here.
 - Never remove a focus indicator. `appearance: none` takes the UA ring with it — state the ring yourself when you use it.
