@@ -22,6 +22,7 @@ const axeSrc = fs.readFileSync(
 const PAGES = [
   "en/index.html", "de/index.html",
   "en/statement.html", "de/statement.html",
+  "en/cookie-banner.html", "de/cookie-banner.html",
   "rechtliches.html",
   "en-XA/index.html",
 ];

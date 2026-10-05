@@ -1,0 +1,1743 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="description" content="A cookie consent banner for EU websites that screen readers can read past, keyboards can operate and regulators accept. Free HTML, CSS and JavaScript.">
+<title>Accessible Consent Banner</title>
+</head>
+<body>
+<style>
+/* Layout: one 68ch column of instruction, full-width code blocks, the banner itself live at the bottom. */
+:root {
+  --bg: #fbfaf7; --fg: #1d1c1a; --muted: #5b5955; --line: #c9c6bf; --accent: #0b5cad; --surface: #f1efe9; --code: #f4f2ec;
+  --font: "PP Telegraf", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  --mono: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --bg: #121211; --fg: #efede8; --muted: #b4b1aa; --line: #4a4844; --accent: #8cc2ff; --surface: #1c1b19; --code: #1a1917; color-scheme: dark } }
+:root[data-theme="dark"] { --bg: #121211; --fg: #efede8; --muted: #b4b1aa; --line: #4a4844; --accent: #8cc2ff; --surface: #1c1b19; --code: #1a1917; color-scheme: dark }
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--bg); color: var(--fg); font-family: var(--font); font-size: 18px; line-height: 1.5; letter-spacing: 0.01em; }
+.wrap { max-width: 960px; margin-inline: auto; padding-block: 48px 96px; padding-inline: 16px; }
+h1 { font-size: 40px; font-weight: 300; line-height: 1.1; margin: 0 0 16px; text-wrap: balance; max-width: 20ch; }
+h2 { font-size: 28px; font-weight: 400; line-height: 1.2; margin: 64px 0 16px; text-wrap: balance; }
+h3 { font-size: 18px; font-weight: 500; margin: 0; }
+p { margin: 0 0 16px; max-width: 68ch; }
+.lede { font-size: 18px; color: var(--muted); max-width: 60ch; }
+a { color: var(--accent); text-underline-offset: 3px; }
+.meta { color: var(--muted); font-weight: 400; font-family: var(--mono); font-size: 15px; }
+.btn { font: inherit; font-size: 18px; letter-spacing: 0.01em; min-height: 48px; padding: 0 20px; border: 2px solid var(--fg); border-radius: 2px; background: var(--fg); color: var(--bg); cursor: pointer; }
+.btn--quiet { background: transparent; color: var(--fg); }
+.btn--small { min-height: 40px; font-size: 15px; padding: 0 14px; background: transparent; color: var(--fg); border-width: 1px; border-color: var(--line); }
+.btn:hover { opacity: 0.9; }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.actions { display: flex; flex-wrap: wrap; gap: 12px; margin: 24px 0 8px; }
+.rules { list-style: none; margin: 0 0 16px; padding: 0; counter-reset: r; }
+.rules li { counter-increment: r; display: grid; grid-template-columns: 3ch 1fr; gap: 0 16px; padding: 14px 0; border-top: 1px solid var(--line); max-width: 68ch; }
+.rules li::before { content: counter(r, decimal-leading-zero); color: var(--muted); font-family: var(--mono); font-size: 15px; padding-top: 3px; }
+.rules li strong { font-weight: 500; }
+.rules li span { grid-column: 2; color: var(--fg); }
+.rules li strong + span { margin-top: 2px; }
+.rules--plain li { grid-template-columns: 3ch 1fr; }
+.code { margin: 24px 0; border: 1px solid var(--line); border-radius: 2px; background: var(--code); }
+.code__bar { display: flex; flex-wrap: wrap; gap: 12px; justify-content: space-between; align-items: center; padding: 12px 16px; border-bottom: 1px solid var(--line); }
+.code__tools { display: flex; gap: 8px; }
+.code pre { margin: 0; padding: 16px; overflow: auto; max-height: 480px; font-family: var(--mono); font-size: 14px; line-height: 1.5; tab-size: 2; }
+.status { color: var(--muted); font-size: 15px; min-height: 1.5em; }
+footer { margin-top: 64px; padding-top: 24px; border-top: 1px solid var(--line); display: flex; flex-wrap: wrap; gap: 24px; font-size: 15px; color: var(--muted); }
+.visually-hidden { position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0; overflow: hidden; clip-path: inset(50%); white-space: nowrap; border: 0; }
+@media (max-width: 480px) { h1 { font-size: 32px; } .btn { width: 100%; } .actions { display: grid; } }
+
+
+/* Design spec: static replicas of the banner and dialog with lettered markers. */
+.spec-figure { margin: 0 0 24px; }
+.spec-figure figcaption { font-size: 15px; letter-spacing: 0.01em; margin: 8px 0 0; }
+.spec-wrap { overflow-x: auto; }
+.spec { position: relative; padding: 16px 0 0 16px; }
+.spec .consent { position: relative; max-height: none; animation: none; box-shadow: none; border: 1px solid var(--consent-border); }
+.spec .consent__dialog { display: block; position: relative; margin: 0; max-height: none; width: 100%; }
+.spec .consent__dialog > div { display: grid; gap: 20px; padding: 24px; }
+.spec .consent__fields { display: grid; gap: 12px; }
+.spec .consent__legend { margin: 0; font-size: 18px; font-weight: 500; }
+.spec .consent__dialog h2 { margin: 0; font-size: 24px; font-weight: 500; line-height: 1.3; }
+.spec .consent__title, .spec .consent__text, .spec .consent__button, .spec .consent__option { position: relative; }
+.spec * { pointer-events: none; }
+.spec .is-focus { outline: 2px solid var(--consent-focus); outline-offset: 2px; box-shadow: 0 0 0 1px var(--consent-bg); }
+.mark { position: absolute; top: -12px; left: -12px; display: inline-grid; place-items: center; width: 24px; height: 24px; border-radius: 50%; font-size: 14px; font-weight: 500; letter-spacing: 0.01em; background: #fdd84b; color: #000; border: 1px solid #000; z-index: 2; }
+.mark--right { left: auto; right: -12px; }
+.spec-table { width: 100%; border-collapse: collapse; margin: 0 0 24px; font-size: 15px; letter-spacing: 0.01em; }
+.spec-table th, .spec-table td { text-align: left; vertical-align: top; padding: 10px 12px 10px 0; border-top: 1px solid var(--consent-border, currentColor); }
+.spec-table th { font-weight: 500; }
+.spec-table td:first-child, .spec-table th:first-child { white-space: nowrap; width: 1%; }
+.spec-table .mark { position: static; }
+.swatch { display: inline-block; width: 14px; height: 14px; border: 1px solid currentColor; vertical-align: -2px; margin-inline-end: 6px; }
+
+/* ── the template's own stylesheet, unchanged ── */
+/* Consent banner — accessible template for EU sites.
+   Drop-in: no dependencies, no framework. Theme it with the custom
+   properties on .consent; every value below has a fallback.
+   Type sizes are literal px so zoom and user stylesheets behave
+   predictably. Nothing here is smaller than 15px. */
+
+.consent {
+  --consent-bg: #ffffff;
+  --consent-text: #1a1a1a;
+  --consent-muted: #4a4a4a;
+  --consent-border: #767676;
+  --consent-accent: #0b5cad;
+  --consent-focus: #0b5cad;
+  --consent-button-bg: #1a1a1a;
+  --consent-button-text: #ffffff;
+  --consent-radius: 2px;
+  --consent-z: 1000;
+
+  position: fixed;
+  inset-block-end: 0;
+  inset-inline: 0;
+  z-index: var(--consent-z);
+  max-height: 60vh;              /* never the whole viewport: the page stays readable */
+  overflow: auto;
+  background: var(--consent-bg);
+  color: var(--consent-text);
+  border-block-start: 1px solid var(--consent-border);
+  box-shadow: 0 -2px 16px rgba(0, 0, 0, 0.12);
+  font-size: 18px;
+  line-height: 1.5;
+  letter-spacing: 0.01em;
+  font-family: inherit;
+}
+
+@media (prefers-color-scheme: dark) {
+  .consent {
+    --consent-bg: #111111;
+    --consent-text: #f2f2f2;
+    --consent-muted: #c4c4c4;
+    --consent-border: #8a8a8a;
+    --consent-accent: #7cbcff;
+    --consent-focus: #ffffff;
+    --consent-button-bg: #f2f2f2;
+    --consent-button-text: #111111;
+  }
+}
+
+.consent[hidden] { display: none; }
+
+.consent__inner {
+  max-width: 1100px;
+  margin-inline: auto;
+  padding: 24px 16px;
+  display: grid;
+  gap: 16px;
+}
+
+.consent__title {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 500;
+  letter-spacing: 0.01em;
+}
+
+.consent__text {
+  margin: 0;
+  max-width: 70ch;
+  color: var(--consent-text);
+}
+
+.consent__text a,
+.consent__dialog a {
+  color: var(--consent-accent);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.consent__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  align-items: center;
+}
+
+/* Accept and Reject are the same button. Same size, same colour, same
+   weight: the law asks for a refusal as easy as acceptance, and a reader
+   who sees a grey "Reject" beside a blue "Accept" is being steered. */
+.consent__button {
+  min-height: 48px;
+  min-width: 48px;
+  padding: 10px 20px;
+  font: inherit;
+  font-size: 18px;
+  font-weight: 500;
+  letter-spacing: 0.01em;
+  line-height: 1.2;
+  color: var(--consent-button-text);
+  background: var(--consent-button-bg);
+  border: 2px solid var(--consent-button-bg);
+  border-radius: var(--consent-radius);
+  cursor: pointer;
+}
+
+.consent__button--quiet {
+  color: var(--consent-text);
+  background: transparent;
+  border-color: var(--consent-border);
+}
+
+.consent__button:hover { opacity: 0.92; }
+
+.consent :focus-visible,
+.consent__dialog :focus-visible {
+  outline: 2px solid var(--consent-focus);
+  outline-offset: 2px;
+  box-shadow: 0 0 0 1px var(--consent-bg);
+}
+
+/* Settings: a real <dialog>, so the browser gives the focus trap,
+   Escape handling and the inert page for free. */
+.consent__dialog {
+  --consent-bg: #ffffff;
+  --consent-text: #1a1a1a;
+  --consent-muted: #4a4a4a;
+  --consent-border: #767676;
+  --consent-accent: #0b5cad;
+  --consent-focus: #0b5cad;
+  --consent-button-bg: #1a1a1a;
+  --consent-button-text: #ffffff;
+  --consent-radius: 2px;
+
+  width: min(100% - 32px, 640px);
+  max-height: calc(100vh - 32px);
+  padding: 0;
+  border: 1px solid var(--consent-border);
+  border-radius: var(--consent-radius);
+  background: var(--consent-bg);
+  color: var(--consent-text);
+  font-size: 18px;
+  line-height: 1.5;
+  letter-spacing: 0.01em;
+  font-family: inherit;
+}
+
+@media (prefers-color-scheme: dark) {
+  .consent__dialog {
+    --consent-bg: #111111;
+    --consent-text: #f2f2f2;
+    --consent-muted: #c4c4c4;
+    --consent-border: #8a8a8a;
+    --consent-accent: #7cbcff;
+    --consent-focus: #ffffff;
+    --consent-button-bg: #f2f2f2;
+    --consent-button-text: #111111;
+  }
+}
+
+.consent__dialog::backdrop { background: rgba(0, 0, 0, 0.5); }
+
+.consent__dialog form {
+  display: grid;
+  gap: 20px;
+  padding: 24px;
+}
+
+.consent__dialog h2 {
+  margin: 0;
+  font-size: 24px;
+  font-weight: 500;
+  letter-spacing: 0.01em;
+  line-height: 1.3;
+}
+
+.consent__dialog fieldset {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  display: grid;
+  gap: 12px;
+}
+
+.consent__dialog legend {
+  padding: 0;
+  margin-block-end: 8px;
+  font-size: 18px;
+  font-weight: 500;
+}
+
+/* One category per row: a native checkbox, big enough to hit, and a
+   label that says what the category does, not just its name. */
+.consent__option {
+  display: grid;
+  grid-template-columns: 24px 1fr;
+  gap: 12px;
+  align-items: start;
+  padding: 12px;
+  border: 1px solid var(--consent-border);
+  border-radius: var(--consent-radius);
+}
+
+.consent__option input {
+  width: 24px;
+  height: 24px;
+  margin: 2px 0 0;
+  accent-color: var(--consent-accent);
+}
+
+.consent__option label {
+  font-size: 18px;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.consent__option p {
+  grid-column: 2;
+  margin: 0;
+  font-size: 15px;
+  color: var(--consent-muted);
+}
+
+.consent__option input:disabled + label {
+  cursor: default;
+}
+
+/* Always-on categories say so in words, not in a greyed-out box. */
+.consent__always {
+  font-size: 15px;
+  font-weight: 400;
+  color: var(--consent-muted);
+  margin-inline-start: 8px;
+}
+
+/* The "Cookie settings" link that lives in the footer, forever. */
+.consent__reopen {
+  font: inherit;
+  font-size: 18px;
+  letter-spacing: 0.01em;
+  color: inherit;
+  background: none;
+  border: 0;
+  padding: 0;
+  min-height: 24px;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  cursor: pointer;
+}
+
+/* Windows High Contrast / forced colours: keep the borders that
+   separate the two buttons, let the system paint the rest. */
+@media (forced-colors: active) {
+  .consent, .consent__dialog { border-color: CanvasText; }
+  .consent__button { border: 2px solid ButtonText; forced-color-adjust: auto; }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .consent { animation: consent-in 240ms ease-out; }
+  @keyframes consent-in {
+    from { transform: translateY(16px); opacity: 0; }
+    to   { transform: none; opacity: 1; }
+  }
+}
+
+@media (max-width: 480px) {
+  .consent__actions { display: grid; }
+  .consent__button { width: 100%; }
+}
+
+/* Included so the snippet works on a site that has no such class. */
+.consent .visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+}
+
+</style>
+
+<a class="visually-hidden" href="#main">Skip to content</a>
+<section class="consent" aria-labelledby="consent-title" hidden>
+  <div class="consent__inner">
+    <h2 class="consent__title" id="consent-title">Cookies on this site</h2>
+    <p class="consent__text">
+      We use cookies that the site needs to work. With your permission we also
+      use cookies that measure how the site is used. You can change your choice
+      at any time under “Cookie settings” in the footer.
+      <a href="#policy">Privacy policy</a>
+    </p>
+    <div class="consent__actions">
+      <button type="button" class="consent__button" data-consent-action="accept"
+              data-consent-message="All cookies accepted.">Accept all</button>
+      <button type="button" class="consent__button" data-consent-action="reject"
+              data-consent-message="Only necessary cookies are in use.">Reject all</button>
+      <button type="button" class="consent__button consent__button--quiet" data-consent-action="settings">Settings</button>
+    </div>
+    <p class="visually-hidden" role="status" data-consent-status></p>
+  </div>
+</section>
+
+
+<dialog class="consent__dialog" aria-labelledby="consent-dialog-title">
+  <form method="dialog">
+    <h2 id="consent-dialog-title" tabindex="-1">Cookie settings</h2>
+    <p>Choose which cookies this site may use. Necessary cookies are always on: without them the site does not work.</p>
+    <fieldset>
+      <legend>Cookie categories</legend>
+
+      <div class="consent__option">
+        <input type="checkbox" id="consent-necessary" name="necessary" checked disabled>
+        <label for="consent-necessary">Necessary <span class="consent__always">always on</span></label>
+        <p>Remember your cookie choice and keep you signed in. Set by this site only.</p>
+      </div>
+
+      <div class="consent__option">
+        <input type="checkbox" id="consent-analytics" name="analytics">
+        <label for="consent-analytics">Measurement</label>
+        <p>Count visits and see which pages are used, so we can improve them. Data is aggregated; no advertising.</p>
+      </div>
+
+      <div class="consent__option">
+        <input type="checkbox" id="consent-media" name="media">
+        <label for="consent-media">Embedded media</label>
+        <p>Show videos and maps from other providers. Those providers set their own cookies when the content loads.</p>
+      </div>
+    </fieldset>
+    <div class="consent__actions">
+      <button type="submit" class="consent__button" data-consent-message="Your cookie choice is saved.">Save choices</button>
+      <button type="button" class="consent__button consent__button--quiet" data-consent-action="close">Cancel</button>
+    </div>
+  </form>
+</dialog>
+
+
+
+<div class="wrap">
+<main id="main">
+  <h1>A cookie banner everyone can get past.</h1>
+  <p class="lede">A consent banner for EU websites that a screen reader can read past, a keyboard can operate and a regulator can live with. Four small files, no dependencies, free to use.</p>
+  <div class="actions">
+    <button type="button" class="btn" id="download-all">Download all four files (.zip)</button>
+    <button type="button" class="btn btn--quiet" id="show-banner">Show the banner again</button>
+  </div>
+  <p class="status" role="status" id="dl-status"></p>
+  <p>The banner at the bottom of this page is the template itself. Try it with Tab, Escape and a screen reader before you read on.</p>
+
+  <h2 id="make">Make yours</h2>
+    <p>Answer four questions and the builder writes the banner for your site: your policy link, your categories in your words, your colours. It checks every colour pair against WCAG and shows the result running. Nothing you type leaves this page.</p>
+    <style>
+.builder { display: grid; gap: 24px; margin-block: 16px 32px; }
+.builder fieldset { border: 1px solid currentColor; border-radius: 2px; padding: 16px; margin: 0; display: grid; gap: 16px; min-width: 0; }
+.builder legend { font-size: 18px; font-weight: 500; padding-inline: 4px; }
+.builder .hint { font-size: 15px; margin: 0; opacity: 0.85; }
+.builder .field { display: grid; gap: 4px; }
+.builder label { font-size: 18px; }
+.builder input[type="text"], .builder textarea { font: inherit; font-size: 18px; letter-spacing: 0.01em; color: inherit; background: transparent; border: 1px solid currentColor; border-radius: 2px; padding: 8px 12px; min-height: 48px; width: 100%; }
+.builder textarea { min-height: 96px; resize: vertical; }
+.builder .check, .builder .radio { display: flex; gap: 12px; align-items: center; min-height: 48px; }
+.builder .check input, .builder .radio input { width: 24px; height: 24px; margin: 0; flex: none; }
+.builder .colour { display: flex; gap: 12px; align-items: center; min-height: 48px; }
+.builder input[type="color"] { width: 64px; height: 48px; padding: 0; border: 1px solid currentColor; border-radius: 2px; background: transparent; }
+.builder .colours { display: flex; flex-wrap: wrap; gap: 8px 32px; }
+.builder .cat-row { display: grid; gap: 4px; padding-inline-start: 36px; }
+.builder-result { display: grid; gap: 16px; }
+.builder-result h4 { font-size: 18px; font-weight: 400; margin: 8px 0 0; }
+.builder-result h3 { font-size: 18px; font-weight: 500; margin: 16px 0 0; }
+.builder-result ul { margin: 0; padding-inline-start: 24px; }
+.builder-result iframe { width: 100%; height: 480px; border: 1px solid currentColor; border-radius: 2px; background: #f4f4f4; }
+.builder-result pre { max-height: 420px; overflow: auto; font-size: 15px; }
+.builder-actions { display: flex; flex-wrap: wrap; gap: 12px; }
+.builder-actions button { font: inherit; font-size: 18px; letter-spacing: 0.01em; min-height: 48px; padding: 0 20px; border: 2px solid currentColor; border-radius: 2px; background: transparent; color: inherit; cursor: pointer; }
+.builder .cat-row[hidden], .builder-result[hidden] { display: none; }
+.builder-actions button:focus-visible, .builder input:focus-visible, .builder textarea:focus-visible { outline: 2px solid currentColor; outline-offset: 2px; }
+</style>
+    <form class="builder" id="builder" novalidate>
+      <fieldset><legend>Language of the banner</legend>
+      <div class="radio"><input type="radio" id="lang-en" name="lang" value="en" checked>
+        <label for="lang-en" lang="en">English</label></div>
+      <div class="radio"><input type="radio" id="lang-de" name="lang" value="de">
+        <label for="lang-de" lang="de">Deutsch</label></div>
+      </fieldset>
+      <div class="field">
+        <label for="policy">Link to your privacy policy</label>
+        <p class="hint" id="policy-hint">A full address or a path on your site, such as /privacy/.</p>
+        <input type="text" id="policy" name="policy" value="/privacy/" aria-describedby="policy-hint" autocomplete="url" spellcheck="false">
+      </div>
+      <fieldset aria-describedby="cats-hint"><legend>Which optional cookies does your site set?</legend>
+        <p class="hint" id="cats-hint">Tick only what your site really uses. Rewrite each description to say what those cookies do on your site.</p>
+      <div class="check"><input type="checkbox" id="cat-analytics" name="cat-analytics" checked>
+        <label for="cat-analytics" id="label-analytics">Measurement</label></div>
+      <div class="cat-row field" id="row-analytics">
+        <label for="text-analytics">What it does, in your words</label>
+        <textarea id="text-analytics" name="text-analytics">Count visits and see which pages are used, so we can improve them. Data is aggregated; no advertising.</textarea>
+      </div>
+      <div class="check"><input type="checkbox" id="cat-media" name="cat-media">
+        <label for="cat-media" id="label-media">Embedded media</label></div>
+      <div class="cat-row field" id="row-media">
+        <label for="text-media">What it does, in your words</label>
+        <textarea id="text-media" name="text-media">Show videos and maps from other providers. Those providers set their own cookies when the content loads.</textarea>
+      </div>
+      <div class="check"><input type="checkbox" id="cat-marketing" name="cat-marketing">
+        <label for="cat-marketing" id="label-marketing">Advertising</label></div>
+      <div class="cat-row field" id="row-marketing">
+        <label for="text-marketing">What it does, in your words</label>
+        <textarea id="text-marketing" name="text-marketing">Let advertising partners show you ads based on the pages you visit here and on other sites.</textarea>
+      </div>
+      <div class="check"><input type="checkbox" id="cat-preferences" name="cat-preferences">
+        <label for="cat-preferences" id="label-preferences">Preferences</label></div>
+      <div class="cat-row field" id="row-preferences">
+        <label for="text-preferences">What it does, in your words</label>
+        <textarea id="text-preferences" name="text-preferences">Remember settings you choose, such as language or region, between visits.</textarea>
+      </div>
+        <div class="field"><label for="own-label">Another category (optional): Its name</label>
+          <input type="text" id="own-label" name="own-label"></div>
+        <div class="field"><label for="own-text">Another category (optional): What it does</label>
+          <textarea id="own-text" name="own-text"></textarea></div>
+      </fieldset>
+      <fieldset aria-describedby="colours-hint"><legend>Colours (light mode)</legend>
+        <p class="hint" id="colours-hint">Dark mode keeps the template&#x27;s own tested colours.</p>
+        <div class="colours">
+          <div class="colour"><input type="color" id="c-bg" name="bg" value="#ffffff"><label for="c-bg">Background</label></div>
+          <div class="colour"><input type="color" id="c-text" name="text" value="#1a1a1a"><label for="c-text">Text</label></div>
+          <div class="colour"><input type="color" id="c-button" name="button" value="#1a1a1a"><label for="c-button">Buttons and links</label></div>
+        </div>
+      </fieldset>
+    </form>
+    <p class="builder-status" role="status" id="builder-status"></p>
+    <p id="builder-none" hidden>With only necessary cookies a site needs no consent banner. Tick a category above if you set any other cookies.</p>
+    <div class="builder-result" id="builder-result">
+      <h3>Contrast</h3>
+      <ul id="builder-contrast"></ul>
+      <h3>Preview</h3>
+      <p class="hint">The banner running with your settings. Use Tab, Escape and Settings inside it.</p>
+      <iframe id="builder-preview" title="Banner preview"></iframe>
+      <h3>Your code</h3>
+      <p class="hint">Three files: the markup to paste into your pages, the stylesheet with your colours, and the script. Copy each one, or download all three.</p>
+      <div class="builder-actions">
+        <button type="button" id="builder-download">Download all three files</button>
+      </div>
+      <h4 class="builder-file">Markup <span class="meta">consent.html</span></h4>
+      <div class="builder-actions"><button type="button" data-builder-copy="builder-output">Copy consent.html</button></div>
+      <pre tabindex="0" aria-label="consent.html"><code id="builder-output"></code></pre>
+      <h4 class="builder-file">Stylesheet <span class="meta">consent.css</span></h4>
+      <div class="builder-actions"><button type="button" data-builder-copy="builder-css">Copy consent.css</button></div>
+      <pre tabindex="0" aria-label="consent.css"><code id="builder-css"></code></pre>
+      <h4 class="builder-file">Script <span class="meta">consent.js</span></h4>
+      <div class="builder-actions"><button type="button" data-builder-copy="builder-js">Copy consent.js</button></div>
+      <pre tabindex="0" aria-label="consent.js"><code id="builder-js"></code></pre>
+    </div>
+    <script type="application/json" id="builder-strings">{"defaultLang": "en", "en": {"lowerInSentence": true, "c1": "<!-- 1. The banner. Place it directly after your skip link, before the\n        header, so it is the first thing a screen reader meets and the\n        first Tab stop after \"Skip to content\". -->", "c2": "<!-- 2. The settings dialog. Anywhere in the body. -->", "c3": "<!-- 3. The way back. In the footer of every page, forever. -->", "c4": "<!-- 4. Scripts that wait for consent. Point src at your real scripts. -->", "title": "Cookies on this site", "textNeed": "We use cookies that the site needs to work.", "textAsk": "With your permission we also use cookies for {purposes}.", "textChange": "You can change your choice at any time under “Cookie settings” in the footer.", "policy": "Privacy policy", "policyDefault": "/privacy/", "accept": "Accept all", "acceptMsg": "All cookies accepted.", "reject": "Reject all", "rejectMsg": "Only necessary cookies are in use.", "settings": "Settings", "dialogTitle": "Cookie settings", "dialogIntro": "Choose which cookies this site may use. Necessary cookies are always on: without them the site does not work.", "legend": "Cookie categories", "necessary": "Necessary", "always": "always on", "necessaryText": "Remember your cookie choice and keep you signed in. Set by this site only.", "save": "Save choices", "saveMsg": "Your cookie choice is saved.", "cancel": "Cancel", "scriptPlaceholder": "/js/your-script.js", "categories": [{"name": "analytics", "label": "Measurement", "phrase": "measurement", "text": "Count visits and see which pages are used, so we can improve them. Data is aggregated; no advertising."}, {"name": "media", "label": "Embedded media", "phrase": "embedded media", "text": "Show videos and maps from other providers. Those providers set their own cookies when the content loads."}, {"name": "marketing", "label": "Advertising", "phrase": "advertising", "text": "Let advertising partners show you ads based on the pages you visit here and on other sites."}, {"name": "preferences", "label": "Preferences", "phrase": "remembering your preferences", "text": "Remember settings you choose, such as language or region, between visits."}], "and": "and"}, "de": {"lowerInSentence": false, "c1": "<!-- 1. Das Banner. Direkt nach dem Sprunglink, vor dem Header: so ist es\n        das Erste, was ein Screenreader liest, und der erste Tabstopp nach\n        „Zum Inhalt springen“. -->", "c2": "<!-- 2. Der Einstellungsdialog. Irgendwo im Body. -->", "c3": "<!-- 3. Der Weg zurück. In der Fußzeile jeder Seite, dauerhaft. -->", "c4": "<!-- 4. Skripte, die auf Einwilligung warten. src auf Ihre echten Skripte setzen. -->", "title": "Cookies auf dieser Website", "textNeed": "Wir verwenden Cookies, die die Website zum Funktionieren braucht.", "textAsk": "Mit Ihrer Erlaubnis verwenden wir auch Cookies für {purposes}.", "textChange": "Ihre Wahl können Sie jederzeit unter „Cookie-Einstellungen“ in der Fußzeile ändern.", "policy": "Datenschutzerklärung", "policyDefault": "/datenschutz/", "accept": "Alle akzeptieren", "acceptMsg": "Alle Cookies akzeptiert.", "reject": "Alle ablehnen", "rejectMsg": "Nur notwendige Cookies werden verwendet.", "settings": "Einstellungen", "dialogTitle": "Cookie-Einstellungen", "dialogIntro": "Wählen Sie, welche Cookies diese Website verwenden darf. Notwendige Cookies sind immer aktiv: ohne sie funktioniert die Website nicht.", "legend": "Cookie-Kategorien", "necessary": "Notwendig", "always": "immer aktiv", "necessaryText": "Merken sich Ihre Cookie-Wahl und halten Sie angemeldet. Nur von dieser Website gesetzt.", "save": "Auswahl speichern", "saveMsg": "Ihre Cookie-Wahl ist gespeichert.", "cancel": "Abbrechen", "scriptPlaceholder": "/js/ihr-skript.js", "categories": [{"name": "analytics", "label": "Messung", "phrase": "Messung", "text": "Zählen Besuche und zeigen, welche Seiten genutzt werden, damit wir sie verbessern können. Daten werden zusammengefasst; keine Werbung."}, {"name": "media", "label": "Eingebettete Medien", "phrase": "eingebettete Medien", "text": "Zeigen Videos und Karten anderer Anbieter. Diese Anbieter setzen eigene Cookies, wenn der Inhalt geladen wird."}, {"name": "marketing", "label": "Werbung", "phrase": "Werbung", "text": "Erlauben Werbepartnern, Ihnen Anzeigen passend zu den Seiten zu zeigen, die Sie hier und auf anderen Websites besuchen."}, {"name": "preferences", "label": "Präferenzen", "phrase": "Ihre Präferenzen", "text": "Merken sich Einstellungen, die Sie wählen, etwa Sprache oder Region, bis zum nächsten Besuch."}], "and": "und"}, "ui": {"c_text": "Text on the background", "c_button_text": "Button text on the button", "c_button_edge": "Button against the background", "c_link": "Policy link on the background", "fail": "fails, needs {need}:1", "failSay": "{n} colour pair fails. See the contrast list.", "failSayMany": "{n} colour pairs fail. See the contrast list.", "readySay": "Banner updated. All colours pass.", "noneSay": "No optional categories: no banner needed.", "cssNote": "Your colours, light mode. Written by the builder.", "previewTitle": "Banner preview", "previewPage": "Your page sits here. The banner below is not a modal: this text stays readable.", "copied": "{name} copied.", "notCopied": "Code selected. Press Ctrl+C or Cmd+C to copy it.", "saved": "{name} saved.", "notSaved": "Not saved. Use Copy instead.", "pass": "passes"}}</script>
+
+  <h2>Install it in seven steps</h2>
+  <ol class="rules"><li><strong>Download the four files.</strong><span>Use the button above for a zip, or take each file below. You need consent.css, consent.js and the snippet in your language; the other language is there for a second locale.</span></li><li><strong>Put the stylesheet and script on every page.</strong><span>Load consent.css before your own stylesheet so your colours win, and consent.js with defer at the end of the body.</span></li><li><strong>Paste the three pieces of markup where the snippet&#x27;s comments say.</strong><span>The banner goes right after your skip link, before the header. The dialog can sit anywhere in the body. The “Cookie settings” button goes in the footer of every page.</span></li><li><strong>Edit the words.</strong><span>Change the privacy-policy link, and rewrite each category&#x27;s label and description to say what your cookies really do. Delete a category you do not use; add one by copying a row and giving its input a new name.</span></li><li><strong>Mark the scripts that need consent.</strong><span>Change each one&#x27;s type to text/plain and add data-consent with the category&#x27;s name. It is switched on the moment that category is allowed.</span></li><li><strong>Theme it.</strong><span>Override the --consent-* custom properties on .consent and .consent__dialog. Keep text at 4.5:1 and borders at 3:1 in both colour schemes; keep Accept and Reject identical.</span></li><li><strong>Run the test list at the end of this page.</strong><span>Ten minutes with a keyboard and a screen reader. Then publish.</span></li></ol>
+
+  <h2>The files</h2>
+  <section class="code" aria-labelledby="h-consent.css">
+  <div class="code__bar">
+    <h3 id="h-consent.css">Stylesheet <span class="meta">consent.css</span></h3>
+    <div class="code__tools">
+      <button type="button" class="btn btn--small" data-copy="consent.css">Copy</button>
+      <button type="button" class="btn btn--small" data-download="consent.css">Download</button>
+    </div>
+  </div>
+  <pre tabindex="0"><code id="consent.css">/* Consent banner — accessible template for EU sites.
+   Drop-in: no dependencies, no framework. Theme it with the custom
+   properties on .consent; every value below has a fallback.
+   Type sizes are literal px so zoom and user stylesheets behave
+   predictably. Nothing here is smaller than 15px. */
+
+.consent {
+  --consent-bg: #ffffff;
+  --consent-text: #1a1a1a;
+  --consent-muted: #4a4a4a;
+  --consent-border: #767676;
+  --consent-accent: #0b5cad;
+  --consent-focus: #0b5cad;
+  --consent-button-bg: #1a1a1a;
+  --consent-button-text: #ffffff;
+  --consent-radius: 2px;
+  --consent-z: 1000;
+
+  position: fixed;
+  inset-block-end: 0;
+  inset-inline: 0;
+  z-index: var(--consent-z);
+  max-height: 60vh;              /* never the whole viewport: the page stays readable */
+  overflow: auto;
+  background: var(--consent-bg);
+  color: var(--consent-text);
+  border-block-start: 1px solid var(--consent-border);
+  box-shadow: 0 -2px 16px rgba(0, 0, 0, 0.12);
+  font-size: 18px;
+  line-height: 1.5;
+  letter-spacing: 0.01em;
+  font-family: inherit;
+}
+
+@media (prefers-color-scheme: dark) {
+  .consent {
+    --consent-bg: #111111;
+    --consent-text: #f2f2f2;
+    --consent-muted: #c4c4c4;
+    --consent-border: #8a8a8a;
+    --consent-accent: #7cbcff;
+    --consent-focus: #ffffff;
+    --consent-button-bg: #f2f2f2;
+    --consent-button-text: #111111;
+  }
+}
+
+.consent[hidden] { display: none; }
+
+.consent__inner {
+  max-width: 1100px;
+  margin-inline: auto;
+  padding: 24px 16px;
+  display: grid;
+  gap: 16px;
+}
+
+.consent__title {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 500;
+  letter-spacing: 0.01em;
+}
+
+.consent__text {
+  margin: 0;
+  max-width: 70ch;
+  color: var(--consent-text);
+}
+
+.consent__text a,
+.consent__dialog a {
+  color: var(--consent-accent);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.consent__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  align-items: center;
+}
+
+/* Accept and Reject are the same button. Same size, same colour, same
+   weight: the law asks for a refusal as easy as acceptance, and a reader
+   who sees a grey &quot;Reject&quot; beside a blue &quot;Accept&quot; is being steered. */
+.consent__button {
+  min-height: 48px;
+  min-width: 48px;
+  padding: 10px 20px;
+  font: inherit;
+  font-size: 18px;
+  font-weight: 500;
+  letter-spacing: 0.01em;
+  line-height: 1.2;
+  color: var(--consent-button-text);
+  background: var(--consent-button-bg);
+  border: 2px solid var(--consent-button-bg);
+  border-radius: var(--consent-radius);
+  cursor: pointer;
+}
+
+.consent__button--quiet {
+  color: var(--consent-text);
+  background: transparent;
+  border-color: var(--consent-border);
+}
+
+.consent__button:hover { opacity: 0.92; }
+
+.consent :focus-visible,
+.consent__dialog :focus-visible {
+  outline: 2px solid var(--consent-focus);
+  outline-offset: 2px;
+  box-shadow: 0 0 0 1px var(--consent-bg);
+}
+
+/* Settings: a real &lt;dialog&gt;, so the browser gives the focus trap,
+   Escape handling and the inert page for free. */
+.consent__dialog {
+  --consent-bg: #ffffff;
+  --consent-text: #1a1a1a;
+  --consent-muted: #4a4a4a;
+  --consent-border: #767676;
+  --consent-accent: #0b5cad;
+  --consent-focus: #0b5cad;
+  --consent-button-bg: #1a1a1a;
+  --consent-button-text: #ffffff;
+  --consent-radius: 2px;
+
+  width: min(100% - 32px, 640px);
+  max-height: calc(100vh - 32px);
+  padding: 0;
+  border: 1px solid var(--consent-border);
+  border-radius: var(--consent-radius);
+  background: var(--consent-bg);
+  color: var(--consent-text);
+  font-size: 18px;
+  line-height: 1.5;
+  letter-spacing: 0.01em;
+  font-family: inherit;
+}
+
+@media (prefers-color-scheme: dark) {
+  .consent__dialog {
+    --consent-bg: #111111;
+    --consent-text: #f2f2f2;
+    --consent-muted: #c4c4c4;
+    --consent-border: #8a8a8a;
+    --consent-accent: #7cbcff;
+    --consent-focus: #ffffff;
+    --consent-button-bg: #f2f2f2;
+    --consent-button-text: #111111;
+  }
+}
+
+.consent__dialog::backdrop { background: rgba(0, 0, 0, 0.5); }
+
+.consent__dialog form {
+  display: grid;
+  gap: 20px;
+  padding: 24px;
+}
+
+.consent__dialog h2 {
+  margin: 0;
+  font-size: 24px;
+  font-weight: 500;
+  letter-spacing: 0.01em;
+  line-height: 1.3;
+}
+
+.consent__dialog fieldset {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  display: grid;
+  gap: 12px;
+}
+
+.consent__dialog legend {
+  padding: 0;
+  margin-block-end: 8px;
+  font-size: 18px;
+  font-weight: 500;
+}
+
+/* One category per row: a native checkbox, big enough to hit, and a
+   label that says what the category does, not just its name. */
+.consent__option {
+  display: grid;
+  grid-template-columns: 24px 1fr;
+  gap: 12px;
+  align-items: start;
+  padding: 12px;
+  border: 1px solid var(--consent-border);
+  border-radius: var(--consent-radius);
+}
+
+.consent__option input {
+  width: 24px;
+  height: 24px;
+  margin: 2px 0 0;
+  accent-color: var(--consent-accent);
+}
+
+.consent__option label {
+  font-size: 18px;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.consent__option p {
+  grid-column: 2;
+  margin: 0;
+  font-size: 15px;
+  color: var(--consent-muted);
+}
+
+.consent__option input:disabled + label {
+  cursor: default;
+}
+
+/* Always-on categories say so in words, not in a greyed-out box. */
+.consent__always {
+  font-size: 15px;
+  font-weight: 400;
+  color: var(--consent-muted);
+  margin-inline-start: 8px;
+}
+
+/* The &quot;Cookie settings&quot; link that lives in the footer, forever. */
+.consent__reopen {
+  font: inherit;
+  font-size: 18px;
+  letter-spacing: 0.01em;
+  color: inherit;
+  background: none;
+  border: 0;
+  padding: 0;
+  min-height: 24px;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  cursor: pointer;
+}
+
+/* Windows High Contrast / forced colours: keep the borders that
+   separate the two buttons, let the system paint the rest. */
+@media (forced-colors: active) {
+  .consent, .consent__dialog { border-color: CanvasText; }
+  .consent__button { border: 2px solid ButtonText; forced-color-adjust: auto; }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .consent { animation: consent-in 240ms ease-out; }
+  @keyframes consent-in {
+    from { transform: translateY(16px); opacity: 0; }
+    to   { transform: none; opacity: 1; }
+  }
+}
+
+@media (max-width: 480px) {
+  .consent__actions { display: grid; }
+  .consent__button { width: 100%; }
+}
+
+/* Included so the snippet works on a site that has no such class. */
+.consent .visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+}
+</code></pre>
+</section>
+  <section class="code" aria-labelledby="h-consent.js">
+  <div class="code__bar">
+    <h3 id="h-consent.js">Script <span class="meta">consent.js</span></h3>
+    <div class="code__tools">
+      <button type="button" class="btn btn--small" data-copy="consent.js">Copy</button>
+      <button type="button" class="btn btn--small" data-download="consent.js">Download</button>
+    </div>
+  </div>
+  <pre tabindex="0"><code id="consent.js">/* Consent banner — behaviour. No dependencies.
+   Reads nothing but the markup: all wording lives in the HTML, so a
+   translation is an edit to the template, not to this file.
+
+   Public API (window.consent):
+     consent.allows(&quot;analytics&quot;)   -&gt; true | false
+     consent.get()                 -&gt; { version, date, categories: {...} } | null
+     consent.open()                -&gt; show the settings dialog
+     consent.reset()               -&gt; forget the choice and show the banner again
+   Events on window:
+     &quot;consentchange&quot;               -&gt; detail: the stored choice
+
+   Scripts that need consent are written as
+     &lt;script type=&quot;text/plain&quot; data-consent=&quot;analytics&quot; src=&quot;…&quot;&gt;&lt;/script&gt;
+   and are switched on the moment that category is allowed. */
+(function () {
+  &quot;use strict&quot;;
+
+  var KEY = &quot;consent-v1&quot;;
+  var banner = document.querySelector(&quot;.consent&quot;);
+  var dialog = document.querySelector(&quot;.consent__dialog&quot;);
+  if (!banner || !dialog) return;
+
+  var form = dialog.querySelector(&quot;form&quot;);
+  var status = banner.querySelector(&quot;[data-consent-status]&quot;);
+  var lastTrigger = null;
+
+  function read() {
+    try { return JSON.parse(localStorage.getItem(KEY)); } catch (e) { return null; }
+  }
+
+  function write(categories) {
+    var choice = { version: 1, date: new Date().toISOString(), categories: categories };
+    try { localStorage.setItem(KEY, JSON.stringify(choice)); } catch (e) { /* private mode: the banner simply returns next visit */ }
+    return choice;
+  }
+
+  function categoryNames() {
+    return Array.prototype.map.call(form.querySelectorAll(&quot;input[name]&quot;), function (i) { return i.name; });
+  }
+
+  function allOrNothing(value) {
+    var out = {};
+    categoryNames().forEach(function (n) {
+      var input = form.querySelector(&#x27;input[name=&quot;&#x27; + n + &#x27;&quot;]&#x27;);
+      out[n] = input.disabled ? true : value;   /* necessary stays on */
+    });
+    return out;
+  }
+
+  function activateScripts(categories) {
+    document.querySelectorAll(&#x27;script[type=&quot;text/plain&quot;][data-consent]&#x27;).forEach(function (s) {
+      if (!categories[s.dataset.consent]) return;
+      var live = document.createElement(&quot;script&quot;);
+      Array.prototype.forEach.call(s.attributes, function (a) {
+        if (a.name !== &quot;type&quot; &amp;&amp; a.name !== &quot;data-consent&quot;) live.setAttribute(a.name, a.value);
+      });
+      live.textContent = s.textContent;
+      s.replaceWith(live);
+    });
+  }
+
+  function announce(text) {
+    if (!status || !text) return;
+    status.textContent = &quot;&quot;;
+    /* a tick later so the live region sees a change even for the same text */
+    setTimeout(function () { status.textContent = text; }, 50);
+  }
+
+  function apply(categories, message) {
+    var choice = write(categories);
+    activateScripts(categories);
+    window.dispatchEvent(new CustomEvent(&quot;consentchange&quot;, { detail: choice }));
+    announce(message);
+    hideBanner();
+  }
+
+  function reserveSpace() {
+    if (banner.hidden) return;
+    /* The page gets padding equal to the banner, so nothing is hidden behind it. */
+    document.body.style.paddingBlockEnd = banner.offsetHeight + &quot;px&quot;;
+  }
+
+  function showBanner() {
+    banner.hidden = false;
+    reserveSpace();
+    /* Focus is NOT moved here. The banner is first in the DOM and is
+       announced as a region; the reader keeps reading the page. */
+  }
+
+  function hideBanner() {
+    banner.hidden = true;
+    document.body.style.paddingBlockEnd = &quot;&quot;;
+    if (lastTrigger &amp;&amp; document.contains(lastTrigger)) { lastTrigger.focus(); lastTrigger = null; }
+  }
+
+  function fillForm() {
+    var stored = read();
+    categoryNames().forEach(function (n) {
+      var input = form.querySelector(&#x27;input[name=&quot;&#x27; + n + &#x27;&quot;]&#x27;);
+      if (input.disabled) { input.checked = true; return; }
+      input.checked = stored ? !!stored.categories[n] : false;   /* nothing pre-ticked */
+    });
+  }
+
+  function openDialog(trigger) {
+    lastTrigger = trigger || document.activeElement;
+    fillForm();
+    if (typeof dialog.showModal === &quot;function&quot;) dialog.showModal();
+    else dialog.setAttribute(&quot;open&quot;, &quot;&quot;);
+    (dialog.querySelector(&quot;h2[tabindex]&quot;) || dialog.querySelector(&quot;input:not(:disabled), button&quot;)).focus();
+  }
+
+  function closeDialog() {
+    if (dialog.open) dialog.close();
+    if (lastTrigger &amp;&amp; document.contains(lastTrigger)) lastTrigger.focus();
+  }
+
+  /* Buttons by their data-action, so the labels can say anything. */
+  document.addEventListener(&quot;click&quot;, function (e) {
+    var el = e.target.closest(&quot;[data-consent-action]&quot;);
+    if (!el) return;
+    var action = el.dataset.consentAction;
+    if (action === &quot;accept&quot;) { apply(allOrNothing(true), el.dataset.consentMessage); }
+    if (action === &quot;reject&quot;) { apply(allOrNothing(false), el.dataset.consentMessage); }
+    if (action === &quot;settings&quot;) { e.preventDefault(); openDialog(el); }
+    if (action === &quot;close&quot;) { e.preventDefault(); closeDialog(); }
+  });
+
+  form.addEventListener(&quot;submit&quot;, function (e) {
+    e.preventDefault();
+    var categories = {};
+    categoryNames().forEach(function (n) {
+      var input = form.querySelector(&#x27;input[name=&quot;&#x27; + n + &#x27;&quot;]&#x27;);
+      categories[n] = input.disabled ? true : input.checked;
+    });
+    var saveButton = form.querySelector(&#x27;[type=&quot;submit&quot;]&#x27;);
+    dialog.close();
+    apply(categories, saveButton &amp;&amp; saveButton.dataset.consentMessage);
+  });
+
+  /* Escape inside the banner = continue without consent. Nothing is set,
+     the choice is stored as a refusal, and the banner does not nag on
+     the next page. Escape in the dialog is the browser&#x27;s own: it just
+     closes it, and nothing changes. */
+  banner.addEventListener(&quot;keydown&quot;, function (e) {
+    if (e.key === &quot;Escape&quot;) {
+      var reject = banner.querySelector(&#x27;[data-consent-action=&quot;reject&quot;]&#x27;);
+      apply(allOrNothing(false), reject &amp;&amp; reject.dataset.consentMessage);
+    }
+  });
+  window.addEventListener(&quot;resize&quot;, reserveSpace);
+  dialog.addEventListener(&quot;close&quot;, function () {
+    if (lastTrigger &amp;&amp; document.contains(lastTrigger)) lastTrigger.focus();
+  });
+
+  window.consent = {
+    get: read,
+    allows: function (name) { var c = read(); return !!(c &amp;&amp; c.categories[name]); },
+    open: function () { openDialog(); },
+    reset: function () {
+      try { localStorage.removeItem(KEY); } catch (e) {}
+      showBanner();
+    }
+  };
+
+  var stored = read();
+  if (stored) activateScripts(stored.categories); else showBanner();
+})();
+</code></pre>
+</section>
+  <section class="code" aria-labelledby="h-consent.en.html">
+  <div class="code__bar">
+    <h3 id="h-consent.en.html">Markup, English <span class="meta">consent.en.html</span></h3>
+    <div class="code__tools">
+      <button type="button" class="btn btn--small" data-copy="consent.en.html">Copy</button>
+      <button type="button" class="btn btn--small" data-download="consent.en.html">Download</button>
+    </div>
+  </div>
+  <pre tabindex="0"><code id="consent.en.html">&lt;!-- 1. The banner. Place it directly after your skip link, before the
+        header, so it is the first thing a screen reader meets and the
+        first Tab stop after &quot;Skip to content&quot;. --&gt;
+&lt;section class=&quot;consent&quot; aria-labelledby=&quot;consent-title&quot; hidden&gt;
+  &lt;div class=&quot;consent__inner&quot;&gt;
+    &lt;h2 class=&quot;consent__title&quot; id=&quot;consent-title&quot;&gt;Cookies on this site&lt;/h2&gt;
+    &lt;p class=&quot;consent__text&quot;&gt;
+      We use cookies that the site needs to work. With your permission we also
+      use cookies that measure how the site is used. You can change your choice
+      at any time under “Cookie settings” in the footer.
+      &lt;a href=&quot;/privacy/&quot;&gt;Privacy policy&lt;/a&gt;
+    &lt;/p&gt;
+    &lt;div class=&quot;consent__actions&quot;&gt;
+      &lt;button type=&quot;button&quot; class=&quot;consent__button&quot; data-consent-action=&quot;accept&quot;
+              data-consent-message=&quot;All cookies accepted.&quot;&gt;Accept all&lt;/button&gt;
+      &lt;button type=&quot;button&quot; class=&quot;consent__button&quot; data-consent-action=&quot;reject&quot;
+              data-consent-message=&quot;Only necessary cookies are in use.&quot;&gt;Reject all&lt;/button&gt;
+      &lt;button type=&quot;button&quot; class=&quot;consent__button consent__button--quiet&quot; data-consent-action=&quot;settings&quot;&gt;Settings&lt;/button&gt;
+    &lt;/div&gt;
+    &lt;p class=&quot;visually-hidden&quot; role=&quot;status&quot; data-consent-status&gt;&lt;/p&gt;
+  &lt;/div&gt;
+&lt;/section&gt;
+
+&lt;!-- 2. The settings dialog. Anywhere in the body. --&gt;
+&lt;dialog class=&quot;consent__dialog&quot; aria-labelledby=&quot;consent-dialog-title&quot;&gt;
+  &lt;form method=&quot;dialog&quot;&gt;
+    &lt;h2 id=&quot;consent-dialog-title&quot; tabindex=&quot;-1&quot;&gt;Cookie settings&lt;/h2&gt;
+    &lt;p&gt;Choose which cookies this site may use. Necessary cookies are always on: without them the site does not work.&lt;/p&gt;
+    &lt;fieldset&gt;
+      &lt;legend&gt;Cookie categories&lt;/legend&gt;
+
+      &lt;div class=&quot;consent__option&quot;&gt;
+        &lt;input type=&quot;checkbox&quot; id=&quot;consent-necessary&quot; name=&quot;necessary&quot; checked disabled&gt;
+        &lt;label for=&quot;consent-necessary&quot;&gt;Necessary &lt;span class=&quot;consent__always&quot;&gt;always on&lt;/span&gt;&lt;/label&gt;
+        &lt;p&gt;Remember your cookie choice and keep you signed in. Set by this site only.&lt;/p&gt;
+      &lt;/div&gt;
+
+      &lt;div class=&quot;consent__option&quot;&gt;
+        &lt;input type=&quot;checkbox&quot; id=&quot;consent-analytics&quot; name=&quot;analytics&quot;&gt;
+        &lt;label for=&quot;consent-analytics&quot;&gt;Measurement&lt;/label&gt;
+        &lt;p&gt;Count visits and see which pages are used, so we can improve them. Data is aggregated; no advertising.&lt;/p&gt;
+      &lt;/div&gt;
+
+      &lt;div class=&quot;consent__option&quot;&gt;
+        &lt;input type=&quot;checkbox&quot; id=&quot;consent-media&quot; name=&quot;media&quot;&gt;
+        &lt;label for=&quot;consent-media&quot;&gt;Embedded media&lt;/label&gt;
+        &lt;p&gt;Show videos and maps from other providers. Those providers set their own cookies when the content loads.&lt;/p&gt;
+      &lt;/div&gt;
+    &lt;/fieldset&gt;
+    &lt;div class=&quot;consent__actions&quot;&gt;
+      &lt;button type=&quot;submit&quot; class=&quot;consent__button&quot; data-consent-message=&quot;Your cookie choice is saved.&quot;&gt;Save choices&lt;/button&gt;
+      &lt;button type=&quot;button&quot; class=&quot;consent__button consent__button--quiet&quot; data-consent-action=&quot;close&quot;&gt;Cancel&lt;/button&gt;
+    &lt;/div&gt;
+  &lt;/form&gt;
+&lt;/dialog&gt;
+
+&lt;!-- 3. The way back. In the footer of every page, forever. --&gt;
+&lt;button type=&quot;button&quot; class=&quot;consent__reopen&quot; id=&quot;consent-settings&quot; data-consent-action=&quot;settings&quot;&gt;Cookie settings&lt;/button&gt;
+
+&lt;!-- 4. Scripts that wait for consent. --&gt;
+&lt;script type=&quot;text/plain&quot; data-consent=&quot;analytics&quot; src=&quot;/js/analytics.js&quot;&gt;&lt;/script&gt;
+
+&lt;link rel=&quot;stylesheet&quot; href=&quot;/cookie-banner/consent.css&quot;&gt;
+&lt;script src=&quot;/cookie-banner/consent.js&quot; defer&gt;&lt;/script&gt;
+</code></pre>
+</section>
+  <section class="code" aria-labelledby="h-consent.de.html">
+  <div class="code__bar">
+    <h3 id="h-consent.de.html">Markup, German <span class="meta">consent.de.html</span></h3>
+    <div class="code__tools">
+      <button type="button" class="btn btn--small" data-copy="consent.de.html">Copy</button>
+      <button type="button" class="btn btn--small" data-download="consent.de.html">Download</button>
+    </div>
+  </div>
+  <pre tabindex="0"><code id="consent.de.html">&lt;!-- 1. Das Banner. Direkt nach dem Sprunglink, vor dem Header: so ist es
+        das Erste, was ein Screenreader liest, und der erste Tabstopp nach
+        „Zum Inhalt springen“. --&gt;
+&lt;section class=&quot;consent&quot; aria-labelledby=&quot;consent-title&quot; hidden&gt;
+  &lt;div class=&quot;consent__inner&quot;&gt;
+    &lt;h2 class=&quot;consent__title&quot; id=&quot;consent-title&quot;&gt;Cookies auf dieser Website&lt;/h2&gt;
+    &lt;p class=&quot;consent__text&quot;&gt;
+      Wir verwenden Cookies, die die Website zum Funktionieren braucht. Mit Ihrer
+      Erlaubnis verwenden wir auch Cookies, die die Nutzung der Website messen.
+      Ihre Wahl können Sie jederzeit unter „Cookie-Einstellungen“
+      in der Fußzeile ändern. &lt;a href=&quot;/datenschutz/&quot;&gt;Datenschutzerklärung&lt;/a&gt;
+    &lt;/p&gt;
+    &lt;div class=&quot;consent__actions&quot;&gt;
+      &lt;button type=&quot;button&quot; class=&quot;consent__button&quot; data-consent-action=&quot;accept&quot;
+              data-consent-message=&quot;Alle Cookies akzeptiert.&quot;&gt;Alle akzeptieren&lt;/button&gt;
+      &lt;button type=&quot;button&quot; class=&quot;consent__button&quot; data-consent-action=&quot;reject&quot;
+              data-consent-message=&quot;Nur notwendige Cookies werden verwendet.&quot;&gt;Alle ablehnen&lt;/button&gt;
+      &lt;button type=&quot;button&quot; class=&quot;consent__button consent__button--quiet&quot; data-consent-action=&quot;settings&quot;&gt;Einstellungen&lt;/button&gt;
+    &lt;/div&gt;
+    &lt;p class=&quot;visually-hidden&quot; role=&quot;status&quot; data-consent-status&gt;&lt;/p&gt;
+  &lt;/div&gt;
+&lt;/section&gt;
+
+&lt;!-- 2. Der Einstellungsdialog. Irgendwo im Body. --&gt;
+&lt;dialog class=&quot;consent__dialog&quot; aria-labelledby=&quot;consent-dialog-title&quot;&gt;
+  &lt;form method=&quot;dialog&quot;&gt;
+    &lt;h2 id=&quot;consent-dialog-title&quot; tabindex=&quot;-1&quot;&gt;Cookie-Einstellungen&lt;/h2&gt;
+    &lt;p&gt;Wählen Sie, welche Cookies diese Website verwenden darf. Notwendige Cookies sind immer aktiv: ohne sie funktioniert die Website nicht.&lt;/p&gt;
+    &lt;fieldset&gt;
+      &lt;legend&gt;Cookie-Kategorien&lt;/legend&gt;
+
+      &lt;div class=&quot;consent__option&quot;&gt;
+        &lt;input type=&quot;checkbox&quot; id=&quot;consent-necessary&quot; name=&quot;necessary&quot; checked disabled&gt;
+        &lt;label for=&quot;consent-necessary&quot;&gt;Notwendig &lt;span class=&quot;consent__always&quot;&gt;immer aktiv&lt;/span&gt;&lt;/label&gt;
+        &lt;p&gt;Merken sich Ihre Cookie-Wahl und halten Sie angemeldet. Nur von dieser Website gesetzt.&lt;/p&gt;
+      &lt;/div&gt;
+
+      &lt;div class=&quot;consent__option&quot;&gt;
+        &lt;input type=&quot;checkbox&quot; id=&quot;consent-analytics&quot; name=&quot;analytics&quot;&gt;
+        &lt;label for=&quot;consent-analytics&quot;&gt;Messung&lt;/label&gt;
+        &lt;p&gt;Zählen Besuche und zeigen, welche Seiten genutzt werden, damit wir sie verbessern können. Daten werden zusammengefasst; keine Werbung.&lt;/p&gt;
+      &lt;/div&gt;
+
+      &lt;div class=&quot;consent__option&quot;&gt;
+        &lt;input type=&quot;checkbox&quot; id=&quot;consent-media&quot; name=&quot;media&quot;&gt;
+        &lt;label for=&quot;consent-media&quot;&gt;Eingebettete Medien&lt;/label&gt;
+        &lt;p&gt;Zeigen Videos und Karten anderer Anbieter. Diese Anbieter setzen eigene Cookies, wenn der Inhalt geladen wird.&lt;/p&gt;
+      &lt;/div&gt;
+    &lt;/fieldset&gt;
+    &lt;div class=&quot;consent__actions&quot;&gt;
+      &lt;button type=&quot;submit&quot; class=&quot;consent__button&quot; data-consent-message=&quot;Ihre Cookie-Wahl ist gespeichert.&quot;&gt;Auswahl speichern&lt;/button&gt;
+      &lt;button type=&quot;button&quot; class=&quot;consent__button consent__button--quiet&quot; data-consent-action=&quot;close&quot;&gt;Abbrechen&lt;/button&gt;
+    &lt;/div&gt;
+  &lt;/form&gt;
+&lt;/dialog&gt;
+
+&lt;!-- 3. Der Weg zurück. In der Fußzeile jeder Seite, dauerhaft. --&gt;
+&lt;button type=&quot;button&quot; class=&quot;consent__reopen&quot; id=&quot;consent-settings&quot; data-consent-action=&quot;settings&quot;&gt;Cookie-Einstellungen&lt;/button&gt;
+
+&lt;!-- 4. Skripte, die auf die Einwilligung warten. --&gt;
+&lt;script type=&quot;text/plain&quot; data-consent=&quot;analytics&quot; src=&quot;/js/analytics.js&quot;&gt;&lt;/script&gt;
+
+&lt;link rel=&quot;stylesheet&quot; href=&quot;/cookie-banner/consent.css&quot;&gt;
+&lt;script src=&quot;/cookie-banner/consent.js&quot; defer&gt;&lt;/script&gt;
+</code></pre>
+</section>
+
+  <h2>Using the choice in your own code</h2>
+  <p>The script exposes a small API and an event. A script written as text/plain with a data-consent attribute is switched on the moment that category is allowed, including on later visits.</p>
+  <section class="code" aria-label="API example"><pre tabindex="0"><code>&lt;!-- A script that waits for the &quot;analytics&quot; category --&gt;
+&lt;script type=&quot;text/plain&quot; data-consent=&quot;analytics&quot; src=&quot;/js/analytics.js&quot;&gt;&lt;/script&gt;
+
+&lt;script&gt;
+  // Ask before doing something that needs consent
+  if (consent.allows(&quot;media&quot;)) loadVideoEmbeds();
+
+  // React when the choice changes
+  window.addEventListener(&quot;consentchange&quot;, function (e) {
+    console.log(e.detail.categories);   // { necessary: true, analytics: false, media: true }
+  });
+
+  // Reopen the dialog from your own control
+  consent.open();
+&lt;/script&gt;</code></pre></section>
+
+  <h2>What EU law asks of a banner</h2>
+  <p>These are the requirements of the GDPR (Articles 4(11) and 7), the ePrivacy Directive (Article 5(3)) and the EDPB's consent guidelines and its 2023 cookie banner taskforce report, as they apply to the banner itself.</p>
+  <ol class="rules"><li><strong>Refusing is as easy as accepting.</strong><span>A “Reject all” button on the first layer, the same size and colour as “Accept all”. Not a link in the small print, not a second screen.</span></li><li><strong>Nothing is pre-ticked.</strong><span>Every optional category starts off. Only strictly necessary cookies are on, and the banner says so in words.</span></li><li><strong>No consent is set until a choice is made.</strong><span>Scrolling, closing or ignoring the banner is not consent. Scripts that need consent wait for it.</span></li><li><strong>Withdrawing is as easy as giving.</strong><span>A “Cookie settings” control in the footer of every page reopens the dialog. The stored choice can be changed in two clicks.</span></li><li><strong>The banner says what the cookies do.</strong><span>Plain words per category: what is collected, by whom, and why. No “we value your privacy”, no illustrations of biscuits.</span></li><li><strong>The site stays usable without consent.</strong><span>No cookie wall. The page behind the banner can be read and used by someone who refuses.</span></li></ol>
+
+  <h2>What accessibility asks of it</h2>
+  <p>The design decisions below are the ones that matter in practice. Each maps to a WCAG 2.2 criterion that the European Accessibility Act, through EN 301 549, makes mandatory.</p>
+  <ol class="rules"><li><strong>It is not a modal.</strong><span>The first layer is a labelled region, not a dialog. The page is not made inert, focus is not stolen, and nothing is trapped. A screen reader meets the banner first, hears what it is, and can keep reading the site. (WCAG 2.1.2, 2.4.3)</span></li><li><strong>It covers at most 60% of the screen.</strong><span>The banner sits at the bottom and the page gets matching padding, so nothing is hidden behind it, including at 400% zoom and 320px wide. (1.4.10)</span></li><li><strong>Escape means “continue without consent”.</strong><span>A keyboard user who presses Escape inside the banner gets the lawful outcome: only necessary cookies, choice stored, no nagging on the next page. (2.1.1)</span></li><li><strong>The settings are a native dialog.</strong><span>The second layer uses the HTML dialog element. The browser provides the focus trap, the Escape key and the inert background, and gives focus back to the control that opened it. (2.4.3, 4.1.2)</span></li><li><strong>Controls are real controls.</strong><span>Buttons are button elements, categories are checkboxes inside a fieldset with a legend, every input has a visible label. Nothing is a div with a click handler. (1.3.1, 4.1.2)</span></li><li><strong>Everything is 48px tall and 18px big.</strong><span>Buttons and checkboxes meet the 24px target minimum with room to spare; the smallest text is 15px. (2.5.8, 1.4.4)</span></li><li><strong>Focus is visible everywhere.</strong><span>A 2px ring with a 1px inner contrast line, in both colour schemes and in Windows high contrast. (2.4.7, 2.4.11)</span></li><li><strong>Colours pass in both schemes.</strong><span>Text is at least 4.5:1 and borders at least 3:1 against the background, in light and dark mode, and the result is announced to a live region so a screen reader hears it. (1.4.3, 1.4.11, 4.1.3)</span></li><li><strong>Motion respects the setting.</strong><span>The entrance slide runs only when the user has not asked for reduced motion. (2.3.3)</span></li><li><strong>Words live in the markup.</strong><span>Translating the banner is editing the HTML. The script reads no strings, so no language is hard-coded. The German version is on this site&#x27;s German page.</span></li></ol>
+
+  
+    <h2>Design spec</h2>
+    <p>For the designer restyling it. Every measurement below is in the stylesheet; change the colours, keep the sizes.</p>
+    <figure class="spec-figure"><div class="spec-wrap"><div class="spec"><div aria-hidden="true" inert class="consent"><span class="mark">A</span>
+  <div class="consent__inner">
+    <h2 class="consent__title"><span class="mark">B</span>Cookies on this site</h2>
+    <p class="consent__text"><span class="mark">C</span>
+      We use cookies that the site needs to work. With your permission we also
+      use cookies that measure how the site is used. You can change your choice
+      at any time under “Cookie settings” in the footer.
+      <a href="#policy">Privacy policy</a>
+    </p>
+    <div class="consent__actions">
+      <button type="button" class="consent__button is-focus"
+             ><span class="mark mark--right">F</span><span class="mark">D</span>Accept all</button>
+      <button type="button" class="consent__button"
+             >Reject all</button>
+      <button type="button" class="consent__button consent__button--quiet"><span class="mark">E</span>Settings</button>
+    </div>
+    <p class="visually-hidden" role="status" data-consent-status></p>
+  </div>
+</div>
+
+</div></div><figcaption>First layer, desktop. Markers refer to the table.</figcaption></figure>
+    <figure class="spec-figure"><div class="spec-wrap"><div class="spec"><div aria-hidden="true" inert class="consent__dialog"><span class="mark">G</span>
+  <div method="dialog">
+    <h2 tabindex="-1">Cookie settings</h2>
+    <p>Choose which cookies this site may use. Necessary cookies are always on: without them the site does not work.</p>
+    <div class="consent__fields">
+      <p class="consent__legend">Cookie categories</p>
+
+      <div class="consent__option"><span class="mark">H</span>
+        <input type="checkbox" name="necessary" checked disabled>
+        <label>Necessary <span class="consent__always">always on</span></label>
+        <p>Remember your cookie choice and keep you signed in. Set by this site only.</p>
+      </div>
+
+      <div class="consent__option">
+        <input type="checkbox" name="analytics">
+        <label>Measurement</label>
+        <p>Count visits and see which pages are used, so we can improve them. Data is aggregated; no advertising.</p>
+      </div>
+
+      <div class="consent__option">
+        <input type="checkbox" name="media">
+        <label>Embedded media</label>
+        <p>Show videos and maps from other providers. Those providers set their own cookies when the content loads.</p>
+      </div>
+    </div>
+    <div class="consent__actions">
+      <button type="submit" class="consent__button"><span class="mark">I</span>Save choices</button>
+      <button type="button" class="consent__button consent__button--quiet">Cancel</button>
+    </div>
+  </div>
+</div>
+
+</div></div><figcaption>Second layer, the settings dialog.</figcaption></figure>
+    <div class="spec-wrap"><table class="spec-table"><thead><tr><th>Marker</th><th>Element</th><th>Specification</th></tr></thead><tbody><tr><td><span class="mark" aria-hidden="true">A</span><span class="visually-hidden">A</span></td><td>Banner container</td><td>Fixed to the bottom edge, full width, max height 60% of the viewport, scrolls inside if taller. 1px top border, soft shadow. Content column max 1100px, padding 24px 16px, rows 16px apart.</td></tr><tr><td><span class="mark" aria-hidden="true">B</span><span class="visually-hidden">B</span></td><td>Title</td><td>18px, weight 500, letter-spacing 0.01em. An h2, so it lands in the heading list.</td></tr><tr><td><span class="mark" aria-hidden="true">C</span><span class="visually-hidden">C</span></td><td>Text</td><td>18px, weight 400, line-height 1.5, max 70 characters per line. Links underlined, offset 3px, in the accent colour.</td></tr><tr><td><span class="mark" aria-hidden="true">D</span><span class="visually-hidden">D</span></td><td>Accept all / Reject all</td><td>Identical: min-height 48px, padding 10px 20px, 18px weight 500, 2px border, 2px radius. Solid fill. Gap between buttons 12px. On screens under 480px they stack full-width.</td></tr><tr><td><span class="mark" aria-hidden="true">E</span><span class="visually-hidden">E</span></td><td>Settings</td><td>Same size, outline only: transparent fill, 2px border in the border colour. Visibly secondary but the same target.</td></tr><tr><td><span class="mark" aria-hidden="true">F</span><span class="visually-hidden">F</span></td><td>Focus ring</td><td>2px outline in the focus colour, 2px offset, plus a 1px line in the background colour so it reads on any fill. Keyboard focus only.</td></tr><tr><td><span class="mark" aria-hidden="true">G</span><span class="visually-hidden">G</span></td><td>Dialog</td><td>Width min(100% − 32px, 640px), max height 100vh − 32px, 1px border, 2px radius, padding 24px, rows 20px apart. Backdrop 50% black. Title 24px weight 500.</td></tr><tr><td><span class="mark" aria-hidden="true">H</span><span class="visually-hidden">H</span></td><td>Category row</td><td>Grid: 24px checkbox, 12px gap, label 18px weight 500, description 15px in the muted colour. 12px padding, 1px border. “Always on” in 15px muted text, never a greyed box.</td></tr><tr><td><span class="mark" aria-hidden="true">I</span><span class="visually-hidden">I</span></td><td>Save choices / Cancel</td><td>Same pair as D and E: one solid, one outline, both 48px.</td></tr></tbody></table></div>
+    <h3>Palette and contrast</h3>
+    <p>Each role, in both schemes, with its contrast against the surface. Text needs 4.5:1, borders and focus 3:1.</p>
+    <div class="spec-wrap"><table class="spec-table"><thead><tr><th>Role</th><th>Light</th><th>Dark</th><th>Used for</th></tr></thead><tbody><tr><td>Surface</td><td><span class="swatch" style="background:#ffffff" aria-hidden="true"></span>#ffffff</td><td><span class="swatch" style="background:#111111" aria-hidden="true"></span>#111111</td><td>Banner and dialog background</td></tr><tr><td>Text</td><td><span class="swatch" style="background:#1a1a1a" aria-hidden="true"></span>#1a1a1a · 17.4:1</td><td><span class="swatch" style="background:#f2f2f2" aria-hidden="true"></span>#f2f2f2 · 16.9:1</td><td>Title, body, labels</td></tr><tr><td>Muted text</td><td><span class="swatch" style="background:#4a4a4a" aria-hidden="true"></span>#4a4a4a · 8.9:1</td><td><span class="swatch" style="background:#c4c4c4" aria-hidden="true"></span>#c4c4c4 · 10.8:1</td><td>Category descriptions, “always on”</td></tr><tr><td>Accent</td><td><span class="swatch" style="background:#0b5cad" aria-hidden="true"></span>#0b5cad · 6.7:1</td><td><span class="swatch" style="background:#7cbcff" aria-hidden="true"></span>#7cbcff · 9.4:1</td><td>Links, checkbox tick</td></tr><tr><td>Border</td><td><span class="swatch" style="background:#767676" aria-hidden="true"></span>#767676 · 4.5:1</td><td><span class="swatch" style="background:#8a8a8a" aria-hidden="true"></span>#8a8a8a · 5.5:1</td><td>Edges, outline buttons, category rows</td></tr><tr><td>Button</td><td><span class="swatch" style="background:#1a1a1a" aria-hidden="true"></span>#1a1a1a on #ffffff</td><td><span class="swatch" style="background:#f2f2f2" aria-hidden="true"></span>#f2f2f2 on #111111</td><td>Solid buttons, text inverted, 17:1</td></tr><tr><td>Focus</td><td><span class="swatch" style="background:#0b5cad" aria-hidden="true"></span>#0b5cad</td><td><span class="swatch" style="background:#ffffff" aria-hidden="true"></span>#ffffff</td><td>The ring</td></tr></tbody></table></div>
+    <h3>Type</h3><p>Two sizes only: 18px for anything read, 15px for secondary notes. Weights 400 and 500. Letter-spacing 0.01em throughout. The font is inherited from the site.</p>
+    <h3>Spacing</h3><p>A 4px grid: 12 between buttons and inside rows, 16 between banner rows and at the sides, 20 between dialog rows, 24 around the dialog and above the banner text.</p>
+    <h3>States</h3>
+    <ol class="rules"><li><strong>Hover</strong><span>Buttons drop to 92% opacity. Nothing else moves.</span></li><li><strong>Focus</strong><span>The ring from F. The dialog opens with focus on its title, so the reader hears the name first.</span></li><li><strong>Checked</strong><span>Native checkbox, tinted with the accent through accent-color. No custom drawing.</span></li><li><strong>Disabled</strong><span>Only the Necessary checkbox. Checked and disabled, with the words “always on” beside it.</span></li><li><strong>Forced colours</strong><span>Windows high contrast: borders switch to the system colours so both buttons still have edges.</span></li><li><strong>Reduced motion</strong><span>The 240ms slide-in is skipped. Nothing else animates.</span></li><li><strong>Under 480px</strong><span>Buttons stack to full width, 12px apart. Text wraps; nothing is cut.</span></li></ol>
+
+
+  <h2>Before you publish, test it</h2>
+  <ol class="rules rules--plain"><li><span>Tab from the address bar. The first stops are the skip link, then “Accept all”, “Reject all”, “Settings”. Nothing is skipped and nothing traps.</span></li><li><span>Press Escape in the banner. It closes, the page gets no analytics, and reloading does not bring it back.</span></li><li><span>Open Settings and press Escape. The dialog closes, focus returns to the Settings button, nothing has changed.</span></li><li><span>Turn on VoiceOver or NVDA and reload. The banner is announced as a region with its heading. Arrow past it: the page reads.</span></li><li><span>Zoom to 400% and set the window to 320px wide. Every button is reachable; the page content is not hidden behind the banner.</span></li><li><span>Switch the system to dark mode and to Windows high contrast. Both buttons still have borders and the focus ring is visible.</span></li><li><span>Clear site data. The banner is back, every optional box is off.</span></li></ol>
+
+  <footer>
+    <span>BarrierFreeWeb, Berlin. Free to copy, change and ship.</span>
+    <span id="policy">On a real site the banner's policy link points at your privacy policy.</span>
+    <button type="button" class="consent__reopen" id="consent-settings" data-consent-action="settings">Cookie settings</button>
+
+
+  </footer>
+</main>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+<script>
+/* Consent banner — behaviour. No dependencies.
+   Reads nothing but the markup: all wording lives in the HTML, so a
+   translation is an edit to the template, not to this file.
+
+   Public API (window.consent):
+     consent.allows("analytics")   -> true | false
+     consent.get()                 -> { version, date, categories: {...} } | null
+     consent.open()                -> show the settings dialog
+     consent.reset()               -> forget the choice and show the banner again
+   Events on window:
+     "consentchange"               -> detail: the stored choice
+
+   Scripts that need consent are written as
+     <script type="text/plain" data-consent="analytics" src="…"><\/script>
+   and are switched on the moment that category is allowed. */
+(function () {
+  "use strict";
+
+  var KEY = "consent-v1";
+  var banner = document.querySelector(".consent");
+  var dialog = document.querySelector(".consent__dialog");
+  if (!banner || !dialog) return;
+
+  var form = dialog.querySelector("form");
+  var status = banner.querySelector("[data-consent-status]");
+  var lastTrigger = null;
+
+  function read() {
+    try { return JSON.parse(localStorage.getItem(KEY)); } catch (e) { return null; }
+  }
+
+  function write(categories) {
+    var choice = { version: 1, date: new Date().toISOString(), categories: categories };
+    try { localStorage.setItem(KEY, JSON.stringify(choice)); } catch (e) { /* private mode: the banner simply returns next visit */ }
+    return choice;
+  }
+
+  function categoryNames() {
+    return Array.prototype.map.call(form.querySelectorAll("input[name]"), function (i) { return i.name; });
+  }
+
+  function allOrNothing(value) {
+    var out = {};
+    categoryNames().forEach(function (n) {
+      var input = form.querySelector('input[name="' + n + '"]');
+      out[n] = input.disabled ? true : value;   /* necessary stays on */
+    });
+    return out;
+  }
+
+  function activateScripts(categories) {
+    document.querySelectorAll('script[type="text/plain"][data-consent]').forEach(function (s) {
+      if (!categories[s.dataset.consent]) return;
+      var live = document.createElement("script");
+      Array.prototype.forEach.call(s.attributes, function (a) {
+        if (a.name !== "type" && a.name !== "data-consent") live.setAttribute(a.name, a.value);
+      });
+      live.textContent = s.textContent;
+      s.replaceWith(live);
+    });
+  }
+
+  function announce(text) {
+    if (!status || !text) return;
+    status.textContent = "";
+    /* a tick later so the live region sees a change even for the same text */
+    setTimeout(function () { status.textContent = text; }, 50);
+  }
+
+  function apply(categories, message) {
+    var choice = write(categories);
+    activateScripts(categories);
+    window.dispatchEvent(new CustomEvent("consentchange", { detail: choice }));
+    announce(message);
+    hideBanner();
+  }
+
+  function reserveSpace() {
+    if (banner.hidden) return;
+    /* The page gets padding equal to the banner, so nothing is hidden behind it. */
+    document.body.style.paddingBlockEnd = banner.offsetHeight + "px";
+  }
+
+  function showBanner() {
+    banner.hidden = false;
+    reserveSpace();
+    /* Focus is NOT moved here. The banner is first in the DOM and is
+       announced as a region; the reader keeps reading the page. */
+  }
+
+  function hideBanner() {
+    banner.hidden = true;
+    document.body.style.paddingBlockEnd = "";
+    if (lastTrigger && document.contains(lastTrigger)) { lastTrigger.focus(); lastTrigger = null; }
+  }
+
+  function fillForm() {
+    var stored = read();
+    categoryNames().forEach(function (n) {
+      var input = form.querySelector('input[name="' + n + '"]');
+      if (input.disabled) { input.checked = true; return; }
+      input.checked = stored ? !!stored.categories[n] : false;   /* nothing pre-ticked */
+    });
+  }
+
+  function openDialog(trigger) {
+    lastTrigger = trigger || document.activeElement;
+    fillForm();
+    if (typeof dialog.showModal === "function") dialog.showModal();
+    else dialog.setAttribute("open", "");
+    (dialog.querySelector("h2[tabindex]") || dialog.querySelector("input:not(:disabled), button")).focus();
+  }
+
+  function closeDialog() {
+    if (dialog.open) dialog.close();
+    if (lastTrigger && document.contains(lastTrigger)) lastTrigger.focus();
+  }
+
+  /* Buttons by their data-action, so the labels can say anything. */
+  document.addEventListener("click", function (e) {
+    var el = e.target.closest("[data-consent-action]");
+    if (!el) return;
+    var action = el.dataset.consentAction;
+    if (action === "accept") { apply(allOrNothing(true), el.dataset.consentMessage); }
+    if (action === "reject") { apply(allOrNothing(false), el.dataset.consentMessage); }
+    if (action === "settings") { e.preventDefault(); openDialog(el); }
+    if (action === "close") { e.preventDefault(); closeDialog(); }
+  });
+
+  form.addEventListener("submit", function (e) {
+    e.preventDefault();
+    var categories = {};
+    categoryNames().forEach(function (n) {
+      var input = form.querySelector('input[name="' + n + '"]');
+      categories[n] = input.disabled ? true : input.checked;
+    });
+    var saveButton = form.querySelector('[type="submit"]');
+    dialog.close();
+    apply(categories, saveButton && saveButton.dataset.consentMessage);
+  });
+
+  /* Escape inside the banner = continue without consent. Nothing is set,
+     the choice is stored as a refusal, and the banner does not nag on
+     the next page. Escape in the dialog is the browser's own: it just
+     closes it, and nothing changes. */
+  banner.addEventListener("keydown", function (e) {
+    if (e.key === "Escape") {
+      var reject = banner.querySelector('[data-consent-action="reject"]');
+      apply(allOrNothing(false), reject && reject.dataset.consentMessage);
+    }
+  });
+  window.addEventListener("resize", reserveSpace);
+  dialog.addEventListener("close", function () {
+    if (lastTrigger && document.contains(lastTrigger)) lastTrigger.focus();
+  });
+
+  window.consent = {
+    get: read,
+    allows: function (name) { var c = read(); return !!(c && c.categories[name]); },
+    open: function () { openDialog(); },
+    reset: function () {
+      try { localStorage.removeItem(KEY); } catch (e) {}
+      showBanner();
+    }
+  };
+
+  var stored = read();
+  if (stored) activateScripts(stored.categories); else showBanner();
+})();
+
+</script>
+<script>
+/* Consent banner builder.
+   Turns the form in #builder into the three files a site needs: the
+   markup in the chosen language with the site's own policy link and
+   categories, consent.css with the site's colours, and consent.js as is.
+   Every colour pair is checked against WCAG before it is offered.
+
+   The page provides:
+     #builder                 the form
+     #builder-strings         JSON: the generated wording, per language
+     code#consent.css         the stylesheet source
+     code#consent.js          the script source
+   and optionally window.JSZip for the one-file download. */
+(function () {
+  var form = document.getElementById("builder");
+  if (!form) return;
+  var S = JSON.parse(document.getElementById("builder-strings").textContent);
+  var ui = S.ui;
+  var out = document.getElementById("builder-output");
+  var status = document.getElementById("builder-status");
+  var contrastList = document.getElementById("builder-contrast");
+  var preview = document.getElementById("builder-preview");
+  var none = document.getElementById("builder-none");
+  var result = document.getElementById("builder-result");
+
+  function src(id) { var el = document.getElementById(id); return el ? el.textContent : ""; }
+  function esc(s) { return String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;"); }
+  function say(t) { status.textContent = ""; setTimeout(function () { status.textContent = t; }, 50); }
+
+  /* ── Contrast ─────────────────────────────────────────────────────── */
+  function lum(hex) {
+    var n = parseInt(hex.slice(1), 16);
+    return [n >> 16, (n >> 8) & 255, n & 255].map(function (c) {
+      c /= 255; return c <= 0.03928 ? c / 12.92 : Math.pow((c + 0.055) / 1.055, 2.4);
+    }).reduce(function (s, c, i) { return s + c * [0.2126, 0.7152, 0.0722][i]; }, 0);
+  }
+  function ratio(a, b) { var x = lum(a), y = lum(b); return (Math.max(x, y) + 0.05) / (Math.min(x, y) + 0.05); }
+
+  /* The template's quiet grey, unless it fails on the chosen background:
+     then the text colour, which the check below already requires. */
+  function mutedFor(bg, text) { return ratio("#4a4a4a", bg) >= 4.5 ? "#4a4a4a" : text; }
+  function borderFor(bg, text) { return ratio("#767676", bg) >= 3 ? "#767676" : text; }
+
+  function theme() {
+    var bg = form.elements.bg.value, text = form.elements.text.value, button = form.elements.button.value;
+    var buttonText = ratio("#ffffff", button) >= ratio("#111111", button) ? "#ffffff" : "#111111";
+    return { bg: bg, text: text, button: button, buttonText: buttonText, muted: mutedFor(bg, text), border: borderFor(bg, text) };
+  }
+
+  function checks(t) {
+    return [
+      { label: ui.c_text, value: ratio(t.text, t.bg), need: 4.5 },
+      { label: ui.c_button_text, value: ratio(t.buttonText, t.button), need: 4.5 },
+      { label: ui.c_button_edge, value: ratio(t.button, t.bg), need: 3 },
+      { label: ui.c_link, value: ratio(t.button, t.bg), need: 4.5 },
+    ];
+  }
+
+  /* ── The markup ───────────────────────────────────────────────────── */
+  function chosen() {
+    var L = S[form.elements.lang ? form.elements.lang.value : S.defaultLang];
+    var cats = [];
+    L.categories.forEach(function (c) {
+      var box = form.elements["cat-" + c.name];
+      if (box && box.checked) cats.push({ name: c.name, label: c.label, phrase: c.phrase, text: form.elements["text-" + c.name].value.trim() || c.text });
+    });
+    var own = form.elements["own-label"].value.trim();
+    if (own) {
+      var name = own.toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, "").replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "") || "other";
+      cats.push({ name: name, label: own, text: form.elements["own-text"].value.trim() });
+    }
+    return { L: L, cats: cats, policy: form.elements.policy.value.trim() || L.policyDefault };
+  }
+
+  function listJoin(words, and) {
+    return words.length < 2 ? words.join("") : words.slice(0, -1).join(", ") + " " + and + " " + words[words.length - 1];
+  }
+
+  function markup(c) {
+    var L = c.L;
+    var purposes = listJoin(c.cats.map(function (x) {
+      // Presets carry their mid-sentence form; an own category is used as typed,
+      // lower-cased in English where labels sit mid-sentence.
+      return x.phrase || (L.lowerInSentence ? x.label.charAt(0).toLowerCase() + x.label.slice(1) : x.label);
+    }), L.and);
+    var options = c.cats.map(function (x) {
+      return '\n      <div class="consent__option">\n' +
+        '        <input type="checkbox" id="consent-' + x.name + '" name="' + x.name + '">\n' +
+        '        <label for="consent-' + x.name + '">' + esc(x.label) + '</label>\n' +
+        '        <p>' + esc(x.text) + '</p>\n' +
+        '      </div>\n';
+    }).join("");
+    var waiting = c.cats.map(function (x) {
+      return '<script type="text/plain" data-consent="' + x.name + '" src="' + L.scriptPlaceholder + '"></' + 'script>';
+    }).join("\n");
+    return L.c1 + '\n' +
+'<section class="consent" aria-labelledby="consent-title" hidden>\n' +
+'  <div class="consent__inner">\n' +
+'    <h2 class="consent__title" id="consent-title">' + L.title + '</h2>\n' +
+'    <p class="consent__text">\n' +
+'      ' + L.textNeed + ' ' + L.textAsk.replace("{purposes}", esc(purposes)) + ' ' + L.textChange + '\n' +
+'      <a href="' + esc(c.policy) + '">' + L.policy + '</a>\n' +
+'    </p>\n' +
+'    <div class="consent__actions">\n' +
+'      <button type="button" class="consent__button" data-consent-action="accept"\n' +
+'              data-consent-message="' + L.acceptMsg + '">' + L.accept + '</button>\n' +
+'      <button type="button" class="consent__button" data-consent-action="reject"\n' +
+'              data-consent-message="' + L.rejectMsg + '">' + L.reject + '</button>\n' +
+'      <button type="button" class="consent__button consent__button--quiet" data-consent-action="settings">' + L.settings + '</button>\n' +
+'    </div>\n' +
+'    <p class="visually-hidden" role="status" data-consent-status></p>\n' +
+'  </div>\n' +
+'</section>\n\n' +
+L.c2 + '\n' +
+'<dialog class="consent__dialog" aria-labelledby="consent-dialog-title">\n' +
+'  <form method="dialog">\n' +
+'    <h2 id="consent-dialog-title" tabindex="-1">' + L.dialogTitle + '</h2>\n' +
+'    <p>' + L.dialogIntro + '</p>\n' +
+'    <fieldset>\n' +
+'      <legend>' + L.legend + '</legend>\n\n' +
+'      <div class="consent__option">\n' +
+'        <input type="checkbox" id="consent-necessary" name="necessary" checked disabled>\n' +
+'        <label for="consent-necessary">' + L.necessary + ' <span class="consent__always">' + L.always + '</span></label>\n' +
+'        <p>' + L.necessaryText + '</p>\n' +
+'      </div>\n' + options +
+'    </fieldset>\n' +
+'    <div class="consent__actions">\n' +
+'      <button type="submit" class="consent__button" data-consent-message="' + L.saveMsg + '">' + L.save + '</button>\n' +
+'      <button type="button" class="consent__button consent__button--quiet" data-consent-action="close">' + L.cancel + '</button>\n' +
+'    </div>\n' +
+'  </form>\n' +
+'</dialog>\n\n' +
+L.c3 + '\n' +
+'<button type="button" class="consent__reopen" id="consent-settings" data-consent-action="settings">' + L.dialogTitle + '</button>\n\n' +
+L.c4 + '\n' + waiting + '\n\n' +
+'<link rel="stylesheet" href="/cookie-banner/consent.css">\n' +
+'<script src="/cookie-banner/consent.js" defer></' + 'script>\n';
+  }
+
+  /* Light mode only: dark mode keeps the template's own tested colours,
+     since one picked palette cannot be checked against both schemes. */
+  function css(t) {
+    var vars = "  --consent-bg: " + t.bg + ";\n  --consent-text: " + t.text + ";\n  --consent-muted: " + t.muted +
+      ";\n  --consent-border: " + t.border + ";\n  --consent-accent: " + t.button + ";\n  --consent-focus: " + t.button +
+      ";\n  --consent-button-bg: " + t.button + ";\n  --consent-button-text: " + t.buttonText + ";\n";
+    return src("consent.css").replace(/\s*$/, "\n") + "\n/* " + ui.cssNote + " */\n@media not all and (prefers-color-scheme: dark) {\n  .consent,\n  .consent__dialog {\n" +
+      vars.replace(/^/gm, "  ").replace(/\s+$/, "") + "\n  }\n}\n";
+  }
+
+  /* ── Preview ──────────────────────────────────────────────────────── */
+  function previewDoc(snippet, styles) {
+    var live = snippet.split("\n").filter(function (l) {
+      var s = l.trim();
+      return s.indexOf("<link") !== 0 && s.indexOf("<script") !== 0;
+    }).join("\n").replace(/<!--[\s\S]*?-->/g, "").replace('class="consent" aria-labelledby', 'class="consent" data-preview aria-labelledby');
+    // Its own storage key: the preview shares this page's origin, and
+    // must neither read nor overwrite the visitor's real choice here.
+    var js = src("consent.js").replace('"consent-v1"', '"consent-builder-preview-" + Math.random()').replace(/<\/script/g, "<\\/script");
+    return '<!doctype html><html lang="' + (form.elements.lang ? form.elements.lang.value : S.defaultLang) + '"><head><meta charset="utf-8"><title>' + ui.previewTitle + '</title><style>' +
+      styles + '\nbody{margin:0;padding:16px;font-family:system-ui,sans-serif;font-size:18px;line-height:1.5;letter-spacing:0.01em;background:#f4f4f4;color:#1a1a1a}' +
+      '@media (prefers-color-scheme: dark){body{background:#222;color:#f2f2f2}}</style></head><body><p>' + ui.previewPage + '</p>' +
+      live + '<script>' + js + '<\/script></body></html>';
+  }
+
+  /* ── Render ───────────────────────────────────────────────────────── */
+  var current = null;
+  function render(announce) {
+    var c = chosen();
+    if (!c.cats.length) {
+      none.hidden = false; result.hidden = true; current = null;
+      if (announce) say(ui.noneSay);
+      return;
+    }
+    none.hidden = true; result.hidden = false;
+    var t = theme();
+    var html = markup(c), styles = css(t);
+    var fails = 0;
+    contrastList.innerHTML = checks(t).map(function (k) {
+      var ok = k.value >= k.need; if (!ok) fails++;
+      return "<li>" + esc(k.label) + ": <strong>" + k.value.toFixed(1) + ":1</strong> — " +
+        (ok ? ui.pass : ui.fail.replace("{need}", k.need)) + "</li>";
+    }).join("");
+    out.textContent = html;
+    document.getElementById("builder-css").textContent = styles;
+    document.getElementById("builder-js").textContent = src("consent.js");
+    preview.srcdoc = previewDoc(html, styles);
+    current = { html: html, css: styles, fails: fails, lang: form.elements.lang ? form.elements.lang.value : S.defaultLang };
+    if (announce) say(fails ? (fails === 1 ? ui.failSay : ui.failSayMany).replace("{n}", fails) : ui.readySay);
+  }
+
+  // Each category's description field only while the category is chosen.
+  function syncFields() {
+    S[S.defaultLang].categories.forEach(function (c) {
+      var box = form.elements["cat-" + c.name], row = document.getElementById("row-" + c.name);
+      if (box && row) row.hidden = !box.checked;
+    });
+  }
+
+  // Switching language swaps the prefilled category wording, unless edited.
+  function relabel() {
+    if (!form.elements.lang) return;
+    var L = S[form.elements.lang.value];
+    L.categories.forEach(function (c) {
+      var area = form.elements["text-" + c.name];
+      if (area && !area.dataset.edited) area.value = c.text;
+      var lab = document.getElementById("label-" + c.name);
+      if (lab) lab.textContent = c.label;
+    });
+    if (!form.elements.policy.dataset.edited) form.elements.policy.value = L.policyDefault;
+  }
+
+  form.addEventListener("input", function (e) {
+    if (e.target.tagName === "TEXTAREA" || e.target.name === "policy") e.target.dataset.edited = "1";
+    if (e.target.name === "lang") relabel();
+    syncFields();
+    render(false);
+  });
+  form.addEventListener("change", function () { render(true); });
+  form.addEventListener("submit", function (e) { e.preventDefault(); render(true); });
+
+  /* ── Copy and download ────────────────────────────────────────────── */
+  var viewerSave = (window.claude && window.claude.use) ? window.claude.use("downloads") : Promise.resolve(null);
+  function save(blob, name) {
+    viewerSave.then(function (dl) {
+      if (dl) return dl.save({ filename: name, data: blob }).then(function () { say(ui.saved.replace("{name}", name)); }, function () { say(ui.notSaved); });
+      var a = document.createElement("a");
+      a.href = URL.createObjectURL(blob); a.download = name;
+      document.body.appendChild(a); a.click(); a.remove();
+      setTimeout(function () { URL.revokeObjectURL(a.href); }, 2000);
+      say(ui.saved.replace("{name}", name));
+    });
+  }
+  document.querySelectorAll("[data-builder-copy]").forEach(function (b) {
+    b.addEventListener("click", function () {
+      if (!current) return;
+      var code = document.getElementById(b.dataset.builderCopy), name = code.parentNode.getAttribute("aria-label");
+      navigator.clipboard.writeText(code.textContent).then(function () { say(ui.copied.replace("{name}", name)); }, function () {
+        // Clipboard refused: select the code so Ctrl+C or Cmd+C takes it.
+        var range = document.createRange(); range.selectNodeContents(code);
+        var sel = getSelection(); sel.removeAllRanges(); sel.addRange(range);
+        say(ui.notCopied);
+      });
+    });
+  });
+  document.getElementById("builder-download").addEventListener("click", function () {
+    if (!current) return;
+    var snippetName = "consent.html";
+    if (!window.JSZip) {
+      save(new Blob([current.html], { type: "text/html" }), snippetName);
+      return;
+    }
+    var zip = new JSZip();
+    zip.file(snippetName, current.html);
+    zip.file("consent.css", current.css);
+    zip.file("consent.js", src("consent.js"));
+    zip.generateAsync({ type: "blob" }).then(function (b) { save(b, "consent-banner.zip"); });
+  });
+
+  syncFields();
+  render(false);
+})();
+
+</script>
+<script>
+(function () {
+  var status = document.getElementById("dl-status");
+  function say(t) { status.textContent = t; }
+  function text(name) { return document.getElementById(name).textContent; }
+  /* Inside the claude.ai viewer the page saves through its downloads
+     capability (viewer confirms each file). Anywhere else, a plain link. */
+  var viewerSave = (window.claude && window.claude.use) ? window.claude.use("downloads") : Promise.resolve(null);
+  function plainSave(blob, name) {
+    var a = document.createElement("a");
+    a.href = URL.createObjectURL(blob); a.download = name;
+    document.body.appendChild(a); a.click(); a.remove();
+    setTimeout(function () { URL.revokeObjectURL(a.href); }, 2000);
+    say(name + " downloaded. If nothing happened, your browser blocked it: use Copy instead.");
+  }
+  function save(blob, name) {
+    viewerSave.then(function (dl) {
+      if (!dl) return plainSave(blob, name);
+      dl.save({ filename: name, data: blob }).then(function () { say(name + " saved."); }, function (err) {
+        if (err && err.code === "rejected_extension" && window.JSZip) {
+          var z = new JSZip(); z.file(name, blob);
+          z.generateAsync({ type: "blob" }).then(function (b) { return dl.save({ filename: name + ".zip", data: b }); })
+            .then(function () { say(name + ".zip saved."); }, function () { say("Not saved. Use Copy instead."); });
+        } else if (err && err.code === "declined") say("Not saved.");
+        else say("Not saved. Use Copy instead.");
+      });
+    });
+  }
+  document.querySelectorAll("[data-download]").forEach(function (b) {
+    b.addEventListener("click", function () { save(new Blob([text(b.dataset.download)], { type: "text/plain" }), b.dataset.download); });
+  });
+  document.querySelectorAll("[data-copy]").forEach(function (b) {
+    b.addEventListener("click", function () {
+      var t = text(b.dataset.copy);
+      var done = function () { var was = b.textContent; b.textContent = "Copied"; setTimeout(function () { b.textContent = was; }, 1500); };
+      if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(t).then(done, function () { fallback(); });
+      else fallback();
+      function fallback() { var r = document.createRange(); r.selectNodeContents(document.getElementById(b.dataset.copy)); var s = getSelection(); s.removeAllRanges(); s.addRange(r); say("Text selected. Press Ctrl+C or Cmd+C to copy."); }
+    });
+  });
+  document.getElementById("download-all").addEventListener("click", function () {
+    if (!window.JSZip) { say("The zip library did not load. Download the files one by one below."); return; }
+    var zip = new JSZip();
+    ["consent.css", "consent.js", "consent.en.html", "consent.de.html"].forEach(function (n) { zip.file(n, text(n)); });
+    zip.generateAsync({ type: "blob" }).then(function (b) { save(b, "accessible-consent-banner.zip"); });
+  });
+  document.getElementById("show-banner").addEventListener("click", function () { consent.reset(); });
+})();
+</script>
+</body>
+</html>

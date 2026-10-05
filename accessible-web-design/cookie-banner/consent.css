@@ -1,0 +1,279 @@
+/* Consent banner — accessible template for EU sites.
+   Drop-in: no dependencies, no framework. Theme it with the custom
+   properties on .consent; every value below has a fallback.
+   Type sizes are literal px so zoom and user stylesheets behave
+   predictably. Nothing here is smaller than 15px. */
+
+.consent {
+  --consent-bg: #ffffff;
+  --consent-text: #1a1a1a;
+  --consent-muted: #4a4a4a;
+  --consent-border: #767676;
+  --consent-accent: #0b5cad;
+  --consent-focus: #0b5cad;
+  --consent-button-bg: #1a1a1a;
+  --consent-button-text: #ffffff;
+  --consent-radius: 2px;
+  --consent-z: 1000;
+
+  position: fixed;
+  inset-block-end: 0;
+  inset-inline: 0;
+  z-index: var(--consent-z);
+  max-height: 60vh;              /* never the whole viewport: the page stays readable */
+  overflow: auto;
+  background: var(--consent-bg);
+  color: var(--consent-text);
+  border-block-start: 1px solid var(--consent-border);
+  box-shadow: 0 -2px 16px rgba(0, 0, 0, 0.12);
+  font-size: 18px;
+  line-height: 1.5;
+  letter-spacing: 0.01em;
+  font-family: inherit;
+}
+
+@media (prefers-color-scheme: dark) {
+  .consent {
+    --consent-bg: #111111;
+    --consent-text: #f2f2f2;
+    --consent-muted: #c4c4c4;
+    --consent-border: #8a8a8a;
+    --consent-accent: #7cbcff;
+    --consent-focus: #ffffff;
+    --consent-button-bg: #f2f2f2;
+    --consent-button-text: #111111;
+  }
+}
+
+.consent[hidden] { display: none; }
+
+.consent__inner {
+  max-width: 1100px;
+  margin-inline: auto;
+  padding: 24px 16px;
+  display: grid;
+  gap: 16px;
+}
+
+.consent__title {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 500;
+  letter-spacing: 0.01em;
+}
+
+.consent__text {
+  margin: 0;
+  max-width: 70ch;
+  color: var(--consent-text);
+}
+
+.consent__text a,
+.consent__dialog a {
+  color: var(--consent-accent);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.consent__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  align-items: center;
+}
+
+/* Accept and Reject are the same button. Same size, same colour, same
+   weight: the law asks for a refusal as easy as acceptance, and a reader
+   who sees a grey "Reject" beside a blue "Accept" is being steered. */
+.consent__button {
+  min-height: 48px;
+  min-width: 48px;
+  padding: 10px 20px;
+  font: inherit;
+  font-size: 18px;
+  font-weight: 500;
+  letter-spacing: 0.01em;
+  line-height: 1.2;
+  color: var(--consent-button-text);
+  background: var(--consent-button-bg);
+  border: 2px solid var(--consent-button-bg);
+  border-radius: var(--consent-radius);
+  cursor: pointer;
+}
+
+.consent__button--quiet {
+  color: var(--consent-text);
+  background: transparent;
+  border-color: var(--consent-border);
+}
+
+.consent__button:hover { opacity: 0.92; }
+
+.consent :focus-visible,
+.consent__dialog :focus-visible {
+  outline: 2px solid var(--consent-focus);
+  outline-offset: 2px;
+  box-shadow: 0 0 0 1px var(--consent-bg);
+}
+
+/* Settings: a real <dialog>, so the browser gives the focus trap,
+   Escape handling and the inert page for free. */
+.consent__dialog {
+  --consent-bg: #ffffff;
+  --consent-text: #1a1a1a;
+  --consent-muted: #4a4a4a;
+  --consent-border: #767676;
+  --consent-accent: #0b5cad;
+  --consent-focus: #0b5cad;
+  --consent-button-bg: #1a1a1a;
+  --consent-button-text: #ffffff;
+  --consent-radius: 2px;
+
+  width: min(100% - 32px, 640px);
+  max-height: calc(100vh - 32px);
+  padding: 0;
+  border: 1px solid var(--consent-border);
+  border-radius: var(--consent-radius);
+  background: var(--consent-bg);
+  color: var(--consent-text);
+  font-size: 18px;
+  line-height: 1.5;
+  letter-spacing: 0.01em;
+  font-family: inherit;
+}
+
+@media (prefers-color-scheme: dark) {
+  .consent__dialog {
+    --consent-bg: #111111;
+    --consent-text: #f2f2f2;
+    --consent-muted: #c4c4c4;
+    --consent-border: #8a8a8a;
+    --consent-accent: #7cbcff;
+    --consent-focus: #ffffff;
+    --consent-button-bg: #f2f2f2;
+    --consent-button-text: #111111;
+  }
+}
+
+.consent__dialog::backdrop { background: rgba(0, 0, 0, 0.5); }
+
+.consent__dialog form {
+  display: grid;
+  gap: 20px;
+  padding: 24px;
+}
+
+.consent__dialog h2 {
+  margin: 0;
+  font-size: 24px;
+  font-weight: 500;
+  letter-spacing: 0.01em;
+  line-height: 1.3;
+}
+
+.consent__dialog fieldset {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  display: grid;
+  gap: 12px;
+}
+
+.consent__dialog legend {
+  padding: 0;
+  margin-block-end: 8px;
+  font-size: 18px;
+  font-weight: 500;
+}
+
+/* One category per row: a native checkbox, big enough to hit, and a
+   label that says what the category does, not just its name. */
+.consent__option {
+  display: grid;
+  grid-template-columns: 24px 1fr;
+  gap: 12px;
+  align-items: start;
+  padding: 12px;
+  border: 1px solid var(--consent-border);
+  border-radius: var(--consent-radius);
+}
+
+.consent__option input {
+  width: 24px;
+  height: 24px;
+  margin: 2px 0 0;
+  accent-color: var(--consent-accent);
+}
+
+.consent__option label {
+  font-size: 18px;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.consent__option p {
+  grid-column: 2;
+  margin: 0;
+  font-size: 15px;
+  color: var(--consent-muted);
+}
+
+.consent__option input:disabled + label {
+  cursor: default;
+}
+
+/* Always-on categories say so in words, not in a greyed-out box. */
+.consent__always {
+  font-size: 15px;
+  font-weight: 400;
+  color: var(--consent-muted);
+  margin-inline-start: 8px;
+}
+
+/* The "Cookie settings" link that lives in the footer, forever. */
+.consent__reopen {
+  font: inherit;
+  font-size: 18px;
+  letter-spacing: 0.01em;
+  color: inherit;
+  background: none;
+  border: 0;
+  padding: 0;
+  min-height: 24px;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  cursor: pointer;
+}
+
+/* Windows High Contrast / forced colours: keep the borders that
+   separate the two buttons, let the system paint the rest. */
+@media (forced-colors: active) {
+  .consent, .consent__dialog { border-color: CanvasText; }
+  .consent__button { border: 2px solid ButtonText; forced-color-adjust: auto; }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .consent { animation: consent-in 240ms ease-out; }
+  @keyframes consent-in {
+    from { transform: translateY(16px); opacity: 0; }
+    to   { transform: none; opacity: 1; }
+  }
+}
+
+@media (max-width: 480px) {
+  .consent__actions { display: grid; }
+  .consent__button { width: 100%; }
+}
+
+/* Included so the snippet works on a site that has no such class. */
+.consent .visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+}

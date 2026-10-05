@@ -5,8 +5,8 @@
   "type": "module",
   "description": "The public site. Built once per locale; every locale is audited before it ships.",
   "scripts": {
-    "build": "node i18n/build.mjs --pseudo",
-    "build:strict": "node i18n/build.mjs --strict --pseudo",
+    "build": "node i18n/build.mjs --pseudo && python3 cookie-banner/build.py",
+    "build:strict": "node i18n/build.mjs --strict --pseudo && python3 cookie-banner/build.py",
     "check:axe": "node i18n/axe-locales.mjs",
     "check:expansion": "node i18n/expansion-check.mjs",
     "check": "npm run build:strict && npm run check:axe && npm run check:expansion",

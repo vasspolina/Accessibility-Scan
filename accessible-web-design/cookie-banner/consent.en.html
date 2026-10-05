@@ -1,0 +1,64 @@
+<!-- 1. The banner. Place it directly after your skip link, before the
+        header, so it is the first thing a screen reader meets and the
+        first Tab stop after "Skip to content". -->
+<section class="consent" aria-labelledby="consent-title" hidden>
+  <div class="consent__inner">
+    <h2 class="consent__title" id="consent-title">Cookies on this site</h2>
+    <p class="consent__text">
+      We use cookies that the site needs to work. With your permission we also
+      use cookies that measure how the site is used. You can change your choice
+      at any time under “Cookie settings” in the footer.
+      <a href="/privacy/">Privacy policy</a>
+    </p>
+    <div class="consent__actions">
+      <button type="button" class="consent__button" data-consent-action="accept"
+              data-consent-message="All cookies accepted.">Accept all</button>
+      <button type="button" class="consent__button" data-consent-action="reject"
+              data-consent-message="Only necessary cookies are in use.">Reject all</button>
+      <button type="button" class="consent__button consent__button--quiet" data-consent-action="settings">Settings</button>
+    </div>
+    <p class="visually-hidden" role="status" data-consent-status></p>
+  </div>
+</section>
+
+<!-- 2. The settings dialog. Anywhere in the body. -->
+<dialog class="consent__dialog" aria-labelledby="consent-dialog-title">
+  <form method="dialog">
+    <h2 id="consent-dialog-title" tabindex="-1">Cookie settings</h2>
+    <p>Choose which cookies this site may use. Necessary cookies are always on: without them the site does not work.</p>
+    <fieldset>
+      <legend>Cookie categories</legend>
+
+      <div class="consent__option">
+        <input type="checkbox" id="consent-necessary" name="necessary" checked disabled>
+        <label for="consent-necessary">Necessary <span class="consent__always">always on</span></label>
+        <p>Remember your cookie choice and keep you signed in. Set by this site only.</p>
+      </div>
+
+      <div class="consent__option">
+        <input type="checkbox" id="consent-analytics" name="analytics">
+        <label for="consent-analytics">Measurement</label>
+        <p>Count visits and see which pages are used, so we can improve them. Data is aggregated; no advertising.</p>
+      </div>
+
+      <div class="consent__option">
+        <input type="checkbox" id="consent-media" name="media">
+        <label for="consent-media">Embedded media</label>
+        <p>Show videos and maps from other providers. Those providers set their own cookies when the content loads.</p>
+      </div>
+    </fieldset>
+    <div class="consent__actions">
+      <button type="submit" class="consent__button" data-consent-message="Your cookie choice is saved.">Save choices</button>
+      <button type="button" class="consent__button consent__button--quiet" data-consent-action="close">Cancel</button>
+    </div>
+  </form>
+</dialog>
+
+<!-- 3. The way back. In the footer of every page, forever. -->
+<button type="button" class="consent__reopen" id="consent-settings" data-consent-action="settings">Cookie settings</button>
+
+<!-- 4. Scripts that wait for consent. -->
+<script type="text/plain" data-consent="analytics" src="/js/analytics.js"></script>
+
+<link rel="stylesheet" href="/cookie-banner/consent.css">
+<script src="/cookie-banner/consent.js" defer></script>

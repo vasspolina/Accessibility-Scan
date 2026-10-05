@@ -1,0 +1,64 @@
+<!-- 1. Das Banner. Direkt nach dem Sprunglink, vor dem Header: so ist es
+        das Erste, was ein Screenreader liest, und der erste Tabstopp nach
+        „Zum Inhalt springen“. -->
+<section class="consent" aria-labelledby="consent-title" hidden>
+  <div class="consent__inner">
+    <h2 class="consent__title" id="consent-title">Cookies auf dieser Website</h2>
+    <p class="consent__text">
+      Wir verwenden Cookies, die die Website zum Funktionieren braucht. Mit Ihrer
+      Erlaubnis verwenden wir auch Cookies, die die Nutzung der Website messen.
+      Ihre Wahl können Sie jederzeit unter „Cookie-Einstellungen“
+      in der Fußzeile ändern. <a href="/datenschutz/">Datenschutzerklärung</a>
+    </p>
+    <div class="consent__actions">
+      <button type="button" class="consent__button" data-consent-action="accept"
+              data-consent-message="Alle Cookies akzeptiert.">Alle akzeptieren</button>
+      <button type="button" class="consent__button" data-consent-action="reject"
+              data-consent-message="Nur notwendige Cookies werden verwendet.">Alle ablehnen</button>
+      <button type="button" class="consent__button consent__button--quiet" data-consent-action="settings">Einstellungen</button>
+    </div>
+    <p class="visually-hidden" role="status" data-consent-status></p>
+  </div>
+</section>
+
+<!-- 2. Der Einstellungsdialog. Irgendwo im Body. -->
+<dialog class="consent__dialog" aria-labelledby="consent-dialog-title">
+  <form method="dialog">
+    <h2 id="consent-dialog-title" tabindex="-1">Cookie-Einstellungen</h2>
+    <p>Wählen Sie, welche Cookies diese Website verwenden darf. Notwendige Cookies sind immer aktiv: ohne sie funktioniert die Website nicht.</p>
+    <fieldset>
+      <legend>Cookie-Kategorien</legend>
+
+      <div class="consent__option">
+        <input type="checkbox" id="consent-necessary" name="necessary" checked disabled>
+        <label for="consent-necessary">Notwendig <span class="consent__always">immer aktiv</span></label>
+        <p>Merken sich Ihre Cookie-Wahl und halten Sie angemeldet. Nur von dieser Website gesetzt.</p>
+      </div>
+
+      <div class="consent__option">
+        <input type="checkbox" id="consent-analytics" name="analytics">
+        <label for="consent-analytics">Messung</label>
+        <p>Zählen Besuche und zeigen, welche Seiten genutzt werden, damit wir sie verbessern können. Daten werden zusammengefasst; keine Werbung.</p>
+      </div>
+
+      <div class="consent__option">
+        <input type="checkbox" id="consent-media" name="media">
+        <label for="consent-media">Eingebettete Medien</label>
+        <p>Zeigen Videos und Karten anderer Anbieter. Diese Anbieter setzen eigene Cookies, wenn der Inhalt geladen wird.</p>
+      </div>
+    </fieldset>
+    <div class="consent__actions">
+      <button type="submit" class="consent__button" data-consent-message="Ihre Cookie-Wahl ist gespeichert.">Auswahl speichern</button>
+      <button type="button" class="consent__button consent__button--quiet" data-consent-action="close">Abbrechen</button>
+    </div>
+  </form>
+</dialog>
+
+<!-- 3. Der Weg zurück. In der Fußzeile jeder Seite, dauerhaft. -->
+<button type="button" class="consent__reopen" id="consent-settings" data-consent-action="settings">Cookie-Einstellungen</button>
+
+<!-- 4. Skripte, die auf die Einwilligung warten. -->
+<script type="text/plain" data-consent="analytics" src="/js/analytics.js"></script>
+
+<link rel="stylesheet" href="/cookie-banner/consent.css">
+<script src="/cookie-banner/consent.js" defer></script>
