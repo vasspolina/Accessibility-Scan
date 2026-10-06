@@ -4,6 +4,7 @@ import { tmpdir } from "node:os";
 import { join } from "node:path";
 import type { FastifyInstance } from "fastify";
 import { START_SCAN_TOOL, CHAT_SYSTEM_PROMPT } from "../src/services/chat/chatPrompt.js";
+import { readFileSync } from "node:fs";
 
 /**
  * The chat endpoint spends this server's API key on every request, so its
@@ -14,6 +15,9 @@ import { START_SCAN_TOOL, CHAT_SYSTEM_PROMPT } from "../src/services/chat/chatPr
 
 let dir: string;
 let app: FastifyInstance;
+// Imported after the env is set, below: a top-level import of the route
+// would load the config first and pin the default rate limit.
+let DIGEST_PREFIX: string;
 
 beforeAll(async () => {
   dir = mkdtempSync(join(tmpdir(), "a11y-chat-"));
@@ -21,6 +25,7 @@ beforeAll(async () => {
   process.env.DB_DURABLE = "false";
   process.env.RATE_LIMIT_MAX = "100";
   const { buildApp } = await import("../src/app.js");
+  ({ DIGEST_PREFIX } = await import("../src/routes/chat.js"));
   app = await buildApp();
   await app.ready();
 });
@@ -51,6 +56,35 @@ describe("POST /api/chat guardrails", () => {
     // 413, like the size cap: the widget starts a new conversation on it.
     const messages = Array.from({ length: 61 }, (_, i) => ({ role: i % 2 ? "assistant" : "user", content: "a" }));
     expect((await post({ messages })).statusCode).toBe(413);
+  });
+
+  it("refuses a document or image block — the API would fetch and bill its source", async () => {
+    const doc = { type: "document", source: { type: "url", url: "https://example.com/600-pages.pdf" } };
+    expect((await post({ messages: [{ role: "user", content: [doc, { type: "text", text: "summarise" }] }] })).statusCode).toBe(400);
+    const img = { type: "image", source: { type: "url", url: "https://example.com/a.png" } };
+    expect((await post({ messages: [{ role: "user", content: [img] }] })).statusCode).toBe(400);
+  });
+
+  it("refuses a sourced block passed off as the assistant's", async () => {
+    const forged = { type: "document", source: { type: "url", url: "https://example.com/x.pdf" } };
+    const messages = [
+      { role: "user", content: "hi" },
+      { role: "assistant", content: [forged] },
+      { role: "user", content: "go on" },
+    ];
+    expect((await post({ messages })).statusCode).toBe(400);
+  });
+
+  it("measures typed text in blocks too, which is all the widget sends", async () => {
+    const res = await post({ messages: [{ role: "user", content: [{ type: "text", text: "x".repeat(4_001) }] }] });
+    expect(res.statusCode).toBe(400);
+  });
+
+  it("lets the report digest past the typed-text cap", async () => {
+    const digest = { type: "text", text: `${DIGEST_PREFIX}${"x".repeat(20_000)}` };
+    const res = await post({ messages: [{ role: "user", content: [digest, { type: "text", text: "what first?" }] }] });
+    // Past every guardrail; without an API key in tests the route answers 503.
+    expect(res.statusCode).not.toBe(400);
   });
 
   it("refuses roles other than user and assistant", async () => {
@@ -88,5 +122,13 @@ describe("show_section stays in step with the widget", () => {
     const schema = SHOW_SECTION_TOOL.input_schema as { properties: { section: { enum: string[] } } };
     expect(widgetKeys.length).toBeGreaterThan(5);
     expect([...schema.properties.section.enum].sort()).toEqual(widgetKeys);
+  });
+});
+
+describe("the digest prefix stays in step with the widget", () => {
+  it("is the exact opening the widget writes", () => {
+    const widget = readFileSync(join(__dirname, "../../widget-business/src/components/ScanChat.tsx"), "utf8");
+    // The widget writes it in a template literal, with a literal \n.
+    expect(widget).toContain(DIGEST_PREFIX.replace("\n", "\\n"));
   });
 });

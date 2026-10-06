@@ -176,3 +176,4 @@ should check that none of those splits reads oddly.
 | Checking {url}. | Prüfe {url}. | chat |
 | Checked {url}. | {url} geprüft. | chat |
 | Could not check {url}. | {url} konnte nicht geprüft werden. | chat |
+| The assistant is still replying. Run it again in a moment. | Der Assistent antwortet noch. Starten Sie den Scan gleich noch einmal. | chat |

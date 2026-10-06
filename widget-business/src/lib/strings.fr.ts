@@ -224,4 +224,5 @@ export const STRINGS_FR: Record<string, string> = {
   "Checking {url}.": "Vérification de {url}.",
   "Checked {url}.": "{url} vérifié.",
   "Could not check {url}.": "Impossible de vérifier {url}.",
+  "The assistant is still replying. Run it again in a moment.": "L'assistant répond encore. Relancez dans un instant.",
 };

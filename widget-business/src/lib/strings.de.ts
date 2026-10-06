@@ -220,4 +220,5 @@ export const STRINGS_DE: Record<string, string> = {
   "Checking {url}.": "Prüfe {url}.",
   "Checked {url}.": "{url} geprüft.",
   "Could not check {url}.": "{url} konnte nicht geprüft werden.",
+  "The assistant is still replying. Run it again in a moment.": "Der Assistent antwortet noch. Starten Sie den Scan gleich noch einmal.",
 };

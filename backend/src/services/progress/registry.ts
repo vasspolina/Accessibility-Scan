@@ -16,6 +16,11 @@
 const MAX_CHANNELS = 200;
 // A channel whose scan never finishes (crash, kill) must not live forever.
 const ORPHAN_TTL_MS = 15 * 60 * 1000;
+// A channel opened by a watcher alone, before any scan publishes to it. The
+// widget opens the stream a moment before its POST lands, so this is
+// generous; the point is that a GET with an invented id cannot hold one of
+// the MAX_CHANNELS slots for the full orphan time.
+const PENDING_TTL_MS = 2 * 60 * 1000;
 // Finished channels linger briefly so a subscriber that arrives just after
 // the finish still gets the backlog and the done marker.
 const FINISHED_TTL_MS = 60 * 1000;
@@ -43,7 +48,7 @@ function reap(id: string, afterMs: number): NodeJS.Timeout {
   return t;
 }
 
-function getOrCreate(id: string): Channel | undefined {
+function getOrCreate(id: string, ttlMs = ORPHAN_TTL_MS): Channel | undefined {
   const existing = channels.get(id);
   if (existing) return existing;
   // Refusing quietly beyond the cap: progress is decoration on the scan,
@@ -53,7 +58,7 @@ function getOrCreate(id: string): Channel | undefined {
     backlog: [],
     listeners: new Set(),
     done: false,
-    reaper: reap(id, ORPHAN_TTL_MS),
+    reaper: reap(id, ttlMs),
   };
   channels.set(id, ch);
   return ch;
@@ -66,6 +71,12 @@ export function publish(id: string, event: string): void {
   // boundary twice (desktop pass, then phone pass re-enters "photograph"),
   // and the story reads forward only.
   if (ch.backlog.includes(event)) return;
+  // The first milestone is the scan arriving: a channel a watcher opened
+  // now gets the full orphan time.
+  if (ch.backlog.length === 0) {
+    clearTimeout(ch.reaper);
+    ch.reaper = reap(id, ORPHAN_TTL_MS);
+  }
   ch.backlog.push(event);
   for (const l of ch.listeners) l(event);
 }
@@ -81,7 +92,7 @@ export function finish(id: string): void {
 
 /** Replays the backlog, then live events. Returns the unsubscribe. */
 export function subscribe(id: string, listener: Listener): () => void {
-  const ch = getOrCreate(id);
+  const ch = getOrCreate(id, PENDING_TTL_MS);
   if (!ch) {
     listener("done");
     return () => {};
@@ -92,7 +103,19 @@ export function subscribe(id: string, listener: Listener): () => void {
     return () => {};
   }
   ch.listeners.add(listener);
-  return () => ch.listeners.delete(listener);
+  return () => {
+    ch.listeners.delete(listener);
+    // Nobody watching and nothing ever published: the slot goes back now.
+    if (ch.listeners.size === 0 && ch.backlog.length === 0 && !ch.done && channels.get(id) === ch) {
+      clearTimeout(ch.reaper);
+      channels.delete(id);
+    }
+  };
+}
+
+/** Test seam: how many slots are held. */
+export function _channelCount(): number {
+  return channels.size;
 }
 
 /** Test seam. */

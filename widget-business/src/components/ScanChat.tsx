@@ -259,7 +259,7 @@ export function ScanChat({
       const summary = rootRef.current?.querySelector<HTMLElement>(`#a11y-chat-block-${existing.id} > summary`);
       summary?.scrollIntoView({ block: "start" });
       summary?.focus();
-      setAnnouncement(`${sectionLabel(key)}: ${t("shown above.")}`);
+      if (announce) setAnnouncement(`${sectionLabel(key)}: ${t("shown above.")}`);
       return true;
     }
     add({ id: nextId++, who: "block", section: key, resultKey });
@@ -319,7 +319,11 @@ export function ScanChat({
       )
     );
 
-    history.current = [...messages, { role: "assistant", content: result.content }];
+    // An empty reply (end_turn with no content, most often right after a
+    // tool result) has no thinking to protect, and the API refuses any later
+    // request carrying an empty assistant message. It is left out; the
+    // history ends on the user turn, and the next message joins it.
+    history.current = result.content.length ? [...messages, { role: "assistant", content: result.content }] : messages;
     // Calls the route did not hand over — a second scan in one turn, or
     // input that failed its check — are answered here, or the next request
     // is refused for good.
@@ -341,7 +345,7 @@ export function ScanChat({
       let shownAny = false;
       const results: ChatBlock[] = result.show.map((req) => {
         const key = req.section as SectionKey;
-        const shown = SHOWABLE.some((s) => s.key === key) && showSection(key, { announce: !text.trim() });
+        const shown = SHOWABLE.some((s) => s.key === key) && showSection(key, { announce: !text.trim(), focusExisting: !text.trim() });
         shownAny = shownAny || shown;
         return {
           type: "tool_result",
@@ -382,6 +386,11 @@ export function ScanChat({
       history.current = appendUser(history.current, [toolResult]);
       try {
         await assistantTurn(history.current);
+      } catch (err) {
+        // The scan finished even if the reply about it did not: say both,
+        // in the one message the failure path shows and announces.
+        const why = err instanceof Error ? err.message : t("The assistant could not answer that.");
+        throw new ChatError(`${outcomeLine(outcome)} ${why}`, err instanceof ChatError ? err.status : undefined);
       } finally {
         // The block is the scan's, not the reply's: it is shown whether or
         // not the assistant managed to say anything about it.
@@ -425,7 +434,10 @@ export function ScanChat({
    *  bar. It runs as a scan turn like any other; the assistant did not start
    *  it, so the next message carries the result, as a form scan does. */
   async function rerun(url: string, scope: "page" | "site", aiReview: boolean) {
-    if (busy || loading) return;
+    if (busy || loading) {
+      setAnnouncement(t("The assistant is still replying. Run it again in a moment."));
+      return;
+    }
     setBusy(true);
     try {
       const outcome = await runScan(url, scope, aiReview);
@@ -436,6 +448,9 @@ export function ScanChat({
       showResult(outcome);
     } finally {
       setBusy(false);
+      // The re-run button disables itself while the scan runs, which drops
+      // focus to the page body.
+      returnFocus();
     }
   }
   if (apiRef) {
@@ -699,7 +714,7 @@ export function ScanChat({
             helperText={
               currentKey ? undefined : t("An address is enough. Say if you want the whole site or the AI review.")
             }
-            inputProps={{ autoComplete: "off", enterKeyHint: "send" }}
+            inputProps={{ autoComplete: "off", enterKeyHint: "send", maxLength: 4000 }}
             action={
               <Button type="submit" variant="primary" disabled={busy || loading || !draft.trim()}>
                 {t("Send")}

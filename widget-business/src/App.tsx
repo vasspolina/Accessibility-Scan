@@ -463,7 +463,9 @@ export function App({
           audience={audience}
           onAudienceChange={setAudience}
           aiIncluded={report?.meta.aiReviewStatus === "completed"}
-          scope={mode}
+          // The result on screen, not the last attempt: a failed site audit in
+          // the conversation leaves the page report up, and `mode` behind it.
+          scope={audit ? "site" : "page"}
           busy={loading}
           language={lang}
           onLanguageChange={changeLang}
@@ -471,9 +473,10 @@ export function App({
             const url = report?.url ?? audit?.pages[0]?.url;
             if (!url) return;
             const aiOn = ai ?? report?.meta.aiReviewStatus === "completed";
+            const shown: ScanMode = audit ? "site" : "page";
             // In the conversation the re-run is a turn in the thread.
-            if (entry === "chat" && chatApi.current) chatApi.current.rerun(url, scope ?? mode, aiOn);
-            else handleScan(url, aiOn, scope ?? mode, 5);
+            if (entry === "chat" && chatApi.current) chatApi.current.rerun(url, scope ?? shown, aiOn);
+            else handleScan(url, aiOn, scope ?? shown, 5);
           }}
         />
         <AccountKey apiBase={apiBase} onChange={() => setAccountVersion((v) => v + 1)} />

@@ -31,7 +31,13 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
  * could see it and no test of this kind existed.
  */
 export async function buildApp() {
-  const app = Fastify({ loggerInstance: logger, bodyLimit: 1_048_576 });
+  // trustProxy: 1 — behind Railway's edge, the socket address is the
+  // proxy's, so every visitor routed through it shared one rate-limit
+  // bucket. One hop is trusted: request.ip becomes the address that hop
+  // appended to X-Forwarded-For, which a client cannot forge (anything the
+  // client sends sits to its left). Without a proxy it is the socket, as
+  // before.
+  const app = Fastify({ loggerInstance: logger, bodyLimit: 1_048_576, trustProxy: 1 });
 
   const allowedOrigins = env.ALLOWED_ORIGINS === "*" ? true : env.ALLOWED_ORIGINS.split(",").map((o) => o.trim());
 

@@ -35,13 +35,44 @@ const MAX_MESSAGES = 60;
 const MAX_USER_TEXT = 4_000;
 const MAX_BODY_CHARS = 400_000;
 
-const textOrBlocks = z.union([z.string().max(MAX_BODY_CHARS), z.array(z.record(z.string(), z.unknown())).max(50)]);
+// What a person's turn may hold: what the widget sends, and nothing else —
+// typed text, the report digest as text, and string tool results. No image,
+// document or search_result blocks and no URL sources: a request of a few
+// kilobytes could otherwise have the API fetch and bill a long PDF. Unknown
+// keys are stripped, so a caller's own cache_control never arrives.
+const userBlock = z.discriminatedUnion("type", [
+  // MAX_BODY_CHARS, not MAX_USER_TEXT: the report digest rides as a text
+  // block. What the person typed is measured in userTextTooLong.
+  z.object({ type: z.literal("text"), text: z.string().max(MAX_BODY_CHARS) }),
+  z.object({
+    type: z.literal("tool_result"),
+    tool_use_id: z.string().min(1).max(200),
+    content: z.string().max(MAX_BODY_CHARS),
+    is_error: z.boolean().optional(),
+  }),
+]);
 
-// No .max here: a conversation over the cap is not malformed, it is too
-// long, and it gets the same 413 as one over the size cap — the widget
+// The assistant's turns go back exactly as the API returned them —
+// signatures, ids, inputs — so their keys pass through untouched. What is
+// refused is what never comes from this route's model: fetched sources and
+// a caller's cache_control.
+const assistantBlock = z
+  .object({ type: z.string() })
+  .passthrough()
+  .refine((b) => !("source" in b) && !("cache_control" in b) && !["image", "document", "search_result"].includes(b.type));
+
+// No .max on the list: a conversation over the cap is not malformed, it is
+// too long, and it gets the same 413 as one over the size cap — the widget
 // starts a new conversation on that status.
 const chatBodySchema = z.object({
-  messages: z.array(z.object({ role: z.enum(["user", "assistant"]), content: textOrBlocks })).min(1),
+  messages: z
+    .array(
+      z.discriminatedUnion("role", [
+        z.object({ role: z.literal("user"), content: z.union([z.string().max(MAX_BODY_CHARS), z.array(userBlock).max(50)]) }),
+        z.object({ role: z.literal("assistant"), content: z.union([z.string().max(MAX_BODY_CHARS), z.array(assistantBlock).max(50)]) }),
+      ])
+    )
+    .min(1),
 });
 
 const SECTIONS = ["score", "findings", "checklist", "wcag22", "team", "notes", "screenreader", "statement", "vpat", "simulator", "history", "audit", "settings"] as const;
@@ -53,10 +84,24 @@ const scanInputSchema = z.object({
   ai_review: z.boolean(),
 });
 
+// The opening of the report digest the widget attaches as a text block
+// (ScanChat.tsx). It is the one text block not written by the person, and
+// it is bounded by the body cap instead; a test holds the two in step.
+export const DIGEST_PREFIX = "The latest scan's report, which this conversation has not seen yet:\n";
+
+/** What the person typed, per turn — string content and text blocks alike.
+ *  The widget sends blocks, so a check of string content alone measured
+ *  nothing it ever sent. */
 function userTextTooLong(messages: z.infer<typeof chatBodySchema>["messages"]): boolean {
   for (const m of messages) {
     if (m.role !== "user") continue;
-    if (typeof m.content === "string" && m.content.length > MAX_USER_TEXT) return true;
+    const blocks = typeof m.content === "string" ? [{ type: "text" as const, text: m.content }] : m.content;
+    let typed = 0;
+    for (const b of blocks) {
+      if (b.type !== "text" || b.text.startsWith(DIGEST_PREFIX)) continue;
+      typed += b.text.length;
+    }
+    if (typed > MAX_USER_TEXT) return true;
   }
   return false;
 }

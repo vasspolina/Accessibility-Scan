@@ -245,6 +245,7 @@ export const CHROME_KEYS: string[] = [
   "found",
   "shown above.",
   "added above.",
+  "The assistant is still replying. Run it again in a moment.",
   "Assistant",
   "Checking {url}.",
   "Checked {url}.",
