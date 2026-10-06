@@ -83,10 +83,17 @@ function renderText(report: AccessibilityReport): string {
 
   lines.push(
     "",
-    "What this score is, and is not:",
-    "- It counts what an automated scan can prove, weighted by how much each problem costs a visitor.",
-    "- A scan of this kind reaches somewhere between a third and a half of accessibility problems.",
+    // The widget's heading and SCORE_POINTS (ScoreGauge.tsx), word for word:
+    // the email and the screen must not disagree about what the number
+    // counts. backend/test/scoreCopy.test.ts holds them together.
+    "What the score counts:",
+    "- It counts the accessibility problems this scan found, weighted by how much each one costs a visitor.",
+    "- Each severity has a limit: past it, more problems of that severity no longer lower the score.",
+    "- Notes on the design and misleading patterns do not count. Neither do the optional advanced level (AAA) or checks new in WCAG 2.2, the newer accessibility guidelines.",
+    "- When the AI review runs, its findings count too, if their card names a WCAG requirement. Those can be wrong.",
+    "- A scan of this kind reaches between a third and a half of accessibility problems.",
     "- The rest need a person with a keyboard and a screen reader.",
+    "- It is useful for tracking whether the site improves over time.",
     "- It is not a statement that the site meets the law.",
     "",
     "You asked for this report from the accessibility scanner on this page."

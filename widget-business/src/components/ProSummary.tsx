@@ -159,7 +159,7 @@ export function ProSummary({
       <div className="a11y-pro-grid">
         <div>
           <h3 className="a11y-pro-eyebrow" id="a11y-pro-counts-heading">
-            What the score counts
+            {t("What the score counts")}
           </h3>
           <ol className="a11y-pro-points" aria-labelledby="a11y-pro-counts-heading">
             {SCORE_POINTS.map((point, i) => (
@@ -167,7 +167,7 @@ export function ProSummary({
                 <span className="a11y-pro-point-num" aria-hidden="true">
                   {String(i + 1).padStart(2, "0")}
                 </span>
-                <span>{point}</span>
+                <span>{t(point)}</span>
               </li>
             ))}
           </ol>

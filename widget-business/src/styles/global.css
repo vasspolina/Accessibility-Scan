@@ -3013,6 +3013,9 @@
   background: var(--layer-02);
   font-size: 18px; line-height: 1.2;
 }
+.a11y-widget-biz .a11y-pro-point > span:last-child {
+  min-width: 0; hyphens: auto; overflow-wrap: break-word; /* as .a11y-sum-point */
+}
 .a11y-widget-biz .a11y-pro-point-num {
   flex: 0 0 auto;
   font-size: 15px; font-weight: 500;
@@ -4022,6 +4025,10 @@
 }
 .a11y-widget-biz .a11y-sum-point > span:last-child {
   flex: 1; min-width: 0; font-size: 18px; line-height: 1.2;
+  /* German compounds ("Barrierefreiheitsprobleme") are wider than a 320px
+     column; the widget declares its language, so they hyphenate, and break
+     outright where hyphenation is unavailable. */
+  hyphens: auto; overflow-wrap: break-word;
 }
 
 /* The run panel. */

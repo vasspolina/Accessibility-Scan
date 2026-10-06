@@ -79,18 +79,34 @@ export function scoreSummary(score: number, seed: string): string {
    means. Split, each one can be taken in on its own — and the last two, the
    ones that stop somebody quoting 87 as proof of compliance, stop being the
    tail of a paragraph nobody finished. */
+/* What the score counts, in the words of scoreFindings
+   (backend/src/services/merge/scoring.ts), which is the one place that
+   knows. It used to say the score counts only what an automated scan
+   could establish, and it does not: AI-review findings whose criterion
+   survived the allow-list (mergeFindings.ts) count too — the card shows
+   that criterion; a stripped one shows none and does not count — and axe's
+   best-practice rules count with no criterion at all. What is left out is
+   what scoreFindings and summarizeSeverity leave out: design notes, dark
+   patterns, AAA, WCAG 2.2-only criteria. computeScore caps each severity's
+   penalty, which is why the second point exists. English keys; the screen renders them through t(),
+   the plain-text summary and the email stay English. Keep
+   backend/src/services/mail/sendReport.ts in step. */
 export const SCORE_POINTS = [
-  "It counts what an automated scan can prove, weighted by how much each problem costs a visitor.",
-  "A scan of this kind reaches somewhere between a third and a half of accessibility problems.",
+  "It counts the accessibility problems this scan found, weighted by how much each one costs a visitor.",
+  "Each severity has a limit: past it, more problems of that severity no longer lower the score.",
+  "Notes on the design and misleading patterns do not count. Neither do the optional advanced level (AAA) or checks new in WCAG 2.2, the newer accessibility guidelines.",
+  "When the AI review runs, its findings count too, if their card names a WCAG requirement. Those can be wrong.",
+  "A scan of this kind reaches between a third and a half of accessibility problems.",
   "The rest need a person with a keyboard and a screen reader.",
   "It is useful for tracking whether the site improves over time.",
   "It is not a statement that the site meets the law.",
 ];
 
-/* The same words as one string, for the plain-text summary — one source, so
-   the copied text and the screen can never disagree about what the score
-   means. */
-export const SCORE_CAVEAT = SCORE_POINTS.join(" ");
+/* The same words for the plain-text summary — one source, so the copied
+   text and the screen can never disagree about what the score means. A
+   heading and one point a line, as in the email: run together, "It" in the
+   first sentence read as the last issue in the list above it. */
+export const SCORE_CAVEAT_LINES = ["What the score counts:", ...SCORE_POINTS.map((p) => `- ${p}`)];
 
 // A plain-text version of the same verdict, for pasting into an email or
 // a message to whoever owns the fix — no HTML, no table, nothing that
@@ -134,7 +150,7 @@ export function buildPlainSummary({
       lines.push(`- [${SEVERITY_LABEL[rep.severity]}] ${title}${count}`);
     }
   }
-  lines.push("", SCORE_CAVEAT);
+  lines.push("", ...SCORE_CAVEAT_LINES);
   return lines.join("\n");
 }
 
@@ -183,9 +199,10 @@ export function computeDoFirst(
 
 /* The second line under the verdict. The evocative line varies by band and
    by scan — scoreSummary picks from a set — while this one never does,
-   because it is the qualification rather than the mood. */
+   because it is the qualification rather than the mood. "Finds", not
+   "proves": AI-review findings move the score too, and they are judgment. */
 const VERDICT_CAVEAT =
-  "A scan proves what a machine can see. The rest needs a person testing the site by hand.";
+  "A scan finds what a machine can check. The rest needs a person testing the site by hand.";
 
 /* The band as its range, not an adjective: "middling" told a reader
    nothing about where the line sat (user's question, 26 Aug 2026). */
@@ -310,16 +327,16 @@ export function ScoreGauge({
 
           <SumPanel title={`What a score of ${BAND_WORD(score)} means`}>
             <p className="a11y-sum-lead">{scoreSummary(score, seed)}</p>
-            <p className="a11y-sum-body">{VERDICT_CAVEAT}</p>
+            <p className="a11y-sum-body">{t(VERDICT_CAVEAT)}</p>
           </SumPanel>
 
-          <SumPanel title="What the score counts" grow>
+          <SumPanel title={t("What the score counts")} grow>
             {SCORE_POINTS.map((point, i) => (
               <p key={point} className="a11y-sum-point">
                 <span className="a11y-sum-point-num" aria-hidden="true">
                   {String(i + 1).padStart(2, "0")}
                 </span>
-                <span>{point}</span>
+                <span>{t(point)}</span>
               </p>
             ))}
           </SumPanel>
