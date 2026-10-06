@@ -177,3 +177,10 @@ should check that none of those splits reads oddly.
 | Checked {url}. | {url} geprüft. | chat |
 | Could not check {url}. | {url} konnte nicht geprüft werden. | chat |
 | The assistant is still replying. Run it again in a moment. | Der Assistent antwortet noch. Starten Sie den Scan gleich noch einmal. | chat |
+| Did not finish | Nicht abgeschlossen | chat |
+| Did not run | Nicht ausgeführt | chat |
+| I can't help with that here. I can check a page, or answer questions about its report. | Dabei kann ich hier nicht helfen. Ich kann eine Seite prüfen oder Fragen zu ihrem Bericht beantworten. | chat |
+| Something went wrong. Please try again. | Etwas ist schiefgelaufen. Bitte versuchen Sie es noch einmal. | chat |
+| Web Content Accessibility Guidelines (WCAG) | Richtlinien für barrierefreie Webinhalte (WCAG) | chat |
+| We check the page at an address, or up to five pages linked from it, against the {wcag} 2.1. Then we explain what to fix, in the order worth fixing it. | Wir prüfen die Seite unter einer Adresse oder bis zu fünf davon verlinkte Seiten anhand der {wcag} 2.1. Dann erklären wir, was zu beheben ist, in sinnvoller Reihenfolge. | chat |
+| We check the page at an address, or up to ten pages linked from it, against the {wcag} 2.1. Then we explain what to fix, in the order worth fixing it. | Wir prüfen die Seite unter einer Adresse oder bis zu zehn davon verlinkte Seiten anhand der {wcag} 2.1. Dann erklären wir, was zu beheben ist, in sinnvoller Reihenfolge. | chat |

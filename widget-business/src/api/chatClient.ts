@@ -119,7 +119,16 @@ export async function sendChatTurn(
       if (!event || !data) continue;
       const payload = JSON.parse(data);
       if (event === "delta") onDelta(payload.text);
-      else if (event === "done") result = { content: payload.content, scan: payload.scan, show: payload.show ?? [] };
+      else if (event === "done") {
+        // A refusal comes back as one canned English block the server wrote
+        // in place of the model's; it carries no thinking to preserve, so it
+        // is replaced with the same sentence in the reader's language.
+        const content =
+          payload.stopReason === "refusal"
+            ? [{ type: "text", text: t("I can't help with that here. I can check a page, or answer questions about its report.") }]
+            : payload.content;
+        result = { content, scan: payload.scan, show: payload.show ?? [] };
+      }
       else if (event === "error") throw new ChatError(t("The assistant stopped responding. Try sending that again."));
     }
   }

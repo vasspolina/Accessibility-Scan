@@ -225,4 +225,11 @@ export const STRINGS_FR: Record<string, string> = {
   "Checked {url}.": "{url} vérifié.",
   "Could not check {url}.": "Impossible de vérifier {url}.",
   "The assistant is still replying. Run it again in a moment.": "L'assistant répond encore. Relancez dans un instant.",
+  "Did not finish": "Inachevé",
+  "Did not run": "Non exécuté",
+  "I can't help with that here. I can check a page, or answer questions about its report.": "Je ne peux pas vous aider sur ce point ici. Je peux vérifier une page ou répondre à des questions sur son rapport.",
+  "Something went wrong. Please try again.": "Une erreur s'est produite. Veuillez réessayer.",
+  "Web Content Accessibility Guidelines (WCAG)": "Règles pour l'accessibilité des contenus web (WCAG)",
+  "We check the page at an address, or up to five pages linked from it, against the {wcag} 2.1. Then we explain what to fix, in the order worth fixing it.": "Nous vérifions la page d'une adresse, ou jusqu'à cinq pages liées depuis celle-ci, selon les {wcag} 2.1. Puis nous expliquons quoi corriger, dans l'ordre qui compte.",
+  "We check the page at an address, or up to ten pages linked from it, against the {wcag} 2.1. Then we explain what to fix, in the order worth fixing it.": "Nous vérifions la page d'une adresse, ou jusqu'à dix pages liées depuis celle-ci, selon les {wcag} 2.1. Puis nous expliquons quoi corriger, dans l'ordre qui compte.",
 };

@@ -3515,11 +3515,17 @@ export async function renderAndScan(
       // Reading-order walk of the accessibility tree, collected in the same
       // pristine desktop state. Best-effort: an empty script just hides the
       // preview rather than costing the report.
+      let screenReaderFailed = false;
       const screenReaderScript = await timed("screenReader", () =>
         page
           .evaluate<ScreenReaderScript>(toBrowserScript(collectScreenReaderScriptInPage))
           .then(condenseScreenReaderScript)
-          .catch(() => ({ lines: [], truncated: false }) as ScreenReaderScript)
+          .catch(() => {
+            // Declared in incompleteChecks: the walk is the only source of
+            // the screen-reader name findings, so an empty one is not a pass.
+            screenReaderFailed = true;
+            return { lines: [], truncated: false } as ScreenReaderScript;
+          })
       );
       // Wait for the layout to stop moving before photographing it.
       //
@@ -4017,12 +4023,16 @@ export async function renderAndScan(
       // How the page answers two user preferences. Non-destructive — it
       // switches media features and reads back, changing no DOM — so it goes
       // before the dialog probe, which does change things.
+      // Failed until the probe says otherwise: a budget skip or a throw
+      // before it ran used to leave an empty result that read as measured.
       let userPreferences: UserPreferenceSignals = {
         motionIgnoringPreference: [],
         iconLostInForcedColors: [],
+        failed: true,
       };
 
       let dialogKeyboard: DialogKeyboardResult[] = [];
+      let dialogProbeRan = false;
       try {
         // These two are the tail the margin was reserved for: about a second
         // of deliberate waiting between them, for switching media features
@@ -4048,6 +4058,7 @@ export async function renderAndScan(
             page,
             domSignals.dialogs.filter((d) => d.selector)
           ));
+          dialogProbeRan = true;
         }
       } catch (err) {
         logger.warn({ err }, "Dialog keyboard probe failed. Reporting without it");
@@ -4106,6 +4117,12 @@ export async function renderAndScan(
           ...(activation === undefined ? ["state changes"] : []),
           ...(darkContrastFailed ? ["dark-scheme contrast"] : []),
           ...(mobileContrastFailed ? ["phone-width contrast"] : []),
+          // Three that used to fail without a word: the screen-reader walk,
+          // the 320px reflow measurement (its own catch swallowed the
+          // error), and the dialog probe when it was skipped or threw.
+          ...(screenReaderFailed ? ["screen reader names"] : []),
+          ...(!mobileFailed && !mobileSignals.reflow320 ? ["320px reflow"] : []),
+          ...(!dialogProbeRan && domSignals.dialogs.some((d) => d.selector) ? ["open dialogs"] : []),
         ],
       };
     } finally {

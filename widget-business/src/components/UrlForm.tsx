@@ -141,11 +141,23 @@ export function UrlForm({
         <LanguageSelect id="a11y-lang-form" value={language} onChange={onLanguageChange} />
       </div>
       <p className="a11y-newscan-sub">
-        We audit every page we can reach against the{" "}
-        <a href={WCAG_LINK} target="_blank" rel="noopener noreferrer">
-          Web Content Accessibility Guidelines (WCAG)
-        </a>{" "}
-        2.1 and explain what to fix, in the order worth fixing it.
+        {/* One page, or up to ten from it: the form's own page limit. */}
+        {t(
+          "We check the page at an address, or up to ten pages linked from it, against the {wcag} 2.1. Then we explain what to fix, in the order worth fixing it."
+        )
+          .split("{wcag}")
+          .map((part, i) =>
+            i === 0 ? (
+              <span key={i}>{part}</span>
+            ) : (
+              <span key={i}>
+                <a href={WCAG_LINK} target="_blank" rel="noopener noreferrer">
+                  {t("Web Content Accessibility Guidelines (WCAG)")}
+                </a>
+                {part}
+              </span>
+            )
+          )}
       </p>
     <form
       className="a11y-url-form"

@@ -117,29 +117,76 @@ function outcomeLine(outcome: ScanOutcome): string {
 
 const resultKeyOf = (o: { scannedAt: string }) => o.scannedAt;
 
-/** What the report found at one step of the scan, for its tool line.
- *  Counts of findings in that area — read from the report, never guessed. */
-function stepResult(step: string, report: AccessibilityReport): string | null {
-  const count = (test: (ruleId: string) => boolean) =>
-    report.findings.filter((f) => f.ruleId && test(f.ruleId)).length;
-  const found = (n: number) => (n ? `${n} ${t("found")}` : t("Nothing found"));
+/** The incomplete-check labels (renderPage's incompleteChecks) that belong
+ *  to each step's line. A step whose check did not finish says so: "Nothing
+ *  found" over a check that never ran reads as a pass. */
+const STEP_CHECKS: Record<string, string[]> = {
+  "screen-reader": ["screen reader names"],
+  keyboard: ["keyboard navigation", "mouse-only controls", "state changes", "open dialogs"],
+  "text-resize": ["text resizing"],
+  phone: ["phone layout", "phone-width contrast", "320px reflow"],
+};
+
+/** Findings each step produces, by rule id. The dialog rules named here are
+ *  the ones the keyboard probe raises; the static dialog-* rules come from
+ *  the page rules and are counted there. */
+const KEYBOARD_RULES = new Set([
+  "dialog-keyboard-trap",
+  "dialog-no-escape",
+  "dialog-focus-not-moved",
+  "dialog-focus-lost-on-close",
+  "activation-stale-state",
+  "forced-colors-focus-lost",
+  "consent-blocks-reader",
+]);
+const isKeyboard = (r: string) => r.startsWith("keyboard-") || KEYBOARD_RULES.has(r);
+const isTextResize = (r: string) => r.startsWith("text-");
+const isPhone = (r: string) => r.startsWith("mobile-") || r === "color-contrast-mobile";
+
+/** What the report found at one step of the scan, for its line. Counts of
+ *  accessibility findings, each on exactly one line — read from the report,
+ *  never guessed. */
+export function stepResult(step: string, report: AccessibilityReport): string | null {
+  const accessibility = report.findings.filter((f) => f.category === "accessibility");
+  const count = (test: (ruleId: string) => boolean) => accessibility.filter((f) => f.ruleId && test(f.ruleId)).length;
+  const unfinished = (STEP_CHECKS[step] ?? []).some((c) => report.meta.incompleteChecks?.includes(c));
+  const found = (n: number) =>
+    unfinished
+      ? n
+        ? `${n} ${t("found")} · ${t("Did not finish")}`
+        : t("Did not finish")
+      : n
+        ? `${n} ${t("found")}`
+        : t("Nothing found");
   switch (step) {
-    case "load":
-      return report.meta.renderTimeMs ? `${(report.meta.renderTimeMs / 1000).toFixed(1)}s` : null;
+    case "load": {
+      // The page's own load. renderTimeMs runs to the end of every probe,
+      // and a site owner reads that figure as their site being slow.
+      const phases = report.meta.renderPhaseMs;
+      const ms = phases ? (phases.goto ?? 0) + (phases.subresources ?? 0) : 0;
+      return ms ? `${(ms / 1000).toFixed(1)}s` : null;
+    }
     case "rules":
-      return found(report.findings.filter((f) => f.source === "automated" && f.category === "accessibility").length);
+      return found(
+        accessibility.filter(
+          (f) => f.source === "automated" && !(f.ruleId && (isKeyboard(f.ruleId) || isTextResize(f.ruleId) || isPhone(f.ruleId)))
+        ).length
+      );
     case "screen-reader":
       return report.screenReaderScript ? found(report.screenReaderScript.lines.filter((l) => l.issue).length) : null;
     case "keyboard":
-      return found(count((r) => r.startsWith("keyboard-") || r.startsWith("dialog-")));
+      return found(count(isKeyboard));
     case "text-resize":
-      return found(count((r) => r.startsWith("text-")));
+      return found(count(isTextResize));
     case "phone":
-      return found(count((r) => r.startsWith("mobile-")));
-    case "ai-review":
-      return report.meta.aiReviewStatus === "completed"
-        ? found(report.findings.filter((f) => f.source === "ai-review").length)
-        : null;
+      return found(count(isPhone));
+    case "ai-review": {
+      const status = report.meta.aiReviewStatus;
+      if (status === "completed") return found(report.findings.filter((f) => f.source === "ai-review").length);
+      // Asked for, announced, and then skipped: the line must not sit there
+      // looking as if it ran.
+      return status === "disabled_by_request" ? null : t("Did not run");
+    }
     case "report":
       return `${t("Score")} ${report.score}/100`;
     default:
@@ -301,7 +348,15 @@ export function ScanChat({
     // Silent: the reply or the outcome line before it is what gets read
     // out, and announcing the block would replace it in the same render.
     const quiet = { force: true, announce: false, focusExisting: false };
-    if (outcome.kind === "report") showSection("findings", { ...quiet, resultKey: resultKeyOf(outcome.report) });
+    if (outcome.kind === "report") {
+      const key = resultKeyOf(outcome.report);
+      const meta = outcome.report.meta;
+      // A score with checks missing behind it arrives with the block that
+      // says which: "every check that did not run must be declared".
+      const aiSkipped = ["skipped_no_key", "skipped_timeout", "skipped_error"].includes(meta.aiReviewStatus);
+      if (meta.incompleteChecks?.length || aiSkipped) showSection("score", { ...quiet, resultKey: key });
+      showSection("findings", { ...quiet, resultKey: key });
+    }
     if (outcome.kind === "audit") showSection("audit", { ...quiet, resultKey: resultKeyOf(outcome.audit) });
   }
 
@@ -550,6 +605,12 @@ export function ScanChat({
   }
 
   const offered = SHOWABLE.filter((s) => availableSections.includes(s.key));
+  // What a scan here covers, said exactly: one page, or up to five from it
+  // (the conversation's site scan is always five). The guidelines' name is
+  // a link set into the sentence, which is translated whole.
+  const [introBefore, introAfter] = t(
+    "We check the page at an address, or up to five pages linked from it, against the {wcag} 2.1. Then we explain what to fix, in the order worth fixing it."
+  ).split("{wcag}");
 
   if (hidden) return null;
 
@@ -562,11 +623,11 @@ export function ScanChat({
         <LanguageSelect id="a11y-lang-form" value={language} onChange={onLanguageChange} />
       </div>
       <p className="a11y-newscan-sub">
-        We audit every page we can reach against the{" "}
+        {introBefore}
         <a href={WCAG_LINK} target="_blank" rel="noopener noreferrer">
-          Web Content Accessibility Guidelines (WCAG)
-        </a>{" "}
-        2.1 and explain what to fix, in the order worth fixing it.
+          {t("Web Content Accessibility Guidelines (WCAG)")}
+        </a>
+        {introAfter}
       </p>
 
       {turns.length > 0 && (

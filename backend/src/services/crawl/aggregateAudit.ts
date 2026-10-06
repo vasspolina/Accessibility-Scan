@@ -56,6 +56,10 @@ export interface SiteAudit {
   // populated here: these are the two criteria a single-page scan cannot
   // speak to at all.
   consistency: ConsistencyIssue[];
+  // Checks that did not finish on at least one scanned page — the union the
+  // conformance rows are built from, carried out so a reader of the audit
+  // is told, not just its table.
+  incompleteChecks: string[];
   // WCAG 2.2 readiness over the whole crawl. This block existed only in
   // single-page reports — absent in exactly the mode where 3.2.6 Consistent
   // Help and 3.3.7 Redundant Entry are answerable at all.
@@ -233,6 +237,7 @@ export function aggregateAudit(
       }
     ),
     consistency,
+    incompleteChecks: [...new Set(scanned.flatMap((o) => o.report!.meta.incompleteChecks ?? []))],
     wcag22: buildWcag22Readiness(allFindings, {
       incompleteChecks: [...new Set(scanned.flatMap((o) => o.report!.meta.incompleteChecks ?? []))],
     }),

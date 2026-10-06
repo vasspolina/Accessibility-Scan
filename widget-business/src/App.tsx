@@ -361,7 +361,7 @@ export function App({
     maxPages: number,
     auth?: AuthConfig
   ): Promise<ScanOutcome> {
-    let outcome: ScanOutcome = { kind: "error", message: "Something went wrong. Please try again." };
+    let outcome: ScanOutcome = { kind: "error", message: t("Something went wrong. Please try again.") };
     setAiRequested(includeAiReview);
     setMode(mode);
     setLoading(true);
@@ -442,7 +442,7 @@ export function App({
         setBlocked(err.message);
         outcome = { kind: "blocked", message: err.message };
       } else {
-        const message = err instanceof ScanError ? err.message : "Something went wrong. Please try again.";
+        const message = err instanceof ScanError ? err.message : t("Something went wrong. Please try again.");
         setError(message);
         outcome = { kind: "error", message };
       }
@@ -765,7 +765,8 @@ export function App({
     if (report.wcag22) out.push("wcag22");
     if (report.undecidedChecks?.length) out.push("team");
     if (!isDocument && findingsByCategory.designClarity.length) out.push("notes");
-    if (report.screenReaderScript) out.push("screenreader");
+    // A walk that came back empty renders nothing; it is not offered.
+    if (report.screenReaderScript?.lines.length) out.push("screenreader");
     if (!isDocument) out.push("statement");
     if (!isDocument && report.conformance) out.push("vpat");
     if (report.pagePreview) out.push("simulator");

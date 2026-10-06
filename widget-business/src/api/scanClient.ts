@@ -179,6 +179,8 @@ export interface AccessibilityReport {
   meta: {
     axeVersion: string;
     renderTimeMs: number;
+    /** Time per render phase; goto + subresources is the page's own load. */
+    renderPhaseMs?: Record<string, number>;
     aiReviewTimeMs: number;
     aiReviewStatus: AiReviewStatus;
     // Checks that didn't finish on this run. The score only counts what ran,
@@ -238,6 +240,9 @@ export interface SiteAudit {
   conformance: ConformanceSummary;
   // Optional so a report from an older backend still parses.
   consistency?: ConsistencyIssue[];
+  // Checks that did not finish on at least one page. Optional so a report
+  // from an older backend still parses.
+  incompleteChecks?: string[];
   // Present when the audit was saved: the caller sent an API key.
   savedAs?: string;
 }

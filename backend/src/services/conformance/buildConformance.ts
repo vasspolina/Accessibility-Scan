@@ -77,6 +77,12 @@ const CHECK_TO_CRITERIA: Record<string, string[]> = {
   "state changes": ["4.1.2"],
   "dark-scheme contrast": ["1.4.3"],
   "phone-width contrast": ["1.4.3"],
+  // The walk is the only emitter of the sr-* name findings; axe keeps the
+  // static half, so amber means "not fully measured", as for state changes.
+  "screen reader names": ["1.1.1", "2.4.4", "2.4.6", "4.1.2"],
+  // The only automated test of 1.4.10: the 390px pass alone cannot fail it.
+  "320px reflow": ["1.4.10"],
+  "open dialogs": ["2.1.2"],
 };
 
 export interface ConformanceSummary {

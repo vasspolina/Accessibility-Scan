@@ -1,5 +1,6 @@
 import type { AccessibilityFinding, AccessibilityReport, SiteAudit } from "../api/scanClient";
 import { groupFindings } from "../components/FindingsList";
+import { TRIAGE_BADGE } from "../components/FindingGroup";
 import { plainForRule, plainFixForRule } from "./wcagPlain";
 import { fixKindForFinding } from "./testMethod";
 import { whatWeFound } from "./findingText";
@@ -32,12 +33,27 @@ function digestFinding(group: AccessibilityFinding[]) {
   const plain = plainForRule(rep.ruleId);
   const title = plain?.plain ?? rep.title ?? rep.description;
   const fix = plainFixForRule(rep.ruleId) ?? rep.suggestedFix;
+  const criterion = rep.wcagCriterion && rep.wcagCriterion !== "N/A" ? rep.wcagCriterion : undefined;
+  // What the site's owner already said about these places, counted by the
+  // badge the card shows. The finding stays — a marked fault is still
+  // measured — but the assistant must not lead with one the owner dismissed.
+  const marks: Record<string, number> = {};
+  for (const f of group) {
+    if (f.triage && f.triage.state !== "open") {
+      const badge = TRIAGE_BADGE[f.triage.state];
+      marks[badge] = (marks[badge] ?? 0) + 1;
+    }
+  }
   return {
     title,
     severity: SEVERITY[rep.severity],
     count: group.length,
-    criterion: rep.wcagCriterion && rep.wcagCriterion !== "N/A" ? rep.wcagCriterion : undefined,
-    level: rep.wcagLevel,
+    criterion,
+    // A level only means something with a criterion: a design note with
+    // none still carries "AA" in the data, and read alone it says
+    // "a Level AA problem".
+    level: criterion ? rep.wcagLevel : undefined,
+    ownerMarked: Object.keys(marks).length ? marks : undefined,
     whoFixes: fixKindForFinding(rep).label,
     found: whatWeFound(rep, plain, group.length, title) ?? undefined,
     whyItMatters: plain?.impact,
@@ -47,25 +63,50 @@ function digestFinding(group: AccessibilityFinding[]) {
   };
 }
 
+const criterionId = (raw: string | undefined) => {
+  const m = raw ? /(\d)\.(\d{1,2})\.(\d{1,2})/.exec(raw) : null;
+  return m ? `${m[1]}.${m[2]}.${m[3]}` : null;
+};
+
+/** The conformance summary, the same way for a page and a site: what fails,
+ *  what nothing was found for, what needs a person, and what was not
+ *  measured — so nothing is left as an unlabelled remainder that reads as
+ *  passes. A failing criterion only the AI review found says so. */
+function digestConformance(c: NonNullable<AccessibilityReport["conformance"]>, findings: AccessibilityFinding[] = []) {
+  return {
+    standard: c.standard,
+    failing: c.failed,
+    nothingFound: c.noIssuesFound,
+    needsAPerson: c.needsReview,
+    total: c.total,
+    failingCriteria: c.criteria
+      .filter((x) => x.status === "failed")
+      .map((x) => {
+        const behind = findings.filter((f) => f.category === "accessibility" && criterionId(f.wcagCriterion) === x.id);
+        return {
+          id: x.id,
+          name: x.name,
+          level: x.level,
+          places: x.findingCount,
+          onlyFromAiReview: behind.length > 0 && behind.every((f) => f.source === "ai-review") ? true : undefined,
+        };
+      }),
+    notMeasured: c.criteria
+      .filter((x) => x.status === "not-measured")
+      .map((x) => ({ id: x.id, why: x.notMeasured })),
+  };
+}
+
+const SKIPPED: Record<string, string> = {
+  skipped_no_key: "did not run: this server has no AI key",
+  skipped_timeout: "did not run: it ran out of time",
+  skipped_error: "did not run: it failed",
+};
+
 export function digestReport(report: AccessibilityReport) {
   const byCategory = (c: AccessibilityFinding["category"]) =>
     groupFindings(report.findings.filter((f) => f.category === c)).map(digestFinding);
-
-  const conformance = report.conformance
-    ? {
-        standard: report.conformance.standard,
-        failing: report.conformance.failed,
-        nothingFound: report.conformance.noIssuesFound,
-        needsAPerson: report.conformance.needsReview,
-        total: report.conformance.total,
-        failingCriteria: report.conformance.criteria
-          .filter((c) => c.status === "failed")
-          .map((c) => ({ id: c.id, name: c.name, level: c.level, places: c.findingCount })),
-        notMeasured: report.conformance.criteria
-          .filter((c) => c.status === "not-measured")
-          .map((c) => c.id),
-      }
-    : undefined;
+  const isPdf = report.meta.documentKind === "pdf";
 
   return {
     kind: "page report",
@@ -78,10 +119,20 @@ export function digestReport(report: AccessibilityReport) {
       "Fix eventually": report.summary.moderate,
       "Minor polish": report.summary.minor,
     },
-    aiReview: report.meta.aiReviewStatus,
+    // A document gets no AI review whatever was asked; the status the
+    // pipeline stamps on it ("disabled_by_request") would say otherwise.
+    aiReview: isPdf ? "not run: documents get no AI review" : SKIPPED[report.meta.aiReviewStatus] ?? report.meta.aiReviewStatus,
     checksThatDidNotFinish: report.meta.incompleteChecks?.length ? report.meta.incompleteChecks : undefined,
-    document: report.meta.documentKind === "pdf" ? `PDF, ${report.meta.documentPages ?? "?"} pages` : undefined,
-    conformance,
+    document: isPdf
+      ? {
+          kind: "PDF",
+          pages: report.meta.documentPages,
+          // checkPdf.ts: MAX_PAGES_INSPECTED and its six rules.
+          checked:
+            "Only these, on the first 10 pages: tagged structure, real text rather than a scanned image, a title, a language, image descriptions, headings. There is no WCAG checklist for a document and nothing else was checked.",
+        }
+      : undefined,
+    conformance: report.conformance ? digestConformance(report.conformance, report.findings) : undefined,
     whatPeopleCantUse: byCategory("accessibility"),
     whatCostsYouTrust: byCategory("dark-pattern"),
     notesOnTheDesign: byCategory("design-clarity"),
@@ -96,9 +147,22 @@ export function digestAudit(audit: SiteAudit) {
     scannedAt: audit.scannedAt,
     pagesScanned: audit.pagesScanned,
     pagesThatFailedToLoad: audit.pagesFailed,
-    averageScore: `${audit.averageScore} out of 100`,
+    averageScore: audit.pagesScanned ? `${audit.averageScore} out of 100` : undefined,
     worstPage: audit.worstPage ? { url: audit.worstPage.url, score: audit.worstPage.score } : undefined,
-    pages: audit.pages.map((p) => ({ url: p.url, score: p.score, findings: p.findingCount, error: p.error })),
+    // A page that did not load has no score and no findings; sent as 0 and
+    // 0 it read as a clean page.
+    pages: audit.pages.map((p) =>
+      p.error ? { url: p.url, notScanned: p.error } : { url: p.url, score: p.score, findings: p.findingCount }
+    ),
+    // auditSite never sends includeAiReview: a site audit has no AI review,
+    // so it says nothing about design, readability or misleading patterns.
+    aiReview: "not run: a site audit never includes the AI review, so it says nothing about design, readability or misleading patterns",
+    checksThatDidNotFinish: audit.incompleteChecks?.length ? audit.incompleteChecks : undefined,
+    // WCAG 3.2.3 and 3.2.4: only a site audit can fail them, and they count
+    // in conformance.failing.
+    consistency: audit.consistency?.length
+      ? audit.consistency.map((i) => ({ criterion: i.criterion, title: i.title, what: i.description, pages: i.pages }))
+      : undefined,
     onEveryPage: audit.siteWide.map((s) => ({
       title: plainForRule(s.ruleId)?.plain ?? s.title,
       severity: SEVERITY[s.severity],
@@ -106,11 +170,6 @@ export function digestAudit(audit: SiteAudit) {
       places: s.totalOccurrences,
       criterion: s.wcagCriterion,
     })),
-    conformance: {
-      standard: audit.conformance.standard,
-      failing: audit.conformance.failed,
-      needsAPerson: audit.conformance.needsReview,
-      total: audit.conformance.total,
-    },
+    conformance: digestConformance(audit.conformance),
   };
 }
