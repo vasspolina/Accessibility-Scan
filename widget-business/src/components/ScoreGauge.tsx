@@ -1,5 +1,5 @@
 import { ScoreDial } from "./ScoreDial";
-import { t } from "../lib/strings";
+import { t, tf } from "../lib/strings";
 import { useState } from "react";
 import type { ReactNode } from "react";
 import { SeverityTag } from "./SeverityTag";
@@ -317,16 +317,21 @@ export function ScoreGauge({
       <div className="a11y-sum-grid">
         <div className="a11y-sum-col">
           {doFirst && (
-            <SumPanel title="Do this first">
+            <SumPanel title={t("Do this first")}>
+              {/* The title in quotes rather than lowercased: lowercasing
+                  broke German nouns ("zu blass zum lesen") and acronyms. */}
               <p className="a11y-sum-lead">
-                Fixing {doFirst.title.toLowerCase()} settles {doFirst.settles} of
-                the {doFirst.outOf} most serious findings at once.
+                {tf("Fixing “{title}” settles {settles} of the {outOf} most serious findings at once.", {
+                  title: doFirst.title,
+                  settles: doFirst.settles,
+                  outOf: doFirst.outOf,
+                })}
               </p>
             </SumPanel>
           )}
 
-          <SumPanel title={`What a score of ${BAND_WORD(score)} means`}>
-            <p className="a11y-sum-lead">{scoreSummary(score, seed)}</p>
+          <SumPanel title={tf("What a score of {band} means", { band: t(BAND_WORD(score)) })}>
+            <p className="a11y-sum-lead">{t(scoreSummary(score, seed))}</p>
             <p className="a11y-sum-body">{t(VERDICT_CAVEAT)}</p>
           </SumPanel>
 
@@ -344,8 +349,8 @@ export function ScoreGauge({
 
         <div className="a11y-sum-col">
           <section className="a11y-sum-run" aria-labelledby="a11y-sum-run-heading">
-            <h3 className="a11y-sum-eyebrow" id="a11y-sum-run-heading">Scan summary</h3>
-            <p className="a11y-sum-micro">This run</p>
+            <h3 className="a11y-sum-eyebrow" id="a11y-sum-run-heading">{t("Scan summary")}</h3>
+            <p className="a11y-sum-micro">{t("This run")}</p>
 
             <div className="a11y-sum-dial-card">
               {/* One label carries the whole thing, and every part of the
@@ -354,9 +359,20 @@ export function ScoreGauge({
               <div
                 className="a11y-sum-dial"
                 role="img"
-                aria-label={`Score ${score} out of 100, ${BAND_WORD(score)}. ${total} ${
-                  total === 1 ? "issue" : "issues"
-                } found${tookSeconds != null ? `, in ${tookSeconds} seconds` : ""}.`}
+                aria-label={
+                  tookSeconds != null
+                    ? tf("Score {score} out of 100, {band}. Issues found: {count}, in {seconds} seconds.", {
+                        score,
+                        band: t(BAND_WORD(score)),
+                        count: total,
+                        seconds: tookSeconds,
+                      })
+                    : tf("Score {score} out of 100, {band}. Issues found: {count}.", {
+                        score,
+                        band: t(BAND_WORD(score)),
+                        count: total,
+                      })
+                }
               >
                 <svg viewBox="0 0 100 100" aria-hidden="true" focusable="false">
                   <circle cx="50" cy="50" r={DIAL_R} fill="none"
@@ -368,28 +384,28 @@ export function ScoreGauge({
                 </svg>
                 <span className="a11y-sum-dial-face" aria-hidden="true">
                   <span className="a11y-sum-dial-num">{score}</span>
-                  <span className="a11y-sum-dial-of">out of 100</span>
+                  <span className="a11y-sum-dial-of">{t("out of 100")}</span>
                 </span>
               </div>
               <div className="a11y-sum-pills" aria-hidden="true">
-                <span className="a11y-sum-pill a11y-sum-pill-band">{scoreBandLabel(score)}</span>
+                <span className="a11y-sum-pill a11y-sum-pill-band">{t(scoreBandLabel(score))}</span>
                 <span className="a11y-sum-pill">
-                  {total} {total === 1 ? "issue" : "issues"}
+                  {total === 1 ? t("1 issue") : tf("{count} issues", { count: total })}
                 </span>
                 {tookSeconds != null && (
-                  <span className="a11y-sum-pill">{tookSeconds} sec</span>
+                  <span className="a11y-sum-pill">{tf("{seconds} sec", { seconds: tookSeconds })}</span>
                 )}
               </div>
             </div>
 
             {preview.length === 0 ? (
-              <p className="a11y-score-clean">Nothing here needs a fix.</p>
+              <p className="a11y-score-clean">{t("Nothing here needs a fix.")}</p>
             ) : (
               <div className="a11y-sum-table">
                 <div className="a11y-sum-thead" aria-hidden="true">
-                  <span className="a11y-sum-cell-no">No</span>
-                  <span className="a11y-sum-cell-item">Item</span>
-                  <span className="a11y-sum-cell-count">Instances</span>
+                  <span className="a11y-sum-cell-no">{t("No.")}</span>
+                  <span className="a11y-sum-cell-item">{t("Item")}</span>
+                  <span className="a11y-sum-cell-count">{t("Instances")}</span>
                 </div>
                 <ul className="a11y-sum-rows">
                   {preview.map((group, i) => {
@@ -415,7 +431,7 @@ export function ScoreGauge({
                             )}
                             <SeverityTag
                               severity={rep.severity}
-                              label={SEVERITY_LABEL[rep.severity]}
+                              label={t(SEVERITY_LABEL[rep.severity])}
                             />
                           </span>
                         </span>
@@ -435,10 +451,10 @@ export function ScoreGauge({
               the fix, not a screenshot of this card. */}
           <div className="a11y-sum-actions">
             <button type="button" className="a11y-show-all a11y-score-copy" onClick={copySummary}>
-              {copied ? "Copied" : "Copy summary as plain text"}
+              {copied ? t("Copied") : t("Copy summary as plain text")}
             </button>
             <span className="a11y-sr-only" role="status">
-              {copied ? "Summary copied to the clipboard." : ""}
+              {copied ? t("Summary copied to the clipboard.") : ""}
             </span>
           </div>
         </div>

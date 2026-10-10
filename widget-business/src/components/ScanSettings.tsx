@@ -1,3 +1,4 @@
+import { t } from "../lib/strings";
 import type { AudienceMode } from "../lib/audienceMode";
 import type { ScanMode } from "./UrlForm";
 import { LanguageSelect } from "./LanguageSelect";
@@ -46,13 +47,13 @@ export function ScanSettings({
   return (
     <section className="a11y-settings" aria-labelledby="a11y-settings-heading">
       <h3 className="a11y-settings-heading" id="a11y-settings-heading">
-        This scan
+        {t("This scan")}
       </h3>
 
       {/* Free and instant, so it is a switch. */}
       <div className="a11y-settings-row">
         <span className="a11y-settings-label" id="a11y-settings-style">
-          Report style
+          {t("Report style")}
         </span>
         <div className="a11y-settings-switch" role="group" aria-labelledby="a11y-settings-style">
           <button
@@ -61,7 +62,7 @@ export function ScanSettings({
             aria-pressed={audience === "business"}
             onClick={() => onAudienceChange("business")}
           >
-            For everyone
+            {t("For everyone")}
           </button>
           <button
             type="button"
@@ -69,7 +70,7 @@ export function ScanSettings({
             aria-pressed={audience === "professional"}
             onClick={() => onAudienceChange("professional")}
           >
-            Professional
+            {t("Professional")}
           </button>
         </div>
       </div>
@@ -82,23 +83,23 @@ export function ScanSettings({
 
       {/* Costs a scan, so it states the cost and does not pretend to toggle. */}
       <div className="a11y-settings-row">
-        <span className="a11y-settings-label">AI review</span>
-        <span className="a11y-settings-state">{aiIncluded ? "Included" : "Not included"}</span>
+        <span className="a11y-settings-label">{t("AI review")}</span>
+        <span className="a11y-settings-state">{aiIncluded ? t("Included") : t("Not included")}</span>
         <button
           type="button"
           className="a11y-settings-rerun"
           disabled={busy}
           onClick={() => onRerun({ ai: !aiIncluded })}
         >
-          {aiIncluded ? "Run again without it" : "Run again with it"}
-          <span className="a11y-settings-cost">. Takes another scan</span>
+          {aiIncluded ? t("Run again without the AI review") : t("Run again with the AI review")}
+          <span className="a11y-settings-cost">. {t("Takes another scan")}</span>
         </button>
       </div>
 
       <div className="a11y-settings-row">
-        <span className="a11y-settings-label">Scope</span>
+        <span className="a11y-settings-label">{t("Scope")}</span>
         <span className="a11y-settings-state">
-          {scope === "site" ? "Whole site" : "This page"}
+          {scope === "site" ? t("Whole site") : t("This page")}
         </span>
         <button
           type="button"
@@ -106,9 +107,9 @@ export function ScanSettings({
           disabled={busy}
           onClick={() => onRerun({ scope: scope === "site" ? "page" : "site" })}
         >
-          {scope === "site" ? "Scan this page only" : "Scan the whole site"}
+          {scope === "site" ? t("Scan this page only") : t("Scan the whole site")}
           <span className="a11y-settings-cost">
-            {scope === "site" ? ". Takes another scan" : ". Takes a few minutes"}
+            . {scope === "site" ? t("Takes another scan") : t("Takes a few minutes")}
           </span>
         </button>
       </div>

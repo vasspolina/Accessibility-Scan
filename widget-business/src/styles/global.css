@@ -4142,7 +4142,11 @@
   .a11y-widget-biz .a11y-sum-row,
   .a11y-widget-biz .a11y-sum-thead { gap: var(--space-04); }
   .a11y-widget-biz .a11y-sum-cell-count { flex-basis: 3.25rem; }
-  .a11y-widget-biz .a11y-sum-row-title { font-size: 18px; }
+  /* break-word was not enough: it breaks a word that overflows, but does
+     not lower the word's min-content width, so a flex child aligned to the
+     start still sized itself to "Beschreibung" and painted it under the
+     tile (German, 320px, measured). Hyphenation and anywhere both do. */
+  .a11y-widget-biz .a11y-sum-row-title { font-size: 18px; hyphens: auto; overflow-wrap: anywhere; }
   .a11y-widget-biz .a11y-sum-cell-item { overflow-wrap: break-word; }
 }
 

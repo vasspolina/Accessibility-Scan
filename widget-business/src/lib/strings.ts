@@ -27,6 +27,20 @@ export function t(key: string): string {
   return BY_LANG[lang]?.[key] ?? key;
 }
 
+/** t() for a sentence with values in it: the sentence is translated whole,
+ *  then each {name} is filled. Never stitch a sentence from translated
+ *  fragments — word order differs, and only English survives it. */
+export function tf(key: string, values: Record<string, string | number>): string {
+  return t(key).replace(/\{(\w+)\}/g, (whole, name: string) => (name in values ? String(values[name]) : whole));
+}
+
+/** The names of checks that did not finish, as the backend writes them
+ *  (renderPage's incompleteChecks), in the reader's language. An unknown
+ *  name falls back to the backend's English, never to nothing. */
+export function checkNames(checks: string[]): string {
+  return checks.map((c) => t(c)).join(", ");
+}
+
 /**
  * Every chrome string the components route through t(), listed so the
  * translation files can be checked for parity in tests. The English value
@@ -245,6 +259,76 @@ export const CHROME_KEYS: string[] = [
   "found",
   "shown above.",
   "added above.",
+  "Do this first",
+  "Fixing “{title}” settles {settles} of the {outOf} most serious findings at once.",
+  "What a score of {band} means",
+  "90 or more",
+  "70 to 89",
+  "under 70",
+  "90 or more. Little to fix. A person would still find more.",
+  "70 to 89. What the scan found stops some visitors. Most get through.",
+  "Under 70. What the scan found stops some people from using the site.",
+  "Scan summary",
+  "This run",
+  "out of 100",
+  "Good",
+  "Needs work",
+  "Failing",
+  "1 issue",
+  "{count} issues",
+  "{seconds} sec",
+  "Score {score} out of 100, {band}. Issues found: {count}, in {seconds} seconds.",
+  "Score {score} out of 100, {band}. Issues found: {count}.",
+  "Nothing here needs a fix.",
+  "No.",
+  "Item",
+  "Copied",
+  "Summary copied to the clipboard.",
+  "1 issue on 1 page",
+  "{count} issues on 1 page",
+  "Issues by severity",
+  "Checked against WCAG 2.1 AA",
+  "1 page",
+  "{count} fix first",
+  "See the {count} findings",
+  "Issues ({count})",
+  "Critical",
+  "Serious",
+  "Moderate",
+  "Minor",
+  "No issues found ({count})",
+  "Nothing here came back clean enough to list.",
+  "Some checks didn't finish this time: {checks}.",
+  "The score above only counts what ran, so it may look better than it should. A second run usually completes them.",
+  "This check ran without the AI review",
+  "Not set up yet.",
+  "Temporarily unavailable.",
+  "These findings come from automated checks only.",
+  "keyboard navigation",
+  "mouse-only controls",
+  "phone layout",
+  "text resizing",
+  "display preferences",
+  "reading order",
+  "reading level",
+  "control boundaries",
+  "state changes",
+  "dark-scheme contrast",
+  "phone-width contrast",
+  "screen reader names",
+  "320px reflow",
+  "open dialogs",
+  "This scan",
+  "Professional",
+  "Included",
+  "Not included",
+  "Run again without the AI review",
+  "Run again with the AI review",
+  "Takes another scan",
+  "Takes a few minutes",
+  "Scope",
+  "Scan this page only",
+  "Scan the whole site",
   "A scan finds what a machine can check. The rest needs a person testing the site by hand.",
   "It counts the accessibility problems this scan found, weighted by how much each one costs a visitor.",
   "Each severity has a limit: past it, more problems of that severity no longer lower the score.",

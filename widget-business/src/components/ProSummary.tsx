@@ -1,5 +1,5 @@
 import type { AccessibilityReport, AccessibilityFinding } from "../api/scanClient";
-import { t } from "../lib/strings";
+import { checkNames, t, tf } from "../lib/strings";
 import { statusWord } from "./ManualChecks";
 import { SCORE_POINTS } from "./ScoreGauge";
 import { Notification } from "./Feedback";
@@ -71,7 +71,7 @@ export function ProSummary({
           {host}: {t("scan results")}
         </h2>
         <p className="a11y-pro-count">
-          {total} {total === 1 ? "issue" : "issues"} on 1 page
+          {total === 1 ? t("1 issue on 1 page") : tf("{count} issues on 1 page", { count: total })}
         </p>
       </div>
 
@@ -79,22 +79,22 @@ export function ProSummary({
         {/* The score card. Inverted, because it is the one figure the whole
             panel is arranged around. */}
         <div className="a11y-pro-scorecard">
-          <p className="a11y-pro-eyebrow a11y-pro-eyebrow-invert">Issues by severity</p>
+          <p className="a11y-pro-eyebrow a11y-pro-eyebrow-invert">{t("Issues by severity")}</p>
           <p className="a11y-pro-score">
             <span className="a11y-pro-score-num">{report.score}</span>
-            <span className="a11y-pro-score-of">out of 100</span>
+            <span className="a11y-pro-score-of">{t("out of 100")}</span>
           </p>
           <div className="a11y-pro-chips">
-            <span className="a11y-pro-chip">Checked against WCAG 2.1 AA</span>
-            <span className="a11y-pro-chip">1 page</span>
+            <span className="a11y-pro-chip">{t("Checked against WCAG 2.1 AA")}</span>
+            <span className="a11y-pro-chip">{t("1 page")}</span>
             {report.summary.critical > 0 && (
-              <span className="a11y-pro-chip">{report.summary.critical} fix first</span>
+              <span className="a11y-pro-chip">{tf("{count} fix first", { count: report.summary.critical })}</span>
             )}
           </div>
           {onSeeFindings && (
             <button type="button" className="a11y-pro-jump" onClick={onSeeFindings}>
               <span>
-                See the {issueCount} {issueCount === 1 ? "finding" : "findings"}
+                {issueCount === 1 ? t("See the finding") : tf("See the {count} findings", { count: issueCount })}
               </span>
               <span aria-hidden="true">&#8599;</span>
             </button>
@@ -103,12 +103,12 @@ export function ProSummary({
 
         <div className="a11y-pro-lists">
           <h3 className="a11y-pro-eyebrow" id="a11y-pro-sev-heading">
-            Issues ({issueCount})
+            {tf("Issues ({count})", { count: issueCount })}
           </h3>
           <ul className="a11y-pro-rows" aria-labelledby="a11y-pro-sev-heading">
             {SEVERITY_ROWS.map(({ key, label }) => (
               <li key={key} className="a11y-pro-row">
-                <span>{label}</span>
+                <span>{t(label)}</span>
                 <span className="a11y-pro-row-num">{report.summary[key]}</span>
               </li>
             ))}
@@ -117,11 +117,11 @@ export function ProSummary({
           {/* "No issues found", never "Passes": a scan evidences failures, it
               cannot evidence conformance. */}
           <h3 className="a11y-pro-eyebrow" id="a11y-pro-clean-heading">
-            No issues found ({cleanCount})
+            {tf("No issues found ({count})", { count: cleanCount })}
           </h3>
           {clean.length === 0 ? (
             <p className="a11y-pro-empty">
-              Nothing here came back clean enough to list.
+              {t("Nothing here came back clean enough to list.")}
             </p>
           ) : (
             <ul className="a11y-pro-rows" aria-labelledby="a11y-pro-clean-heading">
@@ -180,8 +180,8 @@ export function ProSummary({
           {incomplete.length > 0 && (
             <Notification
               kind="warning"
-              title={`Some checks didn't finish this time: ${incomplete.join(", ")}.`}
-              subtitle="The score above only counts what ran, so it may look better than it should. A second run usually completes them."
+              title={tf("Some checks didn't finish this time: {checks}.", { checks: checkNames(incomplete) })}
+              subtitle={t("The score above only counts what ran, so it may look better than it should. A second run usually completes them.")}
             />
           )}
         </div>

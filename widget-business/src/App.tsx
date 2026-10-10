@@ -1,5 +1,5 @@
 import { Fragment, useEffect, useMemo, useRef, useState, type ReactNode } from "react";
-import { t } from "./lib/strings";
+import { checkNames, t, tf } from "./lib/strings";
 import type { RefObject } from "react";
 import { flushSync } from "react-dom";
 import { UrlForm, type ScanMode } from "./components/UrlForm";
@@ -565,11 +565,10 @@ export function App({
             {report.meta.aiReviewStatus !== "completed" && report.meta.aiReviewStatus !== "disabled_by_request" && (
               <Notification
                 kind="info"
-                title="This check ran without the AI review"
-                subtitle={
-                  (report.meta.aiReviewStatus === "skipped_no_key" ? "Not set up yet." : "Temporarily unavailable.") +
-                  " These findings come from automated checks only."
-                }
+                title={t("This check ran without the AI review")}
+                subtitle={`${t(report.meta.aiReviewStatus === "skipped_no_key" ? "Not set up yet." : "Temporarily unavailable.")} ${t(
+                  "These findings come from automated checks only."
+                )}`}
               />
             )}
             {/* The score only counts checks that ran, so a scan where some
@@ -577,8 +576,8 @@ export function App({
             {report.meta.incompleteChecks && report.meta.incompleteChecks.length > 0 && (
               <Notification
                 kind="warning"
-                title={`Some checks didn't finish this time: ${report.meta.incompleteChecks.join(", ")}.`}
-                subtitle="The score above only counts what ran, so it may look better than it should. A second run usually completes them."
+                title={tf("Some checks didn't finish this time: {checks}.", { checks: checkNames(report.meta.incompleteChecks) })}
+                subtitle={t("The score above only counts what ran, so it may look better than it should. A second run usually completes them.")}
               />
             )}
           </>

@@ -194,3 +194,73 @@ should check that none of those splits reads oddly.
 | It is not a statement that the site meets the law. | Es bestätigt nicht, dass die Website die gesetzlichen Anforderungen erfüllt. | score points |
 | What the score counts | Was das Ergebnis zählt | score points |
 | A scan finds what a machine can check. The rest needs a person testing the site by hand. | Ein Scan findet, was eine Maschine prüfen kann. Den Rest muss ein Mensch von Hand testen. | score points |
+| Do this first | Zuerst erledigen | score panel |
+| Fixing “{title}” settles {settles} of the {outOf} most serious findings at once. | Wenn Sie „{title}“ beheben, sind {settles} der {outOf} schwerwiegendsten Befunde auf einmal erledigt. | score panel |
+| What a score of {band} means | Was ein Ergebnis von {band} bedeutet | score panel |
+| 90 or more | 90 oder mehr | score panel |
+| 70 to 89 | 70 bis 89 | score panel |
+| under 70 | unter 70 | score panel |
+| 90 or more. Little to fix. A person would still find more. | 90 oder mehr. Wenig zu beheben. Ein Mensch fände trotzdem mehr. | score panel |
+| 70 to 89. What the scan found stops some visitors. Most get through. | 70 bis 89. Was der Scan gefunden hat, hält manche Besucher auf. Die meisten kommen durch. | score panel |
+| Under 70. What the scan found stops some people from using the site. | Unter 70. Was der Scan gefunden hat, hindert manche Menschen daran, die Website zu nutzen. | score panel |
+| Scan summary | Scan-Übersicht | score panel |
+| This run | Dieser Durchlauf | score panel |
+| out of 100 | von 100 | score panel |
+| Good | Gut | score panel |
+| Needs work | Verbesserungsbedarf | score panel |
+| Failing | Ungenügend | score panel |
+| 1 issue | 1 Problem | score panel |
+| {count} issues | {count} Probleme | score panel |
+| {seconds} sec | {seconds} s | score panel |
+| Score {score} out of 100, {band}. Issues found: {count}, in {seconds} seconds. | Ergebnis {score} von 100, {band}. Gefundene Probleme: {count}, in {seconds} Sekunden. | score panel |
+| Score {score} out of 100, {band}. Issues found: {count}. | Ergebnis {score} von 100, {band}. Gefundene Probleme: {count}. | score panel |
+| Nothing here needs a fix. | Hier muss nichts behoben werden. | score panel |
+| No. | Nr. | score panel |
+| Item | Punkt | score panel |
+| Copied | Kopiert | score panel |
+| Summary copied to the clipboard. | Zusammenfassung in die Zwischenablage kopiert. | score panel |
+| 1 issue on 1 page | 1 Problem auf 1 Seite | score panel |
+| {count} issues on 1 page | {count} Probleme auf 1 Seite | score panel |
+| Issues by severity | Probleme nach Schweregrad | score panel |
+| Checked against WCAG 2.1 AA | Geprüft nach WCAG 2.1 AA | score panel |
+| 1 page | 1 Seite | score panel |
+| {count} fix first | {count} zuerst beheben | score panel |
+| See the {count} findings | Zu den {count} Befunden | score panel |
+| Issues ({count}) | Probleme ({count}) | score panel |
+| Critical | Kritisch | score panel |
+| Serious | Schwerwiegend | score panel |
+| Moderate | Mittel | score panel |
+| Minor | Gering | score panel |
+| No issues found ({count}) | Keine Probleme gefunden ({count}) | score panel |
+| Nothing here came back clean enough to list. | Kein Kriterium kam sauber genug zurück, um es aufzulisten. | score panel |
+| Some checks didn't finish this time: {checks}. | Einige Prüfungen wurden diesmal nicht abgeschlossen: {checks}. | score panel |
+| The score above only counts what ran, so it may look better than it should. A second run usually completes them. | Das Ergebnis oben zählt nur, was gelaufen ist, und kann daher besser aussehen, als es sollte. Ein zweiter Durchlauf schließt sie meist ab. | score panel |
+| This check ran without the AI review | Dieser Scan lief ohne die KI-Prüfung | score panel |
+| Not set up yet. | Noch nicht eingerichtet. | score panel |
+| Temporarily unavailable. | Vorübergehend nicht verfügbar. | score panel |
+| These findings come from automated checks only. | Diese Befunde stammen nur aus automatischen Prüfungen. | score panel |
+| keyboard navigation | Tastaturnavigation | score panel |
+| mouse-only controls | Bedienelemente nur für die Maus | score panel |
+| phone layout | Layout auf dem Handy | score panel |
+| text resizing | Textvergrößerung | score panel |
+| display preferences | Anzeigeeinstellungen | score panel |
+| reading order | Lesereihenfolge | score panel |
+| reading level | Leseniveau | score panel |
+| control boundaries | Umrisse von Bedienelementen | score panel |
+| state changes | Zustandswechsel | score panel |
+| dark-scheme contrast | Kontrast im dunklen Modus | score panel |
+| phone-width contrast | Kontrast in Handybreite | score panel |
+| screen reader names | Namen für Screenreader | score panel |
+| 320px reflow | Umbruch bei 320 px | score panel |
+| open dialogs | offene Dialoge | score panel |
+| This scan | Dieser Scan | score panel |
+| Professional | Fachlich | score panel |
+| Included | Enthalten | score panel |
+| Not included | Nicht enthalten | score panel |
+| Run again without the AI review | Ohne KI-Prüfung erneut ausführen | score panel |
+| Run again with the AI review | Mit KI-Prüfung erneut ausführen | score panel |
+| Takes another scan | Braucht einen weiteren Scan | score panel |
+| Takes a few minutes | Dauert ein paar Minuten | score panel |
+| Scope | Umfang | score panel |
+| Scan this page only | Nur diese Seite scannen | score panel |
+| Scan the whole site | Die ganze Website scannen | score panel |
