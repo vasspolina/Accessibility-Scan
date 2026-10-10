@@ -110,6 +110,12 @@ describe("the chat contract", () => {
     expect(CHAT_SYSTEM_PROMPT).toMatch(/Never invent a finding/);
     expect(CHAT_SYSTEM_PROMPT).toMatch(/Never say or imply the site is compliant/);
   });
+
+  it("reads a loosely typed address, and does not take a country code for a language", () => {
+    // Seen live: "acessobility nl" got a reply in Dutch asking for an address.
+    expect(CHAT_SYSTEM_PROMPT).toMatch(/Did you mean accessibility\.nl\?/);
+    expect(CHAT_SYSTEM_PROMPT).toMatch(/country code after a name .* is the end of an address, not a request to change language/);
+  });
 });
 
 describe("show_section stays in step with the widget", () => {

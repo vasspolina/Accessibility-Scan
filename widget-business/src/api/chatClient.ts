@@ -176,5 +176,26 @@ export function unansweredToolUses(content: ChatBlock[], answered: Iterable<stri
  *  ask. Deliberately narrow: a word with a dot and a known shape. */
 export function addressIn(text: string): string | null {
   const match = text.match(/\b((?:https?:\/\/)?(?:[a-z0-9-]+\.)+[a-z]{2,}(?:\/[^\s]*)?)/i);
-  return match ? match[1].replace(/[.,;:!?)]+$/, "") : null;
+  if (match) return match[1].replace(/[.,;:!?)]+$/, "");
+  return spacedAddress(text);
+}
+
+const ENDINGS = new Set(
+  "com org net io co dev app ai eu nl de fr es it be at ch uk se no dk fi pl pt ie us ca au nz".split(" ")
+);
+const SECOND_LEVEL = new Set(["co", "com", "org", "net", "ac", "gov", "edu"]);
+
+/** An address typed with spaces for dots — "example com", "bbc co uk" —
+ *  when that is the whole message. Kept to the whole message on purpose:
+ *  "check my site nl" is not an address, and scanning a guess is worse than
+ *  asking. Spelling is the assistant's to correct ("acessobility nl"); with
+ *  no assistant, a misspelled name scans as typed and the scan says it
+ *  could not be reached. */
+function spacedAddress(text: string): string | null {
+  const words = text.trim().toLowerCase().split(/\s+/);
+  if (words.length < 2 || words.length > 3 || !words.every((w) => /^[a-z0-9-]+$/.test(w))) return null;
+  const ending = words[words.length - 1];
+  if (!ENDINGS.has(ending)) return null;
+  if (words.length === 3 && !SECOND_LEVEL.has(words[1])) return null;
+  return words.join(".");
 }
