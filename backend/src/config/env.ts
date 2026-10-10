@@ -82,6 +82,10 @@ const envSchema = z.object({
   // than browser renders — see routes/storedRouteLimit.ts for why they do
   // not share the scan's much tighter one.
   STORED_RATE_LIMIT_MAX: z.coerce.number().default(120),
+  // The chat's own budget, per visitor. A conversation about one scan is a
+  // request per message plus one after each scan; the scan's five a minute
+  // ran out mid-conversation once each visitor was counted on their own.
+  CHAT_RATE_LIMIT_MAX: z.coerce.number().default(30),
   // Retention. Stored reports are large — a third of each is screenshots —
   // and nothing else bounds them. Scans older than this, or beyond this
   // many per site, are pruned when a new one is saved. Verdicts are never

@@ -107,7 +107,12 @@ function userTextTooLong(messages: z.infer<typeof chatBodySchema>["messages"]): 
 }
 
 export async function chatRoutes(app: FastifyInstance) {
-  app.post("/api/chat", async (request, reply) => {
+  app.post(
+    "/api/chat",
+    // Its own budget, looser than the scan's: a message costs a model call,
+    // not a browser render. See CHAT_RATE_LIMIT_MAX.
+    { config: { rateLimit: { max: env.CHAT_RATE_LIMIT_MAX, timeWindow: env.RATE_LIMIT_WINDOW_MS } } },
+    async (request, reply) => {
     const raw = JSON.stringify(request.body ?? {});
     if (raw.length > MAX_BODY_CHARS) {
       return reply.status(413).send({ error: "The conversation is too long to continue. Start a new one." });
@@ -241,5 +246,6 @@ export async function chatRoutes(app: FastifyInstance) {
       send("error", { error: "The assistant stopped responding. Try sending that again." });
       res.end();
     }
-  });
+  }
+  );
 }

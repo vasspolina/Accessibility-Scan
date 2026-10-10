@@ -64,6 +64,13 @@ export async function buildApp() {
   await app.register(rateLimit, {
     max: env.RATE_LIMIT_MAX,
     timeWindow: env.RATE_LIMIT_WINDOW_MS,
+    // The budget is for work — scans, the chat, the stores — not for files.
+    // A page load is six requests (page, script, widget, three fonts), and
+    // once each visitor was counted by their own address (trustProxy, above)
+    // those six spent the whole budget before the first message, and the
+    // chat answered 429. The progress stream is exempt too: it is cheap,
+    // one per scan, and its slots are capped in the registry.
+    allowList: (req) => !req.url.startsWith("/api/") || req.url.startsWith("/api/scan/progress/"),
   });
   // Serves the built widget bundle (backend/public/widget.js, produced by
   // `npm run build:widget`) at the server root.
