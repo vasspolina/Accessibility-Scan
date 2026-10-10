@@ -6885,6 +6885,17 @@
   padding-left: var(--space-06);
 }
 
+/* Code the assistant quotes — a tag, a selector, a colour value. Set in the
+   body face, not monospace (the type rules allow mono for labels only, and
+   the chat is not to look like a terminal); a tint marks it instead. */
+.a11y-widget-biz .a11y-chat-text code {
+  padding: 0 4px;
+  border-radius: var(--radius-sm);
+  background: var(--layer-01);
+  font: inherit;
+  overflow-wrap: anywhere;
+}
+
 .a11y-widget-biz .a11y-chat-you .a11y-chat-text p {
   color: var(--purple-60);
 }

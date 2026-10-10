@@ -77,28 +77,62 @@ const MAX_HISTORY_CHARS = 300_000;
 
 let nextId = 1;
 
-/** Paragraphs, hyphen lists and **bold** — the only formatting the system
- *  prompt allows. Built as elements, never as HTML: the text comes from a
- *  model, and none of it should reach a parser. */
-function renderReply(text: string): ReactNode {
-  const bold = (line: string) =>
-    line.split(/\*\*(.+?)\*\*/g).map((part, i) => (i % 2 ? <strong key={i}>{part}</strong> : part));
-  return text
+/** Paragraphs, hyphen lists, **bold** and `code` — the formatting the
+ *  model actually writes. Built as elements, never as HTML: the text comes
+ *  from a model, and none of it should reach a parser.
+ *
+ *  A paragraph may open with a sentence and go on as a list ("Start with
+ *  these three:" then the items, one newline apart). Only all-list
+ *  paragraphs used to become lists, so on production those items ran
+ *  inline, hyphens and all, and backticks showed as backticks. */
+export function renderReply(text: string): ReactNode {
+  const inline = (line: string) =>
+    line.split(/(\*\*[^*]+?\*\*|`[^`]+`)/g).map((part, i) =>
+      part.length > 4 && part.startsWith("**") && part.endsWith("**") ? (
+        <strong key={i}>{part.slice(2, -2)}</strong>
+      ) : part.length > 2 && part.startsWith("`") && part.endsWith("`") ? (
+        <code key={i}>{part.slice(1, -1)}</code>
+      ) : (
+        part
+      )
+    );
+  const ITEM = /^\s*[-•*]\s+/;
+  const out: ReactNode[] = [];
+  text
     .split(/\n{2,}/)
     .filter((p) => p.trim())
-    .map((para, i) => {
-      const lines = para.split("\n");
-      if (lines.every((l) => /^\s*[-•]\s+/.test(l))) {
-        return (
-          <ul key={i}>
-            {lines.map((l, j) => (
-              <li key={j}>{bold(l.replace(/^\s*[-•]\s+/, ""))}</li>
-            ))}
-          </ul>
-        );
+    .forEach((para, i) => {
+      let sentences: string[] = [];
+      let items: string[] = [];
+      let part = 0;
+      const flushText = () => {
+        if (sentences.length) out.push(<p key={`${i}.${part++}`}>{inline(sentences.join(" "))}</p>);
+        sentences = [];
+      };
+      const flushList = () => {
+        if (items.length)
+          out.push(
+            <ul key={`${i}.${part++}`}>
+              {items.map((l, j) => (
+                <li key={j}>{inline(l.replace(ITEM, ""))}</li>
+              ))}
+            </ul>
+          );
+        items = [];
+      };
+      for (const line of para.split("\n").filter((l) => l.trim())) {
+        if (ITEM.test(line)) {
+          flushText();
+          items.push(line);
+        } else {
+          flushList();
+          sentences.push(line.trim());
+        }
       }
-      return <p key={i}>{bold(para)}</p>;
+      flushText();
+      flushList();
     });
+  return out;
 }
 
 function outcomeLine(outcome: ScanOutcome): string {
