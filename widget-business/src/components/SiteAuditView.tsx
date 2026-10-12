@@ -2,6 +2,7 @@ import type { SiteAudit } from "../api/scanClient";
 import { t, tf } from "../lib/strings";
 import { ConformanceView } from "./ConformanceView";
 import { plainForRule } from "../lib/wcagPlain";
+import { getLang } from "../lib/i18n";
 import { useReportView } from "./ReportViewContext";
 import { SeverityTag } from "./SeverityTag";
 import { Tag } from "./Tag";
@@ -95,11 +96,19 @@ export function SiteAuditView({ audit }: { audit: SiteAudit }) {
             )}
           </p>
           <ul className="a11y-audit-list">
-            {(audit.consistency ?? []).map((issue) => (
+            {(audit.consistency ?? []).map((issue) => {
+              // The backend writes these in English, naming the pages and
+              // links involved. In another language the rule's own entry
+              // says it instead, counted from the number the backend sends;
+              // English keeps the backend's more specific wording.
+              const plain = getLang() !== "en" ? plainForRule(issue.ruleId) : undefined;
+              const title = plain?.plain ?? issue.title;
+              const what = plain?.found ? plain.found(issue.count ?? 1) : issue.description;
+              return (
               <li key={issue.ruleId} className="a11y-audit-row">
                 <span className="a11y-audit-body">
                   <strong>
-                    {issue.title}
+                    {title}
                     {professional && (
                       <>
                         {" "}
@@ -107,14 +116,15 @@ export function SiteAuditView({ audit }: { audit: SiteAudit }) {
                       </>
                     )}
                   </strong>
-                  <span className="a11y-conf-plain">{issue.description}</span>
+                  <span className="a11y-conf-plain">{what}</span>
                 </span>
                 <span className="a11y-audit-count">
                   {issue.pages.length}
                   <em>{t("pages")}</em>
                 </span>
               </li>
-            ))}
+              );
+            })}
           </ul>
         </section>
       )}

@@ -754,6 +754,36 @@ export const PLAIN_RULE_EXPLANATIONS: Record<string, PlainRule> = {
     impact:
       "Thin strokes fade on cheap screens and in sunlight, and weak eyesight loses them first. Even when contrast passes.",
   },
+  "activation-stale-state": {
+    plain: "A control announces its old state",
+    // No found line on purpose: English keeps the backend's own description,
+    // which names the specific element. The other languages carry one.
+    impact: "A screen reader user hears “collapsed” while the section is open, or “off” while the switch is on. They hear the opposite of what is on screen.",
+  },
+  "control-faint-boundary": {
+    plain: "Control edges too faint",
+    // No found line on purpose: English keeps the backend's own description,
+    // which names the specific element. The other languages carry one.
+    impact: "People with low vision, or reading in bright light, cannot see where fields begin and end. It is unclear where to click and type.",
+  },
+  "keyboard-positive-tabindex-advisory": {
+    plain: "Tab order set by number",
+    // No found line on purpose: English keeps the backend's own description,
+    // which names the specific element. The other languages carry one.
+    impact: "Every element added to the page later queues behind the numbered ones. Keyboard users then jump across the page in an order that makes no sense.",
+  },
+  "nav-name-inconsistent": {
+    plain: "The same link under different names",
+    // No found line on purpose: English keeps the backend's own description,
+    // which names the specific element. The other languages carry one.
+    impact: "Someone who learned one name has to work out that the other means the same. A screen reader user searching the link list for the familiar word does not find it.",
+  },
+  "nav-order-inconsistent": {
+    plain: "The menu changes its order",
+    // No found line on purpose: English keeps the backend's own description,
+    // which names the specific element. The other languages carry one.
+    impact: "Someone who remembers a position or a Tab count lands on the wrong item on the next page. With a magnifier, the menu has to be searched again.",
+  },
 };
 
 /* Per-language dictionaries. Fallback is per KEY, not per language: a rule
@@ -1185,6 +1215,11 @@ export const PLAIN_RULE_FIXES: Record<string, string | string[]> = {
   "landmark-one-main": "Mark the primary content of the page as its main area, and use only one per page.",
   tabindex: 'Remove positive tabindex values (tabindex="1" or higher) and let the natural page order set focus order.',
   "scrollable-region-focusable": 'Add tabindex="0" to the scrollable container so keyboard users can scroll it.',
+  "keyboard-positive-tabindex-advisory": "Ask your developer to remove the numbers that set the tab order by hand. The keyboard then follows the order of the page, including anything added later.",
+  "nav-name-inconsistent": "Give each menu link one name, \"Basket\" or \"Cart\" but not both, and use it on every page.",
+  "nav-order-inconsistent": "Keep the menu's links in the same order on every page. A page can show fewer links, but the ones it shares with others should not move.",
+  "activation-stale-state": "Make each control announce its new state the moment it changes: open or closed, on or off. Your developer sets this in the same code that opens or switches the control.",
+  "control-faint-boundary": "Darken the borders on fields and buttons. They need at least 3 to 1 against what sits behind them. Your designer can usually fix them all with one change to the shared style.",
 };
 
 /**

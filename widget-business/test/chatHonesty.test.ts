@@ -2,6 +2,7 @@ import { describe, it, expect } from "vitest";
 import type { AccessibilityFinding, AccessibilityReport, SiteAudit } from "../src/api/scanClient";
 import { stepResult } from "../src/components/ScanChat";
 import { digestAudit, digestReport } from "../src/lib/reportDigest";
+import { setLang } from "../src/lib/i18n";
 
 /**
  * What the conversation says about a scan, held to the report's own rules:
@@ -149,5 +150,20 @@ describe("what the assistant is given", () => {
     expect(d.pages[1]).toEqual({ url: "https://example.com/broken", notScanned: "Timed out" });
     expect(d.aiReview).toMatch(/never includes the AI review/);
     expect(d.checksThatDidNotFinish).toEqual(["text resizing"]);
+  });
+});
+
+describe("what the assistant is given, in the reader's language", () => {
+  it("labels severity in the words the finding cards show", () => {
+    // Seen live: a German reply quoted "(Fix soon)" because the digest
+    // labelled severity in English while the cards said "Bald beheben".
+    setLang("de");
+    try {
+      const d = digestReport(report([finding({ ruleId: "image-alt", severity: "serious" })]));
+      expect(d.whatPeopleCantUse[0].severity).not.toBe("Fix soon");
+      expect(Object.keys(d.issuesBySeverity)).not.toContain("Fix first");
+    } finally {
+      setLang("en");
+    }
   });
 });

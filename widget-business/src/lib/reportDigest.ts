@@ -4,6 +4,7 @@ import { TRIAGE_BADGE } from "../components/FindingGroup";
 import { plainForRule, plainFixForRule } from "./wcagPlain";
 import { fixKindForFinding } from "./testMethod";
 import { whatWeFound } from "./findingText";
+import { t } from "./strings";
 
 /**
  * The report, as the chat assistant reads it.
@@ -46,7 +47,10 @@ function digestFinding(group: AccessibilityFinding[]) {
   }
   return {
     title,
-    severity: SEVERITY[rep.severity],
+    // In the reader's language: the assistant quotes these, and they must be
+    // the words the finding cards beside its reply show. English labels here
+    // came back as "(Fix soon)" in the middle of a German reply.
+    severity: t(SEVERITY[rep.severity]),
     count: group.length,
     criterion,
     // A level only means something with a criterion: a design note with
@@ -114,10 +118,10 @@ export function digestReport(report: AccessibilityReport) {
     scannedAt: report.scannedAt,
     score: `${report.score} out of 100`,
     issuesBySeverity: {
-      "Fix first": report.summary.critical,
-      "Fix soon": report.summary.serious,
-      "Fix eventually": report.summary.moderate,
-      "Minor polish": report.summary.minor,
+      [t("Fix first")]: report.summary.critical,
+      [t("Fix soon")]: report.summary.serious,
+      [t("Fix eventually")]: report.summary.moderate,
+      [t("Minor polish")]: report.summary.minor,
     },
     // A document gets no AI review whatever was asked; the status the
     // pipeline stamps on it ("disabled_by_request") would say otherwise.
@@ -165,7 +169,7 @@ export function digestAudit(audit: SiteAudit) {
       : undefined,
     onEveryPage: audit.siteWide.map((s) => ({
       title: plainForRule(s.ruleId)?.plain ?? s.title,
-      severity: SEVERITY[s.severity],
+      severity: t(SEVERITY[s.severity]),
       onPages: s.pageCount,
       places: s.totalOccurrences,
       criterion: s.wcagCriterion,

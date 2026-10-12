@@ -226,6 +226,9 @@ export interface ConsistencyIssue {
   title: string;
   description: string;
   pages: string[];
+  /** Pages in a different order, or links under more than one name.
+   *  Optional: older reports do not carry it. */
+  count?: number;
 }
 
 export interface SiteAudit {
