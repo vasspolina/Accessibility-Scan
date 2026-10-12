@@ -1,5 +1,6 @@
 import { Fragment, useEffect, useRef, useState } from "react";
-import { t } from "../lib/strings";
+import { t, tf } from "../lib/strings";
+import { getLang, type Lang } from "../lib/i18n";
 import { createPortal } from "react-dom";
 import { Dialog } from "./Dialog";
 import { clearHistory, diffScans, scoresComparable, type HistoryEntry } from "../lib/scanHistory";
@@ -9,9 +10,13 @@ import { plainForRule } from "../lib/wcagPlain";
 // verdict. A score with last month's beside it is progress, and progress is
 // what gets the next fix done.
 
+// The month is a word, so it follows the report's language. English stays
+// en-GB: day before month, house style.
+const DATE_LOCALE: Record<Lang, string> = { en: "en-GB", de: "de-DE", es: "es-ES", fr: "fr-FR" };
+
 function formatDate(iso: string): string {
   // European format, house style.
-  return new Date(iso).toLocaleDateString("en-GB", {
+  return new Date(iso).toLocaleDateString(DATE_LOCALE[getLang()], {
     day: "numeric",
     month: "short",
     year: "numeric",
@@ -90,11 +95,11 @@ export function ScanHistory({
   const sameDayAsCurrent = (iso: string) =>
     new Date(iso).toDateString() === new Date(current.scannedAt).toDateString();
   const runsByYear = groupByYear([
-    { scannedAt: current.scannedAt, score: current.score, note: "just now" },
+    { scannedAt: current.scannedAt, score: current.score, note: t("just now") },
     ...previous.map((e) => ({
       scannedAt: e.scannedAt,
       score: e.score,
-      note: sameDayAsCurrent(e.scannedAt) ? "earlier" : undefined,
+      note: sameDayAsCurrent(e.scannedAt) ? t("earlier") : undefined,
     })),
   ]);
 
@@ -106,7 +111,7 @@ export function ScanHistory({
       <section className="a11y-section a11y-hist" aria-labelledby="a11y-hist-heading">
         <h2 className="a11y-section-title" id="a11y-hist-heading" data-nav-label={t("Since last time")}>{t("Since last time")}</h2>
         <p className="a11y-section-desc" role="status" tabIndex={-1} ref={(el) => el?.focus()}>
-          Scan history deleted from this browser.
+          {t("Scan history deleted from this browser.")}
         </p>
       </section>
     );
@@ -131,12 +136,12 @@ export function ScanHistory({
           sentence case, and a landmark called only "Previous" says less
           than it should. */}
       <h2 className="a11y-section-title a11y-hist-title" id="a11y-hist-heading" data-nav-label={t("Since last time")}>
-        Previous scans
+        {t("Previous scans")}
       </h2>
 
       <div className="a11y-hist-cols">
         <div className="a11y-hist-col">
-          <h3 className="a11y-hist-head">Every scan of this page</h3>
+          <h3 className="a11y-hist-head">{t("Every scan of this page")}</h3>
           {/* Grouped by year, because a bare column of dates makes the
               reader parse four digits on every line to find the boundary.
               The year is a real <li> rather than a heading between lists:
@@ -160,48 +165,44 @@ export function ScanHistory({
         </div>
 
         <div className="a11y-hist-col">
-          <h3 className="a11y-hist-head">Since last time</h3>
+          <h3 className="a11y-hist-head">{t("Since last time")}</h3>
           {/* The three numbers used to be stat tiles. As lines they read as
               the sentences they always were, and the score line can say
               "not comparable" without a tile having to show a number it
               does not believe. */}
           <ul className="a11y-hist-facts">
             <li>
-              {comparable ? (
-                <>
-                  {flat ? "Score unchanged" : up ? "Score is up" : "Score is down"} &mdash;{" "}
-                  {last.score} then, {current.score} now
-                </>
-              ) : (
-                <>
-                  Not comparable &mdash; we scored the earlier scan by different rules. Some
-                  checks that used to sit outside the number now count towards it, so the two
-                  are not a fair comparison and we claim no change.
-                </>
-              )}
+              {comparable
+                ? tf(
+                    flat
+                      ? "Score unchanged — {then} then, {now} now"
+                      : up
+                        ? "Score is up — {then} then, {now} now"
+                        : "Score is down — {then} then, {now} now",
+                    { then: last.score, now: current.score }
+                  )
+                : t(
+                    "Not comparable — we scored the earlier scan by different rules. Some checks that used to sit outside the number now count towards it, so the two are not a fair comparison and we claim no change."
+                  )}
             </li>
             <li>
-              Problems gone &mdash;{" "}
               {diff.fixed.length === 0
-                ? "none found this time"
-                : diff.fixed.map(ruleLabel).join(", ")}
+                ? t("Problems gone — none found this time")
+                : tf("Problems gone — {rules}", { rules: diff.fixed.map(ruleLabel).join(", ") })}
             </li>
             {/* "none weren't there before" is a double negative, and the
                 design's own copy has it. Said the way round it means. */}
             <li>
-              New problems &mdash;{" "}
               {diff.appeared.length === 0
-                ? "none appeared"
-                : diff.appeared.map(ruleLabel).join(", ")}
+                ? t("New problems — none appeared")
+                : tf("New problems — {rules}", { rules: diff.appeared.map(ruleLabel).join(", ") })}
             </li>
           </ul>
 
-          <h3 className="a11y-hist-head">Where this lives</h3>
+          <h3 className="a11y-hist-head">{t("Where this lives")}</h3>
           <ul className="a11y-hist-facts">
-            <li>Kept in this browser only, never sent anywhere.</li>
-            <li>
-              Delete it whenever you like &mdash; nothing here is needed to run another scan.
-            </li>
+            <li>{t("Kept in this browser only, never sent anywhere.")}</li>
+            <li>{t("Delete it whenever you like — nothing here is needed to run another scan.")}</li>
           </ul>
           {/* The design writes "Delete this history at any time" as a line
               of prose. It is the one genuinely destructive action here, so
@@ -213,7 +214,7 @@ export function ScanHistory({
             className="a11y-show-all a11y-danger-btn"
             onClick={() => setConfirmOpen(true)}
           >
-            Delete this history
+            {t("Delete this history")}
           </button>
         </div>
       </div>
@@ -222,10 +223,10 @@ export function ScanHistory({
         createPortal(
           <Dialog
             open={confirmOpen}
-            title="Delete this history?"
-            primaryLabel="Delete"
+            title={t("Delete this history?")}
+            primaryLabel={t("Delete")}
             danger
-            secondaryLabel="Cancel"
+            secondaryLabel={t("Cancel")}
             onClose={() => {
               setConfirmOpen(false);
               // The effect above only clears .inert once it re-runs after
@@ -243,9 +244,9 @@ export function ScanHistory({
               setConfirmOpen(false);
             }}
           >
-            You can&rsquo;t undo this. Every past scan of this page, kept
-            only in this browser, will be gone. Including the comparison
-            above.
+            {t(
+              "You can’t undo this. Every past scan of this page, kept only in this browser, will be gone. Including the comparison above."
+            )}
           </Dialog>,
           portalTarget
         )}

@@ -1,3 +1,4 @@
+import { t } from "../lib/strings";
 import type { AccessibilityFinding } from "../api/scanClient";
 import { FindingGroup, findingRow } from "./FindingGroup";
 import { useReportView } from "./ReportViewContext";
@@ -81,25 +82,25 @@ export function FindingsList({
           onClick={expandRowOnClick}
         >
           <DataTable
-            caption={asNotes ? "Notes on the design" : "Findings, most severe first"}
+            caption={asNotes ? t("Notes on the design") : t("Findings, most severe first")}
             headers={
               asNotes
                 ? [
-                    { key: "issue", label: "Note" },
+                    { key: "issue", label: t("Note") },
                     ...(showCount
-                      ? [{ key: "count", label: "Instances", align: "right" as const }]
+                      ? [{ key: "count", label: t("Instances"), align: "right" as const }]
                       : []),
                   ]
                 : [
                     // Hidden at phone width by CSS (see .a11y-finding-sev-col)
                     // — Severity folds into the Issue cell there instead.
-                    { key: "severity", label: "Severity" },
-                    { key: "issue", label: "Issue" },
+                    { key: "severity", label: t("Severity") },
+                    { key: "issue", label: t("Issue") },
                     { key: "wcag", label: "WCAG" },
-                    { key: "fix", label: "Who fixes this" },
-                    ...(showLevel ? [{ key: "level", label: "Level" }] : []),
+                    { key: "fix", label: t("Who fixes this") },
+                    ...(showLevel ? [{ key: "level", label: t("Level") }] : []),
                     ...(showCount
-                      ? [{ key: "count", label: "Instances", align: "right" as const }]
+                      ? [{ key: "count", label: t("Instances"), align: "right" as const }]
                       : []),
                   ]
             }

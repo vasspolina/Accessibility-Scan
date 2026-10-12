@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { t } from "../lib/strings";
+import { t, tf } from "../lib/strings";
 
 // Shows the owner their own page as some of their visitors see it. Reading
 // "contrast is too low" is abstract; watching your call-to-action vanish into
@@ -16,12 +16,18 @@ import { t } from "../lib/strings";
 // severity varies between individuals. The panel says so rather than
 // implying it reproduces any particular person's sight.
 
+// The English text below is each string's translation key: t() runs on it
+// at render time, so a language switch mid-session re-renders every one.
 interface Condition {
   id: string;
   label: string;
   // Share of the population, where there's a well-established figure.
   prevalence?: string;
   note: string;
+  // The screenshot's alt text, a whole sentence per condition. Lowercasing
+  // the label into a shared sentence only works in English: German keeps its
+  // nouns capitalised, and "with no colour vision" is not "ohne Farbsehen".
+  alt: string;
   // An SVG feColorMatrix, a CSS filter, or both.
   matrix?: string;
   cssFilter?: string;
@@ -32,9 +38,9 @@ interface Condition {
    tells the truth for whichever image is actually on the stage. */
 function noteFor(c: Condition, behindConsent: boolean): string {
   if (c.id === "none" && behindConsent) {
-    return "Your page with the cookie banner set aside, so every view here shows the page itself.";
+    return t("Your page with the cookie banner set aside, so every view here shows the page itself.");
   }
-  return c.note;
+  return t(c.note);
 }
 
 const CONDITIONS: Condition[] = [
@@ -42,12 +48,14 @@ const CONDITIONS: Condition[] = [
     id: "none",
     label: "Normal vision",
     note: "Your page as most visitors see it.",
+    alt: "Top of {url} simulated as seen with normal vision",
   },
   {
     id: "deuteranopia",
     label: "Deuteranopia",
     prevalence: "~6% of men",
     note: "Reduced sensitivity to green, the most common form of colour blindness. Red and green become hard to tell apart.",
+    alt: "Top of {url} simulated as seen with deuteranopia",
     matrix: "0.367 0.861 -0.228 0 0  0.280 0.673 0.047 0 0  -0.012 0.043 0.969 0 0  0 0 0 1 0",
   },
   {
@@ -55,6 +63,7 @@ const CONDITIONS: Condition[] = [
     label: "Protanopia",
     prevalence: "~1% of men",
     note: "Reduced sensitivity to red. Reds darken and can disappear against dark backgrounds.",
+    alt: "Top of {url} simulated as seen with protanopia",
     matrix: "0.152 1.053 -0.205 0 0  0.115 0.786 0.099 0 0  -0.004 -0.048 1.052 0 0  0 0 0 1 0",
   },
   {
@@ -62,6 +71,7 @@ const CONDITIONS: Condition[] = [
     label: "Tritanopia",
     prevalence: "rare",
     note: "Reduced sensitivity to blue. Blues and yellows become hard to tell apart.",
+    alt: "Top of {url} simulated as seen with tritanopia",
     matrix: "1.256 -0.077 -0.179 0 0  -0.078 0.931 0.148 0 0  0.005 0.691 0.304 0 0  0 0 0 1 0",
   },
   {
@@ -69,6 +79,7 @@ const CONDITIONS: Condition[] = [
     label: "No colour vision",
     prevalence: "very rare",
     note: "No colour at all. A useful worst case: anything that relies on colour alone disappears completely here.",
+    alt: "Top of {url} simulated as seen with no colour vision",
     cssFilter: "grayscale(1)",
   },
   {
@@ -76,6 +87,7 @@ const CONDITIONS: Condition[] = [
     label: "Low vision",
     prevalence: "~1 in 30 people",
     note: "Reduced sharpness of sight, far more common than total blindness. Small text and thin type lose their edges.",
+    alt: "Top of {url} simulated as seen with low vision",
     cssFilter: "blur(2.2px)",
   },
   {
@@ -83,6 +95,7 @@ const CONDITIONS: Condition[] = [
     label: "Cataracts",
     prevalence: "common over 60",
     note: "Clouded vision and faded contrast. Text with low contrast is the first thing to go.",
+    alt: "Top of {url} simulated as seen with cataracts",
     cssFilter: "blur(1.6px) contrast(0.68) brightness(1.12)",
   },
 ];
@@ -105,11 +118,12 @@ export function VisionSimulator({
     <section className="a11y-section a11y-sim" aria-labelledby="a11y-sim-heading">
       <h2 className="a11y-section-title" id="a11y-sim-heading" data-nav-label={t("Through other eyes")}>{t("Your page, through other eyes")}</h2>
       <p className="a11y-section-desc">
-        About one man in twelve is colour blind. Switch between views to see what your page loses.
-        These are approximations. No one&rsquo;s sight matches them exactly.
+        {t(
+          "About one man in twelve is colour blind. Switch between views to see what your page loses. These are approximations. No one’s sight matches them exactly."
+        )}
       </p>
 
-      <div className="a11y-sim-controls" role="group" aria-label="Vision condition">
+      <div className="a11y-sim-controls" role="group" aria-label={t("Vision condition")}>
         {CONDITIONS.map((c) => (
           <button
             key={c.id}
@@ -118,7 +132,7 @@ export function VisionSimulator({
             aria-pressed={active.id === c.id}
             onClick={() => setActive(c)}
           >
-            {c.label}
+            {t(c.label)}
           </button>
         ))}
       </div>
@@ -131,10 +145,10 @@ export function VisionSimulator({
           one line: it is a fact about the chosen condition, and this is
           where the chosen condition is explained. */}
       <span className="a11y-sr-only" role="status">
-        {active.label}. {active.prevalence ? `${active.prevalence}. ` : ""}{noteFor(active, behindConsent)}
+        {t(active.label)}. {active.prevalence ? <>{t(active.prevalence)}. </> : null}{noteFor(active, behindConsent)}
       </span>
       <p className="a11y-sim-note">
-        {active.prevalence && <strong>{active.prevalence}. </strong>}
+        {active.prevalence && <strong>{t(active.prevalence)}. </strong>}
         {noteFor(active, behindConsent)}
       </p>
 
@@ -155,7 +169,7 @@ export function VisionSimulator({
         <img
           className="a11y-sim-img"
           src={`data:image/jpeg;base64,${pagePreview}`}
-          alt={`Top of ${url} simulated as seen with ${active.label.toLowerCase()}`}
+          alt={tf(active.alt, { url })}
           style={{
             filter: active.matrix
               ? `url(#a11y-sim-${active.id})`
@@ -164,7 +178,7 @@ export function VisionSimulator({
         />
       </div>
       <p className="a11y-sim-caption">
-        This shows the top of the page, as first loaded.
+        {t("This shows the top of the page, as first loaded.")}
       </p>
     </section>
   );

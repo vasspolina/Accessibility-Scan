@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useId, useMemo, useRef, useState } from "react";
-import { t } from "../lib/strings";
+import { t, tf } from "../lib/strings";
 import { StatusChip } from "./SectionHeader";
 import type { ScreenReaderScript } from "../api/scanClient";
 
@@ -119,14 +119,20 @@ export function ScreenReaderPreview({ script }: { script: ScreenReaderScript }) 
             onClick={() => setOpen((v) => !v)}
           >
             <span>
-              Screen reader preview{" "}
-              <span className="a11y-section-count">({lines.length} announcements)</span>
+              {t("Screen reader preview")}{" "}
+              <span className="a11y-section-count">
+                {lines.length === 1
+                  ? t("(1 announcement)")
+                  : tf("({count} announcements)", { count: lines.length })}
+              </span>
             </span>
             {/* The count of problems stays visible while collapsed. A closed
                 section with nothing to show for it gives no reason to open it. */}
             {issueCount > 0 && (
               <StatusChip>
-                {issueCount === 1 ? "1 says nothing useful" : `${issueCount} say nothing useful`}
+                {issueCount === 1
+                  ? t("1 says nothing useful")
+                  : tf("{count} say nothing useful", { count: issueCount })}
               </StatusChip>
             )}
             <svg className="a11y-accordion-chevron" viewBox="0 0 16 16" aria-hidden="true" focusable="false">
@@ -152,11 +158,11 @@ export function ScreenReaderPreview({ script }: { script: ScreenReaderScript }) 
           >
             {playing ? (
               <>
-                <span aria-hidden="true">■</span> Stop
+                <span aria-hidden="true">■</span> {t("Stop")}
               </>
             ) : (
               <>
-                <span aria-hidden="true">▶</span> Play the page aloud
+                <span aria-hidden="true">▶</span> {t("Play the page aloud")}
               </>
             )}
           </button>
@@ -170,9 +176,9 @@ export function ScreenReaderPreview({ script }: { script: ScreenReaderScript }) 
           heading between two tall ones. Easy to scroll straight past, which is
           exactly what happened. */}
       <p className="a11y-section-desc">
-        How your page sounds to someone who can't see it, in the order they hear it. Lines marked
-        &ldquo;says nothing useful&rdquo; are where a listener learns nothing. Close to a real
-        screen reader, not a recording.
+        {t(
+          "How your page sounds to someone who can't see it, in the order they hear it. Lines marked “says nothing useful” are where a listener learns nothing. Close to a real screen reader, not a recording."
+        )}
       </p>
       </div>
 
@@ -193,11 +199,11 @@ export function ScreenReaderPreview({ script }: { script: ScreenReaderScript }) 
              highlight below (current === i) carries the same progress for
              sighted users. */
           <span className="a11y-sr-status">
-            {playing ? `On line ${(current ?? 0) + 1} of ${lines.length}` : ""}
+            {playing ? tf("On line {line} of {total}", { line: (current ?? 0) + 1, total: lines.length }) : ""}
           </span>
         ) : (
           <p className="a11y-sr-status">
-            Your browser can't play audio for this, so the transcript below is read only.
+            {t("Your browser can't play audio for this, so the transcript below is read only.")}
           </p>
         )}
         {/* Filtering beats paging here. Carbon would page a 120-row data
@@ -213,8 +219,8 @@ export function ScreenReaderPreview({ script }: { script: ScreenReaderScript }) 
               onChange={(e) => setOnlyIssues(e.target.checked)}
             />
             {issueCount === 1
-              ? "Only the one that says nothing useful"
-              : `Only the ${issueCount} that say nothing useful`}
+              ? t("Only the one that says nothing useful")
+              : tf("Only the {count} that say nothing useful", { count: issueCount })}
           </label>
         )}
       </div>
@@ -229,7 +235,7 @@ export function ScreenReaderPreview({ script }: { script: ScreenReaderScript }) 
           className="a11y-skip-link"
           onClick={() => showAllRef.current?.focus()}
         >
-          Skip the transcript
+          {t("Skip the transcript")}
         </button>
       )}
 
@@ -242,14 +248,14 @@ export function ScreenReaderPreview({ script }: { script: ScreenReaderScript }) 
           accessible name, aria-current marks the line being read, and
           the header strip is aria-hidden because a list has no columns
           for a listener. */}
-      <p className="a11y-sr-log-title">What a screen reader announces, in reading order</p>
+      <p className="a11y-sr-log-title">{t("What a screen reader announces, in reading order")}</p>
       <div className="a11y-sr-log">
         <p className="a11y-sr-log-heads" aria-hidden="true">
           <span>#</span>
-          <span>What you&rsquo;d hear</span>
-          <span>Note</span>
+          <span>{t("What you’d hear")}</span>
+          <span>{t("Note")}</span>
         </p>
-        <ol className="a11y-sr-list" aria-label="Announcement order">
+        <ol className="a11y-sr-list" aria-label={t("Announcement order")}>
           {visible.map(({ line, index: i }) => (
             <li key={`${line.selector}-${i}`}>
               {supported ? (
@@ -262,7 +268,7 @@ export function ScreenReaderPreview({ script }: { script: ScreenReaderScript }) 
                 >
                   <span className="a11y-sr-num" aria-hidden="true">{i + 1}</span>
                   <span className="a11y-sr-line-text">{line.text}</span>
-                  <span className="a11y-sr-only">. Play aloud from this line</span>
+                  <span className="a11y-sr-only">. {t("Play aloud from this line")}</span>
                   {line.issue && <span className="a11y-sr-issue">{line.issue}</span>}
                 </button>
               ) : (
@@ -290,13 +296,15 @@ export function ScreenReaderPreview({ script }: { script: ScreenReaderScript }) 
           onClick={() => setExpanded((v) => !v)}
         >
           {expanded
-            ? "Show fewer"
-            : `Show all ${filtered.length}${onlyIssues ? " with problems" : " announcements"}`}
+            ? t("Show fewer")
+            : onlyIssues
+              ? tf("Show all {count} with problems", { count: filtered.length })
+              : tf("Show all {count} announcements", { count: filtered.length })}
         </button>
       )}
       {script.truncated && (
         <p className="a11y-sr-note">
-          This shows only the first part of the page. We cut long pages short to keep them readable.
+          {t("This shows only the first part of the page. We cut long pages short to keep them readable.")}
         </p>
       )}
       </div>

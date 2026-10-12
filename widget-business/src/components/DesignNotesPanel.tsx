@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { t } from "../lib/strings";
+import { t, tf } from "../lib/strings";
 import type { AccessibilityFinding } from "../api/scanClient";
 import { FindingGroup, FindingDetails } from "./FindingGroup";
 import { groupFindings } from "./FindingsList";
@@ -77,7 +77,7 @@ export function DesignNotesPanel({ findings }: { findings: AccessibilityFinding[
         id="a11y-notes-heading"
         data-nav-label={t("Notes on the design")}
       >
-        Notes on the design{" "}
+        {t("Notes on the design")}{" "}
         <span className="a11y-section-count">({groups.length})</span>
       </h2>
       {/* The lead used to be three clipped thoughts with no throughline —
@@ -97,12 +97,12 @@ export function DesignNotesPanel({ findings }: { findings: AccessibilityFinding[
           finding once. */}
       {!professional && (
         <div className="a11y-dn-panel">
-          <p className="a11y-dn-panel-eyebrow">The notes</p>
+          <p className="a11y-dn-panel-eyebrow">{t("The notes")}</p>
 
           {/* Toggles, not labels. Pressing one narrows the list to that
               kind; pressing it again clears it, so there is no separate
               "All" pill to keep in step with the others. */}
-          <ul className="a11y-dn-kinds" aria-label="Filter notes by kind">
+          <ul className="a11y-dn-kinds" aria-label={t("Filter notes by kind")}>
             {kinds.map((k) => (
               <li key={k}>
                 <button
@@ -111,7 +111,7 @@ export function DesignNotesPanel({ findings }: { findings: AccessibilityFinding[
                   aria-pressed={kind === k}
                   onClick={() => setKind(kind === k ? null : k)}
                 >
-                  {k}
+                  {t(k)}
                 </button>
               </li>
             ))}
@@ -121,8 +121,14 @@ export function DesignNotesPanel({ findings }: { findings: AccessibilityFinding[
               list getting shorter, which a screen reader never sees. */}
           <p className="a11y-dn-status" role="status">
             {kind
-              ? `Showing ${visible.length} of ${groups.length} notes: ${kind}.`
-              : `Showing all ${groups.length} notes.`}
+              ? tf("Showing {shown} of {total} notes: {kind}.", {
+                  shown: visible.length,
+                  total: groups.length,
+                  kind: t(kind),
+                })
+              : groups.length === 1
+                ? t("Showing 1 note.")
+                : tf("Showing all {count} notes.", { count: groups.length })}
           </p>
 
           <ul className="a11y-dn-list">
@@ -161,8 +167,8 @@ export function DesignNotesPanel({ findings }: { findings: AccessibilityFinding[
               <div className="a11y-dn-detail-head">
                 <h3 className="a11y-dn-detail-title">{noteTitle(open)}</h3>
                 <p className="a11y-dn-pills">
-                  <span className="a11y-dn-pill a11y-dn-pill-kind">{noteKind(open[0])}</span>
-                  <span className="a11y-dn-pill a11y-dn-pill-note">Note</span>
+                  <span className="a11y-dn-pill a11y-dn-pill-kind">{t(noteKind(open[0]))}</span>
+                  <span className="a11y-dn-pill a11y-dn-pill-note">{t("Note")}</span>
                 </p>
               </div>
               <FindingDetails findings={open} asNotes />

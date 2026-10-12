@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { undecidedExplanation } from "../lib/wcagPlain";
-import { t } from "../lib/strings";
+import { t, tf } from "../lib/strings";
 import { fixKindForRule } from "../lib/testMethod";
 import { DataTable } from "./DataTable";
 
@@ -11,11 +11,11 @@ import { DataTable } from "./DataTable";
    otherwise reads UTF-8 as Latin-1 and mangles the em dashes. */
 function exportCsv(rows: Array<{ ruleId: string; count: number; help: string }>) {
   const cell = (s: string) => `"${s.replace(/"/g, '""')}"`;
-  const lines = [["No", "What the checker saw", "What to ask for", "Call", "Places"]];
+  const lines = [[t("No"), t("What the checker saw"), t("What to ask for"), t("Call"), t("Places")]];
   rows.forEach((r, i) => {
     const e = undecidedExplanation(r.ruleId);
     const fix = fixKindForRule(r.ruleId);
-    lines.push([String(i + 1), e ? e.what : r.help, e ? e.ask : "", fix.label, String(r.count)]);
+    lines.push([String(i + 1), e ? e.what : r.help, e ? e.ask : "", t(fix.label), String(r.count)]);
   });
   const csv = "﻿" + lines.map((row) => row.map(cell).join(",")).join("\r\n");
   const url = URL.createObjectURL(new Blob([csv], { type: "text/csv;charset=utf-8" }));
@@ -51,6 +51,9 @@ export function UndecidedChecks({
   const FOLD = 3;
   const [showAll, setShowAll] = useState(false);
   const folded = !showAll && rows.length > FOLD;
+  // One sentence, translated whole: the visible words come before the
+  // arrow, and the rest is said only to a screen reader.
+  const [learnMore, learnMoreRest] = t("Learn more {arrow} about this check").split("{arrow}");
   return (
     <section className="a11y-section" aria-labelledby="a11y-undecided-heading">
       {/* The head is wrapped, and that wrapper is load-bearing. The section is
@@ -62,7 +65,7 @@ export function UndecidedChecks({
       <div className="a11y-section-head">
       {/* h2: this is a top-level section of the report, same as its siblings. */}
       <h2 className="a11y-section-title" id="a11y-undecided-heading" data-nav-label={t("Designer and developer")}>
-        For your designer and developer{" "}
+        {t("For your designer and developer")}{" "}
         <span className="a11y-section-count">({total})</span>
       </h2>
       {/* Two paragraphs, not one. This was a single seventy-one word block of
@@ -71,14 +74,15 @@ export function UndecidedChecks({
           The split is where the subject changes: what the checker did, then
           what it means for the reader. */}
       <p className="a11y-section-desc">
-        The checker could not settle {total === 1 ? "this one" : `these ${total}`}{" "}
-        on its own. It reports a problem only where it can prove one, so
-        anything needing judgement comes here rather than a guess either way.
+        {total === 1
+          ? t("The checker could not settle this one on its own. It reports a problem only where it can prove one, so anything needing judgement comes here rather than a guess either way.")
+          : tf(
+              "The checker could not settle these {total} on its own. It reports a problem only where it can prove one, so anything needing judgement comes here rather than a guess either way.",
+              { total }
+            )}
       </p>
       <p className="a11y-section-desc">
-        Each is a decision for someone on your side, and the mark on each one
-        says whose. None of it counts against the score, and some will turn out
-        to be perfectly fine.
+        {t("Each is a decision for someone on your side, and the mark on each one says whose. None of it counts against the score, and some will turn out to be perfectly fine.")}
       </p>
       </div>
       {rows.length > 0 && (
@@ -97,12 +101,12 @@ export function UndecidedChecks({
            cell carries its own label for a listener. */
         <div className="a11y-undecided-ledger">
           <p className="a11y-undecided-heads" aria-hidden="true">
-            <span>No</span>
-            <span>What the checker saw</span>
-            <span>What to ask for</span>
-            <span>Call</span>
+            <span>{t("No")}</span>
+            <span>{t("What the checker saw")}</span>
+            <span>{t("What to ask for")}</span>
+            <span>{t("Call")}</span>
           </p>
-          <ol className="a11y-undecided-table" aria-label="What the checker couldn't decide">
+          <ol className="a11y-undecided-table" aria-label={t("What the checker couldn't decide")}>
             {rows.map((r, i) => {
               const e = undecidedExplanation(r.ruleId);
               const fix = fixKindForRule(r.ruleId);
@@ -120,17 +124,17 @@ export function UndecidedChecks({
                   <p className="a11y-undecided-what">{e ? e.what : r.help}</p>
                   {e ? (
                     <p className="a11y-undecided-ask">
-                      <strong className="a11y-sr-only">What to ask for: </strong>
-                      {firstOfKind === i ? e.ask : `Same as item ${firstOfKind + 1}.`}
+                      <strong className="a11y-sr-only">{t("What to ask for:")} </strong>
+                      {firstOfKind === i ? e.ask : tf("Same as item {number}.", { number: firstOfKind + 1 })}
                     </p>
                   ) : (
                     <span className="a11y-undecided-ask" />
                   )}
                   <span className="a11y-undecided-call">
-                    <span className={`a11y-method-badge a11y-fix-${fix.key}`}>{fix.label}</span>
-                    {most && <span className="a11y-undecided-most">Most places</span>}
+                    <span className={`a11y-method-badge a11y-fix-${fix.key}`}>{t(fix.label)}</span>
+                    {most && <span className="a11y-undecided-most">{t("Most places")}</span>}
                     <span className="a11y-undecided-places">
-                      {r.count} {r.count === 1 ? "place" : "places"}
+                      {r.count === 1 ? t("1 place") : tf("{count} places", { count: r.count })}
                     </span>
                     {r.helpUrl && (
                       <a
@@ -139,8 +143,9 @@ export function UndecidedChecks({
                         target="_blank"
                         rel="noopener noreferrer"
                       >
-                        Learn more <span aria-hidden="true">↗</span>
-                        <span className="a11y-sr-only"> about this check</span>
+                        {learnMore}
+                        <span aria-hidden="true">↗</span>
+                        <span className="a11y-sr-only">{learnMoreRest}</span>
                       </a>
                     )}
                   </span>
@@ -155,7 +160,7 @@ export function UndecidedChecks({
               aria-expanded={showAll}
               onClick={() => setShowAll((v) => !v)}
             >
-              {showAll ? t("Show the first 3 only") : `${t("Show all")} ${rows.length}`}
+              {showAll ? t("Show the first 3 only") : tf("Show all {count}", { count: rows.length })}
             </button>
           )}
           {/* Below the rows it exports, like the design draws it. The arrow
@@ -165,7 +170,7 @@ export function UndecidedChecks({
             className="a11y-undecided-export"
             onClick={() => exportCsv(rows)}
           >
-            Export the list <span aria-hidden="true">{"\u2192"}</span>
+            {t("Export the list")} <span aria-hidden="true">{"\u2192"}</span>
           </button>
         </div>
       )}

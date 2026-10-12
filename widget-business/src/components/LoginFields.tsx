@@ -65,15 +65,26 @@ export function LoginFields({
   // auth" (see the comment in update() above) — that's the right call for
   // what gets sent, but saying nothing left a visitor who filled in two of
   // three fields believing the scan would sign in when it never would.
+  // One whole sentence per case, never "Add {what}" with a translated
+  // fragment dropped in: the article and case of {what} change with the verb
+  // in German, Spanish and French.
   function readinessMessage(): string {
-    if (auth) return "Ready. The scan will sign in first.";
-    const missing: string[] = [];
-    if (!loginUrl.trim()) missing.push("the login page address");
-    if (!username.trim()) missing.push("a username or email");
-    if (!password) missing.push("a password");
-    if (missing.length === 0 || missing.length === 3) return "";
-    const what = missing.length === 1 ? missing[0] : "the rest";
-    return `Add ${what} to sign in during the scan. Or clear the other fields to scan without a login.`;
+    if (auth) return t("Ready. The scan will sign in first.");
+    const noUrl = !loginUrl.trim();
+    const noUser = !username.trim();
+    const noPassword = !password;
+    const missing = [noUrl, noUser, noPassword].filter(Boolean).length;
+    if (missing === 0 || missing === 3) return "";
+    if (missing > 1) {
+      return t("Add the rest to sign in during the scan. Or clear the other fields to scan without a login.");
+    }
+    if (noUrl) {
+      return t("Add the login page address to sign in during the scan. Or clear the other fields to scan without a login.");
+    }
+    if (noUser) {
+      return t("Add a username or email to sign in during the scan. Or clear the other fields to scan without a login.");
+    }
+    return t("Add a password to sign in during the scan. Or clear the other fields to scan without a login.");
   }
 
   return (
@@ -91,20 +102,21 @@ export function LoginFields({
             type="button"
             className="a11y-login-close"
             onClick={close}
-            aria-label="Close the sign-in panel"
+            aria-label={t("Close the sign-in panel")}
           >
             <span aria-hidden="true">&times;</span>
           </button>
-          <legend className="a11y-login-legend">Sign the scanner in</legend>
+          <legend className="a11y-login-legend">{t("Sign the scanner in")}</legend>
 
           <p className="a11y-login-note">
-            Use a test account, not your own. We sign in and scan the page, then throw the session away.
-            We save nothing. The page we photograph will show whatever that account can see.
+            {t(
+              "Use a test account, not your own. We sign in and scan the page, then throw the session away. We save nothing. The page we photograph will show whatever that account can see."
+            )}
           </p>
 
           <div className="a11y-stmt-fields">
             <label className="a11y-stmt-field">
-              Login page address
+              {t("Login page address")}
               <input
                 type="text"
                 inputMode="url"
@@ -116,7 +128,7 @@ export function LoginFields({
               />
             </label>
             <label className="a11y-stmt-field">
-              Username or email
+              {t("Username or email")}
               <input
                 type="text"
                 autoComplete="off"
@@ -126,7 +138,7 @@ export function LoginFields({
               />
             </label>
             <label className="a11y-stmt-field">
-              Password
+              {t("Password")}
               <input
                 type="password"
                 // Off, so the browser doesn't offer to remember a test login the

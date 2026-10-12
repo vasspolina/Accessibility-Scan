@@ -52,9 +52,20 @@ const PRINCIPLES: Record<string, PrincipleInfo> = {
 // Returns undefined for "N/A", "WCAG (see rule help)" (axe's best-practice
 // fallback label), or a missing criterion — callers should bucket these
 // separately rather than dropping them.
+//
+// The title and description come back in the reader's language, because
+// callers render them straight off this object. `principle` stays English:
+// it is the key findings are grouped by, and the standard's own name.
+// principleText() below has its translation for a caller that wants one.
 export function classifyWcag(wcagCriterion: string | undefined): PrincipleInfo | undefined {
   const match = wcagCriterion?.match(/^([1-4])\./);
-  return match ? PRINCIPLES[match[1]] : undefined;
+  if (!match) return undefined;
+  const info = PRINCIPLES[match[1]];
+  const lang = getLang();
+  const hit = lang !== "en" ? PRINCIPLES_BY_LANG[lang]?.[match[1]] : undefined;
+  return hit
+    ? { principle: info.principle, plainTitle: hit.plainTitle, plainDescription: hit.plainDescription }
+    : info;
 }
 
 export const LEVEL_FRAMING: Record<"A" | "AA" | "AAA", string> = {
@@ -798,7 +809,9 @@ export function principleText(info: PrincipleInfo): {
 } {
   const lang = getLang();
   if (lang !== "en") {
-    const key = Object.keys(PRINCIPLES).find((k) => PRINCIPLES[k] === info);
+    // By principle, not by identity: classifyWcag hands back a translated
+    // copy rather than the entry itself whenever the language is not English.
+    const key = Object.keys(PRINCIPLES).find((k) => PRINCIPLES[k].principle === info.principle);
     const hit = key ? PRINCIPLES_BY_LANG[lang]?.[key] : undefined;
     if (hit) return hit;
   }

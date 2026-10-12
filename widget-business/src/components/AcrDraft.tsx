@@ -1,5 +1,5 @@
 import { useId, useMemo, useState } from "react";
-import { t } from "../lib/strings";
+import { t, tf } from "../lib/strings";
 import type { AccessibilityReport } from "../api/scanClient";
 import { buildAcrDraft } from "../lib/buildAcrDraft";
 
@@ -44,6 +44,12 @@ export function AcrDraft({ report }: { report: AccessibilityReport }) {
 
   if (!report.conformance) return null;
 
+  // One sentence around the evidenced-row count, split on its placeholder so
+  // the count keeps its own styling.
+  const [rowsBefore, rowsAfter] = tf("{failed} of {total}; the rest need a person", {
+    total: report.conformance.total,
+  }).split("{failed}");
+
   async function copy() {
     try {
       await navigator.clipboard.writeText(draft);
@@ -71,8 +77,8 @@ export function AcrDraft({ report }: { report: AccessibilityReport }) {
             onClick={() => setOpen((v) => !v)}
           >
             <span>
-              Conformance report for buyers{" "}
-              <span className="a11y-section-count">VPAT 2.5, draft</span>
+              {t("Conformance report for buyers")}{" "}
+              <span className="a11y-section-count">{t("VPAT 2.5, draft")}</span>
             </span>
             <svg
               className="a11y-accordion-chevron"
@@ -87,8 +93,7 @@ export function AcrDraft({ report }: { report: AccessibilityReport }) {
       </div>
 
       <p className="a11y-section-desc">
-        If a public body or a large customer wants to buy from you, they will ask for one of these. It
-        is the document a procurement team reads instead of your website.
+        {t("If a public body or a large customer wants to buy from you, they will ask for one of these. It is the document a procurement team reads instead of your website.")}
       </p>
       </div>
 
@@ -100,50 +105,49 @@ export function AcrDraft({ report }: { report: AccessibilityReport }) {
               paragraph, which is where a reader in a hurry stops. */}
           <div className="a11y-conf-caveat">
             <p>
-              <strong>This draft fills in the failures. The rest of the form is left for you.</strong>
+              <strong>{t("This draft fills in the failures. The rest of the form is left for you.")}</strong>
             </p>
             <ul className="a11y-plain-points">
-              <li>The template allows four answers: Supports, Partially Supports, Does Not Support, Not Applicable.</li>
-              <li>A scan can find failures. It can never establish conformance.</li>
-              <li>The draft completes the rows it can evidence and leaves the rest blank on purpose.</li>
-              <li>Put &ldquo;Supports&rdquo; in every row and the document looks finished while claiming something nobody checked.</li>
-              <li>In a procurement report, that is the version with legal consequences.</li>
+              <li>{t("The template allows four answers: Supports, Partially Supports, Does Not Support, Not Applicable.")}</li>
+              <li>{t("A scan can find failures. It can never establish conformance.")}</li>
+              <li>{t("The draft completes the rows it can evidence and leaves the rest blank on purpose.")}</li>
+              <li>{t("Put “Supports” in every row and the document looks finished while claiming something nobody checked.")}</li>
+              <li>{t("In a procurement report, that is the version with legal consequences.")}</li>
             </ul>
           </div>
 
           {/* What the draft declares, in the same spec-sheet shape the
               accessibility statement uses — the two documents are read by
               the same person for the same reason. */}
-          <dl className="a11y-spec-grid" aria-label="What this draft declares">
+          <dl className="a11y-spec-grid" aria-label={t("What this draft declares")}>
             <div className="a11y-spec-card a11y-spec-card-lead">
-              <dt className="a11y-spec-label">Product</dt>
-              <dd className="a11y-spec-value">{productName.trim() || "[Your product]"}</dd>
+              <dt className="a11y-spec-label">{t("Product")}</dt>
+              <dd className="a11y-spec-value">{productName.trim() || t("[Your product]")}</dd>
             </div>
             <div className="a11y-spec-card">
-              <dt className="a11y-spec-label">Version</dt>
-              <dd className="a11y-spec-value">{productVersion.trim() || "[Version]"}</dd>
+              <dt className="a11y-spec-label">{t("Version")}</dt>
+              <dd className="a11y-spec-value">{productVersion.trim() || t("[Version]")}</dd>
             </div>
             <div className="a11y-spec-card">
-              <dt className="a11y-spec-label">Checked against</dt>
+              <dt className="a11y-spec-label">{t("Checked against")}</dt>
               <dd className="a11y-spec-value">
                 {report.conformance.standard}
-                <span className="a11y-spec-gloss">The standard a buyer will ask you about</span>
+                <span className="a11y-spec-gloss">{t("The standard a buyer will ask you about")}</span>
               </dd>
             </div>
             <div className="a11y-spec-card">
-              <dt className="a11y-spec-label">Rows the scan can evidence</dt>
+              <dt className="a11y-spec-label">{t("Rows the scan can evidence")}</dt>
               <dd className="a11y-spec-value">
+                {rowsBefore}
                 {report.conformance.failed}
-                <span className="a11y-spec-gloss">
-                  of {report.conformance.total}; the rest need a person
-                </span>
+                <span className="a11y-spec-gloss">{(rowsAfter ?? "").trim()}</span>
               </dd>
             </div>
           </dl>
 
           <div className="a11y-stmt-fields">
             <label className="a11y-stmt-field">
-              Product name
+              {t("Product name")}
               <input
                 type="text"
                 value={productName}
@@ -152,7 +156,7 @@ export function AcrDraft({ report }: { report: AccessibilityReport }) {
               />
             </label>
             <label className="a11y-stmt-field">
-              Version
+              {t("Version")}
               <input
                 type="text"
                 value={productVersion}
@@ -161,7 +165,7 @@ export function AcrDraft({ report }: { report: AccessibilityReport }) {
               />
             </label>
             <label className="a11y-stmt-field">
-              Contact for accessibility questions
+              {t("Contact for accessibility questions")}
               <input
                 type="email"
                 autoComplete="email"
@@ -174,12 +178,12 @@ export function AcrDraft({ report }: { report: AccessibilityReport }) {
 
           <div className="a11y-stmt-actions">
             <button type="button" className="a11y-sr-play" onClick={copy}>
-              {copied ? "Copied" : "Copy the draft"}
+              {copied ? t("Copied") : t("Copy the draft")}
             </button>
             {/* The button's own text changing is not reliably announced;
                 this mounted status region is. */}
             <span className="a11y-sr-only" role="status">
-              {copied ? "Draft copied to the clipboard." : ""}
+              {copied ? t("Draft copied to the clipboard.") : ""}
             </span>
           </div>
 
@@ -187,7 +191,7 @@ export function AcrDraft({ report }: { report: AccessibilityReport }) {
             className="a11y-stmt-text"
             tabIndex={0}
             role="region"
-            aria-label="Draft accessibility conformance report"
+            aria-label={t("Draft accessibility conformance report")}
           >
             {draft}
           </pre>

@@ -720,7 +720,10 @@
 /* Off-Type direction: section titles take the accent at display leading.
    40px, so the 4.5:1 the ink clears anyway is comfortably past the 3:1
    large-text bar — and past 4.5 itself, at 5.2:1 on paper. */
-.a11y-widget-biz .a11y-section-title  { font-size: 40px; line-height: 1.05; font-weight: 300; text-wrap: balance; color: var(--purple-60); }
+.a11y-widget-biz .a11y-section-title  { font-size: 40px; line-height: 1.05; font-weight: 300; text-wrap: balance; color: var(--purple-60);
+  /* A long word at display size is wider than a 320px column
+     ("desarrollador"); the widget declares its language, so it hyphenates. */
+  hyphens: auto; overflow-wrap: break-word; }
 .a11y-widget-biz .a11y-section-eyebrow,
 .a11y-widget-biz .a11y-section-count  { font-size: 15px; line-height: 1.2;  font-weight: 500; }
 .a11y-widget-biz .a11y-section-desc   { font-size: 18px; line-height: 1.2;  font-weight: 400; }
@@ -2500,6 +2503,9 @@
   gap: var(--space-05);
 }
 .a11y-widget-biz .a11y-print-note { font-size: 15px; color: var(--text-secondary); }
+/* The print label wraps rather than running off a phone: "Website-Prüfung
+   als PDF speichern" is wider than 320px on one line. */
+.a11y-widget-biz .a11y-print-row .a11y-btn { white-space: normal; text-align: left; padding-block: var(--space-02); }
 
 /* Inside a finding card the fix-kind is the card's action, filled in that
    card's own severity colour — Perceivable.jsx renders it as
@@ -3535,7 +3541,11 @@
    should beat the base by weight, not by which rule the file states last. */
 .a11y-widget-biz .a11y-ra-item.a11y-ra-email { flex-wrap: wrap; gap: var(--space-03); }
 .a11y-widget-biz .a11y-ra-email-label {
-  flex: 0 0 auto;
+  /* Shrinks and wraps: "M'envoyer ce rapport par courriel" ran 15px past a
+     320px screen when the label held its one-line width. */
+  flex: 0 1 auto;
+  min-width: 0;
+  overflow-wrap: anywhere;
   font-size: 18px;
 }
 .a11y-widget-biz .a11y-ra-email-input {

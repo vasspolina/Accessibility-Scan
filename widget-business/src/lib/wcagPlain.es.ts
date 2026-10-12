@@ -351,6 +351,34 @@ export const PLAIN_ES: Record<string, PlainRule> = {
       "Quien llega hasta aquí con el teclado no puede seguir. Uno de los peores fallos que puede tener un sitio.",
   },
 
+  // Las comprobaciones de nombres para lectores de pantalla. Cada una es una
+  // tarjeta agrupada cuyo recuento está en la descripción del backend, así
+  // que no llevan found().
+  "sr-filename-alt": {
+    plain: "Imágenes descritas con su nombre de archivo",
+    impact:
+      "El lector de pantalla lee el nombre del archivo en voz alta, con cifras y signos incluidos. El visitante oye ruido donde debería estar el sentido de la imagen.",
+  },
+  "sr-vague-link-name": {
+    plain: "Enlaces llamados «haga clic aquí»",
+    impact:
+      "Quien usa un lector de pantalla saca todos los enlaces en una lista. Una lista de «haga clic aquí» y «leer más» no le da nada para elegir.",
+  },
+  "sr-symbol-button-name": {
+    plain: "Botones con solo un símbolo por nombre",
+    impact:
+      "El lector de pantalla anuncia el símbolo o nada en absoluto. Quien escucha no puede saber qué hace el botón al pulsarlo.",
+  },
+  "sr-vague-button-name": {
+    plain: "Nombres de botón que no dicen nada",
+    impact:
+      "Quien puede ver encuentra la × en la esquina y lo entiende. Quien escucha oye «por, botón», sin una esquina en la que apoyarse.",
+  },
+  "form-field-placeholder-label": {
+    plain: "Campos etiquetados solo con texto de ejemplo",
+    impact:
+      "La pista desaparece en cuanto alguien escribe. Quien se para a medio formulario vuelve a unas casillas llenas sin poder comprobar qué va en cada una.",
+  },
   "component-form-autocomplete": {
     plain: "Los campos impiden el autorrelleno",
     impact:
@@ -656,6 +684,26 @@ export const FIXES_ES: Record<string, string | string[]> = {
   "keyboard-focus-trap": [
     "Asegúrese de que el tabulador siempre puede seguir, y de que Escape siempre saca.",
     "Compruébelo apartando el ratón y usando solo el teclado.",
+  ],
+  "sr-filename-alt": [
+    "Sustituya cada nombre de archivo por una frase que diga qué muestra la imagen.",
+    "Marque las imágenes puramente decorativas con un texto alternativo vacío, para que los lectores de pantalla las salten.",
+  ],
+  "sr-vague-link-name": [
+    "Nombre cada enlace por su destino. «Ver precios», no «haga clic aquí».",
+    "Las palabras visibles pueden seguir siendo cortas. Su desarrollador puede añadir el nombre completo de forma invisible, solo para lectores de pantalla.",
+  ],
+  "sr-symbol-button-name": [
+    "Ponga a cada botón el nombre de su acción: «Cerrar», «Siguiente diapositiva», «Buscar», «Reproducir».",
+    "El aspecto de solo icono puede quedarse: las palabras se añaden de forma invisible, solo para lectores de pantalla.",
+  ],
+  "sr-vague-button-name": [
+    "Ponga a cada botón el nombre de su acción: «Cerrar», «Siguiente diapositiva», «Buscar», «Reproducir».",
+    "El aspecto de solo icono puede quedarse: las palabras se añaden de forma invisible, solo para lectores de pantalla.",
+  ],
+  "form-field-placeholder-label": [
+    "Dé a cada campo una etiqueta visible, unida a él con for e id.",
+    "Deje el texto de ejemplo como muestra del formato, nunca como única etiqueta.",
   ],
   "component-form-autocomplete":
     "Indique en cada campo qué recoge, para que los navegadores y los gestores de contraseñas puedan rellenarlo.",
@@ -1014,13 +1062,13 @@ export const PRINCIPLES_ES: Record<string, { principleLabel: string; plainTitle:
     principleLabel: "Perceptible",
     plainTitle: "¿Se puede ver y oír?",
     plainDescription:
-      "Todo lo que la gente no puede ver ni oír: texto demasiado claro para leerlo, imágenes sin nada escrito sobre ellas y vídeo sin subtítulos.",
+      "Todo lo que la gente no puede ver ni oír: texto demasiado claro para leerlo, imágenes sin nada escrito sobre ellas, vídeo sin subtítulos y audio sin transcripción.",
   },
   "2": {
     principleLabel: "Operable",
     plainTitle: "¿Se puede usar?",
     plainDescription:
-      "Si alguien puede recorrer de verdad su sitio, con el teclado en vez del ratón, en el móvil, o sin un control fino de las manos.",
+      "Si alguien puede recorrer de verdad su sitio, con el teclado en vez del ratón, en el móvil, con la voz, o sin un control fino de las manos.",
   },
   "3": {
     principleLabel: "Comprensible",

@@ -1,4 +1,4 @@
-import { t } from "../lib/strings";
+import { t, tf } from "../lib/strings";
 import { LanguageSelect } from "./LanguageSelect";
 import type { Lang } from "../lib/i18n";
 import { useId, useRef, useState, type ChangeEvent, type FormEvent, type ReactNode } from "react";
@@ -258,9 +258,9 @@ export function UrlForm({
               inside never announces. */}
           <p id="a11y-url-error" className="a11y-error a11y-url-error" role="alert">
             {showEmptyError
-              ? "Enter a website address first. For example: example.com."
+              ? t("Enter a website address first. For example: example.com.")
               : showInvalidError
-                ? "That doesn't look like a website address. For example: example.com."
+                ? t("That doesn't look like a website address. For example: example.com.")
                 : ""}
           </p>
 
@@ -298,8 +298,8 @@ export function UrlForm({
             <h3 className="a11y-step-q">{t("How much of it?")}</h3>
             <span className="a11y-step-note">
               {mode === "site"
-                ? `A whole site takes ${SCAN_DURATION.site}`
-                : `This page takes ${SCAN_DURATION.page}`}
+                ? tf("A whole site takes {duration}", { duration: t(SCAN_DURATION.site) })
+                : tf("This page takes {duration}", { duration: t(SCAN_DURATION.page) })}
             </span>
           </div>
           <fieldset className="a11y-radio-group a11y-optioncard-grid">
@@ -378,7 +378,10 @@ export function UrlForm({
               disabled={loading}
               options={[3, 5, 8, 10].map((n) => ({
                 value: String(n),
-                label: `${n} pages (about ${Math.ceil((n * 15) / 60)} min)`,
+                label: tf("{count} pages (about {minutes} min)", {
+                  count: n,
+                  minutes: Math.ceil((n * 15) / 60),
+                }),
               }))}
             />
           )}
@@ -388,8 +391,8 @@ export function UrlForm({
               <span className="a11y-ai-card-text">
                 <span className="a11y-ai-card-title">{t("Add an AI review")}</span>
                 <span id="a11y-ai-hint" className="a11y-ai-hint">
-                  A language model reads the page for design and wording faults no rule can catch. It can be wrong, so check before acting.{" "}
-                  Adds {SCAN_DURATION.aiAdds}.
+                  {t("A language model reads the page for design and wording faults no rule can catch. It can be wrong, so check before acting.")}{" "}
+                  {tf("Adds {duration}.", { duration: t(SCAN_DURATION.aiAdds) })}
                 </span>
               </span>
               <Switch

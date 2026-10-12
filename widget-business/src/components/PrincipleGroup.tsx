@@ -1,5 +1,6 @@
 import type { AccessibilityFinding } from "../api/scanClient";
-import { classifyWcag, PRINCIPLE_ORDER, type Principle } from "../lib/wcagPlain";
+import { classifyWcag, principleText, PRINCIPLE_ORDER, type Principle } from "../lib/wcagPlain";
+import { t, tf } from "../lib/strings";
 import { FindingsList } from "./FindingsList";
 
 // Groups accessibility-category findings by WCAG principle (Perceivable /
@@ -34,7 +35,7 @@ export function PrincipleGroup({ findings }: { findings: AccessibilityFinding[] 
   }
 
   if (findings.length === 0) {
-    return <p className="a11y-empty">Nothing found here.</p>;
+    return <p className="a11y-empty">{t("Nothing found here.")}</p>;
   }
 
   const present = PRINCIPLE_ORDER.filter((p) => (byPrinciple.get(p) ?? []).length > 0);
@@ -43,7 +44,7 @@ export function PrincipleGroup({ findings }: { findings: AccessibilityFinding[] 
     if (i < 0 || i === present.length - 1) return null;
     const np = present[i + 1];
     const ninfo = classifyWcag(byPrinciple.get(np)![0].wcagCriterion);
-    return { key: np, title: ninfo?.plainTitle ?? np };
+    return { key: np, title: ninfo ? principleText(ninfo).plainTitle : np };
   };
 
   return (
@@ -52,6 +53,9 @@ export function PrincipleGroup({ findings }: { findings: AccessibilityFinding[] 
         const groupFindings = byPrinciple.get(principle);
         if (!groupFindings || groupFindings.length === 0) return null;
         const info = classifyWcag(groupFindings[0].wcagCriterion);
+        // The heading parts in the report's language; English when the
+        // language file has no entry.
+        const text = info ? principleText(info) : undefined;
         return (
           <div className="a11y-principle-group" key={principle}>
             {/* Before the heading, not after it. The kit's section head reads
@@ -79,11 +83,11 @@ export function PrincipleGroup({ findings }: { findings: AccessibilityFinding[] 
             <div className="a11y-pg-head">
               <div className="a11y-pg-titles">
                 <p className="a11y-principle-head">
-                  {info && <span className="a11y-pg-pill">{principle}</span>}
+                  {text && <span className="a11y-pg-pill">{text.principleLabel}</span>}
                   {/* Plain text, no hidden/spoken split: now that the pill
                       says the words itself, one span serves eye and ear. */}
                   <span className="a11y-pg-pill">
-                    {groupFindings.length === 1 ? "1 finding" : `${groupFindings.length} findings`}
+                    {groupFindings.length === 1 ? t("1 finding") : tf("{count} findings", { count: groupFindings.length })}
                   </span>
                   {[...new Set(groupFindings.map((f) => f.wcagLevel).filter(Boolean))]
                     .sort()
@@ -94,9 +98,9 @@ export function PrincipleGroup({ findings }: { findings: AccessibilityFinding[] 
                     ))}
                 </p>
                 <h3 className="a11y-principle-title" id={`a11y-pg-${principle}-title`} tabIndex={-1}>
-                  {info?.plainTitle ?? principle}
+                  {text?.plainTitle ?? principle}
                 </h3>
-                {info && <p className="a11y-principle-desc">{info.plainDescription}</p>}
+                {text && <p className="a11y-principle-desc">{text.plainDescription}</p>}
               </div>
               {nextOf(principle) && (
                 <p className="a11y-pg-links">
@@ -105,7 +109,7 @@ export function PrincipleGroup({ findings }: { findings: AccessibilityFinding[] 
                     className="a11y-pg-chip"
                     onClick={(e) => jumpTo(e, `a11y-pg-${nextOf(principle)!.key}-title`)}
                   >
-                    <span className="a11y-pg-chip-eyebrow">Next category</span>
+                    <span className="a11y-pg-chip-eyebrow">{t("Next category")}</span>
                     {nextOf(principle)!.title} <span aria-hidden="true">{"\u2192"}</span>
                   </button>
                 </p>
@@ -118,18 +122,19 @@ export function PrincipleGroup({ findings }: { findings: AccessibilityFinding[] 
       {unclassified.length > 0 && (
         <div className="a11y-principle-group">
           <p className="a11y-principle-head">
-            <span className="a11y-principle-term">Best practice</span>
+            <span className="a11y-principle-term">{t("Best practice")}</span>
             <span className="a11y-principle-count">
               <span aria-hidden="true">{unclassified.length}</span>
               <span className="a11y-sr-only">
-                {unclassified.length === 1 ? "1 finding" : `${unclassified.length} findings`}
+                {unclassified.length === 1 ? t("1 finding") : tf("{count} findings", { count: unclassified.length })}
               </span>
             </span>
           </p>
-          <h3 className="a11y-principle-title">Worth a look anyway</h3>
+          <h3 className="a11y-principle-title">{t("Worth a look anyway")}</h3>
           <p className="a11y-principle-desc">
-            Not tied to a specific WCAG rule, but still worth a look. These are widely recommended
-            practices for a well built, accessible site.
+            {t(
+              "Not tied to a specific WCAG rule, but still worth a look. These are widely recommended practices for a well built, accessible site."
+            )}
           </p>
           <FindingsList findings={unclassified} />
         </div>

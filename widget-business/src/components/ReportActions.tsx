@@ -5,6 +5,7 @@
 import { useId, useState } from "react";
 import { ensureHostPrintStyle } from "./PrintButton";
 import { emailReport, type EmailReportResult } from "../api/scanClient";
+import { t } from "../lib/strings";
 import type { AccessibilityReport } from "../api/scanClient";
 
 /* Sending the report.
@@ -23,6 +24,9 @@ import type { AccessibilityReport } from "../api/scanClient";
  * Every outcome is a sentence, because they are genuinely different things
  * to be told: the scanner has no mail set up, the address was refused, the
  * provider failed. "Something went wrong" would collapse all three.
+ *
+ * The values are the English keys; t() turns them into the reader's language
+ * at render time, so a language switch reaches them too.
  */
 const RESULT_MESSAGE: Record<EmailReportResult, string> = {
   sent: "Sent. Check your inbox. It may take a minute.",
@@ -56,7 +60,7 @@ export function ReportActions({
   return (
     <section className="a11y-report-actions" aria-labelledby="a11y-ra-heading">
       <h2 className="a11y-sr-only" id="a11y-ra-heading">
-        Report actions
+        {t("Report actions")}
       </h2>
 
       {/* Each export carries its own note in its own column, so the sentence
@@ -67,7 +71,7 @@ export function ReportActions({
           <div className="a11y-ra-item a11y-ra-email">
             <span className="a11y-ra-dot" aria-hidden="true" />
             <label className="a11y-ra-email-label" htmlFor={emailId}>
-              Email me this report
+              {t("Email me this report")}
             </label>
             <input
               id={emailId}
@@ -79,21 +83,21 @@ export function ReportActions({
               autoComplete="email"
               inputMode="email"
               required
-              placeholder="you@example.com"
+              placeholder={t("you@example.com")}
               value={address}
               onChange={(ev) => setAddress(ev.target.value)}
               disabled={sending}
             />
             <button type="submit" className="a11y-ra-tag a11y-ra-send" disabled={sending}>
-              {sending ? "Sending\u2026" : "Send"}
+              {sending ? t("Sending\u2026") : t("Send")}
             </button>
           </div>
           {/* role="status" rather than a bare paragraph: the outcome arrives
               after a wait, so it has to be announced, not just drawn. */}
           <p className="a11y-ra-note" role="status">
             {result
-              ? RESULT_MESSAGE[result]
-              : "We send it once, to this address. Nothing is stored."}
+              ? t(RESULT_MESSAGE[result])
+              : t("We send it once, to this address. Nothing is stored.")}
           </p>
         </form>
         <div className="a11y-ra-cell">
@@ -105,12 +109,11 @@ export function ReportActions({
               window.print();
             }}
           >
-            <span className="a11y-ra-label">Save as PDF</span>
+            <span className="a11y-ra-label">{t("Save as PDF")}</span>
             <span className="a11y-ra-tag a11y-ra-tag-pdf">pdf</span>
           </button>
           <p className="a11y-ra-note">
-            Opens your browser&rsquo;s print dialog. Choose &ldquo;Save as
-            PDF&rdquo; as the destination.
+            {t("Opens your browser’s print dialog. Choose “Save as PDF” as the destination.")}
           </p>
         </div>
       </div>

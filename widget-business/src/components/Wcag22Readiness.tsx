@@ -1,5 +1,5 @@
 import { useId, useState } from "react";
-import { t } from "../lib/strings";
+import { t, tf } from "../lib/strings";
 import { WhatsNextPanel } from "./WhatsNextPanel";
 import type { Wcag22Readiness as Readiness } from "../api/scanClient";
 
@@ -25,6 +25,9 @@ export function Wcag22Readiness({ readiness }: { readiness: Readiness }) {
   const panelId = useId();
 
   const { alreadyFailing, needsReview, total, criteria, parsingNoLongerCounts } = readiness;
+  // The backend writes the date in English ("late 2026"). Looked up like the
+  // backend's check names: a date with no translation stays as it came.
+  const expectedFrom = t(readiness.expectedFrom);
 
   return (
     <section className="a11y-section a11y-w22" aria-labelledby="a11y-w22-heading">
@@ -40,9 +43,12 @@ export function Wcag22Readiness({ readiness }: { readiness: Readiness }) {
           item list holds. */}
       <WhatsNextPanel
         standard="WCAG 2.2"
-        expected={`expected ${readiness.expectedFrom}`}
+        expected={tf("expected {date}", { date: expectedFrom })}
         failCount={alreadyFailing}
-        description={`The standard European law points at will change. Nothing here is required yet. These are the ${total} new items that become Level A or AA when it lands. You can fix them on your own schedule rather than someone else's.`}
+        description={tf(
+          "The standard European law points at will change. Nothing here is required yet. These are the {total} new items that become Level A or AA when it lands. You can fix them on your own schedule rather than someone else's.",
+          { total }
+        )}
         items={criteria.map((c) => ({ criterion: c.id, title: c.plain, level: c.level }))}
       />
 
@@ -52,10 +58,9 @@ export function Wcag22Readiness({ readiness }: { readiness: Readiness }) {
           to draw that: the toggle and the region it controls are siblings
           of the heading, not children of anything. */}
       <div className="a11y-w22-panel">
-        <h3 className="a11y-w22-panel-title">The six new items</h3>
+        <h3 className="a11y-w22-panel-title">{t("The six new items")}</h3>
         <p className="a11y-w22-panel-lead">
-          These need a person, which is the same answer the checklist below
-          gives. Nothing here counts against today&rsquo;s score.
+          {t("These need a person, which is the same answer the checklist below gives. Nothing here counts against today’s score.")}
         </p>
       <button
         type="button"
@@ -64,7 +69,7 @@ export function Wcag22Readiness({ readiness }: { readiness: Readiness }) {
         aria-controls={panelId}
         onClick={() => setOpen((v) => !v)}
       >
-        <span>{open ? "Hide the technical breakdown" : "Show the technical breakdown"}</span>
+        <span>{open ? t("Hide the technical breakdown") : t("Show the technical breakdown")}</span>
         <svg
           className="a11y-accordion-chevron"
           viewBox="0 0 16 16"
@@ -81,10 +86,11 @@ export function Wcag22Readiness({ readiness }: { readiness: Readiness }) {
           <div className="a11y-w22-cols">
           <div>
           <p className="a11y-conf-caveat">
-            <strong className="a11y-w22-lead">What actually changes</strong> The European Accessibility Act points at a
-            standard called EN 301 549, which today adopts WCAG 2.1. The next version adopts
-            WCAG 2.2, expected in the EU's Official Journal in{" "}
-            {readiness.expectedFrom}. Until then, the checklist above is the one that counts.
+            <strong className="a11y-w22-lead">{t("What actually changes")}</strong>{" "}
+            {tf(
+              "The European Accessibility Act points at a standard called EN 301 549, which today adopts WCAG 2.1. The next version adopts WCAG 2.2, expected in the EU's Official Journal in {date}. Until then, the checklist above is the one that counts.",
+              { date: expectedFrom }
+            )}
           </p>
 
           {/* Moved ahead of the table it explains: most of these rows carry
@@ -96,19 +102,19 @@ export function Wcag22Readiness({ readiness }: { readiness: Readiness }) {
           </div>
           <div>
           <p className="a11y-conf-caveat">
-            <strong className="a11y-w22-lead">Software can check only one</strong> {needsReview} of the{" "}
-            {total} depend on things a machine cannot judge:
+            <strong className="a11y-w22-lead">{t("Software can check only one")}</strong>{" "}
+            {tf("{needsReview} of the {total} depend on things a machine cannot judge:", { needsReview, total })}
           </p>
           {/* These were five questions in a row inside a seventy-six word
               paragraph. They are a list — each one is a separate thing to go
               and look at — and running them together as prose meant a reader
               had to hold all five while working out where each began. */}
           <ul className="a11y-question-list">
-            <li>Does a sticky header cover what you have tabbed to?</li>
-            <li>Does a drag have a simpler alternative?</li>
-            <li>Does help sit in the same place on every page?</li>
-            <li>Does a form ask twice?</li>
-            <li>Can you log in without solving a puzzle?</li>
+            <li>{t("Does a sticky header cover what you have tabbed to?")}</li>
+            <li>{t("Does a drag have a simpler alternative?")}</li>
+            <li>{t("Does help sit in the same place on every page?")}</li>
+            <li>{t("Does a form ask twice?")}</li>
+            <li>{t("Can you log in without solving a puzzle?")}</li>
           </ul>
           </div>
           </div>
@@ -136,7 +142,7 @@ export function Wcag22Readiness({ readiness }: { readiness: Readiness }) {
               content change wearing a design change's clothes. */}
           {/* "Level A and AA" is load-bearing: WCAG 2.2 adds nine criteria,
               and six is the count of the A/AA subset this section shows. */}
-          <ul className="a11y-next-list" aria-label={`The ${total} new Level A and AA items in WCAG 2.2, checked where software can`}>
+          <ul className="a11y-next-list" aria-label={tf("The {total} new Level A and AA items in WCAG 2.2, checked where software can", { total })}>
             {criteria.map((c) => {
               const fails = c.status === "already-failing";
               return (
@@ -149,7 +155,7 @@ export function Wcag22Readiness({ readiness }: { readiness: Readiness }) {
                       {c.id} · Level {c.level}
                     </span>
                     {c.whyManual && <span className="a11y-next-meta">{c.whyManual}</span>}
-                    <span className="a11y-next-meta">Officially: {c.name}</span>
+                    <span className="a11y-next-meta">{t("Officially:")} {c.name}</span>
                     {/* The count rides as a sentence with the rest of the
                         meta, not as a corner "1 ×" mark: only a failing card
                         ever has one, and a bare glyph on one card in six
@@ -157,8 +163,8 @@ export function Wcag22Readiness({ readiness }: { readiness: Readiness }) {
                     {c.findingCount > 0 && (
                       <span className="a11y-next-meta">
                         {c.findingCount === 1
-                          ? "1 finding in this report"
-                          : `${c.findingCount} findings in this report`}
+                          ? t("1 finding in this report")
+                          : tf("{count} findings in this report", { count: c.findingCount })}
                       </span>
                     )}
                     {/* Every card carries its call, per the design. The
@@ -184,7 +190,7 @@ export function Wcag22Readiness({ readiness }: { readiness: Readiness }) {
                       </span>
                     ) : (
                       <span className="a11y-next-status" data-call={c.coverage}>
-                        {c.coverage === "automated" ? "Software can check it" : "Needs a person"}
+                        {c.coverage === "automated" ? t("Software can check it") : t("Needs a person")}
                       </span>
                     )}
                   </span>
@@ -195,9 +201,7 @@ export function Wcag22Readiness({ readiness }: { readiness: Readiness }) {
 
           {parsingNoLongerCounts && (
             <p className="a11y-notice">
-              One piece of good news. This scan reports a failure against 4.1.1 Parsing, and WCAG 2.2
-              removes that criterion as obsolete. When the standard updates, that particular failure
-              simply no longer counts.
+              {t("One piece of good news. This scan reports a failure against 4.1.1 Parsing, and WCAG 2.2 removes that criterion as obsolete. When the standard updates, that particular failure simply no longer counts.")}
             </p>
           )}
       </div>

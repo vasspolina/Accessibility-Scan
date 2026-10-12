@@ -353,6 +353,34 @@ export const PLAIN_FR: Record<string, PlainRule> = {
       "Un utilisateur au clavier qui arrive ici ne peut pas aller plus loin. L'un des pires défauts qu'un site puisse avoir.",
   },
 
+  // Les vérifications des noms pour lecteurs d'écran. Chacune est une carte
+  // groupée dont le nombre figure dans la description du backend, d'où
+  // l'absence de found().
+  "sr-filename-alt": {
+    plain: "Des images décrites par leur nom de fichier",
+    impact:
+      "Un lecteur d'écran lit le nom de fichier à voix haute, chiffres et ponctuation compris. Le visiteur entend du bruit là où devrait se trouver le sens de l'image.",
+  },
+  "sr-vague-link-name": {
+    plain: "Des liens nommés « cliquez ici »",
+    impact:
+      "Les utilisateurs de lecteurs d'écran affichent tous les liens sous forme de liste. Une liste de « cliquez ici » et « en savoir plus » ne leur donne rien pour choisir.",
+  },
+  "sr-symbol-button-name": {
+    plain: "Des boutons nommés par un seul symbole",
+    impact:
+      "Un lecteur d'écran annonce le symbole, ou rien du tout. La personne qui écoute ne peut pas savoir ce que fait le bouton.",
+  },
+  "sr-vague-button-name": {
+    plain: "Des noms de bouton qui ne disent rien",
+    impact:
+      "Un visiteur voyant repère le × dans le coin et comprend. La personne qui écoute entend « fois, bouton », sans coin sur lequel s'appuyer.",
+  },
+  "form-field-placeholder-label": {
+    plain: "Des champs libellés par un simple texte d'exemple",
+    impact:
+      "L'indication disparaît dès qu'on tape. Qui s'arrête en plein formulaire retrouve une rangée de cases remplies, sans pouvoir vérifier ce qui va où.",
+  },
   "component-form-autocomplete": {
     plain: "Les champs bloquent le remplissage automatique",
     impact:
@@ -658,6 +686,26 @@ export const FIXES_FR: Record<string, string | string[]> = {
   "keyboard-focus-trap": [
     "Assurez-vous que Tab peut toujours avancer, et qu'Échap sort toujours.",
     "Testez-le en posant la souris et en n'utilisant que le clavier.",
+  ],
+  "sr-filename-alt": [
+    "Remplacez chaque nom de fichier par une phrase qui dit ce que montre l'image.",
+    "Marquez les images purement décoratives avec un texte alternatif vide, pour que les lecteurs d'écran les sautent.",
+  ],
+  "sr-vague-link-name": [
+    "Nommez chaque lien d'après sa destination. « Voir les tarifs », pas « cliquez ici ».",
+    "Les mots visibles peuvent rester courts. Votre développeur peut ajouter le nom complet de façon invisible, pour les lecteurs d'écran seulement.",
+  ],
+  "sr-symbol-button-name": [
+    "Donnez à chaque bouton le nom de son action : « Fermer », « Diapositive suivante », « Rechercher », « Lire ».",
+    "L'aspect en icône seule peut rester : les mots s'ajoutent de façon invisible, pour les lecteurs d'écran seulement.",
+  ],
+  "sr-vague-button-name": [
+    "Donnez à chaque bouton le nom de son action : « Fermer », « Diapositive suivante », « Rechercher », « Lire ».",
+    "L'aspect en icône seule peut rester : les mots s'ajoutent de façon invisible, pour les lecteurs d'écran seulement.",
+  ],
+  "form-field-placeholder-label": [
+    "Donnez à chaque champ un libellé visible, relié à lui par for et id.",
+    "Gardez le texte d'exemple comme modèle de format, jamais comme seul libellé.",
   ],
   "component-form-autocomplete":
     "Indiquez pour chaque champ ce qu'il recueille, pour que navigateurs et gestionnaires de mots de passe le remplissent.",
@@ -1036,13 +1084,13 @@ export const PRINCIPLES_FR: Record<
     principleLabel: "Perceptible",
     plainTitle: "Peut-on le voir et l'entendre ?",
     plainDescription:
-      "Tout ce que les gens ne peuvent ni voir ni entendre : du texte trop pâle pour être lu, des images dont rien ne dit ce qu'elles montrent, et des vidéos sans sous-titres.",
+      "Tout ce que les gens ne peuvent ni voir ni entendre : du texte trop pâle pour être lu, des images dont rien ne dit ce qu'elles montrent, des vidéos sans sous-titres et de l'audio sans transcription.",
   },
   "2": {
     principleLabel: "Utilisable",
     plainTitle: "Peut-on s'en servir ?",
     plainDescription:
-      "Savoir si quelqu'un peut vraiment traverser votre site, au clavier plutôt qu'à la souris, sur un téléphone, ou sans contrôle fin de ses mains.",
+      "Savoir si quelqu'un peut vraiment traverser votre site, au clavier plutôt qu'à la souris, sur un téléphone, à la voix, ou sans contrôle fin de ses mains.",
   },
   "3": {
     principleLabel: "Compréhensible",

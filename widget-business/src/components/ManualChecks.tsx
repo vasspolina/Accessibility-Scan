@@ -1,5 +1,5 @@
 import { useEffect, useId, useState } from "react";
-import { t } from "../lib/strings";
+import { t, tf } from "../lib/strings";
 import { Select } from "./Select2";
 import { Textarea } from "./Textarea";
 import { Input } from "./Input";
@@ -30,12 +30,14 @@ import { getDecidedBy, setDecidedBy } from "../lib/apiKey";
  * somebody. The list comes from the server's most recent stored scan of
  * this site, so it shrinks by itself as the scanner learns to decide more.
  */
+// English here, translated where the form renders: a t() at module load
+// would fix the labels to whatever language was set before mount.
 const STATUS_OPTIONS: Array<{ value: RecordedVerdict["status"]; label: string }> = [
-  { value: "supports", label: t("Yes. It meets this") },
-  { value: "partially-supports", label: t("Partly") },
-  { value: "does-not-support", label: t("No. It fails this") },
-  { value: "not-applicable", label: t("Does not apply to this site") },
-  { value: "unresolved", label: t("Looked, could not decide yet") },
+  { value: "supports", label: "Yes. It meets this" },
+  { value: "partially-supports", label: "Partly" },
+  { value: "does-not-support", label: "No. It fails this" },
+  { value: "not-applicable", label: "Does not apply to this site" },
+  { value: "unresolved", label: "Looked, could not decide yet" },
 ];
 
 const STATUS_WORD: Record<RecordedVerdict["status"], string> = {
@@ -98,7 +100,7 @@ export function ManualChecks({
       <section className="a11y-section" aria-labelledby="a11y-manual-heading">
         <div className="a11y-section-head">
           <h2 className="a11y-section-title" id="a11y-manual-heading" data-nav-label={t("Manual checks")}>
-            Manual checks
+            {t("Manual checks")}
           </h2>
         </div>
         <Notification kind="warning" title={t("Could not load the open questions")} subtitle={error} />
@@ -111,9 +113,9 @@ export function ManualChecks({
     <section className="a11y-section" aria-labelledby="a11y-manual-heading">
       <div className="a11y-section-head">
         <h2 className="a11y-section-title" id="a11y-manual-heading" data-nav-label={t("Manual checks")}>
-          Manual checks{" "}
+          {t("Manual checks")}{" "}
           <span className="a11y-section-count">
-            ({data.open} {t("open")}, {data.answered} {t("answered")})
+            ({tf("{open} open, {answered} answered", { open: data.open, answered: data.answered })})
           </span>
         </h2>
         <p className="a11y-section-desc">
@@ -214,11 +216,11 @@ function AnswerForm({
   }
 
   return (
-    <form className="a11y-manual-form" onSubmit={save} aria-label={`Answer for ${question.criterion}`}>
+    <form className="a11y-manual-form" onSubmit={save} aria-label={tf("Answer for {criterion}", { criterion: question.criterion })}>
       <Select
         id={`${id}-status`}
         label={t("Your answer")}
-        options={STATUS_OPTIONS}
+        options={STATUS_OPTIONS.map((o) => ({ ...o, label: t(o.label) }))}
         value={status}
         onChange={(e) => setStatus(e.target.value as RecordedVerdict["status"])}
       />

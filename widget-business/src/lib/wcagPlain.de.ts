@@ -318,6 +318,28 @@ export const PLAIN_DE: Record<string, PlainRule> = {
     impact: "Wer mit der Tastatur bis hierher kommt, kommt nicht weiter. Einer der schlimmsten Fehler, die eine Website haben kann.",
   },
 
+  // Die Namensprüfungen für Screenreader. Jede ist eine gebündelte Karte,
+  // deren Anzahl in der Beschreibung des Backends steht, daher kein found().
+  "sr-filename-alt": {
+    plain: "Bildbeschreibungen sind Dateinamen",
+    impact: "Ein Screenreader liest den Dateinamen vor, samt Ziffern und Satzzeichen. Wo die Bedeutung des Bildes sein sollte, hört man nur Rauschen.",
+  },
+  "sr-vague-link-name": {
+    plain: "Links heißen „Hier klicken“",
+    impact: "Wer einen Screenreader nutzt, lässt sich alle Links als Liste anzeigen. Eine Liste aus „Hier klicken“ und „Mehr erfahren“ bietet nichts, wonach man wählen kann.",
+  },
+  "sr-symbol-button-name": {
+    plain: "Schaltflächen nur mit einem Symbol benannt",
+    impact: "Ein Screenreader sagt das Symbol an oder gar nichts. Wer zuhört, erfährt nicht, was ein Druck auf die Schaltfläche bewirkt.",
+  },
+  "sr-vague-button-name": {
+    plain: "Schaltflächennamen, die nichts sagen",
+    impact: "Wer sehen kann, sieht das × in der Ecke und weiß Bescheid. Wer zuhört, hört „mal, Schaltfläche“ und hat keine Ecke als Anhaltspunkt.",
+  },
+  "form-field-placeholder-label": {
+    plain: "Felder nur mit Platzhalter beschriftet",
+    impact: "Der Hinweis verschwindet, sobald jemand tippt. Wer mitten im Formular innehält, sieht danach gefüllte Felder und kann nicht prüfen, was wohin gehört.",
+  },
   "component-form-autocomplete": {
     plain: "Formularfelder blockieren das Ausfüllen",
     impact: "Alle tippen Name, E-Mail und Adresse wieder von Hand. Langsam für alle, für manche eine echte Hürde.",
@@ -582,6 +604,26 @@ export const FIXES_DE: Record<string, string | string[]> = {
   "keyboard-focus-trap": [
     "Sorgen Sie dafür, dass Tab immer weiterkommt und Escape immer herausführt.",
     "Prüfen Sie es, indem Sie die Maus beiseitelegen und nur die Tastatur nutzen.",
+  ],
+  "sr-filename-alt": [
+    "Ersetzen Sie jeden Dateinamen durch einen Satz, der sagt, was das Bild zeigt.",
+    "Geben Sie rein schmückenden Bildern einen leeren Alt-Text, damit Screenreader sie überspringen.",
+  ],
+  "sr-vague-link-name": [
+    "Benennen Sie jeden Link nach seinem Ziel. „Preise ansehen“, nicht „Hier klicken“.",
+    "Der sichtbare Text darf kurz bleiben. Ihr Entwickler kann den vollständigen Namen unsichtbar ergänzen, nur für Screenreader.",
+  ],
+  "sr-symbol-button-name": [
+    "Beschriften Sie jede Schaltfläche mit ihrer Aktion: „Schließen“, „Nächste Folie“, „Suchen“, „Abspielen“.",
+    "Die reine Symbol-Optik darf bleiben: Die Wörter kommen unsichtbar dazu, nur für Screenreader.",
+  ],
+  "sr-vague-button-name": [
+    "Beschriften Sie jede Schaltfläche mit ihrer Aktion: „Schließen“, „Nächste Folie“, „Suchen“, „Abspielen“.",
+    "Die reine Symbol-Optik darf bleiben: Die Wörter kommen unsichtbar dazu, nur für Screenreader.",
+  ],
+  "form-field-placeholder-label": [
+    "Geben Sie jedem Feld eine sichtbare Beschriftung, die über for und id mit ihm verbunden ist.",
+    "Nutzen Sie den Platzhalter als Beispiel für das Format, nie als einzige Beschriftung.",
   ],
   "component-form-autocomplete": "Kennzeichnen Sie jedes Feld mit dem, was es erfasst, damit Browser und Passwortmanager es ausfüllen können.",
   "component-input-type": [
@@ -934,12 +976,12 @@ export const PRINCIPLES_DE: Record<string, { principleLabel: string; plainTitle:
   "1": {
     principleLabel: "Wahrnehmbar",
     plainTitle: "Können Menschen es sehen und hören?",
-    plainDescription: "Alles, was Menschen nicht sehen oder hören können: Text, der zu blass zum Lesen ist, Bilder ohne ein Wort dazu und Videos ohne Untertitel.",
+    plainDescription: "Alles, was Menschen nicht sehen oder hören können: Text, der zu blass zum Lesen ist, Bilder ohne ein Wort dazu, Videos ohne Untertitel und Audio ohne Transkript.",
   },
   "2": {
     principleLabel: "Bedienbar",
     plainTitle: "Können Menschen es benutzen?",
-    plainDescription: "Ob jemand wirklich durch Ihre Website kommt: mit der Tastatur statt der Maus, auf dem Handy oder ohne feine Kontrolle über die Hände.",
+    plainDescription: "Ob jemand wirklich durch Ihre Website kommt: mit der Tastatur statt der Maus, auf dem Handy, per Sprache oder ohne feine Kontrolle über die Hände.",
   },
   "3": {
     principleLabel: "Verständlich",

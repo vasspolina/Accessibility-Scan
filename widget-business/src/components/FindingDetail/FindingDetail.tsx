@@ -1,4 +1,5 @@
 import { useState, type CSSProperties, type ReactNode } from "react";
+import { t } from "../../lib/strings";
 
 /**
  * FindingDetail, ported from components/scan/FindingDetail.jsx.
@@ -57,9 +58,9 @@ export function FindingDetail({
   who,
   whatFound,
   whatToDo,
-  affectedLabel = "Affected element",
+  affectedLabel = t("Affected element"),
   affected,
-  technicalLabel = "The technical version",
+  technicalLabel = t("The technical version"),
   technical,
   defaultTechnicalOpen = false,
   actionLabel,
@@ -134,15 +135,15 @@ export function FindingDetail({
 
       {whatToDo && <p className="a11y-fd-todo">{whatToDo}</p>}
 
-      {who && row("Who fixes this", who)}
-      {!hasHead && whatFound && row("What we found", whatFound)}
+      {who && row(t("Who fixes this"), who)}
+      {!hasHead && whatFound && row(t("What we found"), whatFound)}
 
       {affected && (
         <div className="a11y-fd-affected">
           <div className="a11y-fd-affected-head">
             <span className="a11y-fd-affected-label">{affectedLabel}</span>
             <button type="button" className="a11y-fd-copy" onClick={copy}>
-              {copied ? "Copied" : "Copy"}
+              {copied ? t("Copied") : t("Copy")}
             </button>
           </div>
           <div className="a11y-fd-affected-value">{affected}</div>
@@ -151,7 +152,7 @@ export function FindingDetail({
               control that changes its own label and says nothing to a screen
               reader is not good enough. */}
           <span className="a11y-sr-only" role="status">
-            {copied ? "Copied to clipboard" : ""}
+            {copied ? t("Copied to clipboard") : ""}
           </span>
         </div>
       )}

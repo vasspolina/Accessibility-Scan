@@ -1,5 +1,5 @@
 import { useId, useMemo, useRef, useState } from "react";
-import { t } from "../lib/strings";
+import { t, tf } from "../lib/strings";
 import type { ConformanceSummary, CriterionResult, RecordedVerdict } from "../api/scanClient";
 import { statusWord } from "./ManualChecks";
 import { DataTable } from "./DataTable";
@@ -35,23 +35,55 @@ const HUMAN_QUESTIONS = [
 /* Counts come from the conformance summary, never recounted here. */
 function RESULT_ROWS(c: ConformanceSummary) {
   return [
-    { key: "failed", severity: "critical", label: "We found problems",
-      meaning: `${c.failedByLevel.A} at level A, ${c.failedByLevel.AA} at AA`,
-      mark: "Fix first", n: c.failed },
-    { key: "clean", severity: "pass", label: "We checked, found nothing",
-      meaning: "Still worth a human look", mark: "Nothing found", n: c.noIssuesFound },
-    { key: "human", severity: "minor", label: "We couldn't check",
-      meaning: "Only a person can judge these. Every one is named below.",
-      mark: "Needs a person", n: c.needsReview },
+    { key: "failed", severity: "critical", label: t("We found problems"),
+      meaning: tf("{a} at level A, {aa} at AA", { a: c.failedByLevel.A, aa: c.failedByLevel.AA }),
+      mark: t("Fix first"), n: c.failed },
+    { key: "clean", severity: "pass", label: t("We checked, found nothing"),
+      meaning: t("Still worth a human look"), mark: t("Nothing found"), n: c.noIssuesFound },
+    { key: "human", severity: "minor", label: t("We couldn't check"),
+      meaning: t("Only a person can judge these. Every one is named below."),
+      mark: t("Needs a person"), n: c.needsReview },
     // Only present when it happened. A permanent zero row would teach readers
     // to skip it; when a check breaks, this is the row that keeps the clean
     // count honest.
     ...((c.notMeasured ?? 0) > 0
-      ? [{ key: "not-measured", severity: "serious", label: "A check didn't finish",
-          meaning: "These weren't examined this time. A second run usually completes them.",
-          mark: "Not measured", n: c.notMeasured ?? 0 }]
+      ? [{ key: "not-measured", severity: "serious", label: t("A check didn't finish"),
+          meaning: t("These weren't examined this time. A second run usually completes them."),
+          mark: t("Not measured"), n: c.notMeasured ?? 0 }]
       : []),
   ];
+}
+
+/* The checks that left a row unmeasured, as one sentence. The names are the
+   report's own, translated one by one the way checkNames does; the list is
+   joined by a key of its own, so "and" is never English inside a German
+   sentence. */
+function unfinishedChecks(names: string[]): string {
+  const local = names.map((n) => t(n));
+  return local.length === 1
+    ? tf("The {check} check didn’t finish this scan", { check: local[0] })
+    : tf("The {checks} checks didn’t finish this scan", {
+        checks: local.reduce((a, b) => tf("{a} and {b}", { a, b })),
+      });
+}
+
+/* "Decided: Meets it " and the em that follows it. The sentence is
+   translated whole and split where the em goes, so the lead stays ONE text
+   node ending in a space — as four adjacent nodes ("Decided", ": ", word,
+   " ") the trailing space measured 0px wide and the em welded on. */
+function DecidedLine({ verdict }: { verdict: RecordedVerdict }) {
+  const [lead, tail] = tf("Decided: {status} {detail}", { status: statusWord(verdict.status) }).split(
+    "{detail}"
+  );
+  return (
+    <span className="a11y-manual-verdict">
+      {lead}
+      <em>
+        ({verdict.decidedBy}, {verdict.decidedAt.slice(0, 10)})
+      </em>
+      {tail}
+    </span>
+  );
 }
 
 export function ConformanceView({
@@ -109,6 +141,12 @@ export function ConformanceView({
   const shown = conformance.criteria;
   const isFilteredOut = (status: CriterionResult["status"]) =>
     filter !== "all" && status !== filter;
+  // One sentence with the filter's name set into it in bold, split where
+  // the name goes rather than stitched from fragments.
+  const [otherBefore, otherAfter] = tf(
+    "The other {count} are in the checklist below. Choose {filter} to see them.",
+    { count: conformance.needsReview - HUMAN_QUESTIONS.length }
+  ).split("{filter}");
 
   return (
     <section className="a11y-section a11y-conf" aria-labelledby="a11y-conf-heading">
@@ -119,14 +157,21 @@ export function ConformanceView({
           project — every colour below is its own. */}
       <div className="a11y-legal-head">
         <h2 className="a11y-legal-title" id="a11y-conf-heading" data-nav-label={t("Legal standard")}>
-          Do you meet the legal standard?
+          {t("Do you meet the legal standard?")}
         </h2>
         <span className="a11y-legal-standard">{conformance.standard}</span>
         <p className="a11y-legal-intro">
-          The checklist of {conformance.total} items European accessibility law
-          measures sites against.
-          {showBfsgNote &&
-            " In Germany this is the standard the BFSG points at. That law implements the European Accessibility Act and has been in force since June 2025."}
+          {tf("The checklist of {total} items European accessibility law measures sites against.", {
+            total: conformance.total,
+          })}
+          {showBfsgNote && (
+            <>
+              {" "}
+              {t(
+                "In Germany this is the standard the BFSG points at. That law implements the European Accessibility Act and has been in force since June 2025."
+              )}
+            </>
+          )}
         </p>
       </div>
 
@@ -135,35 +180,37 @@ export function ConformanceView({
           brand yellow rather than a line of prose. */}
       <div className="a11y-legal-band" aria-labelledby="a11y-legal-band-heading">
         <h3 className="a11y-legal-eyebrow" id="a11y-legal-band-heading">
-          So &ldquo;nothing found&rdquo; is not a pass
+          {t("So “nothing found” is not a pass")}
         </h3>
         <div className="a11y-legal-card">
           <p className="a11y-legal-lead">
-            You need every item at both levels, A and AA. They don&rsquo;t average out.
+            {t("You need every item at both levels, A and AA. They don’t average out.")}
           </p>
           <p className="a11y-legal-body">
-            One Level A failure means you don&rsquo;t meet the standard.
+            {t("One Level A failure means you don’t meet the standard.")}
           </p>
         </div>
       </div>
 
       <div className="a11y-legal-grid">
         <div className="a11y-legal-panel" aria-labelledby="a11y-legal-tells-heading">
-          <h3 className="a11y-legal-eyebrow" id="a11y-legal-tells-heading">What this tells you</h3>
+          <h3 className="a11y-legal-eyebrow" id="a11y-legal-tells-heading">{t("What this tells you")}</h3>
           <div className="a11y-legal-card">
             <p className="a11y-legal-lead">
-              The scan lists where your site fails. It cannot confirm that anything meets the standard.
+              {t("The scan lists where your site fails. It cannot confirm that anything meets the standard.")}
             </p>
             <p className="a11y-legal-body">
-              {conformance.needsReview} of the {conformance.total} items need a
-              person. That&rsquo;s true of every automated check, this one included.
+              {tf(
+                "{count} of the {total} items need a person. That’s true of every automated check, this one included.",
+                { count: conformance.needsReview, total: conformance.total }
+              )}
             </p>
             <div className="a11y-legal-questions">
-              <p className="a11y-legal-micro">Questions no software can answer</p>
+              <p className="a11y-legal-micro">{t("Questions no software can answer")}</p>
               {HUMAN_QUESTIONS.map((q, i) => (
                 <span key={q} className="a11y-legal-q">
                   <span className="a11y-legal-qnum" aria-hidden="true">{i + 1}</span>
-                  <span>{q}</span>
+                  <span>{t(q)}</span>
                 </span>
               ))}
               {conformance.needsReview > HUMAN_QUESTIONS.length && (
@@ -172,8 +219,9 @@ export function ConformanceView({
                     {HUMAN_QUESTIONS.length + 1}
                   </span>
                   <span>
-                    The other {conformance.needsReview - HUMAN_QUESTIONS.length} are in
-                    the checklist below. Choose <strong>Needs a person</strong> to see them.
+                    {otherBefore}
+                    <strong>{t("Needs a person")}</strong>
+                    {otherAfter}
                   </span>
                 </span>
               )}
@@ -183,11 +231,11 @@ export function ConformanceView({
 
         <div className="a11y-legal-results" aria-labelledby="a11y-legal-results-heading">
           <h3 className="a11y-legal-eyebrow" id="a11y-legal-results-heading">
-            Automated check results
+            {t("Automated check results")}
           </h3>
           <div className="a11y-legal-thead" aria-hidden="true">
-            <span className="a11y-legal-col-result">Result</span>
-            <span className="a11y-legal-col-items">Items</span>
+            <span className="a11y-legal-col-result">{t("Result")}</span>
+            <span className="a11y-legal-col-items">{t("Items")}</span>
           </div>
           {RESULT_ROWS(conformance).map((r) => (
             <div key={r.key} className="a11y-legal-row">
@@ -200,7 +248,10 @@ export function ConformanceView({
             </div>
           ))}
           <p className="a11y-legal-micro a11y-legal-foot">
-            Against the {conformance.standard} checklist of {conformance.total} items
+            {tf("Against the {standard} checklist of {total} items", {
+              standard: conformance.standard,
+              total: conformance.total,
+            })}
           </p>
         </div>
       </div>
@@ -218,7 +269,7 @@ export function ConformanceView({
         aria-controls={panelId}
         onClick={() => setExpanded((v) => !v)}
       >
-        {expanded ? "Hide the checklist" : "Show the checklist"}
+        {expanded ? t("Hide the checklist") : t("Show the checklist")}
       </button>
 
       {/* Always in the DOM, hidden when collapsed. A printed report is
@@ -234,17 +285,17 @@ export function ConformanceView({
               filtered view. Here each number sits on the option it
               selects, so every one of them is true. */}
           <fieldset className="a11y-radio-group a11y-conf-filter">
-            <legend>Show</legend>
+            <legend>{t("Show")}</legend>
             {(
               [
-                ["failed", `Failures (${failing.length})`],
-                ["needs-review", `Needs a person (${needsPerson.length})`],
+                ["failed", tf("Failures ({count})", { count: failing.length })],
+                ["needs-review", tf("Needs a person ({count})", { count: needsPerson.length })],
                 // The chip exists only when the state does — an always-empty
                 // filter would be a control that never does anything.
                 ...(notMeasured.length > 0
-                  ? ([["not-measured", `Not measured (${notMeasured.length})`]] as const)
+                  ? ([["not-measured", tf("Not measured ({count})", { count: notMeasured.length })]] as const)
                   : []),
-                ["all", `Everything (${conformance.total})`],
+                ["all", tf("Everything ({count})", { count: conformance.total })],
               ] as const
             ).map(([value, label]) => (
               <label key={value} className="a11y-radio">
@@ -261,7 +312,7 @@ export function ConformanceView({
           </fieldset>
 
           {failing.length === 0 && filter === "failed" ? (
-            <p className="a11y-conf-caveat">Nothing on this page fails.</p>
+            <p className="a11y-conf-caveat">{t("Nothing on this page fails.")}</p>
           ) : (
             <ul className="a11y-conf-list">
               {shown.map((c) => (
@@ -280,28 +331,18 @@ export function ConformanceView({
                         check. */}
                     <strong>{c.status === "failed" ? c.failing : c.plain}</strong>
                     <span className="a11y-conf-plain">
-                      Officially: {c.name}
+                      {t("Officially:")} {c.name}
                     </span>
                     {/* Say which check broke, or "not measured" is just a
                         shrug. The names are the report's own, the same ones
                         the warning banner above uses. */}
                     {c.status === "not-measured" && c.notMeasured && c.notMeasured.length > 0 && (
-                      <span className="a11y-conf-plain">
-                        The {c.notMeasured.join(" and ")} check{c.notMeasured.length > 1 ? "s" : ""} didn&rsquo;t finish this scan
-                      </span>
+                      <span className="a11y-conf-plain">{unfinishedChecks(c.notMeasured)}</span>
                     )}
                     {/* Only where the scan left the question open. A measured
                         failure is not overruled by an opinion. */}
                     {c.status !== "failed" && verdictFor.get(c.id) && (
-                      <span className="a11y-manual-verdict">
-                        {/* One text node ending in a space. As four adjacent
-                            nodes ("Decided", ": ", word, " ") the trailing
-                            space measured 0px wide and the em welded on. */}
-                        {`${t("Decided")}: ${statusWord(verdictFor.get(c.id)!.status)} `}
-                        <em>
-                          ({verdictFor.get(c.id)!.decidedBy}, {verdictFor.get(c.id)!.decidedAt.slice(0, 10)})
-                        </em>
-                      </span>
+                      <DecidedLine verdict={verdictFor.get(c.id)!} />
                     )}
                   </span>
                   <span className="a11y-conf-status">
@@ -310,7 +351,7 @@ export function ConformanceView({
                         Say it: thirteen places on this page. */}
                     {c.findingCount > 0 && (
                       <em className="a11y-conf-count">
-                        {c.findingCount === 1 ? "1 place" : `${c.findingCount} places`}
+                        {c.findingCount === 1 ? t("1 place") : tf("{count} places", { count: c.findingCount })}
                       </em>
                     )}
                   </span>
@@ -328,7 +369,7 @@ export function ConformanceView({
               toggleRef.current?.focus();
             }}
           >
-            Hide the checklist
+            {t("Hide the checklist")}
           </button>
       </div>
     </section>

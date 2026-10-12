@@ -1,4 +1,5 @@
 import type { AccessibilityFinding } from "../api/scanClient";
+import { t } from "./strings";
 
 // Two questions about a finding, answered separately because they are
 // separate questions — and trying to answer both with one badge is what kept
@@ -25,38 +26,58 @@ export type FixOwner = "code" | "content" | "design" | "document";
 
 export interface FixKind {
   key: FixOwner;
-  label: string;
-  hint: string;
+  readonly label: string;
+  readonly hint: string;
 }
 
+// The label and hint are getters so they are translated when they are read,
+// at render time, in whatever language the reader has switched to. A plain
+// t() call here would run once, when this module loads, before the widget
+// has set a language at all.
 export const FIX_KINDS: Record<FixOwner, FixKind> = {
   code: {
     key: "code",
-    label: "Code fix",
+    get label() {
+      return t("Code fix");
+    },
     // "Markup or the stylesheet" is two pieces of jargon in one sentence, on
     // a report written for the person who owns the site rather than the one
     // who builds it. They do not need the names of the files.
-    hint: "This is a change in the site's own code. It goes to whoever builds or maintains the site for you.",
+    get hint() {
+      return t("This is a change in the site's own code. It goes to whoever builds or maintains the site for you.");
+    },
   },
   content: {
     key: "content",
-    label: "Content fix",
-    hint: "No code needs to change. This is a decision about wording. It belongs with whoever writes the page rather than with a developer.",
+    get label() {
+      return t("Content fix");
+    },
+    get hint() {
+      return t("No code needs to change. This is a decision about wording. It belongs with whoever writes the page rather than with a developer.");
+    },
   },
   design: {
     key: "design",
-    label: "Design fix",
+    get label() {
+      return t("Design fix");
+    },
     // Somebody does eventually change a stylesheet, and saying "code fix"
     // sends it to the wrong desk anyway: a developer handed "make these
     // targets bigger" has to invent a size, a colour or a spacing, which is
     // not their decision to make. The decision comes first and belongs to
     // whoever owns how the page looks.
-    hint: "This is a decision about how the page looks: a size, a colour, a spacing. The designer decides it. A developer then changes the stylesheet to match.",
+    get hint() {
+      return t("This is a decision about how the page looks: a size, a colour, a spacing. The designer decides it. A developer then changes the stylesheet to match.");
+    },
   },
   document: {
     key: "document",
-    label: "Document fix",
-    hint: "The fault is inside the PDF, not the website. Fix it in the original file (Word, InDesign, Acrobat) and export again. Editing the site will not help.",
+    get label() {
+      return t("Document fix");
+    },
+    get hint() {
+      return t("The fault is inside the PDF, not the website. Fix it in the original file (Word, InDesign, Acrobat) and export again. Editing the site will not help.");
+    },
   },
 };
 
@@ -189,6 +210,18 @@ export const AI_HINT =
 
 export const KEYBOARD_HINT =
   "You can confirm this one yourself in a few minutes, with nothing installed. Put the mouse aside and move through the page using Tab, Enter and Escape.";
+
+// The two hints above, in the reader's language. The constants stay English
+// because each one is also its own key in t(), and a constant cannot follow
+// the language switcher: it is fixed when this module loads. Render these
+// instead of the constants.
+export function aiHint(): string {
+  return t(AI_HINT);
+}
+
+export function keyboardHint(): string {
+  return t(KEYBOARD_HINT);
+}
 
 export function isKeyboardCheck(finding: AccessibilityFinding): boolean {
   return KEYBOARD_CHECKS.has(finding.ruleId ?? "");

@@ -97,19 +97,21 @@ import {
  */
 export function waitingMessage(mode: ScanMode, aiRequested: boolean, elapsed: number): string {
   if (mode === "site") {
-    return `Site audit under way. Each page in turn, so this takes ${SCAN_DURATION.site}…`;
+    return tf("Site audit under way. Each page in turn, so this takes {duration}…", {
+      duration: t(SCAN_DURATION.site),
+    });
   }
   if (elapsed >= 60) {
-    return "Still at it. This one is unusually heavy — a page of large images can take a while to load and measure.";
+    return t("Still at it. This one is unusually heavy — a page of large images can take a while to load and measure.");
   }
   if (elapsed >= 25) {
     return aiRequested
-      ? "Still at it. The AI review is the slow part, and it is nearly always worth the wait."
-      : "Still at it. Heavier pages take longer, and this one is on the heavier side.";
+      ? t("Still at it. The AI review is the slow part, and it is nearly always worth the wait.")
+      : t("Still at it. Heavier pages take longer, and this one is on the heavier side.");
   }
   return aiRequested
-    ? "We check your site, including the AI review. That usually takes about a minute…"
-    : `We check your site. Most pages take ${SCAN_DURATION.page}…`;
+    ? t("We check your site, including the AI review. That usually takes about a minute…")
+    : tf("We check your site. Most pages take {duration}…", { duration: t(SCAN_DURATION.page) });
 }
 
 export interface CtaConfig {
@@ -496,7 +498,7 @@ export function App({
     if (key === "audit") {
       return audit ? (
         <>
-          <PrintButton label="Save the audit as PDF" />
+          <PrintButton label={t("Save the audit as PDF")} />
           <SiteAuditView audit={audit} />
         </>
       ) : null;
@@ -588,7 +590,7 @@ export function App({
            issues/no-issues switch, and the findings table. */
         return professional && !isDocument ? (
           <>
-            <div className="a11y-mode a11y-filter" role="group" aria-label="Show findings by fix type">
+            <div className="a11y-mode a11y-filter" role="group" aria-label={t("Show findings by fix type")}>
               {(
                 [
                   ["all", "All"],
@@ -604,7 +606,7 @@ export function App({
                   aria-pressed={fixFilter === fkey}
                   onClick={() => setFixFilter(fkey)}
                 >
-                  {label}
+                  {t(label)}
                 </button>
               ))}
             </div>
@@ -613,13 +615,19 @@ export function App({
               items={[
                 {
                   id: "issues",
-                  label: `Issues (${proIssueGroups})`,
-                  panel: `${proIssueGroups} finding${proIssueGroups === 1 ? "" : "s"}`,
+                  label: tf("Issues ({count})", { count: proIssueGroups }),
+                  panel:
+                    proIssueGroups === 1
+                      ? t("1 finding")
+                      : tf("{count} findings", { count: proIssueGroups }),
                 },
                 {
                   id: "clean",
-                  label: `No issues found (${proCleanCount})`,
-                  panel: `${proCleanCount} criteria with nothing found`,
+                  label: tf("No issues found ({count})", { count: proCleanCount }),
+                  panel:
+                    proCleanCount === 1
+                      ? t("1 criterion with nothing found")
+                      : tf("{count} criteria with nothing found", { count: proCleanCount }),
                 },
               ]}
               defaultId={proView}
@@ -640,16 +648,29 @@ export function App({
       case "history":
         return <ScanHistory current={toHistoryEntry(report)} previous={history} />;
 
-      case "findings":
+      case "findings": {
         /* In professional mode these cards are print-only: the screen shows
            the table, but a printed report has to stand alone. */
+        /* One sentence per reading, translated whole; the link sits where
+           its placeholder does, so word order follows the language. */
+        const [sectionDescBefore, sectionDescAfter] = (
+          isDocument
+            ? t(
+                "What a screen reader cannot read aloud in this document, grouped by the four questions the standard asks. More at {link}."
+              )
+            : t(
+                "Grouped by the standard's four questions: can people see it, use it, understand it, and will it still work. More at {link}."
+              )
+        ).split("{link}");
         return (
           <div className={professional && !isDocument ? "a11y-print-cards" : undefined}>
             {!isDocument && (
               <ReportSection
                 title="What costs you trust"
-                eyebrow="Dark pattern findings"
-                description="Places your site nudges people rather than leaves the choice to them. These don't move the score. They move how much people trust you."
+                eyebrow={t("Dark pattern findings")}
+                description={t(
+                  "Places your site nudges people rather than leaves the choice to them. These don't move the score. They move how much people trust you."
+                )}
                 variant={findingsByCategory.darkPattern.length > 0 ? "redflag" : "default"}
                 findings={findingsByCategory.darkPattern}
                 id="a11y-trust-heading"
@@ -666,18 +687,17 @@ export function App({
                 <span className="a11y-section-count">({findingsByCategory.accessibility.length})</span>
               </h2>
               <p className="a11y-section-desc">
-                {isDocument
-                  ? "What a screen reader cannot read aloud in this document, grouped by the four questions the standard asks. More at "
-                  : "Grouped by the standard's four questions: can people see it, use it, understand it, and will it still work. More at "}
+                {sectionDescBefore}
                 <a href={WCAG_LINK} target="_blank" rel="noopener noreferrer">
                   w3.org/WAI
                 </a>
-                .
+                {sectionDescAfter}
               </p>
               <PrincipleGroup findings={findingsByCategory.accessibility} />
             </section>
           </div>
         );
+      }
 
       case "checklist":
         return (
@@ -743,7 +763,9 @@ export function App({
         return !professional && cta?.text && cta?.href ? (
           <section className="a11y-section a11y-cta">
             <a className="a11y-cta-link" href={cta.href} target="_blank" rel="noopener noreferrer">
-              {cta.text}
+              {/* The embedder's own words. A text the dictionary knows is
+                  translated; anything else falls back to itself. */}
+              {t(cta.text)}
             </a>
           </section>
         ) : null;
@@ -788,7 +810,7 @@ export function App({
                   bar rather than below the whole form, so the radio groups
                   and options don't shift position while a scan runs. */}
               <ProgressBar
-                label="In progress"
+                label={t("In progress")}
                 value={
                   // Real steps beat estimated time: once the milestone
                   // stream is talking, the bar reports how far along the
@@ -889,7 +911,7 @@ export function App({
     <>
     <section
       className={`a11y-widget-inner${entry === "form" && sections.length > 0 ? " a11y-shell-with-nav" : ""}`}
-      aria-label="Website accessibility check"
+      aria-label={t("Website accessibility check")}
       /* The widget's language, declared where the widget starts. It is a
          guest on a page marked with the host's language; once the visitor
          switches to Deutsch every string inside is German, and without this
@@ -919,21 +941,25 @@ export function App({
                     : handleScan(report.url, report.meta.aiReviewStatus === "completed", "page", 5)
                 }
               >
-                Run scan
+                {t("Run scan")}
               </Button>
             )}
-            {professional && <PrintButton label="Export report" compact />}
+            {professional && <PrintButton label={t("Export report")} compact />}
             <Button variant="ghost" onClick={focusForm}>
-              New scan
+              {t("New scan")}
             </Button>
           </>
         ) : undefined
       }
       navMeta={
         report
-          ? `${hostnameOf(report.url)} \u00b7 ${new Date(report.scannedAt).toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" })}`
+          ? // The month in the reader's language; English keeps its day-month order.
+            `${hostnameOf(report.url)} \u00b7 ${new Date(report.scannedAt).toLocaleDateString(lang === "en" ? "en-GB" : lang, { day: "numeric", month: "short", year: "numeric" })}`
           : audit
-            ? `${hostnameOf(audit.pages[0]?.url ?? "")} \u00b7 ${audit.pagesScanned} pages`
+            ? // Two facts side by side, not a sentence: the host, then the count.
+              `${hostnameOf(audit.pages[0]?.url ?? "")} \u00b7 ${
+                audit.pagesScanned === 1 ? t("1 page") : tf("{count} pages", { count: audit.pagesScanned })
+              }`
             : undefined
       }
       sections={entry === "form" ? sections : []}
@@ -1040,13 +1066,16 @@ export function App({
             : blocked
             ? blocked
             : report
-              ? `Check complete in ${tookSeconds ?? 0} seconds. Score ${report.score} out of 100, ${
-                  report.summary.total
-                } ${report.summary.total === 1 ? "issue" : "issues"} found. The full report follows.`
+              ? tf("Check complete in {seconds} seconds. Score {score} out of 100. Issues found: {count}. The full report follows.", {
+                  seconds: tookSeconds ?? 0,
+                  score: report.score,
+                  count: report.summary.total,
+                })
               : audit
-                ? `Site audit complete. ${audit.pagesScanned} ${
-                    audit.pagesScanned === 1 ? "page" : "pages"
-                  } checked, average score ${audit.averageScore} out of 100. The full report follows.`
+                ? tf("Site audit complete. Pages checked: {count}. Average score {score} out of 100. The full report follows.", {
+                    count: audit.pagesScanned,
+                    score: audit.averageScore,
+                  })
                 : ""}
       </p>
 

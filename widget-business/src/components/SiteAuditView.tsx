@@ -1,5 +1,5 @@
 import type { SiteAudit } from "../api/scanClient";
-import { t } from "../lib/strings";
+import { t, tf } from "../lib/strings";
 import { ConformanceView } from "./ConformanceView";
 import { plainForRule } from "../lib/wcagPlain";
 import { useReportView } from "./ReportViewContext";
@@ -19,6 +19,24 @@ const severityLabel = {
 // resolves everywhere, versus problems on individual pages. So the site-wide
 // list leads, and the per-page scores follow.
 
+// The opening count, one whole sentence per case: German and the rest agree
+// the verb with both numbers, so neither "page(s)" nor the clause about
+// unreachable pages can be bolted on afterwards.
+function checkedSentence(scanned: number, failed: number): string {
+  const values = { count: scanned, failed };
+  if (failed === 0) {
+    return scanned === 1 ? t("1 page checked.") : tf("{count} pages checked.", values);
+  }
+  if (failed === 1) {
+    return scanned === 1
+      ? t("1 page checked, 1 couldn't be reached.")
+      : tf("{count} pages checked, 1 couldn't be reached.", values);
+  }
+  return scanned === 1
+    ? tf("1 page checked, {failed} couldn't be reached.", values)
+    : tf("{count} pages checked, {failed} couldn't be reached.", values);
+}
+
 export function SiteAuditView({ audit }: { audit: SiteAudit }) {
   const worst = audit.worstPage;
   const { professional } = useReportView();
@@ -28,29 +46,33 @@ export function SiteAuditView({ audit }: { audit: SiteAudit }) {
       <section className="a11y-section a11y-audit-head" aria-labelledby="a11y-audit-head-heading">
         <h2 className="a11y-section-title" id="a11y-audit-head-heading" data-nav-label={t("Site audit")}>{t("Site audit")}</h2>
         <p className="a11y-section-desc">
-          {audit.pagesScanned} page{audit.pagesScanned === 1 ? "" : "s"} checked
-          {audit.pagesFailed > 0 && `, ${audit.pagesFailed} couldn't be reached`}. We pick the pages
-          that matter most: contact, booking and shop before blog posts.
+          {checkedSentence(audit.pagesScanned, audit.pagesFailed)}{" "}
+          {t("We pick the pages that matter most: contact, booking and shop before blog posts.")}
         </p>
 
         <div className="a11y-conf-tiles">
           <div className="a11y-conf-tile">
             <span className="a11y-conf-num">{audit.averageScore}</span>
             <span className="a11y-conf-cap">
-              Average score<em>across {audit.pagesScanned} pages</em>
+              {t("Average score")}
+              <em>
+                {audit.pagesScanned === 1
+                  ? t("across 1 page")
+                  : tf("across {count} pages", { count: audit.pagesScanned })}
+              </em>
             </span>
           </div>
           <div className="a11y-conf-tile a11y-conf-tile-fail">
             <span className="a11y-conf-num">{audit.siteWide.length}</span>
             <span className="a11y-conf-cap">
-              Site-wide issues<em>one fix each, everywhere</em>
+              {t("Site-wide issues")}<em>{t("one fix each, everywhere")}</em>
             </span>
           </div>
           {worst && (
             <div className="a11y-conf-tile">
               <span className="a11y-conf-num">{worst.score}</span>
               <span className="a11y-conf-cap">
-                Worst page<em>{worst.label}</em>
+                {t("Worst page")}<em>{worst.label}</em>
               </span>
             </div>
           )}
@@ -64,14 +86,13 @@ export function SiteAuditView({ audit }: { audit: SiteAudit }) {
             id="a11y-audit-consistency-heading"
             data-nav-label={t("Pages that disagree")}
           >
-            Pages that disagree{" "}
+            {t("Pages that disagree")}{" "}
             <span className="a11y-section-count">({(audit.consistency ?? []).length})</span>
           </h2>
           <p className="a11y-section-desc">
-            Found by comparing your pages against each other, which is the only
-            way these show up. One page on its own always looks fine. A menu
-            that moves, or a link that changes its name, makes people learn your
-            site again on every page.
+            {t(
+              "Found by comparing your pages against each other, which is the only way these show up. One page on its own always looks fine. A menu that moves, or a link that changes its name, makes people learn your site again on every page."
+            )}
           </p>
           <ul className="a11y-audit-list">
             {(audit.consistency ?? []).map((issue) => (
@@ -90,7 +111,7 @@ export function SiteAuditView({ audit }: { audit: SiteAudit }) {
                 </span>
                 <span className="a11y-audit-count">
                   {issue.pages.length}
-                  <em>pages</em>
+                  <em>{t("pages")}</em>
                 </span>
               </li>
             ))}
@@ -101,18 +122,18 @@ export function SiteAuditView({ audit }: { audit: SiteAudit }) {
       {audit.siteWide.length > 0 && (
         <section className="a11y-section a11y-section-concern" aria-labelledby="a11y-audit-siteWide-heading">
           <h2 className="a11y-section-title" id="a11y-audit-siteWide-heading" data-nav-label={t("Fix once, fix everywhere")}>
-            Fix once, fix everywhere{" "}
+            {t("Fix once, fix everywhere")}{" "}
             <span className="a11y-section-count">({audit.siteWide.length})</span>
           </h2>
           <p className="a11y-section-desc">
-            These show up on every page, so they live in the template rather than the content. Structural, not decorative. Start here.
+            {t("These show up on every page, so they live in the template rather than the content. Structural, not decorative. Start here.")}
           </p>
           <ul className="a11y-audit-list">
             {audit.siteWide.map((issue) => {
               const plain = plainForRule(issue.ruleId);
               return (
                 <li key={issue.ruleId} className={`a11y-audit-row a11y-severity-${issue.severity}`}>
-                  <SeverityTag severity={issue.severity} label={severityLabel[issue.severity]} />
+                  <SeverityTag severity={issue.severity} label={t(severityLabel[issue.severity])} />
                   <span className="a11y-audit-body">
                     <strong>
                       {plain?.plain ?? issue.title}
@@ -126,7 +147,9 @@ export function SiteAuditView({ audit }: { audit: SiteAudit }) {
                     {plain && <span className="a11y-conf-plain">{plain.impact}</span>}
                   </span>
                   <span className="a11y-audit-count">
-                    {issue.totalOccurrences}×<em>on all {issue.pageCount} pages</em>
+                    {/* pageCount is never 1: the backend only calls an issue
+                        site-wide once two or more pages were scanned. */}
+                    {issue.totalOccurrences}×<em>{tf("on all {count} pages", { count: issue.pageCount })}</em>
                   </span>
                 </li>
               );
@@ -140,7 +163,7 @@ export function SiteAuditView({ audit }: { audit: SiteAudit }) {
       <section className="a11y-section" aria-labelledby="a11y-audit-pages-heading">
         <h2 className="a11y-section-title" id="a11y-audit-pages-heading" data-nav-label={t("Page by page")}>{t("Page by page")}</h2>
         <p className="a11y-section-desc">
-          Scan a page on its own for the full detail.
+          {t("Scan a page on its own for the full detail.")}
         </p>
         {professional ? (
           /* The core.card composition's page table. The status words obey
@@ -154,10 +177,10 @@ export function SiteAuditView({ audit }: { audit: SiteAudit }) {
           <div className="a11y-pro-table a11y-pages-table">
             <DataTable
               headers={[
-                { key: "page", label: "Page" },
-                { key: "score", label: "Score", align: "right" },
-                { key: "issues", label: "Issues", align: "right" },
-                { key: "status", label: "Status" },
+                { key: "page", label: t("Page") },
+                { key: "score", label: t("Score"), align: "right" },
+                { key: "issues", label: t("Issues"), align: "right" },
+                { key: "status", label: t("Status") },
               ]}
               rows={audit.pages.map((page) => ({
                 id: page.url,
@@ -167,17 +190,17 @@ export function SiteAuditView({ audit }: { audit: SiteAudit }) {
                     <span className="a11y-conf-plain">{page.url}</span>
                     {page.error && <span className="a11y-audit-err">{page.error}</span>}
                   </span>,
-                  page.error ? "n/a" : page.score,
+                  page.error ? t("n/a") : page.score,
                   page.error ? ". " : page.findingCount,
                   <Tag
                     key="s"
                     tone={page.error ? "gray" : page.findingCount > 0 ? "red" : "green"}
                   >
                     {page.error
-                      ? "Unreachable"
+                      ? t("Unreachable")
                       : page.findingCount > 0
-                        ? "Fails"
-                        : "No issues found"}
+                        ? t("Fails")
+                        : t("No issues found")}
                   </Tag>,
                 ],
               }))}
@@ -188,7 +211,7 @@ export function SiteAuditView({ audit }: { audit: SiteAudit }) {
           {audit.pages.map((page) => (
             <li key={page.url} className="a11y-audit-row">
               <span className={`a11y-audit-score${page.error ? " a11y-audit-score-err" : ""}`}>
-                {page.error ? "n/a" : page.score}
+                {page.error ? t("n/a") : page.score}
               </span>
               <span className="a11y-audit-body">
                 <strong>{page.label}</strong>
@@ -198,7 +221,7 @@ export function SiteAuditView({ audit }: { audit: SiteAudit }) {
               {!page.error && (
                 <span className="a11y-audit-count">
                   {page.findingCount}
-                  <em>findings</em>
+                  <em>{page.findingCount === 1 ? t("finding") : t("findings")}</em>
                 </span>
               )}
             </li>

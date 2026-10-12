@@ -19,6 +19,11 @@
  * itself adds roughly half of one.
  *
  * Anything that tells a visitor how long to wait reads from here.
+ *
+ * Each value is also a translation key: pass it through t() and drop the
+ * result into a whole-sentence key's {duration}, as UrlForm does, e.g.
+ * tf("This page takes {duration}", { duration: t(SCAN_DURATION.page) }).
+ * Changing a phrase here means changing its key in the strings files too.
  */
 export const SCAN_DURATION = {
   /** A single page, typical case. Heavy pages run longer and the waiting

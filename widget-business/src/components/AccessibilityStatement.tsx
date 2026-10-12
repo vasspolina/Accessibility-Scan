@@ -1,5 +1,7 @@
 import { useMemo, useState } from "react";
 import { SectionHeader } from "./SectionHeader";
+import { t, tf } from "../lib/strings";
+import { getLang, type Lang } from "../lib/i18n";
 import type { AccessibilityReport, ConformanceSummary, RecordedVerdict } from "../api/scanClient";
 
 // Generates a draft accessibility statement.
@@ -45,22 +47,34 @@ type Position = "partially" | "non";
 function manualNote(needsReview: number, verdicts: RecordedVerdict[]): string {
   const decided = verdicts.filter((v) => v.status !== "unresolved");
   if (decided.length === 0) {
-    return "We have not yet carried out a full manual audit or testing with assistive technology users.";
+    return t("We have not yet carried out a full manual audit or testing with assistive technology users.");
   }
   const n = (s: RecordedVerdict["status"]) => decided.filter((v) => v.status === s).length;
+  // Each list item is a whole phrase, one key per number form; the list
+  // itself is joined with commas, which reads the same in every language.
+  const item = (count: number, one: string, many: string) => (count === 1 ? t(one) : tf(many, { count }));
   const parts: string[] = [];
-  if (n("supports")) parts.push(`${n("supports")} met`);
-  if (n("partially-supports")) parts.push(`${n("partially-supports")} partly met`);
-  if (n("does-not-support")) parts.push(`${n("does-not-support")} not met`);
-  if (n("not-applicable")) parts.push(`${n("not-applicable")} not applicable to this site`);
+  if (n("supports")) parts.push(item(n("supports"), "1 met", "{count} met"));
+  if (n("partially-supports")) parts.push(item(n("partially-supports"), "1 partly met", "{count} partly met"));
+  if (n("does-not-support")) parts.push(item(n("does-not-support"), "1 not met", "{count} not met"));
+  if (n("not-applicable"))
+    parts.push(item(n("not-applicable"), "1 not applicable to this site", "{count} not applicable to this site"));
   const remaining = Math.max(0, needsReview - decided.length);
-  return (
-    `${decided.length} of the criteria that need human judgement ${decided.length === 1 ? "has" : "have"} been checked by a person: ${parts.join(", ")}.` +
-    (remaining > 0
-      ? ` ${remaining} ${remaining === 1 ? "has" : "have"} not yet been checked manually.`
-      : " Every criterion that needs human judgement has been checked by a person.") +
-    " We have not yet tested with assistive technology users."
-  );
+  const results = parts.join(", ");
+  return [
+    decided.length === 1
+      ? tf("1 of the criteria that need human judgement has been checked by a person: {results}.", { results })
+      : tf("{count} of the criteria that need human judgement have been checked by a person: {results}.", {
+          count: decided.length,
+          results,
+        }),
+    remaining > 0
+      ? remaining === 1
+        ? t("1 has not yet been checked manually.")
+        : tf("{count} have not yet been checked manually.", { count: remaining })
+      : t("Every criterion that needs human judgement has been checked by a person."),
+    t("We have not yet tested with assistive technology users."),
+  ].join(" ");
 }
 
 // Exported for testing. The mandatory structure of this document is set by
@@ -80,13 +94,22 @@ export function buildStatement(opts: {
   verdicts?: RecordedVerdict[];
 }): string {
   const { organisation, contactEmail, siteUrl, position, conformance, knownIssues, date, verdicts = [] } = opts;
-  const org = organisation.trim() || "[Your organisation]";
-  const email = contactEmail.trim() || "[your contact email]";
+  const org = organisation.trim() || t("[Your organisation]");
+  const email = contactEmail.trim() || t("[your contact email]");
 
+  // The document is written in the report's language: its markdown frame
+  // (headings, list marks, emphasis) is structure, and every sentence inside
+  // it is one key, translated whole.
   const positionSentence =
     position === "partially"
-      ? `${org} considers ${siteUrl} to be **partially conformant** with EN 301 549 (which adopts WCAG 2.1 Level AA). "Partially conformant" means some parts of the site do not yet fully conform to the standard.`
-      : `${org} considers ${siteUrl} to be **non-conformant** with EN 301 549 (which adopts WCAG 2.1 Level AA). Non-conformant means the site does not yet meet the standard, and we aim to fix this.`;
+      ? tf(
+          '{org} considers {url} to be **partially conformant** with EN 301 549 (which adopts WCAG 2.1 Level AA). "Partially conformant" means some parts of the site do not yet fully conform to the standard.',
+          { org, url: siteUrl }
+        )
+      : tf(
+          "{org} considers {url} to be **non-conformant** with EN 301 549 (which adopts WCAG 2.1 Level AA). Non-conformant means the site does not yet meet the standard, and we aim to fix this.",
+          { org, url: siteUrl }
+        );
 
   // The model statement in Commission Implementing Decision (EU) 2018/1523
   // requires non-accessible content to be split into three named categories,
@@ -94,91 +117,122 @@ export function buildStatement(opts: {
   // are declarations only the owner can make, so they are left as prompts
   // rather than quietly omitted. An omitted mandatory heading is the kind of
   // gap that gets a statement rejected.
-  const issuesBlock = `## Non-accessible content
+  const issuesBlock = `## ${t("Non-accessible content")}
 
-The content below is non-accessible for the following reasons.
+${t("The content below is non-accessible for the following reasons.")}
 
-### Non-compliance
+### ${t("Non-compliance")}
 
 ${
   knownIssues.length
-    ? `We are aware of the following problems and aim to resolve them:
+    ? `${t("We are aware of the following problems and aim to resolve them:")}
 
 ${knownIssues.map((i) => `- ${i}`).join("\n")}`
-    : `An automated check found no failures it is able to detect. That does not mean the site is fully accessible — see "How we assessed this site" below.`
+    : t(
+        'An automated check found no failures it is able to detect. That does not mean the site is fully accessible — see "How we assessed this site" below.'
+      )
 }
 
-### Disproportionate burden
+### ${t("Disproportionate burden")}
 
-[List here anything you will not fix because it would be a disproportionate burden, and say why. Delete this section if it does not apply.]
+${t(
+  "[List here anything you will not fix because it would be a disproportionate burden, and say why. Delete this section if it does not apply.]"
+)}
 
-*Note: under Article 14 of the European Accessibility Act, to claim disproportionate burden takes more than a mention. You must carry out and document an assessment, keep it for five years, and inform the relevant market surveillance authority.*
+*${t(
+  "Note: under Article 14 of the European Accessibility Act, to claim disproportionate burden takes more than a mention. You must carry out and document an assessment, keep it for five years, and inform the relevant market surveillance authority."
+)}*
 
-### Content outside the scope of the legislation
+### ${t("Content outside the scope of the legislation")}
 
-[List here anything on the site that the accessibility rules do not cover. Examples: third party content you neither fund nor control, archived material, or office file formats published before the relevant date. Where an accessible alternative exists, say so. Delete this section if it does not apply.]`;
+${t(
+  "[List here anything on the site that the accessibility rules do not cover. Examples: third party content you neither fund nor control, archived material, or office file formats published before the relevant date. Where an accessible alternative exists, say so. Delete this section if it does not apply.]"
+)}`;
 
   // "Method used to prepare the statement" is a required element of the model
   // (Implementing Decision (EU) 2018/1523, and Art. 3(1) on assessment
   // methods). It distinguishes a self-assessment from a third-party audit, and
   // a statement that does not say which is not complete.
+  const checkedOn = tf("This statement is based on an automated check carried out on {date}.", { date });
   const assessmentNote = conformance
-    ? `**Method used:** self assessment, carried out by the site owner with an automated accessibility checker. It was not a third party evaluation.
+    ? `${t(
+        "**Method used:** self assessment, carried out by the site owner with an automated accessibility checker. It was not a third party evaluation."
+      )}
 
-This statement is based on an automated check carried out on ${date}. The check covers the ${conformance.total} Level A and AA success criteria in WCAG 2.1.
+${checkedOn} ${tf("The check covers the {total} Level A and AA success criteria in WCAG 2.1.", { total: conformance.total })}
 
-An automated check has real limits, and we would rather state them than imply a completeness we cannot evidence. ${conformance.needsReview} of those criteria cannot be assessed by software at all. They depend on human judgement. For example: whether video captions are accurate, or whether a form that times out can be extended. Where the check reports no issue, that means no issue was detected. It does not mean a person has verified the criterion as met.
+${tf(
+  "An automated check has real limits, and we would rather state them than imply a completeness we cannot evidence. {count} of those criteria cannot be assessed by software at all. They depend on human judgement. For example: whether video captions are accurate, or whether a form that times out can be extended. Where the check reports no issue, that means no issue was detected. It does not mean a person has verified the criterion as met.",
+  { count: conformance.needsReview }
+)}
 
 ${manualNote(conformance.needsReview, verdicts)}`
-    : `This statement is based on an automated check carried out on ${date}.`;
+    : checkedOn;
 
-  return `# Accessibility statement for ${siteUrl}
+  return `# ${tf("Accessibility statement for {url}", { url: siteUrl })}
 
-This statement applies to ${siteUrl}.
+${tf("This statement applies to {url}.", { url: siteUrl })}
 
-## How accessible this website is
+## ${t("How accessible this website is")}
 
 ${positionSentence}
 
 ${issuesBlock}
 
-## How we assessed this site
+## ${t("How we assessed this site")}
 
 ${assessmentNote}
 
-## Feedback and contact information
+## ${t("Feedback and contact information")}
 
-If you find an accessibility problem on this site, contact us at ${email}. Contact us too if you need information from the site in a different format. We aim to respond within 10 business days.
+${tf(
+  "If you find an accessibility problem on this site, contact us at {email}. Contact us too if you need information from the site in a different format. We aim to respond within 10 business days.",
+  { email }
+)}
 
-## Enforcement procedure
+## ${t("Enforcement procedure")}
 
-If our response to a complaint does not satisfy you, you can escalate. Take it to the body responsible for enforcement in your country.
+${t(
+  "If our response to a complaint does not satisfy you, you can escalate. Take it to the body responsible for enforcement in your country."
+)}
 
-[Name the enforcement body that applies to you, and link to its complaints procedure. Each EU member state designates its own. For the European Accessibility Act, these are the market surveillance authorities. For public sector bodies, it is the authority named in your country's transposition of Directive (EU) 2016/2102.]
+${t(
+  "[Name the enforcement body that applies to you, and link to its complaints procedure. Each EU member state designates its own. For the European Accessibility Act, these are the market surveillance authorities. For public sector bodies, it is the authority named in your country's transposition of Directive (EU) 2016/2102.]"
+)}
 
-## Preparation of this statement
+## ${t("Preparation of this statement")}
 
-This statement was prepared on ${date}. It was last reviewed on ${date}.
+${tf("This statement was prepared on {date}. It was last reviewed on {date}.", { date })}
 
-We review this statement at least once a year, and whenever the site changes substantially.
+${t("We review this statement at least once a year, and whenever the site changes substantially.")}
 
-## How this information is published
+## ${t("How this information is published")}
 
-The European Accessibility Act (Article 13(2) and Annex V) asks for more than a page like this one. Two things are worth a check:
+${t(
+  "The European Accessibility Act (Article 13(2) and Annex V) asks for more than a page like this one. Two things are worth a check:"
+)}
 
-- **Where it lives.** Annex V says the assessment belongs in your general terms and conditions, or an equivalent document. That assessment explains how the service meets the accessibility requirements. A published page like this one is a good start; it does not on its own satisfy that.
-- **What format it is in.** The information has to be available *in written and oral format*. It must also be in a form people with disabilities can use. In practice that means this page must itself be accessible. There must also be a way to get the same information from a person directly.
+- ${t(
+    "**Where it lives.** Annex V says the assessment belongs in your general terms and conditions, or an equivalent document. That assessment explains how the service meets the accessibility requirements. A published page like this one is a good start; it does not on its own satisfy that."
+  )}
+- ${t(
+    "**What format it is in.** The information has to be available *in written and oral format*. It must also be in a form people with disabilities can use. In practice that means this page must itself be accessible. There must also be a way to get the same information from a person directly."
+  )}
 
-Annex V also asks for the following. [Add or link to them here.]
+${t("Annex V also asks for the following. [Add or link to them here.]")}
 
-- a general description of the service in accessible formats
-- whatever explanation is needed to understand how the service works
-- a description of how the service meets the requirements in Annex I
+- ${t("a general description of the service in accessible formats")}
+- ${t("whatever explanation is needed to understand how the service works")}
+- ${t("a description of how the service meets the requirements in Annex I")}
 
 ---
-*Draft generated from an automated accessibility check. It follows the structure of the model statement in Commission Implementing Decision (EU) 2018/1523. The Web Accessibility Directive prescribes that template for public sector bodies. It is also the closest formal model for everyone else.*
+*${t(
+    "Draft generated from an automated accessibility check. It follows the structure of the model statement in Commission Implementing Decision (EU) 2018/1523. The Web Accessibility Directive prescribes that template for public sector bodies. It is also the closest formal model for everyone else."
+  )}*
 
-*Complete anything in brackets and have it checked before you publish. Two of the three "non-accessible content" headings above are declarations only you can make. A statement is a public, dated, formal declaration. Under the European Accessibility Act, an inaccurate one is its own exposure.*
+*${t(
+    'Complete anything in brackets and have it checked before you publish. Two of the three "non-accessible content" headings above are declarations only you can make. A statement is a public, dated, formal declaration. Under the European Accessibility Act, an inaccurate one is its own exposure.'
+  )}*
 `;
 }
 
@@ -213,7 +267,14 @@ function SpecCard({
   );
 }
 
+// The month is a word inside a translated sentence, so it follows the
+// report's language. English stays en-GB: day before month, house style.
+const DATE_LOCALE: Record<Lang, string> = { en: "en-GB", de: "de-DE", es: "es-ES", fr: "fr-FR" };
+
 export function AccessibilityStatement({ report }: { report: AccessibilityReport }) {
+  // Read at render, and a dependency of the draft below, so switching the
+  // language rewrites the statement rather than leaving the old one cached.
+  const lang = getLang();
   const [organisation, setOrganisation] = useState("");
   const [contactEmail, setContactEmail] = useState("");
   const [copied, setCopied] = useState(false);
@@ -254,15 +315,16 @@ export function AccessibilityStatement({ report }: { report: AccessibilityReport
         conformance: report.conformance,
         knownIssues,
         verdicts: report.verdicts,
-        // en-GB, not the viewer's locale: house style is European dates
-        // (28 June 2025), and that shouldn't change with who's reading.
-        date: new Date(report.scannedAt).toLocaleDateString("en-GB", {
+        // The report's language, not the viewer's browser locale: house
+        // style is European dates (28 June 2025), and that shouldn't change
+        // with who's reading. English is en-GB.
+        date: new Date(report.scannedAt).toLocaleDateString(DATE_LOCALE[lang], {
           year: "numeric",
           month: "long",
           day: "numeric",
         }),
       }),
-    [organisation, contactEmail, report, position, knownIssues]
+    [organisation, contactEmail, report, position, knownIssues, lang]
   );
 
   async function copy() {
@@ -275,6 +337,14 @@ export function AccessibilityStatement({ report }: { report: AccessibilityReport
     }
   }
 
+  // One sentence per number form, split on the position so the position
+  // itself can be set in bold wherever the language puts it.
+  const [saysBefore, saysAfter] = (
+    failing === 1
+      ? t("Says {position}, based on 1 failed criterion.")
+      : tf("Says {position}, based on {count} failed criteria.", { count: failing })
+  ).split("{position}");
+
   return (
     <section className="a11y-section a11y-stmt" aria-labelledby="a11y-stmt-heading">
       <SectionHeader
@@ -284,8 +354,9 @@ export function AccessibilityStatement({ report }: { report: AccessibilityReport
         navLabel="Accessibility statement"
       />
       <p className="a11y-section-desc">
-        European law asks for one if you serve EU customers, and this check already knows most of
-        the answers. Add your details and the draft writes itself.
+        {t(
+          "European law asks for one if you serve EU customers, and this check already knows most of the answers. Add your details and the draft writes itself."
+        )}
       </p>
 
       {/* Numbered steps, from the reference's licence builder. This section
@@ -299,8 +370,8 @@ export function AccessibilityStatement({ report }: { report: AccessibilityReport
           not "one, two". */}
       <div className="a11y-stmt-step">
         <h3 className="a11y-stmt-step-head">
-          <span className="a11y-stmt-step-num" aria-hidden="true">Step 1:</span>
-          Tell us who this is for
+          <span className="a11y-stmt-step-num" aria-hidden="true">{tf("Step {number}:", { number: 1 })}</span>
+          {t("Tell us who this is for")}
         </h3>
       </div>
 
@@ -309,20 +380,20 @@ export function AccessibilityStatement({ report }: { report: AccessibilityReport
             fields already carry their own <label>, and a screen reader
             reading this line as well would announce the group twice. */}
         <p className="a11y-stmt-fields-head" aria-hidden="true">
-          The statement is prepared for
+          {t("The statement is prepared for")}
         </p>
         <label className="a11y-stmt-field">
-          Organisation name
+          {t("Organisation name")}
           <input
             type="text"
             autoComplete="organization"
             value={organisation}
             onChange={(e) => setOrganisation(e.target.value)}
-            placeholder="Acme Ltd"
+            placeholder={t("Acme Ltd")}
           />
         </label>
         <label className="a11y-stmt-field">
-          Contact email for accessibility issues
+          {t("Contact email for accessibility issues")}
           <input
             type="email"
             autoComplete="email"
@@ -343,33 +414,33 @@ export function AccessibilityStatement({ report }: { report: AccessibilityReport
           definition list says the same thing to a screen reader in fewer
           words, and it is what lets the facts sit side by side on a wide
           screen and stack on a narrow one without a scrollbar. */}
-      <dl className="a11y-spec-grid" aria-label="What this statement declares">
-        <SpecCard field="Prepared for" value={organisation.trim() || "[Your organisation]"} lead />
-        <SpecCard field="Website" value={report.url} />
+      <dl className="a11y-spec-grid" aria-label={t("What this statement declares")}>
+        <SpecCard field={t("Prepared for")} value={organisation.trim() || t("[Your organisation]")} lead />
+        <SpecCard field={t("Website")} value={report.url} />
         <SpecCard
-          field="Checked against"
+          field={t("Checked against")}
           value="EN 301 549 · WCAG 2.1 AA"
-          gloss="The EU's technical standard for digital accessibility"
+          gloss={t("The EU's technical standard for digital accessibility")}
         />
         <SpecCard
-          field="Position"
-          value={position === "partially" ? "Partially conformant" : "Non-conformant"}
+          field={t("Position")}
+          value={position === "partially" ? t("Partially conformant") : t("Non-conformant")}
           gloss={
             position === "partially"
-              ? "Meets most requirements, not all of them"
-              : "Doesn't yet meet the standard"
+              ? t("Meets most requirements, not all of them")
+              : t("Doesn't yet meet the standard")
           }
         />
         <SpecCard
-          field="Problems disclosed"
-          value={knownIssues.length === 0 ? "None the scan can detect" : String(knownIssues.length)}
+          field={t("Problems disclosed")}
+          value={knownIssues.length === 0 ? t("None the scan can detect") : String(knownIssues.length)}
         />
       </dl>
 
       <div className="a11y-stmt-step">
         <h3 className="a11y-stmt-step-head">
-          <span className="a11y-stmt-step-num" aria-hidden="true">Step 2:</span>
-          Take the statement
+          <span className="a11y-stmt-step-num" aria-hidden="true">{tf("Step {number}:", { number: 2 })}</span>
+          {t("Take the statement")}
         </h3>
       </div>
 
@@ -378,14 +449,14 @@ export function AccessibilityStatement({ report }: { report: AccessibilityReport
           tie to it; on the bar it is unmistakably the control for the block
           it sits on. */}
       <div className="a11y-stmt-card">
-        <h4 className="a11y-stmt-card-title">The statement</h4>
+        <h4 className="a11y-stmt-card-title">{t("The statement")}</h4>
         <div className="a11y-stmt-code">
           <div className="a11y-stmt-code-bar">
             <span className="a11y-stmt-code-label" aria-hidden="true">
-              Generated statement
+              {t("Generated statement")}
             </span>
             <button type="button" className="a11y-sr-play" onClick={copy}>
-              {copied ? "Copied" : "Copy"}
+              {copied ? t("Copied") : t("Copy")}
             </button>
           </div>
           {/* Focusable on purpose. The block scrolls (overflow: auto), and a
@@ -399,7 +470,7 @@ export function AccessibilityStatement({ report }: { report: AccessibilityReport
             className="a11y-stmt-text"
             tabIndex={0}
             role="region"
-            aria-label="Draft accessibility statement"
+            aria-label={t("Draft accessibility statement")}
           >
             {statement}
           </pre>
@@ -407,18 +478,20 @@ export function AccessibilityStatement({ report }: { report: AccessibilityReport
         {/* The button's own text changing is not reliably announced;
             this mounted status region is. */}
         <span className="a11y-sr-only" role="status">
-          {copied ? "Statement copied to the clipboard." : ""}
+          {copied ? t("Statement copied to the clipboard.") : ""}
         </span>
         <p className="a11y-sr-status">
-          Says <strong>{position === "partially" ? "partially conformant" : "non-conformant"}</strong>,
-          based on {failing} failed {failing === 1 ? "criterion" : "criteria"}.
+          {saysBefore}
+          <strong>{position === "partially" ? t("partially conformant") : t("non-conformant")}</strong>
+          {saysAfter}
         </p>
       </div>
 
       <p className="a11y-conf-caveat">
-        <strong>Read it before you publish.</strong> This is a public, dated declaration. The draft
-        never claims full compliance, because no automated check can prove it. Make sure it matches
-        the testing you have actually done. A starting point, not legal advice.
+        <strong>{t("Read it before you publish.")}</strong>{" "}
+        {t(
+          "This is a public, dated declaration. The draft never claims full compliance, because no automated check can prove it. Make sure it matches the testing you have actually done. A starting point, not legal advice."
+        )}
       </p>
     </section>
   );

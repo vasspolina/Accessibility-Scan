@@ -1,4 +1,5 @@
 import { Button } from "./Button";
+import { t } from "../lib/strings";
 // "Save as PDF" via the browser's own print dialog.
 //
 // Deliberately not a server-rendered PDF: that would mean a second Playwright
@@ -35,14 +36,17 @@ export function ensureHostPrintStyle() {
 }
 
 export function PrintButton({
-  label = "Save as PDF",
+  label,
   compact = false,
 }: {
+  /* Already in the reader's language; the default is read at render time,
+     so a language switch reaches it. */
   label?: string;
   /* The professional action row wants the master file's bare button; the
      business report keeps the sentence explaining what the dialog is. */
   compact?: boolean;
 }) {
+  const text = label ?? t("Save as PDF");
   const onPrint = () => {
     ensureHostPrintStyle();
     window.print();
@@ -52,16 +56,16 @@ export function PrintButton({
   if (compact)
     return (
       <Button variant="secondary" onClick={onPrint}>
-        {label}
+        {text}
       </Button>
     );
   return (
     <div className="a11y-print-row">
       <Button variant="secondary" onClick={onPrint}>
-        {label}
+        {text}
       </Button>
       <span className="a11y-sr-status">
-        Opens your browser's print dialog. Choose &ldquo;Save as PDF&rdquo; as the destination.
+        {t("Opens your browser’s print dialog. Choose “Save as PDF” as the destination.")}
       </span>
     </div>
   );

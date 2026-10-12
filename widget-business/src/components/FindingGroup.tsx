@@ -1,8 +1,8 @@
-import { useId, useState, type ReactNode } from "react";
+import { Fragment, useId, useState, type ReactNode } from "react";
 import { dominantComponent, describeComponent } from "../lib/componentCluster";
 import { SeverityTag } from "./SeverityTag";
 import { ScanError, setFindingState, type AccessibilityFinding, type TriageState } from "../api/scanClient";
-import { t } from "../lib/strings";
+import { t, tf } from "../lib/strings";
 import { getDecidedBy, setDecidedBy } from "../lib/apiKey";
 import { Select } from "./Select2";
 import { Input } from "./Input";
@@ -16,8 +16,8 @@ import {
   fixKindForFinding,
   isKeyboardCheck,
   isAiFinding,
-  AI_HINT,
-  KEYBOARD_HINT,
+  aiHint,
+  keyboardHint,
 } from "../lib/testMethod";
 
 const severityLabel: Record<AccessibilityFinding["severity"], string> = {
@@ -64,6 +64,26 @@ function CodeText({ text }: { text: string }) {
       {parts.map((part, i) =>
         i % 2 === 1 ? <code key={i}>{part}</code> : <span key={i}>{part}</span>
       )}
+    </>
+  );
+}
+
+/**
+ * A translated sentence with elements inside it. The sentence is one key,
+ * translated whole: {name} marks where an element goes, wherever the
+ * language puts it, and <em>…</em> marks the words the translation stresses,
+ * since only the translation knows which words those are.
+ */
+function Sentence({ text, parts = {} }: { text: string; parts?: Record<string, ReactNode> }) {
+  return (
+    <>
+      {text.split(/(\{\w+\}|<em>.*?<\/em>)/).map((piece, i) => {
+        const slot = piece.match(/^\{(\w+)\}$/);
+        if (slot && slot[1] in parts) return <Fragment key={i}>{parts[slot[1]]}</Fragment>;
+        const stressed = piece.match(/^<em>(.*)<\/em>$/);
+        if (stressed) return <em key={i}>{stressed[1]}</em>;
+        return piece;
+      })}
     </>
   );
 }
@@ -185,6 +205,103 @@ const KIND_WORDS: Record<string, string> = {
   table: "table",
 };
 
+/* The labels built from those words, in the reader's language. One whole key
+   per kind rather than a translated kind word dropped into a translated
+   frame: German, Spanish and French put the kind before the quoted name, and
+   that order has to live in the key. Covers every word elementKindWord can
+   return. */
+const NAMED_KIND: Record<string, string> = {
+  link: "“{name}” link",
+  button: "“{name}” button",
+  dropdown: "“{name}” dropdown",
+  "text field": "“{name}” text field",
+  image: "“{name}” image",
+  icon: "“{name}” icon",
+  "list item": "“{name}” list item",
+  navigation: "“{name}” navigation",
+  form: "“{name}” form",
+  section: "“{name}” section",
+  header: "“{name}” header",
+  footer: "“{name}” footer",
+  label: "“{name}” label",
+  paragraph: "“{name}” paragraph",
+  heading: "“{name}” heading",
+  quote: "“{name}” quote",
+  caption: "“{name}” caption",
+  "table cell": "“{name}” table cell",
+  "table heading": "“{name}” table heading",
+  text: "“{name}” text",
+  "block of text": "“{name}” block of text",
+  "main content": "“{name}” main content",
+  article: "“{name}” article",
+  sidebar: "“{name}” sidebar",
+  list: "“{name}” list",
+  table: "“{name}” table",
+  checkbox: "“{name}” checkbox",
+  "radio button": "“{name}” radio button",
+  field: "“{name}” field",
+  element: "“{name}” element",
+};
+
+const KIND_LABEL: Record<string, string> = {
+  link: "Link",
+  button: "Button",
+  dropdown: "Dropdown",
+  "text field": "Text field",
+  image: "Image",
+  icon: "Icon",
+  "list item": "List item",
+  navigation: "Navigation",
+  form: "Form",
+  section: "Section",
+  header: "Header",
+  footer: "Footer",
+  label: "Label",
+  paragraph: "Paragraph",
+  heading: "Heading",
+  quote: "Quote",
+  caption: "Caption",
+  "table cell": "Table cell",
+  "table heading": "Table heading",
+  text: "Text",
+  "block of text": "Block of text",
+  "main content": "Main content",
+  article: "Article",
+  sidebar: "Sidebar",
+  list: "List",
+  table: "Table",
+  checkbox: "Checkbox",
+  "radio button": "Radio button",
+  field: "Field",
+  element: "Element",
+};
+
+// What fieldPurpose recognises, as the field's whole label.
+const FIELD_LABEL: Record<string, string> = {
+  Email: "Email field",
+  "Phone number": "Phone number field",
+  Search: "Search field",
+  Password: "Password field",
+  Name: "Name field",
+  Postcode: "Postcode field",
+  Address: "Address field",
+};
+
+function namedKind(name: string, kind: string): string {
+  const key = NAMED_KIND[kind];
+  return key ? tf(key, { name }) : `“${name}” ${kind}`;
+}
+
+function kindLabel(kind: string): string {
+  const key = KIND_LABEL[kind];
+  return key ? t(key) : capitalize(kind);
+}
+
+function fieldLabel(purpose: string): string {
+  const key = FIELD_LABEL[purpose];
+  return key ? t(key) : `${purpose} field`;
+}
+
 /**
  * Whether a label names a particular thing or only a category of thing.
  *
@@ -197,7 +314,7 @@ const KIND_WORDS: Record<string, string> = {
  * artwork description", whose affected-element list read, in full: Heading.
  */
 export function labelNamesSomething(label: string): boolean {
-  const generic = new Set([...Object.values(KIND_WORDS).map(capitalize), "Element"]);
+  const generic = new Set([...Object.values(KIND_WORDS).map(kindLabel), t("Element")]);
   return !generic.has(label.trim());
 }
 
@@ -254,18 +371,18 @@ function prettySelector(sel: string): string {
   // A plain tag selector (no leading # or .).
   if (/^[a-zA-Z]/.test(last)) {
     const tag = last.match(/^[a-zA-Z][\w-]*/)?.[0]?.toLowerCase();
-    if (tag) return capitalize(KIND_WORDS[tag] ?? tag);
+    if (tag) return KIND_WORDS[tag] ? kindLabel(KIND_WORDS[tag]) : capitalize(tag);
   }
 
   // An id or class selector — humanize the first id/class token.
   const token = last.replace(/^[#.]/, "").split(/[#.:[]/)[0];
   if (token) {
     const purpose = fieldPurpose(`name="${token}"`, undefined);
-    if (purpose) return `${purpose} field`;
+    if (purpose) return fieldLabel(purpose);
     const words = humanizeSlug(token.replace(/^mc[e_-]+/i, ""));
     if (words) return words;
   }
-  return "Element";
+  return t("Element");
 }
 
 // A plain-language, human-readable name for one affected element, derived
@@ -282,41 +399,41 @@ function elementLabel(finding: AccessibilityFinding): string {
 
   // 1. An explicit accessible name is the best label.
   const ariaLabel = attrOf(raw, "aria-label");
-  if (ariaLabel) return `“${decodeEntities(ariaLabel)}” ${kind}`;
+  if (ariaLabel) return namedKind(decodeEntities(ariaLabel), kind);
 
   // 2. Visible text content, when the snippet isn't truncated before it.
   const inner = raw.match(/>([^<]{1,160})</)?.[1]?.replace(/\s+/g, " ").trim();
   if (inner && !/^translation_missing/i.test(inner)) {
-    const label = `“${truncate(decodeEntities(inner), 60)}” ${kind}`;
+    const name = truncate(decodeEntities(inner), 60);
     // A list of nine “Read more” links is nine identical rows, which is the
     // very complaint the finding is making. Where the text says nothing,
     // the destination is the only thing that tells them apart.
     if (tag === "a" && SAYS_NOTHING.test(decodeEntities(inner))) {
       const dest = destinationOf(raw);
-      if (dest) return `${label} to ${dest}`;
+      if (dest) return tf("“{name}” link to {destination}", { name, destination: dest });
     }
-    return label;
+    return namedKind(name, kind);
   }
 
   // 3. An image's alt text.
   const alt = attrOf(raw, "alt");
-  if (alt) return `“${decodeEntities(alt)}” image`;
+  if (alt) return namedKind(decodeEntities(alt), "image");
 
   // 4. An icon-only control — the inner image's alt text names it.
   const innerAlt = raw.match(/<img\b[^>]*\balt\s*=\s*"([^"]+)"/i)?.[1]?.trim();
-  if (innerAlt) return `“${decodeEntities(innerAlt)}” ${kind}`;
+  if (innerAlt) return namedKind(decodeEntities(innerAlt), kind);
 
   // 5. A submit/button input carries its label in value=.
   const value = attrOf(raw, "value");
   if (value && (kind === "button" || tag === "input")) {
-    return `“${decodeEntities(value)}” ${kind}`;
+    return namedKind(decodeEntities(value), kind);
   }
 
   // 6. A tooltip is a weaker name, but better than none. Skip a truncated one
   //    (the snippet was cut mid-attribute) and framework placeholder text.
   const title = attrOf(raw, "title");
   if (title && !/\.\.\.$|…$/.test(title) && !/^translation_missing/i.test(title)) {
-    return `“${decodeEntities(title)}” ${kind}`;
+    return namedKind(decodeEntities(title), kind);
   }
 
   // 7. A link with no text of its own — name it by where it points. Phrased
@@ -325,7 +442,7 @@ function elementLabel(finding: AccessibilityFinding): string {
   //    telling the owner it lacks.
   if (tag === "a") {
     const dest = destinationOf(raw);
-    if (dest) return `link to ${dest}`;
+    if (dest) return tf("link to {destination}", { destination: dest });
   }
 
   // 8. Last resort before a bare kind word: a meaningful id/name attribute
@@ -334,7 +451,9 @@ function elementLabel(finding: AccessibilityFinding): string {
     const ident = attrOf(raw, "id") ?? attrOf(raw, "name");
     if (ident && !/^[0-9a-f-]{8,}$/i.test(ident)) {
       const h = humanizeSlug(ident);
-      if (h && h.toLowerCase() !== kind) return `${h} ${kind}`;
+      if (h && h.toLowerCase() !== kind) {
+        return tf(kind === "button" ? "{name} button" : "{name} link", { name: h });
+      }
     }
   }
 
@@ -344,13 +463,13 @@ function elementLabel(finding: AccessibilityFinding): string {
 
   // 10. A form field — describe its purpose, or flag a hidden one.
   if (kind === "field" || kind === "checkbox" || kind === "radio button") {
-    if (attrOf(raw, "tabindex") === "-1") return "Hidden field";
+    if (attrOf(raw, "tabindex") === "-1") return t("Hidden field");
     const purpose = fieldPurpose(raw, type);
-    return purpose ? `${purpose} field` : capitalize(kind);
+    return purpose ? fieldLabel(purpose) : kindLabel(kind);
   }
 
   // 11. Nothing distinctive — the element type is the best we can do.
-  return capitalize(kind);
+  return kindLabel(kind);
 }
 
 // Collapse repeated elements into one row with a ×N count, so the list stays
@@ -490,16 +609,16 @@ export function FindingDetails({
           you can check it without them, and where the finding came from — so
           each gets its own line and its own label. */}
       <p className="a11y-method-hint">
-        <strong>Who fixes this</strong> {fix.hint}
+        <strong>{t("Who fixes this")}</strong> {fix.hint}
       </p>
       {keyboardCheck && (
         <p className="a11y-method-hint">
-          <strong>Check it yourself</strong> {KEYBOARD_HINT}
+          <strong>{t("Check it yourself")}</strong> {keyboardHint()}
         </p>
       )}
       {fromAi && (
         <p className="a11y-method-hint">
-          <strong>Where this came from</strong> {AI_HINT}
+          <strong>{t("Where this came from")}</strong> {aiHint()}
         </p>
       )}
       {!rep.elementScreenshot && rep.pictureNote && (
@@ -521,7 +640,7 @@ export function FindingDetails({
           80 AI findings arrived as a headline and three badges. */}
       {measured && (
         <p className="a11y-finding-measured">
-          <strong className="a11y-fd-title">What we found</strong> <CodeText text={measured} />
+          <strong className="a11y-fd-title">{t("What we found")}</strong> <CodeText text={measured} />
         </p>
       )}
       {/* Its own line, not folded into the text above: rules with a
@@ -530,20 +649,20 @@ export function FindingDetails({
           attached to. */}
       {rep.ageNote && (
         <p className="a11y-finding-measured">
-          <strong>Past sixty</strong> <CodeText text={rep.ageNote} />
+          <strong>{t("Past sixty")}</strong> <CodeText text={rep.ageNote} />
         </p>
       )}
       {/* Shared explanation — shown once for the whole group */}
       {plain && (
         <p className="a11y-finding-impact">
-          <strong className="a11y-fd-title">Why this matters</strong> <CodeText text={plain.impact} />
+          <strong className="a11y-fd-title">{t("Why this matters")}</strong> <CodeText text={plain.impact} />
         </p>
       )}
       {/* Curated, hand-verified research context — never generated per
           scan, which is how invented statistics happen. */}
       {plain?.research && (
         <p className="a11y-finding-research">
-          <strong>What the research shows</strong> <CodeText text={plain.research} />
+          <strong>{t("What the research shows")}</strong> <CodeText text={plain.research} />
         </p>
       )}
       </div>
@@ -555,7 +674,7 @@ export function FindingDetails({
       {Array.isArray(whatToDo) ? (
         <div className="a11y-finding-steps">
           <p>
-            <strong className="a11y-fd-title">What to do</strong>
+            <strong className="a11y-fd-title">{t("What to do")}</strong>
           </p>
           <ul>
             {whatToDo.map((step) => (
@@ -567,7 +686,7 @@ export function FindingDetails({
         </div>
       ) : (
         <p className="a11y-finding-todo">
-          <strong className="a11y-fd-title">What to do</strong> <CodeText text={whatToDo} />
+          <strong className="a11y-fd-title">{t("What to do")}</strong> <CodeText text={whatToDo} />
         </p>
       )}
       {/* The WCAG and Level columns fold in here at phone width, the same
@@ -580,7 +699,7 @@ export function FindingDetails({
         <p className="a11y-finding-level-fold">
           {criterion && (
             <>
-              <strong>WCAG:</strong> {criterion}
+              <strong>{t("WCAG:")}</strong> {criterion}
               {rep.wcagLevel ? " · " : ""}
             </>
           )}
@@ -590,7 +709,7 @@ export function FindingDetails({
       {rep.helpUrl && (
         <p className="a11y-fd-learn">
           <a className="a11y-learn-more" href={rep.helpUrl} target="_blank" rel="noopener noreferrer">
-            Learn more about this issue <span aria-hidden="true">↗</span>
+            {t("Learn more about this issue")} <span aria-hidden="true">↗</span>
           </a>
         </p>
       )}
@@ -598,12 +717,13 @@ export function FindingDetails({
       {locatesSomething && (
       <div className="a11y-affected">
         <p className="a11y-affected-label">
-          <strong>{count > 1 ? `Affected elements (${count})` : "Affected element"}</strong>
+          <strong>{count > 1 ? tf("Affected elements ({count})", { count }) : t("Affected element")}</strong>
         </p>
         {somePictured && someUnpictured && (
           <p className="a11y-occurrence-note">
-            One picture per issue, so the scan can spend its time across every issue on the page
-            rather than one with many instances. The rest are named by where they are instead.
+            {t(
+              "One picture per issue, so the scan can spend its time across every issue on the page rather than one with many instances. The rest are named by where they are instead."
+            )}
           </p>
         )}
         <ul className="a11y-occurrence-list">
@@ -621,7 +741,7 @@ export function FindingDetails({
             aria-expanded={showAll}
             onClick={() => setShowAll((v) => !v)}
           >
-            {showAll ? "Show fewer" : `Show all ${entries.length} kinds of element`}
+            {showAll ? t("Show fewer") : tf("Show all {count} kinds of element", { count: entries.length })}
           </button>
         )}
       </div>
@@ -630,10 +750,16 @@ export function FindingDetails({
 
       {cluster && (
         <p className="a11y-fix-once">
-          <strong>Fix once, fixes {cluster.count}.</strong> These all come from the same
-          component, <code>{describeComponent(cluster.signature)}</code>
-          {cluster.share < 1 ? " (most of them)" : ""}. Change it where it is defined and every
-          one of them is done.
+          <strong>{tf("Fix once, fixes {count}.", { count: cluster.count })}</strong>{" "}
+          <Sentence
+            text={t(
+              cluster.share < 1
+                ? "These all come from the same component, {component} (most of them)."
+                : "These all come from the same component, {component}."
+            )}
+            parts={{ component: <code>{describeComponent(cluster.signature)}</code> }}
+          />{" "}
+          {t("Change it where it is defined and every one of them is done.")}
         </p>
       )}
 
@@ -658,13 +784,13 @@ export function FindingDetails({
               <>
                 {num && (
                   <p className="a11y-pro-line">
-                    <strong>WCAG:</strong> {num}
+                    <strong>{t("WCAG:")}</strong> {num}
                     {known ? ` ${known.name} (${known.level})` : rep.wcagLevel ? ` (${rep.wcagLevel})` : ""}
                     {en ? <span className="a11y-pro-en"> · {en}</span> : null}
                   </p>
                 )}
                 <p className="a11y-pro-line">
-                  <strong>Selector:</strong> <code>{rep.selector}</code>
+                  <strong>{t("Selector:")}</strong> <code>{rep.selector}</code>
                 </p>
                 {rep.elementSnippet && (
                   /* Scrolls horizontally, so it must be reachable by
@@ -676,7 +802,7 @@ export function FindingDetails({
                     className="a11y-pro-snippet"
                     tabIndex={0}
                     role="group"
-                    aria-label="Element markup"
+                    aria-label={t("Element markup")}
                   >
                     <code>{rep.elementSnippet}</code>
                   </pre>
@@ -684,7 +810,7 @@ export function FindingDetails({
                 {rep.helpUrl && (
                   <p className="a11y-pro-line">
                     <a className="a11y-learn-more" href={rep.helpUrl} target="_blank" rel="noopener noreferrer">
-                      Fix technique <span aria-hidden="true">↗</span>
+                      {t("Fix technique")} <span aria-hidden="true">↗</span>
                     </a>
                   </p>
                 )}
@@ -698,26 +824,26 @@ export function FindingDetails({
           in professional mode, where the block above is already open. */}
       {!professional && (rep.ruleId || rep.wcagCriterion) && (
         <details className="a11y-tech-details">
-          <summary>The technical version</summary>
+          <summary>{t("The technical version")}</summary>
           {/* Only when it was not already shown in the open part of the
               card above. It nearly always is now. */}
           {!measured && rep.description && (
             <p>
-              <strong>What we found:</strong> <CodeText text={rep.description} />
+              <strong>{t("What we found:")}</strong> <CodeText text={rep.description} />
             </p>
           )}
           {rep.wcagCriterion && rep.wcagCriterion !== "N/A" && (
             <p>
-              <strong>WCAG criterion:</strong> {rep.wcagCriterion}
+              <strong>{t("WCAG criterion:")}</strong> {rep.wcagCriterion}
             </p>
           )}
           {rep.ruleId && (
             <p>
-              <strong>Rule:</strong> <code>{rep.ruleId}</code>
+              <strong>{t("Rule:")}</strong> <code>{rep.ruleId}</code>
             </p>
           )}
           <p>
-            <strong>Affected {count > 1 ? "elements" : "element"}:</strong>
+            <strong>{count > 1 ? t("Affected elements:") : t("Affected element:")}</strong>
           </p>
           <ul className="a11y-tech-elements">
             {devElementRefs(findings).map((ref, i) => (
@@ -789,16 +915,16 @@ export function findingRow(
           screens see Severity in its column, not doubled up. */}
       {!asNotes && (
         <span className="a11y-finding-sev-fold">
-          <SeverityTag severity={rep.severity} label={severityLabel[rep.severity]} />
+          <SeverityTag severity={rep.severity} label={t(severityLabel[rep.severity])} />
         </span>
       )}
       <span className="a11y-finding-title">{title}</span>
       {(keyboardCheck || fromAi || (rep.triage && rep.triage.state !== "open")) && (
         <span className="a11y-finding-meta-line">
           {keyboardCheck && (
-            <span className="a11y-method-badge a11y-method-keyboard">Keyboard test</span>
+            <span className="a11y-method-badge a11y-method-keyboard">{t("Keyboard test")}</span>
           )}
-          {fromAi && <span className="a11y-method-badge a11y-method-ai">AI review</span>}
+          {fromAi && <span className="a11y-method-badge a11y-method-ai">{t("AI review")}</span>}
           {rep.triage && rep.triage.state !== "open" && (
             <span className={`a11y-method-badge a11y-triage-badge a11y-triage-${rep.triage.state}`}>
               {t(TRIAGE_BADGE[rep.triage.state])}
@@ -829,7 +955,7 @@ export function findingRow(
           // (a11y-finding-sev-col), where the folded copy inside
           // issueCell takes over instead.
           <span key="sev" className="a11y-finding-sev-col">
-            <SeverityTag severity={rep.severity} label={severityLabel[rep.severity]} />
+            <SeverityTag severity={rep.severity} label={t(severityLabel[rep.severity])} />
           </span>,
           issueCell,
           criterion,
@@ -915,7 +1041,7 @@ export function FindingGroup({
           !asNotes && <span className="a11y-finding-thumb a11y-finding-thumb-empty" aria-hidden="true" />
         )}
         {!asNotes && (
-          <SeverityTag severity={rep.severity} label={severityLabel[rep.severity]} />
+          <SeverityTag severity={rep.severity} label={t(severityLabel[rep.severity])} />
         )}
         <span className="a11y-finding-desc">
           {title}
@@ -938,9 +1064,9 @@ export function FindingGroup({
         <span className="a11y-finding-meta">
           {count > 1 && <span className="a11y-count-badge">{count}×</span>}
           {keyboardCheck && (
-            <span className="a11y-method-badge a11y-method-keyboard">Keyboard test</span>
+            <span className="a11y-method-badge a11y-method-keyboard">{t("Keyboard test")}</span>
           )}
-          {fromAi && <span className="a11y-method-badge a11y-method-ai">AI review</span>}
+          {fromAi && <span className="a11y-method-badge a11y-method-ai">{t("AI review")}</span>}
           {rep.triage && rep.triage.state !== "open" && (
             <span className={`a11y-method-badge a11y-triage-badge a11y-triage-${rep.triage.state}`}>
               {t(TRIAGE_BADGE[rep.triage.state])}
@@ -1040,14 +1166,14 @@ function TriageControl({ finding }: { finding: AccessibilityFinding }) {
     <div className="a11y-triage">
       {saved && saved.state !== "open" && (
         <p className="a11y-triage-current">
-          {`${t("Marked")}: ${t(TRIAGE_WORD[saved.state])} `}
+          {tf("Marked: {state}", { state: t(TRIAGE_WORD[saved.state]) })}{" "}
           <em>
             ({saved.decidedBy}, {saved.decidedAt.slice(0, 10)})
           </em>
         </p>
       )}
       {open ? (
-        <form className="a11y-triage-form" onSubmit={save} aria-label={`Mark finding ${finding.ruleId ?? ""}`}>
+        <form className="a11y-triage-form" onSubmit={save} aria-label={tf("Mark finding {rule}", { rule: finding.ruleId ?? "" })}>
           <Select
             id={`${id}-state`}
             label={t("Mark as")}
@@ -1142,38 +1268,53 @@ function ColourSuggestion({
   return (
     <div className="a11y-colour-fix">
       <p className="a11y-colour-fix-line">
-        <strong>A colour that would pass:</strong> change{" "}
-        <span className="a11y-swatch-pair">
-          <span
-            className="a11y-swatch"
-            style={{ background: suggestion.from, borderColor: suggestion.background }}
-            aria-hidden="true"
-          />
-          <code>{suggestion.from}</code>
-        </span>{" "}
-        to{" "}
-        <span className="a11y-swatch-pair">
-          <span
-            className="a11y-swatch"
-            style={{ background: suggestion.to, borderColor: suggestion.background }}
-            aria-hidden="true"
-          />
-          <code>{suggestion.to}</code>
-        </span>{" "}
-        <button type="button" className="a11y-copy-btn" onClick={copy}>
-          {copied ? "Copied" : "Copy"}
-          <span className="a11y-sr-only"> the suggested colour</span>
+        <strong>{t("A colour that would pass:")}</strong>{" "}
+        <Sentence
+          text={t("change {from} to {to}")}
+          parts={{
+            from: (
+              <span className="a11y-swatch-pair">
+                <span
+                  className="a11y-swatch"
+                  style={{ background: suggestion.from, borderColor: suggestion.background }}
+                  aria-hidden="true"
+                />
+                <code>{suggestion.from}</code>
+              </span>
+            ),
+            to: (
+              <span className="a11y-swatch-pair">
+                <span
+                  className="a11y-swatch"
+                  style={{ background: suggestion.to, borderColor: suggestion.background }}
+                  aria-hidden="true"
+                />
+                <code>{suggestion.to}</code>
+              </span>
+            ),
+          }}
+        />{" "}
+        {/* The name is one whole phrase, so it translates whole, and the
+            visible word is inside it in every language. */}
+        <button
+          type="button"
+          className="a11y-copy-btn"
+          onClick={copy}
+          aria-label={copied ? t("Copied the suggested colour") : t("Copy the suggested colour")}
+        >
+          {copied ? t("Copied") : t("Copy")}
         </button>
         {/* The button's own text changing is not reliably announced;
             this mounted status region is. */}
         <span className="a11y-sr-only" role="status">
-          {copied ? "Colour copied to the clipboard." : ""}
+          {copied ? t("Colour copied to the clipboard.") : ""}
         </span>
       </p>
       <p className="a11y-colour-fix-note">
-        Same hue, dark enough to reach {suggestion.ratio}:1 against {suggestion.background}, where{" "}
-        {suggestion.required}:1 is the minimum. Adjust it to taste as long as it stays at or above
-        that.
+        {tf(
+          "Same hue, dark enough to reach {ratio}:1 against {background}, where {required}:1 is the minimum. Adjust it to taste as long as it stays at or above that.",
+          { ratio: suggestion.ratio, background: suggestion.background, required: suggestion.required }
+        )}
       </p>
     </div>
   );
@@ -1188,8 +1329,13 @@ function AltTextSuggestion({ value }: { value: string }) {
   if (value === "") {
     return (
       <p className="a11y-alt-suggestion a11y-alt-decorative">
-        <strong>Suggested alt text:</strong> This image looks decorative, so give it an <em>empty</em>{" "}
-        alt text (<code>alt=""</code>). That tells screen readers to skip it.
+        <strong>{t("Suggested alt text:")}</strong>{" "}
+        <Sentence
+          text={t(
+            "This image looks decorative, so give it an <em>empty</em> alt text ({code}). That tells screen readers to skip it."
+          )}
+          parts={{ code: <code>alt=""</code> }}
+        />
       </p>
     );
   }
@@ -1207,16 +1353,23 @@ function AltTextSuggestion({ value }: { value: string }) {
   return (
     <div className="a11y-alt-suggestion">
       <p className="a11y-alt-suggestion-label">
-        <strong>Suggested alt text</strong>, written from the actual image:
+        <Sentence
+          text={t("{label}, written from the actual image:")}
+          parts={{ label: <strong>{t("Suggested alt text")}</strong> }}
+        />
       </p>
       <div className="a11y-alt-suggestion-value">
         <code>{value}</code>
-        <button type="button" className="a11y-alt-copy" onClick={copy}>
-          {copied ? "Copied" : "Copy"}
-          <span className="a11y-sr-only"> the suggested alt text</span>
+        <button
+          type="button"
+          className="a11y-alt-copy"
+          onClick={copy}
+          aria-label={copied ? t("Copied the suggested alt text") : t("Copy the suggested alt text")}
+        >
+          {copied ? t("Copied") : t("Copy")}
         </button>
         <span className="a11y-sr-only" role="status">
-          {copied ? "Alt text copied to the clipboard." : ""}
+          {copied ? t("Alt text copied to the clipboard.") : ""}
         </span>
       </div>
     </div>
