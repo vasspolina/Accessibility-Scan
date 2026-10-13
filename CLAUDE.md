@@ -11,8 +11,13 @@
 - One alignment axis: flush left, ragged right, nothing centred (a column centred through `align-items` counts).
 - Hairlines, not boxes: a neutral fill becomes a 1px `var(--border-subtle)` rule. Colour that carries meaning stays filled: severity, status, the yellow "not a pass" panel, selectable cards, every control.
 - No rounded corners. `--radius-sm/md/lg` are 0; only true circles (switch, radio, round numbered badges) keep `--radius-pill`.
-- PP Telegraf and the palette are unchanged. The override block is the last thing in `global.css`, doubled on the root (0,3,0) so it wins by rank.
+- PP Telegraf is unchanged (the palette changed later: see Colour). The override block is the last thing in `global.css`, doubled on the root (0,3,0) so it wins by rank.
 - **Before flattening any fill, measure the text on it, in light and dark.** A fill that looks decorative often carries the contrast: the notes panel is `rgb(22,22,22)`, the legal card sits on fixed yellow, and the failing stat tile, current screen-reader row and hovered related card invert. All four measured 1.00 to 1.10:1 when flattened.
+
+## Colour (no red accent, 13 Oct 2026)
+- The vermilion accent is gone: titles, numbers, eyebrows, rules, primary buttons and the old red panel are **ink** (`#161616`, a mid grey `#6f6f6f` for filled buttons in dark so white text clears 4.5:1). The accent tokens keep their old names: `--purple-60`, `--purple-70`, `--purple-100` and `--purple-filled` are ink, not purple or vermilion.
+- **Red that means something stays**: the "Fix first" severity pill, the critical banner and marks, an invalid input (`--red-*`, `--severity-*`). Do not use them as decoration.
+- Ink on a dark ground is invisible. Anything with a black or inverted ground must map its own title and text to `--text-on-invert`; the black tinted band did not, and read 1.00:1 until it did. Measure text on every changed surface, light and dark.
 
 ## Everything else
 - Colour, spacing, radius, motion still use tokens (`var(--…)`).

@@ -246,9 +246,9 @@
      paper (#fffdf6): purple-60 5.2:1, purple-70 7.0:1 — both clear 4.5:1
      as small-text ink; the reference's own #ff3d00 is 3.5:1 and is used
      nowhere as text below 24px. */
-  --purple-30: #f2b09a; --orange-80: #5e2900;
-  --purple-10: #faf3e3; --purple-20: #f6ead6; --purple-60: #cc2e00;
-  --purple-70: #a82600; --purple-100: #33130a;
+  --purple-30: #cbc5b6; --orange-80: #5e2900;
+  --purple-10: #faf3e3; --purple-20: #f6ead6; --purple-60: #161616;
+  --purple-70: #161616; --purple-100: #161616;
   --orange-20: #ffd9be; --orange-50: #eb6200;
   /* Brand yellow and its tint — marks and count tiles. 14.96:1 and 16.66:1
      with gray-100. */
@@ -270,7 +270,7 @@
   /* The filled purple chip: a surface, where --purple-60 is mostly ink.
      Separating them lets the ink lighten for dark grounds while the
      chip keeps a fill dark enough for its white text. */
-  --purple-filled: #cc2e00;   /* white on it: 5.2:1, measured */
+  --purple-filled: #161616;   /* white on it: 18.7:1 */
   /* The Instances tile, literals from the design's own layer. The fill is
      1.02:1 against the white row it sits on, so the tile is legible only
      because of its border — the two travel together and neither is
@@ -330,7 +330,7 @@
   /* Off-Type direction: the CTA joins the accent. Was the kit's brown.
      Via --purple-filled, NOT --purple-60: the -60 slot is ink and comes UP
      the ramp in dark mode, where white labels on it measured 2.13:1. The
-     filled chip stays #cc2e00 in both themes — white on it is 5.2:1. */
+     filled chip is ink in light and a mid grey in dark; white on it clears 4.5:1 in both. */
   --button-primary: var(--purple-filled);
   --focus: var(--text-primary);
 
@@ -395,7 +395,7 @@
     --yellow-70: #d2a106;   /* the warning glyph on dark grounds: 6.3:1 */
     --green-10: #12261a;   --green-60: #42be65;
     --blue-10: #10203f;
-    --purple-10: #33130a;  --purple-20: #4a1c0c;  --purple-30: #a82600;
+    --purple-10: #262626;  --purple-20: #393939;  --purple-30: #525252;
     /* tone-soft's other two steps, or a green step card keeps a pale
        ground under light ink — green-20 landed on exactly the value the
        new green ink uses, 1:1. */
@@ -409,13 +409,13 @@
     --orange-100: #ffd9be;
     --green-100: #a7f0ba;
     --blue-100: #d0e2ff;
-    --purple-100: #ffd6c7;
+    --purple-100: #f4f4f4;
 
     /* Ink used ON the deep tints — severity fills serve as ink for the legal
        marks (checked: one 'color' use each, no background), and purple-30 is
        the rail's ink. All must come up the ramp. */
-    --purple-30: #ff9673;
-    --purple-70: #ff9673;   /* the rail's ink */
+    --purple-30: #525252;
+    --purple-70: #f4f4f4;   /* the rail's ink */
     /* Pill grounds carry white text, so they cannot follow their ramp steps
        up the way the ink did. Stated, not derived: white on each of these
        is 7.4 / 6.9 / 7.6 / 5.9:1. */
@@ -431,7 +431,8 @@
     --mark-critical-ink: #ff8389;  --mark-pass-ink: #42be65;  --mark-minor-ink: #c6c6c6;  --mark-serious-ink: #ff832b;
     /* Pale fixed grounds keep dark ink in both themes. */
     --ink-on-pale: #161616;
-    --purple-60: #ff9673;   /* ink on dark grounds — 7.1:1 on the card surface; the chip keeps --purple-filled */
+    --purple-60: #f4f4f4;   /* ink on dark grounds; the chip keeps --purple-filled */
+    --purple-filled: #6f6f6f;   /* white on it: 5.0:1; against #161616: 3.4:1 */
     /* Fix-kind pills: deep grounds, light ink of the same hue. */
     --fix-design-bg: #510224;  --fix-design-ink: #ffafd2;
     --fix-code-bg: #002d9c;    --fix-code-ink: #d0e2ff;
@@ -507,7 +508,7 @@
     --yellow-70: #d2a106;   /* the warning glyph on dark grounds: 6.3:1 */
     --green-10: #12261a;   --green-60: #42be65;
     --blue-10: #10203f;
-    --purple-10: #33130a;  --purple-20: #4a1c0c;  --purple-30: #a82600;
+    --purple-10: #262626;  --purple-20: #393939;  --purple-30: #525252;
     /* tone-soft's other two steps, or a green step card keeps a pale
        ground under light ink — green-20 landed on exactly the value the
        new green ink uses, 1:1. */
@@ -521,13 +522,13 @@
     --orange-100: #ffd9be;
     --green-100: #a7f0ba;
     --blue-100: #d0e2ff;
-    --purple-100: #ffd6c7;
+    --purple-100: #f4f4f4;
 
     /* Ink used ON the deep tints — severity fills serve as ink for the legal
        marks (checked: one 'color' use each, no background), and purple-30 is
        the rail's ink. All must come up the ramp. */
-    --purple-30: #ff9673;
-    --purple-70: #ff9673;   /* the rail's ink */
+    --purple-30: #525252;
+    --purple-70: #f4f4f4;   /* the rail's ink */
     /* Pill grounds carry white text, so they cannot follow their ramp steps
        up the way the ink did. Stated, not derived: white on each of these
        is 7.4 / 6.9 / 7.6 / 5.9:1. */
@@ -543,7 +544,8 @@
     --mark-critical-ink: #ff8389;  --mark-pass-ink: #42be65;  --mark-minor-ink: #c6c6c6;  --mark-serious-ink: #ff832b;
     /* Pale fixed grounds keep dark ink in both themes. */
     --ink-on-pale: #161616;
-    --purple-60: #ff9673;   /* ink on dark grounds — 7.1:1 on the card surface; the chip keeps --purple-filled */
+    --purple-60: #f4f4f4;   /* ink on dark grounds; the chip keeps --purple-filled */
+    --purple-filled: #6f6f6f;   /* white on it: 5.0:1; against #161616: 3.4:1 */
     /* Fix-kind pills: deep grounds, light ink of the same hue. */
     --fix-design-bg: #510224;  --fix-design-ink: #ffafd2;
     --fix-code-bg: #002d9c;    --fix-code-ink: #d0e2ff;
@@ -643,6 +645,10 @@
 .a11y-widget-biz .a11y-section-tint .a11y-section-count {
   color: var(--text-on-invert-secondary);
 }
+/* The title was the accent, which read on the black band. Now that the accent
+   is ink it would be ink on ink (1.00:1), so on this ground it takes the
+   on-invert ink. */
+.a11y-widget-biz .a11y-section-tint .a11y-section-title { color: var(--text-on-invert); }
 
 /* ==========================================================================
    TYPE — third layer
