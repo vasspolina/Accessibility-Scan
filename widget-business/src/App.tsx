@@ -618,18 +618,25 @@ export function App({
                 {
                   id: "issues",
                   label: tf("Issues ({count})", { count: proIssueGroups }),
-                  panel:
-                    proIssueGroups === 1
-                      ? t("1 finding")
-                      : tf("{count} findings", { count: proIssueGroups }),
+                  /* The tab and the heading below already say the count. */
+                  panel: (
+                    <span className="a11y-sr-only">
+                      {proIssueGroups === 1
+                        ? t("1 finding")
+                        : tf("{count} findings", { count: proIssueGroups })}
+                    </span>
+                  ),
                 },
                 {
                   id: "clean",
                   label: tf("No issues found ({count})", { count: proCleanCount }),
-                  panel:
-                    proCleanCount === 1
-                      ? t("1 criterion with nothing found")
-                      : tf("{count} criteria with nothing found", { count: proCleanCount }),
+                  panel: (
+                    <span className="a11y-sr-only">
+                      {proCleanCount === 1
+                        ? t("1 criterion with nothing found")
+                        : tf("{count} criteria with nothing found", { count: proCleanCount })}
+                    </span>
+                  ),
                 },
               ]}
               defaultId={proView}

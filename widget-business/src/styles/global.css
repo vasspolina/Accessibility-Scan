@@ -5055,48 +5055,13 @@
    --button-brown and marks "deliberately not a severity colour".
    ========================================================================== */
 
-/* "Findings, most severe first" with its hairline running to the right.
-   It is the table's <caption>, so the rule is drawn by a pseudo-element
-   rather than a sibling: a caption can hold one, and cannot hold a box. */
-/* The visible label is opt-in. Every other table in the report shows its
-   <caption> the ordinary way, and a second copy of the words under each
-   of them would be a duplicate heading — exactly what the notes section
-   had before it stopped going through this component. */
-.a11y-widget-biz .a11y-dt-label { display: none; }
-
-/* The label the design draws, now on the sibling <p> rather than the
-   <caption>. Fixed: the caption was set display:flex to lay the rule out
-   beside it, which took it out of table formatting and left it sized by
-   its own content — 131px against a 952px table, so the label sat clipped
-   over the row above and the rule never drew. A caption is sized by the
-   table algorithm and cannot be talked out of it; the box had to move. */
-.a11y-widget-biz .a11y-principle-group .a11y-dt-label {
-  display: flex;
-  align-items: center;
-  gap: var(--space-05);
-  margin: 0 0 var(--space-05);
-  /* It is a <p>, so it inherited the report's prose measure and stopped
-     643px short of the 904px table — the rule drew, just not to the edge.
-     A measure is for reading; this is a label with a rule to the margin. */
-  max-width: none;
-  text-align: left;
-  white-space: nowrap;
-  font-size: 15px;
-  font-weight: 500;
-  letter-spacing: 0.01em;
-  color: var(--purple-70);              /* 6.1:1 on purple-20 */
-}
-.a11y-widget-biz .a11y-principle-group .a11y-dt-label::after {
-  content: "";
-  flex: 1;
-  height: 2px;
-  background: var(--purple-30);
-}
-
-/* The caption stays as the table's accessible name and stops being seen,
-   because the <p> above now says the same words. Clip rather than
-   display:none — a hidden caption is no accessible name at all. */
-.a11y-widget-biz .a11y-principle-group .a11y-datatable > .a11y-dt-caption {
+/* A table's <caption> is its accessible name and is never drawn as a second
+   title. It used to be printed over every findings table, the same
+   "Findings, most severe first" each time, under a heading, chips ("5
+   FINDINGS") and a count that already said it, and again as a visible <p>
+   with a hairline in each principle group. Clipped, not display:none: a
+   hidden caption is no accessible name at all. */
+.a11y-widget-biz .a11y-datatable > .a11y-dt-caption {
   position: absolute;
   width: 1px;
   height: 1px;
@@ -5106,6 +5071,15 @@
   clip-path: inset(50%);
   white-space: nowrap;
 }
+
+/* Table data is not prose. Cells have no size of their own, so they followed
+   the root to 27px and the columns could no longer hold a badge or a
+   criterion number: "Cod / e fix", "1.1. / 1". Data stays at 18px; titles
+   carry their own size and are unaffected. */
+.a11y-widget-biz .a11y-datatable td { font-size: 18px; line-height: 1.2; }
+/* A badge in a narrow column wraps at its space ("Code / fix"), never inside
+   a word ("Cod / e fix"): the base rule's overflow-wrap: anywhere lets it. */
+.a11y-widget-biz .a11y-datatable .a11y-method-badge { overflow-wrap: normal; hyphens: manual; }
 
 /* The column heads. */
 .a11y-widget-biz .a11y-principle-group .a11y-datatable th {

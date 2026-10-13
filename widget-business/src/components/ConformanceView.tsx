@@ -247,12 +247,8 @@ export function ConformanceView({
               <span className="a11y-legal-count">{r.n}</span>
             </div>
           ))}
-          <p className="a11y-legal-micro a11y-legal-foot">
-            {tf("Against the {standard} checklist of {total} items", {
-              standard: conformance.standard,
-              total: conformance.total,
-            })}
-          </p>
+          {/* No footer restating the standard and the item count: the chip and
+              the line under the title above already say both. */}
         </div>
       </div>
 

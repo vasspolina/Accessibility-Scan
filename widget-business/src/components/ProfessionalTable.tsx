@@ -163,7 +163,7 @@ export function ProfessionalTable({
       {/* Its own heading: without one, heading navigation skipped the
           table and the rail listed the section as nameless. */}
       <h2 className="a11y-section-title" id="a11y-pro-findings-heading">
-        {t("Findings")} <span className="a11y-section-count">({findings.length})</span>
+        {t("Findings")} <span className="a11y-section-count">({grouped.length})</span>
       </h2>
       {view === "issues" ? issuesTable : cleanList}
     </section>

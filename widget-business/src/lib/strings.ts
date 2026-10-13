@@ -472,7 +472,6 @@ export const CHROME_KEYS: string[] = [
   "Automated check results",
   "Result",
   "Items",
-  "Against the {standard} checklist of {total} items",
   "Show",
   "Failures ({count})",
   "Needs a person ({count})",

@@ -519,7 +519,6 @@ export const STRINGS_DE: Record<string, string> = {
   "Automated check results": "Ergebnisse der automatischen Prüfung",
   "Result": "Ergebnis",
   "Items": "Punkte",
-  "Against the {standard} checklist of {total} items": "Gemessen an der Checkliste der {standard} mit {total} Punkten",
   "Show": "Anzeigen",
   "Failures ({count})": "Verstöße ({count})",
   "Needs a person ({count})": "Braucht einen Menschen ({count})",
