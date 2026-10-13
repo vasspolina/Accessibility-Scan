@@ -52,7 +52,11 @@ function startVite() {
     );
     const timer = setTimeout(() => reject(new Error("vite did not report a port within 60s")), 60_000);
     proc.stdout.on("data", (b) => {
-      const m = String(b).match(/localhost:(\d+)/);
+      // On CI (CI=true) vite colours its banner and wraps the port in escape
+      // codes, "localhost:\u001b[1m5174\u001b[22m", which the match below
+      // never saw: the step timed out on every push. Strip them first.
+      const text = String(b).replace(/\u001b\[[0-9;]*m/g, "");
+      const m = text.match(/localhost:(\d+)/);
       if (m) { clearTimeout(timer); resolve({ proc, port: Number(m[1]) }); }
     });
     proc.on("error", reject);
