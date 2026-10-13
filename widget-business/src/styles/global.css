@@ -5023,7 +5023,7 @@
    over — one badge, not none and not two. 680 rather than the 400 it was:
    the drop block below moved to 680, and the two must move together or
    the band between them shows the badge twice or not at all. */
-@container a11y-panel (width < 680px) {
+@container a11y-panel (width < 800px) {
   .a11y-widget-biz .a11y-finding-sev-col { display: none; }
   .a11y-widget-biz .a11y-finding-sev-fold { display: block; }
 }
@@ -5291,7 +5291,7 @@
    the screenshot that reported it. 680 is also where the detail panel,
    the notes list and the breakdown all change shape, so the table now
    carries fewer columns exactly where everything else goes single-column. */
-@container a11y-panel (width < 680px) {
+@container a11y-panel (width < 800px) {
   .a11y-widget-biz .a11y-findings-table th[data-col="severity"],
   .a11y-widget-biz .a11y-findings-table td[data-col="severity"],
   .a11y-widget-biz .a11y-findings-table th[data-col="wcag"],
@@ -5891,7 +5891,7 @@
   width: 100%;
 }
 
-@container a11y-panel (min-width: 680px) {
+@container a11y-panel (min-width: 800px) {
   .a11y-widget-biz .a11y-principle-group .a11y-datatable th[data-col="issue"] {
     width: 32%;
   }
@@ -5907,7 +5907,7 @@
    the void beside it while the title wrapped a letter at a time. Measured
    at 414 and 320. Below 680 every issue-led datatable takes the width its
    dropped columns leave, principle group or not. */
-@container a11y-panel (width < 680px) {
+@container a11y-panel (width < 800px) {
   .a11y-widget-biz .a11y-datatable th[data-col="issue"] { width: 100%; }
 }
 
@@ -7333,3 +7333,74 @@
 /* The top bar holds only the run controls now; without the wordmark it sits
    flush right without a tinted band behind nothing. */
 .a11y-widget-biz.a11y-widget-biz .a11y-topnav { background: transparent; padding-inline: 0; justify-content: flex-end; }
+
+/* ── The expanded finding panel (13 Oct 2026) ──────────────────────────────
+   One column, read top to bottom, every answer under the same kind of
+   label. It had two columns, which put "What to do" beside "Who fixes
+   this" with dead space under the shorter one, and three label styles:
+   a 32px run-in, centred uppercase 18px, and bold inline prose. */
+.a11y-widget-biz.a11y-widget-biz .a11y-fd {
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--space-06);
+  border-radius: var(--radius-sm);
+}
+.a11y-widget-biz.a11y-widget-biz .a11y-fd > .a11y-fd-col { gap: var(--space-05); }
+.a11y-widget-biz.a11y-widget-biz .a11y-fd .a11y-fd-title,
+.a11y-widget-biz.a11y-widget-biz .a11y-fd .a11y-method-hint > strong:first-child,
+.a11y-widget-biz.a11y-widget-biz .a11y-fd .a11y-finding-measured > strong:first-child,
+.a11y-widget-biz.a11y-widget-biz .a11y-fd .a11y-finding-impact > strong:first-child,
+.a11y-widget-biz.a11y-widget-biz .a11y-fd .a11y-finding-research > strong:first-child,
+.a11y-widget-biz.a11y-widget-biz .a11y-fd .a11y-finding-steps > p > strong:first-child,
+.a11y-widget-biz.a11y-widget-biz .a11y-fd .a11y-finding-todo > strong:first-child,
+.a11y-widget-biz.a11y-widget-biz .a11y-fd .a11y-affected-label > strong {
+  display: block;
+  margin: 0 0 var(--space-02);
+  text-align: left;
+  text-transform: none;
+  font-size: 15px;
+  font-weight: 500;
+  line-height: 1.2;
+  letter-spacing: 0.01em;
+  color: var(--text-secondary);
+}
+.a11y-widget-biz.a11y-widget-biz .a11y-fd .a11y-method-hint,
+.a11y-widget-biz.a11y-widget-biz .a11y-fd .a11y-finding-measured,
+.a11y-widget-biz.a11y-widget-biz .a11y-fd .a11y-finding-impact,
+.a11y-widget-biz.a11y-widget-biz .a11y-fd .a11y-finding-research,
+.a11y-widget-biz.a11y-widget-biz .a11y-fd .a11y-finding-steps,
+.a11y-widget-biz.a11y-widget-biz .a11y-fd .a11y-finding-steps > ul > li,
+.a11y-widget-biz.a11y-widget-biz .a11y-fd .a11y-finding-todo,
+.a11y-widget-biz.a11y-widget-biz .a11y-fd .a11y-affected-label {
+  font-size: 18px;
+  line-height: 1.4;
+  letter-spacing: 0.01em;
+  text-align: left;
+  max-width: var(--measure);
+}
+/* The technical drawer under it keeps its key: value lines, at body size
+   rather than the 27px display line the root grew to. */
+.a11y-widget-biz.a11y-widget-biz .a11y-fd .a11y-tech-details,
+.a11y-widget-biz.a11y-widget-biz .a11y-fd .a11y-tech-details p,
+.a11y-widget-biz.a11y-widget-biz .a11y-fd .a11y-tech-details li,
+.a11y-widget-biz.a11y-widget-biz .a11y-fd .a11y-tech-details summary { font-size: 18px; line-height: 1.4; letter-spacing: 0.01em; }
+.a11y-widget-biz.a11y-widget-biz .a11y-fd .a11y-tech-details strong { font-weight: 500; }
+/* The step cards are instructions, not passes: neutral ground, body size. */
+.a11y-widget-biz.a11y-widget-biz .a11y-fd .a11y-finding-steps > ul > li {
+  background: var(--gray-10);
+  color: var(--text-primary);
+  border-radius: var(--radius-sm);
+  font-size: 18px;
+  line-height: 1.4;
+}
+
+/* The findings table's narrow columns get the width their content needs,
+   and the table drops to Issue + Instances below 800px of panel rather
+   than 680 (the three 680 blocks above now read 800): at 696px the
+   severity column measured 50px and "Fix first" set one letter per line. */
+.a11y-widget-biz.a11y-widget-biz .a11y-findings-table th[data-col="severity"] { width: 124px; }
+.a11y-widget-biz.a11y-widget-biz .a11y-findings-table th[data-col="wcag"]     { width: 64px; }
+.a11y-widget-biz.a11y-widget-biz .a11y-findings-table th[data-col="fix"]      { width: 108px; }
+.a11y-widget-biz.a11y-widget-biz .a11y-findings-table .a11y-sev { white-space: nowrap; }
+/* The fold itself lives with the three table blocks keyed on the panel
+   breakpoint above, moved from 680 to 800 together (13 Oct 2026). */
+}
