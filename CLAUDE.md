@@ -3,7 +3,8 @@
 ## Type
 - Three fonts: **PP Telegraf Light (300)**, **Regular (400)** and **Medium (500)**. Light is for **display sizes (40px and up) only** — big and thin, never small and thin (user's instruction, 21 Sep 2026; the served file is the family's Light cut, the thinnest we have). No other weights or families (mono is allowed only for meta/labels).
 - Font sizes are **literal px values** in the markup — never font tokens or CSS variables for size, weight, or tracking.
-- **Minimum size 14px.** Small body text uses only two sizes: **15px** and **18px**.
+- **Minimum size 14px.** Labels, buttons, pills, table headers and inputs use only two sizes: **15px** and **18px**.
+- **Chat and report body text is 27px (20pt) at line-height 1.2** (user's instruction, 13 Oct 2026; 20pt rounded to a whole px so it stays literal). It is set on the `.a11y-widget-biz` root, so prose inherits it. Anything that is not prose declares its own size. Titles that sit above prose are **32px** so they stay above it. At 27px, a grid track or flex child needs `minmax(0, 1fr)` / `min-width: 0` and long words need `hyphens: auto; overflow-wrap: break-word`; `npm run check:reflow` catches the rest.
 - Letter-spacing is **0.01em** everywhere.
 
 ## Everything else
