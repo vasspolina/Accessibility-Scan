@@ -45,12 +45,7 @@ export function AppShell({
   return (
     <>
       <header className="a11y-shell-header">
-        <TopNav
-          sections={sections}
-          activeId={activeId}
-          actions={topActions}
-          onJump={onJump}
-        />
+        <TopNav actions={topActions} />
         <PlansBar plans={plans} />
       </header>
       {/* Nav and content share one grid area rather than taking a row each.

@@ -3409,9 +3409,9 @@
 }
 
 /* ── Top bar ─────────────────────────────────────────────────────────────
-   The product as a pill, four primary destinations, and the run controls,
-   on one sunken bar. Same pill vocabulary as the Sections card so the two
-   navs read as one system. */
+   The product as a pill and the run controls, on one bar. The destination
+   links that used to sit between them are gone: the Sections rail is the one
+   navigation. */
 .a11y-widget-biz .a11y-topnav {
   display: flex; align-items: center;
   gap: var(--space-05);
@@ -3425,24 +3425,6 @@
   border-radius: var(--radius-sm);
   background: var(--layer-02); font-weight: 500;
   white-space: nowrap;
-}
-.a11y-widget-biz .a11y-topnav-links {
-  display: flex; align-items: center;
-  gap: var(--space-05);
-  flex-wrap: wrap;
-}
-.a11y-widget-biz .a11y-topnav-link {
-  padding: var(--space-03) var(--space-02);
-  color: var(--text-primary);
-  text-decoration: none;
-  border-radius: var(--radius-sm);
-}
-.a11y-widget-biz .a11y-topnav-link:hover { text-decoration: underline; text-underline-offset: 3px; }
-/* Current carries weight as well as hue, so it never rests on colour.
-   purple-70 is 7.35:1 on --layer-01. */
-.a11y-widget-biz .a11y-topnav-link[aria-current]:not([aria-current="false"]) {
-  color: var(--purple-70);
-  font-weight: 500;
 }
 .a11y-widget-biz .a11y-topnav-actions {
   display: flex; align-items: center;
@@ -3505,8 +3487,7 @@
 /* Top bar at 14px — the type floor, and a menu is labels, not body text.
    It also puts the bar back on one row: at 18px the actions wrapped below
    the links. */
-.a11y-widget-biz .a11y-topnav-brand,
-.a11y-widget-biz .a11y-topnav-link { font-size: 14px; }
+.a11y-widget-biz .a11y-topnav-brand { font-size: 14px; }
 .a11y-widget-biz .a11y-topnav-brand { padding: var(--space-03) var(--space-05); }
 .a11y-widget-biz .a11y-topnav-actions .a11y-btn {
   min-height: 36px;
