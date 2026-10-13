@@ -77,52 +77,136 @@ const MAX_HISTORY_CHARS = 300_000;
 
 let nextId = 1;
 
-/** Paragraphs, hyphen lists, **bold** and `code` — the formatting the
- *  model actually writes. Built as elements, never as HTML: the text comes
- *  from a model, and none of it should reach a parser.
+/** Paragraphs, hyphen and numbered lists, fenced code blocks, **bold**,
+ *  `code` and links: the formatting the model writes. Built as elements,
+ *  never as HTML: the text comes from a model, and none of it should reach
+ *  a parser. A link is drawn only for an http or https address.
  *
  *  A paragraph may open with a sentence and go on as a list ("Start with
  *  these three:" then the items, one newline apart). Only all-list
  *  paragraphs used to become lists, so on production those items ran
- *  inline, hyphens and all, and backticks showed as backticks. */
+ *  inline, hyphens and all, and backticks showed as backticks.
+ *
+ *  Code blocks are cut out first, because the code inside may hold blank
+ *  lines and list-like lines. A block still streaming in has no closing
+ *  fence yet, and is drawn as code up to the end. */
 export function renderReply(text: string): ReactNode {
-  const inline = (line: string) =>
-    line.split(/(\*\*[^*]+?\*\*|`[^`]+`)/g).map((part, i) =>
-      part.length > 4 && part.startsWith("**") && part.endsWith("**") ? (
-        <strong key={i}>{part.slice(2, -2)}</strong>
-      ) : part.length > 2 && part.startsWith("`") && part.endsWith("`") ? (
-        <code key={i}>{part.slice(1, -1)}</code>
-      ) : (
-        part
-      )
-    );
-  const ITEM = /^\s*[-•*]\s+/;
   const out: ReactNode[] = [];
+  splitFences(text).forEach((seg, s) => {
+    if (seg.code !== undefined) {
+      if (seg.code.trim())
+        out.push(
+          <pre key={`c${s}`} className="a11y-chat-pre">
+            <code>{seg.code.replace(/\n+$/, "")}</code>
+          </pre>
+        );
+    } else renderProse(seg.text, `t${s}`, out);
+  });
+  return out;
+}
+
+type Segment = { text: string; code?: undefined } | { code: string; text?: undefined };
+
+const FENCE = /^\s*```/;
+
+function splitFences(text: string): Segment[] {
+  const segs: Segment[] = [];
+  let prose: string[] = [];
+  let code: string[] | null = null;
+  for (const line of text.split("\n")) {
+    if (code === null) {
+      if (FENCE.test(line)) {
+        if (prose.length) segs.push({ text: prose.join("\n") });
+        prose = [];
+        code = [];
+      } else prose.push(line);
+    } else if (/^\s*```\s*$/.test(line)) {
+      segs.push({ code: code.join("\n") });
+      code = null;
+    } else code.push(line);
+  }
+  if (code !== null) segs.push({ code: code.join("\n") });
+  else if (prose.length) segs.push({ text: prose.join("\n") });
+  return segs;
+}
+
+// **bold**, `code`, [text](https://…), and a bare https://… address. A bare
+// address stops before trailing punctuation, so a sentence's full stop is
+// not swallowed into the link.
+const INLINE = /(\*\*[^*]+?\*\*|`[^`]+`|\[[^\]]+\]\(https?:\/\/[^\s)]+\)|https?:\/\/[^\s<>()]*[^\s<>().,;:!?'"])/g;
+
+function inline(line: string): ReactNode[] {
+  return line.split(INLINE).map((part, i) => {
+    if (part.length > 4 && part.startsWith("**") && part.endsWith("**")) return <strong key={i}>{part.slice(2, -2)}</strong>;
+    if (part.length > 2 && part.startsWith("`") && part.endsWith("`")) return <code key={i}>{part.slice(1, -1)}</code>;
+    const md = /^\[([^\]]+)\]\((https?:\/\/[^\s)]+)\)$/.exec(part);
+    if (md) return link(md[2], md[1], i);
+    if (/^https?:\/\//.test(part)) return link(part, part, i);
+    return part;
+  });
+}
+
+function link(href: string, label: string, key: number): ReactNode {
+  return (
+    <a key={key} href={href} target="_blank" rel="noopener noreferrer">
+      {label}
+      <span className="a11y-sr-only"> {t("(opens in a new tab)")}</span>
+    </a>
+  );
+}
+
+const BULLET = /^\s*[-•*]\s+/;
+const NUMBERED = /^\s*\d+[.)]\s+/;
+// Headings are not asked for, but a model writes one now and then; it reads
+// as a bold line rather than as hashes.
+const HEADING = /^\s*#{1,6}\s+/;
+
+function renderProse(text: string, prefix: string, out: ReactNode[]) {
   text
     .split(/\n{2,}/)
     .filter((p) => p.trim())
     .forEach((para, i) => {
       let sentences: string[] = [];
       let items: string[] = [];
+      let ordered = false;
       let part = 0;
+      const key = () => `${prefix}.${i}.${part++}`;
       const flushText = () => {
-        if (sentences.length) out.push(<p key={`${i}.${part++}`}>{inline(sentences.join(" "))}</p>);
+        if (sentences.length) out.push(<p key={key()}>{inline(sentences.join(" "))}</p>);
         sentences = [];
       };
       const flushList = () => {
-        if (items.length)
+        if (items.length) {
+          const lis = items.map((l, j) => <li key={j}>{inline(l.replace(ordered ? NUMBERED : BULLET, ""))}</li>);
+          // A numbered list that resumes after a code block keeps its count.
+          const start = ordered ? parseInt(items[0], 10) : 1;
           out.push(
-            <ul key={`${i}.${part++}`}>
-              {items.map((l, j) => (
-                <li key={j}>{inline(l.replace(ITEM, ""))}</li>
-              ))}
-            </ul>
+            ordered ? (
+              <ol key={key()} start={start > 1 ? start : undefined}>
+                {lis}
+              </ol>
+            ) : (
+              <ul key={key()}>{lis}</ul>
+            )
           );
+        }
         items = [];
       };
       for (const line of para.split("\n").filter((l) => l.trim())) {
-        if (ITEM.test(line)) {
+        const isBullet = BULLET.test(line);
+        const isNumbered = !isBullet && NUMBERED.test(line);
+        if (HEADING.test(line)) {
           flushText();
+          flushList();
+          out.push(
+            <p key={key()}>
+              <strong>{inline(line.replace(HEADING, ""))}</strong>
+            </p>
+          );
+        } else if (isBullet || isNumbered) {
+          flushText();
+          if (items.length && ordered !== isNumbered) flushList();
+          ordered = isNumbered;
           items.push(line);
         } else {
           flushList();
@@ -132,7 +216,6 @@ export function renderReply(text: string): ReactNode {
       flushText();
       flushList();
     });
-  return out;
 }
 
 function outcomeLine(outcome: ScanOutcome): string {
@@ -661,7 +744,7 @@ export function ScanChat({
         <a href={WCAG_LINK} target="_blank" rel="noopener noreferrer">
           {t("Web Content Accessibility Guidelines (WCAG)")}
         </a>
-        {introAfter}
+        {introAfter} {t("You can also ask anything, from how a screen reader works to the code for a fix.")}
       </p>
 
       {turns.length > 0 && (
@@ -802,7 +885,7 @@ export function ScanChat({
           <Input
             id="a11y-chat-input"
             size="display"
-            label={currentKey ? t("Ask about the report, or name another site") : t("Which site should I check?")}
+            label={currentKey ? t("Ask about the report, or anything else") : t("Ask anything, or name a site to check")}
             placeholder="example.com"
             value={draft}
             onChange={(e) => setDraft(e.target.value)}

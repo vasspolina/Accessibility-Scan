@@ -204,7 +204,7 @@ export async function chatRoutes(app: FastifyInstance) {
 
       if (final.stop_reason === "refusal") {
         send("done", {
-          content: [{ type: "text", text: "I cannot help with that here. I can check a page or answer questions about its report." }],
+          content: [{ type: "text", text: "I can't help with that one. Ask me something else, or name a site to check." }],
           stopReason: "refusal",
           scan: null,
           show: [],

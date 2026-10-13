@@ -101,6 +101,16 @@ describe("the chat contract", () => {
     expect(schema.additionalProperties).toBe(false);
   });
 
+  // The owner's decision, 13 Oct 2026: a general assistant whose speciality
+  // is accessibility. It answers anything, and about the scanned site it
+  // still speaks only from the report.
+  it("answers anything, and keeps general knowledge apart from what the scan found", () => {
+    expect(CHAT_SYSTEM_PROMPT).not.toMatch(/only help with the scan/);
+    expect(CHAT_SYSTEM_PROMPT).toMatch(/help with whatever the person asks/);
+    expect(CHAT_SYSTEM_PROMPT).toMatch(/never present it as something the scan found/);
+    expect(CHAT_SYSTEM_PROMPT).toMatch(/fenced code block/);
+  });
+
   it("keeps credentials out of the conversation", () => {
     expect(CHAT_SYSTEM_PROMPT).toMatch(/Never ask for, or accept, a password/);
     expect(JSON.stringify(START_SCAN_TOOL)).not.toMatch(/password|username|cookie/i);

@@ -125,7 +125,7 @@ export async function sendChatTurn(
         // is replaced with the same sentence in the reader's language.
         const content =
           payload.stopReason === "refusal"
-            ? [{ type: "text", text: t("I can't help with that here. I can check a page, or answer questions about its report.") }]
+            ? [{ type: "text", text: t("I can't help with that one. Ask me something else, or name a site to check.") }]
             : payload.content;
         result = { content, scan: payload.scan, show: payload.show ?? [] };
       }

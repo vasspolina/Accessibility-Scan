@@ -6936,9 +6936,17 @@
   margin-bottom: 0;
 }
 
-.a11y-widget-biz .a11y-chat-text ul {
+.a11y-widget-biz .a11y-chat-text ul,
+.a11y-widget-biz .a11y-chat-text ol {
   margin: 0 0 var(--space-04);
   padding-left: var(--space-06);
+}
+
+.a11y-widget-biz .a11y-chat-text a {
+  color: var(--text-primary);
+  text-decoration: underline;
+  text-underline-offset: 0.15em;
+  overflow-wrap: anywhere;
 }
 
 /* Code the assistant quotes — a tag, a selector, a colour value. Set in the
@@ -6950,6 +6958,32 @@
   background: var(--layer-01);
   font: inherit;
   overflow-wrap: anywhere;
+}
+
+/* A block of code the assistant wrote: a fix to copy into the page. Same
+   face and tint as inline code. Long lines wrap rather than scroll, so the
+   block never makes the page scroll sideways at phone width and needs no
+   scrolling region a keyboard user would have to reach. */
+.a11y-widget-biz .a11y-chat-text .a11y-chat-pre {
+  margin: 0 0 var(--space-04);
+  padding: var(--space-03) var(--space-04);
+  border-radius: var(--radius-sm);
+  background: var(--layer-01);
+  font-size: 15px;
+  line-height: 1.5;
+  letter-spacing: 0.01em;
+  font-family: inherit;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+.a11y-widget-biz .a11y-chat-text .a11y-chat-pre:last-child {
+  margin-bottom: 0;
+}
+
+.a11y-widget-biz .a11y-chat-text .a11y-chat-pre code {
+  padding: 0;
+  background: none;
 }
 
 .a11y-widget-biz .a11y-chat-you .a11y-chat-text p {
