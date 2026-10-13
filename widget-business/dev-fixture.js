@@ -487,6 +487,16 @@
         var input = { url: addr, scope: wantsSite ? "site" : "page", ai_review: /ai|design/i.test(userText) };
         content = [{ type: "text", text: text }, { type: "tool_use", id: toolId, name: "start_scan", input: input }];
         scan = { toolUseId: toolId, url: input.url, scope: input.scope, aiReview: input.ai_review };
+      } else if (/\bcode\b|write the fix/i.test(userText)) {
+        // A fix the way the model writes one: steps, a fenced block with
+        // blank lines in it, a numbered step after the block, a link.
+        text =
+          "Give each field a real label joined to it:\n\n" +
+          "1. Add a `<label>` before the field\n2. Match its `for` to the field's `id`\n\n" +
+          "```html\n<label for=\"email\">Email address</label>\n\n<input type=\"email\" id=\"email\" name=\"email\" autocomplete=\"email\" aria-describedby=\"email-hint email-error another-very-long-identifier-that-has-to-wrap\">\n```\n\n" +
+          "3. Click the label and check the cursor lands in the field\n\n" +
+          "More in [the W3C forms tutorial](https://www.w3.org/WAI/tutorials/forms/labels/).";
+        content = [{ type: "text", text: text }];
       } else if (digest && sectionAsked(userText)) {
         var section = sectionAsked(userText);
         chatCalls += 1;

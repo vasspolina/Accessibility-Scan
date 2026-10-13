@@ -242,8 +242,8 @@ export const CHROME_KEYS: string[] = [
   "What a designer would point out, not failures against a rule. None of it counts towards the score.",
   "Most notes are about type. Text set small, tight or in capitals loses readers before any rule is broken.",
   // The conversational front (ScanChat).
-  "Which site should I check?",
-  "Ask about the report, or name another site",
+  "Ask anything, or name a site to check",
+  "Ask about the report, or anything else",
   "An address is enough. Say if you want the whole site or the AI review.",
   "Send",
   "You",
@@ -815,7 +815,7 @@ export const CHROME_KEYS: string[] = [
   "What the score counts",
   "Did not finish",
   "Did not run",
-  "I can't help with that here. I can check a page, or answer questions about its report.",
+  "I can't help with that one. Ask me something else, or name a site to check.",
   "Something went wrong. Please try again.",
   "Web Content Accessibility Guidelines (WCAG)",
   "We check the page at an address, or up to five pages linked from it, against the {wcag} 2.1. Then we explain what to fix, in the order worth fixing it.",
@@ -905,4 +905,7 @@ export const CHROME_KEYS: string[] = [
   "Scored out of 100",
   "Advertisement",
   "Every checked criterion has at least one finding or open question.",
+  // The assistant answers anything; links in its replies.
+  "You can also ask anything, from how a screen reader works to the code for a fix.",
+  "(opens in a new tab)",
 ];
