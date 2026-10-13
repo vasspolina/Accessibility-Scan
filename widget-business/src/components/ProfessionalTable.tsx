@@ -45,7 +45,9 @@ export function ProfessionalTable({
 
   const criterionLine = (rep: AccessibilityFinding): string => {
     const num = rep.wcagCriterion?.match(/^(\d\.\d+\.\d+)/)?.[1];
-    if (!num) return ". ";
+    // No WCAG number: leave the cell empty. A bare "." here read as a stray
+    // full stop in the Criterion column on every finding that has no rule.
+    if (!num) return "";
     const known = criterionNames[num];
     const name = known ? `${num} ${known.name} (${known.level})` : (rep.wcagCriterion ?? num);
     const en = enClauseFor(rep.wcagCriterion, rep.wcagLevel);

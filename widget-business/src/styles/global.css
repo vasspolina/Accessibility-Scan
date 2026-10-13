@@ -1274,6 +1274,25 @@
   min-width: max-content;
 }
 
+/* The professional table's Issue cell: severity tag, then the title and its
+   rule chip. It had no rule at all, so the tag butted straight against the
+   title ("Fix firstImages have no description"). A wrapping row with a real
+   gap; the tag keeps its own width and the title takes the rest. */
+.a11y-widget-biz .a11y-pro-title-cell {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  gap: var(--space-02) var(--space-03);
+}
+.a11y-widget-biz .a11y-pro-title-cell .a11y-sev {
+  white-space: nowrap;
+  min-width: max-content;
+}
+.a11y-widget-biz .a11y-pro-title-cell > span:not(.a11y-sev) {
+  flex: 1 1 12ch;
+  min-width: 0;
+}
+
 .a11y-widget-biz .a11y-findings-table td,
 .a11y-widget-biz .a11y-notes-table td td { overflow-wrap: normal; }
 
@@ -2710,7 +2729,16 @@
   letter-spacing: 0.01em;
 }
 .a11y-widget-biz .a11y-accordion-head:hover { background: var(--brown-10); }
-.a11y-widget-biz .a11y-accordion-title { flex: 1 1 auto; }
+/* The row the toggle and Play share. It had no rule, so Play dropped under
+   the toggle bar with nothing between them. The title takes the slack and
+   Play keeps its own width, wrapping beneath only when the row runs out. */
+.a11y-widget-biz .a11y-accordion-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-03);
+}
+.a11y-widget-biz .a11y-accordion-title { flex: 1 1 auto; min-width: 0; }
 /* First child that isn't the chevron takes the slack, so a head with a chip
    between the label and the arrow still pushes the arrow to the end. */
 .a11y-widget-biz .a11y-accordion-head > span:first-child { flex: 1 1 auto; }
@@ -3402,6 +3430,11 @@
   margin-left: auto;
   flex-wrap: wrap;
 }
+
+/* A tab list and the panel it opens are one control. The report column's
+   section gap is 0 on purpose (20 Aug), which also zeroed this seam, so the
+   tabs sat on the first line of their panel ("9 findings"). */
+.a11y-widget-biz .a11y-tabs > .a11y-tablist { margin-bottom: var(--space-04); }
 
 /* The fix-kind filter, as the design's chip row. */
 .a11y-widget-biz .a11y-filter {

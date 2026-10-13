@@ -575,7 +575,9 @@ export function App({
             )}
             {/* The score only counts checks that ran, so a scan where some
                 fell over can look better than a complete one. Both audiences. */}
-            {report.meta.incompleteChecks && report.meta.incompleteChecks.length > 0 && (
+            {/* ProSummary prints this same notice beside the score points, so
+                the professional reading must not print it a second time. */}
+            {!(professional && !isDocument) && report.meta.incompleteChecks && report.meta.incompleteChecks.length > 0 && (
               <Notification
                 kind="warning"
                 title={tf("Some checks didn't finish this time: {checks}.", { checks: checkNames(report.meta.incompleteChecks) })}
