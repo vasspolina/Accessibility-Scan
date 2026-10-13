@@ -778,6 +778,16 @@ export const PLAIN_RULE_EXPLANATIONS: Record<string, PlainRule> = {
     // which names the specific element. The other languages carry one.
     impact: "Someone who learned one name has to work out that the other means the same. A screen reader user searching the link list for the familiar word does not find it.",
   },
+  "color-contrast-mobile": {
+    plain: "Text too faint at phone width",
+    // No found line on purpose: English keeps the backend's own description,
+    // which carries the count. The other languages carry one without it.
+    impact: "On a phone in daylight, faint text is hard to read even with good eyesight. A desktop check cannot see this, because the colours change only at the narrow width.",
+  },
+  "color-contrast-dark": {
+    plain: "Text too faint in dark mode",
+    impact: "People who set their device to dark mode, often against glare or tired eyes, get the faint version. The light theme passing says nothing about this one.",
+  },
   "nav-order-inconsistent": {
     plain: "The menu changes its order",
     // No found line on purpose: English keeps the backend's own description,
@@ -1217,6 +1227,14 @@ export const PLAIN_RULE_FIXES: Record<string, string | string[]> = {
   "scrollable-region-focusable": 'Add tabindex="0" to the scrollable container so keyboard users can scroll it.',
   "keyboard-positive-tabindex-advisory": "Ask your developer to remove the numbers that set the tab order by hand. The keyboard then follows the order of the page, including anything added later.",
   "nav-name-inconsistent": "Give each menu link one name, \"Basket\" or \"Cart\" but not both, and use it on every page.",
+  "color-contrast-mobile": [
+    "Find the phone-width media query that changes the text or background colour.",
+    "Check that pairing against the same rule: ordinary text needs at least 4.5 to 1.",
+  ],
+  "color-contrast-dark": [
+    "Check the dark palette's text and background colours the same way as the light ones.",
+    "Ordinary text needs at least 4.5 to 1 in both themes.",
+  ],
   "nav-order-inconsistent": "Keep the menu's links in the same order on every page. A page can show fewer links, but the ones it shares with others should not move.",
   "activation-stale-state": "Make each control announce its new state the moment it changes: open or closed, on or off. Your developer sets this in the same code that opens or switches the control.",
   "control-faint-boundary": "Darken the borders on fields and buttons. They need at least 3 to 1 against what sits behind them. Your designer can usually fix them all with one change to the shared style.",

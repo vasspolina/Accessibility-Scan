@@ -117,3 +117,28 @@ describe("what the readiness table refuses to claim", () => {
     expect(r.criteria.find((c) => c.id === "2.5.8")!.status).toBe("already-failing");
   });
 });
+
+// These rows reached a German report in English: the 2.1 checklist was
+// translated server-side, this section never was.
+describe("WCAG 2.2 readiness in the reader's language", () => {
+  it("words every row in German, Spanish and French, keeping the official name", () => {
+    for (const lang of ["de", "es", "fr"] as const) {
+      const r = buildWcag22Readiness([], { lang });
+      for (const c of r.criteria) {
+        const en = WCAG_22_NEW_AA.find((e) => e.id === c.id)!;
+        expect(c.plain, `${lang} ${c.id}`).not.toBe(en.plain);
+        expect(c.failing, `${lang} ${c.id}`).not.toBe(en.failing);
+        // A row that says why a person is needed in English says so in
+        // every language, and one that does not, does not.
+        expect(Boolean(c.whyManual), `${lang} ${c.id}`).toBe(Boolean(en.whyManual));
+        if (en.whyManual) expect(c.whyManual, `${lang} ${c.id}`).not.toBe(en.whyManual);
+        expect(c.name).toBe(en.name);
+      }
+    }
+  });
+
+  it("stays English when no language is asked for", () => {
+    const r = buildWcag22Readiness([]);
+    expect(r.criteria.map((c) => c.plain)).toEqual(WCAG_22_NEW_AA.map((c) => c.plain));
+  });
+});

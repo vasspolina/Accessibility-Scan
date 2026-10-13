@@ -93,7 +93,7 @@ export function PrincipleGroup({ findings }: { findings: AccessibilityFinding[] 
                     .sort()
                     .map((l) => (
                       <span className="a11y-pg-pill" key={l}>
-                        Level {l}
+                        {t("Level")} {l}
                       </span>
                     ))}
                 </p>

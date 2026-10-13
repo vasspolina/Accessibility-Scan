@@ -597,6 +597,16 @@ export const PLAIN_DE: Record<string, PlainRule> = {
     impact: "Wer den einen Namen gelernt hat, muss erst herausfinden, dass der andere dasselbe meint. Wer mit dem Screenreader in der Linkliste nach dem gewohnten Wort sucht, findet es dort nicht.",
     found: (n) => (n === 1 ? "Ein Menülink heißt auf den geprüften Seiten nicht überall gleich, obwohl er zum selben Ziel führt. Unterschiede nur bei Groß- und Kleinschreibung oder Leerzeichen wurden nicht gezählt." : "{n} Menülinks heißen auf den geprüften Seiten nicht überall gleich, obwohl sie jeweils zum selben Ziel führen. Unterschiede nur bei Groß- und Kleinschreibung oder Leerzeichen wurden nicht gezählt.".replace("{n}", String(n))),
   },
+  "color-contrast-mobile": {
+    plain: "Text bei Handybreite zu blass",
+    impact: "Auf dem Handy bei Tageslicht ist blasser Text selbst mit guten Augen schwer zu lesen. Eine Prüfung am Desktop sieht das nicht, weil sich die Farben erst bei schmaler Breite ändern.",
+    found: () => "Bei Handybreite fällt Text auf dieser Seite unter den nötigen Kontrast, am Desktop nicht. Die Prüfung am Desktop allein hätte das übersehen.",
+  },
+  "color-contrast-dark": {
+    plain: "Text im dunklen Modus zu blass",
+    impact: "Wer das Gerät auf dunklen Modus stellt, oft gegen Blendung oder müde Augen, bekommt die blasse Fassung. Dass das helle Design besteht, sagt darüber nichts.",
+    found: () => "Im dunklen Design der Seite fällt Text unter den nötigen Kontrast, im hellen nicht. Die Prüfung des hellen Designs allein hätte das übersehen.",
+  },
   "nav-order-inconsistent": {
     plain: "Das Menü wechselt die Reihenfolge",
     impact: "Wer sich die Position oder die Zahl der Tab-Schritte merkt, landet auf der nächsten Seite beim falschen Menüpunkt. Mit einer Bildschirmlupe, die nur einen Ausschnitt zeigt, muss man das Menü jedes Mal neu absuchen.",
@@ -952,6 +962,14 @@ export const FIXES_DE: Record<string, string | string[]> = {
   "scrollable-region-focusable": 'Ergänzen Sie tabindex="0" am scrollbaren Container, damit Tastaturnutzer darin scrollen können.',
   "keyboard-positive-tabindex-advisory": "Bitten Sie Ihren Entwickler, die Zahlen zu entfernen, mit denen die Tab-Reihenfolge von Hand festgelegt ist. Die Tastatur folgt dann der Reihenfolge der Seite, auch bei allem, was später dazukommt.",
   "nav-name-inconsistent": "Geben Sie jedem Menülink einen einzigen Namen, „Warenkorb“ oder „Einkaufswagen“, nicht beides, und verwenden Sie ihn auf jeder Seite.",
+  "color-contrast-mobile": [
+    "Suchen Sie die Media Query für Handybreite, die die Text- oder Hintergrundfarbe ändert.",
+    "Prüfen Sie dieses Farbpaar nach derselben Regel: Gewöhnlicher Text braucht mindestens 4.5:1.",
+  ],
+  "color-contrast-dark": [
+    "Prüfen Sie die Text- und Hintergrundfarben der dunklen Palette genauso wie die der hellen.",
+    "Gewöhnlicher Text braucht in beiden Designs mindestens 4.5:1.",
+  ],
   "nav-order-inconsistent": "Zeigen Sie die Menülinks auf jeder Seite in derselben Reihenfolge. Eine Seite darf weniger Links zeigen, aber die vorhandenen sollten ihre Reihenfolge behalten.",
   "activation-stale-state": "Lassen Sie jedes Bedienelement seinen neuen Zustand ansagen, sobald er sich ändert: aufgeklappt oder zugeklappt, an oder aus. Ihr Entwickler setzt das im selben Code, der das Element öffnet oder umschaltet.",
   "control-faint-boundary": "Machen Sie die Rahmen von Feldern und Knöpfen dunkler. Die Rahmen brauchen ein Kontrastverhältnis von mindestens 3:1 zu dem, was dahinter liegt. Ihr Designer kann meist alle mit einer Änderung am gemeinsamen Stil beheben.",

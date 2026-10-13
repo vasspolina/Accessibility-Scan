@@ -1,6 +1,6 @@
-import { CRITERIA_DE } from "./criteriaText.de.js";
-import { CRITERIA_ES } from "./criteriaText.es.js";
-import { CRITERIA_FR } from "./criteriaText.fr.js";
+import { CRITERIA_DE, WCAG22_DE } from "./criteriaText.de.js";
+import { CRITERIA_ES, WCAG22_ES } from "./criteriaText.es.js";
+import { CRITERIA_FR, WCAG22_FR } from "./criteriaText.fr.js";
 
 /**
  * The conformance checklist's plain question and failing statement, per
@@ -43,4 +43,21 @@ export function criterionText(
 ): { plain: string; failing: string } | undefined {
   if (lang === "en") return undefined;
   return BY_LANG[lang]?.[id];
+}
+
+const WCAG22_BY_LANG: Partial<
+  Record<ReportLang, Record<string, { plain: string; failing: string; whyManual?: string }>>
+> = {
+  de: WCAG22_DE,
+  es: WCAG22_ES,
+  fr: WCAG22_FR,
+};
+
+/** The same, for the six criteria WCAG 2.2 adds at A and AA. */
+export function wcag22Text(
+  id: string,
+  lang: ReportLang
+): { plain: string; failing: string; whyManual?: string } | undefined {
+  if (lang === "en") return undefined;
+  return WCAG22_BY_LANG[lang]?.[id];
 }

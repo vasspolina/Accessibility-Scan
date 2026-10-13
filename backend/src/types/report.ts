@@ -72,6 +72,13 @@ export const accessibilityFindingSchema = z.object({
   // usually correct behaviour, and saying so is what stops a picture-less
   // finding reading as a broken report.
   pictureNote: z.string().optional(),
+  // The same note as data, for the widget to word in the reader's language:
+  // which of the capture pass's reasons, and the consent frame's host when
+  // the element lives inside one.
+  pictureReason: z
+    .enum(["hidden", "offscreen", "missing", "too-large", "no-usable-image", "not-attempted", "unreachable"])
+    .optional(),
+  pictureFrame: z.string().optional(),
   // One sentence from the age-inclusive review on how this measured finding
   // lands for visitors past sixty. Its own field, not folded into the
   // description: rules with a plain-language account show that account

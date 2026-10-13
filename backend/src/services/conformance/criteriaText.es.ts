@@ -209,3 +209,36 @@ export const CRITERIA_ES: Record<string, { plain: string; failing: string }> = {
     failing: "Los avisos del tipo 'añadido a la cesta' no se anuncian en voz alta",
   },
 };
+
+/* The six new Level A and AA criteria in WCAG 2.2, in Spanish. Falls back per id. */
+export const WCAG22_ES: Record<string, { plain: string; failing: string; whyManual?: string }> = {
+  "2.4.11": {
+    plain: "Cuando se llega a algo con el tabulador, ¿sigue a la vista?",
+    failing: "Una cabecera o un pie fijos tapan lo que acaba de alcanzar con el tabulador",
+    whyManual: "El recorrido con teclado ya mide esto directamente en cada parada que visita. Una parada oculta del todo al recibir el foco se marca como fallo. Sigue haciendo falta una persona para las paradas fuera de su alcance y para juzgar los solapamientos parciales.",
+  },
+  "2.5.7": {
+    plain: "¿Todo lo que se arrastra se puede hacer también sin arrastrar?",
+    failing: "Hay algo que solo se puede hacer arrastrándolo",
+    whyManual: "Un programa puede ver que existe un control deslizante o una lista ordenable. Si hay otra forma de hacer lo mismo es un juicio sobre la tarea completa.",
+  },
+  "2.5.8": {
+    plain: "¿Todo lo que se toca mide al menos 24 por 24 píxeles, o está bien separado?",
+    failing: "Algunos elementos táctiles miden menos de 24 píxeles y están muy juntos",
+  },
+  "3.2.6": {
+    plain: "¿La ayuda está siempre en el mismo sitio en todas las páginas?",
+    failing: "La ayuda cambia de sitio de una página a otra",
+    whyManual: "Esto compara cada página con todas las demás, y exige saber cuáles de sus enlaces y widgets cuentan como ayuda.",
+  },
+  "3.3.7": {
+    plain: "¿Algo pide la misma información dos veces?",
+    failing: "Hay que escribir la misma información más de una vez",
+    whyManual: "Solo aparece a mitad de un formulario de varios pasos, así que hay que completarlo como lo haría una persona.",
+  },
+  "3.3.8": {
+    plain: "¿Se puede iniciar sesión sin resolver un acertijo ni memorizar nada?",
+    failing: "Iniciar sesión exige un acertijo o recordar algo, sin otra vía",
+    whyManual: "El inicio de sesión suele estar detrás de la página que podemos alcanzar, y si existe otra vía es una pregunta sobre todo el proceso.",
+  },
+};

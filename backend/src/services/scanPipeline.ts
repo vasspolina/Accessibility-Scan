@@ -160,8 +160,12 @@ async function attachEvidence(
       // until it opens. Without the note the reader is left with a finding
       // and nothing to identify it by.
       const why = shots.unpicturable[finding.selector];
-      if (why) finding.pictureNote = UNPICTURABLE_NOTES[why];
+      if (why) {
+        finding.pictureNote = UNPICTURABLE_NOTES[why];
+        finding.pictureReason = why;
+      }
       if (finding.pictureNote && frameForSelector[finding.selector]) {
+        finding.pictureFrame = frameForSelector[finding.selector];
         finding.pictureNote =
           finding.pictureNote.replace(" The technical details for this finding identify the exact element.", "") +
           ` This element lives inside the consent frame from ${frameForSelector[finding.selector]}, so the selector in the technical details is a path within that frame rather than within your own page.`;
@@ -188,7 +192,7 @@ const UNPICTURABLE_NOTES: Record<
   string
 > = {
   hidden:
-    "No picture: this was not visible on the page when it was scanned. It is revealed by something. Opening a panel, or moving focus to it.",
+    "No picture: this was not visible on the page when it was scanned. Something reveals it, such as opening a panel or moving focus to it.",
   offscreen:
     "No picture: this sits off the edge of the screen until it is used. Skip links are built this way on purpose, so nothing is necessarily wrong with it being there.",
   "no-usable-image":
@@ -571,7 +575,10 @@ export async function scanUrlToReport(
     incompleteChecks: renderResult.incompleteChecks,
     axeIncompleteCriteria: axeIncompleteCriteria(renderResult.axe),
   });
-  const wcag22 = buildWcag22Readiness(findings, { incompleteChecks: renderResult.incompleteChecks });
+  const wcag22 = buildWcag22Readiness(findings, {
+    incompleteChecks: renderResult.incompleteChecks,
+    lang: normalizeReportLang(language),
+  });
 
   return {
     url: safeUrl.toString(),

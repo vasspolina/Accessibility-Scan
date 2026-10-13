@@ -1,3 +1,5 @@
+import { t } from "../lib/strings";
+
 /**
  * The embedder's plans, across the top of the report.
  *
@@ -28,7 +30,7 @@ export function PlansBar({ plans }: { plans?: Plan[] }) {
   if (!plans || plans.length === 0) return null;
 
   return (
-    <aside className="a11y-plans-bar" aria-label="Advertisement">
+    <aside className="a11y-plans-bar" aria-label={t("Advertisement")}>
       <ul className="a11y-plans-list">
         {plans.map((plan) => (
           <li

@@ -3,7 +3,8 @@ import { describeScanFailure } from "../src/services/scanFailure.js";
 import { UnsafeUrlError } from "../src/middleware/ssrfGuard.js";
 import { TimeoutError } from "../src/utils/timeout.js";
 import { ServiceBusyError } from "../src/services/render/browserPool.js";
-import { RebindingDetectedError, SiteBlockedError } from "../src/services/render/renderPage.js";
+import { PageStatusError, RebindingDetectedError, SiteBlockedError } from "../src/services/render/renderPage.js";
+import { PdfFetchError } from "../src/services/documents/checkPdf.js";
 import { AuthError } from "../src/services/auth/authenticate.js";
 
 // Both the single-page route and the crawler read this. They had drifted, and
@@ -12,10 +13,46 @@ import { AuthError } from "../src/services/auth/authenticate.js";
 
 describe("describeScanFailure", () => {
   it("passes a blocked site through with its own message and the flag", () => {
-    const f = describeScanFailure(new SiteBlockedError("example.com", "a CAPTCHA"));
+    const f = describeScanFailure(new SiteBlockedError("example.com", { kind: "challenge", label: "Just a moment..." }));
     expect(f.blocked).toBe(true);
     expect(f.status).toBe(422);
     expect(f.message).toMatch(/example\.com/);
+    expect(f.reason).toEqual({ code: "challenge", host: "example.com", label: "Just a moment..." });
+  });
+
+  // The widget words the reason in the reader's language; a sentence built
+  // here only ever reached them in English.
+  it("sends a refusal's values as data", () => {
+    const f = describeScanFailure(new SiteBlockedError("www.w3.org", { kind: "refused", status: 403 }));
+    expect(f.reason).toEqual({ code: "refused", host: "www.w3.org", status: 403 });
+    expect(f.message).toBe(
+      "www.w3.org turned our scanner away (HTTP 403). Its protection against automated visitors keeps tools like ours out, so this says nothing about how accessible the site is."
+    );
+  });
+
+  // A 404 used to arrive as "turned our scanner away", with the advice to
+  // allowlist the scanner: the reader was sent to their firewall for a typo.
+  it("does not call a missing page a block", () => {
+    const f = describeScanFailure(new PageStatusError("example.com", 404));
+    expect(f.blocked).toBeUndefined();
+    expect(f.status).toBe(422);
+    expect(f.message).toMatch(/no page at that address/i);
+    expect(f.reason).toEqual({ code: "page-status", host: "example.com", status: 404 });
+  });
+
+  it("tells a login wall and a server fault apart from a missing page", () => {
+    expect(describeScanFailure(new PageStatusError("example.com", 401)).message).toMatch(/login/i);
+    expect(describeScanFailure(new PageStatusError("example.com", 500)).message).toMatch(/example\.com answered with an error \(HTTP 500\)/);
+  });
+
+  // These fell through to "Could not load or scan the page", which hid the
+  // one thing the reader could act on.
+  it("keeps a document's own reason", () => {
+    expect(describeScanFailure(new PdfFetchError("That document is too large for this check (over 20MB).")).message).toMatch(
+      /too large/
+    );
+    const f = describeScanFailure(new PdfFetchError("We could not download the document (HTTP 404).", 404));
+    expect(f.reason).toEqual({ code: "document-status", status: 404 });
   });
 
   it("marks a timeout so the widget knows not to retry it", () => {

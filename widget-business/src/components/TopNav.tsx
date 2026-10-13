@@ -1,5 +1,6 @@
 import type { ReactNode } from "react";
 import type { NavSection } from "./SideNav";
+import { t } from "../lib/strings";
 
 /**
  * The design's top bar: the product as a pill, a short list of primary
@@ -48,9 +49,9 @@ export function TopNav({
 
   return (
     <div className="a11y-topnav">
-      <span className="a11y-topnav-brand">Accessibility scan</span>
+      <span className="a11y-topnav-brand">{t("Accessibility scan")}</span>
       {links.length > 0 && (
-        <nav className="a11y-topnav-links" aria-label="Report">
+        <nav className="a11y-topnav-links" aria-label={t("Report")}>
           {links.map((l) => (
             <a
               key={l.label}
@@ -62,7 +63,7 @@ export function TopNav({
                 onJump(l.section.el);
               }}
             >
-              {l.label}
+              {t(l.label)}
             </a>
           ))}
         </nav>

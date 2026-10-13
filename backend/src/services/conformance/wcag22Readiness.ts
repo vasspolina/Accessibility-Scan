@@ -1,5 +1,6 @@
 import type { AccessibilityFinding } from "../../types/report.js";
 import { normalizeCriterionId } from "./wcagCriteria.js";
+import { wcag22Text, type ReportLang } from "./criteriaText.js";
 
 // What changes when the law catches up with WCAG 2.2.
 //
@@ -153,7 +154,9 @@ const CHECK_TO_22: Record<string, string[]> = {
 
 export function buildWcag22Readiness(
   findings: AccessibilityFinding[],
-  opts?: { incompleteChecks?: string[] }
+  // The language travels with the rows for the same reason as the 2.1
+  // checklist's: the emailed and printed copies carry them too.
+  opts?: { incompleteChecks?: string[]; lang?: ReportLang }
 ): Wcag22Readiness {
   const countByRule = new Map<string, number>();
   let parsingFailing = false;
@@ -181,7 +184,9 @@ export function buildWcag22Readiness(
           : c.coverage === "manual"
             ? "needs-review"
             : "no-issues-found";
-    return { ...c, status, findingCount };
+    // The official name stays as the standard writes it, as in the 2.1 table.
+    const text = wcag22Text(c.id, opts?.lang ?? "en");
+    return { ...c, ...(text ?? {}), status, findingCount };
   });
 
   return {

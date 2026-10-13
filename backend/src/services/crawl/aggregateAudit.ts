@@ -4,6 +4,7 @@ import { buildWcag22Readiness, type Wcag22Readiness } from "../conformance/wcag2
 import { compareNavigation, type ConsistencyIssue } from "./consistency.js";
 import type { AccessibilityFinding } from "../../types/report.js";
 import { normalizeReportLang } from "../conformance/criteriaText.js";
+import type { FailureReason } from "../scanFailure.js";
 
 // Rolls several page reports into one site-level audit.
 //
@@ -25,6 +26,8 @@ export interface PageSummary {
   // Set when this page couldn't be scanned, with the reason. Reporting a
   // failed page as a clean one would be the worst possible outcome.
   error?: string;
+  // The values in that reason, for the widget to word in the reader's language.
+  errorReason?: FailureReason;
 }
 
 export interface SiteWideIssue {
@@ -71,6 +74,7 @@ export interface PageOutcome {
   label: string;
   report?: AccessibilityReport;
   error?: string;
+  errorReason?: FailureReason;
 }
 
 const SEVERITY_ORDER: Record<Severity, number> = {
@@ -97,6 +101,7 @@ export function aggregateAudit(
     score: o.report?.score ?? 0,
     findingCount: o.report?.findings.length ?? 0,
     error: o.error,
+    ...(o.errorReason ? { errorReason: o.errorReason } : {}),
   }));
 
   const scanned = outcomes.filter((o) => o.report);
@@ -240,6 +245,7 @@ export function aggregateAudit(
     incompleteChecks: [...new Set(scanned.flatMap((o) => o.report!.meta.incompleteChecks ?? []))],
     wcag22: buildWcag22Readiness(allFindings, {
       incompleteChecks: [...new Set(scanned.flatMap((o) => o.report!.meta.incompleteChecks ?? []))],
+      lang: normalizeReportLang(language),
     }),
   };
 }

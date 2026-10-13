@@ -208,3 +208,36 @@ export const CRITERIA_DE: Record<string, { plain: string; failing: string }> = {
     failing: "Änderungen wie „in den Warenkorb gelegt“ werden nicht laut angesagt",
   },
 };
+
+/* Die sechs neuen Kriterien der Stufen A und AA in WCAG 2.2. Rückfall pro id. */
+export const WCAG22_DE: Record<string, { plain: string; failing: string; whyManual?: string }> = {
+  "2.4.11": {
+    plain: "Bleibt ein Element sichtbar, wenn es mit der Tab-Taste den Fokus bekommt?",
+    failing: "Eine fixierte Kopf- oder Fußzeile verdeckt das Element, das gerade mit der Tab-Taste erreicht wurde",
+    whyManual: "Der Tastaturrundgang misst das jetzt an jedem Halt direkt. Ein Halt, der beim Fokus ganz verdeckt ist, gilt als Fehler. Für Halte außerhalb des Rundgangs und für teilweise Überdeckung braucht es weiterhin einen Menschen.",
+  },
+  "2.5.7": {
+    plain: "Lässt sich alles, was man zieht, auch ohne Ziehen erledigen?",
+    failing: "Manches lässt sich nur durch Ziehen erledigen",
+    whyManual: "Software sieht, dass es einen Schieberegler oder eine sortierbare Liste gibt. Ob es einen anderen Weg zum selben Ziel gibt, lässt sich nur mit Blick auf die ganze Aufgabe beurteilen.",
+  },
+  "2.5.8": {
+    plain: "Ist alles, was man antippt, mindestens 24 mal 24 Pixel groß oder mit genug Abstand platziert?",
+    failing: "Manche Tippziele sind kleiner als 24 Pixel und liegen dicht beieinander",
+  },
+  "3.2.6": {
+    plain: "Steht die Hilfe auf jeder Seite an derselben Stelle?",
+    failing: "Die Hilfe steht von Seite zu Seite an einer anderen Stelle",
+    whyManual: "Dafür muss man jede Seite mit jeder anderen vergleichen und wissen, welche Ihrer Links und Widgets als Hilfe gelten.",
+  },
+  "3.3.7": {
+    plain: "Fragt etwas dieselbe Angabe zweimal ab?",
+    failing: "Dieselbe Angabe muss mehr als einmal eingetippt werden",
+    whyManual: "Das zeigt sich erst mitten in einem mehrstufigen Formular. Man muss es also so ausfüllen, wie ein Mensch es täte.",
+  },
+  "3.3.8": {
+    plain: "Können sich Menschen anmelden, ohne ein Rätsel zu lösen oder sich etwas zu merken?",
+    failing: "Die Anmeldung verlangt ein Rätsel oder etwas Auswendiggelerntes, ohne anderen Weg",
+    whyManual: "Die Anmeldung liegt meist hinter der Seite, die wir erreichen. Ob es einen anderen Weg gibt, ist eine Frage an den ganzen Ablauf.",
+  },
+};

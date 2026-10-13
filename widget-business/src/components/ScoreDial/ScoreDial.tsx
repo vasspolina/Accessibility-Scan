@@ -1,3 +1,5 @@
+import { t } from "../../lib/strings";
+
 /**
  * The score, ported from components/scan/ScoreDial.jsx.
  *
@@ -76,7 +78,7 @@ export function ScoreDial({
       <div className="a11y-dial-head" aria-hidden="true">
         <span className="a11y-dial-labels">
           <span className="a11y-dial-label">{label}</span>
-          <span className="a11y-dial-sub">Scored out of 100</span>
+          <span className="a11y-dial-sub">{t("Scored out of 100")}</span>
         </span>
         <span className="a11y-dial-band">{word}</span>
       </div>

@@ -212,3 +212,36 @@ export const CRITERIA_FR: Record<string, { plain: string; failing: string }> = {
     failing: "Les mises à jour comme « ajouté au panier » ne sont pas annoncées à voix haute",
   },
 };
+
+/* The six new Level A and AA criteria in WCAG 2.2, in French. Falls back per id. */
+export const WCAG22_FR: Record<string, { plain: string; failing: string; whyManual?: string }> = {
+  "2.4.11": {
+    plain: "Quand on atteint un élément avec la touche Tab, reste-t-il visible ?",
+    failing: "Un en-tête ou un pied de page fixe masque l'élément que vous venez d'atteindre avec Tab",
+    whyManual: "Le parcours au clavier mesure désormais cela directement à chaque arrêt qu'il visite. Un arrêt entièrement masqué au moment du focus est signalé comme défaillant. Une personne reste nécessaire pour les arrêts hors de sa portée, et pour juger les chevauchements partiels.",
+  },
+  "2.5.7": {
+    plain: "Tout ce qu'on fait glisser peut-il aussi se faire sans glisser ?",
+    failing: "Une action n'est possible qu'en faisant glisser un élément",
+    whyManual: "Un logiciel peut voir qu'un curseur ou une liste triable existe. Savoir s'il existe un autre moyen de faire la même chose relève d'un jugement sur la tâche entière.",
+  },
+  "2.5.8": {
+    plain: "Tout ce qu'on touche fait-il au moins 24 par 24 pixels, ou est-il bien espacé ?",
+    failing: "Certaines cibles tactiles font moins de 24 pixels et sont serrées les unes contre les autres",
+  },
+  "3.2.6": {
+    plain: "L'aide est-elle toujours au même endroit sur chaque page ?",
+    failing: "L'aide change de place d'une page à l'autre",
+    whyManual: "Cela compare chaque page à toutes les autres, et suppose de savoir lesquels de vos liens et widgets comptent comme de l'aide.",
+  },
+  "3.3.7": {
+    plain: "Une information est-elle demandée deux fois ?",
+    failing: "La même information doit être saisie plus d'une fois",
+    whyManual: "Cela n'apparaît qu'au milieu d'un formulaire en plusieurs étapes, ce qui oblige à le remplir comme le ferait une personne.",
+  },
+  "3.3.8": {
+    plain: "Peut-on se connecter sans résoudre d'énigme ni retenir quoi que ce soit ?",
+    failing: "La connexion exige une énigme ou de retenir quelque chose, sans autre moyen",
+    whyManual: "La connexion se trouve souvent derrière la page que nous pouvons atteindre, et l'existence d'un autre chemin est une question qui porte sur tout le parcours.",
+  },
+};

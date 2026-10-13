@@ -3218,12 +3218,44 @@ export class RebindingDetectedError extends Error {
 // Denied" error page itself and return a report about a page the site's
 // real visitors never see — worse than failing, because it looks like a
 // genuine result.
+//
+// The reason travels as data as well as a sentence: the widget words it in
+// the reader's language, and only English survives a sentence built here.
+export type BlockReason =
+  | { kind: "refused"; status: number }
+  | { kind: "challenge"; label: string };
+
 export class SiteBlockedError extends Error {
-  constructor(host: string, detail: string) {
+  constructor(
+    readonly host: string,
+    readonly reason: BlockReason
+  ) {
     super(
-      `${host} turned our scanner away (${detail}). This says nothing about how accessible the site is. It blocks automated tools from visiting at all.`
+      reason.kind === "refused"
+        ? `${host} turned our scanner away (HTTP ${reason.status}). Its protection against automated visitors keeps tools like ours out, so this says nothing about how accessible the site is.`
+        : `${host} showed "${reason.label}" instead of the page. Its protection against automated visitors keeps tools like ours out, so this says nothing about how accessible the site is.`
     );
     this.name = "SiteBlockedError";
+  }
+}
+
+// Thrown when the page itself answers with an error: no page at that
+// address, a login wall, a fault on the server. Not a block, so not the
+// block's advice: telling someone with a typo to allowlist our scanner sends
+// them to their firewall for a mistake in the address.
+export class PageStatusError extends Error {
+  constructor(
+    readonly host: string,
+    readonly status: number
+  ) {
+    super(
+      status === 404 || status === 410
+        ? `There is no page at that address (HTTP ${status}). Check the address and try again.`
+        : status === 401
+          ? `That page asks for a login first (HTTP ${status}). The form can sign in with your details.`
+          : `${host} answered with an error (HTTP ${status}) instead of the page, so there was nothing to check. Try again later.`
+    );
+    this.name = "PageStatusError";
   }
 }
 
@@ -3385,14 +3417,14 @@ export async function renderAndScan(
       const status = mainResponse?.status() ?? 0;
       const host = new URL(page.url()).hostname;
       if (status === 403 || status === 429 || status === 503) {
-        throw new SiteBlockedError(host, `HTTP ${status}. Automated-visitor protection`);
+        throw new SiteBlockedError(host, { kind: "refused", status });
       }
       if (status >= 400) {
-        throw new SiteBlockedError(host, `the page returned HTTP ${status}`);
+        throw new PageStatusError(host, status);
       }
       const pageTitle = await page.title().catch(() => "");
       if (BLOCK_PAGE_PATTERNS.test(pageTitle)) {
-        throw new SiteBlockedError(host, `it served a "${pageTitle.slice(0, 60)}" page instead of content`);
+        throw new SiteBlockedError(host, { kind: "challenge", label: pageTitle.slice(0, 60) });
       }
 
       // The title can look ordinary while the body is a challenge. Only treat
@@ -3403,7 +3435,7 @@ export async function renderAndScan(
         .catch(() => "");
       if (bodyText.length <= CHALLENGE_MAX_TEXT_LENGTH && BLOCK_PAGE_PATTERNS.test(bodyText)) {
         const phrase = bodyText.match(BLOCK_PAGE_PATTERNS)?.[0] ?? "a security check";
-        throw new SiteBlockedError(host, `it served a "${phrase}" check instead of the page`);
+        throw new SiteBlockedError(host, { kind: "challenge", label: phrase });
       }
 
       // Injecting axe is the step most exposed to a page that hasn't finished

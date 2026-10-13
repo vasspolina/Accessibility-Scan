@@ -1,5 +1,7 @@
 import { getApiKey } from "../lib/apiKey";
 import { getLang } from "../lib/i18n";
+import { failureText } from "../lib/failureText";
+import { t, tf } from "../lib/strings";
 
 export type Severity = "critical" | "serious" | "moderate" | "minor";
 export type FindingSource = "automated" | "ai-review";
@@ -49,6 +51,10 @@ export interface AccessibilityFinding {
   // element, when the backend could locate and capture it.
   elementScreenshot?: string;
   pictureNote?: string;
+  // The same note as data, so it can be worded in the reader's language.
+  // Absent on reports saved before it was sent.
+  pictureReason?: "hidden" | "offscreen" | "missing" | "too-large" | "no-usable-image" | "not-attempted" | "unreachable";
+  pictureFrame?: string;
   // One sentence from the age-inclusive review, shown as its own line.
   ageNote?: string;
   // AI-suggested alt text for an image that's missing one. A non-empty
@@ -203,6 +209,7 @@ export interface PageSummary {
   findingCount: number;
   // Present when the page couldn't be scanned — never treat as a clean page.
   error?: string;
+  errorReason?: FailureReason;
 }
 
 // An issue found on every scanned page: almost always a template problem, so
@@ -266,6 +273,18 @@ export function authHeaders(): Record<string, string> {
   const key = getApiKey();
   return key ? { Authorization: `Bearer ${key}` } : {};
 }
+
+/** The values in a failure's sentence, sent so the sentence can be worded
+ *  in the reader's language (lib/failureText). */
+export type FailureReason =
+  | { code: "refused"; host: string; status: number }
+  | { code: "challenge"; host: string; label: string }
+  | { code: "page-status"; host: string; status: number }
+  | { code: "document-status"; status: number };
+
+// Several scans in a short time. The limiter's own answer is English and
+// about requests, not checks.
+const RATE_LIMITED = "You've started several checks in a short time. Wait a minute, then try again.";
 
 export class ScanError extends Error {
   blocked: boolean;
@@ -336,9 +355,7 @@ export async function scanUrl(
       // A deadline is a real answer, not a blip: retrying spends another three
       // minutes to say the same thing.
       if (err instanceof DOMException && err.name === "AbortError") {
-        throw new ScanError(
-          "The check stopped responding, so we gave up waiting. Please try again."
-        );
+        throw new ScanError(t("The check stopped responding, so we gave up waiting. Please try again."));
       }
       // Connection failure — the service may just be briefly restarting.
       // Retry a couple of times before giving up.
@@ -346,7 +363,7 @@ export async function scanUrl(
         await delay(1500 * attempt);
         continue;
       }
-      throw new ScanError("Could not reach the scanner service. Please try again shortly.");
+      throw new ScanError(t("Could not reach the scanner service. Please try again shortly."));
     }
 
     if (TRANSIENT_STATUSES.has(response.status) && attempt < MAX_ATTEMPTS) {
@@ -365,12 +382,15 @@ export async function scanUrl(
       }
     }
 
+    if (response.status === 429) throw new ScanError(t(RATE_LIMITED));
     if (!response.ok) {
       const errBody = await response
         .json()
-        .catch(() => ({}) as { error?: string; blocked?: boolean });
+        .catch(() => ({}) as { error?: string; blocked?: boolean; reason?: FailureReason });
       throw new ScanError(
-        errBody.error ?? `Scan failed with status ${response.status}`,
+        errBody.error
+          ? failureText(errBody.error, errBody.reason)
+          : tf("The scan failed (HTTP {status}). Please try again.", { status: response.status }),
         errBody.blocked === true
       );
     }
@@ -378,7 +398,7 @@ export async function scanUrl(
     return response.json();
   }
 
-  throw new ScanError("Could not reach the scanner service. Please try again shortly.");
+  throw new ScanError(t("Could not reach the scanner service. Please try again shortly."));
 }
 
 export async function auditSite(
@@ -401,14 +421,22 @@ export async function auditSite(
     );
   } catch (err) {
     if (err instanceof DOMException && err.name === "AbortError") {
-      throw new ScanError("The audit stopped responding, so we gave up waiting. Please try again.");
+      throw new ScanError(t("The audit stopped responding, so we gave up waiting. Please try again."));
     }
-    throw new ScanError("Could not reach the scanner service. Please try again shortly.");
+    throw new ScanError(t("Could not reach the scanner service. Please try again shortly."));
   }
 
+  if (response.status === 429) throw new ScanError(t(RATE_LIMITED));
   if (!response.ok) {
-    const errBody = await response.json().catch(() => ({}) as { error?: string });
-    throw new ScanError(errBody.error ?? `Audit failed with status ${response.status}`);
+    const errBody = await response
+      .json()
+      .catch(() => ({}) as { error?: string; blocked?: boolean; reason?: FailureReason });
+    throw new ScanError(
+      errBody.error
+        ? failureText(errBody.error, errBody.reason)
+        : tf("The audit failed (HTTP {status}). Please try again.", { status: response.status }),
+      errBody.blocked === true
+    );
   }
 
   return response.json();

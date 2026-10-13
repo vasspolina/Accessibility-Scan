@@ -51,7 +51,7 @@ export function FindingsList({
   const { professional } = useReportView();
 
   if (findings.length === 0) {
-    return <p className="a11y-empty">Nothing found here.</p>;
+    return <p className="a11y-empty">{t("Nothing found here.")}</p>;
   }
 
   const grouped = groupFindings(findings);

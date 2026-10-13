@@ -1,3 +1,5 @@
+import { t } from "../lib/strings";
+
 // Shown when a site turns the scanner away: bot protection, a CAPTCHA, a
 // "confirm you are human" wall. This isn't the visitor's mistake, so it gets
 // guidance rather than a red error.
@@ -10,27 +12,28 @@
 // assistive tech treats as no change and never announces. The scan
 // outcome is spoken by App's persistent status paragraph instead.
 export function BlockedNotice({ message }: { message: string }) {
+  const [agentBefore, agentAfter] = t(
+    "In your firewall or bot protection (Cloudflare, Akamai and the rest), allow the user agent {agent}, or our IP. A few minutes, and it's the sanctioned way for a testing tool to get in."
+  ).split("{agent}");
   return (
     <section className="a11y-blocked">
       <p id="a11y-blocked-lead" className="a11y-blocked-lead">{message}</p>
       <p className="a11y-blocked-body">
-        This isn't something to work around. The site guards itself on purpose, and we won't
-        try to slip past that. A few honest ways in:
+        {t("This isn't something to work around. The site guards itself on purpose, and we won't try to slip past that. A few honest ways in:")}
       </p>
       <ul className="a11y-blocked-list">
         <li>
-          <strong>Scan your staging site.</strong> Most sites have one without bot protection. It's
-          the same code, so the report is the same.
+          <strong>{t("Scan your staging site.")}</strong>{" "}
+          {t("Most sites have one without bot protection. It's the same code, so the report is the same.")}
         </li>
         <li>
-          <strong>Allow the scanner through.</strong> In your firewall or bot protection (Cloudflare, Akamai
-          and the rest), allow the user agent <code>A11yCheckerBot</code>, or our IP. A few minutes,
-          and it's the sanctioned way for a testing tool to get in.
+          <strong>{t("Allow the scanner through.")}</strong> {agentBefore}
+          <code>A11yCheckerBot</code>
+          {agentAfter}
         </li>
         <li>
-          <strong>Sign in with a session.</strong> If you can already reach the page in your own
-          browser, use the login option above. The scanner signs in with access you already have,
-          not by defeating the block.
+          <strong>{t("Sign in with a session.")}</strong>{" "}
+          {t("If you can already reach the page in your own browser, use the form's login option. The scanner signs in with access you already have, not by defeating the block.")}
         </li>
       </ul>
     </section>

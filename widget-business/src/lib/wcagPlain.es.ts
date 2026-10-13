@@ -676,6 +676,16 @@ export const PLAIN_ES: Record<string, PlainRule> = {
     impact: "Quien aprendió un nombre tiene que averiguar que el otro es lo mismo. Quien busca la palabra de siempre en la lista de enlaces del lector de pantalla no la encuentra allí.",
     found: (n) => (n === 1 ? "Un enlace del menú cambia de nombre según la página analizada, aunque siempre lleva al mismo destino. No se contaron las diferencias solo de mayúsculas o espacios." : "{n} enlaces del menú cambian de nombre según la página analizada, aunque cada uno lleva al mismo destino. No se contaron las diferencias solo de mayúsculas o espacios.".replace("{n}", String(n))),
   },
+  "color-contrast-mobile": {
+    plain: "Texto demasiado claro en el móvil",
+    impact: "En un móvil a plena luz del día, el texto pálido cuesta de leer incluso con buena vista. Una comprobación en escritorio no lo ve, porque los colores solo cambian en el ancho estrecho.",
+    found: () => "Con el ancho de un móvil, hay texto en esta página por debajo del contraste exigido, y en escritorio no. La comprobación en escritorio por sí sola no lo habría detectado.",
+  },
+  "color-contrast-dark": {
+    plain: "Texto demasiado claro en modo oscuro",
+    impact: "Quien pone su dispositivo en modo oscuro, a menudo por los reflejos o la vista cansada, recibe la versión pálida. Que el tema claro apruebe no dice nada de este.",
+    found: () => "En el tema oscuro de la página hay texto por debajo del contraste exigido, y en el claro no. La comprobación del tema claro por sí sola no lo habría detectado.",
+  },
   "nav-order-inconsistent": {
     plain: "El menú cambia de orden",
     impact: "Quien se guía por la posición, o contando pulsaciones del tabulador, acaba en la opción equivocada en otra página. Con una lupa de pantalla, que muestra solo un trozo, hay que recorrer el menú entero otra vez.",
@@ -1037,6 +1047,14 @@ export const FIXES_ES: Record<string, string | string[]> = {
   "scrollable-region-focusable": 'Añada tabindex="0" al contenedor desplazable para que quien usa el teclado pueda desplazarlo.',
   "keyboard-positive-tabindex-advisory": "Pida a su desarrollador que quite los números que fijan a mano el orden de tabulación. Así el teclado sigue el orden de la página, también en todo lo que se añada después.",
   "nav-name-inconsistent": "Dé a cada enlace del menú un solo nombre, «Cesta» o «Carrito», y úselo en todas las páginas.",
+  "color-contrast-mobile": [
+    "Busque la media query de ancho móvil que cambia el color del texto o del fondo.",
+    "Compruebe esa pareja con la misma regla: el texto normal necesita al menos 4.5:1.",
+  ],
+  "color-contrast-dark": [
+    "Compruebe los colores de texto y fondo de la paleta oscura igual que los de la clara.",
+    "El texto normal necesita al menos 4.5:1 en los dos temas.",
+  ],
   "nav-order-inconsistent": "Mantenga los enlaces del menú en el mismo orden en todas las páginas. Una página puede mostrar menos enlaces, pero los que tenga deben conservar su orden.",
   "activation-stale-state": "Haga que cada control anuncie su nuevo estado en cuanto cambie: desplegado o contraído, activado o desactivado. Su desarrollador lo hace en el mismo código que abre o acciona el control.",
   "control-faint-boundary": "Haga más visibles los bordes de campos y botones. Necesitan una proporción de contraste de al menos 3:1 con lo que tienen detrás. Su diseñador suele poder corregirlos todos con un solo cambio en el estilo común.",

@@ -1,8 +1,9 @@
 import { UnsafeUrlError } from "../middleware/ssrfGuard.js";
 import { TimeoutError } from "../utils/timeout.js";
 import { ServiceBusyError } from "./render/browserPool.js";
-import { RebindingDetectedError, SiteBlockedError } from "./render/renderPage.js";
+import { PageStatusError, RebindingDetectedError, SiteBlockedError } from "./render/renderPage.js";
 import { AuthError } from "./auth/authenticate.js";
+import { PdfFetchError } from "./documents/checkPdf.js";
 
 /**
  * One place that decides what a failed scan means and how to say it.
@@ -29,7 +30,16 @@ export interface ScanFailure {
   timedOut?: boolean;
   /** Whether the underlying message is safe to log with the error attached. */
   logLevel: "info" | "warn";
+  /** The parts of a message that carries values, for the widget to word in
+   *  the reader's language. `message` stays the English sentence. */
+  reason?: FailureReason;
 }
+
+export type FailureReason =
+  | { code: "refused"; host: string; status: number }
+  | { code: "challenge"; host: string; label: string }
+  | { code: "page-status"; host: string; status: number }
+  | { code: "document-status"; status: number };
 
 export function describeScanFailure(err: unknown): ScanFailure {
   if (err instanceof UnsafeUrlError) {
@@ -44,7 +54,30 @@ export function describeScanFailure(err: unknown): ScanFailure {
     return { message: "This host is not allowed", status: 400, logLevel: "warn" };
   }
   if (err instanceof SiteBlockedError) {
-    return { message: err.message, status: 422, blocked: true, logLevel: "info" };
+    const reason: FailureReason =
+      err.reason.kind === "refused"
+        ? { code: "refused", host: err.host, status: err.reason.status }
+        : { code: "challenge", host: err.host, label: err.reason.label };
+    return { message: err.message, status: 422, blocked: true, logLevel: "info", reason };
+  }
+  if (err instanceof PageStatusError) {
+    return {
+      message: err.message,
+      status: 422,
+      logLevel: "info",
+      reason: { code: "page-status", host: err.host, status: err.status },
+    };
+  }
+  // Written to be shown. These used to fall through to the generic line
+  // below, which hid the one thing the reader could act on: the document
+  // was too large, or was not a PDF at all.
+  if (err instanceof PdfFetchError) {
+    return {
+      message: err.message,
+      status: 422,
+      logLevel: "info",
+      ...(err.status ? { reason: { code: "document-status", status: err.status } } : {}),
+    };
   }
   if (err instanceof ServiceBusyError) {
     return {

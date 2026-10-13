@@ -114,7 +114,7 @@ export function ProfessionalTable({
 
   const issuesTable =
     rows.length === 0 ? (
-      <p className="a11y-empty">Nothing found here.</p>
+      <p className="a11y-empty">{t("Nothing found here.")}</p>
     ) : (
       <DataTable
         /* Carbon's width rule: columns size to their content and only need
@@ -136,7 +136,7 @@ export function ProfessionalTable({
 
   const cleanList =
     clean.length === 0 ? (
-      <p className="a11y-empty">Every checked criterion has at least one finding or open question.</p>
+      <p className="a11y-empty">{t("Every checked criterion has at least one finding or open question.")}</p>
     ) : (
       <ul className="a11y-clean-list">
         {clean.map((c) => (

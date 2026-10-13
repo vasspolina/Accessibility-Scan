@@ -1,4 +1,5 @@
 import type { AccessibilityReport } from "../api/scanClient";
+import { t, tf } from "../lib/strings";
 
 // The headline for a document, in place of the score.
 //
@@ -16,24 +17,24 @@ function verdict(report: AccessibilityReport): { line: string; tone: "bad" | "wa
   const rules = new Set(report.findings.map((f) => f.ruleId));
   if (rules.has("pdf-scanned-image")) {
     return {
-      line: "This document is a picture of text. Screen readers get nothing from it at all.",
+      line: t("This document is a picture of text. Screen readers get nothing from it at all."),
       tone: "bad",
     };
   }
   if (rules.has("pdf-not-tagged")) {
     return {
-      line: "This document has no structure a screen reader can follow. That is the one to fix first.",
+      line: t("This document has no structure a screen reader can follow. That is the one to fix first."),
       tone: "bad",
     };
   }
   if (report.findings.length > 0) {
     return {
-      line: "Readable, with details that would make it easier to use.",
+      line: t("Readable, with details that would make it easier to use."),
       tone: "warn",
     };
   }
   return {
-    line: "Nothing found in the checks we can run automatically.",
+    line: t("Nothing found in the checks we can run automatically."),
     tone: "good",
   };
 }
@@ -47,14 +48,21 @@ export function DocumentSummary({ report }: { report: AccessibilityReport }) {
     <div className={`a11y-doc-summary a11y-doc-${tone}`}>
       <p className="a11y-doc-verdict">{line}</p>
       <p className="a11y-doc-meta">
-        PDF document{pages ? `, ${pages} ${pages === 1 ? "page" : "pages"}` : ""}.{" "}
+        {!pages
+          ? t("PDF document.")
+          : pages === 1
+            ? t("PDF document, 1 page.")
+            : tf("PDF document, {n} pages.", { n: pages })}{" "}
         {count === 0
-          ? "No problems found."
-          : `${count} ${count === 1 ? "problem" : "problems"} found.`}{" "}
+          ? t("No problems found.")
+          : count === 1
+            ? t("1 problem found.")
+            : tf("{n} problems found.", { n: count })}{" "}
       </p>
       <p className="a11y-doc-meta">
-        We check structure, title, language, readable text and image descriptions. Those decide
-        whether a screen reader can read it aloud at all, though not everything a person would check.
+        {t(
+          "We check structure, title, language, readable text and image descriptions. Those decide whether a screen reader can read it aloud at all, though not everything a person would check."
+        )}
       </p>
     </div>
   );

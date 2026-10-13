@@ -182,6 +182,7 @@ export async function scanRoutes(app: FastifyInstance) {
       }
       return reply.status(failure.status).send({
         error: failure.message,
+        ...(failure.reason ? { reason: failure.reason } : {}),
         ...(failure.blocked ? { blocked: true } : {}),
         ...(failure.timedOut ? { timedOut: true } : {}),
         // Only on a genuine unknown, and only server-side detail that is safe

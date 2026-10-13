@@ -736,3 +736,103 @@ should check that none of those splits reads oddly.
 | The fault is inside the PDF, not the website. Fix it in the original file (Word, InDesign, Acrobat) and export again. Editing the site will not help. | Der Fehler steckt im PDF, nicht in der Website. Beheben Sie ihn in der Originaldatei (Word, InDesign, Acrobat) und exportieren Sie erneut. Änderungen an der Website helfen nicht. | report |
 | Raised by the AI review, which reads the page the way a person might rather than checking a rule. It catches what no rule can express, and it can also be confidently wrong. Check before acting. | Gemeldet von der KI-Prüfung, die die Seite liest, wie ein Mensch es täte, statt eine Regel zu prüfen. Sie erkennt, was keine Regel ausdrücken kann, und sie kann sich auch mit voller Überzeugung irren. Prüfen Sie es, bevor Sie handeln. | report |
 | You can confirm this one yourself in a few minutes, with nothing installed. Put the mouse aside and move through the page using Tab, Enter and Escape. | Das können Sie in wenigen Minuten selbst bestätigen, ohne etwas zu installieren. Legen Sie die Maus beiseite und bewegen Sie sich mit Tab, Enter und Escape durch die Seite. | report |
+
+## Scan errors, the blocked panel, picture notes, the PDF summary and the WCAG 2.2 rows, 13 October 2026
+
+Found by a live German scan: these reached a German reader in English. Same caveat as above.
+
+| English | German | Where |
+| --- | --- | --- |
+| Invalid URL | Diese Adresse ist ungültig. | scan errors, blocked panel, picture notes |
+| Only http and https URLs are allowed | Nur Adressen mit http oder https sind möglich. | scan errors, blocked panel, picture notes |
+| This host is not allowed | Diese Adresse darf nicht geprüft werden. | scan errors, blocked panel, picture notes |
+| We couldn't find a site at that address. Check the spelling and try again. | Unter dieser Adresse haben wir keine Website gefunden. Prüfen Sie die Schreibweise und versuchen Sie es erneut. | scan errors, blocked panel, picture notes |
+| That login address can't be used. | Diese Login-Adresse lässt sich nicht verwenden. | scan errors, blocked panel, picture notes |
+| Couldn't find the username and password fields on that page. Check the login address, or supply the field selectors. | Auf dieser Seite haben wir die Felder für Benutzername und Passwort nicht gefunden. Prüfen Sie die Login-Adresse, oder geben Sie die Feld-Selektoren an. | scan errors, blocked panel, picture notes |
+| Signing in didn't seem to work. The login form is still showing. Check the details and try again. | Die Anmeldung hat offenbar nicht geklappt. Das Login-Formular ist noch zu sehen. Prüfen Sie die Angaben und versuchen Sie es erneut. | scan errors, blocked panel, picture notes |
+| Couldn't sign in with those details. | Mit diesen Angaben hat die Anmeldung nicht geklappt. | scan errors, blocked panel, picture notes |
+| Every scanner is busy right now. Please try again in a minute. | Gerade sind alle Scanner belegt. Versuchen Sie es in einer Minute erneut. | scan errors, blocked panel, picture notes |
+| This page took too long to load, so the check stopped. Very heavy pages sometimes need a second attempt. | Die Seite hat zu lange geladen, deshalb haben wir die Prüfung abgebrochen. Sehr schwere Seiten brauchen manchmal einen zweiten Versuch. | scan errors, blocked panel, picture notes |
+| That address exists, but the site did not answer. It may be down right now. | Die Adresse gibt es, aber die Website hat nicht geantwortet. Vielleicht ist sie gerade nicht erreichbar. | scan errors, blocked panel, picture notes |
+| The checker ran out of room on this page, which can happen with very heavy ones. Please try again. | Dem Scanner ging bei dieser Seite der Speicher aus. Das kommt bei sehr schweren Seiten vor. Versuchen Sie es bitte erneut. | scan errors, blocked panel, picture notes |
+| Could not load or scan the page | Die Seite ließ sich nicht laden oder prüfen. | scan errors, blocked panel, picture notes |
+| That document is too large for this check (over 20MB). | Dieses Dokument ist für die Prüfung zu groß (über 20MB). | scan errors, blocked panel, picture notes |
+| We could not download the document. | Wir konnten das Dokument nicht herunterladen. | scan errors, blocked panel, picture notes |
+| We could not read that file as a PDF. | Wir konnten die Datei nicht als PDF lesen. | scan errors, blocked panel, picture notes |
+| Not scanned — the audit ran out of time. | Nicht geprüft – die Zeit für die Website-Prüfung war um. | scan errors, blocked panel, picture notes |
+| Invalid request body | Die Anfrage war ungültig. | scan errors, blocked panel, picture notes |
+| {host} turned our scanner away (HTTP {status}). Its protection against automated visitors keeps tools like ours out, so this says nothing about how accessible the site is. | {host} hat unseren Scanner abgewiesen (HTTP {status}). Der Schutz vor automatischen Besuchern hält Werkzeuge wie unseres fern. Über die Barrierefreiheit der Website sagt das also nichts. | scan errors, blocked panel, picture notes |
+| {host} showed “{label}” instead of the page. Its protection against automated visitors keeps tools like ours out, so this says nothing about how accessible the site is. | {host} hat statt der Seite „{label}“ gezeigt. Der Schutz vor automatischen Besuchern hält Werkzeuge wie unseres fern. Über die Barrierefreiheit der Website sagt das also nichts. | scan errors, blocked panel, picture notes |
+| There is no page at that address (HTTP {status}). Check the address and try again. | Unter dieser Adresse gibt es keine Seite (HTTP {status}). Prüfen Sie die Adresse und versuchen Sie es erneut. | scan errors, blocked panel, picture notes |
+| That page asks for a login first (HTTP {status}). The form can sign in with your details. | Diese Seite verlangt zuerst eine Anmeldung (HTTP {status}). Das Formular kann sich mit Ihren Zugangsdaten anmelden. | scan errors, blocked panel, picture notes |
+| {host} answered with an error (HTTP {status}) instead of the page, so there was nothing to check. Try again later. | {host} hat statt der Seite einen Fehler gemeldet (HTTP {status}). Es gab also nichts zu prüfen. Versuchen Sie es später erneut. | scan errors, blocked panel, picture notes |
+| We could not download the document (HTTP {status}). | Wir konnten das Dokument nicht herunterladen (HTTP {status}). | scan errors, blocked panel, picture notes |
+| The scan failed (HTTP {status}). Please try again. | Der Scan ist fehlgeschlagen (HTTP {status}). Versuchen Sie es bitte erneut. | scan errors, blocked panel, picture notes |
+| The audit failed (HTTP {status}). Please try again. | Die Website-Prüfung ist fehlgeschlagen (HTTP {status}). Versuchen Sie es bitte erneut. | scan errors, blocked panel, picture notes |
+| The check stopped responding, so we gave up waiting. Please try again. | Die Prüfung hat nicht mehr geantwortet, deshalb haben wir aufgehört zu warten. Versuchen Sie es bitte erneut. | scan errors, blocked panel, picture notes |
+| Could not reach the scanner service. Please try again shortly. | Der Scanner-Dienst war nicht erreichbar. Versuchen Sie es bitte gleich noch einmal. | scan errors, blocked panel, picture notes |
+| The audit stopped responding, so we gave up waiting. Please try again. | Die Website-Prüfung hat nicht mehr geantwortet, deshalb haben wir aufgehört zu warten. Versuchen Sie es bitte erneut. | scan errors, blocked panel, picture notes |
+| You've started several checks in a short time. Wait a minute, then try again. | Sie haben in kurzer Zeit mehrere Prüfungen gestartet. Warten Sie eine Minute und versuchen Sie es dann erneut. | scan errors, blocked panel, picture notes |
+| This isn't something to work around. The site guards itself on purpose, and we won't try to slip past that. A few honest ways in: | Das sollte man nicht umgehen. Die Website schützt sich mit Absicht, und wir versuchen nicht, daran vorbeizukommen. Es gibt ein paar ehrliche Wege: | scan errors, blocked panel, picture notes |
+| Scan your staging site. | Prüfen Sie Ihre Staging-Website. | scan errors, blocked panel, picture notes |
+| Most sites have one without bot protection. It's the same code, so the report is the same. | Die meisten Websites haben eine ohne Bot-Schutz. Der Code ist derselbe, also auch der Bericht. | scan errors, blocked panel, picture notes |
+| Allow the scanner through. | Lassen Sie den Scanner durch. | scan errors, blocked panel, picture notes |
+| In your firewall or bot protection (Cloudflare, Akamai and the rest), allow the user agent {agent}, or our IP. A few minutes, and it's the sanctioned way for a testing tool to get in. | Erlauben Sie in Ihrer Firewall oder Ihrem Bot-Schutz (Cloudflare, Akamai und andere) den User-Agent {agent} oder unsere IP. Das dauert ein paar Minuten und ist der vorgesehene Weg für ein Prüfwerkzeug. | scan errors, blocked panel, picture notes |
+| Sign in with a session. | Melden Sie sich mit einer Sitzung an. | scan errors, blocked panel, picture notes |
+| If you can already reach the page in your own browser, use the form's login option. The scanner signs in with access you already have, not by defeating the block. | Wenn Sie die Seite in Ihrem eigenen Browser erreichen, nutzen Sie die Login-Option im Formular. Der Scanner meldet sich dann mit Ihrem Zugang an, statt die Sperre zu umgehen. | scan errors, blocked panel, picture notes |
+| No picture: this was not visible on the page when it was scanned. Something reveals it, such as opening a panel or moving focus to it. | Kein Bild: Das Element war beim Scan auf der Seite nicht sichtbar. Etwas blendet es ein, etwa ein geöffnetes Panel oder der Fokus. | scan errors, blocked panel, picture notes |
+| No picture: this sits off the edge of the screen until it is used. Skip links are built this way on purpose, so nothing is necessarily wrong with it being there. | Kein Bild: Das Element liegt außerhalb des Bildschirms, bis es benutzt wird. Sprunglinks sind absichtlich so gebaut. Dass es dort liegt, ist also nicht unbedingt ein Fehler. | scan errors, blocked panel, picture notes |
+| No picture: the element is there, but photographing it produced nothing worth showing. A blank rectangle, or whatever is sitting on top of it. | Kein Bild: Das Element ist da, aber das Foto davon zeigt nichts Brauchbares. Nur eine leere Fläche oder das, was darüber liegt. | scan errors, blocked panel, picture notes |
+| No picture: this covers a whole region of the page rather than one component, and a photograph of the entire section would not show you which part of it is at fault. | Kein Bild: Das Element deckt einen ganzen Bereich der Seite ab, nicht nur eine Komponente. Ein Foto des ganzen Bereichs würde nicht zeigen, welcher Teil den Fehler hat. | scan errors, blocked panel, picture notes |
+| No picture: the element was on the page when we judged it, and gone when we went back to photograph it. Banners that appear once per visitor do this. | Kein Bild: Das Element war da, als wir es bewertet haben, und verschwunden, als wir es fotografieren wollten. Banner, die jedem Besucher nur einmal erscheinen, tun das. | scan errors, blocked panel, picture notes |
+| No picture: each scan photographs a limited number of elements, and this one was past that limit. Nothing about the element itself. Scanning again may reach it. | Kein Bild: Jeder Scan fotografiert nur eine begrenzte Zahl von Elementen, und dieses lag hinter der Grenze. Das sagt nichts über das Element selbst. Ein neuer Scan erreicht es vielleicht. | scan errors, blocked panel, picture notes |
+| No picture: this element could not be located again on the return visit. Pages that rebuild themselves on every load do this. | Kein Bild: Beim zweiten Besuch ließ sich das Element nicht wiederfinden. Seiten, die sich bei jedem Laden neu aufbauen, tun das. | scan errors, blocked panel, picture notes |
+| The technical details for this finding identify the exact element. | Die technischen Details zu diesem Befund nennen das genaue Element. | scan errors, blocked panel, picture notes |
+| This element lives inside the consent frame from {host}, so the selector in the technical details is a path within that frame rather than within your own page. | Das Element liegt im Consent-Frame von {host}. Der Selektor in den technischen Details ist darum ein Pfad in diesem Frame, nicht in Ihrer eigenen Seite. | scan errors, blocked panel, picture notes |
+| On | An | switch, top navigation, PDF summary, score dial |
+| Off | Aus | switch, top navigation, PDF summary, score dial |
+| Accessibility scan | Prüfung der Barrierefreiheit | switch, top navigation, PDF summary, score dial |
+| Overview | Überblick | switch, top navigation, PDF summary, score dial |
+| Pages | Seiten | switch, top navigation, PDF summary, score dial |
+| Statement | Erklärung | switch, top navigation, PDF summary, score dial |
+| This document is a picture of text. Screen readers get nothing from it at all. | Dieses Dokument ist ein Bild von Text. Screenreader können daraus gar nichts vorlesen. | switch, top navigation, PDF summary, score dial |
+| This document has no structure a screen reader can follow. That is the one to fix first. | Dieses Dokument hat keine Struktur, der ein Screenreader folgen kann. Das sollten Sie zuerst beheben. | switch, top navigation, PDF summary, score dial |
+| Readable, with details that would make it easier to use. | Lesbar, mit Details, die es leichter nutzbar machen würden. | switch, top navigation, PDF summary, score dial |
+| Nothing found in the checks we can run automatically. | Die automatischen Prüfungen haben nichts gefunden. | switch, top navigation, PDF summary, score dial |
+| PDF document. | PDF-Dokument. | switch, top navigation, PDF summary, score dial |
+| PDF document, 1 page. | PDF-Dokument, 1 Seite. | switch, top navigation, PDF summary, score dial |
+| PDF document, {n} pages. | PDF-Dokument, {n} Seiten. | switch, top navigation, PDF summary, score dial |
+| No problems found. | Keine Probleme gefunden. | switch, top navigation, PDF summary, score dial |
+| 1 problem found. | 1 Problem gefunden. | switch, top navigation, PDF summary, score dial |
+| {n} problems found. | {n} Probleme gefunden. | switch, top navigation, PDF summary, score dial |
+| We check structure, title, language, readable text and image descriptions. Those decide whether a screen reader can read it aloud at all, though not everything a person would check. | Wir prüfen Struktur, Titel, Sprache, lesbaren Text und Bildbeschreibungen. Davon hängt ab, ob ein Screenreader das Dokument überhaupt vorlesen kann. Alles, was ein Mensch prüfen würde, ist das nicht. | switch, top navigation, PDF summary, score dial |
+| Scored out of 100 | Von 100 Punkten | switch, top navigation, PDF summary, score dial |
+| Advertisement | Anzeige | switch, top navigation, PDF summary, score dial |
+| Every checked criterion has at least one finding or open question. | Jedes geprüfte Kriterium hat mindestens einen Befund oder eine offene Frage. | switch, top navigation, PDF summary, score dial |
+| color-contrast-mobile · plain | Text bei Handybreite zu blass | wcagPlain.de.ts |
+| color-contrast-mobile · impact | Auf dem Handy bei Tageslicht ist blasser Text selbst mit guten Augen schwer zu lesen. Eine Prüfung am Desktop sieht das nicht, weil sich die Farben erst bei schmaler Breite ändern. | wcagPlain.de.ts |
+| color-contrast-mobile · found | Bei Handybreite fällt Text auf dieser Seite unter den nötigen Kontrast, am Desktop nicht. Die Prüfung am Desktop allein hätte das übersehen. | wcagPlain.de.ts |
+| color-contrast-mobile · fix 1 | Suchen Sie die Media Query für Handybreite, die die Text- oder Hintergrundfarbe ändert. | wcagPlain.de.ts |
+| color-contrast-mobile · fix 2 | Prüfen Sie dieses Farbpaar nach derselben Regel: Gewöhnlicher Text braucht mindestens 4.5:1. | wcagPlain.de.ts |
+| color-contrast-dark · plain | Text im dunklen Modus zu blass | wcagPlain.de.ts |
+| color-contrast-dark · impact | Wer das Gerät auf dunklen Modus stellt, oft gegen Blendung oder müde Augen, bekommt die blasse Fassung. Dass das helle Design besteht, sagt darüber nichts. | wcagPlain.de.ts |
+| color-contrast-dark · found | Im dunklen Design der Seite fällt Text unter den nötigen Kontrast, im hellen nicht. Die Prüfung des hellen Designs allein hätte das übersehen. | wcagPlain.de.ts |
+| color-contrast-dark · fix 1 | Prüfen Sie die Text- und Hintergrundfarben der dunklen Palette genauso wie die der hellen. | wcagPlain.de.ts |
+| color-contrast-dark · fix 2 | Gewöhnlicher Text braucht in beiden Designs mindestens 4.5:1. | wcagPlain.de.ts |
+| WCAG 2.2 2.4.11 · plain | Bleibt ein Element sichtbar, wenn es mit der Tab-Taste den Fokus bekommt? | criteriaText.de.ts |
+| WCAG 2.2 2.4.11 · failing | Eine fixierte Kopf- oder Fußzeile verdeckt das Element, das gerade mit der Tab-Taste erreicht wurde | criteriaText.de.ts |
+| WCAG 2.2 2.4.11 · whyManual | Der Tastaturrundgang misst das jetzt an jedem Halt direkt. Ein Halt, der beim Fokus ganz verdeckt ist, gilt als Fehler. Für Halte außerhalb des Rundgangs und für teilweise Überdeckung braucht es weiterhin einen Menschen. | criteriaText.de.ts |
+| WCAG 2.2 2.5.7 · plain | Lässt sich alles, was man zieht, auch ohne Ziehen erledigen? | criteriaText.de.ts |
+| WCAG 2.2 2.5.7 · failing | Manches lässt sich nur durch Ziehen erledigen | criteriaText.de.ts |
+| WCAG 2.2 2.5.7 · whyManual | Software sieht, dass es einen Schieberegler oder eine sortierbare Liste gibt. Ob es einen anderen Weg zum selben Ziel gibt, lässt sich nur mit Blick auf die ganze Aufgabe beurteilen. | criteriaText.de.ts |
+| WCAG 2.2 2.5.8 · plain | Ist alles, was man antippt, mindestens 24 mal 24 Pixel groß oder mit genug Abstand platziert? | criteriaText.de.ts |
+| WCAG 2.2 2.5.8 · failing | Manche Tippziele sind kleiner als 24 Pixel und liegen dicht beieinander | criteriaText.de.ts |
+| WCAG 2.2 3.2.6 · plain | Steht die Hilfe auf jeder Seite an derselben Stelle? | criteriaText.de.ts |
+| WCAG 2.2 3.2.6 · failing | Die Hilfe steht von Seite zu Seite an einer anderen Stelle | criteriaText.de.ts |
+| WCAG 2.2 3.2.6 · whyManual | Dafür muss man jede Seite mit jeder anderen vergleichen und wissen, welche Ihrer Links und Widgets als Hilfe gelten. | criteriaText.de.ts |
+| WCAG 2.2 3.3.7 · plain | Fragt etwas dieselbe Angabe zweimal ab? | criteriaText.de.ts |
+| WCAG 2.2 3.3.7 · failing | Dieselbe Angabe muss mehr als einmal eingetippt werden | criteriaText.de.ts |
+| WCAG 2.2 3.3.7 · whyManual | Das zeigt sich erst mitten in einem mehrstufigen Formular. Man muss es also so ausfüllen, wie ein Mensch es täte. | criteriaText.de.ts |
+| WCAG 2.2 3.3.8 · plain | Können sich Menschen anmelden, ohne ein Rätsel zu lösen oder sich etwas zu merken? | criteriaText.de.ts |
+| WCAG 2.2 3.3.8 · failing | Die Anmeldung verlangt ein Rätsel oder etwas Auswendiggelerntes, ohne anderen Weg | criteriaText.de.ts |
+| WCAG 2.2 3.3.8 · whyManual | Die Anmeldung liegt meist hinter der Seite, die wir erreichen. Ob es einen anderen Weg gibt, ist eine Frage an den ganzen Ablauf. | criteriaText.de.ts |

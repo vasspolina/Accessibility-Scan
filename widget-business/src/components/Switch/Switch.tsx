@@ -1,4 +1,5 @@
 import type { CSSProperties, ReactNode } from "react";
+import { t } from "../../lib/strings";
 
 /**
  * Switch, ported from components/forms/Switch.jsx.
@@ -60,7 +61,7 @@ export function Switch({
           <span aria-hidden="true" className="a11y-switch-knob" />
         </button>
         <span aria-hidden="true" className="a11y-switch-word">
-          {checked ? "On" : "Off"}
+          {checked ? t("On") : t("Off")}
         </span>
       </span>
     </div>

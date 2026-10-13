@@ -4,7 +4,7 @@ import { env } from "../config/env.js";
 import { logger } from "../utils/logger.js";
 import { withTimeout } from "../utils/timeout.js";
 import { assertSafeUrl, UnsafeUrlError } from "../middleware/ssrfGuard.js";
-import { renderAndScan, SiteBlockedError } from "../services/render/renderPage.js";
+import { renderAndScan } from "../services/render/renderPage.js";
 import { describeScanFailure } from "../services/scanFailure.js";
 import { scanUrlToReport } from "../services/scanPipeline.js";
 import { selectPagesToAudit } from "../services/crawl/discoverPages.js";
@@ -61,11 +61,15 @@ export async function auditRoutes(app: FastifyInstance) {
       links = entryRender.domSignals.pageLinks;
       resolvedEntry = entryRender.finalUrl;
     } catch (err) {
-      if (err instanceof SiteBlockedError) {
-        return reply.status(422).send({ error: err.message });
-      }
-      logger.warn({ err, url: entryUrl.toString() }, "Audit entry render failed");
-      return reply.status(502).send({ error: "Could not load or scan the page" });
+      // The same classifier as a single page, so a 404 or a slow entry page
+      // says so instead of "Could not load or scan the page".
+      const failure = describeScanFailure(err);
+      if (failure.logLevel === "warn") logger.warn({ err, url: entryUrl.toString() }, "Audit entry render failed");
+      return reply.status(failure.status).send({
+        error: failure.message,
+        ...(failure.reason ? { reason: failure.reason } : {}),
+        ...(failure.blocked ? { blocked: true } : {}),
+      });
     }
 
     const pages = selectPagesToAudit(resolvedEntry, links, parsed.data.maxPages);
@@ -110,7 +114,7 @@ export async function auditRoutes(app: FastifyInstance) {
           // is ours rather than theirs.
           const failure = describeScanFailure(err);
           logger.info({ err, url: page.url }, "Audit page failed, continuing");
-          outcomes.push({ ...page, error: failure.message });
+          outcomes.push({ ...page, error: failure.message, ...(failure.reason ? { errorReason: failure.reason } : {}) });
         }
       }
     };

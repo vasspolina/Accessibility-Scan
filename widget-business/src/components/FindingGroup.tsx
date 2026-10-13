@@ -9,6 +9,7 @@ import { Input } from "./Input";
 import { Button } from "./Button";
 import { levelFraming, plainForRule, plainFixForRule } from "../lib/wcagPlain";
 import { whatWeFound } from "../lib/findingText";
+import { pictureNoteText } from "../lib/failureText";
 import { useReportView } from "./ReportViewContext";
 import { enClauseFor } from "../lib/audienceMode";
 import { DataTable } from "./DataTable";
@@ -621,8 +622,8 @@ export function FindingDetails({
           <strong>{t("Where this came from")}</strong> {aiHint()}
         </p>
       )}
-      {!rep.elementScreenshot && rep.pictureNote && (
-        <p className="a11y-picture-note">{rep.pictureNote}</p>
+      {!rep.elementScreenshot && pictureNoteText(rep) && (
+        <p className="a11y-picture-note">{pictureNoteText(rep)}</p>
       )}
       {/* The rule's own account of what was found where it has one, and
           the finding's description otherwise. axe supplies a requirement

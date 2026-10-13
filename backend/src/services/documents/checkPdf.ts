@@ -22,7 +22,16 @@ const FETCH_TIMEOUT_MS = 20_000;
 // Enough to characterise a document without reading a 400-page report.
 const MAX_PAGES_INSPECTED = 10;
 
-export class PdfFetchError extends Error {}
+export class PdfFetchError extends Error {
+  constructor(
+    message: string,
+    /** The server's answer, when that is what went wrong. */
+    readonly status?: number
+  ) {
+    super(message);
+    this.name = "PdfFetchError";
+  }
+}
 
 export interface PdfCheckResult {
   findings: AccessibilityFinding[];
@@ -85,7 +94,7 @@ export async function checkPdfDocument(url: string): Promise<PdfCheckResult> {
       signal: controller.signal,
       headers: { accept: "application/pdf,*/*" },
     });
-    if (!res.ok) throw new PdfFetchError(`We could not download the document (HTTP ${res.status}).`);
+    if (!res.ok) throw new PdfFetchError(`We could not download the document (HTTP ${res.status}).`, res.status);
     const buf = await res.arrayBuffer();
     if (buf.byteLength > MAX_BYTES) {
       throw new PdfFetchError("That document is too large for this check (over 20MB).");

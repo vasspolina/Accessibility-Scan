@@ -677,6 +677,16 @@ export const PLAIN_FR: Record<string, PlainRule> = {
     impact: "Qui a appris un nom doit d'abord comprendre que l'autre désigne la même chose. Qui cherche le mot habituel dans la liste des liens de son lecteur d'écran ne l'y trouve pas.",
     found: (n) => (n === 1 ? "Un lien du menu change de nom selon la page analysée, alors qu'il mène toujours au même endroit. Les simples écarts de majuscules ou d'espaces n'ont pas été comptés." : "{n} liens du menu changent de nom selon la page analysée, alors que chacun mène toujours au même endroit. Les simples écarts de majuscules ou d'espaces n'ont pas été comptés.".replace("{n}", String(n))),
   },
+  "color-contrast-mobile": {
+    plain: "Texte trop pâle sur mobile",
+    impact: "Sur un téléphone en plein jour, un texte pâle est difficile à lire, même avec une bonne vue. Une vérification sur ordinateur ne le voit pas, car les couleurs ne changent qu'à la largeur étroite.",
+    found: () => "À la largeur d'un téléphone, du texte de cette page passe sous le contraste requis, ce qui n'est pas le cas sur ordinateur. La vérification sur ordinateur seule ne l'aurait pas vu.",
+  },
+  "color-contrast-dark": {
+    plain: "Texte trop pâle en mode sombre",
+    impact: "Qui règle son appareil en mode sombre, souvent contre l'éblouissement ou la fatigue visuelle, reçoit la version pâle. Que le thème clair passe ne dit rien de celui-ci.",
+    found: () => "Dans le thème sombre de la page, du texte passe sous le contraste requis, ce qui n'est pas le cas dans le thème clair. La vérification du thème clair seule ne l'aurait pas vu.",
+  },
   "nav-order-inconsistent": {
     plain: "Le menu change d'ordre",
     impact: "Qui compte ses appuis sur Tab ou retient la position d'une entrée tombe à côté sur la page suivante. Avec une loupe d'écran, qui ne montre qu'une partie de la page, il faut relire le menu chaque fois.",
@@ -1056,6 +1066,14 @@ export const FIXES_FR: Record<string, string | string[]> = {
     'Ajoutez tabindex="0" au conteneur défilant pour que les utilisateurs au clavier puissent le faire défiler.',
   "keyboard-positive-tabindex-advisory": "Demandez à votre développeur de retirer les numéros qui fixent l'ordre de tabulation à la main. Le clavier suit alors l'ordre de la page, y compris pour tout ce qui s'ajoute plus tard.",
   "nav-name-inconsistent": "Donnez à chaque lien du menu un seul nom, « Panier » ou « Mes achats », et gardez-le sur toutes les pages.",
+  "color-contrast-mobile": [
+    "Cherchez la media query de largeur téléphone qui change la couleur du texte ou du fond.",
+    "Vérifiez cette paire avec la même règle : un texte ordinaire demande au moins 4.5:1.",
+  ],
+  "color-contrast-dark": [
+    "Vérifiez les couleurs de texte et de fond de la palette sombre comme celles de la claire.",
+    "Un texte ordinaire demande au moins 4.5:1 dans les deux thèmes.",
+  ],
   "nav-order-inconsistent": "Gardez les liens du menu dans le même ordre sur toutes les pages. Une page peut afficher moins de liens, mais ceux qu'elle affiche doivent garder leur ordre.",
   "activation-stale-state": "Faites en sorte que chaque contrôle annonce son nouvel état dès qu'il change : déplié ou réduit, activé ou désactivé. Votre développeur s'en charge dans le même code qui ouvre ou bascule le contrôle.",
   "control-faint-boundary": "Foncez les bordures des champs et des boutons. Elles demandent un rapport de contraste d'au moins 3:1 avec ce qui se trouve derrière. Votre designer peut en général toutes les corriger d'une seule modification du style commun.",

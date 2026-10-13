@@ -7,6 +7,7 @@ import { useReportView } from "./ReportViewContext";
 import { SeverityTag } from "./SeverityTag";
 import { Tag } from "./Tag";
 import { DataTable } from "./DataTable";
+import { failureText } from "../lib/failureText";
 
 const severityLabel = {
   critical: "Fix first",
@@ -198,10 +199,10 @@ export function SiteAuditView({ audit }: { audit: SiteAudit }) {
                   <span key="p">
                     <strong>{page.label}</strong>
                     <span className="a11y-conf-plain">{page.url}</span>
-                    {page.error && <span className="a11y-audit-err">{page.error}</span>}
+                    {page.error && <span className="a11y-audit-err">{failureText(page.error, page.errorReason)}</span>}
                   </span>,
                   page.error ? t("n/a") : page.score,
-                  page.error ? ". " : page.findingCount,
+                  page.error ? t("n/a") : page.findingCount,
                   <Tag
                     key="s"
                     tone={page.error ? "gray" : page.findingCount > 0 ? "red" : "green"}
@@ -226,7 +227,7 @@ export function SiteAuditView({ audit }: { audit: SiteAudit }) {
               <span className="a11y-audit-body">
                 <strong>{page.label}</strong>
                 <span className="a11y-conf-plain">{page.url}</span>
-                {page.error && <span className="a11y-audit-err">{page.error}</span>}
+                {page.error && <span className="a11y-audit-err">{failureText(page.error, page.errorReason)}</span>}
               </span>
               {!page.error && (
                 <span className="a11y-audit-count">

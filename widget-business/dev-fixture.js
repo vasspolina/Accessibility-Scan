@@ -552,11 +552,20 @@
     return new Promise(function (resolve, reject) {
       setTimeout(function () {
         if (url.includes("error")) {
-          resolve(new Response(JSON.stringify({ error: "The page could not be rendered. Check the address and try again." }), { status: 500, headers: { "Content-Type": "application/json" } }));
+          resolve(new Response(JSON.stringify({
+            error: "There is no page at that address (HTTP 404). Check the address and try again.",
+            reason: { code: "page-status", host: "example.com", status: 404 },
+          }), { status: 422, headers: { "Content-Type": "application/json" } }));
           return;
         }
         if (url.includes("blocked")) {
-          resolve(new Response(JSON.stringify({ error: "The site turned our scanner away before the page loaded.", blocked: true }), { status: 403, headers: { "Content-Type": "application/json" } }));
+          // The backend's own shape: the English sentence, and its values as
+          // `reason` for the widget to word in the reader's language.
+          resolve(new Response(JSON.stringify({
+            error: "example.com turned our scanner away (HTTP 403). Its protection against automated visitors keeps tools like ours out, so this says nothing about how accessible the site is.",
+            reason: { code: "refused", host: "example.com", status: 403 },
+            blocked: true,
+          }), { status: 422, headers: { "Content-Type": "application/json" } }));
           return;
         }
         var payload = /audit$/.test(target) ? makeAudit(url) : makeReport(url);
