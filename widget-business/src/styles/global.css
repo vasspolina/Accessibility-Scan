@@ -7275,6 +7275,15 @@
 .a11y-widget-biz.a11y-widget-biz .a11y-filter-btn,
 .a11y-widget-biz.a11y-widget-biz .a11y-btn { hyphens: manual; overflow-wrap: normal; }
 
+/* The accordion toggle is a <button> but it holds a section title at 32px, not
+   a label, and "Konformitätsbericht" does not fit a 320px screen unbroken. The
+   rule above stopped it breaking; titles may. */
+.a11y-widget-biz.a11y-widget-biz .a11y-accordion-head { hyphens: auto; overflow-wrap: break-word; }
+/* A title can be a flex or grid child whose minimum is its longest word, and
+   break-word does not lower that. "accesibilidad" at 40px pushed a Spanish
+   title 4px past the screen. anywhere does. */
+.a11y-widget-biz.a11y-widget-biz .a11y-section-title { overflow-wrap: anywhere; }
+
 /* The sidebar keeps its padding (the current page's black fill needs it), but
    loses its ground and the unselected links lose their white boxes. The
    current link is styled at (0,4,0), so it keeps its fill. */
