@@ -575,7 +575,9 @@ export function App({
             )}
             {/* The score only counts checks that ran, so a scan where some
                 fell over can look better than a complete one. Both audiences. */}
-            {report.meta.incompleteChecks && report.meta.incompleteChecks.length > 0 && (
+            {/* ProSummary prints this same notice beside the score points, so
+                the professional reading must not print it a second time. */}
+            {!(professional && !isDocument) && report.meta.incompleteChecks && report.meta.incompleteChecks.length > 0 && (
               <Notification
                 kind="warning"
                 title={tf("Some checks didn't finish this time: {checks}.", { checks: checkNames(report.meta.incompleteChecks) })}
@@ -616,18 +618,25 @@ export function App({
                 {
                   id: "issues",
                   label: tf("Issues ({count})", { count: proIssueGroups }),
-                  panel:
-                    proIssueGroups === 1
-                      ? t("1 finding")
-                      : tf("{count} findings", { count: proIssueGroups }),
+                  /* The tab and the heading below already say the count. */
+                  panel: (
+                    <span className="a11y-sr-only">
+                      {proIssueGroups === 1
+                        ? t("1 finding")
+                        : tf("{count} findings", { count: proIssueGroups })}
+                    </span>
+                  ),
                 },
                 {
                   id: "clean",
                   label: tf("No issues found ({count})", { count: proCleanCount }),
-                  panel:
-                    proCleanCount === 1
-                      ? t("1 criterion with nothing found")
-                      : tf("{count} criteria with nothing found", { count: proCleanCount }),
+                  panel: (
+                    <span className="a11y-sr-only">
+                      {proCleanCount === 1
+                        ? t("1 criterion with nothing found")
+                        : tf("{count} criteria with nothing found", { count: proCleanCount })}
+                    </span>
+                  ),
                 },
               ]}
               defaultId={proView}

@@ -45,7 +45,9 @@ export function ProfessionalTable({
 
   const criterionLine = (rep: AccessibilityFinding): string => {
     const num = rep.wcagCriterion?.match(/^(\d\.\d+\.\d+)/)?.[1];
-    if (!num) return ". ";
+    // No WCAG number: leave the cell empty. A bare "." here read as a stray
+    // full stop in the Criterion column on every finding that has no rule.
+    if (!num) return "";
     const known = criterionNames[num];
     const name = known ? `${num} ${known.name} (${known.level})` : (rep.wcagCriterion ?? num);
     const en = enClauseFor(rep.wcagCriterion, rep.wcagLevel);
@@ -161,7 +163,7 @@ export function ProfessionalTable({
       {/* Its own heading: without one, heading navigation skipped the
           table and the rail listed the section as nameless. */}
       <h2 className="a11y-section-title" id="a11y-pro-findings-heading">
-        {t("Findings")} <span className="a11y-section-count">({findings.length})</span>
+        {t("Findings")} <span className="a11y-section-count">({grouped.length})</span>
       </h2>
       {view === "issues" ? issuesTable : cleanList}
     </section>
