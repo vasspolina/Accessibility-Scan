@@ -17,10 +17,11 @@ RUN npm ci --ignore-scripts
 
 COPY tsconfig.json ./
 COPY src ./src
-# Built by `npm run build:widgets` (compiles ../widget AND ../widget-business,
-# copying both dist/*.js here) before `docker build` / `railway up` — the
-# Docker build context is this directory alone, so neither widget's own
-# source is reachable from here to build in-line.
+# The widget bundles are committed, not built here: the Docker build context
+# is this directory alone, so neither widget's source is reachable from this
+# image. `npm run build:widgets` (or build:widget-business) compiles them and
+# copies dist/*.js into public/; commit the result with the source change, or
+# the deploy that follows a merge to main ships the old bundle.
 COPY public ./public
 
 RUN npm run build
