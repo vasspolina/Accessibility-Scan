@@ -455,9 +455,22 @@ export function App({
     return outcome;
   }
 
-  // The run's settings: report style, the re-run switches, the account key
-  // and the schedule. The rail carries them in the page reading; the
-  // conversation shows them as a block when asked.
+  // The account key and the schedule: not repeated by the form, so the rail
+  // keeps them next to the section list.
+  const accountNode =
+    report || audit ? (
+      <>
+        <AccountKey apiBase={apiBase} onChange={() => setAccountVersion((v) => v + 1)} />
+        {/* Only for a saved scan: a schedule belongs to an account, and the
+            row needs the page it is about. */}
+        {report?.savedAs && signedIn && <ScheduleRow key={`${accountVersion}:${report.url}`} apiBase={apiBase} url={report.url} />}
+      </>
+    ) : null;
+
+  // The run's settings, shown as a block in the conversation when asked. The
+  // page reading does NOT repeat them in the rail: the form above the report
+  // already has report style, language, AI review and scope, and a second copy
+  // beside it was the same four controls twice.
   const settingsNode =
     report || audit ? (
       <>
@@ -481,10 +494,7 @@ export function App({
             else handleScan(url, aiOn, scope ?? shown, 5);
           }}
         />
-        <AccountKey apiBase={apiBase} onChange={() => setAccountVersion((v) => v + 1)} />
-        {/* Only for a saved scan: a schedule belongs to an account, and the
-            row needs the page it is about. */}
-        {report?.savedAs && signedIn && <ScheduleRow key={`${accountVersion}:${report.url}`} apiBase={apiBase} url={report.url} />}
+        {accountNode}
       </>
     ) : null;
 
@@ -933,7 +943,7 @@ export function App({
       /* The run's settings live in the rail once there is a run to describe.
          Report style flips in place; the other two re-run the scan, which is
          why they are buttons that name the cost rather than switches. */
-      navSettings={entry === "form" ? settingsNode ?? undefined : undefined}
+      navSettings={entry === "form" ? accountNode ?? undefined : undefined}
       /* The run controls live in the top bar now, for both audiences.
          "Export report" is professional-only: business mode already has
          Save as PDF in the report-actions panel, with the sentence that
