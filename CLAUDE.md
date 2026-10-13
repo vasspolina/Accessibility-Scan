@@ -23,3 +23,6 @@
 
 ## Everything else
 - Colour, spacing, radius, motion still use tokens (`var(--…)`).
+
+## Shipping
+- Merging to `main` deploys the Railway service from `backend/` (Dockerfile, root directory `backend`). The widget is served from the committed `backend/public/widget-business.js`, which the image copies as-is: **rebuild and commit the bundle in the same change as any widget source edit** (`cd backend && npm run build:widget-business`). `/healthz` reports the deployed `commit` and a `widgetBundle` fingerprint; check it before concluding a deploy did not happen.
