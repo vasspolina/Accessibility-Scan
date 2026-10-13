@@ -331,8 +331,13 @@
      Via --purple-filled, NOT --purple-60: the -60 slot is ink and comes UP
      the ramp in dark mode, where white labels on it measured 2.13:1. The
      filled chip is ink in light and a mid grey in dark; white on it clears 4.5:1 in both. */
-  --button-primary: var(--purple-filled);
-  --focus: var(--text-primary);
+  /* Carbon Blue 60, the design system's single interactive accent (13 Oct
+     2026, "use primary colours"). White on it: 4.6:1. It had been remapped
+     to ink, which left every primary button the same black as the
+     severity-free tags and the count chips around it. */
+  --button-primary: var(--blue-60);
+  --button-primary-hover: var(--blue-70);
+  --focus: var(--blue-60);               /* 4.5:1 on the paper ground */
 
   /* These, not the -fill tokens above, are what the visible pills use —
      .a11y-sev-* paints with var(--severity-critical) and friends. Two had
@@ -7278,3 +7283,53 @@
 /* Centred through align-items, not text-align, which is why the text-align
    pass above missed it: the legal section's title, chip and lead. */
 .a11y-widget-biz.a11y-widget-biz .a11y-legal-head { align-items: flex-start; text-align: left; }
+
+
+/* ==========================================================================
+   Primary colours and recognisable controls (13 Oct 2026)
+   ==========================================================================
+   One accent for interaction, the severity ramp for severity, grey for every
+   other label. Controls look like controls. Doubled specificity so these win
+   on rank, not on being last. */
+.a11y-widget-biz.a11y-widget-biz .a11y-btn-primary:hover:not(:disabled) {
+  background: var(--button-primary-hover); border-color: var(--button-primary-hover);
+}
+/* A ghost button is a verb set as a link: underlined at rest, not only on
+   hover. "Use the form instead" and "New scan" were bare text. */
+.a11y-widget-biz.a11y-widget-biz .a11y-btn-ghost { text-decoration-color: currentColor; }
+.a11y-widget-biz.a11y-widget-biz .a11y-btn-ghost:hover { background: var(--gray-10); }
+
+/* Fix-kind chips: the word carries the kind. Three tints from three ramps
+   the system reserves for findings read as three severities. */
+.a11y-widget-biz.a11y-widget-biz .a11y-fix-design,
+.a11y-widget-biz.a11y-widget-biz .a11y-fix-code,
+.a11y-widget-biz.a11y-widget-biz .a11y-fix-content { background: var(--gray-20); color: var(--text-primary); }
+
+/* Pills never hyphenate: "Fix even-tually" split inside its own fill. */
+.a11y-widget-biz.a11y-widget-biz .a11y-sev,
+.a11y-widget-biz.a11y-widget-biz .a11y-tag,
+.a11y-widget-biz.a11y-widget-biz .a11y-count-chip { hyphens: manual; }
+
+/* The row disclosure is a button, drawn as one: a bordered square with the
+   mark turning when open. It was a bare 15px glyph in a 24px box. */
+.a11y-widget-biz.a11y-widget-biz .a11y-dt-toggle {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 32px; height: 32px; min-height: 32px; padding: 0;
+  border: 1px solid var(--text-primary);
+  border-radius: var(--radius-sm);
+  background: var(--layer-02);
+  color: var(--text-primary);
+  font-size: 15px; line-height: 1;
+}
+.a11y-widget-biz.a11y-widget-biz .a11y-dt-toggle:hover { background: var(--gray-10); }
+.a11y-widget-biz.a11y-widget-biz .a11y-dt-toggle:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
+.a11y-widget-biz.a11y-widget-biz .a11y-dt-toggle > span { display: inline-block; transition: transform var(--duration-fast, 120ms) ease; }
+.a11y-widget-biz.a11y-widget-biz .a11y-dt-toggle > span[data-open="true"] { transform: rotate(90deg); }
+
+/* Headings are sentence case throughout; the principle question was the one
+   shouted line in the report. */
+.a11y-widget-biz.a11y-widget-biz .a11y-principle-title { text-transform: none; }
+
+/* The top bar holds only the run controls now; without the wordmark it sits
+   flush right without a tinted band behind nothing. */
+.a11y-widget-biz.a11y-widget-biz .a11y-topnav { background: transparent; padding-inline: 0; justify-content: flex-end; }

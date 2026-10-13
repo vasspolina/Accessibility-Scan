@@ -20,7 +20,6 @@ export function TopNav({
 
   return (
     <div className="a11y-topnav">
-      <span className="a11y-topnav-brand">{t("Accessibility scan")}</span>
       <div className="a11y-topnav-actions">{actions}</div>
     </div>
   );

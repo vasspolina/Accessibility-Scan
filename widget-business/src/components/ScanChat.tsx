@@ -733,19 +733,27 @@ export function ScanChat({
 
   return (
     <div className="a11y-chat" ref={rootRef} onFocus={keepFocusClear}>
+      {/* The title and the intro open an empty conversation. Once there is
+          one, they would sit above it saying "New scan" over a scan that
+          has run — the top bar's New scan button is the way back. The
+          language switcher stays. */}
       <div className="a11y-newscan-head">
-        <h2 className="a11y-section-title a11y-newscan-title" id="a11y-newscan-title">
-          {t("New scan")}
-        </h2>
+        {turns.length === 0 && (
+          <h2 className="a11y-section-title a11y-newscan-title" id="a11y-newscan-title">
+            {t("New scan")}
+          </h2>
+        )}
         <LanguageSelect id="a11y-lang-form" value={language} onChange={onLanguageChange} />
       </div>
-      <p className="a11y-newscan-sub">
-        {introBefore}
-        <a href={WCAG_LINK} target="_blank" rel="noopener noreferrer">
-          {t("Web Content Accessibility Guidelines (WCAG)")}
-        </a>
-        {introAfter} {t("You can also ask anything, from how a screen reader works to the code for a fix.")}
-      </p>
+      {turns.length === 0 && (
+        <p className="a11y-newscan-sub">
+          {introBefore}
+          <a href={WCAG_LINK} target="_blank" rel="noopener noreferrer">
+            {t("Web Content Accessibility Guidelines (WCAG)")}
+          </a>
+          {introAfter} {t("You can also ask anything, from how a screen reader works to the code for a fix.")}
+        </p>
+      )}
 
       {turns.length > 0 && (
         // role="list" said out loud: WebKit drops the list role from a list
@@ -881,12 +889,12 @@ export function ScanChat({
       )}
 
       <div className="a11y-chat-dock" ref={dockRef}>
-        <form className="a11y-chat-composer" onSubmit={send} aria-labelledby="a11y-newscan-title">
+        <form className="a11y-chat-composer" onSubmit={send} aria-label={t("New scan")}>
           <Input
             id="a11y-chat-input"
             size="display"
             label={currentKey ? t("Ask about the report, or anything else") : t("Ask anything, or name a site to check")}
-            placeholder="example.com"
+            placeholder={currentKey ? undefined : "example.com"}
             value={draft}
             onChange={(e) => setDraft(e.target.value)}
             helperText={
