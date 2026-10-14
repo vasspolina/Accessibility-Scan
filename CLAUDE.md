@@ -9,8 +9,8 @@
 
 ## Layout (Experimental Jetset, 13 Oct 2026 — layout and structure only)
 - One alignment axis: flush left, ragged right, nothing centred (a column centred through `align-items` counts).
-- Hairlines, not boxes: a neutral fill becomes a 1px `var(--border-subtle)` rule. Colour that carries meaning stays filled: severity, status, the yellow "not a pass" panel, selectable cards, every control.
-- No rounded corners. `--radius-sm/md/lg` are 0; only true circles (switch, radio, round numbered badges) keep `--radius-pill`.
+- Hairlines, not boxes: a neutral fill becomes a 1px `var(--border-subtle)` rule.
+- **Round: buttons and the chat window, nothing else** (user's instruction, 14 Oct 2026). Every button is a pill (`--radius-pill`), the small row toggles are circles, and the conversation and the line you type in are two rounded panes (28px, 2px ink edge). Section bars, cards, tables, slabs and inputs outside the chat stay square: `--radius-sm/md/lg` are still 0.
 - PP Telegraf is unchanged (the palette changed later: see Colour). The override block is the last thing in `global.css`, doubled on the root (0,3,0) so it wins by rank.
 - **Before flattening any fill, measure the text on it, in light and dark.** A fill that looks decorative often carries the contrast: the notes panel is `rgb(22,22,22)`, the legal card sits on fixed yellow, and the failing stat tile, current screen-reader row and hovered related card invert. All four measured 1.00 to 1.10:1 when flattened.
 
@@ -25,10 +25,11 @@
 - A soft rag: `text-wrap: pretty`, `hyphenate-limit-chars: 7 3 3`, hyphens on. Emphasis is Medium (500), never a synthesized bold; there is no italic cut, and a sloped roman is not an italic, so questions are told from answers by the label alone.
 - Punctuation is set in `lib/typography.ts` `smarten()` on prose only (never code): quotation marks in the conversation's language (“ ” / „ “ / « » / « »), the apostrophe, a spaced en dash for " - ", the ellipsis. Hochuli's rules for what a keyboard cannot type.
 
-## Colour (no red accent, 13 Oct 2026)
-- The vermilion accent is gone: titles, numbers, eyebrows, rules, primary buttons and the old red panel are **ink** (`#161616`, a mid grey `#6f6f6f` for filled buttons in dark so white text clears 4.5:1). The accent tokens keep their old names: `--purple-60`, `--purple-70`, `--purple-100` and `--purple-filled` are ink, not purple or vermilion.
-- **Red that means something stays**: the "Fix first" severity pill, the critical banner and marks, an invalid input (`--red-*`, `--severity-*`). Do not use them as decoration.
-- Ink on a dark ground is invisible. Anything with a black or inverted ground must map its own title and text to `--text-on-invert`; the black tinted band did not, and read 1.00:1 until it did. Measure text on every changed surface, light and dark.
+## Colour: strictly black and white (user's instruction, 14 Oct 2026)
+- **The only colours are `#000` and `#fff`, in every state, light and dark.** No greys, no tints, no hue, no opacity below 1. The tokens keep their old names (`--purple-60`, `--red-*`, `--gray-*`) but every value is black or white; `--ink` and `--paper` are the two roles, and they swap in dark (`prefers-color-scheme` and `data-theme`), so ink is black on white and white on black.
+- Every border, outline and rule is `var(--ink)`. A surface is paper or ink; text on it is the other one (21:1). A dark slab with light text is allowed (`.a11y-section-tint`, `.a11y-pro-scorecard`, the failing stat tile); a slab whose text depended on a mid-grey is paper with a 2px ink edge.
+- **What colour used to say is said by shape.** Severity: Fix first is solid ink; Fix soon is a solid 2px edge on paper; Fix eventually is dashed; Minor polish is dotted. The legal marks follow the same ladder. The score dial is a solid arc on a dotted track, the meter a solid bar with ticks at 70 and 90. A disabled control is a dashed edge on paper, never faded (fading is grey). Focus is a paper ring then an ink ring, so one always shows. Pictures of the customer's page are `grayscale(1)`; the vision simulator is exempt because its colour is the point.
+- Before adding a colour, a grey or an `opacity`, stop: there is nothing to add it to. To check a change, run the colour census (every computed colour in every state, light and dark, must be black, white or transparent) and a text-on-ground measurement; both were zero-failure when this rule was written.
 
 ## Everything else
 - Colour, spacing, radius, motion still use tokens (`var(--…)`).

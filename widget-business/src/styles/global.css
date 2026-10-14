@@ -80,13 +80,7 @@
      directly over a gradient as "unable to determine"; the hairline under
      a glyph is under 2% of its area and the ink is measured against the
      paper both sit on. */
-  background-image: repeating-linear-gradient(
-    to right,
-    transparent 0,
-    transparent calc(100% / 6 - 1px),
-    var(--gray-20) calc(100% / 6 - 1px),
-    var(--gray-20) calc(100% / 6)
-  );
+  background-image: none;     /* decorative column rules: dropped in the black-and-white pass */
   container-type: inline-size;
   /* The WHOLE widget, nav rail included. Rules about the shell — the rail,
      the outer padding, the two-column shell grid — belong here, because
@@ -202,29 +196,29 @@
   /* Off-Type direction (19 Sep 2026): the greys warm to sit on paper.
      Every pairing re-measured — gray-70 ink on gray-10 is 6.9:1, gray-30
      as ink on the inverted slab is 10.5:1. */
-  --gray-10: #f4efe4;  --gray-20: #e6e0d2;  --gray-30: #cbc5b6;
-  --gray-60: #6f6f6f;  --gray-70: #525252;  --gray-100: #161616;
+  --gray-10: #ffffff;  --gray-20: #ffffff;  --gray-30: #ffffff;
+  --gray-60: #000000;  --gray-70: #000000;  --gray-100: #000000;
 
-  --red-10: #fff1f1;   --red-60: #da1e28;   --red-70: #a2191f;  --red-100: #2d0709;
-  --orange-10: #fff2e8; --orange-60: #ba4e00; --orange-70: #8a3800; --orange-100: #231000;
+  --red-10: #ffffff;   --red-60: #000000;   --red-70: #000000;  --red-100: #000000;
+  --orange-10: #ffffff; --orange-60: #000000; --orange-70: #000000; --orange-100: #000000;
   /* The yellow ramp steps the severity tokens need. Referencing
      --yellow-60 before defining it left the moderate pill with NO
      fill at all: an undefined custom property resolves to nothing,
      so white text sat on the black panel behind it and measured
      21:1 — which looks like a pass and is a missing pill. */
-  --yellow-10: #fcf4d6; --yellow-60: #8e6a00;
+  --yellow-10: #ffffff; --yellow-60: #000000;
   /* The warning glyph's ink. yellow-60 is tuned as a pill fill under white
      text; as free-standing 20px ink on the warmed card it measured 4.35:1.
      This step is 5.9:1 there, and the dark blocks lift it to a light
      yellow so it survives the dark grounds too. */
-  --yellow-70: #755700;
+  --yellow-70: #000000;
   /* The notes band uses --yellow-brand, defined with the rest of the ramp
      below. It was briefly a new --yellow-30: #f9e94e sampled off a
      screenshot — wrong twice over. The design system already defines
      --yellow-30 as Carbon's #f1c21b, so the name carried two values; and
      --yellow-brand: #ffed00 was already here, already in use, already
      measured. Sample a colour only after grepping for the token. */
-  --blue-10: #edf5ff;  --blue-60: #0f62fe;  --blue-70: #0043ce;  --blue-100: #001141;
+  --blue-10: #ffffff;  --blue-60: #000000;  --blue-70: #000000;  --blue-100: #000000;
   /* The report-actions panel's ground and its pdf tag. purple-60 (#8a3ffc)
      is the kit's ramp value and clears AA on white at 5.00:1; kept rather
      than darkened so the tag matches the design exactly. */
@@ -233,8 +227,8 @@
      --purple-15 #ebe2fb was guessing at from a screenshot; the guess is gone. */
   /* The step tones' soft/ink pairs, from the same ramps. Measured on the
      selected card: 13.71 / 13.73 / 13.84. */
-  --green-20: #a7f0ba; --green-100: #071908;
-  --blue-20: #d0e2ff;
+  --green-20: #ffffff; --green-100: #000000;
+  --blue-20: #ffffff;
   /* Read from the design system's own tokens/colors.css, not sampled.
      purple-30 is the hairline beside "Findings, most severe first";
      orange-80 is --button-brown, the kit's CTA fill, and its comment is
@@ -246,47 +240,47 @@
      paper (#fffdf6): purple-60 5.2:1, purple-70 7.0:1 — both clear 4.5:1
      as small-text ink; the reference's own #ff3d00 is 3.5:1 and is used
      nowhere as text below 24px. */
-  --purple-30: #cbc5b6; --orange-80: #5e2900;
-  --purple-10: #faf3e3; --purple-20: #f6ead6; --purple-60: #161616;
-  --purple-70: #161616; --purple-100: #161616;
-  --orange-20: #ffd9be; --orange-50: #eb6200;
+  --purple-30: var(--ink); --orange-80: #000000;
+  --purple-10: #ffffff; --purple-20: #ffffff; --purple-60: #000000;
+  --purple-70: #000000; --purple-100: #000000;
+  --orange-20: #ffffff; --orange-50: #000000;
   /* Brand yellow and its tint — marks and count tiles. 14.96:1 and 16.66:1
      with gray-100. */
-  --yellow-brand: #ffed00; --yellow-brand-tint: #fff9a3;
+  --yellow-brand: #ffffff; --yellow-brand-tint: #ffffff;
   /* Ink for the brand marks. Fixed in both themes, because the yellow is
      fixed in both themes: 14.96:1 on it either way. */
-  --ink-on-brand: #161616;
+  --ink-on-brand: #000000;
   /* The fix-kind pills. Literal pale-on-dark pairs until dark mode needed
      them to flip; measured 8.46-9.09:1 when they were introduced. */
-  --fix-design-bg: #ffd6e8;  --fix-design-ink: #9f1853;
-  --fix-code-bg: #d0e2ff;    --fix-code-ink: #0043ce;
-  --fix-content-bg: #9ef0f0; --fix-content-ink: #005d5d;
+  --fix-design-bg: #ffffff;  --fix-design-ink: #000000;
+  --fix-code-bg: #ffffff;    --fix-code-ink: #000000;
+  --fix-content-bg: #ffffff; --fix-content-ink: #000000;
   /* The 'read before you publish' band's amber, with fixed ink: the amber
      is the same in both themes, so its ink must be too. */
-  --band-amber: #e8b33c;
+  --band-amber: #ffffff;
   /* The login panel's accent block: one orange in both themes, so its
      ink is fixed with it. */
-  --accent-orange: #d9662b;
+  --accent-orange: #000000;
   /* The filled purple chip: a surface, where --purple-60 is mostly ink.
      Separating them lets the ink lighten for dark grounds while the
      chip keeps a fill dark enough for its white text. */
-  --purple-filled: #161616;   /* white on it: 18.7:1 */
+  --purple-filled: #000000;   /* white on it: 18.7:1 */
   /* The Instances tile, literals from the design's own layer. The fill is
      1.02:1 against the white row it sits on, so the tile is legible only
      because of its border — the two travel together and neither is
      decorative. gray-100 on the fill is 17.8:1. */
-  --count-tile-fill: #fcffe8; --count-tile-border: #ababab;
+  --count-tile-fill: #ffffff; --count-tile-border: #ffffff;
   /* The count tile and the brand pills are pale in BOTH themes, so their
      ink is fixed with them rather than following the report's. */
-  --ink-on-pale: #161616;
+  --ink-on-pale: #000000;
   /* The legal marks' ink. Separate from the -fill tokens because those are
      pill GROUNDS carrying white text: one token cannot be both the ground
      a white label sits on and the ink on a tint. */
-  --mark-critical-ink: #a2191f;  --mark-pass-ink: #198038;  --mark-minor-ink: #525252;  --mark-serious-ink: #8a3800;
-  --green-40: #42be65;   /* a fixed pale-green pill; its ink is --ink-on-pale */
+  --mark-critical-ink: #000000;  --mark-pass-ink: #000000;  --mark-minor-ink: #000000;  --mark-serious-ink: #000000;
+  --green-40: #ffffff;   /* a fixed pale-green pill; its ink is --ink-on-pale */
   /* 'pass' as INK, split from --green-60, which is a ground under white
      text in the scan form and cannot move with it. */
-  --pass-ink: #198038;
+  --pass-ink: #000000;
   /* The count tile's numeral. The tile is cream in both themes, but the
      light theme puts purple on it — so this moves, unlike --ink-on-pale. */
   --count-ink: var(--purple-60);
@@ -299,23 +293,23 @@
      white-on-fill pair." The other four already matched.
      Measured with white after the change: 7.51 / 5.03 / 4.99 / 7.81 /
      5.02. Critical was 4.83 and is the one that moved. */
-  --severity-critical-fill: #a2191f; --severity-serious-fill: #ba4e00;
-  --severity-moderate-fill: #8e6a00; --severity-minor-fill: #525252;
-  --severity-pass-fill: #198038;
+  --severity-critical-fill: #000000; --severity-serious-fill: #000000;
+  --severity-moderate-fill: #000000; --severity-minor-fill: #000000;
+  --severity-pass-fill: #000000;
   /* The score dial's ground, a literal in the design's own template. */
-  --dial-cream: #f7f2e8;
-  --green-10: #defbe6; --green-60: #198038;
+  --dial-cream: #ffffff;
+  --green-10: #ffffff; --green-60: #000000;
   /* Not in the kit's ramp — the design system has no brown. Placed at the
      -60 slot's role (a filled surface carrying white text) but darker than
      the ramp's ~5:1, because a brown light enough to sit at 5:1 reads as tan.
      7.4:1 on white, measured. */
-  --brown-10: #f4ece2; --brown-60: #7a4a1d;
+  --brown-10: #ffffff; --brown-60: #000000;
 
   --background: var(--layer-02);
   --layer-01: var(--gray-10);
   /* Paper, not white — the Off-Type ground. --white stays true white: it
      is ink on the inverted slabs and the dark focus ring. */
-  --layer-02: #fffdf6;
+  --layer-02: #ffffff;
   /* The deliberately-inverted slab — a panel that inverts to carry weight
      (scan history, the notes panel, the transcript's current line). Its own
      token because in dark mode it cannot stay black: a black slab on a black
@@ -326,7 +320,7 @@
   --text-secondary: var(--gray-70);     /*  7.1:1 on white  */
   --text-on-invert: var(--white);
   --text-on-invert-secondary: var(--gray-30);   /* 10.6:1 on gray-100 */
-  --border-subtle: var(--gray-20);
+  --border-subtle: var(--ink);
   /* Off-Type direction: the CTA joins the accent. Was the kit's brown.
      Via --purple-filled, NOT --purple-60: the -60 slot is ink and comes UP
      the ramp in dark mode, where white labels on it measured 2.13:1. The
@@ -337,7 +331,7 @@
      severity-free tags and the count chips around it. */
   --button-primary: var(--blue-60);
   --button-primary-hover: var(--blue-70);
-  --focus: var(--blue-60);               /* 4.5:1 on the paper ground */
+  --focus: var(--ink);               /* 4.5:1 on the paper ground */
 
   /* These, not the -fill tokens above, are what the visible pills use —
      .a11y-sev-* paints with var(--severity-critical) and friends. Two had
@@ -384,85 +378,85 @@
        a background), the pale steps only as surfaces. So the light steps
        become dark surfaces, the dark steps become light ink, and every rule
        naming them flips with no edit at all. */
-    --gray-100: #f4f4f4;   /* ink: was the near-black, now the near-white */
+    --gray-100: #ffffff;   /* ink: was the near-black, now the near-white */
     --white: #ffffff;      /* stays: it is ink on the inverted slabs */
-    --gray-10: #262626;    /* the quiet card surface */
-    --gray-20: #393939;    /* hairlines and subtle fills */
-    --gray-30: #6f6f6f;
-    --gray-60: #a8a8a8;
-    --gray-70: #c6c6c6;
+    --gray-10: #000000;    /* the quiet card surface */
+    --gray-20: #000000;    /* hairlines and subtle fills */
+    --gray-30: #000000;
+    --gray-60: #ffffff;
+    --gray-70: #ffffff;
 
     /* Hue tints: pale washes become deep ones of the same hue, so a tinted
        card still reads as "this one is red" without becoming a lamp. */
-    --red-10: #3d0a0d;     --red-60: #ff8389;   --red-70: #ff8389;
-    --orange-10: #2e1400;  --orange-60: #ff832b; --orange-70: #ff832b;
-    --yellow-10: #2b2200;
-    --yellow-70: #d2a106;   /* the warning glyph on dark grounds: 6.3:1 */
-    --green-10: #12261a;   --green-60: #42be65;
-    --blue-10: #10203f;
-    --purple-10: #262626;  --purple-20: #393939;  --purple-30: #525252;
+    --red-10: #000000;     --red-60: #ffffff;   --red-70: #ffffff;
+    --orange-10: #000000;  --orange-60: #ffffff; --orange-70: #ffffff;
+    --yellow-10: #000000;
+    --yellow-70: #ffffff;   /* the warning glyph on dark grounds: 6.3:1 */
+    --green-10: #000000;   --green-60: #ffffff;
+    --blue-10: #000000;
+    --purple-10: #000000;  --purple-20: #000000;  --purple-30: var(--ink);
     /* tone-soft's other two steps, or a green step card keeps a pale
        ground under light ink — green-20 landed on exactly the value the
        new green ink uses, 1:1. */
-    --green-20: #12261a;   --blue-20: #10203f;
-    --brown-10: #2a1d10;
+    --green-20: #000000;   --blue-20: #000000;
+    --brown-10: #000000;
 
     /* The -100 steps are the ink that sat on those pale tints. With the
        tints deep, the ink comes up the ramp to meet them — same hue, now
        the light end of it. */
-    --red-100: #ffd7d9;
-    --orange-100: #ffd9be;
-    --green-100: #a7f0ba;
-    --blue-100: #d0e2ff;
-    --purple-100: #f4f4f4;
+    --red-100: #ffffff;
+    --orange-100: #ffffff;
+    --green-100: #ffffff;
+    --blue-100: #ffffff;
+    --purple-100: #ffffff;
 
     /* Ink used ON the deep tints — severity fills serve as ink for the legal
        marks (checked: one 'color' use each, no background), and purple-30 is
        the rail's ink. All must come up the ramp. */
-    --purple-30: #525252;
-    --purple-70: #f4f4f4;   /* the rail's ink */
+    --purple-30: var(--ink);
+    --purple-70: #ffffff;   /* the rail's ink */
     /* Pill grounds carry white text, so they cannot follow their ramp steps
        up the way the ink did. Stated, not derived: white on each of these
        is 7.4 / 6.9 / 7.6 / 5.9:1. */
-    --severity-critical: #a2191f;
-    --severity-serious: #8a3800;
-    --severity-moderate: #6b5000;
-    --severity-minor: #6f6f6f;
+    --severity-critical: #000000;
+    --severity-serious: #000000;
+    --severity-moderate: #000000;
+    --severity-minor: #000000;
     /* green-60 is the scan form's 'strong' tone, a ground under white text. */
-    --green-60: #198038;
-    --pass-ink: #42be65;   /* 8.3:1 on the dark surfaces */
-    --count-ink: #161616;  /* the purple cannot carry the cream in dark */
+    --green-60: #000000;
+    --pass-ink: #ffffff;   /* 8.3:1 on the dark surfaces */
+    --count-ink: #000000;  /* the purple cannot carry the cream in dark */
     /* Mark ink on the deep tints. */
-    --mark-critical-ink: #ff8389;  --mark-pass-ink: #42be65;  --mark-minor-ink: #c6c6c6;  --mark-serious-ink: #ff832b;
+    --mark-critical-ink: #ffffff;  --mark-pass-ink: #ffffff;  --mark-minor-ink: #ffffff;  --mark-serious-ink: #ffffff;
     /* Pale fixed grounds keep dark ink in both themes. */
-    --ink-on-pale: #161616;
-    --purple-60: #f4f4f4;   /* ink on dark grounds; the chip keeps --purple-filled */
-    --purple-filled: #6f6f6f;   /* white on it: 5.0:1; against #161616: 3.4:1 */
+    --ink-on-pale: #000000;
+    --purple-60: #ffffff;   /* ink on dark grounds; the chip keeps --purple-filled */
+    --purple-filled: #000000;   /* white on it: 5.0:1; against #161616: 3.4:1 */
     /* Fix-kind pills: deep grounds, light ink of the same hue. */
-    --fix-design-bg: #510224;  --fix-design-ink: #ffafd2;
-    --fix-code-bg: #002d9c;    --fix-code-ink: #d0e2ff;
-    --fix-content-bg: #004144; --fix-content-ink: #9ef0f0;
+    --fix-design-bg: #000000;  --fix-design-ink: #ffffff;
+    --fix-code-bg: #000000;    --fix-code-ink: #ffffff;
+    --fix-content-bg: #000000; --fix-content-ink: #ffffff;
 
     /* Surfaces: Carbon's Gray-100 dark theme, the counterpart of the light
        ramp this file already speaks. Elevation goes UP as it goes forward,
        the opposite of the light theme's white-on-grey. */
-    --background: #161616;
-    --layer-01: #262626;
-    --layer-02: #393939;
+    --background: #000000;
+    --layer-01: #000000;
+    --layer-02: #000000;
     /* The inverted slab cannot stay black here — a black panel on a black
        page is a hole. It becomes the heaviest elevated surface and keeps
        its white ink: white on #525252 is 7.4:1. */
-    --surface-inverse: #525252;
+    --surface-inverse: #000000;
 
     /* Ink. 16.4:1 and 10.3:1 on the page ground. */
-    --text-primary: #f4f4f4;
-    --text-secondary: #c6c6c6;
+    --text-primary: #ffffff;
+    --text-secondary: #ffffff;
     --text-on-invert: #ffffff;
-    --text-on-invert-secondary: #e0e0e0;
-    --border-subtle: #525252;
+    --text-on-invert-secondary: #ffffff;
+    --border-subtle: var(--ink);
     /* Carbon's dark focus ring: white, because the light theme's near-black
        ring is invisible against a dark ground. */
-    --focus: #ffffff;
+    --focus: var(--ink);
 
     /* Severity keeps its light-theme fills. They are pill GROUNDS carrying
        white text — checked, not assumed — and lightening them put white on
@@ -471,17 +465,17 @@
    /* 8.1:1  */
    /* 11.6:1 */
     /* Tints become deep washes of their own hue rather than pale ones. */
-    --severity-critical-bg: #3d0a0d;
-    --severity-serious-bg:  #2e1400;
-    --severity-moderate-bg: #2b2200;
-    --severity-minor-bg:    #393939;
+    --severity-critical-bg: #000000;
+    --severity-serious-bg:  #000000;
+    --severity-moderate-bg: #000000;
+    --severity-minor-bg:    #000000;
     /* The filled severity pills keep white ink, so their fills stay dark
        enough to carry it. */
-    --severity-serious-fill:  #8a3800;
-    --severity-moderate-fill: #6b5000;
+    --severity-serious-fill:  #000000;
+    --severity-moderate-fill: #000000;
 
     /* The score dial's cream ground becomes a warm dark of the same family. */
-    --dial-cream: #2a2620;
+    --dial-cream: #000000;
   }
 }
 
@@ -497,85 +491,85 @@
        a background), the pale steps only as surfaces. So the light steps
        become dark surfaces, the dark steps become light ink, and every rule
        naming them flips with no edit at all. */
-    --gray-100: #f4f4f4;   /* ink: was the near-black, now the near-white */
+    --gray-100: #ffffff;   /* ink: was the near-black, now the near-white */
     --white: #ffffff;      /* stays: it is ink on the inverted slabs */
-    --gray-10: #262626;    /* the quiet card surface */
-    --gray-20: #393939;    /* hairlines and subtle fills */
-    --gray-30: #6f6f6f;
-    --gray-60: #a8a8a8;
-    --gray-70: #c6c6c6;
+    --gray-10: #000000;    /* the quiet card surface */
+    --gray-20: #000000;    /* hairlines and subtle fills */
+    --gray-30: #000000;
+    --gray-60: #ffffff;
+    --gray-70: #ffffff;
 
     /* Hue tints: pale washes become deep ones of the same hue, so a tinted
        card still reads as "this one is red" without becoming a lamp. */
-    --red-10: #3d0a0d;     --red-60: #ff8389;   --red-70: #ff8389;
-    --orange-10: #2e1400;  --orange-60: #ff832b; --orange-70: #ff832b;
-    --yellow-10: #2b2200;
-    --yellow-70: #d2a106;   /* the warning glyph on dark grounds: 6.3:1 */
-    --green-10: #12261a;   --green-60: #42be65;
-    --blue-10: #10203f;
-    --purple-10: #262626;  --purple-20: #393939;  --purple-30: #525252;
+    --red-10: #000000;     --red-60: #ffffff;   --red-70: #ffffff;
+    --orange-10: #000000;  --orange-60: #ffffff; --orange-70: #ffffff;
+    --yellow-10: #000000;
+    --yellow-70: #ffffff;   /* the warning glyph on dark grounds: 6.3:1 */
+    --green-10: #000000;   --green-60: #ffffff;
+    --blue-10: #000000;
+    --purple-10: #000000;  --purple-20: #000000;  --purple-30: var(--ink);
     /* tone-soft's other two steps, or a green step card keeps a pale
        ground under light ink — green-20 landed on exactly the value the
        new green ink uses, 1:1. */
-    --green-20: #12261a;   --blue-20: #10203f;
-    --brown-10: #2a1d10;
+    --green-20: #000000;   --blue-20: #000000;
+    --brown-10: #000000;
 
     /* The -100 steps are the ink that sat on those pale tints. With the
        tints deep, the ink comes up the ramp to meet them — same hue, now
        the light end of it. */
-    --red-100: #ffd7d9;
-    --orange-100: #ffd9be;
-    --green-100: #a7f0ba;
-    --blue-100: #d0e2ff;
-    --purple-100: #f4f4f4;
+    --red-100: #ffffff;
+    --orange-100: #ffffff;
+    --green-100: #ffffff;
+    --blue-100: #ffffff;
+    --purple-100: #ffffff;
 
     /* Ink used ON the deep tints — severity fills serve as ink for the legal
        marks (checked: one 'color' use each, no background), and purple-30 is
        the rail's ink. All must come up the ramp. */
-    --purple-30: #525252;
-    --purple-70: #f4f4f4;   /* the rail's ink */
+    --purple-30: var(--ink);
+    --purple-70: #ffffff;   /* the rail's ink */
     /* Pill grounds carry white text, so they cannot follow their ramp steps
        up the way the ink did. Stated, not derived: white on each of these
        is 7.4 / 6.9 / 7.6 / 5.9:1. */
-    --severity-critical: #a2191f;
-    --severity-serious: #8a3800;
-    --severity-moderate: #6b5000;
-    --severity-minor: #6f6f6f;
+    --severity-critical: #000000;
+    --severity-serious: #000000;
+    --severity-moderate: #000000;
+    --severity-minor: #000000;
     /* green-60 is the scan form's 'strong' tone, a ground under white text. */
-    --green-60: #198038;
-    --pass-ink: #42be65;   /* 8.3:1 on the dark surfaces */
-    --count-ink: #161616;  /* the purple cannot carry the cream in dark */
+    --green-60: #000000;
+    --pass-ink: #ffffff;   /* 8.3:1 on the dark surfaces */
+    --count-ink: #000000;  /* the purple cannot carry the cream in dark */
     /* Mark ink on the deep tints. */
-    --mark-critical-ink: #ff8389;  --mark-pass-ink: #42be65;  --mark-minor-ink: #c6c6c6;  --mark-serious-ink: #ff832b;
+    --mark-critical-ink: #ffffff;  --mark-pass-ink: #ffffff;  --mark-minor-ink: #ffffff;  --mark-serious-ink: #ffffff;
     /* Pale fixed grounds keep dark ink in both themes. */
-    --ink-on-pale: #161616;
-    --purple-60: #f4f4f4;   /* ink on dark grounds; the chip keeps --purple-filled */
-    --purple-filled: #6f6f6f;   /* white on it: 5.0:1; against #161616: 3.4:1 */
+    --ink-on-pale: #000000;
+    --purple-60: #ffffff;   /* ink on dark grounds; the chip keeps --purple-filled */
+    --purple-filled: #000000;   /* white on it: 5.0:1; against #161616: 3.4:1 */
     /* Fix-kind pills: deep grounds, light ink of the same hue. */
-    --fix-design-bg: #510224;  --fix-design-ink: #ffafd2;
-    --fix-code-bg: #002d9c;    --fix-code-ink: #d0e2ff;
-    --fix-content-bg: #004144; --fix-content-ink: #9ef0f0;
+    --fix-design-bg: #000000;  --fix-design-ink: #ffffff;
+    --fix-code-bg: #000000;    --fix-code-ink: #ffffff;
+    --fix-content-bg: #000000; --fix-content-ink: #ffffff;
 
     /* Surfaces: Carbon's Gray-100 dark theme, the counterpart of the light
        ramp this file already speaks. Elevation goes UP as it goes forward,
        the opposite of the light theme's white-on-grey. */
-    --background: #161616;
-    --layer-01: #262626;
-    --layer-02: #393939;
+    --background: #000000;
+    --layer-01: #000000;
+    --layer-02: #000000;
     /* The inverted slab cannot stay black here — a black panel on a black
        page is a hole. It becomes the heaviest elevated surface and keeps
        its white ink: white on #525252 is 7.4:1. */
-    --surface-inverse: #525252;
+    --surface-inverse: #000000;
 
     /* Ink. 16.4:1 and 10.3:1 on the page ground. */
-    --text-primary: #f4f4f4;
-    --text-secondary: #c6c6c6;
+    --text-primary: #ffffff;
+    --text-secondary: #ffffff;
     --text-on-invert: #ffffff;
-    --text-on-invert-secondary: #e0e0e0;
-    --border-subtle: #525252;
+    --text-on-invert-secondary: #ffffff;
+    --border-subtle: var(--ink);
     /* Carbon's dark focus ring: white, because the light theme's near-black
        ring is invisible against a dark ground. */
-    --focus: #ffffff;
+    --focus: var(--ink);
 
     /* Severity keeps its light-theme fills. They are pill GROUNDS carrying
        white text — checked, not assumed — and lightening them put white on
@@ -584,22 +578,22 @@
    /* 8.1:1  */
    /* 11.6:1 */
     /* Tints become deep washes of their own hue rather than pale ones. */
-    --severity-critical-bg: #3d0a0d;
-    --severity-serious-bg:  #2e1400;
-    --severity-moderate-bg: #2b2200;
-    --severity-minor-bg:    #393939;
+    --severity-critical-bg: #000000;
+    --severity-serious-bg:  #000000;
+    --severity-moderate-bg: #000000;
+    --severity-minor-bg:    #000000;
     /* The filled severity pills keep white ink, so their fills stay dark
        enough to carry it. */
-    --severity-serious-fill:  #8a3800;
-    --severity-moderate-fill: #6b5000;
+    --severity-serious-fill:  #000000;
+    --severity-moderate-fill: #000000;
 
     /* The score dial's cream ground becomes a warm dark of the same family. */
-    --dial-cream: #2a2620;
+    --dial-cream: #000000;
 }
 
 
 .a11y-widget-biz a { color: inherit; }
-.a11y-widget-biz :focus-visible { outline: 2px solid var(--focus); outline-offset: 1px; }
+.a11y-widget-biz :focus-visible { outline: 2px solid var(--ink); outline-offset: 1px; }
 
 .a11y-widget-biz .a11y-section-desc,
 .a11y-widget-biz .a11y-section-eyebrow,
@@ -785,10 +779,10 @@
 .a11y-widget-biz .a11y-btn-lg { min-height: 48px; }        /* .as-btn--lg */
 .a11y-widget-biz .a11y-btn-sm { min-height: 32px; }        /* .as-btn--sm */
 .a11y-widget-biz .a11y-btn-primary {
-  background: var(--button-primary); border-color: var(--button-primary); color: var(--white);
+  background: var(--button-primary); border-color: var(--ink); color: var(--white);
 }
 .a11y-widget-biz .a11y-btn-secondary {                     /* .as-btn--secondary */
-  background: transparent; border: 2px solid var(--text-primary); color: var(--text-primary);
+  background: transparent; border: 2px solid var(--ink); color: var(--text-primary);
 }
 .a11y-widget-biz .a11y-btn-ghost {                         /* .as-btn--ghost */
   background: transparent; color: var(--text-primary);
@@ -801,15 +795,15 @@
    destructive action as bare text beside an outlined Cancel. The vendored
    Button's danger variant: filled red, white ink (4.6:1). */
 .a11y-widget-biz .a11y-btn-danger {
-  background: var(--red-60); border-color: var(--red-60); color: var(--white);
+  background: var(--red-60); border-color: var(--ink); color: var(--white);
 }
-.a11y-widget-biz .a11y-btn-danger:hover { background: var(--red-70); border-color: var(--red-70); }
+.a11y-widget-biz .a11y-btn-danger:hover { background: var(--red-70); border-color: var(--ink); }
 .a11y-widget-biz .a11y-btn:disabled { opacity: .5; cursor: not-allowed; }
 
 /* .as-btn--secondary, shared by five call sites */
 .a11y-widget-biz .a11y-show-all {
   align-self: flex-start; min-height: 48px; padding: 0 var(--space-06);
-  border: 2px solid var(--text-primary); border-radius: var(--radius-sm);
+  border: 2px solid var(--ink); border-radius: var(--radius-sm);
   background: transparent; color: var(--text-primary);
   font-size: 18px; font-weight: 500; cursor: pointer;
 }
@@ -820,9 +814,9 @@
    both schemes (user's ask, 26 Aug 2026: "make the checklist buttons stand
    out"). */
 .a11y-widget-biz .a11y-show-all.a11y-show-checklist {
-  border-color: var(--surface-inverse); background: var(--surface-inverse); color: var(--text-on-invert);
+  border-color: var(--ink); background: var(--surface-inverse); color: var(--text-on-invert);
 }
-.a11y-widget-biz .a11y-show-all.a11y-show-checklist:hover { background: var(--gray-70); border-color: var(--gray-70); }
+.a11y-widget-biz .a11y-show-all.a11y-show-checklist:hover { background: var(--gray-70); border-color: var(--ink); }
 
 /* .as-card / .as-card--flush -------------------------------------------- */
 .a11y-widget-biz .a11y-card { padding: var(--space-07); border-radius: var(--radius-lg); border: 0; }
@@ -880,7 +874,7 @@
 .a11y-widget-biz .a11y-filter { border: 0; }
 .a11y-widget-biz .a11y-tab {
   min-height: var(--target-min); padding: var(--space-03) var(--space-05);
-  border: 1px solid var(--border-subtle); border-radius: var(--radius-sm);
+  border: 1px solid var(--ink); border-radius: var(--radius-sm);
   background: var(--layer-02); color: var(--text-primary);
   font-size: 15px; font-weight: 500; line-height: 1.2; cursor: pointer;
 }
@@ -893,7 +887,7 @@
   font-weight: 500; line-height: 1.2;
 }
 .a11y-widget-biz .a11y-tab[aria-selected="true"] {
-  background: var(--surface-inverse); border-color: var(--text-primary); color: var(--white);
+  background: var(--surface-inverse); border-color: var(--ink); color: var(--white);
 }
 /* The pressed filter chip left this group: the later chip-row rule sets all
    three of these on it (white ground, purple-70 outline) at the same
@@ -955,20 +949,20 @@
    two share. */
 .a11y-widget-biz .a11y-textarea textarea {
   width: 100%; box-sizing: border-box; min-height: 88px; padding: var(--space-03) 0;
-  border: 0; border-bottom: 1px solid var(--text-primary); border-radius: 0;
+  border: 0; border-bottom: 1px solid var(--ink); border-radius: 0;
   background: transparent; color: var(--text-primary);
   font-family: inherit; font-size: 18px; line-height: 1.4; letter-spacing: 0.01em;
   resize: vertical;
 }
-.a11y-widget-biz .a11y-textarea textarea[aria-invalid="true"] { border-bottom: 2px solid var(--severity-critical); }
+.a11y-widget-biz .a11y-textarea textarea[aria-invalid="true"] { border-bottom: 2px solid var(--ink); }
 .a11y-widget-biz .a11y-textarea-help { display: block; font-size: 15px; color: var(--text-secondary); }
 .a11y-widget-biz .a11y-textarea-help-invalid { color: var(--red-70); }
 .a11y-widget-biz .a11y-input-shell > input,
 .a11y-widget-biz .a11y-input input {
-  height: 44px; padding: 0; border: 0; border-bottom: 1px solid var(--text-primary);
+  height: 44px; padding: 0; border: 0; border-bottom: 1px solid var(--ink);
   background: transparent; font-size: 18px; line-height: 1.2;
 }
-.a11y-widget-biz .a11y-input input[aria-invalid="true"] { border-bottom: 2px solid var(--severity-critical); }
+.a11y-widget-biz .a11y-input input[aria-invalid="true"] { border-bottom: 2px solid var(--ink); }
 /* The switch, in the design's purple.
    Off is an outline — a pale ground inside a purple edge, with the knob
    ringed to match. On is the edge filled in. The state is never carried
@@ -976,23 +970,23 @@
    makes the pair readable to anyone who cannot separate the two purples. */
 .a11y-widget-biz .a11y-switch-track {
   width: 72px; height: 40px; padding: 3px; border-radius: var(--radius-pill);
-  border: 2px solid var(--purple-60);
+  border: 2px solid var(--ink);
   background: var(--purple-10);
   display: flex; align-items: center; justify-content: flex-start; cursor: pointer;
 }
 .a11y-widget-biz .a11y-switch-knob {
   width: 30px; height: 30px; border-radius: var(--radius-pill);
-  border: 2px solid var(--purple-60);
+  border: 2px solid var(--ink);
   background: var(--layer-02);
   box-sizing: border-box;
 }
 .a11y-widget-biz .a11y-switch-track[aria-checked="true"] {
-  border-color: var(--purple-70);
+  border-color: var(--ink);
   background: var(--purple-70);        /* white knob on it: 7.7:1 */
   justify-content: flex-end;
 }
 .a11y-widget-biz .a11y-switch-track[aria-checked="true"] .a11y-switch-knob {
-  border-color: var(--white);
+  border-color: var(--ink);
 }
 /* The word takes the accent once the switch is on, so the two read as one
    control rather than a control and a caption. */
@@ -1011,7 +1005,7 @@
   flex: none;
   width: 24px; height: 24px;
   margin: 0;
-  border: 2px solid var(--gray-60);
+  border: 2px solid var(--ink);
   border-radius: 8px;
   background: var(--layer-02);
   display: inline-grid;
@@ -1028,7 +1022,7 @@
 }
 .a11y-widget-biz .a11y-optioncard > input[type="radio"]:checked,
 .a11y-widget-biz .a11y-radio-row input[type="radio"]:checked {
-  border-color: var(--gray-100);
+  border-color: var(--ink);
 }
 .a11y-widget-biz .a11y-optioncard > input[type="radio"]:checked::before,
 .a11y-widget-biz .a11y-radio-row input[type="radio"]:checked::before {
@@ -1037,7 +1031,7 @@
 /* appearance:none takes the UA focus ring with it. */
 .a11y-widget-biz .a11y-optioncard > input[type="radio"]:focus-visible,
 .a11y-widget-biz .a11y-radio-row input[type="radio"]:focus-visible {
-  outline: 2px solid var(--focus);
+  outline: 2px solid var(--ink);
   outline-offset: 3px;
 }
 .a11y-widget-biz .a11y-optioncard {
@@ -1050,7 +1044,7 @@
 /* Track ground per the vendored ProgressBar (layer-01 with a subtle line)
    — the #e8e8e8 it replaces matched no token at all. The near-black fill
    stays: global.css documents it as the kit waiting-screen's own ink. */
-.a11y-widget-biz .a11y-progress-track { height: 10px; border-radius: var(--radius-sm); border: 1px solid var(--border-subtle); background: var(--layer-01); overflow: hidden; }
+.a11y-widget-biz .a11y-progress-track { height: 10px; border-radius: var(--radius-sm); border: 1px solid var(--ink); background: var(--layer-01); overflow: hidden; }
 .a11y-widget-biz .a11y-progress-fill  { height: 100%; border-radius: var(--radius-sm); background: var(--surface-inverse); }
 
 /* .as-skip-link --------------------------------------------------------- */
@@ -1220,7 +1214,7 @@
   gap: var(--space-05);
   /* Off-Type direction: the reference's dotted specimen rule between
      entries. Decorative — the section boundary is the heading. */
-  border-top: 1px dotted var(--purple-30);
+  border-top: 1px dotted var(--ink);
   padding-top: var(--space-07);
 }
 
@@ -1340,7 +1334,7 @@
 
 .a11y-widget-biz .a11y-score-preview-row {
   grid-template-columns: auto minmax(0, 1fr) auto;
-  border-top: 1px solid var(--border-subtle);
+  border-top: 1px solid var(--ink);
 }
 /* Dead since these rows became separate tinted cards rather than a
    hairline-separated list. It outranks the card rule that follows (0,3,0
@@ -1377,7 +1371,7 @@
   gap: 10px;
   padding: 2px 5px;
   border-radius: var(--radius-sm);
-  border: 1px solid var(--count-tile-border);
+  border: 1px solid var(--ink);
   background: var(--count-tile-fill);
   color: var(--count-ink);
   /* No min-width and no content-box. Both went in from the kit, and both
@@ -1593,7 +1587,7 @@
 }
 /* The input is off-screen, so the ring has to be drawn by the label. */
 .a11y-widget-biz .a11y-conf-filter .a11y-radio:has(input:focus-visible) {
-  outline: 2px solid var(--white);
+  outline: 2px solid var(--ink);
   outline-offset: 3px;
 }
 
@@ -1674,7 +1668,7 @@
 }
 .a11y-widget-biz .a11y-conf-no-issues-found .a11y-conf-status {
   background: var(--green-10);
-  color: var(--green-70, #0e6027);
+  color: var(--green-70, #000000);
 }
 .a11y-widget-biz .a11y-conf-needs-review .a11y-conf-status {
   background: var(--layer-01);
@@ -1830,7 +1824,7 @@
 }
 .a11y-widget-biz .a11y-occurrence-list > li {
   padding: var(--space-04) 0;
-  border-bottom: 1px solid var(--border-subtle);
+  border-bottom: 1px solid var(--ink);
 }
 .a11y-widget-biz .a11y-occurrence-list > li:last-child { border-bottom: 0; }
 
@@ -1845,7 +1839,7 @@
   gap: var(--space-04);
   margin-top: var(--space-06);
   padding-top: var(--space-05);
-  border-top: 1px solid var(--border-subtle);
+  border-top: 1px solid var(--ink);
 }
 .a11y-widget-biz .a11y-pro-line {
   margin: 0;
@@ -2001,7 +1995,7 @@
 .a11y-widget-biz .a11y-chat-composer .a11y-input-shell {
   display: flex;
   align-items: center;
-  border-bottom: 2px solid var(--text-primary);
+  border-bottom: 2px solid var(--ink);
 }
 .a11y-widget-biz .a11y-url-form .a11y-input-display > input,
 .a11y-widget-biz .a11y-url-form .a11y-input-shell > input,
@@ -2023,7 +2017,7 @@
 .a11y-widget-biz .a11y-chat-composer .a11y-input-shell > input:focus-visible { outline: 0; }
 .a11y-widget-biz .a11y-url-form .a11y-input-shell:focus-within,
 .a11y-widget-biz .a11y-chat-composer .a11y-input-shell:focus-within {
-  outline: 2px solid var(--focus);
+  outline: 2px solid var(--ink);
 }
 .a11y-widget-biz .a11y-url-form .a11y-input-label,
 .a11y-widget-biz .a11y-chat-composer .a11y-input-label {
@@ -2076,7 +2070,7 @@
    checkbox was rendering in the UA accent. */
 .a11y-widget-biz input[type="radio"],
 .a11y-widget-biz input[type="checkbox"] {
-  accent-color: var(--text-primary);
+  accent-color: var(--ink);
   width: 24px;
   height: 24px;
   margin: 0;
@@ -2665,7 +2659,7 @@
   letter-spacing: 0.01em;
 }
 /* The design marks the PDF export as the outlined one and email as filled. */
-.a11y-widget-biz .a11y-ra-pdf { border-color: var(--text-primary); }
+.a11y-widget-biz .a11y-ra-pdf { border-color: var(--ink); }
 .a11y-widget-biz .a11y-ra-dot {
   flex: 0 0 auto;
   width: 24px; height: 24px;
@@ -2684,7 +2678,7 @@
   letter-spacing: 0.01em;
 }
 .a11y-widget-biz .a11y-ra-tag-email  { background: var(--blue-10);   color: var(--blue-100); }
-.a11y-widget-biz .a11y-ra-tag-time   { background: var(--green-10);  color: #0b2916; }
+.a11y-widget-biz .a11y-ra-tag-time   { background: var(--green-10);  color: #000000; }
 .a11y-widget-biz .a11y-ra-tag-issues { background: var(--red-10);    color: var(--red-100); }
 .a11y-widget-biz .a11y-ra-tag-first  { background: var(--orange-10); color: var(--orange-100); }
 
@@ -2738,7 +2732,7 @@
   width: 100%;
   min-height: 48px;
   padding: var(--space-04) var(--space-05);
-  border: 1px solid var(--border-subtle);
+  border: 1px solid var(--ink);
   border-radius: var(--radius-md);
   background: var(--layer-01);
   color: var(--text-primary);
@@ -3018,7 +3012,7 @@
 .a11y-widget-biz .a11y-pro-chip {
   padding: var(--space-03) var(--space-05);
   border-radius: var(--radius-sm);
-  background: var(--gray-80, #393939);
+  background: var(--gray-80, #000000);
   color: var(--text-on-invert);
   font-size: 15px;
 }
@@ -3142,7 +3136,7 @@
     display: flex; align-items: center; gap: var(--space-03);
     min-height: 44px;
     padding: 0 var(--space-05);
-    border: 1px solid var(--border-subtle);
+    border: 1px solid var(--ink);
     border-radius: var(--radius-sm);
     background: var(--layer-02);
     color: var(--text-primary);
@@ -3199,7 +3193,7 @@
 .a11y-widget-biz .a11y-shell-nav-meta {
   margin: var(--space-05) 0 0;
   padding-top: var(--space-05);
-  border-top: 1px solid var(--purple-30); /* the vendored ShellNav's light-rail hairline */
+  border-top: 1px solid var(--ink); /* the vendored ShellNav's light-rail hairline */
   font-size: 15px;
   color: var(--text-secondary);
   overflow-wrap: anywhere;
@@ -3291,9 +3285,9 @@
   overflow: hidden;
   background: linear-gradient(
     to right,
-    #f9c7c9 0 70%,
-    #f0c9a6 70% 90%,
-    #b7e4c4 90% 100%
+    #ffffff 0 70%,
+    #ffffff 70% 90%,
+    #ffffff 90% 100%
   );
 }
 .a11y-widget-biz .a11y-dial-meter-fill {
@@ -3451,7 +3445,7 @@
 .a11y-widget-biz .a11y-filter-btn {
   min-height: 40px;
   padding: 0 var(--space-05);
-  border: 1px solid var(--border-subtle);
+  border: 1px solid var(--ink);
   border-radius: var(--radius-sm);
   background: var(--layer-02);
   color: var(--text-primary);
@@ -3467,7 +3461,7 @@
    7.74:1. */
 .a11y-widget-biz .a11y-filter-btn[aria-pressed="true"] {
   background: var(--layer-02);
-  border-color: var(--purple-70);
+  border-color: var(--ink);
   color: var(--purple-70);
   font-weight: 500;
 }
@@ -3594,7 +3588,7 @@
   min-width: 0;
   min-height: 40px;
   padding: 0 var(--space-04);
-  border: 1px solid var(--border-subtle);
+  border: 1px solid var(--ink);
   border-radius: var(--radius-sm);
   background: var(--layer-02);
   color: var(--text-primary);
@@ -3700,7 +3694,7 @@
    on the tinted note alike. The statement's dark card overrides it. */
 .a11y-widget-biz .a11y-sr-play {
   padding: 10px 22px;
-  border: 1px solid var(--text-primary);
+  border: 1px solid var(--ink);
   border-radius: var(--radius-sm);
   background: transparent;
   color: var(--text-primary);
@@ -3845,7 +3839,7 @@
 }
 .a11y-widget-biz .a11y-stmt-field input::placeholder { color: var(--text-secondary); }
 .a11y-widget-biz .a11y-stmt-field input:focus-visible {
-  outline: 2px solid var(--focus);
+  outline: 2px solid var(--ink);
   outline-offset: 2px;
 }
 
@@ -3933,7 +3927,7 @@
 }
 .a11y-widget-biz .a11y-stmt-code .a11y-sr-play {
   padding: 6px 18px;
-  border: 1px solid var(--text-on-invert-secondary);
+  border: 1px solid var(--ink);
   border-radius: var(--radius-sm);
   background: transparent;
   color: var(--text-on-invert);
@@ -3948,7 +3942,7 @@
 /* --focus is the report's ink, invisible on this card. */
 .a11y-widget-biz .a11y-stmt-code .a11y-sr-play:focus-visible,
 .a11y-widget-biz .a11y-stmt-text:focus-visible {
-  outline: 2px solid var(--white);
+  outline: 2px solid var(--ink);
   outline-offset: 3px;
 }
 .a11y-widget-biz .a11y-stmt-code .a11y-stmt-text {
@@ -4240,7 +4234,7 @@
 }
 .a11y-widget-biz .a11y-optioncard:has(> input:checked) {
   background: var(--tone-soft, var(--green-20));
-  border-color: var(--tone-strong, var(--green-60));
+  border-color: var(--ink) var(--ink);
   color: var(--tone-ink, var(--green-100));
 }
 .a11y-widget-biz .a11y-optioncard-meta {
@@ -4304,7 +4298,7 @@
   color: var(--text-on-invert);
   font-size: 20px;
 }
-.a11y-widget-biz .a11y-url-submit .a11y-btn:hover:not(:disabled) { background: var(--gray-80, #393939); }
+.a11y-widget-biz .a11y-url-submit .a11y-btn:hover:not(:disabled) { background: var(--gray-80, #000000); }
 
 /* The AI row takes step 03's blue. */
 .a11y-widget-biz .a11y-ai-card {
@@ -4362,12 +4356,12 @@
 .a11y-widget-biz .a11y-plan {
   display: flex; align-items: center; gap: var(--space-04);
   padding: var(--space-04) var(--space-05);
-  border: 1px solid var(--border-subtle);
+  border: 1px solid var(--ink);
   border-radius: var(--radius-sm);
   background: var(--layer-02);
   font-size: 15px;
 }
-.a11y-widget-biz .a11y-plan-featured { border-color: var(--text-primary); }
+.a11y-widget-biz .a11y-plan-featured { border-color: var(--ink); }
 .a11y-widget-biz .a11y-plan-name  { font-weight: 500; }
 .a11y-widget-biz .a11y-plan-price { color: var(--text-secondary); }
 .a11y-widget-biz .a11y-plan-note  { color: var(--text-secondary); }
@@ -4387,7 +4381,7 @@
 }
 .a11y-widget-biz .a11y-conf-result { font-weight: 500; }
 .a11y-widget-biz .a11y-conf-result-fail { color: var(--red-70); }   /* 7.09:1 */
-.a11y-widget-biz .a11y-conf-result-pass { color: var(--green-70, #0e6027); } /* 6.61:1 */
+.a11y-widget-biz .a11y-conf-result-pass { color: var(--green-70, #000000); } /* 6.61:1 */
 .a11y-widget-biz .a11y-conf-meaning { font-size: 27px; color: var(--text-secondary); line-height: 1.2; }
 
 /* ── The address field, as the design's pill ─────────────────────────────
@@ -4399,7 +4393,7 @@
 .a11y-widget-biz .a11y-chat-composer .a11y-input-shell {
   gap: var(--space-04);
   padding: var(--space-03) var(--space-03) var(--space-03) var(--space-06);
-  border: 2px solid var(--purple-70);
+  border: 2px solid var(--ink);
   border-radius: var(--radius-sm);
   background: var(--purple-10);
 }
@@ -4422,7 +4416,7 @@
 /* Invalid still has to read without colour: the edge thickens AND the
    helper text below states the problem. */
 .a11y-widget-biz .a11y-url-form .a11y-input-invalid {
-  border-color: var(--severity-critical);
+  border-color: var(--ink);
 }
 
 /* The trigger, inside the field. */
@@ -4431,7 +4425,7 @@
   display: inline-flex; align-items: center;
   min-height: 48px;
   padding: 0 var(--space-05);
-  border: 2px solid var(--purple-70);
+  border: 2px solid var(--ink);
   border-radius: var(--radius-sm);
   background: var(--layer-02);
   color: var(--purple-70);           /* 7.74:1 on white */
@@ -4468,7 +4462,7 @@
   display: flex; flex-direction: column; gap: var(--space-04);
   margin-top: var(--space-05);
   padding-top: var(--space-05);
-  border-top: 1px solid var(--border-subtle);
+  border-top: 1px solid var(--ink);
 }
 .a11y-widget-biz .a11y-settings-heading {
   margin: 0;
@@ -4495,7 +4489,7 @@
   flex: 1 1 0; min-width: 0;
   min-height: 32px;
   padding: 0 var(--space-03);
-  border: 1px solid var(--border-subtle);
+  border: 1px solid var(--ink);
   border-radius: var(--radius-sm);
   background: var(--layer-02);
   color: var(--text-primary);
@@ -4506,7 +4500,7 @@
 /* Current takes a fill AND a weight, so it never rests on colour alone. */
 .a11y-widget-biz .a11y-settings-opt[aria-pressed="true"] {
   background: var(--surface-inverse);
-  border-color: var(--text-primary);
+  border-color: var(--ink);
   color: var(--text-on-invert);
   font-weight: 500;
 }
@@ -4750,21 +4744,21 @@
 }
 .a11y-widget-biz .a11y-legal-mark-critical {
   background: var(--severity-critical-tint, var(--red-10));
-  color: var(--mark-critical-ink); border: 1px solid var(--mark-critical-ink);
+  color: var(--mark-critical-ink); border: 1px solid var(--ink);
 }
 .a11y-widget-biz .a11y-legal-mark-pass {
   background: var(--severity-pass-tint, var(--green-10));
-  color: var(--mark-pass-ink); border: 1px solid var(--mark-pass-ink);
+  color: var(--mark-pass-ink); border: 1px solid var(--ink);
 }
 .a11y-widget-biz .a11y-legal-mark-minor {
   background: var(--severity-minor-tint, var(--gray-10));
-  color: var(--mark-minor-ink); border: 1px solid var(--mark-minor-ink);
+  color: var(--mark-minor-ink); border: 1px solid var(--ink);
 }
 /* The "a check didn't finish" row — see .a11y-conf-not-measured for why
    amber and why dashed. */
 .a11y-widget-biz .a11y-legal-mark-serious {
   background: var(--severity-serious-bg);
-  color: var(--mark-serious-ink); border: 1px dashed var(--mark-serious-ink);
+  color: var(--mark-serious-ink); border: 1px dashed var(--ink);
 }
 .a11y-widget-biz .a11y-legal-count {
   flex: 0 0 auto;
@@ -4772,9 +4766,9 @@
   box-sizing: content-box;
   min-width: 56px; height: 31px;
   padding: 7px 5px;
-  border: 3px solid #ababab;
+  border: 3px solid var(--ink);
   border-radius: var(--radius-sm);
-  background: #fcffe8;
+  background: #ffffff;
   color: var(--count-ink);        /* 4.91:1 */
   font-size: 32px; font-weight: 500; line-height: 1.2;
 }
@@ -4907,7 +4901,7 @@
   align-self: flex-start;
   margin-top: var(--space-04);
   padding: 10px 24px;
-  border: 1px solid var(--text-on-invert-secondary);
+  border: 1px solid var(--ink);
   border-radius: var(--radius-sm);
   background: transparent;
   color: var(--text-on-invert);
@@ -4921,7 +4915,7 @@
 }
 /* --focus is the report's ink, which is invisible on this field. */
 .a11y-widget-biz .a11y-hist .a11y-danger-btn:focus-visible {
-  outline: 2px solid var(--white);
+  outline: 2px solid var(--ink);
   outline-offset: 3px;
 }
 
@@ -5337,7 +5331,7 @@
   gap: var(--space-03);
   min-height: var(--target-min);
   padding: var(--space-03) var(--space-05);
-  border: 1px solid var(--text-primary);
+  border: 1px solid var(--ink);
   border-radius: var(--radius-sm);
   background: transparent;
   color: var(--text-primary);
@@ -5362,7 +5356,7 @@
 }
 .a11y-widget-biz .a11y-sim-btn[aria-pressed="true"] em { color: var(--purple-100); }
 .a11y-widget-biz .a11y-sim-btn:focus-visible {
-  outline: 2px solid var(--focus);
+  outline: 2px solid var(--ink);
   outline-offset: -2px;
 }
 
@@ -5425,7 +5419,7 @@
 }
 .a11y-widget-biz .a11y-next-crit-item .a11y-next-status {
   background: var(--green-10);
-  color: var(--green-70, #0e6027);
+  color: var(--green-70, #000000);
 }
 .a11y-widget-biz .a11y-next-level {
   flex: none;
@@ -5594,7 +5588,7 @@
 }
 /* --focus is the report's ink and vanishes on purple. */
 .a11y-widget-biz .a11y-w22-panel .a11y-w22-toggle:focus-visible {
-  outline: 2px solid var(--white);
+  outline: 2px solid var(--ink);
   outline-offset: 3px;
 }
 
@@ -5698,7 +5692,7 @@
   display: inline-block;
   background: var(--layer-02);
   color: var(--gray-100);
-  border: 1px dashed var(--gray-60);
+  border: 1px dashed var(--ink);
   border-radius: var(--radius-sm);
   padding: var(--space-03) var(--space-06);
   font-size: 15px;
@@ -5710,7 +5704,7 @@
 .a11y-widget-biz .a11y-dn-kind[aria-pressed="true"] {
   color: var(--ink-on-brand);
   background: var(--yellow-brand);
-  border: 2px solid var(--gray-100);
+  border: 2px solid var(--ink);
   font-weight: 500;
   /* The 2px border would otherwise make the pressed pill a pixel taller
      than its neighbours and shunt the row. */
@@ -5718,7 +5712,7 @@
 }
 
 .a11y-widget-biz .a11y-dn-kind:focus-visible {
-  outline: 2px solid var(--text-on-invert);
+  outline: 2px solid var(--ink);
   outline-offset: 3px;
 }
 
@@ -5782,7 +5776,7 @@
    the ring is stated here — same fault that cost the URL field its focus
    indicator under 2.4.7. White on black, offset so it clears the text. */
 .a11y-widget-biz .a11y-dn-link:focus-visible {
-  outline: 2px solid var(--text-on-invert);
+  outline: 2px solid var(--ink);
   outline-offset: 2px;
   border-radius: var(--radius-sm);
 }
@@ -5951,7 +5945,7 @@
   width: fit-content;
   margin: 0 auto var(--space-05);
   padding: var(--space-03) var(--space-06);
-  border: 1px dashed var(--gray-60);
+  border: 1px dashed var(--ink);
   border-radius: var(--radius-sm);
   background: var(--gray-10);
   color: var(--gray-100);
@@ -5993,7 +5987,7 @@
 }
 .a11y-widget-biz .a11y-w22-panel .a11y-next-crit-item[data-coverage="automated"] .a11y-next-status,
 .a11y-widget-biz .a11y-w22-panel .a11y-next-crit-item .a11y-next-status[data-can-check="true"] {
-  color: var(--green-70, #0e6027);
+  color: var(--green-70, #000000);
 }
 
 /* Both eyebrows are <p>s, so they inherited the report's prose measure —
@@ -6111,7 +6105,7 @@
 }
 
 .a11y-widget-biz .a11y-sr-row:focus-visible {
-  outline: 2px solid var(--focus, var(--text-primary));
+  outline: 2px solid var(--ink) var(--ink);
   outline-offset: 2px;
 }
 
@@ -6144,12 +6138,12 @@
 /* The control pair. Play fills black; its outlined base elsewhere is
    untouched (the statement section keeps its own variant). */
 .a11y-widget-biz .a11y-sr .a11y-sr-play {
-  border-color: var(--text-primary);
+  border-color: var(--ink);
   background: var(--surface-inverse);
   color: var(--text-on-invert);
 }
 .a11y-widget-biz .a11y-sr .a11y-sr-play:hover {
-  background: var(--gray-80, #393939);
+  background: var(--gray-80, #000000);
   color: var(--text-on-invert);
 }
 
@@ -6163,7 +6157,7 @@
   align-items: center;
   min-height: 40px;
   padding: 0 var(--space-05);
-  border: 1px solid var(--gray-60);
+  border: 1px solid var(--ink);
   border-radius: var(--radius-sm);
   background: var(--layer-02);
   color: var(--text-primary);
@@ -6180,12 +6174,12 @@
   pointer-events: none;
 }
 .a11y-widget-biz .a11y-sr .a11y-ai-toggle:has(> input:checked) {
-  border-color: var(--text-primary);
+  border-color: var(--ink);
   background: var(--surface-inverse);
   color: var(--text-on-invert);
 }
 .a11y-widget-biz .a11y-sr .a11y-ai-toggle:has(> input:focus-visible) {
-  outline: 2px solid var(--focus, var(--text-primary));
+  outline: 2px solid var(--ink) var(--ink);
   outline-offset: 2px;
 }
 
@@ -6321,9 +6315,9 @@
   letter-spacing: 0.01em;
   cursor: pointer;
 }
-.a11y-widget-biz .a11y-undecided-export:hover { background: var(--gray-80, #393939); }
+.a11y-widget-biz .a11y-undecided-export:hover { background: var(--gray-80, #000000); }
 .a11y-widget-biz .a11y-undecided-export:focus-visible {
-  outline: 2px solid var(--focus, var(--text-primary));
+  outline: 2px solid var(--ink) var(--ink);
   outline-offset: 3px;
 }
 
@@ -6352,7 +6346,7 @@
 }
 .a11y-widget-biz .a11y-pg-head .a11y-principle-title { outline: none; }
 .a11y-widget-biz .a11y-pg-head .a11y-principle-title:focus-visible {
-  outline: 2px solid var(--tone-ink, var(--text-primary));
+  outline: 2px solid var(--ink) var(--ink);
   outline-offset: 4px;
 }
 
@@ -6398,7 +6392,7 @@
   color: var(--gray-100);
 }
 .a11y-widget-biz .a11y-w22-panel .a11y-next-status[data-call="automated"] {
-  color: var(--green-70, #0e6027);
+  color: var(--green-70, #000000);
 }
 /* The block's own not-measured chip — same amber and dashed non-colour cue
    as the conformance table's. AFTER the [data-call] pair above on purpose:
@@ -6407,7 +6401,7 @@
 .a11y-widget-biz .a11y-w22-panel .a11y-next-status[data-call="not-measured"] {
   background: var(--severity-serious-bg);
   color: var(--mark-serious-ink);
-  border: 1px dashed var(--mark-serious-ink);
+  border: 1px dashed var(--ink);
 }
 
 /* The consultation link never had a rule, so it rendered 21.6px tall —
@@ -6493,13 +6487,13 @@
   align-items: center;
   justify-content: center;
   padding: var(--space-05);
-  background: rgba(22, 22, 22, 0.5);
+  background: transparent;
 }
 .a11y-widget-biz .a11y-dialog {
   width: min(100%, 34rem);
   max-height: 85vh;
   overflow-y: auto;
-  border: 1px solid var(--border-subtle);
+  border: 1px solid var(--ink);
   border-radius: var(--radius-lg);
   background: var(--layer-02);
 }
@@ -6516,17 +6510,17 @@
   justify-content: flex-end;
   gap: var(--space-03);
   padding: var(--space-05) var(--space-06);
-  border-top: 1px solid var(--border-subtle);
+  border-top: 1px solid var(--ink);
 }
 
 /* Notification kinds — Feedback.tsx emits a11y-note-error/success/warning/
    info and NOTHING styled them: the kind was carried by no colour anywhere.
    The vendored Notification keys each kind with a 3px left stripe and a
    toned glyph; the box itself keeps this file's radius and padding. */
-.a11y-widget-biz .a11y-note-error   { border-left: 3px solid var(--red-60); }
-.a11y-widget-biz .a11y-note-success { border-left: 3px solid var(--green-60); }
-.a11y-widget-biz .a11y-note-warning { border-left: 3px solid var(--yellow-60); }
-.a11y-widget-biz .a11y-note-info    { border-left: 3px solid var(--blue-60); }
+.a11y-widget-biz .a11y-note-error   { border-left: 3px solid var(--ink); }
+.a11y-widget-biz .a11y-note-success { border-left: 3px solid var(--ink); }
+.a11y-widget-biz .a11y-note-warning { border-left: 3px solid var(--ink); }
+.a11y-widget-biz .a11y-note-info    { border-left: 3px solid var(--ink); }
 .a11y-widget-biz .a11y-note-error   .a11y-note-glyph { color: var(--red-60); }
 .a11y-widget-biz .a11y-note-success .a11y-note-glyph { color: var(--green-60); }
 .a11y-widget-biz .a11y-note-warning .a11y-note-glyph { color: var(--yellow-70); }
@@ -6552,7 +6546,7 @@
   min-height: 44px;
   padding: 0 var(--space-04);
   border: 0;
-  border-bottom: 1px solid var(--gray-60);
+  border-bottom: 1px solid var(--ink);
   border-radius: 0;
   background: var(--layer-01);
   color: var(--text-primary);
@@ -6560,7 +6554,7 @@
   cursor: pointer;
 }
 .a11y-widget-biz .a11y-select2-field:focus-visible {
-  outline: 2px solid var(--focus);
+  outline: 2px solid var(--ink);
   outline-offset: 2px;
 }
 .a11y-widget-biz .a11y-select2-help { font-size: 15px; color: var(--text-secondary); }
@@ -6588,7 +6582,7 @@
    and the title. */
 .a11y-widget-biz .a11y-blockflag {
   padding: var(--space-05) var(--space-06);
-  border-left: 4px solid var(--red-60);
+  border-left: 4px solid var(--ink);
   border-radius: var(--radius-md);
   background: var(--red-10);
   color: var(--text-primary);
@@ -6664,7 +6658,7 @@
   color: var(--text-on-invert);
 }
 .a11y-widget-biz .a11y-related-card:focus-visible {
-  outline: 2px solid var(--focus);
+  outline: 2px solid var(--ink);
   outline-offset: 2px;
 }
 .a11y-widget-biz .a11y-related-meta { font-size: 15px; color: var(--text-secondary); }
@@ -6729,7 +6723,7 @@
   flex-wrap: wrap;
   gap: var(--space-04);
   padding: var(--space-04) 0;
-  border-top: 1px solid var(--border-subtle);
+  border-top: 1px solid var(--ink);
   align-items: flex-start;
 }
 .a11y-widget-biz .a11y-manual-row > .a11y-conf-id { flex: 0 0 5.5rem; }
@@ -6761,7 +6755,7 @@
    a fact about the owner, not about the fault, so it must not read as a
    severity. Grey ground, primary ink, 7:1 and up in both schemes. */
 .a11y-widget-biz .a11y-triage-badge { background: var(--gray-20); color: var(--text-primary); }
-.a11y-widget-biz .a11y-triage { margin-top: var(--space-04); padding-top: var(--space-04); border-top: 1px solid var(--border-subtle); }
+.a11y-widget-biz .a11y-triage { margin-top: var(--space-04); padding-top: var(--space-04); border-top: 1px solid var(--ink); }
 .a11y-widget-biz .a11y-triage-current { margin: 0 0 var(--space-03); font-size: 15px; font-weight: 500; letter-spacing: 0.01em; }
 .a11y-widget-biz .a11y-triage-current em { font-style: normal; font-weight: 400; color: var(--text-secondary); }
 .a11y-widget-biz .a11y-triage-form { display: grid; gap: var(--space-03); max-width: 32rem; }
@@ -7065,7 +7059,7 @@
 }
 
 .a11y-widget-biz .a11y-chat-block > details > summary:focus-visible {
-  outline: 2px solid var(--focus);
+  outline: 2px solid var(--ink);
   outline-offset: 2px;
 }
 
@@ -7092,7 +7086,7 @@
 .a11y-widget-biz .a11y-chat-chip {
   min-height: 44px;
   padding: 0 var(--space-05);
-  border: 1px solid var(--purple-60);
+  border: 1px solid var(--ink);
   border-radius: var(--radius-sm);
   background: var(--layer-02);
   color: var(--purple-60);
@@ -7108,7 +7102,7 @@
 }
 
 .a11y-widget-biz .a11y-chat-chip:focus-visible {
-  outline: 2px solid var(--focus);
+  outline: 2px solid var(--ink);
   outline-offset: 2px;
 }
 
@@ -7122,7 +7116,7 @@
   z-index: 2;
   margin-top: var(--space-06);
   padding: var(--space-04) 0 var(--space-03);
-  border-top: 1px dotted var(--purple-30);
+  border-top: 1px dotted var(--ink);
   background: var(--layer-02);
 }
 
@@ -7194,7 +7188,7 @@
 .a11y-widget-biz.a11y-widget-biz .a11y-pro-host {
   background: transparent;
   border: 0;
-  border-top: 1px solid var(--border-subtle);
+  border-top: 1px solid var(--ink);
   border-radius: 0;
   padding-inline: 0;
 }
@@ -7245,7 +7239,7 @@
 .a11y-widget-biz.a11y-widget-biz .a11y-shell-nav {
   background: transparent;
   border-radius: 0;
-  border-top: 1px solid var(--border-subtle);
+  border-top: 1px solid var(--ink);
 }
 .a11y-widget-biz.a11y-widget-biz .a11y-shell-nav-link { background: transparent; border-radius: 0; }
 
@@ -7261,7 +7255,7 @@
    other label. Controls look like controls. Doubled specificity so these win
    on rank, not on being last. */
 .a11y-widget-biz.a11y-widget-biz .a11y-btn-primary:hover:not(:disabled) {
-  background: var(--button-primary-hover); border-color: var(--button-primary-hover);
+  background: var(--button-primary-hover); border-color: var(--ink);
 }
 /* A ghost button is a verb set as a link: underlined at rest, not only on
    hover. "Use the form instead" and "New scan" were bare text. */
@@ -7284,14 +7278,14 @@
 .a11y-widget-biz.a11y-widget-biz .a11y-dt-toggle {
   display: inline-flex; align-items: center; justify-content: center;
   width: 32px; height: 32px; min-height: 32px; padding: 0;
-  border: 1px solid var(--text-primary);
+  border: 1px solid var(--ink);
   border-radius: var(--radius-sm);
   background: var(--layer-02);
   color: var(--text-primary);
   font-size: 15px; line-height: 1;
 }
 .a11y-widget-biz.a11y-widget-biz .a11y-dt-toggle:hover { background: var(--gray-10); }
-.a11y-widget-biz.a11y-widget-biz .a11y-dt-toggle:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
+.a11y-widget-biz.a11y-widget-biz .a11y-dt-toggle:focus-visible { outline: 2px solid var(--ink); outline-offset: 2px; }
 .a11y-widget-biz.a11y-widget-biz .a11y-dt-toggle > span { display: inline-block; transition: transform var(--duration-fast, 120ms) ease; }
 .a11y-widget-biz.a11y-widget-biz .a11y-dt-toggle > span[data-open="true"] { transform: rotate(90deg); }
 
@@ -7417,3 +7411,116 @@
 .a11y-widget-biz.a11y-widget-biz .a11y-step-note,
 .a11y-widget-biz.a11y-widget-biz .a11y-method-badge:not(.a11y-triage-badge) { color: inherit; }
 .a11y-widget-biz.a11y-widget-biz .a11y-count-pill-x { color: inherit; }
+
+/* ─────────────────────────────────────────────────────────────────────────
+   STRICTLY BLACK AND WHITE; ROUND BUTTONS AND CHAT WINDOW
+   (14 Oct 2026, user's instruction)
+   Every colour in this file is #000 or #fff: ramps and surfaces were mapped
+   by luminance (a surface that was light is paper, ink that was dark is
+   ink), and every border and outline is the ink token. What colour carried
+   alone is carried by shape here: severity by the weight and style of the
+   edge, the score by a hatched or solid bar, a disabled control by a dashed
+   edge in place of a faded one, focus by a two-tone ring.
+   ───────────────────────────────────────────────────────────────────────── */
+.a11y-widget-biz { --ink: #000000; --paper: #ffffff; --border-subtle: var(--ink); --purple-30: var(--ink); --focus: var(--ink); }
+@media (prefers-color-scheme: dark) {
+  .a11y-widget-biz:not([data-theme="light"]) { --ink: #ffffff; --paper: #000000; --border-subtle: var(--ink); --purple-30: var(--ink); --focus: var(--ink); }
+}
+.a11y-widget-biz[data-theme="dark"] { --ink: #ffffff; --paper: #000000; --border-subtle: var(--ink); --purple-30: var(--ink); --focus: var(--ink); }
+
+/* Focus: paper ring, then ink ring. One of the two always shows, on a
+   paper ground, an ink slab or the edge between them. */
+.a11y-widget-biz.a11y-widget-biz :focus-visible { outline: 2px solid var(--ink); outline-offset: 2px; box-shadow: 0 0 0 2px var(--paper); }
+
+/* Severity by edge: Fix first is solid ink; the rest are paper with a
+   2px edge that is solid, dashed or dotted. The word is on every one. */
+.a11y-widget-biz.a11y-widget-biz .a11y-sev-critical, .a11y-widget-biz.a11y-widget-biz .a11y-severity-critical .a11y-finding-criterion { background: var(--ink); color: var(--paper); border: 2px solid var(--ink); }
+.a11y-widget-biz.a11y-widget-biz .a11y-sev-serious, .a11y-widget-biz.a11y-widget-biz .a11y-severity-serious .a11y-finding-criterion  { background: var(--paper); color: var(--ink); border: 2px solid var(--ink); }
+.a11y-widget-biz.a11y-widget-biz .a11y-sev-moderate, .a11y-widget-biz.a11y-widget-biz .a11y-severity-moderate .a11y-finding-criterion { background: var(--paper); color: var(--ink); border: 2px dashed var(--ink); }
+.a11y-widget-biz.a11y-widget-biz .a11y-sev-minor, .a11y-widget-biz.a11y-widget-biz .a11y-severity-minor .a11y-finding-criterion    { background: var(--paper); color: var(--ink); border: 2px dotted var(--ink); }
+.a11y-widget-biz.a11y-widget-biz .a11y-legal-mark-critical { background: var(--ink); color: var(--paper); border: 2px solid var(--ink); }
+.a11y-widget-biz.a11y-widget-biz .a11y-legal-mark-pass     { background: var(--paper); color: var(--ink); border: 1px solid var(--ink); }
+.a11y-widget-biz.a11y-widget-biz .a11y-legal-mark-minor    { background: var(--paper); color: var(--ink); border: 2px dashed var(--ink); }
+.a11y-widget-biz.a11y-widget-biz .a11y-legal-mark-serious  { background: var(--paper); color: var(--ink); border: 2px dotted var(--ink); }
+
+/* The score: a bar on a ruled track with ticks at 70 and 90, and a dial
+   with a dotted track and a solid arc. */
+.a11y-widget-biz.a11y-widget-biz .a11y-dial-meter {
+  border: 2px solid var(--ink);
+  background: linear-gradient(to right,
+    transparent calc(70% - 1px), var(--ink) calc(70% - 1px) calc(70% + 1px),
+    transparent calc(70% + 1px) calc(90% - 1px), var(--ink) calc(90% - 1px) calc(90% + 1px),
+    transparent calc(90% + 1px));
+}
+.a11y-widget-biz.a11y-widget-biz .a11y-dial-meter-fill,
+.a11y-widget-biz.a11y-widget-biz .a11y-dial[data-band="good"] .a11y-dial-meter-fill,
+.a11y-widget-biz.a11y-widget-biz .a11y-dial[data-band="failing"] .a11y-dial-meter-fill { background: var(--ink); }
+.a11y-widget-biz.a11y-widget-biz svg circle[stroke="var(--orange-20)"] { stroke: var(--ink); stroke-width: 1; stroke-dasharray: 1 3; stroke-linecap: round; }
+.a11y-widget-biz.a11y-widget-biz svg circle[stroke="var(--orange-50)"] { stroke: var(--ink); }
+
+/* Disabled: a dashed edge on paper, not a faded control (fading is grey). */
+.a11y-widget-biz.a11y-widget-biz .a11y-btn:disabled, .a11y-widget-biz.a11y-widget-biz .a11y-ra-send:disabled, .a11y-widget-biz.a11y-widget-biz .a11y-settings-rerun:disabled {
+  opacity: 1; background: var(--paper); color: var(--ink); border: 2px dashed var(--ink); cursor: not-allowed;
+}
+
+/* Pictures of the customer's page are content, not chrome; they are set
+   in black and white with the rest. The vision simulator is exempt: its
+   whole point is the colour it changes. */
+.a11y-widget-biz.a11y-widget-biz .a11y-finding-thumb, .a11y-widget-biz.a11y-widget-biz .a11y-occurrence-thumb { filter: grayscale(1); }
+
+/* Round buttons. Every button that is a button (not a section bar or a
+   rail toggle): a pill. The small row toggles become circles. */
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-btn, .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sim-btn, .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sr-play, .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-mode-btn, .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-filter-btn,
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-login-toggle, .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-show-all, .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-dn-kind, .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-dn-link, .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-tab,
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-ra-tag, .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-ra-item, .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-undecided-export, .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-pro-jump,
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-blockflag-jump, .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-chat-chip, .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-url-submit, .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-plan-buy,
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-dt-toggle, .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-next-toggle { border-radius: var(--radius-pill); }
+
+/* The chat window: the conversation and the line you type in are two
+   rounded panes with a 2px edge. */
+.a11y-widget-biz.a11y-widget-biz .a11y-chat-thread {
+  padding: var(--space-06) var(--space-07);
+  border: 2px solid var(--ink);
+  border-radius: 28px;
+}
+.a11y-widget-biz.a11y-widget-biz .a11y-chat-dock {
+  padding: var(--space-04) var(--space-06);
+  border: 2px solid var(--ink);
+  border-radius: 28px;
+  background: var(--paper);
+}
+.a11y-widget-biz.a11y-widget-biz .a11y-chat-composer .a11y-input-shell { border-radius: var(--radius-pill); }
+
+/* Slabs that were a dark ground with light text carried their text in
+   mid-greys that have no black-and-white equivalent. In black and white
+   they are paper with a 2px ink edge, and the "on invert" inks mean ink. */
+.a11y-widget-biz.a11y-widget-biz .a11y-login-fieldset,
+.a11y-widget-biz.a11y-widget-biz .a11y-conf-panel,
+.a11y-widget-biz.a11y-widget-biz .a11y-w22-panel,
+.a11y-widget-biz.a11y-widget-biz .a11y-dn-panel {
+  background: var(--paper);
+  color: var(--ink);
+  border: 2px solid var(--ink);
+  --text-on-invert: var(--ink);
+  --text-on-invert-secondary: var(--ink);
+  --text-secondary: var(--ink);
+  --text-primary: var(--ink);
+}
+
+/* Tone tokens were three hues for the three steps; there is one ink. */
+.a11y-widget-biz.a11y-widget-biz .a11y-tone-violet, .a11y-widget-biz.a11y-widget-biz .a11y-tone-green, .a11y-widget-biz.a11y-widget-biz .a11y-tone-blue { --tone-soft: var(--paper); --tone-strong: var(--ink); --tone-ink: var(--ink); }
+
+/* Chips that were a grey fill to say "this is a control" have no grey now:
+   an unselected one is paper with an ink edge, the selected one is ink. */
+.a11y-widget-biz.a11y-widget-biz .a11y-conf-filter .a11y-radio { background: var(--paper); color: var(--ink); border: 2px solid var(--ink); border-radius: var(--radius-pill); }
+.a11y-widget-biz.a11y-widget-biz .a11y-conf-filter .a11y-radio:has(input:checked) { background: var(--ink); color: var(--paper); }
+
+/* The toggle inside a slab that is now paper: an ink-edged pill. */
+.a11y-widget-biz.a11y-widget-biz .a11y-w22-panel .a11y-accordion-head.a11y-w22-toggle {
+  background: var(--paper); color: var(--ink); border: 2px solid var(--ink); border-radius: var(--radius-pill);
+}
+
+/* Hover on a paper button is ink with a paper word; the rule names its
+   colours itself rather than leaning on the old "on invert" pair. */
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sr-play:hover, .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-show-all:hover { background: var(--ink); color: var(--paper); }
+
