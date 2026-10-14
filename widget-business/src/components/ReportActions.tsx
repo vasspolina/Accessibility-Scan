@@ -110,7 +110,6 @@ export function ReportActions({
             }}
           >
             <span className="a11y-ra-label">{t("Save as PDF")}</span>
-            <span className="a11y-ra-tag a11y-ra-tag-pdf">pdf</span>
           </button>
           <p className="a11y-ra-note">
             {t("Opens your browser’s print dialog. Choose “Save as PDF” as the destination.")}
