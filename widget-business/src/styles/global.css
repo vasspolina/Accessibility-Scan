@@ -2684,7 +2684,6 @@
   letter-spacing: 0.01em;
 }
 .a11y-widget-biz .a11y-ra-tag-email  { background: var(--blue-10);   color: var(--blue-100); }
-.a11y-widget-biz .a11y-ra-tag-pdf    { background: transparent;      color: var(--purple-60); }
 .a11y-widget-biz .a11y-ra-tag-time   { background: var(--green-10);  color: #0b2916; }
 .a11y-widget-biz .a11y-ra-tag-issues { background: var(--red-10);    color: var(--red-100); }
 .a11y-widget-biz .a11y-ra-tag-first  { background: var(--orange-10); color: var(--orange-100); }
@@ -3775,10 +3774,8 @@
 }
 .a11y-widget-biz .a11y-stmt .a11y-section-eyebrow {
   order: 2;
-  padding: 6px 20px;
-  border-radius: var(--radius-sm);
-  background: var(--green-40);
-  color: var(--ink-on-pale);           /* 7.57:1 — the green is fixed in both themes, so is its ink */
+  /* Was a green pill (14 Oct 2026): a badge on a heading. Now the words. */
+  color: var(--text-secondary);
   font-size: 24px;
   font-weight: 500;
   text-transform: none;
@@ -4114,17 +4111,6 @@
 .a11y-widget-biz .a11y-sum-dial-of {
   font-size: 15px; font-weight: 500; color: var(--purple-70);
 }
-.a11y-widget-biz .a11y-sum-pills {
-  display: flex; gap: var(--space-03); flex-wrap: wrap; justify-content: center;
-}
-.a11y-widget-biz .a11y-sum-pill {
-  padding: 4px 14px; border-radius: var(--radius-sm);
-  background: var(--purple-20); color: var(--purple-100);
-  font-size: 15px; font-weight: 500; white-space: nowrap;
-}
-.a11y-widget-biz .a11y-sum-pill-band {
-  background: var(--severity-serious-fill); color: var(--white);
-}
 
 /* The instances table. */
 .a11y-widget-biz .a11y-sum-table { display: flex; flex-direction: column; gap: var(--space-02); }
@@ -4168,14 +4154,13 @@
   flex: 0 0 4.5rem;
   display: flex; align-items: center; justify-content: center;
   padding: var(--space-04) 0;
-  border-radius: var(--radius-md);
-  background: var(--yellow-brand-tint);
-  color: var(--ink-on-brand);
-  color: var(--ink-on-pale);        /* 16.66:1 */
+  /* Was the design's yellow tile (14 Oct 2026): a badge on a number. Now
+     the number, in the row's own ink. */
+  color: inherit;
   font-size: 32px; font-weight: 500; line-height: 1.2;
 }
 .a11y-widget-biz .a11y-sum-thead .a11y-sum-cell-count {
-  background: none; padding: 0; font-size: 15px; font-weight: 500;
+  padding: 0; font-size: 15px; font-weight: 500;
   color: var(--text-secondary); display: block;
 }
 .a11y-widget-biz .a11y-sum-actions {
@@ -6357,27 +6342,7 @@
   align-items: start;
 }
 
-.a11y-widget-biz .a11y-pg-head .a11y-principle-head {
-  justify-content: flex-start;
-  margin: 0 0 var(--space-04);
-  display: flex;
-  flex-wrap: wrap;
-  gap: var(--space-03);
-}
 
-/* 14px is the sanctioned label size; --tone-ink on white is the tone's
-   own 100-step, 13.7:1 at its lightest (blue-100 on white). */
-.a11y-widget-biz .a11y-pg-pill {
-  padding: 3px var(--space-04);
-  border-radius: var(--radius-sm);
-  background: var(--layer-02);
-  color: var(--tone-ink, var(--text-primary));
-  font-size: 14px;
-  font-weight: 500;
-  letter-spacing: 0.01em;
-  text-transform: uppercase;
-  white-space: nowrap;
-}
 
 .a11y-widget-biz .a11y-pg-head .a11y-principle-title,
 .a11y-widget-biz .a11y-pg-head .a11y-principle-desc {
@@ -6391,34 +6356,7 @@
   outline-offset: 4px;
 }
 
-.a11y-widget-biz .a11y-pg-links { margin: 0; }
 
-.a11y-widget-biz .a11y-pg-chip {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: 2px;
-  padding: var(--space-04) var(--space-05);
-  border: 0;
-  border-radius: var(--radius-md);
-  background: var(--layer-02);
-  color: var(--tone-ink, var(--text-primary));
-  text-align: left;
-  font-size: 15px;
-  font-weight: 500;
-  letter-spacing: 0.01em;
-  cursor: pointer;
-}
-.a11y-widget-biz .a11y-pg-chip-eyebrow {
-  font-size: 14px;
-  font-weight: 500;
-  text-transform: uppercase;
-  color: var(--tone-strong, var(--text-secondary));
-}
-.a11y-widget-biz .a11y-pg-chip:focus-visible {
-  outline: 2px solid var(--tone-ink, var(--text-primary));
-  outline-offset: 2px;
-}
 
 /* One column below the panel breakpoint; the chip follows the titles. */
 @container a11y-panel (width < 680px) {
@@ -6427,7 +6365,6 @@
 
 /* A chip is a control; a printed report cannot press it. */
 @media print {
-  .a11y-widget-biz .a11y-pg-links { display: none; }
 }
 
 /* ── The open row joins its detail card ────────────────────────────────
@@ -7403,4 +7340,48 @@
 .a11y-widget-biz.a11y-widget-biz .a11y-findings-table .a11y-sev { white-space: nowrap; }
 /* The fold itself lives with the three table blocks keyed on the panel
    breakpoint above, moved from 680 to 800 together (13 Oct 2026). */
+/* (A stray "}" closed nothing here until 14 Oct 2026. Harmless as the
+   last token in the file; once a rule followed it, the parser took the
+   brace as the start of that rule's prelude and dropped the rule.) */
+
+/* ─────────────────────────────────────────────────────────────────────
+   NO BADGES ACROSS THE CONTENT (14 Oct 2026, user's instruction)
+   A word that was boxed as a pill, chip or tag is now the word: no fill,
+   no border, no corner, no capitals, no minimum box. The pill row over
+   each principle group, the "Next category" chips, the three pills under
+   the dial, the "pdf" tag and the "Fastest" / "Most chosen" card badges
+   are removed in the markup. Colour that carries meaning keeps its box:
+   severity, triage state, the legal status chips.
+   ───────────────────────────────────────────────────────────────────── */
+.a11y-widget-biz.a11y-widget-biz .a11y-count-pill,
+.a11y-widget-biz.a11y-widget-biz .a11y-sum-chip,
+.a11y-widget-biz.a11y-widget-biz .a11y-rule-chip,
+.a11y-widget-biz.a11y-widget-biz .a11y-pro-chip,
+.a11y-widget-biz.a11y-widget-biz .a11y-section-eyebrow,
+.a11y-widget-biz.a11y-widget-biz .a11y-dn-pill,
+.a11y-widget-biz.a11y-widget-biz .a11y-legal-standard,
+.a11y-widget-biz.a11y-widget-biz .a11y-legal-count,
+.a11y-widget-biz.a11y-widget-biz .a11y-undecided-most,
+.a11y-widget-biz.a11y-widget-biz .a11y-step-note,
+.a11y-widget-biz.a11y-widget-biz .a11y-method-badge:not(.a11y-triage-badge) {
+  background: transparent;
+  border: 0;
+  border-radius: 0;
+  padding: 0;
+  box-shadow: none;
+  text-transform: none;
+  min-width: 0;
+  min-height: 0;
+  height: auto;
 }
+/* Text that took its colour from the fill it sat on takes the page's. */
+.a11y-widget-biz.a11y-widget-biz .a11y-count-pill,
+.a11y-widget-biz.a11y-widget-biz .a11y-sum-chip,
+.a11y-widget-biz.a11y-widget-biz .a11y-rule-chip,
+.a11y-widget-biz.a11y-widget-biz .a11y-dn-pill,
+.a11y-widget-biz.a11y-widget-biz .a11y-legal-standard,
+.a11y-widget-biz.a11y-widget-biz .a11y-legal-count,
+.a11y-widget-biz.a11y-widget-biz .a11y-undecided-most,
+.a11y-widget-biz.a11y-widget-biz .a11y-step-note,
+.a11y-widget-biz.a11y-widget-biz .a11y-method-badge:not(.a11y-triage-badge) { color: inherit; }
+.a11y-widget-biz.a11y-widget-biz .a11y-count-pill-x { color: inherit; }

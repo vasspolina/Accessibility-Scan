@@ -387,15 +387,6 @@ export function ScoreGauge({
                   <span className="a11y-sum-dial-of">{t("out of 100")}</span>
                 </span>
               </div>
-              <div className="a11y-sum-pills" aria-hidden="true">
-                <span className="a11y-sum-pill a11y-sum-pill-band">{t(scoreBandLabel(score))}</span>
-                <span className="a11y-sum-pill">
-                  {total === 1 ? t("1 issue") : tf("{count} issues", { count: total })}
-                </span>
-                {tookSeconds != null && (
-                  <span className="a11y-sum-pill">{tf("{seconds} sec", { seconds: tookSeconds })}</span>
-                )}
-              </div>
             </div>
 
             {preview.length === 0 ? (

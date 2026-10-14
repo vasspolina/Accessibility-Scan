@@ -14,6 +14,7 @@
 - PP Telegraf is unchanged (the palette changed later: see Colour). The override block is the last thing in `global.css`, doubled on the root (0,3,0) so it wins by rank.
 - **Before flattening any fill, measure the text on it, in light and dark.** A fill that looks decorative often carries the contrast: the notes panel is `rgb(22,22,22)`, the legal card sits on fixed yellow, and the failing stat tile, current screen-reader row and hovered related card invert. All four measured 1.00 to 1.10:1 when flattened.
 
+- **No badges across the content** (user's instruction, 14 Oct 2026). A word is not boxed because it is short: no pills, chips or tags around counts, WCAG numbers, rule ids, fix types, standards or section labels, and no "Fastest" / "Most chosen" on controls. Colour that carries meaning keeps its box: severity, triage state, the legal status marks, round numbered markers. Before adding a bordered or filled span, ask what the box says that the word does not.
 - **One of each.** One navigation: the Sections rail (the top bar is the brand and the run controls, no links). One set of report settings on screen at a time: the form owns Report style, Language, AI review and Scope while it is showing, so the rail does not repeat them; the conversation shows them as a block when asked. Before adding a control, search the page for one that already does the job.
 
 ## Colour (no red accent, 13 Oct 2026)
