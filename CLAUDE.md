@@ -17,6 +17,14 @@
 - **No badges across the content** (user's instruction, 14 Oct 2026). A word is not boxed because it is short: no pills, chips or tags around counts, WCAG numbers, rule ids, fix types, standards or section labels, and no "Fastest" / "Most chosen" on controls. Colour that carries meaning keeps its box: severity, triage state, the legal status marks, round numbered markers. Before adding a bordered or filled span, ask what the box says that the word does not.
 - **One of each.** One navigation: the Sections rail (the top bar is the brand and the run controls, no links). One set of report settings on screen at a time: the form owns Report style, Language, AI review and Scope while it is showing, so the rail does not repeat them; the conversation shows them as a block when asked. Before adding a control, search the page for one that already does the job.
 
+## Chat typesetting (Hochuli, *Detail in typography*; user's reference, 14 Oct 2026)
+- The conversation is set as an interview: the speaker hung in the 4.5em gutter on the first line's baseline (18px, roman, secondary ink), the words beside it at 27px/1.2 on a 60ch measure.
+- Inside a turn, no space between paragraphs; every paragraph has a first-line indent (2em, 1.2em on a phone). Between turns, one line (1.2em) and nothing else: no rules, no grounds.
+- List markers hang outside the block (an en dash, or the figure and its point); the list keeps its markers so it keeps its role. On a phone they come inside.
+- Code is an inserted passage: 18px on the text's own 32.4px line, so it stays in register and the text after it returns to the grid; one line of space above and below.
+- A soft rag: `text-wrap: pretty`, `hyphenate-limit-chars: 7 3 3`, hyphens on. Emphasis is Medium (500), never a synthesized bold; there is no italic cut, and a sloped roman is not an italic, so questions are told from answers by the label alone.
+- Punctuation is set in `lib/typography.ts` `smarten()` on prose only (never code): quotation marks in the conversation's language (“ ” / „ “ / « » / « »), the apostrophe, a spaced en dash for " - ", the ellipsis. Hochuli's rules for what a keyboard cannot type.
+
 ## Colour (no red accent, 13 Oct 2026)
 - The vermilion accent is gone: titles, numbers, eyebrows, rules, primary buttons and the old red panel are **ink** (`#161616`, a mid grey `#6f6f6f` for filled buttons in dark so white text clears 4.5:1). The accent tokens keep their old names: `--purple-60`, `--purple-70`, `--purple-100` and `--purple-filled` are ink, not purple or vermilion.
 - **Red that means something stays**: the "Fix first" severity pill, the critical banner and marks, an invalid input (`--red-*`, `--severity-*`). Do not use them as decoration.

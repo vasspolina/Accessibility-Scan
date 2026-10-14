@@ -1,5 +1,7 @@
 import { useRef, useState, type FocusEvent, type FormEvent, type MutableRefObject, type ReactNode } from "react";
 import { t } from "../lib/strings";
+import { getLang } from "../lib/i18n";
+import { smarten } from "../lib/typography";
 import { Input } from "./Input";
 import { Button } from "./Button";
 import { LanguageSelect } from "./LanguageSelect";
@@ -142,7 +144,7 @@ function inline(line: string): ReactNode[] {
     const md = /^\[([^\]]+)\]\((https?:\/\/[^\s)]+)\)$/.exec(part);
     if (md) return link(md[2], md[1], i);
     if (/^https?:\/\//.test(part)) return link(part, part, i);
-    return part;
+    return smarten(part, getLang());
   });
 }
 
@@ -869,7 +871,7 @@ export function ScanChat({
                       <p className="a11y-chat-thinking">{t("Thinking…")}</p>
                     )
                   ) : (
-                    <p>{turn.text}</p>
+                    <p>{smarten(turn.text, getLang())}</p>
                   )}
                 </div>
               </li>

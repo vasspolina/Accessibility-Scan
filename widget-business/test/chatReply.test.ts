@@ -14,7 +14,8 @@ describe("renderReply", () => {
   it("turns a sentence followed by items into a paragraph and a list", () => {
     const out = html('Start with these three:\n- "No main heading"\n- "Links say only read more"\n- "Nothing marks the main content"');
     expect(out).toBe(
-      '<p>Start with these three:</p><ul><li>&quot;No main heading&quot;</li><li>&quot;Links say only read more&quot;</li><li>&quot;Nothing marks the main content&quot;</li></ul>'
+      // The straight marks the model writes are set as quotation marks.
+      '<p>Start with these three:</p><ul><li>\u201CNo main heading\u201D</li><li>\u201CLinks say only read more\u201D</li><li>\u201CNothing marks the main content\u201D</li></ul>'
     );
   });
 
