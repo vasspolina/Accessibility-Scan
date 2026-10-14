@@ -6812,26 +6812,42 @@
    with its speaker — You or Assistant — named in text above it. The person's own words take the accent ink (5.2:1 on
    paper); that is a second cue, never the only one — the speaker label
    says who is talking whatever the colour does. */
+/* The conversation is typeset as an interview (user's reference and Jost
+   Hochuli, Detail in typography, 14 Oct 2026): the speaker hung in the
+   margin on the first line's baseline, the words beside it; no space
+   between the paragraphs of one turn but a first-line indent, which
+   Tschichold calls the only certain sign of a paragraph; one line of
+   space between turns and no rules; a measure of 60 to 70 characters;
+   a soft rag; list markers hung outside the block; an inserted passage
+   (code) one size down with its lines kept in register with the text.
+   The reference sets questions in italic. The family here has no italic
+   cut, and a sloped roman is not one (Hochuli, "The letter"), so the
+   label alone tells the two voices apart. */
 .a11y-widget-biz .a11y-chat-thread {
   list-style: none;
   margin: var(--space-07) 0 var(--space-06);
   padding: 0;
-  display: grid;
-  grid-template-columns: minmax(0, 1fr);   /* as .a11y-chat-steps: an auto track floors at the widest word */
-  gap: 0;
-  border-top: 1px dotted var(--purple-30);
 }
 
 .a11y-widget-biz .a11y-chat-turn {
-  padding: var(--space-06) 0;
-  border-bottom: 1px dotted var(--purple-30);
+  display: grid;
+  grid-template-columns: 4.5em minmax(0, 1fr);
+  align-items: baseline;
+  padding: 0;
+  border: 0;
+  font-size: 27px;        /* the em the gutter and indents are measured in */
+  line-height: 1.2;
 }
+.a11y-widget-biz .a11y-chat-turn + .a11y-chat-turn { margin-top: 1.2em; }
+.a11y-widget-biz .a11y-chat-turn > :not(.a11y-chat-who) { grid-column: 2; }
 
 .a11y-widget-biz .a11y-chat-who {
-  margin: 0 0 var(--space-03);
-  font-size: 15px;
-  font-weight: 500;
-  line-height: 1.4;
+  grid-column: 1;
+  grid-row: 1;
+  margin: 0;
+  font-size: 18px;
+  font-weight: 400;
+  line-height: 1.2;
   letter-spacing: 0.01em;
   color: var(--text-secondary);
 }
@@ -6844,30 +6860,38 @@
 
 .a11y-widget-biz .a11y-chat-text {
   max-width: var(--measure);
+  text-wrap: pretty;
+  hyphenate-limit-chars: 7 3 3;
+  -webkit-hyphenate-limit-before: 3;
+  -webkit-hyphenate-limit-after: 3;
 }
 
 .a11y-widget-biz .a11y-chat-text p,
 .a11y-widget-biz .a11y-chat-text li {
-  margin: 0 0 var(--space-04);
+  margin: 0;
   font-size: 27px;
   line-height: 1.2;
   letter-spacing: 0.01em;
 }
+.a11y-widget-biz .a11y-chat-text > p { text-indent: 2em; }
 
-.a11y-widget-biz .a11y-chat-text p:last-child,
-.a11y-widget-biz .a11y-chat-text li:last-child {
-  margin-bottom: 0;
-}
-
+/* Markers hang outside the block, as Hochuli sets them (fig. 50): an en
+   dash for an item, the figure and its point for a numbered one. The
+   list keeps its markers, so it keeps its role in every reader. */
 .a11y-widget-biz .a11y-chat-text ul,
 .a11y-widget-biz .a11y-chat-text ol {
-  margin: 0 0 var(--space-04);
-  padding-left: var(--space-06);
+  margin: 0;
+  padding-left: 0;
+  list-style-position: outside;
 }
+.a11y-widget-biz .a11y-chat-text ul { list-style-type: "\2013\A0\A0"; }
+.a11y-widget-biz .a11y-chat-text ol { list-style-type: decimal; }
+.a11y-widget-biz .a11y-chat-text li::marker { color: var(--text-secondary); }
 
 .a11y-widget-biz .a11y-chat-text a {
   color: var(--text-primary);
   text-decoration: underline;
+  text-decoration-thickness: 1px;
   text-underline-offset: 0.15em;
   overflow-wrap: anywhere;
 }
@@ -6883,34 +6907,42 @@
   overflow-wrap: anywhere;
 }
 
-/* A block of code the assistant wrote: a fix to copy into the page. Same
-   face and tint as inline code. Long lines wrap rather than scroll, so the
-   block never makes the page scroll sideways at phone width and needs no
-   scrolling region a keyboard user would have to reach. */
+/* A block of code the assistant wrote: an inserted passage, one size down
+   (18px) with a line of 32.4px, the same as the text's, so its lines stay
+   in register and the text after it returns to the grid (Hochuli, fig.
+   70). One line of space above and below. Long lines wrap rather than
+   scroll, so the block never makes the page scroll sideways at phone
+   width and needs no scrolling region a keyboard user would have to
+   reach. */
 .a11y-widget-biz .a11y-chat-text .a11y-chat-pre {
-  margin: 0 0 var(--space-04);
-  padding: var(--space-03) var(--space-04);
+  margin: 1.2em 0;
+  padding: 0 0.6em;
   border-radius: var(--radius-sm);
   background: var(--layer-01);
-  font-size: 15px;
-  line-height: 1.5;
+  font-size: 18px;
+  line-height: 32.4px;
   letter-spacing: 0.01em;
   font-family: inherit;
   white-space: pre-wrap;
   overflow-wrap: anywhere;
 }
-
-.a11y-widget-biz .a11y-chat-text .a11y-chat-pre:last-child {
-  margin-bottom: 0;
-}
+.a11y-widget-biz .a11y-chat-text .a11y-chat-pre:first-child { margin-top: 0; }
+.a11y-widget-biz .a11y-chat-text .a11y-chat-pre:last-child { margin-bottom: 0; }
 
 .a11y-widget-biz .a11y-chat-text .a11y-chat-pre code {
   padding: 0;
   background: none;
 }
 
-.a11y-widget-biz .a11y-chat-you .a11y-chat-text p {
-  color: var(--purple-60);
+/* On a phone the gutter would take a third of the line: the speaker goes
+   above the words, markers come inside the block, the indent shortens. */
+@media (max-width: 640px) {
+  .a11y-widget-biz .a11y-chat-turn { grid-template-columns: minmax(0, 1fr); }
+  .a11y-widget-biz .a11y-chat-turn > :not(.a11y-chat-who) { grid-column: 1; }
+  .a11y-widget-biz .a11y-chat-who { grid-row: auto; margin-bottom: 0.15em; }
+  .a11y-widget-biz .a11y-chat-text > p { text-indent: 1.2em; }
+  .a11y-widget-biz .a11y-chat-text ul,
+  .a11y-widget-biz .a11y-chat-text ol { padding-left: 1.5em; }
 }
 
 .a11y-widget-biz .a11y-chat-thinking {

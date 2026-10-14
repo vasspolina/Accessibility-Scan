@@ -12,3 +12,23 @@ describe("short words stay attached to the next word", () => {
     expect(__test.bind("ends on a")).toBe(`ends on${N}a`);
   });
 });
+
+const { smarten } = __test;
+
+describe("smarten: the chat's punctuation", () => {
+  it("sets English quotation marks, the apostrophe, the spaced en dash and the ellipsis", () => {
+    expect(smarten(`It is announced as "Cookie settings, dialog" - and then nothing... Don't wait.`, "en")).toBe(
+      "It is announced as \u201CCookie settings, dialog\u201D \u2013 and then nothing\u2026 Don\u2019t wait."
+    );
+    expect(smarten("'quoted' (and \"bracketed\")", "en")).toBe("\u2018quoted\u2019 (and \u201Cbracketed\u201D)");
+    expect(smarten("a -- b", "en")).toBe("a \u2013 b");
+  });
+  it("uses the marks of the conversation's language", () => {
+    expect(smarten('"Hallo"', "de")).toBe("\u201EHallo\u201C");
+    expect(smarten('"Bonjour"', "fr")).toBe("\u00AB\u202FBonjour\u202F\u00BB");
+    expect(smarten('"Hola"', "es")).toBe("\u00ABHola\u00BB");
+  });
+  it("leaves a hyphen inside a word and a minus before a figure alone", () => {
+    expect(smarten("one-line change at -3", "en")).toBe("one-line change at -3");
+  });
+});

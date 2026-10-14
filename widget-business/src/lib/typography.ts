@@ -69,4 +69,39 @@ export function keepShortWordsAttached(root: Node): () => void {
   return () => observer.disconnect();
 }
 
-export const __test = { bind };
+/**
+ * Punctuation the keyboard cannot type, applied to the chat's prose
+ * (Hochuli, Detail in typography, "The line": dashes, quotation marks, the
+ * ellipsis). The model and the person both write straight quotes, a hyphen
+ * for a dash and three full points; these become the typographic signs in
+ * the language of the conversation. Code spans and code blocks are never
+ * passed through here: their characters are data.
+ *
+ *   "x"  →  “x”  ‚ „x“ (de), «\u202Fx\u202F» (fr), «x» (es)
+ *   'x'  →  ‘x’ (‚x‘ in German); an apostrophe inside a word is ’
+ *   " - " and " -- "  →  " – "   (a spaced en dash, as in the reference)
+ *   ...  →  …
+ */
+const QUOTES: Record<string, { d: [string, string]; s: [string, string] }> = {
+  en: { d: ["\u201C", "\u201D"], s: ["\u2018", "\u2019"] },
+  de: { d: ["\u201E", "\u201C"], s: ["\u201A", "\u2018"] },
+  fr: { d: ["\u00AB\u202F", "\u202F\u00BB"], s: ["\u2018", "\u2019"] },
+  es: { d: ["\u00AB", "\u00BB"], s: ["\u2018", "\u2019"] },
+};
+
+export function smarten(text: string, lang: string): string {
+  const q = QUOTES[lang] ?? QUOTES.en;
+  return (
+    text
+      .replace(/\.\.\./g, "\u2026")
+      .replace(/(^|[\s(\[])-{1,2}(?=\s)/g, "$1\u2013")
+      // An opening mark follows the start, a space or an opening bracket;
+      // every other straight mark closes.
+      .replace(/(^|[\s(\[\u2013])"/g, `$1${q.d[0]}`)
+      .replace(/"/g, q.d[1])
+      .replace(/(^|[\s(\[\u2013])'/g, `$1${q.s[0]}`)
+      .replace(/'/g, q.s[1])
+  );
+}
+
+export const __test = { bind, smarten };
