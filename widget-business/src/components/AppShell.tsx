@@ -1,3 +1,4 @@
+import { PosterMark } from "./PosterMark";
 import type { ReactNode, RefObject } from "react";
 import { SideNav, type NavSection } from "./SideNav";
 import { TopNav } from "./TopNav";
@@ -16,6 +17,7 @@ export function AppShell({
   navMeta,
   navSettings,
   topActions,
+  mark,
   onJump,
   plans,
   contentRef,
@@ -30,6 +32,8 @@ export function AppShell({
   navSettings?: ReactNode;
   /* The top bar's run controls. */
   topActions?: ReactNode;
+  /* The word the page repeats as its arrow mark (decoration). */
+  mark?: string;
   /* Shared with SideNav so the two navs cannot scroll or focus differently. */
   onJump: (el: HTMLElement) => void;
   /* The embedder's plans, if they configured any. Rendered above the nav
@@ -66,6 +70,7 @@ export function AppShell({
           />
         )}
         <div className="a11y-shell-content" ref={contentRef}>
+          {mark && <PosterMark word={mark} />}
           {children}
         </div>
       </div>

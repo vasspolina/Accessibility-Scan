@@ -939,6 +939,7 @@ export function App({
       lang={lang}
     >
     <AppShell
+      mark={report || audit ? t("Findings") : t("New scan")}
       onJump={jumpTo}
       /* The run's settings live in the rail once there is a run to describe.
          Report style flips in place; the other two re-run the scan, which is

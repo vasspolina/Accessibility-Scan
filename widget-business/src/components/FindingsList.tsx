@@ -82,6 +82,7 @@ export function FindingsList({
           onClick={expandRowOnClick}
         >
           <DataTable
+            schedule
             caption={asNotes ? t("Notes on the design") : t("Findings, most severe first")}
             headers={
               asNotes
