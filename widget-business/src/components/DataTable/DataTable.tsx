@@ -93,6 +93,7 @@ export function DataTable({
   filter,
   onFilterChange,
   framed = false,
+  schedule = false,
 }: {
   caption?: string;
   headers: TableHeader[];
@@ -103,21 +104,27 @@ export function DataTable({
   onFilterChange?: (value: string) => void;
   /** The frame without the filters. */
   framed?: boolean;
+  /** Rows laid out as a list: a count in the margin, the label, title and
+   *  small print stacked beside it. The table is drawn with CSS grid, which
+   *  drops its table semantics in some readers, so the roles are stated. */
+  schedule?: boolean;
 }) {
+  const role = (r: string) => (schedule ? { role: r } : {});
   const [open, setOpen] = useState<ReadonlySet<string>>(() => new Set());
   const expandable = rows.some((r) => r.expand);
 
   const table = (
     <>
-      <table className="a11y-datatable">
+      <table className={`a11y-datatable${schedule ? " a11y-datatable-schedule" : ""}`} {...role("table")}>
         {caption ? <caption className="a11y-dt-caption">{caption}</caption> : null}
-      <thead>
-        <tr>
-          {expandable ? <td aria-hidden="true" className="a11y-dt-spacer" /> : null}
+      <thead {...role("rowgroup")}>
+        <tr {...role("row")}>
+          {expandable ? <td aria-hidden="true" className="a11y-dt-spacer" {...role("cell")} /> : null}
           {headers.map((h) => (
             <th
               key={h.key}
               scope="col"
+              {...role("columnheader")}
               /* The column's own name, so a stylesheet can size one column
                  without having to guess it from alignment. These tables are
                  table-layout: fixed, where the header row decides every
@@ -131,7 +138,7 @@ export function DataTable({
           ))}
         </tr>
       </thead>
-      <tbody>
+      <tbody {...role("rowgroup")}>
         {rows.map((r) => {
           const isOpen = open.has(r.id);
           /* Row state is a name, never a colour — the stylesheet decides
@@ -140,9 +147,9 @@ export function DataTable({
           return (
             <Fragment key={r.id}>
               <tr
-                data-row-state={r.state}>
+                data-row-state={r.state} {...role("row")}>
                 {expandable ? (
-                  <td className="a11y-dt-toggle-cell">
+                  <td className="a11y-dt-toggle-cell" {...role("cell")}>
                     {r.expand ? (
                       <button
                         type="button"
@@ -173,14 +180,15 @@ export function DataTable({
                     data-numeric={headers[i].align === "right" ? "true" : undefined}
                     data-col={headers[i].key}
                     data-align={headers[i].align || "left"}
+                    {...role("cell")}
                   >
                     {cell}
                   </td>
                 ))}
               </tr>
               {r.expand && isOpen ? (
-                <tr className="a11y-dt-expand-row">
-                  <td colSpan={headers.length + (expandable ? 1 : 0)}>{r.expand}</td>
+                <tr className="a11y-dt-expand-row" {...role("row")}>
+                  <td {...role("cell")} colSpan={headers.length + (expandable ? 1 : 0)}>{r.expand}</td>
                 </tr>
               ) : null}
             </Fragment>
