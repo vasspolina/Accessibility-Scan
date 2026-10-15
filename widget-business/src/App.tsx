@@ -7,7 +7,6 @@ import { ScoreGauge } from "./components/ScoreGauge";
 import { ReportActions } from "./components/ReportActions";
 import { ScanSettings } from "./components/ScanSettings";
 import { AppShell } from "./components/AppShell";
-import type { Plan } from "./components/PlansBar";
 import type { NavSection } from "./components/SideNav";
 import { useActiveSection } from "./lib/useActiveSection";
 import { DocumentSummary } from "./components/DocumentSummary";
@@ -122,11 +121,9 @@ export interface CtaConfig {
 export function App({
   apiBase,
   cta,
-  plans,
 }: {
   apiBase: string;
   cta?: CtaConfig;
-  plans?: Plan[];
 }) {
   const [report, setReport] = useState<AccessibilityReport | null>(null);
   const [audit, setAudit] = useState<SiteAudit | null>(null);
@@ -945,32 +942,6 @@ export function App({
          Report style flips in place; the other two re-run the scan, which is
          why they are buttons that name the cost rather than switches. */
       navSettings={entry === "form" ? accountNode ?? undefined : undefined}
-      /* The run controls live in the top bar now, for both audiences.
-         "Export report" is professional-only: business mode already has
-         Save as PDF in the report-actions panel, with the sentence that
-         explains what the print dialog is, and two routes to the same
-         export is the duplication this report keeps having to undo. */
-      topActions={
-        report || audit ? (
-          <>
-            {report && (
-              <Button
-                onClick={() =>
-                  entry === "chat" && chatApi.current
-                    ? chatApi.current.rerun(report.url, "page", report.meta.aiReviewStatus === "completed")
-                    : handleScan(report.url, report.meta.aiReviewStatus === "completed", "page", 5)
-                }
-              >
-                {t("Run scan")}
-              </Button>
-            )}
-            {professional && <PrintButton label={t("Export report")} compact />}
-            <Button variant="ghost" onClick={focusForm}>
-              {t("New scan")}
-            </Button>
-          </>
-        ) : undefined
-      }
       navMeta={
         report
           ? // The month in the reader's language; English keeps its day-month order.
@@ -984,7 +955,6 @@ export function App({
       }
       sections={entry === "form" ? sections : []}
       activeId={activeSectionId}
-      plans={plans}
       contentRef={shellContentRef}
     >
       {/* No standalone intro paragraph — the door metaphor said little the
