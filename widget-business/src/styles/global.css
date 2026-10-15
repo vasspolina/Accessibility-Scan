@@ -39,3 +39,150 @@
 .a11y-widget-biz { overflow-wrap: anywhere; }
 .a11y-widget-biz img, .a11y-widget-biz table, .a11y-widget-biz pre { max-width: 100%; }
 .a11y-widget-biz pre { overflow-x: auto; }
+
+
+/* ═══ THE POSTER, AGAIN ══════════════════════════════════════════════════
+   From the Independent Publishing Fair poster: big plain type in a tight
+   block, with a marker highlight laid over the phrases that matter. The
+   highlight is orange, blue or green behind BLACK text in both themes, so
+   the colour is never what carries the reading: every fill measures 7:1 or
+   better against #000 (orange 10:1, blue 9:1, green 12:1). Everything else
+   is ink on paper, which swap in dark. */
+.a11y-widget-biz {
+  --ink: #000; --paper: #fff;
+  --hl-orange: #ff8a4c; --hl-blue: #6fa8ff; --hl-green: #4fe0a8;
+  --hl-cap-a: #ffe14d; --hl-cap-b: #ff9ad5;
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .a11y-widget-biz { --ink: #fff; --paper: #000; color-scheme: dark; }
+}
+:root[data-theme="dark"] .a11y-widget-biz { --ink: #fff; --paper: #000; color-scheme: dark; }
+
+.a11y-widget-biz {
+  font-family: "PP Telegraf", "DejaVu Sans", sans-serif;
+  font-size: 27px; font-weight: 400; line-height: 1.2; letter-spacing: 0.01em;
+  background: var(--paper); color: var(--ink);
+  hyphens: auto; text-wrap: pretty;
+  max-width: 40em; margin-inline: auto; padding: 1em;
+}
+.a11y-widget-biz :is(h1, h2, h3, h4) { font-weight: 500; line-height: 1.05; font-size: 32px; margin: 1.2em 0 0.3em; }
+.a11y-widget-biz :is(p, ul, ol, dl, table, figure) { margin: 0 0 1.2em; }
+.a11y-widget-biz a { color: var(--ink); text-decoration: underline; text-underline-offset: 0.15em; }
+
+/* The small print under the poster: 15px. */
+.a11y-widget-biz :is(small, .a11y-issue-row-meta, .a11y-conf-cap, .a11y-next-meta, .a11y-sum-eyebrow, .a11y-sum-micro, .a11y-input-help, .a11y-input-label) {
+  font-size: 15px; line-height: 1.2;
+}
+
+/* Controls: pills, 2px ink edge, 18px. */
+.a11y-widget-biz :is(button, .a11y-btn) {
+  font: inherit; font-size: 18px; font-weight: 500;
+  padding: 0.5em 1.1em; border: 2px solid var(--ink); border-radius: 999px;
+  background: var(--paper); color: var(--ink);
+}
+.a11y-widget-biz button:enabled,
+.a11y-widget-biz .a11y-btn:enabled { cursor: pointer; }
+.a11y-widget-biz button:enabled:hover,
+.a11y-widget-biz .a11y-btn:enabled:hover { background: var(--ink); color: var(--paper); }
+.a11y-widget-biz button:disabled,
+.a11y-widget-biz .a11y-btn:disabled { border-style: dashed; cursor: not-allowed; }
+.a11y-widget-biz :is(input:not([type="radio"]):not([type="checkbox"]), textarea, select) {
+  font: inherit; font-size: 18px; padding: 0.4em 0.6em;
+  border: 2px solid var(--ink); border-radius: 0; background: var(--paper); color: var(--ink);
+}
+.a11y-widget-biz :focus-visible { outline: 3px solid var(--ink); outline-offset: 2px; box-shadow: 0 0 0 2px var(--paper); }
+
+/* Tables stay plain: rows on rules. */
+.a11y-widget-biz table { border-collapse: collapse; width: 100%; }
+.a11y-widget-biz :is(th, td) { text-align: start; vertical-align: top; padding: 0.3em 0.6em 0.3em 0; border-bottom: 2px solid var(--ink); font-size: 18px; }
+
+/* The highlight. Black text, always; cap colours are decoration. */
+.a11y-widget-biz :is(.a11y-sev, .a11y-rule-chip, .a11y-level-badge, .a11y-dn-pill, .a11y-sum-chip, .a11y-pro-chip, .a11y-count-pill-n, .a11y-conf-status, .a11y-principle-count) {
+  color: #000; background: var(--hl-green);
+  padding: 0 0.22em; margin-inline: 0.12em;
+  border-radius: 0.9em 0.45em 0.9em 0.55em / 0.7em 0.5em 0.7em 0.5em;
+  box-shadow: 0.14em 0 0 var(--hl-cap-a), -0.14em 0 0 var(--hl-cap-b);
+  -webkit-box-decoration-break: clone; box-decoration-break: clone;
+}
+.a11y-widget-biz :is(.a11y-sev-critical, .a11y-severity-critical) { background: var(--hl-orange); }
+.a11y-widget-biz :is(.a11y-sev-serious, .a11y-severity-serious) { background: var(--hl-blue); }
+.a11y-widget-biz :is(.a11y-sev-moderate, .a11y-severity-moderate) { background: var(--hl-green); }
+.a11y-widget-biz :is(.a11y-sev-minor, .a11y-severity-minor) { background: var(--hl-cap-a); box-shadow: 0.14em 0 0 var(--hl-cap-b), -0.14em 0 0 var(--hl-blue); }
+.a11y-widget-biz :is(.a11y-conf-status, .a11y-dn-pill) { background: var(--hl-blue); }
+.a11y-widget-biz :is(.a11y-rule-chip, .a11y-level-badge) { background: var(--hl-orange); }
+
+/* Inline neighbours need air: the check for welded siblings reads this. */
+.a11y-widget-biz .a11y-ai-card-title,
+.a11y-widget-biz .a11y-ai-hint,
+.a11y-widget-biz .a11y-audit-body,
+.a11y-widget-biz .a11y-audit-count,
+.a11y-widget-biz .a11y-audit-score,
+.a11y-widget-biz .a11y-chat-fold-closed,
+.a11y-widget-biz .a11y-chat-fold-open,
+.a11y-widget-biz .a11y-conf-body,
+.a11y-widget-biz .a11y-conf-cap,
+.a11y-widget-biz .a11y-conf-id,
+.a11y-widget-biz .a11y-conf-num,
+.a11y-widget-biz .a11y-conf-plain,
+.a11y-widget-biz .a11y-conf-status,
+.a11y-widget-biz .a11y-count-pill-n,
+.a11y-widget-biz .a11y-count-pill-x,
+.a11y-widget-biz .a11y-dial-band,
+.a11y-widget-biz .a11y-dial-label,
+.a11y-widget-biz .a11y-dial-number,
+.a11y-widget-biz .a11y-dial-of,
+.a11y-widget-biz .a11y-dial-sub,
+.a11y-widget-biz .a11y-dn-link-text,
+.a11y-widget-biz .a11y-dn-mark,
+.a11y-widget-biz .a11y-dn-pill,
+.a11y-widget-biz .a11y-issue-row-meta,
+.a11y-widget-biz .a11y-issue-row-title,
+.a11y-widget-biz .a11y-legal-col-items,
+.a11y-widget-biz .a11y-legal-col-result,
+.a11y-widget-biz .a11y-legal-count,
+.a11y-widget-biz .a11y-legal-mark,
+.a11y-widget-biz .a11y-legal-row-label,
+.a11y-widget-biz .a11y-legal-row-meaning,
+.a11y-widget-biz .a11y-manual-actions,
+.a11y-widget-biz .a11y-manual-verdict,
+.a11y-widget-biz .a11y-next-crit,
+.a11y-widget-biz .a11y-next-level,
+.a11y-widget-biz .a11y-next-meta,
+.a11y-widget-biz .a11y-next-title,
+.a11y-widget-biz .a11y-plan-name,
+.a11y-widget-biz .a11y-plan-price,
+.a11y-widget-biz .a11y-principle-count,
+.a11y-widget-biz .a11y-principle-term,
+.a11y-widget-biz .a11y-pro-chip,
+.a11y-widget-biz .a11y-pro-row,
+.a11y-widget-biz .a11y-pro-row-num,
+.a11y-widget-biz .a11y-pro-row-pass,
+.a11y-widget-biz .a11y-pro-score-num,
+.a11y-widget-biz .a11y-pro-score-of,
+.a11y-widget-biz .a11y-pro-table,
+.a11y-widget-biz .a11y-progress-num,
+.a11y-widget-biz .a11y-progress-unit,
+.a11y-widget-biz .a11y-rule-chip,
+.a11y-widget-biz .a11y-settings-label,
+.a11y-widget-biz .a11y-settings-state,
+.a11y-widget-biz .a11y-shell-nav-count,
+.a11y-widget-biz .a11y-shell-nav-heading,
+.a11y-widget-biz .a11y-sr-line-text,
+.a11y-widget-biz .a11y-sr-num,
+.a11y-widget-biz .a11y-sum-cell-count,
+.a11y-widget-biz .a11y-sum-cell-item,
+.a11y-widget-biz .a11y-sum-cell-no,
+.a11y-widget-biz .a11y-sum-chip,
+.a11y-widget-biz .a11y-sum-dial-num,
+.a11y-widget-biz .a11y-sum-dial-of,
+.a11y-widget-biz .a11y-sum-row-marks,
+.a11y-widget-biz .a11y-sum-row-title,
+.a11y-widget-biz .a11y-switch-controls,
+.a11y-widget-biz .a11y-switch-label { margin-inline-end: 0.3em; }
+
+.a11y-widget-biz .a11y-poster-word,
+.a11y-widget-biz .a11y-poster-more { margin-inline-end: 0.3em; }
+
+/* An SVG with only a viewBox fills its container; the dials are drawings, not backdrops. */
+.a11y-widget-biz svg { max-width: 8em; max-height: 8em; }
