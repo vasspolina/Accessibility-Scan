@@ -147,4 +147,11 @@ describe("the digest prefix stays in step with the widget", () => {
     // The widget writes it in a template literal, with a literal \n.
     expect(widget).toContain(DIGEST_PREFIX.replace("\n", "\\n"));
   });
+
+  it("scans a site named instead of addressed, and asks only when the name is ambiguous or unknown", () => {
+    // "check the MoMA museum website" used to get a request for an address.
+    expect(CHAT_SYSTEM_PROMPT).toMatch(/name a site instead of giving its address/);
+    expect(CHAT_SYSTEM_PROMPT).toMatch(/moma\.org/);
+    expect(CHAT_SYSTEM_PROMPT).toMatch(/Never invent an address for a name you do not know/);
+  });
 });
