@@ -1,5 +1,7 @@
 # Accessible Scan — project constraints
 
+> **Restyled (user's instruction, 15 Oct 2026).** `global.css` was stripped to functional rules, then rebuilt from the Independent Publishing Fair poster: big plain ink-on-paper type in a tight block, with a marker highlight (orange, blue or green, yellow and pink end caps) laid over key phrases (severity words, rule ids, levels, status marks). **Highlights carry black text in both themes and every fill measures 7:1 or better**; this is the one place colour is allowed, so the black-and-white rule below still holds everywhere else. The per-section poster layout, round chat window and Hochuli chat typesetting below describe the previous design and are not currently in force.
+
 ## Type
 - Three fonts: **PP Telegraf Light (300)**, **Regular (400)** and **Medium (500)**. Light is for **display sizes (40px and up) only** — big and thin, never small and thin (user's instruction, 21 Sep 2026; the served file is the family's Light cut, the thinnest we have). No other weights or families (mono is allowed only for meta/labels).
 - Font sizes are **literal px values** in the markup — never font tokens or CSS variables for size, weight, or tracking.
