@@ -1,8 +1,6 @@
 import { PosterMark } from "./PosterMark";
 import type { ReactNode, RefObject } from "react";
 import { SideNav, type NavSection } from "./SideNav";
-import { TopNav } from "./TopNav";
-import { PlansBar, type Plan } from "./PlansBar";
 
 /**
  * The app-shell's header/nav/content, laid into the grid areas
@@ -16,10 +14,8 @@ export function AppShell({
   activeId,
   navMeta,
   navSettings,
-  topActions,
   mark,
   onJump,
-  plans,
   contentRef,
   children,
 }: {
@@ -30,16 +26,10 @@ export function AppShell({
   navMeta?: string;
   /* The run's settings, shown in the rail under the section list. */
   navSettings?: ReactNode;
-  /* The top bar's run controls. */
-  topActions?: ReactNode;
   /* The word the page repeats as its arrow mark (decoration). */
   mark?: string;
   /* Shared with SideNav so the two navs cannot scroll or focus differently. */
   onJump: (el: HTMLElement) => void;
-  /* The embedder's plans, if they configured any. Rendered above the nav
-     and nowhere else, so the report below it stays one continuous
-     document. */
-  plans?: Plan[];
   // The content wrapper App.tsx queries for `[data-nav-label]` headings
   // after each render, to build `sections` above.
   contentRef: RefObject<HTMLDivElement>;
@@ -48,10 +38,6 @@ export function AppShell({
   const hasNav = sections.length > 0;
   return (
     <>
-      <header className="a11y-shell-header">
-        <TopNav actions={topActions} />
-        <PlansBar plans={plans} />
-      </header>
       {/* Nav and content share one grid area rather than taking a row each.
           A sticky element can only travel inside its containing block, and
           for a grid item that block is its own grid area — a nav in its own
