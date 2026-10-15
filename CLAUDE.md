@@ -1,5 +1,7 @@
 # Accessible Scan — project constraints
 
+> **Stripped (user's instruction, 15 Oct 2026).** `global.css` holds only functional rules (`[hidden]`, visually-hidden text, the dialog's fixed scrim, overflow guards). Every type, colour, layout and shape rule below describes the previous design and is not in force until the user asks for styling back. `lint:css` reports welded siblings for this reason.
+
 ## Type
 - Three fonts: **PP Telegraf Light (300)**, **Regular (400)** and **Medium (500)**. Light is for **display sizes (40px and up) only** — big and thin, never small and thin (user's instruction, 21 Sep 2026; the served file is the family's Light cut, the thinnest we have). No other weights or families (mono is allowed only for meta/labels).
 - Font sizes are **literal px values** in the markup — never font tokens or CSS variables for size, weight, or tracking.
