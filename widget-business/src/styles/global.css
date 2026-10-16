@@ -98,17 +98,17 @@
 .a11y-widget-biz :is(th, td) { text-align: start; vertical-align: top; padding: 0.3em 0.6em 0.3em 0; border-bottom: 2px solid var(--ink); font-size: 18px; }
 
 /* The highlight. Black text, always; cap colours are decoration. */
-.a11y-widget-biz :is(.a11y-sev, .a11y-rule-chip, .a11y-level-badge, .a11y-dn-pill, .a11y-sum-chip, .a11y-pro-chip, .a11y-count-pill-n, .a11y-conf-status, .a11y-principle-count) {
+.a11y-widget-biz :is(.a11y-sev, .a11y-rule-chip, .a11y-level-badge, .a11y-dn-pill, .a11y-sum-chip, .a11y-pro-chip, .a11y-conf-status, .a11y-principle-count) {
   color: #000; background: var(--hl-green);
   padding: 0 0.22em; margin-inline: 0.12em;
   border-radius: 0.9em 0.45em 0.9em 0.55em / 0.7em 0.5em 0.7em 0.5em;
   box-shadow: 0.14em 0 0 var(--hl-cap-a), -0.14em 0 0 var(--hl-cap-b);
   -webkit-box-decoration-break: clone; box-decoration-break: clone;
 }
-.a11y-widget-biz :is(.a11y-sev-critical, .a11y-severity-critical) { background: var(--hl-orange); }
-.a11y-widget-biz :is(.a11y-sev-serious, .a11y-severity-serious) { background: var(--hl-blue); }
-.a11y-widget-biz :is(.a11y-sev-moderate, .a11y-severity-moderate) { background: var(--hl-green); }
-.a11y-widget-biz :is(.a11y-sev-minor, .a11y-severity-minor) { background: var(--hl-cap-a); box-shadow: 0.14em 0 0 var(--hl-cap-b), -0.14em 0 0 var(--hl-blue); }
+.a11y-widget-biz .a11y-sev-critical { background: var(--hl-orange); }
+.a11y-widget-biz .a11y-sev-serious { background: var(--hl-blue); }
+.a11y-widget-biz .a11y-sev-moderate { background: var(--hl-green); }
+.a11y-widget-biz .a11y-sev-minor { background: var(--hl-cap-a); box-shadow: 0.14em 0 0 var(--hl-cap-b), -0.14em 0 0 var(--hl-blue); }
 .a11y-widget-biz :is(.a11y-conf-status, .a11y-dn-pill) { background: var(--hl-blue); }
 .a11y-widget-biz :is(.a11y-rule-chip, .a11y-level-badge) { background: var(--hl-orange); }
 
@@ -209,3 +209,46 @@
 /* Who is speaking: small print above each turn. */
 .a11y-widget-biz .a11y-chat-who { font-size: 15px; font-weight: 500; margin: 0; }
 .a11y-widget-biz .a11y-chat-turn { margin-bottom: 1.2em; }
+
+/* ═══ ONE MARK PER THING (16 Oct 2026) ═══════════════════════════════════
+   The conversation is not a numbered list, a step is not a bullet, a fold
+   has one arrow, and a finding carries its severity once. */
+.a11y-widget-biz .a11y-chat-thread { list-style: none; padding-inline-start: 0; margin: 0 0 1.2em; }
+.a11y-widget-biz .a11y-chat-steps { list-style: none; padding-inline-start: 1em; margin: 0 0 1.2em; }
+
+/* A fold shows the glyph for its state and not the browser's own marker. */
+.a11y-widget-biz summary { list-style: none; cursor: pointer; }
+.a11y-widget-biz summary::-webkit-details-marker { display: none; }
+.a11y-widget-biz details:not([open]) .a11y-chat-fold-open,
+.a11y-widget-biz details[open] .a11y-chat-fold-closed { display: none; }
+.a11y-widget-biz .a11y-chat-fold { margin-inline-start: 0.3em; }
+
+/* Row toggles are a glyph, not a pill: no edge, no fill, turned when open. */
+.a11y-widget-biz .a11y-datatable .a11y-dt-toggle,
+.a11y-widget-biz .a11y-fd-tech .a11y-fd-tech-toggle {
+  border: 0; border-radius: 0; padding: 0; background: none; color: var(--ink);
+}
+.a11y-widget-biz .a11y-datatable .a11y-dt-toggle:enabled:hover,
+.a11y-widget-biz .a11y-fd-tech .a11y-fd-tech-toggle:enabled:hover { background: none; color: var(--ink); }
+.a11y-widget-biz .a11y-dt-toggle [data-open="true"] { display: inline-block; transform: rotate(90deg); }
+.a11y-widget-biz .a11y-fd-tech-toggle[aria-expanded="true"] .a11y-fd-tech-caret { display: inline-block; transform: rotate(90deg); }
+
+/* Severity, criterion and level once each: in their columns on wide
+   screens; on a phone the columns go and the folded copies in the row's
+   issue cell and expanded panel take over. */
+.a11y-widget-biz .a11y-finding-sev-fold,
+.a11y-widget-biz .a11y-finding-level-fold { display: none; }
+@media (max-width: 600px) {
+  .a11y-widget-biz .a11y-finding-sev-fold { display: block; }
+  .a11y-widget-biz .a11y-finding-level-fold { display: block; }
+  .a11y-widget-biz :is(td, th):is([data-col="severity"], [data-col="wcag"], [data-col="level"]) { display: none; }
+}
+
+/* The printed report's own copy of the findings (cards) is in the DOM for
+   print only. On screen the table is the one list; without this every
+   finding showed twice, once in the table and once as a card. */
+.a11y-widget-biz .a11y-print-cards { display: none; }
+@media print {
+  .a11y-widget-biz .a11y-print-cards { display: block; }
+  .a11y-widget-biz .a11y-findings-table { display: none; }
+}

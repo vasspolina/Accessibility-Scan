@@ -718,7 +718,7 @@ export function FindingDetails({
       {locatesSomething && (
       <div className="a11y-affected">
         <p className="a11y-affected-label">
-          <strong>{count > 1 ? tf("Affected elements ({count})", { count }) : t("Affected element")}</strong>
+          <strong>{count > 1 ? t("Affected elements") : t("Affected element")}</strong>
         </p>
         {somePictured && someUnpictured && (
           <p className="a11y-occurrence-note">
@@ -874,14 +874,9 @@ export function FindingDetails({
    screen reader hears "Instances, 3" and adding "3 places" here would
    say the same thing twice. */
 export function CountPill({ count }: { count: number }) {
-  return (
-    <span className="a11y-count-pill">
-      <span className="a11y-count-pill-n">{count}</span>
-      <span className="a11y-count-pill-x" aria-hidden="true">
-        &times;
-      </span>
-    </span>
-  );
+  // The number alone: the "×" mark beside it read as a second symbol to
+  // decode under a header that already says Instances (16 Oct 2026).
+  return <span className="a11y-count-pill">{count}</span>;
 }
 
 // One DataTable row for a group: severity, title plus its WCAG/fix-kind

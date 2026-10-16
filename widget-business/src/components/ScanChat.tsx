@@ -763,11 +763,9 @@ export function ScanChat({
                     <p>
                       {before}
                       <span className="a11y-chat-url">{turn.url}</span>
-                      {/* Beside the address, inside the sentence. */}
-                      {running && !reducedMotion && (
-                        <span className="a11y-chat-elapsed" aria-hidden="true"> ({elapsed}s)</span>
-                      )}
-                      {!running && turn.seconds ? <span className="a11y-chat-elapsed"> ({turn.seconds}s)</span> : null}
+                      {/* No seconds beside the address: the step list below
+                          says where the scan is, and the number was one
+                          more thing to read (user's instruction, 16 Oct 2026). */}
                       {after}
                     </p>
                   </div>
@@ -783,7 +781,6 @@ export function ScanChat({
                               className={`a11y-chat-step${s.id === current ? " a11y-chat-step-now" : ""}`}
                               aria-current={s.id === current ? "step" : undefined}
                             >
-                              <span className="a11y-chat-dot" aria-hidden="true">·</span>{" "}
                               {narrationLabel(s.id)}
                               {result && <span className="a11y-chat-step-result"> — {result}</span>}
                             </li>

@@ -524,7 +524,6 @@ export const CHROME_KEYS: string[] = [
   "Why this matters",
   "What the research shows",
   "WCAG:",
-  "Affected elements ({count})",
   "Affected element",
   "One picture per issue, so the scan can spend its time across every issue on the page rather than one with many instances. The rest are named by where they are instead.",
   "Show all {count} kinds of element",

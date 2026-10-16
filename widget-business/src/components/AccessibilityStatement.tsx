@@ -3,6 +3,7 @@ import { SectionHeader } from "./SectionHeader";
 import { t, tf } from "../lib/strings";
 import { getLang, type Lang } from "../lib/i18n";
 import type { AccessibilityReport, ConformanceSummary, RecordedVerdict } from "../api/scanClient";
+import { renderReply } from "./ScanChat";
 
 // Generates a draft accessibility statement.
 //
@@ -466,14 +467,17 @@ export function AccessibilityStatement({ report }: { report: AccessibilityReport
               role plus label mean it's announced as something worth entering
               rather than an unnamed stop. This is WCAG 2.1.1, which the checker
               flags on other people's sites. */}
-          <pre
+          {/* Drawn as a document, not as its markdown source: the headings,
+              bold and lists are rendered, and Copy still copies the markdown
+              so it pastes into a CMS as structure (16 Oct 2026). */}
+          <div
             className="a11y-stmt-text"
             tabIndex={0}
             role="region"
             aria-label={t("Draft accessibility statement")}
           >
-            {statement}
-          </pre>
+            {renderReply(statement)}
+          </div>
         </div>
         {/* The button's own text changing is not reliably announced;
             this mounted status region is. */}

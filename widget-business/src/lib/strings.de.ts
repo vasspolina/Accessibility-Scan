@@ -568,7 +568,6 @@ export const STRINGS_DE: Record<string, string> = {
   "Why this matters": "Warum das wichtig ist",
   "What the research shows": "Was die Forschung zeigt",
   "WCAG:": "WCAG:",
-  "Affected elements ({count})": "Betroffene Elemente ({count})",
   "Affected element": "Betroffenes Element",
   "One picture per issue, so the scan can spend its time across every issue on the page rather than one with many instances. The rest are named by where they are instead.": "Ein Bild pro Problem. So verteilt der Scan seine Zeit auf alle Probleme der Seite statt auf eines mit vielen Vorkommen. Die übrigen werden stattdessen nach ihrer Lage benannt.",
   "Show all {count} kinds of element": "Alle {count} Elementarten zeigen",
