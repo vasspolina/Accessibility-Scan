@@ -186,3 +186,26 @@
 
 /* An SVG with only a viewBox fills its container; the dials are drawings, not backdrops. */
 .a11y-widget-biz svg { max-width: 8em; max-height: 8em; }
+
+/* The conversation's box, as an assistant draws it: the prompt inside as
+   the placeholder, the actions under the text inside the same 2px edge,
+   pinned to the foot of the window. The box, not the field, shows focus. */
+.a11y-widget-biz .a11y-chat-dock {
+  position: sticky; bottom: 0;
+  background: var(--paper); padding-block: 0.6em;
+}
+.a11y-widget-biz .a11y-chat-box { border: 2px solid var(--ink); padding: 0.5em 0.6em; }
+.a11y-widget-biz .a11y-chat-box:focus-within { outline: 3px solid var(--ink); outline-offset: 2px; box-shadow: 0 0 0 2px var(--paper); }
+/* Outranks the generic field rule (0,3,1) above. */
+.a11y-widget-biz .a11y-chat-dock .a11y-chat-composer .a11y-chat-box textarea {
+  display: block; box-sizing: border-box; width: 100%; min-height: 2.6em; max-height: 40vh;
+  border: 0; padding: 0; resize: none; background: transparent; overflow-y: auto;
+}
+.a11y-widget-biz .a11y-chat-dock .a11y-chat-composer .a11y-chat-box textarea:focus-visible { outline: none; box-shadow: none; }
+.a11y-widget-biz .a11y-chat-box-row {
+  display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center;
+  gap: 0.5em; margin-top: 0.5em;
+}
+/* Who is speaking: small print above each turn. */
+.a11y-widget-biz .a11y-chat-who { font-size: 15px; font-weight: 500; margin: 0; }
+.a11y-widget-biz .a11y-chat-turn { margin-bottom: 1.2em; }

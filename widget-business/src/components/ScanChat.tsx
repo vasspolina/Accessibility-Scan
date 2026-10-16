@@ -2,12 +2,10 @@ import { useRef, useState, type FocusEvent, type FormEvent, type MutableRefObjec
 import { t } from "../lib/strings";
 import { getLang } from "../lib/i18n";
 import { smarten } from "../lib/typography";
-import { Input } from "./Input";
 import { Button } from "./Button";
 import { LanguageSelect } from "./LanguageSelect";
 import { BlockedNotice } from "./BlockedNotice";
 import type { Lang } from "../lib/i18n";
-import { WCAG_LINK } from "../lib/wcagPlain";
 import type { AccessibilityReport, SiteAudit } from "../api/scanClient";
 import {
   addressIn,
@@ -373,7 +371,7 @@ export function ScanChat({
   currentKeyRef.current = currentKey;
   const availableRef = useRef(availableSections);
   availableRef.current = availableSections;
-  const focusInput = () => rootRef.current?.querySelector<HTMLInputElement>("#a11y-chat-input")?.focus();
+  const focusInput = () => rootRef.current?.querySelector<HTMLTextAreaElement>("#a11y-chat-input")?.focus();
 
   /** Back to the composer after a turn — unless focus has gone somewhere on
    *  purpose since: a block the reader was taken to, something they tabbed
@@ -724,12 +722,7 @@ export function ScanChat({
   }
 
   const offered = SHOWABLE.filter((s) => availableSections.includes(s.key));
-  // What a scan here covers, said exactly: one page, or up to five from it
-  // (the conversation's site scan is always five). The guidelines' name is
-  // a link set into the sentence, which is translated whole.
-  const [introBefore, introAfter] = t(
-    "We check the page at an address, or up to five pages linked from it, against the {wcag} 2.1. Then we explain what to fix, in the order worth fixing it."
-  ).split("{wcag}");
+  const prompt = currentKey ? t("Ask about the report, or anything else") : t("Ask anything, or name a site to check");
 
   if (hidden) return null;
 
@@ -747,16 +740,6 @@ export function ScanChat({
         )}
         <LanguageSelect id="a11y-lang-form" value={language} onChange={onLanguageChange} />
       </div>
-      {turns.length === 0 && (
-        <p className="a11y-newscan-sub">
-          {introBefore}
-          <a href={WCAG_LINK} target="_blank" rel="noopener noreferrer">
-            {t("Web Content Accessibility Guidelines (WCAG)")}
-          </a>
-          {introAfter} {t("You can also ask anything, from how a screen reader works to the code for a fix.")}
-        </p>
-      )}
-
       {turns.length > 0 && (
         // role="list" said out loud: WebKit drops the list role from a list
         // drawn without markers, and the label with it.
@@ -891,31 +874,45 @@ export function ScanChat({
       )}
 
       <div className="a11y-chat-dock" ref={dockRef}>
+        {/* An assistant's box: the prompt sits inside it as the placeholder
+            and the actions sit under the text, inside the same edge. The
+            label stays for the accessibility tree. Enter sends; Shift+Enter
+            breaks a line; the box grows with the text. */}
         <form className="a11y-chat-composer" onSubmit={send} aria-label={t("New scan")}>
-          <Input
-            id="a11y-chat-input"
-            size="display"
-            label={currentKey ? t("Ask about the report, or anything else") : t("Ask anything, or name a site to check")}
-            placeholder={currentKey ? undefined : "example.com"}
-            value={draft}
-            onChange={(e) => setDraft(e.target.value)}
-            helperText={
-              currentKey ? undefined : t("An address is enough. Say if you want the whole site or the AI review.")
-            }
-            inputProps={{ autoComplete: "off", enterKeyHint: "send", maxLength: 4000 }}
-            action={
+          <label className="a11y-sr-only" htmlFor="a11y-chat-input">
+            {prompt}
+          </label>
+          <div className="a11y-chat-box">
+            <textarea
+              id="a11y-chat-input"
+              rows={2}
+              placeholder={prompt}
+              value={draft}
+              autoComplete="off"
+              enterKeyHint="send"
+              maxLength={4000}
+              onChange={(e) => {
+                setDraft(e.target.value);
+                e.target.style.height = "auto";
+                e.target.style.height = e.target.scrollHeight + "px";
+              }}
+              onKeyDown={(e) => {
+                if (e.key === "Enter" && !e.shiftKey && !e.nativeEvent.isComposing) {
+                  e.preventDefault();
+                  e.currentTarget.form?.requestSubmit();
+                }
+              }}
+            />
+            <div className="a11y-chat-box-row">
+              <Button variant="ghost" onClick={onUseForm}>
+                {t("Use the form instead")}
+              </Button>
               <Button type="submit" variant="primary" disabled={busy || loading || !draft.trim()}>
                 {t("Send")}
               </Button>
-            }
-          />
+            </div>
+          </div>
         </form>
-        <p className="a11y-chat-alt">
-          <Button variant="ghost" onClick={onUseForm}>
-            {t("Use the form instead")}
-          </Button>{" "}
-          <span className="a11y-chat-alt-note">{t("Needed for pages behind a login.")}</span>
-        </p>
       </div>
 
       {/* The one place the assistant is announced from: the finished reply,

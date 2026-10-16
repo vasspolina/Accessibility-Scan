@@ -15,7 +15,6 @@ import { Switch } from "./Switch";
 import { LoginFields } from "./LoginFields";
 import type { AuthConfig } from "../api/scanClient";
 import type { AudienceMode } from "../lib/audienceMode";
-import { WCAG_LINK } from "../lib/wcagPlain";
 import { Button } from "./Button";
 
 export type ScanMode = "page" | "site";
@@ -128,37 +127,12 @@ export function UrlForm({
 
   return (
     <>
-      {/* The kit's NewScan opens with its own heading and one-line
-          subtitle before the card. The kit's sentence says WCAG 2.2; ours
-          says what this scan actually measures — and names the standard
-          with its link, which used to live in a separate intro paragraph
-          above this form until that read as filler in front of the
-          scanner rather than a reason to run it. */}
       <div className="a11y-newscan-head">
         <h2 className="a11y-section-title a11y-newscan-title" id="a11y-newscan-title">{t("New scan")}</h2>
         {/* Before the scan, because the language rides with the request:
             the checklist comes back written in it. */}
         <LanguageSelect id="a11y-lang-form" value={language} onChange={onLanguageChange} />
       </div>
-      <p className="a11y-newscan-sub">
-        {/* One page, or up to ten from it: the form's own page limit. */}
-        {t(
-          "We check the page at an address, or up to ten pages linked from it, against the {wcag} 2.1. Then we explain what to fix, in the order worth fixing it."
-        )
-          .split("{wcag}")
-          .map((part, i) =>
-            i === 0 ? (
-              <span key={i}>{part}</span>
-            ) : (
-              <span key={i}>
-                <a href={WCAG_LINK} target="_blank" rel="noopener noreferrer">
-                  {t("Web Content Accessibility Guidelines (WCAG)")}
-                </a>
-                {part}
-              </span>
-            )
-          )}
-      </p>
     <form
       className="a11y-url-form"
       onSubmit={handleSubmit}

@@ -43,8 +43,10 @@
          so setting it here reaches inside the widget. 48 + 16 of air. */
       :root { --a11y-sticky-top: 64px; }
       /* The wordmark rule: "Accessibility scan" in PP Telegraf regular at
-         heading size, tight tracking, never a graphic mark. */
+         heading size, tight tracking, never a graphic mark. It is the page
+         heading: the page has no second title under it. */
       .shell .wordmark {
+        margin: 0;
         color: #ffffff;
         font-weight: 400;
         font-size: 28px;
@@ -53,14 +55,13 @@
       .page {
         padding-top: 24px;
       }
-      .page > h1, .page > h2, .page > p, .page > ul {
+      .page > h2, .page > p, .page > ul {
         /* CRM layout: the page flows left with app gutters; the copy keeps
            a readable measure (also our own line-length rule's demand), the
            widget below runs full width. */
         max-width: 40rem;
         margin-inline: 32px;
       }
-      h1 { font-size: 28px; line-height: 36px; margin: 0 0 8px; font-weight: 400; }
       .try-title { font-size: 18px; font-weight: 500; margin: 40px 0 0; }
       .try { font-size: 14px; line-height: 1.5; color: #525252; margin: 8px 0 0; }
       /* Buttons, not decorated text: our own scan flagged the previous
@@ -101,18 +102,9 @@
   </head>
   <body>
     <header class="shell">
-      <span class="wordmark">Accessibility scan</span>
+      <h1 class="wordmark">Accessibility scan</h1>
     </header>
     <main class="page">
-      <!-- The header above already names the product — an h1 repeating
-           the exact same words directly under it read as the page's
-           title doubled, not as two different things (a brand mark and a
-           heading). This one says what the page does instead. -->
-      <h1>Check a website's accessibility</h1>
-
-      <!-- No heading of its own here: the widget opens with one ("New scan"),
-           and a host heading above it read as the title doubled. -->
-
       <!-- The embed itself, exactly as a client would paste it. The address is
            written out rather than derived from window.location: this service
            sends script-src 'self' with no unsafe-inline, so a one-line inline
@@ -124,10 +116,6 @@
       ></div>
 
       <h2 class="try-title">Try an example</h2>
-      <p class="try">
-        Consent banners in a language other than English are worth trying.
-        Each button fills the address in for you.
-      </p>
       <ul class="try-list">
         <li><button type="button" data-domain="bundesregierung.de" aria-label="Fill in bundesregierung.de">bundesregierung.de</button></li>
         <li><button type="button" data-domain="spiegel.de" aria-label="Fill in spiegel.de">spiegel.de</button></li>

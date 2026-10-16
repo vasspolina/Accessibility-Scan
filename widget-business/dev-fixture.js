@@ -635,7 +635,7 @@
       if (!sr.querySelector("#a11y-url-input")) {
         // By position, not by its words: the label is translated, and an
         // English-only match left every non-English state stuck at the chat.
-        var toForm = sr.querySelector(".a11y-chat .a11y-chat-alt button");
+        var toForm = sr.querySelector(".a11y-chat .a11y-chat-box-row .a11y-btn-ghost");
         if (toForm) toForm.click();
         return null;
       }
@@ -687,7 +687,8 @@
       return sr && sr.querySelector("#a11y-chat-input") ? sr : null;
     }, function (sr) {
       var input = sr.querySelector("#a11y-chat-input");
-      var setValue = Object.getOwnPropertyDescriptor(window.HTMLInputElement.prototype, "value").set;
+      // The box is a textarea since 16 Oct 2026; the setter has to match the element.
+      var setValue = Object.getOwnPropertyDescriptor(window.HTMLTextAreaElement.prototype, "value").set;
       setValue.call(input, "Can you check example.com for me?");
       input.dispatchEvent(new Event("input", { bubbles: true, composed: true }));
       setTimeout(function () { sr.querySelector("form.a11y-chat-composer").requestSubmit(); }, 50);

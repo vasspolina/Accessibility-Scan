@@ -244,7 +244,6 @@ export const CHROME_KEYS: string[] = [
   // The conversational front (ScanChat).
   "Ask anything, or name a site to check",
   "Ask about the report, or anything else",
-  "An address is enough. Say if you want the whole site or the AI review.",
   "Send",
   "You",
   "Conversation",
@@ -253,7 +252,6 @@ export const CHROME_KEYS: string[] = [
   "The assistant is not available on this server. Paste an address and the scan still runs.",
   "The assistant could not answer that.",
   "Use the form instead",
-  "Needed for pages behind a login.",
   "Back to the chat",
   // The transcript model (ScanChat blocks, /commands).
   "found",
@@ -816,9 +814,6 @@ export const CHROME_KEYS: string[] = [
   "Did not run",
   "I can't help with that one. Ask me something else, or name a site to check.",
   "Something went wrong. Please try again.",
-  "Web Content Accessibility Guidelines (WCAG)",
-  "We check the page at an address, or up to five pages linked from it, against the {wcag} 2.1. Then we explain what to fix, in the order worth fixing it.",
-  "We check the page at an address, or up to ten pages linked from it, against the {wcag} 2.1. Then we explain what to fix, in the order worth fixing it.",
   "The assistant is still replying. Run it again in a moment.",
   "Assistant",
   "Checking {url}.",
@@ -905,6 +900,5 @@ export const CHROME_KEYS: string[] = [
   "Advertisement",
   "Every checked criterion has at least one finding or open question.",
   // The assistant answers anything; links in its replies.
-  "You can also ask anything, from how a screen reader works to the code for a fix.",
   "(opens in a new tab)",
 ];
