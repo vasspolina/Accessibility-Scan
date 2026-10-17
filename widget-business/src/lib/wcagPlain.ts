@@ -134,7 +134,7 @@ export const PLAIN_RULE_EXPLANATIONS: Record<string, PlainRule> = {
   "aria-prohibited-attr": {
     plain: "A label screen readers must ignore",
     found: (n) =>
-      `${n} ${n === 1 ? "element carries" : "elements carry"} a label the code does not allow on that kind of tag. The label is thrown away rather than read out.`,
+      `${n} ${n === 1 ? "element carries" : "elements carry"} a label the code does not allow on that kind of tag.`,
     impact:
       "The element looks named in the source code, so nobody notices anything wrong. Screen readers ignore the label and announce whatever text sits inside, often nothing.",
   },
@@ -154,13 +154,13 @@ export const PLAIN_RULE_EXPLANATIONS: Record<string, PlainRule> = {
   "landmark-unique": {
     plain: "Two page areas share one name",
     found: (n) =>
-      `${n} ${n === 1 ? "region shares its name with another" : "regions share their names with others"}. A list of regions reads as repeats, with no way to tell them apart.`,
+      `${n} ${n === 1 ? "region shares its name with another" : "regions share their names with others"}.`,
     impact: "Screen reader users get a list of identical entries and cannot tell them apart.",
   },
   "landmark-no-duplicate-banner": {
     plain: "More than one page header",
     found: () =>
-      `The page marks more than one area as its header. A list of regions then offers several, and none of them is the header.`,
+      `The page marks more than one area as its header.`,
     impact: "Screen readers list several headers, so nobody can tell which is the real one.",
   },
   "landmark-no-duplicate-contentinfo": {
@@ -178,33 +178,33 @@ export const PLAIN_RULE_EXPLANATIONS: Record<string, PlainRule> = {
   "landmark-banner-is-top-level": {
     plain: "Header nested inside another area",
     found: () =>
-      `The header is tucked inside another region rather than alongside it. It is not where someone jumping between regions expects to find it.`,
+      `The header is tucked inside another region rather than alongside it.`,
     impact: "Screen reader users cannot jump straight to it the way they expect.",
   },
   "landmark-contentinfo-is-top-level": {
     plain: "Footer nested inside another area",
     found: () =>
-      `The footer is tucked inside another region rather than alongside it. It is not where someone jumping between regions expects it.`,
+      `The footer is tucked inside another region rather than alongside it.`,
     impact: "Screen reader users cannot jump straight to it the way they expect.",
   },
   "skip-link": {
     plain: "Skip link goes nowhere",
     found: (n) =>
-      `${n} skip ${n === 1 ? "link points" : "links point"} at something that is not on the page, so pressing ${n === 1 ? "it" : "them"} moves nobody anywhere.`,
+      `${n} skip ${n === 1 ? "link points" : "links point"} at something that is not on the page.`,
     impact:
       "Keyboard users press it and stay exactly where they were, then tab through the whole menu anyway.",
   },
   "component-skip-link-dead": {
     plain: "Skip link goes nowhere",
     found: (n) =>
-      `${n} skip ${n === 1 ? "link points" : "links point"} at something that is not on the page, so pressing ${n === 1 ? "it" : "them"} moves nobody anywhere.`,
+      `${n} skip ${n === 1 ? "link points" : "links point"} at something that is not on the page.`,
     impact:
       "Keyboard users press it and stay exactly where they were, then tab through the whole menu anyway.",
   },
   "image-redundant-alt": {
     plain: "Image description repeats nearby text",
     found: (n) =>
-      `${n} ${n === 1 ? "image repeats, in its alt text, the words already printed beside it" : "images repeat, in their alt text, the words already printed beside them"}. A screen reader says the same thing twice.`,
+      `${n} ${n === 1 ? "image repeats, in its alt text, the words already printed beside it" : "images repeat, in their alt text, the words already printed beside them"}.`,
     impact: "Screen reader users hear the same thing twice, which slows them down for nothing.",
   },
   "color-contrast": {
@@ -212,7 +212,7 @@ export const PLAIN_RULE_EXPLANATIONS: Record<string, PlainRule> = {
       "WebAIM checks a million homepages every year. Low-contrast text is the most common failure it finds, year after year. Far more people see less sharply than a design team's monitors assume.",
     plain: "Text too faint to read",
     found: (n) =>
-      `${n} ${n === 1 ? "piece" : "pieces"} of text on this page ${n === 1 ? "sits" : "sit"} too close in colour to the background behind ${n === 1 ? "it" : "them"}. ${n === 1 ? "It is" : "Each one is"} listed under Affected elements, and the technical version gives the measured ratio.`,
+      `${n} ${n === 1 ? "piece" : "pieces"} of text on this page ${n === 1 ? "sits" : "sit"} too close in colour to the background behind ${n === 1 ? "it" : "them"}. The technical version gives the measured ratio.`,
     impact:
       "Hard to read in bright light, on a cheap screen, in a dim room, or with imperfect eyesight. The message doesn't land.",
   },
@@ -240,7 +240,7 @@ export const PLAIN_RULE_EXPLANATIONS: Record<string, PlainRule> = {
   },
   "link-name": {
     research:
-      "Empty links are among the most common failures in WebAIM's annual survey of a million homepages. Screen reader users navigate by pulling up a list of links. An empty link appears in that list as the word 'link' and nothing else.",
+      "Empty links are among the most common failures in WebAIM's annual survey of a million homepages.",
     plain: "Links have no readable text",
     found: (n) =>
       `${n} ${n === 1 ? "link has" : "links have"} no readable text inside. No words and no label, so nothing to announce. ${n === 1 ? "Usually this is an icon or an image used as a link." : "Usually these are icons or images used as links."} The picture carries the meaning and the code carries none of it.`,
@@ -265,14 +265,14 @@ export const PLAIN_RULE_EXPLANATIONS: Record<string, PlainRule> = {
       "Missing form labels sit near the top of WebAIM's annual survey of a million homepages. In the UK's Click-Away Pound research, most shoppers who met such a barrier left without a word. They took their spending elsewhere.",
     plain: "Form fields have no label",
     found: (n) =>
-      `${n} form ${n === 1 ? "field is" : "fields are"} not joined to a label in the code. The words may sit right beside the field on screen, but nothing connects the two. A screen reader announces the field with no idea what it is for.`,
+      `${n} form ${n === 1 ? "field is" : "fields are"} not joined to a label in the code. The words may sit right beside the field on screen, but nothing connects the two.`,
     impact:
       "Screen reader users don't know what goes in each box, so forms get abandoned, checkout included.",
   },
   "select-name": {
     plain: "A dropdown has no label",
     found: (n) =>
-      `${n} ${n === 1 ? "dropdown has" : "dropdowns have"} no label in the code. ${n === 1 ? "It is" : "Each is"} announced as a list of options, with nothing saying what is being chosen.`,
+      `${n} ${n === 1 ? "dropdown has" : "dropdowns have"} no label in the code.`,
     impact: "People can't tell what they're choosing. Errors and dropped forms follow.",
   },
   "document-title": {
@@ -302,7 +302,7 @@ export const PLAIN_RULE_EXPLANATIONS: Record<string, PlainRule> = {
   "page-has-heading-one": {
     plain: "No main heading",
     found: () =>
-      `The page has no top level heading, so there is nothing naming what it is about.`,
+      `The page has no top level heading.`,
     impact: "Nobody can tell at a glance what the page is about.",
   },
   "empty-heading": {
@@ -314,7 +314,7 @@ export const PLAIN_RULE_EXPLANATIONS: Record<string, PlainRule> = {
   "link-in-text-block": {
     plain: "Links marked by colour alone",
     found: (n) =>
-      `${n} ${n === 1 ? "link inside running text is" : "links inside running text are"} marked only by colour, with no underline. Anyone who cannot separate those colours cannot see a link there.`,
+      `${n} ${n === 1 ? "link inside running text is" : "links inside running text are"} marked only by colour, with no underline.`,
     impact: "Readers who are colour blind can't tell a link from ordinary text.",
   },
   "meta-viewport": {
@@ -325,7 +325,7 @@ export const PLAIN_RULE_EXPLANATIONS: Record<string, PlainRule> = {
   "meta-viewport-large": {
     plain: "Zoom limited to a fixed level",
     found: () =>
-      `Zooming works, but the page caps it below 500%. The people who need the strongest magnification stop there.`,
+      `Zooming works, but the page caps it below 500%.`,
     impact:
       "Milder than blocking zoom outright, and it fails the same people. Anyone who needs very large text gets to the cap and no further.",
   },
@@ -362,7 +362,7 @@ export const PLAIN_RULE_EXPLANATIONS: Record<string, PlainRule> = {
   "aria-hidden-focus": {
     plain: "Hidden items still catch keyboard focus",
     found: (n) =>
-      `${n} ${n === 1 ? "element is" : "elements are"} hidden from screen readers while still reachable by keyboard. Focus lands somewhere that announces nothing.`,
+      `${n} ${n === 1 ? "element is" : "elements are"} hidden from screen readers while still reachable by keyboard.`,
     impact: "Someone tabbing through lands on something their screen reader won't read. The page feels broken.",
   },
   "aria-dialog-name": {
@@ -370,7 +370,7 @@ export const PLAIN_RULE_EXPLANATIONS: Record<string, PlainRule> = {
     found: (n) =>
       `${n} ${n === 1 ? "pop-up has" : "pop-ups have"} nothing naming ${n === 1 ? "it" : "them"}, so ${n === 1 ? "it is" : "they are"} announced as "dialog" and nothing else.`,
     impact:
-      "It is announced as \"dialog\" and nothing else. Something has taken over the screen and there is no way to hear what it is.",
+      "Something has taken over the screen and there is no way to hear what it is.",
   },
   "nested-interactive": {
     plain: "A control nested inside another",
@@ -382,14 +382,14 @@ export const PLAIN_RULE_EXPLANATIONS: Record<string, PlainRule> = {
   "presentation-role-conflict": {
     plain: "A working control marked as decoration",
     found: (n) =>
-      `${n} ${n === 1 ? "element is" : "elements are"} marked to be ignored while still being reachable and usable. The code contradicts itself about whether ${n === 1 ? "it exists" : "they exist"}.`,
+      `${n} ${n === 1 ? "element is" : "elements are"} marked to be ignored while still being reachable and usable.`,
     impact:
       "The code says to ignore it and the element says to use it. Screen readers resolve that inconsistently, so some people never find it.",
   },
   region: {
     plain: "Page areas unnamed in the code",
     found: (n) =>
-      `Some of this page sits outside any named area. ${n} ${n === 1 ? "block of content has" : "blocks of content have"} no header, nav, main or footer around ${n === 1 ? "it" : "them"}.`,
+      `${n} ${n === 1 ? "block of content has" : "blocks of content have"} no header, nav, main or footer around ${n === 1 ? "it" : "them"}.`,
     impact: "Screen reader users can't skip ahead. They hear everything, every time.",
   },
   "landmark-one-main": {
@@ -407,7 +407,7 @@ export const PLAIN_RULE_EXPLANATIONS: Record<string, PlainRule> = {
   "scrollable-region-focusable": {
     plain: "Scrollable area unreachable by keyboard",
     found: (n) =>
-      `${n} ${n === 1 ? "area scrolls" : "areas scroll"} but cannot be reached with the keyboard. Whatever has scrolled out of view is unreachable without a mouse.`,
+      `${n} ${n === 1 ? "area scrolls" : "areas scroll"} but cannot be reached with the keyboard.`,
     impact: "Without a mouse, there's no way to scroll to what's inside.",
   },
 
@@ -432,7 +432,7 @@ export const PLAIN_RULE_EXPLANATIONS: Record<string, PlainRule> = {
   "readability-dense-prose": {
     plain: "The writing needs university-level reading",
     impact:
-      "Not a legal requirement, and the change with the widest reach in this report. It helps people with cognitive disabilities and anyone reading in a second language. GOV.UK writes for a reading age of about nine, and it is not a simple site.",
+      "The change with the widest reach in this report. It helps people with cognitive disabilities and anyone reading in a second language. GOV.UK writes for a reading age of about nine, and it is not a simple site.",
   },
   "typo-leading-for-measure": {
     plain: "Lines set too close together",
@@ -900,10 +900,7 @@ export const PLAIN_RULE_FIXES: Record<string, string | string[]> = {
     "Put the wording inside the element itself, where it will be read.",
     "Where that is not possible, use an element built to carry a label.",
   ],
-  "aria-required-parent": [
-    "Move each part back inside the control it belongs to.",
-    "A menu item on its own is never announced as part of a menu.",
-  ],
+  "aria-required-parent": "Move each part back inside the control it belongs to.",
   "landmark-no-duplicate-main": [
     "Keep one main content area per page.",
     "Mark the others as ordinary sections.",
@@ -975,10 +972,7 @@ export const PLAIN_RULE_FIXES: Record<string, string | string[]> = {
   ],
   "component-form-autocomplete":
     "Label each field with what it collects, so browsers and password managers can fill it in.",
-  "component-input-type": [
-    "Tell the page which fields hold an email address and which a phone number.",
-    "Phones then show the right keyboard instead of a plain one.",
-  ],
+  "component-input-type": "Tell the page which fields hold an email address and which a phone number.",
   "component-required-cue": [
     "Mark required fields visibly, not only in the code.",
     "The word \"required\" next to the label is enough.",
@@ -989,10 +983,7 @@ export const PLAIN_RULE_FIXES: Record<string, string | string[]> = {
     "Mark the top row as header cells, and the first column too if the rows have names.",
     "If the table only arranges the layout, mark it as not a data table.",
   ],
-  "component-nav-labels": [
-    "Name each menu for what it holds, such as \"Main menu\" or \"Footer links\".",
-    "Several unnamed menus are announced identically, so nobody can tell them apart.",
-  ],
+  "component-nav-labels": "Name each menu for what it holds, such as \"Main menu\" or \"Footer links\".",
   "component-skip-link": [
     "Add a link at the very top that jumps straight to the main content.",
     "Show it when it receives keyboard focus, so people know it is there.",
@@ -1021,19 +1012,10 @@ export const PLAIN_RULE_FIXES: Record<string, string | string[]> = {
     "Let containers grow when the reader enlarges the text.",
     "Check the page at twice its normal text size.",
   ],
-  "text-zoom-horizontal-scroll": [
-    "Let the page reflow when text is enlarged, rather than running off to the side.",
-    "Reading a line by scrolling sideways for every word is what this avoids.",
-  ],
+  "text-zoom-horizontal-scroll": "Let the page reflow when text is enlarged, rather than running off to the side.",
   "dark-consent-no-reject": "Put a refuse option on the cookie banner, as easy to find as the accept one.",
-  "dark-consent-asymmetry": [
-    "Give accept and refuse the same size, style and prominence.",
-    "The choice is only real when both options look equally available.",
-  ],
-  "dark-preselected-optin": [
-    "Leave marketing and sharing boxes unticked.",
-    "Let people opt in themselves rather than opting out.",
-  ],
+  "dark-consent-asymmetry": "Give accept and refuse the same size, style and prominence.",
+  "dark-preselected-optin": "Leave marketing and sharing boxes unticked.",
   "dark-confirmshaming": "Word the decline option plainly, such as \"No thanks\", with nothing that scolds.",
   "dark-fake-scarcity": [
     "Show stock and demand figures only where they are true and current.",
@@ -1048,15 +1030,9 @@ export const PLAIN_RULE_FIXES: Record<string, string | string[]> = {
     "Let Tab cycle within the pop-up while it is open.",
     "Let Escape close it and return to the page.",
   ],
-  "dialog-no-escape": [
-    "Let the Escape key close the pop-up.",
-    "It is the first key people reach for.",
-  ],
+  "dialog-no-escape": "Let the Escape key close the pop-up.",
   "dialog-focus-not-moved": "Move the cursor into the pop-up when it opens, so keyboard users start inside it.",
-  "dialog-focus-lost-on-close": [
-    "Put the cursor back on whatever opened the pop-up when it closes.",
-    "Otherwise people are returned to the top and have to find their place again.",
-  ],
+  "dialog-focus-lost-on-close": "Put the cursor back on whatever opened the pop-up when it closes.",
   "dialog-no-close": [
     "Give every pop-up a visible close button.",
     "Let Escape close it as well.",
@@ -1068,10 +1044,7 @@ export const PLAIN_RULE_FIXES: Record<string, string | string[]> = {
     "Return the keyboard to whatever opened it when it closes.",
   ],
   "dialog-missing-name": "Give the pop-up a heading or name that says what it is for.",
-  "markup-validation": [
-    "Run the page through the W3C validator and clear what it reports.",
-    "Broken markup is guesswork for screen readers, and they guess differently.",
-  ],
+  "markup-validation": "Run the page through the W3C validator and clear what it reports.",
   "motion-marquee": [
     "Replace the scrolling ticker with text that stays still.",
     "If it has to move, give people a way to pause it.",
@@ -1086,16 +1059,8 @@ export const PLAIN_RULE_FIXES: Record<string, string | string[]> = {
   ],
   "typo-caps-letterspacing":
     "Add a little space between letters in capitalised headings, so the words keep their shape.",
-  "typo-lowercase-letterspaced":
-    [
-    "Take the extra letter spacing off ordinary text.",
-    "It pulls words apart and slows reading down.",
-  ],
-  "typo-negative-letterspacing":
-    [
-    "Stop squeezing the letters together.",
-    "Letters that touch each other are read as one shape.",
-  ],
+  "typo-lowercase-letterspaced": "Take the extra letter spacing off ordinary text.",
+  "typo-negative-letterspacing": "Stop squeezing the letters together.",
   "typo-justified-no-hyphens": [
     "Set the text ranged left rather than justified.",
     "If it must be justified, turn hyphenation on so the word gaps stay even.",
@@ -1108,18 +1073,12 @@ export const PLAIN_RULE_FIXES: Record<string, string | string[]> = {
     "Keep underlining for links only.",
     "Use bold or italic where you want emphasis.",
   ],
-  "typo-italic-body": [
-    "Set long passages upright, and keep italics for a phrase at a time.",
-    "Italics are harder to read at length, especially on screen.",
-  ],
+  "typo-italic-body": "Set long passages upright, and keep italics for a phrase at a time.",
   "typo-allcaps-block": [
     "Set long passages in ordinary sentence case.",
-    "Capitals remove the word shapes people read by, so keep them for short labels.",
+    "Keep capitals for short labels.",
   ],
-  "typo-thin-weight": [
-    "Set body text in a regular weight.",
-    "Hairline weights disappear on ordinary screens and in bright light.",
-  ],
+  "typo-thin-weight": "Set body text in a regular weight.",
 
   "aria-allowed-role": [
     "Use an element that genuinely is the thing it claims to be.",
@@ -1130,10 +1089,7 @@ export const PLAIN_RULE_FIXES: Record<string, string | string[]> = {
     "Put the promised items inside: a list needs list items, a menu needs menu items.",
     "If the content is not really a list or a menu, take that marking off the container.",
   ],
-  "landmark-unique": [
-    "Name each area for what it holds, such as \"Main menu\" or \"Footer links\".",
-    "Areas with the same name are announced identically, so nobody can tell them apart.",
-  ],
+  "landmark-unique": "Name each area for what it holds, such as \"Main menu\" or \"Footer links\".",
   "landmark-no-duplicate-banner": [
     "Keep one site header, at the top level of the page.",
     "Turn the others into ordinary containers.",
@@ -1193,31 +1149,21 @@ export const PLAIN_RULE_FIXES: Record<string, string | string[]> = {
   "document-title": "Give the page a title that describes it. It is what shows in the browser tab and in search results.",
   "html-has-lang": "Tell the page which language it is written in, so screen readers use the right voice.",
   "html-lang-valid": "Correct the page's language setting to a real language code, such as English or German.",
-  "heading-order": [
-    "Use headings in order, without skipping a level.",
-    "Do not jump from a second-level heading straight to a fourth.",
-  ],
+  "heading-order": "Use headings in order, without skipping a level.",
   "page-has-heading-one": "Add one <h1> near the top that states what the page is about.",
   "empty-heading": "Put text in the heading, or remove the empty heading tag.",
   "link-in-text-block": "Give in-text links a second visual cue besides colour, usually an underline.",
   "meta-viewport": "Remove the setting that blocks zooming, so the page can grow to whatever size a reader needs.",
   "frame-title": "Give each embedded frame a name saying what it holds, such as \"Location map\".",
   "duplicate-id-active": "Make every id on the page unique. No two elements should share one.",
-  list: [
-    "Mark real lists up as lists, with each item inside the same list.",
-    "Screen readers then announce how many items there are.",
-  ],
+  list: "Mark real lists up as lists, with each item inside the same list.",
   listitem: "Put every list item inside a list, rather than leaving it on its own.",
   "aria-required-attr": [
     "Give the control the state it claims.",
     "Say in the code whether it is checked or unchecked, open or closed.",
     "A control that reports a value on a scale also has to state the value.",
   ],
-  "aria-hidden-focus":
-    [
-    "Anything hidden from screen readers should not be reachable by keyboard.",
-    "Either unhide it, or take it out of the tab order as well.",
-  ],
+  "aria-hidden-focus": "Either unhide it, or take it out of the tab order as well.",
   region: [
     "Put every part of the page inside a named area: header, navigation, main content, footer.",
     "Content sitting outside them is skipped by readers jumping between sections.",
@@ -1328,7 +1274,7 @@ export const UNDECIDED_EXPLANATIONS: Record<string, { what: string; ask: string 
   },
   "consent-trap-unnamed": {
     what: "Keyboard focus stays inside the cookie layer, but the layer never says what it is. No dialog role, no name.",
-    ask: "Ask your developer to mark the layer as a dialog and name it. A trap with no label leaves a screen reader user stuck in something nameless.",
+    ask: "Ask your developer to mark the layer as a dialog and name it.",
   },
   "interaction-motion-actuation": {
     what: "The page responds to the phone being tilted or shaken. Somebody who keeps their phone in a stand, or whose hands shake, cannot do that.",
@@ -1379,7 +1325,7 @@ export const UNDECIDED_EXPLANATIONS: Record<string, { what: string; ask: string 
     ask: "Ask your developer to check each is announced with the name you intended. Where it is not, move the name onto an element allowed to carry one.",
   },
   "css-orientation-lock": {
-    what: "Styles that may lock the page to portrait or landscape. The check that found this is experimental, which is why it is a question rather than a finding.",
+    what: "Styles that may lock the page to portrait or landscape. The check that found this is experimental.",
     ask: "Ask your developer whether the page rotates with the device. Some people mount a phone or wheelchair tablet in one orientation and cannot turn it.",
   },
   "duplicate-id-aria": {

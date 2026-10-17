@@ -26,7 +26,7 @@ export const PLAIN_ES: Record<string, PlainRule> = {
   "aria-prohibited-attr": {
     plain: "Una etiqueta que los lectores de pantalla deben ignorar",
     found: (n) =>
-      `${n} ${n === 1 ? "elemento lleva" : "elementos llevan"} un nombre que el código no permite en ese tipo de elemento. El nombre se tira en vez de leerse en voz alta.`,
+      `${n} ${n === 1 ? "elemento lleva" : "elementos llevan"} un nombre que el código no permite en ese tipo de elemento.`,
     impact:
       "En su código el elemento parece nombrado, así que nadie nota nada raro. Los lectores de pantalla ignoran ese nombre y anuncian el texto que haya dentro, que a menudo no es nada.",
   },
@@ -46,13 +46,13 @@ export const PLAIN_ES: Record<string, PlainRule> = {
   "landmark-unique": {
     plain: "Dos zonas de la página con el mismo nombre",
     found: (n) =>
-      `${n} ${n === 1 ? "región comparte su nombre con otra" : "regiones comparten su nombre con otras"}. La lista de regiones se lee como repeticiones, sin forma de distinguirlas.`,
+      `${n} ${n === 1 ? "región comparte su nombre con otra" : "regiones comparten su nombre con otras"}.`,
     impact: "Quien usa un lector de pantalla recibe una lista de entradas idénticas y no puede distinguirlas.",
   },
   "landmark-no-duplicate-banner": {
     plain: "Más de una cabecera de página",
     found: () =>
-      `La página marca más de una zona como su cabecera, así que la lista de regiones ofrece varias y ninguna es la cabecera.`,
+      `La página marca más de una zona como su cabecera.`,
     impact: "Los lectores de pantalla enumeran varias cabeceras, y nadie sabe cuál es la de verdad.",
   },
   "landmark-no-duplicate-contentinfo": {
@@ -70,33 +70,33 @@ export const PLAIN_ES: Record<string, PlainRule> = {
   "landmark-banner-is-top-level": {
     plain: "Cabecera metida dentro de otra zona",
     found: () =>
-      `La cabecera está metida dentro de otra región en vez de al lado. No está donde la busca quien salta de una región a otra.`,
+      `La cabecera está metida dentro de otra región en vez de al lado.`,
     impact: "Quien usa un lector de pantalla no puede saltar directo a ella como espera.",
   },
   "landmark-contentinfo-is-top-level": {
     plain: "Pie metido dentro de otra zona",
     found: () =>
-      `El pie está metido dentro de otra región en vez de al lado. No está donde lo busca quien salta de una región a otra.`,
+      `El pie está metido dentro de otra región en vez de al lado.`,
     impact: "Quien usa un lector de pantalla no puede saltar directo a él como espera.",
   },
   "skip-link": {
     plain: "El enlace de salto no lleva a ninguna parte",
     found: (n) =>
-      `${n} ${n === 1 ? "enlace de salto apunta" : "enlaces de salto apuntan"} a algo que no está en la página, así que pulsar${n === 1 ? "lo" : "los"} no lleva a nadie a ningún sitio.`,
+      `${n} ${n === 1 ? "enlace de salto apunta" : "enlaces de salto apuntan"} a algo que no está en la página.`,
     impact:
       "Quien usa el teclado lo pulsa y se queda donde estaba, y luego recorre el menú entero con el tabulador igualmente.",
   },
   "component-skip-link-dead": {
     plain: "El enlace de salto no lleva a ninguna parte",
     found: (n) =>
-      `${n} ${n === 1 ? "enlace de salto apunta" : "enlaces de salto apuntan"} a algo que no está en la página, así que pulsar${n === 1 ? "lo" : "los"} no lleva a nadie a ningún sitio.`,
+      `${n} ${n === 1 ? "enlace de salto apunta" : "enlaces de salto apuntan"} a algo que no está en la página.`,
     impact:
       "Quien usa el teclado lo pulsa y se queda donde estaba, y luego recorre el menú entero con el tabulador igualmente.",
   },
   "image-redundant-alt": {
     plain: "La descripción repite el texto de al lado",
     found: (n) =>
-      `${n} ${n === 1 ? "imagen repite, en su texto alternativo, las palabras que ya están escritas a su lado" : "imágenes repiten, en su texto alternativo, las palabras que ya están escritas a su lado"}. El lector de pantalla dice lo mismo dos veces.`,
+      `${n} ${n === 1 ? "imagen repite, en su texto alternativo, las palabras que ya están escritas a su lado" : "imágenes repiten, en su texto alternativo, las palabras que ya están escritas a su lado"}.`,
     impact: "Quien usa un lector de pantalla oye lo mismo dos veces, y pierde tiempo para nada.",
   },
   "color-contrast": {
@@ -104,7 +104,7 @@ export const PLAIN_ES: Record<string, PlainRule> = {
       "WebAIM revisa un millón de páginas de inicio cada año. El texto con poco contraste es el fallo más común que encuentra, año tras año. Mucha más gente ve con menos nitidez de lo que suponen los monitores de un equipo de diseño.",
     plain: "Texto demasiado claro para leerlo",
     found: (n) =>
-      `${n} ${n === 1 ? "texto de esta página está" : "textos de esta página están"} demasiado cerca en color del fondo que ${n === 1 ? "tiene" : "tienen"} detrás. ${n === 1 ? "Aparece" : "Cada uno aparece"} en Elementos afectados, y la versión técnica da la proporción medida.`,
+      `${n} ${n === 1 ? "texto de esta página está" : "textos de esta página están"} demasiado cerca en color del fondo que ${n === 1 ? "tiene" : "tienen"} detrás. La versión técnica da la proporción medida.`,
     impact:
       "Cuesta leerlo con luz fuerte, en una pantalla barata o con la vista imperfecta. Su mensaje no llega.",
   },
@@ -132,7 +132,7 @@ export const PLAIN_ES: Record<string, PlainRule> = {
   },
   "link-name": {
     research:
-      "Los enlaces vacíos están entre los fallos más comunes de la revisión anual que WebAIM hace de un millón de páginas de inicio. Quien usa un lector de pantalla se mueve sacando una lista de enlaces. Un enlace vacío aparece en esa lista como la palabra \"enlace\" y nada más.",
+      "Los enlaces vacíos están entre los fallos más comunes de la revisión anual que WebAIM hace de un millón de páginas de inicio.",
     plain: "Enlaces sin texto legible",
     found: (n) =>
       `${n} ${n === 1 ? "enlace no tiene" : "enlaces no tienen"} texto legible dentro: ni palabras, ni nombre, nada que anunciar. ${n === 1 ? "Casi siempre es un icono, una flecha o una imagen usada como enlace." : "Casi siempre son iconos, flechas o imágenes usadas como enlace."} La imagen carga con el significado y el código no carga con nada.`,
@@ -158,14 +158,14 @@ export const PLAIN_ES: Record<string, PlainRule> = {
       "Los campos de formulario sin etiqueta están cerca de lo más alto de la revisión anual que WebAIM hace de un millón de páginas de inicio. En el estudio británico Click-Away Pound, la mayoría de los compradores que se topó con una barrera así se marchó sin decir nada. Se llevó su dinero a otra parte.",
     plain: "Los campos del formulario no tienen etiqueta",
     found: (n) =>
-      `${n} ${n === 1 ? "campo del formulario no está unido" : "campos del formulario no están unidos"} a una etiqueta en el código. Las palabras pueden estar justo al lado del campo en pantalla, pero nada une las dos cosas. El lector de pantalla anuncia el campo sin saber para qué sirve.`,
+      `${n} ${n === 1 ? "campo del formulario no está unido" : "campos del formulario no están unidos"} a una etiqueta en el código. Las palabras pueden estar justo al lado del campo en pantalla, pero nada une las dos cosas.`,
     impact:
       "Quien usa un lector de pantalla no sabe qué va en cada casilla, así que abandona el formulario, y la compra con él.",
   },
   "select-name": {
     plain: "Un desplegable sin etiqueta",
     found: (n) =>
-      `${n} ${n === 1 ? "desplegable no tiene" : "desplegables no tienen"} etiqueta en el código. Se ${n === 1 ? "anuncia" : "anuncian"} como una lista de opciones, sin nada que diga qué se está eligiendo.`,
+      `${n} ${n === 1 ? "desplegable no tiene" : "desplegables no tienen"} etiqueta en el código.`,
     impact: "La gente no sabe qué está eligiendo. Vienen los errores y los formularios abandonados.",
   },
   "document-title": {
@@ -195,7 +195,7 @@ export const PLAIN_ES: Record<string, PlainRule> = {
   "page-has-heading-one": {
     plain: "No hay encabezado principal",
     found: () =>
-      `La página no tiene encabezado de primer nivel, así que nada dice de qué trata.`,
+      `La página no tiene encabezado de primer nivel.`,
     impact: "Nadie sabe de un vistazo de qué trata la página.",
   },
   "empty-heading": {
@@ -207,7 +207,7 @@ export const PLAIN_ES: Record<string, PlainRule> = {
   "link-in-text-block": {
     plain: "Enlaces marcados solo con color",
     found: (n) =>
-      `${n} ${n === 1 ? "enlace dentro del texto corrido está marcado" : "enlaces dentro del texto corrido están marcados"} solo con color, sin subrayado. Quien no separa esos colores no ve ningún enlace ahí.`,
+      `${n} ${n === 1 ? "enlace dentro del texto corrido está marcado" : "enlaces dentro del texto corrido están marcados"} solo con color, sin subrayado.`,
     impact: "Quien es daltónico no distingue un enlace del texto normal.",
   },
   "meta-viewport": {
@@ -218,7 +218,7 @@ export const PLAIN_ES: Record<string, PlainRule> = {
   "meta-viewport-large": {
     plain: "Zoom limitado a un nivel fijo",
     found: () =>
-      `Ampliar funciona, pero la página lo limita por debajo del 500%, y quien necesita el mayor aumento se queda en el tope.`,
+      `Ampliar funciona, pero la página lo limita por debajo del 500%.`,
     impact:
       "Más suave que bloquear la ampliación del todo, y falla a la misma gente. Quien necesita el texto muy grande llega al tope y no pasa de ahí.",
   },
@@ -255,7 +255,7 @@ export const PLAIN_ES: Record<string, PlainRule> = {
   "aria-hidden-focus": {
     plain: "Elementos ocultos que aún reciben el foco",
     found: (n) =>
-      `${n} ${n === 1 ? "elemento está oculto" : "elementos están ocultos"} para los lectores de pantalla y aun así se ${n === 1 ? "alcanza" : "alcanzan"} con el teclado. El foco aterriza en un sitio que no anuncia nada.`,
+      `${n} ${n === 1 ? "elemento está oculto" : "elementos están ocultos"} para los lectores de pantalla y aun así se ${n === 1 ? "alcanza" : "alcanzan"} con el teclado.`,
     impact: "Quien avanza con el tabulador aterriza en algo que su lector de pantalla no lee. La página parece rota.",
   },
   "aria-dialog-name": {
@@ -263,7 +263,7 @@ export const PLAIN_ES: Record<string, PlainRule> = {
     found: (n) =>
       `${n} ${n === 1 ? "ventana emergente no tiene nada que la nombre, así que se anuncia" : "ventanas emergentes no tienen nada que las nombre, así que se anuncian"} como "diálogo" y nada más.`,
     impact:
-      "Se anuncia como \"diálogo\" y nada más. Algo se ha adueñado de la pantalla y no hay forma de oír qué es.",
+      "Algo se ha adueñado de la pantalla y no hay forma de oír qué es.",
   },
   "nested-interactive": {
     plain: "Un control anidado dentro de otro",
@@ -275,14 +275,14 @@ export const PLAIN_ES: Record<string, PlainRule> = {
   "presentation-role-conflict": {
     plain: "Un control activo marcado como decoración",
     found: (n) =>
-      `${n} ${n === 1 ? "elemento está marcado" : "elementos están marcados"} para que se ignore y aun así se ${n === 1 ? "alcanza y se usa" : "alcanzan y se usan"}. El código se contradice sobre si ${n === 1 ? "existe" : "existen"}.`,
+      `${n} ${n === 1 ? "elemento está marcado" : "elementos están marcados"} para que se ignore y aun así se ${n === 1 ? "alcanza y se usa" : "alcanzan y se usan"}.`,
     impact:
       "El código dice que se ignore y el elemento dice que se use. Los lectores de pantalla resuelven eso de formas distintas, así que hay quien nunca lo encuentra.",
   },
   region: {
     plain: "Zonas de la página sin nombre en el código",
     found: (n) =>
-      `Parte de esta página queda fuera de cualquier zona con nombre. ${n} ${n === 1 ? "bloque de contenido no tiene" : "bloques de contenido no tienen"} cabecera, navegación, contenido principal ni pie alrededor.`,
+      `${n} ${n === 1 ? "bloque de contenido no tiene" : "bloques de contenido no tienen"} cabecera, navegación, contenido principal ni pie alrededor.`,
     impact: "Quien usa un lector de pantalla no puede adelantar. Lo oye todo, cada vez.",
   },
   "landmark-one-main": {
@@ -300,7 +300,7 @@ export const PLAIN_ES: Record<string, PlainRule> = {
   "scrollable-region-focusable": {
     plain: "Zona desplazable fuera del alcance del teclado",
     found: (n) =>
-      `${n} ${n === 1 ? "zona se desplaza" : "zonas se desplazan"} pero no se ${n === 1 ? "alcanza" : "alcanzan"} con el teclado. Lo que ha quedado fuera de vista es inalcanzable sin ratón.`,
+      `${n} ${n === 1 ? "zona se desplaza" : "zonas se desplazan"} pero no se ${n === 1 ? "alcanza" : "alcanzan"} con el teclado.`,
     impact: "Sin ratón, no se puede desplazar para ver lo que hay dentro.",
   },
 
@@ -322,7 +322,7 @@ export const PLAIN_ES: Record<string, PlainRule> = {
     found: (n) => (n === 1 ? "El texto de esta página exige más o menos nivel universitario. Se mide por la longitud de frases y palabras." : "{n} textos de esta página exigen más o menos nivel universitario. Se mide por la longitud de frases y palabras.".replace("{n}", String(n))),
     plain: "El texto exige nivel universitario",
     impact:
-      "No es una exigencia legal, y es el cambio de mayor alcance de este informe. Ayuda a las personas con discapacidad cognitiva y a quien lee en un segundo idioma. GOV.UK escribe para una edad lectora de unos nueve años, y no es un sitio sencillo.",
+      "Es el cambio de mayor alcance de este informe. Ayuda a las personas con discapacidad cognitiva y a quien lee en un segundo idioma. GOV.UK escribe para una edad lectora de unos nueve años, y no es un sitio sencillo.",
   },
   "typo-leading-for-measure": {
     found: (n) => (n === 1 ? "Hay texto en esta página con poco interlineado para la longitud de sus líneas y su tamaño de letra." : "{n} bloques de texto tienen poco interlineado para la longitud de sus líneas y su tamaño de letra.".replace("{n}", String(n))),
@@ -725,10 +725,7 @@ export const FIXES_ES: Record<string, string | string[]> = {
     "Ponga las palabras dentro del propio elemento, donde se van a leer.",
     "Cuando eso no se pueda, use un elemento hecho para llevar un nombre.",
   ],
-  "aria-required-parent": [
-    "Devuelva cada pieza al control al que pertenece.",
-    "Una opción de menú suelta nunca se anuncia como parte de un menú.",
-  ],
+  "aria-required-parent": "Devuelva cada pieza al control al que pertenece.",
   "landmark-no-duplicate-main": [
     "Deje un solo contenido principal por página.",
     "Marque los demás como secciones normales.",
@@ -800,10 +797,7 @@ export const FIXES_ES: Record<string, string | string[]> = {
   ],
   "component-form-autocomplete":
     "Indique en cada campo qué recoge, para que los navegadores y los gestores de contraseñas puedan rellenarlo.",
-  "component-input-type": [
-    "Diga a la página qué campos llevan un correo y cuáles un teléfono.",
-    "Los móviles muestran entonces el teclado adecuado en vez de uno normal.",
-  ],
+  "component-input-type": "Diga a la página qué campos llevan un correo y cuáles un teléfono.",
   "component-required-cue": [
     "Marque los campos obligatorios a la vista, no solo en el código.",
     "Con la palabra \"obligatorio\" junto a la etiqueta basta.",
@@ -814,10 +808,7 @@ export const FIXES_ES: Record<string, string | string[]> = {
     "Marque la fila superior como celdas de encabezado, y también la primera columna si las filas tienen nombre.",
     "Si la tabla solo sirve para maquetar, márquela como tabla sin datos.",
   ],
-  "component-nav-labels": [
-    "Nombre cada menú por lo que contiene, como \"Menú principal\" o \"Enlaces del pie\".",
-    "Varios menús sin nombre se anuncian igual, así que nadie los distingue.",
-  ],
+  "component-nav-labels": "Nombre cada menú por lo que contiene, como \"Menú principal\" o \"Enlaces del pie\".",
   "component-skip-link": [
     "Añada arriba del todo un enlace que salte directo al contenido principal.",
     "Muéstrelo cuando reciba el foco del teclado, para que la gente sepa que está ahí.",
@@ -847,19 +838,10 @@ export const FIXES_ES: Record<string, string | string[]> = {
     "Deje que los contenedores crezcan cuando el lector agranda el texto.",
     "Revise la página con el texto al doble de su tamaño normal.",
   ],
-  "text-zoom-horizontal-scroll": [
-    "Deje que la página se reajuste cuando se agranda el texto, en vez de irse hacia el lado.",
-    "Esto evita tener que desplazarse de lado por cada palabra de la línea.",
-  ],
+  "text-zoom-horizontal-scroll": "Deje que la página se reajuste cuando se agranda el texto, en vez de irse hacia el lado.",
   "dark-consent-no-reject": "Ponga una opción de rechazar en el aviso de cookies, tan fácil de encontrar como la de aceptar.",
-  "dark-consent-asymmetry": [
-    "Dé a aceptar y a rechazar el mismo tamaño, el mismo estilo y la misma presencia.",
-    "La elección solo es real cuando las dos opciones se ven igual de disponibles.",
-  ],
-  "dark-preselected-optin": [
-    "Deje sin marcar las casillas de publicidad y de compartir datos.",
-    "Deje que la gente se apunte por su cuenta, en vez de tener que darse de baja.",
-  ],
+  "dark-consent-asymmetry": "Dé a aceptar y a rechazar el mismo tamaño, el mismo estilo y la misma presencia.",
+  "dark-preselected-optin": "Deje sin marcar las casillas de publicidad y de compartir datos.",
   "dark-confirmshaming": "Redacte con claridad la opción de rechazo, como \"No, gracias\", sin nada que regañe.",
   "dark-fake-scarcity": [
     "Muestre cifras de existencias y de demanda solo donde sean ciertas y estén al día.",
@@ -874,15 +856,9 @@ export const FIXES_ES: Record<string, string | string[]> = {
     "Deje que el tabulador dé vueltas dentro de la ventana emergente mientras esté abierta.",
     "Deje que Escape la cierre y devuelva a la página.",
   ],
-  "dialog-no-escape": [
-    "Deje que la tecla Escape cierre la ventana emergente.",
-    "Es la primera tecla que la gente busca.",
-  ],
+  "dialog-no-escape": "Deje que la tecla Escape cierre la ventana emergente.",
   "dialog-focus-not-moved": "Lleve el cursor a la ventana emergente al abrirse, para que quien usa el teclado empiece dentro.",
-  "dialog-focus-lost-on-close": [
-    "Devuelva el cursor a lo que abrió la ventana emergente cuando esta se cierre.",
-    "Si no, la gente vuelve arriba y tiene que buscar otra vez dónde estaba.",
-  ],
+  "dialog-focus-lost-on-close": "Devuelva el cursor a lo que abrió la ventana emergente cuando esta se cierre.",
   "dialog-no-close": [
     "Dé a cada ventana emergente un botón de cerrar visible.",
     "Deje que Escape la cierre también.",
@@ -893,10 +869,7 @@ export const FIXES_ES: Record<string, string | string[]> = {
     "Mantenga el teclado dentro mientras esté abierta, y devuélvalo al cerrar.",
   ],
   "dialog-missing-name": "Dé a la ventana emergente un encabezado o un nombre que diga para qué es.",
-  "markup-validation": [
-    "Pase la página por el validador del W3C y limpie lo que le indique.",
-    "El código roto es una adivinanza para los lectores de pantalla, y cada uno adivina distinto.",
-  ],
+  "markup-validation": "Pase la página por el validador del W3C y limpie lo que le indique.",
   "motion-marquee": [
     "Cambie el texto en movimiento por texto quieto.",
     "Si tiene que moverse, dé a la gente una forma de pararlo.",
@@ -911,14 +884,8 @@ export const FIXES_ES: Record<string, string | string[]> = {
   ],
   "typo-caps-letterspacing":
     "Añada un poco de espacio entre letras en los titulares en mayúsculas, para que las palabras guarden su forma.",
-  "typo-lowercase-letterspaced": [
-    "Quite el espacio de más entre las letras del texto normal.",
-    "Separa las palabras y frena la lectura.",
-  ],
-  "typo-negative-letterspacing": [
-    "Deje de apretar las letras unas contra otras.",
-    "Las letras que se tocan se leen como una sola forma.",
-  ],
+  "typo-lowercase-letterspaced": "Quite el espacio de más entre las letras del texto normal.",
+  "typo-negative-letterspacing": "Deje de apretar las letras unas contra otras.",
   "typo-justified-no-hyphens": [
     "Componga el texto alineado a la izquierda en vez de justificado.",
     "Si tiene que ir justificado, active la partición de palabras para que los huecos queden parejos.",
@@ -931,18 +898,12 @@ export const FIXES_ES: Record<string, string | string[]> = {
     "Reserve el subrayado para los enlaces.",
     "Use negrita o cursiva cuando quiera destacar algo.",
   ],
-  "typo-italic-body": [
-    "Componga los pasajes largos en redonda, y guarde la cursiva para una frase suelta.",
-    "La cursiva cuesta más de leer en textos largos, sobre todo en pantalla.",
-  ],
+  "typo-italic-body": "Componga los pasajes largos en redonda, y guarde la cursiva para una frase suelta.",
   "typo-allcaps-block": [
     "Componga los pasajes largos en minúsculas normales.",
-    "Las mayúsculas quitan la forma de palabra con la que se lee, así que resérvelas para etiquetas cortas.",
+    "Reserve las mayúsculas para etiquetas cortas.",
   ],
-  "typo-thin-weight": [
-    "Componga el texto de lectura en un grosor normal.",
-    "Los grosores finísimos desaparecen en pantallas corrientes y con luz fuerte.",
-  ],
+  "typo-thin-weight": "Componga el texto de lectura en un grosor normal.",
 
   "aria-allowed-role": [
     "Use un elemento que sea de verdad lo que dice ser.",
@@ -953,10 +914,7 @@ export const FIXES_ES: Record<string, string | string[]> = {
     "Ponga dentro los elementos prometidos: una lista necesita elementos de lista, un menú necesita opciones de menú.",
     "Si el contenido no es realmente una lista ni un menú, quite esa marca del contenedor.",
   ],
-  "landmark-unique": [
-    "Nombre cada zona por lo que contiene, como \"Menú principal\" o \"Enlaces del pie\".",
-    "Las zonas con el mismo nombre se anuncian igual, así que nadie las distingue.",
-  ],
+  "landmark-unique": "Nombre cada zona por lo que contiene, como \"Menú principal\" o \"Enlaces del pie\".",
   "landmark-no-duplicate-banner": [
     "Deje una sola cabecera del sitio, en el primer nivel de la página.",
     "Convierta las demás en contenedores normales.",
@@ -1014,30 +972,21 @@ export const FIXES_ES: Record<string, string | string[]> = {
   "document-title": "Dé a la página un título que la describa. Es lo que sale en la pestaña del navegador y en los resultados de búsqueda.",
   "html-has-lang": "Diga a la página en qué idioma está escrita, para que los lectores de pantalla usen la voz correcta.",
   "html-lang-valid": "Corrija el ajuste de idioma de la página a un código de idioma real, como el español o el alemán.",
-  "heading-order": [
-    "Use los encabezados en orden, sin saltarse ningún nivel.",
-    "No pase de un encabezado de segundo nivel directamente a uno de cuarto.",
-  ],
+  "heading-order": "Use los encabezados en orden, sin saltarse ningún nivel.",
   "page-has-heading-one": "Añada un <h1> cerca de arriba que diga de qué trata la página.",
   "empty-heading": "Ponga texto en el encabezado, o quite la etiqueta de encabezado vacía.",
   "link-in-text-block": "Dé a los enlaces dentro del texto una segunda señal visual además del color, normalmente el subrayado.",
   "meta-viewport": "Quite el ajuste que bloquea la ampliación, para que la página crezca hasta donde el lector necesite.",
   "frame-title": "Dé a cada marco incrustado un nombre que diga qué contiene, como \"Mapa de la ubicación\".",
   "duplicate-id-active": "Haga único cada id de la página. Dos elementos no deben compartir ninguno.",
-  list: [
-    "Marque como listas las listas de verdad, con cada elemento dentro de la misma lista.",
-    "Los lectores de pantalla anuncian entonces cuántos elementos hay.",
-  ],
+  list: "Marque como listas las listas de verdad, con cada elemento dentro de la misma lista.",
   listitem: "Ponga cada elemento de lista dentro de una lista, en vez de dejarlo suelto.",
   "aria-required-attr": [
     "Dé al control el estado que dice tener.",
     "Indique en el código si está marcado o sin marcar, abierto o cerrado.",
     "Un control que informa de un valor en una escala también debe indicar el valor.",
   ],
-  "aria-hidden-focus": [
-    "Lo que está oculto a los lectores de pantalla no debería alcanzarse con el teclado.",
-    "O deja de esconderlo, o lo saca también del orden de tabulación.",
-  ],
+  "aria-hidden-focus": "O deja de esconderlo, o lo saca también del orden de tabulación.",
   region: [
     "Ponga cada parte de la página dentro de una zona con nombre: cabecera, navegación, contenido principal, pie.",
     "El contenido que queda fuera se lo salta quien va dando saltos de sección en sección.",
@@ -1103,7 +1052,7 @@ export const UNDECIDED_ES: Record<string, { what: string; ask: string }> = {
   },
   "consent-trap-unnamed": {
     what: "El foco del teclado se queda dentro de la capa de cookies, pero la capa nunca dice qué es. Ni rol de diálogo ni nombre.",
-    ask: "Pida a su desarrollador que marque la capa como diálogo y le ponga nombre. Una trampa sin etiqueta deja a quien usa un lector de pantalla atrapado en algo sin nombre.",
+    ask: "Pida a su desarrollador que marque la capa como diálogo y le ponga nombre.",
   },
   "interaction-motion-actuation": {
     what: "La página responde a inclinar o agitar el teléfono. Quien lo tiene en un soporte, o a quien le tiemblan las manos, no puede hacerlo.",
@@ -1154,7 +1103,7 @@ export const UNDECIDED_ES: Record<string, { what: string; ask: string }> = {
     ask: "Pida a su desarrollador que compruebe que cada uno se anuncia con el nombre que usted quería. Donde no sea así, mueva el nombre a un elemento al que se le permita llevarlo.",
   },
   "css-orientation-lock": {
-    what: "Estilos que pueden atar la página a vertical o a apaisado. La comprobación que encontró esto es experimental, y por eso es una pregunta y no un hallazgo.",
+    what: "Estilos que pueden atar la página a vertical o a apaisado. La comprobación que encontró esto es experimental.",
     ask: "Pregunte a su desarrollador si la página gira con el dispositivo. Hay quien monta el teléfono, o la tableta de su silla de ruedas, en una sola orientación y no puede girarlo.",
   },
   "duplicate-id-aria": {

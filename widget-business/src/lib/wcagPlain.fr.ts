@@ -26,7 +26,7 @@ export const PLAIN_FR: Record<string, PlainRule> = {
   "aria-prohibited-attr": {
     plain: "Une étiquette que les lecteurs d’écran doivent ignorer",
     found: (n) =>
-      `${n} ${n === 1 ? "élément porte" : "éléments portent"} un libellé que le code n'autorise pas sur ce type de balise. Le libellé est jeté au lieu d'être lu.`,
+      `${n} ${n === 1 ? "élément porte" : "éléments portent"} un libellé que le code n'autorise pas sur ce type de balise.`,
     impact:
       "L'élément a l'air nommé dans votre source, donc personne ne remarque le problème. Les lecteurs d'écran ignorent le libellé et annoncent le texte qui se trouve dedans. Souvent rien.",
   },
@@ -46,14 +46,14 @@ export const PLAIN_FR: Record<string, PlainRule> = {
   "landmark-unique": {
     plain: "Deux zones de page portent le même nom",
     found: (n) =>
-      `${n} ${n === 1 ? "région porte le même nom qu'une autre" : "régions portent le même nom que d'autres"}. Une liste de régions se lit comme des répétitions, sans moyen de les distinguer.`,
+      `${n} ${n === 1 ? "région porte le même nom qu'une autre" : "régions portent le même nom que d'autres"}.`,
     impact:
       "Les utilisateurs de lecteurs d'écran obtiennent une liste d'entrées identiques et ne peuvent pas les distinguer.",
   },
   "landmark-no-duplicate-banner": {
     plain: "Plus d'un en-tête de page",
     found: () =>
-      `La page marque plus d'une zone comme son en-tête : une liste de régions en propose plusieurs et aucune n'est l'en-tête.`,
+      `La page marque plus d'une zone comme son en-tête.`,
     impact: "Les lecteurs d'écran listent plusieurs en-têtes, donc personne ne sait lequel est le vrai.",
   },
   "landmark-no-duplicate-contentinfo": {
@@ -71,33 +71,33 @@ export const PLAIN_FR: Record<string, PlainRule> = {
   "landmark-banner-is-top-level": {
     plain: "En-tête imbriqué dans une autre zone",
     found: () =>
-      `L'en-tête est glissé dans une autre région au lieu d'être à côté d'elle. Il n'est pas là où quelqu'un qui saute de région en région s'attend à le trouver.`,
+      `L'en-tête est glissé dans une autre région au lieu d'être à côté d'elle.`,
     impact: "Les utilisateurs de lecteurs d'écran ne peuvent pas y aller directement comme ils s'y attendent.",
   },
   "landmark-contentinfo-is-top-level": {
     plain: "Pied de page imbriqué dans une autre zone",
     found: () =>
-      `Le pied de page est glissé dans une autre région au lieu d'être à côté d'elle. Il n'est pas là où quelqu'un qui saute de région en région s'y attend.`,
+      `Le pied de page est glissé dans une autre région au lieu d'être à côté d'elle.`,
     impact: "Les utilisateurs de lecteurs d'écran ne peuvent pas y aller directement comme ils s'y attendent.",
   },
   "skip-link": {
     plain: "Le lien d'évitement ne mène nulle part",
     found: (n) =>
-      `${n} ${n === 1 ? "lien d'évitement pointe" : "liens d'évitement pointent"} vers quelque chose qui n'est pas sur la page : ${n === 1 ? "l'activer ne mène" : "les activer ne mène"} personne nulle part.`,
+      `${n} ${n === 1 ? "lien d'évitement pointe" : "liens d'évitement pointent"} vers quelque chose qui n'est pas sur la page.`,
     impact:
       "Les utilisateurs au clavier l'activent et restent exactement où ils étaient, puis parcourent tout le menu quand même.",
   },
   "component-skip-link-dead": {
     plain: "Le lien d'évitement ne mène nulle part",
     found: (n) =>
-      `${n} ${n === 1 ? "lien d'évitement pointe" : "liens d'évitement pointent"} vers quelque chose qui n'est pas sur la page : ${n === 1 ? "l'activer ne mène" : "les activer ne mène"} personne nulle part.`,
+      `${n} ${n === 1 ? "lien d'évitement pointe" : "liens d'évitement pointent"} vers quelque chose qui n'est pas sur la page.`,
     impact:
       "Les utilisateurs au clavier l'activent et restent exactement où ils étaient, puis parcourent tout le menu quand même.",
   },
   "image-redundant-alt": {
     plain: "La description d'image répète le texte voisin",
     found: (n) =>
-      `${n} ${n === 1 ? "image reprend, dans son texte alternatif, les mots déjà écrits à côté d'elle" : "images reprennent, dans leur texte alternatif, les mots déjà écrits à côté d'elles"}. Un lecteur d'écran dit deux fois la même chose.`,
+      `${n} ${n === 1 ? "image reprend, dans son texte alternatif, les mots déjà écrits à côté d'elle" : "images reprennent, dans leur texte alternatif, les mots déjà écrits à côté d'elles"}.`,
     impact: "Les utilisateurs de lecteurs d'écran entendent deux fois la même chose, ce qui les ralentit pour rien.",
   },
   "color-contrast": {
@@ -105,7 +105,7 @@ export const PLAIN_FR: Record<string, PlainRule> = {
       "WebAIM examine chaque année un million de pages d'accueil. Le texte trop peu contrasté est le défaut le plus fréquent qu'il y trouve, année après année. Bien plus de gens voient moins net que ne le supposent les écrans d'une équipe de design.",
     plain: "Texte trop pâle pour être lu",
     found: (n) =>
-      `${n} ${n === 1 ? "passage de texte sur cette page est trop proche" : "passages de texte sur cette page sont trop proches"} en couleur du fond qui se trouve derrière ${n === 1 ? "lui" : "eux"}. ${n === 1 ? "Il est listé" : "Chacun est listé"} sous Éléments concernés, et la version technique donne le rapport mesuré.`,
+      `${n} ${n === 1 ? "passage de texte sur cette page est trop proche" : "passages de texte sur cette page sont trop proches"} en couleur du fond qui se trouve derrière ${n === 1 ? "lui" : "eux"}. La version technique donne le rapport mesuré.`,
     impact:
       "Difficile à lire en plein soleil, sur un écran bon marché, ou avec une vue imparfaite. Votre message ne passe pas.",
   },
@@ -133,7 +133,7 @@ export const PLAIN_FR: Record<string, PlainRule> = {
   },
   "link-name": {
     research:
-      "Les liens vides comptent parmi les défauts les plus fréquents du relevé annuel de WebAIM sur un million de pages d'accueil. Les utilisateurs de lecteurs d'écran naviguent en affichant la liste des liens. Un lien vide apparaît dans cette liste comme le mot « lien » et rien d'autre.",
+      "Les liens vides comptent parmi les défauts les plus fréquents du relevé annuel de WebAIM sur un million de pages d'accueil.",
     plain: "Des liens sans texte lisible",
     found: (n) =>
       `${n} ${n === 1 ? "lien n'a" : "liens n'ont"} aucun texte lisible à l'intérieur : ni mots, ni libellé, rien à annoncer. ${n === 1 ? "C'est le plus souvent une icône, une flèche ou une image servant de lien." : "Ce sont le plus souvent des icônes, des flèches ou des images servant de liens."} L'image porte le sens et le code n'en porte rien.`,
@@ -159,14 +159,14 @@ export const PLAIN_FR: Record<string, PlainRule> = {
       "Les champs de formulaire sans libellé sont tout en haut du relevé annuel de WebAIM sur un million de pages d'accueil. Dans l'étude britannique Click-Away Pound, la plupart des acheteurs qui ont rencontré un tel obstacle sont partis sans un mot. Ils ont dépensé ailleurs.",
     plain: "Les champs de formulaire n'ont pas de libellé",
     found: (n) =>
-      `${n} ${n === 1 ? "champ de formulaire n'est pas relié" : "champs de formulaire ne sont pas reliés"} à un libellé dans le code. Les mots ont beau être juste à côté du champ à l'écran, rien ne relie les deux. Un lecteur d'écran annonce le champ sans savoir à quoi il sert.`,
+      `${n} ${n === 1 ? "champ de formulaire n'est pas relié" : "champs de formulaire ne sont pas reliés"} à un libellé dans le code. Les mots ont beau être juste à côté du champ à l'écran, rien ne relie les deux.`,
     impact:
       "Les utilisateurs de lecteurs d'écran ne savent pas quoi mettre dans chaque case, donc les formulaires sont abandonnés, le paiement compris.",
   },
   "select-name": {
     plain: "Une liste déroulante sans libellé",
     found: (n) =>
-      `${n} ${n === 1 ? "liste déroulante n'a" : "listes déroulantes n'ont"} pas de libellé dans le code. ${n === 1 ? "Elle est annoncée" : "Chacune est annoncée"} comme une liste d'options, sans rien dire de ce qu'on choisit.`,
+      `${n} ${n === 1 ? "liste déroulante n'a" : "listes déroulantes n'ont"} pas de libellé dans le code.`,
     impact: "Les gens ne savent pas ce qu'ils choisissent. Les erreurs et les formulaires abandonnés suivent.",
   },
   "document-title": {
@@ -195,7 +195,7 @@ export const PLAIN_FR: Record<string, PlainRule> = {
   },
   "page-has-heading-one": {
     plain: "Pas de titre principal",
-    found: () => `La page n'a pas de titre de premier niveau : rien ne dit de quoi elle parle.`,
+    found: () => `La page n'a pas de titre de premier niveau.`,
     impact: "Personne ne voit d'un coup d'œil de quoi parle la page.",
   },
   "empty-heading": {
@@ -207,7 +207,7 @@ export const PLAIN_FR: Record<string, PlainRule> = {
   "link-in-text-block": {
     plain: "Des liens signalés par la couleur seule",
     found: (n) =>
-      `${n} ${n === 1 ? "lien dans le texte courant n'est signalé" : "liens dans le texte courant ne sont signalés"} que par la couleur, sans soulignement. Qui ne distingue pas ces couleurs ne voit aucun lien là.`,
+      `${n} ${n === 1 ? "lien dans le texte courant n'est signalé" : "liens dans le texte courant ne sont signalés"} que par la couleur, sans soulignement.`,
     impact: "Les lecteurs daltoniens ne distinguent pas un lien du texte ordinaire.",
   },
   "meta-viewport": {
@@ -218,7 +218,7 @@ export const PLAIN_FR: Record<string, PlainRule> = {
   "meta-viewport-large": {
     plain: "Zoom limité à un niveau fixe",
     found: () =>
-      `Le zoom fonctionne, mais la page le plafonne sous 500%, et les gens qui ont besoin du plus fort grossissement s'arrêtent au plafond.`,
+      `Le zoom fonctionne, mais la page le plafonne sous 500%.`,
     impact:
       "Moins grave que bloquer le zoom, et cela dessert les mêmes personnes. Qui a besoin d'un très gros texte atteint le plafond et rien de plus.",
   },
@@ -256,7 +256,7 @@ export const PLAIN_FR: Record<string, PlainRule> = {
   "aria-hidden-focus": {
     plain: "Des éléments masqués captent quand même le clavier",
     found: (n) =>
-      `${n} ${n === 1 ? "élément est masqué" : "éléments sont masqués"} pour les lecteurs d'écran tout en restant ${n === 1 ? "accessible" : "accessibles"} au clavier. Le focus atterrit quelque part qui n'annonce rien.`,
+      `${n} ${n === 1 ? "élément est masqué" : "éléments sont masqués"} pour les lecteurs d'écran tout en restant ${n === 1 ? "accessible" : "accessibles"} au clavier.`,
     impact:
       "Quelqu'un qui tabule atterrit sur quelque chose que son lecteur d'écran ne lira pas. La page semble cassée.",
   },
@@ -265,7 +265,7 @@ export const PLAIN_FR: Record<string, PlainRule> = {
     found: (n) =>
       `${n} ${n === 1 ? "fenêtre surgissante n'a rien qui la nomme, donc elle est annoncée" : "fenêtres surgissantes n'ont rien qui les nomme, donc elles sont annoncées"} comme « boîte de dialogue » et rien d'autre.`,
     impact:
-      "Elle est annoncée comme « boîte de dialogue » et rien d'autre. Quelque chose a pris tout l'écran et il n'y a aucun moyen d'entendre ce que c'est.",
+      "Quelque chose a pris tout l'écran et il n'y a aucun moyen d'entendre ce que c'est.",
   },
   "nested-interactive": {
     plain: "Un contrôle imbriqué dans un autre",
@@ -277,14 +277,14 @@ export const PLAIN_FR: Record<string, PlainRule> = {
   "presentation-role-conflict": {
     plain: "Un contrôle actif marqué comme décoration",
     found: (n) =>
-      `${n} ${n === 1 ? "élément est marqué" : "éléments sont marqués"} comme à ignorer tout en restant ${n === 1 ? "atteignable et utilisable" : "atteignables et utilisables"}. Le code se contredit sur ${n === 1 ? "son existence" : "leur existence"}.`,
+      `${n} ${n === 1 ? "élément est marqué" : "éléments sont marqués"} comme à ignorer tout en restant ${n === 1 ? "atteignable et utilisable" : "atteignables et utilisables"}.`,
     impact:
       "Le code dit de l'ignorer et l'élément dit de s'en servir. Les lecteurs d'écran tranchent chacun à leur façon, donc certaines personnes ne le trouvent jamais.",
   },
   region: {
     plain: "Des zones de page sans nom dans le code",
     found: (n) =>
-      `Une partie de cette page est hors de toute zone nommée. ${n} ${n === 1 ? "bloc de contenu n'a" : "blocs de contenu n'ont"} ni en-tête, ni navigation, ni contenu principal, ni pied de page autour ${n === 1 ? "de lui" : "d'eux"}.`,
+      `${n} ${n === 1 ? "bloc de contenu n'a" : "blocs de contenu n'ont"} ni en-tête, ni navigation, ni contenu principal, ni pied de page autour ${n === 1 ? "de lui" : "d'eux"}.`,
     impact: "Les utilisateurs de lecteurs d'écran ne peuvent pas passer devant. Ils entendent tout, à chaque fois.",
   },
   "landmark-one-main": {
@@ -302,7 +302,7 @@ export const PLAIN_FR: Record<string, PlainRule> = {
   "scrollable-region-focusable": {
     plain: "Zone défilante hors d'atteinte au clavier",
     found: (n) =>
-      `${n} ${n === 1 ? "zone défile" : "zones défilent"} mais ${n === 1 ? "ne peut pas être atteinte" : "ne peuvent pas être atteintes"} au clavier. Tout ce qui a défilé hors de vue est hors d'atteinte sans souris.`,
+      `${n} ${n === 1 ? "zone défile" : "zones défilent"} mais ${n === 1 ? "ne peut pas être atteinte" : "ne peuvent pas être atteintes"} au clavier.`,
     impact: "Sans souris, vous ne pouvez pas faire défiler ce qu'il y a dedans.",
   },
 
@@ -324,7 +324,7 @@ export const PLAIN_FR: Record<string, PlainRule> = {
     found: (n) => (n === 1 ? "Le texte de cette page demande à peu près un niveau universitaire. La mesure porte sur la longueur des phrases et des mots." : "{n} textes de cette page demandent à peu près un niveau universitaire. La mesure porte sur la longueur des phrases et des mots.".replace("{n}", String(n))),
     plain: "L'écriture demande un niveau universitaire",
     impact:
-      "Ce n'est pas une obligation légale, et c'est le changement qui touche le plus de monde dans ce rapport. Il aide les personnes ayant des troubles cognitifs et tous ceux qui lisent dans une deuxième langue. GOV.UK écrit pour un âge de lecture d'environ neuf ans, et ce n'est pas un site simple.",
+      "C'est le changement qui touche le plus de monde dans ce rapport. Il aide les personnes ayant des troubles cognitifs et tous ceux qui lisent dans une deuxième langue. GOV.UK écrit pour un âge de lecture d'environ neuf ans, et ce n'est pas un site simple.",
   },
   "typo-leading-for-measure": {
     found: (n) => (n === 1 ? "Sur cette page, du texte courant a trop peu d'interligne pour sa taille et la longueur de ses lignes." : "{n} blocs de texte ont trop peu d'interligne pour la longueur de leurs lignes et leur taille de caractères.".replace("{n}", String(n))),
@@ -726,10 +726,7 @@ export const FIXES_FR: Record<string, string | string[]> = {
     "Mettez les mots dans l'élément lui-même, là où ils seront lus.",
     "Quand ce n'est pas possible, utilisez un élément fait pour porter un libellé.",
   ],
-  "aria-required-parent": [
-    "Remettez chaque morceau dans le contrôle auquel il appartient.",
-    "Une entrée de menu toute seule n'est jamais annoncée comme faisant partie d'un menu.",
-  ],
+  "aria-required-parent": "Remettez chaque morceau dans le contrôle auquel il appartient.",
   "landmark-no-duplicate-main": [
     "Gardez une seule zone de contenu principal par page.",
     "Marquez les autres comme des sections ordinaires.",
@@ -802,10 +799,7 @@ export const FIXES_FR: Record<string, string | string[]> = {
   ],
   "component-form-autocomplete":
     "Indiquez pour chaque champ ce qu'il recueille, pour que navigateurs et gestionnaires de mots de passe le remplissent.",
-  "component-input-type": [
-    "Dites à la page quels champs contiennent un courriel et lesquels un numéro de téléphone.",
-    "Les téléphones affichent alors le bon clavier au lieu d'un clavier ordinaire.",
-  ],
+  "component-input-type": "Dites à la page quels champs contiennent un courriel et lesquels un numéro de téléphone.",
   "component-required-cue": [
     "Signalez les champs obligatoires à l'œil, pas seulement dans le code.",
     "Le mot « obligatoire » à côté du libellé suffit.",
@@ -816,10 +810,7 @@ export const FIXES_FR: Record<string, string | string[]> = {
     "Marquez la ligne du haut comme cellules d’en-tête, et la première colonne aussi si les lignes ont des noms.",
     "Si le tableau ne sert qu’à la mise en page, marquez-le comme n’étant pas un tableau de données.",
   ],
-  "component-nav-labels": [
-    "Nommez chaque menu d'après ce qu'il contient, comme « Menu principal » ou « Liens du pied de page ».",
-    "Plusieurs menus sans nom sont annoncés à l'identique, donc personne ne les distingue.",
-  ],
+  "component-nav-labels": "Nommez chaque menu d'après ce qu'il contient, comme « Menu principal » ou « Liens du pied de page ».",
   "component-skip-link": [
     "Ajoutez tout en haut un lien qui saute directement au contenu principal.",
     "Faites-le apparaître quand le clavier l'atteint, pour que les gens sachent qu'il existe.",
@@ -849,20 +840,11 @@ export const FIXES_FR: Record<string, string | string[]> = {
     "Laissez les conteneurs grandir quand le lecteur agrandit le texte.",
     "Vérifiez la page avec un texte deux fois plus grand que la normale.",
   ],
-  "text-zoom-horizontal-scroll": [
-    "Laissez la page se réagencer quand le texte est agrandi, au lieu de déborder sur le côté.",
-    "C'est ce qui évite de lire une ligne en faisant défiler de côté à chaque mot.",
-  ],
+  "text-zoom-horizontal-scroll": "Laissez la page se réagencer quand le texte est agrandi, au lieu de déborder sur le côté.",
   "dark-consent-no-reject":
     "Mettez une option de refus sur la bannière cookies, aussi facile à trouver que celle qui accepte.",
-  "dark-consent-asymmetry": [
-    "Donnez à accepter et à refuser la même taille, le même style et la même place.",
-    "Le choix n'est réel que si les deux options ont l'air également disponibles.",
-  ],
-  "dark-preselected-optin": [
-    "Laissez décochées les cases de marketing et de partage.",
-    "Laissez les gens s'inscrire eux-mêmes plutôt que d'avoir à se désinscrire.",
-  ],
+  "dark-consent-asymmetry": "Donnez à accepter et à refuser la même taille, le même style et la même place.",
+  "dark-preselected-optin": "Laissez décochées les cases de marketing et de partage.",
   "dark-confirmshaming":
     "Formulez le refus simplement, comme « Non merci », sans rien qui fasse la leçon.",
   "dark-fake-scarcity": [
@@ -879,16 +861,10 @@ export const FIXES_FR: Record<string, string | string[]> = {
     "Laissez Tab tourner dans la fenêtre tant qu'elle est ouverte.",
     "Laissez Échap la fermer et rendre la main à la page.",
   ],
-  "dialog-no-escape": [
-    "Laissez la touche Échap fermer la fenêtre.",
-    "C'est la première touche vers laquelle les gens vont.",
-  ],
+  "dialog-no-escape": "Laissez la touche Échap fermer la fenêtre.",
   "dialog-focus-not-moved":
     "Amenez le curseur dans la fenêtre à son ouverture, pour que les utilisateurs au clavier démarrent dedans.",
-  "dialog-focus-lost-on-close": [
-    "Remettez le curseur sur ce qui a ouvert la fenêtre quand elle se ferme.",
-    "Sinon les gens sont renvoyés en haut et doivent retrouver leur place.",
-  ],
+  "dialog-focus-lost-on-close": "Remettez le curseur sur ce qui a ouvert la fenêtre quand elle se ferme.",
   "dialog-no-close": [
     "Donnez à chaque fenêtre un bouton de fermeture visible.",
     "Laissez Échap la fermer aussi.",
@@ -899,10 +875,7 @@ export const FIXES_FR: Record<string, string | string[]> = {
     "Gardez le clavier dedans tant qu'elle est ouverte, et rendez-le à la fermeture.",
   ],
   "dialog-missing-name": "Donnez à la fenêtre un titre ou un nom qui dit à quoi elle sert.",
-  "markup-validation": [
-    "Passez la page au validateur du W3C et corrigez ce qu'il signale.",
-    "Un code cassé, c'est de la devinette pour les lecteurs d'écran, et ils devinent différemment.",
-  ],
+  "markup-validation": "Passez la page au validateur du W3C et corrigez ce qu'il signale.",
   "motion-marquee": [
     "Remplacez le bandeau défilant par un texte qui reste immobile.",
     "S'il doit bouger, donnez aux gens un moyen de le mettre en pause.",
@@ -917,14 +890,8 @@ export const FIXES_FR: Record<string, string | string[]> = {
   ],
   "typo-caps-letterspacing":
     "Ajoutez un peu d'espace entre les lettres des titres en capitales, pour que les mots gardent leur forme.",
-  "typo-lowercase-letterspaced": [
-    "Retirez l'espacement des lettres ajouté au texte ordinaire.",
-    "Il écarte les mots et ralentit la lecture.",
-  ],
-  "typo-negative-letterspacing": [
-    "Cessez de serrer les lettres les unes contre les autres.",
-    "Des lettres qui se touchent sont lues comme une seule forme.",
-  ],
+  "typo-lowercase-letterspaced": "Retirez l'espacement des lettres ajouté au texte ordinaire.",
+  "typo-negative-letterspacing": "Cessez de serrer les lettres les unes contre les autres.",
   "typo-justified-no-hyphens": [
     "Alignez le texte à gauche plutôt que de le justifier.",
     "S'il doit être justifié, activez la césure pour que les espaces entre les mots restent réguliers.",
@@ -937,18 +904,12 @@ export const FIXES_FR: Record<string, string | string[]> = {
     "Gardez le soulignement pour les liens seulement.",
     "Servez-vous du gras ou de l'italique pour mettre en valeur.",
   ],
-  "typo-italic-body": [
-    "Composez les longs passages en romain, et gardez l'italique pour une expression à la fois.",
-    "L'italique est plus difficile à lire sur la longueur, surtout à l'écran.",
-  ],
+  "typo-italic-body": "Composez les longs passages en romain, et gardez l'italique pour une expression à la fois.",
   "typo-allcaps-block": [
     "Composez les longs passages en minuscules ordinaires.",
-    "Les capitales effacent les formes de mots qui nous servent à lire, alors gardez-les pour de courts libellés.",
+    "Gardez les capitales pour de courts libellés.",
   ],
-  "typo-thin-weight": [
-    "Composez le texte courant dans une graisse normale.",
-    "Les graisses très fines disparaissent sur les écrans ordinaires et en pleine lumière.",
-  ],
+  "typo-thin-weight": "Composez le texte courant dans une graisse normale.",
 
   "aria-allowed-role": [
     "Utilisez un élément qui est vraiment ce qu'il prétend être.",
@@ -960,10 +921,7 @@ export const FIXES_FR: Record<string, string | string[]> = {
     "Placez à l'intérieur les éléments promis : une liste a besoin d'entrées de liste, un menu d'entrées de menu.",
     "Si le contenu n'est pas vraiment une liste ou un menu, retirez ce marquage du conteneur.",
   ],
-  "landmark-unique": [
-    "Nommez chaque zone d'après ce qu'elle contient, comme « Menu principal » ou « Liens du pied de page ».",
-    "Des zones qui portent le même nom sont annoncées à l'identique, donc personne ne les distingue.",
-  ],
+  "landmark-unique": "Nommez chaque zone d'après ce qu'elle contient, comme « Menu principal » ou « Liens du pied de page ».",
   "landmark-no-duplicate-banner": [
     "Gardez un seul en-tête de site, au premier niveau de la page.",
     "Transformez les autres en conteneurs ordinaires.",
@@ -1027,10 +985,7 @@ export const FIXES_FR: Record<string, string | string[]> = {
     "Indiquez à la page dans quelle langue elle est écrite, pour que les lecteurs d'écran prennent la bonne voix.",
   "html-lang-valid":
     "Corrigez le réglage de langue de la page avec un vrai code de langue, comme le français ou l'allemand.",
-  "heading-order": [
-    "Employez les titres dans l'ordre, sans sauter de niveau.",
-    "Ne passez pas d'un titre de deuxième niveau directement à un quatrième.",
-  ],
+  "heading-order": "Employez les titres dans l'ordre, sans sauter de niveau.",
   "page-has-heading-one": "Ajoutez un <h1> près du haut qui dit de quoi parle la page.",
   "empty-heading": "Mettez du texte dans le titre, ou retirez la balise de titre vide.",
   "link-in-text-block":
@@ -1040,20 +995,14 @@ export const FIXES_FR: Record<string, string | string[]> = {
   "frame-title":
     "Donnez à chaque cadre intégré un nom qui dit ce qu'il contient, comme « Plan d'accès ».",
   "duplicate-id-active": "Rendez chaque id de la page unique. Deux éléments ne doivent jamais en partager un.",
-  list: [
-    "Codez les vraies listes comme des listes, chaque entrée dans la même liste.",
-    "Les lecteurs d'écran annoncent alors combien il y a d'entrées.",
-  ],
+  list: "Codez les vraies listes comme des listes, chaque entrée dans la même liste.",
   listitem: "Mettez chaque entrée de liste dans une liste, plutôt que de la laisser toute seule.",
   "aria-required-attr": [
     "Donnez au composant l'état qu'il prétend avoir.",
     "Indiquez dans le code s'il est coché ou non, ouvert ou fermé.",
     "Un composant qui annonce une valeur sur une échelle doit aussi indiquer cette valeur.",
   ],
-  "aria-hidden-focus": [
-    "Ce qui est masqué aux lecteurs d'écran ne doit pas être atteignable au clavier.",
-    "Soit vous le démasquez, soit vous le sortez aussi de l'ordre de tabulation.",
-  ],
+  "aria-hidden-focus": "Soit vous le démasquez, soit vous le sortez aussi de l'ordre de tabulation.",
   region: [
     "Mettez chaque partie de la page dans une zone nommée : en-tête, navigation, contenu principal, pied de page.",
     "Le contenu qui reste dehors est sauté par ceux qui passent d'une section à l'autre.",
@@ -1122,7 +1071,7 @@ export const UNDECIDED_FR: Record<string, { what: string; ask: string }> = {
   },
   "consent-trap-unnamed": {
     what: "Le focus clavier reste dans la couche cookies, mais la couche ne dit jamais ce qu'elle est. Ni rôle de dialogue, ni nom.",
-    ask: "Demandez à votre développeur de marquer la couche comme une boîte de dialogue et de la nommer. Un piège sans libellé laisse un utilisateur de lecteur d'écran coincé dans quelque chose d'anonyme.",
+    ask: "Demandez à votre développeur de marquer la couche comme une boîte de dialogue et de la nommer.",
   },
   "interaction-motion-actuation": {
     what: "La page réagit au téléphone qu'on penche ou qu'on secoue. Quelqu'un qui garde son téléphone sur un support, ou dont les mains tremblent, ne peut pas faire cela.",
@@ -1173,7 +1122,7 @@ export const UNDECIDED_FR: Record<string, { what: string; ask: string }> = {
     ask: "Demandez à votre développeur de vérifier que chacun est annoncé avec le nom que vous vouliez. Là où ce n'est pas le cas, déplacez le nom sur un élément autorisé à en porter un.",
   },
   "css-orientation-lock": {
-    what: "Des styles qui bloquent peut-être la page en portrait ou en paysage. La vérification qui a trouvé cela est expérimentale, d'où une question plutôt qu'un constat.",
+    what: "Des styles qui bloquent peut-être la page en portrait ou en paysage. La vérification qui a trouvé cela est expérimentale.",
     ask: "Demandez à votre développeur si la page pivote avec l'appareil. Certaines personnes fixent un téléphone ou une tablette de fauteuil roulant dans un seul sens et ne peuvent pas le tourner.",
   },
   "duplicate-id-aria": {
