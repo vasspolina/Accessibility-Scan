@@ -98,7 +98,7 @@
 .a11y-widget-biz :is(th, td) { text-align: start; vertical-align: top; padding: 0.3em 0.6em 0.3em 0; border-bottom: 2px solid var(--ink); font-size: 18px; }
 
 /* The highlight. Black text, always; cap colours are decoration. */
-.a11y-widget-biz :is(.a11y-sev, .a11y-rule-chip, .a11y-level-badge, .a11y-dn-pill, .a11y-sum-chip, .a11y-pro-chip, .a11y-conf-status, .a11y-principle-count) {
+.a11y-widget-biz :is(.a11y-sev, .a11y-rule-chip, .a11y-level-badge, .a11y-dn-pill, .a11y-sum-chip, .a11y-pro-chip, .a11y-conf-status, .a11y-principle-count, .a11y-status-chip) {
   color: #000; background: var(--hl-green);
   padding: 0 0.22em; margin-inline: 0.12em;
   border-radius: 0.9em 0.45em 0.9em 0.55em / 0.7em 0.5em 0.7em 0.5em;
@@ -262,3 +262,219 @@
 @media (max-width: 600px) {
   .a11y-widget-biz th { hyphens: auto; overflow-wrap: anywhere; }
 }
+
+/* ═══ REPORT LAYOUT (17 Oct 2026) ═════════════════════════════════════════
+   The strip-down left the report's inner parts with no layout at all, so
+   labels, counts, numbers and glosses ran into the words beside them
+   ("01It counts", "Step 1:Tell us", "Partially conformantMeets most...").
+   One rule per part, in the poster's terms: a hung number, small print
+   under the line it belongs to, no boxes, no rules. */
+
+/* A highlight is a word: it never breaks inside itself or hyphenates
+   ("Fix eventual-ly"). Rule ids are the one exception, they are long. */
+.a11y-widget-biz :is(.a11y-sev, .a11y-level-badge, .a11y-dn-pill, .a11y-sum-chip, .a11y-pro-chip, .a11y-conf-status, .a11y-principle-count, .a11y-status-chip) {
+  hyphens: manual; overflow-wrap: normal;
+}
+.a11y-widget-biz .a11y-rule-chip { hyphens: manual; overflow-wrap: anywhere; }
+.a11y-widget-biz .a11y-status-chip { margin-inline: 0.4em; }
+
+/* Section titles that hold a button: the title is the heading, set at
+   heading size; the button around it is not a pill. */
+.a11y-widget-biz .a11y-accordion-row { display: flex; flex-wrap: wrap; align-items: baseline; gap: 0.3em 1em; }
+.a11y-widget-biz .a11y-accordion-row .a11y-accordion-title { flex: 1 1 14em; min-width: 0; margin: 1.2em 0 0.3em; }
+.a11y-widget-biz .a11y-accordion-title .a11y-accordion-head {
+  display: flex; align-items: baseline; gap: 0.4em; width: 100%; box-sizing: border-box;
+  font: inherit; text-align: start;
+  padding: 0; border: 0; border-radius: 0; background: none; color: var(--ink);
+}
+.a11y-widget-biz .a11y-accordion-title .a11y-accordion-head:enabled:hover { background: none; color: var(--ink); }
+.a11y-widget-biz .a11y-accordion-chevron { flex: none; width: 0.6em; height: 0.6em; margin-inline-start: auto; }
+.a11y-widget-biz .a11y-accordion-head[aria-expanded="true"] .a11y-accordion-chevron { transform: rotate(180deg); }
+.a11y-widget-biz .a11y-w22-toggle { display: flex; align-items: center; gap: 0.6em; text-align: start; }
+.a11y-widget-biz .a11y-section-count { font-size: 18px; font-weight: 400; }
+
+/* Steps: the word "Step 1:" has a space after it. */
+.a11y-widget-biz .a11y-stmt-step-num { margin-inline-end: 0.4em; }
+
+/* Fields: the label above, the box under it, full width. */
+.a11y-widget-biz .a11y-stmt-fields { display: grid; grid-template-columns: minmax(0, 1fr); gap: 0.8em; margin: 0 0 1.2em; }
+.a11y-widget-biz .a11y-stmt-field { display: grid; gap: 0.2em; font-size: 15px; font-weight: 500; }
+.a11y-widget-biz .a11y-stmt-field input { width: 100%; box-sizing: border-box; font-weight: 400; }
+
+/* Name and value pairs: small label, the value under it, the gloss under that. */
+.a11y-widget-biz .a11y-spec-grid { margin: 0 0 1.2em; }
+.a11y-widget-biz .a11y-spec-card { margin: 0 0 0.6em; }
+.a11y-widget-biz .a11y-spec-label { font-size: 15px; font-weight: 500; }
+.a11y-widget-biz .a11y-spec-value { margin: 0; }
+.a11y-widget-biz .a11y-spec-gloss { display: block; font-size: 15px; }
+
+/* The draft: a label and its Copy on one line, the text wrapping inside the page. */
+.a11y-widget-biz .a11y-stmt-code-bar { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 0.5em; margin: 0 0 0.5em; }
+.a11y-widget-biz .a11y-stmt-code-label { font-size: 15px; font-weight: 500; }
+.a11y-widget-biz .a11y-stmt-text { white-space: pre-wrap; overflow-wrap: anywhere; font-size: 18px; margin: 0 0 1.2em; }
+
+/* What the score counts: the number hangs, the sentence beside it. */
+.a11y-widget-biz .a11y-pro-points { list-style: none; padding: 0; margin: 0 0 1.2em; }
+.a11y-widget-biz :is(.a11y-sum-point, .a11y-pro-point) {
+  display: grid; grid-template-columns: 2.4em minmax(0, 1fr); align-items: baseline; margin: 0 0 0.6em;
+}
+.a11y-widget-biz :is(.a11y-sum-point-num, .a11y-pro-point-num) { font-size: 15px; font-weight: 500; }
+
+/* The three worst findings next to the dial: number, title with its marks under it, count. */
+.a11y-widget-biz .a11y-sum-thead { display: none; }
+.a11y-widget-biz .a11y-sum-rows { list-style: none; padding: 0; margin: 0 0 1.2em; }
+.a11y-widget-biz .a11y-sum-row { display: grid; grid-template-columns: 1.6em minmax(0, 1fr) auto; gap: 0 0.4em; align-items: baseline; margin: 0 0 0.6em; }
+.a11y-widget-biz .a11y-sum-cell-item { display: block; }
+.a11y-widget-biz .a11y-sum-row-title { display: block; }
+.a11y-widget-biz .a11y-sum-row-marks { display: block; font-size: 18px; }
+.a11y-widget-biz .a11y-sum-cell-count { white-space: nowrap; font-weight: 500; }
+
+/* Severity rows of the professional panel: the word, then its count. */
+.a11y-widget-biz .a11y-pro-rows { list-style: none; padding: 0; margin: 0 0 1.2em; }
+.a11y-widget-biz .a11y-pro-row { display: flex; justify-content: space-between; gap: 1em; align-items: baseline; }
+
+/* The legal checklist's questions and the result rows. */
+.a11y-widget-biz .a11y-legal-q { display: grid; grid-template-columns: 1.6em minmax(0, 1fr); align-items: baseline; margin: 0 0 0.4em; }
+.a11y-widget-biz .a11y-legal-qnum { font-size: 15px; font-weight: 500; }
+.a11y-widget-biz .a11y-legal-micro { font-size: 15px; font-weight: 500; margin: 0 0 0.4em; }
+.a11y-widget-biz .a11y-legal-thead { display: none; }
+.a11y-widget-biz .a11y-legal-row { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 0 1em; align-items: baseline; margin: 0 0 0.8em; }
+.a11y-widget-biz .a11y-legal-col-result { display: block; }
+.a11y-widget-biz :is(.a11y-legal-row-label, .a11y-legal-row-meaning) { display: block; }
+.a11y-widget-biz .a11y-legal-row-label { font-weight: 500; }
+.a11y-widget-biz .a11y-legal-row-meaning { font-size: 15px; }
+.a11y-widget-biz .a11y-legal-count { font-size: 32px; font-weight: 500; }
+.a11y-widget-biz .a11y-radio-group { display: flex; flex-wrap: wrap; gap: 0.3em 1.2em; border: 0; padding: 0; margin: 0 0 1em; }
+.a11y-widget-biz .a11y-radio { display: inline-flex; align-items: center; gap: 0.4em; font-size: 18px; }
+
+/* The checklist rows: criterion, the question with its official name under it, the status under that. */
+.a11y-widget-biz .a11y-conf-list { list-style: none; padding: 0; margin: 0 0 1.2em; }
+.a11y-widget-biz .a11y-conf-row { display: grid; grid-template-columns: 4em minmax(0, 1fr); gap: 0.2em 0.8em; margin: 0 0 1em; }
+.a11y-widget-biz .a11y-conf-row .a11y-conf-status { grid-column: 2; justify-self: start; }
+.a11y-widget-biz .a11y-conf-id { font-size: 15px; font-weight: 500; }
+.a11y-widget-biz .a11y-conf-id em { font-style: normal; }
+.a11y-widget-biz .a11y-conf-body { display: block; }
+.a11y-widget-biz .a11y-conf-plain { display: block; font-size: 15px; }
+.a11y-widget-biz .a11y-conf-count { margin-inline-start: 0.4em; font-size: 15px; font-style: normal; }
+.a11y-widget-biz .a11y-conf-row[hidden] { display: none; }
+
+/* WCAG 2.2 panel head: the standard, its date, what would fail today. */
+.a11y-widget-biz .a11y-next-toggle { display: flex; flex-wrap: wrap; align-items: baseline; gap: 0.3em 0.8em; text-align: start; }
+.a11y-widget-biz .a11y-next-count { font-size: 15px; }
+.a11y-widget-biz .a11y-next-list { list-style: none; padding: 0; margin: 0 0 1.2em; }
+.a11y-widget-biz .a11y-next-list > li { margin: 0 0 1em; }
+.a11y-widget-biz .a11y-next-main { display: block; }
+.a11y-widget-biz :is(.a11y-next-title, .a11y-next-meta, .a11y-next-status) { display: block; }
+
+/* For your designer and developer: number, what the checker saw, what to ask for, the call. */
+.a11y-widget-biz .a11y-undecided-heads { display: none; }
+.a11y-widget-biz .a11y-undecided-table { list-style: none; padding: 0; margin: 0 0 1.2em; }
+.a11y-widget-biz .a11y-undecided-cell { display: grid; grid-template-columns: 2em minmax(0, 1fr); gap: 0.5em 0.4em; margin: 0 0 1.4em; }
+.a11y-widget-biz .a11y-undecided-cell > :not(.a11y-undecided-no) { grid-column: 2; margin: 0; }
+.a11y-widget-biz .a11y-undecided-no { font-size: 15px; font-weight: 500; grid-row: 1; }
+.a11y-widget-biz .a11y-undecided-call { display: flex; flex-wrap: wrap; align-items: baseline; gap: 0.3em 0.8em; font-size: 18px; }
+.a11y-widget-biz .a11y-undecided-table .a11y-undecided-folded { display: none; }
+@media print { .a11y-widget-biz .a11y-undecided-table .a11y-undecided-folded { display: grid; } }
+
+/* The screen reader's announcements: a row is a line to play, not a pill. */
+.a11y-widget-biz .a11y-sr-log-heads { display: none; }
+.a11y-widget-biz .a11y-sr-list { list-style: none; padding: 0; margin: 0 0 1.2em; }
+.a11y-widget-biz .a11y-sr-row {
+  display: grid; grid-template-columns: 2em minmax(0, 1fr); gap: 0 0.4em; align-items: baseline;
+  width: 100%; box-sizing: border-box; text-align: start; margin: 0 0 0.4em;
+  padding: 0; border: 0; border-radius: 0; background: none; color: var(--ink);
+}
+.a11y-widget-biz .a11y-sr-row:enabled:hover { background: none; color: var(--ink); }
+.a11y-widget-biz .a11y-sr-row[aria-current="true"] { text-decoration: underline; text-underline-offset: 0.15em; }
+.a11y-widget-biz .a11y-sr-num { font-size: 15px; font-weight: 500; }
+.a11y-widget-biz .a11y-sr-issue { grid-column: 2; font-size: 15px; }
+.a11y-widget-biz .a11y-sr-status { font-size: 15px; }
+
+/* The start form's choices: the label, its explanation under it. */
+.a11y-widget-biz .a11y-optioncard-label { font-weight: 500; }
+.a11y-widget-biz .a11y-optioncard-label,
+.a11y-widget-biz .a11y-optioncard-desc { display: block; }
+.a11y-widget-biz .a11y-optioncard-desc { font-size: 15px; }
+
+/* The score dial: a solid arc on a dotted track, the number inside it.
+   Its SVG strokes named colour tokens that no longer exist, so it drew
+   nothing and left a blank block above the number. */
+.a11y-widget-biz .a11y-sum-dial { position: relative; width: 7em; height: 7em; margin: 0 0 0.6em; }
+.a11y-widget-biz .a11y-sum-dial svg { display: block; width: 100%; height: 100%; max-width: none; max-height: none; }
+.a11y-widget-biz .a11y-sum-dial circle { stroke: var(--ink); }
+.a11y-widget-biz .a11y-sum-dial circle:first-child { stroke-width: 3; stroke-linecap: round; stroke-dasharray: 0 6.6; }
+.a11y-widget-biz .a11y-sum-dial-face { position: absolute; inset: 0; display: grid; place-content: center; text-align: center; }
+.a11y-widget-biz .a11y-sum-dial-num { font-size: 40px; font-weight: 300; line-height: 1; margin: 0; }
+.a11y-widget-biz .a11y-sum-dial-of { font-size: 15px; margin: 0; }
+.a11y-widget-biz .a11y-status-chip { font-size: 18px; }
+.a11y-widget-biz .a11y-accordion-title .a11y-accordion-head > span:first-child { flex: 0 1 auto; }
+
+/* A notice: its mark hangs, its title and the line under it beside it. */
+.a11y-widget-biz .a11y-note { display: grid; grid-template-columns: 1.6em minmax(0, 1fr); align-items: baseline; margin: 0 0 1.2em; }
+.a11y-widget-biz .a11y-note-glyph { font-weight: 500; }
+.a11y-widget-biz .a11y-note-title { font-weight: 500; }
+.a11y-widget-biz .a11y-note-sub { font-size: 18px; }
+
+/* The legal result marks are the severity highlight, same words, same colours. */
+.a11y-widget-biz .a11y-legal-mark {
+  display: inline-block; margin-top: 0.2em; font-size: 18px; color: #000; background: var(--hl-green);
+  padding: 0 0.22em; border-radius: 0.9em 0.45em 0.9em 0.55em / 0.7em 0.5em 0.7em 0.5em;
+  box-shadow: 0.14em 0 0 var(--hl-cap-a), -0.14em 0 0 var(--hl-cap-b);
+}
+.a11y-widget-biz .a11y-legal-mark-critical { background: var(--hl-orange); }
+.a11y-widget-biz .a11y-legal-mark-serious { background: var(--hl-blue); }
+.a11y-widget-biz .a11y-legal-mark-minor { background: var(--hl-cap-a); box-shadow: 0.14em 0 0 var(--hl-cap-b), -0.14em 0 0 var(--hl-blue); }
+.a11y-widget-biz .a11y-show-checklist { margin: 0 0 1em; }
+
+/* The Sections rail: small print, no bullets, the current section in Medium. */
+.a11y-widget-biz .a11y-shell-nav ul { list-style: none; padding: 0; margin: 0; }
+.a11y-widget-biz .a11y-shell-nav-head { margin: 0 0 0.4em; font-size: 18px; }
+.a11y-widget-biz .a11y-shell-nav-toggle {
+  display: flex; flex-wrap: wrap; align-items: baseline; gap: 0 0.8em; font: inherit; font-size: 18px; text-align: start;
+  padding: 0; border: 0; border-radius: 0; background: none; color: var(--ink);
+}
+.a11y-widget-biz .a11y-shell-nav-toggle:enabled:hover { background: none; color: var(--ink); }
+.a11y-widget-biz .a11y-shell-nav-heading { font-weight: 500; }
+.a11y-widget-biz .a11y-shell-nav-count { font-size: 15px; font-weight: 400; }
+.a11y-widget-biz .a11y-shell-nav-group { margin: 0 0 0.7em; }
+.a11y-widget-biz .a11y-shell-nav-group-label { display: block; font-size: 15px; font-weight: 500; }
+.a11y-widget-biz .a11y-shell-nav-link { font-size: 18px; }
+.a11y-widget-biz .a11y-shell-nav-link[aria-current="true"] { font-weight: 500; }
+
+.a11y-widget-biz .a11y-status-chip-critical { background: var(--hl-orange); }
+.a11y-widget-biz .a11y-ai-toggle { display: flex; align-items: center; gap: 0.5em; font-size: 18px; margin: 0 0 0.6em; }
+
+/* In the table's Severity column the word stays on one line. On a phone that
+   column is gone and the folded copy in the issue cell wraps like prose. */
+.a11y-widget-biz .a11y-finding-sev-col .a11y-sev { white-space: nowrap; }
+
+/* Notes on the design: kinds as one row of toggles, notes as plain lines, the open one in Medium. */
+.a11y-widget-biz :is(.a11y-dn-kinds, .a11y-dn-list) { list-style: none; padding: 0; margin: 0 0 1em; }
+.a11y-widget-biz .a11y-dn-kinds { display: flex; flex-wrap: wrap; gap: 0.4em 0.6em; }
+.a11y-widget-biz .a11y-dn-link {
+  display: grid; grid-template-columns: 1em minmax(0, 1fr); gap: 0 0.3em; align-items: baseline; width: 100%;
+  box-sizing: border-box; text-align: start; padding: 0.15em 0; border: 0; border-radius: 0; background: none; color: var(--ink);
+  font-size: 27px; font-weight: 400;
+}
+.a11y-widget-biz .a11y-dn-link:enabled:hover { background: none; color: var(--ink); text-decoration: underline; }
+.a11y-widget-biz .a11y-dn-link[aria-expanded="true"] { font-weight: 500; }
+.a11y-widget-biz .a11y-dn-pills { margin: 0 0 0.6em; }
+.a11y-widget-biz .a11y-dn-detail-title { margin-top: 0.6em; }
+
+/* An expanded finding: each part is a small label over its sentence. */
+.a11y-widget-biz :is(.a11y-method-hint, .a11y-finding-measured, .a11y-finding-impact, .a11y-finding-research, .a11y-finding-todo) > strong:first-child,
+.a11y-widget-biz .a11y-finding-steps > p > strong,
+.a11y-widget-biz .a11y-affected-label > strong { display: block; font-size: 15px; font-weight: 500; }
+.a11y-widget-biz .a11y-finding-steps ul { margin: 0 0 1.2em; }
+.a11y-widget-biz .a11y-occurrence-list { list-style: none; padding: 0; margin: 0 0 1em; }
+.a11y-widget-biz .a11y-occurrence { margin: 0 0 0.6em; }
+.a11y-widget-biz .a11y-occurrence-count { margin-inline-start: 0.4em; font-size: 15px; font-weight: 500; }
+
+/* The professional score: the number is the poster word, the rest small print under it. */
+.a11y-widget-biz .a11y-pro-score { display: flex; align-items: baseline; gap: 0.4em; margin: 0 0 0.4em; }
+.a11y-widget-biz .a11y-pro-score-num { font-size: 40px; font-weight: 300; line-height: 1; }
+.a11y-widget-biz .a11y-pro-score-of { font-size: 15px; }
+.a11y-widget-biz .a11y-pro-eyebrow { font-size: 15px; font-weight: 500; margin: 0 0 0.4em; }
+.a11y-widget-biz .a11y-pro-count { font-size: 18px; }
+.a11y-widget-biz .a11y-pro-chips { display: flex; flex-wrap: wrap; gap: 0.3em 0.6em; margin: 0 0 0.6em; font-size: 18px; }
+.a11y-widget-biz .a11y-pro-jump { display: inline-flex; align-items: baseline; gap: 0.4em; }
