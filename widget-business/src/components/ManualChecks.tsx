@@ -119,10 +119,10 @@ export function ManualChecks({
           </span>
         </h2>
         <p className="a11y-section-desc">
-          {t("No software can decide these. Each one is a question about your site, not this page, so an answer holds for every later scan until you change it.")}
+          {t("Each one is a question about your site, not this page, so an answer holds for every later scan until you change it.")}
         </p>
         <p className="a11y-section-desc">
-          {t("Answers are signed and kept with their history. They fill the conformance report for buyers, which a scan alone can never complete.")}
+          {t("Answers are signed and kept with their history. They fill the conformance report for buyers.")}
         </p>
       </div>
       <ul className="a11y-manual-list">
@@ -192,7 +192,7 @@ function AnswerForm({
   async function save(e: React.FormEvent) {
     e.preventDefault();
     if (!name.trim()) {
-      setError(t("Sign the answer with your name. A decision nobody stands behind is not evidence."));
+      setError(t("Sign the answer with your name."));
       return;
     }
     setBusy(true);

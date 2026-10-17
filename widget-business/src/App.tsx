@@ -667,16 +667,12 @@ export function App({
       case "findings": {
         /* In professional mode these cards are print-only: the screen shows
            the table, but a printed report has to stand alone. */
-        /* One sentence per reading, translated whole; the link sits where
-           its placeholder does, so word order follows the language. */
-        const [sectionDescBefore, sectionDescAfter] = (
-          isDocument
-            ? t(
-                "What a screen reader cannot read aloud in this document, grouped by the four questions the standard asks. More at {link}."
-              )
-            : t(
-                "Grouped by the standard's four questions: can people see it, use it, understand it, and will it still work. More at {link}."
-              )
+        /* A lead only for a document. On a web page the group headings
+           beneath ARE the standard's questions, and a sentence listing them
+           first said the headings twice. Translated whole; the link sits
+           where its placeholder does, so word order follows the language. */
+        const [sectionDescBefore, sectionDescAfter] = t(
+          "What a screen reader cannot read aloud in this document, grouped by the four questions the standard asks. More at {link}."
         ).split("{link}");
         return (
           <div className={professional && !isDocument ? "a11y-print-cards" : undefined}>
@@ -685,7 +681,7 @@ export function App({
                 title="What costs you trust"
                 eyebrow={t("Dark pattern findings")}
                 description={t(
-                  "Places your site nudges people rather than leaves the choice to them. These don't move the score. They move how much people trust you."
+                  "Places your site nudges people rather than leaves the choice to them. These don't move the score."
                 )}
                 variant={findingsByCategory.darkPattern.length > 0 ? "redflag" : "default"}
                 findings={findingsByCategory.darkPattern}
@@ -702,13 +698,15 @@ export function App({
                 {t("What people can't use")}{" "}
                 <span className="a11y-section-count">({findingsByCategory.accessibility.length})</span>
               </h2>
-              <p className="a11y-section-desc">
-                {sectionDescBefore}
-                <a href={WCAG_LINK} target="_blank" rel="noopener noreferrer">
-                  w3.org/WAI
-                </a>
-                {sectionDescAfter}
-              </p>
+              {isDocument && (
+                <p className="a11y-section-desc">
+                  {sectionDescBefore}
+                  <a href={WCAG_LINK} target="_blank" rel="noopener noreferrer">
+                    w3.org/WAI
+                  </a>
+                  {sectionDescAfter}
+                </p>
+              )}
               <PrincipleGroup findings={findingsByCategory.accessibility} />
             </section>
           </div>

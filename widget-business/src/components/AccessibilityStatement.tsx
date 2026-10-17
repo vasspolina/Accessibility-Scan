@@ -162,7 +162,7 @@ ${t(
 ${checkedOn} ${tf("The check covers the {total} Level A and AA success criteria in WCAG 2.1.", { total: conformance.total })}
 
 ${tf(
-  "An automated check has real limits, and we would rather state them than imply a completeness we cannot evidence. {count} of those criteria cannot be assessed by software at all. They depend on human judgement. For example: whether video captions are accurate, or whether a form that times out can be extended. Where the check reports no issue, that means no issue was detected. It does not mean a person has verified the criterion as met.",
+  "{count} of those criteria cannot be assessed by software at all. They depend on human judgement. For example: whether video captions are accurate, or whether a form that times out can be extended. Where the check reports no issue, that means no issue was detected. It does not mean a person has verified the criterion as met.",
   { count: conformance.needsReview }
 )}
 
@@ -209,7 +209,7 @@ ${t("We review this statement at least once a year, and whenever the site change
 ## ${t("How this information is published")}
 
 ${t(
-  "The European Accessibility Act (Article 13(2) and Annex V) asks for more than a page like this one. Two things are worth a check:"
+  "The European Accessibility Act (Article 13(2) and Annex V) asks for more than a page like this one:"
 )}
 
 - ${t(
@@ -337,14 +337,6 @@ export function AccessibilityStatement({ report }: { report: AccessibilityReport
     }
   }
 
-  // One sentence per number form, split on the position so the position
-  // itself can be set in bold wherever the language puts it.
-  const [saysBefore, saysAfter] = (
-    failing === 1
-      ? t("Says {position}, based on 1 failed criterion.")
-      : tf("Says {position}, based on {count} failed criteria.", { count: failing })
-  ).split("{position}");
-
   return (
     <section className="a11y-section a11y-stmt" aria-labelledby="a11y-stmt-heading">
       <SectionHeader
@@ -355,7 +347,7 @@ export function AccessibilityStatement({ report }: { report: AccessibilityReport
       />
       <p className="a11y-section-desc">
         {t(
-          "European law asks for one if you serve EU customers, and this check already knows most of the answers. Add your details and the draft writes itself."
+          "European law asks for one if you serve EU customers."
         )}
       </p>
 
@@ -376,12 +368,6 @@ export function AccessibilityStatement({ report }: { report: AccessibilityReport
       </div>
 
       <div className="a11y-stmt-fields">
-        {/* Names the pair of fields on screen. aria-hidden because both
-            fields already carry their own <label>, and a screen reader
-            reading this line as well would announce the group twice. */}
-        <p className="a11y-stmt-fields-head" aria-hidden="true">
-          {t("The statement is prepared for")}
-        </p>
         <label className="a11y-stmt-field">
           {t("Organisation name")}
           <input
@@ -480,18 +466,13 @@ export function AccessibilityStatement({ report }: { report: AccessibilityReport
         <span className="a11y-sr-only" role="status">
           {copied ? t("Statement copied to the clipboard.") : ""}
         </span>
-        <p className="a11y-sr-status">
-          {saysBefore}
-          <strong>{position === "partially" ? t("partially conformant") : t("non-conformant")}</strong>
-          {saysAfter}
-        </p>
+        {/* No "Says partially conformant, based on N failed criteria" line:
+            the Position and Problems disclosed cards above say both. */}
       </div>
 
       <p className="a11y-conf-caveat">
         <strong>{t("Read it before you publish.")}</strong>{" "}
-        {t(
-          "This is a public, dated declaration. The draft never claims full compliance, because no automated check can prove it. Make sure it matches the testing you have actually done. A starting point, not legal advice."
-        )}
+        {t("Make sure it matches the testing you have actually done. A starting point, not legal advice.")}
       </p>
     </section>
   );

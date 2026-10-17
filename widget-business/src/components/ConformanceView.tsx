@@ -33,22 +33,30 @@ const HUMAN_QUESTIONS = [
 ];
 
 /* Counts come from the conformance summary, never recounted here. */
-function RESULT_ROWS(c: ConformanceSummary) {
+function RESULT_ROWS(c: ConformanceSummary): Array<{
+  key: string;
+  severity: string;
+  label: string;
+  meaning?: string;
+  mark: string;
+  n: number;
+}> {
   return [
     { key: "failed", severity: "critical", label: t("We found problems"),
       meaning: tf("{a} at level A, {aa} at AA", { a: c.failedByLevel.A, aa: c.failedByLevel.AA }),
       mark: t("Fix first"), n: c.failed },
+    // No meaning line on these two: the band above says "nothing found"
+    // is not a pass, and the mark says "Needs a person".
     { key: "clean", severity: "pass", label: t("We checked, found nothing"),
-      meaning: t("Still worth a human look"), mark: t("Nothing found"), n: c.noIssuesFound },
+      mark: t("Nothing found"), n: c.noIssuesFound },
     { key: "human", severity: "minor", label: t("We couldn't check"),
-      meaning: t("Only a person can judge these. Every one is named below."),
       mark: t("Needs a person"), n: c.needsReview },
     // Only present when it happened. A permanent zero row would teach readers
     // to skip it; when a check breaks, this is the row that keeps the clean
     // count honest.
     ...((c.notMeasured ?? 0) > 0
       ? [{ key: "not-measured", severity: "serious", label: t("A check didn't finish"),
-          meaning: t("These weren't examined this time. A second run usually completes them."),
+          meaning: t("A second run usually completes them."),
           mark: t("Not measured"), n: c.notMeasured ?? 0 }]
       : []),
   ];
@@ -201,7 +209,7 @@ export function ConformanceView({
             </p>
             <p className="a11y-legal-body">
               {tf(
-                "{count} of the {total} items need a person. That’s true of every automated check, this one included.",
+                "{count} of the {total} items need a person.",
                 { count: conformance.needsReview, total: conformance.total }
               )}
             </p>
@@ -241,7 +249,7 @@ export function ConformanceView({
             <div key={r.key} className="a11y-legal-row">
               <span className="a11y-legal-col-result">
                 <span className="a11y-legal-row-label">{r.label}</span>
-                <span className="a11y-legal-row-meaning">{r.meaning}</span>
+                {r.meaning && <span className="a11y-legal-row-meaning">{r.meaning}</span>}
                 <span className={`a11y-legal-mark a11y-legal-mark-${r.severity}`}>{r.mark}</span>
               </span>
               <span className="a11y-legal-count">{r.n}</span>

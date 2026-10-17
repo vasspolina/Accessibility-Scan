@@ -206,7 +206,7 @@ export function isAiFinding(finding: AccessibilityFinding): boolean {
 }
 
 export const AI_HINT =
-  "Raised by the AI review, which reads the page the way a person might rather than checking a rule. It catches what no rule can express, and it can also be confidently wrong. Check before acting.";
+  "Raised by the AI review, which reads the page the way a person might rather than checking a rule. It can be confidently wrong. Check before acting.";
 
 export const KEYBOARD_HINT =
   "You can confirm this one yourself in a few minutes, with nothing installed. Put the mouse aside and move through the page using Tab, Enter and Escape.";

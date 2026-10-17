@@ -67,21 +67,23 @@ export function PrincipleGroup({ findings }: { findings: AccessibilityFinding[] 
       })}
       {unclassified.length > 0 && (
         <div className="a11y-principle-group">
-          <p className="a11y-principle-head">
-            <span className="a11y-principle-term">{t("Best practice")}</span>
-            <span className="a11y-principle-count">
-              <span aria-hidden="true">{unclassified.length}</span>
-              <span className="a11y-sr-only">
-                {unclassified.length === 1 ? t("1 finding") : tf("{count} findings", { count: unclassified.length })}
-              </span>
-            </span>
-          </p>
-          <h3 className="a11y-principle-title">{t("Worth a look anyway")}</h3>
-          <p className="a11y-principle-desc">
-            {t(
-              "Not tied to a specific WCAG rule, but still worth a look. These are widely recommended practices for a well built, accessible site."
-            )}
-          </p>
+          {/* The same head as the principle groups: a title and its count.
+              The "Worth a look anyway" title and the sentence under it said
+              only that these are worth a look, which is what listing them
+              already says. */}
+          <div className="a11y-pg-head">
+            <div className="a11y-pg-titles">
+              <h3 className="a11y-principle-title">
+                {t("Best practice")}{" "}
+                <span className="a11y-principle-count">
+                  <span aria-hidden="true">({unclassified.length})</span>
+                  <span className="a11y-sr-only">
+                    {unclassified.length === 1 ? t("1 finding") : tf("{count} findings", { count: unclassified.length })}
+                  </span>
+                </span>
+              </h3>
+            </div>
+          </div>
           <FindingsList findings={unclassified} />
         </div>
       )}

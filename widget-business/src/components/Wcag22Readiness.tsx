@@ -24,7 +24,7 @@ export function Wcag22Readiness({ readiness }: { readiness: Readiness }) {
   const [open, setOpen] = useState(false);
   const panelId = useId();
 
-  const { alreadyFailing, needsReview, total, criteria, parsingNoLongerCounts } = readiness;
+  const { alreadyFailing, total, criteria, parsingNoLongerCounts } = readiness;
   // The backend writes the date in English ("late 2026"). Looked up like the
   // backend's check names: a date with no translation stays as it came.
   const expectedFrom = t(readiness.expectedFrom);
@@ -46,7 +46,7 @@ export function Wcag22Readiness({ readiness }: { readiness: Readiness }) {
         expected={tf("expected {date}", { date: expectedFrom })}
         failCount={alreadyFailing}
         description={tf(
-          "The standard European law points at will change. Nothing here is required yet. These are the {total} new items that become Level A or AA when it lands. You can fix them on your own schedule rather than someone else's.",
+          "The standard European law points at will change. Nothing here is required yet. These are the {total} new items that become Level A or AA when it lands.",
           { total }
         )}
         items={criteria.map((c) => ({ criterion: c.id, title: c.plain, level: c.level }))}
@@ -58,10 +58,9 @@ export function Wcag22Readiness({ readiness }: { readiness: Readiness }) {
           to draw that: the toggle and the region it controls are siblings
           of the heading, not children of anything. */}
       <div className="a11y-w22-panel">
+        {/* No lead under the title: each card below carries its own call,
+            and the panel above already says nothing here is required yet. */}
         <h3 className="a11y-w22-panel-title">{t("The six new items")}</h3>
-        <p className="a11y-w22-panel-lead">
-          {t("These need a person, which is the same answer the checklist below gives. Nothing here counts against today’s score.")}
-        </p>
       <button
         type="button"
         className="a11y-accordion-head a11y-w22-toggle"
@@ -83,46 +82,16 @@ export function Wcag22Readiness({ readiness }: { readiness: Readiness }) {
       {/* Hidden rather than unrendered, so aria-controls always points at a
           real element. */}
       <div id={panelId} hidden={!open}>
-          <div className="a11y-w22-cols">
-          <div>
           <p className="a11y-conf-caveat">
             <strong className="a11y-w22-lead">{t("What actually changes")}</strong>{" "}
             {tf(
-              "The European Accessibility Act points at a standard called EN 301 549, which today adopts WCAG 2.1. The next version adopts WCAG 2.2, expected in the EU's Official Journal in {date}. Until then, the checklist above is the one that counts.",
+              "The European Accessibility Act points at a standard called EN 301 549, which today adopts WCAG 2.1. The next version adopts WCAG 2.2, expected in the EU's Official Journal in {date}.",
               { date: expectedFrom }
             )}
           </p>
-
-          {/* Moved ahead of the table it explains: most of these rows carry
-              no per-row status badge at all (see the comment inside the
-              DataTable below), on the reasoning that this paragraph says
-              "needs a person" for all of them once — which only holds if a
-              reader reaches this sentence before those blank-looking rows,
-              not after them. */}
-          </div>
-          <div>
-          <p className="a11y-conf-caveat">
-            <strong className="a11y-w22-lead">{t("Software can check only one")}</strong>{" "}
-            {tf("{needsReview} of the {total} depend on things a machine cannot judge:", { needsReview, total })}
-          </p>
-          {/* These were five questions in a row inside a seventy-six word
-              paragraph. They are a list — each one is a separate thing to go
-              and look at — and running them together as prose meant a reader
-              had to hold all five while working out where each began. */}
-          <ul className="a11y-question-list">
-            <li>{t("Does a sticky header cover what you have tabbed to?")}</li>
-            <li>{t("Does a drag have a simpler alternative?")}</li>
-            <li>{t("Does help sit in the same place on every page?")}</li>
-            <li>{t("Does a form ask twice?")}</li>
-            <li>{t("Can you log in without solving a puzzle?")}</li>
-          </ul>
-          </div>
-          </div>
-          {/* The closing "these need a person" sentence is gone, not moved.
-              It said exactly what the panel's lead already says above the
-              rows — and after the breakdown became two columns it trailed
-              the whole panel, pointing "below" at nothing. One sentence,
-              said once, above the things it describes. */}
+          {/* The "Software can check only one" column and its five questions
+              are gone: the cards below ask the same questions, each with its
+              own call. */}
 
           {/* The design system's item grid, not a table.
               WhatsNextPanel renders these as cards in an auto-fit grid, with
@@ -201,7 +170,7 @@ export function Wcag22Readiness({ readiness }: { readiness: Readiness }) {
 
           {parsingNoLongerCounts && (
             <p className="a11y-notice">
-              {t("One piece of good news. This scan reports a failure against 4.1.1 Parsing, and WCAG 2.2 removes that criterion as obsolete. When the standard updates, that particular failure simply no longer counts.")}
+              {t("This scan reports a failure against 4.1.1 Parsing, and WCAG 2.2 removes that criterion as obsolete. When the standard updates, that particular failure simply no longer counts.")}
             </p>
           )}
       </div>
