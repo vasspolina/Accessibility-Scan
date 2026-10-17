@@ -119,7 +119,7 @@ export function VisionSimulator({
       <h2 className="a11y-section-title" id="a11y-sim-heading" data-nav-label={t("Through other eyes")}>{t("Your page, through other eyes")}</h2>
       <p className="a11y-section-desc">
         {t(
-          "About one man in twelve is colour blind. Switch between views to see what your page loses. These are approximations. No one’s sight matches them exactly."
+          "About one man in twelve is colour blind. Switch between views to see what your page loses."
         )}
       </p>
 

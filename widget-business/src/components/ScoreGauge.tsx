@@ -98,7 +98,6 @@ export const SCORE_POINTS = [
   "When the AI review runs, its findings count too, if their card names a WCAG requirement. Those can be wrong.",
   "A scan of this kind reaches between a third and a half of accessibility problems.",
   "The rest need a person with a keyboard and a screen reader.",
-  "It is useful for tracking whether the site improves over time.",
   "It is not a statement that the site meets the law.",
 ];
 
@@ -196,13 +195,6 @@ export function computeDoFirst(
     outOf: worstFirst.reduce((n, g) => n + g.length, 0),
   };
 }
-
-/* The second line under the verdict. The evocative line varies by band and
-   by scan — scoreSummary picks from a set — while this one never does,
-   because it is the qualification rather than the mood. "Finds", not
-   "proves": AI-review findings move the score too, and they are judgment. */
-const VERDICT_CAVEAT =
-  "A scan finds what a machine can check. The rest needs a person testing the site by hand.";
 
 /* The band as its range, not an adjective: "middling" told a reader
    nothing about where the line sat (user's question, 26 Aug 2026). */
@@ -331,8 +323,9 @@ export function ScoreGauge({
           )}
 
           <SumPanel title={tf("What a score of {band} means", { band: t(BAND_WORD(score)) })}>
+            {/* No second line: points 05 and 06 under "What the score counts"
+                already say what a scan reaches and what needs a person. */}
             <p className="a11y-sum-lead">{t(scoreSummary(score, seed))}</p>
-            <p className="a11y-sum-body">{t(VERDICT_CAVEAT)}</p>
           </SumPanel>
 
           <SumPanel title={t("What the score counts")} grow>
@@ -350,7 +343,6 @@ export function ScoreGauge({
         <div className="a11y-sum-col">
           <section className="a11y-sum-run" aria-labelledby="a11y-sum-run-heading">
             <h3 className="a11y-sum-eyebrow" id="a11y-sum-run-heading">{t("Scan summary")}</h3>
-            <p className="a11y-sum-micro">{t("This run")}</p>
 
             <div className="a11y-sum-dial-card">
               {/* One label carries the whole thing, and every part of the

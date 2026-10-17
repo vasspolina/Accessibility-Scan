@@ -252,3 +252,13 @@
   .a11y-widget-biz .a11y-print-cards { display: block; }
   .a11y-widget-biz .a11y-findings-table { display: none; }
 }
+
+/* Column heads never hyphenate or split a word ("WCA / G", "Who fix- / es
+   this"): the root's auto hyphenation and break-anywhere are for prose. A
+   head that does not fit widens its column instead. */
+.a11y-widget-biz th { hyphens: manual; overflow-wrap: normal; }
+/* Under 600px the WCAG and Level columns are gone and the page is too
+   narrow for "Occurrences" whole: heads hyphenate there like prose. */
+@media (max-width: 600px) {
+  .a11y-widget-biz th { hyphens: auto; overflow-wrap: anywhere; }
+}

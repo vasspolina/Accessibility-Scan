@@ -177,7 +177,7 @@ export function ScreenReaderPreview({ script }: { script: ScreenReaderScript }) 
           exactly what happened. */}
       <p className="a11y-section-desc">
         {t(
-          "How your page sounds to someone who can't see it, in the order they hear it. Lines marked “says nothing useful” are where a listener learns nothing. Close to a real screen reader, not a recording."
+          "How your page sounds to someone who can't see it, in the order they hear it."
         )}
       </p>
       </div>
@@ -248,7 +248,6 @@ export function ScreenReaderPreview({ script }: { script: ScreenReaderScript }) 
           accessible name, aria-current marks the line being read, and
           the header strip is aria-hidden because a list has no columns
           for a listener. */}
-      <p className="a11y-sr-log-title">{t("What a screen reader announces, in reading order")}</p>
       <div className="a11y-sr-log">
         <p className="a11y-sr-log-heads" aria-hidden="true">
           <span>#</span>
@@ -281,7 +280,6 @@ export function ScreenReaderPreview({ script }: { script: ScreenReaderScript }) 
             </li>
           ))}
         </ol>
-        <p className="a11y-sr-log-foot">{t("This is the order a screen reader reads it in.")}</p>
       </div>
 
       {/* A toggle rather than a button that removes itself: a control that
@@ -304,7 +302,7 @@ export function ScreenReaderPreview({ script }: { script: ScreenReaderScript }) 
       )}
       {script.truncated && (
         <p className="a11y-sr-note">
-          {t("This shows only the first part of the page. We cut long pages short to keep them readable.")}
+          {t("This shows only the first part of the page.")}
         </p>
       )}
       </div>

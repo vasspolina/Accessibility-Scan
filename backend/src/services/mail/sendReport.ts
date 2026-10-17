@@ -93,7 +93,6 @@ function renderText(report: AccessibilityReport): string {
     "- When the AI review runs, its findings count too, if their card names a WCAG requirement. Those can be wrong.",
     "- A scan of this kind reaches between a third and a half of accessibility problems.",
     "- The rest need a person with a keyboard and a screen reader.",
-    "- It is useful for tracking whether the site improves over time.",
     "- It is not a statement that the site meets the law.",
     "",
     "You asked for this report from the accessibility scanner on this page."

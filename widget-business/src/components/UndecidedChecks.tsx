@@ -68,21 +68,13 @@ export function UndecidedChecks({
         {t("For your designer and developer")}{" "}
         <span className="a11y-section-count">({total})</span>
       </h2>
-      {/* Two paragraphs, not one. This was a single seventy-one word block of
-          five sentences, which is the longest thing in the report and sits at
-          the top of a section — the worst place to ask someone to work for it.
-          The split is where the subject changes: what the checker did, then
-          what it means for the reader. */}
+      {/* Two sentences: what the checker did, and that none of it is
+          scored. The heading names who decides and the Call column says
+          whose, so the lead no longer repeats either. */}
       <p className="a11y-section-desc">
         {total === 1
-          ? t("The checker could not settle this one on its own. It reports a problem only where it can prove one, so anything needing judgement comes here rather than a guess either way.")
-          : tf(
-              "The checker could not settle these {total} on its own. It reports a problem only where it can prove one, so anything needing judgement comes here rather than a guess either way.",
-              { total }
-            )}
-      </p>
-      <p className="a11y-section-desc">
-        {t("Each is a decision for someone on your side, and the mark on each one says whose. None of it counts against the score, and some will turn out to be perfectly fine.")}
+          ? t("The checker could not settle this one on its own. It does not count against the score.")
+          : tf("The checker could not settle these {total} on its own. None of them count against the score.", { total })}
       </p>
       </div>
       {rows.length > 0 && (

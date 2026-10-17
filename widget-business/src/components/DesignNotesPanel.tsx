@@ -88,17 +88,12 @@ export function DesignNotesPanel({ findings }: { findings: AccessibilityFinding[
       <p className="a11y-section-desc">
         {t("What a designer would point out, not failures against a rule. None of it counts towards the score.")}
       </p>
-      <p className="a11y-section-desc">
-        {t("Most notes are about type. Text set small, tight or in capitals loses readers before any rule is broken.")}
-      </p>
 
       {/* Professional mode gets the notes as cards only — the black panel is
           the business reading of them, and the pro screen already lists every
           finding once. */}
       {!professional && (
         <div className="a11y-dn-panel">
-          <p className="a11y-dn-panel-eyebrow">{t("The notes")}</p>
-
           {/* Toggles, not labels. Pressing one narrows the list to that
               kind; pressing it again clears it, so there is no separate
               "All" pill to keep in step with the others. */}
@@ -168,7 +163,6 @@ export function DesignNotesPanel({ findings }: { findings: AccessibilityFinding[
                 <h3 className="a11y-dn-detail-title">{noteTitle(open)}</h3>
                 <p className="a11y-dn-pills">
                   <span className="a11y-dn-pill a11y-dn-pill-kind">{t(noteKind(open[0]))}</span>
-                  <span className="a11y-dn-pill a11y-dn-pill-note">{t("Note")}</span>
                 </p>
               </div>
               <FindingDetails findings={open} asNotes />

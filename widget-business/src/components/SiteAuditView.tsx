@@ -93,7 +93,7 @@ export function SiteAuditView({ audit }: { audit: SiteAudit }) {
           </h2>
           <p className="a11y-section-desc">
             {t(
-              "Found by comparing your pages against each other, which is the only way these show up. One page on its own always looks fine. A menu that moves, or a link that changes its name, makes people learn your site again on every page."
+              "Found by comparing your pages against each other, which is the only way these show up."
             )}
           </p>
           <ul className="a11y-audit-list">
@@ -137,7 +137,7 @@ export function SiteAuditView({ audit }: { audit: SiteAudit }) {
             <span className="a11y-section-count">({audit.siteWide.length})</span>
           </h2>
           <p className="a11y-section-desc">
-            {t("These show up on every page, so they live in the template rather than the content. Structural, not decorative. Start here.")}
+            {t("These show up on every page, so they live in the template rather than the content. Start here.")}
           </p>
           <ul className="a11y-audit-list">
             {audit.siteWide.map((issue) => {
