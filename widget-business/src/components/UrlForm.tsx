@@ -283,7 +283,6 @@ export function UrlForm({
               name="a11y-scan-mode"
               value="page"
               label={t("This page")}
-              description={t("Only the page at this address")}
               checked={mode === "page"}
               onChange={() => setMode("page")}
               disabled={loading}
@@ -358,7 +357,7 @@ export function UrlForm({
               <span className="a11y-ai-card-text">
                 <span className="a11y-ai-card-title">{t("Add an AI review")}</span>
                 <span id="a11y-ai-hint" className="a11y-ai-hint">
-                  {t("A language model reads the page for design and wording faults no rule can catch. It can be wrong, so check before acting.")}{" "}
+                  {t("A language model reads the page for design and wording faults. It can be wrong.")}{" "}
                   {tf("Adds {duration}.", { duration: t(SCAN_DURATION.aiAdds) })}
                 </span>
               </span>

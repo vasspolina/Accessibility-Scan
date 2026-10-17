@@ -108,9 +108,7 @@ export function SideNav({
           <span className="a11y-shell-nav-heading" id={headingId}>
             {t("Sections")}
           </span>
-          <span className="a11y-shell-nav-count">
-            {sections.length} {t(sections.length === 1 ? "section in this report" : "sections in this report")}
-          </span>
+          <span className="a11y-shell-nav-count">({sections.length})</span>
         </button>
       </h2>
       {/* Five groups, in the order a reader's questions come — the

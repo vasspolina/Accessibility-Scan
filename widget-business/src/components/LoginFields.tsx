@@ -76,15 +76,15 @@ export function LoginFields({
     const missing = [noUrl, noUser, noPassword].filter(Boolean).length;
     if (missing === 0 || missing === 3) return "";
     if (missing > 1) {
-      return t("Add the rest to sign in during the scan. Or clear the other fields to scan without a login.");
+      return t("Add the rest to sign in during the scan.");
     }
     if (noUrl) {
-      return t("Add the login page address to sign in during the scan. Or clear the other fields to scan without a login.");
+      return t("Add the login page address to sign in during the scan.");
     }
     if (noUser) {
-      return t("Add a username or email to sign in during the scan. Or clear the other fields to scan without a login.");
+      return t("Add a username or email to sign in during the scan.");
     }
-    return t("Add a password to sign in during the scan. Or clear the other fields to scan without a login.");
+    return t("Add a password to sign in during the scan.");
   }
 
   return (
@@ -110,7 +110,7 @@ export function LoginFields({
 
           <p className="a11y-login-note">
             {t(
-              "Use a test account, not your own. We sign in and scan the page, then throw the session away. We save nothing. The page we photograph will show whatever that account can see."
+              "Use a test account, not your own. We sign in and scan the page, then throw the session away. The page we photograph will show whatever that account can see."
             )}
           </p>
 

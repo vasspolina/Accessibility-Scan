@@ -50,7 +50,7 @@ const PICTURE_NOTES: Record<NonNullable<AccessibilityFinding["pictureReason"]>, 
   hidden:
     "No picture: this was not visible on the page when it was scanned. Something reveals it, such as opening a panel or moving focus to it.",
   offscreen:
-    "No picture: this sits off the edge of the screen until it is used. Skip links are built this way on purpose, so nothing is necessarily wrong with it being there.",
+    "No picture: this sits off the edge of the screen until it is used. Skip links are built this way on purpose.",
   "no-usable-image":
     "No picture: the element is there, but photographing it produced nothing worth showing. A blank rectangle, or whatever is sitting on top of it.",
   "too-large":
@@ -58,7 +58,7 @@ const PICTURE_NOTES: Record<NonNullable<AccessibilityFinding["pictureReason"]>, 
   missing:
     "No picture: the element was on the page when we judged it, and gone when we went back to photograph it. Banners that appear once per visitor do this.",
   "not-attempted":
-    "No picture: each scan photographs a limited number of elements, and this one was past that limit. Nothing about the element itself. Scanning again may reach it.",
+    "No picture: each scan photographs a limited number of elements, and this one was past that limit. Scanning again may reach it.",
   unreachable:
     "No picture: this element could not be located again on the return visit. Pages that rebuild themselves on every load do this.",
 };

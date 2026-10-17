@@ -24,7 +24,7 @@ describe("waitingMessage", () => {
   it("stops promising a quick answer once the scan is plainly not quick", () => {
     expect(waitingMessage("page", false, 5)).toContain("Most pages");
     expect(waitingMessage("page", false, 30)).toContain("Still at it");
-    expect(waitingMessage("page", false, 70)).toContain("unusually heavy");
+    expect(waitingMessage("page", false, 70)).toContain("large images");
   });
 
   it("blames the AI review for the wait only when it was asked for", () => {

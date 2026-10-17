@@ -80,7 +80,7 @@ export function AccountKey({
       ) : (
         <>
           <span className="a11y-settings-state">
-            {t("Not signed in. Nothing is saved, which is the default.")}
+            {t("Not signed in. Nothing is saved.")}
           </span>
           <Input
             id={`${id}-key`}

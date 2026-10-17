@@ -92,7 +92,6 @@ export function ScanSettings({
           onClick={() => onRerun({ ai: !aiIncluded })}
         >
           {aiIncluded ? t("Run again without the AI review") : t("Run again with the AI review")}
-          <span className="a11y-settings-cost">. {t("Takes another scan")}</span>
         </button>
       </div>
 
@@ -108,9 +107,9 @@ export function ScanSettings({
           onClick={() => onRerun({ scope: scope === "site" ? "page" : "site" })}
         >
           {scope === "site" ? t("Scan this page only") : t("Scan the whole site")}
-          <span className="a11y-settings-cost">
-            . {scope === "site" ? t("Takes another scan") : t("Takes a few minutes")}
-          </span>
+          {/* "Run again" and "Scan" already say it costs a scan; only the
+              whole-site run has a cost worth stating. */}
+          {scope === "page" && <span className="a11y-settings-cost">. {t("Takes a few minutes")}</span>}
         </button>
       </div>
     </section>

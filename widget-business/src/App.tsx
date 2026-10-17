@@ -101,12 +101,12 @@ export function waitingMessage(mode: ScanMode, aiRequested: boolean, elapsed: nu
     });
   }
   if (elapsed >= 60) {
-    return t("Still at it. This one is unusually heavy — a page of large images can take a while to load and measure.");
+    return t("Still at it. A page of large images can take a while to load and measure.");
   }
   if (elapsed >= 25) {
     return aiRequested
-      ? t("Still at it. The AI review is the slow part, and it is nearly always worth the wait.")
-      : t("Still at it. Heavier pages take longer, and this one is on the heavier side.");
+      ? t("Still at it. The AI review is the slow part.")
+      : t("Still at it. Heavier pages take longer.");
   }
   return aiRequested
     ? t("We check your site, including the AI review. That usually takes about a minute…")

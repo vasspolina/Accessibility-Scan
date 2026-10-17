@@ -44,7 +44,7 @@ export const FIX_KINDS: Record<FixOwner, FixKind> = {
     // a report written for the person who owns the site rather than the one
     // who builds it. They do not need the names of the files.
     get hint() {
-      return t("This is a change in the site's own code. It goes to whoever builds or maintains the site for you.");
+      return t("Whoever builds or maintains the site for you.");
     },
   },
   content: {
@@ -53,7 +53,7 @@ export const FIX_KINDS: Record<FixOwner, FixKind> = {
       return t("Content fix");
     },
     get hint() {
-      return t("No code needs to change. This is a decision about wording. It belongs with whoever writes the page rather than with a developer.");
+      return t("No code needs to change. It belongs with whoever writes the page rather than with a developer.");
     },
   },
   design: {
@@ -67,7 +67,7 @@ export const FIX_KINDS: Record<FixOwner, FixKind> = {
     // not their decision to make. The decision comes first and belongs to
     // whoever owns how the page looks.
     get hint() {
-      return t("This is a decision about how the page looks: a size, a colour, a spacing. The designer decides it. A developer then changes the stylesheet to match.");
+      return t("The designer decides it: a size, a colour, a spacing. A developer then changes the stylesheet to match.");
     },
   },
   document: {
@@ -76,7 +76,7 @@ export const FIX_KINDS: Record<FixOwner, FixKind> = {
       return t("Document fix");
     },
     get hint() {
-      return t("The fault is inside the PDF, not the website. Fix it in the original file (Word, InDesign, Acrobat) and export again. Editing the site will not help.");
+      return t("Fix it in the original file (Word, InDesign, Acrobat) and export again. Editing the site will not help.");
     },
   },
 };

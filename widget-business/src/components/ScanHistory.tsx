@@ -141,7 +141,6 @@ export function ScanHistory({
 
       <div className="a11y-hist-cols">
         <div className="a11y-hist-col">
-          <h3 className="a11y-hist-head">{t("Every scan of this page")}</h3>
           {/* Grouped by year, because a bare column of dates makes the
               reader parse four digits on every line to find the boundary.
               The year is a real <li> rather than a heading between lists:
@@ -202,7 +201,6 @@ export function ScanHistory({
           <h3 className="a11y-hist-head">{t("Where this lives")}</h3>
           <ul className="a11y-hist-facts">
             <li>{t("Kept in this browser only, never sent anywhere.")}</li>
-            <li>{t("Delete it whenever you like — nothing here is needed to run another scan.")}</li>
           </ul>
           {/* The design writes "Delete this history at any time" as a line
               of prose. It is the one genuinely destructive action here, so
@@ -245,7 +243,7 @@ export function ScanHistory({
             }}
           >
             {t(
-              "You can’t undo this. Every past scan of this page, kept only in this browser, will be gone. Including the comparison above."
+              "You can’t undo this. Every past scan of this page will be gone, including the comparison above."
             )}
           </Dialog>,
           portalTarget
