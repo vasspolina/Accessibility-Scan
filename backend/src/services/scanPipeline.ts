@@ -626,6 +626,7 @@ export async function scanUrlToReport(
       incompleteChecks: renderResult.incompleteChecks.length
         ? renderResult.incompleteChecks
         : undefined,
+      tabWalkStops: renderResult.keyboardNav.truncated ? renderResult.keyboardNav.stops.length : undefined,
       // The per-page axe incompletes, so a crawl can union them into ITS
       // conformance table. The re-audit found the site-level table printing
       // "Nothing found" on criteria axe could not decide, while the per-page

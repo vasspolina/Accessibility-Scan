@@ -51,6 +51,16 @@ describe("the scan's step lines", () => {
     expect(stepResult("keyboard", r)).toBe("1 found · Did not finish");
   });
 
+  it("say how far a walk cut short by its cap got, and keep 'did not finish' for one that broke", () => {
+    // The walk ran and stopped at the cap: a sample, not a failure.
+    const cut = report([finding({ ruleId: "keyboard-focus-not-visible" })], { incompleteChecks: ["keyboard navigation"], tabWalkStops: 400 });
+    expect(stepResult("keyboard", cut)).toBe("1 found · first 400 stops");
+    expect(stepResult("keyboard", report([], { incompleteChecks: ["keyboard navigation"], tabWalkStops: 400 }))).toBe("Nothing found · first 400 stops");
+    // Another keyboard check that did not finish keeps the plain words.
+    const broke = report([], { incompleteChecks: ["keyboard navigation", "open dialogs"], tabWalkStops: 400 });
+    expect(stepResult("keyboard", broke)).toBe("Did not finish");
+  });
+
   it("count phone-width contrast on the phone line", () => {
     expect(stepResult("phone", report([finding({ ruleId: "color-contrast-mobile" })]))).toBe("1 found");
   });

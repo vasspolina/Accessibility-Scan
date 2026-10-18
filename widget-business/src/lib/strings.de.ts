@@ -214,6 +214,7 @@ export const STRINGS_DE: Record<string, string> = {
   "Could not check {url}.": "{url} konnte nicht geprüft werden.",
   "The assistant is still replying. Run it again in a moment.": "Der Assistent antwortet noch. Starten Sie den Scan gleich noch einmal.",
   "Did not finish": "Nicht abgeschlossen",
+  "first {n} stops": "die ersten {n} Stopps",
   "Did not run": "Nicht ausgeführt",
   "I can't help with that one. Ask me something else, or name a site to check.": "Dabei kann ich nicht helfen. Fragen Sie etwas anderes, oder nennen Sie eine Website zum Prüfen.",
   "Something went wrong. Please try again.": "Etwas ist schiefgelaufen. Bitte versuchen Sie es noch einmal.",
