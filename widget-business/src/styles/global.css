@@ -552,3 +552,18 @@
 .a11y-widget-biz .a11y-pro-count { font-size: 18px; letter-spacing: 0.01em; }
 .a11y-widget-biz .a11y-pro-chips { display: flex; flex-wrap: wrap; gap: 0.3em 0.6em; margin: 0 0 0.6em; font-size: 18px; letter-spacing: 0.01em; }
 .a11y-widget-biz .a11y-pro-jump { display: inline-flex; align-items: baseline; gap: 0.4em; }
+
+/* ═══ DESKTOP GUTTER AND TIGHT CHAT (18 Oct 2026; user's instruction) ═════
+   On desktop the page, the conversation and every element in it sit 16px
+   from the left and right edges: no centred 40em column, no 1em padding.
+   In the conversation there is no space between lines: turns, paragraphs
+   and lists run on, and the speaker label above each turn is what parts
+   one voice from the next. */
+@media (min-width: 641px) {
+  .a11y-widget-biz { max-width: none; margin-inline: 0; padding-inline: 16px; }
+}
+.a11y-widget-biz .a11y-chat-turn,
+.a11y-widget-biz .a11y-chat-thread,
+.a11y-widget-biz .a11y-chat-steps { margin-bottom: 0; }
+.a11y-widget-biz .a11y-chat-text :is(p, ul, ol, pre) { margin: 0; }
+.a11y-widget-biz .a11y-chat-sources { margin-top: 0; }
