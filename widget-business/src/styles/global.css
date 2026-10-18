@@ -210,6 +210,38 @@
 .a11y-widget-biz .a11y-chat-who { font-size: 15px; font-weight: 500; margin: 0; }
 .a11y-widget-biz .a11y-chat-turn { margin-bottom: 1.2em; }
 
+/* ═══ MOTION IN THE CONVERSATION (18 Oct 2026) ═══════════════════════════
+   What arrives, arrives: a turn fades in, and each chunk of a streamed
+   reply fades in from where it began, as an assistant's words do. Nothing
+   rests below full ink — the fades end at 1, and the waiting points are
+   on or off. The title folds shut under the first turn instead of
+   vanishing, which pulled the whole page up a line. All of it is off
+   when the person asks for less motion. */
+@keyframes a11y-chat-in { from { opacity: 0; } to { opacity: 1; } }
+/* The points come on one after another and go off together. */
+@keyframes a11y-chat-dot-1 { 0%, 19% { opacity: 0; } 20%, 100% { opacity: 1; } }
+@keyframes a11y-chat-dot-2 { 0%, 44% { opacity: 0; } 45%, 100% { opacity: 1; } }
+@keyframes a11y-chat-dot-3 { 0%, 69% { opacity: 0; } 70%, 100% { opacity: 1; } }
+.a11y-widget-biz .a11y-chat-turn { animation: a11y-chat-in 0.35s ease-out both; }
+.a11y-widget-biz .a11y-chat-new { animation: a11y-chat-in 0.5s ease-out both; }
+.a11y-widget-biz .a11y-chat-thinking { animation: a11y-chat-in 0.5s ease-out both; }
+.a11y-widget-biz .a11y-chat-dots span { animation: a11y-chat-dot-1 1.2s steps(1, end) infinite; }
+.a11y-widget-biz .a11y-chat-dots span:nth-child(2) { animation-name: a11y-chat-dot-2; }
+.a11y-widget-biz .a11y-chat-dots span:nth-child(3) { animation-name: a11y-chat-dot-3; }
+.a11y-widget-biz .a11y-newscan-fold {
+  display: grid; grid-template-rows: 1fr;
+  transition: grid-template-rows 0.4s ease, opacity 0.3s ease, visibility 0s 0s;
+}
+.a11y-widget-biz .a11y-newscan-fold > div { min-height: 0; overflow: hidden; }
+.a11y-widget-biz .a11y-newscan-fold[data-gone] {
+  grid-template-rows: 0fr; opacity: 0; visibility: hidden;
+  transition: grid-template-rows 0.4s ease, opacity 0.3s ease, visibility 0s 0.4s;
+}
+@media (prefers-reduced-motion: reduce) {
+  .a11y-widget-biz :is(.a11y-chat-turn, .a11y-chat-new, .a11y-chat-thinking, .a11y-chat-dots span) { animation: none; }
+  .a11y-widget-biz .a11y-newscan-fold { transition: none; }
+}
+
 /* ═══ ONE MARK PER THING (16 Oct 2026) ═══════════════════════════════════
    The conversation is not a numbered list, a step is not a bullet, a fold
    has one arrow, and a finding carries its severity once. */

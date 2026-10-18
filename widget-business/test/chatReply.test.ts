@@ -84,3 +84,35 @@ describe("renderReply", () => {
     expect(html("## What to fix\nThe menu.")).toBe("<p><strong>What to fix</strong></p><p>The menu.</p>");
   });
 });
+
+/**
+ * A reply still arriving: each chunk fades in from where it began. The
+ * mark rides through the parsing as a private-use character and must
+ * never reach the page, change what a line is, or break a code block.
+ */
+describe("renderReply while streaming", () => {
+  const streamed = (text: string, at: number[]) =>
+    renderToStaticMarkup(createElement(Fragment, null, renderReply(text, at.map((a) => ({ at: a, t: 0 })))));
+
+  it("wraps each chunk after its mark, typeset, and keeps the words whole", () => {
+    expect(streamed('Say "hi" there', [0, 4, 9])).toBe(
+      '<p><span class="a11y-chat-new">Say </span><span class="a11y-chat-new">“hi” </span><span class="a11y-chat-new">there</span></p>'
+    );
+  });
+
+  it("moves a mark off a list marker and a fence line, so the line keeps its kind", () => {
+    expect(streamed("One:\n- two\n- three", [5, 15])).toBe(
+      '<p>One:</p><ul><li><span class="a11y-chat-new">two</span></li><li>th<span class="a11y-chat-new">ree</span></li></ul>'
+    );
+    expect(streamed("```\nlet a\n```", [0, 6])).toBe(
+      '<pre class="a11y-chat-pre"><code><span class="a11y-chat-new">le</span><span class="a11y-chat-new">t a</span></code></pre>'
+    );
+  });
+
+  it("never lets a mark through to a link, bold or code", () => {
+    const out = streamed("See **this** and `x` at https://a.example/p", [6, 17, 33, 40]);
+    expect(out).not.toMatch(/[-]/);
+    expect(out).toContain('href="https://a.example/p"');
+    expect(out).toMatch(/<strong>(<span[^>]*>)?this(<\/span>)?<\/strong>/);
+  });
+});
