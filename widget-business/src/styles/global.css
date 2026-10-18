@@ -276,6 +276,13 @@
   .a11y-widget-biz :is(td, th):is([data-col="severity"], [data-col="wcag"], [data-col="level"]) { display: none; }
 }
 
+/* A row's second line (test method, AI mark, triage state, fix kind) is
+   small print under the title, not a suffix welded onto its last word:
+   "Pop-up opens without taking focusKeyboard test" shipped on 17 Oct. */
+.a11y-widget-biz .a11y-finding-meta-line,
+.a11y-widget-biz .a11y-finding-meta { display: block; font-size: 15px; line-height: 1.2; }
+.a11y-widget-biz .a11y-method-badge { margin-inline-end: 0.3em; }
+
 /* The printed report's own copy of the findings (cards) is in the DOM for
    print only. On screen the table is the one list; without this every
    finding showed twice, once in the table and once as a card. */
