@@ -55,8 +55,12 @@ export type ScanOutcome =
   | { kind: "blocked"; message: string }
   | { kind: "error"; message: string };
 
+/** Where a streamed chunk of a reply began, and when it arrived. The
+ *  chunk fades in from that point; the mark is dropped once it has. */
+type Mark = { at: number; t: number };
+
 type Turn =
-  | { id: number; who: "you" | "checker"; text: string; streaming?: boolean }
+  | { id: number; who: "you" | "checker"; text: string; streaming?: boolean; marks?: Mark[] }
   | { id: number; who: "scan"; url: string; state: "running" | "done" | "failed"; steps: string[]; seconds?: number; resultKey?: string }
   | { id: number; who: "block"; section: SectionKey; resultKey: string }
   | { id: number; who: "notice"; message: string };
@@ -90,18 +94,101 @@ let nextId = 1;
  *  Code blocks are cut out first, because the code inside may hold blank
  *  lines and list-like lines. A block still streaming in has no closing
  *  fence yet, and is drawn as code up to the end. */
-export function renderReply(text: string): ReactNode {
+export function renderReply(text: string, marks?: Mark[]): ReactNode {
   const out: ReactNode[] = [];
-  splitFences(text).forEach((seg, s) => {
+  splitFences(marks?.length ? withMarks(text, marks) : text).forEach((seg, s) => {
     if (seg.code !== undefined) {
       if (seg.code.trim())
         out.push(
           <pre key={`c${s}`} className="a11y-chat-pre">
-            <code>{seg.code.replace(/\n+$/, "")}</code>
+            <code>{fade(seg.code.replace(/\n+$/, ""), null)}</code>
           </pre>
         );
     } else renderProse(seg.text, `t${s}`, out);
   });
+  return out;
+}
+
+/** How long a chunk fades in for (matches the CSS), and so how long its
+ *  mark is kept. */
+export const FADE_MS = 500;
+
+// A chunk's start is marked in the text with a private-use character, so
+// the mark rides through the paragraph and list parsing untouched and is
+// read back where the words are finally set. The character carries the
+// mark's number, which keys the span so React keeps it — and its running
+// animation — across the re-render each next chunk causes.
+const MARK_BASE = 0xe000;
+const SENTINEL = /([\uE000-\uEFFF])/;
+const SENTINELS = /[\uE000-\uEFFF]/g;
+
+/** The text with a sentinel at the start of each chunk. A mark that would
+ *  land on a fence line, a blank line or inside a list marker is moved to
+ *  the first word after it, so it never changes what the line is. */
+function withMarks(text: string, marks: Mark[]): string {
+  const at = new Map<number, number>();
+  marks.forEach((m, i) => {
+    const off = settle(text, m.at);
+    if (off !== null && !at.has(off)) at.set(off, i);
+  });
+  let out = text;
+  [...at.entries()]
+    .sort((a, b) => b[0] - a[0])
+    .forEach(([off, i]) => {
+      out = out.slice(0, off) + String.fromCharCode(MARK_BASE + (i & 0xfff)) + out.slice(off);
+    });
+  return out;
+}
+
+const LEAD = /^\s*(?:[-•*]\s+|\d+[.)]\s+|#{1,6}\s+)?/;
+
+function settle(text: string, off: number): number | null {
+  for (;;) {
+    if (off >= text.length) return null;
+    const lineStart = text.lastIndexOf("\n", off - 1) + 1;
+    const nl = text.indexOf("\n", off);
+    const lineEnd = nl < 0 ? text.length : nl;
+    const line = text.slice(lineStart, lineEnd);
+    const lead = LEAD.exec(line)![0].length;
+    if (FENCE.test(line) || lead === line.length) {
+      off = lineEnd + 1;
+      continue;
+    }
+    return Math.max(off, lineStart + lead);
+  }
+}
+
+/** The words, with each chunk that is still arriving wrapped so it fades
+ *  in. Prose is typeset (`lang`); code is not (null). */
+function fade(text: string, lang: string | null): ReactNode {
+  const set = (piece: string, prev: string) =>
+    lang === null
+      ? piece
+      : prev
+        ? // The piece before decides whether a quote opens or closes: a
+          // space before it opens, anything else closes.
+          smarten((/[\s(\[\u2013]$/.test(prev) ? " " : "x") + piece, lang).slice(1)
+        : smarten(piece, lang);
+  if (!SENTINEL.test(text)) return set(text, "");
+  const parts = text.split(SENTINEL);
+  const out: ReactNode[] = [];
+  let prev = "";
+  for (let i = 0; i < parts.length; i += 2) {
+    const piece = parts[i];
+    if (piece) {
+      const typeset = set(piece, prev);
+      out.push(
+        i ? (
+          <span key={parts[i - 1].charCodeAt(0)} className="a11y-chat-new">
+            {typeset}
+          </span>
+        ) : (
+          typeset
+        )
+      );
+      prev = piece;
+    }
+  }
   return out;
 }
 
@@ -137,19 +224,19 @@ const INLINE = /(\*\*[^*]+?\*\*|`[^`]+`|\[[^\]]+\]\(https?:\/\/[^\s)]+\)|https?:
 
 function inline(line: string): ReactNode[] {
   return line.split(INLINE).map((part, i) => {
-    if (part.length > 4 && part.startsWith("**") && part.endsWith("**")) return <strong key={i}>{part.slice(2, -2)}</strong>;
-    if (part.length > 2 && part.startsWith("`") && part.endsWith("`")) return <code key={i}>{part.slice(1, -1)}</code>;
+    if (part.length > 4 && part.startsWith("**") && part.endsWith("**")) return <strong key={i}>{fade(part.slice(2, -2), null)}</strong>;
+    if (part.length > 2 && part.startsWith("`") && part.endsWith("`")) return <code key={i}>{fade(part.slice(1, -1), null)}</code>;
     const md = /^\[([^\]]+)\]\((https?:\/\/[^\s)]+)\)$/.exec(part);
     if (md) return link(md[2], md[1], i);
     if (/^https?:\/\//.test(part)) return link(part, part, i);
-    return smarten(part, getLang());
+    return fade(part, getLang());
   });
 }
 
 function link(href: string, label: string, key: number): ReactNode {
   return (
-    <a key={key} href={href} target="_blank" rel="noopener noreferrer">
-      {label}
+    <a key={key} href={href.replace(SENTINELS, "")} target="_blank" rel="noopener noreferrer">
+      {fade(label, null)}
       <span className="a11y-sr-only"> {t("(opens in a new tab)")}</span>
     </a>
   );
@@ -485,11 +572,20 @@ export function ScanChat({
     add({ id: turnId, who: "checker", text: "", streaming: true });
     setAnnouncement(t("Thinking…"));
 
-    const result = await sendChatTurn(apiBase, messages, (delta) =>
+    const result = await sendChatTurn(apiBase, messages, (delta) => {
+      const now = Date.now();
       setAll(
-        turnsRef.current.map((x) => (x.id === turnId && x.who === "checker" ? { ...x, text: x.text + delta } : x))
-      )
-    );
+        turnsRef.current.map((x) =>
+          x.id === turnId && x.who === "checker"
+            ? {
+                ...x,
+                text: x.text + delta,
+                marks: [...(x.marks ?? []).filter((m) => now - m.t < FADE_MS), { at: x.text.length, t: now }],
+              }
+            : x
+        )
+      );
+    });
 
     // An empty reply (end_turn with no content, most often right after a
     // tool result) has no thinking to protect, and the API refuses any later
@@ -507,6 +603,8 @@ export function ScanChat({
     const text = textOf(result.content);
     if (text.trim()) {
       patch(turnId, { text, streaming: false });
+      // The last chunks finish fading before their marks go.
+      window.setTimeout(() => patch(turnId, { marks: undefined }), FADE_MS);
       setAnnouncement(text);
     } else {
       // A turn that is only a tool call leaves no empty "Checker" behind.
@@ -637,6 +735,8 @@ export function ScanChat({
     const text = draft.trim();
     if (!text || busy || loading) return;
     setDraft("");
+    const box = rootRef.current?.querySelector<HTMLTextAreaElement>("#a11y-chat-input");
+    if (box) box.style.height = "";
     add({ id: nextId++, who: "you", text });
     focusInput();
 
@@ -733,11 +833,15 @@ export function ScanChat({
           has run — the top bar's New scan button is the way back. The
           language switcher stays. */}
       <div className="a11y-newscan-head">
-        {turns.length === 0 && (
-          <h2 className="a11y-section-title a11y-newscan-title" id="a11y-newscan-title">
-            {t("New scan")}
-          </h2>
-        )}
+        {/* Kept in the markup and folded shut, so the first turn slides
+            up under it instead of jumping; hidden from readers once gone. */}
+        <div className="a11y-newscan-fold" data-gone={turns.length > 0 ? "" : undefined}>
+          <div>
+            <h2 className="a11y-section-title a11y-newscan-title" id="a11y-newscan-title">
+              {t("New scan")}
+            </h2>
+          </div>
+        </div>
         <LanguageSelect id="a11y-lang-form" value={language} onChange={onLanguageChange} />
       </div>
       {turns.length > 0 && (
@@ -846,9 +950,17 @@ export function ScanChat({
                 <div className="a11y-chat-text">
                   {turn.who === "checker" ? (
                     turn.text ? (
-                      renderReply(turn.text)
+                      renderReply(turn.text, turn.marks)
                     ) : (
-                      <p className="a11y-chat-thinking">{t("Thinking…")}</p>
+                      <p className="a11y-chat-thinking">
+                        {t("Thinking…").replace(/(…|\.{3})$/, "")}
+                        {/* The points come on one by one; the word alone is read. */}
+                        <span className="a11y-chat-dots" aria-hidden="true">
+                          <span>.</span>
+                          <span>.</span>
+                          <span>.</span>
+                        </span>
+                      </p>
                     )
                   ) : (
                     <p>{smarten(turn.text, getLang())}</p>
