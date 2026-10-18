@@ -548,8 +548,13 @@ export function ScanChat({
       const toolResult: ChatBlock = {
         type: "tool_result",
         tool_use_id: result.scan.toolUseId,
+        // A blocked scan has already put its notice on screen, with the
+        // three ways in. Told that, the assistant adds a sentence; not
+        // told, it wrote the same three ways out again under the notice.
         content: failed
-          ? `The scan did not complete: ${outcomeLine(outcome)}`
+          ? outcome.kind === "blocked"
+            ? `The scan did not complete: ${outcomeLine(outcome)} The person can already see a notice with the three ways in (scan the staging site, allow the user agent A11yCheckerBot through the bot protection, or sign in with a session from the form). Do not repeat them. Reply in one short sentence, or offer to try a different address.`
+            : `The scan did not complete: ${outcomeLine(outcome)}`
           : JSON.stringify(outcome.kind === "report" ? digestReport(outcome.report) : digestAudit(outcome.audit)),
         ...(failed ? { is_error: true } : {}),
       };
@@ -774,7 +779,14 @@ export function ScanChat({
                       {NARRATION_STEPS.filter((s) => steps.includes(s.id))
                         .sort((a, b) => narrationIndex(a.id) - narrationIndex(b.id))
                         .map((s) => {
-                          const result = fresh ? stepResult(s.id, fresh) : null;
+                          // A scan that failed stopped at its last step: that
+                          // line says so, or "Loading your page" stands over
+                          // the failure looking as if the load went fine.
+                          const result = fresh
+                            ? stepResult(s.id, fresh)
+                            : turn.state === "failed" && s.id === steps[steps.length - 1]
+                              ? t("Did not finish")
+                              : null;
                           return (
                             <li
                               key={s.id}

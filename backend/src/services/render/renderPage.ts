@@ -3050,6 +3050,12 @@ async function probeDisclosureActivation(
         // A "control" that navigates. Undo it and stop pressing things.
         navigated = true;
         await page.goBack({ waitUntil: "domcontentloaded" }).catch(() => {});
+        // Back is not always the page: a redirect in the history, or a
+        // site that rewrote the entry, leaves the browser somewhere else,
+        // and every probe after this one would measure that page instead.
+        if (page.url() !== urlBefore) {
+          await page.goto(urlBefore, { waitUntil: "domcontentloaded" }).catch(() => {});
+        }
         await page.waitForTimeout(500);
         return true;
       };
@@ -3089,8 +3095,18 @@ async function probeDisclosureActivation(
 
       let restored = false;
       if (after.state !== before.state) {
+        // The second press goes to the control, not to wherever the first
+        // one sent focus. bundesregierung.de's search toggle moves focus
+        // into the search field it opens; Enter there submitted the form,
+        // the pass ended on the results page without noticing, and the
+        // text-resize and phone-width contrast probes then ran on a page
+        // that was still loading and had no axe in it.
+        await page.evaluate((sel: string) => {
+          (document.querySelector(sel) as HTMLElement | null)?.focus();
+        }, t.selector);
         await page.keyboard.press(usedKey);
         await page.waitForTimeout(200);
+        if (await navigatedAway()) break;
         const back = await read();
         restored = back?.state === before.state;
       } else {
@@ -3904,6 +3920,18 @@ export async function renderAndScan(
       const activation = await timed("activation", () =>
         probeDisclosureActivation(page, renderDeadline).catch(() => undefined)
       );
+      // Going back after a control navigated lands on a new document: the
+      // axe script injected above is not in it, and it is still loading
+      // when the next probe starts. Measured on bundesregierung.de: the
+      // text-resize pass failed in 8ms, the phone-width contrast run in
+      // 2ms (no window.axe), and the report marked three checks unfinished
+      // on a page that was there the whole time. Let it load, put axe back.
+      if (activation?.navigated) {
+        await page.waitForLoadState("load", { timeout: 10_000 }).catch(() => {});
+        await page.addScriptTag({ path: require.resolve("axe-core") }).catch((err) => {
+          logger.warn({ err }, "Could not re-inject axe after the activation probe went back");
+        });
+      }
 
       // Visual-versus-source order. Geometry only, so it changes nothing and
       // has to run at desktop width, before the mobile pass reflows the page.
@@ -4009,7 +4037,10 @@ export async function renderAndScan(
             )
           )) as AxeRunResult;
           mobileContrast = run.violations;
-        }).catch(() => {
+        }).catch((err) => {
+          // Logged like the mobile pass above it: a check marked unfinished
+          // with its reason swallowed cannot be fixed.
+          logger.warn({ err }, "Phone-width contrast run failed. Reporting without it");
           mobileContrastFailed = true;
         });
         // Breakout (overflow) elements first — they're large regions that crop
