@@ -107,3 +107,6 @@ Comments in this codebase are long and record what was measured and why a value 
 
 ## Shipping
 - Merging to `main` deploys the Railway service from `backend/` (Dockerfile, root directory `backend`). The widget is served from the committed `backend/public/widget-business.js`, which the image copies as-is: **rebuild and commit the bundle in the same change as any widget source edit** (`cd backend && npm run build:widget-business`). `/healthz` reports the deployed `commit` and a `widgetBundle` fingerprint; check it before concluding a deploy did not happen.
+
+## Not in this repository
+- **Culture Atlas** (the cultural atlas, Sponsor Atlas, MoMA Money Map) is a separate project in `~/culture-atlas` (user's instruction, 18 Oct 2026). Nothing of it is tracked here. A session opened in this folder and asked about the atlas should say so and point to that folder, not add atlas files or servers here. Sessions for this repository go in their own worktree, not the shared checkout: several sessions editing `global.css` and the committed widget bundle in one folder is how work got overwritten.
