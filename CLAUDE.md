@@ -1,3 +1,69 @@
+# CLAUDE.md
+
+This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+
+## Commands
+
+There is no root package: each of `backend/`, `widget-business/`, `widget/` and `accessible-web-design/` has its own `package.json` and lockfile, and commands run from inside that directory. Node 24 (`backend` declares `engines >=24`; CI uses 24). Node is not on the shell's PATH here: the local runtime is `.tools/node/bin/` (gitignored), which also holds `npm`, `npx` and `railway`. `.claude/launch.json` starts the dev servers through it: `backend` (:8787), `widget-business` (:5174), `widget` (:5173), `accessible-web-design` (:5175).
+
+```bash
+# backend/
+npm run dev                         # tsx watch src/server.ts, API on :8787
+npx tsc --noEmit                    # CI runs types first
+npm test                            # vitest run (~60 files in test/)
+npx vitest run test/scoring.test.ts # one file; add -t "name" for one test
+npm run build                       # tsc to dist/
+npm run build:widget-business       # builds ../widget-business, copies the bundle into public/
+node dist/cli.js https://example.com   # the a11y-scan CLI (docs/CLI.md: exit 0 ok, 1 threshold missed, 2 scan failed)
+
+# widget-business/
+npx vite                            # dev harness on :5174
+npx tsc -b && npm test              # types, then vitest
+npm run check:reflow                # every fixture state at 320/375px in en/de/es/fr (needs Playwright chromium); see the font caveat under Type
+npm run lint:css                    # undefined var(--x) and same-specificity collisions
+node scripts/check-styles.mjs       # dead selectors and unstyled classes
+
+# accessible-web-design/  (the public marketing site)
+npm run check                       # strict per-locale build, axe on each locale, pseudolocale expansion check
+```
+
+CI (`.github/workflows/`) runs only for the package whose path changed: backend is tsc, test, build, then a CLI smoke test from outside the repo; widget is `tsc -b`, test, `check:reflow`, `lint:css`; site is `npm run check`.
+
+**Working on the widget without a backend:** open the dev harness with `?fixture` (stops at the form) or a named state: `?fixture=report`, `?fixture=error`, `?fixture=blocked`, plus `&audience=professional`, `&scope=site`, `&at=<section id>`. `dev-fixture.js` stubs `fetch` for `/api/scan` and `/api/audit`. Copy `backend/node_modules/axe-core/axe.min.js` to `widget-business/axe.dev.js` to axe-scan the rendered widget in place.
+
+`backend/.env` (gitignored) takes `ANTHROPIC_API_KEY`; without it scans still run and the report says the AI layer was skipped. Optional features (mail via `MAIL_API_KEY`, storage via `DB_PATH`) follow the same contract: absent means the feature reports itself as not set up, never a silent failure. All env is validated in `backend/src/config/env.ts`.
+
+## Architecture
+
+**Three deployables, one service.** `backend/` is a Fastify server that renders pages in Playwright Chromium and returns a JSON report. It also serves the two embeddable widgets as static files from `backend/public/`. Both widgets are Vite library builds to one self-contained IIFE (React bundled in) that mounts into a shadow root, so host-page CSS cannot leak in. Styles are imported `?inline` and injected into the shadow root (`src/utils/shadowMount.ts`). `@font-face` is ignored inside a shadow root, so `src/index.tsx` declares the fonts at document level, served from the backend.
+
+- `widget-business/` is the product: the plain-language owner's report, with a professional audience toggle over the same scan. Almost all UI work happens here.
+- `widget/` is the older technical widget. It has no tests or CI.
+- `accessible-web-design/` is the public site, built once per locale by `i18n/build.mjs`.
+- `design-system/` is the vendored design system. The widget depends on `design-system/production` as `@verify/design-system` (a `file:` dependency). `system-guide.md` is the spec; the rules in this file override it where they differ.
+
+**The scan pipeline** is `scanUrlToReport` in `backend/src/services/scanPipeline.ts`, called by `POST /api/scan` and by the CLI (`src/cli.ts`). The steps:
+
+1. `assertSafeUrl` (SSRF guard).
+2. `render/renderPage.ts` renders at desktop and phone width and runs axe-core. It collects the raw signals every probe needs, such as tab walk, bounding boxes, consent banner and frames, in one page visit.
+3. Each `services/<probe>/analyze*.ts` exports a pure `evaluate*` function over those signals. That is why probes are unit-tested without a browser.
+4. The optional AI review runs in `aiReview/`.
+5. `merge/mergeFindings.ts` merges and filters. Axe, probe and AI findings are fingerprinted and merged, so one fault gives one card and a measured finding beats an AI one. Speculative or contradicted claims are dropped in code.
+6. `merge/scoring.ts` scores only provable WCAG A/AA findings. `conformance/` builds the criterion table, with criterion text per language.
+7. Thumbnails are cropped last. A second, capped browser visit pictures the findings the render pass could not.
+
+Concurrency is bounded by `render/browserPool.ts` (`MAX_CONCURRENT_RENDERS`, default 2, deliberately low because of container memory). Progress streams over `GET /api/scan/progress/:id`, keyed by a client-chosen `progressId`. `POST /api/audit` crawls a site (`crawl/`) and aggregates per-page reports. `routes/chat.ts` is the report-scoped assistant.
+
+**`buildApp()` in `src/app.ts` is separate from `server.ts`** so route tests `inject()` requests with no port or browser. Storage (`src/storage/`) is `node:sqlite` and opt-in: every route works without a database. `GET /api/storage` reports whether `DB_PATH` is durable.
+
+**Fixture detection tests.** `backend/test/fixtureDetection.test.ts` scans `backend/public/qa-*.html` over `file://`. Each fixture holds known defects beside sections built to be correct, and several exist to prove a silence. A new probe needs one of these, not only unit tests.
+
+**Widget internals.** `App.tsx` owns the scan flow and report state. `src/api/` holds the scan and chat clients. Reader-facing copy lives in `src/lib/strings.ts` with `strings.{de,es,fr}.ts` beside it, and WCAG plain-language text in `wcagPlain*.ts`. The language is a module-level value in `lib/i18n.ts`, read at render time, not React context; English is the fallback for any missing key. Tests in `widget-business/test/` enforce voice and honesty rules on that copy (`voice.test.ts`, `voice.de.test.ts`, `chatHonesty.test.ts`, `researchLines.test.ts`). A copy change that trips them is usually the copy's fault. `ACCESSIBILITY.md` is the widget's own audit against WCAG.
+
+Comments in this codebase are long and record what was measured and why a value is what it is. Read them before changing a number such as a timeout, a limit, or a concurrency value.
+
+---
+
 # Accessible Scan — project constraints
 
 > **Restyled (user's instruction, 15 Oct 2026).** `global.css` was stripped to functional rules, then rebuilt from the Independent Publishing Fair poster: big plain ink-on-paper type in a tight block, with a marker highlight (orange, blue or green, yellow and pink end caps) laid over key phrases (severity words, rule ids, levels, status marks). **Highlights carry black text in both themes and every fill measures 7:1 or better**; this is the one place colour is allowed, so the black-and-white rule below still holds everywhere else. The per-section poster layout, round chat window and Hochuli chat typesetting below describe the previous design and are not currently in force.
