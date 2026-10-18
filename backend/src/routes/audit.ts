@@ -87,7 +87,7 @@ export async function auditRoutes(app: FastifyInstance) {
         if (Date.now() > deadline) {
           // Out of time rather than broken — say which, so a partial audit
           // isn't mistaken for a site where those pages failed.
-          outcomes.push({ ...page, error: "Not scanned — the audit ran out of time." });
+          outcomes.push({ ...page, error: "Not scanned—the audit ran out of time." });
           continue;
         }
 

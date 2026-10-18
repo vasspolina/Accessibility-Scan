@@ -15,7 +15,7 @@ describe("renderReply", () => {
     const out = html('Start with these three:\n- "No main heading"\n- "Links say only read more"\n- "Nothing marks the main content"');
     expect(out).toBe(
       // The straight marks the model writes are set as quotation marks.
-      '<p>Start with these three:</p><ul><li>\u201CNo main heading\u201D</li><li>\u201CLinks say only read more\u201D</li><li>\u201CNothing marks the main content\u201D</li></ul>'
+      '<p>Start with these three:</p><ul><li>\u2018No main heading\u2019</li><li>\u2018Links say only read more\u2019</li><li>\u2018Nothing marks the main content\u2019</li></ul>'
     );
   });
 
@@ -96,7 +96,7 @@ describe("renderReply while streaming", () => {
 
   it("wraps each chunk after its mark, typeset, and keeps the words whole", () => {
     expect(streamed('Say "hi" there', [0, 4, 9])).toBe(
-      '<p><span class="a11y-chat-new">Say </span><span class="a11y-chat-new">“hi” </span><span class="a11y-chat-new">there</span></p>'
+      '<p><span class="a11y-chat-new">Say </span><span class="a11y-chat-new">‘hi’ </span><span class="a11y-chat-new">there</span></p>'
     );
   });
 

@@ -137,7 +137,7 @@ export function ManualChecks({
               <span className="a11y-conf-plain">{q.whyAsking}</span>
               {q.answered && (
                 <span className="a11y-manual-verdict">
-                  {`${statusWord(q.answered.status)}${q.answered.note ? ` — ${q.answered.note}` : ""} `}
+                  {`${statusWord(q.answered.status)}${q.answered.note ? `—${q.answered.note}` : ""} `}
                   <em>
                     ({q.answered.decidedBy}, {q.answered.decidedAt.slice(0, 10)})
                   </em>

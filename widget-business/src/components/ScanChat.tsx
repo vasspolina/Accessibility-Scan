@@ -1,7 +1,7 @@
 import { useRef, useState, type FocusEvent, type FormEvent, type MutableRefObject, type ReactNode } from "react";
 import { t } from "../lib/strings";
 import { getLang } from "../lib/i18n";
-import { smarten } from "../lib/typography";
+import { CAPS_RUN, smarten } from "../lib/typography";
 import { Button } from "./Button";
 import { LanguageSelect } from "./LanguageSelect";
 import { BlockedNotice } from "./BlockedNotice";
@@ -203,15 +203,34 @@ function settle(text: string, off: number): number | null {
 
 /** The words, with each chunk that is still arriving wrapped so it fades
  *  in. Prose is typeset (`lang`); code is not (null). */
+/** Runs of capitals in prose (WCAG, ARIA, AA) set a size smaller and
+ *  evenly spaced, the way Hochuli sets an abbreviation (p.39–40, fig. 54):
+ *  they stop shouting in the line. Words stay whole; only the run is wrapped. */
+function capsWrap(text: string): ReactNode {
+  const parts = text.split(CAPS_RUN);
+  if (parts.length === 1) return text;
+  return parts.map((part, i) =>
+    i % 2 ? (
+      <span key={i} className="a11y-caps">
+        {part}
+      </span>
+    ) : (
+      part
+    )
+  );
+}
+
 function fade(text: string, lang: string | null): ReactNode {
-  const set = (piece: string, prev: string) =>
+  const set = (piece: string, prev: string): ReactNode =>
     lang === null
       ? piece
-      : prev
-        ? // The piece before decides whether a quote opens or closes: a
-          // space before it opens, anything else closes.
-          smarten((/[\s(\[\u2013]$/.test(prev) ? " " : "x") + piece, lang).slice(1)
-        : smarten(piece, lang);
+      : capsWrap(
+          prev
+            ? // The piece before decides whether a quote opens or closes: a
+              // space before it opens, anything else closes.
+              smarten((/[\s(\[\u2013\u2014]$/.test(prev) ? " " : "x") + piece, lang).slice(1)
+            : smarten(piece, lang)
+        );
   if (!SENTINEL.test(text)) return set(text, "");
   const parts = text.split(SENTINEL);
   const out: ReactNode[] = [];
@@ -951,7 +970,7 @@ export function ScanChat({
                               aria-current={s.id === current ? "step" : undefined}
                             >
                               {narrationLabel(s.id)}
-                              {result && <span className="a11y-chat-step-result"> — {result}</span>}
+                              {result && <span className="a11y-chat-step-result"> —{result}</span>}
                             </li>
                           );
                         })}
@@ -1034,7 +1053,7 @@ export function ScanChat({
                       )}
                     </>
                   ) : (
-                    <p>{smarten(turn.text, getLang())}</p>
+                    <p>{capsWrap(smarten(turn.text, getLang()))}</p>
                   )}
                 </div>
               </li>

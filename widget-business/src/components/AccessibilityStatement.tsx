@@ -130,7 +130,7 @@ ${
 
 ${knownIssues.map((i) => `- ${i}`).join("\n")}`
     : t(
-        'An automated check found no failures it is able to detect. That does not mean the site is fully accessible — see "How we assessed this site" below.'
+        'An automated check found no failures it is able to detect. That does not mean the site is fully accessible—see "How we assessed this site" below.'
       )
 }
 

@@ -63,7 +63,7 @@ function Group({ title, children }: { title: string; children: ReactNode }) {
 function NotPorted({ name, source }: { name: string; source: string }) {
   return (
     <div className="a11y-gallery-missing">
-      {name} is not ported yet — the design has it at <code>{source}</code>.
+      {name} is not ported yet—the design has it at <code>{source}</code>.
     </div>
   );
 }
@@ -271,7 +271,7 @@ export function Gallery() {
             />
           </Cd>
           <Cd
-            name="FindingDetail — band"
+            name="FindingDetail—band"
             wide
             note="Metadata header, the fix set as display type, action pill at the right. tone=invert puts it on black. The badge is a SeverityTag rather than the design's plain string, so a Serious finding is not painted the same red as a Critical one."
           >
@@ -288,12 +288,12 @@ export function Gallery() {
             />
           </Cd>
           <Cd
-            name="FindingDetail — plain"
+            name="FindingDetail—plain"
             wide
             note="Row-expansion shape: labelled answers, black code block with a Copy pill, nested technical disclosure."
           >
             <FindingDetail
-              who="No code needs to change — this is a decision about wording."
+              who="No code needs to change—this is a decision about wording."
               whatFound="Six links inside running text are marked only by colour, with no underline."
               whatToDo="Underline links inside paragraphs, or mark them some other way that does not depend on colour."
               affected=".prose a"
@@ -303,7 +303,7 @@ export function Gallery() {
           <Cd
             name="SiteAudit / ScreenReaderPreview / VisionSimulator / WhatsNextPanel / AccessibilityStatementBuilder"
             wide
-            note="The app has its own version of each of these. They are not ports — their markup and behaviour predate the design system, so they are not on this page."
+            note="The app has its own version of each of these. They are not ports—their markup and behaviour predate the design system, so they are not on this page."
           >
             <NotPorted
               name="These five"
