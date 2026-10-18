@@ -126,7 +126,7 @@ describe("the chat contract", () => {
   // site's own accessibility, which only the report speaks for.
   it("searches the web as the last resort, and never for the scanned site itself", () => {
     expect(WEB_SEARCH_TOOL.name).toBe("web_search");
-    expect(WEB_SEARCH_TOOL.type).toBe("web_search_20260209");
+    expect(WEB_SEARCH_TOOL.type).toBe("web_search_20250305");
     // Each search bills; a turn is capped.
     expect(WEB_SEARCH_TOOL.max_uses).toBeGreaterThan(0);
     expect(WEB_SEARCH_TOOL.max_uses).toBeLessThanOrEqual(5);

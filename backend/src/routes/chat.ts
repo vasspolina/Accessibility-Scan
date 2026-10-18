@@ -234,7 +234,10 @@ export async function chatRoutes(app: FastifyInstance) {
           if (event.type === "content_block_delta" && event.delta.type === "text_delta") {
             send("delta", { text: event.delta.text });
           } else if (event.type === "content_block_start" && event.content_block.type === "server_tool_use" && event.content_block.name === "web_search") {
-            searches.set(event.index, "");
+            // The input usually streams in after the start; when the start
+            // already carries it, that is the whole of it.
+            const given = event.content_block.input;
+            searches.set(event.index, given && typeof given === "object" && Object.keys(given).length ? JSON.stringify(given) : "");
             send("searching", { query: null });
           } else if (event.type === "content_block_delta" && event.delta.type === "input_json_delta" && searches.has(event.index)) {
             searches.set(event.index, searches.get(event.index) + event.delta.partial_json);

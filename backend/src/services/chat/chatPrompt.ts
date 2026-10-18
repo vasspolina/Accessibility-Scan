@@ -142,10 +142,15 @@ export const START_SCAN_TOOL: Anthropic.Beta.BetaTool = {
  *  page. The reader's fallback when the report and the model's own
  *  knowledge run out (the owner's instruction, 18 Oct 2026). Capped per
  *  turn: each search bills, and a question rarely needs more than a few.
- *  The 20260209 variant filters results before they reach the context, so
- *  no code_execution tool is declared beside it. */
-export const WEB_SEARCH_TOOL: Anthropic.Beta.BetaWebSearchTool20260209 = {
-  type: "web_search_20260209",
+ *
+ *  The plain variant, not 20260209: tried live on 18 Oct 2026, the
+ *  filtering variant ran its searches through code execution, so the
+ *  query never streamed (the widget showed "Searching the web" with no
+ *  query five times) and the text came back without a single citation,
+ *  leaving nothing to list as sources. This one streams the query and
+ *  cites the pages it used. */
+export const WEB_SEARCH_TOOL: Anthropic.Beta.BetaWebSearchTool20250305 = {
+  type: "web_search_20250305",
   name: "web_search",
   max_uses: 5,
 };
