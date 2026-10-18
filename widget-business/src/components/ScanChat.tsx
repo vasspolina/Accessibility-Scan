@@ -13,10 +13,12 @@ import {
   ChatError,
   ChatUnavailableError,
   sendChatTurn,
+  sourcesOf,
   textOf,
   unansweredToolUses,
   type ChatBlock,
   type ChatMessage,
+  type ChatSource,
 } from "../api/chatClient";
 import { digestAudit, digestReport } from "../lib/reportDigest";
 import { NARRATION_STEPS, narrationIndex, narrationLabel } from "../lib/scanNarration";
@@ -59,8 +61,19 @@ export type ScanOutcome =
  *  chunk fades in from that point; the mark is dropped once it has. */
 type Mark = { at: number; t: number };
 
+/** A reply while it streams may be out on the web: `searching` is set while
+ *  a search runs (null until its query is known), and cleared by the next
+ *  words. `sources` are the pages the finished reply cites. */
 type Turn =
-  | { id: number; who: "you" | "checker"; text: string; streaming?: boolean; marks?: Mark[] }
+  | {
+      id: number;
+      who: "you" | "checker";
+      text: string;
+      streaming?: boolean;
+      marks?: Mark[];
+      searching?: string | null;
+      sources?: ChatSource[];
+    }
   | { id: number; who: "scan"; url: string; state: "running" | "done" | "failed"; steps: string[]; seconds?: number; resultKey?: string }
   | { id: number; who: "block"; section: SectionKey; resultKey: string }
   | { id: number; who: "notice"; message: string };
@@ -112,6 +125,36 @@ export function renderReply(text: string, marks?: Mark[]): ReactNode {
 /** How long a chunk fades in for (matches the CSS), and so how long its
  *  mark is kept. */
 export const FADE_MS = 500;
+
+/** A line for a wait, with the points coming on one by one. The sentence
+ *  ends in an ellipsis; the points stand in for it, and only the words are
+ *  read out. */
+function waiting(label: ReactNode): ReactNode {
+  return (
+    <p className="a11y-chat-thinking">
+      {label}
+      <span className="a11y-chat-dots" aria-hidden="true">
+        <span>.</span>
+        <span>.</span>
+        <span>.</span>
+      </span>
+    </p>
+  );
+}
+
+/** "Searching the web for {query}" with the query set into the translated
+ *  sentence, or the sentence without it while the query is still coming. */
+function searchingLine(query: string | null): ReactNode {
+  if (query === null) return t("Searching the web…").replace(/(…|\.{3})$/, "");
+  const [before, after] = t("Searching the web for {query}…").replace(/(…|\.{3})$/, "").split("{query}");
+  return (
+    <>
+      {before}
+      <span className="a11y-chat-url">{query}</span>
+      {after}
+    </>
+  );
+}
 
 // A chunk's start is marked in the text with a private-use character, so
 // the mark rides through the paragraph and list parsing untouched and is
@@ -572,19 +615,29 @@ export function ScanChat({
     add({ id: turnId, who: "checker", text: "", streaming: true });
     setAnnouncement(t("Thinking…"));
 
-    const result = await sendChatTurn(apiBase, messages, (delta) => {
-      const now = Date.now();
-      setAll(
-        turnsRef.current.map((x) =>
-          x.id === turnId && x.who === "checker"
-            ? {
-                ...x,
-                text: x.text + delta,
-                marks: [...(x.marks ?? []).filter((m) => now - m.t < FADE_MS), { at: x.text.length, t: now }],
-              }
-            : x
-        )
-      );
+    const result = await sendChatTurn(apiBase, messages, {
+      onDelta: (delta) => {
+        const now = Date.now();
+        setAll(
+          turnsRef.current.map((x) =>
+            x.id === turnId && x.who === "checker"
+              ? {
+                  ...x,
+                  text: x.text + delta,
+                  marks: [...(x.marks ?? []).filter((m) => now - m.t < FADE_MS), { at: x.text.length, t: now }],
+                  // Words after a search mean the search is over.
+                  searching: undefined,
+                }
+              : x
+          )
+        );
+      },
+      onSearching: (query) => {
+        patch(turnId, { searching: query });
+        // Said once per search, when it starts; the query that follows is
+        // shown, not announced, so the reader is not read two lines.
+        if (query === null) setAnnouncement(t("Searching the web…"));
+      },
     });
 
     // An empty reply (end_turn with no content, most often right after a
@@ -602,7 +655,7 @@ export function ScanChat({
     if (unanswered.length) history.current = appendUser(history.current, unanswered);
     const text = textOf(result.content);
     if (text.trim()) {
-      patch(turnId, { text, streaming: false });
+      patch(turnId, { text, streaming: false, searching: undefined, sources: sourcesOf(result.content) });
       // The last chunks finish fading before their marks go.
       window.setTimeout(() => patch(turnId, { marks: undefined }), FADE_MS);
       setAnnouncement(text);
@@ -961,19 +1014,25 @@ export function ScanChat({
                 <p className="a11y-chat-who">{turn.who === "you" ? t("You") : t("Assistant")}</p>
                 <div className="a11y-chat-text">
                   {turn.who === "checker" ? (
-                    turn.text ? (
-                      renderReply(turn.text, turn.marks)
-                    ) : (
-                      <p className="a11y-chat-thinking">
-                        {t("Thinking…").replace(/(…|\.{3})$/, "")}
-                        {/* The points come on one by one; the word alone is read. */}
-                        <span className="a11y-chat-dots" aria-hidden="true">
-                          <span>.</span>
-                          <span>.</span>
-                          <span>.</span>
-                        </span>
-                      </p>
-                    )
+                    <>
+                      {turn.text ? renderReply(turn.text, turn.marks) : turn.searching === undefined && waiting(t("Thinking…"))}
+                      {/* A search in progress, under whatever has been said so
+                          far: the wait has a name, and the query once it is known. */}
+                      {turn.streaming && turn.searching !== undefined && waiting(searchingLine(turn.searching))}
+                      {turn.sources && turn.sources.length > 0 && (
+                        <p className="a11y-chat-sources">
+                          {t("Sources")}:{" "}
+                          {turn.sources.map((s, i) => (
+                            <span key={s.url}>
+                              {i > 0 && ", "}
+                              <a href={s.url} target="_blank" rel="noopener noreferrer">
+                                {s.title}
+                              </a>
+                            </span>
+                          ))}
+                        </p>
+                      )}
+                    </>
                   ) : (
                     <p>{smarten(turn.text, getLang())}</p>
                   )}

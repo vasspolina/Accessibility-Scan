@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { appendUser, unansweredToolUses, type ChatMessage } from "../src/api/chatClient";
+import { appendUser, sourcesOf, unansweredToolUses, type ChatMessage } from "../src/api/chatClient";
 
 /**
  * The two rules that keep the conversation valid for the API: every
@@ -67,5 +67,36 @@ describe("unansweredToolUses", () => {
   it("has nothing to add when every call is answered", () => {
     const content = (assistantWith("a").content as Array<Record<string, unknown> & { type: string }>);
     expect(unansweredToolUses(content, ["a"])).toEqual([]);
+  });
+});
+
+describe("sourcesOf", () => {
+  it("lists each cited web page once, in order, and names it by its title or its address", () => {
+    const content = [
+      { type: "server_tool_use", id: "s", name: "web_search", input: { query: "eaa" } },
+      { type: "web_search_tool_result", tool_use_id: "s", content: [] },
+      {
+        type: "text",
+        text: "From 28 June 2025.",
+        citations: [
+          { type: "web_search_result_location", url: "https://example.eu/eaa", title: "EAA", cited_text: "a", encrypted_index: "x" },
+          { type: "web_search_result_location", url: "https://example.eu/eaa", title: "EAA", cited_text: "b", encrypted_index: "y" },
+          { type: "web_search_result_location", url: "https://example.org/", title: "  ", cited_text: "c", encrypted_index: "z" },
+          { type: "char_location", document_index: 0, start_char_index: 0, end_char_index: 1, cited_text: "d" },
+        ],
+      },
+      { type: "text", text: " Nothing more." },
+    ];
+    expect(sourcesOf(content)).toEqual([
+      { url: "https://example.eu/eaa", title: "EAA" },
+      { url: "https://example.org/", title: "https://example.org/" },
+    ]);
+  });
+
+  it("draws no link for an address that is not http or https", () => {
+    const content = [
+      { type: "text", text: "x", citations: [{ type: "web_search_result_location", url: "javascript:alert(1)", title: "x", cited_text: "x", encrypted_index: "x" }] },
+    ];
+    expect(sourcesOf(content)).toEqual([]);
   });
 });

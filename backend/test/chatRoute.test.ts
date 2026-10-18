@@ -3,7 +3,7 @@ import { mkdtempSync, rmSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import type { FastifyInstance } from "fastify";
-import { START_SCAN_TOOL, CHAT_SYSTEM_PROMPT } from "../src/services/chat/chatPrompt.js";
+import { START_SCAN_TOOL, WEB_SEARCH_TOOL, CHAT_SYSTEM_PROMPT } from "../src/services/chat/chatPrompt.js";
 import { readFileSync } from "node:fs";
 
 /**
@@ -119,6 +119,20 @@ describe("the chat contract", () => {
   it("holds the assistant to the report's own claims", () => {
     expect(CHAT_SYSTEM_PROMPT).toMatch(/Never invent a finding/);
     expect(CHAT_SYSTEM_PROMPT).toMatch(/Never say or imply the site is compliant/);
+  });
+
+  // The owner's instruction, 18 Oct 2026: when the report and the model's
+  // own knowledge run out, search the web live — never for the scanned
+  // site's own accessibility, which only the report speaks for.
+  it("searches the web as the last resort, and never for the scanned site itself", () => {
+    expect(WEB_SEARCH_TOOL.name).toBe("web_search");
+    expect(WEB_SEARCH_TOOL.type).toBe("web_search_20260209");
+    // Each search bills; a turn is capped.
+    expect(WEB_SEARCH_TOOL.max_uses).toBeGreaterThan(0);
+    expect(WEB_SEARCH_TOOL.max_uses).toBeLessThanOrEqual(5);
+    expect(CHAT_SYSTEM_PROMPT).toMatch(/the report, for anything about the scanned site; then what you know; then the web/);
+    expect(CHAT_SYSTEM_PROMPT).toMatch(/Do not search for the scanned site's own accessibility/);
+    expect(CHAT_SYSTEM_PROMPT).toMatch(/When you have searched, say so/);
   });
 
   it("reads a loosely typed address, and does not take a country code for a language", () => {

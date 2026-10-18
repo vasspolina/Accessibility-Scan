@@ -29,6 +29,7 @@ What you can do:
 - Write the code that fixes a problem, in HTML, CSS, JavaScript or ARIA. Draft the email or ticket that hands a fix to a developer or designer. Explain a finding in more depth, or for a different reader.
 - Start a scan of a web address with the start_scan tool. The checker runs it and returns the report as the tool result.
 - Show a section of the report in the conversation with the show_section tool.
+- Search the web with the web_search tool when the answer is not in the report or in what you know.
 
 The conversation is the whole interface. There is no report page: everything the person sees of the report appears in the conversation as a block. After a scan the findings block appears under your reply on its own, so do not list every finding.
 
@@ -79,6 +80,12 @@ Writing fixes:
 - A toggle button keeps one label and uses aria-pressed, or changes its label without aria-pressed. Never both.
 - A suggestion made in words must work as written. If other lines have to change with it, show the code.
 
+Searching the web:
+- Look in this order: the report, for anything about the scanned site; then what you know; then the web, with web_search, when neither gives a reliable answer. Search when the question needs something current (the date or status of a law, a tool's latest version, a price, news), a specific source the person can read, or a fact you are not sure of.
+- Do not search for the scanned site's own accessibility. The report is the record of that, and a search cannot see the page the way the scan did. If the report cannot answer, say so, as above.
+- Do not search for what you already know, and search no more than the question needs.
+- When you have searched, say so in a few words, and name where the answer came from. What you found on the web is kept apart from what the scan found, like any general knowledge.
+
 Laws and standards:
 - Explain what a law or standard asks, and of whom. When the person is making a legal decision, say once that this is general information, not legal advice.
 
@@ -128,6 +135,19 @@ export const START_SCAN_TOOL: Anthropic.Beta.BetaTool = {
   // Streamed as generated rather than buffered; the route validates the
   // finished input against the schema itself before anything acts on it.
   eager_input_streaming: true,
+};
+
+/** Live search, run on Anthropic's side: the model writes the query, the
+ *  results come back inside the same response, and the route never sees a
+ *  page. The reader's fallback when the report and the model's own
+ *  knowledge run out (the owner's instruction, 18 Oct 2026). Capped per
+ *  turn: each search bills, and a question rarely needs more than a few.
+ *  The 20260209 variant filters results before they reach the context, so
+ *  no code_execution tool is declared beside it. */
+export const WEB_SEARCH_TOOL: Anthropic.Beta.BetaWebSearchTool20260209 = {
+  type: "web_search_20260209",
+  name: "web_search",
+  max_uses: 5,
 };
 
 /** Shows part of the report as a block in the conversation. The section

@@ -31,14 +31,48 @@ const twoScans = {
   stop_reason: "tool_use",
 };
 
-let script: typeof oneScan = oneScan;
+// A search that the API pauses: the first request ends in pause_turn with
+// the search started; the second finishes the answer. Streamed as the API
+// streams it — the server_tool_use block's input arrives in pieces.
+const pausedSearch = {
+  events: [
+    { type: "content_block_start", index: 0, content_block: { type: "server_tool_use", id: "srvtoolu_1", name: "web_search", input: {} } },
+    { type: "content_block_delta", index: 0, delta: { type: "input_json_delta", partial_json: '{"query": "European Acc' } },
+    { type: "content_block_delta", index: 0, delta: { type: "input_json_delta", partial_json: 'essibility Act deadline"}' } },
+    { type: "content_block_stop", index: 0 },
+  ],
+  final: {
+    content: [
+      { type: "server_tool_use", id: "srvtoolu_1", name: "web_search", input: { query: "European Accessibility Act deadline" } },
+      { type: "web_search_tool_result", tool_use_id: "srvtoolu_1", content: [{ type: "web_search_result", url: "https://example.eu/eaa", title: "EAA", encrypted_content: "x", page_age: null }] },
+    ],
+    stop_reason: "pause_turn",
+  },
+};
+const searchedAnswer = {
+  events: [{ type: "content_block_delta", index: 0, delta: { type: "text_delta", text: "It applied from 28 June 2025." } }],
+  final: {
+    content: [{ type: "text", text: "It applied from 28 June 2025.", citations: [{ type: "web_search_result_location", url: "https://example.eu/eaa", title: "EAA", cited_text: "28 June 2025", encrypted_index: "y" }] }],
+    stop_reason: "end_turn",
+  },
+};
+
+type Script = { events?: Array<Record<string, unknown>>; final: { content: unknown[]; stop_reason: string } };
+const words = ["Checking ", "example.com ", "now."].map((text) => ({ type: "content_block_delta", index: 0, delta: { type: "text_delta", text } }));
+
+// The requests one turn makes, in order; the route resumes a paused turn
+// with another request, so a test may script more than one.
+let scripts: Script[] = [{ events: words, final: oneScan }];
+let requests: unknown[][] = [];
 
 vi.mock("../src/services/aiReview/claudeClient.js", () => ({
   CLAUDE_MODEL: "test",
   getClaudeClient: () => ({
     beta: {
       messages: {
-        stream: () => {
+        stream: (params: { messages: unknown[] }) => {
+          requests.push(params.messages);
+          const script = scripts[Math.min(requests.length, scripts.length) - 1];
           let aborted = false;
           return {
             get aborted() {
@@ -48,15 +82,15 @@ vi.mock("../src/services/aiReview/claudeClient.js", () => ({
               aborted = true;
             },
             async *[Symbol.asyncIterator]() {
-              for (const word of ["Checking ", "example.com ", "now."]) {
+              for (const event of script.events ?? words) {
                 await new Promise((r) => setTimeout(r, 10));
                 if (aborted) throw new Error("aborted");
-                yield { type: "content_block_delta", delta: { type: "text_delta", text: word } };
+                yield event;
               }
             },
             async finalMessage() {
               if (aborted) throw new Error("aborted");
-              return script;
+              return script.final;
             },
           };
         },
@@ -96,7 +130,7 @@ async function chat(): Promise<Response> {
 
 describe("POST /api/chat streaming", () => {
   it("names the first of two scans asked for in one turn, and passes both calls back", async () => {
-    script = twoScans;
+    scripts = [{ final: twoScans }];
     try {
       const body = await (await chat()).text();
       const payload = JSON.parse(/event: done\ndata: (.+)\n/.exec(body)![1]);
@@ -104,7 +138,7 @@ describe("POST /api/chat streaming", () => {
       // The widget answers toolu_b itself; it can only do that if it sees it.
       expect(payload.content.filter((b: { type: string }) => b.type === "tool_use")).toHaveLength(2);
     } finally {
-      script = oneScan;
+      scripts = [{ final: oneScan }];
     }
   }, 15_000);
 
@@ -127,5 +161,48 @@ describe("POST /api/chat streaming", () => {
     const payload = JSON.parse(done![1]);
     expect(payload.scan).toEqual({ toolUseId: "toolu_1", url: "example.com", scope: "page", aiReview: false });
     expect(payload.show).toEqual([]);
+  }, 15_000);
+
+  it("tells the widget when a web search starts and what it asked, resumes a paused turn, and hands back one joined turn", async () => {
+    scripts = [pausedSearch, searchedAnswer];
+    requests = [];
+    try {
+      const body = await (await chat()).text();
+      // Named as soon as it starts, then with the query once the input has all arrived.
+      expect(body).toMatch(/event: searching\ndata: \{"query":null\}/);
+      expect(body).toMatch(/event: searching\ndata: \{"query":"European Accessibility Act deadline"\}/);
+      // Two requests: the second carries the paused turn back as the assistant's.
+      expect(requests).toHaveLength(2);
+      const resumed = requests[1] as Array<{ role: string; content: unknown[] }>;
+      expect(resumed[resumed.length - 1].role).toBe("assistant");
+      expect(resumed[resumed.length - 1].content).toEqual(pausedSearch.final.content);
+      // One done event, with both halves of the turn, so the widget's history is what the API saw.
+      const payload = JSON.parse(/event: done\ndata: (.+)\n/.exec(body)![1]);
+      expect(payload.stopReason).toBe("end_turn");
+      expect(payload.content.map((b: { type: string }) => b.type)).toEqual(["server_tool_use", "web_search_tool_result", "text"]);
+      expect(payload.content[2].citations[0].url).toBe("https://example.eu/eaa");
+      expect(payload.scan).toBeNull();
+    } finally {
+      scripts = [{ final: oneScan }];
+    }
+  }, 15_000);
+
+  it("accepts a searched turn sent back as the assistant's: the result blocks are not sourced documents", async () => {
+    scripts = [{ final: searchedAnswer.final }];
+    address ??= await app.listen({ port: 0, host: "127.0.0.1" });
+    const res = await fetch(`${address}/api/chat`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        messages: [
+          { role: "user", content: "When did the EAA apply?" },
+          { role: "assistant", content: [...pausedSearch.final.content, ...searchedAnswer.final.content] },
+          { role: "user", content: "And in Germany?" },
+        ],
+      }),
+      signal: AbortSignal.timeout(8_000),
+    });
+    expect(res.status).toBe(200);
+    await res.text();
   }, 15_000);
 });
