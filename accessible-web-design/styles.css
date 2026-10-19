@@ -36,7 +36,7 @@ body {
   background: var(--bg);
   color: var(--body-text);
   font-family: "Jokker", "Helvetica Neue", Arial, sans-serif;
-  font-feature-settings: "ss01", "ss04", "ss05";
+  font-feature-settings: "ss04", "ss05";
   font-weight: 300;
   -webkit-font-smoothing: antialiased;
   line-height: 1.45;
