@@ -60,9 +60,9 @@
 :root[data-theme="dark"] .a11y-widget-biz { --ink: #fff; --paper: #000; color-scheme: dark; }
 
 .a11y-widget-biz {
-  font-family: "PP Telegraf", "DejaVu Sans", sans-serif;
+  font-family: "Jokker", "DejaVu Sans", sans-serif;
   font-size: 27px; font-weight: 400; line-height: 1.2; letter-spacing: 0;
-  font-kerning: normal; font-variant-ligatures: common-ligatures; text-rendering: optimizeLegibility; font-synthesis: none;
+  font-kerning: normal; font-feature-settings: "ss01", "ss04", "ss05"; font-variant-ligatures: common-ligatures; text-rendering: optimizeLegibility; font-synthesis: none;
   background: var(--paper); color: var(--ink);
   hyphens: auto; hyphenate-limit-chars: 7 3 3; -webkit-hyphenate-limit-lines: 3; hyphenate-limit-lines: 3; text-wrap: pretty;
   max-width: 40em; margin-inline: auto; padding: 1em;

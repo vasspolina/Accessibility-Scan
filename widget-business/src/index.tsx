@@ -22,14 +22,12 @@ export interface MountOptions {
   cta?: { text: string; href: string };
 }
 
-// @font-face is IGNORED inside a shadow-root stylesheet, so the faces are
-// declared once at document level. The design system's PP Telegraf, served
-// beside the widget bundle; three faces since the Off-Type direction —
-// Light (300, display sizes only, at the user's word on 21 Sep 2026),
-// Regular (400) and Medium (500). font-display swap keeps text readable
-// while it loads, and every rule keeps a system fallback. A backend that
-// does not serve the Light file yet degrades to the 400 without
-// synthesis — browsers do not fake a lighter weight.
+// @font-face is IGNORED inside a shadow-root stylesheet, so the face is
+// declared once at document level. Jokker VF (trial), served beside the
+// widget bundle: one variable file whose wght axis (100–900) covers the
+// 300 / 400 / 500 the stylesheet asks for, so no weight is synthesised.
+// font-display swap keeps text readable while it loads, and every rule
+// keeps a system fallback.
 function injectFonts(apiBase: string) {
   const id = "a11y-widget-fonts";
   if (document.getElementById(id)) return;
@@ -38,23 +36,9 @@ function injectFonts(apiBase: string) {
   style.id = id;
   style.textContent = `
 @font-face {
-  font-family: "PP Telegraf";
-  src: url("${base}/fonts/PPTelegraf-Light.otf") format("opentype");
-  font-weight: 300;
-  font-style: normal;
-  font-display: swap;
-}
-@font-face {
-  font-family: "PP Telegraf";
-  src: url("${base}/fonts/PPTelegraf-Regular.otf") format("opentype");
-  font-weight: 400;
-  font-style: normal;
-  font-display: swap;
-}
-@font-face {
-  font-family: "PP Telegraf";
-  src: url("${base}/fonts/PPTelegraf-Medium.otf") format("opentype");
-  font-weight: 500;
+  font-family: "Jokker";
+  src: url("${base}/fonts/JokkerVF-TRIAL.woff2") format("woff2");
+  font-weight: 100 900;
   font-style: normal;
   font-display: swap;
 }`;
