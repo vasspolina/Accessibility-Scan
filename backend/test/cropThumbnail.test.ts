@@ -1,6 +1,6 @@
 import { describe, it, expect } from "vitest";
 import sharp from "sharp";
-import { cropElementThumbnail } from "../src/services/render/cropThumbnail.js";
+import { cropElementThumbnail, cropElementWithBox } from "../src/services/render/cropThumbnail.js";
 
 // A crop that came out blank is worse than no crop. It shows the reader an
 // empty box where the evidence should be, and the alt-text suggester reads
@@ -56,6 +56,44 @@ describe("cropElementThumbnail", () => {
   it("refuses a zero-sized box", async () => {
     const page = await halfAndHalf(400, 400);
     expect(await cropElementThumbnail(page, { x: 10, y: 10, width: 0, height: 50 }, 400, 400)).toBeNull();
+  });
+});
+
+// The crop is padded out for context, so the reader needs to be told which part
+// of it is the element. The box is where, as fractions of the finished frame.
+describe("cropElementWithBox", () => {
+  it("places the element inside the padded frame", async () => {
+    const page = await halfAndHalf(1280, 800);
+    // A 600x200 element: wider than MIN_CROP_WIDTH and taller than MIN_CROP_HEIGHT,
+    // so the only padding is the 12px margin on every side.
+    const out = await cropElementWithBox(page, { x: 100, y: 350, width: 600, height: 200 }, 1280, 800);
+    expect(out).not.toBeNull();
+    const frameW = 600 + 24;
+    const frameH = 200 + 24;
+    expect(out!.box.x).toBeCloseTo(12 / frameW, 3);
+    expect(out!.box.y).toBeCloseTo(12 / frameH, 3);
+    expect(out!.box.width).toBeCloseTo(600 / frameW, 3);
+    expect(out!.box.height).toBeCloseTo(200 / frameH, 3);
+  });
+
+  it("centres a small element in the minimum frame", async () => {
+    const page = await halfAndHalf(1280, 800);
+    const out = await cropElementWithBox(page, { x: 600, y: 380, width: 40, height: 40 }, 1280, 800);
+    expect(out).not.toBeNull();
+    expect(out!.box.x + out!.box.width / 2).toBeCloseTo(0.5, 2);
+    expect(out!.box.y + out!.box.height / 2).toBeCloseTo(0.5, 2);
+    expect(out!.box.width).toBeLessThan(0.2);
+  });
+
+  it("keeps the box inside the frame when the element sits against the page edge", async () => {
+    const page = await halfAndHalf(400, 400);
+    const out = await cropElementWithBox(page, { x: 0, y: 120, width: 360, height: 160 }, 400, 400);
+    expect(out).not.toBeNull();
+    for (const v of Object.values(out!.box)) {
+      expect(v).toBeGreaterThanOrEqual(0);
+      expect(v).toBeLessThanOrEqual(1);
+    }
+    expect(out!.box.x).toBe(0);
   });
 });
 

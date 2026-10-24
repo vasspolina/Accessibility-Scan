@@ -1,7 +1,7 @@
 @font-face {
-  font-family: "PP Telegraf";
-  src: url("fonts/PPTelegraf-Light.otf") format("opentype");
-  font-weight: 300;
+  font-family: "Jokker";
+  src: url("fonts/JokkerVF-TRIAL.woff2") format("woff2");
+  font-weight: 100 900;
   font-style: normal;
   font-display: swap;
 }
@@ -35,7 +35,8 @@ body {
   margin: 0;
   background: var(--bg);
   color: var(--body-text);
-  font-family: "PP Telegraf", "Helvetica Neue", Arial, sans-serif;
+  font-family: "Jokker", "Helvetica Neue", Arial, sans-serif;
+  font-feature-settings: "ss04", "ss05";
   font-weight: 300;
   -webkit-font-smoothing: antialiased;
   line-height: 1.45;

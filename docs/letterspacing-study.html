@@ -1,0 +1,38 @@
+<!doctype html><meta charset="utf-8"><title>PP Telegraf letterspacing study</title>
+<!-- Hochuli, Detail in typography, "The word" p.23-31. Open in a browser; fonts load from the production backend. Findings are written up in the LETTERSPACING block of widget-business/src/styles/global.css. -->
+<style>
+@font-face{font-family:"PP Telegraf";src:url("https://a11y-checker-v2-production.up.railway.app/fonts/PPTelegraf-Light.otf") format("opentype");font-weight:300}
+@font-face{font-family:"PP Telegraf";src:url("https://a11y-checker-v2-production.up.railway.app/fonts/PPTelegraf-Regular.otf") format("opentype");font-weight:400}
+@font-face{font-family:"PP Telegraf";src:url("https://a11y-checker-v2-production.up.railway.app/fonts/PPTelegraf-Medium.otf") format("opentype");font-weight:500}
+body{font-family:"PP Telegraf",sans-serif;margin:16px;color:#000;background:#fff;font-kerning:normal}
+.row{display:flex;gap:24px;align-items:baseline;margin:0 0 6px}
+.lab{font:12px/1 monospace;width:150px;flex:none;color:#000}
+h2{font:12px/1 monospace;margin:18px 0 6px}
+.s{white-space:nowrap}
+</style>
+<body>
+<div id="out"></div>
+<script>
+const out=document.getElementById("out");
+const sizes=[[15,400],[18,400],[18,500],[27,400],[27,500],[32,500],[40,300]];
+const tracks=[-0.02,-0.01,0,0.01,0.02];
+const words="tollere minimum nn oo Verwaltung aren’t";
+for(const [px,w] of sizes){
+  const h=document.createElement("h2");h.textContent=`${px}px / ${w}`;out.appendChild(h);
+  for(const t of tracks){
+    const r=document.createElement("div");r.className="row";
+    r.innerHTML=`<span class="lab">tracking ${t}em</span><span class="s" style="font-size:${px}px;font-weight:${w};letter-spacing:${t}em">${words}</span>`;
+    out.appendChild(r);
+  }
+}
+const h=document.createElement("h2");h.textContent="capitals 27px/400 and 15px/500 — tracking 0.01 / 0.04 / 0.06 / 0.08em";out.appendChild(h);
+for(const [px,w] of [[27,400],[15,500]]) for(const t of [0.01,0.04,0.06,0.08]){
+  const r=document.createElement("div");r.className="row";
+  r.innerHTML=`<span class="lab">${px}px caps ${t}em</span><span class="s" style="font-size:${px}px;font-weight:${w};letter-spacing:${t}em">WCAG 2.1 AA ARIA HTML OCCURRENCES VPAT</span>`;
+  out.appendChild(r);
+}
+const d=document.createElement("h2");d.textContent="dashes 27px/400";out.appendChild(d);
+for(const s of ["self-service page - a hyphen as dash","self-service page – spaced en dash","self-service page—unspaced em dash","self-service page — spaced em dash","10:00–18:00 Wed–Fri 1465–80","Ta Ve Wo Ya Ypres Table Verse Warn fi fl ff ffi"]){
+  const r=document.createElement("div");r.className="row";r.innerHTML=`<span class="lab"></span><span class="s" style="font-size:27px;letter-spacing:0.01em">${s}</span>`;out.appendChild(r);
+}
+</script>

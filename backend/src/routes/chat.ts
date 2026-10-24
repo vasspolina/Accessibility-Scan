@@ -4,7 +4,7 @@ import { z } from "zod";
 import { env } from "../config/env.js";
 import { logger } from "../utils/logger.js";
 import { getClaudeClient } from "../services/aiReview/claudeClient.js";
-import { CHAT_SYSTEM_PROMPT, SHOW_SECTION_TOOL, START_SCAN_TOOL } from "../services/chat/chatPrompt.js";
+import { CHAT_SYSTEM_PROMPT, SHOW_SECTION_TOOL, START_SCAN_TOOL, WEB_SEARCH_TOOL } from "../services/chat/chatPrompt.js";
 
 /**
  * The conversational front of the checker, as server-sent events.
@@ -20,6 +20,10 @@ import { CHAT_SYSTEM_PROMPT, SHOW_SECTION_TOOL, START_SCAN_TOOL } from "../servi
  * request ends with that call; the widget runs the scan the way the form
  * always has — narration, history, report — and sends the result back as
  * the tool result in the next request.
+ *
+ * Web search is the other way round: it runs on the API's side, inside the
+ * same response, and the route only tells the widget that a search is on
+ * and what it asked, so the wait has a name.
  */
 
 // Opus 5.5 for the conversation. The page review keeps its own constant;
@@ -34,6 +38,24 @@ const CHAT_MODEL = "claude-opus-5-5";
 const MAX_MESSAGES = 60;
 const MAX_USER_TEXT = 4_000;
 const MAX_BODY_CHARS = 400_000;
+
+// Web searches run in a loop on the API's side, and a long one is handed
+// back as pause_turn with the work so far. The route resumes it, up to this
+// many times, so the person sees one answer and not a half-finished one;
+// the turn that is still paused after that goes to the widget as it is.
+const MAX_PAUSE_RESUMES = 3;
+
+/** The query of a web_search call, read out of its streamed input. The
+ *  input arrives in pieces and may be cut short; a query that does not
+ *  parse is simply not shown. */
+function searchQuery(partialJson: string): string | null {
+  try {
+    const input = JSON.parse(partialJson) as { query?: unknown };
+    return typeof input.query === "string" && input.query.trim() ? input.query.trim() : null;
+  } catch {
+    return null;
+  }
+}
 
 // What a person's turn may hold: what the widget sends, and nothing else —
 // typed text, the report digest as text, and string tool results. No image,
@@ -165,7 +187,7 @@ export async function chatRoutes(app: FastifyInstance) {
       res.write(`event: ${event}\ndata: ${JSON.stringify(data)}\n\n`);
     };
 
-    const stream = client.beta.messages.stream({
+    const params: Omit<Anthropic.Beta.MessageCreateParams, "messages" | "stream"> = {
       model: CHAT_MODEL,
       max_tokens: 16_000,
       // Opus 5.5 always thinks; effort is the control, and its default is
@@ -174,16 +196,18 @@ export async function chatRoutes(app: FastifyInstance) {
       thinking: { type: "adaptive" },
       output_config: { effort: "medium" },
       system: [{ type: "text", text: CHAT_SYSTEM_PROMPT }],
-      tools: [START_SCAN_TOOL, SHOW_SECTION_TOOL],
+      tools: [START_SCAN_TOOL, SHOW_SECTION_TOOL, WEB_SEARCH_TOOL],
       // Caches the growing conversation, report digest included, so a
       // follow-up question re-reads the report from cache.
       cache_control: { type: "ephemeral" },
-      messages: parsed.data.messages as Anthropic.Beta.BetaMessageParam[],
       // A refusal on the primary model is retried on the fallback rather
       // than ending the person's turn.
       betas: ["server-side-fallback-2026-06-01"],
       fallbacks: [{ model: "claude-opus-4-8" }],
-    });
+    };
+
+    let messages = parsed.data.messages as Anthropic.Beta.BetaMessageParam[];
+    let stream = client.beta.messages.stream({ ...params, messages });
 
     // The RESPONSE closing, not the request: on a POST the request's
     // "close" fires as soon as its body has been read, which Fastify does
@@ -195,12 +219,40 @@ export async function chatRoutes(app: FastifyInstance) {
     });
 
     try {
-      for await (const event of stream) {
-        if (event.type === "content_block_delta" && event.delta.type === "text_delta") {
-          send("delta", { text: event.delta.text });
+      // One turn may take several requests: a search loop the API pauses is
+      // resumed by sending the paused turn back, and the pieces go to the
+      // widget as one assistant turn. The API reads consecutive assistant
+      // messages as one, so the joined turn is the conversation it saw.
+      const content: Anthropic.Beta.BetaContentBlock[] = [];
+      let final: Anthropic.Beta.BetaMessage;
+      for (let resumed = 0; ; resumed++) {
+        // Web searches in flight, by content block index, with their input
+        // as it streams in. The widget is told when one starts, and told
+        // the query once it has all arrived.
+        const searches = new Map<number, string>();
+        for await (const event of stream) {
+          if (event.type === "content_block_delta" && event.delta.type === "text_delta") {
+            send("delta", { text: event.delta.text });
+          } else if (event.type === "content_block_start" && event.content_block.type === "server_tool_use" && event.content_block.name === "web_search") {
+            // The input usually streams in after the start; when the start
+            // already carries it, that is the whole of it.
+            const given = event.content_block.input;
+            searches.set(event.index, given && typeof given === "object" && Object.keys(given).length ? JSON.stringify(given) : "");
+            send("searching", { query: null });
+          } else if (event.type === "content_block_delta" && event.delta.type === "input_json_delta" && searches.has(event.index)) {
+            searches.set(event.index, searches.get(event.index) + event.delta.partial_json);
+          } else if (event.type === "content_block_stop" && searches.has(event.index)) {
+            const query = searchQuery(searches.get(event.index) ?? "");
+            searches.delete(event.index);
+            if (query) send("searching", { query });
+          }
         }
+        final = await stream.finalMessage();
+        content.push(...final.content);
+        if (final.stop_reason !== "pause_turn" || resumed >= MAX_PAUSE_RESUMES || res.destroyed) break;
+        messages = [...messages, { role: "assistant", content: final.content }];
+        stream = client.beta.messages.stream({ ...params, messages });
       }
-      const final = await stream.finalMessage();
 
       if (final.stop_reason === "refusal") {
         send("done", {
@@ -215,7 +267,7 @@ export async function chatRoutes(app: FastifyInstance) {
 
       let scan: { toolUseId: string; url: string; scope: "page" | "site"; aiReview: boolean } | null = null;
       const show: Array<{ toolUseId: string; section: (typeof SECTIONS)[number] }> = [];
-      for (const block of final.content) {
+      for (const block of content) {
         if (block.type === "tool_use" && block.name === "show_section") {
           const input = showInputSchema.safeParse(block.input);
           if (input.success) show.push({ toolUseId: block.id, section: input.data.section });
@@ -237,7 +289,7 @@ export async function chatRoutes(app: FastifyInstance) {
         }
       }
 
-      send("done", { content: final.content, stopReason: final.stop_reason, scan, show });
+      send("done", { content, stopReason: final.stop_reason, scan, show });
       res.end();
     } catch (err) {
       // The visitor left; there is nobody to tell.

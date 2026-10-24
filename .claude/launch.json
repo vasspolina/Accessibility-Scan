@@ -69,6 +69,18 @@
         "/Users/polinavasilyeva/product-portfolio"
       ],
       "port": 4174
+    },
+    {
+      "name": "bts-site",
+      "runtimeExecutable": "python3",
+      "runtimeArgs": [
+        "-m",
+        "http.server",
+        "4190",
+        "-d",
+        "/Users/polinavasilyeva/bts-site"
+      ],
+      "port": 4190
     }
   ]
 }

@@ -34,6 +34,21 @@ export interface ChatTurnResult {
   show: ShowRequest[];
 }
 
+/** What the widget hears while a turn streams: the reply's text as it
+ *  comes, and a web search as it starts (no query yet) and as its query
+ *  arrives. */
+export interface ChatTurnListener {
+  onDelta: (text: string) => void;
+  onSearching?: (query: string | null) => void;
+}
+
+/** A page the assistant drew on, from the citations the API attaches to
+ *  the text it wrote from a web search. */
+export interface ChatSource {
+  url: string;
+  title: string;
+}
+
 /** The server has no assistant: no API key, or the route is absent on an
  *  older backend. The widget falls back to scanning the address it was
  *  given, and says so. */
@@ -56,12 +71,31 @@ export function textOf(content: ChatMessage["content"]): string {
     .join("");
 }
 
+/** The web pages an assistant turn cites, each once, in the order they are
+ *  first cited. Only web search citations count; a title that is missing
+ *  falls back to the address, so every source has a name to show. */
+export function sourcesOf(content: ChatBlock[]): ChatSource[] {
+  const seen = new Set<string>();
+  const out: ChatSource[] = [];
+  for (const block of content) {
+    if (block.type !== "text" || !Array.isArray(block.citations)) continue;
+    for (const c of block.citations as Array<Record<string, unknown>>) {
+      if (c.type !== "web_search_result_location" || typeof c.url !== "string" || !/^https?:\/\//.test(c.url)) continue;
+      if (seen.has(c.url)) continue;
+      seen.add(c.url);
+      out.push({ url: c.url, title: typeof c.title === "string" && c.title.trim() ? c.title.trim() : c.url });
+    }
+  }
+  return out;
+}
+
 export async function sendChatTurn(
   apiBase: string,
   messages: ChatMessage[],
-  onDelta: (text: string) => void,
+  listener: ChatTurnListener | ((text: string) => void),
   signal?: AbortSignal
 ): Promise<ChatTurnResult> {
+  const on: ChatTurnListener = typeof listener === "function" ? { onDelta: listener } : listener;
   let response: Response;
   try {
     response = await fetch(`${apiBase.replace(/\/$/, "")}/api/chat`, {
@@ -118,7 +152,8 @@ export async function sendChatTurn(
       const data = /^data: (.+)$/m.exec(frame)?.[1];
       if (!event || !data) continue;
       const payload = JSON.parse(data);
-      if (event === "delta") onDelta(payload.text);
+      if (event === "delta") on.onDelta(payload.text);
+      else if (event === "searching") on.onSearching?.(typeof payload.query === "string" ? payload.query : null);
       else if (event === "done") {
         // A refusal comes back as one canned English block the server wrote
         // in place of the model's; it carries no thinking to preserve, so it

@@ -71,37 +71,139 @@ export function keepShortWordsAttached(root: Node): () => void {
 
 /**
  * Punctuation the keyboard cannot type, applied to the chat's prose
- * (Hochuli, Detail in typography, "The line": dashes, quotation marks, the
- * ellipsis). The model and the person both write straight quotes, a hyphen
- * for a dash and three full points; these become the typographic signs in
- * the language of the conversation. Code spans and code blocks are never
- * passed through here: their characters are data.
+ * (Hochuli, Detail in typography, "The line", p.36–40, figs 46–53). The
+ * model and the person both write straight quotes, a hyphen for a dash and
+ * three full points; these become the typographic signs in the language of
+ * the conversation. Code spans, code blocks and links are never passed
+ * through here: their characters are data.
  *
- *   "x"  →  “x”  ‚ „x“ (de), «\u202Fx\u202F» (fr), «x» (es)
- *   'x'  →  ‘x’ (‚x‘ in German); an apostrophe inside a word is ’
- *   " - " and " -- "  →  " – "   (a spaced en dash, as in the reference)
- *   ...  →  …
+ * The dash. Hochuli allows two forms, the em dash set close (English and
+ * American practice) or the en dash with a space either side (the book's
+ * own, Continental), never a hyphen and never a spaced em dash. PP
+ * Telegraf's hyphen is 0.47em and its en dash 0.57em, so a spaced en dash
+ * cannot be told from a spaced hyphen in this face (measured 18 Oct 2026);
+ * English takes the close em dash, which at 0.77em reads as a dash. German,
+ * French and Spanish keep their spaced en dash, with a no-break space before
+ * it so a line never opens with a dash. A span of figures or words
+ * (10:00–18:00, Mon–Fri, 1465–80) is a closed en dash in every language
+ * (fig. 49); a date written 2026-10-18 keeps its hyphens.
+ *
+ *   " - ", " -- ", " – ", "—", " — "  →  "—" (en) / " – " (de, fr, es)
+ *   10-12, 1465-80                     →  10–12, 1465–80
+ *   "x"   →  ‘x’ (en: single marks first, double inside them, fig. 53)
+ *             „x“ (de), « x » (fr), «x» (es)
+ *   'x'   →  the marks for a quotation inside one; an apostrophe is ’
+ *   ‘not stated,’  →  ‘not stated’,  (a comma or point that is not part of
+ *             a short quoted phrase goes outside the marks)
+ *   ...   →  …
+ *   fr: a narrow no-break space before ; ! ? and a no-break space before :
+ *   1280x900  →  1280 x 900, no-break spaces (fig. 52: the x of the face)
  */
-const QUOTES: Record<string, { d: [string, string]; s: [string, string] }> = {
-  en: { d: ["\u201C", "\u201D"], s: ["\u2018", "\u2019"] },
-  de: { d: ["\u201E", "\u201C"], s: ["\u201A", "\u2018"] },
-  fr: { d: ["\u00AB\u202F", "\u202F\u00BB"], s: ["\u2018", "\u2019"] },
-  es: { d: ["\u00AB", "\u00BB"], s: ["\u2018", "\u2019"] },
+type Marks = { d: [string, string]; s: [string, string] };
+const QUOTES: Record<string, Marks> = {
+  // English: single marks for the frequent quotations, double within them.
+  en: { d: ["‘", "’"], s: ["“", "”"] },
+  de: { d: ["„", "“"], s: ["‚", "‘"] },
+  fr: { d: ["« ", " »"], s: ["‘", "’"] },
+  es: { d: ["«", "»"], s: ["‘", "’"] },
 };
+const DASH: Record<string, string> = { en: "—", de: " – ", fr: " – ", es: " – " };
+
+// What a quotation mark can follow to be an opening one: the start, a
+// space, an opening bracket, a dash.
+const BEFORE_OPEN = "(^|[\\s(\\[\\u2013\\u2014])";
+const LETTER = /\p{L}/u;
 
 export function smarten(text: string, lang: string): string {
   const q = QUOTES[lang] ?? QUOTES.en;
-  return (
-    text
-      .replace(/\.\.\./g, "\u2026")
-      .replace(/(^|[\s(\[])-{1,2}(?=\s)/g, "$1\u2013")
-      // An opening mark follows the start, a space or an opening bracket;
-      // every other straight mark closes.
-      .replace(/(^|[\s(\[\u2013])"/g, `$1${q.d[0]}`)
-      .replace(/"/g, q.d[1])
-      .replace(/(^|[\s(\[\u2013])'/g, `$1${q.s[0]}`)
-      .replace(/'/g, q.s[1])
+  const dash = DASH[lang] ?? DASH.en;
+  let out = text
+    .replace(/\.\.\./g, "…")
+    // A span: figures (or times, decimals) either side of one hyphen or dash,
+    // not part of a longer hyphenated run such as a date.
+    .replace(/(?<![\d-])(\d+(?:[.:,]\d+)?)\s?[-–—]\s?(?=\d+(?:[.:,]\d+)?(?![\d-]))/g, "$1–")
+    // The dash between words, whatever was typed for it: a hyphen, two, an
+    // en dash or an em dash with spaces round it.
+    .replace(/[  ]+(?:-{1,2}|–|—)[  ]+/g, dash)
+    // One that opens the text stands as a plain en dash.
+    .replace(/^(?:-{1,2}|—)(?=\s)/, "–")
+    // An unspaced em dash in another language takes that language's form.
+    .replace(/(?<=\S)—(?=\S)/g, dash)
+    // 1280x900: the x of the typeface, a word space either side that cannot
+    // break (the face has no thin space, so none is asked for).
+    .replace(/(\d{2,})[  ]?[x×][  ]?(\d{2,})/g, "$1 x $2");
+  // Quotation marks, read left to right with the depth of the quotation:
+  // the first mark that opens takes the language's primary marks, one opened
+  // inside it the nested marks, whichever straight character was typed
+  // (fig. 53). A mark opens after the start, a space, a bracket, a dash or
+  // another opening mark; otherwise it closes the one it matches. A single
+  // mark inside a word (it's) or before a dropped century ('90s) is an
+  // apostrophe, and so is one with no single quotation open to close.
+  const OPENING = /[\s(\[–—‘“‚„«‹]/;
+  const stack: { ch: string; marks: [string, string] }[] = [];
+  let res = "";
+  for (let i = 0; i < out.length; i++) {
+    const ch = out[i];
+    if (ch !== '"' && ch !== "'") {
+      res += ch;
+      continue;
+    }
+    const prev = i > 0 ? out[i - 1] : "";
+    const rest = out.slice(i + 1);
+    if (ch === "'") {
+      const inWord =
+        (LETTER.test(prev) && LETTER.test(rest[0] ?? "")) ||
+        (!LETTER.test(prev) &&
+          (/^\d\ds\b/.test(rest) || (/^\d\d(?![\d'])/.test(rest) && !rest.includes("'"))));
+      if (inWord) {
+        res += "’";
+        continue;
+      }
+    }
+    const opens = prev === "" || OPENING.test(prev);
+    if (opens) {
+      const marks = stack.length ? q.s : q.d;
+      stack.push({ ch, marks });
+      res += marks[0];
+    } else {
+      const at = stack.map((x) => x.ch).lastIndexOf(ch);
+      if (at >= 0) {
+        res += stack[at].marks[1];
+        stack.length = at;
+      } else {
+        // Nothing of this kind is open: a closing mark whose opening was in
+        // an earlier chunk, or the apostrophe of a possessive plural.
+        res += ch === '"' ? q.d[1] : "’";
+      }
+    }
+  }
+  out = res;
+  // A comma or point after a short quoted phrase belongs to the sentence,
+  // not to the quotation: ‘not stated’, rather than ‘not stated,’. A quoted
+  // sentence (five words or more, or one ending in ? or !) keeps its own.
+  const [open, close] = q.d;
+  const esc = (x: string) => x.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  out = out.replace(
+    new RegExp(`${esc(open)}([^${esc(close[close.length - 1])}\\n]{1,80}?)([,.])${esc(close)}`, "g"),
+    (m, phrase: string, punct: string) =>
+      phrase.trim().split(/\s+/).length <= 4 && !/[?!]$/.test(phrase) ? `${open}${phrase}${close}${punct}` : m
   );
+  if (lang === "fr") {
+    // The spaces French sets before its high punctuation (fig. 41): narrow
+    // and unbreakable before ; ! ?, a word space's worth before a colon
+    // that follows a word (never inside a time such as 10:00).
+    out = out
+      .replace(/(\p{L}|\p{N}|[»’)])\s?([;!?])/gu, "$1 $2")
+      .replace(/(\p{L})\s?:/gu, "$1 :");
+  }
+  return out;
 }
+
+/** Runs of capitals in prose (WCAG, ARIA, AA, URL) as Hochuli sets
+ *  abbreviations (p.39–40, fig. 54): a size smaller and evenly spaced, so
+ *  they stop shouting in the line. The regex finds two or more capitals
+ *  (figures allowed after the first) standing as a word; MoMA, iOS and a
+ *  word's first capital are not runs. Used to wrap them in markup. */
+export const CAPS_RUN = /(?<![\p{L}\p{N}])([A-ZÄÖÜ][A-Z0-9ÄÖÜ]+(?:-[A-Z0-9]+)*)(?![\p{L}])/gu;
 
 export const __test = { bind, smarten };

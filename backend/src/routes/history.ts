@@ -132,7 +132,7 @@ export async function historyRoutes(app: FastifyInstance) {
     if (!recent && !recentAudit) {
       return reply.status(404).send({
         error: "No scan on file for that site",
-        detail: "Scan the site with your API key first — the questions come from its own conformance rows.",
+        detail: "Scan the site with your API key first—the questions come from its own conformance rows.",
       });
     }
     const useAudit = recentAudit && (!recent || recentAudit.scannedAt >= recent.scannedAt);

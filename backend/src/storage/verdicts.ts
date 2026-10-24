@@ -270,7 +270,7 @@ export function guidedQuestions(
       whyAsking:
         c.status === "not-measured"
           ? `The ${(c.notMeasured ?? []).join(" and ") || "automated"} check did not finish on the last scan, so nothing was measured here.`
-          : "No software can decide this one — it needs a person.",
+          : "No software can decide this one—it needs a person.",
       answered: answered.get(c.id) ?? null,
     }));
 }

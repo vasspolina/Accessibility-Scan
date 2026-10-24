@@ -91,6 +91,7 @@
         description: "Text has a contrast of 2.9:1, below the 4.5:1 minimum.",
         suggestedFix: "Darken the text colour until it reaches 4.5:1.",
         elementScreenshot: TINY_JPEG,
+        elementBox: { x: 0.12, y: 0.34, width: 0.5, height: 0.3 },
         suggestedColour: { from: "#8a9bb0", to: "#4a617f", background: "#ffffff", ratio: 4.6, required: 4.5 },
         ageNote: "Contrast this faint sits below what reduced contrast sensitivity, a common change past sixty, can reliably resolve.",
       }),
@@ -121,6 +122,7 @@
         description: "Image has no alt attribute.",
         suggestedFix: "Describe the image in an alt attribute.",
         elementScreenshot: TINY_JPEG,
+        elementBox: { x: 0.04, y: 0.18, width: 0.9, height: 0.7 },
         suggestedAltText: "A red bicycle leaning against a brick wall",
         helpUrl: "https://dequeuniversity.com/rules/axe/4.10/image-alt",
       }),
@@ -447,7 +449,7 @@
       });
     });
 
-    var text, content, scan = null, showReq = [];
+    var text, content, scan = null, showReq = [], searchQuery = null;
     function sectionAsked(t) {
       var map = [
         [/law|legal|checklist|comply|compliance/i, "checklist", "legal checklist"],
@@ -497,6 +499,20 @@
           "3. Click the label and check the cursor lands in the field\n\n" +
           "More in [the W3C forms tutorial](https://www.w3.org/WAI/tutorials/forms/labels/).";
         content = [{ type: "text", text: text }];
+      } else if (/deadline|when (did|does|will)|latest|news|look (it )?up|search/i.test(userText)) {
+        // A question the report cannot answer and the model is not sure of:
+        // it searches first. The route tells the widget when the search
+        // starts and what it asked; the text that follows cites a page.
+        searchQuery = "European Accessibility Act deadline";
+        text = "I looked this up. The European Accessibility Act applied to new products and services from 28 June 2025; services already on the market have until 28 June 2030.";
+        content = [
+          { type: "server_tool_use", id: "srvtoolu_fixture", name: "web_search", input: { query: searchQuery } },
+          { type: "web_search_tool_result", tool_use_id: "srvtoolu_fixture", content: [{ type: "web_search_result", url: "https://commission.europa.eu/eaa", title: "European Accessibility Act", encrypted_content: "x", page_age: null }] },
+          { type: "text", text: text, citations: [
+            { type: "web_search_result_location", url: "https://commission.europa.eu/eaa", title: "European Accessibility Act", cited_text: "28 June 2025", encrypted_index: "a" },
+            { type: "web_search_result_location", url: "https://eur-lex.europa.eu/eli/dir/2019/882", title: "Directive (EU) 2019/882", cited_text: "28 June 2030", encrypted_index: "b" },
+          ] },
+        ];
       } else if (digest && sectionAsked(userText)) {
         var section = sectionAsked(userText);
         chatCalls += 1;
@@ -524,11 +540,21 @@
     }
 
     var words = text.split(/(\s+)/);
+    // A search is shown before the words: named when it starts, then with
+    // its query, each held long enough to be seen (ticks are 40ms).
+    var before = searchQuery
+      ? [JSON.stringify({ query: null })].concat(new Array(20).fill(null), [JSON.stringify({ query: searchQuery })], new Array(45).fill(null))
+      : [];
     var stream = new ReadableStream({
       start: function (controller) {
         var enc = new TextEncoder();
         var i = 0;
         var tick = setInterval(function () {
+          if (before.length) {
+            var frame = before.shift();
+            if (frame) controller.enqueue(enc.encode("event: searching\ndata: " + frame + "\n\n"));
+            return;
+          }
           if (i < words.length) {
             controller.enqueue(enc.encode("event: delta\ndata: " + JSON.stringify({ text: words.slice(i, i + 4).join("") }) + "\n\n"));
             i += 4;

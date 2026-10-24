@@ -174,27 +174,27 @@ export function ScanHistory({
               {comparable
                 ? tf(
                     flat
-                      ? "Score unchanged — {then} then, {now} now"
+                      ? "Score unchanged—{then} then, {now} now"
                       : up
-                        ? "Score is up — {then} then, {now} now"
-                        : "Score is down — {then} then, {now} now",
+                        ? "Score is up—{then} then, {now} now"
+                        : "Score is down—{then} then, {now} now",
                     { then: last.score, now: current.score }
                   )
                 : t(
-                    "Not comparable — we scored the earlier scan by different rules. Some checks that used to sit outside the number now count towards it, so the two are not a fair comparison and we claim no change."
+                    "Not comparable—we scored the earlier scan by different rules. Some checks that used to sit outside the number now count towards it, so the two are not a fair comparison and we claim no change."
                   )}
             </li>
             <li>
               {diff.fixed.length === 0
-                ? t("Problems gone — none found this time")
-                : tf("Problems gone — {rules}", { rules: diff.fixed.map(ruleLabel).join(", ") })}
+                ? t("Problems gone—none found this time")
+                : tf("Problems gone—{rules}", { rules: diff.fixed.map(ruleLabel).join(", ") })}
             </li>
             {/* "none weren't there before" is a double negative, and the
                 design's own copy has it. Said the way round it means. */}
             <li>
               {diff.appeared.length === 0
-                ? t("New problems — none appeared")
-                : tf("New problems — {rules}", { rules: diff.appeared.map(ruleLabel).join(", ") })}
+                ? t("New problems—none appeared")
+                : tf("New problems—{rules}", { rules: diff.appeared.map(ruleLabel).join(", ") })}
             </li>
           </ul>
 

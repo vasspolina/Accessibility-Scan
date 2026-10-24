@@ -278,7 +278,7 @@ export function evaluateKeyboardNav(nav: KeyboardNavResult): AccessibilityFindin
         "A",
         "https://www.w3.org/WAI/WCAG21/Understanding/focus-order.html",
         first.selector,
-        `${anomalies.positiveTabindex.length === 1 ? "A control uses" : `${anomalies.positiveTabindex.length} controls use`} a positive tabindex (${first.tabindex}), which yanks ${anomalies.positiveTabindex.length === 1 ? "it" : "them"} out of the page's natural tab order${anomalies.domInversions.length > 0 ? ` — the walk measured ${anomalies.domInversions.length} place${anomalies.domInversions.length === 1 ? "" : "s"} where focus jumps backwards through the page` : ""}. Everything without a number then comes after everything with one, in an order no one chose.`,
+        `${anomalies.positiveTabindex.length === 1 ? "A control uses" : `${anomalies.positiveTabindex.length} controls use`} a positive tabindex (${first.tabindex}), which yanks ${anomalies.positiveTabindex.length === 1 ? "it" : "them"} out of the page's natural tab order${anomalies.domInversions.length > 0 ? `—the walk measured ${anomalies.domInversions.length} place${anomalies.domInversions.length === 1 ? "" : "s"} where focus jumps backwards through the page` : ""}. Everything without a number then comes after everything with one, in an order no one chose.`,
         "Remove the positive tabindex values and let the DOM order carry the tab order. If the visual order is the problem, reorder the markup. A tabindex number is a patch that breaks somewhere else."
       )
     );
