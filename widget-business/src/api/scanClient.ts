@@ -196,6 +196,8 @@ export interface AccessibilityReport {
     // so an incomplete scan can look better than a complete one — the report
     // says so rather than letting the number stand unqualified.
     incompleteChecks?: string[];
+    // Only when the Tab walk was cut short: how many stops it did walk.
+    tabWalkStops?: number;
     // Set when what was checked was a document rather than a web page. Several
     // sections of the report do not apply to one.
     documentKind?: "pdf";

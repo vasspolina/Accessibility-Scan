@@ -778,6 +778,7 @@ export const CHROME_KEYS: string[] = [
   "It is not a statement that the site meets the law.",
   "What the score counts",
   "Did not finish",
+  "first {n} stops",
   "Did not run",
   "I can't help with that one. Ask me something else, or name a site to check.",
   "Something went wrong. Please try again.",

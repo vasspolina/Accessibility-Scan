@@ -350,6 +350,10 @@ export const accessibilityReportSchema = z.object({
     // Checks that did not finish on this run. Present so the reader can tell a
     // clean result from an incomplete one — the score only counts what ran.
     incompleteChecks: z.array(z.string()).optional(),
+    // Present only when the Tab walk was cut short (by its cap or the time
+    // budget): the stops it did walk, so the report can say "first 400
+    // stops" rather than "did not finish" about a walk that ran.
+    tabWalkStops: z.number().optional(),
     // Criteria carrying axe results axe could not decide, for the crawl's
     // site-level union. Optional: absent means none, or an older report.
     axeIncomplete: z.array(z.string()).optional(),

@@ -2014,7 +2014,17 @@ async function captureMobileElementScreenshots(
 // produced any visible change at all. Runs LAST in the scan: pressing Tab
 // scrolls the page and mutates :focus styles, which would disturb the
 // screenshots and style measurements taken earlier.
-const MAX_TAB_STOPS = 25;
+//
+// The cap was 25, and a real page has far more tab stops than that: a
+// header, a navigation, a cookie banner. The walk hit the cap on nearly
+// every site, which the report called "Did not finish" and conformance
+// read as five criteria not measured, for a walk that had worked. A press
+// costs 7-10ms here, so 400 stops is about 3-4s of the 6s budget. Measured
+// 17 Oct: bundesregierung.de wrapped round in 1.2s and showed two findings
+// the first 25 stops could not; spiegel.de ran past 150. A page with more
+// stops than this is still reported as cut short, and the budget below is
+// the other backstop.
+const MAX_TAB_STOPS = 400;
 const KEYBOARD_BUDGET_MS = 6_000;
 
 async function captureKeyboardNavigation(

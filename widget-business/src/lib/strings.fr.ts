@@ -221,6 +221,7 @@ export const STRINGS_FR: Record<string, string> = {
   "Could not check {url}.": "Impossible de vérifier {url}.",
   "The assistant is still replying. Run it again in a moment.": "L'assistant répond encore. Relancez dans un instant.",
   "Did not finish": "Inachevé",
+  "first {n} stops": "les {n} premiers arrêts",
   "Did not run": "Non exécuté",
   "I can't help with that one. Ask me something else, or name a site to check.": "Je ne peux pas vous aider sur ce point. Posez une autre question, ou indiquez un site à vérifier.",
   "Something went wrong. Please try again.": "Une erreur s'est produite. Veuillez réessayer.",

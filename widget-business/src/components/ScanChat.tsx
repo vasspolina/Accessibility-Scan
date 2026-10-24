@@ -440,8 +440,21 @@ export function stepResult(step: string, report: AccessibilityReport): string | 
       );
     case "screen-reader":
       return report.screenReaderScript ? found(report.screenReaderScript.lines.filter((l) => l.issue).length) : null;
-    case "keyboard":
+    case "keyboard": {
+      // A walk cut short by its cap is a walk that ran: "first 400 stops",
+      // not "Did not finish", unless another keyboard check really did not
+      // finish. spiegel.de has more stops than the cap and read as broken.
+      const cut = report.meta.tabWalkStops;
+      const otherUnfinished = STEP_CHECKS.keyboard
+        .filter((c) => c !== "keyboard navigation")
+        .some((c) => report.meta.incompleteChecks?.includes(c));
+      if (unfinished && cut && !otherUnfinished) {
+        const n = count(isKeyboard);
+        const first = t("first {n} stops").replace("{n}", String(cut));
+        return `${n ? `${n} ${t("found")}` : t("Nothing found")} · ${first}`;
+      }
       return found(count(isKeyboard));
+    }
     case "text-resize":
       return found(count(isTextResize));
     case "phone":
