@@ -50,6 +50,9 @@ export interface AccessibilityFinding {
   // Base64 JPEG (no data: prefix) — a cropped screenshot of the flagged
   // element, when the backend could locate and capture it.
   elementScreenshot?: string;
+  // Where the flagged element sits inside that thumbnail, as fractions (0..1)
+  // of its width and height. Present only when the thumbnail is a padded crop.
+  elementBox?: { x: number; y: number; width: number; height: number };
   pictureNote?: string;
   // The same note as data, so it can be worded in the reader's language.
   // Absent on reports saved before it was sent.

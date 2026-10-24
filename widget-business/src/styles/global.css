@@ -568,3 +568,137 @@
   .a11y-widget-biz { max-width: none; margin-inline: 0; padding-inline: 16px; }
 }
 .a11y-widget-biz .a11y-chat-text :is(p, pre) { margin: 0; }
+
+/* ═══ FINDING CARDS, EVIDENCE PICTURES AND THE PRINTED REPORT (24 Oct 2026) ══
+   The card the printed report is made of (the on-screen list is the table) had
+   no layout at all, so everything sat on one inline run: "Images have no
+   descriptionWCAG 1.1.1", a severity mark touching the title, a picture at its
+   full pixel size, and the whole header a 999px pill because it is a <button>.
+
+   A card is a grid: severity, title (criterion under it), then the marks, each
+   its own row with a gap, so nothing needs an absolute position or a negative
+   margin to sit where it does and nothing can land on a neighbour when a title
+   or a badge runs long. Every child is min-width: 0, so a long German word or
+   rule id wraps inside its track instead of pushing the row wider.
+
+   A marker highlight draws its end caps 0.14em OUTSIDE its box (box-shadow), so
+   two highlights, or a highlight and a word, need more than a space between
+   them: the gaps below are 0.4em and up, never the 0.12em margin alone.
+
+   Every rule is scoped under .a11y-print-cards (three classes), so it outranks
+   the generic button and pill rules above without matching their specificity,
+   which lint:css refuses. */
+.a11y-widget-biz .a11y-print-cards { list-style: none; padding: 0; margin: 0 0 1.2em; }
+.a11y-widget-biz .a11y-print-cards .a11y-finding { display: block; margin: 0 0 1.6em; padding: 0; }
+.a11y-widget-biz .a11y-print-cards .a11y-finding-header,
+.a11y-widget-biz .a11y-print-cards .a11y-finding-header:enabled:hover {
+  display: grid; grid-template-columns: minmax(0, 1fr); justify-items: start; align-items: start;
+  gap: 0.45em 1.2em; width: 100%; box-sizing: border-box; margin: 0; padding: 0;
+  font: inherit; font-size: 27px; font-weight: 400; letter-spacing: 0; text-align: start;
+  border: 0; border-radius: 0; background: none; color: var(--ink);
+}
+.a11y-widget-biz .a11y-print-cards .a11y-finding-header > * { min-width: 0; max-width: 100%; }
+.a11y-widget-biz .a11y-print-cards .a11y-finding-header > .a11y-sev {
+  margin-inline: 0.2em; padding-block: 0.08em; line-height: 1.25; white-space: normal;
+}
+.a11y-widget-biz .a11y-print-cards .a11y-finding-desc {
+  display: block; font-size: 32px; font-weight: 500; line-height: 1.05; letter-spacing: -0.005em;
+  overflow-wrap: break-word; hyphens: auto; text-wrap: balance;
+}
+/* The criterion is small print under the title, on its own line: set after the
+   title on the same line it welded onto the title's last word. */
+.a11y-widget-biz .a11y-print-cards .a11y-finding-criterion {
+  display: block; margin-top: 0.35em; font-size: 15px; font-weight: 400; line-height: 1.2; letter-spacing: 0.01em;
+}
+.a11y-widget-biz .a11y-print-cards .a11y-finding-meta {
+  display: flex; flex-wrap: wrap; align-items: baseline; gap: 0.4em 0.9em;
+}
+.a11y-widget-biz .a11y-print-cards .a11y-finding-meta > * { min-width: 0; max-width: 100%; }
+.a11y-widget-biz .a11y-print-cards .a11y-finding-details { margin-top: 0.9em; }
+.a11y-widget-biz .a11y-occurrence-head { display: flex; flex-wrap: wrap; align-items: baseline; gap: 0.2em 0.6em; }
+.a11y-widget-biz .a11y-occurrence-label { min-width: 0; overflow-wrap: anywhere; }
+
+/* With a picture, the card is two columns: the picture on the left and severity,
+   title and marks stacked beside it. The fourth, flexible row takes the
+   picture's extra height, so the three text rows keep their own spacing instead
+   of stretching apart. Without :has() the picture simply sits above the text. */
+@supports selector(:has(*)) {
+  .a11y-widget-biz .a11y-print-cards .a11y-finding-header:has(> .a11y-shot) {
+    grid-template-columns: minmax(120px, 36%) minmax(0, 1fr);
+    grid-template-rows: auto auto auto 1fr;
+    grid-template-areas: "shot sev" "shot desc" "shot meta" "shot .";
+  }
+  .a11y-widget-biz .a11y-print-cards .a11y-finding-header:has(> .a11y-shot) > .a11y-shot { grid-area: shot; }
+  .a11y-widget-biz .a11y-print-cards .a11y-finding-header:has(> .a11y-shot) > .a11y-sev { grid-area: sev; }
+  .a11y-widget-biz .a11y-print-cards .a11y-finding-header:has(> .a11y-shot) > .a11y-finding-desc { grid-area: desc; }
+  .a11y-widget-biz .a11y-print-cards .a11y-finding-header:has(> .a11y-shot) > .a11y-finding-meta { grid-area: meta; }
+}
+@media (max-width: 640px) {
+  .a11y-widget-biz .a11y-print-cards .a11y-finding-header:has(> .a11y-shot) {
+    grid-template-columns: minmax(0, 1fr); grid-template-rows: none; grid-template-areas: none;
+  }
+  .a11y-widget-biz .a11y-print-cards .a11y-finding-header:has(> .a11y-shot) > :is(.a11y-shot, .a11y-sev, .a11y-finding-desc, .a11y-finding-meta) { grid-area: auto; }
+}
+
+/* The evidence picture. The frame shrink-wraps the image and the image is sized
+   by max-width and max-height with the other side auto, so its box is exactly
+   the painted pixels and the outline's percentages land on the element. A fixed
+   box with object-fit: contain would letterbox the image and shift the outline
+   off the element: do not "fix" a tall or wide crop that way. The frame carries
+   the border (the outline's percentages resolve inside it, on the image). The
+   crop is shown at its own pixel size or smaller, never enlarged. */
+.a11y-widget-biz .a11y-shot { display: block; margin: 0; min-width: 0; max-width: 100%; }
+.a11y-widget-biz .a11y-shot-frame {
+  position: relative; display: block; width: fit-content; max-width: 100%; line-height: 0;
+  border: 2px solid var(--ink); box-sizing: border-box;
+}
+.a11y-widget-biz .a11y-shot-img { display: block; width: auto; height: auto; max-width: 100%; max-height: 220px; }
+/* Black inside, paper outside: one of the two rings is visible on any
+   photograph, and borders and outlines print without "background graphics". */
+.a11y-widget-biz .a11y-shot-box {
+  position: absolute; box-sizing: border-box; min-width: 10px; min-height: 10px; pointer-events: none;
+  border: 3px solid var(--ink); outline: 3px solid var(--paper);
+}
+.a11y-widget-biz .a11y-shot-locator {
+  margin-top: 0.4em; max-width: 60ch; font-size: 15px; line-height: 1.3; letter-spacing: 0.01em; overflow-wrap: anywhere;
+}
+.a11y-widget-biz .a11y-shot-locator strong { font-weight: 500; }
+.a11y-widget-biz .a11y-shot-locator code { font-size: inherit; overflow-wrap: anywhere; }
+.a11y-widget-biz .a11y-occurrence .a11y-shot { margin-top: 0.5em; }
+
+/* PRINT AND "SAVE AS PDF". Browsers cut wherever the page ends unless told
+   otherwise, which bisected cards, rows and pictures across pages.
+   - break-inside: avoid keeps a block whole; the page-break-* twins are for
+     engines that predate the break-* names.
+   - break-after: avoid keeps a title with what it introduces, so a heading is
+     never the last line on a page.
+   - orphans/widows: at least three lines of a paragraph at either end of a page.
+   - A card taller than a page cannot be kept whole, so a card with five or more
+     affected elements may break BETWEEN them (each one still whole, the header
+     still held to the first), rather than leaving a blank half page.
+   - print-color-adjust: exact: the marker highlights are background fills,
+     which browsers drop from a PDF by default, leaving severity as bare words.
+   - The card's details are hidden on screen by [hidden]; a printed report has
+     to stand without clicks, so print opens them. */
+@media print {
+  .a11y-widget-biz { orphans: 3; widows: 3; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  /* !important because line 6's [hidden] rule is !important too: of two
+     important rules the more specific wins, which is this one. */
+  .a11y-widget-biz .a11y-print-cards .a11y-finding-details[hidden] { display: block !important; }
+
+  .a11y-widget-biz .a11y-print-cards .a11y-finding { break-inside: avoid; page-break-inside: avoid; }
+  .a11y-widget-biz .a11y-print-cards .a11y-finding:has(.a11y-occurrence:nth-child(5)) { break-inside: auto; page-break-inside: auto; }
+  .a11y-widget-biz .a11y-print-cards .a11y-finding-header { break-inside: avoid; break-after: avoid; page-break-after: avoid; }
+
+  .a11y-widget-biz :is(h1, h2, h3, h4, h5, h6, caption, .a11y-accordion-title, .a11y-affected-label, .a11y-pro-eyebrow, .a11y-spec-label, .a11y-legal-micro) {
+    break-after: avoid; page-break-after: avoid;
+  }
+  .a11y-widget-biz :is(
+    figure, img, pre, tr, blockquote,
+    .a11y-occurrence, .a11y-fd-col > p, .a11y-fd-learn, .a11y-pro-block, .a11y-fix-once,
+    .a11y-sum-row, .a11y-pro-row, .a11y-pro-point, .a11y-sum-point, .a11y-legal-row, .a11y-legal-q,
+    .a11y-conf-row, .a11y-next-list > li, .a11y-undecided-cell, .a11y-spec-card, .a11y-sr-row, .a11y-dn-link
+  ) { break-inside: avoid; page-break-inside: avoid; }
+  .a11y-widget-biz thead { display: table-header-group; }
+  .a11y-widget-biz tfoot { display: table-footer-group; }
+}

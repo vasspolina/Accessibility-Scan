@@ -72,6 +72,27 @@ export async function cropElementThumbnail(
   imgWidth: number,
   imgHeight: number
 ): Promise<string | null> {
+  return (await cropElementWithBox(fullPageScreenshot, box, imgWidth, imgHeight))?.image ?? null;
+}
+
+/** Where the flagged element sits inside its thumbnail, as fractions (0..1) of the frame. */
+export type ElementBox = { x: number; y: number; width: number; height: number };
+
+/**
+ * cropElementThumbnail, plus the element's own rectangle inside the crop.
+ *
+ * The frame is padded for context (a 17px icon arrives with its surroundings),
+ * so without this the reader is shown a neighbourhood and left to guess which
+ * part of it the finding is about. The box lets the widget outline the element.
+ * Fractions rather than pixels, because the crop is resized to MAX_THUMB_WIDTH
+ * and the widget scales it again: a fraction survives both.
+ */
+export async function cropElementWithBox(
+  fullPageScreenshot: Buffer,
+  box: BoundingBox,
+  imgWidth: number,
+  imgHeight: number
+): Promise<{ image: string; box: ElementBox } | null> {
   if (box.width <= 0 || box.height <= 0 || imgWidth === 0 || imgHeight === 0) return null;
 
   // A box this small is not a small element — it is a hidden one. Skip links
@@ -137,7 +158,17 @@ export async function cropElementThumbnail(
     const maxStdev = stats ? Math.max(...stats.channels.map((c) => c.stdev)) : 1;
     if (maxStdev < BLANK_STDEV) return null;
 
-    return cropped.toString("base64");
+    // Clamped, because the overflow guard above tolerates an element that
+    // hangs up to 15% past the page edge and the frame ends at that edge.
+    const clamp = (n: number) => Math.min(1, Math.max(0, n));
+    const x0 = clamp((box.x - left) / width);
+    const y0 = clamp((box.y - top) / height);
+    const x1 = clamp((box.x + box.width - left) / width);
+    const y1 = clamp((box.y + box.height - top) / height);
+    return {
+      image: cropped.toString("base64"),
+      box: { x: x0, y: y0, width: x1 - x0, height: y1 - y0 },
+    };
   } catch {
     return null;
   }
@@ -259,8 +290,11 @@ export async function attachElementScreenshots(
       candidates.slice(i, i + CONCURRENT_CROPS).map(async (finding) => {
         const box = boundingBoxes[finding.selector];
         if (!box) return;
-        const thumbnail = await cropElementThumbnail(fullPageScreenshot, box, imgWidth, imgHeight);
-        if (thumbnail) finding.elementScreenshot = thumbnail;
+        const crop = await cropElementWithBox(fullPageScreenshot, box, imgWidth, imgHeight);
+        if (crop) {
+          finding.elementScreenshot = crop.image;
+          finding.elementBox = crop.box;
+        }
       })
     );
   }

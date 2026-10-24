@@ -67,6 +67,13 @@ export const accessibilityFindingSchema = z.object({
   // screenshot server-side. Omitted when the element couldn't be located
   // or the thumbnail cap for this scan was reached — see routes/scan.ts.
   elementScreenshot: z.string().optional(),
+  // Where the flagged element sits inside that thumbnail, as fractions (0..1)
+  // of its width and height. Only set when the thumbnail is a padded crop whose
+  // origin is known (the full-page fallback); element captures that are the
+  // element itself carry none, and need none.
+  elementBox: z
+    .object({ x: z.number(), y: z.number(), width: z.number(), height: z.number() })
+    .optional(),
   // Set only when there is no screenshot and the page could tell us why —
   // the element is hidden, or parked off-screen until it is used. Both are
   // usually correct behaviour, and saying so is what stops a picture-less

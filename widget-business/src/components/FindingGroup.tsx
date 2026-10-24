@@ -13,6 +13,7 @@ import { pictureNoteText } from "../lib/failureText";
 import { useReportView } from "./ReportViewContext";
 import { enClauseFor } from "../lib/audienceMode";
 import { DataTable } from "./DataTable";
+import { ElementShot } from "./ElementShot";
 import {
   fixKindForFinding,
   isKeyboardCheck,
@@ -1015,11 +1016,7 @@ export function FindingGroup({
             reads as misaligned rather than as a table. asNotes is the one
             context where every row already carries real evidence, so it
             never needs the empty placeholder. */}
-        {rep.elementScreenshot ? (
-          <img className="a11y-finding-thumb" src={`data:image/jpeg;base64,${rep.elementScreenshot}`} alt="" />
-        ) : (
-          !asNotes && <span className="a11y-finding-thumb a11y-finding-thumb-empty" aria-hidden="true" />
-        )}
+        <ElementShot finding={rep} />
         {!asNotes && (
           <SeverityTag severity={rep.severity} label={t(severityLabel[rep.severity])} />
         )}
@@ -1206,15 +1203,14 @@ function Occurrence({
   repeatCount: number;
 }) {
   const hasAlt = finding.suggestedAltText !== undefined;
+  const { professional } = useReportView();
   return (
     <li className="a11y-occurrence">
       <div className="a11y-occurrence-head">
-        {finding.elementScreenshot && (
-          <img className="a11y-occurrence-thumb" src={`data:image/jpeg;base64,${finding.elementScreenshot}`} alt="" />
-        )}
         <span className="a11y-occurrence-label">{label}</span>
         {repeatCount > 1 && <span className="a11y-occurrence-count">{repeatCount}×</span>}
       </div>
+      <ElementShot finding={finding} showLocator={professional} />
       {hasAlt && <AltTextSuggestion value={finding.suggestedAltText!} />}
       {finding.suggestedColour && <ColourSuggestion suggestion={finding.suggestedColour} />}
     </li>
