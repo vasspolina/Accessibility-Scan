@@ -101,12 +101,14 @@ describe("the chat contract", () => {
     expect(schema.additionalProperties).toBe(false);
   });
 
-  // The owner's decision, 13 Oct 2026: a general assistant whose speciality
-  // is accessibility. It answers anything, and about the scanned site it
-  // still speaks only from the report.
-  it("answers anything, and keeps general knowledge apart from what the scan found", () => {
-    expect(CHAT_SYSTEM_PROMPT).not.toMatch(/only help with the scan/);
-    expect(CHAT_SYSTEM_PROMPT).toMatch(/help with whatever the person asks/);
+  // The owner's decision, 27 Oct 2026, reversing the 13 Oct one: every
+  // answer stays on accessibility and the scanned site's report, and an
+  // off-topic question is redirected, not answered. About the scanned site
+  // it still speaks only from the report.
+  it("stays on topic, and keeps general knowledge apart from what the scan found", () => {
+    expect(CHAT_SYSTEM_PROMPT).not.toMatch(/help with whatever the person asks/);
+    expect(CHAT_SYSTEM_PROMPT).toMatch(/Every answer you give is about that subject/);
+    expect(CHAT_SYSTEM_PROMPT).toMatch(/Do not answer the off-topic question/);
     expect(CHAT_SYSTEM_PROMPT).toMatch(/never present it as something the scan found/);
     expect(CHAT_SYSTEM_PROMPT).toMatch(/fenced code block/);
   });
