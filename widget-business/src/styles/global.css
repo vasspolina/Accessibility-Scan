@@ -416,6 +416,96 @@
 }
 .a11y-widget-biz .a11y-select2-help { font-size: 15px; letter-spacing: 0.01em; }
 
+/* ═══ THE SCAN FORM (3 Nov 2026) ═══════════════════════════════════════════
+   The form's parts had no layout rules, so buttons, switch and notes landed
+   wherever the browser dropped them. Set on one vertical grid, from Hochuli
+   (Detail in typography, and this file's chat rules): the unit is the body
+   line, 27px at 1.2 = 32.4px. Between blocks, one line; inside a block, half
+   a line; a title carries its small print directly under it with no gap; no
+   rule or box does any separating. A 15px line (18px tall) is the only thing
+   that breaks the grid, and it always hangs from the line above it. */
+.a11y-widget-biz { --line: 32.4px; }
+
+.a11y-widget-biz .a11y-newscan-head { display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: calc(var(--line) / 2) 1.2em; margin: 0 0 var(--line); }
+.a11y-widget-biz .a11y-newscan-head .a11y-newscan-title { margin: 0; }
+.a11y-widget-biz .a11y-newscan-head .a11y-select2 { margin: 0; }
+.a11y-widget-biz .a11y-url-form { margin: 0; }
+
+/* One step: a hung number, then a title with its note, then the content.
+   One line between steps. */
+.a11y-widget-biz .a11y-form-single { display: grid; gap: var(--line); }
+.a11y-widget-biz .a11y-step-group { display: grid; grid-template-columns: 4.5em minmax(0, 1fr); align-items: first baseline; }
+.a11y-widget-biz .a11y-step-num { font-size: 18px; letter-spacing: 0.01em; line-height: 1.2; }
+.a11y-widget-biz .a11y-step-body { min-width: 0; display: grid; gap: calc(var(--line) / 2); }
+.a11y-widget-biz .a11y-step-head { display: grid; }
+.a11y-widget-biz .a11y-step-q { margin: 0; }
+.a11y-widget-biz .a11y-step-note { font-size: 15px; letter-spacing: 0.01em; line-height: 1.2; }
+
+/* The address: label, then the field with the login button beside it. */
+.a11y-widget-biz .a11y-input { display: grid; gap: 0.3em; }
+.a11y-widget-biz .a11y-input-shell { display: flex; flex-wrap: wrap; align-items: stretch; gap: calc(var(--line) / 2) 0.6em; }
+.a11y-widget-biz .a11y-input-shell > input { flex: 1 1 14em; min-width: 0; box-sizing: border-box; }
+.a11y-widget-biz .a11y-input-shell > .a11y-login-toggle { flex: none; white-space: nowrap; align-self: center; }
+.a11y-widget-biz .a11y-url-helper-row { display: flex; flex-wrap: wrap; align-items: baseline; gap: calc(var(--line) / 4) 1.2em; }
+.a11y-widget-biz .a11y-url-helper-row > :empty { display: none; }
+.a11y-widget-biz .a11y-group-hint { font-size: 15px; letter-spacing: 0.01em; line-height: 1.2; }
+.a11y-widget-biz .a11y-url-error { margin: 0; }
+.a11y-widget-biz .a11y-url-error:not(:empty) { font-size: 18px; letter-spacing: 0.01em; }
+
+/* The action: the button leads, its note after it, on one baseline. */
+.a11y-widget-biz .a11y-url-submit { display: flex; flex-wrap: wrap; align-items: center; gap: calc(var(--line) / 2) 1.2em; }
+.a11y-widget-biz .a11y-url-submit-note { font-size: 15px; letter-spacing: 0.01em; line-height: 1.2; }
+
+/* The choices are cards: two equal, rounded, side by side while they fit, then
+   one above the other a line apart. The dot and the title sit at the top, the
+   explanation at the foot, whatever its length. The chosen card is solid ink
+   with paper text; the other is paper with an ink edge (21:1 either way, and
+   shape, not colour, tells them apart). Corner radius is the card's own, the
+   one place besides buttons and the chat that is round. */
+.a11y-widget-biz .a11y-radio-group.a11y-optioncard-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 260px), 1fr)); gap: calc(var(--line) / 2); }
+.a11y-widget-biz .a11y-optioncard {
+  display: grid; grid-template-columns: 39px minmax(0, 1fr); grid-template-rows: auto 1fr; align-items: start;
+  gap: 0 0.6em; box-sizing: border-box; padding: 20px;
+  border: 2px solid var(--ink); border-radius: 20px; background: var(--paper); color: var(--ink); cursor: pointer;
+}
+.a11y-widget-biz .a11y-optioncard-on { background: var(--ink); color: var(--paper); }
+.a11y-widget-biz .a11y-optioncard > input { grid-row: 1; grid-column: 1; margin-top: -3px; }
+.a11y-widget-biz .a11y-optioncard-text { display: contents; }
+.a11y-widget-biz .a11y-optioncard-label { grid-row: 1; grid-column: 2; }
+.a11y-widget-biz .a11y-optioncard-desc { grid-row: 2; grid-column: 1 / -1; align-self: end; padding-top: var(--line); font-size: 18px; letter-spacing: 0.01em; line-height: 1.2; }
+.a11y-widget-biz .a11y-optioncard:has(input:focus-visible) { outline: 3px solid var(--ink); outline-offset: 2px; box-shadow: 0 0 0 2px var(--paper); }
+.a11y-widget-biz .a11y-optioncard > input:focus-visible { outline: none; box-shadow: none; }
+.a11y-widget-biz .a11y-optioncard-disabled { border-style: dashed; cursor: not-allowed; }
+.a11y-widget-biz .a11y-step-body .a11y-radio-group { margin: 0; }
+
+/* The AI card: words left, the switch right, a line apart when they wrap. */
+.a11y-widget-biz .a11y-ai-card { margin-top: calc(var(--line) / 2); display: flex; flex-wrap: wrap; align-items: flex-start; justify-content: space-between; gap: calc(var(--line) / 2) 1.2em; }
+.a11y-widget-biz .a11y-ai-card-text { display: grid; flex: 1 1 18em; min-width: 0; }
+.a11y-widget-biz .a11y-ai-card-title { font-size: 18px; letter-spacing: 0.01em; font-weight: 500; line-height: 1.2; }
+.a11y-widget-biz .a11y-ai-hint { font-size: 15px; letter-spacing: 0.01em; line-height: 1.2; }
+
+/* The switch: a track and a round knob in ink and paper, with the word On or
+   Off after it. The knob takes the track's text colour, so it inverts with it
+   and never disappears; hover keeps the track as it is, since the control
+   hover that fills a button would make Off look like On. */
+.a11y-widget-biz .a11y-switch { display: inline-flex; flex-wrap: wrap; align-items: center; gap: 0 0.8em; }
+.a11y-widget-biz .a11y-switch-label { font-size: 18px; letter-spacing: 0.01em; }
+.a11y-widget-biz .a11y-switch-controls { display: inline-flex; align-items: center; gap: 0.5em; }
+.a11y-widget-biz .a11y-switch-word { font-size: 18px; letter-spacing: 0.01em; min-width: 2em; }
+.a11y-widget-biz .a11y-switch-track { position: relative; flex: none; box-sizing: border-box; width: 52px; height: 30px; padding: 0; border-radius: 999px; }
+.a11y-widget-biz .a11y-switch-knob { position: absolute; top: 50%; left: 4px; width: 18px; height: 18px; margin-top: -9px; border-radius: 50%; background: currentColor; }
+.a11y-widget-biz .a11y-switch-track[aria-checked="true"] { background: var(--ink); color: var(--paper); }
+.a11y-widget-biz .a11y-switch-track[aria-checked="true"] .a11y-switch-knob { left: auto; right: 4px; }
+.a11y-widget-biz .a11y-switch-track:enabled:hover { background: var(--paper); color: var(--ink); }
+.a11y-widget-biz .a11y-switch-track[aria-checked="true"]:enabled:hover { background: var(--ink); color: var(--paper); }
+
+/* "Back to the chat": one line below the form, flush left. */
+.a11y-widget-biz .a11y-chat-alt { margin: var(--line) 0 0; }
+
+@media (max-width: 600px) {
+  .a11y-widget-biz .a11y-step-group { grid-template-columns: minmax(0, 1fr); }
+}
+
 /* Name and value pairs: small label, the value under it, the gloss under that. */
 .a11y-widget-biz .a11y-spec-grid { margin: 0 0 1.2em; }
 .a11y-widget-biz .a11y-spec-card { margin: 0 0 0.6em; }
@@ -468,12 +558,12 @@
   appearance: none; -webkit-appearance: none;
   display: inline-grid; place-content: center; flex: none;
   width: 39px; height: 39px; margin: 0;
-  border: 1px solid var(--ink); border-radius: 50%;
-  background: var(--paper); color: var(--ink);
+  border: 1px solid currentColor; border-radius: 50%;
+  background: transparent; color: inherit;
 }
 .a11y-widget-biz input[type="radio"]::before {
   content: ""; width: 21px; height: 21px; border-radius: 50%;
-  background: var(--ink); transform: scale(0);
+  background: currentColor; transform: scale(0);
 }
 .a11y-widget-biz input[type="radio"]:checked::before { transform: scale(1); }
 .a11y-widget-biz input[type="radio"]:disabled { border-style: dashed; cursor: not-allowed; }
@@ -526,7 +616,6 @@
 .a11y-widget-biz .a11y-optioncard-label { font-weight: 500; }
 .a11y-widget-biz .a11y-optioncard-label,
 .a11y-widget-biz .a11y-optioncard-desc { display: block; }
-.a11y-widget-biz .a11y-optioncard-desc { font-size: 15px; letter-spacing: 0.01em; }
 
 /* The score dial: a solid arc on a dotted track, the number inside it.
    Its SVG strokes named colour tokens that no longer exist, so it drew
