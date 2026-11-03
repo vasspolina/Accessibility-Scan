@@ -21,6 +21,14 @@ export interface ReportView {
    * name the rest of the report uses.
    */
   criterionNames: Record<string, { name: string; level: "A" | "AA" }>;
+  /**
+   * Whether the findings tables carry an Instances column. Decided once for
+   * the whole report so every section's table has the same columns: the
+   * column is there when any finding anywhere repeats, and gone from all of
+   * them when none does. Unset outside a report, where a table decides for
+   * itself.
+   */
+  showInstances?: boolean;
 }
 
 const ReportViewContext = createContext<ReportView>({ professional: false, criterionNames: {} });

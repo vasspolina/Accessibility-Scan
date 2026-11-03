@@ -212,7 +212,8 @@ export function App({
     for (const c of report?.conformance?.criteria ?? []) {
       criterionNames[c.id] = { name: c.name, level: c.level };
     }
-    return { professional, criterionNames, apiBase, siteUrl: report?.url, signedIn: signedIn && Boolean(report?.savedAs) };
+    const showInstances = groupFindings(report?.findings ?? []).some((g) => g.length > 1);
+    return { professional, criterionNames, showInstances, apiBase, siteUrl: report?.url, signedIn: signedIn && Boolean(report?.savedAs) };
   }, [report, professional, apiBase, signedIn]);
 
   // Print must include every card whatever the on-screen filter shows — the

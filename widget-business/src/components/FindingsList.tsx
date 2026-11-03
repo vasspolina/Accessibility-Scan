@@ -48,22 +48,22 @@ export function FindingsList({
   findings: AccessibilityFinding[];
   asNotes?: boolean;
 }) {
-  const { professional } = useReportView();
+  const { professional, showInstances } = useReportView();
 
   if (findings.length === 0) {
     return <p className="a11y-empty">{t("Nothing found here.")}</p>;
   }
 
   const grouped = groupFindings(findings);
-  // The findings schedules (one per section) always carry the same six
-  // columns, so a column sits at the same x in every section. It used to be
-  // dropped when blank in every row of its table (Level for best-practice
-  // rules with no numbered criterion, Instances when every group is
-  // singular), which left each section a different shape; the user asked
-  // for them all the same on 3 Nov 2026. The notes table keeps the old rule:
-  // its Instances column is its only second column.
+  // The findings schedules (one per section) all carry the same columns, so a
+  // column sits at the same x in every section; the user asked for that on
+  // 3 Nov 2026. Level always stays. Instances is decided for the whole report
+  // (see ReportView.showInstances): an empty column is deleted from every
+  // table, not just from the ones where it happens to be empty. The notes
+  // table keeps its own rule, since its Instances is its only second column.
+  const ownCount = grouped.some((group) => group.length > 1);
   const showLevel = true;
-  const showCount = asNotes ? grouped.some((group) => group.length > 1) : true;
+  const showCount = asNotes ? ownCount : (showInstances ?? ownCount);
 
   return (
     <>
