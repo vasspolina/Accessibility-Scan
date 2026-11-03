@@ -460,6 +460,23 @@
 .a11y-widget-biz .a11y-legal-row-meaning { font-size: 15px; letter-spacing: 0.01em; }
 .a11y-widget-biz .a11y-legal-count { font-size: 32px; letter-spacing: -0.005em; font-weight: 500; }
 .a11y-widget-biz .a11y-radio-group { display: flex; flex-wrap: wrap; gap: 0.3em 1.2em; border: 0; padding: 0; margin: 0 0 1em; }
+/* Radio dots: black and white only, a 1px line, three times the browser's 13px
+   (user's instruction, 3 Nov 2026). The system's blue and grey dot is drawn by
+   the browser and takes neither; ink and paper swap in dark. Checked is a solid
+   ink centre, disabled a dashed edge, never faded. */
+.a11y-widget-biz input[type="radio"] {
+  appearance: none; -webkit-appearance: none;
+  display: inline-grid; place-content: center; flex: none;
+  width: 39px; height: 39px; margin: 0;
+  border: 1px solid var(--ink); border-radius: 50%;
+  background: var(--paper); color: var(--ink);
+}
+.a11y-widget-biz input[type="radio"]::before {
+  content: ""; width: 21px; height: 21px; border-radius: 50%;
+  background: var(--ink); transform: scale(0);
+}
+.a11y-widget-biz input[type="radio"]:checked::before { transform: scale(1); }
+.a11y-widget-biz input[type="radio"]:disabled { border-style: dashed; cursor: not-allowed; }
 .a11y-widget-biz .a11y-radio { display: inline-flex; align-items: center; gap: 0.4em; font-size: 18px; letter-spacing: 0.01em; }
 
 /* The checklist rows: criterion, the question with its official name under it, the status under that. */
