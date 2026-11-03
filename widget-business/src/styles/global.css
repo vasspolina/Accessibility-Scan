@@ -543,8 +543,26 @@
 .a11y-widget-biz .a11y-legal-qnum { font-size: 15px; letter-spacing: 0.01em; font-weight: 500; }
 .a11y-widget-biz .a11y-legal-micro { font-size: 15px; letter-spacing: 0.01em; font-weight: 500; margin: 0 0 0.4em; }
 .a11y-widget-biz .a11y-legal-thead { display: none; }
-.a11y-widget-biz .a11y-legal-row { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 0 1em; align-items: baseline; margin: 0 0 0.8em; }
-.a11y-widget-biz .a11y-legal-col-result { display: block; }
+/* The result rows (We found problems 3, We checked 19, ...): one line each,
+   in four columns that line up from row to row: the title, its small print,
+   the mark, the count at the right edge (the last two are fixed widths, or
+   the digits of each count would shift the others). The wrapper is dissolved so its
+   three parts are the row's own cells, and each is placed by column so a
+   row with no small print leaves its cell empty instead of pulling the mark
+   left. Narrow, they stack again: title with the count, small print, mark. */
+.a11y-widget-biz .a11y-legal-row { display: grid; grid-template-columns: minmax(0, 1.55fr) minmax(0, 1fr) 164px 72px; gap: 0 0.8em; align-items: baseline; margin: 0 0 var(--line, 0.8em); }
+.a11y-widget-biz .a11y-legal-col-result { display: contents; }
+.a11y-widget-biz .a11y-legal-row-label { grid-column: 1; }
+.a11y-widget-biz .a11y-legal-row-meaning { grid-column: 2; hyphens: manual; }
+.a11y-widget-biz .a11y-legal-mark { grid-column: 3; justify-self: start; white-space: nowrap; }
+.a11y-widget-biz .a11y-legal-count { grid-column: 4; justify-self: end; }
+@media (max-width: 860px) {
+  .a11y-widget-biz .a11y-legal-row { grid-template-columns: minmax(0, 1fr) auto; margin-bottom: calc(var(--line, 0.8em) / 2); }
+  .a11y-widget-biz .a11y-legal-row-label { grid-column: 1; grid-row: 1; }
+  .a11y-widget-biz .a11y-legal-count { grid-column: 2; grid-row: 1; }
+  .a11y-widget-biz .a11y-legal-row-meaning { grid-column: 1 / -1; grid-row: 2; }
+  .a11y-widget-biz .a11y-legal-mark { grid-column: 1 / -1; grid-row: 3; }
+}
 .a11y-widget-biz :is(.a11y-legal-row-label, .a11y-legal-row-meaning) { display: block; }
 .a11y-widget-biz .a11y-legal-row-label { font-weight: 500; }
 .a11y-widget-biz .a11y-legal-row-meaning { font-size: 15px; letter-spacing: 0.01em; }
