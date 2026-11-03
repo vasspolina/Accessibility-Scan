@@ -377,6 +377,13 @@
 .a11y-widget-biz .a11y-stmt-field { display: grid; gap: 0.2em; font-size: 15px; letter-spacing: 0.01em; font-weight: 500; }
 .a11y-widget-biz .a11y-stmt-field input { width: 100%; box-sizing: border-box; font-weight: 400; }
 
+/* The kit Select (Language): the label above, the box under it, the gloss under that.
+   It had no rules at all, so the label ran straight into the box on one line. */
+.a11y-widget-biz .a11y-select2 { display: grid; justify-items: start; gap: 0.3em; margin: 0 0 1.2em; }
+.a11y-widget-biz .a11y-select2-label { font-size: 15px; letter-spacing: 0.01em; font-weight: 500; }
+.a11y-widget-biz .a11y-select2-field { min-width: 12em; max-width: 100%; box-sizing: border-box; }
+.a11y-widget-biz .a11y-select2-help { font-size: 15px; letter-spacing: 0.01em; }
+
 /* Name and value pairs: small label, the value under it, the gloss under that. */
 .a11y-widget-biz .a11y-spec-grid { margin: 0 0 1.2em; }
 .a11y-widget-biz .a11y-spec-card { margin: 0 0 0.6em; }
