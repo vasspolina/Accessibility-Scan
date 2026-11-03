@@ -377,11 +377,43 @@
 .a11y-widget-biz .a11y-stmt-field { display: grid; gap: 0.2em; font-size: 15px; letter-spacing: 0.01em; font-weight: 500; }
 .a11y-widget-biz .a11y-stmt-field input { width: 100%; box-sizing: border-box; font-weight: 400; }
 
+/* The findings schedules (one per section: "Can people use it?", "Will it keep
+   working?"). Auto layout sized each table's columns to its own rows, so the
+   same column sat at a different x in every section. Fixed layout takes the
+   widths from the header row, which is the same in all of them: the shares
+   below are the same everywhere and the issue statement takes the rest. */
+.a11y-widget-biz .a11y-datatable-schedule { table-layout: fixed; }
+.a11y-widget-biz .a11y-datatable-schedule :is(th, td) { box-sizing: border-box; min-width: 0; overflow-wrap: break-word; hyphens: auto; padding-inline-end: 0.8em; }
+.a11y-widget-biz .a11y-datatable-schedule .a11y-dt-spacer,
+.a11y-widget-biz .a11y-datatable-schedule .a11y-dt-toggle-cell { width: 2.2em; }
+/* A header word is never broken: it wraps between words or not at all. */
+.a11y-widget-biz .a11y-datatable-schedule th { overflow-wrap: normal; hyphens: manual; }
+/* Each width holds its header word (18px Medium: "WCAG", "Instances") or its
+   longest unbreakable cell ("Fix eventually" with its highlight) plus the
+   0.8em of air after it; the two wordy columns grow with the screen. */
+.a11y-widget-biz .a11y-datatable-schedule th[data-col="severity"] { width: max(9.6em, 9%); }
+.a11y-widget-biz .a11y-datatable-schedule th[data-col="wcag"] { width: 5em; }
+.a11y-widget-biz .a11y-datatable-schedule th[data-col="fix"] { width: 6.8em; }
+.a11y-widget-biz .a11y-datatable-schedule th[data-col="level"] { width: max(9.6em, 15%); }
+.a11y-widget-biz .a11y-datatable-schedule th[data-col="count"] { width: 6.6em; }
+
 /* The kit Select (Language): the label above, the box under it, the gloss under that.
    It had no rules at all, so the label ran straight into the box on one line. */
 .a11y-widget-biz .a11y-select2 { display: grid; justify-items: start; gap: 0.3em; margin: 0 0 1.2em; }
 .a11y-widget-biz .a11y-select2-label { font-size: 15px; letter-spacing: 0.01em; font-weight: 500; }
 .a11y-widget-biz .a11y-select2-field { min-width: 12em; max-width: 100%; box-sizing: border-box; }
+/* The native arrow is drawn flush against the box's edge and takes no padding.
+   Drawn here instead, in ink so it follows the theme, with room on its right.
+   The doubled class out-ranks the :is() form rule above, which carries the
+   specificity of its input:not():not() branch. */
+.a11y-widget-biz .a11y-select2 .a11y-select2-field.a11y-select2-field {
+  appearance: none; -webkit-appearance: none;
+  padding-inline-end: 2.6em;
+  background-image: linear-gradient(45deg, transparent 50%, var(--ink) 50%), linear-gradient(135deg, var(--ink) 50%, transparent 50%);
+  background-position: calc(100% - 1.4em) 50%, calc(100% - 1em) 50%;
+  background-size: 0.4em 0.4em, 0.4em 0.4em;
+  background-repeat: no-repeat;
+}
 .a11y-widget-biz .a11y-select2-help { font-size: 15px; letter-spacing: 0.01em; }
 
 /* Name and value pairs: small label, the value under it, the gloss under that. */

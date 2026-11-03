@@ -55,16 +55,15 @@ export function FindingsList({
   }
 
   const grouped = groupFindings(findings);
-  // Only a fraction of findings carry a WCAG level at all — best-practice
-  // rules (no numbered criterion) never do. A column that's blank in every
-  // row is worse than no column, so it's dropped for the whole table
-  // rather than left in place empty.
-  const showLevel = grouped.some((group) => Boolean(group[0].wcagLevel));
-  // Same rule for Instances: it only ever shows a number once a rule fires
-  // more than once, so a table where every group is singular (dark-pattern
-  // findings almost always are) would otherwise print a header over a
-  // column of nothing.
-  const showCount = grouped.some((group) => group.length > 1);
+  // The findings schedules (one per section) always carry the same six
+  // columns, so a column sits at the same x in every section. It used to be
+  // dropped when blank in every row of its table (Level for best-practice
+  // rules with no numbered criterion, Instances when every group is
+  // singular), which left each section a different shape; the user asked
+  // for them all the same on 3 Nov 2026. The notes table keeps the old rule:
+  // its Instances column is its only second column.
+  const showLevel = true;
+  const showCount = asNotes ? grouped.some((group) => group.length > 1) : true;
 
   return (
     <>
