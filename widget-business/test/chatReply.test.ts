@@ -90,6 +90,27 @@ describe("renderReply", () => {
  * mark rides through the parsing as a private-use character and must
  * never reach the page, change what a line is, or break a code block.
  */
+describe("renderReply test plans", () => {
+  const plan = "Test these by hand:\n\n1. **Keyboard only.** Tab through the page.\n2. **Zoom.** Set 200%.\n3. **Forms.** Submit one empty.";
+  it("draws a numbered test plan as one tile per step", () => {
+    const out = html(plan);
+    expect(out).toContain('class="a11y-chat-plan"');
+    expect(out.match(/class="a11y-chat-plan-step"/g)).toHaveLength(3);
+    expect(out).toContain('<strong class="a11y-chat-plan-title">Keyboard only</strong>');
+    expect(out).toContain('<span class="a11y-chat-plan-no">2</span>');
+  });
+  it("takes an instruction indented under its step's name", () => {
+    const out = html("1. **Keyboard only**\n   Tab through the page.\n2. **Zoom**\n   Set 200%.");
+    expect(out.match(/class="a11y-chat-plan-step"/g)).toHaveLength(2);
+    expect(out).toContain("Tab through the page.");
+  });
+  it("leaves a plain numbered list a list", () => {
+    const out = html("1. Open the page.\n2. Press Tab.");
+    expect(out).not.toContain("a11y-chat-plan");
+    expect(out).toContain("<ol>");
+  });
+});
+
 describe("renderReply while streaming", () => {
   const streamed = (text: string, at: number[]) =>
     renderToStaticMarkup(createElement(Fragment, null, renderReply(text, at.map((a) => ({ at: a, t: 0 })))));

@@ -24,6 +24,7 @@ import { digestAudit, digestReport } from "../lib/reportDigest";
 import { NARRATION_STEPS, narrationIndex, narrationLabel } from "../lib/scanNarration";
 import { SHOWABLE, sectionForCommand, sectionLabel, type SectionKey } from "../lib/sections";
 import { pickOpeningPrompts } from "../lib/openingPrompts";
+import { planSteps } from "../lib/testPlan";
 
 /**
  * The whole checker, as one conversation with an assistant.
@@ -326,7 +327,23 @@ function renderProse(text: string, prefix: string, out: ReactNode[]) {
         sentences = [];
       };
       const flushList = () => {
-        if (items.length) {
+        const plan = ordered ? planSteps(items) : null;
+        if (plan) {
+          // A test plan: one tile per step. Still an ordered list, so a
+          // reader hears how many steps there are; the figure is drawn as
+          // text so it is read with the step.
+          out.push(
+            <ol key={key()} className="a11y-chat-plan" role="list">
+              {plan.map((step, j) => (
+                <li key={j} className="a11y-chat-plan-step">
+                  <span className="a11y-chat-plan-no">{step.number}</span>
+                  <strong className="a11y-chat-plan-title">{inline(step.title)}</strong>
+                  {step.body && <span className="a11y-chat-plan-text">{inline(step.body)}</span>}
+                </li>
+              ))}
+            </ol>
+          );
+        } else if (items.length) {
           const lis = items.map((l, j) => <li key={j}>{inline(l.replace(ordered ? NUMBERED : BULLET, ""))}</li>);
           // A numbered list that resumes after a code block keeps its count.
           const start = ordered ? parseInt(items[0], 10) : 1;
@@ -358,6 +375,10 @@ function renderProse(text: string, prefix: string, out: ReactNode[]) {
           if (items.length && ordered !== isNumbered) flushList();
           ordered = isNumbered;
           items.push(line);
+        } else if (items.length && /^\s{2,}\S/.test(line)) {
+          // An indented line under a list item carries on that item (a
+          // step's instruction set under its name).
+          items[items.length - 1] += " " + line.trim();
         } else {
           flushList();
           sentences.push(line.trim());

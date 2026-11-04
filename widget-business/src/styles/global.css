@@ -236,7 +236,36 @@
    the 27px text between turns, half a line between paragraphs inside one,
    the speaker label a small step above its words. Spacing parts the turns;
    the label names them. */
-.a11y-widget-biz .a11y-chat-turn { margin-bottom: 1.2em; }
+/* Two lines between turns (user's instruction, 4 Nov 2026: "twice more
+   white vertical space"), replacing the one line of the same day; the
+   label keeps its small step above its words. */
+.a11y-widget-biz .a11y-chat-turn { margin-bottom: 2.4em; }
+/* A long address has no break point, so at 27px it ran past the column and
+   was clipped (user's screenshot, 4 Nov 2026). It may break anywhere. */
+.a11y-widget-biz .a11y-chat-turn :is(a, .a11y-chat-url),
+.a11y-widget-biz .a11y-chat-you .a11y-chat-text { overflow-wrap: anywhere; }
+.a11y-widget-biz .a11y-chat-text { min-width: 0; }
+/* A numbered test plan is a set of tiles (user's instruction, 4 Nov 2026:
+   "this needs to widgets"; lib/testPlan.ts decides which lists are plans).
+   The tiles are the expanded finding's specimen tiles: Displaay's #f0efe8
+   ground, fixed in both themes with black text (18.4:1), square corners, a
+   10px gutter on an auto-fit grid that stacks on a phone. The figure is the
+   small label top-left, the step's name in Medium under it, the
+   instruction in 18px text. */
+.a11y-widget-biz .a11y-chat-text .a11y-chat-plan {
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 260px), 1fr)); gap: 10px;
+  list-style: none; padding: 0; margin: 0.6em 0;
+}
+.a11y-widget-biz .a11y-chat-text .a11y-chat-plan-step {
+  display: flex; flex-direction: column; box-sizing: border-box; min-width: 0; margin: 0;
+  padding: 14px 16px 22px; background: #f0efe8; color: #000;
+  overflow-wrap: break-word; hyphens: auto;
+}
+.a11y-widget-biz .a11y-chat-text .a11y-chat-plan-no { font-size: 15px; letter-spacing: 0.01em; line-height: 1.2; margin: 0 0 40px; }
+.a11y-widget-biz .a11y-chat-text .a11y-chat-plan-title { display: block; font-size: 27px; font-weight: 500; line-height: 1.1; letter-spacing: 0; margin: 0 0 0.4em; }
+.a11y-widget-biz .a11y-chat-text .a11y-chat-plan-text { display: block; font-size: 18px; line-height: 1.35; letter-spacing: 0.01em; }
+.a11y-widget-biz .a11y-chat-text .a11y-chat-plan :is(a, code) { color: inherit; }
+.a11y-widget-biz .a11y-chat-text .a11y-chat-plan :focus-visible { outline-color: #000; box-shadow: 0 0 0 2px #f0efe8; }
 /* Where a searched answer came from: small print under the reply, the
    pages named and linked, each once. */
 .a11y-widget-biz .a11y-chat-sources { font-size: 15px; letter-spacing: 0.01em; line-height: 1.3; margin: 0; overflow-wrap: anywhere; }
