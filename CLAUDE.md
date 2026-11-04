@@ -98,8 +98,8 @@ Comments in this codebase are long and record what was measured and why a value 
 
 ## Chat typesetting (Hochuli, *Detail in typography*; user's reference, 14 Oct 2026)
 - The conversation is set as an interview: the speaker hung in the 4.5em gutter on the first line's baseline (18px, roman, secondary ink), the words beside it at 27px/1.2 on a 60ch measure.
-- **Paragraph spacing** (user's instruction, 4 Nov 2026, after the FAQ on displaay.net): one line (1.2em) between turns, half a line (0.6em) between paragraphs and after a list inside a turn, the speaker label 0.3em above its words; headings sit 0.5em above their text. No rules, no grounds.
-- List markers hang outside the block (an en dash, or the figure and its point); the list keeps its markers so it keeps its role. On a phone they come inside.
+- **Paragraph spacing** (user's instruction, 4 Nov 2026, after the FAQ on displaay.net): one line (1.2em) between turns, and one line (1.2em) between paragraphs and after a list inside a turn too (doubled from 0.6em, user's instruction, 4 Nov 2026), the speaker label 0.3em above its words; headings sit 0.5em above their text. Report prose (p, lists, tables, figures) has 2.4em under each (doubled from 1.2em the same day). No rules, no grounds.
+- List markers hang outside the block: an en dash for a bullet; a numbered list takes the widget's round marker (solid ink, paper figure, 32px circle, 18px Medium; user's instruction, 4 Nov 2026), drawn from `counter(list-item)` so `start` holds, with `role="list"` on the ol.
 - Code is an inserted passage: 18px on the text's own 32.4px line, so it stays in register and the text after it returns to the grid; one line of space above and below.
 - A soft rag: `text-wrap: pretty`, `hyphenate-limit-chars: 7 3 3`, hyphens on. Emphasis is Medium (500), never a synthesized bold; there is no italic cut, and a sloped roman is not an italic, so questions are told from answers by the label alone.
 - Punctuation is set in `lib/typography.ts` `smarten()` on prose only (never code); the current rules are in the Punctuation bullet under Type above (the spaced en dash in every language, single marks first in English).

@@ -71,7 +71,9 @@
    line clear of what came before: paragraph spacing after the FAQ on
    displaay.net, user's instruction, 4 Nov 2026. */
 .a11y-widget-biz :is(h1, h2, h3, h4) { font-weight: 500; line-height: 1.05; font-size: 32px; letter-spacing: -0.005em; margin: 1.2em 0 0.5em; }
-.a11y-widget-biz :is(p, ul, ol, dl, table, figure) { margin: 0 0 1.2em; }
+/* Two lines under each paragraph, list, table and figure of the report
+   (was one; user asked for twice the room, 4 Nov 2026). */
+.a11y-widget-biz :is(p, ul, ol, dl, table, figure) { margin: 0 0 2.4em; }
 .a11y-widget-biz a { color: var(--ink); text-decoration: underline; text-underline-offset: 0.15em; }
 
 /* The small print under the poster: 15px. */
@@ -233,7 +235,8 @@
 .a11y-widget-biz .a11y-chat-who { font-size: 15px; letter-spacing: 0.01em; font-weight: 500; margin: 0 0 0.3em; }
 /* Paragraph spacing, after the FAQ on displaay.net (user's instruction,
    4 Nov 2026, replacing "no space between turns" of 18 Oct): one line of
-   the 27px text between turns, half a line between paragraphs inside one,
+   the 27px text between turns and, since the same day, a full line between
+   paragraphs inside one too (was half a line; user asked for twice the room),
    the speaker label a small step above its words. Spacing parts the turns;
    the label names them. */
 .a11y-widget-biz .a11y-chat-turn { margin-bottom: 1.2em; }
@@ -266,9 +269,23 @@
 .a11y-widget-biz :is(.a11y-chat-who, small, th) .a11y-caps { font-size: inherit; }
 /* A list in the conversation (fig. 50): an en dash and a word space for a
    bullet, hung in the margin; a figure and its point for a count. */
-.a11y-widget-biz .a11y-chat-text :is(ul, ol) { padding-inline-start: 1.4em; margin: 0 0 0.6em; }
-.a11y-widget-biz .a11y-chat-text ul { list-style: "\2013\00A0"; }
-.a11y-widget-biz .a11y-chat-text ol { list-style: decimal outside; }
+.a11y-widget-biz .a11y-chat-text :is(ul, ol) { margin: 0 0 1.2em; }
+.a11y-widget-biz .a11y-chat-text ul { list-style: "\2013\00A0"; padding-inline-start: 1.4em; }
+/* A numbered list takes the widget's own figure (user's instruction,
+   4 Nov 2026): the summary's solid round with the figure in paper, hung in
+   the list's margin on the first line. counter(list-item) follows the
+   start attribute, so a list resumed after code keeps its count; the ol
+   carries role="list" because list-style: none drops the role in Safari. */
+.a11y-widget-biz .a11y-chat-text ol { list-style: none; padding-inline-start: 1.6em; }
+.a11y-widget-biz .a11y-chat-text ol > li { position: relative; }
+.a11y-widget-biz .a11y-chat-text ol > li::before {
+  content: counter(list-item);
+  position: absolute; inset-inline-start: -1.6em; top: 0;
+  display: grid; place-content: center;
+  width: 32px; height: 32px; border-radius: 50%;
+  background: var(--ink); color: var(--paper);
+  font-size: 18px; letter-spacing: 0; font-weight: 500; line-height: 1;
+}
 .a11y-widget-biz .a11y-chat-text li::marker { font-weight: 400; }
 .a11y-widget-biz .a11y-chat-text li { margin: 0 0 0.2em; }
 
@@ -961,7 +978,7 @@
 @media (min-width: 641px) {
   .a11y-widget-biz { max-width: none; margin-inline: 0; padding-inline: 16px; }
 }
-.a11y-widget-biz .a11y-chat-text :is(p, pre) { margin: 0 0 0.6em; }
+.a11y-widget-biz .a11y-chat-text :is(p, pre) { margin: 0 0 1.2em; }
 .a11y-widget-biz .a11y-chat-text > :last-child { margin-bottom: 0; }
 
 /* ═══ FINDING CARDS, EVIDENCE PICTURES AND THE PRINTED REPORT (24 Oct 2026) ══
