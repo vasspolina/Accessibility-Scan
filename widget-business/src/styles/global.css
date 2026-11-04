@@ -206,10 +206,10 @@
   position: sticky; bottom: 0;
   background: var(--paper); padding-block: 0.6em;
 }
-/* Corners match the buttons (user's instruction, 4 Nov 2026): the buttons
-   are pills, so the box is a round pane, 28px, with the buttons' 1px ink
-   edge. The focus ring follows the radius. */
-.a11y-widget-biz .a11y-chat-box { border: 1px solid var(--ink); border-radius: 28px; padding: 0.5em 0.8em; }
+/* The chat box keeps its old design (user's instruction, 4 Nov 2026): square
+   corners and a 2px ink edge, whatever the buttons inside it do. It had been
+   made round earlier that day (20px, then 28px) and was put back. */
+.a11y-widget-biz .a11y-chat-box { border: 2px solid var(--ink); padding: 0.5em 0.6em; }
 .a11y-widget-biz .a11y-chat-box:focus-within { outline: 3px solid var(--ink); outline-offset: 2px; box-shadow: 0 0 0 2px var(--paper); }
 /* Outranks the generic field rule (0,3,1) above. */
 .a11y-widget-biz .a11y-chat-dock .a11y-chat-composer .a11y-chat-box textarea {
