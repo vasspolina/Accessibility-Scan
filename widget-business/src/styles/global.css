@@ -898,8 +898,28 @@
 /* A labelled part is a specimen: the label pinned top-left, the words big
    under it, with the room of a Reckless tile above them. */
 .a11y-widget-biz .a11y-fd-panel > :is(p:has(> strong:first-child):not(.a11y-finding-level-fold), .a11y-finding-steps, .a11y-affected) {
-  min-height: 220px; padding-top: 72px;
+  padding-top: 72px;
   font-family: "Serrif", "Jokker", serif; font-weight: 300; font-size: 27px; line-height: 1.2; letter-spacing: 0;
+}
+/* No fixed tile height: the grid already makes tiles in one row as tall as
+   the tallest, and a 220px floor under one short sentence was a slab of
+   empty ground. */
+/* "What to do" is one instruction: one tile across the full width. Its label
+   repeated the tab directly above it, so on screen the tab names it; print
+   shows every panel without tabs, so the label comes back there. The
+   `.a11y-fd … [role]` prefix (0,5,x) is what out-ranks the specimen rule
+   above (0,4,2); without it none of this applies. */
+.a11y-widget-biz .a11y-fd .a11y-fd-panel[role] > :is(.a11y-finding-todo, .a11y-finding-steps) { grid-column: 1 / -1; }
+@media screen {
+  .a11y-widget-biz .a11y-fd .a11y-fd-panel[role] > .a11y-finding-todo > strong:first-child,
+  .a11y-widget-biz .a11y-fd .a11y-fd-panel[role] > .a11y-finding-steps > p:first-child { display: none; }
+  .a11y-widget-biz .a11y-fd .a11y-fd-panel[role] > :is(.a11y-finding-todo, .a11y-finding-steps) { padding: 20px 16px 24px; }
+}
+/* The link is not a part, so it gets no tile: a line under the tiles, on
+   the page's own ground, set like the rest of the small print. */
+.a11y-widget-biz .a11y-fd-panel > .a11y-fd-learn {
+  grid-column: 1 / -1; padding: 2px 0 0; background: none; color: inherit;
+  font-size: 18px; line-height: 1.35;
 }
 .a11y-widget-biz .a11y-fd-panel :is(a, code) { color: inherit; }
 .a11y-widget-biz .a11y-fd-panel :focus-visible { outline-color: #000; box-shadow: 0 0 0 2px #f0efe8; }
@@ -929,7 +949,8 @@
 .a11y-widget-biz .a11y-fd-panel .a11y-pro-block > .a11y-pro-snippet { margin: 0.3em 0 0.3em 9em; }
 .a11y-widget-biz .a11y-fd-panel .a11y-tech-elements { margin: 0; padding-inline-start: 9em; list-style: none; }
 @container a11y-fd (max-width: 640px) {
-  .a11y-widget-biz .a11y-fd-panel > :is(p:has(> strong:first-child):not(.a11y-finding-level-fold), .a11y-finding-steps, .a11y-affected) { min-height: 0; padding-top: 52px; }
+  .a11y-widget-biz .a11y-fd-panel > :is(p:has(> strong:first-child):not(.a11y-finding-level-fold), .a11y-finding-steps, .a11y-affected) { padding-top: 52px; }
+  .a11y-widget-biz .a11y-fd .a11y-fd-panel[role] > :is(.a11y-finding-todo, .a11y-finding-steps) { padding-top: 20px; }
   .a11y-widget-biz .a11y-fd-panel .a11y-pro-line,
   .a11y-widget-biz .a11y-fd-panel .a11y-tech-details > p { padding-inline-start: 0; text-indent: 0; }
   .a11y-widget-biz .a11y-fd-panel > .a11y-finding-level-fold { padding-inline-start: 16px; text-indent: 0; }
