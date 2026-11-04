@@ -91,6 +91,11 @@
 .a11y-widget-biz .a11y-btn:enabled:hover { background: var(--hl-cap-a); border-color: var(--hl-cap-a); color: #000; }
 .a11y-widget-biz button:disabled,
 .a11y-widget-biz .a11y-btn:disabled { border-style: dashed; cursor: not-allowed; }
+/* The main action is solid ink, Displaay's "Ask Albert": the run, the send,
+   the save. It turns marker-yellow on hover like the rest. Disabled, it drops
+   back to paper with the dashed edge, never a faded ink. */
+.a11y-widget-biz .a11y-btn.a11y-btn-primary:enabled { background: var(--ink); color: var(--paper); }
+.a11y-widget-biz .a11y-btn.a11y-btn-primary:enabled:hover { background: var(--hl-cap-a); border-color: var(--hl-cap-a); color: #000; }
 .a11y-widget-biz :is(input:not([type="radio"]):not([type="checkbox"]), textarea, select) {
   font: inherit; font-size: 18px; letter-spacing: 0.01em; padding: 0.4em 0.6em;
   border: 2px solid var(--ink); border-radius: 0; background: var(--paper); color: var(--ink);
@@ -711,6 +716,81 @@
 .a11y-widget-biz .a11y-occurrence-list { list-style: none; padding: 0; margin: 0 0 1em; }
 .a11y-widget-biz .a11y-occurrence { margin: 0 0 0.6em; }
 .a11y-widget-biz .a11y-occurrence-count { margin-inline-start: 0.4em; font-size: 15px; letter-spacing: 0.01em; font-weight: 500; }
+
+/* ═══ THE EXPANDED FINDING, SET LIKE DISPLAAY'S "INFO" BLOCK ════════════════
+   User's instruction, 4 Nov 2026, from the Info section of
+   displaay.net/typeface/dazzed: a heavy ink rule across the top, two columns,
+   each part under a small capital label with a 1px rule beneath it, the prose
+   in a book serif, and the key/value lines (WCAG, selector, rule) set as a
+   two-column list in the sans between two 1px rules.
+   Saans and Serrif are trial files with a Light cut only, so both run at 300
+   here, the small labels too: this block is the user's exception to "Light
+   for display sizes only". No weight is synthesised (font-synthesis: none).
+   Every selector carries .a11y-fd, so it outranks the generic expanded-finding
+   rules above by one class and never ties with them. */
+.a11y-widget-biz .a11y-fd {
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 420px), 1fr)); gap: 0 30px;
+  margin-top: 0.6em; padding-top: 1.2em; border-top: 4px solid var(--ink);
+}
+.a11y-widget-biz .a11y-fd > :not(.a11y-fd-col) { grid-column: 1 / -1; }
+.a11y-widget-biz .a11y-fd > .a11y-fd-col { min-width: 0; }
+.a11y-widget-biz .a11y-fd .a11y-method-hint,
+.a11y-widget-biz .a11y-fd .a11y-finding-measured,
+.a11y-widget-biz .a11y-fd .a11y-finding-impact,
+.a11y-widget-biz .a11y-fd .a11y-finding-research,
+.a11y-widget-biz .a11y-fd .a11y-finding-todo,
+.a11y-widget-biz .a11y-fd .a11y-finding-steps,
+.a11y-widget-biz .a11y-fd .a11y-fix-once,
+.a11y-widget-biz .a11y-fd .a11y-picture-note {
+  font-family: "Serrif", Georgia, serif; font-weight: 300; font-size: 27px; line-height: 1.2; letter-spacing: 0;
+  overflow-wrap: break-word; hyphens: auto;
+}
+.a11y-widget-biz .a11y-fd .a11y-method-hint > strong:first-child,
+.a11y-widget-biz .a11y-fd .a11y-finding-measured > strong:first-child,
+.a11y-widget-biz .a11y-fd .a11y-finding-impact > strong:first-child,
+.a11y-widget-biz .a11y-fd .a11y-finding-research > strong:first-child,
+.a11y-widget-biz .a11y-fd .a11y-finding-todo > strong:first-child,
+.a11y-widget-biz .a11y-fd .a11y-finding-steps > p > strong,
+.a11y-widget-biz .a11y-fd .a11y-affected-label > strong {
+  display: block; margin: 0 0 0.5em; padding-bottom: 0.6em; border-bottom: 1px solid var(--ink);
+  font-family: "Saans", "Jokker", sans-serif; font-weight: 300; font-size: 15px; line-height: 1.2;
+  letter-spacing: 0.04em; text-transform: uppercase;
+}
+.a11y-widget-biz .a11y-fd .a11y-fix-once > strong { font-weight: 300; }
+/* The key/value lines: the key hangs in a 9em column, the value runs beside
+   it and wraps under itself, not under the key. */
+.a11y-widget-biz .a11y-fd .a11y-pro-block,
+.a11y-widget-biz .a11y-fd .a11y-tech-details {
+  margin: 0 0 1.2em; padding: 0.5em 0; border-block: 1px solid var(--ink);
+  font-family: "Saans", "Jokker", sans-serif; font-weight: 300; font-size: 18px; line-height: 1.3; letter-spacing: 0.01em;
+}
+.a11y-widget-biz .a11y-fd .a11y-pro-line,
+.a11y-widget-biz .a11y-fd .a11y-tech-details > p,
+.a11y-widget-biz .a11y-fd .a11y-finding-level-fold {
+  margin: 0; padding-inline-start: 9em; text-indent: -9em; overflow-wrap: anywhere;
+}
+.a11y-widget-biz .a11y-fd .a11y-pro-line > strong:first-child,
+.a11y-widget-biz .a11y-fd .a11y-tech-details > p > strong:first-child,
+.a11y-widget-biz .a11y-fd .a11y-finding-level-fold > strong:first-child {
+  display: inline-block; width: 9em; text-indent: 0; font-weight: 300; vertical-align: top;
+}
+.a11y-widget-biz .a11y-fd .a11y-pro-line:not(:has(> strong:first-child)) { text-indent: 0; }
+.a11y-widget-biz .a11y-fd .a11y-pro-block > .a11y-pro-snippet { margin: 0.3em 0 0.3em 9em; }
+.a11y-widget-biz .a11y-fd .a11y-finding-level-fold { font-family: "Saans", "Jokker", sans-serif; font-weight: 300; font-size: 18px; line-height: 1.3; margin-bottom: 1.2em; }
+.a11y-widget-biz .a11y-fd .a11y-fd-learn,
+.a11y-widget-biz .a11y-fd .a11y-occurrence-list { font-family: "Saans", "Jokker", sans-serif; font-weight: 300; font-size: 18px; letter-spacing: 0.01em; }
+.a11y-widget-biz .a11y-fd .a11y-tech-details > summary { font-size: 15px; text-transform: uppercase; letter-spacing: 0.04em; cursor: pointer; }
+.a11y-widget-biz .a11y-fd .a11y-tech-elements { margin: 0; padding-inline-start: 9em; list-style: none; }
+@container a11y-shell (max-width: 640px) {
+  .a11y-widget-biz .a11y-fd .a11y-pro-line,
+  .a11y-widget-biz .a11y-fd .a11y-tech-details > p,
+  .a11y-widget-biz .a11y-fd .a11y-finding-level-fold { padding-inline-start: 0; text-indent: 0; }
+  .a11y-widget-biz .a11y-fd .a11y-pro-line > strong:first-child,
+  .a11y-widget-biz .a11y-fd .a11y-tech-details > p > strong:first-child,
+  .a11y-widget-biz .a11y-fd .a11y-finding-level-fold > strong:first-child { display: block; width: auto; }
+  .a11y-widget-biz .a11y-fd .a11y-tech-elements { padding-inline-start: 0; }
+  .a11y-widget-biz .a11y-fd .a11y-pro-block > .a11y-pro-snippet { margin-inline-start: 0; }
+}
 
 /* The professional score: the number is the poster word, the rest small print under it. */
 .a11y-widget-biz .a11y-pro-score { display: flex; align-items: baseline; gap: 0.4em; margin: 0 0 0.4em; }
