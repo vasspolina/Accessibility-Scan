@@ -349,7 +349,7 @@ function renderProse(text: string, prefix: string, out: ReactNode[]) {
           const start = ordered ? parseInt(items[0], 10) : 1;
           out.push(
             ordered ? (
-              <ol key={key()} start={start > 1 ? start : undefined}>
+              <ol key={key()} role="list" start={start > 1 ? start : undefined}>
                 {lis}
               </ol>
             ) : (

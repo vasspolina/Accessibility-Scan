@@ -58,7 +58,7 @@ describe("renderReply", () => {
 
   it("numbers steps, and keeps counting after a code block", () => {
     expect(html("1. Open the page\n2. Press Tab\n\n```html\n<a>\n```\n\n3. Check the outline")).toBe(
-      '<ol><li>Open the page</li><li>Press Tab</li></ol><pre class="a11y-chat-pre"><code>&lt;a&gt;</code></pre><ol start="3"><li>Check the outline</li></ol>'
+      '<ol role="list"><li>Open the page</li><li>Press Tab</li></ol><pre class="a11y-chat-pre"><code>&lt;a&gt;</code></pre><ol role="list" start="3"><li>Check the outline</li></ol>'
     );
   });
 

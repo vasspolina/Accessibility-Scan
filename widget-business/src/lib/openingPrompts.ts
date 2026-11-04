@@ -50,10 +50,9 @@ export const OPENING_PROMPTS: PromptGroup[] = [
   },
 ];
 
-/** The cut each panel is set in, after the specimens on a font tester.
- *  Every question is the same size (56px, 40px under 640px; user's
- *  instruction, 4 Nov 2026), so the layouts differ only in weight: Light,
- *  Medium, Regular. Light stays inside the type rules at 40px and up. */
+/** The layout tag each panel carries. Every question is now set the same,
+ *  56px Light (40px under 640px; user's instruction, 4 Nov 2026), so the
+ *  stylesheet no longer reads the tag. */
 export const PROMPT_LAYOUTS = ["display", "bold", "text"] as const;
 export type PromptLayout = (typeof PROMPT_LAYOUTS)[number];
 
