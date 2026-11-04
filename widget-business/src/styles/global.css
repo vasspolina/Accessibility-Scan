@@ -1096,6 +1096,55 @@
 @media (min-width: 641px) {
   .a11y-widget-biz { max-width: none; margin-inline: 0; padding-inline: 16px; }
 }
+/* ═══ PHONE TYPESETTING, AFTER DISPLAAY.NET (user's instruction, 4 Nov 2026) ═
+   Measured on displaay.net at 390px against 1440px: the page gutter halves
+   (20px to 10px); the small sizes barely move (UI 15px to 14px, labels stay
+   15px); the prose steps down by about a fifth (Serrif 21px to 17px); the
+   big type compresses hardest (headings 48px to 29px, the footer 200px to
+   48px). Leading ratios and tracking-by-size are kept, only the size moves.
+   Here, in the same proportions and on this file's own scale:
+   - the gutter 1em (27px) to 10px, Displaay's figure;
+   - prose 27px to 22px (x0.81, Displaay's 21 to 17), +0.005em, half-way
+     between 18px (+0.01em) and 27px (0); line-height stays 1.2;
+   - titles 32px to 27px, one step over the prose as Displaay's 22px card
+     titles sit over its 17px text; tracking 0 at 27px;
+   - labels, buttons and inputs keep 15px and 18px: Displaay moves its small
+     sizes by a pixel at most, and 14px is our floor;
+   - display sizes already come down in their own container queries above
+     (56 to 40, 48 to 32); Light 40px stays 40px, Light's floor.
+   Everything spaced in em (paragraphs, turns, the speaker gutter) follows the
+   new body size on its own. */
+@media (max-width: 640px) {
+  .a11y-widget-biz { font-size: 22px; letter-spacing: 0.005em; padding: 10px; }
+  .a11y-widget-biz :is(h1, h2, h3, h4) { font-size: 27px; letter-spacing: 0; }
+  .a11y-widget-biz .a11y-legal-count { font-size: 27px; letter-spacing: 0; }
+  .a11y-widget-biz .a11y-dn-link { font-size: 22px; }
+  /* Displaay's phone tables give the words the width and the figures their
+     own: here the issue cell was left 40px wide ("Image / s have / no de")
+     while "Who fixes this" kept 122px. On a phone that column takes what
+     "Design fix" on two lines needs, cells keep half the air, and the issue
+     gets the rest. The count column keeps its 6.6em: a header word never
+     breaks, and "Occurrences" (fr) and "Vorkommen" (de) need all of it. */
+  .a11y-widget-biz .a11y-datatable-schedule th[data-col="fix"] { width: 5.4em; }
+  .a11y-widget-biz .a11y-datatable-schedule :is(th, td) { padding-inline-end: 0.4em; }
+  /* The Serrif prose of the expanded finding and of the specimen tiles is
+     the report's prose, so it takes the phone's prose size with it. */
+  .a11y-widget-biz .a11y-fd .a11y-method-hint,
+  .a11y-widget-biz .a11y-fd .a11y-finding-measured,
+  .a11y-widget-biz .a11y-fd .a11y-finding-impact,
+  .a11y-widget-biz .a11y-fd .a11y-finding-research,
+  .a11y-widget-biz .a11y-fd .a11y-finding-todo,
+  .a11y-widget-biz .a11y-fd .a11y-finding-steps,
+  .a11y-widget-biz .a11y-fd .a11y-fix-once,
+  .a11y-widget-biz .a11y-fd .a11y-picture-note,
+  .a11y-widget-biz .a11y-sum-col > .a11y-sum-panel:not(.a11y-sum-counts) .a11y-sum-lead,
+  .a11y-widget-biz .a11y-next-list > li .a11y-next-title,
+  .a11y-widget-biz .a11y-dn-link > .a11y-dn-link-text,
+  .a11y-widget-biz .a11y-spec-card > .a11y-spec-value,
+  .a11y-widget-biz .a11y-pro-row > .a11y-pro-row-num,
+  .a11y-widget-biz .a11y-pro-row > .a11y-pro-row-pass,
+  .a11y-widget-biz .a11y-manual-row > .a11y-conf-body > strong { font-size: 22px; letter-spacing: 0.005em; }
+}
 .a11y-widget-biz .a11y-chat-text :is(p, pre) { margin: 0 0 0.6em; }
 .a11y-widget-biz .a11y-chat-text > :last-child { margin-bottom: 0; }
 
