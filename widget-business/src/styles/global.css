@@ -797,32 +797,45 @@
      pair may part rather than run off the screen. */
   .a11y-widget-biz .a11y-sum-run .a11y-sum-nobreak { white-space: normal; }
 }
-/* What the score counts as a tester's specimen sheet (user's reference,
-   4 Nov 2026: the Displaay tester, without its corner marks; "can be done
-   in 6 columns"). Six equal columns: 01, 04 and 07 span all six at 48px,
-   the pairs 02 + 03 and 05 + 06 take three each at 32px. Each point is
-   centred with its number under it at 15px, where the tester prints the
-   cut and size. No rules, no boxes: space separates the specimens. Under
-   640px of its own width every point takes the full row, 32px and 27px. */
-.a11y-widget-biz .a11y-sum-counts { container: a11y-sum-counts / inline-size; text-align: center; margin: 0 0 1.2em; }
-.a11y-widget-biz .a11y-sum-counts > .a11y-sum-eyebrow { margin: 0 0 1.6em; }
+/* What the score counts as the Displaay homepage's release grid (user's
+   reference, 4 Nov 2026: displaay.net, "New Releases"). Measured there at
+   1400px: a six-column grid, 15px between columns and 25px between rows;
+   the lead release spans five columns and leaves the sixth empty, the
+   next two span three each. Each release is a square-cornered tile with
+   the type set big in its middle, and its name under it, 10px down, at
+   28px Regular, set left. Here the point is the type in the tile and its
+   number is the name under it (27px, the prose size, nearest to 28).
+   01, 04 and 07 span five columns at 48px; 02 + 03 and 05 + 06 span three
+   each at 32px. Tiles keep Displaay's proportions (636 / 1131 for the
+   wide one, 420 / 673 for the pair) as a minimum, and grow when the words
+   need more. Colour is the user's tile exception (see .a11y-fd-panel):
+   #f0efe8, fixed in both themes, #000 on it at 18.4:1. Under 640px of its
+   own width every point takes the full row at 32px and 27px, with no
+   fixed proportion. */
+.a11y-widget-biz .a11y-sum-counts { container: a11y-sum-counts / inline-size; text-align: start; margin: 0 0 1.2em; }
+.a11y-widget-biz .a11y-sum-counts > .a11y-sum-eyebrow { margin: 0 0 0.6em; font-size: 32px; letter-spacing: -0.005em; line-height: 1.1; font-weight: 400; hyphens: manual; }
 .a11y-widget-biz .a11y-sum-specimens {
-  display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 2.2em 1.2em; align-items: start;
+  display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 25px 15px; align-items: start;
 }
 .a11y-widget-biz .a11y-sum-specimen {
-  grid-column: span 3; margin: 0; display: flex; flex-direction: column; align-items: center; gap: 0.7em;
+  grid-column: span 3; min-width: 0; margin: 0; display: flex; flex-direction: column; align-items: stretch; gap: 10px;
 }
-.a11y-widget-biz .a11y-sum-specimen-wide { grid-column: 1 / -1; }
+.a11y-widget-biz .a11y-sum-specimen-wide { grid-column: 1 / span 5; }
 .a11y-widget-biz .a11y-sum-specimen-text {
-  display: block; max-width: 30ch; font-size: 32px; letter-spacing: -0.005em; line-height: 1.08; font-weight: 500;
+  box-sizing: border-box; display: flex; align-items: center; justify-content: center; aspect-ratio: 673 / 420;
+  padding: 32px; background: #f0efe8; color: #000; text-align: center;
+  font-size: 32px; letter-spacing: -0.005em; line-height: 1.08; font-weight: 500;
   text-wrap: balance; hyphens: manual; overflow-wrap: break-word;
 }
-.a11y-widget-biz .a11y-sum-specimen-wide .a11y-sum-specimen-text { max-width: 34ch; font-size: 48px; letter-spacing: -0.01em; line-height: 1.04; }
-.a11y-widget-biz .a11y-sum-specimen-num { font-size: 15px; letter-spacing: 0.01em; line-height: 1.2; }
+.a11y-widget-biz .a11y-sum-specimen-wide .a11y-sum-specimen-text { aspect-ratio: 1131 / 636; padding: 48px; font-size: 48px; letter-spacing: -0.01em; line-height: 1.04; }
+.a11y-widget-biz .a11y-sum-specimen-num { font-size: 27px; letter-spacing: 0; line-height: 1.2; font-weight: 400; }
 @container a11y-sum-counts (max-width: 640px) {
-  .a11y-widget-biz .a11y-sum-specimens { row-gap: 1.6em; }
-  .a11y-widget-biz .a11y-sum-specimen { grid-column: 1 / -1; }
-  .a11y-widget-biz .a11y-sum-specimen-text { font-size: 27px; letter-spacing: 0; line-height: 1.15; hyphens: auto; }
+  .a11y-widget-biz .a11y-sum-specimens { row-gap: 20px; }
+  .a11y-widget-biz .a11y-sum-specimen,
+  .a11y-widget-biz .a11y-sum-specimen-wide { grid-column: 1 / -1; }
+  .a11y-widget-biz .a11y-sum-specimen-text,
+  .a11y-widget-biz .a11y-sum-specimen-wide .a11y-sum-specimen-text { aspect-ratio: auto; min-height: 180px; padding: 24px 16px; hyphens: auto; }
+  .a11y-widget-biz .a11y-sum-specimen-text { font-size: 27px; letter-spacing: 0; line-height: 1.15; }
   .a11y-widget-biz .a11y-sum-specimen-wide .a11y-sum-specimen-text { font-size: 32px; letter-spacing: -0.005em; line-height: 1.08; }
 }
 .a11y-widget-biz .a11y-status-chip { font-size: 18px; letter-spacing: 0.01em; }
