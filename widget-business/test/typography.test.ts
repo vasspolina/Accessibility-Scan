@@ -16,8 +16,8 @@ describe("short words stay attached to the next word", () => {
 const { smarten } = __test;
 
 describe("smarten: the chat's punctuation (Hochuli, p.36–40)", () => {
-  const DASH = "—";
-  it("sets single marks first, the apostrophe, the close em dash and the ellipsis in English", () => {
+  const DASH = `${N}– `;
+  it("sets single marks first, the apostrophe, the spaced en dash and the ellipsis in English", () => {
     expect(smarten(`It is announced as "Cookie settings, dialog" - and then nothing... Don't wait.`, "en")).toBe(
       `It is announced as ‘Cookie settings, dialog’${DASH}and then nothing… Don’t wait.`
     );

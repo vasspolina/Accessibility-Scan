@@ -1029,7 +1029,7 @@ export function ScanChat({
                               aria-current={s.id === current ? "step" : undefined}
                             >
                               {narrationLabel(s.id)}
-                              {result && <span className="a11y-chat-step-result"> —{result}</span>}
+                              {result && <span className="a11y-chat-step-result"> – {result}</span>}
                             </li>
                           );
                         })}

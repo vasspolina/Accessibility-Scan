@@ -93,7 +93,7 @@ describe("German voice: sentences and punctuation", () => {
   });
 
   it("uses the spaced en dash, not the em dash", () => {
-    // House typography per locale: en keeps the em dash, de takes " – ".
+    // Every locale takes " – " since 4 Nov 2026, English included.
     for (const [file, v] of STRINGS) {
       expect(v.includes("—"), `${file}: em dash in ${v}`).toBe(false);
     }
