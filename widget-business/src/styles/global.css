@@ -728,7 +728,11 @@
 .a11y-widget-biz .a11y-prompt { text-align: center; padding: 1.2em 0; }
 .a11y-widget-biz .a11y-prompt-label { font-size: 15px; letter-spacing: 0.01em; margin: 0 0 0.9em; }
 .a11y-widget-biz .a11y-prompts .a11y-prompt-ask {
-  display: inline; min-height: 0; padding: 0 0.08em; border: 0; border-radius: 0;
+  /* A button is sized by its longest word, which break-word does not
+     shrink: without the cap, "Barrierefreiheit" at 40px pushed the button
+     to 330px on a 320px phone where no hyphenation dictionary exists
+     (CI's Chromium, 4 Nov 2026). Capped, the word breaks inside it. */
+  display: inline; max-width: 100%; min-height: 0; padding: 0 0.08em; border: 0; border-radius: 0;
   background: none; color: var(--ink); text-align: center;
   text-wrap: balance; hyphens: manual; overflow-wrap: break-word;
   -webkit-box-decoration-break: clone; box-decoration-break: clone;
@@ -754,6 +758,9 @@
   .a11y-widget-biz .a11y-sum-run .a11y-score-clean { font-size: 32px; letter-spacing: -0.005em; hyphens: auto; }
   .a11y-widget-biz .a11y-sum-run .a11y-sum-cell-no { width: 30px; height: 30px; font-size: 18px; }
   .a11y-widget-biz .a11y-sum-run .a11y-sum-row-marks { white-space: normal; }
+  /* A long first word held to its marker cannot break, so on a phone the
+     pair may part rather than run off the screen. */
+  .a11y-widget-biz .a11y-sum-run .a11y-sum-nobreak { white-space: normal; }
 }
 .a11y-widget-biz .a11y-status-chip { font-size: 18px; letter-spacing: 0.01em; }
 .a11y-widget-biz .a11y-accordion-title .a11y-accordion-head > span:first-child { flex: 0 1 auto; }
