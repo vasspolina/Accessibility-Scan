@@ -301,89 +301,56 @@ export function ScoreGauge({
           with no way to jump straight to the score at all. */}
       <h2 className="a11y-section-title" id="a11y-score-heading" data-nav-label={t("Score")}>{t("Your score")}</h2>
 
-      {/* The dial comes first, straight under the heading (user's
-          instruction, 4 Nov 2026). It used to sit in the right-hand column
-          under "Scan summary", and with the columns stacked that put it
-          below three panels of text. */}
-      <div className="a11y-sum-dial-card">
-        {/* One label carries the whole thing, and every part of the
-            drawing is hidden — the arc, the numeral and the pills all
-            repeat it. Announced once, as a sentence. */}
-        <div
-          className="a11y-sum-dial"
-          role="img"
-          aria-label={
-            tookSeconds != null
-              ? tf("Score {score} out of 100, {band}. Issues found: {count}, in {seconds} seconds.", {
-                  score,
-                  band: t(BAND_WORD(score)),
-                  count: total,
-                  seconds: tookSeconds,
-                })
-              : tf("Score {score} out of 100, {band}. Issues found: {count}.", {
-                  score,
-                  band: t(BAND_WORD(score)),
-                  count: total,
-                })
-          }
-        >
-          <svg viewBox="0 0 100 100" aria-hidden="true" focusable="false">
-            <circle cx="50" cy="50" r={DIAL_R} fill="none"
-              stroke="var(--orange-20)" strokeWidth="9" />
-            <circle cx="50" cy="50" r={DIAL_R} fill="none"
-              stroke="var(--orange-50)" strokeWidth="9" strokeLinecap="round"
-              strokeDasharray={`${(Math.max(0, Math.min(100, score)) / 100) * DIAL_C} ${DIAL_C}`}
-              transform="rotate(-90 50 50)" />
-          </svg>
-          <span className="a11y-sum-dial-face" aria-hidden="true">
-            <span className="a11y-sum-dial-num">{score}</span>
-            <span className="a11y-sum-dial-of">{t("out of 100")}</span>
-          </span>
-        </div>
-      </div>
-
-      {/* The design's scan-summary template: three titled panels down the
-          left, the run and its worst findings on the right. Ported from
+      {/* The design's scan-summary template: the run and its worst findings,
+          then three titled panels. Ported from
           templates/scan-summary/Summary.jsx in the design project — read
           from there rather than from a screenshot, which is how the arc
-          arithmetic and every token below are the design's own. */}
+          arithmetic and every token below are the design's own. The scan
+          summary (its heading, the dial, the top three) comes first, straight
+          under the title (user's instruction, 4 Nov 2026): it was the
+          design's right column, and with the columns stacked it sat below
+          the three panels. */}
       <div className="a11y-sum-grid">
-        <div className="a11y-sum-col">
-          {doFirst && (
-            <SumPanel title={t("Do this first")}>
-              {/* The title in quotes rather than lowercased: lowercasing
-                  broke German nouns ("zu blass zum lesen") and acronyms. */}
-              <p className="a11y-sum-lead">
-                {tf("Fixing “{title}” settles {settles} of the {outOf} most serious findings at once.", {
-                  title: doFirst.title,
-                  settles: doFirst.settles,
-                  outOf: doFirst.outOf,
-                })}
-              </p>
-            </SumPanel>
-          )}
-
-          <SumPanel title={tf("What a score of {band} means", { band: t(BAND_WORD(score)) })}>
-            {/* No second line: points 05 and 06 under "What the score counts"
-                already say what a scan reaches and what needs a person. */}
-            <p className="a11y-sum-lead">{t(scoreSummary(score, seed))}</p>
-          </SumPanel>
-
-          <SumPanel title={t("What the score counts")} grow>
-            {SCORE_POINTS.map((point, i) => (
-              <p key={point} className="a11y-sum-point">
-                <span className="a11y-sum-point-num" aria-hidden="true">
-                  {String(i + 1).padStart(2, "0")}
-                </span>
-                <span>{t(point)}</span>
-              </p>
-            ))}
-          </SumPanel>
-        </div>
-
         <div className="a11y-sum-col">
           <section className="a11y-sum-run" aria-labelledby="a11y-sum-run-heading">
             <h3 className="a11y-sum-eyebrow" id="a11y-sum-run-heading">{t("Scan summary")}</h3>
+
+            <div className="a11y-sum-dial-card">
+              {/* One label carries the whole thing, and every part of the
+                  drawing is hidden — the arc, the numeral and the pills all
+                  repeat it. Announced once, as a sentence. */}
+              <div
+                className="a11y-sum-dial"
+                role="img"
+                aria-label={
+                  tookSeconds != null
+                    ? tf("Score {score} out of 100, {band}. Issues found: {count}, in {seconds} seconds.", {
+                        score,
+                        band: t(BAND_WORD(score)),
+                        count: total,
+                        seconds: tookSeconds,
+                      })
+                    : tf("Score {score} out of 100, {band}. Issues found: {count}.", {
+                        score,
+                        band: t(BAND_WORD(score)),
+                        count: total,
+                      })
+                }
+              >
+                <svg viewBox="0 0 100 100" aria-hidden="true" focusable="false">
+                  <circle cx="50" cy="50" r={DIAL_R} fill="none"
+                    stroke="var(--orange-20)" strokeWidth="9" />
+                  <circle cx="50" cy="50" r={DIAL_R} fill="none"
+                    stroke="var(--orange-50)" strokeWidth="9" strokeLinecap="round"
+                    strokeDasharray={`${(Math.max(0, Math.min(100, score)) / 100) * DIAL_C} ${DIAL_C}`}
+                    transform="rotate(-90 50 50)" />
+                </svg>
+                <span className="a11y-sum-dial-face" aria-hidden="true">
+                  <span className="a11y-sum-dial-num">{score}</span>
+                  <span className="a11y-sum-dial-of">{t("out of 100")}</span>
+                </span>
+              </div>
+            </div>
 
             {preview.length === 0 ? (
               <p className="a11y-score-clean">{t("Nothing here needs a fix.")}</p>
@@ -409,9 +376,16 @@ export function ScoreGauge({
                         : null;
                     return (
                       <li key={rep.id} className="a11y-sum-row">
-                        <span className="a11y-sum-cell-no" aria-hidden="true">{i + 1}</span>
                         <span className="a11y-sum-cell-item">
-                          <span className="a11y-sum-row-title">{title}</span>
+                          {/* The round marker is held to the title's first
+                              word, so a wrap never strands it at a line end. */}
+                          <span className="a11y-sum-row-title">
+                            <span className="a11y-sum-nobreak">
+                              <span className="a11y-sum-cell-no" aria-hidden="true">{i + 1}</span>
+                              {title.split(" ")[0]}
+                            </span>
+                            {title.includes(" ") ? ` ${title.slice(title.indexOf(" ") + 1)}` : ""}
+                          </span>
                           <span className="a11y-sum-row-marks">
                             {criterion && (
                               <span className="a11y-sum-chip">WCAG {criterion}</span>
@@ -444,6 +418,39 @@ export function ScoreGauge({
               {copied ? t("Summary copied to the clipboard.") : ""}
             </span>
           </div>
+        </div>
+
+        <div className="a11y-sum-col">
+          {doFirst && (
+            <SumPanel title={t("Do this first")}>
+              {/* The title in quotes rather than lowercased: lowercasing
+                  broke German nouns ("zu blass zum lesen") and acronyms. */}
+              <p className="a11y-sum-lead">
+                {tf("Fixing “{title}” settles {settles} of the {outOf} most serious findings at once.", {
+                  title: doFirst.title,
+                  settles: doFirst.settles,
+                  outOf: doFirst.outOf,
+                })}
+              </p>
+            </SumPanel>
+          )}
+
+          <SumPanel title={tf("What a score of {band} means", { band: t(BAND_WORD(score)) })}>
+            {/* No second line: points 05 and 06 under "What the score counts"
+                already say what a scan reaches and what needs a person. */}
+            <p className="a11y-sum-lead">{t(scoreSummary(score, seed))}</p>
+          </SumPanel>
+
+          <SumPanel title={t("What the score counts")} grow>
+            {SCORE_POINTS.map((point, i) => (
+              <p key={point} className="a11y-sum-point">
+                <span className="a11y-sum-point-num" aria-hidden="true">
+                  {String(i + 1).padStart(2, "0")}
+                </span>
+                <span>{t(point)}</span>
+              </p>
+            ))}
+          </SumPanel>
         </div>
       </div>
     </div>
