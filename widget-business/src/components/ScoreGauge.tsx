@@ -441,12 +441,11 @@ export function ScoreGauge({
             <p className="a11y-sum-lead">{t(scoreSummary(score, seed))}</p>
           </SumPanel>
 
-          {/* Set as a type tester's specimen sheet (user's reference,
-              4 Nov 2026), on six columns: 01, 04 and 07 run the full width
-              at display size, 02 with 03 and 05 with 06 share a row at
-              half width, because each pair is one thought in two lines.
-              Every point is centred with its number as the small caption
-              under it, where the tester names the cut. No corner marks. */}
+          {/* Set as the Displaay homepage's release grid (user's reference,
+              4 Nov 2026), on six columns: 01, 04 and 07 are the lead tile
+              over five columns, 02 with 03 and 05 with 06 share a row,
+              because each pair is one thought in two lines. Every point is
+              the type inside a tile, with its number as the name under it. */}
           <section className="a11y-sum-panel a11y-sum-counts" aria-labelledby="a11y-sum-counts-heading">
             <h3 className="a11y-sum-eyebrow" id="a11y-sum-counts-heading">{t("What the score counts")}</h3>
             <div className="a11y-sum-specimens">
