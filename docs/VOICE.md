@@ -76,8 +76,10 @@ Titles state what was measured and never hedge ("A control", not "Something").
 - Sentences under 20 words. Paragraphs no longer than 3 sentences.
 - Lists stay clean and parallel, with no full stop at the end of an item.
 - No exclamation points, ever.
-- Em dashes may replace parentheses, but never more than once per finding
-  block. Never inside a selector or a code value.
+- A dash may replace parentheses, but never more than once per finding
+  block. Never inside a selector or a code value. The dash is the spaced en
+  dash with a no-break space before it (` – `) in every language, English
+  included since 4 Nov 2026; never an em dash.
 - Dates in European format (28 June 2025).
 - British spelling (colour, recognise), matching the rest of the report.
 - Lists carry the technical detail. Prose carries the meaning.
