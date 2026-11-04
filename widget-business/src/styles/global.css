@@ -67,7 +67,10 @@
   hyphens: auto; hyphenate-limit-chars: 7 3 3; -webkit-hyphenate-limit-lines: 3; hyphenate-limit-lines: 3; text-wrap: pretty;
   max-width: 40em; margin-inline: auto; padding: 1em;
 }
-.a11y-widget-biz :is(h1, h2, h3, h4) { font-weight: 500; line-height: 1.05; font-size: 32px; letter-spacing: -0.005em; margin: 1.2em 0 0.3em; }
+/* A heading sits a clear step above its text (0.5em, was 0.3em) and a full
+   line clear of what came before: paragraph spacing after the FAQ on
+   displaay.net, user's instruction, 4 Nov 2026. */
+.a11y-widget-biz :is(h1, h2, h3, h4) { font-weight: 500; line-height: 1.05; font-size: 32px; letter-spacing: -0.005em; margin: 1.2em 0 0.5em; }
 .a11y-widget-biz :is(p, ul, ol, dl, table, figure) { margin: 0 0 1.2em; }
 .a11y-widget-biz a { color: var(--ink); text-decoration: underline; text-underline-offset: 0.15em; }
 
@@ -219,10 +222,13 @@
   gap: 0.5em; margin-top: 0.5em;
 }
 /* Who is speaking: small print above each turn. */
-.a11y-widget-biz .a11y-chat-who { font-size: 15px; letter-spacing: 0.01em; font-weight: 500; margin: 0; }
-/* No space between turns: the speaker label above each one is what parts
-   one voice from the next (18 Oct 2026; user's instruction). */
-.a11y-widget-biz .a11y-chat-turn { margin-bottom: 0; }
+.a11y-widget-biz .a11y-chat-who { font-size: 15px; letter-spacing: 0.01em; font-weight: 500; margin: 0 0 0.3em; }
+/* Paragraph spacing, after the FAQ on displaay.net (user's instruction,
+   4 Nov 2026, replacing "no space between turns" of 18 Oct): one line of
+   the 27px text between turns, half a line between paragraphs inside one,
+   the speaker label a small step above its words. Spacing parts the turns;
+   the label names them. */
+.a11y-widget-biz .a11y-chat-turn { margin-bottom: 1.2em; }
 /* Where a searched answer came from: small print under the reply, the
    pages named and linked, each once. */
 .a11y-widget-biz .a11y-chat-sources { font-size: 15px; letter-spacing: 0.01em; line-height: 1.3; margin: 0; overflow-wrap: anywhere; }
@@ -252,11 +258,11 @@
 .a11y-widget-biz :is(.a11y-chat-who, small, th) .a11y-caps { font-size: inherit; }
 /* A list in the conversation (fig. 50): an en dash and a word space for a
    bullet, hung in the margin; a figure and its point for a count. */
-.a11y-widget-biz .a11y-chat-text :is(ul, ol) { padding-inline-start: 1.4em; margin: 0; }
+.a11y-widget-biz .a11y-chat-text :is(ul, ol) { padding-inline-start: 1.4em; margin: 0 0 0.6em; }
 .a11y-widget-biz .a11y-chat-text ul { list-style: "\2013\00A0"; }
 .a11y-widget-biz .a11y-chat-text ol { list-style: decimal outside; }
 .a11y-widget-biz .a11y-chat-text li::marker { font-weight: 400; }
-.a11y-widget-biz .a11y-chat-text li { margin: 0; }
+.a11y-widget-biz .a11y-chat-text li { margin: 0 0 0.2em; }
 
 /* ═══ MOTION IN THE CONVERSATION (18 Oct 2026) ═══════════════════════════
    What arrives, arrives: a turn fades in, and each chunk of a streamed
@@ -827,7 +833,8 @@
 @media (min-width: 641px) {
   .a11y-widget-biz { max-width: none; margin-inline: 0; padding-inline: 16px; }
 }
-.a11y-widget-biz .a11y-chat-text :is(p, pre) { margin: 0; }
+.a11y-widget-biz .a11y-chat-text :is(p, pre) { margin: 0 0 0.6em; }
+.a11y-widget-biz .a11y-chat-text > :last-child { margin-bottom: 0; }
 
 /* ═══ FINDING CARDS, EVIDENCE PICTURES AND THE PRINTED REPORT (24 Oct 2026) ══
    The card the printed report is made of (the on-screen list is the table) had
