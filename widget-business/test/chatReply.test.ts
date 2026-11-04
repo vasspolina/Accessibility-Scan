@@ -107,7 +107,7 @@ describe("renderReply test plans", () => {
   it("leaves a plain numbered list a list", () => {
     const out = html("1. Open the page.\n2. Press Tab.");
     expect(out).not.toContain("a11y-chat-plan");
-    expect(out).toContain("<ol>");
+    expect(out).toContain("<ol role=\"list\">");
   });
 });
 
