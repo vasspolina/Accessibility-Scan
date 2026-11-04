@@ -436,6 +436,10 @@
    specificity of its input:not():not() branch. */
 .a11y-widget-biz .a11y-select2 .a11y-select2-field.a11y-select2-field {
   appearance: none; -webkit-appearance: none;
+  /* Square corners and a 2px ink edge, like the chat box (user's instruction,
+     4 Nov 2026: "keep language button too"). */
+  border: 2px solid var(--ink);
+  border-radius: 0;
   padding-inline-end: 2.6em;
   background-image: linear-gradient(45deg, transparent 50%, var(--ink) 50%), linear-gradient(135deg, var(--ink) 50%, transparent 50%);
   background-position: calc(100% - 1.4em) 50%, calc(100% - 1em) 50%;
@@ -548,10 +552,10 @@
 
 /* What the score counts: the number hangs, the sentence beside it. */
 .a11y-widget-biz .a11y-pro-points { list-style: none; padding: 0; margin: 0 0 1.2em; }
-.a11y-widget-biz :is(.a11y-sum-point, .a11y-pro-point) {
+.a11y-widget-biz .a11y-pro-point {
   display: grid; grid-template-columns: 2.4em minmax(0, 1fr); align-items: baseline; margin: 0 0 0.6em;
 }
-.a11y-widget-biz :is(.a11y-sum-point-num, .a11y-pro-point-num) { font-size: 15px; letter-spacing: 0.01em; font-weight: 500; }
+.a11y-widget-biz .a11y-pro-point-num { font-size: 15px; letter-spacing: 0.01em; font-weight: 500; }
 
 /* The three worst findings next to the dial: number, title with its marks under it, count. */
 .a11y-widget-biz .a11y-sum-thead { display: none; }
@@ -675,32 +679,18 @@
 .a11y-widget-biz .a11y-sum-dial-of { font-size: 15px; letter-spacing: 0.01em; margin: 0; }
 
 /* The scan summary as a type specimen (user's instruction and reference,
-   4 Nov 2026: a font tester's panel, kept with the dial). Four corner marks
-   frame the block; the label and the dial sit centred at the top; the worst
+   4 Nov 2026: a font tester's panel, kept with the dial; no corner marks,
+   user's word the same day). The label and the dial sit centred at the top; the worst
    findings run as one centred paragraph of display type, each opened by a
    round numbered marker, the way the specimen drops a dingbat between
    words; the copy button sits centred under it, like the tester's buttons.
-   Still a list in the markup: only its display is inline. The marks are
-   ink, the markers ink with paper figures (21:1); the severity fills are
-   the highlight colours with black text, as everywhere else. */
+   Still a list in the markup: only its display is inline. The markers are
+   ink with paper figures (21:1); the severity fills are the highlight
+   colours with black text, as everywhere else. */
 .a11y-widget-biz .a11y-sum-run {
   container: a11y-sum-run / inline-size;
-  position: relative; text-align: center;
-  padding: 2.2em 1.2em 2.4em; margin: 0 0 0.6em;
+  text-align: center; padding: 1.2em 1.2em 1.4em; margin: 0 0 0.6em;
 }
-/* Top corners on the section, bottom corners on its label (positioned
-   against the section, since the label itself is not). */
-.a11y-widget-biz .a11y-sum-run::before,
-.a11y-widget-biz .a11y-sum-run::after,
-.a11y-widget-biz .a11y-sum-run > .a11y-sum-eyebrow::before,
-.a11y-widget-biz .a11y-sum-run > .a11y-sum-eyebrow::after {
-  content: ""; position: absolute; width: 34px; height: 14px;
-  border: 0 solid var(--ink); pointer-events: none;
-}
-.a11y-widget-biz .a11y-sum-run::before { top: 0; left: 0; border-top-width: 1px; border-left-width: 1px; border-top-left-radius: 14px; }
-.a11y-widget-biz .a11y-sum-run::after { top: 0; right: 0; border-top-width: 1px; border-right-width: 1px; border-top-right-radius: 14px; }
-.a11y-widget-biz .a11y-sum-run > .a11y-sum-eyebrow::before { bottom: 0; left: 0; border-bottom-width: 1px; border-left-width: 1px; border-bottom-left-radius: 14px; }
-.a11y-widget-biz .a11y-sum-run > .a11y-sum-eyebrow::after { bottom: 0; right: 0; border-bottom-width: 1px; border-right-width: 1px; border-bottom-right-radius: 14px; }
 .a11y-widget-biz .a11y-sum-run > .a11y-sum-eyebrow { margin: 0 0 0.6em; }
 .a11y-widget-biz .a11y-sum-run .a11y-sum-dial-card { display: flex; justify-content: center; }
 .a11y-widget-biz .a11y-sum-run .a11y-sum-dial { margin: 0 0 0.5em; }
@@ -730,11 +720,79 @@
 /* On a phone the run comes down to title size, so a long German word
    still fits 320px. */
 @media (max-width: 640px) { .a11y-widget-biz .a11y-sum-run { padding-inline: 0; } }
+
+/* The opening questions, after the panels of a font tester (user's
+   reference, 4 Nov 2026): a small centred label, the question under it in
+   big centred type, one panel per group, no frame and no corner marks.
+   Each load sets the three panels in a different layout from these three,
+   the way a tester shows one face at several settings. The question is a
+   button, but reads as type: no pill, no edge; hover lays the marker
+   yellow under it (black text, better than 7:1), focus shows the ring. */
+.a11y-widget-biz .a11y-prompts { container: a11y-prompts / inline-size; margin: 0.6em 0 1.2em; }
+.a11y-widget-biz .a11y-prompt { text-align: center; padding: 1.2em 0; }
+.a11y-widget-biz .a11y-prompt-label { font-size: 15px; letter-spacing: 0.01em; margin: 0 0 0.9em; }
+.a11y-widget-biz .a11y-prompts .a11y-prompt-ask {
+  /* A button is sized by its longest word, which break-word does not
+     shrink: without the cap, "Barrierefreiheit" at 40px pushed the button
+     to 330px on a 320px phone where no hyphenation dictionary exists
+     (CI's Chromium, 4 Nov 2026). Capped, the word breaks inside it. */
+  display: inline; max-width: 100%; min-height: 0; padding: 0 0.08em; border: 0; border-radius: 0;
+  background: none; color: var(--ink); text-align: center;
+  text-wrap: balance; hyphens: manual; overflow-wrap: break-word;
+  -webkit-box-decoration-break: clone; box-decoration-break: clone;
+}
+.a11y-widget-biz .a11y-prompts .a11y-prompt-ask:enabled:hover { background: var(--hl-cap-a); color: #000; }
+.a11y-widget-biz .a11y-prompts .a11y-prompt-ask:disabled { border: 0; text-decoration: underline dashed 1px; text-underline-offset: 0.15em; }
+/* Display: Light at display size, tight. */
+.a11y-widget-biz .a11y-prompt[data-layout="display"] .a11y-prompt-ask { font-size: 56px; font-weight: 300; letter-spacing: -0.01em; line-height: 1.02; }
+/* Bold: Medium, a size down, a little air. */
+.a11y-widget-biz .a11y-prompt[data-layout="bold"] .a11y-prompt-ask { font-size: 40px; font-weight: 500; letter-spacing: -0.01em; line-height: 1.08; }
+/* Text: Regular at title size, open leading, on a measure. */
+.a11y-widget-biz .a11y-prompt[data-layout="text"] .a11y-prompt-ask { font-size: 32px; font-weight: 400; letter-spacing: -0.005em; line-height: 1.25; }
+.a11y-widget-biz .a11y-prompt[data-layout="text"] { max-width: 34em; margin-inline: auto; }
+.a11y-widget-biz .a11y-prompt-more { text-align: center; margin: 0.4em 0 0; }
+@container a11y-prompts (max-width: 640px) {
+  .a11y-widget-biz .a11y-prompt[data-layout="display"] .a11y-prompt-ask { font-size: 40px; }
+  .a11y-widget-biz .a11y-prompt[data-layout="bold"] .a11y-prompt-ask { font-size: 32px; letter-spacing: -0.005em; }
+  .a11y-widget-biz .a11y-prompt[data-layout="text"] .a11y-prompt-ask { font-size: 27px; letter-spacing: 0; }
+  .a11y-widget-biz .a11y-prompts .a11y-prompt-ask { hyphens: auto; }
+}
 @container a11y-sum-run (max-width: 640px) {
   .a11y-widget-biz .a11y-sum-run .a11y-sum-rows,
   .a11y-widget-biz .a11y-sum-run .a11y-score-clean { font-size: 32px; letter-spacing: -0.005em; hyphens: auto; }
   .a11y-widget-biz .a11y-sum-run .a11y-sum-cell-no { width: 30px; height: 30px; font-size: 18px; }
   .a11y-widget-biz .a11y-sum-run .a11y-sum-row-marks { white-space: normal; }
+  /* A long first word held to its marker cannot break, so on a phone the
+     pair may part rather than run off the screen. */
+  .a11y-widget-biz .a11y-sum-run .a11y-sum-nobreak { white-space: normal; }
+}
+/* What the score counts as a tester's specimen sheet (user's reference,
+   4 Nov 2026: the Displaay tester, without its corner marks; "can be done
+   in 6 columns"). Six equal columns: 01, 04 and 07 span all six at 48px,
+   the pairs 02 + 03 and 05 + 06 take three each at 32px. Each point is
+   centred with its number under it at 15px, where the tester prints the
+   cut and size. No rules, no boxes: space separates the specimens. Under
+   640px of its own width every point takes the full row, 32px and 27px. */
+.a11y-widget-biz .a11y-sum-counts { container: a11y-sum-counts / inline-size; text-align: center; margin: 0 0 1.2em; }
+.a11y-widget-biz .a11y-sum-counts > .a11y-sum-eyebrow { margin: 0 0 1.6em; }
+.a11y-widget-biz .a11y-sum-specimens {
+  display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 2.2em 1.2em; align-items: start;
+}
+.a11y-widget-biz .a11y-sum-specimen {
+  grid-column: span 3; margin: 0; display: flex; flex-direction: column; align-items: center; gap: 0.7em;
+}
+.a11y-widget-biz .a11y-sum-specimen-wide { grid-column: 1 / -1; }
+.a11y-widget-biz .a11y-sum-specimen-text {
+  display: block; max-width: 30ch; font-size: 32px; letter-spacing: -0.005em; line-height: 1.08; font-weight: 500;
+  text-wrap: balance; hyphens: manual; overflow-wrap: break-word;
+}
+.a11y-widget-biz .a11y-sum-specimen-wide .a11y-sum-specimen-text { max-width: 34ch; font-size: 48px; letter-spacing: -0.01em; line-height: 1.04; }
+.a11y-widget-biz .a11y-sum-specimen-num { font-size: 15px; letter-spacing: 0.01em; line-height: 1.2; }
+@container a11y-sum-counts (max-width: 640px) {
+  .a11y-widget-biz .a11y-sum-specimens { row-gap: 1.6em; }
+  .a11y-widget-biz .a11y-sum-specimen { grid-column: 1 / -1; }
+  .a11y-widget-biz .a11y-sum-specimen-text { font-size: 27px; letter-spacing: 0; line-height: 1.15; hyphens: auto; }
+  .a11y-widget-biz .a11y-sum-specimen-wide .a11y-sum-specimen-text { font-size: 32px; letter-spacing: -0.005em; line-height: 1.08; }
 }
 .a11y-widget-biz .a11y-status-chip { font-size: 18px; letter-spacing: 0.01em; }
 .a11y-widget-biz .a11y-accordion-title .a11y-accordion-head > span:first-child { flex: 0 1 auto; }
@@ -1036,7 +1094,7 @@
   .a11y-widget-biz :is(
     figure, img, pre, tr, blockquote,
     .a11y-occurrence, .a11y-fd-col > p, .a11y-fd-learn, .a11y-pro-block, .a11y-fix-once,
-    .a11y-sum-row, .a11y-pro-row, .a11y-pro-point, .a11y-sum-point, .a11y-legal-row, .a11y-legal-q,
+    .a11y-sum-row, .a11y-pro-row, .a11y-pro-point, .a11y-legal-row, .a11y-legal-q,
     .a11y-conf-row, .a11y-next-list > li, .a11y-undecided-cell, .a11y-spec-card, .a11y-sr-row, .a11y-dn-link
   ) { break-inside: avoid; page-break-inside: avoid; }
   .a11y-widget-biz thead { display: table-header-group; }

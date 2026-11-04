@@ -441,16 +441,25 @@ export function ScoreGauge({
             <p className="a11y-sum-lead">{t(scoreSummary(score, seed))}</p>
           </SumPanel>
 
-          <SumPanel title={t("What the score counts")} grow>
-            {SCORE_POINTS.map((point, i) => (
-              <p key={point} className="a11y-sum-point">
-                <span className="a11y-sum-point-num" aria-hidden="true">
-                  {String(i + 1).padStart(2, "0")}
-                </span>
-                <span>{t(point)}</span>
-              </p>
-            ))}
-          </SumPanel>
+          {/* Set as a type tester's specimen sheet (user's reference,
+              4 Nov 2026), on six columns: 01, 04 and 07 run the full width
+              at display size, 02 with 03 and 05 with 06 share a row at
+              half width, because each pair is one thought in two lines.
+              Every point is centred with its number as the small caption
+              under it, where the tester names the cut. No corner marks. */}
+          <section className="a11y-sum-panel a11y-sum-counts" aria-labelledby="a11y-sum-counts-heading">
+            <h3 className="a11y-sum-eyebrow" id="a11y-sum-counts-heading">{t("What the score counts")}</h3>
+            <div className="a11y-sum-specimens">
+              {SCORE_POINTS.map((point, i) => (
+                <p key={point} className={`a11y-sum-specimen${[0, 3, 6].includes(i) ? " a11y-sum-specimen-wide" : ""}`}>
+                  <span className="a11y-sum-specimen-text">{t(point)}</span>
+                  <span className="a11y-sum-specimen-num" aria-hidden="true">
+                    {String(i + 1).padStart(2, "0")}
+                  </span>
+                </p>
+              ))}
+            </div>
+          </section>
         </div>
       </div>
     </div>
