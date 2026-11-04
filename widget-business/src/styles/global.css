@@ -743,19 +743,21 @@
 }
 .a11y-widget-biz .a11y-prompts .a11y-prompt-ask:enabled:hover { background: var(--hl-cap-a); color: #000; }
 .a11y-widget-biz .a11y-prompts .a11y-prompt-ask:disabled { border: 0; text-decoration: underline dashed 1px; text-underline-offset: 0.15em; }
-/* Display: Light at display size, tight. */
-.a11y-widget-biz .a11y-prompt[data-layout="display"] .a11y-prompt-ask { font-size: 56px; font-weight: 300; letter-spacing: -0.01em; line-height: 1.02; }
-/* Bold: Medium, a size down, a little air. */
-.a11y-widget-biz .a11y-prompt[data-layout="bold"] .a11y-prompt-ask { font-size: 40px; font-weight: 500; letter-spacing: -0.01em; line-height: 1.08; }
-/* Text: Regular at title size, open leading, on a measure. */
-.a11y-widget-biz .a11y-prompt[data-layout="text"] .a11y-prompt-ask { font-size: 32px; font-weight: 400; letter-spacing: -0.005em; line-height: 1.25; }
-.a11y-widget-biz .a11y-prompt[data-layout="text"] { max-width: 34em; margin-inline: auto; }
+/* One size for every question (user's instruction, 4 Nov 2026): the
+   display size, 56px, stepping down to 40px on a phone, so the three
+   panels read as one scale. The layouts now differ only in weight, the
+   way a tester shows one face at several cuts; Light stays legal because
+   every question is at 40px or up. */
+.a11y-widget-biz .a11y-prompts .a11y-prompt-ask { font-size: 56px; letter-spacing: -0.01em; line-height: 1.04; }
+/* Display: Light. */
+.a11y-widget-biz .a11y-prompt[data-layout="display"] .a11y-prompt-ask { font-weight: 300; line-height: 1.02; }
+/* Bold: Medium. */
+.a11y-widget-biz .a11y-prompt[data-layout="bold"] .a11y-prompt-ask { font-weight: 500; }
+/* Text: Regular. */
+.a11y-widget-biz .a11y-prompt[data-layout="text"] .a11y-prompt-ask { font-weight: 400; }
 .a11y-widget-biz .a11y-prompt-more { text-align: center; margin: 0.4em 0 0; }
 @container a11y-prompts (max-width: 640px) {
-  .a11y-widget-biz .a11y-prompt[data-layout="display"] .a11y-prompt-ask { font-size: 40px; }
-  .a11y-widget-biz .a11y-prompt[data-layout="bold"] .a11y-prompt-ask { font-size: 32px; letter-spacing: -0.005em; }
-  .a11y-widget-biz .a11y-prompt[data-layout="text"] .a11y-prompt-ask { font-size: 27px; letter-spacing: 0; }
-  .a11y-widget-biz .a11y-prompts .a11y-prompt-ask { hyphens: auto; }
+  .a11y-widget-biz .a11y-prompts .a11y-prompt-ask { font-size: 40px; hyphens: auto; }
 }
 @container a11y-sum-run (max-width: 640px) {
   .a11y-widget-biz .a11y-sum-run .a11y-sum-rows,
