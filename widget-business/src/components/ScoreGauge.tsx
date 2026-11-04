@@ -301,6 +301,47 @@ export function ScoreGauge({
           with no way to jump straight to the score at all. */}
       <h2 className="a11y-section-title" id="a11y-score-heading" data-nav-label={t("Score")}>{t("Your score")}</h2>
 
+      {/* The dial comes first, straight under the heading (user's
+          instruction, 4 Nov 2026). It used to sit in the right-hand column
+          under "Scan summary", and with the columns stacked that put it
+          below three panels of text. */}
+      <div className="a11y-sum-dial-card">
+        {/* One label carries the whole thing, and every part of the
+            drawing is hidden — the arc, the numeral and the pills all
+            repeat it. Announced once, as a sentence. */}
+        <div
+          className="a11y-sum-dial"
+          role="img"
+          aria-label={
+            tookSeconds != null
+              ? tf("Score {score} out of 100, {band}. Issues found: {count}, in {seconds} seconds.", {
+                  score,
+                  band: t(BAND_WORD(score)),
+                  count: total,
+                  seconds: tookSeconds,
+                })
+              : tf("Score {score} out of 100, {band}. Issues found: {count}.", {
+                  score,
+                  band: t(BAND_WORD(score)),
+                  count: total,
+                })
+          }
+        >
+          <svg viewBox="0 0 100 100" aria-hidden="true" focusable="false">
+            <circle cx="50" cy="50" r={DIAL_R} fill="none"
+              stroke="var(--orange-20)" strokeWidth="9" />
+            <circle cx="50" cy="50" r={DIAL_R} fill="none"
+              stroke="var(--orange-50)" strokeWidth="9" strokeLinecap="round"
+              strokeDasharray={`${(Math.max(0, Math.min(100, score)) / 100) * DIAL_C} ${DIAL_C}`}
+              transform="rotate(-90 50 50)" />
+          </svg>
+          <span className="a11y-sum-dial-face" aria-hidden="true">
+            <span className="a11y-sum-dial-num">{score}</span>
+            <span className="a11y-sum-dial-of">{t("out of 100")}</span>
+          </span>
+        </div>
+      </div>
+
       {/* The design's scan-summary template: three titled panels down the
           left, the run and its worst findings on the right. Ported from
           templates/scan-summary/Summary.jsx in the design project — read
@@ -343,43 +384,6 @@ export function ScoreGauge({
         <div className="a11y-sum-col">
           <section className="a11y-sum-run" aria-labelledby="a11y-sum-run-heading">
             <h3 className="a11y-sum-eyebrow" id="a11y-sum-run-heading">{t("Scan summary")}</h3>
-
-            <div className="a11y-sum-dial-card">
-              {/* One label carries the whole thing, and every part of the
-                  drawing is hidden — the arc, the numeral and the pills all
-                  repeat it. Announced once, as a sentence. */}
-              <div
-                className="a11y-sum-dial"
-                role="img"
-                aria-label={
-                  tookSeconds != null
-                    ? tf("Score {score} out of 100, {band}. Issues found: {count}, in {seconds} seconds.", {
-                        score,
-                        band: t(BAND_WORD(score)),
-                        count: total,
-                        seconds: tookSeconds,
-                      })
-                    : tf("Score {score} out of 100, {band}. Issues found: {count}.", {
-                        score,
-                        band: t(BAND_WORD(score)),
-                        count: total,
-                      })
-                }
-              >
-                <svg viewBox="0 0 100 100" aria-hidden="true" focusable="false">
-                  <circle cx="50" cy="50" r={DIAL_R} fill="none"
-                    stroke="var(--orange-20)" strokeWidth="9" />
-                  <circle cx="50" cy="50" r={DIAL_R} fill="none"
-                    stroke="var(--orange-50)" strokeWidth="9" strokeLinecap="round"
-                    strokeDasharray={`${(Math.max(0, Math.min(100, score)) / 100) * DIAL_C} ${DIAL_C}`}
-                    transform="rotate(-90 50 50)" />
-                </svg>
-                <span className="a11y-sum-dial-face" aria-hidden="true">
-                  <span className="a11y-sum-dial-num">{score}</span>
-                  <span className="a11y-sum-dial-of">{t("out of 100")}</span>
-                </span>
-              </div>
-            </div>
 
             {preview.length === 0 ? (
               <p className="a11y-score-clean">{t("Nothing here needs a fix.")}</p>

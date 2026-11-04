@@ -607,8 +607,16 @@ export function ScanChat({
       // The step lines freeze at what the pipeline actually reported.
       patch(turnId, { state: "done", seconds, resultKey: key, steps: [...milestonesRef.current] });
       sharedScan.current = key;
-      if (outcome.kind === "report" && outcome.report.findings.some((f) => f.ruleId === "consent-blocks-reader")) {
-        add({ id: nextId++, who: "block", section: "stop", resultKey: key });
+      if (outcome.kind === "report") {
+        // The score and its dial are the first thing a completed scan shows,
+        // straight under the scan line and before the assistant's reply
+        // (user's instruction, 4 Nov 2026). It used to show only when checks
+        // were missing behind it; that block still says which did not run.
+        // Silent, like every block the widget adds on its own account.
+        showSection("score", { resultKey: key, force: true, announce: false, focusExisting: false });
+        if (outcome.report.findings.some((f) => f.ruleId === "consent-blocks-reader")) {
+          add({ id: nextId++, who: "block", section: "stop", resultKey: key });
+        }
       }
     } else {
       patch(turnId, { state: "failed", seconds, steps: [...milestonesRef.current] });
@@ -622,18 +630,18 @@ export function ScanChat({
   const milestonesRef = useRef<string[]>([]);
   milestonesRef.current = milestones;
 
-  /** The block a finished scan opens with: the findings, or the audit. */
+  /** The blocks a finished scan opens with: the score dial first, then the
+   *  findings; or the audit. */
   function showResult(outcome: ScanOutcome) {
     // Silent: the reply or the outcome line before it is what gets read
     // out, and announcing the block would replace it in the same render.
     const quiet = { force: true, announce: false, focusExisting: false };
     if (outcome.kind === "report") {
       const key = resultKeyOf(outcome.report);
-      const meta = outcome.report.meta;
-      // A score with checks missing behind it arrives with the block that
-      // says which: "every check that did not run must be declared".
-      const aiSkipped = ["skipped_no_key", "skipped_timeout", "skipped_error"].includes(meta.aiReviewStatus);
-      if (meta.incompleteChecks?.length || aiSkipped) showSection("score", { ...quiet, resultKey: key });
+      // The score block is already in the thread: runScan shows it the
+      // moment the scan completes. This only lands it on a path that
+      // skipped that (a no-op when it is there).
+      showSection("score", { ...quiet, resultKey: key });
       showSection("findings", { ...quiet, resultKey: key });
     }
     if (outcome.kind === "audit") showSection("audit", { ...quiet, resultKey: resultKeyOf(outcome.audit) });

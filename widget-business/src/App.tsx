@@ -558,7 +558,8 @@ export function App({
               />
             ) : (
               <>
-                <ReportActions report={report} apiBase={apiBase} />
+                {/* The score and its dial open the block; sending or saving
+                    the report follows it (4 Nov 2026). */}
                 <ScoreGauge
                   score={report.score}
                   seed={report.scannedAt}
@@ -568,6 +569,7 @@ export function App({
                   total={report.summary.total}
                   tookSeconds={tookSeconds}
                 />
+                <ReportActions report={report} apiBase={apiBase} />
               </>
             )}
             {/* Only when the AI review was wanted but did not happen;
