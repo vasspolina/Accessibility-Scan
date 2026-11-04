@@ -548,8 +548,6 @@ export function FindingDetails({
   asNotes?: boolean;
 }) {
   const [showAll, setShowAll] = useState(false);
-  const [tab, setTab] = useState(0);
-  const baseId = useId();
   const { professional, criterionNames } = useReportView();
 
   const rep = findings[0];
@@ -576,285 +574,274 @@ export function FindingDetails({
       ? (rep.wcagCriterion.match(/^\d\.\d+\.\d+/)?.[0] ?? "")
       : "";
 
-  /* Laid out like the pricing block on displaay.net/typeface/dazzed (user's
-     instruction, 4 Nov 2026): three buttons of one size, each switching the
-     content of the brown panel under them. A real tab set: arrow keys move
-     between the tabs, and all three panels stay in the DOM (inactive ones
-     `hidden`), so the printed report can show every one of them. */
-  const panels: { key: "found" | "todo" | "tech"; label: string; body: ReactNode }[] = [
-    {
-      key: "found",
-      label: t("What we found"),
-      body: (
-        <>
-          {/* Three hints, three paragraphs, each answering its own question:
-              who does the work, whether you can check it yourself, and where
-              the finding came from. */}
-          <p className="a11y-method-hint">
-            <strong>{t("Who fixes this")}</strong> {fix.hint}
-          </p>
-          {keyboardCheck && (
-            <p className="a11y-method-hint">
-              <strong>{t("Check it yourself")}</strong> {keyboardHint()}
-            </p>
-          )}
-          {fromAi && (
-            <p className="a11y-method-hint">
-              <strong>{t("Where this came from")}</strong> {aiHint()}
-            </p>
-          )}
-          {/* The rule's own account of what was found where it has one, and
-              the finding's description otherwise (AI findings put their
-              substance in the description). */}
-          {measured && (
-            <p className="a11y-finding-measured">
-              <strong className="a11y-fd-title">{t("What we found")}</strong> <CodeText text={measured} />
-            </p>
-          )}
-          {rep.ageNote && (
-            <p className="a11y-finding-measured">
-              <strong>{t("Past sixty")}</strong> <CodeText text={rep.ageNote} />
-            </p>
-          )}
-          {plain && (
-            <p className="a11y-finding-impact">
-              <strong className="a11y-fd-title">{t("Why this matters")}</strong> <CodeText text={plain.impact} />
-            </p>
-          )}
-          {/* Curated, hand-verified research context: never generated per
-              scan, which is how invented statistics happen. */}
-          {plain?.research && (
-            <p className="a11y-finding-research">
-              <strong>{t("What the research shows")}</strong> <CodeText text={plain.research} />
-            </p>
-          )}
-          {!rep.elementScreenshot && pictureNoteText(rep) && (
-            <p className="a11y-picture-note">{pictureNoteText(rep)}</p>
-          )}
-        </>
-      ),
-    },
-    {
-      key: "todo",
-      label: t("What to do"),
-      body: (
-        <>
-          {Array.isArray(whatToDo) ? (
-            <div className="a11y-finding-steps">
-              <p>
-                <strong className="a11y-fd-title">{t("What to do")}</strong>
-              </p>
-              <ul>
-                {whatToDo.map((step) => (
-                  <li key={step}>
-                    <CodeText text={step} />
-                  </li>
-                ))}
-              </ul>
-            </div>
-          ) : (
-            <p className="a11y-finding-todo">
-              <strong className="a11y-fd-title">{t("What to do")}</strong> <CodeText text={whatToDo} />
-            </p>
-          )}
-          {cluster && (
-            <p className="a11y-fix-once">
-              <strong>{tf("Fix once, fixes {count}.", { count: cluster.count })}</strong>{" "}
-              <Sentence
-                text={t(
-                  cluster.share < 1
-                    ? "These all come from the same component, {component} (most of them)."
-                    : "These all come from the same component, {component}."
-                )}
-                parts={{ component: <code>{describeComponent(cluster.signature)}</code> }}
-              />
-            </p>
-          )}
-          {/* The WCAG and Level columns fold in here at phone width, where the
-              table drops them, so a phone reader keeps the criterion and the
-              sentence saying whether the law requires it. */}
-          {!asNotes && (criterion || rep.wcagLevel) && (
-            <p className="a11y-finding-level-fold">
-              {criterion && (
-                <>
-                  <strong>{t("WCAG:")}</strong> {criterion}
-                  {rep.wcagLevel ? " · " : ""}
-                </>
-              )}
-              {rep.wcagLevel && levelFraming(rep.wcagLevel)}
-            </p>
-          )}
-          {rep.helpUrl && (
-            <p className="a11y-fd-learn">
-              <a className="a11y-learn-more" href={rep.helpUrl} target="_blank" rel="noopener noreferrer">
-                {t("Learn more about this issue")} <span aria-hidden="true">↗</span>
-              </a>
-            </p>
-          )}
-        </>
-      ),
-    },
-    {
-      key: "tech",
-      label: t("The technical version"),
-      body: (
-        <>
-          {/* Dropped when not one row would name anything: a list whose only
-              entry is the word "Heading" says less than the sentence above. */}
-          {locatesSomething && (
-            <div className="a11y-affected">
-              <p className="a11y-affected-label">
-                <strong>{count > 1 ? t("Affected elements") : t("Affected element")}</strong>
-              </p>
-              <ul className="a11y-occurrence-list">
-                {visibleEntries.map((e) => (
-                  <Occurrence key={e.rep.id} finding={e.rep} label={e.label} repeatCount={e.count} />
-                ))}
-              </ul>
-              {/* A toggle, not a self-removing button: a control that vanishes
-                  under the focus that pressed it strands the user. */}
-              {summarize && (
-                <button
-                  type="button"
-                  className="a11y-show-all"
-                  aria-expanded={showAll}
-                  onClick={() => setShowAll((v) => !v)}
-                >
-                  {showAll ? t("Show fewer") : tf("Show all {count} kinds of element", { count: entries.length })}
-                </button>
-              )}
-            </div>
-          )}
-          {/* The hand-off detail: criterion by number, name and level from the
-              conformance table, the EN 301 549 clause derived mechanically and
-              never claimed for AAA or N/A, the selector and the markup. */}
-          {professional ? (
-            <div className="a11y-pro-block">
-              {(() => {
-                const num = rep.wcagCriterion?.match(/^(\d\.\d+\.\d+)/)?.[1];
-                const known = num ? criterionNames[num] : undefined;
-                const en = enClauseFor(rep.wcagCriterion, rep.wcagLevel);
-                return (
-                  <>
-                    {num && (
-                      <p className="a11y-pro-line">
-                        <strong>{t("WCAG:")}</strong> {num}
-                        {known ? ` ${known.name} (${known.level})` : rep.wcagLevel ? ` (${rep.wcagLevel})` : ""}
-                        {en ? <span className="a11y-pro-en"> · {en}</span> : null}
-                      </p>
-                    )}
-                    <p className="a11y-pro-line">
-                      <strong>{t("Selector:")}</strong> <code>{rep.selector}</code>
-                    </p>
-                    {rep.elementSnippet && (
-                      /* Scrolls horizontally, so it must be reachable by
-                         keyboard. role="group", not "region": one landmark per
-                         card would fill the landmark list. */
-                      <pre
-                        className="a11y-pro-snippet"
-                        tabIndex={0}
-                        role="group"
-                        aria-label={t("Element markup")}
-                      >
-                        <code>{rep.elementSnippet}</code>
-                      </pre>
-                    )}
-                    {rep.helpUrl && (
-                      <p className="a11y-pro-line">
-                        <a className="a11y-learn-more" href={rep.helpUrl} target="_blank" rel="noopener noreferrer">
-                          {t("Fix technique")} <span aria-hidden="true">↗</span>
-                        </a>
-                      </p>
-                    )}
-                  </>
-                );
-              })()}
-            </div>
-          ) : (
-            <div className="a11y-tech-details">
-              {!measured && rep.description && (
-                <p>
-                  <strong>{t("What we found:")}</strong> <CodeText text={rep.description} />
-                </p>
-              )}
-              {rep.wcagCriterion && rep.wcagCriterion !== "N/A" && (
-                <p>
-                  <strong>{t("WCAG criterion:")}</strong> {rep.wcagCriterion}
-                </p>
-              )}
-              {rep.ruleId && (
-                <p>
-                  <strong>{t("Rule:")}</strong> <code>{rep.ruleId}</code>
-                </p>
-              )}
-              <p>
-                <strong>{count > 1 ? t("Affected elements:") : t("Affected element:")}</strong>
-              </p>
-              <ul className="a11y-tech-elements">
-                {devElementRefs(findings).map((ref, i) => (
-                  <li key={i}>
-                    <code>{ref}</code>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          )}
-        </>
-      ),
-    },
-  ];
-  const tabId = (i: number) => `${baseId}-tab-${i}`;
-  const panelId = (i: number) => `${baseId}-panel-${i}`;
-  const onTabKey = (e: React.KeyboardEvent<HTMLButtonElement>) => {
-    const last = panels.length - 1;
-    const next =
-      e.key === "ArrowRight" ? (tab === last ? 0 : tab + 1)
-      : e.key === "ArrowLeft" ? (tab === 0 ? last : tab - 1)
-      : e.key === "Home" ? 0
-      : e.key === "End" ? last
-      : null;
-    if (next === null) return;
-    e.preventDefault();
-    setTab(next);
-    const root = e.currentTarget.getRootNode() as Document | ShadowRoot;
-    (root.getElementById?.(tabId(next)) as HTMLElement | null)?.focus();
-  };
-
   return (
+    /* A real element, not a fragment. The two-column layout has to live on
+       a box inside the expanded cell: setting display:grid on the <td>
+       itself takes the cell out of table formatting, its colspan stops
+       applying, and the cell collapsed to 33px with both columns inside
+       it. Measured, in all three engines. */
     <div className="a11y-fd">
-      <div className="a11y-fd-tabs" role="tablist" aria-label={title}>
-        {panels.map((panel, i) => (
-          <button
-            key={panel.key}
-            type="button"
-            role="tab"
-            id={tabId(i)}
-            aria-selected={tab === i}
-            aria-controls={panelId(i)}
-            tabIndex={tab === i ? 0 : -1}
-            className={`a11y-fd-tab a11y-fd-tab-${panel.key}`}
-            onClick={() => setTab(i)}
-            onKeyDown={onTabKey}
-          >
-            {panel.label}
-          </button>
-        ))}
+      {/* Two real column boxes, the kit's own composition. The children
+          used to sit flat in the grid with grid-column rules assigning
+          each to a side — which row-locked them: a grid row is as tall as
+          its tallest cell across BOTH columns, so a 65px hint beside a
+          262px steps list carried 196px of dead space, and the affected
+          list opposite a short research note carried 403px. Measured
+          grid-template-rows: 261px 129px 129px 557px. Columns that flow
+          independently cannot do that. */}
+      <div className="a11y-fd-col">
+      {/* What was actually measured on this page. It used to sit inside
+          the technical drawer, two clicks from view, which left the
+          summary above saying a ring was "too pale" and never how pale or
+          on how many controls — the numbers are the most useful sentence
+          in the finding. Skipped when there is no plain-language title,
+          because then the description is already the heading. */}
+      {/* Three hints, three paragraphs. They used to be concatenated into one
+          with spaces, which produced a sixty-seven word block under a label
+          that promised to answer one question and then answered three. Each
+          of these answers something different — who does the work, whether
+          you can check it without them, and where the finding came from — so
+          each gets its own line and its own label. */}
+      <p className="a11y-method-hint">
+        <strong>{t("Who fixes this")}</strong> {fix.hint}
+      </p>
+      {keyboardCheck && (
+        <p className="a11y-method-hint">
+          <strong>{t("Check it yourself")}</strong> {keyboardHint()}
+        </p>
+      )}
+      {fromAi && (
+        <p className="a11y-method-hint">
+          <strong>{t("Where this came from")}</strong> {aiHint()}
+        </p>
+      )}
+      {!rep.elementScreenshot && pictureNoteText(rep) && (
+        <p className="a11y-picture-note">{pictureNoteText(rep)}</p>
+      )}
+      {/* The rule's own account of what was found where it has one, and
+          the finding's description otherwise. axe supplies a requirement
+          rather than a finding — "Links must have discernible text" — and
+          that read as a category error under this heading.
+
+          This used to require a plain-language entry, on the reasoning
+          that without one the description was already serving as the
+          heading. True for axe findings, false for every AI one: those
+          write a short headline of their own and put the substance in the
+          description. So the substance went to the technical drawer, two
+          clicks down, and where a finding had neither rule id nor
+          criterion the drawer never rendered and the description was not
+          shown anywhere at all. Measured across the European sweep: 32 of
+          80 AI findings arrived as a headline and three badges. */}
+      {measured && (
+        <p className="a11y-finding-measured">
+          <strong className="a11y-fd-title">{t("What we found")}</strong> <CodeText text={measured} />
+        </p>
+      )}
+      {/* Its own line, not folded into the text above: rules with a
+          plain-language account replace the description entirely, which
+          made the first of these notes invisible on the very rule it
+          attached to. */}
+      {rep.ageNote && (
+        <p className="a11y-finding-measured">
+          <strong>{t("Past sixty")}</strong> <CodeText text={rep.ageNote} />
+        </p>
+      )}
+      {/* Shared explanation — shown once for the whole group */}
+      {plain && (
+        <p className="a11y-finding-impact">
+          <strong className="a11y-fd-title">{t("Why this matters")}</strong> <CodeText text={plain.impact} />
+        </p>
+      )}
+      {/* Curated, hand-verified research context — never generated per
+          scan, which is how invented statistics happen. */}
+      {plain?.research && (
+        <p className="a11y-finding-research">
+          <strong>{t("What the research shows")}</strong> <CodeText text={plain.research} />
+        </p>
+      )}
       </div>
-      {panels.map((panel, i) => (
-        <div
-          key={panel.key}
-          role="tabpanel"
-          id={panelId(i)}
-          aria-labelledby={tabId(i)}
-          className="a11y-fd-panel"
-          hidden={tab !== i}
-          tabIndex={0}
-        >
-          {panel.body}
+
+      <div className="a11y-fd-col">
+      {/* Steps get a list; a single action stays a sentence. Both carry the
+          same "What to do" label, so the reader is never hunting for where
+          the advice starts. */}
+      {Array.isArray(whatToDo) ? (
+        <div className="a11y-finding-steps">
+          <p>
+            <strong className="a11y-fd-title">{t("What to do")}</strong>
+          </p>
+          <ul>
+            {whatToDo.map((step) => (
+              <li key={step}>
+                <CodeText text={step} />
+              </li>
+            ))}
+          </ul>
         </div>
-      ))}
-      {/* The owner's mark, on every path a group's details render: the card
-          and the professional table's expand row alike. */}
+      ) : (
+        <p className="a11y-finding-todo">
+          <strong className="a11y-fd-title">{t("What to do")}</strong> <CodeText text={whatToDo} />
+        </p>
+      )}
+      {/* The WCAG and Level columns fold in here at phone width, the same
+          way Severity folds into the Issue cell. The CSS that drops those
+          columns said they stayed reachable in this panel; they didn't —
+          nothing here carried them, so a phone reader lost the criterion
+          and, more to the point, the sentence saying the item is required
+          by law. Hidden above that width, where both columns show. */}
+      {!asNotes && (criterion || rep.wcagLevel) && (
+        <p className="a11y-finding-level-fold">
+          {criterion && (
+            <>
+              <strong>{t("WCAG:")}</strong> {criterion}
+              {rep.wcagLevel ? " · " : ""}
+            </>
+          )}
+          {rep.wcagLevel && levelFraming(rep.wcagLevel)}
+        </p>
+      )}
+      {rep.helpUrl && (
+        <p className="a11y-fd-learn">
+          <a className="a11y-learn-more" href={rep.helpUrl} target="_blank" rel="noopener noreferrer">
+            {t("Learn more about this issue")} <span aria-hidden="true">↗</span>
+          </a>
+        </p>
+      )}
+
+      {locatesSomething && (
+      <div className="a11y-affected">
+        <p className="a11y-affected-label">
+          <strong>{count > 1 ? t("Affected elements") : t("Affected element")}</strong>
+        </p>
+        <ul className="a11y-occurrence-list">
+          {visibleEntries.map((e) => (
+            <Occurrence key={e.rep.id} finding={e.rep} label={e.label} repeatCount={e.count} />
+          ))}
+        </ul>
+        {/* A toggle, not a self-removing button: a control that vanishes
+            under the keyboard focus that just pressed it strands the
+            user. */}
+        {summarize && (
+          <button
+            type="button"
+            className="a11y-show-all"
+            aria-expanded={showAll}
+            onClick={() => setShowAll((v) => !v)}
+          >
+            {showAll ? t("Show fewer") : tf("Show all {count} kinds of element", { count: entries.length })}
+          </button>
+        )}
+      </div>
+      )}
+      </div>
+
+      {cluster && (
+        <p className="a11y-fix-once">
+          <strong>{tf("Fix once, fixes {count}.", { count: cluster.count })}</strong>{" "}
+          <Sentence
+            text={t(
+              cluster.share < 1
+                ? "These all come from the same component, {component} (most of them)."
+                : "These all come from the same component, {component}."
+            )}
+            parts={{ component: <code>{describeComponent(cluster.signature)}</code> }}
+          />
+        </p>
+      )}
+
+      {/* Which specific elements are affected.
+          Dropped entirely when not one row would name anything: a list
+          whose only entry is the word "Heading" tells the reader less
+          than the sentence above it already did, while looking like it
+          is about to be useful. The count is on the header badge and the
+          selector is in the technical drawer, so nothing is lost. */}
+      {/* Professional mode: the hand-off detail open on the card, not
+          two clicks down. Criterion cited by number, name and level from
+          the same table the conformance section renders; the EN 301 549
+          clause derived mechanically (chapter 9 maps one-to-one onto
+          WCAG 2.1 A/AA) and never claimed for AAA or N/A. */}
+      {professional && (
+        <div className="a11y-pro-block">
+          {(() => {
+            const num = rep.wcagCriterion?.match(/^(\d\.\d+\.\d+)/)?.[1];
+            const known = num ? criterionNames[num] : undefined;
+            const en = enClauseFor(rep.wcagCriterion, rep.wcagLevel);
+            return (
+              <>
+                {num && (
+                  <p className="a11y-pro-line">
+                    <strong>{t("WCAG:")}</strong> {num}
+                    {known ? ` ${known.name} (${known.level})` : rep.wcagLevel ? ` (${rep.wcagLevel})` : ""}
+                    {en ? <span className="a11y-pro-en"> · {en}</span> : null}
+                  </p>
+                )}
+                <p className="a11y-pro-line">
+                  <strong>{t("Selector:")}</strong> <code>{rep.selector}</code>
+                </p>
+                {rep.elementSnippet && (
+                  /* Scrolls horizontally, so it must be reachable by
+                     keyboard — our own scan flags scrollable regions a
+                     Tab press cannot enter. role="group", not "region":
+                     a region is a landmark, and one per card would fill
+                     the landmark list with identical entries. */
+                  <pre
+                    className="a11y-pro-snippet"
+                    tabIndex={0}
+                    role="group"
+                    aria-label={t("Element markup")}
+                  >
+                    <code>{rep.elementSnippet}</code>
+                  </pre>
+                )}
+                {rep.helpUrl && (
+                  <p className="a11y-pro-line">
+                    <a className="a11y-learn-more" href={rep.helpUrl} target="_blank" rel="noopener noreferrer">
+                      {t("Fix technique")} <span aria-hidden="true">↗</span>
+                    </a>
+                  </p>
+                )}
+              </>
+            );
+          })()}
+        </div>
+      )}
+
+      {/* Developer hand-off — the rule reference, shown once. Redundant
+          in professional mode, where the block above is already open. */}
+      {!professional && (rep.ruleId || rep.wcagCriterion) && (
+        <details className="a11y-tech-details">
+          <summary>{t("The technical version")}</summary>
+          {/* Only when it was not already shown in the open part of the
+              card above. It nearly always is now. */}
+          {!measured && rep.description && (
+            <p>
+              <strong>{t("What we found:")}</strong> <CodeText text={rep.description} />
+            </p>
+          )}
+          {rep.wcagCriterion && rep.wcagCriterion !== "N/A" && (
+            <p>
+              <strong>{t("WCAG criterion:")}</strong> {rep.wcagCriterion}
+            </p>
+          )}
+          {rep.ruleId && (
+            <p>
+              <strong>{t("Rule:")}</strong> <code>{rep.ruleId}</code>
+            </p>
+          )}
+          <p>
+            <strong>{count > 1 ? t("Affected elements:") : t("Affected element:")}</strong>
+          </p>
+          <ul className="a11y-tech-elements">
+            {devElementRefs(findings).map((ref, i) => (
+              <li key={i}>
+                <code>{ref}</code>
+              </li>
+            ))}
+          </ul>
+        </details>
+      )}
+      {/* The owner's mark, on every path a group's details render —
+          the card and the professional table's expand row alike. */}
       {!asNotes && <TriageControl finding={rep} />}
     </div>
   );

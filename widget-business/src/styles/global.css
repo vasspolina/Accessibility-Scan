@@ -539,8 +539,6 @@
 }
 
 /* Name and value pairs: small label, the value under it, the gloss under that. */
-.a11y-widget-biz .a11y-spec-grid { margin: 0 0 1.2em; }
-.a11y-widget-biz .a11y-spec-card { margin: 0 0 0.6em; }
 .a11y-widget-biz .a11y-spec-label { font-size: 15px; letter-spacing: 0.01em; font-weight: 500; }
 .a11y-widget-biz .a11y-spec-value { margin: 0; }
 .a11y-widget-biz .a11y-spec-gloss { display: block; font-size: 15px; letter-spacing: 0.01em; }
@@ -567,8 +565,6 @@
 .a11y-widget-biz .a11y-sum-cell-count { white-space: nowrap; font-weight: 500; }
 
 /* Severity rows of the professional panel: the word, then its count. */
-.a11y-widget-biz .a11y-pro-rows { list-style: none; padding: 0; margin: 0 0 1.2em; }
-.a11y-widget-biz .a11y-pro-row { display: flex; justify-content: space-between; gap: 1em; align-items: baseline; }
 
 /* The legal checklist's questions and the result rows. */
 .a11y-widget-biz .a11y-legal-q { display: grid; grid-template-columns: 1.6em minmax(0, 1fr); align-items: baseline; margin: 0 0 0.4em; }
@@ -633,8 +629,6 @@
 /* WCAG 2.2 panel head: the standard, its date, what would fail today. */
 .a11y-widget-biz .a11y-next-toggle { display: flex; flex-wrap: wrap; align-items: baseline; gap: 0.3em 0.8em; text-align: start; }
 .a11y-widget-biz .a11y-next-count { font-size: 15px; letter-spacing: 0.01em; }
-.a11y-widget-biz .a11y-next-list { list-style: none; padding: 0; margin: 0 0 1.2em; }
-.a11y-widget-biz .a11y-next-list > li { margin: 0 0 1em; }
 .a11y-widget-biz .a11y-next-main { display: block; }
 .a11y-widget-biz :is(.a11y-next-title, .a11y-next-meta, .a11y-next-status) { display: block; }
 
@@ -777,7 +771,7 @@
    01, 04 and 07 span five columns at 48px; 02 + 03 and 05 + 06 span three
    each at 32px. Tiles keep Displaay's proportions (636 / 1131 for the
    wide one, 420 / 673 for the pair) as a minimum, and grow when the words
-   need more. Colour is the user's tile exception (see .a11y-fd-panel):
+   need more. Colour is the user's tile exception (see SPECIMEN TILES):
    #f0efe8, fixed in both themes, #000 on it at 18.4:1. Under 640px of its
    own width every point takes the full row at 32px and 27px, with no
    fixed proportion. */
@@ -871,107 +865,86 @@
 .a11y-widget-biz .a11y-occurrence { margin: 0 0 0.6em; }
 .a11y-widget-biz .a11y-occurrence-count { margin-inline-start: 0.4em; font-size: 15px; letter-spacing: 0.01em; font-weight: 500; }
 
-/* ═══ THE EXPANDED FINDING: RECKLESS'S SPECIMEN TILES ═══════════════════════
-   User's instruction, 4 Nov 2026, from displaay.net/typeface/reckless,
-   replacing the pricing block of the same day (three coloured tabs over a
-   brown panel). Two things from that page:
-   - the switch is its nav row: plain pills with the 1px ink edge, set left,
-     the one showing solid ink (Reckless's "Typefaces"). They are the app's
-     own buttons, so hover is the marker yellow like every other control;
-   - each part of the panel is a specimen tile: a pale ground, square
-     corners, a small sentence-case label in the top corner ("Ligatures",
-     "Fractions") and the words set big under it in a serif, the tiles side by
-     side on an auto-fit grid with a narrow gutter. Reckless's switches in the
-     tile corners are left out: there is nothing here for them to switch, and
-     a control that does nothing is a lie to a keyboard user.
-   Colour is the user's exception to black and white, on the highlight terms:
-   the tile ground is Displaay's #f0efe8, fixed in both themes like the
-   highlights, with #000 text on it (18.4:1). Serrif Light, the Displaay
-   serif already served, stands in for Reckless (a trial file, one cut). */
-/* Its own size container: the block sits in a table row, a card or the notes
-   panel, so it folds on its own width, not the window's. */
-.a11y-widget-biz .a11y-fd { margin-top: 0.6em; container: a11y-fd / inline-size; }
-.a11y-widget-biz .a11y-fd-tabs { display: flex; flex-wrap: wrap; gap: 6px; margin: 0 0 10px; }
-.a11y-widget-biz .a11y-fd .a11y-fd-tab { margin: 0; padding: 0.35em 0.9em; font-size: 15px; font-weight: 400; line-height: 1.2; }
-.a11y-widget-biz .a11y-fd .a11y-fd-tab[aria-selected="true"],
-.a11y-widget-biz .a11y-fd .a11y-fd-tab[aria-selected="true"]:enabled:hover { background: var(--ink); border-color: var(--ink); color: var(--paper); }
-
-.a11y-widget-biz .a11y-fd-panel {
-  display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr)); gap: 10px; align-items: stretch;
-  margin: 0 0 1.2em;
+/* ═══ THE EXPANDED FINDING, SET LIKE DISPLAAY'S "INFO" BLOCK ════════════════
+   User's instruction, 4 Nov 2026, from the Info section of
+   displaay.net/typeface/dazzed: a heavy ink rule across the top, one column
+   at the full width (two half-width columns until the user's instruction of
+   the same day). Restored at the user's word later that day, over the
+   pricing block and Reckless's specimen tiles that had replaced it; the
+   tiles now set the report's other groups of content (SPECIMEN TILES below).
+   each part under a small capital label with a 1px rule beneath it, the prose
+   in a book serif, and the key/value lines (WCAG, selector, rule) set as a
+   two-column list in the sans between two 1px rules.
+   Saans and Serrif are trial files with a Light cut only, so both run at 300
+   here, the small labels too: this block is the user's exception to "Light
+   for display sizes only". No weight is synthesised (font-synthesis: none).
+   Every selector carries .a11y-fd, so it outranks the generic expanded-finding
+   rules above by one class and never ties with them. */
+.a11y-widget-biz .a11y-fd {
+  display: grid; grid-template-columns: minmax(0, 1fr); gap: 0;
+  margin-top: 0.6em; padding-top: 1.2em; border-top: 4px solid var(--ink);
+  /* Its own size container: the shell container is gone, and the block sits
+     in a table row, a card or the notes panel, so it folds on its own width. */
+  container: a11y-fd / inline-size;
 }
-.a11y-widget-biz .a11y-fd-panel[hidden] { display: none; }
-/* Every part is a tile. */
-.a11y-widget-biz .a11y-fd-panel > * {
-  position: relative; box-sizing: border-box; min-width: 0; margin: 0; padding: 16px 16px 22px;
-  background: #f0efe8; color: #000;
-  font-family: "Jokker", sans-serif; font-size: 18px; line-height: 1.35; letter-spacing: 0.01em;
+.a11y-widget-biz .a11y-fd > :not(.a11y-fd-col) { grid-column: 1 / -1; }
+.a11y-widget-biz .a11y-fd > .a11y-fd-col { min-width: 0; }
+.a11y-widget-biz .a11y-fd .a11y-method-hint,
+.a11y-widget-biz .a11y-fd .a11y-finding-measured,
+.a11y-widget-biz .a11y-fd .a11y-finding-impact,
+.a11y-widget-biz .a11y-fd .a11y-finding-research,
+.a11y-widget-biz .a11y-fd .a11y-finding-todo,
+.a11y-widget-biz .a11y-fd .a11y-finding-steps,
+.a11y-widget-biz .a11y-fd .a11y-fix-once,
+.a11y-widget-biz .a11y-fd .a11y-picture-note {
+  font-family: "Serrif", Georgia, serif; font-weight: 300; font-size: 27px; line-height: 1.2; letter-spacing: 0;
   overflow-wrap: break-word; hyphens: auto;
 }
-/* A labelled part is a specimen: the label pinned top-left, the words big
-   under it, with the room of a Reckless tile above them. */
-.a11y-widget-biz .a11y-fd-panel > :is(p:has(> strong:first-child):not(.a11y-finding-level-fold), .a11y-finding-steps, .a11y-affected) {
-  padding-top: 72px;
-  font-family: "Serrif", "Jokker", serif; font-weight: 300; font-size: 27px; line-height: 1.2; letter-spacing: 0;
+.a11y-widget-biz .a11y-fd .a11y-method-hint > strong:first-child,
+.a11y-widget-biz .a11y-fd .a11y-finding-measured > strong:first-child,
+.a11y-widget-biz .a11y-fd .a11y-finding-impact > strong:first-child,
+.a11y-widget-biz .a11y-fd .a11y-finding-research > strong:first-child,
+.a11y-widget-biz .a11y-fd .a11y-finding-todo > strong:first-child,
+.a11y-widget-biz .a11y-fd .a11y-finding-steps > p > strong,
+.a11y-widget-biz .a11y-fd .a11y-affected-label > strong {
+  display: block; margin: 0 0 0.5em; padding-bottom: 0.6em; border-bottom: 1px solid var(--ink);
+  font-family: "Saans", "Jokker", sans-serif; font-weight: 300; font-size: 15px; line-height: 1.2;
+  letter-spacing: 0.04em; text-transform: uppercase;
 }
-/* No fixed tile height: the grid already makes tiles in one row as tall as
-   the tallest, and a 220px floor under one short sentence was a slab of
-   empty ground. */
-/* "What to do" is one instruction: one tile across the full width. Its label
-   repeated the tab directly above it, so on screen the tab names it; print
-   shows every panel without tabs, so the label comes back there. The
-   `.a11y-fd … [role]` prefix (0,5,x) is what out-ranks the specimen rule
-   above (0,4,2); without it none of this applies. */
-.a11y-widget-biz .a11y-fd .a11y-fd-panel[role] > :is(.a11y-finding-todo, .a11y-finding-steps) { grid-column: 1 / -1; }
-@media screen {
-  .a11y-widget-biz .a11y-fd .a11y-fd-panel[role] > .a11y-finding-todo > strong:first-child,
-  .a11y-widget-biz .a11y-fd .a11y-fd-panel[role] > .a11y-finding-steps > p:first-child { display: none; }
-  .a11y-widget-biz .a11y-fd .a11y-fd-panel[role] > :is(.a11y-finding-todo, .a11y-finding-steps) { padding: 20px 16px 24px; }
+.a11y-widget-biz .a11y-fd .a11y-fix-once > strong { font-weight: 300; }
+/* The key/value lines: the key hangs in a 9em column, the value runs beside
+   it and wraps under itself, not under the key. */
+.a11y-widget-biz .a11y-fd .a11y-pro-block,
+.a11y-widget-biz .a11y-fd .a11y-tech-details {
+  margin: 0 0 1.2em; padding: 0.5em 0; border-block: 1px solid var(--ink);
+  font-family: "Saans", "Jokker", sans-serif; font-weight: 300; font-size: 18px; line-height: 1.3; letter-spacing: 0.01em;
 }
-/* The link is not a part, so it gets no tile: a line under the tiles, on
-   the page's own ground, set like the rest of the small print. */
-.a11y-widget-biz .a11y-fd-panel > .a11y-fd-learn {
-  grid-column: 1 / -1; padding: 2px 0 0; background: none; color: inherit;
-  font-size: 18px; line-height: 1.35;
+.a11y-widget-biz .a11y-fd .a11y-pro-line,
+.a11y-widget-biz .a11y-fd .a11y-tech-details > p,
+.a11y-widget-biz .a11y-fd .a11y-finding-level-fold {
+  margin: 0; padding-inline-start: 9em; text-indent: -9em; overflow-wrap: anywhere;
 }
-.a11y-widget-biz .a11y-fd-panel :is(a, code) { color: inherit; }
-.a11y-widget-biz .a11y-fd-panel :focus-visible { outline-color: #000; box-shadow: 0 0 0 2px #f0efe8; }
-.a11y-widget-biz .a11y-fd-panel strong { font-weight: 400; }
-.a11y-widget-biz .a11y-fd-panel > p:not(.a11y-finding-level-fold) > strong:first-child,
-.a11y-widget-biz .a11y-fd-panel .a11y-finding-steps > p > strong,
-.a11y-widget-biz .a11y-fd-panel .a11y-affected-label > strong {
-  display: block; position: absolute; inset: 14px 16px auto 16px; margin: 0;
-  font-family: "Jokker", sans-serif; font-weight: 400; font-size: 15px; line-height: 1.2; letter-spacing: 0.01em;
+.a11y-widget-biz .a11y-fd .a11y-pro-line > strong:first-child,
+.a11y-widget-biz .a11y-fd .a11y-tech-details > p > strong:first-child,
+.a11y-widget-biz .a11y-fd .a11y-finding-level-fold > strong:first-child {
+  display: inline-block; width: 9em; text-indent: 0; font-weight: 300; vertical-align: top;
 }
-.a11y-widget-biz .a11y-fd-panel .a11y-finding-steps > p,
-.a11y-widget-biz .a11y-fd-panel .a11y-affected-label { margin: 0; }
-.a11y-widget-biz .a11y-fd-panel .a11y-finding-steps ul { margin: 0; padding-inline-start: 1em; }
-.a11y-widget-biz .a11y-fd-panel .a11y-occurrence-list { margin: 0; }
-.a11y-widget-biz .a11y-fd-panel :is(button, .a11y-btn):enabled:not(:hover) { border-color: #000; background: #f0efe8; color: #000; }
-.a11y-widget-biz .a11y-fd-panel .a11y-show-all { margin-top: 0.6em; }
-/* The key/value lines: the key hangs in a 9em column, the value beside it. */
-.a11y-widget-biz .a11y-fd-panel .a11y-pro-line,
-.a11y-widget-biz .a11y-fd-panel .a11y-tech-details > p { margin: 0; padding-inline-start: 9em; text-indent: -9em; overflow-wrap: anywhere; }
-.a11y-widget-biz .a11y-fd-panel > .a11y-finding-level-fold { padding-inline-start: calc(16px + 9em); text-indent: -9em; overflow-wrap: anywhere; }
-.a11y-widget-biz .a11y-fd-panel .a11y-pro-line > strong:first-child,
-.a11y-widget-biz .a11y-fd-panel .a11y-tech-details > p > strong:first-child,
-.a11y-widget-biz .a11y-fd-panel .a11y-finding-level-fold > strong:first-child {
-  display: inline-block; width: 9em; margin: 0; text-indent: 0; vertical-align: top;
-}
-.a11y-widget-biz .a11y-fd-panel .a11y-pro-line:not(:has(> strong:first-child)) { text-indent: 0; }
-.a11y-widget-biz .a11y-fd-panel .a11y-pro-block > .a11y-pro-snippet { margin: 0.3em 0 0.3em 9em; }
-.a11y-widget-biz .a11y-fd-panel .a11y-tech-elements { margin: 0; padding-inline-start: 9em; list-style: none; }
+.a11y-widget-biz .a11y-fd .a11y-pro-line:not(:has(> strong:first-child)) { text-indent: 0; }
+.a11y-widget-biz .a11y-fd .a11y-pro-block > .a11y-pro-snippet { margin: 0.3em 0 0.3em 9em; }
+.a11y-widget-biz .a11y-fd .a11y-finding-level-fold { font-family: "Saans", "Jokker", sans-serif; font-weight: 300; font-size: 18px; line-height: 1.3; margin-bottom: 1.2em; }
+.a11y-widget-biz .a11y-fd .a11y-fd-learn,
+.a11y-widget-biz .a11y-fd .a11y-occurrence-list { font-family: "Saans", "Jokker", sans-serif; font-weight: 300; font-size: 18px; letter-spacing: 0.01em; }
+.a11y-widget-biz .a11y-fd .a11y-tech-details > summary { font-size: 15px; text-transform: uppercase; letter-spacing: 0.04em; cursor: pointer; }
+.a11y-widget-biz .a11y-fd .a11y-tech-elements { margin: 0; padding-inline-start: 9em; list-style: none; }
 @container a11y-fd (max-width: 640px) {
-  .a11y-widget-biz .a11y-fd-panel > :is(p:has(> strong:first-child):not(.a11y-finding-level-fold), .a11y-finding-steps, .a11y-affected) { padding-top: 52px; }
-  .a11y-widget-biz .a11y-fd .a11y-fd-panel[role] > :is(.a11y-finding-todo, .a11y-finding-steps) { padding-top: 20px; }
-  .a11y-widget-biz .a11y-fd-panel .a11y-pro-line,
-  .a11y-widget-biz .a11y-fd-panel .a11y-tech-details > p { padding-inline-start: 0; text-indent: 0; }
-  .a11y-widget-biz .a11y-fd-panel > .a11y-finding-level-fold { padding-inline-start: 16px; text-indent: 0; }
-  .a11y-widget-biz .a11y-fd-panel .a11y-pro-line > strong:first-child,
-  .a11y-widget-biz .a11y-fd-panel .a11y-tech-details > p > strong:first-child,
-  .a11y-widget-biz .a11y-fd-panel .a11y-finding-level-fold > strong:first-child { display: block; width: auto; }
-  .a11y-widget-biz .a11y-fd-panel .a11y-tech-elements { padding-inline-start: 0; }
-  .a11y-widget-biz .a11y-fd-panel .a11y-pro-block > .a11y-pro-snippet { margin-inline-start: 0; }
+  .a11y-widget-biz .a11y-fd .a11y-pro-line,
+  .a11y-widget-biz .a11y-fd .a11y-tech-details > p,
+  .a11y-widget-biz .a11y-fd .a11y-finding-level-fold { padding-inline-start: 0; text-indent: 0; }
+  .a11y-widget-biz .a11y-fd .a11y-pro-line > strong:first-child,
+  .a11y-widget-biz .a11y-fd .a11y-tech-details > p > strong:first-child,
+  .a11y-widget-biz .a11y-fd .a11y-finding-level-fold > strong:first-child { display: block; width: auto; }
+  .a11y-widget-biz .a11y-fd .a11y-tech-elements { padding-inline-start: 0; }
+  .a11y-widget-biz .a11y-fd .a11y-pro-block > .a11y-pro-snippet { margin-inline-start: 0; }
 }
 
 /* The professional score: the number is the poster word, the rest small print under it. */
@@ -982,6 +955,134 @@
 .a11y-widget-biz .a11y-pro-count { font-size: 18px; letter-spacing: 0.01em; }
 .a11y-widget-biz .a11y-pro-chips { display: flex; flex-wrap: wrap; gap: 0.3em 0.6em; margin: 0 0 0.6em; font-size: 18px; letter-spacing: 0.01em; }
 .a11y-widget-biz .a11y-pro-jump { display: inline-flex; align-items: baseline; gap: 0.4em; }
+
+/* ═══ SPECIMEN TILES FOR THE REPORT'S GROUPS (user's instruction, 4 Nov 2026) ═
+   The Reckless tiles (displaay.net/typeface/reckless) left the expanded
+   finding, which went back to its Info block, and now set every group of
+   parallel items in the report: the two scan-summary panels, the WCAG 2.2
+   items, the design notes, the statement and buyer-report facts, the report
+   actions, the professional tallies and the manual checks. Not tiled, on
+   purpose: tables (the findings schedule, the undecided ledger, the legal
+   results, the conformance list), sequences (the screen-reader preview),
+   the legal card (its yellow carries the legal status) and the score-counts
+   sheet, which has its own tiles as the Displaay homepage release grid.
+   Each tile is Displaay's #f0efe8 ground, square, on an auto-fit grid with
+   a 10px gutter; a 15px Jokker label at the top-left, then the words in
+   Serrif Light 27px/1.2 under the room of a Reckless tile. The ground is
+   fixed in both themes, like the highlights, so the tile redefines --ink and
+   --paper for everything inside it: borders, buttons, inputs and the focus
+   rings follow without a rule each. #000 on #f0efe8 is 18.4:1. */
+.a11y-widget-biz .a11y-next-list,
+.a11y-widget-biz .a11y-dn-list,
+.a11y-widget-biz .a11y-spec-grid,
+.a11y-widget-biz .a11y-ra-row,
+.a11y-widget-biz .a11y-manual-list {
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr));
+  gap: 10px; align-items: stretch; margin: 0 0 1.2em; padding: 0; list-style: none;
+}
+/* A tally is one word over one figure, so its tiles can be narrower. */
+.a11y-widget-biz .a11y-pro-rows {
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 160px), 1fr));
+  gap: 10px; align-items: stretch; margin: 0 0 1.2em; padding: 0; list-style: none;
+}
+/* The summary column also holds the score-counts sheet, which takes the full
+   row; in a grid that full-width item would keep every auto-fit track alive
+   and squeeze the two panels into the first two of five, so the column
+   wraps as a flex row instead. */
+.a11y-widget-biz .a11y-sum-col:has(> .a11y-sum-panel) { display: flex; flex-wrap: wrap; gap: 10px; align-items: stretch; }
+.a11y-widget-biz .a11y-sum-col > .a11y-sum-panel:not(.a11y-sum-counts) { flex: 1 1 280px; }
+.a11y-widget-biz .a11y-sum-col > :not(.a11y-sum-panel:not(.a11y-sum-counts)) { flex: 1 1 100%; }
+.a11y-widget-biz .a11y-dn-list > li { display: flex; margin: 0; }
+
+.a11y-widget-biz .a11y-sum-col > .a11y-sum-panel:not(.a11y-sum-counts),
+.a11y-widget-biz .a11y-next-list > li,
+.a11y-widget-biz .a11y-dn-list > li > .a11y-dn-link,
+.a11y-widget-biz .a11y-spec-grid > .a11y-spec-card,
+.a11y-widget-biz .a11y-ra-row > .a11y-ra-cell,
+.a11y-widget-biz .a11y-pro-rows > .a11y-pro-row,
+.a11y-widget-biz .a11y-manual-list > .a11y-manual-row {
+  --ink: #000; --paper: #f0efe8;
+  box-sizing: border-box; min-width: 0; margin: 0; padding: 14px 16px 22px;
+  border: 0; border-radius: 0; background: #f0efe8; color: #000;
+  text-align: start; overflow-wrap: break-word; hyphens: auto;
+}
+.a11y-widget-biz .a11y-next-list > li a,
+.a11y-widget-biz .a11y-next-list > li code,
+.a11y-widget-biz .a11y-spec-grid > .a11y-spec-card a,
+.a11y-widget-biz .a11y-spec-grid > .a11y-spec-card code,
+.a11y-widget-biz .a11y-manual-list > .a11y-manual-row a,
+.a11y-widget-biz .a11y-manual-list > .a11y-manual-row code,
+.a11y-widget-biz .a11y-pro-rows > .a11y-pro-row a,
+.a11y-widget-biz .a11y-pro-rows > .a11y-pro-row code,
+.a11y-widget-biz .a11y-sum-col > .a11y-sum-panel a,
+.a11y-widget-biz .a11y-sum-col > .a11y-sum-panel code { color: inherit; }
+
+/* The label: 15px Jokker, sentence case, at the top-left, with the room of
+   a Reckless tile (about 72px from the edge to the words) under it. */
+.a11y-widget-biz .a11y-sum-col > .a11y-sum-panel:not(.a11y-sum-counts) > .a11y-sum-eyebrow,
+.a11y-widget-biz .a11y-next-list > li > .a11y-next-crit,
+.a11y-widget-biz .a11y-next-main > .a11y-next-title + .a11y-next-meta,
+.a11y-widget-biz .a11y-dn-link > .a11y-dn-mark,
+.a11y-widget-biz .a11y-spec-card > .a11y-spec-label,
+.a11y-widget-biz .a11y-ra-cell .a11y-ra-email-label,
+.a11y-widget-biz .a11y-pro-row > span:first-child,
+.a11y-widget-biz .a11y-manual-row > .a11y-conf-id {
+  display: block; margin: 0 0 40px; padding: 0; text-align: start;
+  font-family: "Jokker", sans-serif; font-size: 15px; font-weight: 400; line-height: 1.2; letter-spacing: 0.01em;
+  text-transform: none;
+}
+/* The words: Serrif Light, the size of the report's prose. */
+.a11y-widget-biz .a11y-sum-col > .a11y-sum-panel:not(.a11y-sum-counts) .a11y-sum-lead,
+.a11y-widget-biz .a11y-next-list > li .a11y-next-title,
+.a11y-widget-biz .a11y-dn-link > .a11y-dn-link-text,
+.a11y-widget-biz .a11y-spec-card > .a11y-spec-value,
+.a11y-widget-biz .a11y-pro-row > .a11y-pro-row-num,
+.a11y-widget-biz .a11y-pro-row > .a11y-pro-row-pass,
+.a11y-widget-biz .a11y-manual-row > .a11y-conf-body > strong {
+  display: block; margin: 0;
+  font-family: "Serrif", "Jokker", serif; font-weight: 300; font-size: 27px; line-height: 1.2; letter-spacing: 0;
+}
+/* Small print under the words stays Jokker at 15px or 18px. */
+.a11y-widget-biz .a11y-spec-card > .a11y-spec-value > .a11y-spec-gloss { margin-top: 0.6em; font-family: "Jokker", sans-serif; }
+.a11y-widget-biz .a11y-next-list .a11y-next-main { display: flex; flex-direction: column; }
+.a11y-widget-biz .a11y-next-main > .a11y-next-title + .a11y-next-meta { order: -1; }
+.a11y-widget-biz .a11y-next-main > :is(.a11y-next-meta, .a11y-next-status):not(.a11y-next-title + .a11y-next-meta) { margin-top: 0.5em; font-size: 15px; letter-spacing: 0.01em; }
+.a11y-widget-biz .a11y-manual-row > .a11y-conf-body > .a11y-conf-plain { display: block; margin-top: 0.5em; font-size: 15px; letter-spacing: 0.01em; }
+.a11y-widget-biz .a11y-manual-row > :is(.a11y-conf-body, .a11y-manual-actions) { display: block; }
+.a11y-widget-biz .a11y-manual-row > .a11y-manual-actions { margin-top: 1em; }
+
+/* The summary WCAG 2.2 list: the number and the level share the label line. */
+.a11y-widget-biz .a11y-next-list > li:has(> .a11y-next-crit) {
+  display: grid; grid-template-columns: auto minmax(0, 1fr); align-content: start; column-gap: 0.6em;
+}
+.a11y-widget-biz .a11y-next-list > li > .a11y-next-level { grid-row: 1; grid-column: 2; font-size: 15px; letter-spacing: 0.01em; }
+.a11y-widget-biz .a11y-next-list > li > .a11y-next-title { grid-column: 1 / -1; }
+
+/* A design note is a button: the whole tile is the control. Hover is the
+   marker yellow, like every other button; the note that is open is solid
+   ink, like the selected tab. */
+.a11y-widget-biz .a11y-dn-list > li > .a11y-dn-link { display: block; width: 100%; font-size: 18px; cursor: pointer; }
+.a11y-widget-biz .a11y-dn-list > li > .a11y-dn-link:enabled:hover { background: var(--hl-cap-a); color: #000; text-decoration: none; }
+.a11y-widget-biz .a11y-dn-list > li > .a11y-dn-link[aria-expanded="true"] { --ink: #fff; --paper: #000; background: #000; color: #fff; font-weight: 400; }
+
+/* The report actions: the controls keep their own sizes inside the tile. */
+.a11y-widget-biz .a11y-ra-row > .a11y-ra-cell .a11y-ra-note { margin: 0.6em 0 0; font-size: 15px; letter-spacing: 0.01em; }
+.a11y-widget-biz .a11y-ra-row > .a11y-ra-cell input { background: #fff; color: #000; border-color: #000; }
+
+/* A tally is the label over its figure. */
+.a11y-widget-biz .a11y-pro-rows > .a11y-pro-row { display: block; }
+/* On a phone the tiles stack one above another, and the Reckless room under
+   each label became a column of gaps: half of it is enough there. */
+@media (max-width: 640px) {
+  .a11y-widget-biz .a11y-sum-col > .a11y-sum-panel:not(.a11y-sum-counts) > .a11y-sum-eyebrow,
+  .a11y-widget-biz .a11y-next-list > li > .a11y-next-crit,
+  .a11y-widget-biz .a11y-next-main > .a11y-next-title + .a11y-next-meta,
+  .a11y-widget-biz .a11y-dn-link > .a11y-dn-mark,
+  .a11y-widget-biz .a11y-spec-card > .a11y-spec-label,
+  .a11y-widget-biz .a11y-ra-cell .a11y-ra-email-label,
+  .a11y-widget-biz .a11y-pro-row > span:first-child,
+  .a11y-widget-biz .a11y-manual-row > .a11y-conf-id { margin-bottom: 20px; }
+}
 
 /* ═══ DESKTOP GUTTER AND TIGHT CHAT (18 Oct 2026; user's instruction) ═════
    On desktop the page, the conversation and every element in it sit 16px
@@ -1026,8 +1127,23 @@
      breaks, and "Occurrences" (fr) and "Vorkommen" (de) need all of it. */
   .a11y-widget-biz .a11y-datatable-schedule th[data-col="fix"] { width: 5.4em; }
   .a11y-widget-biz .a11y-datatable-schedule :is(th, td) { padding-inline-end: 0.4em; }
-  .a11y-widget-biz .a11y-fd-panel > * { padding: 10px 10px 16px; }
-  .a11y-widget-biz .a11y-fd-panel > :is(p:has(> strong:first-child):not(.a11y-finding-level-fold), .a11y-finding-steps, .a11y-affected) { font-size: 22px; letter-spacing: 0.005em; }
+  /* The Serrif prose of the expanded finding and of the specimen tiles is
+     the report's prose, so it takes the phone's prose size with it. */
+  .a11y-widget-biz .a11y-fd .a11y-method-hint,
+  .a11y-widget-biz .a11y-fd .a11y-finding-measured,
+  .a11y-widget-biz .a11y-fd .a11y-finding-impact,
+  .a11y-widget-biz .a11y-fd .a11y-finding-research,
+  .a11y-widget-biz .a11y-fd .a11y-finding-todo,
+  .a11y-widget-biz .a11y-fd .a11y-finding-steps,
+  .a11y-widget-biz .a11y-fd .a11y-fix-once,
+  .a11y-widget-biz .a11y-fd .a11y-picture-note,
+  .a11y-widget-biz .a11y-sum-col > .a11y-sum-panel:not(.a11y-sum-counts) .a11y-sum-lead,
+  .a11y-widget-biz .a11y-next-list > li .a11y-next-title,
+  .a11y-widget-biz .a11y-dn-link > .a11y-dn-link-text,
+  .a11y-widget-biz .a11y-spec-card > .a11y-spec-value,
+  .a11y-widget-biz .a11y-pro-row > .a11y-pro-row-num,
+  .a11y-widget-biz .a11y-pro-row > .a11y-pro-row-pass,
+  .a11y-widget-biz .a11y-manual-row > .a11y-conf-body > strong { font-size: 22px; letter-spacing: 0.005em; }
 }
 .a11y-widget-biz .a11y-chat-text :is(p, pre) { margin: 0 0 0.6em; }
 .a11y-widget-biz .a11y-chat-text > :last-child { margin-bottom: 0; }
@@ -1148,9 +1264,6 @@
   /* !important because line 6's [hidden] rule is !important too: of two
      important rules the more specific wins, which is this one. */
   .a11y-widget-biz .a11y-print-cards .a11y-finding-details[hidden] { display: block !important; }
-  /* Paper cannot switch tabs: every panel prints, the buttons do not. */
-  .a11y-widget-biz .a11y-print-cards .a11y-fd-panel[hidden] { display: grid !important; }
-  .a11y-widget-biz .a11y-print-cards .a11y-fd-tabs { display: none; }
 
   .a11y-widget-biz .a11y-print-cards .a11y-finding { break-inside: avoid; page-break-inside: avoid; }
   .a11y-widget-biz .a11y-print-cards .a11y-finding:has(.a11y-occurrence:nth-child(5)) { break-inside: auto; page-break-inside: auto; }
