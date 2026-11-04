@@ -552,10 +552,10 @@
 
 /* What the score counts: the number hangs, the sentence beside it. */
 .a11y-widget-biz .a11y-pro-points { list-style: none; padding: 0; margin: 0 0 1.2em; }
-.a11y-widget-biz :is(.a11y-sum-point, .a11y-pro-point) {
+.a11y-widget-biz .a11y-pro-point {
   display: grid; grid-template-columns: 2.4em minmax(0, 1fr); align-items: baseline; margin: 0 0 0.6em;
 }
-.a11y-widget-biz :is(.a11y-sum-point-num, .a11y-pro-point-num) { font-size: 15px; letter-spacing: 0.01em; font-weight: 500; }
+.a11y-widget-biz .a11y-pro-point-num { font-size: 15px; letter-spacing: 0.01em; font-weight: 500; }
 
 /* The three worst findings next to the dial: number, title with its marks under it, count. */
 .a11y-widget-biz .a11y-sum-thead { display: none; }
@@ -765,6 +765,34 @@
   /* A long first word held to its marker cannot break, so on a phone the
      pair may part rather than run off the screen. */
   .a11y-widget-biz .a11y-sum-run .a11y-sum-nobreak { white-space: normal; }
+}
+/* What the score counts as a tester's specimen sheet (user's reference,
+   4 Nov 2026: the Displaay tester, without its corner marks; "can be done
+   in 6 columns"). Six equal columns: 01, 04 and 07 span all six at 48px,
+   the pairs 02 + 03 and 05 + 06 take three each at 32px. Each point is
+   centred with its number under it at 15px, where the tester prints the
+   cut and size. No rules, no boxes: space separates the specimens. Under
+   640px of its own width every point takes the full row, 32px and 27px. */
+.a11y-widget-biz .a11y-sum-counts { container: a11y-sum-counts / inline-size; text-align: center; margin: 0 0 1.2em; }
+.a11y-widget-biz .a11y-sum-counts > .a11y-sum-eyebrow { margin: 0 0 1.6em; }
+.a11y-widget-biz .a11y-sum-specimens {
+  display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 2.2em 1.2em; align-items: start;
+}
+.a11y-widget-biz .a11y-sum-specimen {
+  grid-column: span 3; margin: 0; display: flex; flex-direction: column; align-items: center; gap: 0.7em;
+}
+.a11y-widget-biz .a11y-sum-specimen-wide { grid-column: 1 / -1; }
+.a11y-widget-biz .a11y-sum-specimen-text {
+  display: block; max-width: 30ch; font-size: 32px; letter-spacing: -0.005em; line-height: 1.08; font-weight: 500;
+  text-wrap: balance; hyphens: manual; overflow-wrap: break-word;
+}
+.a11y-widget-biz .a11y-sum-specimen-wide .a11y-sum-specimen-text { max-width: 34ch; font-size: 48px; letter-spacing: -0.01em; line-height: 1.04; }
+.a11y-widget-biz .a11y-sum-specimen-num { font-size: 15px; letter-spacing: 0.01em; line-height: 1.2; }
+@container a11y-sum-counts (max-width: 640px) {
+  .a11y-widget-biz .a11y-sum-specimens { row-gap: 1.6em; }
+  .a11y-widget-biz .a11y-sum-specimen { grid-column: 1 / -1; }
+  .a11y-widget-biz .a11y-sum-specimen-text { font-size: 27px; letter-spacing: 0; line-height: 1.15; hyphens: auto; }
+  .a11y-widget-biz .a11y-sum-specimen-wide .a11y-sum-specimen-text { font-size: 32px; letter-spacing: -0.005em; line-height: 1.08; }
 }
 .a11y-widget-biz .a11y-status-chip { font-size: 18px; letter-spacing: 0.01em; }
 .a11y-widget-biz .a11y-accordion-title .a11y-accordion-head > span:first-child { flex: 0 1 auto; }
@@ -1066,7 +1094,7 @@
   .a11y-widget-biz :is(
     figure, img, pre, tr, blockquote,
     .a11y-occurrence, .a11y-fd-col > p, .a11y-fd-learn, .a11y-pro-block, .a11y-fix-once,
-    .a11y-sum-row, .a11y-pro-row, .a11y-pro-point, .a11y-sum-point, .a11y-legal-row, .a11y-legal-q,
+    .a11y-sum-row, .a11y-pro-row, .a11y-pro-point, .a11y-legal-row, .a11y-legal-q,
     .a11y-conf-row, .a11y-next-list > li, .a11y-undecided-cell, .a11y-spec-card, .a11y-sr-row, .a11y-dn-link
   ) { break-inside: avoid; page-break-inside: avoid; }
   .a11y-widget-biz thead { display: table-header-group; }
