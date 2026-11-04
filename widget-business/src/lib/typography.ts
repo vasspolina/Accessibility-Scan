@@ -79,16 +79,19 @@ export function keepShortWordsAttached(root: Node): () => void {
  *
  * The dash. Hochuli allows two forms, the em dash set close (English and
  * American practice) or the en dash with a space either side (the book's
- * own, Continental), never a hyphen and never a spaced em dash. PP
- * Telegraf's hyphen is 0.47em and its en dash 0.57em, so a spaced en dash
- * cannot be told from a spaced hyphen in this face (measured 18 Oct 2026);
- * English takes the close em dash, which at 0.77em reads as a dash. German,
- * French and Spanish keep their spaced en dash, with a no-break space before
- * it so a line never opens with a dash. A span of figures or words
+ * own, Continental), never a hyphen and never a spaced em dash. Every
+ * language takes the book's spaced en dash, with a no-break space before it
+ * so a line never opens with a dash. English took the close em dash from
+ * 18 Oct 2026 because PP Telegraf's hyphen (0.47em) and en dash (0.57em)
+ * were too close to tell apart when spaced. Jokker VF, the face since
+ * 19 Oct, has a 0.36em hyphen and a 0.557em en dash, half as wide again, so
+ * the reason went with the font and English joined the others (user's
+ * instruction, 4 Nov 2026; docs/hochuli-typography-study.html). An em dash,
+ * spaced or close, becomes the spaced en dash. A span of figures or words
  * (10:00–18:00, Mon–Fri, 1465–80) is a closed en dash in every language
  * (fig. 49); a date written 2026-10-18 keeps its hyphens.
  *
- *   " - ", " -- ", " – ", "—", " — "  →  "—" (en) / " – " (de, fr, es)
+ *   " - ", " -- ", " – ", "—", " — "  →  " – " (no-break space before)
  *   10-12, 1465-80                     →  10–12, 1465–80
  *   "x"   →  ‘x’ (en: single marks first, double inside them, fig. 53)
  *             „x“ (de), « x » (fr), «x» (es)
@@ -107,7 +110,7 @@ const QUOTES: Record<string, Marks> = {
   fr: { d: ["« ", " »"], s: ["‘", "’"] },
   es: { d: ["«", "»"], s: ["‘", "’"] },
 };
-const DASH: Record<string, string> = { en: "—", de: " – ", fr: " – ", es: " – " };
+const DASH: Record<string, string> = { en: " – ", de: " – ", fr: " – ", es: " – " };
 
 // What a quotation mark can follow to be an opening one: the start, a
 // space, an opening bracket, a dash.
@@ -127,7 +130,7 @@ export function smarten(text: string, lang: string): string {
     .replace(/[  ]+(?:-{1,2}|–|—)[  ]+/g, dash)
     // One that opens the text stands as a plain en dash.
     .replace(/^(?:-{1,2}|—)(?=\s)/, "–")
-    // An unspaced em dash in another language takes that language's form.
+    // An unspaced em dash takes the spaced form too.
     .replace(/(?<=\S)—(?=\S)/g, dash)
     // 1280x900: the x of the typeface, a word space either side that cannot
     // break (the face has no thin space, so none is asked for).
