@@ -201,8 +201,16 @@
 
 /* The conversation's box, as an assistant draws it: the prompt inside as
    the placeholder, the actions under the text inside the same edge,
-   pinned to the foot of the window. The box, not the field, shows focus. */
+   pinned to the foot of the window. The box, not the field, shows focus.
+   The box lives at the bottom of the window and stays there (user's
+   instruction, 4 Nov 2026). Sticky alone could not do it: the widget is
+   only as tall as what it holds, so with two short turns the box sat right
+   under them, mid-page. The conversation is now a column at least a window
+   high, the box is pushed to its foot, and sticky keeps it there once the
+   turns outgrow the window. */
+.a11y-widget-biz .a11y-chat { min-height: 100dvh; display: flex; flex-direction: column; }
 .a11y-widget-biz .a11y-chat-dock {
+  margin-top: auto;
   position: sticky; bottom: 0;
   background: var(--paper); padding-block: 0.6em;
 }
