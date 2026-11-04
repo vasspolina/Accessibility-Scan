@@ -76,16 +76,19 @@
   font-size: 15px; letter-spacing: 0.01em; line-height: 1.2;
 }
 
-/* Controls: pills, 2px ink edge, 18px. */
+/* Controls, after displaay.net/typeface/dazzed (user's instruction, 4 Nov 2026):
+   a rounded rectangle, not a pill: 10px corners, a 1px ink edge, 4px by 12px
+   padding with a 34px floor, and a flat marker-yellow fill on hover (black
+   text on --hl-cap-a measures better than 7:1). 18px. */
 .a11y-widget-biz :is(button, .a11y-btn) {
   font: inherit; font-size: 18px; letter-spacing: 0.01em; font-weight: 500;
-  padding: 0.5em 1.1em; border: 2px solid var(--ink); border-radius: 999px;
-  background: var(--paper); color: var(--ink);
+  box-sizing: border-box; min-height: 34px; padding: 4px 12px; border: 1px solid var(--ink); border-radius: 10px;
+  background: var(--paper); color: var(--ink); transition: background-color 0.15s, border-color 0.15s, border-radius 0.15s;
 }
 .a11y-widget-biz button:enabled,
 .a11y-widget-biz .a11y-btn:enabled { cursor: pointer; }
 .a11y-widget-biz button:enabled:hover,
-.a11y-widget-biz .a11y-btn:enabled:hover { background: var(--ink); color: var(--paper); }
+.a11y-widget-biz .a11y-btn:enabled:hover { background: var(--hl-cap-a); border-color: var(--hl-cap-a); color: #000; }
 .a11y-widget-biz button:disabled,
 .a11y-widget-biz .a11y-btn:disabled { border-style: dashed; cursor: not-allowed; }
 .a11y-widget-biz :is(input:not([type="radio"]):not([type="checkbox"]), textarea, select) {
@@ -466,7 +469,7 @@
 .a11y-widget-biz .a11y-optioncard {
   display: grid; grid-template-columns: 39px minmax(0, 1fr); grid-template-rows: auto 1fr; align-items: start;
   gap: 0 0.6em; box-sizing: border-box; padding: 20px;
-  border: 2px solid var(--ink); border-radius: 20px; background: var(--paper); color: var(--ink); cursor: pointer;
+  border: 1px solid var(--ink); border-radius: 20px; background: var(--paper); color: var(--ink); cursor: pointer;
 }
 .a11y-widget-biz .a11y-optioncard-on { background: var(--ink); color: var(--paper); }
 .a11y-widget-biz .a11y-optioncard > input { grid-row: 1; grid-column: 1; margin-top: -3px; }
