@@ -4,6 +4,7 @@ import { getLang } from "../lib/i18n";
 import { CAPS_RUN, smarten } from "../lib/typography";
 import { Button } from "./Button";
 import { LanguageSelect } from "./LanguageSelect";
+import { PosterMark } from "./PosterMark";
 import { BlockedNotice } from "./BlockedNotice";
 import type { Lang } from "../lib/i18n";
 import type { AccessibilityReport, SiteAudit } from "../api/scanClient";
@@ -918,6 +919,9 @@ export function ScanChat({
 
   return (
     <div className="a11y-chat" ref={rootRef} onFocus={keepFocusClear}>
+      {/* The arrow opens the chat, above everything else in it (user's
+          instruction, 4 Nov 2026). Decoration, hidden from readers. */}
+      <PosterMark word={currentKey ? t("Findings") : t("New scan")} />
       {/* The title and the intro open an empty conversation. Once there is
           one, they would sit above it saying "New scan" over a scan that
           has run — the top bar's New scan button is the way back. The

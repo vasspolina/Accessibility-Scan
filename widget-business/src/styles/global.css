@@ -21,8 +21,37 @@
   white-space: nowrap;
 }
 
-/* Decoration only, and already aria-hidden. */
-.a11y-widget-biz .a11y-poster { display: none; }
+/* The arrow (PosterMark): the page's word along a shaft and on both strokes
+   of the head, tilted. Back on 4 Nov 2026 as the first thing in the chat
+   (user's instruction); the geometry is the poster layer's of 14 Oct. Hidden
+   from assistive technology in the markup. 40px is display size; Medium, for
+   the poster's weight. The mark is its own size container, so it folds on
+   its own width wherever the widget is embedded. */
+.a11y-widget-biz .a11y-poster {
+  container: a11y-poster / inline-size;
+  position: relative; flex-shrink: 0;
+  height: 330px; margin: 0 0 1.2em;
+  overflow: hidden; pointer-events: none; user-select: none;
+  font-size: 40px; letter-spacing: -0.01em; font-weight: 500; line-height: 1.2;
+  white-space: nowrap; color: var(--ink);
+}
+.a11y-widget-biz .a11y-poster-word { position: absolute; transform-origin: 0 50%; }
+/* Tip at (40, 220). The shaft starts a little way along itself; the two
+   strokes start a little way off the tip to either side, so the three
+   words meet without sitting on one another. The 14 Oct tip was at 150,
+   which clipped the upper stroke: at -50deg a word rises about 170px. */
+.a11y-widget-biz .a11y-poster-shaft { left: 76px; top: calc(216px - 0.6em); transform: rotate(-16deg); }
+.a11y-widget-biz .a11y-poster-head-up { left: 52px; top: calc(192px - 0.6em); transform: rotate(-50deg); }
+.a11y-widget-biz .a11y-poster-head-down { left: 50px; top: calc(248px - 0.6em); transform: rotate(18deg); }
+/* On a phone: smaller, one word on the shaft, so it never runs off 320px. */
+@container a11y-poster (max-width: 640px) {
+  .a11y-widget-biz .a11y-poster-word { font-size: 27px; letter-spacing: 0; }
+  .a11y-widget-biz .a11y-poster-more { display: none; }
+  .a11y-widget-biz .a11y-poster-shaft { left: 52px; top: calc(140px - 0.6em); }
+  .a11y-widget-biz .a11y-poster-head-up { left: 34px; top: calc(124px - 0.6em); }
+  .a11y-widget-biz .a11y-poster-head-down { left: 32px; top: calc(160px - 0.6em); }
+}
+@media (max-width: 640px) { .a11y-widget-biz .a11y-poster { height: 215px; } }
 
 /* The compare dialog is a modal: out of flow, over the page, on a ground. */
 .a11y-widget-biz .a11y-dialog-scrim {
