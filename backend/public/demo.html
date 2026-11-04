@@ -12,10 +12,11 @@
         font-feature-settings: "ss04", "ss05";
         letter-spacing: 0.01em;
         margin: 0;
-        /* No body padding: the shell runs full-bleed. */
-        padding: 0 0 64px;
-        background: #f4f4f4;
-        color: #161616;
+        /* No body padding and the widget's own paper: the shell runs
+           full-bleed, and a tinted page showed as a grey band under it. */
+        padding: 0;
+        background: #fff;
+        color: #000;
       }
       /* Full width. The widget sizes and centres itself against the viewport,
          so giving it a column here as well made the two multiply. */
@@ -36,7 +37,7 @@
       /* The widget follows the visitor's scheme; the page around it should
          too, or a dark report sits in a glowing light frame. */
       @media (prefers-color-scheme: dark) {
-        body { background: #161616; color: #f4f4f4; }
+        body { background: #000; color: #fff; }
       }
     </style>
   </head>
