@@ -675,32 +675,18 @@
 .a11y-widget-biz .a11y-sum-dial-of { font-size: 15px; letter-spacing: 0.01em; margin: 0; }
 
 /* The scan summary as a type specimen (user's instruction and reference,
-   4 Nov 2026: a font tester's panel, kept with the dial). Four corner marks
-   frame the block; the label and the dial sit centred at the top; the worst
+   4 Nov 2026: a font tester's panel, kept with the dial; no corner marks,
+   user's word the same day). The label and the dial sit centred at the top; the worst
    findings run as one centred paragraph of display type, each opened by a
    round numbered marker, the way the specimen drops a dingbat between
    words; the copy button sits centred under it, like the tester's buttons.
-   Still a list in the markup: only its display is inline. The marks are
-   ink, the markers ink with paper figures (21:1); the severity fills are
-   the highlight colours with black text, as everywhere else. */
+   Still a list in the markup: only its display is inline. The markers are
+   ink with paper figures (21:1); the severity fills are the highlight
+   colours with black text, as everywhere else. */
 .a11y-widget-biz .a11y-sum-run {
   container: a11y-sum-run / inline-size;
-  position: relative; text-align: center;
-  padding: 2.2em 1.2em 2.4em; margin: 0 0 0.6em;
+  text-align: center; padding: 1.2em 1.2em 1.4em; margin: 0 0 0.6em;
 }
-/* Top corners on the section, bottom corners on its label (positioned
-   against the section, since the label itself is not). */
-.a11y-widget-biz .a11y-sum-run::before,
-.a11y-widget-biz .a11y-sum-run::after,
-.a11y-widget-biz .a11y-sum-run > .a11y-sum-eyebrow::before,
-.a11y-widget-biz .a11y-sum-run > .a11y-sum-eyebrow::after {
-  content: ""; position: absolute; width: 34px; height: 14px;
-  border: 0 solid var(--ink); pointer-events: none;
-}
-.a11y-widget-biz .a11y-sum-run::before { top: 0; left: 0; border-top-width: 1px; border-left-width: 1px; border-top-left-radius: 14px; }
-.a11y-widget-biz .a11y-sum-run::after { top: 0; right: 0; border-top-width: 1px; border-right-width: 1px; border-top-right-radius: 14px; }
-.a11y-widget-biz .a11y-sum-run > .a11y-sum-eyebrow::before { bottom: 0; left: 0; border-bottom-width: 1px; border-left-width: 1px; border-bottom-left-radius: 14px; }
-.a11y-widget-biz .a11y-sum-run > .a11y-sum-eyebrow::after { bottom: 0; right: 0; border-bottom-width: 1px; border-right-width: 1px; border-bottom-right-radius: 14px; }
 .a11y-widget-biz .a11y-sum-run > .a11y-sum-eyebrow { margin: 0 0 0.6em; }
 .a11y-widget-biz .a11y-sum-run .a11y-sum-dial-card { display: flex; justify-content: center; }
 .a11y-widget-biz .a11y-sum-run .a11y-sum-dial { margin: 0 0 0.5em; }
@@ -730,6 +716,39 @@
 /* On a phone the run comes down to title size, so a long German word
    still fits 320px. */
 @media (max-width: 640px) { .a11y-widget-biz .a11y-sum-run { padding-inline: 0; } }
+
+/* The opening questions, after the panels of a font tester (user's
+   reference, 4 Nov 2026): a small centred label, the question under it in
+   big centred type, one panel per group, no frame and no corner marks.
+   Each load sets the three panels in a different layout from these three,
+   the way a tester shows one face at several settings. The question is a
+   button, but reads as type: no pill, no edge; hover lays the marker
+   yellow under it (black text, better than 7:1), focus shows the ring. */
+.a11y-widget-biz .a11y-prompts { container: a11y-prompts / inline-size; margin: 0.6em 0 1.2em; }
+.a11y-widget-biz .a11y-prompt { text-align: center; padding: 1.2em 0; }
+.a11y-widget-biz .a11y-prompt-label { font-size: 15px; letter-spacing: 0.01em; margin: 0 0 0.9em; }
+.a11y-widget-biz .a11y-prompts .a11y-prompt-ask {
+  display: inline; min-height: 0; padding: 0 0.08em; border: 0; border-radius: 0;
+  background: none; color: var(--ink); text-align: center;
+  text-wrap: balance; hyphens: manual; overflow-wrap: break-word;
+  -webkit-box-decoration-break: clone; box-decoration-break: clone;
+}
+.a11y-widget-biz .a11y-prompts .a11y-prompt-ask:enabled:hover { background: var(--hl-cap-a); color: #000; }
+.a11y-widget-biz .a11y-prompts .a11y-prompt-ask:disabled { border: 0; text-decoration: underline dashed 1px; text-underline-offset: 0.15em; }
+/* Display: Light at display size, tight. */
+.a11y-widget-biz .a11y-prompt[data-layout="display"] .a11y-prompt-ask { font-size: 56px; font-weight: 300; letter-spacing: -0.01em; line-height: 1.02; }
+/* Bold: Medium, a size down, a little air. */
+.a11y-widget-biz .a11y-prompt[data-layout="bold"] .a11y-prompt-ask { font-size: 40px; font-weight: 500; letter-spacing: -0.01em; line-height: 1.08; }
+/* Text: Regular at title size, open leading, on a measure. */
+.a11y-widget-biz .a11y-prompt[data-layout="text"] .a11y-prompt-ask { font-size: 32px; font-weight: 400; letter-spacing: -0.005em; line-height: 1.25; }
+.a11y-widget-biz .a11y-prompt[data-layout="text"] { max-width: 34em; margin-inline: auto; }
+.a11y-widget-biz .a11y-prompt-more { text-align: center; margin: 0.4em 0 0; }
+@container a11y-prompts (max-width: 640px) {
+  .a11y-widget-biz .a11y-prompt[data-layout="display"] .a11y-prompt-ask { font-size: 40px; }
+  .a11y-widget-biz .a11y-prompt[data-layout="bold"] .a11y-prompt-ask { font-size: 32px; letter-spacing: -0.005em; }
+  .a11y-widget-biz .a11y-prompt[data-layout="text"] .a11y-prompt-ask { font-size: 27px; letter-spacing: 0; }
+  .a11y-widget-biz .a11y-prompts .a11y-prompt-ask { hyphens: auto; }
+}
 @container a11y-sum-run (max-width: 640px) {
   .a11y-widget-biz .a11y-sum-run .a11y-sum-rows,
   .a11y-widget-biz .a11y-sum-run .a11y-score-clean { font-size: 32px; letter-spacing: -0.005em; hyphens: auto; }

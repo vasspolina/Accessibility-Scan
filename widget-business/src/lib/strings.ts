@@ -14,6 +14,7 @@ import { getLang, type Lang } from "./i18n";
 import { STRINGS_DE } from "./strings.de";
 import { STRINGS_ES } from "./strings.es";
 import { STRINGS_FR } from "./strings.fr";
+import { OPENING_PROMPT_KEYS } from "./openingPrompts";
 
 const BY_LANG: Partial<Record<Lang, Record<string, string>>> = {
   de: STRINGS_DE,
@@ -869,4 +870,6 @@ export const CHROME_KEYS: string[] = [
   "Every checked criterion has at least one finding or open question.",
   // The assistant answers anything; links in its replies.
   "(opens in a new tab)",
+  // The questions an empty conversation opens with.
+  ...OPENING_PROMPT_KEYS,
 ];

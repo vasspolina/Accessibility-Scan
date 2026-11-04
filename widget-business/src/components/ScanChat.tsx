@@ -23,6 +23,7 @@ import {
 import { digestAudit, digestReport } from "../lib/reportDigest";
 import { NARRATION_STEPS, narrationIndex, narrationLabel } from "../lib/scanNarration";
 import { SHOWABLE, sectionForCommand, sectionLabel, type SectionKey } from "../lib/sections";
+import { pickOpeningPrompts } from "../lib/openingPrompts";
 
 /**
  * The whole checker, as one conversation with an assistant.
@@ -512,6 +513,9 @@ export function ScanChat({
 }) {
   const [turns, setTurns] = useState<Turn[]>([]);
   const [draft, setDraft] = useState("");
+  // The opening questions: drawn fresh on every load, one from each group,
+  // each in a different layout (user's instruction, 4 Nov 2026).
+  const [picks, setPicks] = useState(() => pickOpeningPrompts());
   const [busy, setBusy] = useState(false);
   const [announcement, setAnnouncement] = useState("");
   // The conversation in the API's shape. Append-only — see chatClient.
@@ -835,6 +839,13 @@ export function ScanChat({
     setDraft("");
     const box = rootRef.current?.querySelector<HTMLTextAreaElement>("#a11y-chat-input");
     if (box) box.style.height = "";
+    await ask(text);
+  }
+
+  /** One message from the reader, typed or picked from the opening prompts:
+   *  both go the same way, so a prompt is exactly what typing it would be. */
+  async function ask(text: string) {
+    if (!text || busy || loading) return;
     add({ id: nextId++, who: "you", text });
     focusInput();
 
@@ -942,6 +953,33 @@ export function ScanChat({
         </div>
         <LanguageSelect id="a11y-lang-form" value={language} onChange={onLanguageChange} />
       </div>
+      {/* The opening questions, set like the panels of a font tester (user's
+          reference, 4 Nov 2026): a small label over each, the question in
+          big centred type, a different layout each, no frame. Each is a
+          button that sends its question as if typed; they go once the
+          conversation starts. */}
+      {turns.length === 0 && (
+        <section className="a11y-prompts" aria-label={t("Questions to start with")}>
+          {picks.map((p) => (
+            <div key={p.group} className="a11y-prompt" data-layout={p.layout}>
+              <p className="a11y-prompt-label">{t(p.group)}</p>
+              <button
+                type="button"
+                className="a11y-prompt-ask"
+                disabled={busy || loading}
+                onClick={() => void ask(t(p.prompt))}
+              >
+                {smarten(t(p.prompt), getLang())}
+              </button>
+            </div>
+          ))}
+          <p className="a11y-prompt-more">
+            <Button variant="ghost" onClick={() => setPicks((last) => pickOpeningPrompts(Math.random, last))}>
+              {t("Other questions")}
+            </Button>
+          </p>
+        </section>
+      )}
       {turns.length > 0 && (
         // role="list" said out loud: WebKit drops the list role from a list
         // drawn without markers, and the label with it.
