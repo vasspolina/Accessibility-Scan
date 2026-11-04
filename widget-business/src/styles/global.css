@@ -729,82 +729,81 @@
 .a11y-widget-biz .a11y-occurrence { margin: 0 0 0.6em; }
 .a11y-widget-biz .a11y-occurrence-count { margin-inline-start: 0.4em; font-size: 15px; letter-spacing: 0.01em; font-weight: 500; }
 
-/* ═══ THE EXPANDED FINDING: DISPLAAY'S PRICING BLOCK ═══════════════════════
-   User's instruction, 4 Nov 2026, from displaay.net/typeface/dazzed: three
-   buttons of one size in a row (ink, cyan, green), each switching what the
-   brown panel under them shows, the panel set like Displaay's: an uppercase
-   label over a 1px rule, then small sans text, the parts side by side.
-   Colour here is the user's exception to black and white, on the highlight
-   terms: every fill measured, black text on cyan and green (18:1), white
-   text on the brown (#66522a, 7.49:1; Displaay's own #8b7340 is only 4.5:1
-   either way). The fills are fixed in both themes, like the highlights; the
-   ink tab swaps with the theme. Saans Light only (a trial file, one cut). */
+/* ═══ THE EXPANDED FINDING: RECKLESS'S SPECIMEN TILES ═══════════════════════
+   User's instruction, 4 Nov 2026, from displaay.net/typeface/reckless,
+   replacing the pricing block of the same day (three coloured tabs over a
+   brown panel). Two things from that page:
+   - the switch is its nav row: plain pills with the 1px ink edge, set left,
+     the one showing solid ink (Reckless's "Typefaces"). They are the app's
+     own buttons, so hover is the marker yellow like every other control;
+   - each part of the panel is a specimen tile: a pale ground, square
+     corners, a small sentence-case label in the top corner ("Ligatures",
+     "Fractions") and the words set big under it in a serif, the tiles side by
+     side on an auto-fit grid with a narrow gutter. Reckless's switches in the
+     tile corners are left out: there is nothing here for them to switch, and
+     a control that does nothing is a lie to a keyboard user.
+   Colour is the user's exception to black and white, on the highlight terms:
+   the tile ground is Displaay's #f0efe8, fixed in both themes like the
+   highlights, with #000 text on it (18.4:1). Serrif Light, the Displaay
+   serif already served, stands in for Reckless (a trial file, one cut). */
 /* Its own size container: the block sits in a table row, a card or the notes
-   panel, so it folds on its own width, not the window's. (The a11y-shell
-   container the poster layer used is gone with that layer.) */
+   panel, so it folds on its own width, not the window's. */
 .a11y-widget-biz .a11y-fd { margin-top: 0.6em; container: a11y-fd / inline-size; }
-.a11y-widget-biz .a11y-fd-tabs { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; margin: 0 0 10px; }
-.a11y-widget-biz .a11y-fd .a11y-fd-tab,
-.a11y-widget-biz .a11y-fd .a11y-fd-tab:enabled:hover {
-  display: flex; align-items: center; justify-content: center; box-sizing: border-box; min-height: 96px; margin: 0; padding: 12px 16px;
-  border: 0; border-radius: 20px; text-align: center;
-  font-family: "Saans", "Jokker", sans-serif; font-weight: 300; font-size: 27px; line-height: 1.1; letter-spacing: 0;
-  overflow-wrap: break-word; hyphens: auto;
-}
-.a11y-widget-biz .a11y-fd .a11y-fd-tab-found,
-.a11y-widget-biz .a11y-fd .a11y-fd-tab-found:enabled:hover { background: var(--ink); color: var(--paper); }
-.a11y-widget-biz .a11y-fd .a11y-fd-tab-todo,
-.a11y-widget-biz .a11y-fd .a11y-fd-tab-todo:enabled:hover { background: #b8fbff; color: #000; }
-.a11y-widget-biz .a11y-fd .a11y-fd-tab-tech,
-.a11y-widget-biz .a11y-fd .a11y-fd-tab-tech:enabled:hover { background: #beffbd; color: #000; }
-/* Which one is showing is said by shape, not colour: its word is underlined.
-   Hover underlines thinly so a pointer still sees what it is on. */
-.a11y-widget-biz .a11y-fd .a11y-fd-tab:enabled:hover { text-decoration: underline 1px; text-underline-offset: 0.2em; }
+.a11y-widget-biz .a11y-fd-tabs { display: flex; flex-wrap: wrap; gap: 6px; margin: 0 0 10px; }
+.a11y-widget-biz .a11y-fd .a11y-fd-tab { margin: 0; padding: 0.35em 0.9em; font-size: 15px; font-weight: 400; line-height: 1.2; }
 .a11y-widget-biz .a11y-fd .a11y-fd-tab[aria-selected="true"],
-.a11y-widget-biz .a11y-fd .a11y-fd-tab[aria-selected="true"]:enabled:hover { text-decoration: underline 2px; text-underline-offset: 0.2em; }
+.a11y-widget-biz .a11y-fd .a11y-fd-tab[aria-selected="true"]:enabled:hover { background: var(--ink); border-color: var(--ink); color: var(--paper); }
 
 .a11y-widget-biz .a11y-fd-panel {
-  display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 240px), 1fr)); gap: 0 30px; align-items: start;
-  box-sizing: border-box; margin: 0 0 1.2em; padding: 18px 18px 22px; border-radius: 20px;
-  background: #66522a; color: #fff;
-  font-family: "Saans", "Jokker", sans-serif; font-weight: 300; font-size: 18px; line-height: 1.35; letter-spacing: 0.01em;
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr)); gap: 10px; align-items: stretch;
+  margin: 0 0 1.2em;
 }
 .a11y-widget-biz .a11y-fd-panel[hidden] { display: none; }
-.a11y-widget-biz .a11y-fd-panel > * { min-width: 0; margin: 0 0 1.2em; overflow-wrap: break-word; hyphens: auto; }
+/* Every part is a tile. */
+.a11y-widget-biz .a11y-fd-panel > * {
+  position: relative; box-sizing: border-box; min-width: 0; margin: 0; padding: 16px 16px 22px;
+  background: #f0efe8; color: #000;
+  font-family: "Jokker", sans-serif; font-size: 18px; line-height: 1.35; letter-spacing: 0.01em;
+  overflow-wrap: break-word; hyphens: auto;
+}
+/* A labelled part is a specimen: the label pinned top-left, the words big
+   under it, with the room of a Reckless tile above them. */
+.a11y-widget-biz .a11y-fd-panel > :is(p:has(> strong:first-child):not(.a11y-finding-level-fold), .a11y-finding-steps, .a11y-affected) {
+  min-height: 220px; padding-top: 72px;
+  font-family: "Serrif", "Jokker", serif; font-weight: 300; font-size: 27px; line-height: 1.2; letter-spacing: 0;
+}
 .a11y-widget-biz .a11y-fd-panel :is(a, code) { color: inherit; }
-.a11y-widget-biz .a11y-fd-panel :focus-visible { outline-color: #fff; box-shadow: 0 0 0 2px #000; }
-.a11y-widget-biz .a11y-fd-panel strong { font-weight: 300; }
-/* The labels: uppercase over a 1px rule, as DISCOUNTS / PRICING / PERKS. */
-.a11y-widget-biz .a11y-fd-panel > p > strong:first-child,
+.a11y-widget-biz .a11y-fd-panel :focus-visible { outline-color: #000; box-shadow: 0 0 0 2px #f0efe8; }
+.a11y-widget-biz .a11y-fd-panel strong { font-weight: 400; }
+.a11y-widget-biz .a11y-fd-panel > p:not(.a11y-finding-level-fold) > strong:first-child,
 .a11y-widget-biz .a11y-fd-panel .a11y-finding-steps > p > strong,
 .a11y-widget-biz .a11y-fd-panel .a11y-affected-label > strong {
-  display: block; margin: 0 0 0.7em; padding-bottom: 0.7em; border-bottom: 1px solid currentColor;
-  font-size: 15px; line-height: 1.2; letter-spacing: 0.04em; text-transform: uppercase;
+  display: block; position: absolute; inset: 14px 16px auto 16px; margin: 0;
+  font-family: "Jokker", sans-serif; font-weight: 400; font-size: 15px; line-height: 1.2; letter-spacing: 0.01em;
 }
-.a11y-widget-biz .a11y-fd-panel .a11y-finding-steps > p { margin: 0; }
-.a11y-widget-biz .a11y-fd-panel .a11y-finding-steps ul { margin: 0; padding-inline-start: 1.1em; }
+.a11y-widget-biz .a11y-fd-panel .a11y-finding-steps > p,
+.a11y-widget-biz .a11y-fd-panel .a11y-affected-label { margin: 0; }
+.a11y-widget-biz .a11y-fd-panel .a11y-finding-steps ul { margin: 0; padding-inline-start: 1em; }
 .a11y-widget-biz .a11y-fd-panel .a11y-occurrence-list { margin: 0; }
-.a11y-widget-biz .a11y-fd-panel .a11y-show-all { border-color: #fff; background: #66522a; color: #fff; }
+.a11y-widget-biz .a11y-fd-panel :is(button, .a11y-btn):enabled:not(:hover) { border-color: #000; background: #f0efe8; color: #000; }
+.a11y-widget-biz .a11y-fd-panel .a11y-show-all { margin-top: 0.6em; }
 /* The key/value lines: the key hangs in a 9em column, the value beside it. */
 .a11y-widget-biz .a11y-fd-panel .a11y-pro-line,
-.a11y-widget-biz .a11y-fd-panel .a11y-tech-details > p,
-.a11y-widget-biz .a11y-fd-panel .a11y-finding-level-fold { margin: 0; padding-inline-start: 9em; text-indent: -9em; overflow-wrap: anywhere; }
+.a11y-widget-biz .a11y-fd-panel .a11y-tech-details > p { margin: 0; padding-inline-start: 9em; text-indent: -9em; overflow-wrap: anywhere; }
+.a11y-widget-biz .a11y-fd-panel > .a11y-finding-level-fold { padding-inline-start: calc(16px + 9em); text-indent: -9em; overflow-wrap: anywhere; }
 .a11y-widget-biz .a11y-fd-panel .a11y-pro-line > strong:first-child,
 .a11y-widget-biz .a11y-fd-panel .a11y-tech-details > p > strong:first-child,
 .a11y-widget-biz .a11y-fd-panel .a11y-finding-level-fold > strong:first-child {
-  display: inline-block; width: 9em; margin: 0; padding: 0; border: 0; text-indent: 0; vertical-align: top;
-  font-size: 18px; letter-spacing: 0.01em; text-transform: none;
+  display: inline-block; width: 9em; margin: 0; text-indent: 0; vertical-align: top;
 }
 .a11y-widget-biz .a11y-fd-panel .a11y-pro-line:not(:has(> strong:first-child)) { text-indent: 0; }
 .a11y-widget-biz .a11y-fd-panel .a11y-pro-block > .a11y-pro-snippet { margin: 0.3em 0 0.3em 9em; }
 .a11y-widget-biz .a11y-fd-panel .a11y-tech-elements { margin: 0; padding-inline-start: 9em; list-style: none; }
-.a11y-widget-biz .a11y-fd-panel .a11y-finding-level-fold { margin-bottom: 1.2em; }
 @container a11y-fd (max-width: 640px) {
-  .a11y-widget-biz .a11y-fd .a11y-fd-tab,
-  .a11y-widget-biz .a11y-fd .a11y-fd-tab:enabled:hover { min-height: 64px; padding: 8px 6px; border-radius: 14px; font-size: 18px; }
+  .a11y-widget-biz .a11y-fd-panel > :is(p:has(> strong:first-child):not(.a11y-finding-level-fold), .a11y-finding-steps, .a11y-affected) { min-height: 0; padding-top: 52px; }
   .a11y-widget-biz .a11y-fd-panel .a11y-pro-line,
-  .a11y-widget-biz .a11y-fd-panel .a11y-tech-details > p,
-  .a11y-widget-biz .a11y-fd-panel .a11y-finding-level-fold { padding-inline-start: 0; text-indent: 0; }
+  .a11y-widget-biz .a11y-fd-panel .a11y-tech-details > p { padding-inline-start: 0; text-indent: 0; }
+  .a11y-widget-biz .a11y-fd-panel > .a11y-finding-level-fold { padding-inline-start: 16px; text-indent: 0; }
   .a11y-widget-biz .a11y-fd-panel .a11y-pro-line > strong:first-child,
   .a11y-widget-biz .a11y-fd-panel .a11y-tech-details > p > strong:first-child,
   .a11y-widget-biz .a11y-fd-panel .a11y-finding-level-fold > strong:first-child { display: block; width: auto; }
