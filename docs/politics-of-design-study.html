@@ -1,0 +1,338 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Politics of design study</title>
+<!--
+  Ruben Pater, The Politics of Design: A (Not So) Global Manual for Visual
+  Communication (BIS Publishers, 2016), read against Accessible Scan on
+  4 Nov 2026. There is no copy of the book in this repository or on this Mac,
+  so nothing here cites a page: the themes are the book's, the measurements
+  are ours. When a scan of the book is added, put page numbers on each claim,
+  the way the Hochuli study did.
+  Open in a browser; the font loads from the production backend.
+-->
+<style>
+@font-face{font-family:"Jokker";src:url("https://a11y-checker-v2-production.up.railway.app/fonts/JokkerVF-TRIAL.woff2") format("woff2");font-weight:100 900}
+:root{--ink:#000;--paper:#fff;--hl:#ffd400}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--ink:#fff;--paper:#000}}
+:root[data-theme="dark"]{--ink:#fff;--paper:#000}
+*{box-sizing:border-box}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:"Jokker",sans-serif;font-feature-settings:"ss04","ss05";font-kerning:normal;font-synthesis:none;font-size:27px;line-height:1.2}
+main{max-width:1100px;margin:0 auto;padding:48px 16px 96px}
+h1{font-size:40px;font-weight:300;letter-spacing:-0.01em;line-height:1.05;margin:0 0 16px}
+.dek{font-size:18px;letter-spacing:0.01em;margin:0 0 64px;max-width:60ch}
+section{display:grid;grid-template-columns:4.5em minmax(0,1fr);column-gap:0;margin:0 0 64px;counter-increment:n}
+body{counter-reset:n}
+section::before{content:counter(n,decimal-leading-zero) / "";font-size:18px;letter-spacing:0.01em;padding-top:10px}
+h2{font-size:32px;font-weight:500;letter-spacing:-0.005em;line-height:1.05;margin:0 0 8px}
+.small{font-size:15px;letter-spacing:0.01em;margin:0 0 20px}
+p{margin:0 0 0.6em;max-width:60ch;text-wrap:pretty;hyphens:auto;overflow-wrap:break-word}
+.label{font-size:15px;letter-spacing:0.01em;text-transform:uppercase;border-bottom:1px solid var(--ink);padding-bottom:4px;margin:24px 0 8px;max-width:60ch}
+mark{background:var(--hl);color:#000;padding:0 0.1em}
+code{font-size:18px;font-family:ui-monospace,monospace}
+table{border-collapse:collapse;font-size:18px;letter-spacing:0.01em;margin:8px 0 16px}
+th,td{text-align:left;padding:4px 24px 4px 0;border-bottom:1px solid var(--ink)}
+th{font-weight:500}
+ul{margin:0 0 0.6em;padding-left:0;list-style:none;max-width:60ch}
+li{position:relative;margin:0 0 0.3em}
+li::before{content:"–";position:absolute;left:-1em}
+figure.chart{margin:16px 0 24px;max-width:640px;position:relative}
+figure.chart svg{display:block;width:100%;height:auto;color:var(--ink);overflow:visible}
+svg text{font-family:"Jokker",sans-serif;font-size:15px;letter-spacing:0.01em;fill:currentColor}
+.tip{position:absolute;pointer-events:none;background:var(--paper);color:var(--ink);border:1px solid var(--ink);font-size:15px;letter-spacing:0.01em;padding:4px 8px;white-space:nowrap}
+@media (max-width:640px){section{grid-template-columns:minmax(0,1fr)}section::before{padding:0 0 8px}li{padding-left:1em}li::before{left:0}}
+</style>
+</head>
+<body>
+<main>
+<h1>The Politics of Design, read against the scan</h1>
+<p class="dek">Ruben Pater, <em>The Politics of Design</em> (BIS, 2016). Pater’s argument is that no visual choice is neutral: a typeface, a sign, a colour or a stock photo carries the culture it came from, and it fails the people outside that culture. An accessibility checker makes the same claim about disability. These notes check our own widget against the book’s themes. Each one has what the book asks, what we measured on 4 Nov 2026, and what would follow. Nothing in the code has been changed yet. The study starts with choice architecture and dark patterns, the part of the book that bears most on what the scan already does.</p>
+
+<section>
+<div>
+<h2>The architecture of choice, and dark patterns</h2>
+<p class="small">Book: choice architecture, nudges, dark patterns · Where: <code>services/darkPatterns/analyzeDarkPatterns.ts</code>, <code>components/UrlForm.tsx</code></p>
+<p>Every interface arranges choices, so there is no neutral layout: something has to be the default, something comes first, and something is the big button. Pater’s point is that this arrangement is political. It decides for people who do not notice they were decided for. A dark pattern is choice architecture turned against the person choosing it: the default, the order and the weight all serve the site.</p>
+<p>The people least able to see the arrangement pay for it most. They include people with cognitive and learning disabilities, people working in a second language, people using a screen reader or magnifier who see one control at a time, and anyone tired or in a hurry. A trick that most visitors catch on a second look gets past them.</p>
+
+<p class="label">What the scan detects today</p>
+<p>There is already a dark-pattern probe. It reports in its own category, which <mark>does not move the score</mark>, because these are not WCAG failures and the score counts only provable A and AA. Its own comment sets the bar: every check keys off an explicit signal in the markup, because a false accusation of manipulation does more harm than a missed one. Its names follow Harry Brignull’s deceptive.design.</p>
+<table>
+<tr><th>Pattern</th><th>Rule</th><th>Severity</th></tr>
+<tr><td>Accept in one click, no way to refuse</td><td><code>dark-consent-no-reject</code></td><td>serious</td></tr>
+<tr><td>Accept is a button, refuse is plain text</td><td><code>dark-consent-asymmetry</code></td><td>moderate</td></tr>
+<tr><td>Opt-in ticked before the visitor chooses</td><td><code>dark-preselected-optin</code></td><td>serious</td></tr>
+<tr><td>Decline worded to shame</td><td><code>dark-confirmshaming</code></td><td>moderate</td></tr>
+<tr><td>Time pressure</td><td><code>dark-fake-urgency</code></td><td>minor</td></tr>
+<tr><td>Scarcity claim</td><td><code>dark-fake-scarcity</code></td><td>minor</td></tr>
+</table>
+<p>Its consent patterns match in several European languages, not only English: on bundesregierung.de an English-only version found the banner but missed the pattern, because the buttons say ‘Akzeptieren’ and ‘Ablehnen’. The urgency and scarcity findings ask the owner to check that the claim is real, rather than calling it false. A single page visit cannot know the stock, so that is the honest framing.</p>
+
+<p class="label">Where it sees only what a sighted visitor sees</p>
+<p>The asymmetry check asks one question: is accept a filled button and refuse a bare link? That is weight, and weight is visual. A screen reader user does not hear weight. They hear the order. The nudge they meet is ‘Accept all’ taking focus first, and refusal sitting several tabs later or behind ‘Settings’. The consent probe already measures focus in the banner and tabs into it (<code>focusInBanner</code>, <code>tabsInBanner</code>). Nothing yet asks whether those tabs reach accept before reject.</p>
+
+<p class="label">Patterns it does not look for</p>
+<ul>
+<li><strong>Trick questions.</strong> An opt-out checkbox worded as a double negative (‘Untick if you do not want to not receive…’). This can be detected from the label in one visit, it hits people with cognitive disabilities hardest, and it sits next to WCAG 3.3.2, Labels or Instructions.</li>
+<li><strong>Disguised ads.</strong> An ad styled as content or as a ‘Download’ button. This needs judgement, so it is a candidate for the AI review, not the probe, and it would be dropped unless the markup confirms it.</li>
+<li><strong>Hard to cancel, hidden costs, sneaking into the basket, nagging.</strong> These need a journey across several pages or several visits, which a single-page scan does not make. The report should not imply it checked them.</li>
+</ul>
+
+<p class="label">Our own choice architecture</p>
+<p>The book applies to the scanner too.</p>
+<ul>
+<li>The AI review is <mark>off by default</mark> (<code>UrlForm.tsx:73</code>). The reason in the code is speed: about 15s without it, about 40s with it. The default also means the customer’s page goes to an outside model only when they ask. I found no string on the toggle that says the page is sent anywhere. A default that protects people only works if they can see what turning it on gives away.</li>
+<li>The form has one primary action and no labels like ‘Fastest’ or ‘Most chosen’ on its controls. Those were removed on 14 Oct 2026, which is the book’s point applied: a badge on one option is a nudge.</li>
+<li>The report sorts work by severity, so ‘Fix first’ is a recommendation we make for the owner. It is an argued one, since it is built from who is blocked, and the score does not count what we cannot prove.</li>
+</ul>
+
+<p class="label">What would follow</p>
+<ul>
+<li>Add a focus-order version of the asymmetry check: accept reached in fewer tabs than reject, or accept taking initial focus. Add a <code>qa-*.html</code> fixture with a banner that does this and one that does not, so the silence is proved too.</li>
+<li>Add a trick-question check over opt-in and opt-out labels, in the same languages as the consent patterns.</li>
+<li>State in the dark-pattern section what one visit cannot see: cancellation, the checkout total, repeated asking.</li>
+<li>Say on the AI review toggle that it sends the page to an outside model.</li>
+</ul>
+</div>
+</section>
+
+<section>
+<div>
+<h2>Graphs: a number drawn as a fact</h2>
+<p class="small">Book: information graphics · Where: <code>components/ScoreGauge.tsx</code>, <code>backend/src/services/merge/scoring.ts</code></p>
+<p>Pater treats charts as arguments, not windows. Someone chose what was counted, where the scale starts, where the lines are drawn and what the shape suggests. A dial looks like a speedometer, so it reads as a measurement of the whole site. Our dial draws one number out of 100, and the reader takes it as a grade.</p>
+
+<p class="label">What the score actually is</p>
+<p>The score is 100 minus a penalty. The penalty is 10 for each critical finding, 5 for each serious, 2 for each moderate and 1 for each minor, and each severity is capped: 100, 50, 30 and 20. Above a penalty of 90 the line stops being straight and becomes 900 ÷ penalty, so a page in deep trouble can still show progress. The thresholds at 70 and 90 are our choice, and they appear twice: on the dial and in the report copy.</p>
+
+<figure class="chart" aria-labelledby="c1t">
+<p id="c1t" class="label">Score against penalty</p>
+<svg id="c1" viewBox="0 0 640 300" role="img" aria-label="Line chart. The score falls in a straight line from 100 at no penalty to 10 at a penalty of 90, then curves down slowly to 5 at the largest possible penalty, 200. Bands are marked at 70 and 90."></svg>
+<div id="c1tip" class="tip" hidden></div>
+</figure>
+
+<p>Two things the chart shows that the dial does not.</p>
+<ul>
+<li><mark>The dial never reaches 0.</mark> Every cap full is a penalty of 200, which gives 4.5, which rounds to 5. The bottom of the drawn scale is a place no page can be.</li>
+<li>The caps decide which band a kind of fault can push a site into. A page with only moderate faults can never fall below 70, however many it has. A page with only serious faults bottoms out at 50.</li>
+</ul>
+
+<figure class="chart" aria-labelledby="c2t">
+<p id="c2t" class="label">Lowest score one severity can reach on its own</p>
+<svg id="c2" viewBox="0 0 640 200" role="img" aria-label="Bar chart. With only critical findings the lowest score is 9. With only serious, 50. With only moderate, 70. With only minor, 80."></svg>
+<div id="c2tip" class="tip" hidden></div>
+</figure>
+<table>
+<tr><th>Only this severity</th><th>Cap on its penalty</th><th>Lowest score</th></tr>
+<tr><td>Critical</td><td>100</td><td>9</td></tr>
+<tr><td>Serious</td><td>50</td><td>50</td></tr>
+<tr><td>Moderate</td><td>30</td><td><mark>70</mark></td></tr>
+<tr><td>Minor</td><td>20</td><td>80</td></tr>
+<tr><td>All four, every cap full</td><td>200</td><td>5</td></tr>
+</table>
+
+<p class="label">What the report already does right</p>
+<ul>
+<li>The band is said as a range, ‘under 70’, not as a verdict word like ‘Failing’. A range can be checked. A verdict is a judgement handed to the reader.</li>
+<li>The dial is one picture with one sentence for assistive technology. Its parts are hidden, so the number is not read out three times.</li>
+<li>The top band’s copy does not claim the site is fine. A comment in the code says a scan reaches perhaps half of what is wrong, so ‘90 or more’ says what was looked for and found clean.</li>
+<li>The meter is a solid bar with ticks, not red, amber and green. Colour would make it a traffic light.</li>
+</ul>
+
+<p class="label">What would follow</p>
+<ul>
+<li>Say beside the score what it counts: provable WCAG A and AA findings on the pages scanned, not the whole site and not the whole of accessibility.</li>
+<li>Decide whether the moderate cap should be able to hold a site above 70. If 200 moderate faults should stop visitors, the cap is drawing a better picture than the page deserves. If the cap stays, say so.</li>
+<li>Either let the scale end at 5, or say in the score’s small print that 0 is not reachable.</li>
+</ul>
+</div>
+</section>
+
+<section>
+<div>
+<h2>Typography is Latin by default</h2>
+<p class="small">Book: type and writing systems · Where: <code>JokkerVF-TRIAL.woff2</code>, <code>src/index.tsx</code></p>
+<p>Pater shows how type design, software and the type market grew up around the Latin alphabet, so other scripts get fewer faces, worse fallbacks and later support. Our report quotes the customer’s own page: link text, alt text, headings. Whatever script that page is in lands in our type.</p>
+<p class="label">Measured</p>
+<p>Jokker VF maps 523 code points. It covers Western, Central and Turkish Latin. It covers <mark>no</mark> Vietnamese, Greek, Cyrillic, Arabic, Hebrew, Devanagari or CJK.</p>
+<table>
+<tr><th>Script</th><th>In Jokker</th></tr>
+<tr><td>Latin (de, pl, cs, tr)</td><td>yes</td></tr>
+<tr><td>Vietnamese</td><td><mark>no</mark></td></tr>
+<tr><td>Greek, Cyrillic</td><td><mark>no</mark></td></tr>
+<tr><td>Arabic, Hebrew</td><td><mark>no</mark></td></tr>
+<tr><td>Devanagari, CJK</td><td><mark>no</mark></td></tr>
+</table>
+<p>A Russian or Greek page’s quoted text falls back to whatever the browser’s <code>sans-serif</code> is, in the middle of a line set in Jokker, at Jokker’s size and spacing. The four interface languages (en, de, es, fr) are all Western European and Latin.</p>
+<p>The scanner itself does better: <code>renderPage.ts</code> already maps a page’s <code>lang</code> to its expected script and counts text in another script that is not marked.</p>
+<p class="label">What would follow</p>
+<ul>
+<li>Name a fallback per script in the <code>font-family</code> stack, so the fallback is chosen, not left to the browser.</li>
+<li>Quoted page text carries the page’s own <code>lang</code>, so the reader’s screen reader pronounces it in the right voice. It is a WCAG 3.1.2 matter in our own widget, not only a type matter.</li>
+</ul>
+</div>
+</section>
+
+<section>
+<div>
+<h2>Reading direction is assumed</h2>
+<p class="small">Book: reading direction and layout · Where: the widget source</p>
+<p>Pater points out that left to right, top to bottom is one convention among several. A design built only for it breaks for Arabic, Hebrew, Persian and Urdu readers.</p>
+<p class="label">Measured</p>
+<p>There is <mark>no</mark> <code>dir</code> handling anywhere in <code>widget-business/src</code>. The report quotes right-to-left text inline among left-to-right text, so a quoted Hebrew link with a number or a bracket in it can have its parts reordered by the bidi algorithm.</p>
+<p class="label">What would follow</p>
+<ul>
+<li>Wrap every quoted piece of the customer’s page in <code>&lt;bdi&gt;</code>, or give it <code>dir="auto"</code>. This is a small change with no visual cost for Latin pages.</li>
+</ul>
+</div>
+</section>
+
+<section>
+<div>
+<h2>A tick is not a universal yes</h2>
+<p class="small">Book: signs, icons and gestures · Where: <code>Wcag22Readiness.tsx:157</code>, <code>Feedback.tsx:67</code></p>
+<p>Pater collects signs that mean different things in different places. The check mark is a common case: in Japan and Korea a circle marks a correct answer and a cross a wrong one, and in Swedish and Finnish schools a tick can mark a wrong answer.</p>
+<p class="label">Measured</p>
+<p>The WCAG 2.2 table marks a pass with <code>✓</code> and a failure with <code>!</code>, hidden from assistive technology. The feedback toast uses <code>✓</code> for success. In both, a word sits beside the mark, so the sign never has to work alone.</p>
+<p class="label">What would follow</p>
+<ul>
+<li>Keep the rule: a mark is never the only carrier of a meaning. It is the same rule as our black-and-white one, where shape and word say what colour used to say.</li>
+</ul>
+</div>
+</section>
+
+<section>
+<div>
+<h2>Colour already has no culture to carry</h2>
+<p class="small">Book: colour · Where: CLAUDE.md, ‘Colour: strictly black and white’</p>
+<p>Pater shows that colours carry opposite meanings across cultures: red is danger in one place and luck in another, white is purity in one and mourning in another. A red, amber and green severity scale assumes everyone reads traffic lights.</p>
+<p class="label">Measured</p>
+<p>We dropped colour as meaning on 14 Oct 2026. Severity is said by shape and word: solid ink, a solid edge, a dashed edge, a dotted edge. The marker highlights are laid over words that already say the thing, and the finding tabs’ cyan, green and brown are tab fills, not signals. Pictures of the customer’s page are grey.</p>
+<p class="label">What would follow</p>
+<ul>
+<li>Nothing to change. Record it as a reason for the rule, beside contrast, so the rule is not undone as ‘only a style’.</li>
+</ul>
+</div>
+</section>
+
+<section>
+<div>
+<h2>Dates in one country’s order</h2>
+<p class="small">Book: conventions taken as global · Where: <code>AcrDraft.tsx:32</code>, <code>ScoreGauge.tsx:127</code></p>
+<p class="label">Measured</p>
+<p>Most dates follow the report language. Two do not: the ACR draft and the copied score summary are always <code>en-GB</code>, so a German report’s summary reads ‘4 November 2026’.</p>
+<p class="label">What would follow</p>
+<ul>
+<li>Use the same <code>DATE_LOCALE[lang]</code> table the statement and history already use. The ACR is a US form in English, so it may keep <code>en-GB</code>, or take <code>en-US</code> since its readers are American.</li>
+</ul>
+</div>
+</section>
+
+<section>
+<div>
+<h2>Who the reader is pictured as</h2>
+<p class="small">Book: representation and stereotypes · Where: <code>lib/strings.ts</code></p>
+<p>Pater’s chapters on representation ask who appears in pictures and examples, and who is defined by what they lack. For an accessibility product, the question is how disabled people are named.</p>
+<p class="label">Measured</p>
+<p>The report has no pictures of people. The English strings name people rarely: ‘people with disabilities’ once, ‘screen reader user’ once, ‘colour blind’ and ‘colour blindness’ once each. The rest names the barrier (‘the button has no name’), which is the social model Pater’s argument leans towards: the page disables, not the person.</p>
+<p class="label">What would follow</p>
+<ul>
+<li>Keep naming the barrier and the tool, not the person. A voice test could hold it, the way <code>voice.test.ts</code> holds the rest.</li>
+</ul>
+</div>
+</section>
+
+<section>
+<div>
+<h2>One region’s standard, presented as the standard</h2>
+<p class="small">Book: the ‘not so global’ of the title · Where: the legal section, <code>conformance/</code></p>
+<p>Pater’s subtitle is the point: guidance written in Europe and North America gets called global. WCAG is a W3C standard, written mostly in those places, and the laws the report reads by are European: the European Accessibility Act (six times in the English strings), EN 301 549 (three) and Germany’s BFSG (one).</p>
+<p class="label">Measured</p>
+<p>The score counts only WCAG A and AA findings we can prove, which keeps the report honest about what it measures. It does not say which country’s law the reader is under, and it names no law outside the EU.</p>
+<p class="label">What would follow</p>
+<ul>
+<li>Say once, plainly, that the legal section reads EU law, and that a business outside the EU should check its own country’s rules. No list of other laws: we cannot keep one accurate.</li>
+</ul>
+</div>
+</section>
+
+<section>
+<div>
+<h2>In short</h2>
+<p>On choice architecture, the dark-pattern probe is strong on what is visible and blind to order. A focus-order consent check and a trick-question check would close that gap for the readers dark patterns hurt most. The AI review toggle should say where the page goes.</p>
+<p>On graphs, the dial draws a scale whose bottom cannot be reached, and the caps keep a site with only moderate faults above 70 forever. Both are decisions the picture hides. The score should say what it counts.</p>
+<p>Two other changes are worth making now, because they are faults in our own accessibility: quoted page text needs its <code>lang</code> and <code>dir</code>, and it needs a chosen fallback for scripts Jokker does not have. Two are small: the two fixed <code>en-GB</code> dates, and one line saying the legal section is EU law. The colour and sign rules already do what the book asks.</p>
+</div>
+</section>
+</main>
+<script>
+// The score function, copied from backend/src/services/merge/scoring.ts.
+const score = p => p <= 90 ? 100 - p : Math.max(0, Math.round(900 / p));
+const NS = "http://www.w3.org/2000/svg";
+const el = (tag, attrs, parent) => { const e = document.createElementNS(NS, tag); for (const k in attrs) e.setAttribute(k, attrs[k]); parent.appendChild(e); return e; };
+const text = (s, attrs, parent) => { const e = el("text", attrs, parent); e.textContent = s; return e; };
+function tipAt(fig, tip, svg, x, y, s) {
+  const r = svg.getBoundingClientRect(), k = r.width / svg.viewBox.baseVal.width;
+  tip.textContent = s; tip.hidden = false;
+  tip.style.left = Math.min(x * k + 12, r.width - tip.offsetWidth) + "px"; tip.style.top = (y * k - 36) + "px";
+}
+
+// Chart 1: score against penalty.
+(() => {
+  const svg = document.getElementById("c1"), fig = svg.parentElement, tip = document.getElementById("c1tip");
+  const L = 48, R = 624, T = 12, B = 260, maxP = 200;
+  const X = p => L + (p / maxP) * (R - L), Y = s => B - (s / 100) * (B - T);
+  for (const s of [0, 50, 100]) text(String(s), { x: L - 10, y: Y(s) + 5, "text-anchor": "end" }, svg);
+  for (const p of [0, 50, 90, 150, 200]) text(String(p), { x: X(p), y: B + 22, "text-anchor": "middle" }, svg);
+  text("penalty", { x: R, y: B + 40, "text-anchor": "end" }, svg);
+  el("line", { x1: L, x2: R, y1: B, y2: B, stroke: "currentColor", "stroke-width": 1 }, svg);
+  for (const s of [70, 90]) {
+    el("line", { x1: L, x2: R, y1: Y(s), y2: Y(s), stroke: "currentColor", "stroke-width": 1, "stroke-dasharray": "2 4" }, svg);
+    text(String(s), { x: R, y: Y(s) - 6, "text-anchor": "end" }, svg);
+  }
+  el("line", { x1: X(90), x2: X(90), y1: B, y2: Y(10), stroke: "currentColor", "stroke-width": 1, "stroke-dasharray": "2 4" }, svg);
+  text("the curve starts", { x: X(90) + 8, y: Y(10) - 10 }, svg);
+  let d = ""; for (let p = 0; p <= maxP; p++) d += (p ? "L" : "M") + X(p).toFixed(1) + " " + Y(score(p)).toFixed(1);
+  el("path", { d, fill: "none", stroke: "currentColor", "stroke-width": 2, "stroke-linejoin": "round" }, svg);
+  el("circle", { cx: X(200), cy: Y(5), r: 4, fill: "currentColor" }, svg);
+  text("5, the lowest possible", { x: X(200) - 8, y: Y(5) - 12, "text-anchor": "end" }, svg);
+  const hair = el("line", { y1: T, y2: B, stroke: "currentColor", "stroke-width": 1, visibility: "hidden" }, svg);
+  const dot = el("circle", { r: 5, fill: "var(--paper)", stroke: "currentColor", "stroke-width": 2, visibility: "hidden" }, svg);
+  const hit = el("rect", { x: L, y: T, width: R - L, height: B - T, fill: "transparent" }, svg);
+  hit.addEventListener("pointermove", e => {
+    const pt = new DOMPoint(e.clientX, e.clientY).matrixTransform(svg.getScreenCTM().inverse());
+    const p = Math.max(0, Math.min(maxP, Math.round(((pt.x - L) / (R - L)) * maxP))), s = score(p);
+    hair.setAttribute("x1", X(p)); hair.setAttribute("x2", X(p)); dot.setAttribute("cx", X(p)); dot.setAttribute("cy", Y(s));
+    hair.setAttribute("visibility", "visible"); dot.setAttribute("visibility", "visible");
+    tipAt(fig, tip, svg, X(p), Y(s), `penalty ${p} · score ${s}`);
+  });
+  hit.addEventListener("pointerleave", () => { hair.setAttribute("visibility", "hidden"); dot.setAttribute("visibility", "hidden"); tip.hidden = true; });
+})();
+
+// Chart 2: lowest score each severity reaches alone.
+(() => {
+  const svg = document.getElementById("c2"), fig = svg.parentElement, tip = document.getElementById("c2tip");
+  const rows = [["Critical", 100], ["Serious", 50], ["Moderate", 30], ["Minor", 20]];
+  const L = 96, R = 600, T = 8, rowH = 40, bar = 14;
+  const X = s => L + (s / 100) * (R - L);
+  for (const s of [70, 90]) {
+    el("line", { x1: X(s), x2: X(s), y1: T, y2: T + rows.length * rowH, stroke: "currentColor", "stroke-width": 1, "stroke-dasharray": "2 4" }, svg);
+    text(String(s), { x: X(s), y: T + rows.length * rowH + 20, "text-anchor": "middle" }, svg);
+  }
+  rows.forEach(([name, cap], i) => {
+    const s = score(cap), y = T + i * rowH + (rowH - bar) / 2;
+    text(name, { x: L - 10, y: y + bar - 2, "text-anchor": "end" }, svg);
+    el("rect", { x: L, y, width: X(s) - L, height: bar, rx: 4, fill: "currentColor" }, svg);
+    text(String(s), { x: X(s) + 8, y: y + bar - 2 }, svg);
+    const hit = el("rect", { x: L, y: y - 12, width: R - L, height: bar + 24, fill: "transparent" }, svg);
+    hit.addEventListener("pointermove", () => tipAt(fig, tip, svg, X(s), y, `${name} only: penalty capped at ${cap}, score ${s}`));
+    hit.addEventListener("pointerleave", () => { tip.hidden = true; });
+  });
+  el("line", { x1: L, x2: L, y1: T, y2: T + rows.length * rowH, stroke: "currentColor", "stroke-width": 1 }, svg);
+})();
+</script>
+</main>
+</body>
+</html>

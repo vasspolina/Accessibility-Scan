@@ -78,13 +78,16 @@ const JARGON_OWNER = new RegExp(
 );
 
 describe("all reader-facing copy", () => {
-  // "Em dashes may replace parentheses, but never more than once per finding
+  // "A dash may replace parentheses, but never more than once per finding
   // block." Counted per string, which is stricter than per block and easier
-  // to point at when it fails.
-  it("uses at most one em dash per string", () => {
+  // to point at when it fails. The dash is the spaced en dash in English too
+  // since 4 Nov 2026 (Jokker's hyphen is narrow enough to tell it apart), so
+  // an em dash is now a fault, and a range such as 10–12 is not a dash.
+  it("uses the spaced en dash, at most once per string, and never an em dash", () => {
     for (const [id, text] of allCopy()) {
-      const dashes = (text.match(/—/g) ?? []).length;
-      expect(dashes, `${id} uses ${dashes} em dashes`).toBeLessThanOrEqual(1);
+      expect(text.includes("—"), `${id} uses an em dash`).toBe(false);
+      const dashes = (text.match(/\s–\s/g) ?? []).length;
+      expect(dashes, `${id} uses ${dashes} dashes`).toBeLessThanOrEqual(1);
     }
   });
 

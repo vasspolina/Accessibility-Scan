@@ -1,0 +1,193 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Hochuli typography study</title>
+<!--
+  Jost Hochuli, Detail in typography (Hyphen Press, 2008), read against the
+  widget on 4 Nov 2026, after the font changed from PP Telegraf to Jokker VF
+  (19 Oct 2026). Page and figure numbers are the book's, from the scan used
+  for the first pass (~/Downloads/hochuli-...-64-page.pdf). The font figures
+  were measured from backend/public/fonts/JokkerVF-TRIAL.woff2 with fontTools:
+  advance widths in em, and the GSUB/GPOS feature lists.
+  The earlier study, docs/letterspacing-study.html, measured Telegraf; its
+  numbers are historical (CLAUDE.md, Type).
+  Open in a browser; the font loads from the production backend.
+-->
+<style>
+@font-face{font-family:"Jokker";src:url("https://a11y-checker-v2-production.up.railway.app/fonts/JokkerVF-TRIAL.woff2") format("woff2");font-weight:100 900}
+:root{--ink:#000;--paper:#fff;--hl:#ffd400}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--ink:#fff;--paper:#000}}
+:root[data-theme="dark"]{--ink:#fff;--paper:#000}
+*{box-sizing:border-box}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:"Jokker",sans-serif;font-feature-settings:"ss04","ss05";font-kerning:normal;font-synthesis:none;font-size:27px;line-height:1.2;counter-reset:n}
+main{max-width:1100px;margin:0 auto;padding:48px 16px 96px}
+h1{font-size:40px;font-weight:300;letter-spacing:-0.01em;line-height:1.05;margin:0 0 16px}
+.dek{font-size:18px;letter-spacing:0.01em;margin:0 0 64px;max-width:60ch}
+section{display:grid;grid-template-columns:4.5em minmax(0,1fr);margin:0 0 64px;counter-increment:n}
+section::before{content:counter(n,decimal-leading-zero) / "";font-size:18px;letter-spacing:0.01em;padding-top:10px}
+h2{font-size:32px;font-weight:500;letter-spacing:-0.005em;line-height:1.05;margin:0 0 8px}
+.small{font-size:15px;letter-spacing:0.01em;margin:0 0 20px}
+p{margin:0 0 0.6em;max-width:60ch;text-wrap:pretty;hyphens:auto;overflow-wrap:break-word}
+.label{font-size:15px;letter-spacing:0.01em;text-transform:uppercase;border-bottom:1px solid var(--ink);padding-bottom:4px;margin:24px 0 8px;max-width:60ch}
+mark{background:var(--hl);color:#000;padding:0 0.1em}
+code{font-size:18px;font-family:ui-monospace,monospace}
+table{border-collapse:collapse;font-size:18px;letter-spacing:0.01em;margin:8px 0 16px}
+th,td{text-align:left;padding:4px 24px 4px 0;border-bottom:1px solid var(--ink);vertical-align:baseline}
+th{font-weight:500}
+td.num,th.num{text-align:right;font-variant-numeric:tabular-nums}
+ul{margin:0 0 0.6em;padding-left:0;list-style:none;max-width:60ch}
+li{position:relative;margin:0 0 0.3em}
+li::before{content:"–";position:absolute;left:-1em}
+.spec{border-top:1px solid var(--ink);padding:12px 0 4px;margin:0}
+.spec .k{display:block;font-size:15px;letter-spacing:0.01em;margin:0 0 4px}
+.spec .v{display:block;font-size:27px;overflow-wrap:anywhere}
+.big .v{font-size:40px;font-weight:300;letter-spacing:-0.01em}
+.caps{font-size:25px;letter-spacing:0.06em}
+.tnum{font-variant-numeric:tabular-nums}
+.case{font-feature-settings:"ss04","ss05","case"}
+@media (max-width:640px){section{grid-template-columns:minmax(0,1fr)}section::before{padding:0 0 8px}li{padding-left:1em}li::before{left:0}}
+</style>
+</head>
+<body>
+<main>
+<h1>Detail in typography, set in Jokker</h1>
+<p class="dek">Jost Hochuli, <em>Detail in typography</em> (Hyphen Press, 2008). The widget’s typesetting rules came from this book on 18 Oct 2026, measured on PP Telegraf. The next day the font changed to Jokker VF. Several of those rules were reasons about Telegraf’s glyphs, so this study measures Jokker and asks which reasons still hold. Each section gives the book’s rule and page, what Jokker can do, and what the widget does now. Nothing in the code has been changed.</p>
+
+<section>
+<div>
+<h2>What the font can and cannot do</h2>
+<p class="small">Measured from <code>JokkerVF-TRIAL.woff2</code>: 1000 units to the em, x-height 534, cap height 700</p>
+<table>
+<tr><th>Hochuli asks for</th><th>Book</th><th>Jokker</th></tr>
+<tr><td>Kerning</td><td>p.23–31</td><td>yes, <code>kern</code></td></tr>
+<tr><td>fi, fl ligatures</td><td>p.23–31</td><td>yes, <code>liga</code></td></tr>
+<tr><td>Non-lining figures in prose</td><td>p.41–44</td><td><mark>no</mark>, no <code>onum</code></td></tr>
+<tr><td>Tabular figures in tables</td><td>p.41–44</td><td>yes, <code>tnum</code> (default is proportional)</td></tr>
+<tr><td>Small capitals</td><td>p.39–40</td><td><mark>no</mark>, no <code>smcp</code> or <code>c2sc</code></td></tr>
+<tr><td>Punctuation at capital height</td><td>p.39–40</td><td>yes, <code>case</code></td></tr>
+<tr><td>A true italic</td><td>p.41–44</td><td><mark>no</mark>, a <code>slnt</code> axis (0 to −16°) slopes the roman</td></tr>
+<tr><td>One-sign ellipsis</td><td>p.36–40</td><td>yes, 0.715em</td></tr>
+<tr><td>Thin space</td><td>p.36–40</td><td>yes, 0.125em</td></tr>
+<tr><td>Narrow no-break space</td><td>p.36–40, fig.41</td><td><mark>no</mark>, U+202F missing</td></tr>
+</table>
+</div>
+</section>
+
+<section>
+<div>
+<h2>The dash: the reason for the em dash is gone</h2>
+<p class="small">Book: p.36–40, figs 41–53 · Where: <code>lib/typography.ts</code> <code>smarten()</code></p>
+<p>Hochuli’s own dash is the spaced en dash. We set English with a close em dash instead, for one reason written into CLAUDE.md: in Telegraf the hyphen was 0.47em and the en dash 0.57em, so a spaced en dash read as a hyphen.</p>
+<p class="label">Measured</p>
+<table>
+<tr><th>Glyph</th><th class="num">Telegraf</th><th class="num">Jokker</th></tr>
+<tr><td>Hyphen</td><td class="num">0.47</td><td class="num">0.360</td></tr>
+<tr><td>En dash</td><td class="num">0.57</td><td class="num">0.557</td></tr>
+<tr><td>Em dash</td><td class="num">not measured</td><td class="num">0.927</td></tr>
+<tr><td>En dash ÷ hyphen</td><td class="num">1.21</td><td class="num"><mark>1.55</mark></td></tr>
+</table>
+<p>In Jokker the en dash is half as wide again as the hyphen, so it no longer reads as one. The close em dash is now the wide one: at 27px it is 25px of rule touching both words.</p>
+<div class="spec"><span class="k">hyphen as dash (wrong everywhere)</span><span class="v">self-service page - the form is long</span></div>
+<div class="spec"><span class="k">spaced en dash, Hochuli’s form (no-break space before it)</span><span class="v">self-service page&nbsp;– the form is long</span></div>
+<div class="spec"><span class="k">close em dash, our English form now</span><span class="v">self-service page—the form is long</span></div>
+<div class="spec"><span class="k">ranges, closed en dash</span><span class="v">10–12 · 10:00–18:00 · Wed–Fri</span></div>
+<p class="label">What would follow</p>
+<ul>
+<li>A decision for you: English could take the spaced en dash, like de, fr and es already do, and every language would set the dash one way. <code>smarten()</code> already does this for the other three, so it is one branch to remove. The strings that were swept to the close em dash would need sweeping back.</li>
+</ul>
+</div>
+</section>
+
+<section>
+<div>
+<h2>French spacing falls back to another font</h2>
+<p class="small">Book: p.36, fig.41 · Where: <code>typography.ts:196</code>, <code>:107</code></p>
+<p>French sets a narrow space before ; ! ? and inside « ». <code>smarten()</code> does this with U+202F, the narrow no-break space, which is right. Jokker has <mark>no glyph for U+202F</mark>, so the browser takes that one character from a fallback font, at that font’s width. The space is there, but its width depends on the reader’s system, not on us.</p>
+<div class="spec"><span class="k">as set now (U+202F)</span><span class="v" lang="fr">Pourquoi&#8239;? «&#8239;Refuser&#8239;»</span></div>
+<div class="spec"><span class="k">thin space U+2009, in Jokker, but it can break</span><span class="v" lang="fr">Pourquoi&#8201;? «&#8201;Refuser&#8201;»</span></div>
+<p class="label">What would follow</p>
+<ul>
+<li>Use Jokker’s thin space (U+2009) and keep it from breaking: wrap the mark and its space in a <code>nowrap</code> span. Jokker has no word joiner (U+2060) either, so that route is closed.</li>
+</ul>
+</div>
+</section>
+
+<section>
+<div>
+<h2>Figures: lining in prose, proportional in tables</h2>
+<p class="small">Book: p.41–44 · Where: <code>styles/global.css</code></p>
+<p>Hochuli wants non-lining figures in running text, so numbers sit in the line like lowercase, and tabular figures in tables, so columns align. Jokker has no non-lining figures, so prose stays lining, and that cannot be fixed in CSS. Jokker does have tabular figures, and the widget <mark>never asks for them</mark>: <code>font-variant-numeric</code> appears nowhere in the widget. Its default figures are proportional, a 1 being 0.306em and a 0 being 0.612em.</p>
+<div class="spec"><span class="k">proportional, the default: the columns drift</span><span class="v">111 issues<br>808 issues<br>101 issues</span></div>
+<div class="spec"><span class="k">tabular, <code>font-variant-numeric: tabular-nums</code></span><span class="v tnum">111 issues<br>808 issues<br>101 issues</span></div>
+<p class="label">What would follow</p>
+<ul>
+<li>Set <code>tabular-nums</code> on the schedule, the conformance table, the stat tiles and the score numeral, where figures stack or change in place. Leave prose proportional.</li>
+</ul>
+</div>
+</section>
+
+<section>
+<div>
+<h2>Capitals in the line</h2>
+<p class="small">Book: p.39–40, fig.54; letterspacing p.23–31 · Where: <code>.a11y-caps</code>, <code>ScanChat</code></p>
+<p>Hochuli sets abbreviations in small capitals, or failing that in capitals a size smaller and spaced evenly, with no holes at O, C and G. Jokker has no small capitals, so the widget’s workaround is the right one: 25px at +0.06em inside 27px prose. That spacing was judged on Telegraf and has not been checked on Jokker.</p>
+<p>Jokker’s <code>case</code> feature raises hyphens, brackets and dashes to capital height. The widget never turns it on, so ‘WCAG-AA’ or ‘(ARIA)’ has its punctuation hung at lowercase height.</p>
+<div class="spec"><span class="k">capitals 25px +0.06em, without <code>case</code></span><span class="v"><span class="caps">(WCAG-AA) · ARIA · OCC</span></span></div>
+<div class="spec"><span class="k">the same, with <code>case</code></span><span class="v case"><span class="caps">(WCAG-AA) · ARIA · OCC</span></span></div>
+<p class="label">What would follow</p>
+<ul>
+<li>Turn on <code>case</code> for <code>.a11y-caps</code>.</li>
+<li>Re-judge +0.06em on Jokker by eye at O, C and G, using the specimen above.</li>
+</ul>
+</div>
+</section>
+
+<section>
+<div>
+<h2>Letterspacing follows the size, on old numbers</h2>
+<p class="small">Book: p.23–31, figs 25–35 · Where: 61 rules at +0.01em, 4 at 0, 4 at −0.005em, 4 at −0.01em</p>
+<p>The rule holds: spacing follows the counter, tighter as the size grows, never tracking lowercase for effect. The values do not yet. They were measured on Telegraf, where the space between two n was 0.13em against a counter of 0.29em. Jokker is a different face, with an n of 0.634em, an o of 0.635em and an x-height of 0.534em, and nobody has looked at it at our five sizes.</p>
+<div class="spec big"><span class="k">40px Light at −0.01em</span><span class="v">Accessibility minimum</span></div>
+<div class="spec"><span class="k">27px at 0</span><span class="v">tollere minimum nn oo Verwaltung aren’t</span></div>
+<div class="spec"><span class="k">15px at +0.01em</span><span class="v" style="font-size:15px;letter-spacing:0.01em">tollere minimum nn oo Verwaltung aren’t</span></div>
+<p class="label">What would follow</p>
+<ul>
+<li>Port <code>docs/letterspacing-study.html</code> to Jokker and re-judge the five values, then update the Type bullet in CLAUDE.md, which still names Telegraf.</li>
+</ul>
+</div>
+</section>
+
+<section>
+<div>
+<h2>Emphasis, and the italic Jokker does not have</h2>
+<p class="small">Book: p.41–44</p>
+<p>The rule stands as written in CLAUDE.md: emphasis is Medium, and questions are told from answers by the label. Jokker’s variable file has a <code>slnt</code> axis, which is a sloped roman, not an italic, so the rule does not change. The <code>font-synthesis: none</code> setting keeps the browser from faking one.</p>
+</div>
+</section>
+
+<section>
+<div>
+<h2>What already follows the book</h2>
+<ul>
+<li>Quotation marks by language, single first in English (fig.53), and a short quoted phrase’s comma set outside it.</li>
+<li>Three dots become one ellipsis sign, which Jokker has.</li>
+<li>One- and two-letter words bound to the next word with a no-break space, so they never end a line.</li>
+<li>A 60ch measure, <code>text-wrap: pretty</code> and <code>hyphenate-limit-chars: 7 3 3</code> for a soft rag (p.32–35).</li>
+<li>List markers hung outside the text, en dash or figure.</li>
+<li>Code as an inserted passage at 18px on the text’s line (p.47–53, figs 68, 70).</li>
+</ul>
+<p>One knowing departure: Hochuli prefers a first-line indent to a line space between paragraphs. The chat uses half a line, on your instruction of 4 Nov 2026 after the Displaay FAQ. It stays.</p>
+</div>
+</section>
+
+<section>
+<div>
+<h2>In short</h2>
+<p>Three changes are small and plainly right: tabular figures in tables and stat tiles, <code>case</code> on runs of capitals, and a thin space that Jokker has instead of the narrow space it lacks. One is a decision: with Jokker’s narrow hyphen, English can return to Hochuli’s spaced en dash. One is work: re-measure the letterspacing on Jokker.</p>
+</div>
+</section>
+</main>
+</body>
+</html>
