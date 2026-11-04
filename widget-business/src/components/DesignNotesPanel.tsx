@@ -141,11 +141,6 @@ export function DesignNotesPanel({ findings }: { findings: AccessibilityFinding[
                   aria-controls="a11y-dn-detail"
                   onClick={() => setOpenId(group[0].id)}
                 >
-                  {/* The design's bullet. It is a mark, not a close button,
-                      so it never reaches the accessible name. */}
-                  <span className="a11y-dn-mark" aria-hidden="true">
-                    &times;
-                  </span>
                   <span className="a11y-dn-link-text">{noteTitle(group)}</span>
                 </button>
               </li>

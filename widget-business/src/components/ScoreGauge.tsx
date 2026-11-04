@@ -441,16 +441,15 @@ export function ScoreGauge({
             <p className="a11y-sum-lead">{t(scoreSummary(score, seed))}</p>
           </SumPanel>
 
-          {/* Set as the Displaay homepage's release grid (user's reference,
-              4 Nov 2026), on six columns: 01, 04 and 07 are the lead tile
-              over five columns, 02 with 03 and 05 with 06 share a row,
-              because each pair is one thought in two lines. Every point is
-              the type inside a tile, with its number as the name under it. */}
+          {/* Set as the displaay.net Info block (user's instruction, 4 Nov
+              2026): two columns, each point's number over a rule and its
+              words under it. The number follows the words in the markup and
+              is drawn first, so a screen reader hears the sentence alone. */}
           <section className="a11y-sum-panel a11y-sum-counts" aria-labelledby="a11y-sum-counts-heading">
             <h3 className="a11y-sum-eyebrow" id="a11y-sum-counts-heading">{t("What the score counts")}</h3>
             <div className="a11y-sum-specimens">
               {SCORE_POINTS.map((point, i) => (
-                <p key={point} className={`a11y-sum-specimen${[0, 3, 6].includes(i) ? " a11y-sum-specimen-wide" : ""}`}>
+                <p key={point} className="a11y-sum-specimen">
                   <span className="a11y-sum-specimen-text">{t(point)}</span>
                   <span className="a11y-sum-specimen-num" aria-hidden="true">
                     {String(i + 1).padStart(2, "0")}

@@ -148,7 +148,6 @@
 .a11y-widget-biz .a11y-dial-of,
 .a11y-widget-biz .a11y-dial-sub,
 .a11y-widget-biz .a11y-dn-link-text,
-.a11y-widget-biz .a11y-dn-mark,
 .a11y-widget-biz .a11y-dn-pill,
 .a11y-widget-biz .a11y-issue-row-meta,
 .a11y-widget-biz .a11y-issue-row-title,
@@ -801,29 +800,24 @@
    fixed proportion. */
 .a11y-widget-biz .a11y-sum-counts { container: a11y-sum-counts / inline-size; text-align: start; margin: 0 0 1.2em; }
 .a11y-widget-biz .a11y-sum-counts > .a11y-sum-eyebrow { margin: 0 0 0.6em; font-size: 32px; letter-spacing: -0.005em; line-height: 1.1; font-weight: 400; hyphens: manual; }
+/* Replaced the same day (user's instruction, the displaay.net Info block
+   as reference): no big tiles. Two columns, 15px apart; each point is its
+   number at 15px over a 1px ink rule, the words under it at 18px Regular,
+   set left. One column under 640px of its own width. */
 .a11y-widget-biz .a11y-sum-specimens {
-  display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 25px 15px; align-items: start;
+  display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1.2em 15px; align-items: start;
 }
-.a11y-widget-biz .a11y-sum-specimen {
-  grid-column: span 3; min-width: 0; margin: 0; display: flex; flex-direction: column; align-items: stretch; gap: 10px;
+.a11y-widget-biz .a11y-sum-specimen { min-width: 0; margin: 0; display: flex; flex-direction: column; }
+.a11y-widget-biz .a11y-sum-specimen-num {
+  order: -1; font-size: 15px; letter-spacing: 0.01em; line-height: 1.2; font-weight: 400;
+  padding: 0 0 6px; margin: 0 0 10px; border-bottom: 1px solid var(--ink);
 }
-.a11y-widget-biz .a11y-sum-specimen-wide { grid-column: 1 / span 5; }
 .a11y-widget-biz .a11y-sum-specimen-text {
-  box-sizing: border-box; display: flex; align-items: center; justify-content: center; aspect-ratio: 673 / 420;
-  padding: 32px; background: #f0efe8; color: #000; text-align: center;
-  font-size: 32px; letter-spacing: -0.005em; line-height: 1.08; font-weight: 500;
-  text-wrap: balance; hyphens: manual; overflow-wrap: break-word;
+  font-size: 18px; letter-spacing: 0.01em; line-height: 1.3; font-weight: 400; text-align: start;
+  hyphens: auto; overflow-wrap: break-word;
 }
-.a11y-widget-biz .a11y-sum-specimen-wide .a11y-sum-specimen-text { aspect-ratio: 1131 / 636; padding: 48px; font-size: 48px; letter-spacing: -0.01em; line-height: 1.04; }
-.a11y-widget-biz .a11y-sum-specimen-num { font-size: 27px; letter-spacing: 0; line-height: 1.2; font-weight: 400; }
 @container a11y-sum-counts (max-width: 640px) {
-  .a11y-widget-biz .a11y-sum-specimens { row-gap: 20px; }
-  .a11y-widget-biz .a11y-sum-specimen,
-  .a11y-widget-biz .a11y-sum-specimen-wide { grid-column: 1 / -1; }
-  .a11y-widget-biz .a11y-sum-specimen-text,
-  .a11y-widget-biz .a11y-sum-specimen-wide .a11y-sum-specimen-text { aspect-ratio: auto; min-height: 180px; padding: 24px 16px; hyphens: auto; }
-  .a11y-widget-biz .a11y-sum-specimen-text { font-size: 27px; letter-spacing: 0; line-height: 1.15; }
-  .a11y-widget-biz .a11y-sum-specimen-wide .a11y-sum-specimen-text { font-size: 32px; letter-spacing: -0.005em; line-height: 1.08; }
+  .a11y-widget-biz .a11y-sum-specimens { grid-template-columns: minmax(0, 1fr); }
 }
 .a11y-widget-biz .a11y-status-chip { font-size: 18px; letter-spacing: 0.01em; }
 .a11y-widget-biz .a11y-accordion-title .a11y-accordion-head > span:first-child { flex: 0 1 auto; }
@@ -990,45 +984,63 @@
    results, the conformance list), sequences (the screen-reader preview),
    the legal card (its yellow carries the legal status) and the score-counts
    sheet, which has its own tiles as the Displaay homepage release grid.
-   Each tile is Displaay's #f0efe8 ground, square, on an auto-fit grid with
-   a 10px gutter; a 15px Jokker label at the top-left, then the words in
-   Serrif Light 27px/1.2 under the room of a Reckless tile. The ground is
-   fixed in both themes, like the highlights, so the tile redefines --ink and
+   Since later on 4 Nov 2026 (user's instruction) the tiles are gone except
+   for the design notes: every group is set as the columns of the
+   displaay.net pricing block (below), and the notes are round tappable
+   blocks. What follows about the tile ground applies to the notes only:
+   the ground is fixed in both themes, like the highlights, so the tile redefines --ink and
    --paper for everything inside it: borders, buttons, inputs and the focus
    rings follow without a rule each. #000 on #f0efe8 is 18.4:1. */
 .a11y-widget-biz .a11y-next-list,
-.a11y-widget-biz .a11y-dn-list,
 .a11y-widget-biz .a11y-spec-grid,
 .a11y-widget-biz .a11y-ra-row,
 .a11y-widget-biz .a11y-manual-list {
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr));
+  gap: 1.2em 15px; align-items: start; margin: 0 0 1.2em; padding: 0; list-style: none;
+}
+.a11y-widget-biz .a11y-dn-list {
   display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr));
   gap: 10px; align-items: stretch; margin: 0 0 1.2em; padding: 0; list-style: none;
 }
 /* A tally is one word over one figure, so its tiles can be narrower. */
 .a11y-widget-biz .a11y-pro-rows {
   display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 160px), 1fr));
-  gap: 10px; align-items: stretch; margin: 0 0 1.2em; padding: 0; list-style: none;
+  gap: 1.2em 15px; align-items: start; margin: 0 0 1.2em; padding: 0; list-style: none;
 }
 /* The summary column also holds the score-counts sheet, which takes the full
    row; in a grid that full-width item would keep every auto-fit track alive
    and squeeze the two panels into the first two of five, so the column
    wraps as a flex row instead. */
-.a11y-widget-biz .a11y-sum-col:has(> .a11y-sum-panel) { display: flex; flex-wrap: wrap; gap: 10px; align-items: stretch; }
+.a11y-widget-biz .a11y-sum-col:has(> .a11y-sum-panel) { display: flex; flex-wrap: wrap; gap: 1.2em 15px; align-items: flex-start; }
 .a11y-widget-biz .a11y-sum-col > .a11y-sum-panel:not(.a11y-sum-counts) { flex: 1 1 280px; }
 .a11y-widget-biz .a11y-sum-col > :not(.a11y-sum-panel:not(.a11y-sum-counts)) { flex: 1 1 100%; }
 .a11y-widget-biz .a11y-dn-list > li { display: flex; margin: 0; }
 
+/* Each cell is a column of the displaay.net pricing block (user's
+   reference, 4 Nov 2026): no ground, no box; its label over a 1px ink rule,
+   the lines under it at 18px. Ink and paper are the page's again, so the
+   cells follow the theme. */
 .a11y-widget-biz .a11y-sum-col > .a11y-sum-panel:not(.a11y-sum-counts),
 .a11y-widget-biz .a11y-next-list > li,
-.a11y-widget-biz .a11y-dn-list > li > .a11y-dn-link,
 .a11y-widget-biz .a11y-spec-grid > .a11y-spec-card,
 .a11y-widget-biz .a11y-ra-row > .a11y-ra-cell,
 .a11y-widget-biz .a11y-pro-rows > .a11y-pro-row,
 .a11y-widget-biz .a11y-manual-list > .a11y-manual-row {
-  --ink: #000; --paper: #f0efe8;
-  box-sizing: border-box; min-width: 0; margin: 0; padding: 14px 16px 22px;
-  border: 0; border-radius: 0; background: #f0efe8; color: #000;
+  box-sizing: border-box; min-width: 0; margin: 0; padding: 0;
+  border: 0; border-radius: 0; background: none; color: var(--ink);
   text-align: start; overflow-wrap: break-word; hyphens: auto;
+}
+/* A design note is a tappable block, like the displaay.net Download, Test
+   and Buy buttons (user's instruction, 4 Nov 2026): 20px corners, the title
+   centred in it at the prose size, at least 128px tall. Its ground is the
+   fixed #f0efe8 (#000 on it 18.4:1); hover is the marker yellow and the
+   open note solid ink, as before. */
+.a11y-widget-biz .a11y-dn-list > li > .a11y-dn-link {
+  --ink: #000; --paper: #f0efe8;
+  box-sizing: border-box; min-width: 0; min-height: 128px; margin: 0; padding: 16px 20px;
+  display: flex; align-items: center; justify-content: center;
+  border: 0; border-radius: 20px; background: #f0efe8; color: #000;
+  text-align: center; overflow-wrap: break-word; hyphens: auto;
 }
 .a11y-widget-biz .a11y-next-list > li a,
 .a11y-widget-biz .a11y-next-list > li code,
@@ -1046,25 +1058,27 @@
 .a11y-widget-biz .a11y-sum-col > .a11y-sum-panel:not(.a11y-sum-counts) > .a11y-sum-eyebrow,
 .a11y-widget-biz .a11y-next-list > li > .a11y-next-crit,
 .a11y-widget-biz .a11y-next-main > .a11y-next-title + .a11y-next-meta,
-.a11y-widget-biz .a11y-dn-link > .a11y-dn-mark,
 .a11y-widget-biz .a11y-spec-card > .a11y-spec-label,
 .a11y-widget-biz .a11y-ra-cell .a11y-ra-email-label,
 .a11y-widget-biz .a11y-pro-row > span:first-child,
 .a11y-widget-biz .a11y-manual-row > .a11y-conf-id {
-  display: block; margin: 0 0 40px; padding: 0; text-align: start;
+  display: block; margin: 0 0 10px; padding: 0 0 6px; border-bottom: 1px solid var(--ink); text-align: start;
   font-family: "Jokker", sans-serif; font-size: 15px; font-weight: 400; line-height: 1.2; letter-spacing: 0.01em;
   text-transform: none;
 }
-/* The words: Serrif Light, the size of the report's prose. */
+/* The lines: Jokker 18px, as the pricing block sets its rows. */
 .a11y-widget-biz .a11y-sum-col > .a11y-sum-panel:not(.a11y-sum-counts) .a11y-sum-lead,
 .a11y-widget-biz .a11y-next-list > li .a11y-next-title,
-.a11y-widget-biz .a11y-dn-link > .a11y-dn-link-text,
 .a11y-widget-biz .a11y-spec-card > .a11y-spec-value,
 .a11y-widget-biz .a11y-pro-row > .a11y-pro-row-num,
 .a11y-widget-biz .a11y-pro-row > .a11y-pro-row-pass,
 .a11y-widget-biz .a11y-manual-row > .a11y-conf-body > strong {
   display: block; margin: 0;
-  font-family: "Serrif", "Jokker", serif; font-weight: 300; font-size: 27px; line-height: 1.2; letter-spacing: 0;
+  font-family: "Jokker", sans-serif; font-weight: 400; font-size: 18px; line-height: 1.3; letter-spacing: 0.01em;
+}
+.a11y-widget-biz .a11y-dn-link > .a11y-dn-link-text {
+  display: block; margin: 0; font-family: "Jokker", sans-serif; font-weight: 400; font-size: 27px; line-height: 1.1; letter-spacing: 0;
+  text-wrap: balance;
 }
 /* Small print under the words stays Jokker at 15px or 18px. */
 .a11y-widget-biz .a11y-spec-card > .a11y-spec-value > .a11y-spec-gloss { margin-top: 0.6em; font-family: "Jokker", sans-serif; }
@@ -1085,7 +1099,7 @@
 /* A design note is a button: the whole tile is the control. Hover is the
    marker yellow, like every other button; the note that is open is solid
    ink, like the selected tab. */
-.a11y-widget-biz .a11y-dn-list > li > .a11y-dn-link { display: block; width: 100%; font-size: 18px; cursor: pointer; }
+.a11y-widget-biz .a11y-dn-list > li > .a11y-dn-link { width: 100%; font-size: 18px; cursor: pointer; }
 .a11y-widget-biz .a11y-dn-list > li > .a11y-dn-link:enabled:hover { background: var(--hl-cap-a); color: #000; text-decoration: none; }
 .a11y-widget-biz .a11y-dn-list > li > .a11y-dn-link[aria-expanded="true"] { --ink: #fff; --paper: #000; background: #000; color: #fff; font-weight: 400; }
 
@@ -1095,18 +1109,6 @@
 
 /* A tally is the label over its figure. */
 .a11y-widget-biz .a11y-pro-rows > .a11y-pro-row { display: block; }
-/* On a phone the tiles stack one above another, and the Reckless room under
-   each label became a column of gaps: half of it is enough there. */
-@media (max-width: 640px) {
-  .a11y-widget-biz .a11y-sum-col > .a11y-sum-panel:not(.a11y-sum-counts) > .a11y-sum-eyebrow,
-  .a11y-widget-biz .a11y-next-list > li > .a11y-next-crit,
-  .a11y-widget-biz .a11y-next-main > .a11y-next-title + .a11y-next-meta,
-  .a11y-widget-biz .a11y-dn-link > .a11y-dn-mark,
-  .a11y-widget-biz .a11y-spec-card > .a11y-spec-label,
-  .a11y-widget-biz .a11y-ra-cell .a11y-ra-email-label,
-  .a11y-widget-biz .a11y-pro-row > span:first-child,
-  .a11y-widget-biz .a11y-manual-row > .a11y-conf-id { margin-bottom: 20px; }
-}
 
 /* ═══ DESKTOP GUTTER AND TIGHT CHAT (18 Oct 2026; user's instruction) ═════
    On desktop the page, the conversation and every element in it sit 16px
@@ -1160,14 +1162,7 @@
   .a11y-widget-biz .a11y-fd .a11y-finding-todo,
   .a11y-widget-biz .a11y-fd .a11y-finding-steps,
   .a11y-widget-biz .a11y-fd .a11y-fix-once,
-  .a11y-widget-biz .a11y-fd .a11y-picture-note,
-  .a11y-widget-biz .a11y-sum-col > .a11y-sum-panel:not(.a11y-sum-counts) .a11y-sum-lead,
-  .a11y-widget-biz .a11y-next-list > li .a11y-next-title,
-  .a11y-widget-biz .a11y-dn-link > .a11y-dn-link-text,
-  .a11y-widget-biz .a11y-spec-card > .a11y-spec-value,
-  .a11y-widget-biz .a11y-pro-row > .a11y-pro-row-num,
-  .a11y-widget-biz .a11y-pro-row > .a11y-pro-row-pass,
-  .a11y-widget-biz .a11y-manual-row > .a11y-conf-body > strong { font-size: 22px; letter-spacing: 0.005em; }
+  .a11y-widget-biz .a11y-fd .a11y-picture-note { font-size: 22px; letter-spacing: 0.005em; }
 }
 .a11y-widget-biz .a11y-chat-text :is(p, pre) { margin: 0 0 1.2em; }
 .a11y-widget-biz .a11y-chat-text > :last-child { margin-bottom: 0; }
