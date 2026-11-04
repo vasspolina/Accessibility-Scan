@@ -76,13 +76,13 @@
   font-size: 15px; letter-spacing: 0.01em; line-height: 1.2;
 }
 
-/* Controls, after displaay.net/typeface/dazzed (user's instruction, 4 Nov 2026):
-   a rounded rectangle, not a pill: 10px corners, a 1px ink edge, 4px by 12px
-   padding with a 34px floor, and a flat marker-yellow fill on hover (black
-   text on --hl-cap-a measures better than 7:1). 18px. */
+/* Controls: pills again (user's instruction, 4 Nov 2026, back from the 10px
+   Displaay rectangle the same day), with Displaay's 1px ink edge, a 34px floor
+   and a flat marker-yellow fill on hover (black text on --hl-cap-a measures
+   better than 7:1). 18px. */
 .a11y-widget-biz :is(button, .a11y-btn) {
   font: inherit; font-size: 18px; letter-spacing: 0.01em; font-weight: 500;
-  box-sizing: border-box; min-height: 34px; padding: 4px 12px; border: 1px solid var(--ink); border-radius: 10px;
+  box-sizing: border-box; min-height: 34px; padding: 0.5em 1.1em; border: 1px solid var(--ink); border-radius: 999px;
   background: var(--paper); color: var(--ink); transition: background-color 0.15s, border-color 0.15s, border-radius 0.15s;
 }
 .a11y-widget-biz button:enabled,
@@ -203,11 +203,10 @@
   position: sticky; bottom: 0;
   background: var(--paper); padding-block: 0.6em;
 }
-/* Corners match the buttons (displaay.net, user's instruction, 4 Nov 2026):
-   a 1px ink edge, and 20px corners, the 10px button radius plus the box's own
-   padding, so the buttons inside sit concentric with it, as Displaay's larger
-   panels do. The focus ring follows the radius. */
-.a11y-widget-biz .a11y-chat-box { border: 1px solid var(--ink); border-radius: 20px; padding: 0.5em 0.6em; }
+/* Corners match the buttons (user's instruction, 4 Nov 2026): the buttons
+   are pills, so the box is a round pane, 28px, with the buttons' 1px ink
+   edge. The focus ring follows the radius. */
+.a11y-widget-biz .a11y-chat-box { border: 1px solid var(--ink); border-radius: 28px; padding: 0.5em 0.8em; }
 .a11y-widget-biz .a11y-chat-box:focus-within { outline: 3px solid var(--ink); outline-offset: 2px; box-shadow: 0 0 0 2px var(--paper); }
 /* Outranks the generic field rule (0,3,1) above. */
 .a11y-widget-biz .a11y-chat-dock .a11y-chat-composer .a11y-chat-box textarea {
@@ -403,7 +402,10 @@
 /* Each width holds its header word (18px Medium: "WCAG", "Instances") or its
    longest unbreakable cell ("Fix eventually" with its highlight) plus the
    0.8em of air after it; the two wordy columns grow with the screen. */
-.a11y-widget-biz .a11y-datatable-schedule th[data-col="severity"] { width: max(9.6em, 9%); }
+/* Severity is a fixed 8em: the widest mark ("Fix eventually" with its end
+   caps, 125px measured) plus the 0.8em of air. It was max(9.6em, 9%), which
+   left a wide gap before the issue on a large screen (user's note, 4 Nov 2026). */
+.a11y-widget-biz .a11y-datatable-schedule th[data-col="severity"] { width: 8em; }
 .a11y-widget-biz .a11y-datatable-schedule th[data-col="wcag"] { width: 5em; }
 .a11y-widget-biz .a11y-datatable-schedule th[data-col="fix"] { width: 6.8em; }
 .a11y-widget-biz .a11y-datatable-schedule th[data-col="level"] { width: max(9.6em, 15%); }
@@ -723,7 +725,9 @@
 
 /* ═══ THE EXPANDED FINDING, SET LIKE DISPLAAY'S "INFO" BLOCK ════════════════
    User's instruction, 4 Nov 2026, from the Info section of
-   displaay.net/typeface/dazzed: a heavy ink rule across the top, two columns,
+   displaay.net/typeface/dazzed: a heavy ink rule across the top, one column
+   at the full width (two half-width columns until the user's instruction of
+   the same day),
    each part under a small capital label with a 1px rule beneath it, the prose
    in a book serif, and the key/value lines (WCAG, selector, rule) set as a
    two-column list in the sans between two 1px rules.
@@ -733,7 +737,7 @@
    Every selector carries .a11y-fd, so it outranks the generic expanded-finding
    rules above by one class and never ties with them. */
 .a11y-widget-biz .a11y-fd {
-  display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 420px), 1fr)); gap: 0 30px;
+  display: grid; grid-template-columns: minmax(0, 1fr); gap: 0;
   margin-top: 0.6em; padding-top: 1.2em; border-top: 4px solid var(--ink);
 }
 .a11y-widget-biz .a11y-fd > :not(.a11y-fd-col) { grid-column: 1 / -1; }

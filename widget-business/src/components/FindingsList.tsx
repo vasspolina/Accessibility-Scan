@@ -57,12 +57,15 @@ export function FindingsList({
   const grouped = groupFindings(findings);
   // The findings schedules (one per section) all carry the same columns, so a
   // column sits at the same x in every section; the user asked for that on
-  // 3 Nov 2026. Level always stays. Instances is decided for the whole report
+  // 3 Nov 2026. Level is dropped from a table where no finding names one
+  // (user's instruction, 4 Nov 2026: an empty column only pushed the issue
+  // over); the cell reads the group's first finding, so the test does too.
+  // Instances is decided for the whole report
   // (see ReportView.showInstances): an empty column is deleted from every
   // table, not just from the ones where it happens to be empty. The notes
   // table keeps its own rule, since its Instances is its only second column.
   const ownCount = grouped.some((group) => group.length > 1);
-  const showLevel = true;
+  const showLevel = grouped.some((group) => Boolean(group[0]?.wcagLevel));
   const showCount = asNotes ? ownCount : (showInstances ?? ownCount);
 
   return (
