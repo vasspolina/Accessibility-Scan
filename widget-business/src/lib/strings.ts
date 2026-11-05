@@ -251,6 +251,11 @@ export const CHROME_KEYS: string[] = [
   "The assistant could not answer that.",
   "Use the form instead",
   "Back to the chat",
+  // The conversation's folds and its way back (ScanChat).
+  "Show details",
+  "Hide details",
+  "Details",
+  "Back",
   // The transcript model (ScanChat blocks, /commands).
   "found",
   "shown above.",
