@@ -27,13 +27,13 @@ const PRINCIPLES: Record<string, PrincipleInfo> = {
     principle: "Perceivable",
     plainTitle: "Can people see and hear it?",
     plainDescription:
-      "Anything people can't see or hear. Text too faint to read, images with nothing written about them, video with no captions, audio with no transcript.",
+      "What people can't see or hear: faint text, images with no description, video with no captions, audio with no transcript.",
   },
   "2": {
     principle: "Operable",
     plainTitle: "Can people use it?",
     plainDescription:
-      "Whether someone can actually get through your site. With a keyboard instead of a mouse, on a phone, by voice, or without fine control of their hands.",
+      "Whether people can get through your site with a keyboard, on a phone, by voice, or without fine hand control.",
   },
   "3": {
     principle: "Understandable",
@@ -45,7 +45,7 @@ const PRINCIPLES: Record<string, PrincipleInfo> = {
     principle: "Robust",
     plainTitle: "Will it keep working?",
     plainDescription:
-      "Whether your site still works in other browsers and on other devices. And with the software that reads it aloud to blind visitors.",
+      "Whether your site works in other browsers, on other devices and with screen readers.",
   },
 };
 

@@ -22,7 +22,7 @@ import type { CSSProperties } from "react";
  * the future and is allowed to look like it.
  */
 export function WhatsNextPanel({
-  eyebrow = "What's next",
+  eyebrow,
   standard,
   expected,
   failCount = 0,
@@ -47,7 +47,9 @@ export function WhatsNextPanel({
 
   return (
     <section className="a11y-next" style={style}>
-      <div className="a11y-next-eyebrow">{eyebrow}</div>
+      {/* No default label: inside "Ready for WCAG 2.2?" a "What's next"
+          above the standard's name said the section title again. */}
+      {eyebrow && <div className="a11y-next-eyebrow">{eyebrow}</div>}
       <button
         type="button"
         className="a11y-next-toggle"

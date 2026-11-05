@@ -176,7 +176,7 @@ export function ConformanceView({
             <>
               {" "}
               {t(
-                "In Germany this is the standard the BFSG points at. That law implements the European Accessibility Act and has been in force since June 2025."
+                "In Germany the BFSG, in force since June 2025, points at it."
               )}
             </>
           )}

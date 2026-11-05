@@ -46,7 +46,7 @@ export function Wcag22Readiness({ readiness }: { readiness: Readiness }) {
         expected={tf("expected {date}", { date: expectedFrom })}
         failCount={alreadyFailing}
         description={tf(
-          "The standard European law points at will change. Nothing here is required yet. These are the {total} new items that become Level A or AA when it lands.",
+          "Nothing here is required yet. These {total} new items become Level A or AA when WCAG 2.2 lands.",
           { total }
         )}
         items={criteria.map((c) => ({ criterion: c.id, title: c.plain, level: c.level }))}

@@ -5,7 +5,6 @@ import { SectionHeader } from "./SectionHeader";
 
 export function ReportSection({
   title,
-  eyebrow,
   description,
   variant,
   findings,
@@ -13,8 +12,6 @@ export function ReportSection({
   id,
 }: {
   title: string;
-  /** The kit's uppercase category line above the title. */
-  eyebrow?: string;
   description: string;
   variant: "default" | "redflag";
   findings: AccessibilityFinding[];
@@ -29,10 +26,8 @@ export function ReportSection({
   id?: string;
 }) {
   // The kit's TrustIssues screen reads differently from every other section:
-  // the tint IS the alert, so the headline leads it and the category line
-  // sits underneath as a caption — reversed from the eyebrow-first anatomy
-  // every other section shares (see SectionHeader's own comment). The
-  // finding rows then sit outside the tint, under their own column labels,
+  // the tint IS the alert, so the headline leads it, with no category line
+  // (the description says what these are). The finding rows then sit outside the tint, under their own column labels,
   // on the card's plain surface — the warning colour marks the claim, not
   // the evidence for it.
   if (variant === "redflag") {
@@ -42,7 +37,6 @@ export function ReportSection({
           <h2 className="a11y-section-title" id={id} data-nav-label={t(title)}>
             {t(title)} <span className="a11y-section-count">({findings.length})</span>
           </h2>
-          {eyebrow && <span className="a11y-section-eyebrow">{eyebrow}</span>}
           <p className="a11y-section-desc">{description}</p>
         </div>
         <FindingsList findings={findings} asNotes={asNotes} />
@@ -53,7 +47,6 @@ export function ReportSection({
   return (
     <section className={`a11y-section a11y-section-${variant}`} aria-labelledby={id}>
       <SectionHeader
-        eyebrow={eyebrow}
         title={title}
         qualifier={`(${findings.length})`}
         id={id}

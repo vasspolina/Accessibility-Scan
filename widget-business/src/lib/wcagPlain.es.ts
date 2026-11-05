@@ -1117,13 +1117,13 @@ export const PRINCIPLES_ES: Record<string, { principleLabel: string; plainTitle:
     principleLabel: "Perceptible",
     plainTitle: "¿Se puede ver y oír?",
     plainDescription:
-      "Todo lo que la gente no puede ver ni oír: texto demasiado claro para leerlo, imágenes sin nada escrito sobre ellas, vídeo sin subtítulos y audio sin transcripción.",
+      "Lo que la gente no puede ver ni oír: texto demasiado claro, imágenes sin descripción, vídeo sin subtítulos, audio sin transcripción.",
   },
   "2": {
     principleLabel: "Operable",
     plainTitle: "¿Se puede usar?",
     plainDescription:
-      "Si alguien puede recorrer de verdad su sitio, con el teclado en vez del ratón, en el móvil, con la voz, o sin un control fino de las manos.",
+      "Si la gente puede recorrer su sitio con el teclado, en el móvil, con la voz o sin un control fino de las manos.",
   },
   "3": {
     principleLabel: "Comprensible",
@@ -1135,7 +1135,7 @@ export const PRINCIPLES_ES: Record<string, { principleLabel: string; plainTitle:
     principleLabel: "Robusto",
     plainTitle: "¿Va a seguir funcionando?",
     plainDescription:
-      "Si su sitio sigue funcionando bien en otros navegadores, en otros dispositivos y con los programas que usan los visitantes ciegos para leerlo en voz alta.",
+      "Si su sitio funciona en otros navegadores, en otros dispositivos y con lectores de pantalla.",
   },
 };
 
