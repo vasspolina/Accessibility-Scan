@@ -682,7 +682,6 @@ export function App({
             {!isDocument && (
               <ReportSection
                 title="What costs you trust"
-                eyebrow={t("Dark pattern findings")}
                 description={t(
                   "Places your site nudges people rather than leaves the choice to them. These don't move the score."
                 )}

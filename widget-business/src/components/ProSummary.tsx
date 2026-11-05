@@ -79,7 +79,6 @@ export function ProSummary({
         {/* The score card. Inverted, because it is the one figure the whole
             panel is arranged around. */}
         <div className="a11y-pro-scorecard">
-          <p className="a11y-pro-eyebrow a11y-pro-eyebrow-invert">{t("Issues by severity")}</p>
           <p className="a11y-pro-score">
             <span className="a11y-pro-score-num">{report.score}</span>
             <span className="a11y-pro-score-of">{t("out of 100")}</span>

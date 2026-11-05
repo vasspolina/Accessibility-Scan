@@ -93,7 +93,7 @@ export function SiteAuditView({ audit }: { audit: SiteAudit }) {
           </h2>
           <p className="a11y-section-desc">
             {t(
-              "Found by comparing your pages against each other, which is the only way these show up."
+              "Found by comparing your pages against each other."
             )}
           </p>
           <ul className="a11y-audit-list">

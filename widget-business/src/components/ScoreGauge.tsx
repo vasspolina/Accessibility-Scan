@@ -46,9 +46,9 @@ export const SUMMARIES: Record<"good" | "middling" | "poor", string[]> = {
   // One plain line per band. The rotating quips this replaced read as
   // slogans, and a verdict about somebody's site is not the place for one:
   // it says what the scan found and what that does not cover, then stops.
-  good: ["90 or more. Little to fix. A person would still find more."],
-  middling: ["70 to 89. What the scan found stops some visitors. Most get through."],
-  poor: ["Under 70. What the scan found stops some people from using the site."],
+  good: ["Little to fix. A person would still find more."],
+  middling: ["What the scan found stops some visitors. Most get through."],
+  poor: ["What the scan found stops some people from using the site."],
 };
 
 /**
@@ -93,11 +93,10 @@ export function scoreSummary(score: number, seed: string): string {
    backend/src/services/mail/sendReport.ts in step. */
 export const SCORE_POINTS = [
   "It counts the accessibility problems this scan found, weighted by how much each one costs a visitor.",
-  "Each severity has a limit: past it, more problems of that severity no longer lower the score.",
-  "Notes on the design and misleading patterns do not count. Neither do the optional advanced level (AAA) or checks new in WCAG 2.2, the newer accessibility guidelines.",
-  "When the AI review runs, its findings count too, if their card names a WCAG requirement. Those can be wrong.",
-  "A scan of this kind reaches between a third and a half of accessibility problems.",
-  "The rest need a person with a keyboard and a screen reader.",
+  "Each severity has a limit on how far it lowers the score.",
+  "Design notes, misleading patterns, the optional AAA level and checks new in WCAG 2.2 do not count.",
+  "AI review findings count too when their card names a WCAG requirement. They can be wrong.",
+  "A scan like this finds a third to a half of the problems. The rest need a person with a keyboard and a screen reader.",
   "It is not a statement that the site meets the law.",
 ];
 
@@ -313,7 +312,7 @@ export function ScoreGauge({
       <div className="a11y-sum-grid">
         <div className="a11y-sum-col">
           <section className="a11y-sum-run" aria-labelledby="a11y-sum-run-heading">
-            <h3 className="a11y-sum-eyebrow" id="a11y-sum-run-heading">{t("Scan summary")}</h3>
+            <h3 className="a11y-sr-only" id="a11y-sum-run-heading">{t("Scan summary")}</h3>
 
             <div className="a11y-sum-dial-card">
               {/* One label carries the whole thing, and every part of the
