@@ -1,0 +1,405 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<style>:root{color-scheme:light dark}img{max-width:100%}[hidden]{display:none!important}</style>
+<title>Position Poster</title>
+<style>
+/* Layout: a fixed control column on the left, the poster on the right; stacks on phones. */
+:root{
+  --bg:#F4F4F2; --panel:#FFFFFF; --fg:#111111; --muted:#5B5B5B; --line:#D6D6D2;
+  --accent:#2436E0; --accent-fg:#FFFFFF; --warn:#B3261E; --field:#FFFFFF;
+  --ui:Arial,"Liberation Sans",Helvetica,sans-serif;
+}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){
+  --bg:#141416; --panel:#1C1C1F; --fg:#F2F2F0; --muted:#A8A8A4; --line:#333338;
+  --accent:#6C7BFF; --accent-fg:#0B0B1A; --warn:#FF7B72; --field:#232327; color-scheme:dark } }
+:root[data-theme="dark"]{
+  --bg:#141416; --panel:#1C1C1F; --fg:#F2F2F0; --muted:#A8A8A4; --line:#333338;
+  --accent:#6C7BFF; --accent-fg:#0B0B1A; --warn:#FF7B72; --field:#232327; color-scheme:dark }
+*{box-sizing:border-box}
+html,body{height:100%}
+body{margin:0;background:var(--bg);color:var(--fg);font:14px/1.45 var(--ui);
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:16px}
+.app{display:grid;grid-template-columns:340px minmax(0,1fr);gap:24px;max-width:1400px;margin:0 auto;align-items:start}
+@media (max-width:860px){.app{grid-template-columns:1fr}}
+header{grid-column:1/-1;display:flex;flex-wrap:wrap;align-items:baseline;gap:8px 16px;border-bottom:2px solid var(--fg);padding-bottom:10px}
+header h1{margin:0;font-size:20px;font-weight:700;letter-spacing:-0.01em}
+header p{margin:0;color:var(--muted)}
+.panel{background:var(--panel);border:1px solid var(--line);padding:16px;display:flex;flex-direction:column;gap:14px;min-width:0}
+fieldset{border:0;padding:0;margin:0;display:flex;flex-direction:column;gap:8px}
+legend{font-size:11px;letter-spacing:0.08em;text-transform:uppercase;color:var(--muted);padding:0;margin-bottom:4px}
+label{display:flex;flex-direction:column;gap:4px;font-size:12px;color:var(--muted)}
+input[type=text],textarea,select{font:inherit;color:var(--fg);background:var(--field);border:1px solid var(--line);padding:7px 8px;width:100%;min-width:0}
+textarea{resize:vertical;font-variant-numeric:tabular-nums}
+input[type=text]:focus,textarea:focus,select:focus,button:focus-visible{outline:2px solid var(--accent);outline-offset:1px}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.row3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px}
+.color{display:flex;align-items:center;gap:8px}
+.color input[type=color]{width:34px;height:30px;padding:0;border:1px solid var(--line);background:none}
+.color input[type=text]{flex:1}
+.range{display:flex;flex-direction:row;align-items:center;gap:8px;white-space:nowrap}
+[hidden]{display:none!important}
+.range input{flex:1}
+.range output{font-variant-numeric:tabular-nums;min-width:3ch;text-align:right;color:var(--fg)}
+.actions{display:flex;flex-wrap:wrap;gap:8px}
+button{font:inherit;font-weight:700;padding:9px 14px;border:1px solid var(--fg);background:var(--panel);color:var(--fg);cursor:pointer}
+button.primary{background:var(--fg);color:var(--bg);border-color:var(--fg)}
+button:disabled{opacity:.45;cursor:default}
+.note{font-size:12px;color:var(--muted);margin:0}
+.warn{font-size:12px;color:var(--warn);margin:0}
+.stage{position:sticky;top:16px;display:flex;flex-direction:column;gap:10px;min-width:0}
+@media (max-width:860px){.stage{position:static}}
+.frame{background:var(--panel);border:1px solid var(--line);padding:16px;display:flex;justify-content:center}
+.frame svg{max-width:100%;height:auto;display:block;box-shadow:0 1px 0 var(--line)}
+.stats{display:flex;flex-wrap:wrap;gap:6px 18px;font-size:12px;color:var(--muted);font-variant-numeric:tabular-nums}
+.stats b{color:var(--fg);font-weight:700}
+details summary{cursor:pointer;font-size:12px;color:var(--muted)}
+.toast{position:fixed;left:50%;bottom:calc(16px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--fg);color:var(--bg);padding:8px 14px;font-size:13px;opacity:0;transition:opacity .2s;pointer-events:none}
+.toast.show{opacity:1}
+@media (prefers-reduced-motion: reduce){.toast{transition:none}}
+</style>
+</head>
+<body>
+
+
+<div class="app">
+<header>
+  <h1>Position Poster</h1>
+  <p>Type a chess game and some text. Each character becomes a piece in the final position; the squares behind it show how often each square was occupied during the game.</p>
+</header>
+
+<form class="panel" id="controls" autocomplete="off">
+  <fieldset>
+    <legend>Game</legend>
+    <label>Moves (PGN or plain SAN)
+      <textarea id="moves" rows="5">1.e4 c5 2.Nf3 Nc6 3.Nc3 e5 4.Bc4 d6 5.d3 Be7 6.O-O Nf6 7.Nh4 Nd4 8.g3 Bg4 9.f3 Be6 10.Bg5 Ng8 11.Bxe7 Nxe7 12.f4 exf4 13.Bxe6 fxe6 14.Rxf4 Kd7 15.Nf3 Rf8 16.Rxf8 Qxf8 17.Nxd4 cxd4 18.Ne2 Qf6 19.c3 Rf8 20.Nxd4 Nc6 21.Qf1 Qxf1+ 22.Rxf1 Rxf1+ 23.Kxf1 Nxd4 24.cxd4 d5 25.Kf2 Ke7 26.Kf3 Kf6 27.h4 g6 28.b4 b5 29.Kf4 h6 30.Kg4</textarea>
+    </label>
+    <p class="note">Default: Topalov–Kasparov, Linares 2005, Kasparov’s last game. Paste any game; the position after the last move is used.</p>
+    <p class="warn" id="moveWarn" hidden></p>
+  </fieldset>
+
+  <fieldset>
+    <legend>Text</legend>
+    <label>Title, one character per piece (spaces are skipped)
+      <input type="text" id="title" value="chess.irl №4 2026">
+    </label>
+    <p class="warn" id="titleWarn" hidden></p>
+    <label>Info, one item per piece, one per line
+      <textarea id="info" rows="8">12/05/2026
+7pm
+RSVP
+for
+address
+Greenpoint,
+Brooklyn
+Anya Tran
+(live)
+Daren Ho
+(live)
+Iggy Nuclear
+(dj)
+Sofiya V
+(dj)</textarea>
+    </label>
+    <p class="warn" id="infoWarn" hidden></p>
+  </fieldset>
+
+  <fieldset>
+    <legend>Type</legend>
+    <div class="row">
+      <label>Font
+        <select id="font">
+          <option value="Arial, 'Liberation Sans', Helvetica, sans-serif">Arial</option>
+          <option value="Helvetica, 'Helvetica Neue', Arial, sans-serif">Helvetica</option>
+          <option value="Saans, 'Saans TRIAL', Arial, sans-serif">Saans (if installed)</option>
+          <option value="'Times New Roman', Times, serif">Times</option>
+          <option value="custom">Custom…</option>
+        </select>
+      </label>
+      <label>Weight
+        <select id="weight">
+          <option value="700">Bold</option>
+          <option value="400">Regular</option>
+          <option value="900">Black</option>
+        </select>
+      </label>
+    </div>
+    <label id="customFontWrap" hidden>Custom font-family
+      <input type="text" id="customFont" placeholder="e.g. 'Saans', sans-serif">
+    </label>
+    <label class="range">Title size <input type="range" id="titleScale" min="60" max="120" value="100"><output id="titleScaleOut">100</output></label>
+    <label class="range">Info size <input type="range" id="infoScale" min="60" max="140" value="100"><output id="infoScaleOut">100</output></label>
+  </fieldset>
+
+  <fieldset>
+    <legend>Pattern</legend>
+    <div class="row">
+      <label>Shape
+        <select id="pattern">
+          <option value="squares">Density squares</option>
+          <option value="dots">Density dots</option>
+          <option value="none">None</option>
+        </select>
+      </label>
+      <label>Mark last move
+        <select id="markLast">
+          <option value="yes">Accent colour</option>
+          <option value="no">Off</option>
+        </select>
+      </label>
+    </div>
+    <label class="range">Max density <input type="range" id="density" min="20" max="100" value="60"><output id="densityOut">60</output></label>
+  </fieldset>
+
+  <fieldset>
+    <legend>Colour</legend>
+    <div class="row">
+      <label>Tint <span class="color"><input type="color" id="tint" value="#2436E0"><input type="text" id="tintHex" value="#2436E0"></span></label>
+      <label>Accent <span class="color"><input type="color" id="accent" value="#E62600"><input type="text" id="accentHex" value="#E62600"></span></label>
+    </div>
+    <div class="row">
+      <label>Paper <span class="color"><input type="color" id="paper" value="#FFFFFF"><input type="text" id="paperHex" value="#FFFFFF"></span></label>
+      <label>Ink <span class="color"><input type="color" id="ink" value="#000000"><input type="text" id="inkHex" value="#000000"></span></label>
+    </div>
+  </fieldset>
+
+  <fieldset>
+    <legend>Format</legend>
+    <div class="row">
+      <label>Size
+        <select id="size">
+          <option value="900x1200">3:4 · 900 × 1200</option>
+          <option value="1000x1414">A-series · 1000 × 1414</option>
+          <option value="1080x1350">Portrait post · 1080 × 1350</option>
+          <option value="1080x1920">Story · 1080 × 1920</option>
+          <option value="1000x1000">Square · 1000 × 1000</option>
+        </select>
+      </label>
+      <label>Export scale
+        <select id="scale">
+          <option value="1">1×</option>
+          <option value="2" selected>2×</option>
+          <option value="3">3×</option>
+          <option value="4">4×</option>
+        </select>
+      </label>
+    </div>
+  </fieldset>
+
+  <div class="actions">
+    <button type="button" class="primary" id="savePng">Save PNG</button>
+    <button type="button" id="saveSvg">Save SVG</button>
+    <button type="button" id="copySvg">Copy SVG code</button>
+  </div>
+  <p class="note" id="saveNote" hidden>Saving files isn’t available in this view. “Copy SVG code” still works.</p>
+</form>
+
+<section class="stage" aria-label="Poster preview">
+  <div class="frame" id="frame"></div>
+  <div class="stats" id="stats"></div>
+  <details><summary>How the layout is built</summary>
+    <p class="note">The game is replayed move by move. The pieces left on the board after the last move give the title its squares: characters fill them in reading order, a8 to h1. The same squares hold the info items on the smaller board at the bottom. Each background square is tinted by how many of the game’s positions it was occupied in, from the start position to the end. The destination of the last move is set in the accent colour.</p>
+  </details>
+</section>
+</div>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/chess.js/0.10.3/chess.min.js" onerror="var s=document.createElement('script');s.src='https://cdnjs.cloudflare.com/ajax/libs/chess.js/0.13.4/chess.min.js';s.onload=function(){window.dispatchEvent(new Event('chessready'))};document.head.appendChild(s)"></script>
+<script>
+(function(){
+  const $ = id => document.getElementById(id);
+  const FILES = 'abcdefgh';
+
+  // ---------- game analysis ----------
+  function cleanMoves(text){
+    return text
+      .replace(/\{[^}]*\}/g,' ')            // comments
+      .replace(/\([^)]*\)/g,' ')            // variations (one level)
+      .replace(/\$\d+/g,' ')                // NAGs
+      .replace(/\[[^\]]*\]/g,' ')           // tag pairs
+      .replace(/\d+\.(\.\.)?/g,' ')         // move numbers
+      .replace(/\b(1-0|0-1|1\/2-1\/2|\*)\b/g,' ')
+      .split(/\s+/).filter(Boolean);
+  }
+
+  function analyse(text){
+    const result = {ok:false, error:'', positions:0, occ:{}, finalSquares:[], lastTo:null, plies:0, pieces:0};
+    if (typeof Chess !== 'function'){ result.error = 'The chess library did not load, so the moves cannot be replayed.'; return result; }
+    const game = new Chess();
+    const occ = {};
+    const count = () => { game.board().forEach((row, r) => row.forEach((cell, f) => { if (cell){ const sq = FILES[f] + (8 - r); occ[sq] = (occ[sq]||0) + 1; } })); };
+    count();
+    let positions = 1, lastTo = null, plies = 0;
+    for (const san of cleanMoves(text)){
+      const mv = game.move(san, {sloppy:true});
+      if (!mv){ result.error = `Could not play “${san}” (move ${Math.floor(plies/2)+1}). The position up to that move is used.`; break; }
+      plies++; lastTo = mv.to; count(); positions++;
+    }
+    const finalSquares = [];
+    const board = game.board(); // rank 8 first, files a..h
+    board.forEach((row, r) => row.forEach((cell, f) => { if (cell) finalSquares.push({sq: FILES[f] + (8 - r), col: f, row: r, piece: cell}); }));
+    Object.assign(result, {ok:true, positions, occ, finalSquares, lastTo, plies, pieces: finalSquares.length});
+    return result;
+  }
+
+  // ---------- rendering ----------
+  const esc = s => String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+
+  function settings(){
+    const [W,H] = $('size').value.split('x').map(Number);
+    let font = $('font').value;
+    if (font === 'custom') font = $('customFont').value.trim() || 'Arial, sans-serif';
+    return {
+      W, H, font,
+      weight: $('weight').value,
+      titleScale: +$('titleScale').value/100,
+      infoScale: +$('infoScale').value/100,
+      pattern: $('pattern').value,
+      markLast: $('markLast').value === 'yes',
+      density: +$('density').value/100,
+      tint: $('tintHex').value, accent: $('accentHex').value, paper: $('paperHex').value, ink: $('inkHex').value,
+      title: $('title').value, info: $('info').value.split(/\r?\n/).map(s=>s.trim()).filter(Boolean),
+    };
+  }
+
+  function buildSvg(a, s){
+    const m = Math.round(s.W * 0.0556);            // 50px at 900 wide
+    const boardW = s.W - 2*m;
+    const cell = boardW / 8;
+    const r2 = cell * 0.4;                          // row height of the lower board
+    const topY = m;
+    const lowY = s.H - m - 8*r2;
+    const titleSize = cell * 1.0 * s.titleScale;
+    const infoSize = cell * 0.17 * s.infoScale;
+    const chars = Array.from(s.title.replace(/\s+/g,''));
+    const parts = [];
+
+    parts.push(`<rect width="${s.W}" height="${s.H}" fill="${esc(s.paper)}"/>`);
+
+    // pattern
+    if (s.pattern !== 'none'){
+      for (let r=0;r<8;r++) for (let f=0;f<8;f++){
+        const n = a.occ[FILES[f]+(8-r)] || 0; if (!n) continue;
+        const d = a.positions ? n/a.positions : 0;
+        const x = m + f*cell, y = topY + r*cell;
+        if (s.pattern === 'squares'){
+          const o = (0.06 + (s.density-0.06)*d).toFixed(3);
+          parts.push(`<rect x="${x}" y="${y}" width="${cell}" height="${cell}" fill="${esc(s.tint)}" fill-opacity="${o}"/>`);
+        } else {
+          const rad = cell*(0.05 + 0.42*d*s.density/0.6);
+          parts.push(`<circle cx="${x+cell/2}" cy="${y+cell/2}" r="${rad.toFixed(1)}" fill="${esc(s.tint)}" fill-opacity="0.9"/>`);
+        }
+      }
+    }
+
+    // title characters on the final position
+    const tFont = `font-family="${esc(s.font)}" font-weight="${s.weight}" font-size="${titleSize.toFixed(1)}" text-anchor="middle" dominant-baseline="central"`;
+    a.finalSquares.forEach((p, i) => {
+      if (i >= chars.length) return;
+      const x = m + p.col*cell + cell/2, y = topY + p.row*cell + cell/2;
+      const fill = (s.markLast && p.sq === a.lastTo) ? s.accent : s.ink;
+      parts.push(`<text x="${x}" y="${y}" ${tFont} fill="${esc(fill)}">${esc(chars[i])}</text>`);
+    });
+
+    // info items on the final position, lower board
+    const iFont = `font-family="${esc(s.font)}" font-weight="${s.weight}" font-size="${infoSize.toFixed(1)}" dominant-baseline="central"`;
+    a.finalSquares.forEach((p, i) => {
+      if (i >= s.info.length) return;
+      const x = m + p.col*cell, y = lowY + p.row*r2 + r2/2;
+      const fill = (s.markLast && p.sq === a.lastTo) ? s.accent : s.ink;
+      parts.push(`<text x="${x}" y="${y}" ${iFont} fill="${esc(fill)}">${esc(s.info[i])}</text>`);
+    });
+
+    return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${s.W} ${s.H}" width="${s.W}" height="${s.H}" role="img" aria-label="${esc(s.title)} poster">${parts.join('')}</svg>`;
+  }
+
+  let currentSvg = '';
+  function render(){
+    const s = settings();
+    const a = analyse($('moves').value);
+    $('moveWarn').hidden = !a.error; $('moveWarn').textContent = a.error;
+    const chars = Array.from(s.title.replace(/\s+/g,''));
+    const tw = chars.length > a.pieces ? `The title has ${chars.length} characters but the position has ${a.pieces} pieces; the last ${chars.length-a.pieces} are left out.` : (chars.length < a.pieces ? `${a.pieces-chars.length} piece square${a.pieces-chars.length===1?'':'s'} left empty.` : '');
+    $('titleWarn').hidden = !tw; $('titleWarn').textContent = tw;
+    const iw = s.info.length > a.pieces ? `${s.info.length} info items for ${a.pieces} pieces; the last ${s.info.length-a.pieces} are left out.` : '';
+    $('infoWarn').hidden = !iw; $('infoWarn').textContent = iw;
+    currentSvg = buildSvg(a, s);
+    $('frame').innerHTML = currentSvg;
+    $('stats').innerHTML = `<span><b>${a.plies}</b> plies</span><span><b>${a.positions}</b> positions</span><span><b>${a.pieces}</b> pieces left</span><span>last move to <b>${a.lastTo||'—'}</b></span><span><b>${Object.keys(a.occ).length}</b> of 64 squares ever occupied</span>`;
+  }
+
+  // ---------- wiring ----------
+  const form = $('controls');
+  form.addEventListener('input', e => {
+    const t = e.target;
+    if (t.type === 'color'){ $(t.id+'Hex').value = t.value.toUpperCase(); }
+    if (t.id.endsWith('Hex') && /^#[0-9a-f]{6}$/i.test(t.value)){ $(t.id.replace('Hex','')).value = t.value; }
+    if (t.type === 'range'){ $(t.id+'Out').value = t.value; }
+    if (t.id === 'font'){ $('customFontWrap').hidden = t.value !== 'custom'; }
+    render();
+  });
+  form.addEventListener('submit', e => e.preventDefault());
+
+  const toastEl = $('toast'); let toastT;
+  function toast(msg){ toastEl.textContent = msg; toastEl.classList.add('show'); clearTimeout(toastT); toastT = setTimeout(()=>toastEl.classList.remove('show'), 2400); }
+
+  function svgBlob(){ return new Blob([currentSvg], {type:'image/svg+xml;charset=utf-8'}); }
+  function fileStem(){ return ($('title').value.replace(/[^\w№-]+/g,'-').replace(/^-|-$/g,'') || 'poster'); }
+
+  function renderPng(scale){
+    return new Promise((resolve, reject) => {
+      const s = settings();
+      const url = URL.createObjectURL(svgBlob());
+      const img = new Image();
+      img.onload = () => {
+        const c = document.createElement('canvas'); c.width = s.W*scale; c.height = s.H*scale;
+        const ctx = c.getContext('2d'); ctx.drawImage(img, 0, 0, c.width, c.height);
+        URL.revokeObjectURL(url);
+        c.toBlob(b => b ? resolve(b) : reject(new Error('Could not encode the PNG.')), 'image/png');
+      };
+      img.onerror = () => { URL.revokeObjectURL(url); reject(new Error('Could not rasterise the poster.')); };
+      img.src = url;
+    });
+  }
+
+  let downloads = null;
+  async function save(kind){
+    if (!downloads){ toast('Saving is not available here.'); return; }
+    try {
+      if (kind === 'svg'){ await downloads.save({filename: fileStem()+'.svg', data: svgBlob()}); }
+      else { const blob = await renderPng(+$('scale').value); await downloads.save({filename: fileStem()+'.png', data: blob}); }
+      toast('Saved.');
+    } catch (err){
+      if (err && err.code === 'declined') return;
+      toast(err && err.message ? err.message : 'Could not save the file.');
+    }
+  }
+  $('savePng').addEventListener('click', () => save('png'));
+  $('saveSvg').addEventListener('click', () => save('svg'));
+  $('copySvg').addEventListener('click', async () => {
+    try { await navigator.clipboard.writeText(currentSvg); toast('SVG code copied.'); }
+    catch (e){
+      const ta = document.createElement('textarea'); ta.value = currentSvg; document.body.appendChild(ta); ta.select();
+      try { document.execCommand('copy'); toast('SVG code copied.'); } catch(e2){ toast('Select and copy the code manually.'); }
+      ta.remove();
+    }
+  });
+
+  render();
+  window.addEventListener('chessready', render);
+  if (window.claude && typeof window.claude.use === 'function'){
+    window.claude.use('downloads').then(ns => {
+      downloads = ns;
+      if (!ns){ $('savePng').disabled = true; $('saveSvg').disabled = true; $('saveNote').hidden = false; }
+    });
+  } else {
+    // Standalone (e.g. GitHub Pages): save through a normal browser download.
+    downloads = { save: ({filename, data}) => new Promise(res => { const u = URL.createObjectURL(data); const a = document.createElement('a'); a.href = u; a.download = filename; document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(u), 2000); res(); }) };
+  }
+})();
+</script>
+
+</body>
+</html>
