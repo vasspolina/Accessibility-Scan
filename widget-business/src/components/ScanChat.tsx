@@ -1,4 +1,4 @@
-import { useRef, useState, type FocusEvent, type FormEvent, type MutableRefObject, type ReactNode } from "react";
+import { useEffect, useRef, useState, type FocusEvent, type FormEvent, type MutableRefObject, type ReactNode } from "react";
 import { t } from "../lib/strings";
 import { getLang } from "../lib/i18n";
 import { CAPS_RUN, smarten } from "../lib/typography";
@@ -539,6 +539,13 @@ export function ScanChat({
   const [picks, setPicks] = useState(() => pickOpeningPrompts());
   const [busy, setBusy] = useState(false);
   const [announcement, setAnnouncement] = useState("");
+  /** Where the reader was before the conversation took them to a block:
+   *  the scroll position and what had focus. While it is set, the dock
+   *  offers Back, the way Claude's apps return from an opened artifact. */
+  const [backTo, setBackTo] = useState<{ y: number; el: HTMLElement | null } | null>(null);
+  /** A block just added at the reader's request, to take focus once it is
+   *  in the thread: the chip that asked for it is gone by then. */
+  const focusBlock = useRef<number | null>(null);
   // The conversation in the API's shape. Append-only — see chatClient.
   const history = useRef<ChatMessage[]>([]);
   // Once the server says it has no assistant, stop asking it every turn.
@@ -584,6 +591,34 @@ export function ScanChat({
   const patch = (id: number, change: Partial<Turn>) =>
     setAll(turnsRef.current.map((x) => (x.id === id ? ({ ...x, ...change } as Turn) : x)));
 
+  /** Remembers where the reader is, so Back can return them there. */
+  function markBack() {
+    const scope = rootRef.current?.getRootNode() as Document | ShadowRoot | undefined;
+    const active = scope?.activeElement as HTMLElement | null | undefined;
+    // A control that is about to vanish (a chip for the section being
+    // shown) is no place to come back to: the composer is.
+    const el = active && !active.closest(".a11y-chat-suggest") ? active : null;
+    setBackTo({ y: window.scrollY, el });
+  }
+
+  function goBack() {
+    const target = backTo;
+    setBackTo(null);
+    if (!target) return;
+    window.scrollTo({ top: target.y, behavior: "instant" as ScrollBehavior });
+    if (target.el && target.el.isConnected) target.el.focus({ preventScroll: true });
+    else focusInput();
+  }
+
+  useEffect(() => {
+    const id = focusBlock.current;
+    if (id === null) return;
+    focusBlock.current = null;
+    const summary = rootRef.current?.querySelector<HTMLElement>(`#a11y-chat-block-${id} > summary`);
+    summary?.scrollIntoView({ block: "start" });
+    summary?.focus({ preventScroll: true });
+  }, [turns]);
+
   /** Shows a section as a block, or — when it is already in the thread for
    *  this result — takes the reader to it. One block per section per
    *  result: the sections carry fixed ids, and a second copy would
@@ -601,19 +636,28 @@ export function ScanChat({
       // Off when the widget shows a block on its own account (after a
       // scan): taking the reader to it would pull focus out from under them.
       focusExisting = true,
-    }: { resultKey?: string | null; force?: boolean; announce?: boolean; focusExisting?: boolean } = {}
+      // On when the reader asked for it themselves (a chip): a new block
+      // takes focus, and Back returns them to where they were.
+      takeFocus = false,
+    }: { resultKey?: string | null; force?: boolean; announce?: boolean; focusExisting?: boolean; takeFocus?: boolean } = {}
   ): boolean {
     if (!resultKey || !(force || availableRef.current.includes(key))) return false;
     const existing = turnsRef.current.find((x) => x.who === "block" && x.section === key && x.resultKey === resultKey);
     if (existing) {
       if (!focusExisting) return true;
+      markBack();
       const summary = rootRef.current?.querySelector<HTMLElement>(`#a11y-chat-block-${existing.id} > summary`);
       summary?.scrollIntoView({ block: "start" });
       summary?.focus();
       if (announce) setAnnouncement(`${sectionLabel(key)}: ${t("shown above.")}`);
       return true;
     }
-    add({ id: nextId++, who: "block", section: key, resultKey });
+    const id = nextId++;
+    if (takeFocus) {
+      markBack();
+      focusBlock.current = id;
+    }
+    add({ id, who: "block", section: key, resultKey });
     // A block that arrives in silence is invisible to a screen reader user:
     // nothing moved focus, and nothing said anything. "Above" because the
     // reader is in the composer, which every block sits above.
@@ -867,6 +911,8 @@ export function ScanChat({
    *  both go the same way, so a prompt is exactly what typing it would be. */
   async function ask(text: string) {
     if (!text || busy || loading) return;
+    // A new question moves the conversation on; there is nowhere to go back to.
+    setBackTo(null);
     add({ id: nextId++, who: "you", text });
     focusInput();
 
@@ -951,7 +997,14 @@ export function ScanChat({
     if (covered > 0) window.scrollBy({ top: covered + 16, behavior: "instant" as ScrollBehavior });
   }
 
-  const offered = SHOWABLE.filter((s) => availableSections.includes(s.key));
+  // A section already in the thread for this result is not offered again:
+  // its block is above, with its own fold, and the row only offers what is
+  // still to see.
+  const offered = SHOWABLE.filter(
+    (s) =>
+      availableSections.includes(s.key) &&
+      !turns.some((x) => x.who === "block" && x.section === s.key && x.resultKey === currentKey)
+  );
   const prompt = currentKey ? t("Ask about the report, or anything else") : t("Ask anything, or name a site to check");
 
   if (hidden) return null;
@@ -1031,6 +1084,7 @@ export function ScanChat({
                     </p>
                   </div>
                   {steps.length > 0 && (
+                    <StepFold folded={turn.state === "done"}>
                     <ol className="a11y-chat-steps" role="list">
                       {NARRATION_STEPS.filter((s) => steps.includes(s.id))
                         .sort((a, b) => narrationIndex(a.id) - narrationIndex(b.id))
@@ -1055,6 +1109,7 @@ export function ScanChat({
                           );
                         })}
                     </ol>
+                    </StepFold>
                   )}
                 </li>
               );
@@ -1079,8 +1134,8 @@ export function ScanChat({
                           content joins the summary's name wherever the
                           alt-text syntax for `content` is not supported. */}
                       <span className="a11y-chat-fold" aria-hidden="true">
-                        <span className="a11y-chat-fold-closed">▸</span>
-                        <span className="a11y-chat-fold-open">▾</span>
+                        <span className="a11y-chat-fold-closed">{t("Show details")} ▸</span>
+                        <span className="a11y-chat-fold-open">{t("Hide details")} ▾</span>
                       </span>
                     </summary>
                     <div className="a11y-chat-blockbody">
@@ -1145,7 +1200,7 @@ export function ScanChat({
       {offered.length > 0 && (
         <div className="a11y-chat-suggest" role="group" aria-label={t("Show from the report")}>
           {offered.map((s) => (
-            <button key={s.key} type="button" className="a11y-chat-chip" onClick={() => showSection(s.key)}>
+            <button key={s.key} type="button" className="a11y-chat-chip" onClick={() => showSection(s.key, { takeFocus: true })}>
               {s.label()}
             </button>
           ))}
@@ -1183,9 +1238,17 @@ export function ScanChat({
               }}
             />
             <div className="a11y-chat-box-row">
-              <Button variant="ghost" onClick={onUseForm}>
-                {t("Use the form instead")}
-              </Button>
+              <span className="a11y-chat-box-start">
+                {backTo && (
+                  <Button variant="ghost" onClick={goBack}>
+                    <span aria-hidden="true">← </span>
+                    {t("Back")}
+                  </Button>
+                )}
+                <Button variant="ghost" onClick={onUseForm}>
+                  {t("Use the form instead")}
+                </Button>
+              </span>
               <Button type="submit" variant="primary" disabled={busy || loading || !draft.trim()}>
                 {t("Send")}
               </Button>
@@ -1201,5 +1264,25 @@ export function ScanChat({
         {announcement}
       </p>
     </div>
+  );
+}
+
+/** The step lines of a scan, once it is over, behind a Details toggle: the
+ *  way Claude folds a finished tool call, so the thread reads as the
+ *  conversation and the working is one click away. A running scan shows
+ *  its steps; a failed one too, since its last line says where it stopped. */
+function StepFold({ folded, children }: { folded: boolean; children: ReactNode }) {
+  if (!folded) return <>{children}</>;
+  return (
+    <details className="a11y-chat-stepfold">
+      <summary>
+        {t("Details")}
+        <span className="a11y-chat-fold" aria-hidden="true">
+          <span className="a11y-chat-fold-closed">▸</span>
+          <span className="a11y-chat-fold-open">▾</span>
+        </span>
+      </summary>
+      {children}
+    </details>
   );
 }

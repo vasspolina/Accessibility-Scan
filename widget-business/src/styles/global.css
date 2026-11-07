@@ -363,6 +363,14 @@
 .a11y-widget-biz details:not([open]) .a11y-chat-fold-open,
 .a11y-widget-biz details[open] .a11y-chat-fold-closed { display: none; }
 .a11y-widget-biz .a11y-chat-fold { margin-inline-start: 0.3em; }
+/* The details toggle (5 Nov 2026, after Claude's folded tool calls): a
+   block's fold says what it does in small print, and a finished scan's
+   steps sit behind one "Details" line. */
+.a11y-widget-biz .a11y-chat-blockhead .a11y-chat-fold { font-size: 15px; letter-spacing: 0.01em; margin-inline-start: 0.8em; }
+.a11y-widget-biz .a11y-chat-stepfold > summary { font-size: 15px; letter-spacing: 0.01em; margin-top: 0.3em; width: fit-content; }
+.a11y-widget-biz .a11y-chat-stepfold[open] > summary { margin-bottom: 0.3em; }
+/* Back and the form link share the start of the box's row. */
+.a11y-widget-biz .a11y-chat-box-start { display: flex; flex-wrap: wrap; align-items: center; gap: 0.5em; }
 
 /* Row toggles are a glyph, not a pill: no edge, no fill, turned when open. */
 .a11y-widget-biz .a11y-datatable .a11y-dt-toggle,
