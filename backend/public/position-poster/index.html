@@ -76,7 +76,7 @@ details summary{cursor:pointer;font-size:12px;color:var(--muted)}
 <div class="app">
 <header>
   <h1>Position Poster</h1>
-  <p>Type a chess game and some text. Each character becomes a piece in the final position; the squares behind it show how often each square was occupied during the game. Two looks: Classic sets the letters on a tinted board; Cut sets heavy capitals over colour bands and slices them, after the Museum für Gestaltung’s exhibition posters.</p>
+  <p>Type a chess game and some text. Each character becomes a piece in the final position; the squares behind it show how often each square was occupied during the game. Three looks: Classic sets the letters on a tinted board; Cut sets heavy capitals over colour bands and slices them, after the Museum für Gestaltung’s exhibition posters; Shade sets the title in ghost capitals on grey stock and blurs the game into a dark spot over it, after a live-recording cover.</p>
 </header>
 
 <form class="panel" id="controls" autocomplete="off">
@@ -150,6 +150,7 @@ Sofiya V
       <label>Style
         <select id="look">
           <option value="cut">Cut capitals</option>
+          <option value="shade">Shade</option>
           <option value="classic">Classic board</option>
         </select>
       </label>
@@ -166,6 +167,14 @@ Sofiya V
           <option value="toni">Pink, red, blue</option>
           <option value="bahnhof">Cream, green, black</option>
           <option value="paper">Paper and ink</option>
+        </select>
+      </label>
+      <label id="toneWrap" hidden>Stock
+        <select id="tone">
+          <option value="newsprint">Grey stock</option>
+          <option value="chalk">Pale stock</option>
+          <option value="night">Dark stock</option>
+          <option value="own">Your colours</option>
         </select>
       </label>
       <label id="patternWrap" hidden>Shape
@@ -229,6 +238,7 @@ Sofiya V
     <p class="note">The game is replayed move by move. The pieces left on the board after the last move give the title its squares: characters fill them in reading order, a8 to h1. Each square is scored by how many of the game’s positions it was occupied in, from the start position to the end.</p>
     <p class="note"><b>Classic</b> tints each square by that score and sets the info items on the same squares of a smaller board at the bottom. The destination of the last move is set in the accent colour.</p>
     <p class="note"><b>Cut</b> bleeds the board to the edges and lays three colour bands over it. The title is set in capitals, one per piece square; the more often the square was occupied, the more slices the letter is cut into and the further they slide, with a sliver of the opposite colour showing. Squares the game passed through but left empty carry a fragment of a title letter at twice the size, or a disc, half-disc or quarter cut (the letter fragments only when there is no info). The info is set the same way: its words flow in reading order from the top left, one capital per free square, a square of air between words, so the game’s pieces interrupt the text where it ended. The last move’s square is filled with the accent colour.</p>
+    <p class="note"><b>Shade</b> sets the title in lines of capitals across the full width, printed in a white that barely lifts off the stock: the first and last lines bleed past the edges, the lines between are set smaller and centred (a slash in the title forces a line break; otherwise each word is a line). The game is the shadow: every square a move left or landed on throws a soft disc, bigger the more traffic the square saw, and the discs are blurred into one dark spot over the type, so an open middlegame darkens the centre and a kingside attack pulls the shadow to one side. The last move’s square is the core, tinted with the accent colour when the last move is marked. The info items run as one small serif line along the bottom edge, parted by middle dots. Grain is printed over everything.</p>
   </details>
 </section>
 </div>
@@ -253,10 +263,10 @@ Sofiya V
   }
 
   function analyse(text){
-    const result = {ok:false, error:'', positions:0, occ:{}, finalSquares:[], lastTo:null, plies:0, pieces:0};
+    const result = {ok:false, error:'', positions:0, occ:{}, traffic:{}, finalSquares:[], lastTo:null, plies:0, pieces:0};
     if (typeof Chess !== 'function'){ result.error = 'The chess library did not load, so the moves cannot be replayed.'; return result; }
     const game = new Chess();
-    const occ = {};
+    const occ = {}, traffic = {};   // traffic: how many moves left or landed on a square
     const count = () => { game.board().forEach((row, r) => row.forEach((cell, f) => { if (cell){ const sq = FILES[f] + (8 - r); occ[sq] = (occ[sq]||0) + 1; } })); };
     count();
     let positions = 1, lastTo = null, plies = 0;
@@ -264,11 +274,12 @@ Sofiya V
       const mv = game.move(san, {sloppy:true});
       if (!mv){ result.error = `Could not play “${san}” (move ${Math.floor(plies/2)+1}). The position up to that move is used.`; break; }
       plies++; lastTo = mv.to; count(); positions++;
+      traffic[mv.from] = (traffic[mv.from]||0) + 1; traffic[mv.to] = (traffic[mv.to]||0) + 1;
     }
     const finalSquares = [];
     const board = game.board(); // rank 8 first, files a..h
     board.forEach((row, r) => row.forEach((cell, f) => { if (cell) finalSquares.push({sq: FILES[f] + (8 - r), col: f, row: r, piece: cell}); }));
-    Object.assign(result, {ok:true, positions, occ, finalSquares, lastTo, plies, pieces: finalSquares.length});
+    Object.assign(result, {ok:true, positions, occ, traffic, finalSquares, lastTo, plies, pieces: finalSquares.length});
     return result;
   }
 
@@ -287,6 +298,7 @@ Sofiya V
       pattern: $('pattern').value,
       look: $('look').value,
       palette: $('palette').value,
+      tone: $('tone').value,
       markLast: $('markLast').value === 'yes',
       density: +$('density').value/100,
       tint: $('tintHex').value, accent: $('accentHex').value, paper: $('paperHex').value, ink: $('inkHex').value,
@@ -532,6 +544,112 @@ Sofiya V
     return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${W} ${H}" width="${W}" height="${H}" role="img" aria-label="${esc(s.title)} poster"><defs>${fontDefs(s)}${defs.join('')}</defs>${parts.join('')}</svg>`;
   }
 
+  // ---------- the Shade look ----------
+  // After the user's reference (9 Nov 2026), the cover of a live recording:
+  // heavy condensed capitals printed in a white that barely lifts off grey
+  // stock, a dark spot blurred over the middle of the sheet so the lines of
+  // type sink under it, grain over everything, and one line of small serif
+  // along the bottom edge. Here the spot is the game: every square a move left
+  // or landed on throws a soft disc, bigger the more traffic it saw, and the
+  // discs are blurred into one shadow, so an open middlegame darkens the
+  // centre and a kingside attack pulls the shadow to one side. The last move's
+  // square is the core, tinted with the accent colour when the last move is
+  // marked. The title is set in lines across the full width, not one letter
+  // per piece: the first and last lines bleed a little past the edges, as the
+  // reference's do, and the lines between are set smaller and centred. The
+  // info items run as one serif line along the bottom, parted by middle dots.
+  // Traffic is used rather than occupancy because occupancy is heaviest on
+  // the pawns and rooks that never moved, at the edges of the board, and the
+  // shadow would sit on the margins; traffic gathers where the game was.
+  const TONES = {
+    newsprint: { ground:'#C8CAC4', ghost:'#FFFFFF', ghostA:0.5,  shade:'#17131C', foot:'#454842', grainA:0.38 },
+    chalk:     { ground:'#E7E5DE', ghost:'#FFFFFF', ghostA:0.85, shade:'#262230', foot:'#575550', grainA:0.3 },
+    night:     { ground:'#16151B', ghost:'#FFFFFF', ghostA:0.07, shade:'#EEEAE1', foot:'#ABA8A0', grainA:0.28 },
+  };
+  // Text is measured on a canvas with the document's own fonts, so a line can
+  // be sized to the sheet. Before Panell has loaded the fallback is measured;
+  // the page renders again when the fonts arrive.
+  const measureCtx = document.createElement('canvas').getContext('2d');
+  function measure(str, font, weight){
+    measureCtx.font = `${weight} 100px ${font}`;
+    const m = measureCtx.measureText(str);
+    return { w: m.width/100, cap: (m.actualBoundingBoxAscent || 70)/100 };
+  }
+  const SERIF = "'Times New Roman', Times, 'Liberation Serif', serif";
+  function buildShadeSvg(a, s){
+    const W = s.W, H = s.H;
+    const t = TONES[s.tone] || { ground:s.paper, ghost:s.ink, ghostA:0.08, shade:s.ink, foot:s.ink, grainA:0.3 };
+    const cell = W/8, y0 = (H - 8*cell)/2;          // the board fills the width, centred on the sheet
+    const parts = [], defs = [];
+    parts.push(`<rect width="${W}" height="${H}" fill="${esc(t.ground)}"/>`);
+
+    // the title, in lines
+    const raw = s.title.trim().toUpperCase();
+    const lines = (raw.indexOf('/') !== -1 ? raw.split('/') : raw.split(/\s+/)).map(x => x.trim()).filter(Boolean);
+    const capRatio = measure('H', s.font, s.weight).cap;
+    const bleed = 1.04 * s.titleScale;                // 100 on the slider: the edge letters are just cut, as in the reference
+    const maxSize = 0.2*H;                            // a two-character line is not a quarter of the sheet
+    let y = 0.018*H, firstSize = 0;
+    lines.forEach((line, i) => {
+      const w = measure(line, s.font, s.weight).w || 0.5*Array.from(line).length;
+      const full = i === 0 || i === lines.length-1;
+      let size = Math.min(W*bleed / w, maxSize);
+      if (!full) size = Math.min(size, firstSize*0.62);
+      if (i === 0) firstSize = size;
+      const cap = size*capRatio;
+      y += cap;
+      parts.push(`<text x="${(W/2).toFixed(1)}" y="${y.toFixed(1)}" text-anchor="middle" font-family="${esc(s.font)}" font-weight="${s.weight}" font-size="${size.toFixed(1)}" fill="${esc(t.ghost)}" fill-opacity="${t.ghostA}">${esc(line)}</text>`);
+      y += cap*0.14;
+    });
+
+    // the shadow. One soft spot, as in the reference, placed and sized by the
+    // game: its centre is the traffic-weighted centre of the board's squares
+    // and its radius grows with how widely the traffic spread (one standard
+    // deviation, in squares). Inside it, the traffic itself is blurred in at
+    // low opacity, so the spot leans the way the game went. The last move's
+    // square is the core, tinted with the accent colour when it is marked.
+    const traffic = a.traffic || {};
+    const keys = Object.keys(traffic);
+    const maxT = Math.max(1, ...keys.map(k => traffic[k]));
+    const spread = 0.5 + 1.25*s.density;              // the slider: 40 is the reference
+    const at = sq => ({ cx: FILES.indexOf(sq[0])*cell + cell/2, cy: y0 + (8 - +sq[1])*cell + cell/2 });
+    let tw = 0, mx = 0, my = 0;
+    keys.forEach(sq => { const c = at(sq), w = traffic[sq]; tw += w; mx += w*c.cx; my += w*c.cy; });
+    const centre = tw ? { cx: mx/tw, cy: my/tw } : { cx: W/2, cy: H/2 };
+    let vx = 0, vy = 0;
+    keys.forEach(sq => { const c = at(sq), w = traffic[sq]; vx += w*(c.cx-centre.cx)**2; vy += w*(c.cy-centre.cy)**2; });
+    const sx = tw ? Math.sqrt(vx/tw)/cell : 2, sy = tw ? Math.sqrt(vy/tw)/cell : 2;   // in squares; about 2 for a whole game
+    let rx = cell*(1.0 + 1.2*sx)*spread, ry = cell*(1.0 + 1.2*sy)*spread;
+    ry = Math.max(rx*0.85, Math.min(rx*1.3, ry));     // a little taller than wide at most, like the reference
+    defs.push(`<radialGradient id="shSpot"><stop offset="0" stop-color="${esc(t.shade)}"/><stop offset="0.38" stop-color="${esc(t.shade)}"/><stop offset="0.6" stop-color="${esc(t.shade)}" stop-opacity="0.62"/><stop offset="0.8" stop-color="${esc(t.shade)}" stop-opacity="0.2"/><stop offset="0.92" stop-color="${esc(t.shade)}" stop-opacity="0.05"/><stop offset="1" stop-color="${esc(t.shade)}" stop-opacity="0"/></radialGradient>`);
+    parts.push(`<ellipse cx="${centre.cx.toFixed(1)}" cy="${centre.cy.toFixed(1)}" rx="${rx.toFixed(1)}" ry="${ry.toFixed(1)}" fill="url(#shSpot)"/>`);
+    defs.push(`<filter id="shBlur" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="${(cell*1.5).toFixed(1)}"/></filter>`);
+    let discs = '';
+    keys.forEach(sq => {
+      const d = traffic[sq]/maxT, c = at(sq);
+      discs += `<circle cx="${c.cx.toFixed(1)}" cy="${c.cy.toFixed(1)}" r="${(cell*(0.2 + 0.7*d)*spread).toFixed(1)}" fill="${esc(t.shade)}" fill-opacity="${(0.15+0.45*d).toFixed(2)}"/>`;
+    });
+    if (a.lastTo){
+      const c = at(a.lastTo);
+      discs += `<circle cx="${c.cx.toFixed(1)}" cy="${c.cy.toFixed(1)}" r="${(cell*0.8*spread).toFixed(1)}" fill="${esc(s.markLast ? s.accent : t.shade)}" fill-opacity="${s.markLast ? 0.45 : 0.6}"/>`;
+    }
+    parts.push(`<g filter="url(#shBlur)" opacity="0.5">${discs}</g>`);
+
+    // the footer: one serif line along the bottom edge
+    const foot = s.info.join(' · ');
+    if (foot){
+      const fw = measure(foot, SERIF, 400).w || 0.45*foot.length;
+      const size = Math.max(cell*0.1, Math.min(W / fw * s.infoScale, cell*0.32));
+      parts.push(`<text x="${(W/2).toFixed(1)}" y="${(H - 0.014*H).toFixed(1)}" text-anchor="middle" font-family="${esc(SERIF)}" font-size="${size.toFixed(1)}" fill="${esc(t.foot)}">${esc(foot)}</text>`);
+    }
+
+    // grain over everything, overlaid so it speckles the stock and the shadow alike
+    defs.push(`<filter id="shGrain" x="0" y="0" width="100%" height="100%" color-interpolation-filters="sRGB"><feTurbulence type="fractalNoise" baseFrequency="${(900/W).toFixed(4)}" numOctaves="2" seed="7" stitchTiles="stitch"/><feColorMatrix values="1 0 0 0 0  1 0 0 0 0  1 0 0 0 0  0 0 0 0 1"/></filter>`);
+    parts.push(`<rect width="${W}" height="${H}" filter="url(#shGrain)" opacity="${t.grainA}" style="mix-blend-mode:overlay"/>`);
+
+    return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${W} ${H}" width="${W}" height="${H}" role="img" aria-label="${esc(s.title)} poster"><defs>${fontDefs(s)}${defs.join('')}</defs>${parts.join('')}</svg>`;
+  }
+
   // Panell files as data URIs, one per weight, fetched the first time a weight
   // is drawn. Until the fetch lands the SVG goes out without the face and the
   // page re-renders when it arrives.
@@ -557,10 +675,10 @@ Sofiya V
     const a = analyse($('moves').value);
     $('moveWarn').hidden = !a.error; $('moveWarn').textContent = a.error;
     const chars = Array.from(s.title.replace(/\s+/g,''));
-    const tw = chars.length > a.pieces ? `The title has ${chars.length} characters but the position has ${a.pieces} pieces; the last ${chars.length-a.pieces} are left out.` : (chars.length < a.pieces ? `${a.pieces-chars.length} piece square${a.pieces-chars.length===1?'':'s'} left empty.` : '');
+    const tw = s.look === 'shade' ? '' : chars.length > a.pieces ? `The title has ${chars.length} characters but the position has ${a.pieces} pieces; the last ${chars.length-a.pieces} are left out.` : (chars.length < a.pieces ? `${a.pieces-chars.length} piece square${a.pieces-chars.length===1?'':'s'} left empty.` : '');
     $('titleWarn').hidden = !tw; $('titleWarn').textContent = tw;
-    currentSvg = s.look === 'cut' ? buildCutSvg(a, s) : buildSvg(a, s);
-    const iw = s.look === 'cut'
+    currentSvg = s.look === 'cut' ? buildCutSvg(a, s) : s.look === 'shade' ? buildShadeSvg(a, s) : buildSvg(a, s);
+    const iw = s.look === 'shade' ? '' : s.look === 'cut'
       ? (cutLeftover ? `The board has no room for the last ${cutLeftover} character${cutLeftover===1?'':'s'} of the info. A taller size gives more rows.` : '')
       : (s.info.length > a.pieces ? `${s.info.length} info items for ${a.pieces} pieces; the last ${s.info.length-a.pieces} are left out.` : '');
     $('infoWarn').hidden = !iw; $('infoWarn').textContent = iw;
@@ -627,13 +745,15 @@ Sofiya V
   });
 
   function syncLook(){
-    const cut = $('look').value === 'cut';
-    $('paletteWrap').hidden = !cut; $('patternWrap').hidden = cut;
-    $('densityLabel').textContent = cut ? 'Cut depth' : 'Max density';
+    const look = $('look').value, cut = look === 'cut', shade = look === 'shade';
+    $('paletteWrap').hidden = !cut; $('toneWrap').hidden = !shade; $('patternWrap').hidden = cut || shade;
+    $('densityLabel').textContent = cut ? 'Cut depth' : shade ? 'Shadow' : 'Max density';
   }
   syncLook();
   render();
   window.addEventListener('chessready', render);
+  // Shade sizes its lines from measured text, so it renders again once the fonts are in.
+  if (document.fonts){ document.fonts.ready.then(render); document.fonts.addEventListener('loadingdone', render); }
   if (window.claude && typeof window.claude.use === 'function'){
     window.claude.use('downloads').then(ns => {
       downloads = ns;
