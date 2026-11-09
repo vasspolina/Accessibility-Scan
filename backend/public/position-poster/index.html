@@ -176,7 +176,7 @@ Sofiya V
         </select>
       </label>
     </div>
-    <label class="range"><span id="densityLabel">Cut depth</span> <input type="range" id="density" min="20" max="100" value="60"><output id="densityOut">60</output></label>
+    <label class="range"><span id="densityLabel">Cut depth</span> <input type="range" id="density" min="20" max="100" value="40"><output id="densityOut">40</output></label>
   </fieldset>
 
   <fieldset>
@@ -228,7 +228,7 @@ Sofiya V
   <details><summary>How the layout is built</summary>
     <p class="note">The game is replayed move by move. The pieces left on the board after the last move give the title its squares: characters fill them in reading order, a8 to h1. Each square is scored by how many of the game’s positions it was occupied in, from the start position to the end.</p>
     <p class="note"><b>Classic</b> tints each square by that score and sets the info items on the same squares of a smaller board at the bottom. The destination of the last move is set in the accent colour.</p>
-    <p class="note"><b>Cut</b> bleeds the board to the edges and lays three colour bands over it. The title is set in capitals, one per piece square; the more often the square was occupied, the more slices the letter is cut into and the further they slide, with a sliver of the opposite colour showing. Squares the game passed through but left empty carry a fragment of a title letter at twice the size, or a disc, half-disc or quarter cut. The info items are two small blocks, top left and right. The last move’s square is filled with the accent colour.</p>
+    <p class="note"><b>Cut</b> bleeds the board to the edges and lays three colour bands over it. The title is set in capitals, one per piece square; the more often the square was occupied, the more slices the letter is cut into and the further they slide, with a sliver of the opposite colour showing. Squares the game passed through but left empty carry a fragment of a title letter at twice the size, or a disc, half-disc or quarter cut (the letter fragments only when there is no info). The info is set the same way: its words flow in reading order from the top left, one capital per free square, a square of air between words, so the game’s pieces interrupt the text where it ended. The last move’s square is filled with the accent colour.</p>
   </details>
 </section>
 </div>
@@ -371,48 +371,20 @@ Sofiya V
     return inside;
   }
 
+  let cutLeftover = 0;   // info characters the last Cut render had no square for
   function buildCutSvg(a, s){
     const W = s.W, H = s.H;
     const pal = PALETTES[s.palette] || { bands:[s.paper, s.paper, s.ink], corner:[s.tint, s.ink], dot:s.accent, extras:[s.tint, s.accent, s.ink, s.paper] };
     const cell = W / 8;
     const y0 = H - 8*cell;                           // the board sits on the bottom edge
-    const rowsAbove = Math.ceil(Math.max(0, y0) / cell);
+    const rowsAbove = Math.floor(Math.max(0, y0) / cell);   // whole rows only: a letter is never cut by the top edge
     const cut = s.density;                           // the slider: how deep the cuts go
     const chars = Array.from(s.title.replace(/\s+/g,'').toUpperCase());
     const parts = [], defs = [];
     const poly = (pts, fill) => `<polygon points="${pts.map(p => p.map(v => v.toFixed(1)).join(',')).join(' ')}" fill="${esc(fill)}"/>`;
 
-    // the two info blocks: top left on the corner, right on the second band,
-    // each slid down its edge until it covers no piece square
-    const iSize = cell * (s.panell ? 0.16 : 0.13) * s.infoScale, pad = 0.045*W, lh = iSize*1.2;
-    const nA = Math.ceil(s.info.length/2);
-    const blockA = s.info.slice(0, nA), blockB = s.info.slice(nA);
-    const widest = lines => lines.reduce((m, t) => Math.max(m, t.length), 0) * iSize * (s.panell ? 0.42 : 0.62);
-    const pieceRects = a.finalSquares.map(p => ({x0:p.col*cell, y0:y0+p.row*cell, x1:(p.col+1)*cell, y1:y0+(p.row+1)*cell}));
-    const hits = (b, list) => list.some(o => b.x1 > o.x0 && b.x0 < o.x1 && b.y1 > o.y0 && b.y0 < o.y1);
-    const boxes = [];
-    const place = (lines, xs, atY) => {
-      if (!lines.length) return null;
-      const w = widest(lines), h = lines.length*lh;
-      const cands = [];
-      for (let k=0; k<8; k++){ const y = atY + k*cell; if (y + h <= H) for (const x of xs) cands.push([x, y]); }
-      if (!cands.length) cands.push([xs[0], atY]);
-      let box = null;
-      for (const [x, y] of cands){ const b = {x0:x, y0:y, x1:x+w, y1:y+h}; if (!hits(b, pieceRects) && !hits(b, boxes)){ box = b; break; } }
-      if (!box){ const [x, y] = cands[0]; box = {x0:x, y0:y, x1:x+w, y1:y+h}; }
-      boxes.push(box); return box;
-    };
-    const boxA = place(blockA, [pad, pad+cell, pad+2*cell], pad);
-    const boxB = place(blockB, [W - pad - widest(blockB)], 0.25*H + 0.03*H);
-    const underText = (x, y) => hits({x0:x, y0:y, x1:x+cell, y1:y+cell}, boxes);
-
-    // bands and the corner; the yellow triangle grows to hold the first block
-    let ty = 0.24*H, tx = 0.36*W;
-    if (boxA && boxA.y0 === pad){
-      ty = Math.max(ty, boxA.y1 + 0.04*H);
-      tx = Math.max(tx, (boxA.x1 + 0.03*W) / (1 - boxA.y1/ty));
-      if (tx > 0.7*W){ tx = 0.7*W; ty = (boxA.y1 + 0.04*H) / (1 - (boxA.x1 + 0.03*W)/tx); }
-    }
+    // bands and the corner
+    const ty = 0.24*H, tx = 0.36*W;
     const by = Math.max(0.25*H, ty + 0.01*H);
     const yellowTri = [[0,0],[tx,0],[0,ty]];
     const blackPoly = [[tx,0],[tx+0.24*W,0],[0.08*W,by],[0,by],[0,ty]];
@@ -433,10 +405,63 @@ Sofiya V
     const inkOn = ground => lum(ground) > 0.4 ? s.ink : s.paper;   // dark letters on light bands, light on dark
     const otherOn = ground => lum(ground) > 0.4 ? s.paper : s.ink;
 
-    // occupied squares: letters on the pieces, fragments and cuts on the rest
     const clipId = (f, r) => `k${f}_${r+rowsAbove}`;
     const byIndex = {}; a.finalSquares.forEach((p, i) => { byIndex[p.sq] = i; });
     const big = `font-family="${esc(s.font)}" font-weight="${s.weight}" text-anchor="middle" dominant-baseline="central"`;
+
+    // The info is set like the title: one capital per square, the same size and
+    // the same cuts. Its words flow in reading order from the top left corner
+    // across the squares no piece holds, one square of air after each word, a
+    // word moving to the next row when its run of free squares is too short
+    // (after two rows with no room, or when it is longer than a row, it splits).
+    // The piece squares keep the title's letters, so the game interrupts the
+    // text where it ended.
+    const words = s.info.join(' ').toUpperCase().split(/\s+/).filter(Boolean);
+    const rows = []; for (let r=-rowsAbove; r<8; r++) rows.push(r);
+    const isFree = (f, r) => f < 8 && !(r >= 0 && byIndex[FILES[f]+(8-r)] !== undefined);
+    const nextFree = (r, f) => { while (f < 8 && !isFree(f, r)) f++; return f; };
+    const runFrom = (r, f) => { let n = 0; while (isFree(f+n, r)) n++; return n; };
+    const flow = {}; let ri = 0, fc = 0, misses = 0; cutLeftover = 0;
+    for (const word of words){
+      let w = Array.from(word);
+      while (w.length){
+        if (ri >= rows.length){ cutLeftover += w.length; break; }
+        const r = rows[ri];
+        let f = nextFree(r, fc), run = runFrom(r, f);
+        const whole = w.length <= 8 && misses < 2;
+        while (f < 8 && whole && run < w.length){ f = nextFree(r, f+run); run = runFrom(r, f); }
+        if (f >= 8 || run === 0){ ri++; fc = 0; misses++; continue; }
+        const take = Math.min(run, w.length);
+        for (let i=0; i<take; i++) flow[`${f+i},${r}`] = w[i];
+        w = w.slice(take); misses = 0;
+        fc = f + take + 1;
+        if (fc >= 8){ ri++; fc = 0; }
+      }
+    }
+
+    // one capital on one square, cut into slices by how often the square was occupied
+    const letter = (f, r, x, y, ch, tile, d) => {
+      const cx = x+cell/2, cy = y+cell/2;
+      const size = cell * (s.panell ? 1.45 : 1.2) * s.titleScale;
+      const depth = d * cut;                              // 0 … 1
+      const nS = depth > 0.3 ? 3 : depth > 0.12 ? 2 : 1;  // how many slices
+      const shift = depth * 0.3 * cell;
+      const fill = inkOn(tile), sliver = otherOn(tile);
+      let inner = '';
+      for (let i=0; i<nS; i++){
+        const sx = x + i*cell/nS, sw = cell/nS;
+        const sgn = i % 2 ? 1 : -1;
+        const dx = nS > 1 ? sgn*shift : 0;
+        const sid = `${clipId(f,r)}s${i}`;
+        defs.push(`<clipPath id="${sid}"><rect x="${sx.toFixed(1)}" y="${y.toFixed(1)}" width="${sw.toFixed(1)}" height="${cell.toFixed(1)}"/></clipPath>`);
+        inner += `<g clip-path="url(#${sid})">` +
+          `<text x="${(cx+dx-sgn*shift*0.6-0.04*cell).toFixed(1)}" y="${cy.toFixed(1)}" ${big} font-size="${size.toFixed(1)}" fill="${esc(sliver)}">${esc(ch)}</text>` +
+          `<text x="${(cx+dx).toFixed(1)}" y="${cy.toFixed(1)}" ${big} font-size="${size.toFixed(1)}" fill="${esc(fill)}">${esc(ch)}</text></g>`;
+      }
+      parts.push(inner);
+    };
+
+    // every square: the title on the pieces, the info on the flow, cuts on the rest
 
     for (let r=-rowsAbove; r<8; r++) for (let f=0; f<8; f++){
       // rows above the board echo the board's top ranks, mirrored, with no letters
@@ -448,41 +473,23 @@ Sofiya V
       const ground = bandAt(cx, cy);
       const idx = r >= 0 ? byIndex[FILES[f]+(8-r)] : undefined;
       const isPiece = idx !== undefined;
-      if (!isPiece && !n) continue;
-      if (!isPiece && underText(x, y)) continue;
+      const flowCh = flow[`${f},${r}`];
+      if (!isPiece && !flowCh && !n) continue;
       const h = hashCell(f, r+rowsAbove, n);
       defs.push(`<clipPath id="${clipId(f,r)}"><rect x="${x.toFixed(1)}" y="${y.toFixed(1)}" width="${cell.toFixed(1)}" height="${cell.toFixed(1)}"/></clipPath>`);
       const g = inner => parts.push(`<g clip-path="url(#${clipId(f,r)})">${inner}</g>`);
 
       if (isPiece){
         const last = s.markLast && FILES[f]+(8-r) === a.lastTo;
-        const tile = last ? s.accent : ground;
         if (last) parts.push(`<rect x="${x.toFixed(1)}" y="${y.toFixed(1)}" width="${cell.toFixed(1)}" height="${cell.toFixed(1)}" fill="${esc(s.accent)}"/>`);
-        if (idx >= chars.length) continue;
-        const ch = esc(chars[idx]);
-        const size = cell * (s.panell ? 1.45 : 1.2) * s.titleScale;
-        const depth = d * cut;                              // 0 … 1
-        const nS = depth > 0.3 ? 3 : depth > 0.12 ? 2 : 1;  // how many slices
-        const shift = depth * 0.3 * cell;
-        const fill = inkOn(tile), sliver = otherOn(tile);
-        let inner = '';
-        for (let i=0; i<nS; i++){
-          const sx = x + i*cell/nS, sw = cell/nS;
-          const sgn = i % 2 ? 1 : -1;
-          const dx = nS > 1 ? sgn*shift : 0;
-          const sid = `${clipId(f,r)}s${i}`;
-          defs.push(`<clipPath id="${sid}"><rect x="${sx.toFixed(1)}" y="${y.toFixed(1)}" width="${sw.toFixed(1)}" height="${cell.toFixed(1)}"/></clipPath>`);
-          inner += `<g clip-path="url(#${sid})">` +
-            `<text x="${(cx+dx-sgn*shift*0.6-0.04*cell).toFixed(1)}" y="${cy.toFixed(1)}" ${big} font-size="${size.toFixed(1)}" fill="${esc(sliver)}">${ch}</text>` +
-            `<text x="${(cx+dx).toFixed(1)}" y="${cy.toFixed(1)}" ${big} font-size="${size.toFixed(1)}" fill="${esc(fill)}">${ch}</text></g>`;
-        }
-        parts.push(inner);
+        if (idx < chars.length) letter(f, r, x, y, chars[idx], last ? s.accent : ground, d);
         continue;
       }
+      if (flowCh){ letter(f, r, x, y, flowCh, ground, d); continue; }
 
       // an empty square the game passed through
       const depth = d * cut / 0.6;
-      if (depth >= 0.3 && chars.length){
+      if (depth >= 0.3 && chars.length && !words.length){
         const ch = esc(chars[h % chars.length]);
         const size = cell * (s.panell ? 2.8 : 2.2);
         const ox = ((h >> 2) % 5 - 2) * 0.22 * cell, oy = ((h >> 5) % 5 - 2) * 0.22 * cell;
@@ -522,17 +529,6 @@ Sofiya V
       }
     }
 
-    // info blocks last, so nothing sits over them
-    const small = `font-family="${esc(s.font)}" font-weight="${s.weight}" font-size="${iSize.toFixed(1)}"`;
-    if (boxA) blockA.forEach((t, i) => {
-      const y = boxA.y0 + iSize*0.85 + i*lh;
-      parts.push(`<text x="${boxA.x0.toFixed(1)}" y="${y.toFixed(1)}" ${small} fill="${esc(inkOn(bandAt(boxA.x0, y)))}">${esc(t.toUpperCase())}</text>`);
-    });
-    if (boxB) blockB.forEach((t, i) => {
-      const y = boxB.y0 + iSize*0.85 + i*lh;
-      parts.push(`<text x="${boxB.x1.toFixed(1)}" y="${y.toFixed(1)}" ${small} text-anchor="end" fill="${esc(inkOn(bandAt(boxB.x1, y)))}">${esc(t.toUpperCase())}</text>`);
-    });
-
     return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${W} ${H}" width="${W}" height="${H}" role="img" aria-label="${esc(s.title)} poster"><defs>${fontDefs(s)}${defs.join('')}</defs>${parts.join('')}</svg>`;
   }
 
@@ -563,9 +559,11 @@ Sofiya V
     const chars = Array.from(s.title.replace(/\s+/g,''));
     const tw = chars.length > a.pieces ? `The title has ${chars.length} characters but the position has ${a.pieces} pieces; the last ${chars.length-a.pieces} are left out.` : (chars.length < a.pieces ? `${a.pieces-chars.length} piece square${a.pieces-chars.length===1?'':'s'} left empty.` : '');
     $('titleWarn').hidden = !tw; $('titleWarn').textContent = tw;
-    const iw = s.info.length > a.pieces ? `${s.info.length} info items for ${a.pieces} pieces; the last ${s.info.length-a.pieces} are left out.` : '';
-    $('infoWarn').hidden = !iw; $('infoWarn').textContent = iw;
     currentSvg = s.look === 'cut' ? buildCutSvg(a, s) : buildSvg(a, s);
+    const iw = s.look === 'cut'
+      ? (cutLeftover ? `The board has no room for the last ${cutLeftover} character${cutLeftover===1?'':'s'} of the info. A taller size gives more rows.` : '')
+      : (s.info.length > a.pieces ? `${s.info.length} info items for ${a.pieces} pieces; the last ${s.info.length-a.pieces} are left out.` : '');
+    $('infoWarn').hidden = !iw; $('infoWarn').textContent = iw;
     $('frame').innerHTML = currentSvg;
     $('stats').innerHTML = `<span><b>${a.plies}</b> plies</span><span><b>${a.positions}</b> positions</span><span><b>${a.pieces}</b> pieces left</span><span>last move to <b>${a.lastTo||'—'}</b></span><span><b>${Object.keys(a.occ).length}</b> of 64 squares ever occupied</span>`;
   }
