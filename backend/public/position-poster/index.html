@@ -6,6 +6,15 @@
 <style>:root{color-scheme:light dark}img{max-width:100%}[hidden]{display:none!important}</style>
 <title>Position Poster</title>
 <style>
+/* Panell Compressed (Displaay trial): the poster face. The same files are
+   embedded as a data URI in the exported SVG, because an SVG drawn into a
+   canvas or opened on its own cannot reach the page's fonts. */
+@font-face{font-family:"Panell Compressed";font-weight:400;src:url(../fonts/PanellCompressed-TRIAL-Regular.woff2) format("woff2");font-display:block}
+@font-face{font-family:"Panell Compressed";font-weight:500;src:url(../fonts/PanellCompressed-TRIAL-Medium.woff2) format("woff2");font-display:block}
+@font-face{font-family:"Panell Compressed";font-weight:600;src:url(../fonts/PanellCompressed-TRIAL-SemiBold.woff2) format("woff2");font-display:block}
+@font-face{font-family:"Panell Compressed";font-weight:700;src:url(../fonts/PanellCompressed-TRIAL-Bold.woff2) format("woff2");font-display:block}
+</style>
+<style>
 /* Layout: a fixed control column on the left, the poster on the right; stacks on phones. */
 :root{
   --bg:#F4F4F2; --panel:#FFFFFF; --fg:#111111; --muted:#5B5B5B; --line:#D6D6D2;
@@ -111,6 +120,7 @@ Sofiya V
     <div class="row">
       <label>Font
         <select id="font">
+          <option value="'Panell Compressed', 'Arial Narrow', Arial, sans-serif">Panell Compressed</option>
           <option value="Arial, 'Liberation Sans', Helvetica, sans-serif">Arial</option>
           <option value="Helvetica, 'Helvetica Neue', Arial, sans-serif">Helvetica</option>
           <option value="Saans, 'Saans TRIAL', Arial, sans-serif">Saans (if installed)</option>
@@ -121,8 +131,9 @@ Sofiya V
       <label>Weight
         <select id="weight">
           <option value="700">Bold</option>
+          <option value="600">SemiBold</option>
+          <option value="500">Medium</option>
           <option value="400">Regular</option>
-          <option value="900">Black</option>
         </select>
       </label>
     </div>
@@ -269,7 +280,7 @@ Sofiya V
     let font = $('font').value;
     if (font === 'custom') font = $('customFont').value.trim() || 'Arial, sans-serif';
     return {
-      W, H, font,
+      W, H, font, panell: font.indexOf('Panell Compressed') !== -1,
       weight: $('weight').value,
       titleScale: +$('titleScale').value/100,
       infoScale: +$('infoScale').value/100,
@@ -290,8 +301,8 @@ Sofiya V
     const r2 = cell * 0.4;                          // row height of the lower board
     const topY = m;
     const lowY = s.H - m - 8*r2;
-    const titleSize = cell * 1.0 * s.titleScale;
-    const infoSize = cell * 0.17 * s.infoScale;
+    const titleSize = cell * (s.panell ? 1.25 : 1.0) * s.titleScale;
+    const infoSize = cell * (s.panell ? 0.21 : 0.17) * s.infoScale;
     const chars = Array.from(s.title.replace(/\s+/g,''));
     const parts = [];
 
@@ -331,7 +342,7 @@ Sofiya V
       parts.push(`<text x="${x}" y="${y}" ${iFont} fill="${esc(fill)}">${esc(s.info[i])}</text>`);
     });
 
-    return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${s.W} ${s.H}" width="${s.W}" height="${s.H}" role="img" aria-label="${esc(s.title)} poster">${parts.join('')}</svg>`;
+    return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${s.W} ${s.H}" width="${s.W}" height="${s.H}" role="img" aria-label="${esc(s.title)} poster">${fontDefs(s)}${parts.join('')}</svg>`;
   }
 
 
@@ -373,10 +384,10 @@ Sofiya V
 
     // the two info blocks: top left on the corner, right on the second band,
     // each slid down its edge until it covers no piece square
-    const iSize = cell * 0.13 * s.infoScale, pad = 0.045*W, lh = iSize*1.2;
+    const iSize = cell * (s.panell ? 0.16 : 0.13) * s.infoScale, pad = 0.045*W, lh = iSize*1.2;
     const nA = Math.ceil(s.info.length/2);
     const blockA = s.info.slice(0, nA), blockB = s.info.slice(nA);
-    const widest = lines => lines.reduce((m, t) => Math.max(m, t.length), 0) * iSize * 0.62;
+    const widest = lines => lines.reduce((m, t) => Math.max(m, t.length), 0) * iSize * (s.panell ? 0.42 : 0.62);
     const pieceRects = a.finalSquares.map(p => ({x0:p.col*cell, y0:y0+p.row*cell, x1:(p.col+1)*cell, y1:y0+(p.row+1)*cell}));
     const hits = (b, list) => list.some(o => b.x1 > o.x0 && b.x0 < o.x1 && b.y1 > o.y0 && b.y0 < o.y1);
     const boxes = [];
@@ -449,7 +460,7 @@ Sofiya V
         if (last) parts.push(`<rect x="${x.toFixed(1)}" y="${y.toFixed(1)}" width="${cell.toFixed(1)}" height="${cell.toFixed(1)}" fill="${esc(s.accent)}"/>`);
         if (idx >= chars.length) continue;
         const ch = esc(chars[idx]);
-        const size = cell * 1.2 * s.titleScale;
+        const size = cell * (s.panell ? 1.45 : 1.2) * s.titleScale;
         const depth = d * cut;                              // 0 … 1
         const nS = depth > 0.3 ? 3 : depth > 0.12 ? 2 : 1;  // how many slices
         const shift = depth * 0.3 * cell;
@@ -473,7 +484,7 @@ Sofiya V
       const depth = d * cut / 0.6;
       if (depth >= 0.3 && chars.length){
         const ch = esc(chars[h % chars.length]);
-        const size = cell * 2.2;
+        const size = cell * (s.panell ? 2.8 : 2.2);
         const ox = ((h >> 2) % 5 - 2) * 0.22 * cell, oy = ((h >> 5) % 5 - 2) * 0.22 * cell;
         g(`<text x="${(cx+ox).toFixed(1)}" y="${(cy+oy).toFixed(1)}" ${big} font-size="${size.toFixed(1)}" fill="${esc(inkOn(ground))}">${ch}</text>`);
       } else if (depth >= 0.08){
@@ -522,8 +533,27 @@ Sofiya V
       parts.push(`<text x="${boxB.x1.toFixed(1)}" y="${y.toFixed(1)}" ${small} text-anchor="end" fill="${esc(inkOn(bandAt(boxB.x1, y)))}">${esc(t.toUpperCase())}</text>`);
     });
 
-    return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${W} ${H}" width="${W}" height="${H}" role="img" aria-label="${esc(s.title)} poster"><defs>${defs.join('')}</defs>${parts.join('')}</svg>`;
+    return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${W} ${H}" width="${W}" height="${H}" role="img" aria-label="${esc(s.title)} poster"><defs>${fontDefs(s)}${defs.join('')}</defs>${parts.join('')}</svg>`;
   }
+
+  // Panell files as data URIs, one per weight, fetched the first time a weight
+  // is drawn. Until the fetch lands the SVG goes out without the face and the
+  // page re-renders when it arrives.
+  const PANELL_FILES = {400:'Regular', 500:'Medium', 600:'SemiBold', 700:'Bold'};
+  const panellData = {};
+  function panellStyle(weight){
+    const w = PANELL_FILES[weight] ? weight : 700;
+    const d = panellData[w];
+    if (d === undefined){
+      panellData[w] = null;
+      fetch(`../fonts/PanellCompressed-TRIAL-${PANELL_FILES[w]}.woff2`).then(r => r.ok ? r.blob() : Promise.reject(new Error(r.status)))
+        .then(b => new Promise(res => { const fr = new FileReader(); fr.onload = () => res(fr.result); fr.readAsDataURL(b); }))
+        .then(uri => { panellData[w] = uri; render(); })
+        .catch(() => { panellData[w] = false; });
+    }
+    return d ? `<style>@font-face{font-family:"Panell Compressed";font-weight:${w};src:url(${d}) format("woff2")}</style>` : '';
+  }
+  const fontDefs = s => s.panell ? panellStyle(+s.weight) : '';
 
   let currentSvg = '';
   function render(){
