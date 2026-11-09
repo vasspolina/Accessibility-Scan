@@ -6,6 +6,15 @@
 <style>:root{color-scheme:light dark}img{max-width:100%}[hidden]{display:none!important}</style>
 <title>Position Poster</title>
 <style>
+/* Panell Compressed (Displaay trial): the poster face. The same files are
+   embedded as a data URI in the exported SVG, because an SVG drawn into a
+   canvas or opened on its own cannot reach the page's fonts. */
+@font-face{font-family:"Panell Compressed";font-weight:400;src:url(../fonts/PanellCompressed-TRIAL-Regular.woff2) format("woff2");font-display:block}
+@font-face{font-family:"Panell Compressed";font-weight:500;src:url(../fonts/PanellCompressed-TRIAL-Medium.woff2) format("woff2");font-display:block}
+@font-face{font-family:"Panell Compressed";font-weight:600;src:url(../fonts/PanellCompressed-TRIAL-SemiBold.woff2) format("woff2");font-display:block}
+@font-face{font-family:"Panell Compressed";font-weight:700;src:url(../fonts/PanellCompressed-TRIAL-Bold.woff2) format("woff2");font-display:block}
+</style>
+<style>
 /* Layout: a fixed control column on the left, the poster on the right; stacks on phones. */
 :root{
   --bg:#F4F4F2; --panel:#FFFFFF; --fg:#111111; --muted:#5B5B5B; --line:#D6D6D2;
@@ -67,7 +76,7 @@ details summary{cursor:pointer;font-size:12px;color:var(--muted)}
 <div class="app">
 <header>
   <h1>Position Poster</h1>
-  <p>Type a chess game and some text. Each character becomes a piece in the final position; the squares behind it show how often each square was occupied during the game.</p>
+  <p>Type a chess game and some text. Each character becomes a piece in the final position; the squares behind it show how often each square was occupied during the game. Two looks: Classic sets the letters on a tinted board; Cut sets heavy capitals over colour bands and slices them, after the Museum für Gestaltung’s exhibition posters.</p>
 </header>
 
 <form class="panel" id="controls" autocomplete="off">
@@ -111,6 +120,7 @@ Sofiya V
     <div class="row">
       <label>Font
         <select id="font">
+          <option value="'Panell Compressed', 'Arial Narrow', Arial, sans-serif">Panell Compressed</option>
           <option value="Arial, 'Liberation Sans', Helvetica, sans-serif">Arial</option>
           <option value="Helvetica, 'Helvetica Neue', Arial, sans-serif">Helvetica</option>
           <option value="Saans, 'Saans TRIAL', Arial, sans-serif">Saans (if installed)</option>
@@ -121,8 +131,9 @@ Sofiya V
       <label>Weight
         <select id="weight">
           <option value="700">Bold</option>
+          <option value="600">SemiBold</option>
+          <option value="500">Medium</option>
           <option value="400">Regular</option>
-          <option value="900">Black</option>
         </select>
       </label>
     </div>
@@ -134,13 +145,12 @@ Sofiya V
   </fieldset>
 
   <fieldset>
-    <legend>Pattern</legend>
+    <legend>Look</legend>
     <div class="row">
-      <label>Shape
-        <select id="pattern">
-          <option value="squares">Density squares</option>
-          <option value="dots">Density dots</option>
-          <option value="none">None</option>
+      <label>Style
+        <select id="look">
+          <option value="cut">Cut capitals</option>
+          <option value="classic">Classic board</option>
         </select>
       </label>
       <label>Mark last move
@@ -150,7 +160,23 @@ Sofiya V
         </select>
       </label>
     </div>
-    <label class="range">Max density <input type="range" id="density" min="20" max="100" value="60"><output id="densityOut">60</output></label>
+    <div class="row">
+      <label id="paletteWrap">Bands
+        <select id="palette">
+          <option value="toni">Pink, red, blue</option>
+          <option value="bahnhof">Cream, green, black</option>
+          <option value="paper">Paper and ink</option>
+        </select>
+      </label>
+      <label id="patternWrap" hidden>Shape
+        <select id="pattern">
+          <option value="squares">Density squares</option>
+          <option value="dots">Density dots</option>
+          <option value="none">None</option>
+        </select>
+      </label>
+    </div>
+    <label class="range"><span id="densityLabel">Cut depth</span> <input type="range" id="density" min="20" max="100" value="40"><output id="densityOut">40</output></label>
   </fieldset>
 
   <fieldset>
@@ -200,7 +226,9 @@ Sofiya V
   <div class="frame" id="frame"></div>
   <div class="stats" id="stats"></div>
   <details><summary>How the layout is built</summary>
-    <p class="note">The game is replayed move by move. The pieces left on the board after the last move give the title its squares: characters fill them in reading order, a8 to h1. The same squares hold the info items on the smaller board at the bottom. Each background square is tinted by how many of the game’s positions it was occupied in, from the start position to the end. The destination of the last move is set in the accent colour.</p>
+    <p class="note">The game is replayed move by move. The pieces left on the board after the last move give the title its squares: characters fill them in reading order, a8 to h1. Each square is scored by how many of the game’s positions it was occupied in, from the start position to the end.</p>
+    <p class="note"><b>Classic</b> tints each square by that score and sets the info items on the same squares of a smaller board at the bottom. The destination of the last move is set in the accent colour.</p>
+    <p class="note"><b>Cut</b> bleeds the board to the edges and lays three colour bands over it. The title is set in capitals, one per piece square; the more often the square was occupied, the more slices the letter is cut into and the further they slide, with a sliver of the opposite colour showing. Squares the game passed through but left empty carry a fragment of a title letter at twice the size, or a disc, half-disc or quarter cut (the letter fragments only when there is no info). The info is set the same way: its words flow in reading order from the top left, one capital per free square, a square of air between words, so the game’s pieces interrupt the text where it ended. The last move’s square is filled with the accent colour.</p>
   </details>
 </section>
 </div>
@@ -252,11 +280,13 @@ Sofiya V
     let font = $('font').value;
     if (font === 'custom') font = $('customFont').value.trim() || 'Arial, sans-serif';
     return {
-      W, H, font,
+      W, H, font, panell: font.indexOf('Panell Compressed') !== -1,
       weight: $('weight').value,
       titleScale: +$('titleScale').value/100,
       infoScale: +$('infoScale').value/100,
       pattern: $('pattern').value,
+      look: $('look').value,
+      palette: $('palette').value,
       markLast: $('markLast').value === 'yes',
       density: +$('density').value/100,
       tint: $('tintHex').value, accent: $('accentHex').value, paper: $('paperHex').value, ink: $('inkHex').value,
@@ -271,8 +301,8 @@ Sofiya V
     const r2 = cell * 0.4;                          // row height of the lower board
     const topY = m;
     const lowY = s.H - m - 8*r2;
-    const titleSize = cell * 1.0 * s.titleScale;
-    const infoSize = cell * 0.17 * s.infoScale;
+    const titleSize = cell * (s.panell ? 1.25 : 1.0) * s.titleScale;
+    const infoSize = cell * (s.panell ? 0.21 : 0.17) * s.infoScale;
     const chars = Array.from(s.title.replace(/\s+/g,''));
     const parts = [];
 
@@ -312,8 +342,214 @@ Sofiya V
       parts.push(`<text x="${x}" y="${y}" ${iFont} fill="${esc(fill)}">${esc(s.info[i])}</text>`);
     });
 
-    return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${s.W} ${s.H}" width="${s.W}" height="${s.H}" role="img" aria-label="${esc(s.title)} poster">${parts.join('')}</svg>`;
+    return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${s.W} ${s.H}" width="${s.W}" height="${s.H}" role="img" aria-label="${esc(s.title)} poster">${fontDefs(s)}${parts.join('')}</svg>`;
   }
+
+
+  // ---------- the Cut look ----------
+  // After the user's reference, a Museum für Gestaltung Zürich exhibition poster
+  // (Design Studio: Prozesse, 2017): a yellow and black corner over pink, a red
+  // band, a blue band, and heavy white capitals sliced apart with black slivers
+  // showing in the cuts. Here the slices come from the game: a square that was
+  // occupied in many positions cuts its letter more.
+  const PALETTES = {
+    toni:    { bands:['#F3A8C6','#E8334A','#1FA9E8'], corner:['#F9E11E','#141414'], dot:'#1FA9E8', extras:['#4B1F3F','#0F6B3C','#F3A8C6','#141414','#FFFFFF','#F9E11E'] },
+    bahnhof: { bands:['#F1E9D6','#1B6E4A','#141414'], corner:['#F9E11E','#E8334A'], dot:'#E8334A', extras:['#F9E11E','#E8334A','#FFFFFF','#1FA9E8','#141414'] },
+    paper:   null, // built from the colour fields at render time
+  };
+  function lum(hex){
+    const v = [1,3,5].map(i => parseInt(hex.slice(i,i+2),16)/255).map(c => c <= 0.03928 ? c/12.92 : Math.pow((c+0.055)/1.055, 2.4));
+    return 0.2126*v[0] + 0.7152*v[1] + 0.0722*v[2];
+  }
+  const hashCell = (f, r, n) => ((Math.imul(f+13, 73856093) ^ Math.imul(r+7, 19349663) ^ Math.imul(n+1, 83492791)) >>> 0);
+  function pointInPoly(x, y, poly){
+    let inside = false;
+    for (let i=0, j=poly.length-1; i<poly.length; j=i++){
+      const [xi,yi] = poly[i], [xj,yj] = poly[j];
+      if ((yi > y) !== (yj > y) && x < (xj-xi)*(y-yi)/(yj-yi) + xi) inside = !inside;
+    }
+    return inside;
+  }
+
+  let cutLeftover = 0;   // info characters the last Cut render had no square for
+  function buildCutSvg(a, s){
+    const W = s.W, H = s.H;
+    const pal = PALETTES[s.palette] || { bands:[s.paper, s.paper, s.ink], corner:[s.tint, s.ink], dot:s.accent, extras:[s.tint, s.accent, s.ink, s.paper] };
+    const cell = W / 8;
+    const y0 = H - 8*cell;                           // the board sits on the bottom edge
+    const rowsAbove = Math.floor(Math.max(0, y0) / cell);   // whole rows only: a letter is never cut by the top edge
+    const cut = s.density;                           // the slider: how deep the cuts go
+    const chars = Array.from(s.title.replace(/\s+/g,'').toUpperCase());
+    const parts = [], defs = [];
+    const poly = (pts, fill) => `<polygon points="${pts.map(p => p.map(v => v.toFixed(1)).join(',')).join(' ')}" fill="${esc(fill)}"/>`;
+
+    // bands and the corner
+    const ty = 0.24*H, tx = 0.36*W;
+    const by = Math.max(0.25*H, ty + 0.01*H);
+    const yellowTri = [[0,0],[tx,0],[0,ty]];
+    const blackPoly = [[tx,0],[tx+0.24*W,0],[0.08*W,by],[0,by],[0,ty]];
+    parts.push(`<rect width="${W}" height="${H}" fill="${esc(pal.bands[0])}"/>`);
+    parts.push(`<rect y="${(0.25*H).toFixed(1)}" width="${W}" height="${(0.25*H).toFixed(1)}" fill="${esc(pal.bands[1])}"/>`);
+    parts.push(`<rect y="${(0.5*H).toFixed(1)}" width="${W}" height="${(0.5*H).toFixed(1)}" fill="${esc(pal.bands[2])}"/>`);
+    parts.push(poly(blackPoly, pal.corner[1]));
+    parts.push(poly(yellowTri, pal.corner[0]));
+    parts.push(`<circle cx="${(0.7*tx).toFixed(1)}" cy="${(0.3*ty).toFixed(1)}" r="${(0.016*W).toFixed(1)}" fill="${esc(pal.dot)}"/>`);
+
+    const bandAt = (x, y) => {
+      if (y >= 0.5*H) return pal.bands[2];
+      if (y >= 0.25*H) return pal.bands[1];
+      if (x/tx + y/ty < 1) return pal.corner[0];
+      if (pointInPoly(x, y, blackPoly)) return pal.corner[1];
+      return pal.bands[0];
+    };
+    const inkOn = ground => lum(ground) > 0.4 ? s.ink : s.paper;   // dark letters on light bands, light on dark
+    const otherOn = ground => lum(ground) > 0.4 ? s.paper : s.ink;
+
+    const clipId = (f, r) => `k${f}_${r+rowsAbove}`;
+    const byIndex = {}; a.finalSquares.forEach((p, i) => { byIndex[p.sq] = i; });
+    const big = `font-family="${esc(s.font)}" font-weight="${s.weight}" text-anchor="middle" dominant-baseline="central"`;
+
+    // The info is set like the title: one capital per square, the same size and
+    // the same cuts. Its words flow in reading order from the top left corner
+    // across the squares no piece holds, one square of air after each word, a
+    // word moving to the next row when its run of free squares is too short
+    // (after two rows with no room, or when it is longer than a row, it splits).
+    // The piece squares keep the title's letters, so the game interrupts the
+    // text where it ended.
+    const words = s.info.join(' ').toUpperCase().split(/\s+/).filter(Boolean);
+    const rows = []; for (let r=-rowsAbove; r<8; r++) rows.push(r);
+    const isFree = (f, r) => f < 8 && !(r >= 0 && byIndex[FILES[f]+(8-r)] !== undefined);
+    const nextFree = (r, f) => { while (f < 8 && !isFree(f, r)) f++; return f; };
+    const runFrom = (r, f) => { let n = 0; while (isFree(f+n, r)) n++; return n; };
+    const flow = {}; let ri = 0, fc = 0, misses = 0; cutLeftover = 0;
+    for (const word of words){
+      let w = Array.from(word);
+      while (w.length){
+        if (ri >= rows.length){ cutLeftover += w.length; break; }
+        const r = rows[ri];
+        let f = nextFree(r, fc), run = runFrom(r, f);
+        const whole = w.length <= 8 && misses < 2;
+        while (f < 8 && whole && run < w.length){ f = nextFree(r, f+run); run = runFrom(r, f); }
+        if (f >= 8 || run === 0){ ri++; fc = 0; misses++; continue; }
+        const take = Math.min(run, w.length);
+        for (let i=0; i<take; i++) flow[`${f+i},${r}`] = w[i];
+        w = w.slice(take); misses = 0;
+        fc = f + take + 1;
+        if (fc >= 8){ ri++; fc = 0; }
+      }
+    }
+
+    // one capital on one square, cut into slices by how often the square was occupied
+    const letter = (f, r, x, y, ch, tile, d) => {
+      const cx = x+cell/2, cy = y+cell/2;
+      const size = cell * (s.panell ? 1.45 : 1.2) * s.titleScale;
+      const depth = d * cut;                              // 0 … 1
+      const nS = depth > 0.3 ? 3 : depth > 0.12 ? 2 : 1;  // how many slices
+      const shift = depth * 0.3 * cell;
+      const fill = inkOn(tile), sliver = otherOn(tile);
+      let inner = '';
+      for (let i=0; i<nS; i++){
+        const sx = x + i*cell/nS, sw = cell/nS;
+        const sgn = i % 2 ? 1 : -1;
+        const dx = nS > 1 ? sgn*shift : 0;
+        const sid = `${clipId(f,r)}s${i}`;
+        defs.push(`<clipPath id="${sid}"><rect x="${sx.toFixed(1)}" y="${y.toFixed(1)}" width="${sw.toFixed(1)}" height="${cell.toFixed(1)}"/></clipPath>`);
+        inner += `<g clip-path="url(#${sid})">` +
+          `<text x="${(cx+dx-sgn*shift*0.6-0.04*cell).toFixed(1)}" y="${cy.toFixed(1)}" ${big} font-size="${size.toFixed(1)}" fill="${esc(sliver)}">${esc(ch)}</text>` +
+          `<text x="${(cx+dx).toFixed(1)}" y="${cy.toFixed(1)}" ${big} font-size="${size.toFixed(1)}" fill="${esc(fill)}">${esc(ch)}</text></g>`;
+      }
+      parts.push(inner);
+    };
+
+    // every square: the title on the pieces, the info on the flow, cuts on the rest
+
+    for (let r=-rowsAbove; r<8; r++) for (let f=0; f<8; f++){
+      // rows above the board echo the board's top ranks, mirrored, with no letters
+      const srcR = r < 0 ? (-r-1) % 8 : r, srcF = r < 0 ? 7-f : f;
+      const n = a.occ[FILES[srcF]+(8-srcR)] || 0;
+      const d = a.positions ? n/a.positions : 0;
+      const x = f*cell, y = y0 + r*cell;
+      const cx = x+cell/2, cy = y+cell/2;
+      const ground = bandAt(cx, cy);
+      const idx = r >= 0 ? byIndex[FILES[f]+(8-r)] : undefined;
+      const isPiece = idx !== undefined;
+      const flowCh = flow[`${f},${r}`];
+      if (!isPiece && !flowCh && !n) continue;
+      const h = hashCell(f, r+rowsAbove, n);
+      defs.push(`<clipPath id="${clipId(f,r)}"><rect x="${x.toFixed(1)}" y="${y.toFixed(1)}" width="${cell.toFixed(1)}" height="${cell.toFixed(1)}"/></clipPath>`);
+      const g = inner => parts.push(`<g clip-path="url(#${clipId(f,r)})">${inner}</g>`);
+
+      if (isPiece){
+        const last = s.markLast && FILES[f]+(8-r) === a.lastTo;
+        if (last) parts.push(`<rect x="${x.toFixed(1)}" y="${y.toFixed(1)}" width="${cell.toFixed(1)}" height="${cell.toFixed(1)}" fill="${esc(s.accent)}"/>`);
+        if (idx < chars.length) letter(f, r, x, y, chars[idx], last ? s.accent : ground, d);
+        continue;
+      }
+      if (flowCh){ letter(f, r, x, y, flowCh, ground, d); continue; }
+
+      // an empty square the game passed through
+      const depth = d * cut / 0.6;
+      if (depth >= 0.3 && chars.length && !words.length){
+        const ch = esc(chars[h % chars.length]);
+        const size = cell * (s.panell ? 2.8 : 2.2);
+        const ox = ((h >> 2) % 5 - 2) * 0.22 * cell, oy = ((h >> 5) % 5 - 2) * 0.22 * cell;
+        g(`<text x="${(cx+ox).toFixed(1)}" y="${(cy+oy).toFixed(1)}" ${big} font-size="${size.toFixed(1)}" fill="${esc(inkOn(ground))}">${ch}</text>`);
+      } else if (depth >= 0.08){
+        let colours = pal.extras.filter(c => c.toLowerCase() !== ground.toLowerCase());
+        if (!colours.length) colours = [inkOn(ground)];
+        const col = colours[(h >> 8) % colours.length];
+        const kind = (h >> 11) % 4;
+        const rad = cell * (0.22 + 0.28*Math.min(1, depth));
+        if (kind === 0){
+          g(`<circle cx="${cx.toFixed(1)}" cy="${cy.toFixed(1)}" r="${rad.toFixed(1)}" fill="${esc(col)}"/>`);
+        } else if (kind === 1){
+          // half-disc against one side of the square
+          const side = (h >> 13) % 4, R = cell/2;
+          const arcs = [
+            `M${x} ${y} h${cell} a${R} ${R} 0 0 1 ${-cell} 0 z`,
+            `M${x+cell} ${y} v${cell} a${R} ${R} 0 0 1 0 ${-cell} z`,
+            `M${x+cell} ${y+cell} h${-cell} a${R} ${R} 0 0 1 ${cell} 0 z`,
+            `M${x} ${y+cell} v${-cell} a${R} ${R} 0 0 1 0 ${cell} z`,
+          ];
+          g(`<path d="${arcs[side]}" fill="${esc(col)}"/>`);
+        } else if (kind === 2){
+          // quarter-disc in one corner, radius a whole square
+          const corner = (h >> 13) % 4, R = cell;
+          const q = [
+            `M${x} ${y} h${R} a${R} ${R} 0 0 1 ${-R} ${R} z`,
+            `M${x+cell} ${y} v${R} a${R} ${R} 0 0 1 ${-R} ${-R} z`,
+            `M${x+cell} ${y+cell} h${-R} a${R} ${R} 0 0 1 ${R} ${-R} z`,
+            `M${x} ${y+cell} v${-R} a${R} ${R} 0 0 1 ${R} ${R} z`,
+          ];
+          g(`<path d="${q[corner]}" fill="${esc(col)}"/>`);
+        } else {
+          const w = cell * (0.35 + 0.65*Math.min(1, depth));
+          g(`<rect x="${(cx-w/2).toFixed(1)}" y="${(cy-w/2).toFixed(1)}" width="${w.toFixed(1)}" height="${w.toFixed(1)}" fill="${esc(col)}"/>`);
+        }
+      }
+    }
+
+    return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${W} ${H}" width="${W}" height="${H}" role="img" aria-label="${esc(s.title)} poster"><defs>${fontDefs(s)}${defs.join('')}</defs>${parts.join('')}</svg>`;
+  }
+
+  // Panell files as data URIs, one per weight, fetched the first time a weight
+  // is drawn. Until the fetch lands the SVG goes out without the face and the
+  // page re-renders when it arrives.
+  const PANELL_FILES = {400:'Regular', 500:'Medium', 600:'SemiBold', 700:'Bold'};
+  const panellData = {};
+  function panellStyle(weight){
+    const w = PANELL_FILES[weight] ? weight : 700;
+    const d = panellData[w];
+    if (d === undefined){
+      panellData[w] = null;
+      fetch(`../fonts/PanellCompressed-TRIAL-${PANELL_FILES[w]}.woff2`).then(r => r.ok ? r.blob() : Promise.reject(new Error(r.status)))
+        .then(b => new Promise(res => { const fr = new FileReader(); fr.onload = () => res(fr.result); fr.readAsDataURL(b); }))
+        .then(uri => { panellData[w] = uri; render(); })
+        .catch(() => { panellData[w] = false; });
+    }
+    return d ? `<style>@font-face{font-family:"Panell Compressed";font-weight:${w};src:url(${d}) format("woff2")}</style>` : '';
+  }
+  const fontDefs = s => s.panell ? panellStyle(+s.weight) : '';
 
   let currentSvg = '';
   function render(){
@@ -323,9 +559,11 @@ Sofiya V
     const chars = Array.from(s.title.replace(/\s+/g,''));
     const tw = chars.length > a.pieces ? `The title has ${chars.length} characters but the position has ${a.pieces} pieces; the last ${chars.length-a.pieces} are left out.` : (chars.length < a.pieces ? `${a.pieces-chars.length} piece square${a.pieces-chars.length===1?'':'s'} left empty.` : '');
     $('titleWarn').hidden = !tw; $('titleWarn').textContent = tw;
-    const iw = s.info.length > a.pieces ? `${s.info.length} info items for ${a.pieces} pieces; the last ${s.info.length-a.pieces} are left out.` : '';
+    currentSvg = s.look === 'cut' ? buildCutSvg(a, s) : buildSvg(a, s);
+    const iw = s.look === 'cut'
+      ? (cutLeftover ? `The board has no room for the last ${cutLeftover} character${cutLeftover===1?'':'s'} of the info. A taller size gives more rows.` : '')
+      : (s.info.length > a.pieces ? `${s.info.length} info items for ${a.pieces} pieces; the last ${s.info.length-a.pieces} are left out.` : '');
     $('infoWarn').hidden = !iw; $('infoWarn').textContent = iw;
-    currentSvg = buildSvg(a, s);
     $('frame').innerHTML = currentSvg;
     $('stats').innerHTML = `<span><b>${a.plies}</b> plies</span><span><b>${a.positions}</b> positions</span><span><b>${a.pieces}</b> pieces left</span><span>last move to <b>${a.lastTo||'—'}</b></span><span><b>${Object.keys(a.occ).length}</b> of 64 squares ever occupied</span>`;
   }
@@ -338,6 +576,7 @@ Sofiya V
     if (t.id.endsWith('Hex') && /^#[0-9a-f]{6}$/i.test(t.value)){ $(t.id.replace('Hex','')).value = t.value; }
     if (t.type === 'range'){ $(t.id+'Out').value = t.value; }
     if (t.id === 'font'){ $('customFontWrap').hidden = t.value !== 'custom'; }
+    if (t.id === 'look') syncLook();
     render();
   });
   form.addEventListener('submit', e => e.preventDefault());
@@ -387,6 +626,12 @@ Sofiya V
     }
   });
 
+  function syncLook(){
+    const cut = $('look').value === 'cut';
+    $('paletteWrap').hidden = !cut; $('patternWrap').hidden = cut;
+    $('densityLabel').textContent = cut ? 'Cut depth' : 'Max density';
+  }
+  syncLook();
   render();
   window.addEventListener('chessready', render);
   if (window.claude && typeof window.claude.use === 'function'){
