@@ -13,6 +13,18 @@
 @font-face{font-family:"Panell Compressed";font-weight:500;src:url(../fonts/PanellCompressed-TRIAL-Medium.woff2) format("woff2");font-display:block}
 @font-face{font-family:"Panell Compressed";font-weight:600;src:url(../fonts/PanellCompressed-TRIAL-SemiBold.woff2) format("woff2");font-display:block}
 @font-face{font-family:"Panell Compressed";font-weight:700;src:url(../fonts/PanellCompressed-TRIAL-Bold.woff2) format("woff2");font-display:block}
+/* Atlas Grotesk Condensed (Commercial Type, a commercial licence): the title
+   face the user asked for on 10 Nov 2026. It is not in the repository; these
+   rules use it when it is installed on the viewer's machine, or when licensed
+   web files are added to ../fonts under these names, and otherwise the stack
+   falls through to Panell Compressed. */
+@font-face{font-family:"Atlas Grotesk Condensed";font-weight:400;src:local("Atlas Grotesk Condensed Regular"),local("AtlasGroteskCondensed-Regular"),url(../fonts/AtlasGroteskCondensed-Regular.woff2) format("woff2")}
+@font-face{font-family:"Atlas Grotesk Condensed";font-weight:500;src:local("Atlas Grotesk Condensed Medium"),local("AtlasGroteskCondensed-Medium"),url(../fonts/AtlasGroteskCondensed-Medium.woff2) format("woff2")}
+@font-face{font-family:"Atlas Grotesk Condensed";font-weight:600;src:local("Atlas Grotesk Condensed Semibold"),local("AtlasGroteskCondensed-Semibold"),url(../fonts/AtlasGroteskCondensed-Semibold.woff2) format("woff2")}
+@font-face{font-family:"Atlas Grotesk Condensed";font-weight:700;src:local("Atlas Grotesk Condensed Bold"),local("AtlasGroteskCondensed-Bold"),url(../fonts/AtlasGroteskCondensed-Bold.woff2) format("woff2")}
+/* EB Garamond (SIL Open Font License, ../fonts/EBGaramond-OFL.txt): the
+   Shade footer, Latin regular only. Embedded in the exported SVG like Panell. */
+@font-face{font-family:"EB Garamond";font-weight:400;src:url(../fonts/EBGaramond-Regular-latin.woff2) format("woff2");font-display:block}
 </style>
 <style>
 /* Layout: a fixed control column on the left, the poster on the right; stacks on phones. */
@@ -95,7 +107,7 @@ details summary{cursor:pointer;font-size:12px;color:var(--muted)}
       <input type="text" id="title" value="chess.irl №4">
     </label>
     <p class="warn" id="titleWarn" hidden></p>
-    <label>Info, one item per line
+    <label>Info, one item per line; in Shade, a blank line starts a new line at the bottom
       <textarea id="info" rows="14">A night of chess and deep listening
 
 Live music by
@@ -120,6 +132,7 @@ RSVP for the address</textarea>
     <div class="row">
       <label>Font
         <select id="font">
+          <option value="'Atlas Grotesk Condensed', 'Panell Compressed', 'Arial Narrow', Arial, sans-serif">Atlas Grotesk Condensed</option>
           <option value="'Panell Compressed', 'Arial Narrow', Arial, sans-serif">Panell Compressed</option>
           <option value="Arial, 'Liberation Sans', Helvetica, sans-serif">Arial</option>
           <option value="Helvetica, 'Helvetica Neue', Arial, sans-serif">Helvetica</option>
@@ -331,6 +344,7 @@ RSVP for the address</textarea>
       density: +$('density').value/100,
       tint: $('tintHex').value, accent: $('accentHex').value, paper: $('paperHex').value, ink: $('inkHex').value,
       title: $('title').value, info: $('info').value.split(/\r?\n/).map(s=>s.trim()).filter(Boolean),
+      infoGroups: $('info').value.split(/\r?\n\s*\r?\n/).map(b => b.split(/\r?\n/).map(x => x.trim()).filter(Boolean)).filter(b => b.length),
     };
   }
 
@@ -622,7 +636,11 @@ RSVP for the address</textarea>
     const m = measureCtx.measureText(str);
     return { w: m.width/100, cap: (m.actualBoundingBoxAscent || 70)/100 };
   }
-  const SERIF = "'Times New Roman', Times, 'Liberation Serif', serif";
+  // The footer is set in EB Garamond (user's instruction, 10 Nov 2026, "use
+  // Garamond for this one"). TIMES stays for the pinned size: the size is
+  // measured on the old face, so it is the same px as before the change.
+  const SERIF = "'EB Garamond', Garamond, 'Times New Roman', serif";
+  const TIMES = "'Times New Roman', Times, 'Liberation Serif', serif";
 
   // The queen (user's photo, 10 Nov 2026: a Staunton queen in wood). Her
   // right-hand profile was traced off the photo as half-widths down a 100 by
@@ -736,10 +754,15 @@ RSVP for the address</textarea>
     let infoTop = H;
     // No separators added (user's instruction, 10 Nov 2026, "don't add dots
     // and dashes"): items are parted by an em space, a gap with no mark, and
-    // a line may break between any two words.
+    // a line may break between any two words. A blank line in the info starts
+    // a new footer line (user's instruction, 10 Nov 2026: live music and the
+    // DJ sets each on their own line).
     const EMSP = '\u2003';
     const tokens = [];
-    s.info.forEach(item => item.split(/\s+/).filter(Boolean).forEach((w, wi) => tokens.push({ w, sep: tokens.length ? (wi === 0 ? EMSP : ' ') : '' })));
+    (s.infoGroups || [s.info]).forEach(group => group.forEach((item, ii) => item.split(/\s+/).filter(Boolean).forEach((w, wi) => {
+      const first = tokens.length === 0;
+      tokens.push({ w, br: !first && ii === 0 && wi === 0, sep: first ? '' : (wi === 0 ? EMSP : ' ') });
+    })));
     if (tokens.length){
       // The size is pinned (user's instruction, 10 Nov 2026, "keep exactly
       // this font size") to what the doubled footer had with the first info
@@ -748,10 +771,11 @@ RSVP for the address</textarea>
       // lines at the same size instead of shrinking.
       const FOOT_REF = '12/05/2026 · 7pm · RSVP · for · address · Greenpoint, · Brooklyn · Anya Tran · (live) · Daren Ho · (live) · Iggy Nuclear · (dj) · Sofiya V · (dj)';
       // Then 20% larger (user's instruction, 10 Nov 2026).
-      const fw = measure(FOOT_REF, SERIF, 400).w || 0.45*FOOT_REF.length;
+      const fw = measure(FOOT_REF, TIMES, 400).w || 0.45*FOOT_REF.length;
       const size = 1.2 * Math.max(cell*0.2, Math.min(2 * W / fw * s.infoScale, cell*0.64));
       const lines = []; let line = '';
-      tokens.forEach(({ w, sep }) => {
+      tokens.forEach(({ w, sep, br }) => {
+        if (br && line){ lines.push(line); line = w; return; }
         const trial = line ? line + sep + w : w;
         if (line && measure(trial, SERIF, 400).w * size > W*0.97) { lines.push(line); line = w; } else line = trial;
       });
@@ -853,7 +877,7 @@ RSVP for the address</textarea>
     // quality"): the grain and the scanlines that printed over the sheet are
     // removed, so the board, the type and the queen are flat.
 
-    return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${W} ${H}" width="${W}" height="${H}" role="img" aria-label="${esc(s.title)} poster"><defs>${fontDefs(s)}${defs.join('')}</defs>${parts.join('')}</svg>`;
+    return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${W} ${H}" width="${W}" height="${H}" role="img" aria-label="${esc(s.title)} poster"><defs>${fontDefs(s)}${garamondStyle()}${defs.join('')}</defs>${parts.join('')}</svg>`;
   }
 
   // Panell files as data URIs, one per weight, fetched the first time a weight
@@ -873,7 +897,35 @@ RSVP for the address</textarea>
     }
     return d ? `<style>@font-face{font-family:"Panell Compressed";font-weight:${w};src:url(${d}) format("woff2")}</style>` : '';
   }
-  const fontDefs = s => s.panell ? panellStyle(+s.weight) : '';
+  // Atlas Grotesk Condensed, embedded only when its licensed web files are in
+  // ../fonts (a 404 leaves it out, and the Panell fallback is embedded).
+  const ATLAS_FILES = {400:'Regular', 500:'Medium', 600:'Semibold', 700:'Bold'};
+  const atlasData = {};
+  function atlasStyle(weight){
+    const w = ATLAS_FILES[weight] ? weight : 700;
+    if (atlasData[w] === undefined){
+      atlasData[w] = null;
+      fetch(`../fonts/AtlasGroteskCondensed-${ATLAS_FILES[w]}.woff2`).then(r => r.ok ? r.blob() : Promise.reject(new Error(r.status)))
+        .then(b => new Promise(res => { const fr = new FileReader(); fr.onload = () => res(fr.result); fr.readAsDataURL(b); }))
+        .then(uri => { atlasData[w] = uri; render(); })
+        .catch(() => { atlasData[w] = false; });
+    }
+    const d = atlasData[w];
+    return d ? `<style>@font-face{font-family:"Atlas Grotesk Condensed";font-weight:${w};src:url(${d}) format("woff2")}</style>` : '';
+  }
+  const fontDefs = s => (s.font.indexOf('Atlas Grotesk Condensed') !== -1 ? atlasStyle(+s.weight) : '') + (s.panell ? panellStyle(+s.weight) : '');
+  // EB Garamond as a data URI for the Shade footer, fetched once.
+  let garamondData;
+  function garamondStyle(){
+    if (garamondData === undefined){
+      garamondData = null;
+      fetch('../fonts/EBGaramond-Regular-latin.woff2').then(r => r.ok ? r.blob() : Promise.reject(new Error(r.status)))
+        .then(b => new Promise(res => { const fr = new FileReader(); fr.onload = () => res(fr.result); fr.readAsDataURL(b); }))
+        .then(uri => { garamondData = uri; render(); })
+        .catch(() => { garamondData = false; });
+    }
+    return garamondData ? `<style>@font-face{font-family:"EB Garamond";font-weight:400;src:url(${garamondData}) format("woff2")}</style>` : '';
+  }
 
   let currentSvg = '';
   function render(){
@@ -959,7 +1011,7 @@ RSVP for the address</textarea>
   render();
   window.addEventListener('chessready', render);
   // Shade sizes its lines from measured text, so it renders again once the fonts are in.
-  if (document.fonts){ document.fonts.ready.then(render); document.fonts.addEventListener('loadingdone', render); }
+  if (document.fonts){ document.fonts.ready.then(render); document.fonts.addEventListener('loadingdone', render); document.fonts.load('400 20px "EB Garamond"').then(render).catch(() => {}); }
   if (window.claude && typeof window.claude.use === 'function'){
     window.claude.use('downloads').then(ns => {
       downloads = ns;
