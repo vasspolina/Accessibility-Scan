@@ -95,7 +95,7 @@ details summary{cursor:pointer;font-size:12px;color:var(--muted)}
       <input type="text" id="title" value="chess.irl №4">
     </label>
     <p class="warn" id="titleWarn" hidden></p>
-    <label>Info, one item per line; in Shade, a blank line starts a new block
+    <label>Info, one item per line
       <textarea id="info" rows="16">Non Stop Chess Action
 With Live Music &amp; DJ Sets
 
@@ -174,8 +174,8 @@ RSVP for the address</textarea>
       </label>
       <label id="queenWrap" hidden>Queen colour
         <select id="queenCol">
+          <option value="shade">Shadow</option>
           <option value="red">Red</option>
-          <option value="shade">Shade colour</option>
         </select>
       </label>
       <label id="groundWrap" hidden>Ground
@@ -193,8 +193,8 @@ RSVP for the address</textarea>
       </label>
       <label id="toneWrap" hidden>Stock
         <select id="tone">
-          <option value="palace">White, black and vermilion</option>
           <option value="newsprint">Grey stock</option>
+          <option value="palace">White, black and vermilion</option>
           <option value="night">Dark stock</option>
           <option value="chalk">Pale stock</option>
           <option value="own">Your colours</option>
@@ -263,7 +263,7 @@ RSVP for the address</textarea>
     <p class="note">The game is replayed move by move. The pieces left on the board after the last move give the title its squares: characters fill them in reading order, a8 to h1. Each square is scored by how many of the game’s positions it was occupied in, from the start position to the end.</p>
     <p class="note"><b>Classic</b> tints each square by that score and sets the info items on the same squares of a smaller board at the bottom. The destination of the last move is set in the accent colour.</p>
     <p class="note"><b>Cut</b> bleeds the board to the edges and lays three colour bands over it. The title is set in capitals, one per piece square; the more often the square was occupied, the more slices the letter is cut into and the further they slide, with a sliver of the opposite colour showing. Squares the game passed through but left empty carry a fragment of a title letter at twice the size, or a disc, half-disc or quarter cut (the letter fragments only when there is no info). The info is set the same way: its words flow in reading order from the top left, one capital per free square, a square of air between words, so the game’s pieces interrupt the text where it ended. The last move’s square is filled with the accent colour.</p>
-    <p class="note"><b>Shade</b> sets the title in lines of capitals across the full width, printed in a white that barely lifts off the stock: the first and last lines bleed past the edges, the lines between are set smaller and centred (a slash in the title forces a line break; otherwise each word is a line). The game is the shadow: its centre is the centre of gravity of every square a move left or landed on, its size is how widely that traffic spread, and the traffic itself is blurred in faintly, so an open middlegame darkens the centre and a kingside attack pulls the shadow to one side. The shadow is a queen’s silhouette, blurred until only the crown, the waist and the base read, or a round spot. The stock carries the chess board, the eight files chequered across the whole sheet with the board’s own ranks in the middle, quiet or strong, or stays plain; on the strong board the type is traced in flipped colours, white over the dark squares and dark over the light ones. Fine scanlines run over the sheet; the Black slider sets how black the darkest tone is, and the Contrast slider pulls the whole sheet toward mid grey. The last move’s square is the core, tinted with the accent colour when the last move is marked. The info is set in the serif along the bottom edge in blocks, one per group of lines parted by a blank line, in columns, and the queen stands clear of it. Grain is printed over everything.</p>
+    <p class="note"><b>Shade</b> sets the title in lines of capitals across the full width, printed in a white that barely lifts off the stock: the first and last lines bleed past the edges, the lines between are set smaller and centred (a slash in the title forces a line break; otherwise each word is a line). The game is the shadow: its centre is the centre of gravity of every square a move left or landed on, its size is how widely that traffic spread, and the traffic itself is blurred in faintly, so an open middlegame darkens the centre and a kingside attack pulls the shadow to one side. The shadow is a queen’s silhouette, blurred until only the crown, the waist and the base read, or a round spot. The stock carries the chess board, the eight files chequered across the whole sheet with the board’s own ranks in the middle, quiet or strong, or stays plain; on the strong board the type is traced in flipped colours, white over the dark squares and dark over the light ones. The sheet is flat, with no grain; the Black slider sets how black the darkest tone is, and the Contrast slider pulls the whole sheet toward mid grey. The last move’s square is the core, tinted with the accent colour when the last move is marked. The info items run in the serif along the bottom edge, parted by middle dots, wrapped into as many lines as they need, and the queen stands clear of them.</p>
   </details>
 </section>
 </div>
@@ -333,7 +333,6 @@ RSVP for the address</textarea>
       density: +$('density').value/100,
       tint: $('tintHex').value, accent: $('accentHex').value, paper: $('paperHex').value, ink: $('inkHex').value,
       title: $('title').value, info: $('info').value.split(/\r?\n/).map(s=>s.trim()).filter(Boolean),
-      infoBlocks: $('info').value.split(/\r?\n\s*\r?\n/).map(b => b.split(/\r?\n/).map(x => x.trim()).filter(Boolean)).filter(b => b.length),
     };
   }
 
@@ -637,7 +636,7 @@ RSVP for the address</textarea>
     for (let i = QUEEN_PROFILE.length-1; i >= 0; i--){ const [y, h] = QUEEN_PROFILE[i]; d += ` L${f(50 - h)} ${y}`; }
     return d + ' Z';
   })();
-  const QUEEN_RED = '#C8102E';
+  const QUEEN_RED = '#E5432A';   // the vermilion of the user's colour reference (10 Nov 2026)
   function buildShadeSvg(a, s){
     const W = s.W, H = s.H;
     const t = TONES[s.tone] || { ground:s.paper, ghost:s.ink, ghostA:0.08, shade:s.ink, foot:s.ink, grainA:0.3, square:s.ink, squareA:0.08, line:s.ink };
@@ -665,7 +664,7 @@ RSVP for the address</textarea>
     // On the strong board the type is traced in flipped colours (user's
     // instruction, 10 Nov 2026): white drawn with a difference blend, so over
     // a dark square it stays white and over a light square it turns dark,
-    // square by square. On the other grounds the
+    // square by square. The footer flips the same way. On the other grounds the
     // type stays the ghost of the reference.
     const flip = s.ground === 'board';
     const flipAttr = flip ? ' style="mix-blend-mode:difference"' : '';
@@ -689,41 +688,33 @@ RSVP for the address</textarea>
       y += cap*0.14;
     });
 
-    // The info (user's copy, 10 Nov 2026): set in the serif along the bottom
-    // edge as blocks, one per group of lines the user parted with a blank
-    // line, in columns (three across for five or six blocks, as many as there
-    // are for fewer), rows stacked up from the bottom. One size for all, the
-    // largest at which every line fits its column, at most a little under a
-    // quarter of a square (the footer was doubled on 10 Nov 2026 and this
-    // keeps that size). It is solid ink drawn after the veils and the queen,
-    // not flipped: flipped and then softened by the Black slider it measured
-    // about 3:1 on both kinds of square, and black on the softened board
-    // reads on the white squares and the grey ones alike.
+    // the footer: the info along the bottom edge, in the serif. It was one
+    // line fitted to the width; at the user's instruction (10 Nov 2026,
+    // "200% bigger at bottom") it is set at twice that size and wrapped by
+    // measure into as many lines as it needs, stacked up from the bottom edge,
+    // flipping with the squares on the strong board. A blocks-in-columns
+    // setting in solid black was tried the same day and the user asked for
+    // this one back. The queen stands clear of its top line.
     let infoTop = H;
-    const infoParts = [];
-    const blocks = s.infoBlocks || [];
-    if (blocks.length){
-      const cols = blocks.length <= 3 ? blocks.length : Math.ceil(blocks.length/2);
-      const m = 0.035*W, gut = 0.03*W;
-      const colW = (W - 2*m - (cols-1)*gut) / cols;
-      let size = cell*0.24*s.infoScale;
-      blocks.forEach(b => b.forEach(line => { const w = measure(line, SERIF, 400).w; if (w) size = Math.min(size, colW*0.98 / w); }));
-      const lh = size*1.18, rowGap = size*1.1;
-      const rows = []; for (let i = 0; i < blocks.length; i += cols) rows.push(blocks.slice(i, i + cols));
-      const rowH = rows.map(r => Math.max(...r.map(b => b.length)) * lh);
-      const total = rowH.reduce((x, y) => x + y, 0) + rowGap*(rows.length-1);
-      infoTop = H - 0.03*H - total;
-      let top = infoTop, out = '';
-      rows.forEach((r, ri) => {
-        r.forEach((b, ci) => {
-          const x = m + ci*(colW + gut);
-          b.forEach((line, li) => {
-            out += `<text x="${x.toFixed(1)}" y="${(top + (li+1)*lh - (lh-size)/2 - size*0.18).toFixed(1)}" font-family="${esc(SERIF)}" font-size="${size.toFixed(1)}" fill="${esc(t.foot)}">${esc(line)}</text>`;
-          });
-        });
-        top += rowH[ri] + rowGap;
+    const foot = s.info.join(' · ');
+    if (foot){
+      const fw = measure(foot, SERIF, 400).w || 0.45*foot.length;
+      const size = Math.max(cell*0.2, Math.min(2 * W / fw * s.infoScale, cell*0.64));
+      const words = foot.split(' '), lines = []; let line = '';
+      words.forEach(w => {
+        const trial = line ? line + ' ' + w : w;
+        if (line && measure(trial, SERIF, 400).w * size > W) { lines.push(line); line = w; } else line = trial;
       });
-      infoParts.push(out);
+      if (line) lines.push(line);
+      const lh = size*1.12;
+      let y = H - 0.014*H;
+      let out = '';
+      for (let i = lines.length-1; i >= 0; i--){
+        out = `<text x="${(W/2).toFixed(1)}" y="${y.toFixed(1)}" text-anchor="middle" font-family="${esc(SERIF)}" font-size="${size.toFixed(1)}" fill="${flip ? '#FFFFFF' : esc(t.foot)}"${flipAttr}>${esc(lines[i])}</text>` + out;
+        y -= lh;
+      }
+      infoTop = y + lh - size;
+      parts.push(out);
     }
 
     // the shadow. One soft spot, as in the reference, placed and sized by the
@@ -745,11 +736,16 @@ RSVP for the address</textarea>
     const sx = tw ? Math.sqrt(vx/tw)/cell : 2, sy = tw ? Math.sqrt(vy/tw)/cell : 2;   // in squares; about 2 for a whole game
     let rx = cell*(1.0 + 1.2*sx)*spread, ry = cell*(1.0 + 1.2*sy)*spread;
     ry = Math.max(rx*0.85, Math.min(rx*1.3, ry));     // a little taller than wide at most, like the reference
-    const queenParts = [];   // drawn over the Black and Contrast veils, so her colour keeps its strength
+    // The red queen is drawn over the Black and Contrast veils, so her colour
+    // keeps its strength; the shadow queen (the default, user's instruction,
+    // 10 Nov 2026, "keep like this shadow for figure") sinks into the board
+    // under the veils, as the first queen did.
+    const queenParts = [];
+    const queenTo = s.queenCol === 'red' ? queenParts : parts;
     if (s.spot === 'queen'){
       // The queen (user's instructions, 9 and 10 Nov 2026): the silhouette
-      // traced off the user's photo (QUEEN_D), in red unless the Queen colour
-      // select asks for the shade colour. She keeps the soft look of the
+      // traced off the user's photo (QUEEN_D), a shadow in the shade colour
+      // unless the Queen colour select asks for red. She keeps the soft look of the
       // first queen (user's instruction, 10 Nov 2026): the core blurred to
       // about 2% of her height, so the edge goes and the crown, the collar
       // and the base still read, and a wider blur of the same shape as the
@@ -762,13 +758,13 @@ RSVP for the address</textarea>
       const qh = Math.min(0.78*H, 1.9*ry, floor - 0.03*H);
       const qw = qh*100/220;
       const qx = centre.cx - qw/2, qy = Math.min(centre.cy - qh/2, floor - qh);
-      const qcol = s.queenCol === 'red' ? (t.red || QUEEN_RED) : t.shade;
+      const qcol = s.queenCol === 'red' ? QUEEN_RED : t.shade;
       defs.push(`<g id="shQueen"><circle cx="50" cy="9.5" r="9"/><rect x="45" y="16" width="10" height="7"/><path d="${QUEEN_D}"/></g>`);
       defs.push(`<filter id="shQCore" x="-60%" y="-40%" width="220%" height="180%"><feGaussianBlur stdDeviation="${(qh*0.021).toFixed(1)}"/></filter>`);
       defs.push(`<filter id="shQHalo" x="-80%" y="-60%" width="260%" height="220%"><feGaussianBlur stdDeviation="${(qh*0.085).toFixed(1)}"/></filter>`);
       const place = `transform="translate(${qx.toFixed(1)} ${qy.toFixed(1)}) scale(${(qw/100).toFixed(4)} ${(qh/220).toFixed(4)})"`;
-      queenParts.push(`<g filter="url(#shQHalo)" opacity="0.6"><g ${place} fill="${esc(qcol)}"><use href="#shQueen"/></g></g>`);
-      queenParts.push(`<g filter="url(#shQCore)" opacity="0.96"><g ${place} fill="${esc(qcol)}"><use href="#shQueen"/></g></g>`);
+      queenTo.push(`<g filter="url(#shQHalo)" opacity="0.6"><g ${place} fill="${esc(qcol)}"><use href="#shQueen"/></g></g>`);
+      queenTo.push(`<g filter="url(#shQCore)" opacity="0.96"><g ${place} fill="${esc(qcol)}"><use href="#shQueen"/></g></g>`);
     } else {
     defs.push(`<radialGradient id="shSpot"><stop offset="0" stop-color="${esc(t.shade)}"/><stop offset="0.38" stop-color="${esc(t.shade)}"/><stop offset="0.6" stop-color="${esc(t.shade)}" stop-opacity="0.62"/><stop offset="0.8" stop-color="${esc(t.shade)}" stop-opacity="0.2"/><stop offset="0.92" stop-color="${esc(t.shade)}" stop-opacity="0.05"/><stop offset="1" stop-color="${esc(t.shade)}" stop-opacity="0"/></radialGradient>`);
     parts.push(`<ellipse cx="${centre.cx.toFixed(1)}" cy="${centre.cy.toFixed(1)}" rx="${rx.toFixed(1)}" ry="${ry.toFixed(1)}" fill="url(#shSpot)"/>`);
@@ -794,21 +790,12 @@ RSVP for the address</textarea>
     if (s.black < 1) parts.push(`<rect width="${W}" height="${H}" fill="#FFFFFF" opacity="${(1 - s.black).toFixed(2)}"/>`);
     if (s.contrast < 1) parts.push(`<rect width="${W}" height="${H}" fill="#808080" opacity="${(1 - s.contrast).toFixed(2)}"/>`);
 
-    // The queen goes on after the veils, so her red is not washed toward pink;
-    // the scanlines and the grain print over her like everything else.
+    // The red queen goes on after the veils, so her red is not washed toward pink.
     parts.push(...queenParts);
-    parts.push(...infoParts);
 
-    // Scanlines over the whole sheet, every four units, as faint as the quiet
-    // board (the techno vibe, user's instruction, 10 Nov 2026). The waveform of
-    // the game that ran along the bottom edge was removed the same day at the
-    // user's request.
-    defs.push(`<pattern id="shScan" width="4" height="4" patternUnits="userSpaceOnUse"><rect width="4" height="1" fill="${esc(t.line)}"/></pattern>`);
-    parts.push(`<rect width="${W}" height="${H}" fill="url(#shScan)" opacity="${lum(t.ground) > 0.4 ? 0.06 : 0.09}"/>`);
-
-    // grain over everything, overlaid so it speckles the stock and the shadow alike
-    defs.push(`<filter id="shGrain" x="0" y="0" width="100%" height="100%" color-interpolation-filters="sRGB"><feTurbulence type="fractalNoise" baseFrequency="${(900/W).toFixed(4)}" numOctaves="2" seed="7" stitchTiles="stitch"/><feColorMatrix values="1 0 0 0 0  1 0 0 0 0  1 0 0 0 0  0 0 0 0 1"/></filter>`);
-    parts.push(`<rect width="${W}" height="${H}" filter="url(#shGrain)" opacity="${t.grainA}" style="mix-blend-mode:overlay"/>`);
+    // No paper texture (user's instruction, 10 Nov 2026, "don't add any paper
+    // quality"): the grain and the scanlines that printed over the sheet are
+    // removed, so the board, the type and the queen are flat.
 
     return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${W} ${H}" width="${W}" height="${H}" role="img" aria-label="${esc(s.title)} poster"><defs>${fontDefs(s)}${defs.join('')}</defs>${parts.join('')}</svg>`;
   }
