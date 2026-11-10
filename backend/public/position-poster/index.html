@@ -199,6 +199,7 @@ Sofiya V
       </label>
     </div>
     <label class="range"><span id="densityLabel">Cut depth</span> <input type="range" id="density" min="20" max="100" value="40"><output id="densityOut">40</output></label>
+    <label class="range" id="contrastWrap" hidden>Contrast <input type="range" id="contrast" min="20" max="100" value="50"><output id="contrastOut">50</output></label>
   </fieldset>
 
   <fieldset>
@@ -251,7 +252,7 @@ Sofiya V
     <p class="note">The game is replayed move by move. The pieces left on the board after the last move give the title its squares: characters fill them in reading order, a8 to h1. Each square is scored by how many of the game’s positions it was occupied in, from the start position to the end.</p>
     <p class="note"><b>Classic</b> tints each square by that score and sets the info items on the same squares of a smaller board at the bottom. The destination of the last move is set in the accent colour.</p>
     <p class="note"><b>Cut</b> bleeds the board to the edges and lays three colour bands over it. The title is set in capitals, one per piece square; the more often the square was occupied, the more slices the letter is cut into and the further they slide, with a sliver of the opposite colour showing. Squares the game passed through but left empty carry a fragment of a title letter at twice the size, or a disc, half-disc or quarter cut (the letter fragments only when there is no info). The info is set the same way: its words flow in reading order from the top left, one capital per free square, a square of air between words, so the game’s pieces interrupt the text where it ended. The last move’s square is filled with the accent colour.</p>
-    <p class="note"><b>Shade</b> sets the title in lines of capitals across the full width, printed in a white that barely lifts off the stock: the first and last lines bleed past the edges, the lines between are set smaller and centred (a slash in the title forces a line break; otherwise each word is a line). The game is the shadow: its centre is the centre of gravity of every square a move left or landed on, its size is how widely that traffic spread, and the traffic itself is blurred in faintly, so an open middlegame darkens the centre and a kingside attack pulls the shadow to one side. The shadow is a queen’s silhouette, blurred until only the crown, the waist and the base read, or a round spot. The stock carries the chess board, the eight files chequered across the whole sheet with the board’s own ranks in the middle, quiet or strong, or stays plain; on the strong board the type is traced in flipped colours, white over the dark squares and dark over the light ones. Fine scanlines run over the sheet. The last move’s square is the core, tinted with the accent colour when the last move is marked. The info items run in the serif along the bottom edge, parted by middle dots, wrapped into as many lines as they need. Grain is printed over everything.</p>
+    <p class="note"><b>Shade</b> sets the title in lines of capitals across the full width, printed in a white that barely lifts off the stock: the first and last lines bleed past the edges, the lines between are set smaller and centred (a slash in the title forces a line break; otherwise each word is a line). The game is the shadow: its centre is the centre of gravity of every square a move left or landed on, its size is how widely that traffic spread, and the traffic itself is blurred in faintly, so an open middlegame darkens the centre and a kingside attack pulls the shadow to one side. The shadow is a queen’s silhouette, blurred until only the crown, the waist and the base read, or a round spot. The stock carries the chess board, the eight files chequered across the whole sheet with the board’s own ranks in the middle, quiet or strong, or stays plain; on the strong board the type is traced in flipped colours, white over the dark squares and dark over the light ones. Fine scanlines run over the sheet, and the Contrast slider pulls the whole sheet toward mid grey. The last move’s square is the core, tinted with the accent colour when the last move is marked. The info items run in the serif along the bottom edge, parted by middle dots, wrapped into as many lines as they need. Grain is printed over everything.</p>
   </details>
 </section>
 </div>
@@ -314,6 +315,7 @@ Sofiya V
       tone: $('tone').value,
       spot: $('spot').value,
       ground: $('ground').value,
+      contrast: +$('contrast').value/100,
       markLast: $('markLast').value === 'yes',
       density: +$('density').value/100,
       tint: $('tintHex').value, accent: $('accentHex').value, paper: $('paperHex').value, ink: $('inkHex').value,
@@ -730,6 +732,13 @@ Sofiya V
     defs.push(`<filter id="shGrain" x="0" y="0" width="100%" height="100%" color-interpolation-filters="sRGB"><feTurbulence type="fractalNoise" baseFrequency="${(900/W).toFixed(4)}" numOctaves="2" seed="7" stitchTiles="stitch"/><feColorMatrix values="1 0 0 0 0  1 0 0 0 0  1 0 0 0 0  0 0 0 0 1"/></filter>`);
     parts.push(`<rect width="${W}" height="${H}" filter="url(#shGrain)" opacity="${t.grainA}" style="mix-blend-mode:overlay"/>`);
 
+    // Contrast (user's instruction, 10 Nov 2026, "drop contrast 50%"): a veil
+    // of mid grey over the finished sheet, grain included, at one minus the
+    // slider, so every tone moves toward the middle by that share. At 50 the
+    // black of a square is a dark grey and the stock a light one; the flipped
+    // type keeps its edges, since both its colours move the same way.
+    if (s.contrast < 1) parts.push(`<rect width="${W}" height="${H}" fill="#808080" opacity="${(1 - s.contrast).toFixed(2)}"/>`);
+
     return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${W} ${H}" width="${W}" height="${H}" role="img" aria-label="${esc(s.title)} poster"><defs>${fontDefs(s)}${defs.join('')}</defs>${parts.join('')}</svg>`;
   }
 
@@ -829,7 +838,7 @@ Sofiya V
 
   function syncLook(){
     const look = $('look').value, cut = look === 'cut', shade = look === 'shade';
-    $('paletteWrap').hidden = !cut; $('toneWrap').hidden = !shade; $('spotWrap').hidden = !shade; $('groundWrap').hidden = !shade; $('patternWrap').hidden = cut || shade;
+    $('paletteWrap').hidden = !cut; $('toneWrap').hidden = !shade; $('spotWrap').hidden = !shade; $('groundWrap').hidden = !shade; $('contrastWrap').hidden = !shade; $('patternWrap').hidden = cut || shade;
     $('densityLabel').textContent = cut ? 'Cut depth' : shade ? 'Shadow' : 'Max density';
   }
   syncLook();
