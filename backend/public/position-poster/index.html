@@ -22,10 +22,11 @@
 @font-face{font-family:"Atlas Grotesk Condensed";font-weight:500;src:local("Atlas Grotesk Condensed Medium"),local("AtlasGroteskCondensed-Medium"),url(../fonts/AtlasGroteskCondensed-Medium.woff2) format("woff2")}
 @font-face{font-family:"Atlas Grotesk Condensed";font-weight:600;src:local("Atlas Grotesk Condensed Semibold"),local("AtlasGroteskCondensed-Semibold"),url(../fonts/AtlasGroteskCondensed-Semibold.woff2) format("woff2")}
 @font-face{font-family:"Atlas Grotesk Condensed";font-weight:700;src:local("Atlas Grotesk Condensed Bold"),local("AtlasGroteskCondensed-Bold"),url(../fonts/AtlasGroteskCondensed-Bold.woff2) format("woff2")}
-/* EB Garamond (SIL Open Font License, ../fonts/EBGaramond-OFL.txt): the
-   Shade footer, Latin regular only. Embedded in the exported SVG like Panell. */
-@font-face{font-family:"EB Garamond";font-weight:400;src:url(../fonts/EBGaramond-Regular-latin.woff2) format("woff2");font-display:block}
-@font-face{font-family:"EB Garamond";font-weight:400;font-style:italic;src:url(../fonts/EBGaramond-Italic-latin.woff2) format("woff2");font-display:block}
+/* Instrument Serif (SIL Open Font License, ../fonts/InstrumentSerif-OFL.txt):
+   the Shade info block, Latin regular and italic. Embedded in the exported SVG
+   like Panell. */
+@font-face{font-family:"Instrument Serif";font-weight:400;src:url(../fonts/InstrumentSerif-Regular-latin.woff2) format("woff2");font-display:block}
+@font-face{font-family:"Instrument Serif";font-weight:400;font-style:italic;src:url(../fonts/InstrumentSerif-Italic-latin.woff2) format("woff2");font-display:block}
 </style>
 <style>
 /* Layout: a fixed control column on the left, the poster on the right; stacks on phones. */
@@ -637,10 +638,12 @@ RSVP for the address</textarea>
     const m = measureCtx.measureText(str);
     return { w: m.width/100, cap: (m.actualBoundingBoxAscent || 70)/100 };
   }
-  // The footer is set in EB Garamond (user's instruction, 10 Nov 2026, "use
-  // Garamond for this one"). TIMES stays for the pinned size: the size is
-  // measured on the old face, so it is the same px as before the change.
-  const SERIF = "'EB Garamond', Garamond, 'Times New Roman', serif";
+  // The info block is set in Instrument Serif, a condensed display serif with
+  // an italic, the nearest open-licensed face to the user's layout reference
+  // (user's instruction, 10 Nov 2026, "make same fonts as well"; it replaced
+  // the EB Garamond set earlier that day). TIMES stays for the pinned size:
+  // the size is measured on the first face, so it is the same px as before.
+  const SERIF = "'Instrument Serif', 'Times New Roman', serif";
   const TIMES = "'Times New Roman', Times, 'Liberation Serif', serif";
 
   // The queen (user's photo, 10 Nov 2026: a Staunton queen in wood). Her
@@ -772,7 +775,7 @@ RSVP for the address</textarea>
       // The size is pinned (user's instruction, 10 Nov 2026, "keep exactly
       // this font size") to what the doubled footer had with the first info
       // text, then made 20% larger; it is measured on Times, the face it was
-      // pinned in, so it is the same px in Garamond.
+      // pinned in, so it is the same px in the serif now used.
       const FOOT_REF = '12/05/2026 · 7pm · RSVP · for · address · Greenpoint, · Brooklyn · Anya Tran · (live) · Daren Ho · (live) · Iggy Nuclear · (dj) · Sofiya V · (dj)';
       const fw = measure(FOOT_REF, TIMES, 400).w || 0.45*FOOT_REF.length;
       const size = 1.2 * Math.max(cell*0.2, Math.min(2 * W / fw * s.infoScale, cell*0.64));
@@ -903,7 +906,7 @@ RSVP for the address</textarea>
     // quality"): the grain and the scanlines that printed over the sheet are
     // removed, so the board, the type and the queen are flat.
 
-    return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${W} ${H}" width="${W}" height="${H}" role="img" aria-label="${esc(s.title)} poster"><defs>${fontDefs(s)}${garamondStyle()}${defs.join('')}</defs>${parts.join('')}</svg>`;
+    return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${W} ${H}" width="${W}" height="${H}" role="img" aria-label="${esc(s.title)} poster"><defs>${fontDefs(s)}${serifStyle()}${defs.join('')}</defs>${parts.join('')}</svg>`;
   }
 
   // Panell files as data URIs, one per weight, fetched the first time a weight
@@ -940,21 +943,21 @@ RSVP for the address</textarea>
     return d ? `<style>@font-face{font-family:"Atlas Grotesk Condensed";font-weight:${w};src:url(${d}) format("woff2")}</style>` : '';
   }
   const fontDefs = s => (s.font.indexOf('Atlas Grotesk Condensed') !== -1 ? atlasStyle(+s.weight) : '') + (s.panell ? panellStyle(+s.weight) : '');
-  // EB Garamond as a data URI for the Shade footer, fetched once.
-  const garamondData = {};
-  function garamondCut(style){
+  // Instrument Serif, both cuts, as data URIs for the Shade info block, fetched once.
+  const serifData = {};
+  function serifCut(style){
     const file = style === 'italic' ? 'Italic' : 'Regular';
-    if (garamondData[style] === undefined){
-      garamondData[style] = null;
-      fetch(`../fonts/EBGaramond-${file}-latin.woff2`).then(r => r.ok ? r.blob() : Promise.reject(new Error(r.status)))
+    if (serifData[style] === undefined){
+      serifData[style] = null;
+      fetch(`../fonts/InstrumentSerif-${file}-latin.woff2`).then(r => r.ok ? r.blob() : Promise.reject(new Error(r.status)))
         .then(b => new Promise(res => { const fr = new FileReader(); fr.onload = () => res(fr.result); fr.readAsDataURL(b); }))
-        .then(uri => { garamondData[style] = uri; render(); })
-        .catch(() => { garamondData[style] = false; });
+        .then(uri => { serifData[style] = uri; render(); })
+        .catch(() => { serifData[style] = false; });
     }
-    const d = garamondData[style];
-    return d ? `@font-face{font-family:"EB Garamond";font-weight:400;font-style:${style};src:url(${d}) format("woff2")}` : '';
+    const d = serifData[style];
+    return d ? `@font-face{font-family:"Instrument Serif";font-weight:400;font-style:${style};src:url(${d}) format("woff2")}` : '';
   }
-  const garamondStyle = () => { const css = garamondCut('normal') + garamondCut('italic'); return css ? `<style>${css}</style>` : ''; };
+  const serifStyle = () => { const css = serifCut('normal') + serifCut('italic'); return css ? `<style>${css}</style>` : ''; };
 
   let currentSvg = '';
   function render(){
@@ -1040,7 +1043,7 @@ RSVP for the address</textarea>
   render();
   window.addEventListener('chessready', render);
   // Shade sizes its lines from measured text, so it renders again once the fonts are in.
-  if (document.fonts){ document.fonts.ready.then(render); document.fonts.addEventListener('loadingdone', render); document.fonts.load('400 20px "EB Garamond"').then(render).catch(() => {}); document.fonts.load('italic 400 20px "EB Garamond"').then(render).catch(() => {}); }
+  if (document.fonts){ document.fonts.ready.then(render); document.fonts.addEventListener('loadingdone', render); document.fonts.load('400 20px "Instrument Serif"').then(render).catch(() => {}); document.fonts.load('italic 400 20px "Instrument Serif"').then(render).catch(() => {}); }
   if (window.claude && typeof window.claude.use === 'function'){
     window.claude.use('downloads').then(ns => {
       downloads = ns;
