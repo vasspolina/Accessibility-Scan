@@ -25,6 +25,7 @@
 /* EB Garamond (SIL Open Font License, ../fonts/EBGaramond-OFL.txt): the
    Shade footer, Latin regular only. Embedded in the exported SVG like Panell. */
 @font-face{font-family:"EB Garamond";font-weight:400;src:url(../fonts/EBGaramond-Regular-latin.woff2) format("woff2");font-display:block}
+@font-face{font-family:"EB Garamond";font-weight:400;font-style:italic;src:url(../fonts/EBGaramond-Italic-latin.woff2) format("woff2");font-display:block}
 </style>
 <style>
 /* Layout: a fixed control column on the left, the poster on the right; stacks on phones. */
@@ -631,8 +632,8 @@ RSVP for the address</textarea>
   // be sized to the sheet. Before Panell has loaded the fallback is measured;
   // the page renders again when the fonts arrive.
   const measureCtx = document.createElement('canvas').getContext('2d');
-  function measure(str, font, weight){
-    measureCtx.font = `${weight} 100px ${font}`;
+  function measure(str, font, weight, style){
+    measureCtx.font = `${style || ''} ${weight} 100px ${font}`;
     const m = measureCtx.measureText(str);
     return { w: m.width/100, cap: (m.actualBoundingBoxAscent || 70)/100 };
   }
@@ -752,18 +753,21 @@ RSVP for the address</textarea>
     // stacked up from the bottom edge and flipping with the squares on the
     // strong board. The queen stands clear of its top line.
     let infoTop = H;
-    // No separators added (user's instruction, 10 Nov 2026, "don't add dots
-    // and dashes"): items on one line are parted by an em space. Each group of
-    // lines the user parted with a blank line starts a new footer line.
-    //
-    // Sizes vary (user's instruction and reference, 10 Nov 2026, "make font
-    // sizes different"): a role label (an item ending in "by" or a colon) is
-    // set at half the footer size beside the first name, and each name after
-    // a label takes a line of its own at one and a half times; the first group
-    // (the tagline) is 1.2 times; the other groups stay at the footer size. A
-    // line wider than the sheet is scaled down to fit.
+    // The info block copies the layout of the user's reference (10 Nov 2026,
+    // "just copy that layout and put it in the right corner"): set flush right
+    // in the bottom right corner, in this order and at these sizes, as
+    // multiples of the footer size:
+    //   the date group first: the date underlined (1.1), a small italic "at"
+    //   (0.45), the time (1.1);
+    //   the first other group, the tagline, in italic (1.1);
+    //   a group led by a role label (an item ending in "by" or a colon): the
+    //   label small and italic (0.45) beside the first name (1.5), then a
+    //   small italic "and" beside each further name (1.5);
+    //   any other group on one line at the footer size, items parted by an em
+    //   space. No dots or dashes are added (user's instruction, 10 Nov 2026).
+    // A line wider than the measure is scaled down to fit.
     const EMSP = ' ';
-    const groups = (s.infoGroups && s.infoGroups.length) ? s.infoGroups : (s.info.length ? [s.info] : []);
+    const groups = (s.infoGroups && s.infoGroups.length) ? s.infoGroups.map(g => g.slice()) : (s.info.length ? [s.info.slice()] : []);
     if (groups.length){
       // The size is pinned (user's instruction, 10 Nov 2026, "keep exactly
       // this font size") to what the doubled footer had with the first info
@@ -773,30 +777,43 @@ RSVP for the address</textarea>
       const fw = measure(FOOT_REF, TIMES, 400).w || 0.45*FOOT_REF.length;
       const size = 1.2 * Math.max(cell*0.2, Math.min(2 * W / fw * s.infoScale, cell*0.64));
       const isLabel = x => /(\bby|:)$/i.test(x);
-      const lines = [];   // each line: [{t, k}] where k is a multiple of size
-      groups.forEach((g, gi) => {
-        if (isLabel(g[0]) && g.length > 1){
-          lines.push([{ t: g[0], k: 0.5 }, { t: EMSP, k: 0.5 }, { t: g[1], k: 1.5 }]);
-          g.slice(2).forEach(x => lines.push([{ t: x, k: 1.5 }]));
+      const isDate = x => /\d{1,2}\s*[\/.·-]\s*\d{1,2}\s*[\/.·-]\s*\d{2,4}|\b(jan|feb|mar|apr|may|jun|jul|aug|sep|oct|nov|dec)[a-z]*\.?\s+\d/i.test(x);
+      const R = (t, k, o) => Object.assign({ t, k }, o || {});
+      const lines = [];
+      const di = groups.findIndex(g => isDate(g[0]));
+      const ordered = di > 0 ? [groups[di], ...groups.filter((_, i) => i !== di)] : groups;
+      let taglineDone = false;
+      ordered.forEach((g, gi) => {
+        if (gi === 0 && di !== -1){
+          const line = [R(g[0], 1.1, { u: true })];
+          if (g.length > 1) line.push(R(' at ', 0.45, { i: true }), R(g.slice(1).join(' '), 1.1));
+          lines.push(line);
+        } else if (isLabel(g[0]) && g.length > 1){
+          lines.push([R(g[0], 0.45, { i: true }), R(EMSP, 0.45), R(g[1], 1.5)]);
+          g.slice(2).forEach(x => lines.push([R('and', 0.45, { i: true }), R(EMSP, 0.45), R(x, 1.5)]));
+        } else if (!taglineDone && g.length === 1){
+          taglineDone = true;
+          lines.push([R(g[0], 1.1, { i: true })]);
         } else {
-          const k = gi === 0 ? 1.2 : 1;
-          lines.push(g.flatMap((x, i) => i ? [{ t: EMSP, k }, { t: x, k }] : [{ t: x, k }]));
+          lines.push(g.flatMap((x, i) => i ? [R(EMSP, 1), R(x, 1)] : [R(x, 1)]));
         }
       });
-      const widthOf = line => line.reduce((sum, r) => sum + measure(r.t, SERIF, 400).w * r.k * size, 0);
-      let y = H - 0.014*H, out = '';
+      const m = 0.045*W;
+      const widthOf = line => line.reduce((sum, r) => sum + measure(r.t, SERIF, 400, r.i ? 'italic' : '').w * r.k * size, 0);
+      const fitOf = line => Math.min(1, (W - 2*m) / (widthOf(line) || 1));
+      let y = H - 0.03*H, out = '';
       for (let i = lines.length-1; i >= 0; i--){
         const line = lines[i];
-        const fit = Math.min(1, W*0.97 / (widthOf(line) || 1));
+        const fit = fitOf(line);
         const big = Math.max(...line.map(r => r.k)) * size * fit;
-        const body = line.map(r => `<tspan font-size="${(r.k*size*fit).toFixed(1)}">${esc(r.t)}</tspan>`).join('');
-        const fAttrs = `x="${(W/2).toFixed(1)}" y="${y.toFixed(1)}" text-anchor="middle" font-family="${esc(SERIF)}" font-size="${(size*fit).toFixed(1)}"`;
+        const body = line.map(r => `<tspan font-size="${(r.k*size*fit).toFixed(1)}"${r.i ? ' font-style="italic"' : ''}${r.u ? ' text-decoration="underline"' : ''}>${esc(r.t).replace(/ /g, '&#160;')}</tspan>`).join('');
+        const fAttrs = `x="${(W - m).toFixed(1)}" y="${y.toFixed(1)}" text-anchor="end" font-family="${esc(SERIF)}" font-size="${(size*fit).toFixed(1)}"`;
         out = (flip ? flipText(fAttrs, body, t.footLight) : `<text ${fAttrs} fill="${esc(t.foot)}">${body}</text>`) + out;
         infoTop = y - big*0.78;
-        // the next baseline up clears this line's capitals and the line
-        // above's descenders, with a little air between
-        const above = i > 0 ? Math.max(...lines[i-1].map(r => r.k)) * size * Math.min(1, W*0.97 / (widthOf(lines[i-1]) || 1)) : 0;
-        y -= big*0.74 + above*0.34 + Math.max(big, above)*0.08;
+        // set tight, as the reference is: the next baseline up clears this
+        // line's capitals and the line above's descenders, with a hair between
+        const above = i > 0 ? Math.max(...lines[i-1].map(r => r.k)) * size * fitOf(lines[i-1]) : 0;
+        y -= big*0.70 + above*0.30 + Math.max(big, above)*0.04;
       }
       textTo.push(out);
     }
@@ -924,17 +941,20 @@ RSVP for the address</textarea>
   }
   const fontDefs = s => (s.font.indexOf('Atlas Grotesk Condensed') !== -1 ? atlasStyle(+s.weight) : '') + (s.panell ? panellStyle(+s.weight) : '');
   // EB Garamond as a data URI for the Shade footer, fetched once.
-  let garamondData;
-  function garamondStyle(){
-    if (garamondData === undefined){
-      garamondData = null;
-      fetch('../fonts/EBGaramond-Regular-latin.woff2').then(r => r.ok ? r.blob() : Promise.reject(new Error(r.status)))
+  const garamondData = {};
+  function garamondCut(style){
+    const file = style === 'italic' ? 'Italic' : 'Regular';
+    if (garamondData[style] === undefined){
+      garamondData[style] = null;
+      fetch(`../fonts/EBGaramond-${file}-latin.woff2`).then(r => r.ok ? r.blob() : Promise.reject(new Error(r.status)))
         .then(b => new Promise(res => { const fr = new FileReader(); fr.onload = () => res(fr.result); fr.readAsDataURL(b); }))
-        .then(uri => { garamondData = uri; render(); })
-        .catch(() => { garamondData = false; });
+        .then(uri => { garamondData[style] = uri; render(); })
+        .catch(() => { garamondData[style] = false; });
     }
-    return garamondData ? `<style>@font-face{font-family:"EB Garamond";font-weight:400;src:url(${garamondData}) format("woff2")}</style>` : '';
+    const d = garamondData[style];
+    return d ? `@font-face{font-family:"EB Garamond";font-weight:400;font-style:${style};src:url(${d}) format("woff2")}` : '';
   }
+  const garamondStyle = () => { const css = garamondCut('normal') + garamondCut('italic'); return css ? `<style>${css}</style>` : ''; };
 
   let currentSvg = '';
   function render(){
@@ -1020,7 +1040,7 @@ RSVP for the address</textarea>
   render();
   window.addEventListener('chessready', render);
   // Shade sizes its lines from measured text, so it renders again once the fonts are in.
-  if (document.fonts){ document.fonts.ready.then(render); document.fonts.addEventListener('loadingdone', render); document.fonts.load('400 20px "EB Garamond"').then(render).catch(() => {}); }
+  if (document.fonts){ document.fonts.ready.then(render); document.fonts.addEventListener('loadingdone', render); document.fonts.load('400 20px "EB Garamond"').then(render).catch(() => {}); document.fonts.load('italic 400 20px "EB Garamond"').then(render).catch(() => {}); }
   if (window.claude && typeof window.claude.use === 'function'){
     window.claude.use('downloads').then(ns => {
       downloads = ns;
