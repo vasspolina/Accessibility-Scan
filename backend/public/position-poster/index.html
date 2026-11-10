@@ -96,20 +96,17 @@ details summary{cursor:pointer;font-size:12px;color:var(--muted)}
     </label>
     <p class="warn" id="titleWarn" hidden></p>
     <label>Info, one item per line
-      <textarea id="info" rows="16">Non Stop Chess Action
-With Live Music &amp; DJ Sets
+      <textarea id="info" rows="14">Non Stop Chess Action
 
-All Levels Welcome
-
-Live Sounds by:
+Live music by
 Anya Tran
 Daren Ho
 
-DJ Sets by:
+DJ sets by
 Iggy Nuclear
 Sofiya V
 
-12·05·2026
+12/05/2026
 7 PM
 
 Greenpoint, Brooklyn
@@ -596,14 +593,19 @@ RSVP for the address</textarea>
     // The user's colour reference of 10 Nov 2026 (Bart de Baets, Palace Ruin):
     // white paper, black ink, one vermilion, and grey only as black thinned
     // out, which the Black slider gives at 50.
-    palace:    { ground:'#F3F1EC', ghost:'#FFFFFF', ghostA:0.5,  shade:'#141414', foot:'#141414', grainA:0.3,  square:'#000000', squareA:0.09, line:'#000000', red:'#E5432A' },
+    // The grey squares are the user's blue swatch (10 Nov 2026), about
+    // #A6B0DE: board is set so that at Black 50 (a 50% white veil) the square
+    // lands on it. The flipped type is clipped square by square (black on the
+    // white squares, white on the blue ones, both softened with the sheet),
+    // since a difference blend over blue would turn yellow.
+    palace:    { ground:'#F3F1EC', ghost:'#FFFFFF', ghostA:0.5,  shade:'#141414', foot:'#141414', grainA:0.3,  square:'#000000', squareA:0.09, line:'#000000', red:'#E5432A', board:'#4D61BD', flipLight:'#141414', flipDark:'#FFFFFF', footLight:'#141414' },
     // The user's second colour reference of 10 Nov 2026 (a Murmuring
     // Collection poster): pale cornflower blue, red, black and white. The
     // Black slider pulls toward the blue here (veil), not toward white, so the
     // blue keeps its colour; the flipped type is drawn clipped square by square
     // (flipLight on the blue, flipDark on the dark squares) instead of with a
     // difference blend, which would turn the blue's complement, an olive.
-    murmur:    { ground:'#A9B9E2', ghost:'#FFFFFF', ghostA:0.5,  shade:'#111111', foot:'#111111', grainA:0.3,  square:'#000000', squareA:0.09, line:'#000000', red:'#E5352A', veil:'#A9B9E2', flipLight:'#E5352A', flipDark:'#FFFFFF', footLight:'#111111' },
+    murmur:    { ground:'#A9B9E2', ghost:'#FFFFFF', ghostA:0.5,  shade:'#111111', foot:'#111111', grainA:0.3,  square:'#000000', squareA:0.09, line:'#000000', red:'#E5352A', veil:'#A9B9E2', flipLight:'#E5352A', flipDark:'#FFFFFF', footLight:'#111111', overVeil:true },
     newsprint: { ground:'#C8CAC4', ghost:'#FFFFFF', ghostA:0.5,  shade:'#17131C', foot:'#454842', grainA:0.38, square:'#000000', squareA:0.09, line:'#000000' },
     chalk:     { ground:'#E7E5DE', ghost:'#FFFFFF', ghostA:0.85, shade:'#262230', foot:'#575550', grainA:0.3,  square:'#000000', squareA:0.07, line:'#000000' },
     night:     { ground:'#0F0E13', ghost:'#FFFFFF', ghostA:0.18, shade:'#EEEAE1', foot:'#B4B1A9', grainA:0.42, square:'#FFFFFF', squareA:0.07, line:'#FFFFFF' },
@@ -667,7 +669,7 @@ RSVP for the address</textarea>
         if ((((f + r) % 2) + 2) % 2 !== 1) continue;    // a8 is light, b8 dark; the same parity above and below the board
         sq += `<rect x="${(f*cell).toFixed(1)}" y="${(y0 + r*cell).toFixed(1)}" width="${cell.toFixed(1)}" height="${cell.toFixed(1)}"/>`;
       }
-      parts.push(`<g fill="${esc(dark ? t.shade : t.square)}" fill-opacity="${dark ? 1 : t.squareA}">${sq}</g>`);
+      parts.push(`<g fill="${esc(dark ? (t.board || t.shade) : t.square)}" fill-opacity="${dark ? 1 : t.squareA}">${sq}</g>`);
       boardSq = sq;
     }
 
@@ -689,10 +691,11 @@ RSVP for the address</textarea>
       }).join('');
       defs.push(`<clipPath id="shLightSq"><path clip-rule="evenodd" d="M0 0H${W}V${H}H0Z${holes}"/></clipPath>`);
     }
-    // Clipped text is drawn after the veils, so its red, black and white keep
-    // their strength while the dark squares are softened behind it.
+    // A stock with overVeil draws its clipped text after the veils, so its
+    // red, black and white keep their strength while the dark squares are
+    // softened behind it; otherwise the text softens with the sheet.
     const overParts = [];
-    const textTo = clipFlip ? overParts : parts;
+    const textTo = clipFlip && t.overVeil ? overParts : parts;
     const flipText = (attrs, body, light) => clipFlip
       ? `<g clip-path="url(#shDarkSq)"><text ${attrs} fill="${esc(t.flipDark)}">${body}</text></g><g clip-path="url(#shLightSq)"><text ${attrs} fill="${esc(light)}">${body}</text></g>`
       : `<text ${attrs} fill="#FFFFFF"${flipAttr}>${body}</text>`;
@@ -741,8 +744,9 @@ RSVP for the address</textarea>
       // from that text, not from the info, so a longer info wraps onto more
       // lines at the same size instead of shrinking.
       const FOOT_REF = '12/05/2026 · 7pm · RSVP · for · address · Greenpoint, · Brooklyn · Anya Tran · (live) · Daren Ho · (live) · Iggy Nuclear · (dj) · Sofiya V · (dj)';
+      // Then 20% larger (user's instruction, 10 Nov 2026).
       const fw = measure(FOOT_REF, SERIF, 400).w || 0.45*FOOT_REF.length;
-      const size = Math.max(cell*0.2, Math.min(2 * W / fw * s.infoScale, cell*0.64));
+      const size = 1.2 * Math.max(cell*0.2, Math.min(2 * W / fw * s.infoScale, cell*0.64));
       const lines = []; let line = '';
       tokens.forEach(({ w, sep }) => {
         const trial = line ? line + sep + w : w;
