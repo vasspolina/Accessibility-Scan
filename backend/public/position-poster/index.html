@@ -76,7 +76,7 @@ details summary{cursor:pointer;font-size:12px;color:var(--muted)}
 <div class="app">
 <header>
   <h1>Position Poster</h1>
-  <p>Type a chess game and some text. Each character becomes a piece in the final position; the squares behind it show how often each square was occupied during the game. Three looks: Classic sets the letters on a tinted board; Cut sets heavy capitals over colour bands and slices them, after the Museum für Gestaltung’s exhibition posters; Shade sets the title in ghost capitals on grey stock and blurs the game into a dark spot over it, after a live-recording cover.</p>
+  <p>Type a chess game and some text. Each character becomes a piece in the final position; the squares behind it show how often each square was occupied during the game. Three looks: Classic sets the letters on a tinted board; Cut sets heavy capitals over colour bands and slices them, after the Museum für Gestaltung’s exhibition posters; Shade sets the title in ghost capitals on dark stock over a quiet chess board, blurs the game into a queen’s shadow and plays it back as a waveform, after a live-recording cover.</p>
 </header>
 
 <form class="panel" id="controls" autocomplete="off">
@@ -171,8 +171,15 @@ Sofiya V
       </label>
       <label id="groundWrap" hidden>Ground
         <select id="ground">
-          <option value="board">Chess board</option>
+          <option value="faint">Chess board, quiet</option>
+          <option value="board">Chess board, strong</option>
           <option value="plain">Plain stock</option>
+        </select>
+      </label>
+      <label id="soundWrap" hidden>Sound
+        <select id="sound">
+          <option value="wave">Waveform of the game</option>
+          <option value="none">None</option>
         </select>
       </label>
       <label id="spotWrap" hidden>Spot
@@ -183,9 +190,9 @@ Sofiya V
       </label>
       <label id="toneWrap" hidden>Stock
         <select id="tone">
+          <option value="night">Dark stock</option>
           <option value="newsprint">Grey stock</option>
           <option value="chalk">Pale stock</option>
-          <option value="night">Dark stock</option>
           <option value="own">Your colours</option>
         </select>
       </label>
@@ -250,7 +257,7 @@ Sofiya V
     <p class="note">The game is replayed move by move. The pieces left on the board after the last move give the title its squares: characters fill them in reading order, a8 to h1. Each square is scored by how many of the game’s positions it was occupied in, from the start position to the end.</p>
     <p class="note"><b>Classic</b> tints each square by that score and sets the info items on the same squares of a smaller board at the bottom. The destination of the last move is set in the accent colour.</p>
     <p class="note"><b>Cut</b> bleeds the board to the edges and lays three colour bands over it. The title is set in capitals, one per piece square; the more often the square was occupied, the more slices the letter is cut into and the further they slide, with a sliver of the opposite colour showing. Squares the game passed through but left empty carry a fragment of a title letter at twice the size, or a disc, half-disc or quarter cut (the letter fragments only when there is no info). The info is set the same way: its words flow in reading order from the top left, one capital per free square, a square of air between words, so the game’s pieces interrupt the text where it ended. The last move’s square is filled with the accent colour.</p>
-    <p class="note"><b>Shade</b> sets the title in lines of capitals across the full width, printed in a white that barely lifts off the stock: the first and last lines bleed past the edges, the lines between are set smaller and centred (a slash in the title forces a line break; otherwise each word is a line). The game is the shadow: its centre is the centre of gravity of every square a move left or landed on, its size is how widely that traffic spread, and the traffic itself is blurred in faintly, so an open middlegame darkens the centre and a kingside attack pulls the shadow to one side. The shadow is a queen’s silhouette, blurred until only the crown, the waist and the base read, or a round spot. The stock carries the chess board, the eight files chequered across the whole sheet with the board’s own ranks in the middle, or stays plain. The last move’s square is the core, tinted with the accent colour when the last move is marked. The info items run as one small serif line along the bottom edge, parted by middle dots. Grain is printed over everything.</p>
+    <p class="note"><b>Shade</b> sets the title in lines of capitals across the full width, printed in a white that barely lifts off the stock: the first and last lines bleed past the edges, the lines between are set smaller and centred (a slash in the title forces a line break; otherwise each word is a line). The game is the shadow: its centre is the centre of gravity of every square a move left or landed on, its size is how widely that traffic spread, and the traffic itself is blurred in faintly, so an open middlegame darkens the centre and a kingside attack pulls the shadow to one side. The shadow is a queen’s silhouette, blurred until only the crown, the waist and the base read, or a round spot. The stock carries the chess board, the eight files chequered across the whole sheet with the board’s own ranks in the middle, quiet or strong, or stays plain. The sound is the game as a waveform along the bottom edge: one bar per move, its height the number of moves open to the player to move, a capture a full-height spike, a check a brighter bar; fine scanlines run over the sheet. The last move’s square is the core, tinted with the accent colour when the last move is marked. The info items run as one small serif line along the bottom edge, parted by middle dots. Grain is printed over everything.</p>
   </details>
 </section>
 </div>
@@ -275,10 +282,10 @@ Sofiya V
   }
 
   function analyse(text){
-    const result = {ok:false, error:'', positions:0, occ:{}, traffic:{}, finalSquares:[], lastTo:null, plies:0, pieces:0};
+    const result = {ok:false, error:'', positions:0, occ:{}, traffic:{}, wave:[], finalSquares:[], lastTo:null, plies:0, pieces:0};
     if (typeof Chess !== 'function'){ result.error = 'The chess library did not load, so the moves cannot be replayed.'; return result; }
     const game = new Chess();
-    const occ = {}, traffic = {};   // traffic: how many moves left or landed on a square
+    const occ = {}, traffic = {}, wave = [];   // traffic: how many moves left or landed on a square; wave: one reading per ply
     const count = () => { game.board().forEach((row, r) => row.forEach((cell, f) => { if (cell){ const sq = FILES[f] + (8 - r); occ[sq] = (occ[sq]||0) + 1; } })); };
     count();
     let positions = 1, lastTo = null, plies = 0;
@@ -287,11 +294,12 @@ Sofiya V
       if (!mv){ result.error = `Could not play “${san}” (move ${Math.floor(plies/2)+1}). The position up to that move is used.`; break; }
       plies++; lastTo = mv.to; count(); positions++;
       traffic[mv.from] = (traffic[mv.from]||0) + 1; traffic[mv.to] = (traffic[mv.to]||0) + 1;
+      wave.push({ mob: game.moves().length, cap: !!mv.captured, chk: game.in_check() });   // how loud the position is: the moves open to the side to move
     }
     const finalSquares = [];
     const board = game.board(); // rank 8 first, files a..h
     board.forEach((row, r) => row.forEach((cell, f) => { if (cell) finalSquares.push({sq: FILES[f] + (8 - r), col: f, row: r, piece: cell}); }));
-    Object.assign(result, {ok:true, positions, occ, traffic, finalSquares, lastTo, plies, pieces: finalSquares.length});
+    Object.assign(result, {ok:true, positions, occ, traffic, wave, finalSquares, lastTo, plies, pieces: finalSquares.length});
     return result;
   }
 
@@ -313,6 +321,7 @@ Sofiya V
       tone: $('tone').value,
       spot: $('spot').value,
       ground: $('ground').value,
+      sound: $('sound').value,
       markLast: $('markLast').value === 'yes',
       density: +$('density').value/100,
       tint: $('tintHex').value, accent: $('accentHex').value, paper: $('paperHex').value, ink: $('inkHex').value,
@@ -576,9 +585,9 @@ Sofiya V
   // the pawns and rooks that never moved, at the edges of the board, and the
   // shadow would sit on the margins; traffic gathers where the game was.
   const TONES = {
-    newsprint: { ground:'#C8CAC4', ghost:'#FFFFFF', ghostA:0.5,  shade:'#17131C', foot:'#454842', grainA:0.38, square:'#000000', squareA:0.09 },
-    chalk:     { ground:'#E7E5DE', ghost:'#FFFFFF', ghostA:0.85, shade:'#262230', foot:'#575550', grainA:0.3,  square:'#000000', squareA:0.07 },
-    night:     { ground:'#16151B', ghost:'#FFFFFF', ghostA:0.07, shade:'#EEEAE1', foot:'#ABA8A0', grainA:0.28, square:'#FFFFFF', squareA:0.06 },
+    newsprint: { ground:'#C8CAC4', ghost:'#FFFFFF', ghostA:0.5,  shade:'#17131C', foot:'#454842', grainA:0.38, square:'#000000', squareA:0.09, line:'#000000' },
+    chalk:     { ground:'#E7E5DE', ghost:'#FFFFFF', ghostA:0.85, shade:'#262230', foot:'#575550', grainA:0.3,  square:'#000000', squareA:0.07, line:'#000000' },
+    night:     { ground:'#0F0E13', ghost:'#FFFFFF', ghostA:0.18, shade:'#EEEAE1', foot:'#B4B1A9', grainA:0.42, square:'#FFFFFF', squareA:0.07, line:'#FFFFFF' },
   };
   // Text is measured on a canvas with the document's own fonts, so a line can
   // be sized to the sheet. Before Panell has loaded the fallback is measured;
@@ -592,7 +601,7 @@ Sofiya V
   const SERIF = "'Times New Roman', Times, 'Liberation Serif', serif";
   function buildShadeSvg(a, s){
     const W = s.W, H = s.H;
-    const t = TONES[s.tone] || { ground:s.paper, ghost:s.ink, ghostA:0.08, shade:s.ink, foot:s.ink, grainA:0.3, square:s.ink, squareA:0.08 };
+    const t = TONES[s.tone] || { ground:s.paper, ghost:s.ink, ghostA:0.08, shade:s.ink, foot:s.ink, grainA:0.3, square:s.ink, squareA:0.08, line:s.ink };
     const cell = W/8, y0 = (H - 8*cell)/2;          // the board fills the width, centred on the sheet
     const parts = [], defs = [];
     parts.push(`<rect width="${W}" height="${H}" fill="${esc(t.ground)}"/>`);
@@ -602,13 +611,16 @@ Sofiya V
     // the middle, where the shadow is measured. The dark squares are the ink
     // at a few per cent, as quiet as the ghost type is light, so the type and
     // the queen stay in front; the grain prints over them like everything else.
-    if (s.ground === 'board'){
+    if (s.ground === 'board' || s.ground === 'faint'){
+      // 'board' (user's instruction, 10 Nov 2026, "same dark"): the dark
+      // squares are the shade colour itself, the same dark as the queen.
+      const dark = s.ground === 'board';
       let sq = '';
       for (let r = Math.floor(-y0/cell); y0 + r*cell < H; r++) for (let f = 0; f < 8; f++){
         if ((((f + r) % 2) + 2) % 2 !== 1) continue;    // a8 is light, b8 dark; the same parity above and below the board
         sq += `<rect x="${(f*cell).toFixed(1)}" y="${(y0 + r*cell).toFixed(1)}" width="${cell.toFixed(1)}" height="${cell.toFixed(1)}"/>`;
       }
-      parts.push(`<g fill="${esc(t.square)}" fill-opacity="${t.squareA}">${sq}</g>`);
+      parts.push(`<g fill="${esc(dark ? t.shade : t.square)}" fill-opacity="${dark ? 1 : t.squareA}">${sq}</g>`);
     }
 
     // the title, in lines
@@ -657,14 +669,14 @@ Sofiya V
       // the stock, as the reference's spot fades. The height follows the
       // game's spread as the round spot's radius does, capped so the base
       // clears the footer and the crown reaches into the title.
-      const qh = Math.min(0.78*H, 1.9*ry);
+      const qh = Math.min(0.78*H, 1.9*ry, s.sound === 'wave' ? 2*(0.835*H - centre.cy) : Infinity);   // her base clears the waveform
       const qw = qh*0.5*Math.max(0.85, Math.min(1.2, rx/ry));
       const qx = centre.cx - qw/2, qy = centre.cy - qh/2;
       defs.push(`<g id="shQueen"><circle cx="50" cy="9" r="7.5"/><circle cx="8" cy="26" r="6.5"/><circle cx="29" cy="18" r="6.5"/><circle cx="71" cy="18" r="6.5"/><circle cx="92" cy="26" r="6.5"/><path d="M20 72 L8 26 L18.5 42 L29 18 L39.5 42 L50 10 L60.5 42 L71 18 L81.5 42 L92 26 L80 72 Z"/><path d="M20 72 Q50 66 80 72 L74 82 Q50 88 26 82 Z"/><path d="M26 82 C36 100 36 112 30 126 L70 126 C64 112 64 100 74 82 Z"/><path d="M30 126 L70 126 Q86 134 86 142 L14 142 Q14 134 30 126 Z"/><rect x="10" y="142" width="80" height="18" rx="6"/></g>`);
-      defs.push(`<filter id="shQCore" x="-60%" y="-40%" width="220%" height="180%"><feGaussianBlur stdDeviation="${(qh*0.026).toFixed(1)}"/></filter>`);
+      defs.push(`<filter id="shQCore" x="-60%" y="-40%" width="220%" height="180%"><feGaussianBlur stdDeviation="${(qh*0.021).toFixed(1)}"/></filter>`);
       defs.push(`<filter id="shQHalo" x="-80%" y="-60%" width="260%" height="220%"><feGaussianBlur stdDeviation="${(qh*0.085).toFixed(1)}"/></filter>`);
       const place = `transform="translate(${qx.toFixed(1)} ${qy.toFixed(1)}) scale(${(qw/100).toFixed(4)} ${(qh/160).toFixed(4)})"`;
-      parts.push(`<g filter="url(#shQHalo)" opacity="0.75"><g ${place} fill="${esc(t.shade)}"><use href="#shQueen"/></g></g>`);
+      parts.push(`<g filter="url(#shQHalo)" opacity="0.6"><g ${place} fill="${esc(t.shade)}"><use href="#shQueen"/></g></g>`);
       parts.push(`<g filter="url(#shQCore)" opacity="0.96"><g ${place} fill="${esc(t.shade)}"><use href="#shQueen"/></g></g>`);
     } else {
     defs.push(`<radialGradient id="shSpot"><stop offset="0" stop-color="${esc(t.shade)}"/><stop offset="0.38" stop-color="${esc(t.shade)}"/><stop offset="0.6" stop-color="${esc(t.shade)}" stop-opacity="0.62"/><stop offset="0.8" stop-color="${esc(t.shade)}" stop-opacity="0.2"/><stop offset="0.92" stop-color="${esc(t.shade)}" stop-opacity="0.05"/><stop offset="1" stop-color="${esc(t.shade)}" stop-opacity="0"/></radialGradient>`);
@@ -689,6 +701,28 @@ Sofiya V
       const size = Math.max(cell*0.1, Math.min(W / fw * s.infoScale, cell*0.32));
       parts.push(`<text x="${(W/2).toFixed(1)}" y="${(H - 0.014*H).toFixed(1)}" text-anchor="middle" font-family="${esc(SERIF)}" font-size="${size.toFixed(1)}" fill="${esc(t.foot)}">${esc(foot)}</text>`);
     }
+
+    // the sound (user's instruction, 10 Nov 2026, "sound techno vibe"): the
+    // game as a waveform along the bottom edge, one bar per ply about a centre
+    // line, its height the number of moves open to the side to move in that
+    // position, so a cramped position is quiet and an open one loud; a capture
+    // is a full-height spike and a check a brighter bar. Over the whole sheet,
+    // fine scanlines every four units, as faint as the quiet board.
+    if (s.sound === 'wave' && a.wave && a.wave.length){
+      const n = a.wave.length, maxMob = Math.max(1, ...a.wave.map(w => w.mob));
+      const cy = H - 0.085*H, amp = 0.055*H;
+      const bw = Math.max(1.5, (W/n)*0.55);
+      const col = lum(t.ground) > 0.4 ? t.shade : t.ghost;
+      let bars = `<rect x="0" y="${(cy-0.5).toFixed(1)}" width="${W}" height="1" fill="${esc(col)}" fill-opacity="0.45"/>`;
+      a.wave.forEach((w, i) => {
+        const h = w.cap ? amp : amp*(0.12 + 0.88*w.mob/maxMob);
+        const x = (i+0.5)*W/n - bw/2;
+        bars += `<rect x="${x.toFixed(1)}" y="${(cy-h).toFixed(1)}" width="${bw.toFixed(1)}" height="${(2*h).toFixed(1)}" fill="${esc(col)}" fill-opacity="${w.cap || w.chk ? 0.95 : 0.7}"/>`;
+      });
+      parts.push(`<g>${bars}</g>`);
+    }
+    defs.push(`<pattern id="shScan" width="4" height="4" patternUnits="userSpaceOnUse"><rect width="4" height="1" fill="${esc(t.line)}"/></pattern>`);
+    parts.push(`<rect width="${W}" height="${H}" fill="url(#shScan)" opacity="${lum(t.ground) > 0.4 ? 0.06 : 0.09}"/>`);
 
     // grain over everything, overlaid so it speckles the stock and the shadow alike
     defs.push(`<filter id="shGrain" x="0" y="0" width="100%" height="100%" color-interpolation-filters="sRGB"><feTurbulence type="fractalNoise" baseFrequency="${(900/W).toFixed(4)}" numOctaves="2" seed="7" stitchTiles="stitch"/><feColorMatrix values="1 0 0 0 0  1 0 0 0 0  1 0 0 0 0  0 0 0 0 1"/></filter>`);
@@ -793,7 +827,7 @@ Sofiya V
 
   function syncLook(){
     const look = $('look').value, cut = look === 'cut', shade = look === 'shade';
-    $('paletteWrap').hidden = !cut; $('toneWrap').hidden = !shade; $('spotWrap').hidden = !shade; $('groundWrap').hidden = !shade; $('patternWrap').hidden = cut || shade;
+    $('paletteWrap').hidden = !cut; $('toneWrap').hidden = !shade; $('spotWrap').hidden = !shade; $('groundWrap').hidden = !shade; $('soundWrap').hidden = !shade; $('patternWrap').hidden = cut || shade;
     $('densityLabel').textContent = cut ? 'Cut depth' : shade ? 'Shadow' : 'Max density';
   }
   syncLook();
