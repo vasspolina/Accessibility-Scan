@@ -793,7 +793,9 @@ RSVP for the address</textarea>
       // first queen (user's instruction, 10 Nov 2026): the core blurred to
       // about 2% of her height, so the edge goes and the crown, the collar
       // and the base still read, and a wider blur of the same shape as the
-      // halo that fades her into the stock, as the reference's spot fades. Her height follows the
+      // halo that fades her into the stock, as the reference's spot fades.
+      // Core 75% and halo 45% opaque (from 96% and 60%; user's instruction,
+      // 10 Nov 2026, "a bit less dense"), so the board shows through her. Her height follows the
       // game's spread as the round spot's radius does, capped at 78% of the
       // sheet; her width keeps the photo's proportion.
       // her base stands a little above the info, so the details stay readable;
@@ -807,8 +809,8 @@ RSVP for the address</textarea>
       defs.push(`<filter id="shQCore" x="-60%" y="-40%" width="220%" height="180%"><feGaussianBlur stdDeviation="${(qh*0.021).toFixed(1)}"/></filter>`);
       defs.push(`<filter id="shQHalo" x="-80%" y="-60%" width="260%" height="220%"><feGaussianBlur stdDeviation="${(qh*0.085).toFixed(1)}"/></filter>`);
       const place = `transform="translate(${qx.toFixed(1)} ${qy.toFixed(1)}) scale(${(qw/100).toFixed(4)} ${(qh/220).toFixed(4)})"`;
-      queenTo.push(`<g filter="url(#shQHalo)" opacity="0.6"><g ${place} fill="${esc(qcol)}"><use href="#shQueen"/></g></g>`);
-      queenTo.push(`<g filter="url(#shQCore)" opacity="0.96"><g ${place} fill="${esc(qcol)}"><use href="#shQueen"/></g></g>`);
+      queenTo.push(`<g filter="url(#shQHalo)" opacity="0.45"><g ${place} fill="${esc(qcol)}"><use href="#shQueen"/></g></g>`);
+      queenTo.push(`<g filter="url(#shQCore)" opacity="0.75"><g ${place} fill="${esc(qcol)}"><use href="#shQueen"/></g></g>`);
     } else {
     defs.push(`<radialGradient id="shSpot"><stop offset="0" stop-color="${esc(t.shade)}"/><stop offset="0.38" stop-color="${esc(t.shade)}"/><stop offset="0.6" stop-color="${esc(t.shade)}" stop-opacity="0.62"/><stop offset="0.8" stop-color="${esc(t.shade)}" stop-opacity="0.2"/><stop offset="0.92" stop-color="${esc(t.shade)}" stop-opacity="0.05"/><stop offset="1" stop-color="${esc(t.shade)}" stop-opacity="0"/></radialGradient>`);
     parts.push(`<ellipse cx="${centre.cx.toFixed(1)}" cy="${centre.cy.toFixed(1)}" rx="${rx.toFixed(1)}" ry="${ry.toFixed(1)}" fill="url(#shSpot)"/>`);
