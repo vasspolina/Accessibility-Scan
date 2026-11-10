@@ -595,11 +595,13 @@ RSVP for the address</textarea>
     // out, which the Black slider gives at 50.
     // The grey squares are the user's blue swatch (10 Nov 2026), about
     // #A6B0DE: board is set so that at Black 50 (a 50% white veil) the square
-    // lands on it. The flipped type is clipped square by square (black on the
-    // white squares, white on the blue ones), since a difference blend over
-    // blue would turn yellow, and drawn above the veil so the black stays
-    // black (user's instruction, 10 Nov 2026, "don't add any grey").
-    palace:    { ground:'#F3F1EC', ghost:'#FFFFFF', ghostA:0.5,  shade:'#141414', foot:'#141414', grainA:0.3,  square:'#000000', squareA:0.09, line:'#000000', red:'#E5432A', board:'#4D61BD', flipLight:'#141414', flipDark:'#FFFFFF', footLight:'#141414', overVeil:true },
+    // lands on it. The flipped type is clipped square by square and takes the
+    // other square's colour: the blue on the white squares, white on the blue
+    // ones, so the letters are the board inverted. It is drawn above the veil
+    // and adds no colour of its own (user's instructions, 10 Nov 2026, "don't
+    // add any grey", then "don't add any black"). A difference blend over blue
+    // would turn yellow.
+    palace:    { ground:'#F3F1EC', ghost:'#FFFFFF', ghostA:0.5,  shade:'#141414', foot:'#141414', grainA:0.3,  square:'#000000', squareA:0.09, line:'#000000', red:'#E5432A', board:'#4D61BD', flipLight:'#A6B0DE', flipDark:'#FFFFFF', footLight:'#A6B0DE', overVeil:true },
     // The user's second colour reference of 10 Nov 2026 (a Murmuring
     // Collection poster): pale cornflower blue, red, black and white. The
     // Black slider pulls toward the blue here (veil), not toward white, so the
