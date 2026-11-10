@@ -257,7 +257,7 @@ Sofiya V
     <p class="note">The game is replayed move by move. The pieces left on the board after the last move give the title its squares: characters fill them in reading order, a8 to h1. Each square is scored by how many of the game’s positions it was occupied in, from the start position to the end.</p>
     <p class="note"><b>Classic</b> tints each square by that score and sets the info items on the same squares of a smaller board at the bottom. The destination of the last move is set in the accent colour.</p>
     <p class="note"><b>Cut</b> bleeds the board to the edges and lays three colour bands over it. The title is set in capitals, one per piece square; the more often the square was occupied, the more slices the letter is cut into and the further they slide, with a sliver of the opposite colour showing. Squares the game passed through but left empty carry a fragment of a title letter at twice the size, or a disc, half-disc or quarter cut (the letter fragments only when there is no info). The info is set the same way: its words flow in reading order from the top left, one capital per free square, a square of air between words, so the game’s pieces interrupt the text where it ended. The last move’s square is filled with the accent colour.</p>
-    <p class="note"><b>Shade</b> sets the title in lines of capitals across the full width, printed in a white that barely lifts off the stock: the first and last lines bleed past the edges, the lines between are set smaller and centred (a slash in the title forces a line break; otherwise each word is a line). The game is the shadow: its centre is the centre of gravity of every square a move left or landed on, its size is how widely that traffic spread, and the traffic itself is blurred in faintly, so an open middlegame darkens the centre and a kingside attack pulls the shadow to one side. The shadow is a queen’s silhouette, blurred until only the crown, the waist and the base read, or a round spot. The stock carries the chess board, the eight files chequered across the whole sheet with the board’s own ranks in the middle, quiet or strong, or stays plain. The sound is the game as a waveform along the bottom edge: one bar per move, its height the number of moves open to the player to move, a capture a full-height spike, a check a brighter bar; fine scanlines run over the sheet. The last move’s square is the core, tinted with the accent colour when the last move is marked. The info items run as one small serif line along the bottom edge, parted by middle dots. Grain is printed over everything.</p>
+    <p class="note"><b>Shade</b> sets the title in lines of capitals across the full width, printed in a white that barely lifts off the stock: the first and last lines bleed past the edges, the lines between are set smaller and centred (a slash in the title forces a line break; otherwise each word is a line). The game is the shadow: its centre is the centre of gravity of every square a move left or landed on, its size is how widely that traffic spread, and the traffic itself is blurred in faintly, so an open middlegame darkens the centre and a kingside attack pulls the shadow to one side. The shadow is a queen’s silhouette, blurred until only the crown, the waist and the base read, or a round spot. The stock carries the chess board, the eight files chequered across the whole sheet with the board’s own ranks in the middle, quiet or strong, or stays plain; on the strong board the type is traced in flipped colours, white over the dark squares and dark over the light ones. The sound is the game as a waveform along the bottom edge: one bar per move, its height the number of moves open to the player to move, a capture a full-height spike, a check a brighter bar; fine scanlines run over the sheet. The last move’s square is the core, tinted with the accent colour when the last move is marked. The info items run as one small serif line along the bottom edge, parted by middle dots. Grain is printed over everything.</p>
   </details>
 </section>
 </div>
@@ -623,6 +623,15 @@ Sofiya V
       parts.push(`<g fill="${esc(dark ? t.shade : t.square)}" fill-opacity="${dark ? 1 : t.squareA}">${sq}</g>`);
     }
 
+    // On the strong board the type is traced in flipped colours (user's
+    // instruction, 10 Nov 2026): white drawn with a difference blend, so over
+    // a dark square it stays white and over a light square it turns dark,
+    // square by square, and over the queen it flips against her too. The
+    // footer and the waveform flip the same way. On the other grounds the
+    // type stays the ghost of the reference.
+    const flip = s.ground === 'board';
+    const flipAttr = flip ? ' style="mix-blend-mode:difference"' : '';
+
     // the title, in lines
     const raw = s.title.trim().toUpperCase();
     const lines = (raw.indexOf('/') !== -1 ? raw.split('/') : raw.split(/\s+/)).map(x => x.trim()).filter(Boolean);
@@ -638,7 +647,7 @@ Sofiya V
       if (i === 0) firstSize = size;
       const cap = size*capRatio;
       y += cap;
-      parts.push(`<text x="${(W/2).toFixed(1)}" y="${y.toFixed(1)}" text-anchor="middle" font-family="${esc(s.font)}" font-weight="${s.weight}" font-size="${size.toFixed(1)}" fill="${esc(t.ghost)}" fill-opacity="${t.ghostA}">${esc(line)}</text>`);
+      parts.push(`<text x="${(W/2).toFixed(1)}" y="${y.toFixed(1)}" text-anchor="middle" font-family="${esc(s.font)}" font-weight="${s.weight}" font-size="${size.toFixed(1)}" fill="${flip ? '#FFFFFF' : esc(t.ghost)}" fill-opacity="${flip ? 1 : t.ghostA}"${flipAttr}>${esc(line)}</text>`);
       y += cap*0.14;
     });
 
@@ -699,7 +708,7 @@ Sofiya V
     if (foot){
       const fw = measure(foot, SERIF, 400).w || 0.45*foot.length;
       const size = Math.max(cell*0.1, Math.min(W / fw * s.infoScale, cell*0.32));
-      parts.push(`<text x="${(W/2).toFixed(1)}" y="${(H - 0.014*H).toFixed(1)}" text-anchor="middle" font-family="${esc(SERIF)}" font-size="${size.toFixed(1)}" fill="${esc(t.foot)}">${esc(foot)}</text>`);
+      parts.push(`<text x="${(W/2).toFixed(1)}" y="${(H - 0.014*H).toFixed(1)}" text-anchor="middle" font-family="${esc(SERIF)}" font-size="${size.toFixed(1)}" fill="${flip ? '#FFFFFF' : esc(t.foot)}"${flipAttr}>${esc(foot)}</text>`);
     }
 
     // the sound (user's instruction, 10 Nov 2026, "sound techno vibe"): the
@@ -712,14 +721,14 @@ Sofiya V
       const n = a.wave.length, maxMob = Math.max(1, ...a.wave.map(w => w.mob));
       const cy = H - 0.085*H, amp = 0.055*H;
       const bw = Math.max(1.5, (W/n)*0.55);
-      const col = lum(t.ground) > 0.4 ? t.shade : t.ghost;
+      const col = flip ? '#FFFFFF' : lum(t.ground) > 0.4 ? t.shade : t.ghost;
       let bars = `<rect x="0" y="${(cy-0.5).toFixed(1)}" width="${W}" height="1" fill="${esc(col)}" fill-opacity="0.45"/>`;
       a.wave.forEach((w, i) => {
         const h = w.cap ? amp : amp*(0.12 + 0.88*w.mob/maxMob);
         const x = (i+0.5)*W/n - bw/2;
         bars += `<rect x="${x.toFixed(1)}" y="${(cy-h).toFixed(1)}" width="${bw.toFixed(1)}" height="${(2*h).toFixed(1)}" fill="${esc(col)}" fill-opacity="${w.cap || w.chk ? 0.95 : 0.7}"/>`;
       });
-      parts.push(`<g>${bars}</g>`);
+      parts.push(`<g${flipAttr}>${bars}</g>`);
     }
     defs.push(`<pattern id="shScan" width="4" height="4" patternUnits="userSpaceOnUse"><rect width="4" height="1" fill="${esc(t.line)}"/></pattern>`);
     parts.push(`<rect width="${W}" height="${H}" fill="url(#shScan)" opacity="${lum(t.ground) > 0.4 ? 0.06 : 0.09}"/>`);
