@@ -727,14 +727,18 @@ RSVP for the address</textarea>
     const capRatio = measure('H', s.font, s.weight).cap;
     const bleed = 1.04 * s.titleScale;                // 100 on the slider: the edge letters are just cut, as in the reference
     const maxSize = 0.2*H;                            // a two-character line is not a quarter of the sheet
-    let y = 0.018*H, firstSize = 0;
+    // 10% of the sheet lower and 20% larger than first set (user's
+    // instruction, 10 Nov 2026), so the first line runs a little past the
+    // edges, as the reference's does.
+    const TITLE_DROP = 0.10, TITLE_GROW = 1.2;
+    let y = (0.018 + TITLE_DROP)*H, firstSize = 0;
     lines.forEach((line, i) => {
       const w = measure(line, s.font, s.weight).w || 0.5*Array.from(line).length;
       // the first line bleeds; the last does too when there are three or more
       // lines. A two-line title keeps its second line at the middle size, as
       // the user asked to keep it (10 Nov 2026: "CHESS.IRL" over a smaller "№4").
       const full = i === 0 || (i === lines.length-1 && lines.length > 2);
-      let size = Math.min(W*bleed / w, maxSize);
+      let size = Math.min(W*bleed / w, maxSize) * TITLE_GROW;
       if (!full) size = Math.min(size, firstSize*0.62);
       if (i === 0) firstSize = size;
       const cap = size*capRatio;
@@ -744,51 +748,56 @@ RSVP for the address</textarea>
       y += cap*0.14;
     });
 
-    // the footer: the info along the bottom edge, in the serif. It was one
-    // line fitted to the width; at the user's instruction (10 Nov 2026,
-    // "200% bigger at bottom") it is set at twice that size and wrapped by
-    // measure into as many lines as it needs, stacked up from the bottom edge,
-    // flipping with the squares on the strong board. A blocks-in-columns
-    // setting in solid black was tried the same day and the user asked for
-    // this one back. The queen stands clear of its top line.
+    // the footer: the info along the bottom edge, in the serif, centred,
+    // stacked up from the bottom edge and flipping with the squares on the
+    // strong board. The queen stands clear of its top line.
     let infoTop = H;
     // No separators added (user's instruction, 10 Nov 2026, "don't add dots
-    // and dashes"): items are parted by an em space, a gap with no mark, and
-    // a line may break between any two words. A blank line in the info starts
-    // a new footer line (user's instruction, 10 Nov 2026: live music and the
-    // DJ sets each on their own line).
-    const EMSP = '\u2003';
-    const tokens = [];
-    (s.infoGroups || [s.info]).forEach(group => group.forEach((item, ii) => item.split(/\s+/).filter(Boolean).forEach((w, wi) => {
-      const first = tokens.length === 0;
-      tokens.push({ w, br: !first && ii === 0 && wi === 0, sep: first ? '' : (wi === 0 ? EMSP : ' ') });
-    })));
-    if (tokens.length){
+    // and dashes"): items on one line are parted by an em space. Each group of
+    // lines the user parted with a blank line starts a new footer line.
+    //
+    // Sizes vary (user's instruction and reference, 10 Nov 2026, "make font
+    // sizes different"): a role label (an item ending in "by" or a colon) is
+    // set at half the footer size beside the first name, and each name after
+    // a label takes a line of its own at one and a half times; the first group
+    // (the tagline) is 1.2 times; the other groups stay at the footer size. A
+    // line wider than the sheet is scaled down to fit.
+    const EMSP = ' ';
+    const groups = (s.infoGroups && s.infoGroups.length) ? s.infoGroups : (s.info.length ? [s.info] : []);
+    if (groups.length){
       // The size is pinned (user's instruction, 10 Nov 2026, "keep exactly
       // this font size") to what the doubled footer had with the first info
-      // text: twice the size that fits that text on one line. It is measured
-      // from that text, not from the info, so a longer info wraps onto more
-      // lines at the same size instead of shrinking.
+      // text, then made 20% larger; it is measured on Times, the face it was
+      // pinned in, so it is the same px in Garamond.
       const FOOT_REF = '12/05/2026 · 7pm · RSVP · for · address · Greenpoint, · Brooklyn · Anya Tran · (live) · Daren Ho · (live) · Iggy Nuclear · (dj) · Sofiya V · (dj)';
-      // Then 20% larger (user's instruction, 10 Nov 2026).
       const fw = measure(FOOT_REF, TIMES, 400).w || 0.45*FOOT_REF.length;
       const size = 1.2 * Math.max(cell*0.2, Math.min(2 * W / fw * s.infoScale, cell*0.64));
-      const lines = []; let line = '';
-      tokens.forEach(({ w, sep, br }) => {
-        if (br && line){ lines.push(line); line = w; return; }
-        const trial = line ? line + sep + w : w;
-        if (line && measure(trial, SERIF, 400).w * size > W*0.97) { lines.push(line); line = w; } else line = trial;
+      const isLabel = x => /(\bby|:)$/i.test(x);
+      const lines = [];   // each line: [{t, k}] where k is a multiple of size
+      groups.forEach((g, gi) => {
+        if (isLabel(g[0]) && g.length > 1){
+          lines.push([{ t: g[0], k: 0.5 }, { t: EMSP, k: 0.5 }, { t: g[1], k: 1.5 }]);
+          g.slice(2).forEach(x => lines.push([{ t: x, k: 1.5 }]));
+        } else {
+          const k = gi === 0 ? 1.2 : 1;
+          lines.push(g.flatMap((x, i) => i ? [{ t: EMSP, k }, { t: x, k }] : [{ t: x, k }]));
+        }
       });
-      if (line) lines.push(line);
-      const lh = size*1.12;
-      let y = H - 0.014*H;
-      let out = '';
+      const widthOf = line => line.reduce((sum, r) => sum + measure(r.t, SERIF, 400).w * r.k * size, 0);
+      let y = H - 0.014*H, out = '';
       for (let i = lines.length-1; i >= 0; i--){
-        const fAttrs = `x="${(W/2).toFixed(1)}" y="${y.toFixed(1)}" text-anchor="middle" font-family="${esc(SERIF)}" font-size="${size.toFixed(1)}"`;
-        out = (flip ? flipText(fAttrs, esc(lines[i]), t.footLight) : `<text ${fAttrs} fill="${esc(t.foot)}">${esc(lines[i])}</text>`) + out;
-        y -= lh;
+        const line = lines[i];
+        const fit = Math.min(1, W*0.97 / (widthOf(line) || 1));
+        const big = Math.max(...line.map(r => r.k)) * size * fit;
+        const body = line.map(r => `<tspan font-size="${(r.k*size*fit).toFixed(1)}">${esc(r.t)}</tspan>`).join('');
+        const fAttrs = `x="${(W/2).toFixed(1)}" y="${y.toFixed(1)}" text-anchor="middle" font-family="${esc(SERIF)}" font-size="${(size*fit).toFixed(1)}"`;
+        out = (flip ? flipText(fAttrs, body, t.footLight) : `<text ${fAttrs} fill="${esc(t.foot)}">${body}</text>`) + out;
+        infoTop = y - big*0.78;
+        // the next baseline up clears this line's capitals and the line
+        // above's descenders, with a little air between
+        const above = i > 0 ? Math.max(...lines[i-1].map(r => r.k)) * size * Math.min(1, W*0.97 / (widthOf(lines[i-1]) || 1)) : 0;
+        y -= big*0.74 + above*0.34 + Math.max(big, above)*0.08;
       }
-      infoTop = y + lh - size;
       textTo.push(out);
     }
 
