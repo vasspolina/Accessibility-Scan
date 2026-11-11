@@ -264,6 +264,7 @@ RSVP for the address</textarea>
   <div class="actions">
     <button type="button" class="primary" id="savePng">Save PNG</button>
     <button type="button" id="saveSvg">Save SVG</button>
+    <button type="button" id="saveEditable">Save editable SVG</button>
     <button type="button" id="copySvg">Copy SVG code</button>
   </div>
   <p class="note" id="saveNote" hidden>Saving files isn’t available in this view. “Copy SVG code” still works.</p>
@@ -677,7 +678,17 @@ RSVP for the address</textarea>
     const t = TONES[s.tone] || { ground:s.paper, ghost:s.ink, ghostA:0.08, shade:s.ink, foot:s.ink, grainA:0.3, square:s.ink, squareA:0.08, line:s.ink };
     const cell = W/8, y0 = (H - 8*cell)/2;          // the board fills the width, centred on the sheet
     const parts = [], defs = [];
-    parts.push(`<rect width="${W}" height="${H}" fill="${esc(t.ground)}"/>`);
+    // The editable export (user's instruction, 11 Nov 2026, "create editable
+    // file"): the same drawing with named layers (Paper, Board, Title and Info
+    // with a group per line, Queen with its halo and core, the veils), live
+    // text, and fonts referenced by name instead of embedded, so it opens for
+    // editing in Illustrator, Figma or Inkscape with the fonts installed.
+    const ed = !!s.editable;
+    // a desktop install of the trial Panell names its family with -TRIAL
+    if (ed) s = Object.assign({}, s, { font: s.font.replace("'Panell Compressed'", "'Panell Compressed', 'Panell Compressed-TRIAL'") });
+    const L = (id, inner) => ed ? `<g id="${id}" data-name="${id.replace(/_/g, ' ')}">${inner}</g>` : inner;
+    const useHref = ed ? 'href="#shQueen" xlink:href="#shQueen"' : 'href="#shQueen"';
+    parts.push(`<rect${ed ? ' id="Paper"' : ''} width="${W}" height="${H}" fill="${esc(t.ground)}"/>`);
 
     // the chess board in the stock (user's instruction, 10 Nov 2026): the
     // eight files chequered across the whole sheet, the board's own ranks in
@@ -694,7 +705,7 @@ RSVP for the address</textarea>
         if ((((f + r) % 2) + 2) % 2 !== 1) continue;    // a8 is light, b8 dark; the same parity above and below the board
         sq += `<rect x="${(f*cell).toFixed(1)}" y="${(y0 + r*cell).toFixed(1)}" width="${cell.toFixed(1)}" height="${cell.toFixed(1)}"/>`;
       }
-      parts.push(`<g fill="${esc(dark ? (t.board || t.shade) : t.square)}" fill-opacity="${dark ? 1 : t.squareA}">${sq}</g>`);
+      parts.push(`<g${ed ? ' id="Board" data-name="Board"' : ''} fill="${esc(dark ? (t.board || t.shade) : t.square)}" fill-opacity="${dark ? 1 : t.squareA}">${sq}</g>`);
       boardSq = sq;
     }
 
@@ -721,9 +732,12 @@ RSVP for the address</textarea>
     // softened behind it; otherwise the text softens with the sheet.
     const overParts = [];
     const textTo = clipFlip && t.overVeil ? overParts : parts;
-    const flipText = (attrs, body, light) => clipFlip
-      ? `<g clip-path="url(#shDarkSq)"><text ${attrs} fill="${esc(t.flipDark)}">${body}</text></g><g clip-path="url(#shLightSq)"><text ${attrs} fill="${esc(light)}">${body}</text></g>`
-      : `<text ${attrs} fill="#FFFFFF"${flipAttr}>${body}</text>`;
+    // In the editable file each flipped line is one group holding its two
+    // clipped copies, named for the squares they print on; an edit to the
+    // words goes into both.
+    const flipText = (attrs, body, light, name) => clipFlip
+      ? L(name || 'Line', `<g${ed && name ? ` id="${name}_on_blue_squares"` : ''} clip-path="url(#shDarkSq)"><text ${attrs} fill="${esc(t.flipDark)}">${body}</text></g><g${ed && name ? ` id="${name}_on_white_squares"` : ''} clip-path="url(#shLightSq)"><text ${attrs} fill="${esc(light)}">${body}</text></g>`)
+      : L(name || 'Line', `<text ${attrs} fill="#FFFFFF"${flipAttr}>${body}</text>`);
 
     // the title, in lines
     const raw = s.title.trim().toUpperCase();
@@ -736,6 +750,7 @@ RSVP for the address</textarea>
     // edges, as the reference's does.
     const TITLE_DROP = 0.10, TITLE_GROW = 1.2;
     let y = (0.018 + TITLE_DROP)*H, firstSize = 0;
+    let titleOut = '';
     lines.forEach((line, i) => {
       const w = measure(line, s.font, s.weight).w || 0.5*Array.from(line).length;
       // the first line bleeds; the last does too when there are three or more
@@ -748,9 +763,10 @@ RSVP for the address</textarea>
       const cap = size*capRatio;
       y += cap;
       const tAttrs = `x="${(W/2).toFixed(1)}" y="${y.toFixed(1)}" text-anchor="middle" font-family="${esc(s.font)}" font-weight="${s.weight}" font-size="${size.toFixed(1)}"`;
-      textTo.push(flip ? flipText(tAttrs, esc(line), t.flipLight) : `<text ${tAttrs} fill="${esc(t.ghost)}" fill-opacity="${t.ghostA}">${esc(line)}</text>`);
+      titleOut += flip ? flipText(tAttrs, esc(line), t.flipLight, `Title_line_${i+1}`) : L(`Title_line_${i+1}`, `<text ${tAttrs} fill="${esc(t.ghost)}" fill-opacity="${t.ghostA}">${esc(line)}</text>`);
       y += cap*0.14;
     });
+    textTo.push(L('Title', titleOut));
 
     // the footer: the info along the bottom edge, in the serif, centred,
     // stacked up from the bottom edge and flipping with the squares on the
@@ -811,14 +827,14 @@ RSVP for the address</textarea>
         const big = Math.max(...line.map(r => r.k)) * size * fit;
         const body = line.map(r => `<tspan font-size="${(r.k*size*fit).toFixed(1)}"${r.i ? ' font-style="italic"' : ''}${r.u ? ' text-decoration="underline"' : ''}>${esc(r.t).replace(/ /g, '&#160;')}</tspan>`).join('');
         const fAttrs = `x="${(W - m).toFixed(1)}" y="${y.toFixed(1)}" text-anchor="end" font-family="${esc(SERIF)}" font-size="${(size*fit).toFixed(1)}"`;
-        out = (flip ? flipText(fAttrs, body, t.footLight) : `<text ${fAttrs} fill="${esc(t.foot)}">${body}</text>`) + out;
+        out = (flip ? flipText(fAttrs, body, t.footLight, `Info_line_${i+1}`) : L(`Info_line_${i+1}`, `<text ${fAttrs} fill="${esc(t.foot)}">${body}</text>`)) + out;
         infoTop = y - big*0.78;
         // set tight, as the reference is: the next baseline up clears this
         // line's capitals and the line above's descenders, with a hair between
         const above = i > 0 ? Math.max(...lines[i-1].map(r => r.k)) * size * fitOf(lines[i-1]) : 0;
         y -= big*0.70 + above*0.30 + Math.max(big, above)*0.04;
       }
-      textTo.push(out);
+      textTo.push(L('Info', out));
     }
 
     // the shadow. One soft spot, as in the reference, placed and sized by the
@@ -869,8 +885,9 @@ RSVP for the address</textarea>
       defs.push(`<filter id="shQCore" x="-60%" y="-40%" width="220%" height="180%"><feGaussianBlur stdDeviation="${(qh*0.021).toFixed(1)}"/></filter>`);
       defs.push(`<filter id="shQHalo" x="-80%" y="-60%" width="260%" height="220%"><feGaussianBlur stdDeviation="${(qh*0.085).toFixed(1)}"/></filter>`);
       const place = `transform="translate(${qx.toFixed(1)} ${qy.toFixed(1)}) scale(${(qw/100).toFixed(4)} ${(qh/220).toFixed(4)})"`;
-      queenTo.push(`<g filter="url(#shQHalo)" opacity="0.45"><g ${place} fill="${esc(qcol)}"><use href="#shQueen"/></g></g>`);
-      queenTo.push(`<g filter="url(#shQCore)" opacity="0.75"><g ${place} fill="${esc(qcol)}"><use href="#shQueen"/></g></g>`);
+      queenTo.push(L('Queen',
+        `<g${ed ? ' id="Queen_halo"' : ''} filter="url(#shQHalo)" opacity="0.45"><g ${place} fill="${esc(qcol)}"><use ${useHref}/></g></g>` +
+        `<g${ed ? ' id="Queen_core"' : ''} filter="url(#shQCore)" opacity="0.75"><g ${place} fill="${esc(qcol)}"><use ${useHref}/></g></g>`));
     } else {
     defs.push(`<radialGradient id="shSpot"><stop offset="0" stop-color="${esc(t.shade)}"/><stop offset="0.38" stop-color="${esc(t.shade)}"/><stop offset="0.6" stop-color="${esc(t.shade)}" stop-opacity="0.62"/><stop offset="0.8" stop-color="${esc(t.shade)}" stop-opacity="0.2"/><stop offset="0.92" stop-color="${esc(t.shade)}" stop-opacity="0.05"/><stop offset="1" stop-color="${esc(t.shade)}" stop-opacity="0"/></radialGradient>`);
     parts.push(`<ellipse cx="${centre.cx.toFixed(1)}" cy="${centre.cy.toFixed(1)}" rx="${rx.toFixed(1)}" ry="${ry.toFixed(1)}" fill="url(#shSpot)"/>`);
@@ -887,7 +904,7 @@ RSVP for the address</textarea>
     }
     // the blurred traffic belongs to the shadow; under a red queen it only
     // added grey smudges (user's instruction, 10 Nov 2026, "don't add any grey")
-    if (!(s.spot === 'queen' && s.queenCol === 'red')) parts.push(`<g filter="url(#shBlur)" opacity="${s.spot === 'queen' ? 0.3 : 0.5}">${discs}</g>`);
+    if (!(s.spot === 'queen' && s.queenCol === 'red')) parts.push(`<g${ed ? ' id="Traffic"' : ''} filter="url(#shBlur)" opacity="${s.spot === 'queen' ? 0.3 : 0.5}">${discs}</g>`);
 
     // Black (user's instruction, 10 Nov 2026, "keep contrast but make black
     // 50% black"): a veil of white over the sheet under the queen, at
@@ -895,8 +912,8 @@ RSVP for the address</textarea>
     // and white stays white. At 50 the black of a square is a mid grey. It
     // replaced the mid-grey contrast veil as the default softening the same
     // day; the Contrast slider stays, at 100, for a veil that moves both ends.
-    if (s.black < 1) parts.push(`<rect width="${W}" height="${H}" fill="${esc(t.veil || '#FFFFFF')}" opacity="${(1 - s.black).toFixed(2)}"/>`);
-    if (s.contrast < 1) parts.push(`<rect width="${W}" height="${H}" fill="#808080" opacity="${(1 - s.contrast).toFixed(2)}"/>`);
+    if (s.black < 1) parts.push(`<rect${ed ? ' id="Black_veil"' : ''} width="${W}" height="${H}" fill="${esc(t.veil || '#FFFFFF')}" opacity="${(1 - s.black).toFixed(2)}"/>`);
+    if (s.contrast < 1) parts.push(`<rect${ed ? ' id="Contrast_veil"' : ''} width="${W}" height="${H}" fill="#808080" opacity="${(1 - s.contrast).toFixed(2)}"/>`);
 
     // The red queen goes on after the veils, so her red is not washed toward pink.
     parts.push(...overParts);
@@ -906,6 +923,7 @@ RSVP for the address</textarea>
     // quality"): the grain and the scanlines that printed over the sheet are
     // removed, so the board, the type and the queen are flat.
 
+    if (ed) return `<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 ${W} ${H}" width="${W}" height="${H}"><title>${esc(s.title)}</title><defs>${defs.join('')}</defs>${parts.join('')}</svg>`;
     return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${W} ${H}" width="${W}" height="${H}" role="img" aria-label="${esc(s.title)} poster"><defs>${fontDefs(s)}${serifStyle()}${defs.join('')}</defs>${parts.join('')}</svg>`;
   }
 
@@ -1016,6 +1034,7 @@ RSVP for the address</textarea>
     if (!downloads){ toast('Saving is not available here.'); return; }
     try {
       if (kind === 'svg'){ await downloads.save({filename: fileStem()+'.svg', data: svgBlob()}); }
+      else if (kind === 'editable'){ await downloads.save({filename: fileStem()+'-editable.svg', data: new Blob([editableSvg()], {type:'image/svg+xml;charset=utf-8'})}); }
       else { const blob = await renderPng(+$('scale').value); await downloads.save({filename: fileStem()+'.png', data: blob}); }
       toast('Saved.');
     } catch (err){
@@ -1025,6 +1044,14 @@ RSVP for the address</textarea>
   }
   $('savePng').addEventListener('click', () => save('png'));
   $('saveSvg').addEventListener('click', () => save('svg'));
+  $('saveEditable').addEventListener('click', () => save('editable'));
+  // Shade builds a layered file with live text and fonts by name; the other
+  // looks save their usual SVG.
+  function editableSvg(){
+    const s = settings(); s.editable = true;
+    return s.look === 'shade' ? buildShadeSvg(analyse($('moves').value), s) : currentSvg;
+  }
+  window.__editableSvg = editableSvg;
   $('copySvg').addEventListener('click', async () => {
     try { await navigator.clipboard.writeText(currentSvg); toast('SVG code copied.'); }
     catch (e){
@@ -1047,7 +1074,7 @@ RSVP for the address</textarea>
   if (window.claude && typeof window.claude.use === 'function'){
     window.claude.use('downloads').then(ns => {
       downloads = ns;
-      if (!ns){ $('savePng').disabled = true; $('saveSvg').disabled = true; $('saveNote').hidden = false; }
+      if (!ns){ $('savePng').disabled = true; $('saveSvg').disabled = true; $('saveEditable').disabled = true; $('saveNote').hidden = false; }
     });
   } else {
     // Standalone (e.g. GitHub Pages): save through a normal browser download.
