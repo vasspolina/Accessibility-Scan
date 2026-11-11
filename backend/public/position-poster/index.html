@@ -186,6 +186,7 @@ RSVP for the address</textarea>
       </label>
       <label id="queenWrap" hidden>Queen colour
         <select id="queenCol">
+          <option value="grey">Grey, light centre</option>
           <option value="file">Blue, light centre</option>
           <option value="red">Sand</option>
           <option value="shade">Shadow</option>
@@ -735,8 +736,11 @@ RSVP for the address</textarea>
     // 10% of the sheet lower and 20% larger than first set (user's
     // instruction, 10 Nov 2026), so the first line runs a little past the
     // edges, as the reference's does.
-    const TITLE_DROP = 0.10, TITLE_GROW = 1.2;
-    let y = (0.018 + TITLE_DROP)*H, firstSize = 0;
+    // Then moved 15% of the sheet up (user's instruction, 11 Nov 2026), but no
+    // higher than 1.5% below the top edge, so the overshoot of round capitals
+    // (C, S) above the cap height is not cut.
+    const TITLE_DROP = 0.10 - 0.15, TITLE_GROW = 1.2;
+    let y = Math.max(0.015*H, (0.018 + TITLE_DROP)*H), firstSize = 0;
     let titleOut = '';
     lines.forEach((line, i) => {
       const w = measure(line, s.font, s.weight).w || 0.5*Array.from(line).length;
@@ -783,6 +787,7 @@ RSVP for the address</textarea>
       const fw = measure(FOOT_REF, TIMES, 400).w || 0.45*FOOT_REF.length;
       const size = 1.2 * Math.max(cell*0.2, Math.min(2 * W / fw * s.infoScale, cell*0.64));
       const isLabel = x => /(\bby|:)$/i.test(x);
+      const SERIF_CAP = measure('H', SERIF, 400).cap;
       const isDate = x => /\d{1,2}\s*[\/.·-]\s*\d{1,2}\s*[\/.·-]\s*\d{2,4}|\b(jan|feb|mar|apr|may|jun|jul|aug|sep|oct|nov|dec)[a-z]*\.?\s+\d/i.test(x);
       // italic runs are 80% larger than first set (user's instruction,
       // 11 Nov 2026, "make italic text larger 80%")
@@ -826,9 +831,19 @@ RSVP for the address</textarea>
         const line = lines[i];
         const fit = fitOf(line);
         const big = Math.max(...line.map(r => r.k)) * size * fit;
-        const body = line.map(r => `<tspan font-size="${(r.k*size*fit).toFixed(1)}"${r.i ? ' font-style="italic"' : ''}${r.u ? ' text-decoration="underline"' : ''}>${esc(r.t).replace(/ /g, '&#160;')}</tspan>`).join('');
-        // centred on the sheet (user's instruction, 11 Nov 2026), no longer flush right
-        const fAttrs = `x="${(W/2).toFixed(1)}" y="${y.toFixed(1)}" text-anchor="middle" font-family="${esc(SERIF)}" font-size="${(size*fit).toFixed(1)}"`;
+        // A small italic run beside larger roman text ("at", a role label,
+        // "and") is raised so its capitals are centred on the larger text's
+        // capitals instead of sharing its baseline (user's instruction,
+        // 11 Nov 2026: "center only italics and Anya Tran horizontally").
+        const romanK = Math.max(0, ...line.filter(r => !r.i && r.t.trim()).map(r => r.k));
+        let off = 0;
+        const body = line.map((r, ri) => {
+          const smallItalic = romanK && (r.i || (!r.t.trim() && line[ri-1] && line[ri-1].i)) && r.k < romanK;
+          const target = smallItalic ? -SERIF_CAP * size * fit * (romanK - r.k) / 2 : 0;
+          const dy = target - off; off = target;
+          return `<tspan font-size="${(r.k*size*fit).toFixed(1)}"${Math.abs(dy) > 0.05 ? ` dy="${dy.toFixed(1)}"` : ''}${r.i ? ' font-style="italic"' : ''}${r.u ? ' text-decoration="underline"' : ''}>${esc(r.t).replace(/ /g, '&#160;')}</tspan>`;
+        }).join('');
+        const fAttrs = `x="${(W - m).toFixed(1)}" y="${y.toFixed(1)}" text-anchor="end" font-family="${esc(SERIF)}" font-size="${(size*fit).toFixed(1)}"`;
         out = (flip ? flipText(fAttrs, body, t.footLight, `Info_line_${i+1}`) : L(`Info_line_${i+1}`, `<text ${fAttrs} fill="${esc(t.foot)}">${body}</text>`)) + out;
         infoTop = y - big*0.78;
         // set tight, as the reference is: the next baseline up clears this
@@ -863,7 +878,7 @@ RSVP for the address</textarea>
     // 10 Nov 2026, "keep like this shadow for figure") sinks into the board
     // under the veils, as the first queen did.
     const queenParts = [];
-    const queenTo = s.queenCol === 'red' || s.queenCol === 'file' ? queenParts : parts;
+    const queenTo = ['red', 'file', 'grey'].includes(s.queenCol) ? queenParts : parts;
     if (s.spot === 'queen'){
       // The queen (user's instructions, 9 and 10 Nov 2026): the silhouette
       // traced off the user's photo (QUEEN_D), a shadow in the shade colour
@@ -889,14 +904,20 @@ RSVP for the address</textarea>
       defs.push(`<filter id="shQHaze" x="-50%" y="-50%" width="200%" height="200%" color-interpolation-filters="sRGB"><feGaussianBlur stdDeviation="40"/></filter>`);
       defs.push(`<filter id="shQFigure" x="-50%" y="-50%" width="200%" height="200%" color-interpolation-filters="sRGB"><feGaussianBlur stdDeviation="24"/></filter>`);
       let fill;
-      if (s.queenCol === 'file'){
-        defs.push(`<radialGradient id="shQFade" gradientUnits="userSpaceOnUse" cx="0" cy="0" r="560" gradientTransform="translate(0 70) scale(0.78 1)"><stop offset="0" stop-color="#cfe6ff"/><stop offset="0.12" stop-color="#cfe6ff"/><stop offset="0.78" stop-color="#4a8ff0"/><stop offset="1" stop-color="#4a8ff0"/></radialGradient>`);
+      // "grey" (the default since 11 Nov 2026, "make chess figure grey") is the
+      // file's look with each colour replaced by the grey of the same
+      // luminance: #cfe6ff to #e3e3e3, #4a8ff0 to #8f8f8f, the haze #4a2c48
+      // to #363636.
+      const lit = s.queenCol === 'file' || s.queenCol === 'grey';
+      const pal = s.queenCol === 'grey' ? { hi:'#e3e3e3', lo:'#8f8f8f', haze:'#363636' } : { hi:'#cfe6ff', lo:'#4a8ff0', haze:'#4a2c48' };
+      if (lit){
+        defs.push(`<radialGradient id="shQFade" gradientUnits="userSpaceOnUse" cx="0" cy="0" r="560" gradientTransform="translate(0 70) scale(0.78 1)"><stop offset="0" stop-color="${pal.hi}"/><stop offset="0.12" stop-color="${pal.hi}"/><stop offset="0.78" stop-color="${pal.lo}"/><stop offset="1" stop-color="${pal.lo}"/></radialGradient>`);
         fill = 'url(#shQFade)';
       } else fill = esc(s.queenCol === 'red' ? (t.red || QUEEN_RED) : t.shade);
-      const haze = s.queenCol === 'file'
-        ? `<g${ed ? ' id="Queen_haze"' : ''} filter="url(#shQHaze)" fill="#4a2c48" transform="scale(1.09 1.05)">${shape}</g>`
+      const haze = lit
+        ? `<g${ed ? ' id="Queen_haze"' : ''} filter="url(#shQHaze)" fill="${pal.haze}" transform="scale(1.09 1.05)">${shape}</g>`
         : `<g${ed ? ' id="Queen_haze"' : ''} filter="url(#shQHaze)" fill="${fill}" opacity="0.45" transform="scale(1.09 1.05)">${shape}</g>`;
-      queenTo.push(L('Queen', `<g ${place}>${haze}<g${ed ? ' id="Queen_figure"' : ''} filter="url(#shQFigure)" fill="${fill}"${s.queenCol === 'file' ? '' : ' opacity="0.75"'}>${shape}</g></g>`));
+      queenTo.push(L('Queen', `<g ${place}>${haze}<g${ed ? ' id="Queen_figure"' : ''} filter="url(#shQFigure)" fill="${fill}"${lit ? '' : ' opacity="0.75"'}>${shape}</g></g>`));
     } else {
     defs.push(`<radialGradient id="shSpot"><stop offset="0" stop-color="${esc(t.shade)}"/><stop offset="0.38" stop-color="${esc(t.shade)}"/><stop offset="0.6" stop-color="${esc(t.shade)}" stop-opacity="0.62"/><stop offset="0.8" stop-color="${esc(t.shade)}" stop-opacity="0.2"/><stop offset="0.92" stop-color="${esc(t.shade)}" stop-opacity="0.05"/><stop offset="1" stop-color="${esc(t.shade)}" stop-opacity="0"/></radialGradient>`);
     parts.push(`<ellipse cx="${centre.cx.toFixed(1)}" cy="${centre.cy.toFixed(1)}" rx="${rx.toFixed(1)}" ry="${ry.toFixed(1)}" fill="url(#shSpot)"/>`);
@@ -913,7 +934,7 @@ RSVP for the address</textarea>
     }
     // the blurred traffic belongs to the shadow; under a red queen it only
     // added grey smudges (user's instruction, 10 Nov 2026, "don't add any grey")
-    if (!(s.spot === 'queen' && (s.queenCol === 'red' || s.queenCol === 'file'))) parts.push(`<g${ed ? ' id="Traffic"' : ''} filter="url(#shBlur)" opacity="${s.spot === 'queen' ? 0.3 : 0.5}">${discs}</g>`);
+    if (!(s.spot === 'queen' && ['red', 'file', 'grey'].includes(s.queenCol))) parts.push(`<g${ed ? ' id="Traffic"' : ''} filter="url(#shBlur)" opacity="${s.spot === 'queen' ? 0.3 : 0.5}">${discs}</g>`);
 
     // Black (user's instruction, 10 Nov 2026, "keep contrast but make black
     // 50% black"): a veil of white over the sheet under the queen, at
