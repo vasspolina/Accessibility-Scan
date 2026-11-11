@@ -186,6 +186,7 @@ RSVP for the address</textarea>
       </label>
       <label id="queenWrap" hidden>Queen colour
         <select id="queenCol">
+          <option value="file">Blue, light centre</option>
           <option value="red">Sand</option>
           <option value="shade">Shadow</option>
         </select>
@@ -649,32 +650,16 @@ RSVP for the address</textarea>
   const SERIF = "'Instrument Serif', 'Times New Roman', serif";
   const TIMES = "'Times New Roman', Times, 'Liberation Serif', serif";
 
-  // The queen (user's photo, 10 Nov 2026: a Staunton queen in wood). Her
-  // right-hand profile was traced off the photo as half-widths down a 100 by
-  // 220 box, the photo's own proportion: the scalloped crown, three collar
-  // rings, the long neck pinched two thirds of the way down, the ring above
-  // the base, the swelling base and the wide foot. The left side is the
-  // mirror; the ball finial and its stem sit on top of the crown.
-  const QUEEN_PROFILE = [
-    [21,30.5],[30,31],[45,28],[58,24],[66,22],
-    [67,27],[69,29],[73,29],[75,26],[76,27.5],[80,28],[83,26],[84,27],[88,28.5],[94,28],
-    [96,22],[110,18],[125,14.5],[141,13],[152,15],[160,19],[165,23],
-    [166,29],[170,30.5],[174,29],[176,30],[185,36],[193,40],[199,39],
-    [201,45],[204,49],[214,49.5],[219,47],[220,44],
-  ];
-  const QUEEN_D = (() => {
-    const f = n => n.toFixed(1);
-    let d = `M${f(50 - 30.5)} 21`;
-    const peaks = [19.5, 35, 50, 65, 80.5];                       // the crown's points, front five
-    for (let i = 1; i < peaks.length; i++){
-      const mid = (peaks[i-1] + peaks[i]) / 2;
-      d += ` Q${f(mid)} 31 ${f(peaks[i])} ${i === peaks.length-1 ? 21 : 19}`;
-    }
-    QUEEN_PROFILE.forEach(([y, h]) => { d += ` L${f(50 + h)} ${y}`; });
-    for (let i = QUEEN_PROFILE.length-1; i >= 0; i--){ const [y, h] = QUEEN_PROFILE[i]; d += ` L${f(50 - h)} ${y}`; }
-    return d + ' Z';
-  })();
-  const QUEEN_RED = '#E5432A';   // the vermilion of the user's colour reference (10 Nov 2026)
+  const QUEEN_RED = '#E5432A';
+  // The queen from the user's own SVG (11 Nov 2026, "add this chess instead of
+  // current"): a five-point crown with balls, a waisted stem, a stepped base,
+  // in a local box from x -300 to 300 and y -472 to 400, drawn as two blurred
+  // layers exactly as in the file: a plum haze a little larger behind, and the
+  // figure in a radial gradient, pale blue at the centre to blue at the edge.
+  // The file's dark ground is left out; the poster has its board.
+  const QUEEN2_D = 'M-240 -380 L-150 -240 L-120 -400 L-45 -250 L0 -425 L45 -250 L120 -400 L150 -240 L240 -380 L175 -170 L205 -150 L205 -108 L120 -94 L110 -78 Q128 100 200 208 L252 228 L252 270 L214 286 L300 330 L300 400 L-300 400 L-300 330 L-214 286 L-252 270 L-252 228 L-200 208 Q-128 100 -110 -78 L-120 -94 L-205 -108 L-205 -150 L-175 -170 Z';
+  const QUEEN2_BALLS = '<circle cx="-240" cy="-388" r="30"/><circle cx="-120" cy="-410" r="30"/><circle cx="0" cy="-440" r="32"/><circle cx="120" cy="-410" r="30"/><circle cx="240" cy="-388" r="30"/>';
+  const QUEEN2_TOP = 472, QUEEN2_H = 872, QUEEN2_W = 600;   // the vermilion of the user's colour reference (10 Nov 2026)
   function buildShadeSvg(a, s){
     const W = s.W, H = s.H;
     const t = TONES[s.tone] || { ground:s.paper, ghost:s.ink, ghostA:0.08, shade:s.ink, foot:s.ink, grainA:0.3, square:s.ink, squareA:0.08, line:s.ink };
@@ -817,7 +802,18 @@ RSVP for the address</textarea>
           g.slice(2).forEach(x => lines.push([R('and', 0.45, { i: true }), R(EMSP, 0.45), R(x, 1.5)]));
         } else if (!taglineDone && g.length === 1){
           taglineDone = true;
-          lines.push([R(g[0], 1.1, { i: true })]);
+          // 15% smaller and broken into two lines (user's instruction,
+          // 11 Nov 2026), at the word break that leaves the halves nearest
+          // in width
+          const k = 1.1 * 0.85, words = g[0].split(/\s+/);
+          if (words.length > 1){
+            let best = 1, bestD = Infinity;
+            for (let b = 1; b < words.length; b++){
+              const d = Math.abs(measure(words.slice(0, b).join(' '), SERIF, 400, 'italic').w - measure(words.slice(b).join(' '), SERIF, 400, 'italic').w);
+              if (d < bestD){ bestD = d; best = b; }
+            }
+            lines.push([R(words.slice(0, best).join(' '), k, { i: true })], [R(words.slice(best).join(' '), k, { i: true })]);
+          } else lines.push([R(g[0], k, { i: true })]);
         } else {
           lines.push(g.flatMap((x, i) => i ? [R(EMSP, 1), R(x, 1)] : [R(x, 1)]));
         }
@@ -831,7 +827,8 @@ RSVP for the address</textarea>
         const fit = fitOf(line);
         const big = Math.max(...line.map(r => r.k)) * size * fit;
         const body = line.map(r => `<tspan font-size="${(r.k*size*fit).toFixed(1)}"${r.i ? ' font-style="italic"' : ''}${r.u ? ' text-decoration="underline"' : ''}>${esc(r.t).replace(/ /g, '&#160;')}</tspan>`).join('');
-        const fAttrs = `x="${(W - m).toFixed(1)}" y="${y.toFixed(1)}" text-anchor="end" font-family="${esc(SERIF)}" font-size="${(size*fit).toFixed(1)}"`;
+        // centred on the sheet (user's instruction, 11 Nov 2026), no longer flush right
+        const fAttrs = `x="${(W/2).toFixed(1)}" y="${y.toFixed(1)}" text-anchor="middle" font-family="${esc(SERIF)}" font-size="${(size*fit).toFixed(1)}"`;
         out = (flip ? flipText(fAttrs, body, t.footLight, `Info_line_${i+1}`) : L(`Info_line_${i+1}`, `<text ${fAttrs} fill="${esc(t.foot)}">${body}</text>`)) + out;
         infoTop = y - big*0.78;
         // set tight, as the reference is: the next baseline up clears this
@@ -866,7 +863,7 @@ RSVP for the address</textarea>
     // 10 Nov 2026, "keep like this shadow for figure") sinks into the board
     // under the veils, as the first queen did.
     const queenParts = [];
-    const queenTo = s.queenCol === 'red' ? queenParts : parts;
+    const queenTo = s.queenCol === 'red' || s.queenCol === 'file' ? queenParts : parts;
     if (s.spot === 'queen'){
       // The queen (user's instructions, 9 and 10 Nov 2026): the silhouette
       // traced off the user's photo (QUEEN_D), a shadow in the shade colour
@@ -883,16 +880,23 @@ RSVP for the address</textarea>
       // her crown may run up into the title, as the reference's spot does
       const floor = infoTop - 0.02*H;
       const qh = Math.min(0.78*H, 1.9*ry, floor - 0.03*H);
-      const qw = qh*100/220;
-      const qx = centre.cx - qw/2, qy = Math.min(centre.cy - qh/2, floor - qh);
-      const qcol = s.queenCol === 'red' ? (t.red || QUEEN_RED) : t.shade;
-      defs.push(`<g id="shQueen"><circle cx="50" cy="9.5" r="9"/><rect x="45" y="16" width="10" height="7"/><path d="${QUEEN_D}"/></g>`);
-      defs.push(`<filter id="shQCore" x="-60%" y="-40%" width="220%" height="180%"><feGaussianBlur stdDeviation="${(qh*0.021).toFixed(1)}"/></filter>`);
-      defs.push(`<filter id="shQHalo" x="-80%" y="-60%" width="260%" height="220%"><feGaussianBlur stdDeviation="${(qh*0.085).toFixed(1)}"/></filter>`);
-      const place = `transform="translate(${qx.toFixed(1)} ${qy.toFixed(1)}) scale(${(qw/100).toFixed(4)} ${(qh/220).toFixed(4)})"`;
-      queenTo.push(L('Queen',
-        `<g${ed ? ' id="Queen_halo"' : ''} filter="url(#shQHalo)" opacity="0.45"><g ${place} fill="${esc(qcol)}"><use ${useHref}/></g></g>` +
-        `<g${ed ? ' id="Queen_core"' : ''} filter="url(#shQCore)" opacity="0.75"><g ${place} fill="${esc(qcol)}"><use ${useHref}/></g></g>`));
+      const k = qh / QUEEN2_H;                        // the user's file at this height
+      const qy = Math.min(centre.cy - qh/2, floor - qh);
+      const place = `transform="translate(${centre.cx.toFixed(1)} ${(qy + QUEEN2_TOP*k).toFixed(1)}) scale(${k.toFixed(4)})"`;
+      const shape = `<path d="${QUEEN2_D}"/>${QUEEN2_BALLS}`;
+      // The file's blurs are in its local units (haze 40, figure 24), so they
+      // scale with her. Sand and Shadow fill the same shape flat.
+      defs.push(`<filter id="shQHaze" x="-50%" y="-50%" width="200%" height="200%" color-interpolation-filters="sRGB"><feGaussianBlur stdDeviation="40"/></filter>`);
+      defs.push(`<filter id="shQFigure" x="-50%" y="-50%" width="200%" height="200%" color-interpolation-filters="sRGB"><feGaussianBlur stdDeviation="24"/></filter>`);
+      let fill;
+      if (s.queenCol === 'file'){
+        defs.push(`<radialGradient id="shQFade" gradientUnits="userSpaceOnUse" cx="0" cy="0" r="560" gradientTransform="translate(0 70) scale(0.78 1)"><stop offset="0" stop-color="#cfe6ff"/><stop offset="0.12" stop-color="#cfe6ff"/><stop offset="0.78" stop-color="#4a8ff0"/><stop offset="1" stop-color="#4a8ff0"/></radialGradient>`);
+        fill = 'url(#shQFade)';
+      } else fill = esc(s.queenCol === 'red' ? (t.red || QUEEN_RED) : t.shade);
+      const haze = s.queenCol === 'file'
+        ? `<g${ed ? ' id="Queen_haze"' : ''} filter="url(#shQHaze)" fill="#4a2c48" transform="scale(1.09 1.05)">${shape}</g>`
+        : `<g${ed ? ' id="Queen_haze"' : ''} filter="url(#shQHaze)" fill="${fill}" opacity="0.45" transform="scale(1.09 1.05)">${shape}</g>`;
+      queenTo.push(L('Queen', `<g ${place}>${haze}<g${ed ? ' id="Queen_figure"' : ''} filter="url(#shQFigure)" fill="${fill}"${s.queenCol === 'file' ? '' : ' opacity="0.75"'}>${shape}</g></g>`));
     } else {
     defs.push(`<radialGradient id="shSpot"><stop offset="0" stop-color="${esc(t.shade)}"/><stop offset="0.38" stop-color="${esc(t.shade)}"/><stop offset="0.6" stop-color="${esc(t.shade)}" stop-opacity="0.62"/><stop offset="0.8" stop-color="${esc(t.shade)}" stop-opacity="0.2"/><stop offset="0.92" stop-color="${esc(t.shade)}" stop-opacity="0.05"/><stop offset="1" stop-color="${esc(t.shade)}" stop-opacity="0"/></radialGradient>`);
     parts.push(`<ellipse cx="${centre.cx.toFixed(1)}" cy="${centre.cy.toFixed(1)}" rx="${rx.toFixed(1)}" ry="${ry.toFixed(1)}" fill="url(#shSpot)"/>`);
@@ -909,7 +913,7 @@ RSVP for the address</textarea>
     }
     // the blurred traffic belongs to the shadow; under a red queen it only
     // added grey smudges (user's instruction, 10 Nov 2026, "don't add any grey")
-    if (!(s.spot === 'queen' && s.queenCol === 'red')) parts.push(`<g${ed ? ' id="Traffic"' : ''} filter="url(#shBlur)" opacity="${s.spot === 'queen' ? 0.3 : 0.5}">${discs}</g>`);
+    if (!(s.spot === 'queen' && (s.queenCol === 'red' || s.queenCol === 'file'))) parts.push(`<g${ed ? ' id="Traffic"' : ''} filter="url(#shBlur)" opacity="${s.spot === 'queen' ? 0.3 : 0.5}">${discs}</g>`);
 
     // Black (user's instruction, 10 Nov 2026, "keep contrast but make black
     // 50% black"): a veil of white over the sheet under the queen, at
