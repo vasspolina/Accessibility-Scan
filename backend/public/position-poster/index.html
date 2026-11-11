@@ -785,7 +785,8 @@ RSVP for the address</textarea>
     // and 30% smaller (user's instruction, 11 Nov 2026, with PP Neue Gstaad,
     // which is wider than Panell): 1.2 x 0.7
     const TITLE_DROP = 0.10 - 0.15, TITLE_GROW = 1.2 * 0.7;
-    let y = Math.max(0.015*H, (0.018 + TITLE_DROP)*H), firstSize = 0;
+    // then dropped 10% of the sheet again (user's instruction, 11 Nov 2026)
+    let y = Math.max(0.015*H, (0.018 + TITLE_DROP)*H) + 0.10*H, firstSize = 0;
     let titleOut = '';
     lines.forEach((line, i) => {
       const w = measure(line, s.font, s.weight).w || 0.5*Array.from(line).length;
@@ -807,7 +808,12 @@ RSVP for the address</textarea>
     // behind them, as the reference keeps its words over darkness.
     if (t.liquid && !defs.some(d => d.indexOf('id="shLHalo"') !== -1))
       defs.push(`<filter id="shLHalo" x="-20%" y="-40%" width="140%" height="180%" color-interpolation-filters="sRGB"><feMorphology in="SourceAlpha" operator="dilate" radius="${(0.012*W).toFixed(1)}" result="d"/><feGaussianBlur in="d" stdDeviation="${(0.03*W).toFixed(1)}" result="b"/><feFlood flood-color="${esc(t.night || t.ground)}" flood-opacity="0.6"/><feComposite in2="b" operator="in" result="pool"/><feMerge><feMergeNode in="pool"/><feMergeNode in="SourceGraphic"/></feMerge></filter>`);
-    const pool = inner => t.liquid ? `<g filter="url(#shLHalo)">${inner}</g>` : inner;
+    // The pools were taken out the same day (user's instruction, "blend both
+    // more into the board like the previous option"): the letters sit straight
+    // on the board, changing colour square by square, periwinkle over the night
+    // squares and near-white over the others. Night letters over the glowing
+    // squares were tried first and vanished where the glow is faint.
+    const pool = inner => inner;
     textTo.push(pool(L('Title', titleOut)));
     const titleBottom = y;
 
