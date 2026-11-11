@@ -628,7 +628,7 @@ RSVP for the address</textarea>
     // this option and make the rest"): a near-black sheet with glowing swirls,
     // teal outside and periwinkle at the core, and the type in the
     // reference's lavender. No board, no veil.
-    liquid:    { ground:'#07090c', ghost:'#b8c2f2', ghostA:1, shade:'#b8c2f2', foot:'#b8c2f2', grainA:0, square:'#000000', squareA:0, line:'#000000', liquid:true, noVeil:true, board:'#161c30' },
+    liquid:    { ground:'#07090c', ghost:'#b8c2f2', ghostA:1, shade:'#b8c2f2', foot:'#b8c2f2', grainA:0, square:'#000000', squareA:0, line:'#000000', liquid:true, noVeil:true, board:'#161c30', flipLight:'#9fb1f2', flipDark:'#f1f2ff', footLight:'#9fb1f2', overVeil:true },
     palace:    { ground:'#F3F1EC', ghost:'#FFFFFF', ghostA:0.5,  shade:'#141414', foot:'#141414', grainA:0.3,  square:'#000000', squareA:0.09, line:'#000000', red:'#C4936A', board:'#4D61BD', flipLight:'#A6B0DE', flipDark:'#FFFFFF', footLight:'#A6B0DE', overVeil:true },
     // The user's second colour reference of 10 Nov 2026 (a Murmuring
     // Collection poster): pale cornflower blue, red, black and white. The
@@ -732,7 +732,10 @@ RSVP for the address</textarea>
     // a dark square it stays white and over a light square it turns dark,
     // square by square. The footer flips the same way. On the other grounds the
     // type stays the ghost of the reference.
-    const flip = s.ground === 'board' && !t.liquid;
+    // the type changes colour square by square on the liquid night board too
+    // (user's instruction, 11 Nov 2026, "keep font over chess effect"):
+    // near-white over the slate squares, periwinkle over the night ones
+    const flip = s.ground === 'board';
     const flipAttr = flip ? ' style="mix-blend-mode:difference"' : '';
     // A stock with flipLight sets the flip by clipping instead: the text is
     // drawn once inside the dark squares and once outside them.
@@ -791,7 +794,7 @@ RSVP for the address</textarea>
     // night colour, so lavender words stay readable where a bright swirl runs
     // behind them, as the reference keeps its words over darkness.
     if (t.liquid && !defs.some(d => d.indexOf('id="shLHalo"') !== -1))
-      defs.push(`<filter id="shLHalo" x="-20%" y="-40%" width="140%" height="180%" color-interpolation-filters="sRGB"><feMorphology in="SourceAlpha" operator="dilate" radius="${(0.012*W).toFixed(1)}" result="d"/><feGaussianBlur in="d" stdDeviation="${(0.03*W).toFixed(1)}" result="b"/><feFlood flood-color="${esc(t.ground)}" flood-opacity="0.9"/><feComposite in2="b" operator="in" result="pool"/><feMerge><feMergeNode in="pool"/><feMergeNode in="SourceGraphic"/></feMerge></filter>`);
+      defs.push(`<filter id="shLHalo" x="-20%" y="-40%" width="140%" height="180%" color-interpolation-filters="sRGB"><feMorphology in="SourceAlpha" operator="dilate" radius="${(0.012*W).toFixed(1)}" result="d"/><feGaussianBlur in="d" stdDeviation="${(0.03*W).toFixed(1)}" result="b"/><feFlood flood-color="${esc(t.ground)}" flood-opacity="0.6"/><feComposite in2="b" operator="in" result="pool"/><feMerge><feMergeNode in="pool"/><feMergeNode in="SourceGraphic"/></feMerge></filter>`);
     const pool = inner => t.liquid ? `<g filter="url(#shLHalo)">${inner}</g>` : inner;
     textTo.push(pool(L('Title', titleOut)));
     const titleBottom = y;
