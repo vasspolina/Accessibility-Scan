@@ -13,6 +13,10 @@
 @font-face{font-family:"Panell Compressed";font-weight:500;src:url(../fonts/PanellCompressed-TRIAL-Medium.woff2) format("woff2");font-display:block}
 @font-face{font-family:"Panell Compressed";font-weight:600;src:url(../fonts/PanellCompressed-TRIAL-SemiBold.woff2) format("woff2");font-display:block}
 @font-face{font-family:"Panell Compressed";font-weight:700;src:url(../fonts/PanellCompressed-TRIAL-Bold.woff2) format("woff2");font-display:block}
+/* PP Neue Gstaad Compact Bold (Pangram Pangram; supplied by the user on
+   11 Nov 2026 as the title face; check its licence before publishing): the
+   default title face, embedded in exported SVGs like Panell. */
+@font-face{font-family:"PP Neue Gstaad Compact";font-weight:700;src:url(../fonts/PPNeueGstaad-CompactBold.woff2) format("woff2");font-display:block}
 /* Atlas Grotesk Condensed (Commercial Type, a commercial licence): the title
    face the user asked for on 10 Nov 2026. It is not in the repository; these
    rules use it when it is installed on the viewer's machine, or when licensed
@@ -134,6 +138,7 @@ RSVP for the address</textarea>
     <div class="row">
       <label>Font
         <select id="font">
+          <option value="'PP Neue Gstaad Compact', 'Panell Compressed', 'Arial Narrow', Arial, sans-serif">PP Neue Gstaad Compact</option>
           <option value="'Atlas Grotesk Condensed', 'Panell Compressed', 'Arial Narrow', Arial, sans-serif">Atlas Grotesk Condensed</option>
           <option value="'Panell Compressed', 'Arial Narrow', Arial, sans-serif">Panell Compressed</option>
           <option value="Arial, 'Liberation Sans', Helvetica, sans-serif">Arial</option>
@@ -628,7 +633,12 @@ RSVP for the address</textarea>
     // this option and make the rest"): a near-black sheet with glowing swirls,
     // teal outside and periwinkle at the core, and the type in the
     // reference's lavender. No board, no veil.
-    liquid:    { ground:'#07090c', ghost:'#b8c2f2', ghostA:1, shade:'#b8c2f2', foot:'#b8c2f2', grainA:0, square:'#000000', squareA:0, line:'#000000', liquid:true, noVeil:true, board:'#161c30', flipLight:'#9fb1f2', flipDark:'#f1f2ff', footLight:'#9fb1f2', overVeil:true },
+    // Since 11 Nov 2026 ("change green to blue and make chess board over the
+    // background, in the background colour"): the swirls glow on a slate paper
+    // and the board's night squares lie over them, so the glow shows through
+    // every other square; the teal glow is blue (#3d7bea). The type is
+    // periwinkle over the night squares and near-white over the others.
+    liquid:    { ground:'#161c30', night:'#07090c', ghost:'#b8c2f2', ghostA:1, shade:'#b8c2f2', foot:'#b8c2f2', grainA:0, square:'#000000', squareA:0, line:'#000000', liquid:true, noVeil:true, board:'#07090c', flipLight:'#f1f2ff', flipDark:'#9fb1f2', footLight:'#f1f2ff', overVeil:true },
     palace:    { ground:'#F3F1EC', ghost:'#FFFFFF', ghostA:0.5,  shade:'#141414', foot:'#141414', grainA:0.3,  square:'#000000', squareA:0.09, line:'#000000', red:'#C4936A', board:'#4D61BD', flipLight:'#A6B0DE', flipDark:'#FFFFFF', footLight:'#A6B0DE', overVeil:true },
     // The user's second colour reference of 10 Nov 2026 (a Murmuring
     // Collection poster): pale cornflower blue, red, black and white. The
@@ -680,7 +690,7 @@ RSVP for the address</textarea>
     // editing in Illustrator, Figma or Inkscape with the fonts installed.
     const ed = !!s.editable;
     // a desktop install of the trial Panell names its family with -TRIAL
-    if (ed) s = Object.assign({}, s, { font: s.font.replace("'Panell Compressed'", "'Panell Compressed', 'Panell Compressed-TRIAL'") });
+    if (ed) s = Object.assign({}, s, { font: s.font.replace("'Panell Compressed'", "'Panell Compressed', 'Panell Compressed-TRIAL'").replace("'PP Neue Gstaad Compact'", "'PP Neue Gstaad Compact', 'PP Neue Gstaad'") });
     const L = (id, inner) => ed ? `<g id="${id}" data-name="${id.replace(/_/g, ' ')}">${inner}</g>` : inner;
     const useHref = ed ? 'href="#shQueen" xlink:href="#shQueen"' : 'href="#shQueen"';
     parts.push(`<rect${ed ? ' id="Paper"' : ''} width="${W}" height="${H}" fill="${esc(t.ground)}"/>`);
@@ -708,11 +718,12 @@ RSVP for the address</textarea>
       defs.push(`<filter id="shLBlue" x="-30%" y="-30%" width="160%" height="160%"><feGaussianBlur stdDeviation="${(0.02*W).toFixed(1)}"/></filter>`);
       const teal = swirls.map(d => `<path d="${d}" stroke-width="${(0.2*W).toFixed(0)}"/>`).join('');
       const blue = swirls.map(d => `<path d="${d}" stroke-width="${(0.09*W).toFixed(0)}"/>`).join('');
-      swirlsOut = L('Swirls', `<g filter="url(#shLFlow)" fill="none" stroke-linecap="round" style="mix-blend-mode:screen"><g${ed ? ' id="Swirls_teal"' : ''} stroke="#3fcfb9" opacity="0.85" filter="url(#shLTeal)">${teal}</g><g${ed ? ' id="Swirls_blue"' : ''} stroke="#9fb1f2" filter="url(#shLBlue)">${blue}</g></g>`);
+      swirlsOut = L('Swirls', `<g filter="url(#shLFlow)" fill="none" stroke-linecap="round"><g${ed ? ' id="Swirls_glow"' : ''} stroke="#3d7bea" opacity="0.85" filter="url(#shLTeal)">${teal}</g><g${ed ? ' id="Swirls_blue"' : ''} stroke="#9fb1f2" filter="url(#shLBlue)">${blue}</g></g>`);
     }
     // the board stays under the swirls on the liquid night stock (user's
     // instruction, 11 Nov 2026, "keep the chess board"): night black and a
     // deep slate periwinkle, the swirls screened over it
+    if (swirlsOut) parts.push(swirlsOut);   // under the board, which lies over the glow
     if (s.ground === 'board' || s.ground === 'faint'){
       // 'board' (user's instruction, 10 Nov 2026, "same dark"): the dark
       // squares are the shade colour itself, the same dark as the queen.
@@ -725,7 +736,6 @@ RSVP for the address</textarea>
       parts.push(`<g${ed ? ' id="Board" data-name="Board"' : ''} fill="${esc(dark ? (t.board || t.shade) : t.square)}" fill-opacity="${dark ? 1 : t.squareA}">${sq}</g>`);
       boardSq = sq;
     }
-    if (swirlsOut) parts.push(swirlsOut);
 
     // On the strong board the type is traced in flipped colours (user's
     // instruction, 10 Nov 2026): white drawn with a difference blend, so over
@@ -794,7 +804,7 @@ RSVP for the address</textarea>
     // night colour, so lavender words stay readable where a bright swirl runs
     // behind them, as the reference keeps its words over darkness.
     if (t.liquid && !defs.some(d => d.indexOf('id="shLHalo"') !== -1))
-      defs.push(`<filter id="shLHalo" x="-20%" y="-40%" width="140%" height="180%" color-interpolation-filters="sRGB"><feMorphology in="SourceAlpha" operator="dilate" radius="${(0.012*W).toFixed(1)}" result="d"/><feGaussianBlur in="d" stdDeviation="${(0.03*W).toFixed(1)}" result="b"/><feFlood flood-color="${esc(t.ground)}" flood-opacity="0.6"/><feComposite in2="b" operator="in" result="pool"/><feMerge><feMergeNode in="pool"/><feMergeNode in="SourceGraphic"/></feMerge></filter>`);
+      defs.push(`<filter id="shLHalo" x="-20%" y="-40%" width="140%" height="180%" color-interpolation-filters="sRGB"><feMorphology in="SourceAlpha" operator="dilate" radius="${(0.012*W).toFixed(1)}" result="d"/><feGaussianBlur in="d" stdDeviation="${(0.03*W).toFixed(1)}" result="b"/><feFlood flood-color="${esc(t.night || t.ground)}" flood-opacity="0.6"/><feComposite in2="b" operator="in" result="pool"/><feMerge><feMergeNode in="pool"/><feMergeNode in="SourceGraphic"/></feMerge></filter>`);
     const pool = inner => t.liquid ? `<g filter="url(#shLHalo)">${inner}</g>` : inner;
     textTo.push(pool(L('Title', titleOut)));
     const titleBottom = y;
@@ -851,7 +861,8 @@ RSVP for the address</textarea>
           // 15% smaller and broken into two lines (user's instruction,
           // 11 Nov 2026), at the word break that leaves the halves nearest
           // in width
-          const k = 1.1 * 0.85, words = g[0].split(/\s+/);
+          // then 20% smaller again (user's instruction, 11 Nov 2026)
+          const k = 1.1 * 0.85 * 0.8, words = g[0].split(/\s+/);
           if (words.length > 1){
             let best = 1, bestD = Infinity;
             for (let b = 1; b < words.length; b++){
@@ -985,7 +996,7 @@ RSVP for the address</textarea>
       // at the centre, with a teal glow round her.
       const qc = t.liquid && s.queenCol === 'liquid' ? 'glow' : s.queenCol;
       const lit = qc === 'file' || qc === 'grey' || qc === 'liquid' || qc === 'glow';
-      const pal = qc === 'glow' ? { hi:'#f1f2ff', lo:'#a3b4f4', haze:'#3fcfb9' }
+      const pal = qc === 'glow' ? { hi:'#f1f2ff', lo:'#a3b4f4', haze:'#3d7bea' }
         : qc === 'grey' || qc === 'liquid' ? { hi:'#e3e3e3', lo:'#8f8f8f', haze:'#363636' } : { hi:'#cfe6ff', lo:'#4a8ff0', haze:'#4a2c48' };
       if (lit){
         defs.push(`<radialGradient id="shQFade" gradientUnits="userSpaceOnUse" cx="0" cy="0" r="560" gradientTransform="translate(0 70) scale(0.78 1)"><stop offset="0" stop-color="${pal.hi}"/><stop offset="0.12" stop-color="${pal.hi}"/><stop offset="0.78" stop-color="${pal.lo}"/><stop offset="1" stop-color="${pal.lo}"/></radialGradient>`);
@@ -1091,7 +1102,25 @@ RSVP for the address</textarea>
     const d = atlasData[w];
     return d ? `<style>@font-face{font-family:"Atlas Grotesk Condensed";font-weight:${w};src:url(${d}) format("woff2")}</style>` : '';
   }
-  const fontDefs = s => (s.font.indexOf('Atlas Grotesk Condensed') !== -1 ? atlasStyle(+s.weight) : '') + (s.panell ? panellStyle(+s.weight) : '');
+  // PP Neue Gstaad Compact, one Bold file, as a data URI, fetched once.
+  let gstaadData;
+  function gstaadStyle(){
+    if (gstaadData === undefined){
+      gstaadData = null;
+      fetch('../fonts/PPNeueGstaad-CompactBold.woff2').then(r => r.ok ? r.blob() : Promise.reject(new Error(r.status)))
+        .then(b => new Promise(res => { const fr = new FileReader(); fr.onload = () => res(fr.result); fr.readAsDataURL(b); }))
+        .then(uri => { gstaadData = uri; render(); })
+        .catch(() => { gstaadData = false; });
+    }
+    return gstaadData ? `<style>@font-face{font-family:"PP Neue Gstaad Compact";font-weight:700;src:url(${gstaadData}) format("woff2")}</style>` : '';
+  }
+  // the face named first is embedded; Panell, the fallback, only when it is
+  // the face in use
+  const fontDefs = s => {
+    const first = s.font.split(',')[0];
+    if (first.indexOf('PP Neue Gstaad') !== -1) return gstaadStyle();
+    return (first.indexOf('Atlas Grotesk Condensed') !== -1 ? atlasStyle(+s.weight) : '') + (s.panell ? panellStyle(+s.weight) : '');
+  };
   // Instrument Serif, both cuts, as data URIs for the Shade info block, fetched once.
   const serifData = {};
   function serifCut(style){
@@ -1201,7 +1230,7 @@ RSVP for the address</textarea>
   render();
   window.addEventListener('chessready', render);
   // Shade sizes its lines from measured text, so it renders again once the fonts are in.
-  if (document.fonts){ document.fonts.ready.then(render); document.fonts.addEventListener('loadingdone', render); document.fonts.load('400 20px "Instrument Serif"').then(render).catch(() => {}); document.fonts.load('italic 400 20px "Instrument Serif"').then(render).catch(() => {}); }
+  if (document.fonts){ document.fonts.ready.then(render); document.fonts.addEventListener('loadingdone', render); document.fonts.load('700 20px "PP Neue Gstaad Compact"').then(render).catch(() => {}); document.fonts.load('400 20px "Instrument Serif"').then(render).catch(() => {}); document.fonts.load('italic 400 20px "Instrument Serif"').then(render).catch(() => {}); }
   if (window.claude && typeof window.claude.use === 'function'){
     window.claude.use('downloads').then(ns => {
       downloads = ns;
