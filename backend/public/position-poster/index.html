@@ -186,7 +186,7 @@ RSVP for the address</textarea>
       </label>
       <label id="queenWrap" hidden>Queen colour
         <select id="queenCol">
-          <option value="red">Vermilion</option>
+          <option value="red">Sand</option>
           <option value="shade">Shadow</option>
         </select>
       </label>
@@ -612,13 +612,15 @@ RSVP for the address</textarea>
     // out, which the Black slider gives at 50.
     // The grey squares are the user's blue swatch (10 Nov 2026), about
     // #A6B0DE: board is set so that at Black 50 (a 50% white veil) the square
-    // lands on it. The flipped type is clipped square by square and takes the
+    // lands on it. The queen is sand, about #C4936A, picked by eye from the
+    // user's photo of an arena floor (11 Nov 2026, "make chess figure this
+    // color"); she was vermilion before. The flipped type is clipped square by square and takes the
     // other square's colour: the blue on the white squares, white on the blue
     // ones, so the letters are the board inverted. It is drawn above the veil
     // and adds no colour of its own (user's instructions, 10 Nov 2026, "don't
     // add any grey", then "don't add any black"). A difference blend over blue
     // would turn yellow.
-    palace:    { ground:'#F3F1EC', ghost:'#FFFFFF', ghostA:0.5,  shade:'#141414', foot:'#141414', grainA:0.3,  square:'#000000', squareA:0.09, line:'#000000', red:'#E5432A', board:'#4D61BD', flipLight:'#A6B0DE', flipDark:'#FFFFFF', footLight:'#A6B0DE', overVeil:true },
+    palace:    { ground:'#F3F1EC', ghost:'#FFFFFF', ghostA:0.5,  shade:'#141414', foot:'#141414', grainA:0.3,  square:'#000000', squareA:0.09, line:'#000000', red:'#C4936A', board:'#4D61BD', flipLight:'#A6B0DE', flipDark:'#FFFFFF', footLight:'#A6B0DE', overVeil:true },
     // The user's second colour reference of 10 Nov 2026 (a Murmuring
     // Collection poster): pale cornflower blue, red, black and white. The
     // Black slider pulls toward the blue here (veil), not toward white, so the
@@ -797,7 +799,10 @@ RSVP for the address</textarea>
       const size = 1.2 * Math.max(cell*0.2, Math.min(2 * W / fw * s.infoScale, cell*0.64));
       const isLabel = x => /(\bby|:)$/i.test(x);
       const isDate = x => /\d{1,2}\s*[\/.·-]\s*\d{1,2}\s*[\/.·-]\s*\d{2,4}|\b(jan|feb|mar|apr|may|jun|jul|aug|sep|oct|nov|dec)[a-z]*\.?\s+\d/i.test(x);
-      const R = (t, k, o) => Object.assign({ t, k }, o || {});
+      // italic runs are 80% larger than first set (user's instruction,
+      // 11 Nov 2026, "make italic text larger 80%")
+      const ITALIC_GROW = 1.8;
+      const R = (t, k, o) => Object.assign({ t, k: o && o.i ? k * ITALIC_GROW : k }, o || {});
       const lines = [];
       const di = groups.findIndex(g => isDate(g[0]));
       const ordered = di > 0 ? [groups[di], ...groups.filter((_, i) => i !== di)] : groups;
