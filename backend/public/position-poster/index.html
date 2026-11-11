@@ -628,7 +628,7 @@ RSVP for the address</textarea>
     // this option and make the rest"): a near-black sheet with glowing swirls,
     // teal outside and periwinkle at the core, and the type in the
     // reference's lavender. No board, no veil.
-    liquid:    { ground:'#07090c', ghost:'#b8c2f2', ghostA:1, shade:'#b8c2f2', foot:'#b8c2f2', grainA:0, square:'#000000', squareA:0, line:'#000000', liquid:true, noVeil:true },
+    liquid:    { ground:'#07090c', ghost:'#b8c2f2', ghostA:1, shade:'#b8c2f2', foot:'#b8c2f2', grainA:0, square:'#000000', squareA:0, line:'#000000', liquid:true, noVeil:true, board:'#161c30' },
     palace:    { ground:'#F3F1EC', ghost:'#FFFFFF', ghostA:0.5,  shade:'#141414', foot:'#141414', grainA:0.3,  square:'#000000', squareA:0.09, line:'#000000', red:'#C4936A', board:'#4D61BD', flipLight:'#A6B0DE', flipDark:'#FFFFFF', footLight:'#A6B0DE', overVeil:true },
     // The user's second colour reference of 10 Nov 2026 (a Murmuring
     // Collection poster): pale cornflower blue, red, black and white. The
@@ -691,6 +691,7 @@ RSVP for the address</textarea>
     // at a few per cent, as quiet as the ghost type is light, so the type and
     // the queen stay in front; the grain prints over them like everything else.
     let boardSq = '';
+    let swirlsOut = '';
     if (t.liquid){
       // the swirls, in sheet fractions: a wave along the top, tongues at the
       // left and right edges, a wave along the bottom, as in the reference;
@@ -707,9 +708,12 @@ RSVP for the address</textarea>
       defs.push(`<filter id="shLBlue" x="-30%" y="-30%" width="160%" height="160%"><feGaussianBlur stdDeviation="${(0.02*W).toFixed(1)}"/></filter>`);
       const teal = swirls.map(d => `<path d="${d}" stroke-width="${(0.2*W).toFixed(0)}"/>`).join('');
       const blue = swirls.map(d => `<path d="${d}" stroke-width="${(0.09*W).toFixed(0)}"/>`).join('');
-      parts.push(L('Swirls', `<g filter="url(#shLFlow)" fill="none" stroke-linecap="round"><g${ed ? ' id="Swirls_teal"' : ''} stroke="#3fcfb9" opacity="0.85" filter="url(#shLTeal)">${teal}</g><g${ed ? ' id="Swirls_blue"' : ''} stroke="#9fb1f2" filter="url(#shLBlue)">${blue}</g></g>`));
+      swirlsOut = L('Swirls', `<g filter="url(#shLFlow)" fill="none" stroke-linecap="round" style="mix-blend-mode:screen"><g${ed ? ' id="Swirls_teal"' : ''} stroke="#3fcfb9" opacity="0.85" filter="url(#shLTeal)">${teal}</g><g${ed ? ' id="Swirls_blue"' : ''} stroke="#9fb1f2" filter="url(#shLBlue)">${blue}</g></g>`);
     }
-    if (!t.liquid && (s.ground === 'board' || s.ground === 'faint')){
+    // the board stays under the swirls on the liquid night stock (user's
+    // instruction, 11 Nov 2026, "keep the chess board"): night black and a
+    // deep slate periwinkle, the swirls screened over it
+    if (s.ground === 'board' || s.ground === 'faint'){
       // 'board' (user's instruction, 10 Nov 2026, "same dark"): the dark
       // squares are the shade colour itself, the same dark as the queen.
       const dark = s.ground === 'board';
@@ -721,6 +725,7 @@ RSVP for the address</textarea>
       parts.push(`<g${ed ? ' id="Board" data-name="Board"' : ''} fill="${esc(dark ? (t.board || t.shade) : t.square)}" fill-opacity="${dark ? 1 : t.squareA}">${sq}</g>`);
       boardSq = sq;
     }
+    if (swirlsOut) parts.push(swirlsOut);
 
     // On the strong board the type is traced in flipped colours (user's
     // instruction, 10 Nov 2026): white drawn with a difference blend, so over
