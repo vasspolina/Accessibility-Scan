@@ -139,8 +139,8 @@ RSVP for the address</textarea>
       <label>Font
         <select id="font">
           <option value="'PP Neue Gstaad Compact', 'Panell Compressed', 'Arial Narrow', Arial, sans-serif">PP Neue Gstaad Compact</option>
-          <option value="'Atlas Grotesk Condensed', 'Panell Compressed', 'Arial Narrow', Arial, sans-serif">Atlas Grotesk Condensed</option>
           <option value="'Panell Compressed', 'Arial Narrow', Arial, sans-serif">Panell Compressed</option>
+          <option value="'Atlas Grotesk Condensed', 'Panell Compressed', 'Arial Narrow', Arial, sans-serif">Atlas Grotesk Condensed</option>
           <option value="Arial, 'Liberation Sans', Helvetica, sans-serif">Arial</option>
           <option value="Helvetica, 'Helvetica Neue', Arial, sans-serif">Helvetica</option>
           <option value="Saans, 'Saans TRIAL', Arial, sans-serif">Saans (if installed)</option>
@@ -638,7 +638,7 @@ RSVP for the address</textarea>
     // and the board's night squares lie over them, so the glow shows through
     // every other square; the teal glow is blue (#3d7bea). The type is
     // periwinkle over the night squares and near-white over the others.
-    liquid:    { ground:'#161c30', night:'#07090c', ghost:'#b8c2f2', ghostA:1, shade:'#b8c2f2', foot:'#b8c2f2', grainA:0, square:'#000000', squareA:0, line:'#000000', liquid:true, noVeil:true, board:'#07090c', flipLight:'#f1f2ff', flipDark:'#9fb1f2', footLight:'#f1f2ff', overVeil:true },
+    liquid:    { ground:'#161c30', night:'#07090c', ghost:'#b8c2f2', ghostA:1, shade:'#b8c2f2', foot:'#b8c2f2', grainA:0, square:'#000000', squareA:0, line:'#000000', liquid:true, noVeil:true, board:'#07090c', boardA:0.6, flipLight:'#f1f2ff', flipDark:'#9fb1f2', footLight:'#f1f2ff', overVeil:true },
     palace:    { ground:'#F3F1EC', ghost:'#FFFFFF', ghostA:0.5,  shade:'#141414', foot:'#141414', grainA:0.3,  square:'#000000', squareA:0.09, line:'#000000', red:'#C4936A', board:'#4D61BD', flipLight:'#A6B0DE', flipDark:'#FFFFFF', footLight:'#A6B0DE', overVeil:true },
     // The user's second colour reference of 10 Nov 2026 (a Murmuring
     // Collection poster): pale cornflower blue, red, black and white. The
@@ -733,7 +733,7 @@ RSVP for the address</textarea>
         if ((((f + r) % 2) + 2) % 2 !== 1) continue;    // a8 is light, b8 dark; the same parity above and below the board
         sq += `<rect x="${(f*cell).toFixed(1)}" y="${(y0 + r*cell).toFixed(1)}" width="${cell.toFixed(1)}" height="${cell.toFixed(1)}"/>`;
       }
-      parts.push(`<g${ed ? ' id="Board" data-name="Board"' : ''} fill="${esc(dark ? (t.board || t.shade) : t.square)}" fill-opacity="${dark ? 1 : t.squareA}">${sq}</g>`);
+      parts.push(`<g${ed ? ' id="Board" data-name="Board"' : ''} fill="${esc(dark ? (t.board || t.shade) : t.square)}" fill-opacity="${dark ? (t.boardA || 1) : t.squareA}">${sq}</g>`);
       boardSq = sq;
     }
 
@@ -782,7 +782,9 @@ RSVP for the address</textarea>
     // Then moved 15% of the sheet up (user's instruction, 11 Nov 2026), but no
     // higher than 1.5% below the top edge, so the overshoot of round capitals
     // (C, S) above the cap height is not cut.
-    const TITLE_DROP = 0.10 - 0.15, TITLE_GROW = 1.2;
+    // and 30% smaller (user's instruction, 11 Nov 2026, with PP Neue Gstaad,
+    // which is wider than Panell): 1.2 x 0.7
+    const TITLE_DROP = 0.10 - 0.15, TITLE_GROW = 1.2 * 0.7;
     let y = Math.max(0.015*H, (0.018 + TITLE_DROP)*H), firstSize = 0;
     let titleOut = '';
     lines.forEach((line, i) => {
