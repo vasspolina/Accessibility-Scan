@@ -112,7 +112,7 @@
 .a11y-widget-biz :is(th, td) { text-align: start; vertical-align: top; padding: 0.3em 0.6em 0.3em 0; border-bottom: 2px solid var(--ink); font-size: 18px; letter-spacing: 0.01em; }
 
 /* The highlight. Black text, always; cap colours are decoration. */
-.a11y-widget-biz :is(.a11y-sev, .a11y-rule-chip, .a11y-level-badge, .a11y-dn-pill, .a11y-sum-chip, .a11y-pro-chip, .a11y-conf-status, .a11y-principle-count, .a11y-status-chip) {
+.a11y-widget-biz :is(.a11y-sev, .a11y-rule-chip, .a11y-level-badge, .a11y-sum-chip, .a11y-pro-chip, .a11y-conf-status, .a11y-principle-count, .a11y-status-chip) {
   color: #000; background: var(--hl-green);
   padding: 0 0.22em; margin-inline: 0.12em;
   border-radius: 0.9em 0.45em 0.9em 0.55em / 0.7em 0.5em 0.7em 0.5em;
@@ -123,7 +123,7 @@
 .a11y-widget-biz .a11y-sev-serious { background: var(--hl-blue); }
 .a11y-widget-biz .a11y-sev-moderate { background: var(--hl-green); }
 .a11y-widget-biz .a11y-sev-minor { background: var(--hl-cap-a); box-shadow: 0.14em 0 0 var(--hl-cap-b), -0.14em 0 0 var(--hl-blue); }
-.a11y-widget-biz :is(.a11y-conf-status, .a11y-dn-pill) { background: var(--hl-blue); }
+.a11y-widget-biz .a11y-conf-status { background: var(--hl-blue); }
 .a11y-widget-biz :is(.a11y-rule-chip, .a11y-level-badge) { background: var(--hl-orange); }
 
 /* Inline neighbours need air: the check for welded siblings reads this. */
@@ -148,7 +148,6 @@
 .a11y-widget-biz .a11y-dial-of,
 .a11y-widget-biz .a11y-dial-sub,
 .a11y-widget-biz .a11y-dn-link-text,
-.a11y-widget-biz .a11y-dn-pill,
 .a11y-widget-biz .a11y-issue-row-meta,
 .a11y-widget-biz .a11y-issue-row-title,
 .a11y-widget-biz .a11y-legal-col-items,
@@ -429,7 +428,7 @@
 
 /* A highlight is a word: it never breaks inside itself or hyphenates
    ("Fix eventual-ly"). Rule ids are the one exception, they are long. */
-.a11y-widget-biz :is(.a11y-sev, .a11y-level-badge, .a11y-dn-pill, .a11y-sum-chip, .a11y-pro-chip, .a11y-conf-status, .a11y-principle-count, .a11y-status-chip) {
+.a11y-widget-biz :is(.a11y-sev, .a11y-level-badge, .a11y-sum-chip, .a11y-pro-chip, .a11y-conf-status, .a11y-principle-count, .a11y-status-chip) {
   hyphens: manual; overflow-wrap: normal;
 }
 .a11y-widget-biz .a11y-rule-chip { hyphens: manual; overflow-wrap: anywhere; }
@@ -600,8 +599,7 @@
 .a11y-widget-biz .a11y-spec-gloss { display: block; font-size: 15px; letter-spacing: 0.01em; }
 
 /* The draft: a label and its Copy on one line, the text wrapping inside the page. */
-.a11y-widget-biz .a11y-stmt-code-bar { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 0.5em; margin: 0 0 0.5em; }
-.a11y-widget-biz .a11y-stmt-code-label { font-size: 15px; letter-spacing: 0.01em; font-weight: 500; }
+.a11y-widget-biz .a11y-stmt-code-bar { display: flex; flex-wrap: wrap; justify-content: flex-end; align-items: center; gap: 0.5em; margin: 0 0 0.5em; }
 .a11y-widget-biz .a11y-stmt-text { white-space: pre-wrap; overflow-wrap: anywhere; font-size: 18px; letter-spacing: 0.01em; margin: 0 0 1.2em; }
 
 /* What the score counts: the number hangs, the sentence beside it. */
@@ -911,7 +909,6 @@
 }
 .a11y-widget-biz .a11y-dn-link:enabled:hover { background: none; color: var(--ink); text-decoration: underline; }
 .a11y-widget-biz .a11y-dn-link[aria-expanded="true"] { font-weight: 500; }
-.a11y-widget-biz .a11y-dn-pills { margin: 0 0 0.6em; }
 .a11y-widget-biz .a11y-dn-detail-title { margin-top: 0.6em; }
 
 /* An expanded finding: each part is a small label over its sentence. */

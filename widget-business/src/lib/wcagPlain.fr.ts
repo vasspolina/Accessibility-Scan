@@ -1139,13 +1139,13 @@ export const PRINCIPLES_FR: Record<
     principleLabel: "Perceptible",
     plainTitle: "Peut-on le voir et l'entendre ?",
     plainDescription:
-      "Tout ce que les gens ne peuvent ni voir ni entendre : du texte trop pâle pour être lu, des images dont rien ne dit ce qu'elles montrent, des vidéos sans sous-titres et de l'audio sans transcription.",
+      "Ce que les gens ne peuvent ni voir ni entendre : texte trop pâle, images sans description, vidéos sans sous-titres, audio sans transcription.",
   },
   "2": {
     principleLabel: "Utilisable",
     plainTitle: "Peut-on s'en servir ?",
     plainDescription:
-      "Savoir si quelqu'un peut vraiment traverser votre site, au clavier plutôt qu'à la souris, sur un téléphone, à la voix, ou sans contrôle fin de ses mains.",
+      "Savoir si l'on peut traverser votre site au clavier, sur un téléphone, à la voix ou sans contrôle fin des mains.",
   },
   "3": {
     principleLabel: "Compréhensible",
@@ -1157,7 +1157,7 @@ export const PRINCIPLES_FR: Record<
     principleLabel: "Robuste",
     plainTitle: "Est-ce que cela continuera de marcher ?",
     plainDescription:
-      "Savoir si votre site marche encore correctement dans d'autres navigateurs, sur d'autres appareils, et avec les logiciels qui le lisent à voix haute aux visiteurs aveugles.",
+      "Savoir si votre site marche dans d'autres navigateurs, sur d'autres appareils et avec les lecteurs d'écran.",
   },
 };
 

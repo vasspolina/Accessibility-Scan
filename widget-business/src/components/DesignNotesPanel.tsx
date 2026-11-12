@@ -155,10 +155,9 @@ export function DesignNotesPanel({ findings }: { findings: AccessibilityFinding[
               aria-labelledby={`a11y-dn-note-${open[0].id}`}
             >
               <div className="a11y-dn-detail-head">
+                {/* No kind tag under the title: the filter above already
+                    names the kind (Type, Layout, Design). */}
                 <h3 className="a11y-dn-detail-title">{noteTitle(open)}</h3>
-                <p className="a11y-dn-pills">
-                  <span className="a11y-dn-pill a11y-dn-pill-kind">{t(noteKind(open[0]))}</span>
-                </p>
               </div>
               <FindingDetails findings={open} asNotes />
             </div>

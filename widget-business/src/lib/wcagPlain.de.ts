@@ -1031,12 +1031,12 @@ export const PRINCIPLES_DE: Record<string, { principleLabel: string; plainTitle:
   "1": {
     principleLabel: "Wahrnehmbar",
     plainTitle: "Können Menschen es sehen und hören?",
-    plainDescription: "Alles, was Menschen nicht sehen oder hören können: Text, der zu blass zum Lesen ist, Bilder ohne ein Wort dazu, Videos ohne Untertitel und Audio ohne Transkript.",
+    plainDescription: "Was Menschen nicht sehen oder hören können: blasser Text, Bilder ohne Beschreibung, Videos ohne Untertitel, Audio ohne Transkript.",
   },
   "2": {
     principleLabel: "Bedienbar",
     plainTitle: "Können Menschen es benutzen?",
-    plainDescription: "Ob jemand wirklich durch Ihre Website kommt: mit der Tastatur statt der Maus, auf dem Handy, per Sprache oder ohne feine Kontrolle über die Hände.",
+    plainDescription: "Ob Menschen durch Ihre Website kommen: mit der Tastatur, auf dem Handy, per Sprache oder ohne feine Kontrolle über die Hände.",
   },
   "3": {
     principleLabel: "Verständlich",
@@ -1046,7 +1046,7 @@ export const PRINCIPLES_DE: Record<string, { principleLabel: string; plainTitle:
   "4": {
     principleLabel: "Robust",
     plainTitle: "Wird es weiter funktionieren?",
-    plainDescription: "Ob Ihre Website auch in anderen Browsern und auf anderen Geräten läuft. Und mit dem Screenreader, der sie blinden Besuchern vorliest.",
+    plainDescription: "Ob Ihre Website in anderen Browsern, auf anderen Geräten und mit Screenreadern funktioniert.",
   },
 };
 

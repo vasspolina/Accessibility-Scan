@@ -341,7 +341,6 @@ export function AccessibilityStatement({ report }: { report: AccessibilityReport
   return (
     <section className="a11y-section a11y-stmt" aria-labelledby="a11y-stmt-heading">
       <SectionHeader
-        eyebrow="European law"
         title="Your accessibility statement"
         id="a11y-stmt-heading"
         navLabel="Accessibility statement"
@@ -439,9 +438,8 @@ export function AccessibilityStatement({ report }: { report: AccessibilityReport
         <h4 className="a11y-stmt-card-title">{t("The statement")}</h4>
         <div className="a11y-stmt-code">
           <div className="a11y-stmt-code-bar">
-            <span className="a11y-stmt-code-label" aria-hidden="true">
-              {t("Generated statement")}
-            </span>
+            {/* No "Generated statement" label here: the card title above
+                already names the block. */}
             <button type="button" className="a11y-sr-play" onClick={copy}>
               {copied ? t("Copied") : t("Copy")}
             </button>
