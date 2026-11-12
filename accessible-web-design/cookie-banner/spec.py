@@ -129,7 +129,7 @@ def _inject(markup, selector_open, letter, right=False, nth=1):
     close = markup.index(">", idx) + 1
     return markup[:close] + _mark(letter, right) + markup[close:]
 
-def section(lang, banner_html, dialog_html, h_open="<h2>", h_close="</h2>"):
+def section(lang, banner_html, dialog_html, h_open="<h2>", h_close="</h2>", sub="h3"):
     t = T[lang]
     banner_html, dialog_html = _static(banner_html), _static(dialog_html)
     b = banner_html.replace(" hidden", "").replace('class="consent__button"', 'class="consent__button is-focus"', 1)
@@ -153,11 +153,11 @@ def section(lang, banner_html, dialog_html, h_open="<h2>", h_close="</h2>"):
     {banner}
     {dialog}
     <div class="spec-wrap"><table class="spec-table"><thead><tr>{"".join(f"<th>{c}</th>" for c in t["cols"])}</tr></thead><tbody>{rows}</tbody></table></div>
-    <h3>{t["palette_h"]}</h3>
+    <{sub}>{t["palette_h"]}</{sub}>
     <p>{html.escape(t["palette_intro"])}</p>
     <div class="spec-wrap"><table class="spec-table"><thead><tr>{"".join(f"<th>{c}</th>" for c in t["pcols"])}</tr></thead><tbody>{prow}</tbody></table></div>
-    <h3>{t["type_h"]}</h3><p>{html.escape(t["type_p"])}</p>
-    <h3>{t["spacing_h"]}</h3><p>{html.escape(t["spacing_p"])}</p>
-    <h3>{t["states_h"]}</h3>
+    <{sub}>{t["type_h"]}</{sub}><p>{html.escape(t["type_p"])}</p>
+    <{sub}>{t["spacing_h"]}</{sub}><p>{html.escape(t["spacing_p"])}</p>
+    <{sub}>{t["states_h"]}</{sub}>
     <ol class="rules">{states}</ol>
 '''
