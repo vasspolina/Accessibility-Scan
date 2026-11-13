@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light dark">
+<title>Content Strategy — Accessible Web</title>
+<meta name="description" content="Structure and strategy that makes your content work better with assistive technologies.">
+<script>try{var t=localStorage.getItem("aw-theme");if(t==="light"||t==="dark")document.documentElement.dataset.theme=t}catch(e){}</script>
+<link rel="preload" href="fonts/PPTelegraf-Light.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="style.css">
+<script src="theme.js" defer></script>
+</head>
+<body>
+<a class="skip-link" href="#main">Skip to content</a>
+<header class="site-header wrap">
+  <a class="wordmark" href="index.html"><span class="sr-only">Accessible Web, home</span><span class="spread" aria-hidden="true"><span>A</span><span>c</span><span>c</span><span>e</span><span>s</span><span>s</span><span>i</span><span>b</span><span>l</span><span>e</span><span class="gap"></span><span>W</span><span>e</span><span>b</span></span></a>
+  <nav class="nav" aria-label="Main">
+    <ul><li><a href="index.html">Home</a></li><li><a href="services.html">Services</a></li><li><a href="accessibility.html">Accessibility</a></li><li><a href="about.html">About</a></li><li><a href="journal.html">Journal</a></li></ul>
+    <button class="theme-toggle" type="button" aria-pressed="false" data-theme-toggle><span class="dot" aria-hidden="true"></span>Dark theme</button>
+  </nav>
+</header>
+<main id="main" class="wrap">
+
+<header class="page-head">
+  <p class="label"><a href="services.html">Services</a> / 04</p>
+  <h1 class="display">Content Strategy</h1>
+  <p class="lead">Structure and strategy that makes your content work better with assistive technologies.</p>
+</header>
+<section class="sec" aria-labelledby="what-h">
+  <div class="sec-head"><p class="label">What it covers</p><h2 class="h2" id="what-h">In practice</h2></div>
+  <div class="sec-body">
+    <figure class="fig "><svg class="ill " viewBox="0 0 360 226" role="img" aria-labelledby="lib9-t lib9-d" focusable="false"><title id="lib9-t">Two shelves</title><desc id="lib9-d">Top, books filed by colour: tidy, but nothing can be found. Bottom, the same books in order of size, with the one you are looking for, in red, easy to spot.</desc><text class="t-ink" x="20" y="24" font-size="15">Filed by colour</text><rect class="i-blue" x="20" y="42" width="26" height="58"/><rect class="i-blue" x="52" y="56" width="26" height="44"/><rect class="i-blue" x="84" y="38" width="26" height="62"/><rect class="i-ink" x="116" y="50" width="26" height="50"/><rect class="i-ink" x="148" y="60" width="26" height="40"/><rect class="i-ink" x="180" y="36" width="26" height="64"/><rect class="i-ink" x="212" y="52" width="26" height="48"/><rect class="i-red" x="244" y="44" width="26" height="56"/><rect class="i-red" x="276" y="58" width="26" height="42"/><rect class="i-red" x="308" y="40" width="26" height="60"/><rect class="i-ink" x="14" y="100" width="330" height="4"/><text class="t-ink" x="20" y="138" font-size="15">Filed in order</text><rect class="i-ink" x="20" y="178" width="26" height="36"/><rect class="i-ink" x="52" y="175" width="26" height="39"/><rect class="i-ink" x="84" y="172" width="26" height="42"/><rect class="i-ink" x="116" y="169" width="26" height="45"/><rect class="i-ink" x="148" y="166" width="26" height="48"/><rect class="i-ink" x="180" y="163" width="26" height="51"/><rect class="i-red" x="212" y="160" width="26" height="54"/><rect class="i-ink" x="244" y="157" width="26" height="57"/><rect class="i-ink" x="276" y="154" width="26" height="60"/><rect class="i-ink" x="308" y="151" width="26" height="63"/><rect class="i-ink" x="14" y="214" width="330" height="4"/></svg><figcaption><span class="fig-no">Fig. 01</span> Order is what makes a collection usable.</figcaption></figure>
+    
+    <dl class="terms"><div><dt>Clear, logical structure</dt><dd>Content organized with descriptive headings and intuitive flow</dd></div><div><dt>Consistent navigation</dt><dd>Predictable, easy-to-understand paths through your site</dd></div><div><dt>Input assistance</dt><dd>Clear instructions, error recognition, and helpful correction suggestions</dd></div><div><dt>Inclusive language</dt><dd>Respectful, non-discriminatory content that addresses diverse audiences</dd></div><div><dt>Screen reader optimization</dt><dd>Logical content order that reads naturally with assistive technology</dd></div><div><dt>Meaningful descriptions</dt><dd>Alt text and descriptive links that explain an image’s purpose, not just presence</dd></div></dl>
+    <a class="cta" href="mailto:gf@barrierfreeweb.de?subject=Quote%20request">Request a quote<span aria-hidden="true">→</span></a>
+  </div>
+</section>
+<nav class="pager" aria-label="Services">
+  <a class="prev" href="brand.html"><span aria-hidden="true">← </span>Brand Development</a>
+  <a class="next" href="copywriting.html">Copywriting<span aria-hidden="true"> →</span></a>
+</nav>
+
+</main>
+<footer class="site-footer wrap">
+  <div class="foot-grid">
+    <div>
+      <p class="label">Contact</p>
+      <p class="foot-mail"><a href="mailto:gf@barrierfreeweb.de">gf@barrierfreeweb.de</a></p>
+      <p class="small muted">Accessible Web, design studio, Berlin</p>
+    </div>
+    <nav aria-label="Footer"><ul><li><a href="index.html">Home</a></li><li><a href="services.html">Services</a></li><li><a href="accessibility.html">Accessibility</a></li><li><a href="about.html">About</a></li><li><a href="journal.html">Journal</a></li></ul></nav>
+    <div>
+      <p class="small muted">Built to WCAG 2.2 Level AA. Light and dark themes follow your system unless you choose one above.</p>
+    </div>
+  </div>
+  <div class="mirror"><span class="spread" aria-hidden="true"><span>A</span><span>c</span><span>c</span><span>e</span><span>s</span><span>s</span><span>i</span><span>b</span><span>l</span><span>e</span><span class="gap"></span><span>W</span><span>e</span><span>b</span></span></div>
+</footer>
+</body>
+</html>

@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light dark">
+<title>Design and typography — Accessible Web</title>
+<meta name="description" content="We make sure your content works everywhere, for everyone.">
+<script>try{var t=localStorage.getItem("aw-theme");if(t==="light"||t==="dark")document.documentElement.dataset.theme=t}catch(e){}</script>
+<link rel="preload" href="fonts/PPTelegraf-Light.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="style.css">
+<script src="theme.js" defer></script>
+</head>
+<body>
+<a class="skip-link" href="#main">Skip to content</a>
+<header class="site-header wrap">
+  <a class="wordmark" href="index.html"><span class="sr-only">Accessible Web, home</span><span class="spread" aria-hidden="true"><span>A</span><span>c</span><span>c</span><span>e</span><span>s</span><span>s</span><span>i</span><span>b</span><span>l</span><span>e</span><span class="gap"></span><span>W</span><span>e</span><span>b</span></span></a>
+  <nav class="nav" aria-label="Main">
+    <ul><li><a href="index.html">Home</a></li><li><a href="services.html">Services</a></li><li><a href="accessibility.html">Accessibility</a></li><li><a href="about.html">About</a></li><li><a href="journal.html">Journal</a></li></ul>
+    <button class="theme-toggle" type="button" aria-pressed="false" data-theme-toggle><span class="dot" aria-hidden="true"></span>Dark theme</button>
+  </nav>
+</header>
+<main id="main" class="wrap">
+
+<header class="page-head">
+  <p class="label"><a href="services.html">Services</a> / 01</p>
+  <h1 class="display">Design and typography</h1>
+  <p class="lead">We make sure your content works everywhere, for everyone.</p>
+</header>
+<section class="sec" aria-labelledby="what-h">
+  <div class="sec-head"><p class="label">What it covers</p><h2 class="h2" id="what-h">In practice</h2></div>
+  <div class="sec-body">
+    <figure class="fig "><svg class="ill " viewBox="0 0 360 244" role="img" aria-labelledby="mob5-t mob5-d" focusable="false"><title id="mob5-t">Phone first</title><desc id="mob5-d">Three screen outlines nested in one corner: a filled phone, then a tablet around it, then a desktop around both, numbered in the order they are designed.</desc><rect class="s-ink" x="20" y="34" width="320" height="196" stroke-width="3"/><rect class="s-ink" x="20" y="96" width="176" height="134" stroke-width="3"/><rect class="i-ink" x="20" y="146" width="66" height="84"/><rect class="i-red" x="30" y="156" width="46" height="20"/><rect class="i-paper" x="30" y="184" width="46" height="5"/><rect class="i-paper" x="30" y="195" width="34" height="5"/><rect class="i-paper" x="30" y="206" width="40" height="5"/><text class="t-red" x="96" y="168" font-size="16">01 Phone</text><text class="t-ink" x="30" y="122" font-size="16">02 Tablet</text><text class="t-ink" x="30" y="60" font-size="16">03 Desktop</text></svg><figcaption><span class="fig-no">Fig. 01</span> The same content, set for every screen.</figcaption></figure>
+    
+    <dl class="terms"><div><dt>Text reflow</dt><dd>Content resizes smoothly across all screen sizes</dd></div><div><dt>Fluid design</dt><dd>Flexible layouts that adapt without breaking or losing meaning</dd></div><div><dt>Semantic markup</dt><dd>Content organized so screen readers can understand it</dd></div><div><dt>Alt text</dt><dd>Written descriptions of images and videos for people using screen readers</dd></div></dl>
+    <a class="cta" href="mailto:gf@barrierfreeweb.de?subject=Quote%20request">Request a quote<span aria-hidden="true">→</span></a>
+  </div>
+</section>
+<nav class="pager" aria-label="Services">
+  <a class="prev" href="testing.html"><span aria-hidden="true">← </span>Accessibility testing</a>
+  <a class="next" href="ux-ui.html">UX/UI and Web Development<span aria-hidden="true"> →</span></a>
+</nav>
+
+</main>
+<footer class="site-footer wrap">
+  <div class="foot-grid">
+    <div>
+      <p class="label">Contact</p>
+      <p class="foot-mail"><a href="mailto:gf@barrierfreeweb.de">gf@barrierfreeweb.de</a></p>
+      <p class="small muted">Accessible Web, design studio, Berlin</p>
+    </div>
+    <nav aria-label="Footer"><ul><li><a href="index.html">Home</a></li><li><a href="services.html">Services</a></li><li><a href="accessibility.html">Accessibility</a></li><li><a href="about.html">About</a></li><li><a href="journal.html">Journal</a></li></ul></nav>
+    <div>
+      <p class="small muted">Built to WCAG 2.2 Level AA. Light and dark themes follow your system unless you choose one above.</p>
+    </div>
+  </div>
+  <div class="mirror"><span class="spread" aria-hidden="true"><span>A</span><span>c</span><span>c</span><span>e</span><span>s</span><span>s</span><span>i</span><span>b</span><span>l</span><span>e</span><span class="gap"></span><span>W</span><span>e</span><span>b</span></span></div>
+</footer>
+</body>
+</html>

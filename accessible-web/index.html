@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light dark">
+<title>Accessible Web — websites everyone can use</title>
+<meta name="description" content="A design studio in Berlin building websites that everyone can use, and that meet the European Accessibility Act.">
+<script>try{var t=localStorage.getItem("aw-theme");if(t==="light"||t==="dark")document.documentElement.dataset.theme=t}catch(e){}</script>
+<link rel="preload" href="fonts/PPTelegraf-Light.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="style.css">
+<script src="theme.js" defer></script>
+</head>
+<body>
+<a class="skip-link" href="#main">Skip to content</a>
+<header class="site-header wrap">
+  <a class="wordmark" href="index.html"><span class="sr-only">Accessible Web, home</span><span class="spread" aria-hidden="true"><span>A</span><span>c</span><span>c</span><span>e</span><span>s</span><span>s</span><span>i</span><span>b</span><span>l</span><span>e</span><span class="gap"></span><span>W</span><span>e</span><span>b</span></span></a>
+  <nav class="nav" aria-label="Main">
+    <ul><li><a href="index.html" aria-current="page">Home</a></li><li><a href="services.html">Services</a></li><li><a href="accessibility.html">Accessibility</a></li><li><a href="about.html">About</a></li><li><a href="journal.html">Journal</a></li></ul>
+    <button class="theme-toggle" type="button" aria-pressed="false" data-theme-toggle><span class="dot" aria-hidden="true"></span>Dark theme</button>
+  </nav>
+</header>
+<main id="main" class="wrap">
+
+<section class="hero" aria-labelledby="hero-h">
+  <svg class="ill ill-hero" viewBox="0 0 400 400" role="img" aria-labelledby="ent1-t ent1-d" focusable="false"><title id="ent1-t">The entrance</title><desc id="ent1-d">A heavy stepped block with a round opening cut through it. Four red dots mark its corners; a blue square stands in the middle of the opening, the visitor passing through.</desc><path class="i-ink" fill-rule="evenodd" d="M120,40 L280,40 L280,80 L320,80 L320,120 L360,120 L360,280 L320,280 L320,320 L280,320 L280,360 L120,360 L120,320 L80,320 L80,280 L40,280 L40,120 L80,120 L80,80 L120,80Z M200,72 a128,128 0 1,0 0.01,0Z"/><circle class="i-red" cx="92" cy="92" r="11"/><circle class="i-red" cx="308" cy="92" r="11"/><circle class="i-red" cx="92" cy="308" r="11"/><circle class="i-red" cx="308" cy="308" r="11"/><rect class="i-blue" x="186" y="186" width="28" height="28"/></svg>
+  <div class="hero-row"><span class="spread" aria-hidden="true"><span>B</span><span>E</span><span>R</span><span>L</span><span>I</span><span>N</span><span class="gap"></span><span>·</span><span class="gap"></span><span>D</span><span>E</span><span>S</span><span>I</span><span>G</span><span>N</span><span class="gap"></span><span>·</span><span class="gap"></span><span>S</span><span>T</span><span>U</span><span>D</span><span>I</span><span>O</span></span></div>
+  <h1 class="display" id="hero-h">We’re a design studio in Berlin building websites that everyone can use.</h1>
+</section>
+<section class="sec" id="eaa" aria-labelledby="eaa-h">
+  <div class="sec-head"><p class="label">The law</p><h2 class="h2" id="eaa-h">The European Accessibility Act is here.</h2></div>
+  <div class="sec-body"><p class="date-mark" aria-hidden="true">28.06.2025</p><div class="prose"><p>As of 28 June 2025, websites operating in the EU must meet EAA accessibility requirements. Non-compliance can result in fines.</p><p>Not sure if your site is compliant? We can help.</p></div><a class="cta" href="mailto:gf@barrierfreeweb.de?subject=Accessibility%20audit">Request an accessibility audit<span aria-hidden="true">→</span></a></div>
+</section>
+<section class="sec" aria-labelledby="pages-h">
+  <div class="sec-head"><p class="label">Studio</p><h2 class="h2" id="pages-h">What we do</h2></div>
+  <div class="sec-body">
+    <ul class="index">
+      <li><a href="services.html"><span class="name">Services</span><span class="line">Building websites that work for everyone.</span></a></li>
+      <li><a href="accessibility.html"><span class="name">Accessibility</span><span class="line">Accessibility is a human right. No exceptions.</span></a></li>
+      <li><a href="about.html"><span class="name">About</span><span class="line">We start with accessibility.</span></a></li>
+      <li><a href="journal.html"><span class="name">Journal</span><span class="line">The four principles of accessibility, in plain language.</span></a></li>
+    </ul>
+  </div>
+</section>
+<section class="hero" aria-label="A question">
+  <div class="vertical" aria-hidden="true"><span>E</span><span>N</span><span>T</span><span>R</span><span>A</span><span>N</span><span>C</span><span>E</span></div>
+  <p class="question display">If everyone can’t use the door, is it truly an entrance?</p>
+</section>
+
+</main>
+<footer class="site-footer wrap">
+  <div class="foot-grid">
+    <div>
+      <p class="label">Contact</p>
+      <p class="foot-mail"><a href="mailto:gf@barrierfreeweb.de">gf@barrierfreeweb.de</a></p>
+      <p class="small muted">Accessible Web, design studio, Berlin</p>
+    </div>
+    <nav aria-label="Footer"><ul><li><a href="index.html">Home</a></li><li><a href="services.html">Services</a></li><li><a href="accessibility.html">Accessibility</a></li><li><a href="about.html">About</a></li><li><a href="journal.html">Journal</a></li></ul></nav>
+    <div>
+      <p class="small muted">Built to WCAG 2.2 Level AA. Light and dark themes follow your system unless you choose one above.</p>
+    </div>
+  </div>
+  <div class="mirror"><span class="spread" aria-hidden="true"><span>A</span><span>c</span><span>c</span><span>e</span><span>s</span><span>s</span><span>i</span><span>b</span><span>l</span><span>e</span><span class="gap"></span><span>W</span><span>e</span><span>b</span></span></div>
+</footer>
+</body>
+</html>
