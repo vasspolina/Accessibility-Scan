@@ -139,6 +139,12 @@ strong, b { font-weight: 500; }
 .blocks a:hover { background: var(--hl-cap-a); }
 .blocks a[aria-current="page"] { background: var(--ink); color: var(--paper); }
 
+/* ── The scan widget: its title in the hung column, the widget full width.
+   It mounts in a shadow root and brings its own styles and 1em padding. ── */
+.scan { padding-bottom: 72px; }
+.scan .sec { padding-bottom: 0; }
+.scan #a11y-widget-business-root { min-height: 320px; }
+
 .actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 1.2em; }
 
 /* ── Foot ──────────────────────────────────────────────────────────────── */
@@ -158,6 +164,7 @@ strong, b { font-weight: 500; }
   .hero .lede, .hero .btn { margin-top: 24px; }
   .closing { padding-block: 24px 72px; }
   .sec { grid-template-columns: minmax(0, 1fr); padding-bottom: 53px; }
+  .scan { padding-bottom: 53px; }
   .sec::before { padding: 0 0 6px; }
   .blocks a { font-size: 22px; min-height: 96px; }
   .top .wrap { padding-block: 6px; }

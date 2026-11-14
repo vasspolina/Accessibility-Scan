@@ -13,6 +13,8 @@ import { fileURLToPath } from "node:url";
 
 const here = dirname(fileURLToPath(import.meta.url));
 const MAIL = "gf@barrierfreeweb.de";
+// The scan widget on the home page is served by the deployed backend (../backend).
+const SCAN = "https://a11y-checker-v2-production.up.railway.app";
 const mailto = (subject) => `mailto:${MAIL}?subject=${encodeURIComponent(subject)}`;
 
 /** Prose typesetting, applied to text only, never to tags or attributes. */
@@ -133,6 +135,15 @@ page({
         "Not sure if your site is compliant? We can help.",
       ) + `\n<div class="actions">${btn("Request an accessibility audit", "Accessibility audit")}</div>`,
     ),
+    `<section class="scan" aria-labelledby="scan-title">
+<div class="sec">
+<div>
+<h2 id="scan-title">Check your site</h2>
+</div>
+</div>
+<div id="a11y-widget-business-root" data-api-base="${SCAN}" data-language="en"></div>
+<script src="${SCAN}/widget-business.js" defer></script>
+</section>`,
     sec("What we offer", blocks()),
     `<section class="closing">\n<p class="display">If everyone can’t use the door, is it truly an entrance?</p>\n</section>`,
   ].join("\n"),
