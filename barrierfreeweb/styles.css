@@ -11,7 +11,7 @@
    lightest grey that clears 4.5:1 on white (4.6:1) and on black (4.6:1), so
    one value serves both themes. And the excerpts, which the reference shows
    only on hover, are always shown: beside each entry on a wide screen, under
-   it below 900px. */
+   it below 1200px. */
 
 @font-face {
   font-family: "Serrif";
@@ -94,30 +94,36 @@ p + p, p + ul, ul + p, dl + p, p + dl, ul + ul { margin-top: var(--line); }
 .info { margin-top: calc(var(--line) * 4); }
 .info p + p { margin-top: var(--line); }
 
-/* ── Narrow: wordmark, the navigation in two columns, then the page ────── */
-@media (max-width: 899px) {
+/* ── Narrow: wordmark, the navigation in two columns, then the page, kept
+   to a readable measure on a tablet or small laptop ──────────────────── */
+@media (max-width: 1199px) {
   .nav { display: grid; grid-template-columns: 1fr 1fr; gap: 0 var(--m); margin-bottom: calc(var(--line) * 2); }
   .nav ul + ul { margin-top: 0; }
   .nav .clock { grid-column: 2; }
+  .lead, .body, .info, .entries li, .closing { max-width: 36em; margin-inline: auto; }
 }
 
-/* ── Wide: the reference's columns ─────────────────────────────────────── */
-@media (min-width: 900px) {
+/* ── Wide: the reference's columns ───────────────────────────────────────
+   The text column starts at 50%, as on the reference, or 8.5em right of
+   the navigation, whichever is further: "Check your site" is 7.2em wide in
+   Serrif, so at 50% it ran into the column under about 1300px. The wide
+   layout starts at 1200px, where the excerpt column is still 265px. */
+@media (min-width: 1200px) {
   .mast { width: calc(37.5% - var(--m)); }
   .nav {
     position: fixed; top: var(--m); bottom: var(--m); left: 37.5%; z-index: 2;
-    display: flex; flex-direction: column; width: 11%;
+    display: flex; flex-direction: column; width: 8em;
   }
   .nav .clock { margin-top: auto; }
 
-  .inner main { display: grid; grid-template-columns: calc(37.5% - var(--m)) minmax(0, 1fr); column-gap: 12.5%; }
+  .inner main { display: grid; grid-template-columns: calc(37.5% - var(--m)) minmax(0, 1fr); column-gap: max(12.5%, calc(8.5em + var(--m))); }
   .lead { padding-right: 25px; }
   /* Two packed columns, read down the first and then down the second, so a
      short section leaves no hole beside a long one. A section never splits. */
   .body { display: block; margin-top: 0; columns: 2; column-gap: 55px; }
   .body .sec { break-inside: avoid; margin-bottom: calc(var(--line) * 2); }
   .body-wide { columns: auto; }
-  .inner .info { margin-left: calc(50% - 10px); }
+  .inner .info { margin-left: calc(37.5% - var(--m) + max(12.5%, calc(8.5em + var(--m)))); }
 
   .home .info { position: fixed; top: var(--m); left: 75%; right: var(--m); margin: 0; }
   .entries li { position: relative; }
@@ -127,8 +133,11 @@ p + p, p + ul, ul + p, dl + p, p + dl, ul + ul { margin-top: var(--line); }
 
 /* The excerpt beside its entry, always shown: nothing on this site appears
    only on hover (user's instruction, 15 Nov 2026). */
-@media (min-width: 900px) {
-  .more { position: absolute; top: 0; left: 50%; width: calc(25% - 25px); margin: 0; text-align: start; }
+@media (min-width: 1200px) {
+  .more {
+    position: absolute; top: 0; margin: 0; text-align: start;
+    left: max(50%, calc(37.5% + 8.5em)); width: calc(75% - 25px - max(50%, calc(37.5% + 8.5em)));
+  }
 }
 
 @media print {
