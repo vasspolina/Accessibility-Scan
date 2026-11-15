@@ -1147,6 +1147,59 @@
 /* A tally is the label over its figure. */
 .a11y-widget-biz .a11y-pro-rows > .a11y-pro-row { display: block; }
 
+/* ═══ WHERE TO START: THE TOP FINDINGS AS SCATTERED CARDS (user's reference, 15 Nov 2026) ═
+   The worst findings of the scan, one per round block, scattered over a
+   12-column grid like a page of review cards: each block sits at its own
+   offset and width (there are at most five). The block is the
+   design note's (20px corners, the fixed #f0efe8 ground, #000 on it
+   18.4:1 in both themes, marker yellow on hover), with the severity mark,
+   the title at the prose size in Medium, and small print at 15px. Under
+   640px of the widget's own width the blocks stack. The focus ring is
+   drawn inside the block: outside it would be ink on the page, which in
+   dark is black on black. */
+.a11y-widget-biz .a11y-top { container: a11y-top / inline-size; margin: 2.4em 0; }
+.a11y-widget-biz .a11y-top-title { margin: 0 0 0.75em; font-size: 32px; font-weight: 500; line-height: 1.05; letter-spacing: -0.005em; }
+.a11y-widget-biz .a11y-top-list {
+  display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); grid-auto-rows: minmax(54px, auto);
+  gap: 10px; margin: 0; padding: 0; list-style: none;
+}
+/* Each block spans two rows and starts a row or two after the one before,
+   so neighbours overlap by half a block instead of sitting in a table: a
+   narrow one top centre, one lower right, a wide one left, a small one far
+   right, a wide one bottom centre. */
+.a11y-widget-biz .a11y-top-list > li { min-width: 0; margin: 0; display: flex; grid-column: 5 / span 4; grid-row: 1 / span 2; }
+.a11y-widget-biz .a11y-top-list > li:nth-child(2) { grid-column: 9 / span 4; grid-row: 3 / span 2; }
+.a11y-widget-biz .a11y-top-list > li:nth-child(3) { grid-column: 1 / span 6; grid-row: 4 / span 2; }
+.a11y-widget-biz .a11y-top-list > li:nth-child(4) { grid-column: 10 / span 3; grid-row: 5 / span 2; }
+.a11y-widget-biz .a11y-top-list > li:nth-child(5) { grid-column: 3 / span 6; grid-row: 6 / span 2; }
+.a11y-widget-biz .a11y-top-card {
+  --ink: #000; --paper: #f0efe8;
+  box-sizing: border-box; width: 100%; min-width: 0; min-height: 128px; margin: 0; padding: 24px 20px;
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px;
+  border: 0; border-radius: 20px; background: #f0efe8; color: #000; cursor: pointer;
+  font: inherit; text-align: center; overflow-wrap: break-word; hyphens: auto;
+}
+.a11y-widget-biz .a11y-top-card:hover { background: var(--hl-cap-a); color: #000; }
+.a11y-widget-biz .a11y-top-card:focus-visible { outline: 3px solid #000; outline-offset: -6px; box-shadow: none; }
+.a11y-widget-biz .a11y-top-card-title { font-size: 27px; font-weight: 500; line-height: 1.05; letter-spacing: 0; text-wrap: balance; max-width: 100%; }
+.a11y-widget-biz .a11y-top-card-small { display: flex; flex-wrap: wrap; justify-content: center; gap: 0 1em; font-size: 15px; letter-spacing: 0.01em; line-height: 1.3; }
+/* A narrower report: the same scatter with wider blocks, so the small ones
+   still hold a title. */
+@container a11y-top (max-width: 1000px) {
+  .a11y-widget-biz .a11y-top-list > li { grid-column: 4 / span 6; }
+  .a11y-widget-biz .a11y-top-list > li:nth-child(2) { grid-column: 7 / span 6; }
+  .a11y-widget-biz .a11y-top-list > li:nth-child(3) { grid-column: 1 / span 6; grid-row: 5 / span 2; }
+  .a11y-widget-biz .a11y-top-list > li:nth-child(4) { grid-column: 8 / span 5; grid-row: 6 / span 2; }
+  .a11y-widget-biz .a11y-top-list > li:nth-child(5) { grid-column: 2 / span 6; grid-row: 7 / span 2; }
+}
+@container a11y-top (max-width: 640px) {
+  .a11y-widget-biz .a11y-top-list { grid-auto-rows: auto; }
+  .a11y-widget-biz .a11y-top-list > li, .a11y-widget-biz .a11y-top-list > li:nth-child(n) { grid-column: 1 / -1; grid-row: auto; }
+  .a11y-widget-biz .a11y-top-title { font-size: 27px; letter-spacing: 0; }
+  .a11y-widget-biz .a11y-top-card { min-height: 96px; padding: 20px 16px; }
+  .a11y-widget-biz .a11y-top-card-title { font-size: 22px; letter-spacing: 0.005em; }
+}
+
 /* ═══ DESKTOP GUTTER AND TIGHT CHAT (18 Oct 2026; user's instruction) ═════
    On desktop the page, the conversation and every element in it sit 16px
    from the left and right edges: no centred 40em column, no 1em padding.
@@ -1332,7 +1385,7 @@
     figure, img, pre, tr, blockquote,
     .a11y-occurrence, .a11y-fd-col > p, .a11y-fd-learn, .a11y-pro-block, .a11y-fix-once,
     .a11y-sum-row, .a11y-pro-row, .a11y-pro-point, .a11y-legal-row, .a11y-legal-q,
-    .a11y-conf-row, .a11y-next-list > li, .a11y-undecided-cell, .a11y-spec-card, .a11y-sr-row, .a11y-dn-link
+    .a11y-conf-row, .a11y-next-list > li, .a11y-undecided-cell, .a11y-spec-card, .a11y-sr-row, .a11y-dn-link, .a11y-top-card
   ) { break-inside: avoid; page-break-inside: avoid; }
   .a11y-widget-biz thead { display: table-header-group; }
   .a11y-widget-biz tfoot { display: table-footer-group; }
