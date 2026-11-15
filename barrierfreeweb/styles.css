@@ -7,12 +7,11 @@
    at 50% and the address at 75%.
 
    Two things differ from the reference on purpose. It marks the current page
-   and the entries you are not pointing at with 20% opacity, which measures
-   1.5:1; here that is --dim, #757575, the lightest grey that clears 4.5:1 on
-   white (4.6:1) and on black (4.6:1), so one value serves both themes. And
-   the excerpts, which the reference shows only on hover, also show on
-   keyboard focus, and sit under each entry wherever there is no hover or no
-   room (touch screens, under 900px). */
+   with 20% opacity, which measures 1.5:1; here that is --dim, #757575, the
+   lightest grey that clears 4.5:1 on white (4.6:1) and on black (4.6:1), so
+   one value serves both themes. And the excerpts, which the reference shows
+   only on hover, are always shown: beside each entry on a wide screen, under
+   it below 900px. */
 
 @font-face {
   font-family: "Serrif";
@@ -127,19 +126,11 @@ p + p, p + ul, ul + p, dl + p, p + dl, ul + ul { margin-top: var(--line); }
   .closing { width: calc(37.5% - var(--m)); }
 }
 
-/* The excerpt beside the entry, where there is a pointer that can hover. It
-   stays in the accessibility tree (opacity, not visibility), so a screen
-   reader gets it without pointing. */
-@media (min-width: 900px) and (hover: hover) {
-  .more {
-    position: absolute; top: 0; left: 50%; width: calc(25% - 25px); margin: 0;
-    text-align: start; opacity: 0; pointer-events: none;
-  }
+/* The excerpt beside its entry, always shown: nothing on this site appears
+   only on hover (user's instruction, 15 Nov 2026). */
+@media (min-width: 900px) {
+  .more { position: absolute; top: 0; left: 50%; width: calc(25% - 25px); margin: 0; text-align: start; }
   .more .no { display: block; position: absolute; right: 100%; top: 0; padding-right: 14px; }
-  .entries li:hover .more, .entries li:focus-within .more { opacity: 1; }
-  .entries:has(a:hover) a:not(:hover),
-  .entries:has(a:focus-visible) a:not(:focus-visible):not(:hover) { color: var(--dim); }
-  .entries a:hover .t, .entries a:focus-visible .t { text-decoration: none; }
 }
 
 @media print {

@@ -5,7 +5,7 @@
 // The layout follows grazerkunstverein.org (user's instruction, 15 Nov 2026):
 // one light serif at one size, a centred wordmark over the left column, the
 // navigation fixed in a narrow column beside it, and the home page as a list
-// of centred entries whose excerpt shows to the right on hover or focus.
+// of centred entries, each with its number and excerpt set to its right.
 //
 // Typography: write " – " in copy and set() makes it a spaced en dash after a
 // no-break space; an em dash in copy is a fault and fails the build.
@@ -130,7 +130,8 @@ ${CLOCK}
 }
 
 // ── Home: a list of entries, each a page ────────────────────────────────
-// [category, title, line under it, excerpt shown beside it, href]
+// [category (the line in parentheses; empty for none), title, line under it,
+// excerpt shown beside it, href]
 const ENTRIES = [
   ["Studio", "BarrierFreeWeb", "Berlin", "We’re a design studio in Berlin building websites that everyone can use.", "about.html"],
   [
@@ -141,17 +142,17 @@ const ENTRIES = [
     "accessibility.html",
   ],
   [
-    "Services",
+    "",
     "Building websites that work for everyone.",
     "Web design, brand, content",
     "We specialize in accessible web design, brand development, and content strategy. Your website should be future-proof and usable by all.",
     "services.html",
   ],
-  ["Service", "Design and Typography", "Reflow, fluid layout, semantic markup, alt text", "We make sure your content works everywhere, for everyone.", "design-and-typography.html"],
-  ["Service", "UX/UI and Web Development", "Components, robust code, status messages", "We build interfaces that actually work.", "ux-ui.html"],
-  ["Service", "Brand Development", "Identity, voice, guidelines, art direction", "Brand identities that are clear, memorable, and work for everyone.", "brand-development.html"],
-  ["Service", "Content Strategy", "Structure, navigation, inclusive language", "Structure and strategy that makes your content work better with assistive technologies.", "content-strategy.html"],
-  ["Service", "Copywriting", "Clear, scannable, descriptive", "We believe in simplicity.", "copywriting.html"],
+  ["", "Design and Typography", "Reflow, fluid layout, semantic markup, alt text", "We make sure your content works everywhere, for everyone.", "design-and-typography.html"],
+  ["", "UX/UI and Web Development", "Components, robust code, status messages", "We build interfaces that actually work.", "ux-ui.html"],
+  ["", "Brand Development", "Identity, voice, guidelines, art direction", "Brand identities that are clear, memorable, and work for everyone.", "brand-development.html"],
+  ["", "Content Strategy", "Structure, navigation, inclusive language", "Structure and strategy that makes your content work better with assistive technologies.", "content-strategy.html"],
+  ["", "Copywriting", "Clear, scannable, descriptive", "We believe in simplicity.", "copywriting.html"],
   ["Audit", "Check your site", "Accessibility testing", "Not sure if your site is compliant? We can help.", "scan.html"],
 ];
 page({
@@ -162,7 +163,7 @@ page({
   body: `<ol class="entries">
 ${ENTRIES.map(
   ([cat, title, line, more, href], i) => `<li>
-<a href="${href}"><span>(${cat})</span><br><span class="t">${set(title)}</span><br><span>${set(line)}</span></a>
+<a href="${href}">${cat ? `<span>(${cat})</span><br>` : ""}<span class="t">${set(title)}</span><br><span>${set(line)}</span></a>
 <p class="more"><span class="no" aria-hidden="true">${String(i + 1).padStart(2, "0")}</span>${set(more)}</p>
 </li>`,
 ).join("\n")}
