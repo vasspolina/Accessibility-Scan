@@ -13,6 +13,7 @@ import { healthRoutes } from "./routes/health.js";
 import { scanRoutes } from "./routes/scan.js";
 import { chatRoutes } from "./routes/chat.js";
 import { emailReportRoutes } from "./routes/emailReport.js";
+import { inquiryRoutes } from "./routes/inquiry.js";
 import { auditRoutes } from "./routes/audit.js";
 import { accountRoutes } from "./routes/account.js";
 import { historyRoutes } from "./routes/history.js";
@@ -94,5 +95,6 @@ export async function buildApp() {
   await app.register(chatRoutes);
   await app.register(auditRoutes);
   await app.register(emailReportRoutes);
+  await app.register(inquiryRoutes);
   return app;
 }

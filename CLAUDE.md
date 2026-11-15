@@ -53,7 +53,7 @@ CI (`.github/workflows/`) runs only for the package whose path changed: backend 
 6. `merge/scoring.ts` scores only provable WCAG A/AA findings. `conformance/` builds the criterion table, with criterion text per language.
 7. Thumbnails are cropped last. A second, capped browser visit pictures the findings the render pass could not.
 
-Concurrency is bounded by `render/browserPool.ts` (`MAX_CONCURRENT_RENDERS`, default 2, deliberately low because of container memory). Progress streams over `GET /api/scan/progress/:id`, keyed by a client-chosen `progressId`. `POST /api/audit` crawls a site (`crawl/`) and aggregates per-page reports. `routes/chat.ts` is the report-scoped assistant.
+Concurrency is bounded by `render/browserPool.ts` (`MAX_CONCURRENT_RENDERS`, default 2, deliberately low because of container memory). Progress streams over `GET /api/scan/progress/:id`, keyed by a client-chosen `progressId`. `POST /api/audit` crawls a site (`crawl/`) and aggregates per-page reports. `routes/chat.ts` is the report-scoped assistant. `routes/inquiry.ts` is the BarrierFreeWeb studio site's request form: an AI assistant asks up to three questions and the request is mailed to `CONTACT_TO`, never to an address the caller supplies.
 
 **`buildApp()` in `src/app.ts` is separate from `server.ts`** so route tests `inject()` requests with no port or browser. Storage (`src/storage/`) is `node:sqlite` and opt-in: every route works without a database. `GET /api/storage` reports whether `DB_PATH` is durable.
 

@@ -55,6 +55,10 @@ const envSchema = z.object({
   // rejected at their end.
   MAIL_API_KEY: z.string().optional(),
   MAIL_FROM: z.string().optional(),
+  // Where a request from the studio site's form is sent (routes/inquiry.ts).
+  // Fixed here and never taken from the request: the form's text is the
+  // visitor's, so its recipient cannot be.
+  CONTACT_TO: z.string().email().default("gf@barrierfreeweb.de"),
   // Deliberately far below the global limit. This route sends mail to an
   // address the caller chooses, which is the one endpoint here that can be
   // turned into a spam relay, so it gets its own much tighter budget.
