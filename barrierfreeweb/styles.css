@@ -93,6 +93,27 @@ a:hover { text-decoration-thickness: 3px; }
 .hero .btn { margin-top: 36px; }
 .closing { padding-block: 72px 120px; }
 
+/* The opening screen, after displaay.net/typeface/bagoss (measured there at
+   1440 and 390px): one screen tall, the display type centred on both axes at
+   line-height 1 and -0.03em, and a centred 15px line at +0.02em sitting 32px
+   off the bottom. Bagoss sets three words at 160px; this is a sentence, so
+   the size steps down with the width and height until it fits one screen.
+   --top is the measured height of the top bar, which grows where the
+   navigation wraps: 64px, then 51px from 640px down, 95px under 600px and
+   129px under 440px. */
+.open {
+  --top: 64px;
+  min-height: calc(100vh - var(--top)); min-height: calc(100svh - var(--top));
+  display: grid; grid-template-rows: minmax(0, 1fr) auto; justify-items: center; align-items: center;
+  padding-block: 32px; text-align: center;
+}
+.open .display { font-size: 56px; line-height: 1; letter-spacing: -0.03em; max-width: none; hyphens: manual; text-wrap: balance; }
+.open-note { margin: 32px 0 0; font-size: 15px; letter-spacing: 0.02em; line-height: 1.3; max-width: 40em; }
+.open-note a { display: inline-block; padding-block: 4px; }
+@media (min-width: 900px) and (min-height: 560px) { .open .display { font-size: 80px; } }
+@media (min-width: 1200px) and (min-height: 700px) { .open .display { font-size: 112px; } }
+@media (min-width: 1700px) and (min-height: 900px) { .open .display { font-size: 144px; } }
+
 /* ── Sections: a number hung in the margin, everything else on one edge ── */
 main { counter-reset: poster; }
 .sec { display: grid; grid-template-columns: var(--hang) minmax(0, 1fr); padding-block: 0 72px; }
@@ -162,6 +183,8 @@ strong, b { font-weight: 500; }
   .caps { font-size: 20px; }
   .hero { padding-block: 48px 48px; }
   .hero .lede, .hero .btn { margin-top: 24px; }
+  .open { --top: 51px; padding-block: 24px; }
+  .open .display { font-size: 48px; }
   .closing { padding-block: 24px 72px; }
   .sec { grid-template-columns: minmax(0, 1fr); padding-bottom: 53px; }
   .scan { padding-bottom: 53px; }
@@ -170,6 +193,8 @@ strong, b { font-weight: 500; }
   .top .wrap { padding-block: 6px; }
   .nav ul { gap: 0 18px; }
 }
+@media (max-width: 599px) { .open { --top: 95px; } }
+@media (max-width: 439px) { .open { --top: 129px; } }
 
 @media print {
   .nav, .skip { display: none; }

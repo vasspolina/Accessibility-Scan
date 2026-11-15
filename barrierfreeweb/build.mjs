@@ -127,7 +127,10 @@ page({
   title: "BarrierFreeWeb – accessible web design studio, Berlin",
   description: "A design studio in Berlin building websites that everyone can use, and that meet the European Accessibility Act.",
   body: [
-    hero("We’re a design studio in Berlin building websites that everyone can use."),
+    `<section class="hero open">
+<h1 class="display">We’re a design studio in Berlin building websites that everyone can use.</h1>
+<p class="open-note">Accessible web design, brand and content, built to meet the European Accessibility Act.<br><a href="mailto:${MAIL}">Contact us</a></p>
+</section>`,
     sec(
       "The European Accessibility Act is here.",
       p(
