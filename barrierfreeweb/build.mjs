@@ -2,10 +2,13 @@
 // file per page beside this script. No dependencies. The copy lives here, the
 // look in styles.css.
 //
-// Typography follows the widget's rules (../CLAUDE.md, "Punctuation"):
-// write " – " in copy and set() makes it a spaced en dash after a no-break
-// space; an em dash in copy is a fault and fails the build. A run of three or
-// more capitals in prose (WCAG, EAA) is wrapped in .caps.
+// The layout follows grazerkunstverein.org (user's instruction, 15 Nov 2026):
+// one light serif at one size, a centred wordmark over the left column, the
+// navigation fixed in a narrow column beside it, and the home page as a list
+// of centred entries whose excerpt shows to the right on hover or focus.
+//
+// Typography: write " – " in copy and set() makes it a spaced en dash after a
+// no-break space; an em dash in copy is a fault and fails the build.
 
 import { writeFileSync } from "node:fs";
 import { dirname, join } from "node:path";
@@ -13,7 +16,7 @@ import { fileURLToPath } from "node:url";
 
 const here = dirname(fileURLToPath(import.meta.url));
 const MAIL = "gf@barrierfreeweb.de";
-// The scan widget on the home page is served by the deployed backend (../backend).
+// The scan widget on scan.html is served by the deployed backend (../backend).
 const SCAN = "https://a11y-checker-v2-production.up.railway.app";
 const mailto = (subject) => `mailto:${MAIL}?subject=${encodeURIComponent(subject)}`;
 
@@ -22,29 +25,21 @@ function set(html) {
   if (html.includes("—")) throw new Error(`Em dash in copy: ${html.slice(0, 80)}`);
   return html
     .split(/(<[^>]+>)/)
-    .map((part) =>
-      part.startsWith("<")
-        ? part
-        : part
-            .replace(/ – /g, " – ")
-            .replace(/\b[A-Z]{3,}\b/g, '<span class="caps">$&</span>'),
-    )
+    .map((part) => (part.startsWith("<") ? part : part.replace(/ – /g, " – ")))
     .join("");
 }
-/** Small sizes take the dash rule but not the capitals rule (that is for 27px prose). */
-const small = (html) => set(html).replace(/<span class="caps">([A-Z]+)<\/span>/g, "$1");
 
 const p = (...paras) => paras.map((t) => `<p>${set(t)}</p>`).join("\n");
 const dash = (items) => `<ul class="dash">\n${items.map((t) => `<li>${set(t)}</li>`).join("\n")}\n</ul>`;
-const lines = (items) => `<ul class="lines">\n${items.map((t) => `<li>${small(t)}</li>`).join("\n")}\n</ul>`;
+const lines = (items) => `<ul class="lines">\n${items.map((t) => `<li>${set(t)}</li>`).join("\n")}\n</ul>`;
 const cols = (pairs) =>
-  `<dl class="cols">\n${pairs.map(([t, d]) => `<div><dt>${small(t)}</dt><dd>${small(d)}</dd></div>`).join("\n")}\n</dl>`;
-const btn = (label, subject, primary = true) =>
-  `<a class="btn${primary ? " btn-primary" : ""}" href="${mailto(subject)}">${label}</a>`;
+  `<dl class="pairs">\n${pairs.map(([t, d]) => `<div><dt>${set(t)}</dt><dd>${set(d)}</dd></div>`).join("\n")}\n</dl>`;
+/** A call to action is a plain underlined link, as everything on this site is text. */
+const btn = (label, subject) => `<a class="cta" href="${mailto(subject)}">${label}</a>`;
 const sec = (title, body, id) =>
-  `<section class="sec"${id ? ` id="${id}"` : ""}>\n<div>\n<h2>${small(title)}</h2>\n${body}\n</div>\n</section>`;
-const hero = (title, rest = "") =>
-  `<section class="hero">\n<h1 class="display">${title}</h1>\n${rest}\n</section>`;
+  `<section class="sec"${id ? ` id="${id}"` : ""}>\n<h2>${set(title)}</h2>\n${body}\n</section>`;
+const hero = (title, rest = "") => `<h1>${set(title)}</h1>\n${rest}`;
+const hl = (t) => t;
 
 const SERVICES = [
   ["design-and-typography.html", "Design and typography"],
@@ -55,20 +50,49 @@ const SERVICES = [
   ["accessibility.html", "Accessibility testing"],
 ];
 const blocks = (current) =>
-  `<ul class="blocks">\n${SERVICES.map(
+  `<ul class="lines">\n${SERVICES.map(
     ([href, name]) => `<li><a href="${href}"${href === current ? ' aria-current="page"' : ""}>${name}</a></li>`,
   ).join("\n")}\n</ul>`;
 
+// One navigation, in two groups: the pages, then the two things to do.
 const NAV = [
-  ["services.html", "Services"],
-  ["accessibility.html", "Accessibility"],
-  ["about.html", "About"],
+  [
+    ["services.html", "Services"],
+    ["accessibility.html", "Accessibility"],
+    ["about.html", "About"],
+  ],
+  [
+    ["scan.html", "Check your site"],
+    [`mailto:${MAIL}`, "Contact"],
+  ],
 ];
 
-function page({ file, title, description, section, body }) {
+// The clock under the navigation, as on the reference: Berlin time, to the
+// minute, so nothing on the page moves more than once a minute. Without
+// script the line stays hidden.
+const CLOCK = `<script>
+(function () {
+  var el = document.getElementById("clock");
+  if (!el || !window.Intl) return;
+  var f = new Intl.DateTimeFormat("en-GB", { timeZone: "Europe/Berlin", hour: "2-digit", minute: "2-digit" });
+  function tick() { el.textContent = "Berlin, " + f.format(new Date()); el.hidden = false; }
+  tick(); setInterval(tick, 20000);
+})();
+</script>`;
+
+function page({ file, title, description, section, lead = "", body, home = false, wide = false }) {
   const nav = NAV.map(
-    ([href, name]) => `<li><a href="${href}"${href === section ? ' aria-current="page"' : ""}>${name}</a></li>`,
-  ).join("\n        ");
+    (group) =>
+      `<ul>\n${group
+        .map(([href, name]) => `    <li><a href="${href}"${href === section ? ' aria-current="page"' : ""}>${name}</a></li>`)
+        .join("\n")}\n  </ul>`,
+  ).join("\n  ");
+  const brand = home
+    ? `<h1 class="brand"><a href="index.html" aria-current="page">BarrierFreeWeb</a></h1>`
+    : `<p class="brand"><a href="index.html">BarrierFreeWeb</a></p>`;
+  const main = home
+    ? body
+    : `<div class="lead">\n${lead}\n</div>\n<div class="body${wide ? " body-wide" : ""}">\n${body}\n</div>`;
   const html = `<!doctype html>
 <html lang="en">
 <head>
@@ -78,40 +102,26 @@ function page({ file, title, description, section, body }) {
 <meta name="description" content="${description}">
 <meta property="og:title" content="${title}">
 <meta property="og:description" content="${description}">
-<link rel="preload" href="fonts/JokkerVF-TRIAL.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="fonts/Serrif-TRIAL-Light.otf" as="font" type="font/otf" crossorigin>
 <link rel="stylesheet" href="styles.css">
 </head>
-<body>
+<body class="${home ? "home" : "inner"}">
 <a class="skip" href="#main">Skip to content</a>
-<header class="top">
-  <div class="wrap">
-    <a class="brand" href="index.html"${file === "index.html" ? ' aria-current="page"' : ""}>BarrierFreeWeb</a>
-    <nav class="nav" aria-label="Main">
-      <ul>
-        ${nav}
-        <li><a class="btn" href="mailto:${MAIL}">Contact</a></li>
-      </ul>
-    </nav>
-  </div>
+<header class="mast">
+${brand}
 </header>
-<main id="main" class="wrap">
-${body}
+<nav class="nav" aria-label="Main">
+  ${nav}
+  <p class="clock" id="clock" hidden></p>
+</nav>
+<main id="main">
+${main}
 </main>
-<footer class="foot">
-  <div class="wrap">
-    <dl class="cols">
-      <div><dt>Studio</dt><dd>BarrierFreeWeb<br>Berlin</dd></div>
-      <div><dt>Contact</dt><dd><a href="mailto:${MAIL}">${MAIL}</a></dd></div>
-      <div><dt>Services</dt><dd><ul>
-        ${SERVICES.slice(0, 5).map(([href, name]) => `<li><a href="${href}">${name}</a></li>`).join("\n        ")}
-      </ul></dd></div>
-      <div><dt>Read</dt><dd><ul>
-        <li><a href="accessibility.html">Accessibility</a></li>
-        <li><a href="about.html">About</a></li>
-      </ul></dd></div>
-    </dl>
-  </div>
+<footer class="info">
+  <p>BarrierFreeWeb<br>Design studio, Berlin<br><a href="mailto:${MAIL}">${MAIL}</a></p>
+  <p>Not sure if your site is compliant?<br>${btn("Request an accessibility audit", "Accessibility audit")}</p>
 </footer>
+${CLOCK}
 </body>
 </html>
 `;
@@ -119,34 +129,61 @@ ${body}
   console.log(`wrote ${file}`);
 }
 
-const hl = (t, colour = "") => `<span class="hl${colour ? ` hl-${colour}` : ""}">${t}</span>`;
-
-// ── Home ────────────────────────────────────────────────────────────────
+// ── Home: a list of entries, each a page ────────────────────────────────
+// [category, title, line under it, excerpt shown beside it, href]
+const ENTRIES = [
+  ["Studio", "BarrierFreeWeb", "Berlin", "We’re a design studio in Berlin building websites that everyone can use.", "about.html"],
+  [
+    "Law",
+    "The European Accessibility Act is here.",
+    "Since 28 June 2025",
+    "As of 28 June 2025, websites operating in the EU must meet EAA accessibility requirements. Non-compliance can result in fines. Not sure if your site is compliant? We can help.",
+    "accessibility.html",
+  ],
+  [
+    "Services",
+    "Building websites that work for everyone.",
+    "Web design, brand, content",
+    "We specialize in accessible web design, brand development, and content strategy. Your website should be future-proof and usable by all.",
+    "services.html",
+  ],
+  ["Service", "Design and Typography", "Reflow, fluid layout, semantic markup, alt text", "We make sure your content works everywhere, for everyone.", "design-and-typography.html"],
+  ["Service", "UX/UI and Web Development", "Components, robust code, status messages", "We build interfaces that actually work.", "ux-ui.html"],
+  ["Service", "Brand Development", "Identity, voice, guidelines, art direction", "Brand identities that are clear, memorable, and work for everyone.", "brand-development.html"],
+  ["Service", "Content Strategy", "Structure, navigation, inclusive language", "Structure and strategy that makes your content work better with assistive technologies.", "content-strategy.html"],
+  ["Service", "Copywriting", "Clear, scannable, descriptive", "We believe in simplicity.", "copywriting.html"],
+  ["Audit", "Check your site", "Accessibility testing", "Not sure if your site is compliant? We can help.", "scan.html"],
+];
 page({
   file: "index.html",
+  home: true,
   title: "BarrierFreeWeb – accessible web design studio, Berlin",
   description: "A design studio in Berlin building websites that everyone can use, and that meet the European Accessibility Act.",
-  body: [
-    hero("We’re a design studio in Berlin building websites that everyone can use."),
-    sec(
-      "The European Accessibility Act is here.",
-      p(
-        `As of ${hl("28 June 2025")}, websites operating in the EU must meet EAA accessibility requirements. Non-compliance can result in fines.`,
-        "Not sure if your site is compliant? We can help.",
-      ) + `\n<div class="actions">${btn("Request an accessibility audit", "Accessibility audit")}</div>`,
-    ),
-    `<section class="scan" aria-labelledby="scan-title">
-<div class="sec">
-<div>
-<h2 id="scan-title">Check your site</h2>
-</div>
-</div>
-<div id="a11y-widget-business-root" data-api-base="${SCAN}" data-language="en"></div>
-<script src="${SCAN}/widget-business.js" defer></script>
-</section>`,
-    sec("What we offer", blocks()),
-    `<section class="closing">\n<p class="display">If everyone can’t use the door, is it truly an entrance?</p>\n</section>`,
-  ].join("\n"),
+  body: `<ol class="entries">
+${ENTRIES.map(
+  ([cat, title, line, more, href], i) => `<li>
+<a href="${href}"><span>(${cat})</span><br><span class="t">${set(title)}</span><br><span>${set(line)}</span></a>
+<p class="more"><span class="no" aria-hidden="true">${String(i + 1).padStart(2, "0")}</span>${set(more)}</p>
+</li>`,
+).join("\n")}
+</ol>
+<p class="closing">If everyone can’t use the door, is it truly an entrance?</p>`,
+});
+
+// ── Check your site: the scan widget ────────────────────────────────────
+page({
+  file: "scan.html",
+  section: "scan.html",
+  wide: true,
+  title: "Check your site – BarrierFreeWeb",
+  description: "Scan a page against the accessibility requirements of the European Accessibility Act.",
+  lead: hero(
+    "Check your site",
+    p("Not sure if your site is compliant? We can help.") +
+      `\n<p>${btn("Request an accessibility audit", "Accessibility audit")}</p>`,
+  ),
+  body: `<div id="a11y-widget-business-root" data-api-base="${SCAN}" data-language="en"></div>
+<script src="${SCAN}/widget-business.js" defer></script>`,
 });
 
 // ── Services ────────────────────────────────────────────────────────────
@@ -155,12 +192,12 @@ page({
   section: "services.html",
   title: "Services – BarrierFreeWeb",
   description: "Accessible web design, brand development and content strategy that meet EAA accessibility standards.",
-  body: [
-    hero(
+  lead: hero(
       "Building websites that work for everyone.",
       `<p class="lede">${set("We specialize in accessible web design, brand development, and content strategy. Your website should be future-proof and usable by all.")}</p>
 <p class="lede">${set("Think of it this way: A door that only opens if you’re exactly 5′10″ isn’t a broken door – it’s a badly designed one. Good design works for everyone.")}</p>`,
     ),
+    body: [
     sec("What we offer", blocks(), "offer"),
     sec(
       "Our approach",
@@ -227,7 +264,7 @@ page({
     sec(
       "What you get",
       p("A beautifully designed website, brand identity, and content strategy that meets EAA accessibility standards – verified through thorough testing.") +
-        `\n<div class="actions">${btn("Request a quote today", "Quote request")}</div>`,
+        `\n<p>${btn("Request a quote today", "Quote request")}</p>`,
     ),
   ].join("\n"),
 });
@@ -239,9 +276,9 @@ function service({ file, name, lede, intro = "", items }) {
     section: "services.html",
     title: `${name} – BarrierFreeWeb`,
     description: lede,
+    lead: hero(name, `<p class="lede">${set(lede)}</p>`),
     body: [
-      hero(name, `<p class="lede">${set(lede)}</p>`),
-      sec("What this covers", (intro ? p(intro) : "") + cols(items) + `\n<div class="actions">${btn("Request a quote", `Quote request: ${name}`)}</div>`),
+      sec("What this covers", (intro ? p(intro) : "") + cols(items) + `\n<p>${btn("Request a quote", `Quote request: ${name}`)}</p>`),
       sec("More services", blocks(file)),
     ].join("\n"),
   });
@@ -317,12 +354,12 @@ page({
   section: "accessibility.html",
   title: "Accessibility – BarrierFreeWeb",
   description: "Why accessibility matters, what the law requires across Europe, and whether it applies to your business.",
-  body: [
-    hero(
+  lead: hero(
       "Accessibility is a human right. No exceptions.",
       `<p class="lede">${set("Life has moved online. We depend on the internet for work, connection, and daily necessities. It’s our entertainment, but it’s also essential. Everyone needs to be able to use it.")}</p>
 <p class="lede">${set("Remember: When you build a house, you don’t make the door optional. The same goes for digital access – everyone needs a way in.")}</p>`,
     ),
+    body: [
     sec(
       "Accessibility benefits everyone.",
       p(
@@ -375,7 +412,7 @@ page({
           "But even small businesses aren’t always exempt. If you sell products like smartphones, tablets, or e-readers, you must comply regardless of company size.",
           "Not sure if this applies to you? Request a free accessibility audit and we’ll help you figure it out.",
         ) +
-        `\n<div class="actions">${btn("Request a free accessibility audit", "Free accessibility audit")}</div>`,
+        `\n<p>${btn("Request a free accessibility audit", "Free accessibility audit")}</p>`,
     ),
   ].join("\n"),
 });
@@ -386,11 +423,11 @@ page({
   section: "about.html",
   title: "About – BarrierFreeWeb",
   description: "BarrierFreeWeb is a design studio in Berlin building websites that work for everyone.",
-  body: [
-    hero(
+  lead: hero(
       "About BarrierFreeWeb",
       `<p class="lede">${set("We’re a design studio in Berlin building websites that work for everyone.")}</p>`,
     ),
+    body: [
     sec(
       "Our approach",
       p(
@@ -401,8 +438,8 @@ page({
     sec(
       "Our team",
       cols([
-        ["Co-Founder & Managing Director", "Liza Gavrova"],
-        ["Co-Founder & Designer", "Polina Vasilieva"],
+        ["Liza Gavrova", "Co-Founder & Managing Director"],
+        ["Polina Vasilieva", "Co-Founder & Designer"],
       ]),
     ),
     sec(

@@ -7,45 +7,45 @@
 <meta name="description" content="We make sure your content works everywhere, for everyone.">
 <meta property="og:title" content="Design and Typography – BarrierFreeWeb">
 <meta property="og:description" content="We make sure your content works everywhere, for everyone.">
-<link rel="preload" href="fonts/JokkerVF-TRIAL.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="fonts/Serrif-TRIAL-Light.otf" as="font" type="font/otf" crossorigin>
 <link rel="stylesheet" href="styles.css">
 </head>
-<body>
+<body class="inner">
 <a class="skip" href="#main">Skip to content</a>
-<header class="top">
-  <div class="wrap">
-    <a class="brand" href="index.html">BarrierFreeWeb</a>
-    <nav class="nav" aria-label="Main">
-      <ul>
-        <li><a href="services.html" aria-current="page">Services</a></li>
-        <li><a href="accessibility.html">Accessibility</a></li>
-        <li><a href="about.html">About</a></li>
-        <li><a class="btn" href="mailto:gf@barrierfreeweb.de">Contact</a></li>
-      </ul>
-    </nav>
-  </div>
+<header class="mast">
+<p class="brand"><a href="index.html">BarrierFreeWeb</a></p>
 </header>
-<main id="main" class="wrap">
-<section class="hero">
-<h1 class="display">Design and Typography</h1>
+<nav class="nav" aria-label="Main">
+  <ul>
+    <li><a href="services.html" aria-current="page">Services</a></li>
+    <li><a href="accessibility.html">Accessibility</a></li>
+    <li><a href="about.html">About</a></li>
+  </ul>
+  <ul>
+    <li><a href="scan.html">Check your site</a></li>
+    <li><a href="mailto:gf@barrierfreeweb.de">Contact</a></li>
+  </ul>
+  <p class="clock" id="clock" hidden></p>
+</nav>
+<main id="main">
+<div class="lead">
+<h1>Design and Typography</h1>
 <p class="lede">We make sure your content works everywhere, for everyone.</p>
-</section>
+</div>
+<div class="body">
 <section class="sec">
-<div>
 <h2>What this covers</h2>
-<dl class="cols">
+<dl class="pairs">
 <div><dt>Text reflow</dt><dd>Content resizes smoothly across all screen sizes</dd></div>
 <div><dt>Fluid design</dt><dd>Flexible layouts that adapt without breaking or losing meaning</dd></div>
 <div><dt>Semantic markup</dt><dd>Content organized so screen readers can understand it</dd></div>
 <div><dt>Alt text</dt><dd>Written descriptions of images and videos for people using screen readers</dd></div>
 </dl>
-<div class="actions"><a class="btn btn-primary" href="mailto:gf@barrierfreeweb.de?subject=Quote%20request%3A%20Design%20and%20Typography">Request a quote</a></div>
-</div>
+<p><a class="cta" href="mailto:gf@barrierfreeweb.de?subject=Quote%20request%3A%20Design%20and%20Typography">Request a quote</a></p>
 </section>
 <section class="sec">
-<div>
 <h2>More services</h2>
-<ul class="blocks">
+<ul class="lines">
 <li><a href="design-and-typography.html" aria-current="page">Design and typography</a></li>
 <li><a href="ux-ui.html">UX/UI design</a></li>
 <li><a href="brand-development.html">Brand development</a></li>
@@ -53,27 +53,21 @@
 <li><a href="copywriting.html">Copywriting</a></li>
 <li><a href="accessibility.html">Accessibility testing</a></li>
 </ul>
-</div>
 </section>
+</div>
 </main>
-<footer class="foot">
-  <div class="wrap">
-    <dl class="cols">
-      <div><dt>Studio</dt><dd>BarrierFreeWeb<br>Berlin</dd></div>
-      <div><dt>Contact</dt><dd><a href="mailto:gf@barrierfreeweb.de">gf@barrierfreeweb.de</a></dd></div>
-      <div><dt>Services</dt><dd><ul>
-        <li><a href="design-and-typography.html">Design and typography</a></li>
-        <li><a href="ux-ui.html">UX/UI design</a></li>
-        <li><a href="brand-development.html">Brand development</a></li>
-        <li><a href="content-strategy.html">Content strategy</a></li>
-        <li><a href="copywriting.html">Copywriting</a></li>
-      </ul></dd></div>
-      <div><dt>Read</dt><dd><ul>
-        <li><a href="accessibility.html">Accessibility</a></li>
-        <li><a href="about.html">About</a></li>
-      </ul></dd></div>
-    </dl>
-  </div>
+<footer class="info">
+  <p>BarrierFreeWeb<br>Design studio, Berlin<br><a href="mailto:gf@barrierfreeweb.de">gf@barrierfreeweb.de</a></p>
+  <p>Not sure if your site is compliant?<br><a class="cta" href="mailto:gf@barrierfreeweb.de?subject=Accessibility%20audit">Request an accessibility audit</a></p>
 </footer>
+<script>
+(function () {
+  var el = document.getElementById("clock");
+  if (!el || !window.Intl) return;
+  var f = new Intl.DateTimeFormat("en-GB", { timeZone: "Europe/Berlin", hour: "2-digit", minute: "2-digit" });
+  function tick() { el.textContent = "Berlin, " + f.format(new Date()); el.hidden = false; }
+  tick(); setInterval(tick, 20000);
+})();
+</script>
 </body>
 </html>
