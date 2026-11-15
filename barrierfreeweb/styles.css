@@ -70,7 +70,7 @@ a:hover { text-decoration-thickness: 2px; }
 .nav ul + ul { margin-top: 20px; }
 
 /* ── Inner pages: the title and its lede on the left, the sections in two
-   columns on the right, read across then down ─────────────────────────── */
+   packed columns on the right, read down each in turn ─────────────────────────── */
 h1, h2 { text-transform: uppercase; letter-spacing: 0.03em; text-align: center; margin-bottom: var(--line); }
 .brand { text-transform: none; letter-spacing: 0; margin: 0; }
 p + p, p + ul, ul + p, dl + p, p + dl, ul + ul { margin-top: var(--line); }
@@ -114,8 +114,11 @@ p + p, p + ul, ul + p, dl + p, p + dl, ul + ul { margin-top: var(--line); }
 
   .inner main { display: grid; grid-template-columns: calc(37.5% - var(--m)) minmax(0, 1fr); column-gap: 12.5%; }
   .lead { padding-right: 25px; }
-  .body { margin-top: 0; grid-template-columns: repeat(2, minmax(0, 1fr)); align-content: start; }
-  .body-wide { grid-template-columns: minmax(0, 1fr); }
+  /* Two packed columns, read down the first and then down the second, so a
+     short section leaves no hole beside a long one. A section never splits. */
+  .body { display: block; margin-top: 0; columns: 2; column-gap: 55px; }
+  .body .sec { break-inside: avoid; margin-bottom: calc(var(--line) * 2); }
+  .body-wide { columns: auto; }
   .inner .info { margin-left: calc(50% - 10px); }
 
   .home .info { position: fixed; top: var(--m); left: 75%; right: var(--m); margin: 0; }
