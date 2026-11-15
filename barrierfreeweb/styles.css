@@ -3,7 +3,7 @@
    22px line; the reference is 16 on 20), a 32px wordmark, ink on paper, a
    10px page margin and a great deal of white. Measured on the reference at
    1440px: the left column is 37.5% wide with the wordmark and the entries
-   centred in it, the navigation is fixed at 37.5%, the hover excerpt starts
+   centred in it, the navigation is fixed at 37.5%, the excerpt starts
    at 50% and the address at 75%.
 
    Two things differ from the reference on purpose. It marks the current page
@@ -89,7 +89,6 @@ p + p, p + ul, ul + p, dl + p, p + dl, ul + ul { margin-top: var(--line); }
 .entries a { display: block; text-decoration: none; }
 .entries a:hover .t, .entries a:focus-visible .t { text-decoration: underline; text-decoration-thickness: 1px; }
 .more { margin-top: var(--line); }
-.more .no { display: none; }
 .closing { text-align: center; padding-block: var(--line) calc(var(--line) * 4); }
 
 .info { margin-top: calc(var(--line) * 4); }
@@ -130,7 +129,6 @@ p + p, p + ul, ul + p, dl + p, p + dl, ul + ul { margin-top: var(--line); }
    only on hover (user's instruction, 15 Nov 2026). */
 @media (min-width: 900px) {
   .more { position: absolute; top: 0; left: 50%; width: calc(25% - 25px); margin: 0; text-align: start; }
-  .more .no { display: block; position: absolute; right: 100%; top: 0; padding-right: 14px; }
 }
 
 @media print {

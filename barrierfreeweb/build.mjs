@@ -5,7 +5,7 @@
 // The layout follows grazerkunstverein.org (user's instruction, 15 Nov 2026):
 // one light serif at one size, a centred wordmark over the left column, the
 // navigation fixed in a narrow column beside it, and the home page as a list
-// of centred entries, each with its number and excerpt set to its right.
+// of centred entries, each with its excerpt set to its right.
 //
 // Typography: write " – " in copy and set() makes it a spaced en dash after a
 // no-break space; an em dash in copy is a fault and fails the build.
@@ -162,9 +162,9 @@ page({
   description: "A design studio in Berlin building websites that everyone can use, and that meet the European Accessibility Act.",
   body: `<ol class="entries">
 ${ENTRIES.map(
-  ([cat, title, line, more, href], i) => `<li>
+  ([cat, title, line, more, href]) => `<li>
 <a href="${href}">${cat ? `<span>(${cat})</span><br>` : ""}<span class="t">${set(title)}</span><br><span>${set(line)}</span></a>
-<p class="more"><span class="no" aria-hidden="true">${String(i + 1).padStart(2, "0")}</span>${set(more)}</p>
+<p class="more">${set(more)}</p>
 </li>`,
 ).join("\n")}
 </ol>
