@@ -59,9 +59,15 @@ const blocks = (current) =>
     ([href, name]) => `<li><a href="${href}"${href === current ? ' aria-current="page"' : ""}>${name}</a></li>`,
   ).join("\n")}\n</ul>`;
 
+// What clients have said, in their words: [quote, name, role or company].
+// Only real, permitted quotes go here. While it is empty, reviews.html is not
+// written and nothing links to it, so the site never shows an invented review.
+const REVIEWS = [];
+
 const NAV = [
   ["services.html", "Services"],
   ["accessibility.html", "Accessibility"],
+  ...(REVIEWS.length ? [["reviews.html", "Reviews"]] : []),
   ["about.html", "About"],
 ];
 
@@ -127,7 +133,10 @@ page({
   title: "BarrierFreeWeb – accessible web design studio, Berlin",
   description: "A design studio in Berlin building websites that everyone can use, and that meet the European Accessibility Act.",
   body: [
-    hero("We’re a design studio in Berlin building websites that everyone can use."),
+    `<section class="hero open">
+<h1 class="display">We’re a design studio in Berlin building websites that everyone can use.</h1>
+<p class="open-note">Accessible web design, brand and content, built to meet the European Accessibility Act.<br><a href="mailto:${MAIL}">Contact us</a></p>
+</section>`,
     sec(
       "The European Accessibility Act is here.",
       p(
@@ -418,3 +427,22 @@ page({
     ),
   ].join("\n"),
 });
+
+// ── Reviews ─────────────────────────────────────────────────────────────
+// English quotations take single marks first (see ../CLAUDE.md, Punctuation).
+if (REVIEWS.length) {
+  page({
+    file: "reviews.html",
+    section: "reviews.html",
+    title: "Reviews – BarrierFreeWeb",
+    description: "What clients say about working with BarrierFreeWeb.",
+    body: [
+      `<section class="hero reviews-head">\n<h1 class="display">Don’t just take our word for it.</h1>\n<p class="open-note">${small("A few words from the people we’ve built websites for.")}</p>\n</section>`,
+      `<ul class="reviews">\n${REVIEWS.map(
+        ([quote, name, role]) =>
+          `<li><figure>\n<blockquote><p>‘${small(quote)}’</p></blockquote>\n<figcaption><b>${small(name)}</b>${role ? `<br>${small(role)}` : ""}</figcaption>\n</figure></li>`,
+      ).join("\n")}\n</ul>`,
+      `<section class="closing reviews-foot">\n<div class="actions">${btn("Work with us", "New project")}</div>\n</section>`,
+    ].join("\n"),
+  });
+}
