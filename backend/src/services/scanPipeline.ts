@@ -459,7 +459,9 @@ export async function scanUrlToReport(
   const automatedFindings = axeToFindings(renderResult.axe);
   // The plain-language rewrite needs only axe's findings, so it starts now
   // and runs beside the AI review and the probes below. It is an AI layer,
-  // so the reader's "AI review off" switches it off too.
+  // so the reader's "AI review off" switches it off too; and it runs only
+  // where the deployer set PLAIN_LANGUAGE_IN_SCANS (by default the model
+  // is the pilot's alone).
   const reportLang = normalizeReportLang(language);
   const plainPromise = rewriteFindings(automatedFindings, reportLang, includeAiReview);
   const deterministic: AccessibilityFinding[] = [];

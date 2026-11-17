@@ -160,7 +160,7 @@ export type AiReviewStatus = z.infer<typeof aiReviewStatusSchema>;
 // Why a failed AI review failed, in coarse terms. A small fixed set, never a
 // raw error message: this crosses a public API boundary.
 export const plainLanguageMetaSchema = z.object({
-  status: z.enum(["completed", "partial", "timed_out", "failed", "not_configured", "disabled_by_request"]),
+  status: z.enum(["completed", "partial", "timed_out", "failed", "not_configured", "disabled_by_request", "off_for_scans"]),
   model: z.string().optional(),
   /** axe rules on the page, and how many of them the model rewrote. */
   rules: z.number(),

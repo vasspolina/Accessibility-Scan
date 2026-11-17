@@ -209,7 +209,7 @@ export interface AccessibilityReport {
     // The plain-language rewrite: whether it ran, and how many of the page's
     // axe rules it reached.
     plainLanguage?: {
-      status: "completed" | "partial" | "timed_out" | "failed" | "not_configured" | "disabled_by_request";
+      status: "completed" | "partial" | "timed_out" | "failed" | "not_configured" | "disabled_by_request" | "off_for_scans";
       model?: string;
       rules: number;
       rewritten: number;

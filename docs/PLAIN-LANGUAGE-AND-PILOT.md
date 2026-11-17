@@ -51,6 +51,7 @@ checks a token (`LOCAL_LLM_API_KEY`).
 | `LOCAL_LLM_MODEL` | Model name as the server knows it. Default `qwen2.5:7b-instruct`. |
 | `LOCAL_LLM_API_KEY` | Bearer token, only if a proxy in front of the server checks one. |
 | `LOCAL_LLM_TIMEOUT_MS` | The rewrite's whole budget per scan. Default 45000. |
+| `PLAIN_LANGUAGE_IN_SCANS` | `true` lets scans use the model too. **Unset (the default), only the pilot uses it**: every public scan would otherwise call the model and keep a paid GPU worker awake, so the bill would follow the scanner's traffic. |
 | `PILOT_CODES` | Comma-separated codes, one per participant. Absent: the pilot is closed. |
 | `DB_PATH` (+ `DB_DURABLE`) | Where pilot reports are stored. Use a mounted volume. |
 | `MAIL_API_KEY`, `MAIL_FROM` | Optional: each pilot report is also mailed to `CONTACT_TO`. |
@@ -60,6 +61,10 @@ The pilot form will not start unless reports have somewhere to go (storage
 or mail), so a participant never writes into a pilot that cannot keep it.
 
 ## How the rewrite behaves
+
+Only with `PLAIN_LANGUAGE_IN_SCANS=true`. Without it, scans report
+`meta.plainLanguage.status: "off_for_scans"` and keep the hand-written copy.
+
 
 - One model call per axe rule, not per element: the report shows one card per
   rule. The model is shown up to three of the rule's elements and the total.

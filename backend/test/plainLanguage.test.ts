@@ -19,6 +19,7 @@ beforeAll(async () => {
   process.env.LOCAL_LLM_URL = "http://gpu.test:11434/";
   process.env.LOCAL_LLM_MODEL = "qwen2.5:7b-instruct";
   process.env.LOCAL_LLM_TIMEOUT_MS = "2000";
+  process.env.PLAIN_LANGUAGE_IN_SCANS = "true";
   globalThis.fetch = (async (url: string, init: { body: string }) => {
     const body = JSON.parse(init.body);
     calls.push({ url, body });

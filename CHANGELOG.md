@@ -7,6 +7,12 @@ The `backend`, `widget`, and `widget-business` packages are versioned together.
 
 ## Unreleased
 
+### Changed
+
+- The self-hosted model is used by the pilot only, unless
+  `PLAIN_LANGUAGE_IN_SCANS=true`. Public scans no longer call it by
+  default, so a paid GPU worker is not kept awake by scanner traffic.
+
 ### Added
 
 - **Plain-language rewrite by a self-hosted model.** With `LOCAL_LLM_URL` set
