@@ -184,7 +184,7 @@ should check that none of those splits reads oddly.
 | Web Content Accessibility Guidelines (WCAG) | Richtlinien für barrierefreie Webinhalte (WCAG) | chat |
 | We check the page at an address, or up to five pages linked from it, against the {wcag} 2.1. Then we explain what to fix, in the order worth fixing it. | Wir prüfen die Seite unter einer Adresse oder bis zu fünf davon verlinkte Seiten anhand der {wcag} 2.1. Dann erklären wir, was zu beheben ist, in sinnvoller Reihenfolge. | chat |
 | We check the page at an address, or up to ten pages linked from it, against the {wcag} 2.1. Then we explain what to fix, in the order worth fixing it. | Wir prüfen die Seite unter einer Adresse oder bis zu zehn davon verlinkte Seiten anhand der {wcag} 2.1. Dann erklären wir, was zu beheben ist, in sinnvoller Reihenfolge. | chat |
-| It counts the accessibility problems this scan found, weighted by how much each one costs a visitor. | Es zählt die Barrierefreiheitsprobleme, die dieser Scan gefunden hat, gewichtet danach, wie schwer jedes für Besucher wiegt. | score points |
+| It counts the accessibility problems this scan found, weighted by how much each one costs a visitor. | Es zählt die Barrierefreiheitsprobleme, die dieser Scan gefunden hat, gewichtet danach, wie sehr jedes Menschen behindert. | score points |
 | Each severity has a limit: past it, more problems of that severity no longer lower the score. | Jeder Schweregrad hat eine Grenze: Darüber hinaus senken weitere Probleme dieses Grades das Ergebnis nicht mehr. | score points |
 | Notes on the design and misleading patterns do not count. Neither do the optional advanced level (AAA) or checks new in WCAG 2.2, the newer accessibility guidelines. | Hinweise zur Gestaltung und irreführende Muster zählen nicht. Ebenso wenig die optionale erweiterte Stufe (AAA) und die Neuerungen der Barrierefreiheitsrichtlinien WCAG 2.2. | score points |
 | When the AI review runs, its findings count too, if their card names a WCAG requirement. Those can be wrong. | Wenn die KI-Prüfung läuft, zählen auch ihre Befunde, sofern ihre Karte eine WCAG-Anforderung nennt. Diese können falsch sein. | score points |
@@ -264,7 +264,7 @@ should check that none of those splits reads oddly.
 | Scope | Umfang | score panel |
 | Scan this page only | Nur diese Seite scannen | score panel |
 | Scan the whole site | Die ganze Website scannen | score panel |
-| Conformance report for buyers | Konformitätsbericht für Käufer | report |
+| Conformance report for buyers | Konformitätsbericht für den Einkauf | report |
 | VPAT 2.5, draft | VPAT 2.5, Entwurf | report |
 | If a public body or a large customer wants to buy from you, they will ask for one of these. It is the document a procurement team reads instead of your website. | Wenn eine öffentliche Stelle oder ein großer Kunde bei Ihnen kaufen möchte, wird man Sie nach einem solchen Bericht fragen. Ein Beschaffungsteam liest dieses Dokument statt Ihrer Website. | report |
 | This draft fills in the failures. The rest of the form is left for you. | Dieser Entwurf trägt die Verstöße ein. Den Rest des Formulars füllen Sie aus. | report |
@@ -279,7 +279,7 @@ should check that none of those splits reads oddly.
 | Version | Version | report |
 | [Version] | [Version] | report |
 | Checked against | Geprüft nach | report |
-| The standard a buyer will ask you about | Der Standard, nach dem ein Käufer Sie fragen wird | report |
+| The standard a buyer will ask you about | Der Standard, nach dem der Einkauf Sie fragen wird | report |
 | Rows the scan can evidence | Zeilen, die der Scan belegen kann | report |
 | {failed} of {total}; the rest need a person | {failed} von {total}; den Rest muss eine Person prüfen | report |
 | Product name | Produktname | report |
@@ -408,7 +408,7 @@ should check that none of those splits reads oddly.
 | very rare | sehr selten | report |
 | ~1 in 30 people | ~1 von 30 Menschen | report |
 | common over 60 | häufig ab 60 | report |
-| Your page as most visitors see it. | Ihre Seite, wie die meisten Besucher sie sehen. | report |
+| Your page as most visitors see it. | Ihre Seite, wie die meisten Menschen sie sehen. | report |
 | Reduced sensitivity to green, the most common form of colour blindness. Red and green become hard to tell apart. | Verminderte Empfindlichkeit für Grün, die häufigste Form der Farbenblindheit. Rot und Grün werden schwer unterscheidbar. | report |
 | Reduced sensitivity to red. Reds darken and can disappear against dark backgrounds. | Verminderte Empfindlichkeit für Rot. Rottöne werden dunkler und können vor dunklen Hintergründen verschwinden. | report |
 | Reduced sensitivity to blue. Blues and yellows become hard to tell apart. | Verminderte Empfindlichkeit für Blau. Blau- und Gelbtöne werden schwer unterscheidbar. | report |
@@ -644,13 +644,13 @@ should check that none of those splits reads oddly.
 | Type | Typografie | report |
 | Layout | Layout | report |
 | Colour | Farbe | report |
-| We have not yet carried out a full manual audit or testing with assistive technology users. | Wir haben noch keine vollständige manuelle Prüfung durchgeführt und noch nicht mit Nutzern assistiver Technologien getestet. | report |
+| We have not yet carried out a full manual audit or testing with assistive technology users. | Wir haben noch keine vollständige manuelle Prüfung durchgeführt und noch nicht mit Menschen getestet, die assistive Technologien nutzen. | report |
 | 1 of the criteria that need human judgement has been checked by a person: {results}. | 1 der Kriterien, die menschliches Urteilsvermögen erfordern, wurde von einer Person geprüft: {results}. | report |
 | {count} of the criteria that need human judgement have been checked by a person: {results}. | {count} der Kriterien, die menschliches Urteilsvermögen erfordern, wurden von einer Person geprüft: {results}. | report |
 | 1 has not yet been checked manually. | 1 Kriterium wurde noch nicht manuell geprüft. | report |
 | {count} have not yet been checked manually. | {count} Kriterien wurden noch nicht manuell geprüft. | report |
 | Every criterion that needs human judgement has been checked by a person. | Jedes Kriterium, das menschliches Urteilsvermögen erfordert, wurde von einer Person geprüft. | report |
-| We have not yet tested with assistive technology users. | Wir haben noch nicht mit Nutzern assistiver Technologien getestet. | report |
+| We have not yet tested with assistive technology users. | Wir haben noch nicht mit Menschen getestet, die assistive Technologien nutzen. | report |
 | [Your organisation] | [Ihre Organisation] | report |
 | [your contact email] | [Ihre Kontakt-E-Mail-Adresse] | report |
 | {org} considers {url} to be **partially conformant** with EN 301 549 (which adopts WCAG 2.1 Level AA). "Partially conformant" means some parts of the site do not yet fully conform to the standard. | {org} hält {url} für **teilweise vereinbar** mit EN 301 549 (die WCAG 2.1 auf Stufe AA übernimmt). „Teilweise vereinbar“ bedeutet, dass einige Teile der Website die Norm noch nicht vollständig erfüllen. | report |
@@ -761,8 +761,8 @@ Found by a live German scan: these reached a German reader in English. Same cave
 | We couldn't read that file as a PDF. | Wir konnten die Datei nicht als PDF lesen. | scan errors, blocked panel, picture notes |
 | Not scanned — the audit ran out of time. | Nicht geprüft – die Zeit für die Website-Prüfung war um. | scan errors, blocked panel, picture notes |
 | Something in that request wasn't right. Reload the page and try again. | Bei dieser Anfrage stimmte etwas nicht. Laden Sie die Seite neu und versuchen Sie es erneut. | scan errors, blocked panel, picture notes |
-| {host} turned our scanner away (HTTP {status}). Its protection against automated visitors keeps tools like ours out, so this says nothing about how accessible the site is. | {host} hat unseren Scanner abgewiesen (HTTP {status}). Der Schutz vor automatischen Besuchern hält Werkzeuge wie unseres fern. Über die Barrierefreiheit der Website sagt das also nichts. | scan errors, blocked panel, picture notes |
-| {host} showed “{label}” instead of the page. Its protection against automated visitors keeps tools like ours out, so this says nothing about how accessible the site is. | {host} hat statt der Seite „{label}“ gezeigt. Der Schutz vor automatischen Besuchern hält Werkzeuge wie unseres fern. Über die Barrierefreiheit der Website sagt das also nichts. | scan errors, blocked panel, picture notes |
+| {host} turned our scanner away (HTTP {status}). Its protection against automated visitors keeps tools like ours out, so this says nothing about how accessible the site is. | {host} hat unseren Scanner abgewiesen (HTTP {status}). Der Schutz vor automatisierten Zugriffen hält Werkzeuge wie unseres fern. Über die Barrierefreiheit der Website sagt das also nichts. | scan errors, blocked panel, picture notes |
+| {host} showed “{label}” instead of the page. Its protection against automated visitors keeps tools like ours out, so this says nothing about how accessible the site is. | {host} hat statt der Seite „{label}“ gezeigt. Der Schutz vor automatisierten Zugriffen hält Werkzeuge wie unseres fern. Über die Barrierefreiheit der Website sagt das also nichts. | scan errors, blocked panel, picture notes |
 | There is no page at that address (HTTP {status}). Check the address and try again. | Unter dieser Adresse gibt es keine Seite (HTTP {status}). Prüfen Sie die Adresse und versuchen Sie es erneut. | scan errors, blocked panel, picture notes |
 | That page asks for a login first (HTTP {status}). The form can sign in with your details. | Diese Seite verlangt zuerst eine Anmeldung (HTTP {status}). Das Formular kann sich mit Ihren Zugangsdaten anmelden. | scan errors, blocked panel, picture notes |
 | {host} answered with an error (HTTP {status}) instead of the page, so there was nothing to check. Try again later. | {host} hat statt der Seite einen Fehler gemeldet (HTTP {status}). Es gab also nichts zu prüfen. Versuchen Sie es später erneut. | scan errors, blocked panel, picture notes |

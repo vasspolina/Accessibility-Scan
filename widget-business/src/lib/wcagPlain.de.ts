@@ -131,14 +131,14 @@ export const PLAIN_DE: Record<string, PlainRule> = {
     impact: "Wer einen Screenreader nutzt, kann sich eine Liste aller Links geben lassen. Wenn alle gleich heißen, hilft diese Liste überhaupt nicht.",
   },
   "button-name": {
-    research: "Schaltflächen ohne Beschriftung stehen Jahr für Jahr weit oben in der jährlichen WebAIM-Untersuchung von einer Million Startseiten. Meist sind es reine Symbol-Schaltflächen, die für ihre Gestalter selbsterklärend waren.",
+    research: "Schaltflächen ohne Beschriftung stehen Jahr für Jahr weit oben in der jährlichen WebAIM-Untersuchung von einer Million Startseiten. Meist sind es reine Symbol-Schaltflächen, die für das Designteam selbsterklärend waren.",
     plain: "Schaltflächen ohne Beschriftung",
     found: (n) =>
       `${n} ${n === 1 ? "Schaltfläche hat" : "Schaltflächen haben"} gar keine Beschriftung: keine Wörter darin und keinen Namen im Code. Fast immer sind es Symbol-Schaltflächen, bei denen das Zeichen die Bedeutung trägt und der Code nichts davon.`,
     impact: "Wer einen Screenreader nutzt, weiß vor dem Klick nicht, was passiert. Ein häufiger Grund, aufzugeben.",
   },
   label: {
-    research: "Fehlende Feldbeschriftungen stehen weit oben in der jährlichen WebAIM-Untersuchung von einer Million Startseiten. In der britischen Click-Away-Pound-Studie verließen die meisten Käufer, die auf so eine Hürde stießen, den Shop wortlos. Ihr Geld gaben sie woanders aus.",
+    research: "Fehlende Feldbeschriftungen stehen weit oben in der jährlichen WebAIM-Untersuchung von einer Million Startseiten. In der britischen Click-Away-Pound-Studie verließen die meisten Kundinnen und Kunden, die auf so eine Hürde stießen, den Shop wortlos. Ihr Geld gaben sie woanders aus.",
     plain: "Formularfelder ohne Beschriftung",
     found: (n) =>
       `${n} ${n === 1 ? "Formularfeld ist" : "Formularfelder sind"} im Code nicht mit einer Beschriftung verbunden. Auf dem Bildschirm stehen die Wörter vielleicht direkt daneben, aber nichts verknüpft beides.`,
@@ -171,7 +171,7 @@ export const PLAIN_DE: Record<string, PlainRule> = {
     plain: "Überschriften überspringen Ebenen",
     found: (n) =>
       `Die Überschriftenebenen springen, statt Stufe für Stufe zu gehen. An ${n} ${n === 1 ? "Stelle" : "Stellen"} fehlt eine Ebene. Auf ein h2 folgt direkt ein h4, oder Ähnliches.`,
-    impact: "Die meisten Screenreader-Nutzer navigieren über Überschriften. Sie verlieren den Faden.",
+    impact: "Die meisten Menschen mit Screenreader navigieren über Überschriften. Sie verlieren den Faden.",
   },
   "page-has-heading-one": {
     plain: "Keine Hauptüberschrift",
@@ -189,7 +189,7 @@ export const PLAIN_DE: Record<string, PlainRule> = {
     plain: "Links nur durch Farbe erkennbar",
     found: (n) =>
       `${n} ${n === 1 ? "Link im Fließtext ist" : "Links im Fließtext sind"} nur durch Farbe gekennzeichnet, ohne Unterstreichung.`,
-    impact: "Farbenblinde Leser unterscheiden den Link nicht von gewöhnlichem Text.",
+    impact: "Wer farbenblind ist, unterscheidet den Link nicht von gewöhnlichem Text.",
   },
   "meta-viewport": {
     plain: "Zoomen ist gesperrt",
@@ -283,7 +283,7 @@ export const PLAIN_DE: Record<string, PlainRule> = {
 
   "keyboard-mouse-only": {
     found: (n) => (n === 1 ? "Ein Bedienelement reagiert auf einen Klick, aber nicht auf die Tastatur. Die Tab-Taste erreicht es nicht, oder Enter und Leertaste bewirken dort nichts." : "{n} Bedienelemente reagieren auf einen Klick, aber nicht auf die Tastatur. Die Tab-Taste erreicht sie nicht, oder Enter und Leertaste bewirken dort nichts.".replace("{n}", String(n))),
-    research: "Jahrzehnte an Usability-Forschung, vieles davon von der Nielsen Norman Group, kommen immer wieder zum selben Schluss. Tastaturbedienung nützt geübten Nutzern genauso wie Menschen, die keine Maus halten können.",
+    research: "Jahrzehnte an Usability-Forschung, vieles davon von der Nielsen Norman Group, kommen immer wieder zum selben Schluss. Tastaturbedienung nützt Geübten genauso wie Menschen, die keine Maus halten können.",
     plain: "Ein Bedienelement, das die Tastatur nicht erreicht",
     impact: "Hier gibt es keinen Umweg. Wer keine Maus benutzen kann, kann nicht tun, was dieses Element tut. Ist es der Kaufen-Knopf oder ein Formularschritt, endet der Besuch hier.",
   },
@@ -413,7 +413,7 @@ export const PLAIN_DE: Record<string, PlainRule> = {
   "mobile-horizontal-scroll": {
     found: (n) => (n === 1 ? "In Handybreite ragt ein Element über den Bildschirmrand hinaus, und die ganze Seite scrollt seitwärts." : "In Handybreite ragen {n} Elemente über den Bildschirmrand hinaus, und die ganze Seite scrollt seitwärts.".replace("{n}", String(n))),
     plain: "Die Seite scrollt auf dem Handy seitwärts",
-    impact: "Die meisten Besucher sind am Handy. Für jede Zeile seitwärts wischen zu müssen, treibt sie weg.",
+    impact: "Die meisten Menschen sind am Handy unterwegs. Für jede Zeile seitwärts wischen zu müssen, treibt sie weg.",
   },
   "mobile-tap-target": {
     found: (n) => (n === 1 ? "In Handybreite ist ein Tippziel unter 24 px breit oder hoch, und ein anderes liegt direkt daneben. Ein knapp verfehlter Tipper landet leicht beim Nachbarn." : "In Handybreite sind {n} Tippziele unter 24 px breit oder hoch, und jedes hat ein anderes direkt daneben. Ein knapp verfehlter Tipper landet leicht beim Nachbarn.".replace("{n}", String(n))),
@@ -440,7 +440,7 @@ export const PLAIN_DE: Record<string, PlainRule> = {
   "dark-consent-no-reject": {
     found: (n) => (n === 1 ? "Das Cookie-Banner hat einen Knopf zum Zustimmen. Keiner seiner Knöpfe bietet Ablehnen an, auch nicht als „Nur notwendige“." : "{n} Cookie-Banner haben einen Knopf zum Zustimmen. Keiner ihrer Knöpfe bietet Ablehnen an, auch nicht als „Nur notwendige“.".replace("{n}", String(n))),
     plain: "Cookie-Banner ohne Ablehnen",
-    impact: "Nach der DSGVO muss Ablehnen so leicht sein wie Zustimmen. So eingeholte Einwilligungen können ungültig sein. Ein fehlender „Ablehnen“-Knopf wirkt auf Besucher wie ein Trick.",
+    impact: "Nach der DSGVO muss Ablehnen so leicht sein wie Zustimmen. So eingeholte Einwilligungen können ungültig sein. Ein fehlender „Ablehnen“-Knopf wirkt wie ein Trick.",
   },
   "dark-consent-asymmetry": {
     found: (n) => (n === 1 ? "Auf dem Cookie-Banner hat der Knopf zum Zustimmen eine Hintergrundfarbe. Ablehnen steht ohne Hintergrund da." : "Auf {n} Cookie-Bannern hat der Knopf zum Zustimmen eine Hintergrundfarbe. Ablehnen steht jeweils ohne Hintergrund da.".replace("{n}", String(n))),
@@ -460,7 +460,7 @@ export const PLAIN_DE: Record<string, PlainRule> = {
   "dark-fake-scarcity": {
     found: (n) => (n === 1 ? "Eine Angabe auf dieser Seite meldet knappen Bestand oder große Nachfrage. Wer sie liest, kann nicht prüfen, ob sie stimmt." : "{n} Angaben auf dieser Seite melden knappen Bestand oder große Nachfrage. Wer sie liest, kann nicht prüfen, ob sie stimmen.".replace("{n}", String(n))),
     plain: "Knappheitsangaben als Druckmittel",
-    impact: "Behörden gehen gegen erfundene Knappheit vor. Käufer haben gelernt, ihr zu misstrauen. Erfundene Zahlen kosten mehr Verkäufe, als sie bringen.",
+    impact: "Behörden gehen gegen erfundene Knappheit vor. Die Kundschaft hat gelernt, ihr zu misstrauen. Erfundene Zahlen kosten mehr Verkäufe, als sie bringen.",
   },
   "dark-fake-urgency": {
     found: (n) => (n === 1 ? "Ein Hinweis auf dieser Seite macht Zeitdruck, nennt aber kein Datum. Wer ihn liest, kann nicht prüfen, ob die Frist echt ist." : "{n} Hinweise auf dieser Seite machen Zeitdruck, nennen aber kein Datum. Wer sie liest, kann nicht prüfen, ob die Fristen echt sind.".replace("{n}", String(n))),
@@ -496,7 +496,7 @@ export const PLAIN_DE: Record<string, PlainRule> = {
   "dialog-no-close": {
     found: (n) => (n === 1 ? "Mindestens ein Pop-up hat keinen erkennbaren Schließen-Knopf. Kein Knopf darin trägt ein Wort wie „Schließen“ oder ein Kreuz." : "{n} Pop-ups haben keinen erkennbaren Schließen-Knopf. Kein Knopf darin trägt ein Wort wie „Schließen“ oder ein Kreuz.".replace("{n}", String(n))),
     plain: "Kein sichtbarer Schließen-Knopf",
-    impact: "Wenn der Klick daneben der einzige Ausweg ist, hängen Tastaturnutzer dahinter fest.",
+    impact: "Wenn der Klick daneben der einzige Ausweg ist, hängt dahinter fest, wer nur die Tastatur nutzt.",
   },
   "dialog-missing-role": {
     found: (n) => (n === 1 ? "Mindestens eine Einblendung liegt wie ein Pop-up über der Seite, ist im Code aber nicht als Dialog gekennzeichnet." : "{n} Einblendungen liegen wie Pop-ups über der Seite, sind im Code aber nicht als Dialog gekennzeichnet.".replace("{n}", String(n))),
@@ -506,7 +506,7 @@ export const PLAIN_DE: Record<string, PlainRule> = {
   "dialog-missing-name": {
     found: (n) => (n === 1 ? "Mindestens ein Pop-up hat im Code keinen Namen. Ein Screenreader hat deshalb keinen Titel, den er ansagen kann." : "{n} Pop-ups haben im Code keinen Namen. Ein Screenreader hat deshalb keinen Titel, den er ansagen kann.".replace("{n}", String(n))),
     plain: "Das Pop-up sagt nicht, wozu es da ist",
-    impact: "Beim Öffnen sagt ein Screenreader nur „Dialog“. Der Besucher weiß nicht, was gefragt wird und warum.",
+    impact: "Beim Öffnen sagt ein Screenreader nur „Dialog“. Niemand weiß, was gefragt wird und warum.",
   },
 
   "markup-validation": {
@@ -701,7 +701,7 @@ export const FIXES_DE: Record<string, string | string[]> = {
   ],
   "sr-vague-link-name": [
     "Benennen Sie jeden Link nach seinem Ziel. „Preise ansehen“, nicht „Hier klicken“.",
-    "Der sichtbare Text darf kurz bleiben. Ihr Entwickler kann den vollständigen Namen unsichtbar ergänzen, nur für Screenreader.",
+    "Der sichtbare Text darf kurz bleiben. Ihr Entwicklungsteam kann den vollständigen Namen unsichtbar ergänzen, nur für Screenreader.",
   ],
   "sr-symbol-button-name": [
     "Beschriften Sie jede Schaltfläche mit ihrer Aktion: „Schließen“, „Nächste Folie“, „Suchen“, „Abspielen“.",
@@ -773,7 +773,7 @@ export const FIXES_DE: Record<string, string | string[]> = {
     "Lassen Sie Escape es schließen und zur Seite zurückkehren.",
   ],
   "dialog-no-escape": "Lassen Sie die Escape-Taste das Pop-up schließen.",
-  "dialog-focus-not-moved": "Setzen Sie den Fokus beim Öffnen in das Pop-up, damit Tastaturnutzer darin beginnen.",
+  "dialog-focus-not-moved": "Setzen Sie den Fokus beim Öffnen in das Pop-up, damit man mit der Tastatur darin beginnt.",
   "dialog-focus-lost-on-close": "Setzen Sie den Fokus beim Schließen zurück auf das, was das Pop-up geöffnet hat.",
   "dialog-no-close": [
     "Geben Sie jedem Pop-up einen sichtbaren Schließen-Knopf.",
@@ -908,8 +908,8 @@ export const FIXES_DE: Record<string, string | string[]> = {
   ],
   "landmark-one-main": "Kennzeichnen Sie den Hauptinhalt der Seite als Hauptbereich, und nutzen Sie nur einen pro Seite.",
   tabindex: 'Entfernen Sie positive tabindex-Werte (tabindex="1" oder höher) und lassen Sie die natürliche Reihenfolge der Seite den Fokus bestimmen.',
-  "scrollable-region-focusable": 'Ergänzen Sie tabindex="0" am scrollbaren Container, damit Tastaturnutzer darin scrollen können.',
-  "keyboard-positive-tabindex-advisory": "Bitten Sie Ihren Entwickler, die Zahlen zu entfernen, mit denen die Tab-Reihenfolge von Hand festgelegt ist. Die Tastatur folgt dann der Reihenfolge der Seite, auch bei allem, was später dazukommt.",
+  "scrollable-region-focusable": 'Ergänzen Sie tabindex="0" am scrollbaren Container, damit man auch mit der Tastatur darin scrollen kann.',
+  "keyboard-positive-tabindex-advisory": "Bitten Sie Ihr Entwicklungsteam, die Zahlen zu entfernen, mit denen die Tab-Reihenfolge von Hand festgelegt ist. Die Tastatur folgt dann der Reihenfolge der Seite, auch bei allem, was später dazukommt.",
   "nav-name-inconsistent": "Geben Sie jedem Menülink einen einzigen Namen, „Warenkorb“ oder „Einkaufswagen“, nicht beides, und verwenden Sie ihn auf jeder Seite.",
   "color-contrast-mobile": [
     "Suchen Sie die Media Query für Handybreite, die die Text- oder Hintergrundfarbe ändert.",
@@ -920,18 +920,18 @@ export const FIXES_DE: Record<string, string | string[]> = {
     "Gewöhnlicher Text braucht in beiden Designs mindestens 4,5:1.",
   ],
   "nav-order-inconsistent": "Zeigen Sie die Menülinks auf jeder Seite in derselben Reihenfolge. Eine Seite darf weniger Links zeigen, aber die vorhandenen sollten ihre Reihenfolge behalten.",
-  "activation-stale-state": "Lassen Sie jedes Bedienelement seinen neuen Zustand ansagen, sobald er sich ändert: aufgeklappt oder zugeklappt, an oder aus. Ihr Entwickler setzt das im selben Code, der das Element öffnet oder umschaltet.",
-  "control-faint-boundary": "Machen Sie die Rahmen von Feldern und Knöpfen dunkler. Die Rahmen brauchen ein Kontrastverhältnis von mindestens 3:1 zu dem, was dahinter liegt. Ihr Designer kann meist alle mit einer Änderung am gemeinsamen Stil beheben.",
+  "activation-stale-state": "Lassen Sie jedes Bedienelement seinen neuen Zustand ansagen, sobald er sich ändert: aufgeklappt oder zugeklappt, an oder aus. Ihr Entwicklungsteam setzt das im selben Code, der das Element öffnet oder umschaltet.",
+  "control-faint-boundary": "Machen Sie die Rahmen von Feldern und Knöpfen dunkler. Die Rahmen brauchen ein Kontrastverhältnis von mindestens 3:1 zu dem, was dahinter liegt. Ihr Designteam kann meist alle mit einer Änderung am gemeinsamen Stil beheben.",
 };
 
 export const UNDECIDED_DE: Record<string, { what: string; ask: string }> = {
   "color-contrast": {
     what: "Text auf einem Foto, einem Video oder einem Farbverlauf. Die Prüfung kann die Farbe des Textes lesen. Dahinter liegt aber keine einzelne Farbe zum Messen, und geraten wird nicht.",
-    ask: "Bitten Sie Ihren Designer, jede Stelle gegen das Bild dahinter zu prüfen. Einmal an der hellsten Stelle des Bildes, einmal an der dunkelsten. Wo die Wörter untergehen, brauchen sie eine feste Fläche dahinter, einen dunklen Schleier über dem Bild oder eine andere Position.",
+    ask: "Bitten Sie Ihr Designteam, jede Stelle gegen das Bild dahinter zu prüfen. Einmal an der hellsten Stelle des Bildes, einmal an der dunkelsten. Wo die Wörter untergehen, brauchen sie eine feste Fläche dahinter, einen dunklen Schleier über dem Bild oder eine andere Position.",
   },
   "link-in-text-block": {
     what: "Links in einem Absatz, die möglicherweise nur durch ihre Farbe gekennzeichnet sind. Die Prüfung kann nicht sagen, ob der Unterschied für sich allein stark genug ist.",
-    ask: "Fragen Sie Ihren Designer, ob diese Links ohne die Farbe noch zu finden sind. Ist die Farbe das Einzige, was sie kennzeichnet, brauchen sie eine Unterstreichung oder ein anderes sichtbares Merkmal.",
+    ask: "Fragen Sie Ihr Designteam, ob diese Links ohne die Farbe noch zu finden sind. Ist die Farbe das Einzige, was sie kennzeichnet, brauchen sie eine Unterstreichung oder ein anderes sichtbares Merkmal.",
   },
   "video-caption": {
     what: "Ein Video, das die Prüfung sehen, aber nicht anschauen kann. Sie kann nicht feststellen, ob Untertitel da sind oder ob sie etwas taugen.",
@@ -947,7 +947,7 @@ export const UNDECIDED_DE: Record<string, { what: string; ask: string }> = {
   },
   "form-error-association": {
     what: "Fehlermeldungen im Formular, die im Code nicht mit ihrem Feld verbunden sind. Ein Screenreader sagt das Feld an, aber nicht den Fehler daneben.",
-    ask: "Bitten Sie Ihren Entwickler, jede Meldung mit aria-describedby an ihr Feld zu binden. Dann hört man das Problem im selben Moment wie das Feld.",
+    ask: "Bitten Sie Ihr Entwicklungsteam, jede Meldung mit aria-describedby an ihr Feld zu binden. Dann hört man das Problem im selben Moment wie das Feld.",
   },
   "media-audio-transcript": {
     what: "Ton auf der Seite. Ein Transkript ist gewöhnlicher Seitentext, also kann die Prüfung nicht feststellen, ob eines vorhanden ist.",
@@ -967,63 +967,63 @@ export const UNDECIDED_DE: Record<string, { what: string; ask: string }> = {
   },
   "consent-trap-unnamed": {
     what: "Der Tastaturfokus bleibt in der Cookie-Ebene, aber die Ebene sagt nie, was sie ist. Keine Dialog-Rolle, kein Name.",
-    ask: "Bitten Sie Ihren Entwickler, die Ebene als Dialog zu kennzeichnen und zu benennen.",
+    ask: "Bitten Sie Ihr Entwicklungsteam, die Ebene als Dialog zu kennzeichnen und zu benennen.",
   },
   "interaction-motion-actuation": {
     what: "Die Seite reagiert darauf, dass das Handy gekippt oder geschüttelt wird. Wer sein Handy in einer Halterung hat oder zittrige Hände, kann das nicht.",
-    ask: "Fragen Sie Ihren Entwickler, ob sich jede Kipp- oder Schüttelaktion auch durch Tippen auf dem Bildschirm auslösen lässt. Fragen Sie dann, ob sich die Bewegungssteuerung abschalten lässt, damit eine zitternde Hand sie nicht versehentlich auslöst.",
+    ask: "Fragen Sie Ihr Entwicklungsteam, ob sich jede Kipp- oder Schüttelaktion auch durch Tippen auf dem Bildschirm auslösen lässt. Fragen Sie dann, ob sich die Bewegungssteuerung abschalten lässt, damit eine zitternde Hand sie nicht versehentlich auslöst.",
   },
   "interaction-gesture-listeners": {
     what: "Die Seite horcht auf Wisch- und Ziehbewegungen. Wer zittert oder den Zeiger per Sprache oder Schalter steuert, bringt so eine Bewegung vielleicht nicht zustande.",
-    ask: "Fragen Sie Ihren Entwickler, ob sich jedes Wischen und Ziehen auch durch Tippen erledigen lässt. Pfeile neben einem Karussell, ein Knopf neben einem Schieberegler.",
+    ask: "Fragen Sie Ihr Entwicklungsteam, ob sich jedes Wischen und Ziehen auch durch Tippen erledigen lässt. Pfeile neben einem Karussell, ein Knopf neben einem Schieberegler.",
   },
   "interaction-key-shortcuts": {
     what: "Die Seite achtet auf Tastendrücke im ganzen Fenster. Wo ein einzelner Buchstabe ein Kürzel ist, löst ihn jeder aus, der mit seinem Computer spricht.",
-    ask: "Fragen Sie Ihren Entwickler, ob ein Kürzel aus einem einzelnen Buchstaben oder einer Ziffer besteht. Jedes davon muss abschaltbar oder änderbar sein oder nur gelten, solange das Element den Fokus hat.",
+    ask: "Fragen Sie Ihr Entwicklungsteam, ob ein Kürzel aus einem einzelnen Buchstaben oder einer Ziffer besteht. Jedes davon muss abschaltbar oder änderbar sein oder nur gelten, solange das Element den Fokus hat.",
   },
   "interaction-unmarked-language": {
     what: "Passagen in einer anderen Schrift als der Rest der Seite, ohne Angabe, welche Sprache das ist. Ein Screenreader spricht sie falsch aus, und dann sind sie oft nicht zu verstehen.",
-    ask: "Bitten Sie Ihren Entwickler, jede Passage mit ihrer Sprache zu kennzeichnen. Automatisch erkennbar ist nur ein Schriftwechsel. Fragen Sie also auch nach fremdsprachigen Passagen in lateinischer Schrift.",
+    ask: "Bitten Sie Ihr Entwicklungsteam, jede Passage mit ihrer Sprache zu kennzeichnen. Automatisch erkennbar ist nur ein Schriftwechsel. Fragen Sie also auch nach fremdsprachigen Passagen in lateinischer Schrift.",
   },
   "interaction-title-tooltip": {
     what: "Kurzhinweise aus dem title-Attribut. Sie erscheinen nur beim Zeigen mit der Maus, also sieht sie an Tastatur oder Touchscreen niemand. Sie lassen sich auch nicht wegklicken und verschwinden, sobald man zu ihnen hinfährt, um zu Ende zu lesen.",
-    ask: "Fragen Sie Ihren Entwickler, ob darin etwas Wichtiges steckt. Wenn ja, schreiben Sie es auf die Seite oder bauen Sie einen Hinweis, der stehen bleibt und mit Escape schließt.",
+    ask: "Fragen Sie Ihr Entwicklungsteam, ob darin etwas Wichtiges steckt. Wenn ja, schreiben Sie es auf die Seite oder bauen Sie einen Hinweis, der stehen bleibt und mit Escape schließt.",
   },
   "interaction-orientation-lock": {
     what: "Ein Stylesheet dreht die Seite hier zurück oder blendet sie aus, wenn das Handy gedreht wird. So sieht eine Seite aus, die auf eine Ausrichtung festgelegt ist. Es kann auch eine gewollte Querformat-Ansicht für etwas Breites sein.",
-    ask: "Fragen Sie Ihren Entwickler, ob die Seite in beiden Lagen funktioniert. Wer sein Handy oder Tablet am Rollstuhl befestigt hat, kann es nicht drehen.",
+    ask: "Fragen Sie Ihr Entwicklungsteam, ob die Seite in beiden Lagen funktioniert. Wer sein Handy oder Tablet am Rollstuhl befestigt hat, kann es nicht drehen.",
   },
   "interaction-no-status-region": {
     what: "Seiten aktualisieren sich ohne Neuladen. Ein Filter kürzt eine Liste, ein Formular meldet, dass es gespeichert hat. Auf dieser Seite ist keine Stelle als der Ort gekennzeichnet, an dem so eine Änderung gesprochen wird. Der Screenreader schweigt, während sich die Seite unter ihm bewegt.",
-    ask: "Fragen Sie Ihren Entwickler, ob sich hier etwas ohne Neuladen ändert. Wenn ja, braucht diese Änderung einen Live-Bereich, damit sie nicht nur gezeigt, sondern auch gesprochen wird.",
+    ask: "Fragen Sie Ihr Entwicklungsteam, ob sich hier etwas ohne Neuladen ändert. Wenn ja, braucht diese Änderung einen Live-Bereich, damit sie nicht nur gezeigt, sondern auch gesprochen wird.",
   },
   "interaction-acts-on-change": {
     what: "Menüs oder Kästchen, die offenbar sofort handeln, sobald man sie setzt, statt auf einen Knopf zu warten. Wir haben das aus dem Code gelesen und nicht ausprobiert: Auf Ihrer echten Website könnte das eine echte Bestellung auslösen.",
-    ask: "Fragen Sie Ihren Entwickler, ob die Wahl einer Option hier absendet oder die Seite wechselt. Wenn ja, setzen Sie einen Knopf dafür ein oder weisen Sie vor dem Element darauf hin.",
+    ask: "Fragen Sie Ihr Entwicklungsteam, ob die Wahl einer Option hier absendet oder die Seite wechselt. Wenn ja, setzen Sie einen Knopf dafür ein oder weisen Sie vor dem Element darauf hin.",
   },
   "interaction-pointer-cancellation": {
     what: "Elemente, die schon beim Drücken handeln und nicht erst beim Loslassen. Wer versehentlich auf eines kommt, kann nicht mehr wegrutschen und loslassen.",
-    ask: "Bitten Sie Ihren Entwickler, diese erst beim Loslassen auszulösen. Wem die Hand verrutscht oder wer länger zielt, kann dann noch weggehen, bevor er den Finger hebt.",
+    ask: "Bitten Sie Ihr Entwicklungsteam, diese erst beim Loslassen auszulösen. Wem die Hand verrutscht oder wer länger zielt, kann dann noch weggehen, bevor er den Finger hebt.",
   },
   "aria-valid-attr-value": {
     what: "Angaben im Code, die auf einen anderen Teil der Seite zeigen. Die Prüfung kann nicht immer feststellen, ob das Ziel wirklich da ist.",
-    ask: "Lassen Sie Ihren Entwickler prüfen, ob jede id, auf die ein aria-Attribut zeigt, auf der Seite existiert. Keine davon sollte in einem Block liegen, der versteckt oder entfernt wird.",
+    ask: "Lassen Sie Ihr Entwicklungsteam prüfen, ob jede id, auf die ein aria-Attribut zeigt, auf der Seite existiert. Keine davon sollte in einem Block liegen, der versteckt oder entfernt wird.",
   },
   "aria-allowed-role": {
     what: "Teile der Seite, die im Code eine Rolle tragen, die vielleicht nicht zu ihnen passt. Ob es falsch ist, hängt davon ab, wie sich das Element verhält.",
-    ask: "Lassen Sie Ihren Entwickler prüfen, ob sich jedes so verhält, wie seine Rolle es verspricht, Tastatur eingeschlossen. Sonst lassen Sie die Rolle weg und nehmen das native Element.",
+    ask: "Lassen Sie Ihr Entwicklungsteam prüfen, ob sich jedes so verhält, wie seine Rolle es verspricht, Tastatur eingeschlossen. Sonst lassen Sie die Rolle weg und nehmen das native Element.",
   },
   "aria-prohibited-attr": {
     what: "Ein Element trägt einen Namen, den der Code ihm vielleicht nicht lässt. Ob er bleibt, hängt von der Rolle des Elements ab.",
-    ask: "Lassen Sie Ihren Entwickler prüfen, ob jedes mit dem Namen angesagt wird, den Sie gemeint haben. Wo nicht, setzen Sie den Namen auf ein Element, das einen tragen darf.",
+    ask: "Lassen Sie Ihr Entwicklungsteam prüfen, ob jedes mit dem Namen angesagt wird, den Sie gemeint haben. Wo nicht, setzen Sie den Namen auf ein Element, das einen tragen darf.",
   },
   "css-orientation-lock": {
     what: "Stile, die die Seite auf Hoch- oder Querformat festlegen könnten. Die Prüfung, die das gefunden hat, ist experimentell.",
-    ask: "Fragen Sie Ihren Entwickler, ob sich die Seite mit dem Gerät dreht. Manche Menschen befestigen Handy oder Tablet am Rollstuhl in einer Lage und können es nicht drehen.",
+    ask: "Fragen Sie Ihr Entwicklungsteam, ob sich die Seite mit dem Gerät dreht. Manche Menschen befestigen Handy oder Tablet am Rollstuhl in einer Lage und können es nicht drehen.",
   },
   "duplicate-id-aria": {
     what: "Eine id, die möglicherweise mehrfach verwendet wird. Jede Angabe im Code, die darauf zeigt, folgt nur der ersten, also kann ein Name still am falschen Element landen.",
-    ask: "Bitten Sie Ihren Entwickler, jede id auf der Seite eindeutig zu machen, beginnend mit denen, auf die ein aria-Attribut zeigt.",
+    ask: "Bitten Sie Ihr Entwicklungsteam, jede id auf der Seite eindeutig zu machen, beginnend mit denen, auf die ein aria-Attribut zeigt.",
   },
 };
 
