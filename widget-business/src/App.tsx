@@ -109,8 +109,8 @@ export function waitingMessage(mode: ScanMode, aiRequested: boolean, elapsed: nu
       : t("Still at it. Heavier pages take longer.");
   }
   return aiRequested
-    ? t("We check your site, including the AI review. That usually takes about a minute…")
-    : tf("We check your site. Most pages take {duration}…", { duration: t(SCAN_DURATION.page) });
+    ? t("Checking your site, AI review included. This usually takes about a minute…")
+    : tf("Checking your site. Most pages take {duration}…", { duration: t(SCAN_DURATION.page) });
 }
 
 export interface CtaConfig {
@@ -527,7 +527,7 @@ export function App({
             </p>
             <p className="a11y-blockflag-body">
               {t(
-                "The banner hides the page from screen readers and never takes focus. Until that is fixed, everything below this line is what a screen reader user never reaches."
+                "The banner hides the page from screen readers and never takes focus. Until it is fixed, screen reader users never reach anything below this line."
               )}
             </p>
             <button
@@ -683,7 +683,7 @@ export function App({
               <ReportSection
                 title="What costs you trust"
                 description={t(
-                  "Places your site nudges people rather than leaves the choice to them. These don't move the score."
+                  "Places where your site nudges people instead of leaving the choice to them. These don't move the score."
                 )}
                 variant={findingsByCategory.darkPattern.length > 0 ? "redflag" : "default"}
                 findings={findingsByCategory.darkPattern}

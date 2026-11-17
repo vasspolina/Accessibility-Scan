@@ -203,7 +203,7 @@ export function ScreenReaderPreview({ script }: { script: ScreenReaderScript }) 
           </span>
         ) : (
           <p className="a11y-sr-status">
-            {t("Your browser can't play audio for this, so the transcript below is read only.")}
+            {t("Your browser can't play audio for this, so read the transcript below instead.")}
           </p>
         )}
         {/* Filtering beats paging here. Carbon would page a 120-row data

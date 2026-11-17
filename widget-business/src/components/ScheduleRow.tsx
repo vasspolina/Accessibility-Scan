@@ -134,9 +134,9 @@ export function ScheduleRow({ apiBase, url }: { apiBase: string; url: string }) 
               : `${t("Not run yet.")} `}
             {mine.enabled ? `${t("Next")} ${when(mine.nextRunAt)}.` : ""}
             {mine.lastError ? ` ${t("Last run failed:")} ${mine.lastError}` : ""}
-            {mine.notifyEmail ? ` ${t("Writes to")} ${mine.notifyEmail} ${t("if the score drops or a new finding appears.")}` : ""}
+            {mine.notifyEmail ? ` ${t("Emails")} ${mine.notifyEmail} ${t("if the score drops or a new finding appears.")}` : ""}
           </span>
-          {status && !status.enabled && <span className="a11y-settings-state">{t("The scheduler is off on this server. This schedule will not run until it is on.")}</span>}
+          {status && !status.enabled && <span className="a11y-settings-state">{t("The scheduler is off on this server. This schedule will not run until it is turned on.")}</span>}
           {status && mine.notifyEmail && !status.mail && <span className="a11y-settings-state">{t("Mail is not set up on this server. No email will be sent.")}</span>}
           <div className="a11y-manual-form-actions">
             <Button variant="secondary" size="sm" onClick={toggle} disabled={busy}>
@@ -149,11 +149,11 @@ export function ScheduleRow({ apiBase, url }: { apiBase: string; url: string }) 
         </>
       ) : all !== null ? (
         <form className="a11y-manual-form" onSubmit={create} aria-labelledby={`${id}-label`}>
-          <span className="a11y-settings-state">{t("Scan this page automatically. If the score drops or a new finding appears, you are told.")}</span>
+          <span className="a11y-settings-state">{t("Scan this page on a schedule. We flag it if the score drops or a new finding appears.")}</span>
           <Select id={`${id}-every`} label={t("How often")} options={EVERY} value={every} onChange={(e) => setEvery(e.target.value)} />
           <Input
             id={`${id}-email`}
-            label={t("Email for a worse result (optional)")}
+            label={t("Email me if it gets worse (optional)")}
             type="email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}

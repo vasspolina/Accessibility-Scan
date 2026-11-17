@@ -29,7 +29,7 @@ export function failureText(message: string, reason?: FailureReason): string {
             status: reason.status,
           });
         if (reason.status === 401)
-          return tf("That page asks for a login first (HTTP {status}). The form can sign in with your details.", {
+          return tf("That page asks for a login first (HTTP {status}). Use the form's login option to sign in with a test account.", {
             status: reason.status,
           });
         return tf(
@@ -52,11 +52,11 @@ const PICTURE_NOTES: Record<NonNullable<AccessibilityFinding["pictureReason"]>, 
   offscreen:
     "No picture: this sits off the edge of the screen until it is used. Skip links are built this way on purpose.",
   "no-usable-image":
-    "No picture: the element is there, but photographing it produced nothing worth showing. A blank rectangle, or whatever is sitting on top of it.",
+    "No picture: the element is there, but the photograph came out blank or showed whatever sits on top of it.",
   "too-large":
-    "No picture: this covers a whole region of the page rather than one component, and a photograph of the entire section would not show you which part of it is at fault.",
+    "No picture: this covers a whole region of the page, not one component. A photograph of the entire section would not show which part is at fault.",
   missing:
-    "No picture: the element was on the page when we judged it, and gone when we went back to photograph it. Banners that appear once per visitor do this.",
+    "No picture: the element was on the page when we checked it, and gone when we went back to photograph it. Banners that appear once per visitor do this.",
   "not-attempted":
     "No picture: each scan photographs a limited number of elements, and this one was past that limit. Scanning again may reach it.",
   unreachable:
