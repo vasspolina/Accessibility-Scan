@@ -4,7 +4,7 @@ import { z } from "zod";
 import { env } from "../config/env.js";
 import { logger } from "../utils/logger.js";
 import { getClaudeClient } from "../services/aiReview/claudeClient.js";
-import { CHAT_SYSTEM_PROMPT, SHOW_SECTION_TOOL, START_SCAN_TOOL, WEB_SEARCH_TOOL } from "../services/chat/chatPrompt.js";
+import { CHAT_SYSTEM_PROMPT, chatLanguageNote, SHOW_SECTION_TOOL, START_SCAN_TOOL, WEB_SEARCH_TOOL } from "../services/chat/chatPrompt.js";
 
 /**
  * The conversational front of the checker, as server-sent events.
@@ -95,6 +95,9 @@ const chatBodySchema = z.object({
       ])
     )
     .min(1),
+  // The language the reader set in the widget. Optional, so an older widget
+  // still gets an answer, in the language of its question.
+  language: z.enum(["en", "de", "es", "fr"]).optional(),
 });
 
 const SECTIONS = ["score", "findings", "checklist", "wcag22", "team", "notes", "screenreader", "statement", "vpat", "simulator", "history", "audit", "settings"] as const;
@@ -195,7 +198,14 @@ export async function chatRoutes(app: FastifyInstance) {
       // not quietly change what this costs.
       thinking: { type: "adaptive" },
       output_config: { effort: "medium" },
-      system: [{ type: "text", text: CHAT_SYSTEM_PROMPT }],
+      // The prompt stays byte-stable; the chosen language rides in a second
+      // block after it. It is the same on every turn until the reader
+      // switches, so the cached conversation is re-read until then, and a
+      // switch costs one uncached turn.
+      system: [
+        { type: "text", text: CHAT_SYSTEM_PROMPT },
+        ...(parsed.data.language ? [{ type: "text" as const, text: chatLanguageNote(parsed.data.language) }] : []),
+      ],
       tools: [START_SCAN_TOOL, SHOW_SECTION_TOOL, WEB_SEARCH_TOOL],
       // Caches the growing conversation, report digest included, so a
       // follow-up question re-reads the report from cache.

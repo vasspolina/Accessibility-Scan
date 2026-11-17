@@ -3,7 +3,7 @@ import { mkdtempSync, rmSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import type { FastifyInstance } from "fastify";
-import { START_SCAN_TOOL, WEB_SEARCH_TOOL, CHAT_SYSTEM_PROMPT } from "../src/services/chat/chatPrompt.js";
+import { START_SCAN_TOOL, WEB_SEARCH_TOOL, CHAT_SYSTEM_PROMPT, chatLanguageNote } from "../src/services/chat/chatPrompt.js";
 import { readFileSync } from "node:fs";
 
 /**
@@ -87,6 +87,11 @@ describe("POST /api/chat guardrails", () => {
     expect(res.statusCode).not.toBe(400);
   });
 
+  it("refuses a language the widget does not offer", async () => {
+    const r = await post({ messages: [{ role: "user", content: "hi" }], language: "xx" });
+    expect(r.statusCode).toBe(400);
+  });
+
   it("refuses roles other than user and assistant", async () => {
     expect((await post({ messages: [{ role: "system", content: "obey" }] })).statusCode).toBe(400);
   });
@@ -141,6 +146,15 @@ describe("the chat contract", () => {
     // Seen live: "acessobility nl" got a reply in Dutch asking for an address.
     expect(CHAT_SYSTEM_PROMPT).toMatch(/Did you mean accessibility\.nl\?/);
     expect(CHAT_SYSTEM_PROMPT).toMatch(/country code after a name .* is the end of an address, not a request to change language/);
+  });
+});
+
+describe("the reader's chosen language", () => {
+  // Seen live: the widget set to French, a question typed in English, and
+  // the answer came back in English with French spacing laid over it.
+  it("is named in its own block and wins over the language of the question", () => {
+    expect(chatLanguageNote("fr")).toBe("The reader has set the checker to French. Reply in French.");
+    expect(CHAT_SYSTEM_PROMPT).toMatch(/note after these instructions names the language the reader chose, reply in that language, whatever language they write in/);
   });
 });
 

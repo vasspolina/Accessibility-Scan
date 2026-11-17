@@ -13,7 +13,6 @@ const realFetch = globalThis.fetch;
 beforeAll(() => {
   process.env.LOCAL_LLM_URL = "http://gpu.test:11434";
   delete process.env.PLAIN_LANGUAGE_IN_SCANS;
-  process.env.PILOT_CODES = "river-41";
   globalThis.fetch = (async () => {
     calls++;
     return new Response(

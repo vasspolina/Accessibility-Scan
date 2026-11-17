@@ -1027,26 +1027,31 @@ export function ScanChat({
         </div>
         <LanguageSelect id="a11y-lang-form" value={language} onChange={onLanguageChange} />
       </div>
-      {/* The opening questions, set like the panels of a font tester (user's
-          reference, 4 Nov 2026): a small label over each, the question in
-          big centred type, a different layout each, no frame. Each is a
-          button that sends its question as if typed; they go once the
-          conversation starts. */}
+      {/* The opening questions, set as type-specimen tiles (user's
+          reference, 17 Nov 2026): a pale square tile per group, its label
+          top-left, the question set large at the foot. The whole tile is
+          the button and sends its question as if typed; hover and focus
+          turn it solid black with white words and show a pill that says
+          what a press does. They go once the conversation starts. */}
       {turns.length === 0 && (
         <section className="a11y-prompts" aria-label={t("Questions to start with")}>
+          <div className="a11y-prompt-grid">
           {picks.map((p) => (
-            <div key={p.group} className="a11y-prompt" data-layout={p.layout}>
-              <p className="a11y-prompt-label">{t(p.group)}</p>
-              <button
-                type="button"
-                className="a11y-prompt-ask"
-                disabled={busy || loading}
-                onClick={() => void ask(t(p.prompt))}
-              >
-                {smarten(t(p.prompt), getLang())}
-              </button>
-            </div>
+            <button
+              key={p.group}
+              type="button"
+              className="a11y-prompt"
+              disabled={busy || loading}
+              onClick={() => void ask(t(p.prompt))}
+            >
+              <span className="a11y-prompt-label">{t(p.group)}</span>
+              <span className="a11y-prompt-ask">{smarten(t(p.prompt), getLang())}</span>
+              {/* The press, said in words; the button's name is already
+                  the label and the question, so this is not read twice. */}
+              <span className="a11y-prompt-go" aria-hidden="true">{t("Ask this")}</span>
+            </button>
           ))}
+          </div>
           <p className="a11y-prompt-more">
             <Button variant="ghost" onClick={() => setPicks((last) => pickOpeningPrompts(Math.random, last))}>
               {t("Other questions")}

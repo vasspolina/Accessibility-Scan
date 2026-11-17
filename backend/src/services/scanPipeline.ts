@@ -8,6 +8,7 @@ import type { AxeRunResult, FreshCaptureResult } from "./render/renderPage.js";
 import { extractContext } from "./contextExtraction/extractContext.js";
 import { reviewPage } from "./aiReview/reviewPage.js";
 import { attachAltTextSuggestions } from "./aiReview/suggestAltText.js";
+import { attachCodeFixes, pickCodeFixCandidates, suggestCodeFixes } from "./aiReview/suggestCodeFix.js";
 import { attachPlainLanguage, rewriteFindings } from "./plainLanguage/rewriteFindings.js";
 import {
   axeToFindings,
@@ -508,6 +509,15 @@ export async function scanUrlToReport(
   deterministic.push(...evaluateTextResize(renderResult.textResizeSignals));
   deterministic.push(...(await validateMarkup(renderResult.finalUrl, trustPrivateHosts)));
 
+  // The AI fixes need only the measured findings and their snippets, all of
+  // which exist now, so they run beside the page review that is still in
+  // flight and cost no extra wall-clock time. Same switch as the review.
+  const codeFixPromise = suggestCodeFixes(
+    pickCodeFixCandidates([...automatedFindings, ...deterministic]),
+    includeAiReview,
+    reportLang
+  );
+
   // Everything above ran while the AI review was in flight; collect it now.
   // The render is done; if the AI layer is still thinking, that wait is
   // now the visible activity.
@@ -552,6 +562,10 @@ export async function scanUrlToReport(
     // model wrote none or every note failed to attach.
     logger.info(ageStats, "age enrichments");
   }
+
+  const codeFixes = await codeFixPromise;
+  const codeFixesAttached = attachCodeFixes(findings, codeFixes);
+  if (codeFixes.size > 0) logger.info({ received: codeFixes.size, attached: codeFixesAttached }, "code fixes attached");
 
   const plainRewrite = await plainPromise;
   attachPlainLanguage(findings, plainRewrite, reportLang);

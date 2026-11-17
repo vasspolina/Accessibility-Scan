@@ -48,7 +48,7 @@ export function FindingsList({
   findings: AccessibilityFinding[];
   asNotes?: boolean;
 }) {
-  const { professional, showInstances } = useReportView();
+  const { professional, showInstances, showLevel: reportShowsLevel } = useReportView();
 
   if (findings.length === 0) {
     return <p className="a11y-empty">{t("Nothing found here.")}</p>;
@@ -65,7 +65,9 @@ export function FindingsList({
   // table, not just from the ones where it happens to be empty. The notes
   // table keeps its own rule, since its Instances is its only second column.
   const ownCount = grouped.some((group) => group.length > 1);
-  const showLevel = grouped.some((group) => Boolean(group[0]?.wcagLevel));
+  // Level, like Instances, is decided for the whole report (ReportView.showLevel)
+  // so every section's table has the same columns at the same x.
+  const showLevel = reportShowsLevel ?? grouped.some((group) => Boolean(group[0]?.wcagLevel));
   const showCount = asNotes ? ownCount : (showInstances ?? ownCount);
 
   return (

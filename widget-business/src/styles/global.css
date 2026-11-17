@@ -61,7 +61,7 @@
 
 .a11y-widget-biz {
   font-family: "Jokker", "DejaVu Sans", sans-serif;
-  font-size: 27px; font-weight: 400; line-height: 1.2; letter-spacing: 0;
+  font-size: 32px; font-weight: 400; line-height: 1.2; letter-spacing: 0;
   font-kerning: normal; font-feature-settings: "ss04", "ss05"; font-variant-ligatures: common-ligatures; text-rendering: optimizeLegibility; font-synthesis: none;
   background: var(--paper); color: var(--ink);
   hyphens: auto; hyphenate-limit-chars: 7 3 3; -webkit-hyphenate-limit-lines: 3; hyphenate-limit-lines: 3; text-wrap: pretty;
@@ -70,7 +70,7 @@
 /* A heading sits a clear step above its text (0.5em, was 0.3em) and a full
    line clear of what came before: paragraph spacing after the FAQ on
    displaay.net, user's instruction, 4 Nov 2026. */
-.a11y-widget-biz :is(h1, h2, h3, h4) { font-weight: 500; line-height: 1.05; font-size: 32px; letter-spacing: -0.005em; margin: 1.2em 0 0.5em; }
+.a11y-widget-biz :is(h1, h2, h3, h4) { font-weight: 500; line-height: 1.05; font-size: 38px; letter-spacing: -0.005em; margin: 1.2em 0 0.5em; }
 /* Two lines under each paragraph, list, table and figure of the report
    (was one; user asked for twice the room, 4 Nov 2026). */
 .a11y-widget-biz :is(p, ul, ol, dl, table, figure) { margin: 0 0 2.4em; }
@@ -78,7 +78,7 @@
 
 /* The small print under the poster: 15px. */
 .a11y-widget-biz :is(small, .a11y-issue-row-meta, .a11y-conf-cap, .a11y-next-meta, .a11y-sum-eyebrow, .a11y-sum-micro, .a11y-input-help, .a11y-input-label) {
-  font-size: 15px; letter-spacing: 0.01em; line-height: 1.2;
+  font-size: 18px; letter-spacing: 0.01em; line-height: 1.2;
 }
 
 /* Controls: pills again (user's instruction, 4 Nov 2026, back from the 10px
@@ -86,7 +86,7 @@
    and a flat marker-yellow fill on hover (black text on --hl-cap-a measures
    better than 7:1). 18px. */
 .a11y-widget-biz :is(button, .a11y-btn) {
-  font: inherit; font-size: 18px; letter-spacing: 0.01em; font-weight: 500;
+  font: inherit; font-size: 22px; letter-spacing: 0.01em; font-weight: 500;
   box-sizing: border-box; min-height: 34px; padding: 0.5em 1.1em; border: 1px solid var(--ink); border-radius: 999px;
   background: var(--paper); color: var(--ink); transition: background-color 0.15s, border-color 0.15s, border-radius 0.15s;
 }
@@ -102,14 +102,14 @@
 .a11y-widget-biz .a11y-btn.a11y-btn-primary:enabled { background: var(--ink); color: var(--paper); }
 .a11y-widget-biz .a11y-btn.a11y-btn-primary:enabled:hover { background: var(--hl-cap-a); border-color: var(--hl-cap-a); color: #000; }
 .a11y-widget-biz :is(input:not([type="radio"]):not([type="checkbox"]), textarea, select) {
-  font: inherit; font-size: 18px; letter-spacing: 0.01em; padding: 0.4em 0.6em;
+  font: inherit; font-size: 22px; letter-spacing: 0.01em; padding: 0.4em 0.6em;
   border: 2px solid var(--ink); border-radius: 0; background: var(--paper); color: var(--ink);
 }
 .a11y-widget-biz :focus-visible { outline: 3px solid var(--ink); outline-offset: 2px; box-shadow: 0 0 0 2px var(--paper); }
 
 /* Tables stay plain: rows on rules. */
 .a11y-widget-biz table { border-collapse: collapse; width: 100%; }
-.a11y-widget-biz :is(th, td) { text-align: start; vertical-align: top; padding: 0.3em 0.6em 0.3em 0; border-bottom: 2px solid var(--ink); font-size: 18px; letter-spacing: 0.01em; }
+.a11y-widget-biz :is(th, td) { text-align: start; vertical-align: top; padding: 0.3em 0.6em 0.3em 0; border-bottom: 2px solid var(--ink); font-size: 22px; letter-spacing: 0.01em; }
 
 /* The highlight. Black text, always; cap colours are decoration. */
 .a11y-widget-biz :is(.a11y-sev, .a11y-rule-chip, .a11y-level-badge, .a11y-sum-chip, .a11y-pro-chip, .a11y-conf-status, .a11y-principle-count, .a11y-status-chip) {
@@ -230,7 +230,7 @@
   gap: 0.5em; margin-top: 0.5em;
 }
 /* Who is speaking: small print above each turn. */
-.a11y-widget-biz .a11y-chat-who { font-size: 15px; letter-spacing: 0.01em; font-weight: 500; margin: 0 0 0.3em; }
+.a11y-widget-biz .a11y-chat-who { font-size: 18px; letter-spacing: 0.01em; font-weight: 500; margin: 0 0 0.3em; }
 /* Paragraph spacing, after the FAQ on displaay.net (user's instruction,
    4 Nov 2026, replacing "no space between turns" of 18 Oct): one line of
    the 27px text between turns and, since the same day, a full line between
@@ -262,9 +262,9 @@
   padding: 14px 16px 22px; background: #f0efe8; color: #000;
   overflow-wrap: break-word; hyphens: auto;
 }
-.a11y-widget-biz .a11y-chat-text .a11y-chat-plan-no { font-size: 15px; letter-spacing: 0.01em; line-height: 1.2; margin: 0 0 40px; }
-.a11y-widget-biz .a11y-chat-text .a11y-chat-plan-title { display: block; font-size: 27px; font-weight: 500; line-height: 1.1; letter-spacing: 0; margin: 0 0 0.4em; }
-.a11y-widget-biz .a11y-chat-text .a11y-chat-plan-text { display: block; font-size: 18px; line-height: 1.35; letter-spacing: 0.01em; }
+.a11y-widget-biz .a11y-chat-text .a11y-chat-plan-no { font-size: 18px; letter-spacing: 0.01em; line-height: 1.2; margin: 0 0 40px; }
+.a11y-widget-biz .a11y-chat-text .a11y-chat-plan-title { display: block; font-size: 32px; font-weight: 500; line-height: 1.1; letter-spacing: 0; margin: 0 0 0.4em; }
+.a11y-widget-biz .a11y-chat-text .a11y-chat-plan-text { display: block; font-size: 22px; line-height: 1.35; letter-spacing: 0.01em; }
 /* The tile's own figure is the marker, so the round list marker the chat's
    other numbered lists take is not drawn here. */
 .a11y-widget-biz .a11y-chat-text .a11y-chat-plan > li::before { content: none; }
@@ -272,7 +272,7 @@
 .a11y-widget-biz .a11y-chat-text .a11y-chat-plan :focus-visible { outline-color: #000; box-shadow: 0 0 0 2px #f0efe8; }
 /* Where a searched answer came from: small print under the reply, the
    pages named and linked, each once. */
-.a11y-widget-biz .a11y-chat-sources { font-size: 15px; letter-spacing: 0.01em; line-height: 1.3; margin: 0; overflow-wrap: anywhere; }
+.a11y-widget-biz .a11y-chat-sources { font-size: 18px; letter-spacing: 0.01em; line-height: 1.3; margin: 0; overflow-wrap: anywhere; }
 .a11y-widget-biz .a11y-chat-sources a { color: var(--ink); }
 
 /* ═══ LETTERSPACING AND PUNCTUATION (18 Oct 2026; Hochuli, Detail in
@@ -295,7 +295,7 @@
    emphasis is the Medium cut or nothing. Hyphenation keeps at least
    three letters either side and no more than three lines in a row end in
    a hyphen (p.47). */
-.a11y-widget-biz .a11y-caps { font-size: 25px; letter-spacing: 0.06em; }
+.a11y-widget-biz .a11y-caps { font-size: 30px; letter-spacing: 0.06em; }
 .a11y-widget-biz :is(.a11y-chat-who, small, th) .a11y-caps { font-size: inherit; }
 /* A list in the conversation (fig. 50): an en dash and a word space for a
    bullet, hung in the margin; a figure and its point for a count. */
@@ -314,7 +314,7 @@
   display: grid; place-content: center;
   width: 32px; height: 32px; border-radius: 50%;
   background: var(--ink); color: var(--paper);
-  font-size: 18px; letter-spacing: 0; font-weight: 500; line-height: 1;
+  font-size: 22px; letter-spacing: 0; font-weight: 500; line-height: 1;
 }
 .a11y-widget-biz .a11y-chat-text li::marker { font-weight: 400; }
 .a11y-widget-biz .a11y-chat-text li { margin: 0 0 0.2em; }
@@ -366,8 +366,8 @@
 /* The details toggle (5 Nov 2026, after Claude's folded tool calls): a
    block's fold says what it does in small print, and a finished scan's
    steps sit behind one "Details" line. */
-.a11y-widget-biz .a11y-chat-blockhead .a11y-chat-fold { font-size: 15px; letter-spacing: 0.01em; margin-inline-start: 0.8em; }
-.a11y-widget-biz .a11y-chat-stepfold > summary { font-size: 15px; letter-spacing: 0.01em; margin-top: 0.3em; width: fit-content; }
+.a11y-widget-biz .a11y-chat-blockhead .a11y-chat-fold { font-size: 18px; letter-spacing: 0.01em; margin-inline-start: 0.8em; }
+.a11y-widget-biz .a11y-chat-stepfold > summary { font-size: 18px; letter-spacing: 0.01em; margin-top: 0.3em; width: fit-content; }
 .a11y-widget-biz .a11y-chat-stepfold[open] > summary { margin-bottom: 0.3em; }
 /* Back and the form link share the start of the box's row. */
 .a11y-widget-biz .a11y-chat-box-start { display: flex; flex-wrap: wrap; align-items: center; gap: 0.5em; }
@@ -397,7 +397,7 @@
    small print under the title, not a suffix welded onto its last word:
    "Pop-up opens without taking focusKeyboard test" shipped on 17 Oct. */
 .a11y-widget-biz .a11y-finding-meta-line,
-.a11y-widget-biz .a11y-finding-meta { display: block; font-size: 15px; letter-spacing: 0.01em; line-height: 1.2; }
+.a11y-widget-biz .a11y-finding-meta { display: block; font-size: 18px; letter-spacing: 0.01em; line-height: 1.2; }
 .a11y-widget-biz .a11y-method-badge { margin-inline-end: 0.3em; }
 
 /* The printed report's own copy of the findings (cards) is in the DOM for
@@ -447,14 +447,14 @@
 .a11y-widget-biz .a11y-accordion-chevron { flex: none; width: 0.6em; height: 0.6em; margin-inline-start: auto; }
 .a11y-widget-biz .a11y-accordion-head[aria-expanded="true"] .a11y-accordion-chevron { transform: rotate(180deg); }
 .a11y-widget-biz .a11y-w22-toggle { display: flex; align-items: center; gap: 0.6em; text-align: start; }
-.a11y-widget-biz .a11y-section-count { font-size: 18px; letter-spacing: 0.01em; font-weight: 400; }
+.a11y-widget-biz .a11y-section-count { font-size: 22px; letter-spacing: 0.01em; font-weight: 400; }
 
 /* Steps: the word "Step 1:" has a space after it. */
 .a11y-widget-biz .a11y-stmt-step-num { margin-inline-end: 0.4em; }
 
 /* Fields: the label above, the box under it, full width. */
 .a11y-widget-biz .a11y-stmt-fields { display: grid; grid-template-columns: minmax(0, 1fr); gap: 0.8em; margin: 0 0 1.2em; }
-.a11y-widget-biz .a11y-stmt-field { display: grid; gap: 0.2em; font-size: 15px; letter-spacing: 0.01em; font-weight: 500; }
+.a11y-widget-biz .a11y-stmt-field { display: grid; gap: 0.2em; font-size: 18px; letter-spacing: 0.01em; font-weight: 500; }
 .a11y-widget-biz .a11y-stmt-field input { width: 100%; box-sizing: border-box; font-weight: 400; }
 
 /* The findings schedules (one per section: "Can people use it?", "Will it keep
@@ -477,13 +477,16 @@
 .a11y-widget-biz .a11y-datatable-schedule th[data-col="severity"] { width: 8em; }
 .a11y-widget-biz .a11y-datatable-schedule th[data-col="wcag"] { width: 5em; }
 .a11y-widget-biz .a11y-datatable-schedule th[data-col="fix"] { width: 6.8em; }
-.a11y-widget-biz .a11y-datatable-schedule th[data-col="level"] { width: max(9.6em, 15%); }
+/* A fixed width, not a share of the screen (user's instruction, 17 Nov 2026:
+   one grid, room for the issue): "Required by law in most places (Level AA)"
+   wraps to two lines in it, and the issue statement takes everything left. */
+.a11y-widget-biz .a11y-datatable-schedule th[data-col="level"] { width: 11em; }
 .a11y-widget-biz .a11y-datatable-schedule th[data-col="count"] { width: 6.6em; }
 
 /* The kit Select (Language): the label above, the box under it, the gloss under that.
    It had no rules at all, so the label ran straight into the box on one line. */
 .a11y-widget-biz .a11y-select2 { display: grid; justify-items: start; gap: 0.3em; margin: 0 0 1.2em; }
-.a11y-widget-biz .a11y-select2-label { font-size: 15px; letter-spacing: 0.01em; font-weight: 500; }
+.a11y-widget-biz .a11y-select2-label { font-size: 18px; letter-spacing: 0.01em; font-weight: 500; }
 .a11y-widget-biz .a11y-select2-field { min-width: 12em; max-width: 100%; box-sizing: border-box; }
 /* The native arrow is drawn flush against the box's edge and takes no padding.
    Drawn here instead, in ink so it follows the theme, with room on its right.
@@ -501,7 +504,7 @@
   background-size: 0.4em 0.4em, 0.4em 0.4em;
   background-repeat: no-repeat;
 }
-.a11y-widget-biz .a11y-select2-help { font-size: 15px; letter-spacing: 0.01em; }
+.a11y-widget-biz .a11y-select2-help { font-size: 18px; letter-spacing: 0.01em; }
 
 /* ═══ THE SCAN FORM (3 Nov 2026) ═══════════════════════════════════════════
    The form's parts had no layout rules, so buttons, switch and notes landed
@@ -522,11 +525,11 @@
    One line between steps. */
 .a11y-widget-biz .a11y-form-single { display: grid; gap: var(--line); }
 .a11y-widget-biz .a11y-step-group { display: grid; grid-template-columns: 4.5em minmax(0, 1fr); align-items: first baseline; }
-.a11y-widget-biz .a11y-step-num { font-size: 18px; letter-spacing: 0.01em; line-height: 1.2; }
+.a11y-widget-biz .a11y-step-num { font-size: 22px; letter-spacing: 0.01em; line-height: 1.2; }
 .a11y-widget-biz .a11y-step-body { min-width: 0; display: grid; gap: calc(var(--line) / 2); }
 .a11y-widget-biz .a11y-step-head { display: grid; }
 .a11y-widget-biz .a11y-step-q { margin: 0; }
-.a11y-widget-biz .a11y-step-note { font-size: 15px; letter-spacing: 0.01em; line-height: 1.2; }
+.a11y-widget-biz .a11y-step-note { font-size: 18px; letter-spacing: 0.01em; line-height: 1.2; }
 
 /* The address: label, then the field with the login button beside it. */
 .a11y-widget-biz .a11y-input { display: grid; gap: 0.3em; }
@@ -535,13 +538,13 @@
 .a11y-widget-biz .a11y-input-shell > .a11y-login-toggle { flex: none; white-space: nowrap; align-self: center; }
 .a11y-widget-biz .a11y-url-helper-row { display: flex; flex-wrap: wrap; align-items: baseline; gap: calc(var(--line) / 4) 1.2em; }
 .a11y-widget-biz .a11y-url-helper-row > :empty { display: none; }
-.a11y-widget-biz .a11y-group-hint { font-size: 15px; letter-spacing: 0.01em; line-height: 1.2; }
+.a11y-widget-biz .a11y-group-hint { font-size: 18px; letter-spacing: 0.01em; line-height: 1.2; }
 .a11y-widget-biz .a11y-url-error { margin: 0; }
-.a11y-widget-biz .a11y-url-error:not(:empty) { font-size: 18px; letter-spacing: 0.01em; }
+.a11y-widget-biz .a11y-url-error:not(:empty) { font-size: 22px; letter-spacing: 0.01em; }
 
 /* The action: the button leads, its note after it, on one baseline. */
 .a11y-widget-biz .a11y-url-submit { display: flex; flex-wrap: wrap; align-items: center; gap: calc(var(--line) / 2) 1.2em; }
-.a11y-widget-biz .a11y-url-submit-note { font-size: 15px; letter-spacing: 0.01em; line-height: 1.2; }
+.a11y-widget-biz .a11y-url-submit-note { font-size: 18px; letter-spacing: 0.01em; line-height: 1.2; }
 
 /* The choices are cards: two equal, rounded, side by side while they fit, then
    one above the other a line apart. The dot and the title sit at the top, the
@@ -559,7 +562,7 @@
 .a11y-widget-biz .a11y-optioncard > input { grid-row: 1; grid-column: 1; margin-top: -3px; }
 .a11y-widget-biz .a11y-optioncard-text { display: contents; }
 .a11y-widget-biz .a11y-optioncard-label { grid-row: 1; grid-column: 2; }
-.a11y-widget-biz .a11y-optioncard-desc { grid-row: 2; grid-column: 1 / -1; align-self: end; padding-top: var(--line); font-size: 18px; letter-spacing: 0.01em; line-height: 1.2; }
+.a11y-widget-biz .a11y-optioncard-desc { grid-row: 2; grid-column: 1 / -1; align-self: end; padding-top: var(--line); font-size: 22px; letter-spacing: 0.01em; line-height: 1.2; }
 .a11y-widget-biz .a11y-optioncard:has(input:focus-visible) { outline: 3px solid var(--ink); outline-offset: 2px; box-shadow: 0 0 0 2px var(--paper); }
 .a11y-widget-biz .a11y-optioncard > input:focus-visible { outline: none; box-shadow: none; }
 .a11y-widget-biz .a11y-optioncard-disabled { border-style: dashed; cursor: not-allowed; }
@@ -568,17 +571,17 @@
 /* The AI card: words left, the switch right, a line apart when they wrap. */
 .a11y-widget-biz .a11y-ai-card { margin-top: calc(var(--line) / 2); display: flex; flex-wrap: wrap; align-items: flex-start; justify-content: space-between; gap: calc(var(--line) / 2) 1.2em; }
 .a11y-widget-biz .a11y-ai-card-text { display: grid; flex: 1 1 18em; min-width: 0; }
-.a11y-widget-biz .a11y-ai-card-title { font-size: 18px; letter-spacing: 0.01em; font-weight: 500; line-height: 1.2; }
-.a11y-widget-biz .a11y-ai-hint { font-size: 15px; letter-spacing: 0.01em; line-height: 1.2; }
+.a11y-widget-biz .a11y-ai-card-title { font-size: 22px; letter-spacing: 0.01em; font-weight: 500; line-height: 1.2; }
+.a11y-widget-biz .a11y-ai-hint { font-size: 18px; letter-spacing: 0.01em; line-height: 1.2; }
 
 /* The switch: a track and a round knob in ink and paper, with the word On or
    Off after it. The knob takes the track's text colour, so it inverts with it
    and never disappears; hover keeps the track as it is, since the control
    hover that fills a button would make Off look like On. */
 .a11y-widget-biz .a11y-switch { display: inline-flex; flex-wrap: wrap; align-items: center; gap: 0 0.8em; }
-.a11y-widget-biz .a11y-switch-label { font-size: 18px; letter-spacing: 0.01em; }
+.a11y-widget-biz .a11y-switch-label { font-size: 22px; letter-spacing: 0.01em; }
 .a11y-widget-biz .a11y-switch-controls { display: inline-flex; align-items: center; gap: 0.5em; }
-.a11y-widget-biz .a11y-switch-word { font-size: 18px; letter-spacing: 0.01em; min-width: 2em; }
+.a11y-widget-biz .a11y-switch-word { font-size: 22px; letter-spacing: 0.01em; min-width: 2em; }
 .a11y-widget-biz .a11y-switch-track { position: relative; flex: none; box-sizing: border-box; width: 52px; height: 30px; padding: 0; border-radius: 999px; }
 .a11y-widget-biz .a11y-switch-knob { position: absolute; top: 50%; left: 4px; width: 18px; height: 18px; margin-top: -9px; border-radius: 50%; background: currentColor; }
 .a11y-widget-biz .a11y-switch-track[aria-checked="true"] { background: var(--ink); color: var(--paper); }
@@ -594,20 +597,20 @@
 }
 
 /* Name and value pairs: small label, the value under it, the gloss under that. */
-.a11y-widget-biz .a11y-spec-label { font-size: 15px; letter-spacing: 0.01em; font-weight: 500; }
+.a11y-widget-biz .a11y-spec-label { font-size: 18px; letter-spacing: 0.01em; font-weight: 500; }
 .a11y-widget-biz .a11y-spec-value { margin: 0; }
-.a11y-widget-biz .a11y-spec-gloss { display: block; font-size: 15px; letter-spacing: 0.01em; }
+.a11y-widget-biz .a11y-spec-gloss { display: block; font-size: 18px; letter-spacing: 0.01em; }
 
 /* The draft: a label and its Copy on one line, the text wrapping inside the page. */
 .a11y-widget-biz .a11y-stmt-code-bar { display: flex; flex-wrap: wrap; justify-content: flex-end; align-items: center; gap: 0.5em; margin: 0 0 0.5em; }
-.a11y-widget-biz .a11y-stmt-text { white-space: pre-wrap; overflow-wrap: anywhere; font-size: 18px; letter-spacing: 0.01em; margin: 0 0 1.2em; }
+.a11y-widget-biz .a11y-stmt-text { white-space: pre-wrap; overflow-wrap: anywhere; font-size: 22px; letter-spacing: 0.01em; margin: 0 0 1.2em; }
 
 /* What the score counts: the number hangs, the sentence beside it. */
 .a11y-widget-biz .a11y-pro-points { list-style: none; padding: 0; margin: 0 0 1.2em; }
 .a11y-widget-biz .a11y-pro-point {
   display: grid; grid-template-columns: 2.4em minmax(0, 1fr); align-items: baseline; margin: 0 0 0.6em;
 }
-.a11y-widget-biz .a11y-pro-point-num { font-size: 15px; letter-spacing: 0.01em; font-weight: 500; }
+.a11y-widget-biz .a11y-pro-point-num { font-size: 18px; letter-spacing: 0.01em; font-weight: 500; }
 
 /* The three worst findings next to the dial: number, title with its marks under it, count. */
 .a11y-widget-biz .a11y-sum-thead { display: none; }
@@ -615,15 +618,15 @@
 .a11y-widget-biz .a11y-sum-row { display: grid; grid-template-columns: 1.6em minmax(0, 1fr) auto; gap: 0 0.4em; align-items: baseline; margin: 0 0 0.6em; }
 .a11y-widget-biz .a11y-sum-cell-item { display: block; }
 .a11y-widget-biz .a11y-sum-row-title { display: block; }
-.a11y-widget-biz .a11y-sum-row-marks { display: block; font-size: 18px; letter-spacing: 0.01em; }
+.a11y-widget-biz .a11y-sum-row-marks { display: block; font-size: 22px; letter-spacing: 0.01em; }
 .a11y-widget-biz .a11y-sum-cell-count { white-space: nowrap; font-weight: 500; }
 
 /* Severity rows of the professional panel: the word, then its count. */
 
 /* The legal checklist's questions and the result rows. */
 .a11y-widget-biz .a11y-legal-q { display: grid; grid-template-columns: 1.6em minmax(0, 1fr); align-items: baseline; margin: 0 0 0.4em; }
-.a11y-widget-biz .a11y-legal-qnum { font-size: 15px; letter-spacing: 0.01em; font-weight: 500; }
-.a11y-widget-biz .a11y-legal-micro { font-size: 15px; letter-spacing: 0.01em; font-weight: 500; margin: 0 0 0.4em; }
+.a11y-widget-biz .a11y-legal-qnum { font-size: 18px; letter-spacing: 0.01em; font-weight: 500; }
+.a11y-widget-biz .a11y-legal-micro { font-size: 18px; letter-spacing: 0.01em; font-weight: 500; margin: 0 0 0.4em; }
 .a11y-widget-biz .a11y-legal-thead { display: none; }
 /* The result rows (We found problems 3, We checked 19, ...): one line each,
    in four columns that line up from row to row: the title, its small print,
@@ -647,8 +650,8 @@
 }
 .a11y-widget-biz :is(.a11y-legal-row-label, .a11y-legal-row-meaning) { display: block; }
 .a11y-widget-biz .a11y-legal-row-label { font-weight: 500; }
-.a11y-widget-biz .a11y-legal-row-meaning { font-size: 15px; letter-spacing: 0.01em; }
-.a11y-widget-biz .a11y-legal-count { font-size: 32px; letter-spacing: -0.005em; font-weight: 500; }
+.a11y-widget-biz .a11y-legal-row-meaning { font-size: 18px; letter-spacing: 0.01em; }
+.a11y-widget-biz .a11y-legal-count { font-size: 38px; letter-spacing: -0.005em; font-weight: 500; }
 .a11y-widget-biz .a11y-radio-group { display: flex; flex-wrap: wrap; gap: 0.3em 1.2em; border: 0; padding: 0; margin: 0 0 1em; }
 /* Radio dots: black and white only, a 1px line, three times the browser's 13px
    (user's instruction, 3 Nov 2026). The system's blue and grey dot is drawn by
@@ -667,22 +670,22 @@
 }
 .a11y-widget-biz input[type="radio"]:checked::before { transform: scale(1); }
 .a11y-widget-biz input[type="radio"]:disabled { border-style: dashed; cursor: not-allowed; }
-.a11y-widget-biz .a11y-radio { display: inline-flex; align-items: center; gap: 0.4em; font-size: 18px; letter-spacing: 0.01em; }
+.a11y-widget-biz .a11y-radio { display: inline-flex; align-items: center; gap: 0.4em; font-size: 22px; letter-spacing: 0.01em; }
 
 /* The checklist rows: criterion, the question with its official name under it, the status under that. */
 .a11y-widget-biz .a11y-conf-list { list-style: none; padding: 0; margin: 0 0 1.2em; }
 .a11y-widget-biz .a11y-conf-row { display: grid; grid-template-columns: 4em minmax(0, 1fr); gap: 0.2em 0.8em; margin: 0 0 1em; }
 .a11y-widget-biz .a11y-conf-row .a11y-conf-status { grid-column: 2; justify-self: start; }
-.a11y-widget-biz .a11y-conf-id { font-size: 15px; letter-spacing: 0.01em; font-weight: 500; }
+.a11y-widget-biz .a11y-conf-id { font-size: 18px; letter-spacing: 0.01em; font-weight: 500; }
 .a11y-widget-biz .a11y-conf-id em { font-style: normal; }
 .a11y-widget-biz .a11y-conf-body { display: block; }
-.a11y-widget-biz .a11y-conf-plain { display: block; font-size: 15px; letter-spacing: 0.01em; }
-.a11y-widget-biz .a11y-conf-count { margin-inline-start: 0.4em; font-size: 15px; letter-spacing: 0.01em; font-style: normal; }
+.a11y-widget-biz .a11y-conf-plain { display: block; font-size: 18px; letter-spacing: 0.01em; }
+.a11y-widget-biz .a11y-conf-count { margin-inline-start: 0.4em; font-size: 18px; letter-spacing: 0.01em; font-style: normal; }
 .a11y-widget-biz .a11y-conf-row[hidden] { display: none; }
 
 /* WCAG 2.2 panel head: the standard, its date, what would fail today. */
 .a11y-widget-biz .a11y-next-toggle { display: flex; flex-wrap: wrap; align-items: baseline; gap: 0.3em 0.8em; text-align: start; }
-.a11y-widget-biz .a11y-next-count { font-size: 15px; letter-spacing: 0.01em; }
+.a11y-widget-biz .a11y-next-count { font-size: 18px; letter-spacing: 0.01em; }
 .a11y-widget-biz .a11y-next-main { display: block; }
 .a11y-widget-biz :is(.a11y-next-title, .a11y-next-meta, .a11y-next-status) { display: block; }
 
@@ -691,8 +694,8 @@
 .a11y-widget-biz .a11y-undecided-table { list-style: none; padding: 0; margin: 0 0 1.2em; }
 .a11y-widget-biz .a11y-undecided-cell { display: grid; grid-template-columns: 2em minmax(0, 1fr); gap: 0.5em 0.4em; margin: 0 0 1.4em; }
 .a11y-widget-biz .a11y-undecided-cell > :not(.a11y-undecided-no) { grid-column: 2; margin: 0; }
-.a11y-widget-biz .a11y-undecided-no { font-size: 15px; letter-spacing: 0.01em; font-weight: 500; grid-row: 1; }
-.a11y-widget-biz .a11y-undecided-call { display: flex; flex-wrap: wrap; align-items: baseline; gap: 0.3em 0.8em; font-size: 18px; letter-spacing: 0.01em; }
+.a11y-widget-biz .a11y-undecided-no { font-size: 18px; letter-spacing: 0.01em; font-weight: 500; grid-row: 1; }
+.a11y-widget-biz .a11y-undecided-call { display: flex; flex-wrap: wrap; align-items: baseline; gap: 0.3em 0.8em; font-size: 22px; letter-spacing: 0.01em; }
 .a11y-widget-biz .a11y-undecided-table .a11y-undecided-folded { display: none; }
 @media print { .a11y-widget-biz .a11y-undecided-table .a11y-undecided-folded { display: grid; } }
 
@@ -706,9 +709,9 @@
 }
 .a11y-widget-biz .a11y-sr-row:enabled:hover { background: none; color: var(--ink); }
 .a11y-widget-biz .a11y-sr-row[aria-current="true"] { text-decoration: underline; text-underline-offset: 0.15em; }
-.a11y-widget-biz .a11y-sr-num { font-size: 15px; letter-spacing: 0.01em; font-weight: 500; }
-.a11y-widget-biz .a11y-sr-issue { grid-column: 2; font-size: 15px; letter-spacing: 0.01em; }
-.a11y-widget-biz .a11y-sr-status { font-size: 15px; letter-spacing: 0.01em; }
+.a11y-widget-biz .a11y-sr-num { font-size: 18px; letter-spacing: 0.01em; font-weight: 500; }
+.a11y-widget-biz .a11y-sr-issue { grid-column: 2; font-size: 18px; letter-spacing: 0.01em; }
+.a11y-widget-biz .a11y-sr-status { font-size: 18px; letter-spacing: 0.01em; }
 
 /* The start form's choices: the label, its explanation under it. */
 .a11y-widget-biz .a11y-optioncard-label { font-weight: 500; }
@@ -723,8 +726,8 @@
 .a11y-widget-biz .a11y-sum-dial circle { stroke: var(--ink); }
 .a11y-widget-biz .a11y-sum-dial circle:first-child { stroke-width: 3; stroke-linecap: round; stroke-dasharray: 0 6.6; }
 .a11y-widget-biz .a11y-sum-dial-face { position: absolute; inset: 0; display: grid; place-content: center; text-align: center; }
-.a11y-widget-biz .a11y-sum-dial-num { font-size: 40px; letter-spacing: -0.01em; font-weight: 300; line-height: 1; margin: 0; }
-.a11y-widget-biz .a11y-sum-dial-of { font-size: 15px; letter-spacing: 0.01em; margin: 0; }
+.a11y-widget-biz .a11y-sum-dial-num { font-size: 48px; letter-spacing: -0.01em; font-weight: 300; line-height: 1; margin: 0; }
+.a11y-widget-biz .a11y-sum-dial-of { font-size: 18px; letter-spacing: 0.01em; margin: 0; }
 
 /* The scan summary as a type specimen (user's instruction and reference,
    4 Nov 2026: a font tester's panel, kept with the dial; no corner marks,
@@ -744,78 +747,89 @@
 .a11y-widget-biz .a11y-sum-run .a11y-sum-dial { margin: 0 0 0.5em; }
 /* The run of findings: display size, tight, centred, a soft balanced rag. */
 .a11y-widget-biz .a11y-sum-run .a11y-sum-rows {
-  margin: 0; font-size: 56px; letter-spacing: -0.01em; line-height: 1.06;
+  margin: 0; font-size: 67px; letter-spacing: -0.01em; line-height: 1.06;
   text-wrap: balance; hyphens: manual; overflow-wrap: break-word;
 }
 .a11y-widget-biz .a11y-sum-run .a11y-sum-nobreak { white-space: nowrap; }
 .a11y-widget-biz .a11y-sum-run .a11y-sum-row { display: inline; margin: 0; }
 .a11y-widget-biz .a11y-sum-run .a11y-sum-row:not(:last-child)::after { content: ", " / ""; }
 .a11y-widget-biz .a11y-sum-run :is(.a11y-sum-cell-item, .a11y-sum-row-title) { display: inline; }
+/* Each item links to its finding (lib/openFinding). Ink like the type
+   around it, the title underlined as every link here is; hover lays the
+   marker yellow under the title with black text, the controls' hover. The
+   marks and the count keep their own fills inside the link. */
+.a11y-widget-biz .a11y-sum-run .a11y-sum-row-link { color: inherit; text-decoration: none; }
+.a11y-widget-biz .a11y-sum-run .a11y-sum-row-link .a11y-sum-row-title {
+  text-decoration: underline; text-decoration-thickness: 2px; text-underline-offset: 0.12em;
+}
+.a11y-widget-biz .a11y-sum-run .a11y-sum-row-link:hover .a11y-sum-row-title { background: var(--hl-cap-a); color: #000; }
 /* The marker: a solid round with the figure in paper, sat on the line. */
 .a11y-widget-biz .a11y-sum-run .a11y-sum-cell-no {
   display: inline-grid; place-content: center; vertical-align: 0.08em;
   width: 44px; height: 44px; border-radius: 50%; margin: 0 0.18em 0 0;
   background: var(--ink); color: var(--paper);
-  font-size: 27px; letter-spacing: 0; font-weight: 500; line-height: 1;
+  font-size: 32px; letter-spacing: 0; font-weight: 500; line-height: 1;
 }
 .a11y-widget-biz .a11y-sum-run .a11y-sum-row-marks,
 .a11y-widget-biz .a11y-sum-run .a11y-sum-cell-count {
   display: inline; vertical-align: middle; white-space: nowrap;
-  font-size: 18px; letter-spacing: 0.01em; line-height: 1.2; margin: 0 0 0 0.3em;
+  font-size: 22px; letter-spacing: 0.01em; line-height: 1.2; margin: 0 0 0 0.3em;
 }
-.a11y-widget-biz .a11y-sum-run .a11y-score-clean { font-size: 56px; letter-spacing: -0.01em; line-height: 1.06; margin: 0; }
+.a11y-widget-biz .a11y-sum-run .a11y-score-clean { font-size: 67px; letter-spacing: -0.01em; line-height: 1.06; margin: 0; }
 .a11y-widget-biz .a11y-sum-run + .a11y-sum-actions { text-align: center; margin: 0 0 1.2em; }
 /* On a phone the run comes down to title size, so a long German word
    still fits 320px. */
 @media (max-width: 640px) { .a11y-widget-biz .a11y-sum-run { padding-inline: 0; } }
 
-/* The opening questions, after the panels of a font tester (user's
-   reference, 4 Nov 2026): a small centred label, the question under it in
-   big centred type, one panel per group, no frame and no corner marks.
-   Each load sets the three panels in a different layout from these three,
-   the way a tester shows one face at several settings. The question is a
-   button, but reads as type: no pill, no edge; hover colours the words
-   (below), focus shows the ring. */
+/* The opening questions, as type-specimen tiles (user's reference, 17 Nov
+   2026, replacing the centred display questions and their coloured hover):
+   a square tile per group on an auto-fit grid, 20px corners, the fixed
+   #f0efe8 ground with black words in both themes (18.4:1); the group's
+   label top-left at 15px, the question at the foot at 32px. The whole tile
+   is the button. Hover and focus turn it solid black with white words
+   (21:1) and show a white pill, the "Check it out" of the reference; a 1px
+   white edge keeps the black tile visible on a black page. Disabled is a
+   dashed edge, never faded. */
 .a11y-widget-biz .a11y-prompts { container: a11y-prompts / inline-size; margin: 0.6em 0 1.2em; }
-.a11y-widget-biz .a11y-prompt { text-align: center; padding: 1.2em 0; }
-.a11y-widget-biz .a11y-prompt-label { font-size: 15px; letter-spacing: 0.01em; margin: 0 0 0.9em; }
+.a11y-widget-biz .a11y-prompt-grid {
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 260px), 1fr)); gap: 10px;
+}
+.a11y-widget-biz .a11y-prompts .a11y-prompt {
+  --ink: #000; --paper: #f0efe8;
+  box-sizing: border-box; min-width: 0; min-height: auto; aspect-ratio: 1 / 1; margin: 0; padding: 24px;
+  display: flex; flex-direction: column; align-items: stretch; justify-content: flex-start; gap: 16px;
+  border: 1px solid #f0efe8; border-radius: 20px; background: #f0efe8; color: #000;
+  font: inherit; text-align: start; cursor: pointer;
+  overflow-wrap: break-word; hyphens: auto;
+}
+.a11y-widget-biz .a11y-prompts .a11y-prompt-label { font-size: 18px; font-weight: 500; letter-spacing: 0.01em; line-height: 1.2; }
 .a11y-widget-biz .a11y-prompts .a11y-prompt-ask {
-  /* A button is sized by its longest word, which break-word does not
-     shrink: without the cap, "Barrierefreiheit" at 40px pushed the button
-     to 330px on a 320px phone where no hyphenation dictionary exists
-     (CI's Chromium, 4 Nov 2026). Capped, the word breaks inside it. */
-  display: inline; max-width: 100%; min-height: 0; padding: 0 0.08em; border: 0; border-radius: 0;
-  background: none; color: var(--ink); text-align: center;
-  text-wrap: balance; hyphens: manual; overflow-wrap: break-word;
-  -webkit-box-decoration-break: clone; box-decoration-break: clone;
+  margin-top: auto; font-size: 38px; font-weight: 400; letter-spacing: -0.005em; line-height: 1.05;
+  text-wrap: pretty;
 }
-/* Every question at display size, Light (user's instruction and
-   screenshot, 4 Nov 2026, replacing the three tester layouts: the
-   picker still tags each panel with one, but nothing reads it now). Hover
-   colours the words, nothing else: no fill. Each panel takes its own
-   colour, dark on paper and light on ink, each measured at better than
-   7:1 against its ground, so the colour is a hover state only and never
-   the only sign of one: the cursor, and focus keeps its ring. */
-.a11y-widget-biz .a11y-prompts .a11y-prompt-ask { font-size: 56px; font-weight: 300; letter-spacing: -0.01em; line-height: 1.02; }
-.a11y-widget-biz .a11y-prompts { --prompt-hover-1: #1f3fb0; --prompt-hover-2: #8f2600; --prompt-hover-3: #08583a; --prompt-hover-4: #8a1a6e; }
-@media (prefers-color-scheme: dark) {
-  :root:not([data-theme="light"]) .a11y-widget-biz .a11y-prompts { --prompt-hover-1: #6fa8ff; --prompt-hover-2: #ff8a4c; --prompt-hover-3: #4fe0a8; --prompt-hover-4: #ff9ad5; }
+.a11y-widget-biz .a11y-prompts .a11y-prompt-go {
+  display: flex; align-items: center; justify-content: center; min-height: 34px;
+  border-radius: 999px; background: #fff; color: #000;
+  font-size: 18px; letter-spacing: 0.01em; line-height: 1.2;
+  visibility: hidden;
 }
-:root[data-theme="dark"] .a11y-widget-biz .a11y-prompts { --prompt-hover-1: #6fa8ff; --prompt-hover-2: #ff8a4c; --prompt-hover-3: #4fe0a8; --prompt-hover-4: #ff9ad5; }
-.a11y-widget-biz .a11y-prompt:nth-child(4n+1) { --prompt-hover: var(--prompt-hover-1); }
-.a11y-widget-biz .a11y-prompt:nth-child(4n+2) { --prompt-hover: var(--prompt-hover-2); }
-.a11y-widget-biz .a11y-prompt:nth-child(4n+3) { --prompt-hover: var(--prompt-hover-3); }
-.a11y-widget-biz .a11y-prompt:nth-child(4n+4) { --prompt-hover: var(--prompt-hover-4); }
-.a11y-widget-biz .a11y-prompts .a11y-prompt-ask:enabled:hover { background: none; color: var(--prompt-hover); }
-.a11y-widget-biz .a11y-prompts .a11y-prompt-ask:disabled { border: 0; text-decoration: underline dashed 1px; text-underline-offset: 0.15em; }
-.a11y-widget-biz .a11y-prompt-more { text-align: center; margin: 0.4em 0 0; }
+.a11y-widget-biz .a11y-prompts .a11y-prompt:enabled:hover,
+.a11y-widget-biz .a11y-prompts .a11y-prompt:enabled:focus-visible {
+  --ink: #fff; --paper: #000;
+  background: #000; color: #fff; border-color: #fff; text-decoration: none;
+}
+.a11y-widget-biz .a11y-prompts .a11y-prompt:enabled:hover .a11y-prompt-go,
+.a11y-widget-biz .a11y-prompts .a11y-prompt:enabled:focus-visible .a11y-prompt-go { visibility: visible; }
+.a11y-widget-biz .a11y-prompts .a11y-prompt:disabled { cursor: default; border: 1px dashed #000; }
+.a11y-widget-biz .a11y-prompt-more { text-align: center; margin: 1.2em 0 0; }
 @container a11y-prompts (max-width: 640px) {
-  .a11y-widget-biz .a11y-prompts .a11y-prompt-ask { font-size: 40px; hyphens: auto; }
+  .a11y-widget-biz .a11y-prompts .a11y-prompt { aspect-ratio: auto; min-height: 220px; padding: 20px; }
+  .a11y-widget-biz .a11y-prompts .a11y-prompt-ask { font-size: 32px; letter-spacing: 0; }
 }
 @container a11y-sum-run (max-width: 640px) {
   .a11y-widget-biz .a11y-sum-run .a11y-sum-rows,
-  .a11y-widget-biz .a11y-sum-run .a11y-score-clean { font-size: 32px; letter-spacing: -0.005em; hyphens: auto; }
-  .a11y-widget-biz .a11y-sum-run .a11y-sum-cell-no { width: 30px; height: 30px; font-size: 18px; }
+  .a11y-widget-biz .a11y-sum-run .a11y-score-clean { font-size: 38px; letter-spacing: -0.005em; hyphens: auto; }
+  .a11y-widget-biz .a11y-sum-run .a11y-sum-cell-no { width: 30px; height: 30px; font-size: 22px; }
   .a11y-widget-biz .a11y-sum-run .a11y-sum-row-marks { white-space: normal; }
   /* A long first word held to its marker cannot break, so on a phone the
      pair may part rather than run off the screen. */
@@ -837,7 +851,7 @@
    own width every point takes the full row at 32px and 27px, with no
    fixed proportion. */
 .a11y-widget-biz .a11y-sum-counts { container: a11y-sum-counts / inline-size; text-align: start; margin: 0 0 1.2em; }
-.a11y-widget-biz .a11y-sum-counts > .a11y-sum-eyebrow { margin: 0 0 0.6em; font-size: 32px; letter-spacing: -0.005em; line-height: 1.1; font-weight: 400; hyphens: manual; }
+.a11y-widget-biz .a11y-sum-counts > .a11y-sum-eyebrow { margin: 0 0 0.6em; font-size: 38px; letter-spacing: -0.005em; line-height: 1.1; font-weight: 400; hyphens: manual; }
 /* Replaced the same day (user's instruction, the displaay.net Info block
    as reference): no big tiles. Two columns, 15px apart; each point is its
    number at 15px over a 1px ink rule, the words under it at 18px Regular,
@@ -847,28 +861,28 @@
 }
 .a11y-widget-biz .a11y-sum-specimen { min-width: 0; margin: 0; display: flex; flex-direction: column; }
 .a11y-widget-biz .a11y-sum-specimen-num {
-  order: -1; font-size: 15px; letter-spacing: 0.01em; line-height: 1.2; font-weight: 400;
+  order: -1; font-size: 18px; letter-spacing: 0.01em; line-height: 1.2; font-weight: 400;
   padding: 0 0 6px; margin: 0 0 10px; border-bottom: 1px solid var(--ink);
 }
 .a11y-widget-biz .a11y-sum-specimen-text {
-  font-size: 18px; letter-spacing: 0.01em; line-height: 1.3; font-weight: 400; text-align: start;
+  font-size: 22px; letter-spacing: 0.01em; line-height: 1.3; font-weight: 400; text-align: start;
   hyphens: auto; overflow-wrap: break-word;
 }
 @container a11y-sum-counts (max-width: 640px) {
   .a11y-widget-biz .a11y-sum-specimens { grid-template-columns: minmax(0, 1fr); }
 }
-.a11y-widget-biz .a11y-status-chip { font-size: 18px; letter-spacing: 0.01em; }
+.a11y-widget-biz .a11y-status-chip { font-size: 22px; letter-spacing: 0.01em; }
 .a11y-widget-biz .a11y-accordion-title .a11y-accordion-head > span:first-child { flex: 0 1 auto; }
 
 /* A notice: its mark hangs, its title and the line under it beside it. */
 .a11y-widget-biz .a11y-note { display: grid; grid-template-columns: 1.6em minmax(0, 1fr); align-items: baseline; margin: 0 0 1.2em; }
 .a11y-widget-biz .a11y-note-glyph { font-weight: 500; }
 .a11y-widget-biz .a11y-note-title { font-weight: 500; }
-.a11y-widget-biz .a11y-note-sub { font-size: 18px; letter-spacing: 0.01em; }
+.a11y-widget-biz .a11y-note-sub { font-size: 22px; letter-spacing: 0.01em; }
 
 /* The legal result marks are the severity highlight, same words, same colours. */
 .a11y-widget-biz .a11y-legal-mark {
-  display: inline-block; margin-top: 0.2em; font-size: 18px; letter-spacing: 0.01em; color: #000; background: var(--hl-green);
+  display: inline-block; margin-top: 0.2em; font-size: 22px; letter-spacing: 0.01em; color: #000; background: var(--hl-green);
   padding: 0 0.22em; border-radius: 0.9em 0.45em 0.9em 0.55em / 0.7em 0.5em 0.7em 0.5em;
   box-shadow: 0.14em 0 0 var(--hl-cap-a), -0.14em 0 0 var(--hl-cap-b);
 }
@@ -879,21 +893,21 @@
 
 /* The Sections rail: small print, no bullets, the current section in Medium. */
 .a11y-widget-biz .a11y-shell-nav ul { list-style: none; padding: 0; margin: 0; }
-.a11y-widget-biz .a11y-shell-nav-head { margin: 0 0 0.4em; font-size: 18px; letter-spacing: 0.01em; }
+.a11y-widget-biz .a11y-shell-nav-head { margin: 0 0 0.4em; font-size: 22px; letter-spacing: 0.01em; }
 .a11y-widget-biz .a11y-shell-nav-toggle {
-  display: flex; flex-wrap: wrap; align-items: baseline; gap: 0 0.8em; font: inherit; font-size: 18px; letter-spacing: 0.01em; text-align: start;
+  display: flex; flex-wrap: wrap; align-items: baseline; gap: 0 0.8em; font: inherit; font-size: 22px; letter-spacing: 0.01em; text-align: start;
   padding: 0; border: 0; border-radius: 0; background: none; color: var(--ink);
 }
 .a11y-widget-biz .a11y-shell-nav-toggle:enabled:hover { background: none; color: var(--ink); }
 .a11y-widget-biz .a11y-shell-nav-heading { font-weight: 500; }
-.a11y-widget-biz .a11y-shell-nav-count { font-size: 15px; letter-spacing: 0.01em; font-weight: 400; }
+.a11y-widget-biz .a11y-shell-nav-count { font-size: 18px; letter-spacing: 0.01em; font-weight: 400; }
 .a11y-widget-biz .a11y-shell-nav-group { margin: 0 0 0.7em; }
-.a11y-widget-biz .a11y-shell-nav-group-label { display: block; font-size: 15px; letter-spacing: 0.01em; font-weight: 500; }
-.a11y-widget-biz .a11y-shell-nav-link { font-size: 18px; letter-spacing: 0.01em; }
+.a11y-widget-biz .a11y-shell-nav-group-label { display: block; font-size: 18px; letter-spacing: 0.01em; font-weight: 500; }
+.a11y-widget-biz .a11y-shell-nav-link { font-size: 22px; letter-spacing: 0.01em; }
 .a11y-widget-biz .a11y-shell-nav-link[aria-current="true"] { font-weight: 500; }
 
 .a11y-widget-biz .a11y-status-chip-critical { background: var(--hl-orange); }
-.a11y-widget-biz .a11y-ai-toggle { display: flex; align-items: center; gap: 0.5em; font-size: 18px; letter-spacing: 0.01em; margin: 0 0 0.6em; }
+.a11y-widget-biz .a11y-ai-toggle { display: flex; align-items: center; gap: 0.5em; font-size: 22px; letter-spacing: 0.01em; margin: 0 0 0.6em; }
 
 /* In the table's Severity column the word stays on one line. On a phone that
    column is gone and the folded copy in the issue cell wraps like prose. */
@@ -905,7 +919,7 @@
 .a11y-widget-biz .a11y-dn-link {
   display: grid; grid-template-columns: 1em minmax(0, 1fr); gap: 0 0.3em; align-items: baseline; width: 100%;
   box-sizing: border-box; text-align: start; padding: 0.15em 0; border: 0; border-radius: 0; background: none; color: var(--ink);
-  font-size: 27px; font-weight: 400;
+  font-size: 32px; font-weight: 400;
 }
 .a11y-widget-biz .a11y-dn-link:enabled:hover { background: none; color: var(--ink); text-decoration: underline; }
 .a11y-widget-biz .a11y-dn-link[aria-expanded="true"] { font-weight: 500; }
@@ -914,11 +928,11 @@
 /* An expanded finding: each part is a small label over its sentence. */
 .a11y-widget-biz :is(.a11y-method-hint, .a11y-finding-measured, .a11y-finding-impact, .a11y-finding-research, .a11y-finding-todo) > strong:first-child,
 .a11y-widget-biz .a11y-finding-steps > p > strong,
-.a11y-widget-biz .a11y-affected-label > strong { display: block; font-size: 15px; letter-spacing: 0.01em; font-weight: 500; }
+.a11y-widget-biz .a11y-affected-label > strong { display: block; font-size: 18px; letter-spacing: 0.01em; font-weight: 500; }
 .a11y-widget-biz .a11y-finding-steps ul { margin: 0 0 1.2em; }
 .a11y-widget-biz .a11y-occurrence-list { list-style: none; padding: 0; margin: 0 0 1em; }
 .a11y-widget-biz .a11y-occurrence { margin: 0 0 0.6em; }
-.a11y-widget-biz .a11y-occurrence-count { margin-inline-start: 0.4em; font-size: 15px; letter-spacing: 0.01em; font-weight: 500; }
+.a11y-widget-biz .a11y-occurrence-count { margin-inline-start: 0.4em; font-size: 18px; letter-spacing: 0.01em; font-weight: 500; }
 
 /* ═══ THE EXPANDED FINDING, SET LIKE DISPLAAY'S "INFO" BLOCK ════════════════
    User's instruction, 4 Nov 2026, from the Info section of
@@ -952,7 +966,7 @@
 .a11y-widget-biz .a11y-fd .a11y-finding-steps,
 .a11y-widget-biz .a11y-fd .a11y-fix-once,
 .a11y-widget-biz .a11y-fd .a11y-picture-note {
-  font-family: "Serrif", Georgia, serif; font-weight: 300; font-size: 27px; line-height: 1.2; letter-spacing: 0;
+  font-family: "Serrif", Georgia, serif; font-weight: 300; font-size: 32px; line-height: 1.2; letter-spacing: 0;
   overflow-wrap: break-word; hyphens: auto;
 }
 .a11y-widget-biz .a11y-fd .a11y-method-hint > strong:first-child,
@@ -963,16 +977,37 @@
 .a11y-widget-biz .a11y-fd .a11y-finding-steps > p > strong,
 .a11y-widget-biz .a11y-fd .a11y-affected-label > strong {
   display: block; margin: 0 0 0.5em; padding-bottom: 0.6em; border-bottom: 1px solid var(--ink);
-  font-family: "Saans", "Jokker", sans-serif; font-weight: 300; font-size: 15px; line-height: 1.2;
+  font-family: "Saans", "Jokker", sans-serif; font-weight: 300; font-size: 18px; line-height: 1.2;
   letter-spacing: 0.04em; text-transform: uppercase;
 }
 .a11y-widget-biz .a11y-fd .a11y-fix-once > strong { font-weight: 300; }
+/* The short parts as cards (user's instruction, 17 Nov 2026: "too many
+   lines, these can be cards"). The first column (who fixes this, what we
+   found, why it matters, the research) is a grid of #f0efe8 cards, 14px
+   corners, 10px apart, as wide as the block allows down to 280px; each
+   label sits inside its card with room under it and no rule. The card
+   ground is fixed in both themes like the design notes, so it redefines ink
+   and paper for what is inside it; #000 on #f0efe8 is 18.4:1. The prose
+   comes down to 22px so a card's words fit its width. What to do and the
+   affected elements stay full width below: lists, pictures and code. */
+.a11y-widget-biz .a11y-fd > .a11y-fd-col:first-child {
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr));
+  gap: 10px; align-items: stretch; margin: 0 0 1.6em;
+}
+.a11y-widget-biz .a11y-fd > .a11y-fd-col:first-child > :is(p, div) {
+  --ink: #000; --paper: #f0efe8;
+  box-sizing: border-box; min-width: 0; margin: 0; padding: 16px 20px 20px;
+  border-radius: 14px; background: #f0efe8; color: #000; font-size: 26px;
+}
+.a11y-widget-biz .a11y-fd > .a11y-fd-col:first-child > p > strong:first-child {
+  margin: 0 0 24px; padding: 0; border: 0;
+}
 /* The key/value lines: the key hangs in a 9em column, the value runs beside
    it and wraps under itself, not under the key. */
 .a11y-widget-biz .a11y-fd .a11y-pro-block,
 .a11y-widget-biz .a11y-fd .a11y-tech-details {
   margin: 0 0 1.2em; padding: 0.5em 0; border-block: 1px solid var(--ink);
-  font-family: "Saans", "Jokker", sans-serif; font-weight: 300; font-size: 18px; line-height: 1.3; letter-spacing: 0.01em;
+  font-family: "Saans", "Jokker", sans-serif; font-weight: 300; font-size: 22px; line-height: 1.3; letter-spacing: 0.01em;
 }
 .a11y-widget-biz .a11y-fd .a11y-pro-line,
 .a11y-widget-biz .a11y-fd .a11y-tech-details > p,
@@ -986,10 +1021,10 @@
 }
 .a11y-widget-biz .a11y-fd .a11y-pro-line:not(:has(> strong:first-child)) { text-indent: 0; }
 .a11y-widget-biz .a11y-fd .a11y-pro-block > .a11y-pro-snippet { margin: 0.3em 0 0.3em 9em; }
-.a11y-widget-biz .a11y-fd .a11y-finding-level-fold { font-family: "Saans", "Jokker", sans-serif; font-weight: 300; font-size: 18px; line-height: 1.3; margin-bottom: 1.2em; }
+.a11y-widget-biz .a11y-fd .a11y-finding-level-fold { font-family: "Saans", "Jokker", sans-serif; font-weight: 300; font-size: 22px; line-height: 1.3; margin-bottom: 1.2em; }
 .a11y-widget-biz .a11y-fd .a11y-fd-learn,
-.a11y-widget-biz .a11y-fd .a11y-occurrence-list { font-family: "Saans", "Jokker", sans-serif; font-weight: 300; font-size: 18px; letter-spacing: 0.01em; }
-.a11y-widget-biz .a11y-fd .a11y-tech-details > summary { font-size: 15px; text-transform: uppercase; letter-spacing: 0.04em; cursor: pointer; }
+.a11y-widget-biz .a11y-fd .a11y-occurrence-list { font-family: "Saans", "Jokker", sans-serif; font-weight: 300; font-size: 22px; letter-spacing: 0.01em; }
+.a11y-widget-biz .a11y-fd .a11y-tech-details > summary { font-size: 18px; text-transform: uppercase; letter-spacing: 0.04em; cursor: pointer; }
 .a11y-widget-biz .a11y-fd .a11y-tech-elements { margin: 0; padding-inline-start: 9em; list-style: none; }
 @container a11y-fd (max-width: 640px) {
   .a11y-widget-biz .a11y-fd .a11y-pro-line,
@@ -1004,11 +1039,11 @@
 
 /* The professional score: the number is the poster word, the rest small print under it. */
 .a11y-widget-biz .a11y-pro-score { display: flex; align-items: baseline; gap: 0.4em; margin: 0 0 0.4em; }
-.a11y-widget-biz .a11y-pro-score-num { font-size: 40px; letter-spacing: -0.01em; font-weight: 300; line-height: 1; }
-.a11y-widget-biz .a11y-pro-score-of { font-size: 15px; letter-spacing: 0.01em; }
-.a11y-widget-biz .a11y-pro-eyebrow { font-size: 15px; letter-spacing: 0.01em; font-weight: 500; margin: 0 0 0.4em; }
-.a11y-widget-biz .a11y-pro-count { font-size: 18px; letter-spacing: 0.01em; }
-.a11y-widget-biz .a11y-pro-chips { display: flex; flex-wrap: wrap; gap: 0.3em 0.6em; margin: 0 0 0.6em; font-size: 18px; letter-spacing: 0.01em; }
+.a11y-widget-biz .a11y-pro-score-num { font-size: 48px; letter-spacing: -0.01em; font-weight: 300; line-height: 1; }
+.a11y-widget-biz .a11y-pro-score-of { font-size: 18px; letter-spacing: 0.01em; }
+.a11y-widget-biz .a11y-pro-eyebrow { font-size: 18px; letter-spacing: 0.01em; font-weight: 500; margin: 0 0 0.4em; }
+.a11y-widget-biz .a11y-pro-count { font-size: 22px; letter-spacing: 0.01em; }
+.a11y-widget-biz .a11y-pro-chips { display: flex; flex-wrap: wrap; gap: 0.3em 0.6em; margin: 0 0 0.6em; font-size: 22px; letter-spacing: 0.01em; }
 .a11y-widget-biz .a11y-pro-jump { display: inline-flex; align-items: baseline; gap: 0.4em; }
 
 /* ═══ SPECIMEN TILES FOR THE REPORT'S GROUPS (user's instruction, 4 Nov 2026) ═
@@ -1096,11 +1131,10 @@
 .a11y-widget-biz .a11y-next-list > li > .a11y-next-crit,
 .a11y-widget-biz .a11y-next-main > .a11y-next-title + .a11y-next-meta,
 .a11y-widget-biz .a11y-spec-card > .a11y-spec-label,
-.a11y-widget-biz .a11y-ra-cell .a11y-ra-email-label,
 .a11y-widget-biz .a11y-pro-row > span:first-child,
 .a11y-widget-biz .a11y-manual-row > .a11y-conf-id {
   display: block; margin: 0 0 10px; padding: 0 0 6px; border-bottom: 1px solid var(--ink); text-align: start;
-  font-family: "Jokker", sans-serif; font-size: 15px; font-weight: 400; line-height: 1.2; letter-spacing: 0.01em;
+  font-family: "Jokker", sans-serif; font-size: 18px; font-weight: 400; line-height: 1.2; letter-spacing: 0.01em;
   text-transform: none;
 }
 /* The lines: Jokker 18px, as the pricing block sets its rows. */
@@ -1111,18 +1145,18 @@
 .a11y-widget-biz .a11y-pro-row > .a11y-pro-row-pass,
 .a11y-widget-biz .a11y-manual-row > .a11y-conf-body > strong {
   display: block; margin: 0;
-  font-family: "Jokker", sans-serif; font-weight: 400; font-size: 18px; line-height: 1.3; letter-spacing: 0.01em;
+  font-family: "Jokker", sans-serif; font-weight: 400; font-size: 22px; line-height: 1.3; letter-spacing: 0.01em;
 }
 .a11y-widget-biz .a11y-dn-link > .a11y-dn-link-text {
-  display: block; margin: 0; font-family: "Jokker", sans-serif; font-weight: 400; font-size: 27px; line-height: 1.1; letter-spacing: 0;
+  display: block; margin: 0; font-family: "Jokker", sans-serif; font-weight: 400; font-size: 32px; line-height: 1.1; letter-spacing: 0;
   text-wrap: balance;
 }
 /* Small print under the words stays Jokker at 15px or 18px. */
 .a11y-widget-biz .a11y-spec-card > .a11y-spec-value > .a11y-spec-gloss { margin-top: 0.6em; font-family: "Jokker", sans-serif; }
 .a11y-widget-biz .a11y-next-list .a11y-next-main { display: flex; flex-direction: column; }
 .a11y-widget-biz .a11y-next-main > .a11y-next-title + .a11y-next-meta { order: -1; }
-.a11y-widget-biz .a11y-next-main > :is(.a11y-next-meta, .a11y-next-status):not(.a11y-next-title + .a11y-next-meta) { margin-top: 0.5em; font-size: 15px; letter-spacing: 0.01em; }
-.a11y-widget-biz .a11y-manual-row > .a11y-conf-body > .a11y-conf-plain { display: block; margin-top: 0.5em; font-size: 15px; letter-spacing: 0.01em; }
+.a11y-widget-biz .a11y-next-main > :is(.a11y-next-meta, .a11y-next-status):not(.a11y-next-title + .a11y-next-meta) { margin-top: 0.5em; font-size: 18px; letter-spacing: 0.01em; }
+.a11y-widget-biz .a11y-manual-row > .a11y-conf-body > .a11y-conf-plain { display: block; margin-top: 0.5em; font-size: 18px; letter-spacing: 0.01em; }
 .a11y-widget-biz .a11y-manual-row > :is(.a11y-conf-body, .a11y-manual-actions) { display: block; }
 .a11y-widget-biz .a11y-manual-row > .a11y-manual-actions { margin-top: 1em; }
 
@@ -1130,19 +1164,73 @@
 .a11y-widget-biz .a11y-next-list > li:has(> .a11y-next-crit) {
   display: grid; grid-template-columns: auto minmax(0, 1fr); align-content: start; column-gap: 0.6em;
 }
-.a11y-widget-biz .a11y-next-list > li > .a11y-next-level { grid-row: 1; grid-column: 2; font-size: 15px; letter-spacing: 0.01em; }
+.a11y-widget-biz .a11y-next-list > li > .a11y-next-level { grid-row: 1; grid-column: 2; font-size: 18px; letter-spacing: 0.01em; }
 .a11y-widget-biz .a11y-next-list > li > .a11y-next-title { grid-column: 1 / -1; }
 
 /* A design note is a button: the whole tile is the control. Hover is the
    marker yellow, like every other button; the note that is open is solid
    ink, like the selected tab. */
-.a11y-widget-biz .a11y-dn-list > li > .a11y-dn-link { width: 100%; font-size: 18px; cursor: pointer; }
+.a11y-widget-biz .a11y-dn-list > li > .a11y-dn-link { width: 100%; font-size: 22px; cursor: pointer; }
 .a11y-widget-biz .a11y-dn-list > li > .a11y-dn-link:enabled:hover { background: var(--hl-cap-a); color: #000; text-decoration: none; }
 .a11y-widget-biz .a11y-dn-list > li > .a11y-dn-link[aria-expanded="true"] { --ink: #fff; --paper: #000; background: #000; color: #fff; font-weight: 400; }
 
-/* The report actions: the controls keep their own sizes inside the tile. */
-.a11y-widget-biz .a11y-ra-row > .a11y-ra-cell .a11y-ra-note { margin: 0.6em 0 0; font-size: 15px; letter-spacing: 0.01em; }
-.a11y-widget-biz .a11y-ra-row > .a11y-ra-cell input { background: #fff; color: #000; border-color: #000; }
+/* The report actions, after the Displaay Info block and form (user's
+   references, 17 Nov 2026). Each column opens on an uppercase 15px label
+   over a 1px ink rule, the Info block's DESCRIPTION / DETAILS. The address
+   is a rounded #f0efe8 field with its label inside it; the send is one wide
+   rounded block in Light 40px; the PDF is an outlined button with 10px
+   corners and a download arrow. These three are the user's exceptions to
+   "buttons are pills". #f0efe8 is fixed in both themes like the design
+   notes, so the field redefines ink and paper for what is inside it; #000
+   on it is 18.4:1. The send is solid ink in the page's theme; hover is the
+   marker yellow; sending is a dashed edge on paper, never faded. */
+.a11y-widget-biz .a11y-ra-row > .a11y-ra-cell { display: flex; flex-direction: column; align-items: stretch; gap: 10px; }
+.a11y-widget-biz .a11y-ra-row > .a11y-ra-cell > .a11y-ra-head {
+  margin: 0 0 14px; padding: 0 0 10px; border-bottom: 1px solid var(--ink);
+  font-family: "Jokker", sans-serif; font-size: 18px; font-weight: 400; line-height: 1.2; letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+.a11y-widget-biz .a11y-ra-row > .a11y-ra-cell > .a11y-ra-field {
+  --ink: #000; --paper: #f0efe8;
+  display: flex; flex-direction: column; gap: 4px; padding: 14px 20px 12px;
+  border-radius: 14px; background: #f0efe8; color: #000;
+}
+.a11y-widget-biz .a11y-ra-field > .a11y-ra-field-label { font-size: 22px; letter-spacing: 0.01em; line-height: 1.2; }
+/* input. in the selector: the general field rule (:is(input:not():not())) is
+   0,3,1, and this has to out-rank it to drop the field's own box. */
+.a11y-widget-biz .a11y-ra-field > input.a11y-ra-email-input {
+  box-sizing: border-box; width: 100%; min-height: 34px; margin: 0; padding: 4px 0;
+  border: 0; border-radius: 0; background: transparent; color: #000;
+  font: inherit; font-size: 22px; letter-spacing: 0.01em;
+}
+.a11y-widget-biz .a11y-ra-field > input.a11y-ra-email-input::placeholder { color: #000; opacity: 1; font-weight: 300; }
+/* The field is the box, so the focus ring goes round the field, not the
+   bare line inside it. */
+.a11y-widget-biz .a11y-ra-field:focus-within { outline: 2px solid #000; outline-offset: 2px; box-shadow: 0 0 0 2px var(--paper); }
+.a11y-widget-biz .a11y-ra-field > input.a11y-ra-email-input:focus-visible { outline: none; }
+.a11y-widget-biz .a11y-ra-row > .a11y-ra-cell > .a11y-ra-send {
+  display: block; width: 100%; min-height: 128px; margin: 0; padding: 20px 24px;
+  border: 1px solid var(--ink); border-radius: 14px; background: var(--ink); color: var(--paper);
+  font-family: "Jokker", sans-serif; font-size: 48px; font-weight: 300; line-height: 1.05; letter-spacing: -0.01em;
+  text-align: start; text-wrap: balance;
+}
+.a11y-widget-biz .a11y-ra-row > .a11y-ra-cell > .a11y-ra-send:disabled { background: var(--paper); color: var(--ink); border-style: dashed; }
+.a11y-widget-biz .a11y-ra-row > .a11y-ra-cell > .a11y-ra-pdf {
+  display: inline-flex; align-self: flex-start; align-items: center; gap: 12px;
+  min-height: 44px; padding: 0.55em 1.1em; border: 1px solid var(--ink); border-radius: 10px;
+  font-size: 22px; font-weight: 400; letter-spacing: 0.01em;
+}
+.a11y-widget-biz .a11y-ra-pdf > .a11y-ra-pdf-icon { width: 20px; height: 20px; flex: none; }
+.a11y-widget-biz .a11y-ra-row > .a11y-ra-cell > .a11y-ra-note { margin: 0; font-size: 18px; letter-spacing: 0.01em; }
+@media (max-width: 640px) {
+  .a11y-widget-biz .a11y-ra-row > .a11y-ra-cell > .a11y-ra-send { min-height: 96px; font-size: 38px; }
+}
+
+/* The conformance report's way in: the primary pill under its lead, and
+   the draft's two exports side by side. */
+.a11y-widget-biz .a11y-acr .a11y-section-desc:has(+ .a11y-acr-make) { margin-bottom: 0.8em; }
+.a11y-widget-biz .a11y-acr .a11y-acr-make { margin: 0; }
+.a11y-widget-biz .a11y-stmt-actions { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; margin: 0 0 1.2em; }
 
 /* A tally is the label over its figure. */
 .a11y-widget-biz .a11y-pro-rows > .a11y-pro-row { display: block; }
@@ -1178,10 +1266,10 @@
    Everything spaced in em (paragraphs, turns, the speaker gutter) follows the
    new body size on its own. */
 @media (max-width: 640px) {
-  .a11y-widget-biz { font-size: 22px; letter-spacing: 0.005em; padding: 10px; }
-  .a11y-widget-biz :is(h1, h2, h3, h4) { font-size: 27px; letter-spacing: 0; }
-  .a11y-widget-biz .a11y-legal-count { font-size: 27px; letter-spacing: 0; }
-  .a11y-widget-biz .a11y-dn-link { font-size: 22px; }
+  .a11y-widget-biz { font-size: 26px; letter-spacing: 0.005em; padding: 10px; }
+  .a11y-widget-biz :is(h1, h2, h3, h4) { font-size: 32px; letter-spacing: 0; }
+  .a11y-widget-biz .a11y-legal-count { font-size: 32px; letter-spacing: 0; }
+  .a11y-widget-biz .a11y-dn-link { font-size: 26px; }
   /* Displaay's phone tables give the words the width and the figures their
      own: here the issue cell was left 40px wide ("Image / s have / no de")
      while "Who fixes this" kept 122px. On a phone that column takes what
@@ -1199,7 +1287,7 @@
   .a11y-widget-biz .a11y-fd .a11y-finding-todo,
   .a11y-widget-biz .a11y-fd .a11y-finding-steps,
   .a11y-widget-biz .a11y-fd .a11y-fix-once,
-  .a11y-widget-biz .a11y-fd .a11y-picture-note { font-size: 22px; letter-spacing: 0.005em; }
+  .a11y-widget-biz .a11y-fd .a11y-picture-note { font-size: 26px; letter-spacing: 0.005em; }
 }
 .a11y-widget-biz .a11y-chat-text :is(p, pre) { margin: 0 0 1.2em; }
 .a11y-widget-biz .a11y-chat-text > :last-child { margin-bottom: 0; }
@@ -1229,7 +1317,7 @@
 .a11y-widget-biz .a11y-print-cards .a11y-finding-header:enabled:hover {
   display: grid; grid-template-columns: minmax(0, 1fr); justify-items: start; align-items: start;
   gap: 0.45em 1.2em; width: 100%; box-sizing: border-box; margin: 0; padding: 0;
-  font: inherit; font-size: 27px; font-weight: 400; letter-spacing: 0; text-align: start;
+  font: inherit; font-size: 32px; font-weight: 400; letter-spacing: 0; text-align: start;
   border: 0; border-radius: 0; background: none; color: var(--ink);
 }
 .a11y-widget-biz .a11y-print-cards .a11y-finding-header > * { min-width: 0; max-width: 100%; }
@@ -1237,13 +1325,13 @@
   margin-inline: 0.2em; padding-block: 0.08em; line-height: 1.25; white-space: normal;
 }
 .a11y-widget-biz .a11y-print-cards .a11y-finding-desc {
-  display: block; font-size: 32px; font-weight: 500; line-height: 1.05; letter-spacing: -0.005em;
+  display: block; font-size: 38px; font-weight: 500; line-height: 1.05; letter-spacing: -0.005em;
   overflow-wrap: break-word; hyphens: auto; text-wrap: balance;
 }
 /* The criterion is small print under the title, on its own line: set after the
    title on the same line it welded onto the title's last word. */
 .a11y-widget-biz .a11y-print-cards .a11y-finding-criterion {
-  display: block; margin-top: 0.35em; font-size: 15px; font-weight: 400; line-height: 1.2; letter-spacing: 0.01em;
+  display: block; margin-top: 0.35em; font-size: 18px; font-weight: 400; line-height: 1.2; letter-spacing: 0.01em;
 }
 .a11y-widget-biz .a11y-print-cards .a11y-finding-meta {
   display: flex; flex-wrap: wrap; align-items: baseline; gap: 0.4em 0.9em;
@@ -1295,11 +1383,24 @@
   border: 3px solid var(--ink); outline: 3px solid var(--paper);
 }
 .a11y-widget-biz .a11y-shot-locator {
-  margin-top: 0.4em; max-width: 60ch; font-size: 15px; line-height: 1.3; letter-spacing: 0.01em; overflow-wrap: anywhere;
+  margin-top: 0.4em; max-width: 60ch; font-size: 18px; line-height: 1.3; letter-spacing: 0.01em; overflow-wrap: anywhere;
 }
 .a11y-widget-biz .a11y-shot-locator strong { font-weight: 500; }
 .a11y-widget-biz .a11y-shot-locator code { font-size: inherit; overflow-wrap: anywhere; }
 .a11y-widget-biz .a11y-occurrence .a11y-shot { margin-top: 0.5em; }
+/* The AI fix (CodeFixSuggestion): the expanded finding's own parts at small
+   size. A 15px uppercase label over a 1px ink rule, the note at 18px, then the
+   element as it is and as it would pass, each under its key. The fixed one
+   carries the 2px edge, the same mark as "Fix soon": the one to take. Black
+   and white only; no ground under either. */
+.a11y-widget-biz .a11y-code-fix { margin: 0.8em 0 0; font-size: 22px; line-height: 1.3; letter-spacing: 0.01em; }
+.a11y-widget-biz .a11y-code-fix-label { margin: 0 0 0.5em; padding-bottom: 0.6em; border-bottom: 1px solid var(--ink); font-size: 18px; letter-spacing: 0.01em; }
+.a11y-widget-biz .a11y-code-fix-label > strong { font-weight: 500; text-transform: uppercase; letter-spacing: 0.04em; margin-inline-end: 0.4em; }
+.a11y-widget-biz .a11y-code-fix-note { margin: 0 0 0.6em; overflow-wrap: break-word; hyphens: auto; }
+.a11y-widget-biz .a11y-code-fix-key { margin: 0.6em 0 0.3em; font-size: 18px; letter-spacing: 0.01em; }
+.a11y-widget-biz .a11y-code-fix-pre { margin: 0; padding: 0.5em 0.6em; border: 1px solid var(--ink); font-size: 18px; line-height: 1.4; white-space: pre-wrap; overflow-wrap: anywhere; }
+.a11y-widget-biz .a11y-code-fix-after { border-width: 2px; }
+.a11y-widget-biz .a11y-code-fix > .a11y-copy-btn { margin-top: 0.6em; }
 
 /* PRINT AND "SAVE AS PDF". Browsers cut wherever the page ends unless told
    otherwise, which bisected cards, rows and pictures across pages.
@@ -1336,4 +1437,63 @@
   ) { break-inside: avoid; page-break-inside: avoid; }
   .a11y-widget-biz thead { display: table-header-group; }
   .a11y-widget-biz tfoot { display: table-footer-group; }
+}
+
+/* ═══ CONTENT SPACING (user's instruction, 17 Nov 2026) ════════════════════
+   "At least 50px between pieces of content." A piece is a block that stands
+   on its own: a report section, a summary panel, a numbered point, a group
+   of controls, a legal row, an undecided check, a statement step, a card
+   row. A title and its description, a label and its field, and the lines
+   inside one piece keep their tighter spacing: they are one piece.
+   In block flow the rule is a top margin on the next piece, which collapses
+   with the one above, so a gap that was already wider stays wider. Flex and
+   grid containers do not collapse margins, so they take a 50px row gap.
+   Measured with a sibling-gap walk over the fixture report at 1440px and
+   375px: no gap between pieces under 50px. Last in the file so it wins
+   ties with the rules it lifts. */
+.a11y-widget-biz .a11y-report > * + * { margin-top: 50px; }
+.a11y-widget-biz .a11y-sum-grid > * + * { margin-top: 50px; }
+.a11y-widget-biz .a11y-legal-panel + * { margin-top: 50px; }
+.a11y-widget-biz .a11y-sum-col:has(> .a11y-sum-panel) { row-gap: 50px; }
+.a11y-widget-biz .a11y-sum-specimens,
+.a11y-widget-biz .a11y-next-list,
+.a11y-widget-biz .a11y-spec-grid,
+.a11y-widget-biz .a11y-ra-row,
+.a11y-widget-biz .a11y-manual-list,
+.a11y-widget-biz .a11y-pro-rows { row-gap: 50px; }
+.a11y-widget-biz .a11y-legal-row:not(:last-child) { margin-bottom: 50px; }
+.a11y-widget-biz .a11y-undecided-cell:not(:last-child) { margin-bottom: 50px; }
+.a11y-widget-biz .a11y-dn-list { margin-bottom: 50px; }
+.a11y-widget-biz .a11y-fd > .a11y-fd-col:first-child { margin-bottom: 50px; }
+.a11y-widget-biz :is(.a11y-stmt-step, .a11y-stmt-fields, .a11y-stmt-card) + * { margin-top: 50px; }
+.a11y-widget-biz .a11y-spec-grid { margin-bottom: 50px; }
+
+/* ═══ MEASURE (user's instruction, 17 Nov 2026) ═══════════════════════════
+   "Cap 9 to 12 words in a line; the margin can be added if needed." 42ch,
+   measured over every paragraph of the fixture report at 1440px: English
+   here averages about 4.2 characters a word, so 60ch had set 13 to 17
+   words a line and 42ch sets 9 to 12, fewer in German, whose words run
+   longer. A numbered point's words are capped themselves, since the
+   paragraph around them is set at a larger size than they are. ch is the element's own font size, so one value holds at 22px
+   and at 67px. Applied
+   to running text only: tables, grids and controls keep their widths, and
+   the cap only ever narrows a block, adding margin beside it. Centred
+   blocks centre the capped box too. */
+.a11y-widget-biz :is(p, li, dd, blockquote, figcaption, h1, h2, h3, h4, .a11y-stmt-text, .a11y-sum-specimen-text) { max-width: 42ch; }
+.a11y-widget-biz .a11y-sum-specimen-text { display: block; max-width: 38ch; }
+.a11y-widget-biz :is(.a11y-sum-run, .a11y-sum-actions) :is(p, h3) { margin-inline: auto; }
+
+/* ═══ 320PX AFTER THE 20% TYPE STEP (17 Nov 2026) ══════════════════════════
+   The reflow check (every fixture state at 320px in en/de/es/fr) failed in
+   three places once the type grew by a fifth, and passed on main before it:
+   - the sign-in toggle never wrapped, and "Detrás de un inicio de sesión"
+     at 22px is 359px wide; it may now wrap, and may shrink below its text;
+   - the legal mark "Nur von einer Person prüfbar" never wrapped either;
+   - the findings table's header words at 22px ("Instances", "Vorkommen",
+     "Occurrences") ran the table 2px past 320; they are 18px on a phone,
+     the other of the two label sizes. */
+@media (max-width: 640px) {
+  .a11y-widget-biz .a11y-input-shell > .a11y-login-toggle { flex: 0 1 auto; min-width: 0; white-space: normal; }
+  .a11y-widget-biz .a11y-legal-mark { white-space: normal; max-width: 100%; }
+  .a11y-widget-biz .a11y-datatable-schedule th { font-size: 18px; }
 }

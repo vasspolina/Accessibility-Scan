@@ -506,6 +506,10 @@ function dedupeOccurrences(findings: AccessibilityFinding[]): OccurrenceEntry[] 
     const existing = byKey.get(key);
     if (existing) {
       existing.count += 1;
+      // The row shows its representative's AI fix; when the first of a run
+      // of identical elements had none and a later one does, the later one
+      // speaks for the row.
+      if (!existing.rep.suggestedCode && f.suggestedCode) existing.rep = f;
     } else {
       byKey.set(key, { rep: f, count: 1, label });
       order.push(key);
@@ -563,7 +567,9 @@ export function FindingDetails({
   const entries = dedupeOccurrences(findings);
   const measured = whatWeFound(rep, plain, entries.length, title);
   const locatesSomething = entries.some(
-    (e) => labelNamesSomething(e.label) || e.rep.elementScreenshot
+    // An AI fix is shown in the element's row, so a row that carries one is
+    // kept even when its label and picture identify nothing on their own.
+    (e) => labelNamesSomething(e.label) || e.rep.elementScreenshot || e.rep.suggestedCode
   );
   const cluster = dominantComponent(findings);
   const summarize = entries.length > SUMMARY_THRESHOLD;
@@ -905,7 +911,8 @@ export function findingRow(
   const fromAi = isAiFinding(rep);
 
   const issueCell = (
-    <span className="a11y-finding-issue">
+    // data-finding: the score summary's links find this row by it (lib/openFinding).
+    <span className="a11y-finding-issue" data-finding={rep.id}>
       {/* Severity's own column (below) is hidden at phone width — its
           badge plus the Issue text plus the arrow column already exceeded
           the viewport there, forcing horizontal scroll before a reader
@@ -1232,6 +1239,7 @@ function Occurrence({
       <ElementShot finding={finding} showLocator={professional} />
       {hasAlt && <AltTextSuggestion value={finding.suggestedAltText!} />}
       {finding.suggestedColour && <ColourSuggestion suggestion={finding.suggestedColour} />}
+      {finding.suggestedCode && <CodeFixSuggestion fix={finding.suggestedCode} />}
     </li>
   );
 }
@@ -1318,6 +1326,56 @@ function ColourSuggestion({
 // Renders the AI's alt-text suggestion for an image missing one. An empty
 // value is meaningful — it means the image is decorative and the right fix
 // is an empty alt attribute, not a description.
+// The AI fix: the element as it is, then as it would pass, with a copy
+// button on the fixed one. Both are shown because "here is new markup" alone
+// asks the reader to diff it in their head, and the reader is usually not the
+// person who wrote the original. Labelled as the AI's on every occurrence: it
+// is written from the markup alone and can be wrong, which the backend's
+// validateCodeFix narrows but cannot rule out.
+function CodeFixSuggestion({ fix }: { fix: NonNullable<AccessibilityFinding["suggestedCode"]> }) {
+  const [copied, setCopied] = useState(false);
+
+  async function copy() {
+    try {
+      await navigator.clipboard.writeText(fix.after);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 1500);
+    } catch {
+      // Clipboard blocked: the markup is on screen to copy by hand.
+    }
+  }
+
+  return (
+    <div className="a11y-code-fix">
+      <p className="a11y-code-fix-label">
+        <strong>{t("AI fix")}</strong> {t("Written by AI from this element's markup. Check it before you use it.")}
+      </p>
+      {fix.note && <p className="a11y-code-fix-note">{fix.note}</p>}
+      <p className="a11y-code-fix-key">{t("Current markup")}</p>
+      {/* Scrollable, so keyboard-reachable; a group, not a region, for the
+          same reason as the professional snippet above. */}
+      <pre className="a11y-code-fix-pre" tabIndex={0} role="group" aria-label={t("Current markup")}>
+        <code>{fix.before}</code>
+      </pre>
+      <p className="a11y-code-fix-key">{t("Fixed markup")}</p>
+      <pre className="a11y-code-fix-pre a11y-code-fix-after" tabIndex={0} role="group" aria-label={t("Fixed markup")}>
+        <code>{fix.after}</code>
+      </pre>
+      <button
+        type="button"
+        className="a11y-copy-btn"
+        onClick={copy}
+        aria-label={copied ? t("Copied the fixed markup") : t("Copy the fixed markup")}
+      >
+        {copied ? t("Copied") : t("Copy")}
+      </button>
+      <span className="a11y-sr-only" role="status">
+        {copied ? t("Fixed markup copied to the clipboard.") : ""}
+      </span>
+    </div>
+  );
+}
+
 function AltTextSuggestion({ value }: { value: string }) {
   const [copied, setCopied] = useState(false);
 
