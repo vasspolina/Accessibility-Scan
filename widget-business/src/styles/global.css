@@ -822,9 +822,21 @@
 .a11y-widget-biz .a11y-prompts .a11y-prompt:enabled:focus-visible .a11y-prompt-go { visibility: visible; }
 .a11y-widget-biz .a11y-prompts .a11y-prompt:disabled { cursor: default; border: 1px dashed #000; }
 .a11y-widget-biz .a11y-prompt-more { text-align: center; margin: 1.2em 0 0; }
+/* On a phone (user's instruction, 17 Nov 2026, "optimise for mobile"): the
+   square tile and its 220px floor made the first question fill the screen
+   and the three run two screens deep, under a dock that holds a third of
+   it. Each tile is now as tall as its words: the question at the phone
+   prose size (26px), 16px of padding, 8px between tiles, so all three sit
+   on one 390px screen. A phone has no hover, and the hidden pill still
+   held its 34px, so it is taken out of the flow; it shows on keyboard
+   focus, the one way a phone reaches that state. */
 @container a11y-prompts (max-width: 640px) {
-  .a11y-widget-biz .a11y-prompts .a11y-prompt { aspect-ratio: auto; min-height: 220px; padding: 20px; }
-  .a11y-widget-biz .a11y-prompts .a11y-prompt-ask { font-size: 32px; letter-spacing: 0; }
+  .a11y-widget-biz .a11y-prompt-grid { gap: 8px; }
+  .a11y-widget-biz .a11y-prompts .a11y-prompt { aspect-ratio: auto; min-height: 0; padding: 16px 18px; gap: 10px; border-radius: 16px; }
+  .a11y-widget-biz .a11y-prompts .a11y-prompt-ask { margin-top: 0; font-size: 26px; letter-spacing: 0.005em; line-height: 1.15; }
+  .a11y-widget-biz .a11y-prompts .a11y-prompt-go { display: none; }
+  .a11y-widget-biz .a11y-prompts .a11y-prompt:enabled:focus-visible .a11y-prompt-go { display: flex; }
+  .a11y-widget-biz .a11y-prompt-more { margin-top: 0.6em; }
 }
 @container a11y-sum-run (max-width: 640px) {
   .a11y-widget-biz .a11y-sum-run .a11y-sum-rows,
@@ -1270,6 +1282,13 @@
   .a11y-widget-biz :is(h1, h2, h3, h4) { font-size: 32px; letter-spacing: 0; }
   .a11y-widget-biz .a11y-legal-count { font-size: 32px; letter-spacing: 0; }
   .a11y-widget-biz .a11y-dn-link { font-size: 26px; }
+  /* The chat box on a phone (17 Nov 2026): at 22px "Use the form instead"
+     and Send could not share a 370px row, so they stacked and the dock
+     took 245px of a 664px screen. At the smaller label size, 18px, with a
+     little less side padding, they sit on one row. */
+  .a11y-widget-biz .a11y-chat-box .a11y-btn { font-size: 18px; padding-inline: 0.9em; }
+  .a11y-widget-biz .a11y-chat-box-row { flex-wrap: nowrap; }
+  .a11y-widget-biz .a11y-chat-box-start { min-width: 0; }
   /* Displaay's phone tables give the words the width and the figures their
      own: here the issue cell was left 40px wide ("Image / s have / no de")
      while "Who fixes this" kept 122px. On a phone that column takes what
