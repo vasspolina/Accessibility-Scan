@@ -14,9 +14,10 @@ import type Anthropic from "@anthropic-ai/sdk";
  *
  * Kept byte-stable on purpose. It sits at the front of every request, so it
  * is part of the cached prefix, and anything per-request (the language, the
- * date, the site) would invalidate the cache on every turn. The language
- * rule below is written so the model follows the reader, which needs no
- * per-request value at all.
+ * date, the site) would invalidate the cache on every turn. The language the
+ * reader picked in the widget is sent per request and set after this prompt
+ * as its own block (chatLanguageNote); the rule below covers a request that
+ * carries none.
  *
  * The voice rules are the same ones the report's own copy is held to
  * (docs/VOICE.md) — an assistant that wrote in a different register from
@@ -111,7 +112,17 @@ How you write:
 - No headings, no tables and no horizontal rules. A bold phrase or a short line ending in a colon, standing alone as a section title, is a heading too. Lead into a list with a sentence.
 - A short hyphen list is fine for several items. Number the steps when their order matters.
 - Answer the question first. Background only if it changes what they do next. Match the length to the question: a line for a simple one, more for a fix or an explanation.
-- Reply in the language of the person's latest message. If it is only an address or a name, keep the language the conversation is already in, or English at the start.`;
+- If a note after these instructions names the language the reader chose, reply in that language, whatever language they write in, unless they ask for another one. Otherwise reply in the language of the person's latest message. If it is only an address or a name, keep the language the conversation is already in, or English at the start.`;
+
+const LANGUAGE_NAMES = { en: "English", de: "German", es: "Spanish", fr: "French" } as const;
+
+/** The reader's chosen language, as a system block after the prompt. Set
+ *  in the widget's Language menu, so it wins over the language a question
+ *  happens to be typed in: someone who picked French and typed in English
+ *  was answered in English, with French spacing laid over it. */
+export function chatLanguageNote(lang: keyof typeof LANGUAGE_NAMES): string {
+  return `The reader has set the checker to ${LANGUAGE_NAMES[lang]}. Reply in ${LANGUAGE_NAMES[lang]}.`;
+}
 
 /** The one tool. The widget, not this server, runs the scan: that keeps the
  *  narration, the login form and the report rendering where they already

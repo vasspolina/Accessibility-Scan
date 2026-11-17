@@ -10,6 +10,7 @@
  */
 
 import { t } from "../lib/strings";
+import { getLang } from "../lib/i18n";
 
 export type ChatBlock = Record<string, unknown> & { type: string };
 export type ChatMessage = { role: "user" | "assistant"; content: string | ChatBlock[] };
@@ -101,7 +102,9 @@ export async function sendChatTurn(
     response = await fetch(`${apiBase.replace(/\/$/, "")}/api/chat`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ messages }),
+      // The reader's Language choice: the assistant answers in it whatever
+      // language the question is typed in.
+      body: JSON.stringify({ messages, language: getLang() }),
       signal,
     });
   } catch (err) {
