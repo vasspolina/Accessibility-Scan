@@ -64,6 +64,9 @@ export interface AccessibilityFinding {
   // string is ready-to-use alt text; an empty string means the image looks
   // decorative and should get alt=""; undefined means none was generated.
   suggestedAltText?: string;
+  // The AI fix: the element's captured markup with the fault corrected.
+  // Absent when the AI layer did not run or declined this element.
+  suggestedCode?: { before: string; after: string; note?: string; model: string };
   // The self-hosted model's plain-language wording of an axe finding. Words
   // only: severity, criterion and score are measured, never the model's.
   plain?: { title: string; explanation: string; fix: string; model: string; lang: string };

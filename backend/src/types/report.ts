@@ -99,6 +99,19 @@ export const accessibilityFindingSchema = z.object({
   // decorative and should get alt="" so assistive tech skips it. Undefined
   // means no suggestion was generated (no key, not an image finding, etc.).
   suggestedAltText: z.string().optional(),
+  // The AI fix: the failing element's own markup with the fault corrected
+  // (aiReview/suggestCodeFix.ts). `before` is the captured snippet it was
+  // written against, so the reader sees the change and not only the result.
+  // Present only when the AI layer ran, the element had a snippet, and the
+  // answer passed validateCodeFix. Absent means no fix, never "nothing to fix".
+  suggestedCode: z
+    .object({
+      before: z.string(),
+      after: z.string(),
+      note: z.string().optional(),
+      model: z.string(),
+    })
+    .optional(),
   // A plain-language rewrite of an axe finding by the self-hosted model
   // (services/plainLanguage/). Words only: severity, criterion and score are
   // never the model's. Absent when the layer is not set up, was switched

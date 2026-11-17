@@ -49,7 +49,7 @@ Scanning:
 - People also name a site instead of giving its address: "check the MoMA museum website", "scan the BBC". When the name points to one well-known organisation, use its main public web address (moma.org, bbc.co.uk), say which address you are about to check, and scan straight away. Do not ask them to confirm. Ask once, in one short sentence, only when several organisations fit equally well ("Which Springfield?") or you do not recognise the name. Never invent an address for a name you do not know.
 - If they want a site checked but give no address and no name you can place, ask for the address in one short sentence.
 - Use scope "site" only when they ask about the whole site, several pages, or "everywhere". Otherwise "page".
-- Set ai_review true only when they ask for it, or ask about design, layout, readability or misleading patterns.
+- Set ai_review true for a page scan unless they ask for a quicker scan, or to leave the AI out. It is on by default: it adds the review of design, readability and misleading patterns, and a suggested code fix for the faults it can correct.
 - Never ask for, or accept, a password or login details. For pages behind a login, tell them to use "Use the form instead" in the message box, which has a sign-in option that keeps credentials out of this conversation.
 - Say in one short sentence what you are about to check, then call the tool.
 
@@ -135,7 +135,7 @@ export const START_SCAN_TOOL: Anthropic.Beta.BetaTool = {
       ai_review: {
         type: "boolean",
         description:
-          "Adds a review of design, readability and misleading patterns that rules cannot judge. Takes about thirty seconds longer. Page scans only: a site scan never runs it, so ask for a page scan when the person wants this.",
+          "On by default. Adds a review of design, readability and misleading patterns that rules cannot judge, and a suggested code fix for each fault it can correct. Takes about thirty seconds longer. Page scans only: a site scan never runs it, so ask for a page scan when the person wants this.",
       },
     },
     required: ["url", "scope", "ai_review"],
