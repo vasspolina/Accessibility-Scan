@@ -9,12 +9,11 @@
     code: "Your invitation code",
     assistiveTech: "What do you use",
     pageUrl: "The page's address",
-    task: "What were you trying to do",
     barrier: "What happened",
     impact: "How much did it hold you back"
   };
   var FIRST_INPUT = {
-    code: "code", task: "task", barrier: "barrier", pageUrl: "pageUrl",
+    code: "code", barrier: "barrier", pageUrl: "pageUrl",
     assistiveTech: function () { return form.querySelector('input[name="assistiveTech"]'); },
     impact: function () { return form.querySelector('input[name="impact"]'); }
   };
@@ -45,6 +44,70 @@
     $("code").closest(".row").hidden = true;
   }
 
+  // What a participant answers the same way every time (their code, what
+  // they use) is kept on their own device, so a second report is the page,
+  // a sentence and a rating. Browser storage can be missing or blocked; the
+  // form works the same without it.
+  var MEMORY = "a11y-pilot-me";
+  function remembered() {
+    try { return JSON.parse(localStorage.getItem(MEMORY) || "{}") || {}; } catch (e) { return {}; }
+  }
+  function remember(f) {
+    try {
+      localStorage.setItem(MEMORY, JSON.stringify({
+        code: f.code, assistiveTech: f.assistiveTech, assistiveTechDetail: f.assistiveTechDetail || ""
+      }));
+    } catch (e) { /* storage blocked: nothing to remember */ }
+  }
+  (function prefill() {
+    var me = remembered();
+    if (!$("code").value && me.code) {
+      $("code").value = me.code;
+      // Remembered from last time: hidden like a code from the link.
+      $("code").closest(".row").hidden = true;
+    }
+    if (me.assistiveTech) {
+      var r = form.querySelector('input[name="assistiveTech"][value="' + me.assistiveTech + '"]');
+      if (r) r.checked = true;
+    }
+    if (me.assistiveTechDetail) $("assistiveTechDetail").value = me.assistiveTechDetail;
+  })();
+
+  // Pasting an address looks the page up, and its title shows under the
+  // field (and goes to the model as context), so nobody has to describe
+  // which page they mean.
+  var pageTitle = "";
+  var lookupTimer = null;
+  var lastLooked = "";
+  function lookUpPage() {
+    var url = $("pageUrl").value.trim();
+    var code = $("code").value.trim();
+    if (url === lastLooked) return;
+    lastLooked = url;
+    pageTitle = "";
+    $("page-found").textContent = "";
+    if (!/^https?:\/\/\S+\.\S+/i.test(url) || !code) return;
+    $("page-found").textContent = "Looking the page up…";
+    fetch("/api/pilot/page", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ code: code, url: url })
+    }).then(function (r) { return r.ok ? r.json() : { title: null }; }).then(function (res) {
+      if ($("pageUrl").value.trim() !== url) return;
+      pageTitle = res.title || "";
+      $("page-found").textContent = pageTitle
+        ? "Page found: " + pageTitle
+        : "We couldn't read that page's title. That's fine: your report still goes with the address.";
+    }).catch(function () {
+      if ($("pageUrl").value.trim() === url) $("page-found").textContent = "";
+    });
+  }
+  $("pageUrl").addEventListener("input", function () {
+    clearTimeout(lookupTimer);
+    lookupTimer = setTimeout(lookUpPage, 600);
+  });
+  $("pageUrl").addEventListener("change", lookUpPage);
+
   fetch("/api/pilot").then(function (r) { return r.json(); }).then(function (info) {
     if (!info.open || (!info.stores && !info.mails)) {
       $("closed").hidden = false;
@@ -65,6 +128,7 @@
       assistiveTechDetail: (data.get("assistiveTechDetail") || "").trim() || undefined,
       pageUrl: (data.get("pageUrl") || "").trim(),
       task: (data.get("task") || "").trim(),
+      pageTitle: pageTitle || undefined,
       barrier: (data.get("barrier") || "").trim(),
       impact: data.get("impact") || "",
       company_url: data.get("company_url") || undefined,
@@ -116,7 +180,6 @@
     if (!f.code) errs.push({ field: "code", message: "Enter your invitation code" });
     if (!f.assistiveTech) errs.push({ field: "assistiveTech", message: "Choose what you use" });
     if (f.pageUrl && !/^https?:\/\/\S+$/i.test(f.pageUrl)) errs.push({ field: "pageUrl", message: "Enter the address starting with https, or leave it empty" });
-    if (!f.task) errs.push({ field: "task", message: "Say what you were trying to do" });
     if (!f.barrier) errs.push({ field: "barrier", message: "Say what happened" });
     if (!f.impact) errs.push({ field: "impact", message: "Choose how much it held you back" });
     return errs;
@@ -133,6 +196,7 @@
     var errs = validate(f);
     if (errs.length) { showErrors(errs); return; }
     clearErrors();
+    remember(f);
     state.fields = f;
     var btn = $("draft-btn");
     busy(btn, true, "Writing up your report…");
@@ -236,6 +300,13 @@
     var code = $("code").value;
     form.reset();
     $("code").value = code;
+    pageTitle = ""; lastLooked = ""; $("page-found").textContent = "";
+    (function () {
+      var me = remembered();
+      var r = me.assistiveTech && form.querySelector('input[name="assistiveTech"][value="' + me.assistiveTech + '"]');
+      if (r) r.checked = true;
+      if (me.assistiveTechDetail) $("assistiveTechDetail").value = me.assistiveTechDetail;
+    })();
     state = { fields: null, draft: null, model: null };
     show("report");
     focusEl($("title"));

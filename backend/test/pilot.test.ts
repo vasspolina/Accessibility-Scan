@@ -78,7 +78,9 @@ describe("the pilot", () => {
   it("names the missing fields", async () => {
     const res = await post("/api/pilot/draft", { code: "river-41", assistiveTech: "screen-reader" });
     expect(res.statusCode).toBe(400);
-    expect(res.json().fields).toEqual(expect.arrayContaining(["task", "barrier", "impact"]));
+    expect(res.json().fields).toEqual(expect.arrayContaining(["barrier", "impact"]));
+    // What they were trying to do is optional now: one sentence is enough.
+    expect(res.json().fields).not.toContain("task");
   });
 
   it("drafts a finding from their words, with their rating as the severity", async () => {
@@ -130,6 +132,21 @@ describe("the pilot", () => {
     });
     expect(JSON.stringify(body)).not.toContain("river-41");
     expect(JSON.stringify(body)).not.toContain("stone-07");
+  });
+
+  it("drafts from one sentence: what they were trying to do is optional, and the page title is context", async () => {
+    modelContent = JSON.stringify(draft);
+    const { task: _task, ...rest } = fields;
+    const res = await post("/api/pilot/draft", { ...rest, pageTitle: "Checkout – Example Shop" });
+    expect(res.statusCode).toBe(200);
+    const user = modelCalls[0].messages[1].content;
+    expect(user).toContain('titled "Checkout – Example Shop"');
+    expect(user).toContain("What they were trying to do: not given");
+  });
+
+  it("looks a page up only for someone with a code", async () => {
+    const res = await post("/api/pilot/page", { code: "river-42", url: "http://93.184.216.34/" });
+    expect(res.statusCode).toBe(403);
   });
 
   it("answers a filled trap field as if it worked, and keeps nothing", async () => {

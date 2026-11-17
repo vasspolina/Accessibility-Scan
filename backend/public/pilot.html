@@ -96,6 +96,8 @@
   .field-error { display: block; font-size: 15px; font-weight: 500; margin: 0 0 8px; }
   .field-error::before { content: "Error: "; }
 
+  .page-found { margin: 8px 0 0; }
+  .page-found:empty { display: none; }
   .draft-meta { font-size: 15px; letter-spacing: 0.01em; }
   [hidden] { display: none !important; }
   .visually-hidden { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
@@ -109,7 +111,7 @@
 
   <div id="intro">
     <p>Did something on a website stop you or slow you down? Tell us in your own words.</p>
-    <p class="small">We write it up for the site's owner, and you check it before it is sent. We keep what you write, but never ask for your name or email, so please leave them out.</p>
+    <p class="small">We write it up for the site's owner, and you check it before it is sent. We keep what you write, but never ask for your name or email, so please leave them out. This device remembers your code and what you use, so next time is quicker.</p>
   </div>
 
   <div id="status" role="status" aria-live="polite" class="visually-hidden"></div>
@@ -127,9 +129,32 @@
       <input type="text" id="code" name="code" autocomplete="off" spellcheck="false" required aria-describedby="code-hint">
     </div>
 
+    <div class="row">
+      <label class="field" for="pageUrl">The page's address</label>
+      <span class="hint" id="url-hint">Paste it from your browser's address bar. We look the page up, so you don't have to describe which page it is. Leave it empty if you can't get it.</span>
+      <span class="field-error" id="pageUrl-error" hidden></span>
+      <input type="url" id="pageUrl" name="pageUrl" inputmode="url" autocomplete="off" aria-describedby="url-hint page-found">
+      <span class="hint page-found" id="page-found" aria-live="polite"></span>
+    </div>
+
+    <div class="row">
+      <label class="field" for="barrier">What happened?</label>
+      <span class="hint" id="barrier-hint">One sentence is enough: what you heard or pressed, and where you got stuck.</span>
+      <span class="field-error" id="barrier-error" hidden></span>
+      <textarea id="barrier" name="barrier" maxlength="4000" required aria-describedby="barrier-hint"></textarea>
+    </div>
+
+    <fieldset>
+      <legend>How much did it hold you back?</legend>
+      <span class="field-error" id="impact-error" hidden></span>
+      <label class="choice"><input type="radio" name="impact" value="blocked" required> I could not go on</label>
+      <label class="choice"><input type="radio" name="impact" value="slowed"> I got there, but it took much longer</label>
+      <label class="choice"><input type="radio" name="impact" value="annoyed"> It was irritating, but it did not stop me</label>
+    </fieldset>
+
     <fieldset aria-describedby="at-hint">
       <legend>What do you use?</legend>
-      <span class="hint" id="at-hint">Choose the one you were using when this happened.</span>
+      <span class="hint" id="at-hint">Choose the one you were using when this happened. We remember your answer on this device for next time.</span>
       <span class="field-error" id="assistiveTech-error" hidden></span>
       <label class="choice"><input type="radio" name="assistiveTech" value="screen-reader" required> A screen reader</label>
       <label class="choice"><input type="radio" name="assistiveTech" value="keyboard-only"> Only a keyboard</label>
@@ -146,33 +171,16 @@
     </div>
 
     <div class="row">
-      <label class="field" for="pageUrl">The page's address (optional)</label>
-      <span class="hint" id="url-hint">Paste it if you have it. It starts with https.</span>
-      <span class="field-error" id="pageUrl-error" hidden></span>
-      <input type="url" id="pageUrl" name="pageUrl" inputmode="url" autocomplete="off" aria-describedby="url-hint">
+      <label class="field" for="task">What were you trying to do? (optional)</label>
+      <span class="hint" id="task-hint">Only if it isn't clear from what you wrote above. For example: pay for my order.</span>
+      <input type="text" id="task" name="task" maxlength="1000" aria-describedby="task-hint">
     </div>
 
-    <div class="row">
-      <label class="field" for="task">What were you trying to do?</label>
-      <span class="hint" id="task-hint">One line is enough. For example: pay for my order.</span>
-      <span class="field-error" id="task-error" hidden></span>
-      <input type="text" id="task" name="task" maxlength="1000" required aria-describedby="task-hint">
-    </div>
 
-    <div class="row">
-      <label class="field" for="barrier">What happened?</label>
-      <span class="hint" id="barrier-hint">What you heard, what you pressed and where you got stuck. As much or as little as you like.</span>
-      <span class="field-error" id="barrier-error" hidden></span>
-      <textarea id="barrier" name="barrier" maxlength="4000" required aria-describedby="barrier-hint"></textarea>
-    </div>
 
-    <fieldset>
-      <legend>How much did it hold you back?</legend>
-      <span class="field-error" id="impact-error" hidden></span>
-      <label class="choice"><input type="radio" name="impact" value="blocked" required> I could not go on</label>
-      <label class="choice"><input type="radio" name="impact" value="slowed"> I got there, but it took much longer</label>
-      <label class="choice"><input type="radio" name="impact" value="annoyed"> It was irritating, but it did not stop me</label>
-    </fieldset>
+
+
+
 
     <!-- A trap field: hidden from people and from assistive technology. -->
     <div hidden aria-hidden="true"><label>Company website <input type="text" name="company_url" tabindex="-1" autocomplete="off"></label></div>
