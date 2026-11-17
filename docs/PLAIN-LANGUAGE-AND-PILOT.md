@@ -89,6 +89,14 @@ Only with `PLAIN_LANGUAGE_IN_SCANS=true`. Without it, scans report
 
 ## Running the pilot
 
+The form asks for as little as it can: the page's address, one sentence
+about what happened, and how much it held the participant back. Pasting an
+address looks the page up (`POST /api/pilot/page`, needs a code; every hop
+goes through the SSRF guard and only the title comes back), shows its title
+under the field and gives it to the model as context. "What were you trying
+to do" is optional. The participant's code and assistive technology are
+remembered in their own browser, so a second report is three fields.
+
 1. Make one code per person, e.g. `river-41,stone-07,lake-19`, and set
    `PILOT_CODES`.
 2. Send each person their link: `https://<backend>/pilot.html?code=river-41`.
