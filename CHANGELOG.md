@@ -5,6 +5,20 @@ All notable changes to this project are documented here.
 This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 The `backend`, `widget`, and `widget-business` packages are versioned together.
 
+## Unreleased
+
+### Added
+
+- **Plain-language rewrite by a self-hosted model.** With `LOCAL_LLM_URL` set
+  (Ollama, llama.cpp or vLLM; default model Qwen2.5 7B Instruct), each axe
+  rule's findings get a plain title, an explanation about this page's
+  elements and a fix, in the report's language. Words only: severity,
+  criterion and score stay measured. `meta.plainLanguage` reports how it went.
+- **Assistive-technology pilot** at `/pilot.html`: invited screen-reader and
+  keyboard users report a barrier, the same model drafts a finding, and the
+  participant checks it before it is sent. Closed unless `PILOT_CODES` is set.
+  See `docs/PLAIN-LANGUAGE-AND-PILOT.md`.
+
 ## [1.0.0] — 2026-07-25
 
 First stable release. The web accessibility check tool scans a page (or a whole

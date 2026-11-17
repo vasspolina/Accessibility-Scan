@@ -8,6 +8,7 @@ import type { AxeRunResult, FreshCaptureResult } from "./render/renderPage.js";
 import { extractContext } from "./contextExtraction/extractContext.js";
 import { reviewPage } from "./aiReview/reviewPage.js";
 import { attachAltTextSuggestions } from "./aiReview/suggestAltText.js";
+import { attachPlainLanguage, rewriteFindings } from "./plainLanguage/rewriteFindings.js";
 import {
   axeToFindings,
   aiToFindings,
@@ -456,6 +457,11 @@ export async function scanUrlToReport(
   const aiReviewPromise = reviewPage(context, renderResult.screenshotBase64, includeAiReview);
 
   const automatedFindings = axeToFindings(renderResult.axe);
+  // The plain-language rewrite needs only axe's findings, so it starts now
+  // and runs beside the AI review and the probes below. It is an AI layer,
+  // so the reader's "AI review off" switches it off too.
+  const reportLang = normalizeReportLang(language);
+  const plainPromise = rewriteFindings(automatedFindings, reportLang, includeAiReview);
   const deterministic: AccessibilityFinding[] = [];
   deterministic.push(...evaluateTypography(renderResult.typographyBlocks));
   deterministic.push(
@@ -544,6 +550,9 @@ export async function scanUrlToReport(
     // model wrote none or every note failed to attach.
     logger.info(ageStats, "age enrichments");
   }
+
+  const plainRewrite = await plainPromise;
+  attachPlainLanguage(findings, plainRewrite, reportLang);
 
   if (captureEvidence) {
     await attachEvidence(findings, renderResult, includeAiReview);
@@ -637,6 +646,7 @@ export async function scanUrlToReport(
       })(),
       aiReviewErrorKind: aiReview.errorKind,
       model: aiReview.model,
+      plainLanguage: plainRewrite.meta,
     },
   };
 }

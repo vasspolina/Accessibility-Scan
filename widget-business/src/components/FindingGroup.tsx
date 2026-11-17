@@ -7,7 +7,8 @@ import { getDecidedBy, setDecidedBy } from "../lib/apiKey";
 import { Select } from "./Select2";
 import { Input } from "./Input";
 import { Button } from "./Button";
-import { levelFraming, plainForRule, plainFixForRule } from "../lib/wcagPlain";
+import { levelFraming, plainForRule } from "../lib/wcagPlain";
+import { findingFix, findingTitle, modelPlain } from "../lib/modelPlain";
 import { whatWeFound } from "../lib/findingText";
 import { pictureNoteText } from "../lib/failureText";
 import { useReportView } from "./ReportViewContext";
@@ -553,11 +554,12 @@ export function FindingDetails({
   const rep = findings[0];
   const count = findings.length;
   const plain = plainForRule(rep.ruleId);
-  const title = plain?.plain ?? rep.title ?? rep.description;
+  const title = findingTitle(rep);
   const fix = fixKindForFinding(rep);
   const keyboardCheck = isKeyboardCheck(rep);
   const fromAi = isAiFinding(rep);
-  const whatToDo = plainFixForRule(rep.ruleId) ?? rep.suggestedFix;
+  const whatToDo = findingFix(rep);
+  const worded = modelPlain(rep);
   const entries = dedupeOccurrences(findings);
   const measured = whatWeFound(rep, plain, entries.length, title);
   const locatesSomething = entries.some(
@@ -615,6 +617,15 @@ export function FindingDetails({
           <strong>{t("Where this came from")}</strong> {aiHint()}
         </p>
       )}
+      {/* The model worded this card; the check, its severity and its
+          criterion are still the rule's. Said once, under the same label
+          the AI review's provenance uses. */}
+      {worded && (
+        <p className="a11y-method-hint">
+          <strong>{t("Where this came from")}</strong>{" "}
+          {tf("An automated check found this. {model}, a language model we run on our own server, put it into plain words. The check decided the severity, not the model.", { model: worded.model })}
+        </p>
+      )}
       {!rep.elementScreenshot && pictureNoteText(rep) && (
         <p className="a11y-picture-note">{pictureNoteText(rep)}</p>
       )}
@@ -644,6 +655,14 @@ export function FindingDetails({
       {rep.ageNote && (
         <p className="a11y-finding-measured">
           <strong>{t("Past sixty")}</strong> <CodeText text={rep.ageNote} />
+        </p>
+      )}
+      {/* The model's account of what happens on this page, from the
+          elements it was shown. Beside the curated "why", not instead of
+          it: the curated line is reviewed, this one is not. */}
+      {worded && (
+        <p className="a11y-finding-measured">
+          <strong className="a11y-fd-title">{t("On this page")}</strong> <CodeText text={worded.explanation} />
         </p>
       )}
       {/* Shared explanation — shown once for the whole group */}
@@ -880,7 +899,7 @@ export function findingRow(
   const rep = findings[0];
   const count = findings.length;
   const plain = plainForRule(rep.ruleId);
-  const title = plain?.plain ?? rep.title ?? rep.description;
+  const title = findingTitle(rep);
   const fix = fixKindForFinding(rep);
   const keyboardCheck = isKeyboardCheck(rep);
   const fromAi = isAiFinding(rep);
@@ -978,7 +997,7 @@ export function FindingGroup({
   // Deterministic findings get a plain-language title from the rule map; AI
   // findings write their own. Only fall back to the description when neither
   // exists — it's a paragraph, which reads badly as a heading.
-  const title = plain?.plain ?? rep.title ?? rep.description;
+  const title = findingTitle(rep);
   const detailsId = `a11y-group-${rep.id}`;
   // Where the change is made, and whether the owner can confirm it without
   // help. Two separate questions, two separate marks.

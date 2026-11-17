@@ -37,7 +37,7 @@ import { allVerdicts } from "../storage/verdicts.js";
  */
 /** The operator, or null after having replied. Same contract as
  *  requireAccount, for the routes only the deployer may call. */
-async function requireAdmin(request: FastifyRequest, reply: FastifyReply): Promise<boolean> {
+export async function requireAdmin(request: FastifyRequest, reply: FastifyReply): Promise<boolean> {
   const status = storageStatus();
   if (!status.configured) {
     await reply.status(501).send({ error: "Not set up", detail: status.reason, storage: status });

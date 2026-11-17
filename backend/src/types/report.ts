@@ -99,6 +99,19 @@ export const accessibilityFindingSchema = z.object({
   // decorative and should get alt="" so assistive tech skips it. Undefined
   // means no suggestion was generated (no key, not an image finding, etc.).
   suggestedAltText: z.string().optional(),
+  // A plain-language rewrite of an axe finding by the self-hosted model
+  // (services/plainLanguage/). Words only: severity, criterion and score are
+  // never the model's. Absent when the layer is not set up, was switched
+  // off, or did not reach this rule within its budget.
+  plain: z
+    .object({
+      title: z.string(),
+      explanation: z.string(),
+      fix: z.string(),
+      model: z.string(),
+      lang: z.string(),
+    })
+    .optional(),
 });
 export type AccessibilityFinding = z.infer<typeof accessibilityFindingSchema>;
 
@@ -146,6 +159,16 @@ export type AiReviewStatus = z.infer<typeof aiReviewStatusSchema>;
 
 // Why a failed AI review failed, in coarse terms. A small fixed set, never a
 // raw error message: this crosses a public API boundary.
+export const plainLanguageMetaSchema = z.object({
+  status: z.enum(["completed", "partial", "timed_out", "failed", "not_configured", "disabled_by_request"]),
+  model: z.string().optional(),
+  /** axe rules on the page, and how many of them the model rewrote. */
+  rules: z.number(),
+  rewritten: z.number(),
+  ms: z.number(),
+});
+export type PlainLanguageMeta = z.infer<typeof plainLanguageMetaSchema>;
+
 export const aiReviewErrorKindSchema = z.enum([
   "overloaded",
   "invalid_request",
@@ -362,6 +385,7 @@ export const accessibilityReportSchema = z.object({
     documentPages: z.number().optional(),
     aiReviewErrorKind: aiReviewErrorKindSchema.optional(),
     model: z.string().optional(),
+    plainLanguage: plainLanguageMetaSchema.optional(),
   }),
 });
 export type AccessibilityReport = z.infer<typeof accessibilityReportSchema>;

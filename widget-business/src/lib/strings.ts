@@ -504,6 +504,8 @@ export const CHROME_KEYS: string[] = [
   "Opens your browser’s print dialog. Choose “Save as PDF” as the destination.",
   "Check it yourself",
   "Where this came from",
+  "On this page",
+  "An automated check found this. {model}, a language model we run on our own server, put it into plain words. The check decided the severity, not the model.",
   "Past sixty",
   "Why this matters",
   "What the research shows",
