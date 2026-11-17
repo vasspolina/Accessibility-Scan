@@ -24,6 +24,10 @@ const envSchema = z.object({
   // and it runs after it — giving it its own, tighter budget keeps the
   // worst-case total scan time bounded instead of doubling the review's.
   AI_ALT_TEXT_TIMEOUT_MS: z.coerce.number().default(20_000),
+  // The AI fixes run beside the page review (AI_REVIEW_TIMEOUT_MS), so the
+  // budget only has to be under it to add no time: a dozen short snippets
+  // answer in well under that.
+  AI_CODE_FIX_TIMEOUT_MS: z.coerce.number().default(30_000),
   // Six was optimistic. Each render is a full Chromium page holding a
   // full-page screenshot, a text-resize pass and a mobile pass, and the
   // container is several times slower than a laptop. Measured: five scans in
@@ -126,11 +130,6 @@ const envSchema = z.object({
   // model on one consumer GPU writes one rule's text in 2 to 4 seconds;
   // on CPU it is closer to 30, and the budget then cuts it short and says so.
   LOCAL_LLM_TIMEOUT_MS: z.coerce.number().default(45_000),
-  // The pilot (routes/pilot.ts): people who use a screen reader or a
-  // keyboard report a barrier, and the same model structures it. One code
-  // per participant, comma-separated, so "how many people used it" is a
-  // count of codes and not a guess. Absent means the pilot is closed.
-  PILOT_CODES: z.string().optional(),
   // Whether scans use the model too, or only the pilot does. Off unless set
   // to one of the words below: every public scan with AI review on would
   // otherwise call the model and keep a paid GPU worker awake for its idle
@@ -161,12 +160,6 @@ export const hasMailProvider = Boolean(
 );
 
 export const hasLocalModel = Boolean(env.LOCAL_LLM_URL && env.LOCAL_LLM_URL.length > 0);
-
-/** The pilot's participant codes, trimmed, empty entries dropped. */
-export const pilotCodes: string[] = (env.PILOT_CODES ?? "")
-  .split(",")
-  .map((c) => c.trim())
-  .filter((c) => c.length > 0);
 
 if (!hasAnthropicKey) {
   console.warn(

@@ -8,6 +8,7 @@ import type { AccessibilityFinding } from "../api/scanClient";
 import { groupFindings } from "./FindingsList";
 import { plainForRule } from "../lib/wcagPlain";
 import { Card } from "./Card";
+import { openFinding } from "../lib/openFinding";
 
 /* The stat tiles ARE the Card component's anatomy — layer-01 fill, subtle
    hairline, 2px corner, 16px padding — so they use it rather than a div
@@ -387,6 +388,18 @@ export function ScoreGauge({
                         : null;
                     return (
                       <li key={rep.id} className="a11y-sum-row">
+                        {/* The whole item is a link to its finding in the
+                            schedule below (user's instruction, 17 Nov 2026).
+                            A link and not a button: it goes somewhere, and
+                            a button cannot wrap across lines of display type. */}
+                        <a
+                          className="a11y-sum-row-link"
+                          href={`#a11y-finding-${rep.id}`}
+                          onClick={(e) => {
+                            e.preventDefault();
+                            openFinding(e.currentTarget, rep.id);
+                          }}
+                        >
                         <span className="a11y-sum-cell-item">
                           {/* The round marker is held to the title's first
                               word, so a wrap never strands it at a line end. */}
@@ -410,6 +423,7 @@ export function ScoreGauge({
                         <span className="a11y-sum-cell-count">
                           {group.length}&#8202;&times;
                         </span>
+                        </a>
                       </li>
                     );
                   })}

@@ -34,12 +34,12 @@ export function savePilotReport(body: SubmitBody, model: string | undefined): st
      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`
   ).run(
     id,
-    participantId(body.code),
+    participantId(body.participant),
     new Date().toISOString(),
     body.pageUrl ?? null,
     at,
     body.task,
-    body.barrier,
+    body.barrier || "(not described: drafted from a scan of the page)",
     body.impact,
     body.draft ? JSON.stringify(body.draft) : null,
     body.draft ? (model ?? null) : null,

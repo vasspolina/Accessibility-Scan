@@ -148,6 +148,14 @@
         elementSnippet: '<a href="/posts/spring-opening" class="more">Read more</a>',
         description: "Link text says nothing about where it goes.",
         suggestedFix: "Name the destination in the link text.",
+        // The AI fix (backend aiReview/suggestCodeFix.ts), as the scan
+        // returns it when the AI review ran.
+        suggestedCode: {
+          before: '<a href="/posts/spring-opening" class="more">Read more</a>',
+          after: '<a href="/posts/spring-opening" class="more">Read more about the spring opening</a>',
+          note: "The link now names its destination, taken from its address. Check the wording matches the post.",
+          model: "fixture",
+        },
       }),
       finding({
         id: "f7",

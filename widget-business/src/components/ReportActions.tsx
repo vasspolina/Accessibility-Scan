@@ -66,12 +66,18 @@ export function ReportActions({
       {/* Each export carries its own note in its own column, so the sentence
           that explains a control sits under that control rather than in one
           run-on paragraph the reader has to split apart themselves. */}
+      {/* Set as the Displaay Info block and form (user's references,
+          17 Nov 2026): two columns, each under an uppercase label on a 1px
+          rule. The address is a rounded field with its label inside it, the
+          send is one wide rounded block in display type, and the PDF is an
+          outlined button with a download arrow. Each note sits under its
+          own control. */}
       <div className="a11y-ra-row">
         <form className="a11y-ra-cell a11y-ra-email-form" onSubmit={send}>
-          <div className="a11y-ra-item a11y-ra-email">
-            <span className="a11y-ra-dot" aria-hidden="true" />
-            <label className="a11y-ra-email-label" htmlFor={emailId}>
-              {t("Email me this report")}
+          <h3 className="a11y-ra-head">{t("Email me this report")}</h3>
+          <div className="a11y-ra-field">
+            <label className="a11y-ra-field-label" htmlFor={emailId}>
+              {t("Your email address")}
             </label>
             <input
               id={emailId}
@@ -88,10 +94,10 @@ export function ReportActions({
               onChange={(ev) => setAddress(ev.target.value)}
               disabled={sending}
             />
-            <button type="submit" className="a11y-ra-tag a11y-ra-send" disabled={sending}>
-              {sending ? t("Sending\u2026") : t("Send")}
-            </button>
           </div>
+          <button type="submit" className="a11y-ra-send" disabled={sending}>
+            {sending ? t("Sending\u2026") : t("Send this report")}
+          </button>
           {/* role="status" rather than a bare paragraph: the outcome arrives
               after a wait, so it has to be announced, not just drawn. */}
           <p className="a11y-ra-note" role="status">
@@ -101,15 +107,21 @@ export function ReportActions({
           </p>
         </form>
         <div className="a11y-ra-cell">
+          <h3 className="a11y-ra-head">{t("Save as PDF")}</h3>
           <button
             type="button"
-            className="a11y-ra-item a11y-ra-action a11y-ra-pdf"
+            className="a11y-ra-pdf"
             onClick={() => {
               ensureHostPrintStyle();
               window.print();
             }}
           >
-            <span className="a11y-ra-label">{t("Save as PDF")}</span>
+            {t("Download in PDF")}
+            {/* The arrow is drawn, not a glyph: Jokker's ↓ sits too low on
+                the line, and the reference's arrow has a base bar. */}
+            <svg className="a11y-ra-pdf-icon" viewBox="0 0 20 20" aria-hidden="true" focusable="false">
+              <path d="M10 2v12M4.5 8.5 10 14l5.5-5.5M3 18h14" fill="none" stroke="currentColor" strokeWidth="1.5" />
+            </svg>
           </button>
           <p className="a11y-ra-note">
             {t("Opens your browser’s print dialog. Choose “Save as PDF” as the destination.")}

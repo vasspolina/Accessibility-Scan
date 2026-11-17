@@ -1,15 +1,29 @@
-import { describe, it, expect, beforeAll, afterAll, afterEach } from "vitest";
+import { describe, it, expect, beforeAll, afterAll, afterEach, vi } from "vitest";
 import type { FastifyInstance } from "fastify";
 import { mkdtempSync, rmSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 
 /**
- * The assistive-technology pilot: only codes the deployer issued get in,
- * the model drafts from the participant's words and is told not to obey
- * them, the participant's rating is the severity, and what is stored keeps
- * their words beside the draft and never their code.
+ * The assistive-technology pilot: anyone may report (there is no
+ * invitation code), the model drafts from the participant's words and is
+ * told not to obey them, the participant's rating is the severity, and
+ * what is stored keeps their words beside the draft and only a hash of
+ * the form's device id.
  */
+
+// The scan behind an address-only report. Its findings, or its failure,
+// are set per test; the real pipeline needs a browser and is tested elsewhere.
+let scanFindings: Array<Record<string, unknown>> = [];
+let scanFails = false;
+const scannedUrls: string[] = [];
+vi.mock("../src/services/scanPipeline.js", () => ({
+  scanUrlToReport: async (url: string) => {
+    scannedUrls.push(url);
+    if (scanFails) throw new Error("render failed");
+    return { findings: scanFindings };
+  },
+}));
 
 let app: FastifyInstance;
 let dir: string;
@@ -21,7 +35,6 @@ const realFetch = globalThis.fetch;
 beforeAll(async () => {
   dir = mkdtempSync(join(tmpdir(), "pilot-"));
   process.env.DB_PATH = join(dir, "pilot.db");
-  process.env.PILOT_CODES = "river-41, stone-07 ,,";
   process.env.LOCAL_LLM_URL = "http://gpu.test:11434";
   process.env.ADMIN_TOKEN = "admin-secret";
   process.env.CHAT_RATE_LIMIT_MAX = "1000";
@@ -47,7 +60,7 @@ afterEach(() => {
 });
 
 const fields = {
-  code: "river-41",
+  participant: "device-river-41",
   assistiveTech: "screen-reader",
   assistiveTechDetail: "NVDA with Firefox",
   pageUrl: "https://shop.example/checkout",
@@ -69,21 +82,25 @@ describe("the pilot", () => {
     expect(body).toEqual({ open: true, model: "qwen2.5:7b-instruct", stores: true, mails: false });
   });
 
-  it("turns away a code nobody was given", async () => {
-    const res = await post("/api/pilot/draft", { ...fields, code: "river-42" });
-    expect(res.statusCode).toBe(403);
-    expect(modelCalls).toHaveLength(0);
+  it("needs no invitation code, or any id at all", async () => {
+    modelContent = JSON.stringify(draft);
+    const { participant: _p, ...rest } = fields;
+    const res = await post("/api/pilot/draft", rest);
+    expect(res.statusCode).toBe(200);
   });
 
   it("names the missing fields", async () => {
-    const res = await post("/api/pilot/draft", { code: "river-41", assistiveTech: "screen-reader" });
+    const res = await post("/api/pilot/draft", { assistiveTech: "screen-reader" });
     expect(res.statusCode).toBe(400);
-    expect(res.json().fields).toEqual(expect.arrayContaining(["task", "barrier", "impact"]));
+    expect(res.json().fields).toEqual(expect.arrayContaining(["impact"]));
+    // Optional now: what they were trying to do always, what happened when
+    // the address is given (the route checks that one of the two is there).
+    expect(res.json().fields).not.toContain("task");
   });
 
   it("drafts a finding from their words, with their rating as the severity", async () => {
     modelContent = "```json\n" + JSON.stringify(draft) + "\n```";
-    const res = await post("/api/pilot/draft", { ...fields, code: " stone-07 " });
+    const res = await post("/api/pilot/draft", { ...fields, participant: " device-stone-07 " });
     expect(res.statusCode).toBe(200);
     expect(res.json()).toMatchObject({ draft: { title: draft.title, wcagCriterion: "4.1.2" }, model: "qwen2.5:7b-instruct", severity: "critical" });
     const [system, user] = modelCalls[0].messages.map((m) => m.content);
@@ -107,9 +124,9 @@ describe("the pilot", () => {
     expect(saved.json()).toMatchObject({ ok: true, stored: true, mailed: false });
   });
 
-  it("stores the report with their words, the draft and a hash of the code, and counts participants", async () => {
+  it("stores the report with their words, the draft and a hash of the device id, and counts participants", async () => {
     await post("/api/pilot/report", { ...fields, draft, confirmed: true });
-    await post("/api/pilot/report", { ...fields, code: "stone-07", impact: "annoyed", draft, confirmed: false });
+    await post("/api/pilot/report", { ...fields, participant: "device-stone-07", impact: "annoyed", draft, confirmed: false });
 
     expect((await app.inject({ method: "GET", url: "/api/pilot/reports" })).statusCode).toBe(403);
     const res = await app.inject({
@@ -118,7 +135,7 @@ describe("the pilot", () => {
       headers: { authorization: "Bearer admin-secret" },
     });
     const body = res.json();
-    expect(body.codesIssued).toBe(2);
+    expect(body.codesIssued).toBeUndefined();
     // Three reports so far in this file (one from the no-model test), two people.
     expect(body.totals).toEqual({ reports: 3, participants: 2, drafted: 2, confirmed: 1 });
     const confirmed = body.reports.find((r: { confirmed: boolean }) => r.confirmed);
@@ -128,8 +145,61 @@ describe("the pilot", () => {
       draft: { title: draft.title },
       draftModel: "qwen2.5:7b-instruct",
     });
-    expect(JSON.stringify(body)).not.toContain("river-41");
-    expect(JSON.stringify(body)).not.toContain("stone-07");
+    expect(JSON.stringify(body)).not.toContain("device-river-41");
+    expect(JSON.stringify(body)).not.toContain("device-stone-07");
+  });
+
+  it("drafts from one sentence: what they were trying to do is optional, and the page title is context", async () => {
+    modelContent = JSON.stringify(draft);
+    const { task: _task, ...rest } = fields;
+    const res = await post("/api/pilot/draft", { ...rest, pageTitle: "Checkout – Example Shop" });
+    expect(res.statusCode).toBe(200);
+    const user = modelCalls[0].messages[1].content;
+    expect(user).toContain('titled "Checkout – Example Shop"');
+    expect(user).toContain("What they were trying to do: not given");
+  });
+
+  it("looks a page up without a code, and still refuses a bad address", async () => {
+    const res = await post("/api/pilot/page", { url: "not an address" });
+    expect(res.statusCode).toBe(400);
+  });
+
+  it("drafts from a scan when only the address is given, and says the scan found it", async () => {
+    modelContent = JSON.stringify(draft);
+    scanFails = false;
+    scanFindings = [
+      { severity: "minor", ruleId: "region", description: "Content outside landmarks", wcagCriterion: "1.3.1" },
+      { severity: "critical", ruleId: "button-name", description: "Buttons must have discernible text", wcagCriterion: "4.1.2", elementSnippet: "<button class='pay'></button>" },
+      { severity: "critical", ruleId: "button-name", description: "Buttons must have discernible text", wcagCriterion: "4.1.2" },
+    ];
+    const { task: _t, barrier: _b, ...rest } = fields;
+    const res = await post("/api/pilot/draft", rest);
+    expect(res.statusCode).toBe(200);
+    expect(res.json().draft.fromScan).toBe(true);
+    expect(scannedUrls.at(-1)).toBe(fields.pageUrl);
+    const [system, user] = modelCalls[0].messages.map((m) => m.content);
+    expect(system).toContain("Say that the scan found it");
+    expect(system).toContain("Do not claim the visitor met it");
+    // Most serious first, one line per rule.
+    expect(user.indexOf("Buttons must have discernible text")).toBeLessThan(user.indexOf("Content outside landmarks"));
+    expect(user.match(/Buttons must have discernible text/g)).toHaveLength(1);
+  });
+
+  it("says so when the scan finds nothing, or cannot scan the page", async () => {
+    const { task: _t, barrier: _b, ...rest } = fields;
+    scanFindings = [];
+    expect((await post("/api/pilot/draft", rest)).json()).toMatchObject({ draft: null, reason: "scan_clean" });
+    scanFails = true;
+    expect((await post("/api/pilot/draft", rest)).json()).toMatchObject({ draft: null, reason: "scan_failed" });
+    scanFails = false;
+    expect(modelCalls).toHaveLength(0);
+  });
+
+  it("needs the address or a sentence, not neither", async () => {
+    const { task: _t, barrier: _b, pageUrl: _u, ...rest } = fields;
+    const res = await post("/api/pilot/draft", rest);
+    expect(res.statusCode).toBe(400);
+    expect(res.json().fields).toEqual(["barrier"]);
   });
 
   it("answers a filled trap field as if it worked, and keeps nothing", async () => {

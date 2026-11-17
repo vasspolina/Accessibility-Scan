@@ -66,11 +66,12 @@ export function UrlForm({
   const [value, setValue] = useState("");
   const [mode, setMode] = useState<ScanMode>("page");
   const [maxPages, setMaxPages] = useState(5);
-  // Off by default: the rule-based scan returns in ~15s, the AI review adds
-  // ~25s on top. Most people want an answer quickly and can opt into the
-  // deeper pass; making everyone wait 40s for their first result is the
-  // faster way to lose them.
-  const [includeAiReview, setIncludeAiReview] = useState(false);
+  // On by default (user's instruction, 17 Nov 2026), with the switch as the
+  // opt-out. It was off because the rule-based scan returns in ~15s and the
+  // AI review adds ~25s; it now also writes the AI fix for each element
+  // (backend aiReview/suggestCodeFix.ts), which runs beside the review and
+  // adds no time of its own. The backend's own default was already on.
+  const [includeAiReview, setIncludeAiReview] = useState(true);
   const [auth, setAuth] = useState<AuthConfig | undefined>(undefined);
 
   // Empty-submit error, replacing a button that used to sit disabled until a
@@ -357,7 +358,7 @@ export function UrlForm({
               <span className="a11y-ai-card-text">
                 <span className="a11y-ai-card-title">{t("Add an AI review")}</span>
                 <span id="a11y-ai-hint" className="a11y-ai-hint">
-                  {t("A language model reads the page for design and wording faults. It can be wrong.")}{" "}
+                  {t("A language model reads the page for design and wording faults, and writes a code fix for each fault it can correct. It can be wrong.")}{" "}
                   {tf("Adds {duration}.", { duration: t(SCAN_DURATION.aiAdds) })}
                 </span>
               </span>

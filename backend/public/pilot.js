@@ -6,15 +6,13 @@
   var form = $("report");
   var state = { fields: null, draft: null, model: null };
   var LABELS = {
-    code: "Your pilot code",
     assistiveTech: "What do you use",
     pageUrl: "The page's address",
-    task: "What were you trying to do",
     barrier: "What happened",
     impact: "How much did it hold you back"
   };
   var FIRST_INPUT = {
-    code: "code", task: "task", barrier: "barrier", pageUrl: "pageUrl",
+    barrier: "barrier", pageUrl: "pageUrl",
     assistiveTech: function () { return form.querySelector('input[name="assistiveTech"]'); },
     impact: function () { return form.querySelector('input[name="impact"]'); }
   };
@@ -34,13 +32,80 @@
     return typeof f === "function" ? f() : $(f);
   }
 
-  // An invitation can carry the code as ?code=…; it is filled in and taken
-  // out of the address bar, so it does not end up in a shared link.
-  var params = new URLSearchParams(location.search);
-  if (params.get("code")) {
-    $("code").value = params.get("code");
-    history.replaceState(null, "", location.pathname);
+  // Old invitation links carried ?code=…; there is no code any more, so it
+  // is taken out of the address bar and ignored.
+  if (new URLSearchParams(location.search).has("code")) history.replaceState(null, "", location.pathname);
+
+  // What a participant answers the same way every time (what they use) is
+  // kept on their own device, so a second report is the page, a sentence
+  // and a rating. So is a random id made here, never their name, so the
+  // server can count how many people reported without anyone signing in.
+  // Browser storage can be missing or blocked; the form works the same
+  // without it, and each report then counts as a new person.
+  var MEMORY = "a11y-pilot-me";
+  function remembered() {
+    try { return JSON.parse(localStorage.getItem(MEMORY) || "{}") || {}; } catch (e) { return {}; }
   }
+  function newId() {
+    var a = new Uint8Array(12);
+    crypto.getRandomValues(a);
+    return Array.prototype.map.call(a, function (b) { return ("0" + b.toString(16)).slice(-2); }).join("");
+  }
+  var participant = remembered().participant || newId();
+  function setDetail(value) {
+    var sel = $("assistiveTechDetail");
+    var known = Array.prototype.some.call(sel.options, function (o) { return o.value === value; });
+    sel.value = known ? value : "";
+  }
+  function remember(f) {
+    try {
+      localStorage.setItem(MEMORY, JSON.stringify({
+        participant: participant, assistiveTech: f.assistiveTech, assistiveTechDetail: f.assistiveTechDetail || ""
+      }));
+    } catch (e) { /* storage blocked: nothing to remember */ }
+  }
+  (function prefill() {
+    var me = remembered();
+    if (me.assistiveTech) {
+      var r = form.querySelector('input[name="assistiveTech"][value="' + me.assistiveTech + '"]');
+      if (r) r.checked = true;
+    }
+    if (me.assistiveTechDetail) setDetail(me.assistiveTechDetail);
+  })();
+
+  // Pasting an address looks the page up, and its title shows under the
+  // field (and goes to the model as context), so nobody has to describe
+  // which page they mean.
+  var pageTitle = "";
+  var lookupTimer = null;
+  var lastLooked = "";
+  function lookUpPage() {
+    var url = $("pageUrl").value.trim();
+    if (url === lastLooked) return;
+    lastLooked = url;
+    pageTitle = "";
+    $("page-found").textContent = "";
+    if (!/^https?:\/\/\S+\.\S+/i.test(url) ) return;
+    $("page-found").textContent = "Looking the page up…";
+    fetch("/api/pilot/page", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ url: url })
+    }).then(function (r) { return r.ok ? r.json() : { title: null }; }).then(function (res) {
+      if ($("pageUrl").value.trim() !== url) return;
+      pageTitle = res.title || "";
+      $("page-found").textContent = pageTitle
+        ? "Page found: " + pageTitle
+        : "We couldn't read that page's title. That's fine: your report still goes with the address.";
+    }).catch(function () {
+      if ($("pageUrl").value.trim() === url) $("page-found").textContent = "";
+    });
+  }
+  $("pageUrl").addEventListener("input", function () {
+    clearTimeout(lookupTimer);
+    lookupTimer = setTimeout(lookUpPage, 600);
+  });
+  $("pageUrl").addEventListener("change", lookUpPage);
 
   fetch("/api/pilot").then(function (r) { return r.json(); }).then(function (info) {
     if (!info.open || (!info.stores && !info.mails)) {
@@ -57,11 +122,12 @@
   function readFields() {
     var data = new FormData(form);
     return {
-      code: (data.get("code") || "").trim(),
+      participant: participant,
       assistiveTech: data.get("assistiveTech") || "",
       assistiveTechDetail: (data.get("assistiveTechDetail") || "").trim() || undefined,
       pageUrl: (data.get("pageUrl") || "").trim(),
       task: (data.get("task") || "").trim(),
+      pageTitle: pageTitle || undefined,
       barrier: (data.get("barrier") || "").trim(),
       impact: data.get("impact") || "",
       company_url: data.get("company_url") || undefined,
@@ -109,11 +175,11 @@
 
   function validate(f) {
     var errs = [];
-    if (!f.code) errs.push({ field: "code", message: "Enter your pilot code" });
     if (!f.assistiveTech) errs.push({ field: "assistiveTech", message: "Choose what you use" });
     if (f.pageUrl && !/^https?:\/\/\S+$/i.test(f.pageUrl)) errs.push({ field: "pageUrl", message: "Enter the address starting with https, or leave it empty" });
-    if (!f.task) errs.push({ field: "task", message: "Say what you were trying to do" });
-    if (!f.barrier) errs.push({ field: "barrier", message: "Say what happened" });
+    // The address alone is enough: the page is then scanned. Without it,
+    // the participant's sentence is the report.
+    if (!f.barrier && !f.pageUrl) errs.push({ field: "barrier", message: "Say what happened, or paste the page's address above" });
     if (!f.impact) errs.push({ field: "impact", message: "Choose how much it held you back" });
     return errs;
   }
@@ -129,10 +195,14 @@
     var errs = validate(f);
     if (errs.length) { showErrors(errs); return; }
     clearErrors();
+    remember(f);
     state.fields = f;
     var btn = $("draft-btn");
-    busy(btn, true, "Writing up your report…");
-    say("Writing up your report. This can take up to half a minute.");
+    var scanning = !f.barrier;
+    busy(btn, true, scanning ? "Scanning the page…" : "Writing up your report…");
+    say(scanning
+      ? "Scanning the page and writing up what it finds. This can take a minute or two."
+      : "Writing up your report. This can take up to half a minute.");
     fetch("/api/pilot/draft", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -141,7 +211,6 @@
       return r.json().then(function (body) { return { status: r.status, body: body }; });
     }).then(function (res) {
       busy(btn, false, "Write up my report");
-      if (res.status === 403) { showErrors([{ field: "code", message: "That code is not one we sent. Check it and try again" }]); return; }
       if (res.status === 400) {
         showErrors((res.body.fields || []).filter(function (k) { return LABELS[k]; }).map(function (k) {
           return { field: k, message: "Check " + LABELS[k].toLowerCase() };
@@ -150,14 +219,19 @@
       }
       if (res.status !== 200) { showNoDraft("The writing-up step is not available just now."); return; }
       if (!res.body.draft) {
-        showNoDraft(res.body.reason === "not_configured"
-          ? "The language model is not running at the moment."
-          : "The language model could not write a draft this time.");
+        var why = {
+          not_configured: "The language model is not running at the moment.",
+          scan_failed: "We couldn't scan that page. It may block automated visits, or the address may be wrong.",
+          scan_clean: "The scan didn't find anything it could measure on that page. What you met may be something only a person notices."
+        }[res.body.reason] || "The language model could not write a draft this time.";
+        showNoDraft(why, !state.fields.barrier);
         return;
       }
       state.draft = res.body.draft;
       state.model = res.body.model;
-      $("review-intro").textContent = "This is what the model wrote from your words. Change anything that is wrong, then say whether it matches.";
+      $("review-intro").textContent = res.body.draft.fromScan
+        ? "You gave only the address, so we scanned the page and the model wrote this from what the scan found, not from your words. Check that it matches what you met. Change it, or answer no below if it doesn't."
+        : "This is what the model wrote from your words. Change anything that is wrong, then say whether it matches.";
       $("draft-meta").textContent = "Written by " + res.body.model + ", a language model on our own server.";
       $("d-title").value = res.body.draft.title;
       $("d-explanation").value = res.body.draft.explanation;
@@ -178,9 +252,11 @@
     });
   });
 
-  function showNoDraft(reason) {
+  function showNoDraft(reason, addressOnly) {
     state.draft = null;
-    $("nodraft-reason").textContent = reason + " You can still send your report in your own words.";
+    $("nodraft-reason").textContent = reason + (addressOnly
+      ? " You can go back and add a sentence about what happened, or send just the address and your rating."
+      : " You can still send your report in your own words.");
     show("nodraft");
     focusEl($("nodraft-title"));
   }
@@ -200,6 +276,8 @@
           explanation: $("d-explanation").value.trim(),
           fix: $("d-fix").value.trim(),
           wcagCriterion: state.draft.wcagCriterion
+        ,
+          fromScan: state.draft.fromScan || undefined
         };
         body.confirmed = true;
       } else {
@@ -229,9 +307,14 @@
   $("back-btn").addEventListener("click", back);
   $("back-plain-btn").addEventListener("click", back);
   $("again-btn").addEventListener("click", function () {
-    var code = $("code").value;
     form.reset();
-    $("code").value = code;
+    pageTitle = ""; lastLooked = ""; $("page-found").textContent = "";
+    (function () {
+      var me = remembered();
+      var r = me.assistiveTech && form.querySelector('input[name="assistiveTech"][value="' + me.assistiveTech + '"]');
+      if (r) r.checked = true;
+      if (me.assistiveTechDetail) setDetail(me.assistiveTechDetail);
+    })();
     state = { fields: null, draft: null, model: null };
     show("report");
     focusEl($("title"));
