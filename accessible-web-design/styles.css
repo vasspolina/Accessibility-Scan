@@ -627,17 +627,22 @@ hr.divider.tan {
   border-block-end: 2px solid currentColor;
 }
 
-/* Announced, never shown. Not display:none, which screen readers skip. */
+/* Announced, never shown. Not display:none, which screen readers skip.
+   clip-path: inset(50%) alone hides it (no painted area, no hit area), so
+   the box keeps its own size and wraps its words: the old 1px box with
+   nowrap held every string wider than itself, which is the shape the
+   expansion check rightly reads as clipped text. Absolute, so it takes no
+   room; max-width keeps a long German word from pushing the page sideways. */
 .visually-hidden {
   position: absolute;
-  width: 1px;
-  height: 1px;
-  margin: -1px;
+  max-width: 100%;
+  margin: 0;
   padding: 0;
-  overflow: hidden;
-  clip-path: inset(50%);
-  white-space: nowrap;
   border: 0;
+  clip-path: inset(50%);
+  white-space: normal;
+  overflow-wrap: break-word;
+  hyphens: auto;
 }
 
 /* ── Cookie banner template page ─────────────────────────────────────── */
