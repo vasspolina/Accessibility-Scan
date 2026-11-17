@@ -40,6 +40,12 @@ body {
   font-weight: 300;
   -webkit-font-smoothing: antialiased;
   line-height: 1.45;
+  /* A word wider than its column breaks instead of pushing past it. Only
+     acts when a word cannot fit, so lines that fit are untouched. Needed
+     because font-display: swap lays the page out in the wider fallback
+     until Jokker arrives (slow connections, and CI's expansion check,
+     which measured the fallback and found 320px paragraphs overflowing). */
+  overflow-wrap: break-word;
 }
 
 a {
@@ -159,6 +165,12 @@ a {
   padding: 0.9em 1.4em;
   color: var(--gold);
   font-size: clamp(0.9rem, 1.05vw, 1.1rem);
+}
+
+/* The notice shrinks beside the Close button rather than holding the row at
+   its longest word: a flex item's min-width is otherwise its min-content. */
+.banner > p {
+  min-width: 0;
 }
 
 .banner-close {
@@ -342,6 +354,8 @@ hr.divider.tan {
   font-size: clamp(1rem, 1.25vw, 1.4rem);
   margin: 0 0 1.4em;
   max-width: 62ch;
+  /* German compounds break at a syllable, not at the column edge. */
+  hyphens: auto;
 }
 
 .content p.tinted-teal {
