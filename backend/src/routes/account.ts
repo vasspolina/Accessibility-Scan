@@ -114,7 +114,7 @@ export async function accountRoutes(app: FastifyInstance) {
     const status = storageStatus();
     const parsed = createBody.safeParse(request.body);
     if (!parsed.success) {
-      return reply.status(400).send({ error: "Invalid request body", details: parsed.error.flatten() });
+      return reply.status(400).send({ error: "Something in that request wasn't right. Reload the page and try again.", details: parsed.error.flatten() });
     }
     const account = createAccount(parsed.data.email, parsed.data.label);
     const key = createApiKey(account.id, parsed.data.keyName);
