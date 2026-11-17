@@ -60,6 +60,7 @@ export const OPENING_PROMPT_KEYS: string[] = [
   ...OPENING_PROMPTS.map((g) => g.label),
   ...OPENING_PROMPTS.flatMap((g) => g.prompts),
   "Other questions",
+  "Ask this",
   "Questions to start with",
 ];
 

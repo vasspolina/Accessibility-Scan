@@ -781,48 +781,50 @@
    still fits 320px. */
 @media (max-width: 640px) { .a11y-widget-biz .a11y-sum-run { padding-inline: 0; } }
 
-/* The opening questions, after the panels of a font tester (user's
-   reference, 4 Nov 2026): a small centred label, the question under it in
-   big centred type, one panel per group, no frame and no corner marks.
-   Each load sets the three panels in a different layout from these three,
-   the way a tester shows one face at several settings. The question is a
-   button, but reads as type: no pill, no edge; hover colours the words
-   (below), focus shows the ring. */
+/* The opening questions, as type-specimen tiles (user's reference, 17 Nov
+   2026, replacing the centred display questions and their coloured hover):
+   a square tile per group on an auto-fit grid, 20px corners, the fixed
+   #f0efe8 ground with black words in both themes (18.4:1); the group's
+   label top-left at 15px, the question at the foot at 32px. The whole tile
+   is the button. Hover and focus turn it solid black with white words
+   (21:1) and show a white pill, the "Check it out" of the reference; a 1px
+   white edge keeps the black tile visible on a black page. Disabled is a
+   dashed edge, never faded. */
 .a11y-widget-biz .a11y-prompts { container: a11y-prompts / inline-size; margin: 0.6em 0 1.2em; }
-.a11y-widget-biz .a11y-prompt { text-align: center; padding: 1.2em 0; }
-.a11y-widget-biz .a11y-prompt-label { font-size: 18px; letter-spacing: 0.01em; margin: 0 0 0.9em; }
+.a11y-widget-biz .a11y-prompt-grid {
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 260px), 1fr)); gap: 10px;
+}
+.a11y-widget-biz .a11y-prompts .a11y-prompt {
+  --ink: #000; --paper: #f0efe8;
+  box-sizing: border-box; min-width: 0; min-height: auto; aspect-ratio: 1 / 1; margin: 0; padding: 24px;
+  display: flex; flex-direction: column; align-items: stretch; justify-content: flex-start; gap: 16px;
+  border: 1px solid #f0efe8; border-radius: 20px; background: #f0efe8; color: #000;
+  font: inherit; text-align: start; cursor: pointer;
+  overflow-wrap: break-word; hyphens: auto;
+}
+.a11y-widget-biz .a11y-prompts .a11y-prompt-label { font-size: 18px; font-weight: 500; letter-spacing: 0.01em; line-height: 1.2; }
 .a11y-widget-biz .a11y-prompts .a11y-prompt-ask {
-  /* A button is sized by its longest word, which break-word does not
-     shrink: without the cap, "Barrierefreiheit" at 40px pushed the button
-     to 330px on a 320px phone where no hyphenation dictionary exists
-     (CI's Chromium, 4 Nov 2026). Capped, the word breaks inside it. */
-  display: inline; max-width: 100%; min-height: 0; padding: 0 0.08em; border: 0; border-radius: 0;
-  background: none; color: var(--ink); text-align: center;
-  text-wrap: balance; hyphens: manual; overflow-wrap: break-word;
-  -webkit-box-decoration-break: clone; box-decoration-break: clone;
+  margin-top: auto; font-size: 38px; font-weight: 400; letter-spacing: -0.005em; line-height: 1.05;
+  text-wrap: pretty;
 }
-/* Every question at display size, Light (user's instruction and
-   screenshot, 4 Nov 2026, replacing the three tester layouts: the
-   picker still tags each panel with one, but nothing reads it now). Hover
-   colours the words, nothing else: no fill. Each panel takes its own
-   colour, dark on paper and light on ink, each measured at better than
-   7:1 against its ground, so the colour is a hover state only and never
-   the only sign of one: the cursor, and focus keeps its ring. */
-.a11y-widget-biz .a11y-prompts .a11y-prompt-ask { font-size: 67px; font-weight: 300; letter-spacing: -0.01em; line-height: 1.02; }
-.a11y-widget-biz .a11y-prompts { --prompt-hover-1: #1f3fb0; --prompt-hover-2: #8f2600; --prompt-hover-3: #08583a; --prompt-hover-4: #8a1a6e; }
-@media (prefers-color-scheme: dark) {
-  :root:not([data-theme="light"]) .a11y-widget-biz .a11y-prompts { --prompt-hover-1: #6fa8ff; --prompt-hover-2: #ff8a4c; --prompt-hover-3: #4fe0a8; --prompt-hover-4: #ff9ad5; }
+.a11y-widget-biz .a11y-prompts .a11y-prompt-go {
+  display: flex; align-items: center; justify-content: center; min-height: 34px;
+  border-radius: 999px; background: #fff; color: #000;
+  font-size: 18px; letter-spacing: 0.01em; line-height: 1.2;
+  visibility: hidden;
 }
-:root[data-theme="dark"] .a11y-widget-biz .a11y-prompts { --prompt-hover-1: #6fa8ff; --prompt-hover-2: #ff8a4c; --prompt-hover-3: #4fe0a8; --prompt-hover-4: #ff9ad5; }
-.a11y-widget-biz .a11y-prompt:nth-child(4n+1) { --prompt-hover: var(--prompt-hover-1); }
-.a11y-widget-biz .a11y-prompt:nth-child(4n+2) { --prompt-hover: var(--prompt-hover-2); }
-.a11y-widget-biz .a11y-prompt:nth-child(4n+3) { --prompt-hover: var(--prompt-hover-3); }
-.a11y-widget-biz .a11y-prompt:nth-child(4n+4) { --prompt-hover: var(--prompt-hover-4); }
-.a11y-widget-biz .a11y-prompts .a11y-prompt-ask:enabled:hover { background: none; color: var(--prompt-hover); }
-.a11y-widget-biz .a11y-prompts .a11y-prompt-ask:disabled { border: 0; text-decoration: underline dashed 1px; text-underline-offset: 0.15em; }
-.a11y-widget-biz .a11y-prompt-more { text-align: center; margin: 0.4em 0 0; }
+.a11y-widget-biz .a11y-prompts .a11y-prompt:enabled:hover,
+.a11y-widget-biz .a11y-prompts .a11y-prompt:enabled:focus-visible {
+  --ink: #fff; --paper: #000;
+  background: #000; color: #fff; border-color: #fff; text-decoration: none;
+}
+.a11y-widget-biz .a11y-prompts .a11y-prompt:enabled:hover .a11y-prompt-go,
+.a11y-widget-biz .a11y-prompts .a11y-prompt:enabled:focus-visible .a11y-prompt-go { visibility: visible; }
+.a11y-widget-biz .a11y-prompts .a11y-prompt:disabled { cursor: default; border: 1px dashed #000; }
+.a11y-widget-biz .a11y-prompt-more { text-align: center; margin: 1.2em 0 0; }
 @container a11y-prompts (max-width: 640px) {
-  .a11y-widget-biz .a11y-prompts .a11y-prompt-ask { font-size: 48px; hyphens: auto; }
+  .a11y-widget-biz .a11y-prompts .a11y-prompt { aspect-ratio: auto; min-height: 220px; padding: 20px; }
+  .a11y-widget-biz .a11y-prompts .a11y-prompt-ask { font-size: 32px; letter-spacing: 0; }
 }
 @container a11y-sum-run (max-width: 640px) {
   .a11y-widget-biz .a11y-sum-run .a11y-sum-rows,

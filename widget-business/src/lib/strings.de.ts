@@ -828,6 +828,7 @@ export const STRINGS_DE: Record<string, string> = {
   // Text hier, auch in der Stimme der Leserin an den Assistenten.
   "Questions to start with": "Fragen für den Anfang",
   "Other questions": "Andere Fragen",
+  "Ask this": "Das fragen",
   "Ask about this page": "Fragen zu dieser Seite",
   "Quick checks": "Schnelle Prüfungen",
   "Help me": "Helfen Sie mir",
