@@ -477,7 +477,10 @@
 .a11y-widget-biz .a11y-datatable-schedule th[data-col="severity"] { width: 8em; }
 .a11y-widget-biz .a11y-datatable-schedule th[data-col="wcag"] { width: 5em; }
 .a11y-widget-biz .a11y-datatable-schedule th[data-col="fix"] { width: 6.8em; }
-.a11y-widget-biz .a11y-datatable-schedule th[data-col="level"] { width: max(9.6em, 15%); }
+/* A fixed width, not a share of the screen (user's instruction, 17 Nov 2026:
+   one grid, room for the issue): "Required by law in most places (Level AA)"
+   wraps to two lines in it, and the issue statement takes everything left. */
+.a11y-widget-biz .a11y-datatable-schedule th[data-col="level"] { width: 11em; }
 .a11y-widget-biz .a11y-datatable-schedule th[data-col="count"] { width: 6.6em; }
 
 /* The kit Select (Language): the label above, the box under it, the gloss under that.
@@ -751,6 +754,15 @@
 .a11y-widget-biz .a11y-sum-run .a11y-sum-row { display: inline; margin: 0; }
 .a11y-widget-biz .a11y-sum-run .a11y-sum-row:not(:last-child)::after { content: ", " / ""; }
 .a11y-widget-biz .a11y-sum-run :is(.a11y-sum-cell-item, .a11y-sum-row-title) { display: inline; }
+/* Each item links to its finding (lib/openFinding). Ink like the type
+   around it, the title underlined as every link here is; hover lays the
+   marker yellow under the title with black text, the controls' hover. The
+   marks and the count keep their own fills inside the link. */
+.a11y-widget-biz .a11y-sum-run .a11y-sum-row-link { color: inherit; text-decoration: none; }
+.a11y-widget-biz .a11y-sum-run .a11y-sum-row-link .a11y-sum-row-title {
+  text-decoration: underline; text-decoration-thickness: 2px; text-underline-offset: 0.12em;
+}
+.a11y-widget-biz .a11y-sum-run .a11y-sum-row-link:hover .a11y-sum-row-title { background: var(--hl-cap-a); color: #000; }
 /* The marker: a solid round with the figure in paper, sat on the line. */
 .a11y-widget-biz .a11y-sum-run .a11y-sum-cell-no {
   display: inline-grid; place-content: center; vertical-align: 0.08em;
@@ -967,6 +979,27 @@
   letter-spacing: 0.04em; text-transform: uppercase;
 }
 .a11y-widget-biz .a11y-fd .a11y-fix-once > strong { font-weight: 300; }
+/* The short parts as cards (user's instruction, 17 Nov 2026: "too many
+   lines, these can be cards"). The first column (who fixes this, what we
+   found, why it matters, the research) is a grid of #f0efe8 cards, 14px
+   corners, 10px apart, as wide as the block allows down to 280px; each
+   label sits inside its card with room under it and no rule. The card
+   ground is fixed in both themes like the design notes, so it redefines ink
+   and paper for what is inside it; #000 on #f0efe8 is 18.4:1. The prose
+   comes down to 22px so a card's words fit its width. What to do and the
+   affected elements stay full width below: lists, pictures and code. */
+.a11y-widget-biz .a11y-fd > .a11y-fd-col:first-child {
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr));
+  gap: 10px; align-items: stretch; margin: 0 0 1.6em;
+}
+.a11y-widget-biz .a11y-fd > .a11y-fd-col:first-child > :is(p, div) {
+  --ink: #000; --paper: #f0efe8;
+  box-sizing: border-box; min-width: 0; margin: 0; padding: 16px 20px 20px;
+  border-radius: 14px; background: #f0efe8; color: #000; font-size: 22px;
+}
+.a11y-widget-biz .a11y-fd > .a11y-fd-col:first-child > p > strong:first-child {
+  margin: 0 0 24px; padding: 0; border: 0;
+}
 /* The key/value lines: the key hangs in a 9em column, the value runs beside
    it and wraps under itself, not under the key. */
 .a11y-widget-biz .a11y-fd .a11y-pro-block,
@@ -1096,7 +1129,6 @@
 .a11y-widget-biz .a11y-next-list > li > .a11y-next-crit,
 .a11y-widget-biz .a11y-next-main > .a11y-next-title + .a11y-next-meta,
 .a11y-widget-biz .a11y-spec-card > .a11y-spec-label,
-.a11y-widget-biz .a11y-ra-cell .a11y-ra-email-label,
 .a11y-widget-biz .a11y-pro-row > span:first-child,
 .a11y-widget-biz .a11y-manual-row > .a11y-conf-id {
   display: block; margin: 0 0 10px; padding: 0 0 6px; border-bottom: 1px solid var(--ink); text-align: start;
@@ -1140,9 +1172,63 @@
 .a11y-widget-biz .a11y-dn-list > li > .a11y-dn-link:enabled:hover { background: var(--hl-cap-a); color: #000; text-decoration: none; }
 .a11y-widget-biz .a11y-dn-list > li > .a11y-dn-link[aria-expanded="true"] { --ink: #fff; --paper: #000; background: #000; color: #fff; font-weight: 400; }
 
-/* The report actions: the controls keep their own sizes inside the tile. */
-.a11y-widget-biz .a11y-ra-row > .a11y-ra-cell .a11y-ra-note { margin: 0.6em 0 0; font-size: 15px; letter-spacing: 0.01em; }
-.a11y-widget-biz .a11y-ra-row > .a11y-ra-cell input { background: #fff; color: #000; border-color: #000; }
+/* The report actions, after the Displaay Info block and form (user's
+   references, 17 Nov 2026). Each column opens on an uppercase 15px label
+   over a 1px ink rule, the Info block's DESCRIPTION / DETAILS. The address
+   is a rounded #f0efe8 field with its label inside it; the send is one wide
+   rounded block in Light 40px; the PDF is an outlined button with 10px
+   corners and a download arrow. These three are the user's exceptions to
+   "buttons are pills". #f0efe8 is fixed in both themes like the design
+   notes, so the field redefines ink and paper for what is inside it; #000
+   on it is 18.4:1. The send is solid ink in the page's theme; hover is the
+   marker yellow; sending is a dashed edge on paper, never faded. */
+.a11y-widget-biz .a11y-ra-row > .a11y-ra-cell { display: flex; flex-direction: column; align-items: stretch; gap: 10px; }
+.a11y-widget-biz .a11y-ra-row > .a11y-ra-cell > .a11y-ra-head {
+  margin: 0 0 14px; padding: 0 0 10px; border-bottom: 1px solid var(--ink);
+  font-family: "Jokker", sans-serif; font-size: 15px; font-weight: 400; line-height: 1.2; letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+.a11y-widget-biz .a11y-ra-row > .a11y-ra-cell > .a11y-ra-field {
+  --ink: #000; --paper: #f0efe8;
+  display: flex; flex-direction: column; gap: 4px; padding: 14px 20px 12px;
+  border-radius: 14px; background: #f0efe8; color: #000;
+}
+.a11y-widget-biz .a11y-ra-field > .a11y-ra-field-label { font-size: 18px; letter-spacing: 0.01em; line-height: 1.2; }
+/* input. in the selector: the general field rule (:is(input:not():not())) is
+   0,3,1, and this has to out-rank it to drop the field's own box. */
+.a11y-widget-biz .a11y-ra-field > input.a11y-ra-email-input {
+  box-sizing: border-box; width: 100%; min-height: 34px; margin: 0; padding: 4px 0;
+  border: 0; border-radius: 0; background: transparent; color: #000;
+  font: inherit; font-size: 18px; letter-spacing: 0.01em;
+}
+.a11y-widget-biz .a11y-ra-field > input.a11y-ra-email-input::placeholder { color: #000; opacity: 1; font-weight: 300; }
+/* The field is the box, so the focus ring goes round the field, not the
+   bare line inside it. */
+.a11y-widget-biz .a11y-ra-field:focus-within { outline: 2px solid #000; outline-offset: 2px; box-shadow: 0 0 0 2px var(--paper); }
+.a11y-widget-biz .a11y-ra-field > input.a11y-ra-email-input:focus-visible { outline: none; }
+.a11y-widget-biz .a11y-ra-row > .a11y-ra-cell > .a11y-ra-send {
+  display: block; width: 100%; min-height: 128px; margin: 0; padding: 20px 24px;
+  border: 1px solid var(--ink); border-radius: 14px; background: var(--ink); color: var(--paper);
+  font-family: "Jokker", sans-serif; font-size: 40px; font-weight: 300; line-height: 1.05; letter-spacing: -0.01em;
+  text-align: start; text-wrap: balance;
+}
+.a11y-widget-biz .a11y-ra-row > .a11y-ra-cell > .a11y-ra-send:disabled { background: var(--paper); color: var(--ink); border-style: dashed; }
+.a11y-widget-biz .a11y-ra-row > .a11y-ra-cell > .a11y-ra-pdf {
+  display: inline-flex; align-self: flex-start; align-items: center; gap: 12px;
+  min-height: 44px; padding: 0.55em 1.1em; border: 1px solid var(--ink); border-radius: 10px;
+  font-size: 18px; font-weight: 400; letter-spacing: 0.01em;
+}
+.a11y-widget-biz .a11y-ra-pdf > .a11y-ra-pdf-icon { width: 20px; height: 20px; flex: none; }
+.a11y-widget-biz .a11y-ra-row > .a11y-ra-cell > .a11y-ra-note { margin: 0; font-size: 15px; letter-spacing: 0.01em; }
+@media (max-width: 640px) {
+  .a11y-widget-biz .a11y-ra-row > .a11y-ra-cell > .a11y-ra-send { min-height: 96px; font-size: 32px; }
+}
+
+/* The conformance report's way in: the primary pill under its lead, and
+   the draft's two exports side by side. */
+.a11y-widget-biz .a11y-acr .a11y-section-desc:has(+ .a11y-acr-make) { margin-bottom: 0.8em; }
+.a11y-widget-biz .a11y-acr .a11y-acr-make { margin: 0; }
+.a11y-widget-biz .a11y-stmt-actions { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; margin: 0 0 1.2em; }
 
 /* A tally is the label over its figure. */
 .a11y-widget-biz .a11y-pro-rows > .a11y-pro-row { display: block; }

@@ -209,6 +209,9 @@ export const CHROME_KEYS: string[] = [
   "The six new items",
   "Save as PDF",
   "Email me this report",
+  "Your email address",
+  "Send this report",
+  "Download in PDF",
   "Copy summary as plain text",
   /* The scan form — the first thing anyone reads, and until the
      languages landed the one part that stayed English in all of
@@ -282,6 +285,8 @@ export const CHROME_KEYS: string[] = [
   "Product name",
   "Contact for accessibility questions",
   "Copy the draft",
+  "Make a conformance report",
+  "Download the report",
   "Draft copied to the clipboard.",
   "Draft accessibility conformance report",
   "expected {date}",

@@ -911,7 +911,8 @@ export function findingRow(
   const fromAi = isAiFinding(rep);
 
   const issueCell = (
-    <span className="a11y-finding-issue">
+    // data-finding: the score summary's links find this row by it (lib/openFinding).
+    <span className="a11y-finding-issue" data-finding={rep.id}>
       {/* Severity's own column (below) is hidden at phone width — its
           badge plus the Issue text plus the arrow column already exceeded
           the viewport there, forcing horizontal scroll before a reader

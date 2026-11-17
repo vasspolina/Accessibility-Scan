@@ -164,6 +164,9 @@ export const STRINGS_FR: Record<string, string> = {
   "The six new items": "Les six nouveautés",
   "Save as PDF": "Enregistrer en PDF",
   "Email me this report": "M’envoyer ce rapport par e-mail",
+  "Your email address": "Votre adresse e-mail",
+  "Send this report": "Envoyer le rapport",
+  "Download in PDF": "Télécharger en PDF",
   "Copy summary as plain text": "Copier le résumé en texte brut",
   // The scan form
   "Cancel. Scan without a login": "Annuler. Analyser sans connexion",
@@ -323,6 +326,8 @@ export const STRINGS_FR: Record<string, string> = {
   "Product name": "Nom du produit",
   "Contact for accessibility questions": "Contact pour les questions d’accessibilité",
   "Copy the draft": "Copier le brouillon",
+  "Make a conformance report": "Créer un rapport de conformité",
+  "Download the report": "Télécharger le rapport",
   "Draft copied to the clipboard.": "Brouillon copié dans le presse-papiers.",
   "Draft accessibility conformance report": "Brouillon du rapport de conformité d’accessibilité",
   "expected {date}": "prévues pour {date}",
