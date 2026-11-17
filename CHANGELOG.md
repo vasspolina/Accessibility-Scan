@@ -9,6 +9,11 @@ The `backend`, `widget`, and `widget-business` packages are versioned together.
 
 ### Changed
 
+- The pilot's barrier form no longer asks for an invitation code, and
+  `PILOT_CODES` is gone: anyone can report, bounded by the rate limits, and
+  the pilot is open whenever reports can be stored or mailed. Participants
+  are counted by a random id kept in their browser and stored as a hash.
+  "Which one, and with which browser" is now a list to pick from.
 - The self-hosted model is used by the pilot only, unless
   `PLAIN_LANGUAGE_IN_SCANS=true`. Public scans no longer call it by
   default, so a paid GPU worker is not kept awake by scanner traffic.

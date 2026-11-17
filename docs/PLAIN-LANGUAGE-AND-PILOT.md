@@ -52,7 +52,6 @@ checks a token (`LOCAL_LLM_API_KEY`).
 | `LOCAL_LLM_API_KEY` | Bearer token, only if a proxy in front of the server checks one. |
 | `LOCAL_LLM_TIMEOUT_MS` | The rewrite's whole budget per scan. Default 45000. |
 | `PLAIN_LANGUAGE_IN_SCANS` | `true` lets scans use the model too. **Unset (the default), only the pilot uses it**: every public scan would otherwise call the model and keep a paid GPU worker awake, so the bill would follow the scanner's traffic. |
-| `PILOT_CODES` | Comma-separated codes, one per participant. Absent: the pilot is closed. |
 | `DB_PATH` (+ `DB_DURABLE`) | Where pilot reports are stored. Use a mounted volume. |
 | `MAIL_API_KEY`, `MAIL_FROM` | Optional: each pilot report is also mailed to `CONTACT_TO`. |
 | `ADMIN_TOKEN` | Needed to read the pilot's reports and totals. |
@@ -91,34 +90,37 @@ Only with `PLAIN_LANGUAGE_IN_SCANS=true`. Without it, scans report
 
 The form asks for as little as it can: the page's address, one sentence
 about what happened, and how much it held the participant back. Pasting an
-address looks the page up (`POST /api/pilot/page`, needs a code; every hop
+address looks the page up (`POST /api/pilot/page`; every hop
 goes through the SSRF guard and only the title comes back), shows its title
 under the field and gives it to the model as context. "What were you trying
 to do" is optional, and so is "What happened" when an address is given: the
 page is then scanned (no AI review, no screenshots) and the model drafts one
 finding from the most serious measured problems, worded as what the scan
 found, never as what the participant met. The form says so on the review
-screen, and the stored report marks the draft `fromScan`. The participant's code and assistive technology are
-remembered in their own browser, so a second report is three fields.
+screen, and the stored report marks the draft `fromScan`. The participant's assistive technology (and which one, picked from a list)
+is remembered in their own browser, so a second report is three fields.
 
-1. Make one code per person, e.g. `river-41,stone-07,lake-19`, and set
-   `PILOT_CODES`.
-2. Send each person their link: `https://<backend>/pilot.html?code=river-41`.
-   The page fills in the code and removes it from the address bar.
-3. Read the reports and totals:
+There is no invitation code (removed 17 Nov 2026): anyone with the link can
+report, and the routes' rate limits bound how much. The pilot is open
+whenever reports have somewhere to go (storage or mail).
+
+1. Send people the link: `https://<backend>/pilot.html`. An old link with
+   `?code=` still works; the code is ignored and taken out of the address bar.
+2. Read the reports and totals:
 
    ```bash
    curl -H "Authorization: Bearer $ADMIN_TOKEN" https://<backend>/api/pilot/reports
    ```
 
-   `totals.participants` counts distinct codes that sent a report.
-   `codesIssued` is how many codes exist. `drafted` and `confirmed` count how
+   `totals.participants` counts distinct devices that sent a report: the
+   form keeps a random id in the browser. It is an estimate: a cleared
+   browser or a second device counts again. `drafted` and `confirmed` count how
    many reports had a model draft, and how many drafts the participant said
    were right.
 
 What is stored: the participant's own words, their own impact rating, the
-draft (as they left it), the model's name, and a hash of their code. Their
-code, name and email are not stored.
+draft (as they left it), the model's name, and a hash of the form's device id. Their
+name and email are not asked for or stored.
 
 Before you call the pilot "deployed with users", check that
 `totals.participants` is above zero on the deployed service. The count only

@@ -49,7 +49,7 @@
   .hint { display: block; font-size: 15px; letter-spacing: 0.01em; margin: 0 0 8px; }
   .row { margin: 0 0 24px; }
 
-  input[type="text"], input[type="url"], textarea {
+  input[type="text"], input[type="url"], textarea, select {
     display: block;
     width: 100%;
     font: inherit;
@@ -62,6 +62,18 @@
     padding: 10px 12px;
   }
   textarea { min-height: 7.5em; resize: vertical; }
+  /* A native select, so screen readers and switches know it already; the
+     arrow is drawn in ink so it follows the theme. */
+  select {
+    appearance: none;
+    min-height: 48px;
+    padding-right: 44px;
+    cursor: pointer;
+    background-image: linear-gradient(45deg, transparent 50%, var(--ink) 50%), linear-gradient(135deg, var(--ink) 50%, transparent 50%);
+    background-position: right 22px center, right 14px center;
+    background-size: 8px 8px, 8px 8px;
+    background-repeat: no-repeat;
+  }
   .choice { display: flex; align-items: center; gap: 12px; min-height: 44px; font-size: 18px; letter-spacing: 0.01em; }
   .choice input { width: 24px; height: 24px; margin: 0; accent-color: var(--ink); flex: none; }
 
@@ -107,11 +119,11 @@
 <main>
   <h1 id="title" tabindex="-1">Report a barrier</h1>
 
-  <p id="closed" hidden>The pilot is not open at the moment. If you were sent a code, please write to the person who sent it.</p>
+  <p id="closed" hidden>The pilot is not open at the moment. Please try again later.</p>
 
   <div id="intro">
     <p>Did something on a website stop you or slow you down? Tell us in your own words.</p>
-    <p class="small">We write it up for the site's owner, and you check it before it is sent. We keep what you write, but never ask for your name or email, so please leave them out. This device remembers your code and what you use, so next time is quicker.</p>
+    <p class="small">We write it up for the site's owner, and you check it before it is sent. We keep what you write, but never ask for your name or email, so please leave them out. This device remembers what you use, so next time is quicker.</p>
   </div>
 
   <div id="status" role="status" aria-live="polite" class="visually-hidden"></div>
@@ -120,13 +132,6 @@
     <div id="errors" class="errors" tabindex="-1" hidden>
       <h2 id="errors-title">There is a problem</h2>
       <ul id="errors-list"></ul>
-    </div>
-
-    <div class="row">
-      <label class="field" for="code">Your invitation code</label>
-      <span class="hint" id="code-hint">It is in your invitation. Only invited people can send reports while we test this.</span>
-      <span class="field-error" id="code-error" hidden></span>
-      <input type="text" id="code" name="code" autocomplete="off" spellcheck="false" required aria-describedby="code-hint">
     </div>
 
     <div class="row">
@@ -166,8 +171,41 @@
 
     <div class="row">
       <label class="field" for="assistiveTechDetail">Which one, and with which browser (optional)</label>
-      <span class="hint" id="detail-hint">For example: NVDA with Firefox, or VoiceOver on an iPhone.</span>
-      <input type="text" id="assistiveTechDetail" name="assistiveTechDetail" maxlength="200" aria-describedby="detail-hint">
+      <span class="hint" id="detail-hint">Choose the closest. Leave it as it is if yours is not listed.</span>
+      <select id="assistiveTechDetail" name="assistiveTechDetail" aria-describedby="detail-hint">
+        <option value="">Not chosen</option>
+        <optgroup label="Screen readers">
+          <option>NVDA with Firefox</option>
+          <option>NVDA with Chrome</option>
+          <option>NVDA with Edge</option>
+          <option>JAWS with Chrome</option>
+          <option>JAWS with Edge</option>
+          <option>Narrator with Edge</option>
+          <option>VoiceOver with Safari on a Mac</option>
+          <option>VoiceOver with Chrome on a Mac</option>
+          <option>VoiceOver on an iPhone or iPad</option>
+          <option>TalkBack on Android</option>
+          <option>Orca on Linux</option>
+        </optgroup>
+        <optgroup label="Magnifiers">
+          <option>ZoomText or Fusion</option>
+          <option>Windows Magnifier</option>
+          <option>macOS Zoom</option>
+          <option>Browser zoom</option>
+        </optgroup>
+        <optgroup label="Voice control">
+          <option>Dragon</option>
+          <option>Windows Voice Access</option>
+          <option>Voice Control on a Mac or iPhone</option>
+        </optgroup>
+        <optgroup label="Keyboard and switch">
+          <option>Keyboard with Chrome</option>
+          <option>Keyboard with Firefox</option>
+          <option>Keyboard with Safari</option>
+          <option>Switch Control on a Mac or iPhone</option>
+          <option>Switch Access on Android</option>
+        </optgroup>
+      </select>
     </div>
 
     <div class="row">

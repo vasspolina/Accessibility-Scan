@@ -6,14 +6,13 @@
   var form = $("report");
   var state = { fields: null, draft: null, model: null };
   var LABELS = {
-    code: "Your invitation code",
     assistiveTech: "What do you use",
     pageUrl: "The page's address",
     barrier: "What happened",
     impact: "How much did it hold you back"
   };
   var FIRST_INPUT = {
-    code: "code", barrier: "barrier", pageUrl: "pageUrl",
+    barrier: "barrier", pageUrl: "pageUrl",
     assistiveTech: function () { return form.querySelector('input[name="assistiveTech"]'); },
     impact: function () { return form.querySelector('input[name="impact"]'); }
   };
@@ -33,44 +32,45 @@
     return typeof f === "function" ? f() : $(f);
   }
 
-  // An invitation can carry the code as ?code=…; it is filled in and taken
-  // out of the address bar, so it does not end up in a shared link.
-  var params = new URLSearchParams(location.search);
-  if (params.get("code")) {
-    $("code").value = params.get("code");
-    history.replaceState(null, "", location.pathname);
-    // Already filled in from the link, so the field is one more thing to
-    // read for nothing. It comes back only if the code is refused.
-    $("code").closest(".row").hidden = true;
-  }
+  // Old invitation links carried ?code=…; there is no code any more, so it
+  // is taken out of the address bar and ignored.
+  if (new URLSearchParams(location.search).has("code")) history.replaceState(null, "", location.pathname);
 
-  // What a participant answers the same way every time (their code, what
-  // they use) is kept on their own device, so a second report is the page,
-  // a sentence and a rating. Browser storage can be missing or blocked; the
-  // form works the same without it.
+  // What a participant answers the same way every time (what they use) is
+  // kept on their own device, so a second report is the page, a sentence
+  // and a rating. So is a random id made here, never their name, so the
+  // server can count how many people reported without anyone signing in.
+  // Browser storage can be missing or blocked; the form works the same
+  // without it, and each report then counts as a new person.
   var MEMORY = "a11y-pilot-me";
   function remembered() {
     try { return JSON.parse(localStorage.getItem(MEMORY) || "{}") || {}; } catch (e) { return {}; }
   }
+  function newId() {
+    var a = new Uint8Array(12);
+    crypto.getRandomValues(a);
+    return Array.prototype.map.call(a, function (b) { return ("0" + b.toString(16)).slice(-2); }).join("");
+  }
+  var participant = remembered().participant || newId();
+  function setDetail(value) {
+    var sel = $("assistiveTechDetail");
+    var known = Array.prototype.some.call(sel.options, function (o) { return o.value === value; });
+    sel.value = known ? value : "";
+  }
   function remember(f) {
     try {
       localStorage.setItem(MEMORY, JSON.stringify({
-        code: f.code, assistiveTech: f.assistiveTech, assistiveTechDetail: f.assistiveTechDetail || ""
+        participant: participant, assistiveTech: f.assistiveTech, assistiveTechDetail: f.assistiveTechDetail || ""
       }));
     } catch (e) { /* storage blocked: nothing to remember */ }
   }
   (function prefill() {
     var me = remembered();
-    if (!$("code").value && me.code) {
-      $("code").value = me.code;
-      // Remembered from last time: hidden like a code from the link.
-      $("code").closest(".row").hidden = true;
-    }
     if (me.assistiveTech) {
       var r = form.querySelector('input[name="assistiveTech"][value="' + me.assistiveTech + '"]');
       if (r) r.checked = true;
     }
-    if (me.assistiveTechDetail) $("assistiveTechDetail").value = me.assistiveTechDetail;
+    if (me.assistiveTechDetail) setDetail(me.assistiveTechDetail);
   })();
 
   // Pasting an address looks the page up, and its title shows under the
@@ -81,17 +81,16 @@
   var lastLooked = "";
   function lookUpPage() {
     var url = $("pageUrl").value.trim();
-    var code = $("code").value.trim();
     if (url === lastLooked) return;
     lastLooked = url;
     pageTitle = "";
     $("page-found").textContent = "";
-    if (!/^https?:\/\/\S+\.\S+/i.test(url) || !code) return;
+    if (!/^https?:\/\/\S+\.\S+/i.test(url) ) return;
     $("page-found").textContent = "Looking the page up…";
     fetch("/api/pilot/page", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ code: code, url: url })
+      body: JSON.stringify({ url: url })
     }).then(function (r) { return r.ok ? r.json() : { title: null }; }).then(function (res) {
       if ($("pageUrl").value.trim() !== url) return;
       pageTitle = res.title || "";
@@ -123,7 +122,7 @@
   function readFields() {
     var data = new FormData(form);
     return {
-      code: (data.get("code") || "").trim(),
+      participant: participant,
       assistiveTech: data.get("assistiveTech") || "",
       assistiveTechDetail: (data.get("assistiveTechDetail") || "").trim() || undefined,
       pageUrl: (data.get("pageUrl") || "").trim(),
@@ -154,7 +153,6 @@
   function showErrors(list) {
     clearErrors();
     list.forEach(function (item) {
-      if (item.field === "code") $("code").closest(".row").hidden = false;
       var e = $(item.field + "-error");
       if (e) { e.textContent = item.message; e.hidden = false; }
       var input = inputFor(item.field);
@@ -177,7 +175,6 @@
 
   function validate(f) {
     var errs = [];
-    if (!f.code) errs.push({ field: "code", message: "Enter your invitation code" });
     if (!f.assistiveTech) errs.push({ field: "assistiveTech", message: "Choose what you use" });
     if (f.pageUrl && !/^https?:\/\/\S+$/i.test(f.pageUrl)) errs.push({ field: "pageUrl", message: "Enter the address starting with https, or leave it empty" });
     // The address alone is enough: the page is then scanned. Without it,
@@ -214,7 +211,6 @@
       return r.json().then(function (body) { return { status: r.status, body: body }; });
     }).then(function (res) {
       busy(btn, false, "Write up my report");
-      if (res.status === 403) { showErrors([{ field: "code", message: "That code is not one we sent. Check it and try again" }]); return; }
       if (res.status === 400) {
         showErrors((res.body.fields || []).filter(function (k) { return LABELS[k]; }).map(function (k) {
           return { field: k, message: "Check " + LABELS[k].toLowerCase() };
@@ -311,15 +307,13 @@
   $("back-btn").addEventListener("click", back);
   $("back-plain-btn").addEventListener("click", back);
   $("again-btn").addEventListener("click", function () {
-    var code = $("code").value;
     form.reset();
-    $("code").value = code;
     pageTitle = ""; lastLooked = ""; $("page-found").textContent = "";
     (function () {
       var me = remembered();
       var r = me.assistiveTech && form.querySelector('input[name="assistiveTech"][value="' + me.assistiveTech + '"]');
       if (r) r.checked = true;
-      if (me.assistiveTechDetail) $("assistiveTechDetail").value = me.assistiveTechDetail;
+      if (me.assistiveTechDetail) setDetail(me.assistiveTechDetail);
     })();
     state = { fields: null, draft: null, model: null };
     show("report");
