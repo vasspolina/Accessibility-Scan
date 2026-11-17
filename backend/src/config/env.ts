@@ -131,6 +131,16 @@ const envSchema = z.object({
   // per participant, comma-separated, so "how many people used it" is a
   // count of codes and not a guess. Absent means the pilot is closed.
   PILOT_CODES: z.string().optional(),
+  // Whether scans use the model too, or only the pilot does. Off unless set
+  // to one of the words below: every public scan with AI review on would
+  // otherwise call the model and keep a paid GPU worker awake for its idle
+  // window, so the bill follows the scanner's traffic rather than the
+  // pilot's handful of participants. Parsed like DB_DURABLE, for the same
+  // reason: z.coerce.boolean() reads "false" as true.
+  PLAIN_LANGUAGE_IN_SCANS: z
+    .string()
+    .optional()
+    .transform((v) => ["1", "true", "yes", "on"].includes((v ?? "").trim().toLowerCase())),
   MAIL_RATE_LIMIT_MAX: z.coerce.number().default(3),
   MAIL_RATE_LIMIT_WINDOW_MS: z.coerce.number().default(600_000),
 });

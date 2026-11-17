@@ -162,6 +162,10 @@ export async function rewriteFindings(
   });
   if (!enabled) return empty("disabled_by_request");
   if (!model) return empty("not_configured");
+  // The model is the pilot's unless the deployer opts scans in. After the
+  // reader's switch and the model check, so "AI review off" and "no model"
+  // still say what they mean.
+  if (!env.PLAIN_LANGUAGE_IN_SCANS) return empty("off_for_scans");
 
   const groups = groupByRule(findings);
   if (groups.length === 0) return empty("completed");
