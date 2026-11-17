@@ -96,7 +96,7 @@ describe("describeScanFailure", () => {
   });
 
   it("passes an unsafe url straight through", () => {
-    expect(describeScanFailure(new UnsafeUrlError("This host is not allowed")).status).toBe(400);
+    expect(describeScanFailure(new UnsafeUrlError("This address can't be scanned.")).status).toBe(400);
   });
 
   it("falls back to a generic failure for anything unrecognised", () => {

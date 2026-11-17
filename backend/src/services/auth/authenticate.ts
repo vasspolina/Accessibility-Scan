@@ -144,7 +144,7 @@ export async function authenticate(page: Page, auth: AuthConfig, target?: string
     const passSel = auth.passwordSelector ?? (await firstMatching(page, PASSWORD_SELECTORS));
     if (!userSel || !passSel) {
       throw new AuthError(
-        "Couldn't find the username and password fields on that page. Check the login address, or supply the field selectors."
+        "Couldn't find the username and password fields on that page. Check that the login address opens the sign-in form itself."
       );
     }
 

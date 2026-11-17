@@ -743,12 +743,12 @@ Found by a live German scan: these reached a German reader in English. Same cave
 
 | English | German | Where |
 | --- | --- | --- |
-| Invalid URL | Diese Adresse ist ungültig. | scan errors, blocked panel, picture notes |
-| Only http and https URLs are allowed | Nur Adressen mit http oder https sind möglich. | scan errors, blocked panel, picture notes |
-| This host is not allowed | Diese Adresse darf nicht geprüft werden. | scan errors, blocked panel, picture notes |
+| That address isn't valid. Check it and try again. | Diese Adresse ist ungültig. | scan errors, blocked panel, picture notes |
+| Only web addresses that start with http or https can be scanned. | Nur Adressen mit http oder https sind möglich. | scan errors, blocked panel, picture notes |
+| This address can't be scanned. | Diese Adresse darf nicht geprüft werden. | scan errors, blocked panel, picture notes |
 | We couldn't find a site at that address. Check the spelling and try again. | Unter dieser Adresse haben wir keine Website gefunden. Prüfen Sie die Schreibweise und versuchen Sie es erneut. | scan errors, blocked panel, picture notes |
 | That login address can't be used. | Diese Login-Adresse lässt sich nicht verwenden. | scan errors, blocked panel, picture notes |
-| Couldn't find the username and password fields on that page. Check the login address, or supply the field selectors. | Auf dieser Seite haben wir die Felder für Benutzername und Passwort nicht gefunden. Prüfen Sie die Login-Adresse, oder geben Sie die Feld-Selektoren an. | scan errors, blocked panel, picture notes |
+| Couldn't find the username and password fields on that page. Check that the login address opens the sign-in form itself. | Auf dieser Seite haben wir die Felder für Benutzername und Passwort nicht gefunden. Prüfen Sie, ob die Login-Adresse direkt das Anmeldeformular öffnet. | scan errors, blocked panel, picture notes |
 | Signing in didn't seem to work. The login form is still showing. Check the details and try again. | Die Anmeldung hat offenbar nicht geklappt. Das Login-Formular ist noch zu sehen. Prüfen Sie die Angaben und versuchen Sie es erneut. | scan errors, blocked panel, picture notes |
 | Couldn't sign in with those details. | Mit diesen Angaben hat die Anmeldung nicht geklappt. | scan errors, blocked panel, picture notes |
 | Every scanner is busy right now. Please try again in a minute. | Gerade sind alle Scanner belegt. Versuchen Sie es in einer Minute erneut. | scan errors, blocked panel, picture notes |
@@ -760,7 +760,7 @@ Found by a live German scan: these reached a German reader in English. Same cave
 | We could not download the document. | Wir konnten das Dokument nicht herunterladen. | scan errors, blocked panel, picture notes |
 | We could not read that file as a PDF. | Wir konnten die Datei nicht als PDF lesen. | scan errors, blocked panel, picture notes |
 | Not scanned — the audit ran out of time. | Nicht geprüft – die Zeit für die Website-Prüfung war um. | scan errors, blocked panel, picture notes |
-| Invalid request body | Die Anfrage war ungültig. | scan errors, blocked panel, picture notes |
+| Something in that request wasn't right. Reload the page and try again. | Die Anfrage war ungültig. | scan errors, blocked panel, picture notes |
 | {host} turned our scanner away (HTTP {status}). Its protection against automated visitors keeps tools like ours out, so this says nothing about how accessible the site is. | {host} hat unseren Scanner abgewiesen (HTTP {status}). Der Schutz vor automatischen Besuchern hält Werkzeuge wie unseres fern. Über die Barrierefreiheit der Website sagt das also nichts. | scan errors, blocked panel, picture notes |
 | {host} showed “{label}” instead of the page. Its protection against automated visitors keeps tools like ours out, so this says nothing about how accessible the site is. | {host} hat statt der Seite „{label}“ gezeigt. Der Schutz vor automatischen Besuchern hält Werkzeuge wie unseres fern. Über die Barrierefreiheit der Website sagt das also nichts. | scan errors, blocked panel, picture notes |
 | There is no page at that address (HTTP {status}). Check the address and try again. | Unter dieser Adresse gibt es keine Seite (HTTP {status}). Prüfen Sie die Adresse und versuchen Sie es erneut. | scan errors, blocked panel, picture notes |

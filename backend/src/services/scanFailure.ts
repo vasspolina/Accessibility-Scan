@@ -51,7 +51,7 @@ export function describeScanFailure(err: unknown): ScanFailure {
   }
   if (err instanceof RebindingDetectedError) {
     // Never echo the resolved IP back to the caller.
-    return { message: "This host is not allowed", status: 400, logLevel: "warn" };
+    return { message: "This address can't be scanned.", status: 400, logLevel: "warn" };
   }
   if (err instanceof SiteBlockedError) {
     const reason: FailureReason =
