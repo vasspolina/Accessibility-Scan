@@ -1,6 +1,7 @@
-import { createHash, timingSafeEqual } from "node:crypto";
+import { createHash, randomBytes } from "node:crypto";
 import { z } from "zod";
-import { env, pilotCodes } from "../../config/env.js";
+import { env, hasMailProvider } from "../../config/env.js";
+import { storageStatus } from "../../storage/db.js";
 import { logger } from "../../utils/logger.js";
 import type { ReportLang } from "../conformance/criteriaText.js";
 import { replaceLongDashes } from "../merge/mergeFindings.js";
@@ -28,10 +29,12 @@ import type { SendResult } from "../mail/sendReport.js";
  *   theirs to say, and a model guessing severity from a paragraph would be
  *   the least reliable number in the product.
  *
- *   The pilot is closed unless the deployer gives it codes (PILOT_CODES),
- *   one per participant. That bounds who can write into it, and it makes
- *   "how many people used it" a count of distinct codes rather than a
- *   number anyone has to estimate.
+ *   Anyone can report: there is no invitation code (removed on the user's
+ *   instruction, 17 Nov 2026). The pilot is open whenever a report has
+ *   somewhere to go (storage or mail), and the routes' rate limits bound
+ *   how much anyone can write. "How many people used it" counts a random
+ *   id the form keeps on the participant's device, stored only as a hash:
+ *   an estimate (a cleared browser counts twice), said as one.
  *
  *   Without the model the pilot still works: `draft` says there is no
  *   draft, and the barrier is stored as written.
@@ -44,7 +47,9 @@ const IMPACT_SEVERITY = { blocked: "critical", slowed: "serious", annoyed: "mode
 const text = (max: number) => z.string().trim().min(1).max(max);
 
 export const reportFieldsSchema = z.object({
-  code: text(100),
+  /** A random id the form makes and keeps on the participant's device, so
+   *  reports from one person can be counted as one. Never a name. */
+  participant: z.string().trim().max(64).optional(),
   assistiveTech: z.enum(ASSISTIVE_TECH),
   /** Which one, in their words: "NVDA 2025.3 with Firefox". Optional. */
   assistiveTechDetail: z.string().trim().max(200).optional(),
@@ -95,20 +100,17 @@ export const submitBodySchema = reportFieldsSchema.extend({
 });
 export type SubmitBody = z.infer<typeof submitBodySchema>;
 
-/** Constant-time code check, so a timing difference does not spell out a code. */
-export function isPilotCode(code: string, codes: string[] = pilotCodes): boolean {
-  const given = Buffer.from(code.trim());
-  let match = false;
-  for (const c of codes) {
-    const want = Buffer.from(c);
-    if (want.length === given.length && timingSafeEqual(want, given)) match = true;
-  }
-  return match;
+/** Open when a report has somewhere to go, so nobody writes into a pilot
+ *  that cannot keep it. */
+export function pilotOpen(): boolean {
+  return storageStatus().configured || hasMailProvider;
 }
 
-/** What is stored for a participant: a hash, never their code. */
-export function participantId(code: string): string {
-  return createHash("sha256").update(`pilot:${code.trim()}`).digest("hex").slice(0, 12);
+/** What is stored for a participant: a hash of the form's device id, or a
+ *  fresh one when the browser kept none. */
+export function participantId(id: string | undefined): string {
+  const seed = id?.trim() || randomBytes(12).toString("hex");
+  return createHash("sha256").update(`pilot:${seed}`).digest("hex").slice(0, 12);
 }
 
 export function severityFor(impact: ReportFields["impact"]) {
@@ -268,7 +270,7 @@ export function renderPilotText(body: SubmitBody, model: string | undefined): st
   const lines = [
     "Pilot barrier report",
     "",
-    `Participant: ${participantId(body.code)}`,
+    `Participant: ${participantId(body.participant)}`,
     `Uses: ${AT_NAMES[body.assistiveTech]}${body.assistiveTechDetail ? ` (${body.assistiveTechDetail})` : ""}`,
     `Page: ${body.pageUrl ?? "not given"}`,
     `Their rating: ${body.impact}`,

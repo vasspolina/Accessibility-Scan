@@ -31,7 +31,7 @@ CI (`.github/workflows/`) runs only for the package whose path changed: backend 
 
 **Working on the widget without a backend:** open the dev harness with `?fixture` (stops at the form) or a named state: `?fixture=report`, `?fixture=error`, `?fixture=blocked`, plus `&audience=professional`, `&scope=site`, `&at=<section id>`. `dev-fixture.js` stubs `fetch` for `/api/scan` and `/api/audit`. Copy `backend/node_modules/axe-core/axe.min.js` to `widget-business/axe.dev.js` to axe-scan the rendered widget in place.
 
-`backend/.env` (gitignored) takes `ANTHROPIC_API_KEY`; without it scans still run and the report says the AI layer was skipped. Optional features (mail via `MAIL_API_KEY`, storage via `DB_PATH`) follow the same contract: absent means the feature reports itself as not set up, never a silent failure. All env is validated in `backend/src/config/env.ts`. The self-hosted plain-language model (`LOCAL_LLM_URL`) and the assistive-technology pilot (`PILOT_CODES`, form at `backend/public/pilot.html`) follow the same contract; see `docs/PLAIN-LANGUAGE-AND-PILOT.md`.
+`backend/.env` (gitignored) takes `ANTHROPIC_API_KEY`; without it scans still run and the report says the AI layer was skipped. Optional features (mail via `MAIL_API_KEY`, storage via `DB_PATH`) follow the same contract: absent means the feature reports itself as not set up, never a silent failure. All env is validated in `backend/src/config/env.ts`. The self-hosted plain-language model (`LOCAL_LLM_URL`) and the assistive-technology pilot (open to anyone once storage or mail is set up, form at `backend/public/pilot.html`) follow the same contract; see `docs/PLAIN-LANGUAGE-AND-PILOT.md`.
 
 ## Architecture
 

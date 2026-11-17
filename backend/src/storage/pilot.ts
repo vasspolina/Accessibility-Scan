@@ -34,7 +34,7 @@ export function savePilotReport(body: SubmitBody, model: string | undefined): st
      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`
   ).run(
     id,
-    participantId(body.code),
+    participantId(body.participant),
     new Date().toISOString(),
     body.pageUrl ?? null,
     at,

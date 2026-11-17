@@ -6,7 +6,8 @@ import type { FastifyInstance } from "fastify";
 let app: FastifyInstance;
 beforeAll(async () => {
   delete process.env.LOCAL_LLM_URL;
-  delete process.env.PILOT_CODES;
+  delete process.env.DB_PATH;
+  delete process.env.MAIL_API_KEY;
   const { buildApp } = await import("../src/app.js");
   app = await buildApp();
   await app.ready();
@@ -15,7 +16,7 @@ afterAll(async () => {
   await app.close();
 });
 
-describe("without LOCAL_LLM_URL or PILOT_CODES", () => {
+describe("without LOCAL_LLM_URL, storage or mail", () => {
   it("the rewrite reports itself as not set up", async () => {
     const { rewriteFindings } = await import("../src/services/plainLanguage/rewriteFindings.js");
     const r = await rewriteFindings([], "en", true);
@@ -29,9 +30,9 @@ describe("without LOCAL_LLM_URL or PILOT_CODES", () => {
     expect(body.pilotOpen).toBe(false);
   });
 
-  it("the pilot is closed, not open to anyone", async () => {
+  it("the pilot is closed while a report would have nowhere to go", async () => {
     expect((await app.inject({ method: "GET", url: "/api/pilot" })).json()).toMatchObject({ open: false, model: null });
-    const res = await app.inject({ method: "POST", url: "/api/pilot/draft", payload: { code: "x" } });
+    const res = await app.inject({ method: "POST", url: "/api/pilot/draft", payload: {} });
     expect(res.statusCode).toBe(503);
     expect(res.json().error).toBe("pilot_closed");
   });
