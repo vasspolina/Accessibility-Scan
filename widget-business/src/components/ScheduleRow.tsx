@@ -3,6 +3,7 @@ import { Button } from "./Button";
 import { Input } from "./Input";
 import { Select } from "./Select2";
 import { t } from "../lib/strings";
+import { getLang } from "../lib/i18n";
 import {
   createSchedule,
   deleteSchedule,
@@ -26,11 +27,20 @@ import {
  * is off, or a notify address on a server without mail, would otherwise be
  * a schedule that looks alive and never does anything.
  */
-const EVERY: Array<{ value: string; label: string }> = [
+/** A function, not a constant: t() reads the language when called, and a
+ *  module-level list froze the labels in whatever language loaded first. */
+const everyOptions = (): Array<{ value: string; label: string }> => [
   { value: "24", label: t("Every day") },
   { value: "168", label: t("Every week") },
   { value: "6", label: t("Every 6 hours") },
 ];
+
+/** The frequency label ("Every day") sits mid-sentence after "Runs", so it
+ *  is lowercased there. Not in German: nouns keep their capital, and
+ *  lowercasing "Jeden Tag" gave "jeden tag". */
+function midSentence(label: string): string {
+  return getLang() === "de" ? label : label.toLowerCase();
+}
 
 function sameUrl(a: string, b: string): boolean {
   try {
@@ -128,7 +138,7 @@ export function ScheduleRow({ apiBase, url }: { apiBase: string; url: string }) 
       {mine ? (
         <>
           <span className="a11y-settings-state">
-            {mine.enabled ? `${t("Runs")} ${(EVERY.find((o) => o.value === String(mine.everyHours))?.label ?? `${mine.everyHours} h`).toLowerCase()}. ` : `${t("Paused.")} `}
+            {mine.enabled ? `${t("Runs")} ${midSentence(everyOptions().find((o) => o.value === String(mine.everyHours))?.label ?? `${mine.everyHours} h`)}. ` : `${t("Paused.")} `}
             {mine.lastRunAt
               ? `${t("Last run")} ${when(mine.lastRunAt)}${mine.lastScore !== null ? `, ${t("score")} ${mine.lastScore}` : ""}. `
               : `${t("Not run yet.")} `}
@@ -150,7 +160,7 @@ export function ScheduleRow({ apiBase, url }: { apiBase: string; url: string }) 
       ) : all !== null ? (
         <form className="a11y-manual-form" onSubmit={create} aria-labelledby={`${id}-label`}>
           <span className="a11y-settings-state">{t("Scan this page on a schedule. We flag it if the score drops or a new finding appears.")}</span>
-          <Select id={`${id}-every`} label={t("How often")} options={EVERY} value={every} onChange={(e) => setEvery(e.target.value)} />
+          <Select id={`${id}-every`} label={t("How often")} options={everyOptions()} value={every} onChange={(e) => setEvery(e.target.value)} />
           <Input
             id={`${id}-email`}
             label={t("Email me if it gets worse (optional)")}

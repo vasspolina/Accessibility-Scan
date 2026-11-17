@@ -135,7 +135,7 @@ export const PLAIN_DE: Record<string, PlainRule> = {
     plain: "Schaltflächen ohne Beschriftung",
     found: (n) =>
       `${n} ${n === 1 ? "Schaltfläche hat" : "Schaltflächen haben"} gar keine Beschriftung: keine Wörter darin und keinen Namen im Code. Fast immer sind es Symbol-Schaltflächen, bei denen das Zeichen die Bedeutung trägt und der Code nichts davon.`,
-    impact: "Niemand weiß vor dem Klick, was passiert. Ein häufiger Grund, aufzugeben.",
+    impact: "Wer einen Screenreader nutzt, weiß vor dem Klick nicht, was passiert. Ein häufiger Grund, aufzugeben.",
   },
   label: {
     research: "Fehlende Feldbeschriftungen stehen weit oben in der jährlichen WebAIM-Untersuchung von einer Million Startseiten. In der britischen Click-Away-Pound-Studie verließen die meisten Käufer, die auf so eine Hürde stießen, den Shop wortlos. Ihr Geld gaben sie woanders aus.",
@@ -199,7 +199,7 @@ export const PLAIN_DE: Record<string, PlainRule> = {
   "meta-viewport-large": {
     plain: "Zoom auf eine feste Stufe begrenzt",
     found: () =>
-      `Zoomen geht, aber die Seite deckelt es unter 500%.`,
+      `Zoomen geht, aber die Seite deckelt es unter 500 %.`,
     impact: "Milder, als das Zoomen ganz zu sperren, und es trifft dieselben Menschen. Wer sehr große Schrift braucht, kommt bis zum Deckel und keinen Schritt weiter.",
   },
   "frame-title": {
@@ -309,7 +309,7 @@ export const PLAIN_DE: Record<string, PlainRule> = {
   },
 
   "forced-colors-focus-lost": {
-    found: (n) => (n === 1 ? "Bei mehreren Bedienelementen besteht die Fokusmarkierung nur aus einem Schatten oder einem Farbwechsel. Im Modus für hohen Kontrast unter Windows verschwindet sie deshalb." : "Bei {n} Bedienelementen besteht die Fokusmarkierung nur aus einem Schatten oder einem Farbwechsel. Im Modus für hohen Kontrast unter Windows verschwindet sie deshalb.".replace("{n}", String(n))),
+    found: (n) => (n === 1 ? "Bei mindestens einem Bedienelement besteht die Fokusmarkierung nur aus einem Schatten oder einem Farbwechsel. Im Modus für hohen Kontrast unter Windows verschwindet sie deshalb." : "Bei {n} Bedienelementen besteht die Fokusmarkierung nur aus einem Schatten oder einem Farbwechsel. Im Modus für hohen Kontrast unter Windows verschwindet sie deshalb.".replace("{n}", String(n))),
     plain: "Fokusmarkierung verschwindet im hohen Kontrast",
     impact: "Der Modus für hohen Kontrast entfernt die Schatten und Farben, mit denen die meisten Fokusmarkierungen gezeichnet sind. Wer am dringendsten sehen muss, wo er steht, sieht nichts. Auf einer Seite, die bis dahin perfekt aussieht.",
   },
@@ -319,7 +319,7 @@ export const PLAIN_DE: Record<string, PlainRule> = {
     impact: "Das Symbol ist ein Hintergrundbild, und dieser Modus entfernt Hintergrundbilder. Die Schaltfläche funktioniert weiter, erscheint aber als leerer Kasten: kein Bild, keine Beschriftung, kein Hinweis, dass es eine Schaltfläche ist.",
   },
   "keyboard-faint-focus": {
-    found: (n) => (n === 1 ? "Bei mehreren Bedienelementen ist der Rahmen, der den Tastaturfokus zeigt, zu blass. Sein Kontrast zum Hintergrund liegt unter 3:1, dem Mindestwert für eine sichtbare Markierung." : "Bei {n} Bedienelementen ist der Rahmen, der den Tastaturfokus zeigt, zu blass. Sein Kontrast zum Hintergrund liegt unter 3:1, dem Mindestwert für eine sichtbare Markierung.".replace("{n}", String(n))),
+    found: (n) => (n === 1 ? "Bei mindestens einem Bedienelement ist der Rahmen, der den Tastaturfokus zeigt, zu blass. Sein Kontrast zum Hintergrund liegt unter 3:1, dem Mindestwert für eine sichtbare Markierung." : "Bei {n} Bedienelementen ist der Rahmen, der den Tastaturfokus zeigt, zu blass. Sein Kontrast zum Hintergrund liegt unter 3:1, dem Mindestwert für eine sichtbare Markierung.".replace("{n}", String(n))),
     plain: "Tastaturmarkierung zu blass zum Sehen",
     impact: "Die Tab-Taste bewegt einen unsichtbaren Zeiger, und nur der Rahmen zeigt, wo er angekommen ist. Ist er zu blass, weiß man an der Tastatur nicht, was man gleich auslöst. Beim Testen rutscht das durch, weil ja wirklich ein Rahmen da ist.",
   },
@@ -395,7 +395,7 @@ export const PLAIN_DE: Record<string, PlainRule> = {
   "mobile-target-spacing": {
     plain: "Tippziele liegen zu dicht beieinander",
     found: (n) =>
-      `${n} ${n === 1 ? "Paar von Bedienelementen liegt" : "Paare von Bedienelementen liegen"} in Handy-Breite weniger als 8px auseinander. Einzeln ist jedes groß genug; zusammen lassen sie keinen Platz zum Danebentippen.`,
+      `${n} ${n === 1 ? "Paar von Bedienelementen liegt" : "Paare von Bedienelementen liegen"} in Handybreite weniger als 8 px auseinander. Einzeln ist jedes groß genug; zusammen lassen sie keinen Platz zum Danebentippen.`,
     impact: "Ein Daumen ist kein Mauszeiger. Ein Finger, der ein Element anpeilt und beim Nachbarn landet, tippt oder kauft das Falsche. Menschen mit Zittern oder größeren Fingern trifft es zuerst.",
   },
   "consent-blocks-reader": {
@@ -405,18 +405,18 @@ export const PLAIN_DE: Record<string, PlainRule> = {
     impact: "Wer einen Screenreader nutzt, hört Stille, wo die Seite sein sollte. Man kann die Seite nicht lesen und findet das Banner nicht, um es wegzuräumen.",
   },
   "mobile-sticky-coverage": {
-    plain: "Fixierte Leisten füllen den Handy-Bildschirm",
+    plain: "Fixierte Leisten füllen den Handybildschirm",
     found: () =>
-      `Fixierte Kopfzeilen, Banner oder Werkzeugleisten belegen in Handy-Breite mehr als ein Drittel des Bildschirms.`,
+      `Fixierte Kopfzeilen, Banner oder Werkzeugleisten belegen in Handybreite mehr als ein Drittel des Bildschirms.`,
     impact: "Jedes fixierte Pixel ist eines, durch das niemand die Seite lesen kann. Was die Tastatur fokussiert, kann hinter den Leisten verschwinden. WCAG 2.2 macht genau das schon zur Pflicht; das Gesetz verweist nur noch nicht darauf.",
   },
   "mobile-horizontal-scroll": {
-    found: (n) => (n === 1 ? "In Handy-Breite ragt ein Element über den Bildschirmrand hinaus, und die ganze Seite scrollt seitwärts." : "In Handy-Breite ragen {n} Elemente über den Bildschirmrand hinaus, und die ganze Seite scrollt seitwärts.".replace("{n}", String(n))),
+    found: (n) => (n === 1 ? "In Handybreite ragt ein Element über den Bildschirmrand hinaus, und die ganze Seite scrollt seitwärts." : "In Handybreite ragen {n} Elemente über den Bildschirmrand hinaus, und die ganze Seite scrollt seitwärts.".replace("{n}", String(n))),
     plain: "Die Seite scrollt auf dem Handy seitwärts",
     impact: "Die meisten Besucher sind am Handy. Für jede Zeile seitwärts wischen zu müssen, treibt sie weg.",
   },
   "mobile-tap-target": {
-    found: (n) => (n === 1 ? "In Handy-Breite ist ein Tippziel unter 24px breit oder hoch, und ein anderes liegt direkt daneben. Ein knapp verfehlter Tipper landet leicht beim Nachbarn." : "In Handy-Breite sind {n} Tippziele unter 24px breit oder hoch, und jedes hat ein anderes direkt daneben. Ein knapp verfehlter Tipper landet leicht beim Nachbarn.".replace("{n}", String(n))),
+    found: (n) => (n === 1 ? "In Handybreite ist ein Tippziel unter 24 px breit oder hoch, und ein anderes liegt direkt daneben. Ein knapp verfehlter Tipper landet leicht beim Nachbarn." : "In Handybreite sind {n} Tippziele unter 24 px breit oder hoch, und jedes hat ein anderes direkt daneben. Ein knapp verfehlter Tipper landet leicht beim Nachbarn.".replace("{n}", String(n))),
     plain: "Tippziele zu klein",
     impact: "Tipper gehen daneben, und der Ärger wächst. Am schlimmsten bei größeren Fingern, Zittern oder unruhigen Händen. Das kostet Sie Umsatz.",
   },
@@ -544,7 +544,7 @@ export const PLAIN_DE: Record<string, PlainRule> = {
   "typo-negative-letterspacing": {
     found: (n) => (n === 1 ? "Text auf dieser Seite ist enger gesetzt, als die Schrift es vorsieht. Die Buchstaben können sich dabei berühren." : "An {n} Stellen auf dieser Seite ist Text enger gesetzt, als die Schrift es vorsieht. Die Buchstaben können sich dabei berühren.".replace("{n}", String(n))),
     plain: "Buchstaben berühren sich vor Enge",
-    impact: "Gequetschte Buchstaben verschwimmen ineinander. Besonders in kleinen Größen und bei schwachem Sehvermögen.",
+    impact: "Gequetschte Buchstaben verschwimmen ineinander, besonders in kleinen Größen und bei schwachem Sehvermögen.",
   },
   "typo-line-length-long": {
     found: (n) => (n === 1 ? "Auf dieser Seite steht Fließtext in Zeilen, die im Schnitt länger als 90 Zeichen sind." : "An {n} Stellen auf dieser Seite steht Fließtext in Zeilen, die im Schnitt länger als 90 Zeichen sind.".replace("{n}", String(n))),
@@ -562,7 +562,7 @@ export const PLAIN_DE: Record<string, PlainRule> = {
     impact: "Blocksatz dehnt die Wortabstände, damit jede Zeile voll wird. Die ungleichen Lücken bilden störende weiße „Flüsse“, die die Seite hinunterlaufen.",
   },
   "typo-font-size-small": {
-    found: (n) => (n === 1 ? "Fließtext auf dieser Seite ist kleiner als 13px gesetzt." : "An {n} Stellen auf dieser Seite ist Fließtext kleiner als 13px gesetzt.".replace("{n}", String(n))),
+    found: (n) => (n === 1 ? "Fließtext auf dieser Seite ist kleiner als 13 px gesetzt." : "An {n} Stellen auf dieser Seite ist Fließtext kleiner als 13 px gesetzt.".replace("{n}", String(n))),
     plain: "Fließtext sehr klein gesetzt",
     impact: "Kleine Schrift vertreibt alle, die am Handy, bei schlechtem Licht oder mit nicht perfekten Augen lesen.",
   },
@@ -590,7 +590,7 @@ export const PLAIN_DE: Record<string, PlainRule> = {
   "typo-thin-weight": {
     found: (n) => (n === 1 ? "Für Fließtext auf dieser Seite ist eine sehr dünne Schriftstärke eingestellt: 200 oder weniger. Normal ist 400." : "An {n} Stellen auf dieser Seite ist für Fließtext eine sehr dünne Schriftstärke eingestellt: 200 oder weniger. Normal ist 400.".replace("{n}", String(n))),
     plain: "Fließtext in sehr dünner Schrift",
-    impact: "Dünne Striche verblassen auf billigen Bildschirmen, in der Sonne und bei schwachen Augen. Auch dann, wenn der Kontrast reicht.",
+    impact: "Dünne Striche verblassen auf billigen Bildschirmen, in der Sonne und bei schwachen Augen, auch dann, wenn der Kontrast reicht.",
   },
   "nav-name-inconsistent": {
     plain: "Derselbe Link mit verschiedenen Namen",
@@ -811,7 +811,7 @@ export const FIXES_DE: Record<string, string | string[]> = {
   ],
   "typo-underline-nonlink": [
     "Unterstreichen Sie nur Links.",
-    "Nutzen Sie fett oder kursiv, wo Sie betonen wollen.",
+    "Nutzen Sie Fettdruck oder Kursivschrift, wo Sie betonen wollen.",
   ],
   "typo-italic-body": "Setzen Sie lange Passagen aufrecht und halten Sie Kursives auf einzelne Wortgruppen begrenzt.",
   "typo-allcaps-block": [
@@ -850,8 +850,8 @@ export const FIXES_DE: Record<string, string | string[]> = {
   "image-redundant-alt": "Geben Sie dem Bild ein leeres alt (alt=\"\"), wenn der Text daneben schon dasselbe sagt.",
   "color-contrast": [
     "Machen Sie den Text dunkler oder das, was dahinter liegt, heller.",
-    "Gewöhnlicher Text braucht ein Kontrastverhältnis von mindestens 4.5:1.",
-    "Großer Text, etwa 24px oder 19px fett, braucht 3:1.",
+    "Gewöhnlicher Text braucht ein Kontrastverhältnis von mindestens 4,5:1.",
+    "Großer Text, etwa 24 px oder 19 px fett, braucht 3:1.",
   ],
   "image-alt": [
     "Schreiben Sie zu jedem Bild mit Bedeutung eine kurze Beschreibung.",
@@ -886,7 +886,7 @@ export const FIXES_DE: Record<string, string | string[]> = {
   ],
   "document-title": "Geben Sie der Seite einen Titel, der sie beschreibt. Er steht im Browser-Tab und in den Suchergebnissen.",
   "html-has-lang": "Sagen Sie der Seite, in welcher Sprache sie geschrieben ist, damit Screenreader die richtige Stimme nehmen.",
-  "html-lang-valid": "Korrigieren Sie die Sprachangabe der Seite auf einen echten Sprachcode, etwa Deutsch oder Englisch.",
+  "html-lang-valid": "Korrigieren Sie die Sprachangabe der Seite auf einen echten Sprachcode, etwa de für Deutsch oder en für Englisch.",
   "heading-order": "Nutzen Sie Überschriften der Reihe nach, ohne eine Ebene zu überspringen.",
   "page-has-heading-one": "Setzen Sie oben eine <h1>, die sagt, worum es auf der Seite geht.",
   "empty-heading": "Setzen Sie Text in die Überschrift oder entfernen Sie das leere Überschriften-Tag.",
@@ -913,11 +913,11 @@ export const FIXES_DE: Record<string, string | string[]> = {
   "nav-name-inconsistent": "Geben Sie jedem Menülink einen einzigen Namen, „Warenkorb“ oder „Einkaufswagen“, nicht beides, und verwenden Sie ihn auf jeder Seite.",
   "color-contrast-mobile": [
     "Suchen Sie die Media Query für Handybreite, die die Text- oder Hintergrundfarbe ändert.",
-    "Prüfen Sie dieses Farbpaar nach derselben Regel: Gewöhnlicher Text braucht mindestens 4.5:1.",
+    "Prüfen Sie dieses Farbpaar nach derselben Regel: Gewöhnlicher Text braucht mindestens 4,5:1.",
   ],
   "color-contrast-dark": [
     "Prüfen Sie die Text- und Hintergrundfarben der dunklen Palette genauso wie die der hellen.",
-    "Gewöhnlicher Text braucht in beiden Designs mindestens 4.5:1.",
+    "Gewöhnlicher Text braucht in beiden Designs mindestens 4,5:1.",
   ],
   "nav-order-inconsistent": "Zeigen Sie die Menülinks auf jeder Seite in derselben Reihenfolge. Eine Seite darf weniger Links zeigen, aber die vorhandenen sollten ihre Reihenfolge behalten.",
   "activation-stale-state": "Lassen Sie jedes Bedienelement seinen neuen Zustand ansagen, sobald er sich ändert: aufgeklappt oder zugeklappt, an oder aus. Ihr Entwickler setzt das im selben Code, der das Element öffnet oder umschaltet.",
@@ -951,10 +951,10 @@ export const UNDECIDED_DE: Record<string, { what: string; ask: string }> = {
   },
   "media-audio-transcript": {
     what: "Ton auf der Seite. Ein Transkript ist gewöhnlicher Seitentext, also kann die Prüfung nicht feststellen, ob eines vorhanden ist.",
-    ask: "Prüfen Sie, ob zu jeder Aufnahme der Wortlaut auf der Seite steht, nahe beim Abspieler. Und ob dieser Text alles Gesagte abdeckt.",
+    ask: "Prüfen Sie, ob neben jedem Player der Wortlaut steht und ob er alles Gesagte abdeckt.",
   },
   "media-embedded-player": {
-    what: "Video, das über den Abspieler eines anderen Anbieters läuft. Das Video liegt auf dessen Seite, also kann die Prüfung nicht hineinsehen.",
+    what: "Video, das über den Player eines anderen Anbieters läuft. Das Video liegt auf dessen Seite, also kann die Prüfung nicht hineinsehen.",
     ask: "Öffnen Sie jedes Video und schalten Sie die Untertitel ein. Fehlt die Option oder stimmen die Untertitel nicht, korrigieren Sie das dort, wo das Video liegt.",
   },
   "consent-layer-in-frame": {
@@ -983,7 +983,7 @@ export const UNDECIDED_DE: Record<string, { what: string; ask: string }> = {
   },
   "interaction-unmarked-language": {
     what: "Passagen in einer anderen Schrift als der Rest der Seite, ohne Angabe, welche Sprache das ist. Ein Screenreader spricht sie falsch aus, und dann sind sie oft nicht zu verstehen.",
-    ask: "Bitten Sie Ihren Entwickler, jede Passage mit ihrer Sprache zu kennzeichnen. Automatisch erkennbar ist nur ein Schriftwechsel, fragen Sie also auch nach Passagen in Sprachen mit unserer Schrift.",
+    ask: "Bitten Sie Ihren Entwickler, jede Passage mit ihrer Sprache zu kennzeichnen. Automatisch erkennbar ist nur ein Schriftwechsel. Fragen Sie also auch nach fremdsprachigen Passagen in lateinischer Schrift.",
   },
   "interaction-title-tooltip": {
     what: "Kurzhinweise aus dem title-Attribut. Sie erscheinen nur beim Zeigen mit der Maus, also sieht sie an Tastatur oder Touchscreen niemand. Sie lassen sich auch nicht wegklicken und verschwinden, sobald man zu ihnen hinfährt, um zu Ende zu lesen.",
@@ -1010,7 +1010,7 @@ export const UNDECIDED_DE: Record<string, { what: string; ask: string }> = {
     ask: "Lassen Sie Ihren Entwickler prüfen, ob jede id, auf die ein aria-Attribut zeigt, auf der Seite existiert. Keine davon sollte in einem Block liegen, der versteckt oder entfernt wird.",
   },
   "aria-allowed-role": {
-    what: "Teile der Seite, die im Code als etwas ausgezeichnet sind, das sie vielleicht nicht sein können. Ob es falsch ist, hängt davon ab, wie sich das Element verhält.",
+    what: "Teile der Seite, die im Code eine Rolle tragen, die vielleicht nicht zu ihnen passt. Ob es falsch ist, hängt davon ab, wie sich das Element verhält.",
     ask: "Lassen Sie Ihren Entwickler prüfen, ob sich jedes so verhält, wie seine Rolle es verspricht, Tastatur eingeschlossen. Sonst lassen Sie die Rolle weg und nehmen das native Element.",
   },
   "aria-prohibited-attr": {
@@ -1040,7 +1040,7 @@ export const PRINCIPLES_DE: Record<string, { principleLabel: string; plainTitle:
   },
   "3": {
     principleLabel: "Verständlich",
-    plainTitle: "Können Menschen ihr folgen?",
+    plainTitle: "Können Menschen es verstehen?",
     plainDescription: "Ob Ihre Formulierungen und Ihr Aufbau Sinn ergeben und ob sich die Seite so verhält, wie man es erwartet.",
   },
   "4": {

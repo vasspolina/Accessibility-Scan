@@ -78,11 +78,11 @@ carry the same keys and the same caveat.
 | Paused. | Pausiert. |
 | Runs | Läuft |
 | Last run | Letzter Lauf |
-| score | Wert |
-| Next | Nächster |
+| score | Ergebnis |
+| Next | Nächster Lauf: |
 | Last run failed: | Letzter Lauf fehlgeschlagen: |
 | Writes to | Schreibt an |
-| if the score drops or a new finding appears. | wenn der Wert fällt oder ein neuer Befund erscheint. |
+| if the score drops or a new finding appears. | wenn das Ergebnis sinkt oder ein neuer Befund erscheint. |
 | The scheduler is off on this server. This schedule will not run until it is on. | Der Zeitplaner ist auf diesem Server ausgeschaltet. Dieser Zeitplan läuft erst, wenn er eingeschaltet ist. |
 | Mail is not set up on this server. No email will be sent. | E-Mail ist auf diesem Server nicht eingerichtet. Es wird keine E-Mail gesendet. |
 | Couldn't load the schedules. | Die Zeitpläne konnten nicht geladen werden. |
@@ -134,11 +134,11 @@ should check that none of those splits reads oddly.
 | Walking every Tab stop | Jeder Tab-Halt wird abgeschritten | scan narration |
 | Enlarging the text | Der Text wird vergrößert | scan narration |
 | Trying it at phone width | Die Seite wird in Handybreite geprüft | scan narration |
-| The AI review reads the page | Die KI-Durchsicht liest die Seite | scan narration |
+| The AI review reads the page | Die KI-Prüfung liest die Seite | scan narration |
 | Writing the report | Der Bericht wird geschrieben | scan narration |
 | Put the promised items inside: a list needs list items, a menu needs menu items. | Setzen Sie die versprochenen Einträge hinein: eine Liste braucht Listeneinträge, ein Menü braucht Menüeinträge. | fix, aria-required-children |
 | If the content is not really a list or a menu, take that marking off the container. | Ist der Inhalt in Wahrheit keine Liste und kein Menü, nehmen Sie die Auszeichnung vom Container. | fix, aria-required-children |
-| What a designer would point out, not failures against a rule. None of it counts towards the score. | Was ein Designer anmerken würde, keine Verstöße gegen eine Regel. Nichts davon zählt in den Wert. | design-notes lead |
+| What a designer would point out, not failures against a rule. None of it counts towards the score. | Was eine Gestalterin oder ein Gestalter anmerken würde, keine Verstöße gegen eine Regel. Nichts davon fließt in das Ergebnis ein. | design-notes lead |
 | Most notes are about type. Text set small, tight or in capitals loses readers before any rule is broken. | Die meisten Hinweise betreffen die Typografie. Zu kleiner, zu enger oder durchgehend groß gesetzter Text kostet Leser, bevor eine Regel verletzt ist. | design-notes lead |
 | Which site should I check? | Welche Website soll ich prüfen? | chat |
 | Ask about the report, or name another site | Fragen Sie zum Bericht, oder nennen Sie eine andere Website | chat |
@@ -147,7 +147,7 @@ should check that none of those splits reads oddly.
 | You | Sie | chat |
 | Checker | Prüfer | chat |
 | Conversation | Gespräch | chat |
-| Thinking… | Denkt nach… | chat |
+| Thinking… | Denkt nach … | chat |
 | Checking | Prüfe | chat |
 | Checked | Geprüft | chat |
 | Could not check | Nicht prüfbar | chat |
@@ -173,7 +173,7 @@ should check that none of those splits reads oddly.
 | This conversation is too long to continue. Send your question again to start a new one. | Dieses Gespräch ist zu lang, um es fortzusetzen. Senden Sie Ihre Frage noch einmal, dann beginnt ein neues. | chat transcript |
 | The assistant stopped responding. Try sending that again. | Der Assistent antwortet nicht mehr. Senden Sie die Nachricht noch einmal. | chat transcript |
 | Assistant | Assistent | chat |
-| Checking {url}. | Prüfe {url}. | chat |
+| Checking {url}. | {url} wird geprüft. | chat |
 | Checked {url}. | {url} geprüft. | chat |
 | Couldn't check {url}. | {url} konnte nicht geprüft werden. | chat |
 | The assistant is still replying. Run it again in a moment. | Der Assistent antwortet noch. Starten Sie den Scan gleich noch einmal. | chat |
@@ -254,7 +254,7 @@ should check that none of those splits reads oddly.
 | 320px reflow | Umbruch bei 320 px | score panel |
 | open dialogs | offene Dialoge | score panel |
 | This scan | Dieser Scan | score panel |
-| Professional | Fachlich | score panel |
+| Professional | Für Fachleute | score panel |
 | Included | Enthalten | score panel |
 | Not included | Nicht enthalten | score panel |
 | Run again without the AI review | Ohne KI-Prüfung erneut ausführen | score panel |
@@ -281,7 +281,7 @@ should check that none of those splits reads oddly.
 | Checked against | Geprüft nach | report |
 | The standard a buyer will ask you about | Der Standard, nach dem ein Käufer Sie fragen wird | report |
 | Rows the scan can evidence | Zeilen, die der Scan belegen kann | report |
-| {failed} of {total}; the rest need a person | {failed} von {total}; der Rest braucht einen Menschen | report |
+| {failed} of {total}; the rest need a person | {failed} von {total}; den Rest muss eine Person prüfen | report |
 | Product name | Produktname | report |
 | Contact for accessibility questions | Kontakt für Fragen zur Barrierefreiheit | report |
 | Copy the draft | Entwurf kopieren | report |
@@ -312,7 +312,7 @@ should check that none of those splits reads oddly.
 | Places | Stellen | report |
 | Code fix | Code-Korrektur | report |
 | Content fix | Inhaltskorrektur | report |
-| Design fix | Design-Korrektur | report |
+| Design fix | Korrektur in der Gestaltung | report |
 | Document fix | Dokumentkorrektur | report |
 | The checker could not settle this one on its own. It reports a problem only where it can prove one, so anything needing judgement comes here rather than a guess either way. | Das Prüfwerkzeug konnte diesen Punkt nicht allein klären. Es meldet ein Problem nur dort, wo es eines beweisen kann. Was ein Urteil erfordert, steht deshalb hier, statt in die eine oder andere Richtung geraten zu werden. | report |
 | The checker could not settle these {total} on its own. It reports a problem only where it can prove one, so anything needing judgement comes here rather than a guess either way. | Das Prüfwerkzeug konnte diese {total} Punkte nicht allein klären. Es meldet ein Problem nur dort, wo es eines beweisen kann. Was ein Urteil erfordert, steht deshalb hier, statt in die eine oder andere Richtung geraten zu werden. | report |
@@ -412,7 +412,7 @@ should check that none of those splits reads oddly.
 | Reduced sensitivity to green, the most common form of colour blindness. Red and green become hard to tell apart. | Verminderte Empfindlichkeit für Grün, die häufigste Form der Farbenblindheit. Rot und Grün werden schwer unterscheidbar. | report |
 | Reduced sensitivity to red. Reds darken and can disappear against dark backgrounds. | Verminderte Empfindlichkeit für Rot. Rottöne werden dunkler und können vor dunklen Hintergründen verschwinden. | report |
 | Reduced sensitivity to blue. Blues and yellows become hard to tell apart. | Verminderte Empfindlichkeit für Blau. Blau- und Gelbtöne werden schwer unterscheidbar. | report |
-| No colour at all. A useful worst case: anything that relies on colour alone disappears completely here. | Gar keine Farbe. Ein nützlicher schlimmster Fall: Alles, was nur auf Farbe setzt, verschwindet hier völlig. | report |
+| No colour at all. A useful worst case: anything that relies on colour alone disappears completely here. | Gar keine Farbe. Ein nützlicher Extremfall: Alles, was nur auf Farbe setzt, verschwindet hier völlig. | report |
 | Reduced sharpness of sight, far more common than total blindness. Small text and thin type lose their edges. | Verminderte Sehschärfe, weit häufiger als völlige Blindheit. Kleiner Text und dünne Schrift verlieren ihre Konturen. | report |
 | Clouded vision and faded contrast. Text with low contrast is the first thing to go. | Getrübte Sicht und verblasster Kontrast. Text mit geringem Kontrast verschwindet als Erstes. | report |
 | Your page with the cookie banner set aside, so every view here shows the page itself. | Ihre Seite mit ausgeblendetem Cookie-Banner, damit jede Ansicht hier die Seite selbst zeigt. | report |
@@ -465,7 +465,7 @@ should check that none of those splits reads oddly.
 | The other {count} are in the checklist below. Choose {filter} to see them. | Die übrigen {count} stehen in der Checkliste unten. Wählen Sie {filter}, um sie zu sehen. | report |
 | The checklist of {total} items European accessibility law measures sites against. | Die Checkliste mit {total} Punkten, an der das europäische Barrierefreiheitsrecht Websites misst. | report |
 | In Germany this is the standard the BFSG points at. That law implements the European Accessibility Act and has been in force since June 2025. | In Deutschland verweist das BFSG auf diesen Standard. Das Gesetz setzt den European Accessibility Act um und gilt seit Juni 2025. | report |
-| So “nothing found” is not a pass | „Nichts gefunden“ heißt also nicht bestanden | report |
+| So “nothing found” is not a pass | „Nichts gefunden“ heißt also nicht „bestanden“ | report |
 | You need every item at both levels, A and AA. They don’t average out. | Sie müssen jeden Punkt auf beiden Stufen erfüllen, A und AA. Ein Durchschnitt zählt nicht. | report |
 | One Level A failure means you don’t meet the standard. | Ein einziger Verstoß auf Stufe A bedeutet, dass Sie den Standard nicht erfüllen. | report |
 | What this tells you | Was Ihnen das sagt | report |
@@ -478,7 +478,7 @@ should check that none of those splits reads oddly.
 | Against the {standard} checklist of {total} items | Gemessen an der Checkliste der {standard} mit {total} Punkten | report |
 | Show | Anzeigen | report |
 | Failures ({count}) | Verstöße ({count}) | report |
-| Needs a person ({count}) | Braucht einen Menschen ({count}) | report |
+| Needs a person ({count}) | Nur von einer Person prüfbar ({count}) | report |
 | Not measured ({count}) | Nicht gemessen ({count}) | report |
 | Everything ({count}) | Alle ({count}) | report |
 | Nothing on this page fails. | Auf dieser Seite fällt nichts durch. | report |
@@ -489,7 +489,7 @@ should check that none of those splits reads oddly.
 | Best practice | Bewährte Praxis | report |
 | Worth a look anyway | Trotzdem einen Blick wert | report |
 | Not tied to a specific WCAG rule, but still worth a look. These are widely recommended practices for a well built, accessible site. | Nicht an eine bestimmte WCAG-Regel gebunden, aber trotzdem einen Blick wert. Diese Praktiken werden für eine gut gebaute, barrierefreie Website weithin empfohlen. | report |
-| Site audit under way. Each page in turn, so this takes {duration}… | Die Website-Prüfung läuft. Seite für Seite, daher dauert das {duration}… | report |
+| Site audit under way. Each page in turn, so this takes {duration}… | Die Website-Prüfung läuft. Seite für Seite, daher dauert das {duration} … | report |
 | Still at it. This one is unusually heavy — a page of large images can take a while to load and measure. | Läuft noch. Diese Seite ist ungewöhnlich schwer: Eine Seite mit großen Bildern braucht eine Weile zum Laden und Messen. | report |
 | Still at it. The AI review is the slow part, and it is nearly always worth the wait. | Läuft noch. Die KI-Prüfung ist der langsame Teil, und das Warten lohnt sich fast immer. | report |
 | Still at it. Heavier pages take longer, and this one is on the heavier side. | Läuft noch. Schwerere Seiten brauchen länger, und diese ist eher schwer. | report |
@@ -518,7 +518,7 @@ should check that none of those splits reads oddly.
 | Report actions | Aktionen zum Bericht | report |
 | you@example.com | name@example.com | report |
 | Sending… | Wird gesendet … | report |
-| We send it once, to this address. Nothing is stored. | Wir senden ihn einmal, an diese Adresse. Nichts wird gespeichert. | report |
+| We send it once, to this address. Nothing is stored. | Wir senden ihn einmal an diese Adresse. Gespeichert wird nichts. | report |
 | Sent. Check your inbox. It may take a minute. | Gesendet. Sehen Sie in Ihrem Posteingang nach. Das kann eine Minute dauern. | report |
 | Email isn't set up on this scanner yet. Save as PDF instead. | E-Mail ist auf diesem Scanner noch nicht eingerichtet. Speichern Sie den Bericht stattdessen als PDF. | report |
 | That address was refused. Check it and try again. | Diese Adresse wurde abgelehnt. Prüfen Sie sie und versuchen Sie es noch einmal. | report |
@@ -556,9 +556,9 @@ should check that none of those splits reads oddly.
 | Copy the suggested colour | Vorgeschlagene Farbe kopieren | report |
 | Copied the suggested colour | Vorgeschlagene Farbe kopiert | report |
 | Colour copied to the clipboard. | Farbe in die Zwischenablage kopiert. | report |
-| Same hue, dark enough to reach {ratio}:1 against {background}, where {required}:1 is the minimum. Adjust it to taste as long as it stays at or above that. | Gleicher Farbton, dunkel genug für {ratio}:1 gegenüber {background}, wobei {required}:1 das Minimum ist. Passen Sie sie nach Geschmack an, solange sie diesen Wert erreicht oder übertrifft. | report |
+| Same hue, dark enough to reach {ratio}:1 against {background}, where {required}:1 is the minimum. Adjust it to taste as long as it stays at or above that. | Gleicher Farbton, dunkel genug für {ratio}:1 gegenüber {background}, wobei {required}:1 das Minimum ist. Passen Sie die Farbe nach Geschmack an, solange der Kontrast nicht unter dieses Minimum fällt. | report |
 | Suggested alt text: | Vorgeschlagener Alternativtext: | report |
-| This image looks decorative, so give it an <em>empty</em> alt text ({code}). That tells screen readers to skip it. | Dieses Bild wirkt dekorativ. Geben Sie ihm daher einen <em>leeren</em> Alternativtext ({code}). Das sagt Screenreadern, es zu überspringen. | report |
+| This image looks decorative, so give it an <em>empty</em> alt text ({code}). That tells screen readers to skip it. | Dieses Bild wirkt dekorativ. Geben Sie ihm daher einen <em>leeren</em> Alternativtext ({code}). So wissen Screenreader, dass sie es überspringen sollen. | report |
 | Suggested alt text | Vorgeschlagener Alternativtext | report |
 | {label}, written from the actual image: | {label}, anhand des tatsächlichen Bildes verfasst: | report |
 | Copy the suggested alt text | Vorgeschlagenen Alternativtext kopieren | report |
@@ -743,9 +743,9 @@ Found by a live German scan: these reached a German reader in English. Same cave
 
 | English | German | Where |
 | --- | --- | --- |
-| That address isn't valid. Check it and try again. | Diese Adresse ist ungültig. | scan errors, blocked panel, picture notes |
-| Only web addresses that start with http or https can be scanned. | Nur Adressen mit http oder https sind möglich. | scan errors, blocked panel, picture notes |
-| This address can't be scanned. | Diese Adresse darf nicht geprüft werden. | scan errors, blocked panel, picture notes |
+| That address isn't valid. Check it and try again. | Diese Adresse ist ungültig. Prüfen Sie sie und versuchen Sie es erneut. | scan errors, blocked panel, picture notes |
+| Only web addresses that start with http or https can be scanned. | Nur Adressen, die mit http oder https beginnen, lassen sich prüfen. | scan errors, blocked panel, picture notes |
+| This address can't be scanned. | Diese Adresse lässt sich nicht prüfen. | scan errors, blocked panel, picture notes |
 | We couldn't find a site at that address. Check the spelling and try again. | Unter dieser Adresse haben wir keine Website gefunden. Prüfen Sie die Schreibweise und versuchen Sie es erneut. | scan errors, blocked panel, picture notes |
 | That login address can't be used. | Diese Login-Adresse lässt sich nicht verwenden. | scan errors, blocked panel, picture notes |
 | Couldn't find the username and password fields on that page. Check that the login address opens the sign-in form itself. | Auf dieser Seite haben wir die Felder für Benutzername und Passwort nicht gefunden. Prüfen Sie, ob die Login-Adresse direkt das Anmeldeformular öffnet. | scan errors, blocked panel, picture notes |
@@ -756,11 +756,11 @@ Found by a live German scan: these reached a German reader in English. Same cave
 | That address exists, but the site did not answer. It may be down right now. | Die Adresse gibt es, aber die Website hat nicht geantwortet. Vielleicht ist sie gerade nicht erreichbar. | scan errors, blocked panel, picture notes |
 | The checker ran out of room on this page, which can happen with very heavy ones. Please try again. | Dem Scanner ging bei dieser Seite der Speicher aus. Das kommt bei sehr schweren Seiten vor. Versuchen Sie es bitte erneut. | scan errors, blocked panel, picture notes |
 | Couldn't load or scan the page | Die Seite ließ sich nicht laden oder prüfen. | scan errors, blocked panel, picture notes |
-| That document is too large for this check (over 20MB). | Dieses Dokument ist für die Prüfung zu groß (über 20MB). | scan errors, blocked panel, picture notes |
+| That document is too large for this check (over 20MB). | Dieses Dokument ist für die Prüfung zu groß (über 20 MB). | scan errors, blocked panel, picture notes |
 | We couldn't download the document. | Wir konnten das Dokument nicht herunterladen. | scan errors, blocked panel, picture notes |
 | We couldn't read that file as a PDF. | Wir konnten die Datei nicht als PDF lesen. | scan errors, blocked panel, picture notes |
 | Not scanned — the audit ran out of time. | Nicht geprüft – die Zeit für die Website-Prüfung war um. | scan errors, blocked panel, picture notes |
-| Something in that request wasn't right. Reload the page and try again. | Die Anfrage war ungültig. | scan errors, blocked panel, picture notes |
+| Something in that request wasn't right. Reload the page and try again. | Bei dieser Anfrage stimmte etwas nicht. Laden Sie die Seite neu und versuchen Sie es erneut. | scan errors, blocked panel, picture notes |
 | {host} turned our scanner away (HTTP {status}). Its protection against automated visitors keeps tools like ours out, so this says nothing about how accessible the site is. | {host} hat unseren Scanner abgewiesen (HTTP {status}). Der Schutz vor automatischen Besuchern hält Werkzeuge wie unseres fern. Über die Barrierefreiheit der Website sagt das also nichts. | scan errors, blocked panel, picture notes |
 | {host} showed “{label}” instead of the page. Its protection against automated visitors keeps tools like ours out, so this says nothing about how accessible the site is. | {host} hat statt der Seite „{label}“ gezeigt. Der Schutz vor automatischen Besuchern hält Werkzeuge wie unseres fern. Über die Barrierefreiheit der Website sagt das also nichts. | scan errors, blocked panel, picture notes |
 | There is no page at that address (HTTP {status}). Check the address and try again. | Unter dieser Adresse gibt es keine Seite (HTTP {status}). Prüfen Sie die Adresse und versuchen Sie es erneut. | scan errors, blocked panel, picture notes |
