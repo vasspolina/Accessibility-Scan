@@ -82,11 +82,13 @@ Titles state what was measured and never hedge ("A control", not "Something").
   included since 4 Nov 2026; never an em dash.
 - Dates in European format (28 June 2025).
 - British spelling (colour, recognise), matching the rest of the report.
-- German avoids the generic masculine (17 Nov 2026): neutral wording
-  first ("Ihr Entwicklungsteam", "Menschen mit Screenreader", "die
-  Kundschaft", "wer die Tastatur nutzt"), the paired form where nothing
-  neutral reads well. No gender star or colon: screen readers announce
-  them inconsistently, which matters in an accessibility product.
+- German, Spanish and French avoid the generic masculine (17 Nov 2026):
+  neutral wording first ("Ihr Entwicklungsteam", "su equipo de
+  desarrollo", "votre équipe de développement"; "Menschen mit Screenreader",
+  "quien usa un lector de pantalla", "les personnes qui utilisent un
+  lecteur d'écran"), the paired form where nothing neutral reads well. No
+  gender star or colon, no @/x/e endings, no point médian: screen readers
+  announce them inconsistently, which matters in an accessibility product.
 - Contract "can't" and "couldn't" in the interface and the findings (17 Nov
   2026). The drafts the owner publishes, the accessibility statement and the
   conformance report, keep "cannot" and "could not": they are formal
