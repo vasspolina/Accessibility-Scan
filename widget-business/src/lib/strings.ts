@@ -210,6 +210,10 @@ export const CHROME_KEYS: string[] = [
   "Save as PDF",
   "Email me this report",
   "Copy summary as plain text",
+  // The plain-text summary (ScoreGauge buildPlainSummary).
+  "Accessibility scan: {url}",
+  "Scanned {date}",
+  "Score: {score}/100",
   /* The scan form — the first thing anyone reads, and until the
      languages landed the one part that stayed English in all of
      them. */

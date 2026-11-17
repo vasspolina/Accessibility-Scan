@@ -844,4 +844,7 @@ export const STRINGS_FR: Record<string, string> = {
   "Review a snippet of HTML for accessibility": "Vérifiez l’accessibilité d’un extrait de HTML",
   "Turn an accessibility finding into a developer ticket": "Transformez un constat en ticket pour l’équipe de développement",
   "Help me verify that a fix works": "Aidez-moi à vérifier qu’une correction fonctionne",
+  "Accessibility scan: {url}": "Analyse d’accessibilité : {url}",
+  "Scanned {date}": "Analysé le {date}",
+  "Score: {score}/100": "Score : {score}/100",
 };

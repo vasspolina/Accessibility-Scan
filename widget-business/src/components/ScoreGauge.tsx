@@ -1,5 +1,6 @@
 import { ScoreDial } from "./ScoreDial";
 import { t, tf } from "../lib/strings";
+import { getLang } from "../lib/i18n";
 import { useState } from "react";
 import type { ReactNode } from "react";
 import { SeverityTag } from "./SeverityTag";
@@ -88,8 +89,8 @@ export function scoreSummary(score: number, seed: string): string {
    best-practice rules count with no criterion at all. What is left out is
    what scoreFindings and summarizeSeverity leave out: design notes, dark
    patterns, AAA, WCAG 2.2-only criteria. computeScore caps each severity's
-   penalty, which is why the second point exists. English keys; the screen renders them through t(),
-   the plain-text summary and the email stay English. Keep
+   penalty, which is why the second point exists. English keys; the screen and the plain-text summary render them through
+   t(), the email stays English for now. Keep
    backend/src/services/mail/sendReport.ts in step. */
 export const SCORE_POINTS = [
   "It counts the accessibility problems this scan found, weighted by how much each one costs a visitor.",
@@ -100,11 +101,21 @@ export const SCORE_POINTS = [
   "It is not a statement that the site meets the law.",
 ];
 
-/* The same words for the plain-text summary — one source, so the copied
+/* A heading in the plain-text summary takes a colon, and French sets a
+   no-break space before it. */
+function asHeading(text: string): string {
+  return `${text}${getLang() === "fr" ? "\u00a0:" : ":"}`;
+}
+
+/* The same words for the plain-text summary – one source, so the copied
    text and the screen can never disagree about what the score means. A
    heading and one point a line, as in the email: run together, "It" in the
-   first sentence read as the last issue in the list above it. */
-export const SCORE_CAVEAT_LINES = ["What the score counts:", ...SCORE_POINTS.map((p) => `- ${p}`)];
+   first sentence read as the last issue in the list above it. A function,
+   not a constant, so it is in the reader's language at the moment of
+   copying. */
+export function scoreCaveatLines(): string[] {
+  return [asHeading(t("What the score counts")), ...SCORE_POINTS.map((p) => `- ${t(p)}`)];
+}
 
 // A plain-text version of the same verdict, for pasting into an email or
 // a message to whoever owns the fix — no HTML, no table, nothing that
@@ -123,32 +134,33 @@ export function buildPlainSummary({
   allFindings: AccessibilityFinding[];
 }): string {
   const grouped = groupFindings(allFindings);
-  const scannedAt = new Date(seed).toLocaleDateString("en-GB", {
+  const lang = getLang();
+  const scannedAt = new Date(seed).toLocaleDateString(lang === "en" ? "en-GB" : lang, {
     year: "numeric",
     month: "long",
     day: "numeric",
   });
   const lines = [
-    `Accessibility scan: ${url}`,
-    `Scanned ${scannedAt}`,
+    tf("Accessibility scan: {url}", { url }),
+    tf("Scanned {date}", { date: scannedAt }),
     "",
-    `Score: ${score}/100`,
-    scoreSummary(score, seed),
+    tf("Score: {score}/100", { score }),
+    t(scoreSummary(score, seed)),
     "",
   ];
   if (grouped.length === 0) {
-    lines.push("Nothing found that needs a fix.");
+    lines.push(t("Nothing here needs a fix."));
   } else {
-    lines.push("Issues found, most severe first:");
+    lines.push(asHeading(t("Findings, most severe first")));
     for (const group of grouped) {
       const rep = group[0];
       const plain = plainForRule(rep.ruleId);
       const title = plain?.plain ?? rep.title ?? rep.description;
       const count = group.length > 1 ? ` (${group.length}×)` : "";
-      lines.push(`- [${SEVERITY_LABEL[rep.severity]}] ${title}${count}`);
+      lines.push(`- [${t(SEVERITY_LABEL[rep.severity])}] ${title}${count}`);
     }
   }
-  lines.push("", ...SCORE_CAVEAT_LINES);
+  lines.push("", ...scoreCaveatLines());
   return lines.join("\n");
 }
 
