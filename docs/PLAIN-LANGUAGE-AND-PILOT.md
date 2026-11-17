@@ -94,7 +94,11 @@ about what happened, and how much it held the participant back. Pasting an
 address looks the page up (`POST /api/pilot/page`, needs a code; every hop
 goes through the SSRF guard and only the title comes back), shows its title
 under the field and gives it to the model as context. "What were you trying
-to do" is optional. The participant's code and assistive technology are
+to do" is optional, and so is "What happened" when an address is given: the
+page is then scanned (no AI review, no screenshots) and the model drafts one
+finding from the most serious measured problems, worded as what the scan
+found, never as what the participant met. The form says so on the review
+screen, and the stored report marks the draft `fromScan`. The participant's code and assistive technology are
 remembered in their own browser, so a second report is three fields.
 
 1. Make one code per person, e.g. `river-41,stone-07,lake-19`, and set

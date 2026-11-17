@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeAll, afterAll, afterEach } from "vitest";
+import { describe, it, expect, beforeAll, afterAll, afterEach, vi } from "vitest";
 import type { FastifyInstance } from "fastify";
 import { mkdtempSync, rmSync } from "node:fs";
 import { tmpdir } from "node:os";
@@ -10,6 +10,19 @@ import { join } from "node:path";
  * them, the participant's rating is the severity, and what is stored keeps
  * their words beside the draft and never their code.
  */
+
+// The scan behind an address-only report. Its findings, or its failure,
+// are set per test; the real pipeline needs a browser and is tested elsewhere.
+let scanFindings: Array<Record<string, unknown>> = [];
+let scanFails = false;
+const scannedUrls: string[] = [];
+vi.mock("../src/services/scanPipeline.js", () => ({
+  scanUrlToReport: async (url: string) => {
+    scannedUrls.push(url);
+    if (scanFails) throw new Error("render failed");
+    return { findings: scanFindings };
+  },
+}));
 
 let app: FastifyInstance;
 let dir: string;
@@ -78,8 +91,9 @@ describe("the pilot", () => {
   it("names the missing fields", async () => {
     const res = await post("/api/pilot/draft", { code: "river-41", assistiveTech: "screen-reader" });
     expect(res.statusCode).toBe(400);
-    expect(res.json().fields).toEqual(expect.arrayContaining(["barrier", "impact"]));
-    // What they were trying to do is optional now: one sentence is enough.
+    expect(res.json().fields).toEqual(expect.arrayContaining(["impact"]));
+    // Optional now: what they were trying to do always, what happened when
+    // the address is given (the route checks that one of the two is there).
     expect(res.json().fields).not.toContain("task");
   });
 
@@ -147,6 +161,44 @@ describe("the pilot", () => {
   it("looks a page up only for someone with a code", async () => {
     const res = await post("/api/pilot/page", { code: "river-42", url: "http://93.184.216.34/" });
     expect(res.statusCode).toBe(403);
+  });
+
+  it("drafts from a scan when only the address is given, and says the scan found it", async () => {
+    modelContent = JSON.stringify(draft);
+    scanFails = false;
+    scanFindings = [
+      { severity: "minor", ruleId: "region", description: "Content outside landmarks", wcagCriterion: "1.3.1" },
+      { severity: "critical", ruleId: "button-name", description: "Buttons must have discernible text", wcagCriterion: "4.1.2", elementSnippet: "<button class='pay'></button>" },
+      { severity: "critical", ruleId: "button-name", description: "Buttons must have discernible text", wcagCriterion: "4.1.2" },
+    ];
+    const { task: _t, barrier: _b, ...rest } = fields;
+    const res = await post("/api/pilot/draft", rest);
+    expect(res.statusCode).toBe(200);
+    expect(res.json().draft.fromScan).toBe(true);
+    expect(scannedUrls.at(-1)).toBe(fields.pageUrl);
+    const [system, user] = modelCalls[0].messages.map((m) => m.content);
+    expect(system).toContain("Say that the scan found it");
+    expect(system).toContain("Do not claim the visitor met it");
+    // Most serious first, one line per rule.
+    expect(user.indexOf("Buttons must have discernible text")).toBeLessThan(user.indexOf("Content outside landmarks"));
+    expect(user.match(/Buttons must have discernible text/g)).toHaveLength(1);
+  });
+
+  it("says so when the scan finds nothing, or cannot scan the page", async () => {
+    const { task: _t, barrier: _b, ...rest } = fields;
+    scanFindings = [];
+    expect((await post("/api/pilot/draft", rest)).json()).toMatchObject({ draft: null, reason: "scan_clean" });
+    scanFails = true;
+    expect((await post("/api/pilot/draft", rest)).json()).toMatchObject({ draft: null, reason: "scan_failed" });
+    scanFails = false;
+    expect(modelCalls).toHaveLength(0);
+  });
+
+  it("needs the address or a sentence, not neither", async () => {
+    const { task: _t, barrier: _b, pageUrl: _u, ...rest } = fields;
+    const res = await post("/api/pilot/draft", rest);
+    expect(res.statusCode).toBe(400);
+    expect(res.json().fields).toEqual(["barrier"]);
   });
 
   it("answers a filled trap field as if it worked, and keeps nothing", async () => {

@@ -39,6 +39,9 @@ export async function pilotRoutes(app: FastifyInstance) {
       const parsed = reportFieldsSchema.safeParse(request.body);
       if (!parsed.success) return reply.status(400).send({ error: "invalid_request", fields: fieldErrors(parsed.error) });
       if (!isPilotCode(parsed.data.code)) return reply.status(403).send({ error: "unknown_code" });
+      // The address alone is enough (the page is scanned); otherwise the
+      // participant's own sentence is.
+      if (!parsed.data.barrier && !parsed.data.pageUrl) return reply.status(400).send({ error: "invalid_request", fields: ["barrier"] });
       const result = await draftFinding(parsed.data);
       return reply.send({ ...result, severity: severityFor(parsed.data.impact) });
     }
@@ -54,6 +57,7 @@ export async function pilotRoutes(app: FastifyInstance) {
       const parsed = submitBodySchema.safeParse(request.body);
       if (!parsed.success) return reply.status(400).send({ error: "invalid_request", fields: fieldErrors(parsed.error) });
       if (!isPilotCode(parsed.data.code)) return reply.status(403).send({ error: "unknown_code" });
+      if (!parsed.data.barrier && !parsed.data.pageUrl) return reply.status(400).send({ error: "invalid_request", fields: ["barrier"] });
 
       const model = localModelName();
       const id = savePilotReport(parsed.data, model);
