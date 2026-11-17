@@ -29,6 +29,13 @@ export interface ReportView {
    * itself.
    */
   showInstances?: boolean;
+  /**
+   * Whether the findings tables carry a Level column, decided once for the
+   * whole report like showInstances (user's instruction, 17 Nov 2026: every
+   * table on the same grid). Deciding it per table moved WCAG and "Who
+   * fixes this" to a different x in a section with no levelled finding.
+   */
+  showLevel?: boolean;
 }
 
 const ReportViewContext = createContext<ReportView>({ professional: false, criterionNames: {} });
