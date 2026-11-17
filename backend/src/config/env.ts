@@ -106,6 +106,31 @@ const envSchema = z.object({
   // Gate on creating accounts and minting keys. Without it those routes are
   // closed entirely rather than open to anyone who finds them.
   ADMIN_TOKEN: z.string().optional(),
+  // The plain-language layer: a small model the deployer hosts themselves
+  // (services/plainLanguage/). Any server that speaks the OpenAI chat API
+  // works: Ollama, llama.cpp's llama-server, vLLM. Give the base URL without
+  // /v1 (e.g. http://gpu-box:11434). Absent means the layer reports itself
+  // as not set up and the widget keeps its hand-written copy.
+  //
+  // The default model is Qwen2.5 7B Instruct under Ollama's name for it: it
+  // fits the 10B ceiling, keeps to a JSON schema reliably, and writes German,
+  // Spanish and French, the report's other three languages.
+  LOCAL_LLM_URL: z.string().url().optional(),
+  LOCAL_LLM_MODEL: z.string().default("qwen2.5:7b-instruct"),
+  // Only for a server put behind a reverse proxy that checks a bearer token.
+  // Ollama and llama-server on a private network take none.
+  LOCAL_LLM_API_KEY: z.string().optional(),
+  // The whole rewrite's budget for one scan, not one call's. It starts the
+  // moment axe is done and runs beside the AI review, so a scan only waits
+  // for whatever of it is left when everything else has finished. A 7B
+  // model on one consumer GPU writes one rule's text in 2 to 4 seconds;
+  // on CPU it is closer to 30, and the budget then cuts it short and says so.
+  LOCAL_LLM_TIMEOUT_MS: z.coerce.number().default(45_000),
+  // The pilot (routes/pilot.ts): people who use a screen reader or a
+  // keyboard report a barrier, and the same model structures it. One code
+  // per participant, comma-separated, so "how many people used it" is a
+  // count of codes and not a guess. Absent means the pilot is closed.
+  PILOT_CODES: z.string().optional(),
   MAIL_RATE_LIMIT_MAX: z.coerce.number().default(3),
   MAIL_RATE_LIMIT_WINDOW_MS: z.coerce.number().default(600_000),
 });
@@ -124,6 +149,14 @@ export const hasAnthropicKey = Boolean(env.ANTHROPIC_API_KEY && env.ANTHROPIC_AP
 export const hasMailProvider = Boolean(
   env.MAIL_API_KEY && env.MAIL_API_KEY.length > 0 && env.MAIL_FROM && env.MAIL_FROM.length > 0
 );
+
+export const hasLocalModel = Boolean(env.LOCAL_LLM_URL && env.LOCAL_LLM_URL.length > 0);
+
+/** The pilot's participant codes, trimmed, empty entries dropped. */
+export const pilotCodes: string[] = (env.PILOT_CODES ?? "")
+  .split(",")
+  .map((c) => c.trim())
+  .filter((c) => c.length > 0);
 
 if (!hasAnthropicKey) {
   console.warn(

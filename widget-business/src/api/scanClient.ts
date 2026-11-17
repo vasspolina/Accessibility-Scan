@@ -64,6 +64,9 @@ export interface AccessibilityFinding {
   // string is ready-to-use alt text; an empty string means the image looks
   // decorative and should get alt=""; undefined means none was generated.
   suggestedAltText?: string;
+  // The self-hosted model's plain-language wording of an axe finding. Words
+  // only: severity, criterion and score are measured, never the model's.
+  plain?: { title: string; explanation: string; fix: string; model: string; lang: string };
 }
 
 // One announcement in the screen-reader preview. An approximation of what a
@@ -203,6 +206,15 @@ export interface AccessibilityReport {
     documentKind?: "pdf";
     documentPages?: number;
     model?: string;
+    // The plain-language rewrite: whether it ran, and how many of the page's
+    // axe rules it reached.
+    plainLanguage?: {
+      status: "completed" | "partial" | "timed_out" | "failed" | "not_configured" | "disabled_by_request";
+      model?: string;
+      rules: number;
+      rewritten: number;
+      ms: number;
+    };
   };
 }
 

@@ -541,6 +541,8 @@ export const STRINGS_DE: Record<string, string> = {
   "Opens your browser’s print dialog. Choose “Save as PDF” as the destination.": "Öffnet den Druckdialog Ihres Browsers. Wählen Sie „Als PDF speichern“ als Ziel.",
   "Check it yourself": "Selbst prüfen",
   "Where this came from": "Woher das stammt",
+  "On this page": "Auf dieser Seite",
+  "An automated check found this. {model}, a language model we run on our own server, put it into plain words. The check decided the severity, not the model.": "Eine automatische Prüfung hat das gefunden. {model}, ein Sprachmodell auf unserem eigenen Server, hat es in einfache Worte gefasst. Die Dringlichkeit hat die Prüfung festgelegt, nicht das Modell.",
   "Past sixty": "Ab sechzig",
   "Why this matters": "Warum das wichtig ist",
   "What the research shows": "Was die Forschung zeigt",
