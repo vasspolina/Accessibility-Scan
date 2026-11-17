@@ -47,7 +47,13 @@ export const reportFieldsSchema = z.object({
   /** Which one, in their words: "NVDA 2025.3 with Firefox". Optional. */
   assistiveTechDetail: z.string().trim().max(200).optional(),
   pageUrl: z.string().trim().url().max(2000).optional().or(z.literal("").transform(() => undefined)),
-  task: text(1000),
+  /** Optional: one sentence about what happened is enough, and the model
+   *  works out the rest from it. */
+  task: z.string().trim().max(1000).default(""),
+  /** The page's title, looked up by the form when an address is pasted
+   *  (pageTitle.ts). Context for the model only; the participant can see
+   *  it under the address and it changes nothing they wrote. */
+  pageTitle: z.string().trim().max(200).optional(),
   barrier: text(4000),
   impact: z.enum(IMPACTS),
   lang: z.enum(["en", "de", "es", "fr"]).default("en"),
@@ -134,8 +140,8 @@ export function buildPilotPrompt(r: ReportFields): string {
   const at = AT_NAMES[r.assistiveTech] + (r.assistiveTechDetail ? ` (${r.assistiveTechDetail})` : "");
   return [
     `They use: ${at}`,
-    r.pageUrl ? `Page: ${r.pageUrl}` : "Page: not given",
-    `What they were trying to do:\n${r.task}`,
+    r.pageUrl ? `Page: ${r.pageUrl}${r.pageTitle ? ` (titled "${r.pageTitle}")` : ""}` : "Page: not given",
+    r.task ? `What they were trying to do:\n${r.task}` : "What they were trying to do: not given. Take it from what happened, or leave it out.",
     `What happened, in their words:\n${r.barrier}`,
   ].join("\n\n");
 }
@@ -181,7 +187,7 @@ export function renderPilotText(body: SubmitBody, model: string | undefined): st
     `Their rating: ${body.impact}`,
     "",
     "What they were trying to do, as written:",
-    body.task,
+    body.task || "(not given)",
     "",
     "What happened, as written:",
     body.barrier,
