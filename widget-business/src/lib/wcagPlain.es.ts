@@ -155,7 +155,7 @@ export const PLAIN_ES: Record<string, PlainRule> = {
   },
   label: {
     research:
-      "Los campos de formulario sin etiqueta están cerca de lo más alto de la revisión anual que WebAIM hace de un millón de páginas de inicio. En el estudio británico Click-Away Pound, la mayoría de los compradores que se topó con una barrera así se marchó sin decir nada. Se llevó su dinero a otra parte.",
+      "Los campos de formulario sin etiqueta están cerca de lo más alto de la revisión anual que WebAIM hace de un millón de páginas de inicio. En el estudio británico Click-Away Pound, la mayor parte de la clientela que se topó con una barrera así se marchó sin decir nada. Se llevó su dinero a otra parte.",
     plain: "Los campos del formulario no tienen etiqueta",
     found: (n) =>
       `${n} ${n === 1 ? "campo del formulario no está unido" : "campos del formulario no están unidos"} a una etiqueta en el código. Las palabras pueden estar justo al lado del campo en pantalla, pero nada une las dos cosas.`,
@@ -369,7 +369,7 @@ export const PLAIN_ES: Record<string, PlainRule> = {
     found: (n) => (n === 1 ? "Al menos una imagen lleva su nombre de archivo como descripción. El lector de pantalla lee cifras y signos, no lo que muestra la imagen." : "{n} imágenes llevan su nombre de archivo como descripción. El lector de pantalla lee cifras y signos, no lo que muestran.".replace("{n}", String(n))),
     plain: "Imágenes descritas con su nombre de archivo",
     impact:
-      "El lector de pantalla lee el nombre del archivo en voz alta, con cifras y signos incluidos. El visitante oye ruido donde debería estar el sentido de la imagen.",
+      "El lector de pantalla lee el nombre del archivo en voz alta, con cifras y signos incluidos. Quien escucha oye ruido donde debería estar el sentido de la imagen.",
   },
   "sr-vague-link-name": {
     found: (n) => (n === 1 ? "Al menos un enlace se anuncia solo con un símbolo como «→» o con una dirección web a secas. Un símbolo no dice adónde lleva, y una dirección se oye como una ristra de letras y signos." : "{n} enlaces se anuncian solo con un símbolo como «→» o con una dirección web a secas. Un símbolo no dice adónde lleva, y una dirección se oye como una ristra de letras y signos.".replace("{n}", String(n))),
@@ -399,7 +399,7 @@ export const PLAIN_ES: Record<string, PlainRule> = {
     found: (n) => (n === 1 ? "Al menos un campo de datos personales, como el nombre o el correo, no indica al navegador qué pide. Navegadores y gestores de contraseñas tienen que adivinarlo." : "{n} campos de datos personales, como el nombre o el correo, no indican al navegador qué piden. Navegadores y gestores de contraseñas tienen que adivinarlo.".replace("{n}", String(n))),
     plain: "Los campos impiden el autorrelleno",
     impact:
-      "Todo el mundo vuelve a escribir a mano su nombre, su correo, su dirección y su teléfono. Lento para todos, y una barrera real para algunos.",
+      "Todo el mundo vuelve a escribir a mano su nombre, su correo, su dirección y su teléfono. Lento para cualquiera, y una barrera real para algunos.",
   },
   "component-input-type": {
     found: (n) => (n === 1 ? "Al menos un campo que parece pedir un correo o un teléfono no está definido como tal en el código." : "{n} campos que parecen pedir un correo o un teléfono no están definidos como tales en el código.".replace("{n}", String(n))),
@@ -456,7 +456,7 @@ export const PLAIN_ES: Record<string, PlainRule> = {
     found: () =>
       `Las cabeceras, avisos o barras de herramientas fijas ocupan más de un tercio de la pantalla en ancho de móvil.`,
     impact:
-      "Cada píxel fijo es uno por el que el visitante no puede leer la página. Lo que reciba el foco del teclado puede acabar escondido tras las barras. Las WCAG 2.2 ya lo exigen exactamente así; la ley todavía no remite a ellas.",
+      "Cada píxel fijo es un píxel menos para leer la página. Lo que reciba el foco del teclado puede acabar escondido tras las barras. Las WCAG 2.2 ya lo exigen exactamente así; la ley todavía no remite a ellas.",
   },
   "mobile-horizontal-scroll": {
     found: (n) => (n === 1 ? "En ancho de móvil, un elemento sobresale del borde de la pantalla. Toda la página se desplaza de lado." : "En ancho de móvil, {n} elementos sobresalen del borde de la pantalla. Toda la página se desplaza de lado.".replace("{n}", String(n))),
@@ -503,10 +503,10 @@ export const PLAIN_ES: Record<string, PlainRule> = {
       "Una opción como botón y la otra como texto suelto empuja a la gente a aceptar. Los reguladores buscan justo esto.",
   },
   "dark-preselected-optin": {
-    found: (n) => (n === 1 ? "Una casilla de publicidad, boletín o cesión de datos ya viene marcada antes de que el visitante elija." : "{n} casillas de publicidad, boletín o cesión de datos ya vienen marcadas antes de que el visitante elija.".replace("{n}", String(n))),
+    found: (n) => (n === 1 ? "Una casilla de publicidad, boletín o cesión de datos ya viene marcada antes de que la persona elija." : "{n} casillas de publicidad, boletín o cesión de datos ya vienen marcadas antes de que la persona elija.".replace("{n}", String(n))),
     plain: "Casilla de publicidad marcada de antemano",
     impact:
-      "El RGPD dice que una casilla premarcada no es consentimiento. Quien no se dé cuenta se siente apuntado sin haber aceptado.",
+      "El RGPD dice que una casilla premarcada no es consentimiento. Quien no se dé cuenta acaba en una lista sin haberlo aceptado.",
   },
   "dark-confirmshaming": {
     found: (n) => (n === 1 ? "Un botón para rechazar está redactado en primera persona. Así, rechazar puede sonar a confesión." : "{n} botones para rechazar están redactados en primera persona. Así, rechazar puede sonar a confesión.".replace("{n}", String(n))),
@@ -518,7 +518,7 @@ export const PLAIN_ES: Record<string, PlainRule> = {
     found: (n) => (n === 1 ? "Un aviso de esta página anuncia pocas existencias o mucha demanda. Quien lo lee no puede comprobar si es cierto." : "{n} avisos de esta página anuncian pocas existencias o mucha demanda. Quien los lee no puede comprobar si son ciertos.".replace("{n}", String(n))),
     plain: "Avisos de pocas existencias como presión",
     impact:
-      "Los reguladores persiguen la escasez falsa. Los compradores han aprendido a desconfiar. Los números inventados cuestan más ventas de las que ganan.",
+      "Los reguladores persiguen la escasez falsa. La clientela ha aprendido a desconfiar. Los números inventados cuestan más ventas de las que ganan.",
   },
   "dark-fake-urgency": {
     found: (n) => (n === 1 ? "Un mensaje de esta página mete prisa, pero no da ninguna fecha. Quien lo lee no puede comprobar si el plazo es real." : "{n} mensajes de esta página meten prisa, pero no dan ninguna fecha. Quien los lee no puede comprobar si los plazos son reales.".replace("{n}", String(n))),
@@ -531,7 +531,7 @@ export const PLAIN_ES: Record<string, PlainRule> = {
     found: (n) => (n === 1 ? "En al menos una ventana emergente, el botón de cerrar es solo una cruz, sin nombre en el código. Un lector de pantalla no puede anunciar que cierra." : "En {n} ventanas emergentes, el botón de cerrar es solo una cruz, sin nombre en el código. Un lector de pantalla no puede anunciar que cierra.".replace("{n}", String(n))),
     plain: "Botón de cerrar sin etiqueta",
     impact:
-      "Quien usa un lector de pantalla solo oye «botón» y no sabe cómo cerrar la ventana emergente. Se quedan atrapados, y muchos se van sin más.",
+      "Quien usa un lector de pantalla solo oye «botón» y no sabe cómo cerrar la ventana emergente. No encuentra la salida, y mucha gente se va sin más.",
   },
   "dialog-keyboard-trap": {
     found: (n) => (n === 1 ? "Una ventana emergente no deja salir con el teclado. Escape no la cierra, y tras quince pulsaciones del tabulador el foco sigue dentro." : "{n} ventanas emergentes no dejan salir con el teclado. Escape no las cierra, y tras quince pulsaciones del tabulador el foco sigue dentro.".replace("{n}", String(n))),
@@ -543,7 +543,7 @@ export const PLAIN_ES: Record<string, PlainRule> = {
     found: (n) => (n === 1 ? "Una ventana emergente siguió abierta al pulsar Escape. Con el tabulador sí se puede salir de ella." : "{n} ventanas emergentes siguieron abiertas al pulsar Escape. Con el tabulador sí se puede salir de ellas.".replace("{n}", String(n))),
     plain: "La ventana emergente ignora la tecla Escape",
     impact:
-      "Escape es la tecla que todo el mundo prueba primero. Aquí nadie se queda atrapado, porque aún se puede salir con el tabulador. Pero todos los que usan el teclado la prueban, y no pasa nada.",
+      "Escape es la tecla que todo el mundo prueba primero. Aquí nadie se queda sin salida, porque aún se puede salir con el tabulador. Pero quien usa el teclado la prueba, y no pasa nada.",
   },
   "dialog-focus-not-moved": {
     found: (n) => (n === 1 ? "Apareció una ventana emergente, pero el foco del teclado no entró en ella. Se quedó fuera, en la página." : "Aparecieron {n} ventanas emergentes, pero el foco del teclado no entró en ninguna. Se quedó fuera, en la página.".replace("{n}", String(n))),
@@ -561,7 +561,7 @@ export const PLAIN_ES: Record<string, PlainRule> = {
     found: (n) => (n === 1 ? "Al menos una ventana emergente no tiene un botón de cerrar reconocible. Ningún botón dentro lleva una palabra como «Cerrar» ni una cruz." : "{n} ventanas emergentes no tienen un botón de cerrar reconocible. Ningún botón dentro lleva una palabra como «Cerrar» ni una cruz.".replace("{n}", String(n))),
     plain: "No hay un botón de cerrar claro",
     impact:
-      "Si pulsar fuera es la única salida, quien usa el teclado se queda atrapado detrás.",
+      "Si pulsar fuera es la única salida, quien usa el teclado no tiene forma de salir.",
   },
   "dialog-missing-role": {
     found: (n) => (n === 1 ? "Al menos una capa se superpone a la página como una ventana emergente. El código no la marca como diálogo." : "{n} capas se superponen a la página como ventanas emergentes. El código no las marca como diálogo.".replace("{n}", String(n))),
@@ -573,7 +573,7 @@ export const PLAIN_ES: Record<string, PlainRule> = {
     found: (n) => (n === 1 ? "Al menos una ventana emergente no tiene nombre en el código. Por eso un lector de pantalla no tiene ningún título que anunciar." : "{n} ventanas emergentes no tienen nombre en el código. Un lector de pantalla no encuentra ningún título que anunciar.".replace("{n}", String(n))),
     plain: "La ventana emergente no dice para qué es",
     impact:
-      "Al abrirse, el lector de pantalla solo dice «diálogo». El visitante no tiene ni idea de qué le pide ni por qué.",
+      "Al abrirse, el lector de pantalla solo dice «diálogo». Quien lo oye no tiene ni idea de qué le pide ni por qué.",
   },
 
   "markup-validation": {
@@ -781,7 +781,7 @@ export const FIXES_ES: Record<string, string | string[]> = {
   ],
   "sr-vague-link-name": [
     "Nombre cada enlace por su destino. «Ver precios», no «haga clic aquí».",
-    "Las palabras visibles pueden seguir siendo cortas. Su desarrollador puede añadir el nombre completo de forma invisible, solo para lectores de pantalla.",
+    "Las palabras visibles pueden seguir siendo cortas. Su equipo de desarrollo puede añadir el nombre completo de forma invisible, solo para lectores de pantalla.",
   ],
   "sr-symbol-button-name": [
     "Ponga a cada botón el nombre de su acción: «Cerrar», «Siguiente diapositiva», «Buscar», «Reproducir».",
@@ -994,7 +994,7 @@ export const FIXES_ES: Record<string, string | string[]> = {
   "landmark-one-main": "Marque el contenido principal de la página como su zona principal, y use solo una por página.",
   tabindex: 'Quite los valores positivos de tabindex (tabindex="1" o mayores) y deje que el orden natural de la página fije el orden del foco.',
   "scrollable-region-focusable": 'Añada tabindex="0" al contenedor desplazable para que quien usa el teclado pueda desplazarlo.',
-  "keyboard-positive-tabindex-advisory": "Pida a su desarrollador que quite los números que fijan a mano el orden de tabulación. Así el teclado sigue el orden de la página, también en todo lo que se añada después.",
+  "keyboard-positive-tabindex-advisory": "Pida a su equipo de desarrollo que quite los números que fijan a mano el orden de tabulación. Así el teclado sigue el orden de la página, también en todo lo que se añada después.",
   "nav-name-inconsistent": "Dé a cada enlace del menú un solo nombre, «Cesta» o «Carrito», y úselo en todas las páginas.",
   "color-contrast-mobile": [
     "Busque la media query de ancho de móvil que cambia el color del texto o del fondo.",
@@ -1005,18 +1005,18 @@ export const FIXES_ES: Record<string, string | string[]> = {
     "El texto normal necesita al menos 4,5:1 en los dos temas.",
   ],
   "nav-order-inconsistent": "Mantenga los enlaces del menú en el mismo orden en todas las páginas. Una página puede mostrar menos enlaces, pero los que tenga deben conservar su orden.",
-  "activation-stale-state": "Haga que cada control anuncie su nuevo estado en cuanto cambie: desplegado o contraído, activado o desactivado. Su desarrollador lo hace en el mismo código que abre o acciona el control.",
-  "control-faint-boundary": "Haga más visibles los bordes de campos y botones. Necesitan una proporción de contraste de al menos 3:1 con lo que tienen detrás. Su diseñador suele poder corregirlos todos con un solo cambio en el estilo común.",
+  "activation-stale-state": "Haga que cada control anuncie su nuevo estado en cuanto cambie: desplegado o contraído, activado o desactivado. Su equipo de desarrollo lo hace en el mismo código que abre o acciona el control.",
+  "control-faint-boundary": "Haga más visibles los bordes de campos y botones. Necesitan una proporción de contraste de al menos 3:1 con lo que tienen detrás. Su equipo de diseño suele poder corregirlos todos con un solo cambio en el estilo común.",
 };
 
 export const UNDECIDED_ES: Record<string, { what: string; ask: string }> = {
   "color-contrast": {
     what: "Texto sobre una fotografía, un vídeo, un degradado o un fondo con dibujo. La herramienta puede leer el color del texto. No hay un solo color detrás con el que medirlo, así que no lo va a suponer.",
-    ask: "Pida a su diseñador que mire cada caso sobre la imagen que tiene detrás, en su punto más claro y en el más oscuro. Donde las palabras se pierdan, hace falta un panel sólido detrás. También sirve un velo oscuro sobre la imagen, o cambiar la posición.",
+    ask: "Pida a su equipo de diseño que mire cada caso sobre la imagen que tiene detrás, en su punto más claro y en el más oscuro. Donde las palabras se pierdan, hace falta un panel sólido detrás. También sirve un velo oscuro sobre la imagen, o cambiar la posición.",
   },
   "link-in-text-block": {
     what: "Enlaces dentro de un párrafo que quizá estén marcados solo por su color. La herramienta no puede saber si la diferencia es lo bastante fuerte como para bastarse sola.",
-    ask: "Pregunte a su diseñador si estos enlaces se siguen encontrando con el color quitado. Si el color es lo único que los marca, necesitan un subrayado u otra señal visible.",
+    ask: "Pregunte a su equipo de diseño si estos enlaces se siguen encontrando con el color quitado. Si el color es lo único que los marca, necesitan un subrayado u otra señal visible.",
   },
   "video-caption": {
     what: "Un vídeo que la herramienta ve pero no puede mirar. No tiene forma de saber si hay subtítulos, ni si son buenos.",
@@ -1032,7 +1032,7 @@ export const UNDECIDED_ES: Record<string, { what: string; ask: string }> = {
   },
   "form-error-association": {
     what: "Mensajes de error de formulario que no están unidos a su campo en el código. El lector de pantalla anuncia el campo, pero no el error que está al lado.",
-    ask: "Pida a su desarrollador que una cada mensaje con su campo mediante aria-describedby. Quien usa un lector de pantalla oye entonces el problema en el mismo momento en que oye el campo.",
+    ask: "Pida a su equipo de desarrollo que una cada mensaje con su campo mediante aria-describedby. Quien usa un lector de pantalla oye entonces el problema en el mismo momento en que oye el campo.",
   },
   "media-audio-transcript": {
     what: "Audio en la página. Una transcripción es texto normal de la página, así que la herramienta no tiene forma de saber si hay una.",
@@ -1052,63 +1052,63 @@ export const UNDECIDED_ES: Record<string, { what: string; ask: string }> = {
   },
   "consent-trap-unnamed": {
     what: "El foco del teclado se queda dentro de la capa de cookies, pero la capa nunca dice qué es. Ni rol de diálogo ni nombre.",
-    ask: "Pida a su desarrollador que marque la capa como diálogo y le ponga nombre.",
+    ask: "Pida a su equipo de desarrollo que marque la capa como diálogo y le ponga nombre.",
   },
   "interaction-motion-actuation": {
     what: "La página responde a inclinar o agitar el teléfono. Quien lo tiene en un soporte, o a quien le tiemblan las manos, no puede hacerlo.",
-    ask: "Pregunte a su desarrollador si toda acción de inclinar o agitar se puede hacer también pulsando algo en pantalla. Después pregunte si la respuesta al movimiento se puede apagar, para que una mano que tiembla no la dispare sin querer.",
+    ask: "Pregunte a su equipo de desarrollo si toda acción de inclinar o agitar se puede hacer también pulsando algo en pantalla. Después pregunte si la respuesta al movimiento se puede apagar, para que una mano que tiembla no la dispare sin querer.",
   },
   "interaction-gesture-listeners": {
     what: "La página está atenta a los deslizamientos y los arrastres. Quien tiene temblor, o guía el puntero por voz o con un conmutador, quizá no pueda dibujarlos.",
-    ask: "Pregunte a su desarrollador si todo deslizamiento o arrastre se puede hacer también pulsando: flechas junto a un carrusel, un botón junto a un control deslizante.",
+    ask: "Pregunte a su equipo de desarrollo si todo deslizamiento o arrastre se puede hacer también pulsando: flechas junto a un carrusel, un botón junto a un control deslizante.",
   },
   "interaction-key-shortcuts": {
     what: "La página vigila las pulsaciones de teclas en toda la pantalla. Cuando una letra suelta es un atajo, quien habla a su ordenador lo dispara al hablar.",
-    ask: "Pregunte a su desarrollador si algún atajo es una sola letra o un solo número. Cada uno tiene que poder apagarse, cambiarse, o funcionar solo mientras el control tenga el foco.",
+    ask: "Pregunte a su equipo de desarrollo si algún atajo es una sola letra o un solo número. Cada uno tiene que poder apagarse, cambiarse, o funcionar solo mientras el control tenga el foco.",
   },
   "interaction-unmarked-language": {
     what: "Pasajes escritos en un alfabeto distinto del resto de la página, sin nada que marque en qué idioma están. El lector de pantalla los lee con la pronunciación equivocada, y pueden volverse ininteligibles.",
-    ask: "Pida a su desarrollador que marque cada pasaje con su idioma. Solo un cambio de alfabeto se puede detectar automáticamente, así que pregunte también por los pasajes en otro idioma con el mismo alfabeto que la página.",
+    ask: "Pida a su equipo de desarrollo que marque cada pasaje con su idioma. Solo un cambio de alfabeto se puede detectar automáticamente, así que pregunte también por los pasajes en otro idioma con el mismo alfabeto que la página.",
   },
   "interaction-title-tooltip": {
-    what: "Globos de ayuda hechos con el atributo title. Solo aparecen al pasar el ratón, así que quien usa el teclado o una pantalla táctil nunca los ve. Además no se pueden cerrar, y se esfuman si uno se acerca para terminar de leerlos.",
-    ask: "Pregunte a su desarrollador si hay algo importante escondido ahí. Si lo hay, póngalo en la página, o haga un globo de ayuda que se quede quieto y se cierre con Escape.",
+    what: "Globos de ayuda hechos con el atributo title. Solo aparecen al pasar el ratón, así que quien usa el teclado o una pantalla táctil nunca los ve. Además no se pueden cerrar, y se esfuman si se acerca el puntero para terminar de leerlos.",
+    ask: "Pregunte a su equipo de desarrollo si hay algo importante escondido ahí. Si lo hay, póngalo en la página, o haga un globo de ayuda que se quede quieto y se cierre con Escape.",
   },
   "interaction-orientation-lock": {
     what: "Aquí hay una hoja de estilos que gira la página de vuelta, o la esconde, cuando se voltea el teléfono. Esa es la forma de una página atada a una sola orientación. También puede ser una vista apaisada puesta a propósito para algo ancho.",
-    ask: "Pregunte a su desarrollador si la página funciona en las dos posiciones. Quien lleva el teléfono fijado a una silla de ruedas o a un soporte no puede girarlo para acomodarse al sitio.",
+    ask: "Pregunte a su equipo de desarrollo si la página funciona en las dos posiciones. Quien lleva el teléfono fijado a una silla de ruedas o a un soporte no puede girarlo para acomodarse al sitio.",
   },
   "interaction-no-status-region": {
     what: "Las páginas se actualizan sin recargarse: un filtro acorta una lista, un formulario dice que se ha guardado. Nada en esta página está marcado como el sitio donde se dice ese cambio. El lector de pantalla calla mientras la página se mueve.",
-    ask: "Pregunte a su desarrollador si aquí algo se actualiza sin recargar la página. Si es así, esa actualización necesita una región dinámica (live region) para que se diga además de verse.",
+    ask: "Pregunte a su equipo de desarrollo si aquí algo se actualiza sin recargar la página. Si es así, esa actualización necesita una región dinámica (live region) para que se diga además de verse.",
   },
   "interaction-acts-on-change": {
     what: "Menús o casillas que parecen actuar en cuanto se marcan, en vez de esperar a un botón. Esto lo leemos del código y no lo probamos: tocar los controles de su sitio en marcha podría cursar un pedido de verdad.",
-    ask: "Pregunte a su desarrollador si elegir una opción aquí envía el formulario o mueve la página. Si lo hace, añada un botón que lo haga, o avise a la gente antes del control de que va a pasar.",
+    ask: "Pregunte a su equipo de desarrollo si elegir una opción aquí envía el formulario o mueve la página. Si lo hace, añada un botón que lo haga, o avise a la gente antes del control de que va a pasar.",
   },
   "interaction-pointer-cancellation": {
     what: "Controles que actúan en cuanto se pulsan, y no al soltar. Si se pulsa uno por error, no hay forma de deslizar el dedo fuera y soltar.",
-    ask: "Pida a su desarrollador que estos actúen al soltar. Quien tenga un resbalón, o quien tarde un momento en apuntar, puede entonces apartarse antes de levantar el dedo.",
+    ask: "Pida a su equipo de desarrollo que estos actúen al soltar. Quien tenga un resbalón, o quien tarde un momento en apuntar, puede entonces apartarse antes de levantar el dedo.",
   },
   "aria-valid-attr-value": {
     what: "Etiquetas de código que apuntan a otra parte de la página. La herramienta no siempre puede saber si aquello a lo que apuntan está ahí de verdad.",
-    ask: "Pida a su desarrollador que confirme que existe en la página cada id al que se refiere un atributo aria. Ninguno debería estar dentro de un bloque que se esconde o se quita.",
+    ask: "Pida a su equipo de desarrollo que confirme que existe en la página cada id al que se refiere un atributo aria. Ninguno debería estar dentro de un bloque que se esconde o se quita.",
   },
   "aria-allowed-role": {
     what: "Partes de la página etiquetadas en el código como algo que quizá no puedan ser. Que esté mal o no depende de cómo se comporte el componente.",
-    ask: "Pida a su desarrollador que confirme que cada uno se comporta como promete su rol, teclado incluido. Si no, quite el rol y use el elemento nativo.",
+    ask: "Pida a su equipo de desarrollo que confirme que cada uno se comporta como promete su rol, teclado incluido. Si no, quite el rol y use el elemento nativo.",
   },
   "aria-prohibited-attr": {
     what: "Un elemento que lleva un nombre que quizá el código no le deje conservar. Que sobreviva depende del rol del elemento.",
-    ask: "Pida a su desarrollador que compruebe que cada uno se anuncia con el nombre que usted quería. Donde no sea así, mueva el nombre a un elemento al que se le permita llevarlo.",
+    ask: "Pida a su equipo de desarrollo que compruebe que cada uno se anuncia con el nombre que usted quería. Donde no sea así, mueva el nombre a un elemento al que se le permita llevarlo.",
   },
   "css-orientation-lock": {
     what: "Estilos que pueden atar la página a vertical o a apaisado. La comprobación que encontró esto es experimental.",
-    ask: "Pregunte a su desarrollador si la página gira con el dispositivo. Hay quien monta el teléfono, o la tableta de su silla de ruedas, en una sola orientación y no puede girarlo.",
+    ask: "Pregunte a su equipo de desarrollo si la página gira con el dispositivo. Hay quien monta el teléfono, o la tableta de su silla de ruedas, en una sola orientación y no puede girarlo.",
   },
   "duplicate-id-aria": {
     what: "Un id que puede estar usado más de una vez. Toda etiqueta de código que apunte a él sigue solo al primero, así que un nombre puede acabar pegado en silencio a lo que no era.",
-    ask: "Pida a su desarrollador que haga único cada id de la página, empezando por los que menciona algún atributo aria.",
+    ask: "Pida a su equipo de desarrollo que haga único cada id de la página, empezando por los que menciona algún atributo aria.",
   },
 };
 
