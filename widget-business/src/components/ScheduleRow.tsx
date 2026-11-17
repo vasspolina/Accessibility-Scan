@@ -122,7 +122,7 @@ export function ScheduleRow({ apiBase, url }: { apiBase: string; url: string }) 
     }
   }
 
-  const when = (iso: string) => new Date(iso).toLocaleString("en-GB", { day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" });
+  const when = (iso: string) => new Date(iso).toLocaleString(getLang() === "en" ? "en-GB" : getLang(), { day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" });
 
   return (
     <div className="a11y-settings-row">
