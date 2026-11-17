@@ -205,7 +205,7 @@ const UNPICTURABLE_NOTES: Record<
   "not-attempted":
     "No picture: each scan photographs a limited number of elements, and this one was past that limit. Scanning again may reach it.",
   unreachable:
-    "No picture: this element could not be located again on the return visit. Pages that rebuild themselves on every load do this.",
+    "No picture: this element couldn't be located again on the return visit. Pages that rebuild themselves on every load do this.",
 };
 
 function originOfUrl(url: string): string {
@@ -414,7 +414,7 @@ export async function scanUrlToReport(
   const safeUrl = trustPrivateHosts ? new URL(rawUrl) : await assertSafeUrl(rawUrl);
 
   // A PDF is not a page. Rendering one in Chromium and running axe over the
-  // viewer produced "Could not load or scan the page", which told the reader
+  // viewer produced "Couldn't load or scan the page", which told the reader
   // nothing about a document the accessibility rules very much cover.
   if (looksLikePdf(safeUrl)) return documentReport(safeUrl);
 

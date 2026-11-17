@@ -37,7 +37,7 @@ const STATUS_OPTIONS: Array<{ value: RecordedVerdict["status"]; label: string }>
   { value: "partially-supports", label: "Partly" },
   { value: "does-not-support", label: "No. It fails this" },
   { value: "not-applicable", label: "Does not apply to this site" },
-  { value: "unresolved", label: "Looked, could not decide yet" },
+  { value: "unresolved", label: "Looked, couldn't decide yet" },
 ];
 
 const STATUS_WORD: Record<RecordedVerdict["status"], string> = {
@@ -73,7 +73,7 @@ export function ManualChecks({
         if (!cancelled) setData(r);
       })
       .catch((err) => {
-        if (!cancelled) setError(err instanceof ScanError ? err.message : t("Could not load the open questions."));
+        if (!cancelled) setError(err instanceof ScanError ? err.message : t("Couldn't load the open questions."));
       });
     return () => {
       cancelled = true;
@@ -103,7 +103,7 @@ export function ManualChecks({
             {t("Manual checks")}
           </h2>
         </div>
-        <Notification kind="warning" title={t("Could not load the open questions")} subtitle={error} />
+        <Notification kind="warning" title={t("Couldn't load the open questions")} subtitle={error} />
       </section>
     );
   }
@@ -209,7 +209,7 @@ function AnswerForm({
       });
       onDone(v);
     } catch (err) {
-      setError(err instanceof ScanError ? err.message : t("Could not save the answer."));
+      setError(err instanceof ScanError ? err.message : t("Couldn't save the answer."));
     } finally {
       setBusy(false);
     }

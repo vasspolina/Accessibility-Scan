@@ -826,7 +826,7 @@ export function ScanChat({
       } catch (err) {
         // The scan finished even if the reply about it did not: say both,
         // in the one message the failure path shows and announces.
-        const why = err instanceof Error ? err.message : t("The assistant could not answer that.");
+        const why = err instanceof Error ? err.message : t("The assistant couldn't answer that.");
         throw new ChatError(`${outcomeLine(outcome)} ${why}`, err instanceof ChatError ? err.status : undefined);
       } finally {
         // The block is the scan's, not the reply's: it is shown whether or
@@ -973,7 +973,7 @@ export function ScanChat({
           history.current = [];
           sharedScan.current = null;
         }
-        const message = err instanceof Error ? err.message : t("The assistant could not answer that.");
+        const message = err instanceof Error ? err.message : t("The assistant couldn't answer that.");
         setAll(
           turnsRef.current.map((x) =>
             x.who === "checker" && x.streaming ? { ...x, text: message, streaming: false } : x
@@ -1068,7 +1068,7 @@ export function ScanChat({
               // One sentence per state, translated whole; the address is
               // set into it rather than stitched onto a fragment.
               const [before, after] = t(
-                running ? "Checking {url}." : turn.state === "done" ? "Checked {url}." : "Could not check {url}."
+                running ? "Checking {url}." : turn.state === "done" ? "Checked {url}." : "Couldn't check {url}."
               ).split("{url}");
               return (
                 <li key={turn.id} className={`a11y-chat-turn a11y-chat-tool a11y-chat-scan-${turn.state}`}>

@@ -3469,7 +3469,7 @@ export async function renderAndScan(
       // redirect, a locale route, a client-side router settling — and doing
       // that mid-injection destroys the execution context and throws. Measured
       // on bbc.co.uk/news, which lost an entire scan to it and reported only
-      // "Could not load or scan the page".
+      // "Couldn't load or scan the page".
       //
       // The page is fine; we were simply early. Wait for it to come to rest
       // and go again. Once, because a page that navigates twice more is not

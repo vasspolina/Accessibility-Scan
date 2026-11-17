@@ -205,7 +205,7 @@ export function ConformanceView({
           <h3 className="a11y-legal-eyebrow" id="a11y-legal-tells-heading">{t("What this tells you")}</h3>
           <div className="a11y-legal-card">
             <p className="a11y-legal-lead">
-              {t("The scan lists where your site fails. It cannot confirm that anything meets the standard.")}
+              {t("The scan lists where your site fails. It can't confirm that anything meets the standard.")}
             </p>
             <p className="a11y-legal-body">
               {tf(

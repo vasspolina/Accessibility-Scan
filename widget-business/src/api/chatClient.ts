@@ -108,7 +108,7 @@ export async function sendChatTurn(
     if (err instanceof DOMException && err.name === "AbortError") throw err;
     // A dropped connection is not the server saying it has no assistant:
     // the next message asks again.
-    throw new ChatError(t("Could not reach the assistant. Try sending that again."));
+    throw new ChatError(t("Couldn't reach the assistant. Try sending that again."));
   }
 
   // Only the server's own word switches the assistant off: the route is
@@ -127,8 +127,8 @@ export async function sendChatTurn(
       response.status === 413
         ? t("This conversation is too long to continue. Send your question again to start a new one.")
         : response.status === 503
-          ? t("Could not reach the assistant. Try sending that again.")
-          : t("The assistant could not answer that."),
+          ? t("Couldn't reach the assistant. Try sending that again.")
+          : t("The assistant couldn't answer that."),
       response.status
     );
   }
@@ -203,7 +203,7 @@ export function unansweredToolUses(content: ChatBlock[], answered: Iterable<stri
       content:
         b.name === "start_scan"
           ? "One scan at a time. Ask for this address again once the first scan has finished."
-          : "The checker could not act on this call.",
+          : "The checker couldn't act on this call.",
     }));
 }
 

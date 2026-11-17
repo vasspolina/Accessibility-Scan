@@ -123,7 +123,7 @@ export async function accountRoutes(app: FastifyInstance) {
       // Shown once and never again — only the hash is kept.
       apiKey: key.key,
       apiKeyId: key.id,
-      warning: "Copy this key now. It is stored only as a hash and cannot be shown again.",
+      warning: "Copy this key now. It is stored only as a hash and can't be shown again.",
       storage: status,
     };
   });
@@ -153,7 +153,7 @@ export async function accountRoutes(app: FastifyInstance) {
     if (!account) return;
     const name = z.object({ name: z.string().max(120).default("default") }).safeParse(request.body ?? {});
     const key = createApiKey(account.id, name.success ? name.data.name : "default");
-    return { apiKey: key.key, apiKeyId: key.id, warning: "Copy this key now. It cannot be shown again." };
+    return { apiKey: key.key, apiKeyId: key.id, warning: "Copy this key now. It can't be shown again." };
   });
 
   app.delete("/api/account/keys/:id", { config: storedRouteLimit }, async (request, reply) => {

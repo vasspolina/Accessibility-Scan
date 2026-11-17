@@ -8,7 +8,7 @@ import type { AccessibilityFinding } from "../../types/report.js";
 // council's application form or a bank's annual report is often the single
 // most important thing on the site. No competitor checks documents in the same
 // tool as the page, and pasting a PDF address into this one used to produce
-// "Could not load or scan the page", because Chromium was being asked to
+// "Couldn't load or scan the page", because Chromium was being asked to
 // render it as a web page.
 //
 // What is checked here is what makes the difference between a document a
@@ -94,7 +94,7 @@ export async function checkPdfDocument(url: string): Promise<PdfCheckResult> {
       signal: controller.signal,
       headers: { accept: "application/pdf,*/*" },
     });
-    if (!res.ok) throw new PdfFetchError(`We could not download the document (HTTP ${res.status}).`, res.status);
+    if (!res.ok) throw new PdfFetchError(`We couldn't download the document (HTTP ${res.status}).`, res.status);
     const buf = await res.arrayBuffer();
     if (buf.byteLength > MAX_BYTES) {
       throw new PdfFetchError("That document is too large for this check (over 20MB).");
@@ -102,7 +102,7 @@ export async function checkPdfDocument(url: string): Promise<PdfCheckResult> {
     bytes = new Uint8Array(buf);
   } catch (err) {
     if (err instanceof PdfFetchError) throw err;
-    throw new PdfFetchError("We could not download the document.");
+    throw new PdfFetchError("We couldn't download the document.");
   } finally {
     clearTimeout(timer);
   }
@@ -111,7 +111,7 @@ export async function checkPdfDocument(url: string): Promise<PdfCheckResult> {
   // fonts it cannot substitute, which is noise: we read structure and text, and
   // never render a pixel, so font substitution is irrelevant here.
   const doc = await getDocument({ data: bytes, useSystemFonts: false, verbosity: 0 }).promise.catch(() => {
-    throw new PdfFetchError("We could not read that file as a PDF.");
+    throw new PdfFetchError("We couldn't read that file as a PDF.");
   });
 
   const findings: AccessibilityFinding[] = [];
@@ -150,7 +150,7 @@ export async function checkPdfDocument(url: string): Promise<PdfCheckResult> {
         "critical",
         "1.3.1",
         "A",
-        "This PDF has no tags, so its structure exists only visually. A screen reader has no headings to navigate by and no reading order it can rely on. It cannot tell a heading from a caption.",
+        "This PDF has no tags, so its structure exists only visually. A screen reader has no headings to navigate by and no reading order it can rely on. It can't tell a heading from a caption.",
         "Re-export it from the original document with tagging turned on. In Word or Google Docs, use real heading styles and export as a tagged PDF rather than printing to PDF. Retagging an existing PDF by hand in Acrobat is possible but far slower than fixing the source.",
         "https://www.w3.org/WAI/WCAG21/Techniques/pdf/PDF9"
       )

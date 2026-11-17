@@ -82,6 +82,10 @@ Titles state what was measured and never hedge ("A control", not "Something").
   included since 4 Nov 2026; never an em dash.
 - Dates in European format (28 June 2025).
 - British spelling (colour, recognise), matching the rest of the report.
+- Contract "can't" and "couldn't" in the interface and the findings (17 Nov
+  2026). The drafts the owner publishes, the accessibility statement and the
+  conformance report, keep "cannot" and "could not": they are formal
+  documents. AI prompts, CLI output and server logs are not reader copy.
 - Lists carry the technical detail. Prose carries the meaning.
 
 ## Accuracy rules

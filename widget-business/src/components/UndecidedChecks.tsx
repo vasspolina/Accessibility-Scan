@@ -73,8 +73,8 @@ export function UndecidedChecks({
           whose, so the lead no longer repeats either. */}
       <p className="a11y-section-desc">
         {total === 1
-          ? t("The checker could not settle this one on its own. It does not count against the score.")
-          : tf("The checker could not settle these {total} on its own. None of them count against the score.", { total })}
+          ? t("The checker couldn't settle this one on its own. It does not count against the score.")
+          : tf("The checker couldn't settle these {total} on its own. None of them count against the score.", { total })}
       </p>
       </div>
       {rows.length > 0 && (

@@ -62,7 +62,7 @@ export async function auditRoutes(app: FastifyInstance) {
       resolvedEntry = entryRender.finalUrl;
     } catch (err) {
       // The same classifier as a single page, so a 404 or a slow entry page
-      // says so instead of "Could not load or scan the page".
+      // says so instead of "Couldn't load or scan the page".
       const failure = describeScanFailure(err);
       if (failure.logLevel === "warn") logger.warn({ err, url: entryUrl.toString() }, "Audit entry render failed");
       return reply.status(failure.status).send({

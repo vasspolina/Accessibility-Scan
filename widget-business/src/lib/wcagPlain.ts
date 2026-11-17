@@ -119,9 +119,9 @@ export const PLAIN_RULE_EXPLANATIONS: Record<string, PlainRule> = {
       "Anyone still reading, or part way through the form, is thrown back to the start with no warning. Reading slowly is not a fault, and this punishes it.",
   },
   "aria-allowed-role": {
-    plain: "A role the element cannot have",
+    plain: "A role the element can't have",
     found: (n) =>
-      `${n} ${n === 1 ? "element is" : "elements are"} labelled in the code as something ${n === 1 ? "it" : "they"} cannot be. The role does not belong on that kind of tag.`,
+      `${n} ${n === 1 ? "element is" : "elements are"} labelled in the code as something ${n === 1 ? "it" : "they"} can't be. The role does not belong on that kind of tag.`,
     impact:
       "Screen readers announce the wrong thing. People are told they reached a button when it is a link, or a heading when it is a list.",
   },
@@ -142,20 +142,20 @@ export const PLAIN_RULE_EXPLANATIONS: Record<string, PlainRule> = {
     plain: "Menus or lists missing their items",
     found: (n) =>
       `${n} ${n === 1 ? "control is labelled in the code as a menu or a list, but contains" : "controls are labelled in the code as menus or lists, but contain"} none of the items ${n === 1 ? "it needs" : "they need"}. ${n === 1 ? "It is" : "Each is"} announced as having nothing in it.`,
-    impact: "Screen readers cannot work out its structure, so people cannot navigate it.",
+    impact: "Screen readers can't work out its structure, so people can't navigate it.",
   },
   "aria-required-parent": {
     plain: "List item outside its list",
     found: (n) =>
       `${n} ${n === 1 ? "element is labelled as a piece" : "elements are labelled as pieces"} of a larger control: a tab, a menu item, an option, a row. ${n === 1 ? "It does not sit" : "None sits"} inside the control ${n === 1 ? "it belongs" : "they belong"} to.`,
     impact:
-      "A tab outside its tab strip is not a tab to anything. Screen readers cannot say which one of how many it is. The arrow keys people use to move through these controls have nothing to move through.",
+      "A tab outside its tab strip is not a tab to anything. Screen readers can't say which one of how many it is. The arrow keys people use to move through these controls have nothing to move through.",
   },
   "landmark-unique": {
     plain: "Two page areas share one name",
     found: (n) =>
       `${n} ${n === 1 ? "region shares its name with another" : "regions share their names with others"}.`,
-    impact: "Screen reader users get a list of identical entries and cannot tell them apart.",
+    impact: "Screen reader users get a list of identical entries and can't tell them apart.",
   },
   "landmark-no-duplicate-banner": {
     plain: "More than one page header",
@@ -167,25 +167,25 @@ export const PLAIN_RULE_EXPLANATIONS: Record<string, PlainRule> = {
     plain: "More than one page footer",
     found: () =>
       `The page marks more than one area as its footer. There is then no single place to jump to for contact details or terms.`,
-    impact: "Screen readers list several footers, and people cannot tell which is which.",
+    impact: "Screen readers list several footers, and people can't tell which is which.",
   },
   "landmark-no-duplicate-main": {
     plain: "More than one main content area",
     found: () =>
-      `More than one area is marked as the main content. "Skip to main content" has to pick one, and cannot know which you meant.`,
+      `More than one area is marked as the main content. "Skip to main content" has to pick one, and can't know which you meant.`,
     impact: "People land in the wrong half of the page.",
   },
   "landmark-banner-is-top-level": {
     plain: "Header nested inside another area",
     found: () =>
       `The header is tucked inside another region rather than alongside it.`,
-    impact: "Screen reader users cannot jump straight to it the way they expect.",
+    impact: "Screen reader users can't jump straight to it the way they expect.",
   },
   "landmark-contentinfo-is-top-level": {
     plain: "Footer nested inside another area",
     found: () =>
       `The footer is tucked inside another region rather than alongside it.`,
-    impact: "Screen reader users cannot jump straight to it the way they expect.",
+    impact: "Screen reader users can't jump straight to it the way they expect.",
   },
   "skip-link": {
     plain: "Skip link goes nowhere",
@@ -319,7 +319,7 @@ export const PLAIN_RULE_EXPLANATIONS: Record<string, PlainRule> = {
   },
   "meta-viewport": {
     plain: "Zooming is blocked",
-    found: () => `The page blocks zooming, so anyone who needs to enlarge it on a phone cannot.`,
+    found: () => `The page blocks zooming, so anyone who needs to enlarge it on a phone can't.`,
     impact: "Anyone who needs bigger text can't get it. On a phone, they just leave.",
   },
   "meta-viewport-large": {
@@ -407,7 +407,7 @@ export const PLAIN_RULE_EXPLANATIONS: Record<string, PlainRule> = {
   "scrollable-region-focusable": {
     plain: "Scrollable area unreachable by keyboard",
     found: (n) =>
-      `${n} ${n === 1 ? "area scrolls" : "areas scroll"} but cannot be reached with the keyboard.`,
+      `${n} ${n === 1 ? "area scrolls" : "areas scroll"} but can't be reached with the keyboard.`,
     impact: "Without a mouse, there's no way to scroll to what's inside.",
   },
 
@@ -415,14 +415,14 @@ export const PLAIN_RULE_EXPLANATIONS: Record<string, PlainRule> = {
   // Keyboard Trap, 2.1.1 Keyboard) — from real Tab presses during the scan.
   "keyboard-mouse-only": {
     research:
-      "Decades of usability research, much of it from the Nielsen Norman Group, keeps reaching one conclusion. Keyboard access serves power users as much as people who cannot hold a mouse.",
+      "Decades of usability research, much of it from the Nielsen Norman Group, keeps reaching one conclusion. Keyboard access serves power users as much as people who can't hold a mouse.",
     // "Something on the page" was hedging about a thing we had measured. The
     // scan watched this element take a click handler and then watched Tab
     // never reach it, so it is a control — that is what a control is — and
     // saying so is both more accurate and more confident than "something".
     plain: "A control the keyboard can't reach",
     impact:
-      "There is no workaround for this one. Anyone who cannot use a mouse cannot do whatever this control does. If it's a Buy button or a form step, that's the end of the visit.",
+      "There is no workaround for this one. Anyone who can't use a mouse can't do whatever this control does. If it's a Buy button or a form step, that's the end of the visit.",
   },
   "keyboard-no-visible-focus": {
     plain: "Nothing shows where the keyboard is",
@@ -469,12 +469,12 @@ export const PLAIN_RULE_EXPLANATIONS: Record<string, PlainRule> = {
     // paragraph below is where it gets explained.
     plain: "Keyboard marker too faint to see",
     impact:
-      "Tab moves an invisible cursor, and the outline is the only thing showing where it has reached. Too faint, and a keyboard user cannot tell what they are about to activate. It slips through testing because there genuinely is an outline there.",
+      "Tab moves an invisible cursor, and the outline is the only thing showing where it has reached. Too faint, and a keyboard user can't tell what they are about to activate. It slips through testing because there genuinely is an outline there.",
   },
   "keyboard-focus-trap": {
     plain: "Keyboard focus gets stuck",
     impact:
-      "A keyboard user who reaches this point cannot go further. One of the worst failures a site can have.",
+      "A keyboard user who reaches this point can't go further. One of the worst failures a site can have.",
   },
 
   // Component design suggestions (forms, menus) — from the ARIA Authoring
@@ -495,7 +495,7 @@ export const PLAIN_RULE_EXPLANATIONS: Record<string, PlainRule> = {
   "sr-symbol-button-name": {
     plain: "Buttons named only with a symbol",
     impact:
-      "A screen reader announces the symbol or nothing at all. The listener cannot tell what pressing the button does.",
+      "A screen reader announces the symbol or nothing at all. The listener can't tell what pressing the button does.",
   },
   "sr-vague-button-name": {
     plain: "Button names that say nothing",
@@ -556,14 +556,14 @@ export const PLAIN_RULE_EXPLANATIONS: Record<string, PlainRule> = {
     found: () =>
       `The consent layer marks the whole page behind it as hidden for screen readers. Keyboard focus never lands in the layer itself.`,
     impact:
-      "A screen reader user hears silence where the page should be. They cannot read the page, and they cannot find the banner to clear it.",
+      "A screen reader user hears silence where the page should be. They can't read the page, and they can't find the banner to clear it.",
   },
   "mobile-sticky-coverage": {
     plain: "Pinned bars crowd the phone screen",
     found: () =>
       `Pinned headers, banners or toolbars hold more than a third of the screen at phone width.`,
     impact:
-      "Every pinned pixel is one the visitor cannot read the page through. Anything the keyboard focuses can end up hidden behind the bars. WCAG 2.2 already makes exactly that a requirement; the law just does not point at it yet.",
+      "Every pinned pixel is one the visitor can't read the page through. Anything the keyboard focuses can end up hidden behind the bars. WCAG 2.2 already makes exactly that a requirement; the law just does not point at it yet.",
   },
   "mobile-horizontal-scroll": {
     plain: "The page scrolls sideways on phones",
@@ -764,7 +764,7 @@ export const PLAIN_RULE_EXPLANATIONS: Record<string, PlainRule> = {
     plain: "Control edges too faint",
     // No found line on purpose: English keeps the backend's own description,
     // which names the specific element. The other languages carry one.
-    impact: "People with low vision, or reading in bright light, cannot see where fields begin and end. It is unclear where to click and type.",
+    impact: "People with low vision, or reading in bright light, can't see where fields begin and end. It is unclear where to click and type.",
   },
   "keyboard-positive-tabindex-advisory": {
     plain: "Tab order set by number",
@@ -782,7 +782,7 @@ export const PLAIN_RULE_EXPLANATIONS: Record<string, PlainRule> = {
     plain: "Text too faint at phone width",
     // No found line on purpose: English keeps the backend's own description,
     // which carries the count. The other languages carry one without it.
-    impact: "On a phone in daylight, faint text is hard to read even with good eyesight. A desktop check cannot see this, because the colours change only at the narrow width.",
+    impact: "On a phone in daylight, faint text is hard to read even with good eyesight. A desktop check can't see this, because the colours change only at the narrow width.",
   },
   "color-contrast-dark": {
     plain: "Text too faint in dark mode",
@@ -989,7 +989,7 @@ export const PLAIN_RULE_FIXES: Record<string, string | string[]> = {
     "Show it when it receives keyboard focus, so people know it is there.",
   ],
   "mobile-target-spacing":
-    "Put a little space between buttons and links, so a thumb cannot hit two at once.",
+    "Put a little space between buttons and links, so a thumb can't hit two at once.",
   "consent-blocks-reader": [
     "Move keyboard focus into the banner when it opens, and keep it there until a choice is made.",
     "That is what justifies hiding the page. Or stop hiding it: a bottom banner needs none of this.",
@@ -1213,11 +1213,11 @@ export const WCAG_LINK = "https://www.w3.org/WAI/standards-guidelines/wcag/";
 export const PRINCIPLE_ORDER: Principle[] = ["Perceivable", "Operable", "Understandable", "Robust"];
 
 /**
- * Why the engine could not settle a check, and what a person should do.
+ * Why the engine couldn't settle a check, and what a person should do.
  *
  * These are not faults. axe reports no false positives by refusing to call
- * anything it cannot measure, and this is where those cases go. The reader
- * needs two things: why a machine could not answer, and what looking at it
+ * anything it can't measure, and this is where those cases go. The reader
+ * needs two things: why a machine couldn't answer, and what looking at it
  * themselves involves.
  *
  * Written for the rules a sweep of real sites actually produced.
@@ -1228,15 +1228,15 @@ export const UNDECIDED_EXPLANATIONS: Record<string, { what: string; ask: string 
     ask: "Ask your designer to check each one against the picture behind it, at its lightest and its darkest. Where the words are lost, they need a solid panel behind them. A dark wash over the image works too, or a different position.",
   },
   "link-in-text-block": {
-    what: "Links inside a paragraph that may be marked only by their colour. The checker cannot tell whether the difference is strong enough to stand on its own.",
+    what: "Links inside a paragraph that may be marked only by their colour. The checker can't tell whether the difference is strong enough to stand on its own.",
     ask: "Ask your designer whether these links are still findable with the colour taken away. If colour is the only thing marking them, they need an underline or another visible cue.",
   },
   "video-caption": {
-    what: "A video the checker can see and cannot watch. It has no way to tell whether captions exist, or whether they are any good.",
+    what: "A video the checker can see and can't watch. It has no way to tell whether captions exist, or whether they are any good.",
     ask: "Ask whoever made the video whether it carries captions and whether a person corrected them. Auto-generated captions on their own do not count.",
   },
   // The four media rows. Each says what was counted and what to ask,
-  // because the checker cannot watch or listen to any of it — the count and
+  // because the checker can't watch or listen to any of it — the count and
   // the location are the whole of what it can offer.
   "media-video-captions": {
     what: "Video on the page carrying no captions file. That is not proof it needs one. A silent clip needs nothing, and captions burned into the picture leave no file behind.",
@@ -1255,7 +1255,7 @@ export const UNDECIDED_EXPLANATIONS: Record<string, { what: string; ask: string 
     ask: "Check that each recording has a written transcript near the player, and that it covers everything said.",
   },
   "media-embedded-player": {
-    what: "Video played through another company's player. The video lives on their site, so the checker cannot look inside it.",
+    what: "Video played through another company's player. The video lives on their site, so the checker can't look inside it.",
     ask: "Open each one and turn captions on. If the option is missing or the captions are wrong, fix them where the video is hosted.",
   },
   // Three rows about what the page listens for. A listener leaves no mark on
@@ -1265,7 +1265,7 @@ export const UNDECIDED_EXPLANATIONS: Record<string, { what: string; ask: string 
   // harm and neither is a provable violation — a banner div without a dialog
   // role is legal markup — so they sit here for a person to rule on.
   "consent-layer-in-frame": {
-    what: "The consent layer arrives from another company's website, inside a frame. The scan cannot reach into it to judge what a screen reader meets there.",
+    what: "The consent layer arrives from another company's website, inside a frame. The scan can't reach into it to judge what a screen reader meets there.",
     ask: "Have someone try the banner with a screen reader. Ask whether it is announced and whether focus reaches it. Then check that refusing is as easy as accepting.",
   },
   "consent-layer-unheralded": {
@@ -1277,8 +1277,8 @@ export const UNDECIDED_EXPLANATIONS: Record<string, { what: string; ask: string 
     ask: "Ask your developer to mark the layer as a dialog and name it.",
   },
   "interaction-motion-actuation": {
-    what: "The page responds to the phone being tilted or shaken. Somebody who keeps their phone in a stand, or whose hands shake, cannot do that.",
-    ask: "Ask your developer whether every tilt or shake action can also be done by tapping something on screen. Then ask whether the motion response can be switched off, so a shaking hand cannot fire it by accident.",
+    what: "The page responds to the phone being tilted or shaken. Somebody who keeps their phone in a stand, or whose hands shake, can't do that.",
+    ask: "Ask your developer whether every tilt or shake action can also be done by tapping something on screen. Then ask whether the motion response can be switched off, so a shaking hand can't fire it by accident.",
   },
   "interaction-gesture-listeners": {
     what: "The page listens for swipes or drags. Somebody with a tremor, or steering a pointer by voice or switch, may not be able to draw one.",
@@ -1293,12 +1293,12 @@ export const UNDECIDED_EXPLANATIONS: Record<string, { what: string; ask: string 
     ask: "Ask your developer to mark each passage with its language. Only a change of alphabet can be spotted automatically, so ask about foreign passages that share the page's alphabet.",
   },
   "interaction-title-tooltip": {
-    what: "Tooltips built from the title attribute. They appear only on hover, so a keyboard or touchscreen visitor never sees them. They also cannot be dismissed, and vanish if you move towards them to finish reading.",
+    what: "Tooltips built from the title attribute. They appear only on hover, so a keyboard or touchscreen visitor never sees them. They also can't be dismissed, and vanish if you move towards them to finish reading.",
     ask: "Ask your developer whether anything important is hidden in these. If it is, put it on the page, or build a tooltip that stays put and closes with Escape.",
   },
   "interaction-orientation-lock": {
     what: "A stylesheet here rotates the page back, or hides it, when the phone is turned. That is the shape of a page locked to one orientation. It can also be a deliberate landscape view for something wide.",
-    ask: "Ask your developer whether the page works both ways up. Somebody whose phone is fixed to a wheelchair or a stand cannot turn it to suit the site.",
+    ask: "Ask your developer whether the page works both ways up. Somebody whose phone is fixed to a wheelchair or a stand can't turn it to suit the site.",
   },
   "interaction-no-status-region": {
     what: "Pages update without reloading. A filter narrows a list, a form says it saved. Nothing on this page is marked as the place where such a change is spoken. A screen reader stays silent while the page moves under it.",
@@ -1313,7 +1313,7 @@ export const UNDECIDED_EXPLANATIONS: Record<string, { what: string; ask: string 
     ask: "Ask your developer to make these act on release instead. Anyone whose hand slips, or who takes a moment to aim, can then move away before lifting.",
   },
   "aria-valid-attr-value": {
-    what: "Code labels that point at another part of the page. The checker cannot always tell whether the thing they point at is really there.",
+    what: "Code labels that point at another part of the page. The checker can't always tell whether the thing they point at is really there.",
     ask: "Ask your developer to confirm every id referenced by an aria attribute exists on the page. None should sit inside a block that gets hidden or removed.",
   },
   "aria-allowed-role": {
@@ -1326,7 +1326,7 @@ export const UNDECIDED_EXPLANATIONS: Record<string, { what: string; ask: string 
   },
   "css-orientation-lock": {
     what: "Styles that may lock the page to portrait or landscape. The check that found this is experimental.",
-    ask: "Ask your developer whether the page rotates with the device. Some people mount a phone or wheelchair tablet in one orientation and cannot turn it.",
+    ask: "Ask your developer whether the page rotates with the device. Some people mount a phone or wheelchair tablet in one orientation and can't turn it.",
   },
   "duplicate-id-aria": {
     what: "An id that may be used more than once. Every code label pointing at it follows only the first, so a name can silently attach to the wrong thing.",

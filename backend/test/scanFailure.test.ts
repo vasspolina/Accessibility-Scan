@@ -45,7 +45,7 @@ describe("describeScanFailure", () => {
     expect(describeScanFailure(new PageStatusError("example.com", 500)).message).toMatch(/example\.com answered with an error \(HTTP 500\)/);
   });
 
-  // These fell through to "Could not load or scan the page", which hid the
+  // These fell through to "Couldn't load or scan the page", which hid the
   // one thing the reader could act on.
   it("keeps a document's own reason", () => {
     expect(describeScanFailure(new PdfFetchError("That document is too large for this check (over 20MB).")).message).toMatch(

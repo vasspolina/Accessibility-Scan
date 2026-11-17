@@ -1152,7 +1152,7 @@ function TriageControl({ finding }: { finding: AccessibilityFinding }) {
       setSaved({ state: d.state, decidedBy: d.decidedBy, decidedAt: d.decidedAt });
       setOpen(false);
     } catch (err) {
-      setError(err instanceof ScanError ? err.message : t("Could not save the decision."));
+      setError(err instanceof ScanError ? err.message : t("Couldn't save the decision."));
     } finally {
       setBusy(false);
     }

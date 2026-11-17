@@ -92,7 +92,7 @@ export function evaluateMotion(
         "motion-autoplay-audio",
         "serious",
         autoplayAudio[0].selector,
-        `Sound starts playing automatically with no visible controls to pause or stop it (${autoplayAudio.length} element${autoplayAudio.length === 1 ? "" : "s"}). It plays over what a screen reader says, and the visitor cannot turn it off.`,
+        `Sound starts playing automatically with no visible controls to pause or stop it (${autoplayAudio.length} element${autoplayAudio.length === 1 ? "" : "s"}). It plays over what a screen reader says, and the visitor can't turn it off.`,
         "Remove autoplay, or add visible player controls (the controls attribute) so visitors can stop the sound.",
         "1.4.2",
         "https://www.w3.org/WAI/WCAG21/Understanding/audio-control.html"
