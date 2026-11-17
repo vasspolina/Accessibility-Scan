@@ -68,6 +68,8 @@ You get one automated test result from axe-core: the rule, its technical descrip
 
 Rules:
 - Say only what the test result shows. Do not invent elements, counts, causes or consequences it does not state.
+- Do not suggest colour values or other numbers; the report gives the measured ones.
+- If you show HTML, use single quotes for its attributes, like <img alt='Team photo'>, never double quotes.
 - Do not mention laws, fines, lawsuits, compliance percentages or scores.
 - Do not say the problem is small, easy or quick.
 - Short sentences. No dashes as punctuation. No exclamation marks. No marketing words.
@@ -91,15 +93,36 @@ export function buildRulePrompt(group: AccessibilityFinding[]): string {
   return `${head.join("\n")}\n\n${examples}`;
 }
 
+/**
+ * Cut a code example the model left unfinished. Measured on Qwen2.5 7B
+ * under a JSON grammar: asked for a fix, it wrote `like <img src="` and the
+ * grammar closed the string at the quote, so the card read
+ * "Add an alt attribute with a description of the image, like <img src=".
+ * The prompt now asks for single quotes; this is the net for when it does
+ * not hold. An unclosed tag is cut back to the end of the last whole
+ * sentence; if that leaves nothing, the field is unusable (null).
+ */
+export function dropDanglingTag(text: string): string | null {
+  const open = text.lastIndexOf("<");
+  if (open === -1 || text.indexOf(">", open) !== -1) return text;
+  const head = text.slice(0, open);
+  const end = Math.max(head.lastIndexOf(". "), head.lastIndexOf(".\n"));
+  const kept = end === -1 ? "" : head.slice(0, end + 1).trim();
+  return kept.length >= 10 ? kept : null;
+}
+
 /** House style, applied in code for the reason replaceLongDashes gives:
- *  prompt rules have not held reliably. */
-export function tidyReply(reply: PlainReply): PlainReply {
-  const tidy = (s: string) => replaceLongDashes(s.replace(/!/g, ".")).replace(/\s{2,}/g, " ").trim();
-  return {
-    title: tidy(reply.title).replace(/[.]+$/, ""),
-    explanation: tidy(reply.explanation),
-    fix: tidy(reply.fix),
+ *  prompt rules have not held reliably. Null when a field is unusable. */
+export function tidyReply(reply: PlainReply): PlainReply | null {
+  const tidy = (s: string) => {
+    const whole = dropDanglingTag(s);
+    return whole === null ? null : replaceLongDashes(whole.replace(/!/g, ".")).replace(/\s{2,}/g, " ").trim();
   };
+  const title = tidy(reply.title);
+  const explanation = tidy(reply.explanation);
+  const fix = tidy(reply.fix);
+  if (!title || !explanation || !fix) return null;
+  return { title: title.replace(/[.]+$/, ""), explanation, fix };
 }
 
 /** axe findings grouped by rule, most severe rule first, ties by how many elements failed. */
@@ -161,7 +184,9 @@ export async function rewriteFindings(
         timeoutMs: env.LOCAL_LLM_TIMEOUT_MS,
         signal: budget,
       });
-      if (result.ok) byRule.set(group[0].ruleId!, tidyReply(result.value));
+      const tidied = result.ok ? tidyReply(result.value) : null;
+      if (tidied) byRule.set(group[0].ruleId!, tidied);
+      else if (result.ok) failures.push("unfinished");
       else {
         if (result.kind === "timeout") timedOut = true;
         failures.push(result.kind);

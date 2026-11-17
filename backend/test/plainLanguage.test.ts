@@ -125,6 +125,29 @@ describe("rewriteFindings", () => {
     expect(r.explanation).not.toMatch(/[—–!]/);
   });
 
+  it("cuts a code example the model left unfinished back to the last whole sentence", () => {
+    // Measured on Qwen2.5 7B: the JSON grammar closed the string at the
+    // first double quote inside the example.
+    expect(mod.dropDanglingTag("Add a label for the email field. Use a label element, like <label for=")).toBe(
+      "Add a label for the email field."
+    );
+    expect(mod.dropDanglingTag("Add an alt attribute with a description, like <img src=")).toBeNull();
+    expect(mod.dropDanglingTag("Use <html lang='en'> at the top.")).toBe("Use <html lang='en'> at the top.");
+  });
+
+  it("leaves a rule unrewritten when its fix is unusable, rather than printing half a sentence", async () => {
+    reply = () => ({
+      content: JSON.stringify({
+        title: "Image lacks a description",
+        explanation: "People who use a screen reader hear only a file name.",
+        fix: "Add an alt attribute with a description of the image, like <img src=",
+      }),
+    });
+    const rewrite = await mod.rewriteFindings(axe("image-alt", "critical"), "en", true);
+    expect(rewrite.byRule.has("image-alt")).toBe(false);
+    expect(rewrite.meta.status).toBe("failed");
+  });
+
   it("calls a run partial when some rules came back in the wrong shape, and keeps the good ones", async () => {
     reply = (body) =>
       body.messages[1].content.startsWith("Rule: image-alt") ? { content: good } : { content: '{"title":"x"}' };
