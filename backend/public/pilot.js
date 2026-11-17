@@ -6,7 +6,7 @@
   var form = $("report");
   var state = { fields: null, draft: null, model: null };
   var LABELS = {
-    code: "Your pilot code",
+    code: "Your invitation code",
     assistiveTech: "What do you use",
     pageUrl: "The page's address",
     task: "What were you trying to do",
@@ -40,6 +40,9 @@
   if (params.get("code")) {
     $("code").value = params.get("code");
     history.replaceState(null, "", location.pathname);
+    // Already filled in from the link, so the field is one more thing to
+    // read for nothing. It comes back only if the code is refused.
+    $("code").closest(".row").hidden = true;
   }
 
   fetch("/api/pilot").then(function (r) { return r.json(); }).then(function (info) {
@@ -87,6 +90,7 @@
   function showErrors(list) {
     clearErrors();
     list.forEach(function (item) {
+      if (item.field === "code") $("code").closest(".row").hidden = false;
       var e = $(item.field + "-error");
       if (e) { e.textContent = item.message; e.hidden = false; }
       var input = inputFor(item.field);
@@ -109,7 +113,7 @@
 
   function validate(f) {
     var errs = [];
-    if (!f.code) errs.push({ field: "code", message: "Enter your pilot code" });
+    if (!f.code) errs.push({ field: "code", message: "Enter your invitation code" });
     if (!f.assistiveTech) errs.push({ field: "assistiveTech", message: "Choose what you use" });
     if (f.pageUrl && !/^https?:\/\/\S+$/i.test(f.pageUrl)) errs.push({ field: "pageUrl", message: "Enter the address starting with https, or leave it empty" });
     if (!f.task) errs.push({ field: "task", message: "Say what you were trying to do" });
