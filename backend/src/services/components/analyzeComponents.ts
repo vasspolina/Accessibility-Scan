@@ -208,7 +208,7 @@ export function evaluateComponents(dom: DomSignals): AccessibilityFinding[] {
       makeFinding(
         "component-form-autocomplete",
         worst.selector,
-        `Form fields that collect personal details (${missingAutocomplete.length} field${missingAutocomplete.length === 1 ? "" : "s"}, e.g. the ${purpose.label} field) are not labelled with what they collect. Browsers and password managers then cannot offer to fill them in.`,
+        `Form fields that collect personal details (${missingAutocomplete.length} field${missingAutocomplete.length === 1 ? "" : "s"}, e.g. the ${purpose.label} field) are not labelled with what they collect. Browsers and password managers then can't offer to fill them in.`,
         `Add the matching autocomplete token to each field. For example, autocomplete="${purpose.token}" on the ${purpose.label} field. This is a one-line change per field that makes forms far faster to complete.`,
         "https://www.w3.org/WAI/WCAG21/Understanding/identify-input-purpose.html",
         // The comment on makeFinding names this exact defect, and this call

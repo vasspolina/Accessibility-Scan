@@ -523,7 +523,7 @@ export function App({
         return report.findings.some((f) => f.ruleId === "consent-blocks-reader") ? (
           <div className="a11y-blockflag" role="alert">
             <p className="a11y-blockflag-title">
-              {t("Start here: a screen reader cannot get past your cookie banner")}
+              {t("Start here: a screen reader can't get past your cookie banner")}
             </p>
             <p className="a11y-blockflag-body">
               {t(
@@ -675,7 +675,7 @@ export function App({
            first said the headings twice. Translated whole; the link sits
            where its placeholder does, so word order follows the language. */
         const [sectionDescBefore, sectionDescAfter] = t(
-          "What a screen reader cannot read aloud in this document, grouped by the four questions the standard asks. More at {link}."
+          "What a screen reader can't read aloud in this document, grouped by the four questions the standard asks. More at {link}."
         ).split("{link}");
         return (
           <div className={professional && !isDocument ? "a11y-print-cards" : undefined}>

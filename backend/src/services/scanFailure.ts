@@ -129,5 +129,5 @@ export function describeScanFailure(err: unknown): ScanFailure {
       logLevel: "warn",
     };
   }
-  return { message: "Could not load or scan the page", status: 502, logLevel: "warn" };
+  return { message: "Couldn't load or scan the page", status: 502, logLevel: "warn" };
 }

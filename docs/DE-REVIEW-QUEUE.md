@@ -50,20 +50,20 @@ carry the same keys and the same caveat.
 | Saving… | Wird gespeichert … |
 | Cancel | Abbrechen |
 | Sign the answer with your name. A decision nobody stands behind is not evidence. | Unterschreiben Sie die Antwort mit Ihrem Namen. Eine Entscheidung, hinter der niemand steht, ist kein Nachweis. |
-| Could not save the answer. | Die Antwort konnte nicht gespeichert werden. |
-| Could not load the open questions. | Die offenen Fragen konnten nicht geladen werden. |
-| Could not load the open questions | Die offenen Fragen konnten nicht geladen werden |
+| Couldn't save the answer. | Die Antwort konnte nicht gespeichert werden. |
+| Couldn't load the open questions. | Die offenen Fragen konnten nicht geladen werden. |
+| Couldn't load the open questions | Die offenen Fragen konnten nicht geladen werden |
 | Yes — it meets this | Ja – erfüllt |
 | No — it fails this | Nein – nicht erfüllt |
 | Does not apply to this site | Trifft auf diese Website nicht zu |
-| Looked, could not decide yet | Geprüft, noch nicht entschieden |
+| Looked, couldn't decide yet | Geprüft, noch nicht entschieden |
 | Officially: | Offiziell: |
 | Mark this finding | Diesen Befund markieren |
 | Mark as | Markieren als |
 | Why, in a sentence | Warum, in einem Satz |
 | Save | Speichern |
 | Sign the decision with your name. | Unterschreiben Sie die Entscheidung mit Ihrem Namen. |
-| Could not save the decision. | Die Entscheidung konnte nicht gespeichert werden. |
+| Couldn't save the decision. | Die Entscheidung konnte nicht gespeichert werden. |
 | Scan this page automatically. If the score drops or a new finding appears, you are told. | Diese Seite automatisch scannen. Fällt der Wert oder erscheint ein neuer Befund, werden Sie benachrichtigt. |
 | How often | Wie oft |
 | Every day | Jeden Tag |
@@ -85,10 +85,10 @@ carry the same keys and the same caveat.
 | if the score drops or a new finding appears. | wenn der Wert fällt oder ein neuer Befund erscheint. |
 | The scheduler is off on this server. This schedule will not run until it is on. | Der Zeitplaner ist auf diesem Server ausgeschaltet. Dieser Zeitplan läuft erst, wenn er eingeschaltet ist. |
 | Mail is not set up on this server. No email will be sent. | E-Mail ist auf diesem Server nicht eingerichtet. Es wird keine E-Mail gesendet. |
-| Could not load the schedules. | Die Zeitpläne konnten nicht geladen werden. |
-| Could not create the schedule. | Der Zeitplan konnte nicht angelegt werden. |
-| Could not change the schedule. | Der Zeitplan konnte nicht geändert werden. |
-| Could not delete the schedule. | Der Zeitplan konnte nicht gelöscht werden. |
+| Couldn't load the schedules. | Die Zeitpläne konnten nicht geladen werden. |
+| Couldn't create the schedule. | Der Zeitplan konnte nicht angelegt werden. |
+| Couldn't change the schedule. | Der Zeitplan konnte nicht geändert werden. |
+| Couldn't delete the schedule. | Der Zeitplan konnte nicht gelöscht werden. |
 | Show all | Alle anzeigen |
 | Show the first 3 only | Nur die ersten 3 anzeigen |
 | Manual checks | Manuelle Prüfungen |
@@ -154,7 +154,7 @@ should check that none of those splits reads oddly.
 | Scan finished. | Scan abgeschlossen. | chat |
 | The report is below. | Der Bericht steht darunter. | chat |
 | The assistant is not available on this server. Paste an address and the scan still runs. | Der Assistent ist auf diesem Server nicht verfügbar. Fügen Sie eine Adresse ein, und der Scan läuft trotzdem. | chat |
-| The assistant could not answer that. | Darauf konnte der Assistent nicht antworten. | chat |
+| The assistant couldn't answer that. | Darauf konnte der Assistent nicht antworten. | chat |
 | Use the form instead | Stattdessen das Formular nutzen | chat |
 | Needed for pages behind a login. | Nötig für Seiten hinter einem Login. | chat |
 | Back to the chat | Zurück zum Gespräch | chat |
@@ -169,13 +169,13 @@ should check that none of those splits reads oddly.
 | Settings | Einstellungen | chat transcript |
 | added above. | oben hinzugefügt. | chat transcript |
 | No reply came back. Ask again. | Keine Antwort erhalten. Bitte noch einmal fragen. | chat transcript |
-| Could not reach the assistant. Try sending that again. | Der Assistent war nicht erreichbar. Senden Sie die Nachricht noch einmal. | chat transcript |
+| Couldn't reach the assistant. Try sending that again. | Der Assistent war nicht erreichbar. Senden Sie die Nachricht noch einmal. | chat transcript |
 | This conversation is too long to continue. Send your question again to start a new one. | Dieses Gespräch ist zu lang, um es fortzusetzen. Senden Sie Ihre Frage noch einmal, dann beginnt ein neues. | chat transcript |
 | The assistant stopped responding. Try sending that again. | Der Assistent antwortet nicht mehr. Senden Sie die Nachricht noch einmal. | chat transcript |
 | Assistant | Assistent | chat |
 | Checking {url}. | Prüfe {url}. | chat |
 | Checked {url}. | {url} geprüft. | chat |
-| Could not check {url}. | {url} konnte nicht geprüft werden. | chat |
+| Couldn't check {url}. | {url} konnte nicht geprüft werden. | chat |
 | The assistant is still replying. Run it again in a moment. | Der Assistent antwortet noch. Starten Sie den Scan gleich noch einmal. | chat |
 | Did not finish | Nicht abgeschlossen | chat |
 | Did not run | Nicht ausgeführt | chat |
@@ -460,7 +460,7 @@ should check that none of those splits reads oddly.
 | The {check} check didn’t finish this scan | Die Prüfung „{check}“ wurde in diesem Scan nicht abgeschlossen | report |
 | The {checks} checks didn’t finish this scan | Diese Prüfungen wurden in diesem Scan nicht abgeschlossen: {checks} | report |
 | {a} and {b} | {a} und {b} | report |
-| an automated check that could not decide | eine automatische Prüfung, die nicht entscheiden konnte | report |
+| an automated check that couldn't decide | eine automatische Prüfung, die nicht entscheiden konnte | report |
 | Decided: {status} {detail} | Entschieden: {status} {detail} | report |
 | The other {count} are in the checklist below. Choose {filter} to see them. | Die übrigen {count} stehen in der Checkliste unten. Wählen Sie {filter}, um sie zu sehen. | report |
 | The checklist of {total} items European accessibility law measures sites against. | Die Checkliste mit {total} Punkten, an der das europäische Barrierefreiheitsrecht Websites misst. | report |
@@ -469,7 +469,7 @@ should check that none of those splits reads oddly.
 | You need every item at both levels, A and AA. They don’t average out. | Sie müssen jeden Punkt auf beiden Stufen erfüllen, A und AA. Ein Durchschnitt zählt nicht. | report |
 | One Level A failure means you don’t meet the standard. | Ein einziger Verstoß auf Stufe A bedeutet, dass Sie den Standard nicht erfüllen. | report |
 | What this tells you | Was Ihnen das sagt | report |
-| The scan lists where your site fails. It cannot confirm that anything meets the standard. | Der Scan listet auf, wo Ihre Website durchfällt. Er kann nicht bestätigen, dass irgendetwas den Standard erfüllt. | report |
+| The scan lists where your site fails. It can't confirm that anything meets the standard. | Der Scan listet auf, wo Ihre Website durchfällt. Er kann nicht bestätigen, dass irgendetwas den Standard erfüllt. | report |
 | {count} of the {total} items need a person. That’s true of every automated check, this one included. | Für {count} der {total} Punkte braucht es einen Menschen. Das gilt für jede automatische Prüfung, auch für diese. | report |
 | Questions no software can answer | Fragen, die keine Software beantworten kann | report |
 | Automated check results | Ergebnisse der automatischen Prüfung | report |
@@ -507,7 +507,7 @@ should check that none of those splits reads oddly.
 | {count} criteria with nothing found | {count} Kriterien ohne Befund | report |
 | Dark pattern findings | Befunde zu Dark Patterns | report |
 | Places your site nudges people rather than leaves the choice to them. These don't move the score. They move how much people trust you. | Stellen, an denen Ihre Website Menschen in eine Richtung drängt, statt ihnen die Wahl zu lassen. Sie ändern das Ergebnis nicht. Sie ändern, wie sehr man Ihnen vertraut. | report |
-| What a screen reader cannot read aloud in this document, grouped by the four questions the standard asks. More at {link}. | Was ein Screenreader in diesem Dokument nicht vorlesen kann, geordnet nach den vier Fragen des Standards. Mehr unter {link}. | report |
+| What a screen reader can't read aloud in this document, grouped by the four questions the standard asks. More at {link}. | Was ein Screenreader in diesem Dokument nicht vorlesen kann, geordnet nach den vier Fragen des Standards. Mehr unter {link}. | report |
 | Grouped by the standard's four questions: can people see it, use it, understand it, and will it still work. More at {link}. | Geordnet nach den vier Fragen des Standards: Können Menschen es sehen, bedienen und verstehen, und funktioniert es weiterhin? Mehr unter {link}. | report |
 | Book a fix-it consultation | Beratungstermin zur Behebung buchen | report |
 | In progress | In Arbeit | report |
@@ -755,10 +755,10 @@ Found by a live German scan: these reached a German reader in English. Same cave
 | This page took too long to load, so the check stopped. Very heavy pages sometimes need a second attempt. | Die Seite hat zu lange geladen, deshalb haben wir die Prüfung abgebrochen. Sehr schwere Seiten brauchen manchmal einen zweiten Versuch. | scan errors, blocked panel, picture notes |
 | That address exists, but the site did not answer. It may be down right now. | Die Adresse gibt es, aber die Website hat nicht geantwortet. Vielleicht ist sie gerade nicht erreichbar. | scan errors, blocked panel, picture notes |
 | The checker ran out of room on this page, which can happen with very heavy ones. Please try again. | Dem Scanner ging bei dieser Seite der Speicher aus. Das kommt bei sehr schweren Seiten vor. Versuchen Sie es bitte erneut. | scan errors, blocked panel, picture notes |
-| Could not load or scan the page | Die Seite ließ sich nicht laden oder prüfen. | scan errors, blocked panel, picture notes |
+| Couldn't load or scan the page | Die Seite ließ sich nicht laden oder prüfen. | scan errors, blocked panel, picture notes |
 | That document is too large for this check (over 20MB). | Dieses Dokument ist für die Prüfung zu groß (über 20MB). | scan errors, blocked panel, picture notes |
-| We could not download the document. | Wir konnten das Dokument nicht herunterladen. | scan errors, blocked panel, picture notes |
-| We could not read that file as a PDF. | Wir konnten die Datei nicht als PDF lesen. | scan errors, blocked panel, picture notes |
+| We couldn't download the document. | Wir konnten das Dokument nicht herunterladen. | scan errors, blocked panel, picture notes |
+| We couldn't read that file as a PDF. | Wir konnten die Datei nicht als PDF lesen. | scan errors, blocked panel, picture notes |
 | Not scanned — the audit ran out of time. | Nicht geprüft – die Zeit für die Website-Prüfung war um. | scan errors, blocked panel, picture notes |
 | Something in that request wasn't right. Reload the page and try again. | Die Anfrage war ungültig. | scan errors, blocked panel, picture notes |
 | {host} turned our scanner away (HTTP {status}). Its protection against automated visitors keeps tools like ours out, so this says nothing about how accessible the site is. | {host} hat unseren Scanner abgewiesen (HTTP {status}). Der Schutz vor automatischen Besuchern hält Werkzeuge wie unseres fern. Über die Barrierefreiheit der Website sagt das also nichts. | scan errors, blocked panel, picture notes |
@@ -766,11 +766,11 @@ Found by a live German scan: these reached a German reader in English. Same cave
 | There is no page at that address (HTTP {status}). Check the address and try again. | Unter dieser Adresse gibt es keine Seite (HTTP {status}). Prüfen Sie die Adresse und versuchen Sie es erneut. | scan errors, blocked panel, picture notes |
 | That page asks for a login first (HTTP {status}). The form can sign in with your details. | Diese Seite verlangt zuerst eine Anmeldung (HTTP {status}). Das Formular kann sich mit Ihren Zugangsdaten anmelden. | scan errors, blocked panel, picture notes |
 | {host} answered with an error (HTTP {status}) instead of the page, so there was nothing to check. Try again later. | {host} hat statt der Seite einen Fehler gemeldet (HTTP {status}). Es gab also nichts zu prüfen. Versuchen Sie es später erneut. | scan errors, blocked panel, picture notes |
-| We could not download the document (HTTP {status}). | Wir konnten das Dokument nicht herunterladen (HTTP {status}). | scan errors, blocked panel, picture notes |
+| We couldn't download the document (HTTP {status}). | Wir konnten das Dokument nicht herunterladen (HTTP {status}). | scan errors, blocked panel, picture notes |
 | The scan failed (HTTP {status}). Please try again. | Der Scan ist fehlgeschlagen (HTTP {status}). Versuchen Sie es bitte erneut. | scan errors, blocked panel, picture notes |
 | The audit failed (HTTP {status}). Please try again. | Die Website-Prüfung ist fehlgeschlagen (HTTP {status}). Versuchen Sie es bitte erneut. | scan errors, blocked panel, picture notes |
 | The check stopped responding, so we gave up waiting. Please try again. | Die Prüfung hat nicht mehr geantwortet, deshalb haben wir aufgehört zu warten. Versuchen Sie es bitte erneut. | scan errors, blocked panel, picture notes |
-| Could not reach the scanner service. Please try again shortly. | Der Scanner-Dienst war nicht erreichbar. Versuchen Sie es bitte gleich noch einmal. | scan errors, blocked panel, picture notes |
+| Couldn't reach the scanner service. Please try again shortly. | Der Scanner-Dienst war nicht erreichbar. Versuchen Sie es bitte gleich noch einmal. | scan errors, blocked panel, picture notes |
 | The audit stopped responding, so we gave up waiting. Please try again. | Die Website-Prüfung hat nicht mehr geantwortet, deshalb haben wir aufgehört zu warten. Versuchen Sie es bitte erneut. | scan errors, blocked panel, picture notes |
 | You've started several checks in a short time. Wait a minute, then try again. | Sie haben in kurzer Zeit mehrere Prüfungen gestartet. Warten Sie eine Minute und versuchen Sie es dann erneut. | scan errors, blocked panel, picture notes |
 | This isn't something to work around. The site guards itself on purpose, and we won't try to slip past that. A few honest ways in: | Das sollte man nicht umgehen. Die Website schützt sich mit Absicht, und wir versuchen nicht, daran vorbeizukommen. Es gibt ein paar ehrliche Wege: | scan errors, blocked panel, picture notes |
@@ -786,7 +786,7 @@ Found by a live German scan: these reached a German reader in English. Same cave
 | No picture: this covers a whole region of the page rather than one component, and a photograph of the entire section would not show you which part of it is at fault. | Kein Bild: Das Element deckt einen ganzen Bereich der Seite ab, nicht nur eine Komponente. Ein Foto des ganzen Bereichs würde nicht zeigen, welcher Teil den Fehler hat. | scan errors, blocked panel, picture notes |
 | No picture: the element was on the page when we judged it, and gone when we went back to photograph it. Banners that appear once per visitor do this. | Kein Bild: Das Element war da, als wir es bewertet haben, und verschwunden, als wir es fotografieren wollten. Banner, die jedem Besucher nur einmal erscheinen, tun das. | scan errors, blocked panel, picture notes |
 | No picture: each scan photographs a limited number of elements, and this one was past that limit. Nothing about the element itself. Scanning again may reach it. | Kein Bild: Jeder Scan fotografiert nur eine begrenzte Zahl von Elementen, und dieses lag hinter der Grenze. Das sagt nichts über das Element selbst. Ein neuer Scan erreicht es vielleicht. | scan errors, blocked panel, picture notes |
-| No picture: this element could not be located again on the return visit. Pages that rebuild themselves on every load do this. | Kein Bild: Beim zweiten Besuch ließ sich das Element nicht wiederfinden. Seiten, die sich bei jedem Laden neu aufbauen, tun das. | scan errors, blocked panel, picture notes |
+| No picture: this element couldn't be located again on the return visit. Pages that rebuild themselves on every load do this. | Kein Bild: Beim zweiten Besuch ließ sich das Element nicht wiederfinden. Seiten, die sich bei jedem Laden neu aufbauen, tun das. | scan errors, blocked panel, picture notes |
 | The technical details for this finding identify the exact element. | Die technischen Details zu diesem Befund nennen das genaue Element. | scan errors, blocked panel, picture notes |
 | This element lives inside the consent frame from {host}, so the selector in the technical details is a path within that frame rather than within your own page. | Das Element liegt im Consent-Frame von {host}. Der Selektor in den technischen Details ist darum ein Pfad in diesem Frame, nicht in Ihrer eigenen Seite. | scan errors, blocked panel, picture notes |
 | On | An | switch, top navigation, PDF summary, score dial |

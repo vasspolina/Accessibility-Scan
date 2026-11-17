@@ -380,7 +380,7 @@ export async function scanUrl(
         await delay(1500 * attempt);
         continue;
       }
-      throw new ScanError(t("Could not reach the scanner service. Please try again shortly."));
+      throw new ScanError(t("Couldn't reach the scanner service. Please try again shortly."));
     }
 
     if (TRANSIENT_STATUSES.has(response.status) && attempt < MAX_ATTEMPTS) {
@@ -415,7 +415,7 @@ export async function scanUrl(
     return response.json();
   }
 
-  throw new ScanError(t("Could not reach the scanner service. Please try again shortly."));
+  throw new ScanError(t("Couldn't reach the scanner service. Please try again shortly."));
 }
 
 export async function auditSite(
@@ -440,7 +440,7 @@ export async function auditSite(
     if (err instanceof DOMException && err.name === "AbortError") {
       throw new ScanError(t("The audit stopped responding, so we gave up waiting. Please try again."));
     }
-    throw new ScanError(t("Could not reach the scanner service. Please try again shortly."));
+    throw new ScanError(t("Couldn't reach the scanner service. Please try again shortly."));
   }
 
   if (response.status === 429) throw new ScanError(t(RATE_LIMITED));

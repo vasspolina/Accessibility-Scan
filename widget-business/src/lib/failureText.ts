@@ -37,7 +37,7 @@ export function failureText(message: string, reason?: FailureReason): string {
           { host: reason.host, status: reason.status }
         );
       case "document-status":
-        return tf("We could not download the document (HTTP {status}).", { status: reason.status });
+        return tf("We couldn't download the document (HTTP {status}).", { status: reason.status });
     }
   }
   return t(message);
@@ -60,7 +60,7 @@ const PICTURE_NOTES: Record<NonNullable<AccessibilityFinding["pictureReason"]>, 
   "not-attempted":
     "No picture: each scan photographs a limited number of elements, and this one was past that limit. Scanning again may reach it.",
   unreachable:
-    "No picture: this element could not be located again on the return visit. Pages that rebuild themselves on every load do this.",
+    "No picture: this element couldn't be located again on the return visit. Pages that rebuild themselves on every load do this.",
 };
 
 const POINTS_TO_DETAILS = new Set(["no-usable-image", "too-large"]);

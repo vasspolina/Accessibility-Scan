@@ -58,7 +58,7 @@ export function ScheduleRow({ apiBase, url }: { apiBase: string; url: string }) 
       setAll(r.schedules);
       setStatus(r.scheduler);
     } catch (err) {
-      setError(err instanceof ScanError ? err.message : t("Could not load the schedules."));
+      setError(err instanceof ScanError ? err.message : t("Couldn't load the schedules."));
     }
   }
   useEffect(() => {
@@ -77,7 +77,7 @@ export function ScheduleRow({ apiBase, url }: { apiBase: string; url: string }) 
       setWarnings(r.warnings ?? []);
       await load();
     } catch (err) {
-      setError(err instanceof ScanError ? err.message : t("Could not create the schedule."));
+      setError(err instanceof ScanError ? err.message : t("Couldn't create the schedule."));
     } finally {
       setBusy(false);
     }
@@ -92,7 +92,7 @@ export function ScheduleRow({ apiBase, url }: { apiBase: string; url: string }) 
       await setScheduleEnabled(apiBase, mine.id, !mine.enabled);
       await load();
     } catch (err) {
-      setError(err instanceof ScanError ? err.message : t("Could not change the schedule."));
+      setError(err instanceof ScanError ? err.message : t("Couldn't change the schedule."));
     } finally {
       setBusy(false);
     }
@@ -106,7 +106,7 @@ export function ScheduleRow({ apiBase, url }: { apiBase: string; url: string }) 
       setWarnings([]);
       await load();
     } catch (err) {
-      setError(err instanceof ScanError ? err.message : t("Could not delete the schedule."));
+      setError(err instanceof ScanError ? err.message : t("Couldn't delete the schedule."));
     } finally {
       setBusy(false);
     }
