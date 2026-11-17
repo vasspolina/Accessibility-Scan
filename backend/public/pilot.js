@@ -180,7 +180,9 @@
     if (!f.code) errs.push({ field: "code", message: "Enter your invitation code" });
     if (!f.assistiveTech) errs.push({ field: "assistiveTech", message: "Choose what you use" });
     if (f.pageUrl && !/^https?:\/\/\S+$/i.test(f.pageUrl)) errs.push({ field: "pageUrl", message: "Enter the address starting with https, or leave it empty" });
-    if (!f.barrier) errs.push({ field: "barrier", message: "Say what happened" });
+    // The address alone is enough: the page is then scanned. Without it,
+    // the participant's sentence is the report.
+    if (!f.barrier && !f.pageUrl) errs.push({ field: "barrier", message: "Say what happened, or paste the page's address above" });
     if (!f.impact) errs.push({ field: "impact", message: "Choose how much it held you back" });
     return errs;
   }
@@ -199,8 +201,11 @@
     remember(f);
     state.fields = f;
     var btn = $("draft-btn");
-    busy(btn, true, "Writing up your report…");
-    say("Writing up your report. This can take up to half a minute.");
+    var scanning = !f.barrier;
+    busy(btn, true, scanning ? "Scanning the page…" : "Writing up your report…");
+    say(scanning
+      ? "Scanning the page and writing up what it finds. This can take a minute or two."
+      : "Writing up your report. This can take up to half a minute.");
     fetch("/api/pilot/draft", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -218,14 +223,19 @@
       }
       if (res.status !== 200) { showNoDraft("The writing-up step is not available just now."); return; }
       if (!res.body.draft) {
-        showNoDraft(res.body.reason === "not_configured"
-          ? "The language model is not running at the moment."
-          : "The language model could not write a draft this time.");
+        var why = {
+          not_configured: "The language model is not running at the moment.",
+          scan_failed: "We couldn't scan that page. It may block automated visits, or the address may be wrong.",
+          scan_clean: "The scan didn't find anything it could measure on that page. What you met may be something only a person notices."
+        }[res.body.reason] || "The language model could not write a draft this time.";
+        showNoDraft(why, !state.fields.barrier);
         return;
       }
       state.draft = res.body.draft;
       state.model = res.body.model;
-      $("review-intro").textContent = "This is what the model wrote from your words. Change anything that is wrong, then say whether it matches.";
+      $("review-intro").textContent = res.body.draft.fromScan
+        ? "You gave only the address, so we scanned the page and the model wrote this from what the scan found, not from your words. Check that it matches what you met. Change it, or answer no below if it doesn't."
+        : "This is what the model wrote from your words. Change anything that is wrong, then say whether it matches.";
       $("draft-meta").textContent = "Written by " + res.body.model + ", a language model on our own server.";
       $("d-title").value = res.body.draft.title;
       $("d-explanation").value = res.body.draft.explanation;
@@ -246,9 +256,11 @@
     });
   });
 
-  function showNoDraft(reason) {
+  function showNoDraft(reason, addressOnly) {
     state.draft = null;
-    $("nodraft-reason").textContent = reason + " You can still send your report in your own words.";
+    $("nodraft-reason").textContent = reason + (addressOnly
+      ? " You can go back and add a sentence about what happened, or send just the address and your rating."
+      : " You can still send your report in your own words.");
     show("nodraft");
     focusEl($("nodraft-title"));
   }
@@ -268,6 +280,8 @@
           explanation: $("d-explanation").value.trim(),
           fix: $("d-fix").value.trim(),
           wcagCriterion: state.draft.wcagCriterion
+        ,
+          fromScan: state.draft.fromScan || undefined
         };
         body.confirmed = true;
       } else {

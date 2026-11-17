@@ -39,7 +39,7 @@ export function savePilotReport(body: SubmitBody, model: string | undefined): st
     body.pageUrl ?? null,
     at,
     body.task,
-    body.barrier,
+    body.barrier || "(not described: drafted from a scan of the page)",
     body.impact,
     body.draft ? JSON.stringify(body.draft) : null,
     body.draft ? (model ?? null) : null,
