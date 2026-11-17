@@ -258,7 +258,7 @@ export const PLAIN_RULE_EXPLANATIONS: Record<string, PlainRule> = {
     plain: "Buttons have no label",
     found: (n) =>
       `${n} ${n === 1 ? "button has" : "buttons have"} no label of any kind: no words inside and no name in the code. Nearly always an icon button, where the symbol carries the meaning and the code carries none of it.`,
-    impact: "Nobody can tell what it does before clicking. A common reason people give up.",
+    impact: "Screen reader users can't tell what it does before pressing it. A common reason people give up.",
   },
   label: {
     research:
@@ -302,7 +302,7 @@ export const PLAIN_RULE_EXPLANATIONS: Record<string, PlainRule> = {
   "page-has-heading-one": {
     plain: "No main heading",
     found: () =>
-      `The page has no top level heading.`,
+      `The page has no top-level heading.`,
     impact: "Nobody can tell at a glance what the page is about.",
   },
   "empty-heading": {
@@ -456,7 +456,7 @@ export const PLAIN_RULE_EXPLANATIONS: Record<string, PlainRule> = {
   "forced-colors-focus-lost": {
     plain: "Focus marker vanishes in High Contrast",
     impact:
-      "High contrast mode strips away the shadows and colours most focus highlights are drawn with. The people who most need to see where they are see nothing. The page looks perfect until that mode is on.",
+      "High Contrast mode strips away the shadows and colours most focus highlights are drawn with. The people who most need to see where they are see nothing. The page looks perfect until that mode is on.",
   },
   "forced-colors-icon-lost": {
     plain: "Icon button vanishes in High Contrast",
@@ -520,12 +520,12 @@ export const PLAIN_RULE_EXPLANATIONS: Record<string, PlainRule> = {
   "component-required-cue": {
     plain: "Required fields not visibly marked",
     impact:
-      "Nobody knows a field was required until the form rejects them. Signups fail.",
+      "Nobody knows a field was required until the form rejects them. Sign-ups fail.",
   },
   "component-submit-clarity": {
     plain: "No clearly labelled submit button",
     impact:
-      "A button that just says \"Go\" or shows only an icon leaves people unsure how to finish. Some forms have no button at all. So people don't finish.",
+      "A button that just says \"Go\" or shows only an icon leaves people unsure how to finish. Some forms have no button at all. Either way, people don't finish.",
   },
   "component-table-no-headers": {
     plain: "A table with no header cells",
@@ -707,7 +707,7 @@ export const PLAIN_RULE_EXPLANATIONS: Record<string, PlainRule> = {
   },
   "typo-negative-letterspacing": {
     plain: "Letters squeezed until they touch",
-    impact: "Cramped letters blur into one another. Especially at small sizes or for readers with low vision.",
+    impact: "Cramped letters blur into one another, especially at small sizes or for readers with low vision.",
   },
   "typo-line-length-long": {
     plain: "Lines run too long",
@@ -752,7 +752,7 @@ export const PLAIN_RULE_EXPLANATIONS: Record<string, PlainRule> = {
   "typo-thin-weight": {
     plain: "Body text in hairline weight",
     impact:
-      "Thin strokes fade on cheap screens and in sunlight, and weak eyesight loses them first. Even when contrast passes.",
+      "Thin strokes fade on cheap screens and in sunlight, and weak eyesight loses them first, even when contrast passes.",
   },
   "activation-stale-state": {
     plain: "A control announces its old state",
@@ -1148,7 +1148,7 @@ export const PLAIN_RULE_FIXES: Record<string, string | string[]> = {
   ],
   "document-title": "Give the page a title that describes it. It is what shows in the browser tab and in search results.",
   "html-has-lang": "Tell the page which language it is written in, so screen readers use the right voice.",
-  "html-lang-valid": "Correct the page's language setting to a real language code, such as English or German.",
+  "html-lang-valid": "Correct the page's language setting to a real language code, such as en for English or de for German.",
   "heading-order": "Use headings in order, without skipping a level.",
   "page-has-heading-one": "Add one <h1> near the top that states what the page is about.",
   "empty-heading": "Put text in the heading, or remove the empty heading tag.",
@@ -1166,7 +1166,7 @@ export const PLAIN_RULE_FIXES: Record<string, string | string[]> = {
   "aria-hidden-focus": "Either unhide it, or take it out of the tab order as well.",
   region: [
     "Put every part of the page inside a named area: header, navigation, main content, footer.",
-    "Content sitting outside them is skipped by readers jumping between sections.",
+    "Screen reader users jumping between sections skip any content left outside them.",
   ],
   "landmark-one-main": "Mark the primary content of the page as its main area, and use only one per page.",
   tabindex: 'Remove positive tabindex values (tabindex="1" or higher) and let the natural page order set focus order.',
@@ -1252,7 +1252,7 @@ export const UNDECIDED_EXPLANATIONS: Record<string, { what: string; ask: string 
   },
   "media-audio-transcript": {
     what: "Audio on the page. A transcript is ordinary page text, so the checker has no way to tell whether one is here.",
-    ask: "Check each recording has its words written out near the player. And that the writing covers everything said.",
+    ask: "Check that each recording has a written transcript near the player, and that it covers everything said.",
   },
   "media-embedded-player": {
     what: "Video played through another company's player. The video lives on their site, so the checker cannot look inside it.",
@@ -1270,7 +1270,7 @@ export const UNDECIDED_EXPLANATIONS: Record<string, { what: string; ask: string 
   },
   "consent-layer-unheralded": {
     what: "A cookie layer that never introduces itself. It carries no dialog role and no name, and keyboard focus never reaches it.",
-    ask: "Have someone try the page with a screen reader. If the layer is never announced, it needs a dialog role and a name. And focus moved into it when it opens.",
+    ask: "Have someone try the page with a screen reader. If the layer is never announced, it needs a dialog role and a name. Focus also has to move into it when it opens.",
   },
   "consent-trap-unnamed": {
     what: "Keyboard focus stays inside the cookie layer, but the layer never says what it is. No dialog role, no name.",
@@ -1317,7 +1317,7 @@ export const UNDECIDED_EXPLANATIONS: Record<string, { what: string; ask: string 
     ask: "Ask your developer to confirm every id referenced by an aria attribute exists on the page. None should sit inside a block that gets hidden or removed.",
   },
   "aria-allowed-role": {
-    what: "Parts of the page labelled in the code as something they may not be able to be. Whether it is wrong depends on how the component behaves.",
+    what: "Parts of the page labelled in the code with a role that may not suit them. Whether it is wrong depends on how the component behaves.",
     ask: "Ask your developer to confirm each behaves the way its role promises, keyboard included. Otherwise drop the role and use the native element.",
   },
   "aria-prohibited-attr": {

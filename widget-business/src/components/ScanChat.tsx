@@ -872,7 +872,7 @@ export function ScanChat({
    *  it, so the next message carries the result, as a form scan does. */
   async function rerun(url: string, scope: "page" | "site", aiReview: boolean) {
     if (busy || loading) {
-      setAnnouncement(t("The assistant is still replying. Run it again in a moment."));
+      setAnnouncement(t("The assistant is still replying. Send it again in a moment."));
       return;
     }
     setBusy(true);

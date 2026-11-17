@@ -181,19 +181,19 @@ export function ScanHistory({
                     { then: last.score, now: current.score }
                   )
                 : t(
-                    "Not comparable – we scored the earlier scan by different rules. Some checks that used to sit outside the number now count towards it, so the two are not a fair comparison and we claim no change."
+                    "Not comparable – we scored the earlier scan by different rules. Some checks now count towards the score that did not before, so we do not compare the two."
                   )}
             </li>
             <li>
               {diff.fixed.length === 0
-                ? t("Problems gone – none found this time")
-                : tf("Problems gone – {rules}", { rules: diff.fixed.map(ruleLabel).join(", ") })}
+                ? t("Problems fixed – none")
+                : tf("Problems fixed – {rules}", { rules: diff.fixed.map(ruleLabel).join(", ") })}
             </li>
             {/* "none weren't there before" is a double negative, and the
                 design's own copy has it. Said the way round it means. */}
             <li>
               {diff.appeared.length === 0
-                ? t("New problems – none appeared")
+                ? t("New problems – none")
                 : tf("New problems – {rules}", { rules: diff.appeared.map(ruleLabel).join(", ") })}
             </li>
           </ul>

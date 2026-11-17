@@ -48,7 +48,7 @@ export const SUMMARIES: Record<"good" | "middling" | "poor", string[]> = {
   // it says what the scan found and what that does not cover, then stops.
   good: ["Little to fix. A person would still find more."],
   middling: ["What the scan found stops some visitors. Most get through."],
-  poor: ["What the scan found stops some people from using the site."],
+  poor: ["What the scan found keeps people from using the site."],
 };
 
 /**

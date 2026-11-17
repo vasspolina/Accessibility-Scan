@@ -3278,7 +3278,7 @@ export class PageStatusError extends Error {
       status === 404 || status === 410
         ? `There is no page at that address (HTTP ${status}). Check the address and try again.`
         : status === 401
-          ? `That page asks for a login first (HTTP ${status}). The form can sign in with your details.`
+          ? `That page asks for a login first (HTTP ${status}). Use the form's login option to sign in with a test account.`
           : `${host} answered with an error (HTTP ${status}) instead of the page, so there was nothing to check. Try again later.`
     );
     this.name = "PageStatusError";
