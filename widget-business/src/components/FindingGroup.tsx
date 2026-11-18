@@ -17,6 +17,7 @@ import { DataTable } from "./DataTable";
 import { ElementShot } from "./ElementShot";
 import {
   fixKindForFinding,
+  fixHint,
   isKeyboardCheck,
   isAiFinding,
   aiHint,
@@ -621,8 +622,8 @@ export function FindingDetails({
           of these answers something different — who does the work, whether
           you can check it without them, and where the finding came from — so
           each gets its own line and its own label. */}
-      <p className="a11y-method-hint" data-size={tileSize(fix.hint)}>
-        <strong>{t("Who fixes this")}</strong> <span className="a11y-fd-body">{fix.hint}</span>
+      <p className="a11y-method-hint" data-size={tileSize(fixHint(rep))}>
+        <strong>{t("Who fixes this")}</strong> <span className="a11y-fd-body">{fixHint(rep)}</span>
       </p>
       {keyboardCheck && (
         <p className="a11y-method-hint" data-size={tileSize(keyboardHint())}>

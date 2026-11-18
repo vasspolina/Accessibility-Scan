@@ -926,56 +926,56 @@ export const FIXES_DE: Record<string, string | string[]> = {
 
 export const UNDECIDED_DE: Record<string, { what: string; ask: string }> = {
   "color-contrast": {
-    what: "Text auf einem Foto, einem Video oder einem Farbverlauf. Die Prüfung kann die Farbe des Textes lesen. Dahinter liegt aber keine einzelne Farbe zum Messen, und geraten wird nicht.",
-    ask: "Bitten Sie Ihr Designteam, jede Stelle gegen das Bild dahinter zu prüfen. Einmal an der hellsten Stelle des Bildes, einmal an der dunkelsten. Wo die Wörter untergehen, brauchen sie eine feste Fläche dahinter, einen dunklen Schleier über dem Bild oder eine andere Position.",
+    what: "Text über einem Foto, einem Video oder einem Farbverlauf. Sein Kontrast wechselt von Stelle zu Stelle, deshalb konnte die Prüfung keinen einzelnen Wert messen.",
+    ask: "Bitten Sie Ihr Designteam, jede Stelle dort zu prüfen, wo das Bild dahinter am hellsten ist. Fließtext braucht einen Kontrast von 4,5:1, großer Text 3:1. Reicht er nicht, gehört eine feste Fläche oder ein dunkler Schleier hinter die Wörter.",
   },
   "link-in-text-block": {
-    what: "Links in einem Absatz, die möglicherweise nur durch ihre Farbe gekennzeichnet sind. Die Prüfung kann nicht sagen, ob der Unterschied für sich allein stark genug ist.",
-    ask: "Fragen Sie Ihr Designteam, ob diese Links ohne die Farbe noch zu finden sind. Ist die Farbe das Einzige, was sie kennzeichnet, brauchen sie eine Unterstreichung oder ein anderes sichtbares Merkmal.",
+    what: "Links in Absätzen, die nur durch ihre Farbe auffallen, ohne Unterstreichung. Die Prüfung konnte nicht messen, ob sich ihre Farbe genug vom Text daneben abhebt.",
+    ask: "Bitten Sie Ihr Designteam, diese Links zu unterstreichen. Das ist die einfachste Lösung. Ein Farbunterschied von 3:1 zum umgebenden Text reicht auch, wenn der Link bei Mauszeiger und Tastaturfokus eine Unterstreichung bekommt.",
   },
   "video-caption": {
-    what: "Ein Video, das die Prüfung sehen, aber nicht anschauen kann. Sie kann nicht feststellen, ob Untertitel da sind oder ob sie etwas taugen.",
-    ask: "Fragen Sie die Person, die das Video gemacht hat, ob es Untertitel hat und ob ein Mensch sie korrigiert hat. Automatisch erzeugte Untertitel allein zählen nicht.",
+    what: "Ein Video auf der Seite. Die Prüfung kann es nicht abspielen und weiß deshalb nicht, ob es Untertitel gibt und ob sie zum Gesprochenen passen.",
+    ask: "Spielen Sie es mit eingeschalteten Untertiteln ab. Spricht jemand, sollte jedes Wort erscheinen, von einem Menschen korrigiert. Automatische Untertitel allein zählen nicht.",
   },
   "media-video-captions": {
-    what: "Video auf der Seite ohne Untertiteldatei. Das ist kein Beweis, dass eine nötig wäre: Ein stummer Clip braucht keine, und fest ins Bild gebrannte Untertitel zählen, hinterlassen aber keine Datei.",
-    ask: "Fragen Sie bei jedem Video die Person, die es gemacht hat, ob darin gesprochen wird. Wenn ja, braucht es Untertitel, von einem Menschen korrigiert. Automatisch erzeugte Untertitel allein zählen nicht.",
+    what: "Ein Video ohne angehängte Untertiteldatei. Ein stummer Clip braucht keine, und eingebrannte Untertitel hinterlassen keine Datei. Ein Fehler ist das also noch nicht.",
+    ask: "Spielen Sie jedes Video ab. Spricht jemand und erscheinen keine Untertitel, bitten Sie die Person, die es gemacht hat, um von Menschen korrigierte Untertitel. Automatische allein zählen nicht.",
   },
   "media-video-descriptions": {
-    what: "Video mit Untertiteln, aber ohne Beschreibung dessen, was zu sehen ist. Untertitel tragen die Wörter; das Bild tragen sie nicht.",
-    ask: "Fragen Sie, ob in diesen Videos etwas gezeigt statt gesagt wird. Ein Diagramm, eine Vorführung, Text im Bild. Wenn ja, muss der Ton es selbst beschreiben. Eine schriftliche Fassung auf der Seite deckt nur die unterste Stufe des Standards ab.",
+    what: "Ein untertiteltes Video, in dem nichts beschreibt, was zu sehen ist. Untertitel tragen die Worte, nicht das Bild, etwa ein Diagramm oder eingeblendeten Text.",
+    ask: "Sehen Sie jedes Video mit geschlossenen Augen an. Entgeht Ihnen etwas, etwa ein Diagramm, eine Vorführung oder eingeblendeter Text, muss der Ton es beschreiben. Eine Textfassung auf der Seite erfüllt nur Stufe A.",
   },
   "form-error-association": {
     what: "Fehlermeldungen im Formular, die im Code nicht mit ihrem Feld verbunden sind. Ein Screenreader sagt das Feld an, aber nicht den Fehler daneben.",
     ask: "Bitten Sie Ihr Entwicklungsteam, jede Meldung mit aria-describedby an ihr Feld zu binden. Dann hört man das Problem im selben Moment wie das Feld.",
   },
   "media-audio-transcript": {
-    what: "Ton auf der Seite. Ein Transkript ist gewöhnlicher Seitentext, also kann die Prüfung nicht feststellen, ob eines vorhanden ist.",
-    ask: "Prüfen Sie, ob neben jedem Player der Wortlaut steht und ob er alles Gesagte abdeckt.",
+    what: "Audio auf der Seite. Ein Transkript wäre gewöhnlicher Text, deshalb kann die Prüfung nicht sagen, ob es eines gibt.",
+    ask: "Suchen Sie neben jedem Player eine schriftliche Fassung von allem, was gesagt wird. Fehlt sie, bitten Sie die Person, die die Aufnahme gemacht hat, darum und stellen Sie sie auf die Seite.",
   },
   "media-embedded-player": {
-    what: "Video, das über den Player eines anderen Anbieters läuft. Das Video liegt auf dessen Seite, also kann die Prüfung nicht hineinsehen.",
-    ask: "Öffnen Sie jedes Video und schalten Sie die Untertitel ein. Fehlt die Option oder stimmen die Untertitel nicht, korrigieren Sie das dort, wo das Video liegt.",
+    what: "Ein Video im Player eines anderen Unternehmens, etwa YouTube oder Vimeo. Das Video liegt auf deren Website, deshalb kann die Prüfung nicht hineinsehen.",
+    ask: "Spielen Sie jedes ab und schalten Sie die Untertitel mit der CC-Taste ein. Fehlt die Taste oder stimmen die Untertitel nicht, korrigieren Sie sie in dem Konto, auf dem das Video liegt.",
   },
   "consent-layer-in-frame": {
-    what: "Die Zustimmungsebene kommt von der Website eines anderen Anbieters, in einem Rahmen. Der Scan kann nicht hineingreifen und beurteilen, was ein Screenreader dort vorfindet.",
-    ask: "Lassen Sie jemanden das Banner mit einem Screenreader ausprobieren. Fragen Sie, ob es angesagt wird, ob der Fokus dorthin gelangt und ob Ablehnen so leicht ist wie Zustimmen.",
+    what: "Das Cookie-Banner kommt in einem Frame von der Website eines anderen Unternehmens. Der Scan kann daher nicht prüfen, was ein Screenreader darin vorliest.",
+    ask: "Lassen Sie die Seite mit einem Screenreader öffnen, etwa VoiceOver am Mac oder NVDA unter Windows. Das Banner sollte zuerst vorgelesen werden, und die Tabulatortaste sollte seine Buttons erreichen. Ablehnen sollte so viele Schritte brauchen wie Zustimmen.",
   },
   "consent-layer-unheralded": {
-    what: "Eine Cookie-Ebene, die sich nie vorstellt. Sie trägt keine Dialog-Rolle und keinen Namen, und der Tastaturfokus erreicht sie nie.",
-    ask: "Lassen Sie jemanden die Seite mit einem Screenreader ausprobieren. Wird die Ebene nie angesagt, braucht sie eine Dialog-Rolle, einen Namen und den Fokus beim Öffnen.",
+    what: "Ein Cookie-Banner, von dem ein Screenreader nie erfährt. Es hat keine Dialog-Rolle und keinen Namen, und die Tabulatortaste erreicht es nie.",
+    ask: "Bitten Sie Ihre Entwicklung, das Banner als Dialog mit einem Namen wie „Cookie-Einstellungen“ zu kennzeichnen. Beim Öffnen gehört der Tastaturfokus hinein.",
   },
   "consent-trap-unnamed": {
-    what: "Der Tastaturfokus bleibt in der Cookie-Ebene, aber die Ebene sagt nie, was sie ist. Keine Dialog-Rolle, kein Name.",
-    ask: "Bitten Sie Ihr Entwicklungsteam, die Ebene als Dialog zu kennzeichnen und zu benennen.",
+    what: "Die Tabulatortaste bleibt im Cookie-Banner, aber das Banner sagt nie, was es ist. Wer einen Screenreader nutzt, steckt in etwas ohne Namen fest.",
+    ask: "Bitten Sie Ihre Entwicklung, das Banner als Dialog zu kennzeichnen und ihm einen Namen zu geben, etwa „Cookie-Einstellungen“.",
   },
   "interaction-motion-actuation": {
     what: "Die Seite reagiert darauf, dass das Handy gekippt oder geschüttelt wird. Wer sein Handy in einer Halterung hat oder zittrige Hände, kann das nicht.",
     ask: "Fragen Sie Ihr Entwicklungsteam, ob sich jede Kipp- oder Schüttelaktion auch durch Tippen auf dem Bildschirm auslösen lässt. Fragen Sie dann, ob sich die Bewegungssteuerung abschalten lässt, damit eine zitternde Hand sie nicht versehentlich auslöst.",
   },
   "interaction-gesture-listeners": {
-    what: "Die Seite horcht auf Wisch- und Ziehbewegungen. Wer zittert oder den Zeiger per Sprache oder Schalter steuert, bringt so eine Bewegung vielleicht nicht zustande.",
-    ask: "Fragen Sie Ihr Entwicklungsteam, ob sich jedes Wischen und Ziehen auch durch Tippen erledigen lässt. Pfeile neben einem Karussell, ein Knopf neben einem Schieberegler.",
+    what: "Die Seite wartet auf Wischen oder Ziehen. Menschen mit Zittern oder mit Sprach- oder Schaltersteuerung schaffen das unter Umständen nicht.",
+    ask: "Bedienen Sie jedes Karussell, jeden Regler und jede Karte nur mit einzelnem Tippen. Was Wischen oder Ziehen verlangt, braucht zusätzlich einen Button, etwa Pfeile neben einem Karussell.",
   },
   "interaction-key-shortcuts": {
     what: "Die Seite achtet auf Tastendrücke im ganzen Fenster. Wo ein einzelner Buchstabe ein Kürzel ist, löst ihn jeder aus, der mit seinem Computer spricht.",
@@ -986,40 +986,40 @@ export const UNDECIDED_DE: Record<string, { what: string; ask: string }> = {
     ask: "Bitten Sie Ihr Entwicklungsteam, jede Passage mit ihrer Sprache zu kennzeichnen. Automatisch erkennbar ist nur ein Schriftwechsel. Fragen Sie also auch nach fremdsprachigen Passagen in lateinischer Schrift.",
   },
   "interaction-title-tooltip": {
-    what: "Kurzhinweise aus dem title-Attribut. Sie erscheinen nur beim Zeigen mit der Maus, also sieht sie an Tastatur oder Touchscreen niemand. Sie lassen sich auch nicht wegklicken und verschwinden, sobald man zu ihnen hinfährt, um zu Ende zu lesen.",
-    ask: "Fragen Sie Ihr Entwicklungsteam, ob darin etwas Wichtiges steckt. Wenn ja, schreiben Sie es auf die Seite oder bauen Sie einen Hinweis, der stehen bleibt und mit Escape schließt.",
+    what: "Tooltips, die nur erscheinen, wenn die Maus über etwas schwebt. Wer Tastatur oder Touchscreen nutzt, sieht sie nie, und sie verschwinden, wenn man sich ihnen nähert.",
+    ask: "Fahren Sie mit der Maus über jeden und lesen Sie ihn. Steht darin etwas Wichtiges, gehört der Text auf die Seite. Oder die Entwicklung baut einen Tooltip, der auch beim Fokus erscheint und mit Escape schließt.",
   },
   "interaction-orientation-lock": {
-    what: "Ein Stylesheet dreht die Seite hier zurück oder blendet sie aus, wenn das Handy gedreht wird. So sieht eine Seite aus, die auf eine Ausrichtung festgelegt ist. Es kann auch eine gewollte Querformat-Ansicht für etwas Breites sein.",
-    ask: "Fragen Sie Ihr Entwicklungsteam, ob die Seite in beiden Lagen funktioniert. Wer sein Handy oder Tablet am Rollstuhl befestigt hat, kann es nicht drehen.",
+    what: "Die Styles der Seite drehen sie zurück oder blenden sie aus, wenn das Handy gedreht wird. Meist ist sie dann auf eine Ausrichtung festgelegt, außer eine breite Ansicht ist bewusst nur für Querformat gedacht.",
+    ask: "Öffnen Sie die Seite auf dem Handy und drehen Sie es in beide Richtungen. Alles sollte weiter funktionieren, für Menschen mit einem Handy fest am Rollstuhl oder in einer Halterung.",
   },
   "interaction-no-status-region": {
-    what: "Seiten aktualisieren sich ohne Neuladen. Ein Filter kürzt eine Liste, ein Formular meldet, dass es gespeichert hat. Auf dieser Seite ist keine Stelle als der Ort gekennzeichnet, an dem so eine Änderung gesprochen wird. Der Screenreader schweigt, während sich die Seite unter ihm bewegt.",
+    what: "Nichts auf dieser Seite ist dafür eingerichtet, Änderungen ohne Neuladen anzusagen, etwa eine gefilterte Liste oder die Meldung „Gespeichert“. Ein Screenreader bleibt dabei stumm.",
     ask: "Fragen Sie Ihr Entwicklungsteam, ob sich hier etwas ohne Neuladen ändert. Wenn ja, braucht diese Änderung einen Live-Bereich, damit sie nicht nur gezeigt, sondern auch gesprochen wird.",
   },
   "interaction-acts-on-change": {
-    what: "Menüs oder Kästchen, die offenbar sofort handeln, sobald man sie setzt, statt auf einen Knopf zu warten. Wir haben das aus dem Code gelesen und nicht ausprobiert: Auf Ihrer echten Website könnte das eine echte Bestellung auslösen.",
-    ask: "Fragen Sie Ihr Entwicklungsteam, ob die Wahl einer Option hier absendet oder die Seite wechselt. Wenn ja, setzen Sie einen Knopf dafür ein oder weisen Sie vor dem Element darauf hin.",
+    what: "Menüs oder Kästchen, deren Code nahelegt, dass sie sofort beim Setzen handeln, ohne Button. Wir haben sie nicht ausprobiert, das könnte eine echte Bestellung auslösen.",
+    ask: "Probieren Sie jedes auf einer Testkopie der Website aus. Schickt eine Auswahl ein Formular ab oder öffnet eine neue Seite, braucht es dafür einen Button. Ein Hinweis daneben geht auch.",
   },
   "interaction-pointer-cancellation": {
     what: "Elemente, die schon beim Drücken handeln und nicht erst beim Loslassen. Wer versehentlich auf eines kommt, kann nicht mehr wegrutschen und loslassen.",
     ask: "Bitten Sie Ihr Entwicklungsteam, diese erst beim Loslassen auszulösen. Wem die Hand verrutscht oder wer länger zielt, kann dann noch weggehen, bevor er den Finger hebt.",
   },
   "aria-valid-attr-value": {
-    what: "Angaben im Code, die auf einen anderen Teil der Seite zeigen. Die Prüfung kann nicht immer feststellen, ob das Ziel wirklich da ist.",
-    ask: "Lassen Sie Ihr Entwicklungsteam prüfen, ob jede id, auf die ein aria-Attribut zeigt, auf der Seite existiert. Keine davon sollte in einem Block liegen, der versteckt oder entfernt wird.",
+    what: "Code-Beschriftungen, die über eine ID auf einen anderen Teil der Seite zeigen. Die Prüfung konnte nicht bestätigen, dass dieser Teil vorhanden ist.",
+    ask: "Bitten Sie Ihre Entwicklung zu bestätigen, dass jede von einem aria-Attribut genannte ID existiert. Sie darf nie ausgeblendet oder entfernt werden.",
   },
   "aria-allowed-role": {
-    what: "Teile der Seite, die im Code eine Rolle tragen, die vielleicht nicht zu ihnen passt. Ob es falsch ist, hängt davon ab, wie sich das Element verhält.",
-    ask: "Lassen Sie Ihr Entwicklungsteam prüfen, ob sich jedes so verhält, wie seine Rolle es verspricht, Tastatur eingeschlossen. Sonst lassen Sie die Rolle weg und nehmen das native Element.",
+    what: "Elemente, denen der Code eine Rolle wie Button oder Tab gibt, die vielleicht nicht passt. Ob das falsch ist, hängt von ihrem Verhalten ab.",
+    ask: "Bitten Sie Ihre Entwicklung zu prüfen, ob sich jedes so verhält, wie seine Rolle verspricht, auch mit der Tastatur. Sonst entfällt die Rolle zugunsten des passenden nativen Elements, etwa eines echten Buttons.",
   },
   "aria-prohibited-attr": {
-    what: "Ein Element trägt einen Namen, den der Code ihm vielleicht nicht lässt. Ob er bleibt, hängt von der Rolle des Elements ab.",
-    ask: "Lassen Sie Ihr Entwicklungsteam prüfen, ob jedes mit dem Namen angesagt wird, den Sie gemeint haben. Wo nicht, setzen Sie den Namen auf ein Element, das einen tragen darf.",
+    what: "Elemente mit einem Namen im Code, den ihr Typ vielleicht nicht erlaubt. Ein Screenreader übergeht diesen Namen dann womöglich.",
+    ask: "Bitten Sie Ihre Entwicklung zu prüfen, ob jedes mit dem gewünschten Namen vorgelesen wird. Wenn nicht, gehört der Name auf ein Element, das einen tragen darf.",
   },
   "css-orientation-lock": {
-    what: "Stile, die die Seite auf Hoch- oder Querformat festlegen könnten. Die Prüfung, die das gefunden hat, ist experimentell.",
-    ask: "Fragen Sie Ihr Entwicklungsteam, ob sich die Seite mit dem Gerät dreht. Manche Menschen befestigen Handy oder Tablet am Rollstuhl in einer Lage und können es nicht drehen.",
+    what: "Styles, die die Seite vielleicht auf Hoch- oder Querformat festlegen. Die Prüfung dafür ist noch experimentell und kann sich irren.",
+    ask: "Öffnen Sie die Seite auf dem Handy und drehen Sie es in beide Richtungen. Alles sollte weiter funktionieren, für Menschen mit fest montiertem Handy oder Tablet.",
   },
   "duplicate-id-aria": {
     what: "Eine id, die möglicherweise mehrfach verwendet wird. Jede Angabe im Code, die darauf zeigt, folgt nur der ersten, also kann ein Name still am falschen Element landen.",
