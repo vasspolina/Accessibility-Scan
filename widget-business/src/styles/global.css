@@ -337,16 +337,25 @@
    4 Nov 2026): the summary's solid round with the figure in paper, hung in
    the list's margin on the first line. counter(list-item) follows the
    start attribute, so a list resumed after code keeps its count; the ol
-   carries role="list" because list-style: none drops the role in Safari. */
+   carries role="list" because list-style: none drops the role in Safari.
+   Centred on the first line (user's instruction, 18 Nov 2026, "aligned to
+   the text line, in the middle of it"): top: 0 left the 32px round riding
+   high against the 49px line. The item's line-height becomes a length
+   (1lh, here 56.35px) so the round can inherit it: a unitless 1.15 would
+   be re-read against the round's own 22px. The round then measures 1lh
+   from the item, at whatever size the list is set, and its middle sits on
+   the first line's middle. The test plan's tiles set their own leading
+   and are left out. */
 .a11y-widget-biz .a11y-chat-text ol { list-style: none; padding-inline-start: 1.6em; }
 .a11y-widget-biz .a11y-chat-text ol > li { position: relative; }
+.a11y-widget-biz .a11y-chat-text ol:not(.a11y-chat-plan) > li { line-height: 1lh; }
 .a11y-widget-biz .a11y-chat-text ol > li::before {
   content: counter(list-item);
-  position: absolute; inset-inline-start: -1.6em; top: 0;
+  position: absolute; inset-inline-start: -1.6em; top: 0; top: calc((1lh - 32px) / 2);
   display: grid; place-content: center;
   width: 32px; height: 32px; border-radius: 50%;
   background: var(--ink); color: var(--paper);
-  font-size: 22px; letter-spacing: 0; font-weight: 500; line-height: 1;
+  font-size: 22px; letter-spacing: 0; font-weight: 500; line-height: inherit;
 }
 .a11y-widget-biz .a11y-chat-text li::marker { font-weight: 400; }
 .a11y-widget-biz .a11y-chat-text li { margin: 0 0 0.2em; }
@@ -1651,7 +1660,11 @@
    ellipsis (the full question is the button's name and stays in the thread).
    The row on screen and the row under the pointer take the #f0efe8 ground of
    the opening cards, black words in both themes (18.4:1), 12px corners, the
-   way Claude's rows are drawn; a delete button shows on that row. A 1px ink
+   way Claude's rows are drawn; a delete button shows on that row. New chat
+   and every past conversation keep a 1px dashed ink edge at all times
+   (user's instruction, same day, "keep the dotted lines on these": they
+   had shown only while switching was locked), hover included; locked is
+   now the heavier 2px dash, the padding a pixel less so nothing moves. A 1px ink
    rule parts the panel from the conversation. It is sticky and scrolls on
    its own, so a long list never pushes the box you type in off screen.
    Under 640px it folds behind a Conversations toggle above the thread.
@@ -1682,12 +1695,12 @@
 .a11y-widget-biz .a11y-chats .a11y-chats-toggle,
 .a11y-widget-biz .a11y-chats .a11y-chats-item {
   align-items: center; gap: 10px; box-sizing: border-box; width: 100%; min-height: 40px;
-  margin: 0; padding: 8px 12px; border: 1px solid transparent; border-radius: 12px;
+  margin: 0; padding: 8px 12px; border: 1px dashed var(--ink); border-radius: 12px;
   background: transparent; color: var(--ink);
   font-size: 18px; letter-spacing: 0.01em; line-height: 1.3; text-align: start;
 }
 .a11y-widget-biz .a11y-chats .a11y-chats-new { display: flex; font-weight: 500; }
-.a11y-widget-biz .a11y-chats .a11y-chats-toggle { display: none; font-weight: 400; }
+.a11y-widget-biz .a11y-chats .a11y-chats-toggle { display: none; border-color: transparent; font-weight: 400; }
 .a11y-widget-biz .a11y-chats .a11y-chats-head {
   margin: 28px 0 6px; padding-inline: 12px; font-size: 15px; font-weight: 500; letter-spacing: 0.01em; line-height: 1.2;
 }
@@ -1707,7 +1720,7 @@
 .a11y-widget-biz .a11y-chats .a11y-chats-new:enabled:hover,
 .a11y-widget-biz .a11y-chats .a11y-chats-toggle:hover {
   --ink: #000; --paper: #f0efe8;
-  background: #f0efe8; border-color: transparent; color: #000;
+  background: #f0efe8; color: #000;
 }
 .a11y-widget-biz .a11y-chats .a11y-chats-row[data-current] .a11y-chats-item { font-weight: 500; }
 .a11y-widget-biz .a11y-chats .a11y-chats-delete {
@@ -1718,9 +1731,11 @@
 }
 .a11y-widget-biz .a11y-chats .a11y-chats-row:is([data-current], :hover, :focus-within) .a11y-chats-delete { visibility: visible; }
 .a11y-widget-biz .a11y-chats .a11y-chats-row .a11y-chats-delete:enabled:hover { border-color: #000; }
-/* Disabled while a reply or a scan runs: the dashed edge, never faded. */
-.a11y-widget-biz .a11y-chats :is(.a11y-chats-new, .a11y-chats-item, .a11y-chats-delete):disabled {
-  border: 1px dashed var(--ink); cursor: not-allowed;
+/* Disabled while a reply or a scan runs: a dashed edge, never faded. The
+   rows carry a 1px dash at rest, so theirs goes to 2px. */
+.a11y-widget-biz .a11y-chats .a11y-chats-delete:disabled { border: 1px dashed var(--ink); cursor: not-allowed; }
+.a11y-widget-biz .a11y-chats :is(.a11y-chats-new, .a11y-chats-item):disabled {
+  padding: 7px 11px; border: 2px dashed var(--ink); cursor: not-allowed;
 }
 @media (max-width: 640px) {
   .a11y-widget-biz .a11y-chat-layout { grid-template-columns: minmax(0, 1fr); gap: 0; }
