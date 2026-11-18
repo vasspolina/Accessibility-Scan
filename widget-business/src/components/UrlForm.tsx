@@ -212,9 +212,7 @@ export function UrlForm({
               panel; that drops below this row when opened. */}
           <div className="a11y-url-helper-row">
             <span id="a11y-url-hint" className="a11y-group-hint">
-              {mode === "site"
-                ? t("Public pages only.")
-                : t("Public pages only.")}
+              {t("Public pages only.")}
             </span>
             <LoginFields
               auth={auth}
@@ -355,20 +353,19 @@ export function UrlForm({
 
           {mode === "page" && (
             <div className="a11y-ai-card">
-              <span className="a11y-ai-card-text">
-                <span className="a11y-ai-card-title">{t("Add an AI review")}</span>
-                <span id="a11y-ai-hint" className="a11y-ai-hint">
-                  {t("A language model reads the page for design and wording faults, and writes a code fix for each fault it can correct. It can be wrong.")}{" "}
-                  {tf("Adds {duration}.", { duration: t(SCAN_DURATION.aiAdds) })}
-                </span>
-              </span>
+              {/* One name, once: the switch's own label is the title, so the
+                  page no longer says "AI review" twice on one line. */}
               <Switch
                 id="a11y-ai"
-                label={t("AI review")}
+                label={t("Add an AI review")}
                 checked={includeAiReview}
                 onChange={setIncludeAiReview}
                 disabled={loading}
               />
+              <span id="a11y-ai-hint" className="a11y-ai-hint">
+                {t("A language model reads the page for design and wording faults, and writes a code fix for each fault it can correct. It can be wrong.")}{" "}
+                {tf("Adds {duration}.", { duration: t(SCAN_DURATION.aiAdds) })}
+              </span>
             </div>
           )}
 

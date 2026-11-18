@@ -151,7 +151,6 @@
 .a11y-widget-biz :is(.a11y-rule-chip, .a11y-level-badge) { background: var(--hl-orange); }
 
 /* Inline neighbours need air: the check for welded siblings reads this. */
-.a11y-widget-biz .a11y-ai-card-title,
 .a11y-widget-biz .a11y-ai-hint,
 .a11y-widget-biz .a11y-audit-body,
 .a11y-widget-biz .a11y-audit-count,
@@ -676,26 +675,26 @@
    with paper text; the other is paper with an ink edge (21:1 either way, and
    shape, not colour, tells them apart). Corner radius is the card's own, the
    one place besides buttons and the chat that is round. */
-.a11y-widget-biz .a11y-radio-group.a11y-optioncard-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 260px), 1fr)); gap: calc(var(--line) / 2); }
+.a11y-widget-biz .a11y-radio-group.a11y-optioncard-grid { display: grid; grid-template-columns: minmax(0, 1fr); gap: calc(var(--line) / 2); }
 .a11y-widget-biz .a11y-optioncard {
-  display: grid; grid-template-columns: 39px minmax(0, 1fr); grid-template-rows: auto 1fr; align-items: start;
-  gap: 0 0.6em; box-sizing: border-box; padding: 20px;
-  border: 1px solid var(--ink); border-radius: 20px; background: var(--paper); color: var(--ink); cursor: pointer;
+  display: grid; grid-template-columns: 1.6em minmax(0, 1fr); align-items: baseline;
+  gap: 0 0.4em; cursor: pointer;
 }
-.a11y-widget-biz .a11y-optioncard-on { background: var(--ink); color: var(--paper); }
-.a11y-widget-biz .a11y-optioncard > input { grid-row: 1; grid-column: 1; margin-top: -3px; }
+/* The chosen option is told by the filled dot and an underline, not by a
+   slab of ink: shape survives greyscale, and nothing is boxed. */
+.a11y-widget-biz .a11y-optioncard-on .a11y-optioncard-label { text-decoration: underline; text-decoration-thickness: 2px; text-underline-offset: 0.2em; }
+.a11y-widget-biz .a11y-optioncard > input { grid-row: 1; grid-column: 1; margin: 0; align-self: center; }
 .a11y-widget-biz .a11y-optioncard-text { display: contents; }
 .a11y-widget-biz .a11y-optioncard-label { grid-row: 1; grid-column: 2; }
-.a11y-widget-biz .a11y-optioncard-desc { grid-row: 2; grid-column: 1 / -1; align-self: end; padding-top: var(--line); font-size: 22px; letter-spacing: 0.01em; line-height: 1.2; }
-.a11y-widget-biz .a11y-optioncard:has(input:focus-visible) { outline: 3px solid var(--ink); outline-offset: 2px; box-shadow: 0 0 0 2px var(--paper); }
+.a11y-widget-biz .a11y-optioncard-desc { grid-row: 2; grid-column: 2; font-size: 18px; letter-spacing: 0.01em; line-height: 1.2; }
+.a11y-widget-biz .a11y-optioncard:has(input:focus-visible) { outline: 3px solid var(--ink); outline-offset: 4px; box-shadow: 0 0 0 2px var(--paper); }
 .a11y-widget-biz .a11y-optioncard > input:focus-visible { outline: none; box-shadow: none; }
-.a11y-widget-biz .a11y-optioncard-disabled { border-style: dashed; cursor: not-allowed; }
+.a11y-widget-biz .a11y-optioncard-disabled { cursor: not-allowed; }
+.a11y-widget-biz .a11y-optioncard-disabled .a11y-optioncard-label { text-decoration-style: dashed; }
 .a11y-widget-biz .a11y-step-body .a11y-radio-group { margin: 0; }
 
-/* The AI card: words left, the switch right, a line apart when they wrap. */
-.a11y-widget-biz .a11y-ai-card { margin-top: calc(var(--line) / 2); display: flex; flex-wrap: wrap; align-items: flex-start; justify-content: space-between; gap: calc(var(--line) / 2) 1.2em; }
-.a11y-widget-biz .a11y-ai-card-text { display: grid; flex: 1 1 18em; min-width: 0; }
-.a11y-widget-biz .a11y-ai-card-title { font-size: 22px; letter-spacing: 0.01em; font-weight: 500; line-height: 1.2; }
+/* The AI review: the switch with its name, the warning in small print under. */
+.a11y-widget-biz .a11y-ai-card { display: grid; gap: calc(var(--line) / 4); }
 .a11y-widget-biz .a11y-ai-hint { font-size: 18px; letter-spacing: 0.01em; line-height: 1.2; }
 
 /* The switch: a track and a round knob in ink and paper, with the word On or
