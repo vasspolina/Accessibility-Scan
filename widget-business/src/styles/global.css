@@ -54,10 +54,15 @@
   --hl-cap-a: #ffe14d; --hl-cap-b: #ff9ad5;
   color-scheme: light;
 }
+/* The theme is read on the widget's own root, never on :root: inside the
+   shadow root :root matches nothing, so the dark rules written against it
+   (3 Nov to 18 Nov 2026) never applied, and a dark-mode visitor got a white
+   widget on a black page. index.tsx stamps data-theme on this element when
+   the embedder pins one; otherwise the visitor's system setting decides. */
 @media (prefers-color-scheme: dark) {
-  :root:not([data-theme="light"]) .a11y-widget-biz { --ink: #fff; --paper: #000; color-scheme: dark; }
+  .a11y-widget-biz:not([data-theme="light"]) { --ink: #fff; --paper: #000; color-scheme: dark; }
 }
-:root[data-theme="dark"] .a11y-widget-biz { --ink: #fff; --paper: #000; color-scheme: dark; }
+.a11y-widget-biz[data-theme="dark"] { --ink: #fff; --paper: #000; color-scheme: dark; }
 
 .a11y-widget-biz {
   font-family: "Jokker", "DejaVu Sans", sans-serif;
@@ -348,6 +353,11 @@
    height, so the punctuation in (WCAG-AA) sits with the capitals around it
    rather than at lowercase height (p.39–40). */
 .a11y-widget-biz :is(.a11y-chat-who, small, th) .a11y-caps { font-size: inherit; }
+/* The accessibility statement sets its text at 22px, where a 30px run of
+   capitals stood larger than the words around it ("EN 301 549", "WCAG"),
+   the opposite of the rule. A size smaller there is 21px (measured
+   18 Nov 2026: the only caps run in the report outside the chat). */
+.a11y-widget-biz .a11y-stmt-code .a11y-caps { font-size: 21px; }
 /* A list in the conversation (fig. 50): an en dash and a word space for a
    bullet, hung in the margin; a figure and its point for a count. */
 .a11y-widget-biz .a11y-chat-text :is(ul, ol) { margin: 0 0 1.2em; }
@@ -1909,9 +1919,9 @@
 .a11y-widget-biz .a11y-chats { --chats-edge: #14532d; }
 .a11y-widget-biz .a11y-chats .a11y-chats-new { border-color: var(--chats-edge); }
 @media (prefers-color-scheme: dark) {
-  :root:not([data-theme="light"]) .a11y-widget-biz .a11y-chats { --chats-edge: #3f9e5a; }
+  .a11y-widget-biz:not([data-theme="light"]) .a11y-chats { --chats-edge: #3f9e5a; }
 }
-:root[data-theme="dark"] .a11y-widget-biz .a11y-chats { --chats-edge: #3f9e5a; }
+.a11y-widget-biz[data-theme="dark"] .a11y-chats { --chats-edge: #3f9e5a; }
 .a11y-widget-biz .a11y-chats .a11y-chats-new:enabled:hover { --chats-edge: #14532d; }
 
 /* AUTOMATED CHECK RESULTS AS A SHEET OF ALTERNATES (user's reference, 18 Nov
