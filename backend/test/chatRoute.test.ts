@@ -123,6 +123,17 @@ describe("the chat contract", () => {
     expect(JSON.stringify(START_SCAN_TOOL)).not.toMatch(/password|username|cookie/i);
   });
 
+  // The chat habits that read as filler: an opener, a closing offer, a
+  // padding hedge, formatting the answer does not need. Honest uncertainty
+  // (an AI review finding may be wrong) is kept and must stay in the prompt.
+  it("writes without openers, closing offers, filler hedges or extra formatting", () => {
+    expect(CHAT_SYSTEM_PROMPT).toMatch(/Start with the answer\. No opener/);
+    expect(CHAT_SYSTEM_PROMPT).toMatch(/No "Let me know if", "Hope this helps"/);
+    expect(CHAT_SYSTEM_PROMPT).toMatch(/No filler hedges/);
+    expect(CHAT_SYSTEM_PROMPT).toMatch(/Real uncertainty stays/);
+    expect(CHAT_SYSTEM_PROMPT).toMatch(/A list is for three or more items/);
+  });
+
   it("holds the assistant to the report's own claims", () => {
     expect(CHAT_SYSTEM_PROMPT).toMatch(/Never invent a finding/);
     expect(CHAT_SYSTEM_PROMPT).toMatch(/Never say or imply the site is compliant/);
