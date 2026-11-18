@@ -1255,7 +1255,12 @@ export function ScanChat({
                 </Button>
               </span>
               <Button type="submit" variant="primary" disabled={busy || loading || !draft.trim()}>
-                {t("Send")}
+                {/* On a phone the word is clipped and the arrow drawn, as in
+                    Claude's apps: the button keeps "Send" as its name. */}
+                <span className="a11y-chat-send-word">{t("Send")}</span>
+                <svg className="a11y-chat-send-icon" viewBox="0 0 24 24" width="22" height="22" aria-hidden="true" focusable="false">
+                  <path d="M12 19V5M5.5 11.5 12 5l6.5 6.5" fill="none" stroke="currentColor" strokeWidth="2.25" strokeLinecap="round" strokeLinejoin="round" />
+                </svg>
               </Button>
             </div>
           </div>
