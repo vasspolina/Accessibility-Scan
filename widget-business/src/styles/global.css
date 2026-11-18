@@ -1202,20 +1202,20 @@
 .a11y-widget-biz .a11y-fd > .a11y-fd-col:first-child > :is(p, div) {
   --ink: #000; --paper: #f0efe8;
   flex: 1 1 calc(45% - 16px);
-  display: flex; flex-direction: column; align-items: center; gap: 28px;
+  display: flex; flex-direction: column; align-items: flex-start; gap: 28px;
   box-sizing: border-box; min-width: 0; min-height: 300px; max-width: none; margin: 0; padding: 22px 32px 40px;
-  border-radius: 20px; background: #f0efe8; color: #000; text-align: center;
-  font-family: "Jokker", sans-serif; font-weight: 500; font-size: 30px; line-height: 1.15; letter-spacing: 0.005em;
+  border-radius: 20px; background: #f0efe8; color: #000; text-align: start;
+  font-family: "Jokker", sans-serif; font-weight: 500; font-size: 26px; line-height: 1.2; letter-spacing: 0.005em;
 }
-.a11y-widget-biz .a11y-fd > .a11y-fd-col:first-child > [data-size="s"] { flex-basis: calc(33.333% - 16px); font-size: 38px; letter-spacing: -0.005em; line-height: 1.1; }
-.a11y-widget-biz .a11y-fd > .a11y-fd-col:first-child > [data-size="l"] { flex-basis: calc(60% - 16px); font-size: 26px; line-height: 1.2; }
+.a11y-widget-biz .a11y-fd > .a11y-fd-col:first-child > [data-size="s"] { flex-basis: calc(33.333% - 16px); }
+.a11y-widget-biz .a11y-fd > .a11y-fd-col:first-child > [data-size="l"] { flex-basis: calc(60% - 16px); }
 .a11y-widget-biz .a11y-fd > .a11y-fd-col:first-child > p > strong:first-child {
   flex: none; margin: 0; padding: 3px 12px 4px; border: 0; border-radius: 999px;
   background: #000; color: #f0efe8;
   font-family: "Jokker", sans-serif; font-weight: 400; font-size: 15px; line-height: 1.2; letter-spacing: 0.01em; text-transform: none;
 }
 .a11y-widget-biz .a11y-fd > .a11y-fd-col:first-child .a11y-fd-body {
-  display: block; margin-block: auto; max-width: 100%; text-wrap: balance;
+  display: block; margin-block: 0; max-width: 100%; text-wrap: pretty;
 }
 .a11y-widget-biz .a11y-fd > .a11y-fd-col:first-child .a11y-fd-body code { font-size: 0.8em; }
 @container a11y-fd (max-width: 640px) {

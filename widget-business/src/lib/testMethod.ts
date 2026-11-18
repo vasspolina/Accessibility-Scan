@@ -174,7 +174,7 @@ const TARGET_SIZE =
 const TYPE_SETTINGS =
   "Your designer sets the type: its size, weight, line spacing and line length. Whoever builds the site then changes the stylesheet to match.";
 const MARKETING_DECISION =
-  "Whoever decides your marketing and sales tactics. Taking out a pressure tactic is their decision, not the developer's.";
+  "Your marketing or sales team. Removing a pressure tactic is their call, not the developer's.";
 
 export const RULE_HINTS: Record<string, string> = {
   "link-text-vague": LINK_WORDS,
@@ -291,7 +291,7 @@ export function isAiFinding(finding: AccessibilityFinding): boolean {
 }
 
 export const AI_HINT =
-  "Our AI review wrote this, not a rule check, and it can be wrong while sounding sure. Look at the element yourself before changing anything.";
+  "Our AI wrote this, not a rule check. It can be wrong, so look at the element yourself first.";
 
 export const KEYBOARD_HINT =
   "You can confirm this one yourself in a few minutes, with nothing installed. Put the mouse aside and move through the page using Tab, Enter and Escape.";
