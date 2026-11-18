@@ -524,7 +524,6 @@ export function ScanChat({
   report,
   audit,
   onScan,
-  onUseForm,
   renderSection,
   availableSections,
   language,
@@ -543,7 +542,6 @@ export function ScanChat({
   report: AccessibilityReport | null;
   audit: SiteAudit | null;
   onScan: (url: string, scope: "page" | "site", aiReview: boolean) => Promise<ScanOutcome>;
-  onUseForm: () => void;
   renderSection: (key: SectionKey) => ReactNode;
   availableSections: SectionKey[];
   language: Lang;
@@ -1525,9 +1523,6 @@ export function ScanChat({
                     {t("Back")}
                   </Button>
                 )}
-                <Button variant="ghost" onClick={onUseForm}>
-                  {t("Use the form instead")}
-                </Button>
               </span>
               <Button type="submit" variant="primary" disabled={busy || loading || !draft.trim()}>
                 {/* On a phone the word is clipped and the arrow drawn, as in

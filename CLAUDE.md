@@ -149,6 +149,7 @@ Comments in this codebase are long and record what was measured and why a value 
 - **An opened finding breathes more** ("add 30% more line height between sections of content when carret is opened", "add paragraph break to this content based on text"): the sections stand 65px, 100px and 65px apart (each 30% over the 50, 76.8 and 50 before), and the AI fix's parts are one line of its text apart (1.3em), a key 0.4em over its own code block.
 - **Design notes' titles at the Displaay button size** ("make this text size like this"): 22px set solid (line-height 1.0), down from 32px/1.1.
 - **The report's section pills under the thread are 3px apart** ("add 3px in between tabs", `.a11y-chat-suggest`); they had no rule and touched.
+- **No "Use the form instead" button** ("lets delete button use form instead"). It was the only way into the form (`entry === "form"` in `App.tsx`), and the form is the only way to scan behind a login, so that path is unreachable until something else opens it; the form code stays.
 - **The Language select's edge is dotted** ("lets make line dotted"): 2px dotted ink, square. Dashed still means disabled.
 
 ## Colour: strictly black and white (user's instruction, 14 Oct 2026)

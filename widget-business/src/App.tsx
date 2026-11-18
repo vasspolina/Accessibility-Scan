@@ -987,7 +987,6 @@ export function App({
             const full = /^https?:\/\//i.test(url) ? url : `https://${url}`;
             return handleScan(full, aiReview, scope, 5);
           }}
-          onUseForm={() => setEntry("form")}
           resultPrivate={resultPrivate}
           onRestore={(result) => {
             // A reopened conversation's result, back as it was: no scan, and
