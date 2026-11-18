@@ -67,8 +67,8 @@ export function ReportActions({
           that explains a control sits under that control rather than in one
           run-on paragraph the reader has to split apart themselves. */}
       {/* Set as the Displaay Info block and form (user's references,
-          17 Nov 2026): two columns, each under an uppercase label on a 1px
-          rule. The address is a rounded field with its label inside it, the
+          17 Nov 2026): two columns, each under an uppercase label (no rule
+          under it since 18 Nov 2026). The address is a rounded field with its label inside it, the
           send is one wide rounded block in display type, and the PDF is an
           outlined button with a download arrow. Each note sits under its
           own control. */}
