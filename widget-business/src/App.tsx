@@ -215,10 +215,7 @@ export function App({
     for (const c of report?.conformance?.criteria ?? []) {
       criterionNames[c.id] = { name: c.name, level: c.level };
     }
-    const allGroups = groupFindings(report?.findings ?? []);
-    const showInstances = allGroups.some((g) => g.length > 1);
-    const showLevel = allGroups.some((g) => Boolean(g[0]?.wcagLevel));
-    return { professional, criterionNames, showInstances, showLevel, apiBase, siteUrl: report?.url, signedIn: signedIn && Boolean(report?.savedAs) };
+    return { professional, criterionNames, apiBase, siteUrl: report?.url, signedIn: signedIn && Boolean(report?.savedAs) };
   }, [report, professional, apiBase, signedIn]);
   // The same view for a section drawn as a block in the conversation.
   const chatReportView = useMemo<ReportView>(() => ({ ...reportView, inChat: true }), [reportView]);

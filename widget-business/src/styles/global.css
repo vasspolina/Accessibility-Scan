@@ -114,6 +114,12 @@
 /* Tables stay plain: rows on rules. */
 .a11y-widget-biz table { border-collapse: collapse; width: 100%; }
 .a11y-widget-biz :is(th, td) { text-align: start; vertical-align: top; padding: 0.3em 0.6em 0.3em 0; border-bottom: 2px solid var(--ink); font-size: 22px; letter-spacing: 0.01em; }
+/* No bold (user's instruction, 18 Nov 2026, "dont use bold on titles"):
+   nothing set a weight on th, strong or b, so the browser's 700 drew the
+   column titles and every strong in bold. Column titles are Regular;
+   strong and b are Medium, the emphasis the rest of the widget uses. */
+.a11y-widget-biz th { font-weight: 400; }
+.a11y-widget-biz :is(strong, b) { font-weight: 500; }
 
 /* The highlight. Black text, always; cap colours are decoration. */
 .a11y-widget-biz :is(.a11y-sev, .a11y-rule-chip, .a11y-level-badge, .a11y-sum-chip, .a11y-pro-chip, .a11y-conf-status, .a11y-principle-count, .a11y-status-chip) {
@@ -819,9 +825,11 @@
 .a11y-widget-biz .a11y-sum-run > .a11y-sum-eyebrow { margin: 0 0 0.6em; }
 .a11y-widget-biz .a11y-sum-run .a11y-sum-dial-card { display: flex; justify-content: center; }
 .a11y-widget-biz .a11y-sum-run .a11y-sum-dial { margin: 0 0 0.5em; }
-/* The run of findings: display size, tight, centred, a soft balanced rag. */
+/* The run of findings: display size, tight, centred, a soft balanced rag.
+   10% smaller since 18 Nov 2026 (user's instruction): 67 to 60px, the
+   marker 44 to 40px with its figure 32 to 29px. */
 .a11y-widget-biz .a11y-sum-run .a11y-sum-rows {
-  margin: 0; font-size: 67px; letter-spacing: -0.01em; line-height: 1.06;
+  margin: 0; font-size: 60px; letter-spacing: -0.01em; line-height: 1.06;
   text-wrap: balance; hyphens: manual; overflow-wrap: break-word;
 }
 .a11y-widget-biz .a11y-sum-run .a11y-sum-nobreak { white-space: nowrap; }
@@ -830,26 +838,35 @@
 .a11y-widget-biz .a11y-sum-run :is(.a11y-sum-cell-item, .a11y-sum-row-title) { display: inline; }
 /* Each item links to its finding (lib/openFinding). Ink like the type
    around it, the title underlined as every link here is; hover lays the
-   marker yellow under the title with black text, the controls' hover. The
-   marks and the count keep their own fills inside the link. */
+   marker yellow under the title with black text, the controls' hover, and
+   drops the underline (user's instruction, 18 Nov 2026: the yellow says it
+   alone). The marks and the count keep their own fills inside the link. */
 .a11y-widget-biz .a11y-sum-run .a11y-sum-row-link { color: inherit; text-decoration: none; }
 .a11y-widget-biz .a11y-sum-run .a11y-sum-row-link .a11y-sum-row-title {
   text-decoration: underline; text-decoration-thickness: 2px; text-underline-offset: 0.12em;
 }
-.a11y-widget-biz .a11y-sum-run .a11y-sum-row-link:hover .a11y-sum-row-title { background: var(--hl-cap-a); color: #000; }
+/* The yellow is a band 1em tall, 0.8em above the baseline to 0.2em below,
+   not the inline box's full ground: the run's lines are 1.06em apart and
+   Jokker's content area is 1.18em (measured at 60px: 0.97em up, 0.21em
+   down), so a full ground covered the descenders of the line above
+   (user's report, 18 Nov 2026). The band clears them by about 0.04em. */
+.a11y-widget-biz .a11y-sum-run .a11y-sum-row-link:hover .a11y-sum-row-title {
+  background: linear-gradient(var(--hl-cap-a), var(--hl-cap-a)) 0 0.17em / 100% 1em no-repeat;
+  color: #000; text-decoration: none;
+}
 /* The marker: a solid round with the figure in paper, sat on the line. */
 .a11y-widget-biz .a11y-sum-run .a11y-sum-cell-no {
   display: inline-grid; place-content: center; vertical-align: 0.08em;
-  width: 44px; height: 44px; border-radius: 50%; margin: 0 0.18em 0 0;
+  width: 40px; height: 40px; border-radius: 50%; margin: 0 0.18em 0 0;
   background: var(--ink); color: var(--paper);
-  font-size: 32px; letter-spacing: 0; font-weight: 500; line-height: 1;
+  font-size: 29px; letter-spacing: 0; font-weight: 500; line-height: 1;
 }
 .a11y-widget-biz .a11y-sum-run .a11y-sum-row-marks,
 .a11y-widget-biz .a11y-sum-run .a11y-sum-cell-count {
   display: inline; vertical-align: middle; white-space: nowrap;
   font-size: 22px; letter-spacing: 0.01em; line-height: 1.2; margin: 0 0 0 0.3em;
 }
-.a11y-widget-biz .a11y-sum-run .a11y-score-clean { font-size: 67px; letter-spacing: -0.01em; line-height: 1.06; margin: 0; }
+.a11y-widget-biz .a11y-sum-run .a11y-score-clean { font-size: 60px; letter-spacing: -0.01em; line-height: 1.06; margin: 0; }
 .a11y-widget-biz .a11y-sum-run + .a11y-sum-actions { text-align: center; margin: 0 0 1.2em; }
 /* On a phone the run comes down to title size, so a long German word
    still fits 320px. */
@@ -1814,4 +1831,75 @@
   .a11y-widget-biz .a11y-chats:not([data-open]) .a11y-chats-body { display: none; }
   .a11y-widget-biz .a11y-chats[data-open] .a11y-chats-body { padding-bottom: 12px; border-bottom: 1px solid var(--ink); }
   .a11y-widget-biz .a11y-chats .a11y-chats-delete { visibility: visible; }
+}
+
+/* AUTOMATED CHECK RESULTS AS A SHEET OF ALTERNATES (user's reference, 18 Nov
+   2026, "design these like this", a type foundry's alternates sheet). Each
+   result is a tile, set like the expanded finding's cards above: the fixed
+   #f0efe8 ground with black words in both themes (18.4:1), 20px corners,
+   16px apart in a wrapping row that always closes up. The result's mark
+   is the small pill centred at the top, where the reference sets "Alternate
+   a", stretched from one side margin to the other (user's instruction,
+   18 Nov 2026); it keeps its highlight colour, since the colour is the
+   status, as a plain pill (black on each fill measures 7:1 or better). The count is the
+   specimen, set huge in the middle; the result's words and the level split
+   sit under it, smaller (user's instruction, 18 Nov 2026, "text could go
+   smaller"): 22px and 15px, 18px in a narrow tile. The count's margin is
+   set whole: an older 0.3em end margin (48px at 160px) pulled every figure
+   off centre. The markup keeps label, meaning, mark, count in that order,
+   so a screen reader hears "We found problems, 2 at level A, 2 at AA, Fix
+   first, 4"; only the eye takes them in the reference's order. All the
+   tiles share one row at equal widths (user's instruction, 18 Nov 2026,
+   "put them all in one row"; the problems tile started 45% wide before). The count sits a fixed 24px
+   under the pill, not centred, so the figures line up across a row
+   whatever the words under them run to. One column under 640px. */
+.a11y-widget-biz .a11y-legal-results > .a11y-legal-eyebrow { margin: 0 0 16px; }
+/* The tiles have their own row (a11y-legal-tiles), each flex: 1 1 0 so
+   they split it evenly and never wrap. */
+.a11y-widget-biz .a11y-legal-tiles { display: flex; gap: 16px; align-items: stretch; }
+.a11y-widget-biz .a11y-legal-tiles > .a11y-legal-row {
+  --ink: #000; --paper: #f0efe8;
+  flex: 1 1 0; container: a11y-legal-tile / inline-size;
+  display: flex; flex-direction: column; align-items: center; gap: 14px;
+  box-sizing: border-box; min-width: 0; min-height: 300px; margin: 0; padding: 22px 20px 32px;
+  overflow-wrap: break-word; hyphens: auto;
+  border-radius: 20px; background: #f0efe8; color: #000; text-align: center;
+}
+.a11y-widget-biz .a11y-legal-tiles > .a11y-legal-row .a11y-legal-mark {
+  order: 1; align-self: stretch; box-sizing: border-box; margin: 0; padding: 3px 12px 4px; border-radius: 999px; box-shadow: none;
+  font-size: 15px; letter-spacing: 0.01em; line-height: 1.2; white-space: nowrap; text-align: center;
+}
+.a11y-widget-biz .a11y-legal-tiles > .a11y-legal-row .a11y-legal-count {
+  order: 2; margin: 24px 0 6px;
+  font-size: 160px; font-weight: 500; line-height: 0.9; letter-spacing: -0.02em;
+}
+.a11y-widget-biz .a11y-legal-tiles > .a11y-legal-row .a11y-legal-row-label {
+  order: 3; font-size: 22px; font-weight: 500; line-height: 1.15; letter-spacing: 0.005em; text-wrap: balance;
+}
+.a11y-widget-biz .a11y-legal-tiles > .a11y-legal-row .a11y-legal-row-meaning {
+  order: 4; font-size: 15px; line-height: 1.2; letter-spacing: 0.01em;
+}
+/* A tile under 280px wide (four in a row on a tablet) takes the phone's
+   figure and word sizes: at 160px a two-figure count ran out of a 180px
+   tile at an 800px window. The tile is its own container, so the step
+   follows the tile, not the window. */
+@container a11y-legal-tile (max-width: 280px) {
+  .a11y-widget-biz .a11y-legal-tiles > .a11y-legal-row .a11y-legal-count { margin-top: 12px; font-size: 96px; }
+  .a11y-widget-biz .a11y-legal-tiles > .a11y-legal-row .a11y-legal-row-label { font-size: 18px; }
+}
+/* The same narrow tiles take 12px sides, not 20px: the copy binds a short
+   first word to the next with a no-break space ("We checked,"), and at 22px
+   in a 140px measure that unit broke at its comma. A size container cannot
+   style itself, so this is set on the window width where four tiles drop
+   under 280px. */
+@media (min-width: 641px) and (max-width: 1240px) {
+  .a11y-widget-biz .a11y-legal-tiles > .a11y-legal-row { padding-inline: 12px; }
+}
+@media (max-width: 640px) {
+  .a11y-widget-biz .a11y-legal-tiles { flex-direction: column; gap: 10px; }
+  .a11y-widget-biz .a11y-legal-tiles > .a11y-legal-row {
+    flex: none; min-height: 0; gap: 12px; padding: 16px 20px 24px;
+  }
+  .a11y-widget-biz .a11y-legal-tiles > .a11y-legal-row .a11y-legal-count { margin-top: 12px; font-size: 96px; }
+  .a11y-widget-biz .a11y-legal-tiles > .a11y-legal-row .a11y-legal-row-label { font-size: 18px; }
 }
