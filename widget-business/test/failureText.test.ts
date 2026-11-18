@@ -96,7 +96,9 @@ describe("pictureNoteText", () => {
     const reasons = ["hidden", "offscreen", "no-usable-image", "too-large", "missing", "not-attempted", "unreachable"] as const;
     for (const reason of reasons) {
       const text = pictureNoteText(finding({ pictureReason: reason }))!;
-      expect(backend, reason).toContain(JSON.stringify(text));
+      // t() sets a straight apostrophe as ’ on screen (Hochuli fig. 53);
+      // the backend's source keeps the straight one it was written with.
+      expect(backend, reason).toContain(JSON.stringify(text.replace(/’/g, "'")));
     }
   });
 });

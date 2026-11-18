@@ -15,6 +15,7 @@ import { STRINGS_DE } from "./strings.de";
 import { STRINGS_ES } from "./strings.es";
 import { STRINGS_FR } from "./strings.fr";
 import { OPENING_PROMPT_KEYS } from "./openingPrompts";
+import { setMarks } from "./typography";
 
 const BY_LANG: Partial<Record<Lang, Record<string, string>>> = {
   de: STRINGS_DE,
@@ -24,8 +25,10 @@ const BY_LANG: Partial<Record<Lang, Record<string, string>>> = {
 
 export function t(key: string): string {
   const lang = getLang();
-  if (lang === "en") return key;
-  return BY_LANG[lang]?.[key] ?? key;
+  // Straight marks still typed into the keys (won't, "Partially
+  // conformant") are set as the language's own (Hochuli fig. 53).
+  if (lang === "en") return setMarks(key, lang);
+  return setMarks(BY_LANG[lang]?.[key] ?? key, lang);
 }
 
 /** t() for a sentence with values in it: the sentence is translated whole,
