@@ -246,6 +246,10 @@
 .a11y-widget-biz .a11y-chat-dock {
   margin-top: auto;
   position: sticky; bottom: 0;
+  /* Above the cards' criterion numbers (z-index 1), which painted over the
+     box when the cards scrolled under it (user's instruction, 18 Nov 2026,
+     "fix overlap on scroll"). */
+  z-index: 2;
   /* Clear above the box, paper below its middle: the cards are no longer
      cut by a band over them, and what scrolls under the box does not show
      beneath it. The box's shadow paints over this ground. */
@@ -935,7 +939,7 @@
 .a11y-widget-biz .a11y-prompts .a11y-prompt {
   --ink: var(--tile-ink); --paper: var(--tile);
   position: relative;
-  box-sizing: border-box; min-width: 0; aspect-ratio: 296 / 407; margin: 0; padding: 26px;
+  box-sizing: border-box; min-width: 0; aspect-ratio: 296 / 285; margin: 0; padding: 26px;
   display: flex; flex-direction: column; align-items: flex-start; justify-content: flex-start;
   border: 1px solid var(--tile); border-radius: 20px; background: var(--tile); color: var(--tile-ink);
   overflow-wrap: break-word; hyphens: auto;
@@ -972,7 +976,7 @@
   border-radius: 0.9em 0.45em 0.9em 0.55em / 0.7em 0.5em 0.7em 0.5em;
   box-shadow: 0.14em 0 0 var(--hl-cap-a), -0.14em 0 0 var(--hl-cap-b);
   margin-inline: 0.14em;
-  font: inherit; font-size: 48px; font-weight: 500; letter-spacing: 0; line-height: 1.1;
+  font: inherit; font-size: 34px; font-weight: 500; letter-spacing: 0; line-height: 1.1;
   font-variant-numeric: tabular-nums;
 }
 .a11y-widget-biz .a11y-prompts .a11y-prompt-wcag:enabled:hover { background: var(--hover); color: var(--hover-ink); }
@@ -1174,20 +1178,20 @@
 .a11y-widget-biz .a11y-fd > .a11y-fd-col:first-child > :is(p, div) {
   --ink: var(--tile-ink); --paper: var(--tile);
   flex: 1 1 calc(45% - 16px);
-  display: flex; flex-direction: column; align-items: center; gap: 28px;
+  display: flex; flex-direction: column; align-items: flex-start; gap: 28px;
   box-sizing: border-box; min-width: 0; min-height: 300px; max-width: none; margin: 0; padding: 22px 32px 40px;
-  border-radius: 20px; background: var(--tile); color: var(--tile-ink); text-align: center;
-  font-family: "Jokker", sans-serif; font-weight: 500; font-size: 30px; line-height: 1.15; letter-spacing: 0.005em;
+  border-radius: 20px; background: var(--tile); color: var(--tile-ink); text-align: start;
+  font-family: "Jokker", sans-serif; font-weight: 500; font-size: 26px; line-height: 1.2; letter-spacing: 0.005em;
 }
-.a11y-widget-biz .a11y-fd > .a11y-fd-col:first-child > [data-size="s"] { flex-basis: calc(33.333% - 16px); font-size: 38px; letter-spacing: -0.005em; line-height: 1.1; }
-.a11y-widget-biz .a11y-fd > .a11y-fd-col:first-child > [data-size="l"] { flex-basis: calc(60% - 16px); font-size: 26px; line-height: 1.2; }
+.a11y-widget-biz .a11y-fd > .a11y-fd-col:first-child > [data-size="s"] { flex-basis: calc(33.333% - 16px); }
+.a11y-widget-biz .a11y-fd > .a11y-fd-col:first-child > [data-size="l"] { flex-basis: calc(60% - 16px); }
 .a11y-widget-biz .a11y-fd > .a11y-fd-col:first-child > p > strong:first-child {
   flex: none; margin: 0; padding: 3px 12px 4px; border: 0; border-radius: 999px;
   background: var(--strong); color: var(--strong-ink);
   font-family: "Jokker", sans-serif; font-weight: 400; font-size: 15px; line-height: 1.2; letter-spacing: 0.01em; text-transform: none;
 }
 .a11y-widget-biz .a11y-fd > .a11y-fd-col:first-child .a11y-fd-body {
-  display: block; margin-block: auto; max-width: 100%; text-wrap: balance;
+  display: block; margin-block: 0; max-width: 100%; text-wrap: pretty;
 }
 .a11y-widget-biz .a11y-fd > .a11y-fd-col:first-child .a11y-fd-body code { font-size: 0.8em; }
 @container a11y-fd (max-width: 640px) {
@@ -1742,7 +1746,7 @@
   .a11y-widget-biz .a11y-chat .a11y-prompts .a11y-prompt-label { font-size: 18px; }
   .a11y-widget-biz .a11y-chat .a11y-prompts .a11y-prompt-ask { margin-top: 0; font-size: 19px; letter-spacing: 0.005em; line-height: 1.3; }
   .a11y-widget-biz .a11y-chat .a11y-prompts .a11y-prompt-go { display: none; }
-  .a11y-widget-biz .a11y-chat .a11y-prompts .a11y-prompt-wcag { margin-top: 8px; font-size: 18px; line-height: 1.3; }
+  .a11y-widget-biz .a11y-chat .a11y-prompts .a11y-prompt-wcag { margin-top: 8px; font-size: 14px; line-height: 1.3; }
   .a11y-widget-biz .a11y-chat .a11y-prompt-more { text-align: start; margin: 8px 0 0; }
   .a11y-widget-biz .a11y-chat .a11y-prompt-more .a11y-btn { font-size: 18px; }
 
