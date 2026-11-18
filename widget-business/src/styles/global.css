@@ -341,17 +341,25 @@
    be re-read against the round's own 22px. The round then measures 1lh
    from the item, at whatever size the list is set, and its middle sits on
    the first line's middle. The test plan's tiles set their own leading
-   and are left out. */
-.a11y-widget-biz .a11y-chat-text ol { list-style: none; padding-inline-start: 1.6em; }
+   and are left out.
+   The indent is the round plus a gap, in px (user's report, same day,
+   "numbers not centered"): it and the round's offset were both 1.6em, but
+   of different sizes (32px text, 22px figure), so 3px were left between
+   round and word and the round read as off to one side; on a phone the
+   19px text ran 5px over it. Measured at 4x over Jokker: round centre to
+   the line's ink centre within 1px, figure centre to round centre within
+   0.5px. */
+.a11y-widget-biz .a11y-chat-text ol { list-style: none; padding-inline-start: 44px; }
 .a11y-widget-biz .a11y-chat-text ol > li { position: relative; }
 .a11y-widget-biz .a11y-chat-text ol:not(.a11y-chat-plan) > li { line-height: 1lh; }
 .a11y-widget-biz .a11y-chat-text ol > li::before {
   content: counter(list-item);
-  position: absolute; inset-inline-start: -1.6em; top: 0; top: calc((1lh - 32px) / 2);
+  position: absolute; inset-inline-start: -44px; top: 0; top: calc((1lh - 32px) / 2);
   display: grid; place-content: center;
   width: 32px; height: 32px; border-radius: 50%;
   background: var(--ink); color: var(--paper);
   font-size: 22px; letter-spacing: 0; font-weight: 500; line-height: inherit;
+  font-variant-numeric: tabular-nums;
 }
 .a11y-widget-biz .a11y-chat-text li::marker { font-weight: 400; }
 .a11y-widget-biz .a11y-chat-text li { margin: 0 0 0.2em; }
@@ -1633,6 +1641,14 @@
      Capitals, code and the test-plan tiles step down with it, in em, so
      they keep their place in the line. */
   .a11y-widget-biz .a11y-chat .a11y-chat-thread { font-size: 19px; line-height: 1.4; letter-spacing: 0.005em; }
+  /* The numbered round at 19px/1.4: a 32px round was wider than the indent
+     and taller than the 26.6px line, so the words ran over it and two
+     one-line points' rounds nearly touched. 24px with an 18px figure,
+     centred in the line as above. The plan tiles keep no round. */
+  .a11y-widget-biz .a11y-chat .a11y-chat-thread .a11y-chat-text ol:not(.a11y-chat-plan) { padding-inline-start: 34px; }
+  .a11y-widget-biz .a11y-chat .a11y-chat-thread .a11y-chat-text ol > li::before {
+    inset-inline-start: -34px; top: calc((1lh - 24px) / 2); width: 24px; height: 24px; font-size: 18px;
+  }
   .a11y-widget-biz .a11y-chat .a11y-chat-thread .a11y-caps { font-size: 0.92em; letter-spacing: 0.05em; }
   .a11y-widget-biz .a11y-chat .a11y-chat-thread :is(pre, code) { font-size: 0.9em; line-height: 1.4; }
   .a11y-widget-biz .a11y-chat .a11y-chat-thread .a11y-chat-plan-title { font-size: 22px; }
