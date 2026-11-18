@@ -6,18 +6,18 @@
 <title>Report a barrier – Accessible Scan pilot</title>
 <meta name="robots" content="noindex">
 <!--
-  The assistive-technology pilot's form (routes/pilot.ts). It is used by
+  The assistive-technology pilot’s form (routes/pilot.ts). It is used by
   people on a screen reader or a keyboard, so it is built from native
   controls only: every field has a <label>, groups are <fieldset>s, there
   is no custom widget to learn, and every change of step moves focus to
-  the new step's heading and says what happened in a live region.
+  the new step’s heading and says what happened in a live region.
 
-  Set after Pangram Pangram's contact form (user's reference, 18 Nov 2026):
+  Set after Pangram Pangram’s contact form (user’s reference, 18 Nov 2026):
   a wide page, a big tight title, every field a filled rounded box with its
   label inside at the top, one wide pill for the action. The type is the
-  scanner's, in Jokker: 67px title, 32px prose and fields, 18px and 15px
+  scanner’s, in Jokker: 67px title, 32px prose and fields, 18px and 15px
   labels, 22px choices; phone 40 / 22 / 26. Colour follows the scanner: black
-  and white, #f0efe8 tiles in light and Apple's dark greys in dark, and the
+  and white, #f0efe8 tiles in light and Apple’s dark greys in dark, and the
   orange highlight (black text, 7:1 or better) on the one action.
 -->
 <style>
@@ -32,17 +32,16 @@
     --tile: #f0efe8; --tile-ink: #000;
     --solid: #000; --solid-ink: #fff;
     --hover: #ffe14d; --hover-ink: #000;
-    --action: #ff8a4c;
-  }
+      }
   @media (prefers-color-scheme: dark) {
     :root:not([data-theme="light"]) {
       --ink: #fff; --paper: #000; --tile: #1c1c1e; --tile-ink: #fff;
-      --solid: #636366; --solid-ink: #fff; --hover: #3a3a3c; --hover-ink: #fff; --action: #ff9f0a;
+      --solid: #636366; --solid-ink: #fff; --hover: #3a3a3c; --hover-ink: #fff;
     }
   }
   :root[data-theme="dark"] {
     --ink: #fff; --paper: #000; --tile: #1c1c1e; --tile-ink: #fff;
-    --solid: #636366; --solid-ink: #fff; --hover: #3a3a3c; --hover-ink: #fff; --action: #ff9f0a;
+    --solid: #636366; --solid-ink: #fff; --hover: #3a3a3c; --hover-ink: #fff;
   }
 
   * { box-sizing: border-box; }
@@ -58,9 +57,15 @@
     font-weight: 400;
     line-height: 1.2;
     letter-spacing: 0;
+    font-variant-ligatures: common-ligatures;
+    font-variant-numeric: tabular-nums;
+    text-rendering: optimizeLegibility;
+    text-wrap: pretty;
     hyphens: auto;
+    hyphenate-limit-chars: 7 3 3;
     overflow-wrap: break-word;
   }
+  h1, h2, legend, label.field, button { text-wrap: balance; hyphens: none; }
   strong, b { font-weight: 500; }
   .page { max-width: none; margin: 0; padding: 0 24px 120px; }
 
@@ -79,12 +84,21 @@
   p { margin: 0 0 1.2em; }
   .small { font-size: 18px; letter-spacing: 0.01em; hyphens: manual; }
 
-  fieldset { border: 0; padding: 0; margin: 48px 0 0; min-width: 0; }
-  legend { display: block; font-size: 22px; font-weight: 500; line-height: 1.2; letter-spacing: 0.01em; margin: 0 0 12px; padding: 0; }
+  fieldset { display: flow-root; border: 0; padding: 0; margin: 48px 0 32px; min-width: 0; }
+  legend { float: left; width: var(--hang); margin: 0 24px 0 0; padding: 6px 0 0; font-size: 22px; font-weight: 500; line-height: 1.2; letter-spacing: 0.01em; }
+  fieldset > .field-error { float: left; clear: left; width: var(--hang); }
+  fieldset > .choices { margin-left: calc(var(--hang) + 24px); }
   .hint { display: block; font-size: 15px; letter-spacing: 0.01em; margin: 0 0 12px; max-width: 60em; }
-  .row { margin: 0 0 24px; min-width: 0; }
-  label.field { display: block; font-size: 22px; font-weight: 500; letter-spacing: 0.01em; margin: 0 0 6px; padding: 0; }
-  .pair { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 360px), 1fr)); gap: 0 12px; margin: 56px 0 0; }
+  /* The label and its small print hang in a left column and the words
+     sit beside them, as the scanner's settings block sets its rows and
+     Hochuli sets an interview: the speaker hung, the text on one edge. */
+  :root { --hang: 280px; }
+  .row { display: grid; grid-template-columns: var(--hang) minmax(0, 1fr); column-gap: 24px; align-content: start; margin: 0 0 32px; min-width: 0; }
+  .row > label.field, .row > .hint, .row > .field-error { grid-column: 1; }
+  .row > :is(input, textarea, select) { grid-column: 2; grid-row: 1 / span 4; }
+  .row > .page-found { grid-column: 2; }
+  label.field { display: block; font-size: 22px; font-weight: 500; letter-spacing: 0.01em; margin: 6px 0 4px; padding: 0; }
+  .pair { display: block; margin: 0; }
 
   /* A field is one filled box holding only what you type, 20px corners and
      no edge, as the reference draws its inputs; the label and the small
@@ -93,15 +107,15 @@
     display: block; width: 100%; min-width: 0; margin: 0;
     font: inherit; font-size: 32px; line-height: 1.2; letter-spacing: 0;
     color: var(--tile-ink); background-color: var(--tile);
-    border: 0; border-radius: 20px; padding: 20px 24px;
+    border: 0; border-radius: 12px; padding: 14px 18px 16px;
   }
-  textarea { min-height: 208px; resize: vertical; }
+  textarea { min-height: 7.5em; resize: vertical; }
   /* A native select, so screen readers and switches know it already; the
      arrow is drawn in the tile's ink so it follows the theme. */
   select {
-    appearance: none; font-size: 26px; min-height: 64px; padding-right: 56px; cursor: pointer;
+    appearance: none; font-size: 26px; min-height: 60px; padding-right: 56px; cursor: pointer;
     background-image: linear-gradient(45deg, transparent 50%, var(--tile-ink) 50%), linear-gradient(135deg, var(--tile-ink) 50%, transparent 50%);
-    background-position: right 28px center, right 20px center;
+    background-position: right 26px center, right 18px center;
     background-size: 8px 8px, 8px 8px; background-repeat: no-repeat;
   }
   select option, select optgroup { color: #000; background: #fff; }
@@ -109,8 +123,8 @@
 
   /* A choice is a plain native radio and its words, in a list: no box, no
      toggle, no pill. */
-  .choices { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr)); gap: 4px 24px; min-width: 0; }
-  .choice { display: flex; align-items: center; gap: 14px; min-height: 52px; font-size: 22px; letter-spacing: 0.01em; line-height: 1.2; cursor: pointer; }
+  .choices { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 320px), 1fr)); gap: 0 24px; min-width: 0; }
+  .choice { display: flex; align-items: center; gap: 14px; min-height: 52px; padding: 8px 0; font-size: 22px; letter-spacing: 0.01em; line-height: 1.2; cursor: pointer; }
   .choice input { flex: none; width: 28px; height: 28px; margin: 0; accent-color: var(--ink); cursor: pointer; }
   .choice:has(input:checked) { font-weight: 500; }
 
@@ -126,18 +140,17 @@
     color: var(--ink);
     cursor: pointer;
   }
-  /* The action: one wide pill in the orange highlight with an arrow at its
-     end, as the reference's Send Message; black words, 7:1 or better. */
+  /* The action: the scanner's one wide block, 12px corners, its words large
+     and set left, solid (black in light, Apple grey in dark), hover marker
+     yellow. */
   button.primary {
-    display: inline-flex; align-items: center; justify-content: space-between; gap: 24px;
-    min-width: min(100%, 22em); min-height: 80px; padding: 12px 36px;
-    font-size: 32px; letter-spacing: 0; line-height: 1.1;
-    background: var(--action); color: #000; border-color: var(--action);
+    display: block; flex: 1 1 100%; width: 100%; min-height: 120px; padding: 20px 24px; border-radius: 12px; text-align: start;
+    font-size: 48px; font-weight: 400; letter-spacing: -0.01em; line-height: 1.05;
+    background: var(--solid); color: var(--solid-ink); border-color: var(--solid);
   }
-  button.primary::after { content: "\2192" / ""; flex: none; }
   button:hover, button.primary:hover { background: var(--hover); color: var(--hover-ink); border-color: var(--hover); }
   button[disabled], button.primary[disabled] { border: 1px dashed var(--ink); background: var(--paper); color: var(--ink); cursor: progress; }
-  .actions { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 12px; margin-top: 40px; }
+  .actions { display: flex; flex-wrap: wrap; justify-content: flex-start; gap: 12px; margin-top: 40px; }
 
   /* A paper ring then an ink ring, so one of them shows on any ground. */
   :focus-visible { outline: 3px solid var(--ink); outline-offset: 3px; box-shadow: 0 0 0 3px var(--paper); }
@@ -159,18 +172,22 @@
   [hidden] { display: none !important; }
   .visually-hidden { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
 
-  /* Phone: the scanner's phone sizes. */
+  /* Phone: the scanner's phone sizes; the hung column folds above its words. */
+  @media (max-width: 900px) {
+    .row { grid-template-columns: minmax(0, 1fr); }
+    .row > :is(input, textarea, select), .row > .page-found { grid-column: 1; grid-row: auto; }
+    legend, fieldset > .field-error { float: none; width: auto; margin: 0 0 8px; padding: 0; }
+    fieldset > .choices { margin-left: 0; }
+  }
   @media (max-width: 640px) {
     body { font-size: 22px; letter-spacing: 0.005em; }
     .page { padding: 0 10px 80px; }
     h1 { font-size: 40px; }
     h2 { font-size: 27px; margin-top: 40px; }
     input[type="text"], input[type="url"], textarea { font-size: 26px; }
-    input[type="text"], input[type="url"], textarea { padding: 16px 18px; }
     .head { grid-template-columns: minmax(0, 1fr); padding: 56px 0 32px; }
     #intro > p:first-child, #intro > .small { grid-column: 1; grid-row: auto; }
-    .choice { padding: 10px 20px; }
-    button.primary { width: 100%; min-height: 72px; padding: 12px 24px; font-size: 27px; }
+    button.primary { min-height: 96px; font-size: 32px; }
     .actions button { flex: 1 1 100%; }
   }
 </style>
@@ -182,11 +199,11 @@
   <div class="head">
   <h1 id="title" tabindex="-1">Report a barrier</h1>
 
-  <p id="closed" hidden>The pilot is not open at the moment. Please try again later.</p>
+  <p id="closed" hidden>The pilot is not open at the moment. Please try again&nbsp;later.</p>
 
   <div id="intro">
-    <p>Did something on a website stop you or slow you down? Tell us in your own words.</p>
-    <p class="small">We write it up for the site's owner and you check it before it is sent. We keep what you write, so leave out your name and email. This device remembers what you use.</p>
+    <p>Did something on a website stop you or slow you down? Tell us in your own&nbsp;words.</p>
+    <p class="small">We write it up for the site’s owner and you check it before it is sent. We keep what you write, so leave out your name and email. This device remembers what you&nbsp;use.</p>
   </div>
   </div>
 
@@ -199,8 +216,8 @@
     </div>
 
     <div class="row">
-      <label class="field" for="pageUrl">The page's address</label>
-      <span class="hint" id="url-hint">Paste it from your address bar. Leave it empty if you can't.</span>
+      <label class="field" for="pageUrl">The page’s address</label>
+      <span class="hint" id="url-hint">Paste it from your address bar. Leave it empty if you&nbsp;can’t.</span>
       <span class="field-error" id="pageUrl-error" hidden></span>
       <input type="url" id="pageUrl" name="pageUrl" inputmode="url" autocomplete="off" aria-describedby="url-hint page-found">
       <span class="hint page-found" id="page-found" aria-live="polite"></span>
@@ -208,13 +225,13 @@
 
     <div class="row">
       <label class="field" for="barrier">What happened?</label>
-      <span class="hint" id="barrier-hint">One sentence is enough. With an address, you can leave this empty.</span>
+      <span class="hint" id="barrier-hint">One sentence is enough. With an address, you can leave this&nbsp;empty.</span>
       <span class="field-error" id="barrier-error" hidden></span>
       <textarea id="barrier" name="barrier" maxlength="4000" aria-describedby="barrier-hint"></textarea>
     </div>
 
     <fieldset>
-      <legend>How much did it hold you back?</legend>
+      <legend>How much did it hold you&nbsp;back?</legend>
       <span class="field-error" id="impact-error" hidden></span>
       <div class="choices">
         <label class="choice"><input type="radio" name="impact" value="blocked" required> I could not go on</label>
@@ -224,7 +241,7 @@
     </fieldset>
 
     <fieldset>
-      <legend>What do you use?</legend>
+      <legend>What do you&nbsp;use?</legend>
       <span class="field-error" id="assistiveTech-error" hidden></span>
       <div class="choices">
         <label class="choice"><input type="radio" name="assistiveTech" value="screen-reader" required> A screen reader</label>
@@ -238,7 +255,7 @@
 
     <div class="pair">
     <div class="row">
-      <label class="field" for="assistiveTechDetail">Which one, and with which browser (optional)</label>
+      <label class="field" for="assistiveTechDetail">Which one, and with which browser&nbsp;(optional)</label>
       <span class="hint" id="detail-hint">Choose the closest.</span>
       <select id="assistiveTechDetail" name="assistiveTechDetail" aria-describedby="detail-hint">
         <option value="">Not chosen</option>
@@ -277,8 +294,8 @@
     </div>
 
     <div class="row">
-      <label class="field" for="task">What were you trying to do? (optional)</label>
-      <span class="hint" id="task-hint">Only if it isn't clear above.</span>
+      <label class="field" for="task">What were you trying to do?&nbsp;(optional)</label>
+      <span class="hint" id="task-hint">Only if it isn’t clear&nbsp;above.</span>
       <input type="text" id="task" name="task" maxlength="1000" aria-describedby="task-hint">
     </div>
     </div>
@@ -311,7 +328,7 @@
     <p class="small" id="d-criterion" hidden></p>
 
     <fieldset>
-      <legend>Does the draft say what happened to you?</legend>
+      <legend>Does the draft say what happened to&nbsp;you?</legend>
       <div class="choices">
         <label class="choice"><input type="radio" name="confirm" value="yes"> Yes, as it is now</label>
         <label class="choice"><input type="radio" name="confirm" value="no"> No. Send only my own words</label>
@@ -335,7 +352,7 @@
 
   <section id="done" hidden aria-labelledby="done-title">
     <h2 id="done-title" tabindex="-1">Thank you. Your report is sent</h2>
-    <p>We read every report. If you met another barrier, you can report that too.</p>
+    <p>We read every report. If you met another barrier, you can report that&nbsp;too.</p>
     <div class="actions"><button type="button" id="again-btn">Report another barrier</button></div>
   </section>
 </main>
