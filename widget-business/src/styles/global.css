@@ -49,7 +49,7 @@
    better against #000 (orange 10:1, blue 9:1, green 12:1). Everything else
    is ink on paper, which swap in dark. */
 .a11y-widget-biz {
-  --ink: #000; --paper: #fff;
+  --ink: #000; --paper: #fff; --focus: #198038;
   --hl-orange: #ff8a4c; --hl-blue: #6fa8ff; --hl-green: #4fe0a8;
   --hl-cap-a: #ffe14d; --hl-cap-b: #ff9ad5;
   color-scheme: light;
@@ -109,7 +109,16 @@
   font: inherit; font-size: 22px; letter-spacing: 0.01em; padding: 0.4em 0.6em;
   border: 2px solid var(--ink); border-radius: 0; background: var(--paper); color: var(--ink);
 }
-.a11y-widget-biz :focus-visible { outline: 3px solid var(--ink); outline-offset: 2px; box-shadow: 0 0 0 2px var(--paper); }
+/* Focus after IBM Carbon (user's instruction, 18 Nov 2026, "make focus
+   outline dark green and like ibm carbon"): a 2px line inside the element's
+   own edge, square to its corners, no gap and no second ring. The green is
+   Carbon's green 60, #198038, the one colour that is not marker or ink. One
+   value serves every ground because it measures 5.0:1 on white, 4.2:1 on
+   black, 4.35:1 on the #f0efe8 tiles and 3.9:1 on marker yellow (hover), so
+   it clears 3:1 (WCAG 1.4.11) in both themes without a dark-mode swap.
+   Links take it outside the text, as Carbon's do, so it never cuts letters. */
+.a11y-widget-biz :focus-visible { outline: 2px solid var(--focus); outline-offset: -2px; box-shadow: none; }
+.a11y-widget-biz a:focus-visible { outline-offset: 2px; }
 
 /* Tables stay plain: rows on rules. */
 .a11y-widget-biz table { border-collapse: collapse; width: 100%; }
@@ -242,7 +251,7 @@
   border: 2px solid var(--ink); padding: 0.5em 0.6em;
   background: var(--paper); box-shadow: var(--chat-shadow);
 }
-.a11y-widget-biz .a11y-chat-box:focus-within { outline: 3px solid var(--ink); outline-offset: 2px; box-shadow: 0 0 0 2px var(--paper), var(--chat-shadow); }
+.a11y-widget-biz .a11y-chat-box:focus-within { outline: 2px solid var(--focus); outline-offset: -2px; box-shadow: var(--chat-shadow); }
 /* Outranks the generic field rule (0,3,1) above. */
 .a11y-widget-biz .a11y-chat-dock .a11y-chat-composer .a11y-chat-box textarea {
   display: block; box-sizing: border-box; width: 100%; min-height: 2.6em; max-height: 40vh;
@@ -303,7 +312,6 @@
 }
 .a11y-widget-biz .a11y-chat-text .a11y-chat-plan > li::before { content: none; }
 .a11y-widget-biz .a11y-chat-text .a11y-chat-plan :is(a, code) { color: inherit; }
-.a11y-widget-biz .a11y-chat-text .a11y-chat-plan :focus-visible { outline-color: #000; box-shadow: 0 0 0 2px #f0efe8; }
 /* Where a searched answer came from: small print under the reply, the
    pages named and linked, each once. */
 .a11y-widget-biz .a11y-chat-sources { font-size: 18px; letter-spacing: 0.01em; line-height: 1.3; margin: 0; overflow-wrap: anywhere; }
@@ -614,7 +622,7 @@
 .a11y-widget-biz .a11y-optioncard-text { display: contents; }
 .a11y-widget-biz .a11y-optioncard-label { grid-row: 1; grid-column: 2; }
 .a11y-widget-biz .a11y-optioncard-desc { grid-row: 2; grid-column: 1 / -1; align-self: end; padding-top: var(--line); font-size: 22px; letter-spacing: 0.01em; line-height: 1.2; }
-.a11y-widget-biz .a11y-optioncard:has(input:focus-visible) { outline: 3px solid var(--ink); outline-offset: 2px; box-shadow: 0 0 0 2px var(--paper); }
+.a11y-widget-biz .a11y-optioncard:has(input:focus-visible) { outline: 2px solid var(--focus); outline-offset: -2px; box-shadow: none; }
 .a11y-widget-biz .a11y-optioncard > input:focus-visible { outline: none; box-shadow: none; }
 .a11y-widget-biz .a11y-optioncard-disabled { border-style: dashed; cursor: not-allowed; }
 .a11y-widget-biz .a11y-step-body .a11y-radio-group { margin: 0; }
@@ -1297,7 +1305,7 @@
 .a11y-widget-biz .a11y-ra-field > input.a11y-ra-email-input::placeholder { color: #000; opacity: 1; font-weight: 300; }
 /* The field is the box, so the focus ring goes round the field, not the
    bare line inside it. */
-.a11y-widget-biz .a11y-ra-field:focus-within { outline: 2px solid #000; outline-offset: 2px; box-shadow: 0 0 0 2px var(--paper); }
+.a11y-widget-biz .a11y-ra-field:focus-within { outline: 2px solid var(--focus); outline-offset: -2px; box-shadow: none; }
 .a11y-widget-biz .a11y-ra-field > input.a11y-ra-email-input:focus-visible { outline: none; }
 .a11y-widget-biz .a11y-ra-row > .a11y-ra-cell > .a11y-ra-send {
   display: block; width: 100%; min-height: 128px; margin: 0; padding: 20px 24px;
@@ -1635,7 +1643,6 @@
 
   .a11y-widget-biz .a11y-chat .a11y-chat-dock { padding-block: 6px calc(8px + env(safe-area-inset-bottom, 0px)); }
   .a11y-widget-biz .a11y-chat .a11y-chat-box { border: 1px solid var(--ink); border-radius: 24px; padding: 10px 8px 8px 16px; }
-  .a11y-widget-biz .a11y-chat .a11y-chat-box:focus-within { outline-offset: 1px; }
   .a11y-widget-biz .a11y-chat-dock .a11y-chat-composer .a11y-chat-box textarea { min-height: 1.4em; font-size: 19px; letter-spacing: 0.005em; line-height: 1.4; }
   .a11y-widget-biz .a11y-chat .a11y-chat-box-row { flex-wrap: nowrap; margin-top: 6px; }
   .a11y-widget-biz .a11y-chat .a11y-chat-box-start { min-width: 0; }
