@@ -17,9 +17,8 @@ import { Button } from "./Button";
 
 export type ScanMode = "page" | "site";
 
-// One choice in a tester pill: the radio itself is clipped (it stays for
-// keyboards and screen readers, its focus ring drawn on the segment), and
-// the segment fills black when chosen.
+// One choice: a filled row with its radio showing, the way the reference
+// form shows its checkbox.
 function Seg(props: { id: string; name: string; value: string; label: string; checked: boolean; onChange: () => void; disabled?: boolean }) {
   return (
     <label htmlFor={props.id} className={"a11y-seg" + (props.checked ? " a11y-seg-on" : "") + (props.disabled ? " a11y-seg-disabled" : "")}>
@@ -145,11 +144,12 @@ export function UrlForm({
     onSubmit(withProtocol, includeAiReview, mode, maxPages, auth);
   }
 
-  /* The scan form after a foundry's type tester (user's reference, 18 Nov
-     2026): the name and the settings along the top, then the specimen, the
-     address typed at display size, then the action. No card and no pills
-     wrapped round the groups ("do not do unnecessary containers"): only the
-     controls themselves carry an edge. DOM order is the visual order. */
+  /* The scan form after a type foundry's newsletter form (user's reference,
+     18 Nov 2026, "design this like this"): the name large; a serif heading
+     over each group; every field a filled box with its label inside at the
+     top; each choice a filled row with its radio showing; the action one
+     wide block with its words set large; the note under it. The address
+     comes first, the choices after it. DOM order is the visual order. */
   return (
     <form
       className="a11y-url-form a11y-tester"
@@ -157,65 +157,12 @@ export function UrlForm({
       noValidate
       aria-labelledby="a11y-newscan-title"
     >
-      <div className="a11y-tester-bar">
-        <h2 className="a11y-tester-name" id="a11y-newscan-title">{t("New scan")}</h2>
-        {/* Before the scan, because the language rides with the request:
-            the checklist comes back written in it. */}
-        <LanguageSelect id="a11y-lang-form" value={language} onChange={onLanguageChange} />
-        <div className="a11y-tester-controls">
-          {/* Not "How much?" — that reads as price, and this is scope. */}
-          <div className="a11y-tester-pill" role="radiogroup" aria-labelledby="a11y-scope-q">
-            <span className="a11y-tester-pill-label" id="a11y-scope-q">{t("How much of it?")}</span>
-            <Seg id="a11y-scope-page" name="a11y-scan-mode" value="page" label={t("This page")}
-              checked={mode === "page"} onChange={() => setMode("page")} disabled={loading} />
-            <Seg id="a11y-scope-site" name="a11y-scan-mode" value="site" label={t("Whole site")}
-              checked={mode === "site"} onChange={() => setMode("site")} disabled={loading} />
-          </div>
-          {/* "For everyone", not "Business owners": the report is written for
-              whoever has to act on it. */}
-          <div className="a11y-tester-pill" role="radiogroup" aria-labelledby="a11y-aud-q">
-            <span className="a11y-tester-pill-label" id="a11y-aud-q">{t("Who reads it?")}</span>
-            <Seg id="a11y-aud-biz" name="a11y-audience" value="business" label={t("For everyone")}
-              checked={audience === "business"} onChange={() => onAudienceChange("business")} />
-            <Seg id="a11y-aud-pro" name="a11y-audience" value="professional" label={t("Professionals")}
-              checked={audience === "professional"} onChange={() => onAudienceChange("professional")} />
-          </div>
-          {mode === "page" ? (
-            <div className="a11y-tester-pill a11y-tester-ai">
-              <Switch
-                id="a11y-ai"
-                label={t("AI review")}
-                checked={includeAiReview}
-                onChange={setIncludeAiReview}
-                disabled={loading}
-              />
-            </div>
-          ) : (
-            <Select
-              id="a11y-pages"
-              label={t("Pages to check")}
-              value={String(maxPages)}
-              onChange={(e: ChangeEvent<HTMLSelectElement>) => setMaxPages(Number(e.target.value))}
-              disabled={loading}
-              options={[3, 5, 8, 10].map((n) => ({
-                value: String(n),
-                label: tf("{count} pages (about {minutes} min)", {
-                  count: n,
-                  minutes: Math.ceil((n * 15) / 60),
-                }),
-              }))}
-            />
-          )}
-        </div>
-      </div>
+      <h2 className="a11y-tester-name" id="a11y-newscan-title">{t("New scan")}</h2>
 
-      {/* No row of small print (user's instruction, 18 Nov 2026: the chips
-          of duration, descriptions and hints were "slop"). The address
-          field's one description stays, for screen readers only. */}
+      <h3 className="a11y-tester-sub">{t("Which site?")}</h3>
+      {/* The field's one description, for screen readers only. */}
       <span id="a11y-url-hint" className="a11y-sr-only">{t("Public pages only.")}</span>
-
-      {/* The specimen: the address at display size. describedBy is one of
-          four ids depending on the error state. */}
+      {/* describedBy is one of four ids depending on the error state. */}
       <Input
         id="a11y-url-input"
         size="display"
@@ -275,6 +222,57 @@ export function UrlForm({
             ? t("That doesn't look like a website address. For example: example.com.")
             : ""}
       </p>
+
+      {/* Not "How much?" — that reads as price, and this is scope. */}
+      <h3 className="a11y-tester-sub" id="a11y-scope-q">{t("How much of it?")}</h3>
+      <div className="a11y-tester-choices" role="radiogroup" aria-labelledby="a11y-scope-q">
+        <Seg id="a11y-scope-page" name="a11y-scan-mode" value="page" label={t("This page")}
+          checked={mode === "page"} onChange={() => setMode("page")} disabled={loading} />
+        <Seg id="a11y-scope-site" name="a11y-scan-mode" value="site" label={t("Whole site")}
+          checked={mode === "site"} onChange={() => setMode("site")} disabled={loading} />
+      </div>
+
+      {/* "For everyone", not "Business owners": the report is written for
+          whoever has to act on it. */}
+      <h3 className="a11y-tester-sub" id="a11y-aud-q">{t("Who reads it?")}</h3>
+      <div className="a11y-tester-choices" role="radiogroup" aria-labelledby="a11y-aud-q">
+        <Seg id="a11y-aud-biz" name="a11y-audience" value="business" label={t("For everyone")}
+          checked={audience === "business"} onChange={() => onAudienceChange("business")} />
+        <Seg id="a11y-aud-pro" name="a11y-audience" value="professional" label={t("Professionals")}
+          checked={audience === "professional"} onChange={() => onAudienceChange("professional")} />
+      </div>
+
+      <div className="a11y-tester-rows">
+        {mode === "page" ? (
+          <div className="a11y-tester-row a11y-tester-ai">
+            <Switch
+              id="a11y-ai"
+              label={t("AI review")}
+              checked={includeAiReview}
+              onChange={setIncludeAiReview}
+              disabled={loading}
+            />
+          </div>
+        ) : (
+          <Select
+            id="a11y-pages"
+            label={t("Pages to check")}
+            value={String(maxPages)}
+            onChange={(e: ChangeEvent<HTMLSelectElement>) => setMaxPages(Number(e.target.value))}
+            disabled={loading}
+            options={[3, 5, 8, 10].map((n) => ({
+              value: String(n),
+              label: tf("{count} pages (about {minutes} min)", {
+                count: n,
+                minutes: Math.ceil((n * 15) / 60),
+              }),
+            }))}
+          />
+        )}
+        {/* The language rides with the request: the checklist comes back
+            written in it. */}
+        <LanguageSelect id="a11y-lang-form" value={language} onChange={onLanguageChange} />
+      </div>
 
       {progress}
 

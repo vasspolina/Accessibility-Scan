@@ -2074,69 +2074,119 @@
   .a11y-widget-biz .a11y-legal-tiles > .a11y-legal-row .a11y-legal-row-label { font-size: 18px; }
 }
 
-/* ═══ THE SCAN FORM AS A TYPE TESTER (user's reference, 18 Nov 2026) ══════
-   Laid out after a foundry's type tester: the name and the settings along
-   the top, then the specimen, the address typed at 120px over a 2px rule,
-   then the action. No card, no pills wrapped round the groups and no row of
-   small-print chips (user's instruction the same day: "do not do
-   unnecessary containers, this is slop"); only the controls carry an edge.
-   Everything is the page's own ink and paper, so it follows the theme. A
-   choice is a pill with a 1px ink edge, the chosen one solid ink; hover is
-   --hover (the marker yellow in light, Apple's dark fill in dark). */
-.a11y-widget-biz .a11y-url-form.a11y-tester { display: block; min-width: 0; margin: 0; }
-.a11y-widget-biz .a11y-tester .a11y-tester-bar { display: flex; flex-wrap: wrap; align-items: center; gap: 16px 28px; min-width: 0; }
-.a11y-widget-biz .a11y-tester .a11y-tester-bar .a11y-tester-name { margin: 0; }
-.a11y-widget-biz .a11y-tester .a11y-tester-controls { display: flex; flex-wrap: wrap; align-items: center; gap: 16px 28px; flex: 1 1 100%; min-width: 0; }
-/* A group: its label, then its choices, on one line while they fit. */
-.a11y-widget-biz .a11y-tester .a11y-tester-pill,
-.a11y-widget-biz .a11y-tester .a11y-tester-bar .a11y-select2 {
-  display: inline-flex; flex-wrap: wrap; align-items: center; gap: 6px 8px; max-width: 100%; margin: 0;
+/* ═══ THE SCAN FORM AFTER A FOUNDRY'S NEWSLETTER FORM (user's reference, 18 Nov 2026) ═
+   "Design this like this", over a type foundry's newsletter form (its
+   illustration ignored, user's word): a narrow column; the name large in
+   Regular; a serif heading (Serrif) over each group; every field a filled
+   box with 12px corners and its label inside at the top; each choice a
+   filled row with its radio showing; one wide block for the action, its
+   words set large and left; the note under it. The fill is --tile with
+   --tile-ink words (#f0efe8 and black in light, Apple's #1c1c1e and white
+   in dark); a field box carries no edge, its label inside naming it, as
+   the reference draws it. Hover is --hover; the chosen row's words Medium.
+   Replaces the type-tester row of the same day. */
+.a11y-widget-biz .a11y-url-form.a11y-tester { display: block; box-sizing: border-box; min-width: 0; max-width: 640px; margin: 0; }
+.a11y-widget-biz .a11y-tester > .a11y-tester-name {
+  margin: 0 0 8px; font-size: 67px; font-weight: 400; line-height: 1.05; letter-spacing: -0.01em;
 }
-.a11y-widget-biz .a11y-tester .a11y-tester-pill-label,
-.a11y-widget-biz .a11y-tester .a11y-tester-bar .a11y-select2-label,
+.a11y-widget-biz .a11y-tester > .a11y-tester-sub {
+  margin: 40px 0 12px; font-family: "Serrif", Georgia, serif; font-size: 32px; font-weight: 300; line-height: 1.1; letter-spacing: 0;
+}
+/* A field: the filled box holds its label and its control. */
+.a11y-widget-biz .a11y-tester .a11y-input,
+.a11y-widget-biz .a11y-tester .a11y-tester-rows > .a11y-select2,
+.a11y-widget-biz .a11y-tester .a11y-tester-row {
+  box-sizing: border-box; min-width: 0; margin: 0; padding: 14px 18px 16px;
+  border-radius: 12px; background: var(--tile); color: var(--tile-ink);
+}
+.a11y-widget-biz .a11y-tester .a11y-input { display: grid; grid-template-columns: minmax(0, 1fr); gap: 4px; }
+.a11y-widget-biz .a11y-tester .a11y-input:focus-within,
+.a11y-widget-biz .a11y-tester .a11y-tester-rows > .a11y-select2:focus-within { outline: 3px solid var(--ink); outline-offset: 2px; }
+.a11y-widget-biz .a11y-tester .a11y-input-label,
+.a11y-widget-biz .a11y-tester .a11y-tester-rows .a11y-select2-label,
 .a11y-widget-biz .a11y-tester .a11y-tester-ai .a11y-switch-label {
-  margin-inline-end: 4px; font-size: 18px; font-weight: 500; line-height: 1.2; letter-spacing: 0.01em;
+  color: var(--tile-ink); font-size: 18px; font-weight: 400; line-height: 1.2; letter-spacing: 0.01em;
 }
-.a11y-widget-biz .a11y-tester .a11y-tester-bar .a11y-select2 .a11y-select2-field.a11y-select2-field {
-  min-width: 0; min-height: 40px; padding: 0 2.4em 0 14px; border: 1px solid var(--ink); border-radius: 999px;
-  background-color: var(--paper); color: var(--ink); font-size: 18px; letter-spacing: 0.01em;
-}
-.a11y-widget-biz .a11y-tester .a11y-tester-bar .a11y-select2 .a11y-select2-field.a11y-select2-field:enabled:hover { border-color: var(--hover); background-color: var(--hover); color: var(--hover-ink); }
-.a11y-widget-biz .a11y-tester .a11y-seg {
-  position: relative; display: inline-flex; align-items: center; box-sizing: border-box; min-height: 40px; padding: 0 16px;
-  border: 1px solid var(--ink); border-radius: 999px; background: var(--paper); color: var(--ink); cursor: pointer;
-  font-size: 18px; line-height: 1.2; letter-spacing: 0.01em;
-}
-.a11y-widget-biz .a11y-tester .a11y-seg > input {
-  position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0; overflow: hidden; clip-path: inset(50%);
-}
-.a11y-widget-biz .a11y-tester .a11y-seg.a11y-seg-on { background: var(--solid); color: var(--solid-ink); }
-.a11y-widget-biz .a11y-tester .a11y-seg:not(.a11y-seg-on):not(.a11y-seg-disabled):hover { border-color: var(--hover); background: var(--hover); color: var(--hover-ink); }
-.a11y-widget-biz .a11y-tester .a11y-seg:has(input:focus-visible) { outline: 3px solid var(--ink); outline-offset: 2px; box-shadow: 0 0 0 2px var(--paper); }
-.a11y-widget-biz .a11y-tester .a11y-seg.a11y-seg-disabled { border-style: dashed; cursor: not-allowed; }
-.a11y-widget-biz .a11y-tester .a11y-tester-ai .a11y-switch-word { font-size: 18px; letter-spacing: 0.01em; min-width: 1.8em; }
-/* The specimen. The field's own size attribute makes it wider than a phone,
-   so its track and shell may shrink. 0,5,1 out-ranks the general field rule. */
-.a11y-widget-biz .a11y-tester > .a11y-input { display: grid; grid-template-columns: minmax(0, 1fr); gap: 8px; min-width: 0; margin-top: 40px; }
-.a11y-widget-biz .a11y-tester .a11y-input-shell {
-  display: flex; flex-wrap: wrap; align-items: center; gap: 12px 16px; min-width: 0;
-  padding-bottom: 10px; border-bottom: 2px solid var(--ink);
-}
+.a11y-widget-biz .a11y-tester .a11y-input-shell { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 12px; min-width: 0; }
+/* 0,5,1 out-ranks the general field rule (0,3,1). The field's size
+   attribute makes it wider than a phone, so it may shrink. */
 .a11y-widget-biz .a11y-tester .a11y-input-shell > input:not([type="radio"]) {
-  flex: 1 1 6em; min-width: 0; margin: 0; padding: 0; border: 0; border-radius: 0;
-  background: transparent; color: var(--ink);
-  font-size: 120px; font-weight: 400; letter-spacing: -0.01em; line-height: 1.05;
+  flex: 1 1 8em; min-width: 0; min-height: 44px; margin: 0; padding: 0; border: 0; border-radius: 0;
+  background: transparent; color: var(--tile-ink);
+  font-size: 32px; font-weight: 400; letter-spacing: 0; line-height: 1.2;
 }
-.a11y-widget-biz .a11y-tester .a11y-input-shell > input::placeholder { color: var(--ink); opacity: 1; font-weight: 300; }
-.a11y-widget-biz .a11y-tester .a11y-input-shell > .a11y-login-toggle { flex: none; min-height: 40px; padding: 0 18px; font-size: 18px; }
-.a11y-widget-biz .a11y-tester > .a11y-url-error:not(:empty) { margin-top: 16px; }
-.a11y-widget-biz .a11y-tester > .a11y-url-submit { margin-top: 32px; }
-@media (max-width: 1100px) {
-  .a11y-widget-biz .a11y-tester .a11y-input-shell > input:not([type="radio"]) { font-size: 80px; }
+.a11y-widget-biz .a11y-tester .a11y-input-shell > input:not([type="radio"]):focus-visible { outline: none; box-shadow: none; }
+.a11y-widget-biz .a11y-tester .a11y-input-shell > input::placeholder { color: var(--tile-ink); opacity: 1; font-weight: 300; }
+.a11y-widget-biz .a11y-tester .a11y-input-shell > .a11y-login-toggle { flex: none; min-height: 36px; padding: 0 14px; font-size: 18px; }
+.a11y-widget-biz .a11y-tester > .a11y-url-error:not(:empty) { margin-top: 12px; }
+/* A choice: a filled row, its radio showing in the words' ink. */
+.a11y-widget-biz .a11y-tester .a11y-tester-choices {
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 220px), 1fr)); gap: 8px; min-width: 0;
 }
+.a11y-widget-biz .a11y-tester .a11y-seg {
+  display: flex; align-items: center; gap: 12px; box-sizing: border-box; min-width: 0; min-height: 60px; padding: 12px 18px;
+  border-radius: 12px; background: var(--tile); color: var(--tile-ink); cursor: pointer;
+  font-size: 22px; line-height: 1.2; letter-spacing: 0.01em;
+}
+/* Each choice shows a big toggle instead of a radio's dot (user's
+   instruction, 18 Nov 2026, "make big toggles instead of dots"). It is still
+   the native radio, drawn with appearance: none as a 64 x 36 track with a
+   24px knob: off is an ink edge with the knob left, on is solid with the
+   knob right. A radio cannot be switched off by itself; choosing the other
+   one in the group does it, as before. In forced colours the native radio
+   comes back, so the state never depends on a drawn fill. */
+.a11y-widget-biz .a11y-tester .a11y-seg > input {
+  display: inline-grid; place-content: center; flex: none; box-sizing: border-box; width: 64px; height: 36px; margin: 0;
+  order: 2; margin-inline-start: auto; cursor: pointer;
+  appearance: none; -webkit-appearance: none; border: 2px solid var(--tile-ink); border-radius: 999px;
+  background: var(--tile); color: var(--tile-ink); transition: background-color 0.15s;
+}
+/* The knob is the general radio rule's ::before, moved and resized: one
+   shape, so no second dot can show through. */
+.a11y-widget-biz .a11y-tester .a11y-seg > input::before {
+  width: 24px; height: 24px; background: currentColor; transform: translateX(-13px); transition: transform 0.15s;
+}
+.a11y-widget-biz .a11y-tester .a11y-seg > input:checked { border-color: var(--solid); background: var(--solid); color: var(--solid-ink); }
+.a11y-widget-biz .a11y-tester .a11y-seg > input:checked::before { transform: translateX(13px); }
+@media (forced-colors: active) {
+  .a11y-widget-biz .a11y-tester .a11y-seg > input { appearance: auto; -webkit-appearance: auto; width: 24px; height: 24px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .a11y-widget-biz .a11y-tester .a11y-seg > input,
+  .a11y-widget-biz .a11y-tester .a11y-seg > input::before { transition: none; }
+}
+/* The AI review switch matches the choices' toggles. */
+.a11y-widget-biz .a11y-tester .a11y-tester-ai .a11y-switch-track { width: 64px; height: 36px; }
+.a11y-widget-biz .a11y-tester .a11y-tester-ai .a11y-switch-knob { width: 26px; height: 26px; margin-top: -13px; }
+.a11y-widget-biz .a11y-tester .a11y-seg.a11y-seg-on { font-weight: 500; }
+.a11y-widget-biz .a11y-tester .a11y-seg:not(.a11y-seg-disabled):hover { background: var(--hover); color: var(--hover-ink); }
+.a11y-widget-biz .a11y-tester .a11y-seg:has(input:focus-visible) { outline: 3px solid var(--ink); outline-offset: 2px; }
+.a11y-widget-biz .a11y-tester .a11y-seg > input:focus-visible { outline: none; box-shadow: none; }
+.a11y-widget-biz .a11y-tester .a11y-seg.a11y-seg-disabled { cursor: not-allowed; box-shadow: inset 0 0 0 1px var(--tile-ink); }
+/* The other settings: AI review and the language, a filled row each. */
+.a11y-widget-biz .a11y-tester > .a11y-tester-rows { display: grid; gap: 8px; margin-top: 40px; }
+.a11y-widget-biz .a11y-tester .a11y-tester-ai .a11y-switch { display: flex; justify-content: space-between; width: 100%; }
+.a11y-widget-biz .a11y-tester .a11y-tester-ai .a11y-switch-word { color: var(--tile-ink); font-size: 18px; letter-spacing: 0.01em; min-width: 1.8em; }
+.a11y-widget-biz .a11y-tester .a11y-tester-rows > .a11y-select2 { display: grid; justify-items: stretch; gap: 4px; }
+.a11y-widget-biz .a11y-tester .a11y-tester-rows > .a11y-select2 .a11y-select2-field.a11y-select2-field {
+  width: 100%; min-width: 0; min-height: 40px; padding: 0 2.4em 0 0; border: 0; border-radius: 0;
+  background-color: transparent; color: var(--tile-ink); font-size: 26px; letter-spacing: 0;
+}
+.a11y-widget-biz .a11y-tester .a11y-tester-rows > .a11y-select2 .a11y-select2-field.a11y-select2-field:focus-visible { outline: none; box-shadow: none; }
+/* The action: one wide block, its words large and left, as the reference
+   sets "Subscribe to Our Newsletter"; solid (black in light, Apple grey in
+   dark), hover --hover. */
+.a11y-widget-biz .a11y-tester > .a11y-url-submit { display: grid; gap: 14px; margin-top: 8px; }
+.a11y-widget-biz .a11y-tester > .a11y-url-submit > .a11y-btn.a11y-btn-primary {
+  display: block; width: 100%; min-height: 120px; padding: 20px 24px; border-radius: 12px; text-align: start;
+  font-size: 48px; font-weight: 400; line-height: 1.05; letter-spacing: -0.01em;
+}
+.a11y-widget-biz .a11y-tester > .a11y-url-submit > .a11y-url-submit-note { font-size: 18px; letter-spacing: 0.01em; }
 @media (max-width: 640px) {
-  .a11y-widget-biz .a11y-tester .a11y-input-shell > input:not([type="radio"]) { font-size: 44px; }
-  .a11y-widget-biz .a11y-tester .a11y-tester-pill[role="radiogroup"] > .a11y-tester-pill-label { flex-basis: 100%; }
+  .a11y-widget-biz .a11y-tester > .a11y-tester-name { font-size: 40px; }
+  .a11y-widget-biz .a11y-tester > .a11y-tester-sub { margin-top: 28px; font-size: 27px; }
+  .a11y-widget-biz .a11y-tester .a11y-input-shell > input:not([type="radio"]) { font-size: 26px; }
+  .a11y-widget-biz .a11y-tester > .a11y-url-submit > .a11y-btn.a11y-btn-primary { min-height: 96px; font-size: 32px; }
 }
 
 /* ═══ THE SECTIONS RAIL AS ROWS (user's instruction, 18 Nov 2026) ═════════
@@ -2231,19 +2281,9 @@
    The base button rule reads --btn-fill, which only dark sets, so every
    button with its own look still wins. Light is unchanged. */
 @media (prefers-color-scheme: dark) {
-  .a11y-widget-biz:not([data-theme="light"]) .a11y-tester .a11y-seg:not(.a11y-seg-disabled),
-  .a11y-widget-biz:not([data-theme="light"]) .a11y-tester .a11y-tester-bar .a11y-select2 .a11y-select2-field.a11y-select2-field { border-color: #2c2c2e; background-color: #2c2c2e; }
-  .a11y-widget-biz:not([data-theme="light"]) .a11y-tester .a11y-seg.a11y-seg-on,
   .a11y-widget-biz:not([data-theme="light"]) .a11y-btn.a11y-btn-primary:enabled { border-color: #636366; }
-  .a11y-widget-biz:not([data-theme="light"]) .a11y-tester .a11y-seg.a11y-seg-on { background-color: #636366; }
-  .a11y-widget-biz:not([data-theme="light"]) .a11y-tester .a11y-input-shell { border-bottom-color: #8e8e93; }
 }
-.a11y-widget-biz[data-theme="dark"] .a11y-tester .a11y-seg:not(.a11y-seg-disabled),
-.a11y-widget-biz[data-theme="dark"] .a11y-tester .a11y-tester-bar .a11y-select2 .a11y-select2-field.a11y-select2-field { border-color: #2c2c2e; background-color: #2c2c2e; }
-.a11y-widget-biz[data-theme="dark"] .a11y-tester .a11y-seg.a11y-seg-on,
 .a11y-widget-biz[data-theme="dark"] .a11y-btn.a11y-btn-primary:enabled { border-color: #636366; }
-.a11y-widget-biz[data-theme="dark"] .a11y-tester .a11y-seg.a11y-seg-on { background-color: #636366; }
-.a11y-widget-biz[data-theme="dark"] .a11y-tester .a11y-input-shell { border-bottom-color: #8e8e93; }
 
 /* "Back to the chat" under the form is a way out, not a second action: at
    the 22px button size it stood as large as Start the scan. */
