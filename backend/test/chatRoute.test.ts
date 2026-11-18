@@ -118,6 +118,13 @@ describe("the chat contract", () => {
     expect(CHAT_SYSTEM_PROMPT).toMatch(/fenced code block/);
   });
 
+  // "- **Name:** the label..." read as machine writing (user, 18 Nov 2026:
+  // "don't overdo semicolons, this is slop").
+  it("asks for plain list items and few colons, no semicolons", () => {
+    expect(CHAT_SYSTEM_PROMPT).toMatch(/Do not open a list item with a bold label and a colon/);
+    expect(CHAT_SYSTEM_PROMPT).toMatch(/Never use a semicolon/);
+  });
+
   it("keeps credentials out of the conversation", () => {
     expect(CHAT_SYSTEM_PROMPT).toMatch(/Never ask for, or accept, a password/);
     expect(JSON.stringify(START_SCAN_TOOL)).not.toMatch(/password|username|cookie/i);
