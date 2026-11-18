@@ -339,16 +339,33 @@
    4 Nov 2026): the summary's solid round with the figure in paper, hung in
    the list's margin on the first line. counter(list-item) follows the
    start attribute, so a list resumed after code keeps its count; the ol
-   carries role="list" because list-style: none drops the role in Safari. */
-.a11y-widget-biz .a11y-chat-text ol { list-style: none; padding-inline-start: 1.6em; }
+   carries role="list" because list-style: none drops the role in Safari.
+   Centred on the first line (user's instruction, 18 Nov 2026, "aligned to
+   the text line, in the middle of it"): top: 0 left the 32px round riding
+   high against the text line (then 49px). The item's line-height becomes
+   a length (1lh, 38.4px at the 32px text) so the round can inherit it: a unitless 1.15 would
+   be re-read against the round's own 22px. The round then measures 1lh
+   from the item, at whatever size the list is set, and its middle sits on
+   the first line's middle. The test plan's tiles set their own leading
+   and are left out.
+   The indent is the round plus a gap, in px (user's report, same day,
+   "numbers not centered"): it and the round's offset were both 1.6em, but
+   of different sizes (32px text, 22px figure), so 3px were left between
+   round and word and the round read as off to one side; on a phone the
+   19px text ran 5px over it. Measured at 4x over Jokker: round centre to
+   the line's ink centre within 1px, figure centre to round centre within
+   0.5px. */
+.a11y-widget-biz .a11y-chat-text ol { list-style: none; padding-inline-start: 44px; }
 .a11y-widget-biz .a11y-chat-text ol > li { position: relative; }
+.a11y-widget-biz .a11y-chat-text ol:not(.a11y-chat-plan) > li { line-height: 1lh; }
 .a11y-widget-biz .a11y-chat-text ol > li::before {
   content: counter(list-item);
-  position: absolute; inset-inline-start: -1.6em; top: 0;
+  position: absolute; inset-inline-start: -44px; top: 0; top: calc((1lh - 32px) / 2);
   display: grid; place-content: center;
   width: 32px; height: 32px; border-radius: 50%;
   background: var(--ink); color: var(--paper);
-  font-size: 22px; letter-spacing: 0; font-weight: 500; line-height: 1;
+  font-size: 22px; letter-spacing: 0; font-weight: 500; line-height: inherit;
+  font-variant-numeric: tabular-nums;
 }
 .a11y-widget-biz .a11y-chat-text li::marker { font-weight: 400; }
 .a11y-widget-biz .a11y-chat-text li { margin: 0 0 0.2em; }
@@ -835,10 +852,13 @@
    20% smaller, now it gets cut off"): a square at 316px wide could not hold
    a long question at 38px, and the tile ran taller than the window, where
    the chat box covered it. Now a 200px floor that grows with its words,
-   the question 38 to 30px and the label 18 to 15px. Later the same day
-   the floor went to 280px ("make these 40% taller"): at 200px every tile
-   sat on the floor, since three lines of the question, the label and the
-   padding come to about 173px. The whole tile
+   the question 38 to 30px and the label 18 to 15px. Later the same day,
+   "make these 30% taller": the tiles stood at about 280px on a desktop,
+   set by the longest question, so the floor went from 200 to 370px (1.3
+   times that). A question longer than that still grows its tile; the
+   phone layout below keeps no floor. Then "make this text 30% smaller":
+   the question 30 to 21px, and at that size its spacing follows the
+   small sizes (+0.01em, line-height 1.15, the root's). The whole tile
    is the button. Hover and focus turn it solid black with white words
    (21:1) and show a white pill, the "Check it out" of the reference; a 1px
    white edge keeps the black tile visible on a black page. Disabled is a
@@ -849,7 +869,7 @@
 }
 .a11y-widget-biz .a11y-prompts .a11y-prompt {
   --ink: #000; --paper: #f0efe8;
-  box-sizing: border-box; min-width: 0; min-height: 280px; margin: 0; padding: 20px;
+  box-sizing: border-box; min-width: 0; min-height: 370px; margin: 0; padding: 20px;
   display: flex; flex-direction: column; align-items: stretch; justify-content: flex-start; gap: 16px;
   border: 1px solid #f0efe8; border-radius: 20px; background: #f0efe8; color: #000;
   font: inherit; text-align: start; cursor: pointer;
@@ -857,7 +877,7 @@
 }
 .a11y-widget-biz .a11y-prompts .a11y-prompt-label { font-size: 15px; font-weight: 500; letter-spacing: 0.01em; line-height: 1.2; }
 .a11y-widget-biz .a11y-prompts .a11y-prompt-ask {
-  margin-top: auto; font-size: 30px; font-weight: 400; letter-spacing: -0.005em; line-height: 1.1;
+  margin-top: auto; font-size: 21px; font-weight: 400; letter-spacing: 0.01em; line-height: 1.15;
   text-wrap: pretty;
 }
 .a11y-widget-biz .a11y-prompts .a11y-prompt-go {
@@ -1538,6 +1558,10 @@
 .a11y-widget-biz .a11y-fd > .a11y-fd-col:first-child { margin-bottom: 50px; }
 .a11y-widget-biz :is(.a11y-stmt-step, .a11y-stmt-fields, .a11y-stmt-card) + * { margin-top: 50px; }
 .a11y-widget-biz .a11y-spec-grid { margin-bottom: 50px; }
+/* "Skip the transcript" sat flush on the transcript's first line (user's
+   instruction, 18 Nov 2026: "add paragraph break space under button"). The
+   button and the transcript are two pieces, so the same 50px. */
+.a11y-widget-biz .a11y-sr .a11y-skip-link { margin-bottom: 50px; }
 
 /* ═══ MEASURE (user's instruction, 17 Nov 2026) ═══════════════════════════
    "Cap 9 to 12 words in a line; the margin can be added if needed." 42ch,
@@ -1634,6 +1658,14 @@
      Capitals, code and the test-plan tiles step down with it, in em, so
      they keep their place in the line. */
   .a11y-widget-biz .a11y-chat .a11y-chat-thread { font-size: 19px; line-height: 1.4; letter-spacing: 0.005em; }
+  /* The numbered round at 19px/1.4: a 32px round was wider than the indent
+     and taller than the 26.6px line, so the words ran over it and two
+     one-line points' rounds nearly touched. 24px with an 18px figure,
+     centred in the line as above. The plan tiles keep no round. */
+  .a11y-widget-biz .a11y-chat .a11y-chat-thread .a11y-chat-text ol:not(.a11y-chat-plan) { padding-inline-start: 34px; }
+  .a11y-widget-biz .a11y-chat .a11y-chat-thread .a11y-chat-text ol > li::before {
+    inset-inline-start: -34px; top: calc((1lh - 24px) / 2); width: 24px; height: 24px; font-size: 18px;
+  }
   .a11y-widget-biz .a11y-chat .a11y-chat-thread .a11y-caps { font-size: 0.92em; letter-spacing: 0.05em; }
   .a11y-widget-biz .a11y-chat .a11y-chat-thread :is(pre, code) { font-size: 0.9em; line-height: 1.4; }
   .a11y-widget-biz .a11y-chat .a11y-chat-thread .a11y-chat-plan-title { font-size: 22px; }
@@ -1657,7 +1689,11 @@
    ellipsis (the full question is the button's name and stays in the thread).
    The row on screen and the row under the pointer take the #f0efe8 ground of
    the opening cards, black words in both themes (18.4:1), 12px corners, the
-   way Claude's rows are drawn; a delete button shows on that row. A 1px ink
+   way Claude's rows are drawn; a delete button shows on that row. New chat
+   and every past conversation keep a 1px dashed ink edge at all times
+   (user's instruction, same day, "keep the dotted lines on these": they
+   had shown only while switching was locked), hover included; locked is
+   now the heavier 2px dash, the padding a pixel less so nothing moves. A 1px ink
    rule parts the panel from the conversation. It is sticky and scrolls on
    its own, so a long list never pushes the box you type in off screen.
    Under 640px it folds behind a Conversations toggle above the thread.
@@ -1688,12 +1724,12 @@
 .a11y-widget-biz .a11y-chats .a11y-chats-toggle,
 .a11y-widget-biz .a11y-chats .a11y-chats-item {
   align-items: center; gap: 10px; box-sizing: border-box; width: 100%; min-height: 40px;
-  margin: 0; padding: 8px 12px; border: 1px solid transparent; border-radius: 12px;
+  margin: 0; padding: 8px 12px; border: 1px dashed var(--ink); border-radius: 12px;
   background: transparent; color: var(--ink);
   font-size: 18px; letter-spacing: 0.01em; line-height: 1.3; text-align: start;
 }
 .a11y-widget-biz .a11y-chats .a11y-chats-new { display: flex; font-weight: 500; }
-.a11y-widget-biz .a11y-chats .a11y-chats-toggle { display: none; font-weight: 400; }
+.a11y-widget-biz .a11y-chats .a11y-chats-toggle { display: none; border-color: transparent; font-weight: 400; }
 .a11y-widget-biz .a11y-chats .a11y-chats-head {
   margin: 28px 0 6px; padding-inline: 12px; font-size: 15px; font-weight: 500; letter-spacing: 0.01em; line-height: 1.2;
 }
@@ -1713,7 +1749,7 @@
 .a11y-widget-biz .a11y-chats .a11y-chats-new:enabled:hover,
 .a11y-widget-biz .a11y-chats .a11y-chats-toggle:hover {
   --ink: #000; --paper: #f0efe8;
-  background: #f0efe8; border-color: transparent; color: #000;
+  background: #f0efe8; color: #000;
 }
 .a11y-widget-biz .a11y-chats .a11y-chats-row[data-current] .a11y-chats-item { font-weight: 500; }
 .a11y-widget-biz .a11y-chats .a11y-chats-delete {
@@ -1724,9 +1760,11 @@
 }
 .a11y-widget-biz .a11y-chats .a11y-chats-row:is([data-current], :hover, :focus-within) .a11y-chats-delete { visibility: visible; }
 .a11y-widget-biz .a11y-chats .a11y-chats-row .a11y-chats-delete:enabled:hover { border-color: #000; }
-/* Disabled while a reply or a scan runs: the dashed edge, never faded. */
-.a11y-widget-biz .a11y-chats :is(.a11y-chats-new, .a11y-chats-item, .a11y-chats-delete):disabled {
-  border: 1px dashed var(--ink); cursor: not-allowed;
+/* Disabled while a reply or a scan runs: a dashed edge, never faded. The
+   rows carry a 1px dash at rest, so theirs goes to 2px. */
+.a11y-widget-biz .a11y-chats .a11y-chats-delete:disabled { border: 1px dashed var(--ink); cursor: not-allowed; }
+.a11y-widget-biz .a11y-chats :is(.a11y-chats-new, .a11y-chats-item):disabled {
+  padding: 7px 11px; border: 2px dashed var(--ink); cursor: not-allowed;
 }
 @media (max-width: 640px) {
   .a11y-widget-biz .a11y-chat-layout { grid-template-columns: minmax(0, 1fr); gap: 0; }

@@ -214,6 +214,8 @@ export function App({
     }
     return { professional, criterionNames, apiBase, siteUrl: report?.url, signedIn: signedIn && Boolean(report?.savedAs) };
   }, [report, professional, apiBase, signedIn]);
+  // The same view for a section drawn as a block in the conversation.
+  const chatReportView = useMemo<ReportView>(() => ({ ...reportView, inChat: true }), [reportView]);
 
   // Print must include every card whatever the on-screen filter shows — the
   // rule the conformance checklist already follows. The filter lives in React
@@ -974,7 +976,7 @@ export function App({
           reducedMotion={reducedMotion}
           report={report}
           audit={audit}
-          renderSection={(key) => <ReportViewProvider value={reportView}>{renderSection(key)}</ReportViewProvider>}
+          renderSection={(key) => <ReportViewProvider value={chatReportView}>{renderSection(key)}</ReportViewProvider>}
           availableSections={availableSections}
           onScan={(url, scope, aiReview) => {
             const full = /^https?:\/\//i.test(url) ? url : `https://${url}`;
