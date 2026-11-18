@@ -102,7 +102,7 @@ export function FindingsList({
                     { key: "severity", label: t("Severity") },
                     { key: "issue", label: t("Issue") },
                     { key: "wcag", label: "WCAG" },
-                    { key: "fix", label: t("Who fixes this") },
+                    { key: "fix", label: t("Fix") },
                     ...(showLevel ? [{ key: "level", label: t("Level") }] : []),
                     ...(showCount
                       ? [{ key: "count", label: t("Instances"), align: "right" as const }]
