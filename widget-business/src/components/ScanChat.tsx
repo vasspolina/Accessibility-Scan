@@ -24,6 +24,7 @@ import { digestAudit, digestReport } from "../lib/reportDigest";
 import { NARRATION_STEPS, narrationIndex, narrationLabel } from "../lib/scanNarration";
 import { SHOWABLE, sectionForCommand, sectionLabel, type SectionKey } from "../lib/sections";
 import { pickOpeningPrompts } from "../lib/openingPrompts";
+import { CRITERIA, criterionFor } from "../lib/promptCriteria";
 import { planSteps } from "../lib/testPlan";
 import {
   deleteChat,
@@ -1020,6 +1021,25 @@ export function ScanChat({
     setAnnouncement(line);
   }
 
+  /** The criterion number on an opening card, pressed: the question and a
+   *  short answer from the conformance table, set in the thread at once.
+   *  Nothing goes to the assistant, so it works with no scan and no key. */
+  function explainCriterion(id: string) {
+    const c = CRITERIA[id];
+    if (!c || busy || loading) return;
+    setBackTo(null);
+    add({ id: nextId++, who: "you", text: tf("What does WCAG {id} ask for?", { id }) });
+    const line = tf("**{id} {name}**, level {level}. The question it asks: {plain}", {
+      id,
+      name: c.name,
+      level: c.level,
+      plain: c.plain[getLang()] ?? c.plain.en,
+    });
+    add({ id: nextId++, who: "checker", text: line });
+    setAnnouncement(line.replace(/\*\*/g, ""));
+    focusInput();
+  }
+
   /** A re-run asked for outside the thread — the settings block, the top
    *  bar. It runs as a scan turn like any other; the assistant did not start
    *  it, so the next message carries the result, as a form scan does. */
@@ -1141,11 +1161,17 @@ export function ScanChat({
   }
 
   /** WCAG 2.4.11: the pinned composer must never cover what the keyboard
-   *  is on. Anything that takes focus underneath it is scrolled clear. */
+   *  is on. Anything that takes focus underneath it is scrolled clear.
+   *  Keyboard focus only (:focus-visible): a press focuses its control too,
+   *  and scrolling on that moved the control out from under the pointer
+   *  between press and release, so the click never landed. The criterion
+   *  number at the foot of an opening card, beside the composer, did
+   *  nothing when pressed until this (18 Nov 2026). */
   function keepFocusClear(e: FocusEvent<HTMLDivElement>) {
     const dock = dockRef.current;
     const target = e.target as HTMLElement;
     if (!dock || dock.contains(target)) return;
+    if (!target.matches(":focus-visible")) return;
     const covered = target.getBoundingClientRect().bottom - dock.getBoundingClientRect().top;
     if (covered > 0) window.scrollBy({ top: covered + 16, behavior: "instant" as ScrollBehavior });
   }
@@ -1216,8 +1242,12 @@ export function ScanChat({
                     disabled={switchLocked && c.id === chatId}
                     onClick={() => removeChat(c)}
                   >
-                    <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" focusable="false">
-                      <path d="M5 7h14M10 7V5h4v2M7 7l1 12h8l1-12" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" />
+                    {/* IBM Carbon's trash-can, 32px grid (user's instruction, 18 Nov 2026). */}
+                    <svg viewBox="0 0 32 32" width="18" height="18" fill="currentColor" aria-hidden="true" focusable="false">
+                      <path d="M12 12H14V24H12z" />
+                      <path d="M18 12H20V24H18z" />
+                      <path d="M4,6V8H6V28a2,2,0,0,0,2,2H24a2,2,0,0,0,2-2V8h2V6ZM8,28V8H24V28Z" />
+                      <path d="M12 2H20V4H12z" />
                     </svg>
                   </button>
                 </li>
@@ -1246,32 +1276,52 @@ export function ScanChat({
       </div>
       {/* The opening questions, set as the Pangram Pangram font cards
           (user's reference, 18 Nov 2026): a tall pale card per group, the
-          group as its name top-left with the question under it, and a big
-          question mark at the foot where the foundry sets its "Aa". The
-          whole card is
-          the button and sends its question as if typed; hover and focus
-          turn it solid black with white words and show a pill that says
-          what a press does. They go once the conversation starts. */}
+          group as its name top-left with the question under it, and at the
+          foot, where the foundry sets its "Aa", the WCAG criterion the
+          question checks in a marker highlight (it replaced a big question
+          mark the same day). The question covers the whole card and sends
+          itself as if typed; hover and focus turn the card solid black with
+          white words and show a pill that says what a press does. The
+          number is its own button and puts what the criterion asks in the
+          thread. They go once the conversation starts. */}
       {turns.length === 0 && (
         <section className="a11y-prompts" aria-label={t("Questions to start with")}>
           <div className="a11y-prompt-grid">
-          {picks.map((p) => (
-            <button
-              key={p.group}
-              type="button"
-              className="a11y-prompt"
-              disabled={busy || loading}
-              onClick={() => void ask(t(p.prompt))}
-            >
-              <span className="a11y-prompt-label">{t(p.group)}</span>
-              <span className="a11y-prompt-ask">{smarten(t(p.prompt), getLang())}</span>
-              {/* The press, said in words; the button's name is already
-                  the label and the question, so this is not read twice. */}
-              <span className="a11y-prompt-go" aria-hidden="true">{t("Ask this")}</span>
-              {/* Decoration: the button's name is already the question. */}
-              <span className="a11y-prompt-mark" aria-hidden="true">?</span>
-            </button>
-          ))}
+          {picks.map((p) => {
+            const crit = criterionFor(p.prompt);
+            return (
+              // The card is a frame, not the button: it holds two controls,
+              // the question (stretched over the whole card) and the
+              // criterion number, and a button may not hold a button.
+              <div key={p.group} className="a11y-prompt">
+                <button
+                  type="button"
+                  className="a11y-prompt-q"
+                  disabled={busy || loading}
+                  onClick={() => void ask(t(p.prompt))}
+                >
+                  <span className="a11y-prompt-label">{t(p.group)}</span>
+                  <span className="a11y-prompt-ask">{smarten(t(p.prompt), getLang())}</span>
+                  {/* The press, said in words; the button's name is already
+                      the label and the question, so this is not read twice. */}
+                  <span className="a11y-prompt-go" aria-hidden="true">{t("Ask this")}</span>
+                </button>
+                {/* The criterion the question checks, where the foundry card
+                    sets its "Aa". A question that checks none shows nothing. */}
+                {crit && (
+                  <button
+                    type="button"
+                    className="a11y-prompt-wcag"
+                    disabled={busy || loading}
+                    aria-label={tf("WCAG {id} {name}: what it asks", { id: crit, name: CRITERIA[crit].name })}
+                    onClick={() => explainCriterion(crit)}
+                  >
+                    {crit}
+                  </button>
+                )}
+              </div>
+            );
+          })}
           </div>
           <p className="a11y-prompt-more">
             <Button variant="ghost" onClick={() => setPicks((last) => pickOpeningPrompts(Math.random, last))}>
