@@ -6,42 +6,6 @@
     <!-- The spaced en dash after a no-break space, as every language in the
          widget sets it (Hochuli p.36–40; an em dash is a fault here). -->
     <title>Accessibility scan&nbsp;– demo</title>
-    <style>
-      body {
-        /* Jokker arrives via the widget's injected @font-face; the
-           stack falls back to the system face until it loads. */
-        font-family: "Jokker", -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
-        font-feature-settings: "ss04", "ss05";
-        letter-spacing: 0.01em;
-        margin: 0;
-        /* No body padding and the widget's own paper: the shell runs
-           full-bleed, and a tinted page showed as a grey band under it. */
-        padding: 0;
-        background: #fff;
-        color: #000;
-      }
-      /* Full width. The widget sizes and centres itself against the viewport,
-         so giving it a column here as well made the two multiply. */
-      .page { width: 100%; margin: 0; }
-      /* The page's one h1, for assistive technology only: the widget draws
-         no h1 of its own, and a page without one fails our own
-         page-has-heading-one rule. Nothing is drawn above the widget. */
-      .page > h1 {
-        position: absolute;
-        width: 1px;
-        height: 1px;
-        margin: -1px;
-        padding: 0;
-        overflow: hidden;
-        clip-path: inset(50%);
-        white-space: nowrap;
-      }
-      /* The widget follows the visitor's scheme; the page around it should
-         too, or a dark report sits in a glowing light frame. */
-      @media (prefers-color-scheme: dark) {
-        body { background: #000; color: #fff; }
-      }
-    </style>
   </head>
   <body>
     <main class="page">
