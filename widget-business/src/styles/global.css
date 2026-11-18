@@ -470,6 +470,16 @@
   .a11y-widget-biz .a11y-finding-level-fold { display: block; }
   .a11y-widget-biz :is(td, th):is([data-col="severity"], [data-col="wcag"], [data-col="level"]) { display: none; }
 }
+/* Between a phone and a wide screen the fixed columns (Severity 8em, WCAG 5em,
+   Fix 6.8em, Level 11em, Instances 6.6em) add up to more than the table: at
+   860px of window the issue column was 0px wide and its words stood one
+   letter to a line (user's report, 18 Nov 2026). There, WCAG and Level fold
+   into the expanded finding as they do on a phone, and the issue gets their
+   room (about 340px at 1000px, 200px at 860px, measured). */
+@media (min-width: 601px) and (max-width: 1100px) {
+  .a11y-widget-biz .a11y-finding-level-fold { display: block; }
+  .a11y-widget-biz :is(td, th):is([data-col="wcag"], [data-col="level"]) { display: none; }
+}
 
 /* A row's second line (test method, AI mark, triage state, fix kind) is
    small print under the title, not a suffix welded onto its last word:
@@ -2060,21 +2070,18 @@
    is the tester's specimen line, typed at 48px in a white rounded field;
    the controls are pills, white on the card (the tester's Size and Leading
    pills), the primary action solid black. The option cards are white on the
-   card and solid black when chosen. Each card redefines --ink and --paper,
+   card and solid black when chosen. The card redefines --ink and --paper,
    so focus rings, the switch and the button follow without a rule each;
    the white grounds are written out, since --paper is the card's own. */
-.a11y-widget-biz .a11y-url-form .a11y-form-single { gap: 16px; }
-.a11y-widget-biz .a11y-url-form .a11y-step-group {
+/* Simplified the same day ("simplify"): one card for the whole form rather
+   than one per step, no number pills, steps 48px apart inside it. */
+.a11y-widget-biz .a11y-url-form .a11y-form-single {
   --ink: #000; --paper: #f0efe8;
-  display: flex; flex-direction: column; align-items: stretch; gap: 24px;
-  box-sizing: border-box; min-width: 0; padding: 28px 32px 32px;
+  gap: 48px; box-sizing: border-box; min-width: 0; padding: 32px;
   border-radius: 20px; background: #f0efe8; color: #000;
 }
-.a11y-widget-biz .a11y-url-form .a11y-step-num {
-  align-self: flex-start; padding: 7px 16px; border-radius: 999px;
-  background: #000; color: #f0efe8;
-  font-size: 15px; font-weight: 500; line-height: 1.2; letter-spacing: 0.01em;
-}
+.a11y-widget-biz .a11y-url-form .a11y-step-group { display: block; min-width: 0; }
+.a11y-widget-biz .a11y-url-form .a11y-step-num { display: none; }
 .a11y-widget-biz .a11y-url-form .a11y-step-body { gap: 24px; }
 .a11y-widget-biz .a11y-url-form .a11y-step-head { gap: 6px; }
 /* The specimen line: the address at display size, Regular, -0.01em as 48px
@@ -2099,7 +2106,20 @@
 .a11y-widget-biz .a11y-url-form .a11y-input-shell > .a11y-login-toggle { min-height: 52px; font-size: 18px; padding: 0 22px; }
 .a11y-widget-biz .a11y-url-form .a11y-optioncard.a11y-optioncard-on { border-color: #000; background: #000; color: #f0efe8; }
 .a11y-widget-biz .a11y-url-form .a11y-optioncard.a11y-optioncard-disabled { border: 1px dashed #000; }
-.a11y-widget-biz .a11y-url-form .a11y-optioncard-desc { font-size: 18px; line-height: 1.3; }
+/* The option cards, simplified: no drawn radio (the black ground says which
+   is chosen; the input stays for keyboards and screen readers, clipped like
+   .a11y-sr-only, and its focus ring is drawn on the card), the title at 22px
+   with its description right under it. */
+.a11y-widget-biz .a11y-url-form .a11y-radio-group.a11y-optioncard-grid { gap: 10px; }
+.a11y-widget-biz .a11y-url-form .a11y-optioncard {
+  position: relative; grid-template-columns: minmax(0, 1fr); grid-template-rows: auto auto; align-content: start;
+  gap: 4px; padding: 16px 20px;
+}
+.a11y-widget-biz .a11y-url-form .a11y-optioncard > input {
+  position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0; overflow: hidden; clip-path: inset(50%);
+}
+.a11y-widget-biz .a11y-url-form .a11y-optioncard-label { grid-column: 1; font-size: 22px; line-height: 1.2; }
+.a11y-widget-biz .a11y-url-form .a11y-optioncard-desc { grid-column: 1; align-self: start; padding-top: 0; font-size: 18px; line-height: 1.3; }
 /* The language control above the steps is a pill too, the tester's weight
    menu ("Ultrabold ↓"), on the page's own ink and paper. 0,5,0 out-ranks
    the square 2px box it had (4 Nov 2026), which this replaces. */
@@ -2108,7 +2128,7 @@
   font-size: 18px; letter-spacing: 0.01em;
 }
 @media (max-width: 640px) {
-  .a11y-widget-biz .a11y-url-form .a11y-step-group { gap: 18px; padding: 18px 20px 24px; }
+  .a11y-widget-biz .a11y-url-form .a11y-form-single { gap: 36px; padding: 20px; }
   .a11y-widget-biz .a11y-url-form .a11y-input-shell > input:not([type="radio"]) { min-height: 72px; padding: 0 18px; font-size: 32px; letter-spacing: -0.005em; }
 }
 
