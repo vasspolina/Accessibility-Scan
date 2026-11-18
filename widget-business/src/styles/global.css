@@ -2061,85 +2061,108 @@
   .a11y-widget-biz .a11y-legal-tiles > .a11y-legal-row .a11y-legal-row-label { font-size: 18px; }
 }
 
-/* ═══ THE SCAN FORM AS A TYPE TESTER (user's instruction, 18 Nov 2026) ═════
-   "Design this", over the form's three steps, the language control and the
-   option cards, in the language of the foundry type tester the user sent
-   for the summary cards: each step is a #f0efe8 card, 20px corners, black
-   words in both themes (18.4:1); its number on a small solid-black pill at
-   the top-left where the tester puts its typeface's name; the address field
-   is the tester's specimen line, typed at 48px in a white rounded field;
-   the controls are pills, white on the card (the tester's Size and Leading
-   pills), the primary action solid black. The option cards are white on the
-   card and solid black when chosen. The card redefines --ink and --paper,
-   so focus rings, the switch and the button follow without a rule each;
-   the white grounds are written out, since --paper is the card's own. */
-/* Simplified the same day ("simplify"): one card for the whole form rather
-   than one per step, no number pills, steps 48px apart inside it. */
-.a11y-widget-biz .a11y-url-form .a11y-form-single {
+/* ═══ THE SCAN FORM AS A TYPE TESTER (user's reference, 18 Nov 2026) ══════
+   "Create new inspired by reference design", after a foundry's type tester:
+   one #f0efe8 card, 24px corners, black words in both themes (18.4:1);
+   along the top the tester's row of pills, the name first on solid black
+   ("New scan", where the tester names its typeface), the language beside
+   it as the tester's weight menu, and the settings to the right as white
+   pills holding their choices, the way the tester holds Size, Leading and
+   Spacing; under them a row of small white chips with the chosen settings'
+   small print, where the tester lists its alternates; then the specimen,
+   the address typed at 120px straight onto the card over a 2px rule; the
+   action last. Hover is the marker yellow everywhere (black words); a
+   chosen segment is solid black. The card redefines --ink and --paper, so
+   focus rings and the switch follow; white grounds are written out. This
+   replaces the step cards and option tiles of earlier the same day. */
+.a11y-widget-biz .a11y-url-form.a11y-tester {
   --ink: #000; --paper: #f0efe8;
-  gap: 48px; box-sizing: border-box; min-width: 0; padding: 32px;
-  border-radius: 20px; background: #f0efe8; color: #000;
+  display: block;
+  box-sizing: border-box; min-width: 0; margin: 0; padding: 32px 36px 36px;
+  border-radius: 24px; background: #f0efe8; color: #000;
 }
-.a11y-widget-biz .a11y-url-form .a11y-step-group { display: block; min-width: 0; }
-.a11y-widget-biz .a11y-url-form .a11y-step-num { display: none; }
-.a11y-widget-biz .a11y-url-form .a11y-step-body { gap: 24px; }
-.a11y-widget-biz .a11y-url-form .a11y-step-head { gap: 6px; }
-/* The specimen line: the address at display size, Regular, -0.01em as 48px
-   takes it; the placeholder is black Light, not a grey (the email field's
-   rule), and Light is allowed at this size. 0,4,1 out-ranks the general
-   field rule (0,3,1). */
-.a11y-widget-biz .a11y-url-form .a11y-input-shell > input:not([type="radio"]) {
-  min-height: 96px; padding: 0 24px; border: 0; border-radius: 20px;
-  background: #fff; color: #000;
-  font-size: 48px; font-weight: 400; letter-spacing: -0.01em; line-height: 1.1;
+/* Spaced by margins, not a flex gap: the error line and the login panel are
+   in the markup while empty (a live region has to be there before it is
+   filled), and a gap gave each of them a slot of air. */
+.a11y-widget-biz .a11y-tester > .a11y-input { margin-top: 32px; }
+.a11y-widget-biz .a11y-tester > .a11y-url-error:not(:empty) { margin-top: 16px; }
+.a11y-widget-biz .a11y-tester > .a11y-url-submit { margin-top: 32px; }
+.a11y-widget-biz .a11y-tester .a11y-tester-bar { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; min-width: 0; }
+.a11y-widget-biz .a11y-tester .a11y-tester-bar .a11y-tester-name {
+  display: inline-flex; align-items: center; min-height: 44px; margin: 0; padding: 0 22px;
+  border-radius: 999px; background: #000; color: #f0efe8;
+  font-size: 18px; font-weight: 500; line-height: 1.2; letter-spacing: 0.01em;
 }
-/* The field at 32px on a phone is 423px wide by its own size attribute; the
-   track and the shell may shrink below that, or the card ran off a 375px
-   screen (measured 18 Nov 2026). */
-.a11y-widget-biz .a11y-url-form .a11y-input { grid-template-columns: minmax(0, 1fr); min-width: 0; }
-.a11y-widget-biz .a11y-url-form .a11y-input-shell { min-width: 0; }
-.a11y-widget-biz .a11y-url-form .a11y-input-shell > input::placeholder { color: #000; opacity: 1; font-weight: 300; }
-.a11y-widget-biz .a11y-url-form .a11y-input-shell > .a11y-login-toggle,
-.a11y-widget-biz .a11y-url-form .a11y-optioncard {
-  border-color: #fff; background: #fff; color: #000;
+.a11y-widget-biz .a11y-tester .a11y-tester-controls { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; min-width: 0; margin-inline-start: auto; }
+/* A white pill: its label, then its control (choices, a switch, a menu). */
+.a11y-widget-biz .a11y-tester .a11y-tester-pill,
+.a11y-widget-biz .a11y-tester .a11y-tester-bar .a11y-select2 {
+  display: inline-flex; flex-wrap: wrap; align-items: center; gap: 4px 6px;
+  box-sizing: border-box; max-width: 100%; min-height: 44px; margin: 0; padding: 4px 4px 4px 18px;
+  border-radius: 22px; background: #fff; color: #000;
 }
-.a11y-widget-biz .a11y-url-form .a11y-input-shell > .a11y-login-toggle { min-height: 52px; font-size: 18px; padding: 0 22px; }
-.a11y-widget-biz .a11y-url-form .a11y-optioncard.a11y-optioncard-on { border-color: #000; background: #000; color: #f0efe8; }
-.a11y-widget-biz .a11y-url-form .a11y-optioncard.a11y-optioncard-disabled { border: 1px dashed #000; }
-/* Hover is the marker yellow with black words, as on every button (user's
-   instruction, 18 Nov 2026, "make hover yellow"). The chosen card keeps its
-   black while hovered, so the choice never seems to vanish under the
-   pointer; a disabled card takes no hover. */
-.a11y-widget-biz .a11y-url-form .a11y-optioncard:not(.a11y-optioncard-on):not(.a11y-optioncard-disabled):hover {
-  border-color: var(--hl-cap-a); background: var(--hl-cap-a); color: #000;
+.a11y-widget-biz .a11y-tester .a11y-tester-pill-label,
+.a11y-widget-biz .a11y-tester .a11y-tester-bar .a11y-select2-label,
+.a11y-widget-biz .a11y-tester .a11y-tester-ai .a11y-switch-label {
+  margin-inline-end: 6px; font-size: 15px; font-weight: 500; line-height: 1.2; letter-spacing: 0.01em;
 }
-.a11y-widget-biz .a11y-newscan-head .a11y-select2 .a11y-select2-field.a11y-select2-field:enabled:hover {
-  border-color: var(--hl-cap-a); background-color: var(--hl-cap-a); color: #000;
+.a11y-widget-biz .a11y-tester .a11y-tester-bar .a11y-select2 .a11y-select2-field.a11y-select2-field {
+  min-width: 0; min-height: 36px; padding: 0 2.4em 0 12px; border: 0; border-radius: 999px;
+  background-color: transparent; color: #000; font-size: 15px; letter-spacing: 0.01em;
 }
-/* The option cards, simplified: no drawn radio (the black ground says which
-   is chosen; the input stays for keyboards and screen readers, clipped like
-   .a11y-sr-only, and its focus ring is drawn on the card), the title at 22px
-   with its description right under it. */
-.a11y-widget-biz .a11y-url-form .a11y-radio-group.a11y-optioncard-grid { gap: 10px; }
-.a11y-widget-biz .a11y-url-form .a11y-optioncard {
-  position: relative; grid-template-columns: minmax(0, 1fr); grid-template-rows: auto auto; align-content: start;
-  gap: 4px; padding: 16px 20px;
+.a11y-widget-biz .a11y-tester .a11y-tester-bar .a11y-select2 .a11y-select2-field.a11y-select2-field:enabled:hover { background-color: var(--hl-cap-a); }
+/* A choice in a pill: the radio clipped, the segment black when chosen. */
+.a11y-widget-biz .a11y-tester .a11y-seg {
+  position: relative; display: inline-flex; align-items: center; min-height: 36px; padding: 0 14px;
+  border-radius: 999px; background: #fff; color: #000; cursor: pointer;
+  font-size: 15px; line-height: 1.2; letter-spacing: 0.01em;
 }
-.a11y-widget-biz .a11y-url-form .a11y-optioncard > input {
+.a11y-widget-biz .a11y-tester .a11y-seg > input {
   position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0; overflow: hidden; clip-path: inset(50%);
 }
-.a11y-widget-biz .a11y-url-form .a11y-optioncard-label { grid-column: 1; font-size: 22px; line-height: 1.2; }
-.a11y-widget-biz .a11y-url-form .a11y-optioncard-desc { grid-column: 1; align-self: start; padding-top: 0; font-size: 18px; line-height: 1.3; }
-/* The language control above the steps is a pill too, the tester's weight
-   menu ("Ultrabold ↓"), on the page's own ink and paper. 0,5,0 out-ranks
-   the square 2px box it had (4 Nov 2026), which this replaces. */
-.a11y-widget-biz .a11y-newscan-head .a11y-select2 .a11y-select2-field.a11y-select2-field {
-  min-height: 44px; padding: 0 2.6em 0 1em; border: 1px solid var(--ink); border-radius: 999px;
-  font-size: 18px; letter-spacing: 0.01em;
+.a11y-widget-biz .a11y-tester .a11y-seg.a11y-seg-on { background: #000; color: #f0efe8; }
+.a11y-widget-biz .a11y-tester .a11y-seg:not(.a11y-seg-on):not(.a11y-seg-disabled):hover { background: var(--hl-cap-a); color: #000; }
+.a11y-widget-biz .a11y-tester .a11y-seg:has(input:focus-visible) { outline: 3px solid #000; outline-offset: 2px; box-shadow: 0 0 0 2px #f0efe8; }
+.a11y-widget-biz .a11y-tester .a11y-seg.a11y-seg-disabled { cursor: not-allowed; box-shadow: inset 0 0 0 1px #000; }
+.a11y-widget-biz .a11y-tester .a11y-seg.a11y-seg-disabled.a11y-seg-on { box-shadow: none; }
+.a11y-widget-biz .a11y-tester .a11y-tester-ai { padding-inline-end: 14px; }
+.a11y-widget-biz .a11y-tester .a11y-tester-ai .a11y-switch-word { font-size: 15px; letter-spacing: 0.01em; min-width: 1.8em; }
+/* The chips: the chosen settings' small print. */
+.a11y-widget-biz .a11y-tester .a11y-tester-chips { display: flex; flex-wrap: wrap; gap: 8px; margin: 20px 0 0; padding: 0; list-style: none; }
+.a11y-widget-biz .a11y-tester .a11y-tester-chips > li {
+  box-sizing: border-box; max-width: 100%; margin: 0; padding: 6px 12px; border-radius: 16px;
+  background: #fff; color: #000; font-size: 15px; line-height: 1.3; letter-spacing: 0.01em;
+}
+/* The specimen. The field's own size attribute makes it 423px at 32px and
+   wider at 120px, so its track and shell may shrink below that. 0,5,1
+   out-ranks the general field rule (0,3,1). */
+.a11y-widget-biz .a11y-tester .a11y-input { display: grid; grid-template-columns: minmax(0, 1fr); gap: 8px; min-width: 0; }
+.a11y-widget-biz .a11y-tester .a11y-input-shell {
+  display: flex; flex-wrap: wrap; align-items: center; gap: 12px 16px; min-width: 0;
+  padding-bottom: 10px; border-bottom: 2px solid #000;
+}
+.a11y-widget-biz .a11y-tester .a11y-input-shell > input:not([type="radio"]) {
+  flex: 1 1 6em; min-width: 0; margin: 0; padding: 0; border: 0; border-radius: 0;
+  background: transparent; color: #000;
+  font-size: 120px; font-weight: 400; letter-spacing: -0.01em; line-height: 1.05;
+}
+.a11y-widget-biz .a11y-tester .a11y-input-shell > input::placeholder { color: #000; opacity: 1; font-weight: 300; }
+.a11y-widget-biz .a11y-tester .a11y-input-shell > .a11y-login-toggle {
+  flex: none; min-height: 44px; padding: 0 20px; border-color: #fff; background: #fff; color: #000; font-size: 15px;
+}
+.a11y-widget-biz .a11y-tester .a11y-input-shell > .a11y-login-toggle:enabled:hover { border-color: var(--hl-cap-a); background: var(--hl-cap-a); }
+@media (max-width: 1100px) {
+  .a11y-widget-biz .a11y-tester .a11y-input-shell > input:not([type="radio"]) { font-size: 80px; }
 }
 @media (max-width: 640px) {
-  .a11y-widget-biz .a11y-url-form .a11y-form-single { gap: 36px; padding: 20px; }
-  .a11y-widget-biz .a11y-url-form .a11y-input-shell > input:not([type="radio"]) { min-height: 72px; padding: 0 18px; font-size: 32px; letter-spacing: -0.005em; }
+  .a11y-widget-biz .a11y-url-form.a11y-tester { padding: 20px; border-radius: 20px; }
+  .a11y-widget-biz .a11y-tester .a11y-tester-controls { margin-inline-start: 0; }
+  /* On a phone a pill's label takes its own line and the choices sit under
+     it in one row; at 315px the label and both choices did not fit, and the
+     second choice dropped alone onto a line inside the pill. */
+  .a11y-widget-biz .a11y-tester .a11y-tester-pill[role="radiogroup"] { padding: 10px 4px 4px 16px; }
+  .a11y-widget-biz .a11y-tester .a11y-tester-pill[role="radiogroup"] > .a11y-tester-pill-label { flex-basis: 100%; }
+  .a11y-widget-biz .a11y-tester .a11y-input-shell > input:not([type="radio"]) { font-size: 44px; }
 }
 
 /* ═══ THE SECTIONS RAIL AS ROWS (user's instruction, 18 Nov 2026) ═════════
