@@ -212,10 +212,7 @@ export function App({
     for (const c of report?.conformance?.criteria ?? []) {
       criterionNames[c.id] = { name: c.name, level: c.level };
     }
-    const allGroups = groupFindings(report?.findings ?? []);
-    const showInstances = allGroups.some((g) => g.length > 1);
-    const showLevel = allGroups.some((g) => Boolean(g[0]?.wcagLevel));
-    return { professional, criterionNames, showInstances, showLevel, apiBase, siteUrl: report?.url, signedIn: signedIn && Boolean(report?.savedAs) };
+    return { professional, criterionNames, apiBase, siteUrl: report?.url, signedIn: signedIn && Boolean(report?.savedAs) };
   }, [report, professional, apiBase, signedIn]);
 
   // Print must include every card whatever the on-screen filter shows — the
