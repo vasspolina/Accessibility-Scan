@@ -2289,3 +2289,9 @@
    the 22px button size it stood as large as Start the scan. */
 .a11y-widget-biz .a11y-chat-alt { margin-bottom: 65px; }
 .a11y-widget-biz .a11y-chat-alt > .a11y-btn { min-height: 40px; padding: 0 18px; font-size: 18px; }
+
+/* VOICE CONTROL: one toggle and the line that says what it heard. Three
+   roots, like the rest of the poster layer. */
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-voice { display: flex; flex-wrap: wrap; align-items: center; gap: 10px 16px; margin: 0 0 30px; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-voice-note { margin: 0; font-size: 15px; line-height: 1.2; letter-spacing: 0.01em; flex: 1 1 18em; min-width: 0; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-voice .a11y-btn[aria-pressed="true"] { background: var(--solid); color: var(--solid-ink); }
