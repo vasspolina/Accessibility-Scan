@@ -960,11 +960,22 @@
   --ink: #000; --paper: #f0efe8;
   position: relative;
   box-sizing: border-box; min-width: 0; aspect-ratio: 296 / 407; margin: 0; padding: 26px;
-  display: flex; flex-direction: column; align-items: stretch; justify-content: flex-start; gap: 4px;
+  display: flex; flex-direction: column; align-items: flex-start; justify-content: flex-start;
   border: 1px solid #f0efe8; border-radius: 20px; background: #f0efe8; color: #000;
-  font: inherit; text-align: start; cursor: pointer;
   overflow-wrap: break-word; hyphens: auto;
 }
+/* The question is the card's main control. It is laid out in the card's
+   flow, and its ::after is stretched over the whole card, so a press
+   anywhere but the criterion number asks it. */
+.a11y-widget-biz .a11y-prompts .a11y-prompt-q {
+  position: static; display: flex; flex-direction: column; align-items: stretch; gap: 4px;
+  width: 100%; min-width: 0; min-height: 0; margin: 0; padding: 0;
+  border: 0; border-radius: 0; background: none; color: inherit;
+  font: inherit; text-align: start; cursor: pointer;
+}
+.a11y-widget-biz .a11y-prompts .a11y-prompt-q::after { content: ""; position: absolute; inset: 0; border-radius: 20px; }
+.a11y-widget-biz .a11y-prompts .a11y-prompt-q:focus-visible { outline: none; }
+.a11y-widget-biz .a11y-prompts .a11y-prompt-q:focus-visible::after { outline: 2px solid #fff; outline-offset: -5px; }
 .a11y-widget-biz .a11y-prompts .a11y-prompt-label {
   font-size: 22px; font-weight: 500; letter-spacing: 0.01em; line-height: 1.3;
 }
@@ -972,10 +983,24 @@
   font-size: 18px; font-weight: 400; letter-spacing: 0.01em; line-height: 1.3;
   text-wrap: pretty;
 }
-.a11y-widget-biz .a11y-prompts .a11y-prompt-mark {
-  margin-top: auto; padding-top: 20px;
-  font-size: 180px; font-weight: 500; letter-spacing: 0; line-height: 0.8;
+/* The criterion number at the foot, on the orange highlight the report
+   gives rule ids (black on #ff8a4c, 9.3:1, in both themes). It sits above
+   the question's stretched ::after, so a press on it explains the
+   criterion instead of asking the question. Marker yellow on hover, like
+   every button. */
+.a11y-widget-biz .a11y-prompts .a11y-prompt-wcag {
+  position: relative; z-index: 1;
+  margin-top: auto; min-height: 0; padding: 0 0.12em;
+  border: 0; cursor: pointer;
+  color: #000; background: var(--hl-orange);
+  border-radius: 0.9em 0.45em 0.9em 0.55em / 0.7em 0.5em 0.7em 0.5em;
+  box-shadow: 0.14em 0 0 var(--hl-cap-a), -0.14em 0 0 var(--hl-cap-b);
+  margin-inline: 0.14em;
+  font: inherit; font-size: 48px; font-weight: 500; letter-spacing: 0; line-height: 1.1;
+  font-variant-numeric: tabular-nums;
 }
+.a11y-widget-biz .a11y-prompts .a11y-prompt-wcag:enabled:hover { background: var(--hl-cap-a); }
+.a11y-widget-biz .a11y-prompts .a11y-prompt-wcag:disabled { cursor: default; }
 .a11y-widget-biz .a11y-prompts .a11y-prompt-go {
   position: absolute; right: 26px; bottom: 26px;
   display: flex; align-items: center; justify-content: center; min-height: 34px; padding: 0 14px;
@@ -983,14 +1008,14 @@
   font-size: 18px; letter-spacing: 0.01em; line-height: 1.2;
   visibility: hidden;
 }
-.a11y-widget-biz .a11y-prompts .a11y-prompt:enabled:hover,
-.a11y-widget-biz .a11y-prompts .a11y-prompt:enabled:focus-visible {
+.a11y-widget-biz .a11y-prompts .a11y-prompt:has(> .a11y-prompt-q:enabled:is(:hover, :focus-visible)) {
   --ink: #fff; --paper: #000;
-  background: #000; color: #fff; border-color: #fff; text-decoration: none;
+  background: #000; color: #fff; border-color: #fff;
 }
-.a11y-widget-biz .a11y-prompts .a11y-prompt:enabled:hover .a11y-prompt-go,
-.a11y-widget-biz .a11y-prompts .a11y-prompt:enabled:focus-visible .a11y-prompt-go { visibility: visible; }
-.a11y-widget-biz .a11y-prompts .a11y-prompt:disabled { cursor: default; border: 1px dashed #000; }
+.a11y-widget-biz .a11y-prompts .a11y-prompt-q:enabled:is(:hover, :focus-visible) { background: none; color: inherit; }
+.a11y-widget-biz .a11y-prompts .a11y-prompt-q:enabled:is(:hover, :focus-visible) .a11y-prompt-go { visibility: visible; }
+.a11y-widget-biz .a11y-prompts .a11y-prompt:has(> .a11y-prompt-q:disabled) { border: 1px dashed #000; }
+.a11y-widget-biz .a11y-prompts .a11y-prompt-q:disabled { cursor: default; }
 .a11y-widget-biz .a11y-prompt-more { text-align: center; margin: 1.2em 0 0; }
 @container a11y-sum-run (max-width: 640px) {
   .a11y-widget-biz .a11y-sum-run .a11y-sum-rows,
@@ -1740,8 +1765,8 @@
   }
   .a11y-widget-biz .a11y-chat .a11y-prompts .a11y-prompt-label { font-size: 18px; }
   .a11y-widget-biz .a11y-chat .a11y-prompts .a11y-prompt-ask { margin-top: 0; font-size: 19px; letter-spacing: 0.005em; line-height: 1.3; }
-  .a11y-widget-biz .a11y-chat .a11y-prompts .a11y-prompt-go,
-  .a11y-widget-biz .a11y-chat .a11y-prompts .a11y-prompt-mark { display: none; }
+  .a11y-widget-biz .a11y-chat .a11y-prompts .a11y-prompt-go { display: none; }
+  .a11y-widget-biz .a11y-chat .a11y-prompts .a11y-prompt-wcag { margin-top: 8px; font-size: 18px; line-height: 1.3; }
   .a11y-widget-biz .a11y-chat .a11y-prompt-more { text-align: start; margin: 8px 0 0; }
   .a11y-widget-biz .a11y-chat .a11y-prompt-more .a11y-btn { font-size: 18px; }
 

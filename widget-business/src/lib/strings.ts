@@ -920,4 +920,8 @@ export const CHROME_KEYS: string[] = [
   "(opens in a new tab)",
   // The questions an empty conversation opens with.
   ...OPENING_PROMPT_KEYS,
+  // The criterion number on an opening card, and what it puts in the thread.
+  "What does WCAG {id} ask for?",
+  "**{id} {name}**, level {level}. The question it asks: {plain}",
+  "WCAG {id} {name}: what it asks",
 ];

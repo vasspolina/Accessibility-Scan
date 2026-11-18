@@ -886,4 +886,7 @@ export const STRINGS_ES: Record<string, string> = {
   "Accessibility scan: {url}": "Análisis de accesibilidad: {url}",
   "Scanned {date}": "Analizado el {date}",
   "Score: {score}/100": "Puntuación: {score}/100",
+  "What does WCAG {id} ask for?": "¿Qué pide WCAG {id}?",
+  "**{id} {name}**, level {level}. The question it asks: {plain}": "**{id} {name}**, nivel {level}. La pregunta que plantea: {plain}",
+  "WCAG {id} {name}: what it asks": "WCAG {id} {name}: qué pide",
 };
