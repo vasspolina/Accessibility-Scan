@@ -289,6 +289,10 @@
   font: inherit; font-size: 15px; line-height: 1.3;
 }
 .a11y-widget-biz .a11y-chat-tabhint-text { min-width: 0; overflow-wrap: anywhere; }
+/* The report's sections offered under the thread, one pill each, 3px
+   apart (user's instruction, 18 Nov 2026, "add 3px in between tabs"):
+   they had no rule and sat edge to edge. */
+.a11y-widget-biz .a11y-chat-suggest { display: flex; flex-wrap: wrap; gap: 3px; }
 /* "Did you mean accessibility.nl?": the address as a button under it. */
 .a11y-widget-biz .a11y-chat-text .a11y-chat-confirm { margin: 0.6em 0 0; }
 .a11y-widget-biz .a11y-chat-box-row {
@@ -1400,8 +1404,13 @@
   display: block; margin: 0;
   font-family: "Jokker", sans-serif; font-weight: 400; font-size: 22px; line-height: 1.3; letter-spacing: 0.01em;
 }
+/* A design note's title at the size of the displaay.net Download / Test /
+   Buy buttons (user's reference, 18 Nov 2026, "make this text size like
+   this"): measured against the 32px it was, the reference's lines sit 0.6
+   as far apart, so 22px (the larger of the two label sizes) set solid at
+   line-height 1.0, +0.01em as 22px takes. */
 .a11y-widget-biz .a11y-dn-link > .a11y-dn-link-text {
-  display: block; margin: 0; font-family: "Jokker", sans-serif; font-weight: 400; font-size: 32px; line-height: 1.1; letter-spacing: 0;
+  display: block; margin: 0; font-family: "Jokker", sans-serif; font-weight: 400; font-size: 22px; line-height: 1; letter-spacing: 0.01em;
 }
 /* Small print under the words stays Jokker at 15px or 18px. */
 .a11y-widget-biz .a11y-spec-card > .a11y-spec-value > .a11y-spec-gloss { margin-top: 0.6em; font-family: "Jokker", sans-serif; }
