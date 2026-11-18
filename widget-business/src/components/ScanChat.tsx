@@ -524,6 +524,7 @@ export function ScanChat({
   report,
   audit,
   onScan,
+  onSignInForm,
   renderSection,
   availableSections,
   language,
@@ -542,6 +543,9 @@ export function ScanChat({
   report: AccessibilityReport | null;
   audit: SiteAudit | null;
   onScan: (url: string, scope: "page" | "site", aiReview: boolean) => Promise<ScanOutcome>;
+  /** Opens the scan form, the one way to scan behind a login: a password
+   *  typed into the chat would pass through the model. */
+  onSignInForm: () => void;
   renderSection: (key: SectionKey) => ReactNode;
   availableSections: SectionKey[];
   language: Lang;
@@ -1396,7 +1400,7 @@ export function ScanChat({
             if (turn.who === "notice") {
               return (
                 <li key={turn.id} className="a11y-chat-turn">
-                  <BlockedNotice message={turn.message} />
+                  <BlockedNotice message={turn.message} onSignIn={onSignInForm} />
                 </li>
               );
             }
@@ -1534,6 +1538,14 @@ export function ScanChat({
               </Button>
             </div>
           </div>
+          {/* Under the box, not in it (user's instruction, 18 Nov 2026):
+              a page behind a login is scanned from the form, so the login
+              goes to the scanner and never into the chat or its model. */}
+          <p className="a11y-chat-signin">
+            <Button variant="ghost" onClick={onSignInForm}>
+              {t("Scan a page behind a login")}
+            </Button>
+          </p>
         </form>
       </div>
 

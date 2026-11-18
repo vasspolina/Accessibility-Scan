@@ -269,6 +269,8 @@ export const CHROME_KEYS: string[] = [
   "Yes, check {url}",
   "Check {url}",
   "Press Tab to use this suggestion:",
+  "Scan a page behind a login",
+  "Open the sign-in form",
   "Back to the chat",
   // The conversation's folds and its way back (ScanChat).
   "Show details",

@@ -204,6 +204,8 @@ export const STRINGS_DE: Record<string, string> = {
   "Yes, check {url}": "Ja, prüfe {url}",
   "Check {url}": "{url} prüfen",
   "Press Tab to use this suggestion:": "Mit Tab übernehmen Sie diesen Vorschlag:",
+  "Scan a page behind a login": "Eine Seite hinter einem Login scannen",
+  "Open the sign-in form": "Anmeldeformular öffnen",
   "Back to the chat": "Zurück zum Gespräch",
   "Show details": "Details zeigen",
   "Hide details": "Details ausblenden",

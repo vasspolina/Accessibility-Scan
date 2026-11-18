@@ -208,6 +208,8 @@ export const STRINGS_ES: Record<string, string> = {
   "Yes, check {url}": "Sí, revisa {url}",
   "Check {url}": "Revisar {url}",
   "Press Tab to use this suggestion:": "Pulse Tab para usar esta sugerencia:",
+  "Scan a page behind a login": "Analizar una página con inicio de sesión",
+  "Open the sign-in form": "Abrir el formulario de inicio de sesión",
   "Back to the chat": "Volver a la conversación",
   "Show details": "Ver detalles",
   "Hide details": "Ocultar detalles",

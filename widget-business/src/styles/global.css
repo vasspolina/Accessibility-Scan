@@ -293,6 +293,10 @@
    apart (user's instruction, 18 Nov 2026, "add 3px in between tabs"):
    they had no rule and sat edge to edge. */
 .a11y-widget-biz .a11y-chat-suggest { display: flex; flex-wrap: wrap; gap: 3px; }
+/* The way to the form for a page behind a login: under the box, quiet, and
+   in a blocked scan's notice. */
+.a11y-widget-biz .a11y-chat-composer .a11y-chat-signin { max-width: none; margin: 10px 0 0; }
+.a11y-widget-biz .a11y-blocked .a11y-blocked-action { margin: 1.2em 0 0; }
 /* "Did you mean accessibility.nl?": the address as a button under it. */
 .a11y-widget-biz .a11y-chat-text .a11y-chat-confirm { margin: 0.6em 0 0; }
 .a11y-widget-biz .a11y-chat-box-row {
