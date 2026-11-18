@@ -152,6 +152,7 @@ export const STRINGS_FR: Record<string, string> = {
   "What we found": "Ce que nous avons trouvé",
   "What to do": "Que faire",
   "Who fixes this": "Qui corrige cela",
+  "Fix": "Correction",
   "Needs a person": "À vérifier par une personne",
   "Would fail today": "Échouerait aujourd’hui",
   "Nothing found": "Rien trouvé",

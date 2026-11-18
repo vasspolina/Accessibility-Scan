@@ -114,6 +114,12 @@
 /* Tables stay plain: rows on rules. */
 .a11y-widget-biz table { border-collapse: collapse; width: 100%; }
 .a11y-widget-biz :is(th, td) { text-align: start; vertical-align: top; padding: 0.3em 0.6em 0.3em 0; border-bottom: 2px solid var(--ink); font-size: 22px; letter-spacing: 0.01em; }
+/* No bold (user's instruction, 18 Nov 2026, "dont use bold on titles"):
+   nothing set a weight on th, strong or b, so the browser's 700 drew the
+   column titles and every strong in bold. Column titles are Regular;
+   strong and b are Medium, the emphasis the rest of the widget uses. */
+.a11y-widget-biz th { font-weight: 400; }
+.a11y-widget-biz :is(strong, b) { font-weight: 500; }
 
 /* The highlight. Black text, always; cap colours are decoration. */
 .a11y-widget-biz :is(.a11y-sev, .a11y-rule-chip, .a11y-level-badge, .a11y-sum-chip, .a11y-pro-chip, .a11y-conf-status, .a11y-principle-count, .a11y-status-chip) {
@@ -531,6 +537,35 @@
 /* The kit Select (Language): the label above, the box under it, the gloss under that.
    It had no rules at all, so the label ran straight into the box on one line. */
 .a11y-widget-biz .a11y-select2 { display: grid; justify-items: start; gap: 0.3em; margin: 0 0 1.2em; }
+/* The scan's settings (ScanSettings, AccountKey; user's instruction,
+   18 Nov 2026, "the elements not properly spaced, fix line height"). They
+   had no layout of their own: "Report style" ran at prose size with its
+   switch hard under it, the two options touched, and AI review, Scope and
+   Account sat flush one under the other. Each row is now set like the
+   Language field beside them: an 18px Medium label on its own line, then
+   the state at 22px and its control on one wrapping line, 12px between
+   lines and 16px between items; 40px between rows. */
+.a11y-widget-biz .a11y-settings { display: grid; gap: 40px; justify-items: stretch; }
+.a11y-widget-biz .a11y-settings > .a11y-settings-heading { margin: 0; }
+.a11y-widget-biz .a11y-settings ~ .a11y-settings-row { margin-top: 40px; }
+.a11y-widget-biz .a11y-settings-row { display: flex; flex-wrap: wrap; align-items: center; gap: 12px 16px; margin: 0; }
+.a11y-widget-biz .a11y-settings-row > .a11y-settings-label {
+  flex: 0 0 100%; margin: 0; font-size: 18px; font-weight: 500; letter-spacing: 0.01em; line-height: 1.2;
+}
+.a11y-widget-biz .a11y-settings-row > .a11y-settings-state { margin: 0; font-size: 22px; letter-spacing: 0.01em; line-height: 1.2; }
+.a11y-widget-biz .a11y-settings-row > .a11y-select2 { margin: 0; }
+.a11y-widget-biz .a11y-settings-row > .a11y-input { flex: 1 1 100%; min-width: 0; }
+.a11y-widget-biz .a11y-settings-switch { display: flex; flex-wrap: wrap; gap: 8px; }
+/* Through other eyes (VisionSimulator; user's question, 18 Nov 2026,
+   "what's this gap here"). The SVG that only holds the colour filters had
+   no size, so it took the browser's default 300 x 150 box and stood as an
+   empty band between the note and the picture. It is shrunk to nothing
+   rather than display: none, which switches the filters off in some
+   browsers. The condition buttons touched; they get the gap every row of
+   pills has, and the note sits a line under them. */
+.a11y-widget-biz .a11y-sim-defs { position: absolute; width: 0; height: 0; overflow: hidden; }
+.a11y-widget-biz .a11y-sim-controls { display: flex; flex-wrap: wrap; gap: 8px; }
+.a11y-widget-biz .a11y-sim-controls + .a11y-sr-only + .a11y-sim-note { margin-top: 1.2em; }
 .a11y-widget-biz .a11y-select2-label { font-size: 18px; letter-spacing: 0.01em; font-weight: 500; }
 .a11y-widget-biz .a11y-select2-field { min-width: 12em; max-width: 100%; box-sizing: border-box; }
 /* The native arrow is drawn flush against the box's edge and takes no padding.
@@ -790,9 +825,11 @@
 .a11y-widget-biz .a11y-sum-run > .a11y-sum-eyebrow { margin: 0 0 0.6em; }
 .a11y-widget-biz .a11y-sum-run .a11y-sum-dial-card { display: flex; justify-content: center; }
 .a11y-widget-biz .a11y-sum-run .a11y-sum-dial { margin: 0 0 0.5em; }
-/* The run of findings: display size, tight, centred, a soft balanced rag. */
+/* The run of findings: display size, tight, centred, a soft balanced rag.
+   10% smaller since 18 Nov 2026 (user's instruction): 67 to 60px, the
+   marker 44 to 40px with its figure 32 to 29px. */
 .a11y-widget-biz .a11y-sum-run .a11y-sum-rows {
-  margin: 0; font-size: 67px; letter-spacing: -0.01em; line-height: 1.06;
+  margin: 0; font-size: 60px; letter-spacing: -0.01em; line-height: 1.06;
   text-wrap: balance; hyphens: manual; overflow-wrap: break-word;
 }
 .a11y-widget-biz .a11y-sum-run .a11y-sum-nobreak { white-space: nowrap; }
@@ -801,26 +838,35 @@
 .a11y-widget-biz .a11y-sum-run :is(.a11y-sum-cell-item, .a11y-sum-row-title) { display: inline; }
 /* Each item links to its finding (lib/openFinding). Ink like the type
    around it, the title underlined as every link here is; hover lays the
-   marker yellow under the title with black text, the controls' hover. The
-   marks and the count keep their own fills inside the link. */
+   marker yellow under the title with black text, the controls' hover, and
+   drops the underline (user's instruction, 18 Nov 2026: the yellow says it
+   alone). The marks and the count keep their own fills inside the link. */
 .a11y-widget-biz .a11y-sum-run .a11y-sum-row-link { color: inherit; text-decoration: none; }
 .a11y-widget-biz .a11y-sum-run .a11y-sum-row-link .a11y-sum-row-title {
   text-decoration: underline; text-decoration-thickness: 2px; text-underline-offset: 0.12em;
 }
-.a11y-widget-biz .a11y-sum-run .a11y-sum-row-link:hover .a11y-sum-row-title { background: var(--hl-cap-a); color: #000; }
+/* The yellow is a band 1em tall, 0.8em above the baseline to 0.2em below,
+   not the inline box's full ground: the run's lines are 1.06em apart and
+   Jokker's content area is 1.18em (measured at 60px: 0.97em up, 0.21em
+   down), so a full ground covered the descenders of the line above
+   (user's report, 18 Nov 2026). The band clears them by about 0.04em. */
+.a11y-widget-biz .a11y-sum-run .a11y-sum-row-link:hover .a11y-sum-row-title {
+  background: linear-gradient(var(--hl-cap-a), var(--hl-cap-a)) 0 0.17em / 100% 1em no-repeat;
+  color: #000; text-decoration: none;
+}
 /* The marker: a solid round with the figure in paper, sat on the line. */
 .a11y-widget-biz .a11y-sum-run .a11y-sum-cell-no {
   display: inline-grid; place-content: center; vertical-align: 0.08em;
-  width: 44px; height: 44px; border-radius: 50%; margin: 0 0.18em 0 0;
+  width: 40px; height: 40px; border-radius: 50%; margin: 0 0.18em 0 0;
   background: var(--ink); color: var(--paper);
-  font-size: 32px; letter-spacing: 0; font-weight: 500; line-height: 1;
+  font-size: 29px; letter-spacing: 0; font-weight: 500; line-height: 1;
 }
 .a11y-widget-biz .a11y-sum-run .a11y-sum-row-marks,
 .a11y-widget-biz .a11y-sum-run .a11y-sum-cell-count {
   display: inline; vertical-align: middle; white-space: nowrap;
   font-size: 22px; letter-spacing: 0.01em; line-height: 1.2; margin: 0 0 0 0.3em;
 }
-.a11y-widget-biz .a11y-sum-run .a11y-score-clean { font-size: 67px; letter-spacing: -0.01em; line-height: 1.06; margin: 0; }
+.a11y-widget-biz .a11y-sum-run .a11y-score-clean { font-size: 60px; letter-spacing: -0.01em; line-height: 1.06; margin: 0; }
 .a11y-widget-biz .a11y-sum-run + .a11y-sum-actions { text-align: center; margin: 0 0 1.2em; }
 /* On a phone the run comes down to title size, so a long German word
    still fits 320px. */
@@ -845,26 +891,45 @@
    is the button. Hover and focus turn it solid black with white words
    (21:1) and show a white pill, the "Check it out" of the reference; a 1px
    white edge keeps the black tile visible on a black page. Disabled is a
-   dashed edge, never faded. */
+   dashed edge, never faded.
+   Set as the Pangram Pangram font cards (user's reference, 18 Nov 2026,
+   "take the opening buttons design from here"; measured on
+   pangrampangram.com at 1440px): a tall card in the 296:407 proportion,
+   20px corners, 26px inside, 25px apart; the name top-left in Medium with
+   its small lines under it (here the group, then the question at 18px on
+   1.3), and one big glyph standing at the foot where the foundry sets its
+   "Aa": a question mark, the one glyph that says what the card holds, in
+   the markup and aria-hidden. Their #ededed ground is a grey, so the card
+   keeps the #f0efe8 this page allows. Their New/Update badges are left out
+   ("no badges"); the "Ask this" pill stands in the bottom-right corner,
+   beside the glyph, on hover and focus only. */
 .a11y-widget-biz .a11y-prompts { container: a11y-prompts / inline-size; margin: 0.6em 0 1.2em; }
 .a11y-widget-biz .a11y-prompt-grid {
-  display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 260px), 1fr)); gap: 10px;
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 240px), 1fr)); gap: 25px;
 }
 .a11y-widget-biz .a11y-prompts .a11y-prompt {
   --ink: #000; --paper: #f0efe8;
-  box-sizing: border-box; min-width: 0; min-height: 370px; margin: 0; padding: 20px;
-  display: flex; flex-direction: column; align-items: stretch; justify-content: flex-start; gap: 16px;
+  position: relative;
+  box-sizing: border-box; min-width: 0; aspect-ratio: 296 / 407; margin: 0; padding: 26px;
+  display: flex; flex-direction: column; align-items: stretch; justify-content: flex-start; gap: 4px;
   border: 1px solid #f0efe8; border-radius: 20px; background: #f0efe8; color: #000;
   font: inherit; text-align: start; cursor: pointer;
   overflow-wrap: break-word; hyphens: auto;
 }
-.a11y-widget-biz .a11y-prompts .a11y-prompt-label { font-size: 15px; font-weight: 500; letter-spacing: 0.01em; line-height: 1.2; }
+.a11y-widget-biz .a11y-prompts .a11y-prompt-label {
+  font-size: 22px; font-weight: 500; letter-spacing: 0.01em; line-height: 1.3;
+}
 .a11y-widget-biz .a11y-prompts .a11y-prompt-ask {
-  margin-top: auto; font-size: 21px; font-weight: 400; letter-spacing: 0.01em; line-height: 1.15;
+  font-size: 18px; font-weight: 400; letter-spacing: 0.01em; line-height: 1.3;
   text-wrap: pretty;
 }
+.a11y-widget-biz .a11y-prompts .a11y-prompt-mark {
+  margin-top: auto; padding-top: 20px;
+  font-size: 180px; font-weight: 500; letter-spacing: 0; line-height: 0.8;
+}
 .a11y-widget-biz .a11y-prompts .a11y-prompt-go {
-  display: flex; align-items: center; justify-content: center; min-height: 34px;
+  position: absolute; right: 26px; bottom: 26px;
+  display: flex; align-items: center; justify-content: center; min-height: 34px; padding: 0 14px;
   border-radius: 999px; background: #fff; color: #000;
   font-size: 18px; letter-spacing: 0.01em; line-height: 1.2;
   visibility: hidden;
@@ -1008,6 +1073,12 @@
      in a table row, a card or the notes panel, so it folds on its own width. */
   container: a11y-fd / inline-size;
 }
+/* In an opened table row (user's instruction, 18 Nov 2026, "delete the
+   thick line and drop the line below content when caret is open"): no 4px
+   rule on top, and the row above gives up its rule, so the only line is the
+   one under the opened content, the expand cell's own. */
+.a11y-widget-biz .a11y-dt-expand-row .a11y-fd { margin-top: 0; padding-top: 0.6em; border-top: 0; }
+.a11y-widget-biz .a11y-datatable tr[data-open] > td { border-bottom: 0; }
 .a11y-widget-biz .a11y-fd > :not(.a11y-fd-col) { grid-column: 1 / -1; }
 .a11y-widget-biz .a11y-fd > .a11y-fd-col { min-width: 0; }
 .a11y-widget-biz .a11y-fd .a11y-method-hint,
@@ -1249,8 +1320,9 @@
 .a11y-widget-biz .a11y-dn-list > li > .a11y-dn-link[aria-expanded="true"] { --ink: #fff; --paper: #000; background: #000; color: #fff; font-weight: 400; }
 
 /* The report actions, after the Displaay Info block and form (user's
-   references, 17 Nov 2026). Each column opens on an uppercase 15px label
-   over a 1px ink rule, the Info block's DESCRIPTION / DETAILS. The address
+   references, 17 Nov 2026). Each column opens on an uppercase label, the
+   Info block's DESCRIPTION / DETAILS, with no rule under it (user's
+   instruction, 18 Nov 2026, "delete lines under eyebrows"). The address
    is a rounded #f0efe8 field with its label inside it; the send is one wide
    rounded block in Light 40px; the PDF is an outlined button with 10px
    corners and a download arrow. These three are the user's exceptions to
@@ -1260,7 +1332,7 @@
    marker yellow; sending is a dashed edge on paper, never faded. */
 .a11y-widget-biz .a11y-ra-row > .a11y-ra-cell { display: flex; flex-direction: column; align-items: stretch; gap: 10px; }
 .a11y-widget-biz .a11y-ra-row > .a11y-ra-cell > .a11y-ra-head {
-  margin: 0 0 14px; padding: 0 0 10px; border-bottom: 1px solid var(--ink);
+  margin: 0 0 14px; padding: 0; border: 0;
   font-family: "Jokker", sans-serif; font-size: 18px; font-weight: 400; line-height: 1.2; letter-spacing: 0.04em;
   text-transform: uppercase;
 }
@@ -1612,7 +1684,8 @@
   }
   .a11y-widget-biz .a11y-chat .a11y-prompts .a11y-prompt-label { font-size: 18px; }
   .a11y-widget-biz .a11y-chat .a11y-prompts .a11y-prompt-ask { margin-top: 0; font-size: 19px; letter-spacing: 0.005em; line-height: 1.3; }
-  .a11y-widget-biz .a11y-chat .a11y-prompts .a11y-prompt-go { display: none; }
+  .a11y-widget-biz .a11y-chat .a11y-prompts .a11y-prompt-go,
+  .a11y-widget-biz .a11y-chat .a11y-prompts .a11y-prompt-mark { display: none; }
   .a11y-widget-biz .a11y-chat .a11y-prompt-more { text-align: start; margin: 8px 0 0; }
   .a11y-widget-biz .a11y-chat .a11y-prompt-more .a11y-btn { font-size: 18px; }
 
@@ -1758,4 +1831,75 @@
   .a11y-widget-biz .a11y-chats:not([data-open]) .a11y-chats-body { display: none; }
   .a11y-widget-biz .a11y-chats[data-open] .a11y-chats-body { padding-bottom: 12px; border-bottom: 1px solid var(--ink); }
   .a11y-widget-biz .a11y-chats .a11y-chats-delete { visibility: visible; }
+}
+
+/* AUTOMATED CHECK RESULTS AS A SHEET OF ALTERNATES (user's reference, 18 Nov
+   2026, "design these like this", a type foundry's alternates sheet). Each
+   result is a tile, set like the expanded finding's cards above: the fixed
+   #f0efe8 ground with black words in both themes (18.4:1), 20px corners,
+   16px apart in a wrapping row that always closes up. The result's mark
+   is the small pill centred at the top, where the reference sets "Alternate
+   a", stretched from one side margin to the other (user's instruction,
+   18 Nov 2026); it keeps its highlight colour, since the colour is the
+   status, as a plain pill (black on each fill measures 7:1 or better). The count is the
+   specimen, set huge in the middle; the result's words and the level split
+   sit under it, smaller (user's instruction, 18 Nov 2026, "text could go
+   smaller"): 22px and 15px, 18px in a narrow tile. The count's margin is
+   set whole: an older 0.3em end margin (48px at 160px) pulled every figure
+   off centre. The markup keeps label, meaning, mark, count in that order,
+   so a screen reader hears "We found problems, 2 at level A, 2 at AA, Fix
+   first, 4"; only the eye takes them in the reference's order. All the
+   tiles share one row at equal widths (user's instruction, 18 Nov 2026,
+   "put them all in one row"; the problems tile started 45% wide before). The count sits a fixed 24px
+   under the pill, not centred, so the figures line up across a row
+   whatever the words under them run to. One column under 640px. */
+.a11y-widget-biz .a11y-legal-results > .a11y-legal-eyebrow { margin: 0 0 16px; }
+/* The tiles have their own row (a11y-legal-tiles), each flex: 1 1 0 so
+   they split it evenly and never wrap. */
+.a11y-widget-biz .a11y-legal-tiles { display: flex; gap: 16px; align-items: stretch; }
+.a11y-widget-biz .a11y-legal-tiles > .a11y-legal-row {
+  --ink: #000; --paper: #f0efe8;
+  flex: 1 1 0; container: a11y-legal-tile / inline-size;
+  display: flex; flex-direction: column; align-items: center; gap: 14px;
+  box-sizing: border-box; min-width: 0; min-height: 300px; margin: 0; padding: 22px 20px 32px;
+  overflow-wrap: break-word; hyphens: auto;
+  border-radius: 20px; background: #f0efe8; color: #000; text-align: center;
+}
+.a11y-widget-biz .a11y-legal-tiles > .a11y-legal-row .a11y-legal-mark {
+  order: 1; align-self: stretch; box-sizing: border-box; margin: 0; padding: 3px 12px 4px; border-radius: 999px; box-shadow: none;
+  font-size: 15px; letter-spacing: 0.01em; line-height: 1.2; white-space: nowrap; text-align: center;
+}
+.a11y-widget-biz .a11y-legal-tiles > .a11y-legal-row .a11y-legal-count {
+  order: 2; margin: 24px 0 6px;
+  font-size: 160px; font-weight: 500; line-height: 0.9; letter-spacing: -0.02em;
+}
+.a11y-widget-biz .a11y-legal-tiles > .a11y-legal-row .a11y-legal-row-label {
+  order: 3; font-size: 22px; font-weight: 500; line-height: 1.15; letter-spacing: 0.005em; text-wrap: balance;
+}
+.a11y-widget-biz .a11y-legal-tiles > .a11y-legal-row .a11y-legal-row-meaning {
+  order: 4; font-size: 15px; line-height: 1.2; letter-spacing: 0.01em;
+}
+/* A tile under 280px wide (four in a row on a tablet) takes the phone's
+   figure and word sizes: at 160px a two-figure count ran out of a 180px
+   tile at an 800px window. The tile is its own container, so the step
+   follows the tile, not the window. */
+@container a11y-legal-tile (max-width: 280px) {
+  .a11y-widget-biz .a11y-legal-tiles > .a11y-legal-row .a11y-legal-count { margin-top: 12px; font-size: 96px; }
+  .a11y-widget-biz .a11y-legal-tiles > .a11y-legal-row .a11y-legal-row-label { font-size: 18px; }
+}
+/* The same narrow tiles take 12px sides, not 20px: the copy binds a short
+   first word to the next with a no-break space ("We checked,"), and at 22px
+   in a 140px measure that unit broke at its comma. A size container cannot
+   style itself, so this is set on the window width where four tiles drop
+   under 280px. */
+@media (min-width: 641px) and (max-width: 1240px) {
+  .a11y-widget-biz .a11y-legal-tiles > .a11y-legal-row { padding-inline: 12px; }
+}
+@media (max-width: 640px) {
+  .a11y-widget-biz .a11y-legal-tiles { flex-direction: column; gap: 10px; }
+  .a11y-widget-biz .a11y-legal-tiles > .a11y-legal-row {
+    flex: none; min-height: 0; gap: 12px; padding: 16px 20px 24px;
+  }
+  .a11y-widget-biz .a11y-legal-tiles > .a11y-legal-row .a11y-legal-count { margin-top: 12px; font-size: 96px; }
+  .a11y-widget-biz .a11y-legal-tiles > .a11y-legal-row .a11y-legal-row-label { font-size: 18px; }
 }

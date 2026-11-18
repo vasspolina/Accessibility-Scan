@@ -245,8 +245,9 @@ export function ConformanceView({
             <span className="a11y-legal-col-result">{t("Result")}</span>
             <span className="a11y-legal-col-items">{t("Items")}</span>
           </div>
+          <div className="a11y-legal-tiles">
           {RESULT_ROWS(conformance).map((r) => (
-            <div key={r.key} className="a11y-legal-row">
+            <div key={r.key} className={`a11y-legal-row a11y-legal-row-${r.key}`}>
               <span className="a11y-legal-col-result">
                 <span className="a11y-legal-row-label">{r.label}</span>
                 {r.meaning && <span className="a11y-legal-row-meaning">{r.meaning}</span>}
@@ -255,6 +256,7 @@ export function ConformanceView({
               <span className="a11y-legal-count">{r.n}</span>
             </div>
           ))}
+          </div>
           {/* No footer restating the standard and the item count: the chip and
               the line under the title above already say both. */}
         </div>
