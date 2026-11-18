@@ -1994,3 +1994,88 @@
   .a11y-widget-biz .a11y-legal-tiles > .a11y-legal-row .a11y-legal-count { margin-top: 12px; font-size: 96px; }
   .a11y-widget-biz .a11y-legal-tiles > .a11y-legal-row .a11y-legal-row-label { font-size: 18px; }
 }
+
+/* ═══ THE SCAN FORM AS A TYPE TESTER (user's instruction, 18 Nov 2026) ═════
+   "Design this", over the form's three steps, the language control and the
+   option cards, in the language of the foundry type tester the user sent
+   for the summary cards: each step is a #f0efe8 card, 20px corners, black
+   words in both themes (18.4:1); its number on a small solid-black pill at
+   the top-left where the tester puts its typeface's name; the address field
+   is the tester's specimen line, typed at 48px in a white rounded field;
+   the controls are pills, white on the card (the tester's Size and Leading
+   pills), the primary action solid black. The option cards are white on the
+   card and solid black when chosen. Each card redefines --ink and --paper,
+   so focus rings, the switch and the button follow without a rule each;
+   the white grounds are written out, since --paper is the card's own. */
+.a11y-widget-biz .a11y-url-form .a11y-form-single { gap: 16px; }
+.a11y-widget-biz .a11y-url-form .a11y-step-group {
+  --ink: #000; --paper: #f0efe8;
+  display: flex; flex-direction: column; align-items: stretch; gap: 24px;
+  box-sizing: border-box; min-width: 0; padding: 28px 32px 32px;
+  border-radius: 20px; background: #f0efe8; color: #000;
+}
+.a11y-widget-biz .a11y-url-form .a11y-step-num {
+  align-self: flex-start; padding: 7px 16px; border-radius: 999px;
+  background: #000; color: #f0efe8;
+  font-size: 15px; font-weight: 500; line-height: 1.2; letter-spacing: 0.01em;
+}
+.a11y-widget-biz .a11y-url-form .a11y-step-body { gap: 24px; }
+.a11y-widget-biz .a11y-url-form .a11y-step-head { gap: 6px; }
+/* The specimen line: the address at display size, Regular, -0.01em as 48px
+   takes it; the placeholder is black Light, not a grey (the email field's
+   rule), and Light is allowed at this size. 0,4,1 out-ranks the general
+   field rule (0,3,1). */
+.a11y-widget-biz .a11y-url-form .a11y-input-shell > input:not([type="radio"]) {
+  min-height: 96px; padding: 0 24px; border: 0; border-radius: 20px;
+  background: #fff; color: #000;
+  font-size: 48px; font-weight: 400; letter-spacing: -0.01em; line-height: 1.1;
+}
+/* The field at 32px on a phone is 423px wide by its own size attribute; the
+   track and the shell may shrink below that, or the card ran off a 375px
+   screen (measured 18 Nov 2026). */
+.a11y-widget-biz .a11y-url-form .a11y-input { grid-template-columns: minmax(0, 1fr); min-width: 0; }
+.a11y-widget-biz .a11y-url-form .a11y-input-shell { min-width: 0; }
+.a11y-widget-biz .a11y-url-form .a11y-input-shell > input::placeholder { color: #000; opacity: 1; font-weight: 300; }
+.a11y-widget-biz .a11y-url-form .a11y-input-shell > .a11y-login-toggle,
+.a11y-widget-biz .a11y-url-form .a11y-optioncard {
+  border-color: #fff; background: #fff; color: #000;
+}
+.a11y-widget-biz .a11y-url-form .a11y-input-shell > .a11y-login-toggle { min-height: 52px; font-size: 18px; padding: 0 22px; }
+.a11y-widget-biz .a11y-url-form .a11y-optioncard.a11y-optioncard-on { border-color: #000; background: #000; color: #f0efe8; }
+.a11y-widget-biz .a11y-url-form .a11y-optioncard.a11y-optioncard-disabled { border: 1px dashed #000; }
+.a11y-widget-biz .a11y-url-form .a11y-optioncard-desc { font-size: 18px; line-height: 1.3; }
+/* The language control above the steps is a pill too, the tester's weight
+   menu ("Ultrabold ↓"), on the page's own ink and paper. 0,5,0 out-ranks
+   the square 2px box it had (4 Nov 2026), which this replaces. */
+.a11y-widget-biz .a11y-newscan-head .a11y-select2 .a11y-select2-field.a11y-select2-field {
+  min-height: 44px; padding: 0 2.6em 0 1em; border: 1px solid var(--ink); border-radius: 999px;
+  font-size: 18px; letter-spacing: 0.01em;
+}
+@media (max-width: 640px) {
+  .a11y-widget-biz .a11y-url-form .a11y-step-group { gap: 18px; padding: 18px 20px 24px; }
+  .a11y-widget-biz .a11y-url-form .a11y-input-shell > input:not([type="radio"]) { min-height: 72px; padding: 0 18px; font-size: 32px; letter-spacing: -0.005em; }
+}
+
+/* ═══ THE SECTIONS RAIL AS ROWS (user's instruction, 18 Nov 2026) ═════════
+   "Design this": the report's navigation set like the conversations panel,
+   the other navigation (the two never show together): small print, one row
+   per section with 12px corners, no underline (a row in a nav landmark
+   reads as a link by its place), the hovered row and the current section on
+   the #f0efe8 ground with black words in both themes, the current one in
+   Medium. Group labels at 15px Medium sit over their rows like Recent. */
+.a11y-widget-biz .a11y-shell-nav .a11y-shell-nav-toggle { font-size: 18px; gap: 0 0.6em; }
+.a11y-widget-biz .a11y-shell-nav .a11y-shell-nav-count { font-size: 15px; }
+/* Where the rail runs the full width (above the report rather than beside
+   it), its rows keep to a column, so the current section's ground is a row
+   and not a band across the page. */
+.a11y-widget-biz .a11y-shell-nav > ul { max-width: 360px; }
+.a11y-widget-biz .a11y-shell-nav .a11y-shell-nav-group { margin: 0 0 18px; }
+.a11y-widget-biz .a11y-shell-nav .a11y-shell-nav-group-label {
+  margin: 0 0 4px; padding-inline: 12px; font-size: 15px; line-height: 1.2;
+}
+.a11y-widget-biz .a11y-shell-nav .a11y-shell-nav-link {
+  display: block; margin: 0 0 2px; padding: 8px 12px; border-radius: 12px;
+  color: var(--ink); text-decoration: none;
+  font-size: 18px; line-height: 1.3; letter-spacing: 0.01em;
+}
+.a11y-widget-biz .a11y-shell-nav .a11y-shell-nav-link:is(:hover, [aria-current="true"]) { background: #f0efe8; color: #000; }
