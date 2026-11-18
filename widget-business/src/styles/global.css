@@ -2106,6 +2106,16 @@
 .a11y-widget-biz .a11y-url-form .a11y-input-shell > .a11y-login-toggle { min-height: 52px; font-size: 18px; padding: 0 22px; }
 .a11y-widget-biz .a11y-url-form .a11y-optioncard.a11y-optioncard-on { border-color: #000; background: #000; color: #f0efe8; }
 .a11y-widget-biz .a11y-url-form .a11y-optioncard.a11y-optioncard-disabled { border: 1px dashed #000; }
+/* Hover is the marker yellow with black words, as on every button (user's
+   instruction, 18 Nov 2026, "make hover yellow"). The chosen card keeps its
+   black while hovered, so the choice never seems to vanish under the
+   pointer; a disabled card takes no hover. */
+.a11y-widget-biz .a11y-url-form .a11y-optioncard:not(.a11y-optioncard-on):not(.a11y-optioncard-disabled):hover {
+  border-color: var(--hl-cap-a); background: var(--hl-cap-a); color: #000;
+}
+.a11y-widget-biz .a11y-newscan-head .a11y-select2 .a11y-select2-field.a11y-select2-field:enabled:hover {
+  border-color: var(--hl-cap-a); background-color: var(--hl-cap-a); color: #000;
+}
 /* The option cards, simplified: no drawn radio (the black ground says which
    is chosen; the input stays for keyboards and screen readers, clipped like
    .a11y-sr-only, and its focus ring is drawn on the card), the title at 22px
@@ -2138,7 +2148,7 @@
    per section with 12px corners, no underline (a row in a nav landmark
    reads as a link by its place), the hovered row and the current section on
    the #f0efe8 ground with black words in both themes, the current one in
-   Medium. Group labels at 15px Medium sit over their rows like Recent. */
+   Medium. (Hover became the marker yellow later the same day.) Group labels at 15px Medium sit over their rows like Recent. */
 .a11y-widget-biz .a11y-shell-nav .a11y-shell-nav-toggle { font-size: 18px; gap: 0 0.6em; }
 .a11y-widget-biz .a11y-shell-nav .a11y-shell-nav-count { font-size: 15px; }
 /* Where the rail runs the full width (above the report rather than beside
@@ -2154,4 +2164,6 @@
   color: var(--ink); text-decoration: none;
   font-size: 18px; line-height: 1.3; letter-spacing: 0.01em;
 }
-.a11y-widget-biz .a11y-shell-nav .a11y-shell-nav-link:is(:hover, [aria-current="true"]) { background: #f0efe8; color: #000; }
+.a11y-widget-biz .a11y-shell-nav .a11y-shell-nav-link[aria-current="true"] { background: #f0efe8; color: #000; }
+/* Hover is the marker yellow, as on buttons (same day, "make hover yellow"). */
+.a11y-widget-biz .a11y-shell-nav .a11y-shell-nav-link:hover { background: var(--hl-cap-a); color: #000; }
