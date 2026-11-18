@@ -160,8 +160,12 @@ export function DesignNotesPanel({ findings }: { findings: AccessibilityFinding[
             >
               <div className="a11y-dn-detail-head">
                 {/* No kind tag under the title: the filter above already
-                    names the kind (Type, Layout, Design). */}
-                <h3 className="a11y-dn-detail-title">{noteTitle(open)}</h3>
+                    names the kind (Type, Layout, Design). The title itself
+                    is the open note's button, solid ink, straight above:
+                    printed again here it read twice in a row (user's
+                    instruction, 18 Nov 2026, "check for content
+                    repetition"). Kept for screen readers' heading list. */}
+                <h3 className="a11y-dn-detail-title a11y-sr-only">{noteTitle(open)}</h3>
               </div>
               <FindingDetails findings={open} asNotes />
             </div>
