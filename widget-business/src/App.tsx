@@ -171,6 +171,9 @@ export function App({
   // that keeps counting is the difference between waiting and wondering.
   const [elapsed, setElapsed] = useState(0);
   const [tookSeconds, setTookSeconds] = useState<number | null>(null);
+  // The result on screen came from a scan behind a login. The conversations
+  // panel never stores it, for the reason recordScan() never records it.
+  const [resultPrivate, setResultPrivate] = useState(false);
   // The scan's own narration: milestone ids as the backend crosses them,
   // in arrival order. Empty until the stream produces something, and the
   // waiting screen falls back to the elapsed-time story when it stays so
@@ -397,6 +400,7 @@ export function App({
         setReport(null);
         setHistory([]);
         setAudit(result);
+        setResultPrivate(false);
         setTookSeconds(Math.max(1, Math.round((Date.now() - startedAt) / 1000)));
         outcome = { kind: "audit", audit: result };
       } else {
@@ -407,6 +411,7 @@ export function App({
         recordScan(result, Boolean(auth));
         setAudit(null);
         setReport(result);
+        setResultPrivate(Boolean(auth));
         setTookSeconds(Math.max(1, Math.round((Date.now() - startedAt) / 1000)));
         outcome = { kind: "report", report: result };
         // A saved scan has a server-side history too, which follows the
@@ -983,6 +988,25 @@ export function App({
             return handleScan(full, aiReview, scope, 5);
           }}
           onUseForm={() => setEntry("form")}
+          resultPrivate={resultPrivate}
+          onRestore={(result) => {
+            // A reopened conversation's result, back as it was: no scan, and
+            // nothing recorded in the history, which already holds it.
+            setError(null);
+            setBlocked(null);
+            setTookSeconds(null);
+            setResultPrivate(false);
+            setMode(result.kind === "audit" ? "site" : "page");
+            if (result.kind === "report") {
+              setAudit(null);
+              setReport(result.report);
+              setHistory(getHistory(result.report.url, result.report.scannedAt));
+            } else {
+              setReport(null);
+              setHistory([]);
+              setAudit(result.audit);
+            }
+          }}
           language={lang}
           onLanguageChange={changeLang}
         />

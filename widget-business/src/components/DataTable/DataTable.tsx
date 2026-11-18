@@ -147,7 +147,11 @@ export function DataTable({
           return (
             <Fragment key={r.id}>
               <tr
-                data-row-state={r.state} {...role("row")}>
+                data-row-state={r.state}
+                /* An open row's rule moves below what it opens (user's
+                   instruction, 18 Nov 2026): the stylesheet reads this. */
+                data-open={r.expand && isOpen ? "" : undefined}
+                {...role("row")}>
                 {expandable ? (
                   <td className="a11y-dt-toggle-cell" {...role("cell")}>
                     {r.expand ? (
