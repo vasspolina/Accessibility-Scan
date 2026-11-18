@@ -246,7 +246,7 @@ export function ConformanceView({
             <span className="a11y-legal-col-items">{t("Items")}</span>
           </div>
           {RESULT_ROWS(conformance).map((r) => (
-            <div key={r.key} className="a11y-legal-row">
+            <div key={r.key} className={`a11y-legal-row a11y-legal-row-${r.key}`}>
               <span className="a11y-legal-col-result">
                 <span className="a11y-legal-row-label">{r.label}</span>
                 {r.meaning && <span className="a11y-legal-row-meaning">{r.meaning}</span>}

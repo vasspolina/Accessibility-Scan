@@ -1738,3 +1738,55 @@
   .a11y-widget-biz .a11y-chats[data-open] .a11y-chats-body { padding-bottom: 12px; border-bottom: 1px solid var(--ink); }
   .a11y-widget-biz .a11y-chats .a11y-chats-delete { visibility: visible; }
 }
+
+/* AUTOMATED CHECK RESULTS AS A SHEET OF ALTERNATES (user's reference, 18 Nov
+   2026, "design these like this", a type foundry's alternates sheet). Each
+   result is a tile, set like the expanded finding's cards above: the fixed
+   #f0efe8 ground with black words in both themes (18.4:1), 20px corners,
+   16px apart in a wrapping row that always closes up. The result's mark
+   is the small pill centred at the top, where the reference sets "Alternate
+   a"; it keeps its highlight colour, since the colour is the status, as a
+   plain pill (black on each fill measures 7:1 or better). The count is the
+   specimen, set huge in the middle; the result's words and the level split
+   sit under it. The markup keeps label, meaning, mark, count in that order,
+   so a screen reader hears "We found problems, 2 at level A, 2 at AA, Fix
+   first, 4"; only the eye takes them in the reference's order. The problems
+   tile starts wider (45%) than the others (25%), as the reference mixes
+   widths; every tile grows to fill its row. The count sits a fixed 24px
+   under the pill, not centred, so the figures line up across a row
+   whatever the words under them run to. One column under 640px. */
+.a11y-widget-biz .a11y-legal-results {
+  display: flex; flex-wrap: wrap; gap: 16px; align-items: stretch;
+}
+.a11y-widget-biz .a11y-legal-results > .a11y-legal-eyebrow { flex: 1 1 100%; margin: 0; }
+.a11y-widget-biz .a11y-legal-results > .a11y-legal-row {
+  --ink: #000; --paper: #f0efe8;
+  flex: 1 1 calc(25% - 16px);
+  display: flex; flex-direction: column; align-items: center; gap: 14px;
+  box-sizing: border-box; min-width: 0; min-height: 300px; margin: 0; padding: 22px 32px 32px;
+  border-radius: 20px; background: #f0efe8; color: #000; text-align: center;
+}
+.a11y-widget-biz .a11y-legal-results > .a11y-legal-row-failed { flex-basis: calc(45% - 16px); }
+.a11y-widget-biz .a11y-legal-results > .a11y-legal-row .a11y-legal-mark {
+  order: 1; margin: 0; padding: 3px 12px 4px; border-radius: 999px; box-shadow: none;
+  font-size: 15px; letter-spacing: 0.01em; line-height: 1.2; white-space: nowrap;
+}
+.a11y-widget-biz .a11y-legal-results > .a11y-legal-row .a11y-legal-count {
+  order: 2; margin-block: 24px 6px;
+  font-size: 160px; font-weight: 500; line-height: 0.9; letter-spacing: -0.02em;
+}
+.a11y-widget-biz .a11y-legal-results > .a11y-legal-row .a11y-legal-row-label {
+  order: 3; font-size: 26px; font-weight: 500; line-height: 1.15; letter-spacing: 0.005em; text-wrap: balance;
+}
+.a11y-widget-biz .a11y-legal-results > .a11y-legal-row .a11y-legal-row-meaning {
+  order: 4; font-size: 18px; line-height: 1.2; letter-spacing: 0.01em;
+}
+@media (max-width: 640px) {
+  .a11y-widget-biz .a11y-legal-results { gap: 10px; }
+  .a11y-widget-biz .a11y-legal-results > .a11y-legal-row,
+  .a11y-widget-biz .a11y-legal-results > .a11y-legal-row-failed {
+    flex-basis: 100%; min-height: 0; gap: 12px; padding: 16px 20px 24px;
+  }
+  .a11y-widget-biz .a11y-legal-results > .a11y-legal-row .a11y-legal-count { margin-top: 12px; font-size: 96px; }
+  .a11y-widget-biz .a11y-legal-results > .a11y-legal-row .a11y-legal-row-label { font-size: 22px; }
+}
