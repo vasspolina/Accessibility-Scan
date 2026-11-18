@@ -2046,3 +2046,96 @@
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-voice { display: flex; flex-wrap: wrap; align-items: center; gap: 10px 16px; margin: 0 0 30px; }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-voice-note { margin: 0; font-size: 15px; line-height: 1.2; letter-spacing: 0.01em; flex: 1 1 18em; min-width: 0; }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-voice .a11y-btn[aria-pressed="true"] { background: var(--ink); color: var(--paper); }
+
+/* ═══ WHERE THIS LIVES AND THE SCREEN READER PREVIEW AS CARDS (user's instruction, 18 Nov 2026) ═
+   "this is a slop … design this": the history column's second half was a
+   bare heading, one dash line and a button, and the screen reader block
+   was a heading boxed by its own focus ring with the Play button
+   jammed under it. Both now speak the report's card language: the fixed
+   #f0efe8 ground with black words in both themes (18.4:1), 20px corners,
+   the label on a small solid-black pill (15px Medium, sentence case). Ink
+   and paper are redefined inside so buttons, the checkbox and focus rings
+   follow. Three roots, like the rest of the poster layer. */
+
+/* History: a card each for "Since last time" and "Where this lives". */
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-hist-col:last-child { display: flex; flex-direction: column; gap: 16px; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-hist-card {
+  --ink: #000; --paper: #f0efe8;
+  display: flex; flex-direction: column; align-items: flex-start; gap: 28px;
+  box-sizing: border-box; min-width: 0; margin: 0; padding: 24px 28px 32px;
+  border-radius: 20px; background: #f0efe8; color: #000;
+  overflow-wrap: break-word; hyphens: auto;
+}
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-hist-card > .a11y-hist-head {
+  margin: 0; padding: 7px 16px; border-radius: 999px; background: #000; color: #f0efe8;
+  font-family: "Jokker", sans-serif; font-size: 15px; font-weight: 500; line-height: 1.2; letter-spacing: 0.01em;
+}
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-hist-card > .a11y-hist-facts {
+  align-self: stretch; margin: 0; padding: 0; list-style: none;
+}
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-hist-card > .a11y-hist-facts > li {
+  margin: 0; padding: 12px 0; border-top: 1px solid #000;
+  font-size: 22px; line-height: 1.2; letter-spacing: 0.01em;
+}
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-hist-card > .a11y-hist-facts > li:first-child { border-top: 0; padding-top: 0; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-hist-card > .a11y-hist-facts > li::before { content: none; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-hist-promise {
+  margin: 0; font-size: 30px; font-weight: 400; line-height: 1.15; letter-spacing: 0.005em; text-wrap: pretty;
+}
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-hist-card > .a11y-danger-btn { margin: 0; }
+
+/* Screen reader preview: Play, the status line, the filter and the skip
+   link share one card that is on screen whether the section is open or not.
+   Play is the solid pill; the filter is an outlined pill around its
+   checkbox; the skip link is a quiet pill at the end. */
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sr-bar {
+  --ink: #000; --paper: #f0efe8;
+  display: flex; flex-wrap: wrap; align-items: center; gap: 14px 16px;
+  box-sizing: border-box; margin: 0 0 30px; padding: 20px 24px;
+  border-radius: 20px; background: #f0efe8; color: #000;
+}
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sr-bar .a11y-sr-play {
+  flex: none; min-height: 48px; padding: 0 1.4em; font-size: 22px;
+}
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sr-bar .a11y-sr-status {
+  flex: 1 1 8em; min-width: 0; margin: 0; font-size: 18px; letter-spacing: 0.01em; font-variant-numeric: tabular-nums;
+}
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sr-bar .a11y-ai-toggle {
+  flex: none; margin: 0; min-height: 40px; box-sizing: border-box; padding: 0 1em 0 0.8em;
+  border: 1px solid #000; border-radius: 999px; font-size: 18px; cursor: pointer;
+}
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sr-bar .a11y-ai-toggle:has(:checked) { background: #000; color: #f0efe8; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sr-bar .a11y-skip-link { flex: none; margin: 0; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sr .a11y-skip-link { margin-bottom: 0; }
+
+/* The announcements: the number in the margin, the words at 26px, a rule
+   between lines. The line being read is solid ink; a line that says
+   nothing useful keeps a dashed rule and its note under it on the
+   orange highlight, as the schedule does for a problem. */
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sr-list { margin: 0 0 30px; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sr-row {
+  grid-template-columns: 2.2em minmax(0, 1fr); gap: 4px 0.4em; align-items: baseline;
+  margin: 0; padding: 14px 10px; border-top: 1px solid var(--ink); border-radius: 0;
+}
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sr-row[data-issue] { border-top-style: dashed; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sr-row .a11y-sr-line-text { font-size: 26px; line-height: 1.2; letter-spacing: 0; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sr-row .a11y-sr-num { font-variant-numeric: tabular-nums; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sr-row:is(button):enabled:hover { background: var(--hl-cap-a, #fbd24a); color: #000; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sr-row[aria-current="true"] {
+  background: var(--ink); color: var(--paper); text-decoration: none;
+}
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sr-row[aria-current="true"]:enabled:hover { background: var(--ink); color: var(--paper); }
+
+@container a11y-shell (max-width: 640px) {
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-hist-card { padding: 18px 20px 24px; gap: 20px; }
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-hist-promise { font-size: 22px; }
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sr-bar { padding: 16px 18px; }
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sr-bar .a11y-sr-play { width: 100%; justify-content: center; }
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sr-row .a11y-sr-line-text { font-size: 22px; }
+}
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sr .a11y-show-all { margin-bottom: 30px; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sr-bar .a11y-sr-play:enabled { background: #000; color: #f0efe8; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sr-bar .a11y-sr-play:enabled:hover { background: var(--hl-cap-a); color: #000; }
+@container a11y-shell (max-width: 640px) {
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sr-bar .a11y-ai-toggle { flex: 1 1 100%; min-width: 0; padding-block: 8px; border-radius: 20px; }
+}
