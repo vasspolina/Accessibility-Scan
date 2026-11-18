@@ -773,9 +773,11 @@
 .a11y-widget-biz .a11y-sum-run > .a11y-sum-eyebrow { margin: 0 0 0.6em; }
 .a11y-widget-biz .a11y-sum-run .a11y-sum-dial-card { display: flex; justify-content: center; }
 .a11y-widget-biz .a11y-sum-run .a11y-sum-dial { margin: 0 0 0.5em; }
-/* The run of findings: display size, tight, centred, a soft balanced rag. */
+/* The run of findings: display size, tight, centred, a soft balanced rag.
+   10% smaller since 18 Nov 2026 (user's instruction): 67 to 60px, the
+   marker 44 to 40px with its figure 32 to 29px. */
 .a11y-widget-biz .a11y-sum-run .a11y-sum-rows {
-  margin: 0; font-size: 67px; letter-spacing: -0.01em; line-height: 1.06;
+  margin: 0; font-size: 60px; letter-spacing: -0.01em; line-height: 1.06;
   text-wrap: balance; hyphens: manual; overflow-wrap: break-word;
 }
 .a11y-widget-biz .a11y-sum-run .a11y-sum-nobreak { white-space: nowrap; }
@@ -784,26 +786,35 @@
 .a11y-widget-biz .a11y-sum-run :is(.a11y-sum-cell-item, .a11y-sum-row-title) { display: inline; }
 /* Each item links to its finding (lib/openFinding). Ink like the type
    around it, the title underlined as every link here is; hover lays the
-   marker yellow under the title with black text, the controls' hover. The
-   marks and the count keep their own fills inside the link. */
+   marker yellow under the title with black text, the controls' hover, and
+   drops the underline (user's instruction, 18 Nov 2026: the yellow says it
+   alone). The marks and the count keep their own fills inside the link. */
 .a11y-widget-biz .a11y-sum-run .a11y-sum-row-link { color: inherit; text-decoration: none; }
 .a11y-widget-biz .a11y-sum-run .a11y-sum-row-link .a11y-sum-row-title {
   text-decoration: underline; text-decoration-thickness: 2px; text-underline-offset: 0.12em;
 }
-.a11y-widget-biz .a11y-sum-run .a11y-sum-row-link:hover .a11y-sum-row-title { background: var(--hl-cap-a); color: #000; }
+/* The yellow is a band 1em tall, 0.8em above the baseline to 0.2em below,
+   not the inline box's full ground: the run's lines are 1.06em apart and
+   Jokker's content area is 1.18em (measured at 60px: 0.97em up, 0.21em
+   down), so a full ground covered the descenders of the line above
+   (user's report, 18 Nov 2026). The band clears them by about 0.04em. */
+.a11y-widget-biz .a11y-sum-run .a11y-sum-row-link:hover .a11y-sum-row-title {
+  background: linear-gradient(var(--hl-cap-a), var(--hl-cap-a)) 0 0.17em / 100% 1em no-repeat;
+  color: #000; text-decoration: none;
+}
 /* The marker: a solid round with the figure in paper, sat on the line. */
 .a11y-widget-biz .a11y-sum-run .a11y-sum-cell-no {
   display: inline-grid; place-content: center; vertical-align: 0.08em;
-  width: 44px; height: 44px; border-radius: 50%; margin: 0 0.18em 0 0;
+  width: 40px; height: 40px; border-radius: 50%; margin: 0 0.18em 0 0;
   background: var(--ink); color: var(--paper);
-  font-size: 32px; letter-spacing: 0; font-weight: 500; line-height: 1;
+  font-size: 29px; letter-spacing: 0; font-weight: 500; line-height: 1;
 }
 .a11y-widget-biz .a11y-sum-run .a11y-sum-row-marks,
 .a11y-widget-biz .a11y-sum-run .a11y-sum-cell-count {
   display: inline; vertical-align: middle; white-space: nowrap;
   font-size: 22px; letter-spacing: 0.01em; line-height: 1.2; margin: 0 0 0 0.3em;
 }
-.a11y-widget-biz .a11y-sum-run .a11y-score-clean { font-size: 67px; letter-spacing: -0.01em; line-height: 1.06; margin: 0; }
+.a11y-widget-biz .a11y-sum-run .a11y-score-clean { font-size: 60px; letter-spacing: -0.01em; line-height: 1.06; margin: 0; }
 .a11y-widget-biz .a11y-sum-run + .a11y-sum-actions { text-align: center; margin: 0 0 1.2em; }
 /* On a phone the run comes down to title size, so a long German word
    still fits 320px. */
