@@ -36,6 +36,15 @@ export interface ReportView {
    * fixes this" to a different x in a section with no levelled finding.
    */
   showLevel?: boolean;
+  /**
+   * Drawn inside a block of the conversation, not on the page. The block's
+   * own summary line already names the section ("Notes on the design ·
+   * Hide details"), so a section whose heading only repeats that name keeps
+   * the heading for screen readers and hides it on screen (user's
+   * instruction, 18 Nov 2026: "check for content repetition"). A heading
+   * that says more than the name ("Do you meet the legal standard?") stays.
+   */
+  inChat?: boolean;
 }
 
 const ReportViewContext = createContext<ReportView>({ professional: false, criterionNames: {} });

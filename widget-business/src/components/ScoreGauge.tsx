@@ -9,6 +9,7 @@ import { groupFindings } from "./FindingsList";
 import { plainForRule } from "../lib/wcagPlain";
 import { Card } from "./Card";
 import { openFinding } from "../lib/openFinding";
+import { useReportView } from "./ReportViewContext";
 
 /* The stat tiles ARE the Card component's anatomy — layer-01 fill, subtle
    hairline, 2px corner, 16px padding — so they use it rather than a div
@@ -269,6 +270,7 @@ export function ScoreGauge({
   url: string;
   allFindings: AccessibilityFinding[];
 }) {
+  const { inChat } = useReportView();
   const [copied, setCopied] = useState(false);
   const grouped = groupFindings(findings);
   const preview = grouped.slice(0, PREVIEW_LIMIT);
@@ -311,7 +313,16 @@ export function ScoreGauge({
       {/* Professional mode gets an explicit results header in this slot
           (App.tsx); business mode had none, which left heading navigation
           with no way to jump straight to the score at all. */}
-      <h2 className="a11y-section-title" id="a11y-score-heading" data-nav-label={t("Score")}>{t("Your score")}</h2>
+      {/* "Score" over "Your score" in the conversation, where the block's
+          summary line names it: hidden there on screen, kept for screen
+          readers. */}
+      <h2
+        className={inChat ? "a11y-section-title a11y-sr-only" : "a11y-section-title"}
+        id="a11y-score-heading"
+        data-nav-label={t("Score")}
+      >
+        {t("Your score")}
+      </h2>
 
       {/* The design's scan-summary template: the run and its worst findings,
           then three titled panels. Ported from

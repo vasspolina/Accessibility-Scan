@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useId, useMemo, useRef, useState } from "react";
 import { t, tf } from "../lib/strings";
 import { StatusChip } from "./SectionHeader";
+import { useReportView } from "./ReportViewContext";
 import type { ScreenReaderScript } from "../api/scanClient";
 
 // Lets an owner hear their own page the way a screen-reader user does. Reading
@@ -23,6 +24,12 @@ export function ScreenReaderPreview({ script }: { script: ScreenReaderScript }) 
   // Whether the accordion is open. Closed by default: this is the longest
   // section in the report and the one you consult rather than read.
   const [open, setOpen] = useState(false);
+  // In the conversation the block is already the fold: its summary line
+  // reads "Screen reader preview", and the accordion under it was a second
+  // toggle with the same name to press before the transcript showed. There
+  // the heading is kept for screen readers only and the panel is open.
+  const { inChat } = useReportView();
+  const panelOpen = inChat || open;
   const [onlyIssues, setOnlyIssues] = useState(false);
   const panelId = useId();
   // Guards against an utterance that finished because we cancelled it
@@ -110,6 +117,14 @@ export function ScreenReaderPreview({ script }: { script: ScreenReaderScript }) 
           — 2,200px, in the section where that was measured. */}
       <div className="a11y-section-head">
       <div className="a11y-accordion-row">
+        {inChat ? (
+          <h2 className="a11y-section-title a11y-sr-only" id="a11y-sr-heading">
+            {t("Screen reader preview")}{" "}
+            {lines.length === 1
+              ? t("(1 announcement)")
+              : tf("({count} announcements)", { count: lines.length })}
+          </h2>
+        ) : (
         <h2 className="a11y-section-title a11y-accordion-title" id="a11y-sr-heading" data-nav-label={t("Screen reader preview")}>
           <button
             type="button"
@@ -140,6 +155,7 @@ export function ScreenReaderPreview({ script }: { script: ScreenReaderScript }) 
             </svg>
           </button>
         </h2>
+        )}
         {supported && (
           <button
             type="button"
@@ -185,7 +201,7 @@ export function ScreenReaderPreview({ script }: { script: ScreenReaderScript }) 
       {/* Hidden rather than unrendered: the accordion button's aria-controls
           points here, and it must never point at an element that does not
           exist. */}
-      <div id={panelId} hidden={!open}>
+      <div id={panelId} hidden={!panelOpen}>
       <div className="a11y-sr-controls">
         {/* Play itself now lives in the header row above, so it is reachable
             without opening the section. What stays here is what only makes
