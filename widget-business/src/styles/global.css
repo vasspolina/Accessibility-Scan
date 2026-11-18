@@ -565,13 +565,36 @@
 .a11y-widget-biz .a11y-settings { display: grid; gap: 40px; justify-items: stretch; }
 .a11y-widget-biz .a11y-settings > .a11y-settings-heading { margin: 0; }
 .a11y-widget-biz .a11y-settings ~ .a11y-settings-row { margin-top: 40px; }
-.a11y-widget-biz .a11y-settings-row { display: flex; flex-wrap: wrap; align-items: center; gap: 12px 16px; margin: 0; }
-.a11y-widget-biz .a11y-settings-row > .a11y-settings-label {
-  flex: 0 0 100%; margin: 0; font-size: 18px; font-weight: 500; letter-spacing: 0.01em; line-height: 1.2;
+/* Two columns, one piece per line (user's instruction, 18 Nov 2026,
+   "design this in two columns with content broken per line"): the label
+   hung in a 9em column, and beside it the state, the control and any note
+   each on a line of their own, all on one left edge. The Language field's
+   wrapper steps aside (display: contents) so its own label takes the left
+   column like the others. One column when the block is under 480px wide:
+   the rows' parent is the size container, since the shell is no longer
+   one and the account row also sits in the narrow rail. */
+.a11y-widget-biz:has(> .a11y-settings-row),
+.a11y-widget-biz :has(> .a11y-settings-row) { container: a11y-settings / inline-size; }
+.a11y-widget-biz .a11y-settings-row {
+  display: grid; grid-template-columns: 9em minmax(0, 1fr); column-gap: 24px; row-gap: 12px;
+  align-items: baseline; margin: 0;
 }
-.a11y-widget-biz .a11y-settings-row > .a11y-settings-state { margin: 0; font-size: 22px; letter-spacing: 0.01em; line-height: 1.2; }
-.a11y-widget-biz .a11y-settings-row > .a11y-select2 { margin: 0; }
-.a11y-widget-biz .a11y-settings-row > .a11y-input { flex: 1 1 100%; min-width: 0; }
+.a11y-widget-biz .a11y-settings-row > *,
+.a11y-widget-biz .a11y-settings-row > .a11y-select2 > * { grid-column: 2; justify-self: start; min-width: 0; margin: 0; }
+.a11y-widget-biz .a11y-settings-row > .a11y-select2 { display: contents; }
+.a11y-widget-biz .a11y-settings-row > .a11y-settings-label,
+.a11y-widget-biz .a11y-settings-row > .a11y-select2 > .a11y-select2-label {
+  grid-column: 1; grid-row: 1; margin: 0; font-size: 18px; font-weight: 500; letter-spacing: 0.01em; line-height: 1.2;
+}
+.a11y-widget-biz .a11y-settings-row > .a11y-settings-state { font-size: 22px; letter-spacing: 0.01em; line-height: 1.2; }
+.a11y-widget-biz .a11y-settings-row > .a11y-input { justify-self: stretch; }
+@container a11y-settings (max-width: 480px) {
+  .a11y-widget-biz .a11y-settings-row { grid-template-columns: minmax(0, 1fr); }
+  .a11y-widget-biz .a11y-settings-row > *,
+  .a11y-widget-biz .a11y-settings-row > .a11y-select2 > * { grid-column: 1; }
+  .a11y-widget-biz .a11y-settings-row > .a11y-settings-label,
+  .a11y-widget-biz .a11y-settings-row > .a11y-select2 > .a11y-select2-label { grid-row: auto; }
+}
 .a11y-widget-biz .a11y-settings-switch { display: flex; flex-wrap: wrap; gap: 8px; }
 /* Through other eyes (VisionSimulator; user's question, 18 Nov 2026,
    "what's this gap here"). The SVG that only holds the colour filters had
@@ -1609,37 +1632,43 @@
 }
 
 /* ═══ CONTENT SPACING (user's instruction, 17 Nov 2026) ════════════════════
-   "At least 50px between pieces of content." A piece is a block that stands
+   "At least 65px between pieces of content." A piece is a block that stands
    on its own: a report section, a summary panel, a numbered point, a group
    of controls, a legal row, an undecided check, a statement step, a card
    row. A title and its description, a label and its field, and the lines
    inside one piece keep their tighter spacing: they are one piece.
    In block flow the rule is a top margin on the next piece, which collapses
    with the one above, so a gap that was already wider stays wider. Flex and
-   grid containers do not collapse margins, so they take a 50px row gap.
+   grid containers do not collapse margins, so they take a 65px row gap.
    Measured with a sibling-gap walk over the fixture report at 1440px and
-   375px: no gap between pieces under 50px. Last in the file so it wins
-   ties with the rules it lifts. */
-.a11y-widget-biz .a11y-report > * + * { margin-top: 50px; }
-.a11y-widget-biz .a11y-sum-grid > * + * { margin-top: 50px; }
-.a11y-widget-biz .a11y-legal-panel + * { margin-top: 50px; }
-.a11y-widget-biz .a11y-sum-col:has(> .a11y-sum-panel) { row-gap: 50px; }
+   375px: no gap between pieces under 65px. Last in the file so it wins
+   ties with the rules it lifts.
+   30% more (user's instruction, 18 Nov 2026, "add 30% more line height
+   between groups of content"): the floor is 65px, and the report's
+   sections and its principle groups, which measured 77px apart (a 2.4em
+   prose margin at 32px collapsing through) or 50px, are now 100px. */
+.a11y-widget-biz .a11y-report > * + * { margin-top: 100px; }
+.a11y-widget-biz .a11y-principle-group + .a11y-principle-group { margin-top: 100px; }
+.a11y-widget-biz .a11y-section + .a11y-section { margin-top: 100px; }
+.a11y-widget-biz .a11y-sum-grid > * + * { margin-top: 65px; }
+.a11y-widget-biz .a11y-legal-panel + * { margin-top: 65px; }
+.a11y-widget-biz .a11y-sum-col:has(> .a11y-sum-panel) { row-gap: 65px; }
 .a11y-widget-biz .a11y-sum-specimens,
 .a11y-widget-biz .a11y-next-list,
 .a11y-widget-biz .a11y-spec-grid,
 .a11y-widget-biz .a11y-ra-row,
 .a11y-widget-biz .a11y-manual-list,
-.a11y-widget-biz .a11y-pro-rows { row-gap: 50px; }
-.a11y-widget-biz .a11y-legal-row:not(:last-child) { margin-bottom: 50px; }
-.a11y-widget-biz .a11y-undecided-cell:not(:last-child) { margin-bottom: 50px; }
-.a11y-widget-biz .a11y-dn-list { margin-bottom: 50px; }
-.a11y-widget-biz .a11y-fd > .a11y-fd-col:first-child { margin-bottom: 50px; }
-.a11y-widget-biz :is(.a11y-stmt-step, .a11y-stmt-fields, .a11y-stmt-card) + * { margin-top: 50px; }
-.a11y-widget-biz .a11y-spec-grid { margin-bottom: 50px; }
+.a11y-widget-biz .a11y-pro-rows { row-gap: 65px; }
+.a11y-widget-biz .a11y-legal-row:not(:last-child) { margin-bottom: 65px; }
+.a11y-widget-biz .a11y-undecided-cell:not(:last-child) { margin-bottom: 65px; }
+.a11y-widget-biz .a11y-dn-list { margin-bottom: 65px; }
+.a11y-widget-biz .a11y-fd > .a11y-fd-col:first-child { margin-bottom: 65px; }
+.a11y-widget-biz :is(.a11y-stmt-step, .a11y-stmt-fields, .a11y-stmt-card) + * { margin-top: 65px; }
+.a11y-widget-biz .a11y-spec-grid { margin-bottom: 65px; }
 /* "Skip the transcript" sat flush on the transcript's first line (user's
    instruction, 18 Nov 2026: "add paragraph break space under button"). The
-   button and the transcript are two pieces, so the same 50px. */
-.a11y-widget-biz .a11y-sr .a11y-skip-link { margin-bottom: 50px; }
+   button and the transcript are two pieces, so the same 65px. */
+.a11y-widget-biz .a11y-sr .a11y-skip-link { margin-bottom: 65px; }
 
 /* ═══ MEASURE (user's instruction, 17 Nov 2026) ═══════════════════════════
    "Cap 9 to 12 words in a line; the margin can be added if needed." 42ch,
@@ -1845,9 +1874,11 @@
 }
 .a11y-widget-biz .a11y-chats .a11y-chats-row:is([data-current], :hover, :focus-within) .a11y-chats-delete { visibility: visible; }
 .a11y-widget-biz .a11y-chats .a11y-chats-row .a11y-chats-delete:enabled:hover { border-color: #000; }
-/* Disabled while a reply or a scan runs: a dashed edge, never faded. The
-   rows carry a 1px dash at rest, so theirs goes to 2px. */
-.a11y-widget-biz .a11y-chats .a11y-chats-delete:disabled { border: 1px dashed var(--ink); cursor: not-allowed; }
+/* Disabled while a reply or a scan runs: never faded. The rows carry a 1px
+   dash at rest, so theirs goes to 2px; the bin's ring is solid (user's
+   instruction, 18 Nov 2026), so a dashed circle never sits inside the
+   dashed row. */
+.a11y-widget-biz .a11y-chats .a11y-chats-delete:disabled { border: 1px solid var(--ink); cursor: not-allowed; }
 .a11y-widget-biz .a11y-chats .a11y-chats-new:disabled {
   padding: 7px 11px; border: 2px dashed var(--chats-edge); cursor: not-allowed;
 }

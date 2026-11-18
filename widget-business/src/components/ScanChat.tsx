@@ -1212,8 +1212,12 @@ export function ScanChat({
                     disabled={switchLocked && c.id === chatId}
                     onClick={() => removeChat(c)}
                   >
-                    <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" focusable="false">
-                      <path d="M5 7h14M10 7V5h4v2M7 7l1 12h8l1-12" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" />
+                    {/* IBM Carbon's trash-can, 32px grid (user's instruction, 18 Nov 2026). */}
+                    <svg viewBox="0 0 32 32" width="18" height="18" fill="currentColor" aria-hidden="true" focusable="false">
+                      <path d="M12 12H14V24H12z" />
+                      <path d="M18 12H20V24H18z" />
+                      <path d="M4,6V8H6V28a2,2,0,0,0,2,2H24a2,2,0,0,0,2-2V8h2V6ZM8,28V8H24V28Z" />
+                      <path d="M12 2H20V4H12z" />
                     </svg>
                   </button>
                 </li>
