@@ -61,11 +61,17 @@
 
 .a11y-widget-biz {
   font-family: "Jokker", "DejaVu Sans", sans-serif;
-  font-size: 32px; font-weight: 400; line-height: 1.2; letter-spacing: 0;
+  /* The main text (user's instruction, 18 Nov 2026, from a type tester:
+     Jokker Medium, 37pt, leading 115%, tracking 2%): 37pt is 49px, by the
+     same conversion as the 13 Oct "20pt = 27px". Anything that is not
+     prose declares its own size and weight. The widget's width and gutter
+     were 40em and 1em of the old 32px; they are held at those px so the
+     bigger text does not widen the page. */
+  font-size: 49px; font-weight: 500; line-height: 1.15; letter-spacing: 0.02em;
   font-kerning: normal; font-feature-settings: "ss04", "ss05"; font-variant-ligatures: common-ligatures; text-rendering: optimizeLegibility; font-synthesis: none;
   background: var(--paper); color: var(--ink);
   hyphens: auto; hyphenate-limit-chars: 7 3 3; -webkit-hyphenate-limit-lines: 3; hyphenate-limit-lines: 3; text-wrap: pretty;
-  max-width: 40em; margin-inline: auto; padding: 1em;
+  max-width: 1280px; margin-inline: auto; padding: 32px;
 }
 /* A heading sits a clear step above its text (0.5em, was 0.3em) and a full
    line clear of what came before: paragraph spacing after the FAQ on
@@ -262,25 +268,35 @@
 .a11y-widget-biz .a11y-chat-text { min-width: 0; }
 /* A numbered test plan is a set of tiles (user's instruction, 4 Nov 2026:
    "this needs to widgets"; lib/testPlan.ts decides which lists are plans).
-   The tiles are the expanded finding's specimen tiles: Displaay's #f0efe8
-   ground, fixed in both themes with black text (18.4:1), square corners, a
-   10px gutter on an auto-fit grid that stacks on a phone. The figure is the
-   small label top-left, the step's name in Medium under it, the
-   instruction in 18px text. */
+   Drawn as the type foundry's specimen cards since 18 Nov 2026 (user's
+   reference, "make these cards look like this but do not invent
+   content"): a tall card with 20px corners on the fixed #f0efe8 ground,
+   black words in both themes (18.4:1); the step's name top-left in Medium
+   22px, the instruction under it at 18px as the card's small print, and the
+   step's figure set huge at the foot where the reference sets its "Aa".
+   Nothing is added: no badge, no icon, only the step's own three parts.
+   The figure stays first in the markup, so a screen reader still hears
+   "1, Keyboard only, …"; only the eye takes it at the foot. */
 .a11y-widget-biz .a11y-chat-text .a11y-chat-plan {
-  display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 260px), 1fr)); gap: 10px;
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr)); gap: 16px;
   list-style: none; padding: 0; margin: 0.6em 0;
 }
 .a11y-widget-biz .a11y-chat-text .a11y-chat-plan-step {
-  display: flex; flex-direction: column; box-sizing: border-box; min-width: 0; margin: 0;
-  padding: 14px 16px 22px; background: #f0efe8; color: #000;
+  display: flex; flex-direction: column; box-sizing: border-box; min-width: 0; min-height: 440px; margin: 0;
+  padding: 30px 30px 26px; border-radius: 20px; background: #f0efe8; color: #000;
   overflow-wrap: break-word; hyphens: auto;
 }
-.a11y-widget-biz .a11y-chat-text .a11y-chat-plan-no { font-size: 18px; letter-spacing: 0.01em; line-height: 1.2; margin: 0 0 40px; }
-.a11y-widget-biz .a11y-chat-text .a11y-chat-plan-title { display: block; font-size: 32px; font-weight: 500; line-height: 1.1; letter-spacing: 0; margin: 0 0 0.4em; }
-.a11y-widget-biz .a11y-chat-text .a11y-chat-plan-text { display: block; font-size: 22px; line-height: 1.35; letter-spacing: 0.01em; }
-/* The tile's own figure is the marker, so the round list marker the chat's
-   other numbered lists take is not drawn here. */
+.a11y-widget-biz .a11y-chat-text .a11y-chat-plan-title {
+  order: 1; display: block; margin: 0 0 6px;
+  font-size: 22px; font-weight: 500; line-height: 1.15; letter-spacing: 0.005em;
+}
+.a11y-widget-biz .a11y-chat-text .a11y-chat-plan-text {
+  order: 2; display: block; font-size: 18px; font-weight: 400; line-height: 1.3; letter-spacing: 0.01em;
+}
+.a11y-widget-biz .a11y-chat-text .a11y-chat-plan-no {
+  order: 3; margin: auto 0 0; padding-top: 32px;
+  font-size: 160px; font-weight: 500; line-height: 0.8; letter-spacing: -0.02em;
+}
 .a11y-widget-biz .a11y-chat-text .a11y-chat-plan > li::before { content: none; }
 .a11y-widget-biz .a11y-chat-text .a11y-chat-plan :is(a, code) { color: inherit; }
 .a11y-widget-biz .a11y-chat-text .a11y-chat-plan :focus-visible { outline-color: #000; box-shadow: 0 0 0 2px #f0efe8; }
@@ -309,7 +325,9 @@
    emphasis is the Medium cut or nothing. Hyphenation keeps at least
    three letters either side and no more than three lines in a row end in
    a hyphen (p.47). */
-.a11y-widget-biz .a11y-caps { font-size: 30px; letter-spacing: 0.06em; }
+/* In em since 18 Nov 2026: a fixed 30px stood well under the 49px main
+   text. 0.92em is the old 30/32 ratio, rounded down a step. */
+.a11y-widget-biz .a11y-caps { font-size: 0.92em; letter-spacing: 0.06em; }
 .a11y-widget-biz :is(.a11y-chat-who, small, th) .a11y-caps { font-size: inherit; }
 /* A list in the conversation (fig. 50): an en dash and a word space for a
    bullet, hung in the margin; a figure and its point for a count. */
@@ -1582,7 +1600,8 @@
   .a11y-widget-biz .a11y-chat .a11y-chat-thread :is(pre, code) { font-size: 0.9em; line-height: 1.4; }
   .a11y-widget-biz .a11y-chat .a11y-chat-thread .a11y-chat-plan-title { font-size: 22px; }
   .a11y-widget-biz .a11y-chat .a11y-chat-thread .a11y-chat-plan-text { font-size: 18px; }
-  .a11y-widget-biz .a11y-chat .a11y-chat-thread .a11y-chat-plan-no { margin-bottom: 16px; }
+  .a11y-widget-biz .a11y-chat .a11y-chat-thread .a11y-chat-plan-step { min-height: 280px; padding: 20px 20px 18px; border-radius: 18px; }
+  .a11y-widget-biz .a11y-chat .a11y-chat-thread .a11y-chat-plan-no { padding-top: 24px; font-size: 104px; }
   .a11y-widget-biz .a11y-chat .a11y-chat-thread :is(p, li) { max-width: none; }
   .a11y-widget-biz .a11y-chat .a11y-chat-turn { margin-bottom: 1.4em; }
   .a11y-widget-biz .a11y-chat .a11y-chat-you { display: flex; flex-direction: column; align-items: flex-end; }
