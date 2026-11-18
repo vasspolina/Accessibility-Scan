@@ -15,6 +15,7 @@ import { STRINGS_DE } from "./strings.de";
 import { STRINGS_ES } from "./strings.es";
 import { STRINGS_FR } from "./strings.fr";
 import { OPENING_PROMPT_KEYS } from "./openingPrompts";
+import { setMarks } from "./typography";
 
 const BY_LANG: Partial<Record<Lang, Record<string, string>>> = {
   de: STRINGS_DE,
@@ -24,8 +25,10 @@ const BY_LANG: Partial<Record<Lang, Record<string, string>>> = {
 
 export function t(key: string): string {
   const lang = getLang();
-  if (lang === "en") return key;
-  return BY_LANG[lang]?.[key] ?? key;
+  // Straight marks still typed into the keys (won't, "Partially
+  // conformant") are set as the language's own (Hochuli fig. 53).
+  if (lang === "en") return setMarks(key, lang);
+  return setMarks(BY_LANG[lang]?.[key] ?? key, lang);
 }
 
 /** t() for a sentence with values in it: the sentence is translated whole,
@@ -263,6 +266,9 @@ export const CHROME_KEYS: string[] = [
   "The assistant is not available on this server. Paste an address and the scan still runs.",
   "The assistant couldn't answer that.",
   "Use the form instead",
+  "Yes, check {url}",
+  "Check {url}",
+  "Press Tab to use this suggestion:",
   "Back to the chat",
   // The conversation's folds and its way back (ScanChat).
   "Show details",
@@ -722,11 +728,32 @@ export const CHROME_KEYS: string[] = [
   "1 not applicable to this site",
   "{count} not applicable to this site",
   "Your accessibility statement",
-  "Whoever builds or maintains the site for you.",
-  "No code needs to change. It belongs with whoever writes the page rather than with a developer.",
-  "The designer decides it: a size, a colour, a spacing. A developer then changes the stylesheet to match.",
-  "Fix it in the original file (Word, InDesign, Acrobat) and export again. Editing the site will not help.",
-  "The AI review, not a rule check. It can be confidently wrong. Check before acting.",
+  "Whoever writes the page. In your editor, they rewrite each link to say where it goes, such as ‘Opening hours’ instead of ‘Read more’.",
+  "Whoever writes the page picks words that say what the button does, such as ‘Book a table’. A developer then puts them on the button.",
+  "Whoever adds images to the page. In your editor, they replace the file name in the image's alt text field with what the picture shows.",
+  "Whoever made the video, or runs the account it is on, such as YouTube or Vimeo. They add captions there, not in your site's code.",
+  "Whoever made the recording writes out what is said. Whoever writes the page then puts that text beside the audio.",
+  "Whoever made the video. They add a spoken description of what is shown, or publish a text version of the whole video beside it.",
+  "Whoever writes the form decides what its button promises, such as ‘Send my booking’. A developer then changes the button's label.",
+  "Whoever writes the page. In your editor, they shorten long sentences and split long paragraphs, with no change to the code.",
+  "Whoever runs your cookie banner, often in your consent tool's settings. They add a ‘Reject all’ button as plain as ‘Accept all’.",
+  "Whoever runs your cookie banner, often in your consent tool's settings. They make refusing as easy to see and click as accepting.",
+  "Whoever owns the form or checkout. They untick the boxes that sign people up, so each visitor chooses for themselves.",
+  "Whoever writes your marketing copy. They word the way to decline plainly, such as ‘No thanks’, without guilt or mockery.",
+  "Whoever runs your offers and promotions. They remove the stock or time warning, or tie it to real stock and a real deadline.",
+  "Whoever decides your marketing and sales tactics. Taking out a pressure tactic is their decision, not the developer's.",
+  "Your designer picks a colour with more contrast against its background. Whoever builds the site then swaps it into the stylesheet.",
+  "Your designer decides how links stand out in a paragraph without relying on colour, such as an underline. Whoever builds the site then adds it.",
+  "Your designer draws the outline that shows where the keyboard is, with its colour and thickness. Whoever builds the site then adds it.",
+  "Your designer makes these buttons and links bigger on phones, or puts more space between them. Whoever builds the site then applies it.",
+  "Your designer decides how much of a phone screen the fixed bar may cover. Whoever builds the site then makes it smaller.",
+  "Your designer decides how required fields are marked, such as the word ‘required’ beside the label. Whoever builds the site then adds it.",
+  "Your designer sets the type: its size, weight, line spacing and line length. Whoever builds the site then changes the stylesheet to match.",
+  "Whoever builds or maintains your site. Send them this card, which names the element to change and what is wrong with it.",
+  "Whoever writes the words on this page. They change the wording in the editor you publish pages with, and no developer is needed.",
+  "Your designer chooses the new size, colour or spacing. Whoever builds the site then puts that value into the stylesheet.",
+  "Whoever made the PDF. They fix it in the original file (Word, InDesign, Acrobat) and upload a new export. Editing the web page will not change it.",
+  "Our AI review wrote this, not a rule check, and it can be wrong while sounding sure. Look at the element yourself before changing anything.",
   "You can confirm this one yourself in a few minutes, with nothing installed. Put the mouse aside and move through the page using Tab, Enter and Escape.",
   "Do this first",
   "Fixing “{title}” settles {settles} of the {outOf} most serious findings at once.",
@@ -860,12 +887,12 @@ export const CHROME_KEYS: string[] = [
   "In your firewall or bot protection (Cloudflare, Akamai or similar), allow the user agent {agent}, or our IP address.",
   "Let the scanner sign in.",
   "If you can already reach the page in your own browser, use the form's login option. The scanner signs in with access you already have.",
-  "No picture: this was not visible on the page when it was scanned. Something reveals it, such as opening a panel or moving focus to it.",
-  "No picture: this sits off the edge of the screen until it is used. Skip links are built this way on purpose.",
-  "No picture: the element is there, but the photograph came out blank or showed whatever sits on top of it.",
+  "No picture: this element was hidden when we scanned, for example inside a closed menu, a folded section or a popup. Open that part of the page to see it.",
+  "No picture: this sits off the edge of the screen until the keyboard reaches it or a slider brings it into view. Skip links are built this way on purpose.",
+  "No picture: the element is there, but its photograph came out blank or showed something covering it, such as a cookie banner.",
   "No picture: this covers a whole region of the page, not one component. A photograph of the entire section would not show which part is at fault.",
   "No picture: the element was on the page when we checked it, and gone when we went back to photograph it. Banners that appear once per visitor do this.",
-  "No picture: each scan photographs a limited number of elements, and this one was past that limit. Scanning again may reach it.",
+  "No picture: a scan photographs a limited number of elements in a limited time, and this one came after that limit.",
   "No picture: this element couldn't be located again on the return visit. Pages that rebuild themselves on every load do this.",
   "The technical details for this finding identify the exact element.",
   "This element lives inside the consent frame from {host}, so the selector in the technical details is a path within that frame rather than within your own page.",

@@ -39,6 +39,10 @@ export interface SavedChat<T extends ArchivableTurn = ArchivableTurn> {
   /** ISO time of the last change, which orders the panel. */
   updatedAt: string;
   turns: T[];
+  /** The scan result the conversation was about, kept in IndexedDB under
+   *  the conversation's id (lib/chatResults.ts); absent when it had none
+   *  or was saved before results were kept. */
+  resultKey?: string;
 }
 
 /** The first thing the reader asked, on one line, cut at a word. */
@@ -108,25 +112,44 @@ export function loadChats(): SavedChat[] {
   }
 }
 
+// Set while storage refuses writes (quota, private mode): the page's own
+// list is then the only full one, and reading storage back would lose it.
+let lastWriteFailed = false;
+
 function write(chats: SavedChat[]): SavedChat[] {
   let kept = chats.slice(0, MAX_CHATS);
   while (kept.length > 1 && JSON.stringify(kept).length > MAX_STORE_CHARS) kept = kept.slice(0, -1);
   try {
     storage()?.setItem(STORAGE_KEY, JSON.stringify(kept));
+    lastWriteFailed = false;
   } catch {
+    lastWriteFailed = true;
     // Quota or private mode: the panel still lists this session's chats.
   }
   return kept;
 }
 
+/** What to write over: the stored list, read fresh. The list this page
+ *  holds can be stale (another tab of the widget, or another copy on the
+ *  same page, saved since it was read), and writing it back whole erased
+ *  whatever the other one had added. Falls back to the page's own list when
+ *  storage cannot be read. */
+function base(chats: SavedChat[]): SavedChat[] {
+  if (!storage() || lastWriteFailed) return chats;
+  return loadChats();
+}
+
 /** Stores one conversation, newest first, and returns the list as kept. */
 export function saveChat<T extends ArchivableTurn>(chats: SavedChat[], chat: SavedChat<T>): SavedChat[] {
-  return write([chat, ...chats.filter((c) => c.id !== chat.id)]);
+  return write([chat, ...base(chats).filter((c) => c.id !== chat.id)]);
 }
 
 export function deleteChat(chats: SavedChat[], id: string): SavedChat[] {
-  return write(chats.filter((c) => c.id !== id));
+  return write(base(chats).filter((c) => c.id !== id));
 }
+
+/** The storage key, for a `storage` listener that follows other tabs. */
+export const CHAT_ARCHIVE_KEY = STORAGE_KEY;
 
 export function newChatId(): string {
   return `c${Date.now().toString(36)}${Math.random().toString(36).slice(2, 8)}`;

@@ -83,6 +83,20 @@
 /* Two lines under each paragraph, list, table and figure of the report
    (was one; user asked for twice the room, 4 Nov 2026). */
 .a11y-widget-biz :is(p, ul, ol, dl, table, figure) { margin: 0 0 2.4em; }
+/* A bullet is an en dash and a word space, hung in the margin (fig. 50),
+   wherever a plain list shows: the browser's round disc and hollow circle
+   were left on lists that set no marker of their own. Lists with their own
+   marker or none set it on a class and out-rank this. */
+.a11y-widget-biz ul { list-style: "\2013\00A0"; }
+/* Figures that stack in a column or change in place take Jokker's tabular
+   figures (tnum; its default figures are proportional, a 1 being 0.306em
+   and a 0 0.612em), so a column of counts aligns and a score does not
+   shift as it changes (Hochuli p.41–44; docs/hochuli-typography-study.html).
+   Prose keeps the proportional figures. */
+.a11y-widget-biz :is(table, [role="table"], .a11y-sum-dial-num, .a11y-pro-score-num, .a11y-legal-count,
+  .a11y-section-count, .a11y-shell-nav-count, .a11y-pro-row-num, .a11y-sum-cell-count, .a11y-sum-cell-no) {
+  font-variant-numeric: tabular-nums;
+}
 .a11y-widget-biz a { color: var(--ink); text-decoration: underline; text-underline-offset: 0.15em; }
 
 /* The small print under the poster: 15px. */
@@ -263,6 +277,20 @@
   border: 0; padding: 0; resize: none; background: transparent; overflow-y: auto;
 }
 .a11y-widget-biz .a11y-chat-dock .a11y-chat-composer .a11y-chat-box textarea:focus-visible { outline: none; box-shadow: none; }
+/* The line Tab would fill in, as in Claude's apps (lib/chatSuggest): the
+   key in a small outlined cap, then the words, in ink, not a faded ghost
+   (there is no grey to fade them to). */
+.a11y-widget-biz .a11y-chat-tabhint {
+  display: flex; align-items: baseline; gap: 10px; max-width: none; margin: 4px 0 0;
+  font-size: 18px; letter-spacing: 0.01em; line-height: 1.3;
+}
+.a11y-widget-biz .a11y-chat-tabhint > kbd {
+  flex: none; padding: 1px 8px; border: 1px solid var(--ink); border-radius: 6px;
+  font: inherit; font-size: 15px; line-height: 1.3;
+}
+.a11y-widget-biz .a11y-chat-tabhint-text { min-width: 0; overflow-wrap: anywhere; }
+/* "Did you mean accessibility.nl?": the address as a button under it. */
+.a11y-widget-biz .a11y-chat-text .a11y-chat-confirm { margin: 0.6em 0 0; }
 .a11y-widget-biz .a11y-chat-box-row {
   display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center;
   gap: 0.5em; margin-top: 0.5em;
@@ -342,7 +370,10 @@
    emphasis is the Medium cut or nothing. Hyphenation keeps at least
    three letters either side and no more than three lines in a row end in
    a hyphen (p.47). */
-.a11y-widget-biz .a11y-caps { font-size: 30px; letter-spacing: 0.06em; }
+.a11y-widget-biz .a11y-caps { font-size: 30px; letter-spacing: 0.06em; font-feature-settings: "ss04", "ss05", "case"; }
+/* case (above): Jokker raises hyphens, brackets and dashes to capital
+   height, so the punctuation in (WCAG-AA) sits with the capitals around it
+   rather than at lowercase height (p.39–40). */
 .a11y-widget-biz :is(.a11y-chat-who, small, th) .a11y-caps { font-size: inherit; }
 /* A list in the conversation (fig. 50): an en dash and a word space for a
    bullet, hung in the margin; a figure and its point for a count. */
@@ -551,6 +582,35 @@
 /* The kit Select (Language): the label above, the box under it, the gloss under that.
    It had no rules at all, so the label ran straight into the box on one line. */
 .a11y-widget-biz .a11y-select2 { display: grid; justify-items: start; gap: 0.3em; margin: 0 0 1.2em; }
+/* The scan's settings (ScanSettings, AccountKey; user's instruction,
+   18 Nov 2026, "the elements not properly spaced, fix line height"). They
+   had no layout of their own: "Report style" ran at prose size with its
+   switch hard under it, the two options touched, and AI review, Scope and
+   Account sat flush one under the other. Each row is now set like the
+   Language field beside them: an 18px Medium label on its own line, then
+   the state at 22px and its control on one wrapping line, 12px between
+   lines and 16px between items; 40px between rows. */
+.a11y-widget-biz .a11y-settings { display: grid; gap: 40px; justify-items: stretch; }
+.a11y-widget-biz .a11y-settings > .a11y-settings-heading { margin: 0; }
+.a11y-widget-biz .a11y-settings ~ .a11y-settings-row { margin-top: 40px; }
+.a11y-widget-biz .a11y-settings-row { display: flex; flex-wrap: wrap; align-items: center; gap: 12px 16px; margin: 0; }
+.a11y-widget-biz .a11y-settings-row > .a11y-settings-label {
+  flex: 0 0 100%; margin: 0; font-size: 18px; font-weight: 500; letter-spacing: 0.01em; line-height: 1.2;
+}
+.a11y-widget-biz .a11y-settings-row > .a11y-settings-state { margin: 0; font-size: 22px; letter-spacing: 0.01em; line-height: 1.2; }
+.a11y-widget-biz .a11y-settings-row > .a11y-select2 { margin: 0; }
+.a11y-widget-biz .a11y-settings-row > .a11y-input { flex: 1 1 100%; min-width: 0; }
+.a11y-widget-biz .a11y-settings-switch { display: flex; flex-wrap: wrap; gap: 8px; }
+/* Through other eyes (VisionSimulator; user's question, 18 Nov 2026,
+   "what's this gap here"). The SVG that only holds the colour filters had
+   no size, so it took the browser's default 300 x 150 box and stood as an
+   empty band between the note and the picture. It is shrunk to nothing
+   rather than display: none, which switches the filters off in some
+   browsers. The condition buttons touched; they get the gap every row of
+   pills has, and the note sits a line under them. */
+.a11y-widget-biz .a11y-sim-defs { position: absolute; width: 0; height: 0; overflow: hidden; }
+.a11y-widget-biz .a11y-sim-controls { display: flex; flex-wrap: wrap; gap: 8px; }
+.a11y-widget-biz .a11y-sim-controls + .a11y-sr-only + .a11y-sim-note { margin-top: 1.2em; }
 .a11y-widget-biz .a11y-select2-label { font-size: 18px; letter-spacing: 0.01em; font-weight: 500; }
 .a11y-widget-biz .a11y-select2-field { min-width: 12em; max-width: 100%; box-sizing: border-box; }
 /* The native arrow is drawn flush against the box's edge and takes no padding.
@@ -559,9 +619,11 @@
    specificity of its input:not():not() branch. */
 .a11y-widget-biz .a11y-select2 .a11y-select2-field.a11y-select2-field {
   appearance: none; -webkit-appearance: none;
-  /* Square corners and a 2px ink edge, like the chat box (user's instruction,
-     4 Nov 2026: "keep language button too"). */
-  border: 2px solid var(--ink);
+  /* Square corners and a 2px ink edge (user's instruction, 4 Nov 2026:
+     "keep language button too"), dotted since 18 Nov 2026 ("lets make line
+     dotted"). A dotted edge here is the select's look, not the disabled
+     state: disabled controls are dashed. */
+  border: 2px dotted var(--ink);
   border-radius: 0;
   padding-inline-end: 2.6em;
   background-image: linear-gradient(45deg, transparent 50%, var(--ink) 50%), linear-gradient(135deg, var(--ink) 50%, transparent 50%);
@@ -810,25 +872,34 @@
 .a11y-widget-biz .a11y-sum-run > .a11y-sum-eyebrow { margin: 0 0 0.6em; }
 .a11y-widget-biz .a11y-sum-run .a11y-sum-dial-card { display: flex; justify-content: center; }
 .a11y-widget-biz .a11y-sum-run .a11y-sum-dial { margin: 0 0 0.5em; }
-/* The run of findings: display size, tight, centred, a soft balanced rag.
+/* The run of findings: display size, tight, centred.
    10% smaller since 18 Nov 2026 (user's instruction): 67 to 60px, the
    marker 44 to 40px with its figure 32 to 29px. */
+/* Each finding is one unit (user's instruction, 18 Nov 2026: "either two
+   full statements in a line or one ... don't leave one word from a
+   sentence on the line"). A row is an inline block, so a line holds whole
+   findings and a finding that does not fit starts a new line instead of
+   leaving its first word, "Text", hanging at the end of the one before.
+   The run no longer balances across rows, which had narrowed every line
+   (user's word the same day, "it can be 30% wider"): lines fill the column
+   and only a finding too long for one line wraps, balanced inside itself. */
 .a11y-widget-biz .a11y-sum-run .a11y-sum-rows {
-  margin: 0; font-size: 60px; letter-spacing: -0.01em; line-height: 1.06; hyphens: manual; overflow-wrap: break-word;
+  margin: 0; font-size: 60px; letter-spacing: -0.01em; line-height: 1.06;
+  hyphens: manual; overflow-wrap: break-word;
 }
 .a11y-widget-biz .a11y-sum-run .a11y-sum-nobreak { white-space: nowrap; }
-.a11y-widget-biz .a11y-sum-run .a11y-sum-row { display: inline; margin: 0; }
+.a11y-widget-biz .a11y-sum-run .a11y-sum-row { display: inline-block; max-width: 100%; margin: 0 0 0.12em; }
 .a11y-widget-biz .a11y-sum-run .a11y-sum-row:not(:last-child)::after { content: ", " / ""; }
 .a11y-widget-biz .a11y-sum-run :is(.a11y-sum-cell-item, .a11y-sum-row-title) { display: inline; }
 /* Each item links to its finding (lib/openFinding). Ink like the type
-   around it, the title underlined as every link here is; hover lays the
-   marker yellow under the title with black text, the controls' hover, and
-   drops the underline (user's instruction, 18 Nov 2026: the yellow says it
-   alone). The marks and the count keep their own fills inside the link. */
-.a11y-widget-biz .a11y-sum-run .a11y-sum-row-link { color: inherit; text-decoration: none; }
-.a11y-widget-biz .a11y-sum-run .a11y-sum-row-link .a11y-sum-row-title {
-  text-decoration: underline; text-decoration-thickness: 2px; text-underline-offset: 0.12em;
-}
+   around it, with no underline (user's instruction, 18 Nov 2026,
+   "underline on hover is not needed"): the items stand alone in a numbered
+   run, not inside a sentence, so the round marker and the hover say they
+   can be followed. Hover lays the marker yellow under the title with
+   black text, the controls' hover. The marks and the count keep their own
+   fills inside the link. */
+.a11y-widget-biz .a11y-sum-run .a11y-sum-row-link,
+.a11y-widget-biz .a11y-sum-run .a11y-sum-row-link .a11y-sum-row-title { color: inherit; text-decoration: none; }
 /* The yellow is a band 1em tall, 0.8em above the baseline to 0.2em below,
    not the inline box's full ground: the run's lines are 1.06em apart and
    Jokker's content area is 1.18em (measured at 60px: 0.97em up, 0.21em
@@ -872,28 +943,48 @@
    phone layout below keeps no floor. Then "make this text 30% smaller":
    the question 30 to 21px, and at that size its spacing follows the
    small sizes (+0.01em, line-height 1.15, the root's). The whole tile
-   is the button. Hover and focus turn it solid black with white words
+   is the button. A 25px Serrif Light question (same day) was replaced by
+   the Pangram cards below. Hover and focus turn it solid black with white words
    (21:1) and show a white pill, the "Check it out" of the reference; a 1px
    white edge keeps the black tile visible on a black page. Disabled is a
-   dashed edge, never faded. */
+   dashed edge, never faded.
+   Set as the Pangram Pangram font cards (user's reference, 18 Nov 2026,
+   "take the opening buttons design from here"; measured on
+   pangrampangram.com at 1440px): a tall card in the 296:407 proportion,
+   20px corners, 26px inside, 25px apart; the name top-left in Medium with
+   its small lines under it (here the group, then the question at 18px on
+   1.3), and one big glyph standing at the foot where the foundry sets its
+   "Aa": a question mark, the one glyph that says what the card holds, in
+   the markup and aria-hidden. Their #ededed ground is a grey, so the card
+   keeps the #f0efe8 this page allows. Their New/Update badges are left out
+   ("no badges"); the "Ask this" pill stands in the bottom-right corner,
+   beside the glyph, on hover and focus only. */
 .a11y-widget-biz .a11y-prompts { container: a11y-prompts / inline-size; margin: 0.6em 0 1.2em; }
 .a11y-widget-biz .a11y-prompt-grid {
-  display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 260px), 1fr)); gap: 10px;
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 240px), 1fr)); gap: 25px;
 }
 .a11y-widget-biz .a11y-prompts .a11y-prompt {
   --ink: #000; --paper: #f0efe8;
-  box-sizing: border-box; min-width: 0; min-height: 370px; margin: 0; padding: 20px;
-  display: flex; flex-direction: column; align-items: stretch; justify-content: flex-start; gap: 16px;
+  position: relative;
+  box-sizing: border-box; min-width: 0; aspect-ratio: 296 / 407; margin: 0; padding: 26px;
+  display: flex; flex-direction: column; align-items: stretch; justify-content: flex-start; gap: 4px;
   border: 1px solid #f0efe8; border-radius: 20px; background: #f0efe8; color: #000;
   font: inherit; text-align: start; cursor: pointer;
   overflow-wrap: break-word; hyphens: manual;
 }
-.a11y-widget-biz .a11y-prompts .a11y-prompt-label { font-size: 15px; font-weight: 500; letter-spacing: 0.01em; line-height: 1.2; }
+.a11y-widget-biz .a11y-prompts .a11y-prompt-label {
+  font-size: 22px; font-weight: 500; letter-spacing: 0.01em; line-height: 1.3;
+}
 .a11y-widget-biz .a11y-prompts .a11y-prompt-ask {
-  margin-top: auto; font-size: 21px; font-weight: 400; letter-spacing: 0.01em; line-height: 1.15;
+  font-size: 18px; font-weight: 400; letter-spacing: 0.01em; line-height: 1.3;
+}
+.a11y-widget-biz .a11y-prompts .a11y-prompt-mark {
+  margin-top: auto; padding-top: 20px;
+  font-size: 180px; font-weight: 500; letter-spacing: 0; line-height: 0.8;
 }
 .a11y-widget-biz .a11y-prompts .a11y-prompt-go {
-  display: flex; align-items: center; justify-content: center; min-height: 34px;
+  position: absolute; right: 26px; bottom: 26px;
+  display: flex; align-items: center; justify-content: center; min-height: 34px; padding: 0 14px;
   border-radius: 999px; background: #fff; color: #000;
   font-size: 18px; letter-spacing: 0.01em; line-height: 1.2;
   visibility: hidden;
@@ -1037,6 +1128,12 @@
      in a table row, a card or the notes panel, so it folds on its own width. */
   container: a11y-fd / inline-size;
 }
+/* In an opened table row (user's instruction, 18 Nov 2026, "delete the
+   thick line and drop the line below content when caret is open"): no 4px
+   rule on top, and the row above gives up its rule, so the only line is the
+   one under the opened content, the expand cell's own. */
+.a11y-widget-biz .a11y-dt-expand-row .a11y-fd { margin-top: 0; padding-top: 0.6em; border-top: 0; }
+.a11y-widget-biz .a11y-datatable tr[data-open] > td { border-bottom: 0; }
 .a11y-widget-biz .a11y-fd > :not(.a11y-fd-col) { grid-column: 1 / -1; }
 .a11y-widget-biz .a11y-fd > .a11y-fd-col { min-width: 0; }
 .a11y-widget-biz .a11y-fd .a11y-method-hint,
@@ -1114,22 +1211,35 @@
 .a11y-widget-biz .a11y-fd .a11y-tech-details {
   font-family: "Saans", "Jokker", sans-serif; font-weight: 300; font-size: 22px; line-height: 1.3; letter-spacing: 0.01em;
 }
-/* The technical version is a disclosure, not a ruled box (user's
-   instruction, 18 Nov 2026, "fix this"): closed, it sat between a hairline
-   above, a hairline below and the row's own 2px rule, three lines around
-   one word. Now it is one label line with a + mark, 50px under the
-   affected elements (CONTENT SPACING). Opened, the label takes the 1px
-   rule under it that every other label in this block has, and the mark
-   turns to a minus. The marks are drawn, with empty alt text, so a screen
-   reader hears the summary and its expanded state only. */
-.a11y-widget-biz .a11y-fd .a11y-tech-details { margin: 50px 0 1.2em; padding: 0; border: 0; }
-.a11y-widget-biz .a11y-fd .a11y-tech-details > summary {
-  display: flex; align-items: baseline; gap: 0.5em; width: fit-content; padding-block: 4px;
+/* The technical version (user's instructions, 18 Nov 2026: "design this",
+   then "needs a carret and make lines brown"). It keeps its two rules, one
+   above and one below, now in brown, and the label leads with a caret that
+   points right while it is shut and down once it is open. The caret is
+   drawn from two borders, so it takes the label's colour and needs no
+   glyph. The brown is #6b4226 on white (8.7:1) and #b07f4f on the black
+   page of the dark theme (4.9:1): decoration, but it still reads on both.
+   50px under the affected elements (CONTENT SPACING). */
+.a11y-widget-biz .a11y-fd .a11y-tech-details {
+  --rule-brown: #6b4226;
+  margin: 50px 0 1.2em; padding: 0; border: 0; border-block: 1px solid var(--rule-brown);
 }
-.a11y-widget-biz .a11y-fd .a11y-tech-details > summary::before { content: "+" / ""; display: inline-block; width: 0.8em; }
-.a11y-widget-biz .a11y-fd .a11y-tech-details[open] > summary::before { content: "\2212" / ""; }
-.a11y-widget-biz .a11y-fd .a11y-tech-details[open] > summary {
-  width: auto; margin-bottom: 0.5em; padding-bottom: 0.6em; border-bottom: 1px solid var(--ink);
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .a11y-widget-biz .a11y-fd .a11y-tech-details { --rule-brown: #b07f4f; }
+}
+:root[data-theme="dark"] .a11y-widget-biz .a11y-fd .a11y-tech-details { --rule-brown: #b07f4f; }
+.a11y-widget-biz .a11y-fd .a11y-tech-details > summary {
+  display: flex; align-items: center; gap: 14px; padding: 14px 0;
+}
+.a11y-widget-biz .a11y-fd .a11y-tech-details > summary::before {
+  content: ""; flex: none; box-sizing: border-box; width: 9px; height: 9px; margin-inline: 2px 0;
+  border-right: 2px solid currentColor; border-bottom: 2px solid currentColor;
+  transform: rotate(-45deg); transition: transform 120ms ease;
+}
+.a11y-widget-biz .a11y-fd .a11y-tech-details[open] > summary::before { transform: translateY(-3px) rotate(45deg); }
+.a11y-widget-biz .a11y-fd .a11y-tech-details[open] > summary { margin-bottom: 0.3em; }
+.a11y-widget-biz .a11y-fd .a11y-tech-details[open] { padding-bottom: 0.8em; }
+@media (prefers-reduced-motion: reduce) {
+  .a11y-widget-biz .a11y-fd .a11y-tech-details > summary::before { transition: none; }
 }
 .a11y-widget-biz .a11y-fd .a11y-pro-line,
 .a11y-widget-biz .a11y-fd .a11y-tech-details > p,
@@ -1238,7 +1348,6 @@
    reference, 4 Nov 2026): no ground, no box; its label over a 1px ink rule,
    the lines under it at 18px. Ink and paper are the page's again, so the
    cells follow the theme. */
-.a11y-widget-biz .a11y-sum-col > .a11y-sum-panel:not(.a11y-sum-counts),
 .a11y-widget-biz .a11y-next-list > li,
 .a11y-widget-biz .a11y-spec-grid > .a11y-spec-card,
 .a11y-widget-biz .a11y-ra-row > .a11y-ra-cell,
@@ -1273,7 +1382,6 @@
 
 /* The label: 15px Jokker, sentence case, at the top-left, with the room of
    a Reckless tile (about 72px from the edge to the words) under it. */
-.a11y-widget-biz .a11y-sum-col > .a11y-sum-panel:not(.a11y-sum-counts) > .a11y-sum-eyebrow,
 .a11y-widget-biz .a11y-next-list > li > .a11y-next-crit,
 .a11y-widget-biz .a11y-next-main > .a11y-next-title + .a11y-next-meta,
 .a11y-widget-biz .a11y-spec-card > .a11y-spec-label,
@@ -1284,7 +1392,6 @@
   text-transform: none;
 }
 /* The lines: Jokker 18px, as the pricing block sets its rows. */
-.a11y-widget-biz .a11y-sum-col > .a11y-sum-panel:not(.a11y-sum-counts) .a11y-sum-lead,
 .a11y-widget-biz .a11y-next-list > li .a11y-next-title,
 .a11y-widget-biz .a11y-spec-card > .a11y-spec-value,
 .a11y-widget-biz .a11y-pro-row > .a11y-pro-row-num,
@@ -1320,8 +1427,9 @@
 .a11y-widget-biz .a11y-dn-list > li > .a11y-dn-link[aria-expanded="true"] { --ink: #fff; --paper: #000; background: #000; color: #fff; font-weight: 400; }
 
 /* The report actions, after the Displaay Info block and form (user's
-   references, 17 Nov 2026). Each column opens on an uppercase 15px label
-   over a 1px ink rule, the Info block's DESCRIPTION / DETAILS. The address
+   references, 17 Nov 2026). Each column opens on an uppercase label, the
+   Info block's DESCRIPTION / DETAILS, with no rule under it (user's
+   instruction, 18 Nov 2026, "delete lines under eyebrows"). The address
    is a rounded #f0efe8 field with its label inside it; the send is one wide
    rounded block in Light 40px; the PDF is an outlined button with 10px
    corners and a download arrow. These three are the user's exceptions to
@@ -1329,24 +1437,28 @@
    notes, so the field redefines ink and paper for what is inside it; #000
    on it is 18.4:1. The send is solid ink in the page's theme; hover is the
    marker yellow; sending is a dashed edge on paper, never faded. */
-.a11y-widget-biz .a11y-ra-row > .a11y-ra-cell { display: flex; flex-direction: column; align-items: stretch; gap: 10px; }
+/* More air (user's instruction, 18 Nov 2026, "add more space between
+   content here line height"): the parts of a column 20px apart (was 10),
+   the field's label and line 10px apart (was 4) at line-height 1.4, and
+   the small print at 1.45. */
+.a11y-widget-biz .a11y-ra-row > .a11y-ra-cell { display: flex; flex-direction: column; align-items: stretch; gap: 20px; }
 .a11y-widget-biz .a11y-ra-row > .a11y-ra-cell > .a11y-ra-head {
-  margin: 0 0 14px; padding: 0 0 10px; border-bottom: 1px solid var(--ink);
+  margin: 0 0 14px; padding: 0; border: 0;
   font-family: "Jokker", sans-serif; font-size: 18px; font-weight: 400; line-height: 1.2; letter-spacing: 0.04em;
   text-transform: uppercase;
 }
 .a11y-widget-biz .a11y-ra-row > .a11y-ra-cell > .a11y-ra-field {
   --ink: #000; --paper: #f0efe8;
-  display: flex; flex-direction: column; gap: 4px; padding: 14px 20px 12px;
+  display: flex; flex-direction: column; gap: 10px; padding: 18px 24px 16px;
   border-radius: 14px; background: #f0efe8; color: #000;
 }
-.a11y-widget-biz .a11y-ra-field > .a11y-ra-field-label { font-size: 22px; letter-spacing: 0.01em; line-height: 1.2; }
+.a11y-widget-biz .a11y-ra-field > .a11y-ra-field-label { font-size: 22px; letter-spacing: 0.01em; line-height: 1.4; }
 /* input. in the selector: the general field rule (:is(input:not():not())) is
    0,3,1, and this has to out-rank it to drop the field's own box. */
 .a11y-widget-biz .a11y-ra-field > input.a11y-ra-email-input {
   box-sizing: border-box; width: 100%; min-height: 34px; margin: 0; padding: 4px 0;
   border: 0; border-radius: 0; background: transparent; color: #000;
-  font: inherit; font-size: 22px; letter-spacing: 0.01em;
+  font: inherit; font-size: 22px; letter-spacing: 0.01em; line-height: 1.4;
 }
 .a11y-widget-biz .a11y-ra-field > input.a11y-ra-email-input::placeholder { color: #000; opacity: 1; font-weight: 300; }
 /* The field is the box, so the focus ring goes round the field, not the
@@ -1366,7 +1478,7 @@
   font-size: 22px; font-weight: 400; letter-spacing: 0.01em;
 }
 .a11y-widget-biz .a11y-ra-pdf > .a11y-ra-pdf-icon { width: 20px; height: 20px; flex: none; }
-.a11y-widget-biz .a11y-ra-row > .a11y-ra-cell > .a11y-ra-note { margin: 0; font-size: 18px; letter-spacing: 0.01em; }
+.a11y-widget-biz .a11y-ra-row > .a11y-ra-cell > .a11y-ra-note { margin: 0; font-size: 18px; letter-spacing: 0.01em; line-height: 1.45; }
 @media (max-width: 640px) {
   .a11y-widget-biz .a11y-ra-row > .a11y-ra-cell > .a11y-ra-send { min-height: 96px; font-size: 38px; }
 }
@@ -1528,7 +1640,7 @@
   border: 3px solid var(--ink); outline: 3px solid var(--paper);
 }
 .a11y-widget-biz .a11y-shot-locator {
-  margin-top: 0.4em; max-width: 60ch; font-size: 18px; line-height: 1.3; letter-spacing: 0.01em; overflow-wrap: anywhere;
+  margin-top: 0.4em; font-size: 18px; line-height: 1.3; letter-spacing: 0.01em; overflow-wrap: anywhere;
 }
 .a11y-widget-biz .a11y-shot-locator strong { font-weight: 500; }
 .a11y-widget-biz .a11y-shot-locator code { font-size: inherit; overflow-wrap: anywhere; }
@@ -1627,13 +1739,13 @@
    and at 67px. Applied
    to running text only: tables, grids and controls keep their widths, and
    the cap only ever narrows a block, adding margin beside it. Centred
-   blocks centre the capped box too. */
-.a11y-widget-biz :is(p, li, dd, blockquote, figcaption, h1, h2, h3, h4, .a11y-stmt-text, .a11y-sum-specimen-text) { max-width: 42ch; }
-.a11y-widget-biz .a11y-sum-specimen-text { display: block; max-width: 38ch; }
-/* A label whose 1px rule is its underline is not running text: capped at
-   42ch, the affected-element label's rule stopped at two thirds of the
-   width while every rule under it ran the full width (18 Nov 2026). */
-.a11y-widget-biz .a11y-fd .a11y-affected-label { max-width: none; }
+   blocks centre the capped box too.
+   LIFTED (user's instruction, 18 Nov 2026, "make all text run through to
+   the end of the page, do not rag it short"): running text now takes the
+   full width of its column, as the conversation already did. The 42ch and
+   38ch caps, and the 60ch one on the picture's locator, are gone; the
+   column itself (the widget's 40em) is the measure. */
+.a11y-widget-biz .a11y-sum-specimen-text { display: block; }
 .a11y-widget-biz :is(.a11y-sum-run, .a11y-sum-actions) :is(p, h3) { margin-inline: auto; }
 
 /* ═══ 320PX AFTER THE 20% TYPE STEP (17 Nov 2026) ══════════════════════════
@@ -1687,7 +1799,8 @@
   }
   .a11y-widget-biz .a11y-chat .a11y-prompts .a11y-prompt-label { font-size: 18px; }
   .a11y-widget-biz .a11y-chat .a11y-prompts .a11y-prompt-ask { margin-top: 0; font-size: 19px; letter-spacing: 0.005em; line-height: 1.3; }
-  .a11y-widget-biz .a11y-chat .a11y-prompts .a11y-prompt-go { display: none; }
+  .a11y-widget-biz .a11y-chat .a11y-prompts .a11y-prompt-go,
+  .a11y-widget-biz .a11y-chat .a11y-prompts .a11y-prompt-mark { display: none; }
   .a11y-widget-biz .a11y-chat .a11y-prompt-more { text-align: start; margin: 8px 0 0; }
   .a11y-widget-biz .a11y-chat .a11y-prompt-more .a11y-btn { font-size: 18px; }
 
@@ -1793,15 +1906,21 @@
 .a11y-widget-biz .a11y-chats .a11y-chats-list { list-style: none; margin: 0; padding: 0; }
 .a11y-widget-biz .a11y-chats .a11y-chats-row {
   display: flex; align-items: center; max-width: none; margin: 0 0 2px; border-radius: 12px;
+  box-sizing: border-box; border: 1px dashed var(--ink);
 }
 .a11y-widget-biz .a11y-chats .a11y-chats-item {
   display: block; flex: 1 1 auto; min-width: 0; font-weight: 400; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  border-color: transparent;
 }
 /* The fixed pale ground, black words, in both themes. */
 .a11y-widget-biz .a11y-chats .a11y-chats-row:is([data-current], :hover) {
   --ink: #000; --paper: #f0efe8;
   background: #f0efe8; color: #000;
 }
+/* Only the open conversation's edge is green (user's instruction, 18 Nov
+   2026, "make current chat green only"). It always sits on the #f0efe8
+   fill, where #14532d measures 7.9:1, so it needs no dark-theme value. */
+.a11y-widget-biz .a11y-chats .a11y-chats-row[data-current] { border-color: #14532d; }
 .a11y-widget-biz .a11y-chats .a11y-chats-row :is(.a11y-chats-item, .a11y-chats-delete):enabled:hover,
 .a11y-widget-biz .a11y-chats .a11y-chats-new:enabled:hover,
 .a11y-widget-biz .a11y-chats .a11y-chats-toggle:hover {
@@ -1820,9 +1939,11 @@
 /* Disabled while a reply or a scan runs: a dashed edge, never faded. The
    rows carry a 1px dash at rest, so theirs goes to 2px. */
 .a11y-widget-biz .a11y-chats .a11y-chats-delete:disabled { border: 1px dashed var(--ink); cursor: not-allowed; }
-.a11y-widget-biz .a11y-chats :is(.a11y-chats-new, .a11y-chats-item):disabled {
+.a11y-widget-biz .a11y-chats .a11y-chats-new:disabled {
   padding: 7px 11px; border: 2px dashed var(--ink); cursor: not-allowed;
 }
+.a11y-widget-biz .a11y-chats .a11y-chats-item:disabled { cursor: not-allowed; }
+.a11y-widget-biz .a11y-chats .a11y-chats-row:has(.a11y-chats-item:disabled) { border-width: 2px; margin-bottom: 0; }
 @media (max-width: 640px) {
   .a11y-widget-biz .a11y-chat-layout { grid-template-columns: minmax(0, 1fr); gap: 0; }
   .a11y-widget-biz .a11y-chats {
@@ -1833,6 +1954,45 @@
   .a11y-widget-biz .a11y-chats[data-open] .a11y-chats-body { padding-bottom: 12px; border-bottom: 1px solid var(--ink); }
   .a11y-widget-biz .a11y-chats .a11y-chats-delete { visibility: visible; }
 }
+
+/* ═══ THE SUMMARY PANELS AS TYPE-TESTER CARDS (user's reference, 18 Nov 2026) ═
+   "Design this like this", over a foundry's type tester: each of the two
+   panels, Do this first and What a score of … means, is a card. The fixed
+   #f0efe8 ground with black words in both themes (18.4:1), 20px corners,
+   the label on a small solid-black pill at the top-left (#f0efe8 words,
+   15px Medium, sentence case, as the alternates sheet sets its labels), and
+   the sentence well under it at display size, 38px Regular at -0.005em,
+   the spacing that size takes. The two cards stand the same height side
+   by side. Ink and paper are redefined inside, so links, code and focus
+   rings follow. Under 640px the sentence drops to the phone title size. */
+.a11y-widget-biz .a11y-sum-col > .a11y-sum-panel:not(.a11y-sum-counts) {
+  --ink: #000; --paper: #f0efe8;
+  box-sizing: border-box; min-width: 0; margin: 0;
+  align-self: stretch; display: flex; flex-direction: column; gap: 56px;
+  padding: 28px 32px 36px; border: 0; border-radius: 20px; background: #f0efe8; color: #000;
+  text-align: start; overflow-wrap: break-word; hyphens: manual;
+}
+.a11y-widget-biz .a11y-sum-col > .a11y-sum-panel:not(.a11y-sum-counts) > .a11y-sum-eyebrow {
+  align-self: flex-start; margin: 0; padding: 7px 16px; border: 0; border-radius: 999px;
+  background: #000; color: #f0efe8; text-align: start; text-transform: none;
+  font-family: "Jokker", sans-serif; font-size: 15px; font-weight: 500; line-height: 1.2; letter-spacing: 0.01em;
+}
+.a11y-widget-biz .a11y-sum-col > .a11y-sum-panel:not(.a11y-sum-counts) .a11y-sum-lead {
+  display: block; margin: 0;
+  font-family: "Jokker", sans-serif; font-size: 38px; font-weight: 400; line-height: 1.1; letter-spacing: -0.005em;
+}
+@media (max-width: 640px) {
+  .a11y-widget-biz .a11y-sum-col > .a11y-sum-panel:not(.a11y-sum-counts) { gap: 32px; padding: 18px 20px 24px; }
+  .a11y-widget-biz .a11y-sum-col > .a11y-sum-panel:not(.a11y-sum-counts) .a11y-sum-lead { font-size: 27px; letter-spacing: 0; }
+}
+
+/* ═══ THE CONVERSATIONS PANEL'S EDGE (user's instruction, 18 Nov 2026) ═════
+   "Just make the outline dark green and the fill behind the basket": the
+   dashed edge runs round the whole row, the conversation and its delete
+   button together, so the pale fill and the bin sit inside one shape.
+   Then, the same day, "make current chat green only": every row and New
+   chat keep the 1px dashed ink edge, and only the open conversation's
+   edge is the dark green #14532d (rule above, on its #f0efe8 fill). */
 
 /* AUTOMATED CHECK RESULTS AS A SHEET OF ALTERNATES (user's reference, 18 Nov
    2026, "design these like this", a type foundry's alternates sheet). Each

@@ -3,6 +3,7 @@ import { createRoot } from "react-dom/client";
 import { App } from "./App";
 import { mountShadowRoot } from "./utils/shadowMount";
 import { setLang, detectLang } from "./lib/i18n";
+import { typesetText } from "./lib/typography";
 
 export interface MountOptions {
   apiBase: string;
@@ -86,6 +87,9 @@ export function mount(target: string | HTMLElement, options: MountOptions) {
     mountPoint.dataset.theme = options.theme;
   }
   const root = createRoot(mountPoint);
+  // Typesetting on the rendered text: no word of a sentence alone on a
+  // line, and the French thin space drawn in the face.
+  typesetText(mountPoint);
   root.render(
     <React.StrictMode>
       <App apiBase={options.apiBase} cta={options.cta} />
