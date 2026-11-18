@@ -685,13 +685,16 @@ export function App({
         ).split("{link}");
         return (
           <div className={professional && !isDocument ? "a11y-print-cards" : undefined}>
-            {!isDocument && (
+            {/* Shown only when something was found: an empty "Nothing
+                found here." section is a heading with nothing under it
+                (user's instruction, 18 Nov 2026). */}
+            {!isDocument && findingsByCategory.darkPattern.length > 0 && (
               <ReportSection
                 title="What costs you trust"
                 description={t(
                   "Places where your site nudges people instead of leaving the choice to them. These don't move the score."
                 )}
-                variant={findingsByCategory.darkPattern.length > 0 ? "redflag" : "default"}
+                variant="redflag"
                 findings={findingsByCategory.darkPattern}
                 id="a11y-trust-heading"
               />
