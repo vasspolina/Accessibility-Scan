@@ -48,22 +48,22 @@ export function failureText(message: string, reason?: FailureReason): string {
 // frame, because the frame's own sentence says where to look instead.
 const PICTURE_NOTES: Record<NonNullable<AccessibilityFinding["pictureReason"]>, string> = {
   hidden:
-    "No picture: this was not visible on the page when it was scanned. Something reveals it, such as opening a panel or moving focus to it.",
+    "No picture: this element was hidden when we scanned, for example inside a closed menu, a folded section or a popup. Open that part of the page to see it.",
   offscreen:
-    "No picture: this sits off the edge of the screen until it is used. Skip links are built this way on purpose.",
+    "No picture: this sits off the edge of the screen until the keyboard reaches it or a slider brings it into view. Skip links are built this way on purpose.",
   "no-usable-image":
-    "No picture: the element is there, but the photograph came out blank or showed whatever sits on top of it.",
+    "No picture: the element is there, but its photograph came out blank or showed something covering it, such as a cookie banner.",
   "too-large":
     "No picture: this covers a whole region of the page, not one component. A photograph of the entire section would not show which part is at fault.",
   missing:
     "No picture: the element was on the page when we checked it, and gone when we went back to photograph it. Banners that appear once per visitor do this.",
   "not-attempted":
-    "No picture: each scan photographs a limited number of elements, and this one was past that limit. Scanning again may reach it.",
+    "No picture: a scan photographs a limited number of elements in a limited time, and this one came after that limit.",
   unreachable:
     "No picture: this element couldn't be located again on the return visit. Pages that rebuild themselves on every load do this.",
 };
 
-const POINTS_TO_DETAILS = new Set(["no-usable-image", "too-large"]);
+const POINTS_TO_DETAILS = new Set(["hidden", "no-usable-image", "too-large", "not-attempted"]);
 
 /** The note on a finding that has no picture, in the reader's language.
  *  A report saved before the reason was sent has only the English note. */
