@@ -76,3 +76,35 @@ describe("score summaries", () => {
     }
   });
 });
+
+describe("the plain-text summary", () => {
+  // It used to set English headings around finding titles that were already
+  // translated, so a German reader copied half-German text.
+  it("is in the reader's language, headings and caveat included", async () => {
+    const { buildPlainSummary } = await import("../src/components/ScoreGauge");
+    const { setLang } = await import("../src/lib/i18n");
+    setLang("de");
+    try {
+      const text = buildPlainSummary({ url: "https://example.com", seed: "2026-07-01T10:00:00.000Z", score: 73, allFindings: [] });
+      expect(text).toContain("Ergebnis: 73/100");
+      expect(text).toContain("Was das Ergebnis zählt:");
+      expect(text).toContain("Juli 2026");
+      expect(text).not.toMatch(/What the score counts|Accessibility scan:|Scanned /);
+    } finally {
+      setLang("en");
+    }
+  });
+
+  it("puts a no-break space before a French colon", async () => {
+    const { buildPlainSummary } = await import("../src/components/ScoreGauge");
+    const { setLang } = await import("../src/lib/i18n");
+    setLang("fr");
+    try {
+      const text = buildPlainSummary({ url: "https://example.com", seed: "s", score: 95, allFindings: [] });
+      expect(text).toContain("Score : 95/100");
+      expect(text).toContain("Ce que compte le score :");
+    } finally {
+      setLang("en");
+    }
+  });
+});
