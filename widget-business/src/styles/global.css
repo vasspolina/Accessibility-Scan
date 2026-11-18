@@ -2190,3 +2190,80 @@
 .a11y-widget-biz .a11y-shell-nav .a11y-shell-nav-link[aria-current="true"] { background: #f0efe8; color: #000; }
 /* Hover is the marker yellow, as on buttons (same day, "make hover yellow"). */
 .a11y-widget-biz .a11y-shell-nav .a11y-shell-nav-link:hover { background: var(--hl-cap-a); color: #000; }
+
+/* ═══ WCAG 2.2 AND THE SCREEN READER HEAD AS TESTER ROWS (user's instruction, 18 Nov 2026) ═
+   "Design this", twice, in the type-tester language of the scan form.
+   Ready for WCAG 2.2?: the readiness summary is a #f0efe8 card (24px
+   corners, black words in both themes); its toggle is the tester's row of
+   pills: the standard on solid black where the tester names its face, the
+   date as a white pill, the count of what would fail today on the orange
+   status highlight (black on it 10:1; the colour is the status), the
+   chevron in a white round. The sentence under it is the specimen, 38px.
+   The six new items is a second card, its title on a black pill and its
+   toggle a white one; hover is the marker yellow on every pill.
+   Screen reader preview: the head broke mid-phrase ("(16" over
+   "announcements)", the status chip on two lines). The title and its count
+   now hold one line, the status and the chevron sit on the line under it,
+   and Play keeps the right edge, its top level with the title's. */
+.a11y-widget-biz .a11y-w22 > .a11y-next,
+.a11y-widget-biz .a11y-w22 > .a11y-w22-panel {
+  --ink: #000; --paper: #f0efe8;
+  box-sizing: border-box; min-width: 0; margin: 0 0 16px; padding: 28px 32px 32px;
+  border-radius: 24px; background: #f0efe8; color: #000;
+}
+.a11y-widget-biz .a11y-w22 > .a11y-next > .a11y-next-toggle {
+  display: flex; flex-wrap: wrap; align-items: center; gap: 8px; width: auto; min-height: 0; margin: 0; padding: 0;
+  border: 0; border-radius: 0; background: none; color: #000;
+  font-size: 15px; font-weight: 500; line-height: 1.2; letter-spacing: 0.01em; text-align: start;
+}
+.a11y-widget-biz .a11y-w22 > .a11y-next > .a11y-next-toggle:enabled:hover { background: none; border-color: transparent; color: #000; }
+.a11y-widget-biz .a11y-w22 .a11y-next-toggle > .a11y-next-standard { display: contents; }
+.a11y-widget-biz .a11y-w22 .a11y-next-toggle > .a11y-next-standard > * {
+  display: inline-flex; align-items: center; box-sizing: border-box; min-height: 44px; padding: 0 18px;
+  border-radius: 999px; background: #fff; color: #000; font-size: 15px; font-weight: 500;
+}
+.a11y-widget-biz .a11y-w22 .a11y-next-toggle > .a11y-next-standard > strong { background: #000; color: #f0efe8; }
+.a11y-widget-biz .a11y-w22 .a11y-next-toggle > .a11y-next-count {
+  display: inline-flex; align-items: center; box-sizing: border-box; min-height: 44px; padding: 0 18px;
+  border-radius: 999px; background: var(--hl-orange); color: #000; font-size: 15px; font-weight: 500;
+}
+.a11y-widget-biz .a11y-w22 .a11y-next-toggle > .a11y-next-chevron {
+  display: inline-grid; place-content: center; width: 44px; height: 44px; border-radius: 50%;
+  background: #fff; color: #000; font-size: 18px; line-height: 1;
+}
+.a11y-widget-biz .a11y-w22 .a11y-next-toggle > .a11y-next-chevron[data-open="true"] { transform: rotate(180deg); }
+.a11y-widget-biz .a11y-w22 .a11y-next-toggle:enabled:hover > .a11y-next-standard > span,
+.a11y-widget-biz .a11y-w22 .a11y-next-toggle:enabled:hover > .a11y-next-chevron { background: var(--hl-cap-a); }
+.a11y-widget-biz .a11y-w22 > .a11y-next > .a11y-next-desc {
+  max-width: none; margin: 40px 0 0;
+  font-size: 38px; font-weight: 400; line-height: 1.1; letter-spacing: -0.005em;
+}
+.a11y-widget-biz .a11y-w22 > .a11y-next > .a11y-next-list { margin: 28px 0 0; }
+.a11y-widget-biz .a11y-w22 > .a11y-w22-panel { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; }
+.a11y-widget-biz .a11y-w22 > .a11y-w22-panel > .a11y-w22-panel-title {
+  display: inline-flex; align-items: center; min-height: 44px; margin: 0; padding: 0 20px;
+  border-radius: 999px; background: #000; color: #f0efe8;
+  font-size: 15px; font-weight: 500; line-height: 1.2; letter-spacing: 0.01em;
+}
+.a11y-widget-biz .a11y-w22 > .a11y-w22-panel > .a11y-w22-toggle {
+  min-height: 44px; padding: 0 18px; border-color: #fff; background: #fff; color: #000; font-size: 15px;
+}
+.a11y-widget-biz .a11y-w22 > .a11y-w22-panel > div { flex: 1 1 100%; min-width: 0; margin-top: 18px; }
+.a11y-widget-biz .a11y-w22 > .a11y-w22-panel > div[hidden] { display: none; }
+@media (max-width: 640px) {
+  .a11y-widget-biz .a11y-w22 > .a11y-next,
+  .a11y-widget-biz .a11y-w22 > .a11y-w22-panel { padding: 20px; border-radius: 20px; }
+  .a11y-widget-biz .a11y-w22 > .a11y-next > .a11y-next-desc { margin-top: 28px; font-size: 27px; letter-spacing: 0; }
+}
+
+.a11y-widget-biz .a11y-sr .a11y-accordion-row { align-items: flex-start; margin-top: 46px; }
+.a11y-widget-biz .a11y-sr .a11y-accordion-row > .a11y-accordion-title { margin-top: 0; }
+.a11y-widget-biz .a11y-sr .a11y-accordion-title .a11y-accordion-head { flex-wrap: wrap; align-items: center; gap: 14px 10px; }
+.a11y-widget-biz .a11y-sr .a11y-accordion-title .a11y-accordion-head > span:first-child { flex: 1 1 100%; min-width: 0; }
+.a11y-widget-biz .a11y-sr .a11y-accordion-title .a11y-section-count { white-space: nowrap; }
+.a11y-widget-biz .a11y-sr .a11y-accordion-title .a11y-status-chip { margin-inline: 0; white-space: nowrap; }
+.a11y-widget-biz .a11y-sr .a11y-accordion-title .a11y-accordion-chevron { margin-inline-start: 4px; }
+/* A title is not hyphenated ("pre-view" at 375px); the description stands a
+   clear step under the head. */
+.a11y-widget-biz .a11y-sr .a11y-accordion-row > .a11y-accordion-title { hyphens: manual; }
+.a11y-widget-biz .a11y-sr .a11y-section-head > .a11y-section-desc { margin-top: 24px; }
