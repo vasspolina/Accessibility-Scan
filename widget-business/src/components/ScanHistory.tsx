@@ -164,6 +164,7 @@ export function ScanHistory({
         </div>
 
         <div className="a11y-hist-col">
+          <div className="a11y-hist-card">
           <h3 className="a11y-hist-head">{t("Since last time")}</h3>
           {/* The three numbers used to be stat tiles. As lines they read as
               the sentences they always were, and the score line can say
@@ -197,11 +198,14 @@ export function ScanHistory({
                 : tf("New problems – {rules}", { rules: diff.appeared.map(ruleLabel).join(", ") })}
             </li>
           </ul>
+          </div>
 
+          {/* A card of its own, like the one above: the label on a black
+              pill, the promise as a sentence, and the control that undoes
+              it inside the same card, under the words that promise it. */}
+          <div className="a11y-hist-card">
           <h3 className="a11y-hist-head">{t("Where this lives")}</h3>
-          <ul className="a11y-hist-facts">
-            <li>{t("Kept in this browser only, never sent anywhere.")}</li>
-          </ul>
+          <p className="a11y-hist-promise">{t("Kept in this browser only, never sent anywhere.")}</p>
           {/* The design writes "Delete this history at any time" as a line
               of prose. It is the one genuinely destructive action here, so
               it stays a real control with its confirmation, sitting under
@@ -214,6 +218,7 @@ export function ScanHistory({
           >
             {t("Delete this history")}
           </button>
+          </div>
         </div>
       </div>
 
