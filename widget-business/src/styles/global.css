@@ -2103,9 +2103,12 @@
 .a11y-widget-biz .a11y-tester .a11y-input:focus-within,
 .a11y-widget-biz .a11y-tester .a11y-tester-rows > .a11y-select2:focus-within { outline: 3px solid var(--ink); outline-offset: 2px; }
 .a11y-widget-biz .a11y-tester .a11y-input-label,
-.a11y-widget-biz .a11y-tester .a11y-tester-rows .a11y-select2-label,
-.a11y-widget-biz .a11y-tester .a11y-tester-ai .a11y-switch-label {
+.a11y-widget-biz .a11y-tester .a11y-tester-rows .a11y-select2-label {
   color: var(--tile-ink); font-size: 18px; font-weight: 400; line-height: 1.2; letter-spacing: 0.01em;
+}
+/* AI review reads as a choice, at the choices' 22px. */
+.a11y-widget-biz .a11y-tester .a11y-tester-ai .a11y-switch-label {
+  color: var(--tile-ink); font-size: 22px; font-weight: 400; line-height: 1.2; letter-spacing: 0.01em;
 }
 .a11y-widget-biz .a11y-tester .a11y-input-shell { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 12px; min-width: 0; }
 /* 0,5,1 out-ranks the general field rule (0,3,1). The field's size
@@ -2121,7 +2124,7 @@
 .a11y-widget-biz .a11y-tester > .a11y-url-error:not(:empty) { margin-top: 12px; }
 /* A choice: a filled row, its radio showing in the words' ink. */
 .a11y-widget-biz .a11y-tester .a11y-tester-choices {
-  display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 220px), 1fr)); gap: 8px; min-width: 0;
+  margin-top: 8px; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 220px), 1fr)); gap: 8px; min-width: 0;
 }
 .a11y-widget-biz .a11y-tester .a11y-seg {
   display: flex; align-items: center; gap: 12px; box-sizing: border-box; min-width: 0; min-height: 60px; padding: 12px 18px;
@@ -2164,7 +2167,7 @@
 .a11y-widget-biz .a11y-tester .a11y-seg > input:focus-visible { outline: none; box-shadow: none; }
 .a11y-widget-biz .a11y-tester .a11y-seg.a11y-seg-disabled { cursor: not-allowed; box-shadow: inset 0 0 0 1px var(--tile-ink); }
 /* The other settings: AI review and the language, a filled row each. */
-.a11y-widget-biz .a11y-tester > .a11y-tester-rows { display: grid; gap: 8px; margin-top: 40px; }
+.a11y-widget-biz .a11y-tester > .a11y-tester-rows { display: grid; gap: 8px; margin-top: 8px; }
 .a11y-widget-biz .a11y-tester .a11y-tester-ai .a11y-switch { display: flex; justify-content: space-between; width: 100%; }
 .a11y-widget-biz .a11y-tester .a11y-tester-ai .a11y-switch-word { color: var(--tile-ink); font-size: 18px; letter-spacing: 0.01em; min-width: 1.8em; }
 .a11y-widget-biz .a11y-tester .a11y-tester-rows > .a11y-select2 { display: grid; justify-items: stretch; gap: 4px; }

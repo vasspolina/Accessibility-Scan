@@ -224,7 +224,9 @@ export function UrlForm({
       </p>
 
       {/* Not "How much?" — that reads as price, and this is scope. */}
-      <h3 className="a11y-tester-sub" id="a11y-scope-q">{t("How much of it?")}</h3>
+      {/* The group's name, for screen readers only (user's instruction, 18 Nov
+          2026, "delete this text"): the toggles' own words say the choice. */}
+      <h3 className="a11y-sr-only" id="a11y-scope-q">{t("How much of it?")}</h3>
       <div className="a11y-tester-choices" role="radiogroup" aria-labelledby="a11y-scope-q">
         <Seg id="a11y-scope-page" name="a11y-scan-mode" value="page" label={t("This page")}
           checked={mode === "page"} onChange={() => setMode("page")} disabled={loading} />
@@ -234,7 +236,7 @@ export function UrlForm({
 
       {/* "For everyone", not "Business owners": the report is written for
           whoever has to act on it. */}
-      <h3 className="a11y-tester-sub" id="a11y-aud-q">{t("Who reads it?")}</h3>
+      <h3 className="a11y-sr-only" id="a11y-aud-q">{t("Who reads it?")}</h3>
       <div className="a11y-tester-choices" role="radiogroup" aria-labelledby="a11y-aud-q">
         <Seg id="a11y-aud-biz" name="a11y-audience" value="business" label={t("For everyone")}
           checked={audience === "business"} onChange={() => onAudienceChange("business")} />
