@@ -33,8 +33,17 @@ import {
   saveChat,
   settleTurn,
   titleOf,
+  CHAT_ARCHIVE_KEY,
   type SavedChat,
 } from "../lib/chatArchive";
+import {
+  chatUsesResult,
+  deleteChatResult,
+  getChatResult,
+  pruneChatResults,
+  putChatResult,
+  type ChatResult,
+} from "../lib/chatResults";
 
 /**
  * The whole checker, as one conversation with an assistant.
@@ -521,6 +530,8 @@ export function ScanChat({
   onLanguageChange,
   hidden = false,
   apiRef,
+  resultPrivate = false,
+  onRestore,
 }: {
   apiBase: string;
   loading: boolean;
@@ -541,6 +552,12 @@ export function ScanChat({
    *  nothing — its blocks carry the same ids as the page reading. */
   hidden?: boolean;
   apiRef?: MutableRefObject<ChatApi | null>;
+  /** The result on screen came from a scan behind a login: it describes a
+   *  private page and is never stored with a conversation. */
+  resultPrivate?: boolean;
+  /** Puts a reopened conversation's result back on screen, without
+   *  scanning again. */
+  onRestore?: (result: ChatResult) => void;
 }) {
   const [turns, setTurns] = useState<Turn[]>([]);
   const [draft, setDraft] = useState("");
@@ -578,6 +595,9 @@ export function ScanChat({
   /** The thread just opened from the panel: saving it again unchanged
    *  would move it to the top as if it had been added to. */
   const opened = useRef<Turn[] | null>(null);
+  /** The conversation last opened from the panel, for its result arriving
+   *  from IndexedDB after the reader has moved on. */
+  const openingId = useRef<string | null>(null);
 
   const currentKey = report ? resultKeyOf(report) : audit ? resultKeyOf(audit) : null;
   // Read through refs by the async turn handlers: a turn's closure belongs
@@ -639,14 +659,61 @@ export function ScanChat({
     if (turns.some((x) => x.who === "checker" && x.streaming)) return;
     const id = chatId ?? newChatId();
     if (!chatId) setChatId(id);
-    setChats((list) =>
-      saveChat(list, { id, title: titleOf(turns), updatedAt: new Date().toISOString(), turns: turns.map(settleTurn) })
-    );
+    setChats((list) => {
+      const previous = list.find((c) => c.id === id);
+      const kept = saveChat(list, {
+        id,
+        title: titleOf(turns),
+        updatedAt: new Date().toISOString(),
+        turns: turns.map(settleTurn),
+        resultKey: storedResult.current.get(id) ?? previous?.resultKey,
+      });
+      void pruneChatResults(new Set(kept.map((c) => c.id)));
+      return kept;
+    });
   }, [turns, chatId]);
+
+  /** Which result each conversation has stored, so it is written once and
+   *  not on every turn. */
+  const storedResult = useRef(new Map<string, string>());
+  // Keeps the result on screen with the conversation that is about it
+  // (lib/chatResults.ts), so reopening it brings the report back too.
+  useEffect(() => {
+    if (!chatId || !currentKey || resultPrivate) return;
+    if (storedResult.current.get(chatId) === currentKey) return;
+    if (!chatUsesResult(turns, sharedScan.current, currentKey)) return;
+    const result: ChatResult | null = report
+      ? { kind: "report", report }
+      : audit
+        ? { kind: "audit", audit }
+        : null;
+    if (!result) return;
+    storedResult.current.set(chatId, currentKey);
+    void putChatResult(chatId, result);
+    setChats((list) =>
+      list.some((c) => c.id === chatId && c.resultKey !== currentKey)
+        ? saveChat(
+            list,
+            { ...list.find((c) => c.id === chatId)!, resultKey: currentKey }
+          )
+        : list
+    );
+  }, [turns, chatId, currentKey, report, audit, resultPrivate]);
+
+  // Another tab of the widget saved or deleted a conversation: the panel
+  // follows, so it never writes an old list back over the new one.
+  useEffect(() => {
+    const onStorage = (e: StorageEvent) => {
+      if (e.key === CHAT_ARCHIVE_KEY) setChats(loadChats());
+    };
+    window.addEventListener("storage", onStorage);
+    return () => window.removeEventListener("storage", onStorage);
+  }, []);
 
   /** Clears the screen for a new conversation; the old one stays listed. */
   function newChat() {
     opened.current = null;
+    openingId.current = null;
     setChatId(null);
     setAll([]);
     history.current = [];
@@ -666,7 +733,17 @@ export function ScanChat({
     if (chat.id === chatId) return;
     const restored = (chat.turns as Turn[]).map((x) => ({ ...settleTurn(x), id: nextId++ }) as Turn);
     opened.current = restored;
+    openingId.current = chat.id;
     setChatId(chat.id);
+    // Its report comes back with it, when it is not the one on screen
+    // already. Read from IndexedDB, so it lands a moment later; by then the
+    // reader may have opened another conversation, which then wins.
+    if (chat.resultKey) storedResult.current.set(chat.id, chat.resultKey);
+    if (chat.resultKey && chat.resultKey !== currentKeyRef.current && onRestore) {
+      void getChatResult(chat.id).then((result) => {
+        if (result && openingId.current === chat.id) onRestore(result);
+      });
+    }
     setAll(restored);
     history.current = historyFromTurns(restored);
     sharedScan.current = null;
@@ -677,6 +754,8 @@ export function ScanChat({
 
   function removeChat(chat: SavedChat) {
     setChats((list) => deleteChat(list, chat.id));
+    storedResult.current.delete(chat.id);
+    void deleteChatResult(chat.id);
     if (chat.id === chatId) newChat();
   }
 
@@ -1161,9 +1240,11 @@ export function ScanChat({
         </div>
         <LanguageSelect id="a11y-lang-form" value={language} onChange={onLanguageChange} />
       </div>
-      {/* The opening questions, set as type-specimen tiles (user's
-          reference, 17 Nov 2026): a pale square tile per group, its label
-          top-left, the question set large at the foot. The whole tile is
+      {/* The opening questions, set as the Pangram Pangram font cards
+          (user's reference, 18 Nov 2026): a tall pale card per group, the
+          group as its name top-left with the question under it, and a big
+          question mark at the foot where the foundry sets its "Aa". The
+          whole card is
           the button and sends its question as if typed; hover and focus
           turn it solid black with white words and show a pill that says
           what a press does. They go once the conversation starts. */}
@@ -1183,6 +1264,8 @@ export function ScanChat({
               {/* The press, said in words; the button's name is already
                   the label and the question, so this is not read twice. */}
               <span className="a11y-prompt-go" aria-hidden="true">{t("Ask this")}</span>
+              {/* Decoration: the button's name is already the question. */}
+              <span className="a11y-prompt-mark" aria-hidden="true">?</span>
             </button>
           ))}
           </div>

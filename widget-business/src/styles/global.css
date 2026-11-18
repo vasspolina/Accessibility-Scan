@@ -531,6 +531,35 @@
 /* The kit Select (Language): the label above, the box under it, the gloss under that.
    It had no rules at all, so the label ran straight into the box on one line. */
 .a11y-widget-biz .a11y-select2 { display: grid; justify-items: start; gap: 0.3em; margin: 0 0 1.2em; }
+/* The scan's settings (ScanSettings, AccountKey; user's instruction,
+   18 Nov 2026, "the elements not properly spaced, fix line height"). They
+   had no layout of their own: "Report style" ran at prose size with its
+   switch hard under it, the two options touched, and AI review, Scope and
+   Account sat flush one under the other. Each row is now set like the
+   Language field beside them: an 18px Medium label on its own line, then
+   the state at 22px and its control on one wrapping line, 12px between
+   lines and 16px between items; 40px between rows. */
+.a11y-widget-biz .a11y-settings { display: grid; gap: 40px; justify-items: stretch; }
+.a11y-widget-biz .a11y-settings > .a11y-settings-heading { margin: 0; }
+.a11y-widget-biz .a11y-settings ~ .a11y-settings-row { margin-top: 40px; }
+.a11y-widget-biz .a11y-settings-row { display: flex; flex-wrap: wrap; align-items: center; gap: 12px 16px; margin: 0; }
+.a11y-widget-biz .a11y-settings-row > .a11y-settings-label {
+  flex: 0 0 100%; margin: 0; font-size: 18px; font-weight: 500; letter-spacing: 0.01em; line-height: 1.2;
+}
+.a11y-widget-biz .a11y-settings-row > .a11y-settings-state { margin: 0; font-size: 22px; letter-spacing: 0.01em; line-height: 1.2; }
+.a11y-widget-biz .a11y-settings-row > .a11y-select2 { margin: 0; }
+.a11y-widget-biz .a11y-settings-row > .a11y-input { flex: 1 1 100%; min-width: 0; }
+.a11y-widget-biz .a11y-settings-switch { display: flex; flex-wrap: wrap; gap: 8px; }
+/* Through other eyes (VisionSimulator; user's question, 18 Nov 2026,
+   "what's this gap here"). The SVG that only holds the colour filters had
+   no size, so it took the browser's default 300 x 150 box and stood as an
+   empty band between the note and the picture. It is shrunk to nothing
+   rather than display: none, which switches the filters off in some
+   browsers. The condition buttons touched; they get the gap every row of
+   pills has, and the note sits a line under them. */
+.a11y-widget-biz .a11y-sim-defs { position: absolute; width: 0; height: 0; overflow: hidden; }
+.a11y-widget-biz .a11y-sim-controls { display: flex; flex-wrap: wrap; gap: 8px; }
+.a11y-widget-biz .a11y-sim-controls + .a11y-sr-only + .a11y-sim-note { margin-top: 1.2em; }
 .a11y-widget-biz .a11y-select2-label { font-size: 18px; letter-spacing: 0.01em; font-weight: 500; }
 .a11y-widget-biz .a11y-select2-field { min-width: 12em; max-width: 100%; box-sizing: border-box; }
 /* The native arrow is drawn flush against the box's edge and takes no padding.
@@ -845,26 +874,45 @@
    is the button. Hover and focus turn it solid black with white words
    (21:1) and show a white pill, the "Check it out" of the reference; a 1px
    white edge keeps the black tile visible on a black page. Disabled is a
-   dashed edge, never faded. */
+   dashed edge, never faded.
+   Set as the Pangram Pangram font cards (user's reference, 18 Nov 2026,
+   "take the opening buttons design from here"; measured on
+   pangrampangram.com at 1440px): a tall card in the 296:407 proportion,
+   20px corners, 26px inside, 25px apart; the name top-left in Medium with
+   its small lines under it (here the group, then the question at 18px on
+   1.3), and one big glyph standing at the foot where the foundry sets its
+   "Aa": a question mark, the one glyph that says what the card holds, in
+   the markup and aria-hidden. Their #ededed ground is a grey, so the card
+   keeps the #f0efe8 this page allows. Their New/Update badges are left out
+   ("no badges"); the "Ask this" pill stands in the bottom-right corner,
+   beside the glyph, on hover and focus only. */
 .a11y-widget-biz .a11y-prompts { container: a11y-prompts / inline-size; margin: 0.6em 0 1.2em; }
 .a11y-widget-biz .a11y-prompt-grid {
-  display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 260px), 1fr)); gap: 10px;
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 240px), 1fr)); gap: 25px;
 }
 .a11y-widget-biz .a11y-prompts .a11y-prompt {
   --ink: #000; --paper: #f0efe8;
-  box-sizing: border-box; min-width: 0; min-height: 370px; margin: 0; padding: 20px;
-  display: flex; flex-direction: column; align-items: stretch; justify-content: flex-start; gap: 16px;
+  position: relative;
+  box-sizing: border-box; min-width: 0; aspect-ratio: 296 / 407; margin: 0; padding: 26px;
+  display: flex; flex-direction: column; align-items: stretch; justify-content: flex-start; gap: 4px;
   border: 1px solid #f0efe8; border-radius: 20px; background: #f0efe8; color: #000;
   font: inherit; text-align: start; cursor: pointer;
   overflow-wrap: break-word; hyphens: auto;
 }
-.a11y-widget-biz .a11y-prompts .a11y-prompt-label { font-size: 15px; font-weight: 500; letter-spacing: 0.01em; line-height: 1.2; }
+.a11y-widget-biz .a11y-prompts .a11y-prompt-label {
+  font-size: 22px; font-weight: 500; letter-spacing: 0.01em; line-height: 1.3;
+}
 .a11y-widget-biz .a11y-prompts .a11y-prompt-ask {
-  margin-top: auto; font-size: 21px; font-weight: 400; letter-spacing: 0.01em; line-height: 1.15;
+  font-size: 18px; font-weight: 400; letter-spacing: 0.01em; line-height: 1.3;
   text-wrap: pretty;
 }
+.a11y-widget-biz .a11y-prompts .a11y-prompt-mark {
+  margin-top: auto; padding-top: 20px;
+  font-size: 180px; font-weight: 500; letter-spacing: 0; line-height: 0.8;
+}
 .a11y-widget-biz .a11y-prompts .a11y-prompt-go {
-  display: flex; align-items: center; justify-content: center; min-height: 34px;
+  position: absolute; right: 26px; bottom: 26px;
+  display: flex; align-items: center; justify-content: center; min-height: 34px; padding: 0 14px;
   border-radius: 999px; background: #fff; color: #000;
   font-size: 18px; letter-spacing: 0.01em; line-height: 1.2;
   visibility: hidden;
@@ -1008,6 +1056,12 @@
      in a table row, a card or the notes panel, so it folds on its own width. */
   container: a11y-fd / inline-size;
 }
+/* In an opened table row (user's instruction, 18 Nov 2026, "delete the
+   thick line and drop the line below content when caret is open"): no 4px
+   rule on top, and the row above gives up its rule, so the only line is the
+   one under the opened content, the expand cell's own. */
+.a11y-widget-biz .a11y-dt-expand-row .a11y-fd { margin-top: 0; padding-top: 0.6em; border-top: 0; }
+.a11y-widget-biz .a11y-datatable tr[data-open] > td { border-bottom: 0; }
 .a11y-widget-biz .a11y-fd > :not(.a11y-fd-col) { grid-column: 1 / -1; }
 .a11y-widget-biz .a11y-fd > .a11y-fd-col { min-width: 0; }
 .a11y-widget-biz .a11y-fd .a11y-method-hint,
@@ -1249,8 +1303,9 @@
 .a11y-widget-biz .a11y-dn-list > li > .a11y-dn-link[aria-expanded="true"] { --ink: #fff; --paper: #000; background: #000; color: #fff; font-weight: 400; }
 
 /* The report actions, after the Displaay Info block and form (user's
-   references, 17 Nov 2026). Each column opens on an uppercase 15px label
-   over a 1px ink rule, the Info block's DESCRIPTION / DETAILS. The address
+   references, 17 Nov 2026). Each column opens on an uppercase label, the
+   Info block's DESCRIPTION / DETAILS, with no rule under it (user's
+   instruction, 18 Nov 2026, "delete lines under eyebrows"). The address
    is a rounded #f0efe8 field with its label inside it; the send is one wide
    rounded block in Light 40px; the PDF is an outlined button with 10px
    corners and a download arrow. These three are the user's exceptions to
@@ -1260,7 +1315,7 @@
    marker yellow; sending is a dashed edge on paper, never faded. */
 .a11y-widget-biz .a11y-ra-row > .a11y-ra-cell { display: flex; flex-direction: column; align-items: stretch; gap: 10px; }
 .a11y-widget-biz .a11y-ra-row > .a11y-ra-cell > .a11y-ra-head {
-  margin: 0 0 14px; padding: 0 0 10px; border-bottom: 1px solid var(--ink);
+  margin: 0 0 14px; padding: 0; border: 0;
   font-family: "Jokker", sans-serif; font-size: 18px; font-weight: 400; line-height: 1.2; letter-spacing: 0.04em;
   text-transform: uppercase;
 }
@@ -1612,7 +1667,8 @@
   }
   .a11y-widget-biz .a11y-chat .a11y-prompts .a11y-prompt-label { font-size: 18px; }
   .a11y-widget-biz .a11y-chat .a11y-prompts .a11y-prompt-ask { margin-top: 0; font-size: 19px; letter-spacing: 0.005em; line-height: 1.3; }
-  .a11y-widget-biz .a11y-chat .a11y-prompts .a11y-prompt-go { display: none; }
+  .a11y-widget-biz .a11y-chat .a11y-prompts .a11y-prompt-go,
+  .a11y-widget-biz .a11y-chat .a11y-prompts .a11y-prompt-mark { display: none; }
   .a11y-widget-biz .a11y-chat .a11y-prompt-more { text-align: start; margin: 8px 0 0; }
   .a11y-widget-biz .a11y-chat .a11y-prompt-more .a11y-btn { font-size: 18px; }
 
