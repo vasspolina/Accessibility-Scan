@@ -1107,10 +1107,29 @@
 }
 /* The key/value lines: the key hangs in a 9em column, the value runs beside
    it and wraps under itself, not under the key. */
+.a11y-widget-biz .a11y-fd .a11y-pro-block {
+  margin: 0 0 1.2em; padding: 0.5em 0; border-block: 1px solid var(--ink);
+}
 .a11y-widget-biz .a11y-fd .a11y-pro-block,
 .a11y-widget-biz .a11y-fd .a11y-tech-details {
-  margin: 0 0 1.2em; padding: 0.5em 0; border-block: 1px solid var(--ink);
   font-family: "Saans", "Jokker", sans-serif; font-weight: 300; font-size: 22px; line-height: 1.3; letter-spacing: 0.01em;
+}
+/* The technical version is a disclosure, not a ruled box (user's
+   instruction, 18 Nov 2026, "fix this"): closed, it sat between a hairline
+   above, a hairline below and the row's own 2px rule, three lines around
+   one word. Now it is one label line with a + mark, 50px under the
+   affected elements (CONTENT SPACING). Opened, the label takes the 1px
+   rule under it that every other label in this block has, and the mark
+   turns to a minus. The marks are drawn, with empty alt text, so a screen
+   reader hears the summary and its expanded state only. */
+.a11y-widget-biz .a11y-fd .a11y-tech-details { margin: 50px 0 1.2em; padding: 0; border: 0; }
+.a11y-widget-biz .a11y-fd .a11y-tech-details > summary {
+  display: flex; align-items: baseline; gap: 0.5em; width: fit-content; padding-block: 4px;
+}
+.a11y-widget-biz .a11y-fd .a11y-tech-details > summary::before { content: "+" / ""; display: inline-block; width: 0.8em; }
+.a11y-widget-biz .a11y-fd .a11y-tech-details[open] > summary::before { content: "\2212" / ""; }
+.a11y-widget-biz .a11y-fd .a11y-tech-details[open] > summary {
+  width: auto; margin-bottom: 0.5em; padding-bottom: 0.6em; border-bottom: 1px solid var(--ink);
 }
 .a11y-widget-biz .a11y-fd .a11y-pro-line,
 .a11y-widget-biz .a11y-fd .a11y-tech-details > p,
@@ -1128,6 +1147,30 @@
 .a11y-widget-biz .a11y-fd .a11y-fd-learn,
 .a11y-widget-biz .a11y-fd .a11y-occurrence-list { font-family: "Saans", "Jokker", sans-serif; font-weight: 300; font-size: 22px; letter-spacing: 0.01em; }
 .a11y-widget-biz .a11y-fd .a11y-tech-details > summary { font-size: 18px; text-transform: uppercase; letter-spacing: 0.04em; cursor: pointer; }
+/* The affected elements as cards, two to a row (user's instruction, 18 Nov
+   2026, "keep typography all height spacing and put into cards so its two
+   per row"). Each element (its name, the picture, a colour that would pass,
+   the alt text or code fix) is one #f0efe8 card with 20px corners and black
+   words in both themes, the same ground and corners as the sheet of
+   alternates above it, 16px apart. Type sizes and the vertical spacing
+   inside an element are unchanged: only the ground, the padding and the
+   two-column grid are new. The card redefines --ink and --paper so the
+   picture's frame, the Copy button and the focus ring follow it. One column
+   under 640px of block. */
+.a11y-widget-biz .a11y-fd .a11y-occurrence-list {
+  display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px;
+}
+.a11y-widget-biz .a11y-fd .a11y-occurrence-list > .a11y-occurrence {
+  --ink: #000; --paper: #f0efe8;
+  box-sizing: border-box; min-width: 0; max-width: none; margin: 0; padding: 22px 24px 28px;
+  border-radius: 20px; background: #f0efe8; color: #000;
+}
+.a11y-widget-biz .a11y-fd .a11y-occurrence-list > .a11y-occurrence > :last-child,
+.a11y-widget-biz .a11y-fd .a11y-occurrence-list > .a11y-occurrence > :last-child > :last-child { margin-bottom: 0; }
+@container a11y-fd (max-width: 640px) {
+  .a11y-widget-biz .a11y-fd .a11y-occurrence-list { grid-template-columns: minmax(0, 1fr); gap: 10px; }
+  .a11y-widget-biz .a11y-fd .a11y-occurrence-list > .a11y-occurrence { padding: 16px 20px 20px; }
+}
 .a11y-widget-biz .a11y-fd .a11y-tech-elements { margin: 0; padding-inline-start: 9em; list-style: none; }
 @container a11y-fd (max-width: 640px) {
   .a11y-widget-biz .a11y-fd .a11y-pro-line,
@@ -1587,6 +1630,10 @@
    blocks centre the capped box too. */
 .a11y-widget-biz :is(p, li, dd, blockquote, figcaption, h1, h2, h3, h4, .a11y-stmt-text, .a11y-sum-specimen-text) { max-width: 42ch; }
 .a11y-widget-biz .a11y-sum-specimen-text { display: block; max-width: 38ch; }
+/* A label whose 1px rule is its underline is not running text: capped at
+   42ch, the affected-element label's rule stopped at two thirds of the
+   width while every rule under it ran the full width (18 Nov 2026). */
+.a11y-widget-biz .a11y-fd .a11y-affected-label { max-width: none; }
 .a11y-widget-biz :is(.a11y-sum-run, .a11y-sum-actions) :is(p, h3) { margin-inline: auto; }
 
 /* ═══ 320PX AFTER THE 20% TYPE STEP (17 Nov 2026) ══════════════════════════
