@@ -205,6 +205,7 @@ export const CHROME_KEYS: string[] = [
   "What we found",
   "What to do",
   "Who fixes this",
+  "Fix",
   "Needs a person",
   "Would fail today",
   "Nothing found",
