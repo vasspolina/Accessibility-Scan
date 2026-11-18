@@ -316,6 +316,17 @@ function fieldLabel(purpose: string): string {
  * Reported on a card headed "Screen reader hears exhibition dates with no
  * artwork description", whose affected-element list read, in full: Heading.
  */
+
+/** How wide a card of the expanded finding runs on the mosaic (user's
+ *  reference, 18 Nov 2026: a type foundry's sheet of alternates, tiles of
+ *  different widths on one grid). Measured on the words, so a one-line
+ *  answer is a narrow tile set large and a paragraph takes the width it
+ *  needs. s spans two of six columns, m three, l four. */
+export function tileSize(text: string | null | undefined): "s" | "m" | "l" {
+  const n = (text ?? "").length;
+  return n <= 90 ? "s" : n <= 200 ? "m" : "l";
+}
+
 export function labelNamesSomething(label: string): boolean {
   const generic = new Set([...Object.values(KIND_WORDS).map(kindLabel), t("Element")]);
   return !generic.has(label.trim());
@@ -610,30 +621,34 @@ export function FindingDetails({
           of these answers something different — who does the work, whether
           you can check it without them, and where the finding came from — so
           each gets its own line and its own label. */}
-      <p className="a11y-method-hint">
-        <strong>{t("Who fixes this")}</strong> {fix.hint}
+      <p className="a11y-method-hint" data-size={tileSize(fix.hint)}>
+        <strong>{t("Who fixes this")}</strong> <span className="a11y-fd-body">{fix.hint}</span>
       </p>
       {keyboardCheck && (
-        <p className="a11y-method-hint">
-          <strong>{t("Check it yourself")}</strong> {keyboardHint()}
+        <p className="a11y-method-hint" data-size={tileSize(keyboardHint())}>
+          <strong>{t("Check it yourself")}</strong> <span className="a11y-fd-body">{keyboardHint()}</span>
         </p>
       )}
       {fromAi && (
-        <p className="a11y-method-hint">
-          <strong>{t("Where this came from")}</strong> {aiHint()}
+        <p className="a11y-method-hint" data-size={tileSize(aiHint())}>
+          <strong>{t("Where this came from")}</strong> <span className="a11y-fd-body">{aiHint()}</span>
         </p>
       )}
       {/* The model worded this card; the check, its severity and its
           criterion are still the rule's. Said once, under the same label
           the AI review's provenance uses. */}
       {worded && (
-        <p className="a11y-method-hint">
+        <p className="a11y-method-hint" data-size="l">
           <strong>{t("Where this came from")}</strong>{" "}
-          {tf("An automated check found this. {model}, a language model we run on our own server, put it into plain words. The check decided the severity, not the model.", { model: worded.model })}
+          <span className="a11y-fd-body">
+            {tf("An automated check found this. {model}, a language model we run on our own server, put it into plain words. The check decided the severity, not the model.", { model: worded.model })}
+          </span>
         </p>
       )}
       {!rep.elementScreenshot && pictureNoteText(rep) && (
-        <p className="a11y-picture-note">{pictureNoteText(rep)}</p>
+        <p className="a11y-picture-note" data-size={tileSize(pictureNoteText(rep) ?? "")}>
+          <span className="a11y-fd-body">{pictureNoteText(rep)}</span>
+        </p>
       )}
       {/* The rule's own account of what was found where it has one, and
           the finding's description otherwise. axe supplies a requirement
@@ -650,8 +665,9 @@ export function FindingDetails({
           shown anywhere at all. Measured across the European sweep: 32 of
           80 AI findings arrived as a headline and three badges. */}
       {measured && (
-        <p className="a11y-finding-measured">
-          <strong className="a11y-fd-title">{t("What we found")}</strong> <CodeText text={measured} />
+        <p className="a11y-finding-measured" data-size={tileSize(measured)}>
+          <strong className="a11y-fd-title">{t("What we found")}</strong>{" "}
+          <span className="a11y-fd-body"><CodeText text={measured} /></span>
         </p>
       )}
       {/* Its own line, not folded into the text above: rules with a
@@ -659,29 +675,32 @@ export function FindingDetails({
           made the first of these notes invisible on the very rule it
           attached to. */}
       {rep.ageNote && (
-        <p className="a11y-finding-measured">
-          <strong>{t("Past sixty")}</strong> <CodeText text={rep.ageNote} />
+        <p className="a11y-finding-measured" data-size={tileSize(rep.ageNote)}>
+          <strong>{t("Past sixty")}</strong> <span className="a11y-fd-body"><CodeText text={rep.ageNote} /></span>
         </p>
       )}
       {/* The model's account of what happens on this page, from the
           elements it was shown. Beside the curated "why", not instead of
           it: the curated line is reviewed, this one is not. */}
       {worded && (
-        <p className="a11y-finding-measured">
-          <strong className="a11y-fd-title">{t("On this page")}</strong> <CodeText text={worded.explanation} />
+        <p className="a11y-finding-measured" data-size={tileSize(worded.explanation)}>
+          <strong className="a11y-fd-title">{t("On this page")}</strong>{" "}
+          <span className="a11y-fd-body"><CodeText text={worded.explanation} /></span>
         </p>
       )}
       {/* Shared explanation — shown once for the whole group */}
       {plain && (
-        <p className="a11y-finding-impact">
-          <strong className="a11y-fd-title">{t("Why this matters")}</strong> <CodeText text={plain.impact} />
+        <p className="a11y-finding-impact" data-size={tileSize(plain.impact)}>
+          <strong className="a11y-fd-title">{t("Why this matters")}</strong>{" "}
+          <span className="a11y-fd-body"><CodeText text={plain.impact} /></span>
         </p>
       )}
       {/* Curated, hand-verified research context — never generated per
           scan, which is how invented statistics happen. */}
       {plain?.research && (
-        <p className="a11y-finding-research">
-          <strong>{t("What the research shows")}</strong> <CodeText text={plain.research} />
+        <p className="a11y-finding-research" data-size={tileSize(plain.research)}>
+          <strong>{t("What the research shows")}</strong>{" "}
+          <span className="a11y-fd-body"><CodeText text={plain.research} /></span>
         </p>
       )}
       </div>
