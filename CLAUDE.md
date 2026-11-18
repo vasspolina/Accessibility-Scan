@@ -67,8 +67,6 @@ Comments in this codebase are long and record what was measured and why a value 
 
 # Accessible Scan — project constraints
 
-> **All widget CSS stripped (user's instruction, 18 Nov 2026: "delete all css … start fresh").** `widget-business/src/styles/global.css` now holds only behaviour: `[hidden]`, the screen-reader-only clip, the dialog's position, overflow wrapping, and the spacing between inline neighbours that `lint:css` checks for. Everything else draws with the browser's defaults until the design is rebuilt. Every rule below about type, colour, layout, tiles, cards, the form, the rail and dark mode describes the design that was removed: read it as history and as a list of decisions the user made, not as code that exists. Do not deploy this state over a styled `main` without the user's word.
-
 > **Restyled (user's instruction, 15 Oct 2026).** `global.css` was stripped to functional rules, then rebuilt from the Independent Publishing Fair poster: big plain ink-on-paper type in a tight block, with a marker highlight (orange, blue or green, yellow and pink end caps) laid over key phrases (severity words, rule ids, levels, status marks). **Highlights carry black text in both themes and every fill measures 7:1 or better**; this is the one place colour is allowed, so the black-and-white rule below still holds everywhere else. The per-section poster layout, round chat window and Hochuli chat typesetting below describe the previous design and are not currently in force.
 
 ## Type
