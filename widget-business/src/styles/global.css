@@ -61,17 +61,15 @@
 
 .a11y-widget-biz {
   font-family: "Jokker", "DejaVu Sans", sans-serif;
-  /* The main text (user's instruction, 18 Nov 2026, from a type tester:
-     Jokker Medium, 37pt, leading 115%, tracking 2%): 37pt is 49px, by the
-     same conversion as the 13 Oct "20pt = 27px". Anything that is not
-     prose declares its own size and weight. The widget's width and gutter
-     were 40em and 1em of the old 32px; they are held at those px so the
-     bigger text does not widen the page. */
-  font-size: 49px; font-weight: 500; line-height: 1.15; letter-spacing: 0.02em;
+  /* Back to 32px Regular at line-height 1.2 (user's instruction, 18 Nov
+     2026, "lets go back to this font sizing", after the Jokker Medium 49px
+     from a type tester was tried the same morning). Width and gutter are
+     40em and 1em of the 32px again. */
+  font-size: 32px; font-weight: 400; line-height: 1.2; letter-spacing: 0;
   font-kerning: normal; font-feature-settings: "ss04", "ss05"; font-variant-ligatures: common-ligatures; text-rendering: optimizeLegibility; font-synthesis: none;
   background: var(--paper); color: var(--ink);
   hyphens: auto; hyphenate-limit-chars: 7 3 3; -webkit-hyphenate-limit-lines: 3; hyphenate-limit-lines: 3; text-wrap: pretty;
-  max-width: 1280px; margin-inline: auto; padding: 32px;
+  max-width: 40em; margin-inline: auto; padding: 1em;
 }
 /* A heading sits a clear step above its text (0.5em, was 0.3em) and a full
    line clear of what came before: paragraph spacing after the FAQ on
@@ -325,9 +323,7 @@
    emphasis is the Medium cut or nothing. Hyphenation keeps at least
    three letters either side and no more than three lines in a row end in
    a hyphen (p.47). */
-/* In em since 18 Nov 2026: a fixed 30px stood well under the 49px main
-   text. 0.92em is the old 30/32 ratio, rounded down a step. */
-.a11y-widget-biz .a11y-caps { font-size: 0.92em; letter-spacing: 0.06em; }
+.a11y-widget-biz .a11y-caps { font-size: 30px; letter-spacing: 0.06em; }
 .a11y-widget-biz :is(.a11y-chat-who, small, th) .a11y-caps { font-size: inherit; }
 /* A list in the conversation (fig. 50): an en dash and a word space for a
    bullet, hung in the margin; a figure and its point for a count. */
@@ -340,8 +336,8 @@
    carries role="list" because list-style: none drops the role in Safari.
    Centred on the first line (user's instruction, 18 Nov 2026, "aligned to
    the text line, in the middle of it"): top: 0 left the 32px round riding
-   high against the 49px line. The item's line-height becomes a length
-   (1lh, here 56.35px) so the round can inherit it: a unitless 1.15 would
+   high against the text line (then 49px). The item's line-height becomes
+   a length (1lh, 38.4px at the 32px text) so the round can inherit it: a unitless 1.15 would
    be re-read against the round's own 22px. The round then measures 1lh
    from the item, at whatever size the list is set, and its middle sits on
    the first line's middle. The test plan's tiles set their own leading
