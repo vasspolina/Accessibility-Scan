@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { __test, CAPS_RUN } from "../src/lib/typography";
+import { __test, CAPS_RUN, setMarks } from "../src/lib/typography";
 
 const N = "\u00A0";
 describe("short words stay attached to the next word", () => {
@@ -42,8 +42,9 @@ describe("smarten: the chat's punctuation (Hochuli, p.36–40)", () => {
     expect(smarten("open 10:00-18:00, pages 10 - 12, 1465-80", "en")).toBe("open 10:00–18:00, pages 10–12, 1465–80");
     expect(smarten("on 2026-10-18 a one-line, 24-hour change at -3", "en")).toBe("on 2026-10-18 a one-line, 24-hour change at -3");
   });
-  it("sets 1280x900 with the face's own x between no-break spaces (fig. 52)", () => {
-    expect(smarten("at 1280x900 and 390 x 844", "en")).toBe("at 1280 x 900 and 390 x 844");
+  it("sets 1280x900 with the face's own x between held thin spaces (fig. 52)", () => {
+    const H = "\u2060\u2009\u2060";
+    expect(smarten("at 1280x900 and 390 x 844", "en")).toBe(`at 1280${H}x${H}900 and 390${H}x${H}844`);
     expect(smarten("0x1f and 3x faster", "en")).toBe("0x1f and 3x faster");
   });
   it("uses the marks and the spaced en dash of the conversation's language", () => {
@@ -72,5 +73,30 @@ describe("CAPS_RUN: abbreviations in capitals", () => {
   });
   it("leaves a capitalised word and a single capital alone", () => {
     expect(find("Fix first. A page. Das Ärgerliche")).toEqual([]);
+  });
+});
+
+describe("Jokker's spaces and a run's first and last word", () => {
+  it("swaps the narrow no-break space Jokker lacks for its thin space, held by word joiners", () => {
+    expect(__test.jokkerSpaces("Pourquoi\u202F? «\u202FRefuser\u202F»")).toBe(
+      "Pourquoi\u2060\u2009\u2060? «\u2060\u2009\u2060Refuser\u2060\u2009\u2060»"
+    );
+  });
+  it("holds a run's first word to the second and its last to the one before", () => {
+    expect(__test.holdEnds("Fixing this settles most findings")).toBe("Fixing\u00A0this settles most\u00A0findings");
+  });
+  it("leaves runs of two or three words breakable", () => {
+    expect(__test.holdEnds("Website address required")).toBe("Website address required");
+  });
+});
+
+describe("setMarks: straight marks left in interface copy", () => {
+  it("sets apostrophes and quotation marks per language", () => {
+    expect(setMarks("we won't try the form's login", "en")).toBe("we won’t try the form’s login");
+    expect(setMarks('see "How we assessed this site" below', "en")).toBe("see ‘How we assessed this site’ below");
+    expect(setMarks('siehe "Wie wir prüfen"', "de")).toBe("siehe „Wie wir prüfen“");
+    expect(setMarks("the users' pages", "en")).toBe("the users’ pages");
+    expect(setMarks("Fixing “{title}” settles it", "en")).toBe("Fixing ‘{title}’ settles it");
+    expect(setMarks("Fixing “{title}” settles it", "de")).toBe("Fixing “{title}” settles it");
   });
 });
