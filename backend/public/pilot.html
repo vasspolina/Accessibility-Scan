@@ -62,7 +62,7 @@
     overflow-wrap: break-word;
   }
   strong, b { font-weight: 500; }
-  .page { max-width: 1260px; margin: 0 auto; padding: 0 clamp(10px, 6.5vw, 90px) 120px; }
+  .page { max-width: none; margin: 0; padding: 0 24px 120px; }
 
   /* The bar: the product's name left, what this is right, as the
      reference's header sets its brand. */
@@ -162,6 +162,7 @@
   /* Phone: the scanner's phone sizes. */
   @media (max-width: 640px) {
     body { font-size: 22px; letter-spacing: 0.005em; }
+    .page { padding: 0 10px 80px; }
     h1 { font-size: 40px; }
     h2 { font-size: 27px; margin-top: 40px; }
     input[type="text"], input[type="url"], textarea { font-size: 26px; }
