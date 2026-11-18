@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState, type FocusEvent, type FormEvent, type MutableRefObject, type ReactNode } from "react";
-import { t } from "../lib/strings";
+import { t, tf } from "../lib/strings";
 import { getLang } from "../lib/i18n";
 import { CAPS_RUN, smarten } from "../lib/typography";
 import { Button } from "./Button";
@@ -25,6 +25,16 @@ import { NARRATION_STEPS, narrationIndex, narrationLabel } from "../lib/scanNarr
 import { SHOWABLE, sectionForCommand, sectionLabel, type SectionKey } from "../lib/sections";
 import { pickOpeningPrompts } from "../lib/openingPrompts";
 import { planSteps } from "../lib/testPlan";
+import {
+  deleteChat,
+  historyFromTurns,
+  loadChats,
+  newChatId,
+  saveChat,
+  settleTurn,
+  titleOf,
+  type SavedChat,
+} from "../lib/chatArchive";
 
 /**
  * The whole checker, as one conversation with an assistant.
@@ -557,6 +567,17 @@ export function ScanChat({
   const dockRef = useRef<HTMLDivElement>(null);
   // Mirrors `turns` for code that runs between renders.
   const turnsRef = useRef<Turn[]>([]);
+  /** The conversations panel: past threads kept in this browser
+   *  (lib/chatArchive.ts), and which one is on screen. A thread gets its id
+   *  with its first question, so an empty one is never listed. */
+  const [chats, setChats] = useState<SavedChat[]>(() => loadChats());
+  const [chatId, setChatId] = useState<string | null>(null);
+  /** On a phone the panel is folded behind a toggle; on a wider screen it
+   *  is always open and the toggle is not drawn. */
+  const [panelOpen, setPanelOpen] = useState(false);
+  /** The thread just opened from the panel: saving it again unchanged
+   *  would move it to the top as if it had been added to. */
+  const opened = useRef<Turn[] | null>(null);
 
   const currentKey = report ? resultKeyOf(report) : audit ? resultKeyOf(audit) : null;
   // Read through refs by the async turn handlers: a turn's closure belongs
@@ -608,6 +629,55 @@ export function ScanChat({
     window.scrollTo({ top: target.y, behavior: "instant" as ScrollBehavior });
     if (target.el && target.el.isConnected) target.el.focus({ preventScroll: true });
     else focusInput();
+  }
+
+  // Keeps the thread on screen in the panel. Not while a reply streams:
+  // every chunk is a render, and the finished reply is saved once.
+  useEffect(() => {
+    if (turns === opened.current) return;
+    if (!turns.some((x) => x.who === "you")) return;
+    if (turns.some((x) => x.who === "checker" && x.streaming)) return;
+    const id = chatId ?? newChatId();
+    if (!chatId) setChatId(id);
+    setChats((list) =>
+      saveChat(list, { id, title: titleOf(turns), updatedAt: new Date().toISOString(), turns: turns.map(settleTurn) })
+    );
+  }, [turns, chatId]);
+
+  /** Clears the screen for a new conversation; the old one stays listed. */
+  function newChat() {
+    opened.current = null;
+    setChatId(null);
+    setAll([]);
+    history.current = [];
+    sharedScan.current = null;
+    setBackTo(null);
+    setDraft("");
+    setPicks((last) => pickOpeningPrompts(Math.random, last));
+    setPanelOpen(false);
+    focusInput();
+  }
+
+  /** Puts a past conversation back on screen. Its turns take fresh ids, so
+   *  they cannot meet a block id of this session's. The API history is
+   *  rebuilt from its words; the latest report rides along with the next
+   *  question, as after any fresh start. */
+  function openChat(chat: SavedChat) {
+    if (chat.id === chatId) return;
+    const restored = (chat.turns as Turn[]).map((x) => ({ ...settleTurn(x), id: nextId++ }) as Turn);
+    opened.current = restored;
+    setChatId(chat.id);
+    setAll(restored);
+    history.current = historyFromTurns(restored);
+    sharedScan.current = null;
+    setBackTo(null);
+    setPanelOpen(false);
+    focusInput();
+  }
+
+  function removeChat(chat: SavedChat) {
+    setChats((list) => deleteChat(list, chat.id));
+    if (chat.id === chatId) newChat();
   }
 
   useEffect(() => {
@@ -1009,7 +1079,71 @@ export function ScanChat({
 
   if (hidden) return null;
 
+  // Switching threads mid-turn would land the reply in the wrong one.
+  const switchLocked = busy || loading;
+
   return (
+    <div className="a11y-chat-layout">
+      {/* The conversations panel, after Claude's sidebar (user's
+          instruction, 18 Nov 2026). A second navigation beside the report's
+          Sections rail, but the two never show together: this one lives in
+          the chat, the rail in the form's report. */}
+      <nav className="a11y-chats" aria-label={t("Conversations")} data-open={panelOpen ? "" : undefined}>
+        <button
+          type="button"
+          className="a11y-chats-toggle"
+          aria-expanded={panelOpen}
+          aria-controls="a11y-chats-body"
+          onClick={() => setPanelOpen((open) => !open)}
+        >
+          <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false">
+            <path d="M4 7h16M4 12h16M4 17h16" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+          </svg>
+          {t("Conversations")}
+        </button>
+        <div className="a11y-chats-body" id="a11y-chats-body">
+        <button type="button" className="a11y-chats-new" onClick={newChat} disabled={switchLocked}>
+          <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false">
+            <path d="M12 5v14M5 12h14" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+          </svg>
+          {t("New chat")}
+        </button>
+        {chats.length > 0 && (
+          <>
+            <h2 className="a11y-chats-head" id="a11y-chats-head">
+              {t("Recent")}
+            </h2>
+            {/* eslint-disable-next-line jsx-a11y/no-redundant-roles */}
+            <ul className="a11y-chats-list" role="list" aria-labelledby="a11y-chats-head">
+              {chats.map((c) => (
+                <li key={c.id} className="a11y-chats-row" data-current={c.id === chatId ? "" : undefined}>
+                  <button
+                    type="button"
+                    className="a11y-chats-item"
+                    aria-current={c.id === chatId ? "page" : undefined}
+                    disabled={switchLocked && c.id !== chatId}
+                    onClick={() => openChat(c)}
+                  >
+                    {c.title}
+                  </button>
+                  <button
+                    type="button"
+                    className="a11y-chats-delete"
+                    aria-label={tf("Delete {title}", { title: c.title })}
+                    disabled={switchLocked && c.id === chatId}
+                    onClick={() => removeChat(c)}
+                  >
+                    <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" focusable="false">
+                      <path d="M5 7h14M10 7V5h4v2M7 7l1 12h8l1-12" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" />
+                    </svg>
+                  </button>
+                </li>
+              ))}
+            </ul>
+          </>
+        )}
+        </div>
+      </nav>
     <div className="a11y-chat" ref={rootRef} onFocus={keepFocusClear}>
       {/* The title and the intro open an empty conversation. Once there is
           one, they would sit above it saying "New scan" over a scan that
@@ -1273,6 +1407,7 @@ export function ScanChat({
       <p className="a11y-sr-only" role="status">
         {announcement}
       </p>
+    </div>
     </div>
   );
 }
