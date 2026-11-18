@@ -71,9 +71,9 @@
    widget on a black page. index.tsx stamps data-theme on this element when
    the embedder pins one; otherwise the visitor's system setting decides. */
 @media (prefers-color-scheme: dark) {
-  .a11y-widget-biz:not([data-theme="light"]) { --ink: #fff; --paper: #000; color-scheme: dark; --tile: #1c1c1e; --tile-ink: #fff; --tile-fill: #2c2c2e; --strong: #636366; --strong-ink: #fff; --hover: #3a3a3c; --hover-ink: #fff; --solid: #636366; --solid-ink: #fff; --hl-orange: #ff9f0a; --hl-blue: #409cff; --hl-green: #30d158; --hl-cap-a: #ffd60a; --hl-cap-b: #ff375f; }
+  .a11y-widget-biz:not([data-theme="light"]) { --ink: #fff; --paper: #000; color-scheme: dark; --tile: #1c1c1e; --tile-ink: #fff; --tile-fill: #2c2c2e; --strong: #636366; --strong-ink: #fff; --hover: #3a3a3c; --hover-ink: #fff; --solid: #636366; --solid-ink: #fff; --btn-fill: #2c2c2e; --field-edge: 1px solid #8e8e93; --field-bg: #1c1c1e; --hl-orange: #ff9f0a; --hl-blue: #409cff; --hl-green: #30d158; --hl-cap-a: #ffd60a; --hl-cap-b: #ff375f; }
 }
-.a11y-widget-biz[data-theme="dark"] { --ink: #fff; --paper: #000; color-scheme: dark; --tile: #1c1c1e; --tile-ink: #fff; --tile-fill: #2c2c2e; --strong: #636366; --strong-ink: #fff; --hover: #3a3a3c; --hover-ink: #fff; --solid: #636366; --solid-ink: #fff; --hl-orange: #ff9f0a; --hl-blue: #409cff; --hl-green: #30d158; --hl-cap-a: #ffd60a; --hl-cap-b: #ff375f; }
+.a11y-widget-biz[data-theme="dark"] { --ink: #fff; --paper: #000; color-scheme: dark; --tile: #1c1c1e; --tile-ink: #fff; --tile-fill: #2c2c2e; --strong: #636366; --strong-ink: #fff; --hover: #3a3a3c; --hover-ink: #fff; --solid: #636366; --solid-ink: #fff; --btn-fill: #2c2c2e; --field-edge: 1px solid #8e8e93; --field-bg: #1c1c1e; --hl-orange: #ff9f0a; --hl-blue: #409cff; --hl-green: #30d158; --hl-cap-a: #ffd60a; --hl-cap-b: #ff375f; }
 
 .a11y-widget-biz {
   font-family: "Jokker", "DejaVu Sans", sans-serif;
@@ -121,15 +121,15 @@
    better than 7:1). 18px. */
 .a11y-widget-biz :is(button, .a11y-btn) {
   font: inherit; font-size: 22px; letter-spacing: 0.01em; font-weight: 500;
-  box-sizing: border-box; min-height: 34px; padding: 0.5em 1.1em; border: 1px solid var(--ink); border-radius: 999px;
-  background: var(--paper); color: var(--ink); transition: background-color 0.15s, border-color 0.15s, border-radius 0.15s;
+  box-sizing: border-box; min-height: 34px; padding: 0.5em 1.1em; border: 1px solid var(--btn-fill, var(--ink)); border-radius: 999px;
+  background: var(--btn-fill, var(--paper)); color: var(--ink); transition: background-color 0.15s, border-color 0.15s, border-radius 0.15s;
 }
 .a11y-widget-biz button:enabled,
 .a11y-widget-biz .a11y-btn:enabled { cursor: pointer; }
 .a11y-widget-biz button:enabled:hover,
 .a11y-widget-biz .a11y-btn:enabled:hover { background: var(--hover); border-color: var(--hover); color: var(--hover-ink); }
 .a11y-widget-biz button:disabled,
-.a11y-widget-biz .a11y-btn:disabled { border-style: dashed; cursor: not-allowed; }
+.a11y-widget-biz .a11y-btn:disabled { border-style: dashed; border-color: var(--ink); background: var(--paper); cursor: not-allowed; }
 /* The main action is solid ink, Displaay's "Ask Albert": the run, the send,
    the save. It turns marker-yellow on hover like the rest. Disabled, it drops
    back to paper with the dashed edge, never a faded ink. */
@@ -138,6 +138,8 @@
 .a11y-widget-biz :is(input:not([type="radio"]):not([type="checkbox"]), textarea, select) {
   font: inherit; font-size: 22px; letter-spacing: 0.01em; padding: 0.4em 0.6em;
   border: 2px solid var(--ink); border-radius: 0; background: var(--paper); color: var(--ink);
+  /* Dark: Apple's filled field, a 1px system-grey edge (6.3:1 on black). */
+  border: var(--field-edge, 2px solid var(--ink)); background: var(--field-bg, var(--paper));
 }
 .a11y-widget-biz :focus-visible { outline: 3px solid var(--ink); outline-offset: 2px; box-shadow: 0 0 0 2px var(--paper); }
 
@@ -2216,3 +2218,34 @@
    clear step under the head. */
 .a11y-widget-biz .a11y-sr .a11y-accordion-row > .a11y-accordion-title { hyphens: manual; }
 .a11y-widget-biz .a11y-sr .a11y-section-head > .a11y-section-desc { margin-top: 24px; }
+
+/* ═══ DARK CONTROLS, APPLE'S WAY (user's instruction, 18 Nov 2026, "design this") ═
+   In dark, Apple draws controls as fills, not outlines: a 1px white edge on
+   every pill read as a wireframe. So in dark a button, a choice and the
+   language menu are filled #2c2c2e (Apple's tertiary system fill on black)
+   with no visible edge, white words (14.7:1); the chosen choice and the
+   primary action #636366 (white 6.1:1); hover #3a3a3c. The edge stays as
+   the fill's own colour, so sizes do not move between themes, and a
+   disabled control keeps its dashed edge. The address rule is Apple's
+   system grey #8e8e93 (6.3:1 on black, past 3:1 for a field's boundary).
+   The base button rule reads --btn-fill, which only dark sets, so every
+   button with its own look still wins. Light is unchanged. */
+@media (prefers-color-scheme: dark) {
+  .a11y-widget-biz:not([data-theme="light"]) .a11y-tester .a11y-seg:not(.a11y-seg-disabled),
+  .a11y-widget-biz:not([data-theme="light"]) .a11y-tester .a11y-tester-bar .a11y-select2 .a11y-select2-field.a11y-select2-field { border-color: #2c2c2e; background-color: #2c2c2e; }
+  .a11y-widget-biz:not([data-theme="light"]) .a11y-tester .a11y-seg.a11y-seg-on,
+  .a11y-widget-biz:not([data-theme="light"]) .a11y-btn.a11y-btn-primary:enabled { border-color: #636366; }
+  .a11y-widget-biz:not([data-theme="light"]) .a11y-tester .a11y-seg.a11y-seg-on { background-color: #636366; }
+  .a11y-widget-biz:not([data-theme="light"]) .a11y-tester .a11y-input-shell { border-bottom-color: #8e8e93; }
+}
+.a11y-widget-biz[data-theme="dark"] .a11y-tester .a11y-seg:not(.a11y-seg-disabled),
+.a11y-widget-biz[data-theme="dark"] .a11y-tester .a11y-tester-bar .a11y-select2 .a11y-select2-field.a11y-select2-field { border-color: #2c2c2e; background-color: #2c2c2e; }
+.a11y-widget-biz[data-theme="dark"] .a11y-tester .a11y-seg.a11y-seg-on,
+.a11y-widget-biz[data-theme="dark"] .a11y-btn.a11y-btn-primary:enabled { border-color: #636366; }
+.a11y-widget-biz[data-theme="dark"] .a11y-tester .a11y-seg.a11y-seg-on { background-color: #636366; }
+.a11y-widget-biz[data-theme="dark"] .a11y-tester .a11y-input-shell { border-bottom-color: #8e8e93; }
+
+/* "Back to the chat" under the form is a way out, not a second action: at
+   the 22px button size it stood as large as Start the scan. */
+.a11y-widget-biz .a11y-chat-alt { margin-bottom: 65px; }
+.a11y-widget-biz .a11y-chat-alt > .a11y-btn { min-height: 40px; padding: 0 18px; font-size: 18px; }
