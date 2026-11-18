@@ -114,6 +114,12 @@
 /* Tables stay plain: rows on rules. */
 .a11y-widget-biz table { border-collapse: collapse; width: 100%; }
 .a11y-widget-biz :is(th, td) { text-align: start; vertical-align: top; padding: 0.3em 0.6em 0.3em 0; border-bottom: 2px solid var(--ink); font-size: 22px; letter-spacing: 0.01em; }
+/* No bold (user's instruction, 18 Nov 2026, "dont use bold on titles"):
+   nothing set a weight on th, strong or b, so the browser's 700 drew the
+   column titles and every strong in bold. Column titles are Regular;
+   strong and b are Medium, the emphasis the rest of the widget uses. */
+.a11y-widget-biz th { font-weight: 400; }
+.a11y-widget-biz :is(strong, b) { font-weight: 500; }
 
 /* The highlight. Black text, always; cap colours are decoration. */
 .a11y-widget-biz :is(.a11y-sev, .a11y-rule-chip, .a11y-level-badge, .a11y-sum-chip, .a11y-pro-chip, .a11y-conf-status, .a11y-principle-count, .a11y-status-chip) {
