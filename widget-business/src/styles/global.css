@@ -68,7 +68,12 @@
   font-size: 32px; font-weight: 400; line-height: 1.2; letter-spacing: 0;
   font-kerning: normal; font-feature-settings: "ss04", "ss05"; font-variant-ligatures: common-ligatures; text-rendering: optimizeLegibility; font-synthesis: none;
   background: var(--paper); color: var(--ink);
-  hyphens: auto; hyphenate-limit-chars: 7 3 3; -webkit-hyphenate-limit-lines: 3; hyphenate-limit-lines: 3; text-wrap: pretty;
+  /* No rag (user's instruction, 18 Nov 2026, "do not rag the text"): no
+     hyphenation anywhere and no text-wrap pretty or balance, so every line
+     fills to the measure before it breaks. A word too long for its box
+     still breaks inside itself (overflow-wrap: anywhere, above) rather
+     than overflow. */
+  hyphens: manual;
   max-width: 40em; margin-inline: auto; padding: 1em;
 }
 /* A heading sits a clear step above its text (0.5em, was 0.3em) and a full
@@ -297,7 +302,7 @@
 .a11y-widget-biz .a11y-chat-text .a11y-chat-plan-step {
   display: flex; flex-direction: column; box-sizing: border-box; min-width: 0; min-height: 440px; margin: 0;
   padding: 30px 30px 26px; border-radius: 20px; background: #f0efe8; color: #000;
-  overflow-wrap: break-word; hyphens: auto;
+  overflow-wrap: break-word; hyphens: manual;
 }
 .a11y-widget-biz .a11y-chat-text .a11y-chat-plan-title {
   order: 1; display: block; margin: 0 0 6px;
@@ -469,13 +474,14 @@
 }
 
 /* Column heads never hyphenate or split a word ("WCA / G", "Who fix- / es
-   this"): the root's auto hyphenation and break-anywhere are for prose. A
+   this"): the root's break-inside-a-word is for prose. A
    head that does not fit widens its column instead. */
 .a11y-widget-biz th { hyphens: manual; overflow-wrap: normal; }
 /* Under 600px the WCAG and Level columns are gone and the page is too
-   narrow for "Occurrences" whole: heads hyphenate there like prose. */
+   narrow for "Occurrences" whole: heads may break inside the word there,
+   without a hyphen (no hyphenation anywhere since 18 Nov 2026). */
 @media (max-width: 600px) {
-  .a11y-widget-biz th { hyphens: auto; overflow-wrap: anywhere; }
+  .a11y-widget-biz th { hyphens: manual; overflow-wrap: anywhere; }
 }
 
 /* ═══ REPORT LAYOUT (17 Oct 2026) ═════════════════════════════════════════
@@ -522,7 +528,7 @@
    widths from the header row, which is the same in all of them: the shares
    below are the same everywhere and the issue statement takes the rest. */
 .a11y-widget-biz .a11y-datatable-schedule { table-layout: fixed; }
-.a11y-widget-biz .a11y-datatable-schedule :is(th, td) { box-sizing: border-box; min-width: 0; overflow-wrap: break-word; hyphens: auto; padding-inline-end: 0.8em; }
+.a11y-widget-biz .a11y-datatable-schedule :is(th, td) { box-sizing: border-box; min-width: 0; overflow-wrap: break-word; hyphens: manual; padding-inline-end: 0.8em; }
 .a11y-widget-biz .a11y-datatable-schedule .a11y-dt-spacer,
 .a11y-widget-biz .a11y-datatable-schedule .a11y-dt-toggle-cell { width: 2.2em; }
 /* A header word is never broken: it wraps between words or not at all. */
@@ -808,8 +814,7 @@
    10% smaller since 18 Nov 2026 (user's instruction): 67 to 60px, the
    marker 44 to 40px with its figure 32 to 29px. */
 .a11y-widget-biz .a11y-sum-run .a11y-sum-rows {
-  margin: 0; font-size: 60px; letter-spacing: -0.01em; line-height: 1.06;
-  text-wrap: balance; hyphens: manual; overflow-wrap: break-word;
+  margin: 0; font-size: 60px; letter-spacing: -0.01em; line-height: 1.06; hyphens: manual; overflow-wrap: break-word;
 }
 .a11y-widget-biz .a11y-sum-run .a11y-sum-nobreak { white-space: nowrap; }
 .a11y-widget-biz .a11y-sum-run .a11y-sum-row { display: inline; margin: 0; }
@@ -881,12 +886,11 @@
   display: flex; flex-direction: column; align-items: stretch; justify-content: flex-start; gap: 16px;
   border: 1px solid #f0efe8; border-radius: 20px; background: #f0efe8; color: #000;
   font: inherit; text-align: start; cursor: pointer;
-  overflow-wrap: break-word; hyphens: auto;
+  overflow-wrap: break-word; hyphens: manual;
 }
 .a11y-widget-biz .a11y-prompts .a11y-prompt-label { font-size: 15px; font-weight: 500; letter-spacing: 0.01em; line-height: 1.2; }
 .a11y-widget-biz .a11y-prompts .a11y-prompt-ask {
   margin-top: auto; font-size: 21px; font-weight: 400; letter-spacing: 0.01em; line-height: 1.15;
-  text-wrap: pretty;
 }
 .a11y-widget-biz .a11y-prompts .a11y-prompt-go {
   display: flex; align-items: center; justify-content: center; min-height: 34px;
@@ -905,7 +909,7 @@
 .a11y-widget-biz .a11y-prompt-more { text-align: center; margin: 1.2em 0 0; }
 @container a11y-sum-run (max-width: 640px) {
   .a11y-widget-biz .a11y-sum-run .a11y-sum-rows,
-  .a11y-widget-biz .a11y-sum-run .a11y-score-clean { font-size: 38px; letter-spacing: -0.005em; hyphens: auto; }
+  .a11y-widget-biz .a11y-sum-run .a11y-score-clean { font-size: 38px; letter-spacing: -0.005em; hyphens: manual; }
   .a11y-widget-biz .a11y-sum-run .a11y-sum-cell-no { width: 30px; height: 30px; font-size: 22px; }
   .a11y-widget-biz .a11y-sum-run .a11y-sum-row-marks { white-space: normal; }
   /* A long first word held to its marker cannot break, so on a phone the
@@ -943,7 +947,7 @@
 }
 .a11y-widget-biz .a11y-sum-specimen-text {
   font-size: 22px; letter-spacing: 0.01em; line-height: 1.3; font-weight: 400; text-align: start;
-  hyphens: auto; overflow-wrap: break-word;
+  hyphens: manual; overflow-wrap: break-word;
 }
 @container a11y-sum-counts (max-width: 640px) {
   .a11y-widget-biz .a11y-sum-specimens { grid-template-columns: minmax(0, 1fr); }
@@ -1044,7 +1048,7 @@
 .a11y-widget-biz .a11y-fd .a11y-fix-once,
 .a11y-widget-biz .a11y-fd .a11y-picture-note {
   font-family: "Serrif", Georgia, serif; font-weight: 300; font-size: 32px; line-height: 1.2; letter-spacing: 0;
-  overflow-wrap: break-word; hyphens: auto;
+  overflow-wrap: break-word; hyphens: manual;
 }
 .a11y-widget-biz .a11y-fd .a11y-method-hint > strong:first-child,
 .a11y-widget-biz .a11y-fd .a11y-finding-measured > strong:first-child,
@@ -1091,7 +1095,7 @@
   font-family: "Jokker", sans-serif; font-weight: 400; font-size: 15px; line-height: 1.2; letter-spacing: 0.01em; text-transform: none;
 }
 .a11y-widget-biz .a11y-fd > .a11y-fd-col:first-child .a11y-fd-body {
-  display: block; margin-block: auto; max-width: 100%; text-wrap: balance;
+  display: block; margin-block: auto; max-width: 100%;
 }
 .a11y-widget-biz .a11y-fd > .a11y-fd-col:first-child .a11y-fd-body code { font-size: 0.8em; }
 @container a11y-fd (max-width: 640px) {
@@ -1199,7 +1203,7 @@
 .a11y-widget-biz .a11y-manual-list > .a11y-manual-row {
   box-sizing: border-box; min-width: 0; margin: 0; padding: 0;
   border: 0; border-radius: 0; background: none; color: var(--ink);
-  text-align: start; overflow-wrap: break-word; hyphens: auto;
+  text-align: start; overflow-wrap: break-word; hyphens: manual;
 }
 /* A design note is a tappable block, like the displaay.net Download, Test
    and Buy buttons (user's instruction, 4 Nov 2026): 20px corners, the title
@@ -1211,7 +1215,7 @@
   box-sizing: border-box; min-width: 0; min-height: 128px; margin: 0; padding: 16px 20px;
   display: flex; align-items: center; justify-content: center;
   border: 0; border-radius: 20px; background: #f0efe8; color: #000;
-  text-align: center; overflow-wrap: break-word; hyphens: auto;
+  text-align: center; overflow-wrap: break-word; hyphens: manual;
 }
 .a11y-widget-biz .a11y-next-list > li a,
 .a11y-widget-biz .a11y-next-list > li code,
@@ -1248,7 +1252,6 @@
 }
 .a11y-widget-biz .a11y-dn-link > .a11y-dn-link-text {
   display: block; margin: 0; font-family: "Jokker", sans-serif; font-weight: 400; font-size: 32px; line-height: 1.1; letter-spacing: 0;
-  text-wrap: balance;
 }
 /* Small print under the words stays Jokker at 15px or 18px. */
 .a11y-widget-biz .a11y-spec-card > .a11y-spec-value > .a11y-spec-gloss { margin-top: 0.6em; font-family: "Jokker", sans-serif; }
@@ -1311,7 +1314,7 @@
   display: block; width: 100%; min-height: 128px; margin: 0; padding: 20px 24px;
   border: 1px solid var(--ink); border-radius: 14px; background: var(--ink); color: var(--paper);
   font-family: "Jokker", sans-serif; font-size: 48px; font-weight: 300; line-height: 1.05; letter-spacing: -0.01em;
-  text-align: start; text-wrap: balance;
+  text-align: start;
 }
 .a11y-widget-biz .a11y-ra-row > .a11y-ra-cell > .a11y-ra-send:disabled { background: var(--paper); color: var(--ink); border-style: dashed; }
 .a11y-widget-biz .a11y-ra-row > .a11y-ra-cell > .a11y-ra-pdf {
@@ -1425,7 +1428,7 @@
 }
 .a11y-widget-biz .a11y-print-cards .a11y-finding-desc {
   display: block; font-size: 38px; font-weight: 500; line-height: 1.05; letter-spacing: -0.005em;
-  overflow-wrap: break-word; hyphens: auto; text-wrap: balance;
+  overflow-wrap: break-word; hyphens: manual;
 }
 /* The criterion is small print under the title, on its own line: set after the
    title on the same line it welded onto the title's last word. */
@@ -1495,7 +1498,7 @@
 .a11y-widget-biz .a11y-code-fix { margin: 0.8em 0 0; font-size: 22px; line-height: 1.3; letter-spacing: 0.01em; }
 .a11y-widget-biz .a11y-code-fix-label { margin: 0 0 0.5em; padding-bottom: 0.6em; border-bottom: 1px solid var(--ink); font-size: 18px; letter-spacing: 0.01em; }
 .a11y-widget-biz .a11y-code-fix-label > strong { font-weight: 500; text-transform: uppercase; letter-spacing: 0.04em; margin-inline-end: 0.4em; }
-.a11y-widget-biz .a11y-code-fix-note { margin: 0 0 0.6em; overflow-wrap: break-word; hyphens: auto; }
+.a11y-widget-biz .a11y-code-fix-note { margin: 0 0 0.6em; overflow-wrap: break-word; hyphens: manual; }
 .a11y-widget-biz .a11y-code-fix-key { margin: 0.6em 0 0.3em; font-size: 18px; letter-spacing: 0.01em; }
 .a11y-widget-biz .a11y-code-fix-pre { margin: 0; padding: 0.5em 0.6em; border: 1px solid var(--ink); font-size: 18px; line-height: 1.4; white-space: pre-wrap; overflow-wrap: anywhere; }
 .a11y-widget-biz .a11y-code-fix-after { border-width: 2px; }
@@ -1813,7 +1816,7 @@
   flex: 1 1 0; container: a11y-legal-tile / inline-size;
   display: flex; flex-direction: column; align-items: center; gap: 14px;
   box-sizing: border-box; min-width: 0; min-height: 300px; margin: 0; padding: 22px 20px 32px;
-  overflow-wrap: break-word; hyphens: auto;
+  overflow-wrap: break-word; hyphens: manual;
   border-radius: 20px; background: #f0efe8; color: #000; text-align: center;
 }
 .a11y-widget-biz .a11y-legal-tiles > .a11y-legal-row .a11y-legal-mark {
@@ -1825,7 +1828,7 @@
   font-size: 160px; font-weight: 500; line-height: 0.9; letter-spacing: -0.02em;
 }
 .a11y-widget-biz .a11y-legal-tiles > .a11y-legal-row .a11y-legal-row-label {
-  order: 3; font-size: 22px; font-weight: 500; line-height: 1.15; letter-spacing: 0.005em; text-wrap: balance;
+  order: 3; font-size: 22px; font-weight: 500; line-height: 1.15; letter-spacing: 0.005em;
 }
 .a11y-widget-biz .a11y-legal-tiles > .a11y-legal-row .a11y-legal-row-meaning {
   order: 4; font-size: 15px; line-height: 1.2; letter-spacing: 0.01em;
