@@ -166,7 +166,7 @@
   .field-error { display: block; font-size: 15px; font-weight: 500; letter-spacing: 0.01em; margin: 0 0 8px; }
   .field-error::before { content: "Error: "; }
 
-  .page-found { margin: 8px 0 0; }
+  .page-found { margin: 8px 0 0; overflow-wrap: anywhere; }
   .page-found:empty { display: none; }
   .draft-meta { font-size: 15px; letter-spacing: 0.01em; }
   [hidden] { display: none !important; }
@@ -217,9 +217,9 @@
 
     <div class="row">
       <label class="field" for="pageUrl">The page’s address</label>
-      <span class="hint" id="url-hint">Paste it from your address bar. Leave it empty if you&nbsp;can’t.</span>
+      <span class="hint" id="url-hint">Type it the way you’d say it, or paste it. Leave it empty if you&nbsp;can’t.</span>
       <span class="field-error" id="pageUrl-error" hidden></span>
-      <input type="url" id="pageUrl" name="pageUrl" inputmode="url" autocomplete="off" aria-describedby="url-hint page-found">
+      <input type="text" id="pageUrl" name="pageUrl" inputmode="url" autocomplete="off" autocapitalize="off" spellcheck="false" aria-describedby="url-hint page-found">
       <span class="hint page-found" id="page-found" aria-live="polite"></span>
     </div>
 

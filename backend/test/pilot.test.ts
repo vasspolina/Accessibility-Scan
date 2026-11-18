@@ -159,9 +159,18 @@ describe("the pilot", () => {
     expect(user).toContain("What they were trying to do: not given");
   });
 
-  it("looks a page up without a code, and still refuses a bad address", async () => {
-    const res = await post("/api/pilot/page", { url: "not an address" });
-    expect(res.statusCode).toBe(400);
+  it("reads the address field like a chat: a sentence is words, not a refusal, and empty is refused", async () => {
+    const res = await post("/api/pilot/page", { url: "the checkout would not let me pay" });
+    expect(res.statusCode).toBe(200);
+    expect(res.json()).toMatchObject({ url: null, words: true, title: null });
+    expect((await post("/api/pilot/page", { url: "  " })).statusCode).toBe(400);
+  });
+
+  it("takes an address typed without https, the way the form's lookup reads it", async () => {
+    modelContent = JSON.stringify(draft);
+    const res = await post("/api/pilot/draft", { ...fields, pageUrl: "example dot com" });
+    expect(res.statusCode).toBe(200);
+    expect(modelCalls[0].messages[1].content).toContain("Page: https://example.com");
   });
 
   it("drafts from a scan when only the address is given, and says the scan found it", async () => {
