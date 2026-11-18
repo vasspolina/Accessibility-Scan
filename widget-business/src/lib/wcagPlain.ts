@@ -1224,39 +1224,39 @@ export const PRINCIPLE_ORDER: Principle[] = ["Perceivable", "Operable", "Underst
  */
 export const UNDECIDED_EXPLANATIONS: Record<string, { what: string; ask: string }> = {
   "color-contrast": {
-    what: "Text sitting on a photograph, a video, a gradient or a patterned background. The checker can read the colour of the text. There is no single colour behind it to measure against, so it will not guess.",
-    ask: "Ask your designer to check each one against the picture behind it, at its lightest and its darkest. Where the words are lost, they need a solid panel behind them. A dark wash over the image works too, or a different position.",
+    what: "Text laid over a photo, a video or a colour fade. Its contrast changes from spot to spot, so the checker could not give it one number.",
+    ask: "Ask your designer to check each one where the image behind it is lightest. Body text needs a contrast of 4.5:1, large text 3:1. Where it falls short, put a solid panel or a dark wash behind the words.",
   },
   "link-in-text-block": {
-    what: "Links inside a paragraph that may be marked only by their colour. The checker can't tell whether the difference is strong enough to stand on its own.",
-    ask: "Ask your designer whether these links are still findable with the colour taken away. If colour is the only thing marking them, they need an underline or another visible cue.",
+    what: "Links inside paragraphs marked out by colour alone, with no underline. The checker could not measure whether their colour differs enough from the text around them.",
+    ask: "Ask your designer to underline these links. That is the simplest fix. A colour 3:1 apart from the text also passes, if the link is underlined on hover and keyboard focus.",
   },
   "video-caption": {
-    what: "A video the checker can see and can't watch. It has no way to tell whether captions exist, or whether they are any good.",
-    ask: "Ask whoever made the video whether it carries captions and whether a person corrected them. Auto-generated captions on their own do not count.",
+    what: "A video on the page. The checker cannot play it, so it cannot tell whether captions exist or whether they match what is said.",
+    ask: "Play it with captions on. If anyone speaks, every word should appear, corrected by a person. Auto-generated captions alone do not count.",
   },
   // The four media rows. Each says what was counted and what to ask,
   // because the checker can't watch or listen to any of it — the count and
   // the location are the whole of what it can offer.
   "media-video-captions": {
-    what: "Video on the page carrying no captions file. That is not proof it needs one. A silent clip needs nothing, and captions burned into the picture leave no file behind.",
-    ask: "Ask whoever made each video whether anyone speaks in it. Where somebody does, it needs captions, corrected by a person. Auto-generated captions on their own do not count.",
+    what: "A video with no captions file attached. A silent clip needs none, and captions burned into the picture leave no file. So this is not yet a fault.",
+    ask: "Play each video. If anyone speaks and no captions appear, ask whoever made it to add captions, corrected by a person. Auto-generated captions alone do not count.",
   },
   "media-video-descriptions": {
-    what: "Captioned video with nothing describing what is on screen. Captions carry the words; they do not carry the picture.",
-    ask: "Ask whether anything in these videos is shown rather than said. A chart, a demonstration, a diagram, text on screen. If so, the audio itself needs to describe it. A written version on the page covers only the lowest level of the standard.",
+    what: "A captioned video with nothing describing what is on screen. Captions carry the words but not the picture, such as a chart or text shown on screen.",
+    ask: "Watch each video with your eyes closed. If you miss anything, such as a chart, a demonstration or text on screen, the soundtrack needs to describe it. A written version on the page meets only Level A.",
   },
   "form-error-association": {
     what: "Form error messages that are not tied to their field in the code. A screen reader announces the field, but not the error sitting beside it.",
     ask: "Ask your developer to connect each message to its field with aria-describedby. The reader then hears the problem at the moment it hears the field.",
   },
   "media-audio-transcript": {
-    what: "Audio on the page. A transcript is ordinary page text, so the checker has no way to tell whether one is here.",
-    ask: "Check that each recording has a written transcript near the player, and that it covers everything said.",
+    what: "Audio on the page. A transcript would be ordinary text, so the checker cannot tell whether one exists.",
+    ask: "Look beside each player for a written version of everything said. If there is none, ask whoever made the recording for one and put it on the page.",
   },
   "media-embedded-player": {
-    what: "Video played through another company's player. The video lives on their site, so the checker can't look inside it.",
-    ask: "Open each one and turn captions on. If the option is missing or the captions are wrong, fix them where the video is hosted.",
+    what: "A video playing in another company's player, such as YouTube or Vimeo. The video lives on their site, so the checker cannot look inside it.",
+    ask: "Play each one and turn captions on with the CC button. If there is no button or the captions are wrong, fix them in the account the video is hosted on.",
   },
   // Three rows about what the page listens for. A listener leaves no mark on
   // the page, so the checker can say one is there and nothing about what it
@@ -1265,24 +1265,24 @@ export const UNDECIDED_EXPLANATIONS: Record<string, { what: string; ask: string 
   // harm and neither is a provable violation — a banner div without a dialog
   // role is legal markup — so they sit here for a person to rule on.
   "consent-layer-in-frame": {
-    what: "The consent layer arrives from another company's website, inside a frame. The scan can't reach into it to judge what a screen reader meets there.",
-    ask: "Have someone try the banner with a screen reader. Ask whether it is announced and whether focus reaches it. Then check that refusing is as easy as accepting.",
+    what: "The cookie banner loads inside a frame from another company's site. The scan cannot check what a screen reader hears in it.",
+    ask: "Ask someone to open the page with a screen reader, such as VoiceOver on a Mac or NVDA on Windows. The banner should be read out first and Tab should reach its buttons. Refusing should take as many steps as accepting.",
   },
   "consent-layer-unheralded": {
-    what: "A cookie layer that never introduces itself. It carries no dialog role and no name, and keyboard focus never reaches it.",
-    ask: "Have someone try the page with a screen reader. If the layer is never announced, it needs a dialog role and a name. Focus also has to move into it when it opens.",
+    what: "A cookie banner a screen reader is never told about. It has no dialog role and no name, and pressing Tab never reaches it.",
+    ask: "Ask your developer to mark the banner as a dialog named, for example, ‘Cookie settings’. Keyboard focus should move into it when it opens.",
   },
   "consent-trap-unnamed": {
-    what: "Keyboard focus stays inside the cookie layer, but the layer never says what it is. No dialog role, no name.",
-    ask: "Ask your developer to mark the layer as a dialog and name it.",
+    what: "Pressing Tab stays inside the cookie banner, but the banner never says what it is. A screen reader user is held in something with no name.",
+    ask: "Ask your developer to mark the banner as a dialog and name it, such as ‘Cookie settings’.",
   },
   "interaction-motion-actuation": {
     what: "The page responds to the phone being tilted or shaken. Somebody who keeps their phone in a stand, or whose hands shake, can't do that.",
     ask: "Ask your developer whether every tilt or shake action can also be done by tapping something on screen. Then ask whether the motion response can be switched off, so a shaking hand can't fire it by accident.",
   },
   "interaction-gesture-listeners": {
-    what: "The page listens for swipes or drags. Somebody with a tremor, or steering a pointer by voice or switch, may not be able to draw one.",
-    ask: "Ask your developer whether every swipe or drag can also be done by tapping. Arrows beside a carousel, a button beside a slider.",
+    what: "The page listens for swipes or drags. People with a tremor, or using voice or switch control, may not be able to make one.",
+    ask: "Try each carousel, slider or map with single taps only. Anything that needs a swipe or drag also needs a button, such as arrows beside a carousel.",
   },
   "interaction-key-shortcuts": {
     what: "The page watches for key presses across the whole screen. Where a plain letter is a shortcut, anyone speaking to their computer sets it off by talking.",
@@ -1293,40 +1293,40 @@ export const UNDECIDED_EXPLANATIONS: Record<string, { what: string; ask: string 
     ask: "Ask your developer to mark each passage with its language. Only a change of alphabet can be spotted automatically, so ask about foreign passages that share the page's alphabet.",
   },
   "interaction-title-tooltip": {
-    what: "Tooltips built from the title attribute. They appear only on hover, so a keyboard or touchscreen visitor never sees them. They also can't be dismissed, and vanish if you move towards them to finish reading.",
-    ask: "Ask your developer whether anything important is hidden in these. If it is, put it on the page, or build a tooltip that stays put and closes with Escape.",
+    what: "Tooltips that appear only when a mouse hovers over something. Keyboard and touchscreen users never see them, and they vanish when you move towards them.",
+    ask: "Hover over each one and read it. If it says anything a visitor needs, put that text on the page. Or ask for a tooltip that also opens on focus and closes with Escape.",
   },
   "interaction-orientation-lock": {
-    what: "A stylesheet here rotates the page back, or hides it, when the phone is turned. That is the shape of a page locked to one orientation. It can also be a deliberate landscape view for something wide.",
-    ask: "Ask your developer whether the page works both ways up. Somebody whose phone is fixed to a wheelchair or a stand can't turn it to suit the site.",
+    what: "The page's styles turn it back or hide it when the phone is rotated. That usually means it is locked to one orientation, unless a wide view is meant for landscape only.",
+    ask: "Open the page on a phone and turn it both ways. Everything should still work, for people whose phone is fixed to a wheelchair or a stand.",
   },
   "interaction-no-status-region": {
-    what: "Pages update without reloading. A filter narrows a list, a form says it saved. Nothing on this page is marked as the place where such a change is spoken. A screen reader stays silent while the page moves under it.",
+    what: "Nothing here announces changes made without a reload, such as a filtered list or a ‘Saved’ message. A screen reader stays silent while they happen.",
     ask: "Ask your developer whether anything here updates without a page load. If it does, that update needs a live region so it is spoken as well as shown.",
   },
   "interaction-acts-on-change": {
-    what: "Menus or tick boxes that look like they act the moment you set them, rather than waiting for a button. We read this from the code and did not try it. Setting controls on your live site could place a real order.",
-    ask: "Ask your developer whether choosing an option here submits or moves the page. If it does, add a button that does it instead, or warn people before the control that it will.",
+    what: "Menus or tick boxes whose code suggests they act the moment you set them, without a button. We did not try them, as that could place a real order.",
+    ask: "Try each one on a test copy of the site. If choosing an option submits a form or opens a new page, add a button for that. A warning beside the control also works.",
   },
   "interaction-pointer-cancellation": {
     what: "Controls that act the moment they are pressed rather than when released. Press one by mistake and there is no way to slide off it and let go.",
     ask: "Ask your developer to make these act on release instead. Anyone whose hand slips, or who takes a moment to aim, can then move away before lifting.",
   },
   "aria-valid-attr-value": {
-    what: "Code labels that point at another part of the page. The checker can't always tell whether the thing they point at is really there.",
-    ask: "Ask your developer to confirm every id referenced by an aria attribute exists on the page. None should sit inside a block that gets hidden or removed.",
+    what: "Code labels that point to another part of the page by its id. The checker could not confirm that the part they point to is there.",
+    ask: "Ask your developer to confirm every id an aria attribute names exists on the page. None may be hidden or removed.",
   },
   "aria-allowed-role": {
-    what: "Parts of the page labelled in the code with a role that may not suit them. Whether it is wrong depends on how the component behaves.",
-    ask: "Ask your developer to confirm each behaves the way its role promises, keyboard included. Otherwise drop the role and use the native element.",
+    what: "Elements given a role in the code, such as button or tab, that may not fit them. Whether it is wrong depends on how they behave.",
+    ask: "Ask your developer to check that each works the way its role promises, keyboard included. If not, remove the role and use the matching native element, such as a real button.",
   },
   "aria-prohibited-attr": {
-    what: "An element carrying a name the code may not let it keep. Whether it survives depends on the element's role.",
-    ask: "Ask your developer to check each is announced with the name you intended. Where it is not, move the name onto an element allowed to carry one.",
+    what: "Elements given a name in the code that their type may not allow. A screen reader may then ignore that name.",
+    ask: "Ask your developer to check that each is read out with the intended name. Where it is not, move the name onto an element allowed to carry one.",
   },
   "css-orientation-lock": {
-    what: "Styles that may lock the page to portrait or landscape. The check that found this is experimental.",
-    ask: "Ask your developer whether the page rotates with the device. Some people mount a phone or wheelchair tablet in one orientation and can't turn it.",
+    what: "Styles that may lock the page to portrait or landscape. The check that found this is still experimental, so it may be wrong.",
+    ask: "Open the page on a phone and turn it both ways. Everything should still work, for people whose phone or tablet is fixed in one position.",
   },
   "duplicate-id-aria": {
     what: "An id that may be used more than once. Every code label pointing at it follows only the first, so a name can silently attach to the wrong thing.",

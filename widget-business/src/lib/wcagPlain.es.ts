@@ -1011,56 +1011,56 @@ export const FIXES_ES: Record<string, string | string[]> = {
 
 export const UNDECIDED_ES: Record<string, { what: string; ask: string }> = {
   "color-contrast": {
-    what: "Texto sobre una fotografía, un vídeo, un degradado o un fondo con dibujo. La herramienta puede leer el color del texto. No hay un solo color detrás con el que medirlo, así que no lo va a suponer.",
-    ask: "Pida a su equipo de diseño que mire cada caso sobre la imagen que tiene detrás, en su punto más claro y en el más oscuro. Donde las palabras se pierdan, hace falta un panel sólido detrás. También sirve un velo oscuro sobre la imagen, o cambiar la posición.",
+    what: "Texto sobre una foto, un vídeo o un degradado. Su contraste cambia de un punto a otro, así que la comprobación no pudo darle un único valor.",
+    ask: "Pida a su diseñador que revise cada uno donde la imagen de fondo es más clara. El texto normal necesita un contraste de 4,5:1 y el texto grande de 3:1. Donde no llegue, ponga un panel sólido o un velo oscuro detrás de las palabras.",
   },
   "link-in-text-block": {
-    what: "Enlaces dentro de un párrafo que quizá estén marcados solo por su color. La herramienta no puede saber si la diferencia es lo bastante fuerte como para bastarse sola.",
-    ask: "Pregunte a su equipo de diseño si estos enlaces se siguen encontrando con el color quitado. Si el color es lo único que los marca, necesitan un subrayado u otra señal visible.",
+    what: "Enlaces dentro de párrafos que solo se distinguen por el color, sin subrayado. La comprobación no pudo medir si su color se diferencia lo bastante del texto que los rodea.",
+    ask: "Pida a su diseñador que subraye estos enlaces. Es la solución más sencilla. Una diferencia de color de 3:1 con el texto de alrededor también vale, si el enlace se subraya al pasar el ratón y con el foco del teclado.",
   },
   "video-caption": {
-    what: "Un vídeo que la herramienta ve pero no puede mirar. No tiene forma de saber si hay subtítulos, ni si son buenos.",
-    ask: "Pregunte a quien hizo el vídeo si lleva subtítulos y si una persona los corrigió. Los subtítulos automáticos por sí solos no cuentan.",
+    what: "Un vídeo en la página. La comprobación no puede reproducirlo, así que no sabe si tiene subtítulos ni si coinciden con lo que se dice.",
+    ask: "Reprodúzcalo con los subtítulos activados. Si alguien habla, debe aparecer cada palabra, revisada por una persona. Los subtítulos automáticos por sí solos no cuentan.",
   },
   "media-video-captions": {
-    what: "Vídeo en la página sin ningún archivo de subtítulos. Eso no prueba que los necesite: un clip mudo no necesita nada, y los subtítulos incrustados en la imagen cuentan pero no dejan archivo.",
-    ask: "Pregunte a quien hizo cada vídeo si alguien habla en él. Donde alguien hable, hacen falta subtítulos corregidos por una persona. Los subtítulos automáticos por sí solos no cuentan.",
+    what: "Un vídeo sin archivo de subtítulos. Un clip sin sonido no lo necesita, y los subtítulos incrustados en la imagen no dejan archivo, así que aún no es un fallo.",
+    ask: "Reproduzca cada vídeo. Si alguien habla y no aparecen subtítulos, pida a quien lo hizo que los añada, revisados por una persona. Los automáticos por sí solos no cuentan.",
   },
   "media-video-descriptions": {
-    what: "Vídeo con subtítulos y nada que describa lo que se ve en pantalla. Los subtítulos llevan las palabras; no llevan la imagen.",
-    ask: "Pregunte si en estos vídeos algo se muestra en vez de decirse: un gráfico, una demostración, un diagrama, texto en pantalla. Si es así, el propio audio tiene que describirlo. Una versión escrita en la página cubre solo el nivel más bajo de la norma.",
+    what: "Un vídeo subtitulado sin nada que describa lo que se ve. Los subtítulos llevan las palabras, no la imagen, como un gráfico o un texto en pantalla.",
+    ask: "Vea cada vídeo con los ojos cerrados. Si se pierde algo, como un gráfico, una demostración o un texto en pantalla, el audio tiene que describirlo. Una versión escrita en la página solo cumple el nivel A.",
   },
   "form-error-association": {
     what: "Mensajes de error de formulario que no están unidos a su campo en el código. El lector de pantalla anuncia el campo, pero no el error que está al lado.",
     ask: "Pida a su equipo de desarrollo que una cada mensaje con su campo mediante aria-describedby. Quien usa un lector de pantalla oye entonces el problema en el mismo momento en que oye el campo.",
   },
   "media-audio-transcript": {
-    what: "Audio en la página. Una transcripción es texto normal de la página, así que la herramienta no tiene forma de saber si hay una.",
-    ask: "Compruebe que cada grabación tiene sus palabras escritas en la página, cerca del reproductor, y que lo escrito recoge todo lo que se dice.",
+    what: "Audio en la página. Una transcripción sería texto normal, así que la comprobación no puede saber si existe.",
+    ask: "Busque junto a cada reproductor una versión escrita de todo lo que se dice. Si no la hay, pídasela a quien hizo la grabación y póngala en la página.",
   },
   "media-embedded-player": {
-    what: "Vídeo reproducido con el reproductor de otra empresa. El vídeo vive en su sitio, así que la herramienta no puede mirar dentro.",
-    ask: "Abra cada uno y active los subtítulos. Si falta la opción, o si los subtítulos están mal, arréglelos donde esté alojado el vídeo.",
+    what: "Un vídeo en el reproductor de otra empresa, como YouTube o Vimeo. El vídeo está en su sitio, así que la comprobación no puede mirar dentro.",
+    ask: "Reproduzca cada uno y active los subtítulos con el botón CC. Si no hay botón o los subtítulos están mal, corríjalos en la cuenta donde está alojado el vídeo.",
   },
   "consent-layer-in-frame": {
-    what: "La capa de consentimiento llega desde el sitio web de otra empresa, dentro de un marco. El análisis no puede entrar en ella para juzgar qué encuentra ahí un lector de pantalla.",
-    ask: "Que alguien pruebe el aviso con un lector de pantalla. Pregunte si se anuncia, si el foco llega a él y si rechazar es tan fácil como aceptar.",
+    what: "El banner de cookies se carga desde el sitio de otra empresa dentro de un marco, así que el análisis no puede comprobar qué oye en él un lector de pantalla.",
+    ask: "Pida a alguien que abra la página con un lector de pantalla, como VoiceOver en Mac o NVDA en Windows. El banner debe leerse primero y la tecla Tab debe llegar a sus botones. Rechazar debe costar los mismos pasos que aceptar.",
   },
   "consent-layer-unheralded": {
-    what: "Una capa de cookies que nunca se presenta. No lleva rol de diálogo ni nombre, y el foco del teclado nunca llega a ella.",
-    ask: "Que alguien pruebe la página con un lector de pantalla. Si la capa no se anuncia nunca, necesita un rol de diálogo, un nombre y que el foco entre en ella al abrirse.",
+    what: "Un banner de cookies del que nunca se avisa al lector de pantalla. No tiene rol de diálogo ni nombre, y la tecla Tab nunca llega a él.",
+    ask: "Pida a su equipo de desarrollo que marque el banner como diálogo, le dé un nombre como «Ajustes de cookies» y lleve el foco del teclado a él cuando se abra.",
   },
   "consent-trap-unnamed": {
-    what: "El foco del teclado se queda dentro de la capa de cookies, pero la capa nunca dice qué es. Ni rol de diálogo ni nombre.",
-    ask: "Pida a su equipo de desarrollo que marque la capa como diálogo y le ponga nombre.",
+    what: "La tecla Tab se queda dentro del banner de cookies, pero el banner nunca dice qué es. Quien usa un lector de pantalla queda atrapado en algo sin nombre.",
+    ask: "Pida a su equipo de desarrollo que marque el banner como diálogo y le dé un nombre, como «Ajustes de cookies».",
   },
   "interaction-motion-actuation": {
     what: "La página responde a inclinar o agitar el teléfono. Quien lo tiene en un soporte, o a quien le tiemblan las manos, no puede hacerlo.",
     ask: "Pregunte a su equipo de desarrollo si toda acción de inclinar o agitar se puede hacer también pulsando algo en pantalla. Después pregunte si la respuesta al movimiento se puede apagar, para que una mano que tiembla no la dispare sin querer.",
   },
   "interaction-gesture-listeners": {
-    what: "La página está atenta a los deslizamientos y los arrastres. Quien tiene temblor, o guía el puntero por voz o con un conmutador, quizá no pueda dibujarlos.",
-    ask: "Pregunte a su equipo de desarrollo si todo deslizamiento o arrastre se puede hacer también pulsando: flechas junto a un carrusel, un botón junto a un control deslizante.",
+    what: "La página espera deslizamientos o arrastres. Las personas con temblor, o que usan control por voz o por pulsador, quizá no puedan hacerlos.",
+    ask: "Pruebe cada carrusel, control deslizante o mapa solo con toques sueltos. Lo que necesite deslizar o arrastrar también necesita un botón, como flechas junto a un carrusel.",
   },
   "interaction-key-shortcuts": {
     what: "La página vigila las pulsaciones de teclas en toda la pantalla. Cuando una letra suelta es un atajo, quien habla a su ordenador lo dispara al hablar.",
@@ -1071,40 +1071,40 @@ export const UNDECIDED_ES: Record<string, { what: string; ask: string }> = {
     ask: "Pida a su equipo de desarrollo que marque cada pasaje con su idioma. Solo un cambio de alfabeto se puede detectar automáticamente, así que pregunte también por los pasajes en otro idioma con el mismo alfabeto que la página.",
   },
   "interaction-title-tooltip": {
-    what: "Globos de ayuda hechos con el atributo title. Solo aparecen al pasar el ratón, así que quien usa el teclado o una pantalla táctil nunca los ve. Además no se pueden cerrar, y se esfuman si se acerca el puntero para terminar de leerlos.",
-    ask: "Pregunte a su equipo de desarrollo si hay algo importante escondido ahí. Si lo hay, póngalo en la página, o haga un globo de ayuda que se quede quieto y se cierre con Escape.",
+    what: "Información emergente que solo aparece al pasar el ratón por encima. Quien usa teclado o pantalla táctil nunca la ve, y desaparece al acercarse a ella.",
+    ask: "Pase el ratón por cada una y léala. Si dice algo que un visitante necesita, ponga ese texto en la página, o pida a su equipo de desarrollo una que también se abra con el foco y se cierre con Escape.",
   },
   "interaction-orientation-lock": {
-    what: "Aquí hay una hoja de estilos que gira la página de vuelta, o la esconde, cuando se voltea el teléfono. Esa es la forma de una página atada a una sola orientación. También puede ser una vista apaisada puesta a propósito para algo ancho.",
-    ask: "Pregunte a su equipo de desarrollo si la página funciona en las dos posiciones. Quien lleva el teléfono fijado a una silla de ruedas o a un soporte no puede girarlo para acomodarse al sitio.",
+    what: "Los estilos de la página la giran de vuelta o la ocultan cuando se gira el móvil. Suele significar que está bloqueada en una orientación, salvo que una vista ancha sea solo para horizontal a propósito.",
+    ask: "Abra la página en un móvil y gírelo en los dos sentidos. Todo debe seguir funcionando, para quien tiene el móvil fijo en una silla de ruedas o un soporte.",
   },
   "interaction-no-status-region": {
-    what: "Las páginas se actualizan sin recargarse: un filtro acorta una lista, un formulario dice que se ha guardado. Nada en esta página está marcado como el sitio donde se dice ese cambio. El lector de pantalla calla mientras la página se mueve.",
+    what: "Nada en esta página está preparado para anunciar cambios sin recargar, como una lista filtrada o un mensaje de «Guardado». Un lector de pantalla calla mientras ocurren.",
     ask: "Pregunte a su equipo de desarrollo si aquí algo se actualiza sin recargar la página. Si es así, esa actualización necesita una región dinámica (live region) para que se diga además de verse.",
   },
   "interaction-acts-on-change": {
-    what: "Menús o casillas que parecen actuar en cuanto se marcan, en vez de esperar a un botón. Esto lo leemos del código y no lo probamos: tocar los controles de su sitio en marcha podría cursar un pedido de verdad.",
-    ask: "Pregunte a su equipo de desarrollo si elegir una opción aquí envía el formulario o mueve la página. Si lo hace, añada un botón que lo haga, o avise a la gente antes del control de que va a pasar.",
+    what: "Menús o casillas cuyo código indica que actúan en cuanto se marcan, sin botón. No los probamos, porque podría hacerse un pedido real.",
+    ask: "Pruebe cada uno en una copia de prueba del sitio. Si elegir una opción envía un formulario o lleva a otra página, añada un botón que lo haga o avise junto al control.",
   },
   "interaction-pointer-cancellation": {
     what: "Controles que actúan en cuanto se pulsan, y no al soltar. Si se pulsa uno por error, no hay forma de deslizar el dedo fuera y soltar.",
     ask: "Pida a su equipo de desarrollo que estos actúen al soltar. Quien tenga un resbalón, o quien tarde un momento en apuntar, puede entonces apartarse antes de levantar el dedo.",
   },
   "aria-valid-attr-value": {
-    what: "Etiquetas de código que apuntan a otra parte de la página. La herramienta no siempre puede saber si aquello a lo que apuntan está ahí de verdad.",
-    ask: "Pida a su equipo de desarrollo que confirme que existe en la página cada id al que se refiere un atributo aria. Ninguno debería estar dentro de un bloque que se esconde o se quita.",
+    what: "Etiquetas del código que señalan otra parte de la página por su id. La comprobación no pudo confirmar que esa parte esté ahí.",
+    ask: "Pida a su equipo de desarrollo que confirme que cada id nombrado por un atributo aria existe en la página y nunca se oculta ni se elimina.",
   },
   "aria-allowed-role": {
-    what: "Partes de la página etiquetadas en el código como algo que quizá no puedan ser. Que esté mal o no depende de cómo se comporte el componente.",
-    ask: "Pida a su equipo de desarrollo que confirme que cada uno se comporta como promete su rol, teclado incluido. Si no, quite el rol y use el elemento nativo.",
+    what: "Elementos con un rol en el código, como botón o pestaña, que quizá no les corresponde. Si está mal depende de cómo se comportan.",
+    ask: "Pida a su equipo de desarrollo que compruebe que cada uno funciona como promete su rol, también con teclado. Si no, que quite el rol y use el elemento nativo adecuado, como un botón real.",
   },
   "aria-prohibited-attr": {
-    what: "Un elemento que lleva un nombre que quizá el código no le deje conservar. Que sobreviva depende del rol del elemento.",
-    ask: "Pida a su equipo de desarrollo que compruebe que cada uno se anuncia con el nombre que usted quería. Donde no sea así, mueva el nombre a un elemento al que se le permita llevarlo.",
+    what: "Elementos con un nombre en el código que su tipo quizá no admite. Un lector de pantalla puede entonces ignorar ese nombre.",
+    ask: "Pida a su equipo de desarrollo que compruebe que cada uno se lee con el nombre previsto. Si no, que pase el nombre a un elemento que pueda llevarlo.",
   },
   "css-orientation-lock": {
-    what: "Estilos que pueden atar la página a vertical o a apaisado. La comprobación que encontró esto es experimental.",
-    ask: "Pregunte a su equipo de desarrollo si la página gira con el dispositivo. Hay quien monta el teléfono, o la tableta de su silla de ruedas, en una sola orientación y no puede girarlo.",
+    what: "Estilos que quizá bloquean la página en vertical u horizontal. La comprobación que lo encontró aún es experimental, así que puede equivocarse.",
+    ask: "Abra la página en un móvil y gírelo en los dos sentidos. Todo debe seguir funcionando, para quien tiene el móvil o la tableta fijos en una posición.",
   },
   "duplicate-id-aria": {
     what: "Un id que puede estar usado más de una vez. Toda etiqueta de código que apunte a él sigue solo al primero, así que un nombre puede acabar pegado en silencio a lo que no era.",

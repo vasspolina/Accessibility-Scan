@@ -6,7 +6,7 @@ import {
   PLAIN_RULE_FIXES,
   UNDECIDED_EXPLANATIONS,
 } from "../src/lib/wcagPlain";
-import { AI_HINT, FIX_KINDS, KEYBOARD_HINT } from "../src/lib/testMethod";
+import { AI_HINT, ALL_RULE_HINTS, FIX_KINDS, KEYBOARD_HINT } from "../src/lib/testMethod";
 
 // The voice guide (docs/VOICE.md), enforced rather than requested — the same
 // treatment the research lines already get. A guide that lives only in a
@@ -37,6 +37,7 @@ function allCopy(): Array<[string, string]> {
   for (const [key, kind] of Object.entries(FIX_KINDS)) {
     out.push([`hint:${key}`, kind.hint]);
   }
+  ALL_RULE_HINTS.forEach((hint, i) => out.push([`hint:rule[${i}]`, hint]));
   out.push(["hint:ai", AI_HINT]);
   out.push(["hint:keyboard", KEYBOARD_HINT]);
   return out;

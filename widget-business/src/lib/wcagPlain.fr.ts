@@ -1030,56 +1030,56 @@ export const FIXES_FR: Record<string, string | string[]> = {
 
 export const UNDECIDED_FR: Record<string, { what: string; ask: string }> = {
   "color-contrast": {
-    what: "Du texte posé sur une photo, une vidéo, un dégradé ou un fond à motif. L’outil lit bien la couleur du texte. Il n’y a pas une seule couleur derrière pour la mesurer, alors il ne devine pas.",
-    ask: "Demandez à votre équipe de design de regarder chacun sur l’image qui est derrière, au plus clair et au plus foncé de cette image. Là où les mots se perdent, il leur faut un panneau plein derrière, un voile foncé sur l’image, ou une autre position.",
+    what: "Du texte posé sur une photo, une vidéo ou un dégradé. Son contraste change d’un point à l’autre, donc la vérification n’a pas pu lui donner une seule valeur.",
+    ask: "Demandez à votre designer de vérifier chacun là où l’image derrière est la plus claire. Le texte courant demande un contraste de 4,5:1, le grand texte 3:1. Là où il manque, placez un aplat ou un voile sombre derrière les mots.",
   },
   "link-in-text-block": {
-    what: "Des liens dans un paragraphe qui ne sont peut-être signalés que par leur couleur. L’outil ne peut pas dire si la différence est assez forte pour tenir toute seule.",
-    ask: "Demandez à votre équipe de design si ces liens restent repérables une fois la couleur retirée. Si la couleur est la seule chose qui les marque, il leur faut un soulignement ou un autre repère visible.",
+    what: "Des liens dans des paragraphes signalés par leur seule couleur, sans soulignement. La vérification n’a pas pu mesurer si leur couleur se distingue assez du texte autour.",
+    ask: "Demandez à votre designer de souligner ces liens. C’est la solution la plus simple. Un écart de couleur de 3:1 avec le texte autour convient aussi, si le lien se souligne au survol et au focus clavier.",
   },
   "video-caption": {
-    what: "Une vidéo que l’outil voit et ne peut pas regarder. Il n’a aucun moyen de savoir si des sous-titres existent, ni s’ils sont bons.",
-    ask: "Demandez à qui a fait la vidéo si elle porte des sous-titres et si une personne les a corrigés. Des sous-titres générés automatiquement ne suffisent pas.",
+    what: "Une vidéo sur la page. La vérification ne peut pas la lire, donc elle ne sait pas s’il y a des sous-titres ni s’ils suivent ce qui est dit.",
+    ask: "Lancez-la avec les sous-titres activés. Si quelqu’un parle, chaque mot doit apparaître, corrigé par une personne. Les sous-titres automatiques seuls ne comptent pas.",
   },
   "media-video-captions": {
-    what: "Une vidéo sur la page sans fichier de sous-titres. Ce n’est pas une preuve qu’il en faut : un extrait muet n’a besoin de rien, et des sous-titres incrustés dans l’image ne laissent aucun fichier.",
-    ask: "Demandez à qui a fait chaque vidéo si quelqu’un y parle. Là où c’est le cas, il faut des sous-titres, corrigés par une personne. Des sous-titres générés automatiquement ne suffisent pas.",
+    what: "Une vidéo sans fichier de sous-titres. Un clip muet n’en a pas besoin, et des sous-titres incrustés dans l’image ne laissent pas de fichier : ce n’est donc pas encore une erreur.",
+    ask: "Lancez chaque vidéo. Si quelqu’un parle et qu’aucun sous-titre n’apparaît, demandez à la personne qui l’a réalisée d’en ajouter, corrigés par une personne. Les sous-titres automatiques seuls ne comptent pas.",
   },
   "media-video-descriptions": {
-    what: "Une vidéo sous-titrée sans rien qui décrive ce qui est à l’écran. Les sous-titres portent les paroles ; ils ne portent pas l’image.",
-    ask: "Demandez si quelque chose dans ces vidéos est montré plutôt que dit. Un graphique, une démonstration, un schéma, du texte à l’écran. Si oui, la bande son doit le décrire. Une version écrite sur la page ne couvre que le niveau le plus bas de la norme.",
+    what: "Une vidéo sous-titrée où rien ne décrit ce qu’on voit. Les sous-titres portent les mots, pas l’image, comme un graphique ou un texte à l’écran.",
+    ask: "Regardez chaque vidéo les yeux fermés. Si quelque chose vous échappe, comme un graphique, une démonstration ou un texte à l’écran, la bande-son doit le décrire. Une version écrite sur la page ne remplit que le niveau A.",
   },
   "form-error-association": {
     what: "Des messages d’erreur de formulaire qui ne sont pas rattachés à leur champ dans le code. Un lecteur d’écran annonce le champ, mais pas l’erreur posée à côté.",
     ask: "Demandez à votre équipe de développement de relier chaque message à son champ avec aria-describedby. La personne qui écoute entend alors le problème en même temps que le champ.",
   },
   "media-audio-transcript": {
-    what: "Du son sur la page. Une transcription est du texte de page ordinaire, donc l’outil n’a aucun moyen de savoir s’il y en a une.",
-    ask: "Vérifiez que chaque enregistrement a une transcription écrite près du lecteur audio, et qu’elle couvre tout ce qui est dit.",
+    what: "De l’audio sur la page. Une transcription serait du texte ordinaire, donc la vérification ne peut pas savoir s’il y en a une.",
+    ask: "Cherchez à côté de chaque lecteur une version écrite de tout ce qui est dit. S’il n’y en a pas, demandez-la à la personne qui a fait l’enregistrement et mettez-la sur la page.",
   },
   "media-embedded-player": {
-    what: "Une vidéo diffusée par le lecteur vidéo d’une autre société. La vidéo est hébergée chez elle, donc l’outil ne peut pas regarder dedans.",
-    ask: "Ouvrez chacune et activez les sous-titres. Si l’option manque ou si les sous-titres sont faux, corrigez-les là où la vidéo est hébergée.",
+    what: "Une vidéo lue dans le lecteur d’une autre entreprise, comme YouTube ou Vimeo. La vidéo se trouve sur leur site, donc la vérification ne peut pas regarder dedans.",
+    ask: "Lancez chacune et activez les sous-titres avec le bouton CC. S’il n’y a pas de bouton ou que les sous-titres sont faux, corrigez-les dans le compte qui héberge la vidéo.",
   },
   "consent-layer-in-frame": {
-    what: "La couche de consentement arrive du site d’une autre société, dans un cadre. L’analyse ne peut pas entrer dedans pour juger ce qu’un lecteur d’écran y rencontre.",
-    ask: "Faites essayer la bannière à quelqu’un avec un lecteur d’écran. Demandez si elle est annoncée, si le focus l’atteint, et si refuser est aussi simple qu’accepter.",
+    what: "Le bandeau cookies se charge depuis le site d’une autre entreprise, dans un cadre : l’analyse ne peut donc pas vérifier ce qu’un lecteur d’écran y entend.",
+    ask: "Demandez à quelqu’un d’ouvrir la page avec un lecteur d’écran, comme VoiceOver sur Mac ou NVDA sous Windows. Le bandeau doit être lu en premier et la touche Tab doit atteindre ses boutons. Refuser doit prendre autant d’étapes qu’accepter.",
   },
   "consent-layer-unheralded": {
-    what: "Une couche cookies qui ne se présente jamais. Elle ne porte ni rôle de dialogue ni nom, et le focus clavier ne l’atteint jamais.",
-    ask: "Faites essayer la page à quelqu’un avec un lecteur d’écran. Si la couche n’est jamais annoncée, il lui faut un rôle de dialogue, un nom, et le focus amené dedans à son ouverture.",
+    what: "Un bandeau cookies dont le lecteur d’écran n’est jamais averti. Il n’a ni rôle de dialogue ni nom, et la touche Tab ne l’atteint jamais.",
+    ask: "Demandez à votre équipe de développement de marquer le bandeau comme dialogue, de lui donner un nom comme « Réglages des cookies » et d’y placer le focus clavier à son ouverture.",
   },
   "consent-trap-unnamed": {
-    what: "Le focus clavier reste dans la couche cookies, mais la couche ne dit jamais ce qu’elle est. Ni rôle de dialogue, ni nom.",
-    ask: "Demandez à votre équipe de développement de marquer la couche comme une boîte de dialogue et de la nommer.",
+    what: "La touche Tab reste dans le bandeau cookies, mais le bandeau ne dit jamais ce qu’il est. Une personne avec un lecteur d’écran est retenue dans quelque chose sans nom.",
+    ask: "Demandez à votre équipe de développement de marquer le bandeau comme dialogue et de lui donner un nom, comme « Réglages des cookies ».",
   },
   "interaction-motion-actuation": {
     what: "La page réagit au téléphone qu’on penche ou qu’on secoue. Quelqu’un qui garde son téléphone sur un support, ou dont les mains tremblent, ne peut pas faire cela.",
     ask: "Demandez à votre équipe de développement si chaque action par inclinaison ou secousse peut aussi se faire en touchant quelque chose à l’écran. Demandez ensuite si la réaction au mouvement peut être désactivée, pour qu’une main qui tremble ne la déclenche pas par accident.",
   },
   "interaction-gesture-listeners": {
-    what: "La page guette les balayages ou les glissements. Quelqu’un qui tremble, ou qui pilote un pointeur à la voix ou par contacteur, ne peut peut-être pas en tracer un.",
-    ask: "Demandez à votre équipe de développement si chaque balayage ou glissement peut aussi se faire en touchant : des flèches à côté d’un carrousel, un bouton à côté d’un curseur de réglage.",
+    what: "La page attend des balayages ou des glisser-déposer. Les personnes qui tremblent, ou qui utilisent la voix ou un contacteur, n’y arrivent pas toujours.",
+    ask: "Essayez chaque carrousel, curseur ou carte avec de simples touchers. Tout ce qui demande un balayage ou un glissement demande aussi un bouton, comme des flèches à côté d’un carrousel.",
   },
   "interaction-key-shortcuts": {
     what: "La page guette les appuis de touches sur tout l’écran. Quand une simple lettre est un raccourci, quiconque parle à son ordinateur le déclenche en parlant.",
@@ -1090,40 +1090,40 @@ export const UNDECIDED_FR: Record<string, { what: string; ask: string }> = {
     ask: "Demandez à votre équipe de développement de marquer chaque passage avec sa langue. Seul un changement d’alphabet se repère automatiquement, alors posez aussi la question pour les passages en langue étrangère écrits dans le même alphabet que la page.",
   },
   "interaction-title-tooltip": {
-    what: "Des infobulles construites avec l’attribut title. Elles n’apparaissent qu’au survol, donc on ne les voit jamais au clavier ou sur écran tactile. On ne peut pas non plus les écarter, et elles disparaissent si vous allez vers elles pour finir de lire.",
-    ask: "Demandez à votre équipe de développement si quelque chose d’important s’y cache. Si oui, mettez-le sur la page, ou construisez une infobulle qui reste en place et se ferme avec Échap.",
+    what: "Des infobulles qui n’apparaissent qu’au survol de la souris. Au clavier ou sur écran tactile, on ne les voit jamais, et elles disparaissent quand on s’en approche.",
+    ask: "Survolez chacune et lisez-la. Si elle dit quelque chose d’utile, mettez ce texte sur la page, ou demandez à votre équipe de développement une infobulle qui s’ouvre aussi au focus et se ferme avec Échap.",
   },
   "interaction-orientation-lock": {
-    what: "Une feuille de style fait ici pivoter la page en arrière, ou la masque, quand le téléphone est tourné. C’est la forme d’une page bloquée dans un seul sens. Ce peut aussi être un affichage paysage voulu pour quelque chose de large.",
-    ask: "Demandez à votre équipe de développement si la page marche dans les deux sens. Quelqu’un dont le téléphone est fixé à un fauteuil roulant ou à un support ne peut pas le tourner pour s’adapter au site.",
+    what: "Les styles de la page la retournent ou la masquent quand on tourne le téléphone. Elle est alors souvent bloquée dans une orientation, sauf si une vue large est prévue pour le paysage seul.",
+    ask: "Ouvrez la page sur un téléphone et tournez-le dans les deux sens. Tout doit continuer à fonctionner, pour les personnes dont le téléphone est fixé à un fauteuil ou un support.",
   },
   "interaction-no-status-region": {
-    what: "Les pages se mettent à jour sans recharger. Un filtre réduit une liste, un formulaire dit qu’il a enregistré. Rien sur cette page n’est marqué comme l’endroit où un tel changement est dit à voix haute. Un lecteur d’écran reste muet pendant que la page bouge.",
+    what: "Rien sur cette page n’est prévu pour annoncer les changements sans rechargement, comme une liste filtrée ou un message « Enregistré ». Un lecteur d’écran reste muet pendant ce temps.",
     ask: "Demandez à votre équipe de développement si quelque chose se met à jour ici sans chargement de page. Si oui, cette mise à jour a besoin d’une région live (aria-live) pour être dite autant que montrée.",
   },
   "interaction-acts-on-change": {
-    what: "Des menus ou des cases à cocher qui semblent agir dès qu’on les règle, au lieu d’attendre un bouton. Nous l’avons lu dans le code sans l’essayer : régler des contrôles sur votre site en ligne pourrait passer une vraie commande.",
-    ask: "Demandez à votre équipe de développement si choisir une option ici envoie le formulaire ou change de page. Si oui, ajoutez un bouton qui le fait à la place, ou prévenez les gens, avant le contrôle, de ce qui va se passer.",
+    what: "Des menus ou des cases dont le code laisse penser qu’ils agissent dès qu’on les règle, sans bouton. Nous ne les avons pas essayés, car cela pourrait passer une vraie commande.",
+    ask: "Essayez chacun sur une copie de test du site. Si un choix envoie un formulaire ou ouvre une nouvelle page, ajoutez un bouton qui le fait, ou prévenez à côté du contrôle.",
   },
   "interaction-pointer-cancellation": {
     what: "Des contrôles qui agissent dès qu’on appuie plutôt qu’au relâchement. Appuyez sur l’un par erreur et il n’y a aucun moyen de glisser à côté avant de lâcher.",
     ask: "Demandez à votre équipe de développement de les faire agir au relâchement. Quiconque a la main qui glisse, ou met un instant à viser, peut alors s’écarter avant de lever le doigt.",
   },
   "aria-valid-attr-value": {
-    what: "Des libellés de code qui renvoient à une autre partie de la page. L’outil ne peut pas toujours dire si ce qu’ils désignent est vraiment là.",
-    ask: "Demandez à votre équipe de développement de confirmer que chaque id désigné par un attribut aria existe sur la page. Aucun ne doit se trouver dans un bloc qui est masqué ou retiré.",
+    what: "Des étiquettes du code qui désignent une autre partie de la page par son id. La vérification n’a pas pu confirmer que cette partie existe.",
+    ask: "Demandez à votre équipe de développement de confirmer que chaque id cité par un attribut aria existe sur la page et n’est jamais masqué ni supprimé.",
   },
   "aria-allowed-role": {
-    what: "Des parties de la page qui portent dans le code un rôle qui ne leur convient peut-être pas. Que ce soit faux dépend du comportement du composant.",
-    ask: "Demandez à votre équipe de développement de confirmer que chacune se comporte comme son rôle le promet, clavier compris. Sinon, abandonnez le rôle et prenez l’élément natif.",
+    what: "Des éléments dotés d’un rôle dans le code, comme bouton ou onglet, qui ne leur convient peut-être pas. Que ce soit faux dépend de leur comportement.",
+    ask: "Demandez à votre équipe de développement de vérifier que chacun fonctionne comme son rôle le promet, clavier compris. Sinon, retirez le rôle et utilisez l’élément natif correspondant, comme un vrai bouton.",
   },
   "aria-prohibited-attr": {
-    what: "Un élément portant un nom que le code ne le laisse peut-être pas garder. Qu’il le garde dépend du rôle de l’élément.",
-    ask: "Demandez à votre équipe de développement de vérifier que chacun est annoncé avec le nom que vous vouliez. Là où ce n’est pas le cas, déplacez le nom sur un élément autorisé à en porter un.",
+    what: "Des éléments dotés d’un nom dans le code que leur type n’autorise peut-être pas. Un lecteur d’écran peut alors ignorer ce nom.",
+    ask: "Demandez à votre équipe de développement de vérifier que chacun est lu avec le nom prévu. Sinon, placez le nom sur un élément autorisé à en porter un.",
   },
   "css-orientation-lock": {
-    what: "Des styles qui bloquent peut-être la page en portrait ou en paysage. La vérification qui a trouvé cela est expérimentale.",
-    ask: "Demandez à votre équipe de développement si la page pivote avec l’appareil. Certaines personnes fixent un téléphone ou une tablette de fauteuil roulant dans un seul sens et ne peuvent pas le tourner.",
+    what: "Des styles qui bloquent peut-être la page en portrait ou en paysage. La vérification qui l’a trouvé est encore expérimentale et peut se tromper.",
+    ask: "Ouvrez la page sur un téléphone et tournez-le dans les deux sens. Tout doit continuer à fonctionner, pour les personnes dont le téléphone ou la tablette est fixé dans une position.",
   },
   "duplicate-id-aria": {
     what: "Un id peut-être utilisé plus d’une fois. Chaque libellé de code qui le désigne ne suit que le premier, donc un nom peut s’attacher en silence au mauvais élément.",
