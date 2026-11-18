@@ -31,8 +31,8 @@
   z-index: 50;
 }
 .a11y-widget-biz .a11y-dialog {
-  background: #fff;
-  color: #000;
+  background: var(--tile-fill);
+  color: var(--tile-ink);
 }
 
 /* Without these a long word or a wide table pushes the page sideways on a phone. */
@@ -52,6 +52,17 @@
   --ink: #000; --paper: #fff;
   --hl-orange: #ff8a4c; --hl-blue: #6fa8ff; --hl-green: #4fe0a8;
   --hl-cap-a: #ffe14d; --hl-cap-b: #ff9ad5;
+  /* Surfaces that were pinned light in both themes, as tokens so dark mode
+     can take Apple's dark system colours (user's instruction, 18 Nov 2026,
+     "do a proper dark mode, no white or light buttons, take colours from
+     apple"). Light keeps the values it had. */
+  --tile: #f0efe8; --tile-ink: #000; --tile-fill: #fff;
+  --strong: #000; --strong-ink: #f0efe8;
+  --hover: #ffe14d; --hover-ink: #000;
+  /* What is drawn solid in ink (the primary action, a chosen option, a
+     switch that is on, numbered rounds, the dark slabs): black in light; in
+     dark Apple's grey, so nothing solid turns white. */
+  --solid: #000; --solid-ink: #fff;
   color-scheme: light;
 }
 /* The theme is read on the widget's own root, never on :root: inside the
@@ -60,9 +71,9 @@
    widget on a black page. index.tsx stamps data-theme on this element when
    the embedder pins one; otherwise the visitor's system setting decides. */
 @media (prefers-color-scheme: dark) {
-  .a11y-widget-biz:not([data-theme="light"]) { --ink: #fff; --paper: #000; color-scheme: dark; }
+  .a11y-widget-biz:not([data-theme="light"]) { --ink: #fff; --paper: #000; color-scheme: dark; --tile: #1c1c1e; --tile-ink: #fff; --tile-fill: #2c2c2e; --strong: #636366; --strong-ink: #fff; --hover: #3a3a3c; --hover-ink: #fff; --solid: #636366; --solid-ink: #fff; --hl-orange: #ff9f0a; --hl-blue: #409cff; --hl-green: #30d158; --hl-cap-a: #ffd60a; --hl-cap-b: #ff375f; }
 }
-.a11y-widget-biz[data-theme="dark"] { --ink: #fff; --paper: #000; color-scheme: dark; }
+.a11y-widget-biz[data-theme="dark"] { --ink: #fff; --paper: #000; color-scheme: dark; --tile: #1c1c1e; --tile-ink: #fff; --tile-fill: #2c2c2e; --strong: #636366; --strong-ink: #fff; --hover: #3a3a3c; --hover-ink: #fff; --solid: #636366; --solid-ink: #fff; --hl-orange: #ff9f0a; --hl-blue: #409cff; --hl-green: #30d158; --hl-cap-a: #ffd60a; --hl-cap-b: #ff375f; }
 
 .a11y-widget-biz {
   font-family: "Jokker", "DejaVu Sans", sans-serif;
@@ -116,14 +127,14 @@
 .a11y-widget-biz button:enabled,
 .a11y-widget-biz .a11y-btn:enabled { cursor: pointer; }
 .a11y-widget-biz button:enabled:hover,
-.a11y-widget-biz .a11y-btn:enabled:hover { background: var(--hl-cap-a); border-color: var(--hl-cap-a); color: #000; }
+.a11y-widget-biz .a11y-btn:enabled:hover { background: var(--hover); border-color: var(--hover); color: var(--hover-ink); }
 .a11y-widget-biz button:disabled,
 .a11y-widget-biz .a11y-btn:disabled { border-style: dashed; cursor: not-allowed; }
 /* The main action is solid ink, Displaay's "Ask Albert": the run, the send,
    the save. It turns marker-yellow on hover like the rest. Disabled, it drops
    back to paper with the dashed edge, never a faded ink. */
-.a11y-widget-biz .a11y-btn.a11y-btn-primary:enabled { background: var(--ink); color: var(--paper); }
-.a11y-widget-biz .a11y-btn.a11y-btn-primary:enabled:hover { background: var(--hl-cap-a); border-color: var(--hl-cap-a); color: #000; }
+.a11y-widget-biz .a11y-btn.a11y-btn-primary:enabled { background: var(--solid); color: var(--solid-ink); }
+.a11y-widget-biz .a11y-btn.a11y-btn-primary:enabled:hover { background: var(--hover); border-color: var(--hover); color: var(--hover-ink); }
 .a11y-widget-biz :is(input:not([type="radio"]):not([type="checkbox"]), textarea, select) {
   font: inherit; font-size: 22px; letter-spacing: 0.01em; padding: 0.4em 0.6em;
   border: 2px solid var(--ink); border-radius: 0; background: var(--paper); color: var(--ink);
@@ -306,7 +317,7 @@
 }
 .a11y-widget-biz .a11y-chat-text .a11y-chat-plan-step {
   display: flex; flex-direction: column; box-sizing: border-box; min-width: 0; min-height: 440px; margin: 0;
-  padding: 30px 30px 26px; border-radius: 20px; background: #f0efe8; color: #000;
+  padding: 30px 30px 26px; border-radius: 20px; background: var(--tile); color: var(--tile-ink);
   overflow-wrap: break-word; hyphens: auto;
 }
 .a11y-widget-biz .a11y-chat-text .a11y-chat-plan-title {
@@ -322,7 +333,7 @@
 }
 .a11y-widget-biz .a11y-chat-text .a11y-chat-plan > li::before { content: none; }
 .a11y-widget-biz .a11y-chat-text .a11y-chat-plan :is(a, code) { color: inherit; }
-.a11y-widget-biz .a11y-chat-text .a11y-chat-plan :focus-visible { outline-color: #000; box-shadow: 0 0 0 2px #f0efe8; }
+.a11y-widget-biz .a11y-chat-text .a11y-chat-plan :focus-visible { outline-color: var(--tile-ink); box-shadow: 0 0 0 2px var(--tile); }
 /* Where a searched answer came from: small print under the reply, the
    pages named and linked, each once. */
 .a11y-widget-biz .a11y-chat-sources { font-size: 18px; letter-spacing: 0.01em; line-height: 1.3; margin: 0; overflow-wrap: anywhere; }
@@ -390,7 +401,7 @@
   position: absolute; inset-inline-start: -44px; top: 0; top: calc((1lh - 32px) / 2);
   display: grid; place-content: center;
   width: 32px; height: 32px; border-radius: 50%;
-  background: var(--ink); color: var(--paper);
+  background: var(--solid); color: var(--solid-ink);
   font-size: 22px; letter-spacing: 0; font-weight: 500; line-height: inherit;
   font-variant-numeric: tabular-nums;
 }
@@ -698,7 +709,7 @@
   gap: 0 0.6em; box-sizing: border-box; padding: 20px;
   border: 1px solid var(--ink); border-radius: 20px; background: var(--paper); color: var(--ink); cursor: pointer;
 }
-.a11y-widget-biz .a11y-optioncard-on { background: var(--ink); color: var(--paper); }
+.a11y-widget-biz .a11y-optioncard-on { background: var(--solid); color: var(--solid-ink); }
 .a11y-widget-biz .a11y-optioncard > input { grid-row: 1; grid-column: 1; margin-top: -3px; }
 .a11y-widget-biz .a11y-optioncard-text { display: contents; }
 .a11y-widget-biz .a11y-optioncard-label { grid-row: 1; grid-column: 2; }
@@ -724,10 +735,10 @@
 .a11y-widget-biz .a11y-switch-word { font-size: 22px; letter-spacing: 0.01em; min-width: 2em; }
 .a11y-widget-biz .a11y-switch-track { position: relative; flex: none; box-sizing: border-box; width: 52px; height: 30px; padding: 0; border-radius: 999px; }
 .a11y-widget-biz .a11y-switch-knob { position: absolute; top: 50%; left: 4px; width: 18px; height: 18px; margin-top: -9px; border-radius: 50%; background: currentColor; }
-.a11y-widget-biz .a11y-switch-track[aria-checked="true"] { background: var(--ink); color: var(--paper); }
+.a11y-widget-biz .a11y-switch-track[aria-checked="true"] { background: var(--solid); color: var(--solid-ink); }
 .a11y-widget-biz .a11y-switch-track[aria-checked="true"] .a11y-switch-knob { left: auto; right: 4px; }
 .a11y-widget-biz .a11y-switch-track:enabled:hover { background: var(--paper); color: var(--ink); }
-.a11y-widget-biz .a11y-switch-track[aria-checked="true"]:enabled:hover { background: var(--ink); color: var(--paper); }
+.a11y-widget-biz .a11y-switch-track[aria-checked="true"]:enabled:hover { background: var(--solid); color: var(--solid-ink); }
 
 /* "Back to the chat": one line below the form, flush left. */
 .a11y-widget-biz .a11y-chat-alt { margin: var(--line) 0 0; }
@@ -926,7 +937,7 @@
 .a11y-widget-biz .a11y-sum-run .a11y-sum-cell-no {
   display: inline-grid; place-content: center; vertical-align: 0.08em;
   width: 40px; height: 40px; border-radius: 50%; margin: 0 0.18em 0 0;
-  background: var(--ink); color: var(--paper);
+  background: var(--solid); color: var(--solid-ink);
   font-size: 29px; letter-spacing: 0; font-weight: 500; line-height: 1;
 }
 .a11y-widget-biz .a11y-sum-run .a11y-sum-row-marks,
@@ -977,11 +988,11 @@
   display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 240px), 1fr)); gap: 25px;
 }
 .a11y-widget-biz .a11y-prompts .a11y-prompt {
-  --ink: #000; --paper: #f0efe8;
+  --ink: var(--tile-ink); --paper: var(--tile);
   position: relative;
   box-sizing: border-box; min-width: 0; aspect-ratio: 296 / 407; margin: 0; padding: 26px;
   display: flex; flex-direction: column; align-items: flex-start; justify-content: flex-start;
-  border: 1px solid #f0efe8; border-radius: 20px; background: #f0efe8; color: #000;
+  border: 1px solid var(--tile); border-radius: 20px; background: var(--tile); color: var(--tile-ink);
   overflow-wrap: break-word; hyphens: auto;
 }
 /* The question is the card's main control. It is laid out in the card's
@@ -1019,12 +1030,12 @@
   font: inherit; font-size: 48px; font-weight: 500; letter-spacing: 0; line-height: 1.1;
   font-variant-numeric: tabular-nums;
 }
-.a11y-widget-biz .a11y-prompts .a11y-prompt-wcag:enabled:hover { background: var(--hl-cap-a); }
+.a11y-widget-biz .a11y-prompts .a11y-prompt-wcag:enabled:hover { background: var(--hover); color: var(--hover-ink); }
 .a11y-widget-biz .a11y-prompts .a11y-prompt-wcag:disabled { cursor: default; }
 .a11y-widget-biz .a11y-prompts .a11y-prompt-go {
   position: absolute; right: 26px; bottom: 26px;
   display: flex; align-items: center; justify-content: center; min-height: 34px; padding: 0 14px;
-  border-radius: 999px; background: #fff; color: #000;
+  border-radius: 999px; background: var(--tile-fill); color: var(--tile-ink);
   font-size: 18px; letter-spacing: 0.01em; line-height: 1.2;
   visibility: hidden;
 }
@@ -1216,18 +1227,18 @@
   display: flex; flex-wrap: wrap; gap: 16px; align-items: stretch; margin: 0 0 1.6em;
 }
 .a11y-widget-biz .a11y-fd > .a11y-fd-col:first-child > :is(p, div) {
-  --ink: #000; --paper: #f0efe8;
+  --ink: var(--tile-ink); --paper: var(--tile);
   flex: 1 1 calc(45% - 16px);
   display: flex; flex-direction: column; align-items: center; gap: 28px;
   box-sizing: border-box; min-width: 0; min-height: 300px; max-width: none; margin: 0; padding: 22px 32px 40px;
-  border-radius: 20px; background: #f0efe8; color: #000; text-align: center;
+  border-radius: 20px; background: var(--tile); color: var(--tile-ink); text-align: center;
   font-family: "Jokker", sans-serif; font-weight: 500; font-size: 30px; line-height: 1.15; letter-spacing: 0.005em;
 }
 .a11y-widget-biz .a11y-fd > .a11y-fd-col:first-child > [data-size="s"] { flex-basis: calc(33.333% - 16px); font-size: 38px; letter-spacing: -0.005em; line-height: 1.1; }
 .a11y-widget-biz .a11y-fd > .a11y-fd-col:first-child > [data-size="l"] { flex-basis: calc(60% - 16px); font-size: 26px; line-height: 1.2; }
 .a11y-widget-biz .a11y-fd > .a11y-fd-col:first-child > p > strong:first-child {
   flex: none; margin: 0; padding: 3px 12px 4px; border: 0; border-radius: 999px;
-  background: #000; color: #f0efe8;
+  background: var(--strong); color: var(--strong-ink);
   font-family: "Jokker", sans-serif; font-weight: 400; font-size: 15px; line-height: 1.2; letter-spacing: 0.01em; text-transform: none;
 }
 .a11y-widget-biz .a11y-fd > .a11y-fd-col:first-child .a11y-fd-body {
@@ -1346,10 +1357,10 @@
    fixed #f0efe8 (#000 on it 18.4:1); hover is the marker yellow and the
    open note solid ink, as before. */
 .a11y-widget-biz .a11y-dn-list > li > .a11y-dn-link {
-  --ink: #000; --paper: #f0efe8;
+  --ink: var(--tile-ink); --paper: var(--tile);
   box-sizing: border-box; min-width: 0; min-height: 128px; margin: 0; padding: 16px 20px;
   display: flex; align-items: center; justify-content: center;
-  border: 0; border-radius: 20px; background: #f0efe8; color: #000;
+  border: 0; border-radius: 20px; background: var(--tile); color: var(--tile-ink);
   text-align: center; overflow-wrap: break-word; hyphens: auto;
 }
 .a11y-widget-biz .a11y-next-list > li a,
@@ -1407,7 +1418,7 @@
    marker yellow, like every other button; the note that is open is solid
    ink, like the selected tab. */
 .a11y-widget-biz .a11y-dn-list > li > .a11y-dn-link { width: 100%; font-size: 22px; cursor: pointer; }
-.a11y-widget-biz .a11y-dn-list > li > .a11y-dn-link:enabled:hover { background: var(--hl-cap-a); color: #000; text-decoration: none; }
+.a11y-widget-biz .a11y-dn-list > li > .a11y-dn-link:enabled:hover { background: var(--hover); color: var(--hover-ink); text-decoration: none; }
 .a11y-widget-biz .a11y-dn-list > li > .a11y-dn-link[aria-expanded="true"] { --ink: #fff; --paper: #000; background: #000; color: #fff; font-weight: 400; }
 
 /* The report actions, after the Displaay Info block and form (user's
@@ -1428,26 +1439,26 @@
   text-transform: uppercase;
 }
 .a11y-widget-biz .a11y-ra-row > .a11y-ra-cell > .a11y-ra-field {
-  --ink: #000; --paper: #f0efe8;
+  --ink: var(--tile-ink); --paper: var(--tile);
   display: flex; flex-direction: column; gap: 4px; padding: 14px 20px 12px;
-  border-radius: 14px; background: #f0efe8; color: #000;
+  border-radius: 14px; background: var(--tile); color: var(--tile-ink);
 }
 .a11y-widget-biz .a11y-ra-field > .a11y-ra-field-label { font-size: 22px; letter-spacing: 0.01em; line-height: 1.2; }
 /* input. in the selector: the general field rule (:is(input:not():not())) is
    0,3,1, and this has to out-rank it to drop the field's own box. */
 .a11y-widget-biz .a11y-ra-field > input.a11y-ra-email-input {
   box-sizing: border-box; width: 100%; min-height: 34px; margin: 0; padding: 4px 0;
-  border: 0; border-radius: 0; background: transparent; color: #000;
+  border: 0; border-radius: 0; background: transparent; color: var(--tile-ink);
   font: inherit; font-size: 22px; letter-spacing: 0.01em;
 }
-.a11y-widget-biz .a11y-ra-field > input.a11y-ra-email-input::placeholder { color: #000; opacity: 1; font-weight: 300; }
+.a11y-widget-biz .a11y-ra-field > input.a11y-ra-email-input::placeholder { color: var(--tile-ink); opacity: 1; font-weight: 300; }
 /* The field is the box, so the focus ring goes round the field, not the
    bare line inside it. */
 .a11y-widget-biz .a11y-ra-field:focus-within { outline: 2px solid #000; outline-offset: 2px; box-shadow: 0 0 0 2px var(--paper); }
 .a11y-widget-biz .a11y-ra-field > input.a11y-ra-email-input:focus-visible { outline: none; }
 .a11y-widget-biz .a11y-ra-row > .a11y-ra-cell > .a11y-ra-send {
   display: block; width: 100%; min-height: 128px; margin: 0; padding: 20px 24px;
-  border: 1px solid var(--ink); border-radius: 14px; background: var(--ink); color: var(--paper);
+  border: 1px solid var(--ink); border-radius: 14px; background: var(--solid); color: var(--solid-ink);
   font-family: "Jokker", sans-serif; font-size: 48px; font-weight: 300; line-height: 1.05; letter-spacing: -0.01em;
   text-align: start; text-wrap: balance;
 }
@@ -1833,9 +1844,9 @@
   .a11y-widget-biz .a11y-chat .a11y-chat-turn { margin-bottom: 1.4em; }
   .a11y-widget-biz .a11y-chat .a11y-chat-you { display: flex; flex-direction: column; align-items: flex-end; }
   .a11y-widget-biz .a11y-chat .a11y-chat-you .a11y-chat-text {
-    --ink: #000; --paper: #f0efe8;
+    --ink: var(--tile-ink); --paper: var(--tile);
     box-sizing: border-box; max-width: 85%; padding: 10px 16px; border-radius: 22px;
-    background: #f0efe8; color: #000;
+    background: var(--tile); color: var(--tile-ink);
   }
 }
 
@@ -1901,14 +1912,14 @@
 }
 /* The fixed pale ground, black words, in both themes. */
 .a11y-widget-biz .a11y-chats .a11y-chats-row:is([data-current], :hover) {
-  --ink: #000; --paper: #f0efe8; --chats-edge: #14532d;
-  background: #f0efe8; color: #000;
+  --ink: var(--tile-ink); --paper: var(--tile); --chats-edge: #14532d;
+  background: var(--tile); color: var(--tile-ink);
 }
 .a11y-widget-biz .a11y-chats .a11y-chats-row :is(.a11y-chats-item, .a11y-chats-delete):enabled:hover,
 .a11y-widget-biz .a11y-chats .a11y-chats-new:enabled:hover,
 .a11y-widget-biz .a11y-chats .a11y-chats-toggle:hover {
-  --ink: #000; --paper: #f0efe8;
-  background: #f0efe8; color: #000;
+  --ink: var(--tile-ink); --paper: var(--tile);
+  background: var(--tile); color: var(--tile-ink);
 }
 .a11y-widget-biz .a11y-chats .a11y-chats-row[data-current] .a11y-chats-item { font-weight: 500; }
 .a11y-widget-biz .a11y-chats .a11y-chats-delete {
@@ -1951,15 +1962,15 @@
    by side. Ink and paper are redefined inside, so links, code and focus
    rings follow. Under 640px the sentence drops to the phone title size. */
 .a11y-widget-biz .a11y-sum-col > .a11y-sum-panel:not(.a11y-sum-counts) {
-  --ink: #000; --paper: #f0efe8;
+  --ink: var(--tile-ink); --paper: var(--tile);
   box-sizing: border-box; min-width: 0; margin: 0;
   align-self: stretch; display: flex; flex-direction: column; gap: 56px;
-  padding: 28px 32px 36px; border: 0; border-radius: 20px; background: #f0efe8; color: #000;
+  padding: 28px 32px 36px; border: 0; border-radius: 20px; background: var(--tile); color: var(--tile-ink);
   text-align: start; overflow-wrap: break-word; hyphens: auto;
 }
 .a11y-widget-biz .a11y-sum-col > .a11y-sum-panel:not(.a11y-sum-counts) > .a11y-sum-eyebrow {
   align-self: flex-start; margin: 0; padding: 7px 16px; border: 0; border-radius: 999px;
-  background: #000; color: #f0efe8; text-align: start; text-transform: none;
+  background: var(--strong); color: var(--strong-ink); text-align: start; text-transform: none;
   font-family: "Jokker", sans-serif; font-size: 15px; font-weight: 500; line-height: 1.2; letter-spacing: 0.01em;
 }
 .a11y-widget-biz .a11y-sum-col > .a11y-sum-panel:not(.a11y-sum-counts) .a11y-sum-lead {
@@ -2015,12 +2026,12 @@
    they split it evenly and never wrap. */
 .a11y-widget-biz .a11y-legal-tiles { display: flex; gap: 16px; align-items: stretch; }
 .a11y-widget-biz .a11y-legal-tiles > .a11y-legal-row {
-  --ink: #000; --paper: #f0efe8;
+  --ink: var(--tile-ink); --paper: var(--tile);
   flex: 1 1 0; container: a11y-legal-tile / inline-size;
   display: flex; flex-direction: column; align-items: center; gap: 14px;
   box-sizing: border-box; min-width: 0; min-height: 300px; margin: 0; padding: 22px 20px 32px;
   overflow-wrap: break-word; hyphens: auto;
-  border-radius: 20px; background: #f0efe8; color: #000; text-align: center;
+  border-radius: 20px; background: var(--tile); color: var(--tile-ink); text-align: center;
 }
 .a11y-widget-biz .a11y-legal-tiles > .a11y-legal-row .a11y-legal-mark {
   order: 1; align-self: stretch; box-sizing: border-box; margin: 0; padding: 3px 12px 4px; border-radius: 999px; box-shadow: none;
@@ -2062,107 +2073,68 @@
 }
 
 /* ═══ THE SCAN FORM AS A TYPE TESTER (user's reference, 18 Nov 2026) ══════
-   "Create new inspired by reference design", after a foundry's type tester:
-   one #f0efe8 card, 24px corners, black words in both themes (18.4:1);
-   along the top the tester's row of pills, the name first on solid black
-   ("New scan", where the tester names its typeface), the language beside
-   it as the tester's weight menu, and the settings to the right as white
-   pills holding their choices, the way the tester holds Size, Leading and
-   Spacing; under them a row of small white chips with the chosen settings'
-   small print, where the tester lists its alternates; then the specimen,
-   the address typed at 120px straight onto the card over a 2px rule; the
-   action last. Hover is the marker yellow everywhere (black words); a
-   chosen segment is solid black. The card redefines --ink and --paper, so
-   focus rings and the switch follow; white grounds are written out. This
-   replaces the step cards and option tiles of earlier the same day. */
-.a11y-widget-biz .a11y-url-form.a11y-tester {
-  --ink: #000; --paper: #f0efe8;
-  display: block;
-  box-sizing: border-box; min-width: 0; margin: 0; padding: 32px 36px 36px;
-  border-radius: 24px; background: #f0efe8; color: #000;
-}
-/* Spaced by margins, not a flex gap: the error line and the login panel are
-   in the markup while empty (a live region has to be there before it is
-   filled), and a gap gave each of them a slot of air. */
-.a11y-widget-biz .a11y-tester > .a11y-input { margin-top: 32px; }
-.a11y-widget-biz .a11y-tester > .a11y-url-error:not(:empty) { margin-top: 16px; }
-.a11y-widget-biz .a11y-tester > .a11y-url-submit { margin-top: 32px; }
-.a11y-widget-biz .a11y-tester .a11y-tester-bar { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; min-width: 0; }
-.a11y-widget-biz .a11y-tester .a11y-tester-bar .a11y-tester-name {
-  display: inline-flex; align-items: center; min-height: 44px; margin: 0; padding: 0 22px;
-  border-radius: 999px; background: #000; color: #f0efe8;
-  font-size: 18px; font-weight: 500; line-height: 1.2; letter-spacing: 0.01em;
-}
-.a11y-widget-biz .a11y-tester .a11y-tester-controls { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; min-width: 0; margin-inline-start: auto; }
-/* A white pill: its label, then its control (choices, a switch, a menu). */
+   Laid out after a foundry's type tester: the name and the settings along
+   the top, then the specimen, the address typed at 120px over a 2px rule,
+   then the action. No card, no pills wrapped round the groups and no row of
+   small-print chips (user's instruction the same day: "do not do
+   unnecessary containers, this is slop"); only the controls carry an edge.
+   Everything is the page's own ink and paper, so it follows the theme. A
+   choice is a pill with a 1px ink edge, the chosen one solid ink; hover is
+   --hover (the marker yellow in light, Apple's dark fill in dark). */
+.a11y-widget-biz .a11y-url-form.a11y-tester { display: block; min-width: 0; margin: 0; }
+.a11y-widget-biz .a11y-tester .a11y-tester-bar { display: flex; flex-wrap: wrap; align-items: center; gap: 16px 28px; min-width: 0; }
+.a11y-widget-biz .a11y-tester .a11y-tester-bar .a11y-tester-name { margin: 0; }
+.a11y-widget-biz .a11y-tester .a11y-tester-controls { display: flex; flex-wrap: wrap; align-items: center; gap: 16px 28px; flex: 1 1 100%; min-width: 0; }
+/* A group: its label, then its choices, on one line while they fit. */
 .a11y-widget-biz .a11y-tester .a11y-tester-pill,
 .a11y-widget-biz .a11y-tester .a11y-tester-bar .a11y-select2 {
-  display: inline-flex; flex-wrap: wrap; align-items: center; gap: 4px 6px;
-  box-sizing: border-box; max-width: 100%; min-height: 44px; margin: 0; padding: 4px 4px 4px 18px;
-  border-radius: 22px; background: #fff; color: #000;
+  display: inline-flex; flex-wrap: wrap; align-items: center; gap: 6px 8px; max-width: 100%; margin: 0;
 }
 .a11y-widget-biz .a11y-tester .a11y-tester-pill-label,
 .a11y-widget-biz .a11y-tester .a11y-tester-bar .a11y-select2-label,
 .a11y-widget-biz .a11y-tester .a11y-tester-ai .a11y-switch-label {
-  margin-inline-end: 6px; font-size: 15px; font-weight: 500; line-height: 1.2; letter-spacing: 0.01em;
+  margin-inline-end: 4px; font-size: 18px; font-weight: 500; line-height: 1.2; letter-spacing: 0.01em;
 }
 .a11y-widget-biz .a11y-tester .a11y-tester-bar .a11y-select2 .a11y-select2-field.a11y-select2-field {
-  min-width: 0; min-height: 36px; padding: 0 2.4em 0 12px; border: 0; border-radius: 999px;
-  background-color: transparent; color: #000; font-size: 15px; letter-spacing: 0.01em;
+  min-width: 0; min-height: 40px; padding: 0 2.4em 0 14px; border: 1px solid var(--ink); border-radius: 999px;
+  background-color: var(--paper); color: var(--ink); font-size: 18px; letter-spacing: 0.01em;
 }
-.a11y-widget-biz .a11y-tester .a11y-tester-bar .a11y-select2 .a11y-select2-field.a11y-select2-field:enabled:hover { background-color: var(--hl-cap-a); }
-/* A choice in a pill: the radio clipped, the segment black when chosen. */
+.a11y-widget-biz .a11y-tester .a11y-tester-bar .a11y-select2 .a11y-select2-field.a11y-select2-field:enabled:hover { border-color: var(--hover); background-color: var(--hover); color: var(--hover-ink); }
 .a11y-widget-biz .a11y-tester .a11y-seg {
-  position: relative; display: inline-flex; align-items: center; min-height: 36px; padding: 0 14px;
-  border-radius: 999px; background: #fff; color: #000; cursor: pointer;
-  font-size: 15px; line-height: 1.2; letter-spacing: 0.01em;
+  position: relative; display: inline-flex; align-items: center; box-sizing: border-box; min-height: 40px; padding: 0 16px;
+  border: 1px solid var(--ink); border-radius: 999px; background: var(--paper); color: var(--ink); cursor: pointer;
+  font-size: 18px; line-height: 1.2; letter-spacing: 0.01em;
 }
 .a11y-widget-biz .a11y-tester .a11y-seg > input {
   position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0; overflow: hidden; clip-path: inset(50%);
 }
-.a11y-widget-biz .a11y-tester .a11y-seg.a11y-seg-on { background: #000; color: #f0efe8; }
-.a11y-widget-biz .a11y-tester .a11y-seg:not(.a11y-seg-on):not(.a11y-seg-disabled):hover { background: var(--hl-cap-a); color: #000; }
-.a11y-widget-biz .a11y-tester .a11y-seg:has(input:focus-visible) { outline: 3px solid #000; outline-offset: 2px; box-shadow: 0 0 0 2px #f0efe8; }
-.a11y-widget-biz .a11y-tester .a11y-seg.a11y-seg-disabled { cursor: not-allowed; box-shadow: inset 0 0 0 1px #000; }
-.a11y-widget-biz .a11y-tester .a11y-seg.a11y-seg-disabled.a11y-seg-on { box-shadow: none; }
-.a11y-widget-biz .a11y-tester .a11y-tester-ai { padding-inline-end: 14px; }
-.a11y-widget-biz .a11y-tester .a11y-tester-ai .a11y-switch-word { font-size: 15px; letter-spacing: 0.01em; min-width: 1.8em; }
-/* The chips: the chosen settings' small print. */
-.a11y-widget-biz .a11y-tester .a11y-tester-chips { display: flex; flex-wrap: wrap; gap: 8px; margin: 20px 0 0; padding: 0; list-style: none; }
-.a11y-widget-biz .a11y-tester .a11y-tester-chips > li {
-  box-sizing: border-box; max-width: 100%; margin: 0; padding: 6px 12px; border-radius: 16px;
-  background: #fff; color: #000; font-size: 15px; line-height: 1.3; letter-spacing: 0.01em;
-}
-/* The specimen. The field's own size attribute makes it 423px at 32px and
-   wider at 120px, so its track and shell may shrink below that. 0,5,1
-   out-ranks the general field rule (0,3,1). */
-.a11y-widget-biz .a11y-tester .a11y-input { display: grid; grid-template-columns: minmax(0, 1fr); gap: 8px; min-width: 0; }
+.a11y-widget-biz .a11y-tester .a11y-seg.a11y-seg-on { background: var(--solid); color: var(--solid-ink); }
+.a11y-widget-biz .a11y-tester .a11y-seg:not(.a11y-seg-on):not(.a11y-seg-disabled):hover { border-color: var(--hover); background: var(--hover); color: var(--hover-ink); }
+.a11y-widget-biz .a11y-tester .a11y-seg:has(input:focus-visible) { outline: 3px solid var(--ink); outline-offset: 2px; box-shadow: 0 0 0 2px var(--paper); }
+.a11y-widget-biz .a11y-tester .a11y-seg.a11y-seg-disabled { border-style: dashed; cursor: not-allowed; }
+.a11y-widget-biz .a11y-tester .a11y-tester-ai .a11y-switch-word { font-size: 18px; letter-spacing: 0.01em; min-width: 1.8em; }
+/* The specimen. The field's own size attribute makes it wider than a phone,
+   so its track and shell may shrink. 0,5,1 out-ranks the general field rule. */
+.a11y-widget-biz .a11y-tester > .a11y-input { display: grid; grid-template-columns: minmax(0, 1fr); gap: 8px; min-width: 0; margin-top: 40px; }
 .a11y-widget-biz .a11y-tester .a11y-input-shell {
   display: flex; flex-wrap: wrap; align-items: center; gap: 12px 16px; min-width: 0;
-  padding-bottom: 10px; border-bottom: 2px solid #000;
+  padding-bottom: 10px; border-bottom: 2px solid var(--ink);
 }
 .a11y-widget-biz .a11y-tester .a11y-input-shell > input:not([type="radio"]) {
   flex: 1 1 6em; min-width: 0; margin: 0; padding: 0; border: 0; border-radius: 0;
-  background: transparent; color: #000;
+  background: transparent; color: var(--ink);
   font-size: 120px; font-weight: 400; letter-spacing: -0.01em; line-height: 1.05;
 }
-.a11y-widget-biz .a11y-tester .a11y-input-shell > input::placeholder { color: #000; opacity: 1; font-weight: 300; }
-.a11y-widget-biz .a11y-tester .a11y-input-shell > .a11y-login-toggle {
-  flex: none; min-height: 44px; padding: 0 20px; border-color: #fff; background: #fff; color: #000; font-size: 15px;
-}
-.a11y-widget-biz .a11y-tester .a11y-input-shell > .a11y-login-toggle:enabled:hover { border-color: var(--hl-cap-a); background: var(--hl-cap-a); }
+.a11y-widget-biz .a11y-tester .a11y-input-shell > input::placeholder { color: var(--ink); opacity: 1; font-weight: 300; }
+.a11y-widget-biz .a11y-tester .a11y-input-shell > .a11y-login-toggle { flex: none; min-height: 40px; padding: 0 18px; font-size: 18px; }
+.a11y-widget-biz .a11y-tester > .a11y-url-error:not(:empty) { margin-top: 16px; }
+.a11y-widget-biz .a11y-tester > .a11y-url-submit { margin-top: 32px; }
 @media (max-width: 1100px) {
   .a11y-widget-biz .a11y-tester .a11y-input-shell > input:not([type="radio"]) { font-size: 80px; }
 }
 @media (max-width: 640px) {
-  .a11y-widget-biz .a11y-url-form.a11y-tester { padding: 20px; border-radius: 20px; }
-  .a11y-widget-biz .a11y-tester .a11y-tester-controls { margin-inline-start: 0; }
-  /* On a phone a pill's label takes its own line and the choices sit under
-     it in one row; at 315px the label and both choices did not fit, and the
-     second choice dropped alone onto a line inside the pill. */
-  .a11y-widget-biz .a11y-tester .a11y-tester-pill[role="radiogroup"] { padding: 10px 4px 4px 16px; }
-  .a11y-widget-biz .a11y-tester .a11y-tester-pill[role="radiogroup"] > .a11y-tester-pill-label { flex-basis: 100%; }
   .a11y-widget-biz .a11y-tester .a11y-input-shell > input:not([type="radio"]) { font-size: 44px; }
+  .a11y-widget-biz .a11y-tester .a11y-tester-pill[role="radiogroup"] > .a11y-tester-pill-label { flex-basis: 100%; }
 }
 
 /* ═══ THE SECTIONS RAIL AS ROWS (user's instruction, 18 Nov 2026) ═════════
@@ -2187,73 +2159,50 @@
   color: var(--ink); text-decoration: none;
   font-size: 18px; line-height: 1.3; letter-spacing: 0.01em;
 }
-.a11y-widget-biz .a11y-shell-nav .a11y-shell-nav-link[aria-current="true"] { background: #f0efe8; color: #000; }
+.a11y-widget-biz .a11y-shell-nav .a11y-shell-nav-link[aria-current="true"] { background: var(--tile); color: var(--tile-ink); }
 /* Hover is the marker yellow, as on buttons (same day, "make hover yellow"). */
-.a11y-widget-biz .a11y-shell-nav .a11y-shell-nav-link:hover { background: var(--hl-cap-a); color: #000; }
+.a11y-widget-biz .a11y-shell-nav .a11y-shell-nav-link:hover { background: var(--hover); color: var(--hover-ink); }
 
-/* ═══ WCAG 2.2 AND THE SCREEN READER HEAD AS TESTER ROWS (user's instruction, 18 Nov 2026) ═
-   "Design this", twice, in the type-tester language of the scan form.
-   Ready for WCAG 2.2?: the readiness summary is a #f0efe8 card (24px
-   corners, black words in both themes); its toggle is the tester's row of
-   pills: the standard on solid black where the tester names its face, the
-   date as a white pill, the count of what would fail today on the orange
-   status highlight (black on it 10:1; the colour is the status), the
-   chevron in a white round. The sentence under it is the specimen, 38px.
-   The six new items is a second card, its title on a black pill and its
-   toggle a white one; hover is the marker yellow on every pill.
+/* ═══ WCAG 2.2 AND THE SCREEN READER HEAD (user's instructions, 18 Nov 2026) ═
+   Ready for WCAG 2.2?: "design this", then "do not do unnecessary
+   containers, this is slop". No card grounds and no pills round words: the
+   readiness toggle reads as one line, the standard in Medium, the date
+   plain, the count of what would fail today on the orange status highlight
+   (the colour is the status; black on it 10:1 light, Apple orange in dark),
+   the chevron in a 1px ink round, the control's one edge. The sentence under
+   it is the specimen, 38px. The six new items: its title at 22px Medium, its
+   toggle an ordinary pill button.
    Screen reader preview: the head broke mid-phrase ("(16" over
    "announcements)", the status chip on two lines). The title and its count
    now hold one line, the status and the chevron sit on the line under it,
    and Play keeps the right edge, its top level with the title's. */
-.a11y-widget-biz .a11y-w22 > .a11y-next,
-.a11y-widget-biz .a11y-w22 > .a11y-w22-panel {
-  --ink: #000; --paper: #f0efe8;
-  box-sizing: border-box; min-width: 0; margin: 0 0 16px; padding: 28px 32px 32px;
-  border-radius: 24px; background: #f0efe8; color: #000;
-}
 .a11y-widget-biz .a11y-w22 > .a11y-next > .a11y-next-toggle {
-  display: flex; flex-wrap: wrap; align-items: center; gap: 8px; width: auto; min-height: 0; margin: 0; padding: 0;
-  border: 0; border-radius: 0; background: none; color: #000;
-  font-size: 15px; font-weight: 500; line-height: 1.2; letter-spacing: 0.01em; text-align: start;
+  display: flex; flex-wrap: wrap; align-items: center; gap: 8px 14px; width: auto; min-height: 0; margin: 0; padding: 0;
+  border: 0; border-radius: 0; background: none; color: var(--ink);
+  font-size: 18px; font-weight: 400; line-height: 1.2; letter-spacing: 0.01em; text-align: start;
 }
-.a11y-widget-biz .a11y-w22 > .a11y-next > .a11y-next-toggle:enabled:hover { background: none; border-color: transparent; color: #000; }
+.a11y-widget-biz .a11y-w22 > .a11y-next > .a11y-next-toggle:enabled:hover { background: none; border-color: transparent; color: var(--ink); }
 .a11y-widget-biz .a11y-w22 .a11y-next-toggle > .a11y-next-standard { display: contents; }
-.a11y-widget-biz .a11y-w22 .a11y-next-toggle > .a11y-next-standard > * {
-  display: inline-flex; align-items: center; box-sizing: border-box; min-height: 44px; padding: 0 18px;
-  border-radius: 999px; background: #fff; color: #000; font-size: 15px; font-weight: 500;
-}
-.a11y-widget-biz .a11y-w22 .a11y-next-toggle > .a11y-next-standard > strong { background: #000; color: #f0efe8; }
-.a11y-widget-biz .a11y-w22 .a11y-next-toggle > .a11y-next-count {
-  display: inline-flex; align-items: center; box-sizing: border-box; min-height: 44px; padding: 0 18px;
-  border-radius: 999px; background: var(--hl-orange); color: #000; font-size: 15px; font-weight: 500;
-}
+.a11y-widget-biz .a11y-w22 .a11y-next-toggle > .a11y-next-standard > strong { font-weight: 500; }
+.a11y-widget-biz .a11y-w22 .a11y-next-toggle > .a11y-next-count { padding: 2px 10px; border-radius: 999px; background: var(--hl-orange); color: #000; font-size: 18px; }
 .a11y-widget-biz .a11y-w22 .a11y-next-toggle > .a11y-next-chevron {
-  display: inline-grid; place-content: center; width: 44px; height: 44px; border-radius: 50%;
-  background: #fff; color: #000; font-size: 18px; line-height: 1;
+  display: inline-grid; place-content: center; box-sizing: border-box; width: 40px; height: 40px;
+  border: 1px solid var(--ink); border-radius: 50%; font-size: 18px; line-height: 1;
 }
 .a11y-widget-biz .a11y-w22 .a11y-next-toggle > .a11y-next-chevron[data-open="true"] { transform: rotate(180deg); }
-.a11y-widget-biz .a11y-w22 .a11y-next-toggle:enabled:hover > .a11y-next-standard > span,
-.a11y-widget-biz .a11y-w22 .a11y-next-toggle:enabled:hover > .a11y-next-chevron { background: var(--hl-cap-a); }
+.a11y-widget-biz .a11y-w22 .a11y-next-toggle:enabled:hover > .a11y-next-chevron { border-color: var(--hover); background: var(--hover); color: var(--hover-ink); }
 .a11y-widget-biz .a11y-w22 > .a11y-next > .a11y-next-desc {
-  max-width: none; margin: 40px 0 0;
+  max-width: none; margin: 28px 0 0;
   font-size: 38px; font-weight: 400; line-height: 1.1; letter-spacing: -0.005em;
 }
 .a11y-widget-biz .a11y-w22 > .a11y-next > .a11y-next-list { margin: 28px 0 0; }
-.a11y-widget-biz .a11y-w22 > .a11y-w22-panel { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; }
-.a11y-widget-biz .a11y-w22 > .a11y-w22-panel > .a11y-w22-panel-title {
-  display: inline-flex; align-items: center; min-height: 44px; margin: 0; padding: 0 20px;
-  border-radius: 999px; background: #000; color: #f0efe8;
-  font-size: 15px; font-weight: 500; line-height: 1.2; letter-spacing: 0.01em;
-}
-.a11y-widget-biz .a11y-w22 > .a11y-w22-panel > .a11y-w22-toggle {
-  min-height: 44px; padding: 0 18px; border-color: #fff; background: #fff; color: #000; font-size: 15px;
-}
-.a11y-widget-biz .a11y-w22 > .a11y-w22-panel > div { flex: 1 1 100%; min-width: 0; margin-top: 18px; }
+.a11y-widget-biz .a11y-w22 > .a11y-w22-panel { display: flex; flex-wrap: wrap; align-items: center; gap: 12px 16px; margin-top: 65px; }
+.a11y-widget-biz .a11y-w22 > .a11y-w22-panel > .a11y-w22-panel-title { margin: 0; font-size: 22px; font-weight: 500; line-height: 1.2; letter-spacing: 0.01em; }
+.a11y-widget-biz .a11y-w22 > .a11y-w22-panel > .a11y-w22-toggle { font-size: 18px; }
+.a11y-widget-biz .a11y-w22 > .a11y-w22-panel > div { flex: 1 1 100%; min-width: 0; margin-top: 12px; }
 .a11y-widget-biz .a11y-w22 > .a11y-w22-panel > div[hidden] { display: none; }
 @media (max-width: 640px) {
-  .a11y-widget-biz .a11y-w22 > .a11y-next,
-  .a11y-widget-biz .a11y-w22 > .a11y-w22-panel { padding: 20px; border-radius: 20px; }
-  .a11y-widget-biz .a11y-w22 > .a11y-next > .a11y-next-desc { margin-top: 28px; font-size: 27px; letter-spacing: 0; }
+  .a11y-widget-biz .a11y-w22 > .a11y-next > .a11y-next-desc { font-size: 27px; letter-spacing: 0; }
 }
 
 .a11y-widget-biz .a11y-sr .a11y-accordion-row { align-items: flex-start; margin-top: 46px; }

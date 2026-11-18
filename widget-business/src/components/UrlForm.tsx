@@ -9,7 +9,6 @@ import { Select } from "./Select2";
 // The ported Radio, not FormControls' — it carries the per-option description
 // the design puts on each choice instead of one hint under both.
 import { Input } from "./Input";
-import { SCAN_DURATION } from "../lib/scanDuration";
 import { Switch } from "./Switch";
 import { LoginFields } from "./LoginFields";
 import type { AuthConfig } from "../api/scanClient";
@@ -146,15 +145,11 @@ export function UrlForm({
     onSubmit(withProtocol, includeAiReview, mode, maxPages, auth);
   }
 
-  /* The scan form as a foundry's type tester (user's reference, 18 Nov 2026,
-     "create new inspired by reference design"): one card; along the top the
-     tester's row of pills, the name first in black ("New scan", where the
-     tester names its typeface), then the settings as white pills, the way
-     the tester carries its weight menu and its Size, Leading and Spacing
-     controls; under them a row of small chips with the chosen settings'
-     small print, where the tester lists its alternates; then the specimen,
-     the address typed at display size straight onto the card; the action
-     last. DOM order is the visual order. */
+  /* The scan form after a foundry's type tester (user's reference, 18 Nov
+     2026): the name and the settings along the top, then the specimen, the
+     address typed at display size, then the action. No card and no pills
+     wrapped round the groups ("do not do unnecessary containers"): only the
+     controls themselves carry an edge. DOM order is the visual order. */
   return (
     <form
       className="a11y-url-form a11y-tester"
@@ -214,27 +209,10 @@ export function UrlForm({
         </div>
       </div>
 
-      {/* The chosen settings' small print, as the tester's row of chips. */}
-      <ul className="a11y-tester-chips" role="list">
-        <li>
-          {mode === "site"
-            ? tf("A whole site takes {duration}", { duration: t(SCAN_DURATION.site) })
-            : tf("This page takes {duration}", { duration: t(SCAN_DURATION.page) })}
-        </li>
-        {mode === "site" && <li>{t("Up to five pages from this address. Lists what repeats across them")}</li>}
-        <li>
-          {audience === "professional"
-            ? t("Each finding with its WCAG number, selector and code")
-            : t("What is wrong, who fixes it, and what it costs you, in plain words")}
-        </li>
-        <li id="a11y-url-hint">{t("Public pages only.")}</li>
-        {mode === "page" && includeAiReview && (
-          <li id="a11y-ai-hint">
-            {t("A language model reads the page for design and wording faults, and writes a code fix for each fault it can correct. It can be wrong.")}{" "}
-            {tf("Adds {duration}.", { duration: t(SCAN_DURATION.aiAdds) })}
-          </li>
-        )}
-      </ul>
+      {/* No row of small print (user's instruction, 18 Nov 2026: the chips
+          of duration, descriptions and hints were "slop"). The address
+          field's one description stays, for screen readers only. */}
+      <span id="a11y-url-hint" className="a11y-sr-only">{t("Public pages only.")}</span>
 
       {/* The specimen: the address at display size. describedBy is one of
           four ids depending on the error state. */}
