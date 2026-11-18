@@ -95,6 +95,22 @@ Titles state what was measured and never hedge ("A control", not "Something").
   documents. AI prompts, CLI output and server logs are not reader copy.
 - Lists carry the technical detail. Prose carries the meaning.
 
+## Chat replies
+
+The assistant's replies are generated, so these rules live in its prompt
+(`backend/src/services/chat/chatPrompt.ts`, "How you write") and are checked
+there by `backend/test/chatRoute.test.ts`:
+
+- Start with the answer. No praise of the question, no "Sure", no
+  restating what was asked.
+- Stop when the answer is done. No "Let me know if", "Hope this helps" or
+  closing summary. The only offers are the concrete one-sentence ones the
+  prompt asks for.
+- No filler hedges ("it's worth noting", "arguably", "generally speaking").
+  Real uncertainty stays, said once: an AI review finding may be wrong.
+- Format only what needs it. A list is three or more items; bold marks a
+  term to find on the page, not emphasis.
+
 ## Accuracy rules
 
 - Never invent a WCAG criterion, severity, or count. Copy what the scan
