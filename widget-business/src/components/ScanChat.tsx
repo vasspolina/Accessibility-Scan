@@ -301,14 +301,18 @@ function splitFences(text: string): Segment[] {
   return segs;
 }
 
-// **bold**, `code`, [text](https://…), and a bare https://… address. A bare
-// address stops before trailing punctuation, so a sentence's full stop is
-// not swallowed into the link.
-const INLINE = /(\*\*[^*]+?\*\*|`[^`]+`|\[[^\]]+\]\(https?:\/\/[^\s)]+\)|https?:\/\/[^\s<>()]*[^\s<>().,;:!?'"])/g;
+// **bold**, *emphasis*, `code`, [text](https://…), and a bare https://…
+// address. A bare address stops before trailing punctuation, so a
+// sentence's full stop is not swallowed into the link. Single-star
+// emphasis asks for an italic, which Jokker does not have (a sloped roman
+// is not one, Hochuli p.41–44), so its words are set plain and the stars
+// dropped: the statement's note showed them as "*Note: …*".
+const INLINE = /(\*\*[^*]+?\*\*|(?<![\p{L}\p{N}*])\*(?![\s*])[^*\n]+?(?<![\s*])\*(?![\p{L}\p{N}*])|`[^`]+`|\[[^\]]+\]\(https?:\/\/[^\s)]+\)|https?:\/\/[^\s<>()]*[^\s<>().,;:!?'"])/gu;
 
 function inline(line: string): ReactNode[] {
   return line.split(INLINE).map((part, i) => {
     if (part.length > 4 && part.startsWith("**") && part.endsWith("**")) return <strong key={i}>{fade(part.slice(2, -2), null)}</strong>;
+    if (part.length > 2 && part.startsWith("*") && part.endsWith("*") && !part.startsWith("**")) return fade(part.slice(1, -1), getLang());
     if (part.length > 2 && part.startsWith("`") && part.endsWith("`")) return <code key={i}>{fade(part.slice(1, -1), null)}</code>;
     const md = /^\[([^\]]+)\]\((https?:\/\/[^\s)]+)\)$/.exec(part);
     if (md) return link(md[2], md[1], i);
