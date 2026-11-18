@@ -212,13 +212,27 @@
 .a11y-widget-biz .a11y-chat-dock {
   margin-top: auto;
   position: sticky; bottom: 0;
-  background: var(--paper); padding-block: 0.6em;
+  /* Clear above the box, paper below its middle: the cards are no longer
+     cut by a band over them, and what scrolls under the box does not show
+     beneath it. The box's shadow paints over this ground. */
+  background: linear-gradient(to bottom, transparent 50%, var(--paper) 50%);
+  padding-block: 0.6em 20px;
 }
 /* The chat box keeps its old design (user's instruction, 4 Nov 2026): square
    corners and a 2px ink edge, whatever the buttons inside it do. It had been
-   made round earlier that day (20px, then 28px) and was put back. */
-.a11y-widget-biz .a11y-chat-box { border: 2px solid var(--ink); padding: 0.5em 0.6em; }
-.a11y-widget-biz .a11y-chat-box:focus-within { outline: 3px solid var(--ink); outline-offset: 2px; box-shadow: 0 0 0 2px var(--paper); }
+   made round earlier that day (20px, then 28px) and was put back.
+   It floats on a soft shadow, like Gemini's (user's instruction, 18 Nov
+   2026, "chat have shadow like gemini and no white cut off"). The dock
+   behind it is clear above the box: its paper ground was a white band that
+   cut the opening cards off over the box. The box carries its own paper, so the
+   words you type keep 21:1. The shadow is the one grey on the page, by
+   the user's word; it carries no meaning and no text sits on it. */
+.a11y-widget-biz .a11y-chat-box {
+  --chat-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 6px 24px rgba(0, 0, 0, 0.12);
+  border: 2px solid var(--ink); padding: 0.5em 0.6em;
+  background: var(--paper); box-shadow: var(--chat-shadow);
+}
+.a11y-widget-biz .a11y-chat-box:focus-within { outline: 3px solid var(--ink); outline-offset: 2px; box-shadow: 0 0 0 2px var(--paper), var(--chat-shadow); }
 /* Outranks the generic field rule (0,3,1) above. */
 .a11y-widget-biz .a11y-chat-dock .a11y-chat-composer .a11y-chat-box textarea {
   display: block; box-sizing: border-box; width: 100%; min-height: 2.6em; max-height: 40vh;
@@ -783,9 +797,14 @@
 
 /* The opening questions, as type-specimen tiles (user's reference, 17 Nov
    2026, replacing the centred display questions and their coloured hover):
-   a square tile per group on an auto-fit grid, 20px corners, the fixed
+   a tile per group on an auto-fit grid, 20px corners, the fixed
    #f0efe8 ground with black words in both themes (18.4:1); the group's
-   label top-left at 15px, the question at the foot at 32px. The whole tile
+   label top-left at 15px, the question at the foot at 30px.
+   No longer square (user's instruction, 18 Nov 2026, "less tall and text
+   20% smaller, now it gets cut off"): a square at 316px wide could not hold
+   a long question at 38px, and the tile ran taller than the window, where
+   the chat box covered it. Now a 200px floor that grows with its words,
+   the question 38 to 30px and the label 18 to 15px. The whole tile
    is the button. Hover and focus turn it solid black with white words
    (21:1) and show a white pill, the "Check it out" of the reference; a 1px
    white edge keeps the black tile visible on a black page. Disabled is a
@@ -796,15 +815,15 @@
 }
 .a11y-widget-biz .a11y-prompts .a11y-prompt {
   --ink: #000; --paper: #f0efe8;
-  box-sizing: border-box; min-width: 0; min-height: auto; aspect-ratio: 1 / 1; margin: 0; padding: 24px;
+  box-sizing: border-box; min-width: 0; min-height: 200px; margin: 0; padding: 20px;
   display: flex; flex-direction: column; align-items: stretch; justify-content: flex-start; gap: 16px;
   border: 1px solid #f0efe8; border-radius: 20px; background: #f0efe8; color: #000;
   font: inherit; text-align: start; cursor: pointer;
   overflow-wrap: break-word; hyphens: auto;
 }
-.a11y-widget-biz .a11y-prompts .a11y-prompt-label { font-size: 18px; font-weight: 500; letter-spacing: 0.01em; line-height: 1.2; }
+.a11y-widget-biz .a11y-prompts .a11y-prompt-label { font-size: 15px; font-weight: 500; letter-spacing: 0.01em; line-height: 1.2; }
 .a11y-widget-biz .a11y-prompts .a11y-prompt-ask {
-  margin-top: auto; font-size: 38px; font-weight: 400; letter-spacing: -0.005em; line-height: 1.05;
+  margin-top: auto; font-size: 30px; font-weight: 400; letter-spacing: -0.005em; line-height: 1.1;
   text-wrap: pretty;
 }
 .a11y-widget-biz .a11y-prompts .a11y-prompt-go {
@@ -1572,4 +1591,93 @@
     box-sizing: border-box; max-width: 85%; padding: 10px 16px; border-radius: 22px;
     background: #f0efe8; color: #000;
   }
+}
+
+/* ═══ THE CONVERSATIONS PANEL (user's instruction, 18 Nov 2026) ═══════════
+   "Add this panel on the left", with Claude's sidebar as the picture: a
+   column beside the conversation with New chat at the top and the past
+   conversations under a small Recent label, each one line, cut with an
+   ellipsis (the full question is the button's name and stays in the thread).
+   The row on screen and the row under the pointer take the #f0efe8 ground of
+   the opening cards, black words in both themes (18.4:1), 12px corners, the
+   way Claude's rows are drawn; a delete button shows on that row. A 1px ink
+   rule parts the panel from the conversation. It is sticky and scrolls on
+   its own, so a long list never pushes the box you type in off screen.
+   Under 640px it folds behind a Conversations toggle above the thread.
+
+   And the conversation runs the full width (same day, "make text run full
+   screen"): the 42ch MEASURE cap is lifted inside the chat's own words.
+   Report blocks shown in the thread keep theirs. */
+.a11y-widget-biz .a11y-chat-layout {
+  display: grid; grid-template-columns: 300px minmax(0, 1fr); gap: 32px; align-items: start;
+}
+.a11y-widget-biz .a11y-chat-layout > .a11y-chat { min-width: 0; }
+.a11y-widget-biz .a11y-chat-thread > .a11y-chat-turn,
+.a11y-widget-biz .a11y-chat-text p,
+.a11y-widget-biz .a11y-chat-text li,
+.a11y-widget-biz .a11y-chat-text dd,
+.a11y-widget-biz .a11y-chat-text blockquote,
+.a11y-widget-biz .a11y-chat-text figcaption,
+.a11y-widget-biz .a11y-chat-text h1,
+.a11y-widget-biz .a11y-chat-text h2,
+.a11y-widget-biz .a11y-chat-text h3,
+.a11y-widget-biz .a11y-chat-text h4 { max-width: none; }
+.a11y-widget-biz .a11y-chats {
+  position: sticky; top: 0; box-sizing: border-box; max-height: 100dvh; overflow-y: auto;
+  padding: 16px 16px 16px 0; border-right: 1px solid var(--ink);
+  font-size: 18px; letter-spacing: 0.01em; line-height: 1.3;
+}
+.a11y-widget-biz .a11y-chats .a11y-chats-new,
+.a11y-widget-biz .a11y-chats .a11y-chats-toggle,
+.a11y-widget-biz .a11y-chats .a11y-chats-item {
+  align-items: center; gap: 10px; box-sizing: border-box; width: 100%; min-height: 40px;
+  margin: 0; padding: 8px 12px; border: 1px solid transparent; border-radius: 12px;
+  background: transparent; color: var(--ink);
+  font-size: 18px; letter-spacing: 0.01em; line-height: 1.3; text-align: start;
+}
+.a11y-widget-biz .a11y-chats .a11y-chats-new { display: flex; font-weight: 500; }
+.a11y-widget-biz .a11y-chats .a11y-chats-toggle { display: none; font-weight: 400; }
+.a11y-widget-biz .a11y-chats .a11y-chats-head {
+  margin: 28px 0 6px; padding-inline: 12px; font-size: 15px; font-weight: 500; letter-spacing: 0.01em; line-height: 1.2;
+}
+.a11y-widget-biz .a11y-chats .a11y-chats-list { list-style: none; margin: 0; padding: 0; }
+.a11y-widget-biz .a11y-chats .a11y-chats-row {
+  display: flex; align-items: center; max-width: none; margin: 0 0 2px; border-radius: 12px;
+}
+.a11y-widget-biz .a11y-chats .a11y-chats-item {
+  display: block; flex: 1 1 auto; min-width: 0; font-weight: 400; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+/* The fixed pale ground, black words, in both themes. */
+.a11y-widget-biz .a11y-chats .a11y-chats-row:is([data-current], :hover) {
+  --ink: #000; --paper: #f0efe8;
+  background: #f0efe8; color: #000;
+}
+.a11y-widget-biz .a11y-chats .a11y-chats-row :is(.a11y-chats-item, .a11y-chats-delete):enabled:hover,
+.a11y-widget-biz .a11y-chats .a11y-chats-new:enabled:hover,
+.a11y-widget-biz .a11y-chats .a11y-chats-toggle:hover {
+  --ink: #000; --paper: #f0efe8;
+  background: #f0efe8; border-color: transparent; color: #000;
+}
+.a11y-widget-biz .a11y-chats .a11y-chats-row[data-current] .a11y-chats-item { font-weight: 500; }
+.a11y-widget-biz .a11y-chats .a11y-chats-delete {
+  flex: none; display: inline-flex; align-items: center; justify-content: center;
+  width: 36px; height: 36px; min-height: 0; margin-inline-end: 2px; padding: 0;
+  border: 1px solid transparent; border-radius: 50%; background: transparent; color: inherit;
+  visibility: hidden;
+}
+.a11y-widget-biz .a11y-chats .a11y-chats-row:is([data-current], :hover, :focus-within) .a11y-chats-delete { visibility: visible; }
+.a11y-widget-biz .a11y-chats .a11y-chats-row .a11y-chats-delete:enabled:hover { border-color: #000; }
+/* Disabled while a reply or a scan runs: the dashed edge, never faded. */
+.a11y-widget-biz .a11y-chats :is(.a11y-chats-new, .a11y-chats-item, .a11y-chats-delete):disabled {
+  border: 1px dashed var(--ink); cursor: not-allowed;
+}
+@media (max-width: 640px) {
+  .a11y-widget-biz .a11y-chat-layout { grid-template-columns: minmax(0, 1fr); gap: 0; }
+  .a11y-widget-biz .a11y-chats {
+    position: static; max-height: none; overflow: visible; padding: 6px 0; border-right: 0;
+  }
+  .a11y-widget-biz .a11y-chats .a11y-chats-toggle { display: flex; width: auto; padding-inline: 8px; }
+  .a11y-widget-biz .a11y-chats:not([data-open]) .a11y-chats-body { display: none; }
+  .a11y-widget-biz .a11y-chats[data-open] .a11y-chats-body { padding-bottom: 12px; border-bottom: 1px solid var(--ink); }
+  .a11y-widget-biz .a11y-chats .a11y-chats-delete { visibility: visible; }
 }

@@ -48,6 +48,11 @@ export function checkNames(checks: string[]): string {
  * IS the key.
  */
 export const CHROME_KEYS: string[] = [
+  // The conversations panel (ScanChat, lib/chatArchive.ts)
+  "Conversations",
+  "New chat",
+  "Recent",
+  "Delete {title}",
   // Manual checks (guided manual testing)
   "Language",
   "The checklist's wording changes on the next scan.",
