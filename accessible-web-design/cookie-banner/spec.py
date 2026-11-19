@@ -4,7 +4,7 @@ import html, re
 
 T = {
  "en": dict(
-  h="Design spec", intro="For the designer restyling it. Every measurement below is in the stylesheet; change the colours, keep the sizes.",
+  h="Design spec", intro="For your designer. Change the colours, keep the sizes. Every measurement is in the stylesheet.",
   banner_cap="First layer, desktop. Markers refer to the table.", dialog_cap="Second layer, the settings dialog.",
   cols=("Marker", "Element", "Specification"),
   marks=[
@@ -42,7 +42,7 @@ T = {
   spacing_h="Spacing", spacing_p="A 4px grid: 12 between buttons and inside rows, 16 between banner rows and at the sides, 20 between dialog rows, 24 around the dialog and above the banner text.",
  ),
  "de": dict(
-  h="Design-Spezifikation", intro="Für die Designerin, die es umgestaltet. Jedes Maß unten steht im Stylesheet; Farben ändern, Größen behalten.",
+  h="Design-Spezifikation", intro="Für Ihr Design-Team. Farben ändern, Größen behalten. Jedes Maß steht im Stylesheet.",
   banner_cap="Erste Ebene, Desktop. Die Markierungen verweisen auf die Tabelle.", dialog_cap="Zweite Ebene, der Einstellungsdialog.",
   cols=("Markierung","Element","Spezifikation"),
   marks=[
@@ -142,8 +142,8 @@ def section(lang, banner_html, dialog_html, h_open="<h2>", h_close="</h2>", sub=
     d = _inject(dialog_html, '<div aria-hidden="true" inert class="consent__dialog"', "G")
     d = _inject(d, '<div class="consent__option">', "H")
     d = _inject(d, '<button type="submit" class="consent__button"', "I")
-    banner = f'''<figure class="spec-figure"><div class="spec-wrap"><div class="spec">{b}</div></div><figcaption>{html.escape(t["banner_cap"])}</figcaption></figure>'''
-    dialog = f'''<figure class="spec-figure"><div class="spec-wrap"><div class="spec">{d}</div></div><figcaption>{html.escape(t["dialog_cap"])}</figcaption></figure>'''
+    banner = f'''<figure class="spec-figure"><div class="spec-wrap" tabindex="0" role="region" aria-label="{html.escape(t["banner_cap"])}"><div class="spec">{b}</div></div><figcaption>{html.escape(t["banner_cap"])}</figcaption></figure>'''
+    dialog = f'''<figure class="spec-figure"><div class="spec-wrap" tabindex="0" role="region" aria-label="{html.escape(t["dialog_cap"])}"><div class="spec">{d}</div></div><figcaption>{html.escape(t["dialog_cap"])}</figcaption></figure>'''
     rows = "".join(f'<tr><td><span class="mark" aria-hidden="true">{m}</span><span class="visually-hidden">{m}</span></td><td>{html.escape(e)}</td><td>{html.escape(s)}</td></tr>' for m,e,s in t["marks"])
     prow = "".join(f'<tr><td>{html.escape(r)}</td><td>{_sw(l)}</td><td>{_sw(d)}</td><td>{html.escape(u)}</td></tr>' for r,l,d,u in t["roles"])
     states = "".join(f'<li><strong>{html.escape(a)}</strong><span>{html.escape(b)}</span></li>' for a,b in t["states"])
@@ -152,10 +152,10 @@ def section(lang, banner_html, dialog_html, h_open="<h2>", h_close="</h2>", sub=
     <p>{html.escape(t["intro"])}</p>
     {banner}
     {dialog}
-    <div class="spec-wrap"><table class="spec-table"><thead><tr>{"".join(f"<th>{c}</th>" for c in t["cols"])}</tr></thead><tbody>{rows}</tbody></table></div>
+    <div class="spec-wrap" tabindex="0" role="region" aria-label="{html.escape(t["h"])}"><table class="spec-table"><thead><tr>{"".join(f"<th>{c}</th>" for c in t["cols"])}</tr></thead><tbody>{rows}</tbody></table></div>
     <{sub}>{t["palette_h"]}</{sub}>
     <p>{html.escape(t["palette_intro"])}</p>
-    <div class="spec-wrap"><table class="spec-table"><thead><tr>{"".join(f"<th>{c}</th>" for c in t["pcols"])}</tr></thead><tbody>{prow}</tbody></table></div>
+    <div class="spec-wrap" tabindex="0" role="region" aria-label="{html.escape(t["palette_h"])}"><table class="spec-table"><thead><tr>{"".join(f"<th>{c}</th>" for c in t["pcols"])}</tr></thead><tbody>{prow}</tbody></table></div>
     <{sub}>{t["type_h"]}</{sub}><p>{html.escape(t["type_p"])}</p>
     <{sub}>{t["spacing_h"]}</{sub}><p>{html.escape(t["spacing_p"])}</p>
     <{sub}>{t["states_h"]}</{sub}>
