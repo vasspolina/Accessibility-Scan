@@ -1256,7 +1256,7 @@ export function ScanChat({
                     disabled={switchLocked && c.id !== chatId}
                     onClick={() => openChat(c)}
                   >
-                    {c.title}
+                    <span className="a11y-chats-title">{c.title}</span>
                   </button>
                   <button
                     type="button"
