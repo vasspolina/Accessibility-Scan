@@ -46,8 +46,8 @@ describe("the model statement (Implementing Decision (EU) 2018/1523)", () => {
 
   it("says how the assessment was made, not just when", () => {
     expect(text).toMatch(/Method used:/i);
-    expect(text).toMatch(/self assessment/i);
-    expect(text).toMatch(/not a third party evaluation/i);
+    expect(text).toMatch(/self-assessment/i);
+    expect(text).toMatch(/not a third-party evaluation/i);
   });
 
   it("gives the preparation date and the review date", () => {

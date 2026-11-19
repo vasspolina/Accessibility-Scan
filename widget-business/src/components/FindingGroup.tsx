@@ -7,7 +7,8 @@ import { getDecidedBy, setDecidedBy } from "../lib/apiKey";
 import { Select } from "./Select2";
 import { Input } from "./Input";
 import { Button } from "./Button";
-import { levelFraming, plainForRule, plainFixForRule } from "../lib/wcagPlain";
+import { levelFraming, plainForRule } from "../lib/wcagPlain";
+import { findingFix, findingTitle, modelPlain } from "../lib/modelPlain";
 import { whatWeFound } from "../lib/findingText";
 import { pictureNoteText } from "../lib/failureText";
 import { useReportView } from "./ReportViewContext";
@@ -16,6 +17,7 @@ import { DataTable } from "./DataTable";
 import { ElementShot } from "./ElementShot";
 import {
   fixKindForFinding,
+  fixHint,
   isKeyboardCheck,
   isAiFinding,
   aiHint,
@@ -315,6 +317,17 @@ function fieldLabel(purpose: string): string {
  * Reported on a card headed "Screen reader hears exhibition dates with no
  * artwork description", whose affected-element list read, in full: Heading.
  */
+
+/** How wide a card of the expanded finding runs on the mosaic (user's
+ *  reference, 18 Nov 2026: a type foundry's sheet of alternates, tiles of
+ *  different widths on one grid). Measured on the words, so a one-line
+ *  answer is a narrow tile set large and a paragraph takes the width it
+ *  needs. s spans two of six columns, m three, l four. */
+export function tileSize(text: string | null | undefined): "s" | "m" | "l" {
+  const n = (text ?? "").length;
+  return n <= 90 ? "s" : n <= 200 ? "m" : "l";
+}
+
 export function labelNamesSomething(label: string): boolean {
   const generic = new Set([...Object.values(KIND_WORDS).map(kindLabel), t("Element")]);
   return !generic.has(label.trim());
@@ -505,6 +518,10 @@ function dedupeOccurrences(findings: AccessibilityFinding[]): OccurrenceEntry[] 
     const existing = byKey.get(key);
     if (existing) {
       existing.count += 1;
+      // The row shows its representative's AI fix; when the first of a run
+      // of identical elements had none and a later one does, the later one
+      // speaks for the row.
+      if (!existing.rep.suggestedCode && f.suggestedCode) existing.rep = f;
     } else {
       byKey.set(key, { rep: f, count: 1, label });
       order.push(key);
@@ -553,15 +570,18 @@ export function FindingDetails({
   const rep = findings[0];
   const count = findings.length;
   const plain = plainForRule(rep.ruleId);
-  const title = plain?.plain ?? rep.title ?? rep.description;
+  const title = findingTitle(rep);
   const fix = fixKindForFinding(rep);
   const keyboardCheck = isKeyboardCheck(rep);
   const fromAi = isAiFinding(rep);
-  const whatToDo = plainFixForRule(rep.ruleId) ?? rep.suggestedFix;
+  const whatToDo = findingFix(rep);
+  const worded = modelPlain(rep);
   const entries = dedupeOccurrences(findings);
   const measured = whatWeFound(rep, plain, entries.length, title);
   const locatesSomething = entries.some(
-    (e) => labelNamesSomething(e.label) || e.rep.elementScreenshot
+    // An AI fix is shown in the element's row, so a row that carries one is
+    // kept even when its label and picture identify nothing on their own.
+    (e) => labelNamesSomething(e.label) || e.rep.elementScreenshot || e.rep.suggestedCode
   );
   const cluster = dominantComponent(findings);
   const summarize = entries.length > SUMMARY_THRESHOLD;
@@ -602,21 +622,34 @@ export function FindingDetails({
           of these answers something different — who does the work, whether
           you can check it without them, and where the finding came from — so
           each gets its own line and its own label. */}
-      <p className="a11y-method-hint">
-        <strong>{t("Who fixes this")}</strong> {fix.hint}
+      <p className="a11y-method-hint" data-size={tileSize(fixHint(rep))}>
+        <strong>{t("Who fixes this")}</strong> <span className="a11y-fd-body">{fixHint(rep)}</span>
       </p>
       {keyboardCheck && (
-        <p className="a11y-method-hint">
-          <strong>{t("Check it yourself")}</strong> {keyboardHint()}
+        <p className="a11y-method-hint" data-size={tileSize(keyboardHint())}>
+          <strong>{t("Check it yourself")}</strong> <span className="a11y-fd-body">{keyboardHint()}</span>
         </p>
       )}
       {fromAi && (
-        <p className="a11y-method-hint">
-          <strong>{t("Where this came from")}</strong> {aiHint()}
+        <p className="a11y-method-hint" data-size={tileSize(aiHint())}>
+          <strong>{t("Where this came from")}</strong> <span className="a11y-fd-body">{aiHint()}</span>
+        </p>
+      )}
+      {/* The model worded this card; the check, its severity and its
+          criterion are still the rule's. Said once, under the same label
+          the AI review's provenance uses. */}
+      {worded && (
+        <p className="a11y-method-hint" data-size="l">
+          <strong>{t("Where this came from")}</strong>{" "}
+          <span className="a11y-fd-body">
+            {tf("An automated check found this. {model}, a language model we run on our own server, put it into plain words. The check decided the severity, not the model.", { model: worded.model })}
+          </span>
         </p>
       )}
       {!rep.elementScreenshot && pictureNoteText(rep) && (
-        <p className="a11y-picture-note">{pictureNoteText(rep)}</p>
+        <p className="a11y-picture-note" data-size={tileSize(pictureNoteText(rep) ?? "")}>
+          <span className="a11y-fd-body">{pictureNoteText(rep)}</span>
+        </p>
       )}
       {/* The rule's own account of what was found where it has one, and
           the finding's description otherwise. axe supplies a requirement
@@ -633,8 +666,9 @@ export function FindingDetails({
           shown anywhere at all. Measured across the European sweep: 32 of
           80 AI findings arrived as a headline and three badges. */}
       {measured && (
-        <p className="a11y-finding-measured">
-          <strong className="a11y-fd-title">{t("What we found")}</strong> <CodeText text={measured} />
+        <p className="a11y-finding-measured" data-size={tileSize(measured)}>
+          <strong className="a11y-fd-title">{t("What we found")}</strong>{" "}
+          <span className="a11y-fd-body"><CodeText text={measured} /></span>
         </p>
       )}
       {/* Its own line, not folded into the text above: rules with a
@@ -642,21 +676,32 @@ export function FindingDetails({
           made the first of these notes invisible on the very rule it
           attached to. */}
       {rep.ageNote && (
-        <p className="a11y-finding-measured">
-          <strong>{t("Past sixty")}</strong> <CodeText text={rep.ageNote} />
+        <p className="a11y-finding-measured" data-size={tileSize(rep.ageNote)}>
+          <strong>{t("Past sixty")}</strong> <span className="a11y-fd-body"><CodeText text={rep.ageNote} /></span>
+        </p>
+      )}
+      {/* The model's account of what happens on this page, from the
+          elements it was shown. Beside the curated "why", not instead of
+          it: the curated line is reviewed, this one is not. */}
+      {worded && (
+        <p className="a11y-finding-measured" data-size={tileSize(worded.explanation)}>
+          <strong className="a11y-fd-title">{t("On this page")}</strong>{" "}
+          <span className="a11y-fd-body"><CodeText text={worded.explanation} /></span>
         </p>
       )}
       {/* Shared explanation — shown once for the whole group */}
       {plain && (
-        <p className="a11y-finding-impact">
-          <strong className="a11y-fd-title">{t("Why this matters")}</strong> <CodeText text={plain.impact} />
+        <p className="a11y-finding-impact" data-size={tileSize(plain.impact)}>
+          <strong className="a11y-fd-title">{t("Why this matters")}</strong>{" "}
+          <span className="a11y-fd-body"><CodeText text={plain.impact} /></span>
         </p>
       )}
       {/* Curated, hand-verified research context — never generated per
           scan, which is how invented statistics happen. */}
       {plain?.research && (
-        <p className="a11y-finding-research">
-          <strong>{t("What the research shows")}</strong> <CodeText text={plain.research} />
+        <p className="a11y-finding-research" data-size={tileSize(plain.research)}>
+          <strong>{t("What the research shows")}</strong>{" "}
+          <span className="a11y-fd-body"><CodeText text={plain.research} /></span>
         </p>
       )}
       </div>
@@ -880,13 +925,14 @@ export function findingRow(
   const rep = findings[0];
   const count = findings.length;
   const plain = plainForRule(rep.ruleId);
-  const title = plain?.plain ?? rep.title ?? rep.description;
+  const title = findingTitle(rep);
   const fix = fixKindForFinding(rep);
   const keyboardCheck = isKeyboardCheck(rep);
   const fromAi = isAiFinding(rep);
 
   const issueCell = (
-    <span className="a11y-finding-issue">
+    // data-finding: the score summary's links find this row by it (lib/openFinding).
+    <span className="a11y-finding-issue" data-finding={rep.id}>
       {/* Severity's own column (below) is hidden at phone width — its
           badge plus the Issue text plus the arrow column already exceeded
           the viewport there, forcing horizontal scroll before a reader
@@ -978,7 +1024,7 @@ export function FindingGroup({
   // Deterministic findings get a plain-language title from the rule map; AI
   // findings write their own. Only fall back to the description when neither
   // exists — it's a paragraph, which reads badly as a heading.
-  const title = plain?.plain ?? rep.title ?? rep.description;
+  const title = findingTitle(rep);
   const detailsId = `a11y-group-${rep.id}`;
   // Where the change is made, and whether the owner can confirm it without
   // help. Two separate questions, two separate marks.
@@ -1133,7 +1179,7 @@ function TriageControl({ finding }: { finding: AccessibilityFinding }) {
       setSaved({ state: d.state, decidedBy: d.decidedBy, decidedAt: d.decidedAt });
       setOpen(false);
     } catch (err) {
-      setError(err instanceof ScanError ? err.message : t("Could not save the decision."));
+      setError(err instanceof ScanError ? err.message : t("Couldn't save the decision."));
     } finally {
       setBusy(false);
     }
@@ -1213,6 +1259,7 @@ function Occurrence({
       <ElementShot finding={finding} showLocator={professional} />
       {hasAlt && <AltTextSuggestion value={finding.suggestedAltText!} />}
       {finding.suggestedColour && <ColourSuggestion suggestion={finding.suggestedColour} />}
+      {finding.suggestedCode && <CodeFixSuggestion fix={finding.suggestedCode} />}
     </li>
   );
 }
@@ -1299,6 +1346,56 @@ function ColourSuggestion({
 // Renders the AI's alt-text suggestion for an image missing one. An empty
 // value is meaningful — it means the image is decorative and the right fix
 // is an empty alt attribute, not a description.
+// The AI fix: the element as it is, then as it would pass, with a copy
+// button on the fixed one. Both are shown because "here is new markup" alone
+// asks the reader to diff it in their head, and the reader is usually not the
+// person who wrote the original. Labelled as the AI's on every occurrence: it
+// is written from the markup alone and can be wrong, which the backend's
+// validateCodeFix narrows but cannot rule out.
+function CodeFixSuggestion({ fix }: { fix: NonNullable<AccessibilityFinding["suggestedCode"]> }) {
+  const [copied, setCopied] = useState(false);
+
+  async function copy() {
+    try {
+      await navigator.clipboard.writeText(fix.after);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 1500);
+    } catch {
+      // Clipboard blocked: the markup is on screen to copy by hand.
+    }
+  }
+
+  return (
+    <div className="a11y-code-fix">
+      <p className="a11y-code-fix-label">
+        <strong>{t("AI fix")}</strong> {t("Written by AI from this element's markup. Check it before you use it.")}
+      </p>
+      {fix.note && <p className="a11y-code-fix-note">{fix.note}</p>}
+      <p className="a11y-code-fix-key">{t("Current markup")}</p>
+      {/* Scrollable, so keyboard-reachable; a group, not a region, for the
+          same reason as the professional snippet above. */}
+      <pre className="a11y-code-fix-pre" tabIndex={0} role="group" aria-label={t("Current markup")}>
+        <code>{fix.before}</code>
+      </pre>
+      <p className="a11y-code-fix-key">{t("Fixed markup")}</p>
+      <pre className="a11y-code-fix-pre a11y-code-fix-after" tabIndex={0} role="group" aria-label={t("Fixed markup")}>
+        <code>{fix.after}</code>
+      </pre>
+      <button
+        type="button"
+        className="a11y-copy-btn"
+        onClick={copy}
+        aria-label={copied ? t("Copied the fixed markup") : t("Copy the fixed markup")}
+      >
+        {copied ? t("Copied") : t("Copy")}
+      </button>
+      <span className="a11y-sr-only" role="status">
+        {copied ? t("Fixed markup copied to the clipboard.") : ""}
+      </span>
+    </div>
+  );
+}
+
 function AltTextSuggestion({ value }: { value: string }) {
   const [copied, setCopied] = useState(false);
 

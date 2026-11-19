@@ -23,6 +23,41 @@ function bind(text: string): string {
   return text.replace(SHORT, (_m, word: string) => `${word}${NBSP}`);
 }
 
+/**
+ * No word of a sentence alone on a line (user's instruction, 18 Nov 2026,
+ * "just don't leave one word from a sentence on the line"). In a run of
+ * four words or more, the first word is held to the second and the last to
+ * the one before, so a line never ends on a run's opening word or opens on
+ * its closing one. A run of two or three words is left breakable: held
+ * whole, a two-word German label could not fit 320px. Hyphenation and
+ * overflow-wrap still break inside a word, so a held pair cannot run off a
+ * phone screen.
+ */
+const WORDS = /[^\s\u00A0]+/g;
+function holdEnds(text: string): string {
+  const words = [...text.matchAll(WORDS)];
+  if (words.length < 4) return text;
+  const gap = (a: RegExpMatchArray, b: RegExpMatchArray) => [a.index! + a[0].length, b.index!] as const;
+  const [s1, e1] = gap(words[0], words[1]);
+  const [s2, e2] = gap(words[words.length - 2], words[words.length - 1]);
+  const join = (seg: string) => (/^[\t ]+$/.test(seg) ? NBSP : seg);
+  return text.slice(0, s1) + join(text.slice(s1, e1)) + text.slice(e1, s2) + join(text.slice(s2, e2)) + text.slice(e2);
+}
+
+/**
+ * French spaces before ; ! ? and inside « » are the narrow no-break space,
+ * U+202F (Hochuli fig. 41), which Jokker does not have: Chromium measured it
+ * at 0.095em, drawn from whatever fallback font the reader's system holds.
+ * Jokker's own thin space (U+2009, 0.122em measured) is drawn in the face,
+ * and a word joiner either side (U+2060, zero width, never drawn, so it needs
+ * no glyph) keeps it from breaking: a line can no longer end on « or open
+ * on ? (measured, 18 Nov 2026).
+ */
+const THIN_HELD = "\u2060\u2009\u2060";
+function jokkerSpaces(text: string): string {
+  return text.includes("\u202F") ? text.replace(/\u202F/g, THIN_HELD) : text;
+}
+
 function inSkipped(node: Node): boolean {
   let el: Node | null = node.parentNode;
   while (el && el.nodeType === Node.ELEMENT_NODE) {
@@ -38,8 +73,9 @@ function process(root: Node): number {
   let n: Node | null;
   while ((n = walker.nextNode())) {
     const t = n as Text;
-    if (!t.data || t.data.length < 4 || inSkipped(t)) continue;
-    const next = bind(t.data);
+    if (!t.data || inSkipped(t)) continue;
+    const spaced = jokkerSpaces(t.data);
+    const next = spaced.length < 4 ? spaced : holdEnds(bind(spaced));
     if (next !== t.data) {
       t.data = next;
       changed++;
@@ -132,9 +168,9 @@ export function smarten(text: string, lang: string): string {
     .replace(/^(?:-{1,2}|—)(?=\s)/, "–")
     // An unspaced em dash takes the spaced form too.
     .replace(/(?<=\S)—(?=\S)/g, dash)
-    // 1280x900: the x of the typeface, a word space either side that cannot
-    // break (the face has no thin space, so none is asked for).
-    .replace(/(\d{2,})[  ]?[x×][  ]?(\d{2,})/g, "$1 x $2");
+    // 1280x900: the x of the typeface between thin spaces (fig. 52). Jokker
+    // has a thin space (U+2009, 0.122em); a word joiner either side holds it.
+    .replace(/(\d{2,})[  ]?[x×][  ]?(\d{2,})/g, `$1${THIN_HELD}x${THIN_HELD}$2`);
   // Quotation marks, read left to right with the depth of the quotation:
   // the first mark that opens takes the language's primary marks, one opened
   // inside it the nested marks, whichever straight character was typed
@@ -209,4 +245,21 @@ export function smarten(text: string, lang: string): string {
  *  word's first capital are not runs. Used to wrap them in markup. */
 export const CAPS_RUN = /(?<![\p{L}\p{N}])([A-ZÄÖÜ][A-Z0-9ÄÖÜ]+(?:-[A-Z0-9]+)*)(?![\p{L}])/gu;
 
-export const __test = { bind, smarten };
+/** Straight marks left in interface copy: an apostrophe inside a word
+ *  (won't, form's) or after a plural's s (users') becomes ’, and a pair of
+ *  straight double marks takes the language's primary quotation marks
+ *  (fig. 53). Applied by t(), so every string table is set the same way
+ *  without rewriting its keys. */
+export function setMarks(text: string, lang: string): string {
+  // English takes single marks first (fig. 53); keys typed with curly
+  // doubles, “{title}”, take them too, unless a single quotation is inside.
+  if (lang === "en" && text.includes("“")) text = text.replace(/“([^“”‘\n]*)”/g, "‘$1’");
+  if (!/['"]/.test(text)) return text;
+  const [open, close] = (QUOTES[lang] ?? QUOTES.en).d;
+  return text
+    .replace(/(?<=\p{L})'(?=\p{L})/gu, "’")
+    .replace(/(?<=\p{L}s)'(?=[\s.,;:!?)]|$)/gu, "’")
+    .replace(/(^|[\s(\[\u2013])"([^"\n]+)"/g, `$1${open}$2${close}`);
+}
+
+export const __test = { bind, smarten, holdEnds, jokkerSpaces };

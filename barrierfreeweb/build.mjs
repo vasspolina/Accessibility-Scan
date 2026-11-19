@@ -54,11 +54,17 @@ const blocks = (current) =>
     ([href, name]) => `<li><a href="${href}"${href === current ? ' aria-current="page"' : ""}>${name}</a></li>`,
   ).join("\n")}\n</ul>`;
 
+// What clients have said, in their words: [quote, name, role or company].
+// Only real, permitted quotes go here. While it is empty, reviews.html is not
+// written and nothing links to it, so the site never shows an invented review.
+const REVIEWS = [];
+
 // One navigation, in two groups: the pages, then the two things to do.
 const NAV = [
   [
     ["services.html", "Services"],
     ["accessibility.html", "Accessibility"],
+    ...(REVIEWS.length ? [["reviews.html", "Reviews"]] : []),
     ["about.html", "About"],
   ],
   [
@@ -456,3 +462,22 @@ page({
     ),
   ].join("\n"),
 });
+
+// ── Reviews ─────────────────────────────────────────────────────────────
+// English quotations take single marks first (see ../CLAUDE.md, Punctuation).
+if (REVIEWS.length) {
+  page({
+    file: "reviews.html",
+    section: "reviews.html",
+    title: "Reviews – BarrierFreeWeb",
+    description: "What clients say about working with BarrierFreeWeb.",
+    lead: hero("Don’t just take our word for it.", p("A few words from the people we’ve built websites for.")),
+    body: [
+      ...REVIEWS.map(
+        ([quote, name, role]) =>
+          `<section class="sec"><figure class="review">\n<blockquote><p>‘${set(quote)}’</p></blockquote>\n<figcaption>${set(name)}${role ? `<br>${set(role)}` : ""}</figcaption>\n</figure></section>`,
+      ),
+      `<section class="sec"><p>${btn("Work with us", "New project")}</p></section>`,
+    ].join("\n"),
+  });
+}

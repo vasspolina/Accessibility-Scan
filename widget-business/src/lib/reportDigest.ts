@@ -1,7 +1,8 @@
 import type { AccessibilityFinding, AccessibilityReport, SiteAudit } from "../api/scanClient";
 import { groupFindings } from "../components/FindingsList";
 import { TRIAGE_BADGE } from "../components/FindingGroup";
-import { plainForRule, plainFixForRule } from "./wcagPlain";
+import { plainForRule } from "./wcagPlain";
+import { findingFix, findingTitle } from "./modelPlain";
 import { fixKindForFinding } from "./testMethod";
 import { whatWeFound } from "./findingText";
 import { t } from "./strings";
@@ -32,8 +33,8 @@ const ELEMENTS_PER_FINDING = 3;
 function digestFinding(group: AccessibilityFinding[]) {
   const rep = group[0];
   const plain = plainForRule(rep.ruleId);
-  const title = plain?.plain ?? rep.title ?? rep.description;
-  const fix = plainFixForRule(rep.ruleId) ?? rep.suggestedFix;
+  const title = findingTitle(rep);
+  const fix = findingFix(rep);
   const criterion = rep.wcagCriterion && rep.wcagCriterion !== "N/A" ? rep.wcagCriterion : undefined;
   // What the site's owner already said about these places, counted by the
   // badge the card shows. The finding stays — a marked fault is still

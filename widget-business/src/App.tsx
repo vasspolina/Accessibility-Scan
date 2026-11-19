@@ -109,8 +109,8 @@ export function waitingMessage(mode: ScanMode, aiRequested: boolean, elapsed: nu
       : t("Still at it. Heavier pages take longer.");
   }
   return aiRequested
-    ? t("We check your site, including the AI review. That usually takes about a minute…")
-    : tf("We check your site. Most pages take {duration}…", { duration: t(SCAN_DURATION.page) });
+    ? t("Checking your site, AI review included. This usually takes about a minute…")
+    : tf("Checking your site. Most pages take {duration}…", { duration: t(SCAN_DURATION.page) });
 }
 
 export interface CtaConfig {
@@ -171,6 +171,9 @@ export function App({
   // that keeps counting is the difference between waiting and wondering.
   const [elapsed, setElapsed] = useState(0);
   const [tookSeconds, setTookSeconds] = useState<number | null>(null);
+  // The result on screen came from a scan behind a login. The conversations
+  // panel never stores it, for the reason recordScan() never records it.
+  const [resultPrivate, setResultPrivate] = useState(false);
   // The scan's own narration: milestone ids as the backend crosses them,
   // in arrival order. Empty until the stream produces something, and the
   // waiting screen falls back to the elapsed-time story when it stays so
@@ -212,9 +215,10 @@ export function App({
     for (const c of report?.conformance?.criteria ?? []) {
       criterionNames[c.id] = { name: c.name, level: c.level };
     }
-    const showInstances = groupFindings(report?.findings ?? []).some((g) => g.length > 1);
-    return { professional, criterionNames, showInstances, apiBase, siteUrl: report?.url, signedIn: signedIn && Boolean(report?.savedAs) };
+    return { professional, criterionNames, apiBase, siteUrl: report?.url, signedIn: signedIn && Boolean(report?.savedAs) };
   }, [report, professional, apiBase, signedIn]);
+  // The same view for a section drawn as a block in the conversation.
+  const chatReportView = useMemo<ReportView>(() => ({ ...reportView, inChat: true }), [reportView]);
 
   // Print must include every card whatever the on-screen filter shows — the
   // rule the conformance checklist already follows. The filter lives in React
@@ -396,6 +400,7 @@ export function App({
         setReport(null);
         setHistory([]);
         setAudit(result);
+        setResultPrivate(false);
         setTookSeconds(Math.max(1, Math.round((Date.now() - startedAt) / 1000)));
         outcome = { kind: "audit", audit: result };
       } else {
@@ -406,6 +411,7 @@ export function App({
         recordScan(result, Boolean(auth));
         setAudit(null);
         setReport(result);
+        setResultPrivate(Boolean(auth));
         setTookSeconds(Math.max(1, Math.round((Date.now() - startedAt) / 1000)));
         outcome = { kind: "report", report: result };
         // A saved scan has a server-side history too, which follows the
@@ -523,11 +529,11 @@ export function App({
         return report.findings.some((f) => f.ruleId === "consent-blocks-reader") ? (
           <div className="a11y-blockflag" role="alert">
             <p className="a11y-blockflag-title">
-              {t("Start here: a screen reader cannot get past your cookie banner")}
+              {t("Start here: a screen reader can't get past your cookie banner")}
             </p>
             <p className="a11y-blockflag-body">
               {t(
-                "The banner hides the page from screen readers and never takes focus. Until that is fixed, everything below this line is what a screen reader user never reaches."
+                "The banner hides the page from screen readers and never takes focus. Until it is fixed, screen reader users never reach anything below this line."
               )}
             </p>
             <button
@@ -675,17 +681,20 @@ export function App({
            first said the headings twice. Translated whole; the link sits
            where its placeholder does, so word order follows the language. */
         const [sectionDescBefore, sectionDescAfter] = t(
-          "What a screen reader cannot read aloud in this document, grouped by the four questions the standard asks. More at {link}."
+          "What a screen reader can't read aloud in this document, grouped by the four questions the standard asks. More at {link}."
         ).split("{link}");
         return (
           <div className={professional && !isDocument ? "a11y-print-cards" : undefined}>
-            {!isDocument && (
+            {/* Shown only when something was found: an empty "Nothing
+                found here." section is a heading with nothing under it
+                (user's instruction, 18 Nov 2026). */}
+            {!isDocument && findingsByCategory.darkPattern.length > 0 && (
               <ReportSection
                 title="What costs you trust"
                 description={t(
-                  "Places your site nudges people rather than leaves the choice to them. These don't move the score."
+                  "Places where your site nudges people instead of leaving the choice to them. These don't move the score."
                 )}
-                variant={findingsByCategory.darkPattern.length > 0 ? "redflag" : "default"}
+                variant="redflag"
                 findings={findingsByCategory.darkPattern}
                 id="a11y-trust-heading"
               />
@@ -975,13 +984,32 @@ export function App({
           reducedMotion={reducedMotion}
           report={report}
           audit={audit}
-          renderSection={(key) => <ReportViewProvider value={reportView}>{renderSection(key)}</ReportViewProvider>}
+          renderSection={(key) => <ReportViewProvider value={chatReportView}>{renderSection(key)}</ReportViewProvider>}
           availableSections={availableSections}
           onScan={(url, scope, aiReview) => {
             const full = /^https?:\/\//i.test(url) ? url : `https://${url}`;
             return handleScan(full, aiReview, scope, 5);
           }}
           onUseForm={() => setEntry("form")}
+          resultPrivate={resultPrivate}
+          onRestore={(result) => {
+            // A reopened conversation's result, back as it was: no scan, and
+            // nothing recorded in the history, which already holds it.
+            setError(null);
+            setBlocked(null);
+            setTookSeconds(null);
+            setResultPrivate(false);
+            setMode(result.kind === "audit" ? "site" : "page");
+            if (result.kind === "report") {
+              setAudit(null);
+              setReport(result.report);
+              setHistory(getHistory(result.report.url, result.report.scannedAt));
+            } else {
+              setReport(null);
+              setHistory([]);
+              setAudit(result.audit);
+            }
+          }}
           language={lang}
           onLanguageChange={changeLang}
         />

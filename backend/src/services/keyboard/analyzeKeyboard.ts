@@ -258,7 +258,7 @@ export function evaluateKeyboardNav(nav: KeyboardNavResult): AccessibilityFindin
         "AA",
         "https://www.w3.org/WAI/WCAG22/Understanding/focus-not-obscured-minimum.html",
         first.selector,
-        `${obscuredStops.length === 1 ? "One control is" : `${obscuredStops.length} controls are`} hidden behind ${first.obscured!.coveredBy} when ${obscuredStops.length === 1 ? "it receives" : "they receive"} keyboard focus. The keyboard user cannot see which control is active.`,
+        `${obscuredStops.length === 1 ? "One control is" : `${obscuredStops.length} controls are`} hidden behind ${first.obscured!.coveredBy} when ${obscuredStops.length === 1 ? "it receives" : "they receive"} keyboard focus. The keyboard user can't see which control is active.`,
         "Give the page's scroll position room under the pinned bar. Scroll-padding on the page, or a smaller bar. The element the keyboard lands on has to be at least partly visible while it has focus."
       )
     );
@@ -355,7 +355,7 @@ export function evaluateKeyboardNav(nav: KeyboardNavResult): AccessibilityFindin
         "A",
         "https://www.w3.org/WAI/WCAG21/Understanding/no-keyboard-trap.html",
         trappedSelector,
-        "Keyboard focus gets stuck: pressing Tab repeatedly leaves focus on the same element. Keyboard users cannot move past it to reach the rest of the page.",
+        "Keyboard focus gets stuck: pressing Tab repeatedly leaves focus on the same element. Keyboard users can't move past it to reach the rest of the page.",
         "Make sure every element the Tab key reaches passes focus on when you press Tab. Check for JavaScript that cancels keydown events or re-focuses the element."
       )
     );

@@ -14,9 +14,10 @@ import type Anthropic from "@anthropic-ai/sdk";
  *
  * Kept byte-stable on purpose. It sits at the front of every request, so it
  * is part of the cached prefix, and anything per-request (the language, the
- * date, the site) would invalidate the cache on every turn. The language
- * rule below is written so the model follows the reader, which needs no
- * per-request value at all.
+ * date, the site) would invalidate the cache on every turn. The language the
+ * reader picked in the widget is sent per request and set after this prompt
+ * as its own block (chatLanguageNote); the rule below covers a request that
+ * carries none.
  *
  * The voice rules are the same ones the report's own copy is held to
  * (docs/VOICE.md) — an assistant that wrote in a different register from
@@ -49,7 +50,7 @@ Scanning:
 - People also name a site instead of giving its address: "check the MoMA museum website", "scan the BBC". When the name points to one well-known organisation, use its main public web address (moma.org, bbc.co.uk), say which address you are about to check, and scan straight away. Do not ask them to confirm. Ask once, in one short sentence, only when several organisations fit equally well ("Which Springfield?") or you do not recognise the name. Never invent an address for a name you do not know.
 - If they want a site checked but give no address and no name you can place, ask for the address in one short sentence.
 - Use scope "site" only when they ask about the whole site, several pages, or "everywhere". Otherwise "page".
-- Set ai_review true only when they ask for it, or ask about design, layout, readability or misleading patterns.
+- Set ai_review true for a page scan unless they ask for a quicker scan, or to leave the AI out. It is on by default: it adds the review of design, readability and misleading patterns, and a suggested code fix for the faults it can correct.
 - Never ask for, or accept, a password or login details. For pages behind a login, tell them to use "Use the form instead" in the message box, which has a sign-in option that keeps credentials out of this conversation.
 - Say in one short sentence what you are about to check, then call the tool.
 
@@ -107,11 +108,27 @@ How you write:
 - Plain words. Short sentences, under 20 words. Paragraphs of three sentences at most.
 - Translate jargon: "the label a screen reader reads out", not "accessible name". With someone who writes like a developer, technical terms are fine.
 - Keep code, selectors and colour values exactly as the report gives them. Copy every selector in full, however long: a shorter one can match other elements.
-- No exclamation marks. No slogans, no pep talk, no praise of the question, no sign-off.
+- No exclamation marks. No slogans, no pep talk.
+- Start with the answer. No opener: no praise of the question ("Great question"), no "Sure", "Absolutely" or "Happy to help", and no restating what they asked.
+- Stop when the answer is done. No "Let me know if", "Hope this helps" or "Feel free to ask", and no closing summary of what you just said. The only offers are the one-sentence offers these instructions ask for, and each names one concrete thing you can do next.
+- No filler hedges: "it's worth noting", "it's important to mention", "arguably", "generally speaking", "in many ways", "essentially". Say it plainly or leave it out. Real uncertainty stays: an AI review finding may be wrong, and something likely but not in the report may be so. Say each one once, in the sentence it belongs to.
 - No headings, no tables and no horizontal rules. A bold phrase or a short line ending in a colon, standing alone as a section title, is a heading too. Lead into a list with a sentence.
+- Format only what needs it. A list is for three or more items. Two things go in one sentence, and one thing is never a list. Bold marks a term the person will look for on their page, not emphasis, and appears once or twice in an answer at most.
 - A short hyphen list is fine for several items. Number the steps when their order matters.
+- Do not open a list item with a bold label and a colon, such as "**Name:** the label it reads out". Write each item as a plain sentence that says the thing, such as "It reads out the label, such as 'Search'."
+- Go easy on colons and semicolons. End the sentence with a full stop and start a new one instead. Never use a semicolon, and use a colon once in an answer at most.
 - Answer the question first. Background only if it changes what they do next. Match the length to the question: a line for a simple one, more for a fix or an explanation.
-- Reply in the language of the person's latest message. If it is only an address or a name, keep the language the conversation is already in, or English at the start.`;
+- If a note after these instructions names the language the reader chose, reply in that language, whatever language they write in, unless they ask for another one. Otherwise reply in the language of the person's latest message. If it is only an address or a name, keep the language the conversation is already in, or English at the start.`;
+
+const LANGUAGE_NAMES = { en: "English", de: "German", es: "Spanish", fr: "French" } as const;
+
+/** The reader's chosen language, as a system block after the prompt. Set
+ *  in the widget's Language menu, so it wins over the language a question
+ *  happens to be typed in: someone who picked French and typed in English
+ *  was answered in English, with French spacing laid over it. */
+export function chatLanguageNote(lang: keyof typeof LANGUAGE_NAMES): string {
+  return `The reader has set the checker to ${LANGUAGE_NAMES[lang]}. Reply in ${LANGUAGE_NAMES[lang]}.`;
+}
 
 /** The one tool. The widget, not this server, runs the scan: that keeps the
  *  narration, the login form and the report rendering where they already
@@ -135,7 +152,7 @@ export const START_SCAN_TOOL: Anthropic.Beta.BetaTool = {
       ai_review: {
         type: "boolean",
         description:
-          "Adds a review of design, readability and misleading patterns that rules cannot judge. Takes about thirty seconds longer. Page scans only: a site scan never runs it, so ask for a page scan when the person wants this.",
+          "On by default. Adds a review of design, readability and misleading patterns that rules cannot judge, and a suggested code fix for each fault it can correct. Takes about thirty seconds longer. Page scans only: a site scan never runs it, so ask for a page scan when the person wants this.",
       },
     },
     required: ["url", "scope", "ai_review"],

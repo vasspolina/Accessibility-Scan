@@ -120,7 +120,7 @@ export function ProSummary({
           </h3>
           {clean.length === 0 ? (
             <p className="a11y-pro-empty">
-              {t("Nothing here came back clean enough to list.")}
+              {t("No check came back clean on this page.")}
             </p>
           ) : (
             <ul className="a11y-pro-rows" aria-labelledby="a11y-pro-clean-heading">

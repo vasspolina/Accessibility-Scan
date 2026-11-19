@@ -44,7 +44,7 @@ export const FIX_KINDS: Record<FixOwner, FixKind> = {
     // a report written for the person who owns the site rather than the one
     // who builds it. They do not need the names of the files.
     get hint() {
-      return t("Whoever builds or maintains the site for you.");
+      return t("Whoever builds or maintains your site. Send them this card, which names the element to change and what is wrong with it.");
     },
   },
   content: {
@@ -53,7 +53,7 @@ export const FIX_KINDS: Record<FixOwner, FixKind> = {
       return t("Content fix");
     },
     get hint() {
-      return t("No code needs to change. It belongs with whoever writes the page rather than with a developer.");
+      return t("Whoever writes the words on this page. They change the wording in the editor you publish pages with, and no developer is needed.");
     },
   },
   design: {
@@ -67,7 +67,7 @@ export const FIX_KINDS: Record<FixOwner, FixKind> = {
     // not their decision to make. The decision comes first and belongs to
     // whoever owns how the page looks.
     get hint() {
-      return t("The designer decides it: a size, a colour, a spacing. A developer then changes the stylesheet to match.");
+      return t("Your designer chooses the new size, colour or spacing. Whoever builds the site then puts that value into the stylesheet.");
     },
   },
   document: {
@@ -76,7 +76,7 @@ export const FIX_KINDS: Record<FixOwner, FixKind> = {
       return t("Document fix");
     },
     get hint() {
-      return t("Fix it in the original file (Word, InDesign, Acrobat) and export again. Editing the site will not help.");
+      return t("Whoever made the PDF. They fix it in the original file (Word, InDesign, Acrobat) and upload a new export. Editing the web page will not change it.");
     },
   },
 };
@@ -147,6 +147,91 @@ export function fixKindForRule(ruleId: string | undefined): FixKind {
   return FIX_KINDS.code;
 }
 
+/**
+ * The "Who fixes this" sentence for one rule, where the desk's own sentence
+ * would be too general to act on.
+ *
+ * The four desk sentences above answer "which kind of person". Read on a
+ * card about a vague link, "whoever writes the page" left the owner asking
+ * who that is and what they should change; on a video it named the wrong
+ * person outright, since captions are added where the video is hosted. So a
+ * rule whose answer is narrower than its desk names the person and the
+ * change. Everything not listed keeps its desk's sentence. English keys,
+ * translated through t() at render time like the desk sentences.
+ */
+const LINK_WORDS =
+  "Whoever writes the page. In your editor, they rewrite each link to say where it goes, such as ‘Opening hours’ instead of ‘Read more’.";
+const VIDEO_CAPTIONS =
+  "Whoever made the video, or runs the account it is on, such as YouTube or Vimeo. They add captions there, not in your site's code.";
+const CONSENT_BANNER_SETTINGS =
+  "Whoever runs your cookie banner, often in your consent tool's settings. They make refusing as easy to see and click as accepting.";
+const PRESSURE_WARNING =
+  "Whoever runs your offers and promotions. They remove the stock or time warning, or tie it to real stock and a real deadline.";
+const FOCUS_OUTLINE =
+  "Your designer draws the outline that shows where the keyboard is, with its colour and thickness. Whoever builds the site then adds it.";
+const TARGET_SIZE =
+  "Your designer makes these buttons and links bigger on phones, or puts more space between them. Whoever builds the site then applies it.";
+const TYPE_SETTINGS =
+  "Your designer sets the type: its size, weight, line spacing and line length. Whoever builds the site then changes the stylesheet to match.";
+const MARKETING_DECISION =
+  "Your marketing or sales team. Removing a pressure tactic is their call, not the developer's.";
+
+export const RULE_HINTS: Record<string, string> = {
+  "link-text-vague": LINK_WORDS,
+  "sr-vague-link-name": LINK_WORDS,
+  "sr-vague-button-name":
+    "Whoever writes the page picks words that say what the button does, such as ‘Book a table’. A developer then puts them on the button.",
+  "sr-filename-alt":
+    "Whoever adds images to the page. In your editor, they replace the file name in the image's alt text field with what the picture shows.",
+  "video-caption": VIDEO_CAPTIONS,
+  "media-video-captions": VIDEO_CAPTIONS,
+  "media-embedded-player": VIDEO_CAPTIONS,
+  "media-audio-transcript":
+    "Whoever made the recording writes out what is said. Whoever writes the page then puts that text beside the audio.",
+  "media-video-descriptions":
+    "Whoever made the video. They add a spoken description of what is shown, or publish a text version of the whole video beside it.",
+  "component-submit-clarity":
+    "Whoever writes the form decides what its button promises, such as ‘Send my booking’. A developer then changes the button's label.",
+  "readability-dense-prose":
+    "Whoever writes the page. In your editor, they shorten long sentences and split long paragraphs, with no change to the code.",
+  "dark-consent-no-reject":
+    "Whoever runs your cookie banner, often in your consent tool's settings. They add a ‘Reject all’ button as plain as ‘Accept all’.",
+  "dark-consent-asymmetry": CONSENT_BANNER_SETTINGS,
+  "dark-preselected-optin":
+    "Whoever owns the form or checkout. They untick the boxes that sign people up, so each visitor chooses for themselves.",
+  "dark-confirmshaming":
+    "Whoever writes your marketing copy. They word the way to decline plainly, such as ‘No thanks’, without guilt or mockery.",
+  "dark-fake-scarcity": PRESSURE_WARNING,
+  "dark-fake-urgency": PRESSURE_WARNING,
+  "color-contrast":
+    "Your designer picks a colour with more contrast against its background. Whoever builds the site then swaps it into the stylesheet.",
+  "link-in-text-block":
+    "Your designer decides how links stand out in a paragraph without relying on colour, such as an underline. Whoever builds the site then adds it.",
+  "keyboard-faint-focus": FOCUS_OUTLINE,
+  "keyboard-no-visible-focus": FOCUS_OUTLINE,
+  "mobile-tap-target": TARGET_SIZE,
+  "mobile-target-spacing": TARGET_SIZE,
+  "mobile-sticky-coverage":
+    "Your designer decides how much of a phone screen the fixed bar may cover. Whoever builds the site then makes it smaller.",
+  "component-required-cue":
+    "Your designer decides how required fields are marked, such as the word ‘required’ beside the label. Whoever builds the site then adds it.",
+};
+
+/** The "Who fixes this" sentence for a finding, in the reader's language:
+ *  the rule's own where it has one, the desk's otherwise. A dark pattern
+ *  with no rule of its own (the AI review writes those) names the people
+ *  who decide marketing, for the reason fixKindForFinding gives. */
+export function fixHint(finding: AccessibilityFinding): string {
+  const id = finding.ruleId ?? "";
+  if (RULE_HINTS[id]) return t(RULE_HINTS[id]);
+  if (id.startsWith("typo-")) return t(TYPE_SETTINGS);
+  if (finding.category === "dark-pattern") return t(MARKETING_DECISION);
+  return fixKindForFinding(finding).hint;
+}
+
+/** Every rule-specific sentence, for the voice tests. */
+export const ALL_RULE_HINTS: string[] = [...new Set([...Object.values(RULE_HINTS), TYPE_SETTINGS, MARKETING_DECISION])];
+
 export function fixKindForFinding(finding: AccessibilityFinding): FixKind {
   // Category before rule id. A dark pattern is a marketing decision whatever
   // produced the finding, and routing by rule id alone sent two kinds of them
@@ -206,7 +291,7 @@ export function isAiFinding(finding: AccessibilityFinding): boolean {
 }
 
 export const AI_HINT =
-  "The AI review, not a rule check. It can be confidently wrong. Check before acting.";
+  "Our AI wrote this, not a rule check. It can be wrong, so look at the element yourself first.";
 
 export const KEYBOARD_HINT =
   "You can confirm this one yourself in a few minutes, with nothing installed. Put the mouse aside and move through the page using Tab, Enter and Escape.";

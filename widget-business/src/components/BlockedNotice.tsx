@@ -13,7 +13,7 @@ import { t } from "../lib/strings";
 // outcome is spoken by App's persistent status paragraph instead.
 export function BlockedNotice({ message }: { message: string }) {
   const [agentBefore, agentAfter] = t(
-    "In your firewall or bot protection (Cloudflare, Akamai and the rest), allow the user agent {agent}, or our IP."
+    "In your firewall or bot protection (Cloudflare, Akamai or similar), allow the user agent {agent}, or our IP address."
   ).split("{agent}");
   return (
     <section className="a11y-blocked">
@@ -24,7 +24,7 @@ export function BlockedNotice({ message }: { message: string }) {
       <ul className="a11y-blocked-list">
         <li>
           <strong>{t("Scan your staging site.")}</strong>{" "}
-          {t("Most sites have one without bot protection. It's the same code, so the report is the same.")}
+          {t("Most sites have a staging copy without bot protection. It runs the same code, so the report is the same.")}
         </li>
         <li>
           <strong>{t("Allow the scanner through.")}</strong> {agentBefore}
@@ -32,7 +32,7 @@ export function BlockedNotice({ message }: { message: string }) {
           {agentAfter}
         </li>
         <li>
-          <strong>{t("Sign in with a session.")}</strong>{" "}
+          <strong>{t("Let the scanner sign in.")}</strong>{" "}
           {t("If you can already reach the page in your own browser, use the form's login option. The scanner signs in with access you already have.")}
         </li>
       </ul>

@@ -84,6 +84,10 @@ p + p, p + ul, ul + p, dl + p, p + dl, ul + ul { margin-top: var(--line); }
 /* Links that stand alone get a 24px target at the least (they are 22px tall). */
 .cta, .lines a, .info a { display: inline-block; padding-block: 1px; }
 
+/* A review: the quote, then who said it, a line apart. */
+.review, .review blockquote { margin: 0; }
+.review figcaption { margin-top: var(--line); }
+
 /* ── Home: the entries ─────────────────────────────────────────────────── */
 .entries li { text-align: center; padding-bottom: calc(var(--line) * 3); }
 .entries a { display: block; text-decoration: none; }

@@ -78,7 +78,7 @@ export function evaluateConsentA11y(signals: DarkPatternSignals): AccessibilityF
       description:
         `While the cookie banner is up, ${a.bgHiddenPct}% of the page's text is marked hidden for assistive technology, ` +
         `and keyboard focus never lands inside the banner. A screen reader user hears silence where the page should be, ` +
-        `and cannot find the banner to clear it.`,
+        `and can't find the banner to clear it.`,
       suggestedFix:
         'Move focus into the banner when it opens and keep it there until a choice is made, then the hiding is a correct modal. ' +
         'Or stop hiding the page: a non-modal banner needs no aria-hidden at all.',
@@ -109,7 +109,7 @@ export function consentA11yUndecided(signals: DarkPatternSignals): UndecidedRow[
       {
         ruleId: "consent-layer-in-frame",
         count: 1,
-        help: "The consent layer arrives from another website in a frame, where this scan cannot judge what a screen reader meets.",
+        help: "The consent layer arrives from another website in a frame, where this scan can't judge what a screen reader meets.",
         helpUrl: "https://www.w3.org/WAI/ARIA/apg/patterns/dialog-modal/",
       },
     ];
