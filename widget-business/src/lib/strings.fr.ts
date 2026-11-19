@@ -158,6 +158,7 @@ export const STRINGS_FR: Record<string, string> = {
   "Nothing found": "Rien trouvé",
   "Not measured": "Non mesuré",
   "Software can check it": "Un logiciel peut le vérifier",
+  "Where to start": "Par où commencer",
   "Fix first": "À corriger en premier",
   "Fix soon": "À corriger bientôt",
   "Fix eventually": "À corriger plus tard",
