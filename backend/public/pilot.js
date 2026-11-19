@@ -169,6 +169,14 @@
       return;
     }
     form.hidden = false;
+    // The model's worker sleeps when idle and takes over a minute to wake
+    // (measured 19 Nov 2026). The first time someone moves into a field,
+    // ask the server to start waking it, so it is up by the time they press
+    // the button. Once per page; the server throttles it across pages too.
+    form.addEventListener("focusin", function wake() {
+      form.removeEventListener("focusin", wake);
+      fetch("/api/pilot/wake", { method: "POST" }).catch(function () { /* the draft still works, only slower */ });
+    });
   }).catch(function () {
     $("closed").hidden = false;
     $("closed").textContent = "The pilot could not be reached. Please try again later.";
@@ -286,8 +294,8 @@
     var scanning = !f.barrier;
     busy(btn, true, scanning ? "Scanning the page…" : "Writing up your report…");
     say(scanning
-      ? "Scanning the page and writing up what it finds. This can take a minute or two."
-      : "Writing up your report. This can take up to half a minute.");
+      ? "Scanning the page and writing up what it finds. This can take up to three minutes."
+      : "Writing up your report. This can take up to two minutes.");
     fetch("/api/pilot/draft", {
       method: "POST",
       headers: { "Content-Type": "application/json" },

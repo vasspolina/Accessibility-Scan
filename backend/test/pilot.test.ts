@@ -250,6 +250,35 @@ describe("the pilot", () => {
     expect(res.json().fields).toEqual(["barrier"]);
   });
 
+  it("wakes the model while the form is filled in, once per two minutes", async () => {
+    const { resetWake, wakeModel, WAKE_EVERY_MS } = await import("../src/services/pilot/pilot.js");
+    resetWake();
+    const res = await post("/api/pilot/wake", {});
+    expect(res.statusCode).toBe(202);
+    expect(res.json()).toEqual({ waking: true });
+    // A second form opened at once does not wake it again.
+    expect((await post("/api/pilot/wake", {})).json()).toEqual({ waking: false });
+    await new Promise((r) => setTimeout(r, 0));
+    expect(modelCalls).toHaveLength(1);
+    expect((modelCalls[0] as unknown as { max_tokens: number }).max_tokens).toBe(1);
+    // After the window it may wake it again.
+    expect(wakeModel(Date.now() + WAKE_EVERY_MS + 1)).toBe(true);
+    resetWake();
+  });
+
+  it("holds the model to the length, the impact and the right criterion", async () => {
+    modelContent = JSON.stringify(draft);
+    await post("/api/pilot/draft", fields);
+    const call = modelCalls[0] as unknown as { messages: Array<{ content: string }>; max_tokens: number };
+    const system = call.messages[0].content;
+    expect(system).toContain("explanation has at least three sentences");
+    expect(system).toContain("Never leave it out");
+    // The first live run picked 2.4.6 for an unnamed button.
+    expect(system).toMatch(/only as "button" or "link": 4\.1\.2/);
+    expect(system).toContain("Copy its shape, never its facts");
+    expect(call.max_tokens).toBe(1400);
+  });
+
   it("answers a filled trap field as if it worked, and keeps nothing", async () => {
     const before = (await app.inject({ method: "GET", url: "/api/pilot/reports", headers: { authorization: "Bearer admin-secret" } })).json().totals.reports;
     const res = await post("/api/pilot/report", { ...fields, company_url: "http://spam" });
