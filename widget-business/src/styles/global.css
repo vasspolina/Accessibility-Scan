@@ -31,15 +31,14 @@
   z-index: 50;
 }
 .a11y-widget-biz .a11y-dialog {
-  background: #fff;
-  color: #000;
+  background: var(--tile-fill);
+  color: var(--tile-ink);
 }
 
 /* Without these a long word or a wide table pushes the page sideways on a phone. */
 .a11y-widget-biz { overflow-wrap: anywhere; }
 .a11y-widget-biz img, .a11y-widget-biz table, .a11y-widget-biz pre { max-width: 100%; }
 .a11y-widget-biz pre { overflow-x: auto; }
-
 
 /* ═══ THE POSTER, AGAIN ══════════════════════════════════════════════════
    From the Independent Publishing Fair poster: big plain type in a tight
@@ -49,15 +48,31 @@
    better against #000 (orange 10:1, blue 9:1, green 12:1). Everything else
    is ink on paper, which swap in dark. */
 .a11y-widget-biz {
-  --ink: #000; --paper: #fff; --focus: #198038;
+  --ink: #000; --paper: #fff; --focus: #198038; --chats-current: #14532d;
   --hl-orange: #ff8a4c; --hl-blue: #6fa8ff; --hl-green: #4fe0a8;
   --hl-cap-a: #ffe14d; --hl-cap-b: #ff9ad5;
+  /* Surfaces that were pinned light in both themes, as tokens so dark mode
+     can take Apple's dark system colours (user's instruction, 18 Nov 2026,
+     "do a proper dark mode, no white or light buttons, take colours from
+     apple"). Light keeps the values it had. */
+  --tile: #f0efe8; --tile-ink: #000; --tile-fill: #fff;
+  --strong: #000; --strong-ink: #f0efe8;
+  --hover: #ffe14d; --hover-ink: #000;
+  /* What is drawn solid in ink (the primary action, a chosen option, a
+     switch that is on, numbered rounds, the dark slabs): black in light; in
+     dark Apple's grey, so nothing solid turns white. */
+  --solid: #000; --solid-ink: #fff;
   color-scheme: light;
 }
+/* The theme is read on the widget's own root, never on :root: inside the
+   shadow root :root matches nothing, so the dark rules written against it
+   (3 Nov to 18 Nov 2026) never applied, and a dark-mode visitor got a white
+   widget on a black page. index.tsx stamps data-theme on this element when
+   the embedder pins one; otherwise the visitor's system setting decides. */
 @media (prefers-color-scheme: dark) {
-  :root:not([data-theme="light"]) .a11y-widget-biz { --ink: #fff; --paper: #000; color-scheme: dark; }
+  .a11y-widget-biz:not([data-theme="light"]) { --ink: #fff; --paper: #000; color-scheme: dark; --tile: #1c1c1e; --tile-ink: #fff; --tile-fill: #2c2c2e; --strong: #636366; --strong-ink: #fff; --hover: #3a3a3c; --hover-ink: #fff; --solid: #636366; --solid-ink: #fff; --btn-fill: #2c2c2e; --field-edge: 1px solid #8e8e93; --field-bg: #1c1c1e; --hl-orange: #ff9f0a; --hl-blue: #409cff; --hl-green: #30d158; --hl-cap-a: #ffd60a; --hl-cap-b: #ff375f; --focus: #6fdc8c; --chats-current: #30d158; }
 }
-:root[data-theme="dark"] .a11y-widget-biz { --ink: #fff; --paper: #000; color-scheme: dark; }
+.a11y-widget-biz[data-theme="dark"] { --ink: #fff; --paper: #000; color-scheme: dark; --tile: #1c1c1e; --tile-ink: #fff; --tile-fill: #2c2c2e; --strong: #636366; --strong-ink: #fff; --hover: #3a3a3c; --hover-ink: #fff; --solid: #636366; --solid-ink: #fff; --btn-fill: #2c2c2e; --field-edge: 1px solid #8e8e93; --field-bg: #1c1c1e; --hl-orange: #ff9f0a; --hl-blue: #409cff; --hl-green: #30d158; --hl-cap-a: #ffd60a; --hl-cap-b: #ff375f; --focus: #6fdc8c; --chats-current: #30d158; }
 
 .a11y-widget-biz {
   font-family: "Jokker", "DejaVu Sans", sans-serif;
@@ -100,7 +115,7 @@
 .a11y-widget-biz a { color: var(--ink); text-decoration: underline; text-underline-offset: 0.15em; }
 
 /* The small print under the poster: 15px. */
-.a11y-widget-biz :is(small, .a11y-issue-row-meta, .a11y-conf-cap, .a11y-next-meta, .a11y-sum-eyebrow, .a11y-sum-micro, .a11y-input-help, .a11y-input-label) {
+.a11y-widget-biz :is(small, .a11y-issue-row-meta, .a11y-conf-cap, .a11y-next-meta, .a11y-sum-eyebrow, .a11y-input-help, .a11y-input-label) {
   font-size: 18px; letter-spacing: 0.01em; line-height: 1.2;
 }
 
@@ -110,23 +125,25 @@
    better than 7:1). 18px. */
 .a11y-widget-biz :is(button, .a11y-btn) {
   font: inherit; font-size: 22px; letter-spacing: 0.01em; font-weight: 500;
-  box-sizing: border-box; min-height: 34px; padding: 0.5em 1.1em; border: 1px solid var(--ink); border-radius: 999px;
-  background: var(--paper); color: var(--ink); transition: background-color 0.15s, border-color 0.15s, border-radius 0.15s;
+  box-sizing: border-box; min-height: 34px; padding: 0.5em 1.1em; border: 1px solid var(--btn-fill, var(--ink)); border-radius: 999px;
+  background: var(--btn-fill, var(--paper)); color: var(--ink); transition: background-color 0.15s, border-color 0.15s, border-radius 0.15s;
 }
 .a11y-widget-biz button:enabled,
 .a11y-widget-biz .a11y-btn:enabled { cursor: pointer; }
 .a11y-widget-biz button:enabled:hover,
-.a11y-widget-biz .a11y-btn:enabled:hover { background: var(--hl-cap-a); border-color: var(--hl-cap-a); color: #000; }
+.a11y-widget-biz .a11y-btn:enabled:hover { background: var(--hover); border-color: var(--hover); color: var(--hover-ink); }
 .a11y-widget-biz button:disabled,
-.a11y-widget-biz .a11y-btn:disabled { border-style: dashed; cursor: not-allowed; }
+.a11y-widget-biz .a11y-btn:disabled { border-style: dashed; border-color: var(--ink); background: var(--paper); cursor: not-allowed; }
 /* The main action is solid ink, Displaay's "Ask Albert": the run, the send,
    the save. It turns marker-yellow on hover like the rest. Disabled, it drops
    back to paper with the dashed edge, never a faded ink. */
-.a11y-widget-biz .a11y-btn.a11y-btn-primary:enabled { background: var(--ink); color: var(--paper); }
-.a11y-widget-biz .a11y-btn.a11y-btn-primary:enabled:hover { background: var(--hl-cap-a); border-color: var(--hl-cap-a); color: #000; }
+.a11y-widget-biz .a11y-btn.a11y-btn-primary:enabled { background: var(--solid); color: var(--solid-ink); }
+.a11y-widget-biz .a11y-btn.a11y-btn-primary:enabled:hover { background: var(--hover); border-color: var(--hover); color: var(--hover-ink); }
 .a11y-widget-biz :is(input:not([type="radio"]):not([type="checkbox"]), textarea, select) {
   font: inherit; font-size: 22px; letter-spacing: 0.01em; padding: 0.4em 0.6em;
   border: 2px solid var(--ink); border-radius: 0; background: var(--paper); color: var(--ink);
+  /* Dark: Apple's filled field, a 1px system-grey edge (6.3:1 on black). */
+  border: var(--field-edge, 2px solid var(--ink)); background: var(--field-bg, var(--paper));
 }
 /* Focus after IBM Carbon (user's instruction, 18 Nov 2026, "make focus
    outline dark green and like ibm carbon"): a 2px line inside the element's
@@ -134,7 +151,9 @@
    Carbon's green 60, #198038, the one colour that is not marker or ink. One
    value serves every ground because it measures 5.0:1 on white, 4.2:1 on
    black, 4.35:1 on the #f0efe8 tiles and 3.9:1 on marker yellow (hover), so
-   it clears 3:1 (WCAG 1.4.11) in both themes without a dark-mode swap.
+   it clears 3:1 (WCAG 1.4.11) on every light-theme ground. Dark mode's
+   Apple greys (#636366 solids, #2c2c2e fills) are too close to it, so dark
+   takes Carbon's green 30, #6fdc8c: 3.5:1 on #636366, 8:1 on #2c2c2e.
    Links take it outside the text, as Carbon's do, so it never cuts letters. */
 .a11y-widget-biz :focus-visible { outline: 2px solid var(--focus); outline-offset: -2px; box-shadow: none; }
 .a11y-widget-biz a:focus-visible { outline-offset: 2px; }
@@ -165,8 +184,6 @@
 .a11y-widget-biz :is(.a11y-rule-chip, .a11y-level-badge) { background: var(--hl-orange); }
 
 /* Inline neighbours need air: the check for welded siblings reads this. */
-.a11y-widget-biz .a11y-ai-card-title,
-.a11y-widget-biz .a11y-ai-hint,
 .a11y-widget-biz .a11y-audit-body,
 .a11y-widget-biz .a11y-audit-count,
 .a11y-widget-biz .a11y-audit-score,
@@ -178,8 +195,6 @@
 .a11y-widget-biz .a11y-conf-num,
 .a11y-widget-biz .a11y-conf-plain,
 .a11y-widget-biz .a11y-conf-status,
-.a11y-widget-biz .a11y-count-pill-n,
-.a11y-widget-biz .a11y-count-pill-x,
 .a11y-widget-biz .a11y-dial-band,
 .a11y-widget-biz .a11y-dial-label,
 .a11y-widget-biz .a11y-dial-number,
@@ -200,10 +215,7 @@
 .a11y-widget-biz .a11y-next-level,
 .a11y-widget-biz .a11y-next-meta,
 .a11y-widget-biz .a11y-next-title,
-.a11y-widget-biz .a11y-plan-name,
-.a11y-widget-biz .a11y-plan-price,
 .a11y-widget-biz .a11y-principle-count,
-.a11y-widget-biz .a11y-principle-term,
 .a11y-widget-biz .a11y-pro-chip,
 .a11y-widget-biz .a11y-pro-row,
 .a11y-widget-biz .a11y-pro-row-num,
@@ -250,6 +262,10 @@
 .a11y-widget-biz .a11y-chat-dock {
   margin-top: auto;
   position: sticky; bottom: 0;
+  /* Above the cards' criterion numbers (z-index 1), which painted over the
+     box when the cards scrolled under it (user's instruction, 18 Nov 2026,
+     "fix overlap on scroll"). */
+  z-index: 2;
   /* Clear above the box, paper below its middle: the cards are no longer
      cut by a band over them, and what scrolls under the box does not show
      beneath it. The box's shadow paints over this ground. */
@@ -337,7 +353,7 @@
 }
 .a11y-widget-biz .a11y-chat-text .a11y-chat-plan-step {
   display: flex; flex-direction: column; box-sizing: border-box; min-width: 0; min-height: 440px; margin: 0;
-  padding: 30px 30px 26px; border-radius: 20px; background: #f0efe8; color: #000;
+  padding: 30px 30px 26px; border-radius: 20px; background: var(--tile); color: var(--tile-ink);
   overflow-wrap: break-word; hyphens: manual;
 }
 .a11y-widget-biz .a11y-chat-text .a11y-chat-plan-title {
@@ -383,6 +399,11 @@
    height, so the punctuation in (WCAG-AA) sits with the capitals around it
    rather than at lowercase height (p.39–40). */
 .a11y-widget-biz :is(.a11y-chat-who, small, th) .a11y-caps { font-size: inherit; }
+/* The accessibility statement sets its text at 22px, where a 30px run of
+   capitals stood larger than the words around it ("EN 301 549", "WCAG"),
+   the opposite of the rule. A size smaller there is 21px (measured
+   18 Nov 2026: the only caps run in the report outside the chat). */
+.a11y-widget-biz .a11y-stmt-code .a11y-caps { font-size: 21px; }
 /* A list in the conversation (fig. 50): an en dash and a word space for a
    bullet, hung in the margin; a figure and its point for a count. */
 .a11y-widget-biz .a11y-chat-text :is(ul, ol) { margin: 0 0 1.2em; }
@@ -415,7 +436,7 @@
   position: absolute; inset-inline-start: -44px; top: 0; top: calc((1lh - 32px) / 2);
   display: grid; place-content: center;
   width: 32px; height: 32px; border-radius: 50%;
-  background: var(--ink); color: var(--paper);
+  background: var(--solid); color: var(--solid-ink);
   font-size: 22px; letter-spacing: 0; font-weight: 500; line-height: inherit;
   font-variant-numeric: tabular-nums;
 }
@@ -494,6 +515,16 @@
   .a11y-widget-biz .a11y-finding-sev-fold { display: block; }
   .a11y-widget-biz .a11y-finding-level-fold { display: block; }
   .a11y-widget-biz :is(td, th):is([data-col="severity"], [data-col="wcag"], [data-col="level"]) { display: none; }
+}
+/* Between a phone and a wide screen the fixed columns (Severity 8em, WCAG 5em,
+   Fix 6.8em, Level 11em, Instances 6.6em) add up to more than the table: at
+   860px of window the issue column was 0px wide and its words stood one
+   letter to a line (user's report, 18 Nov 2026). There, WCAG and Level fold
+   into the expanded finding as they do on a phone, and the issue gets their
+   room (about 340px at 1000px, 200px at 860px, measured). */
+@media (min-width: 601px) and (max-width: 1100px) {
+  .a11y-widget-biz .a11y-finding-level-fold { display: block; }
+  .a11y-widget-biz :is(td, th):is([data-col="wcag"], [data-col="level"]) { display: none; }
 }
 
 /* A row's second line (test method, AI mark, triage state, fix kind) is
@@ -601,13 +632,36 @@
 .a11y-widget-biz .a11y-settings { display: grid; gap: 40px; justify-items: stretch; }
 .a11y-widget-biz .a11y-settings > .a11y-settings-heading { margin: 0; }
 .a11y-widget-biz .a11y-settings ~ .a11y-settings-row { margin-top: 40px; }
-.a11y-widget-biz .a11y-settings-row { display: flex; flex-wrap: wrap; align-items: center; gap: 12px 16px; margin: 0; }
-.a11y-widget-biz .a11y-settings-row > .a11y-settings-label {
-  flex: 0 0 100%; margin: 0; font-size: 18px; font-weight: 500; letter-spacing: 0.01em; line-height: 1.2;
+/* Two columns, one piece per line (user's instruction, 18 Nov 2026,
+   "design this in two columns with content broken per line"): the label
+   hung in a 9em column, and beside it the state, the control and any note
+   each on a line of their own, all on one left edge. The Language field's
+   wrapper steps aside (display: contents) so its own label takes the left
+   column like the others. One column when the block is under 480px wide:
+   the rows' parent is the size container, since the shell is no longer
+   one and the account row also sits in the narrow rail. */
+.a11y-widget-biz:has(> .a11y-settings-row),
+.a11y-widget-biz :has(> .a11y-settings-row) { container: a11y-settings / inline-size; }
+.a11y-widget-biz .a11y-settings-row {
+  display: grid; grid-template-columns: 9em minmax(0, 1fr); column-gap: 24px; row-gap: 12px;
+  align-items: baseline; margin: 0;
 }
-.a11y-widget-biz .a11y-settings-row > .a11y-settings-state { margin: 0; font-size: 22px; letter-spacing: 0.01em; line-height: 1.2; }
-.a11y-widget-biz .a11y-settings-row > .a11y-select2 { margin: 0; }
-.a11y-widget-biz .a11y-settings-row > .a11y-input { flex: 1 1 100%; min-width: 0; }
+.a11y-widget-biz .a11y-settings-row > *,
+.a11y-widget-biz .a11y-settings-row > .a11y-select2 > * { grid-column: 2; justify-self: start; min-width: 0; margin: 0; }
+.a11y-widget-biz .a11y-settings-row > .a11y-select2 { display: contents; }
+.a11y-widget-biz .a11y-settings-row > .a11y-settings-label,
+.a11y-widget-biz .a11y-settings-row > .a11y-select2 > .a11y-select2-label {
+  grid-column: 1; grid-row: 1; margin: 0; font-size: 18px; font-weight: 500; letter-spacing: 0.01em; line-height: 1.2;
+}
+.a11y-widget-biz .a11y-settings-row > .a11y-settings-state { font-size: 22px; letter-spacing: 0.01em; line-height: 1.2; }
+.a11y-widget-biz .a11y-settings-row > .a11y-input { justify-self: stretch; }
+@container a11y-settings (max-width: 480px) {
+  .a11y-widget-biz .a11y-settings-row { grid-template-columns: minmax(0, 1fr); }
+  .a11y-widget-biz .a11y-settings-row > *,
+  .a11y-widget-biz .a11y-settings-row > .a11y-select2 > * { grid-column: 1; }
+  .a11y-widget-biz .a11y-settings-row > .a11y-settings-label,
+  .a11y-widget-biz .a11y-settings-row > .a11y-select2 > .a11y-select2-label { grid-row: auto; }
+}
 .a11y-widget-biz .a11y-settings-switch { display: flex; flex-wrap: wrap; gap: 8px; }
 /* Through other eyes (VisionSimulator; user's question, 18 Nov 2026,
    "what's this gap here"). The SVG that only holds the colour filters had
@@ -656,23 +710,11 @@
 .a11y-widget-biz .a11y-newscan-head .a11y-select2 { margin: 0; }
 .a11y-widget-biz .a11y-url-form { margin: 0; }
 
-/* One step: a hung number, then a title with its note, then the content.
-   One line between steps. */
-.a11y-widget-biz .a11y-form-single { display: grid; gap: var(--line); }
-.a11y-widget-biz .a11y-step-group { display: grid; grid-template-columns: 4.5em minmax(0, 1fr); align-items: first baseline; }
-.a11y-widget-biz .a11y-step-num { font-size: 22px; letter-spacing: 0.01em; line-height: 1.2; }
-.a11y-widget-biz .a11y-step-body { min-width: 0; display: grid; gap: calc(var(--line) / 2); }
-.a11y-widget-biz .a11y-step-head { display: grid; }
-.a11y-widget-biz .a11y-step-q { margin: 0; }
-.a11y-widget-biz .a11y-step-note { font-size: 18px; letter-spacing: 0.01em; line-height: 1.2; }
-
 /* The address: label, then the field with the login button beside it. */
 .a11y-widget-biz .a11y-input { display: grid; gap: 0.3em; }
 .a11y-widget-biz .a11y-input-shell { display: flex; flex-wrap: wrap; align-items: stretch; gap: calc(var(--line) / 2) 0.6em; }
 .a11y-widget-biz .a11y-input-shell > input { flex: 1 1 14em; min-width: 0; box-sizing: border-box; }
 .a11y-widget-biz .a11y-input-shell > .a11y-login-toggle { flex: none; white-space: nowrap; align-self: center; }
-.a11y-widget-biz .a11y-url-helper-row { display: flex; flex-wrap: wrap; align-items: baseline; gap: calc(var(--line) / 4) 1.2em; }
-.a11y-widget-biz .a11y-url-helper-row > :empty { display: none; }
 .a11y-widget-biz .a11y-group-hint { font-size: 18px; letter-spacing: 0.01em; line-height: 1.2; }
 .a11y-widget-biz .a11y-url-error { margin: 0; }
 .a11y-widget-biz .a11y-url-error:not(:empty) { font-size: 22px; letter-spacing: 0.01em; }
@@ -680,34 +722,6 @@
 /* The action: the button leads, its note after it, on one baseline. */
 .a11y-widget-biz .a11y-url-submit { display: flex; flex-wrap: wrap; align-items: center; gap: calc(var(--line) / 2) 1.2em; }
 .a11y-widget-biz .a11y-url-submit-note { font-size: 18px; letter-spacing: 0.01em; line-height: 1.2; }
-
-/* The choices are cards: two equal, rounded, side by side while they fit, then
-   one above the other a line apart. The dot and the title sit at the top, the
-   explanation at the foot, whatever its length. The chosen card is solid ink
-   with paper text; the other is paper with an ink edge (21:1 either way, and
-   shape, not colour, tells them apart). Corner radius is the card's own, the
-   one place besides buttons and the chat that is round. */
-.a11y-widget-biz .a11y-radio-group.a11y-optioncard-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 260px), 1fr)); gap: calc(var(--line) / 2); }
-.a11y-widget-biz .a11y-optioncard {
-  display: grid; grid-template-columns: 39px minmax(0, 1fr); grid-template-rows: auto 1fr; align-items: start;
-  gap: 0 0.6em; box-sizing: border-box; padding: 20px;
-  border: 1px solid var(--ink); border-radius: 20px; background: var(--paper); color: var(--ink); cursor: pointer;
-}
-.a11y-widget-biz .a11y-optioncard-on { background: var(--ink); color: var(--paper); }
-.a11y-widget-biz .a11y-optioncard > input { grid-row: 1; grid-column: 1; margin-top: -3px; }
-.a11y-widget-biz .a11y-optioncard-text { display: contents; }
-.a11y-widget-biz .a11y-optioncard-label { grid-row: 1; grid-column: 2; }
-.a11y-widget-biz .a11y-optioncard-desc { grid-row: 2; grid-column: 1 / -1; align-self: end; padding-top: var(--line); font-size: 22px; letter-spacing: 0.01em; line-height: 1.2; }
-.a11y-widget-biz .a11y-optioncard:has(input:focus-visible) { outline: 2px solid var(--focus); outline-offset: -2px; box-shadow: none; }
-.a11y-widget-biz .a11y-optioncard > input:focus-visible { outline: none; box-shadow: none; }
-.a11y-widget-biz .a11y-optioncard-disabled { border-style: dashed; cursor: not-allowed; }
-.a11y-widget-biz .a11y-step-body .a11y-radio-group { margin: 0; }
-
-/* The AI card: words left, the switch right, a line apart when they wrap. */
-.a11y-widget-biz .a11y-ai-card { margin-top: calc(var(--line) / 2); display: flex; flex-wrap: wrap; align-items: flex-start; justify-content: space-between; gap: calc(var(--line) / 2) 1.2em; }
-.a11y-widget-biz .a11y-ai-card-text { display: grid; flex: 1 1 18em; min-width: 0; }
-.a11y-widget-biz .a11y-ai-card-title { font-size: 22px; letter-spacing: 0.01em; font-weight: 500; line-height: 1.2; }
-.a11y-widget-biz .a11y-ai-hint { font-size: 18px; letter-spacing: 0.01em; line-height: 1.2; }
 
 /* The switch: a track and a round knob in ink and paper, with the word On or
    Off after it. The knob takes the track's text colour, so it inverts with it
@@ -719,17 +733,13 @@
 .a11y-widget-biz .a11y-switch-word { font-size: 22px; letter-spacing: 0.01em; min-width: 2em; }
 .a11y-widget-biz .a11y-switch-track { position: relative; flex: none; box-sizing: border-box; width: 52px; height: 30px; padding: 0; border-radius: 999px; }
 .a11y-widget-biz .a11y-switch-knob { position: absolute; top: 50%; left: 4px; width: 18px; height: 18px; margin-top: -9px; border-radius: 50%; background: currentColor; }
-.a11y-widget-biz .a11y-switch-track[aria-checked="true"] { background: var(--ink); color: var(--paper); }
+.a11y-widget-biz .a11y-switch-track[aria-checked="true"] { background: var(--solid); color: var(--solid-ink); }
 .a11y-widget-biz .a11y-switch-track[aria-checked="true"] .a11y-switch-knob { left: auto; right: 4px; }
 .a11y-widget-biz .a11y-switch-track:enabled:hover { background: var(--paper); color: var(--ink); }
-.a11y-widget-biz .a11y-switch-track[aria-checked="true"]:enabled:hover { background: var(--ink); color: var(--paper); }
+.a11y-widget-biz .a11y-switch-track[aria-checked="true"]:enabled:hover { background: var(--solid); color: var(--solid-ink); }
 
 /* "Back to the chat": one line below the form, flush left. */
 .a11y-widget-biz .a11y-chat-alt { margin: var(--line) 0 0; }
-
-@media (max-width: 600px) {
-  .a11y-widget-biz .a11y-step-group { grid-template-columns: minmax(0, 1fr); }
-}
 
 /* Name and value pairs: small label, the value under it, the gloss under that. */
 .a11y-widget-biz .a11y-spec-label { font-size: 18px; letter-spacing: 0.01em; font-weight: 500; }
@@ -848,11 +858,6 @@
 .a11y-widget-biz .a11y-sr-issue { grid-column: 2; font-size: 18px; letter-spacing: 0.01em; }
 .a11y-widget-biz .a11y-sr-status { font-size: 18px; letter-spacing: 0.01em; }
 
-/* The start form's choices: the label, its explanation under it. */
-.a11y-widget-biz .a11y-optioncard-label { font-weight: 500; }
-.a11y-widget-biz .a11y-optioncard-label,
-.a11y-widget-biz .a11y-optioncard-desc { display: block; }
-
 /* The score dial: a solid arc on a dotted track, the number inside it.
    Its SVG strokes named colour tokens that no longer exist, so it drew
    nothing and left a blank block above the number. */
@@ -921,7 +926,7 @@
 .a11y-widget-biz .a11y-sum-run .a11y-sum-cell-no {
   display: inline-grid; place-content: center; vertical-align: 0.08em;
   width: 40px; height: 40px; border-radius: 50%; margin: 0 0.18em 0 0;
-  background: var(--ink); color: var(--paper);
+  background: var(--solid); color: var(--solid-ink);
   font-size: 29px; letter-spacing: 0; font-weight: 500; line-height: 1;
 }
 .a11y-widget-biz .a11y-sum-run .a11y-sum-row-marks,
@@ -972,39 +977,64 @@
   display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 240px), 1fr)); gap: 25px;
 }
 .a11y-widget-biz .a11y-prompts .a11y-prompt {
-  --ink: #000; --paper: #f0efe8;
+  --ink: var(--tile-ink); --paper: var(--tile);
   position: relative;
-  box-sizing: border-box; min-width: 0; aspect-ratio: 296 / 407; margin: 0; padding: 26px;
-  display: flex; flex-direction: column; align-items: stretch; justify-content: flex-start; gap: 4px;
-  border: 1px solid #f0efe8; border-radius: 20px; background: #f0efe8; color: #000;
-  font: inherit; text-align: start; cursor: pointer;
+  box-sizing: border-box; min-width: 0; aspect-ratio: 296 / 285; margin: 0; padding: 26px;
+  display: flex; flex-direction: column; align-items: flex-start; justify-content: flex-start;
+  border: 1px solid var(--tile); border-radius: 20px; background: var(--tile); color: var(--tile-ink);
   overflow-wrap: break-word; hyphens: manual;
 }
+/* The question is the card's main control. It is laid out in the card's
+   flow, and its ::after is stretched over the whole card, so a press
+   anywhere but the criterion number asks it. */
+.a11y-widget-biz .a11y-prompts .a11y-prompt-q {
+  position: static; display: flex; flex-direction: column; align-items: stretch; gap: 4px;
+  width: 100%; min-width: 0; min-height: 0; margin: 0; padding: 0;
+  border: 0; border-radius: 0; background: none; color: inherit;
+  font: inherit; text-align: start; cursor: pointer;
+}
+.a11y-widget-biz .a11y-prompts .a11y-prompt-q::after { content: ""; position: absolute; inset: 0; border-radius: 20px; }
+.a11y-widget-biz .a11y-prompts .a11y-prompt-q:focus-visible { outline: none; }
+.a11y-widget-biz .a11y-prompts .a11y-prompt-q:focus-visible::after { outline: 2px solid #fff; outline-offset: -5px; }
 .a11y-widget-biz .a11y-prompts .a11y-prompt-label {
   font-size: 22px; font-weight: 500; letter-spacing: 0.01em; line-height: 1.3;
 }
 .a11y-widget-biz .a11y-prompts .a11y-prompt-ask {
   font-size: 18px; font-weight: 400; letter-spacing: 0.01em; line-height: 1.3;
 }
-.a11y-widget-biz .a11y-prompts .a11y-prompt-mark {
-  margin-top: auto; padding-top: 20px;
-  font-size: 180px; font-weight: 500; letter-spacing: 0; line-height: 0.8;
+/* The criterion number at the foot, on the orange highlight the report
+   gives rule ids (black on #ff8a4c, 9.3:1, in both themes). It sits above
+   the question's stretched ::after, so a press on it explains the
+   criterion instead of asking the question. Marker yellow on hover, like
+   every button. */
+.a11y-widget-biz .a11y-prompts .a11y-prompt-wcag {
+  position: relative; z-index: 1;
+  margin-top: auto; min-height: 0; padding: 0 0.12em;
+  border: 0; cursor: pointer;
+  color: #000; background: var(--hl-orange);
+  border-radius: 0.9em 0.45em 0.9em 0.55em / 0.7em 0.5em 0.7em 0.5em;
+  box-shadow: 0.14em 0 0 var(--hl-cap-a), -0.14em 0 0 var(--hl-cap-b);
+  margin-inline: 0.14em;
+  font: inherit; font-size: 34px; font-weight: 500; letter-spacing: 0; line-height: 1.1;
+  font-variant-numeric: tabular-nums;
 }
+.a11y-widget-biz .a11y-prompts .a11y-prompt-wcag:enabled:hover { background: var(--hover); color: var(--hover-ink); }
+.a11y-widget-biz .a11y-prompts .a11y-prompt-wcag:disabled { cursor: default; }
 .a11y-widget-biz .a11y-prompts .a11y-prompt-go {
   position: absolute; right: 26px; bottom: 26px;
   display: flex; align-items: center; justify-content: center; min-height: 34px; padding: 0 14px;
-  border-radius: 999px; background: #fff; color: #000;
+  border-radius: 999px; background: var(--tile-fill); color: var(--tile-ink);
   font-size: 18px; letter-spacing: 0.01em; line-height: 1.2;
   visibility: hidden;
 }
-.a11y-widget-biz .a11y-prompts .a11y-prompt:enabled:hover,
-.a11y-widget-biz .a11y-prompts .a11y-prompt:enabled:focus-visible {
+.a11y-widget-biz .a11y-prompts .a11y-prompt:has(> .a11y-prompt-q:enabled:is(:hover, :focus-visible)) {
   --ink: #fff; --paper: #000;
-  background: #000; color: #fff; border-color: #fff; text-decoration: none;
+  background: #000; color: #fff; border-color: #fff;
 }
-.a11y-widget-biz .a11y-prompts .a11y-prompt:enabled:hover .a11y-prompt-go,
-.a11y-widget-biz .a11y-prompts .a11y-prompt:enabled:focus-visible .a11y-prompt-go { visibility: visible; }
-.a11y-widget-biz .a11y-prompts .a11y-prompt:disabled { cursor: default; border: 1px dashed #000; }
+.a11y-widget-biz .a11y-prompts .a11y-prompt-q:enabled:is(:hover, :focus-visible) { background: none; color: inherit; }
+.a11y-widget-biz .a11y-prompts .a11y-prompt-q:enabled:is(:hover, :focus-visible) .a11y-prompt-go { visibility: visible; }
+.a11y-widget-biz .a11y-prompts .a11y-prompt:has(> .a11y-prompt-q:disabled) { border: 1px dashed #000; }
+.a11y-widget-biz .a11y-prompts .a11y-prompt-q:disabled { cursor: default; }
 .a11y-widget-biz .a11y-prompt-more { text-align: center; margin: 1.2em 0 0; }
 @container a11y-sum-run (max-width: 640px) {
   .a11y-widget-biz .a11y-sum-run .a11y-sum-rows,
@@ -1168,46 +1198,44 @@
 }
 .a11y-widget-biz .a11y-fd .a11y-fix-once > strong { font-weight: 300; }
 /* The short parts as cards (user's instruction, 17 Nov 2026: "too many
-   lines, these can be cards"), set since 18 Nov 2026 as a type foundry's
-   sheet of alternates (user's reference, "try designing this content like
-   this"): tiles of different widths in wrapping rows that always close up,
-   each with its label on a small pill centred at the top and its words
-   centred in the space under it, set large. FindingGroup's tileSize()
-   reads the words: up to 90 characters starts a third wide at 38px, up to
-   200 starts 45% wide at 30px, longer starts 60% wide at 26px, and every
-   tile grows to fill its row, so no row ends in a hole.
-   The ground is the fixed #f0efe8, black words in both themes (18.4:1);
-   the pill is solid black with #f0efe8 words, the reference's red pill
-   in the page's two inks. The words are Jokker Medium, the main text's
-   cut, in place of Serrif. Under 640px of block, one column. What to do
-   and the affected elements stay full width below: lists, pictures, code. */
+   lines, these can be cards"), set since 18 Nov 2026 as the spec cards of a
+   type foundry's page (user's reference, "design this like this"): equal
+   cards on one grid, 18px apart, the cards of a row the same height. Each has
+   its label top-left in small Medium type, no pill, and its words under it set
+   large and tight in Jokker Medium (-0.01em), the way the reference sets
+   "Grotesk / Italics / Sans Serif". FindingGroup's tileSize() reads the
+   words: up to 90 characters set at 38px, up to 200 at 30px, longer at 26px.
+   A card is as tall as its words plus 22px above and 40px below, with no
+   minimum height (user's instruction, 18 Nov 2026).
+   The ground is the fixed #f0efe8, black words in both themes (18.4:1). The
+   reference's red card is not taken: the widget has no red (COLOUR, in
+   CLAUDE.md). Under 640px of block, one column. What to do and the affected
+   elements stay full width below: lists, pictures, code. */
 .a11y-widget-biz .a11y-fd > .a11y-fd-col:first-child {
-  display: flex; flex-wrap: wrap; gap: 16px; align-items: stretch; margin: 0 0 1.6em;
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr));
+  gap: 18px; align-items: stretch; margin: 0 0 1.6em;
 }
 .a11y-widget-biz .a11y-fd > .a11y-fd-col:first-child > :is(p, div) {
-  --ink: #000; --paper: #f0efe8;
-  flex: 1 1 calc(45% - 16px);
-  display: flex; flex-direction: column; align-items: center; gap: 28px;
-  box-sizing: border-box; min-width: 0; min-height: 300px; max-width: none; margin: 0; padding: 22px 32px 40px;
-  border-radius: 20px; background: #f0efe8; color: #000; text-align: center;
-  font-family: "Jokker", sans-serif; font-weight: 500; font-size: 30px; line-height: 1.15; letter-spacing: 0.005em;
+  --ink: var(--tile-ink); --paper: var(--tile);
+  display: flex; flex-direction: column; align-items: flex-start; gap: 28px;
+  box-sizing: border-box; min-width: 0; max-width: none; margin: 0; padding: 22px 32px 40px;
+  border-radius: 20px; background: var(--tile); color: var(--tile-ink); text-align: start;
+  font-family: "Jokker", sans-serif; font-weight: 500; font-size: 26px; line-height: 1.15; letter-spacing: -0.01em;
 }
-.a11y-widget-biz .a11y-fd > .a11y-fd-col:first-child > [data-size="s"] { flex-basis: calc(33.333% - 16px); font-size: 38px; letter-spacing: -0.005em; line-height: 1.1; }
-.a11y-widget-biz .a11y-fd > .a11y-fd-col:first-child > [data-size="l"] { flex-basis: calc(60% - 16px); font-size: 26px; line-height: 1.2; }
+.a11y-widget-biz .a11y-fd > .a11y-fd-col:first-child > [data-size="s"] { font-size: 38px; line-height: 1.1; }
+.a11y-widget-biz .a11y-fd > .a11y-fd-col:first-child > [data-size="m"] { font-size: 30px; }
 .a11y-widget-biz .a11y-fd > .a11y-fd-col:first-child > p > strong:first-child {
-  flex: none; margin: 0; padding: 3px 12px 4px; border: 0; border-radius: 999px;
-  background: #000; color: #f0efe8;
-  font-family: "Jokker", sans-serif; font-weight: 400; font-size: 15px; line-height: 1.2; letter-spacing: 0.01em; text-transform: none;
+  flex: none; margin: 0; padding: 0; border: 0; border-radius: 0; background: none; color: inherit;
+  font-family: "Jokker", sans-serif; font-weight: 500; font-size: 15px; line-height: 1.2; letter-spacing: 0.01em; text-transform: none;
 }
 .a11y-widget-biz .a11y-fd > .a11y-fd-col:first-child .a11y-fd-body {
-  display: block; margin-block: auto; max-width: 100%;
-}
+  display: block; margin-block: 0; max-width: 100%;}
 .a11y-widget-biz .a11y-fd > .a11y-fd-col:first-child .a11y-fd-body code { font-size: 0.8em; }
 @container a11y-fd (max-width: 640px) {
-  .a11y-widget-biz .a11y-fd > .a11y-fd-col:first-child { gap: 10px; }
+  .a11y-widget-biz .a11y-fd > .a11y-fd-col:first-child { grid-template-columns: minmax(0, 1fr); gap: 10px; }
   .a11y-widget-biz .a11y-fd > .a11y-fd-col:first-child > :is(p, div),
-  .a11y-widget-biz .a11y-fd > .a11y-fd-col:first-child > :is([data-size="s"], [data-size="l"]) {
-    flex-basis: 100%; min-height: 0; gap: 20px; padding: 16px 20px 24px; font-size: 22px; line-height: 1.25;
+  .a11y-widget-biz .a11y-fd > .a11y-fd-col:first-child > :is([data-size="s"], [data-size="m"], [data-size="l"]) {
+    gap: 20px; padding: 16px 20px 24px; font-size: 22px; line-height: 1.25;
   }
 }
 /* The key/value lines: the key hangs in a 9em column, the value runs beside
@@ -1232,9 +1260,9 @@
   margin: 50px 0 1.2em; padding: 0; border: 0; border-block: 1px solid var(--rule-brown);
 }
 @media (prefers-color-scheme: dark) {
-  :root:not([data-theme="light"]) .a11y-widget-biz .a11y-fd .a11y-tech-details { --rule-brown: #b07f4f; }
+  .a11y-widget-biz:not([data-theme="light"]) .a11y-fd .a11y-tech-details { --rule-brown: #b07f4f; }
 }
-:root[data-theme="dark"] .a11y-widget-biz .a11y-fd .a11y-tech-details { --rule-brown: #b07f4f; }
+.a11y-widget-biz[data-theme="dark"] .a11y-fd .a11y-tech-details { --rule-brown: #b07f4f; }
 .a11y-widget-biz .a11y-fd .a11y-tech-details > summary {
   display: flex; align-items: center; gap: 14px; padding: 14px 0;
 }
@@ -1371,10 +1399,10 @@
    fixed #f0efe8 (#000 on it 18.4:1); hover is the marker yellow and the
    open note solid ink, as before. */
 .a11y-widget-biz .a11y-dn-list > li > .a11y-dn-link {
-  --ink: #000; --paper: #f0efe8;
+  --ink: var(--tile-ink); --paper: var(--tile);
   box-sizing: border-box; min-width: 0; min-height: 128px; margin: 0; padding: 16px 20px;
   display: flex; align-items: center; justify-content: center;
-  border: 0; border-radius: 20px; background: #f0efe8; color: #000;
+  border: 0; border-radius: 20px; background: var(--tile); color: var(--tile-ink);
   text-align: center; overflow-wrap: break-word; hyphens: manual;
 }
 .a11y-widget-biz .a11y-next-list > li a,
@@ -1436,7 +1464,7 @@
    marker yellow, like every other button; the note that is open is solid
    ink, like the selected tab. */
 .a11y-widget-biz .a11y-dn-list > li > .a11y-dn-link { width: 100%; font-size: 22px; cursor: pointer; }
-.a11y-widget-biz .a11y-dn-list > li > .a11y-dn-link:enabled:hover { background: var(--hl-cap-a); color: #000; text-decoration: none; }
+.a11y-widget-biz .a11y-dn-list > li > .a11y-dn-link:enabled:hover { background: var(--hover); color: var(--hover-ink); text-decoration: none; }
 .a11y-widget-biz .a11y-dn-list > li > .a11y-dn-link[aria-expanded="true"] { --ink: #fff; --paper: #000; background: #000; color: #fff; font-weight: 400; }
 
 /* The report actions, after the Displaay Info block and form (user's
@@ -1461,26 +1489,26 @@
   text-transform: uppercase;
 }
 .a11y-widget-biz .a11y-ra-row > .a11y-ra-cell > .a11y-ra-field {
-  --ink: #000; --paper: #f0efe8;
+  --ink: var(--tile-ink); --paper: var(--tile);
   display: flex; flex-direction: column; gap: 10px; padding: 18px 24px 16px;
-  border-radius: 14px; background: #f0efe8; color: #000;
+  border-radius: 14px; background: var(--tile); color: var(--tile-ink);
 }
 .a11y-widget-biz .a11y-ra-field > .a11y-ra-field-label { font-size: 22px; letter-spacing: 0.01em; line-height: 1.4; }
 /* input. in the selector: the general field rule (:is(input:not():not())) is
    0,3,1, and this has to out-rank it to drop the field's own box. */
 .a11y-widget-biz .a11y-ra-field > input.a11y-ra-email-input {
   box-sizing: border-box; width: 100%; min-height: 34px; margin: 0; padding: 4px 0;
-  border: 0; border-radius: 0; background: transparent; color: #000;
+  border: 0; border-radius: 0; background: transparent; color: var(--tile-ink);
   font: inherit; font-size: 22px; letter-spacing: 0.01em; line-height: 1.4;
 }
-.a11y-widget-biz .a11y-ra-field > input.a11y-ra-email-input::placeholder { color: #000; opacity: 1; font-weight: 300; }
+.a11y-widget-biz .a11y-ra-field > input.a11y-ra-email-input::placeholder { color: var(--tile-ink); opacity: 1; font-weight: 300; }
 /* The field is the box, so the focus ring goes round the field, not the
    bare line inside it. */
 .a11y-widget-biz .a11y-ra-field:focus-within { outline: 2px solid var(--focus); outline-offset: -2px; box-shadow: none; }
 .a11y-widget-biz .a11y-ra-field > input.a11y-ra-email-input:focus-visible { outline: none; }
 .a11y-widget-biz .a11y-ra-row > .a11y-ra-cell > .a11y-ra-send {
   display: block; width: 100%; min-height: 128px; margin: 0; padding: 20px 24px;
-  border: 1px solid var(--ink); border-radius: 14px; background: var(--ink); color: var(--paper);
+  border: 1px solid var(--ink); border-radius: 14px; background: var(--solid); color: var(--solid-ink);
   font-family: "Jokker", sans-serif; font-size: 48px; font-weight: 300; line-height: 1.05; letter-spacing: -0.01em;
   text-align: start;
 }
@@ -1716,30 +1744,36 @@
 }
 
 /* ═══ CONTENT SPACING (user's instruction, 17 Nov 2026) ════════════════════
-   "At least 50px between pieces of content." A piece is a block that stands
+   "At least 65px between pieces of content." A piece is a block that stands
    on its own: a report section, a summary panel, a numbered point, a group
    of controls, a legal row, an undecided check, a statement step, a card
    row. A title and its description, a label and its field, and the lines
    inside one piece keep their tighter spacing: they are one piece.
    In block flow the rule is a top margin on the next piece, which collapses
    with the one above, so a gap that was already wider stays wider. Flex and
-   grid containers do not collapse margins, so they take a 50px row gap.
+   grid containers do not collapse margins, so they take a 65px row gap.
    Measured with a sibling-gap walk over the fixture report at 1440px and
-   375px: no gap between pieces under 50px. Last in the file so it wins
-   ties with the rules it lifts. */
-.a11y-widget-biz .a11y-report > * + * { margin-top: 50px; }
-.a11y-widget-biz .a11y-sum-grid > * + * { margin-top: 50px; }
-.a11y-widget-biz .a11y-legal-panel + * { margin-top: 50px; }
-.a11y-widget-biz .a11y-sum-col:has(> .a11y-sum-panel) { row-gap: 50px; }
+   375px: no gap between pieces under 65px. Last in the file so it wins
+   ties with the rules it lifts.
+   30% more (user's instruction, 18 Nov 2026, "add 30% more line height
+   between groups of content"): the floor is 65px, and the report's
+   sections and its principle groups, which measured 77px apart (a 2.4em
+   prose margin at 32px collapsing through) or 50px, are now 100px. */
+.a11y-widget-biz .a11y-report > * + * { margin-top: 100px; }
+.a11y-widget-biz .a11y-principle-group + .a11y-principle-group { margin-top: 100px; }
+.a11y-widget-biz .a11y-section + .a11y-section { margin-top: 100px; }
+.a11y-widget-biz .a11y-sum-grid > * + * { margin-top: 65px; }
+.a11y-widget-biz .a11y-legal-panel + * { margin-top: 65px; }
+.a11y-widget-biz .a11y-sum-col:has(> .a11y-sum-panel) { row-gap: 65px; }
 .a11y-widget-biz .a11y-sum-specimens,
 .a11y-widget-biz .a11y-next-list,
 .a11y-widget-biz .a11y-spec-grid,
 .a11y-widget-biz .a11y-ra-row,
 .a11y-widget-biz .a11y-manual-list,
-.a11y-widget-biz .a11y-pro-rows { row-gap: 50px; }
-.a11y-widget-biz .a11y-legal-row:not(:last-child) { margin-bottom: 50px; }
-.a11y-widget-biz .a11y-undecided-cell:not(:last-child) { margin-bottom: 50px; }
-.a11y-widget-biz .a11y-dn-list { margin-bottom: 50px; }
+.a11y-widget-biz .a11y-pro-rows { row-gap: 65px; }
+.a11y-widget-biz .a11y-legal-row:not(:last-child) { margin-bottom: 65px; }
+.a11y-widget-biz .a11y-undecided-cell:not(:last-child) { margin-bottom: 65px; }
+.a11y-widget-biz .a11y-dn-list { margin-bottom: 65px; }
 /* An opened finding's sections stand 30% further apart (user's
    instruction, 18 Nov 2026, "add 30% more line height between sections of
    content when carret is opened"), measured at 1280px: the cards to What
@@ -1748,12 +1782,12 @@
 .a11y-widget-biz .a11y-fd > .a11y-fd-col:first-child { margin-bottom: 65px; }
 .a11y-widget-biz .a11y-fd > .a11y-fd-col:not(:first-child) > :not(:last-child) { margin-bottom: 100px; }
 .a11y-widget-biz .a11y-fd > .a11y-tech-details { margin-top: 65px; }
-.a11y-widget-biz :is(.a11y-stmt-step, .a11y-stmt-fields, .a11y-stmt-card) + * { margin-top: 50px; }
-.a11y-widget-biz .a11y-spec-grid { margin-bottom: 50px; }
+.a11y-widget-biz :is(.a11y-stmt-step, .a11y-stmt-fields, .a11y-stmt-card) + * { margin-top: 65px; }
+.a11y-widget-biz .a11y-spec-grid { margin-bottom: 65px; }
 /* "Skip the transcript" sat flush on the transcript's first line (user's
    instruction, 18 Nov 2026: "add paragraph break space under button"). The
-   button and the transcript are two pieces, so the same 50px. */
-.a11y-widget-biz .a11y-sr .a11y-skip-link { margin-bottom: 50px; }
+   button and the transcript are two pieces, so the same 65px. */
+.a11y-widget-biz .a11y-sr .a11y-skip-link { margin-bottom: 65px; }
 
 /* ═══ MEASURE (user's instruction, 17 Nov 2026) ═══════════════════════════
    "Cap 9 to 12 words in a line; the margin can be added if needed." 42ch,
@@ -1825,8 +1859,8 @@
   }
   .a11y-widget-biz .a11y-chat .a11y-prompts .a11y-prompt-label { font-size: 18px; }
   .a11y-widget-biz .a11y-chat .a11y-prompts .a11y-prompt-ask { margin-top: 0; font-size: 19px; letter-spacing: 0.005em; line-height: 1.3; }
-  .a11y-widget-biz .a11y-chat .a11y-prompts .a11y-prompt-go,
-  .a11y-widget-biz .a11y-chat .a11y-prompts .a11y-prompt-mark { display: none; }
+  .a11y-widget-biz .a11y-chat .a11y-prompts .a11y-prompt-go { display: none; }
+  .a11y-widget-biz .a11y-chat .a11y-prompts .a11y-prompt-wcag { margin-top: 8px; font-size: 14px; line-height: 1.3; }
   .a11y-widget-biz .a11y-chat .a11y-prompt-more { text-align: start; margin: 8px 0 0; }
   .a11y-widget-biz .a11y-chat .a11y-prompt-more .a11y-btn { font-size: 18px; }
 
@@ -1872,9 +1906,9 @@
   .a11y-widget-biz .a11y-chat .a11y-chat-turn { margin-bottom: 1.4em; }
   .a11y-widget-biz .a11y-chat .a11y-chat-you { display: flex; flex-direction: column; align-items: flex-end; }
   .a11y-widget-biz .a11y-chat .a11y-chat-you .a11y-chat-text {
-    --ink: #000; --paper: #f0efe8;
+    --ink: var(--tile-ink); --paper: var(--tile);
     box-sizing: border-box; max-width: 85%; padding: 10px 16px; border-radius: 22px;
-    background: #f0efe8; color: #000;
+    background: var(--tile); color: var(--tile-ink);
   }
 }
 
@@ -1940,18 +1974,19 @@
 }
 /* The fixed pale ground, black words, in both themes. */
 .a11y-widget-biz .a11y-chats .a11y-chats-row:is([data-current], :hover) {
-  --ink: #000; --paper: #f0efe8;
-  background: #f0efe8; color: #000;
+  --ink: var(--tile-ink); --paper: var(--tile);
+  background: var(--tile); color: var(--tile-ink);
 }
 /* Only the open conversation's edge is green (user's instruction, 18 Nov
    2026, "make current chat green only"). It always sits on the #f0efe8
-   fill, where #14532d measures 7.9:1, so it needs no dark-theme value. */
-.a11y-widget-biz .a11y-chats .a11y-chats-row[data-current] { border-color: #14532d; }
+   fill, where #14532d measures 7.9:1; on the dark theme's #1c1c1e tile it
+   is Apple's green #30d158 (8.4:1). */
+.a11y-widget-biz .a11y-chats .a11y-chats-row[data-current] { border-color: var(--chats-current); }
 .a11y-widget-biz .a11y-chats .a11y-chats-row :is(.a11y-chats-item, .a11y-chats-delete):enabled:hover,
 .a11y-widget-biz .a11y-chats .a11y-chats-new:enabled:hover,
 .a11y-widget-biz .a11y-chats .a11y-chats-toggle:hover {
-  --ink: #000; --paper: #f0efe8;
-  background: #f0efe8; color: #000;
+  --ink: var(--tile-ink); --paper: var(--tile);
+  background: var(--tile); color: var(--tile-ink);
 }
 .a11y-widget-biz .a11y-chats .a11y-chats-row[data-current] .a11y-chats-item { font-weight: 500; }
 .a11y-widget-biz .a11y-chats .a11y-chats-delete {
@@ -1962,9 +1997,11 @@
 }
 .a11y-widget-biz .a11y-chats .a11y-chats-row:is([data-current], :hover, :focus-within) .a11y-chats-delete { visibility: visible; }
 .a11y-widget-biz .a11y-chats .a11y-chats-row .a11y-chats-delete:enabled:hover { border-color: #000; }
-/* Disabled while a reply or a scan runs: a dashed edge, never faded. The
-   rows carry a 1px dash at rest, so theirs goes to 2px. */
-.a11y-widget-biz .a11y-chats .a11y-chats-delete:disabled { border: 1px dashed var(--ink); cursor: not-allowed; }
+/* Disabled while a reply or a scan runs: never faded. The rows carry a 1px
+   dash at rest, so theirs goes to 2px; the bin's ring is solid (user's
+   instruction, 18 Nov 2026), so a dashed circle never sits inside the
+   dashed row. */
+.a11y-widget-biz .a11y-chats .a11y-chats-delete:disabled { border: 1px solid var(--ink); cursor: not-allowed; }
 .a11y-widget-biz .a11y-chats .a11y-chats-new:disabled {
   padding: 7px 11px; border: 2px dashed var(--ink); cursor: not-allowed;
 }
@@ -1992,15 +2029,15 @@
    by side. Ink and paper are redefined inside, so links, code and focus
    rings follow. Under 640px the sentence drops to the phone title size. */
 .a11y-widget-biz .a11y-sum-col > .a11y-sum-panel:not(.a11y-sum-counts) {
-  --ink: #000; --paper: #f0efe8;
+  --ink: var(--tile-ink); --paper: var(--tile);
   box-sizing: border-box; min-width: 0; margin: 0;
   align-self: stretch; display: flex; flex-direction: column; gap: 56px;
-  padding: 28px 32px 36px; border: 0; border-radius: 20px; background: #f0efe8; color: #000;
+  padding: 28px 32px 36px; border: 0; border-radius: 20px; background: var(--tile); color: var(--tile-ink);
   text-align: start; overflow-wrap: break-word; hyphens: manual;
 }
 .a11y-widget-biz .a11y-sum-col > .a11y-sum-panel:not(.a11y-sum-counts) > .a11y-sum-eyebrow {
   align-self: flex-start; margin: 0; padding: 7px 16px; border: 0; border-radius: 999px;
-  background: #000; color: #f0efe8; text-align: start; text-transform: none;
+  background: var(--strong); color: var(--strong-ink); text-align: start; text-transform: none;
   font-family: "Jokker", sans-serif; font-size: 15px; font-weight: 500; line-height: 1.2; letter-spacing: 0.01em;
 }
 .a11y-widget-biz .a11y-sum-col > .a11y-sum-panel:not(.a11y-sum-counts) .a11y-sum-lead {
@@ -2045,12 +2082,12 @@
    they split it evenly and never wrap. */
 .a11y-widget-biz .a11y-legal-tiles { display: flex; gap: 16px; align-items: stretch; }
 .a11y-widget-biz .a11y-legal-tiles > .a11y-legal-row {
-  --ink: #000; --paper: #f0efe8;
+  --ink: var(--tile-ink); --paper: var(--tile);
   flex: 1 1 0; container: a11y-legal-tile / inline-size;
   display: flex; flex-direction: column; align-items: center; gap: 14px;
   box-sizing: border-box; min-width: 0; min-height: 300px; margin: 0; padding: 22px 20px 32px;
   overflow-wrap: break-word; hyphens: manual;
-  border-radius: 20px; background: #f0efe8; color: #000; text-align: center;
+  border-radius: 20px; background: var(--tile); color: var(--tile-ink); text-align: center;
 }
 .a11y-widget-biz .a11y-legal-tiles > .a11y-legal-row .a11y-legal-mark {
   order: 1; align-self: stretch; box-sizing: border-box; margin: 0; padding: 3px 12px 4px; border-radius: 999px; box-shadow: none;
@@ -2089,4 +2126,326 @@
   }
   .a11y-widget-biz .a11y-legal-tiles > .a11y-legal-row .a11y-legal-count { margin-top: 12px; font-size: 96px; }
   .a11y-widget-biz .a11y-legal-tiles > .a11y-legal-row .a11y-legal-row-label { font-size: 18px; }
+}
+
+/* ═══ THE SCAN FORM AFTER A FOUNDRY'S NEWSLETTER FORM (user's reference, 18 Nov 2026) ═
+   "Design this like this", over a type foundry's newsletter form (its
+   illustration ignored, user's word): a narrow column; the name large in
+   Regular; a serif heading (Serrif) over each group; every field a filled
+   box with 12px corners and its label inside at the top; each choice a
+   filled row with its radio showing; one wide block for the action, its
+   words set large and left; the note under it. The fill is --tile with
+   --tile-ink words (#f0efe8 and black in light, Apple's #1c1c1e and white
+   in dark); a field box carries no edge, its label inside naming it, as
+   the reference draws it. Hover is --hover; the chosen row's words Medium.
+   Replaces the type-tester row of the same day. */
+.a11y-widget-biz .a11y-url-form.a11y-tester { display: block; box-sizing: border-box; min-width: 0; max-width: 640px; margin: 0; }
+.a11y-widget-biz .a11y-tester > .a11y-tester-name {
+  margin: 0 0 8px; font-size: 67px; font-weight: 400; line-height: 1.05; letter-spacing: -0.01em;
+}
+.a11y-widget-biz .a11y-tester > .a11y-tester-sub {
+  margin: 40px 0 12px; font-family: "Serrif", Georgia, serif; font-size: 32px; font-weight: 300; line-height: 1.1; letter-spacing: 0;
+}
+/* A field: the filled box holds its label and its control. */
+.a11y-widget-biz .a11y-tester .a11y-input,
+.a11y-widget-biz .a11y-tester .a11y-tester-rows > .a11y-select2,
+.a11y-widget-biz .a11y-tester .a11y-tester-row {
+  box-sizing: border-box; min-width: 0; margin: 0; padding: 14px 18px 16px;
+  border-radius: 12px; background: var(--tile); color: var(--tile-ink);
+}
+.a11y-widget-biz .a11y-tester .a11y-input { display: grid; grid-template-columns: minmax(0, 1fr); gap: 4px; }
+.a11y-widget-biz .a11y-tester .a11y-input:focus-within,
+.a11y-widget-biz .a11y-tester .a11y-tester-rows > .a11y-select2:focus-within { outline: 2px solid var(--focus); outline-offset: -2px; }
+.a11y-widget-biz .a11y-tester .a11y-input-label,
+.a11y-widget-biz .a11y-tester .a11y-tester-rows .a11y-select2-label {
+  color: var(--tile-ink); font-size: 18px; font-weight: 400; line-height: 1.2; letter-spacing: 0.01em;
+}
+/* AI review reads as a choice, at the choices' 22px. */
+.a11y-widget-biz .a11y-tester .a11y-tester-ai .a11y-switch-label {
+  color: var(--tile-ink); font-size: 22px; font-weight: 400; line-height: 1.2; letter-spacing: 0.01em;
+}
+.a11y-widget-biz .a11y-tester .a11y-input-shell { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 12px; min-width: 0; }
+/* 0,5,1 out-ranks the general field rule (0,3,1). The field's size
+   attribute makes it wider than a phone, so it may shrink. */
+.a11y-widget-biz .a11y-tester .a11y-input-shell > input:not([type="radio"]) {
+  flex: 1 1 8em; min-width: 0; min-height: 44px; margin: 0; padding: 0; border: 0; border-radius: 0;
+  background: transparent; color: var(--tile-ink);
+  font-size: 32px; font-weight: 400; letter-spacing: 0; line-height: 1.2;
+}
+.a11y-widget-biz .a11y-tester .a11y-input-shell > input:not([type="radio"]):focus-visible { outline: none; box-shadow: none; }
+.a11y-widget-biz .a11y-tester .a11y-input-shell > input::placeholder { color: var(--tile-ink); opacity: 1; font-weight: 300; }
+.a11y-widget-biz .a11y-tester .a11y-input-shell > .a11y-login-toggle { flex: none; min-height: 36px; padding: 0 14px; font-size: 18px; }
+.a11y-widget-biz .a11y-tester > .a11y-url-error:not(:empty) { margin-top: 12px; }
+/* A choice: a filled row, its radio showing in the words' ink. */
+.a11y-widget-biz .a11y-tester .a11y-tester-choices {
+  margin-top: 8px; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 220px), 1fr)); gap: 8px; min-width: 0;
+}
+.a11y-widget-biz .a11y-tester .a11y-seg {
+  display: flex; align-items: center; gap: 12px; box-sizing: border-box; min-width: 0; min-height: 60px; padding: 12px 18px;
+  border-radius: 12px; background: var(--tile); color: var(--tile-ink); cursor: pointer;
+  font-size: 22px; line-height: 1.2; letter-spacing: 0.01em;
+}
+/* Each choice shows a big toggle instead of a radio's dot (user's
+   instruction, 18 Nov 2026, "make big toggles instead of dots"). It is still
+   the native radio, drawn with appearance: none as a 64 x 36 track with a
+   24px knob: off is an ink edge with the knob left, on is solid with the
+   knob right. A radio cannot be switched off by itself; choosing the other
+   one in the group does it, as before. In forced colours the native radio
+   comes back, so the state never depends on a drawn fill. */
+.a11y-widget-biz .a11y-tester .a11y-seg > input {
+  display: inline-grid; place-content: center; flex: none; box-sizing: border-box; width: 64px; height: 36px; margin: 0;
+  order: 2; margin-inline-start: auto; cursor: pointer;
+  appearance: none; -webkit-appearance: none; border: 2px solid var(--tile-ink); border-radius: 999px;
+  background: var(--tile); color: var(--tile-ink); transition: background-color 0.15s;
+}
+/* The knob is the general radio rule's ::before, moved and resized: one
+   shape, so no second dot can show through. */
+.a11y-widget-biz .a11y-tester .a11y-seg > input::before {
+  width: 24px; height: 24px; background: currentColor; transform: translateX(-13px); transition: transform 0.15s;
+}
+.a11y-widget-biz .a11y-tester .a11y-seg > input:checked { border-color: var(--solid); background: var(--solid); color: var(--solid-ink); }
+.a11y-widget-biz .a11y-tester .a11y-seg > input:checked::before { transform: translateX(13px); }
+@media (forced-colors: active) {
+  .a11y-widget-biz .a11y-tester .a11y-seg > input { appearance: auto; -webkit-appearance: auto; width: 24px; height: 24px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .a11y-widget-biz .a11y-tester .a11y-seg > input,
+  .a11y-widget-biz .a11y-tester .a11y-seg > input::before { transition: none; }
+}
+/* The AI review switch matches the choices' toggles. */
+.a11y-widget-biz .a11y-tester .a11y-tester-ai .a11y-switch-track { width: 64px; height: 36px; }
+.a11y-widget-biz .a11y-tester .a11y-tester-ai .a11y-switch-knob { width: 26px; height: 26px; margin-top: -13px; }
+.a11y-widget-biz .a11y-tester .a11y-seg.a11y-seg-on { font-weight: 500; }
+.a11y-widget-biz .a11y-tester .a11y-seg:not(.a11y-seg-disabled):hover { background: var(--hover); color: var(--hover-ink); }
+.a11y-widget-biz .a11y-tester .a11y-seg:has(input:focus-visible) { outline: 2px solid var(--focus); outline-offset: -2px; }
+.a11y-widget-biz .a11y-tester .a11y-seg > input:focus-visible { outline: none; box-shadow: none; }
+.a11y-widget-biz .a11y-tester .a11y-seg.a11y-seg-disabled { cursor: not-allowed; box-shadow: inset 0 0 0 1px var(--tile-ink); }
+/* The other settings: AI review and the language, a filled row each. */
+.a11y-widget-biz .a11y-tester > .a11y-tester-rows { display: grid; gap: 8px; margin-top: 8px; }
+.a11y-widget-biz .a11y-tester .a11y-tester-ai .a11y-switch { display: flex; justify-content: space-between; width: 100%; }
+.a11y-widget-biz .a11y-tester .a11y-tester-ai .a11y-switch-word { color: var(--tile-ink); font-size: 18px; letter-spacing: 0.01em; min-width: 1.8em; }
+.a11y-widget-biz .a11y-tester .a11y-tester-rows > .a11y-select2 { display: grid; justify-items: stretch; gap: 4px; }
+.a11y-widget-biz .a11y-tester .a11y-tester-rows > .a11y-select2 .a11y-select2-field.a11y-select2-field {
+  width: 100%; min-width: 0; min-height: 40px; padding: 0 2.4em 0 0; border: 0; border-radius: 0;
+  background-color: transparent; color: var(--tile-ink); font-size: 26px; letter-spacing: 0;
+}
+.a11y-widget-biz .a11y-tester .a11y-tester-rows > .a11y-select2 .a11y-select2-field.a11y-select2-field:focus-visible { outline: none; box-shadow: none; }
+/* The action: one wide block, its words large and left, as the reference
+   sets "Subscribe to Our Newsletter"; solid (black in light, Apple grey in
+   dark), hover --hover. */
+.a11y-widget-biz .a11y-tester > .a11y-url-submit { display: grid; gap: 14px; margin-top: 8px; }
+.a11y-widget-biz .a11y-tester > .a11y-url-submit > .a11y-btn.a11y-btn-primary {
+  display: block; width: 100%; min-height: 120px; padding: 20px 24px; border-radius: 12px; text-align: start;
+  font-size: 48px; font-weight: 400; line-height: 1.05; letter-spacing: -0.01em;
+}
+.a11y-widget-biz .a11y-tester > .a11y-url-submit > .a11y-url-submit-note { font-size: 18px; letter-spacing: 0.01em; }
+@media (max-width: 640px) {
+  .a11y-widget-biz .a11y-tester > .a11y-tester-name { font-size: 40px; }
+  .a11y-widget-biz .a11y-tester > .a11y-tester-sub { margin-top: 28px; font-size: 27px; }
+  .a11y-widget-biz .a11y-tester .a11y-input-shell > input:not([type="radio"]) { font-size: 26px; }
+  .a11y-widget-biz .a11y-tester > .a11y-url-submit > .a11y-btn.a11y-btn-primary { min-height: 96px; font-size: 32px; }
+}
+
+/* ═══ THE SECTIONS RAIL AS ROWS (user's instruction, 18 Nov 2026) ═════════
+   "Design this": the report's navigation set like the conversations panel,
+   the other navigation (the two never show together): small print, one row
+   per section with 12px corners, no underline (a row in a nav landmark
+   reads as a link by its place), the hovered row and the current section on
+   the #f0efe8 ground with black words in both themes, the current one in
+   Medium. (Hover became the marker yellow later the same day.) Group labels at 15px Medium sit over their rows like Recent. */
+.a11y-widget-biz .a11y-shell-nav .a11y-shell-nav-toggle { font-size: 18px; gap: 0 0.6em; }
+.a11y-widget-biz .a11y-shell-nav .a11y-shell-nav-count { font-size: 15px; }
+/* Where the rail runs the full width (above the report rather than beside
+   it), its rows keep to a column, so the current section's ground is a row
+   and not a band across the page. */
+.a11y-widget-biz .a11y-shell-nav > ul { max-width: 360px; }
+.a11y-widget-biz .a11y-shell-nav .a11y-shell-nav-group { margin: 0 0 18px; }
+.a11y-widget-biz .a11y-shell-nav .a11y-shell-nav-group-label {
+  margin: 0 0 4px; padding-inline: 12px; font-size: 15px; line-height: 1.2;
+}
+.a11y-widget-biz .a11y-shell-nav .a11y-shell-nav-link {
+  display: block; margin: 0 0 2px; padding: 8px 12px; border-radius: 12px;
+  color: var(--ink); text-decoration: none;
+  font-size: 18px; line-height: 1.3; letter-spacing: 0.01em;
+}
+.a11y-widget-biz .a11y-shell-nav .a11y-shell-nav-link[aria-current="true"] { background: var(--tile); color: var(--tile-ink); }
+/* Hover is the marker yellow, as on buttons (same day, "make hover yellow"). */
+.a11y-widget-biz .a11y-shell-nav .a11y-shell-nav-link:hover { background: var(--hover); color: var(--hover-ink); }
+
+/* ═══ WCAG 2.2 AND THE SCREEN READER HEAD (user's instructions, 18 Nov 2026) ═
+   Ready for WCAG 2.2?: "design this", then "do not do unnecessary
+   containers, this is slop". No card grounds and no pills round words: the
+   readiness toggle reads as one line, the standard in Medium, the date
+   plain, the count of what would fail today on the orange status highlight
+   (the colour is the status; black on it 10:1 light, Apple orange in dark),
+   the chevron in a 1px ink round, the control's one edge. The sentence under
+   it is the specimen, 38px. The six new items: its title at 22px Medium, its
+   toggle an ordinary pill button.
+   Screen reader preview: the head broke mid-phrase ("(16" over
+   "announcements)", the status chip on two lines). The title and its count
+   now hold one line, the status and the chevron sit on the line under it,
+   and Play keeps the right edge, its top level with the title's. */
+.a11y-widget-biz .a11y-w22 > .a11y-next > .a11y-next-toggle {
+  display: flex; flex-wrap: wrap; align-items: center; gap: 8px 14px; width: auto; min-height: 0; margin: 0; padding: 0;
+  border: 0; border-radius: 0; background: none; color: var(--ink);
+  font-size: 18px; font-weight: 400; line-height: 1.2; letter-spacing: 0.01em; text-align: start;
+}
+.a11y-widget-biz .a11y-w22 > .a11y-next > .a11y-next-toggle:enabled:hover { background: none; border-color: transparent; color: var(--ink); }
+.a11y-widget-biz .a11y-w22 .a11y-next-toggle > .a11y-next-standard { display: contents; }
+.a11y-widget-biz .a11y-w22 .a11y-next-toggle > .a11y-next-standard > strong { font-weight: 500; }
+.a11y-widget-biz .a11y-w22 .a11y-next-toggle > .a11y-next-count { padding: 2px 10px; border-radius: 999px; background: var(--hl-orange); color: #000; font-size: 18px; }
+.a11y-widget-biz .a11y-w22 .a11y-next-toggle > .a11y-next-chevron {
+  display: inline-grid; place-content: center; box-sizing: border-box; width: 40px; height: 40px;
+  border: 1px solid var(--ink); border-radius: 50%; font-size: 18px; line-height: 1;
+}
+.a11y-widget-biz .a11y-w22 .a11y-next-toggle > .a11y-next-chevron[data-open="true"] { transform: rotate(180deg); }
+.a11y-widget-biz .a11y-w22 .a11y-next-toggle:enabled:hover > .a11y-next-chevron { border-color: var(--hover); background: var(--hover); color: var(--hover-ink); }
+.a11y-widget-biz .a11y-w22 > .a11y-next > .a11y-next-desc {
+  max-width: none; margin: 28px 0 0;
+  font-size: 38px; font-weight: 400; line-height: 1.1; letter-spacing: -0.005em;
+}
+.a11y-widget-biz .a11y-w22 > .a11y-next > .a11y-next-list { margin: 28px 0 0; }
+.a11y-widget-biz .a11y-w22 > .a11y-w22-panel { display: flex; flex-wrap: wrap; align-items: center; gap: 12px 16px; margin-top: 65px; }
+.a11y-widget-biz .a11y-w22 > .a11y-w22-panel > .a11y-w22-panel-title { margin: 0; font-size: 22px; font-weight: 500; line-height: 1.2; letter-spacing: 0.01em; }
+.a11y-widget-biz .a11y-w22 > .a11y-w22-panel > .a11y-w22-toggle { font-size: 18px; }
+.a11y-widget-biz .a11y-w22 > .a11y-w22-panel > div { flex: 1 1 100%; min-width: 0; margin-top: 12px; }
+.a11y-widget-biz .a11y-w22 > .a11y-w22-panel > div[hidden] { display: none; }
+@media (max-width: 640px) {
+  .a11y-widget-biz .a11y-w22 > .a11y-next > .a11y-next-desc { font-size: 27px; letter-spacing: 0; }
+}
+
+.a11y-widget-biz .a11y-sr .a11y-accordion-row { align-items: flex-start; margin-top: 46px; }
+.a11y-widget-biz .a11y-sr .a11y-accordion-row > .a11y-accordion-title { margin-top: 0; }
+.a11y-widget-biz .a11y-sr .a11y-accordion-title .a11y-accordion-head { flex-wrap: wrap; align-items: center; gap: 14px 10px; }
+.a11y-widget-biz .a11y-sr .a11y-accordion-title .a11y-accordion-head > span:first-child { flex: 1 1 100%; min-width: 0; }
+.a11y-widget-biz .a11y-sr .a11y-accordion-title .a11y-section-count { white-space: nowrap; }
+.a11y-widget-biz .a11y-sr .a11y-accordion-title .a11y-status-chip { margin-inline: 0; white-space: nowrap; }
+.a11y-widget-biz .a11y-sr .a11y-accordion-title .a11y-accordion-chevron { margin-inline-start: 4px; }
+/* A title is not hyphenated ("pre-view" at 375px); the description stands a
+   clear step under the head. */
+.a11y-widget-biz .a11y-sr .a11y-accordion-row > .a11y-accordion-title { hyphens: manual; }
+.a11y-widget-biz .a11y-sr .a11y-section-head > .a11y-section-desc { margin-top: 24px; }
+
+/* ═══ DARK CONTROLS, APPLE'S WAY (user's instruction, 18 Nov 2026, "design this") ═
+   In dark, Apple draws controls as fills, not outlines: a 1px white edge on
+   every pill read as a wireframe. So in dark a button is filled #2c2c2e (Apple's tertiary system fill on black)
+   with no visible edge, white words (14.7:1); the chosen choice and the
+   primary action #636366 (white 6.1:1); hover #3a3a3c. The edge stays as
+   the fill's own colour, so sizes do not move between themes, and a
+   disabled control keeps its dashed edge. The address rule is Apple's
+   system grey #8e8e93 (6.3:1 on black, past 3:1 for a field's boundary).
+   The base button rule reads --btn-fill, which only dark sets, so every
+   button with its own look still wins. Light is unchanged. */
+@media (prefers-color-scheme: dark) {
+  .a11y-widget-biz:not([data-theme="light"]) .a11y-btn.a11y-btn-primary:enabled { border-color: #636366; }
+}
+.a11y-widget-biz[data-theme="dark"] .a11y-btn.a11y-btn-primary:enabled { border-color: #636366; }
+
+/* "Back to the chat" under the form is a way out, not a second action: at
+   the 22px button size it stood as large as Start the scan. */
+.a11y-widget-biz .a11y-chat-alt { margin-bottom: 65px; }
+.a11y-widget-biz .a11y-chat-alt > .a11y-btn { min-height: 40px; padding: 0 18px; font-size: 18px; }
+
+/* VOICE CONTROL: one toggle and the line that says what it heard. Three
+   roots, like the rest of the poster layer. */
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-voice { display: flex; flex-wrap: wrap; align-items: center; gap: 10px 16px; margin: 0 0 30px; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-voice-note { margin: 0; font-size: 15px; line-height: 1.2; letter-spacing: 0.01em; flex: 1 1 18em; min-width: 0; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-voice .a11y-btn[aria-pressed="true"] { background: var(--solid); color: var(--solid-ink); }
+
+/* ═══ WHERE THIS LIVES AND THE SCREEN READER PREVIEW AS CARDS (user's instruction, 18 Nov 2026) ═
+   "this is a slop … design this": the history column's second half was a
+   bare heading, one dash line and a button, and the screen reader block
+   was a heading boxed by its own focus ring with the Play button
+   jammed under it. Both now speak the report's card language: the fixed
+   #f0efe8 ground with black words in both themes (18.4:1), 20px corners,
+   the label on a small solid-black pill (15px Medium, sentence case). Ink
+   and paper are redefined inside so buttons, the checkbox and focus rings
+   follow. Three roots, like the rest of the poster layer. */
+
+/* History: a card each for "Since last time" and "Where this lives". */
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-hist-col:last-child { display: flex; flex-direction: column; gap: 16px; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-hist-card {
+  --ink: var(--tile-ink); --paper: var(--tile);
+  display: flex; flex-direction: column; align-items: flex-start; gap: 28px;
+  box-sizing: border-box; min-width: 0; margin: 0; padding: 24px 28px 32px;
+  border-radius: 20px; background: var(--tile); color: var(--tile-ink);
+  overflow-wrap: break-word; hyphens: manual;
+}
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-hist-card > .a11y-hist-head {
+  margin: 0; padding: 7px 16px; border-radius: 999px; background: var(--strong); color: var(--strong-ink);
+  font-family: "Jokker", sans-serif; font-size: 15px; font-weight: 500; line-height: 1.2; letter-spacing: 0.01em;
+}
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-hist-card > .a11y-hist-facts {
+  align-self: stretch; margin: 0; padding: 0; list-style: none;
+}
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-hist-card > .a11y-hist-facts > li {
+  margin: 0; padding: 12px 0; border-top: 1px solid var(--tile-ink);
+  font-size: 22px; line-height: 1.2; letter-spacing: 0.01em;
+}
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-hist-card > .a11y-hist-facts > li:first-child { border-top: 0; padding-top: 0; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-hist-card > .a11y-hist-facts > li::before { content: none; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-hist-promise {
+  margin: 0; font-size: 30px; font-weight: 400; line-height: 1.15; letter-spacing: 0.005em;}
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-hist-card > .a11y-danger-btn { margin: 0; }
+
+/* Screen reader preview: Play, the status line, the filter and the skip
+   link share one card that is on screen whether the section is open or not.
+   Play is the solid pill; the filter is an outlined pill around its
+   checkbox; the skip link is a quiet pill at the end. */
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sr-bar {
+  --ink: var(--tile-ink); --paper: var(--tile);
+  display: flex; flex-wrap: wrap; align-items: center; gap: 14px 16px;
+  box-sizing: border-box; margin: 0 0 30px; padding: 20px 24px;
+  border-radius: 20px; background: var(--tile); color: var(--tile-ink);
+}
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sr-bar .a11y-sr-play {
+  flex: 0 1 auto; min-width: 0; max-width: 100%; min-height: 48px; padding: 0 1.4em; font-size: 22px; white-space: normal; text-align: start;
+}
+/* On a phone the button takes the 18px label size and may wrap: at 22px
+   "Reproducir la página en voz alta" (es) ran to 463px of a 320px screen
+   (reflow check, 18 Nov 2026). */
+@media (max-width: 640px) {
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sr-bar .a11y-sr-play { padding: 8px 1em; font-size: 18px; }
+}
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sr-bar .a11y-sr-status {
+  flex: 1 1 8em; min-width: 0; margin: 0; font-size: 18px; letter-spacing: 0.01em; font-variant-numeric: tabular-nums;
+}
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sr-bar .a11y-ai-toggle {
+  flex: none; margin: 0; min-height: 40px; box-sizing: border-box; padding: 0 1em 0 0.8em;
+  border: 1px solid var(--tile-ink); border-radius: 999px; font-size: 18px; cursor: pointer;
+}
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sr-bar .a11y-ai-toggle:has(:checked) { background: var(--strong); color: var(--strong-ink); }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sr-bar .a11y-skip-link { flex: none; margin: 0; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sr .a11y-skip-link { margin-bottom: 0; }
+
+/* The announcements: the number in the margin, the words at 26px, a rule
+   between lines. The line being read is solid ink; a line that says
+   nothing useful keeps a dashed rule and its note under it on the
+   orange highlight, as the schedule does for a problem. */
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sr-list { margin: 0 0 30px; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sr-row {
+  grid-template-columns: 2.2em minmax(0, 1fr); gap: 4px 0.4em; align-items: baseline;
+  margin: 0; padding: 14px 10px; border-top: 1px solid var(--ink); border-radius: 0;
+}
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sr-row[data-issue] { border-top-style: dashed; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sr-row .a11y-sr-line-text { font-size: 26px; line-height: 1.2; letter-spacing: 0; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sr-row .a11y-sr-num { font-variant-numeric: tabular-nums; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sr-row:is(button):enabled:hover { background: var(--hl-cap-a, #fbd24a); color: var(--tile-ink); }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sr-row[aria-current="true"] {
+  background: var(--ink); color: var(--paper); text-decoration: none;
+}
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sr-row[aria-current="true"]:enabled:hover { background: var(--ink); color: var(--paper); }
+
+@container a11y-shell (max-width: 640px) {
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-hist-card { padding: 18px 20px 24px; gap: 20px; }
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-hist-promise { font-size: 22px; }
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sr-bar { padding: 16px 18px; }
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sr-bar .a11y-sr-play { width: 100%; justify-content: center; }
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sr-row .a11y-sr-line-text { font-size: 22px; }
+}
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sr .a11y-show-all { margin-bottom: 30px; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sr-bar .a11y-sr-play:enabled { background: var(--strong); color: var(--strong-ink); }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sr-bar .a11y-sr-play:enabled:hover { background: var(--hl-cap-a); color: var(--tile-ink); }
+@container a11y-shell (max-width: 640px) {
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sr-bar .a11y-ai-toggle { flex: 1 1 100%; min-width: 0; padding-block: 8px; border-radius: 20px; }
 }

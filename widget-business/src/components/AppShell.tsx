@@ -1,5 +1,6 @@
 import { PosterMark } from "./PosterMark";
 import type { ReactNode, RefObject } from "react";
+import { VoiceControl } from "./VoiceControl";
 import { SideNav, type NavSection } from "./SideNav";
 
 /**
@@ -56,6 +57,7 @@ export function AppShell({
           />
         )}
         <div className="a11y-shell-content" ref={contentRef}>
+          <VoiceControl />
           {mark && <PosterMark word={mark} />}
           {children}
         </div>

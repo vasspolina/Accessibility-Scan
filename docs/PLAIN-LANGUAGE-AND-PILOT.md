@@ -89,10 +89,18 @@ Only with `PLAIN_LANGUAGE_IN_SCANS=true`. Without it, scans report
 ## Running the pilot
 
 The form asks for as little as it can: the page's address, one sentence
-about what happened, and how much it held the participant back. Pasting an
-address looks the page up (`POST /api/pilot/page`; every hop
-goes through the SSRF guard and only the title comes back), shows its title
-under the field and gives it to the model as context. "What were you trying
+about what happened, and how much it held the participant back. The address
+field reads what was typed the way a chat would (`POST /api/pilot/page`,
+`services/pilot/readAddress.ts`): spaces, commas or "dot" before a domain
+ending become dots, https:// goes in front, and a host that does not
+resolve is passed to Claude (when `ANTHROPIC_API_KEY` is set) for the address
+the person meant, kept only if that host resolves. "acsessobilty nl" reads as
+https://accessibility.nl. The form shows the reading under the field, puts
+it in the field once the person leaves it, and stops once on submit if a
+guess has not been shown yet; a sentence typed there moves to "What
+happened?". Only text nothing can be made of is an error. The page is then
+looked up (every hop goes through the SSRF guard and only the title comes
+back), its title shown under the field and given to the model as context. "What were you trying
 to do" is optional, and so is "What happened" when an address is given: the
 page is then scanned (no AI review, no screenshots) and the model drafts one
 finding from the most serious measured problems, worded as what the scan

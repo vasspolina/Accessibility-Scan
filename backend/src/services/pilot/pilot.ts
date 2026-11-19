@@ -8,6 +8,7 @@ import { replaceLongDashes } from "../merge/mergeFindings.js";
 import { callLocalModel, localModelName } from "../plainLanguage/localModel.js";
 import { dropDanglingTag } from "../plainLanguage/rewriteFindings.js";
 import { scanUrlToReport } from "../scanPipeline.js";
+import { normaliseAddress } from "./readAddress.js";
 import type { AccessibilityFinding } from "../../types/report.js";
 import type { SendResult } from "../mail/sendReport.js";
 
@@ -53,7 +54,13 @@ export const reportFieldsSchema = z.object({
   assistiveTech: z.enum(ASSISTIVE_TECH),
   /** Which one, in their words: "NVDA 2025.3 with Firefox". Optional. */
   assistiveTechDetail: z.string().trim().max(200).optional(),
-  pageUrl: z.string().trim().url().max(2000).optional().or(z.literal("").transform(() => undefined)),
+  /** The form sends the address it showed the person (readAddress.ts).
+   *  Typed text that still reaches here, e.g. "example.nl" from a form that
+   *  could not reach the lookup, is normalised the same way first. */
+  pageUrl: z.preprocess(
+    (v) => (typeof v === "string" && v.trim() ? (normaliseAddress(v).url ?? v) : v),
+    z.string().trim().url().max(2000).optional().or(z.literal("").transform(() => undefined))
+  ),
   /** Optional: one sentence about what happened is enough, and the model
    *  works out the rest from it. */
   task: z.string().trim().max(1000).default(""),

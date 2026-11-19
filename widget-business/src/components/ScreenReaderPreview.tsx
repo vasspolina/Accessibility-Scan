@@ -107,10 +107,6 @@ export function ScreenReaderPreview({ script }: { script: ScreenReaderScript }) 
           The heading holds the button rather than sitting inside it, so the
           heading stays a heading in the accessibility tree and screen-reader
           users can still jump between sections by heading. */}
-      {/* Play sits beside the accordion toggle rather than inside it. Nesting a
-          button in a button is invalid HTML and assistive tech handles it
-          unpredictably, so the two are siblings in one row and the rule that
-          closes the header belongs to the row. */}
       {/* The accordion row and the lead are the section head, wrapped so the
           two-column grid treats them as one item. Grid rows are shared between
           columns, so loose head siblings get pushed below a tall content item
@@ -156,33 +152,6 @@ export function ScreenReaderPreview({ script }: { script: ScreenReaderScript }) 
           </button>
         </h2>
         )}
-        {supported && (
-          <button
-            type="button"
-            className="a11y-sr-play"
-            onClick={() => {
-              if (playing) {
-                stop();
-                return;
-              }
-              // Opening on play is the point of having the button out here:
-              // you press it from a closed section and the transcript is there
-              // to follow, with the current line highlighted as it reads.
-              setOpen(true);
-              speakFrom(current ?? 0);
-            }}
-          >
-            {playing ? (
-              <>
-                <span aria-hidden="true">■</span> {t("Stop")}
-              </>
-            ) : (
-              <>
-                <span aria-hidden="true">▶</span> {t("Play the page aloud")}
-              </>
-            )}
-          </button>
-        )}
       </div>
 
       {/* Stays visible when collapsed, and that is not a detail. With it hidden
@@ -198,22 +167,46 @@ export function ScreenReaderPreview({ script }: { script: ScreenReaderScript }) 
       </p>
       </div>
 
-      {/* Hidden rather than unrendered: the accordion button's aria-controls
-          points here, and it must never point at an element that does not
-          exist. */}
-      <div id={panelId} hidden={!panelOpen}>
-      <div className="a11y-sr-controls">
-        {/* Play itself now lives in the header row above, so it is reachable
-            without opening the section. What stays here is what only makes
-            sense alongside the transcript.
-
-            The status span stays mounted while empty — a live region that
-            appears already carrying text announces unreliably. */}
+      {/* The controls are one card that stays on screen when the section is
+          closed, so Play is reachable without opening it (it used to sit
+          beside the accordion toggle and wrapped into the heading's focus
+          ring on a narrow column). Play comes first and is the solid pill;
+          the filter and the skip link only make sense beside the transcript,
+          so they appear with it. */}
+      <div className="a11y-sr-bar">
+        {supported && (
+        <button
+          type="button"
+          className="a11y-btn a11y-btn-primary a11y-sr-play"
+          onClick={() => {
+            if (playing) {
+              stop();
+              return;
+            }
+            // Opening on play is the point of having the button out here:
+            // you press it from a closed section and the transcript is there
+            // to follow, with the current line highlighted as it reads.
+            setOpen(true);
+            speakFrom(current ?? 0);
+          }}
+        >
+          {playing ? (
+            <>
+              <span aria-hidden="true">■</span> {t("Stop")}
+            </>
+          ) : (
+            <>
+              <span aria-hidden="true">▶</span> {t("Play the page aloud")}
+            </>
+          )}
+        </button>
+        )}
+        {/* The status span stays mounted while empty: a live region that
+            appears already carrying text announces unreliably. Not a live
+            region: the utterance is the audio feedback, and announcing each
+            line would talk over it. The highlighted row carries the same
+            progress for sighted users. */}
         {supported ? (
-          /* Not a live region: the utterance itself is the audio feedback,
-             and announcing every line here would talk over it. The row
-             highlight below (current === i) carries the same progress for
-             sighted users. */
           <span className="a11y-sr-status">
             {playing ? tf("On line {line} of {total}", { line: (current ?? 0) + 1, total: lines.length }) : ""}
           </span>
@@ -222,12 +215,7 @@ export function ScreenReaderPreview({ script }: { script: ScreenReaderScript }) 
             {t("Your browser can't play audio for this, so read the transcript below instead.")}
           </p>
         )}
-        {/* Filtering beats paging here. Carbon would page a 120-row data
-            table, but this is a reading order, and page 4 of 10 of a
-            narrative is meaningless. What a reader actually wants is the 16
-            lines that go wrong, which is the same "show only what's failing"
-            control the conformance list already uses. */}
-        {issueCount > 0 && (
+        {panelOpen && issueCount > 0 && (
           <label className="a11y-ai-toggle">
             <input
               type="checkbox"
@@ -239,21 +227,24 @@ export function ScreenReaderPreview({ script }: { script: ScreenReaderScript }) 
               : tf("Only the {count} that say nothing useful", { count: issueCount })}
           </label>
         )}
+        {/* A row-by-row transcript is exactly the kind of block WCAG 2.4.1
+            exists for: on a normal page it is over a hundred consecutive tab
+            stops, one per play button. */}
+        {panelOpen && filtered.length > 12 && (
+          <button
+            type="button"
+            className="a11y-skip-link"
+            onClick={() => showAllRef.current?.focus()}
+          >
+            {t("Skip the transcript")}
+          </button>
+        )}
       </div>
 
-      {/* A row-by-row transcript is exactly the kind of block WCAG 2.4.1
-          exists for: on a normal page it's over a hundred consecutive tab
-          stops, one per play button, with nothing letting a keyboard user
-          get past it in fewer presses than that. */}
-      {filtered.length > 12 && (
-        <button
-          type="button"
-          className="a11y-skip-link"
-          onClick={() => showAllRef.current?.focus()}
-        >
-          {t("Skip the transcript")}
-        </button>
-      )}
+      {/* Hidden rather than unrendered: the accordion button's aria-controls
+          points here, and it must never point at an element that does not
+          exist. */}
+      <div id={panelId} hidden={!panelOpen}>
 
       {/* The design's announcement log: a light card on the report's own
           ground, white pill rows, the silent lines tinted purple with
