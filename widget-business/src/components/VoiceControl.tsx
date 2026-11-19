@@ -21,6 +21,12 @@ interface Recognition extends EventTarget {
   onerror: ((e: any) => void) | null;
   onend: (() => void) | null;
 }
+/** The chat's message box, when it is on screen. */
+function chatBox(root: ShadowRoot | Document): HTMLTextAreaElement | null {
+  const el = root.querySelector<HTMLTextAreaElement>("#a11y-chat-input");
+  return el && !el.disabled && el.getClientRects().length > 0 ? el : null;
+}
+
 function recogniserClass(): (new () => Recognition) | null {
   const w = window as any;
   return w.SpeechRecognition ?? w.webkitSpeechRecognition ?? null;
@@ -65,7 +71,7 @@ export function VoiceControl() {
       case "help":
         setStatus(
           t(
-            "Say: press send, new scan, type example.com, clear, scroll down, scroll to the top, stop listening."
+            "Say: scan example.com, ask what to fix first, type a message, press send, scroll down, stop listening."
           )
         );
         return;
@@ -77,10 +83,29 @@ export function VoiceControl() {
         say(t("Scrolled."));
         return;
       }
+      case "scan":
+      case "ask": {
+        // The chat box is where a scan starts and a question goes: the words
+        // are put in it and sent, exactly as typing them and pressing Send.
+        const box = chatBox(root);
+        if (!box) {
+          say(t("There is no field to type into."));
+          return;
+        }
+        box.focus();
+        setFieldValue(box, cmd.kind === "scan" ? tf("Scan {url}", { url: cmd.url }) : cmd.text);
+        // React re-renders the Send button enabled before the form is sent.
+        requestAnimationFrame(() => box.form?.requestSubmit());
+        say(cmd.kind === "scan" ? tf("Scanning {url}.", { url: cmd.url }) : t("Sent."));
+        return;
+      }
       case "type":
       case "clear": {
         let field =
           active && /^(INPUT|TEXTAREA)$/.test(active.tagName) ? (active as HTMLInputElement | HTMLTextAreaElement) : null;
+        // Nothing in focus (the voice button has it): the chat box, which is
+        // the field a voice user means, not whichever field comes first.
+        if (!field) field = chatBox(root);
         if (!field) {
           const first = collectControls(root, wrap).find((c) => /^(INPUT|TEXTAREA)$/.test(c.el.tagName));
           field = (first?.el as HTMLInputElement | undefined) ?? null;

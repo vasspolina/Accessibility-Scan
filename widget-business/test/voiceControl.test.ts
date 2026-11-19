@@ -17,6 +17,24 @@ describe("parseCommand", () => {
   it("keeps the speaker's words when typing", () => {
     expect(parseCommand("type Example.com", "en")).toEqual({ kind: "type", text: "Example.com" });
   });
+  it("scans an address, through hesitations and a misheard 'scan'", () => {
+    // What the recogniser wrote for "please scan accessibility.now".
+    expect(parseCommand("Uh please can accessibility.now", "en")).toEqual({ kind: "scan", url: "https://accessibility.now" });
+    expect(parseCommand("scan example dot com", "en")).toEqual({ kind: "scan", url: "https://example.com" });
+    expect(parseCommand("Could you check https://Example.com/shop.", "en")).toEqual({ kind: "scan", url: "https://Example.com/shop" });
+    expect(parseCommand("example.com", "en")).toEqual({ kind: "scan", url: "https://example.com" });
+    expect(parseCommand("scanne example.de bitte", "de")).toEqual({ kind: "scan", url: "https://example.de" });
+    expect(parseCommand("escanea example.es", "es")).toEqual({ kind: "scan", url: "https://example.es" });
+    expect(parseCommand("analyse example.fr", "fr")).toEqual({ kind: "scan", url: "https://example.fr" });
+  });
+  it("does not take 'can' without an address as a scan", () => {
+    expect(parseCommand("can you press send", "en")).toEqual({ kind: "click", target: "send" });
+    expect(parseCommand("check the box", "en").kind).not.toBe("scan");
+  });
+  it("sends a question to the chat", () => {
+    expect(parseCommand("ask What should I fix first?", "en")).toEqual({ kind: "ask", text: "What should I fix first?" });
+    expect(parseCommand("um, type Hello there", "en")).toEqual({ kind: "type", text: "Hello there" });
+  });
   it("scrolls and stops", () => {
     expect(parseCommand("scroll down", "en")).toEqual({ kind: "scroll", where: "down" });
     expect(parseCommand("scroll to the top", "en")).toEqual({ kind: "scroll", where: "top" });
