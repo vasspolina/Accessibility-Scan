@@ -58,15 +58,17 @@ describe("PLAIN_LANGUAGE_IN_SCANS unset", () => {
   });
 
   it("still lets the pilot draft with the model", async () => {
-    const { draftFinding } = await import("../src/services/pilot/pilot.js");
-    const r = await draftFinding({
-      code: "river-41",
-      assistiveTech: "screen-reader",
-      task: "Pay",
-      barrier: "The pay button is read as button.",
-      impact: "blocked",
-      lang: "en",
-    });
+    const { draftFinding, reportFieldsSchema } = await import("../src/services/pilot/pilot.js");
+    // Through the schema, as the route does: it fills what the form left out.
+    const r = await draftFinding(
+      reportFieldsSchema.parse({
+        assistiveTech: "screen-reader",
+        task: "Pay",
+        barrier: "The pay button is read as button.",
+        impact: "blocked",
+        lang: "en",
+      })
+    );
     expect(r.draft?.title).toBe("The pay button has no name");
     expect(calls).toBe(1);
   });

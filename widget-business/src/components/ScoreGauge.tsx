@@ -458,7 +458,7 @@ export function ScoreGauge({
 
         <div className="a11y-sum-col">
           {doFirst && (
-            <SumPanel title={t("Do this first")}>
+            <SumPanel title={t("Start here")}>
               {/* The title in quotes rather than lowercased: lowercasing
                   broke German nouns ("zu blass zum lesen") and acronyms. */}
               <p className="a11y-sum-lead">
@@ -471,7 +471,7 @@ export function ScoreGauge({
             </SumPanel>
           )}
 
-          <SumPanel title={tf("What a score of {band} means", { band: t(BAND_WORD(score)) })}>
+          <SumPanel title={tf("Score {band}", { band: t(BAND_WORD(score)) })}>
             {/* No second line: points 05 and 06 under "What the score counts"
                 already say what a scan reaches and what needs a person. */}
             <p className="a11y-sum-lead">{t(scoreSummary(score, seed))}</p>

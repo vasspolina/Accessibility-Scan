@@ -298,3 +298,94 @@ describe("the pilot", () => {
     expect(after).toBe(before);
   });
 });
+
+/**
+ * The form as a conversation: one follow-up question before the draft,
+ * worded by the model or scripted, the finding written again after a
+ * change the person asks for, and what was asked kept with their words.
+ */
+describe("the pilot's conversation", () => {
+  const said = { assistiveTech: "keyboard-only", pageUrl: "https://shop.example/", barrier: "The button did nothing when I pressed Enter." };
+
+  it("asks the one follow-up the model words, tidied, with answers to pick", async () => {
+    modelContent = JSON.stringify({ enough: false, question: "Which button was it", suggestions: ["The menu button", "the menu button", "A button in a form!"] });
+    const res = await post("/api/pilot/followup", said);
+    expect(res.statusCode).toBe(200);
+    expect(res.json()).toEqual({ question: "Which button was it?", suggestions: ["The menu button", "A button in a form"], source: "model" });
+    const [system, user] = modelCalls[0].messages.map((m) => m.content);
+    expect(system).toContain("You have not seen the page");
+    expect(system).toContain("Never ask for their name");
+    expect(user).toContain("The button did nothing when I pressed Enter.");
+  });
+
+  it("asks nothing when the model says the report is enough", async () => {
+    modelContent = JSON.stringify({ enough: true, question: "", suggestions: [] });
+    expect((await post("/api/pilot/followup", said)).json()).toEqual({ question: null, suggestions: [], source: null });
+  });
+
+  it("asks the scripted question when the model is down, slow, or asks about the person", async () => {
+    const scripted = { question: "Where on the page was it?", source: "script" };
+    modelDown = true;
+    expect((await post("/api/pilot/followup", said)).json()).toMatchObject(scripted);
+    modelDown = false;
+    modelTimesOut = true;
+    expect((await post("/api/pilot/followup", said)).json()).toMatchObject(scripted);
+    modelTimesOut = false;
+    modelContent = JSON.stringify({ enough: false, question: "What is your disability?", suggestions: [] });
+    expect((await post("/api/pilot/followup", said)).json()).toMatchObject(scripted);
+    // In the report's language, like everything else the person reads.
+    modelDown = true;
+    expect((await post("/api/pilot/followup", { ...said, lang: "de" })).json().question).toBe("Wo auf der Seite war das?");
+  });
+
+  it("asks one follow-up, not two, and none for an address-only report", async () => {
+    modelContent = JSON.stringify({ enough: false, question: "Which button was it?", suggestions: [] });
+    const asked = await post("/api/pilot/followup", { ...said, followUps: [{ question: "Where on the page was it?", answer: "The menu" }] });
+    expect(asked.json().question).toBeNull();
+    const { barrier: _b, ...addressOnly } = said;
+    expect((await post("/api/pilot/followup", addressOnly)).json().question).toBeNull();
+    expect(modelCalls).toHaveLength(0);
+  });
+
+  it("drafts from what was asked too, and writes the finding again after a change", async () => {
+    modelContent = JSON.stringify(draft);
+    const followUps = [{ question: "Where on the page was it?", answer: "The menu" }];
+    await post("/api/pilot/draft", { ...said, followUps });
+    expect(modelCalls[0].messages[1].content).toContain('Asked "Where on the page was it?", they said:\nThe menu');
+
+    const res = await post("/api/pilot/draft", { ...said, followUps, previous: draft, change: "It was the search button, not the pay button." });
+    expect(res.json().draft.title).toBe(draft.title);
+    const user = modelCalls[1].messages[1].content;
+    expect(user).toContain("You wrote this finding from the above");
+    expect(user).toContain(draft.title);
+    expect(user).toContain("It was the search button, not the pay button.");
+    expect(user).toContain("Keep every part they did not ask to change");
+  });
+
+  it("keeps what was asked with their words, and says when an answer was picked, not typed", async () => {
+    const report = {
+      ...said,
+      participant: "device-fern-12",
+      barrier: "I couldn't reach something",
+      barrierPicked: true,
+      followUps: [
+        { question: "Where on the page was it?", answer: "The menu" },
+        { question: "Change asked after reading the draft", answer: "It was the search, not the menu." },
+      ],
+      draft,
+      confirmed: true,
+    };
+    expect((await post("/api/pilot/report", report)).json()).toMatchObject({ ok: true, stored: true });
+    // Read straight from the table: the operator's route is rate limited
+    // at the server's default, and this file has used it up by now.
+    const { listPilotReports } = await import("../src/storage/pilot.js");
+    const record =
+      "I couldn't reach something (picked from the suggested answers, not typed)\n\n" +
+      "Asked: Where on the page was it?\nThe menu\n\n" +
+      "Asked: Change asked after reading the draft\nIt was the search, not the menu.";
+    expect(listPilotReports()[0].barrier).toBe(record);
+    // The mail the studio reads carries the same record.
+    const { renderPilotText, submitBodySchema } = await import("../src/services/pilot/pilot.js");
+    expect(renderPilotText(submitBodySchema.parse(report), "qwen2.5:7b-instruct")).toContain(record);
+  });
+});
