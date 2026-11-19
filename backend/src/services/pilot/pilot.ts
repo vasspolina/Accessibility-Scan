@@ -281,7 +281,7 @@ export function buildPilotPrompt(r: ReportFields): string {
 
 export type DraftResult =
   | { draft: PilotDraft; model: string }
-  | { draft: null; reason: "not_configured" | "failed" | "scan_failed" | "scan_clean" };
+  | { draft: null; reason: "not_configured" | "failed" | "timeout" | "scan_failed" | "scan_clean" };
 
 const SEVERITY_RANK: Record<string, number> = { critical: 0, serious: 1, moderate: 2, minor: 3 };
 /** How many measured findings the model is shown when drafting from a scan. */
@@ -382,7 +382,10 @@ export async function draftFinding(r: ReportFields): Promise<DraftResult> {
   });
   if (!result.ok) {
     logger.warn({ kind: result.kind, detail: result.detail }, "pilot draft failed, the report goes as written");
-    return { draft: null, reason: "failed" };
+    // A timeout is told apart: on the live service it meant the model was
+    // still loading (19 Nov 2026: 150s with nothing, then 46s on the next
+    // try), so the form offers to try again rather than only to send.
+    return { draft: null, reason: result.kind === "timeout" ? "timeout" : "failed" };
   }
   // The participant reads every word before it is sent, so an unfinished
   // code example is cut where it can be and otherwise left for them to see.
