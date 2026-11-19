@@ -66,7 +66,7 @@ export function ProfessionalTable({
         // badge, the rule-id chip, and the issue text together already
         // ran past a phone's width with Severity as a separate column,
         // forcing horizontal scroll before a reader reached the row.
-        <span key="title" className="a11y-pro-title-cell">
+        <span key="title" className="a11y-pro-title-cell" data-finding={rep.id}>
           <SeverityTag severity={rep.severity} label={severityWord[rep.severity]} />
           <span>
             {title}

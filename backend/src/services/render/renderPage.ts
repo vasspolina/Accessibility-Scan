@@ -3278,7 +3278,7 @@ export class PageStatusError extends Error {
       status === 404 || status === 410
         ? `There is no page at that address (HTTP ${status}). Check the address and try again.`
         : status === 401
-          ? `That page asks for a login first (HTTP ${status}). The form can sign in with your details.`
+          ? `That page asks for a login first (HTTP ${status}). Use the form's login option to sign in with a test account.`
           : `${host} answered with an error (HTTP ${status}) instead of the page, so there was nothing to check. Try again later.`
     );
     this.name = "PageStatusError";
@@ -3469,7 +3469,7 @@ export async function renderAndScan(
       // redirect, a locale route, a client-side router settling — and doing
       // that mid-injection destroys the execution context and throws. Measured
       // on bbc.co.uk/news, which lost an entire scan to it and reported only
-      // "Could not load or scan the page".
+      // "Couldn't load or scan the page".
       //
       // The page is fine; we were simply early. Wait for it to come to rest
       // and go again. Once, because a page that navigates twice more is not

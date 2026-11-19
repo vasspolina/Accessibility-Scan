@@ -8,6 +8,8 @@ import type { AxeRunResult, FreshCaptureResult } from "./render/renderPage.js";
 import { extractContext } from "./contextExtraction/extractContext.js";
 import { reviewPage } from "./aiReview/reviewPage.js";
 import { attachAltTextSuggestions } from "./aiReview/suggestAltText.js";
+import { attachCodeFixes, pickCodeFixCandidates, suggestCodeFixes } from "./aiReview/suggestCodeFix.js";
+import { attachPlainLanguage, rewriteFindings } from "./plainLanguage/rewriteFindings.js";
 import {
   axeToFindings,
   aiToFindings,
@@ -192,19 +194,19 @@ const UNPICTURABLE_NOTES: Record<
   string
 > = {
   hidden:
-    "No picture: this was not visible on the page when it was scanned. Something reveals it, such as opening a panel or moving focus to it.",
+    "No picture: this element was hidden when we scanned, for example inside a closed menu, a folded section or a popup. Open that part of the page to see it. The technical details for this finding identify the exact element.",
   offscreen:
-    "No picture: this sits off the edge of the screen until it is used. Skip links are built this way on purpose.",
+    "No picture: this sits off the edge of the screen until the keyboard reaches it or a slider brings it into view. Skip links are built this way on purpose.",
   "no-usable-image":
-    "No picture: the element is there, but photographing it produced nothing worth showing. A blank rectangle, or whatever is sitting on top of it. The technical details for this finding identify the exact element.",
+    "No picture: the element is there, but its photograph came out blank or showed something covering it, such as a cookie banner. The technical details for this finding identify the exact element.",
   "too-large":
-    "No picture: this covers a whole region of the page rather than one component, and a photograph of the entire section would not show you which part of it is at fault. The technical details for this finding identify the exact element.",
+    "No picture: this covers a whole region of the page, not one component. A photograph of the entire section would not show which part is at fault. The technical details for this finding identify the exact element.",
   missing:
-    "No picture: the element was on the page when we judged it, and gone when we went back to photograph it. Banners that appear once per visitor do this.",
+    "No picture: the element was on the page when we checked it, and gone when we went back to photograph it. Banners that appear once per visitor do this.",
   "not-attempted":
-    "No picture: each scan photographs a limited number of elements, and this one was past that limit. Scanning again may reach it.",
+    "No picture: a scan photographs a limited number of elements in a limited time, and this one came after that limit. The technical details for this finding identify the exact element.",
   unreachable:
-    "No picture: this element could not be located again on the return visit. Pages that rebuild themselves on every load do this.",
+    "No picture: this element couldn't be located again on the return visit. Pages that rebuild themselves on every load do this.",
 };
 
 function originOfUrl(url: string): string {
@@ -413,7 +415,7 @@ export async function scanUrlToReport(
   const safeUrl = trustPrivateHosts ? new URL(rawUrl) : await assertSafeUrl(rawUrl);
 
   // A PDF is not a page. Rendering one in Chromium and running axe over the
-  // viewer produced "Could not load or scan the page", which told the reader
+  // viewer produced "Couldn't load or scan the page", which told the reader
   // nothing about a document the accessibility rules very much cover.
   if (looksLikePdf(safeUrl)) return documentReport(safeUrl);
 
@@ -456,6 +458,13 @@ export async function scanUrlToReport(
   const aiReviewPromise = reviewPage(context, renderResult.screenshotBase64, includeAiReview);
 
   const automatedFindings = axeToFindings(renderResult.axe);
+  // The plain-language rewrite needs only axe's findings, so it starts now
+  // and runs beside the AI review and the probes below. It is an AI layer,
+  // so the reader's "AI review off" switches it off too; and it runs only
+  // where the deployer set PLAIN_LANGUAGE_IN_SCANS (by default the model
+  // is the pilot's alone).
+  const reportLang = normalizeReportLang(language);
+  const plainPromise = rewriteFindings(automatedFindings, reportLang, includeAiReview);
   const deterministic: AccessibilityFinding[] = [];
   deterministic.push(...evaluateTypography(renderResult.typographyBlocks));
   deterministic.push(
@@ -499,6 +508,15 @@ export async function scanUrlToReport(
   );
   deterministic.push(...evaluateTextResize(renderResult.textResizeSignals));
   deterministic.push(...(await validateMarkup(renderResult.finalUrl, trustPrivateHosts)));
+
+  // The AI fixes need only the measured findings and their snippets, all of
+  // which exist now, so they run beside the page review that is still in
+  // flight and cost no extra wall-clock time. Same switch as the review.
+  const codeFixPromise = suggestCodeFixes(
+    pickCodeFixCandidates([...automatedFindings, ...deterministic]),
+    includeAiReview,
+    reportLang
+  );
 
   // Everything above ran while the AI review was in flight; collect it now.
   // The render is done; if the AI layer is still thinking, that wait is
@@ -544,6 +562,13 @@ export async function scanUrlToReport(
     // model wrote none or every note failed to attach.
     logger.info(ageStats, "age enrichments");
   }
+
+  const codeFixes = await codeFixPromise;
+  const codeFixesAttached = attachCodeFixes(findings, codeFixes);
+  if (codeFixes.size > 0) logger.info({ received: codeFixes.size, attached: codeFixesAttached }, "code fixes attached");
+
+  const plainRewrite = await plainPromise;
+  attachPlainLanguage(findings, plainRewrite, reportLang);
 
   if (captureEvidence) {
     await attachEvidence(findings, renderResult, includeAiReview);
@@ -637,6 +662,7 @@ export async function scanUrlToReport(
       })(),
       aiReviewErrorKind: aiReview.errorKind,
       model: aiReview.model,
+      plainLanguage: plainRewrite.meta,
     },
   };
 }

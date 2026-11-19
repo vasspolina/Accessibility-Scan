@@ -46,7 +46,7 @@ export function Wcag22Readiness({ readiness }: { readiness: Readiness }) {
         expected={tf("expected {date}", { date: expectedFrom })}
         failCount={alreadyFailing}
         description={tf(
-          "Nothing here is required yet. These {total} new items become Level A or AA when WCAG 2.2 lands.",
+          "Nothing here is required yet. These {total} new items become Level A or AA once EN 301 549 adopts WCAG 2.2.",
           { total }
         )}
         items={criteria.map((c) => ({ criterion: c.id, title: c.plain, level: c.level }))}
@@ -170,7 +170,7 @@ export function Wcag22Readiness({ readiness }: { readiness: Readiness }) {
 
           {parsingNoLongerCounts && (
             <p className="a11y-notice">
-              {t("This scan reports a failure against 4.1.1 Parsing, and WCAG 2.2 removes that criterion as obsolete. When the standard updates, that particular failure simply no longer counts.")}
+              {t("This scan reports a failure against 4.1.1 Parsing. WCAG 2.2 removes that criterion as obsolete, so once the standard updates, that failure no longer counts.")}
             </p>
           )}
       </div>

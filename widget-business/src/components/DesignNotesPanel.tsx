@@ -45,7 +45,7 @@ function noteTitle(group: AccessibilityFinding[]): string {
 }
 
 export function DesignNotesPanel({ findings }: { findings: AccessibilityFinding[] }) {
-  const { professional } = useReportView();
+  const { professional, inChat } = useReportView();
   const groups = groupFindings(findings);
   // Keyed by the note's own id, not its position. A filter changes what is
   // at index 0, so an index would have quietly re-pointed at a different
@@ -72,8 +72,12 @@ export function DesignNotesPanel({ findings }: { findings: AccessibilityFinding[
           The kit's yellow band with its decorative repeat of the heading
           came along in the port and outlived the direction that once
           justified it — one heading, said once, on the report's own paper. */}
+      {/* In the conversation the block's summary line already reads "Notes
+          on the design", straight above this; the heading stays for screen
+          readers, whose heading list the summary is not in. The count is
+          said again by the status line under the kinds. */}
       <h2
-        className="a11y-section-title"
+        className={inChat ? "a11y-section-title a11y-sr-only" : "a11y-section-title"}
         id="a11y-notes-heading"
         data-nav-label={t("Notes on the design")}
       >
@@ -156,8 +160,12 @@ export function DesignNotesPanel({ findings }: { findings: AccessibilityFinding[
             >
               <div className="a11y-dn-detail-head">
                 {/* No kind tag under the title: the filter above already
-                    names the kind (Type, Layout, Design). */}
-                <h3 className="a11y-dn-detail-title">{noteTitle(open)}</h3>
+                    names the kind (Type, Layout, Design). The title itself
+                    is the open note's button, solid ink, straight above:
+                    printed again here it read twice in a row (user's
+                    instruction, 18 Nov 2026, "check for content
+                    repetition"). Kept for screen readers' heading list. */}
+                <h3 className="a11y-dn-detail-title a11y-sr-only">{noteTitle(open)}</h3>
               </div>
               <FindingDetails findings={open} asNotes />
             </div>

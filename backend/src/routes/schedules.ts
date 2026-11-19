@@ -38,7 +38,7 @@ export async function scheduleRoutes(app: FastifyInstance) {
         notifyEmail: z.string().email().optional(),
       })
       .safeParse(request.body);
-    if (!body.success) return reply.status(400).send({ error: "Invalid request body", details: body.error.flatten() });
+    if (!body.success) return reply.status(400).send({ error: "Something in that request wasn't right. Reload the page and try again.", details: body.error.flatten() });
     let url: URL;
     try {
       url = await assertSafeUrl(body.data.url);
