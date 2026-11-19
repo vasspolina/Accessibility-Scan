@@ -22,163 +22,171 @@ def esc(name):
 L = {
  "en": dict(
   lang="en", other="de", path="en/cookie-banner.html", snippet="consent.en.html",
-  title="Accessible cookie banner — BarrierFreeWeb",
-  desc="A free cookie banner for EU websites. Visitors can use it with a keyboard or a screen reader. Make yours in the browser.",
+  title="Cookie banner for your website – BarrierFreeWeb",
+  desc="A free cookie banner that follows EU law. Everyone can use it, by mouse, keyboard or screen reader.",
   skip="Skip to content", back="Back to the site", copy="Copy", copied="Copied",
   h1="Cookie banner for your website",
-  lede="A consent banner that follows EU law and works with a keyboard or a screen reader. Free to use. Make yours below, then hand the files to your developer.",
-  facts_label="What this banner is",
+  lede="A free cookie banner that follows EU law. Everyone can use it, by mouse, keyboard or screen reader.",
+  facts_label="At a glance",
   facts=[
-   ("Covers", "GDPR · ePrivacy", "The EU rules on cookie consent."),
-   ("Built to", "WCAG 2.2 AA", "The international standard for accessible websites."),
-   ("You get", "3 files", "Markup, stylesheet and script. No other software needed."),
-   ("Your data", "Stays on this page", "The builder runs in your browser. Nothing you type is sent."),
+   ("Follows", "EU cookie law"),
+   ("Works for", "Everyone, including people with disabilities"),
+   ("Costs", "Nothing"),
+   ("What you type", "Stays in your browser"),
   ],
-  demo_h="See it working",
-  demo_p="The banner on this page is the real template. Bring it back with the button, then try Tab, Escape and a screen reader.",
+  demo_h="Try it",
+  demo_p="The banner on this page is the real one. Close it, then bring it back.",
   demo_reset="Show the banner again", demo_settings="Open the settings",
-  law_h="What the law asks, and what the banner does",
-  law_p="Based on the GDPR (Articles 4 and 7), the ePrivacy Directive (Article 5) and the European Data Protection Board's guidance on cookie banners.",
+  law_h="What the law asks",
   law=[
-   ("Refusing is as easy as accepting.", "Accept all and Reject all sit side by side on the first screen, the same size and colour."),
-   ("Nothing is pre-ticked.", "Optional cookies start switched off. Only the cookies your site needs to work are on."),
-   ("Nothing is set before a choice.", "Scrolling is not consent. Scripts that need consent wait for a click."),
-   ("Changing your mind is as easy.", "A Cookie settings button in the footer of every page reopens the choices."),
-   ("Each category says what it does.", "What is collected, by whom and why, in plain words."),
-   ("The site works if visitors refuse.", "No cookie wall. Visitors who decline can still read and use every page."),
+   "“Accept all” and “Reject all” sit side by side and look the same.",
+   "Optional cookies start switched off.",
+   "Nothing optional loads until the visitor chooses.",
+   "Visitors can change their choice from any page.",
+   "Each type of cookie says what it does.",
+   "Visitors who say no can still use the whole site.",
   ],
-  a11y_h="What it does for visitors with disabilities",
-  a11y_p="The European Accessibility Act expects a banner like this to be usable by everyone.",
+  a11y_h="Who can use it",
+  a11y_p="Everyone. Since June 2025, EU law requires this of most online shops.",
   a11y=[
-   ("It never blocks the page.", "The banner sits at the bottom and covers at most 60% of the screen. Visitors can read the site while they decide."),
-   ("Every control works from the keyboard.", "Tab reaches each button. Escape closes the banner and keeps only necessary cookies."),
-   ("Screen readers announce it first.", "It is read out as a labelled region with a heading. The page follows."),
-   ("The buttons are easy to hit.", "Each is 48px tall. The text is at least 15px."),
-   ("The colours are readable.", "Text and borders pass the contrast check in light and dark mode. If your own colours fail, the builder warns you."),
-   ("Zoom and small screens work.", "Nothing hides behind the banner at 400% zoom or 320px wide."),
+   "It never covers the whole page.",
+   "It works with a keyboard alone.",
+   "Screen readers read it out first.",
+   "The buttons are large and easy to press.",
+   "The text is easy to read, in light and dark mode.",
+   "It still works zoomed in and on small phones.",
   ],
   install_h="Put it on your site",
   install=[
-   ("Make your banner above.", "Set your policy link, your cookie categories and your colours."),
-   ("Give the three files to your developer.", "Or add them yourself: markup, stylesheet and script."),
-   ("Paste the markup.", "The banner goes right after your skip link, before the header. The Cookie settings button goes in the footer of every page."),
-   ("Mark each script that needs consent.", "Change its type to text/plain and add data-consent with the category name. It starts once that category is allowed."),
-   ("Test it.", "Run the checks below before you publish."),
+   "Make your banner above.",
+   "Download the three files.",
+   "Give them to your developer. Their steps are at the end of this page.",
+   "Check it before you publish.",
   ],
   test_h="Check it before you publish",
-  test_p="Ten minutes, a keyboard and a screen reader.",
+  test_p="It takes ten minutes.",
   test=[
-   "Press Tab from the address bar. Focus lands on the skip link, then Accept all, Reject all and Settings.",
-   "Press Escape in the banner. It closes, no analytics load, and it stays closed after a reload.",
-   "Open Settings, then press Escape. The dialog closes and focus returns to the Settings button.",
-   "Turn on VoiceOver or NVDA and reload. The banner is announced with its heading. Arrow past it and the page reads on.",
-   "Zoom to 400% at 320px wide. Every button is reachable and nothing sits behind the banner.",
-   "Switch to dark mode, then Windows high contrast. The buttons keep their borders and the focus ring shows.",
-   "Clear site data and reload. The banner returns with every optional box off.",
+   "Use only the Tab key. You can reach every button.",
+   "Press Escape. The banner closes and stays closed when you reload.",
+   "Turn on a screen reader. It reads the banner first.",
+   "Zoom in as far as you can. Every button still shows.",
+   "Open the site on your phone. Nothing hides behind the banner.",
+   "Click “Cookie settings” in the footer. The choices open again.",
   ],
-  caveat_b="Read it before you publish.",
-  caveat="Make sure the categories name the cookies your site really sets. A starting point, not legal advice.",
+  caveat_b="Before you publish,",
+  caveat="make sure the list names the cookies your site really uses. This is a template, not legal advice.",
   dev_h="For your developer",
-  dev_p="Files, scripting, design measurements and the WCAG criteria the banner meets.",
-  files_h="Files", files_p="Save the files, or copy the code below:",
+  dev_p="How to install it, the code, the design measurements and the WCAG criteria it meets.",
+  setup_h="Install",
+  setup=[
+   "Load consent.css before your own stylesheet, so your colours win.",
+   "Paste the banner right after the skip link, before the header.",
+   "Put the “Cookie settings” button in the footer of every page.",
+   "For each script that needs consent, set type=\"text/plain\" and data-consent=\"<category>\". It runs once that category is allowed.",
+  ],
+  files_h="Files", files_p="Download the files, or copy the code below:",
   api_h="Using the choice in your code",
-  api_p="The script exposes a small API and an event. A script written as text/plain with a data-consent attribute switches on as soon as its category is allowed, including on later visits.",
+  api_p="The script adds a small API and a consentchange event. Scripts marked with data-consent start as soon as their category is allowed, on this visit and later ones.",
   theme_h="Theming",
   theme_p="Override the --consent-* custom properties on .consent and .consent__dialog. Keep text at 4.5:1 and borders at 3:1 in both colour schemes. Keep Accept and Reject identical.",
   crit_h="WCAG criteria",
-  crit_p="Each point maps to a WCAG 2.2 criterion, shown in brackets.",
+  crit_p="WCAG 2.2 criterion numbers are in brackets.",
   crit=[
-   ("Not a modal.", "The first layer is a labelled region, not a dialog. The page stays active, focus is not moved and nothing is trapped. (2.1.2, 2.4.3)"),
-   ("At most 60% of the screen.", "Fixed to the bottom, with matching padding on the page, so nothing hides behind it at 400% zoom or 320px wide. (1.4.10)"),
-   ("Escape continues without consent.", "Only necessary cookies, choice stored, no repeat prompt. (2.1.1)"),
-   ("Settings use a native dialog.", "The dialog element supplies the focus trap, the Escape key and the inert background, and returns focus to the opener. (2.4.3, 4.1.2)"),
-   ("Real controls.", "Buttons are button elements. Categories are checkboxes in a fieldset with a legend, each with a visible label. (1.3.1, 4.1.2)"),
-   ("48px targets, 18px text.", "Targets clear the 24px minimum. The smallest text is 15px. (2.5.8, 1.4.4)"),
-   ("Visible focus.", "A 2px ring with a 1px inner contrast line, in both colour schemes and in Windows high contrast. (2.4.7, 2.4.11)"),
-   ("Contrast in both schemes.", "Text 4.5:1 or better, borders 3:1 or better. Status changes go to a live region. (1.4.3, 1.4.11, 4.1.3)"),
-   ("Reduced motion.", "The entrance slide runs only if the visitor has not asked for less motion. (2.3.3)"),
-   ("Words live in the markup.", "The script holds no text. To translate the banner, edit the HTML."),
+   ("Not a modal.", "The first layer is a labelled region. Focus stays where it is and nothing is trapped. (2.1.2, 2.4.3)"),
+   ("At most 60% of the screen.", "Fixed to the bottom. The page gets matching padding, so nothing hides at 400% zoom or 320px. (1.4.10)"),
+   ("Escape means no consent.", "Only necessary cookies. The choice is stored and not asked again. (2.1.1)"),
+   ("Settings use a native dialog.", "It traps focus, closes on Escape and returns focus to the opener. (2.4.3, 4.1.2)"),
+   ("Real controls.", "Button elements. Categories are labelled checkboxes in a fieldset with a legend. (1.3.1, 4.1.2)"),
+   ("48px targets.", "The minimum is 24px. The smallest text is 15px. (2.5.8, 1.4.4)"),
+   ("Visible focus.", "A 2px ring with a 1px inner line, in both schemes and in Windows high contrast. (2.4.7, 2.4.11)"),
+   ("Contrast.", "Text 4.5:1, borders 3:1, in both schemes. Status changes go to a live region. (1.4.3, 1.4.11, 4.1.3)"),
+   ("Reduced motion.", "The slide-in is skipped when the visitor asks for less motion. (2.3.3)"),
+   ("Words in the markup.", "The script holds no text. To translate, edit the HTML."),
   ],
   footer_statement="Accessibility statement", footer_contact="Contact",
  ),
  "de": dict(
   lang="de", other="en", path="de/cookie-banner.html", snippet="consent.de.html",
-  title="Barrierefreies Cookie-Banner — BarrierFreeWeb",
-  desc="Ein kostenloses Cookie-Banner für EU-Websites. Besucher bedienen es mit Tastatur oder Screenreader. Erstellen Sie Ihres im Browser.",
+  title="Cookie-Banner für Ihre Website – BarrierFreeWeb",
+  desc="Ein kostenloses Cookie-Banner nach EU-Recht. Alle können es nutzen, mit Maus, Tastatur oder Screenreader.",
   skip="Zum Inhalt springen", back="Zurück zur Website", copy="Kopieren", copied="Kopiert",
   h1="Cookie-Banner für Ihre Website",
-  lede="Ein Einwilligungsbanner, das dem EU-Recht entspricht und mit Tastatur und Screenreader funktioniert. Kostenlos. Erstellen Sie unten Ihr Banner und geben Sie die Dateien an Ihre Entwicklung weiter.",
-  facts_label="Was dieses Banner ist",
+  lede="Ein kostenloses Cookie-Banner nach EU-Recht. Alle können es nutzen, mit Maus, Tastatur oder Screenreader.",
+  facts_label="Auf einen Blick",
   facts=[
-   ("Deckt ab", "DSGVO · ePrivacy", "Die EU-Regeln zur Cookie-Einwilligung."),
-   ("Gebaut nach", "WCAG 2.2 AA", "Der internationale Standard für barrierefreie Websites."),
-   ("Sie erhalten", "3 Dateien", "Markup, Stylesheet und Skript. Keine weitere Software nötig."),
-   ("Ihre Daten", "Bleiben auf dieser Seite", "Der Generator läuft in Ihrem Browser. Nichts, was Sie eingeben, wird gesendet."),
+   ("Rechtlich", "Nach EU-Cookie-Recht"),
+   ("Für wen", "Für alle, auch Menschen mit Behinderungen"),
+   ("Preis", "Kostenlos"),
+   ("Ihre Eingaben", "Bleiben in Ihrem Browser"),
   ],
   demo_h="Ausprobieren",
-  demo_p="Das Banner auf dieser Seite ist die echte Vorlage. Holen Sie es mit der Schaltfläche zurück und probieren Sie Tab, Escape und einen Screenreader aus.",
+  demo_p="Das Banner auf dieser Seite ist das echte. Schließen Sie es und holen Sie es zurück.",
   demo_reset="Banner erneut anzeigen", demo_settings="Einstellungen öffnen",
-  law_h="Was das Recht verlangt und was das Banner tut",
-  law_p="Grundlage sind die DSGVO (Artikel 4 und 7), die ePrivacy-Richtlinie (Artikel 5) und die Leitlinien des Europäischen Datenschutzausschusses zu Cookie-Bannern.",
+  law_h="Was das Gesetz verlangt",
   law=[
-   ("Ablehnen ist so einfach wie Akzeptieren.", "„Alle akzeptieren“ und „Alle ablehnen“ stehen nebeneinander auf der ersten Ebene, gleich groß und gleich farbig."),
-   ("Nichts ist vorangekreuzt.", "Optionale Cookies sind zunächst aus. Aktiv sind nur die Cookies, die Ihre Website zum Funktionieren braucht."),
-   ("Ohne Entscheidung wird nichts gesetzt.", "Scrollen ist keine Einwilligung. Skripte, die eine Einwilligung brauchen, warten auf den Klick."),
-   ("Die Entscheidung lässt sich ändern.", "Die Schaltfläche „Cookie-Einstellungen“ in der Fußzeile jeder Seite öffnet die Auswahl erneut."),
-   ("Jede Kategorie sagt, was sie tut.", "Was erhoben wird, von wem und wozu, in einfachen Worten."),
-   ("Die Website funktioniert auch nach einer Ablehnung.", "Keine Cookie-Wall. Wer ablehnt, kann jede Seite lesen und nutzen."),
+   "„Alle akzeptieren“ und „Alle ablehnen“ stehen nebeneinander und sehen gleich aus.",
+   "Optionale Cookies sind zu Beginn aus.",
+   "Nichts Optionales lädt, bevor Besucher entscheiden.",
+   "Besucher können ihre Wahl auf jeder Seite ändern.",
+   "Jede Cookie-Art sagt, was sie tut.",
+   "Wer ablehnt, kann trotzdem die ganze Website nutzen.",
   ],
-  a11y_h="Was es für Besucher mit Behinderungen leistet",
-  a11y_p="Das Barrierefreiheitsstärkungsgesetz erwartet, dass ein solches Banner für alle nutzbar ist.",
+  a11y_h="Wer es nutzen kann",
+  a11y_p="Alle. Seit Juni 2025 verlangt das EU-Recht das von den meisten Onlineshops.",
   a11y=[
-   ("Es blockiert die Seite nie.", "Das Banner sitzt unten und bedeckt höchstens 60 % des Bildschirms. Besucher können die Seite lesen, während sie entscheiden."),
-   ("Jedes Bedienelement funktioniert per Tastatur.", "Tab erreicht jede Schaltfläche. Escape schließt das Banner und behält nur notwendige Cookies."),
-   ("Screenreader lesen es zuerst vor.", "Es wird als beschriftete Region mit Überschrift angesagt. Danach folgt die Seite."),
-   ("Die Schaltflächen sind leicht zu treffen.", "Jede ist 48 px hoch. Der Text hat mindestens 15 px."),
-   ("Die Farben sind gut lesbar.", "Text und Rahmen bestehen den Kontrastcheck, im hellen wie im dunklen Modus. Fallen Ihre eigenen Farben durch, warnt Sie der Generator."),
-   ("Zoom und kleine Bildschirme funktionieren.", "Bei 400 % Zoom und 320 px Breite verschwindet nichts hinter dem Banner."),
+   "Es verdeckt nie die ganze Seite.",
+   "Es funktioniert nur mit der Tastatur.",
+   "Screenreader lesen es zuerst vor.",
+   "Die Schaltflächen sind groß und leicht zu treffen.",
+   "Der Text ist gut lesbar, hell wie dunkel.",
+   "Es funktioniert auch vergrößert und auf kleinen Handys.",
   ],
   install_h="Auf Ihrer Website einbauen",
   install=[
-   ("Banner oben erstellen.", "Legen Sie Datenschutz-Link, Cookie-Kategorien und Farben fest."),
-   ("Drei Dateien an Ihre Entwicklung geben.", "Oder selbst einbauen: Markup, Stylesheet und Skript."),
-   ("Markup einfügen.", "Das Banner kommt direkt nach den Sprunglink, vor den Header. Die Schaltfläche „Cookie-Einstellungen“ gehört in die Fußzeile jeder Seite."),
-   ("Skripte kennzeichnen, die eine Einwilligung brauchen.", "Setzen Sie type auf text/plain und ergänzen Sie data-consent mit dem Namen der Kategorie. Das Skript startet, sobald die Kategorie erlaubt ist."),
-   ("Testen.", "Gehen Sie vor dem Veröffentlichen die Prüfliste unten durch."),
+   "Erstellen Sie oben Ihr Banner.",
+   "Laden Sie die drei Dateien herunter.",
+   "Geben Sie sie Ihrer Entwicklung. Die Schritte dafür stehen am Ende der Seite.",
+   "Prüfen Sie es vor dem Veröffentlichen.",
   ],
   test_h="Vor dem Veröffentlichen prüfen",
-  test_p="Zehn Minuten, eine Tastatur und ein Screenreader.",
+  test_p="Das dauert zehn Minuten.",
   test=[
-   "Von der Adressleiste aus Tab drücken. Der Fokus landet auf dem Sprunglink, dann auf „Alle akzeptieren“, „Alle ablehnen“ und „Einstellungen“.",
-   "Im Banner Escape drücken. Es schließt sich, keine Analyse lädt, und nach dem Neuladen bleibt es geschlossen.",
-   "Einstellungen öffnen, dann Escape drücken. Der Dialog schließt sich und der Fokus kehrt zur Schaltfläche „Einstellungen“ zurück.",
-   "VoiceOver oder NVDA einschalten und neu laden. Das Banner wird mit seiner Überschrift angesagt. Mit den Pfeiltasten daran vorbei, dann wird die Seite gelesen.",
-   "Auf 400 % zoomen, bei 320 px Breite. Jede Schaltfläche ist erreichbar, nichts liegt hinter dem Banner.",
-   "Auf Dunkelmodus und dann auf den Windows-Kontrastmodus umstellen. Die Schaltflächen behalten ihre Rahmen, der Fokusring bleibt sichtbar.",
-   "Website-Daten löschen und neu laden. Das Banner kehrt zurück, jede optionale Box ist aus.",
+   "Nutzen Sie nur die Tab-Taste. Sie erreichen jede Schaltfläche.",
+   "Drücken Sie Escape. Das Banner schließt sich und bleibt nach dem Neuladen zu.",
+   "Schalten Sie einen Screenreader ein. Er liest das Banner zuerst vor.",
+   "Vergrößern Sie die Seite so weit wie möglich. Jede Schaltfläche bleibt sichtbar.",
+   "Öffnen Sie die Website auf dem Handy. Nichts verschwindet hinter dem Banner.",
+   "Klicken Sie unten auf „Cookie-Einstellungen“. Die Auswahl öffnet sich wieder.",
   ],
-  caveat_b="Vor dem Veröffentlichen prüfen.",
-  caveat="Die Kategorien müssen die Cookies nennen, die Ihre Website wirklich setzt. Ein Ausgangspunkt, keine Rechtsberatung.",
+  caveat_b="Vor dem Veröffentlichen:",
+  caveat="Die Liste muss die Cookies nennen, die Ihre Website wirklich nutzt. Dies ist eine Vorlage, keine Rechtsberatung.",
   dev_h="Für Ihre Entwicklung",
-  dev_p="Dateien, Skripting, Designmaße und die WCAG-Kriterien, die das Banner erfüllt.",
-  files_h="Dateien", files_p="Speichern Sie die Dateien oder kopieren Sie den Code unten:",
+  dev_p="Einbau, Code, Designmaße und die WCAG-Kriterien, die das Banner erfüllt.",
+  setup_h="Einbau",
+  setup=[
+   "consent.css vor dem eigenen Stylesheet laden, damit Ihre Farben gelten.",
+   "Das Banner direkt nach dem Sprunglink einfügen, vor dem Header.",
+   "Die Schaltfläche „Cookie-Einstellungen“ in die Fußzeile jeder Seite setzen.",
+   "Jedes Skript, das eine Einwilligung braucht, mit type=\"text/plain\" und data-consent=\"<Kategorie>\" kennzeichnen. Es startet, sobald die Kategorie erlaubt ist.",
+  ],
+  files_h="Dateien", files_p="Laden Sie die Dateien herunter oder kopieren Sie den Code unten:",
   api_h="Die Wahl im eigenen Code nutzen",
-  api_p="Das Skript stellt eine kleine API und ein Ereignis bereit. Ein Skript mit type text/plain und einem data-consent-Attribut startet, sobald seine Kategorie erlaubt ist, auch bei späteren Besuchen.",
+  api_p="Das Skript stellt eine kleine API und das Ereignis consentchange bereit. Skripte mit data-consent starten, sobald ihre Kategorie erlaubt ist, jetzt und bei späteren Besuchen.",
   theme_h="Gestaltung",
-  theme_p="Überschreiben Sie die Custom Properties --consent-* auf .consent und .consent__dialog. Halten Sie Text bei 4,5:1 und Rahmen bei 3:1, in beiden Farbschemata. „Alle akzeptieren“ und „Alle ablehnen“ bleiben identisch.",
+  theme_p="Überschreiben Sie die Custom Properties --consent-* auf .consent und .consent__dialog. Text bleibt bei 4,5:1, Rahmen bei 3:1, in beiden Farbschemata. „Alle akzeptieren“ und „Alle ablehnen“ bleiben identisch.",
   crit_h="WCAG-Kriterien",
-  crit_p="Jeder Punkt entspricht einem WCAG-2.2-Kriterium, in Klammern genannt.",
+  crit_p="Die Nummern der WCAG-2.2-Kriterien stehen in Klammern.",
   crit=[
-   ("Kein Modal.", "Die erste Ebene ist eine beschriftete Region, kein Dialog. Die Seite bleibt aktiv, der Fokus wird nicht verschoben, nichts wird eingesperrt. (2.1.2, 2.4.3)"),
-   ("Höchstens 60 % des Bildschirms.", "Unten fixiert, die Seite bekommt passenden Abstand, sodass bei 400 % Zoom und 320 px Breite nichts dahinter verschwindet. (1.4.10)"),
-   ("Escape heißt weiter ohne Einwilligung.", "Nur notwendige Cookies, Wahl gespeichert, keine erneute Abfrage. (2.1.1)"),
-   ("Einstellungen in einem nativen Dialog.", "Das dialog-Element liefert Fokusfalle, Escape-Taste und inerten Hintergrund und gibt den Fokus an das öffnende Element zurück. (2.4.3, 4.1.2)"),
-   ("Echte Bedienelemente.", "Buttons sind button-Elemente. Kategorien sind Checkboxen in einem fieldset mit legend, jede mit sichtbarer Beschriftung. (1.3.1, 4.1.2)"),
-   ("48 px Zielgröße, 18 px Text.", "Die Ziele übertreffen das Minimum von 24 px. Der kleinste Text hat 15 px. (2.5.8, 1.4.4)"),
-   ("Sichtbarer Fokus.", "Ein 2-px-Ring mit 1 px innerer Kontrastlinie, in beiden Farbschemata und im Windows-Kontrastmodus. (2.4.7, 2.4.11)"),
-   ("Kontrast in beiden Schemata.", "Text mindestens 4,5:1, Rahmen mindestens 3:1. Statusmeldungen gehen an eine Live-Region. (1.4.3, 1.4.11, 4.1.3)"),
-   ("Reduzierte Bewegung.", "Die Einblendung läuft nur, wenn der Besucher nicht um weniger Bewegung gebeten hat. (2.3.3)"),
-   ("Die Wörter stehen im Markup.", "Das Skript enthält keinen Text. Zum Übersetzen des Banners bearbeiten Sie das HTML."),
+   ("Kein Modal.", "Die erste Ebene ist eine beschriftete Region. Der Fokus bleibt, wo er ist, nichts wird eingesperrt. (2.1.2, 2.4.3)"),
+   ("Höchstens 60 % des Bildschirms.", "Unten fixiert. Die Seite bekommt passenden Abstand, sodass bei 400 % Zoom und 320 px nichts verschwindet. (1.4.10)"),
+   ("Escape heißt keine Einwilligung.", "Nur notwendige Cookies. Die Wahl wird gespeichert und nicht erneut abgefragt. (2.1.1)"),
+   ("Einstellungen im nativen Dialog.", "Er hält den Fokus, schließt mit Escape und gibt den Fokus zurück. (2.4.3, 4.1.2)"),
+   ("Echte Bedienelemente.", "button-Elemente. Kategorien sind beschriftete Checkboxen in einem fieldset mit legend. (1.3.1, 4.1.2)"),
+   ("48 px Zielgröße.", "Das Minimum sind 24 px. Der kleinste Text hat 15 px. (2.5.8, 1.4.4)"),
+   ("Sichtbarer Fokus.", "Ein 2-px-Ring mit 1 px innerer Linie, in beiden Schemata und im Windows-Kontrastmodus. (2.4.7, 2.4.11)"),
+   ("Kontrast.", "Text 4,5:1, Rahmen 3:1, in beiden Schemata. Statusmeldungen gehen an eine Live-Region. (1.4.3, 1.4.11, 4.1.3)"),
+   ("Reduzierte Bewegung.", "Die Einblendung entfällt, wenn Besucher weniger Bewegung wünschen. (2.3.3)"),
+   ("Wörter im Markup.", "Das Skript enthält keinen Text. Zum Übersetzen das HTML bearbeiten."),
   ],
   footer_statement="Erklärung zur Barrierefreiheit", footer_contact="Kontakt",
  ),
@@ -208,7 +216,6 @@ SHARED_CSS = '''
 .facts > div { border-top: 1px solid var(--rule); padding-top: 12px; min-width: 0; }
 .facts dt { font-size: 15px; letter-spacing: 0.01em; color: var(--sub); margin: 0 0 6px; }
 .facts dd { margin: 0; font-size: 18px; letter-spacing: 0.01em; overflow-wrap: anywhere; }
-.facts .gloss { display: block; font-size: 15px; color: var(--sub); margin-top: 6px; }
 .step-head { display: flex; flex-wrap: wrap; gap: 0 0.5em; align-items: baseline; margin-top: 40px; }
 .step-num { color: var(--sub); font-weight: 400; }
 .caveat { border-top: 1px solid var(--rule); padding-top: 16px; margin-top: 40px; }
@@ -220,8 +227,8 @@ def rules(items):
 
 def facts(t):
     cards = "".join(
-        f'<div><dt>{html.escape(f)}</dt><dd>{html.escape(v)}<span class="gloss">{html.escape(g)}</span></dd></div>'
-        for f, v, g in t["facts"])
+        f'<div><dt>{html.escape(f)}</dt><dd>{html.escape(v)}</dd></div>'
+        for f, v in t["facts"])
     return f'<dl class="facts" aria-label="{html.escape(t["facts_label"])}">{cards}</dl>'
 
 def plain_list(items):
@@ -301,15 +308,14 @@ def build(L):
     {builder_page.section(L['lang'])}
 
     <h2>{L['law_h']}</h2>
-    <p>{L['law_p']}</p>
-    {rules(L['law'])}
+    {plain_list(L['law'])}
 
     <h2>{L['a11y_h']}</h2>
     <p>{L['a11y_p']}</p>
-    {rules(L['a11y'])}
+    {plain_list(L['a11y'])}
 
     <h2>{L['install_h']}</h2>
-    {rules(L['install'])}
+    {plain_list(L['install'])}
 
     <h2>{L['test_h']}</h2>
     <p>{L['test_p']}</p>
@@ -319,6 +325,9 @@ def build(L):
 
     <h2>{L['dev_h']}</h2>
     <p>{L['dev_p']}</p>
+
+    <h3>{L['setup_h']}</h3>
+    {plain_list(L['setup'])}
 
     <h3 id="code">{L['files_h']}</h3>
     <p>{L['files_p']}
@@ -405,7 +414,7 @@ def block(title, name):
   <pre tabindex="0"><code id="{name}">{html.escape(sources[name])}</code></pre>
 </section>'''
 
-TITLE = "<title>Accessible Consent Banner</title>\n"
+TITLE = "<title>Cookie banner for your website</title>\n"
 page = f'''<style>
 /* Layout: one 68ch column of instruction, full-width code blocks, the banner itself live at the bottom. */
 :root {{
@@ -473,15 +482,14 @@ footer {{ margin-top: 64px; padding-top: 24px; border-top: 1px solid var(--line)
   {builder_page.section('en')}
 
   <h2>{E['law_h']}</h2>
-  <p>{E['law_p']}</p>
-  {rules(E['law'])}
+  {plain_list(E['law'])}
 
   <h2>{E['a11y_h']}</h2>
   <p>{E['a11y_p']}</p>
-  {rules(E['a11y'])}
+  {plain_list(E['a11y'])}
 
   <h2>{E['install_h']}</h2>
-  {rules(E['install'])}
+  {plain_list(E['install'])}
 
   <h2>{E['test_h']}</h2>
   <p>{E['test_p']}</p>
@@ -491,6 +499,9 @@ footer {{ margin-top: 64px; padding-top: 24px; border-top: 1px solid var(--line)
 
   <h2>{E['dev_h']}</h2>
   <p>{E['dev_p']}</p>
+
+  <h3>{E['setup_h']}</h3>
+  {plain_list(E['setup'])}
 
   <h3>{E['files_h']}</h3>
   <p>Take every file at once, or one at a time.</p>
@@ -581,6 +592,6 @@ footer {{ margin-top: 64px; padding-top: 24px; border-top: 1px solid var(--line)
 }})();
 </script>
 '''
-(KIT / "index.html").write_text("<!doctype html>\n<html lang=\"en\">\n<head>\n<meta charset=\"UTF-8\">\n<meta name=\"viewport\" content=\"width=device-width, initial-scale=1, viewport-fit=cover\">\n<meta name=\"description\" content=\"" + html.escape(E["desc"]) + "\">\n<title>Accessible Consent Banner</title>\n</head>\n<body>\n" + page + "</body>\n</html>\n")
+(KIT / "index.html").write_text("<!doctype html>\n<html lang=\"en\">\n<head>\n<meta charset=\"UTF-8\">\n<meta name=\"viewport\" content=\"width=device-width, initial-scale=1, viewport-fit=cover\">\n<meta name=\"description\" content=\"" + html.escape(E["desc"]) + "\">\n<title>Cookie banner for your website</title>\n</head>\n<body>\n" + page + "</body>\n</html>\n")
 (KIT / "artifact.html").write_text(TITLE + page)
 print("wrote cookie-banner/index.html and artifact.html")
