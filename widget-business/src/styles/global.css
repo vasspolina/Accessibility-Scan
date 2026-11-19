@@ -2018,13 +2018,26 @@
   margin: 28px 0 6px; padding-inline: 12px; font-size: 15px; font-weight: 500; letter-spacing: 0.01em; line-height: 1.2;
 }
 .a11y-widget-biz .a11y-chats .a11y-chats-list { list-style: none; margin: 0; padding: 0; }
+/* Titles on two lines (19 Nov 2026, the user's screenshot, "fix this"): on
+   one line beside the bin's 38px (kept while hidden, so a row never rewraps
+   under the pointer), a title got about 20 characters, and the questions
+   that open alike ("Can someone…", "How would a screen re…") read as the
+   same row five times. Two lines hold about 44, most of the 60 titleOf()
+   keeps; a URL breaks anywhere rather than running under the cut. 4px
+   between rows so two dashed edges do not read as one ladder. */
 .a11y-widget-biz .a11y-chats .a11y-chats-row {
-  display: flex; align-items: center; max-width: none; margin: 0 0 2px; border-radius: 12px;
+  display: flex; align-items: center; max-width: none; margin: 0 0 4px; border-radius: 12px;
   box-sizing: border-box; border: 1px dashed var(--ink);
 }
 .a11y-widget-biz .a11y-chats .a11y-chats-item {
-  display: block; flex: 1 1 auto; min-width: 0; font-weight: 400; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  display: block; flex: 1 1 auto; min-width: 0; font-weight: 400;
   border-color: transparent;
+}
+/* The clamp sits on the words, not the button: on the button the third line
+   showed in its bottom padding. */
+.a11y-widget-biz .a11y-chats .a11y-chats-title {
+  display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; line-clamp: 2;
+  overflow: hidden; overflow-wrap: anywhere;
 }
 /* The fixed pale ground, black words, in both themes. */
 .a11y-widget-biz .a11y-chats .a11y-chats-row:is([data-current], :hover) {
@@ -2060,7 +2073,7 @@
   padding: 7px 11px; border: 2px dashed var(--ink); cursor: not-allowed;
 }
 .a11y-widget-biz .a11y-chats .a11y-chats-item:disabled { cursor: not-allowed; }
-.a11y-widget-biz .a11y-chats .a11y-chats-row:has(.a11y-chats-item:disabled) { border-width: 2px; margin-bottom: 0; }
+.a11y-widget-biz .a11y-chats .a11y-chats-row:has(.a11y-chats-item:disabled) { border-width: 2px; margin-bottom: 2px; }
 @media (max-width: 640px) {
   .a11y-widget-biz .a11y-chat-layout { grid-template-columns: minmax(0, 1fr); gap: 0; }
   .a11y-widget-biz .a11y-chats {

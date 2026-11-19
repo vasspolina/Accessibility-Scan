@@ -65,48 +65,48 @@ GEN = {
 UI = {
  "en": dict(
   h="Make yours",
-  p="Answer four questions and get the banner as files. Your colours are checked for contrast. Nothing you type leaves this page.",
+  p="Answer four questions. You get the banner as three files. Nothing you type leaves this page.",
   step="Step {n}:", s1="Describe your site", s2="Check the preview", s3="Take your files",
-  lang="Language of the banner", policy="Link to your privacy policy", policy_hint="A full address, or a path such as /privacy/.",
-  cats="Which optional cookies does your site set?", cats_hint="Tick only what you use. Describe each one in your own words.",
+  lang="Language of the banner", policy="Link to your privacy policy", policy_hint="For example /privacy/ or a full web address.",
+  cats="Which other cookies does your site use?", cats_hint="Tick only what you use. Say in your own words what each one does.",
   describe="What it does", own="Another category (optional)", own_label="Name", own_text="What it does",
-  colours="Colours (light mode)", colours_hint="Dark mode keeps the template's tested colours.",
+  colours="Colours (light mode)", colours_hint="Dark mode keeps our colours.",
   bg="Background", text="Text", button="Buttons and links",
-  none="A site that only uses necessary cookies does not need a consent banner. Tick a category if you set any others.",
-  contrast="Colour contrast", preview="Preview", preview_hint="Try Tab, Escape and Settings inside the banner.",
-  code_hint="Markup for your pages, a stylesheet with your colours, and the script. Copy each one or download all three.", copy_file="Copy", f_html="Markup", f_css="Stylesheet", f_js="Script", download="Download all three files",
+  none="If your site only uses necessary cookies, you need no banner. Tick a box if you use any others.",
+  contrast="Can people read it?", preview="Preview", preview_hint="Click around, or use Tab and Escape.",
+  code_hint="Give these three files to your developer. Their steps are at the end of this page.", show_code="Show the code", copy_file="Copy", f_html="The banner", f_css="Its look", f_js="Its script", download="Download all three files",
   ui=dict(
    c_text="Text on the background", c_button_text="Button text on the button", c_button_edge="Button against the background",
    c_link="Policy link on the background",
-   pass_="passes", fail="fails, needs {need}:1",
-   failSay="{n} colour pair fails. See the contrast list.", failSayMany="{n} colour pairs fail. See the contrast list.", readySay="Banner updated. All colours pass.",
-   noneSay="No optional categories, so no banner is needed.",
+   pass_="readable", fail="too faint, needs {need}:1",
+   failSay="{n} colour pair is hard to read. See the list.", failSayMany="{n} colour pairs are hard to read. See the list.", readySay="Banner updated. All colours are readable.",
+   noneSay="No other cookies, so no banner is needed.",
    cssNote="Your colours, light mode. Written by the builder.",
-   previewTitle="Banner preview", previewPage="Your page goes here. The banner does not block it.",
+   previewTitle="Banner preview", previewPage="Your page goes here.",
    copied="{name} copied.", notCopied="Code selected. Press Ctrl+C or Cmd+C to copy it.",
    saved="{name} saved.", notSaved="Not saved. Use Copy instead.",
   ),
  ),
  "de": dict(
   h="Ihr eigenes Banner",
-  p="Beantworten Sie vier Fragen und erhalten Sie das Banner als Dateien. Ihre Farben werden auf Kontrast geprüft. Nichts, was Sie eingeben, verlässt diese Seite.",
+  p="Beantworten Sie vier Fragen. Sie erhalten das Banner als drei Dateien. Ihre Eingaben verlassen diese Seite nicht.",
   step="Schritt {n}:", s1="Beschreiben Sie Ihre Website", s2="Vorschau prüfen", s3="Dateien übernehmen",
-  lang="Sprache des Banners", policy="Link zu Ihrer Datenschutzerklärung", policy_hint="Eine vollständige Adresse oder ein Pfad wie /datenschutz/.",
-  cats="Welche optionalen Cookies setzt Ihre Website?", cats_hint="Kreuzen Sie nur an, was Sie nutzen. Beschreiben Sie jede Kategorie in Ihren eigenen Worten.",
+  lang="Sprache des Banners", policy="Link zu Ihrer Datenschutzerklärung", policy_hint="Zum Beispiel /datenschutz/ oder eine vollständige Webadresse.",
+  cats="Welche weiteren Cookies nutzt Ihre Website?", cats_hint="Kreuzen Sie nur an, was Sie nutzen. Sagen Sie in eigenen Worten, was jedes tut.",
   describe="Was sie tut", own="Weitere Kategorie (optional)", own_label="Name", own_text="Was sie tut",
-  colours="Farben (heller Modus)", colours_hint="Der dunkle Modus behält die geprüften Farben der Vorlage.",
+  colours="Farben (heller Modus)", colours_hint="Der dunkle Modus behält unsere Farben.",
   bg="Hintergrund", text="Text", button="Buttons und Links",
-  none="Eine Website mit nur notwendigen Cookies braucht kein Einwilligungsbanner. Kreuzen Sie eine Kategorie an, wenn Sie weitere Cookies setzen.",
-  contrast="Farbkontrast", preview="Vorschau", preview_hint="Probieren Sie Tab, Escape und Einstellungen im Banner aus.",
-  code_hint="Markup für Ihre Seiten, ein Stylesheet mit Ihren Farben und das Skript. Kopieren Sie jede Datei einzeln oder laden Sie alle drei herunter.", copy_file="Kopieren:", f_html="Markup", f_css="Stylesheet", f_js="Skript", download="Alle drei Dateien herunterladen",
+  none="Nutzt Ihre Website nur notwendige Cookies, brauchen Sie kein Banner. Kreuzen Sie an, wenn Sie weitere nutzen.",
+  contrast="Ist es gut lesbar?", preview="Vorschau", preview_hint="Klicken Sie herum oder nutzen Sie Tab und Escape.",
+  code_hint="Geben Sie diese drei Dateien Ihrer Entwicklung. Die Schritte dafür stehen am Ende der Seite.", show_code="Code anzeigen", copy_file="Kopieren:", f_html="Das Banner", f_css="Sein Aussehen", f_js="Sein Skript", download="Alle drei Dateien herunterladen",
   ui=dict(
    c_text="Text auf dem Hintergrund", c_button_text="Buttontext auf dem Button", c_button_edge="Button gegen den Hintergrund",
    c_link="Datenschutz-Link auf dem Hintergrund",
-   pass_="besteht", fail="besteht nicht, braucht {need}:1",
-   failSay="{n} Farbpaar besteht nicht. Siehe die Kontrastliste.", failSayMany="{n} Farbpaare bestehen nicht. Siehe die Kontrastliste.", readySay="Banner aktualisiert. Alle Farben bestehen.",
-   noneSay="Keine optionalen Kategorien, daher ist kein Banner nötig.",
+   pass_="gut lesbar", fail="zu blass, braucht {need}:1",
+   failSay="{n} Farbpaar ist schwer lesbar. Siehe die Liste.", failSayMany="{n} Farbpaare sind schwer lesbar. Siehe die Liste.", readySay="Banner aktualisiert. Alle Farben sind gut lesbar.",
+   noneSay="Keine weiteren Cookies, daher ist kein Banner nötig.",
    cssNote="Ihre Farben, heller Modus. Vom Generator geschrieben.",
-   previewTitle="Banner-Vorschau", previewPage="Hier steht Ihre Seite. Das Banner blockiert sie nicht.",
+   previewTitle="Banner-Vorschau", previewPage="Hier steht Ihre Seite.",
    copied="{name} kopiert.", notCopied="Code markiert. Drücken Sie Strg+C oder Cmd+C zum Kopieren.",
    saved="{name} gespeichert.", notSaved="Nicht gespeichert. Nutzen Sie Kopieren.",
   ),
@@ -134,6 +134,9 @@ CSS = """
 .builder-result ul { margin: 0; padding-inline-start: 24px; }
 .builder-result iframe { width: 100%; height: 480px; border: 1px solid currentColor; border-radius: 2px; background: #f4f4f4; }
 .builder-result pre { max-height: 420px; overflow: auto; font-size: 15px; }
+.builder-code summary { font-size: 18px; min-height: 48px; display: flex; align-items: center; cursor: pointer; }
+.builder-code[open] > summary { margin-bottom: 16px; }
+.builder-code { display: grid; gap: 16px; }
 .builder-actions { display: flex; flex-wrap: wrap; gap: 12px; }
 .builder-actions button { font: inherit; font-size: 18px; letter-spacing: 0.01em; min-height: 48px; padding: 0 20px; border: 2px solid currentColor; border-radius: 2px; background: transparent; color: inherit; cursor: pointer; }
 .builder .cat-row[hidden], .builder-result[hidden] { display: none; }
@@ -203,18 +206,21 @@ def section(lang, heading="h2"):
       <p class="hint">{e(U['preview_hint'])}</p>
       <iframe id="builder-preview" title="{e(U['ui']['previewTitle'])}"></iframe>
       {step(3, U['s3'])}
-      <p class="hint">{e(U['code_hint'])}</p>
       <div class="builder-actions">
         <button type="button" id="builder-download">{e(U['download'])}</button>
       </div>
-      <h4 class="builder-file">{e(U['f_html'])}, consent.html</h4>
-      <div class="builder-actions"><button type="button" data-builder-copy="builder-output">{e(U['copy_file'])} consent.html</button></div>
-      <pre tabindex="0" aria-label="consent.html"><code id="builder-output"></code></pre>
-      <h4 class="builder-file">{e(U['f_css'])}, consent.css</h4>
-      <div class="builder-actions"><button type="button" data-builder-copy="builder-css">{e(U['copy_file'])} consent.css</button></div>
-      <pre tabindex="0" aria-label="consent.css"><code id="builder-css"></code></pre>
-      <h4 class="builder-file">{e(U['f_js'])}, consent.js</h4>
-      <div class="builder-actions"><button type="button" data-builder-copy="builder-js">{e(U['copy_file'])} consent.js</button></div>
-      <pre tabindex="0" aria-label="consent.js"><code id="builder-js"></code></pre>
+      <p>{e(U['code_hint'])}</p>
+      <details class="builder-code">
+        <summary>{e(U['show_code'])}</summary>
+        <h4 class="builder-file">{e(U['f_html'])}, consent.html</h4>
+        <div class="builder-actions"><button type="button" data-builder-copy="builder-output">{e(U['copy_file'])} consent.html</button></div>
+        <pre tabindex="0" aria-label="consent.html"><code id="builder-output"></code></pre>
+        <h4 class="builder-file">{e(U['f_css'])}, consent.css</h4>
+        <div class="builder-actions"><button type="button" data-builder-copy="builder-css">{e(U['copy_file'])} consent.css</button></div>
+        <pre tabindex="0" aria-label="consent.css"><code id="builder-css"></code></pre>
+        <h4 class="builder-file">{e(U['f_js'])}, consent.js</h4>
+        <div class="builder-actions"><button type="button" data-builder-copy="builder-js">{e(U['copy_file'])} consent.js</button></div>
+        <pre tabindex="0" aria-label="consent.js"><code id="builder-js"></code></pre>
+      </details>
     </div>
     <script type="application/json" id="builder-strings">{strings(lang)}</script>'''
