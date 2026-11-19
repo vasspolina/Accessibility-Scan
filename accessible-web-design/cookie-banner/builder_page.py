@@ -65,8 +65,17 @@ GEN = {
 UI = {
  "en": dict(
   h="Make yours",
-  p="Answer four questions. You get the banner as three files. Nothing you type leaves this page.",
-  step="Step {n}:", s1="Describe your site", s2="Check the preview", s3="Take your files",
+  p="Tell the assistant about your site, or fill in the form yourself. You get the banner as three files.",
+  chat_greeting="Which outside services does your site use? For example Google Analytics, YouTube videos or Google Maps.",
+  chat_label="Your message", chat_send="Send", chat_you="You", chat_bot="Assistant",
+  chat_note="What you write here goes to our server and to Claude, an AI from Anthropic, to write your banner. The form below stays in your browser.",
+  chat_wait="The assistant is writing…", chat_applied="The form below is filled in.",
+  chat_off="The chat is not available right now. Fill in the form below instead.",
+  chat_busy="Too many messages. Wait a minute, then try again.",
+  chat_failed="The assistant did not answer. Send that again.",
+  chat_long="This chat is too long. Reload the page to start again.",
+  form_h="Your answers", form_hint="The assistant fills this in. You can change anything.",
+  step="Step {n}:", s1="Tell us about your site", s2="Check the preview", s3="Take your files",
   lang="Language of the banner", policy="Link to your privacy policy", policy_hint="For example /privacy/ or a full web address.",
   cats="Which other cookies does your site use?", cats_hint="Tick only what you use. Say in your own words what each one does.",
   describe="What it does", own="Another category (optional)", own_label="Name", own_text="What it does",
@@ -89,8 +98,17 @@ UI = {
  ),
  "de": dict(
   h="Ihr eigenes Banner",
-  p="Beantworten Sie vier Fragen. Sie erhalten das Banner als drei Dateien. Ihre Eingaben verlassen diese Seite nicht.",
-  step="Schritt {n}:", s1="Beschreiben Sie Ihre Website", s2="Vorschau prüfen", s3="Dateien übernehmen",
+  p="Erzählen Sie dem Assistenten von Ihrer Website oder füllen Sie das Formular selbst aus. Sie erhalten das Banner als drei Dateien.",
+  chat_greeting="Welche externen Dienste nutzt Ihre Website? Zum Beispiel Google Analytics, YouTube-Videos oder Google Maps.",
+  chat_label="Ihre Nachricht", chat_send="Senden", chat_you="Sie", chat_bot="Assistent",
+  chat_note="Was Sie hier schreiben, geht an unseren Server und an Claude, eine KI von Anthropic, um Ihr Banner zu schreiben. Das Formular unten bleibt in Ihrem Browser.",
+  chat_wait="Der Assistent schreibt …", chat_applied="Das Formular unten ist ausgefüllt.",
+  chat_off="Der Chat ist gerade nicht verfügbar. Füllen Sie stattdessen das Formular unten aus.",
+  chat_busy="Zu viele Nachrichten. Warten Sie eine Minute und versuchen Sie es erneut.",
+  chat_failed="Der Assistent hat nicht geantwortet. Senden Sie das noch einmal.",
+  chat_long="Dieser Chat ist zu lang. Laden Sie die Seite neu, um neu zu beginnen.",
+  form_h="Ihre Angaben", form_hint="Der Assistent füllt das aus. Sie können alles ändern.",
+  step="Schritt {n}:", s1="Erzählen Sie von Ihrer Website", s2="Vorschau prüfen", s3="Dateien übernehmen",
   lang="Sprache des Banners", policy="Link zu Ihrer Datenschutzerklärung", policy_hint="Zum Beispiel /datenschutz/ oder eine vollständige Webadresse.",
   cats="Welche weiteren Cookies nutzt Ihre Website?", cats_hint="Kreuzen Sie nur an, was Sie nutzen. Sagen Sie in eigenen Worten, was jedes tut.",
   describe="Was sie tut", own="Weitere Kategorie (optional)", own_label="Name", own_text="Was sie tut",
@@ -114,6 +132,19 @@ UI = {
 }
 
 CSS = """
+.cookie-chat { display: grid; gap: 12px; margin-block: 16px 32px; max-width: 68ch; }
+.cookie-chat__log { list-style: none; margin: 0; padding: 0; display: grid; gap: 20px; }
+.cookie-chat__turn { display: grid; gap: 4px; }
+.cookie-chat__turn p { margin: 0; white-space: pre-line; }
+.cookie-chat__who { font-size: 15px; letter-spacing: 0.01em; opacity: 0.85; }
+.cookie-chat__status { font-size: 15px; min-height: 1.5em; margin: 0; }
+.cookie-chat__form { display: grid; gap: 8px; }
+.cookie-chat__form label { font-size: 18px; }
+.cookie-chat__form textarea { font: inherit; font-size: 18px; letter-spacing: 0.01em; color: inherit; background: transparent; border: 1px solid currentColor; border-radius: 2px; padding: 8px 12px; min-height: 96px; width: 100%; resize: vertical; }
+.cookie-chat__form button { justify-self: start; font: inherit; font-size: 18px; letter-spacing: 0.01em; min-height: 48px; padding: 0 20px; border: 2px solid currentColor; border-radius: 2px; background: transparent; color: inherit; cursor: pointer; }
+.cookie-chat__form button[disabled] { border-style: dashed; cursor: wait; }
+.cookie-chat__form textarea:focus-visible, .cookie-chat__form button:focus-visible { outline: 2px solid currentColor; outline-offset: 2px; }
+.builder-form-h { font-size: 18px; font-weight: 500; margin: 8px 0 0; }
 .builder { display: grid; gap: 24px; margin-block: 16px 32px; }
 .builder fieldset { border: 1px solid currentColor; border-radius: 2px; padding: 16px; margin: 0; display: grid; gap: 16px; min-width: 0; }
 .builder legend { font-size: 18px; font-weight: 500; padding-inline: 4px; }
@@ -153,6 +184,11 @@ def strings(default):
     # Safe inside <script>: no "</" can close it early.
     return json.dumps(out, ensure_ascii=False).replace("</", "<\\/")
 
+def chat_strings(lang):
+    U = UI[lang]
+    keys = ("chat_you", "chat_bot", "chat_wait", "chat_applied", "chat_off", "chat_busy", "chat_failed", "chat_long")
+    return json.dumps({k[5:]: U[k] for k in keys}, ensure_ascii=False).replace("</", "<\\/")
+
 def section(lang, heading="h2"):
     U, G = UI[lang], GEN[lang]
     e = html.escape
@@ -172,6 +208,20 @@ def section(lang, heading="h2"):
     <p>{e(U['p'])}</p>
     <style>{CSS}</style>
     {step(1, U['s1'])}
+    <div class="cookie-chat" id="cookie-chat">
+      <ol class="cookie-chat__log" id="cookie-chat-log" aria-live="polite" aria-relevant="additions">
+        <li class="cookie-chat__turn cookie-chat__turn--bot"><span class="cookie-chat__who">{e(U['chat_bot'])}</span><p>{e(U['chat_greeting'])}</p></li>
+      </ol>
+      <p class="cookie-chat__status" id="cookie-chat-status" role="status"></p>
+      <form class="cookie-chat__form" id="cookie-chat-form">
+        <label for="cookie-chat-input">{e(U['chat_label'])}</label>
+        <textarea id="cookie-chat-input" name="message" rows="3" maxlength="2000" required></textarea>
+        <button type="submit" id="cookie-chat-send">{e(U['chat_send'])}</button>
+      </form>
+      <p class="hint">{e(U['chat_note'])}</p>
+    </div>
+    <h4 class="builder-form-h">{e(U['form_h'])}</h4>
+    <p class="hint">{e(U['form_hint'])}</p>
     <form class="builder" id="builder" novalidate>
       <fieldset><legend>{e(U['lang'])}</legend>{langs}
       </fieldset>
@@ -223,4 +273,5 @@ def section(lang, heading="h2"):
         <pre tabindex="0" aria-label="consent.js"><code id="builder-js"></code></pre>
       </details>
     </div>
-    <script type="application/json" id="builder-strings">{strings(lang)}</script>'''
+    <script type="application/json" id="builder-strings">{strings(lang)}</script>
+    <script type="application/json" id="cookie-chat-strings">{chat_strings(lang)}</script>'''

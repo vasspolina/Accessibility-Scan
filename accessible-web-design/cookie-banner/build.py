@@ -315,6 +315,7 @@ def build(L):
 <script src="../cookie-banner/consent.js" defer></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js" defer></script>
 <script src="../cookie-banner/builder.js" defer></script>
+<script src="../cookie-banner/cookie-chat.js" defer></script>
 <script>
   document.querySelectorAll(".copy").forEach(function (b) {{
     b.addEventListener("click", function (e) {{
@@ -341,6 +342,7 @@ FILES = ["consent.css", "consent.js", "consent.en.html", "consent.de.html"]
 sources = {n: (KIT / n).read_text() for n in FILES}
 css_src = sources["consent.css"]
 builder_src = (KIT / "builder.js").read_text().replace("</script", "<\\/script")
+chat_src = (KIT / "cookie-chat.js").read_text().replace("</script", "<\\/script")
 js_src = sources["consent.js"].replace("</script", "<\\/script")
 snippet = sources["consent.en.html"]
 live = "\n".join(l for l in snippet.splitlines() if not l.lstrip().startswith("<!--") and "text/plain" not in l
@@ -492,6 +494,9 @@ footer {{ margin-top: 64px; padding-top: 24px; border-top: 1px solid var(--line)
 </script>
 <script>
 {builder_src}
+</script>
+<script>
+{chat_src}
 </script>
 <script>
 (function () {{
