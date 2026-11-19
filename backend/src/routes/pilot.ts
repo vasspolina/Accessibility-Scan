@@ -44,7 +44,7 @@ export async function pilotRoutes(app: FastifyInstance) {
       // participant's own sentence is.
       if (!parsed.data.barrier && !parsed.data.pageUrl) return reply.status(400).send({ error: "invalid_request", fields: ["barrier"] });
       const result = await draftFinding(parsed.data);
-      return reply.send({ ...result, severity: severityFor(parsed.data.impact) });
+      return reply.send({ ...result, severity: severityFor(parsed.data.impact, result.draft?.impact) });
     }
   );
 

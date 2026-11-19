@@ -8,13 +8,11 @@
   var LABELS = {
     assistiveTech: "What do you use",
     pageUrl: "The page's address",
-    barrier: "What happened",
-    impact: "How much did it hold you back"
+    barrier: "What happened"
   };
   var FIRST_INPUT = {
     barrier: "barrier", pageUrl: "pageUrl",
-    assistiveTech: function () { return form.querySelector('input[name="assistiveTech"]'); },
-    impact: function () { return form.querySelector('input[name="impact"]'); }
+    assistiveTech: function () { return form.querySelector('input[name="assistiveTech"]'); }
   };
 
   function say(text) {
@@ -37,8 +35,8 @@
   if (new URLSearchParams(location.search).has("code")) history.replaceState(null, "", location.pathname);
 
   // What a participant answers the same way every time (what they use) is
-  // kept on their own device, so a second report is the page, a sentence
-  // and a rating. So is a random id made here, never their name, so the
+  // kept on their own device, so a second report is the page and a
+  // sentence. So is a random id made here, never their name, so the
   // server can count how many people reported without anyone signing in.
   // Browser storage can be missing or blocked; the form works the same
   // without it, and each report then counts as a new person.
@@ -52,15 +50,10 @@
     return Array.prototype.map.call(a, function (b) { return ("0" + b.toString(16)).slice(-2); }).join("");
   }
   var participant = remembered().participant || newId();
-  function setDetail(value) {
-    var sel = $("assistiveTechDetail");
-    var known = Array.prototype.some.call(sel.options, function (o) { return o.value === value; });
-    sel.value = known ? value : "";
-  }
   function remember(f) {
     try {
       localStorage.setItem(MEMORY, JSON.stringify({
-        participant: participant, assistiveTech: f.assistiveTech, assistiveTechDetail: f.assistiveTechDetail || ""
+        participant: participant, assistiveTech: f.assistiveTech
       }));
     } catch (e) { /* storage blocked: nothing to remember */ }
   }
@@ -70,7 +63,6 @@
       var r = form.querySelector('input[name="assistiveTech"][value="' + me.assistiveTech + '"]');
       if (r) r.checked = true;
     }
-    if (me.assistiveTechDetail) setDetail(me.assistiveTechDetail);
   })();
 
   // The address field reads what was typed the way a chat would
@@ -187,12 +179,9 @@
     return {
       participant: participant,
       assistiveTech: data.get("assistiveTech") || "",
-      assistiveTechDetail: (data.get("assistiveTechDetail") || "").trim() || undefined,
       pageUrl: (data.get("pageUrl") || "").trim(),
-      task: (data.get("task") || "").trim(),
       pageTitle: pageTitle || undefined,
       barrier: (data.get("barrier") || "").trim(),
-      impact: data.get("impact") || "",
       company_url: data.get("company_url") || undefined,
       lang: "en"
     };
@@ -243,7 +232,6 @@
     // The address alone is enough: the page is then scanned. Without it,
     // the participant's sentence is the report.
     if (!f.barrier && !f.pageUrl) errs.push({ field: "barrier", message: "Say what happened, or paste the page's address above" });
-    if (!f.impact) errs.push({ field: "impact", message: "Choose how much it held you back" });
     return errs;
   }
 
@@ -327,21 +315,12 @@
       state.draft = res.body.draft;
       state.model = res.body.model;
       $("review-intro").textContent = res.body.draft.fromScan
-        ? "You gave only the address, so we scanned the page and the model wrote this from what the scan found, not from your words. Check that it matches what you met. Change it, or answer no below if it doesn't."
-        : "This is what the model wrote from your words. Change anything that is wrong, then say whether it matches.";
+        ? "You gave only the address, so we scanned the page and wrote this from what the scan found, not from your words. If it isn\u2019t what you met, go back and add a sentence about what happened."
+        : "We wrote this from what you told us. If something in it is wrong, go back and change what you wrote.";
       $("draft-meta").textContent = "Written by " + res.body.model + ", a language model on our own server.";
-      $("d-title").value = res.body.draft.title;
-      $("d-explanation").value = res.body.draft.explanation;
-      $("d-fix").value = res.body.draft.fix;
-      if (res.body.draft.wcagCriterion) {
-        $("d-criterion").textContent = "The model thinks this may fail WCAG success criterion " + res.body.draft.wcagCriterion + ". Nobody has checked that yet.";
-        $("d-criterion").hidden = false;
-      } else {
-        $("d-criterion").hidden = true;
-      }
-      Array.prototype.forEach.call(document.querySelectorAll('input[name="confirm"]'), function (r) { r.checked = false; });
+      renderDraft(res.body.draft);
       show("review");
-      say("Your draft is ready.");
+      say("Your report is ready. Read it, then send it.");
       focusEl($("review-title"));
     }).catch(function () {
       busy(btn, false, "Write up my report");
@@ -349,10 +328,37 @@
     });
   }
 
+  // The report as finished text: no edit boxes. Every part the model left
+  // out is left out here too, never shown empty.
+  var IMPACT_WORDS = {
+    blocked: "it stops them: they cannot go on",
+    slowed: "they get there, but much more slowly",
+    annoyed: "it is irritating, but it does not stop them"
+  };
+  function renderDraft(d) {
+    $("d-title").textContent = d.title;
+    $("d-explanation").textContent = d.explanation;
+    $("d-who").textContent = d.whoItStops || "";
+    $("d-who-part").hidden = !d.whoItStops;
+    var ol = $("d-steps");
+    ol.textContent = "";
+    (d.steps || []).forEach(function (step) {
+      var li = document.createElement("li");
+      li.textContent = step;
+      ol.appendChild(li);
+    });
+    $("d-steps-part").hidden = !(d.steps && d.steps.length);
+    $("d-fix").textContent = d.fix;
+    $("d-impact").textContent = d.impact ? "How much it holds people back, as the model judges it: " + IMPACT_WORDS[d.impact] + "." : "";
+    $("d-impact").hidden = !d.impact;
+    $("d-criterion").textContent = d.wcagCriterion ? "The model thinks this may fail WCAG success criterion " + d.wcagCriterion + ". Nobody has checked that yet." : "";
+    $("d-criterion").hidden = !d.wcagCriterion;
+  }
+
   function showNoDraft(reason, addressOnly) {
     state.draft = null;
     $("nodraft-reason").textContent = reason + (addressOnly
-      ? " You can go back and add a sentence about what happened, or send just the address and your rating."
+      ? " You can go back and add a sentence about what happened, or send just the address."
       : " You can still send your report in your own words.");
     show("nodraft");
     focusEl($("nodraft-title"));
@@ -360,26 +366,10 @@
 
   function send(btn, withDraft) {
     var body = Object.assign({}, state.fields);
-    if (withDraft) {
-      var choice = document.querySelector('input[name="confirm"]:checked');
-      if (!choice) {
-        say("Please say whether the draft matches what happened.");
-        focusEl(document.querySelector('input[name="confirm"]'));
-        return;
-      }
-      if (choice.value === "yes") {
-        body.draft = {
-          title: $("d-title").value.trim(),
-          explanation: $("d-explanation").value.trim(),
-          fix: $("d-fix").value.trim(),
-          wcagCriterion: state.draft.wcagCriterion
-        ,
-          fromScan: state.draft.fromScan || undefined
-        };
-        body.confirmed = true;
-      } else {
-        body.draft = null;
-      }
+    // They read the whole report and pressed Send: it goes as they saw it.
+    if (withDraft && state.draft) {
+      body.draft = state.draft;
+      body.confirmed = true;
     }
     busy(btn, true, "Sending…");
     say("Sending your report.");
@@ -410,7 +400,6 @@
       var me = remembered();
       var r = me.assistiveTech && form.querySelector('input[name="assistiveTech"][value="' + me.assistiveTech + '"]');
       if (r) r.checked = true;
-      if (me.assistiveTechDetail) setDetail(me.assistiveTechDetail);
     })();
     state = { fields: null, draft: null, model: null };
     show("report");
