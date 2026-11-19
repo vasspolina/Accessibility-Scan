@@ -3,6 +3,7 @@ import { env, hasMailProvider } from "../config/env.js";
 import { localModelName } from "../services/plainLanguage/localModel.js";
 import { z } from "zod";
 import { lookupPageTitle } from "../services/pilot/pageTitle.js";
+import { readAddress } from "../services/pilot/readAddress.js";
 import { draftFinding, mailPilotReport, pilotOpen, reportFieldsSchema, severityFor, submitBodySchema } from "../services/pilot/pilot.js";
 import { storageStatus } from "../storage/db.js";
 import { listPilotReports, pilotTotals, savePilotReport } from "../storage/pilot.js";
@@ -16,7 +17,8 @@ import { requireAdmin } from "./account.js";
  * POST /api/pilot/draft    the model's finding from a reported barrier
  * POST /api/pilot/report   store the report (and mail it, if mail is set up)
  * GET  /api/pilot/reports  the operator's view: every report and the totals
- * POST /api/pilot/page     the title of a pasted page, so the form can show it
+ * POST /api/pilot/page     what was typed in the address field, read as an
+ *                          address (readAddress.ts), and that page's title
  *
  * There is no invitation code: anyone may report, bounded by the rate
  * limits. Reading the reports needs ADMIN_TOKEN.
@@ -72,11 +74,15 @@ export async function pilotRoutes(app: FastifyInstance) {
     { config: { rateLimit: { max: env.CHAT_RATE_LIMIT_MAX, timeWindow: env.RATE_LIMIT_WINDOW_MS } } },
     async (request, reply) => {
       if (!pilotOpen()) return reply.status(503).send({ error: "pilot_closed" });
-      const parsed = z.object({ url: z.string().trim().url().max(2000) }).safeParse(request.body);
+      // Free text, not only a URL: "acsessobilty nl" is read as the address
+      // the person meant (readAddress.ts), and the form shows it back to them.
+      const parsed = z.object({ url: z.string().trim().min(1).max(2000) }).safeParse(request.body);
       if (!parsed.success) return reply.status(400).send({ error: "invalid_request" });
+      const reading = await readAddress(parsed.data.url);
       // This fetches an address the caller typed: every hop goes through
       // the SSRF guard (pageTitle.ts) and only the title comes back.
-      return reply.send({ title: await lookupPageTitle(parsed.data.url) });
+      const title = reading.url && reading.reached ? await lookupPageTitle(reading.url) : null;
+      return reply.send({ ...reading, title });
     }
   );
 

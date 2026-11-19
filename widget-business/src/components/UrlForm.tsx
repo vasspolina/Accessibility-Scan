@@ -9,8 +9,6 @@ import { Select } from "./Select2";
 // The ported Radio, not FormControls' — it carries the per-option description
 // the design puts on each choice instead of one hint under both.
 import { Input } from "./Input";
-import { OptionCard } from "./OptionCard";
-import { SCAN_DURATION } from "../lib/scanDuration";
 import { Switch } from "./Switch";
 import { LoginFields } from "./LoginFields";
 import type { AuthConfig } from "../api/scanClient";
@@ -18,6 +16,26 @@ import type { AudienceMode } from "../lib/audienceMode";
 import { Button } from "./Button";
 
 export type ScanMode = "page" | "site";
+
+// One choice: a filled row with its radio showing, the way the reference
+// form shows its checkbox.
+function Seg(props: { id: string; name: string; value: string; label: string; checked: boolean; onChange: () => void; disabled?: boolean }) {
+  return (
+    <label htmlFor={props.id} className={"a11y-seg" + (props.checked ? " a11y-seg-on" : "") + (props.disabled ? " a11y-seg-disabled" : "")}>
+      <input
+        type="radio"
+        id={props.id}
+        name={props.name}
+        value={props.value}
+        checked={props.checked}
+        onChange={props.onChange}
+        disabled={props.disabled}
+      />
+      <span>{props.label}</span>
+    </label>
+  );
+}
+
 
 export function UrlForm({
   onSubmit,
@@ -126,261 +144,148 @@ export function UrlForm({
     onSubmit(withProtocol, includeAiReview, mode, maxPages, auth);
   }
 
+  /* The scan form after a type foundry's newsletter form (user's reference,
+     18 Nov 2026, "design this like this"): the name large; a serif heading
+     over each group; every field a filled box with its label inside at the
+     top; each choice a filled row with its radio showing; the action one
+     wide block with its words set large; the note under it. The address
+     comes first, the choices after it. DOM order is the visual order. */
   return (
-    <>
-      <div className="a11y-newscan-head">
-        <h2 className="a11y-section-title a11y-newscan-title" id="a11y-newscan-title">{t("New scan")}</h2>
-        {/* Before the scan, because the language rides with the request:
-            the checklist comes back written in it. */}
-        <LanguageSelect id="a11y-lang-form" value={language} onChange={onLanguageChange} />
-      </div>
     <form
-      className="a11y-url-form"
+      className="a11y-url-form a11y-tester"
       onSubmit={handleSubmit}
       noValidate
       aria-labelledby="a11y-newscan-title"
     >
-      {/* The kit's NewScan composition: a quiet card, two columns, and the
-          actions gathered in a hairline-topped footer. Our content and our
-          contracts (persistent error region, described-by hints, login
-          fields) ride inside it. */}
-      {/* One column, in the order the design lays it out: address, scope,
-          report style, the optional extras, then the action. DOM order IS
-          visual order — reordering this with CSS `order` would leave tab
-          order following the markup while the eye follows the layout. */}
-      <div className="a11y-form-single">
-          {/* The ported Input at display size. The submit button does NOT ride
-              inside the field: the Checker screen puts the address full width
-              on its rule and the button below it, which is what the design
-              shows and the opposite of the search-plus-action row this used
-              to be. describedBy is passed through
-              rather than left to the component: this field's description is
-              one of four ids depending on the error state, which the
-              component's own ${id}-help cannot express. */}
-          <div className="a11y-step-group a11y-tone-violet">
-          <span className="a11y-step-num" aria-hidden="true">01</span>
-          <div className="a11y-step-body">
-          <div className="a11y-step-head">
-            <h3 className="a11y-step-q">{t("Which site?")}</h3>
-          </div>
-          <Input
-            id="a11y-url-input"
-            size="display"
-            label={t("Website address (required)")}
-            placeholder="example.com"
-            value={value}
-            onChange={(e) => {
-              setValue(e.target.value);
-              if (e.target.value.trim()) setShowEmptyError(false);
-              setShowInvalidError(false);
-            }}
+      <h2 className="a11y-tester-name" id="a11y-newscan-title">{t("New scan")}</h2>
+
+      <h3 className="a11y-tester-sub">{t("Which site?")}</h3>
+      {/* The field's one description, for screen readers only. */}
+      <span id="a11y-url-hint" className="a11y-sr-only">{t("Public pages only.")}</span>
+      {/* describedBy is one of four ids depending on the error state. */}
+      <Input
+        id="a11y-url-input"
+        size="display"
+        label={t("Website address (required)")}
+        placeholder="example.com"
+        value={value}
+        onChange={(e) => {
+          setValue(e.target.value);
+          if (e.target.value.trim()) setShowEmptyError(false);
+          setShowInvalidError(false);
+        }}
+        disabled={loading}
+        invalid={showEmptyError || showInvalidError || Boolean(scanError)}
+        inputProps={{ inputMode: "url", autoComplete: "url", required: true }}
+        action={
+          /* Stays mounted whether the panel is open or shut, so keyboard
+             focus always has somewhere to live. */
+          <button
+            ref={loginToggleRef}
+            type="button"
+            className="a11y-login-toggle"
+            aria-expanded={loginOpen}
+            aria-controls={loginPanelId}
+            onClick={() => setLoginOpen(!loginOpen)}
             disabled={loading}
-            invalid={showEmptyError || showInvalidError || Boolean(scanError)}
-            inputProps={{ inputMode: "url", autoComplete: "url", required: true }}
-            action={
-              /* Inside the field, where the design puts it. It stays mounted
-                 whether the panel is open or shut, so keyboard focus always
-                 has somewhere to live. */
-              <button
-                ref={loginToggleRef}
-                type="button"
-                className="a11y-login-toggle"
-                aria-expanded={loginOpen}
-                aria-controls={loginPanelId}
-                onClick={() => setLoginOpen(!loginOpen)}
-                disabled={loading}
-              >
-                {t("Behind a login")}
-              </button>
-            }
-            describedBy={
-              showEmptyError || showInvalidError
-                ? "a11y-url-error"
-                : scanError
-                  ? "a11y-scan-error"
-                  : scanBlocked
-                    ? "a11y-blocked-lead"
-                    : "a11y-url-hint"
-            }
-          />
+          >
+            {t("Behind a login")}
+          </button>
+        }
+        describedBy={
+          showEmptyError || showInvalidError
+            ? "a11y-url-error"
+            : scanError
+              ? "a11y-scan-error"
+              : scanBlocked
+                ? "a11y-blocked-lead"
+                : "a11y-url-hint"
+        }
+      />
 
-          {progress}
+      <LoginFields
+        auth={auth}
+        onChange={setAuth}
+        disabled={loading}
+        open={loginOpen}
+        setOpen={setLoginOpen}
+        panelId={loginPanelId}
+        toggleRef={loginToggleRef}
+      />
 
-          {/* The helper line carries the login trigger inline, which is where
-              the reference puts it — not as a block between the AI card and
-              the submit button. LoginFields still owns its own disclosure
-              panel; that drops below this row when opened. */}
-          <div className="a11y-url-helper-row">
-            <span id="a11y-url-hint" className="a11y-group-hint">
-              {t("Public pages only.")}
-            </span>
-            <LoginFields
-              auth={auth}
-              onChange={setAuth}
-              disabled={loading}
-              open={loginOpen}
-              setOpen={setLoginOpen}
-              panelId={loginPanelId}
-              toggleRef={loginToggleRef}
-            />
-          </div>
+      {/* Persistent and empty until filled: a live region mounted with its
+          message already inside never announces. */}
+      <p id="a11y-url-error" className="a11y-error a11y-url-error" role="alert">
+        {showEmptyError
+          ? t("Enter a website address first. For example: example.com.")
+          : showInvalidError
+            ? t("That doesn't look like a website address. For example: example.com.")
+            : ""}
+      </p>
 
-          {/* The empty-submit / malformed-address message, beside the field it
-              is about rather than at the foot of the form. Persistent and empty
-              until filled — a live region mounted with its message already
-              inside never announces. */}
-          <p id="a11y-url-error" className="a11y-error a11y-url-error" role="alert">
-            {showEmptyError
-              ? t("Enter a website address first. For example: example.com.")
-              : showInvalidError
-                ? t("That doesn't look like a website address. For example: example.com.")
-                : ""}
-          </p>
-
-          {/* The action sits with the address it acts on. It used to end the
-              form, three steps below the only field that is required — so the
-              scan could be started from step 01 without scrolling past scope
-              and report style, both of which have defaults. */}
-          {/* The tinted action bar, button leading. It was note-left,
-              button-right; the swap keeps the rule that mattered in the old
-              arrangement — DOM order and visual order agree — so it is done
-              by moving the element, never with flex order. A listener hears
-              the action, then the line that qualifies it. */}
-          <div className="a11y-url-submit">
-            <Button type="submit" size="lg" disabled={loading}>
-              {loading ? t("One moment\u2026") : t("Start the scan")}
-            </Button>
-            <span className="a11y-url-submit-note">
-              {t("Keep this page open. The scan runs here.")}
-            </span>
-          </div>
-          </div>
-          </div>
-
-          <div className="a11y-step-group a11y-tone-green">
-          <span className="a11y-step-num" aria-hidden="true">02</span>
-          <div className="a11y-step-body">
-          {/* The note is a sibling of the heading, not a child of it: inside,
-              it became part of the heading's accessible name. */}
-          <div className="a11y-step-head">
-            {/* Not "How much?" — that reads as price, and this step is
-                about scope: one page or the whole site. "of it" chains back
-                to the site named in 01, the way 03's "it" already does, so
-                the three steps read as one continuing question rather than
-                three unrelated ones. */}
-            <h3 className="a11y-step-q">{t("How much of it?")}</h3>
-            <span className="a11y-step-note">
-              {mode === "site"
-                ? tf("A whole site takes {duration}", { duration: t(SCAN_DURATION.site) })
-                : tf("This page takes {duration}", { duration: t(SCAN_DURATION.page) })}
-            </span>
-          </div>
-          <fieldset className="a11y-radio-group a11y-optioncard-grid">
-            <legend>{t("Scan scope")}</legend>
-            <OptionCard
-              id="a11y-scope-page"
-              name="a11y-scan-mode"
-              value="page"
-              label={t("This page")}
-              checked={mode === "page"}
-              onChange={() => setMode("page")}
-              disabled={loading}
-            />
-            <OptionCard
-              id="a11y-scope-site"
-              name="a11y-scan-mode"
-              value="site"
-              label={t("Whole site")}
-              description={t("Up to five pages from this address. Lists what repeats across them")}
-              checked={mode === "site"}
-              onChange={() => setMode("site")}
-              disabled={loading}
-            />
-          </fieldset>
-
-          </div>
-          </div>
-
-          <div className="a11y-step-group a11y-tone-blue">
-          <span className="a11y-step-num" aria-hidden="true">03</span>
-          <div className="a11y-step-body">
-          <div className="a11y-step-head">
-            <h3 className="a11y-step-q">{t("Who reads it?")}</h3>
-          </div>
-          <fieldset className="a11y-radio-group a11y-optioncard-grid">
-            <legend>{t("Report style")}</legend>
-            <OptionCard
-              id="a11y-aud-biz"
-              name="a11y-audience"
-              value="business"
-              /* Not "Business owners". This report is written for whoever has
-                 to act on it — an owner, a marketer, a designer, the person
-                 who inherited the site — and naming one of them told the rest
-                 they were in the wrong place. The pair it sits in carries the
-                 distinction already: everyone, or professionals. */
-              label={t("For everyone")}
-              description={t("What is wrong, who fixes it, and what it costs you, in plain words")}
-              checked={audience === "business"}
-              onChange={() => onAudienceChange("business")}
-            />
-            <OptionCard
-              id="a11y-aud-pro"
-              name="a11y-audience"
-              value="professional"
-              label={t("Professionals")}
-              description={t("Each finding with its WCAG number, selector and code")}
-              checked={audience === "professional"}
-              onChange={() => onAudienceChange("professional")}
-            />
-          </fieldset>
-
-          {mode === "site" && (
-            <Select
-              id="a11y-pages"
-              label={t("Pages to check")}
-              value={String(maxPages)}
-              onChange={(e: ChangeEvent<HTMLSelectElement>) => setMaxPages(Number(e.target.value))}
-              disabled={loading}
-              options={[3, 5, 8, 10].map((n) => ({
-                value: String(n),
-                label: tf("{count} pages (about {minutes} min)", {
-                  count: n,
-                  minutes: Math.ceil((n * 15) / 60),
-                }),
-              }))}
-            />
-          )}
-
-          {mode === "page" && (
-            <div className="a11y-ai-card">
-              {/* One name, once: the switch's own label is the title, so the
-                  page no longer says "AI review" twice on one line. */}
-              <Switch
-                id="a11y-ai"
-                label={t("Add an AI review")}
-                checked={includeAiReview}
-                onChange={setIncludeAiReview}
-                disabled={loading}
-              />
-              <span id="a11y-ai-hint" className="a11y-ai-hint">
-                {t("A language model reads the page for design and wording faults, and writes a code fix for each fault it can correct. It can be wrong.")}{" "}
-                {tf("Adds {duration}.", { duration: t(SCAN_DURATION.aiAdds) })}
-              </span>
-            </div>
-          )}
-
-          </div>
-          </div>
-
-
+      {/* Not "How much?" — that reads as price, and this is scope. */}
+      {/* The group's name, for screen readers only (user's instruction, 18 Nov
+          2026, "delete this text"): the toggles' own words say the choice. */}
+      <h3 className="a11y-sr-only" id="a11y-scope-q">{t("How much of it?")}</h3>
+      <div className="a11y-tester-choices" role="radiogroup" aria-labelledby="a11y-scope-q">
+        <Seg id="a11y-scope-page" name="a11y-scan-mode" value="page" label={t("This page")}
+          checked={mode === "page"} onChange={() => setMode("page")} disabled={loading} />
+        <Seg id="a11y-scope-site" name="a11y-scan-mode" value="site" label={t("Whole site")}
+          checked={mode === "site"} onChange={() => setMode("site")} disabled={loading} />
       </div>
 
-      {/* Save as PDF used to sit here in business mode. It moved into the
-          report-actions panel, which the design groups the exports into —
-          leaving it here as well printed the same button and the same
-          "opens your print dialog" sentence twice on one page.
-          Professionals still print from the report's own action row. */}
+      {/* "For everyone", not "Business owners": the report is written for
+          whoever has to act on it. */}
+      <h3 className="a11y-sr-only" id="a11y-aud-q">{t("Who reads it?")}</h3>
+      <div className="a11y-tester-choices" role="radiogroup" aria-labelledby="a11y-aud-q">
+        <Seg id="a11y-aud-biz" name="a11y-audience" value="business" label={t("For everyone")}
+          checked={audience === "business"} onChange={() => onAudienceChange("business")} />
+        <Seg id="a11y-aud-pro" name="a11y-audience" value="professional" label={t("Professionals")}
+          checked={audience === "professional"} onChange={() => onAudienceChange("professional")} />
+      </div>
+
+      <div className="a11y-tester-rows">
+        {mode === "page" ? (
+          <div className="a11y-tester-row a11y-tester-ai">
+            <Switch
+              id="a11y-ai"
+              label={t("AI review")}
+              checked={includeAiReview}
+              onChange={setIncludeAiReview}
+              disabled={loading}
+            />
+          </div>
+        ) : (
+          <Select
+            id="a11y-pages"
+            label={t("Pages to check")}
+            value={String(maxPages)}
+            onChange={(e: ChangeEvent<HTMLSelectElement>) => setMaxPages(Number(e.target.value))}
+            disabled={loading}
+            options={[3, 5, 8, 10].map((n) => ({
+              value: String(n),
+              label: tf("{count} pages (about {minutes} min)", {
+                count: n,
+                minutes: Math.ceil((n * 15) / 60),
+              }),
+            }))}
+          />
+        )}
+        {/* The language rides with the request: the checklist comes back
+            written in it. */}
+        <LanguageSelect id="a11y-lang-form" value={language} onChange={onLanguageChange} />
+      </div>
+
+      {progress}
+
+      <div className="a11y-url-submit">
+        <Button type="submit" size="lg" disabled={loading}>
+          {loading ? t("One moment…") : t("Start the scan")}
+        </Button>
+        <span className="a11y-url-submit-note">
+          {t("Keep this page open. The scan runs here.")}
+        </span>
+      </div>
     </form>
-    </>
   );
 }

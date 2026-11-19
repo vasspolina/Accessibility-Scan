@@ -73,39 +73,102 @@
     if (me.assistiveTechDetail) setDetail(me.assistiveTechDetail);
   })();
 
-  // Pasting an address looks the page up, and its title shows under the
-  // field (and goes to the model as context), so nobody has to describe
-  // which page they mean.
+  // The address field reads what was typed the way a chat would
+  // (backend services/pilot/readAddress.ts): "acsessobilty nl" comes back
+  // as https://accessibility.nl. Whatever the server makes of it is shown
+  // under the field (a live hint the field points to), put into the field
+  // once the person leaves it, never while they type, and a correction
+  // the model guessed is never sent before it has stood in the field.
+  // The page's title comes back too and goes to the model as context.
+  var NBSP_DASH = "\u00a0\u2013 ";
   var pageTitle = "";
   var lookupTimer = null;
-  var lastLooked = "";
-  function lookUpPage() {
-    var url = $("pageUrl").value.trim();
-    if (url === lastLooked) return;
-    lastLooked = url;
-    pageTitle = "";
-    $("page-found").textContent = "";
-    if (!/^https?:\/\/\S+\.\S+/i.test(url) ) return;
-    $("page-found").textContent = "Looking the page up…";
-    fetch("/api/pilot/page", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ url: url })
-    }).then(function (r) { return r.ok ? r.json() : { title: null }; }).then(function (res) {
-      if ($("pageUrl").value.trim() !== url) return;
-      pageTitle = res.title || "";
-      $("page-found").textContent = pageTitle
-        ? "Page found: " + pageTitle
-        : "We couldn't read that page's title. That's fine: your report still goes with the address.";
-    }).catch(function () {
-      if ($("pageUrl").value.trim() === url) $("page-found").textContent = "";
+  var readings = {};
+  var shownFor = "";
+  function readingFor(raw) {
+    if (!readings[raw]) {
+      readings[raw] = fetch("/api/pilot/page", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ url: raw })
+      }).then(function (r) { return r.ok ? r.json() : null; }).catch(function () { return null; });
+      readings[raw].then(function (r) { if (!r) delete readings[raw]; });
+    }
+    return readings[raw];
+  }
+  // Worth reading while the person pauses only when it looks finished: it
+  // ends in what could be a domain ending, or it has a scheme. Anything
+  // else waits for them to leave the field, so half a word is not looked up.
+  function looksFinished(raw) {
+    return /:\/\//.test(raw) || /[.,\s][a-z]{2,}\/?$/i.test(raw) || /\s\S+\s\S+\s\S+/.test(raw);
+  }
+  function describe(raw, r) {
+    if (!r) return "";
+    if (r.words) {
+      return r.url
+        ? "That reads like a description, so it will go in the What happened field. We\u2019ll check " + r.url + NBSP_DASH + "change it if that\u2019s wrong."
+        : "That reads like a description, not an address, so it will go in the What happened field.";
+    }
+    if (!r.url) return "";
+    var lines = [];
+    if (r.url !== raw) {
+      lines.push(r.guessed
+        ? "We\u2019ll check " + r.url + NBSP_DASH + "change it if that\u2019s wrong."
+        : "We\u2019ll check " + r.url + ".");
+    }
+    if (!r.reached) lines.push("We couldn\u2019t reach that address. Check the spelling" + NBSP_DASH + "your report can still go with it.");
+    else if (r.title) lines.push("Page found: " + r.title);
+    return lines.join(" ");
+  }
+  function showReading(raw) {
+    return readingFor(raw).then(function (r) {
+      if ($("pageUrl").value.trim() !== raw) return r;
+      pageTitle = (r && r.title) || "";
+      $("page-found").textContent = describe(raw, r);
+      if ($("page-found").textContent) shownFor = raw;
+      return r;
     });
+  }
+  function moveToBarrier(raw) {
+    var b = $("barrier");
+    var now = b.value.trim();
+    if (now.indexOf(raw) === -1) b.value = now ? now + "\n\n" + raw : raw;
+  }
+  // Puts the reading into the form: the address into its field, a
+  // description in the What happened field. Focus stays where it is.
+  function applyReading(raw, r) {
+    if (!r || $("pageUrl").value.trim() !== raw) return;
+    if (r.words) {
+      moveToBarrier(raw);
+      $("pageUrl").value = r.url || "";
+      say(r.url
+        ? "What you typed is now in the What happened field, and the address is " + r.url + "."
+        : "What you typed is now in the What happened field.");
+    } else if (r.url && r.url !== raw) {
+      $("pageUrl").value = r.url;
+    } else {
+      return;
+    }
+    if (r.url) readings[r.url] = Promise.resolve({ url: r.url, words: false, guessed: false, reached: r.reached, title: r.title });
+    $("page-found").textContent = r.url ? describe(raw, { url: r.url, words: false, guessed: r.guessed, reached: r.reached, title: r.title }) : "";
+    shownFor = r.url || "";
   }
   $("pageUrl").addEventListener("input", function () {
     clearTimeout(lookupTimer);
-    lookupTimer = setTimeout(lookUpPage, 600);
+    var raw = this.value.trim();
+    if (!raw) { pageTitle = ""; $("page-found").textContent = ""; return; }
+    if (looksFinished(raw)) lookupTimer = setTimeout(function () { showReading(raw); }, 600);
   });
-  $("pageUrl").addEventListener("change", lookUpPage);
+  $("pageUrl").addEventListener("change", function () {
+    clearTimeout(lookupTimer);
+    var raw = this.value.trim();
+    if (!raw) { pageTitle = ""; $("page-found").textContent = ""; return; }
+    showReading(raw).then(function (r) {
+      // Only once they have left the field: the value never changes under
+      // someone who is typing in it.
+      if (document.activeElement !== $("pageUrl")) applyReading(raw, r);
+    });
+  });
 
   fetch("/api/pilot").then(function (r) { return r.json(); }).then(function (info) {
     if (!info.open || (!info.stores && !info.mails)) {
@@ -176,7 +239,7 @@
   function validate(f) {
     var errs = [];
     if (!f.assistiveTech) errs.push({ field: "assistiveTech", message: "Choose what you use" });
-    if (f.pageUrl && !/^https?:\/\/\S+$/i.test(f.pageUrl)) errs.push({ field: "pageUrl", message: "Enter the address starting with https, or leave it empty" });
+    if (f.pageUrl && addressProblem) errs.push({ field: "pageUrl", message: addressProblem });
     // The address alone is enough: the page is then scanned. Without it,
     // the participant's sentence is the report.
     if (!f.barrier && !f.pageUrl) errs.push({ field: "barrier", message: "Say what happened, or paste the page's address above" });
@@ -189,15 +252,49 @@
     if (text) btn.textContent = text;
   }
 
+  // What the address field could not be read as, worded for the error
+  // summary; empty when it reads fine or the lookup was out of reach (the
+  // server then normalises what it can and says if it cannot).
+  var addressProblem = "";
+
   form.addEventListener("submit", function (ev) {
     ev.preventDefault();
+    var btn = $("draft-btn");
+    var raw = $("pageUrl").value.trim();
+    addressProblem = "";
+    if (!raw) { writeUp(); return; }
+    busy(btn, true, "Checking the address\u2026");
+    var seen = shownFor === raw;
+    readingFor(raw).then(function (r) {
+      busy(btn, false, "Write up my report");
+      var now = $("pageUrl").value.trim();
+      // Leaving the field for the button can apply the reading a moment
+      // before this runs; anything else in the field means they typed on.
+      if (now !== raw && !(r && now === (r.url || ""))) return;
+      if (r && !r.words && !r.url) {
+        addressProblem = "We couldn\u2019t make a web address out of \u201c" + raw + "\u201d. Check it, or leave the field empty.";
+        $("page-found").textContent = "";
+      } else if (r && r.guessed && !seen) {
+        // A correction the person has not had in front of them yet: put it
+        // in the field and stop once, so nothing guessed goes unseen.
+        applyReading(raw, r);
+        say("We changed the address to " + r.url + ". If that\u2019s right, press Write up my report again.");
+        return;
+      } else {
+        applyReading(raw, r);
+      }
+      writeUp();
+    });
+  });
+
+  function writeUp() {
+    var btn = $("draft-btn");
     var f = readFields();
     var errs = validate(f);
     if (errs.length) { showErrors(errs); return; }
     clearErrors();
     remember(f);
     state.fields = f;
-    var btn = $("draft-btn");
     var scanning = !f.barrier;
     busy(btn, true, scanning ? "Scanning the page…" : "Writing up your report…");
     say(scanning
@@ -250,7 +347,7 @@
       busy(btn, false, "Write up my report");
       showNoDraft("The writing-up step could not be reached.");
     });
-  });
+  }
 
   function showNoDraft(reason, addressOnly) {
     state.draft = null;
@@ -308,7 +405,7 @@
   $("back-plain-btn").addEventListener("click", back);
   $("again-btn").addEventListener("click", function () {
     form.reset();
-    pageTitle = ""; lastLooked = ""; $("page-found").textContent = "";
+    pageTitle = ""; $("page-found").textContent = "";
     (function () {
       var me = remembered();
       var r = me.assistiveTech && form.querySelector('input[name="assistiveTech"][value="' + me.assistiveTech + '"]');
