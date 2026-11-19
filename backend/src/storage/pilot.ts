@@ -1,6 +1,6 @@
 import { randomUUID } from "node:crypto";
 import { getDb } from "./db.js";
-import { participantId, type PilotDraft, type SubmitBody } from "../services/pilot/pilot.js";
+import { barrierRecord, participantId, type PilotDraft, type SubmitBody } from "../services/pilot/pilot.js";
 
 /**
  * Pilot barrier reports (services/pilot/pilot.ts). Never pruned and never
@@ -39,7 +39,9 @@ export function savePilotReport(body: SubmitBody, model: string | undefined): st
     body.pageUrl ?? null,
     at,
     body.task,
-    body.barrier || "(not described: drafted from a scan of the page)",
+    // Their side of the conversation: what happened, then each question
+    // with their answer (barrierRecord).
+    barrierRecord(body) || "(not described: drafted from a scan of the page)",
     // NOT NULL in the table; the form stopped asking (19 Nov 2026), and the
     // model's estimate stays in draft_json, never in this column.
     body.impact ?? "unrated",

@@ -4,7 +4,7 @@ import { localModelName } from "../services/plainLanguage/localModel.js";
 import { z } from "zod";
 import { lookupPageTitle } from "../services/pilot/pageTitle.js";
 import { readAddress } from "../services/pilot/readAddress.js";
-import { draftFinding, mailPilotReport, pilotOpen, reportFieldsSchema, severityFor, submitBodySchema, wakeModel } from "../services/pilot/pilot.js";
+import { draftFinding, mailPilotReport, nextFollowUp, pilotDraftSchema, pilotOpen, reportFieldsSchema, severityFor, submitBodySchema, wakeModel } from "../services/pilot/pilot.js";
 import { storageStatus } from "../storage/db.js";
 import { listPilotReports, pilotTotals, savePilotReport } from "../storage/pilot.js";
 import { requireAdmin } from "./account.js";
@@ -14,7 +14,9 @@ import { requireAdmin } from "./account.js";
  * backend/public/pilot.html.
  *
  * GET  /api/pilot          is the pilot open, and is there a model
- * POST /api/pilot/draft    the model's finding from a reported barrier
+ * POST /api/pilot/followup the one question to ask before drafting, or none
+ * POST /api/pilot/draft    the model's finding from a reported barrier, or
+ *                          the finding again after a change they asked for
  * POST /api/pilot/report   store the report (and mail it, if mail is set up)
  * GET  /api/pilot/reports  the operator's view: every report and the totals
  * POST /api/pilot/wake     start the model waking while the form is filled in
@@ -39,13 +41,28 @@ export async function pilotRoutes(app: FastifyInstance) {
     { config: { rateLimit: { max: env.CHAT_RATE_LIMIT_MAX, timeWindow: env.RATE_LIMIT_WINDOW_MS } } },
     async (request, reply) => {
       if (!pilotOpen()) return reply.status(503).send({ error: "pilot_closed" });
-      const parsed = reportFieldsSchema.safeParse(request.body);
+      const parsed = draftBodySchema.safeParse(request.body);
       if (!parsed.success) return reply.status(400).send({ error: "invalid_request", fields: fieldErrors(parsed.error) });
       // The address alone is enough (the page is scanned); otherwise the
       // participant's own sentence is.
       if (!parsed.data.barrier && !parsed.data.pageUrl) return reply.status(400).send({ error: "invalid_request", fields: ["barrier"] });
-      const result = await draftFinding(parsed.data);
+      const { previous, change, ...report } = parsed.data;
+      const result = await draftFinding(report, previous && change ? { previous, change } : undefined);
       return reply.send({ ...result, severity: severityFor(parsed.data.impact, result.draft?.impact) });
+    }
+  );
+
+  // The conversation's one follow-up: what the owner would still need to
+  // know, worded by the model when it answers in time and scripted when it
+  // does not (nextFollowUp).
+  app.post(
+    "/api/pilot/followup",
+    { config: { rateLimit: { max: env.CHAT_RATE_LIMIT_MAX, timeWindow: env.RATE_LIMIT_WINDOW_MS } } },
+    async (request, reply) => {
+      if (!pilotOpen()) return reply.status(503).send({ error: "pilot_closed" });
+      const parsed = reportFieldsSchema.safeParse(request.body);
+      if (!parsed.success) return reply.status(400).send({ error: "invalid_request", fields: fieldErrors(parsed.error) });
+      return reply.send(await nextFollowUp(parsed.data));
     }
   );
 
@@ -103,6 +120,13 @@ export async function pilotRoutes(app: FastifyInstance) {
     return reply.send({ totals: pilotTotals(), reports: listPilotReports() });
   });
 }
+
+/** A draft request, or a redraft: the finding they read and what they
+ *  said is wrong with it. */
+const draftBodySchema = reportFieldsSchema.extend({
+  previous: pilotDraftSchema.optional(),
+  change: z.string().trim().min(1).max(1000).optional(),
+});
 
 function fieldErrors(error: { issues: Array<{ path: PropertyKey[] }> }): string[] {
   return [...new Set(error.issues.map((i) => String(i.path[0] ?? "")).filter(Boolean))];
