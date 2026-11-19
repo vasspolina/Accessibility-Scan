@@ -491,6 +491,18 @@
    block's fold says what it does in small print, and a finished scan's
    steps sit behind one "Details" line. */
 .a11y-widget-biz .a11y-chat-blockhead .a11y-chat-fold { font-size: 18px; letter-spacing: 0.01em; margin-inline-start: 0.8em; }
+/* A block's summary line is as wide as its words (user's screenshot,
+   19 Nov 2026, the Settings block). It was a full-width line, so the focus
+   ring a click left on it drew a 2px ink box across the whole thread, and
+   the block's first line sat hard against it. The ring now hugs the words
+   with air outside them, and the body starts 40px under the line, the
+   space the settings rows keep between themselves. */
+.a11y-widget-biz .a11y-chat-blockhead { width: fit-content; max-width: 100%; }
+.a11y-widget-biz .a11y-chat-blockhead:focus-visible { outline-offset: 4px; }
+.a11y-widget-biz .a11y-chat-block > details[open] > .a11y-chat-blockhead { margin-bottom: 40px; }
+/* The account key is a short code, not a line of prose: the field stops at
+   a key's length instead of running to the edge of the thread. */
+.a11y-widget-biz .a11y-settings-row > .a11y-input { max-width: 420px; }
 .a11y-widget-biz .a11y-chat-stepfold > summary { font-size: 18px; letter-spacing: 0.01em; margin-top: 0.3em; width: fit-content; }
 .a11y-widget-biz .a11y-chat-stepfold[open] > summary { margin-bottom: 0.3em; }
 /* Back and the form link share the start of the box's row. */
