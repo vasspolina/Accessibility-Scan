@@ -42,10 +42,11 @@ footer { margin-top: 64px; padding-top: 24px; border-top: 1px solid var(--line);
 @media (max-width: 480px) { h1 { font-size: 32px; } .btn { width: 100%; } .actions { display: grid; } }
 
 /* Facts, steps and the closing note: the accessibility statement's shape. */
-.facts { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 24px; margin: 0 0 40px; padding: 0; max-width: 1100px; }
-.facts > div { border-top: 1px solid var(--rule); padding-top: 12px; min-width: 0; }
-.facts dt { font-size: 15px; letter-spacing: 0.01em; color: var(--sub); margin: 0 0 6px; }
-.facts dd { margin: 0; font-size: 18px; letter-spacing: 0.01em; overflow-wrap: anywhere; }
+.dev-panel { border-top: 1px solid var(--rule); }
+.dev-panel:last-of-type { border-bottom: 1px solid var(--rule); }
+.dev-panel > summary { font-size: 18px; font-weight: 500; min-height: 48px; display: flex; align-items: center; cursor: pointer; padding: 8px 0; margin: 0; }
+.dev-panel[open] > summary { margin-bottom: 16px; }
+.dev-panel[open] { padding-bottom: 24px; }
 .step-head { display: flex; flex-wrap: wrap; gap: 0 0.5em; align-items: baseline; margin-top: 40px; }
 .step-num { color: var(--sub); font-weight: 400; }
 .caveat { border-top: 1px solid var(--rule); padding-top: 16px; margin-top: 40px; }
@@ -418,7 +419,6 @@ footer { margin-top: 64px; padding-top: 24px; border-top: 1px solid var(--line);
 <main id="main">
   <h1>Cookie banner for your website</h1>
   <p class="lede">A free cookie banner that follows EU law. Everyone can use it, by mouse, keyboard or screen reader.</p>
-  <dl class="facts" aria-label="At a glance"><div><dt>Follows</dt><dd>EU cookie law</dd></div><div><dt>Works for</dt><dd>Everyone, including people with disabilities</dd></div><div><dt>Costs</dt><dd>Nothing</dd></div><div><dt>What you type</dt><dd>Stays in your browser</dd></div></dl>
 
   <h2>Try it</h2>
   <p>The banner on this page is the real one. Close it, then bring it back.</p>
@@ -450,6 +450,9 @@ footer { margin-top: 64px; padding-top: 24px; border-top: 1px solid var(--line);
 .builder-result ul { margin: 0; padding-inline-start: 24px; }
 .builder-result iframe { width: 100%; height: 480px; border: 1px solid currentColor; border-radius: 2px; background: #f4f4f4; }
 .builder-result pre { max-height: 420px; overflow: auto; font-size: 15px; }
+.builder-code summary { font-size: 18px; min-height: 48px; display: flex; align-items: center; cursor: pointer; }
+.builder-code[open] > summary { margin-bottom: 16px; }
+.builder-code { display: grid; gap: 16px; }
 .builder-actions { display: flex; flex-wrap: wrap; gap: 12px; }
 .builder-actions button { font: inherit; font-size: 18px; letter-spacing: 0.01em; min-height: 48px; padding: 0 20px; border: 2px solid currentColor; border-radius: 2px; background: transparent; color: inherit; cursor: pointer; }
 .builder .cat-row[hidden], .builder-result[hidden] { display: none; }
@@ -518,31 +521,27 @@ footer { margin-top: 64px; padding-top: 24px; border-top: 1px solid var(--line);
       <p class="hint">Click around, or use Tab and Escape.</p>
       <iframe id="builder-preview" title="Banner preview"></iframe>
       <h3 class="step-head"><span class="step-num" aria-hidden="true">Step 3:</span> Take your files</h3>
-      <p class="hint">Download all three, or copy them one by one.</p>
       <div class="builder-actions">
         <button type="button" id="builder-download">Download all three files</button>
       </div>
-      <h4 class="builder-file">The banner, consent.html</h4>
-      <div class="builder-actions"><button type="button" data-builder-copy="builder-output">Copy consent.html</button></div>
-      <pre tabindex="0" aria-label="consent.html"><code id="builder-output"></code></pre>
-      <h4 class="builder-file">Its look, consent.css</h4>
-      <div class="builder-actions"><button type="button" data-builder-copy="builder-css">Copy consent.css</button></div>
-      <pre tabindex="0" aria-label="consent.css"><code id="builder-css"></code></pre>
-      <h4 class="builder-file">Its script, consent.js</h4>
-      <div class="builder-actions"><button type="button" data-builder-copy="builder-js">Copy consent.js</button></div>
-      <pre tabindex="0" aria-label="consent.js"><code id="builder-js"></code></pre>
+      <p>Give these three files to your developer. Their steps are at the end of this page.</p>
+      <details class="builder-code">
+        <summary>Show the code</summary>
+        <h4 class="builder-file">The banner, consent.html</h4>
+        <div class="builder-actions"><button type="button" data-builder-copy="builder-output">Copy consent.html</button></div>
+        <pre tabindex="0" aria-label="consent.html"><code id="builder-output"></code></pre>
+        <h4 class="builder-file">Its look, consent.css</h4>
+        <div class="builder-actions"><button type="button" data-builder-copy="builder-css">Copy consent.css</button></div>
+        <pre tabindex="0" aria-label="consent.css"><code id="builder-css"></code></pre>
+        <h4 class="builder-file">Its script, consent.js</h4>
+        <div class="builder-actions"><button type="button" data-builder-copy="builder-js">Copy consent.js</button></div>
+        <pre tabindex="0" aria-label="consent.js"><code id="builder-js"></code></pre>
+      </details>
     </div>
     <script type="application/json" id="builder-strings">{"defaultLang": "en", "en": {"lowerInSentence": true, "c1": "<!-- 1. The banner. Place it directly after your skip link, before the\n        header, so it is the first thing a screen reader meets and the\n        first Tab stop after \"Skip to content\". -->", "c2": "<!-- 2. The settings dialog. Anywhere in the body. -->", "c3": "<!-- 3. The way back. In the footer of every page, forever. -->", "c4": "<!-- 4. Scripts that wait for consent. Point src at your real scripts. -->", "title": "Cookies on this site", "textNeed": "We use necessary cookies to keep the site working.", "textAsk": "With your permission, we also use cookies for {purposes}.", "textChange": "Change your choice any time under “Cookie settings” in the footer.", "policy": "Privacy policy", "policyDefault": "/privacy/", "accept": "Accept all", "acceptMsg": "All cookies accepted.", "reject": "Reject all", "rejectMsg": "Only necessary cookies are in use.", "settings": "Settings", "dialogTitle": "Cookie settings", "dialogIntro": "Choose which cookies we may use. Necessary cookies are always on, because the site cannot work without them.", "legend": "Cookie categories", "necessary": "Necessary", "always": "always on", "necessaryText": "We store your cookie choice and keep the site working. Set by this site only.", "save": "Save choices", "saveMsg": "Your cookie choice is saved.", "cancel": "Cancel", "scriptPlaceholder": "/js/your-script.js", "categories": [{"name": "analytics", "label": "Measurement", "phrase": "measurement", "text": "We count visits and see which pages people use, so we can improve them. Not used for advertising."}, {"name": "media", "label": "Embedded media", "phrase": "embedded media", "text": "We show videos and maps from other providers. They set their own cookies when the content loads."}, {"name": "marketing", "label": "Advertising", "phrase": "advertising", "text": "Our advertising partners show you ads based on the pages you visit here and on other sites."}, {"name": "preferences", "label": "Preferences", "phrase": "remembering your preferences", "text": "We remember settings you choose, such as language or region, between visits."}], "and": "and"}, "de": {"lowerInSentence": false, "c1": "<!-- 1. Das Banner. Direkt nach dem Sprunglink, vor dem Header: so ist es\n        das Erste, was ein Screenreader liest, und der erste Tabstopp nach\n        „Zum Inhalt springen“. -->", "c2": "<!-- 2. Der Einstellungsdialog. Irgendwo im Body. -->", "c3": "<!-- 3. Der Weg zurück. In der Fußzeile jeder Seite, dauerhaft. -->", "c4": "<!-- 4. Skripte, die auf Einwilligung warten. src auf Ihre echten Skripte setzen. -->", "title": "Cookies auf dieser Website", "textNeed": "Wir verwenden notwendige Cookies, damit die Website funktioniert.", "textAsk": "Mit Ihrer Erlaubnis verwenden wir auch Cookies für {purposes}.", "textChange": "Ändern Sie Ihre Wahl jederzeit unter „Cookie-Einstellungen“ in der Fußzeile.", "policy": "Datenschutzerklärung", "policyDefault": "/datenschutz/", "accept": "Alle akzeptieren", "acceptMsg": "Alle Cookies akzeptiert.", "reject": "Alle ablehnen", "rejectMsg": "Nur notwendige Cookies werden verwendet.", "settings": "Einstellungen", "dialogTitle": "Cookie-Einstellungen", "dialogIntro": "Wählen Sie, welche Cookies wir verwenden dürfen. Notwendige Cookies sind immer aktiv, weil die Website ohne sie nicht funktioniert.", "legend": "Cookie-Kategorien", "necessary": "Notwendig", "always": "immer aktiv", "necessaryText": "Wir speichern Ihre Cookie-Wahl und halten die Website funktionsfähig. Nur von dieser Website gesetzt.", "save": "Auswahl speichern", "saveMsg": "Ihre Cookie-Wahl ist gespeichert.", "cancel": "Abbrechen", "scriptPlaceholder": "/js/ihr-skript.js", "categories": [{"name": "analytics", "label": "Messung", "phrase": "Messung", "text": "Wir zählen Besuche und sehen, welche Seiten genutzt werden, damit wir sie verbessern können. Nicht für Werbung."}, {"name": "media", "label": "Eingebettete Medien", "phrase": "eingebettete Medien", "text": "Wir zeigen Videos und Karten anderer Anbieter. Diese setzen eigene Cookies, wenn der Inhalt geladen wird."}, {"name": "marketing", "label": "Werbung", "phrase": "Werbung", "text": "Unsere Werbepartner zeigen Ihnen Anzeigen passend zu den Seiten, die Sie hier und auf anderen Websites besuchen."}, {"name": "preferences", "label": "Präferenzen", "phrase": "Ihre Präferenzen", "text": "Wir merken uns Einstellungen, die Sie wählen, etwa Sprache oder Region, bis zum nächsten Besuch."}], "and": "und"}, "ui": {"c_text": "Text on the background", "c_button_text": "Button text on the button", "c_button_edge": "Button against the background", "c_link": "Policy link on the background", "fail": "too faint, needs {need}:1", "failSay": "{n} colour pair is hard to read. See the list.", "failSayMany": "{n} colour pairs are hard to read. See the list.", "readySay": "Banner updated. All colours are readable.", "noneSay": "No other cookies, so no banner is needed.", "cssNote": "Your colours, light mode. Written by the builder.", "previewTitle": "Banner preview", "previewPage": "Your page goes here.", "copied": "{name} copied.", "notCopied": "Code selected. Press Ctrl+C or Cmd+C to copy it.", "saved": "{name} saved.", "notSaved": "Not saved. Use Copy instead.", "pass": "readable"}}</script>
 
-  <h2>What the law asks</h2>
-  <ol class="rules"><li><span>“Accept all” and “Reject all” sit side by side and look the same.</span></li><li><span>Optional cookies start switched off.</span></li><li><span>Nothing optional loads until the visitor chooses.</span></li><li><span>Visitors can change their choice from any page.</span></li><li><span>Each type of cookie says what it does.</span></li><li><span>Visitors who say no can still use the whole site.</span></li></ol>
-
-  <h2>Who can use it</h2>
-  <p>Everyone. Since June 2025, EU law requires this of most online shops.</p>
-  <ol class="rules"><li><span>It never covers the whole page.</span></li><li><span>It works with a keyboard alone.</span></li><li><span>Screen readers read it out first.</span></li><li><span>The buttons are large and easy to press.</span></li><li><span>The text is easy to read, in light and dark mode.</span></li><li><span>It still works zoomed in and on small phones.</span></li></ol>
-
-  <h2>Put it on your site</h2>
-  <ol class="rules"><li><span>Make your banner above.</span></li><li><span>Download the three files.</span></li><li><span>Give them to your developer. Their steps are at the end of this page.</span></li><li><span>Check it before you publish.</span></li></ol>
+  <h2>What it does</h2>
+  <ol class="rules"><li><span>“Accept all” and “Reject all” sit side by side and look the same.</span></li><li><span>Optional cookies stay off until the visitor chooses.</span></li><li><span>Visitors who say no can still use the whole site.</span></li><li><span>Visitors can change their choice from any page.</span></li><li><span>It works with a keyboard and a screen reader.</span></li><li><span>It never covers the whole page, even zoomed in or on a phone.</span></li></ol>
 
   <h2>Check it before you publish</h2>
   <p>It takes ten minutes.</p>
@@ -553,10 +552,13 @@ footer { margin-top: 64px; padding-top: 24px; border-top: 1px solid var(--line);
   <h2>For your developer</h2>
   <p>How to install it, the code, the design measurements and the WCAG criteria it meets.</p>
 
-  <h3>Install</h3>
+  <details class="dev-panel">
+    <summary>Install</summary>
   <ol class="rules"><li><span>Load consent.css before your own stylesheet, so your colours win.</span></li><li><span>Paste the banner right after the skip link, before the header.</span></li><li><span>Put the “Cookie settings” button in the footer of every page.</span></li><li><span>For each script that needs consent, set type=&quot;text/plain&quot; and data-consent=&quot;&lt;category&gt;&quot;. It runs once that category is allowed.</span></li></ol>
+  </details>
 
-  <h3>Files</h3>
+  <details class="dev-panel">
+    <summary>Files</summary>
   <p>Take every file at once, or one at a time.</p>
   <div class="actions">
     <button type="button" class="btn" id="download-all">Download all files (.zip)</button>
@@ -1178,8 +1180,10 @@ footer { margin-top: 64px; padding-top: 24px; border-top: 1px solid var(--line);
 &lt;script src=&quot;/cookie-banner/consent.js&quot; defer&gt;&lt;/script&gt;
 </code></pre>
 </section>
+  </details>
 
-  <h3>Using the choice in your code</h3>
+  <details class="dev-panel">
+    <summary>Using the choice in your code</summary>
   <p>The script adds a small API and a consentchange event. Scripts marked with data-consent start as soon as their category is allowed, on this visit and later ones.</p>
   <section class="code" aria-label="API example"><pre tabindex="0"><code>&lt;!-- A script that waits for the &quot;analytics&quot; category --&gt;
 &lt;script type=&quot;text/plain&quot; data-consent=&quot;analytics&quot; src=&quot;/js/analytics.js&quot;&gt;&lt;/script&gt;
@@ -1196,12 +1200,15 @@ footer { margin-top: 64px; padding-top: 24px; border-top: 1px solid var(--line);
   // Reopen the dialog from your own control
   consent.open();
 &lt;/script&gt;</code></pre></section>
+  </details>
 
-  <h3>Theming</h3>
+  <details class="dev-panel">
+    <summary>Theming</summary>
   <p>Override the --consent-* custom properties on .consent and .consent__dialog. Keep text at 4.5:1 and borders at 3:1 in both colour schemes. Keep Accept and Reject identical.</p>
+  </details>
 
-  
-    <h3>Design spec</h3>
+  <details class="dev-panel">
+    <summary>Design spec</summary>
     <p>For your designer. Change the colours, keep the sizes. Every measurement is in the stylesheet.</p>
     <figure class="spec-figure"><div class="spec-wrap" tabindex="0" role="region" aria-label="First layer, desktop. Markers refer to the table."><div class="spec"><div aria-hidden="true" inert class="consent"><span class="mark">A</span>
   <div class="consent__inner">
@@ -1258,18 +1265,20 @@ footer { margin-top: 64px; padding-top: 24px; border-top: 1px solid var(--line);
 
 </div></div><figcaption>Second layer, the settings dialog.</figcaption></figure>
     <div class="spec-wrap" tabindex="0" role="region" aria-label="Design spec"><table class="spec-table"><thead><tr><th>Marker</th><th>Element</th><th>Specification</th></tr></thead><tbody><tr><td><span class="mark" aria-hidden="true">A</span><span class="visually-hidden">A</span></td><td>Banner container</td><td>Fixed to the bottom edge, full width, max height 60% of the viewport, scrolls inside if taller. 1px top border, soft shadow. Content column max 1100px, padding 24px 16px, rows 16px apart.</td></tr><tr><td><span class="mark" aria-hidden="true">B</span><span class="visually-hidden">B</span></td><td>Title</td><td>18px, weight 500, letter-spacing 0.01em. An h2, so it lands in the heading list.</td></tr><tr><td><span class="mark" aria-hidden="true">C</span><span class="visually-hidden">C</span></td><td>Text</td><td>18px, weight 400, line-height 1.5, max 70 characters per line. Links underlined, offset 3px, in the accent colour.</td></tr><tr><td><span class="mark" aria-hidden="true">D</span><span class="visually-hidden">D</span></td><td>Accept all / Reject all</td><td>Identical: min-height 48px, padding 10px 20px, 18px weight 500, 2px border, 2px radius. Solid fill. Gap between buttons 12px. On screens under 480px they stack full-width.</td></tr><tr><td><span class="mark" aria-hidden="true">E</span><span class="visually-hidden">E</span></td><td>Settings</td><td>Same size, outline only: transparent fill, 2px border in the border colour. Visibly secondary but the same target.</td></tr><tr><td><span class="mark" aria-hidden="true">F</span><span class="visually-hidden">F</span></td><td>Focus ring</td><td>2px outline in the focus colour, 2px offset, plus a 1px line in the background colour so it reads on any fill. Keyboard focus only.</td></tr><tr><td><span class="mark" aria-hidden="true">G</span><span class="visually-hidden">G</span></td><td>Dialog</td><td>Width min(100% − 32px, 640px), max height 100vh − 32px, 1px border, 2px radius, padding 24px, rows 20px apart. Backdrop 50% black. Title 24px weight 500.</td></tr><tr><td><span class="mark" aria-hidden="true">H</span><span class="visually-hidden">H</span></td><td>Category row</td><td>Grid: 24px checkbox, 12px gap, label 18px weight 500, description 15px in the muted colour. 12px padding, 1px border. “Always on” in 15px muted text, never a greyed box.</td></tr><tr><td><span class="mark" aria-hidden="true">I</span><span class="visually-hidden">I</span></td><td>Save choices / Cancel</td><td>Same pair as D and E: one solid, one outline, both 48px.</td></tr></tbody></table></div>
-    <h4>Palette and contrast</h4>
+    <h3>Palette and contrast</h3>
     <p>Each role, in both schemes, with its contrast against the surface. Text needs 4.5:1, borders and focus 3:1.</p>
     <div class="spec-wrap" tabindex="0" role="region" aria-label="Palette and contrast"><table class="spec-table"><thead><tr><th>Role</th><th>Light</th><th>Dark</th><th>Used for</th></tr></thead><tbody><tr><td>Surface</td><td><span class="swatch" style="background:#ffffff" aria-hidden="true"></span>#ffffff</td><td><span class="swatch" style="background:#111111" aria-hidden="true"></span>#111111</td><td>Banner and dialog background</td></tr><tr><td>Text</td><td><span class="swatch" style="background:#1a1a1a" aria-hidden="true"></span>#1a1a1a · 17.4:1</td><td><span class="swatch" style="background:#f2f2f2" aria-hidden="true"></span>#f2f2f2 · 16.9:1</td><td>Title, body, labels</td></tr><tr><td>Muted text</td><td><span class="swatch" style="background:#4a4a4a" aria-hidden="true"></span>#4a4a4a · 8.9:1</td><td><span class="swatch" style="background:#c4c4c4" aria-hidden="true"></span>#c4c4c4 · 10.8:1</td><td>Category descriptions, “always on”</td></tr><tr><td>Accent</td><td><span class="swatch" style="background:#0b5cad" aria-hidden="true"></span>#0b5cad · 6.7:1</td><td><span class="swatch" style="background:#7cbcff" aria-hidden="true"></span>#7cbcff · 9.4:1</td><td>Links, checkbox tick</td></tr><tr><td>Border</td><td><span class="swatch" style="background:#767676" aria-hidden="true"></span>#767676 · 4.5:1</td><td><span class="swatch" style="background:#8a8a8a" aria-hidden="true"></span>#8a8a8a · 5.5:1</td><td>Edges, outline buttons, category rows</td></tr><tr><td>Button</td><td><span class="swatch" style="background:#1a1a1a" aria-hidden="true"></span>#1a1a1a on #ffffff</td><td><span class="swatch" style="background:#f2f2f2" aria-hidden="true"></span>#f2f2f2 on #111111</td><td>Solid buttons, text inverted, 17:1</td></tr><tr><td>Focus</td><td><span class="swatch" style="background:#0b5cad" aria-hidden="true"></span>#0b5cad</td><td><span class="swatch" style="background:#ffffff" aria-hidden="true"></span>#ffffff</td><td>The ring</td></tr></tbody></table></div>
-    <h4>Type</h4><p>Two sizes only: 18px for anything read, 15px for secondary notes. Weights 400 and 500. Letter-spacing 0.01em throughout. The font is inherited from the site.</p>
-    <h4>Spacing</h4><p>A 4px grid: 12 between buttons and inside rows, 16 between banner rows and at the sides, 20 between dialog rows, 24 around the dialog and above the banner text.</p>
-    <h4>States</h4>
+    <h3>Type</h3><p>Two sizes only: 18px for anything read, 15px for secondary notes. Weights 400 and 500. Letter-spacing 0.01em throughout. The font is inherited from the site.</p>
+    <h3>Spacing</h3><p>A 4px grid: 12 between buttons and inside rows, 16 between banner rows and at the sides, 20 between dialog rows, 24 around the dialog and above the banner text.</p>
+    <h3>States</h3>
     <ol class="rules"><li><strong>Hover</strong><span>Buttons drop to 92% opacity. Nothing else moves.</span></li><li><strong>Focus</strong><span>The ring from F. The dialog opens with focus on its title, so the reader hears the name first.</span></li><li><strong>Checked</strong><span>Native checkbox, tinted with the accent through accent-color. No custom drawing.</span></li><li><strong>Disabled</strong><span>Only the Necessary checkbox. Checked and disabled, with the words “always on” beside it.</span></li><li><strong>Forced colours</strong><span>Windows high contrast: borders switch to the system colours so both buttons still have edges.</span></li><li><strong>Reduced motion</strong><span>The 240ms slide-in is skipped. Nothing else animates.</span></li><li><strong>Under 480px</strong><span>Buttons stack to full width, 12px apart. Text wraps; nothing is cut.</span></li></ol>
+  </details>
 
-
-  <h3>WCAG criteria</h3>
+  <details class="dev-panel">
+    <summary>WCAG criteria</summary>
   <p>WCAG 2.2 criterion numbers are in brackets.</p>
   <ol class="rules"><li><span><strong>Not a modal.</strong>The first layer is a labelled region. Focus stays where it is and nothing is trapped. (2.1.2, 2.4.3)</span></li><li><span><strong>At most 60% of the screen.</strong>Fixed to the bottom. The page gets matching padding, so nothing hides at 400% zoom or 320px. (1.4.10)</span></li><li><span><strong>Escape means no consent.</strong>Only necessary cookies. The choice is stored and not asked again. (2.1.1)</span></li><li><span><strong>Settings use a native dialog.</strong>It traps focus, closes on Escape and returns focus to the opener. (2.4.3, 4.1.2)</span></li><li><span><strong>Real controls.</strong>Button elements. Categories are labelled checkboxes in a fieldset with a legend. (1.3.1, 4.1.2)</span></li><li><span><strong>48px targets.</strong>The minimum is 24px. The smallest text is 15px. (2.5.8, 1.4.4)</span></li><li><span><strong>Visible focus.</strong>A 2px ring with a 1px inner line, in both schemes and in Windows high contrast. (2.4.7, 2.4.11)</span></li><li><span><strong>Contrast.</strong>Text 4.5:1, borders 3:1, in both schemes. Status changes go to a live region. (1.4.3, 1.4.11, 4.1.3)</span></li><li><span><strong>Reduced motion.</strong>The slide-in is skipped when the visitor asks for less motion. (2.3.3)</span></li><li><span><strong>Words in the markup.</strong>The script holds no text. To translate, edit the HTML.</span></li></ol>
+  </details>
 
   <footer>
     <span>BarrierFreeWeb, Berlin. Free to copy, change and ship.</span>

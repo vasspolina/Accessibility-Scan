@@ -74,7 +74,7 @@ UI = {
   bg="Background", text="Text", button="Buttons and links",
   none="If your site only uses necessary cookies, you need no banner. Tick a box if you use any others.",
   contrast="Can people read it?", preview="Preview", preview_hint="Click around, or use Tab and Escape.",
-  code_hint="Download all three, or copy them one by one.", copy_file="Copy", f_html="The banner", f_css="Its look", f_js="Its script", download="Download all three files",
+  code_hint="Give these three files to your developer. Their steps are at the end of this page.", show_code="Show the code", copy_file="Copy", f_html="The banner", f_css="Its look", f_js="Its script", download="Download all three files",
   ui=dict(
    c_text="Text on the background", c_button_text="Button text on the button", c_button_edge="Button against the background",
    c_link="Policy link on the background",
@@ -98,7 +98,7 @@ UI = {
   bg="Hintergrund", text="Text", button="Buttons und Links",
   none="Nutzt Ihre Website nur notwendige Cookies, brauchen Sie kein Banner. Kreuzen Sie an, wenn Sie weitere nutzen.",
   contrast="Ist es gut lesbar?", preview="Vorschau", preview_hint="Klicken Sie herum oder nutzen Sie Tab und Escape.",
-  code_hint="Laden Sie alle drei herunter oder kopieren Sie sie einzeln.", copy_file="Kopieren:", f_html="Das Banner", f_css="Sein Aussehen", f_js="Sein Skript", download="Alle drei Dateien herunterladen",
+  code_hint="Geben Sie diese drei Dateien Ihrer Entwicklung. Die Schritte dafür stehen am Ende der Seite.", show_code="Code anzeigen", copy_file="Kopieren:", f_html="Das Banner", f_css="Sein Aussehen", f_js="Sein Skript", download="Alle drei Dateien herunterladen",
   ui=dict(
    c_text="Text auf dem Hintergrund", c_button_text="Buttontext auf dem Button", c_button_edge="Button gegen den Hintergrund",
    c_link="Datenschutz-Link auf dem Hintergrund",
@@ -134,6 +134,9 @@ CSS = """
 .builder-result ul { margin: 0; padding-inline-start: 24px; }
 .builder-result iframe { width: 100%; height: 480px; border: 1px solid currentColor; border-radius: 2px; background: #f4f4f4; }
 .builder-result pre { max-height: 420px; overflow: auto; font-size: 15px; }
+.builder-code summary { font-size: 18px; min-height: 48px; display: flex; align-items: center; cursor: pointer; }
+.builder-code[open] > summary { margin-bottom: 16px; }
+.builder-code { display: grid; gap: 16px; }
 .builder-actions { display: flex; flex-wrap: wrap; gap: 12px; }
 .builder-actions button { font: inherit; font-size: 18px; letter-spacing: 0.01em; min-height: 48px; padding: 0 20px; border: 2px solid currentColor; border-radius: 2px; background: transparent; color: inherit; cursor: pointer; }
 .builder .cat-row[hidden], .builder-result[hidden] { display: none; }
@@ -203,18 +206,21 @@ def section(lang, heading="h2"):
       <p class="hint">{e(U['preview_hint'])}</p>
       <iframe id="builder-preview" title="{e(U['ui']['previewTitle'])}"></iframe>
       {step(3, U['s3'])}
-      <p class="hint">{e(U['code_hint'])}</p>
       <div class="builder-actions">
         <button type="button" id="builder-download">{e(U['download'])}</button>
       </div>
-      <h4 class="builder-file">{e(U['f_html'])}, consent.html</h4>
-      <div class="builder-actions"><button type="button" data-builder-copy="builder-output">{e(U['copy_file'])} consent.html</button></div>
-      <pre tabindex="0" aria-label="consent.html"><code id="builder-output"></code></pre>
-      <h4 class="builder-file">{e(U['f_css'])}, consent.css</h4>
-      <div class="builder-actions"><button type="button" data-builder-copy="builder-css">{e(U['copy_file'])} consent.css</button></div>
-      <pre tabindex="0" aria-label="consent.css"><code id="builder-css"></code></pre>
-      <h4 class="builder-file">{e(U['f_js'])}, consent.js</h4>
-      <div class="builder-actions"><button type="button" data-builder-copy="builder-js">{e(U['copy_file'])} consent.js</button></div>
-      <pre tabindex="0" aria-label="consent.js"><code id="builder-js"></code></pre>
+      <p>{e(U['code_hint'])}</p>
+      <details class="builder-code">
+        <summary>{e(U['show_code'])}</summary>
+        <h4 class="builder-file">{e(U['f_html'])}, consent.html</h4>
+        <div class="builder-actions"><button type="button" data-builder-copy="builder-output">{e(U['copy_file'])} consent.html</button></div>
+        <pre tabindex="0" aria-label="consent.html"><code id="builder-output"></code></pre>
+        <h4 class="builder-file">{e(U['f_css'])}, consent.css</h4>
+        <div class="builder-actions"><button type="button" data-builder-copy="builder-css">{e(U['copy_file'])} consent.css</button></div>
+        <pre tabindex="0" aria-label="consent.css"><code id="builder-css"></code></pre>
+        <h4 class="builder-file">{e(U['f_js'])}, consent.js</h4>
+        <div class="builder-actions"><button type="button" data-builder-copy="builder-js">{e(U['copy_file'])} consent.js</button></div>
+        <pre tabindex="0" aria-label="consent.js"><code id="builder-js"></code></pre>
+      </details>
     </div>
     <script type="application/json" id="builder-strings">{strings(lang)}</script>'''

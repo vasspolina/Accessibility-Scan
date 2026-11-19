@@ -2,10 +2,10 @@
 """Builds en/cookie-banner.html and de/cookie-banner.html from the kit files.
 Run after editing consent.css / consent.js / consent.*.html.
 
-The page is set out like the accessibility statement: a plain heading, a
-facts grid, short sections that say what is so, numbered steps, and one note
-to read before publishing. Business-owner sections come first; everything a
-developer needs sits under one heading at the end."""
+The page is set out like the accessibility statement: a plain heading, the
+live banner, the builder, one list of what it does, a short check and one note
+to read before publishing. Everything a developer needs sits in closed panels
+at the end, so an owner never has to scroll past code."""
 import html, json, pathlib, sys
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent))
 import spec
@@ -27,43 +27,19 @@ L = {
   skip="Skip to content", back="Back to the site", copy="Copy", copied="Copied",
   h1="Cookie banner for your website",
   lede="A free cookie banner that follows EU law. Everyone can use it, by mouse, keyboard or screen reader.",
-  facts_label="At a glance",
-  facts=[
-   ("Follows", "EU cookie law"),
-   ("Works for", "Everyone, including people with disabilities"),
-   ("Costs", "Nothing"),
-   ("What you type", "Stays in your browser"),
-  ],
   demo_h="Try it",
   demo_p="The banner on this page is the real one. Close it, then bring it back.",
   demo_reset="Show the banner again", demo_settings="Open the settings",
-  law_h="What the law asks",
-  law=[
+  what_h="What it does",
+  what=[
    "“Accept all” and “Reject all” sit side by side and look the same.",
-   "Optional cookies start switched off.",
-   "Nothing optional loads until the visitor chooses.",
-   "Visitors can change their choice from any page.",
-   "Each type of cookie says what it does.",
+   "Optional cookies stay off until the visitor chooses.",
    "Visitors who say no can still use the whole site.",
+   "Visitors can change their choice from any page.",
+   "It works with a keyboard and a screen reader.",
+   "It never covers the whole page, even zoomed in or on a phone.",
   ],
-  a11y_h="Who can use it",
-  a11y_p="Everyone. Since June 2025, EU law requires this of most online shops.",
-  a11y=[
-   "It never covers the whole page.",
-   "It works with a keyboard alone.",
-   "Screen readers read it out first.",
-   "The buttons are large and easy to press.",
-   "The text is easy to read, in light and dark mode.",
-   "It still works zoomed in and on small phones.",
-  ],
-  install_h="Put it on your site",
-  install=[
-   "Make your banner above.",
-   "Download the three files.",
-   "Give them to your developer. Their steps are at the end of this page.",
-   "Check it before you publish.",
-  ],
-  test_h="Check it before you publish",
+    test_h="Check it before you publish",
   test_p="It takes ten minutes.",
   test=[
    "Use only the Tab key. You can reach every button.",
@@ -112,43 +88,19 @@ L = {
   skip="Zum Inhalt springen", back="Zurück zur Website", copy="Kopieren", copied="Kopiert",
   h1="Cookie-Banner für Ihre Website",
   lede="Ein kostenloses Cookie-Banner nach EU-Recht. Alle können es nutzen, mit Maus, Tastatur oder Screenreader.",
-  facts_label="Auf einen Blick",
-  facts=[
-   ("Rechtlich", "Nach EU-Cookie-Recht"),
-   ("Für wen", "Für alle, auch Menschen mit Behinderungen"),
-   ("Preis", "Kostenlos"),
-   ("Ihre Eingaben", "Bleiben in Ihrem Browser"),
-  ],
   demo_h="Ausprobieren",
   demo_p="Das Banner auf dieser Seite ist das echte. Schließen Sie es und holen Sie es zurück.",
   demo_reset="Banner erneut anzeigen", demo_settings="Einstellungen öffnen",
-  law_h="Was das Gesetz verlangt",
-  law=[
+  what_h="Was es tut",
+  what=[
    "„Alle akzeptieren“ und „Alle ablehnen“ stehen nebeneinander und sehen gleich aus.",
-   "Optionale Cookies sind zu Beginn aus.",
-   "Nichts Optionales lädt, bevor Besucher entscheiden.",
-   "Besucher können ihre Wahl auf jeder Seite ändern.",
-   "Jede Cookie-Art sagt, was sie tut.",
+   "Optionale Cookies bleiben aus, bis Besucher entscheiden.",
    "Wer ablehnt, kann trotzdem die ganze Website nutzen.",
+   "Besucher können ihre Wahl auf jeder Seite ändern.",
+   "Es funktioniert mit Tastatur und Screenreader.",
+   "Es verdeckt nie die ganze Seite, auch nicht vergrößert oder auf dem Handy.",
   ],
-  a11y_h="Wer es nutzen kann",
-  a11y_p="Alle. Seit Juni 2025 verlangt das EU-Recht das von den meisten Onlineshops.",
-  a11y=[
-   "Es verdeckt nie die ganze Seite.",
-   "Es funktioniert nur mit der Tastatur.",
-   "Screenreader lesen es zuerst vor.",
-   "Die Schaltflächen sind groß und leicht zu treffen.",
-   "Der Text ist gut lesbar, hell wie dunkel.",
-   "Es funktioniert auch vergrößert und auf kleinen Handys.",
-  ],
-  install_h="Auf Ihrer Website einbauen",
-  install=[
-   "Erstellen Sie oben Ihr Banner.",
-   "Laden Sie die drei Dateien herunter.",
-   "Geben Sie sie Ihrer Entwicklung. Die Schritte dafür stehen am Ende der Seite.",
-   "Prüfen Sie es vor dem Veröffentlichen.",
-  ],
-  test_h="Vor dem Veröffentlichen prüfen",
+    test_h="Vor dem Veröffentlichen prüfen",
   test_p="Das dauert zehn Minuten.",
   test=[
    "Nutzen Sie nur die Tab-Taste. Sie erreichen jede Schaltfläche.",
@@ -212,10 +164,11 @@ API_EXAMPLE = '''<!-- A script that waits for the "analytics" category -->
 # by each: the site's soft border and muted text, the standalone's own.
 SHARED_CSS = '''
 /* Facts, steps and the closing note: the accessibility statement's shape. */
-.facts { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 24px; margin: 0 0 40px; padding: 0; max-width: 1100px; }
-.facts > div { border-top: 1px solid var(--rule); padding-top: 12px; min-width: 0; }
-.facts dt { font-size: 15px; letter-spacing: 0.01em; color: var(--sub); margin: 0 0 6px; }
-.facts dd { margin: 0; font-size: 18px; letter-spacing: 0.01em; overflow-wrap: anywhere; }
+.dev-panel { border-top: 1px solid var(--rule); }
+.dev-panel:last-of-type { border-bottom: 1px solid var(--rule); }
+.dev-panel > summary { font-size: 18px; font-weight: 500; min-height: 48px; display: flex; align-items: center; cursor: pointer; padding: 8px 0; margin: 0; }
+.dev-panel[open] > summary { margin-bottom: 16px; }
+.dev-panel[open] { padding-bottom: 24px; }
 .step-head { display: flex; flex-wrap: wrap; gap: 0 0.5em; align-items: baseline; margin-top: 40px; }
 .step-num { color: var(--sub); font-weight: 400; }
 .caveat { border-top: 1px solid var(--rule); padding-top: 16px; margin-top: 40px; }
@@ -224,12 +177,6 @@ SHARED_CSS = '''
 
 def rules(items):
     return '<ol class="rules">' + "".join(f"<li><span><strong>{html.escape(h)}</strong>{html.escape(p)}</span></li>" for h, p in items) + "</ol>"
-
-def facts(t):
-    cards = "".join(
-        f'<div><dt>{html.escape(f)}</dt><dd>{html.escape(v)}</dd></div>'
-        for f, v in t["facts"])
-    return f'<dl class="facts" aria-label="{html.escape(t["facts_label"])}">{cards}</dl>'
 
 def plain_list(items):
     return '<ol class="rules">' + "".join(f"<li><span>{html.escape(x)}</span></li>" for x in items) + "</ol>"
@@ -296,7 +243,6 @@ def build(L):
   <main class="content" id="main-content">
     <h1>{L['h1']}</h1>
     <p class="lede">{L['lede']}</p>
-    {facts(L)}
 
     <h2>{L['demo_h']}</h2>
     <p>{L['demo_p']}</p>
@@ -307,15 +253,8 @@ def build(L):
 
     {builder_page.section(L['lang'])}
 
-    <h2>{L['law_h']}</h2>
-    {plain_list(L['law'])}
-
-    <h2>{L['a11y_h']}</h2>
-    <p>{L['a11y_p']}</p>
-    {plain_list(L['a11y'])}
-
-    <h2>{L['install_h']}</h2>
-    {plain_list(L['install'])}
+    <h2>{L['what_h']}</h2>
+    {plain_list(L['what'])}
 
     <h2>{L['test_h']}</h2>
     <p>{L['test_p']}</p>
@@ -326,10 +265,13 @@ def build(L):
     <h2>{L['dev_h']}</h2>
     <p>{L['dev_p']}</p>
 
-    <h3>{L['setup_h']}</h3>
+    <details class="dev-panel">
+      <summary>{L['setup_h']}</summary>
     {plain_list(L['setup'])}
+    </details>
 
-    <h3 id="code">{L['files_h']}</h3>
+    <details class="dev-panel">
+      <summary>{L['files_h']}</summary>
     <p>{L['files_p']}
       <a class="link" href="../cookie-banner/consent.css" download>consent.css</a>,
       <a class="link" href="../cookie-banner/consent.js" download>consent.js</a>,
@@ -338,22 +280,29 @@ def build(L):
     {code("HTML", L['snippet'], L)}
     {code("CSS", "consent.css", L)}
     {code("JavaScript", "consent.js", L)}
+    </details>
 
-    <h3>{L['api_h']}</h3>
+    <details class="dev-panel">
+      <summary>{L['api_h']}</summary>
     <p>{L['api_p']}</p>
     <details class="code-block" open>
       <summary>HTML + JavaScript</summary>
       <pre tabindex="0"><code>{html.escape(API_EXAMPLE)}</code></pre>
     </details>
+    </details>
 
-    <h3>{L['theme_h']}</h3>
+    <details class="dev-panel">
+      <summary>{L['theme_h']}</summary>
     <p>{L['theme_p']}</p>
+    </details>
 
-    {spec.section(L['lang'], banner_live, dialog_live, h_open="<h3>", h_close="</h3>", sub="h4")}
+    <details class="dev-panel">{spec.section(L['lang'], banner_live, dialog_live, h_open="<summary>", h_close="</summary>", sub="h3")}    </details>
 
-    <h3>{L['crit_h']}</h3>
+    <details class="dev-panel">
+      <summary>{L['crit_h']}</summary>
     <p>{L['crit_p']}</p>
     {rules(L['crit'])}
+    </details>
 
     <footer class="site-footer">
       <a href="statement.html">{L['footer_statement']}</a>
@@ -470,7 +419,6 @@ footer {{ margin-top: 64px; padding-top: 24px; border-top: 1px solid var(--line)
 <main id="main">
   <h1>{E['h1']}</h1>
   <p class="lede">{E['lede']}</p>
-  {facts(E)}
 
   <h2>{E['demo_h']}</h2>
   <p>{E['demo_p']}</p>
@@ -481,15 +429,8 @@ footer {{ margin-top: 64px; padding-top: 24px; border-top: 1px solid var(--line)
 
   {builder_page.section('en')}
 
-  <h2>{E['law_h']}</h2>
-  {plain_list(E['law'])}
-
-  <h2>{E['a11y_h']}</h2>
-  <p>{E['a11y_p']}</p>
-  {plain_list(E['a11y'])}
-
-  <h2>{E['install_h']}</h2>
-  {plain_list(E['install'])}
+  <h2>{E['what_h']}</h2>
+  {plain_list(E['what'])}
 
   <h2>{E['test_h']}</h2>
   <p>{E['test_p']}</p>
@@ -500,10 +441,13 @@ footer {{ margin-top: 64px; padding-top: 24px; border-top: 1px solid var(--line)
   <h2>{E['dev_h']}</h2>
   <p>{E['dev_p']}</p>
 
-  <h3>{E['setup_h']}</h3>
+  <details class="dev-panel">
+    <summary>{E['setup_h']}</summary>
   {plain_list(E['setup'])}
+  </details>
 
-  <h3>{E['files_h']}</h3>
+  <details class="dev-panel">
+    <summary>{E['files_h']}</summary>
   <p>Take every file at once, or one at a time.</p>
   <div class="actions">
     <button type="button" class="btn" id="download-all">Download all files (.zip)</button>
@@ -513,19 +457,26 @@ footer {{ margin-top: 64px; padding-top: 24px; border-top: 1px solid var(--line)
   {block("Script", "consent.js")}
   {block("Markup, English", "consent.en.html")}
   {block("Markup, German", "consent.de.html")}
+  </details>
 
-  <h3>{E['api_h']}</h3>
+  <details class="dev-panel">
+    <summary>{E['api_h']}</summary>
   <p>{E['api_p']}</p>
   <section class="code" aria-label="API example"><pre tabindex="0"><code>{html.escape(API_EXAMPLE)}</code></pre></section>
+  </details>
 
-  <h3>{E['theme_h']}</h3>
+  <details class="dev-panel">
+    <summary>{E['theme_h']}</summary>
   <p>{E['theme_p']}</p>
+  </details>
 
-  {spec.section("en", banner_live, dialog_live, h_open="<h3>", h_close="</h3>", sub="h4")}
+  <details class="dev-panel">{spec.section("en", banner_live, dialog_live, h_open="<summary>", h_close="</summary>", sub="h3")}  </details>
 
-  <h3>{E['crit_h']}</h3>
+  <details class="dev-panel">
+    <summary>{E['crit_h']}</summary>
   <p>{E['crit_p']}</p>
   {rules(E['crit'])}
+  </details>
 
   <footer>
     <span>BarrierFreeWeb, Berlin. Free to copy, change and ship.</span>
