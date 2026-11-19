@@ -169,6 +169,14 @@
       return;
     }
     form.hidden = false;
+    // The model's worker sleeps when idle and takes over a minute to wake
+    // (measured 19 Nov 2026). The first time someone moves into a field,
+    // ask the server to start waking it, so it is up by the time they press
+    // the button. Once per page; the server throttles it across pages too.
+    form.addEventListener("focusin", function wake() {
+      form.removeEventListener("focusin", wake);
+      fetch("/api/pilot/wake", { method: "POST" }).catch(function () { /* the draft still works, only slower */ });
+    });
   }).catch(function () {
     $("closed").hidden = false;
     $("closed").textContent = "The pilot could not be reached. Please try again later.";
@@ -283,11 +291,19 @@
     clearErrors();
     remember(f);
     state.fields = f;
+    requestDraft(btn, "Write up my report");
+  }
+
+  // Asks for the draft of what is in state.fields. Called by the form's
+  // button and by Try again on the no-draft screen; `btn` is whichever was
+  // pressed, so its words say what is happening while it runs.
+  function requestDraft(btn, idleText) {
+    var f = state.fields;
     var scanning = !f.barrier;
     busy(btn, true, scanning ? "Scanning the page…" : "Writing up your report…");
     say(scanning
-      ? "Scanning the page and writing up what it finds. This can take a minute or two."
-      : "Writing up your report. This can take up to half a minute.");
+      ? "Scanning the page and writing up what it finds. This can take up to three minutes."
+      : "Writing up your report. This can take up to two minutes.");
     fetch("/api/pilot/draft", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -295,21 +311,26 @@
     }).then(function (r) {
       return r.json().then(function (body) { return { status: r.status, body: body }; });
     }).then(function (res) {
-      busy(btn, false, "Write up my report");
+      busy(btn, false, idleText);
       if (res.status === 400) {
+        show("report");
         showErrors((res.body.fields || []).filter(function (k) { return LABELS[k]; }).map(function (k) {
           return { field: k, message: "Check " + LABELS[k].toLowerCase() };
         }));
         return;
       }
-      if (res.status !== 200) { showNoDraft("The writing-up step is not available just now."); return; }
+      if (res.status !== 200) { showNoDraft("The writing-up step is not available just now.", !f.barrier, true); return; }
       if (!res.body.draft) {
         var why = {
           not_configured: "The language model is not running at the moment.",
+          timeout: "The language model was still starting up, so it ran out of time. It is usually ready by now.",
           scan_failed: "We couldn't scan that page. It may block automated visits, or the address may be wrong.",
           scan_clean: "The scan didn't find anything it could measure on that page. What you met may be something only a person notices."
         }[res.body.reason] || "The language model could not write a draft this time.";
-        showNoDraft(why, !state.fields.barrier);
+        // Worth another go when the model was slow or slipped once; not
+        // when it is off, or the scan could not read the page.
+        var again = res.body.reason === "timeout" || res.body.reason === "failed";
+        showNoDraft(why, !f.barrier, again);
         return;
       }
       state.draft = res.body.draft;
@@ -323,8 +344,8 @@
       say("Your report is ready. Read it, then send it.");
       focusEl($("review-title"));
     }).catch(function () {
-      busy(btn, false, "Write up my report");
-      showNoDraft("The writing-up step could not be reached.");
+      busy(btn, false, idleText);
+      showNoDraft("The writing-up step could not be reached.", !f.barrier, true);
     });
   }
 
@@ -355,11 +376,20 @@
     $("d-criterion").hidden = !d.wcagCriterion;
   }
 
-  function showNoDraft(reason, addressOnly) {
+  // `again`: the model was slow or slipped, so Try again leads and Send
+  // report steps back to a plain button; otherwise Send report leads.
+  function showNoDraft(reason, addressOnly, again) {
     state.draft = null;
-    $("nodraft-reason").textContent = reason + (addressOnly
-      ? " You can go back and add a sentence about what happened, or send just the address."
-      : " You can still send your report in your own words.");
+    $("nodraft-reason").textContent = reason + (again
+      ? (addressOnly
+        ? " Press Try again, or send just the address."
+        : " Press Try again, or send your report in your own words.")
+      : (addressOnly
+        ? " You can go back and add a sentence about what happened, or send just the address."
+        : " You can still send your report in your own words."));
+    $("nodraft-title").textContent = again ? "Your report isn’t written up yet" : "Send your report as written";
+    $("retry-btn").hidden = !again;
+    $("send-plain-btn").classList.toggle("primary", !again);
     show("nodraft");
     focusEl($("nodraft-title"));
   }
@@ -390,6 +420,7 @@
 
   $("send-btn").addEventListener("click", function () { send(this, true); });
   $("send-plain-btn").addEventListener("click", function () { send(this, false); });
+  $("retry-btn").addEventListener("click", function () { requestDraft(this, "Try again"); });
   function back() { show("report"); focusEl($("barrier")); }
   $("back-btn").addEventListener("click", back);
   $("back-plain-btn").addEventListener("click", back);

@@ -30,6 +30,7 @@ let app: FastifyInstance;
 let dir: string;
 let modelContent = "";
 let modelDown = false;
+let modelTimesOut = false;
 const modelCalls: Array<{ messages: Array<{ role: string; content: string }> }> = [];
 const realFetch = globalThis.fetch;
 
@@ -43,6 +44,7 @@ beforeAll(async () => {
   globalThis.fetch = (async (url: string, init: { body: string }) => {
     if (!String(url).startsWith("http://gpu.test")) throw new Error(`unexpected fetch ${url}`);
     if (modelDown) throw new TypeError("fetch failed");
+    if (modelTimesOut) throw new DOMException("The operation timed out.", "TimeoutError");
     modelCalls.push(JSON.parse(init.body));
     return new Response(JSON.stringify({ choices: [{ message: { content: modelContent } }] }));
   }) as unknown as typeof fetch;
@@ -58,6 +60,7 @@ afterAll(async () => {
 afterEach(() => {
   modelCalls.length = 0;
   modelDown = false;
+  modelTimesOut = false;
 });
 
 const fields = {
@@ -248,6 +251,43 @@ describe("the pilot", () => {
     const res = await post("/api/pilot/draft", rest);
     expect(res.statusCode).toBe(400);
     expect(res.json().fields).toEqual(["barrier"]);
+  });
+
+  it("says the model timed out, apart from other failures, so the form can offer to try again", async () => {
+    modelTimesOut = true;
+    expect((await post("/api/pilot/draft", fields)).json()).toMatchObject({ draft: null, reason: "timeout" });
+    modelTimesOut = false;
+    modelDown = true;
+    expect((await post("/api/pilot/draft", fields)).json()).toMatchObject({ draft: null, reason: "failed" });
+  });
+
+  it("wakes the model while the form is filled in, once per two minutes", async () => {
+    const { resetWake, wakeModel, WAKE_EVERY_MS } = await import("../src/services/pilot/pilot.js");
+    resetWake();
+    const res = await post("/api/pilot/wake", {});
+    expect(res.statusCode).toBe(202);
+    expect(res.json()).toEqual({ waking: true });
+    // A second form opened at once does not wake it again.
+    expect((await post("/api/pilot/wake", {})).json()).toEqual({ waking: false });
+    await new Promise((r) => setTimeout(r, 0));
+    expect(modelCalls).toHaveLength(1);
+    expect((modelCalls[0] as unknown as { max_tokens: number }).max_tokens).toBe(1);
+    // After the window it may wake it again.
+    expect(wakeModel(Date.now() + WAKE_EVERY_MS + 1)).toBe(true);
+    resetWake();
+  });
+
+  it("holds the model to the length, the impact and the right criterion", async () => {
+    modelContent = JSON.stringify(draft);
+    await post("/api/pilot/draft", fields);
+    const call = modelCalls[0] as unknown as { messages: Array<{ content: string }>; max_tokens: number };
+    const system = call.messages[0].content;
+    expect(system).toContain("explanation has at least three sentences");
+    expect(system).toContain("Never leave it out");
+    // The first live run picked 2.4.6 for an unnamed button.
+    expect(system).toMatch(/only as "button" or "link": 4\.1\.2/);
+    expect(system).toContain("Copy its shape, never its facts");
+    expect(call.max_tokens).toBe(1400);
   });
 
   it("answers a filled trap field as if it worked, and keeps nothing", async () => {

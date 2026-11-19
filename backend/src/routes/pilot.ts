@@ -4,7 +4,7 @@ import { localModelName } from "../services/plainLanguage/localModel.js";
 import { z } from "zod";
 import { lookupPageTitle } from "../services/pilot/pageTitle.js";
 import { readAddress } from "../services/pilot/readAddress.js";
-import { draftFinding, mailPilotReport, pilotOpen, reportFieldsSchema, severityFor, submitBodySchema } from "../services/pilot/pilot.js";
+import { draftFinding, mailPilotReport, pilotOpen, reportFieldsSchema, severityFor, submitBodySchema, wakeModel } from "../services/pilot/pilot.js";
 import { storageStatus } from "../storage/db.js";
 import { listPilotReports, pilotTotals, savePilotReport } from "../storage/pilot.js";
 import { requireAdmin } from "./account.js";
@@ -17,6 +17,7 @@ import { requireAdmin } from "./account.js";
  * POST /api/pilot/draft    the model's finding from a reported barrier
  * POST /api/pilot/report   store the report (and mail it, if mail is set up)
  * GET  /api/pilot/reports  the operator's view: every report and the totals
+ * POST /api/pilot/wake     start the model waking while the form is filled in
  * POST /api/pilot/page     what was typed in the address field, read as an
  *                          address (readAddress.ts), and that page's title
  *
@@ -83,6 +84,17 @@ export async function pilotRoutes(app: FastifyInstance) {
       // the SSRF guard (pageTitle.ts) and only the title comes back.
       const title = reading.url && reading.reached ? await lookupPageTitle(reading.url) : null;
       return reply.send({ ...reading, title });
+    }
+  );
+
+  // The form calls this the first time someone moves into a field, so the
+  // model's worker wakes while they type (wakeModel, pilot.ts).
+  app.post(
+    "/api/pilot/wake",
+    { config: { rateLimit: { max: env.CHAT_RATE_LIMIT_MAX, timeWindow: env.RATE_LIMIT_WINDOW_MS } } },
+    async (_request, reply) => {
+      if (!pilotOpen()) return reply.status(503).send({ error: "pilot_closed" });
+      return reply.status(202).send({ waking: wakeModel() });
     }
   );
 

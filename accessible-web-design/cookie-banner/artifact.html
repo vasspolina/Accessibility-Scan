@@ -428,8 +428,21 @@ footer { margin-top: 64px; padding-top: 24px; border-top: 1px solid var(--line);
   </div>
 
   <h2 id="make">Make yours</h2>
-    <p>Answer four questions. You get the banner as three files. Nothing you type leaves this page.</p>
+    <p>Tell the assistant about your site, or fill in the form yourself. You get the banner as three files.</p>
     <style>
+.cookie-chat { display: grid; gap: 12px; margin-block: 16px 32px; max-width: 68ch; }
+.cookie-chat__log { list-style: none; margin: 0; padding: 0; display: grid; gap: 20px; }
+.cookie-chat__turn { display: grid; gap: 4px; }
+.cookie-chat__turn p { margin: 0; white-space: pre-line; }
+.cookie-chat__who { font-size: 15px; letter-spacing: 0.01em; opacity: 0.85; }
+.cookie-chat__status { font-size: 15px; min-height: 1.5em; margin: 0; }
+.cookie-chat__form { display: grid; gap: 8px; }
+.cookie-chat__form label { font-size: 18px; }
+.cookie-chat__form textarea { font: inherit; font-size: 18px; letter-spacing: 0.01em; color: inherit; background: transparent; border: 1px solid currentColor; border-radius: 2px; padding: 8px 12px; min-height: 96px; width: 100%; resize: vertical; }
+.cookie-chat__form button { justify-self: start; font: inherit; font-size: 18px; letter-spacing: 0.01em; min-height: 48px; padding: 0 20px; border: 2px solid currentColor; border-radius: 2px; background: transparent; color: inherit; cursor: pointer; }
+.cookie-chat__form button[disabled] { border-style: dashed; cursor: wait; }
+.cookie-chat__form textarea:focus-visible, .cookie-chat__form button:focus-visible { outline: 2px solid currentColor; outline-offset: 2px; }
+.builder-form-h { font-size: 18px; font-weight: 500; margin: 8px 0 0; }
 .builder { display: grid; gap: 24px; margin-block: 16px 32px; }
 .builder fieldset { border: 1px solid currentColor; border-radius: 2px; padding: 16px; margin: 0; display: grid; gap: 16px; min-width: 0; }
 .builder legend { font-size: 18px; font-weight: 500; padding-inline: 4px; }
@@ -458,7 +471,21 @@ footer { margin-top: 64px; padding-top: 24px; border-top: 1px solid var(--line);
 .builder .cat-row[hidden], .builder-result[hidden] { display: none; }
 .builder-actions button:focus-visible, .builder input:focus-visible, .builder textarea:focus-visible { outline: 2px solid currentColor; outline-offset: 2px; }
 </style>
-    <h3 class="step-head"><span class="step-num" aria-hidden="true">Step 1:</span> Describe your site</h3>
+    <h3 class="step-head"><span class="step-num" aria-hidden="true">Step 1:</span> Tell us about your site</h3>
+    <div class="cookie-chat" id="cookie-chat">
+      <ol class="cookie-chat__log" id="cookie-chat-log" aria-live="polite" aria-relevant="additions">
+        <li class="cookie-chat__turn cookie-chat__turn--bot"><span class="cookie-chat__who">Assistant</span><p>Which outside services does your site use? For example Google Analytics, YouTube videos or Google Maps.</p></li>
+      </ol>
+      <p class="cookie-chat__status" id="cookie-chat-status" role="status"></p>
+      <form class="cookie-chat__form" id="cookie-chat-form">
+        <label for="cookie-chat-input">Your message</label>
+        <textarea id="cookie-chat-input" name="message" rows="3" maxlength="2000" required></textarea>
+        <button type="submit" id="cookie-chat-send">Send</button>
+      </form>
+      <p class="hint">What you write here goes to our server and to Claude, an AI from Anthropic, to write your banner. The form below stays in your browser.</p>
+    </div>
+    <h4 class="builder-form-h">Your answers</h4>
+    <p class="hint">The assistant fills this in. You can change anything.</p>
     <form class="builder" id="builder" novalidate>
       <fieldset><legend>Language of the banner</legend>
       <div class="radio"><input type="radio" id="lang-en" name="lang" value="en" checked>
@@ -539,6 +566,7 @@ footer { margin-top: 64px; padding-top: 24px; border-top: 1px solid var(--line);
       </details>
     </div>
     <script type="application/json" id="builder-strings">{"defaultLang": "en", "en": {"lowerInSentence": true, "c1": "<!-- 1. The banner. Place it directly after your skip link, before the\n        header, so it is the first thing a screen reader meets and the\n        first Tab stop after \"Skip to content\". -->", "c2": "<!-- 2. The settings dialog. Anywhere in the body. -->", "c3": "<!-- 3. The way back. In the footer of every page, forever. -->", "c4": "<!-- 4. Scripts that wait for consent. Point src at your real scripts. -->", "title": "Cookies on this site", "textNeed": "We use necessary cookies to keep the site working.", "textAsk": "With your permission, we also use cookies for {purposes}.", "textChange": "Change your choice any time under “Cookie settings” in the footer.", "policy": "Privacy policy", "policyDefault": "/privacy/", "accept": "Accept all", "acceptMsg": "All cookies accepted.", "reject": "Reject all", "rejectMsg": "Only necessary cookies are in use.", "settings": "Settings", "dialogTitle": "Cookie settings", "dialogIntro": "Choose which cookies we may use. Necessary cookies are always on, because the site cannot work without them.", "legend": "Cookie categories", "necessary": "Necessary", "always": "always on", "necessaryText": "We store your cookie choice and keep the site working. Set by this site only.", "save": "Save choices", "saveMsg": "Your cookie choice is saved.", "cancel": "Cancel", "scriptPlaceholder": "/js/your-script.js", "categories": [{"name": "analytics", "label": "Measurement", "phrase": "measurement", "text": "We count visits and see which pages people use, so we can improve them. Not used for advertising."}, {"name": "media", "label": "Embedded media", "phrase": "embedded media", "text": "We show videos and maps from other providers. They set their own cookies when the content loads."}, {"name": "marketing", "label": "Advertising", "phrase": "advertising", "text": "Our advertising partners show you ads based on the pages you visit here and on other sites."}, {"name": "preferences", "label": "Preferences", "phrase": "remembering your preferences", "text": "We remember settings you choose, such as language or region, between visits."}], "and": "and"}, "de": {"lowerInSentence": false, "c1": "<!-- 1. Das Banner. Direkt nach dem Sprunglink, vor dem Header: so ist es\n        das Erste, was ein Screenreader liest, und der erste Tabstopp nach\n        „Zum Inhalt springen“. -->", "c2": "<!-- 2. Der Einstellungsdialog. Irgendwo im Body. -->", "c3": "<!-- 3. Der Weg zurück. In der Fußzeile jeder Seite, dauerhaft. -->", "c4": "<!-- 4. Skripte, die auf Einwilligung warten. src auf Ihre echten Skripte setzen. -->", "title": "Cookies auf dieser Website", "textNeed": "Wir verwenden notwendige Cookies, damit die Website funktioniert.", "textAsk": "Mit Ihrer Erlaubnis verwenden wir auch Cookies für {purposes}.", "textChange": "Ändern Sie Ihre Wahl jederzeit unter „Cookie-Einstellungen“ in der Fußzeile.", "policy": "Datenschutzerklärung", "policyDefault": "/datenschutz/", "accept": "Alle akzeptieren", "acceptMsg": "Alle Cookies akzeptiert.", "reject": "Alle ablehnen", "rejectMsg": "Nur notwendige Cookies werden verwendet.", "settings": "Einstellungen", "dialogTitle": "Cookie-Einstellungen", "dialogIntro": "Wählen Sie, welche Cookies wir verwenden dürfen. Notwendige Cookies sind immer aktiv, weil die Website ohne sie nicht funktioniert.", "legend": "Cookie-Kategorien", "necessary": "Notwendig", "always": "immer aktiv", "necessaryText": "Wir speichern Ihre Cookie-Wahl und halten die Website funktionsfähig. Nur von dieser Website gesetzt.", "save": "Auswahl speichern", "saveMsg": "Ihre Cookie-Wahl ist gespeichert.", "cancel": "Abbrechen", "scriptPlaceholder": "/js/ihr-skript.js", "categories": [{"name": "analytics", "label": "Messung", "phrase": "Messung", "text": "Wir zählen Besuche und sehen, welche Seiten genutzt werden, damit wir sie verbessern können. Nicht für Werbung."}, {"name": "media", "label": "Eingebettete Medien", "phrase": "eingebettete Medien", "text": "Wir zeigen Videos und Karten anderer Anbieter. Diese setzen eigene Cookies, wenn der Inhalt geladen wird."}, {"name": "marketing", "label": "Werbung", "phrase": "Werbung", "text": "Unsere Werbepartner zeigen Ihnen Anzeigen passend zu den Seiten, die Sie hier und auf anderen Websites besuchen."}, {"name": "preferences", "label": "Präferenzen", "phrase": "Ihre Präferenzen", "text": "Wir merken uns Einstellungen, die Sie wählen, etwa Sprache oder Region, bis zum nächsten Besuch."}], "and": "und"}, "ui": {"c_text": "Text on the background", "c_button_text": "Button text on the button", "c_button_edge": "Button against the background", "c_link": "Policy link on the background", "fail": "too faint, needs {need}:1", "failSay": "{n} colour pair is hard to read. See the list.", "failSayMany": "{n} colour pairs are hard to read. See the list.", "readySay": "Banner updated. All colours are readable.", "noneSay": "No other cookies, so no banner is needed.", "cssNote": "Your colours, light mode. Written by the builder.", "previewTitle": "Banner preview", "previewPage": "Your page goes here.", "copied": "{name} copied.", "notCopied": "Code selected. Press Ctrl+C or Cmd+C to copy it.", "saved": "{name} saved.", "notSaved": "Not saved. Use Copy instead.", "pass": "readable"}}</script>
+    <script type="application/json" id="cookie-chat-strings">{"you": "You", "bot": "Assistant", "wait": "The assistant is writing…", "applied": "The form below is filled in.", "off": "The chat is not available right now. Fill in the form below instead.", "busy": "Too many messages. Wait a minute, then try again.", "failed": "The assistant did not answer. Send that again.", "long": "This chat is too long. Reload the page to start again."}</script>
 
   <h2>What it does</h2>
   <ol class="rules"><li><span>“Accept all” and “Reject all” sit side by side and look the same.</span></li><li><span>Optional cookies stay off until the visitor chooses.</span></li><li><span>Visitors who say no can still use the whole site.</span></li><li><span>Visitors can change their choice from any page.</span></li><li><span>It works with a keyboard and a screen reader.</span></li><li><span>It never covers the whole page, even zoomed in or on a phone.</span></li></ol>
@@ -1723,6 +1751,123 @@ L.c4 + '\n' + waiting + '\n\n' +
 
   syncFields();
   render(false);
+})();
+
+</script>
+<script>
+/* The cookie banner chat. The visitor describes their site; the backend
+   (POST /api/cookie-banner/chat) asks Claude, which answers in words and
+   fills in the builder form through a set_banner call. This script applies
+   that banner to the form and lets builder.js do the rest: files, contrast
+   check, preview. With no backend the chat says so and the form still works.
+
+   The conversation lives here and goes to the server whole on every turn.
+   Assistant turns are stored exactly as returned, because the API ties
+   their thinking blocks to the conversation that produced them. */
+(function () {
+  var box = document.getElementById("cookie-chat");
+  var form = document.getElementById("builder");
+  if (!box || !form) return;
+  var T = JSON.parse(document.getElementById("cookie-chat-strings").textContent);
+  var log = document.getElementById("cookie-chat-log");
+  var chatForm = document.getElementById("cookie-chat-form");
+  var input = document.getElementById("cookie-chat-input");
+  var send = document.getElementById("cookie-chat-send");
+  var status = document.getElementById("cookie-chat-status");
+
+  var local = /^(localhost|127\.0\.0\.1|\[::1\])$/.test(location.hostname);
+  var API = (local ? "http://localhost:8787" : "https://a11y-checker-v2-production.up.railway.app") + "/api/cookie-banner/chat";
+
+  var history = [];
+  var KNOWN = ["analytics", "media", "marketing", "preferences"];
+
+  function turn(who, text, note) {
+    var li = document.createElement("li");
+    li.className = "cookie-chat__turn cookie-chat__turn--" + (who === T.you ? "you" : "bot");
+    var w = document.createElement("span");
+    w.className = "cookie-chat__who"; w.textContent = who;
+    li.appendChild(w);
+    if (text) { var p = document.createElement("p"); p.textContent = text; li.appendChild(p); }
+    if (note) { var n = document.createElement("p"); n.className = "cookie-chat__note"; n.textContent = note; li.appendChild(n); }
+    log.appendChild(li);
+  }
+
+  function say(t) { status.textContent = t; }
+
+  function textOf(messages) {
+    return messages.filter(function (m) { return m.role === "assistant"; }).map(function (m) {
+      if (typeof m.content === "string") return m.content;
+      return m.content.filter(function (b) { return b.type === "text"; }).map(function (b) { return b.text; }).join("");
+    }).join("\n\n").trim();
+  }
+
+  function fire(el, type) { el.dispatchEvent(new Event(type, { bubbles: true })); }
+
+  /* Put the banner into the form the way a person would, then let the
+     form's own listeners re-render. */
+  function apply(b) {
+    var lang = form.elements.lang;
+    if (lang && lang.value !== b.language) {
+      var radio = document.getElementById("lang-" + b.language);
+      if (radio) { radio.checked = true; fire(radio, "input"); }
+    }
+    if (b.policy_url) { form.elements.policy.value = b.policy_url; form.elements.policy.dataset.edited = "1"; }
+    var byName = {};
+    b.categories.forEach(function (c) { byName[c.name] = c; });
+    KNOWN.forEach(function (name) {
+      var check = form.elements["cat-" + name], area = form.elements["text-" + name];
+      if (!check) return;
+      check.checked = !!byName[name];
+      if (byName[name] && area) { area.value = byName[name].text; area.dataset.edited = "1"; }
+    });
+    var other = byName.other;
+    form.elements["own-label"].value = other ? other.label : "";
+    form.elements["own-text"].value = other ? other.text : "";
+    [["c-bg", "background"], ["c-text", "text"], ["c-button", "button"]].forEach(function (p) {
+      var v = b.colours[p[1]];
+      if (/^#[0-9a-fA-F]{6}$/.test(v)) document.getElementById(p[0]).value = v.toLowerCase();
+    });
+    fire(form.elements.policy, "input");
+    form.dispatchEvent(new Event("change"));
+  }
+
+  chatForm.addEventListener("submit", function (e) {
+    e.preventDefault();
+    var text = input.value.trim();
+    if (!text || send.disabled) return;
+    turn(T.you, text);
+    history.push({ role: "user", content: text });
+    input.value = "";
+    send.disabled = true;
+    say(T.wait);
+    fetch(API, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ messages: history }) })
+      .then(function (r) {
+        if (r.ok) return r.json();
+        throw { status: r.status };
+      })
+      .then(function (data) {
+        history = history.concat(data.messages);
+        if (data.banner) apply(data.banner);
+        turn(T.bot, textOf(data.messages), data.banner ? T.applied : "");
+        say("");
+      })
+      .catch(function (err) {
+        // The turn did not happen: take it back out so the conversation
+        // the server sees next time is still a valid one, and give the
+        // visitor their words back.
+        history.pop();
+        log.removeChild(log.lastChild);
+        input.value = text;
+        var s = err && err.status;
+        say(s === 503 ? T.off : s === 429 ? T.busy : s === 413 ? T.long : !s ? T.off : T.failed);
+      })
+      .then(function () { send.disabled = false; input.focus(); });
+  });
+
+  // Enter sends; Shift+Enter is a new line.
+  input.addEventListener("keydown", function (e) {
+    if (e.key === "Enter" && !e.shiftKey && !e.isComposing) { e.preventDefault(); chatForm.requestSubmit(); }
+  });
 })();
 
 </script>
