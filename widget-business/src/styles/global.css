@@ -1531,7 +1531,22 @@
   font-size: 22px; font-weight: 400; letter-spacing: 0.01em;
 }
 .a11y-widget-biz .a11y-ra-pdf > .a11y-ra-pdf-icon { width: 20px; height: 20px; flex: none; }
-.a11y-widget-biz .a11y-ra-row > .a11y-ra-cell > .a11y-ra-note { margin: 0; font-size: 18px; letter-spacing: 0.01em; line-height: 1.45; }
+/* The notes under the email and PDF controls are set in Serrif (user's
+   instruction, 19 Nov 2026, "this can be typeset in serif"), the face of
+   the expanded finding's prose, so the explanation reads as text and the
+   controls above it as controls. Light is the only cut, and its x-height
+   is smaller than Jokker's, so 22px matches the 18px Jokker it replaced. */
+.a11y-widget-biz .a11y-ra-row > .a11y-ra-cell > .a11y-ra-note {
+  margin: 0; font-family: "Serrif", Georgia, serif; font-weight: 300;
+  font-size: 22px; letter-spacing: 0; line-height: 1.3;
+}
+/* A 50px break between the score block and the report actions (user's
+   instruction, 19 Nov 2026): the last score point's margin ran straight
+   into "Email me this report" at 38px, so the actions read as a seventh
+   point. The counts' own bottom margin is dropped here so the 50px is the
+   whole gap. */
+.a11y-widget-biz .a11y-sum-col > .a11y-sum-counts:last-child { margin-bottom: 0; }
+.a11y-widget-biz .a11y-report-actions { margin-top: 50px; }
 @media (max-width: 640px) {
   .a11y-widget-biz .a11y-ra-row > .a11y-ra-cell > .a11y-ra-send { min-height: 96px; font-size: 38px; }
 }
@@ -2045,18 +2060,21 @@
 
 /* ═══ THE SUMMARY PANELS AS TYPE-TESTER CARDS (user's reference, 18 Nov 2026) ═
    "Design this like this", over a foundry's type tester: each of the two
-   panels, Do this first and What a score of … means, is a card. The fixed
+   panels, Start here and Score … (labels shortened from "Do this first"
+   and "What a score of … means", user's instruction, 19 Nov 2026), is a
+   card. The fixed
    #f0efe8 ground with black words in both themes (18.4:1), 20px corners,
    the label on a small solid-black pill at the top-left (#f0efe8 words,
    15px Medium, sentence case, as the alternates sheet sets its labels), and
-   the sentence well under it at display size, 38px Regular at -0.005em,
-   the spacing that size takes. The two cards stand the same height side
-   by side. Ink and paper are redefined inside, so links, code and focus
-   rings follow. Under 640px the sentence drops to the phone title size. */
+   the sentence under it at the report's prose size, 27px/1.2 at 0 (it was
+   38px display size until the user's "text too big", 19 Nov 2026). The two
+   cards stand the same height side by side. Ink and paper are redefined
+   inside, so links, code and focus rings follow. Under 640px the sentence
+   takes the phone prose size, 22px. */
 .a11y-widget-biz .a11y-sum-col > .a11y-sum-panel:not(.a11y-sum-counts) {
   --ink: var(--tile-ink); --paper: var(--tile);
   box-sizing: border-box; min-width: 0; margin: 0;
-  align-self: stretch; display: flex; flex-direction: column; gap: 56px;
+  align-self: stretch; display: flex; flex-direction: column; gap: 32px;
   padding: 28px 32px 36px; border: 0; border-radius: 20px; background: var(--tile); color: var(--tile-ink);
   text-align: start; overflow-wrap: break-word; hyphens: manual;
 }
@@ -2067,11 +2085,11 @@
 }
 .a11y-widget-biz .a11y-sum-col > .a11y-sum-panel:not(.a11y-sum-counts) .a11y-sum-lead {
   display: block; margin: 0;
-  font-family: "Jokker", sans-serif; font-size: 38px; font-weight: 400; line-height: 1.1; letter-spacing: -0.005em;
+  font-family: "Jokker", sans-serif; font-size: 27px; font-weight: 400; line-height: 1.2; letter-spacing: 0;
 }
 @media (max-width: 640px) {
-  .a11y-widget-biz .a11y-sum-col > .a11y-sum-panel:not(.a11y-sum-counts) { gap: 32px; padding: 18px 20px 24px; }
-  .a11y-widget-biz .a11y-sum-col > .a11y-sum-panel:not(.a11y-sum-counts) .a11y-sum-lead { font-size: 27px; letter-spacing: 0; }
+  .a11y-widget-biz .a11y-sum-col > .a11y-sum-panel:not(.a11y-sum-counts) { gap: 20px; padding: 18px 20px 24px; }
+  .a11y-widget-biz .a11y-sum-col > .a11y-sum-panel:not(.a11y-sum-counts) .a11y-sum-lead { font-size: 22px; letter-spacing: 0.005em; }
 }
 
 /* ═══ THE CONVERSATIONS PANEL'S EDGE (user's instruction, 18 Nov 2026) ═════
