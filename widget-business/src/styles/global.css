@@ -1159,46 +1159,45 @@
 }
 .a11y-widget-biz .a11y-fd .a11y-fix-once > strong { font-weight: 300; }
 /* The short parts as cards (user's instruction, 17 Nov 2026: "too many
-   lines, these can be cards"), set since 18 Nov 2026 as a type foundry's
-   sheet of alternates (user's reference, "try designing this content like
-   this"): tiles of different widths in wrapping rows that always close up,
-   each with its label on a small pill centred at the top and its words
-   centred in the space under it, set large. FindingGroup's tileSize()
-   reads the words: up to 90 characters starts a third wide at 38px, up to
-   200 starts 45% wide at 30px, longer starts 60% wide at 26px, and every
-   tile grows to fill its row, so no row ends in a hole.
-   The ground is the fixed #f0efe8, black words in both themes (18.4:1);
-   the pill is solid black with #f0efe8 words, the reference's red pill
-   in the page's two inks. The words are Jokker Medium, the main text's
-   cut, in place of Serrif. Under 640px of block, one column. What to do
-   and the affected elements stay full width below: lists, pictures, code. */
+   lines, these can be cards"), set since 18 Nov 2026 as the spec cards of a
+   type foundry's page (user's reference, "design this like this"): equal
+   cards on one grid, 18px apart, the cards of a row the same height. Each has
+   its label top-left in small Medium type, no pill, and its words under it set
+   large and tight in Jokker Medium (-0.01em), the way the reference sets
+   "Grotesk / Italics / Sans Serif". FindingGroup's tileSize() reads the
+   words: up to 90 characters set at 38px, up to 200 at 30px, longer at 26px.
+   A card is as tall as its words plus 22px above and 40px below, with no
+   minimum height (user's instruction, 18 Nov 2026).
+   The ground is the fixed #f0efe8, black words in both themes (18.4:1). The
+   reference's red card is not taken: the widget has no red (COLOUR, in
+   CLAUDE.md). Under 640px of block, one column. What to do and the affected
+   elements stay full width below: lists, pictures, code. */
 .a11y-widget-biz .a11y-fd > .a11y-fd-col:first-child {
-  display: flex; flex-wrap: wrap; gap: 16px; align-items: stretch; margin: 0 0 1.6em;
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr));
+  gap: 18px; align-items: stretch; margin: 0 0 1.6em;
 }
 .a11y-widget-biz .a11y-fd > .a11y-fd-col:first-child > :is(p, div) {
   --ink: var(--tile-ink); --paper: var(--tile);
-  flex: 1 1 calc(45% - 16px);
   display: flex; flex-direction: column; align-items: flex-start; gap: 28px;
-  box-sizing: border-box; min-width: 0; min-height: 300px; max-width: none; margin: 0; padding: 22px 32px 40px;
+  box-sizing: border-box; min-width: 0; max-width: none; margin: 0; padding: 22px 32px 40px;
   border-radius: 20px; background: var(--tile); color: var(--tile-ink); text-align: start;
-  font-family: "Jokker", sans-serif; font-weight: 500; font-size: 26px; line-height: 1.2; letter-spacing: 0.005em;
+  font-family: "Jokker", sans-serif; font-weight: 500; font-size: 26px; line-height: 1.15; letter-spacing: -0.01em;
 }
-.a11y-widget-biz .a11y-fd > .a11y-fd-col:first-child > [data-size="s"] { flex-basis: calc(33.333% - 16px); }
-.a11y-widget-biz .a11y-fd > .a11y-fd-col:first-child > [data-size="l"] { flex-basis: calc(60% - 16px); }
+.a11y-widget-biz .a11y-fd > .a11y-fd-col:first-child > [data-size="s"] { font-size: 38px; line-height: 1.1; }
+.a11y-widget-biz .a11y-fd > .a11y-fd-col:first-child > [data-size="m"] { font-size: 30px; }
 .a11y-widget-biz .a11y-fd > .a11y-fd-col:first-child > p > strong:first-child {
-  flex: none; margin: 0; padding: 3px 12px 4px; border: 0; border-radius: 999px;
-  background: var(--strong); color: var(--strong-ink);
-  font-family: "Jokker", sans-serif; font-weight: 400; font-size: 15px; line-height: 1.2; letter-spacing: 0.01em; text-transform: none;
+  flex: none; margin: 0; padding: 0; border: 0; border-radius: 0; background: none; color: inherit;
+  font-family: "Jokker", sans-serif; font-weight: 500; font-size: 15px; line-height: 1.2; letter-spacing: 0.01em; text-transform: none;
 }
 .a11y-widget-biz .a11y-fd > .a11y-fd-col:first-child .a11y-fd-body {
   display: block; margin-block: 0; max-width: 100%; text-wrap: pretty;
 }
 .a11y-widget-biz .a11y-fd > .a11y-fd-col:first-child .a11y-fd-body code { font-size: 0.8em; }
 @container a11y-fd (max-width: 640px) {
-  .a11y-widget-biz .a11y-fd > .a11y-fd-col:first-child { gap: 10px; }
+  .a11y-widget-biz .a11y-fd > .a11y-fd-col:first-child { grid-template-columns: minmax(0, 1fr); gap: 10px; }
   .a11y-widget-biz .a11y-fd > .a11y-fd-col:first-child > :is(p, div),
-  .a11y-widget-biz .a11y-fd > .a11y-fd-col:first-child > :is([data-size="s"], [data-size="l"]) {
-    flex-basis: 100%; min-height: 0; gap: 20px; padding: 16px 20px 24px; font-size: 22px; line-height: 1.25;
+  .a11y-widget-biz .a11y-fd > .a11y-fd-col:first-child > :is([data-size="s"], [data-size="m"], [data-size="l"]) {
+    gap: 20px; padding: 16px 20px 24px; font-size: 22px; line-height: 1.25;
   }
 }
 /* The key/value lines: the key hangs in a 9em column, the value runs beside
