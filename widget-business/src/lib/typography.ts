@@ -1,27 +1,17 @@
 /**
- * Keeps short words attached to the word after them, so a line never ends
- * on a lone "A" or "to".
+ * Typesetting on the rendered text nodes, so it holds for every language
+ * and every component, including copy the server writes. Inputs, code and
+ * pre are left alone: their whitespace is data.
  *
- * The user's rule (26 Aug 2026): no single letter or single short word left
- * at the end of a line. Typesetters do this with a non-breaking space after
- * one- and two-letter words — the same rule German and Czech composition
- * apply to prepositions. Done here on the rendered text nodes rather than
- * in every string, so it holds for every language and every component,
- * including copy the server writes.
- *
- * A non-breaking space is read as a space by screen readers and copied as
- * one by most clipboards; it changes where lines break and nothing else.
- * Inputs, code and pre are left alone — their whitespace is data.
+ * Short words are no longer tied to the word after them (user's
+ * instruction, 18 Nov 2026, "do not rag the text"): the no-break space after
+ * every one- and two-letter word, kept since 26 Aug 2026, pushed phrases
+ * like "to the" onto the next line and left lines visibly short of the
+ * measure. What stays is holdEnds (no word of a sentence alone on a line)
+ * and jokkerSpaces (the French thin space drawn in the face).
  */
-// Lookbehind rather than a consumed group, so "go to the" binds both words:
-// a consumed space is not there for the next match to see.
-const SHORT = /(?<=^|[\s\u00A0])([A-Za-zÀ-ÿ]{1,2})[ \t]+(?=\S)/g;
 const SKIP = new Set(["INPUT", "TEXTAREA", "SELECT", "OPTION", "CODE", "PRE", "SCRIPT", "STYLE", "KBD", "SAMP"]);
 const NBSP = " ";
-
-function bind(text: string): string {
-  return text.replace(SHORT, (_m, word: string) => `${word}${NBSP}`);
-}
 
 /**
  * No word of a sentence alone on a line (user's instruction, 18 Nov 2026,
@@ -29,8 +19,8 @@ function bind(text: string): string {
  * four words or more, the first word is held to the second and the last to
  * the one before, so a line never ends on a run's opening word or opens on
  * its closing one. A run of two or three words is left breakable: held
- * whole, a two-word German label could not fit 320px. Hyphenation and
- * overflow-wrap still break inside a word, so a held pair cannot run off a
+ * whole, a two-word German label could not fit 320px. overflow-wrap
+ * still breaks inside a word, so a held pair cannot run off a
  * phone screen.
  */
 const WORDS = /[^\s\u00A0]+/g;
@@ -75,7 +65,7 @@ function process(root: Node): number {
     const t = n as Text;
     if (!t.data || inSkipped(t)) continue;
     const spaced = jokkerSpaces(t.data);
-    const next = spaced.length < 4 ? spaced : holdEnds(bind(spaced));
+    const next = spaced.length < 4 ? spaced : holdEnds(spaced);
     if (next !== t.data) {
       t.data = next;
       changed++;
@@ -90,7 +80,7 @@ function process(root: Node): number {
  * then re-bound here; the observer ignores its own writes because a bound
  * string binds to itself.
  */
-export function keepShortWordsAttached(root: Node): () => void {
+export function typesetText(root: Node): () => void {
   process(root);
   let scheduled = false;
   const observer = new MutationObserver(() => {
@@ -262,4 +252,4 @@ export function setMarks(text: string, lang: string): string {
     .replace(/(^|[\s(\[\u2013])"([^"\n]+)"/g, `$1${open}$2${close}`);
 }
 
-export const __test = { bind, smarten, holdEnds, jokkerSpaces };
+export const __test = { smarten, holdEnds, jokkerSpaces };

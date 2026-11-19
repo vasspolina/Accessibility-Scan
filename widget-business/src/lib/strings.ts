@@ -266,6 +266,11 @@ export const CHROME_KEYS: string[] = [
   "The assistant is not available on this server. Paste an address and the scan still runs.",
   "The assistant couldn't answer that.",
   "Use the form instead",
+  "Yes, check {url}",
+  "Check {url}",
+  "Press Tab to use this suggestion:",
+  "Scan a page behind a login",
+  "Open the sign-in form",
   "Back to the chat",
   // The conversation's folds and its way back (ScanChat).
   "Show details",
