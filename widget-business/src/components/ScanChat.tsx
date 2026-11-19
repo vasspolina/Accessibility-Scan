@@ -23,8 +23,9 @@ import {
 import { digestAudit, digestReport } from "../lib/reportDigest";
 import { NARRATION_STEPS, narrationIndex, narrationLabel } from "../lib/scanNarration";
 import { SHOWABLE, sectionForCommand, sectionLabel, type SectionKey } from "../lib/sections";
-import { pickOpeningPrompts } from "../lib/openingPrompts";
+import { pickOpeningPrompts, OPENING_PROMPTS } from "../lib/openingPrompts";
 import { CRITERIA, criterionFor } from "../lib/promptCriteria";
+import { addressToConfirm, tabSuggestion } from "../lib/chatSuggest";
 import { planSteps } from "../lib/testPlan";
 import {
   deleteChat,
@@ -528,7 +529,7 @@ export function ScanChat({
   report,
   audit,
   onScan,
-  onUseForm,
+  onSignInForm,
   renderSection,
   availableSections,
   language,
@@ -547,7 +548,9 @@ export function ScanChat({
   report: AccessibilityReport | null;
   audit: SiteAudit | null;
   onScan: (url: string, scope: "page" | "site", aiReview: boolean) => Promise<ScanOutcome>;
-  onUseForm: () => void;
+  /** Opens the scan form, the one way to scan behind a login: a password
+   *  typed into the chat would pass through the model. */
+  onSignInForm: () => void;
   renderSection: (key: SectionKey) => ReactNode;
   availableSections: SectionKey[];
   language: Lang;
@@ -656,12 +659,17 @@ export function ScanChat({
     else focusInput();
   }
 
-  // Keeps the thread on screen in the panel. Not while a reply streams:
-  // every chunk is a render, and the finished reply is saved once.
+  // Keeps the thread on screen in the panel. A new conversation gets its
+  // row the moment its first question is asked, streaming or not, so the
+  // open chat is always in the list and marked (user's report, 18 Nov 2026:
+  // "its not showing current chat in row"; it used to wait for the first
+  // reply, and a scan's reply can take a minute). After that, not while a
+  // reply streams: every chunk is a render, and the finished reply is
+  // saved once.
   useEffect(() => {
     if (turns === opened.current) return;
     if (!turns.some((x) => x.who === "you")) return;
-    if (turns.some((x) => x.who === "checker" && x.streaming)) return;
+    if (chatId && turns.some((x) => x.who === "checker" && x.streaming)) return;
     const id = chatId ?? newChatId();
     if (!chatId) setChatId(id);
     setChats((list) => {
@@ -1070,6 +1078,21 @@ export function ScanChat({
     };
   }
 
+  // The last finished reply, the address it asks about, and the line Tab
+  // would fill in (lib/chatSuggest).
+  const lastTurn = turns[turns.length - 1];
+  const lastReplyId = lastTurn && lastTurn.who === "checker" ? lastTurn.id : null;
+  const confirmAddress =
+    lastTurn && lastTurn.who === "checker" && !lastTurn.streaming && lastTurn.text ? addressToConfirm(lastTurn.text) : null;
+  const allPrompts = OPENING_PROMPTS.flatMap((g) => g.prompts.map((q) => t(q)));
+  const suggestion =
+    busy || loading
+      ? null
+      : tabSuggestion(draft, {
+          confirmReply: confirmAddress ? tf("Yes, check {url}", { url: confirmAddress }) : null,
+          prompts: allPrompts,
+        });
+
   async function send(e: FormEvent) {
     e.preventDefault();
     const text = draft.trim();
@@ -1431,7 +1454,7 @@ export function ScanChat({
             if (turn.who === "notice") {
               return (
                 <li key={turn.id} className="a11y-chat-turn">
-                  <BlockedNotice message={turn.message} />
+                  <BlockedNotice message={turn.message} onSignIn={onSignInForm} />
                 </li>
               );
             }
@@ -1449,6 +1472,22 @@ export function ScanChat({
                       {/* A search in progress, under whatever has been said so
                           far: the wait has a name, and the query once it is known. */}
                       {turn.streaming && turn.searching !== undefined && waiting(searchingLine(turn.searching))}
+                      {/* "Did you mean accessibility.nl?": the address is a
+                          button, and pressing it is the yes (user's
+                          instruction, 18 Nov 2026, "i would like to click
+                          website so it is researching it"). Only under the
+                          last reply, and only once it has finished. */}
+                      {!turn.streaming && turn.id === lastReplyId && confirmAddress && (
+                        <p className="a11y-chat-confirm">
+                          <Button
+                            variant="ghost"
+                            disabled={busy || loading}
+                            onClick={() => void ask(tf("Yes, check {url}", { url: confirmAddress }))}
+                          >
+                            {tf("Check {url}", { url: confirmAddress })}
+                          </Button>
+                        </p>
+                      )}
                       {turn.sources && turn.sources.length > 0 && (
                         <p className="a11y-chat-sources">
                           {t("Sources")}:{" "}
@@ -1506,13 +1545,34 @@ export function ScanChat({
                 e.target.style.height = "auto";
                 e.target.style.height = e.target.scrollHeight + "px";
               }}
+              aria-describedby={suggestion ? "a11y-chat-tabhint" : undefined}
               onKeyDown={(e) => {
+                // Tab takes the suggestion, as in Claude's apps; with none
+                // showing, or once taken, Tab moves on as it always does.
+                if (e.key === "Tab" && !e.shiftKey && !e.altKey && !e.ctrlKey && !e.metaKey && suggestion) {
+                  e.preventDefault();
+                  setDraft(suggestion);
+                  const el = e.currentTarget;
+                  requestAnimationFrame(() => {
+                    el.style.height = "auto";
+                    el.style.height = el.scrollHeight + "px";
+                    el.setSelectionRange(el.value.length, el.value.length);
+                  });
+                  return;
+                }
                 if (e.key === "Enter" && !e.shiftKey && !e.nativeEvent.isComposing) {
                   e.preventDefault();
                   e.currentTarget.form?.requestSubmit();
                 }
               }}
             />
+            {suggestion && (
+              <p className="a11y-chat-tabhint" id="a11y-chat-tabhint">
+                <span className="a11y-sr-only">{t("Press Tab to use this suggestion:")} </span>
+                <kbd aria-hidden="true">Tab</kbd>
+                <span className="a11y-chat-tabhint-text">{smarten(suggestion, getLang())}</span>
+              </p>
+            )}
             <div className="a11y-chat-box-row">
               <span className="a11y-chat-box-start">
                 {backTo && (
@@ -1521,9 +1581,6 @@ export function ScanChat({
                     {t("Back")}
                   </Button>
                 )}
-                <Button variant="ghost" onClick={onUseForm}>
-                  {t("Use the form instead")}
-                </Button>
               </span>
               <Button type="submit" variant="primary" disabled={busy || loading || !draft.trim()}>
                 {/* On a phone the word is clipped and the arrow drawn, as in
@@ -1535,6 +1592,14 @@ export function ScanChat({
               </Button>
             </div>
           </div>
+          {/* Under the box, not in it (user's instruction, 18 Nov 2026):
+              a page behind a login is scanned from the form, so the login
+              goes to the scanner and never into the chat or its model. */}
+          <p className="a11y-chat-signin">
+            <Button variant="ghost" onClick={onSignInForm}>
+              {t("Scan a page behind a login")}
+            </Button>
+          </p>
         </form>
       </div>
 

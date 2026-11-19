@@ -7,8 +7,8 @@ Two features that share one small language model you host yourself.
    elements, and a fix. Code: `backend/src/services/plainLanguage/`.
 2. **The pilot.** A form at `/pilot.html` where invited screen-reader and
    keyboard users report a barrier in their own words. The same model drafts
-   a structured finding from it. The participant checks and corrects the
-   draft before it is sent. Code: `backend/src/services/pilot/`,
+   a detailed finding from it on its own. The participant reads it and sends
+   it. Code: `backend/src/services/pilot/`,
    `backend/src/routes/pilot.ts`, `backend/public/pilot.html`.
 
 Both follow the repository's rule for optional features: with nothing set,
@@ -100,13 +100,20 @@ it in the field once the person leaves it, and stops once on submit if a
 guess has not been shown yet; a sentence typed there moves to "What
 happened?". Only text nothing can be made of is an error. The page is then
 looked up (every hop goes through the SSRF guard and only the title comes
-back), its title shown under the field and given to the model as context. "What were you trying
-to do" is optional, and so is "What happened" when an address is given: the
+back), its title shown under the field and given to the model as context.
+
+Since 19 Nov 2026 the form asks only for the address, a sentence and what
+the person uses: no impact rating, no "which one", no "what were you trying
+to do". The model writes one finding at length (what happens, who it stops,
+how to see it, what to change, its estimate of how much it holds people
+back, and a suggested criterion), shown as finished text with one Send
+button; to change it, the person goes back and changes what they wrote.
+"What happened" is optional when an address is given: the
 page is then scanned (no AI review, no screenshots) and the model drafts one
 finding from the most serious measured problems, worded as what the scan
 found, never as what the participant met. The form says so on the review
-screen, and the stored report marks the draft `fromScan`. The participant's assistive technology (and which one, picked from a list)
-is remembered in their own browser, so a second report is three fields.
+screen, and the stored report marks the draft `fromScan`. The participant's assistive technology is remembered in their own browser,
+so a second report is the address and a sentence.
 
 There is no invitation code (removed 17 Nov 2026): anyone with the link can
 report, and the routes' rate limits bound how much. The pilot is open
@@ -123,11 +130,11 @@ whenever reports have somewhere to go (storage or mail).
    `totals.participants` counts distinct devices that sent a report: the
    form keeps a random id in the browser. It is an estimate: a cleared
    browser or a second device counts again. `drafted` and `confirmed` count how
-   many reports had a model draft, and how many drafts the participant said
-   were right.
+   many reports had a model draft, and how many the participant read and sent.
 
-What is stored: the participant's own words, their own impact rating, the
-draft (as they left it), the model's name, and a hash of the form's device id. Their
+What is stored: the participant's own words, their impact rating if an
+older form sent one (otherwise `unrated`; the model's estimate stays in the
+draft, marked as the model's), the draft as they read it, the model's name, and a hash of the form's device id. Their
 name and email are not asked for or stored.
 
 Before you call the pilot "deployed with users", check that

@@ -12,13 +12,25 @@
   is no custom widget to learn, and every change of step moves focus to
   the new step’s heading and says what happened in a live region.
 
-  Set after Pangram Pangram’s contact form (user’s reference, 18 Nov 2026):
-  a wide page, a big tight title, every field a filled rounded box with its
-  label inside at the top, one wide pill for the action. The type is the
-  scanner’s, in Jokker: 67px title, 32px prose and fields, 18px and 15px
-  labels, 22px choices; phone 40 / 22 / 26. Colour follows the scanner: black
-  and white, #f0efe8 tiles in light and Apple’s dark greys in dark, and the
-  orange highlight (black text, 7:1 or better) on the one action.
+  Set after Displaay’s newsletter page (displaay.net/newsletter; user’s
+  reference, 19 Nov 2026), measured there at 1440px: a grey band across the
+  top with the name at its head and two Serrif lines at its foot; a big
+  tight title (44px, -0.025em) and the intro under it (21px on a 740px
+  measure); then one narrow column (465px) of filled tiles, #f2f0e6 with
+  10px corners, each holding its label at the top and what you type under
+  it, 5px apart; a Serrif heading over each group; and one tall block for
+  the action, its words large and set top left. The sizes are scaled up for
+  people on magnifiers (title 56, intro 27, labels 18, typed text and
+  choices 22, action 32; the column 640px) and the proportions kept. A
+  choice is a tile too, as Displaay draws its one checkbox; a chosen one
+  turns solid.
+
+  Simplified (user's instruction, 19 Nov 2026): the form asks only for the
+  address, a sentence and what the person uses; the system writes one
+  long finding on its own, shown as finished text, and they send it.
+
+  Colour: the band’s grey and the tiles’ cream carry black
+  text (12.8:1 and 18.4:1); dark mode takes Apple’s dark greys.
 -->
 <style>
   @font-face {
@@ -27,20 +39,31 @@
     font-weight: 100 900;
     font-display: swap;
   }
+  @font-face {
+    font-family: "Serrif";
+    src: url("/fonts/Serrif-TRIAL-Light.otf") format("opentype");
+    font-weight: 300;
+    font-display: swap;
+  }
   :root {
-    --ink: #000; --paper: #fff; color-scheme: light dark;
-    --tile: #f0efe8; --tile-ink: #000;
+    color-scheme: light dark;
+    --ink: #000; --paper: #fff;
+    --band: #c9cac9; --band-ink: #000;
+    --tile: #f2f0e6; --tile-ink: #000;
     --solid: #000; --solid-ink: #fff;
     --hover: #ffe14d; --hover-ink: #000;
-      }
+    --gutter: 20px; --column: 640px;
+  }
   @media (prefers-color-scheme: dark) {
     :root:not([data-theme="light"]) {
-      --ink: #fff; --paper: #000; --tile: #1c1c1e; --tile-ink: #fff;
+      --ink: #fff; --paper: #000; --band: #2c2c2e; --band-ink: #fff;
+      --tile: #1c1c1e; --tile-ink: #fff;
       --solid: #636366; --solid-ink: #fff; --hover: #3a3a3c; --hover-ink: #fff;
     }
   }
   :root[data-theme="dark"] {
-    --ink: #fff; --paper: #000; --tile: #1c1c1e; --tile-ink: #fff;
+    --ink: #fff; --paper: #000; --band: #2c2c2e; --band-ink: #fff;
+    --tile: #1c1c1e; --tile-ink: #fff;
     --solid: #636366; --solid-ink: #fff; --hover: #3a3a3c; --hover-ink: #fff;
   }
 
@@ -53,10 +76,10 @@
     font-feature-settings: "ss04", "ss05";
     font-kerning: normal;
     font-synthesis: none;
-    font-size: 32px;
+    font-size: 22px;
     font-weight: 400;
     line-height: 1.2;
-    letter-spacing: 0;
+    letter-spacing: 0.005em;
     font-variant-ligatures: common-ligatures;
     font-variant-numeric: tabular-nums;
     text-rendering: optimizeLegibility;
@@ -67,134 +90,152 @@
   }
   h1, h2, legend, label.field, button { text-wrap: balance; hyphens: none; }
   strong, b { font-weight: 500; }
-  .page { max-width: none; margin: 0; padding: 0 24px 120px; }
-
-  /* The bar: the product's name left, what this is right, as the
-     reference's header sets its brand. */
-  .bar { display: flex; justify-content: space-between; gap: 16px; padding: 24px 0 0; font-size: 18px; letter-spacing: 0.01em; }
-  .bar .brand { font-weight: 500; }
-
-  .head { display: grid; grid-template-columns: minmax(0, 2fr) minmax(0, 1fr); gap: 24px 64px; align-items: end; padding: 120px 0 72px; }
-  .head h1 { grid-column: 1; margin: 0 0 24px; }
-  #intro { display: contents; }
-  #intro > p:first-child { grid-column: 1; grid-row: 2; margin: 0; }
-  #intro > .small { grid-column: 2; grid-row: 2; margin: 0; }
-  h1 { font-size: 67px; font-weight: 400; letter-spacing: -0.01em; line-height: 1.05; }
-  h2 { font-size: 38px; font-weight: 400; letter-spacing: -0.005em; line-height: 1.1; margin: 64px 0 24px; }
   p { margin: 0 0 1.2em; }
-  .small { font-size: 18px; letter-spacing: 0.01em; hyphens: manual; }
+  [hidden] { display: none !important; }
+  .visually-hidden { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
 
-  fieldset { display: flow-root; border: 0; padding: 0; margin: 48px 0 32px; min-width: 0; }
-  legend { float: left; width: var(--hang); margin: 0 24px 0 0; padding: 6px 0 0; font-size: 22px; font-weight: 500; line-height: 1.2; letter-spacing: 0.01em; }
-  fieldset > .field-error { float: left; clear: left; width: var(--hang); }
-  fieldset > .choices { margin-left: calc(var(--hang) + 24px); }
-  .hint { display: block; font-size: 15px; letter-spacing: 0.01em; margin: 0 0 12px; max-width: 60em; }
-  /* The label and its small print hang in a left column and the words
-     sit beside them, as the scanner's settings block sets its rows and
-     Hochuli sets an interview: the speaker hung, the text on one edge. */
-  :root { --hang: 280px; }
-  .row { display: grid; grid-template-columns: var(--hang) minmax(0, 1fr); column-gap: 24px; align-content: start; margin: 0 0 32px; min-width: 0; }
-  .row > label.field, .row > .hint, .row > .field-error { grid-column: 1; }
-  .row > :is(input, textarea, select) { grid-column: 2; grid-row: 1 / span 4; }
-  .row > .page-found { grid-column: 2; }
-  label.field { display: block; font-size: 22px; font-weight: 500; letter-spacing: 0.01em; margin: 6px 0 4px; padding: 0; }
-  .pair { display: block; margin: 0; }
-
-  /* A field is one filled box holding only what you type, 20px corners and
-     no edge, as the reference draws its inputs; the label and the small
-     print stand above it, outside. */
-  input[type="text"], input[type="url"], textarea, select {
-    display: block; width: 100%; min-width: 0; margin: 0;
-    font: inherit; font-size: 32px; line-height: 1.2; letter-spacing: 0;
-    color: var(--tile-ink); background-color: var(--tile);
-    border: 0; border-radius: 12px; padding: 14px 18px 16px;
+  /* The band: Displaay's grey header, the name at its head and two Serrif
+     lines at its foot, the page's own gutter inside it. */
+  .band {
+    display: flex; flex-direction: column; justify-content: space-between; gap: 48px;
+    min-height: 262px; padding: 13px var(--gutter) 15px;
+    background: var(--band); color: var(--band-ink);
   }
-  textarea { min-height: 7.5em; resize: vertical; }
-  /* A native select, so screen readers and switches know it already; the
-     arrow is drawn in the tile's ink so it follows the theme. */
-  select {
-    appearance: none; font-size: 26px; min-height: 60px; padding-right: 56px; cursor: pointer;
-    background-image: linear-gradient(45deg, transparent 50%, var(--tile-ink) 50%), linear-gradient(135deg, var(--tile-ink) 50%, transparent 50%);
-    background-position: right 26px center, right 18px center;
-    background-size: 8px 8px, 8px 8px; background-repeat: no-repeat;
+  .band .brand { font-size: 28px; line-height: 1.1; letter-spacing: -0.01em; }
+  .band-line { font-family: "Serrif", Georgia, serif; font-weight: 300; font-size: 22px; line-height: 1.15; letter-spacing: 0.01em; margin: 0; }
+
+  .page { padding: 0 var(--gutter) 120px; }
+
+  .head { padding: 40px 0 0; }
+  h1 { font-size: 56px; font-weight: 400; letter-spacing: -0.025em; line-height: 0.95; margin: 0 0 28px; }
+  h2 { font-size: 40px; font-weight: 400; letter-spacing: -0.02em; line-height: 1; margin: 48px 0 20px; }
+  #intro > p:first-child { font-size: 27px; line-height: 1.15; letter-spacing: 0; max-width: 35em; margin: 0 0 16px; }
+  .small { font-size: 18px; line-height: 1.3; letter-spacing: 0.01em; max-width: 40em; hyphens: manual; }
+  #intro > .small { margin: 0; }
+  #closed { font-size: 27px; line-height: 1.15; max-width: 35em; }
+
+  /* One narrow column, as the reference sets its form beside an empty half. */
+  form, #review, #nodraft, #done { max-width: var(--column); }
+  form { margin-top: 48px; }
+
+  /* A field is one tile holding its label at the top, the small print under
+     that, and what you type below, as Displaay draws Name and Email. The
+     tile, not the bare input, takes the focus ring and the error edge. */
+  .row {
+    display: block; margin: 0 0 5px; padding: 10px 14px 12px; min-width: 0;
+    background: var(--tile); color: var(--tile-ink); border-radius: 10px;
   }
-  select option, select optgroup { color: #000; background: #fff; }
-  .pair input[type="text"] { font-size: 26px; }
+  label.field { display: block; font-size: 18px; line-height: 1.25; letter-spacing: 0.01em; }
+  .hint { display: block; font-size: 15px; line-height: 1.3; letter-spacing: 0.01em; margin: 2px 0 0; }
+  .row :is(input, textarea, select) {
+    display: block; width: 100%; min-width: 0; margin: 8px 0 0; padding: 0;
+    font: inherit; font-size: 22px; line-height: 1.25; letter-spacing: 0.005em;
+    color: inherit; background-color: transparent; border: 0; border-radius: 0;
+  }
+  .row :is(input, textarea, select):focus { outline: none; }
+  .row:focus-within { outline: 3px solid var(--ink); outline-offset: 2px; }
+  .row:has([aria-invalid="true"]) { box-shadow: inset 0 0 0 2px var(--tile-ink); }
+  textarea { min-height: 5em; resize: vertical; }
+  .page-found { font-size: 15px; margin: 8px 0 0; overflow-wrap: anywhere; }
+  .page-found:empty { display: none; }
 
-  /* A choice is a plain native radio and its words, in a list: no box, no
-     toggle, no pill. */
-  .choices { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 320px), 1fr)); gap: 0 24px; min-width: 0; }
-  .choice { display: flex; align-items: center; gap: 14px; min-height: 52px; padding: 8px 0; font-size: 22px; letter-spacing: 0.01em; line-height: 1.2; cursor: pointer; }
-  .choice input { flex: none; width: 28px; height: 28px; margin: 0; accent-color: var(--ink); cursor: pointer; }
-  .choice:has(input:checked) { font-weight: 500; }
+  /* A group: its question as the reference's Serrif heading, then a tile
+     per choice, 5px apart. The radio stays native; a chosen tile turns
+     solid, so the choice shows by shape and not only by the dot. */
+  fieldset { border: 0; padding: 0; margin: 40px 0 0; min-width: 0; }
+  legend { display: block; padding: 0 0 14px; font-family: "Serrif", Georgia, serif; font-weight: 300; font-size: 27px; line-height: 1.15; letter-spacing: 0; }
+  .choices { display: grid; grid-template-columns: minmax(0, 1fr); gap: 5px; min-width: 0; }
+  .choices.two { grid-template-columns: repeat(auto-fit, minmax(min(100%, 260px), 1fr)); }
+  .choice {
+    display: flex; align-items: center; gap: 12px; min-height: 52px; padding: 10px 14px;
+    background: var(--tile); color: var(--tile-ink); border-radius: 10px;
+    font-size: 22px; line-height: 1.2; cursor: pointer;
+  }
+  .choice input { flex: none; width: 22px; height: 22px; margin: 0; accent-color: currentColor; cursor: pointer; }
+  .choice input:focus { outline: none; }
+  .choice:hover { background: var(--hover); color: var(--hover-ink); }
+  .choice:has(input:checked) { background: var(--solid); color: var(--solid-ink); }
+  .choice:has(input:focus-visible) { outline: 3px solid var(--ink); outline-offset: 2px; }
 
+
+  /* Buttons: Displaay's boxes, 10px corners and a 1px ink edge. The action
+     is the reference's one tall block, solid, its words top left; every
+     enabled button turns marker yellow on hover. */
   button {
-    font: inherit;
-    font-size: 22px;
-    letter-spacing: 0.01em;
-    min-height: 56px;
-    padding: 8px 28px;
-    border-radius: 999px;
-    border: 1px solid var(--ink);
-    background: var(--paper);
-    color: var(--ink);
-    cursor: pointer;
+    font: inherit; font-size: 22px; line-height: 1.2; letter-spacing: 0.005em;
+    min-height: 52px; padding: 8px 18px; border-radius: 10px;
+    border: 1px solid var(--ink); background: var(--paper); color: var(--ink);
+    cursor: pointer; text-align: start;
   }
-  /* The action: the scanner's one wide block, 12px corners, its words large
-     and set left, solid (black in light, Apple grey in dark), hover marker
-     yellow. */
   button.primary {
-    display: block; flex: 1 1 100%; width: 100%; min-height: 120px; padding: 20px 24px; border-radius: 12px; text-align: start;
-    font-size: 48px; font-weight: 400; letter-spacing: -0.01em; line-height: 1.05;
+    display: flex; align-items: flex-start; flex: 1 1 100%; width: 100%; min-height: 96px; padding: 13px 20px; border-radius: 8px;
+    font-size: 32px; line-height: 1.1; letter-spacing: -0.01em;
     background: var(--solid); color: var(--solid-ink); border-color: var(--solid);
   }
   button:hover, button.primary:hover { background: var(--hover); color: var(--hover-ink); border-color: var(--hover); }
   button[disabled], button.primary[disabled] { border: 1px dashed var(--ink); background: var(--paper); color: var(--ink); cursor: progress; }
-  .actions { display: flex; flex-wrap: wrap; justify-content: flex-start; gap: 12px; margin-top: 40px; }
+  .actions { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 5px; }
+  /* The action stands clear of the group of choices above it. */
+  form > .actions, #review > .actions, #nodraft > .actions, #done > .actions { margin-top: 40px; }
 
   /* A paper ring then an ink ring, so one of them shows on any ground. */
   :focus-visible { outline: 3px solid var(--ink); outline-offset: 3px; box-shadow: 0 0 0 3px var(--paper); }
   h1:focus, h2:focus { outline: none; }
   h1:focus-visible, h2:focus-visible { outline: 3px solid var(--ink); }
 
-  .errors { border: 2px solid var(--ink); border-radius: 20px; padding: 24px; margin: 0 0 32px; }
-  .errors h2 { margin-top: 0; font-size: 32px; }
-  .errors ul { margin: 0; padding-left: 1.2em; font-size: 22px; letter-spacing: 0.01em; }
-  .errors li { margin: 0 0 4px; }
-  /* Tall enough to hit: an inline link at 22px measured under 24px. */
-  .errors a { color: var(--ink); display: inline-block; padding: 6px 0; }
-  .field-error { display: block; font-size: 15px; font-weight: 500; letter-spacing: 0.01em; margin: 0 0 8px; }
+  .errors { background: var(--tile); color: var(--tile-ink); box-shadow: inset 0 0 0 2px var(--tile-ink); border-radius: 10px; padding: 14px 16px 16px; margin: 0 0 40px; }
+  .errors h2 { margin: 0 0 10px; font-family: "Serrif", Georgia, serif; font-weight: 300; font-size: 27px; line-height: 1.15; letter-spacing: 0; }
+  .errors ul { margin: 0; padding-left: 1.1em; font-size: 18px; letter-spacing: 0.01em; }
+  .errors li { margin: 0 0 2px; }
+  /* Tall enough to hit: an inline link measured under 24px. */
+  .errors a { color: inherit; display: block; padding: 6px 0; }
+  .field-error { display: block; font-size: 15px; font-weight: 500; line-height: 1.3; letter-spacing: 0.01em; margin: 4px 0 0; }
+  fieldset > .field-error { margin: 0 0 8px; }
   .field-error::before { content: "Error: "; }
 
-  .page-found { margin: 8px 0 0; overflow-wrap: anywhere; }
-  .page-found:empty { display: none; }
-  .draft-meta { font-size: 15px; letter-spacing: 0.01em; }
-  [hidden] { display: none !important; }
-  .visually-hidden { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+  #review-intro { margin: 0 0 24px; }
+  .draft-meta { font-size: 15px; letter-spacing: 0.01em; margin: 12px 0 0; }
 
-  /* Phone: the scanner's phone sizes; the hung column folds above its words. */
-  @media (max-width: 900px) {
-    .row { grid-template-columns: minmax(0, 1fr); }
-    .row > :is(input, textarea, select), .row > .page-found { grid-column: 1; grid-row: auto; }
-    legend, fieldset > .field-error { float: none; width: auto; margin: 0 0 8px; padding: 0; }
-    fieldset > .choices { margin-left: 0; }
-  }
+  /* The written report: one cream tile, read as finished text. Its parts
+     stand under small labels over a 1px rule, as Displaay sets the columns
+     of its pricing block; the steps keep their numbers. */
+  .doc { background: var(--tile); color: var(--tile-ink); border-radius: 10px; padding: 18px 20px 22px; }
+  .doc h3 { font-size: 32px; font-weight: 400; letter-spacing: -0.01em; line-height: 1.1; margin: 0 0 28px; text-wrap: balance; }
+  .doc h4 { font-size: 15px; font-weight: 400; letter-spacing: 0.01em; line-height: 1.3; margin: 24px 0 8px; padding: 0 0 6px; border-bottom: 1px solid var(--tile-ink); }
+  .doc h3 + h4 { margin-top: 0; }
+  .doc p, .doc ol { margin: 0; font-size: 22px; line-height: 1.25; }
+  .doc ol { padding-left: 1.4em; }
+  .doc li + li { margin-top: 6px; }
+  .doc .doc-note { font-size: 15px; line-height: 1.3; letter-spacing: 0.01em; margin-top: 20px; }
+  .doc .doc-note + .doc-note { margin-top: 6px; }
+
+  /* Phone: Displaay's 10px gutter, the scanner's phone sizes. */
   @media (max-width: 640px) {
-    body { font-size: 22px; letter-spacing: 0.005em; }
-    .page { padding: 0 10px 80px; }
-    h1 { font-size: 40px; }
-    h2 { font-size: 27px; margin-top: 40px; }
-    input[type="text"], input[type="url"], textarea { font-size: 26px; }
-    .head { grid-template-columns: minmax(0, 1fr); padding: 56px 0 32px; }
-    #intro > p:first-child, #intro > .small { grid-column: 1; grid-row: auto; }
-    button.primary { min-height: 96px; font-size: 32px; }
+    :root { --gutter: 10px; }
+    .band { min-height: 180px; gap: 32px; }
+    .band .brand { font-size: 22px; }
+    .band-line { font-size: 18px; }
+    .head { padding-top: 28px; }
+    h1 { font-size: 40px; margin-bottom: 20px; }
+    h2 { font-size: 32px; margin-top: 40px; }
+    #intro > p:first-child, #closed { font-size: 22px; }
+    legend, .errors h2 { font-size: 22px; padding-bottom: 10px; }
+    .choice { font-size: 18px; }
+    form { margin-top: 32px; }
+    fieldset { margin-top: 32px; }
+    .doc { padding: 14px 14px 18px; }
+    .doc h3 { font-size: 27px; }
+    button.primary { min-height: 80px; font-size: 27px; }
     .actions button { flex: 1 1 100%; }
   }
 </style>
 </head>
 <body>
+<header class="band">
+  <span class="brand">Accessible Scan</span>
+  <p class="band-line">A pilot for people who use<br>assistive technology</p>
+</header>
 <div class="page">
-<div class="bar"><span class="brand">Accessible Scan</span><span>Pilot</span></div>
 <main>
   <div class="head">
   <h1 id="title" tabindex="-1">Report a barrier</h1>
@@ -202,8 +243,8 @@
   <p id="closed" hidden>The pilot is not open at the moment. Please try again&nbsp;later.</p>
 
   <div id="intro">
-    <p>Did something on a website stop you or slow you down? Tell us in your own&nbsp;words.</p>
-    <p class="small">We write it up for the site’s owner and you check it before it is sent. We keep what you write, so leave out your name and email. This device remembers what you&nbsp;use.</p>
+    <p>Did something on a website stop you or slow you down? Tell us where, and we write the report for the site’s&nbsp;owner.</p>
+    <p class="small">Give the page’s address, a sentence about what happened, or both. You read the report before it is sent. We keep what you write, so leave out your name and email. This device remembers what you&nbsp;use.</p>
   </div>
   </div>
 
@@ -231,19 +272,9 @@
     </div>
 
     <fieldset>
-      <legend>How much did it hold you&nbsp;back?</legend>
-      <span class="field-error" id="impact-error" hidden></span>
-      <div class="choices">
-        <label class="choice"><input type="radio" name="impact" value="blocked" required> I could not go on</label>
-        <label class="choice"><input type="radio" name="impact" value="slowed"> I got there, but it took much longer</label>
-        <label class="choice"><input type="radio" name="impact" value="annoyed"> It was irritating, but it did not stop me</label>
-      </div>
-    </fieldset>
-
-    <fieldset>
       <legend>What do you&nbsp;use?</legend>
       <span class="field-error" id="assistiveTech-error" hidden></span>
-      <div class="choices">
+      <div class="choices two">
         <label class="choice"><input type="radio" name="assistiveTech" value="screen-reader" required> A screen reader</label>
         <label class="choice"><input type="radio" name="assistiveTech" value="keyboard-only"> Only a keyboard</label>
         <label class="choice"><input type="radio" name="assistiveTech" value="screen-magnifier"> A screen magnifier</label>
@@ -252,53 +283,6 @@
         <label class="choice"><input type="radio" name="assistiveTech" value="other"> Something else</label>
       </div>
     </fieldset>
-
-    <div class="pair">
-    <div class="row">
-      <label class="field" for="assistiveTechDetail">Which one, and with which browser&nbsp;(optional)</label>
-      <span class="hint" id="detail-hint">Choose the closest.</span>
-      <select id="assistiveTechDetail" name="assistiveTechDetail" aria-describedby="detail-hint">
-        <option value="">Not chosen</option>
-        <optgroup label="Screen readers">
-          <option>NVDA with Firefox</option>
-          <option>NVDA with Chrome</option>
-          <option>NVDA with Edge</option>
-          <option>JAWS with Chrome</option>
-          <option>JAWS with Edge</option>
-          <option>Narrator with Edge</option>
-          <option>VoiceOver with Safari on a Mac</option>
-          <option>VoiceOver with Chrome on a Mac</option>
-          <option>VoiceOver on an iPhone or iPad</option>
-          <option>TalkBack on Android</option>
-          <option>Orca on Linux</option>
-        </optgroup>
-        <optgroup label="Magnifiers">
-          <option>ZoomText or Fusion</option>
-          <option>Windows Magnifier</option>
-          <option>macOS Zoom</option>
-          <option>Browser zoom</option>
-        </optgroup>
-        <optgroup label="Voice control">
-          <option>Dragon</option>
-          <option>Windows Voice Access</option>
-          <option>Voice Control on a Mac or iPhone</option>
-        </optgroup>
-        <optgroup label="Keyboard and switch">
-          <option>Keyboard with Chrome</option>
-          <option>Keyboard with Firefox</option>
-          <option>Keyboard with Safari</option>
-          <option>Switch Control on a Mac or iPhone</option>
-          <option>Switch Access on Android</option>
-        </optgroup>
-      </select>
-    </div>
-
-    <div class="row">
-      <label class="field" for="task">What were you trying to do?&nbsp;(optional)</label>
-      <span class="hint" id="task-hint">Only if it isn’t clear&nbsp;above.</span>
-      <input type="text" id="task" name="task" maxlength="1000" aria-describedby="task-hint">
-    </div>
-    </div>
 
     <!-- A trap field: hidden from people and from assistive technology. -->
     <div hidden aria-hidden="true"><label>Company website <input type="text" name="company_url" tabindex="-1" autocomplete="off"></label></div>
@@ -309,31 +293,27 @@
   </form>
 
   <section id="review" hidden aria-labelledby="review-title">
-    <h2 id="review-title" tabindex="-1">Check the draft</h2>
+    <h2 id="review-title" tabindex="-1">Your report</h2>
     <p id="review-intro"></p>
-    <p class="draft-meta" id="draft-meta"></p>
 
-    <div class="row">
-      <label class="field" for="d-title">Title</label>
-      <input type="text" id="d-title" maxlength="120">
-    </div>
-    <div class="row">
-      <label class="field" for="d-explanation">What happens</label>
-      <textarea id="d-explanation" maxlength="800"></textarea>
-    </div>
-    <div class="row">
-      <label class="field" for="d-fix">What to change</label>
-      <textarea id="d-fix" maxlength="800"></textarea>
-    </div>
-    <p class="small" id="d-criterion" hidden></p>
-
-    <fieldset>
-      <legend>Does the draft say what happened to&nbsp;you?</legend>
-      <div class="choices">
-        <label class="choice"><input type="radio" name="confirm" value="yes"> Yes, as it is now</label>
-        <label class="choice"><input type="radio" name="confirm" value="no"> No. Send only my own words</label>
+    <article class="doc" aria-labelledby="d-title">
+      <h3 id="d-title"></h3>
+      <h4>What happens</h4>
+      <p id="d-explanation"></p>
+      <div id="d-who-part" hidden>
+        <h4>Who it stops</h4>
+        <p id="d-who"></p>
       </div>
-    </fieldset>
+      <div id="d-steps-part" hidden>
+        <h4>How to see it</h4>
+        <ol id="d-steps"></ol>
+      </div>
+      <h4>What to change</h4>
+      <p id="d-fix"></p>
+      <p class="doc-note" id="d-impact" hidden></p>
+      <p class="doc-note" id="d-criterion" hidden></p>
+    </article>
+    <p class="draft-meta" id="draft-meta"></p>
 
     <div class="actions">
       <button type="button" class="primary" id="send-btn">Send report</button>

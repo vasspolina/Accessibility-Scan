@@ -40,7 +40,9 @@ export function savePilotReport(body: SubmitBody, model: string | undefined): st
     at,
     body.task,
     body.barrier || "(not described: drafted from a scan of the page)",
-    body.impact,
+    // NOT NULL in the table; the form stopped asking (19 Nov 2026), and the
+    // model's estimate stays in draft_json, never in this column.
+    body.impact ?? "unrated",
     body.draft ? JSON.stringify(body.draft) : null,
     body.draft ? (model ?? null) : null,
     body.draft && body.confirmed ? 1 : 0

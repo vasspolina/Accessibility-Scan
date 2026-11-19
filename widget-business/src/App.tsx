@@ -185,6 +185,8 @@ export function App({
   // it is the only way to scan behind a login, because a password typed
   // into the chat would pass through the model.
   const [entry, setEntry] = useState<"chat" | "form">("chat");
+  // The form opened for a page behind a login starts with its login panel open.
+  const [formForLogin, setFormForLogin] = useState(false);
   // The ticking "12s" is reassurance, not essential status — the words
   // beside it carry the real information, and elapsed itself keeps driving
   // those words and the progress bar either way. WCAG 2.2.2 asks for a way
@@ -993,11 +995,14 @@ export function App({
           audit={audit}
           renderSection={(key) => <ReportViewProvider value={chatReportView}>{renderSection(key)}</ReportViewProvider>}
           availableSections={availableSections}
+          onSignInForm={() => {
+            setFormForLogin(true);
+            setEntry("form");
+          }}
           onScan={(url, scope, aiReview) => {
             const full = /^https?:\/\//i.test(url) ? url : `https://${url}`;
             return handleScan(full, aiReview, scope, 5);
           }}
-          onUseForm={() => setEntry("form")}
           resultPrivate={resultPrivate}
           onRestore={(result) => {
             // A reopened conversation's result, back as it was: no scan, and
@@ -1023,6 +1028,7 @@ export function App({
       {entry === "form" && (
       <>
       <UrlForm
+        startWithLogin={formForLogin}
         onSubmit={handleScan}
         loading={loading}
         audience={audience}
@@ -1038,7 +1044,13 @@ export function App({
         progress={progressNode}
       />
       <p className="a11y-chat-alt">
-        <Button variant="ghost" onClick={() => setEntry("chat")}>
+        <Button
+          variant="ghost"
+          onClick={() => {
+            setFormForLogin(false);
+            setEntry("chat");
+          }}
+        >
           {t("Back to the chat")}
         </Button>
       </p>
