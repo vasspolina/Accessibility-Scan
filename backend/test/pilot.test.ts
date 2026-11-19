@@ -30,6 +30,7 @@ let app: FastifyInstance;
 let dir: string;
 let modelContent = "";
 let modelDown = false;
+let modelTimesOut = false;
 const modelCalls: Array<{ messages: Array<{ role: string; content: string }> }> = [];
 const realFetch = globalThis.fetch;
 
@@ -43,6 +44,7 @@ beforeAll(async () => {
   globalThis.fetch = (async (url: string, init: { body: string }) => {
     if (!String(url).startsWith("http://gpu.test")) throw new Error(`unexpected fetch ${url}`);
     if (modelDown) throw new TypeError("fetch failed");
+    if (modelTimesOut) throw new DOMException("The operation timed out.", "TimeoutError");
     modelCalls.push(JSON.parse(init.body));
     return new Response(JSON.stringify({ choices: [{ message: { content: modelContent } }] }));
   }) as unknown as typeof fetch;
@@ -58,6 +60,7 @@ afterAll(async () => {
 afterEach(() => {
   modelCalls.length = 0;
   modelDown = false;
+  modelTimesOut = false;
 });
 
 const fields = {
@@ -248,6 +251,14 @@ describe("the pilot", () => {
     const res = await post("/api/pilot/draft", rest);
     expect(res.statusCode).toBe(400);
     expect(res.json().fields).toEqual(["barrier"]);
+  });
+
+  it("says the model timed out, apart from other failures, so the form can offer to try again", async () => {
+    modelTimesOut = true;
+    expect((await post("/api/pilot/draft", fields)).json()).toMatchObject({ draft: null, reason: "timeout" });
+    modelTimesOut = false;
+    modelDown = true;
+    expect((await post("/api/pilot/draft", fields)).json()).toMatchObject({ draft: null, reason: "failed" });
   });
 
   it("wakes the model while the form is filled in, once per two minutes", async () => {
