@@ -17,7 +17,6 @@ points below; keep them short. Character limits are the form's.
       `design-system/`). Swap in an open (OFL) face.
 - [ ] Check whether `design-system/` and `reference/` (vendored from claude.ai/design)
       can be published under the EUPL. If not, leave them out of the public repo.
-- [ ] Remove `design-library/koerber/` (values taken from koerber.com).
 - [ ] The git history still holds those files. Publish a fresh repository without that
       history, or rewrite it, rather than flipping the current repo to public.
 - [ ] Make it public, or link a public mirror. The form asks for

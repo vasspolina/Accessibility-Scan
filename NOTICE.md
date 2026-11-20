@@ -14,7 +14,6 @@ They must be removed or replaced before the repository is made public.
 | `backend/public/fonts/Saans-TRIAL-Light.ttf`, `backend/public/fonts/Serrif-TRIAL-Light.otf` | Displaay Saans and Serrif, trial licence | Not redistributable; replace |
 | `design-system/production/assets/fonts/PPTelegraf-*.otf` | PP Telegraf (Pangram Pangram) | Commercial font; remove |
 | `design-system/`, `reference/` | Vendored design system and its UI kit | Check its terms before publishing |
-| `design-library/koerber/` | Design values taken from koerber.com | Not ours to license; remove |
 
 Bundled dependencies (React, axe-core and others in each package's
 `node_modules` and in the built widget files) keep their own licences.
