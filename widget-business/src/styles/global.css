@@ -37,8 +37,8 @@
 .a11y-widget-biz img, .a11y-widget-biz table, .a11y-widget-biz pre { max-width: 100%; }
 .a11y-widget-biz pre { overflow-x: auto; }
 
-/* ═══ THE POSTER, AGAIN ══════════════════════════════════════════════════
-   From the Independent Publishing Fair poster: big plain type in a tight
+/* ═══ INK, PAPER AND THE MARKER ══════════════════════════════════════════
+   Big plain type in a tight
    block, with a marker highlight laid over the phrases that matter. The
    highlight is orange, blue or green behind BLACK text in both themes, so
    the colour is never what carries the reading: every fill measures 7:1 or
@@ -89,8 +89,7 @@
   max-width: 40em; margin-inline: auto; padding: 1em;
 }
 /* A heading sits a clear step above its text (0.5em, was 0.3em) and a full
-   line clear of what came before: paragraph spacing after the FAQ on
-   displaay.net, user's instruction, 4 Nov 2026. */
+   line clear of what came before (user's instruction, 4 Nov 2026). */
 .a11y-widget-biz :is(h1, h2, h3, h4) { font-weight: 500; line-height: 1.05; font-size: 38px; letter-spacing: -0.005em; margin: 1.2em 0 0.5em; }
 /* Two lines under each paragraph, list, table and figure of the report
    (was one; user asked for twice the room, 4 Nov 2026). */
@@ -116,8 +115,8 @@
   font-size: 18px; letter-spacing: 0.01em; line-height: 1.2;
 }
 
-/* Controls: pills again (user's instruction, 4 Nov 2026, back from the 10px
-   Displaay rectangle the same day), with Displaay's 1px ink edge, a 34px floor
+/* Controls: pills again (user's instruction, 4 Nov 2026, back from a 10px
+   rectangle tried the same day), with a 1px ink edge, a 34px floor
    and a flat marker-yellow fill on hover (black text on --hl-cap-a measures
    better than 7:1). 18px. */
 .a11y-widget-biz :is(button, .a11y-btn) {
@@ -133,7 +132,7 @@
 .a11y-widget-biz .a11y-btn:enabled:hover { background: var(--hover); border-color: var(--hover); color: var(--hover-ink); }
 .a11y-widget-biz button:disabled,
 .a11y-widget-biz .a11y-btn:disabled { border-style: dashed; border-color: var(--ink); background: var(--paper); cursor: not-allowed; }
-/* The main action is solid ink, Displaay's "Ask Albert": the run, the send,
+/* The main action is solid ink: the run, the send,
    the save. It turns marker-yellow on hover like the rest. Disabled, it drops
    back to paper with the dashed edge, never a faded ink. */
 .a11y-widget-biz .a11y-btn.a11y-btn-primary:enabled { background: var(--solid); color: var(--solid-ink); }
@@ -336,7 +335,7 @@
 }
 /* Who is speaking: small print above each turn. */
 .a11y-widget-biz .a11y-chat-who { font-size: 18px; letter-spacing: 0.01em; font-weight: 500; margin: 0 0 0.3em; }
-/* Paragraph spacing, after the FAQ on displaay.net (user's instruction,
+/* Paragraph spacing (user's instruction,
    4 Nov 2026, replacing "no space between turns" of 18 Oct): one line of
    the 27px text between turns and, since the same day, a full line between
    paragraphs inside one too (was half a line; user asked for twice the room),
@@ -1089,16 +1088,15 @@
      pair may part rather than run off the screen. */
   .a11y-widget-biz .a11y-sum-run .a11y-sum-nobreak { white-space: normal; }
 }
-/* What the score counts as the Displaay homepage's release grid (user's
-   reference, 4 Nov 2026: displaay.net, "New Releases"). Measured there at
-   1400px: a six-column grid, 15px between columns and 25px between rows;
-   the lead release spans five columns and leaves the sixth empty, the
-   next two span three each. Each release is a square-cornered tile with
-   the type set big in its middle, and its name under it, 10px down, at
-   28px Regular, set left. Here the point is the type in the tile and its
-   number is the name under it (27px, the prose size, nearest to 28).
+/* What the score counts as a grid of tiles (user's instruction,
+   4 Nov 2026): six columns, 15px between columns and 25px between rows;
+   the lead tile spans five columns and leaves the sixth empty, the
+   next two span three each. Each tile is square-cornered with
+   the type set big in its middle, and its name under it, 10px down,
+   set left. Here the point is the type in the tile and its
+   number is the name under it (27px, the prose size).
    01, 04 and 07 span five columns at 48px; 02 + 03 and 05 + 06 span three
-   each at 32px. Tiles keep Displaay's proportions (636 / 1131 for the
+   each at 32px. Tiles keep fixed proportions (636 / 1131 for the
    wide one, 420 / 673 for the pair) as a minimum, and grow when the words
    need more. Colour is the user's tile exception (see SPECIMEN TILES):
    #f0efe8, fixed in both themes, #000 on it at 18.4:1. Under 640px of its
@@ -1106,8 +1104,7 @@
    fixed proportion. */
 .a11y-widget-biz .a11y-sum-counts { container: a11y-sum-counts / inline-size; text-align: start; margin: 0 0 1.2em; }
 .a11y-widget-biz .a11y-sum-counts > .a11y-sum-eyebrow { margin: 0 0 0.6em; font-size: 38px; letter-spacing: -0.005em; line-height: 1.1; font-weight: 400; hyphens: manual; }
-/* Replaced the same day (user's instruction, the displaay.net Info block
-   as reference): no big tiles. Two columns, 15px apart; each point is its
+/* Replaced the same day (user's instruction): no big tiles. Two columns, 15px apart; each point is its
    number at 15px over a 1px ink rule, the words under it at 18px Regular,
    set left. One column under 640px of its own width. */
 .a11y-widget-biz .a11y-sum-specimens {
@@ -1188,12 +1185,11 @@
 .a11y-widget-biz .a11y-occurrence { margin: 0 0 0.6em; }
 .a11y-widget-biz .a11y-occurrence-count { margin-inline-start: 0.4em; font-size: 18px; letter-spacing: 0.01em; font-weight: 500; }
 
-/* ═══ THE EXPANDED FINDING, SET LIKE DISPLAAY'S "INFO" BLOCK ════════════════
-   User's instruction, 4 Nov 2026, from the Info section of
-   displaay.net/typeface/dazzed: a heavy ink rule across the top, one column
+/* ═══ THE EXPANDED FINDING, SET AS AN INFO BLOCK ═════════════════════════════
+   User's instruction, 4 Nov 2026: a heavy ink rule across the top, one column
    at the full width (two half-width columns until the user's instruction of
    the same day). Restored at the user's word later that day, over the
-   pricing block and Reckless's specimen tiles that had replaced it; the
+   pricing columns and specimen tiles that had replaced it; the
    tiles now set the report's other groups of content (SPECIMEN TILES below).
    each part under a small capital label with a 1px rule beneath it, the prose
    in a book serif, and the key/value lines (WCAG, selector, rule) set as a
@@ -1387,7 +1383,7 @@
 .a11y-widget-biz .a11y-pro-jump { display: inline-flex; align-items: baseline; gap: 0.4em; }
 
 /* ═══ SPECIMEN TILES FOR THE REPORT'S GROUPS (user's instruction, 4 Nov 2026) ═
-   The Reckless tiles (displaay.net/typeface/reckless) left the expanded
+   The specimen tiles left the expanded
    finding, which went back to its Info block, and now set every group of
    parallel items in the report: the two scan-summary panels, the WCAG 2.2
    items, the design notes, the statement and buyer-report facts, the report
@@ -1395,10 +1391,10 @@
    purpose: tables (the findings schedule, the undecided ledger, the legal
    results, the conformance list), sequences (the screen-reader preview),
    the legal card (its yellow carries the legal status) and the score-counts
-   sheet, which has its own tiles as the Displaay homepage release grid.
+   sheet, which has its own grid of tiles.
    Since later on 4 Nov 2026 (user's instruction) the tiles are gone except
-   for the design notes: every group is set as the columns of the
-   displaay.net pricing block (below), and the notes are round tappable
+   for the design notes: every group is set as pricing-style
+   columns (below), and the notes are round tappable
    blocks. What follows about the tile ground applies to the notes only:
    the ground is fixed in both themes, like the highlights, so the tile redefines --ink and
    --paper for everything inside it: borders, buttons, inputs and the focus
@@ -1428,8 +1424,8 @@
 .a11y-widget-biz .a11y-sum-col > :not(.a11y-sum-panel:not(.a11y-sum-counts)) { flex: 1 1 100%; }
 .a11y-widget-biz .a11y-dn-list > li { display: flex; margin: 0; }
 
-/* Each cell is a column of the displaay.net pricing block (user's
-   reference, 4 Nov 2026): no ground, no box; its label over a 1px ink rule,
+/* Each cell is a pricing-style column (user's
+   instruction, 4 Nov 2026): no ground, no box; its label over a 1px ink rule,
    the lines under it at 18px. Ink and paper are the page's again, so the
    cells follow the theme. */
 .a11y-widget-biz .a11y-next-list > li,
@@ -1462,8 +1458,8 @@
 .a11y-widget-biz .a11y-sum-col > .a11y-sum-panel a,
 .a11y-widget-biz .a11y-sum-col > .a11y-sum-panel code { color: inherit; }
 
-/* The label: 15px Jokker, sentence case, at the top-left, with the room of
-   a Reckless tile (about 72px from the edge to the words) under it. */
+/* The label: 15px Jokker, sentence case, at the top-left, with about 72px
+   from the edge to the words under it. */
 .a11y-widget-biz .a11y-next-list > li > .a11y-next-crit,
 .a11y-widget-biz .a11y-next-main > .a11y-next-title + .a11y-next-meta,
 .a11y-widget-biz .a11y-spec-card > .a11y-spec-label,
@@ -1482,10 +1478,9 @@
   display: block; margin: 0;
   font-family: "Jokker", sans-serif; font-weight: 400; font-size: 22px; line-height: 1.3; letter-spacing: 0.01em;
 }
-/* A design note's title at the size of the displaay.net Download / Test /
-   Buy buttons (user's reference, 18 Nov 2026, "make this text size like
-   this"): measured against the 32px it was, the reference's lines sit 0.6
-   as far apart, so 22px (the larger of the two label sizes) set solid at
+/* A design note's title at button size (user's instruction, 18 Nov 2026,
+   "make this text size like this"): measured against the 32px it was, the
+   requested lines sit 0.6 as far apart, so 22px (the larger of the two label sizes) set solid at
    line-height 1.0, +0.01em as 22px takes. */
 .a11y-widget-biz .a11y-dn-link > .a11y-dn-link-text {
   display: block; margin: 0; font-family: "Jokker", sans-serif; font-weight: 400; font-size: 22px; line-height: 1.2; letter-spacing: 0.01em;
@@ -1520,9 +1515,8 @@
   -webkit-box-decoration-break: clone; box-decoration-break: clone;
 }
 
-/* The report actions, after the Displaay Info block and form (user's
-   references, 17 Nov 2026). Each column opens on an uppercase label, the
-   Info block's DESCRIPTION / DETAILS, with no rule under it (user's
+/* The report actions (user's instruction, 17 Nov 2026). Each column opens
+   on an uppercase label (DESCRIPTION / DETAILS), with no rule under it (user's
    instruction, 18 Nov 2026, "delete lines under eyebrows"). The address
    is a rounded #f0efe8 field with its label inside it; the send is one wide
    rounded block in Light 40px; the PDF is an outlined button with 10px
@@ -1639,20 +1633,17 @@
 @media (min-width: 641px) {
   .a11y-widget-biz { max-width: none; margin-inline: 0; padding-inline: 16px; }
 }
-/* ═══ PHONE TYPESETTING, AFTER DISPLAAY.NET (user's instruction, 4 Nov 2026) ═
-   Measured on displaay.net at 390px against 1440px: the page gutter halves
-   (20px to 10px); the small sizes barely move (UI 15px to 14px, labels stay
-   15px); the prose steps down by about a fifth (Serrif 21px to 17px); the
-   big type compresses hardest (headings 48px to 29px, the footer 200px to
-   48px). Leading ratios and tracking-by-size are kept, only the size moves.
-   Here, in the same proportions and on this file's own scale:
-   - the gutter 1em (27px) to 10px, Displaay's figure;
-   - prose 27px to 22px (x0.81, Displaay's 21 to 17), +0.005em, half-way
+/* ═══ PHONE TYPESETTING (user's instruction, 4 Nov 2026) ════════════════════
+   On a phone the page gutter halves, the small sizes barely move, the prose
+   steps down by about a fifth and the big type compresses hardest. Leading
+   ratios and tracking-by-size are kept, only the size moves. On this file's
+   own scale:
+   - the gutter 1em (27px) to 10px;
+   - prose 27px to 22px (x0.81), +0.005em, half-way
      between 18px (+0.01em) and 27px (0); line-height stays 1.2;
-   - titles 32px to 27px, one step over the prose as Displaay's 22px card
-     titles sit over its 17px text; tracking 0 at 27px;
-   - labels, buttons and inputs keep 15px and 18px: Displaay moves its small
-     sizes by a pixel at most, and 14px is our floor;
+   - titles 32px to 27px, one step over the prose; tracking 0 at 27px;
+   - labels, buttons and inputs keep 15px and 18px: the small sizes move
+     by a pixel at most, and 14px is our floor;
    - display sizes already come down in their own container queries above
      (56 to 40, 48 to 32); Light 40px stays 40px, Light's floor.
    Everything spaced in em (paragraphs, turns, the speaker gutter) follows the
@@ -1662,7 +1653,7 @@
   .a11y-widget-biz :is(h1, h2, h3, h4) { font-size: 32px; letter-spacing: 0; }
   .a11y-widget-biz .a11y-legal-count { font-size: 32px; letter-spacing: 0; }
   .a11y-widget-biz .a11y-dn-link { font-size: 26px; }
-  /* Displaay's phone tables give the words the width and the figures their
+  /* On a phone a table gives the words the width and the figures their
      own: here the issue cell was left 40px wide ("Image / s have / no de")
      while "Who fixes this" kept 122px. On a phone that column takes what
      "Design fix" on two lines needs, cells keep half the air, and the issue

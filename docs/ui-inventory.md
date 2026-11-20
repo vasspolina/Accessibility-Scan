@@ -11,19 +11,10 @@ from scratch if any is worth reusing:
 
 | commit | what it was |
 |---|---|
-| `0d4611a` | the fullest one. Built from the design system's OWN stylesheet and component sources rather than from screenshots: the 12/24/48 spacing scale, the project type rules (literal px, 15/18 body, 0.01em tracking), ports of `.as-card` / `.as-head` / `.as-table` / `.as-row` / `.as-band` / `.as-pill` / `.as-sev`, the severity tone ramp, and the report sections' 5fr/7fr grid |
-| `dadf555` | Foundations-v2 component sheets |
+| `0d4611a` | the fullest one: the 12/24/48 spacing scale, the project type rules (literal px, 15/18 body, 0.01em tracking), ports of `.as-card` / `.as-head` / `.as-table` / `.as-row` / `.as-band` / `.as-pill` / `.as-sev`, the severity tone ramp, and the report sections' 5fr/7fr grid |
+| `dadf555` | component sheets |
 | `c5a2640` | the Pangram-direction system |
 | `92b5a9b` | the reference-matched scan form |
-
-**Take values from `reference/accessible-scan.css`, not from a screenshot.** It
-is the design system's real stylesheet — 30KB, greppable, exact. Its companion
-`reference/ui-kit.html` is 1.5MB, generates its strings at runtime so grep finds
-nothing in it, and scales every page to `transform: scale(0)` until scrolled
-into view, so readings taken at the wrong moment come back as zeros. Use the
-HTML for composition and the CSS for values. Component sources are readable
-through the design project itself, which is how the two screens that crash in
-the exported HTML (`Perceivable`, `ReportSections`) were recovered.
 
 **The webfont lives at document level, not in `global.css`.** `src/index.tsx`
 injects two `@font-face` declarations for PP Telegraf 400/500 into
@@ -119,7 +110,7 @@ alignment — it is data from the caller, not a style decision to remove.
 `ScreenReaderPreview`, `VisionSimulator`, `TrustIssues`, `SinceLastTime`,
 `FixPreviews` — all in `components/`.
 
-`SinceLastTime`, `TrustIssues` and `FixPreviews` are UI-kit ports and are **not
+`SinceLastTime`, `TrustIssues` and `FixPreviews` are **not
 wired**: they duplicate or await data the app already owns. Style them last.
 
 ## Feedback, empty and error states

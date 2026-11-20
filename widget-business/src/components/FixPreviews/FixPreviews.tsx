@@ -1,8 +1,7 @@
 import type { ReactNode } from "react";
 
 /**
- * FixPreviews, ported from ui_kits/scan-app/FixPreviews.jsx. Tokens rewritten
- * per .claude/rules/kit-token-map.md.
+ * FixPreviews.
  *
  * ---- The before/after samples are illustrations, not content --------------
  *

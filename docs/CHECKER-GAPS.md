@@ -375,7 +375,7 @@ No Appium, XCUITest, Espresso, or React Native. "Mobile" here means Chromium emu
 ### 3.9 Component and design-system auditing — absent as a mode
 `componentSignature` clusters repeats *within one report*, which is the seed. Missing: a way to point the scanner at a Storybook or a set of component URLs, per-component pass/fail, cross-page component rollup, or any design-token/Figma awareness.
 
-This is the odd one, because the raw material is sitting in the repo: a vendored design system in `/Users/polinavasilyeva/a11y-checker/design-system/`, and a fixture harness (`?fixture`) that already renders every widget state without a backend and is already axe-scannable in place.
+This is the odd one, because the raw material is sitting in the repo: a fixture harness (`?fixture`) that already renders every widget state without a backend and is already axe-scannable in place.
 
 **Commercially:** the highest-leverage sale in accessibility — fix the button once, fix it on 4,000 pages — and the one that gets you into the design org rather than the compliance org.
 

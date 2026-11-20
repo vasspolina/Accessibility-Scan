@@ -27,9 +27,8 @@ export interface MountOptions {
 // widget bundle: one variable file whose wght axis (100–900) covers the
 // 300 / 400 / 500 the stylesheet asks for, so no weight is synthesised.
 // font-display swap keeps text readable while it loads, and every rule
-// keeps a system fallback. Saans and Serrif (Displaay, trial, Light only)
-// set the expanded finding, after the "Info" block of
-// displaay.net/typeface/dazzed (user's instruction, 4 Nov 2026).
+// keeps a system fallback. Saans and Serrif (trial, Light only) set the
+// expanded finding (user's instruction, 4 Nov 2026).
 function injectFonts(apiBase: string) {
   const id = "a11y-widget-fonts";
   if (document.getElementById(id)) return;

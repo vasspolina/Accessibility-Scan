@@ -22,8 +22,7 @@ import type { ReactNode } from "react";
  * trap this report flags on other sites.
  *
  * No inline styles and no values of any kind: everything visual is in
- * Button.css against Foundations v2 tokens. The source styles inline so it
- * can render without a stylesheet; this package has one, and a class is what
+ * Button.css against the design tokens. A class is what
  * lets the responsive and print rules reach the control.
  *
  */

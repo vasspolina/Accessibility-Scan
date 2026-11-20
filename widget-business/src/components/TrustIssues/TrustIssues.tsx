@@ -3,8 +3,7 @@ import { SeverityTag } from "../SeverityTag";
 import type { Severity } from "../SeverityTag";
 
 /**
- * TrustIssues, ported from ui_kits/scan-app/TrustIssues.jsx — the dark-pattern
- * section. Tokens rewritten to v2 per .claude/rules/kit-token-map.md.
+ * TrustIssues — the dark-pattern section.
  *
  * The screen's argument is in its own words and worth keeping: these findings
  * "don't move the score. They move how much you're trusted." That is why the

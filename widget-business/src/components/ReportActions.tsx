@@ -66,7 +66,7 @@ export function ReportActions({
       {/* Each export carries its own note in its own column, so the sentence
           that explains a control sits under that control rather than in one
           run-on paragraph the reader has to split apart themselves. */}
-      {/* Set as the Displaay Info block and form (user's references,
+      {/* Set as an info block and form (user's instruction,
           17 Nov 2026): two columns, each under an uppercase label (no rule
           under it since 18 Nov 2026). The address is a rounded field with its label inside it, the
           send is one wide rounded block in display type, and the PDF is an

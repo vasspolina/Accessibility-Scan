@@ -142,7 +142,7 @@ was re-run the same way: clean in both modes and both schemes — after one
 false alarm from a stale hot-reloaded stylesheet inside the shadow root,
 which a full page reload resolved. Axe runs after CSS edits need a fresh
 mount, not hot module replacement. Re-earned once more on 1 August after
-the Verify design-system restyle (PP Telegraf, 18/28 type scale, tinted
+an earlier restyle (PP Telegraf, 18/28 type scale, tinted
 severity tags, focus ring with inner contrast line): the full matrix —
 both audience modes, both colour schemes, collapsed and expanded — zero
 violations, and the deployed demo self-scans at 100 with no findings.
@@ -167,8 +167,8 @@ four-word label plus aria-describedby description — each deployed,
 re-scanned, and back at 100 before the next began.
 
 **Design strip, 1 August (late).** At the user's direction the widget was
-stripped to browser defaults: the GitHub, Carbon and Verify design layers
-and the imported design-system components are gone (git history keeps
+stripped to browser defaults: the earlier design layers
+and the imported components are gone (git history keeps
 them; df0cf62 is the last dressed revision). The stylesheet now holds only
 what accessibility requires — the shadow-boundary reset with explicit
 colours, the screen-reader-only utility, a visible aria-pressed state (no

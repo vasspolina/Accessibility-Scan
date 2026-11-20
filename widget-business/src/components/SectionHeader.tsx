@@ -9,9 +9,7 @@ import type { ReactNode } from "react";
  *   Title <qualifier>            [status chip] [action]
  *   ───────────────────────────────────────────────────
  *
- * Rendered as markup rather than imported, because the kit's `Section` is a
- * screen-local helper rather than a published component, there is nothing in
- * `@verify/design-system` to import for it. No eyebrow above the title: it
+ * Rendered as markup. No eyebrow above the title: it
  * named the category the title already says (removed 5 Nov 2026).
  */
 export function SectionHeader({

@@ -1,12 +1,7 @@
 import type { ReactNode } from "react";
 
 /**
- * SinceLastTime, ported from ui_kits/scan-app/SinceLastTime.jsx.
- *
- * The kit's screens are inline-styled and speak the design system's older token
- * vocabulary. Both change here: the styling moves to SinceLastTime.css, and
- * every token is rewritten to Foundations v2 — no alias layer, so v2 stays the
- * only vocabulary in this tree.
+ * SinceLastTime. The styling is in SinceLastTime.css, on this tree's tokens.
  *
  * One substitution has to be flagged rather than buried. The kit reaches for
  * --text-on-invert-tertiary four times, and v2 has no tertiary on-inverse ink.

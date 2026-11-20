@@ -93,10 +93,9 @@ a:hover { text-decoration-thickness: 3px; }
 .hero .btn { margin-top: 36px; }
 .closing { padding-block: 72px 120px; }
 
-/* The opening screen, after displaay.net/typeface/bagoss (measured there at
-   1440 and 390px): one screen tall, the display type centred on both axes at
+/* The opening screen: one screen tall, the display type centred on both axes at
    line-height 1 and -0.03em, and a centred 15px line at +0.02em sitting 32px
-   off the bottom. Bagoss sets three words at 160px; this is a sentence, so
+   off the bottom. This is a sentence, so
    the size steps down with the width and height until it fits one screen.
    --top is the measured height of the top bar, which grows where the
    navigation wraps: 64px, then 51px from 640px down, 95px under 600px and
@@ -194,7 +193,7 @@ strong, b { font-weight: 500; }
 .foot a { display: inline-block; padding-block: 0.3em; }
 .foot ul { list-style: none; padding: 0; margin: 0; }
 
-/* ── Phone typesetting, after displaay.net: 10px gutter, 22px prose ────── */
+/* ── Phone typesetting: 10px gutter, 22px prose ─────────────────────────── */
 @media (max-width: 640px) {
   :root { --gutter: 10px; }
   body { font-size: 22px; letter-spacing: 0.005em; }
