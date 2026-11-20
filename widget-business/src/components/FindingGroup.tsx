@@ -24,7 +24,7 @@ import {
   keyboardHint,
 } from "../lib/testMethod";
 
-const severityLabel: Record<AccessibilityFinding["severity"], string> = {
+export const severityLabel: Record<AccessibilityFinding["severity"], string> = {
   critical: "Fix first",
   serious: "Fix soon",
   moderate: "Fix eventually",

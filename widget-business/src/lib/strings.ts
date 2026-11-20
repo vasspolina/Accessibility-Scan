@@ -211,6 +211,7 @@ export const CHROME_KEYS: string[] = [
   "Nothing found",
   "Not measured",
   "Software can check it",
+  "Where to start",
   "Fix first",
   "Fix soon",
   "Fix eventually",
