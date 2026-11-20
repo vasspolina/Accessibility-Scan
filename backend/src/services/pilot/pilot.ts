@@ -120,6 +120,9 @@ export const pilotDraftSchema = z.object({
   /** The model's estimate of how much it holds people back, used only when
    *  the person gave no rating, and always shown as the model's. */
   impact: z.enum(IMPACTS).optional().catch(undefined),
+  /** Set when the model said "blocked" for a 2.4.4 link finding and the
+   *  rule in `draftFinding` lowered it to "slowed"; shown with the estimate. */
+  impactCapped: z.literal(true).optional().catch(undefined),
   /** The criterion the model thinks this touches, as "1.3.1". A suggestion,
    *  shown as one; nobody has checked it. */
   wcagCriterion: z
@@ -270,20 +273,20 @@ const L = "\\p{L}";
 const COMPLETE_WORDS: Record<ReportLang, { element: string; place: string; compound?: boolean }> = {
   en: {
     element: "buttons?|links?|fields?|box(es)?|check ?box(es)?|radio|menus?|drop-?down|images?|pictures?|photos?|icons?|videos?|player|headings?|forms?|banner|pop-?ups?|dialog|modal|slider|carousel|captcha|map|table|input",
-    place: `menu|navigation|nav|header|footer|sidebar|form|checkout|basket|cart|sign[ -]?in|log[ -]?in|search|banner|pop-?up|summary|top of the page|bottom of the page|home ?page|(on|in) the [${L}-]+( [${L}-]+)? (page|screen|step|section)`,
+    place: `menu|navigation|nav|header|footer|sidebar|form|checkout|basket|cart|sign[ -]?in|log[ -]?in|search|banner|pop-?up|summary|main (text|content|part|area|section)|body text|article|headings?|(top|bottom) of (the|a) page|(at|near) the (top|bottom)|(under|below|above|beside|next to) the [${L}-]+|home ?page|(on|in) the [${L}-]+( [${L}-]+)? (page|screen|step|section)`,
   },
   de: {
     element: `button|schaltfläche|knopf|link(?!s(?!${L}))|feld|eingabe|kästchen|checkbox|menü|auswahl|reiter|bild(?!schirm)|foto|symbol|icon|video|überschrift|formular|banner|pop-?up|dialog|fenster|slider|karussell|captcha|karte|tabelle`,
-    place: `menü|navigation|kopfzeile|fußzeile|footer|seitenleiste|formular|kasse|bezahl|warenkorb|anmeld|login|einlogg|such|banner|pop-?up|übersicht|zusammenfassung|(?!web|internet)[${L}]+seite`,
+    place: `menü|navigation|kopfzeile|fußzeile|footer|seitenleiste|formular|kasse|bezahl|warenkorb|anmeld|login|einlogg|such|banner|pop-?up|übersicht|zusammenfassung|haupt|inhalt|artikel|überschrift|oben|unten|(unter|über|neben) (der|dem|den)|seitenanfang|seitenende|(?!web|internet)[${L}]+seite`,
     compound: true,
   },
   es: {
     element: "botón|boton|enlace|vínculo|campo|casilla|caja|menú|desplegable|pestaña|imagen|foto|icono|ícono|vídeo|título|encabezado|formulario|aviso|ventana|diálogo|carrusel|mapa|tabla",
-    place: `menú|navegación|cabecera|encabezado|pie de página|barra lateral|formulario|pago|carrito|cesta|inicio de sesión|iniciar sesión|buscador|búsqueda|aviso|ventana|resumen|página de inicio|(en|de) la página de [${L}]+`,
+    place: `menú|navegación|cabecera|encabezado|pie de página|barra lateral|formulario|pago|carrito|cesta|inicio de sesión|iniciar sesión|buscador|búsqueda|aviso|ventana|resumen|página de inicio|texto principal|contenido principal|cuerpo|artículo|título|arriba|abajo|parte (superior|inferior)|(debajo|encima) del?|junto al?|al lado del?|(principio|final) de la página|(en|de) la página de [${L}]+`,
   },
   fr: {
     element: "bouton|lien|champ|case|liste déroulante|onglet|icône|icone|vidéo|titre|formulaire|bandeau|bannière|fenêtre|dialogue|carrousel|carte|tableau",
-    place: `en-tête|entête|pied de page|barre latérale|formulaire|paiement|caisse|panier|connexion|identification|recherche|bandeau|bannière|fenêtre|récapitulatif|résumé|page d[’']accueil|(sur|dans) la page (de |d[’'])[${L}]+`,
+    place: `en-tête|entête|pied de page|barre latérale|formulaire|paiement|caisse|panier|connexion|identification|recherche|bandeau|bannière|fenêtre|récapitulatif|résumé|page d[’']accueil|texte principal|contenu principal|corps|article|titre|en haut|en bas|(haut|bas) de (la )?page|sous (le|la|les)|au-dessus|à côté|près d(u|e)|(sur|dans) la page (de |d[’'])[${L}]+`,
   },
 };
 
@@ -299,8 +302,12 @@ function spans(text: string, words: string, { inside = false, open = false } = {
  * Pay now button in the order summary on the checkout page"), so the owner
  * can find it without a follow-up. Decided here, not by the model: on the
  * live worker, 20 Nov 2026, the 7B model asked a follow-up of a report like
- * that every time, even with an example of one marked enough. The element
- * and the place must be different words, so "the form" alone is not both.
+ * that every time, even with an example of one marked enough. A place is a
+ * part of the page (menu, main text, heading) or a position (at the top,
+ * under the heading); the second came from the live widget the same day,
+ * where "in the main text under the heading" was still asked where. The
+ * element and the place must be different words, so "the form" alone is
+ * not both.
  * A picked sentence is generic by design and always gets its follow-up.
  */
 export function namesElementAndPlace(barrier: string, lang: ReportLang): boolean {
@@ -444,8 +451,12 @@ const EXAMPLE_FINDING = `An example of the shape and length wanted, for a differ
  "wcagCriterion": "2.1.1"}`;
 
 /** The criteria a reported barrier most often fails, as plain cases, so a
- *  small model picks 4.1.2 for an unnamed button and not 2.4.6. */
+ *  small model picks 4.1.2 for an unnamed button and not 2.4.6. On the
+ *  live widget, 20 Nov 2026, it twice gave 1.1.1 for a "More information"
+ *  link read only as link, so the link case and the bounds of 1.1.1 are
+ *  said outright. */
 const CRITERION_HINTS = `Which criterion, by what happened:
+- a link whose words do not say where it goes, such as "More information" or "Click here": 2.4.4
 - a button, link or field read with no name, or only as "button" or "link": 4.1.2
 - something cannot be reached or used with the keyboard: 2.1.1
 - the keyboard gets stuck inside something and cannot leave: 2.1.2
@@ -458,7 +469,24 @@ const CRITERION_HINTS = `Which criterion, by what happened:
 - content cut off or overlapping when zoomed in: 1.4.10
 - something moves or changes on its own and cannot be paused: 2.2.2
 - a time limit that runs out: 2.2.1
-- a video with no captions: 1.2.2`;
+- a video with no captions: 1.2.2
+1.1.1 is only for images, icons and other things that are not text. Never give it for a link, button or field.`;
+
+/**
+ * What the live widget's drafts got wrong twice running, 20 Nov 2026, said
+ * as rules: "blocked" for a link whose destination was unclear (the visitor
+ * could still go on), and a fix that set an aria-label with different words
+ * from the link's visible text, which breaks 2.5.3 for voice control users,
+ * who say the words they see. Code came wrapped in an unclosed backtick
+ * and showed raw. With the rules deployed, the criterion and the fix came
+ * right but the vague link was still "blocked" ("impossible to determine
+ * the destination"), so the cases each way are spelled out.
+ */
+const JUDGEMENT_RULES = `Rules for impact and the fix:
+- "blocked" only when they could not go on at all: something could not be reached, opened or used. If they could still go on but had to guess, search or try again, it is "slowed".
+- A link or button whose name is vague or missing, but which can still be reached and pressed, is "slowed": they can press it and find out. A button that does nothing, a menu that will not open, or a form that cannot be sent is "blocked".
+- A name you suggest for a link, button or field must contain the words shown on screen, in the same order. Never replace the visible words with an aria-label that says something else: people using voice control say the words they see. Prefer changing the visible text, or adding hidden text after it.
+- Never wrap code in backticks.`;
 
 const LANGUAGE_NAMES: Record<ReportLang, string> = { en: "English", de: "German", es: "Spanish", fr: "French" };
 const AT_NAMES: Record<ReportFields["assistiveTech"], string> = {
@@ -484,6 +512,8 @@ You get the page, what happened in the person's words, and the assistive technol
 - wcagCriterion: the one WCAG 2.2 success criterion number this most likely fails, such as "2.1.1", or "" if you cannot tell.
 
 ${CRITERION_HINTS}
+
+${JUDGEMENT_RULES}
 
 ${LENGTH_RULES}
 
@@ -548,6 +578,8 @@ The owner should be able to act on your finding without writing back to ask.
 - fix: three to five plain sentences saying what the site should change. If the element is listed, say what to change on it.
 - impact: how much this most likely holds back a person who uses that technology: "blocked" (they cannot go on), "slowed" (they get there, much more slowly) or "annoyed" (irritating, but it does not stop them).
 - wcagCriterion: the criterion number listed with the problem you picked, or "".
+
+${JUDGEMENT_RULES}
 
 ${LENGTH_RULES}
 
@@ -646,6 +678,13 @@ export async function draftFinding(r: ReportFields, revise?: Revision): Promise<
     replaceLongDashes((dropDanglingTag(s) ?? s).replace(/!/g, ".")).replace(/\s{2,}/g, " ").trim();
   const d = result.value;
   const steps = d.steps?.map((s) => tidy(s).replace(/^\d+[.)]\s*/, "")).filter(Boolean);
+  // A link whose words do not say where it goes (2.4.4) slows a person
+  // down; they can still press it and find out. On the live model, 20 Nov
+  // 2026, the 7B model called one "blocked" every time, through two
+  // prompt rules that said otherwise, so the estimate is lowered here and
+  // marked as lowered. Never on a rewrite: what the person asked to change
+  // there may be exactly this.
+  const capped = d.impact === "blocked" && d.wcagCriterion === "2.4.4" && !r.impact && !revise;
   return {
     draft: {
       title: tidy(d.title).replace(/[.]+$/, ""),
@@ -654,7 +693,7 @@ export async function draftFinding(r: ReportFields, revise?: Revision): Promise<
       ...(steps?.length ? { steps } : {}),
       fix: tidy(d.fix),
       // Only when the person gave no rating: theirs is never overruled.
-      ...(d.impact && !r.impact ? { impact: d.impact } : {}),
+      ...(capped ? { impact: "slowed" as const, impactCapped: true as const } : d.impact && !r.impact ? { impact: d.impact } : {}),
       wcagCriterion: d.wcagCriterion,
       ...(fromScan ? { fromScan: true } : {}),
     },
@@ -690,7 +729,11 @@ export function renderPilotText(body: SubmitBody, model: string | undefined): st
     if (d.whoItStops) lines.push("", "Who it stops:", d.whoItStops);
     if (d.steps?.length) lines.push("", "How to see it:", ...d.steps.map((s, i) => `${i + 1}. ${s}`));
     lines.push("", "What to change:", d.fix);
-    if (d.impact) lines.push("", `How much it holds people back (the model's estimate, not theirs): ${d.impact}`);
+    if (d.impact)
+      lines.push(
+        "",
+        `How much it holds people back (the model's estimate, not theirs${d.impactCapped ? ", lowered from blocked by the rule for unclear links" : ""}): ${d.impact}`
+      );
     if (d.wcagCriterion) lines.push(`Suggested criterion (unchecked): ${d.wcagCriterion}`);
   }
   return lines.join("\n");

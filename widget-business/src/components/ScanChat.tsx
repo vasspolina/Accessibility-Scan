@@ -1331,21 +1331,6 @@ export function ScanChat({
       {!barrier && turns.length === 0 && (
         <section className="a11y-prompts" aria-label={t("Questions to start with")}>
           <div className="a11y-prompt-grid">
-          {/* Report a barrier, promoted into the opening (user's
-              instruction, 20 Nov 2026: "promote it so it appears in chat on
-              load"). First in the row, so it is the first card a reader
-              meets and the first a phone shows before the row scrolls; it
-              stays when the questions are shuffled. Set as the other
-              cards, with its own words for the press. */}
-          {onReportBarrier && (
-            <div className="a11y-prompt">
-              <button type="button" className="a11y-prompt-q" disabled={busy || loading} onClick={onReportBarrier}>
-                <span className="a11y-prompt-label">{t("Report a barrier")}</span>
-                <span className="a11y-prompt-ask">{smarten(t("Did something on a website stop you or slow you down?"), getLang())}</span>
-                <span className="a11y-prompt-go" aria-hidden="true">{t("Start a report")}</span>
-              </button>
-            </div>
-          )}
           {picks.map((p) => {
             const crit = criterionFor(p.prompt);
             return (
@@ -1381,6 +1366,23 @@ export function ScanChat({
               </div>
             );
           })}
+          {/* Report a barrier, promoted into the opening (user's
+              instruction, 20 Nov 2026: "promote it so it appears in chat on
+              load"). Set as the other cards, with its own words for the
+              press, on the marker yellow (a11y-prompt-barrier; user's
+              instruction, 20 Nov 2026, "make the barrier card stand out
+              more"), and the fourth card in their row (user's instruction,
+              20 Nov 2026, "add yellow button 4th in a row"). It stays when
+              the questions are shuffled. */}
+          {onReportBarrier && (
+            <div className="a11y-prompt a11y-prompt-barrier">
+              <button type="button" className="a11y-prompt-q" disabled={busy || loading} onClick={onReportBarrier}>
+                <span className="a11y-prompt-label">{t("Report a barrier")}</span>
+                <span className="a11y-prompt-ask">{smarten(t("Did something on a website stop you or slow you down?"), getLang())}</span>
+                <span className="a11y-prompt-go" aria-hidden="true">{t("Start a report")}</span>
+              </button>
+            </div>
+          )}
           </div>
           <p className="a11y-prompt-more">
             <Button variant="ghost" onClick={() => setPicks((last) => pickOpeningPrompts(Math.random, last))}>
@@ -1548,16 +1550,6 @@ export function ScanChat({
         </ol>
       )}
 
-      {!barrier && offered.length > 0 && (
-        <div className="a11y-chat-suggest" role="group" aria-label={t("Show from the report")}>
-          {offered.map((s) => (
-            <button key={s.key} type="button" className="a11y-chat-chip" onClick={() => showSection(s.key, { takeFocus: true })}>
-              {s.label()}
-            </button>
-          ))}
-        </div>
-      )}
-
       {!barrier && (
       <div className="a11y-chat-dock" ref={dockRef}>
         {/* An assistant's box: the prompt sits inside it as the placeholder
@@ -1629,6 +1621,19 @@ export function ScanChat({
               </Button>
             </div>
           </div>
+          {/* The report's sections, under the box in the sticky dock, so
+              they stay on screen while the thread scrolls (user's
+              instruction, 20 Nov 2026, "put them below chat so it's not on
+              scroll"). Each is type="button", so none submits the form. */}
+          {offered.length > 0 && (
+            <div className="a11y-chat-suggest" role="group" aria-label={t("Show from the report")}>
+              {offered.map((s) => (
+                <button key={s.key} type="button" className="a11y-chat-chip" onClick={() => showSection(s.key, { takeFocus: true })}>
+                  {s.label()}
+                </button>
+              ))}
+            </div>
+          )}
           {/* Under the box, not in it (user's instruction, 18 Nov 2026):
               a page behind a login is scanned from the form, so the login
               goes to the scanner and never into the chat or its model. */}
