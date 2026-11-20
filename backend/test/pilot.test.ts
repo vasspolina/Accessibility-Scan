@@ -388,6 +388,13 @@ describe("the pilot's conversation", () => {
       ["Auf der Anmeldeseite hat der Weiter-Knopf keinen Namen.", "de"],
       ["En la página de pago el botón Pagar no tiene nombre.", "es"],
       ["Le bouton Payer du panier n’a pas de nom.", "fr"],
+      // Where it is said as a part of the page or a position (asked "Where
+      // on the page was it?" on the live widget, 20 Nov 2026).
+      ["In the main text under the heading, the More information link is read only as link, with no clue where it goes.", "en"],
+      ["The link at the top of the page has no name.", "en"],
+      ["Der Link unter der Überschrift hat keinen Namen.", "de"],
+      ["El enlace debajo del título no dice adónde va.", "es"],
+      ["Le lien sous le titre ne dit pas où il mène.", "fr"],
     ];
     const incomplete: Array<[string, "en" | "de" | "es" | "fr"]> = [
       ["The button did nothing when I pressed Enter.", "en"],
@@ -398,6 +405,8 @@ describe("the pilot's conversation", () => {
       ["Auf der Webseite ging der Button nicht.", "de"],
       ["Ich wollte die Seite besuchen, aber der Link ging nicht.", "de"],
       ["Mein Bildschirmleser hat den Knopf nicht gefunden.", "de"],
+      ["After I pressed the button nothing happened.", "en"],
+      ["The heading has no level.", "en"],
       ["El botón no hacía nada.", "es"],
       ["Le lien ne marche pas.", "fr"],
     ];

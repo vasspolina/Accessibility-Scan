@@ -270,20 +270,20 @@ const L = "\\p{L}";
 const COMPLETE_WORDS: Record<ReportLang, { element: string; place: string; compound?: boolean }> = {
   en: {
     element: "buttons?|links?|fields?|box(es)?|check ?box(es)?|radio|menus?|drop-?down|images?|pictures?|photos?|icons?|videos?|player|headings?|forms?|banner|pop-?ups?|dialog|modal|slider|carousel|captcha|map|table|input",
-    place: `menu|navigation|nav|header|footer|sidebar|form|checkout|basket|cart|sign[ -]?in|log[ -]?in|search|banner|pop-?up|summary|top of the page|bottom of the page|home ?page|(on|in) the [${L}-]+( [${L}-]+)? (page|screen|step|section)`,
+    place: `menu|navigation|nav|header|footer|sidebar|form|checkout|basket|cart|sign[ -]?in|log[ -]?in|search|banner|pop-?up|summary|main (text|content|part|area|section)|body text|article|headings?|(top|bottom) of (the|a) page|(at|near) the (top|bottom)|(under|below|above|beside|next to) the [${L}-]+|home ?page|(on|in) the [${L}-]+( [${L}-]+)? (page|screen|step|section)`,
   },
   de: {
     element: `button|schaltfläche|knopf|link(?!s(?!${L}))|feld|eingabe|kästchen|checkbox|menü|auswahl|reiter|bild(?!schirm)|foto|symbol|icon|video|überschrift|formular|banner|pop-?up|dialog|fenster|slider|karussell|captcha|karte|tabelle`,
-    place: `menü|navigation|kopfzeile|fußzeile|footer|seitenleiste|formular|kasse|bezahl|warenkorb|anmeld|login|einlogg|such|banner|pop-?up|übersicht|zusammenfassung|(?!web|internet)[${L}]+seite`,
+    place: `menü|navigation|kopfzeile|fußzeile|footer|seitenleiste|formular|kasse|bezahl|warenkorb|anmeld|login|einlogg|such|banner|pop-?up|übersicht|zusammenfassung|haupt|inhalt|artikel|überschrift|oben|unten|(unter|über|neben) (der|dem|den)|seitenanfang|seitenende|(?!web|internet)[${L}]+seite`,
     compound: true,
   },
   es: {
     element: "botón|boton|enlace|vínculo|campo|casilla|caja|menú|desplegable|pestaña|imagen|foto|icono|ícono|vídeo|título|encabezado|formulario|aviso|ventana|diálogo|carrusel|mapa|tabla",
-    place: `menú|navegación|cabecera|encabezado|pie de página|barra lateral|formulario|pago|carrito|cesta|inicio de sesión|iniciar sesión|buscador|búsqueda|aviso|ventana|resumen|página de inicio|(en|de) la página de [${L}]+`,
+    place: `menú|navegación|cabecera|encabezado|pie de página|barra lateral|formulario|pago|carrito|cesta|inicio de sesión|iniciar sesión|buscador|búsqueda|aviso|ventana|resumen|página de inicio|texto principal|contenido principal|cuerpo|artículo|título|arriba|abajo|parte (superior|inferior)|(debajo|encima) del?|junto al?|al lado del?|(principio|final) de la página|(en|de) la página de [${L}]+`,
   },
   fr: {
     element: "bouton|lien|champ|case|liste déroulante|onglet|icône|icone|vidéo|titre|formulaire|bandeau|bannière|fenêtre|dialogue|carrousel|carte|tableau",
-    place: `en-tête|entête|pied de page|barre latérale|formulaire|paiement|caisse|panier|connexion|identification|recherche|bandeau|bannière|fenêtre|récapitulatif|résumé|page d[’']accueil|(sur|dans) la page (de |d[’'])[${L}]+`,
+    place: `en-tête|entête|pied de page|barre latérale|formulaire|paiement|caisse|panier|connexion|identification|recherche|bandeau|bannière|fenêtre|récapitulatif|résumé|page d[’']accueil|texte principal|contenu principal|corps|article|titre|en haut|en bas|(haut|bas) de (la )?page|sous (le|la|les)|au-dessus|à côté|près d(u|e)|(sur|dans) la page (de |d[’'])[${L}]+`,
   },
 };
 
@@ -299,8 +299,12 @@ function spans(text: string, words: string, { inside = false, open = false } = {
  * Pay now button in the order summary on the checkout page"), so the owner
  * can find it without a follow-up. Decided here, not by the model: on the
  * live worker, 20 Nov 2026, the 7B model asked a follow-up of a report like
- * that every time, even with an example of one marked enough. The element
- * and the place must be different words, so "the form" alone is not both.
+ * that every time, even with an example of one marked enough. A place is a
+ * part of the page (menu, main text, heading) or a position (at the top,
+ * under the heading); the second came from the live widget the same day,
+ * where "in the main text under the heading" was still asked where. The
+ * element and the place must be different words, so "the form" alone is
+ * not both.
  * A picked sentence is generic by design and always gets its follow-up.
  */
 export function namesElementAndPlace(barrier: string, lang: ReportLang): boolean {
