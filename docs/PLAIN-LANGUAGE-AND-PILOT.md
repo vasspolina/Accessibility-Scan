@@ -5,12 +5,16 @@ Two features that share one small language model you host yourself.
 1. **The plain-language rewrite.** During a scan, the model rewrites each axe
    rule's findings into a plain title, an explanation about this page's
    elements, and a fix. Code: `backend/src/services/plainLanguage/`.
-2. **The pilot.** A short conversation at `/pilot.html` where people who
-   use assistive technology report a barrier. It asks one thing at a time
-   with answers to pick, the same model drafts a detailed finding, and the
-   participant reads it, says what is wrong with it if anything, and sends
-   it. Code: `backend/src/services/pilot/`,
-   `backend/src/routes/pilot.ts`, `backend/public/pilot.html`.
+2. **The pilot.** Report a barrier, a short conversation inside the scan
+   widget (since 20 Nov 2026; before that its own page, `/pilot.html`,
+   which now sends people on) where people who use assistive technology
+   report a barrier. It opens from Report a barrier in the widget's
+   conversations panel, or from a link ending `#report-a-barrier`. It asks
+   one thing at a time with answers to pick, the same model drafts a
+   detailed finding, and the participant reads it, says what is wrong with
+   it if anything, and sends it. Code: `backend/src/services/pilot/`,
+   `backend/src/routes/pilot.ts`,
+   `widget-business/src/components/BarrierReport.tsx`.
 
 Both follow the repository's rule for optional features: with nothing set,
 they say they are not set up, and nothing fails.
@@ -120,7 +124,7 @@ pick under it so a report can be made without typing. The order is fixed:
 
 The model's worker sleeps when idle and took over 100 seconds to wake when
 measured (20 Nov 2026): a first report took 87 seconds, the same report
-written again 4. So the page asks the server to wake it as it opens
+written again 4. So the view asks the server to wake it as it opens
 (`POST /api/pilot/wake`), and once more at the first answer. The server
 lets one wake call through per two minutes; each page view outside that
 window wakes the paid worker.
@@ -159,8 +163,8 @@ There is no invitation code (removed 17 Nov 2026): anyone with the link can
 report, and the routes' rate limits bound how much. The pilot is open
 whenever reports have somewhere to go (storage or mail).
 
-1. Send people the link: `https://<backend>/pilot.html`. An old link with
-   `?code=` still works; the code is ignored and taken out of the address bar.
+1. Send people the link: `https://<backend>/demo.html#report-a-barrier`.
+   Links already sent to `/pilot.html` still work: that page sends them on.
 2. Read the reports and totals:
 
    ```bash
