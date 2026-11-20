@@ -952,7 +952,7 @@ export const CHROME_KEYS: string[] = [
   "Voice control needs Chrome, Edge or Safari.",
   "Your browser's speech service hears what you say.",
   // Report a barrier (components/BarrierReport.tsx), the assistive-technology
-  // pilot inside the widget since 20 Nov 2026. Untranslated so far: English shows.
+  // pilot inside the widget since 20 Nov 2026. Translated in de, es and fr.
   "And the page’s address?",
   "Answers to pick",
   "Anything wrong?",

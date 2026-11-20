@@ -2740,3 +2740,9 @@
 /* Small print does not break words: at 15 and 18px a hyphen leaves
    "can-not" and "suc-cess" on two lines for one saved word. */
 .a11y-widget-biz .a11y-barrier :is(.a11y-barrier-small, .a11y-barrier-hint, .a11y-barrier-error, .a11y-barrier-note, .a11y-barrier-asked, .a11y-barrier-doc-note) { hyphens: manual; }
+/* On a narrow screen Change goes under the answer, so the answer keeps the
+   box's width: beside it, German answers broke mid-word at 320px. */
+@media (max-width: 480px) {
+  .a11y-widget-biz .a11y-barrier .a11y-barrier-said { flex-wrap: wrap; align-items: flex-start; }
+  .a11y-widget-biz .a11y-barrier .a11y-barrier-said-text { flex-basis: 100%; }
+}
