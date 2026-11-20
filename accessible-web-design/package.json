@@ -1,6 +1,7 @@
 {
   "name": "barrierfreeweb-site",
   "version": "0.0.0",
+  "license": "EUPL-1.2",
   "private": true,
   "type": "module",
   "description": "The public site. Built once per locale; every locale is audited before it ships.",
