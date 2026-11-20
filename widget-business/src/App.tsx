@@ -960,7 +960,6 @@ export function App({
       lang={lang}
     >
     <AppShell
-      mark={entry === "barrier" ? t("Report a barrier") : report || audit ? t("Findings") : t("New scan")}
       onJump={jumpTo}
       /* The run's settings live in the rail once there is a run to describe.
          Report style flips in place; the other two re-run the scan, which is
@@ -990,7 +989,7 @@ export function App({
       {/* Mounted in both readings: behind the form it renders nothing but
           keeps its thread and history. */}
       <ScanChat
-          hidden={entry !== "chat"}
+          hidden={entry === "form"}
           apiRef={chatApi}
           apiBase={apiBase}
           loading={loading}
@@ -1006,6 +1005,20 @@ export function App({
             setEntry("form");
           }}
           onReportBarrier={() => setEntry("barrier")}
+          // Report a barrier opens inside the chat, in the conversation's
+          // place, not as a page of its own (user's instruction, 20 Nov 2026).
+          barrier={
+            entry === "barrier" ? (
+              <BarrierReport
+                apiBase={apiBase}
+                onBack={() => {
+                  // Out of the view, and out of the address, so a reload opens the chat.
+                  if (location.hash === "#report-a-barrier") window.history.replaceState(null, "", location.pathname + location.search);
+                  setEntry("chat");
+                }}
+              />
+            ) : null
+          }
           onScan={(url, scope, aiReview) => {
             const full = /^https?:\/\//i.test(url) ? url : `https://${url}`;
             return handleScan(full, aiReview, scope, 5);
@@ -1032,16 +1045,6 @@ export function App({
           language={lang}
           onLanguageChange={changeLang}
         />
-      {entry === "barrier" && (
-        <BarrierReport
-          apiBase={apiBase}
-          onBack={() => {
-            // Out of the view, and out of the address, so a reload opens the chat.
-            if (location.hash === "#report-a-barrier") window.history.replaceState(null, "", location.pathname + location.search);
-            setEntry("chat");
-          }}
-        />
-      )}
       {entry === "form" && (
       <>
       <UrlForm

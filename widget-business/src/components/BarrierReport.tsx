@@ -531,7 +531,13 @@ class Talk {
 
   /* ---- the written report ---- */
 
-  requestDraft(revise?: { previous: Draft; change: string } | null) {
+  // `retried`: this is the one automatic second try after a timeout. Tried
+  // on the live widget, 20 Nov 2026: a worker woken as the view opened was
+  // still not ready more than three and a half minutes later, so the first
+  // draft ran out its 150s and the reporter met "Not written up yet"; Try
+  // again then came back in seconds. Once is enough: a second timeout means
+  // something more than a slow start, and Try again stays theirs.
+  requestDraft(revise?: { previous: Draft; change: string } | null, retried = false) {
     const gen = this.gen;
     const body = this.payload();
     const scanning = !body.barrier;
@@ -543,13 +549,17 @@ class Talk {
       body.followUps = body.followUps.slice(0, -1);
     }
     this.lastRequest = revise || null;
-    this.wait(
-      scanning
+    const waiting = retried
+      ? t("The language model is still starting. Trying once more, up to two minutes.")
+      : scanning
         ? t("Scanning the page. Up to three minutes.")
         : revise
           ? t("Writing it again. Up to two minutes.")
-          : t("Writing your report. Up to two minutes.")
-    );
+          : t("Writing your report. Up to two minutes.");
+    this.wait(waiting);
+    // The wait line already has focus from the first try, and focusing it
+    // again reads nothing, so the second try is said.
+    if (retried) this.say(waiting);
     fetch(this.url("/api/pilot/draft"), {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -570,6 +580,7 @@ class Talk {
           // Worth another go when the model was slow or slipped once; not
           // when it is off, or the scan could not read the page.
           const reason = res.body.reason ?? "";
+          if (reason === "timeout" && !retried) return this.requestDraft(revise, true);
           return this.noDraft(why[reason] ?? t("The language model slipped."), reason === "timeout" || reason === "failed", revise);
         }
         this.draft = res.body.draft;
