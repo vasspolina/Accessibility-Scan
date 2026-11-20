@@ -448,8 +448,12 @@ const EXAMPLE_FINDING = `An example of the shape and length wanted, for a differ
  "wcagCriterion": "2.1.1"}`;
 
 /** The criteria a reported barrier most often fails, as plain cases, so a
- *  small model picks 4.1.2 for an unnamed button and not 2.4.6. */
+ *  small model picks 4.1.2 for an unnamed button and not 2.4.6. On the
+ *  live widget, 20 Nov 2026, it twice gave 1.1.1 for a "More information"
+ *  link read only as link, so the link case and the bounds of 1.1.1 are
+ *  said outright. */
 const CRITERION_HINTS = `Which criterion, by what happened:
+- a link whose words do not say where it goes, such as "More information" or "Click here": 2.4.4
 - a button, link or field read with no name, or only as "button" or "link": 4.1.2
 - something cannot be reached or used with the keyboard: 2.1.1
 - the keyboard gets stuck inside something and cannot leave: 2.1.2
@@ -462,7 +466,21 @@ const CRITERION_HINTS = `Which criterion, by what happened:
 - content cut off or overlapping when zoomed in: 1.4.10
 - something moves or changes on its own and cannot be paused: 2.2.2
 - a time limit that runs out: 2.2.1
-- a video with no captions: 1.2.2`;
+- a video with no captions: 1.2.2
+1.1.1 is only for images, icons and other things that are not text. Never give it for a link, button or field.`;
+
+/**
+ * What the live widget's drafts got wrong twice running, 20 Nov 2026, said
+ * as rules: "blocked" for a link whose destination was unclear (the visitor
+ * could still go on), and a fix that set an aria-label with different words
+ * from the link's visible text, which breaks 2.5.3 for voice control users,
+ * who say the words they see. Code came wrapped in an unclosed backtick
+ * and showed raw.
+ */
+const JUDGEMENT_RULES = `Rules for impact and the fix:
+- "blocked" only when they could not go on at all: something could not be reached, opened or used. If they could still go on but had to guess, search or try again, it is "slowed".
+- A name you suggest for a link, button or field must contain the words shown on screen, in the same order. Never replace the visible words with an aria-label that says something else: people using voice control say the words they see. Prefer changing the visible text, or adding hidden text after it.
+- Never wrap code in backticks.`;
 
 const LANGUAGE_NAMES: Record<ReportLang, string> = { en: "English", de: "German", es: "Spanish", fr: "French" };
 const AT_NAMES: Record<ReportFields["assistiveTech"], string> = {
@@ -488,6 +506,8 @@ You get the page, what happened in the person's words, and the assistive technol
 - wcagCriterion: the one WCAG 2.2 success criterion number this most likely fails, such as "2.1.1", or "" if you cannot tell.
 
 ${CRITERION_HINTS}
+
+${JUDGEMENT_RULES}
 
 ${LENGTH_RULES}
 
@@ -552,6 +572,8 @@ The owner should be able to act on your finding without writing back to ask.
 - fix: three to five plain sentences saying what the site should change. If the element is listed, say what to change on it.
 - impact: how much this most likely holds back a person who uses that technology: "blocked" (they cannot go on), "slowed" (they get there, much more slowly) or "annoyed" (irritating, but it does not stop them).
 - wcagCriterion: the criterion number listed with the problem you picked, or "".
+
+${JUDGEMENT_RULES}
 
 ${LENGTH_RULES}
 

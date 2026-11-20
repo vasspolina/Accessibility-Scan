@@ -286,6 +286,14 @@ describe("the pilot", () => {
     expect(system).toContain("Never leave it out");
     // The first live run picked 2.4.6 for an unnamed button.
     expect(system).toMatch(/only as "button" or "link": 4\.1\.2/);
+    // The live widget's drafts, 20 Nov 2026: 1.1.1 for a vague link,
+    // "blocked" where the visitor could go on, and an aria-label that
+    // replaced the link's visible words.
+    expect(system).toMatch(/"More information" or "Click here": 2\.4\.4/);
+    expect(system).toContain("Never give it for a link, button or field");
+    expect(system).toContain('"blocked" only when they could not go on at all');
+    expect(system).toContain("must contain the words shown on screen");
+    expect(system).toContain("Never wrap code in backticks");
     expect(system).toContain("Copy its shape, never its facts");
     expect(call.max_tokens).toBe(1400);
   });
