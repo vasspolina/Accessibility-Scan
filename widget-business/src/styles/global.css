@@ -2630,8 +2630,13 @@
 
 /* The answers to pick, under the question: pills in a row, as the chat's
    own suggestions. */
-.a11y-widget-biz .a11y-barrier .a11y-barrier-picks { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 0.6em; min-width: 0; }
-.a11y-widget-biz .a11y-barrier .a11y-barrier-pick { max-width: 100%; height: auto; white-space: normal; text-align: start; overflow-wrap: break-word; }
+/* The choices are 15px, 30% under the widget's 22px buttons (user's
+   instruction, 20 Nov 2026, "make these smaller 30%"): 22 x 0.7 is 15.4, and
+   15px is the label size. The padding is in em, so it comes down with the
+   type: 50px tall became 34px, the buttons' minimum height. The phone, at 18px
+   before, comes to 15px too, since 30% off 18 would be under 14px. */
+.a11y-widget-biz .a11y-barrier .a11y-barrier-picks { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 0.6em; min-width: 0; }
+.a11y-widget-biz .a11y-barrier .a11y-barrier-pick { font-size: 15px; letter-spacing: 0.01em; max-width: 100%; height: auto; white-space: normal; text-align: start; overflow-wrap: break-word; }
 
 /* An answer the box refused, said over what you typed. */
 .a11y-widget-biz .a11y-barrier .a11y-barrier-error { margin: 0 0 0.3em; font-size: 18px; font-weight: 500; line-height: 1.2; letter-spacing: 0.01em; }
@@ -2670,7 +2675,6 @@
   .a11y-widget-biz .a11y-barrier .a11y-barrier-doc h4 { font-size: 22px; }
   .a11y-widget-biz .a11y-barrier .a11y-barrier-doc p,
   .a11y-widget-biz .a11y-barrier .a11y-barrier-doc ol { font-size: 19px; line-height: 1.4; }
-  .a11y-widget-biz .a11y-barrier .a11y-barrier-pick { font-size: 18px; }
   /* Your answer is a bubble at the right edge; what is under it follows. */
   .a11y-widget-biz .a11y-barrier .a11y-chat-you .a11y-barrier-note { text-align: end; }
   /* The box has room for the arrow, not for Back's words beside it. */
