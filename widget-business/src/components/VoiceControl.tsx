@@ -23,7 +23,8 @@ interface Recognition extends EventTarget {
 }
 /** The chat's message box, when it is on screen. */
 function chatBox(root: ShadowRoot | Document): HTMLTextAreaElement | null {
-  const el = root.querySelector<HTMLTextAreaElement>("#a11y-chat-input");
+  // The scan chat's box, or Report a barrier's, whichever is showing.
+  const el = root.querySelector<HTMLTextAreaElement>("#a11y-chat-input, #a11y-barrier-answer");
   return el && !el.disabled && el.getClientRects().length > 0 ? el : null;
 }
 
@@ -40,15 +41,21 @@ function recogniserClass(): (new () => Recognition) | null {
  * of sitting there dead.
  *
  * The browser's own speech service hears the audio and may send it to its
- * maker; the line under the toggle says so. Nothing is sent to our server.
+ * maker. Nothing is sent to our server.
+ *
+ * One toggle sits in each chat box (the scan chat's and Report a barrier's),
+ * and only one box is on screen at a time. Whether it is listening is kept
+ * outside the component, so going from one box to the other leaves it on.
  */
+const listening = { current: false };
+
 export function VoiceControl() {
   const Rec = typeof window === "undefined" ? null : recogniserClass();
-  const [on, setOn] = useState(false);
+  const [on, setOn] = useState(listening.current);
   const [status, setStatus] = useState("");
-  const wrapRef = useRef<HTMLDivElement>(null);
+  const wrapRef = useRef<HTMLSpanElement>(null);
   const recRef = useRef<Recognition | null>(null);
-  const wantOn = useRef(false);
+  const wantOn = listening;
 
   const handle = useCallback((heard: string) => {
     const wrap = wrapRef.current;
@@ -176,13 +183,20 @@ export function VoiceControl() {
     rec.start();
   }, [Rec, handle]);
 
-  useEffect(
-    () => () => {
-      wantOn.current = false;
-      recRef.current?.stop();
-    },
-    []
-  );
+  // Mounted while listening (the other box was just replaced by this one):
+  // carry on. Unmounted: this recogniser stops, but the wish to listen stays
+  // for the box that takes its place.
+  useEffect(() => {
+    if (wantOn.current) start();
+    return () => {
+      const rec = recRef.current;
+      if (rec) {
+        rec.onend = null;
+        rec.stop();
+      }
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   function toggle() {
     if (on) {
@@ -198,22 +212,21 @@ export function VoiceControl() {
     }
   }
 
-  if (!Rec) {
-    return (
-      <div className="a11y-voice" ref={wrapRef}>
-        <p className="a11y-voice-note">{t("Voice control needs Chrome, Edge or Safari.")}</p>
-      </div>
-    );
-  }
+  // In the chat's box, beside Back (user's instruction, 20 Nov 2026: "move
+  // button into chat and no description needed"). The line that sat beside
+  // it at rest is gone; what the control heard and did still shows, under
+  // the button, once there is something to say. Where the browser has no
+  // recogniser there is no button, rather than a button with an excuse.
+  if (!Rec) return null;
 
   return (
-    <div className="a11y-voice" ref={wrapRef}>
-      <button type="button" className="a11y-btn a11y-btn-secondary a11y-btn-sm" aria-pressed={on} onClick={toggle}>
+    <span className="a11y-voice" ref={wrapRef}>
+      <button type="button" className="a11y-btn a11y-btn-ghost a11y-btn-md" aria-pressed={on} onClick={toggle}>
         {t("Voice control")}
       </button>
-      <p className="a11y-voice-note" role="status">
-        {status || t("Your browser's speech service hears what you say.")}
-      </p>
-    </div>
+      <span className="a11y-voice-note" role="status">
+        {status}
+      </span>
+    </span>
   );
 }

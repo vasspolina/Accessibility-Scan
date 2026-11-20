@@ -1,5 +1,4 @@
 import type { ReactNode, RefObject } from "react";
-import { VoiceControl } from "./VoiceControl";
 import { SideNav, type NavSection } from "./SideNav";
 
 /**
@@ -55,7 +54,8 @@ export function AppShell({
           />
         )}
         <div className="a11y-shell-content" ref={contentRef}>
-          <VoiceControl />
+          {/* Voice control sits in the chat's box now, beside Back
+              (user's instruction, 20 Nov 2026, "move button into chat"). */}
           {children}
         </div>
       </div>

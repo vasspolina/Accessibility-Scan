@@ -949,8 +949,6 @@ export const CHROME_KEYS: string[] = [
   "I can't find a button called {name}.",
   "The microphone is blocked. Allow it in your browser's address bar, then try again.",
   "Listening. Say the name of a button, like \"press send\". Say \"what can I say\" for more.",
-  "Voice control needs Chrome, Edge or Safari.",
-  "Your browser's speech service hears what you say.",
   // Report a barrier (components/BarrierReport.tsx), the assistive-technology
   // pilot inside the widget since 20 Nov 2026. Translated in de, es and fr.
   "And the page’s address?",
@@ -1026,6 +1024,14 @@ export const CHROME_KEYS: string[] = [
   "Here is your report for the site’s owner. Read it before you send it.",
   "Your report could not be sent. Nothing is lost. Press the button to try again.",
   "Your report is as it was.",
+  // The read-back before writing (BarrierReport stepCheck)
+  "Is this right?",
+  "Type what to correct.",
+  "Yes, write it",
+  "You use",
+  "No address",
+  "What happened",
+  "Your correction",
   "Your report is written again.",
   "Your report, step by step",
   "{count} answers to pick follow.",

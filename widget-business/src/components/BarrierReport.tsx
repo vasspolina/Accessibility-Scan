@@ -1,6 +1,7 @@
 import { Fragment, useEffect, useLayoutEffect, useReducer, useRef, useState, type ReactNode, type Ref } from "react";
 import { getLang } from "../lib/i18n";
 import { t, tf } from "../lib/strings";
+import { VoiceControl } from "./VoiceControl";
 
 /**
  * Report a barrier, inside the widget (user's instruction, 20 Nov 2026:
@@ -33,6 +34,9 @@ interface Patch {
   scanOnly?: boolean;
   followUp?: { question: string; answer: string };
   followDone?: boolean;
+  /** Set on the answer to "Is this right?": the read-back was seen and the
+   *  report may be written. */
+  checked?: boolean;
 }
 interface Pick {
   label: string;
@@ -41,8 +45,10 @@ interface Pick {
   note?: string;
 }
 interface Step {
-  id: "use" | "page" | "happened" | "follow" | "change";
+  id: "use" | "page" | "happened" | "follow" | "check" | "change";
   ask: string;
+  /** What the assistant reads back before writing (the check step). */
+  summary?: Array<{ label: string; value: string }>;
   hint: string;
   picks: Pick[];
   url?: boolean;
@@ -98,6 +104,9 @@ const HAPPENED: Record<Uses, string[]> = {
 };
 // The same words as CHANGE_QUESTION in backend services/pilot/pilot.ts.
 const CHANGE_QUESTION = "Change asked after reading the draft";
+// A correction typed at the read-back, before anything was written. It goes
+// with the other follow-ups, so the model reads it as the person's words.
+const CHECK_QUESTION = "Correction given when the answers were read back, before the report was written";
 
 // The same key the stand-alone page used, so someone who reported there
 // keeps their answers and their device id here.
@@ -399,6 +408,40 @@ class Talk {
     return step;
   }
 
+  // Before the report is written, the assistant reads back what it has and
+  // asks whether it is right (user's instruction, 20 Nov 2026, "make
+  // assistant check the information"). It had gone from the last answer
+  // straight to writing, a wait of up to two minutes on answers nobody had
+  // looked over. Yes writes it; anything typed is a correction, sent with
+  // the answers; Change on an earlier answer works as before.
+  private stepCheck(): Step {
+    const self = this;
+    const f = this.fields();
+    const summary: Array<{ label: string; value: string }> = [];
+    const use = f.assistiveTechDetail || t(useLabel(f.assistiveTech));
+    if (use) summary.push({ label: t("You use"), value: use });
+    summary.push({ label: t("Page"), value: f.pageUrl || t("No address") });
+    summary.push({
+      label: t("What happened"),
+      value: f.barrier ? (f.barrierPicked ? t(f.barrier) : f.barrier) : t("Scan the page instead"),
+    });
+    for (const q of f.followUps) {
+      if (q.question === CHANGE_QUESTION) continue;
+      summary.push({ label: q.question === CHECK_QUESTION ? t("Your correction") : q.question, value: q.answer });
+    }
+    return {
+      id: "check",
+      ask: t("Is this right?"),
+      hint: t("Type what to correct."),
+      summary,
+      picks: [{ label: t("Yes, write it"), patch: { checked: true } }],
+      make: () => self.stepCheck(),
+      typed(text) {
+        self.commit(this, text, { followUp: { question: CHECK_QUESTION, answer: text.slice(0, 1000) }, checked: true }, "", true);
+      },
+    };
+  }
+
   // Under the written report: what they type is a change to it. A report
   // that came from a scan has none of their words yet, so what they type
   // there is what happened, and the report is written from that instead.
@@ -464,6 +507,13 @@ class Talk {
         if (x.step.id === step.id) continue;
         if (step.id === "happened" && x.step.id === "follow") continue;
         if (x.patch.scanOnly && !hasPage) continue;
+        // The read-back is asked again over the changed answers: a plain
+        // yes goes; a typed correction stays as their words, without the
+        // read-back it answered, which no longer matches.
+        if (x.step.id === "check") {
+          if (x.typed) this.turns.push({ ...x, step: { ...x.step, summary: undefined }, patch: { ...x.patch, checked: undefined } });
+          continue;
+        }
         this.turns.push(x);
       }
       this.after = null;
@@ -499,6 +549,7 @@ class Talk {
     if (!f.pageAsked) return this.ask(this.stepPage());
     if (!f.barrier && !f.scanOnly) return this.ask(this.stepHappened());
     if (f.barrier && !f.followDone && !this.noFollow) return this.fetchFollow();
+    if (!this.turns[this.turns.length - 1]?.patch.checked) return this.ask(this.stepCheck());
     this.requestDraft();
   }
 
@@ -726,6 +777,21 @@ function Waiting({ text, at }: { text: string; at: Ref<HTMLParagraphElement> }) 
   );
 }
 
+/** What the assistant reads back before writing: each answer under its
+ *  question, as terms and values, so a screen reader moves by item. */
+function Summary({ lines }: { lines: Array<{ label: string; value: string }> }) {
+  return (
+    <dl className="a11y-barrier-check">
+      {lines.map((l, i) => (
+        <div key={i}>
+          <dt>{l.label}</dt>
+          <dd>{l.value}</dd>
+        </div>
+      ))}
+    </dl>
+  );
+}
+
 /** One of the assistant's turns in the thread. */
 function Says({ children, className = "" }: { children: ReactNode; className?: string }) {
   return (
@@ -902,6 +968,7 @@ export function BarrierReport({ apiBase, onBack }: { apiBase: string; onBack: ()
           talk.turns.map((turn, i) => (
             <Fragment key={`${i}:${turn.ask}`}>
               <Says>
+                {turn.step.summary && <Summary lines={turn.step.summary} />}
                 <div className="a11y-chat-text">
                   <p>{turn.ask}</p>
                 </div>
@@ -960,6 +1027,7 @@ export function BarrierReport({ apiBase, onBack }: { apiBase: string; onBack: ()
         {/* The question on the table, with the answers to pick under it. */}
         {asking && (
           <Says>
+            {asking.summary && <Summary lines={asking.summary} />}
             <div className="a11y-chat-text">
               <p className="a11y-barrier-ask" ref={refs.ask} tabIndex={-1}>
                 {asking.ask}
@@ -1157,6 +1225,7 @@ export function BarrierReport({ apiBase, onBack }: { apiBase: string; onBack: ()
                   <span aria-hidden="true">← </span>
                   {t("Back to the chat")}
                 </button>
+                <VoiceControl />
               </span>
               <button type="submit" className="a11y-btn a11y-btn-primary a11y-btn-md" disabled={!answering || !talk.answer.trim()}>
                 {/* On a phone the word is clipped and the arrow drawn, as in

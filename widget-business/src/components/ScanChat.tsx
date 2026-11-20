@@ -5,6 +5,7 @@ import { CAPS_RUN, smarten } from "../lib/typography";
 import { Button } from "./Button";
 import { LanguageSelect } from "./LanguageSelect";
 import { BlockedNotice } from "./BlockedNotice";
+import { VoiceControl } from "./VoiceControl";
 import type { Lang } from "../lib/i18n";
 import type { AccessibilityReport, SiteAudit } from "../api/scanClient";
 import {
@@ -1622,6 +1623,7 @@ export function ScanChat({
                     {t("Back")}
                   </Button>
                 )}
+                <VoiceControl />
               </span>
               <Button type="submit" variant="primary" disabled={busy || loading || !draft.trim()}>
                 {/* On a phone the word is clipped and the arrow drawn, as in
