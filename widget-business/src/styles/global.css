@@ -2606,3 +2606,137 @@
 @media print {
   .a11y-widget-biz .a11y-poster { display: none; }
 }
+
+/* ═══ REPORT A BARRIER (user's instruction, 20 Nov 2026) ═══════════════════
+   The assistive-technology pilot's conversation, moved into the widget
+   from backend/public/pilot.html (BarrierReport.tsx). Set in the scan
+   form's terms, so the widget's two forms read as one family: a 640px
+   column, the name at 67px Regular, the question on the table as the
+   Serrif heading over its field, every field and every answer to pick a
+   filled --tile box with 12px corners, and the action one wide block with
+   its words large and left. Answered questions stay above, small question
+   over the answer in its box, with Change at the box's end. The report is
+   one --tile sheet, its parts under 15px labels over a 1px rule. */
+.a11y-widget-biz .a11y-chats .a11y-chats-new.a11y-chats-barrier { margin-top: 8px; font-weight: 400; }
+.a11y-widget-biz .a11y-barrier { box-sizing: border-box; min-width: 0; max-width: 640px; }
+.a11y-widget-biz .a11y-barrier .a11y-barrier-title {
+  margin: 0 0 24px; font-size: 67px; font-weight: 400; line-height: 1.05; letter-spacing: -0.01em;
+}
+.a11y-widget-biz .a11y-barrier .a11y-barrier-title:focus { outline: none; }
+.a11y-widget-biz .a11y-barrier .a11y-barrier-title:focus-visible { outline: 2px solid var(--focus); outline-offset: 4px; }
+.a11y-widget-biz .a11y-barrier .a11y-barrier-intro { margin: 0 0 12px; font-size: 32px; line-height: 1.2; }
+.a11y-widget-biz .a11y-barrier .a11y-barrier-small { margin: 0 0 12px; font-size: 18px; line-height: 1.3; letter-spacing: 0.01em; }
+.a11y-widget-biz .a11y-barrier .a11y-barrier-talk { margin-top: 40px; }
+
+/* An answered question: the question small, the answer in its box. */
+.a11y-widget-biz .a11y-barrier .a11y-barrier-turn { margin: 0 0 16px; }
+.a11y-widget-biz .a11y-barrier .a11y-barrier-asked { margin: 0 0 6px; font-size: 18px; line-height: 1.3; letter-spacing: 0.01em; }
+.a11y-widget-biz .a11y-barrier .a11y-barrier-said {
+  display: flex; align-items: center; gap: 12px; box-sizing: border-box; min-width: 0; padding: 12px 12px 12px 18px;
+  border-radius: 12px; background: var(--tile); color: var(--tile-ink);
+}
+.a11y-widget-biz .a11y-barrier .a11y-barrier-said-text {
+  flex: 1 1 auto; min-width: 0; margin: 0; font-size: 26px; line-height: 1.2; overflow-wrap: break-word; hyphens: auto;
+}
+.a11y-widget-biz .a11y-barrier .a11y-barrier-said > .a11y-btn { flex: none; }
+.a11y-widget-biz .a11y-barrier .a11y-barrier-note { margin: 6px 0 0; font-size: 15px; line-height: 1.3; letter-spacing: 0.01em; overflow-wrap: anywhere; }
+
+.a11y-widget-biz .a11y-barrier .a11y-barrier-wait { margin: 24px 0; font-size: 32px; line-height: 1.2; }
+.a11y-widget-biz .a11y-barrier .a11y-barrier-wait:focus { outline: none; }
+
+/* The question on the table, and its field. */
+.a11y-widget-biz .a11y-barrier .a11y-barrier-composer { margin-top: 40px; }
+.a11y-widget-biz .a11y-barrier .a11y-barrier-ask {
+  display: block; margin: 0 0 12px; font-family: "Serrif", Georgia, serif; font-size: 32px; font-weight: 300; line-height: 1.1; letter-spacing: 0;
+}
+.a11y-widget-biz .a11y-barrier .a11y-barrier-ask:focus { outline: none; }
+.a11y-widget-biz .a11y-barrier .a11y-barrier-ask:focus-visible { outline: 2px solid var(--focus); outline-offset: 4px; }
+.a11y-widget-biz .a11y-barrier .a11y-barrier-field {
+  display: grid; grid-template-columns: minmax(0, 1fr); gap: 4px; box-sizing: border-box; padding: 14px 18px 16px;
+  border-radius: 12px; background: var(--tile); color: var(--tile-ink);
+}
+.a11y-widget-biz .a11y-barrier .a11y-barrier-field:focus-within { outline: 2px solid var(--focus); outline-offset: -2px; }
+.a11y-widget-biz .a11y-barrier .a11y-barrier-hint { font-size: 18px; line-height: 1.2; letter-spacing: 0.01em; }
+.a11y-widget-biz .a11y-barrier .a11y-barrier-error { font-size: 18px; font-weight: 500; line-height: 1.2; letter-spacing: 0.01em; }
+.a11y-widget-biz .a11y-barrier .a11y-barrier-error::before { content: "Error: "; }
+.a11y-widget-biz .a11y-barrier .a11y-barrier-field > textarea {
+  display: block; box-sizing: border-box; width: 100%; min-width: 0; min-height: 44px; margin: 0; padding: 0; overflow: hidden; resize: none;
+  border: 0; border-radius: 0; background: transparent; color: var(--tile-ink);
+  font: inherit; font-size: 32px; font-weight: 400; line-height: 1.2; letter-spacing: 0;
+}
+.a11y-widget-biz .a11y-barrier .a11y-barrier-field > textarea:focus-visible { outline: none; box-shadow: none; }
+.a11y-widget-biz .a11y-barrier .a11y-barrier-field:has(textarea[aria-invalid="true"]) { box-shadow: inset 0 0 0 2px var(--tile-ink); }
+
+/* Answers to pick: filled rows, two to a line where they fit. */
+.a11y-widget-biz .a11y-barrier .a11y-barrier-picks {
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 260px), 1fr)); gap: 8px; margin-top: 8px; min-width: 0;
+}
+.a11y-widget-biz .a11y-barrier .a11y-barrier-pick {
+  box-sizing: border-box; min-width: 0; min-height: 60px; margin: 0; padding: 12px 18px;
+  border: 0; border-radius: 12px; background: var(--tile); color: var(--tile-ink); cursor: pointer;
+  font: inherit; font-size: 22px; line-height: 1.2; letter-spacing: 0.01em; text-align: start;
+  overflow-wrap: break-word; hyphens: auto;
+}
+.a11y-widget-biz .a11y-barrier .a11y-barrier-pick:hover { background: var(--hover); color: var(--hover-ink); }
+.a11y-widget-biz .a11y-barrier .a11y-barrier-pick:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
+
+.a11y-widget-biz .a11y-barrier .a11y-barrier-actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px; }
+/* The report's one action, as the scan form's "Start the scan". */
+.a11y-widget-biz .a11y-barrier .a11y-barrier-actions > .a11y-btn.a11y-btn-primary {
+  display: block; flex: 1 1 100%; width: 100%; min-height: 120px; padding: 20px 24px; border-radius: 12px; text-align: start;
+  font-size: 48px; font-weight: 400; line-height: 1.05; letter-spacing: -0.01em;
+}
+
+/* The written report: one sheet. */
+.a11y-widget-biz .a11y-barrier .a11y-barrier-review,
+.a11y-widget-biz .a11y-barrier .a11y-barrier-nodraft,
+.a11y-widget-biz .a11y-barrier .a11y-barrier-done { margin-top: 40px; }
+.a11y-widget-biz .a11y-barrier .a11y-barrier-review > h3,
+.a11y-widget-biz .a11y-barrier .a11y-barrier-nodraft > h3,
+.a11y-widget-biz .a11y-barrier .a11y-barrier-done > h3 {
+  margin: 0 0 16px; font-size: 48px; font-weight: 400; line-height: 1.05; letter-spacing: -0.01em;
+}
+.a11y-widget-biz .a11y-barrier h3:focus { outline: none; }
+.a11y-widget-biz .a11y-barrier h3:focus-visible { outline: 2px solid var(--focus); outline-offset: 4px; }
+.a11y-widget-biz .a11y-barrier .a11y-barrier-nodraft > p { margin: 0 0 8px; font-size: 32px; line-height: 1.2; }
+.a11y-widget-biz .a11y-barrier .a11y-barrier-doc {
+  box-sizing: border-box; margin: 0 0 12px; padding: 20px 22px 24px; border-radius: 12px; background: var(--tile); color: var(--tile-ink);
+}
+.a11y-widget-biz .a11y-barrier .a11y-barrier-doc h4 { margin: 0 0 28px; font-size: 38px; font-weight: 400; line-height: 1.1; letter-spacing: -0.005em; }
+.a11y-widget-biz .a11y-barrier .a11y-barrier-doc h5 {
+  margin: 24px 0 8px; padding: 0 0 6px; border-bottom: 1px solid var(--tile-ink);
+  font-size: 15px; font-weight: 400; line-height: 1.3; letter-spacing: 0.01em;
+}
+.a11y-widget-biz .a11y-barrier .a11y-barrier-doc h4 + h5 { margin-top: 0; }
+.a11y-widget-biz .a11y-barrier .a11y-barrier-doc p,
+.a11y-widget-biz .a11y-barrier .a11y-barrier-doc ol { margin: 0; font-size: 26px; line-height: 1.25; overflow-wrap: break-word; hyphens: auto; }
+.a11y-widget-biz .a11y-barrier .a11y-barrier-doc ol { padding-left: 1.4em; list-style: decimal; }
+.a11y-widget-biz .a11y-barrier .a11y-barrier-doc li { padding: 0; }
+.a11y-widget-biz .a11y-barrier .a11y-barrier-doc li::before { content: none; }
+.a11y-widget-biz .a11y-barrier .a11y-barrier-doc li + li { margin-top: 6px; }
+.a11y-widget-biz .a11y-barrier .a11y-barrier-doc .a11y-barrier-doc-note { margin-top: 20px; font-size: 15px; line-height: 1.3; letter-spacing: 0.01em; }
+.a11y-widget-biz .a11y-barrier .a11y-barrier-doc .a11y-barrier-doc-note + .a11y-barrier-doc-note { margin-top: 6px; }
+
+/* Phone: the scan form's phone sizes. */
+@media (max-width: 640px) {
+  .a11y-widget-biz .a11y-barrier .a11y-barrier-title { font-size: 40px; }
+  .a11y-widget-biz .a11y-barrier .a11y-barrier-intro,
+  .a11y-widget-biz .a11y-barrier .a11y-barrier-wait,
+  .a11y-widget-biz .a11y-barrier .a11y-barrier-nodraft > p { font-size: 22px; }
+  .a11y-widget-biz .a11y-barrier .a11y-barrier-ask { font-size: 26px; }
+  .a11y-widget-biz .a11y-barrier .a11y-barrier-field > textarea { font-size: 26px; }
+  .a11y-widget-biz .a11y-barrier .a11y-barrier-said-text,
+  .a11y-widget-biz .a11y-barrier .a11y-barrier-doc p,
+  .a11y-widget-biz .a11y-barrier .a11y-barrier-doc ol { font-size: 22px; }
+  .a11y-widget-biz .a11y-barrier .a11y-barrier-pick { font-size: 18px; }
+  .a11y-widget-biz .a11y-barrier .a11y-barrier-review > h3,
+  .a11y-widget-biz .a11y-barrier .a11y-barrier-nodraft > h3,
+  .a11y-widget-biz .a11y-barrier .a11y-barrier-done > h3 { font-size: 32px; }
+  .a11y-widget-biz .a11y-barrier .a11y-barrier-doc { padding: 14px 14px 18px; }
+  .a11y-widget-biz .a11y-barrier .a11y-barrier-doc h4 { font-size: 27px; }
+  .a11y-widget-biz .a11y-barrier .a11y-barrier-actions > .a11y-btn.a11y-btn-primary { min-height: 96px; font-size: 32px; }
+  .a11y-widget-biz .a11y-barrier .a11y-barrier-actions > .a11y-btn { flex: 1 1 100%; }
+}
+/* Small print does not break words: at 15 and 18px a hyphen leaves
+   "can-not" and "suc-cess" on two lines for one saved word. */
+.a11y-widget-biz .a11y-barrier :is(.a11y-barrier-small, .a11y-barrier-hint, .a11y-barrier-error, .a11y-barrier-note, .a11y-barrier-asked, .a11y-barrier-doc-note) { hyphens: manual; }
