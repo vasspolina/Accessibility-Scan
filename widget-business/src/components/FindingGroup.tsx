@@ -11,7 +11,7 @@ import { levelFraming, plainForRule } from "../lib/wcagPlain";
 import { findingFix, findingTitle, modelPlain } from "../lib/modelPlain";
 import { whatWeFound } from "../lib/findingText";
 import { pictureNoteText } from "../lib/failureText";
-import { cardText, toPoints } from "../lib/cardText";
+import { toPoints } from "../lib/cardText";
 import { useReportView } from "./ReportViewContext";
 import { enClauseFor } from "../lib/audienceMode";
 import { DataTable } from "./DataTable";
@@ -572,33 +572,6 @@ function TileBody({ text }: { text: string }) {
   );
 }
 
-/* Copies the whole card as plain text, so "send them this card" is one
-   press and a paste into an email or a ticket (user's instruction,
-   20 Nov 2026). The text is built on press, not on render, so twenty
-   open cards build nothing until asked. */
-function CopyCardButton({ text }: { text: () => string }) {
-  const [copied, setCopied] = useState(false);
-  async function copy() {
-    try {
-      await navigator.clipboard.writeText(text());
-      setCopied(true);
-      setTimeout(() => setCopied(false), 1500);
-    } catch {
-      // Clipboard blocked: every part of the card is on screen to copy by hand.
-    }
-  }
-  return (
-    <>
-      <button type="button" className="a11y-copy-btn a11y-fd-copy" onClick={copy}>
-        {copied ? t("Copied") : t("Copy this card")}
-      </button>
-      <span className="a11y-sr-only" role="status">
-        {copied ? t("Card copied to the clipboard.") : ""}
-      </span>
-    </>
-  );
-}
-
 // One titled group = every occurrence of the same issue on the page. The
 // shared explanation (why it matters, one clean instruction, learn-more) is
 // shown once; below it, the specific elements affected are listed so the
@@ -675,25 +648,6 @@ export function FindingDetails({
           each gets its own line and its own label. */}
       <div className="a11y-method-hint" data-size={tileSize(fixHint(rep))}>
         <strong>{t("Who fixes this")}</strong> <TileBody text={fixHint(rep)} />
-        <CopyCardButton
-          text={() =>
-            cardText({
-              title,
-              severity: t(severityLabel[rep.severity]),
-              criterion,
-              found: measured ?? worded?.explanation ?? rep.description,
-              todo: whatToDo,
-              elements: devElementRefs(findings),
-              more: rep.helpUrl,
-              labels: {
-                found: t("What we found"),
-                todo: t("What to do"),
-                elements: count > 1 ? t("Affected elements") : t("Affected element"),
-                more: t("Learn more about this issue"),
-              },
-            })
-          }
-        />
       </div>
       {keyboardCheck && (
         <div className="a11y-method-hint" data-size={tileSize(keyboardHint())}>

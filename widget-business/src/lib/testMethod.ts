@@ -44,7 +44,7 @@ export const FIX_KINDS: Record<FixOwner, FixKind> = {
     // a report written for the person who owns the site rather than the one
     // who builds it. They do not need the names of the files.
     get hint() {
-      return t("Whoever builds your site. Copy this card and send it to them.");
+      return t("Whoever builds your site. Send them this card.");
     },
   },
   content: {

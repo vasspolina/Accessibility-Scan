@@ -1,9 +1,9 @@
 import { describe, it, expect } from "vitest";
-import { cardText, toPoints } from "../src/lib/cardText";
+import { toPoints } from "../src/lib/cardText";
 
 describe("toPoints", () => {
   it("keeps a short text as one sentence", () => {
-    expect(toPoints("Whoever builds your site. Copy this card and send it to them.")).toBeNull();
+    expect(toPoints("Whoever builds your site. Send them this card.")).toBeNull();
   });
 
   it("splits a long text into one point per sentence", () => {
@@ -27,45 +27,5 @@ describe("toPoints", () => {
 
   it("keeps one long sentence whole", () => {
     expect(toPoints("a".repeat(150))).toBeNull();
-  });
-});
-
-describe("cardText", () => {
-  const labels = { found: "What we found", todo: "What to do", elements: "Affected elements", more: "Learn more" };
-
-  it("puts the title, the severity and the criterion first, then the parts in order", () => {
-    const text = cardText({
-      title: "Images have no description",
-      severity: "Fix first",
-      criterion: "1.1.1",
-      found: "3 images have no alt text.",
-      todo: ["Describe each image.", "Leave decorative ones empty."],
-      elements: ["img.hero", "img.card"],
-      more: "https://example.com/rule",
-      labels,
-    });
-    expect(text).toBe(
-      [
-        "Images have no description",
-        "Fix first · WCAG 1.1.1",
-        "",
-        "What we found:",
-        "3 images have no alt text.",
-        "",
-        "What to do:",
-        "- Describe each image.",
-        "- Leave decorative ones empty.",
-        "",
-        "Affected elements:",
-        "- img.hero",
-        "- img.card",
-        "",
-        "Learn more: https://example.com/rule",
-      ].join("\n")
-    );
-  });
-
-  it("leaves out the parts a finding does not have", () => {
-    expect(cardText({ title: "Title", todo: "Do this.", labels })).toBe("Title\n\nWhat to do:\nDo this.");
   });
 });
