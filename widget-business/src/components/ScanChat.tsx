@@ -1336,9 +1336,11 @@ export function ScanChat({
               load"). First in the row, so it is the first card a reader
               meets and the first a phone shows before the row scrolls; it
               stays when the questions are shuffled. Set as the other
-              cards, with its own words for the press. */}
+              cards, with its own words for the press, and set apart on
+              the marker yellow (a11y-prompt-barrier; user's instruction,
+              20 Nov 2026, "make the barrier card stand out more"). */}
           {onReportBarrier && (
-            <div className="a11y-prompt">
+            <div className="a11y-prompt a11y-prompt-barrier">
               <button type="button" className="a11y-prompt-q" disabled={busy || loading} onClick={onReportBarrier}>
                 <span className="a11y-prompt-label">{t("Report a barrier")}</span>
                 <span className="a11y-prompt-ask">{smarten(t("Did something on a website stop you or slow you down?"), getLang())}</span>
