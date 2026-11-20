@@ -145,6 +145,12 @@ export const PLAIN_ES: Record<string, PlainRule> = {
     impact:
       "Quien usa un lector de pantalla puede sacar una lista con todos los enlaces de la página. Si todos dicen lo mismo, la lista no sirve de nada.",
   },
+  "label-content-name-mismatch": {
+    plain: "El nombre leído no coincide",
+    found: (n) =>
+      `${n} ${n === 1 ? "control muestra" : "controles muestran"} unas palabras y ${n === 1 ? "lleva" : "llevan"} otro nombre en el código. El nombre que lee un lector de pantalla deja fuera las palabras que se ven.`,
+    impact: "Quien maneja el sitio por voz dice las palabras que ve. «Pulsa Enviar mensaje» no hace nada si el botón se llama de otro modo en el código. Quien usa un lector de pantalla y ve la página oye una cosa y lee otra.",
+  },
   "button-name": {
     research:
       "Los botones sin etiqueta están cerca de lo más alto de la revisión anual que WebAIM hace de un millón de páginas de inicio, año tras año. Suelen ser controles de solo icono, evidentes para quien los diseñó.",
@@ -955,6 +961,11 @@ export const FIXES_ES: Record<string, string | string[]> = {
     "«Lea los cambios de tarifas de 2026» en vez de «Leer más».",
     "Para dejar la versión corta en pantalla, añada el texto completo como nombre.",
   ],
+  "label-content-name-mismatch": [
+    "Conserve las palabras que muestra el control dentro de su nombre en el código.",
+    "Empiece el nombre por esas mismas palabras y añada después lo demás.",
+    "Quien maneja el sitio por voz dice lo que ve, así que los dos tienen que coincidir.",
+  ],
   "button-name": [
     "Dé a cada botón palabras que digan lo que hace.",
     "En un botón de icono, añada un nombre que describa la acción.",
@@ -1105,6 +1116,10 @@ export const UNDECIDED_ES: Record<string, { what: string; ask: string }> = {
   "css-orientation-lock": {
     what: "Estilos que quizá bloquean la página en vertical u horizontal. La comprobación que lo encontró aún es experimental, así que puede equivocarse.",
     ask: "Abra la página en un móvil y gírelo en los dos sentidos. Todo debe seguir funcionando, para quien tiene el móvil o la tableta fijos en una posición.",
+  },
+  "label-content-name-mismatch": {
+    what: "Controles cuyo nombre en el código quizá no contiene las palabras que muestran. La comprobación no pudo decidirlo, casi siempre porque el control toma el nombre de su valor actual.",
+    ask: "Pida a su equipo de desarrollo que compare lo que muestra cada uno con el nombre que lee un lector de pantalla. El nombre leído debe contener las palabras visibles, en el mismo orden.",
   },
   "duplicate-id-aria": {
     what: "Un id que puede estar usado más de una vez. Toda etiqueta de código que apunte a él sigue solo al primero, así que un nombre puede acabar pegado en silencio a lo que no era.",

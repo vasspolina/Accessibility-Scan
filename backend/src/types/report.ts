@@ -252,8 +252,9 @@ export const criterionResultSchema = z.object({
   alwaysSatisfied: z.boolean().optional(),
 });
 
-// What changes when EN 301 549 adopts WCAG 2.2, expected in the Official
-// Journal around October 2026. Kept separate from the conformance summary on
+// What changes when the EU's cited standard moves to WCAG 2.2. EN 301 549
+// v4.1.1 adopts it and was published on 2 September 2026; its citation in
+// the Official Journal is still pending (see wcag22Readiness). Kept separate from the conformance summary on
 // purpose: reporting a site as failing something it is not yet required to
 // meet would be the same overclaim this report refuses elsewhere.
 export const wcag22CriterionSchema = z.object({

@@ -146,6 +146,12 @@ export const PLAIN_FR: Record<string, PlainRule> = {
     impact:
       "Les utilisateurs de lecteurs d’écran peuvent afficher la liste de tous les liens de la page. Quand ils se lisent tous pareil, la liste n’aide en rien.",
   },
+  "label-content-name-mismatch": {
+    plain: "Le nom lu diffère du libellé",
+    found: (n) =>
+      `${n} ${n === 1 ? "contrôle affiche" : "contrôles affichent"} certains mots et ${n === 1 ? "porte" : "portent"} un autre nom dans le code. Le nom que lit un lecteur d’écran laisse de côté les mots visibles.`,
+    impact: "Les personnes qui utilisent la commande vocale disent les mots qu’elles voient. « Clique sur Envoyer le message » ne fait rien si le bouton porte un autre nom dans le code. Avec un lecteur d’écran et la page sous les yeux, on entend une chose et on en lit une autre.",
+  },
   "button-name": {
     research:
       "Les boutons sans libellé sont tout en haut du relevé annuel de WebAIM sur un million de pages d’accueil, année après année. Ce sont en général des contrôles réduits à une icône, évidente pour qui les a dessinés.",
@@ -965,6 +971,11 @@ export const FIXES_FR: Record<string, string | string[]> = {
     "« Lire les changements de tarifs 2026 » plutôt que « En savoir plus ».",
     "Pour garder la version courte à l’écran, ajoutez la formulation complète en libellé.",
   ],
+  "label-content-name-mismatch": [
+    "Gardez les mots affichés sur le contrôle dans son nom dans le code.",
+    "Commencez le nom par ces mots exacts, puis ajoutez le reste.",
+    "Les personnes qui utilisent la commande vocale disent ce qu’elles voient, donc les deux doivent correspondre.",
+  ],
   "button-name": [
     "Donnez à chaque bouton des mots qui disent ce qu’il fait.",
     "Pour un bouton-icône, ajoutez un libellé qui décrit l’action.",
@@ -1124,6 +1135,10 @@ export const UNDECIDED_FR: Record<string, { what: string; ask: string }> = {
   "css-orientation-lock": {
     what: "Des styles qui bloquent peut-être la page en portrait ou en paysage. La vérification qui l’a trouvé est encore expérimentale et peut se tromper.",
     ask: "Ouvrez la page sur un téléphone et tournez-le dans les deux sens. Tout doit continuer à fonctionner, pour les personnes dont le téléphone ou la tablette est fixé dans une position.",
+  },
+  "label-content-name-mismatch": {
+    what: "Des contrôles dont le nom dans le code ne contient peut-être pas les mots affichés. La vérification n’a pas pu trancher, le plus souvent parce que le contrôle est nommé d’après sa valeur.",
+    ask: "Demandez à votre équipe de développement de comparer ce que chacun affiche avec le nom que lit un lecteur d’écran. Le nom lu doit contenir les mots visibles, dans le même ordre.",
   },
   "duplicate-id-aria": {
     what: "Un id peut-être utilisé plus d’une fois. Chaque libellé de code qui le désigne ne suit que le premier, donc un nom peut s’attacher en silence au mauvais élément.",
