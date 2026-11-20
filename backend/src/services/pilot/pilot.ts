@@ -120,6 +120,9 @@ export const pilotDraftSchema = z.object({
   /** The model's estimate of how much it holds people back, used only when
    *  the person gave no rating, and always shown as the model's. */
   impact: z.enum(IMPACTS).optional().catch(undefined),
+  /** Set when the model said "blocked" for a 2.4.4 link finding and the
+   *  rule in `draftFinding` lowered it to "slowed"; shown with the estimate. */
+  impactCapped: z.literal(true).optional().catch(undefined),
   /** The criterion the model thinks this touches, as "1.3.1". A suggestion,
    *  shown as one; nobody has checked it. */
   wcagCriterion: z
@@ -675,6 +678,13 @@ export async function draftFinding(r: ReportFields, revise?: Revision): Promise<
     replaceLongDashes((dropDanglingTag(s) ?? s).replace(/!/g, ".")).replace(/\s{2,}/g, " ").trim();
   const d = result.value;
   const steps = d.steps?.map((s) => tidy(s).replace(/^\d+[.)]\s*/, "")).filter(Boolean);
+  // A link whose words do not say where it goes (2.4.4) slows a person
+  // down; they can still press it and find out. On the live model, 20 Nov
+  // 2026, the 7B model called one "blocked" every time, through two
+  // prompt rules that said otherwise, so the estimate is lowered here and
+  // marked as lowered. Never on a rewrite: what the person asked to change
+  // there may be exactly this.
+  const capped = d.impact === "blocked" && d.wcagCriterion === "2.4.4" && !r.impact && !revise;
   return {
     draft: {
       title: tidy(d.title).replace(/[.]+$/, ""),
@@ -683,7 +693,7 @@ export async function draftFinding(r: ReportFields, revise?: Revision): Promise<
       ...(steps?.length ? { steps } : {}),
       fix: tidy(d.fix),
       // Only when the person gave no rating: theirs is never overruled.
-      ...(d.impact && !r.impact ? { impact: d.impact } : {}),
+      ...(capped ? { impact: "slowed" as const, impactCapped: true as const } : d.impact && !r.impact ? { impact: d.impact } : {}),
       wcagCriterion: d.wcagCriterion,
       ...(fromScan ? { fromScan: true } : {}),
     },
@@ -719,7 +729,11 @@ export function renderPilotText(body: SubmitBody, model: string | undefined): st
     if (d.whoItStops) lines.push("", "Who it stops:", d.whoItStops);
     if (d.steps?.length) lines.push("", "How to see it:", ...d.steps.map((s, i) => `${i + 1}. ${s}`));
     lines.push("", "What to change:", d.fix);
-    if (d.impact) lines.push("", `How much it holds people back (the model's estimate, not theirs): ${d.impact}`);
+    if (d.impact)
+      lines.push(
+        "",
+        `How much it holds people back (the model's estimate, not theirs${d.impactCapped ? ", lowered from blocked by the rule for unclear links" : ""}): ${d.impact}`
+      );
     if (d.wcagCriterion) lines.push(`Suggested criterion (unchecked): ${d.wcagCriterion}`);
   }
   return lines.join("\n");

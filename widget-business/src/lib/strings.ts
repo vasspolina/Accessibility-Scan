@@ -963,6 +963,7 @@ export const CHROME_KEYS: string[] = [
   "Did you mean {url}?",
   "Error:",
   "From a scan of the page, not from your words.",
+  "How much it holds people back, as the model judges it, lowered by our rule for unclear links: {words}.",
   "How much it holds people back, as the model judges it: {words}.",
   "How to see it",
   "I don’t have it",

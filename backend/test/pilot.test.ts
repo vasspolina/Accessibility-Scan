@@ -447,6 +447,22 @@ describe("the pilot's conversation", () => {
     expect(user).toContain("Keep every part they did not ask to change");
   });
 
+  it("lowers the model's 'blocked' to 'slowed' for an unclear link, and says so", async () => {
+    const { severityFor } = await import("../src/services/pilot/pilot.js");
+    modelContent = JSON.stringify({ ...draft, impact: "blocked", wcagCriterion: "2.4.4" });
+    const res = (await post("/api/pilot/draft", said)).json();
+    expect(res.draft).toMatchObject({ impact: "slowed", impactCapped: true, wcagCriterion: "2.4.4" });
+    expect(res.severity).toBe(severityFor(undefined, "slowed"));
+    // Not when the person rated it, not on a rewrite, not for another criterion.
+    const rated = (await post("/api/pilot/draft", { ...said, impact: "blocked" })).json();
+    expect(rated.draft.impactCapped).toBeUndefined();
+    const rewrite = (await post("/api/pilot/draft", { ...said, previous: draft, change: "It does stop me." })).json();
+    expect(rewrite.draft).toMatchObject({ impact: "blocked" });
+    expect(rewrite.draft.impactCapped).toBeUndefined();
+    modelContent = JSON.stringify({ ...draft, impact: "blocked", wcagCriterion: "2.1.1" });
+    expect((await post("/api/pilot/draft", said)).json().draft).toMatchObject({ impact: "blocked" });
+  });
+
   it("keeps what was asked with their words, and says when an answer was picked, not typed", async () => {
     const report = {
       ...said,
