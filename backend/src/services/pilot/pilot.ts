@@ -475,10 +475,13 @@ const CRITERION_HINTS = `Which criterion, by what happened:
  * could still go on), and a fix that set an aria-label with different words
  * from the link's visible text, which breaks 2.5.3 for voice control users,
  * who say the words they see. Code came wrapped in an unclosed backtick
- * and showed raw.
+ * and showed raw. With the rules deployed, the criterion and the fix came
+ * right but the vague link was still "blocked" ("impossible to determine
+ * the destination"), so the cases each way are spelled out.
  */
 const JUDGEMENT_RULES = `Rules for impact and the fix:
 - "blocked" only when they could not go on at all: something could not be reached, opened or used. If they could still go on but had to guess, search or try again, it is "slowed".
+- A link or button whose name is vague or missing, but which can still be reached and pressed, is "slowed": they can press it and find out. A button that does nothing, a menu that will not open, or a form that cannot be sent is "blocked".
 - A name you suggest for a link, button or field must contain the words shown on screen, in the same order. Never replace the visible words with an aria-label that says something else: people using voice control say the words they see. Prefer changing the visible text, or adding hidden text after it.
 - Never wrap code in backticks.`;
 
