@@ -514,6 +514,7 @@ export const STRINGS_FR: Record<string, string> = {
   "Show": "Afficher",
   "Failures ({count})": "Manquements ({count})",
   "Needs a person ({count})": "À vérifier par une personne ({count})",
+  "Nothing found ({count})": "Rien trouvé ({count})",
   "Not measured ({count})": "Non mesuré ({count})",
   "Everything ({count})": "Tout ({count})",
   "Nothing on this page fails.": "Rien n’échoue sur cette page.",

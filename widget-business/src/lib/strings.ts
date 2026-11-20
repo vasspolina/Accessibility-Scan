@@ -485,6 +485,7 @@ export const CHROME_KEYS: string[] = [
   "Show",
   "Failures ({count})",
   "Needs a person ({count})",
+  "Nothing found ({count})",
   "Not measured ({count})",
   "Everything ({count})",
   "Nothing on this page fails.",
