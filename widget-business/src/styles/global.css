@@ -303,6 +303,23 @@
    apart (user's instruction, 18 Nov 2026, "add 3px in between tabs"):
    they had no rule and sat edge to edge. */
 .a11y-widget-biz .a11y-chat-suggest { display: flex; flex-wrap: wrap; gap: 3px; }
+/* Since 20 Nov 2026 they sit under the box, inside the sticky dock, and are
+   small (user's instruction, "make these suggestions smaller and put them
+   below chat so its not on scroll"): 15px, the label size, on the 34px
+   button floor, so a row of five takes one short line under the box. */
+.a11y-widget-biz .a11y-chat-composer .a11y-chat-suggest { margin: 10px 0 0; }
+.a11y-widget-biz .a11y-chat-suggest .a11y-chat-chip { font-size: 15px; padding: 0.3em 0.9em; }
+/* On a phone ten chips wrapped to seven rows, and the sticky dock then held
+   460px of an 812px screen. There they are one line that scrolls sideways;
+   each chip is a button, so Tab still reaches and scrolls to every one. */
+@media (max-width: 640px) {
+  .a11y-widget-biz .a11y-chat-composer .a11y-chat-suggest {
+    flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none; overscroll-behavior-x: contain;
+    /* Room for the focus ring, which a scrolling box would clip. */
+    margin-top: 6px; padding: 4px;
+  }
+  .a11y-widget-biz .a11y-chat-suggest .a11y-chat-chip { flex: none; white-space: nowrap; }
+}
 /* The way to the form for a page behind a login: under the box, quiet, and
    in a blocked scan's notice. */
 .a11y-widget-biz .a11y-chat-composer .a11y-chat-signin { max-width: none; margin: 10px 0 0; }
@@ -2182,15 +2199,15 @@
    they split it evenly and never wrap. */
 .a11y-widget-biz .a11y-legal-tiles { display: flex; gap: 16px; align-items: stretch; }
 .a11y-widget-biz .a11y-legal-tiles > .a11y-legal-row {
-  --ink: var(--tile-ink); --paper: var(--tile);
+  --ink: #000; --tile-ink: #000; --paper: var(--tile);
   flex: 1 1 0; container: a11y-legal-tile / inline-size;
   display: flex; flex-direction: column; align-items: center; gap: 14px;
   box-sizing: border-box; min-width: 0; min-height: 300px; margin: 0; padding: 22px 20px 32px;
   overflow-wrap: break-word; hyphens: manual;
-  border-radius: 20px; background: var(--tile); color: var(--tile-ink); text-align: center;
+  border-radius: 20px; background: var(--tile); color: #000; text-align: center;
 }
 .a11y-widget-biz .a11y-legal-tiles > .a11y-legal-row .a11y-legal-mark {
-  order: 1; align-self: stretch; box-sizing: border-box; margin: 0; padding: 3px 12px 4px; border-radius: 999px; box-shadow: none;
+  order: 1; align-self: center; box-sizing: border-box; margin: 0; padding: 0; border-radius: 0; background: none; box-shadow: none; color: #000;
   font-size: 15px; letter-spacing: 0.01em; line-height: 1.2; white-space: nowrap; text-align: center;
 }
 .a11y-widget-biz .a11y-legal-tiles > .a11y-legal-row .a11y-legal-count {
@@ -2219,6 +2236,21 @@
 @media (min-width: 641px) and (max-width: 1240px) {
   .a11y-widget-biz .a11y-legal-tiles > .a11y-legal-row { padding-inline: 12px; }
 }
+/* Each tile takes its status colour whole, and the status word loses its pill
+   (user's instruction, 20 Nov 2026, "make cards different colors and do not
+   use badges"). The fills are the highlight set, the one place colour is
+   allowed; black words on each measure 7:1 or better in both themes, so the
+   tile (in the rules above) pins --ink to black for whatever sits inside it,
+   and the status word is plain small print at the top: the colour says the
+   status to the eye, the word says it to everyone else. The checklist button
+   keeps 24px off the row (user's instruction, same day: it sat flush against
+   the tiles). */
+.a11y-widget-biz .a11y-legal-tiles > .a11y-legal-row-failed { --paper: var(--hl-orange); background: var(--hl-orange); }
+.a11y-widget-biz .a11y-legal-tiles > .a11y-legal-row-clean { --paper: var(--hl-green); background: var(--hl-green); }
+.a11y-widget-biz .a11y-legal-tiles > .a11y-legal-row-human { --paper: var(--hl-cap-a); background: var(--hl-cap-a); }
+.a11y-widget-biz .a11y-legal-tiles > .a11y-legal-row-not-measured { --paper: var(--hl-blue); background: var(--hl-blue); }
+.a11y-widget-biz .a11y-legal-results + .a11y-show-checklist,
+.a11y-widget-biz .a11y-legal-grid + .a11y-show-checklist { margin-top: 24px; }
 @media (max-width: 640px) {
   .a11y-widget-biz .a11y-legal-tiles { flex-direction: column; gap: 10px; }
   .a11y-widget-biz .a11y-legal-tiles > .a11y-legal-row {
