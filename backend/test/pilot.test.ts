@@ -292,6 +292,7 @@ describe("the pilot", () => {
     expect(system).toMatch(/"More information" or "Click here": 2\.4\.4/);
     expect(system).toContain("Never give it for a link, button or field");
     expect(system).toContain('"blocked" only when they could not go on at all');
+    expect(system).toContain('but which can still be reached and pressed, is "slowed"');
     expect(system).toContain("must contain the words shown on screen");
     expect(system).toContain("Never wrap code in backticks");
     expect(system).toContain("Copy its shape, never its facts");
