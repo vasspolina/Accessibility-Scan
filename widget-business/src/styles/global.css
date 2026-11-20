@@ -122,7 +122,9 @@
    better than 7:1). 18px. */
 .a11y-widget-biz :is(button, .a11y-btn) {
   font: inherit; font-size: 22px; letter-spacing: 0.01em; font-weight: 500;
-  box-sizing: border-box; min-height: 34px; padding: 0.5em 1.1em; border: 1px solid var(--btn-fill, var(--ink)); border-radius: 999px;
+  /* Dotted like the chat box (user's instruction, 20 Nov 2026); a disabled
+     button stays dashed, so the two still differ. */
+  box-sizing: border-box; min-height: 34px; padding: 0.5em 1.1em; border: 1px dotted var(--btn-fill, var(--ink)); border-radius: 999px;
   background: var(--btn-fill, var(--paper)); color: var(--ink); transition: background-color 0.15s, border-color 0.15s, border-radius 0.15s;
 }
 .a11y-widget-biz button:enabled,
@@ -253,6 +255,11 @@
    high, the box is pushed to its foot, and sticky keeps it there once the
    turns outgrow the window. */
 .a11y-widget-biz .a11y-chat { min-height: 100dvh; display: flex; flex-direction: column; }
+/* 40px of margin round the conversation (user's instruction, 20 Nov 2026),
+   so the thread, the box and its buttons stand off the window's edges. A
+   phone keeps its 10px page gutter (PHONE TYPESETTING). */
+.a11y-widget-biz .a11y-chat { padding-inline: 40px; box-sizing: border-box; }
+@media (max-width: 640px) { .a11y-widget-biz.a11y-widget-biz .a11y-chat { padding-inline: 0; } }
 .a11y-widget-biz .a11y-chat-dock {
   margin-top: auto;
   position: sticky; bottom: 0;
@@ -317,9 +324,9 @@
   }
   .a11y-widget-biz .a11y-chat-suggest .a11y-chat-chip { flex: none; white-space: nowrap; }
 }
-/* The way to the form for a page behind a login: under the box, quiet, and
-   in a blocked scan's notice. */
-.a11y-widget-biz .a11y-chat-composer .a11y-chat-signin { max-width: none; margin: 10px 0 0; }
+/* The way to the form for a page behind a login sits in the box beside
+   Voice control (user's instruction, 20 Nov 2026), and in a blocked scan's
+   notice. */
 .a11y-widget-biz .a11y-blocked .a11y-blocked-action { margin: 1.2em 0 0; }
 /* "Did you mean accessibility.nl?": the address as a button under it. */
 .a11y-widget-biz .a11y-chat-text .a11y-chat-confirm { margin: 0.6em 0 0; }

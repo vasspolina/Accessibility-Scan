@@ -1669,6 +1669,16 @@ export function ScanChat({
                   </Button>
                 )}
                 <VoiceControl />
+                {/* In the box (user's instruction, 20 Nov 2026), and only
+                    while a website is being scanned: the message names an
+                    address, or a website's report is open. It opens the
+                    form, so the login goes to the scanner and never into
+                    the chat or its model. */}
+                {(addressIn(draft) || (report && report.meta.documentKind !== "pdf")) && (
+                  <Button variant="ghost" onClick={onSignInForm}>
+                    {t("Scan a page behind a login")}
+                  </Button>
+                )}
               </span>
               <Button type="submit" variant="primary" disabled={busy || loading || !draft.trim()}>
                 {/* On a phone the word is clipped and the arrow drawn, as in
@@ -1693,14 +1703,6 @@ export function ScanChat({
               ))}
             </div>
           )}
-          {/* Under the box, not in it (user's instruction, 18 Nov 2026):
-              a page behind a login is scanned from the form, so the login
-              goes to the scanner and never into the chat or its model. */}
-          <p className="a11y-chat-signin">
-            <Button variant="ghost" onClick={onSignInForm}>
-              {t("Scan a page behind a login")}
-            </Button>
-          </p>
         </form>
       </div>
       )}
