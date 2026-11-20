@@ -585,6 +585,48 @@
       try { chatBody = JSON.parse(init && init.body ? init.body : "{}"); } catch (e) { /* ignore */ }
       return chatStub(chatBody);
     }
+    // Report a barrier (BarrierReport.tsx): the pilot's routes, canned, so
+    // the whole conversation can be walked through, written report and send
+    // included. Marked SAMPLE so it is never taken for the model's work.
+    var pilot = /\/api\/pilot(\/[a-z]+)?$/.exec(target);
+    if (pilot) {
+      var pb = {};
+      try { pb = JSON.parse(init && init.body ? init.body : "{}"); } catch (e) { /* ignore */ }
+      var json = function (o, ms) {
+        return new Promise(function (resolve) {
+          setTimeout(function () {
+            resolve(new Response(JSON.stringify(o), { status: 200, headers: { "Content-Type": "application/json" } }));
+          }, ms || 300);
+        });
+      };
+      var route = pilot[1] || "";
+      if (route === "") return json({ open: true, stores: true, mails: false }, 50);
+      if (route === "/wake") return json({}, 50);
+      if (route === "/page") {
+        var raw = String(pb.url || "").trim();
+        if (raw.split(/\s+/).length > 3) return json({ url: null, words: true });
+        var u = /^https?:\/\//.test(raw) ? raw : "https://" + raw.replace(/\s+/g, "");
+        return json({ url: u, words: false, reached: true, title: "SAMPLE page title" });
+      }
+      if (route === "/followup") {
+        return json({ question: "SAMPLE follow-up: which control was it?", suggestions: ["The menu button", "The search field"] }, 800);
+      }
+      if (route === "/draft") {
+        return json({
+          model: "sample-model",
+          draft: {
+            title: "SAMPLE: the menu button cannot be reached with the keyboard",
+            explanation: "SAMPLE. Pressing Tab skips the menu button, so the menu cannot be opened without a mouse.",
+            whoItStops: "People who use only a keyboard, and people who use a switch.",
+            steps: ["Open the page.", "Press Tab until you pass the logo.", "The menu button is skipped."],
+            fix: "Make the menu a real button element, or give it tabindex=\"0\" and open it on Enter and Space.",
+            impact: "blocked",
+            wcagCriterion: "2.1.1",
+          },
+        }, 1500);
+      }
+      if (route === "/report") return json({ ok: true }, 600);
+    }
     if (!/\/api\/(scan|audit)$/.test(target)) return realFetch(input, init);
 
     var body = {};
