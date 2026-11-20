@@ -914,7 +914,9 @@ export const STRINGS_FR: Record<string, string> = {
   "More than one control fits. Say the full name: {names}.": "Plusieurs éléments correspondent. Dites le nom complet : {names}.",
   "I can't find a button called {name}.": "Je ne trouve aucun bouton nommé {name}.",
   "The microphone is blocked. Allow it in your browser's address bar, then try again.": "Le micro est bloqué. Autorisez-le dans la barre d'adresse du navigateur, puis réessayez.",
-  "Listening. Say the name of a button, like \"press send\". Say \"what can I say\" for more.": "J'écoute. Dites le nom d'un bouton, par exemple « appuie sur envoyer ». Dites « que puis-je dire » pour en savoir plus.",
+  "Listening. Speak to write in the chat, or name a button, like \"press send\". Say \"what can I say\" for more.": "J'écoute. Parlez pour écrire dans le chat, ou dites le nom d'un bouton, par exemple « appuie sur envoyer ». Dites « que puis-je dire » pour en savoir plus.",
+  "Written in the chat. Say \"send\" to send it.": "Écrit dans le chat. Dites « envoyer » pour l'envoyer.",
+  "Ready to type in the chat. Say your message.": "Prêt à écrire dans le chat. Dites votre message.",
   // Signaler un obstacle (components/BarrierReport.tsx), dans le widget depuis le 20 novembre 2026.
   "And the page’s address?": "Et l’adresse de la page ?",
   "Answers to pick": "Réponses à choisir",

@@ -910,7 +910,9 @@ export const STRINGS_DE: Record<string, string> = {
   "More than one control fits. Say the full name: {names}.": "Mehrere Elemente passen. Sagen Sie den ganzen Namen: {names}.",
   "I can't find a button called {name}.": "Ich finde keine Schaltfläche namens {name}.",
   "The microphone is blocked. Allow it in your browser's address bar, then try again.": "Das Mikrofon ist gesperrt. Erlauben Sie es in der Adressleiste Ihres Browsers und versuchen Sie es erneut.",
-  "Listening. Say the name of a button, like \"press send\". Say \"what can I say\" for more.": "Ich höre zu. Sagen Sie den Namen einer Schaltfläche, etwa „drücke Senden“. Sagen Sie „Was kann ich sagen“ für mehr.",
+  "Listening. Speak to write in the chat, or name a button, like \"press send\". Say \"what can I say\" for more.": "Ich höre zu. Sprechen Sie, um in den Chat zu schreiben, oder nennen Sie eine Schaltfläche, etwa „drücke Senden“. Sagen Sie „Was kann ich sagen“ für mehr.",
+  "Written in the chat. Say \"send\" to send it.": "In den Chat geschrieben. Sagen Sie „Senden“, um es abzuschicken.",
+  "Ready to type in the chat. Say your message.": "Bereit zum Schreiben im Chat. Sagen Sie Ihre Nachricht.",
   // Barriere melden (components/BarrierReport.tsx), seit 20. November 2026 im Widget.
   "And the page’s address?": "Und die Adresse der Seite?",
   "Answers to pick": "Antworten zur Auswahl",

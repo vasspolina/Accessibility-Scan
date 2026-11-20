@@ -35,6 +35,20 @@ describe("parseCommand", () => {
     expect(parseCommand("ask What should I fix first?", "en")).toEqual({ kind: "ask", text: "What should I fix first?" });
     expect(parseCommand("um, type Hello there", "en")).toEqual({ kind: "type", text: "Hello there" });
   });
+  it("keeps words with no command for the chat, as heard", () => {
+    // The component presses a button on a close match, else writes these in the chat box.
+    expect(parseCommand("What should I fix first?", "en")).toEqual({
+      kind: "phrase",
+      target: "what should i fix first",
+      text: "What should I fix first?",
+    });
+    expect(parseCommand("send", "en")).toEqual({ kind: "phrase", target: "send", text: "send" });
+    expect(parseCommand("Was soll ich zuerst beheben", "de").kind).toBe("phrase");
+  });
+  it("takes 'chat' alone as going to the chat box", () => {
+    expect(parseCommand("Chat", "en")).toEqual({ kind: "ask", text: "" });
+    expect(parseCommand("ask", "en")).toEqual({ kind: "ask", text: "" });
+  });
   it("scrolls and stops", () => {
     expect(parseCommand("scroll down", "en")).toEqual({ kind: "scroll", where: "down" });
     expect(parseCommand("scroll to the top", "en")).toEqual({ kind: "scroll", where: "top" });

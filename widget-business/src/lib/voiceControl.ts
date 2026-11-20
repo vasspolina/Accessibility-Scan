@@ -1,5 +1,6 @@
 /**
- * Voice control: say the name of a button and it is pressed.
+ * Voice control: say the name of a button and it is pressed; say anything
+ * else and it is written into the chat box.
  *
  * Two halves, kept apart so the first can be tested without a browser:
  *
@@ -20,6 +21,12 @@ import type { Lang } from "./i18n";
 
 export type VoiceCommand =
   | { kind: "click"; target: string }
+  /**
+   * Words with no command in front of them. A button whose name they match
+   * closely is pressed ("send", "new scan"); anything else is written into
+   * the chat box, because that is what a person talking to a chat means.
+   */
+  | { kind: "phrase"; target: string; text: string }
   | { kind: "click-focused" }
   | { kind: "type"; text: string }
   /** Scan a page: the address goes into the chat box and is sent. */
@@ -223,6 +230,8 @@ export function parseCommand(heard: string, lang: Lang): VoiceCommand {
   }
   const asked = after(w.ask);
   if (asked) return { kind: "ask", text: asked };
+  // "chat", "ask" on its own: go to the chat box and wait for the words.
+  if (w.ask.map(normalize).includes(text)) return { kind: "ask", text: "" };
   const typed = after(w.type);
   if (typed) return { kind: "type", text: typed };
   // An address said on its own ("example.com", "example dot com").
@@ -254,9 +263,10 @@ export function parseCommand(heard: string, lang: Lang): VoiceCommand {
     }
     return { kind: "click", target: name };
   }
-  // No verb at all: "send", "new scan". Treated as a name, and only pressed
-  // when it matches strongly (findTarget's bare threshold).
-  return name ? { kind: "click", target: name } : { kind: "none" };
+  // No verb at all: "send", "new scan", or a sentence for the chat. The
+  // component presses a control only on a strong match and otherwise writes
+  // the words, as heard, into the chat box.
+  return name ? { kind: "phrase", target: name, text: raw } : { kind: "none" };
 }
 
 export interface VoiceControlTarget {

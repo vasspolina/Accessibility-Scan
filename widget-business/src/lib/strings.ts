@@ -949,7 +949,9 @@ export const CHROME_KEYS: string[] = [
   "More than one control fits. Say the full name: {names}.",
   "I can't find a button called {name}.",
   "The microphone is blocked. Allow it in your browser's address bar, then try again.",
-  "Listening. Say the name of a button, like \"press send\". Say \"what can I say\" for more.",
+  "Listening. Speak to write in the chat, or name a button, like \"press send\". Say \"what can I say\" for more.",
+  "Written in the chat. Say \"send\" to send it.",
+  "Ready to type in the chat. Say your message.",
   // Report a barrier (components/BarrierReport.tsx), the assistive-technology
   // pilot inside the widget since 20 Nov 2026. Translated in de, es and fr.
   "And the page’s address?",

@@ -100,6 +100,10 @@ export function VoiceControl() {
           return;
         }
         box.focus();
+        if (cmd.kind === "ask" && !cmd.text) {
+          say(t("Ready to type in the chat. Say your message."));
+          return;
+        }
         setFieldValue(box, cmd.kind === "scan" ? tf("Scan {url}", { url: cmd.url }) : cmd.text);
         // React re-renders the Send button enabled before the form is sent.
         requestAnimationFrame(() => box.form?.requestSubmit());
@@ -133,11 +137,35 @@ export function VoiceControl() {
         } else say(t("Nothing is selected. Say the name of the button."));
         return;
       }
+      case "phrase": {
+        // Words with no command: a button only when its name fits closely
+        // (a bare phrase could be anything the room said), else dictation
+        // into the chat box, added to what is already there. Before 20 Nov
+        // 2026 every such phrase was looked up as a button name, so talking
+        // to the chat only ever answered "I can't find a button called …".
+        const controls = collectControls(root, wrap);
+        const res = findTarget(cmd.target, controls, 80);
+        if (res.status === "match") {
+          const how = press(res.target.el);
+          say(tf(how === "focused" ? "Ready to type in {name}." : "Pressed {name}.", { name: res.target.name }));
+          return;
+        }
+        const box = chatBox(root);
+        if (box) {
+          box.focus();
+          const now = box.value;
+          setFieldValue(box, now && !/\s$/.test(now) ? `${now} ${cmd.text}` : now + cmd.text);
+          say(t('Written in the chat. Say "send" to send it.'));
+        } else if (res.status === "ambiguous") {
+          say(tf("More than one control fits. Say the full name: {names}.", { names: res.names.join(", ") }));
+        } else {
+          say(tf("I can't find a button called {name}.", { name: cmd.target }));
+        }
+        return;
+      }
       case "click": {
         const controls = collectControls(root, wrap);
-        // A bare name could be anything the room said: demand a closer match.
-        const explicit = new RegExp("^\\s*" + "[^\\s]+\\s").test(heard);
-        const res = findTarget(cmd.target, controls, explicit ? 55 : 80);
+        const res = findTarget(cmd.target, controls, 55);
         if (res.status === "match") {
           const how = press(res.target.el);
           say(tf(how === "focused" ? "Ready to type in {name}." : "Pressed {name}.", { name: res.target.name }));
@@ -207,7 +235,7 @@ export function VoiceControl() {
     } else {
       wantOn.current = true;
       setOn(true);
-      setStatus(t("Listening. Say the name of a button, like \"press send\". Say \"what can I say\" for more."));
+      setStatus(t("Listening. Speak to write in the chat, or name a button, like \"press send\". Say \"what can I say\" for more."));
       start();
     }
   }
