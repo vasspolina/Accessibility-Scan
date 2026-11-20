@@ -651,15 +651,28 @@
     // two lines are read first.
     var f = fields();
     ask(f.assistiveTech ? stepPage() : stepUse(), { quiet: true });
-    // The model's worker sleeps when idle and takes over a minute to wake
-    // (measured 19 Nov 2026). The first time someone moves into the
-    // conversation, ask the server to start waking it, so it is up by the
-    // time the report is written. Once per page; the server throttles it
-    // across pages too.
-    talk.addEventListener("focusin", function wake() {
-      talk.removeEventListener("focusin", wake);
+    // The model's worker sleeps when idle and takes over 100 seconds to
+    // wake (measured on the live service, 20 Nov 2026: a follow-up asked
+    // 100s after the wake call still missed its ten seconds, and the first
+    // report took 87s; warm, they took 1s and 4s). Someone who picks their
+    // answers reaches the follow-up in ten or twenty seconds, so the
+    // waking starts as the page opens (user's instruction, 20 Nov 2026),
+    // not at the first answer. It is asked once more at the first press or
+    // move into the conversation, for someone who read the page for a
+    // while first; a press counts as well as focus, because Safari does
+    // not focus a button that is clicked. The server lets one call through
+    // per two minutes, however many pages ask.
+    var wake = function () {
       fetch("/api/pilot/wake", { method: "POST" }).catch(function () { /* the draft still works, only slower */ });
-    });
+    };
+    wake();
+    var wakeAgain = function () {
+      talk.removeEventListener("focusin", wakeAgain);
+      talk.removeEventListener("pointerdown", wakeAgain);
+      wake();
+    };
+    talk.addEventListener("focusin", wakeAgain);
+    talk.addEventListener("pointerdown", wakeAgain);
   }).catch(function () {
     $("closed").hidden = false;
     $("closed").textContent = "The pilot could not be reached. Please try again later.";

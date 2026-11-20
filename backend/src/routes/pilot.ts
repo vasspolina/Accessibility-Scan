@@ -19,7 +19,7 @@ import { requireAdmin } from "./account.js";
  *                          the finding again after a change they asked for
  * POST /api/pilot/report   store the report (and mail it, if mail is set up)
  * GET  /api/pilot/reports  the operator's view: every report and the totals
- * POST /api/pilot/wake     start the model waking while the form is filled in
+ * POST /api/pilot/wake     start the model waking as the form opens
  * POST /api/pilot/page     what was typed in the address field, read as an
  *                          address (readAddress.ts), and that page's title
  *
@@ -104,8 +104,8 @@ export async function pilotRoutes(app: FastifyInstance) {
     }
   );
 
-  // The form calls this the first time someone moves into a field, so the
-  // model's worker wakes while they type (wakeModel, pilot.ts).
+  // The form calls this as it opens, and once more at the first answer, so
+  // the model's worker wakes while the person answers (wakeModel, pilot.ts).
   app.post(
     "/api/pilot/wake",
     { config: { rateLimit: { max: env.CHAT_RATE_LIMIT_MAX, timeWindow: env.RATE_LIMIT_WINDOW_MS } } },

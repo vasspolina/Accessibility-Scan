@@ -188,10 +188,9 @@ export function barrierRecord(r: Pick<ReportFields, "barrier" | "barrierPicked" 
 /**
  * How long the follow-up question may take. It is a short reply (about 60
  * tokens), and a person is waiting with nothing to do, so past this the
- * scripted question is asked instead. Not measured on the live worker yet
- * (written 19 Nov 2026): the long finding ran at roughly ten tokens a
- * second warm, which puts this reply near six seconds. A worker that is
- * still waking misses it, and the scripted question covers that.
+ * scripted question is asked instead. Measured on the live worker, 20 Nov
+ * 2026: 0.9s and 1.1s warm. A worker that is still waking misses it (it
+ * did 100s after the wake call), and the scripted question covers that.
  */
 export const FOLLOW_UP_TIMEOUT_MS = 10_000;
 
@@ -287,6 +286,9 @@ export async function nextFollowUp(r: ReportFields): Promise<FollowUp> {
  * old 90s ceiling with nothing back (the GPU worker sleeps when idle and
  * was still waking), and the next, warm, came back in 63s. 150s covers a
  * waking worker with room to spare; the form says it can take two minutes.
+ * Again on 20 Nov 2026: 87s for a first report from a worker woken 110s
+ * before, and 3.8s for the same finding written again once it was warm, so
+ * nearly all of the wait is the worker waking, not the writing.
  */
 export const PILOT_DRAFT_TIMEOUT_MS = 150_000;
 
@@ -295,11 +297,13 @@ export const WAKE_EVERY_MS = 120_000;
 let lastWake = 0;
 
 /**
- * Starts the model waking while the person is still typing, so the draft
- * does not pay for the worker's start. A one-token request, not awaited:
+ * Starts the model waking as the form opens (and again at the first
+ * answer), so the follow-up and the draft pay as little of the worker's
+ * start as they can. A one-token request, not awaited:
  * the answer does not matter, only that the worker is up by the time the
- * draft is asked for. Throttled, so a page left open or reloaded does not
- * keep a paid worker awake. Returns whether a call went out.
+ * draft is asked for. Throttled, so pages opened or reloaded one after
+ * another make one call, not many; each page view outside that window
+ * does wake the paid worker, which is the price of the quicker report. Returns whether a call went out.
  */
 export function wakeModel(now = Date.now()): boolean {
   if (!localModelName()) return false;
