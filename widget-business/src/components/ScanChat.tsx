@@ -1331,23 +1331,6 @@ export function ScanChat({
       {!barrier && turns.length === 0 && (
         <section className="a11y-prompts" aria-label={t("Questions to start with")}>
           <div className="a11y-prompt-grid">
-          {/* Report a barrier, promoted into the opening (user's
-              instruction, 20 Nov 2026: "promote it so it appears in chat on
-              load"). First in the row, so it is the first card a reader
-              meets and the first a phone shows before the row scrolls; it
-              stays when the questions are shuffled. Set as the other
-              cards, with its own words for the press, and set apart on
-              the marker yellow (a11y-prompt-barrier; user's instruction,
-              20 Nov 2026, "make the barrier card stand out more"). */}
-          {onReportBarrier && (
-            <div className="a11y-prompt a11y-prompt-barrier">
-              <button type="button" className="a11y-prompt-q" disabled={busy || loading} onClick={onReportBarrier}>
-                <span className="a11y-prompt-label">{t("Report a barrier")}</span>
-                <span className="a11y-prompt-ask">{smarten(t("Did something on a website stop you or slow you down?"), getLang())}</span>
-                <span className="a11y-prompt-go" aria-hidden="true">{t("Start a report")}</span>
-              </button>
-            </div>
-          )}
           {picks.map((p) => {
             const crit = criterionFor(p.prompt);
             return (
@@ -1383,6 +1366,23 @@ export function ScanChat({
               </div>
             );
           })}
+          {/* Report a barrier, promoted into the opening (user's
+              instruction, 20 Nov 2026: "promote it so it appears in chat on
+              load"). Set as the other cards, with its own words for the
+              press, on the marker yellow (a11y-prompt-barrier; user's
+              instruction, 20 Nov 2026, "make the barrier card stand out
+              more"), and the fourth card in their row (user's instruction,
+              20 Nov 2026, "add yellow button 4th in a row"). It stays when
+              the questions are shuffled. */}
+          {onReportBarrier && (
+            <div className="a11y-prompt a11y-prompt-barrier">
+              <button type="button" className="a11y-prompt-q" disabled={busy || loading} onClick={onReportBarrier}>
+                <span className="a11y-prompt-label">{t("Report a barrier")}</span>
+                <span className="a11y-prompt-ask">{smarten(t("Did something on a website stop you or slow you down?"), getLang())}</span>
+                <span className="a11y-prompt-go" aria-hidden="true">{t("Start a report")}</span>
+              </button>
+            </div>
+          )}
           </div>
           <p className="a11y-prompt-more">
             <Button variant="ghost" onClick={() => setPicks((last) => pickOpeningPrompts(Math.random, last))}>
