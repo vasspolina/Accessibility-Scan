@@ -972,18 +972,15 @@ export function BarrierReport({ apiBase, onBack }: { apiBase: string; onBack: ()
                 <div className="a11y-chat-text">
                   <p>{turn.ask}</p>
                 </div>
-              </Says>
-              <li className="a11y-chat-turn a11y-chat-you">
-                <p className="a11y-chat-who">{t("You")}</p>
-                <div className="a11y-chat-text">
-                  <p>{turn.text}</p>
-                </div>
-                {turn.note && <p className="a11y-barrier-note">{turn.note}</p>}
-                {/* Every choice the question offered stays under the answer,
-                    the one picked pressed, so another is one press away
-                    (user's instruction, 20 Nov 2026, "put all the choices
-                    here"), in place of a lone Change. A typed answer, or a
-                    question with nothing to pick (the page), keeps Change. */}
+                {/* Every choice the question offered stays under the question,
+                    where it was offered, the one picked pressed, so another
+                    is one press away (user's instruction, 20 Nov 2026, "put
+                    all the choices here"). They sat under the answer, which
+                    read answer, then choices; now each step reads one by one:
+                    the question, its choices, your answer, the next question
+                    (user's instruction, 20 Nov 2026, "make it one by one").
+                    A typed answer, or a question with nothing to pick (the
+                    page), keeps Change. */}
                 {turn.step.id !== "change" && !talk.sent && (
                   <div
                     className="a11y-barrier-picks"
@@ -1018,6 +1015,13 @@ export function BarrierReport({ apiBase, onBack }: { apiBase: string; onBack: ()
                     )}
                   </div>
                 )}
+              </Says>
+              <li className="a11y-chat-turn a11y-chat-you">
+                <p className="a11y-chat-who">{t("You")}</p>
+                <div className="a11y-chat-text">
+                  <p>{turn.text}</p>
+                </div>
+                {turn.note && <p className="a11y-barrier-note">{turn.note}</p>}
                 {/* A change asked of the draft is not changed itself: say another
                     (the "change" step offers nothing here). */}
               </li>
