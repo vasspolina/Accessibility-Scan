@@ -116,6 +116,9 @@ describe("qa-fixture.html: the rules axe owns", () => {
     ["image with no alt", ["image-alt"]],
     ["button with no accessible name", ["button-name"]],
     ["link with no text", ["link-name"]],
+    // Stable and on by default since axe-core 4.14.0. Before that it was
+    // experimental and its results were filed as open questions.
+    ["button whose spoken name leaves out its visible words", ["label-content-name-mismatch"]],
     ["link text that says nothing", ["link-text-vague"]],
     ["input with no label", ["label"]],
     ["text far below 4.5:1", ["color-contrast"]],

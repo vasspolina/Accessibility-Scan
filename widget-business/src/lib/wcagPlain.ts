@@ -252,6 +252,15 @@ export const PLAIN_RULE_EXPLANATIONS: Record<string, PlainRule> = {
     impact:
       "Screen reader users can pull up a list of every link on the page. When they all read the same, the list is no help at all.",
   },
+  // A finding of its own since axe-core 4.14.0 made the rule stable; before
+  // that it reached the report only as an open question.
+  "label-content-name-mismatch": {
+    plain: "Spoken name differs from label",
+    found: (n) =>
+      `${n} ${n === 1 ? "control shows" : "controls show"} one set of words and ${n === 1 ? "carries" : "carry"} a different name in the code. The name a screen reader speaks leaves out the words printed on ${n === 1 ? "it" : "them"}.`,
+    impact:
+      "People who work a site by voice say the words they see. \"Click Send message\" does nothing when the code calls the button something else. Screen reader users who can see the page hear one thing and read another.",
+  },
   "button-name": {
     research:
       "Unlabelled buttons sit near the top of WebAIM's annual survey of a million homepages, year after year. Usually they are icon-only controls that were obvious to whoever designed them.",
@@ -1131,6 +1140,11 @@ export const PLAIN_RULE_FIXES: Record<string, string | string[]> = {
     "Write link text that makes sense on its own. \"Read the 2026 fee changes\", not \"Read more\".",
     "To keep the short version on screen, add the full wording as a label.",
   ],
+  "label-content-name-mismatch": [
+    "Keep the words shown on the control inside its name in the code.",
+    "Start the name with those exact words, then add anything extra.",
+    "Voice control users say what they see, so the two have to match.",
+  ],
   "button-name":
     [
     "Give every button words that say what it does.",
@@ -1327,6 +1341,10 @@ export const UNDECIDED_EXPLANATIONS: Record<string, { what: string; ask: string 
   "css-orientation-lock": {
     what: "Styles that may lock the page to portrait or landscape. The check that found this is still experimental, so it may be wrong.",
     ask: "Open the page on a phone and turn it both ways. Everything should still work, for people whose phone or tablet is fixed in one position.",
+  },
+  "label-content-name-mismatch": {
+    what: "Controls whose name in the code may not contain the words shown on them. The checker could not decide, usually because the control is named by its current value.",
+    ask: "Ask your developer to compare what each one shows with the name a screen reader speaks. The spoken name should contain the visible words, in the same order.",
   },
   "duplicate-id-aria": {
     what: "An id that may be used more than once. Every code label pointing at it follows only the first, so a name can silently attach to the wrong thing.",

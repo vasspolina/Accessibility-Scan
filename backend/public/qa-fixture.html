@@ -42,6 +42,11 @@
 <!-- EXPECTED: 4.1.2 button with no accessible name -->
 <button class="icon-btn"></button>
 
+<!-- EXPECTED: 2.5.3 the spoken name leaves out the words on the button.
+     Someone using voice control says "click Send message" and nothing
+     answers to it. Padded so that target size has nothing to say here. -->
+<p><button type="button" id="mismatch-btn" aria-label="Submit form" style="padding:12px 20px">Send message</button></p>
+
 <!-- EXPECTED: 2.4.4 link with no text -->
 <a href="/somewhere"></a>
 
@@ -74,6 +79,9 @@
   <p style="color:#1a1a1a;background:#ffffff">Text with strong contrast.</p>
   <img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" alt="A meaningful description">
   <button type="button">Clearly labelled button</button>
+  <!-- 2.5.3 done right: the spoken name starts with the words on the
+       button and adds to them. -->
+  <button type="button" aria-label="Search the site" style="padding:12px 20px">Search</button>
   <a href="/pricing">See our pricing plans</a>
   <label for="ok-input">Your email address</label>
   <input id="ok-input" type="email" name="ok">
