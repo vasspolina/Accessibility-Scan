@@ -1396,7 +1396,19 @@ export function ScanChat({
         // drawn without markers, and the label with it.
         // eslint-disable-next-line jsx-a11y/no-redundant-roles
         <ol className="a11y-chat-thread" role="list" aria-label={t("Conversation")}>
-          {turns.map((turn) => {
+          {turns.map((turn, i) => {
+            // One assistant message, however many parts it lands in. A scan
+            // line, the blocks it opens and the reply about them follow one
+            // another as one speaker's turn: the label is said once, on the
+            // first part, and the parts after it sit a line apart rather
+            // than two (user's instruction, 20 Nov 2026, "file a report in
+            // chat like an assistant would do"; it read as four speakers
+            // cutting in). The label stays for screen readers on every part,
+            // since each is its own list item.
+            const prev = i > 0 ? turns[i - 1] : null;
+            const cont = !!prev && prev.who !== "you" && prev.who !== "notice" && turn.who !== "you" && turn.who !== "notice";
+            const contClass = cont ? " a11y-chat-cont" : "";
+            const whoClass = cont ? "a11y-chat-who a11y-sr-only" : "a11y-chat-who";
             if (turn.who === "scan") {
               const running = turn.state === "running";
               const steps = running ? milestones : turn.steps;
@@ -1408,8 +1420,8 @@ export function ScanChat({
                 running ? "Checking {url}." : turn.state === "done" ? "Checked {url}." : "Couldn't check {url}."
               ).split("{url}");
               return (
-                <li key={turn.id} className={`a11y-chat-turn a11y-chat-tool a11y-chat-scan-${turn.state}`}>
-                  <p className="a11y-chat-who">{t("Assistant")}</p>
+                <li key={turn.id} className={`a11y-chat-turn a11y-chat-tool a11y-chat-scan-${turn.state}${contClass}`}>
+                  <p className={whoClass}>{t("Assistant")}</p>
                   <div className="a11y-chat-text">
                     <p>
                       {before}
@@ -1457,13 +1469,13 @@ export function ScanChat({
               // The stop-press is an alert, not a block to fold away.
               if (turn.section === "stop") {
                 return body ? (
-                  <li key={turn.id} className="a11y-chat-turn a11y-chat-stop">
+                  <li key={turn.id} className={`a11y-chat-turn a11y-chat-stop${contClass}`}>
                     {body}
                   </li>
                 ) : null;
               }
               return (
-                <li key={turn.id} className="a11y-chat-turn a11y-chat-block">
+                <li key={turn.id} className={`a11y-chat-turn a11y-chat-block${contClass}`}>
                   <details id={`a11y-chat-block-${turn.id}`} open={fresh}>
                     <summary className="a11y-chat-blockhead">
                       {sectionLabel(turn.section)}
@@ -1499,10 +1511,10 @@ export function ScanChat({
             return (
               <li
                 key={turn.id}
-                className={`a11y-chat-turn a11y-chat-${turn.who}`}
+                className={`a11y-chat-turn a11y-chat-${turn.who}${contClass}`}
                 aria-busy={turn.who === "checker" && turn.streaming ? true : undefined}
               >
-                <p className="a11y-chat-who">{turn.who === "you" ? t("You") : t("Assistant")}</p>
+                <p className={whoClass}>{turn.who === "you" ? t("You") : t("Assistant")}</p>
                 <div className="a11y-chat-text">
                   {turn.who === "checker" ? (
                     <>

@@ -517,7 +517,7 @@ export function App({
    * conversation renders whichever the person or the assistant asks for,
    * as a block in the thread.
    */
-  function renderSection(key: SectionKey): ReactNode {
+  function renderSection(key: SectionKey, inChat = false): ReactNode {
     if (key === "audit") {
       return audit ? (
         <>
@@ -584,13 +584,21 @@ export function App({
                   total={report.summary.total}
                   tookSeconds={tookSeconds}
                 />
-                <ReportActions report={report} apiBase={apiBase} />
+                {/* In the conversation the score block heads a report the
+                    assistant files, not a page. The findings block follows
+                    the reply, so the worst-of cards would be a third copy
+                    of the same titles there, and sending or saving moves to
+                    the foot of the findings, where a report ends (user's
+                    instruction, 20 Nov 2026). */}
+                {!inChat && <ReportActions report={report} apiBase={apiBase} />}
                 {/* The worst of the findings, as cards, before the schedule
                     that holds them all (15 Nov 2026). */}
-                <TopFindings
-                  findings={findingsByCategory.accessibility}
-                  onSee={() => focusFindings("a11y-accessibility-heading")}
-                />
+                {!inChat && (
+                  <TopFindings
+                    findings={findingsByCategory.accessibility}
+                    onSee={() => focusFindings("a11y-accessibility-heading")}
+                  />
+                )}
               </>
             )}
             {/* Only when the AI review was wanted but did not happen;
@@ -698,22 +706,29 @@ export function App({
         const [sectionDescBefore, sectionDescAfter] = t(
           "What a screen reader can't read aloud in this document, grouped by the four questions the standard asks. More at {link}."
         ).split("{link}");
+        /* Shown only when something was found: an empty "Nothing found
+           here." section is a heading with nothing under it (user's
+           instruction, 18 Nov 2026). */
+        const trust =
+          !isDocument && findingsByCategory.darkPattern.length > 0 ? (
+            <ReportSection
+              title="What costs you trust"
+              description={t(
+                "Places where your site nudges people instead of leaving the choice to them. These don't move the score."
+              )}
+              variant="redflag"
+              findings={findingsByCategory.darkPattern}
+              id="a11y-trust-heading"
+            />
+          ) : null;
         return (
           <div className={professional && !isDocument ? "a11y-print-cards" : undefined}>
-            {/* Shown only when something was found: an empty "Nothing
-                found here." section is a heading with nothing under it
-                (user's instruction, 18 Nov 2026). */}
-            {!isDocument && findingsByCategory.darkPattern.length > 0 && (
-              <ReportSection
-                title="What costs you trust"
-                description={t(
-                  "Places where your site nudges people instead of leaving the choice to them. These don't move the score."
-                )}
-                variant="redflag"
-                findings={findingsByCategory.darkPattern}
-                id="a11y-trust-heading"
-              />
-            )}
+            {/* The page opens on trust. The conversation opens on what
+                people can't use, the findings the reply has just named, and
+                ends where a filed report ends: send it or save it (user's
+                instruction, 20 Nov 2026, "file a report in chat like an
+                assistant would do"). */}
+            {!inChat && trust}
             <section className="a11y-section" aria-labelledby="a11y-accessibility-heading">
               <h2
                 className="a11y-section-title"
@@ -735,6 +750,8 @@ export function App({
               )}
               <PrincipleGroup findings={findingsByCategory.accessibility} />
             </section>
+            {inChat && trust}
+            {inChat && !professional && !isDocument && <ReportActions report={report} apiBase={apiBase} />}
           </div>
         );
       }
@@ -998,7 +1015,7 @@ export function App({
           reducedMotion={reducedMotion}
           report={report}
           audit={audit}
-          renderSection={(key) => <ReportViewProvider value={chatReportView}>{renderSection(key)}</ReportViewProvider>}
+          renderSection={(key) => <ReportViewProvider value={chatReportView}>{renderSection(key, true)}</ReportViewProvider>}
           availableSections={availableSections}
           onSignInForm={() => {
             setFormForLogin(true);

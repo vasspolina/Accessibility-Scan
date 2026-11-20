@@ -471,6 +471,13 @@ class Talk {
     this.next();
   }
 
+  // Another of the choices picked on an answered question: the same as
+  // changing it and picking that one, in one press.
+  repick(i: number, p: Pick) {
+    this.edit(i);
+    if (this.step) this.commit(this.step, p.text || p.label, p.patch, p.note || "", false);
+  }
+
   // Change on an answered question: it is asked again, with what they typed
   // still in the field.
   edit(i: number) {
@@ -905,17 +912,47 @@ export function BarrierReport({ apiBase, onBack }: { apiBase: string; onBack: ()
                   <p>{turn.text}</p>
                 </div>
                 {turn.note && <p className="a11y-barrier-note">{turn.note}</p>}
-                {/* A change asked of the draft is not changed itself: say another. */}
+                {/* Every choice the question offered stays under the answer,
+                    the one picked pressed, so another is one press away
+                    (user's instruction, 20 Nov 2026, "put all the choices
+                    here"), in place of a lone Change. A typed answer, or a
+                    question with nothing to pick (the page), keeps Change. */}
                 {turn.step.id !== "change" && !talk.sent && (
-                  <button
-                    type="button"
-                    className="a11y-btn a11y-btn-ghost a11y-btn-sm a11y-barrier-change"
+                  <div
+                    className="a11y-barrier-picks"
+                    role="group"
                     aria-label={tf("Change answer: {question}", { question: turn.ask })}
-                    onClick={() => talk.edit(i)}
                   >
-                    {t("Change")}
-                  </button>
+                    {turn.step.picks.map((p) => {
+                      const on = !turn.typed && turn.text === (p.text || p.label);
+                      return (
+                        <button
+                          key={p.label}
+                          type="button"
+                          // The one picked is solid ink, like the primary
+                          // action: pressed is said by shape, not a tint.
+                          className={`a11y-btn ${on ? "a11y-btn-primary" : "a11y-btn-secondary"} a11y-btn-md a11y-barrier-pick`}
+                          aria-pressed={on}
+                          onClick={() => {
+                            if (!on) talk.repick(i, p);
+                          }}
+                        >
+                          {p.label}
+                        </button>
+                      );
+                    })}
+                    {/* Typed, or nothing to pick: Change asks it again with
+                        the words still in the field. In the row with the
+                        choices, which name the question for it. */}
+                    {(turn.typed || turn.step.picks.length === 0) && (
+                      <button type="button" className="a11y-btn a11y-btn-ghost a11y-btn-md a11y-barrier-pick" onClick={() => talk.edit(i)}>
+                        {t("Change")}
+                      </button>
+                    )}
+                  </div>
                 )}
+                {/* A change asked of the draft is not changed itself: say another
+                    (the "change" step offers nothing here). */}
               </li>
             </Fragment>
           ))}
@@ -955,9 +992,17 @@ export function BarrierReport({ apiBase, onBack }: { apiBase: string; onBack: ()
 
         {open === "open" && talk.phase === "review" && d && (
           <Says className="a11y-barrier-review">
+            {/* Filed the way an assistant hands one over (user's
+                instruction, 20 Nov 2026, "make report a barrier also like
+                this"): a sentence saying what it is, the report, who wrote
+                it, then what to do with it, and the button last, where the
+                reading ends. It opened on a bare "Your report", and the
+                line about changing it came after the button. The lead is
+                still the heading, so heading navigation and focus land on
+                it, set as the turn's own words. */}
             <div className="a11y-chat-text">
-              <h3 ref={refs.review} tabIndex={-1}>
-                {t("Your report")}
+              <h3 className="a11y-barrier-lead" ref={refs.review} tabIndex={-1}>
+                {t("Here is your report for the site’s owner. Read it before you send it.")}
               </h3>
               {talk.reviewIntro && <p className="a11y-barrier-small">{talk.reviewIntro}</p>}
             </div>
@@ -999,19 +1044,19 @@ export function BarrierReport({ apiBase, onBack }: { apiBase: string; onBack: ()
             {talk.model && (
               <p className="a11y-barrier-small">{tf("Written by {model}, a language model on our own server.", { model: talk.model })}</p>
             )}
-            <div className="a11y-barrier-actions">
-              <button type="button" className="a11y-btn a11y-btn-primary a11y-btn-lg" disabled={talk.sending} onClick={() => talk.send("draft")}>
-                {talk.sendLabel}
-              </button>
-            </div>
             {/* What the box under the thread does now: a change to the report. */}
             {step && (
-              <div className="a11y-chat-text">
+              <div className="a11y-chat-text a11y-barrier-close">
                 <p>
                   {step.ask} {step.hint}
                 </p>
               </div>
             )}
+            <div className="a11y-barrier-actions">
+              <button type="button" className="a11y-btn a11y-btn-primary a11y-btn-lg" disabled={talk.sending} onClick={() => talk.send("draft")}>
+                {talk.sendLabel}
+              </button>
+            </div>
           </Says>
         )}
 

@@ -986,7 +986,7 @@ export const STRINGS_ES: Record<string, string> = {
   "Yes": "Sí",
   "You read it before it is sent. We keep what you write, so leave out your name and email.": "Lo leerá antes de que se envíe. Guardamos lo que escribe, así que no incluya su nombre ni su correo electrónico.",
   "You:": "Usted:",
-  "Your report": "Su informe",
+  "Here is your report for the site’s owner. Read it before you send it.": "Aquí está su informe para quien gestiona el sitio. Léalo antes de enviarlo.",
   "Your report could not be sent. Nothing is lost. Press the button to try again.": "No se pudo enviar su informe. No se ha perdido nada. Pulse el botón para intentarlo de nuevo.",
   "Your report is as it was.": "Su informe sigue como estaba.",
   "Your report is written again.": "Su informe se ha escrito de nuevo.",

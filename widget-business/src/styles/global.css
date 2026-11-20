@@ -339,6 +339,26 @@
    white vertical space"), replacing the one line of the same day; the
    label keeps its small step above its words. */
 .a11y-widget-biz .a11y-chat-turn { margin-bottom: 2.4em; }
+/* The parts of one assistant message (the scan line, the blocks it opens,
+   the reply about them) sit one line apart, the space between paragraphs
+   inside a turn, so a filed report reads as one message (user's
+   instruction, 20 Nov 2026). Outranks the phone rule for turns below. */
+.a11y-widget-biz .a11y-chat-thread > .a11y-chat-turn:has(+ .a11y-chat-cont) { margin-bottom: 1.2em; }
+/* "What the score counts", folded in the conversation (ScoreGauge). */
+.a11y-widget-biz .a11y-sum-counts-fold { margin-top: 1.2em; }
+.a11y-widget-biz .a11y-sum-counts-fold > summary { font-size: 18px; letter-spacing: 0.01em; cursor: pointer; }
+.a11y-widget-biz .a11y-sum-counts-fold .a11y-sum-counts-mark { display: inline-block; margin-inline-start: 0.3em; }
+.a11y-widget-biz .a11y-sum-counts-fold[open] .a11y-sum-counts-mark { transform: rotate(90deg); }
+.a11y-widget-biz .a11y-sum-counts-fold > .a11y-sum-counts-list {
+  margin: 0.6em 0 0; padding-left: 1.4em; list-style: decimal;
+  font-size: 18px; line-height: 1.3; letter-spacing: 0.01em;
+}
+.a11y-widget-biz .a11y-sum-counts-fold > .a11y-sum-counts-list > li + li { margin-top: 0.4em; }
+/* In the conversation the run holds the dial alone (ScoreGauge), so the
+   room kept for the display list under it, and the 65px between the run
+   and the panels, came out as a gap the height of the dial. */
+.a11y-widget-biz .a11y-chat-block .a11y-sum-grid .a11y-sum-run { padding-block: 0; margin-bottom: 0; }
+.a11y-widget-biz .a11y-chat-block .a11y-sum-grid > .a11y-sum-col + .a11y-sum-col { margin-top: 1.2em; }
 /* A long address has no break point, so at 27px it ran past the column and
    was clipped (user's screenshot, 4 Nov 2026). It may break anywhere. */
 .a11y-widget-biz .a11y-chat-turn :is(a, .a11y-chat-url),
@@ -2013,15 +2033,19 @@
 .a11y-widget-biz .a11y-chats {
   position: sticky; top: 0; box-sizing: border-box; max-height: 100dvh; overflow-y: auto;
   padding: 16px 16px 16px 0; border-right: 1px solid var(--ink);
-  font-size: 18px; letter-spacing: 0.01em; line-height: 1.3;
+  font-size: 15px; letter-spacing: 0.01em; line-height: 1.3;
 }
+/* 15px, the smaller of the two label sizes (user's instruction, 20 Nov
+   2026, "make this font smaller", on a screenshot of the column at 18px):
+   the column is navigation beside a 27px conversation, and at 18px its
+   titles read as loud as the thread. */
 .a11y-widget-biz .a11y-chats .a11y-chats-new,
 .a11y-widget-biz .a11y-chats .a11y-chats-toggle,
 .a11y-widget-biz .a11y-chats .a11y-chats-item {
   align-items: center; gap: 10px; box-sizing: border-box; width: 100%; min-height: 40px;
   margin: 0; padding: 8px 12px; border: 1px dashed var(--ink); border-radius: 12px;
   background: transparent; color: var(--ink);
-  font-size: 18px; letter-spacing: 0.01em; line-height: 1.3; text-align: start;
+  font-size: 15px; letter-spacing: 0.01em; line-height: 1.3; text-align: start;
 }
 .a11y-widget-biz .a11y-chats .a11y-chats-new { display: flex; font-weight: 500; }
 .a11y-widget-biz .a11y-chats .a11y-chats-toggle { display: none; border-color: transparent; font-weight: 400; }
@@ -2577,6 +2601,11 @@
 .a11y-widget-biz .a11y-barrier .a11y-chat-text .a11y-barrier-small,
 .a11y-widget-biz .a11y-barrier .a11y-barrier-small { margin: 0.6em 0 0; font-size: 18px; line-height: 1.3; letter-spacing: 0.01em; }
 .a11y-widget-biz .a11y-barrier .a11y-chat-text h3 { margin: 0 0 0.4em; font-size: 32px; font-weight: 400; line-height: 1.1; letter-spacing: -0.005em; }
+/* The report's lead is the assistant's sentence, so it is set as the
+   turn's prose (27px/1.2), with a line under it before the report. */
+.a11y-widget-biz .a11y-barrier .a11y-chat-text h3.a11y-barrier-lead { margin: 0 0 1.2em; font-size: 27px; line-height: 1.2; letter-spacing: 0; }
+/* The closing line after the report, a line clear of the small print. */
+.a11y-widget-biz .a11y-barrier .a11y-barrier-review .a11y-barrier-close { margin-top: 1.2em; }
 /* The thread's foot: kept clear of the docked box, so a turn scrolled to
    lands above it, not under it. */
 .a11y-widget-biz .a11y-barrier .a11y-barrier-end { height: 0; margin: 0; scroll-margin-bottom: 200px; }

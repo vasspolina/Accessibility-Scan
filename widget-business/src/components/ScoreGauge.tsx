@@ -375,7 +375,12 @@ export function ScoreGauge({
               </div>
             </div>
 
-            {preview.length === 0 ? (
+            {/* In the conversation the reply names the findings to start
+                with and the findings block follows it, so the run of the
+                worst three at display size was the same titles a third time
+                (user's instruction, 20 Nov 2026, "file a report in chat like
+                an assistant would do"). The page keeps it. */}
+            {inChat ? null : preview.length === 0 ? (
               <p className="a11y-score-clean">{t("Nothing here needs a fix.")}</p>
             ) : (
               <div className="a11y-sum-table">
@@ -446,6 +451,7 @@ export function ScoreGauge({
           {/* Plain text, not the report's own HTML: the point is to leave the
               widget entirely — an email or a Slack message to whoever owns
               the fix, not a screenshot of this card. */}
+          {!inChat && (
           <div className="a11y-sum-actions">
             <button type="button" className="a11y-show-all a11y-score-copy" onClick={copySummary}>
               {copied ? t("Copied") : t("Copy summary as plain text")}
@@ -454,6 +460,7 @@ export function ScoreGauge({
               {copied ? t("Summary copied to the clipboard.") : ""}
             </span>
           </div>
+          )}
         </div>
 
         <div className="a11y-sum-col">
@@ -481,6 +488,25 @@ export function ScoreGauge({
               2026): two columns, each point's number over a rule and its
               words under it. The number follows the words in the markup and
               is drawn first, so a screen reader hears the sentence alone. */}
+          {/* In the conversation the six points are asked for, not read
+              through on the way to the reply: folded under their title. */}
+          {inChat ? (
+            <details className="a11y-sum-counts-fold">
+              <summary>
+                {t("What the score counts")}
+                {/* Its own mark, in the markup and hidden, so the summary's
+                    name stays the title. Not the block's two-glyph fold: the
+                    block around it is a details too, and its open/closed
+                    rules reached in and hid both glyphs. Turned when open. */}
+                <span className="a11y-sum-counts-mark" aria-hidden="true">▸</span>
+              </summary>
+              <ol className="a11y-sum-counts-list">
+                {SCORE_POINTS.map((point) => (
+                  <li key={point}>{t(point)}</li>
+                ))}
+              </ol>
+            </details>
+          ) : (
           <section className="a11y-sum-panel a11y-sum-counts" aria-labelledby="a11y-sum-counts-heading">
             <h3 className="a11y-sum-eyebrow" id="a11y-sum-counts-heading">{t("What the score counts")}</h3>
             <div className="a11y-sum-specimens">
@@ -494,6 +520,7 @@ export function ScoreGauge({
               ))}
             </div>
           </section>
+          )}
         </div>
       </div>
     </div>

@@ -1023,7 +1023,7 @@ export const CHROME_KEYS: string[] = [
   "Yes",
   "You read it before it is sent. We keep what you write, so leave out your name and email.",
   "You:",
-  "Your report",
+  "Here is your report for the site’s owner. Read it before you send it.",
   "Your report could not be sent. Nothing is lost. Press the button to try again.",
   "Your report is as it was.",
   "Your report is written again.",
