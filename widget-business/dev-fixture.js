@@ -669,12 +669,21 @@
       if (!sr.querySelector("#a11y-url-input")) {
         // By position, not by its words: the label is translated, and an
         // English-only match left every non-English state stuck at the chat.
-        var toForm = sr.querySelector(".a11y-chat .a11y-chat-box-row .a11y-btn-ghost");
+        // Since 18 Nov 2026 the only way to the form is "Scan a page behind
+        // a login", under the box (.a11y-chat-signin); "Use the form
+        // instead" in the box row is gone. While this still looked in the
+        // row it found nothing, gave up after 10s, and every report state
+        // of check:reflow measured the chat landing and passed.
+        var toForm = sr.querySelector(".a11y-chat .a11y-chat-signin button");
         if (toForm) toForm.click();
         return null;
       }
       return sr.querySelector("form.a11y-url-form") ? sr : null;
     }, function (sr) {
+      // That button opens the form with its login panel open. These states
+      // are public scans, so shut it before anything is typed.
+      var login = sr.querySelector('.a11y-login-toggle[aria-expanded="true"]');
+      if (login) login.click();
       // Options first — they have to be set before the submit that reads them.
       if (params.get("scope") === "site") click(sr, "#a11y-scope-site");
       click(sr, params.get("audience") === "professional" ? "#a11y-aud-pro" : "#a11y-aud-biz");
