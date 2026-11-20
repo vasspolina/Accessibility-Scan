@@ -262,25 +262,22 @@
   z-index: 2;
   /* Clear above the box, paper below its middle: the cards are no longer
      cut by a band over them, and what scrolls under the box does not show
-     beneath it. The box's shadow paints over this ground. */
+     beneath it. */
   background: linear-gradient(to bottom, transparent 50%, var(--paper) 50%);
   padding-block: 0.6em 20px;
 }
 /* The chat box has a soft 1px dotted ink edge and 20px corners (user's
    instruction, 20 Nov 2026, replacing the square 2px solid edge kept since
    4 Nov); the focus ring stays solid so focus never depends on the dots.
-   It floats on a soft shadow, like Gemini's (user's instruction, 18 Nov
-   2026, "chat have shadow like gemini and no white cut off"). The dock
-   behind it is clear above the box: its paper ground was a white band that
-   cut the opening cards off over the box. The box carries its own paper, so the
-   words you type keep 21:1. The shadow is the one grey on the page, by
-   the user's word; it carries no meaning and no text sits on it. */
+   No shadow (user's instruction, 20 Nov 2026, removing the Gemini-like
+   shadow of 18 Nov). The dock behind it is clear above the box: its paper
+   ground was a white band that cut the opening cards off over the box. The
+   box carries its own paper, so the words you type keep 21:1. */
 .a11y-widget-biz .a11y-chat-box {
-  --chat-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 6px 24px rgba(0, 0, 0, 0.12);
   border: 1px dotted var(--ink); border-radius: 20px; padding: 0.5em 0.6em;
-  background: var(--paper); box-shadow: var(--chat-shadow);
+  background: var(--paper);
 }
-.a11y-widget-biz .a11y-chat-box:focus-within { outline: 2px solid var(--focus); outline-offset: -2px; box-shadow: var(--chat-shadow); }
+.a11y-widget-biz .a11y-chat-box:focus-within { outline: 2px solid var(--focus); outline-offset: -2px; }
 /* Outranks the generic field rule (0,3,1) above. */
 .a11y-widget-biz .a11y-chat-dock .a11y-chat-composer .a11y-chat-box textarea {
   display: block; box-sizing: border-box; width: 100%; min-height: 2.6em; max-height: 40vh;
