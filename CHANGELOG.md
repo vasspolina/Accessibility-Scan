@@ -11,8 +11,9 @@ The `backend`, `widget`, and `widget-business` packages are versioned together.
 
 - **The pilot's barrier form is a short conversation.** One question at a
   time (what you use, which page, what happened), each with answers to
-  pick, so a report can be made without typing. The model asks at most one
-  follow-up (`POST /api/pilot/followup`; a scripted question when it is off
+  pick, so a report can be made without typing. The model picks at most one
+  follow-up from seven questions written in each language
+  (`POST /api/pilot/followup`; "Where on the page was it?" when it is off
   or slow), then writes the report. Under the report, "Anything wrong?"
   takes a change in the person's words and the report is written again
   (`previous` and `change` on `POST /api/pilot/draft`). What was asked and
