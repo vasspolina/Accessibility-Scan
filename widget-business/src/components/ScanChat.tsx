@@ -11,6 +11,7 @@ import type { AccessibilityReport, SiteAudit } from "../api/scanClient";
 import {
   addressIn,
   appendUser,
+  beforeLastAnswer,
   ChatError,
   ChatUnavailableError,
   sendChatTurn,
@@ -1193,6 +1194,44 @@ export function ScanChat({
       returnFocus();
     }
   }
+
+  /** A switch of language re-answers the latest reply in the new one (user's
+   *  report, 20 Nov 2026: switched to Deutsch, and the answer on screen
+   *  stayed English). The language only rode with the next question, so the
+   *  reader saw German controls around an English answer and nothing to say
+   *  the switch had worked. Only a plain last answer is redone: the history
+   *  must end on it, and it must be the last thing in the thread, so a shown
+   *  section, a scan underway or a failed turn is left as it is. Earlier
+   *  answers stay in the language they were written in. */
+  const answeredIn = useRef(language);
+  useEffect(() => {
+    if (answeredIn.current === language) return;
+    answeredIn.current = language;
+    if (busy || loading || assistantDown.current) return;
+    const before = beforeLastAnswer(history.current);
+    const lastTurn = turnsRef.current[turnsRef.current.length - 1];
+    if (!before) return;
+    if (!lastTurn || lastTurn.who !== "checker" || lastTurn.streaming || !lastTurn.text.trim()) return;
+    setAll(turnsRef.current.slice(0, -1));
+    setBusy(true);
+    void (async () => {
+      try {
+        await assistantTurn(before);
+      } catch (err) {
+        // The question stays in the history, so the next message carries it.
+        history.current = before;
+        const message = err instanceof Error ? err.message : t("The assistant couldn't answer that.");
+        setAll(
+          turnsRef.current.map((x) => (x.who === "checker" && x.streaming ? { ...x, text: message, streaming: false } : x))
+        );
+        setAnnouncement(message);
+      } finally {
+        setBusy(false);
+      }
+    })();
+    // Runs on a switch of language only; the rest is read when it happens.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [language]);
 
   /** WCAG 2.4.11: the pinned composer must never cover what the keyboard
    *  is on. Anything that takes focus underneath it is scrolled clear.
