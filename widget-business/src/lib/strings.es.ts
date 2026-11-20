@@ -939,6 +939,8 @@ export const STRINGS_ES: Record<string, string> = {
   "Pick one, or type it.": "Elija una o escríbala.",
   "Remembered on this device.": "Recordado en este dispositivo.",
   "Report a barrier": "Informar de una barrera",
+  "Did something on a website stop you or slow you down?": "¿Algo en un sitio web le impidió avanzar o le hizo ir más lento?",
+  "Start a report": "Empezar un informe",
   "Report another barrier": "Informar de otra barrera",
   "Say what happened and we write it again.": "Diga qué pasó y lo escribimos de nuevo.",
   "Say what to change and we write it again.": "Diga qué cambiar y lo escribimos de nuevo.",

@@ -976,6 +976,8 @@ export const CHROME_KEYS: string[] = [
   "Pick one, or type it.",
   "Remembered on this device.",
   "Report a barrier",
+  "Did something on a website stop you or slow you down?",
+  "Start a report",
   "Report another barrier",
   "Say what happened and we write it again.",
   "Say what to change and we write it again.",
