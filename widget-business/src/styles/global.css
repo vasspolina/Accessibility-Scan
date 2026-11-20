@@ -21,9 +21,6 @@
   white-space: nowrap;
 }
 
-/* Decoration only, and already aria-hidden. */
-.a11y-widget-biz .a11y-poster { display: none; }
-
 /* The compare dialog is a modal: out of flow, over the page, on a ground. */
 .a11y-widget-biz .a11y-dialog-scrim {
   position: fixed;
@@ -90,6 +87,10 @@
      than overflow. */
   hyphens: manual;
   max-width: 40em; margin-inline: auto; padding: 1em;
+  /* The tracking of a spaced-capitals title and the extra word space that
+     goes with it (THE SHEET, at the end of this file); the phone sets them
+     narrower in PHONE TYPESETTING. */
+  --caps-track: 0.4em; --caps-word: 0.3em;
 }
 /* A heading sits a clear step above its text (0.5em, was 0.3em) and a full
    line clear of what came before: paragraph spacing after the FAQ on
@@ -242,9 +243,6 @@
 .a11y-widget-biz .a11y-sum-row-title,
 .a11y-widget-biz .a11y-switch-controls,
 .a11y-widget-biz .a11y-switch-label { margin-inline-end: 0.3em; }
-
-.a11y-widget-biz .a11y-poster-word,
-.a11y-widget-biz .a11y-poster-more { margin-inline-end: 0.3em; }
 
 /* An SVG with only a viewBox fills its container; the dials are drawings, not backdrops. */
 .a11y-widget-biz svg { max-width: 8em; max-height: 8em; }
@@ -594,7 +592,9 @@
 .a11y-widget-biz .a11y-accordion-chevron { flex: none; width: 0.6em; height: 0.6em; margin-inline-start: auto; }
 .a11y-widget-biz .a11y-accordion-head[aria-expanded="true"] .a11y-accordion-chevron { transform: rotate(180deg); }
 .a11y-widget-biz .a11y-w22-toggle { display: flex; align-items: center; gap: 0.6em; text-align: start; }
-.a11y-widget-biz .a11y-section-count { font-size: 22px; letter-spacing: 0.01em; font-weight: 400; }
+/* The count beside a title is the sheet's "(DJ SET)": small, roman, not
+   spread, hung after the name on the name's line. */
+.a11y-widget-biz .a11y-section-count { font-size: 22px; letter-spacing: 0.01em; font-weight: 400; text-transform: none; word-spacing: normal; }
 
 /* Steps: the word "Step 1:" has a space after it. */
 .a11y-widget-biz .a11y-stmt-step-num { margin-inline-end: 0.4em; }
@@ -1560,6 +1560,60 @@
 /* A tally is the label over its figure. */
 .a11y-widget-biz .a11y-pro-rows > .a11y-pro-row { display: block; }
 
+/* ═══ WHERE TO START: THE TOP FINDINGS AS SCATTERED CARDS (user's reference, 15 Nov 2026) ═
+   The worst findings of the scan, one per round block, scattered over a
+   12-column grid like a page of review cards: each block sits at its own
+   offset and width (there are at most five). The block is the
+   design note's (20px corners, the tile tokens: #f0efe8 with black words in
+   light, Apple's #1c1c1e with white in dark; the hover token), with the severity mark,
+   the title at the prose size in Medium, and small print at 15px. Under
+   640px of the widget's own width the blocks stack. The focus ring is
+   drawn inside the block: outside it would be ink on the page, which in
+   dark is black on black. */
+.a11y-widget-biz .a11y-top { container: a11y-top / inline-size; margin: 2.4em 0; }
+.a11y-widget-biz .a11y-top-title { margin: 0 0 0.75em; font-size: 32px; font-weight: 500; line-height: 1.05; letter-spacing: -0.005em; }
+.a11y-widget-biz .a11y-top-list {
+  display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); grid-auto-rows: minmax(54px, auto);
+  gap: 10px; margin: 0; padding: 0; list-style: none;
+}
+/* Each block spans two rows and starts a row or two after the one before,
+   so neighbours overlap by half a block instead of sitting in a table: a
+   wide one top left, one a step lower on the right, a narrow one in the
+   centre, a wide one right, one bottom left (rearranged at the user's
+   request, 15 Nov 2026). */
+.a11y-widget-biz .a11y-top-list > li { min-width: 0; margin: 0; display: flex; grid-column: 1 / span 6; grid-row: 1 / span 2; }
+.a11y-widget-biz .a11y-top-list > li:nth-child(2) { grid-column: 9 / span 4; grid-row: 2 / span 2; }
+.a11y-widget-biz .a11y-top-list > li:nth-child(3) { grid-column: 4 / span 4; grid-row: 4 / span 2; }
+.a11y-widget-biz .a11y-top-list > li:nth-child(4) { grid-column: 8 / span 5; grid-row: 5 / span 2; }
+.a11y-widget-biz .a11y-top-list > li:nth-child(5) { grid-column: 1 / span 5; grid-row: 6 / span 2; }
+.a11y-widget-biz .a11y-top-card {
+  --ink: var(--tile-ink); --paper: var(--tile);
+  box-sizing: border-box; width: 100%; min-width: 0; min-height: 128px; margin: 0; padding: 24px 20px;
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px;
+  border: 0; border-radius: 20px; background: var(--tile); color: var(--tile-ink); cursor: pointer;
+  font: inherit; text-align: center; overflow-wrap: break-word; hyphens: auto;
+}
+.a11y-widget-biz .a11y-top-card:hover { background: var(--hover); color: var(--hover-ink); }
+.a11y-widget-biz .a11y-top-card:focus-visible { outline: 3px solid var(--tile-ink); outline-offset: -6px; box-shadow: none; }
+.a11y-widget-biz .a11y-top-card-title { font-size: 27px; font-weight: 500; line-height: 1.05; letter-spacing: 0; text-wrap: balance; max-width: 100%; }
+.a11y-widget-biz .a11y-top-card-small { display: flex; flex-wrap: wrap; justify-content: center; gap: 0 1em; font-size: 15px; letter-spacing: 0.01em; line-height: 1.3; }
+/* A narrower report: the same scatter with wider blocks, so the small ones
+   still hold a title. */
+@container a11y-top (max-width: 1000px) {
+  .a11y-widget-biz .a11y-top-list > li { grid-column: 1 / span 7; }
+  .a11y-widget-biz .a11y-top-list > li:nth-child(2) { grid-column: 8 / span 5; grid-row: 2 / span 2; }
+  .a11y-widget-biz .a11y-top-list > li:nth-child(3) { grid-column: 3 / span 6; grid-row: 4 / span 2; }
+  .a11y-widget-biz .a11y-top-list > li:nth-child(4) { grid-column: 7 / span 6; grid-row: 6 / span 2; }
+  .a11y-widget-biz .a11y-top-list > li:nth-child(5) { grid-column: 1 / span 6; grid-row: 7 / span 2; }
+}
+@container a11y-top (max-width: 640px) {
+  .a11y-widget-biz .a11y-top-list { grid-auto-rows: auto; }
+  .a11y-widget-biz .a11y-top-list > li, .a11y-widget-biz .a11y-top-list > li:nth-child(n) { grid-column: 1 / -1; grid-row: auto; }
+  .a11y-widget-biz .a11y-top-title { font-size: 27px; letter-spacing: 0; }
+  .a11y-widget-biz .a11y-top-card { min-height: 96px; padding: 20px 16px; }
+  .a11y-widget-biz .a11y-top-card-title { font-size: 22px; letter-spacing: 0.005em; }
+}
+
 /* ═══ DESKTOP GUTTER AND TIGHT CHAT (18 Oct 2026; user's instruction) ═════
    On desktop the page, the conversation and every element in it sit 16px
    from the left and right edges: no centred 40em column, no 1em padding.
@@ -1591,7 +1645,7 @@
    Everything spaced in em (paragraphs, turns, the speaker gutter) follows the
    new body size on its own. */
 @media (max-width: 640px) {
-  .a11y-widget-biz { font-size: 26px; letter-spacing: 0.005em; padding: 10px; }
+  .a11y-widget-biz { font-size: 26px; letter-spacing: 0.005em; padding: 10px; --caps-track: 0.25em; --caps-word: 0.2em; }
   .a11y-widget-biz :is(h1, h2, h3, h4) { font-size: 32px; letter-spacing: 0; }
   .a11y-widget-biz .a11y-legal-count { font-size: 32px; letter-spacing: 0; }
   .a11y-widget-biz .a11y-dn-link { font-size: 26px; }
@@ -1764,7 +1818,7 @@
     figure, img, pre, tr, blockquote,
     .a11y-occurrence, .a11y-fd-col > p, .a11y-fd-learn, .a11y-pro-block, .a11y-fix-once,
     .a11y-sum-row, .a11y-pro-row, .a11y-pro-point, .a11y-legal-row, .a11y-legal-q,
-    .a11y-conf-row, .a11y-next-list > li, .a11y-undecided-cell, .a11y-spec-card, .a11y-sr-row, .a11y-dn-link
+    .a11y-conf-row, .a11y-next-list > li, .a11y-undecided-cell, .a11y-spec-card, .a11y-sr-row, .a11y-dn-link, .a11y-top-card
   ) { break-inside: avoid; page-break-inside: avoid; }
   .a11y-widget-biz thead { display: table-header-group; }
   .a11y-widget-biz tfoot { display: table-footer-group; }
@@ -2491,4 +2545,64 @@
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sr-bar .a11y-sr-play:enabled:hover { background: var(--hl-cap-a); color: var(--tile-ink); }
 @container a11y-shell (max-width: 640px) {
   .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sr-bar .a11y-ai-toggle { flex: 1 1 100%; min-width: 0; padding-block: 8px; border-radius: 20px; }
+}
+
+/* ═══ THE SHEET (user's reference, 9 Nov 2026: the Mesma + Acme sheet for
+   Zarya's release, Acme Estudio, Madrid) ═══════════════════════════════════
+   What the sheet does, and what does it here:
+   - One line of capitals spread along the top edge, letter by letter, from
+     margin to margin ("M E S M A + A C M E"), and another along the foot
+     ("M A D R I D"). The page's word is the top line (PosterMark: Findings,
+     New scan), the host is the foot line; each letter is a flex item and
+     space-between spreads them over whatever width there is. 18px, roman,
+     no tracking of its own: the spread is the tracking.
+   - Under the top line, centred, a few short lines of small spaced
+     capitals naming the event. The report's meta line (host · date) is
+     set so, 15px at +0.2em, where it was the rail's footer before.
+   - The date stacked down the left margin, a digit under a digit, in the
+     white above the names. Every report section hangs its number so: a
+     CSS counter in vertical writing with upright glyphs, 15px, the digits
+     1em apart, standing at the left edge above the title. It is a mark,
+     not a word (alt text empty), and it resets on the shell's content,
+     which holds the report in both readings.
+   - The names big, in widely spaced capitals, each on its own line at the
+     left edge, with "(DJ SET)" small beside the last. Section titles are
+     the names: uppercase, Regular, 32px (27px on a phone), tracked 0.4em
+     with a 0.3em word space (0.25em and 0.2em on a phone, --caps-track and
+     --caps-word), on a 1.3 line so stacked lines of capitals keep the
+     sheet's air; the count beside a title stays small print. A spaced
+     title does not hyphenate; the root's break-anywhere still holds a
+     26-letter German title inside 320px.
+   - Most of the sheet empty: two lines of the prose between sections.
+   The sheet's names are red. That colour is not taken: the widget is black
+   and white (COLOUR, in CLAUDE.md), and a third exception needs the
+   user's word. Capitals come from text-transform, so the markup, the
+   nav labels and the accessible names keep their sentence case. */
+.a11y-widget-biz .a11y-poster {
+  display: flex; justify-content: space-between; margin: 0 0 1.2em;
+  font-size: 18px; font-weight: 400; line-height: 1.2; letter-spacing: 0; text-transform: uppercase;
+}
+.a11y-widget-biz .a11y-poster-letter { flex: none; }
+.a11y-widget-biz .a11y-poster-foot { margin: 4.8em 0 0; }
+.a11y-widget-biz .a11y-poster-line {
+  text-align: center; margin: 0 0 2.4em;
+  font-size: 15px; letter-spacing: 0.2em; line-height: 1.4; text-transform: uppercase; hyphens: manual;
+}
+.a11y-widget-biz .a11y-shell-content { counter-reset: poster; }
+.a11y-widget-biz .a11y-section,
+.a11y-widget-biz .a11y-score,
+.a11y-widget-biz .a11y-pro-panel { counter-increment: poster; margin-top: 2.4em; }
+.a11y-widget-biz .a11y-section::before,
+.a11y-widget-biz .a11y-score::before,
+.a11y-widget-biz .a11y-pro-panel::before {
+  content: counter(poster, decimal-leading-zero) / "";
+  display: block; writing-mode: vertical-rl; text-orientation: upright;
+  font-size: 15px; font-weight: 400; line-height: 1; letter-spacing: 1em; margin: 0 0 0.6em;
+}
+.a11y-widget-biz .a11y-section-title {
+  text-transform: uppercase; font-weight: 400; line-height: 1.3;
+  letter-spacing: var(--caps-track); word-spacing: var(--caps-word); hyphens: manual;
+}
+@media print {
+  .a11y-widget-biz .a11y-poster { display: none; }
 }

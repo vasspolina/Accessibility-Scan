@@ -11,6 +11,7 @@ import type { NavSection } from "./components/SideNav";
 import { useActiveSection } from "./lib/useActiveSection";
 import { DocumentSummary } from "./components/DocumentSummary";
 import { ReportSection } from "./components/ReportSection";
+import { TopFindings } from "./components/TopFindings";
 import { DesignNotesPanel } from "./components/DesignNotesPanel";
 import { PrincipleGroup } from "./components/PrincipleGroup";
 import { UndecidedChecks } from "./components/UndecidedChecks";
@@ -578,6 +579,12 @@ export function App({
                   tookSeconds={tookSeconds}
                 />
                 <ReportActions report={report} apiBase={apiBase} />
+                {/* The worst of the findings, as cards, before the schedule
+                    that holds them all (15 Nov 2026). */}
+                <TopFindings
+                  findings={findingsByCategory.accessibility}
+                  onSee={() => focusFindings("a11y-accessibility-heading")}
+                />
               </>
             )}
             {/* Only when the AI review was wanted but did not happen;
@@ -948,6 +955,8 @@ export function App({
     >
     <AppShell
       mark={report || audit ? t("Findings") : t("New scan")}
+      /* The foot line is the host, as the sheet's foot is the city. */
+      foot={report ? hostnameOf(report.url) : audit ? hostnameOf(audit.pages[0]?.url ?? "") : undefined}
       onJump={jumpTo}
       /* The run's settings live in the rail once there is a run to describe.
          Report style flips in place; the other two re-run the scan, which is
