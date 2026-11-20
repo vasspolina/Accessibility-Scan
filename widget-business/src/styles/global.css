@@ -266,9 +266,9 @@
   background: linear-gradient(to bottom, transparent 50%, var(--paper) 50%);
   padding-block: 0.6em 20px;
 }
-/* The chat box keeps its old design (user's instruction, 4 Nov 2026): square
-   corners and a 2px ink edge, whatever the buttons inside it do. It had been
-   made round earlier that day (20px, then 28px) and was put back.
+/* The chat box has a soft 1px dotted ink edge and 20px corners (user's
+   instruction, 20 Nov 2026, replacing the square 2px solid edge kept since
+   4 Nov); the focus ring stays solid so focus never depends on the dots.
    It floats on a soft shadow, like Gemini's (user's instruction, 18 Nov
    2026, "chat have shadow like gemini and no white cut off"). The dock
    behind it is clear above the box: its paper ground was a white band that
@@ -277,7 +277,7 @@
    the user's word; it carries no meaning and no text sits on it. */
 .a11y-widget-biz .a11y-chat-box {
   --chat-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 6px 24px rgba(0, 0, 0, 0.12);
-  border: 2px solid var(--ink); padding: 0.5em 0.6em;
+  border: 1px dotted var(--ink); border-radius: 20px; padding: 0.5em 0.6em;
   background: var(--paper); box-shadow: var(--chat-shadow);
 }
 .a11y-widget-biz .a11y-chat-box:focus-within { outline: 2px solid var(--focus); outline-offset: -2px; box-shadow: var(--chat-shadow); }
@@ -1935,7 +1935,7 @@
   .a11y-widget-biz .a11y-chat .a11y-prompt-more .a11y-btn { font-size: 18px; }
 
   .a11y-widget-biz .a11y-chat .a11y-chat-dock { padding-block: 6px calc(8px + env(safe-area-inset-bottom, 0px)); }
-  .a11y-widget-biz .a11y-chat .a11y-chat-box { border: 1px solid var(--ink); border-radius: 24px; padding: 10px 8px 8px 16px; }
+  .a11y-widget-biz .a11y-chat .a11y-chat-box { border: 1px dotted var(--ink); border-radius: 24px; padding: 10px 8px 8px 16px; }
   .a11y-widget-biz .a11y-chat-dock .a11y-chat-composer .a11y-chat-box textarea { min-height: 1.4em; font-size: 19px; letter-spacing: 0.005em; line-height: 1.4; }
   .a11y-widget-biz .a11y-chat .a11y-chat-box-row { flex-wrap: nowrap; margin-top: 6px; }
   .a11y-widget-biz .a11y-chat .a11y-chat-box-start { min-width: 0; }
