@@ -2686,3 +2686,38 @@
   .a11y-widget-biz .a11y-barrier .a11y-barrier-said { flex-wrap: wrap; align-items: flex-start; }
   .a11y-widget-biz .a11y-barrier .a11y-barrier-said-text { flex-basis: 100%; }
 }
+
+/* ═══ THE BARRIER CARD (user's instruction, 20 Nov 2026: "make the barrier
+   card stand out more") ═════════════════════════════════════════════════
+   Report a barrier leads the opening questions on the marker yellow, the
+   one colour the page allows for what matters, with black words in both
+   themes (#000 on #ffe14d 16.2:1, on the dark theme's #ffd60a 14.8:1).
+   Its press is said at all times, not only on hover: the "Start a report"
+   pill stands at the foot, solid ink with paper words, and stays on a
+   phone, where the other cards drop theirs. Hover and focus turn the card
+   solid black like the others, and the pill then turns paper.
+   It runs the full width of the grid's first row, a banner over the three
+   questions, so the row under it stays whole (beside them as a fourth
+   card it left one question alone on a second row) and its question is set
+   at 27px. On a phone the row scrolls sideways and it is the first card. */
+.a11y-widget-biz .a11y-prompts .a11y-prompt.a11y-prompt-barrier {
+  --ink: #000; --paper: var(--hl-cap-a);
+  background: var(--hl-cap-a); color: #000; border-color: #000;
+  grid-column: 1 / -1; aspect-ratio: auto; min-height: 180px;
+}
+.a11y-widget-biz .a11y-prompts .a11y-prompt-barrier .a11y-prompt-ask { font-size: 27px; line-height: 1.2; letter-spacing: 0; }
+.a11y-widget-biz .a11y-prompts .a11y-prompt-barrier .a11y-prompt-q { flex: 1 1 auto; }
+.a11y-widget-biz .a11y-prompts .a11y-prompt-barrier .a11y-prompt-go {
+  position: static; display: flex; align-self: flex-start; margin-top: auto;
+  background: #000; color: #fff; visibility: visible;
+}
+.a11y-widget-biz .a11y-prompts .a11y-prompt.a11y-prompt-barrier:has(> .a11y-prompt-q:enabled:is(:hover, :focus-visible)) {
+  --ink: #fff; --paper: #000;
+  background: #000; color: #fff; border-color: #fff;
+}
+.a11y-widget-biz .a11y-prompts .a11y-prompt-barrier .a11y-prompt-q:enabled:is(:hover, :focus-visible) .a11y-prompt-go { background: #fff; color: #000; }
+@media (max-width: 640px) {
+  .a11y-widget-biz .a11y-chat .a11y-prompts .a11y-prompt.a11y-prompt-barrier { grid-column: auto; min-height: 0; }
+  .a11y-widget-biz .a11y-chat .a11y-prompts .a11y-prompt-barrier .a11y-prompt-ask { font-size: 19px; line-height: 1.3; letter-spacing: 0.005em; }
+  .a11y-widget-biz .a11y-chat .a11y-prompts .a11y-prompt-barrier .a11y-prompt-go { display: flex; margin-top: 10px; font-size: 15px; min-height: 30px; }
+}
