@@ -37,9 +37,9 @@
 .a11y-widget-biz img, .a11y-widget-biz table, .a11y-widget-biz pre { max-width: 100%; }
 .a11y-widget-biz pre { overflow-x: auto; }
 
-/* ═══ THE POSTER, AGAIN ══════════════════════════════════════════════════
-   From the Independent Publishing Fair poster: big plain type in a tight
-   block, with a marker highlight laid over the phrases that matter. The
+/* ═══ TYPE, INK AND THE MARKER HIGHLIGHT ═════════════════════════════════
+   Big plain type in a tight block, with a marker highlight laid over the
+   phrases that matter. The
    highlight is orange, blue or green behind BLACK text in both themes, so
    the colour is never what carries the reading: every fill measures 7:1 or
    better against #000 (orange 10:1, blue 9:1, green 12:1). Everything else
@@ -49,15 +49,15 @@
   --hl-orange: #ff8a4c; --hl-blue: #6fa8ff; --hl-green: #4fe0a8;
   --hl-cap-a: #ffe14d; --hl-cap-b: #ff9ad5;
   /* Surfaces that were pinned light in both themes, as tokens so dark mode
-     can take Apple's dark system colours (user's instruction, 18 Nov 2026,
-     "do a proper dark mode, no white or light buttons, take colours from
-     apple"). Light keeps the values it had. */
+     can take its own dark system greys (user's instruction, 18 Nov 2026,
+     "do a proper dark mode, no white or light buttons"). Light keeps the
+     values it had. */
   --tile: #f0efe8; --tile-ink: #000; --tile-fill: #fff;
   --strong: #000; --strong-ink: #f0efe8;
   --hover: #ffe14d; --hover-ink: #000;
   /* What is drawn solid in ink (the primary action, a chosen option, a
      switch that is on, numbered rounds, the dark slabs): black in light; in
-     dark Apple's grey, so nothing solid turns white. */
+     dark the #636366 grey, so nothing solid turns white. */
   --solid: #000; --solid-ink: #fff;
   color-scheme: light;
 }
@@ -74,8 +74,8 @@
 .a11y-widget-biz {
   font-family: "Jokker", "DejaVu Sans", sans-serif;
   /* Back to 32px Regular at line-height 1.2 (user's instruction, 18 Nov
-     2026, "lets go back to this font sizing", after the Jokker Medium 49px
-     from a type tester was tried the same morning). Width and gutter are
+     2026, "lets go back to this font sizing", after Jokker Medium 49px
+     was tried the same morning). Width and gutter are
      40em and 1em of the 32px again. */
   font-size: 32px; font-weight: 400; line-height: 1.2; letter-spacing: 0;
   font-kerning: normal; font-feature-settings: "ss04", "ss05"; font-variant-ligatures: common-ligatures; text-rendering: optimizeLegibility; font-synthesis: none;
@@ -89,8 +89,8 @@
   max-width: 40em; margin-inline: auto; padding: 1em;
 }
 /* A heading sits a clear step above its text (0.5em, was 0.3em) and a full
-   line clear of what came before: paragraph spacing after the FAQ on
-   displaay.net, user's instruction, 4 Nov 2026. */
+   line clear of what came before (paragraph spacing, user's instruction,
+   4 Nov 2026). */
 .a11y-widget-biz :is(h1, h2, h3, h4) { font-weight: 500; line-height: 1.05; font-size: 38px; letter-spacing: -0.005em; margin: 1.2em 0 0.5em; }
 /* Two lines under each paragraph, list, table and figure of the report
    (was one; user asked for twice the room, 4 Nov 2026). */
@@ -111,13 +111,13 @@
 }
 .a11y-widget-biz a { color: var(--ink); text-decoration: underline; text-underline-offset: 0.15em; }
 
-/* The small print under the poster: 15px. */
+/* The small print under a title: 15px. */
 .a11y-widget-biz :is(small, .a11y-issue-row-meta, .a11y-conf-cap, .a11y-next-meta, .a11y-sum-eyebrow, .a11y-input-help, .a11y-input-label) {
   font-size: 18px; letter-spacing: 0.01em; line-height: 1.2;
 }
 
-/* Controls: pills again (user's instruction, 4 Nov 2026, back from the 10px
-   Displaay rectangle the same day), with Displaay's 1px ink edge, a 34px floor
+/* Controls: pills again (user's instruction, 4 Nov 2026, back from a 10px
+   rectangle tried the same day), with a 1px ink edge, a 34px floor
    and a flat marker-yellow fill on hover (black text on --hl-cap-a measures
    better than 7:1). 18px. */
 .a11y-widget-biz :is(button, .a11y-btn) {
@@ -133,27 +133,26 @@
 .a11y-widget-biz .a11y-btn:enabled:hover { background: var(--hover); border-color: var(--hover); color: var(--hover-ink); }
 .a11y-widget-biz button:disabled,
 .a11y-widget-biz .a11y-btn:disabled { border-style: dashed; border-color: var(--ink); background: var(--paper); cursor: not-allowed; }
-/* The main action is solid ink, Displaay's "Ask Albert": the run, the send,
-   the save. It turns marker-yellow on hover like the rest. Disabled, it drops
+/* The main action is solid ink: the run, the send, the save. It turns marker-yellow on hover like the rest. Disabled, it drops
    back to paper with the dashed edge, never a faded ink. */
 .a11y-widget-biz .a11y-btn.a11y-btn-primary:enabled { background: var(--solid); color: var(--solid-ink); }
 .a11y-widget-biz .a11y-btn.a11y-btn-primary:enabled:hover { background: var(--hover); border-color: var(--hover); color: var(--hover-ink); }
 .a11y-widget-biz :is(input:not([type="radio"]):not([type="checkbox"]), textarea, select) {
   font: inherit; font-size: 22px; letter-spacing: 0.01em; padding: 0.4em 0.6em;
   border: 2px solid var(--ink); border-radius: 0; background: var(--paper); color: var(--ink);
-  /* Dark: Apple's filled field, a 1px system-grey edge (6.3:1 on black). */
+  /* Dark: a filled field, a 1px #8e8e93 grey edge (6.3:1 on black). */
   border: var(--field-edge, 2px solid var(--ink)); background: var(--field-bg, var(--paper));
 }
-/* Focus after IBM Carbon (user's instruction, 18 Nov 2026, "make focus
-   outline dark green and like ibm carbon"): a 2px line inside the element's
-   own edge, square to its corners, no gap and no second ring. The green is
-   Carbon's green 60, #198038, the one colour that is not marker or ink. One
+/* Focus is dark green (user's instruction, 18 Nov 2026, "make focus
+   outline dark green"): a 2px line inside the element's own edge, square to
+   its corners, no gap and no second ring. The green is #198038, the one
+   colour that is not marker or ink. One
    value serves every ground because it measures 5.0:1 on white, 4.2:1 on
    black, 4.35:1 on the #f0efe8 tiles and 3.9:1 on marker yellow (hover), so
    it clears 3:1 (WCAG 1.4.11) on every light-theme ground. Dark mode's
-   Apple greys (#636366 solids, #2c2c2e fills) are too close to it, so dark
-   takes Carbon's green 30, #6fdc8c: 3.5:1 on #636366, 8:1 on #2c2c2e.
-   Links take it outside the text, as Carbon's do, so it never cuts letters. */
+   greys (#636366 solids, #2c2c2e fills) are too close to it, so dark takes
+   the lighter green #6fdc8c: 3.5:1 on #636366, 8:1 on #2c2c2e. Links take
+   it 2px outside the text, so it never cuts letters. */
 .a11y-widget-biz :focus-visible { outline: 2px solid var(--focus); outline-offset: -2px; box-shadow: none; }
 .a11y-widget-biz a:focus-visible { outline-offset: 2px; }
 
@@ -276,7 +275,7 @@
 /* The chat box has a soft 1px dotted ink edge and 20px corners (user's
    instruction, 20 Nov 2026, replacing the square 2px solid edge kept since
    4 Nov); the focus ring stays solid so focus never depends on the dots.
-   No shadow (user's instruction, 20 Nov 2026, removing the Gemini-like
+   No shadow (user's instruction, 20 Nov 2026, removing the soft drop
    shadow of 18 Nov). The dock behind it is clear above the box: its paper
    ground was a white band that cut the opening cards off over the box. The
    box carries its own paper, so the words you type keep 21:1. */
@@ -291,7 +290,7 @@
   border: 0; padding: 0; resize: none; background: transparent; overflow-y: auto;
 }
 .a11y-widget-biz .a11y-chat-dock .a11y-chat-composer .a11y-chat-box textarea:focus-visible { outline: none; box-shadow: none; }
-/* The line Tab would fill in, as in Claude's apps (lib/chatSuggest): the
+/* The line Tab would fill in (lib/chatSuggest): the
    key in a small outlined cap, then the words, in ink, not a faded ghost
    (there is no grey to fade them to). */
 .a11y-widget-biz .a11y-chat-tabhint {
@@ -336,8 +335,7 @@
 }
 /* Who is speaking: small print above each turn. */
 .a11y-widget-biz .a11y-chat-who { font-size: 18px; letter-spacing: 0.01em; font-weight: 500; margin: 0 0 0.3em; }
-/* Paragraph spacing, after the FAQ on displaay.net (user's instruction,
-   4 Nov 2026, replacing "no space between turns" of 18 Oct): one line of
+/* Paragraph spacing (user's instruction, 4 Nov 2026, replacing "no space between turns" of 18 Oct): one line of
    the 27px text between turns and, since the same day, a full line between
    paragraphs inside one too (was half a line; user asked for twice the room),
    the speaker label a small step above its words. Spacing parts the turns;
@@ -373,9 +371,9 @@
 .a11y-widget-biz .a11y-chat-text { min-width: 0; }
 /* A numbered test plan (user's instruction, 4 Nov 2026: "this needs to
    widgets"; lib/testPlan.ts decides which lists are plans) stands its steps
-   side by side, each a column of the pricing block: the step's figure in
+   side by side, each a column with no ground: the step's figure in
    small print over a 1px ink rule, its name in Medium 22px, the
-   instruction under it at 18px. They were 440px #f0efe8 specimen cards
+   instruction under it at 18px. They were 440px #f0efe8 cards
    with 20px corners and the figure set at 160px at the foot (18 Nov 2026)
    until the user's word on those cards, 20 Nov 2026: "this is a slop".
    Nothing is added; the figure stays first in the markup and on screen. */
@@ -519,7 +517,7 @@
 .a11y-widget-biz details:not([open]) .a11y-chat-fold-open,
 .a11y-widget-biz details[open] .a11y-chat-fold-closed { display: none; }
 .a11y-widget-biz .a11y-chat-fold { margin-inline-start: 0.3em; }
-/* The details toggle (5 Nov 2026, after Claude's folded tool calls): a
+/* The details toggle (5 Nov 2026): a
    block's fold says what it does in small print, and a finished scan's
    steps sit behind one "Details" line. */
 .a11y-widget-biz .a11y-chat-blockhead .a11y-chat-fold { font-size: 18px; letter-spacing: 0.01em; margin-inline-start: 0.8em; }
@@ -602,7 +600,7 @@
    The strip-down left the report's inner parts with no layout at all, so
    labels, counts, numbers and glosses ran into the words beside them
    ("01It counts", "Step 1:Tell us", "Partially conformantMeets most...").
-   One rule per part, in the poster's terms: a hung number, small print
+   One rule per part: a hung number, small print
    under the line it belongs to, no boxes, no rules. */
 
 /* A highlight is a word: it never breaks inside itself or hyphenates
@@ -913,12 +911,12 @@
 .a11y-widget-biz .a11y-sum-dial-num { font-size: 48px; letter-spacing: -0.01em; font-weight: 300; line-height: 1; margin: 0; }
 .a11y-widget-biz .a11y-sum-dial-of { font-size: 18px; letter-spacing: 0.01em; margin: 0; }
 
-/* The scan summary as a type specimen (user's instruction and reference,
-   4 Nov 2026: a font tester's panel, kept with the dial; no corner marks,
-   user's word the same day). The label and the dial sit centred at the top; the worst
+/* The scan summary as a run of display type (user's instruction,
+   4 Nov 2026, kept with the dial; no corner marks, user's word the same
+   day). The label and the dial sit centred at the top; the worst
    findings run as one centred paragraph of display type, each opened by a
-   round numbered marker, the way the specimen drops a dingbat between
-   words; the copy button sits centred under it, like the tester's buttons.
+   round numbered marker set between the words; the copy button sits
+   centred under it.
    Still a list in the markup: only its display is inline. The markers are
    ink with paper figures (21:1); the severity fills are the highlight
    colours with black text, as everywhere else. */
@@ -984,8 +982,8 @@
    still fits 320px. */
 @media (max-width: 640px) { .a11y-widget-biz .a11y-sum-run { padding-inline: 0; } }
 
-/* The opening questions, as type-specimen tiles (user's reference, 17 Nov
-   2026, replacing the centred display questions and their coloured hover):
+/* The opening questions, as tiles (user's instruction, 17 Nov 2026,
+   replacing the centred display questions and their coloured hover):
    a tile per group on an auto-fit grid, 20px corners, the fixed
    #f0efe8 ground with black words in both themes (18.4:1); the group's
    label top-left at 15px, the question at the foot at 30px.
@@ -1001,19 +999,16 @@
    the question 30 to 21px, and at that size its spacing follows the
    small sizes (+0.01em, line-height 1.15, the root's). The whole tile
    is the button. A 25px Serrif Light question (same day) was replaced by
-   the Pangram cards below. Hover and focus turn it solid black with white words
-   (21:1) and show a white pill, the "Check it out" of the reference; a 1px
-   white edge keeps the black tile visible on a black page. Disabled is a
-   dashed edge, never faded.
-   Set as the Pangram Pangram font cards (user's reference, 18 Nov 2026,
-   "take the opening buttons design from here"; measured on
-   pangrampangram.com at 1440px): a tall card in the 296:407 proportion,
-   20px corners, 26px inside, 25px apart; the name top-left in Medium with
-   its small lines under it (here the group, then the question at 18px on
-   1.3), and one big glyph standing at the foot where the foundry sets its
-   "Aa": a question mark, the one glyph that says what the card holds, in
-   the markup and aria-hidden. Their #ededed ground is a grey, so the card
-   keeps the #f0efe8 this page allows. Their New/Update badges are left out
+   the cards below. Hover and focus turn it solid black with white words
+   (21:1) and show a white "Ask this" pill; a 1px white edge keeps the
+   black tile visible on a black page. Disabled is a dashed edge, never
+   faded.
+   Set as tall cards (user's instruction, 18 Nov 2026): the 296:407
+   proportion, 20px corners, 26px inside, 25px apart; the name top-left in
+   Medium with its small lines under it (here the group, then the question
+   at 18px on 1.3), and one big glyph standing at the foot: a question
+   mark, the one glyph that says what the card holds, in the markup and
+   aria-hidden. The ground is #f0efe8, never a grey. No New/Update badges
    ("no badges"); the "Ask this" pill stands in the bottom-right corner,
    beside the glyph, on hover and focus only. */
 .a11y-widget-biz .a11y-prompts { container: a11y-prompts / inline-size; margin: 0.6em 0 1.2em; }
@@ -1089,25 +1084,23 @@
      pair may part rather than run off the screen. */
   .a11y-widget-biz .a11y-sum-run .a11y-sum-nobreak { white-space: normal; }
 }
-/* What the score counts as the Displaay homepage's release grid (user's
-   reference, 4 Nov 2026: displaay.net, "New Releases"). Measured there at
-   1400px: a six-column grid, 15px between columns and 25px between rows;
-   the lead release spans five columns and leaves the sixth empty, the
-   next two span three each. Each release is a square-cornered tile with
-   the type set big in its middle, and its name under it, 10px down, at
-   28px Regular, set left. Here the point is the type in the tile and its
-   number is the name under it (27px, the prose size, nearest to 28).
+/* What the score counts as a grid of tiles (user's instruction,
+   4 Nov 2026): a six-column grid, 15px between columns and 25px between
+   rows; the lead tile spans five columns and leaves the sixth empty, the
+   next two span three each. Each tile is square-cornered with the type
+   set big in its middle, and its name under it, 10px down, set left. Here
+   the point is the type in the tile and its number is the name under it
+   (27px, the prose size).
    01, 04 and 07 span five columns at 48px; 02 + 03 and 05 + 06 span three
-   each at 32px. Tiles keep Displaay's proportions (636 / 1131 for the
-   wide one, 420 / 673 for the pair) as a minimum, and grow when the words
+   each at 32px. Tiles keep the proportions 636 / 1131 for the wide one
+   and 420 / 673 for the pair as a minimum, and grow when the words
    need more. Colour is the user's tile exception (see SPECIMEN TILES):
    #f0efe8, fixed in both themes, #000 on it at 18.4:1. Under 640px of its
    own width every point takes the full row at 32px and 27px, with no
    fixed proportion. */
 .a11y-widget-biz .a11y-sum-counts { container: a11y-sum-counts / inline-size; text-align: start; margin: 0 0 1.2em; }
 .a11y-widget-biz .a11y-sum-counts > .a11y-sum-eyebrow { margin: 0 0 0.6em; font-size: 38px; letter-spacing: -0.005em; line-height: 1.1; font-weight: 400; hyphens: manual; }
-/* Replaced the same day (user's instruction, the displaay.net Info block
-   as reference): no big tiles. Two columns, 15px apart; each point is its
+/* Replaced the same day (user's instruction): no big tiles. Two columns, 15px apart; each point is its
    number at 15px over a 1px ink rule, the words under it at 18px Regular,
    set left. One column under 640px of its own width. */
 .a11y-widget-biz .a11y-sum-specimens {
@@ -1188,12 +1181,11 @@
 .a11y-widget-biz .a11y-occurrence { margin: 0 0 0.6em; }
 .a11y-widget-biz .a11y-occurrence-count { margin-inline-start: 0.4em; font-size: 18px; letter-spacing: 0.01em; font-weight: 500; }
 
-/* ═══ THE EXPANDED FINDING, SET LIKE DISPLAAY'S "INFO" BLOCK ════════════════
-   User's instruction, 4 Nov 2026, from the Info section of
-   displaay.net/typeface/dazzed: a heavy ink rule across the top, one column
-   at the full width (two half-width columns until the user's instruction of
-   the same day). Restored at the user's word later that day, over the
-   pricing block and Reckless's specimen tiles that had replaced it; the
+/* ═══ THE EXPANDED FINDING AS ONE RULED BLOCK ══════════════════════════════
+   User's instruction, 4 Nov 2026: a heavy ink rule across the top, one
+   column at the full width (two half-width columns until the user's
+   instruction of the same day). Restored at the user's word later that
+   day, over the ruled columns and serif tiles that had replaced it; the
    tiles now set the report's other groups of content (SPECIMEN TILES below).
    each part under a small capital label with a 1px rule beneath it, the prose
    in a book serif, and the key/value lines (WCAG, selector, rule) set as a
@@ -1242,22 +1234,21 @@
 }
 .a11y-widget-biz .a11y-fd .a11y-fix-once > strong { font-weight: 300; }
 /* The short parts as cards (user's instruction, 17 Nov 2026: "too many
-   lines, these can be cards"), set since 18 Nov 2026 as the spec cards of a
-   type foundry's page (user's reference, "design this like this"): equal
-   cards on one grid, 18px apart, the cards of a row the same height. Each has
-   its label top-left in small Medium type, no pill, and its words under it set
-   large and tight in Jokker Medium (-0.01em), the way the reference sets
-   "Grotesk / Italics / Sans Serif". FindingGroup's tileSize() reads the
+   lines, these can be cards"), set since 18 Nov 2026 (user's instruction,
+   "design this like this") as equal cards on one grid, 18px apart, the
+   cards of a row the same height. Each has its label top-left in small
+   Medium type, no pill, and its words under it set large and tight in
+   Jokker Medium (-0.01em). FindingGroup's tileSize() reads the
    words: up to 90 characters set at 38px, up to 200 at 30px, longer at 26px.
    A card is as tall as its words plus 22px above and 40px below, with no
    minimum height (user's instruction, 18 Nov 2026).
-   The ground is the fixed #f0efe8, black words in both themes (18.4:1). The
-   reference's red card is not taken: the widget has no red (COLOUR, in
-   CLAUDE.md). Under 640px of block, one column. What to do and the affected
+   The ground is the fixed #f0efe8, black words in both themes (18.4:1). No
+   card is red: the widget has no red (COLOUR, in CLAUDE.md). Under 640px
+   of block, one column. What to do and the affected
    elements stay full width below: lists, pictures, code. */
 /* No cards (user's word, 20 Nov 2026, on a screenshot of these: "this is a
-   slop"). The parts stay side by side, but as columns of the pricing block
-   the report's other groups use: no ground, no corners, no padding; each
+   slop"). The parts stay side by side, but as the ruled columns the
+   report's other groups use: no ground, no corners, no padding; each
    label over a 1px ink rule, the words under it. Page ink and paper, so
    they follow the theme. */
 .a11y-widget-biz .a11y-fd > .a11y-fd-col:first-child {
@@ -1377,7 +1368,7 @@
   .a11y-widget-biz .a11y-fd .a11y-pro-block > .a11y-pro-snippet { margin-inline-start: 0; }
 }
 
-/* The professional score: the number is the poster word, the rest small print under it. */
+/* The professional score: the number is the big word, the rest small print under it. */
 .a11y-widget-biz .a11y-pro-score { display: flex; align-items: baseline; gap: 0.4em; margin: 0 0 0.4em; }
 .a11y-widget-biz .a11y-pro-score-num { font-size: 48px; letter-spacing: -0.01em; font-weight: 300; line-height: 1; }
 .a11y-widget-biz .a11y-pro-score-of { font-size: 18px; letter-spacing: 0.01em; }
@@ -1387,18 +1378,18 @@
 .a11y-widget-biz .a11y-pro-jump { display: inline-flex; align-items: baseline; gap: 0.4em; }
 
 /* ═══ SPECIMEN TILES FOR THE REPORT'S GROUPS (user's instruction, 4 Nov 2026) ═
-   The Reckless tiles (displaay.net/typeface/reckless) left the expanded
-   finding, which went back to its Info block, and now set every group of
+   The serif tiles left the expanded finding, which went back to its one
+   ruled block, and now set every group of
    parallel items in the report: the two scan-summary panels, the WCAG 2.2
    items, the design notes, the statement and buyer-report facts, the report
    actions, the professional tallies and the manual checks. Not tiled, on
    purpose: tables (the findings schedule, the undecided ledger, the legal
    results, the conformance list), sequences (the screen-reader preview),
    the legal card (its yellow carries the legal status) and the score-counts
-   sheet, which has its own tiles as the Displaay homepage release grid.
+   panel, which has its own grid of tiles.
    Since later on 4 Nov 2026 (user's instruction) the tiles are gone except
-   for the design notes: every group is set as the columns of the
-   displaay.net pricing block (below), and the notes are round tappable
+   for the design notes: every group is set as ruled columns (a label over
+   a 1px ink rule, the lines under it; below), and the notes are round tappable
    blocks. What follows about the tile ground applies to the notes only:
    the ground is fixed in both themes, like the highlights, so the tile redefines --ink and
    --paper for everything inside it: borders, buttons, inputs and the focus
@@ -1419,7 +1410,7 @@
   display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 160px), 1fr));
   gap: 1.2em 15px; align-items: start; margin: 0 0 1.2em; padding: 0; list-style: none;
 }
-/* The summary column also holds the score-counts sheet, which takes the full
+/* The summary column also holds the score-counts panel, which takes the full
    row; in a grid that full-width item would keep every auto-fit track alive
    and squeeze the two panels into the first two of five, so the column
    wraps as a flex row instead. */
@@ -1428,8 +1419,8 @@
 .a11y-widget-biz .a11y-sum-col > :not(.a11y-sum-panel:not(.a11y-sum-counts)) { flex: 1 1 100%; }
 .a11y-widget-biz .a11y-dn-list > li { display: flex; margin: 0; }
 
-/* Each cell is a column of the displaay.net pricing block (user's
-   reference, 4 Nov 2026): no ground, no box; its label over a 1px ink rule,
+/* Each cell is a ruled column (user's instruction, 4 Nov 2026): no
+   ground, no box; its label over a 1px ink rule,
    the lines under it at 18px. Ink and paper are the page's again, so the
    cells follow the theme. */
 .a11y-widget-biz .a11y-next-list > li,
@@ -1462,8 +1453,8 @@
 .a11y-widget-biz .a11y-sum-col > .a11y-sum-panel a,
 .a11y-widget-biz .a11y-sum-col > .a11y-sum-panel code { color: inherit; }
 
-/* The label: 15px Jokker, sentence case, at the top-left, with the room of
-   a Reckless tile (about 72px from the edge to the words) under it. */
+/* The label: 15px Jokker, sentence case, at the top-left, over a 1px ink
+   rule with 10px under it. */
 .a11y-widget-biz .a11y-next-list > li > .a11y-next-crit,
 .a11y-widget-biz .a11y-next-main > .a11y-next-title + .a11y-next-meta,
 .a11y-widget-biz .a11y-spec-card > .a11y-spec-label,
@@ -1473,7 +1464,7 @@
   font-family: "Jokker", sans-serif; font-size: 18px; font-weight: 400; line-height: 1.2; letter-spacing: 0.01em;
   text-transform: none;
 }
-/* The lines: Jokker 18px, as the pricing block sets its rows. */
+/* The lines: Jokker 18px, the rows of a ruled column. */
 .a11y-widget-biz .a11y-next-list > li .a11y-next-title,
 .a11y-widget-biz .a11y-spec-card > .a11y-spec-value,
 .a11y-widget-biz .a11y-pro-row > .a11y-pro-row-num,
@@ -1482,10 +1473,8 @@
   display: block; margin: 0;
   font-family: "Jokker", sans-serif; font-weight: 400; font-size: 22px; line-height: 1.3; letter-spacing: 0.01em;
 }
-/* A design note's title at the size of the displaay.net Download / Test /
-   Buy buttons (user's reference, 18 Nov 2026, "make this text size like
-   this"): measured against the 32px it was, the reference's lines sit 0.6
-   as far apart, so 22px (the larger of the two label sizes) set solid at
+/* A design note's title at button size (user's instruction, 18 Nov 2026,
+   "make this text size like this"): 0.6 of the 32px it was, so 22px (the larger of the two label sizes) set solid at
    line-height 1.0, +0.01em as 22px takes. */
 .a11y-widget-biz .a11y-dn-link > .a11y-dn-link-text {
   display: block; margin: 0; font-family: "Jokker", sans-serif; font-weight: 400; font-size: 22px; line-height: 1.2; letter-spacing: 0.01em;
@@ -1520,9 +1509,8 @@
   -webkit-box-decoration-break: clone; box-decoration-break: clone;
 }
 
-/* The report actions, after the Displaay Info block and form (user's
-   references, 17 Nov 2026). Each column opens on an uppercase label, the
-   Info block's DESCRIPTION / DETAILS, with no rule under it (user's
+/* The report actions (user's instructions, 17 Nov 2026). Each column
+   opens on an uppercase label, with no rule under it (user's
    instruction, 18 Nov 2026, "delete lines under eyebrows"). The address
    is a rounded #f0efe8 field with its label inside it; the send is one wide
    rounded block in Light 40px; the PDF is an outlined button with 10px
@@ -1639,20 +1627,17 @@
 @media (min-width: 641px) {
   .a11y-widget-biz { max-width: none; margin-inline: 0; padding-inline: 16px; }
 }
-/* ═══ PHONE TYPESETTING, AFTER DISPLAAY.NET (user's instruction, 4 Nov 2026) ═
-   Measured on displaay.net at 390px against 1440px: the page gutter halves
-   (20px to 10px); the small sizes barely move (UI 15px to 14px, labels stay
-   15px); the prose steps down by about a fifth (Serrif 21px to 17px); the
-   big type compresses hardest (headings 48px to 29px, the footer 200px to
-   48px). Leading ratios and tracking-by-size are kept, only the size moves.
-   Here, in the same proportions and on this file's own scale:
-   - the gutter 1em (27px) to 10px, Displaay's figure;
-   - prose 27px to 22px (x0.81, Displaay's 21 to 17), +0.005em, half-way
-     between 18px (+0.01em) and 27px (0); line-height stays 1.2;
-   - titles 32px to 27px, one step over the prose as Displaay's 22px card
-     titles sit over its 17px text; tracking 0 at 27px;
-   - labels, buttons and inputs keep 15px and 18px: Displaay moves its small
-     sizes by a pixel at most, and 14px is our floor;
+/* ═══ PHONE TYPESETTING (user's instruction, 4 Nov 2026) ═══════════════════
+   Under 640px the page gutter halves; the small sizes barely move; the
+   prose steps down by about a fifth; the big type compresses hardest.
+   Leading ratios and tracking-by-size are kept, only the size moves. On
+   this file's own scale:
+   - the gutter 1em (27px) to 10px;
+   - prose 27px to 22px (x0.81), +0.005em, half-way between 18px (+0.01em)
+     and 27px (0); line-height stays 1.2;
+   - titles 32px to 27px, one step over the prose; tracking 0 at 27px;
+   - labels, buttons and inputs keep 15px and 18px: small sizes move by a
+     pixel at most, and 14px is our floor;
    - display sizes already come down in their own container queries above
      (56 to 40, 48 to 32); Light 40px stays 40px, Light's floor.
    Everything spaced in em (paragraphs, turns, the speaker gutter) follows the
@@ -1662,15 +1647,15 @@
   .a11y-widget-biz :is(h1, h2, h3, h4) { font-size: 32px; letter-spacing: 0; }
   .a11y-widget-biz .a11y-legal-count { font-size: 32px; letter-spacing: 0; }
   .a11y-widget-biz .a11y-dn-link { font-size: 26px; }
-  /* Displaay's phone tables give the words the width and the figures their
-     own: here the issue cell was left 40px wide ("Image / s have / no de")
+  /* On a phone the table gives the words the width and the figures their
+     own: the issue cell was left 40px wide ("Image / s have / no de")
      while "Who fixes this" kept 122px. On a phone that column takes what
      "Design fix" on two lines needs, cells keep half the air, and the issue
      gets the rest. The count column keeps its 6.6em: a header word never
      breaks, and "Occurrences" (fr) and "Vorkommen" (de) need all of it. */
   .a11y-widget-biz .a11y-datatable-schedule th[data-col="fix"] { width: 5.4em; }
   .a11y-widget-biz .a11y-datatable-schedule :is(th, td) { padding-inline-end: 0.4em; }
-  /* The Serrif prose of the expanded finding and of the specimen tiles is
+  /* The Serrif prose of the expanded finding and of the report's tiles is
      the report's prose, so it takes the phone's prose size with it. */
   .a11y-widget-biz .a11y-fd .a11y-method-hint,
   .a11y-widget-biz .a11y-fd .a11y-finding-measured,
@@ -1917,10 +1902,10 @@
   .a11y-widget-biz .a11y-datatable-schedule th { font-size: 18px; }
 }
 
-/* ═══ THE CONVERSATION ON A PHONE, AFTER CLAUDE'S APPS (user's instruction,
-   17 Nov 2026, "optimize for mobile like Claude chat") ═════════════════════
-   Under 640px the conversation is laid out the way Claude's phone apps lay
-   theirs out, inside the widget's own palette (black, white and the
+/* ═══ THE CONVERSATION ON A PHONE (user's instruction, 17 Nov 2026,
+   "optimize for mobile") ═══════════════════════════════════════════════════
+   Under 640px the conversation is laid out as a phone chat app, inside the
+   widget's own palette (black, white and the
    #f0efe8 tile ground, black on it 18.4:1 in both themes):
    - before the first message, the opening questions are a row of small
      cards that scrolls sideways, sat right above the box you type in, the
@@ -1975,9 +1960,9 @@
     overflow: hidden; clip: rect(0 0 0 0); clip-path: inset(50%); white-space: nowrap;
   }
 
-  /* Chat text at Claude's reading size (user's instruction, 17 Nov 2026,
-     "make smaller chat text"): 19px at line-height 1.4, against 26px
-     before. Jokker is wide, so 19px reads like the 17px of Claude's apps.
+  /* Smaller chat text (user's instruction, 17 Nov 2026, "make smaller
+     chat text"): 19px at line-height 1.4, against 26px before. Jokker is
+     wide, so 19px reads like 17px of a narrower face.
      Only the conversation shrinks; the report keeps its phone sizes.
      Capitals, code and the test-plan tiles step down with it, in em, so
      they keep their place in the line. */
@@ -2005,13 +1990,12 @@
 }
 
 /* ═══ THE CONVERSATIONS PANEL (user's instruction, 18 Nov 2026) ═══════════
-   "Add this panel on the left", with Claude's sidebar as the picture: a
-   column beside the conversation with New chat at the top and the past
+   "Add this panel on the left": a column beside the conversation with New chat at the top and the past
    conversations under a small Recent label, each one line, cut with an
    ellipsis (the full question is the button's name and stays in the thread).
    The row on screen and the row under the pointer take the #f0efe8 ground of
-   the opening cards, black words in both themes (18.4:1), 12px corners, the
-   way Claude's rows are drawn; a delete button shows on that row. New chat
+   the opening cards, black words in both themes (18.4:1), 12px corners; a
+   delete button shows on that row. New chat
    and every past conversation keep a 1px dotted ink edge at all times
    (user's instruction, same day, "keep the dotted lines on these": they
    had shown only while switching was locked), hover included; locked is
@@ -2092,7 +2076,7 @@
 /* Only the open conversation's edge is green (user's instruction, 18 Nov
    2026, "make current chat green only"). It always sits on the #f0efe8
    fill, where #14532d measures 7.9:1; on the dark theme's #1c1c1e tile it
-   is Apple's green #30d158 (8.4:1). */
+   is the brighter green #30d158 (8.4:1). */
 .a11y-widget-biz .a11y-chats .a11y-chats-row[data-current] { border-color: var(--chats-current); }
 .a11y-widget-biz .a11y-chats .a11y-chats-row :is(.a11y-chats-item, .a11y-chats-delete):enabled:hover,
 .a11y-widget-biz .a11y-chats .a11y-chats-new:enabled:hover,
@@ -2132,7 +2116,7 @@
 
 /* ═══ THE SUMMARY PANELS (user's reference, 18 Nov 2026) ═
    Start here and Score … (labels shortened at the user's instruction,
-   19 Nov 2026) side by side, each a column of the pricing block: the label
+   19 Nov 2026) side by side, each a ruled column: the label
    in small print over a 1px ink rule, the sentence under it at the report's
    prose size, 27px/1.2 at 0. They were #f0efe8 cards with 20px corners and
    the label on a black pill until the user's word on the same cards
@@ -2165,22 +2149,22 @@
    chat keep the 1px dotted ink edge, and only the open conversation's
    edge is the dark green #14532d (rule above, on its #f0efe8 fill). */
 
-/* AUTOMATED CHECK RESULTS AS A SHEET OF ALTERNATES (user's reference, 18 Nov
-   2026, "design these like this", a type foundry's alternates sheet). Each
+/* AUTOMATED CHECK RESULTS AS TILES (user's instruction, 18 Nov 2026,
+   "design these like this"). Each
    result is a tile, set like the expanded finding's cards above: the fixed
    #f0efe8 ground with black words in both themes (18.4:1), 20px corners,
    16px apart in a wrapping row that always closes up. The result's mark
-   is the small pill centred at the top, where the reference sets "Alternate
-   a", stretched from one side margin to the other (user's instruction,
+   is the small pill centred at the top, stretched from one side margin to
+   the other (user's instruction,
    18 Nov 2026); it keeps its highlight colour, since the colour is the
-   status, as a plain pill (black on each fill measures 7:1 or better). The count is the
-   specimen, set huge in the middle; the result's words and the level split
+   status, as a plain pill (black on each fill measures 7:1 or better). The count is
+   set huge in the middle; the result's words and the level split
    sit under it, smaller (user's instruction, 18 Nov 2026, "text could go
    smaller"): 22px and 15px, 18px in a narrow tile. The count's margin is
    set whole: an older 0.3em end margin (48px at 160px) pulled every figure
    off centre. The markup keeps label, meaning, mark, count in that order,
    so a screen reader hears "We found problems, 2 at level A, 2 at AA, Fix
-   first, 4"; only the eye takes them in the reference's order. All the
+   first, 4"; only the eye takes them as pill, count, words. All the
    tiles share one row at equal widths (user's instruction, 18 Nov 2026,
    "put them all in one row"; the problems tile started 45% wide before). The count sits a fixed 24px
    under the pill, not centred, so the figures line up across a row
@@ -2251,17 +2235,16 @@
   .a11y-widget-biz .a11y-legal-tiles > .a11y-legal-row .a11y-legal-row-label { font-size: 18px; }
 }
 
-/* ═══ THE SCAN FORM AFTER A FOUNDRY'S NEWSLETTER FORM (user's reference, 18 Nov 2026) ═
-   "Design this like this", over a type foundry's newsletter form (its
-   illustration ignored, user's word): a narrow column; the name large in
+/* ═══ THE SCAN FORM AS FILLED ROWS (user's instruction, 18 Nov 2026) ═════════
+   "Design this like this": a narrow column; the name large in
    Regular; a serif heading (Serrif) over each group; every field a filled
    box with 12px corners and its label inside at the top; each choice a
    filled row with its radio showing; one wide block for the action, its
    words set large and left; the note under it. The fill is --tile with
-   --tile-ink words (#f0efe8 and black in light, Apple's #1c1c1e and white
-   in dark); a field box carries no edge, its label inside naming it, as
-   the reference draws it. Hover is --hover; the chosen row's words Medium.
-   Replaces the type-tester row of the same day. */
+   --tile-ink words (#f0efe8 and black in light, #1c1c1e and white in
+   dark); a field box carries no edge, its label inside naming it. Hover
+   is --hover; the chosen row's words Medium. Replaces a single-row form
+   of the same day. */
 .a11y-widget-biz .a11y-url-form.a11y-tester { display: block; box-sizing: border-box; min-width: 0; max-width: 640px; margin: 0; }
 .a11y-widget-biz .a11y-tester > .a11y-tester-name {
   margin: 0 0 8px; font-size: 67px; font-weight: 400; line-height: 1.05; letter-spacing: -0.01em;
@@ -2353,9 +2336,8 @@
   background-color: transparent; color: var(--tile-ink); font-size: 26px; letter-spacing: 0;
 }
 .a11y-widget-biz .a11y-tester .a11y-tester-rows > .a11y-select2 .a11y-select2-field.a11y-select2-field:focus-visible { outline: none; box-shadow: none; }
-/* The action: one wide block, its words large and left, as the reference
-   sets "Subscribe to Our Newsletter"; solid (black in light, Apple grey in
-   dark), hover --hover. */
+/* The action: one wide block, its words large and left; solid (black in
+   light, #636366 grey in dark), hover --hover. */
 .a11y-widget-biz .a11y-tester > .a11y-url-submit { display: grid; gap: 14px; margin-top: 8px; }
 .a11y-widget-biz .a11y-tester > .a11y-url-submit > .a11y-btn.a11y-btn-primary {
   display: block; width: 100%; min-height: 120px; padding: 20px 24px; border-radius: 12px; text-align: start;
@@ -2400,9 +2382,9 @@
    containers, this is slop". No card grounds and no pills round words: the
    readiness toggle reads as one line, the standard in Medium, the date
    plain, the count of what would fail today on the orange status highlight
-   (the colour is the status; black on it 10:1 light, Apple orange in dark),
+   (the colour is the status; black on it 10:1 light, #ff9f0a in dark),
    the chevron in a 1px ink round, the control's one edge. The sentence under
-   it is the specimen, 38px. The six new items: its title at 22px Medium, its
+   it is display size, 38px. The six new items: its title at 22px Medium, its
    toggle an ordinary pill button.
    Screen reader preview: the head broke mid-phrase ("(16" over
    "announcements)", the status chip on two lines). The title and its count
@@ -2449,14 +2431,14 @@
 .a11y-widget-biz .a11y-sr .a11y-accordion-row > .a11y-accordion-title { hyphens: manual; }
 .a11y-widget-biz .a11y-sr .a11y-section-head > .a11y-section-desc { margin-top: 24px; }
 
-/* ═══ DARK CONTROLS, APPLE'S WAY (user's instruction, 18 Nov 2026, "design this") ═
-   In dark, Apple draws controls as fills, not outlines: a 1px white edge on
-   every pill read as a wireframe. So in dark a button is filled #2c2c2e (Apple's tertiary system fill on black)
-   with no visible edge, white words (14.7:1); the chosen choice and the
+/* ═══ DARK CONTROLS AS FILLS (user's instruction, 18 Nov 2026, "design this") ═
+   In dark, controls are fills, not outlines: a 1px white edge on every
+   pill read as a wireframe. So in dark a button is filled #2c2c2e (a dark
+   grey fill on black) with no visible edge, white words (14.7:1); the chosen choice and the
    primary action #636366 (white 6.1:1); hover #3a3a3c. The edge stays as
    the fill's own colour, so sizes do not move between themes, and a
-   disabled control keeps its dashed edge. The address rule is Apple's
-   system grey #8e8e93 (6.3:1 on black, past 3:1 for a field's boundary).
+   disabled control keeps its dashed edge. The address rule is the grey
+   #8e8e93 (6.3:1 on black, past 3:1 for a field's boundary).
    The base button rule reads --btn-fill, which only dark sets, so every
    button with its own look still wins. Light is unchanged. */
 @media (prefers-color-scheme: dark) {
@@ -2475,7 +2457,7 @@
    item in the box's start group, and the line saying what it heard takes
    its own row under them once there is something to say. Empty, the line
    stays in the tree, clipped, so the first thing said is announced. Three
-   roots, like the rest of the poster layer. */
+   roots, like the rest of the layout layer. */
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-voice { display: contents; }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-voice-note { flex: 1 0 100%; margin: 0; font-size: 15px; line-height: 1.2; letter-spacing: 0.01em; min-width: 0; overflow-wrap: break-word; }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-voice-note:empty { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
@@ -2487,10 +2469,10 @@
    was a heading boxed by its own focus ring with the Play button jammed
    under it. They became #f0efe8 cards with 20px corners and a label on a
    black pill; on 20 Nov 2026 the user called those cards slop too, on the
-   expanded finding. Now each is a column of the pricing block: the label
+   expanded finding. Now each is a ruled column: the label
    in small print over a 1px ink rule, the facts on rules under it, the
    Play row between two rules. Page ink and paper. Three roots, like the
-   rest of the poster layer. */
+   rest of the layout layer. */
 
 /* History: a card each for "Since last time" and "Where this lives". */
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-hist-col:last-child { display: flex; flex-direction: column; gap: 2.4em; }
@@ -2577,8 +2559,8 @@
   .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sr-bar .a11y-ai-toggle { flex: 1 1 100%; min-width: 0; padding-block: 8px; border-radius: 20px; }
 }
 
-/* THE SHEET is gone (user's instruction, 20 Nov 2026: "delete, this is a
-   design slop"): no word spread letter by letter along the top or the
+/* THE SPREAD WORDS AND STACKED NUMBERS are gone (user's instruction,
+   20 Nov 2026: "delete, this is a design slop"): no word spread letter by letter along the top or the
    foot, no section number stacked digit under digit, no spaced-capital
    section titles. Titles are sentence case again; host · date is back in
    the rail's footer. */
@@ -2628,7 +2610,7 @@
 
 /* The read-back before writing: each answer under its question, a 15px
    label over a 1px ink rule and the answer in the turn's prose, as the
-   pricing-block columns elsewhere. No ground, no box. */
+   ruled columns elsewhere. No ground, no box. */
 .a11y-widget-biz .a11y-barrier .a11y-barrier-check { margin: 0.6em 0 1.2em; padding: 0; min-width: 0; }
 .a11y-widget-biz .a11y-barrier .a11y-barrier-check > div + div { margin-top: 0.6em; }
 .a11y-widget-biz .a11y-barrier .a11y-barrier-check dt { padding-bottom: 4px; border-bottom: 1px solid var(--ink); font-size: 15px; line-height: 1.2; letter-spacing: 0.01em; }
@@ -2677,7 +2659,7 @@
 .a11y-widget-biz .a11y-barrier .a11y-barrier-doc .a11y-barrier-doc-note + .a11y-barrier-doc-note { margin-top: 6px; }
 
 /* Phone: the chat's phone sizes (19px conversation) come from the chat's
-   block; the report sheet steps down beside them. */
+   block; the written report steps down beside them. */
 @media (max-width: 640px) {
   .a11y-widget-biz .a11y-barrier .a11y-barrier-title,
   .a11y-widget-biz .a11y-barrier .a11y-chat-text h3 { font-size: 27px; }
