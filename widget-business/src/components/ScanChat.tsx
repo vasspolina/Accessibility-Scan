@@ -1550,16 +1550,6 @@ export function ScanChat({
         </ol>
       )}
 
-      {!barrier && offered.length > 0 && (
-        <div className="a11y-chat-suggest" role="group" aria-label={t("Show from the report")}>
-          {offered.map((s) => (
-            <button key={s.key} type="button" className="a11y-chat-chip" onClick={() => showSection(s.key, { takeFocus: true })}>
-              {s.label()}
-            </button>
-          ))}
-        </div>
-      )}
-
       {!barrier && (
       <div className="a11y-chat-dock" ref={dockRef}>
         {/* An assistant's box: the prompt sits inside it as the placeholder
@@ -1631,6 +1621,19 @@ export function ScanChat({
               </Button>
             </div>
           </div>
+          {/* The report's sections, under the box in the sticky dock, so
+              they stay on screen while the thread scrolls (user's
+              instruction, 20 Nov 2026, "put them below chat so it's not on
+              scroll"). Each is type="button", so none submits the form. */}
+          {offered.length > 0 && (
+            <div className="a11y-chat-suggest" role="group" aria-label={t("Show from the report")}>
+              {offered.map((s) => (
+                <button key={s.key} type="button" className="a11y-chat-chip" onClick={() => showSection(s.key, { takeFocus: true })}>
+                  {s.label()}
+                </button>
+              ))}
+            </div>
+          )}
           {/* Under the box, not in it (user's instruction, 18 Nov 2026):
               a page behind a login is scanned from the form, so the login
               goes to the scanner and never into the chat or its model. */}

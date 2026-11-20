@@ -286,6 +286,15 @@ describe("the pilot", () => {
     expect(system).toContain("Never leave it out");
     // The first live run picked 2.4.6 for an unnamed button.
     expect(system).toMatch(/only as "button" or "link": 4\.1\.2/);
+    // The live widget's drafts, 20 Nov 2026: 1.1.1 for a vague link,
+    // "blocked" where the visitor could go on, and an aria-label that
+    // replaced the link's visible words.
+    expect(system).toMatch(/"More information" or "Click here": 2\.4\.4/);
+    expect(system).toContain("Never give it for a link, button or field");
+    expect(system).toContain('"blocked" only when they could not go on at all');
+    expect(system).toContain('but which can still be reached and pressed, is "slowed"');
+    expect(system).toContain("must contain the words shown on screen");
+    expect(system).toContain("Never wrap code in backticks");
     expect(system).toContain("Copy its shape, never its facts");
     expect(call.max_tokens).toBe(1400);
   });
@@ -388,6 +397,13 @@ describe("the pilot's conversation", () => {
       ["Auf der Anmeldeseite hat der Weiter-Knopf keinen Namen.", "de"],
       ["En la página de pago el botón Pagar no tiene nombre.", "es"],
       ["Le bouton Payer du panier n’a pas de nom.", "fr"],
+      // Where it is said as a part of the page or a position (asked "Where
+      // on the page was it?" on the live widget, 20 Nov 2026).
+      ["In the main text under the heading, the More information link is read only as link, with no clue where it goes.", "en"],
+      ["The link at the top of the page has no name.", "en"],
+      ["Der Link unter der Überschrift hat keinen Namen.", "de"],
+      ["El enlace debajo del título no dice adónde va.", "es"],
+      ["Le lien sous le titre ne dit pas où il mène.", "fr"],
     ];
     const incomplete: Array<[string, "en" | "de" | "es" | "fr"]> = [
       ["The button did nothing when I pressed Enter.", "en"],
@@ -398,6 +414,8 @@ describe("the pilot's conversation", () => {
       ["Auf der Webseite ging der Button nicht.", "de"],
       ["Ich wollte die Seite besuchen, aber der Link ging nicht.", "de"],
       ["Mein Bildschirmleser hat den Knopf nicht gefunden.", "de"],
+      ["After I pressed the button nothing happened.", "en"],
+      ["The heading has no level.", "en"],
       ["El botón no hacía nada.", "es"],
       ["Le lien ne marche pas.", "fr"],
     ];
@@ -427,6 +445,22 @@ describe("the pilot's conversation", () => {
     expect(user).toContain(draft.title);
     expect(user).toContain("It was the search button, not the pay button.");
     expect(user).toContain("Keep every part they did not ask to change");
+  });
+
+  it("lowers the model's 'blocked' to 'slowed' for an unclear link, and says so", async () => {
+    const { severityFor } = await import("../src/services/pilot/pilot.js");
+    modelContent = JSON.stringify({ ...draft, impact: "blocked", wcagCriterion: "2.4.4" });
+    const res = (await post("/api/pilot/draft", said)).json();
+    expect(res.draft).toMatchObject({ impact: "slowed", impactCapped: true, wcagCriterion: "2.4.4" });
+    expect(res.severity).toBe(severityFor(undefined, "slowed"));
+    // Not when the person rated it, not on a rewrite, not for another criterion.
+    const rated = (await post("/api/pilot/draft", { ...said, impact: "blocked" })).json();
+    expect(rated.draft.impactCapped).toBeUndefined();
+    const rewrite = (await post("/api/pilot/draft", { ...said, previous: draft, change: "It does stop me." })).json();
+    expect(rewrite.draft).toMatchObject({ impact: "blocked" });
+    expect(rewrite.draft.impactCapped).toBeUndefined();
+    modelContent = JSON.stringify({ ...draft, impact: "blocked", wcagCriterion: "2.1.1" });
+    expect((await post("/api/pilot/draft", said)).json().draft).toMatchObject({ impact: "blocked" });
   });
 
   it("keeps what was asked with their words, and says when an answer was picked, not typed", async () => {

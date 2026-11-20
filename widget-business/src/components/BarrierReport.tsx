@@ -65,6 +65,9 @@ interface Draft {
   steps?: string[];
   fix: string;
   impact?: "blocked" | "slowed" | "annoyed";
+  /** The server lowered the model's "blocked" to "slowed" for an unclear
+   *  link (backend draftFinding); the line says so. */
+  impactCapped?: true;
   wcagCriterion?: string;
   fromScan?: boolean;
 }
@@ -878,7 +881,9 @@ export function BarrierReport({ apiBase, onBack }: { apiBase: string; onBack: ()
                 <p>{d.fix}</p>
                 {d.impact && (
                   <p className="a11y-barrier-doc-note">
-                    {tf("How much it holds people back, as the model judges it: {words}.", { words: t(IMPACT_WORDS[d.impact]) })}
+                    {d.impactCapped
+                      ? tf("How much it holds people back, as the model judges it, lowered by our rule for unclear links: {words}.", { words: t(IMPACT_WORDS[d.impact]) })
+                      : tf("How much it holds people back, as the model judges it: {words}.", { words: t(IMPACT_WORDS[d.impact]) })}
                   </p>
                 )}
                 {d.wcagCriterion && (

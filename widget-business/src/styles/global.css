@@ -303,6 +303,23 @@
    apart (user's instruction, 18 Nov 2026, "add 3px in between tabs"):
    they had no rule and sat edge to edge. */
 .a11y-widget-biz .a11y-chat-suggest { display: flex; flex-wrap: wrap; gap: 3px; }
+/* Since 20 Nov 2026 they sit under the box, inside the sticky dock, and are
+   small (user's instruction, "make these suggestions smaller and put them
+   below chat so its not on scroll"): 15px, the label size, on the 34px
+   button floor, so a row of five takes one short line under the box. */
+.a11y-widget-biz .a11y-chat-composer .a11y-chat-suggest { margin: 10px 0 0; }
+.a11y-widget-biz .a11y-chat-suggest .a11y-chat-chip { font-size: 15px; padding: 0.3em 0.9em; }
+/* On a phone ten chips wrapped to seven rows, and the sticky dock then held
+   460px of an 812px screen. There they are one line that scrolls sideways;
+   each chip is a button, so Tab still reaches and scrolls to every one. */
+@media (max-width: 640px) {
+  .a11y-widget-biz .a11y-chat-composer .a11y-chat-suggest {
+    flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none; overscroll-behavior-x: contain;
+    /* Room for the focus ring, which a scrolling box would clip. */
+    margin-top: 6px; padding: 4px;
+  }
+  .a11y-widget-biz .a11y-chat-suggest .a11y-chat-chip { flex: none; white-space: nowrap; }
+}
 /* The way to the form for a page behind a login: under the box, quiet, and
    in a blocked scan's notice. */
 .a11y-widget-biz .a11y-chat-composer .a11y-chat-signin { max-width: none; margin: 10px 0 0; }
@@ -330,36 +347,33 @@
 .a11y-widget-biz .a11y-chat-turn :is(a, .a11y-chat-url),
 .a11y-widget-biz .a11y-chat-you .a11y-chat-text { overflow-wrap: anywhere; }
 .a11y-widget-biz .a11y-chat-text { min-width: 0; }
-/* A numbered test plan is a set of tiles (user's instruction, 4 Nov 2026:
-   "this needs to widgets"; lib/testPlan.ts decides which lists are plans).
-   Drawn as the type foundry's specimen cards since 18 Nov 2026 (user's
-   reference, "make these cards look like this but do not invent
-   content"): a tall card with 20px corners on the fixed #f0efe8 ground,
-   black words in both themes (18.4:1); the step's name top-left in Medium
-   22px, the instruction under it at 18px as the card's small print, and the
-   step's figure set huge at the foot where the reference sets its "Aa".
-   Nothing is added: no badge, no icon, only the step's own three parts.
-   The figure stays first in the markup, so a screen reader still hears
-   "1, Keyboard only, …"; only the eye takes it at the foot. */
+/* A numbered test plan (user's instruction, 4 Nov 2026: "this needs to
+   widgets"; lib/testPlan.ts decides which lists are plans) stands its steps
+   side by side, each a column of the pricing block: the step's figure in
+   small print over a 1px ink rule, its name in Medium 22px, the
+   instruction under it at 18px. They were 440px #f0efe8 specimen cards
+   with 20px corners and the figure set at 160px at the foot (18 Nov 2026)
+   until the user's word on those cards, 20 Nov 2026: "this is a slop".
+   Nothing is added; the figure stays first in the markup and on screen. */
 .a11y-widget-biz .a11y-chat-text .a11y-chat-plan {
-  display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr)); gap: 16px;
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 240px), 1fr)); gap: 1.2em 30px;
   list-style: none; padding: 0; margin: 0.6em 0;
 }
 .a11y-widget-biz .a11y-chat-text .a11y-chat-plan-step {
-  display: flex; flex-direction: column; box-sizing: border-box; min-width: 0; min-height: 440px; margin: 0;
-  padding: 30px 30px 26px; border-radius: 20px; background: var(--tile); color: var(--tile-ink);
+  display: flex; flex-direction: column; box-sizing: border-box; min-width: 0; margin: 0; padding: 0;
+  border-radius: 0; background: none; color: var(--ink);
   overflow-wrap: break-word; hyphens: manual;
 }
+.a11y-widget-biz .a11y-chat-text .a11y-chat-plan-no {
+  display: block; margin: 0 0 10px; padding: 0 0 6px; border-bottom: 1px solid var(--ink);
+  font-size: 18px; font-weight: 400; line-height: 1.2; letter-spacing: 0.01em; font-variant-numeric: tabular-nums;
+}
 .a11y-widget-biz .a11y-chat-text .a11y-chat-plan-title {
-  order: 1; display: block; margin: 0 0 6px;
+  display: block; margin: 0 0 6px;
   font-size: 22px; font-weight: 500; line-height: 1.15; letter-spacing: 0.005em;
 }
 .a11y-widget-biz .a11y-chat-text .a11y-chat-plan-text {
-  order: 2; display: block; font-size: 18px; font-weight: 400; line-height: 1.3; letter-spacing: 0.01em;
-}
-.a11y-widget-biz .a11y-chat-text .a11y-chat-plan-no {
-  order: 3; margin: auto 0 0; padding-top: 32px;
-  font-size: 160px; font-weight: 500; line-height: 0.8; letter-spacing: -0.02em;
+  display: block; font-size: 18px; font-weight: 400; line-height: 1.3; letter-spacing: 0.01em;
 }
 .a11y-widget-biz .a11y-chat-text .a11y-chat-plan > li::before { content: none; }
 .a11y-widget-biz .a11y-chat-text .a11y-chat-plan :is(a, code) { color: inherit; }
@@ -1217,15 +1231,19 @@
    reference's red card is not taken: the widget has no red (COLOUR, in
    CLAUDE.md). Under 640px of block, one column. What to do and the affected
    elements stay full width below: lists, pictures, code. */
+/* No cards (user's word, 20 Nov 2026, on a screenshot of these: "this is a
+   slop"). The parts stay side by side, but as columns of the pricing block
+   the report's other groups use: no ground, no corners, no padding; each
+   label over a 1px ink rule, the words under it. Page ink and paper, so
+   they follow the theme. */
 .a11y-widget-biz .a11y-fd > .a11y-fd-col:first-child {
   display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr));
-  gap: 18px; align-items: stretch; margin: 0 0 1.6em;
+  gap: 1.2em 30px; align-items: start; margin: 0 0 1.6em;
 }
 .a11y-widget-biz .a11y-fd > .a11y-fd-col:first-child > :is(p, div) {
-  --ink: var(--tile-ink); --paper: var(--tile);
-  display: flex; flex-direction: column; align-items: flex-start; gap: 16px;
-  box-sizing: border-box; min-width: 0; max-width: none; margin: 0; padding: 20px 24px 24px;
-  border-radius: 20px; background: var(--tile); color: var(--tile-ink); text-align: start;
+  display: flex; flex-direction: column; align-items: stretch; gap: 10px;
+  box-sizing: border-box; min-width: 0; max-width: none; margin: 0; padding: 0;
+  border-radius: 0; background: none; color: var(--ink); text-align: start;
   font-family: "Jokker", sans-serif; font-weight: 400; font-size: 22px; line-height: 1.25; letter-spacing: 0.005em;
 }
 /* Smaller and Regular (user's instruction, 20 Nov 2026: "make large font
@@ -1236,21 +1254,18 @@
 .a11y-widget-biz .a11y-fd > .a11y-fd-col:first-child .a11y-fd-points { margin: 0; padding: 0 0 0 0.8em; }
 .a11y-widget-biz .a11y-fd > .a11y-fd-col:first-child .a11y-fd-points > li { margin: 0 0 0.4em; padding: 0; list-style: "–\00a0" outside; }
 .a11y-widget-biz .a11y-fd > .a11y-fd-col:first-child .a11y-fd-points > li:last-child { margin-bottom: 0; }
-/* The copy button sits at the foot of its card, so the cards of a row
-   keep their words on one line across. */
-.a11y-widget-biz .a11y-fd > .a11y-fd-col:first-child .a11y-fd-copy { margin-top: auto; }
 .a11y-widget-biz .a11y-fd > .a11y-fd-col:first-child > * > strong:first-child {
-  flex: none; margin: 0; padding: 0; border: 0; border-radius: 0; background: none; color: inherit;
+  flex: none; margin: 0; padding: 0 0 6px; border: 0; border-bottom: 1px solid var(--ink); border-radius: 0; background: none; color: inherit;
   font-family: "Jokker", sans-serif; font-weight: 500; font-size: 15px; line-height: 1.2; letter-spacing: 0.01em; text-transform: none;
 }
 .a11y-widget-biz .a11y-fd > .a11y-fd-col:first-child .a11y-fd-body {
   display: block; margin-block: 0; max-width: 100%;}
 .a11y-widget-biz .a11y-fd > .a11y-fd-col:first-child .a11y-fd-body code { font-size: 0.8em; }
 @container a11y-fd (max-width: 640px) {
-  .a11y-widget-biz .a11y-fd > .a11y-fd-col:first-child { grid-template-columns: minmax(0, 1fr); gap: 10px; }
+  .a11y-widget-biz .a11y-fd > .a11y-fd-col:first-child { grid-template-columns: minmax(0, 1fr); gap: 1.6em; }
   .a11y-widget-biz .a11y-fd > .a11y-fd-col:first-child > :is(p, div),
   .a11y-widget-biz .a11y-fd > .a11y-fd-col:first-child > :is([data-size="s"], [data-size="m"], [data-size="l"]) {
-    gap: 14px; padding: 16px 20px 20px; font-size: 18px; line-height: 1.3; letter-spacing: 0.01em;
+    gap: 8px; padding: 0; font-size: 18px; line-height: 1.3; letter-spacing: 0.01em;
   }
 }
 /* The key/value lines: the key hangs in a 9em column, the value runs beside
@@ -1308,29 +1323,23 @@
 .a11y-widget-biz .a11y-fd .a11y-fd-learn,
 .a11y-widget-biz .a11y-fd .a11y-occurrence-list { font-family: "Saans", "Jokker", sans-serif; font-weight: 300; font-size: 22px; letter-spacing: 0.01em; }
 .a11y-widget-biz .a11y-fd .a11y-tech-details > summary { font-size: 18px; text-transform: uppercase; letter-spacing: 0.04em; cursor: pointer; }
-/* The affected elements as cards, two to a row (user's instruction, 18 Nov
-   2026, "keep typography all height spacing and put into cards so its two
-   per row"). Each element (its name, the picture, a colour that would pass,
-   the alt text or code fix) is one #f0efe8 card with 20px corners and black
-   words in both themes, the same ground and corners as the sheet of
-   alternates above it, 16px apart. Type sizes and the vertical spacing
-   inside an element are unchanged: only the ground, the padding and the
-   two-column grid are new. The card redefines --ink and --paper so the
-   picture's frame, the Copy button and the focus ring follow it. One column
-   under 640px of block. */
+/* The affected elements, two to a row (user's instruction, 18 Nov 2026,
+   "put into cards so its two per row"). The cards' #f0efe8 ground and 20px
+   corners went with the finding's own cards (user's word, 20 Nov 2026,
+   "this is a slop"): each element now opens on a 1px ink rule, on the page's
+   own paper, so it follows the theme. Type and vertical spacing inside an
+   element are unchanged. One column under 640px of block. */
 .a11y-widget-biz .a11y-fd .a11y-occurrence-list {
-  display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px;
+  display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1.2em 30px;
 }
 .a11y-widget-biz .a11y-fd .a11y-occurrence-list > .a11y-occurrence {
-  --ink: #000; --paper: #f0efe8;
-  box-sizing: border-box; min-width: 0; max-width: none; margin: 0; padding: 22px 24px 28px;
-  border-radius: 20px; background: #f0efe8; color: #000;
+  box-sizing: border-box; min-width: 0; max-width: none; margin: 0; padding: 12px 0 0;
+  border-top: 1px solid var(--ink); border-radius: 0; background: none; color: var(--ink);
 }
 .a11y-widget-biz .a11y-fd .a11y-occurrence-list > .a11y-occurrence > :last-child,
 .a11y-widget-biz .a11y-fd .a11y-occurrence-list > .a11y-occurrence > :last-child > :last-child { margin-bottom: 0; }
 @container a11y-fd (max-width: 640px) {
-  .a11y-widget-biz .a11y-fd .a11y-occurrence-list { grid-template-columns: minmax(0, 1fr); gap: 10px; }
-  .a11y-widget-biz .a11y-fd .a11y-occurrence-list > .a11y-occurrence { padding: 16px 20px 20px; }
+  .a11y-widget-biz .a11y-fd .a11y-occurrence-list { grid-template-columns: minmax(0, 1fr); gap: 1.2em; }
 }
 .a11y-widget-biz .a11y-fd .a11y-tech-elements { margin: 0; padding-inline-start: 9em; list-style: none; }
 @container a11y-fd (max-width: 640px) {
@@ -1379,7 +1388,7 @@
 }
 .a11y-widget-biz .a11y-dn-list {
   display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr));
-  gap: 10px; align-items: stretch; margin: 0 0 1.2em; padding: 0; list-style: none;
+  gap: 0 30px; align-items: stretch; margin: 0 0 1.2em; padding: 0; list-style: none;
 }
 /* A tally is one word over one figure, so its tiles can be narrower. */
 .a11y-widget-biz .a11y-pro-rows {
@@ -1408,17 +1417,15 @@
   border: 0; border-radius: 0; background: none; color: var(--ink);
   text-align: start; overflow-wrap: break-word; hyphens: manual;
 }
-/* A design note is a tappable block, like the displaay.net Download, Test
-   and Buy buttons (user's instruction, 4 Nov 2026): 20px corners, the title
-   centred in it at the prose size, at least 128px tall. Its ground is the
-   fixed #f0efe8 (#000 on it 18.4:1); hover is the marker yellow and the
-   open note solid ink, as before. */
+/* A design note is a line of a list: its title on a 1px ink rule, left,
+   on the page's paper. It was a 128px tappable block with 20px corners on
+   #f0efe8 (4 Nov 2026) until the user's word on a screenshot of it, 20 Nov
+   2026: "this is a slop". The row keeps a 44px target. */
 .a11y-widget-biz .a11y-dn-list > li > .a11y-dn-link {
-  --ink: var(--tile-ink); --paper: var(--tile);
-  box-sizing: border-box; min-width: 0; min-height: 128px; margin: 0; padding: 16px 20px;
-  display: flex; align-items: center; justify-content: center;
-  border: 0; border-radius: 20px; background: var(--tile); color: var(--tile-ink);
-  text-align: center; overflow-wrap: break-word; hyphens: manual;
+  box-sizing: border-box; min-width: 0; min-height: 44px; margin: 0; padding: 10px 0 12px;
+  display: flex; align-items: baseline; justify-content: flex-start;
+  border: 0; border-top: 1px solid var(--ink); border-radius: 0; background: none; color: var(--ink);
+  text-align: start; overflow-wrap: break-word; hyphens: manual;
 }
 .a11y-widget-biz .a11y-next-list > li a,
 .a11y-widget-biz .a11y-next-list > li code,
@@ -1457,7 +1464,7 @@
    as far apart, so 22px (the larger of the two label sizes) set solid at
    line-height 1.0, +0.01em as 22px takes. */
 .a11y-widget-biz .a11y-dn-link > .a11y-dn-link-text {
-  display: block; margin: 0; font-family: "Jokker", sans-serif; font-weight: 400; font-size: 22px; line-height: 1; letter-spacing: 0.01em;
+  display: block; margin: 0; font-family: "Jokker", sans-serif; font-weight: 400; font-size: 22px; line-height: 1.2; letter-spacing: 0.01em;
 }
 /* Small print under the words stays Jokker at 15px or 18px. */
 .a11y-widget-biz .a11y-spec-card > .a11y-spec-value > .a11y-spec-gloss { margin-top: 0.6em; font-family: "Jokker", sans-serif; }
@@ -1475,12 +1482,19 @@
 .a11y-widget-biz .a11y-next-list > li > .a11y-next-level { grid-row: 1; grid-column: 2; font-size: 18px; letter-spacing: 0.01em; }
 .a11y-widget-biz .a11y-next-list > li > .a11y-next-title { grid-column: 1 / -1; }
 
-/* A design note is a button: the whole tile is the control. Hover is the
-   marker yellow, like every other button; the note that is open is solid
-   ink, like the selected tab. */
+/* The whole line is the control. Hover underlines the title; the open
+   note's title carries the marker highlight, black on yellow in both
+   themes (the highlight is the one place colour is allowed). Hover never
+   fills the row, so the open note's words never sit white on yellow, as
+   they did on the old block. */
 .a11y-widget-biz .a11y-dn-list > li > .a11y-dn-link { width: 100%; font-size: 22px; cursor: pointer; }
-.a11y-widget-biz .a11y-dn-list > li > .a11y-dn-link:enabled:hover { background: var(--hover); color: var(--hover-ink); text-decoration: none; }
-.a11y-widget-biz .a11y-dn-list > li > .a11y-dn-link[aria-expanded="true"] { --ink: #fff; --paper: #000; background: #000; color: #fff; font-weight: 400; }
+.a11y-widget-biz .a11y-dn-list > li > .a11y-dn-link:enabled:hover { background: none; color: var(--ink); text-decoration: none; }
+.a11y-widget-biz .a11y-dn-list > li > .a11y-dn-link:enabled:hover > .a11y-dn-link-text { text-decoration: underline; text-underline-offset: 0.15em; }
+.a11y-widget-biz .a11y-dn-list > li > .a11y-dn-link[aria-expanded="true"] { background: none; color: var(--ink); font-weight: 400; }
+.a11y-widget-biz .a11y-dn-list > li > .a11y-dn-link[aria-expanded="true"] > .a11y-dn-link-text {
+  padding: 0 0.15em; background: var(--hl-cap-a); color: #000;
+  -webkit-box-decoration-break: clone; box-decoration-break: clone;
+}
 
 /* The report actions, after the Displaay Info block and form (user's
    references, 17 Nov 2026). Each column opens on an uppercase label, the
@@ -1563,57 +1577,29 @@
 /* A tally is the label over its figure. */
 .a11y-widget-biz .a11y-pro-rows > .a11y-pro-row { display: block; }
 
-/* ═══ WHERE TO START: THE TOP FINDINGS AS SCATTERED CARDS (user's reference, 15 Nov 2026) ═
-   The worst findings of the scan, one per round block, scattered over a
-   12-column grid like a page of review cards: each block sits at its own
-   offset and width (there are at most five). The block is the
-   design note's (20px corners, the tile tokens: #f0efe8 with black words in
-   light, Apple's #1c1c1e with white in dark; the hover token), with the severity mark,
-   the title at the prose size in Medium, and small print at 15px. Under
-   640px of the widget's own width the blocks stack. The focus ring is
-   drawn inside the block: outside it would be ink on the page, which in
-   dark is black on black. */
+/* ═══ WHERE TO START: THE TOP FINDINGS (user's reference, 15 Nov 2026) ═
+   The worst findings of the scan, at most five, as a plain list: each a
+   line on a 1px ink rule, the title at the prose size in Medium, the small
+   print under it at 15px. They were round #f0efe8 blocks scattered over a
+   12-column grid, the design note's block, until the user's word on that
+   block, 20 Nov 2026: "this is a slop". The whole line is the button;
+   hover underlines the title. Page ink and paper, so it follows the theme. */
 .a11y-widget-biz .a11y-top { container: a11y-top / inline-size; margin: 2.4em 0; }
 .a11y-widget-biz .a11y-top-title { margin: 0 0 0.75em; font-size: 32px; font-weight: 500; line-height: 1.05; letter-spacing: -0.005em; }
-.a11y-widget-biz .a11y-top-list {
-  display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); grid-auto-rows: minmax(54px, auto);
-  gap: 10px; margin: 0; padding: 0; list-style: none;
-}
-/* Each block spans two rows and starts a row or two after the one before,
-   so neighbours overlap by half a block instead of sitting in a table: a
-   wide one top left, one a step lower on the right, a narrow one in the
-   centre, a wide one right, one bottom left (rearranged at the user's
-   request, 15 Nov 2026). */
-.a11y-widget-biz .a11y-top-list > li { min-width: 0; margin: 0; display: flex; grid-column: 1 / span 6; grid-row: 1 / span 2; }
-.a11y-widget-biz .a11y-top-list > li:nth-child(2) { grid-column: 9 / span 4; grid-row: 2 / span 2; }
-.a11y-widget-biz .a11y-top-list > li:nth-child(3) { grid-column: 4 / span 4; grid-row: 4 / span 2; }
-.a11y-widget-biz .a11y-top-list > li:nth-child(4) { grid-column: 8 / span 5; grid-row: 5 / span 2; }
-.a11y-widget-biz .a11y-top-list > li:nth-child(5) { grid-column: 1 / span 5; grid-row: 6 / span 2; }
+.a11y-widget-biz .a11y-top-list { display: block; margin: 0; padding: 0; list-style: none; border-bottom: 1px solid var(--ink); }
+.a11y-widget-biz .a11y-top-list > li { min-width: 0; margin: 0; display: block; }
 .a11y-widget-biz .a11y-top-card {
-  --ink: var(--tile-ink); --paper: var(--tile);
-  box-sizing: border-box; width: 100%; min-width: 0; min-height: 128px; margin: 0; padding: 24px 20px;
-  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px;
-  border: 0; border-radius: 20px; background: var(--tile); color: var(--tile-ink); cursor: pointer;
-  font: inherit; text-align: center; overflow-wrap: break-word; hyphens: auto;
+  box-sizing: border-box; width: 100%; min-width: 0; min-height: 44px; margin: 0; padding: 12px 0 14px;
+  display: flex; flex-direction: column; align-items: flex-start; justify-content: flex-start; gap: 6px;
+  border: 0; border-top: 1px solid var(--ink); border-radius: 0; background: none; color: var(--ink); cursor: pointer;
+  font: inherit; text-align: start; overflow-wrap: break-word; hyphens: auto;
 }
-.a11y-widget-biz .a11y-top-card:hover { background: var(--hover); color: var(--hover-ink); }
-.a11y-widget-biz .a11y-top-card:focus-visible { outline: 3px solid var(--tile-ink); outline-offset: -6px; box-shadow: none; }
-.a11y-widget-biz .a11y-top-card-title { font-size: 27px; font-weight: 500; line-height: 1.05; letter-spacing: 0; text-wrap: balance; max-width: 100%; }
-.a11y-widget-biz .a11y-top-card-small { display: flex; flex-wrap: wrap; justify-content: center; gap: 0 1em; font-size: 15px; letter-spacing: 0.01em; line-height: 1.3; }
-/* A narrower report: the same scatter with wider blocks, so the small ones
-   still hold a title. */
-@container a11y-top (max-width: 1000px) {
-  .a11y-widget-biz .a11y-top-list > li { grid-column: 1 / span 7; }
-  .a11y-widget-biz .a11y-top-list > li:nth-child(2) { grid-column: 8 / span 5; grid-row: 2 / span 2; }
-  .a11y-widget-biz .a11y-top-list > li:nth-child(3) { grid-column: 3 / span 6; grid-row: 4 / span 2; }
-  .a11y-widget-biz .a11y-top-list > li:nth-child(4) { grid-column: 7 / span 6; grid-row: 6 / span 2; }
-  .a11y-widget-biz .a11y-top-list > li:nth-child(5) { grid-column: 1 / span 6; grid-row: 7 / span 2; }
-}
+.a11y-widget-biz .a11y-top-card:hover { background: none; color: var(--ink); }
+.a11y-widget-biz .a11y-top-card:hover > .a11y-top-card-title { text-decoration: underline; text-underline-offset: 0.15em; }
+.a11y-widget-biz .a11y-top-card-title { font-size: 27px; font-weight: 500; line-height: 1.15; letter-spacing: 0; max-width: 100%; }
+.a11y-widget-biz .a11y-top-card-small { display: flex; flex-wrap: wrap; justify-content: flex-start; gap: 0 1em; font-size: 15px; letter-spacing: 0.01em; line-height: 1.3; }
 @container a11y-top (max-width: 640px) {
-  .a11y-widget-biz .a11y-top-list { grid-auto-rows: auto; }
-  .a11y-widget-biz .a11y-top-list > li, .a11y-widget-biz .a11y-top-list > li:nth-child(n) { grid-column: 1 / -1; grid-row: auto; }
   .a11y-widget-biz .a11y-top-title { font-size: 27px; letter-spacing: 0; }
-  .a11y-widget-biz .a11y-top-card { min-height: 96px; padding: 20px 16px; }
   .a11y-widget-biz .a11y-top-card-title { font-size: 22px; letter-spacing: 0.005em; }
 }
 
@@ -1984,8 +1970,6 @@
   .a11y-widget-biz .a11y-chat .a11y-chat-thread :is(pre, code) { font-size: 0.9em; line-height: 1.4; }
   .a11y-widget-biz .a11y-chat .a11y-chat-thread .a11y-chat-plan-title { font-size: 22px; }
   .a11y-widget-biz .a11y-chat .a11y-chat-thread .a11y-chat-plan-text { font-size: 18px; }
-  .a11y-widget-biz .a11y-chat .a11y-chat-thread .a11y-chat-plan-step { min-height: 280px; padding: 20px 20px 18px; border-radius: 18px; }
-  .a11y-widget-biz .a11y-chat .a11y-chat-thread .a11y-chat-plan-no { padding-top: 24px; font-size: 104px; }
   .a11y-widget-biz .a11y-chat .a11y-chat-thread :is(p, li) { max-width: none; }
   .a11y-widget-biz .a11y-chat .a11y-chat-turn { margin-bottom: 1.4em; }
   .a11y-widget-biz .a11y-chat .a11y-chat-you { display: flex; flex-direction: column; align-items: flex-end; }
@@ -2115,37 +2099,30 @@
   .a11y-widget-biz .a11y-chats .a11y-chats-delete { visibility: visible; }
 }
 
-/* ═══ THE SUMMARY PANELS AS TYPE-TESTER CARDS (user's reference, 18 Nov 2026) ═
-   "Design this like this", over a foundry's type tester: each of the two
-   panels, Start here and Score … (labels shortened from "Do this first"
-   and "What a score of … means", user's instruction, 19 Nov 2026), is a
-   card. The fixed
-   #f0efe8 ground with black words in both themes (18.4:1), 20px corners,
-   the label on a small solid-black pill at the top-left (#f0efe8 words,
-   15px Medium, sentence case, as the alternates sheet sets its labels), and
-   the sentence under it at the report's prose size, 27px/1.2 at 0 (it was
-   38px display size until the user's "text too big", 19 Nov 2026). The two
-   cards stand the same height side by side. Ink and paper are redefined
-   inside, so links, code and focus rings follow. Under 640px the sentence
-   takes the phone prose size, 22px. */
+/* ═══ THE SUMMARY PANELS (user's reference, 18 Nov 2026) ═
+   Start here and Score … (labels shortened at the user's instruction,
+   19 Nov 2026) side by side, each a column of the pricing block: the label
+   in small print over a 1px ink rule, the sentence under it at the report's
+   prose size, 27px/1.2 at 0. They were #f0efe8 cards with 20px corners and
+   the label on a black pill until the user's word on the same cards
+   elsewhere, 20 Nov 2026: "this is a slop". Page ink and paper, so they
+   follow the theme. Under 640px the sentence takes the phone prose size. */
 .a11y-widget-biz .a11y-sum-col > .a11y-sum-panel:not(.a11y-sum-counts) {
-  --ink: var(--tile-ink); --paper: var(--tile);
   box-sizing: border-box; min-width: 0; margin: 0;
-  align-self: stretch; display: flex; flex-direction: column; gap: 32px;
-  padding: 28px 32px 36px; border: 0; border-radius: 20px; background: var(--tile); color: var(--tile-ink);
+  align-self: stretch; display: flex; flex-direction: column; gap: 14px;
+  padding: 0; border: 0; border-radius: 0; background: none; color: var(--ink);
   text-align: start; overflow-wrap: break-word; hyphens: manual;
 }
 .a11y-widget-biz .a11y-sum-col > .a11y-sum-panel:not(.a11y-sum-counts) > .a11y-sum-eyebrow {
-  align-self: flex-start; margin: 0; padding: 7px 16px; border: 0; border-radius: 999px;
-  background: var(--strong); color: var(--strong-ink); text-align: start; text-transform: none;
-  font-family: "Jokker", sans-serif; font-size: 15px; font-weight: 500; line-height: 1.2; letter-spacing: 0.01em;
+  align-self: stretch; margin: 0; padding: 0 0 6px; border: 0; border-bottom: 1px solid var(--ink); border-radius: 0;
+  background: none; color: var(--ink); text-align: start; text-transform: none;
+  font-family: "Jokker", sans-serif; font-size: 18px; font-weight: 400; line-height: 1.2; letter-spacing: 0.01em;
 }
 .a11y-widget-biz .a11y-sum-col > .a11y-sum-panel:not(.a11y-sum-counts) .a11y-sum-lead {
   display: block; margin: 0;
   font-family: "Jokker", sans-serif; font-size: 27px; font-weight: 400; line-height: 1.2; letter-spacing: 0;
 }
 @media (max-width: 640px) {
-  .a11y-widget-biz .a11y-sum-col > .a11y-sum-panel:not(.a11y-sum-counts) { gap: 20px; padding: 18px 20px 24px; }
   .a11y-widget-biz .a11y-sum-col > .a11y-sum-panel:not(.a11y-sum-counts) .a11y-sum-lead { font-size: 22px; letter-spacing: 0.005em; }
 }
 
@@ -2182,15 +2159,15 @@
    they split it evenly and never wrap. */
 .a11y-widget-biz .a11y-legal-tiles { display: flex; gap: 16px; align-items: stretch; }
 .a11y-widget-biz .a11y-legal-tiles > .a11y-legal-row {
-  --ink: var(--tile-ink); --paper: var(--tile);
+  --ink: #000; --tile-ink: #000; --paper: var(--tile);
   flex: 1 1 0; container: a11y-legal-tile / inline-size;
   display: flex; flex-direction: column; align-items: center; gap: 14px;
   box-sizing: border-box; min-width: 0; min-height: 300px; margin: 0; padding: 22px 20px 32px;
   overflow-wrap: break-word; hyphens: manual;
-  border-radius: 20px; background: var(--tile); color: var(--tile-ink); text-align: center;
+  border-radius: 20px; background: var(--tile); color: #000; text-align: center;
 }
 .a11y-widget-biz .a11y-legal-tiles > .a11y-legal-row .a11y-legal-mark {
-  order: 1; align-self: stretch; box-sizing: border-box; margin: 0; padding: 3px 12px 4px; border-radius: 999px; box-shadow: none;
+  order: 1; align-self: center; box-sizing: border-box; margin: 0; padding: 0; border-radius: 0; background: none; box-shadow: none; color: #000;
   font-size: 15px; letter-spacing: 0.01em; line-height: 1.2; white-space: nowrap; text-align: center;
 }
 .a11y-widget-biz .a11y-legal-tiles > .a11y-legal-row .a11y-legal-count {
@@ -2219,6 +2196,21 @@
 @media (min-width: 641px) and (max-width: 1240px) {
   .a11y-widget-biz .a11y-legal-tiles > .a11y-legal-row { padding-inline: 12px; }
 }
+/* Each tile takes its status colour whole, and the status word loses its pill
+   (user's instruction, 20 Nov 2026, "make cards different colors and do not
+   use badges"). The fills are the highlight set, the one place colour is
+   allowed; black words on each measure 7:1 or better in both themes, so the
+   tile (in the rules above) pins --ink to black for whatever sits inside it,
+   and the status word is plain small print at the top: the colour says the
+   status to the eye, the word says it to everyone else. The checklist button
+   keeps 24px off the row (user's instruction, same day: it sat flush against
+   the tiles). */
+.a11y-widget-biz .a11y-legal-tiles > .a11y-legal-row-failed { --paper: var(--hl-orange); background: var(--hl-orange); }
+.a11y-widget-biz .a11y-legal-tiles > .a11y-legal-row-clean { --paper: var(--hl-green); background: var(--hl-green); }
+.a11y-widget-biz .a11y-legal-tiles > .a11y-legal-row-human { --paper: var(--hl-cap-a); background: var(--hl-cap-a); }
+.a11y-widget-biz .a11y-legal-tiles > .a11y-legal-row-not-measured { --paper: var(--hl-blue); background: var(--hl-blue); }
+.a11y-widget-biz .a11y-legal-results + .a11y-show-checklist,
+.a11y-widget-biz .a11y-legal-grid + .a11y-show-checklist { margin-top: 24px; }
 @media (max-width: 640px) {
   .a11y-widget-biz .a11y-legal-tiles { flex-direction: column; gap: 10px; }
   .a11y-widget-biz .a11y-legal-tiles > .a11y-legal-row {
@@ -2452,34 +2444,34 @@
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-voice-note { margin: 0; font-size: 15px; line-height: 1.2; letter-spacing: 0.01em; flex: 1 1 18em; min-width: 0; }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-voice .a11y-btn[aria-pressed="true"] { background: var(--solid); color: var(--solid-ink); }
 
-/* ═══ WHERE THIS LIVES AND THE SCREEN READER PREVIEW AS CARDS (user's instruction, 18 Nov 2026) ═
+/* ═══ WHERE THIS LIVES AND THE SCREEN READER PREVIEW (user's instruction, 18 Nov 2026) ═
    "this is a slop … design this": the history column's second half was a
    bare heading, one dash line and a button, and the screen reader block
-   was a heading boxed by its own focus ring with the Play button
-   jammed under it. Both now speak the report's card language: the fixed
-   #f0efe8 ground with black words in both themes (18.4:1), 20px corners,
-   the label on a small solid-black pill (15px Medium, sentence case). Ink
-   and paper are redefined inside so buttons, the checkbox and focus rings
-   follow. Three roots, like the rest of the poster layer. */
+   was a heading boxed by its own focus ring with the Play button jammed
+   under it. They became #f0efe8 cards with 20px corners and a label on a
+   black pill; on 20 Nov 2026 the user called those cards slop too, on the
+   expanded finding. Now each is a column of the pricing block: the label
+   in small print over a 1px ink rule, the facts on rules under it, the
+   Play row between two rules. Page ink and paper. Three roots, like the
+   rest of the poster layer. */
 
 /* History: a card each for "Since last time" and "Where this lives". */
-.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-hist-col:last-child { display: flex; flex-direction: column; gap: 16px; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-hist-col:last-child { display: flex; flex-direction: column; gap: 2.4em; }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-hist-card {
-  --ink: var(--tile-ink); --paper: var(--tile);
-  display: flex; flex-direction: column; align-items: flex-start; gap: 28px;
-  box-sizing: border-box; min-width: 0; margin: 0; padding: 24px 28px 32px;
-  border-radius: 20px; background: var(--tile); color: var(--tile-ink);
+  display: flex; flex-direction: column; align-items: flex-start; gap: 14px;
+  box-sizing: border-box; min-width: 0; margin: 0; padding: 0;
+  border-radius: 0; background: none; color: var(--ink);
   overflow-wrap: break-word; hyphens: manual;
 }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-hist-card > .a11y-hist-head {
-  margin: 0; padding: 7px 16px; border-radius: 999px; background: var(--strong); color: var(--strong-ink);
-  font-family: "Jokker", sans-serif; font-size: 15px; font-weight: 500; line-height: 1.2; letter-spacing: 0.01em;
+  align-self: stretch; margin: 0; padding: 0 0 6px; border-bottom: 1px solid var(--ink); border-radius: 0; background: none; color: var(--ink);
+  font-family: "Jokker", sans-serif; font-size: 18px; font-weight: 400; line-height: 1.2; letter-spacing: 0.01em;
 }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-hist-card > .a11y-hist-facts {
   align-self: stretch; margin: 0; padding: 0; list-style: none;
 }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-hist-card > .a11y-hist-facts > li {
-  margin: 0; padding: 12px 0; border-top: 1px solid var(--tile-ink);
+  margin: 0; padding: 12px 0; border-top: 1px solid var(--ink);
   font-size: 22px; line-height: 1.2; letter-spacing: 0.01em;
 }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-hist-card > .a11y-hist-facts > li:first-child { border-top: 0; padding-top: 0; }
@@ -2489,14 +2481,14 @@
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-hist-card > .a11y-danger-btn { margin: 0; }
 
 /* Screen reader preview: Play, the status line, the filter and the skip
-   link share one card that is on screen whether the section is open or not.
+   link share one row, between two rules, that is on screen whether the
+   section is open or not.
    Play is the solid pill; the filter is an outlined pill around its
    checkbox; the skip link is a quiet pill at the end. */
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sr-bar {
-  --ink: var(--tile-ink); --paper: var(--tile);
   display: flex; flex-wrap: wrap; align-items: center; gap: 14px 16px;
-  box-sizing: border-box; margin: 0 0 30px; padding: 20px 24px;
-  border-radius: 20px; background: var(--tile); color: var(--tile-ink);
+  box-sizing: border-box; margin: 0 0 30px; padding: 14px 0;
+  border-block: 1px solid var(--ink); border-radius: 0; background: none; color: var(--ink);
 }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sr-bar .a11y-sr-play {
   flex: 0 1 auto; min-width: 0; max-width: 100%; min-height: 48px; padding: 0 1.4em; font-size: 22px; white-space: normal; text-align: start;
@@ -2512,7 +2504,7 @@
 }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sr-bar .a11y-ai-toggle {
   flex: none; margin: 0; min-height: 40px; box-sizing: border-box; padding: 0 1em 0 0.8em;
-  border: 1px solid var(--tile-ink); border-radius: 999px; font-size: 18px; cursor: pointer;
+  border: 1px solid var(--ink); border-radius: 999px; font-size: 18px; cursor: pointer;
 }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sr-bar .a11y-ai-toggle:has(:checked) { background: var(--strong); color: var(--strong-ink); }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sr-bar .a11y-skip-link { flex: none; margin: 0; }
@@ -2537,9 +2529,7 @@
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sr-row[aria-current="true"]:enabled:hover { background: var(--ink); color: var(--paper); }
 
 @container a11y-shell (max-width: 640px) {
-  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-hist-card { padding: 18px 20px 24px; gap: 20px; }
   .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-hist-promise { font-size: 22px; }
-  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sr-bar { padding: 16px 18px; }
   .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sr-bar .a11y-sr-play { width: 100%; justify-content: center; }
   .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sr-row .a11y-sr-line-text { font-size: 22px; }
 }
@@ -2648,12 +2638,14 @@
 .a11y-widget-biz .a11y-barrier h3:focus { outline: none; }
 .a11y-widget-biz .a11y-barrier h3:focus-visible { outline: 2px solid var(--focus); outline-offset: 4px; }
 .a11y-widget-biz .a11y-barrier .a11y-barrier-nodraft > p { margin: 0 0 8px; font-size: 32px; line-height: 1.2; }
+/* On the page's paper under a 1px ink rule, not a #f0efe8 card (user's
+   word on those cards, 20 Nov 2026: "this is a slop"). */
 .a11y-widget-biz .a11y-barrier .a11y-barrier-doc {
-  box-sizing: border-box; margin: 0 0 12px; padding: 20px 22px 24px; border-radius: 12px; background: var(--tile); color: var(--tile-ink);
+  box-sizing: border-box; margin: 0 0 12px; padding: 16px 0 0; border-top: 1px solid var(--ink); border-radius: 0; background: none; color: var(--ink);
 }
 .a11y-widget-biz .a11y-barrier .a11y-barrier-doc h4 { margin: 0 0 28px; font-size: 38px; font-weight: 400; line-height: 1.1; letter-spacing: -0.005em; }
 .a11y-widget-biz .a11y-barrier .a11y-barrier-doc h5 {
-  margin: 24px 0 8px; padding: 0 0 6px; border-bottom: 1px solid var(--tile-ink);
+  margin: 24px 0 8px; padding: 0 0 6px; border-bottom: 1px solid var(--ink);
   font-size: 15px; font-weight: 400; line-height: 1.3; letter-spacing: 0.01em;
 }
 .a11y-widget-biz .a11y-barrier .a11y-barrier-doc h4 + h5 { margin-top: 0; }
