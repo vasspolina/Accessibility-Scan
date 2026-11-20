@@ -140,3 +140,7 @@ per-criterion verdicts with evidence, what each verification stage actually
 ran, and an honest list of what still needs a human with a screen reader. It
 does not claim conformance, which is a habit the report itself keeps too:
 what was measured is stated, what was not is named.
+
+## Licence
+
+EUPL-1.2, in [`LICENSE`](LICENSE). Some files in this repository belong to others and are not covered; [`NOTICE.md`](NOTICE.md) lists them.
