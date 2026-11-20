@@ -307,23 +307,36 @@ describe("the pilot", () => {
 describe("the pilot's conversation", () => {
   const said = { assistiveTech: "keyboard-only", pageUrl: "https://shop.example/", barrier: "The button did nothing when I pressed Enter." };
 
-  it("asks the one follow-up the model words, tidied, with answers to pick", async () => {
-    modelContent = JSON.stringify({ enough: false, question: "Which button was it", suggestions: ["The menu button", "the menu button", "A button in a form!"] });
+  it("asks the written question the model picks, with its answers to pick", async () => {
+    modelContent = JSON.stringify({ enough: false, ask: "button" });
     const res = await post("/api/pilot/followup", said);
     expect(res.statusCode).toBe(200);
-    expect(res.json()).toEqual({ question: "Which button was it?", suggestions: ["The menu button", "A button in a form"], source: "model" });
+    expect(res.json()).toEqual({
+      question: "Which button was it?",
+      suggestions: ["One in the menu", "One in a form", "The search button", "The close button"],
+      source: "model",
+    });
     const [system, user] = modelCalls[0].messages.map((m) => m.content);
     expect(system).toContain("You have not seen the page");
-    expect(system).toContain("Never ask for their name");
+    expect(system).toContain('"button": which button it was');
     expect(user).toContain("The button did nothing when I pressed Enter.");
+    // The model picks; the words are ours, in the report's language.
+    modelContent = JSON.stringify({ enough: false, ask: "field" });
+    expect((await post("/api/pilot/followup", { ...said, lang: "de" })).json().question).toBe("Welches Feld war es?");
+  });
+
+  it("asks a screen reader question only of someone who uses one", async () => {
+    modelContent = JSON.stringify({ enough: false, ask: "said" });
+    expect((await post("/api/pilot/followup", said)).json().question).toBe("What happened instead?");
+    expect((await post("/api/pilot/followup", { ...said, assistiveTech: "screen-reader" })).json().question).toBe("What did your screen reader say?");
   });
 
   it("asks nothing when the model says the report is enough", async () => {
-    modelContent = JSON.stringify({ enough: true, question: "", suggestions: [] });
+    modelContent = JSON.stringify({ enough: true, ask: "where" });
     expect((await post("/api/pilot/followup", said)).json()).toEqual({ question: null, suggestions: [], source: null });
   });
 
-  it("asks the scripted question when the model is down, slow, or asks about the person", async () => {
+  it("asks where it was when the model is down, slow, or answers off the list", async () => {
     const scripted = { question: "Where on the page was it?", source: "script" };
     modelDown = true;
     expect((await post("/api/pilot/followup", said)).json()).toMatchObject(scripted);
@@ -331,15 +344,28 @@ describe("the pilot's conversation", () => {
     modelTimesOut = true;
     expect((await post("/api/pilot/followup", said)).json()).toMatchObject(scripted);
     modelTimesOut = false;
-    modelContent = JSON.stringify({ enough: false, question: "What is your disability?", suggestions: [] });
-    expect((await post("/api/pilot/followup", said)).json()).toMatchObject(scripted);
+    // A question of its own, or one off the list, is never asked.
+    modelContent = JSON.stringify({ enough: false, ask: "What is your disability?" });
+    expect((await post("/api/pilot/followup", said)).json().question).toBe("Where on the page was it?");
     // In the report's language, like everything else the person reads.
     modelDown = true;
     expect((await post("/api/pilot/followup", { ...said, lang: "de" })).json().question).toBe("Wo auf der Seite war das?");
   });
 
+  it("writes every question and its answers in all four languages", async () => {
+    const { FOLLOW_UP_QUESTIONS, FOLLOW_UP_KINDS } = await import("../src/services/pilot/pilot.js");
+    for (const lang of ["en", "de", "es", "fr"] as const) {
+      for (const kind of FOLLOW_UP_KINDS) {
+        const q = FOLLOW_UP_QUESTIONS[lang][kind];
+        expect(q.question, `${lang} ${kind}`).toMatch(/\?$/);
+        expect(q.suggestions).toHaveLength(4);
+        expect(q.question + q.suggestions.join(" ")).not.toMatch(/[—!]/);
+      }
+    }
+  });
+
   it("asks one follow-up, not two, and none for an address-only report", async () => {
-    modelContent = JSON.stringify({ enough: false, question: "Which button was it?", suggestions: [] });
+    modelContent = JSON.stringify({ enough: false, ask: "button" });
     const asked = await post("/api/pilot/followup", { ...said, followUps: [{ question: "Where on the page was it?", answer: "The menu" }] });
     expect(asked.json().question).toBeNull();
     const { barrier: _b, ...addressOnly } = said;
