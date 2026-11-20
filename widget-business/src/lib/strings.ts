@@ -993,6 +993,7 @@ export const CHROME_KEYS: string[] = [
   "That isn’t a web address. Try again.",
   "The language model is off. Your report can go as you wrote it.",
   "The language model slipped.",
+  "The language model is still starting. Trying once more, up to two minutes.",
   "The language model was still starting. It is usually ready now.",
   "The model thinks this may fail WCAG success criterion {criterion}. Nobody has checked that yet.",
   "The pilot could not be reached. Please try again later.",
