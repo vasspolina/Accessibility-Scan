@@ -3,6 +3,7 @@ import { checkNames, t, tf } from "./lib/strings";
 import type { RefObject } from "react";
 import { flushSync } from "react-dom";
 import { UrlForm, type ScanMode } from "./components/UrlForm";
+import { BarrierReport } from "./components/BarrierReport";
 import { ScoreGauge } from "./components/ScoreGauge";
 import { ReportActions } from "./components/ReportActions";
 import { ScanSettings } from "./components/ScanSettings";
@@ -184,7 +185,12 @@ export function App({
   // How a scan starts: by conversation, or by the form. The form stays —
   // it is the only way to scan behind a login, because a password typed
   // into the chat would pass through the model.
-  const [entry, setEntry] = useState<"chat" | "form">("chat");
+  // A third way in, since 20 Nov 2026: Report a barrier, the
+  // assistive-technology pilot's conversation (BarrierReport). A link to
+  // #report-a-barrier opens on it; the old /pilot.html sends people there.
+  const [entry, setEntry] = useState<"chat" | "form" | "barrier">(() =>
+    typeof location !== "undefined" && location.hash === "#report-a-barrier" ? "barrier" : "chat"
+  );
   // The form opened for a page behind a login starts with its login panel open.
   const [formForLogin, setFormForLogin] = useState(false);
   // The ticking "12s" is reassurance, not essential status — the words
@@ -954,7 +960,9 @@ export function App({
       lang={lang}
     >
     <AppShell
-      mark={report || audit ? t("Findings") : t("New scan")}
+      mark={entry === "barrier" ? t("Report a barrier") : report || audit ? t("Findings") : t("New scan")}
+      /* The foot line is the host, as the sheet's foot is the city. */
+      foot={report ? hostnameOf(report.url) : audit ? hostnameOf(audit.pages[0]?.url ?? "") : undefined}
       onJump={jumpTo}
       /* The run's settings live in the rail once there is a run to describe.
          Report style flips in place; the other two re-run the scan, which is
@@ -999,6 +1007,7 @@ export function App({
             setFormForLogin(true);
             setEntry("form");
           }}
+          onReportBarrier={() => setEntry("barrier")}
           onScan={(url, scope, aiReview) => {
             const full = /^https?:\/\//i.test(url) ? url : `https://${url}`;
             return handleScan(full, aiReview, scope, 5);
@@ -1025,6 +1034,16 @@ export function App({
           language={lang}
           onLanguageChange={changeLang}
         />
+      {entry === "barrier" && (
+        <BarrierReport
+          apiBase={apiBase}
+          onBack={() => {
+            // Out of the view, and out of the address, so a reload opens the chat.
+            if (location.hash === "#report-a-barrier") window.history.replaceState(null, "", location.pathname + location.search);
+            setEntry("chat");
+          }}
+        />
+      )}
       {entry === "form" && (
       <>
       <UrlForm

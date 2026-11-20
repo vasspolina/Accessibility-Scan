@@ -5,12 +5,16 @@ Two features that share one small language model you host yourself.
 1. **The plain-language rewrite.** During a scan, the model rewrites each axe
    rule's findings into a plain title, an explanation about this page's
    elements, and a fix. Code: `backend/src/services/plainLanguage/`.
-2. **The pilot.** A short conversation at `/pilot.html` where people who
-   use assistive technology report a barrier. It asks one thing at a time
-   with answers to pick, the same model drafts a detailed finding, and the
-   participant reads it, says what is wrong with it if anything, and sends
-   it. Code: `backend/src/services/pilot/`,
-   `backend/src/routes/pilot.ts`, `backend/public/pilot.html`.
+2. **The pilot.** Report a barrier, a short conversation inside the scan
+   widget (since 20 Nov 2026; before that its own page, `/pilot.html`,
+   which now sends people on) where people who use assistive technology
+   report a barrier. It opens from Report a barrier in the widget's
+   conversations panel, or from a link ending `#report-a-barrier`. It asks
+   one thing at a time with answers to pick, the same model drafts a
+   detailed finding, and the participant reads it, says what is wrong with
+   it if anything, and sends it. Code: `backend/src/services/pilot/`,
+   `backend/src/routes/pilot.ts`,
+   `widget-business/src/components/BarrierReport.tsx`.
 
 Both follow the repository's rule for optional features: with nothing set,
 they say they are not set up, and nothing fails.
@@ -101,17 +105,29 @@ pick under it so a report can be made without typing. The order is fixed:
    they use ("A button or link had no name"). With an address there is also
    "Scan the page instead".
 4. **One follow-up at most** (`POST /api/pilot/followup`, `nextFollowUp`):
-   the model reads what was said and asks for the one detail the owner
-   would still need, with answers to pick, or says the report is enough. It
-   has ten seconds (`FOLLOW_UP_TIMEOUT_MS`, not yet measured on the live
-   worker). When it is off, slow, off the point or asks about the person,
-   the scripted question is asked instead: "Where on the page was it?".
-   Skip is always one of the answers.
+   the model reads what was said and picks the one question the owner
+   would most need answered, or says the report is enough. It picks from
+   seven questions written in each language (`FOLLOW_UP_QUESTIONS`: where
+   on the page, which button, link or field, what the screen reader said,
+   what happened instead, at which step), each with its own four answers to
+   pick; it never words a question itself, since its own wording came out
+   rough on the live worker, 20 Nov 2026. The screen reader question goes
+   only to screen reader users. It has ten seconds
+   (`FOLLOW_UP_TIMEOUT_MS`; about one second on a warm worker, measured 20
+   Nov 2026). When it is off, still waking or answers off the list, "Where
+   on the page was it?" is asked. Skip is always one of the answers.
 5. **The report**, written by the model, with Send report under it and one
    field: "Anything wrong?". What is typed there goes back to the model
    with the draft (`POST /api/pilot/draft` with `previous` and `change`)
    and the report is written again. If that fails, the report they already
    read stands.
+
+The model's worker sleeps when idle and took over 100 seconds to wake when
+measured (20 Nov 2026): a first report took 87 seconds, the same report
+written again 4. So the view asks the server to wake it as it opens
+(`POST /api/pilot/wake`), and once more at the first answer. The server
+lets one wake call through per two minutes; each page view outside that
+window wakes the paid worker.
 
 Every answered question stays on the page with a Change button; changing
 one keeps the later answers that still hold. What was asked and answered is
@@ -147,8 +163,8 @@ There is no invitation code (removed 17 Nov 2026): anyone with the link can
 report, and the routes' rate limits bound how much. The pilot is open
 whenever reports have somewhere to go (storage or mail).
 
-1. Send people the link: `https://<backend>/pilot.html`. An old link with
-   `?code=` still works; the code is ignored and taken out of the address bar.
+1. Send people the link: `https://<backend>/demo.html#report-a-barrier`.
+   Links already sent to `/pilot.html` still work: that page sends them on.
 2. Read the reports and totals:
 
    ```bash

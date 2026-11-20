@@ -28,14 +28,22 @@ const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 /* Every state the dev harness can render. A state that only exists after a
    submit has to be named — bare ?fixture stops at the form, and measuring
    the form while believing you measured the report is the failure mode this
-   file exists to avoid. */
+   file exists to avoid.
+
+   It happened anyway (found 20 Nov 2026): when the chat lost "Use the form
+   instead" on 18 Nov, the harness could no longer reach the form, every
+   named state stayed on the chat landing, and this check measured the
+   landing 48 times and passed. So each state now names an element only it
+   renders, and a state where that element never shows is a failure, not a
+   pass. Bare ?fixture is the chat landing, the default entry since
+   1 Oct 2026, hence its name. */
 const STATES = [
-  ["form", "?fixture"],
-  ["report", "?fixture=report"],
-  ["pro", "?fixture=report&audience=professional"],
-  ["site", "?fixture=report&scope=site"],
-  ["error", "?fixture=error"],
-  ["blocked", "?fixture=blocked"],
+  ["landing", "?fixture", "#a11y-chat-input"],
+  ["report", "?fixture=report", ".a11y-report .a11y-score"],
+  ["pro", "?fixture=report&audience=professional", ".a11y-report .a11y-pro-table"],
+  ["site", "?fixture=report&scope=site", ".a11y-report .a11y-audit-list"],
+  ["error", "?fixture=error", "#a11y-scan-error"],
+  ["blocked", "?fixture=blocked", ".a11y-blocked"],
 ];
 const LANGS = ["en", "de", "es", "fr"]; // every language the report ships — a nowrap fault hid in German once
 const WIDTHS = [320, 375];
@@ -72,15 +80,25 @@ const failures = [];
 let measured = 0;
 
 try {
-  for (const [state, query] of STATES) {
+  for (const [state, query, marker] of STATES) {
     for (const lang of LANGS) {
       for (const width of WIDTHS) {
         const page = await browser.newPage({ viewport: { width, height: 900 } });
-        await page.goto(`${base}/${query}&lang=${lang}`, { waitUntil: "networkidle" }).catch(() => {});
+        // "load", then the state's own element: the marker is what says the
+        // state is ready, so idle network adds nothing. A whole sweep takes
+        // about two and a half minutes (20 Nov 2026).
+        await page.goto(`${base}/${query}&lang=${lang}`, { waitUntil: "load" }).catch(() => {});
+        await page.waitForFunction((sel) => {
+          const el = document.querySelector("#a11y-widget-business-root")?.shadowRoot?.querySelector(sel);
+          return !!el && el.getClientRects().length > 0;
+        }, marker, { timeout: 20000 }).catch(() => {});
+        await page.evaluate(() => document.fonts.ready).catch(() => {});
         await page.waitForTimeout(1200);
-        const r = await page.evaluate(() => {
+        const r = await page.evaluate((sel) => {
           const sr = document.querySelector("#a11y-widget-business-root")?.shadowRoot;
           if (!sr) return { mounted: false };
+          const built = [...sr.querySelectorAll(sel)].some((e) => e.getClientRects().length > 0);
+          if (!built) return { mounted: true, built: false };
           const vw = window.innerWidth;
           const nodes = [...sr.querySelectorAll("*")].filter((e) => e.getClientRects().length);
           const over = nodes
@@ -101,11 +119,11 @@ try {
               right: Math.round(e.getBoundingClientRect().right),
             }));
           return {
-            mounted: true, examined: nodes.length,
+            mounted: true, built: true, examined: nodes.length,
             sideways: document.documentElement.scrollWidth > vw + 1,
             docScrollW: document.documentElement.scrollWidth, over,
           };
-        });
+        }, marker);
         await page.close();
 
         const label = `${state.padEnd(8)} ${lang} ${String(width).padStart(4)}px`;
@@ -114,6 +132,11 @@ try {
         if (!r.mounted) {
           console.log(`NOT MOUNTED  ${label}  — nothing was measured`);
           failures.push(`${state}/${lang}/${width}: widget did not mount`);
+          continue;
+        }
+        if (!r.built) {
+          console.log(`NOT BUILT    ${label}  — ${marker} never showed; nothing of this state was measured`);
+          failures.push(`${state}/${lang}/${width}: the state was not built (${marker} missing)`);
           continue;
         }
         measured += r.examined;

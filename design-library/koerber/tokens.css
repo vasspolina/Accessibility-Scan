@@ -1,0 +1,285 @@
+/*
+ * Körber design library – tokens.
+ * Extracted 9 Nov 2026 from https://www.koerber.com/en (computed styles + the
+ * site's own stylesheet). Values are the site's, names follow its own
+ * `--_primitives--*` / `--_color-scheme--*` layers, shortened.
+ *
+ * Fonts: body is Noto Sans (open, variable 100–900) and labels are Noto Sans
+ * Mono. Headings use "fontKoerber", a proprietary single-weight (400) face
+ * that is NOT included here. The stack below falls back to Noto Sans; for
+ * brand-accurate headings licence the font from Körber and add an
+ * @font-face for `fontKoerber`.
+ */
+
+:root {
+  /* ── Primitives: colour ─────────────────────────────── */
+  --kb-blue-lightest: #e5efff;
+  --kb-blue-lighter: #ccdfff;
+  --kb-blue-light: #4c8fff;
+  --kb-blue: #0060ff;           /* brand */
+  --kb-blue-dark: #004ccc;
+  --kb-blue-darker: #002666;
+  --kb-blue-darkest: #001c4c;
+
+  --kb-yellow-lightest: #fffcea;
+  --kb-yellow-lighter: #fff9d5;
+  --kb-yellow-light: #ffeb6d;
+  --kb-yellow: #ffe32f;
+  --kb-orange-light: #fec037;
+  --kb-orange: #fe8623;
+
+  --kb-warm-grey-lightest: #fbfaf9;  /* page ground */
+  --kb-warm-grey-lighter: #f5f3f1;
+  --kb-warm-grey-light: #f0eeea;
+  --kb-warm-grey: #e6e2dc;
+  --kb-warm-grey-dark: #bfb8af;
+  --kb-warm-grey-darker: #5c5a58;
+  --kb-warm-grey-darkest: #454342;
+
+  --kb-neutral-lightest: #f2f2f2;
+  --kb-neutral-lighter: #d8d9da;
+  --kb-neutral-light: #b2b4b6;
+  --kb-neutral: #7f8286;
+  --kb-neutral-dark: #4c5055;
+  --kb-neutral-darker: #191e25;
+  --kb-neutral-darkest: #00050d;     /* ink */
+
+  --kb-white: #fff;
+  --kb-error-red: #d93025;
+  --kb-error-red-on-dark: #ff9a9a;
+  --kb-visited: #9747ff;
+  --kb-visited-on-dark: #feffb0;
+
+  /* Alpha ramps: ink and white, in the steps the site uses */
+  --kb-ink-5: #00050d0d;  --kb-ink-10: #00050d1a; --kb-ink-15: #00050d26;
+  --kb-ink-20: #00050d33; --kb-ink-30: #00050d4d; --kb-ink-40: #00050d66;
+  --kb-ink-50: #00050d80; --kb-ink-60: #00050d99;
+  --kb-white-5: #ffffff0d;  --kb-white-10: #ffffff1a; --kb-white-15: #ffffff26;
+  --kb-white-20: #fff3;     --kb-white-30: #ffffff4d; --kb-white-40: #fff6;
+  --kb-white-50: #ffffff80; --kb-white-80: #fffc;
+
+  --kb-gradient-start: #8bbbf9;   /* hero background gradient */
+  --kb-gradient-end: #b6d5ff;
+
+  /* ── Primitives: space (4px base) ───────────────────── */
+  --kb-space-1: 4px;  --kb-space-2: 8px;  --kb-space-3: 16px; --kb-space-4: 20px;
+  --kb-space-5: 24px; --kb-space-6: 32px; --kb-space-7: 40px; --kb-space-8: 48px;
+  --kb-space-9: 56px; --kb-space-10: 64px; --kb-space-11: 80px; --kb-space-12: 96px;
+
+  /* Semantic spacers */
+  --kb-spacer-xxs: var(--kb-space-2);   /*  8 */
+  --kb-spacer-xs: var(--kb-space-3);    /* 16 */
+  --kb-spacer-s: var(--kb-space-4);     /* 20 */
+  --kb-spacer-m: var(--kb-space-5);     /* 24 */
+  --kb-spacer-l: var(--kb-space-6);     /* 32 */
+  --kb-spacer-xl: var(--kb-space-8);    /* 48 */
+  --kb-spacer-xxl: var(--kb-space-9);   /* 56 */
+  --kb-spacer-xxxl: var(--kb-space-10); /* 64 */
+  --kb-margin: var(--kb-space-3);
+  --kb-gutter: var(--kb-space-3);
+  --kb-section-padding: var(--kb-space-8);
+  --kb-module-spacer: var(--kb-space-10);
+  --kb-module-spacer-small: var(--kb-space-6);
+  --kb-navigation-height: 69px;
+
+  /* ── Radius ─────────────────────────────────────────── */
+  --kb-radius-xs: 4px;  --kb-radius-s: 8px;  --kb-radius-m: 20px;
+  --kb-radius-l: 32px;  --kb-radius-xl: 40px; --kb-radius-round: 999px;
+
+  /* ── Elevation ──────────────────────────────────────── */
+  --kb-shadow-small: 0 4px 8px -2px #0000001a, 0 2px 4px -2px #0000000f;
+  --kb-shadow-medium: 0 12px 16px -4px #00000014, 0 4px 6px -2px #00000008;
+
+  /* ── Motion ─────────────────────────────────────────── */
+  --kb-ease: cubic-bezier(0.4, 0, 0.2, 1);
+  --kb-duration-fast: 0.15s;   /* buttons, links */
+  --kb-duration-card: 0.3s;    /* card shadow, ease-in-out */
+
+  /* ── Type ───────────────────────────────────────────── */
+  --kb-font-heading: "fontKoerber", "Noto Sans", system-ui, sans-serif;
+  --kb-font-body: "Noto Sans", system-ui, sans-serif;
+  --kb-font-mono: "Noto Sans Mono", ui-monospace, monospace;
+  --kb-weight-normal: 400; --kb-weight-medium: 500;
+  --kb-weight-semibold: 600; --kb-weight-bold: 700;
+
+  /* ── Breakpoints (reference only; CSS can't use vars in @media) ──
+     site tokens: s 375 · m 768 · l 1100
+     media queries used: 600px, 1100px, 1440px, 1536px, 1600px          */
+
+  /* ── Theme (default = light) ────────────────────────── */
+  --kb-bg: #fbfaf9;
+  --kb-bg-accent: #0060ff;
+  --kb-bg-accent-strong: #004ccc;
+  --kb-card: #fff;
+  --kb-card-dark: #00050d0d;
+  --kb-text: #00050d;
+  --kb-text-alt: #00050d99;
+  --kb-text-accent: #0060ff;
+  --kb-text-inverted: #fff;
+  --kb-text-white: #fff;
+  --kb-border: #00050d66;
+  --kb-border-light: #00050d26;
+  --kb-border-inverse: #fbfaf9;
+  --kb-border-accent: #004ccc;
+  --kb-border-high-contrast: #00050d99;
+  --kb-hover: #00050d4d;
+  --kb-hover-light: #00050d0d;
+  --kb-hover-inverse: #ffffff1a;
+  --kb-hover-on-base: #00050d1a;
+  --kb-focus: #002666;
+  --kb-alert: #d93025;
+  --kb-link-visited: #9747ff;
+  --kb-field-bg: #fff;
+  --kb-field-hover: #f2f2f2;
+  --kb-radio: #454342;
+  --kb-toggle-bg: #004ccc;
+  --kb-toggle-handle-off: #7f8286;
+  --kb-toggle-handle-on: #fff;
+  --kb-tags-hover: #00050d0d;
+}
+
+/* The five surface themes. Put the class on any section; everything inside
+   (text, cards, borders, buttons) follows. */
+.kb-light { /* same as :root */ }
+
+.kb-mid {
+  --kb-bg: #f0eeea; --kb-card: #fffc; --kb-border-inverse: #f0eeea;
+  --kb-field-bg: #f5f3f1; --kb-radio: #191e25; --kb-toggle-handle-off: #4c5055;
+}
+
+.kb-white {
+  --kb-bg: #fff; --kb-card: #fbfaf9; --kb-border-inverse: #fff;
+  --kb-border-light: #00050d33; --kb-field-bg: #fbfaf9;
+}
+
+.kb-blue {
+  --kb-bg: #0060ff; --kb-bg-accent: #fff; --kb-bg-accent-strong: #fff;
+  --kb-card: #00050d0d; --kb-card-dark: #00050d1a;
+  --kb-text: #fff; --kb-text-alt: #fff; --kb-text-accent: #fff;
+  --kb-text-inverted: #00050d; --kb-text-white: #00050d;
+  --kb-border: #ffffff80; --kb-border-light: #ffffff4d; --kb-border-inverse: #0060ff;
+  --kb-border-accent: #fff; --kb-border-high-contrast: #fff;
+  --kb-hover: #00050d1a; --kb-hover-inverse: #00050d26; --kb-hover-on-base: #00050d1a;
+  --kb-focus: #ccdfff; --kb-alert: #ff9a9a; --kb-link-visited: #feffb0;
+  --kb-field-bg: #004ccc; --kb-field-hover: #ffffff1a; --kb-radio: #fff;
+  --kb-toggle-bg: #fff; --kb-toggle-handle-off: #fff; --kb-toggle-handle-on: #00050d;
+  --kb-tags-hover: #00050d26;
+}
+
+.kb-dark {
+  --kb-bg: #00050d; --kb-bg-accent: #fff; --kb-bg-accent-strong: #fff;
+  --kb-card: #ffffff0d; --kb-card-dark: #ffffff0d;
+  --kb-text: #fbfaf9; --kb-text-alt: #fffc; --kb-text-accent: #fff;
+  --kb-text-inverted: #00050d; --kb-text-white: #fff;
+  --kb-border: #fff; --kb-border-light: #ffffff80; --kb-border-inverse: #00050d;
+  --kb-border-accent: #fff; --kb-border-high-contrast: #fff;
+  --kb-hover: #00050d26; --kb-hover-light: #ffffff1a; --kb-hover-on-base: #ffffff1a;
+  --kb-focus: #4c8fff; --kb-alert: #ff9a9a; --kb-link-visited: #feffb0;
+  --kb-field-bg: #191e25; --kb-field-hover: #ffffff1a; --kb-radio: #fff;
+  --kb-toggle-bg: #fff; --kb-toggle-handle-off: #b2b4b6; --kb-toggle-handle-on: #00050d;
+  --kb-tags-hover: #00050d26;
+}
+
+.kb-light, .kb-mid, .kb-white, .kb-blue, .kb-dark {
+  background: var(--kb-bg);
+  color: var(--kb-text);
+}
+
+/* ── Base ─────────────────────────────────────────────── */
+.kb-root, .kb-root body {
+  font-family: var(--kb-font-body);
+  font-size: 1rem; line-height: 1.5; letter-spacing: -0.01rem;
+  background: var(--kb-bg); color: var(--kb-text);
+  -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale;
+}
+
+/* ── Type scale ───────────────────────────────────────────
+   Headings are one weight (400), tightened with size. Sizes step up
+   at 1100px. */
+.kb-h1, .kb-h2, .kb-h3, .kb-h4, .kb-h5, .kb-h6 {
+  font-family: var(--kb-font-heading); font-weight: 400; margin: 0;
+}
+.kb-h1 { font-size: 2.5rem;  line-height: 1.1; letter-spacing: -0.05rem; }
+.kb-h2 { font-size: 2rem;    line-height: 1.2; letter-spacing: -0.04rem; }
+.kb-h3 { font-size: 1.75rem; line-height: 1.1; letter-spacing: -0.035rem; }
+.kb-h4 { font-size: 1.5rem;  line-height: 1.2; letter-spacing: -0.03rem; }
+.kb-h5 { font-size: 1.25rem; line-height: 1.4; letter-spacing: -0.0125rem; }
+.kb-h6 { font-size: 1.125rem; line-height: 1.4; letter-spacing: -0.01125rem; }
+@media (min-width: 68.75rem) {
+  .kb-h1 { font-size: 3.5rem; letter-spacing: -0.07rem; }
+  .kb-h2 { font-size: 3rem;   line-height: 1.1; letter-spacing: -0.06rem; }
+  .kb-h3 { font-size: 2.5rem; letter-spacing: -0.05rem; }
+  .kb-h4 { font-size: 2rem;   letter-spacing: -0.04rem; }
+  .kb-h5 { font-size: 1.5rem; letter-spacing: -0.015rem; }
+  .kb-h6 { font-size: 1.25rem; letter-spacing: -0.0125rem; }
+}
+/* Hero statement: scales with the viewport */
+.kb-display {
+  font-family: var(--kb-font-heading); font-weight: 400; line-height: 1.2;
+  letter-spacing: -0.2vw; font-size: clamp(0px, 10vw, 40px);
+}
+@media (min-width: 68.75rem) { .kb-display { font-size: clamp(0px, 5vw, 80px); } }
+
+/* Tagline / eyebrow: mono, uppercase */
+.kb-tagline {
+  font-family: var(--kb-font-mono); font-size: 0.75rem; line-height: 1.5;
+  letter-spacing: 0.0262rem; text-transform: uppercase; font-weight: 400;
+}
+
+/* Text sizes (weights: normal 400, medium 500, semibold 600) */
+.kb-text-large   { font-size: 1.25rem;  line-height: 1.5; letter-spacing: -0.0125rem; }
+.kb-text-medium  { font-size: 1.125rem; line-height: 1.5; letter-spacing: -0.01125rem; }
+.kb-text-regular { font-size: 1rem;     line-height: 1.5; letter-spacing: -0.01rem; }
+.kb-text-small   { font-size: 0.875rem; line-height: 1.4; letter-spacing: -0.00875rem; }
+.kb-text-tiny    { font-size: 0.75rem;  line-height: 1.4; letter-spacing: -0.0075rem; }
+
+/* ── Button ───────────────────────────────────────────────
+   Pill. 44px tall; the hero CTA (.kb-btn--large) is 56px with the arrow
+   in a 50px circle sitting 3px from the right edge. */
+.kb-btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+  min-height: 44px; padding: 10px 18px 10px 24px;
+  font: 400 1rem/1.5 var(--kb-font-body); letter-spacing: -0.01rem;
+  border: 1px solid transparent; border-radius: var(--kb-radius-round);
+  background: var(--kb-bg-accent); color: var(--kb-text-white);
+  cursor: pointer; text-decoration: none; outline: none;
+  transition: all var(--kb-duration-fast) var(--kb-ease);
+}
+.kb-btn:hover { background: var(--kb-bg-accent-strong); }
+.kb-btn:focus-visible { outline: 2px solid var(--kb-focus); outline-offset: 2px; }
+.kb-btn:disabled, .kb-btn[aria-disabled="true"] { opacity: 0.5; pointer-events: none; }
+.kb-btn--secondary {            /* outline */
+  background: transparent; color: var(--kb-text); border-color: var(--kb-border-high-contrast);
+}
+.kb-btn--secondary:hover { background: var(--kb-hover-light); }
+.kb-btn--large { min-height: 56px; padding: 0 3px 0 24px; gap: 18px; font-size: 1.125rem; }
+.kb-btn--icon {                 /* round, icon only */
+  width: 44px; height: 44px; min-height: 0; padding: 0;
+  background: transparent; color: var(--kb-text); border-color: var(--kb-border-high-contrast);
+}
+
+/* ── Card ─────────────────────────────────────────────────
+   32px radius, 24/20 padding; hover lifts with shadow and a hairline. */
+.kb-card {
+  display: flex; flex-direction: column; justify-content: space-between;
+  min-height: 220px; padding: var(--kb-space-5) var(--kb-space-4);
+  background: var(--kb-card); color: var(--kb-text);
+  border-radius: var(--kb-radius-l); text-decoration: none;
+  transition: box-shadow var(--kb-duration-card) ease-in-out;
+}
+@media (min-width: 68.75rem) { .kb-card { min-height: 340px; } }
+.kb-card:hover { box-shadow: var(--kb-shadow-medium), 0 0 0 1px var(--kb-border-light); }
+.kb-card:focus-visible {
+  outline: none; box-shadow: var(--kb-shadow-medium), 0 0 0 2px var(--kb-border-accent);
+}
+
+/* ── Layout grid: 4 columns on phone, 12 from 768px ───── */
+.kb-grid {
+  display: grid; grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: var(--kb-gutter); padding-inline: var(--kb-margin);
+}
+@media (min-width: 48rem) { .kb-grid { grid-template-columns: repeat(12, minmax(0, 1fr)); } }
+
+/* Links: visited colour is part of the system */
+.kb-link { color: var(--kb-text-accent); }
+.kb-link:visited { color: var(--kb-link-visited); }

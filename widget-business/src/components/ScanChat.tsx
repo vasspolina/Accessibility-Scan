@@ -530,6 +530,7 @@ export function ScanChat({
   audit,
   onScan,
   onSignInForm,
+  onReportBarrier,
   renderSection,
   availableSections,
   language,
@@ -551,6 +552,9 @@ export function ScanChat({
   /** Opens the scan form, the one way to scan behind a login: a password
    *  typed into the chat would pass through the model. */
   onSignInForm: () => void;
+  /** Opens Report a barrier, the assistive-technology pilot's conversation.
+   *  Optional: without it the panel shows no entry for it. */
+  onReportBarrier?: () => void;
   renderSection: (key: SectionKey) => ReactNode;
   availableSections: SectionKey[];
   language: Lang;
@@ -1240,6 +1244,16 @@ export function ScanChat({
           </svg>
           {t("New chat")}
         </button>
+        {/* Report a barrier sits under New chat, the panel's other way to
+            start something (user's instruction, 20 Nov 2026). */}
+        {onReportBarrier && (
+          <button type="button" className="a11y-chats-new a11y-chats-barrier" onClick={onReportBarrier} disabled={switchLocked}>
+            <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false">
+              <path d="M5 21V4h11l-1.5 4L16 12H5" fill="none" stroke="currentColor" strokeWidth="2" strokeLinejoin="round" strokeLinecap="round" />
+            </svg>
+            {t("Report a barrier")}
+          </button>
+        )}
         {chats.length > 0 && (
           <>
             <h2 className="a11y-chats-head" id="a11y-chats-head">
