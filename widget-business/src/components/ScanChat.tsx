@@ -534,6 +534,7 @@ export function ScanChat({
   onSignInForm,
   onReportBarrier,
   barrier = null,
+  onLeaveBarrier,
   renderSection,
   availableSections,
   language,
@@ -563,6 +564,9 @@ export function ScanChat({
    *  scan"), so the Conversations panel and the language stay beside it,
    *  and the thread underneath is kept for the way back. */
   barrier?: ReactNode;
+  /** Closes Report a barrier. New chat and a past conversation call it, so
+   *  they show the thread they open instead of leaving the barrier on top. */
+  onLeaveBarrier?: () => void;
   renderSection: (key: SectionKey) => ReactNode;
   availableSections: SectionKey[];
   language: Lang;
@@ -747,6 +751,7 @@ export function ScanChat({
     setDraft("");
     setPicks((last) => pickOpeningPrompts(Math.random, last));
     setPanelOpen(false);
+    onLeaveBarrier?.();
     focusInput();
   }
 
@@ -755,6 +760,7 @@ export function ScanChat({
    *  rebuilt from its words; the latest report rides along with the next
    *  question, as after any fresh start. */
   function openChat(chat: SavedChat) {
+    onLeaveBarrier?.();
     if (chat.id === chatId) return;
     const restored = (chat.turns as Turn[]).map((x) => ({ ...settleTurn(x), id: nextId++ }) as Turn);
     opened.current = restored;

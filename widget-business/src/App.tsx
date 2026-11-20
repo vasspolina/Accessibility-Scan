@@ -191,6 +191,16 @@ export function App({
   const [entry, setEntry] = useState<"chat" | "form" | "barrier">(() =>
     typeof location !== "undefined" && location.hash === "#report-a-barrier" ? "barrier" : "chat"
   );
+  // Out of Report a barrier, and out of the address, so a reload opens the
+  // chat. Its Back button calls it, and so do New chat and a past
+  // conversation in the panel: without that they changed the thread
+  // underneath and left the barrier on top, so they seemed to do nothing.
+  const leaveBarrier = () => {
+    if (typeof location !== "undefined" && location.hash === "#report-a-barrier") {
+      window.history.replaceState(null, "", location.pathname + location.search);
+    }
+    setEntry((current) => (current === "barrier" ? "chat" : current));
+  };
   // The form opened for a page behind a login starts with its login panel open.
   const [formForLogin, setFormForLogin] = useState(false);
   // The ticking "12s" is reassurance, not essential status — the words
@@ -1022,17 +1032,14 @@ export function App({
             setEntry("form");
           }}
           onReportBarrier={() => setEntry("barrier")}
+          onLeaveBarrier={leaveBarrier}
           // Report a barrier opens inside the chat, in the conversation's
           // place, not as a page of its own (user's instruction, 20 Nov 2026).
           barrier={
             entry === "barrier" ? (
               <BarrierReport
                 apiBase={apiBase}
-                onBack={() => {
-                  // Out of the view, and out of the address, so a reload opens the chat.
-                  if (location.hash === "#report-a-barrier") window.history.replaceState(null, "", location.pathname + location.search);
-                  setEntry("chat");
-                }}
+                onBack={leaveBarrier}
               />
             ) : null
           }
