@@ -50,6 +50,8 @@ interface Step {
   /** What the assistant reads back before writing (the check step). */
   summary?: Array<{ label: string; value: string }>;
   hint: string;
+  /** Small print under the question while it is asked. */
+  note?: string;
   picks: Pick[];
   url?: boolean;
   button?: string;
@@ -383,6 +385,9 @@ class Talk {
       make: () => self.stepHappened(),
       ask: t("What happened?"),
       hint: t("One sentence is enough. Enter sends."),
+      // Said where they first type their own words: it stood in an opening
+      // turn above the first question, which is now all the view shows.
+      note: t("You read it before it is sent. We keep what you write, so leave out your name and email."),
       picks,
       typed(text) {
         self.commit(this, text, { barrier: text, barrierPicked: false }, "", true);
@@ -852,10 +857,13 @@ export function BarrierReport({ apiBase, onBack }: { apiBase: string; onBack: ()
         setOpen("open");
         // Waking starts as the view opens; see askWake below.
         void fetch(`${apiBase}/api/pilot/wake`, { method: "POST" }).catch(() => undefined);
-        talk.turns = talk.rememberedTurns();
-        // The first question waits where it is: the view's own heading and
-        // the opening turn are read first.
-        talk.ask(talk.fields().assistiveTech ? talk.stepPage() : talk.stepUse(), { quiet: true });
+        // The view opens on the first question and its choices, nothing else
+        // (user's instruction, 20 Nov 2026, "just only show this to user
+        // first"). A remembered answer no longer answers it ahead: it had
+        // opened on that answer and the second question. The heading is read
+        // first, then the question.
+        talk.turns = [];
+        talk.ask(talk.stepUse(), { quiet: true });
       })
       .catch(() => live && setOpen("unreachable"));
     return () => {
@@ -938,7 +946,8 @@ export function BarrierReport({ apiBase, onBack }: { apiBase: string; onBack: ()
 
   return (
     <div className="a11y-barrier" onFocus={wake} onPointerDown={wake}>
-      <h2 className="a11y-barrier-title" ref={refs.title} tabIndex={-1}>
+      {/* For screen readers only: on screen the view opens on the question. */}
+      <h2 className="a11y-barrier-title a11y-sr-only" ref={refs.title} tabIndex={-1}>
         {t("Report a barrier")}
       </h2>
 
@@ -950,18 +959,19 @@ export function BarrierReport({ apiBase, onBack }: { apiBase: string; onBack: ()
           drawn without markers, and the label with it. */}
       {/* eslint-disable-next-line jsx-a11y/no-redundant-roles */}
       <ol className="a11y-chat-thread a11y-barrier-thread" role="list" aria-label={t("Your report, step by step")}>
-        <Says>
-          <div className="a11y-chat-text">
-            {open === "closed" && <p>{t("The pilot is not open at the moment. Please try again later.")}</p>}
-            {open === "unreachable" && <p>{t("The pilot could not be reached. Please try again later.")}</p>}
-            {open !== "closed" && open !== "unreachable" && (
-              <>
-                <p>{t("Did something on a website stop you or slow you down? Answer a few short questions and we write the report for the site’s owner.")}</p>
-                <p className="a11y-barrier-small">{t("You read it before it is sent. We keep what you write, so leave out your name and email.")}</p>
-              </>
-            )}
-          </div>
-        </Says>
+        {/* No opening turn: the first question is the first thing shown.
+            Only a pilot that is closed or out of reach says so here. */}
+        {(open === "closed" || open === "unreachable") && (
+          <Says>
+            <div className="a11y-chat-text">
+              <p>
+                {open === "closed"
+                  ? t("The pilot is not open at the moment. Please try again later.")
+                  : t("The pilot could not be reached. Please try again later.")}
+              </p>
+            </div>
+          </Says>
+        )}
 
         {/* Answered questions, oldest first: the question, then your answer. */}
         {open === "open" &&
@@ -1037,6 +1047,7 @@ export function BarrierReport({ apiBase, onBack }: { apiBase: string; onBack: ()
                 {asking.ask}
               </p>
             </div>
+            {asking.note && <p className="a11y-barrier-small">{asking.note}</p>}
             {asking.picks.length > 0 && (
               <div className="a11y-barrier-picks" role="group" aria-label={t("Answers to pick")}>
                 {asking.picks.map((p) => (
