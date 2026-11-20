@@ -87,10 +87,6 @@
      than overflow. */
   hyphens: manual;
   max-width: 40em; margin-inline: auto; padding: 1em;
-  /* The tracking of a spaced-capitals title and the extra word space that
-     goes with it (THE SHEET, at the end of this file); the phone sets them
-     narrower in PHONE TYPESETTING. */
-  --caps-track: 0.4em; --caps-word: 0.3em;
 }
 /* A heading sits a clear step above its text (0.5em, was 0.3em) and a full
    line clear of what came before: paragraph spacing after the FAQ on
@@ -592,9 +588,7 @@
 .a11y-widget-biz .a11y-accordion-chevron { flex: none; width: 0.6em; height: 0.6em; margin-inline-start: auto; }
 .a11y-widget-biz .a11y-accordion-head[aria-expanded="true"] .a11y-accordion-chevron { transform: rotate(180deg); }
 .a11y-widget-biz .a11y-w22-toggle { display: flex; align-items: center; gap: 0.6em; text-align: start; }
-/* The count beside a title is the sheet's "(DJ SET)": small, roman, not
-   spread, hung after the name on the name's line. */
-.a11y-widget-biz .a11y-section-count { font-size: 22px; letter-spacing: 0.01em; font-weight: 400; text-transform: none; word-spacing: normal; }
+.a11y-widget-biz .a11y-section-count { font-size: 22px; letter-spacing: 0.01em; font-weight: 400; }
 
 /* Steps: the word "Step 1:" has a space after it. */
 .a11y-widget-biz .a11y-stmt-step-num { margin-inline-end: 0.4em; }
@@ -1229,14 +1223,23 @@
 }
 .a11y-widget-biz .a11y-fd > .a11y-fd-col:first-child > :is(p, div) {
   --ink: var(--tile-ink); --paper: var(--tile);
-  display: flex; flex-direction: column; align-items: flex-start; gap: 28px;
-  box-sizing: border-box; min-width: 0; max-width: none; margin: 0; padding: 22px 32px 40px;
+  display: flex; flex-direction: column; align-items: flex-start; gap: 16px;
+  box-sizing: border-box; min-width: 0; max-width: none; margin: 0; padding: 20px 24px 24px;
   border-radius: 20px; background: var(--tile); color: var(--tile-ink); text-align: start;
-  font-family: "Jokker", sans-serif; font-weight: 500; font-size: 26px; line-height: 1.15; letter-spacing: -0.01em;
+  font-family: "Jokker", sans-serif; font-weight: 400; font-size: 22px; line-height: 1.25; letter-spacing: 0.005em;
 }
-.a11y-widget-biz .a11y-fd > .a11y-fd-col:first-child > [data-size="s"] { font-size: 38px; line-height: 1.1; }
-.a11y-widget-biz .a11y-fd > .a11y-fd-col:first-child > [data-size="m"] { font-size: 30px; }
-.a11y-widget-biz .a11y-fd > .a11y-fd-col:first-child > p > strong:first-child {
+/* Smaller and Regular (user's instruction, 20 Nov 2026: "make large font
+   smaller and regular"): every card's words at 22px Regular, whatever their
+   length, in place of 26/30/38px Medium by tileSize(). The copy is shorter
+   to match, and a long text is set as points (TileBody, lib/cardText.ts),
+   an en dash hung outside each, as the chat's bullets are. */
+.a11y-widget-biz .a11y-fd > .a11y-fd-col:first-child .a11y-fd-points { margin: 0; padding: 0 0 0 0.8em; }
+.a11y-widget-biz .a11y-fd > .a11y-fd-col:first-child .a11y-fd-points > li { margin: 0 0 0.4em; padding: 0; list-style: "–\00a0" outside; }
+.a11y-widget-biz .a11y-fd > .a11y-fd-col:first-child .a11y-fd-points > li:last-child { margin-bottom: 0; }
+/* The copy button sits at the foot of its card, so the cards of a row
+   keep their words on one line across. */
+.a11y-widget-biz .a11y-fd > .a11y-fd-col:first-child .a11y-fd-copy { margin-top: auto; }
+.a11y-widget-biz .a11y-fd > .a11y-fd-col:first-child > * > strong:first-child {
   flex: none; margin: 0; padding: 0; border: 0; border-radius: 0; background: none; color: inherit;
   font-family: "Jokker", sans-serif; font-weight: 500; font-size: 15px; line-height: 1.2; letter-spacing: 0.01em; text-transform: none;
 }
@@ -1247,7 +1250,7 @@
   .a11y-widget-biz .a11y-fd > .a11y-fd-col:first-child { grid-template-columns: minmax(0, 1fr); gap: 10px; }
   .a11y-widget-biz .a11y-fd > .a11y-fd-col:first-child > :is(p, div),
   .a11y-widget-biz .a11y-fd > .a11y-fd-col:first-child > :is([data-size="s"], [data-size="m"], [data-size="l"]) {
-    gap: 20px; padding: 16px 20px 24px; font-size: 22px; line-height: 1.25;
+    gap: 14px; padding: 16px 20px 20px; font-size: 18px; line-height: 1.3; letter-spacing: 0.01em;
   }
 }
 /* The key/value lines: the key hangs in a 9em column, the value runs beside
@@ -1645,7 +1648,7 @@
    Everything spaced in em (paragraphs, turns, the speaker gutter) follows the
    new body size on its own. */
 @media (max-width: 640px) {
-  .a11y-widget-biz { font-size: 26px; letter-spacing: 0.005em; padding: 10px; --caps-track: 0.25em; --caps-word: 0.2em; }
+  .a11y-widget-biz { font-size: 26px; letter-spacing: 0.005em; padding: 10px; }
   .a11y-widget-biz :is(h1, h2, h3, h4) { font-size: 32px; letter-spacing: 0; }
   .a11y-widget-biz .a11y-legal-count { font-size: 32px; letter-spacing: 0; }
   .a11y-widget-biz .a11y-dn-link { font-size: 26px; }
@@ -1816,7 +1819,7 @@
   }
   .a11y-widget-biz :is(
     figure, img, pre, tr, blockquote,
-    .a11y-occurrence, .a11y-fd-col > p, .a11y-fd-learn, .a11y-pro-block, .a11y-fix-once,
+    .a11y-occurrence, .a11y-fd-col > p, .a11y-fd-col:first-child > div, .a11y-fd-learn, .a11y-pro-block, .a11y-fix-once,
     .a11y-sum-row, .a11y-pro-row, .a11y-pro-point, .a11y-legal-row, .a11y-legal-q,
     .a11y-conf-row, .a11y-next-list > li, .a11y-undecided-cell, .a11y-spec-card, .a11y-sr-row, .a11y-dn-link, .a11y-top-card
   ) { break-inside: avoid; page-break-inside: avoid; }
@@ -2547,65 +2550,11 @@
   .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sr-bar .a11y-ai-toggle { flex: 1 1 100%; min-width: 0; padding-block: 8px; border-radius: 20px; }
 }
 
-/* ═══ THE SHEET (user's reference, 9 Nov 2026: the Mesma + Acme sheet for
-   Zarya's release, Acme Estudio, Madrid) ═══════════════════════════════════
-   What the sheet does, and what does it here:
-   - One line of capitals spread along the top edge, letter by letter, from
-     margin to margin ("M E S M A + A C M E"), and another along the foot
-     ("M A D R I D"). The page's word is the top line (PosterMark: Findings,
-     New scan), the host is the foot line; each letter is a flex item and
-     space-between spreads them over whatever width there is. 18px, roman,
-     no tracking of its own: the spread is the tracking.
-   - Under the top line, centred, a few short lines of small spaced
-     capitals naming the event. The report's meta line (host · date) is
-     set so, 15px at +0.2em, where it was the rail's footer before.
-   - The date stacked down the left margin, a digit under a digit, in the
-     white above the names. Every report section hangs its number so: a
-     CSS counter in vertical writing with upright glyphs, 15px, the digits
-     1em apart, standing at the left edge above the title. It is a mark,
-     not a word (alt text empty), and it resets on the shell's content,
-     which holds the report in both readings.
-   - The names big, in widely spaced capitals, each on its own line at the
-     left edge, with "(DJ SET)" small beside the last. Section titles are
-     the names: uppercase, Regular, 32px (27px on a phone), tracked 0.4em
-     with a 0.3em word space (0.25em and 0.2em on a phone, --caps-track and
-     --caps-word), on a 1.3 line so stacked lines of capitals keep the
-     sheet's air; the count beside a title stays small print. A spaced
-     title does not hyphenate; the root's break-anywhere still holds a
-     26-letter German title inside 320px.
-   - Most of the sheet empty: two lines of the prose between sections.
-   The sheet's names are red. That colour is not taken: the widget is black
-   and white (COLOUR, in CLAUDE.md), and a third exception needs the
-   user's word. Capitals come from text-transform, so the markup, the
-   nav labels and the accessible names keep their sentence case. */
-.a11y-widget-biz .a11y-poster {
-  display: flex; justify-content: space-between; margin: 0 0 1.2em;
-  font-size: 18px; font-weight: 400; line-height: 1.2; letter-spacing: 0; text-transform: uppercase;
-}
-.a11y-widget-biz .a11y-poster-letter { flex: none; }
-.a11y-widget-biz .a11y-poster-foot { margin: 4.8em 0 0; }
-.a11y-widget-biz .a11y-poster-line {
-  text-align: center; margin: 0 0 2.4em;
-  font-size: 15px; letter-spacing: 0.2em; line-height: 1.4; text-transform: uppercase; hyphens: manual;
-}
-.a11y-widget-biz .a11y-shell-content { counter-reset: poster; }
-.a11y-widget-biz .a11y-section,
-.a11y-widget-biz .a11y-score,
-.a11y-widget-biz .a11y-pro-panel { counter-increment: poster; margin-top: 2.4em; }
-.a11y-widget-biz .a11y-section::before,
-.a11y-widget-biz .a11y-score::before,
-.a11y-widget-biz .a11y-pro-panel::before {
-  content: counter(poster, decimal-leading-zero) / "";
-  display: block; writing-mode: vertical-rl; text-orientation: upright;
-  font-size: 15px; font-weight: 400; line-height: 1; letter-spacing: 1em; margin: 0 0 0.6em;
-}
-.a11y-widget-biz .a11y-section-title {
-  text-transform: uppercase; font-weight: 400; line-height: 1.3;
-  letter-spacing: var(--caps-track); word-spacing: var(--caps-word); hyphens: manual;
-}
-@media print {
-  .a11y-widget-biz .a11y-poster { display: none; }
-}
+/* THE SHEET is gone (user's instruction, 20 Nov 2026: "delete, this is a
+   design slop"): no word spread letter by letter along the top or the
+   foot, no section number stacked digit under digit, no spaced-capital
+   section titles. Titles are sentence case again; host · date is back in
+   the rail's footer. */
 
 /* ═══ REPORT A BARRIER (user's instruction, 20 Nov 2026) ═══════════════════
    The assistive-technology pilot's conversation, moved into the widget

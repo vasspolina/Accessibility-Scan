@@ -1,4 +1,3 @@
-import { PosterMark } from "./PosterMark";
 import type { ReactNode, RefObject } from "react";
 import { VoiceControl } from "./VoiceControl";
 import { SideNav, type NavSection } from "./SideNav";
@@ -15,24 +14,19 @@ export function AppShell({
   activeId,
   navMeta,
   navSettings,
-  mark,
-  foot,
   onJump,
   contentRef,
   children,
 }: {
   sections: NavSection[];
   activeId: string | null;
-  /* "hostname · date": the small centred line under the page's spread word,
-     where the sheet names the event. Optional: before a report exists
-     there is nothing to name. */
+  /* "hostname · date" for the nav's footer. Optional: before a report
+     exists there is nothing to name. The sheet's spread word along the top
+     and the host along the foot are gone (user's instruction, 20 Nov 2026,
+     "delete this"), and the line is back in the rail. */
   navMeta?: string;
   /* The run's settings, shown in the rail under the section list. */
   navSettings?: ReactNode;
-  /* The word the page spreads along its top edge (decoration). */
-  mark?: string;
-  /* The word spread along the foot, the sheet's "MADRID": the host. */
-  foot?: string;
   /* Shared with SideNav so the two navs cannot scroll or focus differently. */
   onJump: (el: HTMLElement) => void;
   // The content wrapper App.tsx queries for `[data-nav-label]` headings
@@ -50,15 +44,12 @@ export function AppShell({
           to go and the bar scrolled away like any other element. Inside this
           wrapper its containing block is the whole report, which is the
           distance it was always meant to travel. */}
-      {/* The sheet's top edge comes before everything, the rail included:
-          the spread word, then the small centred line under it. */}
-      {mark && <PosterMark word={mark} />}
-      {navMeta && <p className="a11y-poster-line">{navMeta}</p>}
       <div className="a11y-shell-main">
         {hasNav && (
           <SideNav
             sections={sections}
             activeId={activeId}
+            meta={navMeta}
             settings={navSettings}
             onJump={onJump}
           />
@@ -68,8 +59,6 @@ export function AppShell({
           {children}
         </div>
       </div>
-      {/* And the foot edge after everything. */}
-      {foot && <PosterMark word={foot} foot />}
     </>
   );
 }

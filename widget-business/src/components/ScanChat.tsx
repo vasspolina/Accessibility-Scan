@@ -531,6 +531,7 @@ export function ScanChat({
   onScan,
   onSignInForm,
   onReportBarrier,
+  barrier = null,
   renderSection,
   availableSections,
   language,
@@ -555,6 +556,11 @@ export function ScanChat({
   /** Opens Report a barrier, the assistive-technology pilot's conversation.
    *  Optional: without it the panel shows no entry for it. */
   onReportBarrier?: () => void;
+  /** Report a barrier, open: it takes the conversation's place inside the
+   *  chat (user's instruction, 20 Nov 2026, "add this feature to main chat
+   *  scan"), so the Conversations panel and the language stay beside it,
+   *  and the thread underneath is kept for the way back. */
+  barrier?: ReactNode;
   renderSection: (key: SectionKey) => ReactNode;
   availableSections: SectionKey[];
   language: Lang;
@@ -1302,7 +1308,7 @@ export function ScanChat({
       <div className="a11y-newscan-head">
         {/* Kept in the markup and folded shut, so the first turn slides
             up under it instead of jumping; hidden from readers once gone. */}
-        <div className="a11y-newscan-fold" data-gone={turns.length > 0 ? "" : undefined}>
+        <div className="a11y-newscan-fold" data-gone={turns.length > 0 || barrier ? "" : undefined}>
           <div>
             <h2 className="a11y-section-title a11y-newscan-title" id="a11y-newscan-title">
               {t("New scan")}
@@ -1321,9 +1327,25 @@ export function ScanChat({
           white words and show a pill that says what a press does. The
           number is its own button and puts what the criterion asks in the
           thread. They go once the conversation starts. */}
-      {turns.length === 0 && (
+      {barrier}
+      {!barrier && turns.length === 0 && (
         <section className="a11y-prompts" aria-label={t("Questions to start with")}>
           <div className="a11y-prompt-grid">
+          {/* Report a barrier, promoted into the opening (user's
+              instruction, 20 Nov 2026: "promote it so it appears in chat on
+              load"). First in the row, so it is the first card a reader
+              meets and the first a phone shows before the row scrolls; it
+              stays when the questions are shuffled. Set as the other
+              cards, with its own words for the press. */}
+          {onReportBarrier && (
+            <div className="a11y-prompt">
+              <button type="button" className="a11y-prompt-q" disabled={busy || loading} onClick={onReportBarrier}>
+                <span className="a11y-prompt-label">{t("Report a barrier")}</span>
+                <span className="a11y-prompt-ask">{smarten(t("Did something on a website stop you or slow you down?"), getLang())}</span>
+                <span className="a11y-prompt-go" aria-hidden="true">{t("Start a report")}</span>
+              </button>
+            </div>
+          )}
           {picks.map((p) => {
             const crit = criterionFor(p.prompt);
             return (
@@ -1367,7 +1389,7 @@ export function ScanChat({
           </p>
         </section>
       )}
-      {turns.length > 0 && (
+      {!barrier && turns.length > 0 && (
         // role="list" said out loud: WebKit drops the list role from a list
         // drawn without markers, and the label with it.
         // eslint-disable-next-line jsx-a11y/no-redundant-roles
@@ -1526,7 +1548,7 @@ export function ScanChat({
         </ol>
       )}
 
-      {offered.length > 0 && (
+      {!barrier && offered.length > 0 && (
         <div className="a11y-chat-suggest" role="group" aria-label={t("Show from the report")}>
           {offered.map((s) => (
             <button key={s.key} type="button" className="a11y-chat-chip" onClick={() => showSection(s.key, { takeFocus: true })}>
@@ -1536,6 +1558,7 @@ export function ScanChat({
         </div>
       )}
 
+      {!barrier && (
       <div className="a11y-chat-dock" ref={dockRef}>
         {/* An assistant's box: the prompt sits inside it as the placeholder
             and the actions sit under the text, inside the same edge. The
@@ -1616,6 +1639,7 @@ export function ScanChat({
           </p>
         </form>
       </div>
+      )}
 
       {/* The one place the assistant is announced from: the finished reply,
           once, or "Thinking…" while it works. Mounted from the start, so
