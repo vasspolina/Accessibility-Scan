@@ -364,6 +364,47 @@ describe("the pilot's conversation", () => {
     }
   });
 
+  it("asks nothing, and does not ask the model, when they named the element and where it is", async () => {
+    modelContent = JSON.stringify({ enough: false, ask: "field" });
+    const complete = {
+      ...said,
+      assistiveTech: "screen-reader",
+      barrier: "On the checkout page, the Pay now button in the order summary is announced only as button, with no name.",
+    };
+    expect((await post("/api/pilot/followup", complete)).json()).toEqual({ question: null, suggestions: [], source: null });
+    expect(modelCalls).toHaveLength(0);
+    // A picked sentence is generic by design, so it always gets its follow-up.
+    await post("/api/pilot/followup", { ...complete, barrierPicked: true });
+    expect(modelCalls).toHaveLength(1);
+  });
+
+  it("tells a report that names an element and a place from one that does not, in all four languages", async () => {
+    const { namesElementAndPlace } = await import("../src/services/pilot/pilot.js");
+    const complete: Array<[string, "en" | "de" | "es" | "fr"]> = [
+      ["The menu button did nothing.", "en"],
+      ["The search field in the header has no label.", "en"],
+      ["On the sign-in page the Continue button is read only as button.", "en"],
+      ["Das Suchfeld oben hat keine Beschriftung.", "de"],
+      ["Auf der Anmeldeseite hat der Weiter-Knopf keinen Namen.", "de"],
+      ["En la página de pago el botón Pagar no tiene nombre.", "es"],
+      ["Le bouton Payer du panier n’a pas de nom.", "fr"],
+    ];
+    const incomplete: Array<[string, "en" | "de" | "es" | "fr"]> = [
+      ["The button did nothing when I pressed Enter.", "en"],
+      ["I couldn't use the form.", "en"],
+      ["Something on the page stopped me.", "en"],
+      ["I pressed Tab and could not reach the menu.", "en"],
+      ["My screen reader just said button, nothing else.", "en"],
+      ["Auf der Webseite ging der Button nicht.", "de"],
+      ["Ich wollte die Seite besuchen, aber der Link ging nicht.", "de"],
+      ["Mein Bildschirmleser hat den Knopf nicht gefunden.", "de"],
+      ["El botón no hacía nada.", "es"],
+      ["Le lien ne marche pas.", "fr"],
+    ];
+    for (const [text, lang] of complete) expect(namesElementAndPlace(text, lang), text).toBe(true);
+    for (const [text, lang] of incomplete) expect(namesElementAndPlace(text, lang), text).toBe(false);
+  });
+
   it("asks one follow-up, not two, and none for an address-only report", async () => {
     modelContent = JSON.stringify({ enough: false, ask: "button" });
     const asked = await post("/api/pilot/followup", { ...said, followUps: [{ question: "Where on the page was it?", answer: "The menu" }] });

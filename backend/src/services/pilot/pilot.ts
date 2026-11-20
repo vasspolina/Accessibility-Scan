@@ -256,6 +256,62 @@ export type FollowUp =
   | { question: null; suggestions: string[]; source: null };
 const NO_FOLLOW_UP: FollowUp = { question: null, suggestions: [], source: null };
 
+/**
+ * Words for a kind of element and for a place on a page, per language.
+ * English is checked beside every language, since button, link and login
+ * are used as they are. German builds compounds (Suchfeld,
+ * Absendebutton), so its words are matched inside longer words, with
+ * exceptions written in: a place must still start a word, so "besuchen"
+ * is not a search, and "Bildschirm" is not a picture, "links" a link nor
+ * "Webseite" a place. Tab and select are left out: in these reports they
+ * are the key and the verb.
+ */
+const L = "\\p{L}";
+const COMPLETE_WORDS: Record<ReportLang, { element: string; place: string; compound?: boolean }> = {
+  en: {
+    element: "buttons?|links?|fields?|box(es)?|check ?box(es)?|radio|menus?|drop-?down|images?|pictures?|photos?|icons?|videos?|player|headings?|forms?|banner|pop-?ups?|dialog|modal|slider|carousel|captcha|map|table|input",
+    place: `menu|navigation|nav|header|footer|sidebar|form|checkout|basket|cart|sign[ -]?in|log[ -]?in|search|banner|pop-?up|summary|top of the page|bottom of the page|home ?page|(on|in) the [${L}-]+( [${L}-]+)? (page|screen|step|section)`,
+  },
+  de: {
+    element: `button|schaltfläche|knopf|link(?!s(?!${L}))|feld|eingabe|kästchen|checkbox|menü|auswahl|reiter|bild(?!schirm)|foto|symbol|icon|video|überschrift|formular|banner|pop-?up|dialog|fenster|slider|karussell|captcha|karte|tabelle`,
+    place: `menü|navigation|kopfzeile|fußzeile|footer|seitenleiste|formular|kasse|bezahl|warenkorb|anmeld|login|einlogg|such|banner|pop-?up|übersicht|zusammenfassung|(?!web|internet)[${L}]+seite`,
+    compound: true,
+  },
+  es: {
+    element: "botón|boton|enlace|vínculo|campo|casilla|caja|menú|desplegable|pestaña|imagen|foto|icono|ícono|vídeo|título|encabezado|formulario|aviso|ventana|diálogo|carrusel|mapa|tabla",
+    place: `menú|navegación|cabecera|encabezado|pie de página|barra lateral|formulario|pago|carrito|cesta|inicio de sesión|iniciar sesión|buscador|búsqueda|aviso|ventana|resumen|página de inicio|(en|de) la página de [${L}]+`,
+  },
+  fr: {
+    element: "bouton|lien|champ|case|liste déroulante|onglet|icône|icone|vidéo|titre|formulaire|bandeau|bannière|fenêtre|dialogue|carrousel|carte|tableau",
+    place: `en-tête|entête|pied de page|barre latérale|formulaire|paiement|caisse|panier|connexion|identification|recherche|bandeau|bannière|fenêtre|récapitulatif|résumé|page d[’']accueil|(sur|dans) la page (de |d[’'])[${L}]+`,
+  },
+};
+
+/** Where the words stand in the text. A word must start a word unless
+ *  `inside`, and end one unless `open`. */
+function spans(text: string, words: string, { inside = false, open = false } = {}): Array<[number, number]> {
+  const re = new RegExp(`${inside ? "" : `(?<!${L})`}(?:${words})${open ? "" : `(?!${L})`}`, "giu");
+  return [...text.matchAll(re)].map((m) => [m.index!, m.index! + m[0].length]);
+}
+
+/**
+ * Whether what they typed already names an element and where it is ("the
+ * Pay now button in the order summary on the checkout page"), so the owner
+ * can find it without a follow-up. Decided here, not by the model: on the
+ * live worker, 20 Nov 2026, the 7B model asked a follow-up of a report like
+ * that every time, even with an example of one marked enough. The element
+ * and the place must be different words, so "the form" alone is not both.
+ * A picked sentence is generic by design and always gets its follow-up.
+ */
+export function namesElementAndPlace(barrier: string, lang: ReportLang): boolean {
+  const sets = lang === "en" ? [COMPLETE_WORDS.en] : [COMPLETE_WORDS[lang], COMPLETE_WORDS.en];
+  // German compounds: an element word may stand anywhere in a word
+  // (Suchfeld), a place word must start one but may run on (Anmeldung).
+  const elements = sets.flatMap((s) => spans(barrier, s.element, { inside: s.compound, open: s.compound }));
+  const places = sets.flatMap((s) => spans(barrier, s.place, { open: s.compound }));
+  return elements.some(([a, b]) => places.some(([c, d]) => b <= c || d <= a));
+}
+
 export function buildFollowUpSystemPrompt(): string {
   return `A disabled web user is reporting a barrier they met on a website. You have what they said so far. You have not seen the page.
 
@@ -293,6 +349,7 @@ They said: "On the sign-in page the Continue button in the form is read only as 
 export async function nextFollowUp(r: ReportFields): Promise<FollowUp> {
   if (!r.barrier) return NO_FOLLOW_UP;
   if (r.followUps.length >= MAX_FOLLOW_UPS) return NO_FOLLOW_UP;
+  if (!r.barrierPicked && namesElementAndPlace(r.barrier, r.lang)) return NO_FOLLOW_UP;
   const questions = FOLLOW_UP_QUESTIONS[r.lang];
   const scripted: FollowUp = { ...questions.where, source: "script" };
   if (!localModelName()) return scripted;

@@ -115,7 +115,12 @@ pick under it so a report can be made without typing. The order is fixed:
    only to screen reader users. It has ten seconds
    (`FOLLOW_UP_TIMEOUT_MS`; about one second on a warm worker, measured 20
    Nov 2026). When it is off, still waking or answers off the list, "Where
-   on the page was it?" is asked. Skip is always one of the answers.
+   on the page was it?" is asked. Skip is always one of the answers. A
+   typed report that already names an element and where it is ("the Pay
+   now button on the checkout page") gets no follow-up and the model is
+   not asked (`namesElementAndPlace`, word lists per language): on the
+   live worker the model asked one of such reports every time. A picked
+   sentence always gets its follow-up.
 5. **The report**, written by the model, with Send report under it and one
    field: "Anything wrong?". What is typed there goes back to the model
    with the draft (`POST /api/pilot/draft` with `previous` and `change`)
