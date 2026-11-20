@@ -1,23 +1,17 @@
 /**
- * The page's word, spread across the full width one letter at a time, the
- * way the Mesma + Acme sheet spreads "MESMA + ACME" along its top edge and
- * "MADRID" along its foot (user's reference, 9 Nov 2026; from 14 Oct 2026
- * the word was set as a tilted arrow, after the symposium poster). Each
- * letter is its own flex item, so justify-content spaces them edge to
- * edge at any width; a word space becomes the sheet's "+". Decoration
- * only: the word is already on the page (the heading it repeats, or the
- * meta line the foot repeats), so the mark is hidden from assistive
- * technology and nothing is read twice. The geometry is in the stylesheet.
+ * The page's word (Findings, New scan) at the top of the page, set as a
+ * plain word. From 9 Nov 2026 it was spread across the full width one
+ * letter at a time, after the Mesma + Acme sheet, with the scanned host
+ * spread the same way along the foot; the user had both taken out on
+ * 20 Nov 2026 ("do not space letters like that"; the foot line, "delete").
+ * Decoration only: the word is already on the page as the heading it
+ * repeats, so the mark is hidden from assistive technology and nothing is
+ * read twice.
  */
-export function PosterMark({ word, foot = false }: { word: string; foot?: boolean }) {
-  const letters = Array.from(word.trim());
+export function PosterMark({ word }: { word: string }) {
   return (
-    <div className={foot ? "a11y-poster a11y-poster-foot" : "a11y-poster"} aria-hidden="true">
-      {letters.map((ch, i) => (
-        <span key={i} className="a11y-poster-letter">
-          {ch === " " ? "+" : ch}
-        </span>
-      ))}
+    <div className="a11y-poster" aria-hidden="true">
+      {word.trim()}
     </div>
   );
 }

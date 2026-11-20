@@ -961,8 +961,6 @@ export function App({
     >
     <AppShell
       mark={entry === "barrier" ? t("Report a barrier") : report || audit ? t("Findings") : t("New scan")}
-      /* The foot line is the host, as the sheet's foot is the city. */
-      foot={report ? hostnameOf(report.url) : audit ? hostnameOf(audit.pages[0]?.url ?? "") : undefined}
       onJump={jumpTo}
       /* The run's settings live in the rail once there is a run to describe.
          Report style flips in place; the other two re-run the scan, which is
