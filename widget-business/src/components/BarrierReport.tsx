@@ -721,6 +721,8 @@ export function BarrierReport({ apiBase, onBack }: { apiBase: string; onBack: ()
           return;
         }
         setOpen("open");
+        // Waking starts as the view opens; see askWake below.
+        void fetch(`${apiBase}/api/pilot/wake`, { method: "POST" }).catch(() => undefined);
         talk.turns = talk.rememberedTurns();
         // The first question waits where it is: the view's own heading and
         // two lines are read first.
@@ -756,16 +758,24 @@ export function BarrierReport({ apiBase, onBack }: { apiBase: string; onBack: ()
     el.style.height = `${el.scrollHeight}px`;
   });
 
-  // The model's worker sleeps when idle and takes over a minute to wake
-  // (measured 19 Nov 2026). The first time someone moves into the
-  // conversation, ask the server to start waking it. Once per view; the
-  // server throttles it across visitors too.
-  const wake = () => {
-    if (woke.current) return;
-    woke.current = true;
+  // The model's worker sleeps when idle and takes over 100 seconds to wake
+  // (measured on the live service, 20 Nov 2026: a follow-up asked 100s
+  // after the wake call still missed its ten seconds, and the first report
+  // took 87s; warm, they took 1s and 4s). Someone who picks their answers
+  // reaches the follow-up in ten or twenty seconds, so the waking starts as
+  // the view opens (user's instruction, 20 Nov 2026, carried over from the
+  // old page), and is asked once more at the first press or move into the
+  // conversation, for someone who read for a while first; a press counts as
+  // well as focus, because Safari does not focus a button that is clicked.
+  // The server lets one call through per two minutes, however many ask.
+  const askWake = () =>
     fetch(`${apiBase}/api/pilot/wake`, { method: "POST" }).catch(() => {
       /* the draft still works, only slower */
     });
+  const wake = () => {
+    if (woke.current) return;
+    woke.current = true;
+    void askWake();
   };
 
   const step = talk.step;
@@ -795,7 +805,7 @@ export function BarrierReport({ apiBase, onBack }: { apiBase: string; onBack: ()
       </div>
 
       {open === "open" && (
-        <section className="a11y-barrier-talk" aria-label={t("Your report, step by step")} onFocus={wake}>
+        <section className="a11y-barrier-talk" aria-label={t("Your report, step by step")} onFocus={wake} onPointerDown={wake}>
           {/* Answered questions, oldest first. */}
           {talk.turns.map((turn, i) => (
             <div className="a11y-barrier-turn" key={`${i}:${turn.ask}`}>

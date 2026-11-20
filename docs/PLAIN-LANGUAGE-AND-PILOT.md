@@ -107,8 +107,9 @@ pick under it so a report can be made without typing. The order is fixed:
 4. **One follow-up at most** (`POST /api/pilot/followup`, `nextFollowUp`):
    the model reads what was said and asks for the one detail the owner
    would still need, with answers to pick, or says the report is enough. It
-   has ten seconds (`FOLLOW_UP_TIMEOUT_MS`, not yet measured on the live
-   worker). When it is off, slow, off the point or asks about the person,
+   has ten seconds (`FOLLOW_UP_TIMEOUT_MS`; about one second on a warm
+   worker, measured 20 Nov 2026). When it is off, still waking, off the
+   point or asks about the person,
    the scripted question is asked instead: "Where on the page was it?".
    Skip is always one of the answers.
 5. **The report**, written by the model, with Send report under it and one
@@ -116,6 +117,13 @@ pick under it so a report can be made without typing. The order is fixed:
    with the draft (`POST /api/pilot/draft` with `previous` and `change`)
    and the report is written again. If that fails, the report they already
    read stands.
+
+The model's worker sleeps when idle and took over 100 seconds to wake when
+measured (20 Nov 2026): a first report took 87 seconds, the same report
+written again 4. So the view asks the server to wake it as it opens
+(`POST /api/pilot/wake`), and once more at the first answer. The server
+lets one wake call through per two minutes; each page view outside that
+window wakes the paid worker.
 
 Every answered question stays on the page with a Change button; changing
 one keeps the later answers that still hold. What was asked and answered is
