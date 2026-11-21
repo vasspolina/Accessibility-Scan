@@ -1299,7 +1299,10 @@ export function ScanChat({
             start something (user's instruction, 20 Nov 2026). */}
         {onReportBarrier && (
           <button type="button" className="a11y-chats-new a11y-chats-barrier" onClick={onReportBarrier} disabled={switchLocked}>
-            <Icon name="flag" size={20} />
+            {/* 18px, 10% under the add icon's 20: Carbon's flag fills 24 of
+                its 32 units where add fills 16, so at one size it looked
+                the larger (user's instruction, 21 Nov 2026). */}
+            <Icon name="flag" size={18} />
             {t("Report a barrier")}
           </button>
         )}

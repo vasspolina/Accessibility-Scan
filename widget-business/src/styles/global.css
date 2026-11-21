@@ -1053,8 +1053,11 @@
 .a11y-widget-biz .a11y-prompts .a11y-prompt-label {
   font-size: 22px; font-weight: 500; letter-spacing: 0.01em; line-height: 1.3;
 }
+/* 15px, 15% under the 18px it was (user's instruction, 21 Nov 2026, "make
+   this text 15% smaller", on the four cards in a row): 15.3 rounds to the
+   smaller of the two label sizes. */
 .a11y-widget-biz .a11y-prompts .a11y-prompt-ask {
-  font-size: 18px; font-weight: 400; letter-spacing: 0.01em; line-height: 1.3;
+  font-size: 15px; font-weight: 400; letter-spacing: 0.01em; line-height: 1.3;
 }
 /* The criterion number at the foot, on the orange highlight the report
    gives rule ids (black on #ff8a4c, 9.3:1, in both themes). It sits above
@@ -2058,24 +2061,25 @@
 .a11y-widget-biz .a11y-chats {
   position: sticky; top: 0; box-sizing: border-box; max-height: 100dvh; overflow-y: auto;
   padding: 16px 16px 16px 0; border-right: 1px solid var(--ink);
-  font-size: 14px; letter-spacing: 0.01em; line-height: 1.3;
+  font-size: 15px; letter-spacing: 0.01em; line-height: 1.3;
 }
 /* 15px, the smaller of the two label sizes (user's instruction, 20 Nov
    2026, "make this font smaller", on a screenshot of the column at 18px):
    the column is navigation beside a 27px conversation, and at 18px its
-   titles read as loud as the thread. */
+   titles read as loud as the thread. It had slipped to 14px; back to 15px,
+   10% up (user's instruction, 21 Nov 2026, "text can be 10% bigger"). */
 .a11y-widget-biz .a11y-chats .a11y-chats-new,
 .a11y-widget-biz .a11y-chats .a11y-chats-toggle,
 .a11y-widget-biz .a11y-chats .a11y-chats-item {
   align-items: center; gap: 10px; box-sizing: border-box; width: 100%; min-height: 40px;
   margin: 0; padding: 8px 12px; border: 1px dotted var(--ink); border-radius: 12px;
   background: transparent; color: var(--ink);
-  font-size: 14px; letter-spacing: 0.01em; line-height: 1.3; text-align: start;
+  font-size: 15px; letter-spacing: 0.01em; line-height: 1.3; text-align: start;
 }
 .a11y-widget-biz .a11y-chats .a11y-chats-new { display: flex; font-weight: 500; }
 .a11y-widget-biz .a11y-chats .a11y-chats-toggle { display: none; border-color: transparent; font-weight: 400; }
 .a11y-widget-biz .a11y-chats .a11y-chats-head {
-  margin: 28px 0 6px; padding-inline: 12px; font-size: 14px; font-weight: 500; letter-spacing: 0.01em; line-height: 1.2;
+  margin: 28px 0 6px; padding-inline: 12px; font-size: 15px; font-weight: 500; letter-spacing: 0.01em; line-height: 1.2;
 }
 .a11y-widget-biz .a11y-chats .a11y-chats-list { list-style: none; margin: 0; padding: 0; }
 /* Titles on two lines (19 Nov 2026, the user's screenshot, "fix this"): on
@@ -2093,7 +2097,9 @@
   display: flex; align-items: center; max-width: none; margin: 0 0 4px; border-radius: 12px;
   box-sizing: border-box; border: 1px dotted transparent;
 }
-.a11y-widget-biz .a11y-chats .a11y-chats-row:is(:hover, :focus-within) { border-color: var(--ink); }
+/* Since later the same day only the open conversation keeps a dotted edge
+   (user's instruction, 21 Nov 2026, "keep dots around only the chat that is
+   current"): a hovered row takes the pale fill and no edge. */
 .a11y-widget-biz .a11y-chats .a11y-chats-item {
   display: block; flex: 1 1 auto; min-width: 0; font-weight: 400;
   border-color: transparent;
@@ -2138,7 +2144,7 @@
   padding: 7px 11px; border: 2px dotted var(--ink); cursor: not-allowed;
 }
 .a11y-widget-biz .a11y-chats .a11y-chats-item:disabled { cursor: not-allowed; }
-.a11y-widget-biz .a11y-chats .a11y-chats-row:has(.a11y-chats-item:disabled) { border-width: 2px; border-color: var(--ink); margin-bottom: 2px; }
+.a11y-widget-biz .a11y-chats .a11y-chats-row[data-current]:has(.a11y-chats-item:disabled) { border-width: 2px; margin-block: -1px 3px; }
 @media (max-width: 640px) {
   .a11y-widget-biz .a11y-chat-layout { grid-template-columns: minmax(0, 1fr); gap: 0; }
   .a11y-widget-biz .a11y-chats {
@@ -2848,8 +2854,10 @@
    chat"): the panel sat flush on the window's left edge. The page now
    stands 40px in on both sides; the conversation keeps its 40px off the
    panel's rule and gives up its own right padding, so the right side is
-   40px, not 80. Phones keep their 10px gutter. */
+   40px, not 80. Phones keep their 10px gutter. The left, before the
+   conversations panel, is 20px since 21 Nov 2026 (user's instruction,
+   "make this margin 20 px", on the panel's left edge). */
 @media (min-width: 641px) {
-  .a11y-widget-biz .a11y-chat-layout { padding-inline: 40px; box-sizing: border-box; }
+  .a11y-widget-biz .a11y-chat-layout { padding-inline: 20px 40px; box-sizing: border-box; }
   .a11y-widget-biz .a11y-chat-layout > .a11y-chat { padding-inline-end: 0; }
 }
