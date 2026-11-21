@@ -1219,6 +1219,15 @@
      "Les images n'ont pas de description"). In a phone's narrow run the
      count may take the next line; the count itself stays whole. */
   .a11y-widget-biz .a11y-sum-run .a11y-sum-row-link { white-space: normal; }
+  /* No space stands between the title's last word and the marks, or the
+     marks and the count (JSX drops the line break between the spans), so
+     "description" and the WCAG mark were one unbreakable piece, still 1px
+     too wide on CI's Linux text. A zero-width space at each end of the
+     marks gives the line a place to break (both sides of the marks, since
+     the count is nowrap and cannot hold one); it is empty for screen
+     readers. */
+  .a11y-widget-biz .a11y-sum-run .a11y-sum-row-marks::before,
+  .a11y-widget-biz .a11y-sum-run .a11y-sum-row-marks::after { content: "\200B" / ""; }
   /* A long first word held to its marker cannot break, so on a phone the
      pair may part rather than run off the screen. */
   .a11y-widget-biz .a11y-sum-run .a11y-sum-nobreak { white-space: normal; }
