@@ -1,0 +1,273 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Barrier reports</title>
+<meta name="robots" content="noindex, nofollow">
+<meta name="referrer" content="no-referrer">
+<!--
+  The operator's ledger of Report a barrier (user's instruction, 21 Nov
+  2026): every report from a person who uses assistive technology, their
+  words beside the finding the model drafted, and a signed mark on whether
+  a scan of the page caught the barrier (pilot_checks). Private: the
+  reports come from GET /api/pilot/reports, which needs ADMIN_TOKEN, and the
+  token is kept for this tab only (sessionStorage), never in the address.
+
+  Set in the widget's look: Jokker, black and white, 1px ink rules, the
+  marker highlight only on the scan's status, pills for buttons, dark
+  green focus. The script is its own file (barrier-ledger.js) so a
+  script-src 'self' policy still runs it.
+-->
+<link rel="icon" href="data:,">
+<style>
+@font-face {
+  font-family: "Jokker";
+  src: url("/fonts/JokkerVF-TRIAL.woff2") format("woff2");
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+:root {
+  --ink: #000; --paper: #fff; --focus: #198038;
+  --hl-orange: #ff8a4c; --hl-blue: #6fa8ff; --hl-green: #4fe0a8; --hl-cap-a: #ffe14d; --hl-cap-b: #ff9ad5;
+  --hover: var(--hl-cap-a); --hover-ink: #000; --solid: #000; --solid-ink: #fff;
+  --btn-fill: transparent; --field-edge: 1px solid #000; --field-bg: #fff;
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --ink: #fff; --paper: #000; --focus: #6fdc8c;
+    --hl-orange: #ff9f0a; --hl-blue: #409cff; --hl-green: #30d158; --hl-cap-a: #ffd60a; --hl-cap-b: #ff375f;
+    --hover: #3a3a3c; --hover-ink: #fff; --solid: #636366; --solid-ink: #fff;
+    --btn-fill: #2c2c2e; --field-edge: 1px solid #8e8e93; --field-bg: #1c1c1e;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --ink: #fff; --paper: #000; --focus: #6fdc8c;
+  --hl-orange: #ff9f0a; --hl-blue: #409cff; --hl-green: #30d158; --hl-cap-a: #ffd60a; --hl-cap-b: #ff375f;
+  --hover: #3a3a3c; --hover-ink: #fff; --solid: #636366; --solid-ink: #fff;
+  --btn-fill: #2c2c2e; --field-edge: 1px solid #8e8e93; --field-bg: #1c1c1e;
+  color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body {
+  margin: 0; background: var(--paper); color: var(--ink);
+  font-family: "Jokker", system-ui, sans-serif; font-weight: 400;
+  font-size: 22px; line-height: 1.2; letter-spacing: 0;
+  font-feature-settings: "ss04", "ss05", "kern", "liga";
+  font-synthesis: none; hyphens: manual; overflow-wrap: anywhere;
+}
+.page { max-width: 1240px; margin: 0 auto; padding: 40px 40px 120px; }
+@media (max-width: 640px) { .page { padding: 24px 10px 80px; } body { font-size: 19px; line-height: 1.3; } }
+
+h1, h2, h3, p, ul, ol, dl, dd, figure { margin: 0; }
+h1 { font-size: 67px; font-weight: 400; line-height: 1.05; letter-spacing: -0.01em; }
+h2 { font-size: 38px; font-weight: 400; line-height: 1.1; letter-spacing: -0.005em; }
+h3 { font-size: 22px; font-weight: 500; line-height: 1.2; }
+@media (max-width: 640px) { h1 { font-size: 40px; } h2 { font-size: 27px; } }
+strong, b { font-weight: 500; }
+a { color: inherit; text-underline-offset: 0.15em; text-decoration-thickness: 1px; }
+.small { font-size: 18px; letter-spacing: 0.01em; }
+.tiny { font-size: 15px; letter-spacing: 0.01em; }
+.lede { margin-top: 20px; max-width: 34em; }
+section + section, .signin, .ledger { margin-top: 100px; }
+@media (max-width: 640px) { section + section, .signin, .ledger { margin-top: 65px; } }
+[hidden] { display: none !important; }
+.visually-hidden { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }
+
+/* Focus: dark green, inside the edge; links take it outside so it never cuts letters. */
+:focus-visible { outline: 2px solid var(--focus); outline-offset: -2px; }
+a:focus-visible { outline-offset: 2px; }
+
+/* Buttons are pills with a dotted ink edge; the primary is solid; hover is marker yellow. */
+button, .btn {
+  font: inherit; font-size: 18px; letter-spacing: 0.01em; line-height: 1.2;
+  display: inline-flex; align-items: center; gap: 0.4em;
+  min-height: 34px; padding: 6px 18px; border-radius: 999px;
+  border: 1px dotted var(--ink); background: var(--btn-fill); color: var(--ink);
+  cursor: pointer; text-decoration: none;
+}
+button:hover, .btn:hover { background: var(--hover); color: var(--hover-ink); }
+.btn-primary { background: var(--solid); color: var(--solid-ink); border-style: solid; border-color: var(--solid); }
+button:disabled { border-style: dashed; background: transparent; color: var(--ink); cursor: default; }
+@media (forced-colors: active) { button, .btn { border: 1px solid ButtonText; } }
+
+/* Fields: square, a 1px edge, the label above. */
+label, .label { display: block; font-size: 15px; font-weight: 500; letter-spacing: 0.01em; margin-bottom: 10px; }
+input[type="password"], input[type="text"], textarea, select {
+  font: inherit; font-size: 18px; letter-spacing: 0.01em; color: var(--ink);
+  background: var(--field-bg); border: var(--field-edge); border-radius: 0;
+  padding: 8px 10px; min-height: 44px; width: 100%;
+}
+select { border: 2px dotted var(--ink); background: var(--paper); }
+textarea { min-height: 88px; resize: vertical; line-height: 1.4; }
+
+.signin form { display: grid; grid-template-columns: minmax(0, 28em) auto; gap: 16px; align-items: end; max-width: 760px; }
+@media (max-width: 640px) { .signin form { grid-template-columns: minmax(0, 1fr); } }
+.status-line { margin-top: 20px; min-height: 1.2em; }
+
+.bar { display: flex; flex-wrap: wrap; gap: 10px 16px; align-items: baseline; justify-content: space-between; }
+.bar .actions { display: flex; flex-wrap: wrap; gap: 10px; }
+
+/* Tallies: each number over a 1px ink rule, its words under it. */
+.tally { list-style: none; padding: 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 30px 15px; margin-top: 30px; }
+.tally li { border-top: 1px solid var(--ink); padding-top: 10px; }
+.tally .n { display: block; font-size: 67px; line-height: 1; letter-spacing: -0.01em; font-variant-numeric: tabular-nums; }
+.tally .l { display: block; margin-top: 10px; font-size: 18px; letter-spacing: 0.01em; }
+.tally.by-tech .n { font-size: 38px; letter-spacing: -0.005em; }
+@media (max-width: 640px) { .tally { grid-template-columns: repeat(2, minmax(0, 1fr)); } .tally .n { font-size: 48px; } }
+
+/* The marker highlight: black words, always. Only the scan's status takes it. */
+.mark {
+  color: #000; padding: 0 0.22em; margin-inline: 0.12em; white-space: nowrap;
+  border-radius: 0.9em 0.45em 0.9em 0.55em / 0.7em 0.5em 0.7em 0.5em;
+  box-shadow: 0.14em 0 0 var(--hl-cap-a), -0.14em 0 0 var(--hl-cap-b);
+  -webkit-box-decoration-break: clone; box-decoration-break: clone;
+}
+.mark-caught { background: var(--hl-green); }
+.mark-missed { background: var(--hl-orange); }
+.mark-unclear { background: var(--hl-blue); }
+.mark-none { color: inherit; box-shadow: none; padding: 0; margin: 0; }
+
+/* Filters */
+.filters { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; margin-top: 30px; max-width: 900px; }
+@media (max-width: 760px) { .filters { grid-template-columns: minmax(0, 1fr); } }
+.shown { margin-top: 30px; }
+
+/* The ledger: one row per report on 1px rules. */
+.table { width: 100%; margin-top: 20px; border-top: 1px solid var(--ink); }
+/* Widths in px, not em: the header is 15px and the rows 22px, so the same
+   em gave the two different columns. */
+.thead, .row { display: grid; grid-template-columns: 90px 180px 230px minmax(0, 1fr) 130px; gap: 0 16px; }
+.thead { padding: 10px 0; border-bottom: 1px solid var(--ink); font-size: 15px; letter-spacing: 0.01em; }
+.row { padding: 16px 0; border-bottom: 1px solid var(--ink); align-items: start; }
+.row[data-open] { border-bottom: 0; }
+.cell { min-width: 0; }
+.num { font-variant-numeric: tabular-nums; }
+.row .sub { display: block; font-size: 15px; letter-spacing: 0.01em; margin-top: 4px; }
+.toggle {
+  all: unset; box-sizing: border-box; display: grid; grid-template-columns: 1em minmax(0, 1fr); gap: 8px;
+  width: 100%; cursor: pointer; font-size: 22px; line-height: 1.2;
+}
+.toggle:hover { background: none; color: inherit; }
+.toggle:hover .words { text-decoration: underline; text-underline-offset: 0.15em; text-decoration-thickness: 1px; }
+.toggle:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
+.caret { width: 0.5em; height: 0.5em; margin-top: 0.3em; border-right: 1.5px solid currentColor; border-bottom: 1.5px solid currentColor; transform: rotate(-45deg); }
+.toggle[aria-expanded="true"] .caret { transform: rotate(45deg); margin-top: 0.15em; }
+@media (max-width: 1100px) {
+  .thead { display: none; }
+  .row { grid-template-columns: minmax(0, 1fr) auto; gap: 8px 16px; }
+  .row .c-what { grid-column: 1 / -1; grid-row: 1; }
+  .row .c-date { grid-column: 1; }
+  .row .c-scan { grid-column: 2; grid-row: 2; justify-self: end; }
+  .row .c-tech, .row .c-site { grid-column: 1; }
+  .row .c-date::before, .row .c-tech::before, .row .c-site::before { content: attr(data-label) " "; font-size: 15px; }
+}
+.empty { padding: 30px 0; border-bottom: 1px solid var(--ink); }
+
+/* An opened report: their words beside the draft, then the mark. */
+.detail { padding: 10px 0 50px; border-bottom: 1px solid var(--ink); }
+.pair { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 40px; }
+@media (max-width: 860px) { .pair { grid-template-columns: minmax(0, 1fr); gap: 50px; } }
+.side > h3 { padding-bottom: 10px; border-bottom: 1px solid var(--ink); }
+.side p, .side ol, .side dl { margin-top: 20px; }
+.side .words-said { white-space: pre-line; }
+.side ol { padding-left: 1.4em; }
+.side ol li + li { margin-top: 6px; }
+.kv { display: grid; grid-template-columns: 9em minmax(0, 1fr); gap: 0; font-size: 18px; letter-spacing: 0.01em; }
+.kv dt, .kv dd { padding: 8px 0; border-top: 1px solid var(--ink); }
+.kv dt { padding-right: 12px; }
+.kv dd:last-of-type, .kv dt:last-of-type { border-bottom: 1px solid var(--ink); }
+@media (max-width: 640px) { .kv { grid-template-columns: minmax(0, 1fr); } .kv dd { border-top: 0; padding-top: 0; } }
+.part-label { display: block; font-size: 15px; letter-spacing: 0.01em; margin-top: 30px; }
+.part-label + p, .part-label + ol { margin-top: 6px; }
+
+.check { margin-top: 65px; max-width: 900px; }
+.check > h3 { padding-bottom: 10px; border-bottom: 1px solid var(--ink); }
+.check .now { margin-top: 20px; }
+.check .links { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 20px; }
+.check fieldset { border: 0; padding: 0; margin: 30px 0 0; min-width: 0; }
+.check legend { padding: 0; font-size: 15px; font-weight: 500; letter-spacing: 0.01em; margin-bottom: 10px; }
+.choices { display: flex; flex-wrap: wrap; gap: 10px; }
+.choices label { margin: 0; font-size: 18px; font-weight: 400; display: inline-flex; align-items: center; gap: 10px; min-height: 44px; padding: 6px 18px 6px 10px; border: 1px dotted var(--ink); border-radius: 999px; cursor: pointer; }
+.choices label:hover { background: var(--hover); color: var(--hover-ink); }
+.choices input { width: 22px; height: 22px; margin: 0; accent-color: var(--ink); }
+.choices label:has(input:checked) { background: var(--solid); color: var(--solid-ink); border-style: solid; border-color: var(--solid); font-weight: 500; }
+.choices label:has(input:focus-visible) { outline: 2px solid var(--focus); outline-offset: -2px; }
+.check .fields { display: grid; grid-template-columns: minmax(0, 2fr) minmax(0, 1fr); gap: 16px; margin-top: 20px; }
+@media (max-width: 640px) { .check .fields { grid-template-columns: minmax(0, 1fr); } }
+.check .save { display: flex; flex-wrap: wrap; gap: 16px; align-items: center; margin-top: 20px; }
+.history { margin-top: 20px; list-style: none; padding: 0; font-size: 18px; letter-spacing: 0.01em; }
+.history li { padding: 8px 0; border-top: 1px solid var(--ink); }
+</style>
+</head>
+<body>
+<div class="page">
+  <header>
+    <h1>Barrier reports</h1>
+    <p class="lede">What people who use assistive technology reported through Report a barrier, newest first, each beside the finding the model drafted from it. Private: it needs the admin token.</p>
+  </header>
+
+  <section class="signin" id="signin" aria-labelledby="signin-title">
+    <h2 id="signin-title" class="visually-hidden">Sign in</h2>
+    <form id="signin-form" novalidate>
+      <div>
+        <label for="token">Admin token</label>
+        <input id="token" name="token" type="password" autocomplete="off" spellcheck="false" required aria-describedby="token-note">
+        <p id="token-note" class="tiny" style="margin-top:8px">Kept in this tab until you close it, never in the address.</p>
+      </div>
+      <div><button type="submit" class="btn-primary">Show reports</button></div>
+    </form>
+    <p class="status-line" id="signin-status" role="status"></p>
+  </section>
+
+  <main class="ledger" id="ledger" hidden>
+    <section aria-labelledby="totals-title">
+      <div class="bar">
+        <h2 id="totals-title">So far</h2>
+        <div class="actions">
+          <button type="button" id="reload">Reload</button>
+          <button type="button" id="signout">Sign out</button>
+        </div>
+      </div>
+      <ul class="tally" id="totals"></ul>
+    </section>
+
+    <section aria-labelledby="tech-title">
+      <h2 id="tech-title">What people use</h2>
+      <ul class="tally by-tech" id="by-tech"></ul>
+    </section>
+
+    <section aria-labelledby="reports-title">
+      <div class="bar">
+        <h2 id="reports-title">Reports</h2>
+        <div class="actions"><button type="button" id="csv">Download the shown reports as CSV</button></div>
+      </div>
+      <form class="filters" id="filters">
+        <div><label for="f-tech">What they use</label><select id="f-tech"></select></div>
+        <div><label for="f-site">Site</label><select id="f-site"></select></div>
+        <div><label for="f-scan">Did the scan catch it?</label><select id="f-scan"></select></div>
+      </form>
+      <p class="shown small" id="shown" role="status" aria-live="polite"></p>
+      <div class="table" role="table" aria-labelledby="reports-title" aria-describedby="shown">
+        <div role="rowgroup">
+          <div class="thead" role="row">
+            <span role="columnheader">Date</span>
+            <span role="columnheader">Uses</span>
+            <span role="columnheader">Site</span>
+            <span role="columnheader">What happened</span>
+            <span role="columnheader">Scan</span>
+          </div>
+        </div>
+        <div role="rowgroup" id="rows"></div>
+      </div>
+    </section>
+  </main>
+</div>
+<script src="/barrier-ledger.js" type="module"></script>
+</body>
+</html>

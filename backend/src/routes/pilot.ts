@@ -6,8 +6,9 @@ import { lookupPageTitle } from "../services/pilot/pageTitle.js";
 import { readAddress } from "../services/pilot/readAddress.js";
 import { draftFinding, mailPilotReport, nextFollowUp, pilotDraftSchema, pilotOpen, reportFieldsSchema, severityFor, submitBodySchema, wakeModel } from "../services/pilot/pilot.js";
 import { storageStatus } from "../storage/db.js";
-import { listPilotReports, pilotTotals, savePilotReport } from "../storage/pilot.js";
+import { CHECK_RESULTS, listPilotReports, pilotCheckHistory, pilotTotals, savePilotCheck, savePilotReport } from "../storage/pilot.js";
 import { requireAdmin } from "./account.js";
+import { storedRouteLimit } from "./storedRouteLimit.js";
 
 /**
  * The assistive-technology pilot (services/pilot/pilot.ts). The form is
@@ -19,6 +20,8 @@ import { requireAdmin } from "./account.js";
  *                          the finding again after a change they asked for
  * POST /api/pilot/report   store the report (and mail it, if mail is set up)
  * GET  /api/pilot/reports  the operator's view: every report and the totals
+ * POST /api/pilot/reports/:id/check   mark whether the scanner caught it
+ * GET  /api/pilot/reports/:id/checks  every mark on one report
  * POST /api/pilot/wake     start the model waking as the form opens
  * POST /api/pilot/page     what was typed in the address field, read as an
  *                          address (readAddress.ts), and that page's title
@@ -115,11 +118,42 @@ export async function pilotRoutes(app: FastifyInstance) {
     }
   );
 
-  app.get("/api/pilot/reports", async (request, reply) => {
+  // The three operator routes read and write the database, with no render,
+  // so they take the stored routes' budget (storedRouteLimit.ts). Under the
+  // global one, sized for scans, the ledger answered 429 on its sixth
+  // request in a minute: a reload, a mark and its history are three.
+  app.get("/api/pilot/reports", { config: storedRouteLimit }, async (request, reply) => {
     if (!(await requireAdmin(request, reply))) return;
     return reply.send({ totals: pilotTotals(), reports: listPilotReports() });
   });
+
+  // The ledger's mark (barrier-ledger.html): did a scan of the page catch
+  // the barrier this person met? A person decides, after scanning the page
+  // and reading both, and signs it.
+  app.post("/api/pilot/reports/:id/check", { config: storedRouteLimit }, async (request, reply) => {
+    if (!(await requireAdmin(request, reply))) return;
+    const { id } = request.params as { id: string };
+    const parsed = checkBodySchema.safeParse(request.body);
+    if (!parsed.success) return reply.status(400).send({ error: "invalid_request", fields: fieldErrors(parsed.error) });
+    const saved = savePilotCheck({ reportId: id, ...parsed.data });
+    if (saved.error === "no_such_report") return reply.status(404).send({ error: "no_such_report" });
+    if (!saved.check) return reply.status(501).send({ error: "not_configured" });
+    return reply.send({ check: saved.check });
+  });
+
+  app.get("/api/pilot/reports/:id/checks", { config: storedRouteLimit }, async (request, reply) => {
+    if (!(await requireAdmin(request, reply))) return;
+    const { id } = request.params as { id: string };
+    return reply.send({ checks: pilotCheckHistory(id) });
+  });
 }
+
+const checkBodySchema = z.object({
+  result: z.enum(CHECK_RESULTS),
+  note: z.string().trim().max(1000).optional(),
+  // A mark nobody signed is not one (the rule verdicts and triage follow).
+  decidedBy: z.string().trim().min(1).max(120),
+});
 
 /** A draft request, or a redraft: the finding they read and what they
  *  said is wrong with it. */

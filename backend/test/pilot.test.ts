@@ -191,6 +191,41 @@ describe("the pilot", () => {
     expect(JSON.stringify(body)).not.toContain("device-stone-07");
   });
 
+  it("marks whether the scan caught a report: signed, admin only, and a second mark never erases the first", async () => {
+    const admin = { authorization: "Bearer admin-secret" };
+    const list = async () => (await app.inject({ method: "GET", url: "/api/pilot/reports", headers: admin })).json().reports;
+    const [report, other] = await list();
+    // Nobody has checked anything yet.
+    expect(report.check).toBeNull();
+    const url = `/api/pilot/reports/${report.id}/check`;
+
+    // Closed without the token, like the reports themselves.
+    expect((await app.inject({ method: "POST", url, payload: { result: "missed", decidedBy: "Polina" } })).statusCode).toBe(403);
+    // A mark nobody signed is not one, and the result is one of three.
+    const unsigned = await app.inject({ method: "POST", url, headers: admin, payload: { result: "missed", decidedBy: " " } });
+    expect(unsigned.statusCode).toBe(400);
+    expect(unsigned.json().fields).toEqual(["decidedBy"]);
+    expect((await app.inject({ method: "POST", url, headers: admin, payload: { result: "probably", decidedBy: "Polina" } })).statusCode).toBe(400);
+    // A report that does not exist is said to be missing, not marked.
+    const ghost = await app.inject({ method: "POST", url: "/api/pilot/reports/no-such-id/check", headers: admin, payload: { result: "missed", decidedBy: "Polina" } });
+    expect(ghost.statusCode).toBe(404);
+
+    const first = await app.inject({ method: "POST", url, headers: admin, payload: { result: "missed", note: " No finding names the pay button. ", decidedBy: "Polina" } });
+    expect(first.statusCode).toBe(200);
+    expect(first.json().check).toMatchObject({ result: "missed", note: "No finding names the pay button.", decidedBy: "Polina" });
+    const second = await app.inject({ method: "POST", url, headers: admin, payload: { result: "caught", decidedBy: "Polina" } });
+    expect(second.json().check).toMatchObject({ result: "caught", note: null });
+
+    // The list carries the latest mark, on that report only.
+    const after = await list();
+    expect(after.find((r: { id: string }) => r.id === report.id).check).toMatchObject({ result: "caught" });
+    expect(after.find((r: { id: string }) => r.id === other.id).check).toBeNull();
+    // And the first mark is still there to read.
+    const history = await app.inject({ method: "GET", url: `/api/pilot/reports/${report.id}/checks`, headers: admin });
+    expect(history.json().checks.map((c: { result: string }) => c.result)).toEqual(["caught", "missed"]);
+    expect((await app.inject({ method: "GET", url: `/api/pilot/reports/${report.id}/checks` })).statusCode).toBe(403);
+  });
+
   it("drafts from one sentence: what they were trying to do is optional, and the page title is context", async () => {
     modelContent = JSON.stringify(draft);
     const { task: _task, ...rest } = fields;

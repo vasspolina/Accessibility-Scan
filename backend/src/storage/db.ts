@@ -163,6 +163,21 @@ CREATE TABLE IF NOT EXISTS pilot_reports (
   confirmed     INTEGER NOT NULL
 );
 CREATE INDEX IF NOT EXISTS pilot_reports_time ON pilot_reports(created_at DESC);
+
+-- Did the scanner catch the barrier a pilot report describes? Decided by a
+-- person who scanned the page and read both, because matching someone's
+-- sentence to a finding is a judgement, not a measurement. Never
+-- overwrites, for the reason verdicts never do: the latest row is the
+-- current mark, and the earlier ones say who changed their mind and when.
+CREATE TABLE IF NOT EXISTS pilot_checks (
+  id          TEXT PRIMARY KEY,
+  report_id   TEXT NOT NULL REFERENCES pilot_reports(id),
+  result      TEXT NOT NULL,
+  note        TEXT,
+  decided_by  TEXT NOT NULL,
+  decided_at  TEXT NOT NULL
+);
+CREATE INDEX IF NOT EXISTS pilot_checks_report ON pilot_checks(report_id, decided_at DESC);
 `;
 
 /**
@@ -192,6 +207,9 @@ const MIGRATIONS: Array<{ version: number; sql: string }> = [
   { version: 3, sql: "" },
   // 4: the assistive-technology pilot. A new table only, as in 3.
   { version: 4, sql: "" },
+  // 5: whether the scanner caught a pilot report's barrier (pilot_checks).
+  //    A new table only, as in 3.
+  { version: 5, sql: "" },
 ];
 export const SCHEMA_VERSION = MIGRATIONS[MIGRATIONS.length - 1].version;
 
