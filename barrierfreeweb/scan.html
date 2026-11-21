@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Check your site – BarrierFreeWeb</title>
+<meta name="description" content="Scan a page against the accessibility requirements of the European Accessibility Act.">
+<meta property="og:title" content="Check your site – BarrierFreeWeb">
+<meta property="og:description" content="Scan a page against the accessibility requirements of the European Accessibility Act.">
+<link rel="preload" href="fonts/Serrif-TRIAL-Light.otf" as="font" type="font/otf" crossorigin>
+<link rel="stylesheet" href="styles.css">
+</head>
+<body class="inner">
+<a class="skip" href="#main">Skip to content</a>
+<header class="mast">
+<p class="brand"><a href="index.html">BarrierFreeWeb</a></p>
+</header>
+<nav class="nav" aria-label="Main">
+  <ul>
+    <li><a href="services.html">Services</a></li>
+    <li><a href="accessibility.html">Accessibility</a></li>
+    <li><a href="about.html">About</a></li>
+  </ul>
+  <ul>
+    <li><a href="scan.html" aria-current="page">Check your site</a></li>
+    <li><a href="mailto:gf@barrierfreeweb.de">Contact</a></li>
+  </ul>
+  <p class="clock" id="clock" hidden></p>
+</nav>
+<main id="main">
+<div class="lead">
+<h1>Check your site</h1>
+<p>Not sure if your site is compliant? We can help.</p>
+<p><a class="cta" href="mailto:gf@barrierfreeweb.de?subject=Accessibility%20audit">Request an accessibility audit</a></p>
+</div>
+<div class="body body-wide">
+<div id="a11y-widget-business-root" data-api-base="https://a11y-checker-v2-production.up.railway.app" data-language="en"></div>
+<script src="https://a11y-checker-v2-production.up.railway.app/widget-business.js" defer></script>
+</div>
+</main>
+<footer class="info">
+  <p>BarrierFreeWeb<br>Design studio, Berlin<br><a href="mailto:gf@barrierfreeweb.de">gf@barrierfreeweb.de</a></p>
+  <p>Not sure if your site is compliant?<br><a class="cta" href="mailto:gf@barrierfreeweb.de?subject=Accessibility%20audit">Request an accessibility audit</a></p>
+</footer>
+<script>
+(function () {
+  var el = document.getElementById("clock");
+  if (!el || !window.Intl) return;
+  var f = new Intl.DateTimeFormat("en-GB", { timeZone: "Europe/Berlin", hour: "2-digit", minute: "2-digit" });
+  function tick() { el.textContent = "Berlin, " + f.format(new Date()); el.hidden = false; }
+  tick(); setInterval(tick, 20000);
+})();
+</script>
+</body>
+</html>
