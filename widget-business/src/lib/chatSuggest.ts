@@ -1,14 +1,14 @@
 /**
  * Two small helps for the box you type in (user's instruction, 18 Nov
- * 2026: "i would like to click website so it is researching it also add
- * suggestions on tab like claude").
+ * 2026: "i would like to click website so it is researching it", and
+ * suggestions on Tab).
  *
  * addressToConfirm: the assistant asks once when it had to correct a typed
  * address ("Did you mean accessibility.nl?", chatPrompt.ts). That address
  * becomes a button under the reply, so one press says yes and the scan
  * starts, instead of typing the yes.
  *
- * tabSuggestion: the line Tab would fill in, as in Claude's apps. With
+ * tabSuggestion: the line Tab would fill in. With
  * nothing typed, the yes to a pending address. While typing, the rest of an
  * opening question that starts with what is typed, so a question from the
  * cards can be finished with one key.

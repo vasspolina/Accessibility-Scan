@@ -321,8 +321,7 @@ function fieldLabel(purpose: string): string {
  */
 
 /** How wide a card of the expanded finding runs on the mosaic (user's
- *  reference, 18 Nov 2026: a type foundry's sheet of alternates, tiles of
- *  different widths on one grid). Measured on the words, so a one-line
+ *  reference, 18 Nov 2026: tiles of different widths on one grid). Measured on the words, so a one-line
  *  answer is a narrow tile set large and a paragraph takes the width it
  *  needs. s spans two of six columns, m three, l four. */
 export function tileSize(text: string | null | undefined): "s" | "m" | "l" {

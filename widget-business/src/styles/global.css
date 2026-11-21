@@ -49,7 +49,7 @@
   --hl-orange: #ff8a4c; --hl-blue: #6fa8ff; --hl-green: #4fe0a8;
   --hl-cap-a: #ffe14d; --hl-cap-b: #ff9ad5;
   /* The Report a barrier card's mint (user's swatch, 21 Nov 2026): black
-     on #ccffcc is 18.7:1; dark takes Apple's green, black on it 7.4:1+. */
+     on #ccffcc is 18.7:1; dark takes #30d158, black on it 7.4:1+. */
   --barrier: #ccffcc;
   /* Surfaces that were pinned light in both themes, as tokens so dark mode
      can take its own dark system greys (user's instruction, 18 Nov 2026,
@@ -388,7 +388,7 @@
    photos). Your messages had no design of their own on a desktop, so they
    take it there and on a phone, in the scan chat and in Report a barrier:
    the bubble on the tile ground (white would vanish on the page's paper;
-   #f0efe8 with black words 18.4:1, Apple's #1c1c1e with white in dark),
+   #f0efe8 with black words 18.4:1, #1c1c1e with white in dark),
    28px corners, the tail a small triangle at the bottom right pointing
    down to the right like the reference's, the whole tilted 1.2 degrees
    (small enough that a line still reads level). Right-aligned, at most
@@ -1164,13 +1164,15 @@
    At the card's own text size with no ground since 21 Nov 2026 (user's
    instruction, "make this normal size and delete background", on the
    34px figures on the orange highlight): 15px Regular in the card's ink,
-   like the question above it, still tabular. */
+   like the question above it, still tabular. At the card title's size
+   since the same day (user's instruction, "make numbers same as title
+   size"): 22px on its 1.3 line, Regular, so the title keeps the weight. */
 .a11y-widget-biz .a11y-prompts .a11y-prompt-wcag {
   position: relative; z-index: 1;
   margin-top: auto; min-height: 0; padding: 0;
   border: 0; border-radius: 0; cursor: pointer;
   color: var(--ink); background: none;
-  font: inherit; font-size: 15px; font-weight: 400; letter-spacing: 0.01em; line-height: 1.3;
+  font: inherit; font-size: 22px; font-weight: 400; letter-spacing: 0.01em; line-height: 1.3;
   font-variant-numeric: tabular-nums;
 }
 .a11y-widget-biz .a11y-prompts .a11y-prompt-wcag:enabled:hover { background: var(--hover); color: var(--hover-ink); }
@@ -1424,7 +1426,7 @@
    then "needs a carret and make lines brown"). It keeps its two rules, one
    above and one below, now in brown, and the label leads with a caret that
    points right while it is shut and down once it is open. The caret is
-   Carbon's chevron (rule below), so it takes the label's colour. The brown
+   the icon set's chevron (rule below), so it takes the label's colour. The brown
    is #6b4226 on white (8.7:1) and #b07f4f on the black page of the dark
    theme (4.9:1): decoration, but it still reads on both. 50px under the
    affected elements (CONTENT SPACING), and 50px after it before the next
@@ -1442,8 +1444,8 @@
   display: flex; align-items: center; gap: 14px; padding: 14px 0;
 }
 .a11y-widget-biz .a11y-fd .a11y-tech-details > summary::before {
-  /* Carbon's chevron--right (user's instruction, 21 Nov 2026, "use ibm
-     carbon icons for any icon in this app"), as a mask in currentColor; it
+  /* The icon set's chevron--right (user's instruction, 21 Nov 2026), as
+     a mask in currentColor; it
      was two borders turned 45 degrees. */
   content: ""; flex: none; box-sizing: border-box; width: 16px; height: 16px; margin: 0;
   background: currentColor;
@@ -2138,7 +2140,7 @@
   .a11y-widget-biz .a11y-chat .a11y-prompts .a11y-prompt-label { font-size: 18px; }
   .a11y-widget-biz .a11y-chat .a11y-prompts .a11y-prompt-ask { margin-top: 0; font-size: 19px; letter-spacing: 0.005em; line-height: 1.3; }
   .a11y-widget-biz .a11y-chat .a11y-prompts .a11y-prompt-go { display: none; }
-  .a11y-widget-biz .a11y-chat .a11y-prompts .a11y-prompt-wcag { margin-top: 8px; font-size: 19px; letter-spacing: 0.005em; line-height: 1.3; }
+  .a11y-widget-biz .a11y-chat .a11y-prompts .a11y-prompt-wcag { margin-top: 8px; font-size: 18px; letter-spacing: 0.01em; line-height: 1.3; }
   .a11y-widget-biz .a11y-chat .a11y-prompt-more { text-align: start; margin: 8px 0 0; }
   .a11y-widget-biz .a11y-chat .a11y-prompt-more .a11y-btn { font-size: 18px; }
 
@@ -2969,20 +2971,18 @@
   .a11y-widget-biz .a11y-legal-tiles > button.a11y-legal-row { min-height: 0; }
 }
 
-/* ═══ 21 NOV 2026: LANGUAGE PIN, CARBON ICONS, CARDS, PANEL ═══════════════
+/* ═══ 21 NOV 2026: LANGUAGE PIN, ICONS, CARDS, PANEL ══════════════════════
    The new parts of the user's instructions from one sitting; the cards,
    the panel and the technical caret are changed where they are set.
 
-   CARBON ICONS ("use ibm carbon icons for any icon in this app"): every
-   icon is <Icon> (components/Icon.tsx), Carbon's 32px paths at 1em in
-   currentColor. They sit a little under the baseline, as Carbon sets them
-   beside text. */
+   ICONS: every icon is <Icon> (components/Icon.tsx), 32px paths at 1em
+   in currentColor. They sit a little under the baseline beside text. */
 .a11y-widget-biz .a11y-icon { flex: none; vertical-align: -0.125em; }
 .a11y-widget-biz .a11y-ra-pdf > .a11y-icon.a11y-ra-pdf-icon { width: 20px; height: 20px; vertical-align: middle; }
 .a11y-widget-biz .a11y-w22 .a11y-next-toggle > .a11y-next-chevron > .a11y-icon { width: 20px; height: 20px; }
 .a11y-widget-biz .a11y-accordion-chevron.a11y-icon { width: 0.8em; height: 0.8em; }
 /* THE LANGUAGE PIN ("fold the language button on the right like this and
-   keep it on top on scroll"): Carbon's translate and the word, one button
+   keep it on top on scroll"): the translate icon and the word, one button
    at the column's top right, sticky for the whole conversation. On a
    desktop the pin takes no height, so the New scan title keeps its place
    beside it; under 640px it takes its line, since the title and the

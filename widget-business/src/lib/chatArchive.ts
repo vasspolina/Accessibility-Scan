@@ -1,7 +1,7 @@
 import type { ChatMessage } from "../api/chatClient";
 
 // The conversations panel (user's instruction, 18 Nov 2026: "add this panel
-// on the left", with Claude's sidebar as the picture): past conversations,
+// on the left"): past conversations,
 // newest first, each named by its first question, and a way to start a new
 // one.
 //

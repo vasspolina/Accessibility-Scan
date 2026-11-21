@@ -67,7 +67,7 @@ export function ReportActions({
       {/* Each export carries its own note in its own column, so the sentence
           that explains a control sits under that control rather than in one
           run-on paragraph the reader has to split apart themselves. */}
-      {/* Set as the Displaay Info block and form (user's references,
+      {/* Set as a ruled block and a form (user's references,
           17 Nov 2026): two columns, each under an uppercase label (no rule
           under it since 18 Nov 2026). The address is a rounded field with its label inside it, the
           send is one wide rounded block in display type, and the PDF is an
@@ -118,7 +118,7 @@ export function ReportActions({
             }}
           >
             {t("Download in PDF")}
-            {/* Carbon's download, not a glyph: Jokker's ↓ sits too low on the
+            {/* The icon set's download, not a glyph: Jokker's ↓ sits too low on the
                 line, and the reference's arrow has a base bar. */}
             <Icon name="download" className="a11y-ra-pdf-icon" />
           </button>

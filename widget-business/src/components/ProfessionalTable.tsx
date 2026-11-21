@@ -119,7 +119,7 @@ export function ProfessionalTable({
       <p className="a11y-empty">{t("Nothing found here.")}</p>
     ) : (
       <DataTable
-        /* Carbon's width rule: columns size to their content and only need
+        /* The width rule: columns size to their content and only need
            the 16px spacing between them. Instances shrinks to fit (1% +
            nowrap in the stylesheet), the issue statement takes the room
            that remains — it is the row's point, and now carries Severity

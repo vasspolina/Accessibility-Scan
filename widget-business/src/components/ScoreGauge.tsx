@@ -486,7 +486,7 @@ export function ScoreGauge({
             <p className="a11y-sum-lead">{t(scoreSummary(score, seed))}</p>
           </SumPanel>
 
-          {/* Set as the displaay.net Info block (user's instruction, 4 Nov
+          {/* Set as a ruled block (user's instruction, 4 Nov
               2026): two columns, each point's number over a rule and its
               words under it. The number follows the words in the markup and
               is drawn first, so a screen reader hears the sentence alone. */}

@@ -100,7 +100,7 @@ export function ScreenReaderPreview({ script }: { script: ScreenReaderScript }) 
 
   return (
     <section className="a11y-section a11y-sr" aria-labelledby="a11y-sr-heading">
-      {/* Carbon accordion. This section is the longest thing in the report by
+      {/* An accordion. This section is the longest thing in the report by
           a wide margin — 120 rows on a normal page — and it is supplementary:
           you open it to hear a problem, not to read it end to end. Collapsed
           by default it costs one row instead of a screenful.
