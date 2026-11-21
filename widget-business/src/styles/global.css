@@ -1700,10 +1700,33 @@
   .a11y-widget-biz .a11y-ra-row > .a11y-ra-cell > .a11y-ra-send { min-height: 96px; font-size: 32px; }
 }
 
-/* The conformance report's way in: the primary pill under its lead, and
-   the draft's two exports side by side. */
-.a11y-widget-biz .a11y-acr .a11y-section-desc:has(+ .a11y-acr-make) { margin-bottom: 0.8em; }
-.a11y-widget-biz .a11y-acr .a11y-acr-make { margin: 0; }
+/* THE CONFORMANCE REPORT HEAD (user's instruction, 21 Nov 2026, "design
+   the conformance report head too"), in the terms of the statement and
+   Send this report below it. The title keeps its size; "VPAT 2.5, draft"
+   drops under it as small print instead of trailing on its baseline; the
+   chevron sits in a 1px ink round at the top right, as the WCAG 2.2 toggle
+   does, and the round turns mint on hover. The way in is one wide block,
+   not a pill: solid ink, 14px corners, the words set left at 41px Light
+   (32px on a phone), the size of Send this report, mint on hover like
+   every button. Then the draft's two exports side by side. */
+.a11y-widget-biz .a11y-acr .a11y-accordion-title .a11y-accordion-head { align-items: flex-start; gap: 0.6em; }
+.a11y-widget-biz .a11y-acr .a11y-accordion-head .a11y-section-count {
+  display: block; margin-top: 10px; font-size: 18px; font-weight: 400; letter-spacing: 0.01em; line-height: 1.3;
+}
+.a11y-widget-biz .a11y-acr .a11y-accordion-head > .a11y-accordion-chevron {
+  box-sizing: content-box; width: 20px; height: 20px; padding: 9px;
+  border: 1px solid var(--ink); border-radius: 50%; transition: background-color 0.15s, border-color 0.15s;
+}
+.a11y-widget-biz .a11y-acr .a11y-accordion-head:enabled:hover > .a11y-accordion-chevron { border-color: var(--hover); background: var(--hover); color: var(--hover-ink); }
+.a11y-widget-biz .a11y-acr .a11y-section-desc:has(+ .a11y-acr-make) { margin-bottom: 28px; }
+.a11y-widget-biz .a11y-acr .a11y-acr-make {
+  display: block; width: 100%; min-height: 128px; margin: 0; padding: 20px 24px;
+  border-radius: 14px; text-align: start;
+  font-size: 41px; font-weight: 300; line-height: 1.05; letter-spacing: -0.01em;
+}
+@media (max-width: 640px) {
+  .a11y-widget-biz .a11y-acr .a11y-acr-make { min-height: 96px; font-size: 32px; }
+}
 .a11y-widget-biz .a11y-stmt-actions { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; margin: 0 0 1.2em; }
 
 /* A tally is the label over its figure. */
