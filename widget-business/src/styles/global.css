@@ -380,7 +380,11 @@
 .a11y-widget-biz .a11y-chat-block .a11y-sum-grid > .a11y-sum-col + .a11y-sum-col { margin-top: 1.2em; }
 /* A long address has no break point, so at 27px it ran past the column and
    was clipped (user's screenshot, 4 Nov 2026). It may break anywhere. */
-.a11y-widget-biz .a11y-chat-turn :is(a, .a11y-chat-url),
+.a11y-widget-biz .a11y-chat-turn :is(a, .a11y-chat-url) { overflow-wrap: anywhere; }
+/* The bubble rule below once lost the declaration above (21 Nov 2026), and
+   the address took the bubble's flex column: set right-aligned on a line
+   of its own, with the sentence's full stop left alone on the next line
+   (user's screenshot, "whats this dot"). */
 /* YOUR WORDS AS SPEECH BUBBLES (user's reference, 21 Nov 2026, "lets add
    these cute bubbles to the design where it fits if there is no other
    design applied": rounded bubbles with a tail, set a little askew over
@@ -550,7 +554,10 @@
    The conversation is not a numbered list, a step is not a bullet, a fold
    has one arrow, and a finding carries its severity once. */
 .a11y-widget-biz .a11y-chat-thread { list-style: none; padding-inline-start: 0; margin: 0; }
-.a11y-widget-biz .a11y-chat-steps { list-style: none; padding-inline-start: 1em; margin: 0; }
+/* The scan's steps are green (user's instruction, 21 Nov 2026, "make this
+   text green"): the open conversation's green, #14532d on white (10.4:1),
+   Apple's #30d158 on black in dark (11.0:1). */
+.a11y-widget-biz .a11y-chat-steps { list-style: none; padding-inline-start: 1em; margin: 0; color: var(--chats-current); }
 
 /* A fold shows the glyph for its state and not the browser's own marker. */
 .a11y-widget-biz summary { list-style: none; cursor: pointer; }
