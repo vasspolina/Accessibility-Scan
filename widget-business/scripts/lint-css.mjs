@@ -117,9 +117,27 @@ const lastKey = (sel) => {
 const css = fs.readFileSync(CSS, "utf8");
 /* block carries the index of the rule the selector came from, so two
    selectors of one comma-separated group are never paired against each
-   other — they ARE the same declaration block, not a collision. */
+   other — they ARE the same declaration block, not a collision.
+   The list splits only at top-level commas: a comma inside :is(), :has()
+   or :not() separates arguments, not selectors. Splitting there (until
+   21 Nov 2026) cut ".a11y-prompt:has(> .a11y-prompt-q:enabled:is(:hover,
+   :focus-visible))" into two pieces, and the orphan ":focus-visible))" of
+   the generic opening card then "tied" with the barrier card's, which
+   carries one more class and outranks it. */
+const splitSelectors = (list) => {
+  const out = [];
+  let depth = 0, buf = "";
+  for (const ch of list) {
+    if (ch === "(") depth++;
+    else if (ch === ")") depth--;
+    if (ch === "," && depth === 0) { out.push(buf); buf = ""; continue; }
+    buf += ch;
+  }
+  out.push(buf);
+  return out;
+};
 const rules = parse(css).flatMap((r, block) =>
-  r.selector.split(",").map((s) => ({ ...r, block, selector: s.replace(/\s+/g, " ").trim() }))
+  splitSelectors(r.selector).map((s) => ({ ...r, block, selector: s.replace(/\s+/g, " ").trim() }))
 ).filter((r) => r.selector && r.decls.length);
 
 const problems = [];

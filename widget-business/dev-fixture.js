@@ -712,12 +712,25 @@
         // By position, not by its words: the label is translated, and an
         // English-only match left every non-English state stuck at the chat.
         // Since 18 Nov 2026 the only way to the form is "Scan a page behind
-        // a login", under the box (.a11y-chat-signin); "Use the form
+        // a login", then under the box; "Use the form
         // instead" in the box row is gone. While this still looked in the
         // row it found nothing, gave up after 10s, and every report state
         // of check:reflow measured the chat landing and passed.
-        var toForm = sr.querySelector(".a11y-chat .a11y-chat-signin button");
-        if (toForm) toForm.click();
+        // Since 20 Nov 2026 (feae924) the button sits in the box's start
+        // group and shows only once the message names an address, so the
+        // harness types the address into the chat box first. It is the
+        // group's only direct-child button on the landing: Voice control's
+        // button is wrapped in .a11y-voice, and Back shows only after a
+        // block was opened. Looking under the box found nothing from then
+        // on, and check:reflow failed every report state as not built.
+        var toForm = sr.querySelector(".a11y-chat .a11y-chat-box-start > button");
+        if (toForm) { toForm.click(); return null; }
+        var chatInput = sr.querySelector("#a11y-chat-input");
+        if (chatInput && !chatInput.value) {
+          var setDraft = Object.getOwnPropertyDescriptor(window.HTMLTextAreaElement.prototype, "value").set;
+          setDraft.call(chatInput, address);
+          chatInput.dispatchEvent(new Event("input", { bubbles: true, composed: true }));
+        }
         return null;
       }
       return sr.querySelector("form.a11y-url-form") ? sr : null;
