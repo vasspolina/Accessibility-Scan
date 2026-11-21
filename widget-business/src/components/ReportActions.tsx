@@ -7,6 +7,7 @@ import { ensureHostPrintStyle } from "./PrintButton";
 import { emailReport, type EmailReportResult } from "../api/scanClient";
 import { t } from "../lib/strings";
 import type { AccessibilityReport } from "../api/scanClient";
+import { Icon } from "./Icon";
 
 /* Sending the report.
  *
@@ -117,11 +118,9 @@ export function ReportActions({
             }}
           >
             {t("Download in PDF")}
-            {/* The arrow is drawn, not a glyph: Jokker's ↓ sits too low on
-                the line, and the reference's arrow has a base bar. */}
-            <svg className="a11y-ra-pdf-icon" viewBox="0 0 20 20" aria-hidden="true" focusable="false">
-              <path d="M10 2v12M4.5 8.5 10 14l5.5-5.5M3 18h14" fill="none" stroke="currentColor" strokeWidth="1.5" />
-            </svg>
+            {/* Carbon's download, not a glyph: Jokker's ↓ sits too low on the
+                line, and the reference's arrow has a base bar. */}
+            <Icon name="download" className="a11y-ra-pdf-icon" />
           </button>
           <p className="a11y-ra-note">
             {t("Opens your browser’s print dialog. Choose “Save as PDF” as the destination.")}

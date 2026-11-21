@@ -3,6 +3,7 @@ import { t, tf } from "../lib/strings";
 import { StatusChip } from "./SectionHeader";
 import { useReportView } from "./ReportViewContext";
 import type { ScreenReaderScript } from "../api/scanClient";
+import { Icon } from "./Icon";
 
 // Lets an owner hear their own page the way a screen-reader user does. Reading
 // a list of violations is abstract; hearing "button, unlabelled" where your
@@ -146,9 +147,7 @@ export function ScreenReaderPreview({ script }: { script: ScreenReaderScript }) 
                   : tf("{count} say nothing useful", { count: issueCount })}
               </StatusChip>
             )}
-            <svg className="a11y-accordion-chevron" viewBox="0 0 16 16" aria-hidden="true" focusable="false">
-              <path d="M8 11L3 6l.7-.7L8 9.6l4.3-4.3L13 6z" fill="currentColor" />
-            </svg>
+            <Icon name="chevron--down" className="a11y-accordion-chevron" />
           </button>
         </h2>
         )}
@@ -192,11 +191,11 @@ export function ScreenReaderPreview({ script }: { script: ScreenReaderScript }) 
         >
           {playing ? (
             <>
-              <span aria-hidden="true">■</span> {t("Stop")}
+              <Icon name="stop--filled--alt" /> {t("Stop")}
             </>
           ) : (
             <>
-              <span aria-hidden="true">▶</span> {t("Play the page aloud")}
+              <Icon name="play--filled--alt" /> {t("Play the page aloud")}
             </>
           )}
         </button>

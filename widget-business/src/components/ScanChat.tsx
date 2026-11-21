@@ -3,7 +3,7 @@ import { t, tf } from "../lib/strings";
 import { getLang } from "../lib/i18n";
 import { CAPS_RUN, smarten } from "../lib/typography";
 import { Button } from "./Button";
-import { LanguageSelect } from "./LanguageSelect";
+import { LanguageMenu } from "./LanguageMenu";
 import { BlockedNotice } from "./BlockedNotice";
 import { VoiceControl } from "./VoiceControl";
 import type { Lang } from "../lib/i18n";
@@ -48,6 +48,7 @@ import {
   putChatResult,
   type ChatResult,
 } from "../lib/chatResults";
+import { Icon } from "./Icon";
 
 /**
  * The whole checker, as one conversation with an assistant.
@@ -1284,25 +1285,21 @@ export function ScanChat({
           aria-controls="a11y-chats-body"
           onClick={() => setPanelOpen((open) => !open)}
         >
-          <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false">
-            <path d="M4 7h16M4 12h16M4 17h16" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
-          </svg>
+          <Icon name="menu" size={20} />
           {t("Conversations")}
         </button>
         <div className="a11y-chats-body" id="a11y-chats-body">
         <button type="button" className="a11y-chats-new" onClick={newChat} disabled={switchLocked}>
-          <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false">
-            <path d="M12 5v14M5 12h14" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
-          </svg>
+          {/* IBM Carbon's add and flag, 32px grid, like the bin below
+              (user's instruction, 21 Nov 2026, "use ibm carbon icons here"). */}
+          <Icon name="add" size={20} />
           {t("New chat")}
         </button>
         {/* Report a barrier sits under New chat, the panel's other way to
             start something (user's instruction, 20 Nov 2026). */}
         {onReportBarrier && (
           <button type="button" className="a11y-chats-new a11y-chats-barrier" onClick={onReportBarrier} disabled={switchLocked}>
-            <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false">
-              <path d="M5 21V4h11l-1.5 4L16 12H5" fill="none" stroke="currentColor" strokeWidth="2" strokeLinejoin="round" strokeLinecap="round" />
-            </svg>
+            <Icon name="flag" size={20} />
             {t("Report a barrier")}
           </button>
         )}
@@ -1332,12 +1329,7 @@ export function ScanChat({
                     onClick={() => removeChat(c)}
                   >
                     {/* IBM Carbon's trash-can, 32px grid (user's instruction, 18 Nov 2026). */}
-                    <svg viewBox="0 0 32 32" width="18" height="18" fill="currentColor" aria-hidden="true" focusable="false">
-                      <path d="M12 12H14V24H12z" />
-                      <path d="M18 12H20V24H18z" />
-                      <path d="M4,6V8H6V28a2,2,0,0,0,2,2H24a2,2,0,0,0,2-2V8h2V6ZM8,28V8H24V28Z" />
-                      <path d="M12 2H20V4H12z" />
-                    </svg>
+                    <Icon name="trash-can" size={18} />
                   </button>
                 </li>
               ))}
@@ -1347,10 +1339,16 @@ export function ScanChat({
         </div>
       </nav>
     <div className="a11y-chat" ref={rootRef} onFocus={keepFocusClear}>
+      {/* The language, folded into one button pinned at the top right
+          (user's instruction, 21 Nov 2026). It is the column's first child
+          so sticky holds it for the whole conversation, not only while the
+          head is in view. */}
+      <div className="a11y-lang-pin">
+        <LanguageMenu value={language} onChange={onLanguageChange} />
+      </div>
       {/* The title and the intro open an empty conversation. Once there is
           one, they would sit above it saying "New scan" over a scan that
-          has run — the top bar's New scan button is the way back. The
-          language switcher stays. */}
+          has run — the top bar's New scan button is the way back. */}
       <div className="a11y-newscan-head">
         {/* Kept in the markup and folded shut, so the first turn slides
             up under it instead of jumping; hidden from readers once gone. */}
@@ -1361,7 +1359,6 @@ export function ScanChat({
             </h2>
           </div>
         </div>
-        <LanguageSelect id="a11y-lang-form" value={language} onChange={onLanguageChange} />
       </div>
       {/* The opening questions, set as the Pangram Pangram font cards
           (user's reference, 18 Nov 2026): a tall pale card per group, the
@@ -1529,8 +1526,8 @@ export function ScanChat({
                           content joins the summary's name wherever the
                           alt-text syntax for `content` is not supported. */}
                       <span className="a11y-chat-fold" aria-hidden="true">
-                        <span className="a11y-chat-fold-closed">{t("Show details")} ▸</span>
-                        <span className="a11y-chat-fold-open">{t("Hide details")} ▾</span>
+                        <span className="a11y-chat-fold-closed">{t("Show details")} <Icon name="caret--right" /></span>
+                        <span className="a11y-chat-fold-open">{t("Hide details")} <Icon name="caret--down" /></span>
                       </span>
                     </summary>
                     <div className="a11y-chat-blockbody">
@@ -1664,7 +1661,7 @@ export function ScanChat({
               <span className="a11y-chat-box-start">
                 {backTo && (
                   <Button variant="ghost" onClick={goBack}>
-                    <span aria-hidden="true">← </span>
+                    <Icon name="arrow--left" />{" "}
                     {t("Back")}
                   </Button>
                 )}
@@ -1684,9 +1681,7 @@ export function ScanChat({
                 {/* On a phone the word is clipped and the arrow drawn, as in
                     Claude's apps: the button keeps "Send" as its name. */}
                 <span className="a11y-chat-send-word">{t("Send")}</span>
-                <svg className="a11y-chat-send-icon" viewBox="0 0 24 24" width="22" height="22" aria-hidden="true" focusable="false">
-                  <path d="M12 19V5M5.5 11.5 12 5l6.5 6.5" fill="none" stroke="currentColor" strokeWidth="2.25" strokeLinecap="round" strokeLinejoin="round" />
-                </svg>
+                <Icon name="arrow--up" size={22} className="a11y-chat-send-icon" />
               </Button>
             </div>
           </div>
@@ -1729,8 +1724,8 @@ function StepFold({ folded, children }: { folded: boolean; children: ReactNode }
       <summary>
         {t("Details")}
         <span className="a11y-chat-fold" aria-hidden="true">
-          <span className="a11y-chat-fold-closed">▸</span>
-          <span className="a11y-chat-fold-open">▾</span>
+          <span className="a11y-chat-fold-closed"><Icon name="caret--right" /></span>
+          <span className="a11y-chat-fold-open"><Icon name="caret--down" /></span>
         </span>
       </summary>
       {children}

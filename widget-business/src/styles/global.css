@@ -48,6 +48,9 @@
   --ink: #000; --paper: #fff; --focus: #198038; --chats-current: #14532d;
   --hl-orange: #ff8a4c; --hl-blue: #6fa8ff; --hl-green: #4fe0a8;
   --hl-cap-a: #ffe14d; --hl-cap-b: #ff9ad5;
+  /* The Report a barrier card's mint (user's swatch, 21 Nov 2026): black
+     on #ccffcc is 18.7:1; dark takes Apple's green, black on it 7.4:1+. */
+  --barrier: #ccffcc;
   /* Surfaces that were pinned light in both themes, as tokens so dark mode
      can take its own dark system greys (user's instruction, 18 Nov 2026,
      "do a proper dark mode, no white or light buttons"). Light keeps the
@@ -67,9 +70,9 @@
    widget on a black page. index.tsx stamps data-theme on this element when
    the embedder pins one; otherwise the visitor's system setting decides. */
 @media (prefers-color-scheme: dark) {
-  .a11y-widget-biz:not([data-theme="light"]) { --ink: #fff; --paper: #000; color-scheme: dark; --tile: #1c1c1e; --tile-ink: #fff; --tile-fill: #2c2c2e; --strong: #636366; --strong-ink: #fff; --hover: #3a3a3c; --hover-ink: #fff; --solid: #636366; --solid-ink: #fff; --btn-fill: #2c2c2e; --field-edge: 1px solid #8e8e93; --field-bg: #1c1c1e; --hl-orange: #ff9f0a; --hl-blue: #409cff; --hl-green: #30d158; --hl-cap-a: #ffd60a; --hl-cap-b: #ff375f; --focus: #6fdc8c; --chats-current: #30d158; }
+  .a11y-widget-biz:not([data-theme="light"]) { --ink: #fff; --paper: #000; color-scheme: dark; --tile: #1c1c1e; --tile-ink: #fff; --tile-fill: #2c2c2e; --strong: #636366; --strong-ink: #fff; --hover: #3a3a3c; --hover-ink: #fff; --solid: #636366; --solid-ink: #fff; --btn-fill: #2c2c2e; --field-edge: 1px solid #8e8e93; --field-bg: #1c1c1e; --hl-orange: #ff9f0a; --hl-blue: #409cff; --hl-green: #30d158; --hl-cap-a: #ffd60a; --hl-cap-b: #ff375f; --focus: #6fdc8c; --chats-current: #30d158; --barrier: #30d158; }
 }
-.a11y-widget-biz[data-theme="dark"] { --ink: #fff; --paper: #000; color-scheme: dark; --tile: #1c1c1e; --tile-ink: #fff; --tile-fill: #2c2c2e; --strong: #636366; --strong-ink: #fff; --hover: #3a3a3c; --hover-ink: #fff; --solid: #636366; --solid-ink: #fff; --btn-fill: #2c2c2e; --field-edge: 1px solid #8e8e93; --field-bg: #1c1c1e; --hl-orange: #ff9f0a; --hl-blue: #409cff; --hl-green: #30d158; --hl-cap-a: #ffd60a; --hl-cap-b: #ff375f; --focus: #6fdc8c; --chats-current: #30d158; }
+.a11y-widget-biz[data-theme="dark"] { --ink: #fff; --paper: #000; color-scheme: dark; --tile: #1c1c1e; --tile-ink: #fff; --tile-fill: #2c2c2e; --strong: #636366; --strong-ink: #fff; --hover: #3a3a3c; --hover-ink: #fff; --solid: #636366; --solid-ink: #fff; --btn-fill: #2c2c2e; --field-edge: 1px solid #8e8e93; --field-bg: #1c1c1e; --hl-orange: #ff9f0a; --hl-blue: #409cff; --hl-green: #30d158; --hl-cap-a: #ffd60a; --hl-cap-b: #ff375f; --focus: #6fdc8c; --chats-current: #30d158; --barrier: #30d158; }
 
 .a11y-widget-biz {
   font-family: "Jokker", "DejaVu Sans", sans-serif;
@@ -545,7 +548,16 @@
 }
 .a11y-widget-biz .a11y-datatable .a11y-dt-toggle:enabled:hover,
 .a11y-widget-biz .a11y-fd-tech .a11y-fd-tech-toggle:enabled:hover { background: none; color: var(--ink); }
-.a11y-widget-biz .a11y-dt-toggle [data-open="true"] { display: inline-block; transform: rotate(90deg); }
+.a11y-widget-biz .a11y-dt-toggle [data-open="true"] { transform: rotate(90deg); }
+/* The schedule's caret is centred on the row's first line (user's
+   instruction, 21 Nov 2026, "center the first paragraph"): the button took
+   the 34px button floor and sat its caret about 4px under the words beside
+   it. It is now one line of its cell's own type tall, top-aligned, with the
+   caret centred in it. */
+.a11y-widget-biz .a11y-datatable .a11y-dt-toggle {
+  display: inline-flex; align-items: center; vertical-align: top;
+  min-height: 0; height: 1lh; font-size: inherit; line-height: inherit;
+}
 .a11y-widget-biz .a11y-fd-tech-toggle[aria-expanded="true"] .a11y-fd-tech-caret { display: inline-block; transform: rotate(90deg); }
 
 /* Severity, criterion and level once each: in their columns on wide
@@ -1015,12 +1027,15 @@
 .a11y-widget-biz .a11y-prompt-grid {
   display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 240px), 1fr)); gap: 25px;
 }
+/* On the page's own paper with a 1px dotted ink edge, the #f0efe8 tile
+   only on hover and keyboard focus (user's instruction, 21 Nov 2026, "just
+   make dotted outline and beige on hover"; they were tiles at rest that
+   turned solid black). */
 .a11y-widget-biz .a11y-prompts .a11y-prompt {
-  --ink: var(--tile-ink); --paper: var(--tile);
   position: relative;
   box-sizing: border-box; min-width: 0; aspect-ratio: 296 / 285; margin: 0; padding: 26px;
   display: flex; flex-direction: column; align-items: flex-start; justify-content: flex-start;
-  border: 1px solid var(--tile); border-radius: 20px; background: var(--tile); color: var(--tile-ink);
+  border: 1px dotted var(--ink); border-radius: 20px; background: transparent; color: var(--ink);
   overflow-wrap: break-word; hyphens: manual;
 }
 /* The question is the card's main control. It is laid out in the card's
@@ -1034,7 +1049,7 @@
 }
 .a11y-widget-biz .a11y-prompts .a11y-prompt-q::after { content: ""; position: absolute; inset: 0; border-radius: 20px; }
 .a11y-widget-biz .a11y-prompts .a11y-prompt-q:focus-visible { outline: none; }
-.a11y-widget-biz .a11y-prompts .a11y-prompt-q:focus-visible::after { outline: 2px solid #fff; outline-offset: -5px; }
+.a11y-widget-biz .a11y-prompts .a11y-prompt-q:focus-visible::after { outline: 2px solid var(--focus); outline-offset: -2px; }
 .a11y-widget-biz .a11y-prompts .a11y-prompt-label {
   font-size: 22px; font-weight: 500; letter-spacing: 0.01em; line-height: 1.3;
 }
@@ -1067,12 +1082,12 @@
   visibility: hidden;
 }
 .a11y-widget-biz .a11y-prompts .a11y-prompt:has(> .a11y-prompt-q:enabled:is(:hover, :focus-visible)) {
-  --ink: #fff; --paper: #000;
-  background: #000; color: #fff; border-color: #fff;
+  --ink: var(--tile-ink); --paper: var(--tile);
+  background: var(--tile); color: var(--tile-ink); border-color: var(--tile-ink);
 }
 .a11y-widget-biz .a11y-prompts .a11y-prompt-q:enabled:is(:hover, :focus-visible) { background: none; color: inherit; }
 .a11y-widget-biz .a11y-prompts .a11y-prompt-q:enabled:is(:hover, :focus-visible) .a11y-prompt-go { visibility: visible; }
-.a11y-widget-biz .a11y-prompts .a11y-prompt:has(> .a11y-prompt-q:disabled) { border: 1px dashed #000; }
+.a11y-widget-biz .a11y-prompts .a11y-prompt:has(> .a11y-prompt-q:disabled) { border: 1px dashed var(--ink); }
 .a11y-widget-biz .a11y-prompts .a11y-prompt-q:disabled { cursor: default; }
 .a11y-widget-biz .a11y-prompt-more { text-align: center; margin: 1.2em 0 0; }
 @container a11y-sum-run (max-width: 640px) {
@@ -1250,9 +1265,11 @@
    slop"). The parts stay side by side, but as the ruled columns the
    report's other groups use: no ground, no corners, no padding; each
    label over a 1px ink rule, the words under it. Page ink and paper, so
-   they follow the theme. */
+   they follow the theme. Two to a row (user's instruction, 21 Nov 2026,
+   "this needs to be two in a row"; auto-fit had set three), one column
+   under 640px of block as before. */
 .a11y-widget-biz .a11y-fd > .a11y-fd-col:first-child {
-  display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr));
+  display: grid; grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 1.2em 30px; align-items: start; margin: 0 0 1.6em;
 }
 .a11y-widget-biz .a11y-fd > .a11y-fd-col:first-child > :is(p, div) {
@@ -1296,13 +1313,15 @@
    then "needs a carret and make lines brown"). It keeps its two rules, one
    above and one below, now in brown, and the label leads with a caret that
    points right while it is shut and down once it is open. The caret is
-   drawn from two borders, so it takes the label's colour and needs no
-   glyph. The brown is #6b4226 on white (8.7:1) and #b07f4f on the black
-   page of the dark theme (4.9:1): decoration, but it still reads on both.
-   50px under the affected elements (CONTENT SPACING). */
+   Carbon's chevron (rule below), so it takes the label's colour. The brown
+   is #6b4226 on white (8.7:1) and #b07f4f on the black page of the dark
+   theme (4.9:1): decoration, but it still reads on both. 50px under the
+   affected elements (CONTENT SPACING), and 50px after it before the next
+   finding's row (user's instruction, 21 Nov 2026, "add 50 px space
+   between content groups here after technical version"). */
 .a11y-widget-biz .a11y-fd .a11y-tech-details {
   --rule-brown: #6b4226;
-  margin: 50px 0 1.2em; padding: 0; border: 0; border-block: 1px solid var(--rule-brown);
+  margin: 50px 0 50px; padding: 0; border: 0; border-block: 1px solid var(--rule-brown);
 }
 @media (prefers-color-scheme: dark) {
   .a11y-widget-biz:not([data-theme="light"]) .a11y-fd .a11y-tech-details { --rule-brown: #b07f4f; }
@@ -1312,11 +1331,19 @@
   display: flex; align-items: center; gap: 14px; padding: 14px 0;
 }
 .a11y-widget-biz .a11y-fd .a11y-tech-details > summary::before {
-  content: ""; flex: none; box-sizing: border-box; width: 9px; height: 9px; margin-inline: 2px 0;
-  border-right: 2px solid currentColor; border-bottom: 2px solid currentColor;
-  transform: rotate(-45deg); transition: transform 120ms ease;
+  /* Carbon's chevron--right (user's instruction, 21 Nov 2026, "use ibm
+     carbon icons for any icon in this app"), as a mask in currentColor; it
+     was two borders turned 45 degrees. */
+  content: ""; flex: none; box-sizing: border-box; width: 16px; height: 16px; margin: 0;
+  background: currentColor;
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cpath d='M22 16 12 26 10.6 24.6 19.2 16 10.6 7.4 12 6z'/%3E%3C/svg%3E") center / contain no-repeat;
+  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cpath d='M22 16 12 26 10.6 24.6 19.2 16 10.6 7.4 12 6z'/%3E%3C/svg%3E") center / contain no-repeat;
+  transition: transform 120ms ease;
 }
-.a11y-widget-biz .a11y-fd .a11y-tech-details[open] > summary::before { transform: translateY(-3px) rotate(45deg); }
+.a11y-widget-biz .a11y-fd .a11y-tech-details[open] > summary::before { transform: rotate(90deg); }
+@media (forced-colors: active) {
+  .a11y-widget-biz .a11y-fd .a11y-tech-details > summary::before { forced-color-adjust: none; background: CanvasText; }
+}
 .a11y-widget-biz .a11y-fd .a11y-tech-details[open] > summary { margin-bottom: 0.3em; }
 .a11y-widget-biz .a11y-fd .a11y-tech-details[open] { padding-bottom: 0.8em; }
 @media (prefers-reduced-motion: reduce) {
@@ -1547,9 +1574,13 @@
    bare line inside it. */
 .a11y-widget-biz .a11y-ra-field:focus-within { outline: 2px solid var(--focus); outline-offset: -2px; box-shadow: none; }
 .a11y-widget-biz .a11y-ra-field > input.a11y-ra-email-input:focus-visible { outline: none; }
+/* Mint, the Report a barrier card's green (user's instruction, 21 Nov 2026,
+   "make button mint green"): black words on --barrier in both themes, 18.7:1
+   on #ccffcc and 7.4:1 or better on dark's #30d158; the edge takes the
+   ground's colour. Disabled is still paper with a dashed ink edge. */
 .a11y-widget-biz .a11y-ra-row > .a11y-ra-cell > .a11y-ra-send {
   display: block; width: 100%; min-height: 128px; margin: 0; padding: 20px 24px;
-  border: 1px solid var(--ink); border-radius: 14px; background: var(--solid); color: var(--solid-ink);
+  border: 1px solid var(--barrier); border-radius: 14px; background: var(--barrier); color: #000;
   font-family: "Jokker", sans-serif; font-size: 48px; font-weight: 300; line-height: 1.05; letter-spacing: -0.01em;
   text-align: start;
 }
@@ -2027,7 +2058,7 @@
 .a11y-widget-biz .a11y-chats {
   position: sticky; top: 0; box-sizing: border-box; max-height: 100dvh; overflow-y: auto;
   padding: 16px 16px 16px 0; border-right: 1px solid var(--ink);
-  font-size: 15px; letter-spacing: 0.01em; line-height: 1.3;
+  font-size: 14px; letter-spacing: 0.01em; line-height: 1.3;
 }
 /* 15px, the smaller of the two label sizes (user's instruction, 20 Nov
    2026, "make this font smaller", on a screenshot of the column at 18px):
@@ -2039,12 +2070,12 @@
   align-items: center; gap: 10px; box-sizing: border-box; width: 100%; min-height: 40px;
   margin: 0; padding: 8px 12px; border: 1px dotted var(--ink); border-radius: 12px;
   background: transparent; color: var(--ink);
-  font-size: 15px; letter-spacing: 0.01em; line-height: 1.3; text-align: start;
+  font-size: 14px; letter-spacing: 0.01em; line-height: 1.3; text-align: start;
 }
 .a11y-widget-biz .a11y-chats .a11y-chats-new { display: flex; font-weight: 500; }
 .a11y-widget-biz .a11y-chats .a11y-chats-toggle { display: none; border-color: transparent; font-weight: 400; }
 .a11y-widget-biz .a11y-chats .a11y-chats-head {
-  margin: 28px 0 6px; padding-inline: 12px; font-size: 15px; font-weight: 500; letter-spacing: 0.01em; line-height: 1.2;
+  margin: 28px 0 6px; padding-inline: 12px; font-size: 14px; font-weight: 500; letter-spacing: 0.01em; line-height: 1.2;
 }
 .a11y-widget-biz .a11y-chats .a11y-chats-list { list-style: none; margin: 0; padding: 0; }
 /* Titles on two lines (19 Nov 2026, the user's screenshot, "fix this"): on
@@ -2054,10 +2085,15 @@
    same row five times. Two lines hold about 44, most of the 60 titleOf()
    keeps; a URL breaks anywhere rather than running under the cut. 4px
    between rows so two dotted edges do not read as one ladder. */
+/* The dotted edge shows only on the open conversation (green) and on
+   hover or focus (user's instruction, 21 Nov 2026, "make text smaller and
+   make dotted only the active one or on hover"; 14px is the floor). At
+   rest it is transparent, so nothing moves when it shows. */
 .a11y-widget-biz .a11y-chats .a11y-chats-row {
   display: flex; align-items: center; max-width: none; margin: 0 0 4px; border-radius: 12px;
-  box-sizing: border-box; border: 1px dotted var(--ink);
+  box-sizing: border-box; border: 1px dotted transparent;
 }
+.a11y-widget-biz .a11y-chats .a11y-chats-row:is(:hover, :focus-within) { border-color: var(--ink); }
 .a11y-widget-biz .a11y-chats .a11y-chats-item {
   display: block; flex: 1 1 auto; min-width: 0; font-weight: 400;
   border-color: transparent;
@@ -2102,7 +2138,7 @@
   padding: 7px 11px; border: 2px dotted var(--ink); cursor: not-allowed;
 }
 .a11y-widget-biz .a11y-chats .a11y-chats-item:disabled { cursor: not-allowed; }
-.a11y-widget-biz .a11y-chats .a11y-chats-row:has(.a11y-chats-item:disabled) { border-width: 2px; margin-bottom: 2px; }
+.a11y-widget-biz .a11y-chats .a11y-chats-row:has(.a11y-chats-item:disabled) { border-width: 2px; border-color: var(--ink); margin-bottom: 2px; }
 @media (max-width: 640px) {
   .a11y-widget-biz .a11y-chat-layout { grid-template-columns: minmax(0, 1fr); gap: 0; }
   .a11y-widget-biz .a11y-chats {
@@ -2702,9 +2738,12 @@
 @container a11y-prompts (max-width: 760px) {
   .a11y-widget-biz .a11y-prompts .a11y-prompt-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }
+/* Mint with no outline (user's instruction, 21 Nov 2026, "report a
+   barrier can be green with no outline"): the edge is the ground's own
+   colour, black words in both themes. Hover keeps its solid black turn. */
 .a11y-widget-biz .a11y-prompts .a11y-prompt.a11y-prompt-barrier {
-  --ink: #000; --paper: var(--hl-cap-a);
-  background: var(--hl-cap-a); color: #000; border-color: var(--hl-cap-a);
+  --ink: #000; --paper: var(--barrier);
+  background: var(--barrier); color: #000; border: 1px solid var(--barrier);
 }
 .a11y-widget-biz .a11y-prompts .a11y-prompt-barrier .a11y-prompt-q { flex: 1 1 auto; }
 .a11y-widget-biz .a11y-prompts .a11y-prompt-barrier .a11y-prompt-go {
@@ -2752,4 +2791,65 @@
 .a11y-widget-biz .a11y-legal-tiles > button.a11y-legal-row:focus-visible { outline: 3px solid var(--focus); outline-offset: 3px; }
 @media (max-width: 640px) {
   .a11y-widget-biz .a11y-legal-tiles > button.a11y-legal-row { min-height: 0; }
+}
+
+/* ═══ 21 NOV 2026: LANGUAGE PIN, CARBON ICONS, CARDS, PANEL ═══════════════
+   The new parts of the user's instructions from one sitting; the cards,
+   the panel and the technical caret are changed where they are set.
+
+   CARBON ICONS ("use ibm carbon icons for any icon in this app"): every
+   icon is <Icon> (components/Icon.tsx), Carbon's 32px paths at 1em in
+   currentColor. They sit a little under the baseline, as Carbon sets them
+   beside text. */
+.a11y-widget-biz .a11y-icon { flex: none; vertical-align: -0.125em; }
+.a11y-widget-biz .a11y-ra-pdf > .a11y-icon.a11y-ra-pdf-icon { width: 20px; height: 20px; vertical-align: middle; }
+.a11y-widget-biz .a11y-w22 .a11y-next-toggle > .a11y-next-chevron > .a11y-icon { width: 20px; height: 20px; }
+.a11y-widget-biz .a11y-accordion-chevron.a11y-icon { width: 0.8em; height: 0.8em; }
+/* THE LANGUAGE PIN ("fold the language button on the right like this and
+   keep it on top on scroll"): Carbon's translate and the word, one button
+   at the column's top right, sticky for the whole conversation. On a
+   desktop the pin takes no height, so the New scan title keeps its place
+   beside it; under 640px it takes its line, since the title and the
+   button would meet at 320px. Its list opens under it, right-aligned. */
+.a11y-widget-biz .a11y-chat > .a11y-lang-pin {
+  position: sticky; top: 0; z-index: 3; align-self: flex-end; height: 0;
+}
+@media (max-width: 640px) {
+  .a11y-widget-biz .a11y-chat > .a11y-lang-pin { height: auto; }
+}
+.a11y-widget-biz .a11y-lang-menu { position: relative; padding-top: 16px; }
+.a11y-widget-biz .a11y-lang-menu .a11y-lang-toggle {
+  display: inline-flex; align-items: center; gap: 10px; min-height: 48px; padding: 0 16px;
+  border: 1px dotted transparent; border-radius: 999px;
+  background: var(--btn-fill, var(--paper)); color: var(--ink);
+  font-size: 22px; font-weight: 500; letter-spacing: 0.01em; line-height: 1;
+}
+.a11y-widget-biz .a11y-lang-menu .a11y-lang-toggle:enabled:is(:hover, [aria-expanded="true"]) {
+  --ink: var(--tile-ink); background: var(--tile); color: var(--tile-ink); border-color: var(--tile-ink);
+}
+.a11y-widget-biz .a11y-lang-menu .a11y-lang-list {
+  --ink: var(--tile-ink); --paper: var(--tile);
+  position: absolute; top: calc(100% + 6px); right: 0; z-index: 3;
+  box-sizing: border-box; min-width: 12em; margin: 0; padding: 6px; list-style: none;
+  border: 1px dotted var(--ink); border-radius: 12px; background: var(--tile); color: var(--ink);
+}
+.a11y-widget-biz .a11y-lang-menu .a11y-lang-list[hidden] { display: none; }
+.a11y-widget-biz .a11y-lang-menu .a11y-lang-list > li { max-width: none; margin: 0; padding: 0; }
+.a11y-widget-biz .a11y-lang-menu .a11y-lang-list > li::before { content: none; }
+.a11y-widget-biz .a11y-lang-menu .a11y-lang-option {
+  display: block; width: 100%; min-height: 40px; padding: 8px 12px; text-align: start;
+  border: 1px dotted transparent; border-radius: 12px; background: transparent; color: var(--ink);
+  font-size: 18px; font-weight: 400; line-height: 1.3;
+}
+.a11y-widget-biz .a11y-lang-menu .a11y-lang-option[aria-pressed="true"] { border-color: var(--ink); font-weight: 500; }
+.a11y-widget-biz .a11y-lang-menu .a11y-lang-option:enabled:hover { background: var(--tile-fill); color: var(--ink); border-color: var(--ink); }
+
+/* 40PX EACH SIDE OF THE CHAT ("add a 40 px margin from left and right of
+   chat"): the panel sat flush on the window's left edge. The page now
+   stands 40px in on both sides; the conversation keeps its 40px off the
+   panel's rule and gives up its own right padding, so the right side is
+   40px, not 80. Phones keep their 10px gutter. */
+@media (min-width: 641px) {
+  .a11y-widget-biz .a11y-chat-layout { padding-inline: 40px; box-sizing: border-box; }
+  .a11y-widget-biz .a11y-chat-layout > .a11y-chat { padding-inline-end: 0; }
 }

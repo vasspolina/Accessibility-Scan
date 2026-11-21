@@ -10,6 +10,7 @@ import { plainForRule } from "../lib/wcagPlain";
 import { Card } from "./Card";
 import { openFinding } from "../lib/openFinding";
 import { useReportView } from "./ReportViewContext";
+import { Icon } from "./Icon";
 
 /* The stat tiles ARE the Card component's anatomy — layer-01 fill, subtle
    hairline, 2px corner, 16px padding — so they use it rather than a div
@@ -498,7 +499,7 @@ export function ScoreGauge({
                     name stays the title. Not the block's two-glyph fold: the
                     block around it is a details too, and its open/closed
                     rules reached in and hid both glyphs. Turned when open. */}
-                <span className="a11y-sum-counts-mark" aria-hidden="true">▸</span>
+                <Icon name="caret--right" className="a11y-sum-counts-mark" />
               </summary>
               <ol className="a11y-sum-counts-list">
                 {SCORE_POINTS.map((point) => (

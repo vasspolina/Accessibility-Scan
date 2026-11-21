@@ -1,4 +1,5 @@
 import type { CSSProperties } from "react";
+import { Icon } from "../Icon";
 
 /**
  * RelatedChecks, ported from components/scan/RelatedChecks.jsx.
@@ -72,7 +73,7 @@ export function RelatedChecks({
                   a screen reader reading both announces "…, north east
                   arrow". The button's name is the whole card text, which
                   already identifies which check it opens. */}
-              <span aria-hidden="true"> ↗</span>
+              {" "}<Icon name="launch" />
             </span>
           </button>
         ))}
