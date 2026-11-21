@@ -2967,12 +2967,17 @@
 .a11y-widget-biz .a11y-lang-menu { position: relative; padding-top: 16px; }
 .a11y-widget-biz .a11y-lang-menu .a11y-lang-toggle {
   display: inline-flex; align-items: center; gap: 10px; min-height: 48px; padding: 0 16px;
-  border: 1px dotted transparent; border-radius: 999px;
+  border: 1px solid var(--chats-current); border-radius: 999px;
   background: var(--btn-fill, var(--paper)); color: var(--ink);
   font-size: 22px; font-weight: 500; letter-spacing: 0.01em; line-height: 1;
 }
+/* A green line round it (user's instruction, 21 Nov 2026, "outline with
+   green line"): the pin floats over the thread, and with no edge it ran
+   into what scrolled under it, the mint barrier card most of all. The
+   current chat's green: #14532d on paper and on the #f0efe8 hover fill
+   (7.9:1 or better), #30d158 in dark. It stays on hover and while open. */
 .a11y-widget-biz .a11y-lang-menu .a11y-lang-toggle:enabled:is(:hover, [aria-expanded="true"]) {
-  --ink: var(--tile-ink); background: var(--tile); color: var(--tile-ink); border-color: var(--tile-ink);
+  --ink: var(--tile-ink); background: var(--tile); color: var(--tile-ink); border-color: var(--chats-current);
 }
 .a11y-widget-biz .a11y-lang-menu .a11y-lang-list {
   --ink: var(--tile-ink); --paper: var(--tile);
