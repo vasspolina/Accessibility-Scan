@@ -941,7 +941,10 @@
 .a11y-widget-biz .a11y-sum-run .a11y-sum-dial { margin: 0 0 0.5em; }
 /* The run of findings: display size, tight, centred.
    10% smaller since 18 Nov 2026 (user's instruction): 67 to 60px, the
-   marker 44 to 40px with its figure 32 to 29px. */
+   marker 44 to 40px with its figure 32 to 29px. 12% smaller again since
+   21 Nov 2026 (user's instruction, "make this a 12% smaller", then "like
+   large text only"): the titles 60 to 53px; the marker keeps its 40px
+   and 29px figure, the marks and count their 22px. */
 /* Each finding is one unit (user's instruction, 18 Nov 2026: "either two
    full statements in a line or one ... don't leave one word from a
    sentence on the line"). A row is an inline block, so a line holds whole
@@ -951,7 +954,7 @@
    (user's word the same day, "it can be 30% wider"): lines fill the column
    and only a finding too long for one line wraps, balanced inside itself. */
 .a11y-widget-biz .a11y-sum-run .a11y-sum-rows {
-  margin: 0; font-size: 60px; letter-spacing: -0.01em; line-height: 1.06;
+  margin: 0; font-size: 53px; letter-spacing: -0.01em; line-height: 1.06;
   hyphens: manual; overflow-wrap: break-word;
 }
 .a11y-widget-biz .a11y-sum-run .a11y-sum-nobreak { white-space: nowrap; }
@@ -988,7 +991,7 @@
   display: inline; vertical-align: middle; white-space: nowrap;
   font-size: 22px; letter-spacing: 0.01em; line-height: 1.2; margin: 0 0 0 0.3em;
 }
-.a11y-widget-biz .a11y-sum-run .a11y-score-clean { font-size: 60px; letter-spacing: -0.01em; line-height: 1.06; margin: 0; }
+.a11y-widget-biz .a11y-sum-run .a11y-score-clean { font-size: 53px; letter-spacing: -0.01em; line-height: 1.06; margin: 0; }
 .a11y-widget-biz .a11y-sum-run + .a11y-sum-actions { text-align: center; margin: 0 0 1.2em; }
 /* On a phone the run comes down to title size, so a long German word
    still fits 320px. */
