@@ -795,10 +795,22 @@ export function ScanChat({
     const id = focusBlock.current;
     if (id === null) return;
     focusBlock.current = null;
-    const summary = rootRef.current?.querySelector<HTMLElement>(`#a11y-chat-block-${id} > summary`);
+    const summary = blockTarget(id);
     summary?.scrollIntoView({ block: "start" });
     summary?.focus({ preventScroll: true });
   }, [turns]);
+
+  /** Where a block takes focus: its fold line, or, for the findings block,
+   *  which has none, its first heading (made focusable for the purpose). */
+  function blockTarget(id: number): HTMLElement | null {
+    const block = rootRef.current?.querySelector<HTMLElement>(`#a11y-chat-block-${id}`);
+    if (!block) return null;
+    const summary = block.querySelector<HTMLElement>(":scope > summary");
+    if (summary) return summary;
+    const heading = block.querySelector<HTMLElement>("h2, h3");
+    if (heading && !heading.hasAttribute("tabindex")) heading.tabIndex = -1;
+    return heading;
+  }
 
   /** Shows a section as a block, or — when it is already in the thread for
    *  this result — takes the reader to it. One block per section per
@@ -827,7 +839,7 @@ export function ScanChat({
     if (existing) {
       if (!focusExisting) return true;
       markBack();
-      const summary = rootRef.current?.querySelector<HTMLElement>(`#a11y-chat-block-${existing.id} > summary`);
+      const summary = blockTarget(existing.id);
       summary?.scrollIntoView({ block: "start" });
       summary?.focus();
       if (announce) setAnnouncement(`${sectionLabel(key)}: ${t("shown above.")}`);
@@ -1519,6 +1531,27 @@ export function ScanChat({
                   </li>
                 ) : null;
               }
+              // The findings block has no fold line (user's instruction, 21 Nov
+              // 2026, "delete these" on "Findings · Hide details"): its own
+              // headings ("What people can't use") already title it, so the
+              // line only repeated them. It stands open. Other blocks keep
+              // theirs, since some hide a heading that repeats the line.
+              if (turn.section === "findings") {
+                return (
+                  <li key={turn.id} id={`a11y-chat-block-${turn.id}`} className={`a11y-chat-turn a11y-chat-block${contClass}`}>
+                    <div className="a11y-chat-blockbody">
+                      {fresh ? (
+                        <>
+                          {renderSection("protable")}
+                          {body}
+                        </>
+                      ) : (
+                        <p className="a11y-chat-stale">{t("From an earlier scan. Run it again to see it.")}</p>
+                      )}
+                    </div>
+                  </li>
+                );
+              }
               return (
                 <li key={turn.id} className={`a11y-chat-turn a11y-chat-block${contClass}`}>
                   <details id={`a11y-chat-block-${turn.id}`} open={fresh}>
@@ -1534,10 +1567,7 @@ export function ScanChat({
                     </summary>
                     <div className="a11y-chat-blockbody">
                       {fresh ? (
-                        <>
-                          {turn.section === "findings" && renderSection("protable")}
-                          {body}
-                        </>
+                        body
                       ) : (
                         <p className="a11y-chat-stale">{t("From an earlier scan. Run it again to see it.")}</p>
                       )}

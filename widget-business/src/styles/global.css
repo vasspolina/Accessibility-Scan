@@ -1049,14 +1049,24 @@
    The run no longer balances across rows, which had narrowed every line
    (user's word the same day, "it can be 30% wider"): lines fill the column
    and only a finding too long for one line wraps, balanced inside itself. */
+/* 20% smaller again on 21 Nov 2026 (user's instruction, "make big text
+   20% smaller"): the titles 53 to 42px, 38 to 30px on a phone; the
+   marker, marks and count keep their sizes. The commas between findings
+   are gone the same day ("whats this gaps in between?"): the comma hung
+   off the end of each row, so when a title filled its line the count and
+   then the comma each fell to a line of their own. The round numbers
+   already part the findings. The count is held to its marks: the link is
+   nowrap, so nothing breaks between the marks and the count, and the item
+   inside it wraps as before. */
 .a11y-widget-biz .a11y-sum-run .a11y-sum-rows {
-  margin: 0; font-size: 53px; letter-spacing: -0.01em; line-height: 1.06;
+  margin: 0; font-size: 42px; letter-spacing: -0.01em; line-height: 1.06;
   hyphens: manual; overflow-wrap: break-word;
 }
 .a11y-widget-biz .a11y-sum-run .a11y-sum-nobreak { white-space: nowrap; }
 .a11y-widget-biz .a11y-sum-run .a11y-sum-row { display: inline-block; max-width: 100%; margin: 0 0 0.12em; }
-.a11y-widget-biz .a11y-sum-run .a11y-sum-row:not(:last-child)::after { content: ", " / ""; }
 .a11y-widget-biz .a11y-sum-run :is(.a11y-sum-cell-item, .a11y-sum-row-title) { display: inline; }
+.a11y-widget-biz .a11y-sum-run .a11y-sum-row-link { white-space: nowrap; }
+.a11y-widget-biz .a11y-sum-run .a11y-sum-row-link > .a11y-sum-cell-item { white-space: normal; }
 /* Each item links to its finding (lib/openFinding). Ink like the type
    around it, with no underline (user's instruction, 18 Nov 2026,
    "underline on hover is not needed"): the items stand alone in a numbered
@@ -1087,7 +1097,7 @@
   display: inline; vertical-align: middle; white-space: nowrap;
   font-size: 22px; letter-spacing: 0.01em; line-height: 1.2; margin: 0 0 0 0.3em;
 }
-.a11y-widget-biz .a11y-sum-run .a11y-score-clean { font-size: 53px; letter-spacing: -0.01em; line-height: 1.06; margin: 0; }
+.a11y-widget-biz .a11y-sum-run .a11y-score-clean { font-size: 42px; letter-spacing: -0.01em; line-height: 1.06; margin: 0; }
 .a11y-widget-biz .a11y-sum-run + .a11y-sum-actions { text-align: center; margin: 0 0 1.2em; }
 /* On a phone the run comes down to title size, so a long German word
    still fits 320px. */
@@ -1195,7 +1205,7 @@
 .a11y-widget-biz .a11y-prompt-more { text-align: center; margin: 1.2em 0 0; }
 @container a11y-sum-run (max-width: 640px) {
   .a11y-widget-biz .a11y-sum-run .a11y-sum-rows,
-  .a11y-widget-biz .a11y-sum-run .a11y-score-clean { font-size: 38px; letter-spacing: -0.005em; hyphens: manual; }
+  .a11y-widget-biz .a11y-sum-run .a11y-score-clean { font-size: 30px; letter-spacing: -0.005em; hyphens: manual; }
   .a11y-widget-biz .a11y-sum-run .a11y-sum-cell-no { width: 30px; height: 30px; font-size: 22px; }
   .a11y-widget-biz .a11y-sum-run .a11y-sum-row-marks { white-space: normal; }
   /* A long first word held to its marker cannot break, so on a phone the
@@ -2299,12 +2309,12 @@
   visibility: hidden;
 }
 .a11y-widget-biz .a11y-chats .a11y-chats-row:is([data-current], :hover, :focus-within) .a11y-chats-delete { visibility: visible; }
-.a11y-widget-biz .a11y-chats .a11y-chats-row .a11y-chats-delete:enabled:hover { border-color: #000; }
-/* Disabled while a reply or a scan runs: never faded. The rows carry a 1px
-   dot at rest, so theirs goes to 2px; the bin's ring is solid (user's
-   instruction, 18 Nov 2026), so a broken circle never sits inside the
-   dotted row. */
-.a11y-widget-biz .a11y-chats .a11y-chats-delete:disabled { border: 1px solid var(--ink); cursor: not-allowed; }
+/* No circle round the bin (user's instruction, 21 Nov 2026, "delete circle
+   around icon"): not on hover, not while disabled. Disabled while a reply
+   or a scan runs is never faded; the row's own edge goes from 1px to 2px
+   then, which says the panel is locked. */
+.a11y-widget-biz .a11y-chats .a11y-chats-row .a11y-chats-delete:is(:enabled:hover, :disabled) { border-color: transparent; }
+.a11y-widget-biz .a11y-chats .a11y-chats-delete:disabled { cursor: not-allowed; }
 .a11y-widget-biz .a11y-chats .a11y-chats-new:disabled {
   padding: 7px 11px; border: 2px dotted var(--ink); cursor: not-allowed;
 }
