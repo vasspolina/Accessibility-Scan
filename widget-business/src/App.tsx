@@ -3,6 +3,7 @@ import { checkNames, t, tf } from "./lib/strings";
 import type { RefObject } from "react";
 import { flushSync } from "react-dom";
 import { UrlForm, type ScanMode } from "./components/UrlForm";
+import { BarrierReport } from "./components/BarrierReport";
 import { ScoreGauge } from "./components/ScoreGauge";
 import { ReportActions } from "./components/ReportActions";
 import { ScanSettings } from "./components/ScanSettings";
@@ -11,6 +12,7 @@ import type { NavSection } from "./components/SideNav";
 import { useActiveSection } from "./lib/useActiveSection";
 import { DocumentSummary } from "./components/DocumentSummary";
 import { ReportSection } from "./components/ReportSection";
+import { TopFindings } from "./components/TopFindings";
 import { DesignNotesPanel } from "./components/DesignNotesPanel";
 import { PrincipleGroup } from "./components/PrincipleGroup";
 import { UndecidedChecks } from "./components/UndecidedChecks";
@@ -109,8 +111,8 @@ export function waitingMessage(mode: ScanMode, aiRequested: boolean, elapsed: nu
       : t("Still at it. Heavier pages take longer.");
   }
   return aiRequested
-    ? t("We check your site, including the AI review. That usually takes about a minute…")
-    : tf("We check your site. Most pages take {duration}…", { duration: t(SCAN_DURATION.page) });
+    ? t("Checking your site, AI review included. This usually takes about a minute…")
+    : tf("Checking your site. Most pages take {duration}…", { duration: t(SCAN_DURATION.page) });
 }
 
 export interface CtaConfig {
@@ -171,6 +173,9 @@ export function App({
   // that keeps counting is the difference between waiting and wondering.
   const [elapsed, setElapsed] = useState(0);
   const [tookSeconds, setTookSeconds] = useState<number | null>(null);
+  // The result on screen came from a scan behind a login. The conversations
+  // panel never stores it, for the reason recordScan() never records it.
+  const [resultPrivate, setResultPrivate] = useState(false);
   // The scan's own narration: milestone ids as the backend crosses them,
   // in arrival order. Empty until the stream produces something, and the
   // waiting screen falls back to the elapsed-time story when it stays so
@@ -180,7 +185,24 @@ export function App({
   // How a scan starts: by conversation, or by the form. The form stays —
   // it is the only way to scan behind a login, because a password typed
   // into the chat would pass through the model.
-  const [entry, setEntry] = useState<"chat" | "form">("chat");
+  // A third way in, since 20 Nov 2026: Report a barrier, the
+  // assistive-technology pilot's conversation (BarrierReport). A link to
+  // #report-a-barrier opens on it; the old /pilot.html sends people there.
+  const [entry, setEntry] = useState<"chat" | "form" | "barrier">(() =>
+    typeof location !== "undefined" && location.hash === "#report-a-barrier" ? "barrier" : "chat"
+  );
+  // Out of Report a barrier, and out of the address, so a reload opens the
+  // chat. Its Back button calls it, and so do New chat and a past
+  // conversation in the panel: without that they changed the thread
+  // underneath and left the barrier on top, so they seemed to do nothing.
+  const leaveBarrier = () => {
+    if (typeof location !== "undefined" && location.hash === "#report-a-barrier") {
+      window.history.replaceState(null, "", location.pathname + location.search);
+    }
+    setEntry((current) => (current === "barrier" ? "chat" : current));
+  };
+  // The form opened for a page behind a login starts with its login panel open.
+  const [formForLogin, setFormForLogin] = useState(false);
   // The ticking "12s" is reassurance, not essential status — the words
   // beside it carry the real information, and elapsed itself keeps driving
   // those words and the progress bar either way. WCAG 2.2.2 asks for a way
@@ -212,9 +234,10 @@ export function App({
     for (const c of report?.conformance?.criteria ?? []) {
       criterionNames[c.id] = { name: c.name, level: c.level };
     }
-    const showInstances = groupFindings(report?.findings ?? []).some((g) => g.length > 1);
-    return { professional, criterionNames, showInstances, apiBase, siteUrl: report?.url, signedIn: signedIn && Boolean(report?.savedAs) };
+    return { professional, criterionNames, apiBase, siteUrl: report?.url, signedIn: signedIn && Boolean(report?.savedAs) };
   }, [report, professional, apiBase, signedIn]);
+  // The same view for a section drawn as a block in the conversation.
+  const chatReportView = useMemo<ReportView>(() => ({ ...reportView, inChat: true }), [reportView]);
 
   // Print must include every card whatever the on-screen filter shows — the
   // rule the conformance checklist already follows. The filter lives in React
@@ -396,6 +419,7 @@ export function App({
         setReport(null);
         setHistory([]);
         setAudit(result);
+        setResultPrivate(false);
         setTookSeconds(Math.max(1, Math.round((Date.now() - startedAt) / 1000)));
         outcome = { kind: "audit", audit: result };
       } else {
@@ -406,6 +430,7 @@ export function App({
         recordScan(result, Boolean(auth));
         setAudit(null);
         setReport(result);
+        setResultPrivate(Boolean(auth));
         setTookSeconds(Math.max(1, Math.round((Date.now() - startedAt) / 1000)));
         outcome = { kind: "report", report: result };
         // A saved scan has a server-side history too, which follows the
@@ -502,7 +527,7 @@ export function App({
    * conversation renders whichever the person or the assistant asks for,
    * as a block in the thread.
    */
-  function renderSection(key: SectionKey): ReactNode {
+  function renderSection(key: SectionKey, inChat = false): ReactNode {
     if (key === "audit") {
       return audit ? (
         <>
@@ -523,11 +548,11 @@ export function App({
         return report.findings.some((f) => f.ruleId === "consent-blocks-reader") ? (
           <div className="a11y-blockflag" role="alert">
             <p className="a11y-blockflag-title">
-              {t("Start here: a screen reader cannot get past your cookie banner")}
+              {t("Start here: a screen reader can't get past your cookie banner")}
             </p>
             <p className="a11y-blockflag-body">
               {t(
-                "The banner hides the page from screen readers and never takes focus. Until that is fixed, everything below this line is what a screen reader user never reaches."
+                "The banner hides the page from screen readers and never takes focus. Until it is fixed, screen reader users never reach anything below this line."
               )}
             </p>
             <button
@@ -569,7 +594,21 @@ export function App({
                   total={report.summary.total}
                   tookSeconds={tookSeconds}
                 />
-                <ReportActions report={report} apiBase={apiBase} />
+                {/* In the conversation the score block heads a report the
+                    assistant files, not a page. The findings block follows
+                    the reply, so the worst-of cards would be a third copy
+                    of the same titles there, and sending or saving moves to
+                    the foot of the findings, where a report ends (user's
+                    instruction, 20 Nov 2026). */}
+                {!inChat && <ReportActions report={report} apiBase={apiBase} />}
+                {/* The worst of the findings, as cards, before the schedule
+                    that holds them all (15 Nov 2026). */}
+                {!inChat && (
+                  <TopFindings
+                    findings={findingsByCategory.accessibility}
+                    onSee={() => focusFindings("a11y-accessibility-heading")}
+                  />
+                )}
               </>
             )}
             {/* Only when the AI review was wanted but did not happen;
@@ -675,22 +714,31 @@ export function App({
            first said the headings twice. Translated whole; the link sits
            where its placeholder does, so word order follows the language. */
         const [sectionDescBefore, sectionDescAfter] = t(
-          "What a screen reader cannot read aloud in this document, grouped by the four questions the standard asks. More at {link}."
+          "What a screen reader can't read aloud in this document, grouped by the four questions the standard asks. More at {link}."
         ).split("{link}");
+        /* Shown only when something was found: an empty "Nothing found
+           here." section is a heading with nothing under it (user's
+           instruction, 18 Nov 2026). */
+        const trust =
+          !isDocument && findingsByCategory.darkPattern.length > 0 ? (
+            <ReportSection
+              title="What costs you trust"
+              description={t(
+                "Places where your site nudges people instead of leaving the choice to them. These don't move the score."
+              )}
+              variant="redflag"
+              findings={findingsByCategory.darkPattern}
+              id="a11y-trust-heading"
+            />
+          ) : null;
         return (
           <div className={professional && !isDocument ? "a11y-print-cards" : undefined}>
-            {!isDocument && (
-              <ReportSection
-                title="What costs you trust"
-                eyebrow={t("Dark pattern findings")}
-                description={t(
-                  "Places your site nudges people rather than leaves the choice to them. These don't move the score."
-                )}
-                variant={findingsByCategory.darkPattern.length > 0 ? "redflag" : "default"}
-                findings={findingsByCategory.darkPattern}
-                id="a11y-trust-heading"
-              />
-            )}
+            {/* The page opens on trust. The conversation opens on what
+                people can't use, the findings the reply has just named, and
+                ends where a filed report ends: send it or save it (user's
+                instruction, 20 Nov 2026, "file a report in chat like an
+                assistant would do"). */}
+            {!inChat && trust}
             <section className="a11y-section" aria-labelledby="a11y-accessibility-heading">
               <h2
                 className="a11y-section-title"
@@ -712,6 +760,8 @@ export function App({
               )}
               <PrincipleGroup findings={findingsByCategory.accessibility} />
             </section>
+            {inChat && trust}
+            {inChat && !professional && !isDocument && <ReportActions report={report} apiBase={apiBase} />}
           </div>
         );
       }
@@ -937,7 +987,6 @@ export function App({
       lang={lang}
     >
     <AppShell
-      mark={report || audit ? t("Findings") : t("New scan")}
       onJump={jumpTo}
       /* The run's settings live in the rail once there is a run to describe.
          Report style flips in place; the other two re-run the scan, which is
@@ -967,7 +1016,7 @@ export function App({
       {/* Mounted in both readings: behind the form it renders nothing but
           keeps its thread and history. */}
       <ScanChat
-          hidden={entry !== "chat"}
+          hidden={entry === "form"}
           apiRef={chatApi}
           apiBase={apiBase}
           loading={loading}
@@ -976,19 +1025,54 @@ export function App({
           reducedMotion={reducedMotion}
           report={report}
           audit={audit}
-          renderSection={(key) => <ReportViewProvider value={reportView}>{renderSection(key)}</ReportViewProvider>}
+          renderSection={(key) => <ReportViewProvider value={chatReportView}>{renderSection(key, true)}</ReportViewProvider>}
           availableSections={availableSections}
+          onSignInForm={() => {
+            setFormForLogin(true);
+            setEntry("form");
+          }}
+          onReportBarrier={() => setEntry("barrier")}
+          onLeaveBarrier={leaveBarrier}
+          // Report a barrier opens inside the chat, in the conversation's
+          // place, not as a page of its own (user's instruction, 20 Nov 2026).
+          barrier={
+            entry === "barrier" ? (
+              <BarrierReport
+                apiBase={apiBase}
+                onBack={leaveBarrier}
+              />
+            ) : null
+          }
           onScan={(url, scope, aiReview) => {
             const full = /^https?:\/\//i.test(url) ? url : `https://${url}`;
             return handleScan(full, aiReview, scope, 5);
           }}
-          onUseForm={() => setEntry("form")}
+          resultPrivate={resultPrivate}
+          onRestore={(result) => {
+            // A reopened conversation's result, back as it was: no scan, and
+            // nothing recorded in the history, which already holds it.
+            setError(null);
+            setBlocked(null);
+            setTookSeconds(null);
+            setResultPrivate(false);
+            setMode(result.kind === "audit" ? "site" : "page");
+            if (result.kind === "report") {
+              setAudit(null);
+              setReport(result.report);
+              setHistory(getHistory(result.report.url, result.report.scannedAt));
+            } else {
+              setReport(null);
+              setHistory([]);
+              setAudit(result.audit);
+            }
+          }}
           language={lang}
           onLanguageChange={changeLang}
         />
       {entry === "form" && (
       <>
       <UrlForm
+        startWithLogin={formForLogin}
         onSubmit={handleScan}
         loading={loading}
         audience={audience}
@@ -1004,7 +1088,13 @@ export function App({
         progress={progressNode}
       />
       <p className="a11y-chat-alt">
-        <Button variant="ghost" onClick={() => setEntry("chat")}>
+        <Button
+          variant="ghost"
+          onClick={() => {
+            setFormForLogin(false);
+            setEntry("chat");
+          }}
+        >
           {t("Back to the chat")}
         </Button>
       </p>

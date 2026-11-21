@@ -6,8 +6,20 @@ import { wcag22Text, type ReportLang } from "./criteriaText.js";
 //
 // The report measures WCAG 2.1 A/AA, because that is what EN 301 549 v3.2.1
 // adopts and therefore what the European Accessibility Act currently points
-// at. EN 301 549 v4.1.1 adopts WCAG 2.2, and is expected to be cited in the
-// Official Journal around October 2026. Once it is, the bar moves.
+// at. EN 301 549 v4.1.1 adopts WCAG 2.2. It was adopted on 24 August 2026
+// and published by ETSI on 2 September 2026.
+//
+// Published is not yet binding. A harmonised standard carries the
+// presumption of conformity only once the Commission cites it in the
+// Official Journal, and as of 19 November 2026 it has not: v3.2.1 is still
+// the cited version. The date has slipped more than once. This file first
+// said "around October 2026"; the trackers then said 30 November and
+// 16 December 2026; Deque's write-up of the final standard now gives
+// 22 January 2027. None of these is a Commission announcement, which is
+// why the report says "expected" and names a season, not a day. When the
+// citation happens, three things change together: EXPECTED_FROM below, the
+// comment in scoring.ts that keeps 2.2-only findings out of the score, and
+// the checklist's own standard line. Once it is cited, the bar moves.
 //
 // This section exists so an owner can see the move coming rather than
 // discover it. It is deliberately separate from the conformance checklist:
@@ -113,6 +125,21 @@ const RULES_EVIDENCING: Record<string, string[]> = {
   "2.4.11": ["keyboard-focus-obscured"],
 };
 
+/* When the citation is expected, in the report's language.
+ *
+ * Localised here, not in the widget, for the same reason the criterion rows
+ * are: the emailed and printed copies carry this text too. The widget looks
+ * the value up in its own strings and falls back to it unchanged, so a
+ * season written here in German reads correctly inside the German sentence
+ * around it ("erscheint voraussichtlich Anfang 2027 im Amtsblatt der EU").
+ */
+const EXPECTED_FROM: Record<ReportLang, string> = {
+  en: "early 2027",
+  de: "Anfang 2027",
+  es: "principios de 2027",
+  fr: "début 2027",
+};
+
 // "not-measured" joined after the re-audit found this block carrying the
 // exact defect the 2.1 table had just fixed: a dead mobile pass printed
 // 2.5.8 "no-issues-found" — a measurement that never happened, on the
@@ -191,7 +218,7 @@ export function buildWcag22Readiness(
 
   return {
     standard: "WCAG 2.2 Level AA (EN 301 549 v4.1.1)",
-    expectedFrom: "late 2026",
+    expectedFrom: EXPECTED_FROM[opts?.lang ?? "en"] ?? EXPECTED_FROM.en,
     criteria,
     alreadyFailing: criteria.filter((c) => c.status === "already-failing").length,
     needsReview: criteria.filter((c) => c.status === "needs-review").length,

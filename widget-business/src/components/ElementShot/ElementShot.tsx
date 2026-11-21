@@ -26,14 +26,21 @@ import { t } from "../../lib/strings";
 export function ElementShot({
   finding,
   showLocator = false,
+  bubble,
 }: {
   finding: AccessibilityFinding;
   showLocator?: boolean;
+  /** The element's name, set as a speech bubble over the picture's top-left
+   *  corner (user's instruction, 21 Nov 2026, "add bubbles to the finding
+   *  screenshots too"). Real text, before the picture in reading order; the
+   *  occurrence then leaves its own label out, so the name is said once. */
+  bubble?: string;
 }) {
   if (!finding.elementScreenshot) return null;
   const box = finding.elementBox;
   return (
-    <figure className="a11y-shot">
+    <figure className={bubble ? "a11y-shot a11y-shot-has-bubble" : "a11y-shot"}>
+      {bubble && <span className="a11y-shot-bubble">{bubble}</span>}
       <span className="a11y-shot-frame">
         <img
           className="a11y-shot-img"

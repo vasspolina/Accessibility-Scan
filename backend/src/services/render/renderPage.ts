@@ -3278,7 +3278,7 @@ export class PageStatusError extends Error {
       status === 404 || status === 410
         ? `There is no page at that address (HTTP ${status}). Check the address and try again.`
         : status === 401
-          ? `That page asks for a login first (HTTP ${status}). The form can sign in with your details.`
+          ? `That page asks for a login first (HTTP ${status}). Use the form's login option to sign in with a test account.`
           : `${host} answered with an error (HTTP ${status}) instead of the page, so there was nothing to check. Try again later.`
     );
     this.name = "PageStatusError";
@@ -3469,7 +3469,7 @@ export async function renderAndScan(
       // redirect, a locale route, a client-side router settling — and doing
       // that mid-injection destroys the execution context and throws. Measured
       // on bbc.co.uk/news, which lost an entire scan to it and reported only
-      // "Could not load or scan the page".
+      // "Couldn't load or scan the page".
       //
       // The page is fine; we were simply early. Wait for it to come to rest
       // and go again. Once, because a page that navigates twice more is not
@@ -4019,17 +4019,23 @@ export async function renderAndScan(
           await page.waitForTimeout(200);
         }).catch(() => {});
 
-        // Experimental axe rules, run explicitly because they are off by
-        // default: css-orientation-lock (1.3.4) and label-content-name-mismatch
-        // (2.5.3 — before this, nothing anywhere tested Label in Name while
-        // its conformance row claimed "automated"). Experimental rules cry
-        // wolf, so their results go to the undecided channel for a person to
-        // judge rather than into the findings as confident claims.
+        // The experimental axe rule for 1.3.4, run explicitly because it is
+        // off by default. Experimental rules cry wolf, so its results go to
+        // the undecided channel for a person to judge rather than into the
+        // findings as confident claims.
+        //
+        // label-content-name-mismatch (2.5.3) used to run here beside it, for
+        // the same reason. axe-core 4.14.0 (5 Oct 2026) took it out of
+        // experimental and turned it on by default, after rewriting it to
+        // compare the visible label with the name word by word. The main run
+        // above now returns it as a violation like any other rule, so asking
+        // for it again here would file the same control twice: once as a
+        // finding and once as an open question.
         await timed("orientationLock", async () => {
           const lock = (await page.evaluate(() =>
             (window as unknown as { axe: { run: (c: unknown, o: unknown) => Promise<unknown> } }).axe.run(
               document,
-              { runOnly: { type: "rule", values: ["css-orientation-lock", "label-content-name-mismatch"] } }
+              { runOnly: { type: "rule", values: ["css-orientation-lock"] } }
             )
           )) as AxeRunResult;
           for (const v of lock.violations) {

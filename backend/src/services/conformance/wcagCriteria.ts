@@ -95,11 +95,13 @@ export const WCAG_21_AA_CRITERIA: WcagCriterion[] = [
   { id: "2.4.7", name: "Focus Visible", level: "AA", coverage: "automated", plain: "Can you see where you are while tabbing through?", failing: "You can't see where you are while tabbing through" },
   { id: "2.5.1", name: "Pointer Gestures", level: "A", coverage: "manual", plain: "Is there a simpler way to do anything needing a swipe or pinch?", failing: "A swipe or pinch is the only way to do something" },
   { id: "2.5.2", name: "Pointer Cancellation", level: "A", coverage: "manual", plain: "Can someone who taps the wrong thing slide their finger off to undo it?", failing: "Tapping the wrong thing can't be undone by sliding your finger off it" },
-  // manual, not automated: axe's only 2.5.3 rule (label-content-name-mismatch)
-  // is experimental, so its results go to the undecided channel for a person
-  // to judge — same treatment as css-orientation-lock for 1.3.4. Nothing can
-  // fail this row mechanically, and "automated" was claiming otherwise.
-  { id: "2.5.3", name: "Label in Name", level: "A", coverage: "manual", plain: "Does a button's spoken name match the words on it?", failing: "A button's spoken name doesn't match the words on it" },
+  // partial since axe-core 4.14.0 (5 Oct 2026), which made its 2.5.3 rule
+  // (label-content-name-mismatch) stable and on by default. The row was
+  // "manual" while that rule was experimental and its results went to the
+  // undecided channel; it can now be failed mechanically. Not "automated":
+  // the rule compares words, so it misses a label drawn as an image, and it
+  // hands sliders and other controls named by their value back as undecided.
+  { id: "2.5.3", name: "Label in Name", level: "A", coverage: "partial", plain: "Does a button's spoken name match the words on it?", failing: "A button's spoken name doesn't match the words on it" },
   { id: "2.5.4", name: "Motion Actuation", level: "A", coverage: "manual", plain: "Is there a normal control for anything worked by shaking or tilting?", failing: "An action only works by shaking or tilting the device" },
 
   // ---- Understandable ---------------------------------------------------

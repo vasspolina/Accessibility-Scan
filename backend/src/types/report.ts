@@ -99,6 +99,32 @@ export const accessibilityFindingSchema = z.object({
   // decorative and should get alt="" so assistive tech skips it. Undefined
   // means no suggestion was generated (no key, not an image finding, etc.).
   suggestedAltText: z.string().optional(),
+  // The AI fix: the failing element's own markup with the fault corrected
+  // (aiReview/suggestCodeFix.ts). `before` is the captured snippet it was
+  // written against, so the reader sees the change and not only the result.
+  // Present only when the AI layer ran, the element had a snippet, and the
+  // answer passed validateCodeFix. Absent means no fix, never "nothing to fix".
+  suggestedCode: z
+    .object({
+      before: z.string(),
+      after: z.string(),
+      note: z.string().optional(),
+      model: z.string(),
+    })
+    .optional(),
+  // A plain-language rewrite of an axe finding by the self-hosted model
+  // (services/plainLanguage/). Words only: severity, criterion and score are
+  // never the model's. Absent when the layer is not set up, was switched
+  // off, or did not reach this rule within its budget.
+  plain: z
+    .object({
+      title: z.string(),
+      explanation: z.string(),
+      fix: z.string(),
+      model: z.string(),
+      lang: z.string(),
+    })
+    .optional(),
 });
 export type AccessibilityFinding = z.infer<typeof accessibilityFindingSchema>;
 
@@ -146,6 +172,16 @@ export type AiReviewStatus = z.infer<typeof aiReviewStatusSchema>;
 
 // Why a failed AI review failed, in coarse terms. A small fixed set, never a
 // raw error message: this crosses a public API boundary.
+export const plainLanguageMetaSchema = z.object({
+  status: z.enum(["completed", "partial", "timed_out", "failed", "not_configured", "disabled_by_request", "off_for_scans"]),
+  model: z.string().optional(),
+  /** axe rules on the page, and how many of them the model rewrote. */
+  rules: z.number(),
+  rewritten: z.number(),
+  ms: z.number(),
+});
+export type PlainLanguageMeta = z.infer<typeof plainLanguageMetaSchema>;
+
 export const aiReviewErrorKindSchema = z.enum([
   "overloaded",
   "invalid_request",
@@ -216,8 +252,9 @@ export const criterionResultSchema = z.object({
   alwaysSatisfied: z.boolean().optional(),
 });
 
-// What changes when EN 301 549 adopts WCAG 2.2, expected in the Official
-// Journal around October 2026. Kept separate from the conformance summary on
+// What changes when the EU's cited standard moves to WCAG 2.2. EN 301 549
+// v4.1.1 adopts it and was published on 2 September 2026; its citation in
+// the Official Journal is still pending (see wcag22Readiness). Kept separate from the conformance summary on
 // purpose: reporting a site as failing something it is not yet required to
 // meet would be the same overclaim this report refuses elsewhere.
 export const wcag22CriterionSchema = z.object({
@@ -362,6 +399,7 @@ export const accessibilityReportSchema = z.object({
     documentPages: z.number().optional(),
     aiReviewErrorKind: aiReviewErrorKindSchema.optional(),
     model: z.string().optional(),
+    plainLanguage: plainLanguageMetaSchema.optional(),
   }),
 });
 export type AccessibilityReport = z.infer<typeof accessibilityReportSchema>;

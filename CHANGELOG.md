@@ -5,6 +5,41 @@ All notable changes to this project are documented here.
 This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 The `backend`, `widget`, and `widget-business` packages are versioned together.
 
+## Unreleased
+
+### Changed
+
+- **The pilot's barrier form is a short conversation.** One question at a
+  time (what you use, which page, what happened), each with answers to
+  pick, so a report can be made without typing. The model picks at most one
+  follow-up from seven questions written in each language
+  (`POST /api/pilot/followup`; "Where on the page was it?" when it is off
+  or slow), then writes the report. Under the report, "Anything wrong?"
+  takes a change in the person's words and the report is written again
+  (`previous` and `change` on `POST /api/pilot/draft`). What was asked and
+  answered is stored with their words, and a picked sentence is marked as
+  picked.
+- The pilot's barrier form no longer asks for an invitation code, and
+  `PILOT_CODES` is gone: anyone can report, bounded by the rate limits, and
+  the pilot is open whenever reports can be stored or mailed. Participants
+  are counted by a random id kept in their browser and stored as a hash.
+  "Which one, and with which browser" is now a list to pick from.
+- The self-hosted model is used by the pilot only, unless
+  `PLAIN_LANGUAGE_IN_SCANS=true`. Public scans no longer call it by
+  default, so a paid GPU worker is not kept awake by scanner traffic.
+
+### Added
+
+- **Plain-language rewrite by a self-hosted model.** With `LOCAL_LLM_URL` set
+  (Ollama, llama.cpp or vLLM; default model Qwen2.5 7B Instruct), each axe
+  rule's findings get a plain title, an explanation about this page's
+  elements and a fix, in the report's language. Words only: severity,
+  criterion and score stay measured. `meta.plainLanguage` reports how it went.
+- **Assistive-technology pilot** at `/pilot.html`: invited screen-reader and
+  keyboard users report a barrier, the same model drafts a finding, and the
+  participant checks it before it is sent. Closed unless `PILOT_CODES` is set.
+  See `docs/PLAIN-LANGUAGE-AND-PILOT.md`.
+
 ## [1.0.0] — 2026-07-25
 
 First stable release. The web accessibility check tool scans a page (or a whole

@@ -1,7 +1,8 @@
-import { useId, useMemo, useState } from "react";
+import { useId, useMemo, useRef, useState } from "react";
 import { t, tf } from "../lib/strings";
 import type { AccessibilityReport } from "../api/scanClient";
 import { buildAcrDraft } from "../lib/buildAcrDraft";
+import { Icon } from "./Icon";
 
 // The procurement document, as far as a scan can honestly take it.
 //
@@ -21,6 +22,7 @@ export function AcrDraft({ report }: { report: AccessibilityReport }) {
   const [contact, setContact] = useState("");
   const [copied, setCopied] = useState(false);
   const panelId = useId();
+  const firstField = useRef<HTMLInputElement>(null);
 
   const draft = useMemo(() => {
     if (!report.conformance) return "";
@@ -49,6 +51,26 @@ export function AcrDraft({ report }: { report: AccessibilityReport }) {
   const [rowsBefore, rowsAfter] = tf("{failed} of {total}; the rest need a person", {
     total: report.conformance.total,
   }).split("{failed}");
+
+  // The draft as a file to send on. Markdown, because the draft is written
+  // in it: its tables open as tables in most editors and convert to Word.
+  function download() {
+    const host = (() => {
+      try {
+        return new URL(report.url).hostname.replace(/^www\./, "");
+      } catch {
+        return "site";
+      }
+    })();
+    const url = URL.createObjectURL(new Blob([draft], { type: "text/markdown;charset=utf-8" }));
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `conformance-report-${host}.md`;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    setTimeout(() => URL.revokeObjectURL(url), 1000);
+  }
 
   async function copy() {
     try {
@@ -80,14 +102,7 @@ export function AcrDraft({ report }: { report: AccessibilityReport }) {
               {t("Conformance report for buyers")}{" "}
               <span className="a11y-section-count">{t("VPAT 2.5, draft")}</span>
             </span>
-            <svg
-              className="a11y-accordion-chevron"
-              viewBox="0 0 16 16"
-              aria-hidden="true"
-              focusable="false"
-            >
-              <path d="M8 11L3 6l.7-.7L8 9.6l4.3-4.3L13 6z" fill="currentColor" />
-            </svg>
+            <Icon name="chevron--down" className="a11y-accordion-chevron" />
           </button>
         </h2>
       </div>
@@ -95,6 +110,24 @@ export function AcrDraft({ report }: { report: AccessibilityReport }) {
       <p className="a11y-section-desc">
         {t("If a public body or a large customer wants to buy from you, they will ask for one of these. It is the document a procurement team reads instead of your website.")}
       </p>
+      {/* The way in that reads as one (user's instruction, 17 Nov 2026). The
+          title above was the only toggle, and nothing about it said it would
+          make anything. Opens the draft and puts the cursor in its first
+          field, the one thing the reader has to type. Gone once open: the
+          title still closes it. */}
+      {!open && (
+        <button
+          type="button"
+          className="a11y-btn a11y-btn-primary a11y-acr-make"
+          aria-controls={panelId}
+          onClick={() => {
+            setOpen(true);
+            requestAnimationFrame(() => firstField.current?.focus());
+          }}
+        >
+          {t("Make a conformance report")}
+        </button>
+      )}
       </div>
 
       {/* Hidden rather than unrendered, so aria-controls always points at a
@@ -148,6 +181,7 @@ export function AcrDraft({ report }: { report: AccessibilityReport }) {
             <label className="a11y-stmt-field">
               {t("Product name")}
               <input
+                ref={firstField}
                 type="text"
                 value={productName}
                 onChange={(e) => setProductName(e.target.value)}
@@ -178,6 +212,9 @@ export function AcrDraft({ report }: { report: AccessibilityReport }) {
           <div className="a11y-stmt-actions">
             <button type="button" className="a11y-sr-play" onClick={copy}>
               {copied ? t("Copied") : t("Copy the draft")}
+            </button>
+            <button type="button" className="a11y-sr-play" onClick={download}>
+              {t("Download the report")}
             </button>
             {/* The button's own text changing is not reliably announced;
                 this mounted status region is. */}

@@ -1,6 +1,6 @@
 import type { AccessibilityFinding } from "../api/scanClient";
 import { classifyWcag, principleText, PRINCIPLE_ORDER, type Principle } from "../lib/wcagPlain";
-import { t, tf } from "../lib/strings";
+import { t } from "../lib/strings";
 import { FindingsList } from "./FindingsList";
 
 // Groups accessibility-category findings by WCAG principle (Perceivable /
@@ -67,20 +67,16 @@ export function PrincipleGroup({ findings }: { findings: AccessibilityFinding[] 
       })}
       {unclassified.length > 0 && (
         <div className="a11y-principle-group">
-          {/* The same head as the principle groups: a title and its count.
+          {/* The same head as the principle groups: a title alone. Its count,
+              "(3)" on a marker, is gone (user's instruction, 21 Nov 2026,
+              "delete number 3"): the list under it shows how many.
               The "Worth a look anyway" title and the sentence under it said
               only that these are worth a look, which is what listing them
               already says. */}
           <div className="a11y-pg-head">
             <div className="a11y-pg-titles">
               <h3 className="a11y-principle-title">
-                {t("Best practice")}{" "}
-                <span className="a11y-principle-count">
-                  <span aria-hidden="true">({unclassified.length})</span>
-                  <span className="a11y-sr-only">
-                    {unclassified.length === 1 ? t("1 finding") : tf("{count} findings", { count: unclassified.length })}
-                  </span>
-                </span>
+                {t("Best practice")}
               </h3>
             </div>
           </div>

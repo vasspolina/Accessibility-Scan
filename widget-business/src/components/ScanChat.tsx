@@ -1,15 +1,17 @@
 import { useEffect, useRef, useState, type FocusEvent, type FormEvent, type MutableRefObject, type ReactNode } from "react";
-import { t } from "../lib/strings";
+import { t, tf } from "../lib/strings";
 import { getLang } from "../lib/i18n";
 import { CAPS_RUN, smarten } from "../lib/typography";
 import { Button } from "./Button";
-import { LanguageSelect } from "./LanguageSelect";
+import { LanguageMenu } from "./LanguageMenu";
 import { BlockedNotice } from "./BlockedNotice";
+import { VoiceControl } from "./VoiceControl";
 import type { Lang } from "../lib/i18n";
 import type { AccessibilityReport, SiteAudit } from "../api/scanClient";
 import {
   addressIn,
   appendUser,
+  beforeLastAnswer,
   ChatError,
   ChatUnavailableError,
   sendChatTurn,
@@ -23,8 +25,30 @@ import {
 import { digestAudit, digestReport } from "../lib/reportDigest";
 import { NARRATION_STEPS, narrationIndex, narrationLabel } from "../lib/scanNarration";
 import { SHOWABLE, sectionForCommand, sectionLabel, type SectionKey } from "../lib/sections";
-import { pickOpeningPrompts } from "../lib/openingPrompts";
+import { pickOpeningPrompts, OPENING_PROMPTS } from "../lib/openingPrompts";
+import { CRITERIA, criterionFor } from "../lib/promptCriteria";
+import { addressToConfirm, tabSuggestion } from "../lib/chatSuggest";
 import { planSteps } from "../lib/testPlan";
+import {
+  deleteChat,
+  historyFromTurns,
+  loadChats,
+  newChatId,
+  saveChat,
+  settleTurn,
+  titleOf,
+  CHAT_ARCHIVE_KEY,
+  type SavedChat,
+} from "../lib/chatArchive";
+import {
+  chatUsesResult,
+  deleteChatResult,
+  getChatResult,
+  pruneChatResults,
+  putChatResult,
+  type ChatResult,
+} from "../lib/chatResults";
+import { Icon } from "./Icon";
 
 /**
  * The whole checker, as one conversation with an assistant.
@@ -281,14 +305,18 @@ function splitFences(text: string): Segment[] {
   return segs;
 }
 
-// **bold**, `code`, [text](https://…), and a bare https://… address. A bare
-// address stops before trailing punctuation, so a sentence's full stop is
-// not swallowed into the link.
-const INLINE = /(\*\*[^*]+?\*\*|`[^`]+`|\[[^\]]+\]\(https?:\/\/[^\s)]+\)|https?:\/\/[^\s<>()]*[^\s<>().,;:!?'"])/g;
+// **bold**, *emphasis*, `code`, [text](https://…), and a bare https://…
+// address. A bare address stops before trailing punctuation, so a
+// sentence's full stop is not swallowed into the link. Single-star
+// emphasis asks for an italic, which Jokker does not have (a sloped roman
+// is not one, Hochuli p.41–44), so its words are set plain and the stars
+// dropped: the statement's note showed them as "*Note: …*".
+const INLINE = /(\*\*[^*]+?\*\*|(?<![\p{L}\p{N}*])\*(?![\s*])[^*\n]+?(?<![\s*])\*(?![\p{L}\p{N}*])|`[^`]+`|\[[^\]]+\]\(https?:\/\/[^\s)]+\)|https?:\/\/[^\s<>()]*[^\s<>().,;:!?'"])/gu;
 
 function inline(line: string): ReactNode[] {
   return line.split(INLINE).map((part, i) => {
     if (part.length > 4 && part.startsWith("**") && part.endsWith("**")) return <strong key={i}>{fade(part.slice(2, -2), null)}</strong>;
+    if (part.length > 2 && part.startsWith("*") && part.endsWith("*") && !part.startsWith("**")) return fade(part.slice(1, -1), getLang());
     if (part.length > 2 && part.startsWith("`") && part.endsWith("`")) return <code key={i}>{fade(part.slice(1, -1), null)}</code>;
     const md = /^\[([^\]]+)\]\((https?:\/\/[^\s)]+)\)$/.exec(part);
     if (md) return link(md[2], md[1], i);
@@ -504,13 +532,18 @@ export function ScanChat({
   report,
   audit,
   onScan,
-  onUseForm,
+  onSignInForm,
+  onReportBarrier,
+  barrier = null,
+  onLeaveBarrier,
   renderSection,
   availableSections,
   language,
   onLanguageChange,
   hidden = false,
   apiRef,
+  resultPrivate = false,
+  onRestore,
 }: {
   apiBase: string;
   loading: boolean;
@@ -521,7 +554,20 @@ export function ScanChat({
   report: AccessibilityReport | null;
   audit: SiteAudit | null;
   onScan: (url: string, scope: "page" | "site", aiReview: boolean) => Promise<ScanOutcome>;
-  onUseForm: () => void;
+  /** Opens the scan form, the one way to scan behind a login: a password
+   *  typed into the chat would pass through the model. */
+  onSignInForm: () => void;
+  /** Opens Report a barrier, the assistive-technology pilot's conversation.
+   *  Optional: without it the panel shows no entry for it. */
+  onReportBarrier?: () => void;
+  /** Report a barrier, open: it takes the conversation's place inside the
+   *  chat (user's instruction, 20 Nov 2026, "add this feature to main chat
+   *  scan"), so the Conversations panel and the language stay beside it,
+   *  and the thread underneath is kept for the way back. */
+  barrier?: ReactNode;
+  /** Closes Report a barrier. New chat and a past conversation call it, so
+   *  they show the thread they open instead of leaving the barrier on top. */
+  onLeaveBarrier?: () => void;
   renderSection: (key: SectionKey) => ReactNode;
   availableSections: SectionKey[];
   language: Lang;
@@ -531,6 +577,12 @@ export function ScanChat({
    *  nothing — its blocks carry the same ids as the page reading. */
   hidden?: boolean;
   apiRef?: MutableRefObject<ChatApi | null>;
+  /** The result on screen came from a scan behind a login: it describes a
+   *  private page and is never stored with a conversation. */
+  resultPrivate?: boolean;
+  /** Puts a reopened conversation's result back on screen, without
+   *  scanning again. */
+  onRestore?: (result: ChatResult) => void;
 }) {
   const [turns, setTurns] = useState<Turn[]>([]);
   const [draft, setDraft] = useState("");
@@ -541,7 +593,7 @@ export function ScanChat({
   const [announcement, setAnnouncement] = useState("");
   /** Where the reader was before the conversation took them to a block:
    *  the scroll position and what had focus. While it is set, the dock
-   *  offers Back, the way Claude's apps return from an opened artifact. */
+   *  offers Back, to return to where they were before the block opened. */
   const [backTo, setBackTo] = useState<{ y: number; el: HTMLElement | null } | null>(null);
   /** A block just added at the reader's request, to take focus once it is
    *  in the thread: the chip that asked for it is gone by then. */
@@ -557,6 +609,20 @@ export function ScanChat({
   const dockRef = useRef<HTMLDivElement>(null);
   // Mirrors `turns` for code that runs between renders.
   const turnsRef = useRef<Turn[]>([]);
+  /** The conversations panel: past threads kept in this browser
+   *  (lib/chatArchive.ts), and which one is on screen. A thread gets its id
+   *  with its first question, so an empty one is never listed. */
+  const [chats, setChats] = useState<SavedChat[]>(() => loadChats());
+  const [chatId, setChatId] = useState<string | null>(null);
+  /** On a phone the panel is folded behind a toggle; on a wider screen it
+   *  is always open and the toggle is not drawn. */
+  const [panelOpen, setPanelOpen] = useState(false);
+  /** The thread just opened from the panel: saving it again unchanged
+   *  would move it to the top as if it had been added to. */
+  const opened = useRef<Turn[] | null>(null);
+  /** The conversation last opened from the panel, for its result arriving
+   *  from IndexedDB after the reader has moved on. */
+  const openingId = useRef<string | null>(null);
 
   const currentKey = report ? resultKeyOf(report) : audit ? resultKeyOf(audit) : null;
   // Read through refs by the async turn handlers: a turn's closure belongs
@@ -610,14 +676,141 @@ export function ScanChat({
     else focusInput();
   }
 
+  // Keeps the thread on screen in the panel. A new conversation gets its
+  // row the moment its first question is asked, streaming or not, so the
+  // open chat is always in the list and marked (user's report, 18 Nov 2026:
+  // "its not showing current chat in row"; it used to wait for the first
+  // reply, and a scan's reply can take a minute). After that, not while a
+  // reply streams: every chunk is a render, and the finished reply is
+  // saved once.
+  useEffect(() => {
+    if (turns === opened.current) return;
+    if (!turns.some((x) => x.who === "you")) return;
+    if (chatId && turns.some((x) => x.who === "checker" && x.streaming)) return;
+    const id = chatId ?? newChatId();
+    if (!chatId) setChatId(id);
+    setChats((list) => {
+      const previous = list.find((c) => c.id === id);
+      const kept = saveChat(list, {
+        id,
+        title: titleOf(turns),
+        updatedAt: new Date().toISOString(),
+        turns: turns.map(settleTurn),
+        resultKey: storedResult.current.get(id) ?? previous?.resultKey,
+      });
+      void pruneChatResults(new Set(kept.map((c) => c.id)));
+      return kept;
+    });
+  }, [turns, chatId]);
+
+  /** Which result each conversation has stored, so it is written once and
+   *  not on every turn. */
+  const storedResult = useRef(new Map<string, string>());
+  // Keeps the result on screen with the conversation that is about it
+  // (lib/chatResults.ts), so reopening it brings the report back too.
+  useEffect(() => {
+    if (!chatId || !currentKey || resultPrivate) return;
+    if (storedResult.current.get(chatId) === currentKey) return;
+    if (!chatUsesResult(turns, sharedScan.current, currentKey)) return;
+    const result: ChatResult | null = report
+      ? { kind: "report", report }
+      : audit
+        ? { kind: "audit", audit }
+        : null;
+    if (!result) return;
+    storedResult.current.set(chatId, currentKey);
+    void putChatResult(chatId, result);
+    setChats((list) =>
+      list.some((c) => c.id === chatId && c.resultKey !== currentKey)
+        ? saveChat(
+            list,
+            { ...list.find((c) => c.id === chatId)!, resultKey: currentKey }
+          )
+        : list
+    );
+  }, [turns, chatId, currentKey, report, audit, resultPrivate]);
+
+  // Another tab of the widget saved or deleted a conversation: the panel
+  // follows, so it never writes an old list back over the new one.
+  useEffect(() => {
+    const onStorage = (e: StorageEvent) => {
+      if (e.key === CHAT_ARCHIVE_KEY) setChats(loadChats());
+    };
+    window.addEventListener("storage", onStorage);
+    return () => window.removeEventListener("storage", onStorage);
+  }, []);
+
+  /** Clears the screen for a new conversation; the old one stays listed. */
+  function newChat() {
+    opened.current = null;
+    openingId.current = null;
+    setChatId(null);
+    setAll([]);
+    history.current = [];
+    sharedScan.current = null;
+    setBackTo(null);
+    setDraft("");
+    setPicks((last) => pickOpeningPrompts(Math.random, last));
+    setPanelOpen(false);
+    onLeaveBarrier?.();
+    focusInput();
+  }
+
+  /** Puts a past conversation back on screen. Its turns take fresh ids, so
+   *  they cannot meet a block id of this session's. The API history is
+   *  rebuilt from its words; the latest report rides along with the next
+   *  question, as after any fresh start. */
+  function openChat(chat: SavedChat) {
+    onLeaveBarrier?.();
+    if (chat.id === chatId) return;
+    const restored = (chat.turns as Turn[]).map((x) => ({ ...settleTurn(x), id: nextId++ }) as Turn);
+    opened.current = restored;
+    openingId.current = chat.id;
+    setChatId(chat.id);
+    // Its report comes back with it, when it is not the one on screen
+    // already. Read from IndexedDB, so it lands a moment later; by then the
+    // reader may have opened another conversation, which then wins.
+    if (chat.resultKey) storedResult.current.set(chat.id, chat.resultKey);
+    if (chat.resultKey && chat.resultKey !== currentKeyRef.current && onRestore) {
+      void getChatResult(chat.id).then((result) => {
+        if (result && openingId.current === chat.id) onRestore(result);
+      });
+    }
+    setAll(restored);
+    history.current = historyFromTurns(restored);
+    sharedScan.current = null;
+    setBackTo(null);
+    setPanelOpen(false);
+    focusInput();
+  }
+
+  function removeChat(chat: SavedChat) {
+    setChats((list) => deleteChat(list, chat.id));
+    storedResult.current.delete(chat.id);
+    void deleteChatResult(chat.id);
+    if (chat.id === chatId) newChat();
+  }
+
   useEffect(() => {
     const id = focusBlock.current;
     if (id === null) return;
     focusBlock.current = null;
-    const summary = rootRef.current?.querySelector<HTMLElement>(`#a11y-chat-block-${id} > summary`);
+    const summary = blockTarget(id);
     summary?.scrollIntoView({ block: "start" });
     summary?.focus({ preventScroll: true });
   }, [turns]);
+
+  /** Where a block takes focus: its fold line, or, for the findings block,
+   *  which has none, its first heading (made focusable for the purpose). */
+  function blockTarget(id: number): HTMLElement | null {
+    const block = rootRef.current?.querySelector<HTMLElement>(`#a11y-chat-block-${id}`);
+    if (!block) return null;
+    const summary = block.querySelector<HTMLElement>(":scope > summary");
+    if (summary) return summary;
+    const heading = block.querySelector<HTMLElement>("h2, h3");
+    if (heading && !heading.hasAttribute("tabindex")) heading.tabIndex = -1;
+    return heading;
+  }
 
   /** Shows a section as a block, or — when it is already in the thread for
    *  this result — takes the reader to it. One block per section per
@@ -646,7 +839,7 @@ export function ScanChat({
     if (existing) {
       if (!focusExisting) return true;
       markBack();
-      const summary = rootRef.current?.querySelector<HTMLElement>(`#a11y-chat-block-${existing.id} > summary`);
+      const summary = blockTarget(existing.id);
       summary?.scrollIntoView({ block: "start" });
       summary?.focus();
       if (announce) setAnnouncement(`${sectionLabel(key)}: ${t("shown above.")}`);
@@ -826,7 +1019,7 @@ export function ScanChat({
       } catch (err) {
         // The scan finished even if the reply about it did not: say both,
         // in the one message the failure path shows and announces.
-        const why = err instanceof Error ? err.message : t("The assistant could not answer that.");
+        const why = err instanceof Error ? err.message : t("The assistant couldn't answer that.");
         throw new ChatError(`${outcomeLine(outcome)} ${why}`, err instanceof ChatError ? err.status : undefined);
       } finally {
         // The block is the scan's, not the reply's: it is shown whether or
@@ -867,12 +1060,31 @@ export function ScanChat({
     setAnnouncement(line);
   }
 
+  /** The criterion number on an opening card, pressed: the question and a
+   *  short answer from the conformance table, set in the thread at once.
+   *  Nothing goes to the assistant, so it works with no scan and no key. */
+  function explainCriterion(id: string) {
+    const c = CRITERIA[id];
+    if (!c || busy || loading) return;
+    setBackTo(null);
+    add({ id: nextId++, who: "you", text: tf("What does WCAG {id} ask for?", { id }) });
+    const line = tf("**{id} {name}**, level {level}. The question it asks: {plain}", {
+      id,
+      name: c.name,
+      level: c.level,
+      plain: c.plain[getLang()] ?? c.plain.en,
+    });
+    add({ id: nextId++, who: "checker", text: line });
+    setAnnouncement(line.replace(/\*\*/g, ""));
+    focusInput();
+  }
+
   /** A re-run asked for outside the thread — the settings block, the top
    *  bar. It runs as a scan turn like any other; the assistant did not start
    *  it, so the next message carries the result, as a form scan does. */
   async function rerun(url: string, scope: "page" | "site", aiReview: boolean) {
     if (busy || loading) {
-      setAnnouncement(t("The assistant is still replying. Run it again in a moment."));
+      setAnnouncement(t("The assistant is still replying. Send it again in a moment."));
       return;
     }
     setBusy(true);
@@ -896,6 +1108,21 @@ export function ScanChat({
       show: (key) => void showSection(key, { force: true, announce: false, focusExisting: false }),
     };
   }
+
+  // The last finished reply, the address it asks about, and the line Tab
+  // would fill in (lib/chatSuggest).
+  const lastTurn = turns[turns.length - 1];
+  const lastReplyId = lastTurn && lastTurn.who === "checker" ? lastTurn.id : null;
+  const confirmAddress =
+    lastTurn && lastTurn.who === "checker" && !lastTurn.streaming && lastTurn.text ? addressToConfirm(lastTurn.text) : null;
+  const allPrompts = OPENING_PROMPTS.flatMap((g) => g.prompts.map((q) => t(q)));
+  const suggestion =
+    busy || loading
+      ? null
+      : tabSuggestion(draft, {
+          confirmReply: confirmAddress ? tf("Yes, check {url}", { url: confirmAddress }) : null,
+          prompts: allPrompts,
+        });
 
   async function send(e: FormEvent) {
     e.preventDefault();
@@ -973,7 +1200,7 @@ export function ScanChat({
           history.current = [];
           sharedScan.current = null;
         }
-        const message = err instanceof Error ? err.message : t("The assistant could not answer that.");
+        const message = err instanceof Error ? err.message : t("The assistant couldn't answer that.");
         setAll(
           turnsRef.current.map((x) =>
             x.who === "checker" && x.streaming ? { ...x, text: message, streaming: false } : x
@@ -987,12 +1214,56 @@ export function ScanChat({
     }
   }
 
+  /** A switch of language re-answers the latest reply in the new one (user's
+   *  report, 20 Nov 2026: switched to Deutsch, and the answer on screen
+   *  stayed English). The language only rode with the next question, so the
+   *  reader saw German controls around an English answer and nothing to say
+   *  the switch had worked. Only a plain last answer is redone: the history
+   *  must end on it, and it must be the last thing in the thread, so a shown
+   *  section, a scan underway or a failed turn is left as it is. Earlier
+   *  answers stay in the language they were written in. */
+  const answeredIn = useRef(language);
+  useEffect(() => {
+    if (answeredIn.current === language) return;
+    answeredIn.current = language;
+    if (busy || loading || assistantDown.current) return;
+    const before = beforeLastAnswer(history.current);
+    const lastTurn = turnsRef.current[turnsRef.current.length - 1];
+    if (!before) return;
+    if (!lastTurn || lastTurn.who !== "checker" || lastTurn.streaming || !lastTurn.text.trim()) return;
+    setAll(turnsRef.current.slice(0, -1));
+    setBusy(true);
+    void (async () => {
+      try {
+        await assistantTurn(before);
+      } catch (err) {
+        // The question stays in the history, so the next message carries it.
+        history.current = before;
+        const message = err instanceof Error ? err.message : t("The assistant couldn't answer that.");
+        setAll(
+          turnsRef.current.map((x) => (x.who === "checker" && x.streaming ? { ...x, text: message, streaming: false } : x))
+        );
+        setAnnouncement(message);
+      } finally {
+        setBusy(false);
+      }
+    })();
+    // Runs on a switch of language only; the rest is read when it happens.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [language]);
+
   /** WCAG 2.4.11: the pinned composer must never cover what the keyboard
-   *  is on. Anything that takes focus underneath it is scrolled clear. */
+   *  is on. Anything that takes focus underneath it is scrolled clear.
+   *  Keyboard focus only (:focus-visible): a press focuses its control too,
+   *  and scrolling on that moved the control out from under the pointer
+   *  between press and release, so the click never landed. The criterion
+   *  number at the foot of an opening card, beside the composer, did
+   *  nothing when pressed until this (18 Nov 2026). */
   function keepFocusClear(e: FocusEvent<HTMLDivElement>) {
     const dock = dockRef.current;
     const target = e.target as HTMLElement;
     if (!dock || dock.contains(target)) return;
+    if (!target.matches(":focus-visible")) return;
     const covered = target.getBoundingClientRect().bottom - dock.getBoundingClientRect().top;
     if (covered > 0) window.scrollBy({ top: covered + 16, behavior: "instant" as ScrollBehavior });
   }
@@ -1009,44 +1280,167 @@ export function ScanChat({
 
   if (hidden) return null;
 
+  // Switching threads mid-turn would land the reply in the wrong one.
+  const switchLocked = busy || loading;
+
   return (
+    <div className="a11y-chat-layout">
+      {/* The conversations panel, on the left (user's
+          instruction, 18 Nov 2026). A second navigation beside the report's
+          Sections rail, but the two never show together: this one lives in
+          the chat, the rail in the form's report. */}
+      <nav className="a11y-chats" aria-label={t("Conversations")} data-open={panelOpen ? "" : undefined}>
+        <button
+          type="button"
+          className="a11y-chats-toggle"
+          aria-expanded={panelOpen}
+          aria-controls="a11y-chats-body"
+          onClick={() => setPanelOpen((open) => !open)}
+        >
+          <Icon name="menu" size={20} />
+          {t("Conversations")}
+        </button>
+        <div className="a11y-chats-body" id="a11y-chats-body">
+        <button type="button" className="a11y-chats-new" onClick={newChat} disabled={switchLocked}>
+          {/* The icon set's add and flag, 32px grid, like the bin below
+              (user's instruction, 21 Nov 2026). */}
+          <Icon name="add" size={20} />
+          {t("New chat")}
+        </button>
+        {/* Report a barrier sits under New chat, the panel's other way to
+            start something (user's instruction, 20 Nov 2026). */}
+        {onReportBarrier && (
+          <button type="button" className="a11y-chats-new a11y-chats-barrier" onClick={onReportBarrier} disabled={switchLocked}>
+            {/* 18px, 10% under the add icon's 20: the flag fills 24 of
+                its 32 units where add fills 16, so at one size it looked
+                the larger (user's instruction, 21 Nov 2026). */}
+            <Icon name="flag" size={18} />
+            {t("Report a barrier")}
+          </button>
+        )}
+        {chats.length > 0 && (
+          <>
+            <h2 className="a11y-chats-head" id="a11y-chats-head">
+              {t("Recent")}
+            </h2>
+            {/* eslint-disable-next-line jsx-a11y/no-redundant-roles */}
+            <ul className="a11y-chats-list" role="list" aria-labelledby="a11y-chats-head">
+              {chats.map((c) => (
+                <li key={c.id} className="a11y-chats-row" data-current={c.id === chatId ? "" : undefined}>
+                  <button
+                    type="button"
+                    className="a11y-chats-item"
+                    aria-current={c.id === chatId ? "page" : undefined}
+                    disabled={switchLocked && c.id !== chatId}
+                    onClick={() => openChat(c)}
+                  >
+                    <span className="a11y-chats-title">{c.title}</span>
+                  </button>
+                  <button
+                    type="button"
+                    className="a11y-chats-delete"
+                    aria-label={tf("Delete {title}", { title: c.title })}
+                    disabled={switchLocked && c.id === chatId}
+                    onClick={() => removeChat(c)}
+                  >
+                    {/* A trash-can drawn on a 32px grid (user's instruction, 18 Nov 2026). */}
+                    <Icon name="trash-can" size={18} />
+                  </button>
+                </li>
+              ))}
+            </ul>
+          </>
+        )}
+        </div>
+      </nav>
     <div className="a11y-chat" ref={rootRef} onFocus={keepFocusClear}>
+      {/* The language, folded into one button pinned at the top right
+          (user's instruction, 21 Nov 2026). It is the column's first child
+          so sticky holds it for the whole conversation, not only while the
+          head is in view. */}
+      <div className="a11y-lang-pin">
+        <LanguageMenu value={language} onChange={onLanguageChange} />
+      </div>
       {/* The title and the intro open an empty conversation. Once there is
           one, they would sit above it saying "New scan" over a scan that
-          has run — the top bar's New scan button is the way back. The
-          language switcher stays. */}
+          has run — the top bar's New scan button is the way back. */}
       <div className="a11y-newscan-head">
         {/* Kept in the markup and folded shut, so the first turn slides
             up under it instead of jumping; hidden from readers once gone. */}
-        <div className="a11y-newscan-fold" data-gone={turns.length > 0 ? "" : undefined}>
+        <div className="a11y-newscan-fold" data-gone={turns.length > 0 || barrier ? "" : undefined}>
           <div>
             <h2 className="a11y-section-title a11y-newscan-title" id="a11y-newscan-title">
               {t("New scan")}
             </h2>
           </div>
         </div>
-        <LanguageSelect id="a11y-lang-form" value={language} onChange={onLanguageChange} />
       </div>
-      {/* The opening questions, set like the panels of a font tester (user's
-          reference, 4 Nov 2026): a small label over each, the question in
-          big centred type, a different layout each, no frame. Each is a
-          button that sends its question as if typed; they go once the
-          conversation starts. */}
-      {turns.length === 0 && (
+      {/* The opening questions as cards (user's reference, 18 Nov 2026):
+          a tall pale card per group, the group as its name top-left with
+          the question under it, and at the foot the WCAG criterion the
+          question checks in a marker highlight (it replaced a big question
+          mark the same day). The question covers the whole card and sends
+          itself as if typed; hover and focus turn the card solid black with
+          white words and show a pill that says what a press does. The
+          number is its own button and puts what the criterion asks in the
+          thread. They go once the conversation starts. */}
+      {barrier}
+      {!barrier && turns.length === 0 && (
         <section className="a11y-prompts" aria-label={t("Questions to start with")}>
-          {picks.map((p) => (
-            <div key={p.group} className="a11y-prompt" data-layout={p.layout}>
-              <p className="a11y-prompt-label">{t(p.group)}</p>
-              <button
-                type="button"
-                className="a11y-prompt-ask"
-                disabled={busy || loading}
-                onClick={() => void ask(t(p.prompt))}
-              >
-                {smarten(t(p.prompt), getLang())}
+          <div className="a11y-prompt-grid">
+          {picks.map((p) => {
+            const crit = criterionFor(p.prompt);
+            return (
+              // The card is a frame, not the button: it holds two controls,
+              // the question (stretched over the whole card) and the
+              // criterion number, and a button may not hold a button.
+              <div key={p.group} className="a11y-prompt">
+                <button
+                  type="button"
+                  className="a11y-prompt-q"
+                  disabled={busy || loading}
+                  onClick={() => void ask(t(p.prompt))}
+                >
+                  <span className="a11y-prompt-label">{t(p.group)}</span>
+                  <span className="a11y-prompt-ask">{smarten(t(p.prompt), getLang())}</span>
+                  {/* The press, said in words; the button's name is already
+                      the label and the question, so this is not read twice. */}
+                  <span className="a11y-prompt-go" aria-hidden="true">{t("Ask this")}</span>
+                </button>
+                {/* The criterion the question checks, at the foot of the
+                    card. A question that checks none shows nothing. */}
+                {crit && (
+                  <button
+                    type="button"
+                    className="a11y-prompt-wcag"
+                    disabled={busy || loading}
+                    aria-label={tf("WCAG {id} {name}: what it asks", { id: crit, name: CRITERIA[crit].name })}
+                    onClick={() => explainCriterion(crit)}
+                  >
+                    {crit}
+                  </button>
+                )}
+              </div>
+            );
+          })}
+          {/* Report a barrier, promoted into the opening (user's
+              instruction, 20 Nov 2026: "promote it so it appears in chat on
+              load"). Set as the other cards, with its own words for the
+              press, on the marker yellow (a11y-prompt-barrier; user's
+              instruction, 20 Nov 2026, "make the barrier card stand out
+              more"), and the fourth card in their row (user's instruction,
+              20 Nov 2026, "add yellow button 4th in a row"). It stays when
+              the questions are shuffled. */}
+          {onReportBarrier && (
+            <div className="a11y-prompt a11y-prompt-barrier">
+              <button type="button" className="a11y-prompt-q" disabled={busy || loading} onClick={onReportBarrier}>
+                <span className="a11y-prompt-label">{t("Report a barrier")}</span>
+                <span className="a11y-prompt-ask">{smarten(t("Did something on a website stop you or slow you down?"), getLang())}</span>
+                <span className="a11y-prompt-go" aria-hidden="true">{t("Start a report")}</span>
               </button>
             </div>
-          ))}
+          )}
+          </div>
           <p className="a11y-prompt-more">
             <Button variant="ghost" onClick={() => setPicks((last) => pickOpeningPrompts(Math.random, last))}>
               {t("Other questions")}
@@ -1054,12 +1448,24 @@ export function ScanChat({
           </p>
         </section>
       )}
-      {turns.length > 0 && (
+      {!barrier && turns.length > 0 && (
         // role="list" said out loud: WebKit drops the list role from a list
         // drawn without markers, and the label with it.
         // eslint-disable-next-line jsx-a11y/no-redundant-roles
         <ol className="a11y-chat-thread" role="list" aria-label={t("Conversation")}>
-          {turns.map((turn) => {
+          {turns.map((turn, i) => {
+            // One assistant message, however many parts it lands in. A scan
+            // line, the blocks it opens and the reply about them follow one
+            // another as one speaker's turn: the label is said once, on the
+            // first part, and the parts after it sit a line apart rather
+            // than two (user's instruction, 20 Nov 2026, "file a report in
+            // chat like an assistant would do"; it read as four speakers
+            // cutting in). The label stays for screen readers on every part,
+            // since each is its own list item.
+            const prev = i > 0 ? turns[i - 1] : null;
+            const cont = !!prev && prev.who !== "you" && prev.who !== "notice" && turn.who !== "you" && turn.who !== "notice";
+            const contClass = cont ? " a11y-chat-cont" : "";
+            const whoClass = cont ? "a11y-chat-who a11y-sr-only" : "a11y-chat-who";
             if (turn.who === "scan") {
               const running = turn.state === "running";
               const steps = running ? milestones : turn.steps;
@@ -1068,11 +1474,11 @@ export function ScanChat({
               // One sentence per state, translated whole; the address is
               // set into it rather than stitched onto a fragment.
               const [before, after] = t(
-                running ? "Checking {url}." : turn.state === "done" ? "Checked {url}." : "Could not check {url}."
+                running ? "Checking {url}." : turn.state === "done" ? "Checked {url}." : "Couldn't check {url}."
               ).split("{url}");
               return (
-                <li key={turn.id} className={`a11y-chat-turn a11y-chat-tool a11y-chat-scan-${turn.state}`}>
-                  <p className="a11y-chat-who">{t("Assistant")}</p>
+                <li key={turn.id} className={`a11y-chat-turn a11y-chat-tool a11y-chat-scan-${turn.state}${contClass}`}>
+                  <p className={whoClass}>{t("Assistant")}</p>
                   <div className="a11y-chat-text">
                     <p>
                       {before}
@@ -1120,13 +1526,34 @@ export function ScanChat({
               // The stop-press is an alert, not a block to fold away.
               if (turn.section === "stop") {
                 return body ? (
-                  <li key={turn.id} className="a11y-chat-turn a11y-chat-stop">
+                  <li key={turn.id} className={`a11y-chat-turn a11y-chat-stop${contClass}`}>
                     {body}
                   </li>
                 ) : null;
               }
+              // The findings block has no fold line (user's instruction, 21 Nov
+              // 2026, "delete these" on "Findings · Hide details"): its own
+              // headings ("What people can't use") already title it, so the
+              // line only repeated them. It stands open. Other blocks keep
+              // theirs, since some hide a heading that repeats the line.
+              if (turn.section === "findings") {
+                return (
+                  <li key={turn.id} id={`a11y-chat-block-${turn.id}`} className={`a11y-chat-turn a11y-chat-block${contClass}`}>
+                    <div className="a11y-chat-blockbody">
+                      {fresh ? (
+                        <>
+                          {renderSection("protable")}
+                          {body}
+                        </>
+                      ) : (
+                        <p className="a11y-chat-stale">{t("From an earlier scan. Run it again to see it.")}</p>
+                      )}
+                    </div>
+                  </li>
+                );
+              }
               return (
-                <li key={turn.id} className="a11y-chat-turn a11y-chat-block">
+                <li key={turn.id} className={`a11y-chat-turn a11y-chat-block${contClass}`}>
                   <details id={`a11y-chat-block-${turn.id}`} open={fresh}>
                     <summary className="a11y-chat-blockhead">
                       {sectionLabel(turn.section)}
@@ -1134,16 +1561,13 @@ export function ScanChat({
                           content joins the summary's name wherever the
                           alt-text syntax for `content` is not supported. */}
                       <span className="a11y-chat-fold" aria-hidden="true">
-                        <span className="a11y-chat-fold-closed">{t("Show details")} ▸</span>
-                        <span className="a11y-chat-fold-open">{t("Hide details")} ▾</span>
+                        <span className="a11y-chat-fold-closed">{t("Show details")} <Icon name="caret--right" /></span>
+                        <span className="a11y-chat-fold-open">{t("Hide details")} <Icon name="caret--down" /></span>
                       </span>
                     </summary>
                     <div className="a11y-chat-blockbody">
                       {fresh ? (
-                        <>
-                          {turn.section === "findings" && renderSection("protable")}
-                          {body}
-                        </>
+                        body
                       ) : (
                         <p className="a11y-chat-stale">{t("From an earlier scan. Run it again to see it.")}</p>
                       )}
@@ -1155,17 +1579,17 @@ export function ScanChat({
             if (turn.who === "notice") {
               return (
                 <li key={turn.id} className="a11y-chat-turn">
-                  <BlockedNotice message={turn.message} />
+                  <BlockedNotice message={turn.message} onSignIn={onSignInForm} />
                 </li>
               );
             }
             return (
               <li
                 key={turn.id}
-                className={`a11y-chat-turn a11y-chat-${turn.who}`}
+                className={`a11y-chat-turn a11y-chat-${turn.who}${contClass}`}
                 aria-busy={turn.who === "checker" && turn.streaming ? true : undefined}
               >
-                <p className="a11y-chat-who">{turn.who === "you" ? t("You") : t("Assistant")}</p>
+                <p className={whoClass}>{turn.who === "you" ? t("You") : t("Assistant")}</p>
                 <div className="a11y-chat-text">
                   {turn.who === "checker" ? (
                     <>
@@ -1173,6 +1597,22 @@ export function ScanChat({
                       {/* A search in progress, under whatever has been said so
                           far: the wait has a name, and the query once it is known. */}
                       {turn.streaming && turn.searching !== undefined && waiting(searchingLine(turn.searching))}
+                      {/* "Did you mean accessibility.nl?": the address is a
+                          button, and pressing it is the yes (user's
+                          instruction, 18 Nov 2026, "i would like to click
+                          website so it is researching it"). Only under the
+                          last reply, and only once it has finished. */}
+                      {!turn.streaming && turn.id === lastReplyId && confirmAddress && (
+                        <p className="a11y-chat-confirm">
+                          <Button
+                            variant="ghost"
+                            disabled={busy || loading}
+                            onClick={() => void ask(tf("Yes, check {url}", { url: confirmAddress }))}
+                          >
+                            {tf("Check {url}", { url: confirmAddress })}
+                          </Button>
+                        </p>
+                      )}
                       {turn.sources && turn.sources.length > 0 && (
                         <p className="a11y-chat-sources">
                           {t("Sources")}:{" "}
@@ -1197,16 +1637,7 @@ export function ScanChat({
         </ol>
       )}
 
-      {offered.length > 0 && (
-        <div className="a11y-chat-suggest" role="group" aria-label={t("Show from the report")}>
-          {offered.map((s) => (
-            <button key={s.key} type="button" className="a11y-chat-chip" onClick={() => showSection(s.key, { takeFocus: true })}>
-              {s.label()}
-            </button>
-          ))}
-        </div>
-      )}
-
+      {!barrier && (
       <div className="a11y-chat-dock" ref={dockRef}>
         {/* An assistant's box: the prompt sits inside it as the placeholder
             and the actions sit under the text, inside the same edge. The
@@ -1230,32 +1661,78 @@ export function ScanChat({
                 e.target.style.height = "auto";
                 e.target.style.height = e.target.scrollHeight + "px";
               }}
+              aria-describedby={suggestion ? "a11y-chat-tabhint" : undefined}
               onKeyDown={(e) => {
+                // Tab takes the suggestion; with none
+                // showing, or once taken, Tab moves on as it always does.
+                if (e.key === "Tab" && !e.shiftKey && !e.altKey && !e.ctrlKey && !e.metaKey && suggestion) {
+                  e.preventDefault();
+                  setDraft(suggestion);
+                  const el = e.currentTarget;
+                  requestAnimationFrame(() => {
+                    el.style.height = "auto";
+                    el.style.height = el.scrollHeight + "px";
+                    el.setSelectionRange(el.value.length, el.value.length);
+                  });
+                  return;
+                }
                 if (e.key === "Enter" && !e.shiftKey && !e.nativeEvent.isComposing) {
                   e.preventDefault();
                   e.currentTarget.form?.requestSubmit();
                 }
               }}
             />
+            {suggestion && (
+              <p className="a11y-chat-tabhint" id="a11y-chat-tabhint">
+                <span className="a11y-sr-only">{t("Press Tab to use this suggestion:")} </span>
+                <kbd aria-hidden="true">Tab</kbd>
+                <span className="a11y-chat-tabhint-text">{smarten(suggestion, getLang())}</span>
+              </p>
+            )}
             <div className="a11y-chat-box-row">
               <span className="a11y-chat-box-start">
                 {backTo && (
                   <Button variant="ghost" onClick={goBack}>
-                    <span aria-hidden="true">← </span>
+                    <Icon name="arrow--left" />{" "}
                     {t("Back")}
                   </Button>
                 )}
-                <Button variant="ghost" onClick={onUseForm}>
-                  {t("Use the form instead")}
-                </Button>
+                <VoiceControl />
+                {/* In the box (user's instruction, 20 Nov 2026), and only
+                    while a website is being scanned: the message names an
+                    address, or a website's report is open. It opens the
+                    form, so the login goes to the scanner and never into
+                    the chat or its model. */}
+                {(addressIn(draft) || (report && report.meta.documentKind !== "pdf")) && (
+                  <Button variant="ghost" onClick={onSignInForm}>
+                    {t("Scan a page behind a login")}
+                  </Button>
+                )}
               </span>
               <Button type="submit" variant="primary" disabled={busy || loading || !draft.trim()}>
-                {t("Send")}
+                {/* On a phone the word is clipped and the arrow drawn: the
+                    button keeps "Send" as its name. */}
+                <span className="a11y-chat-send-word">{t("Send")}</span>
+                <Icon name="arrow--up" size={22} className="a11y-chat-send-icon" />
               </Button>
             </div>
           </div>
+          {/* The report's sections, under the box in the sticky dock, so
+              they stay on screen while the thread scrolls (user's
+              instruction, 20 Nov 2026, "put them below chat so it's not on
+              scroll"). Each is type="button", so none submits the form. */}
+          {offered.length > 0 && (
+            <div className="a11y-chat-suggest" role="group" aria-label={t("Show from the report")}>
+              {offered.map((s) => (
+                <button key={s.key} type="button" className="a11y-chat-chip" onClick={() => showSection(s.key, { takeFocus: true })}>
+                  {s.label()}
+                </button>
+              ))}
+            </div>
+          )}
         </form>
       </div>
+      )}
 
       {/* The one place the assistant is announced from: the finished reply,
           once, or "Thinking…" while it works. Mounted from the start, so
@@ -1264,11 +1741,12 @@ export function ScanChat({
         {announcement}
       </p>
     </div>
+    </div>
   );
 }
 
-/** The step lines of a scan, once it is over, behind a Details toggle: the
- *  way Claude folds a finished tool call, so the thread reads as the
+/** The step lines of a scan, once it is over, behind a Details toggle,
+ *  so the thread reads as the
  *  conversation and the working is one click away. A running scan shows
  *  its steps; a failed one too, since its last line says where it stopped. */
 function StepFold({ folded, children }: { folded: boolean; children: ReactNode }) {
@@ -1278,8 +1756,8 @@ function StepFold({ folded, children }: { folded: boolean; children: ReactNode }
       <summary>
         {t("Details")}
         <span className="a11y-chat-fold" aria-hidden="true">
-          <span className="a11y-chat-fold-closed">▸</span>
-          <span className="a11y-chat-fold-open">▾</span>
+          <span className="a11y-chat-fold-closed"><Icon name="caret--right" /></span>
+          <span className="a11y-chat-fold-open"><Icon name="caret--down" /></span>
         </span>
       </summary>
       {children}

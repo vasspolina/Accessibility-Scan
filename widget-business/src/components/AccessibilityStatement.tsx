@@ -141,13 +141,13 @@ ${t(
 )}
 
 *${t(
-  "Note: under Article 14 of the European Accessibility Act, to claim disproportionate burden takes more than a mention. You must carry out and document an assessment, keep it for five years, and inform the relevant market surveillance authority."
+  "Note: under Article 14 of the European Accessibility Act, claiming disproportionate burden takes more than a mention. You must carry out and document an assessment, keep it for five years, and inform the relevant market surveillance authority."
 )}*
 
 ### ${t("Content outside the scope of the legislation")}
 
 ${t(
-  "[List here anything on the site that the accessibility rules do not cover. Examples: third party content you neither fund nor control, archived material, or office file formats published before the relevant date. Where an accessible alternative exists, say so. Delete this section if it does not apply.]"
+  "[List here anything on the site that the accessibility rules do not cover. Examples: third-party content you neither fund nor control, archived material, or office file formats published before the relevant date. Where an accessible alternative exists, say so. Delete this section if it does not apply.]"
 )}`;
 
   // "Method used to prepare the statement" is a required element of the model
@@ -157,7 +157,7 @@ ${t(
   const checkedOn = tf("This statement is based on an automated check carried out on {date}.", { date });
   const assessmentNote = conformance
     ? `${t(
-        "**Method used:** self assessment, carried out by the site owner with an automated accessibility checker. It was not a third party evaluation."
+        "**Method used:** self-assessment, carried out by the site owner with an automated accessibility checker. It was not a third-party evaluation."
       )}
 
 ${checkedOn} ${tf("The check covers the {total} Level A and AA success criteria in WCAG 2.1.", { total: conformance.total })}
@@ -341,7 +341,6 @@ export function AccessibilityStatement({ report }: { report: AccessibilityReport
   return (
     <section className="a11y-section a11y-stmt" aria-labelledby="a11y-stmt-heading">
       <SectionHeader
-        eyebrow="European law"
         title="Your accessibility statement"
         id="a11y-stmt-heading"
         navLabel="Accessibility statement"
@@ -439,9 +438,8 @@ export function AccessibilityStatement({ report }: { report: AccessibilityReport
         <h4 className="a11y-stmt-card-title">{t("The statement")}</h4>
         <div className="a11y-stmt-code">
           <div className="a11y-stmt-code-bar">
-            <span className="a11y-stmt-code-label" aria-hidden="true">
-              {t("Generated statement")}
-            </span>
+            {/* No "Generated statement" label here: the card title above
+                already names the block. */}
             <button type="button" className="a11y-sr-play" onClick={copy}>
               {copied ? t("Copied") : t("Copy")}
             </button>
@@ -476,7 +474,7 @@ export function AccessibilityStatement({ report }: { report: AccessibilityReport
 
       <p className="a11y-conf-caveat">
         <strong>{t("Read it before you publish.")}</strong>{" "}
-        {t("Make sure it matches the testing you have actually done. A starting point, not legal advice.")}
+        {t("Make sure it matches the testing you have actually done. This is a starting point, not legal advice.")}
       </p>
     </section>
   );

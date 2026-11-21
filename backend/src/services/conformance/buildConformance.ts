@@ -157,7 +157,7 @@ export function buildConformance(
   }
   for (const id of opts?.axeIncompleteCriteria ?? []) {
     const norm = normalizeCriterionId(id);
-    if (norm) markUnmeasured(norm, "an automated check that could not decide");
+    if (norm) markUnmeasured(norm, "an automated check that couldn't decide");
   }
 
   const criteria: CriterionResult[] = WCAG_21_AA_CRITERIA.map((c) => {

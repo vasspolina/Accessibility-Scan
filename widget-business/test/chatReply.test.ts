@@ -31,6 +31,12 @@ describe("renderReply", () => {
     expect(html("**Fix first** findings come first.")).toBe("<p><strong>Fix first</strong> findings come first.</p>");
   });
 
+  // Jokker has no italic: single-star emphasis is set plain, stars dropped.
+  it("drops single-star emphasis marks and keeps the words", () => {
+    expect(html("*Note: under Article 14 you must.*")).toBe("<p>Note: under Article 14 you must.</p>");
+    expect(html("Rate 2*3*4 stays as typed.")).toBe("<p>Rate 2*3*4 stays as typed.</p>");
+  });
+
   it("splits paragraphs on blank lines", () => {
     expect(html("One.\n\nTwo.")).toBe("<p>One.</p><p>Two.</p>");
   });

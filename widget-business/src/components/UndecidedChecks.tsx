@@ -3,6 +3,7 @@ import { undecidedExplanation } from "../lib/wcagPlain";
 import { t, tf } from "../lib/strings";
 import { fixKindForRule } from "../lib/testMethod";
 import { DataTable } from "./DataTable";
+import { Icon } from "./Icon";
 
 /* The design's "Export the list" made real. A CSV, because this section is
    the one the owner hands to someone else: it opens in whatever spreadsheet
@@ -73,8 +74,8 @@ export function UndecidedChecks({
           whose, so the lead no longer repeats either. */}
       <p className="a11y-section-desc">
         {total === 1
-          ? t("The checker could not settle this one on its own. It does not count against the score.")
-          : tf("The checker could not settle these {total} on its own. None of them count against the score.", { total })}
+          ? t("The checker couldn't settle this one on its own. It does not count against the score.")
+          : tf("The checker couldn't settle these {total} on its own. None of them count against the score.", { total })}
       </p>
       </div>
       {rows.length > 0 && (
@@ -136,7 +137,7 @@ export function UndecidedChecks({
                         rel="noopener noreferrer"
                       >
                         {learnMore}
-                        <span aria-hidden="true">↗</span>
+                        <Icon name="launch" />
                         <span className="a11y-sr-only">{learnMoreRest}</span>
                       </a>
                     )}

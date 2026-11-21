@@ -29,7 +29,7 @@ export const OPENING_PROMPTS: PromptGroup[] = [
       "Can someone close a cookie banner with a keyboard?",
       "Is the text easy to read against its background?",
       "Can someone zoom in without losing access to content?",
-      "Can someone fill out a form with a screen reader?",
+      "Can someone fill in a form with a screen reader?",
       "Can someone complete checkout using only a keyboard?",
       "Do the images have useful alt text?",
       "Are the videos accessible without sound?",
@@ -60,6 +60,7 @@ export const OPENING_PROMPT_KEYS: string[] = [
   ...OPENING_PROMPTS.map((g) => g.label),
   ...OPENING_PROMPTS.flatMap((g) => g.prompts),
   "Other questions",
+  "Ask this",
   "Questions to start with",
 ];
 

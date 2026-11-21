@@ -64,6 +64,12 @@ export interface AccessibilityFinding {
   // string is ready-to-use alt text; an empty string means the image looks
   // decorative and should get alt=""; undefined means none was generated.
   suggestedAltText?: string;
+  // The AI fix: the element's captured markup with the fault corrected.
+  // Absent when the AI layer did not run or declined this element.
+  suggestedCode?: { before: string; after: string; note?: string; model: string };
+  // The self-hosted model's plain-language wording of an axe finding. Words
+  // only: severity, criterion and score are measured, never the model's.
+  plain?: { title: string; explanation: string; fix: string; model: string; lang: string };
 }
 
 // One announcement in the screen-reader preview. An approximation of what a
@@ -203,6 +209,15 @@ export interface AccessibilityReport {
     documentKind?: "pdf";
     documentPages?: number;
     model?: string;
+    // The plain-language rewrite: whether it ran, and how many of the page's
+    // axe rules it reached.
+    plainLanguage?: {
+      status: "completed" | "partial" | "timed_out" | "failed" | "not_configured" | "disabled_by_request" | "off_for_scans";
+      model?: string;
+      rules: number;
+      rewritten: number;
+      ms: number;
+    };
   };
 }
 
@@ -368,7 +383,7 @@ export async function scanUrl(
         await delay(1500 * attempt);
         continue;
       }
-      throw new ScanError(t("Could not reach the scanner service. Please try again shortly."));
+      throw new ScanError(t("Couldn't reach the scanner service. Please try again shortly."));
     }
 
     if (TRANSIENT_STATUSES.has(response.status) && attempt < MAX_ATTEMPTS) {
@@ -403,7 +418,7 @@ export async function scanUrl(
     return response.json();
   }
 
-  throw new ScanError(t("Could not reach the scanner service. Please try again shortly."));
+  throw new ScanError(t("Couldn't reach the scanner service. Please try again shortly."));
 }
 
 export async function auditSite(
@@ -428,7 +443,7 @@ export async function auditSite(
     if (err instanceof DOMException && err.name === "AbortError") {
       throw new ScanError(t("The audit stopped responding, so we gave up waiting. Please try again."));
     }
-    throw new ScanError(t("Could not reach the scanner service. Please try again shortly."));
+    throw new ScanError(t("Couldn't reach the scanner service. Please try again shortly."));
   }
 
   if (response.status === 429) throw new ScanError(t(RATE_LIMITED));

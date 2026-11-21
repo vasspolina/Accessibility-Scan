@@ -79,7 +79,6 @@ export function ProSummary({
         {/* The score card. Inverted, because it is the one figure the whole
             panel is arranged around. */}
         <div className="a11y-pro-scorecard">
-          <p className="a11y-pro-eyebrow a11y-pro-eyebrow-invert">{t("Issues by severity")}</p>
           <p className="a11y-pro-score">
             <span className="a11y-pro-score-num">{report.score}</span>
             <span className="a11y-pro-score-of">{t("out of 100")}</span>
@@ -121,7 +120,7 @@ export function ProSummary({
           </h3>
           {clean.length === 0 ? (
             <p className="a11y-pro-empty">
-              {t("Nothing here came back clean enough to list.")}
+              {t("No check came back clean on this page.")}
             </p>
           ) : (
             <ul className="a11y-pro-rows" aria-labelledby="a11y-pro-clean-heading">

@@ -82,7 +82,34 @@ Titles state what was measured and never hedge ("A control", not "Something").
   included since 4 Nov 2026; never an em dash.
 - Dates in European format (28 June 2025).
 - British spelling (colour, recognise), matching the rest of the report.
+- German, Spanish and French avoid the generic masculine (17 Nov 2026):
+  neutral wording first ("Ihr Entwicklungsteam", "su equipo de
+  desarrollo", "votre équipe de développement"; "Menschen mit Screenreader",
+  "quien usa un lector de pantalla", "les personnes qui utilisent un
+  lecteur d'écran"), the paired form where nothing neutral reads well. No
+  gender star or colon, no @/x/e endings, no point médian: screen readers
+  announce them inconsistently, which matters in an accessibility product.
+- Contract "can't" and "couldn't" in the interface and the findings (17 Nov
+  2026). The drafts the owner publishes, the accessibility statement and the
+  conformance report, keep "cannot" and "could not": they are formal
+  documents. AI prompts, CLI output and server logs are not reader copy.
 - Lists carry the technical detail. Prose carries the meaning.
+
+## Chat replies
+
+The assistant's replies are generated, so these rules live in its prompt
+(`backend/src/services/chat/chatPrompt.ts`, "How you write") and are checked
+there by `backend/test/chatRoute.test.ts`:
+
+- Start with the answer. No praise of the question, no "Sure", no
+  restating what was asked.
+- Stop when the answer is done. No "Let me know if", "Hope this helps" or
+  closing summary. The only offers are the concrete one-sentence ones the
+  prompt asks for.
+- No filler hedges ("it's worth noting", "arguably", "generally speaking").
+  Real uncertainty stays, said once: an AI review finding may be wrong.
+- Format only what needs it. A list is three or more items; bold marks a
+  term to find on the page, not emphasis.
 
 ## Accuracy rules
 

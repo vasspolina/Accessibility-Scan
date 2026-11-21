@@ -130,15 +130,21 @@ export const PLAIN_DE: Record<string, PlainRule> = {
     plain: "Links heißen nur „Mehr erfahren“",
     impact: "Wer einen Screenreader nutzt, kann sich eine Liste aller Links geben lassen. Wenn alle gleich heißen, hilft diese Liste überhaupt nicht.",
   },
+  "label-content-name-mismatch": {
+    plain: "Angesagter Name weicht von Beschriftung ab",
+    found: (n) =>
+      `${n} ${n === 1 ? "Bedienelement zeigt" : "Bedienelemente zeigen"} bestimmte Wörter und ${n === 1 ? "trägt" : "tragen"} im Code einen anderen Namen. Der Name, den ein Screenreader ansagt, lässt die sichtbaren Wörter aus.`,
+    impact: "Wer per Sprache steuert, sagt die Wörter, die zu sehen sind. „Klick auf Nachricht senden“ bewirkt nichts, wenn die Schaltfläche im Code anders heißt. Wer einen Screenreader nutzt und die Seite sieht, hört etwas anderes, als dasteht.",
+  },
   "button-name": {
-    research: "Schaltflächen ohne Beschriftung stehen Jahr für Jahr weit oben in der jährlichen WebAIM-Untersuchung von einer Million Startseiten. Meist sind es reine Symbol-Schaltflächen, die für ihre Gestalter selbsterklärend waren.",
+    research: "Schaltflächen ohne Beschriftung stehen Jahr für Jahr weit oben in der jährlichen WebAIM-Untersuchung von einer Million Startseiten. Meist sind es reine Symbol-Schaltflächen, die für das Designteam selbsterklärend waren.",
     plain: "Schaltflächen ohne Beschriftung",
     found: (n) =>
       `${n} ${n === 1 ? "Schaltfläche hat" : "Schaltflächen haben"} gar keine Beschriftung: keine Wörter darin und keinen Namen im Code. Fast immer sind es Symbol-Schaltflächen, bei denen das Zeichen die Bedeutung trägt und der Code nichts davon.`,
-    impact: "Niemand weiß vor dem Klick, was passiert. Ein häufiger Grund, aufzugeben.",
+    impact: "Wer einen Screenreader nutzt, weiß vor dem Klick nicht, was passiert. Ein häufiger Grund, aufzugeben.",
   },
   label: {
-    research: "Fehlende Feldbeschriftungen stehen weit oben in der jährlichen WebAIM-Untersuchung von einer Million Startseiten. In der britischen Click-Away-Pound-Studie verließen die meisten Käufer, die auf so eine Hürde stießen, den Shop wortlos. Ihr Geld gaben sie woanders aus.",
+    research: "Fehlende Feldbeschriftungen stehen weit oben in der jährlichen WebAIM-Untersuchung von einer Million Startseiten. In der britischen Click-Away-Pound-Studie verließen die meisten Kundinnen und Kunden, die auf so eine Hürde stießen, den Shop wortlos. Ihr Geld gaben sie woanders aus.",
     plain: "Formularfelder ohne Beschriftung",
     found: (n) =>
       `${n} ${n === 1 ? "Formularfeld ist" : "Formularfelder sind"} im Code nicht mit einer Beschriftung verbunden. Auf dem Bildschirm stehen die Wörter vielleicht direkt daneben, aber nichts verknüpft beides.`,
@@ -171,7 +177,7 @@ export const PLAIN_DE: Record<string, PlainRule> = {
     plain: "Überschriften überspringen Ebenen",
     found: (n) =>
       `Die Überschriftenebenen springen, statt Stufe für Stufe zu gehen. An ${n} ${n === 1 ? "Stelle" : "Stellen"} fehlt eine Ebene. Auf ein h2 folgt direkt ein h4, oder Ähnliches.`,
-    impact: "Die meisten Screenreader-Nutzer navigieren über Überschriften. Sie verlieren den Faden.",
+    impact: "Die meisten Menschen mit Screenreader navigieren über Überschriften. Sie verlieren den Faden.",
   },
   "page-has-heading-one": {
     plain: "Keine Hauptüberschrift",
@@ -189,7 +195,7 @@ export const PLAIN_DE: Record<string, PlainRule> = {
     plain: "Links nur durch Farbe erkennbar",
     found: (n) =>
       `${n} ${n === 1 ? "Link im Fließtext ist" : "Links im Fließtext sind"} nur durch Farbe gekennzeichnet, ohne Unterstreichung.`,
-    impact: "Farbenblinde Leser unterscheiden den Link nicht von gewöhnlichem Text.",
+    impact: "Wer farbenblind ist, unterscheidet den Link nicht von gewöhnlichem Text.",
   },
   "meta-viewport": {
     plain: "Zoomen ist gesperrt",
@@ -199,7 +205,7 @@ export const PLAIN_DE: Record<string, PlainRule> = {
   "meta-viewport-large": {
     plain: "Zoom auf eine feste Stufe begrenzt",
     found: () =>
-      `Zoomen geht, aber die Seite deckelt es unter 500%.`,
+      `Zoomen geht, aber die Seite deckelt es unter 500 %.`,
     impact: "Milder, als das Zoomen ganz zu sperren, und es trifft dieselben Menschen. Wer sehr große Schrift braucht, kommt bis zum Deckel und keinen Schritt weiter.",
   },
   "frame-title": {
@@ -283,7 +289,7 @@ export const PLAIN_DE: Record<string, PlainRule> = {
 
   "keyboard-mouse-only": {
     found: (n) => (n === 1 ? "Ein Bedienelement reagiert auf einen Klick, aber nicht auf die Tastatur. Die Tab-Taste erreicht es nicht, oder Enter und Leertaste bewirken dort nichts." : "{n} Bedienelemente reagieren auf einen Klick, aber nicht auf die Tastatur. Die Tab-Taste erreicht sie nicht, oder Enter und Leertaste bewirken dort nichts.".replace("{n}", String(n))),
-    research: "Jahrzehnte an Usability-Forschung, vieles davon von der Nielsen Norman Group, kommen immer wieder zum selben Schluss. Tastaturbedienung nützt geübten Nutzern genauso wie Menschen, die keine Maus halten können.",
+    research: "Jahrzehnte an Usability-Forschung, vieles davon von der Nielsen Norman Group, kommen immer wieder zum selben Schluss. Tastaturbedienung nützt Geübten genauso wie Menschen, die keine Maus halten können.",
     plain: "Ein Bedienelement, das die Tastatur nicht erreicht",
     impact: "Hier gibt es keinen Umweg. Wer keine Maus benutzen kann, kann nicht tun, was dieses Element tut. Ist es der Kaufen-Knopf oder ein Formularschritt, endet der Besuch hier.",
   },
@@ -309,7 +315,7 @@ export const PLAIN_DE: Record<string, PlainRule> = {
   },
 
   "forced-colors-focus-lost": {
-    found: (n) => (n === 1 ? "Bei mehreren Bedienelementen besteht die Fokusmarkierung nur aus einem Schatten oder einem Farbwechsel. Im Modus für hohen Kontrast unter Windows verschwindet sie deshalb." : "Bei {n} Bedienelementen besteht die Fokusmarkierung nur aus einem Schatten oder einem Farbwechsel. Im Modus für hohen Kontrast unter Windows verschwindet sie deshalb.".replace("{n}", String(n))),
+    found: (n) => (n === 1 ? "Bei mindestens einem Bedienelement besteht die Fokusmarkierung nur aus einem Schatten oder einem Farbwechsel. Im Modus für hohen Kontrast unter Windows verschwindet sie deshalb." : "Bei {n} Bedienelementen besteht die Fokusmarkierung nur aus einem Schatten oder einem Farbwechsel. Im Modus für hohen Kontrast unter Windows verschwindet sie deshalb.".replace("{n}", String(n))),
     plain: "Fokusmarkierung verschwindet im hohen Kontrast",
     impact: "Der Modus für hohen Kontrast entfernt die Schatten und Farben, mit denen die meisten Fokusmarkierungen gezeichnet sind. Wer am dringendsten sehen muss, wo er steht, sieht nichts. Auf einer Seite, die bis dahin perfekt aussieht.",
   },
@@ -319,7 +325,7 @@ export const PLAIN_DE: Record<string, PlainRule> = {
     impact: "Das Symbol ist ein Hintergrundbild, und dieser Modus entfernt Hintergrundbilder. Die Schaltfläche funktioniert weiter, erscheint aber als leerer Kasten: kein Bild, keine Beschriftung, kein Hinweis, dass es eine Schaltfläche ist.",
   },
   "keyboard-faint-focus": {
-    found: (n) => (n === 1 ? "Bei mehreren Bedienelementen ist der Rahmen, der den Tastaturfokus zeigt, zu blass. Sein Kontrast zum Hintergrund liegt unter 3:1, dem Mindestwert für eine sichtbare Markierung." : "Bei {n} Bedienelementen ist der Rahmen, der den Tastaturfokus zeigt, zu blass. Sein Kontrast zum Hintergrund liegt unter 3:1, dem Mindestwert für eine sichtbare Markierung.".replace("{n}", String(n))),
+    found: (n) => (n === 1 ? "Bei mindestens einem Bedienelement ist der Rahmen, der den Tastaturfokus zeigt, zu blass. Sein Kontrast zum Hintergrund liegt unter 3:1, dem Mindestwert für eine sichtbare Markierung." : "Bei {n} Bedienelementen ist der Rahmen, der den Tastaturfokus zeigt, zu blass. Sein Kontrast zum Hintergrund liegt unter 3:1, dem Mindestwert für eine sichtbare Markierung.".replace("{n}", String(n))),
     plain: "Tastaturmarkierung zu blass zum Sehen",
     impact: "Die Tab-Taste bewegt einen unsichtbaren Zeiger, und nur der Rahmen zeigt, wo er angekommen ist. Ist er zu blass, weiß man an der Tastatur nicht, was man gleich auslöst. Beim Testen rutscht das durch, weil ja wirklich ein Rahmen da ist.",
   },
@@ -395,7 +401,7 @@ export const PLAIN_DE: Record<string, PlainRule> = {
   "mobile-target-spacing": {
     plain: "Tippziele liegen zu dicht beieinander",
     found: (n) =>
-      `${n} ${n === 1 ? "Paar von Bedienelementen liegt" : "Paare von Bedienelementen liegen"} in Handy-Breite weniger als 8px auseinander. Einzeln ist jedes groß genug; zusammen lassen sie keinen Platz zum Danebentippen.`,
+      `${n} ${n === 1 ? "Paar von Bedienelementen liegt" : "Paare von Bedienelementen liegen"} in Handybreite weniger als 8 px auseinander. Einzeln ist jedes groß genug; zusammen lassen sie keinen Platz zum Danebentippen.`,
     impact: "Ein Daumen ist kein Mauszeiger. Ein Finger, der ein Element anpeilt und beim Nachbarn landet, tippt oder kauft das Falsche. Menschen mit Zittern oder größeren Fingern trifft es zuerst.",
   },
   "consent-blocks-reader": {
@@ -405,18 +411,18 @@ export const PLAIN_DE: Record<string, PlainRule> = {
     impact: "Wer einen Screenreader nutzt, hört Stille, wo die Seite sein sollte. Man kann die Seite nicht lesen und findet das Banner nicht, um es wegzuräumen.",
   },
   "mobile-sticky-coverage": {
-    plain: "Fixierte Leisten füllen den Handy-Bildschirm",
+    plain: "Fixierte Leisten füllen den Handybildschirm",
     found: () =>
-      `Fixierte Kopfzeilen, Banner oder Werkzeugleisten belegen in Handy-Breite mehr als ein Drittel des Bildschirms.`,
+      `Fixierte Kopfzeilen, Banner oder Werkzeugleisten belegen in Handybreite mehr als ein Drittel des Bildschirms.`,
     impact: "Jedes fixierte Pixel ist eines, durch das niemand die Seite lesen kann. Was die Tastatur fokussiert, kann hinter den Leisten verschwinden. WCAG 2.2 macht genau das schon zur Pflicht; das Gesetz verweist nur noch nicht darauf.",
   },
   "mobile-horizontal-scroll": {
-    found: (n) => (n === 1 ? "In Handy-Breite ragt ein Element über den Bildschirmrand hinaus, und die ganze Seite scrollt seitwärts." : "In Handy-Breite ragen {n} Elemente über den Bildschirmrand hinaus, und die ganze Seite scrollt seitwärts.".replace("{n}", String(n))),
+    found: (n) => (n === 1 ? "In Handybreite ragt ein Element über den Bildschirmrand hinaus, und die ganze Seite scrollt seitwärts." : "In Handybreite ragen {n} Elemente über den Bildschirmrand hinaus, und die ganze Seite scrollt seitwärts.".replace("{n}", String(n))),
     plain: "Die Seite scrollt auf dem Handy seitwärts",
-    impact: "Die meisten Besucher sind am Handy. Für jede Zeile seitwärts wischen zu müssen, treibt sie weg.",
+    impact: "Die meisten Menschen sind am Handy unterwegs. Für jede Zeile seitwärts wischen zu müssen, treibt sie weg.",
   },
   "mobile-tap-target": {
-    found: (n) => (n === 1 ? "In Handy-Breite ist ein Tippziel unter 24px breit oder hoch, und ein anderes liegt direkt daneben. Ein knapp verfehlter Tipper landet leicht beim Nachbarn." : "In Handy-Breite sind {n} Tippziele unter 24px breit oder hoch, und jedes hat ein anderes direkt daneben. Ein knapp verfehlter Tipper landet leicht beim Nachbarn.".replace("{n}", String(n))),
+    found: (n) => (n === 1 ? "In Handybreite ist ein Tippziel unter 24 px breit oder hoch, und ein anderes liegt direkt daneben. Ein knapp verfehlter Tipper landet leicht beim Nachbarn." : "In Handybreite sind {n} Tippziele unter 24 px breit oder hoch, und jedes hat ein anderes direkt daneben. Ein knapp verfehlter Tipper landet leicht beim Nachbarn.".replace("{n}", String(n))),
     plain: "Tippziele zu klein",
     impact: "Tipper gehen daneben, und der Ärger wächst. Am schlimmsten bei größeren Fingern, Zittern oder unruhigen Händen. Das kostet Sie Umsatz.",
   },
@@ -440,7 +446,7 @@ export const PLAIN_DE: Record<string, PlainRule> = {
   "dark-consent-no-reject": {
     found: (n) => (n === 1 ? "Das Cookie-Banner hat einen Knopf zum Zustimmen. Keiner seiner Knöpfe bietet Ablehnen an, auch nicht als „Nur notwendige“." : "{n} Cookie-Banner haben einen Knopf zum Zustimmen. Keiner ihrer Knöpfe bietet Ablehnen an, auch nicht als „Nur notwendige“.".replace("{n}", String(n))),
     plain: "Cookie-Banner ohne Ablehnen",
-    impact: "Nach der DSGVO muss Ablehnen so leicht sein wie Zustimmen. So eingeholte Einwilligungen können ungültig sein. Ein fehlender „Ablehnen“-Knopf wirkt auf Besucher wie ein Trick.",
+    impact: "Nach der DSGVO muss Ablehnen so leicht sein wie Zustimmen. So eingeholte Einwilligungen können ungültig sein. Ein fehlender „Ablehnen“-Knopf wirkt wie ein Trick.",
   },
   "dark-consent-asymmetry": {
     found: (n) => (n === 1 ? "Auf dem Cookie-Banner hat der Knopf zum Zustimmen eine Hintergrundfarbe. Ablehnen steht ohne Hintergrund da." : "Auf {n} Cookie-Bannern hat der Knopf zum Zustimmen eine Hintergrundfarbe. Ablehnen steht jeweils ohne Hintergrund da.".replace("{n}", String(n))),
@@ -460,7 +466,7 @@ export const PLAIN_DE: Record<string, PlainRule> = {
   "dark-fake-scarcity": {
     found: (n) => (n === 1 ? "Eine Angabe auf dieser Seite meldet knappen Bestand oder große Nachfrage. Wer sie liest, kann nicht prüfen, ob sie stimmt." : "{n} Angaben auf dieser Seite melden knappen Bestand oder große Nachfrage. Wer sie liest, kann nicht prüfen, ob sie stimmen.".replace("{n}", String(n))),
     plain: "Knappheitsangaben als Druckmittel",
-    impact: "Behörden gehen gegen erfundene Knappheit vor. Käufer haben gelernt, ihr zu misstrauen. Erfundene Zahlen kosten mehr Verkäufe, als sie bringen.",
+    impact: "Behörden gehen gegen erfundene Knappheit vor. Die Kundschaft hat gelernt, ihr zu misstrauen. Erfundene Zahlen kosten mehr Verkäufe, als sie bringen.",
   },
   "dark-fake-urgency": {
     found: (n) => (n === 1 ? "Ein Hinweis auf dieser Seite macht Zeitdruck, nennt aber kein Datum. Wer ihn liest, kann nicht prüfen, ob die Frist echt ist." : "{n} Hinweise auf dieser Seite machen Zeitdruck, nennen aber kein Datum. Wer sie liest, kann nicht prüfen, ob die Fristen echt sind.".replace("{n}", String(n))),
@@ -496,7 +502,7 @@ export const PLAIN_DE: Record<string, PlainRule> = {
   "dialog-no-close": {
     found: (n) => (n === 1 ? "Mindestens ein Pop-up hat keinen erkennbaren Schließen-Knopf. Kein Knopf darin trägt ein Wort wie „Schließen“ oder ein Kreuz." : "{n} Pop-ups haben keinen erkennbaren Schließen-Knopf. Kein Knopf darin trägt ein Wort wie „Schließen“ oder ein Kreuz.".replace("{n}", String(n))),
     plain: "Kein sichtbarer Schließen-Knopf",
-    impact: "Wenn der Klick daneben der einzige Ausweg ist, hängen Tastaturnutzer dahinter fest.",
+    impact: "Wenn der Klick daneben der einzige Ausweg ist, hängt dahinter fest, wer nur die Tastatur nutzt.",
   },
   "dialog-missing-role": {
     found: (n) => (n === 1 ? "Mindestens eine Einblendung liegt wie ein Pop-up über der Seite, ist im Code aber nicht als Dialog gekennzeichnet." : "{n} Einblendungen liegen wie Pop-ups über der Seite, sind im Code aber nicht als Dialog gekennzeichnet.".replace("{n}", String(n))),
@@ -506,7 +512,7 @@ export const PLAIN_DE: Record<string, PlainRule> = {
   "dialog-missing-name": {
     found: (n) => (n === 1 ? "Mindestens ein Pop-up hat im Code keinen Namen. Ein Screenreader hat deshalb keinen Titel, den er ansagen kann." : "{n} Pop-ups haben im Code keinen Namen. Ein Screenreader hat deshalb keinen Titel, den er ansagen kann.".replace("{n}", String(n))),
     plain: "Das Pop-up sagt nicht, wozu es da ist",
-    impact: "Beim Öffnen sagt ein Screenreader nur „Dialog“. Der Besucher weiß nicht, was gefragt wird und warum.",
+    impact: "Beim Öffnen sagt ein Screenreader nur „Dialog“. Niemand weiß, was gefragt wird und warum.",
   },
 
   "markup-validation": {
@@ -544,7 +550,7 @@ export const PLAIN_DE: Record<string, PlainRule> = {
   "typo-negative-letterspacing": {
     found: (n) => (n === 1 ? "Text auf dieser Seite ist enger gesetzt, als die Schrift es vorsieht. Die Buchstaben können sich dabei berühren." : "An {n} Stellen auf dieser Seite ist Text enger gesetzt, als die Schrift es vorsieht. Die Buchstaben können sich dabei berühren.".replace("{n}", String(n))),
     plain: "Buchstaben berühren sich vor Enge",
-    impact: "Gequetschte Buchstaben verschwimmen ineinander. Besonders in kleinen Größen und bei schwachem Sehvermögen.",
+    impact: "Gequetschte Buchstaben verschwimmen ineinander, besonders in kleinen Größen und bei schwachem Sehvermögen.",
   },
   "typo-line-length-long": {
     found: (n) => (n === 1 ? "Auf dieser Seite steht Fließtext in Zeilen, die im Schnitt länger als 90 Zeichen sind." : "An {n} Stellen auf dieser Seite steht Fließtext in Zeilen, die im Schnitt länger als 90 Zeichen sind.".replace("{n}", String(n))),
@@ -562,7 +568,7 @@ export const PLAIN_DE: Record<string, PlainRule> = {
     impact: "Blocksatz dehnt die Wortabstände, damit jede Zeile voll wird. Die ungleichen Lücken bilden störende weiße „Flüsse“, die die Seite hinunterlaufen.",
   },
   "typo-font-size-small": {
-    found: (n) => (n === 1 ? "Fließtext auf dieser Seite ist kleiner als 13px gesetzt." : "An {n} Stellen auf dieser Seite ist Fließtext kleiner als 13px gesetzt.".replace("{n}", String(n))),
+    found: (n) => (n === 1 ? "Fließtext auf dieser Seite ist kleiner als 13 px gesetzt." : "An {n} Stellen auf dieser Seite ist Fließtext kleiner als 13 px gesetzt.".replace("{n}", String(n))),
     plain: "Fließtext sehr klein gesetzt",
     impact: "Kleine Schrift vertreibt alle, die am Handy, bei schlechtem Licht oder mit nicht perfekten Augen lesen.",
   },
@@ -590,7 +596,7 @@ export const PLAIN_DE: Record<string, PlainRule> = {
   "typo-thin-weight": {
     found: (n) => (n === 1 ? "Für Fließtext auf dieser Seite ist eine sehr dünne Schriftstärke eingestellt: 200 oder weniger. Normal ist 400." : "An {n} Stellen auf dieser Seite ist für Fließtext eine sehr dünne Schriftstärke eingestellt: 200 oder weniger. Normal ist 400.".replace("{n}", String(n))),
     plain: "Fließtext in sehr dünner Schrift",
-    impact: "Dünne Striche verblassen auf billigen Bildschirmen, in der Sonne und bei schwachen Augen. Auch dann, wenn der Kontrast reicht.",
+    impact: "Dünne Striche verblassen auf billigen Bildschirmen, in der Sonne und bei schwachen Augen, auch dann, wenn der Kontrast reicht.",
   },
   "nav-name-inconsistent": {
     plain: "Derselbe Link mit verschiedenen Namen",
@@ -701,7 +707,7 @@ export const FIXES_DE: Record<string, string | string[]> = {
   ],
   "sr-vague-link-name": [
     "Benennen Sie jeden Link nach seinem Ziel. „Preise ansehen“, nicht „Hier klicken“.",
-    "Der sichtbare Text darf kurz bleiben. Ihr Entwickler kann den vollständigen Namen unsichtbar ergänzen, nur für Screenreader.",
+    "Der sichtbare Text darf kurz bleiben. Ihr Entwicklungsteam kann den vollständigen Namen unsichtbar ergänzen, nur für Screenreader.",
   ],
   "sr-symbol-button-name": [
     "Beschriften Sie jede Schaltfläche mit ihrer Aktion: „Schließen“, „Nächste Folie“, „Suchen“, „Abspielen“.",
@@ -773,7 +779,7 @@ export const FIXES_DE: Record<string, string | string[]> = {
     "Lassen Sie Escape es schließen und zur Seite zurückkehren.",
   ],
   "dialog-no-escape": "Lassen Sie die Escape-Taste das Pop-up schließen.",
-  "dialog-focus-not-moved": "Setzen Sie den Fokus beim Öffnen in das Pop-up, damit Tastaturnutzer darin beginnen.",
+  "dialog-focus-not-moved": "Setzen Sie den Fokus beim Öffnen in das Pop-up, damit man mit der Tastatur darin beginnt.",
   "dialog-focus-lost-on-close": "Setzen Sie den Fokus beim Schließen zurück auf das, was das Pop-up geöffnet hat.",
   "dialog-no-close": [
     "Geben Sie jedem Pop-up einen sichtbaren Schließen-Knopf.",
@@ -811,7 +817,7 @@ export const FIXES_DE: Record<string, string | string[]> = {
   ],
   "typo-underline-nonlink": [
     "Unterstreichen Sie nur Links.",
-    "Nutzen Sie fett oder kursiv, wo Sie betonen wollen.",
+    "Nutzen Sie Fettdruck oder Kursivschrift, wo Sie betonen wollen.",
   ],
   "typo-italic-body": "Setzen Sie lange Passagen aufrecht und halten Sie Kursives auf einzelne Wortgruppen begrenzt.",
   "typo-allcaps-block": [
@@ -850,8 +856,8 @@ export const FIXES_DE: Record<string, string | string[]> = {
   "image-redundant-alt": "Geben Sie dem Bild ein leeres alt (alt=\"\"), wenn der Text daneben schon dasselbe sagt.",
   "color-contrast": [
     "Machen Sie den Text dunkler oder das, was dahinter liegt, heller.",
-    "Gewöhnlicher Text braucht ein Kontrastverhältnis von mindestens 4.5:1.",
-    "Großer Text, etwa 24px oder 19px fett, braucht 3:1.",
+    "Gewöhnlicher Text braucht ein Kontrastverhältnis von mindestens 4,5:1.",
+    "Großer Text, etwa 24 px oder 19 px fett, braucht 3:1.",
   ],
   "image-alt": [
     "Schreiben Sie zu jedem Bild mit Bedeutung eine kurze Beschreibung.",
@@ -870,6 +876,11 @@ export const FIXES_DE: Record<string, string | string[]> = {
     "„Die Gebührenänderungen 2026 lesen“ statt „Mehr erfahren“.",
     "Soll die kurze Fassung auf dem Bildschirm bleiben, hinterlegen Sie den vollen Wortlaut als Beschriftung.",
   ],
+  "label-content-name-mismatch": [
+    "Übernehmen Sie die sichtbaren Wörter des Bedienelements in seinen Namen im Code.",
+    "Beginnen Sie den Namen mit genau diesen Wörtern und ergänzen Sie erst danach.",
+    "Wer per Sprache steuert, sagt, was er sieht, also müssen beide übereinstimmen.",
+  ],
   "button-name": [
     "Geben Sie jedem Knopf Wörter, die sagen, was er tut.",
     "Bei einem Symbol-Knopf ergänzen Sie eine Beschriftung, die die Aktion beschreibt.",
@@ -886,7 +897,7 @@ export const FIXES_DE: Record<string, string | string[]> = {
   ],
   "document-title": "Geben Sie der Seite einen Titel, der sie beschreibt. Er steht im Browser-Tab und in den Suchergebnissen.",
   "html-has-lang": "Sagen Sie der Seite, in welcher Sprache sie geschrieben ist, damit Screenreader die richtige Stimme nehmen.",
-  "html-lang-valid": "Korrigieren Sie die Sprachangabe der Seite auf einen echten Sprachcode, etwa Deutsch oder Englisch.",
+  "html-lang-valid": "Korrigieren Sie die Sprachangabe der Seite auf einen echten Sprachcode, etwa de für Deutsch oder en für Englisch.",
   "heading-order": "Nutzen Sie Überschriften der Reihe nach, ohne eine Ebene zu überspringen.",
   "page-has-heading-one": "Setzen Sie oben eine <h1>, die sagt, worum es auf der Seite geht.",
   "empty-heading": "Setzen Sie Text in die Überschrift oder entfernen Sie das leere Überschriften-Tag.",
@@ -908,122 +919,126 @@ export const FIXES_DE: Record<string, string | string[]> = {
   ],
   "landmark-one-main": "Kennzeichnen Sie den Hauptinhalt der Seite als Hauptbereich, und nutzen Sie nur einen pro Seite.",
   tabindex: 'Entfernen Sie positive tabindex-Werte (tabindex="1" oder höher) und lassen Sie die natürliche Reihenfolge der Seite den Fokus bestimmen.',
-  "scrollable-region-focusable": 'Ergänzen Sie tabindex="0" am scrollbaren Container, damit Tastaturnutzer darin scrollen können.',
-  "keyboard-positive-tabindex-advisory": "Bitten Sie Ihren Entwickler, die Zahlen zu entfernen, mit denen die Tab-Reihenfolge von Hand festgelegt ist. Die Tastatur folgt dann der Reihenfolge der Seite, auch bei allem, was später dazukommt.",
+  "scrollable-region-focusable": 'Ergänzen Sie tabindex="0" am scrollbaren Container, damit man auch mit der Tastatur darin scrollen kann.',
+  "keyboard-positive-tabindex-advisory": "Bitten Sie Ihr Entwicklungsteam, die Zahlen zu entfernen, mit denen die Tab-Reihenfolge von Hand festgelegt ist. Die Tastatur folgt dann der Reihenfolge der Seite, auch bei allem, was später dazukommt.",
   "nav-name-inconsistent": "Geben Sie jedem Menülink einen einzigen Namen, „Warenkorb“ oder „Einkaufswagen“, nicht beides, und verwenden Sie ihn auf jeder Seite.",
   "color-contrast-mobile": [
     "Suchen Sie die Media Query für Handybreite, die die Text- oder Hintergrundfarbe ändert.",
-    "Prüfen Sie dieses Farbpaar nach derselben Regel: Gewöhnlicher Text braucht mindestens 4.5:1.",
+    "Prüfen Sie dieses Farbpaar nach derselben Regel: Gewöhnlicher Text braucht mindestens 4,5:1.",
   ],
   "color-contrast-dark": [
     "Prüfen Sie die Text- und Hintergrundfarben der dunklen Palette genauso wie die der hellen.",
-    "Gewöhnlicher Text braucht in beiden Designs mindestens 4.5:1.",
+    "Gewöhnlicher Text braucht in beiden Designs mindestens 4,5:1.",
   ],
   "nav-order-inconsistent": "Zeigen Sie die Menülinks auf jeder Seite in derselben Reihenfolge. Eine Seite darf weniger Links zeigen, aber die vorhandenen sollten ihre Reihenfolge behalten.",
-  "activation-stale-state": "Lassen Sie jedes Bedienelement seinen neuen Zustand ansagen, sobald er sich ändert: aufgeklappt oder zugeklappt, an oder aus. Ihr Entwickler setzt das im selben Code, der das Element öffnet oder umschaltet.",
-  "control-faint-boundary": "Machen Sie die Rahmen von Feldern und Knöpfen dunkler. Die Rahmen brauchen ein Kontrastverhältnis von mindestens 3:1 zu dem, was dahinter liegt. Ihr Designer kann meist alle mit einer Änderung am gemeinsamen Stil beheben.",
+  "activation-stale-state": "Lassen Sie jedes Bedienelement seinen neuen Zustand ansagen, sobald er sich ändert: aufgeklappt oder zugeklappt, an oder aus. Ihr Entwicklungsteam setzt das im selben Code, der das Element öffnet oder umschaltet.",
+  "control-faint-boundary": "Machen Sie die Rahmen von Feldern und Knöpfen dunkler. Die Rahmen brauchen ein Kontrastverhältnis von mindestens 3:1 zu dem, was dahinter liegt. Ihr Designteam kann meist alle mit einer Änderung am gemeinsamen Stil beheben.",
 };
 
 export const UNDECIDED_DE: Record<string, { what: string; ask: string }> = {
   "color-contrast": {
-    what: "Text auf einem Foto, einem Video oder einem Farbverlauf. Die Prüfung kann die Farbe des Textes lesen. Dahinter liegt aber keine einzelne Farbe zum Messen, und geraten wird nicht.",
-    ask: "Bitten Sie Ihren Designer, jede Stelle gegen das Bild dahinter zu prüfen. Einmal an der hellsten Stelle des Bildes, einmal an der dunkelsten. Wo die Wörter untergehen, brauchen sie eine feste Fläche dahinter, einen dunklen Schleier über dem Bild oder eine andere Position.",
+    what: "Text über einem Foto, einem Video oder einem Farbverlauf. Sein Kontrast wechselt von Stelle zu Stelle, deshalb konnte die Prüfung keinen einzelnen Wert messen.",
+    ask: "Bitten Sie Ihr Designteam, jede Stelle dort zu prüfen, wo das Bild dahinter am hellsten ist. Fließtext braucht einen Kontrast von 4,5:1, großer Text 3:1. Reicht er nicht, gehört eine feste Fläche oder ein dunkler Schleier hinter die Wörter.",
   },
   "link-in-text-block": {
-    what: "Links in einem Absatz, die möglicherweise nur durch ihre Farbe gekennzeichnet sind. Die Prüfung kann nicht sagen, ob der Unterschied für sich allein stark genug ist.",
-    ask: "Fragen Sie Ihren Designer, ob diese Links ohne die Farbe noch zu finden sind. Ist die Farbe das Einzige, was sie kennzeichnet, brauchen sie eine Unterstreichung oder ein anderes sichtbares Merkmal.",
+    what: "Links in Absätzen, die nur durch ihre Farbe auffallen, ohne Unterstreichung. Die Prüfung konnte nicht messen, ob sich ihre Farbe genug vom Text daneben abhebt.",
+    ask: "Bitten Sie Ihr Designteam, diese Links zu unterstreichen. Das ist die einfachste Lösung. Ein Farbunterschied von 3:1 zum umgebenden Text reicht auch, wenn der Link bei Mauszeiger und Tastaturfokus eine Unterstreichung bekommt.",
   },
   "video-caption": {
-    what: "Ein Video, das die Prüfung sehen, aber nicht anschauen kann. Sie kann nicht feststellen, ob Untertitel da sind oder ob sie etwas taugen.",
-    ask: "Fragen Sie die Person, die das Video gemacht hat, ob es Untertitel hat und ob ein Mensch sie korrigiert hat. Automatisch erzeugte Untertitel allein zählen nicht.",
+    what: "Ein Video auf der Seite. Die Prüfung kann es nicht abspielen und weiß deshalb nicht, ob es Untertitel gibt und ob sie zum Gesprochenen passen.",
+    ask: "Spielen Sie es mit eingeschalteten Untertiteln ab. Spricht jemand, sollte jedes Wort erscheinen, von einem Menschen korrigiert. Automatische Untertitel allein zählen nicht.",
   },
   "media-video-captions": {
-    what: "Video auf der Seite ohne Untertiteldatei. Das ist kein Beweis, dass eine nötig wäre: Ein stummer Clip braucht keine, und fest ins Bild gebrannte Untertitel zählen, hinterlassen aber keine Datei.",
-    ask: "Fragen Sie bei jedem Video die Person, die es gemacht hat, ob darin gesprochen wird. Wenn ja, braucht es Untertitel, von einem Menschen korrigiert. Automatisch erzeugte Untertitel allein zählen nicht.",
+    what: "Ein Video ohne angehängte Untertiteldatei. Ein stummer Clip braucht keine, und eingebrannte Untertitel hinterlassen keine Datei. Ein Fehler ist das also noch nicht.",
+    ask: "Spielen Sie jedes Video ab. Spricht jemand und erscheinen keine Untertitel, bitten Sie die Person, die es gemacht hat, um von Menschen korrigierte Untertitel. Automatische allein zählen nicht.",
   },
   "media-video-descriptions": {
-    what: "Video mit Untertiteln, aber ohne Beschreibung dessen, was zu sehen ist. Untertitel tragen die Wörter; das Bild tragen sie nicht.",
-    ask: "Fragen Sie, ob in diesen Videos etwas gezeigt statt gesagt wird. Ein Diagramm, eine Vorführung, Text im Bild. Wenn ja, muss der Ton es selbst beschreiben. Eine schriftliche Fassung auf der Seite deckt nur die unterste Stufe des Standards ab.",
+    what: "Ein untertiteltes Video, in dem nichts beschreibt, was zu sehen ist. Untertitel tragen die Worte, nicht das Bild, etwa ein Diagramm oder eingeblendeten Text.",
+    ask: "Sehen Sie jedes Video mit geschlossenen Augen an. Entgeht Ihnen etwas, etwa ein Diagramm, eine Vorführung oder eingeblendeter Text, muss der Ton es beschreiben. Eine Textfassung auf der Seite erfüllt nur Stufe A.",
   },
   "form-error-association": {
     what: "Fehlermeldungen im Formular, die im Code nicht mit ihrem Feld verbunden sind. Ein Screenreader sagt das Feld an, aber nicht den Fehler daneben.",
-    ask: "Bitten Sie Ihren Entwickler, jede Meldung mit aria-describedby an ihr Feld zu binden. Dann hört man das Problem im selben Moment wie das Feld.",
+    ask: "Bitten Sie Ihr Entwicklungsteam, jede Meldung mit aria-describedby an ihr Feld zu binden. Dann hört man das Problem im selben Moment wie das Feld.",
   },
   "media-audio-transcript": {
-    what: "Ton auf der Seite. Ein Transkript ist gewöhnlicher Seitentext, also kann die Prüfung nicht feststellen, ob eines vorhanden ist.",
-    ask: "Prüfen Sie, ob zu jeder Aufnahme der Wortlaut auf der Seite steht, nahe beim Abspieler. Und ob dieser Text alles Gesagte abdeckt.",
+    what: "Audio auf der Seite. Ein Transkript wäre gewöhnlicher Text, deshalb kann die Prüfung nicht sagen, ob es eines gibt.",
+    ask: "Suchen Sie neben jedem Player eine schriftliche Fassung von allem, was gesagt wird. Fehlt sie, bitten Sie die Person, die die Aufnahme gemacht hat, darum und stellen Sie sie auf die Seite.",
   },
   "media-embedded-player": {
-    what: "Video, das über den Abspieler eines anderen Anbieters läuft. Das Video liegt auf dessen Seite, also kann die Prüfung nicht hineinsehen.",
-    ask: "Öffnen Sie jedes Video und schalten Sie die Untertitel ein. Fehlt die Option oder stimmen die Untertitel nicht, korrigieren Sie das dort, wo das Video liegt.",
+    what: "Ein Video im Player eines anderen Unternehmens, etwa YouTube oder Vimeo. Das Video liegt auf deren Website, deshalb kann die Prüfung nicht hineinsehen.",
+    ask: "Spielen Sie jedes ab und schalten Sie die Untertitel mit der CC-Taste ein. Fehlt die Taste oder stimmen die Untertitel nicht, korrigieren Sie sie in dem Konto, auf dem das Video liegt.",
   },
   "consent-layer-in-frame": {
-    what: "Die Zustimmungsebene kommt von der Website eines anderen Anbieters, in einem Rahmen. Der Scan kann nicht hineingreifen und beurteilen, was ein Screenreader dort vorfindet.",
-    ask: "Lassen Sie jemanden das Banner mit einem Screenreader ausprobieren. Fragen Sie, ob es angesagt wird, ob der Fokus dorthin gelangt und ob Ablehnen so leicht ist wie Zustimmen.",
+    what: "Das Cookie-Banner kommt in einem Frame von der Website eines anderen Unternehmens. Der Scan kann daher nicht prüfen, was ein Screenreader darin vorliest.",
+    ask: "Lassen Sie die Seite mit einem Screenreader öffnen, etwa VoiceOver am Mac oder NVDA unter Windows. Das Banner sollte zuerst vorgelesen werden, und die Tabulatortaste sollte seine Buttons erreichen. Ablehnen sollte so viele Schritte brauchen wie Zustimmen.",
   },
   "consent-layer-unheralded": {
-    what: "Eine Cookie-Ebene, die sich nie vorstellt. Sie trägt keine Dialog-Rolle und keinen Namen, und der Tastaturfokus erreicht sie nie.",
-    ask: "Lassen Sie jemanden die Seite mit einem Screenreader ausprobieren. Wird die Ebene nie angesagt, braucht sie eine Dialog-Rolle, einen Namen und den Fokus beim Öffnen.",
+    what: "Ein Cookie-Banner, von dem ein Screenreader nie erfährt. Es hat keine Dialog-Rolle und keinen Namen, und die Tabulatortaste erreicht es nie.",
+    ask: "Bitten Sie Ihre Entwicklung, das Banner als Dialog mit einem Namen wie „Cookie-Einstellungen“ zu kennzeichnen. Beim Öffnen gehört der Tastaturfokus hinein.",
   },
   "consent-trap-unnamed": {
-    what: "Der Tastaturfokus bleibt in der Cookie-Ebene, aber die Ebene sagt nie, was sie ist. Keine Dialog-Rolle, kein Name.",
-    ask: "Bitten Sie Ihren Entwickler, die Ebene als Dialog zu kennzeichnen und zu benennen.",
+    what: "Die Tabulatortaste bleibt im Cookie-Banner, aber das Banner sagt nie, was es ist. Wer einen Screenreader nutzt, steckt in etwas ohne Namen fest.",
+    ask: "Bitten Sie Ihre Entwicklung, das Banner als Dialog zu kennzeichnen und ihm einen Namen zu geben, etwa „Cookie-Einstellungen“.",
   },
   "interaction-motion-actuation": {
     what: "Die Seite reagiert darauf, dass das Handy gekippt oder geschüttelt wird. Wer sein Handy in einer Halterung hat oder zittrige Hände, kann das nicht.",
-    ask: "Fragen Sie Ihren Entwickler, ob sich jede Kipp- oder Schüttelaktion auch durch Tippen auf dem Bildschirm auslösen lässt. Fragen Sie dann, ob sich die Bewegungssteuerung abschalten lässt, damit eine zitternde Hand sie nicht versehentlich auslöst.",
+    ask: "Fragen Sie Ihr Entwicklungsteam, ob sich jede Kipp- oder Schüttelaktion auch durch Tippen auf dem Bildschirm auslösen lässt. Fragen Sie dann, ob sich die Bewegungssteuerung abschalten lässt, damit eine zitternde Hand sie nicht versehentlich auslöst.",
   },
   "interaction-gesture-listeners": {
-    what: "Die Seite horcht auf Wisch- und Ziehbewegungen. Wer zittert oder den Zeiger per Sprache oder Schalter steuert, bringt so eine Bewegung vielleicht nicht zustande.",
-    ask: "Fragen Sie Ihren Entwickler, ob sich jedes Wischen und Ziehen auch durch Tippen erledigen lässt. Pfeile neben einem Karussell, ein Knopf neben einem Schieberegler.",
+    what: "Die Seite wartet auf Wischen oder Ziehen. Menschen mit Zittern oder mit Sprach- oder Schaltersteuerung schaffen das unter Umständen nicht.",
+    ask: "Bedienen Sie jedes Karussell, jeden Regler und jede Karte nur mit einzelnem Tippen. Was Wischen oder Ziehen verlangt, braucht zusätzlich einen Button, etwa Pfeile neben einem Karussell.",
   },
   "interaction-key-shortcuts": {
     what: "Die Seite achtet auf Tastendrücke im ganzen Fenster. Wo ein einzelner Buchstabe ein Kürzel ist, löst ihn jeder aus, der mit seinem Computer spricht.",
-    ask: "Fragen Sie Ihren Entwickler, ob ein Kürzel aus einem einzelnen Buchstaben oder einer Ziffer besteht. Jedes davon muss abschaltbar oder änderbar sein oder nur gelten, solange das Element den Fokus hat.",
+    ask: "Fragen Sie Ihr Entwicklungsteam, ob ein Kürzel aus einem einzelnen Buchstaben oder einer Ziffer besteht. Jedes davon muss abschaltbar oder änderbar sein oder nur gelten, solange das Element den Fokus hat.",
   },
   "interaction-unmarked-language": {
     what: "Passagen in einer anderen Schrift als der Rest der Seite, ohne Angabe, welche Sprache das ist. Ein Screenreader spricht sie falsch aus, und dann sind sie oft nicht zu verstehen.",
-    ask: "Bitten Sie Ihren Entwickler, jede Passage mit ihrer Sprache zu kennzeichnen. Automatisch erkennbar ist nur ein Schriftwechsel, fragen Sie also auch nach Passagen in Sprachen mit unserer Schrift.",
+    ask: "Bitten Sie Ihr Entwicklungsteam, jede Passage mit ihrer Sprache zu kennzeichnen. Automatisch erkennbar ist nur ein Schriftwechsel. Fragen Sie also auch nach fremdsprachigen Passagen in lateinischer Schrift.",
   },
   "interaction-title-tooltip": {
-    what: "Kurzhinweise aus dem title-Attribut. Sie erscheinen nur beim Zeigen mit der Maus, also sieht sie an Tastatur oder Touchscreen niemand. Sie lassen sich auch nicht wegklicken und verschwinden, sobald man zu ihnen hinfährt, um zu Ende zu lesen.",
-    ask: "Fragen Sie Ihren Entwickler, ob darin etwas Wichtiges steckt. Wenn ja, schreiben Sie es auf die Seite oder bauen Sie einen Hinweis, der stehen bleibt und mit Escape schließt.",
+    what: "Tooltips, die nur erscheinen, wenn die Maus über etwas schwebt. Wer Tastatur oder Touchscreen nutzt, sieht sie nie, und sie verschwinden, wenn man sich ihnen nähert.",
+    ask: "Fahren Sie mit der Maus über jeden und lesen Sie ihn. Steht darin etwas Wichtiges, gehört der Text auf die Seite. Oder die Entwicklung baut einen Tooltip, der auch beim Fokus erscheint und mit Escape schließt.",
   },
   "interaction-orientation-lock": {
-    what: "Ein Stylesheet dreht die Seite hier zurück oder blendet sie aus, wenn das Handy gedreht wird. So sieht eine Seite aus, die auf eine Ausrichtung festgelegt ist. Es kann auch eine gewollte Querformat-Ansicht für etwas Breites sein.",
-    ask: "Fragen Sie Ihren Entwickler, ob die Seite in beiden Lagen funktioniert. Wer sein Handy oder Tablet am Rollstuhl befestigt hat, kann es nicht drehen.",
+    what: "Die Styles der Seite drehen sie zurück oder blenden sie aus, wenn das Handy gedreht wird. Meist ist sie dann auf eine Ausrichtung festgelegt, außer eine breite Ansicht ist bewusst nur für Querformat gedacht.",
+    ask: "Öffnen Sie die Seite auf dem Handy und drehen Sie es in beide Richtungen. Alles sollte weiter funktionieren, für Menschen mit einem Handy fest am Rollstuhl oder in einer Halterung.",
   },
   "interaction-no-status-region": {
-    what: "Seiten aktualisieren sich ohne Neuladen. Ein Filter kürzt eine Liste, ein Formular meldet, dass es gespeichert hat. Auf dieser Seite ist keine Stelle als der Ort gekennzeichnet, an dem so eine Änderung gesprochen wird. Der Screenreader schweigt, während sich die Seite unter ihm bewegt.",
-    ask: "Fragen Sie Ihren Entwickler, ob sich hier etwas ohne Neuladen ändert. Wenn ja, braucht diese Änderung einen Live-Bereich, damit sie nicht nur gezeigt, sondern auch gesprochen wird.",
+    what: "Nichts auf dieser Seite ist dafür eingerichtet, Änderungen ohne Neuladen anzusagen, etwa eine gefilterte Liste oder die Meldung „Gespeichert“. Ein Screenreader bleibt dabei stumm.",
+    ask: "Fragen Sie Ihr Entwicklungsteam, ob sich hier etwas ohne Neuladen ändert. Wenn ja, braucht diese Änderung einen Live-Bereich, damit sie nicht nur gezeigt, sondern auch gesprochen wird.",
   },
   "interaction-acts-on-change": {
-    what: "Menüs oder Kästchen, die offenbar sofort handeln, sobald man sie setzt, statt auf einen Knopf zu warten. Wir haben das aus dem Code gelesen und nicht ausprobiert: Auf Ihrer echten Website könnte das eine echte Bestellung auslösen.",
-    ask: "Fragen Sie Ihren Entwickler, ob die Wahl einer Option hier absendet oder die Seite wechselt. Wenn ja, setzen Sie einen Knopf dafür ein oder weisen Sie vor dem Element darauf hin.",
+    what: "Menüs oder Kästchen, deren Code nahelegt, dass sie sofort beim Setzen handeln, ohne Button. Wir haben sie nicht ausprobiert, das könnte eine echte Bestellung auslösen.",
+    ask: "Probieren Sie jedes auf einer Testkopie der Website aus. Schickt eine Auswahl ein Formular ab oder öffnet eine neue Seite, braucht es dafür einen Button. Ein Hinweis daneben geht auch.",
   },
   "interaction-pointer-cancellation": {
     what: "Elemente, die schon beim Drücken handeln und nicht erst beim Loslassen. Wer versehentlich auf eines kommt, kann nicht mehr wegrutschen und loslassen.",
-    ask: "Bitten Sie Ihren Entwickler, diese erst beim Loslassen auszulösen. Wem die Hand verrutscht oder wer länger zielt, kann dann noch weggehen, bevor er den Finger hebt.",
+    ask: "Bitten Sie Ihr Entwicklungsteam, diese erst beim Loslassen auszulösen. Wem die Hand verrutscht oder wer länger zielt, kann dann noch weggehen, bevor er den Finger hebt.",
   },
   "aria-valid-attr-value": {
-    what: "Angaben im Code, die auf einen anderen Teil der Seite zeigen. Die Prüfung kann nicht immer feststellen, ob das Ziel wirklich da ist.",
-    ask: "Lassen Sie Ihren Entwickler prüfen, ob jede id, auf die ein aria-Attribut zeigt, auf der Seite existiert. Keine davon sollte in einem Block liegen, der versteckt oder entfernt wird.",
+    what: "Code-Beschriftungen, die über eine ID auf einen anderen Teil der Seite zeigen. Die Prüfung konnte nicht bestätigen, dass dieser Teil vorhanden ist.",
+    ask: "Bitten Sie Ihre Entwicklung zu bestätigen, dass jede von einem aria-Attribut genannte ID existiert. Sie darf nie ausgeblendet oder entfernt werden.",
   },
   "aria-allowed-role": {
-    what: "Teile der Seite, die im Code als etwas ausgezeichnet sind, das sie vielleicht nicht sein können. Ob es falsch ist, hängt davon ab, wie sich das Element verhält.",
-    ask: "Lassen Sie Ihren Entwickler prüfen, ob sich jedes so verhält, wie seine Rolle es verspricht, Tastatur eingeschlossen. Sonst lassen Sie die Rolle weg und nehmen das native Element.",
+    what: "Elemente, denen der Code eine Rolle wie Button oder Tab gibt, die vielleicht nicht passt. Ob das falsch ist, hängt von ihrem Verhalten ab.",
+    ask: "Bitten Sie Ihre Entwicklung zu prüfen, ob sich jedes so verhält, wie seine Rolle verspricht, auch mit der Tastatur. Sonst entfällt die Rolle zugunsten des passenden nativen Elements, etwa eines echten Buttons.",
   },
   "aria-prohibited-attr": {
-    what: "Ein Element trägt einen Namen, den der Code ihm vielleicht nicht lässt. Ob er bleibt, hängt von der Rolle des Elements ab.",
-    ask: "Lassen Sie Ihren Entwickler prüfen, ob jedes mit dem Namen angesagt wird, den Sie gemeint haben. Wo nicht, setzen Sie den Namen auf ein Element, das einen tragen darf.",
+    what: "Elemente mit einem Namen im Code, den ihr Typ vielleicht nicht erlaubt. Ein Screenreader übergeht diesen Namen dann womöglich.",
+    ask: "Bitten Sie Ihre Entwicklung zu prüfen, ob jedes mit dem gewünschten Namen vorgelesen wird. Wenn nicht, gehört der Name auf ein Element, das einen tragen darf.",
   },
   "css-orientation-lock": {
-    what: "Stile, die die Seite auf Hoch- oder Querformat festlegen könnten. Die Prüfung, die das gefunden hat, ist experimentell.",
-    ask: "Fragen Sie Ihren Entwickler, ob sich die Seite mit dem Gerät dreht. Manche Menschen befestigen Handy oder Tablet am Rollstuhl in einer Lage und können es nicht drehen.",
+    what: "Styles, die die Seite vielleicht auf Hoch- oder Querformat festlegen. Die Prüfung dafür ist noch experimentell und kann sich irren.",
+    ask: "Öffnen Sie die Seite auf dem Handy und drehen Sie es in beide Richtungen. Alles sollte weiter funktionieren, für Menschen mit fest montiertem Handy oder Tablet.",
+  },
+  "label-content-name-mismatch": {
+    what: "Bedienelemente, deren Name im Code die sichtbaren Wörter vielleicht nicht enthält. Die Prüfung konnte es nicht entscheiden, meist weil das Element nach seinem aktuellen Wert benannt ist.",
+    ask: "Bitten Sie Ihr Entwicklungsteam, bei jedem die sichtbaren Wörter mit dem angesagten Namen zu vergleichen. Der angesagte Name sollte die sichtbaren Wörter enthalten, in derselben Reihenfolge.",
   },
   "duplicate-id-aria": {
     what: "Eine id, die möglicherweise mehrfach verwendet wird. Jede Angabe im Code, die darauf zeigt, folgt nur der ersten, also kann ein Name still am falschen Element landen.",
-    ask: "Bitten Sie Ihren Entwickler, jede id auf der Seite eindeutig zu machen, beginnend mit denen, auf die ein aria-Attribut zeigt.",
+    ask: "Bitten Sie Ihr Entwicklungsteam, jede id auf der Seite eindeutig zu machen, beginnend mit denen, auf die ein aria-Attribut zeigt.",
   },
 };
 
@@ -1031,22 +1046,22 @@ export const PRINCIPLES_DE: Record<string, { principleLabel: string; plainTitle:
   "1": {
     principleLabel: "Wahrnehmbar",
     plainTitle: "Können Menschen es sehen und hören?",
-    plainDescription: "Alles, was Menschen nicht sehen oder hören können: Text, der zu blass zum Lesen ist, Bilder ohne ein Wort dazu, Videos ohne Untertitel und Audio ohne Transkript.",
+    plainDescription: "Was Menschen nicht sehen oder hören können: blasser Text, Bilder ohne Beschreibung, Videos ohne Untertitel, Audio ohne Transkript.",
   },
   "2": {
     principleLabel: "Bedienbar",
     plainTitle: "Können Menschen es benutzen?",
-    plainDescription: "Ob jemand wirklich durch Ihre Website kommt: mit der Tastatur statt der Maus, auf dem Handy, per Sprache oder ohne feine Kontrolle über die Hände.",
+    plainDescription: "Ob Menschen durch Ihre Website kommen: mit der Tastatur, auf dem Handy, per Sprache oder ohne feine Kontrolle über die Hände.",
   },
   "3": {
     principleLabel: "Verständlich",
-    plainTitle: "Können Menschen ihr folgen?",
+    plainTitle: "Können Menschen es verstehen?",
     plainDescription: "Ob Ihre Formulierungen und Ihr Aufbau Sinn ergeben und ob sich die Seite so verhält, wie man es erwartet.",
   },
   "4": {
     principleLabel: "Robust",
     plainTitle: "Wird es weiter funktionieren?",
-    plainDescription: "Ob Ihre Website auch in anderen Browsern und auf anderen Geräten läuft. Und mit dem Screenreader, der sie blinden Besuchern vorliest.",
+    plainDescription: "Ob Ihre Website in anderen Browsern, auf anderen Geräten und mit Screenreadern funktioniert.",
   },
 };
 

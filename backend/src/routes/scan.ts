@@ -127,7 +127,7 @@ export async function scanRoutes(app: FastifyInstance) {
       const hasAuth =
         typeof request.body === "object" && request.body !== null && "auth" in request.body;
       return reply.status(400).send({
-        error: "Invalid request body",
+        error: "Something in that request wasn't right. Reload the page and try again.",
         ...(hasAuth ? {} : { details: parsedBody.error.flatten() }),
       });
     }

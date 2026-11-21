@@ -66,7 +66,7 @@ export function ProfessionalTable({
         // badge, the rule-id chip, and the issue text together already
         // ran past a phone's width with Severity as a separate column,
         // forcing horizontal scroll before a reader reached the row.
-        <span key="title" className="a11y-pro-title-cell">
+        <span key="title" className="a11y-pro-title-cell" data-finding={rep.id}>
           <SeverityTag severity={rep.severity} label={severityWord[rep.severity]} />
           <span>
             {title}
@@ -119,7 +119,7 @@ export function ProfessionalTable({
       <p className="a11y-empty">{t("Nothing found here.")}</p>
     ) : (
       <DataTable
-        /* Carbon's width rule: columns size to their content and only need
+        /* The width rule: columns size to their content and only need
            the 16px spacing between them. Instances shrinks to fit (1% +
            nowrap in the stylesheet), the issue statement takes the room
            that remains — it is the row's point, and now carries Severity

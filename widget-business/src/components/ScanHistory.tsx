@@ -164,6 +164,7 @@ export function ScanHistory({
         </div>
 
         <div className="a11y-hist-col">
+          <div className="a11y-hist-card">
           <h3 className="a11y-hist-head">{t("Since last time")}</h3>
           {/* The three numbers used to be stat tiles. As lines they read as
               the sentences they always were, and the score line can say
@@ -181,27 +182,30 @@ export function ScanHistory({
                     { then: last.score, now: current.score }
                   )
                 : t(
-                    "Not comparable – we scored the earlier scan by different rules. Some checks that used to sit outside the number now count towards it, so the two are not a fair comparison and we claim no change."
+                    "Not comparable – we scored the earlier scan by different rules. Some checks now count towards the score that did not before, so we do not compare the two."
                   )}
             </li>
             <li>
               {diff.fixed.length === 0
-                ? t("Problems gone – none found this time")
-                : tf("Problems gone – {rules}", { rules: diff.fixed.map(ruleLabel).join(", ") })}
+                ? t("Problems fixed – none")
+                : tf("Problems fixed – {rules}", { rules: diff.fixed.map(ruleLabel).join(", ") })}
             </li>
             {/* "none weren't there before" is a double negative, and the
                 design's own copy has it. Said the way round it means. */}
             <li>
               {diff.appeared.length === 0
-                ? t("New problems – none appeared")
+                ? t("New problems – none")
                 : tf("New problems – {rules}", { rules: diff.appeared.map(ruleLabel).join(", ") })}
             </li>
           </ul>
+          </div>
 
+          {/* A card of its own, like the one above: the label on a black
+              pill, the promise as a sentence, and the control that undoes
+              it inside the same card, under the words that promise it. */}
+          <div className="a11y-hist-card">
           <h3 className="a11y-hist-head">{t("Where this lives")}</h3>
-          <ul className="a11y-hist-facts">
-            <li>{t("Kept in this browser only, never sent anywhere.")}</li>
-          </ul>
+          <p className="a11y-hist-promise">{t("Kept in this browser only, never sent anywhere.")}</p>
           {/* The design writes "Delete this history at any time" as a line
               of prose. It is the one genuinely destructive action here, so
               it stays a real control with its confirmation, sitting under
@@ -214,6 +218,7 @@ export function ScanHistory({
           >
             {t("Delete this history")}
           </button>
+          </div>
         </div>
       </div>
 

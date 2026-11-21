@@ -80,8 +80,11 @@ export function computeScore(summary: SeveritySummary): number {
  * The findings stay in the report and in the triage counts, which is why the
  * summary total can exceed what the score was computed from.
  */
-/* Criteria that exist only in WCAG 2.2. The score line names WCAG 2.1 AA,
-   and EN 301 549 has not adopted 2.2 yet, so a 2.2-only finding moving the
+/* Criteria that exist only in WCAG 2.2. The score line names WCAG 2.1 AA.
+   EN 301 549 v4.1.1 adopts 2.2 and was published on 2 September 2026, but
+   it is not yet cited in the Official Journal, so v3.2.1 and WCAG 2.1 are
+   still what the law points at (checked 19 November 2026; wcag22Readiness
+   has the dates). Until the citation, a 2.2-only finding moving the
    number would hold the site to a standard it is not being held to — the
    same reasoning as the AAA filter beside it. These findings surface
    through the WCAG 2.2 readiness block instead. */

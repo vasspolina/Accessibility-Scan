@@ -1,5 +1,6 @@
 import { ScoreDial } from "./ScoreDial";
 import { t, tf } from "../lib/strings";
+import { getLang } from "../lib/i18n";
 import { useState } from "react";
 import type { ReactNode } from "react";
 import { SeverityTag } from "./SeverityTag";
@@ -7,6 +8,9 @@ import type { AccessibilityFinding } from "../api/scanClient";
 import { groupFindings } from "./FindingsList";
 import { plainForRule } from "../lib/wcagPlain";
 import { Card } from "./Card";
+import { openFinding } from "../lib/openFinding";
+import { useReportView } from "./ReportViewContext";
+import { Icon } from "./Icon";
 
 /* The stat tiles ARE the Card component's anatomy — layer-01 fill, subtle
    hairline, 2px corner, 16px padding — so they use it rather than a div
@@ -46,9 +50,9 @@ export const SUMMARIES: Record<"good" | "middling" | "poor", string[]> = {
   // One plain line per band. The rotating quips this replaced read as
   // slogans, and a verdict about somebody's site is not the place for one:
   // it says what the scan found and what that does not cover, then stops.
-  good: ["90 or more. Little to fix. A person would still find more."],
-  middling: ["70 to 89. What the scan found stops some visitors. Most get through."],
-  poor: ["Under 70. What the scan found stops some people from using the site."],
+  good: ["Little to fix. A person would still find more."],
+  middling: ["What the scan found stops some visitors. Most get through."],
+  poor: ["What the scan found keeps people from using the site."],
 };
 
 /**
@@ -88,24 +92,33 @@ export function scoreSummary(score: number, seed: string): string {
    best-practice rules count with no criterion at all. What is left out is
    what scoreFindings and summarizeSeverity leave out: design notes, dark
    patterns, AAA, WCAG 2.2-only criteria. computeScore caps each severity's
-   penalty, which is why the second point exists. English keys; the screen renders them through t(),
-   the plain-text summary and the email stay English. Keep
+   penalty, which is why the second point exists. English keys; the screen and the plain-text summary render them through
+   t(), the email stays English for now. Keep
    backend/src/services/mail/sendReport.ts in step. */
 export const SCORE_POINTS = [
   "It counts the accessibility problems this scan found, weighted by how much each one costs a visitor.",
-  "Each severity has a limit: past it, more problems of that severity no longer lower the score.",
-  "Notes on the design and misleading patterns do not count. Neither do the optional advanced level (AAA) or checks new in WCAG 2.2, the newer accessibility guidelines.",
-  "When the AI review runs, its findings count too, if their card names a WCAG requirement. Those can be wrong.",
-  "A scan of this kind reaches between a third and a half of accessibility problems.",
-  "The rest need a person with a keyboard and a screen reader.",
+  "Each severity has a limit on how far it lowers the score.",
+  "Design notes, misleading patterns, the optional AAA level and checks new in WCAG 2.2 do not count.",
+  "AI review findings count too when their card names a WCAG requirement. They can be wrong.",
+  "A scan like this finds a third to a half of the problems. The rest need a person with a keyboard and a screen reader.",
   "It is not a statement that the site meets the law.",
 ];
 
-/* The same words for the plain-text summary — one source, so the copied
+/* A heading in the plain-text summary takes a colon, and French sets a
+   no-break space before it. */
+function asHeading(text: string): string {
+  return `${text}${getLang() === "fr" ? "\u00a0:" : ":"}`;
+}
+
+/* The same words for the plain-text summary – one source, so the copied
    text and the screen can never disagree about what the score means. A
    heading and one point a line, as in the email: run together, "It" in the
-   first sentence read as the last issue in the list above it. */
-export const SCORE_CAVEAT_LINES = ["What the score counts:", ...SCORE_POINTS.map((p) => `- ${p}`)];
+   first sentence read as the last issue in the list above it. A function,
+   not a constant, so it is in the reader's language at the moment of
+   copying. */
+export function scoreCaveatLines(): string[] {
+  return [asHeading(t("What the score counts")), ...SCORE_POINTS.map((p) => `- ${t(p)}`)];
+}
 
 // A plain-text version of the same verdict, for pasting into an email or
 // a message to whoever owns the fix — no HTML, no table, nothing that
@@ -124,32 +137,33 @@ export function buildPlainSummary({
   allFindings: AccessibilityFinding[];
 }): string {
   const grouped = groupFindings(allFindings);
-  const scannedAt = new Date(seed).toLocaleDateString("en-GB", {
+  const lang = getLang();
+  const scannedAt = new Date(seed).toLocaleDateString(lang === "en" ? "en-GB" : lang, {
     year: "numeric",
     month: "long",
     day: "numeric",
   });
   const lines = [
-    `Accessibility scan: ${url}`,
-    `Scanned ${scannedAt}`,
+    tf("Accessibility scan: {url}", { url }),
+    tf("Scanned {date}", { date: scannedAt }),
     "",
-    `Score: ${score}/100`,
-    scoreSummary(score, seed),
+    tf("Score: {score}/100", { score }),
+    t(scoreSummary(score, seed)),
     "",
   ];
   if (grouped.length === 0) {
-    lines.push("Nothing found that needs a fix.");
+    lines.push(t("Nothing here needs a fix."));
   } else {
-    lines.push("Issues found, most severe first:");
+    lines.push(asHeading(t("Findings, most severe first")));
     for (const group of grouped) {
       const rep = group[0];
       const plain = plainForRule(rep.ruleId);
       const title = plain?.plain ?? rep.title ?? rep.description;
       const count = group.length > 1 ? ` (${group.length}×)` : "";
-      lines.push(`- [${SEVERITY_LABEL[rep.severity]}] ${title}${count}`);
+      lines.push(`- [${t(SEVERITY_LABEL[rep.severity])}] ${title}${count}`);
     }
   }
-  lines.push("", ...SCORE_CAVEAT_LINES);
+  lines.push("", ...scoreCaveatLines());
   return lines.join("\n");
 }
 
@@ -257,6 +271,7 @@ export function ScoreGauge({
   url: string;
   allFindings: AccessibilityFinding[];
 }) {
+  const { inChat } = useReportView();
   const [copied, setCopied] = useState(false);
   const grouped = groupFindings(findings);
   const preview = grouped.slice(0, PREVIEW_LIMIT);
@@ -299,7 +314,16 @@ export function ScoreGauge({
       {/* Professional mode gets an explicit results header in this slot
           (App.tsx); business mode had none, which left heading navigation
           with no way to jump straight to the score at all. */}
-      <h2 className="a11y-section-title" id="a11y-score-heading" data-nav-label={t("Score")}>{t("Your score")}</h2>
+      {/* "Score" over "Your score" in the conversation, where the block's
+          summary line names it: hidden there on screen, kept for screen
+          readers. */}
+      <h2
+        className={inChat ? "a11y-section-title a11y-sr-only" : "a11y-section-title"}
+        id="a11y-score-heading"
+        data-nav-label={t("Score")}
+      >
+        {t("Your score")}
+      </h2>
 
       {/* The design's scan-summary template: the run and its worst findings,
           then three titled panels. Ported from
@@ -313,7 +337,7 @@ export function ScoreGauge({
       <div className="a11y-sum-grid">
         <div className="a11y-sum-col">
           <section className="a11y-sum-run" aria-labelledby="a11y-sum-run-heading">
-            <h3 className="a11y-sum-eyebrow" id="a11y-sum-run-heading">{t("Scan summary")}</h3>
+            <h3 className="a11y-sr-only" id="a11y-sum-run-heading">{t("Scan summary")}</h3>
 
             <div className="a11y-sum-dial-card">
               {/* One label carries the whole thing, and every part of the
@@ -352,6 +376,12 @@ export function ScoreGauge({
               </div>
             </div>
 
+            {/* The run of the worst findings, centred at display size under
+                the dial, in the conversation as on the page. It was left out
+                of the chat on 20 Nov 2026 ("file a report in chat like an
+                assistant would do") and is back since 21 Nov 2026 (user's
+                instruction, "the designed centered text under score is
+                gone, bring it back"). */}
             {preview.length === 0 ? (
               <p className="a11y-score-clean">{t("Nothing here needs a fix.")}</p>
             ) : (
@@ -376,6 +406,18 @@ export function ScoreGauge({
                         : null;
                     return (
                       <li key={rep.id} className="a11y-sum-row">
+                        {/* The whole item is a link to its finding in the
+                            schedule below (user's instruction, 17 Nov 2026).
+                            A link and not a button: it goes somewhere, and
+                            a button cannot wrap across lines of display type. */}
+                        <a
+                          className="a11y-sum-row-link"
+                          href={`#a11y-finding-${rep.id}`}
+                          onClick={(e) => {
+                            e.preventDefault();
+                            openFinding(e.currentTarget, rep.id);
+                          }}
+                        >
                         <span className="a11y-sum-cell-item">
                           {/* The round marker is held to the title's first
                               word, so a wrap never strands it at a line end. */}
@@ -399,6 +441,7 @@ export function ScoreGauge({
                         <span className="a11y-sum-cell-count">
                           {group.length}&#8202;&times;
                         </span>
+                        </a>
                       </li>
                     );
                   })}
@@ -410,6 +453,7 @@ export function ScoreGauge({
           {/* Plain text, not the report's own HTML: the point is to leave the
               widget entirely — an email or a Slack message to whoever owns
               the fix, not a screenshot of this card. */}
+          {!inChat && (
           <div className="a11y-sum-actions">
             <button type="button" className="a11y-show-all a11y-score-copy" onClick={copySummary}>
               {copied ? t("Copied") : t("Copy summary as plain text")}
@@ -418,11 +462,12 @@ export function ScoreGauge({
               {copied ? t("Summary copied to the clipboard.") : ""}
             </span>
           </div>
+          )}
         </div>
 
         <div className="a11y-sum-col">
           {doFirst && (
-            <SumPanel title={t("Do this first")}>
+            <SumPanel title={t("Start here")}>
               {/* The title in quotes rather than lowercased: lowercasing
                   broke German nouns ("zu blass zum lesen") and acronyms. */}
               <p className="a11y-sum-lead">
@@ -435,16 +480,35 @@ export function ScoreGauge({
             </SumPanel>
           )}
 
-          <SumPanel title={tf("What a score of {band} means", { band: t(BAND_WORD(score)) })}>
+          <SumPanel title={tf("Score {band}", { band: t(BAND_WORD(score)) })}>
             {/* No second line: points 05 and 06 under "What the score counts"
                 already say what a scan reaches and what needs a person. */}
             <p className="a11y-sum-lead">{t(scoreSummary(score, seed))}</p>
           </SumPanel>
 
-          {/* Set as the displaay.net Info block (user's instruction, 4 Nov
+          {/* Set as a ruled block (user's instruction, 4 Nov
               2026): two columns, each point's number over a rule and its
               words under it. The number follows the words in the markup and
               is drawn first, so a screen reader hears the sentence alone. */}
+          {/* In the conversation the six points are asked for, not read
+              through on the way to the reply: folded under their title. */}
+          {inChat ? (
+            <details className="a11y-sum-counts-fold">
+              <summary>
+                {t("What the score counts")}
+                {/* Its own mark, in the markup and hidden, so the summary's
+                    name stays the title. Not the block's two-glyph fold: the
+                    block around it is a details too, and its open/closed
+                    rules reached in and hid both glyphs. Turned when open. */}
+                <Icon name="caret--right" className="a11y-sum-counts-mark" />
+              </summary>
+              <ol className="a11y-sum-counts-list">
+                {SCORE_POINTS.map((point) => (
+                  <li key={point}>{t(point)}</li>
+                ))}
+              </ol>
+            </details>
+          ) : (
           <section className="a11y-sum-panel a11y-sum-counts" aria-labelledby="a11y-sum-counts-heading">
             <h3 className="a11y-sum-eyebrow" id="a11y-sum-counts-heading">{t("What the score counts")}</h3>
             <div className="a11y-sum-specimens">
@@ -458,6 +522,7 @@ export function ScoreGauge({
               ))}
             </div>
           </section>
+          )}
         </div>
       </div>
     </div>

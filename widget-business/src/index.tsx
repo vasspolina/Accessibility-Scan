@@ -3,7 +3,7 @@ import { createRoot } from "react-dom/client";
 import { App } from "./App";
 import { mountShadowRoot } from "./utils/shadowMount";
 import { setLang, detectLang } from "./lib/i18n";
-import { keepShortWordsAttached } from "./lib/typography";
+import { typesetText } from "./lib/typography";
 
 export interface MountOptions {
   apiBase: string;
@@ -27,9 +27,8 @@ export interface MountOptions {
 // widget bundle: one variable file whose wght axis (100–900) covers the
 // 300 / 400 / 500 the stylesheet asks for, so no weight is synthesised.
 // font-display swap keeps text readable while it loads, and every rule
-// keeps a system fallback. Saans and Serrif (Displaay, trial, Light only)
-// set the expanded finding, after the "Info" block of
-// displaay.net/typeface/dazzed (user's instruction, 4 Nov 2026).
+// keeps a system fallback. Saans and Serrif (trial, Light only) set the
+// expanded finding as one ruled block (user's instruction, 4 Nov 2026).
 function injectFonts(apiBase: string) {
   const id = "a11y-widget-fonts";
   if (document.getElementById(id)) return;
@@ -87,8 +86,9 @@ export function mount(target: string | HTMLElement, options: MountOptions) {
     mountPoint.dataset.theme = options.theme;
   }
   const root = createRoot(mountPoint);
-  // Typesetting rule: no one- or two-letter word left at a line's end.
-  keepShortWordsAttached(mountPoint);
+  // Typesetting on the rendered text: no word of a sentence alone on a
+  // line, and the French thin space drawn in the face.
+  typesetText(mountPoint);
   root.render(
     <React.StrictMode>
       <App apiBase={options.apiBase} cta={options.cta} />
