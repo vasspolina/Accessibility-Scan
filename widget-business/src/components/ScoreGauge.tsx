@@ -376,12 +376,13 @@ export function ScoreGauge({
               </div>
             </div>
 
-            {/* In the conversation the reply names the findings to start
-                with and the findings block follows it, so the run of the
-                worst three at display size was the same titles a third time
-                (user's instruction, 20 Nov 2026, "file a report in chat like
-                an assistant would do"). The page keeps it. */}
-            {inChat ? null : preview.length === 0 ? (
+            {/* The run of the worst findings, centred at display size under
+                the dial, in the conversation as on the page. It was left out
+                of the chat on 20 Nov 2026 ("file a report in chat like an
+                assistant would do") and is back since 21 Nov 2026 (user's
+                instruction, "the designed centered text under score is
+                gone, bring it back"). */}
+            {preview.length === 0 ? (
               <p className="a11y-score-clean">{t("Nothing here needs a fix.")}</p>
             ) : (
               <div className="a11y-sum-table">
