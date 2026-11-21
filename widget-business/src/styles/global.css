@@ -57,7 +57,11 @@
      values it had. */
   --tile: #f0efe8; --tile-ink: #000; --tile-fill: #fff;
   --strong: #000; --strong-ink: #f0efe8;
-  --hover: #ffe14d; --hover-ink: #000;
+  /* Hover is mint since 21 Nov 2026 (user's instruction, "make mint green
+     on hover", on a pill button turned yellow): the Report a barrier
+     card's and Send this report's #ccffcc, black words 18.7:1. Dark keeps
+     its #3a3a3c below. Marker yellow stays the highlight (--hl-cap-a). */
+  --hover: #ccffcc; --hover-ink: #000;
   /* What is drawn solid in ink (the primary action, a chosen option, a
      switch that is on, numbered rounds, the dark slabs): black in light; in
      dark the #636366 grey, so nothing solid turns white. */
@@ -136,7 +140,7 @@
 .a11y-widget-biz .a11y-btn:enabled:hover { background: var(--hover); border-color: var(--hover); color: var(--hover-ink); }
 .a11y-widget-biz button:disabled,
 .a11y-widget-biz .a11y-btn:disabled { border-style: dashed; border-color: var(--ink); background: var(--paper); cursor: not-allowed; }
-/* The main action is solid ink: the run, the send, the save. It turns marker-yellow on hover like the rest. Disabled, it drops
+/* The main action is solid ink: the run, the send, the save. It turns mint on hover like the rest. Disabled, it drops
    back to paper with the dashed edge, never a faded ink. */
 .a11y-widget-biz .a11y-btn.a11y-btn-primary:enabled { background: var(--solid); color: var(--solid-ink); }
 .a11y-widget-biz .a11y-btn.a11y-btn-primary:enabled:hover { background: var(--hover); border-color: var(--hover); color: var(--hover-ink); }
@@ -352,6 +356,14 @@
    inside a turn, so a filed report reads as one message (user's
    instruction, 20 Nov 2026). Outranks the phone rule for turns below. */
 .a11y-widget-biz .a11y-chat-thread > .a11y-chat-turn:has(+ .a11y-chat-cont) { margin-bottom: 1.2em; }
+/* A report block in the thread (Score, WCAG 2.2, the findings…) is a
+   group of content, and 100px stands after it before whatever follows
+   (user's instruction, 21 Nov 2026, "100 px break after a group of
+   content", on the gap between Send this report's note and WCAG 2.2): the
+   one line of a filed message was too little to tell one block from the
+   next. The same 100px the report keeps between its sections. One class
+   over the rule above, so it wins there and on a phone. */
+.a11y-widget-biz .a11y-chat-thread > .a11y-chat-turn.a11y-chat-block:has(+ .a11y-chat-turn) { margin-bottom: 100px; }
 /* "What the score counts", folded in the conversation (ScoreGauge). */
 .a11y-widget-biz .a11y-sum-counts-fold { margin-top: 1.2em; }
 .a11y-widget-biz .a11y-sum-counts-fold > summary { font-size: 18px; letter-spacing: 0.01em; cursor: pointer; }
@@ -2468,7 +2480,14 @@
   max-width: none; margin: 28px 0 0;
   font-size: 38px; font-weight: 400; line-height: 1.1; letter-spacing: -0.005em;
 }
+/* Two to a row (user's instruction, 21 Nov 2026, "two per row", on the
+   six new items set four across by auto-fit): wider columns, so the
+   explanations wrap less. One column on a phone. */
 .a11y-widget-biz .a11y-w22 > .a11y-next > .a11y-next-list { margin: 28px 0 0; }
+.a11y-widget-biz .a11y-w22 .a11y-next-list { grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: 30px; }
+@media (max-width: 640px) {
+  .a11y-widget-biz .a11y-w22 .a11y-next-list { grid-template-columns: minmax(0, 1fr); }
+}
 .a11y-widget-biz .a11y-w22 > .a11y-w22-panel { display: flex; flex-wrap: wrap; align-items: center; gap: 12px 16px; margin-top: 65px; }
 .a11y-widget-biz .a11y-w22 > .a11y-w22-panel > .a11y-w22-panel-title { margin: 0; font-size: 22px; font-weight: 500; line-height: 1.2; letter-spacing: 0.01em; }
 .a11y-widget-biz .a11y-w22 > .a11y-w22-panel > .a11y-w22-toggle { font-size: 18px; }
