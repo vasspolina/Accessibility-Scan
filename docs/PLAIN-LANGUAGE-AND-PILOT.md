@@ -181,6 +181,20 @@ whenever reports have somewhere to go (storage or mail).
    browser or a second device counts again. `drafted` and `confirmed` count how
    many reports had a model draft, and how many the participant read and sent.
 
+   Or open the ledger, `https://<backend>/barrier-ledger.html` (since 21 Nov
+   2026; `backend/public/barrier-ledger.html` and `.js`). It asks for
+   `ADMIN_TOKEN`, keeps it for that tab only, and shows the totals, what
+   people use, and one row per report: opened, their words stand beside
+   the model's draft. The shown rows download as CSV.
+3. Mark whether the scanner caught each barrier. In an opened report, scan
+   the page, read the findings beside their words, and save Caught, Missed
+   or Can't tell with a note and your name
+   (`POST /api/pilot/reports/:id/check`, table `pilot_checks`). A person
+   decides this, never the code: matching someone's sentence to a finding
+   is a judgement. A second mark never erases the first; Earlier marks
+   lists them. Each Missed is a probe to write, with a real page for its
+   `qa-*.html` fixture.
+
 What is stored: the participant's own words with what they were asked, their impact rating if an
 older form sent one (otherwise `unrated`; the model's estimate stays in the
 draft, marked as the model's), the draft as they read it, the model's name, and a hash of the form's device id. Their
