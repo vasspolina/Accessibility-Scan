@@ -1,7 +1,7 @@
 /**
- * Every icon in the widget is IBM Carbon's (user's instruction, 21 Nov 2026,
- * "use ibm carbon icons for any icon in this app"). The paths are copied
- * from @carbon/icons 11, svg/32, so nothing is redrawn by hand; the package itself is not a
+ * Every icon in the widget comes from one icon set (user's instruction,
+ * 21 Nov 2026). The paths are copied from @carbon/icons 11 (Apache-2.0),
+ * svg/32, so nothing is redrawn by hand; the package itself is not a
  * dependency because a dozen paths do not need a 30MB install.
  *
  * Icons are pictures beside words, so they are always hidden from assistive

@@ -593,7 +593,7 @@ export function ScanChat({
   const [announcement, setAnnouncement] = useState("");
   /** Where the reader was before the conversation took them to a block:
    *  the scroll position and what had focus. While it is set, the dock
-   *  offers Back, the way Claude's apps return from an opened artifact. */
+   *  offers Back, to return to where they were before the block opened. */
   const [backTo, setBackTo] = useState<{ y: number; el: HTMLElement | null } | null>(null);
   /** A block just added at the reader's request, to take focus once it is
    *  in the thread: the chip that asked for it is gone by then. */
@@ -1273,7 +1273,7 @@ export function ScanChat({
 
   return (
     <div className="a11y-chat-layout">
-      {/* The conversations panel, after Claude's sidebar (user's
+      {/* The conversations panel, on the left (user's
           instruction, 18 Nov 2026). A second navigation beside the report's
           Sections rail, but the two never show together: this one lives in
           the chat, the rail in the form's report. */}
@@ -1290,8 +1290,8 @@ export function ScanChat({
         </button>
         <div className="a11y-chats-body" id="a11y-chats-body">
         <button type="button" className="a11y-chats-new" onClick={newChat} disabled={switchLocked}>
-          {/* IBM Carbon's add and flag, 32px grid, like the bin below
-              (user's instruction, 21 Nov 2026, "use ibm carbon icons here"). */}
+          {/* The icon set's add and flag, 32px grid, like the bin below
+              (user's instruction, 21 Nov 2026). */}
           <Icon name="add" size={20} />
           {t("New chat")}
         </button>
@@ -1299,7 +1299,7 @@ export function ScanChat({
             start something (user's instruction, 20 Nov 2026). */}
         {onReportBarrier && (
           <button type="button" className="a11y-chats-new a11y-chats-barrier" onClick={onReportBarrier} disabled={switchLocked}>
-            {/* 18px, 10% under the add icon's 20: Carbon's flag fills 24 of
+            {/* 18px, 10% under the add icon's 20: the flag fills 24 of
                 its 32 units where add fills 16, so at one size it looked
                 the larger (user's instruction, 21 Nov 2026). */}
             <Icon name="flag" size={18} />
@@ -1331,7 +1331,7 @@ export function ScanChat({
                     disabled={switchLocked && c.id === chatId}
                     onClick={() => removeChat(c)}
                   >
-                    {/* IBM Carbon's trash-can, 32px grid (user's instruction, 18 Nov 2026). */}
+                    {/* A trash-can drawn on a 32px grid (user's instruction, 18 Nov 2026). */}
                     <Icon name="trash-can" size={18} />
                   </button>
                 </li>
@@ -1363,10 +1363,9 @@ export function ScanChat({
           </div>
         </div>
       </div>
-      {/* The opening questions, set as the Pangram Pangram font cards
-          (user's reference, 18 Nov 2026): a tall pale card per group, the
-          group as its name top-left with the question under it, and at the
-          foot, where the foundry sets its "Aa", the WCAG criterion the
+      {/* The opening questions as cards (user's reference, 18 Nov 2026):
+          a tall pale card per group, the group as its name top-left with
+          the question under it, and at the foot the WCAG criterion the
           question checks in a marker highlight (it replaced a big question
           mark the same day). The question covers the whole card and sends
           itself as if typed; hover and focus turn the card solid black with
@@ -1396,8 +1395,8 @@ export function ScanChat({
                       the label and the question, so this is not read twice. */}
                   <span className="a11y-prompt-go" aria-hidden="true">{t("Ask this")}</span>
                 </button>
-                {/* The criterion the question checks, where the foundry card
-                    sets its "Aa". A question that checks none shows nothing. */}
+                {/* The criterion the question checks, at the foot of the
+                    card. A question that checks none shows nothing. */}
                 {crit && (
                   <button
                     type="button"
@@ -1634,7 +1633,7 @@ export function ScanChat({
               }}
               aria-describedby={suggestion ? "a11y-chat-tabhint" : undefined}
               onKeyDown={(e) => {
-                // Tab takes the suggestion, as in Claude's apps; with none
+                // Tab takes the suggestion; with none
                 // showing, or once taken, Tab moves on as it always does.
                 if (e.key === "Tab" && !e.shiftKey && !e.altKey && !e.ctrlKey && !e.metaKey && suggestion) {
                   e.preventDefault();
@@ -1681,8 +1680,8 @@ export function ScanChat({
                 )}
               </span>
               <Button type="submit" variant="primary" disabled={busy || loading || !draft.trim()}>
-                {/* On a phone the word is clipped and the arrow drawn, as in
-                    Claude's apps: the button keeps "Send" as its name. */}
+                {/* On a phone the word is clipped and the arrow drawn: the
+                    button keeps "Send" as its name. */}
                 <span className="a11y-chat-send-word">{t("Send")}</span>
                 <Icon name="arrow--up" size={22} className="a11y-chat-send-icon" />
               </Button>
@@ -1716,8 +1715,8 @@ export function ScanChat({
   );
 }
 
-/** The step lines of a scan, once it is over, behind a Details toggle: the
- *  way Claude folds a finished tool call, so the thread reads as the
+/** The step lines of a scan, once it is over, behind a Details toggle,
+ *  so the thread reads as the
  *  conversation and the working is one click away. A running scan shows
  *  its steps; a failed one too, since its last line says where it stopped. */
 function StepFold({ folded, children }: { folded: boolean; children: ReactNode }) {
