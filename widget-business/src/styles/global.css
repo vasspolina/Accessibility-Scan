@@ -2998,13 +2998,23 @@
    desktop the pin takes no height, so the New scan title keeps its place
    beside it; under 640px it takes its line, since the title and the
    button would meet at 320px. Its list opens under it, right-aligned. */
+/* No gap above the row (user's instruction, 21 Nov 2026, "whats this gap
+   on top and bottom? delete"): the 16px that held the button off the top
+   of the window was padding, so at rest it sat 16px under New scan and the
+   panel's New chat. It is the sticky offset now, which only acts once the
+   button is stuck; at rest the button, the title and New chat share one
+   top, and the title is centred on the button's 48px. */
 .a11y-widget-biz .a11y-chat > .a11y-lang-pin {
-  position: sticky; top: 0; z-index: 3; align-self: flex-end; height: 0;
+  position: sticky; top: 16px; z-index: 3; align-self: flex-end; height: 0;
 }
+/* Only while the title shows: folded away, the head must take no height. */
+.a11y-widget-biz .a11y-chat > .a11y-newscan-head:has(> .a11y-newscan-fold:not([data-gone])) { min-height: 48px; align-items: center; }
+.a11y-widget-biz .a11y-chat > .a11y-prompts { margin-top: 0; }
+.a11y-widget-biz .a11y-chats { padding-top: 0; }
 @media (max-width: 640px) {
   .a11y-widget-biz .a11y-chat > .a11y-lang-pin { height: auto; }
 }
-.a11y-widget-biz .a11y-lang-menu { position: relative; padding-top: 16px; }
+.a11y-widget-biz .a11y-lang-menu { position: relative; }
 .a11y-widget-biz .a11y-lang-menu .a11y-lang-toggle {
   display: inline-flex; align-items: center; gap: 10px; min-height: 48px; padding: 0 16px;
   border: 1px solid var(--chats-current); border-radius: 999px;
@@ -3047,3 +3057,39 @@
   .a11y-widget-biz .a11y-chat-layout { padding-inline: 20px 40px; box-sizing: border-box; }
   .a11y-widget-biz .a11y-chat-layout > .a11y-chat { padding-inline-end: 0; }
 }
+
+/* ═══ FORM FIELDS AS THE CHAT BOX (user's instruction, 21 Nov 2026) ═════════
+   "make all form fields designed the same as chat input but different sizes
+   that apropriate": every field takes the chat box's look, the page's own
+   paper with a 1px dotted ink edge and round corners, in both themes, in
+   place of the filled #f0efe8 boxes, the 2px solid or dotted square edges
+   and dark mode's grey-edged fills. Sizes stay each field's own. A box
+   that holds its label and line (the scan form's rows, the email field,
+   the statement's fields) and any textarea take the chat box's 20px
+   corners; a bare one-line input or select, about 44px tall, takes 14px,
+   since 20px would turn it into a pill. Focus stays the 2px green line
+   inside the edge. A choice row's hover keeps its fill. */
+.a11y-widget-biz :is(input:not([type="radio"]):not([type="checkbox"]), textarea, select) {
+  border: 1px dotted var(--ink); border-radius: 14px; background: var(--paper);
+}
+.a11y-widget-biz textarea:not([type="radio"]):not([type="checkbox"]) { border-radius: 20px; }
+.a11y-widget-biz .a11y-select2 .a11y-select2-field.a11y-select2-field { border: 1px dotted var(--ink); border-radius: 14px; }
+.a11y-widget-biz .a11y-tester .a11y-input,
+.a11y-widget-biz .a11y-tester .a11y-tester-rows > .a11y-select2,
+.a11y-widget-biz .a11y-tester .a11y-tester-row,
+.a11y-widget-biz .a11y-tester .a11y-seg,
+.a11y-widget-biz .a11y-ra-row > .a11y-ra-cell > .a11y-ra-field,
+.a11y-widget-biz .a11y-stmt-field {
+  border: 1px dotted var(--tile-ink); border-radius: 20px; background: transparent; color: inherit;
+}
+.a11y-widget-biz .a11y-tester .a11y-seg:not(.a11y-seg-disabled):hover { background: var(--hover); color: var(--hover-ink); }
+
+/* SAVE AS PDF UNDER SEND THIS REPORT (user's instruction, 21 Nov 2026,
+   "rearrange save as pdf under a row with send report"): the report
+   actions are one column, the email part first and Save as PDF under it,
+   65px apart like the other groups. */
+.a11y-widget-biz .a11y-ra-row { grid-template-columns: minmax(0, 1fr); }
+/* A line inside a box keeps no edge of its own: the email field's rule ties
+   the field rule above on specificity, so it is restated here. */
+.a11y-widget-biz .a11y-ra-row .a11y-ra-field > input.a11y-ra-email-input { border: 0; border-radius: 0; background: transparent; }
+.a11y-widget-biz .a11y-stmt-field input:not([type="radio"]):not([type="checkbox"]) { border: 0; border-radius: 0; background: transparent; }
