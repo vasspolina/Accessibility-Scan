@@ -1271,14 +1271,24 @@
    they follow the theme. Two to a row (user's instruction, 21 Nov 2026,
    "this needs to be two in a row"; auto-fit had set three), one column
    under 640px of block as before. */
+/* Cards again, the typography kept (user's instruction, 21 Nov 2026, "make
+   this into cards but keep typography", on Who fixes this, Where this came
+   from and What we found): each part sits on the tile ground with 20px
+   corners, the label still 15px Medium over its 1px rule, the words still
+   22px Regular (18px in a narrow block). The cards of a row stand one
+   height. --ink and --paper follow the tile, so the rule and any control
+   inside take its ink in both themes (#000 on #f0efe8 18.4:1; the dark
+   tile is #1c1c1e with white words). This lifts the 20 Nov "no content
+   cards" rule for these parts only. */
 .a11y-widget-biz .a11y-fd > .a11y-fd-col:first-child {
   display: grid; grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 1.2em 30px; align-items: start; margin: 0 0 1.6em;
+  gap: 16px; align-items: stretch; margin: 0 0 1.6em;
 }
 .a11y-widget-biz .a11y-fd > .a11y-fd-col:first-child > :is(p, div) {
+  --ink: var(--tile-ink); --paper: var(--tile);
   display: flex; flex-direction: column; align-items: stretch; gap: 10px;
-  box-sizing: border-box; min-width: 0; max-width: none; margin: 0; padding: 0;
-  border-radius: 0; background: none; color: var(--ink); text-align: start;
+  box-sizing: border-box; min-width: 0; max-width: none; margin: 0; padding: 22px 24px 30px;
+  border-radius: 20px; background: var(--tile); color: var(--tile-ink); text-align: start;
   font-family: "Jokker", sans-serif; font-weight: 400; font-size: 22px; line-height: 1.25; letter-spacing: 0.005em;
 }
 /* Smaller and Regular (user's instruction, 20 Nov 2026: "make large font
@@ -1297,10 +1307,10 @@
   display: block; margin-block: 0; max-width: 100%;}
 .a11y-widget-biz .a11y-fd > .a11y-fd-col:first-child .a11y-fd-body code { font-size: 0.8em; }
 @container a11y-fd (max-width: 640px) {
-  .a11y-widget-biz .a11y-fd > .a11y-fd-col:first-child { grid-template-columns: minmax(0, 1fr); gap: 1.6em; }
+  .a11y-widget-biz .a11y-fd > .a11y-fd-col:first-child { grid-template-columns: minmax(0, 1fr); gap: 12px; }
   .a11y-widget-biz .a11y-fd > .a11y-fd-col:first-child > :is(p, div),
   .a11y-widget-biz .a11y-fd > .a11y-fd-col:first-child > :is([data-size="s"], [data-size="m"], [data-size="l"]) {
-    gap: 8px; padding: 0; font-size: 18px; line-height: 1.3; letter-spacing: 0.01em;
+    gap: 8px; padding: 18px 18px 22px; font-size: 18px; line-height: 1.3; letter-spacing: 0.01em;
   }
 }
 /* The key/value lines: the key hangs in a 9em column, the value runs beside
