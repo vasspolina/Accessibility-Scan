@@ -1271,11 +1271,15 @@ function Occurrence({
   const { professional } = useReportView();
   return (
     <li className="a11y-occurrence">
-      <div className="a11y-occurrence-head">
-        <span className="a11y-occurrence-label">{label}</span>
-        {repeatCount > 1 && <span className="a11y-occurrence-count">{repeatCount}×</span>}
-      </div>
-      <ElementShot finding={finding} showLocator={professional} />
+      {/* With a picture the name rides on it as a speech bubble (ElementShot);
+          without one it stays a plain label here. */}
+      {(!finding.elementScreenshot || repeatCount > 1) && (
+        <div className="a11y-occurrence-head">
+          {!finding.elementScreenshot && <span className="a11y-occurrence-label">{label}</span>}
+          {repeatCount > 1 && <span className="a11y-occurrence-count">{repeatCount}×</span>}
+        </div>
+      )}
+      <ElementShot finding={finding} showLocator={professional} bubble={finding.elementScreenshot ? label : undefined} />
       {hasAlt && <AltTextSuggestion value={finding.suggestedAltText!} />}
       {finding.suggestedColour && <ColourSuggestion suggestion={finding.suggestedColour} />}
       {finding.suggestedCode && <CodeFixSuggestion fix={finding.suggestedCode} />}

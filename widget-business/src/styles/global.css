@@ -1935,6 +1935,35 @@
 .a11y-widget-biz .a11y-shot-locator strong { font-weight: 500; }
 .a11y-widget-biz .a11y-shot-locator code { font-size: inherit; overflow-wrap: anywhere; }
 .a11y-widget-biz .a11y-occurrence .a11y-shot { margin-top: 0.5em; }
+/* The element's name as a speech bubble on its picture (user's
+   instruction, 21 Nov 2026, "add bubbles to the finding screenshots too",
+   after the bubbles on your own messages): the same tile ground, rounded
+   22px, tilted -2 degrees, set over the picture's top-left corner with a
+   tail pointing down into it, the way the reference lays its bubbles over
+   photos. 22px Regular, black on #f0efe8 (18.4:1), white on #1c1c1e in
+   dark. It sits above the frame (z-index) and overlaps it by 16px, so the
+   figure gives it room above the picture. The plain label returns where
+   there is no picture. Forced colours draw an edge and drop the tail. */
+.a11y-widget-biz .a11y-shot.a11y-shot-has-bubble { padding-top: 6px; }
+.a11y-widget-biz .a11y-shot-bubble {
+  --ink: var(--tile-ink); --paper: var(--tile);
+  position: relative; z-index: 1; display: block; width: fit-content; max-width: 85%;
+  box-sizing: border-box; margin: 0 0 -16px 14px; padding: 10px 20px 12px;
+  border: 1px solid transparent; border-radius: 22px; background: var(--tile); color: var(--tile-ink);
+  font-size: 22px; font-weight: 400; line-height: 1.25; letter-spacing: 0.01em; overflow-wrap: anywhere;
+  transform: rotate(-2deg); transform-origin: 0 100%;
+}
+.a11y-widget-biz .a11y-shot-bubble::after {
+  content: ""; position: absolute; left: 26px; bottom: -12px; width: 20px; height: 14px;
+  background: var(--tile); clip-path: polygon(0 0, 100% 0, 15% 100%);
+}
+@media (forced-colors: active) {
+  .a11y-widget-biz .a11y-shot-bubble { border-color: CanvasText; }
+  .a11y-widget-biz .a11y-shot-bubble::after { display: none; }
+}
+@media (max-width: 640px) {
+  .a11y-widget-biz .a11y-shot-bubble { margin-left: 8px; padding: 8px 16px 10px; font-size: 18px; }
+}
 /* The AI fix (CodeFixSuggestion): the expanded finding's own parts at small
    size. A 15px uppercase label over a 1px ink rule, the note at 18px, then the
    element as it is and as it would pass, each under its key. The fixed one
