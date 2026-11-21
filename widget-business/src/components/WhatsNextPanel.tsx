@@ -1,5 +1,6 @@
 import { useId, useState } from "react";
 import type { CSSProperties } from "react";
+import { Icon } from "./Icon";
 
 /**
  * The readiness panel, brought across from the kit.
@@ -65,7 +66,7 @@ export function WhatsNextPanel({
           <span className="a11y-next-count">{failCount} would fail today</span>
         )}
         <span className="a11y-next-chevron" aria-hidden="true" data-open={open}>
-          ⌄
+          <Icon name="chevron--down" />
         </span>
       </button>
       <p className="a11y-next-desc">{description}</p>

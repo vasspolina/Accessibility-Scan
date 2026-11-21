@@ -1,5 +1,6 @@
 import { Fragment, useState } from "react";
 import type { ReactNode } from "react";
+import { Icon } from "../Icon";
 
 /**
  * The results table, ported from components/display/DataTable.jsx.
@@ -168,9 +169,7 @@ export function DataTable({
                           })
                         }
                       >
-                        <span aria-hidden="true" data-open={isOpen}>
-                          ▸
-                        </span>
+                        <Icon name="caret--right" data-open={isOpen} />
                       </button>
                     ) : null}
                   </td>

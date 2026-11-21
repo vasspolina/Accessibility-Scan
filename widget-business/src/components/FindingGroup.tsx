@@ -24,6 +24,7 @@ import {
   aiHint,
   keyboardHint,
 } from "../lib/testMethod";
+import { Icon } from "./Icon";
 
 export const severityLabel: Record<AccessibilityFinding["severity"], string> = {
   critical: "Fix first",
@@ -766,7 +767,7 @@ export function FindingDetails({
       {rep.helpUrl && (
         <p className="a11y-fd-learn">
           <a className="a11y-learn-more" href={rep.helpUrl} target="_blank" rel="noopener noreferrer">
-            {t("Learn more about this issue")} <span aria-hidden="true">↗</span>
+            {t("Learn more about this issue")} <Icon name="launch" />
           </a>
         </p>
       )}
@@ -859,7 +860,7 @@ export function FindingDetails({
                 {rep.helpUrl && (
                   <p className="a11y-pro-line">
                     <a className="a11y-learn-more" href={rep.helpUrl} target="_blank" rel="noopener noreferrer">
-                      {t("Fix technique")} <span aria-hidden="true">↗</span>
+                      {t("Fix technique")} <Icon name="launch" />
                     </a>
                   </p>
                 )}

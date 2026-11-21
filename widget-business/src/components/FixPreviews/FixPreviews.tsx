@@ -1,4 +1,5 @@
 import type { ReactNode } from "react";
+import { Icon } from "../Icon";
 
 /**
  * FixPreviews, ported from ui_kits/scan-app/FixPreviews.jsx. Tokens rewritten
@@ -49,7 +50,7 @@ export function FixCard({
       <span className={`a11y-fixcard-tag a11y-fixcard-tone-${tone}`}>{label}</span>
       <div className="a11y-fixcard-stage" aria-hidden="true">
         <span className="a11y-fixcard-before">{before}</span>{" "}
-        <span className="a11y-fixcard-arrow">→</span>{" "}
+        <span className="a11y-fixcard-arrow"><Icon name="arrow--right" /></span>{" "}
         <span className="a11y-fixcard-after">{after}</span>
       </div>
     </section>
