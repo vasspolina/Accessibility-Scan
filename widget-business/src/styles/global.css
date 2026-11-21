@@ -146,9 +146,8 @@
 .a11y-widget-biz .a11y-btn.a11y-btn-primary:enabled:hover { background: var(--hover); border-color: var(--hover); color: var(--hover-ink); }
 .a11y-widget-biz :is(input:not([type="radio"]):not([type="checkbox"]), textarea, select) {
   font: inherit; font-size: 22px; letter-spacing: 0.01em; padding: 0.4em 0.6em;
-  border: 2px solid var(--ink); border-radius: 0; background: var(--paper); color: var(--ink);
-  /* Dark: a filled field, a 1px #8e8e93 grey edge (6.3:1 on black). */
-  border: var(--field-edge, 2px solid var(--ink)); background: var(--field-bg, var(--paper));
+  /* The chat box's look (see FORM FIELDS AS THE CHAT BOX at the end). */
+  border: 1px dotted var(--ink); border-radius: 14px; background: var(--paper); color: var(--ink);
 }
 /* Focus is dark green (user's instruction, 18 Nov 2026, "make focus
    outline dark green"): a 2px line inside the element's own edge, square to
@@ -693,9 +692,8 @@
   display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 320px), 1fr)); gap: 16px; margin: 0 0 1.2em;
 }
 .a11y-widget-biz .a11y-stmt-field {
-  --ink: var(--tile-ink); --paper: var(--tile);
   display: flex; flex-direction: column; gap: 10px; padding: 18px 24px 16px;
-  border-radius: 14px; background: var(--tile); color: var(--tile-ink);
+  border: 1px dotted var(--ink); border-radius: 20px; background: transparent; color: inherit;
   font-size: 22px; letter-spacing: 0.01em; font-weight: 400; line-height: 1.4;
 }
 .a11y-widget-biz .a11y-stmt-field:focus-within { outline: 2px solid var(--focus); outline-offset: -2px; }
@@ -807,8 +805,8 @@
      "keep language button too"), dotted since 18 Nov 2026 ("lets make line
      dotted"). A dotted edge here is the select's look, not the disabled
      state: disabled controls are dashed. */
-  border: 2px dotted var(--ink);
-  border-radius: 0;
+  border: 1px dotted var(--ink);
+  border-radius: 14px;
   padding-inline-end: 2.6em;
   background-image: linear-gradient(45deg, transparent 50%, var(--ink) 50%), linear-gradient(135deg, var(--ink) 50%, transparent 50%);
   background-position: calc(100% - 1.4em) 50%, calc(100% - 1em) 50%;
@@ -1550,9 +1548,14 @@
    rings follow without a rule each. #000 on #f0efe8 is 18.4:1. */
 .a11y-widget-biz .a11y-next-list,
 .a11y-widget-biz .a11y-spec-grid,
-.a11y-widget-biz .a11y-ra-row,
 .a11y-widget-biz .a11y-manual-list {
   display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr));
+  gap: 1.2em 15px; align-items: start; margin: 0 0 1.2em; padding: 0; list-style: none;
+}
+/* One column since 21 Nov 2026 (user's instruction, "rearrange save as pdf
+   under a row with send report"): the email part, then Save as PDF. */
+.a11y-widget-biz .a11y-ra-row {
+  display: grid; grid-template-columns: minmax(0, 1fr);
   gap: 1.2em 15px; align-items: start; margin: 0 0 1.2em; padding: 0; list-style: none;
 }
 .a11y-widget-biz .a11y-dn-list {
@@ -1684,9 +1687,8 @@
   text-transform: uppercase;
 }
 .a11y-widget-biz .a11y-ra-row > .a11y-ra-cell > .a11y-ra-field {
-  --ink: var(--tile-ink); --paper: var(--tile);
   display: flex; flex-direction: column; gap: 10px; padding: 18px 24px 16px;
-  border-radius: 14px; background: var(--tile); color: var(--tile-ink);
+  border: 1px dotted var(--ink); border-radius: 20px; background: transparent; color: inherit;
 }
 .a11y-widget-biz .a11y-ra-field > .a11y-ra-field-label { font-size: 22px; letter-spacing: 0.01em; line-height: 1.4; }
 /* input. in the selector: the general field rule (:is(input:not():not())) is
@@ -2475,7 +2477,7 @@
 .a11y-widget-biz .a11y-tester .a11y-tester-rows > .a11y-select2,
 .a11y-widget-biz .a11y-tester .a11y-tester-row {
   box-sizing: border-box; min-width: 0; margin: 0; padding: 14px 18px 16px;
-  border-radius: 12px; background: var(--tile); color: var(--tile-ink);
+  border: 1px dotted var(--tile-ink); border-radius: 20px; background: transparent; color: inherit;
 }
 .a11y-widget-biz .a11y-tester .a11y-input { display: grid; grid-template-columns: minmax(0, 1fr); gap: 4px; }
 .a11y-widget-biz .a11y-tester .a11y-input:focus-within,
@@ -2506,7 +2508,7 @@
 }
 .a11y-widget-biz .a11y-tester .a11y-seg {
   display: flex; align-items: center; gap: 12px; box-sizing: border-box; min-width: 0; min-height: 60px; padding: 12px 18px;
-  border-radius: 12px; background: var(--tile); color: var(--tile-ink); cursor: pointer;
+  border: 1px dotted var(--tile-ink); border-radius: 20px; background: transparent; color: inherit; cursor: pointer;
   font-size: 22px; line-height: 1.2; letter-spacing: 0.01em;
 }
 /* Each choice shows a big toggle instead of a radio's dot (user's
@@ -3068,28 +3070,12 @@
    the statement's fields) and any textarea take the chat box's 20px
    corners; a bare one-line input or select, about 44px tall, takes 14px,
    since 20px would turn it into a pill. Focus stays the 2px green line
-   inside the edge. A choice row's hover keeps its fill. */
-.a11y-widget-biz :is(input:not([type="radio"]):not([type="checkbox"]), textarea, select) {
-  border: 1px dotted var(--ink); border-radius: 14px; background: var(--paper);
-}
-.a11y-widget-biz textarea:not([type="radio"]):not([type="checkbox"]) { border-radius: 20px; }
-.a11y-widget-biz .a11y-select2 .a11y-select2-field.a11y-select2-field { border: 1px dotted var(--ink); border-radius: 14px; }
-.a11y-widget-biz .a11y-tester .a11y-input,
-.a11y-widget-biz .a11y-tester .a11y-tester-rows > .a11y-select2,
-.a11y-widget-biz .a11y-tester .a11y-tester-row,
-.a11y-widget-biz .a11y-tester .a11y-seg,
-.a11y-widget-biz .a11y-ra-row > .a11y-ra-cell > .a11y-ra-field,
-.a11y-widget-biz .a11y-stmt-field {
-  border: 1px dotted var(--tile-ink); border-radius: 20px; background: transparent; color: inherit;
-}
-.a11y-widget-biz .a11y-tester .a11y-seg:not(.a11y-seg-disabled):hover { background: var(--hover); color: var(--hover-ink); }
-
-/* SAVE AS PDF UNDER SEND THIS REPORT (user's instruction, 21 Nov 2026,
-   "rearrange save as pdf under a row with send report"): the report
-   actions are one column, the email part first and Save as PDF under it,
-   65px apart like the other groups. */
-.a11y-widget-biz .a11y-ra-row { grid-template-columns: minmax(0, 1fr); }
+   inside the edge. A choice row's hover keeps its fill. The values are
+   set in each field's own rule; what follows keeps a line inside a box
+   from drawing an edge of its own. */
 /* A line inside a box keeps no edge of its own: the email field's rule ties
    the field rule above on specificity, so it is restated here. */
 .a11y-widget-biz .a11y-ra-row .a11y-ra-field > input.a11y-ra-email-input { border: 0; border-radius: 0; background: transparent; }
 .a11y-widget-biz .a11y-stmt-field input:not([type="radio"]):not([type="checkbox"]) { border: 0; border-radius: 0; background: transparent; }
+/* A textarea is a box like the chat's: 20px corners, not the one-line 14px. */
+.a11y-widget-biz textarea:not([type="radio"]):not([type="checkbox"]):not([hidden]) { border-radius: 20px; }
