@@ -1595,11 +1595,13 @@
 /* Mint, the Report a barrier card's green (user's instruction, 21 Nov 2026,
    "make button mint green"): black words on --barrier in both themes, 18.7:1
    on #ccffcc and 7.4:1 or better on dark's #30d158; the edge takes the
-   ground's colour. Disabled is still paper with a dashed ink edge. */
+   ground's colour. Disabled is still paper with a dashed ink edge. The words
+   are 15% smaller since 21 Nov 2026 (user's instruction, "15% smaller
+   text"): 48 to 41px, 38 to 32px on a phone; the block keeps its height. */
 .a11y-widget-biz .a11y-ra-row > .a11y-ra-cell > .a11y-ra-send {
   display: block; width: 100%; min-height: 128px; margin: 0; padding: 20px 24px;
   border: 1px solid var(--barrier); border-radius: 14px; background: var(--barrier); color: #000;
-  font-family: "Jokker", sans-serif; font-size: 48px; font-weight: 300; line-height: 1.05; letter-spacing: -0.01em;
+  font-family: "Jokker", sans-serif; font-size: 41px; font-weight: 300; line-height: 1.05; letter-spacing: -0.01em;
   text-align: start;
 }
 .a11y-widget-biz .a11y-ra-row > .a11y-ra-cell > .a11y-ra-send:disabled { background: var(--paper); color: var(--ink); border-style: dashed; }
@@ -1626,7 +1628,7 @@
 .a11y-widget-biz .a11y-sum-col > .a11y-sum-counts:last-child { margin-bottom: 0; }
 .a11y-widget-biz .a11y-report-actions { margin-top: 50px; }
 @media (max-width: 640px) {
-  .a11y-widget-biz .a11y-ra-row > .a11y-ra-cell > .a11y-ra-send { min-height: 96px; font-size: 38px; }
+  .a11y-widget-biz .a11y-ra-row > .a11y-ra-cell > .a11y-ra-send { min-height: 96px; font-size: 32px; }
 }
 
 /* The conformance report's way in: the primary pill under its lead, and
