@@ -1214,6 +1214,11 @@
   .a11y-widget-biz .a11y-sum-run .a11y-score-clean { font-size: 30px; letter-spacing: -0.005em; hyphens: manual; }
   .a11y-widget-biz .a11y-sum-run .a11y-sum-cell-no { width: 30px; height: 30px; font-size: 22px; }
   .a11y-widget-biz .a11y-sum-run .a11y-sum-row-marks { white-space: normal; }
+  /* The link's nowrap held the severity mark to the count, and in French
+     at 320px that pair ran 1px past the column (Widget CI, 21 Nov 2026,
+     "Les images n'ont pas de description"). In a phone's narrow run the
+     count may take the next line; the count itself stays whole. */
+  .a11y-widget-biz .a11y-sum-run .a11y-sum-row-link { white-space: normal; }
   /* A long first word held to its marker cannot break, so on a phone the
      pair may part rather than run off the screen. */
   .a11y-widget-biz .a11y-sum-run .a11y-sum-nobreak { white-space: normal; }
