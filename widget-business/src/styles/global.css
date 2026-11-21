@@ -1383,15 +1383,18 @@
 /* The affected elements, two to a row (user's instruction, 18 Nov 2026,
    "put into cards so its two per row"). The cards' #f0efe8 ground and 20px
    corners went with the finding's own cards (user's word, 20 Nov 2026,
-   "this is a slop"): each element now opens on a 1px ink rule, on the page's
-   own paper, so it follows the theme. Type and vertical spacing inside an
-   element are unchanged. One column under 640px of block. */
+   "this is a slop"): each element sat on the page's own paper under a 1px
+   ink rule. The rule is gone too since 21 Nov 2026 (user's instruction,
+   "delete this line", on the rule over an element's name): the element
+   opens on its name, and the grid's gap parts one from the next. Type and
+   vertical spacing inside an element are unchanged. One column under 640px
+   of block. */
 .a11y-widget-biz .a11y-fd .a11y-occurrence-list {
   display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1.2em 30px;
 }
 .a11y-widget-biz .a11y-fd .a11y-occurrence-list > .a11y-occurrence {
-  box-sizing: border-box; min-width: 0; max-width: none; margin: 0; padding: 12px 0 0;
-  border-top: 1px solid var(--ink); border-radius: 0; background: none; color: var(--ink);
+  box-sizing: border-box; min-width: 0; max-width: none; margin: 0; padding: 0;
+  border: 0; border-radius: 0; background: none; color: var(--ink);
 }
 .a11y-widget-biz .a11y-fd .a11y-occurrence-list > .a11y-occurrence > :last-child,
 .a11y-widget-biz .a11y-fd .a11y-occurrence-list > .a11y-occurrence > :last-child > :last-child { margin-bottom: 0; }
