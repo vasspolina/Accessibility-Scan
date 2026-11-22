@@ -498,6 +498,61 @@ export function dropDuplicateConsentClaims(
   });
 }
 
+/* True when two CSS paths name the same element, or one names an element
+ * inside the other. The paths are strings, so "inside" is a prefix ending
+ * at a combinator: "form#signup" holds "form#signup > input", never
+ * "form#signup-old". */
+function samePlace(a: string, b: string): boolean {
+  const x = a.trim();
+  const y = b.trim();
+  if (!x || !y) return false;
+  if (x === y) return true;
+  const inside = (outer: string, inner: string) =>
+    inner.startsWith(outer) && /^\s*(?:>|\s)/.test(inner.slice(outer.length));
+  return inside(x, y) || inside(y, x);
+}
+
+/**
+ * One repair, one card. Folds an AI finding into the measured finding it
+ * retells, as supporting evidence on that card.
+ *
+ * Observed on a broken MDN form (reviewer's note, 22 Nov 2026): the label
+ * rule found two unlabelled fields, the model described the same two fields
+ * again, and both arrived as scored findings. The prompt asks the model to
+ * skip what axe covers (buildPrompt.ts); a prompt is a request, and this is
+ * the guard.
+ *
+ * An AI accessibility finding folds when it points at the same element as a
+ * measured one: the same selector, or one element inside the other with the
+ * same WCAG criterion. Containment alone is not enough, since a note about a
+ * whole form ("no error message after sending") is a different fault from a
+ * field inside it with no label. Nothing is lost when it folds: its words
+ * ride on every measured card it matched, as `aiSupport`, first note wins.
+ *
+ * Pure apart from writing `aiSupport` onto the measured findings it is
+ * given. Exported for testing.
+ */
+export function foldAiIntoMeasured(
+  aiFindings: AccessibilityFinding[],
+  measured: readonly AccessibilityFinding[]
+): AccessibilityFinding[] {
+  return aiFindings.filter((ai) => {
+    if (ai.source !== "ai-review" || ai.category !== "accessibility") return true;
+    const aiCriterion = normalizeCriterionId(ai.wcagCriterion);
+    const matches = measured.filter((m) => {
+      if (m.source === "ai-review" || m.category !== "accessibility") return false;
+      if (m.selector.trim() === ai.selector.trim() && ai.selector.trim() !== "") return true;
+      if (!samePlace(m.selector, ai.selector)) return false;
+      return aiCriterion !== undefined && aiCriterion === normalizeCriterionId(m.wcagCriterion);
+    });
+    if (matches.length === 0) return true;
+    const title = ai.title?.trim();
+    const note = title ? `${title.replace(/[.!?]?$/, ".")} ${ai.description.trim()}` : ai.description.trim();
+    for (const m of matches) if (!m.aiSupport) m.aiSupport = note;
+    return false;
+  });
+}
+
 /**
  * Drops the findings the model itself was not sure of.
  *

@@ -4,9 +4,9 @@ import { readFileSync } from "node:fs";
 /**
  * What the score counts is said in two places that ship separately: the
  * widget's SCORE_POINTS, on screen, and the emailed report, written here.
- * Both once said the score counts "what an automated scan can prove"; it
- * does not — AI-review findings tied to a WCAG criterion count too
- * (scoring.ts). These hold the two to each other and to that correction.
+ * Both once said the score counts "what an automated scan can prove", while
+ * AI-review findings tied to a WCAG criterion counted too; since 22 Nov 2026
+ * they do not (scoring.ts). These hold the two to each other and to that.
  */
 
 const widget = readFileSync(new URL("../../widget-business/src/components/ScoreGauge.tsx", import.meta.url), "utf8");
@@ -40,9 +40,12 @@ describe("what the score counts", () => {
     expect(mail).not.toMatch(/\bcan prove\b/);
   });
 
-  it("says the AI review's findings count, and can be wrong", () => {
+  // Since 22 Nov 2026 no AI judgement moves the score (scoring.ts), and the
+  // copy has to say so rather than the rule it replaced.
+  it("says the AI review's findings do not count, and need a person", () => {
     const ai = points.find((p) => /AI review/.test(p));
-    expect(ai).toMatch(/count too/);
-    expect(ai).toMatch(/can be wrong/);
+    expect(ai).toMatch(/do not count/);
+    expect(ai).toMatch(/person/);
+    expect(widget).not.toMatch(/count too when/);
   });
 });

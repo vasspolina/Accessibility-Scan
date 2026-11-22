@@ -23,6 +23,7 @@ import {
   isAiFinding,
   aiHint,
   keyboardHint,
+  methodLine,
 } from "../lib/testMethod";
 import { Icon } from "./Icon";
 
@@ -602,6 +603,7 @@ export function FindingDetails({
   const worded = modelPlain(rep);
   const entries = dedupeOccurrences(findings);
   const measured = whatWeFound(rep, plain, entries.length, title);
+  const aiSupport = findings.find((f) => f.aiSupport)?.aiSupport;
   const locatesSomething = entries.some(
     // An AI fix is shown in the element's row, so a row that carries one is
     // kept even when its label and picture identify nothing on their own.
@@ -699,6 +701,14 @@ export function FindingDetails({
       {rep.ageNote && (
         <div className="a11y-finding-measured" data-size={tileSize(rep.ageNote)}>
           <strong>{t("Past sixty")}</strong> <TileBody text={rep.ageNote} />
+        </div>
+      )}
+      {/* The AI review's account of this same fault, folded into the
+          measured card on the server (foldAiIntoMeasured): evidence beside
+          the rule's finding, not a second card and not in the score. */}
+      {aiSupport && (
+        <div className="a11y-finding-measured" data-size={tileSize(aiSupport)}>
+          <strong>{t("The AI review saw it too")}</strong> <TileBody text={aiSupport} />
         </div>
       )}
       {/* The model's account of what happens on this page, from the
@@ -969,7 +979,9 @@ export function findingRow(
           {keyboardCheck && (
             <span className="a11y-method-badge a11y-method-keyboard">{t("Keyboard test")}</span>
           )}
-          {fromAi && <span className="a11y-method-badge a11y-method-ai">{t("AI review")}</span>}
+          {/* The method beside the claim (reviewer's note, 22 Nov 2026):
+              not only that the model wrote it, but that no one confirmed it. */}
+          {fromAi && <span className="a11y-method-badge a11y-method-ai">{methodLine(rep)}</span>}
           {rep.triage && rep.triage.state !== "open" && (
             <span className={`a11y-method-badge a11y-triage-badge a11y-triage-${rep.triage.state}`}>
               {t(TRIAGE_BADGE[rep.triage.state])}
@@ -1107,7 +1119,9 @@ export function FindingGroup({
           {keyboardCheck && (
             <span className="a11y-method-badge a11y-method-keyboard">{t("Keyboard test")}</span>
           )}
-          {fromAi && <span className="a11y-method-badge a11y-method-ai">{t("AI review")}</span>}
+          {/* The method beside the claim (reviewer's note, 22 Nov 2026):
+              not only that the model wrote it, but that no one confirmed it. */}
+          {fromAi && <span className="a11y-method-badge a11y-method-ai">{methodLine(rep)}</span>}
           {rep.triage && rep.triage.state !== "open" && (
             <span className={`a11y-method-badge a11y-triage-badge a11y-triage-${rep.triage.state}`}>
               {t(TRIAGE_BADGE[rep.triage.state])}

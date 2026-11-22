@@ -212,7 +212,7 @@ export const SHOW_SECTION_TOOL: Anthropic.Beta.BetaTool = {
           "settings",
         ],
         description:
-          "score: the score and what it means, with email and PDF. findings: every problem found, grouped. checklist: the 50-item legal standard (WCAG 2.1 AA, EN 301 549). wcag22: what changes with WCAG 2.2. team: checks that need a designer or developer to decide. notes: remarks on the design that do not count towards the score. screenreader: how the page sounds to a screen reader, with playback. statement: a draft accessibility statement. vpat: a draft conformance report for buyers (VPAT). simulator: the page as seen with colour blindness and low vision. history: how this page compares with earlier scans. audit: the whole-site results. settings: report style, re-run options, account key and schedule.",
+          "score: the score and what it means, with email and PDF. findings: every problem found, grouped. checklist: the 50-item legal standard (WCAG 2.1 AA, EN 301 549). wcag22: what changes with WCAG 2.2. team: checks that need a designer or developer to decide. notes: remarks on the design that do not count towards the score. screenreader: a simulation, built from the page's code, of what a screen reader announces, with playback; not a recording of a real screen reader, so call it a simulation. statement: a draft accessibility statement. vpat: a draft conformance report for buyers (VPAT). simulator: the page as seen with colour blindness and low vision. history: how this page compares with earlier scans. audit: the whole-site results. settings: report style, re-run options, account key and schedule.",
       },
     },
     required: ["section"],

@@ -90,7 +90,7 @@ function renderText(report: AccessibilityReport): string {
     "- It counts the accessibility problems this scan found, weighted by how much each one costs a visitor.",
     "- Each severity has a limit on how far it lowers the score.",
     "- Design notes, misleading patterns, the optional AAA level and checks new in WCAG 2.2 do not count.",
-    "- AI review findings count too when their card names a WCAG requirement. They can be wrong.",
+    "- AI review findings do not count. They are a model’s view, and a person has to check them.",
     "- A scan like this finds a third to a half of the problems. The rest need a person with a keyboard and a screen reader.",
     "- It is not a statement that the site meets the law.",
     "",

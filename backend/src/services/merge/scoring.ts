@@ -97,11 +97,14 @@ export function scoreFindings(findings: AccessibilityFinding[]): number {
         if (f.wcagLevel === "AAA") return false;
         const id = normalizeCriterionId(f.wcagCriterion);
         if (id && WCAG22_ONLY.has(id)) return false;
-        // An AI observation whose criterion claim the allow-list stripped is
-        // a card worth reading and not a WCAG 2.1 duty the score may bill.
-        // The re-audit found these still lowering a number that names the
-        // standard they no longer cite.
-        if (f.source === "ai-review" && f.wcagCriterion === "N/A") return false;
+        // No AI judgement moves the number, criterion or not. Until 22 Nov
+        // 2026 an AI card whose criterion survived the allow-list counted,
+        // and on a broken form the model described the two unlabelled
+        // fields the label rule had already found: one repair, billed
+        // twice. A score that is sold as a measure has to be built from
+        // measurements; the model's cards stay in the report, marked as
+        // its view, and a person decides whether they are right.
+        if (f.source === "ai-review") return false;
         return true;
       })
     )

@@ -124,6 +124,8 @@
         elementScreenshot: TINY_JPEG,
         elementBox: { x: 0.04, y: 0.18, width: 0.9, height: 0.7 },
         suggestedAltText: "A red bicycle leaning against a brick wall",
+        // An AI card about this same image, folded in on the server.
+        aiSupport: "Gallery photo is announced only as 'image'. A screen reader user hears nothing about the bicycle the section is selling.",
         helpUrl: "https://dequeuniversity.com/rules/axe/4.10/image-alt",
       }),
       finding({
@@ -232,6 +234,12 @@
         suggestedFix: "Restore the focus outline, or draw your own of at least 2px.",
       }),
     ];
+    // &banner=off: the report with no blocking cookie banner, so the
+    // report's own lead ("Start here … Fix these first.") shows instead of
+    // the banner's stop-press, which outranks it.
+    if (new URLSearchParams(location.search).get("banner") === "off") {
+      findings = findings.filter(function (f) { return f.ruleId !== "consent-blocks-reader"; });
+    }
 
     var srLines = [];
     var kinds = ["landmark", "heading", "link", "button", "image", "field", "list", "text"];
