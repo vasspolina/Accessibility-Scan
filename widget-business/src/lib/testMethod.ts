@@ -316,3 +316,16 @@ export function keyboardHint(): string {
 export function isKeyboardCheck(finding: AccessibilityFinding): boolean {
   return KEYBOARD_CHECKS.has(finding.ruleId ?? "");
 }
+
+/* How a finding was established, said beside the claim (reviewer's note,
+   22 Nov 2026: "make the testing method visible beside the claim"). The
+   report says what a person can or cannot do; this line says what that rests
+   on. English keys, rendered through t() at the call site. */
+export const METHOD_LINE = {
+  automated: "Found by an automated check.",
+  "ai-review": "From the AI review. Not confirmed.",
+} as const satisfies Record<AccessibilityFinding["source"], string>;
+
+export function methodLine(finding: AccessibilityFinding): string {
+  return t(METHOD_LINE[finding.source]);
+}

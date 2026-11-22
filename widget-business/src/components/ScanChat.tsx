@@ -3,6 +3,7 @@ import { t, tf } from "../lib/strings";
 import { getLang } from "../lib/i18n";
 import { CAPS_RUN, smarten } from "../lib/typography";
 import { Button } from "./Button";
+import { Input } from "./Input";
 import { LanguageMenu } from "./LanguageMenu";
 import { BlockedNotice } from "./BlockedNotice";
 import { VoiceControl } from "./VoiceControl";
@@ -641,6 +642,9 @@ export function ScanChat({
 }) {
   const [turns, setTurns] = useState<Turn[]>([]);
   const [draft, setDraft] = useState("");
+  // The opening address field and its one error line.
+  const [startUrl, setStartUrl] = useState("");
+  const [startError, setStartError] = useState("");
   // The opening questions: drawn fresh on every load, one from each group,
   // each in a different layout (user's instruction, 4 Nov 2026).
   const [picks, setPicks] = useState(() => pickOpeningPrompts());
@@ -929,10 +933,14 @@ export function ScanChat({
         // (user's instruction, 4 Nov 2026). It used to show only when checks
         // were missing behind it; that block still says which did not run.
         // Silent, like every block the widget adds on its own account.
-        showSection("score", { resultKey: key, force: true, announce: false, focusExisting: false });
+        // A banner that hides the page from screen readers comes first,
+        // before the score: the report leads with what to fix (reviewer's
+        // note, 22 Nov 2026), and the score block's own lead steps aside
+        // for it (computeFirstFix).
         if (outcome.report.findings.some((f) => f.ruleId === "consent-blocks-reader")) {
           add({ id: nextId++, who: "block", section: "stop", resultKey: key });
         }
+        showSection("score", { resultKey: key, force: true, announce: false, focusExisting: false });
       }
     } else {
       patch(turnId, { state: "failed", seconds, steps: [...milestonesRef.current] });
@@ -1178,6 +1186,40 @@ export function ScanChat({
           prompts: allPrompts,
         });
 
+  /** The opening's address field, sent: a scan turn with no assistant in
+   *  between, like a re-run. The assistant has not seen the result, so the
+   *  next question carries it, as after a form scan. */
+  async function startScan(e: FormEvent) {
+    e.preventDefault();
+    if (busy || loading) return;
+    const typed = startUrl.trim();
+    if (!typed) {
+      setStartError(t("Enter a website address first. For example: example.com."));
+      return;
+    }
+    const url = addressIn(typed);
+    if (!url) {
+      setStartError(t("That doesn't look like a website address. For example: example.com."));
+      return;
+    }
+    setStartError("");
+    setStartUrl("");
+    setBackTo(null);
+    add({ id: nextId++, who: "you", text: url });
+    setBusy(true);
+    try {
+      const outcome = await runScan(url, "page", true);
+      sharedScan.current = null;
+      const line = outcomeLine(outcome);
+      add({ id: nextId++, who: "checker", text: line });
+      setAnnouncement(line);
+      showResult(outcome);
+    } finally {
+      setBusy(false);
+      returnFocus();
+    }
+  }
+
   async function send(e: FormEvent) {
     e.preventDefault();
     const text = draft.trim();
@@ -1330,7 +1372,14 @@ export function ScanChat({
       availableSections.includes(s.key) &&
       !turns.some((x) => x.who === "block" && x.section === s.key && x.resultKey === currentKey)
   );
-  const prompt = currentKey ? t("Ask about the report, or anything else") : t("Ask anything, or name a site to check");
+  // On the opening screen the address field above is the way to scan, so
+  // the box below says it is for questions; it still scans an address typed
+  // into it. Once a conversation has started, the field is gone.
+  const prompt = currentKey
+    ? t("Ask about the report, or anything else")
+    : turns.length === 0 && !barrier
+      ? t("Or ask a question")
+      : t("Ask anything, or name a site to check");
 
   if (hidden) return null;
 
@@ -1426,6 +1475,40 @@ export function ScanChat({
             <h2 className="a11y-section-title a11y-newscan-title" id="a11y-newscan-title">
               {t("New scan")}
             </h2>
+            {/* The opening's one obvious action (reviewer's note, 22 Nov
+                2026: "give the opening screen one obvious action, Enter a
+                website address"). The scan form's own address field and
+                start block, so it is drawn as that form is. It scans
+                straight away, with no assistant in between, and the
+                questions below stay for whoever came to ask. */}
+            {!barrier && turns.length === 0 && (
+              <form className="a11y-tester a11y-chat-start" onSubmit={startScan} noValidate aria-labelledby="a11y-newscan-title">
+                <Input
+                  id="a11y-start-url"
+                  size="display"
+                  label={t("Enter a website address")}
+                  placeholder="example.com"
+                  value={startUrl}
+                  onChange={(e) => {
+                    setStartUrl(e.target.value);
+                    setStartError("");
+                  }}
+                  disabled={busy || loading}
+                  invalid={Boolean(startError)}
+                  inputProps={{ inputMode: "url", autoComplete: "url", spellCheck: false }}
+                  describedBy={startError ? "a11y-start-error" : undefined}
+                />
+                {/* Mounted empty, so the message is announced when it lands. */}
+                <p id="a11y-start-error" className="a11y-error a11y-url-error" role="alert">
+                  {startError}
+                </p>
+                <div className="a11y-url-submit">
+                  <Button type="submit" size="lg" disabled={busy || loading}>
+                    {t("Check this site")}
+                  </Button>
+                </div>
+              </form>
+            )}
           </div>
         </div>
       </div>

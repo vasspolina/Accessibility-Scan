@@ -18,6 +18,7 @@ import {
   dropDuplicateConsentClaims,
   applyAgeEnrichments,
   dropSpeculativeFindings,
+  foldAiIntoMeasured,
   dropBannerShadowedAriaHiddenFocus,
   wcagTagsToLabel,
 } from "./merge/mergeFindings.js";
@@ -584,14 +585,20 @@ export async function scanUrlToReport(
   // And where a deterministic rule already proved the same consent problem,
   // the model's retelling of it goes: two cards for one fault inflate the
   // count the score is built on, and the measured one carries the picture.
-  const aiFindings = dropSpeculativeFindings(
-    dropDuplicateConsentClaims(
-      dropContradictedConsentClaims(
-        aiToFindings(aiReview.findings),
-        renderResult.darkPatternSignals.consentBanner
-      ),
-      deterministic
-    )
+  //
+  // Last, an AI card that retells a measured finding on the same element
+  // folds into that card as its supporting note: one repair, one card.
+  const aiFindings = foldAiIntoMeasured(
+    dropSpeculativeFindings(
+      dropDuplicateConsentClaims(
+        dropContradictedConsentClaims(
+          aiToFindings(aiReview.findings),
+          renderResult.darkPatternSignals.consentBanner
+        ),
+        deterministic
+      )
+    ),
+    [...automatedFindings, ...deterministic]
   );
   const merged = mergeFindings(automatedFindings, aiFindings);
   merged.push(...deterministic);
