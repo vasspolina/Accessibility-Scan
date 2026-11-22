@@ -1,3 +1,4 @@
+import type { ReactNode } from "react";
 import type { ProView } from "./ProSummary";
 import { t } from "../lib/strings";
 import { expandRowOnClick } from "../lib/rowExpand";
@@ -34,9 +35,13 @@ export function ProfessionalTable({
   findings,
   conformance,
   view,
+  action,
 }: {
   findings: AccessibilityFinding[];
   conformance?: ConformanceSummary;
+  /* The one control that stands beside the heading: the findings as a CSV
+     (FindingsCsvButton). Passed in because it needs the whole report. */
+  action?: ReactNode;
   /* Which region shows — the tabs above (in ProSummary) drive it. */
   view: ProView;
 }) {
@@ -162,9 +167,12 @@ export function ProfessionalTable({
     >
       {/* Its own heading: without one, heading navigation skipped the
           table and the rail listed the section as nameless. */}
-      <h2 className="a11y-section-title" id="a11y-pro-findings-heading">
-        {t("Findings")} <span className="a11y-section-count">({grouped.length})</span>
-      </h2>
+      <div className="a11y-findings-head">
+        <h2 className="a11y-section-title" id="a11y-pro-findings-heading">
+          {t("Findings")} <span className="a11y-section-count">({grouped.length})</span>
+        </h2>
+        {action}
+      </div>
       {view === "issues" ? issuesTable : cleanList}
     </section>
   );

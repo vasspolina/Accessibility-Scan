@@ -22,12 +22,10 @@ export interface ReportView {
    */
   criterionNames: Record<string, { name: string; level: "A" | "AA" }>;
   /**
-   * Drawn inside a block of the conversation, not on the page. The block's
-   * own summary line already names the section ("Notes on the design ·
-   * Hide details"), so a section whose heading only repeats that name keeps
-   * the heading for screen readers and hides it on screen (user's
-   * instruction, 18 Nov 2026: "check for content repetition"). A heading
-   * that says more than the name ("Do you meet the legal standard?") stays.
+   * Drawn inside a block of the conversation, not on the page. A block has
+   * no fold line since 22 Nov 2026, so each section's own heading titles it
+   * there as on the page; this only drops what a filed report does not
+   * repeat (the summary's copy button, the worst-of cards).
    */
   inChat?: boolean;
 }

@@ -558,19 +558,6 @@
 .a11y-widget-biz details:not([open]) .a11y-chat-fold-open,
 .a11y-widget-biz details[open] .a11y-chat-fold-closed { display: none; }
 .a11y-widget-biz .a11y-chat-fold { margin-inline-start: 0.3em; }
-/* The details toggle (5 Nov 2026): a
-   block's fold says what it does in small print, and a finished scan's
-   steps sit behind one "Details" line. */
-.a11y-widget-biz .a11y-chat-blockhead .a11y-chat-fold { font-size: 18px; letter-spacing: 0.01em; margin-inline-start: 0.8em; }
-/* A block's summary line is as wide as its words (user's screenshot,
-   19 Nov 2026, the Settings block). It was a full-width line, so the focus
-   ring a click left on it drew a 2px ink box across the whole thread, and
-   the block's first line sat hard against it. The ring now hugs the words
-   with air outside them, and the body starts 40px under the line, the
-   space the settings rows keep between themselves. */
-.a11y-widget-biz .a11y-chat-blockhead { width: fit-content; max-width: 100%; }
-.a11y-widget-biz .a11y-chat-blockhead:focus-visible { outline-offset: 4px; }
-.a11y-widget-biz .a11y-chat-block > details[open] > .a11y-chat-blockhead { margin-bottom: 40px; }
 /* The account key is a short code, not a line of prose: the field stops at
    a key's length instead of running to the edge of the thread. */
 .a11y-widget-biz .a11y-settings-row > .a11y-input { max-width: 420px; }
@@ -923,7 +910,6 @@
 /* The legal checklist's questions and the result rows. */
 .a11y-widget-biz .a11y-legal-q { display: grid; grid-template-columns: 1.6em minmax(0, 1fr); align-items: baseline; margin: 0 0 0.4em; }
 .a11y-widget-biz .a11y-legal-qnum { font-size: 18px; letter-spacing: 0.01em; font-weight: 500; }
-.a11y-widget-biz .a11y-legal-micro { font-size: 18px; letter-spacing: 0.01em; font-weight: 500; margin: 0 0 0.4em; }
 .a11y-widget-biz .a11y-legal-thead { display: none; }
 /* The result rows (We found problems 3, We checked 19, ...): one line each,
    in four columns that line up from row to row: the title, its small print,
@@ -1999,7 +1985,7 @@
   .a11y-widget-biz .a11y-print-cards .a11y-finding:has(.a11y-occurrence:nth-child(5)) { break-inside: auto; page-break-inside: auto; }
   .a11y-widget-biz .a11y-print-cards .a11y-finding-header { break-inside: avoid; break-after: avoid; page-break-after: avoid; }
 
-  .a11y-widget-biz :is(h1, h2, h3, h4, h5, h6, caption, .a11y-accordion-title, .a11y-affected-label, .a11y-pro-eyebrow, .a11y-spec-label, .a11y-legal-micro) {
+  .a11y-widget-biz :is(h1, h2, h3, h4, h5, h6, caption, .a11y-accordion-title, .a11y-affected-label, .a11y-pro-eyebrow, .a11y-spec-label) {
     break-after: avoid; page-break-after: avoid;
   }
   .a11y-widget-biz :is(
@@ -3083,3 +3069,71 @@
 .a11y-widget-biz .a11y-stmt-field input:not([type="radio"]):not([type="checkbox"]) { border: 0; border-radius: 0; background: transparent; }
 /* A textarea is a box like the chat's: 20px corners, not the one-line 14px. */
 .a11y-widget-biz textarea:not([type="radio"]):not([type="checkbox"]):not([hidden]) { border-radius: 20px; }
+
+/* ═══ THE FINDINGS AS A CSV (user's choice, 22 Nov 2026) ═══════════════════
+   One button at the head of the findings, beside their title, in both
+   readings: "What people can't use (N)" and the professional "Findings
+   (N)". It is the ordinary pill (22px, 1px dotted ink edge, marker-yellow
+   hover, the dark fill in dark) with the PDF button's download mark; only
+   its place is set here. The title keeps its left edge and the button
+   stands at the right on the title's baseline; where the two do not fit
+   one line the button drops under the title, at the left.
+   The head takes the title's own margins (1.2em and 0.5em of the title's
+   38px, 32px on a phone), so the title stands where it stood: a flex box
+   does not let its child's margin collapse into the 100px between
+   sections, and left on the title it would have added to it. The pill is
+   50px tall beside a 40px title line and hangs 11.5px under it, measured;
+   12px comes back off its foot, so the rows under the head did not move
+   either (title and first row measured at the same y before and after, at
+   1440px). */
+.a11y-widget-biz .a11y-findings-head {
+  display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between;
+  gap: 16px 24px; margin: 46px 0 19px;
+}
+.a11y-widget-biz .a11y-findings-head > h2 { margin: 0; min-width: 0; }
+.a11y-widget-biz .a11y-findings-head > .a11y-findings-csv {
+  display: inline-flex; flex: none; align-items: center; gap: 12px; min-height: 44px; max-width: 100%;
+  margin-bottom: -12px;
+}
+.a11y-widget-biz .a11y-findings-csv > .a11y-icon.a11y-findings-csv-icon { width: 20px; height: 20px; }
+@media (max-width: 640px) {
+  .a11y-widget-biz .a11y-findings-head { margin: 38px 0 16px; }
+  /* On a phone the button stands under the title, so it keeps its foot:
+     38px to what follows, the room the title had. */
+  .a11y-widget-biz .a11y-findings-head > .a11y-findings-csv { margin-bottom: 0; }
+}
+/* A button that saves a file has nothing to do on paper. */
+@media print {
+  .a11y-widget-biz .a11y-findings-head > .a11y-findings-csv { display: none; }
+}
+
+/* ═══ A CODE BLOCK IN THE CHAT AS A CARD TO COPY FROM (user's instruction,
+   22 Nov 2026, "make this into copy form in a card with small text") ════════
+   The assistant writes templates to fill in (an issue report: Title,
+   Summary, Where, Standard) as fenced blocks, and they ran at the thread's
+   prose size in monospace across the full width. Each block is now a card
+   on the tile ground, 20px corners like the chat box, the text at 15px on
+   a 1.45 line and wrapped (pre-wrap), so nothing scrolls sideways and the
+   block needs no tab stop. Copy sits on a bar at the card's top, end side,
+   so it never covers the first line. The card redefines --ink and --paper,
+   so the button's dotted edge and the focus ring follow it in both themes.
+   The doubled class out-ranks the phone's 0.9em rule for pre and code in
+   the thread, and the chat's paragraph margin on pre. */
+.a11y-widget-biz .a11y-chat-copy.a11y-chat-copy {
+  --ink: var(--tile-ink); --paper: var(--tile);
+  box-sizing: border-box; max-width: none; margin: 0 0 1.2em; padding: 14px 20px 20px;
+  border-radius: 20px; background: var(--tile); color: var(--tile-ink);
+}
+.a11y-widget-biz .a11y-chat-text > .a11y-chat-copy:last-child { margin-bottom: 0; }
+.a11y-widget-biz .a11y-chat-copy.a11y-chat-copy > .a11y-chat-copy-bar { display: flex; justify-content: flex-end; margin: 0 0 8px; }
+.a11y-widget-biz .a11y-chat-copy.a11y-chat-copy .a11y-chat-copy-btn {
+  min-height: 34px; padding: 0 1em; font-size: 15px; font-weight: 400; line-height: 1.2; letter-spacing: 0.01em;
+}
+.a11y-widget-biz .a11y-chat-copy.a11y-chat-copy > .a11y-chat-pre {
+  margin: 0; padding: 0; max-width: none; overflow: visible;
+  font-size: 15px; line-height: 1.45; letter-spacing: 0; white-space: pre-wrap; overflow-wrap: anywhere;
+}
+.a11y-widget-biz .a11y-chat-copy.a11y-chat-copy > .a11y-chat-pre > code { font-size: inherit; line-height: inherit; color: inherit; background: none; }
+@media (max-width: 640px) {
+  .a11y-widget-biz .a11y-chat-copy.a11y-chat-copy { padding: 10px 14px 16px; }
+}
