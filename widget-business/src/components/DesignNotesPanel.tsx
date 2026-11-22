@@ -130,32 +130,61 @@ export function DesignNotesPanel({ findings }: { findings: AccessibilityFinding[
                 : tf("Showing all {count} notes.", { count: groups.length })}
           </p>
 
-          <ul className="a11y-dn-list">
-            {visible.map((group) => (
-              <li key={group[0].id}>
-                {/* Opens, never toggles closed. The panel always shows one
-                    note, so "close" could only mean "open a different one" —
-                    and with a single visible note it would reopen itself, a
-                    button that appears to do nothing. */}
+          {/* Tabs (user's instruction, 22 Nov 2026, "design this into
+              tabs"). One note shows at a time under its title, which is
+              what a tab set is, so it now says so: a tablist of the titles
+              and the open note as its tabpanel, in place of a list of
+              expand buttons that never collapsed. Roving tabindex: one tab
+              in the Tab order, the arrow keys (either axis, wrapping) and
+              Home/End move and open together, Tab goes on into the note.
+              A tab opens, never closes: the panel always shows one note. */}
+          <div className="a11y-dn-list" role="tablist" aria-label={t("Notes on the design")}>
+            {visible.map((group, i) => {
+              const selected = open?.[0].id === group[0].id;
+              return (
                 <button
+                  key={group[0].id}
                   type="button"
+                  role="tab"
                   className="a11y-dn-link"
                   id={`a11y-dn-note-${group[0].id}`}
-                  aria-expanded={open?.[0].id === group[0].id}
+                  aria-selected={selected}
                   aria-controls="a11y-dn-detail"
+                  tabIndex={selected ? 0 : -1}
                   onClick={() => setOpenId(group[0].id)}
+                  onKeyDown={(e) => {
+                    const last = visible.length - 1;
+                    const to =
+                      e.key === "ArrowRight" || e.key === "ArrowDown"
+                        ? (i + 1) % visible.length
+                        : e.key === "ArrowLeft" || e.key === "ArrowUp"
+                          ? (i + last) % visible.length
+                          : e.key === "Home"
+                            ? 0
+                            : e.key === "End"
+                              ? last
+                              : -1;
+                    if (to < 0) return;
+                    e.preventDefault();
+                    const id = visible[to][0].id;
+                    setOpenId(id);
+                    (e.currentTarget.parentElement?.querySelector(
+                      `#a11y-dn-note-${CSS.escape(id)}`
+                    ) as HTMLButtonElement | null)?.focus();
+                  }}
                 >
                   <span className="a11y-dn-link-text">{noteTitle(group)}</span>
                 </button>
-              </li>
-            ))}
-          </ul>
+              );
+            })}
+          </div>
 
           {open && (
             <div
               className="a11y-dn-detail"
               id="a11y-dn-detail"
-              role="region"
+              role="tabpanel"
+              tabIndex={0}
               aria-labelledby={`a11y-dn-note-${open[0].id}`}
             >
               <div className="a11y-dn-detail-head">

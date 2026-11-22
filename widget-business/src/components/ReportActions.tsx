@@ -96,8 +96,19 @@ export function ReportActions({
               disabled={sending}
             />
           </div>
+          {/* Both wordings sit in one grid cell and only the current one is
+              shown, so the button is as wide as the wider of the two: it
+              shares a line with the field, and a button that shrank to
+              "Sending\u2026" would move the field's edge under the reader's
+              hand. The hidden one is visibility: hidden, so it is not part
+              of the button's name. */}
           <button type="submit" className="a11y-ra-send" disabled={sending}>
-            {sending ? t("Sending\u2026") : t("Send this report")}
+            <span className="a11y-ra-send-word" data-off={sending ? "" : undefined}>
+              {t("Send this report")}
+            </span>
+            <span className="a11y-ra-send-word" data-off={sending ? undefined : ""}>
+              {t("Sending\u2026")}
+            </span>
           </button>
           {/* role="status" rather than a bare paragraph: the outcome arrives
               after a wait, so it has to be announced, not just drawn. */}
