@@ -14,7 +14,7 @@
   reports come from GET /api/pilot/reports, which needs ADMIN_TOKEN, and the
   token is kept for this tab only (sessionStorage), never in the address.
 
-  Set in the widget's look: Jokker, black and white, 1px ink rules, the
+  Set in the widget's look: PP Telegraf, black and white, 1px ink rules, the
   marker highlight only on the scan's status, pills for buttons, dark
   green focus. The script is its own file (barrier-ledger.js) so a
   script-src 'self' policy still runs it.
@@ -22,9 +22,16 @@
 <link rel="icon" href="data:,">
 <style>
 @font-face {
-  font-family: "Jokker";
-  src: url("/fonts/JokkerVF-TRIAL.woff2") format("woff2");
-  font-weight: 100 900;
+  font-family: "PP Telegraf";
+  src: url("/fonts/PPTelegraf-Regular.otf") format("opentype");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "PP Telegraf";
+  src: url("/fonts/PPTelegraf-Medium.otf") format("opentype");
+  font-weight: 500;
   font-style: normal;
   font-display: swap;
 }
@@ -56,9 +63,9 @@
 html { -webkit-text-size-adjust: 100%; }
 body {
   margin: 0; background: var(--paper); color: var(--ink);
-  font-family: "Jokker", system-ui, sans-serif; font-weight: 400;
+  font-family: "PP Telegraf", system-ui, sans-serif; font-weight: 400;
   font-size: 22px; line-height: 1.2; letter-spacing: 0;
-  font-feature-settings: "ss04", "ss05", "kern", "liga";
+  font-feature-settings: "kern", "liga";
   font-synthesis: none; hyphens: manual; overflow-wrap: anywhere;
 }
 .page { max-width: 1240px; margin: 0 auto; padding: 40px 40px 120px; }

@@ -12,9 +12,38 @@ a11y-scan https://example.com
 
 ## Installing
 
-It is not on the npm registry yet, so `a11y-scan` does not work — the
-earlier version of this page said it did. Until it is published, install
-from a checkout:
+Three ways in, each one line once it is published. The npm package and the
+image are prepared (`backend/package.json`, `backend/cli.Dockerfile`, and
+`.github/workflows/release-cli.yml`, which publishes both when a `cli-v*`
+tag is pushed) but **not published yet**, so the first two do not work
+until the owner publishes them. The Action works now: it builds from this
+repository at the ref you name.
+
+```bash
+# npm (once published)
+npm install -g a11y-scan
+npx playwright@1.61.1 install chromium --with-deps
+
+# Docker (once published): output files land in the mounted directory
+docker run --rm -v "$PWD:/work" ghcr.io/vasspolina/a11y-scan https://example.com --json report.json
+```
+
+```yaml
+# GitHub Actions: use @main until a v1 tag exists
+- uses: vasspolina/Accessibility-Scan@main
+  with:
+    url: http://localhost:3000
+    args: --fail-on serious --sarif a11y.sarif
+```
+
+The Action's `url` takes one or more addresses, `args` any other options,
+and `summary: "true"` (the default) writes the Markdown summary to the job
+summary. Its `exit-code` output and its own exit code are the command's.
+The browser is pinned: Playwright 1.61.1 and the Chromium it ships. A
+Chromium from another Playwright version does not launch, and the command
+says which line to run if it is missing.
+
+Until the package is published, a checkout works too:
 
 ```bash
 git clone git@github.com:vasspolina/Accessibility-Scan.git
@@ -24,9 +53,10 @@ npx playwright install chromium --with-deps
 npm link                                  # puts `a11y-scan` on your PATH
 ```
 
-Node 24 or later. The backend's own CI runs exactly this from a temporary
-directory and checks the three exit codes, so if that job is green the
-install path works.
+Node 24 or later. The backend's own CI runs this from a temporary directory
+and checks the three exit codes, and the `Install paths` workflow runs the
+Action, builds and runs the image, and checks what npm would publish (the
+compiled command and its README, never the widgets or their fonts).
 
 ## Exit codes
 
@@ -63,6 +93,8 @@ scanner as a clean site.
 | `--junit <file>` | write the findings as JUnit XML, the test report GitLab, Jenkins and Azure Pipelines read |
 | `--csv <file>` | write the findings as a spreadsheet, one row for each finding |
 | `--markdown <file>` | write a summary for a job summary or a pull request comment |
+| `--tickets <file>` | write one ticket's text per fault, to paste into any tracker (see Findings as tickets) |
+| `--github-issues <owner/name>` | file those tickets as GitHub issues, once each; the token comes from `GITHUB_TOKEN` |
 | `--server <url>` | save the report into a hosted instance's history |
 | `--api-key <key>` | with this key; or set `A11Y_SERVER` and `A11Y_API_KEY` in the environment |
 | `--ai` | include the AI review (needs `ANTHROPIC_API_KEY`) |
@@ -263,6 +295,45 @@ actually meets it:
 A web page has no file and line, so the location is the URL and the CSS
 selector. The fingerprint is the same rule-plus-selector the baseline uses,
 so GitHub keeps a finding's identity across runs the same way.
+
+### Findings as tickets
+
+`--tickets a11y-tickets.md` writes one ticket for each fault on each page,
+worst first. A fault on forty elements is one ticket that lists the forty
+selectors (up to twenty, then a count), not forty tickets. Each ticket has
+the page, severity, WCAG criterion and level, EN 301 549 clause, rule, what
+to do, the elements, an example element and the fingerprints. Findings the
+owner marked ignored, false positive or fixed are left out.
+
+`--github-issues owner/name` files the same tickets as issues, labelled
+`accessibility`, `severity:<level>` and `wcag-<criterion>`:
+
+```yaml
+    permissions:
+      issues: write
+    steps:
+      # …
+      - name: Scan
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: a11y-scan https://staging.example.com --github-issues ${{ github.repository }}
+```
+
+Each issue carries a hidden key (the page and the rule). Before filing, the
+run reads the open issues labelled `accessibility`, so a fault that already
+has an open issue is not filed again; closing the issue lets a fault that
+comes back be filed anew. At most 25 are filed in one run. Filing never
+changes the exit code: a refused token is printed and the thresholds still
+decide.
+
+The hosted service does the same over HTTP. `POST /api/tickets/draft` with
+`{"reports":[…]}` returns the ticket text with no token. `POST /api/tickets`
+with a `target` files them: `{"kind":"github","repo":"owner/name","token":"…"}`
+or `{"kind":"jira","site":"https://team.atlassian.net","email":"…","token":"…","projectKey":"WEB"}`.
+The token is used for that request only: never stored, logged or sent back.
+Requests go only to `api.github.com` or the caller's own `*.atlassian.net`
+site. In Jira the key is a label (`a11y-<key>`), and an issue counts as open
+until its status is Done.
 
 ### Into the hosted history
 

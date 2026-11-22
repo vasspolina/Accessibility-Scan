@@ -1,13 +1,27 @@
 /* BarrierFreeWeb: the studio site, set in the Accessible Scan widget's design.
-   Ink on paper (#000 and #fff, swapped in dark), Jokker, literal px sizes,
+   Ink on paper (#000 and #fff, swapped in dark), PP Telegraf, literal px sizes,
    pill buttons, 1px ink rules over 15px labels, and a marker highlight with
    black text on the few phrases that matter. Every highlight fill measures
    7:1 or better against #000; see ../CLAUDE.md for the measured rules. */
 
 @font-face {
-  font-family: "Jokker";
-  src: url("fonts/JokkerVF-TRIAL.woff2") format("woff2");
-  font-weight: 100 900;
+  font-family: "PP Telegraf";
+  src: url("fonts/PPTelegraf-Light.otf") format("opentype");
+  font-weight: 300;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "PP Telegraf";
+  src: url("fonts/PPTelegraf-Regular.otf") format("opentype");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "PP Telegraf";
+  src: url("fonts/PPTelegraf-Medium.otf") format("opentype");
+  font-weight: 500;
   font-style: normal;
   font-display: swap;
 }
@@ -33,9 +47,9 @@ html { background: var(--paper); -webkit-text-size-adjust: 100%; text-size-adjus
 body {
   margin: 0;
   background: var(--paper); color: var(--ink);
-  font-family: "Jokker", "DejaVu Sans", sans-serif;
+  font-family: "PP Telegraf", "DejaVu Sans", sans-serif;
   font-size: 27px; font-weight: 400; line-height: 1.2; letter-spacing: 0;
-  font-kerning: normal; font-feature-settings: "ss04", "ss05"; font-variant-ligatures: common-ligatures;
+  font-kerning: normal; font-variant-ligatures: common-ligatures;
   text-rendering: optimizeLegibility; font-synthesis: none;
   hyphens: auto; hyphenate-limit-chars: 7 3 3; overflow-wrap: break-word; text-wrap: pretty;
 }

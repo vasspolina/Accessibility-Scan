@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>QA fixture: things that open, forms that explain, done right</title>
+  <style>body { font: 16px/1.5 system-ui, sans-serif; margin: 1em; } .err { color: #b00020; }</style>
+</head>
+<body>
+  <!-- Built to be correct: opening the panel finds nothing, and both forms explain a refused submit. -->
+  <main>
+    <h1>Opening and submitting, done right</h1>
+
+    <button type="button" aria-expanded="false" aria-controls="times" id="times-btn">Opening times</button>
+    <div id="times" hidden>
+      <img src="data:image/gif;base64,R0lGODlhAQABAAAAACw=" width="40" height="40" alt="Shop front">
+      <p>Monday to Friday, nine to five.</p>
+    </div>
+    <script>
+      document.getElementById("times-btn").addEventListener("click", (e) => {
+        const open = e.currentTarget.getAttribute("aria-expanded") === "true";
+        e.currentTarget.setAttribute("aria-expanded", String(!open));
+        document.getElementById("times").hidden = open;
+      });
+    </script>
+
+    <h2>Newsletter</h2>
+    <!-- The browser's own validation: no novalidate, so it stops the submit and names the field. -->
+    <form id="native" action="/subscribe" method="post">
+      <label for="n-email">Email</label>
+      <input id="n-email" name="email" type="email" required>
+      <button type="submit">Subscribe</button>
+    </form>
+
+    <h2>Contact</h2>
+    <!-- A script's validation done properly: the field is marked, the message linked and announced, focus moved. -->
+    <form id="linked" novalidate action="/contact" method="post">
+      <label for="l-name">Name</label>
+      <input id="l-name" name="name" required aria-describedby="l-name-err">
+      <p id="l-name-err" class="err" role="alert"></p>
+      <button type="submit">Send</button>
+    </form>
+    <script>
+      document.getElementById("linked").addEventListener("submit", (e) => {
+        const field = document.getElementById("l-name");
+        if (!field.value) {
+          e.preventDefault();
+          field.setAttribute("aria-invalid", "true");
+          document.getElementById("l-name-err").textContent = "Enter your name.";
+          field.focus();
+        }
+      });
+    </script>
+  </main>
+</body>
+</html>

@@ -116,6 +116,8 @@ const CONTENT_PREFIXES = ["dark-", "media-"];
 // "Code fix" mark while sitting under a heading that called them notes on the
 // design.
 const DESIGN_RULES = new Set([
+  // Text on a picture: which panel, shade or crop fixes it is a design call.
+  "contrast-over-image",
   "mobile-tap-target",
   "mobile-target-spacing",
   "mobile-sticky-coverage",

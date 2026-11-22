@@ -1,5 +1,6 @@
 import type { DomSignals } from "../render/renderPage.js";
 import type { AccessibilityReport } from "../../types/report.js";
+import type { CaptionState } from "./captionTracks.js";
 
 /**
  * Audio and video — WCAG 1.2.1 to 1.2.5.
@@ -50,7 +51,10 @@ type UndecidedRow = NonNullable<AccessibilityReport["undecidedChecks"]>[number];
 
 export function evaluateMedia(
   media: DomSignals["mediaElements"],
-  embeds: DomSignals["mediaEmbeds"]
+  embeds: DomSignals["mediaEmbeds"],
+  // What YouTube and Vimeo said about each embed's captions, by selector
+  // (captionTracks.ts). Absent or "unknown" leaves an embed as it was.
+  embedCaptions: Map<string, CaptionState> = new Map()
 ): UndecidedRow[] {
   const rows: UndecidedRow[] = [];
 
@@ -99,13 +103,36 @@ export function evaluateMedia(
     });
   }
 
-  // An embedded player's document belongs to the provider, so whether its
-  // video is captioned is not visible from this page at any cost. Grouped
-  // into one row: the reader's next move is the same for all of them.
-  if (embeds.length > 0) {
+  // An embedded player's document belongs to the provider, so the page
+  // cannot say whether its video is captioned. For YouTube and Vimeo the
+  // provider was asked (captionTracks.ts). Still undecided rows, never
+  // scored: a video with no captions may be silent or music only, and
+  // automatic captions may happen to be accurate. But the question is now
+  // the right one, and a video a person captioned drops out of the list.
+  const stateOf = (e: DomSignals["mediaEmbeds"][number]) => embedCaptions.get(e.selector) ?? "unknown";
+  const none = embeds.filter((e) => stateOf(e) === "none");
+  const autoOnly = embeds.filter((e) => stateOf(e) === "auto-only");
+  const unknown = embeds.filter((e) => stateOf(e) === "unknown");
+  if (none.length > 0) {
+    rows.push({
+      ruleId: "media-embed-no-captions",
+      count: none.length,
+      help: "Embedded video with no captions at all, checked with its provider",
+      helpUrl: CAPTIONS_URL,
+    });
+  }
+  if (autoOnly.length > 0) {
+    rows.push({
+      ruleId: "media-embed-auto-captions",
+      count: autoOnly.length,
+      help: "Embedded video with only automatic captions, checked with its provider",
+      helpUrl: CAPTIONS_URL,
+    });
+  }
+  if (unknown.length > 0) {
     rows.push({
       ruleId: "media-embedded-player",
-      count: embeds.length,
+      count: unknown.length,
       help: "Video embedded from another site",
       helpUrl: CAPTIONS_URL,
     });

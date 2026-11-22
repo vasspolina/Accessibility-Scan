@@ -3,6 +3,26 @@
 import type { PlainRule } from "./wcagPlain";
 
 export const PLAIN_DE: Record<string, PlainRule> = {
+  "reflow-height-unreachable": {
+    plain: "Fixiertes Fenster versteckt seine Knöpfe",
+    impact: "Wer zum Lesen heranzoomt, erreicht diese Knöpfe gar nicht. Scrollen hilft nicht, weil das Fenster sich nicht bewegt.",
+  },
+  "reflow-height-pinned": {
+    plain: "Fixierte Leisten lassen keinen Leseplatz",
+    impact: "Wer zum Lesen heranzoomt, sieht die Leisten und fast nichts sonst. Keine einzige Zeile der Seite passt dazwischen.",
+  },
+  "reflow-height-pinned-advisory": {
+    plain: "Fixierte Leisten engen die Seite ein",
+    impact: "Wer heranzoomt, sieht nur wenige Zeilen und verliert bei jedem Scrollen die Stelle.",
+  },
+  "contrast-over-image": {
+    plain: "Text auf einem Bild zu blass",
+    impact: "Menschen mit Sehschwäche, und alle, die in der Sonne lesen, verlieren Wörter auf einem unruhigen oder hellen Hintergrund.",
+  },
+  "form-error-silent": {
+    plain: "Formular verweigert ohne Begründung",
+    impact: "Wer ein Feld übersieht, drückt den Knopf und nichts passiert. Niemand erfährt, was fehlt, und viele geben auf.",
+  },
   "timing-meta-refresh": {
     found: (n) => (n === 1 ? "Die Seite lädt nach einer festen Wartezeit von selbst neu oder springt zu einer anderen Seite. Anhalten lässt sich das nicht." : "{n} Anweisungen im Code laden die Seite nach einer festen Wartezeit neu oder leiten weiter. Keine lässt sich anhalten.".replace("{n}", String(n))),
     plain: "Die Seite lädt automatisch neu",
@@ -636,6 +656,11 @@ export const PLAIN_DE: Record<string, PlainRule> = {
 };
 
 export const FIXES_DE: Record<string, string | string[]> = {
+  "reflow-height-unreachable": ["Lassen Sie das Fenster in sich scrollen, oder fixieren Sie es in einem niedrigen Fenster nicht.", "Setzen Sie die Knöpfe über den langen Text, damit sie sichtbar bleiben."],
+  "reflow-height-pinned": ["Fixieren Sie die Leisten oben und unten nicht, wenn das Fenster niedrig ist.", "Oder lassen Sie die Kopfzeile wegscrollen und beim Hochscrollen zurückkommen."],
+  "reflow-height-pinned-advisory": "Fixieren Sie die Leisten in einem niedrigen Fenster nicht, damit die Seite den Platz bekommt.",
+  "contrast-over-image": ["Legen Sie eine volle oder halbtransparente Fläche hinter den Text.", "Oder dunkeln Sie das Bild unter dem Text ab, oder nehmen Sie den Text vom Bild."],
+  "form-error-silent": ["Sagen Sie neben jedem Feld in Worten, was fehlt.", "Markieren Sie das Feld als ungültig, verknüpfen Sie die Meldung damit und setzen Sie den Fokus auf den ersten Fehler."],
   "keyboard-mouse-only": [
     "Machen Sie daraus einen echten Knopf oder Link, damit die Tastatur ihn wie alles andere erreicht.",
     "Prüfen Sie es, indem Sie die Maus beiseitelegen und mit Tab durch die Seite gehen.",
@@ -936,6 +961,22 @@ export const FIXES_DE: Record<string, string | string[]> = {
 };
 
 export const UNDECIDED_DE: Record<string, { what: string; ask: string }> = {
+  "form-error-unlinked": {
+    what: "Ein Formular zeigt nach leerem Absenden einen Fehler, verbindet ihn aber nicht mit dem Feld. Nichts wurde an die Website gesendet.",
+    ask: "Lassen Sie jedes fehlerhafte Feld als ungültig markieren. Die Meldung gehört per aria-describedby an das Feld, damit ein Screenreader beides vorliest.",
+  },
+  "form-error-unannounced": {
+    what: "Ein Formular zeigt Fehler, ohne den Fokus zu bewegen oder sie anzusagen. Nichts wurde an die Website gesendet.",
+    ask: "Lassen Sie den Fokus auf den ersten Fehler oder eine Übersicht setzen. Ein Live-Bereich geht auch.",
+  },
+  "media-embed-no-captions": {
+    what: "Ein eingebettetes YouTube- oder Vimeo-Video hat laut seiner Website gar keine Untertitel. Ein stummes Video braucht keine.",
+    ask: "Spielen Sie es ab. Spricht jemand, fügen Sie im Konto des Videos Untertitel hinzu, von einem Menschen korrigiert.",
+  },
+  "media-embed-auto-captions": {
+    what: "Ein eingebettetes YouTube- oder Vimeo-Video hat laut seiner Website nur automatische Untertitel. Die verfehlen oft Namen und Zahlen.",
+    ask: "Spielen Sie es mit Untertiteln ab. Stimmen Wörter nicht, korrigieren Sie sie im Konto des Videos, oder laden Sie eine Untertiteldatei hoch.",
+  },
   "color-contrast": {
     what: "Text über einem Foto, einem Video oder einem Farbverlauf. Sein Kontrast wechselt von Stelle zu Stelle, deshalb konnte die Prüfung keinen einzelnen Wert messen.",
     ask: "Bitten Sie Ihr Designteam, jede Stelle dort zu prüfen, wo das Bild dahinter am hellsten ist. Fließtext braucht einen Kontrast von 4,5:1, großer Text 3:1. Reicht er nicht, gehört eine feste Fläche oder ein dunkler Schleier hinter die Wörter.",

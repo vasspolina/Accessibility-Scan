@@ -10,6 +10,9 @@ import { evaluateDialogs } from "../src/services/dialog/analyzeDialogs.js";
 import { evaluateForcedColors } from "../src/services/forcedColors/analyzeForcedColors.js";
 import { evaluateReadingOrder } from "../src/services/readingOrder/analyzeReadingOrder.js";
 import { evaluateMobile } from "../src/services/mobile/analyzeMobile.js";
+import { evaluateReflowHeight } from "../src/services/reflowHeight/analyzeReflowHeight.js";
+import { evaluatePixelContrast } from "../src/services/contrast/pixelContrast.js";
+import { evaluateFormErrors, notePanelFindings, panelViolations } from "../src/services/interaction/openAndMeasure.js";
 import { evaluateDarkPatterns } from "../src/services/darkPatterns/analyzeDarkPatterns.js";
 import { evaluateTextResize } from "../src/services/textResize/analyzeTextResize.js";
 import { evaluateConsentA11y } from "../src/services/consentA11y/evaluateConsentA11y.js";
@@ -37,6 +40,7 @@ import type { AccessibilityFinding } from "../src/types/report.js";
 /* The consent describe below also needs render-level facts (the behind-
    banner screenshot), so the last render is kept beside the findings. */
 let lastRender: Awaited<ReturnType<typeof renderAndScan>> | undefined;
+let lastFormErrors: ReturnType<typeof evaluateFormErrors> | undefined;
 
 async function scanFixture(name: string): Promise<AccessibilityFinding[]> {
   const url = "file://" + path.resolve(`public/${name}`);
@@ -58,6 +62,12 @@ async function scanFixture(name: string): Promise<AccessibilityFinding[]> {
   findings.push(...evaluateForcedColors(r.keyboardNav.stops, r.userPreferences));
   findings.push(...evaluateReadingOrder(r.readingOrder));
   findings.push(...evaluateMobile(r.mobileSignals));
+  findings.push(...evaluateReflowHeight(r.reflowHeight));
+  findings.push(...evaluatePixelContrast(r.pixelContrast));
+  const opened = panelViolations(r.openedPanels);
+  findings.push(...notePanelFindings(axeToFindings(opened.axe as never), opened.foundIn));
+  lastFormErrors = evaluateFormErrors(r.formErrors);
+  findings.push(...lastFormErrors.findings);
   findings.push(...evaluateDarkPatterns(r.darkPatternSignals));
   findings.push(...evaluateConsentA11y(r.darkPatternSignals));
   findings.push(...evaluateTextResize(r.textResizeSignals));
@@ -630,6 +640,116 @@ describe("qa-mobile-good.html: phone-width done right", () => {
   it("stays silent about every correct pattern", () => {
     const mobile = findings.filter((f) => f.ruleId?.startsWith("mobile-"));
     expect(mobile.map((f) => f.ruleId)).toEqual([]);
+  });
+});
+
+// The vertical half of 1.4.10: a window 256px tall. One fixture holds a
+// pinned cookie panel whose buttons fall below the edge and two bars that
+// leave 16px to read through; the other holds the same parts built right (a
+// panel that scrolls inside itself, a bar that stops pinning when the window
+// is short, a slim header) and must draw nothing.
+// Things that open and forms that refuse. Nothing wrong is visible while the
+// page is as it loads: the faults are inside a closed panel and an unselected
+// tab, and in what two forms do with an empty submit. The forms are tested
+// with the network blocked, so the fixture's action URLs are never asked for.
+describe("qa-open-forms.html: open before measuring, submit with nothing sent", () => {
+  let findings: AccessibilityFinding[];
+  beforeAll(async () => {
+    findings = await scanFixture("qa-open-forms.html");
+  }, 120_000);
+
+  it("finds the image without alt inside the closed panel, and says which control opens it", () => {
+    const f = findings.find((x) => x.ruleId === "image-alt");
+    expect(f).toBeDefined();
+    expect(f!.description).toContain("Opening times");
+  });
+
+  it("finds the nameless button inside the unselected tab", () => {
+    const f = findings.find((x) => x.ruleId === "button-name");
+    expect(f).toBeDefined();
+    expect(f!.description).toContain("Prices");
+  });
+
+  it("scores the form that refuses an empty submit in silence", () => {
+    const f = findings.filter((x) => x.ruleId === "form-error-silent");
+    expect(f.map((x) => x.selector)).toEqual(["#silent"]);
+  });
+
+  it("asks about the form whose error is neither linked nor announced", () => {
+    const rows = Object.fromEntries((lastFormErrors?.undecided ?? []).map((r) => [r.ruleId, r.count]));
+    expect(rows).toEqual({ "form-error-unlinked": 1, "form-error-unannounced": 1 });
+  });
+
+  it("puts the page back as it loaded", () => {
+    expect(lastRender!.finalUrl).toMatch(/qa-open-forms\.html$/);
+  });
+});
+
+describe("qa-open-forms-good.html: open before measuring, done right", () => {
+  let findings: AccessibilityFinding[];
+  beforeAll(async () => {
+    findings = await scanFixture("qa-open-forms-good.html");
+  }, 120_000);
+
+  it("stays silent about the panel and both forms", () => {
+    expect(findings.filter((f) => f.ruleId === "image-alt" || f.ruleId?.startsWith("form-error"))).toEqual([]);
+    expect(lastFormErrors?.undecided).toEqual([]);
+  });
+});
+
+// Text on gradients, which axe leaves undecided. Measured from the pixels
+// behind the letters: one run fails everywhere and is scored, one passes
+// everywhere and is settled, one sits half on white and half on black and
+// stays a question for a person.
+describe("qa-contrast-images.html: text over gradients, measured from pixels", () => {
+  let findings: AccessibilityFinding[];
+  let undecided: string[] = [];
+  beforeAll(async () => {
+    findings = await scanFixture("qa-contrast-images.html");
+    undecided = (lastRender!.axe.incomplete.find((r) => r.id === "color-contrast")?.nodes ?? []).map((n) => n.target.flat().join(" "));
+  }, 120_000);
+
+  it("scores the pale text that fails over all of its background", () => {
+    const f = findings.filter((x) => x.ruleId === "contrast-over-image");
+    expect(f.map((x) => x.selector)).toEqual(["#faint"]);
+  });
+
+  it("settles both clear cases and leaves only the split one undecided", () => {
+    expect(undecided).not.toContain("#faint");
+    expect(undecided).not.toContain("#dark-ok");
+    expect(undecided).toContain("#half");
+  });
+});
+
+describe("qa-reflow-height.html: a window 256px tall", () => {
+  let findings: AccessibilityFinding[];
+  beforeAll(async () => {
+    findings = await scanFixture("qa-reflow-height.html");
+  }, 120_000);
+
+  it("names the buttons a pinned panel leaves below the edge", () => {
+    const f = findings.find((x) => x.ruleId === "reflow-height-unreachable");
+    expect(f).toBeDefined();
+    expect(f!.selector).toBe("#consent");
+    expect(f!.description).toContain("Accept all");
+    expect(f!.description).toContain("Reject all");
+  });
+
+  it("scores bars that leave less than a line", () => {
+    const f = findings.find((x) => x.ruleId === "reflow-height-pinned");
+    expect(f).toBeDefined();
+    expect(f!.wcagCriterion).toBe("1.4.10");
+  });
+});
+
+describe("qa-reflow-height-good.html: a window 256px tall, done right", () => {
+  let findings: AccessibilityFinding[];
+  beforeAll(async () => {
+    findings = await scanFixture("qa-reflow-height-good.html");
+  }, 120_000);
+
+  it("stays silent about every correct pattern", () => {
+    expect(findings.filter((f) => f.ruleId?.startsWith("reflow-height")).map((f) => f.ruleId)).toEqual([]);
   });
 });
 

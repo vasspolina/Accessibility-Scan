@@ -24,6 +24,7 @@ import {
 import { evaluateTypography } from "./typography/analyzeTypography.js";
 import { evaluateMotion } from "./motion/analyzeMotion.js";
 import { evaluateMedia } from "./media/analyzeMedia.js";
+import { lookUpEmbedCaptions } from "./media/captionTracks.js";
 import { evaluateConsentA11y, consentA11yUndecided } from "./consentA11y/evaluateConsentA11y.js";
 import { evaluateScreenReaderScript } from "./screenReader/analyzeScreenReader.js";
 import { evaluateControlContrast } from "./contrast/analyzeControlContrast.js";
@@ -37,6 +38,9 @@ import { evaluateDialogs } from "./dialog/analyzeDialogs.js";
 import { evaluateForcedColors } from "./forcedColors/analyzeForcedColors.js";
 import { evaluateReadingOrder } from "./readingOrder/analyzeReadingOrder.js";
 import { evaluateReadability } from "./readability/analyzeReadability.js";
+import { evaluateReflowHeight } from "./reflowHeight/analyzeReflowHeight.js";
+import { evaluatePixelContrast } from "./contrast/pixelContrast.js";
+import { evaluateFormErrors, notePanelFindings, panelViolations } from "./interaction/openAndMeasure.js";
 import { evaluateMobile } from "./mobile/analyzeMobile.js";
 import { evaluateDarkPatterns } from "./darkPatterns/analyzeDarkPatterns.js";
 import { evaluateTextResize } from "./textResize/analyzeTextResize.js";
@@ -446,7 +450,9 @@ export async function scanUrlToReport(
     // CPU, and it was the arithmetic rather than the page that ran out.
     //
     // Signing in costs a page load of its own before the scan starts.
-    env.RENDER_TIMEOUT_MS + (auth ? 55_000 : 35_000)
+    // A captured session (a site audit's) is loaded with the context and
+    // costs nothing.
+    env.RENDER_TIMEOUT_MS + (auth && auth.kind !== "session" ? 55_000 : 35_000)
   ,
     trustPrivateHosts,
     // The render speaks phase names; the narration speaks milestones. The
@@ -515,6 +521,19 @@ export async function scanUrlToReport(
   deterministic.push(...evaluateReadingOrder(renderResult.readingOrder));
   deterministic.push(...evaluateReadability(renderResult.readability));
   deterministic.push(...evaluateMobile(renderResult.mobileSignals));
+  deterministic.push(...evaluateReflowHeight(renderResult.reflowHeight));
+  deterministic.push(...evaluatePixelContrast(renderResult.pixelContrast));
+  // What axe found inside menus, accordions and tabs once they were opened,
+  // each saying which control opens it; and what the empty-submit test of
+  // the forms proved (services/interaction/openAndMeasure.ts).
+  const opened = panelViolations(renderResult.openedPanels);
+  deterministic.push(...notePanelFindings(axeToFindings(opened.axe as AxeRunResult), opened.foundIn));
+  const formErrors = evaluateFormErrors(renderResult.formErrors);
+  deterministic.push(...formErrors.findings);
+  // Asked of YouTube and Vimeo now and awaited when the report is built, so
+  // the lookups run beside the AI review instead of after it. Never throws:
+  // an unanswered lookup is "unknown" and the embed stays undecided.
+  const embedCaptionsLookup = lookUpEmbedCaptions(renderResult.domSignals.mediaEmbeds);
   deterministic.push(...evaluateDarkPatterns(renderResult.darkPatternSignals));
   // The consent banner's screen-reader mechanics — a separate layer from the
   // dark-pattern checks on the same banner: those judge the fairness of the
@@ -634,6 +653,7 @@ export async function scanUrlToReport(
     incompleteChecks: renderResult.incompleteChecks,
     lang: normalizeReportLang(language),
   });
+  const embedCaptions = await embedCaptionsLookup;
 
   // Collected after the score on purpose: nothing below this line can move
   // it. The documents go on the report beside the findings, never among them.
@@ -661,7 +681,8 @@ export async function scanUrlToReport(
       [
         ...consentA11yUndecided(renderResult.darkPatternSignals),
         ...formErrorAssociationUndecided(renderResult.domSignals.forms),
-        ...evaluateMedia(renderResult.domSignals.mediaElements, renderResult.domSignals.mediaEmbeds),
+        ...formErrors.undecided,
+        ...evaluateMedia(renderResult.domSignals.mediaElements, renderResult.domSignals.mediaEmbeds, embedCaptions),
         ...evaluateInteraction(renderResult.domSignals.listeners, {
           liveRegions: renderResult.domSignals.liveRegions,
           hasControls:

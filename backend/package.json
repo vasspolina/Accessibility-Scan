@@ -1,8 +1,19 @@
 {
-  "name": "a11y-checker-backend",
+  "name": "a11y-scan",
   "version": "1.0.0",
+  "description": "Accessibility scan for a pipeline: WCAG 2.2 and EN 301 549 findings from a real browser, with thresholds, a baseline, SARIF, JUnit and tickets.",
   "license": "EUPL-1.2",
-  "private": true,
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/vasspolina/Accessibility-Scan.git",
+    "directory": "backend"
+  },
+  "homepage": "https://github.com/vasspolina/Accessibility-Scan/blob/main/docs/CLI.md",
+  "keywords": ["accessibility", "a11y", "wcag", "en-301-549", "axe-core", "playwright", "ci", "sarif"],
+  "publishConfig": {
+    "access": "public",
+    "provenance": true
+  },
   "type": "module",
   "engines": {
     "node": ">=24"
@@ -50,6 +61,6 @@
   },
   "files": [
     "dist",
-    "public"
+    "README.md"
   ]
 }
