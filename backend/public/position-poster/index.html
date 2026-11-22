@@ -13,6 +13,24 @@
 @font-face{font-family:"Panell Compressed";font-weight:500;src:url(../fonts/PanellCompressed-TRIAL-Medium.woff2) format("woff2");font-display:block}
 @font-face{font-family:"Panell Compressed";font-weight:600;src:url(../fonts/PanellCompressed-TRIAL-SemiBold.woff2) format("woff2");font-display:block}
 @font-face{font-family:"Panell Compressed";font-weight:700;src:url(../fonts/PanellCompressed-TRIAL-Bold.woff2) format("woff2");font-display:block}
+/* PP Neue Gstaad Compact Bold (Pangram Pangram; supplied by the user on
+   11 Nov 2026 as the title face; check its licence before publishing): the
+   default title face, embedded in exported SVGs like Panell. */
+@font-face{font-family:"PP Neue Gstaad Compact";font-weight:700;src:url(../fonts/PPNeueGstaad-CompactBold.woff2) format("woff2");font-display:block}
+/* Atlas Grotesk Condensed (Commercial Type, a commercial licence): the title
+   face the user asked for on 10 Nov 2026. It is not in the repository; these
+   rules use it when it is installed on the viewer's machine, or when licensed
+   web files are added to ../fonts under these names, and otherwise the stack
+   falls through to Panell Compressed. */
+@font-face{font-family:"Atlas Grotesk Condensed";font-weight:400;src:local("Atlas Grotesk Condensed Regular"),local("AtlasGroteskCondensed-Regular"),url(../fonts/AtlasGroteskCondensed-Regular.woff2) format("woff2")}
+@font-face{font-family:"Atlas Grotesk Condensed";font-weight:500;src:local("Atlas Grotesk Condensed Medium"),local("AtlasGroteskCondensed-Medium"),url(../fonts/AtlasGroteskCondensed-Medium.woff2) format("woff2")}
+@font-face{font-family:"Atlas Grotesk Condensed";font-weight:600;src:local("Atlas Grotesk Condensed Semibold"),local("AtlasGroteskCondensed-Semibold"),url(../fonts/AtlasGroteskCondensed-Semibold.woff2) format("woff2")}
+@font-face{font-family:"Atlas Grotesk Condensed";font-weight:700;src:local("Atlas Grotesk Condensed Bold"),local("AtlasGroteskCondensed-Bold"),url(../fonts/AtlasGroteskCondensed-Bold.woff2) format("woff2")}
+/* Instrument Serif (SIL Open Font License, ../fonts/InstrumentSerif-OFL.txt):
+   the Shade info block, Latin regular and italic. Embedded in the exported SVG
+   like Panell. */
+@font-face{font-family:"Instrument Serif";font-weight:400;src:url(../fonts/InstrumentSerif-Regular-latin.woff2) format("woff2");font-display:block}
+@font-face{font-family:"Instrument Serif";font-weight:400;font-style:italic;src:url(../fonts/InstrumentSerif-Italic-latin.woff2) format("woff2");font-display:block}
 </style>
 <style>
 /* Layout: a fixed control column on the left, the poster on the right; stacks on phones. */
@@ -76,7 +94,7 @@ details summary{cursor:pointer;font-size:12px;color:var(--muted)}
 <div class="app">
 <header>
   <h1>Position Poster</h1>
-  <p>Type a chess game and some text. Each character becomes a piece in the final position; the squares behind it show how often each square was occupied during the game. Two looks: Classic sets the letters on a tinted board; Cut sets heavy capitals over colour bands and slices them, after the Museum für Gestaltung’s exhibition posters.</p>
+  <p>Type a chess game and some text. Each character becomes a piece in the final position; the squares behind it show how often each square was occupied during the game. Three looks: Classic sets the letters on a tinted board; Cut sets heavy capitals over colour bands and slices them, after the Museum für Gestaltung’s exhibition posters; Shade sets the title in ghost capitals on dark stock over a quiet chess board, blurs the game into a queen’s shadow, after a live-recording cover.</p>
 </header>
 
 <form class="panel" id="controls" autocomplete="off">
@@ -92,25 +110,25 @@ details summary{cursor:pointer;font-size:12px;color:var(--muted)}
   <fieldset>
     <legend>Text</legend>
     <label>Title, one character per piece (spaces are skipped)
-      <input type="text" id="title" value="chess.irl №4 2026">
+      <input type="text" id="title" value="chess.irl №4">
     </label>
     <p class="warn" id="titleWarn" hidden></p>
-    <label>Info, one item per piece, one per line
-      <textarea id="info" rows="8">12/05/2026
-7pm
-RSVP
-for
-address
-Greenpoint,
-Brooklyn
+    <label>Info, one item per line; in Shade, a blank line starts a new line at the bottom
+      <textarea id="info" rows="14">A night of chess and deep listening
+
+Live music by
 Anya Tran
-(live)
 Daren Ho
-(live)
+
+DJ sets by
 Iggy Nuclear
-(dj)
 Sofiya V
-(dj)</textarea>
+
+12/05/2026
+7 PM
+
+Greenpoint, Brooklyn
+RSVP for the address</textarea>
     </label>
     <p class="warn" id="infoWarn" hidden></p>
   </fieldset>
@@ -120,7 +138,9 @@ Sofiya V
     <div class="row">
       <label>Font
         <select id="font">
+          <option value="'PP Neue Gstaad Compact', 'Panell Compressed', 'Arial Narrow', Arial, sans-serif">PP Neue Gstaad Compact</option>
           <option value="'Panell Compressed', 'Arial Narrow', Arial, sans-serif">Panell Compressed</option>
+          <option value="'Atlas Grotesk Condensed', 'Panell Compressed', 'Arial Narrow', Arial, sans-serif">Atlas Grotesk Condensed</option>
           <option value="Arial, 'Liberation Sans', Helvetica, sans-serif">Arial</option>
           <option value="Helvetica, 'Helvetica Neue', Arial, sans-serif">Helvetica</option>
           <option value="Saans, 'Saans TRIAL', Arial, sans-serif">Saans (if installed)</option>
@@ -150,6 +170,7 @@ Sofiya V
       <label>Style
         <select id="look">
           <option value="cut">Cut capitals</option>
+          <option value="shade">Shade</option>
           <option value="classic">Classic board</option>
         </select>
       </label>
@@ -168,6 +189,39 @@ Sofiya V
           <option value="paper">Paper and ink</option>
         </select>
       </label>
+      <label id="queenWrap" hidden>Queen colour
+        <select id="queenCol">
+          <option value="liquid">Liquid pattern</option>
+          <option value="grey">Grey, light centre</option>
+          <option value="file">Blue, light centre</option>
+          <option value="red">Sand</option>
+          <option value="shade">Shadow</option>
+        </select>
+      </label>
+      <label id="groundWrap" hidden>Ground
+        <select id="ground">
+          <option value="board">Chess board, strong</option>
+          <option value="faint">Chess board, quiet</option>
+          <option value="plain">Plain stock</option>
+        </select>
+      </label>
+      <label id="spotWrap" hidden>Spot
+        <select id="spot">
+          <option value="queen">A queen</option>
+          <option value="round">Round</option>
+        </select>
+      </label>
+      <label id="toneWrap" hidden>Stock
+        <select id="tone">
+          <option value="liquid">Liquid night</option>
+          <option value="palace">White and periwinkle board</option>
+          <option value="murmur">Blue, red, black and white</option>
+          <option value="newsprint">Grey stock</option>
+          <option value="night">Dark stock</option>
+          <option value="chalk">Pale stock</option>
+          <option value="own">Your colours</option>
+        </select>
+      </label>
       <label id="patternWrap" hidden>Shape
         <select id="pattern">
           <option value="squares">Density squares</option>
@@ -177,6 +231,8 @@ Sofiya V
       </label>
     </div>
     <label class="range"><span id="densityLabel">Cut depth</span> <input type="range" id="density" min="20" max="100" value="40"><output id="densityOut">40</output></label>
+    <label class="range" id="blackWrap" hidden>Black <input type="range" id="black" min="20" max="100" value="50"><output id="blackOut">50</output></label>
+    <label class="range" id="contrastWrap" hidden>Contrast <input type="range" id="contrast" min="20" max="100" value="100"><output id="contrastOut">100</output></label>
   </fieldset>
 
   <fieldset>
@@ -217,6 +273,7 @@ Sofiya V
   <div class="actions">
     <button type="button" class="primary" id="savePng">Save PNG</button>
     <button type="button" id="saveSvg">Save SVG</button>
+    <button type="button" id="saveEditable">Save editable SVG</button>
     <button type="button" id="copySvg">Copy SVG code</button>
   </div>
   <p class="note" id="saveNote" hidden>Saving files isn’t available in this view. “Copy SVG code” still works.</p>
@@ -229,6 +286,7 @@ Sofiya V
     <p class="note">The game is replayed move by move. The pieces left on the board after the last move give the title its squares: characters fill them in reading order, a8 to h1. Each square is scored by how many of the game’s positions it was occupied in, from the start position to the end.</p>
     <p class="note"><b>Classic</b> tints each square by that score and sets the info items on the same squares of a smaller board at the bottom. The destination of the last move is set in the accent colour.</p>
     <p class="note"><b>Cut</b> bleeds the board to the edges and lays three colour bands over it. The title is set in capitals, one per piece square; the more often the square was occupied, the more slices the letter is cut into and the further they slide, with a sliver of the opposite colour showing. Squares the game passed through but left empty carry a fragment of a title letter at twice the size, or a disc, half-disc or quarter cut (the letter fragments only when there is no info). The info is set the same way: its words flow in reading order from the top left, one capital per free square, a square of air between words, so the game’s pieces interrupt the text where it ended. The last move’s square is filled with the accent colour.</p>
+    <p class="note"><b>Shade</b> sets the title in lines of capitals across the full width, printed in a white that barely lifts off the stock: the first and last lines bleed past the edges, the lines between are set smaller and centred (a slash in the title forces a line break; otherwise each word is a line). The game is the shadow: its centre is the centre of gravity of every square a move left or landed on, its size is how widely that traffic spread, and the traffic itself is blurred in faintly, so an open middlegame darkens the centre and a kingside attack pulls the shadow to one side. The shadow is a queen’s silhouette, blurred until only the crown, the waist and the base read, or a round spot. The stock carries the chess board, the eight files chequered across the whole sheet with the board’s own ranks in the middle, quiet or strong, or stays plain; on the strong board the type is traced in flipped colours, white over the dark squares and dark over the light ones. The sheet is flat, with no grain; the Black slider sets how black the darkest tone is, and the Contrast slider pulls the whole sheet toward mid grey. The last move’s square is the core, tinted with the accent colour when the last move is marked. The info items run in the serif along the bottom edge, parted by a wide space, wrapped into as many lines as they need, and the queen stands clear of them.</p>
   </details>
 </section>
 </div>
@@ -253,10 +311,10 @@ Sofiya V
   }
 
   function analyse(text){
-    const result = {ok:false, error:'', positions:0, occ:{}, finalSquares:[], lastTo:null, plies:0, pieces:0};
+    const result = {ok:false, error:'', positions:0, occ:{}, traffic:{}, finalSquares:[], lastTo:null, plies:0, pieces:0};
     if (typeof Chess !== 'function'){ result.error = 'The chess library did not load, so the moves cannot be replayed.'; return result; }
     const game = new Chess();
-    const occ = {};
+    const occ = {}, traffic = {};   // traffic: how many moves left or landed on a square
     const count = () => { game.board().forEach((row, r) => row.forEach((cell, f) => { if (cell){ const sq = FILES[f] + (8 - r); occ[sq] = (occ[sq]||0) + 1; } })); };
     count();
     let positions = 1, lastTo = null, plies = 0;
@@ -264,11 +322,12 @@ Sofiya V
       const mv = game.move(san, {sloppy:true});
       if (!mv){ result.error = `Could not play “${san}” (move ${Math.floor(plies/2)+1}). The position up to that move is used.`; break; }
       plies++; lastTo = mv.to; count(); positions++;
+      traffic[mv.from] = (traffic[mv.from]||0) + 1; traffic[mv.to] = (traffic[mv.to]||0) + 1;
     }
     const finalSquares = [];
     const board = game.board(); // rank 8 first, files a..h
     board.forEach((row, r) => row.forEach((cell, f) => { if (cell) finalSquares.push({sq: FILES[f] + (8 - r), col: f, row: r, piece: cell}); }));
-    Object.assign(result, {ok:true, positions, occ, finalSquares, lastTo, plies, pieces: finalSquares.length});
+    Object.assign(result, {ok:true, positions, occ, traffic, finalSquares, lastTo, plies, pieces: finalSquares.length});
     return result;
   }
 
@@ -287,10 +346,17 @@ Sofiya V
       pattern: $('pattern').value,
       look: $('look').value,
       palette: $('palette').value,
+      tone: $('tone').value,
+      spot: $('spot').value,
+      ground: $('ground').value,
+      queenCol: $('queenCol').value,
+      contrast: +$('contrast').value/100,
+      black: +$('black').value/100,
       markLast: $('markLast').value === 'yes',
       density: +$('density').value/100,
       tint: $('tintHex').value, accent: $('accentHex').value, paper: $('paperHex').value, ink: $('inkHex').value,
       title: $('title').value, info: $('info').value.split(/\r?\n/).map(s=>s.trim()).filter(Boolean),
+      infoGroups: $('info').value.split(/\r?\n\s*\r?\n/).map(b => b.split(/\r?\n/).map(x => x.trim()).filter(Boolean)).filter(b => b.length),
     };
   }
 
@@ -532,6 +598,485 @@ Sofiya V
     return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${W} ${H}" width="${W}" height="${H}" role="img" aria-label="${esc(s.title)} poster"><defs>${fontDefs(s)}${defs.join('')}</defs>${parts.join('')}</svg>`;
   }
 
+  // ---------- the Shade look ----------
+  // After the user's reference (9 Nov 2026), the cover of a live recording:
+  // heavy condensed capitals printed in a white that barely lifts off grey
+  // stock, a dark spot blurred over the middle of the sheet so the lines of
+  // type sink under it, grain over everything, and one line of small serif
+  // along the bottom edge. Here the spot is the game: every square a move left
+  // or landed on throws a soft disc, bigger the more traffic it saw, and the
+  // discs are blurred into one shadow, so an open middlegame darkens the
+  // centre and a kingside attack pulls the shadow to one side. The last move's
+  // square is the core, tinted with the accent colour when the last move is
+  // marked. The title is set in lines across the full width, not one letter
+  // per piece: the first and last lines bleed a little past the edges, as the
+  // reference's do, and the lines between are set smaller and centred. The
+  // info items run as one serif line along the bottom, parted by middle dots.
+  // Traffic is used rather than occupancy because occupancy is heaviest on
+  // the pawns and rooks that never moved, at the edges of the board, and the
+  // shadow would sit on the margins; traffic gathers where the game was.
+  const TONES = {
+    // The user's colour reference of 10 Nov 2026 (Bart de Baets, Palace Ruin):
+    // white paper, black ink, one vermilion, and grey only as black thinned
+    // out, which the Black slider gives at 50.
+    // The grey squares are the user's blue swatch (10 Nov 2026), about
+    // #A6B0DE: board is set so that at Black 50 (a 50% white veil) the square
+    // lands on it. The queen is sand, about #C4936A, picked by eye from the
+    // user's photo of an arena floor (11 Nov 2026, "make chess figure this
+    // color"); she was vermilion before. The flipped type is clipped square by square and takes the
+    // other square's colour: the blue on the white squares, white on the blue
+    // ones, so the letters are the board inverted. It is drawn above the veil
+    // and adds no colour of its own (user's instructions, 10 Nov 2026, "don't
+    // add any grey", then "don't add any black"). A difference blend over blue
+    // would turn yellow.
+    // "Liquid night" (user's reference and instruction, 11 Nov 2026, "keep
+    // this option and make the rest"): a near-black sheet with glowing swirls,
+    // teal outside and periwinkle at the core, and the type in the
+    // reference's lavender. No board, no veil.
+    // Since 11 Nov 2026 ("change green to blue and make chess board over the
+    // background, in the background colour"): the swirls glow on a slate paper
+    // and the board's night squares lie over them, so the glow shows through
+    // every other square; the teal glow is blue (#3d7bea). The type is
+    // periwinkle over the night squares and near-white over the others.
+    liquid:    { ground:'#161c30', night:'#07090c', ghost:'#b8c2f2', ghostA:1, shade:'#b8c2f2', foot:'#b8c2f2', grainA:0, square:'#000000', squareA:0, line:'#000000', liquid:true, noVeil:true, board:'#07090c', boardA:0.6, flipLight:'#f1f2ff', flipDark:'#9fb1f2', footLight:'#f1f2ff', overVeil:true },
+    palace:    { ground:'#F3F1EC', ghost:'#FFFFFF', ghostA:0.5,  shade:'#141414', foot:'#141414', grainA:0.3,  square:'#000000', squareA:0.09, line:'#000000', red:'#C4936A', board:'#4D61BD', flipLight:'#A6B0DE', flipDark:'#FFFFFF', footLight:'#A6B0DE', overVeil:true },
+    // The user's second colour reference of 10 Nov 2026 (a Murmuring
+    // Collection poster): pale cornflower blue, red, black and white. The
+    // Black slider pulls toward the blue here (veil), not toward white, so the
+    // blue keeps its colour; the flipped type is drawn clipped square by square
+    // (flipLight on the blue, flipDark on the dark squares) instead of with a
+    // difference blend, which would turn the blue's complement, an olive.
+    murmur:    { ground:'#A9B9E2', ghost:'#FFFFFF', ghostA:0.5,  shade:'#111111', foot:'#111111', grainA:0.3,  square:'#000000', squareA:0.09, line:'#000000', red:'#E5352A', veil:'#A9B9E2', flipLight:'#E5352A', flipDark:'#FFFFFF', footLight:'#111111', overVeil:true },
+    newsprint: { ground:'#C8CAC4', ghost:'#FFFFFF', ghostA:0.5,  shade:'#17131C', foot:'#454842', grainA:0.38, square:'#000000', squareA:0.09, line:'#000000' },
+    chalk:     { ground:'#E7E5DE', ghost:'#FFFFFF', ghostA:0.85, shade:'#262230', foot:'#575550', grainA:0.3,  square:'#000000', squareA:0.07, line:'#000000' },
+    night:     { ground:'#0F0E13', ghost:'#FFFFFF', ghostA:0.18, shade:'#EEEAE1', foot:'#B4B1A9', grainA:0.42, square:'#FFFFFF', squareA:0.07, line:'#FFFFFF' },
+  };
+  // Text is measured on a canvas with the document's own fonts, so a line can
+  // be sized to the sheet. Before Panell has loaded the fallback is measured;
+  // the page renders again when the fonts arrive.
+  const measureCtx = document.createElement('canvas').getContext('2d');
+  function measure(str, font, weight, style){
+    measureCtx.font = `${style || ''} ${weight} 100px ${font}`;
+    const m = measureCtx.measureText(str);
+    return { w: m.width/100, cap: (m.actualBoundingBoxAscent || 70)/100 };
+  }
+  // The info block is set in Instrument Serif, a condensed display serif with
+  // an italic, the nearest open-licensed face to the user's layout reference
+  // (user's instruction, 10 Nov 2026, "make same fonts as well"; it replaced
+  // the EB Garamond set earlier that day). TIMES stays for the pinned size:
+  // the size is measured on the first face, so it is the same px as before.
+  const SERIF = "'Instrument Serif', 'Times New Roman', serif";
+  const TIMES = "'Times New Roman', Times, 'Liberation Serif', serif";
+
+  const QUEEN_RED = '#E5432A';   // the vermilion of the user's colour reference (10 Nov 2026)
+  // The queen from the user's own SVG (11 Nov 2026, "add this chess instead of
+  // current"): a five-point crown with balls, a waisted stem, a stepped base,
+  // in a local box from x -300 to 300 and y -472 to 400, drawn as two blurred
+  // layers exactly as in the file: a plum haze a little larger behind, and the
+  // figure in a radial gradient, pale blue at the centre to blue at the edge.
+  // The file's dark ground is left out; the poster has its board.
+  const QUEEN2_D = 'M-240 -380 L-150 -240 L-120 -400 L-45 -250 L0 -425 L45 -250 L120 -400 L150 -240 L240 -380 L175 -170 L205 -150 L205 -108 L120 -94 L110 -78 Q128 100 200 208 L252 228 L252 270 L214 286 L300 330 L300 400 L-300 400 L-300 330 L-214 286 L-252 270 L-252 228 L-200 208 Q-128 100 -110 -78 L-120 -94 L-205 -108 L-205 -150 L-175 -170 Z';
+  const QUEEN2_BALLS = '<circle cx="-240" cy="-388" r="30"/><circle cx="-120" cy="-410" r="30"/><circle cx="0" cy="-440" r="32"/><circle cx="120" cy="-410" r="30"/><circle cx="240" cy="-388" r="30"/>';
+  const QUEEN2_TOP = 472, QUEEN2_H = 872, QUEEN2_W = 600;
+  function buildShadeSvg(a, s){
+    const W = s.W, H = s.H;
+    const t = TONES[s.tone] || { ground:s.paper, ghost:s.ink, ghostA:0.08, shade:s.ink, foot:s.ink, grainA:0.3, square:s.ink, squareA:0.08, line:s.ink };
+    const cell = W/8, y0 = (H - 8*cell)/2;          // the board fills the width, centred on the sheet
+    const parts = [], defs = [];
+    // The editable export (user's instruction, 11 Nov 2026, "create editable
+    // file"): the same drawing with named layers (Paper, Board, Title and Info
+    // with a group per line, Queen with its halo and core, the veils), live
+    // text, and fonts referenced by name instead of embedded, so it opens for
+    // editing in Illustrator, Figma or Inkscape with the fonts installed.
+    const ed = !!s.editable;
+    // a desktop install of the trial Panell names its family with -TRIAL
+    if (ed) s = Object.assign({}, s, { font: s.font.replace("'Panell Compressed'", "'Panell Compressed', 'Panell Compressed-TRIAL'").replace("'PP Neue Gstaad Compact'", "'PP Neue Gstaad Compact', 'PP Neue Gstaad'") });
+    const L = (id, inner) => ed ? `<g id="${id}" data-name="${id.replace(/_/g, ' ')}">${inner}</g>` : inner;
+    const useHref = ed ? 'href="#shQueen" xlink:href="#shQueen"' : 'href="#shQueen"';
+    parts.push(`<rect${ed ? ' id="Paper"' : ''} width="${W}" height="${H}" fill="${esc(t.ground)}"/>`);
+
+    // the chess board in the stock (user's instruction, 10 Nov 2026): the
+    // eight files chequered across the whole sheet, the board's own ranks in
+    // the middle, where the shadow is measured. The dark squares are the ink
+    // at a few per cent, as quiet as the ghost type is light, so the type and
+    // the queen stay in front; the grain prints over them like everything else.
+    let boardSq = '';
+    let swirlsOut = '';
+    if (t.liquid){
+      // the swirls, in sheet fractions: a wave along the top, tongues at the
+      // left and right edges, a wave along the bottom, as in the reference;
+      // each a wide teal glow under a periwinkle core, warped by turbulence
+      const P = (pts) => pts.replace(/(-?[\d.]+) (-?[\d.]+)/g, (_, x, y) => `${(+x*W).toFixed(1)} ${(+y*H).toFixed(1)}`);
+      const swirls = [
+        'M-0.15 0.03 C0.15 0.17 0.32 -0.06 0.55 0.07 C0.76 0.19 0.86 0.0 1.15 0.11',
+        'M1.15 0.30 C0.92 0.33 0.94 0.50 1.15 0.56',
+        'M-0.15 0.44 C0.08 0.41 0.18 0.50 -0.02 0.57',
+        'M-0.15 0.88 C0.12 0.76 0.34 0.99 0.58 0.88 C0.80 0.79 0.94 0.96 1.15 0.86',
+      ].map(d => d.replace(/^M/, 'M ').replace(/C/g, ' C ')).map(d => P(d));
+      defs.push(`<filter id="shLFlow" x="-20%" y="-20%" width="140%" height="140%" color-interpolation-filters="sRGB"><feTurbulence type="fractalNoise" baseFrequency="${(1/(0.55*W)).toFixed(5)} ${(1/(0.45*W)).toFixed(5)}" numOctaves="2" seed="5" result="n"/><feDisplacementMap in="SourceGraphic" in2="n" scale="${(0.16*W).toFixed(0)}" xChannelSelector="R" yChannelSelector="G"/></filter>`);
+      defs.push(`<filter id="shLTeal" x="-30%" y="-30%" width="160%" height="160%"><feGaussianBlur stdDeviation="${(0.045*W).toFixed(1)}"/></filter>`);
+      defs.push(`<filter id="shLBlue" x="-30%" y="-30%" width="160%" height="160%"><feGaussianBlur stdDeviation="${(0.02*W).toFixed(1)}"/></filter>`);
+      const teal = swirls.map(d => `<path d="${d}" stroke-width="${(0.2*W).toFixed(0)}"/>`).join('');
+      const blue = swirls.map(d => `<path d="${d}" stroke-width="${(0.09*W).toFixed(0)}"/>`).join('');
+      swirlsOut = L('Swirls', `<g filter="url(#shLFlow)" fill="none" stroke-linecap="round"><g${ed ? ' id="Swirls_glow"' : ''} stroke="#3d7bea" opacity="0.85" filter="url(#shLTeal)">${teal}</g><g${ed ? ' id="Swirls_blue"' : ''} stroke="#9fb1f2" filter="url(#shLBlue)">${blue}</g></g>`);
+    }
+    // the board stays under the swirls on the liquid night stock (user's
+    // instruction, 11 Nov 2026, "keep the chess board"): night black and a
+    // deep slate periwinkle, the swirls screened over it
+    if (swirlsOut) parts.push(swirlsOut);   // under the board, which lies over the glow
+    if (s.ground === 'board' || s.ground === 'faint'){
+      // 'board' (user's instruction, 10 Nov 2026, "same dark"): the dark
+      // squares are the shade colour itself, the same dark as the queen.
+      const dark = s.ground === 'board';
+      let sq = '';
+      for (let r = Math.floor(-y0/cell); y0 + r*cell < H; r++) for (let f = 0; f < 8; f++){
+        if ((((f + r) % 2) + 2) % 2 !== 1) continue;    // a8 is light, b8 dark; the same parity above and below the board
+        sq += `<rect x="${(f*cell).toFixed(1)}" y="${(y0 + r*cell).toFixed(1)}" width="${cell.toFixed(1)}" height="${cell.toFixed(1)}"/>`;
+      }
+      parts.push(`<g${ed ? ' id="Board" data-name="Board"' : ''} fill="${esc(dark ? (t.board || t.shade) : t.square)}" fill-opacity="${dark ? (t.boardA || 1) : t.squareA}">${sq}</g>`);
+      boardSq = sq;
+    }
+
+    // On the strong board the type is traced in flipped colours (user's
+    // instruction, 10 Nov 2026): white drawn with a difference blend, so over
+    // a dark square it stays white and over a light square it turns dark,
+    // square by square. The footer flips the same way. On the other grounds the
+    // type stays the ghost of the reference.
+    // the type changes colour square by square on the liquid night board too
+    // (user's instruction, 11 Nov 2026, "keep font over chess effect"):
+    // near-white over the slate squares, periwinkle over the night ones
+    const flip = s.ground === 'board';
+    const flipAttr = flip ? ' style="mix-blend-mode:difference"' : '';
+    // A stock with flipLight sets the flip by clipping instead: the text is
+    // drawn once inside the dark squares and once outside them.
+    const clipFlip = flip && !!t.flipLight;
+    if (clipFlip){
+      defs.push(`<clipPath id="shDarkSq">${boardSq}</clipPath>`);
+      const holes = (boardSq.match(/<rect [^>]*>/g) || []).map(r => {
+        const g = k => +r.match(new RegExp(` ${k}="([-\\d.]+)"`))[1];
+        return `M${g('x')} ${g('y')}h${g('width')}v${g('height')}h${-g('width')}z`;
+      }).join('');
+      defs.push(`<clipPath id="shLightSq"><path clip-rule="evenodd" d="M0 0H${W}V${H}H0Z${holes}"/></clipPath>`);
+    }
+    // A stock with overVeil draws its clipped text after the veils, so its
+    // red, black and white keep their strength while the dark squares are
+    // softened behind it; otherwise the text softens with the sheet.
+    const overParts = [];
+    const textTo = clipFlip && t.overVeil ? overParts : parts;
+    // In the editable file each flipped line is one group holding its two
+    // clipped copies, named for the squares they print on; an edit to the
+    // words goes into both.
+    const flipText = (attrs, body, light, name) => clipFlip
+      ? L(name || 'Line', `<g${ed && name ? ` id="${name}_on_blue_squares"` : ''} clip-path="url(#shDarkSq)"><text ${attrs} fill="${esc(t.flipDark)}">${body}</text></g><g${ed && name ? ` id="${name}_on_white_squares"` : ''} clip-path="url(#shLightSq)"><text ${attrs} fill="${esc(light)}">${body}</text></g>`)
+      : L(name || 'Line', `<text ${attrs} fill="#FFFFFF"${flipAttr}>${body}</text>`);
+
+    // the title, in lines
+    const raw = s.title.trim().toUpperCase();
+    const lines = (raw.indexOf('/') !== -1 ? raw.split('/') : raw.split(/\s+/)).map(x => x.trim()).filter(Boolean);
+    const capRatio = measure('H', s.font, s.weight).cap;
+    const bleed = 1.04 * s.titleScale;                // 100 on the slider: the edge letters are just cut, as in the reference
+    const maxSize = 0.2*H;                            // a two-character line is not a quarter of the sheet
+    // 10% of the sheet lower and 20% larger than first set (user's
+    // instruction, 10 Nov 2026), so the first line runs a little past the
+    // edges, as the reference's does.
+    // Then moved 15% of the sheet up (user's instruction, 11 Nov 2026), but no
+    // higher than 1.5% below the top edge, so the overshoot of round capitals
+    // (C, S) above the cap height is not cut.
+    // and 30% smaller (user's instruction, 11 Nov 2026, with PP Neue Gstaad,
+    // which is wider than Panell): 1.2 x 0.7
+    const TITLE_DROP = 0.10 - 0.15, TITLE_GROW = 1.2 * 0.7;
+    // then dropped 10% of the sheet again (user's instruction, 11 Nov 2026)
+    let y = Math.max(0.015*H, (0.018 + TITLE_DROP)*H) + 0.10*H, firstSize = 0;
+    let titleOut = '';
+    lines.forEach((line, i) => {
+      const w = measure(line, s.font, s.weight).w || 0.5*Array.from(line).length;
+      // the first line bleeds; the last does too when there are three or more
+      // lines. A two-line title keeps its second line at the middle size, as
+      // the user asked to keep it (10 Nov 2026: "CHESS.IRL" over a smaller "№4").
+      const full = i === 0 || (i === lines.length-1 && lines.length > 2);
+      let size = Math.min(W*bleed / w, maxSize) * TITLE_GROW;
+      if (!full) size = Math.min(size, firstSize*0.62);
+      if (i === 0) firstSize = size;
+      const cap = size*capRatio;
+      y += cap;
+      const tAttrs = `x="${(W/2).toFixed(1)}" y="${y.toFixed(1)}" text-anchor="middle" font-family="${esc(s.font)}" font-weight="${s.weight}" font-size="${size.toFixed(1)}"`;
+      titleOut += flip ? flipText(tAttrs, esc(line), t.flipLight, `Title_line_${i+1}`) : L(`Title_line_${i+1}`, `<text ${tAttrs} fill="${esc(t.ghost)}" fill-opacity="${t.ghostA}">${esc(line)}</text>`);
+      y += cap*0.14;
+    });
+    // On the liquid night stock each text block sits in a soft pool of the
+    // night colour, so lavender words stay readable where a bright swirl runs
+    // behind them, as the reference keeps its words over darkness.
+    if (t.liquid && !defs.some(d => d.indexOf('id="shLHalo"') !== -1))
+      defs.push(`<filter id="shLHalo" x="-20%" y="-40%" width="140%" height="180%" color-interpolation-filters="sRGB"><feMorphology in="SourceAlpha" operator="dilate" radius="${(0.012*W).toFixed(1)}" result="d"/><feGaussianBlur in="d" stdDeviation="${(0.03*W).toFixed(1)}" result="b"/><feFlood flood-color="${esc(t.night || t.ground)}" flood-opacity="0.6"/><feComposite in2="b" operator="in" result="pool"/><feMerge><feMergeNode in="pool"/><feMergeNode in="SourceGraphic"/></feMerge></filter>`);
+    // The pools were taken out the same day (user's instruction, "blend both
+    // more into the board like the previous option"): the letters sit straight
+    // on the board, changing colour square by square, periwinkle over the night
+    // squares and near-white over the others. Night letters over the glowing
+    // squares were tried first and vanished where the glow is faint.
+    const pool = inner => inner;
+    textTo.push(pool(L('Title', titleOut)));
+    const titleBottom = y;
+
+    // the footer: the info along the bottom edge, in the serif, centred,
+    // stacked up from the bottom edge and flipping with the squares on the
+    // strong board. The queen stands clear of its top line.
+    let infoTop = H, infoLeft = W;
+    const infoBoxes = [];   // each info line's box, for keeping the queen clear of it
+    // The info block copies the layout of the user's reference (10 Nov 2026,
+    // "just copy that layout and put it in the right corner"): set flush right
+    // in the bottom right corner, in this order and at these sizes, as
+    // multiples of the footer size:
+    //   the date group first: the date underlined (1.1), a small italic "at"
+    //   (0.45), the time (1.1);
+    //   the first other group, the tagline, in italic (1.1);
+    //   a group led by a role label (an item ending in "by" or a colon): the
+    //   label small and italic (0.45) beside the first name (1.5), then a
+    //   small italic "and" beside each further name (1.5);
+    //   any other group on one line at the footer size, items parted by an em
+    //   space. No dots or dashes are added (user's instruction, 10 Nov 2026).
+    // A line wider than the measure is scaled down to fit.
+    const EMSP = ' ';
+    const groups = (s.infoGroups && s.infoGroups.length) ? s.infoGroups.map(g => g.slice()) : (s.info.length ? [s.info.slice()] : []);
+    if (groups.length){
+      // The size is pinned (user's instruction, 10 Nov 2026, "keep exactly
+      // this font size") to what the doubled footer had with the first info
+      // text, then made 20% larger; it is measured on Times, the face it was
+      // pinned in, so it is the same px in the serif now used.
+      const FOOT_REF = '12/05/2026 · 7pm · RSVP · for · address · Greenpoint, · Brooklyn · Anya Tran · (live) · Daren Ho · (live) · Iggy Nuclear · (dj) · Sofiya V · (dj)';
+      const fw = measure(FOOT_REF, TIMES, 400).w || 0.45*FOOT_REF.length;
+      const size = 1.2 * Math.max(cell*0.2, Math.min(2 * W / fw * s.infoScale, cell*0.64));
+      const isLabel = x => /(\bby|:)$/i.test(x);
+      const SERIF_CAP = measure('H', SERIF, 400).cap;
+      const isDate = x => /\d{1,2}\s*[\/.·-]\s*\d{1,2}\s*[\/.·-]\s*\d{2,4}|\b(jan|feb|mar|apr|may|jun|jul|aug|sep|oct|nov|dec)[a-z]*\.?\s+\d/i.test(x);
+      // italic runs are 80% larger than first set (user's instruction,
+      // 11 Nov 2026, "make italic text larger 80%")
+      const ITALIC_GROW = 1.8;
+      const R = (t, k, o) => Object.assign({ t, k: o && o.i ? k * ITALIC_GROW : k }, o || {});
+      const lines = [];
+      const di = groups.findIndex(g => isDate(g[0]));
+      const ordered = di > 0 ? [groups[di], ...groups.filter((_, i) => i !== di)] : groups;
+      let taglineDone = false;
+      ordered.forEach((g, gi) => {
+        if (gi === 0 && di !== -1){
+          const line = [R(g[0], 1.1, { u: true })];
+          if (g.length > 1) line.push(R(' at ', 0.45, { i: true }), R(g.slice(1).join(' '), 1.1));
+          lines.push(line);
+        } else if (isLabel(g[0]) && g.length > 1){
+          lines.push([R(g[0], 0.45, { i: true }), R(EMSP, 0.45), R(g[1], 1.5)]);
+          g.slice(2).forEach(x => lines.push([R('and', 0.45, { i: true }), R(EMSP, 0.45), R(x, 1.5)]));
+        } else if (!taglineDone && g.length === 1){
+          taglineDone = true;
+          // 15% smaller and broken into two lines (user's instruction,
+          // 11 Nov 2026), at the word break that leaves the halves nearest
+          // in width
+          // then 20% smaller again (user's instruction, 11 Nov 2026)
+          const k = 1.1 * 0.85 * 0.8, words = g[0].split(/\s+/);
+          if (words.length > 1){
+            let best = 1, bestD = Infinity;
+            for (let b = 1; b < words.length; b++){
+              const d = Math.abs(measure(words.slice(0, b).join(' '), SERIF, 400, 'italic').w - measure(words.slice(b).join(' '), SERIF, 400, 'italic').w);
+              if (d < bestD){ bestD = d; best = b; }
+            }
+            lines.push([R(words.slice(0, best).join(' '), k, { i: true })], [R(words.slice(best).join(' '), k, { i: true })]);
+          } else lines.push([R(g[0], k, { i: true })]);
+        } else {
+          lines.push(g.flatMap((x, i) => i ? [R(EMSP, 1), R(x, 1)] : [R(x, 1)]));
+        }
+      });
+      const m = 0.045*W;
+      const widthOf = line => line.reduce((sum, r) => sum + measure(r.t, SERIF, 400, r.i ? 'italic' : '').w * r.k * size, 0);
+      const fitOf = line => Math.min(1, (W - 2*m) / (widthOf(line) || 1));
+      let y = H - 0.03*H, out = '';
+      for (let i = lines.length-1; i >= 0; i--){
+        const line = lines[i];
+        const fit = fitOf(line);
+        const big = Math.max(...line.map(r => r.k)) * size * fit;
+        infoLeft = Math.min(infoLeft, W - m - widthOf(line) * fit);
+        infoBoxes.push({ left: W - m - widthOf(line) * fit, top: y - big*0.8, bottom: y + big*0.3 });
+        // A small italic run beside larger roman text ("at", a role label,
+        // "and") is raised so its capitals are centred on the larger text's
+        // capitals instead of sharing its baseline (user's instruction,
+        // 11 Nov 2026: "center only italics and Anya Tran horizontally").
+        const romanK = Math.max(0, ...line.filter(r => !r.i && r.t.trim()).map(r => r.k));
+        let off = 0;
+        const body = line.map((r, ri) => {
+          const smallItalic = romanK && (r.i || (!r.t.trim() && line[ri-1] && line[ri-1].i)) && r.k < romanK;
+          const target = smallItalic ? -SERIF_CAP * size * fit * (romanK - r.k) / 2 : 0;
+          const dy = target - off; off = target;
+          return `<tspan font-size="${(r.k*size*fit).toFixed(1)}"${Math.abs(dy) > 0.05 ? ` dy="${dy.toFixed(1)}"` : ''}${r.i ? ' font-style="italic"' : ''}${r.u ? ' text-decoration="underline"' : ''}>${esc(r.t).replace(/ /g, '&#160;')}</tspan>`;
+        }).join('');
+        const fAttrs = `x="${(W - m).toFixed(1)}" y="${y.toFixed(1)}" text-anchor="end" font-family="${esc(SERIF)}" font-size="${(size*fit).toFixed(1)}"`;
+        out = (flip ? flipText(fAttrs, body, t.footLight, `Info_line_${i+1}`) : L(`Info_line_${i+1}`, `<text ${fAttrs} fill="${esc(t.foot)}">${body}</text>`)) + out;
+        infoTop = y - big*0.78;
+        // set tight, as the reference is: the next baseline up clears this
+        // line's capitals and the line above's descenders, with a hair between
+        const above = i > 0 ? Math.max(...lines[i-1].map(r => r.k)) * size * fitOf(lines[i-1]) : 0;
+        y -= big*0.70 + above*0.30 + Math.max(big, above)*0.04;
+      }
+      textTo.push(pool(L('Info', out)));
+    }
+
+    // the shadow. One soft spot, as in the reference, placed and sized by the
+    // game: its centre is the traffic-weighted centre of the board's squares
+    // and its radius grows with how widely the traffic spread (one standard
+    // deviation, in squares). Inside it, the traffic itself is blurred in at
+    // low opacity, so the spot leans the way the game went. The last move's
+    // square is the core, tinted with the accent colour when it is marked.
+    const traffic = a.traffic || {};
+    const keys = Object.keys(traffic);
+    const maxT = Math.max(1, ...keys.map(k => traffic[k]));
+    const spread = 0.5 + 1.25*s.density;              // the slider: 40 is the reference
+    const at = sq => ({ cx: FILES.indexOf(sq[0])*cell + cell/2, cy: y0 + (8 - +sq[1])*cell + cell/2 });
+    let tw = 0, mx = 0, my = 0;
+    keys.forEach(sq => { const c = at(sq), w = traffic[sq]; tw += w; mx += w*c.cx; my += w*c.cy; });
+    const centre = tw ? { cx: mx/tw, cy: my/tw } : { cx: W/2, cy: H/2 };
+    let vx = 0, vy = 0;
+    keys.forEach(sq => { const c = at(sq), w = traffic[sq]; vx += w*(c.cx-centre.cx)**2; vy += w*(c.cy-centre.cy)**2; });
+    const sx = tw ? Math.sqrt(vx/tw)/cell : 2, sy = tw ? Math.sqrt(vy/tw)/cell : 2;   // in squares; about 2 for a whole game
+    let rx = cell*(1.0 + 1.2*sx)*spread, ry = cell*(1.0 + 1.2*sy)*spread;
+    ry = Math.max(rx*0.85, Math.min(rx*1.3, ry));     // a little taller than wide at most, like the reference
+    // The red queen is drawn over the Black and Contrast veils, so her colour
+    // keeps its strength; the shadow queen (the default, user's instruction,
+    // 10 Nov 2026, "keep like this shadow for figure") sinks into the board
+    // under the veils, as the first queen did.
+    const queenParts = [];
+    const queenTo = ['red', 'file', 'grey', 'liquid'].includes(s.queenCol) ? queenParts : parts;
+    if (s.spot === 'queen'){
+      // The queen (user's instructions, 9 and 10 Nov 2026): the silhouette
+      // traced off the user's photo (QUEEN_D), a shadow in the shade colour
+      // unless the Queen colour select asks for red. She keeps the soft look of the
+      // first queen (user's instruction, 10 Nov 2026): the core blurred to
+      // about 2% of her height, so the edge goes and the crown, the collar
+      // and the base still read, and a wider blur of the same shape as the
+      // halo that fades her into the stock, as the reference's spot fades.
+      // Core 75% and halo 45% opaque (from 96% and 60%; user's instruction,
+      // 10 Nov 2026, "a bit less dense"), so the board shows through her. Her height follows the
+      // game's spread as the round spot's radius does, capped at 78% of the
+      // sheet; her width keeps the photo's proportion.
+      // her base stands a little above the info, so the details stay readable;
+      // her crown may run up into the title, as the reference's spot does
+      // She sits in the free space at the bottom left, below the title and to
+      // the left of the info block, so she crosses no text (user's
+      // instruction, 11 Nov 2026, "put chess figure to the left and down so it
+      // doesn't cross text"). Her box allows for the haze (9% wider, 5% taller)
+      // and two blur radii on every side: local x -405 to 405, y -575 to 500.
+      // She fills that space, left and bottom aligned; the game no longer
+      // places or sizes her.
+      // The largest box that fits against the left edge without meeting the
+      // title or any info line: for each candidate bottom edge the box grows
+      // until it would reach the title or a line's left end, and the biggest
+      // wins (the info lines step, so a box beside the shorter lines can be
+      // larger than one under them). Then she is lifted as high as that size
+      // still fits, just under the title (user's instruction, 11 Nov 2026,
+      // "move it up and make it bigger"). The box allows for the haze and one
+      // blur radius: local x -367 to 367, y -536 to 460.
+      const BX = 367, BT = 536, BB = 460;
+      const gap = 0.015*W, rL = gap, floorY = H - 0.02*H, ceil = titleBottom + gap;
+      const clear = (k, yb) => {
+        const top = yb - (BT + BB)*k, right = rL + 2*BX*k;
+        if (top < ceil || right > W - gap) return false;
+        return infoBoxes.every(b => b.bottom + gap < top || b.top - gap > yb || b.left - gap > right);
+      };
+      const step = H/200;
+      let best = { k: 0.05, yb: floorY };
+      for (let yb = floorY; yb > ceil; yb -= step){
+        let lo = 0, hi = (yb - ceil) / (BT + BB);
+        if (hi <= best.k) break;
+        for (let n = 0; n < 24; n++){ const mid = (lo + hi)/2; if (clear(mid, yb)) lo = mid; else hi = mid; }
+        if (lo > best.k) best = { k: lo, yb };
+      }
+      const k = best.k;
+      let yb = best.yb;
+      while (yb - step > ceil && clear(k, yb - step)) yb -= step;
+      const place = `transform="translate(${(rL + BX*k).toFixed(1)} ${(yb - BB*k).toFixed(1)}) scale(${k.toFixed(4)})"`;
+      const shape = `<path d="${QUEEN2_D}"/>${QUEEN2_BALLS}`;
+      // The file's blurs are in its local units (haze 40, figure 24), so they
+      // scale with her. Sand and Shadow fill the same shape flat.
+      defs.push(`<filter id="shQHaze" x="-50%" y="-50%" width="200%" height="200%" color-interpolation-filters="sRGB"><feGaussianBlur stdDeviation="40"/></filter>`);
+      defs.push(`<filter id="shQFigure" x="-50%" y="-50%" width="200%" height="200%" color-interpolation-filters="sRGB"><feGaussianBlur stdDeviation="24"/></filter>`);
+      let fill;
+      // "grey" (the default since 11 Nov 2026, "make chess figure grey") is the
+      // file's look with each colour replaced by the grey of the same
+      // luminance: #cfe6ff to #e3e3e3, #4a8ff0 to #8f8f8f, the haze #4a2c48
+      // to #363636.
+      // On the liquid night stock the patterned queen would sink into the dark,
+      // so she is drawn as the reference's butterflies are: pale lavender, light
+      // at the centre, with a teal glow round her.
+      const qc = t.liquid && s.queenCol === 'liquid' ? 'glow' : s.queenCol;
+      const lit = qc === 'file' || qc === 'grey' || qc === 'liquid' || qc === 'glow';
+      const pal = qc === 'glow' ? { hi:'#f1f2ff', lo:'#a3b4f4', haze:'#3d7bea' }
+        : qc === 'grey' || qc === 'liquid' ? { hi:'#e3e3e3', lo:'#8f8f8f', haze:'#363636' } : { hi:'#cfe6ff', lo:'#4a8ff0', haze:'#4a2c48' };
+      if (lit){
+        defs.push(`<radialGradient id="shQFade" gradientUnits="userSpaceOnUse" cx="0" cy="0" r="560" gradientTransform="translate(0 70) scale(0.78 1)"><stop offset="0" stop-color="${pal.hi}"/><stop offset="0.12" stop-color="${pal.hi}"/><stop offset="0.78" stop-color="${pal.lo}"/><stop offset="1" stop-color="${pal.lo}"/></radialGradient>`);
+        fill = 'url(#shQFade)';
+      } else fill = esc(s.queenCol === 'red' ? (t.red || QUEEN_RED) : t.shade);
+      const haze = lit
+        ? `<g${ed ? ' id="Queen_haze"' : ''} filter="url(#shQHaze)" fill="${pal.haze}" transform="scale(1.09 1.05)">${shape}</g>`
+        : `<g${ed ? ' id="Queen_haze"' : ''} filter="url(#shQHaze)" fill="${fill}" opacity="0.45" transform="scale(1.09 1.05)">${shape}</g>`;
+      // The liquid pattern of the user's reference (11 Nov 2026, "add this
+      // effect to chess", then "just use this pattern, no butterflies"): the
+      // figure filled with near-black and soft bands of periwinkle edged in
+      // teal, warped by turbulence so they flow, clipped to her outline and
+      // softened with her own blur. In her local units, so it scales with her.
+      let body = `<g${ed ? ' id="Queen_figure"' : ''} filter="url(#shQFigure)" fill="${fill}"${lit ? '' : ' opacity="0.75"'}>${shape}</g>`;
+      if (qc === 'liquid'){
+        const bands = [
+          'M-460 -420 C -260 -160 120 -560 300 -250 C 380 -120 300 40 460 -40',
+          'M-460 150 C -300 -60 -60 360 140 120 C 260 -20 380 260 460 380',
+        ];
+        defs.push(`<clipPath id="shQClip">${shape}</clipPath>`);
+        defs.push(`<filter id="shQFlow" x="-30%" y="-30%" width="160%" height="160%" color-interpolation-filters="sRGB"><feTurbulence type="fractalNoise" baseFrequency="0.0028 0.0036" numOctaves="2" seed="11" result="n"/><feDisplacementMap in="SourceGraphic" in2="n" scale="260" xChannelSelector="R" yChannelSelector="G"/></filter>`);
+        defs.push(`<filter id="shQGlowT" x="-30%" y="-30%" width="160%" height="160%"><feGaussianBlur stdDeviation="50"/></filter>`);
+        defs.push(`<filter id="shQGlowL" x="-30%" y="-30%" width="160%" height="160%"><feGaussianBlur stdDeviation="26"/></filter>`);
+        const teal = bands.map(d => `<path d="${d}" stroke-width="300"/>`).join('');
+        const lav = bands.map(d => `<path d="${d}" stroke-width="170"/>`).join('');
+        body = `<g${ed ? ' id="Queen_figure"' : ''} filter="url(#shQFigure)"><g clip-path="url(#shQClip)">` +
+          `<rect x="-480" y="-640" width="960" height="1200" fill="#0b0e13"/>` +
+          `<g filter="url(#shQFlow)" fill="none" stroke-linecap="round">` +
+            `<g${ed ? ' id="Queen_pattern_teal"' : ''} stroke="#4fd6c3" opacity="0.8" filter="url(#shQGlowT)">${teal}</g>` +
+            `<g${ed ? ' id="Queen_pattern_blue"' : ''} stroke="#a3b4f4" filter="url(#shQGlowL)">${lav}</g>` +
+          `</g></g></g>`;
+      }
+      queenTo.push(L('Queen', `<g ${place}>${haze}${body}</g>`));
+    } else {
+    defs.push(`<radialGradient id="shSpot"><stop offset="0" stop-color="${esc(t.shade)}"/><stop offset="0.38" stop-color="${esc(t.shade)}"/><stop offset="0.6" stop-color="${esc(t.shade)}" stop-opacity="0.62"/><stop offset="0.8" stop-color="${esc(t.shade)}" stop-opacity="0.2"/><stop offset="0.92" stop-color="${esc(t.shade)}" stop-opacity="0.05"/><stop offset="1" stop-color="${esc(t.shade)}" stop-opacity="0"/></radialGradient>`);
+    parts.push(`<ellipse cx="${centre.cx.toFixed(1)}" cy="${centre.cy.toFixed(1)}" rx="${rx.toFixed(1)}" ry="${ry.toFixed(1)}" fill="url(#shSpot)"/>`);
+    }
+    defs.push(`<filter id="shBlur" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="${(cell*1.5).toFixed(1)}"/></filter>`);
+    let discs = '';
+    keys.forEach(sq => {
+      const d = traffic[sq]/maxT, c = at(sq);
+      discs += `<circle cx="${c.cx.toFixed(1)}" cy="${c.cy.toFixed(1)}" r="${(cell*(0.2 + 0.7*d)*spread).toFixed(1)}" fill="${esc(t.shade)}" fill-opacity="${(0.15+0.45*d).toFixed(2)}"/>`;
+    });
+    if (a.lastTo){
+      const c = at(a.lastTo);
+      discs += `<circle cx="${c.cx.toFixed(1)}" cy="${c.cy.toFixed(1)}" r="${(cell*0.8*spread).toFixed(1)}" fill="${esc(s.markLast ? s.accent : t.shade)}" fill-opacity="${s.markLast ? 0.45 : 0.6}"/>`;
+    }
+    // the blurred traffic belongs to the shadow; under a red queen it only
+    // added grey smudges (user's instruction, 10 Nov 2026, "don't add any grey")
+    if (!(s.spot === 'queen' && ['red', 'file', 'grey', 'liquid'].includes(s.queenCol))) parts.push(`<g${ed ? ' id="Traffic"' : ''} filter="url(#shBlur)" opacity="${s.spot === 'queen' ? 0.3 : 0.5}">${discs}</g>`);
+
+    // Black (user's instruction, 10 Nov 2026, "keep contrast but make black
+    // 50% black"): a veil of white over the sheet under the queen, at
+    // one minus the slider, so the darkest tone becomes that share of black
+    // and white stays white. At 50 the black of a square is a mid grey. It
+    // replaced the mid-grey contrast veil as the default softening the same
+    // day; the Contrast slider stays, at 100, for a veil that moves both ends.
+    if (s.black < 1 && !t.noVeil) parts.push(`<rect${ed ? ' id="Black_veil"' : ''} width="${W}" height="${H}" fill="${esc(t.veil || '#FFFFFF')}" opacity="${(1 - s.black).toFixed(2)}"/>`);
+    if (s.contrast < 1 && !t.noVeil) parts.push(`<rect${ed ? ' id="Contrast_veil"' : ''} width="${W}" height="${H}" fill="#808080" opacity="${(1 - s.contrast).toFixed(2)}"/>`);
+
+    // The red queen goes on after the veils, so her red is not washed toward pink.
+    parts.push(...overParts);
+    parts.push(...queenParts);
+
+    // No paper texture (user's instruction, 10 Nov 2026, "don't add any paper
+    // quality"): the grain and the scanlines that printed over the sheet are
+    // removed, so the board, the type and the queen are flat.
+
+    if (ed) return `<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 ${W} ${H}" width="${W}" height="${H}"><title>${esc(s.title)}</title><defs>${defs.join('')}</defs>${parts.join('')}</svg>`;
+    return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${W} ${H}" width="${W}" height="${H}" role="img" aria-label="${esc(s.title)} poster"><defs>${fontDefs(s)}${serifStyle()}${defs.join('')}</defs>${parts.join('')}</svg>`;
+  }
+
   // Panell files as data URIs, one per weight, fetched the first time a weight
   // is drawn. Until the fetch lands the SVG goes out without the face and the
   // page re-renders when it arrives.
@@ -549,7 +1094,56 @@ Sofiya V
     }
     return d ? `<style>@font-face{font-family:"Panell Compressed";font-weight:${w};src:url(${d}) format("woff2")}</style>` : '';
   }
-  const fontDefs = s => s.panell ? panellStyle(+s.weight) : '';
+  // Atlas Grotesk Condensed, embedded only when its licensed web files are in
+  // ../fonts (a 404 leaves it out, and the Panell fallback is embedded).
+  const ATLAS_FILES = {400:'Regular', 500:'Medium', 600:'Semibold', 700:'Bold'};
+  const atlasData = {};
+  function atlasStyle(weight){
+    const w = ATLAS_FILES[weight] ? weight : 700;
+    if (atlasData[w] === undefined){
+      atlasData[w] = null;
+      fetch(`../fonts/AtlasGroteskCondensed-${ATLAS_FILES[w]}.woff2`).then(r => r.ok ? r.blob() : Promise.reject(new Error(r.status)))
+        .then(b => new Promise(res => { const fr = new FileReader(); fr.onload = () => res(fr.result); fr.readAsDataURL(b); }))
+        .then(uri => { atlasData[w] = uri; render(); })
+        .catch(() => { atlasData[w] = false; });
+    }
+    const d = atlasData[w];
+    return d ? `<style>@font-face{font-family:"Atlas Grotesk Condensed";font-weight:${w};src:url(${d}) format("woff2")}</style>` : '';
+  }
+  // PP Neue Gstaad Compact, one Bold file, as a data URI, fetched once.
+  let gstaadData;
+  function gstaadStyle(){
+    if (gstaadData === undefined){
+      gstaadData = null;
+      fetch('../fonts/PPNeueGstaad-CompactBold.woff2').then(r => r.ok ? r.blob() : Promise.reject(new Error(r.status)))
+        .then(b => new Promise(res => { const fr = new FileReader(); fr.onload = () => res(fr.result); fr.readAsDataURL(b); }))
+        .then(uri => { gstaadData = uri; render(); })
+        .catch(() => { gstaadData = false; });
+    }
+    return gstaadData ? `<style>@font-face{font-family:"PP Neue Gstaad Compact";font-weight:700;src:url(${gstaadData}) format("woff2")}</style>` : '';
+  }
+  // the face named first is embedded; Panell, the fallback, only when it is
+  // the face in use
+  const fontDefs = s => {
+    const first = s.font.split(',')[0];
+    if (first.indexOf('PP Neue Gstaad') !== -1) return gstaadStyle();
+    return (first.indexOf('Atlas Grotesk Condensed') !== -1 ? atlasStyle(+s.weight) : '') + (s.panell ? panellStyle(+s.weight) : '');
+  };
+  // Instrument Serif, both cuts, as data URIs for the Shade info block, fetched once.
+  const serifData = {};
+  function serifCut(style){
+    const file = style === 'italic' ? 'Italic' : 'Regular';
+    if (serifData[style] === undefined){
+      serifData[style] = null;
+      fetch(`../fonts/InstrumentSerif-${file}-latin.woff2`).then(r => r.ok ? r.blob() : Promise.reject(new Error(r.status)))
+        .then(b => new Promise(res => { const fr = new FileReader(); fr.onload = () => res(fr.result); fr.readAsDataURL(b); }))
+        .then(uri => { serifData[style] = uri; render(); })
+        .catch(() => { serifData[style] = false; });
+    }
+    const d = serifData[style];
+    return d ? `@font-face{font-family:"Instrument Serif";font-weight:400;font-style:${style};src:url(${d}) format("woff2")}` : '';
+  }
+  const serifStyle = () => { const css = serifCut('normal') + serifCut('italic'); return css ? `<style>${css}</style>` : ''; };
 
   let currentSvg = '';
   function render(){
@@ -557,10 +1151,10 @@ Sofiya V
     const a = analyse($('moves').value);
     $('moveWarn').hidden = !a.error; $('moveWarn').textContent = a.error;
     const chars = Array.from(s.title.replace(/\s+/g,''));
-    const tw = chars.length > a.pieces ? `The title has ${chars.length} characters but the position has ${a.pieces} pieces; the last ${chars.length-a.pieces} are left out.` : (chars.length < a.pieces ? `${a.pieces-chars.length} piece square${a.pieces-chars.length===1?'':'s'} left empty.` : '');
+    const tw = s.look === 'shade' ? '' : chars.length > a.pieces ? `The title has ${chars.length} characters but the position has ${a.pieces} pieces; the last ${chars.length-a.pieces} are left out.` : (chars.length < a.pieces ? `${a.pieces-chars.length} piece square${a.pieces-chars.length===1?'':'s'} left empty.` : '');
     $('titleWarn').hidden = !tw; $('titleWarn').textContent = tw;
-    currentSvg = s.look === 'cut' ? buildCutSvg(a, s) : buildSvg(a, s);
-    const iw = s.look === 'cut'
+    currentSvg = s.look === 'cut' ? buildCutSvg(a, s) : s.look === 'shade' ? buildShadeSvg(a, s) : buildSvg(a, s);
+    const iw = s.look === 'shade' ? '' : s.look === 'cut'
       ? (cutLeftover ? `The board has no room for the last ${cutLeftover} character${cutLeftover===1?'':'s'} of the info. A taller size gives more rows.` : '')
       : (s.info.length > a.pieces ? `${s.info.length} info items for ${a.pieces} pieces; the last ${s.info.length-a.pieces} are left out.` : '');
     $('infoWarn').hidden = !iw; $('infoWarn').textContent = iw;
@@ -608,6 +1202,7 @@ Sofiya V
     if (!downloads){ toast('Saving is not available here.'); return; }
     try {
       if (kind === 'svg'){ await downloads.save({filename: fileStem()+'.svg', data: svgBlob()}); }
+      else if (kind === 'editable'){ await downloads.save({filename: fileStem()+'-editable.svg', data: new Blob([editableSvg()], {type:'image/svg+xml;charset=utf-8'})}); }
       else { const blob = await renderPng(+$('scale').value); await downloads.save({filename: fileStem()+'.png', data: blob}); }
       toast('Saved.');
     } catch (err){
@@ -617,6 +1212,14 @@ Sofiya V
   }
   $('savePng').addEventListener('click', () => save('png'));
   $('saveSvg').addEventListener('click', () => save('svg'));
+  $('saveEditable').addEventListener('click', () => save('editable'));
+  // Shade builds a layered file with live text and fonts by name; the other
+  // looks save their usual SVG.
+  function editableSvg(){
+    const s = settings(); s.editable = true;
+    return s.look === 'shade' ? buildShadeSvg(analyse($('moves').value), s) : currentSvg;
+  }
+  window.__editableSvg = editableSvg;
   $('copySvg').addEventListener('click', async () => {
     try { await navigator.clipboard.writeText(currentSvg); toast('SVG code copied.'); }
     catch (e){
@@ -627,17 +1230,19 @@ Sofiya V
   });
 
   function syncLook(){
-    const cut = $('look').value === 'cut';
-    $('paletteWrap').hidden = !cut; $('patternWrap').hidden = cut;
-    $('densityLabel').textContent = cut ? 'Cut depth' : 'Max density';
+    const look = $('look').value, cut = look === 'cut', shade = look === 'shade';
+    $('paletteWrap').hidden = !cut; $('toneWrap').hidden = !shade; $('spotWrap').hidden = !shade; $('groundWrap').hidden = !shade; $('queenWrap').hidden = !shade; $('contrastWrap').hidden = !shade; $('blackWrap').hidden = !shade; $('patternWrap').hidden = cut || shade;
+    $('densityLabel').textContent = cut ? 'Cut depth' : shade ? 'Shadow' : 'Max density';
   }
   syncLook();
   render();
   window.addEventListener('chessready', render);
+  // Shade sizes its lines from measured text, so it renders again once the fonts are in.
+  if (document.fonts){ document.fonts.ready.then(render); document.fonts.addEventListener('loadingdone', render); document.fonts.load('700 20px "PP Neue Gstaad Compact"').then(render).catch(() => {}); document.fonts.load('400 20px "Instrument Serif"').then(render).catch(() => {}); document.fonts.load('italic 400 20px "Instrument Serif"').then(render).catch(() => {}); }
   if (window.claude && typeof window.claude.use === 'function'){
     window.claude.use('downloads').then(ns => {
       downloads = ns;
-      if (!ns){ $('savePng').disabled = true; $('saveSvg').disabled = true; $('saveNote').hidden = false; }
+      if (!ns){ $('savePng').disabled = true; $('saveSvg').disabled = true; $('saveEditable').disabled = true; $('saveNote').hidden = false; }
     });
   } else {
     // Standalone (e.g. GitHub Pages): save through a normal browser download.
