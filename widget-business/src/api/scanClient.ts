@@ -204,6 +204,9 @@ export interface AccessibilityReport {
     incompleteChecks?: string[];
     // Only when the Tab walk was cut short: how many stops it did walk.
     tabWalkStops?: number;
+    // Third-party accessibility overlays seen on the page. A statement about
+    // how the page was measured, never a finding: see OverlayNotes.
+    overlays?: DetectedOverlay[];
     // Set when what was checked was a document rather than a web page. Several
     // sections of the report do not apply to one.
     documentKind?: "pdf";
@@ -258,7 +261,29 @@ export interface ConsistencyIssue {
   count?: number;
 }
 
+/** An accessibility overlay the scan saw (backend types/report.ts). */
+export interface DetectedOverlay {
+  vendor: string;
+  /** The script as the page loaded it, query string removed. Absent when
+   *  the widget was there and its script came from an unrecognised address. */
+  scriptUrl?: string;
+  /** Whether the vendor's widget element was in the document when the page
+   *  was measured. False: the script tag was there, the widget had not
+   *  started. */
+  widgetOnPage: boolean;
+}
+
+/** The same, rolled up over a site crawl (backend aggregateAudit.ts). */
+export interface SiteOverlay {
+  vendor: string;
+  scriptUrl?: string;
+  pageCount: number;
+  widgetPageCount: number;
+}
+
 export interface SiteAudit {
+  // Overlays seen on the scanned pages. Optional: older reports carry none.
+  overlays?: SiteOverlay[];
   entryUrl: string;
   scannedAt: string;
   pagesScanned: number;

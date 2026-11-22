@@ -211,3 +211,27 @@ The run prints this when a probe was cut short:
 A score computed from checks that did not all run is not comparable with one
 that did. Treat a trend line built from both as measuring the weather, not
 the site.
+
+## An accessibility overlay on the page
+
+The run prints this when the page loads a third-party accessibility overlay
+it recognises, one line per overlay:
+
+```
+  NOTE: accessibility overlay loaded — accessiBe (https://acsbapp.com/apps/app/dist/js/app.js), widget on the page during the scan
+```
+
+It is a statement of what was seen, not a finding. It has no severity, it
+never changes the score, the counts or the exit code, and `--baseline` does
+not track it. The same facts are in the JSON report under `meta.overlays`:
+`vendor`, `scriptUrl` (the script as the page loaded it, query string
+removed) and `widgetOnPage`.
+
+"Widget on the page" means the element the vendor's script builds was in the
+document, so the score was measured with the overlay running. "Widget not on
+the page" means the script tag was there and the widget had not started in
+the scan's browser. UserWay's loader, for one, does not start for a user
+agent containing "bot", and the scanner declares itself as `A11yCheckerBot`.
+
+The vendors it recognises, and what each was checked against, are listed in
+`backend/src/services/overlay/analyzeOverlay.ts`.

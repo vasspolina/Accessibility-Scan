@@ -352,6 +352,20 @@
         aiReviewTimeMs: 8000,
         aiReviewStatus: "completed",
         incompleteChecks: ["phone-layout walk"],
+        // The overlay note (components/OverlayNotes.tsx). A made-up vendor
+        // on a reserved domain, so the fixture names no real product; the
+        // address is long on purpose, since it is the one unbroken string
+        // in the notice and the reflow check should meet it at 320px.
+        // &overlay=script shows the other case: script there, widget not.
+        overlays: isPdf
+          ? undefined
+          : [
+              {
+                vendor: "Example Overlay",
+                scriptUrl: "https://cdn.overlay-vendor.example/apps/widget/dist/js/loader.min.js",
+                widgetOnPage: new URLSearchParams(location.search).get("overlay") !== "script",
+              },
+            ],
         documentKind: isPdf ? "pdf" : undefined,
         documentPages: isPdf ? 4 : undefined,
       },

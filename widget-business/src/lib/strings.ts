@@ -802,6 +802,14 @@ export const CHROME_KEYS: string[] = [
   "Not set up yet.",
   "Temporarily unavailable.",
   "These findings come from automated checks only.",
+  // The overlay note (components/OverlayNotes.tsx). States what the scan
+  // saw and nothing about the product; "running" only when the vendor's
+  // widget element was on the page.
+  "This page loads an accessibility overlay: {vendor}",
+  "An overlay is a third-party script that adds a settings button to a page.",
+  "It was running during this scan, so every finding here was measured with it on.",
+  "Its script is on this page, and its widget had not started when we measured.",
+  "Loaded from {url}",
   "keyboard navigation",
   "mouse-only controls",
   "phone layout",
