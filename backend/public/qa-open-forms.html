@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>QA fixture: things that open, forms that refuse</title>
+  <style>body { font: 16px/1.5 system-ui, sans-serif; margin: 1em; } .err { color: #b00020; }</style>
+</head>
+<body>
+  <!-- Known defects, none visible while the page is as it loads:
+       1. The "Opening times" panel (closed) holds an image with no alt (image-alt, found after opening).
+       2. The "Prices" tab's panel (not selected) holds a button with no name (button-name, found after opening).
+       3. #silent: novalidate, its script refuses an empty submit and shows nothing (form-error-silent, 3.3.1).
+       4. #unlinked: novalidate, its script shows "Please fill in the form" in a div not tied to any field
+          and not announced (form-error-unlinked, form-error-unannounced). -->
+  <main>
+    <h1>Opening and submitting</h1>
+
+    <button type="button" aria-expanded="false" aria-controls="times" id="times-btn">Opening times</button>
+    <div id="times" hidden>
+      <img src="data:image/gif;base64,R0lGODlhAQABAAAAACw=" width="40" height="40">
+      <p>Monday to Friday, nine to five.</p>
+    </div>
+    <script>
+      document.getElementById("times-btn").addEventListener("click", (e) => {
+        const open = e.currentTarget.getAttribute("aria-expanded") === "true";
+        e.currentTarget.setAttribute("aria-expanded", String(!open));
+        document.getElementById("times").hidden = open;
+      });
+    </script>
+
+    <div role="tablist" aria-label="Details">
+      <button role="tab" id="tab-a" aria-selected="true" aria-controls="panel-a">About</button>
+      <button role="tab" id="tab-b" aria-selected="false" aria-controls="panel-b">Prices</button>
+    </div>
+    <div role="tabpanel" id="panel-a" aria-labelledby="tab-a"><p>We are a small bakery.</p></div>
+    <div role="tabpanel" id="panel-b" aria-labelledby="tab-b" hidden><button type="button"><svg width="16" height="16"><circle cx="8" cy="8" r="6"/></svg></button></div>
+    <script>
+      for (const tab of document.querySelectorAll('[role="tab"]')) {
+        tab.addEventListener("click", () => {
+          for (const t of document.querySelectorAll('[role="tab"]')) {
+            const on = t === tab;
+            t.setAttribute("aria-selected", String(on));
+            document.getElementById(t.getAttribute("aria-controls")).hidden = !on;
+          }
+        });
+      }
+    </script>
+
+    <h2>Newsletter</h2>
+    <form id="silent" novalidate action="/subscribe" method="post">
+      <label for="s-email">Email</label>
+      <input id="s-email" name="email" type="email" required>
+      <button type="submit">Subscribe</button>
+    </form>
+    <script>
+      document.getElementById("silent").addEventListener("submit", (e) => {
+        if (!document.getElementById("s-email").value) e.preventDefault();
+      });
+    </script>
+
+    <h2>Contact</h2>
+    <form id="unlinked" novalidate action="/contact" method="post">
+      <div id="unlinked-msg" class="err"></div>
+      <label for="u-name">Name</label>
+      <input id="u-name" name="name" required>
+      <button type="submit">Send</button>
+    </form>
+    <script>
+      document.getElementById("unlinked").addEventListener("submit", (e) => {
+        if (!document.getElementById("u-name").value) {
+          e.preventDefault();
+          document.getElementById("unlinked-msg").textContent = "Please fill in the form.";
+        }
+      });
+    </script>
+  </main>
+</body>
+</html>

@@ -34,6 +34,7 @@ import type { ScreenReaderScript } from "../../types/report.js";
 import type { ReadabilitySignals } from "../readability/analyzeReadability.js";
 import { collectReflowHeightInPage, REFLOW_HEIGHT, type ReflowHeightSignals } from "../reflowHeight/analyzeReflowHeight.js";
 import { measureUndecidedContrast, type PixelContrastResult } from "../contrast/pixelContrast.js";
+import { openAndMeasure, type FormErrorProbe, type OpenedPanel } from "../interaction/openAndMeasure.js";
 import type {
   FocusStyles,
   KeyboardNavResult,
@@ -396,6 +397,11 @@ export interface RenderResult {
   // Text over pictures and gradients that axe left undecided, measured from
   // the pixels (services/contrast/pixelContrast.ts).
   pixelContrast?: PixelContrastResult[];
+  // Axe run inside menus, accordions and tabs opened one at a time, and the
+  // empty-submit test of the page's forms with the network blocked
+  // (services/interaction/openAndMeasure.ts). Absent when they did not run.
+  openedPanels?: OpenedPanel[];
+  formErrors?: FormErrorProbe[];
   // Checks that did not complete on this run, in words a reader understands.
   //
   // Each of these passes catches its own failures and returns empty signals so
@@ -4044,6 +4050,18 @@ export async function renderAndScan(
         });
       }
 
+      // Menus, accordions and tabs, opened one at a time and axe run on the
+      // panel alone, then put back (services/interaction/openAndMeasure.ts).
+      // After the activation pass, which presses the same kind of control
+      // and restores it, and before anything measures the page as loaded
+      // again. Its own budget; never fatal.
+      let openedPanels: OpenedPanel[] | undefined;
+      if (remaining() > 12_000) {
+        openedPanels = (await timed("openPanels", () =>
+          openAndMeasure(page, Math.min(6000, remaining() - 8000), "panels")
+        ).catch(() => undefined)) as OpenedPanel[] | undefined;
+      }
+
       // Visual-versus-source order. Geometry only, so it changes nothing and
       // has to run at desktop width, before the mobile pass reflows the page.
       //
@@ -4261,6 +4279,16 @@ export async function renderAndScan(
         logger.warn({ err }, "Dialog keyboard probe failed. Reporting without it");
       }
 
+      // The form test, last of all: it submits each form empty with every
+      // network request aborted, so nothing reaches the site, and it leaves
+      // error messages on the page that no probe above should have seen.
+      let formErrors: FormErrorProbe[] | undefined;
+      if (remaining() > 3000) {
+        formErrors = (await timed("formErrors", () =>
+          openAndMeasure(page, Math.min(4000, remaining() - 1500), "forms")
+        ).catch(() => undefined)) as FormErrorProbe[] | undefined;
+      }
+
       // Final check — a late subresource (lazy-loaded image, polling XHR)
       // could have triggered a rebind after the initial navigation settled.
       if (rebindingDetected) throw rebindingDetected;
@@ -4272,6 +4300,8 @@ export async function renderAndScan(
         readability,
         reflowHeight,
         pixelContrast,
+        openedPanels,
+        formErrors,
         pageTitle: domSignals.pageTitle,
         finalUrl: page.url(),
         axe,

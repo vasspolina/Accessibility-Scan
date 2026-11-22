@@ -40,6 +40,7 @@ import { evaluateReadingOrder } from "./readingOrder/analyzeReadingOrder.js";
 import { evaluateReadability } from "./readability/analyzeReadability.js";
 import { evaluateReflowHeight } from "./reflowHeight/analyzeReflowHeight.js";
 import { evaluatePixelContrast } from "./contrast/pixelContrast.js";
+import { evaluateFormErrors, notePanelFindings, panelViolations } from "./interaction/openAndMeasure.js";
 import { evaluateMobile } from "./mobile/analyzeMobile.js";
 import { evaluateDarkPatterns } from "./darkPatterns/analyzeDarkPatterns.js";
 import { evaluateTextResize } from "./textResize/analyzeTextResize.js";
@@ -493,6 +494,13 @@ export async function scanUrlToReport(
   deterministic.push(...evaluateMobile(renderResult.mobileSignals));
   deterministic.push(...evaluateReflowHeight(renderResult.reflowHeight));
   deterministic.push(...evaluatePixelContrast(renderResult.pixelContrast));
+  // What axe found inside menus, accordions and tabs once they were opened,
+  // each saying which control opens it; and what the empty-submit test of
+  // the forms proved (services/interaction/openAndMeasure.ts).
+  const opened = panelViolations(renderResult.openedPanels);
+  deterministic.push(...notePanelFindings(axeToFindings(opened.axe as AxeRunResult), opened.foundIn));
+  const formErrors = evaluateFormErrors(renderResult.formErrors);
+  deterministic.push(...formErrors.findings);
   // Asked of YouTube and Vimeo now and awaited when the report is built, so
   // the lookups run beside the AI review instead of after it. Never throws:
   // an unanswered lookup is "unknown" and the embed stays undecided.
@@ -639,6 +647,7 @@ export async function scanUrlToReport(
       [
         ...consentA11yUndecided(renderResult.darkPatternSignals),
         ...formErrorAssociationUndecided(renderResult.domSignals.forms),
+        ...formErrors.undecided,
         ...evaluateMedia(renderResult.domSignals.mediaElements, renderResult.domSignals.mediaEmbeds, embedCaptions),
         ...evaluateInteraction(renderResult.domSignals.listeners, {
           liveRegions: renderResult.domSignals.liveRegions,
