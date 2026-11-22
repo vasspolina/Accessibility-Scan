@@ -116,6 +116,30 @@
         "/Users/polinavasilyeva/bts-site"
       ],
       "port": 4190
+    },
+    {
+      "name": "map-quiet",
+      "runtimeExecutable": "python3",
+      "runtimeArgs": [
+        "-m",
+        "http.server",
+        "4940",
+        "-d",
+        "/Users/polinavasilyeva/culture-atlas/wt-map-quiet"
+      ],
+      "port": 4940
+    },
+    {
+      "name": "chess-irl-mesmarize",
+      "runtimeExecutable": "python3",
+      "runtimeArgs": [
+        "-m",
+        "http.server",
+        "4921",
+        "-d",
+        "/private/tmp/claude-501/-Users-polinavasilyeva--claude-spares-spare-fvBDB7/d534e37c-25a4-4d6a-a223-f987781b0b29/scratchpad/chess-irl"
+      ],
+      "port": 4921
     }
   ]
 }
