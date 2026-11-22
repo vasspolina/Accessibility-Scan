@@ -41,6 +41,7 @@ import { evaluateMobile } from "./mobile/analyzeMobile.js";
 import { evaluateDarkPatterns } from "./darkPatterns/analyzeDarkPatterns.js";
 import { evaluateTextResize } from "./textResize/analyzeTextResize.js";
 import { validateMarkup } from "./markup/validateMarkup.js";
+import { evaluateOverlay } from "./overlay/analyzeOverlay.js";
 import { summarizeSeverity, scoreFindings, summarizeCategories } from "./merge/scoring.js";
 import { buildConformance } from "./conformance/buildConformance.js";
 import { normalizeReportLang } from "./conformance/criteriaText.js";
@@ -663,6 +664,14 @@ export async function scanUrlToReport(
       aiReviewErrorKind: aiReview.errorKind,
       model: aiReview.model,
       plainLanguage: plainRewrite.meta,
+      // Evaluated here, in the return, and nowhere above: by this line the
+      // score, the severity and category counts and the conformance table
+      // are already computed from `findings`, and this never joins them.
+      // See analyzeOverlay.ts for why it is a statement and not a finding.
+      overlays: (() => {
+        const overlays = evaluateOverlay(renderResult.domSignals.overlay);
+        return overlays.length ? overlays : undefined;
+      })(),
     },
   };
 }

@@ -289,6 +289,12 @@ export const STRINGS_ES: Record<string, string> = {
   "Not set up yet.": "Aún no está configurada.",
   "Temporarily unavailable.": "No disponible temporalmente.",
   "These findings come from automated checks only.": "Estos hallazgos proceden solo de comprobaciones automáticas.",
+  // El aviso de overlay (components/OverlayNotes.tsx).
+  "This page loads an accessibility overlay: {vendor}": "Esta página carga un overlay de accesibilidad: {vendor}",
+  "An overlay is a third-party script that adds a settings button to a page.": "Un overlay es un script de terceros que añade a la página un botón de ajustes.",
+  "It was running during this scan, so every finding here was measured with it on.": "Estaba en marcha durante este análisis, así que cada hallazgo de aquí se midió con él activo.",
+  "Its script is on this page, and its widget had not started when we measured.": "Su script está en esta página, y su widget no había arrancado cuando medimos.",
+  "Loaded from {url}": "Cargado desde {url}",
   "keyboard navigation": "navegación con teclado",
   "mouse-only controls": "controles solo para ratón",
   "phone layout": "diseño en el móvil",

@@ -22,6 +22,7 @@ import { ProfessionalTable } from "./components/ProfessionalTable";
 import { ProSummary, type ProView } from "./components/ProSummary";
 import { Tabs } from "./components/Tabs";
 import { Notification, ProgressBar } from "./components/Feedback";
+import { OverlayNotes } from "./components/OverlayNotes";
 import { groupFindings } from "./components/FindingsList";
 import { SCAN_DURATION } from "./lib/scanDuration";
 import { ScanChat, type ChatApi, type ScanOutcome } from "./components/ScanChat";
@@ -634,6 +635,10 @@ export function App({
                 subtitle={t("The score above only counts what ran, so it may look better than it should. A second run usually completes them.")}
               />
             )}
+            {/* An accessibility overlay on the page: what was seen, beside
+                the other notices that qualify the reading. ProSummary prints
+                it for the professional reading, as with the notice above. */}
+            {!(professional && !isDocument) && <OverlayNotes overlays={report.meta.overlays} />}
           </>
         );
 

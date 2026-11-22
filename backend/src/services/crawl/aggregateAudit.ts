@@ -67,6 +67,54 @@ export interface SiteAudit {
   // single-page reports — absent in exactly the mode where 3.2.6 Consistent
   // Help and 3.3.7 Redundant Entry are answerable at all.
   wcag22: Wcag22Readiness;
+  // How the pages were found, beyond the entry page's own links. Set by the
+  // audit route, absent when the site has no sitemap and no robots rules
+  // took anything out.
+  discovery?: AuditDiscovery;
+  // Accessibility overlays seen on the scanned pages (each page's
+  // meta.overlays, rolled up). Absent when no page carried one. The audit
+  // reader only ever receives this aggregate, so a note left on the pages
+  // would never reach them. A statement about the pages, as on a single
+  // report: no part of it enters the scores, the site-wide issues or the
+  // conformance table above.
+  overlays?: SiteOverlay[];
+}
+
+export interface AuditDiscovery {
+  // The sitemap that was read, when there was one.
+  sitemap?: string;
+  // How many addresses it listed (capped at the reader's limit).
+  sitemapUrls: number;
+  // Candidate pages left out because the site's robots.txt disallows them.
+  excludedByRobots: number;
+}
+
+export interface SiteOverlay {
+  vendor: string;
+  // The first address seen for this vendor across the pages.
+  scriptUrl?: string;
+  // Scanned pages carrying the vendor's script or its widget element.
+  pageCount: number;
+  // Of those, the pages where the widget element was in the document, so
+  // the page was measured with the overlay running. Kept apart from
+  // pageCount for the reason widgetOnPage exists on a single report: a
+  // script tag is not proof the widget started.
+  widgetPageCount: number;
+}
+
+/** Each page's overlays, one row per vendor, in the order first seen. */
+export function summariseSiteOverlays(outcomes: PageOutcome[]): SiteOverlay[] | undefined {
+  const byVendor = new Map<string, SiteOverlay>();
+  for (const o of outcomes) {
+    for (const seen of o.report?.meta.overlays ?? []) {
+      const row = byVendor.get(seen.vendor) ?? { vendor: seen.vendor, pageCount: 0, widgetPageCount: 0 };
+      row.pageCount += 1;
+      if (seen.widgetOnPage) row.widgetPageCount += 1;
+      if (!row.scriptUrl && seen.scriptUrl) row.scriptUrl = seen.scriptUrl;
+      byVendor.set(seen.vendor, row);
+    }
+  }
+  return byVendor.size ? [...byVendor.values()] : undefined;
 }
 
 export interface PageOutcome {
@@ -247,5 +295,6 @@ export function aggregateAudit(
       incompleteChecks: [...new Set(scanned.flatMap((o) => o.report!.meta.incompleteChecks ?? []))],
       lang: normalizeReportLang(language),
     }),
+    overlays: summariseSiteOverlays(scanned),
   };
 }

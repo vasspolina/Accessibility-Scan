@@ -289,6 +289,12 @@ export const STRINGS_FR: Record<string, string> = {
   "Not set up yet.": "Pas encore configurée.",
   "Temporarily unavailable.": "Temporairement indisponible.",
   "These findings come from automated checks only.": "Ces constats proviennent uniquement de vérifications automatiques.",
+  // L’avis de surcouche (components/OverlayNotes.tsx).
+  "This page loads an accessibility overlay: {vendor}": "Cette page charge une surcouche d’accessibilité : {vendor}",
+  "An overlay is a third-party script that adds a settings button to a page.": "Une surcouche est un script tiers qui ajoute à la page un bouton de réglages.",
+  "It was running during this scan, so every finding here was measured with it on.": "Elle fonctionnait pendant cette analyse : chaque constat ici a donc été mesuré avec elle.",
+  "Its script is on this page, and its widget had not started when we measured.": "Son script est sur cette page, et son widget n’avait pas démarré au moment de la mesure.",
+  "Loaded from {url}": "Chargé depuis {url}",
   "keyboard navigation": "navigation au clavier",
   "mouse-only controls": "contrôles réservés à la souris",
   "phone layout": "mise en page sur téléphone",
