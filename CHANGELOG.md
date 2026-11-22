@@ -30,6 +30,23 @@ The `backend`, `widget`, and `widget-business` packages are versioned together.
 
 ### Added
 
+- **The command scans several pages.** `a11y-scan` takes more than one
+  address, a file of them (`--urls`) or a sitemap (`--sitemap`, cut to
+  `--max-pages`, 25 by default). Thresholds apply to every page, the
+  baseline keys findings by page path, and a page that could not be scanned
+  makes the run exit 2 where it would have passed.
+- **JUnit, CSV and Markdown output** beside JSON and SARIF (`--junit`,
+  `--csv`, `--markdown`), so GitLab, Jenkins and Azure Pipelines show the
+  findings and a spreadsheet can hold them. The CSV and the SARIF carry the
+  EN 301 549 clause of each Level A and AA finding.
+- **The site audit reads the sitemap and robots.txt.** `POST /api/audit`
+  ranks the pages in the site's sitemap with the links on the entry page,
+  so a page the home page does not link to can be picked. Pages the site's
+  robots.txt disallows are left out, and the audit's `discovery` field says
+  how many. The page limit is unchanged.
+- **`a11y-scan-mcp`**, the scanner as a Model Context Protocol server with
+  two tools, `scan_page` and `scan_site`, for a coding assistant working on
+  a local site. See `docs/MCP.md`.
 - **Plain-language rewrite by a self-hosted model.** With `LOCAL_LLM_URL` set
   (Ollama, llama.cpp or vLLM; default model Qwen2.5 7B Instruct), each axe
   rule's findings get a plain title, an explanation about this page's
