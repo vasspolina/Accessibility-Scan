@@ -662,6 +662,15 @@
 .a11y-widget-biz .a11y-accordion-head[aria-expanded="true"] .a11y-accordion-chevron { transform: rotate(180deg); }
 .a11y-widget-biz .a11y-w22-toggle { display: flex; align-items: center; gap: 0.6em; text-align: start; }
 .a11y-widget-biz .a11y-section-count { font-size: 22px; letter-spacing: 0.01em; font-weight: 400; }
+/* A section title's count is a superior figure (user's instruction, 22 Nov
+   2026, "design number 1"): raised from the baseline to the title's top,
+   so "(1)" reads as a note on the title rather than a word trailing it.
+   text-top lines the count's box up with the top of the title's font, and
+   line-height 1 keeps it from pushing the title's line open. The words
+   ("What costs you trust (1)") are unchanged for screen readers. The
+   accordion heads (Screen reader preview, the buyers' report) keep their
+   own one-line head and their count or edition on the baseline. */
+.a11y-widget-biz .a11y-section-title:not(.a11y-accordion-title) .a11y-section-count { vertical-align: text-top; line-height: 1; }
 
 /* THE ACCESSIBILITY STATEMENT (user's instruction, 21 Nov 2026, "design
    this", on the conformance head, Step 1's fields and Step 2's statement).
@@ -1016,12 +1025,17 @@
    Still a list in the markup: only its display is inline. The markers are
    ink with paper figures (21:1); the severity fills are the highlight
    colours with black text, as everywhere else. */
+/* Set left since 22 Nov 2026 (user's instruction, "lets allign this to the
+   left"): the label, the dial, the run and the copy button stand on the
+   column's own left edge, with no side padding, so they line up with the
+   sections under them. The figure inside the dial stays centred in its
+   ring. */
 .a11y-widget-biz .a11y-sum-run {
   container: a11y-sum-run / inline-size;
-  text-align: center; padding: 1.2em 1.2em 1.4em; margin: 0 0 0.6em;
+  text-align: start; padding: 1.2em 0 1.4em; margin: 0 0 0.6em;
 }
 .a11y-widget-biz .a11y-sum-run > .a11y-sum-eyebrow { margin: 0 0 0.6em; }
-.a11y-widget-biz .a11y-sum-run .a11y-sum-dial-card { display: flex; justify-content: center; }
+.a11y-widget-biz .a11y-sum-run .a11y-sum-dial-card { display: flex; justify-content: flex-start; }
 .a11y-widget-biz .a11y-sum-run .a11y-sum-dial { margin: 0 0 0.5em; }
 /* The run of findings: display size, tight, centred.
    10% smaller since 18 Nov 2026 (user's instruction): 67 to 60px, the
@@ -1086,7 +1100,7 @@
   font-size: 22px; letter-spacing: 0.01em; line-height: 1.2; margin: 0 0 0 0.3em;
 }
 .a11y-widget-biz .a11y-sum-run .a11y-score-clean { font-size: 42px; letter-spacing: -0.01em; line-height: 1.06; margin: 0; }
-.a11y-widget-biz .a11y-sum-run + .a11y-sum-actions { text-align: center; margin: 0 0 1.2em; }
+.a11y-widget-biz .a11y-sum-run + .a11y-sum-actions { text-align: start; margin: 0 0 1.2em; }
 /* On a phone the run comes down to title size, so a long German word
    still fits 320px. */
 @media (max-width: 640px) { .a11y-widget-biz .a11y-sum-run { padding-inline: 0; } }
@@ -2117,7 +2131,7 @@
    full width of its column, as the conversation already did. The 42ch and
    38ch caps, and the 60ch one on the picture's locator, are gone; the
    column itself (the widget's 40em) is the measure. */
-.a11y-widget-biz :is(.a11y-sum-run, .a11y-sum-actions) :is(p, h3) { margin-inline: auto; }
+.a11y-widget-biz :is(.a11y-sum-run, .a11y-sum-actions) :is(p, h3) { margin-inline: 0; }
 
 /* ═══ 320PX AFTER THE 20% TYPE STEP (17 Nov 2026) ══════════════════════════
    The reflow check (every fixture state at 320px in en/de/es/fr) failed in
@@ -3033,7 +3047,7 @@
   .a11y-widget-biz .a11y-legal-tiles > button.a11y-legal-row { min-height: 0; }
 }
 
-/* ═══ 21 NOV 2026: LANGUAGE PIN, ICONS, CARDS, PANEL ══════════════════════
+/* ═══ 21 NOV 2026: LANGUAGE ROW, ICONS, CARDS, PANEL ══════════════════════
    The new parts of the user's instructions from one sitting; the cards,
    the panel and the technical caret are changed where they are set.
 
@@ -3043,47 +3057,50 @@
 .a11y-widget-biz .a11y-ra-pdf > .a11y-icon.a11y-ra-pdf-icon { width: 20px; height: 20px; vertical-align: middle; }
 .a11y-widget-biz .a11y-w22 .a11y-next-toggle > .a11y-next-chevron > .a11y-icon { width: 20px; height: 20px; }
 .a11y-widget-biz .a11y-accordion-chevron.a11y-icon { width: 0.8em; height: 0.8em; }
-/* THE LANGUAGE PIN ("fold the language button on the right like this and
-   keep it on top on scroll"): the translate icon and the word, one button
-   at the column's top right, sticky for the whole conversation. On a
-   desktop the pin takes no height, so the New scan title keeps its place
-   beside it; under 640px it takes its line, since the title and the
-   button would meet at 320px. Its list opens under it, right-aligned. */
-/* No gap above the row (user's instruction, 21 Nov 2026, "whats this gap
-   on top and bottom? delete"): the 16px that held the button off the top
-   of the window was padding, so at rest it sat 16px under New scan and the
-   panel's New chat. It is the sticky offset now, which only acts once the
-   button is stuck; at rest the button, the title and New chat share one
-   top, and the title is centred on the button's 48px. */
-.a11y-widget-biz .a11y-chat > .a11y-lang-pin {
-  position: sticky; top: 16px; z-index: 3; align-self: flex-end; height: 0;
-}
-/* Only while the title shows: folded away, the head must take no height. */
+/* THE LANGUAGE ROW AT THE PANEL'S FOOT (user's instruction and reference,
+   22 Nov 2026, "add language button to the bottom menu like here"). It was
+   a pill pinned at the conversation's top right from 21 Nov; now it is the
+   conversations panel's last row, at the foot of the column under a 1px ink
+   rule, like an app sidebar's account row: the translate mark, Language,
+   a dot and the chosen language, a chevron at the end. Set as the panel's
+   rows are: 15px, 12px corners, no edge at rest, the #f0efe8 ground with
+   black words on hover and while open. The chevron turns over while open.
+
+   The panel stretches to the row's height and is capped at the window
+   (sticky as before), the conversations scroll inside their own body, so
+   the foot stays on screen however long the list. The list opens upward
+   over the panel, full width.
+
+   Under 640px the panel folds behind its Conversations toggle; the row
+   sits on the toggle's line at the right, outside the fold, and opens
+   downward. The New scan head keeps its 48px line from the pin's time. */
 .a11y-widget-biz .a11y-chat > .a11y-newscan-head:has(> .a11y-newscan-fold:not([data-gone])) { min-height: 48px; align-items: center; }
 .a11y-widget-biz .a11y-chat > .a11y-prompts { margin-top: 0; }
 .a11y-widget-biz .a11y-chats { padding-top: 0; }
-@media (max-width: 640px) {
-  .a11y-widget-biz .a11y-chat > .a11y-lang-pin { height: auto; }
+.a11y-widget-biz .a11y-chat-layout > .a11y-chats {
+  display: flex; flex-direction: column; align-self: stretch; overflow: visible;
+}
+.a11y-widget-biz .a11y-chats > .a11y-chats-body { flex: 1 1 auto; min-height: 0; overflow-y: auto; }
+.a11y-widget-biz .a11y-chats > .a11y-chats-foot {
+  flex: none; margin-top: 16px; padding-top: 12px; border-top: 1px solid var(--ink);
 }
 .a11y-widget-biz .a11y-lang-menu { position: relative; }
 .a11y-widget-biz .a11y-lang-menu .a11y-lang-toggle {
-  display: inline-flex; align-items: center; gap: 10px; min-height: 48px; padding: 0 16px;
-  border: 1px solid var(--chats-current); border-radius: 999px;
-  background: var(--btn-fill, var(--paper)); color: var(--ink);
-  font-size: 22px; font-weight: 500; letter-spacing: 0.01em; line-height: 1;
+  display: flex; align-items: center; gap: 10px; box-sizing: border-box; width: 100%; min-height: 44px;
+  margin: 0; padding: 8px 12px; border: 1px dotted transparent; border-radius: 12px;
+  background: transparent; color: var(--ink);
+  font-size: 15px; font-weight: 500; letter-spacing: 0.01em; line-height: 1.3; text-align: start;
 }
-/* A green line round it (user's instruction, 21 Nov 2026, "outline with
-   green line"): the pin floats over the thread, and with no edge it ran
-   into what scrolled under it, the mint barrier card most of all. The
-   current chat's green: #14532d on paper and on the #f0efe8 hover fill
-   (7.9:1 or better), #30d158 in dark. It stays on hover and while open. */
+.a11y-widget-biz .a11y-lang-menu .a11y-lang-current { flex: 1 1 auto; min-width: 0; font-weight: 400; }
+.a11y-widget-biz .a11y-lang-menu .a11y-lang-chevron { flex: none; display: inline-flex; transition: transform 0.15s; }
+.a11y-widget-biz .a11y-lang-menu .a11y-lang-toggle[aria-expanded="true"] .a11y-lang-chevron { transform: rotate(180deg); }
 .a11y-widget-biz .a11y-lang-menu .a11y-lang-toggle:enabled:is(:hover, [aria-expanded="true"]) {
-  --ink: var(--tile-ink); background: var(--tile); color: var(--tile-ink); border-color: var(--chats-current);
+  --ink: var(--tile-ink); background: var(--tile); color: var(--tile-ink);
 }
 .a11y-widget-biz .a11y-lang-menu .a11y-lang-list {
   --ink: var(--tile-ink); --paper: var(--tile);
-  position: absolute; top: calc(100% + 6px); right: 0; z-index: 3;
-  box-sizing: border-box; min-width: 12em; margin: 0; padding: 6px; list-style: none;
+  position: absolute; bottom: calc(100% + 6px); left: 0; right: 0; z-index: 3;
+  box-sizing: border-box; margin: 0; padding: 6px; list-style: none;
   border: 1px dotted var(--ink); border-radius: 12px; background: var(--tile); color: var(--ink);
 }
 .a11y-widget-biz .a11y-lang-menu .a11y-lang-list[hidden] { display: none; }
@@ -3092,10 +3109,17 @@
 .a11y-widget-biz .a11y-lang-menu .a11y-lang-option {
   display: block; width: 100%; min-height: 40px; padding: 8px 12px; text-align: start;
   border: 1px dotted transparent; border-radius: 12px; background: transparent; color: var(--ink);
-  font-size: 18px; font-weight: 400; line-height: 1.3;
+  font-size: 15px; font-weight: 400; letter-spacing: 0.01em; line-height: 1.3;
 }
 .a11y-widget-biz .a11y-lang-menu .a11y-lang-option[aria-pressed="true"] { border-color: var(--ink); font-weight: 500; }
 .a11y-widget-biz .a11y-lang-menu .a11y-lang-option:enabled:hover { background: var(--tile-fill); color: var(--ink); border-color: var(--ink); }
+@media (max-width: 640px) {
+  .a11y-widget-biz .a11y-chat-layout > .a11y-chats { flex-flow: row wrap; align-items: center; justify-content: space-between; }
+  .a11y-widget-biz .a11y-chats > .a11y-chats-body { order: 3; flex: 1 1 100%; overflow: visible; }
+  .a11y-widget-biz .a11y-chats > .a11y-chats-foot { margin: 0; padding: 0; border: 0; }
+  .a11y-widget-biz .a11y-lang-menu .a11y-lang-toggle { width: auto; }
+  .a11y-widget-biz .a11y-lang-menu .a11y-lang-list { top: calc(100% + 6px); bottom: auto; left: auto; min-width: 12em; }
+}
 
 /* 40PX EACH SIDE OF THE CHAT ("add a 40 px margin from left and right of
    chat"): the panel sat flush on the window's left edge. The page now

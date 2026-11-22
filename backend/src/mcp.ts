@@ -30,6 +30,7 @@ import { realpathSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { createInterface } from "node:readline";
 import { SEVERITY_ORDER, criterionOf, enClauseOf } from "./cliFormats.js";
+import { documentsLine } from "./services/documents/inventoryDocuments.js";
 import type { AccessibilityFinding, AccessibilityReport, Severity } from "./types/report.js";
 
 /** The protocol revisions this server answers in. A client that asks for one
@@ -170,6 +171,14 @@ export function digestReport(report: AccessibilityReport, shown: number = FINDIN
   });
   if (findings.length > shown) {
     lines.push(`…and ${findings.length - shown} more findings, less serious than the ones above.`);
+  }
+
+  // The page's linked documents, counted. A linked PDF's faults are the
+  // document's, so they are stated here and kept out of the findings above.
+  const documents = documentsLine(report.documents);
+  if (documents) {
+    lines.push("");
+    lines.push(`Linked ${documents}. Their faults are not part of this page's score.`);
   }
 
   const undecided = report.undecidedChecks ?? [];
