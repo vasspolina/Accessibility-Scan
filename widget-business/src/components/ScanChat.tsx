@@ -173,11 +173,35 @@ function waiting(label: ReactNode): ReactNode {
 function searchingLine(query: string | null): ReactNode {
   if (query === null) return t("Searching the web…").replace(/(…|\.{3})$/, "");
   const [before, after] = t("Searching the web for {query}…").replace(/(…|\.{3})$/, "").split("{query}");
+  return urlInSentence(before, query, after);
+}
+
+/** An address set into its translated sentence. The address may break at
+ *  any character (a long one must fit 320px), and that let the line break
+ *  between its last letter and the full stop after it, so "Checking
+ *  https://example.com." left the stop alone at the start of the next line
+ *  ("whats this dot", 21 Nov 2026). The last letter and the punctuation that
+ *  closes on it are held together; the rest of the address still breaks. */
+function urlInSentence(before: string, url: string, after: string): ReactNode {
+  const close = after.match(/^\p{P}+/u)?.[0];
+  if (!close || url.length < 2) {
+    return (
+      <>
+        {before}
+        <span className="a11y-chat-url">{url}</span>
+        {after}
+      </>
+    );
+  }
   return (
     <>
       {before}
-      <span className="a11y-chat-url">{query}</span>
-      {after}
+      <span className="a11y-chat-url">{url.slice(0, -1)}</span>
+      <span className="a11y-chat-url-end">
+        <span className="a11y-chat-url">{url.slice(-1)}</span>
+        {close}
+      </span>
+      {after.slice(close.length)}
     </>
   );
 }
@@ -1480,14 +1504,10 @@ export function ScanChat({
                 <li key={turn.id} className={`a11y-chat-turn a11y-chat-tool a11y-chat-scan-${turn.state}${contClass}`}>
                   <p className={whoClass}>{t("Assistant")}</p>
                   <div className="a11y-chat-text">
-                    <p>
-                      {before}
-                      <span className="a11y-chat-url">{turn.url}</span>
-                      {/* No seconds beside the address: the step list below
-                          says where the scan is, and the number was one
-                          more thing to read (user's instruction, 16 Oct 2026). */}
-                      {after}
-                    </p>
+                    {/* No seconds beside the address: the step list below
+                        says where the scan is, and the number was one
+                        more thing to read (user's instruction, 16 Oct 2026). */}
+                    <p>{urlInSentence(before, turn.url, after)}</p>
                   </div>
                   {steps.length > 0 && (
                     <StepFold folded={turn.state === "done"}>
