@@ -9,7 +9,18 @@
         "watch",
         "/Users/polinavasilyeva/a11y-checker/backend/src/server.ts"
       ],
+      "cwd": "/Users/polinavasilyeva/a11y-checker/backend",
       "port": 8787
+    },
+    {
+      "name": "widget-business-barrier-in-chat",
+      "runtimeExecutable": "/Users/polinavasilyeva/a11y-checker/.tools/node/bin/node",
+      "runtimeArgs": [
+        "/Users/polinavasilyeva/a11y-checker/.claude/worktrees/barrier-in-chat/widget-business/node_modules/vite/bin/vite.js",
+        "/Users/polinavasilyeva/a11y-checker/.claude/worktrees/barrier-in-chat/widget-business"
+      ],
+      "port": 5184,
+      "autoPort": true
     },
     {
       "name": "widget",
@@ -37,6 +48,18 @@
         "/Users/polinavasilyeva/a11y-checker/accessible-web-design/server.js"
       ],
       "port": 5175
+    },
+    {
+      "name": "cookie-research",
+      "runtimeExecutable": "python3",
+      "runtimeArgs": [
+        "-m",
+        "http.server",
+        "4181",
+        "-d",
+        "/Users/polinavasilyeva/a11y-checker/research/cookie-block"
+      ],
+      "port": 4181
     },
     {
       "name": "portfolio",
@@ -69,6 +92,18 @@
         "/Users/polinavasilyeva/product-portfolio"
       ],
       "port": 4174
+    },
+    {
+      "name": "chess-poster",
+      "runtimeExecutable": "python3",
+      "runtimeArgs": [
+        "-m",
+        "http.server",
+        "4920",
+        "-d",
+        "/Users/polinavasilyeva/chess-poster"
+      ],
+      "port": 4920
     },
     {
       "name": "bts-site",

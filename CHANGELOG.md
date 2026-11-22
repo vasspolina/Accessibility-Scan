@@ -30,6 +30,23 @@ The `backend`, `widget`, and `widget-business` packages are versioned together.
 
 ### Added
 
+- **A page scan says what documents the page links to.** PDFs and Word,
+  Excel and PowerPoint files are counted, one entry per document, on the
+  report's new `documents` field. A page scan opens the first two PDFs on
+  the page's own origin and runs the PDF check on each (12 s for both, 10 MB
+  each, every address and redirect through the same guard as a scanned
+  address); the rest, PDFs on other origins and every office file are
+  counted with the reason they were not opened. A linked document's faults
+  stay on the document: they are never among the page's findings and never
+  in its score. The report mentions them as up to three rows of
+  `undecidedChecks` (`pdf-linked-not-checked`, `pdf-linked-faults`,
+  `office-linked-not-checked`), the command prints one `documents:` line,
+  and the MCP digest carries the same line. The widget words the three
+  rows in English, German, Spanish and French, each marked Document fix.
+- **A site audit counts the site's documents.** `documents` on the audit is
+  the union across the scanned pages, each file once with the number of
+  pages that link to it. An audit opens none of them; the measurement
+  behind that is beside `AUDIT_BUDGET_MS` in `routes/audit.ts`.
 - **The command scans several pages.** `a11y-scan` takes more than one
   address, a file of them (`--urls`) or a sitemap (`--sitemap`, cut to
   `--max-pages`, 25 by default). Thresholds apply to every page, the

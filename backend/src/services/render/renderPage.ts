@@ -198,6 +198,13 @@ export interface DomSignals {
   // at 60 and mixes in buttons: a nav-heavy page would truncate the link list
   // before the pages worth auditing appeared in it.
   pageLinks: Array<{ href: string; text: string }>;
+  // How many of the page's links pageLinks left out because of its cap.
+  // Zero on almost every page. The document inventory
+  // (services/documents/inventoryDocuments.ts) counts from pageLinks, so on
+  // a page with more links than the cap its counts are a floor, and this is
+  // what lets the report say so. Optional so a hand-built DomSignals in a
+  // test need not carry it.
+  pageLinksNotRead?: number;
   // Modal/popup dialogs currently on the page (cookie banners, newsletter
   // pop-ups, age gates, etc.) — either explicitly marked (role="dialog",
   // <dialog>) or heuristically detected as a viewport-covering overlay.
@@ -1091,7 +1098,9 @@ function extractDomSignalsInPage(overlayMarkerSelectors: string[]): DomSignals {
       };
     });
 
-  const pageLinks = Array.from(document.querySelectorAll<HTMLAnchorElement>("a[href]"))
+  const allPageLinks = Array.from(document.querySelectorAll<HTMLAnchorElement>("a[href]"));
+  const pageLinksNotRead = Math.max(0, allPageLinks.length - 300);
+  const pageLinks = allPageLinks
     .slice(0, 300)
     .map((a) => ({
       href: a.getAttribute("href") ?? "",
@@ -1123,6 +1132,7 @@ function extractDomSignalsInPage(overlayMarkerSelectors: string[]): DomSignals {
     metaRefreshSeconds,
     overlay,
     pageLinks,
+    pageLinksNotRead,
     dialogs,
   };
 }

@@ -1094,6 +1094,18 @@ export const UNDECIDED_ES: Record<string, { what: string; ask: string }> = {
     what: "Un vídeo en el reproductor de otra empresa, como YouTube o Vimeo. El vídeo está en su sitio, así que la comprobación no puede mirar dentro.",
     ask: "Reproduzca cada uno y active los subtítulos con el botón CC. Si no hay botón o los subtítulos están mal, corríjalos en la cuenta donde está alojado el vídeo.",
   },
+  "pdf-linked-not-checked": {
+    what: "Documentos PDF a los que enlaza esta página y que la comprobación no abrió. Una comprobación de página abre los dos primeros de su propio sitio y cuenta el resto.",
+    ask: "Pegue la dirección de un documento en la comprobación para revisarlo por separado. Un PDF necesita etiquetas, un título y su idioma definido para que un lector de pantalla pueda leerlo bien.",
+  },
+  "pdf-linked-faults": {
+    what: "Un PDF al que enlaza esta página. La comprobación lo abrió y encontró fallos, como la falta de etiquetas o de título. Son fallos del documento, así que no entran en la puntuación de esta página.",
+    ask: "Pegue la dirección del documento en la comprobación para obtener su propio informe. Después pida a quien lo hizo que corrija el archivo original y lo vuelva a subir.",
+  },
+  "office-linked-not-checked": {
+    what: "Archivos de Word, Excel o PowerPoint a los que enlaza esta página. La comprobación los cuenta y nunca los abre.",
+    ask: "Abra cada uno y ejecute el comprobador de accesibilidad incluido en Office, en la pestaña Revisar. Mejor aún, ponga su contenido en una página web, que todo el mundo puede leer.",
+  },
   "consent-layer-in-frame": {
     what: "El banner de cookies se carga desde el sitio de otra empresa dentro de un marco, así que el análisis no puede comprobar qué oye en él un lector de pantalla.",
     ask: "Pida a alguien que abra la página con un lector de pantalla, como VoiceOver en Mac o NVDA en Windows. El banner debe leerse primero y la tecla Tab debe llegar a sus botones. Rechazar debe costar los mismos pasos que aceptar.",

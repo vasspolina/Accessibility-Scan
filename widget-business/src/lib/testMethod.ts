@@ -139,7 +139,10 @@ const DESIGN_PREFIXES = ["typo-"];
  */
 export function fixKindForRule(ruleId: string | undefined): FixKind {
   const id = ruleId ?? "";
-  if (id.startsWith("pdf-")) return FIX_KINDS.document;
+  // office- is the linked Word, Excel and PowerPoint files, which the scan
+  // counts and never opens. Like a PDF, the fix is made in the file by
+  // whoever made it, and no one working on the page can make it.
+  if (id.startsWith("pdf-") || id.startsWith("office-")) return FIX_KINDS.document;
   if (CONTENT_RULES.has(id) || CONTENT_PREFIXES.some((p) => id.startsWith(p))) {
     return FIX_KINDS.content;
   }

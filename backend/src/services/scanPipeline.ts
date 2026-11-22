@@ -51,6 +51,8 @@ import { buildConformance } from "./conformance/buildConformance.js";
 import { normalizeReportLang } from "./conformance/criteriaText.js";
 import { buildWcag22Readiness } from "./conformance/wcag22Readiness.js";
 import { checkPdfDocument } from "./documents/checkPdf.js";
+import { inventoryDocuments } from "./documents/inventoryDocuments.js";
+import { checkLinkedPdfs, documentUndecidedRows, LINKED_PDF_SAMPLE } from "./documents/linkedDocuments.js";
 import { downscalePreview } from "./render/downscalePreview.js";
 import { attachElementScreenshots, selectorTargetsOneElement } from "./render/cropThumbnail.js";
 import type { AccessibilityFinding, AccessibilityReport } from "../types/report.js";
@@ -415,7 +417,11 @@ export async function scanUrlToReport(
      see services/progress/milestones.ts for the list and the mapping from
      the render's internal phase names. Progress only: it changes nothing
      about the scan, and a missing listener costs nothing. */
-  onMilestone?: (id: MilestoneId) => void
+  onMilestone?: (id: MilestoneId) => void,
+  /* Whether a sample of the PDFs the page links to is opened and checked.
+     The documents are counted either way. A site audit counts and opens
+     none: see the measurement beside AUDIT_BUDGET_MS in routes/audit.ts. */
+  linkedPdfs: "open-sample" | "count-for-site-audit" = "open-sample"
 ): Promise<AccessibilityReport> {
   const safeUrl = trustPrivateHosts ? new URL(rawUrl) : await assertSafeUrl(rawUrl);
 
@@ -456,6 +462,29 @@ export async function scanUrlToReport(
       const id = milestoneForPhase(phase);
       if (id) onMilestone(id);
     } : undefined);
+
+  // What the page links to, and a look inside the first PDFs among them.
+  // Started here and collected at the end, so it runs beside the AI review
+  // and the probes below instead of after them. It resolves always and
+  // touches nothing the score is built from: see linkedDocuments.ts.
+  const linkedDocumentsPromise = checkLinkedPdfs(
+    inventoryDocuments(
+      renderResult.domSignals.pageLinks,
+      renderResult.finalUrl,
+      renderResult.domSignals.pageLinksNotRead
+    ),
+    {
+      limit: LINKED_PDF_SAMPLE,
+      // The same guard as the scanned address, on every address the page
+      // names and every redirect those answer with. The CLI's local trust
+      // lifts it for the same reason it lifts it for the page.
+      guard: trustPrivateHosts ? undefined : assertSafeUrl,
+      // A signed-in scan sees links the document fetch cannot follow: it
+      // carries no session, on purpose. Asking anyway would report every
+      // one of them as a file that will not open, which is not what is true.
+      skip: auth ? "behind-login" : linkedPdfs === "count-for-site-audit" ? "site-audit" : undefined,
+    }
+  );
 
   const context = extractContext(safeUrl.toString(), renderResult);
   // Started but deliberately not awaited yet: the AI review is the single
@@ -626,6 +655,10 @@ export async function scanUrlToReport(
   });
   const embedCaptions = await embedCaptionsLookup;
 
+  // Collected after the score on purpose: nothing below this line can move
+  // it. The documents go on the report beside the findings, never among them.
+  const documents = await linkedDocumentsPromise;
+
   return {
     url: safeUrl.toString(),
     scannedAt: new Date().toISOString(),
@@ -633,6 +666,7 @@ export async function scanUrlToReport(
     summary,
     categorySummary,
     findings: findings.map((f) => ({ ...f, fingerprint: fingerprintFinding(f) })),
+    ...(documents.total > 0 ? { documents } : {}),
     screenReaderScript: renderResult.screenReaderScript,
     conformance,
     wcag22,
@@ -658,6 +692,9 @@ export async function scanUrlToReport(
           titleTooltips: renderResult.domSignals.titleTooltips,
           unmarkedScripts: renderResult.domSignals.unmarkedScripts,
         }),
+        // The linked documents, as the same kind of thing: something the
+        // scan saw and a person has to take from here.
+        ...documentUndecidedRows(documents),
       ]
     ),
     pagePreview: await downscalePreview(renderResult.screenshotBase64),

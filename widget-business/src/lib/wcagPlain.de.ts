@@ -1009,6 +1009,18 @@ export const UNDECIDED_DE: Record<string, { what: string; ask: string }> = {
     what: "Ein Video im Player eines anderen Unternehmens, etwa YouTube oder Vimeo. Das Video liegt auf deren Website, deshalb kann die Prüfung nicht hineinsehen.",
     ask: "Spielen Sie jedes ab und schalten Sie die Untertitel mit der CC-Taste ein. Fehlt die Taste oder stimmen die Untertitel nicht, korrigieren Sie sie in dem Konto, auf dem das Video liegt.",
   },
+  "pdf-linked-not-checked": {
+    what: "PDF-Dokumente, auf die diese Seite verlinkt und die die Prüfung nicht geöffnet hat. Eine Seitenprüfung öffnet die ersten zwei auf Ihrer eigenen Website und zählt die übrigen.",
+    ask: "Fügen Sie die Adresse eines Dokuments in die Prüfung ein, um es einzeln zu prüfen. Ein PDF braucht Tags, einen Titel und eine festgelegte Sprache, damit ein Screenreader es richtig vorlesen kann.",
+  },
+  "pdf-linked-faults": {
+    what: "Ein PDF, auf das diese Seite verlinkt. Die Prüfung hat es geöffnet und Fehler gefunden, etwa fehlende Tags oder einen fehlenden Titel. Es sind Fehler des Dokuments, deshalb zählen sie nicht zum Ergebnis dieser Seite.",
+    ask: "Fügen Sie die Adresse des Dokuments in die Prüfung ein, dann erhalten Sie einen eigenen Bericht dazu. Bitten Sie danach die Person, die es erstellt hat, die Originaldatei zu korrigieren und neu hochzuladen.",
+  },
+  "office-linked-not-checked": {
+    what: "Word-, Excel- oder PowerPoint-Dateien, auf die diese Seite verlinkt. Die Prüfung zählt sie und öffnet sie nie.",
+    ask: "Öffnen Sie jede Datei und starten Sie die Barrierefreiheitsprüfung, die in Office im Menü Überprüfen eingebaut ist. Noch besser stellen Sie den Inhalt auf eine Webseite, die alle lesen können.",
+  },
   "consent-layer-in-frame": {
     what: "Das Cookie-Banner kommt in einem Frame von der Website eines anderen Unternehmens. Der Scan kann daher nicht prüfen, was ein Screenreader darin vorliest.",
     ask: "Lassen Sie die Seite mit einem Screenreader öffnen, etwa VoiceOver am Mac oder NVDA unter Windows. Das Banner sollte zuerst vorgelesen werden, und die Tabulatortaste sollte seine Buttons erreichen. Ablehnen sollte so viele Schritte brauchen wie Zustimmen.",
