@@ -836,3 +836,8 @@ Found by a live German scan: these reached a German reader in English. Same cave
 | WCAG 2.2 3.3.8 · plain | Können sich Menschen anmelden, ohne ein Rätsel zu lösen oder sich etwas zu merken? | criteriaText.de.ts |
 | WCAG 2.2 3.3.8 · failing | Die Anmeldung verlangt ein Rätsel oder etwas Auswendiggelerntes, ohne anderen Weg | criteriaText.de.ts |
 | WCAG 2.2 3.3.8 · whyManual | Die Anmeldung liegt meist hinter der Seite, die wir erreichen. Ob es einen anderen Weg gibt, ist eine Frage an den ganzen Ablauf. | criteriaText.de.ts |
+| This page loads an accessibility overlay: {vendor} | Diese Seite lädt ein Barrierefreiheits-Overlay: {vendor} |
+| An overlay is a third-party script that adds a settings button to a page. | Ein Overlay ist ein Skript eines Drittanbieters, das der Seite eine Schaltfläche für Einstellungen gibt. |
+| It was running during this scan, so every finding here was measured with it on. | Es lief während dieses Scans. Jeder Befund hier ist also mit laufendem Overlay gemessen. |
+| Its script is on this page, and its widget had not started when we measured. | Sein Skript ist auf dieser Seite, das Widget war bei unserer Messung aber noch nicht gestartet. |
+| Loaded from {url} | Geladen von {url} |
