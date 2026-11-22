@@ -8,8 +8,6 @@
 /* Visually hidden, still read aloud. Clipped rather than display:none, which
    would remove the text from the accessibility tree. */
 .a11y-widget-biz .a11y-sr-only,
-.a11y-widget-biz .a11y-conf-filter legend,
-.a11y-widget-biz .a11y-conf-filter .a11y-radio input,
 .a11y-widget-biz .a11y-radio-group > legend,
 .a11y-widget-biz .a11y-datatable > .a11y-dt-caption,
 .a11y-widget-biz .a11y-dn-status {
@@ -3017,27 +3015,16 @@
   .a11y-widget-biz .a11y-chat .a11y-prompts .a11y-prompt-barrier .a11y-prompt-go { display: flex; margin-top: 10px; font-size: 15px; min-height: 30px; }
 }
 
-/* The checklist's Show filter (Failures, Needs a person, Nothing found, Not
-   measured, Everything): each option is a word on a 1px dotted ink
-   underline, so it reads as something to press (user's instruction, 20 Nov
-   2026, "add hover and dotted line"). Hover takes the buttons' --hover
-   ground; the chosen one turns its line solid and 2px, so the choice never
-   rests on the hover; keyboard focus rings the word, since the radio itself
-   is clipped. */
-.a11y-widget-biz .a11y-conf-filter .a11y-radio { cursor: pointer; }
-.a11y-widget-biz .a11y-conf-filter .a11y-radio > span {
-  text-decoration: underline dotted 1px; text-underline-offset: 0.2em;
-  padding: 0 0.15em; transition: background-color 0.15s;
-}
-.a11y-widget-biz .a11y-conf-filter .a11y-radio:hover > span { background: var(--hover); color: var(--hover-ink); }
-.a11y-widget-biz .a11y-conf-filter .a11y-radio > input:checked + span { text-decoration-style: solid; text-decoration-thickness: 2px; }
-.a11y-widget-biz .a11y-conf-filter .a11y-radio > input:focus-visible + span { outline: 2px solid var(--focus); outline-offset: 2px; }
-
 /* The result tiles are buttons (user's instruction, 20 Nov 2026, "make this
    clickable and sorting info"): each opens the checklist below on its own
    group. The button's pill, edge, 22px Medium and hover ground are undone so
    the tile keeps its look; hover rings it in 2px black, the tile whose group
-   the open checklist shows rings in 4px. Black on every fill, both themes. */
+   the open checklist shows rings in 4px. Black on every fill, both themes.
+   They are the checklist's only filter (user's instruction, 22 Nov 2026,
+   "do not double the tabs"): the row of Failures, Needs a person, Nothing
+   found, Not measured and Everything under them repeated the tiles and is
+   gone. Show the checklist opens on everything; pressing the ringed tile
+   again goes back to everything. */
 .a11y-widget-biz .a11y-legal-tiles > button.a11y-legal-row {
   font: inherit; font-weight: 400; letter-spacing: inherit; line-height: inherit;
   border: 0; border-radius: 20px; min-height: 300px; cursor: pointer;
