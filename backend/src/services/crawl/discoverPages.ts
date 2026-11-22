@@ -29,6 +29,20 @@ const SKIP_EXTENSIONS =
 const SKIP_PATH =
   /\/(logout|signout|sign-out|log-out|cart|basket|checkout\/(complete|success)|wp-admin|admin|api)(\/|$)/i;
 
+// Signed in, the crawl acts as the customer, and a GET link can still end
+// their session or change their account (plenty of sites sign out on GET
+// /logout, and some cancel or delete from a confirmation link). With cookies
+// the customer gave us, following one would sign THEM out. So a signed-in
+// crawl also skips anything whose address or words read as signing out,
+// deleting, cancelling or unsubscribing, in the four report languages.
+const SIGNED_IN_SKIP =
+  /log[-_ ]?out|log[-_ ]?off|sign[-_ ]?out|sign[-_ ]?off|abmeld|ausloggen|d[ée]connex|se[-_ ]d[ée]connecter|cerrar[-_ ]sesi[oó]n|salir|delete|remove|deactivat|close[-_ ]account|cancel|unsubscribe|l[oö]schen|k[uü]ndig|supprim|r[ée]silier|eliminar|borrar|darse[-_ ]de[-_ ]baja|revoke|reset/i;
+
+/** Pure check of one candidate link for a signed-in crawl; exported for tests. */
+export function unsafeWhenSignedIn(url: URL, text: string): boolean {
+  return SIGNED_IN_SKIP.test(`${url.pathname} ${url.search}`) || SIGNED_IN_SKIP.test(text);
+}
+
 /**
  * Picks up to `limit` same-origin pages from the links found on the entry
  * page, including the entry page itself as the first result.
@@ -45,7 +59,9 @@ export function selectPagesToAudit(
   // typed by a person, which is a visit, and robots.txt is about crawlers.
   isAllowed?: (pathAndQuery: string) => boolean,
   // Told how many candidates the rules took out, so the audit can say so.
-  onExcluded?: (url: string) => void
+  onExcluded?: (url: string) => void,
+  // The crawl runs signed in: skip links that sign out or change the account.
+  signedIn = false
 ): DiscoveredPage[] {
   let entry: URL;
   try {
@@ -79,6 +95,7 @@ export function selectPagesToAudit(
     if (!/^https?:$/.test(url.protocol)) continue;
     if (SKIP_EXTENSIONS.test(url.pathname)) continue;
     if (SKIP_PATH.test(url.pathname)) continue;
+    if (signedIn && unsafeWhenSignedIn(url, link.text)) continue;
 
     const normalized = normalize(url).toString();
     if (seen.has(normalized)) continue;

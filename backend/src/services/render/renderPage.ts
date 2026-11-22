@@ -32,6 +32,9 @@ import {
 } from "../textResize/analyzeTextResize.js";
 import type { ScreenReaderScript } from "../../types/report.js";
 import type { ReadabilitySignals } from "../readability/analyzeReadability.js";
+import { collectReflowHeightInPage, REFLOW_HEIGHT, type ReflowHeightSignals } from "../reflowHeight/analyzeReflowHeight.js";
+import { measureUndecidedContrast, type PixelContrastResult } from "../contrast/pixelContrast.js";
+import { openAndMeasure, type FormErrorProbe, type OpenedPanel } from "../interaction/openAndMeasure.js";
 import type {
   FocusStyles,
   KeyboardNavResult,
@@ -39,7 +42,7 @@ import type {
   TabStop,
 } from "../keyboard/analyzeKeyboard.js";
 import { logger } from "../../utils/logger.js";
-import { authenticate, type AuthConfig } from "../auth/authenticate.js";
+import { authenticate, AuthError, sessionWasLost, type AuthConfig } from "../auth/authenticate.js";
 import { OVERLAY_MARKER_SELECTORS, type OverlaySignals } from "../overlay/analyzeOverlay.js";
 
 const require = createRequire(import.meta.url);
@@ -122,7 +125,9 @@ export interface DomSignals {
     // selector, so the label is carried when the markup offers one.
     label: string;
   }>;
-  mediaEmbeds: Array<{ selector: string; provider: string; title: string }>;
+  // src is kept (capped) so the pipeline can ask YouTube and Vimeo whether
+  // the embedded video has captions (media/captionTracks.ts).
+  mediaEmbeds: Array<{ selector: string; provider: string; title: string; src?: string }>;
   // The navigation, in the order it appears. Meaningless on its own — a
   // single page cannot be inconsistent with itself — and collected purely so
   // the crawler can compare one page against another. WCAG 3.2.3 and 3.2.4
@@ -392,6 +397,18 @@ export interface RenderResult {
   // Main-content prose and the declared language, for the reading-level
   // advisory (services/readability/analyzeReadability.ts).
   readability: ReadabilitySignals;
+  // Pinned boxes measured in a window 256px tall, the vertical half of
+  // 1.4.10 (services/reflowHeight/analyzeReflowHeight.ts). Absent when the
+  // pass did not finish.
+  reflowHeight?: ReflowHeightSignals;
+  // Text over pictures and gradients that axe left undecided, measured from
+  // the pixels (services/contrast/pixelContrast.ts).
+  pixelContrast?: PixelContrastResult[];
+  // Axe run inside menus, accordions and tabs opened one at a time, and the
+  // empty-submit test of the page's forms with the network blocked
+  // (services/interaction/openAndMeasure.ts). Absent when they did not run.
+  openedPanels?: OpenedPanel[];
+  formErrors?: FormErrorProbe[];
   // Checks that did not complete on this run, in words a reader understands.
   //
   // Each of these passes catches its own failures and returns empty signals so
@@ -692,9 +709,10 @@ function extractDomSignalsInPage(overlayMarkerSelectors: string[]): DomSignals {
         selector: cssPath(el),
         provider: match[1],
         title: el.getAttribute("title") ?? "",
+        src: (el as HTMLIFrameElement).src.slice(0, 300),
       };
     })
-    .filter((e): e is { selector: string; provider: string; title: string } => e !== null)
+    .filter((e): e is { selector: string; provider: string; title: string; src: string } => e !== null)
     .slice(0, 20);
 
   // Navigation landmarks first, header only as a fallback: a great many
@@ -3513,6 +3531,16 @@ export async function renderAndScan(
       if (status >= 400) {
         throw new PageStatusError(host, status);
       }
+      // A crawled page that lands back on the sign-in form has signed the
+      // scanner out (its session expired, or the page needs a different
+      // account). Scanning the form there would report on the wrong page
+      // under the right page's address, so it is refused by name instead.
+      if (auth?.kind === "session" && auth.loginPath && sessionWasLost(page.url(), url, auth.loginPath)) {
+        const formShowing = (await page.locator('input[type="password"]').count().catch(() => 0)) > 0;
+        if (formShowing) {
+          throw new AuthError("This page sent the scanner back to the sign-in form, so it was not scanned signed in.");
+        }
+      }
       const pageTitle = await page.title().catch(() => "");
       if (BLOCK_PAGE_PATTERNS.test(pageTitle)) {
         throw new SiteBlockedError(host, { kind: "challenge", label: pageTitle.slice(0, 60) });
@@ -3563,6 +3591,30 @@ export async function renderAndScan(
       }
       phaseMs.axe = Date.now() - axeBegan;
       const axe = axeResult;
+
+      // Text axe could not settle because it sits on a picture, a gradient
+      // or another element, measured from the pixels behind its letters
+      // (services/contrast/pixelContrast.ts). A node settled either way
+      // leaves axe's undecided list here, so the undecided count, the
+      // conformance row and the report all agree; a failure becomes a
+      // finding in the pipeline. Bounded to eight seconds and never fatal.
+      let pixelContrast: PixelContrastResult[] | undefined;
+      const undecidedContrast = axe.incomplete?.find((r) => r.id === "color-contrast");
+      if (undecidedContrast && undecidedContrast.nodes.length > 0 && remaining() > 15_000) {
+        pixelContrast = await timed("pixelContrast", () =>
+          measureUndecidedContrast(
+            page,
+            undecidedContrast.nodes.map((n) => ({ selector: axeTargetToSelector(n.target), html: n.html })),
+            Date.now() + Math.min(8000, remaining() - 10_000)
+          )
+        ).catch(() => undefined);
+        // The shots scroll each element into view; later probes start from the top.
+        await page.evaluate(() => window.scrollTo(0, 0)).catch(() => {});
+        const settled = new Set((pixelContrast ?? []).filter((r) => r.verdict !== "mixed").map((r) => r.selector));
+        if (settled.size > 0) {
+          undecidedContrast.nodes = undecidedContrast.nodes.filter((n) => !settled.has(axeTargetToSelector(n.target)));
+        }
+      }
 
       // Supplementary context for the AI layer, not something the report
       // depends on — so it must never be able to fail a scan. It normally
@@ -4008,6 +4060,18 @@ export async function renderAndScan(
         });
       }
 
+      // Menus, accordions and tabs, opened one at a time and axe run on the
+      // panel alone, then put back (services/interaction/openAndMeasure.ts).
+      // After the activation pass, which presses the same kind of control
+      // and restores it, and before anything measures the page as loaded
+      // again. Its own budget; never fatal.
+      let openedPanels: OpenedPanel[] | undefined;
+      if (remaining() > 12_000) {
+        openedPanels = (await timed("openPanels", () =>
+          openAndMeasure(page, Math.min(6000, remaining() - 8000), "panels")
+        ).catch(() => undefined)) as OpenedPanel[] | undefined;
+      }
+
       // Visual-versus-source order. Geometry only, so it changes nothing and
       // has to run at desktop width, before the mobile pass reflows the page.
       //
@@ -4023,6 +4087,23 @@ export async function renderAndScan(
       // Text-resize passes — done at desktop width, before the viewport is
       // changed for the mobile pass below.
       const textResizeSignals = await timed("textResize", () => collectTextResizeSignals(page));
+
+      // The vertical half of 1.4.10: a window 256 CSS px tall, which is a
+      // 1280 x 1024 screen at 400%. At desktop width, before the mobile pass
+      // changes the viewport, and put back to 1280 x 900 afterwards so the
+      // phase is invisible to everything that follows. Its own catch: a
+      // failure here costs this check, never the scan.
+      let reflowHeight: ReflowHeightSignals | undefined;
+      if (remaining() > 3000) {
+        await timed("reflowHeight", async () => {
+          await page.setViewportSize({ width: 1280, height: REFLOW_HEIGHT });
+          await page.waitForTimeout(300);
+          reflowHeight = await page.evaluate<ReflowHeightSignals>(toBrowserScript(collectReflowHeightInPage));
+        })
+          .catch(() => {})
+          .finally(() => page.setViewportSize({ width: 1280, height: 900 }).catch(() => {}));
+        await page.waitForTimeout(200);
+      }
 
       // Mobile pass — resize to a phone width, let the layout reflow, and
       // measure mobile-only problems (sideways scrolling, tiny tap targets).
@@ -4208,6 +4289,16 @@ export async function renderAndScan(
         logger.warn({ err }, "Dialog keyboard probe failed. Reporting without it");
       }
 
+      // The form test, last of all: it submits each form empty with every
+      // network request aborted, so nothing reaches the site, and it leaves
+      // error messages on the page that no probe above should have seen.
+      let formErrors: FormErrorProbe[] | undefined;
+      if (remaining() > 3000) {
+        formErrors = (await timed("formErrors", () =>
+          openAndMeasure(page, Math.min(4000, remaining() - 1500), "forms")
+        ).catch(() => undefined)) as FormErrorProbe[] | undefined;
+      }
+
       // Final check — a late subresource (lazy-loaded image, polling XHR)
       // could have triggered a rebind after the initial navigation settled.
       if (rebindingDetected) throw rebindingDetected;
@@ -4217,6 +4308,10 @@ export async function renderAndScan(
         userPreferences,
         readingOrder,
         readability,
+        reflowHeight,
+        pixelContrast,
+        openedPanels,
+        formErrors,
         pageTitle: domSignals.pageTitle,
         finalUrl: page.url(),
         axe,
@@ -4266,11 +4361,12 @@ export async function renderAndScan(
           // error), and the dialog probe when it was skipped or threw.
           ...(screenReaderFailed ? ["screen reader names"] : []),
           ...(!mobileFailed && !mobileSignals.reflow320 ? ["320px reflow"] : []),
+          ...(!reflowHeight ? ["256px-tall reflow"] : []),
           ...(!dialogProbeRan && domSignals.dialogs.some((d) => d.selector) ? ["open dialogs"] : []),
         ],
       };
     } finally {
       page.off("response", onResponse);
     }
-  }, budgetMs);
+  }, budgetMs, auth?.kind === "session" ? auth.state : undefined);
 }

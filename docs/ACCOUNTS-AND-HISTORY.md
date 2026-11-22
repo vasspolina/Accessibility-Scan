@@ -188,6 +188,28 @@ response) and listed at `GET /api/audits`. When a site has both, the open
 questions come from whichever is newer — an audit describes the site, a
 scan one page, and the site's questions are the right ones to ask.
 
+### Behind a login
+
+`POST /api/audit` takes the same `auth` as a single scan, either session
+cookies or a sign-in form:
+
+```bash
+curl -X POST https://your-scanner/api/audit -H "Content-Type: application/json" \
+  -d '{"url":"https://shop.example.com/account","maxPages":5,
+       "auth":{"kind":"form","loginUrl":"https://shop.example.com/login",
+               "username":"test-customer@example.com","password":"…"}}'
+```
+
+The form is filled once. The signed-in browser session (cookies and
+localStorage) is then loaded into every page's fresh browser, so the
+password is not typed again for each page. A signed-in crawl skips any link
+that reads as signing out, deleting, cancelling or unsubscribing, in
+English, German, French and Spanish. A page that sends the scanner back to
+the sign-in form is listed as not scanned, with that reason. The audit says
+`"signedIn": true` and nothing about how. The credentials and the session
+are held in memory for that one request only: never stored, logged or put in
+the report. Use a test account, not a real customer's.
+
 ## Scheduled scans
 
 The standing instruction behind "tell me when it gets worse":
@@ -206,6 +228,29 @@ the previous run did not have. Only then is the email sent — and only when
 `MAIL_API_KEY` and `MAIL_FROM` are set; `GET /api/schedules` reports whether
 mail is configured and what the scheduler last did.
 
+A schedule can also alert a webhook, with or without mail:
+
+```bash
+curl -X POST https://your-scanner/api/schedules \
+  -H "Authorization: Bearer ascan_…" -H "Content-Type: application/json" \
+  -d '{"url":"https://example.com","everyHours":24,
+       "notifyWebhook":"https://hooks.slack.com/services/…"}'
+```
+
+The body is written for the receiving service: Slack, Mattermost and
+Google Chat get `text` plus the numbers (`event`, `url`, `score`,
+`previousScore`, `newFindings`, `scanId`, `findings`). Discord gets
+`content`. A Teams Workflows address (`*.logic.azure.com`,
+`*.powerplatform.com`) gets one Adaptive Card. Any other https address gets
+the same fields as Slack. The answer to the create request carries
+`webhookSecret`, shown that once. Every alert has an `x-a11y-signature:
+sha256=…` header, the HMAC-SHA256 of the body under that secret, so a
+receiver can check who sent it. The address is a secret too: it is checked
+against the private-address guard when saved and again before each send,
+redirects are refused, and lists show only its host and last four
+characters. `POST /api/schedules/:id/test-webhook` sends a test alert at
+once, because a first run never alerts (there is nothing to be worse than).
+
 The scheduler runs inside the server, one scan at a time, on a tick of
 `SCHEDULER_TICK_SECONDS` (60). With several instances on one database, set
 `SCHEDULER_ENABLED=false` on all but one.
@@ -216,5 +261,6 @@ POST   /api/schedules              create; the URL passes the same
                                    private-address guard as a scan
 POST   /api/schedules/:id/run      make it due now
 POST   /api/schedules/:id/enabled  {"enabled": false} to pause
+POST   /api/schedules/:id/test-webhook  send a test alert now
 DELETE /api/schedules/:id
 ```

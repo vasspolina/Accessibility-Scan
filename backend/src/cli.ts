@@ -27,12 +27,15 @@
  * where you stand without failing your build on the day you add it.
  */
 import { writeFileSync, readFileSync, existsSync, realpathSync } from "node:fs";
+import { createRequire } from "node:module";
 import { fileURLToPath } from "node:url";
 import { scanUrlToReport } from "./services/scanPipeline.js";
 import { documentsLine } from "./services/documents/inventoryDocuments.js";
 import { legacyFingerprint } from "./services/merge/fingerprint.js";
 import { discoverFromSitemap, makeTextFetcher, readSitemap } from "./services/crawl/sitemap.js";
 import { SEVERITY_ORDER, fingerprintOf, pageKeyer, toCsv, toJUnit, toMarkdown, toSarif } from "./cliFormats.js";
+import { ticketsFor, ticketsMarkdown } from "./services/tickets/tickets.js";
+import { fileInGithub, REPO_PATTERN } from "./services/tickets/fileTickets.js";
 import { describeOverlay } from "./services/overlay/analyzeOverlay.js";
 import type { AccessibilityFinding, AccessibilityReport, Severity } from "./types/report.js";
 
@@ -70,6 +73,10 @@ interface Options {
   junit?: string;
   csv?: string;
   markdown?: string;
+  /** The findings as ticket text, one Markdown section per fault. */
+  tickets?: string;
+  /** File the tickets as issues in this GitHub repository (owner/name). */
+  githubIssues?: string;
   baseline?: string;
   /** Save the report to a hosted instance's history. */
   server?: string;
@@ -135,6 +142,13 @@ export function parseArgs(argv: string[]): Options | { error: string } {
       case "--junit": opts.junit = next(); break;
       case "--csv": opts.csv = next(); break;
       case "--markdown": opts.markdown = next(); break;
+      case "--tickets": opts.tickets = next(); break;
+      case "--github-issues": {
+        const v = next();
+        if (v && !REPO_PATTERN.test(v)) return { error: "--github-issues takes owner/name" };
+        opts.githubIssues = v;
+        break;
+      }
       case "--server": opts.server = next(); break;
       case "--api-key": opts.apiKey = next(); break;
       case "--baseline": opts.baseline = next(); break;
@@ -168,6 +182,11 @@ export function parseArgs(argv: string[]): Options | { error: string } {
   // --max-new only ever applied inside the baseline comparison, so on its
   // own it was a threshold that quietly did nothing — the same green-forever
   // failure as above, arrived at from the other direction.
+  // The token comes from the environment only: a flag would print it in the
+  // job log. GitHub Actions provides GITHUB_TOKEN to every job.
+  if (opts.githubIssues && !process.env.GITHUB_TOKEN) {
+    return { error: "--github-issues needs a token in GITHUB_TOKEN (with permission to create issues)." };
+  }
   if (opts.maxNew !== undefined && !opts.baseline && !opts.writeBaseline) {
     return { error: "--max-new counts new findings against a baseline. Add --baseline <file>." };
   }
@@ -197,6 +216,11 @@ const HELP = `a11y-scan — accessibility scan for a pipeline
                         GitLab, Jenkins and Azure Pipelines read
   --csv <file>          write the findings as a spreadsheet
   --markdown <file>     write a summary for a job summary or a PR comment
+  --tickets <file>      write one ticket's text per fault, to paste into
+                        any tracker
+  --github-issues <owner/name>
+                        file those tickets as GitHub issues, once each
+                        (token from GITHUB_TOKEN)
 
   --server <url>        save the report to a hosted instance's history
   --api-key <key>       ...with this key (or A11Y_SERVER / A11Y_API_KEY)
@@ -456,6 +480,24 @@ export function judge(
   return { failures, baselineLine };
 }
 
+/**
+ * Installed from the registry, the command has Playwright but not its
+ * browser, and Playwright's own message names a cache path and a generic
+ * command. This says the one line to run, with the exact Playwright version
+ * the scanner is pinned to: a browser from another version does not launch.
+ * Exported for tests.
+ */
+export function missingBrowserHint(message: string): string {
+  if (!/Executable doesn't exist|browserType\.launch: .*(not found|install)/i.test(message)) return message;
+  let version = "";
+  try {
+    version = (createRequire(import.meta.url)("playwright/package.json") as { version: string }).version;
+  } catch {
+    /* the bare command still works */
+  }
+  return `Chromium is not installed for the scanner. Run: npx playwright${version ? `@${version}` : ""} install chromium --with-deps`;
+}
+
 async function main(): Promise<number> {
   const parsed = parseArgs(process.argv.slice(2));
   if ("error" in parsed) {
@@ -559,7 +601,7 @@ async function main(): Promise<number> {
         // address a hosted scanner can never reach.
         slots[index] = await scanUrlToReport(url, opts.ai, undefined, true, undefined, true);
       } catch (err) {
-        slots[index] = { error: err instanceof Error ? err.message : String(err) };
+        slots[index] = { error: missingBrowserHint(err instanceof Error ? err.message : String(err)) };
       }
       done += 1;
       if (several && !opts.quiet) {
@@ -610,6 +652,21 @@ async function main(): Promise<number> {
   if (opts.markdown) {
     writeFileSync(opts.markdown, toMarkdown(reports, failedPages));
     if (!opts.quiet) console.log(`  summary written to ${opts.markdown}`);
+  }
+  if (opts.tickets) {
+    writeFileSync(opts.tickets, ticketsMarkdown(ticketsFor(reports)));
+    if (!opts.quiet) console.log(`  tickets written to ${opts.tickets}`);
+  }
+  if (opts.githubIssues) {
+    // Filing is a report, never a gate: a refused token says so and the
+    // exit code still follows the thresholds alone.
+    const filed = await fileInGithub({ kind: "github", repo: opts.githubIssues, token: process.env.GITHUB_TOKEN ?? "" }, ticketsFor(reports));
+    const count = (s: string) => filed.filter((f) => f.status === s).length;
+    const firstError = filed.find((f) => f.error)?.error;
+    console.log(
+      `  GitHub issues in ${opts.githubIssues}: ${count("created")} new, ${count("exists")} already open` +
+        (count("failed") ? `, ${count("failed")} not filed${firstError ? ` (${firstError})` : ""}` : "")
+    );
   }
 
   if (opts.server && opts.apiKey) {

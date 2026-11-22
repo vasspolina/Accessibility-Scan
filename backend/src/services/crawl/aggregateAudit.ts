@@ -71,6 +71,9 @@ export interface SiteAudit {
   // audit route, absent when the site has no sitemap and no robots rules
   // took anything out.
   discovery?: AuditDiscovery;
+  // True when the pages were scanned signed in (the caller sent sign-in
+  // details). Set by the audit route; says nothing about how they signed in.
+  signedIn?: boolean;
   // Accessibility overlays seen on the scanned pages (each page's
   // meta.overlays, rolled up). Absent when no page carried one. The audit
   // reader only ever receives this aggregate, so a note left on the pages
