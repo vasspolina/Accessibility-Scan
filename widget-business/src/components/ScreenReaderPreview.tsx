@@ -115,13 +115,13 @@ export function ScreenReaderPreview({ script }: { script: ScreenReaderScript }) 
       <div className="a11y-accordion-row">
         {inChat ? (
           <h2 className="a11y-section-title" id="a11y-sr-heading">
-            {t("Screen reader preview")}{" "}
+            {t("Screen reader simulation")}{" "}
             {lines.length === 1
               ? t("(1 announcement)")
               : tf("({count} announcements)", { count: lines.length })}
           </h2>
         ) : (
-        <h2 className="a11y-section-title a11y-accordion-title" id="a11y-sr-heading" data-nav-label={t("Screen reader preview")}>
+        <h2 className="a11y-section-title a11y-accordion-title" id="a11y-sr-heading" data-nav-label={t("Screen reader simulation")}>
           <button
             type="button"
             className="a11y-accordion-head"
@@ -130,7 +130,7 @@ export function ScreenReaderPreview({ script }: { script: ScreenReaderScript }) 
             onClick={() => setOpen((v) => !v)}
           >
             <span>
-              {t("Screen reader preview")}{" "}
+              {t("Screen reader simulation")}{" "}
               <span className="a11y-section-count">
                 {lines.length === 1
                   ? t("(1 announcement)")
@@ -160,7 +160,7 @@ export function ScreenReaderPreview({ script }: { script: ScreenReaderScript }) 
           exactly what happened. */}
       <p className="a11y-section-desc">
         {t(
-          "How your page sounds to someone who can't see it, in the order they hear it."
+          "A simulation built from the page’s code, not a recording of a real screen reader. Real screen readers word things differently."
         )}
       </p>
       </div>

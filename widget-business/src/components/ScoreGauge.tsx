@@ -9,6 +9,7 @@ import { groupFindings } from "./FindingsList";
 import { plainForRule } from "../lib/wcagPlain";
 import { Card } from "./Card";
 import { openFinding } from "../lib/openFinding";
+import { METHOD_LINE } from "../lib/testMethod";
 import { useReportView } from "./ReportViewContext";
 
 /* The stat tiles ARE the Card component's anatomy — layer-01 fill, subtle
@@ -84,13 +85,12 @@ export function scoreSummary(score: number, seed: string): string {
    tail of a paragraph nobody finished. */
 /* What the score counts, in the words of scoreFindings
    (backend/src/services/merge/scoring.ts), which is the one place that
-   knows. It used to say the score counts only what an automated scan
-   could establish, and it does not: AI-review findings whose criterion
-   survived the allow-list (mergeFindings.ts) count too — the card shows
-   that criterion; a stripped one shows none and does not count — and axe's
-   best-practice rules count with no criterion at all. What is left out is
-   what scoreFindings and summarizeSeverity leave out: design notes, dark
-   patterns, AAA, WCAG 2.2-only criteria. computeScore caps each severity's
+   knows. axe's best-practice rules count with no criterion at all. What is
+   left out is what scoreFindings and summarizeSeverity leave out: design
+   notes, dark patterns, AAA, WCAG 2.2-only criteria, and since 22 Nov 2026
+   every AI review finding (they counted when their criterion survived the
+   allow-list, which billed one repair twice when the model retold a rule's
+   finding). computeScore caps each severity's
    penalty, which is why the second point exists. English keys; the screen and the plain-text summary render them through
    t(), the email stays English for now. Keep
    backend/src/services/mail/sendReport.ts in step. */
@@ -98,7 +98,7 @@ export const SCORE_POINTS = [
   "It counts the accessibility problems this scan found, weighted by how much each one costs a visitor.",
   "Each severity has a limit on how far it lowers the score.",
   "Design notes, misleading patterns, the optional AAA level and checks new in WCAG 2.2 do not count.",
-  "AI review findings count too when their card names a WCAG requirement. They can be wrong.",
+  "AI review findings do not count. They are a model’s view, and a person has to check them.",
   "A scan like this finds a third to a half of the problems. The rest need a person with a keyboard and a screen reader.",
   "It is not a statement that the site meets the law.",
 ];
@@ -166,47 +166,42 @@ export function buildPlainSummary({
   return lines.join("\n");
 }
 
-/* "Do this first" — the one fix that settles the most at once.
+/* The report's lead: the first repair, said as what was found, then "Fix
+ * this first" (reviewer's note, 22 Nov 2026: "lead the report with a
+ * finding such as Two fields are missing labels. Fix these first.").
  *
- * From ui_kits/scan-app/checker.prompt.md: "Anti-pattern: opening on a list
- * of 34 findings with no order of attack. Correct: the band states what one
- * fix settles."
+ * The group is the first in the schedule's own order (groupFindings: most
+ * severe, then most widespread), so the lead and the list below never
+ * disagree about what comes first. A group here is ONE fault with N
+ * instances, keyed on the rule, so fixing it settles all N: the claim is
+ * true by construction.
  *
- * The claim has to be provable, because this report's own rule is that a
- * statement is unhedged only when it is true by construction. It is: a
- * group here is ONE fault with N instances — groupFindings keys on ruleId —
- * so fixing it does resolve all N. That is a weaker claim than the design's
- * "the shared header", which groups by component and needs selector
- * analysis in the scanner; this one needs nothing the widget does not
- * already have, and it does not overstate.
+ * Measured findings only. An AI card is the model's view and needs a person
+ * to confirm it; it does not get to open the report. A report whose only
+ * findings are the model's opens on the score, as before.
  *
- * Only critical and serious count. "Do this first" is advice about order of
- * attack, and a minor issue is never the thing to do first however many
- * times it occurs.
- *
- * Exported because the report-actions panel renders it now and ScoreGauge
- * still needs the same answer — computing it twice from the same findings
- * would be two places for the two to drift apart.
+ * It replaced the key's "Start here" column (which named the most
+ * widespread serious fault), so the report says where to start once.
  */
-export function computeDoFirst(
+export function computeFirstFix(
   findings: AccessibilityFinding[]
-): { title: string; settles: number; outOf: number } | null {
-  const worstFirst = groupFindings(findings).filter(
-    (g) => g[0].severity === "critical" || g[0].severity === "serious"
-  );
-  const topGroup =
-    worstFirst.length > 0
-      ? worstFirst.reduce((a, b) => (b.length > a.length ? b : a))
-      : null;
-  /* Suppressed at one instance, deliberately. "Fixing this settles 1 of 1"
-   * is noise, and the anti-pattern the band exists to prevent. A list with
-   * no order of attack. Does not arise when there is one thing to do. */
-  if (!topGroup || topGroup.length <= 1) return null;
-  return {
-    title: plainForRule(topGroup[0].ruleId)?.plain ?? topGroup[0].title ?? "",
-    settles: topGroup.length,
-    outOf: worstFirst.reduce((n, g) => n + g.length, 0),
-  };
+): { id: string; what: string; count: number } | null {
+  // A banner that hides the page from screen readers has its own stop-press
+  // ("Start here: a screen reader can't get past your cookie banner"), which
+  // outranks every other fault. Two places saying where to start would name
+  // two different things.
+  if (findings.some((f) => f.ruleId === "consent-blocks-reader")) return null;
+  const group = groupFindings(findings).find((g) => g[0].source !== "ai-review");
+  if (!group) return null;
+  const rep = group[0];
+  const count = group.length;
+  const plain = plainForRule(rep.ruleId);
+  // The rule's own count sentence where it has one ("2 form fields are not
+  // joined to a label in the code."), its first sentence only.
+  const found = plain?.found?.(count).match(/^.*?[.!?](?=\s|$)/)?.[0];
+  const title = (plain?.plain ?? rep.title ?? rep.description).trim().replace(/[.!?]$/, "");
+  const what = found ?? (count > 1 ? `${title} (${count}\u00d7).` : `${title}.`);
+  return { id: rep.id, what, count };
 }
 
 /* The band as its range, not an adjective: "middling" told a reader
@@ -276,7 +271,8 @@ export function ScoreGauge({
   const preview = grouped.slice(0, PREVIEW_LIMIT);
   /* The same answer the report-actions panel gets, from the same shared
      helper — computing it twice would be two places to disagree. */
-  const doFirst = computeDoFirst(findings);
+  const first = computeFirstFix(findings);
+  const firstId = inChat ? "a11y-first-fix-heading-chat" : "a11y-first-fix-heading";
   const countsId = inChat ? "a11y-sum-counts-heading-chat" : "a11y-sum-counts-heading";
 
   /* "Do this first" — the one fix that settles the most at once.
@@ -311,6 +307,27 @@ export function ScoreGauge({
   }
   return (
     <div className="a11y-score">
+      {/* The first repair leads, before the number (reviewer's note, 22 Nov
+          2026: "Once I have a report, the first thing I see is my score").
+          The sentence goes to the finding in the schedule; the line under
+          it says how the claim was established. */}
+      {first && (
+        <section className="a11y-first-fix" aria-labelledby={firstId}>
+          <h2 className="a11y-first-fix-label" id={firstId}>{t("Start here")}</h2>
+          <p className="a11y-first-fix-lead">
+            <a
+              href={`#a11y-finding-${first.id}`}
+              onClick={(e) => {
+                e.preventDefault();
+                openFinding(e.currentTarget, first.id);
+              }}
+            >
+              {first.what} {first.count > 1 ? t("Fix these first.") : t("Fix this first.")}
+            </a>
+          </p>
+          <p className="a11y-first-fix-how">{t(METHOD_LINE.automated)}</p>
+        </section>
+      )}
       {/* Professional mode gets an explicit results header in this slot
           (App.tsx); business mode had none, which left heading navigation
           with no way to jump straight to the score at all. */}
@@ -462,24 +479,11 @@ export function ScoreGauge({
           )}
         </div>
 
-        {/* The key: Start here, the band and what the score counts, side by
-            side under one rule, each a label over its lines (user's
-            reference, 22 Nov 2026, a type foundry's footer). */}
+        {/* The key: the band and what the score counts, side by side under
+            one rule, each a label over its lines (user's reference, 22 Nov
+            2026, a type foundry's footer). Start here left it the same day
+            for the lead above the score. */}
         <div className="a11y-sum-col a11y-sum-key">
-          {doFirst && (
-            <SumPanel title={t("Start here")}>
-              {/* The title in quotes rather than lowercased: lowercasing
-                  broke German nouns ("zu blass zum lesen") and acronyms. */}
-              <p className="a11y-sum-lead">
-                {tf("Fixing “{title}” settles {settles} of the {outOf} most serious findings at once.", {
-                  title: doFirst.title,
-                  settles: doFirst.settles,
-                  outOf: doFirst.outOf,
-                })}
-              </p>
-            </SumPanel>
-          )}
-
           <SumPanel title={tf("Score {band}", { band: t(BAND_WORD(score)) })}>
             {/* No second line: points 05 and 06 under "What the score counts"
                 already say what a scan reaches and what needs a person. */}

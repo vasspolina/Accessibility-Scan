@@ -92,6 +92,11 @@ export const accessibilityFindingSchema = z.object({
   // instead of the description, which made the first shipped note invisible
   // on the very rule it attached to.
   ageNote: z.string().optional(),
+  // What the AI review said about this same fault on this same element,
+  // when a rule had already measured it (foldAiIntoMeasured). Supporting
+  // evidence on the measured card, never a card of its own and never in the
+  // score: one repair is counted once.
+  aiSupport: z.string().optional(),
   // For images missing alt text: an AI-generated, ready-to-use alt-text
   // suggestion based on looking at the actual image (see aiReview/
   // suggestAltText.ts). Present only when the AI layer ran and produced one.

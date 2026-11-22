@@ -3230,3 +3230,41 @@
 @media (max-width: 640px) {
   .a11y-widget-biz .a11y-chat-copy.a11y-chat-copy { padding: 10px 14px 16px; }
 }
+
+/* ═══ THE FIRST REPAIR LEADS THE REPORT (reviewer's note, 22 Nov 2026) ═══════
+   "Lead the report with a finding such as 'Two fields are missing labels.
+   Fix these first.'" Above the score: a 15px label ("Start here", as the
+   key's column it replaces was named), the sentence at the summary's 38px
+   (27px on a phone), and under it at 18px how the claim was established.
+   The sentence is a link to the finding in the schedule, underlined so it
+   reads as one; ink on paper, no ground. 65px to the score, the report's
+   gap between pieces of content. The key keeps two panels, so the band
+   takes the first two tracks rather than leaving the second empty. */
+.a11y-widget-biz .a11y-first-fix { margin: 0 0 65px; padding: 0; }
+.a11y-widget-biz .a11y-first-fix .a11y-first-fix-label {
+  margin: 0 0 20px; padding: 0; border: 0; color: var(--ink); text-transform: none;
+  font-family: "PP Telegraf", sans-serif; font-size: 15px; font-weight: 400; line-height: 1.2; letter-spacing: 0.01em;
+}
+.a11y-widget-biz .a11y-first-fix .a11y-first-fix-lead {
+  max-width: none; margin: 0 0 16px;
+  font-family: "PP Telegraf", sans-serif; font-size: 38px; font-weight: 400; line-height: 1.1; letter-spacing: -0.005em;
+}
+.a11y-widget-biz .a11y-first-fix .a11y-first-fix-lead > a {
+  color: var(--ink); text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 0.12em;
+}
+.a11y-widget-biz .a11y-first-fix .a11y-first-fix-lead > a:hover { text-decoration-thickness: 2px; }
+.a11y-widget-biz .a11y-first-fix .a11y-first-fix-how {
+  max-width: none; margin: 0;
+  font-family: "PP Telegraf", sans-serif; font-size: 18px; font-weight: 400; line-height: 1.3; letter-spacing: 0.01em;
+}
+.a11y-widget-biz .a11y-sum-key > .a11y-sum-panel:first-child:not(.a11y-sum-counts) { grid-column: 1 / 3; }
+/* The opening's address field (same note: "one obvious action, Enter a
+   website address"): the scan form's own field and start block, held to
+   the form's 640px, with the report's 65px before the questions under it. */
+.a11y-widget-biz .a11y-chat-start { display: block; box-sizing: border-box; min-width: 0; max-width: 640px; margin: 24px 0 65px; }
+@container a11y-sum (max-width: 480px) {
+  .a11y-widget-biz .a11y-sum-key > .a11y-sum-panel:first-child:not(.a11y-sum-counts) { grid-column: 1 / -1; }
+}
+@media (max-width: 640px) {
+  .a11y-widget-biz .a11y-first-fix .a11y-first-fix-lead { font-size: 27px; letter-spacing: 0; }
+}

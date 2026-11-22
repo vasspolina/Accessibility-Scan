@@ -142,6 +142,14 @@ describe("what the score counts", () => {
     expect(scoreOf(mixed)).toBe(90);
   });
 
+  // One repair, billed once: the model's view never moves the number, even
+  // when its card names a criterion the allow-list kept.
+  it("leaves every AI review finding out of the score", () => {
+    const ai: AccessibilityFinding = { ...finding("critical", undefined), source: "ai-review", wcagCriterion: "4.1.2" };
+    expect(scoreOf([ai])).toBe(100);
+    expect(scoreOf([finding("critical", "A"), ai])).toBe(90);
+  });
+
   // The case that prompted this: fifteen AAA tap-target findings, moderate,
   // which alone reach the moderate cap of 30.
   it("does not let AAA findings exhaust a penalty cap", () => {
