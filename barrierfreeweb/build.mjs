@@ -2,7 +2,7 @@
 // file per page beside this script. No dependencies. The copy lives here, the
 // look in styles.css.
 //
-// The layout follows grazerkunstverein.org (user's instruction, 15 Nov 2026):
+// The layout follows a reference site (user's instruction, 15 Nov 2026):
 // one light serif at one size, a centred wordmark over the left column, the
 // navigation fixed in a narrow column beside it, and the home page as a list
 // of centred entries, each with its excerpt set to its right.

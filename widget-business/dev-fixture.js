@@ -585,6 +585,48 @@
       try { chatBody = JSON.parse(init && init.body ? init.body : "{}"); } catch (e) { /* ignore */ }
       return chatStub(chatBody);
     }
+    // Report a barrier (BarrierReport.tsx): the pilot's routes, canned, so
+    // the whole conversation can be walked through, written report and send
+    // included. Marked SAMPLE so it is never taken for the model's work.
+    var pilot = /\/api\/pilot(\/[a-z]+)?$/.exec(target);
+    if (pilot) {
+      var pb = {};
+      try { pb = JSON.parse(init && init.body ? init.body : "{}"); } catch (e) { /* ignore */ }
+      var json = function (o, ms) {
+        return new Promise(function (resolve) {
+          setTimeout(function () {
+            resolve(new Response(JSON.stringify(o), { status: 200, headers: { "Content-Type": "application/json" } }));
+          }, ms || 300);
+        });
+      };
+      var route = pilot[1] || "";
+      if (route === "") return json({ open: true, stores: true, mails: false }, 50);
+      if (route === "/wake") return json({}, 50);
+      if (route === "/page") {
+        var raw = String(pb.url || "").trim();
+        if (raw.split(/\s+/).length > 3) return json({ url: null, words: true });
+        var u = /^https?:\/\//.test(raw) ? raw : "https://" + raw.replace(/\s+/g, "");
+        return json({ url: u, words: false, reached: true, title: "SAMPLE page title" });
+      }
+      if (route === "/followup") {
+        return json({ question: "SAMPLE follow-up: which control was it?", suggestions: ["The menu button", "The search field"] }, 800);
+      }
+      if (route === "/draft") {
+        return json({
+          model: "sample-model",
+          draft: {
+            title: "SAMPLE: the menu button cannot be reached with the keyboard",
+            explanation: "SAMPLE. Pressing Tab skips the menu button, so the menu cannot be opened without a mouse.",
+            whoItStops: "People who use only a keyboard, and people who use a switch.",
+            steps: ["Open the page.", "Press Tab until you pass the logo.", "The menu button is skipped."],
+            fix: "Make the menu a real button element, or give it tabindex=\"0\" and open it on Enter and Space.",
+            impact: "blocked",
+            wcagCriterion: "2.1.1",
+          },
+        }, 1500);
+      }
+      if (route === "/report") return json({ ok: true }, 600);
+    }
     if (!/\/api\/(scan|audit)$/.test(target)) return realFetch(input, init);
 
     var body = {};
@@ -669,12 +711,34 @@
       if (!sr.querySelector("#a11y-url-input")) {
         // By position, not by its words: the label is translated, and an
         // English-only match left every non-English state stuck at the chat.
-        var toForm = sr.querySelector(".a11y-chat .a11y-chat-box-row .a11y-btn-ghost");
-        if (toForm) toForm.click();
+        // Since 18 Nov 2026 the only way to the form is "Scan a page behind
+        // a login", then under the box; "Use the form
+        // instead" in the box row is gone. While this still looked in the
+        // row it found nothing, gave up after 10s, and every report state
+        // of check:reflow measured the chat landing and passed.
+        // Since 20 Nov 2026 (feae924) the button sits in the box's start
+        // group and shows only once the message names an address, so the
+        // harness types the address into the chat box first. It is the
+        // group's only direct-child button on the landing: Voice control's
+        // button is wrapped in .a11y-voice, and Back shows only after a
+        // block was opened. Looking under the box found nothing from then
+        // on, and check:reflow failed every report state as not built.
+        var toForm = sr.querySelector(".a11y-chat .a11y-chat-box-start > button");
+        if (toForm) { toForm.click(); return null; }
+        var chatInput = sr.querySelector("#a11y-chat-input");
+        if (chatInput && !chatInput.value) {
+          var setDraft = Object.getOwnPropertyDescriptor(window.HTMLTextAreaElement.prototype, "value").set;
+          setDraft.call(chatInput, address);
+          chatInput.dispatchEvent(new Event("input", { bubbles: true, composed: true }));
+        }
         return null;
       }
       return sr.querySelector("form.a11y-url-form") ? sr : null;
     }, function (sr) {
+      // That button opens the form with its login panel open. These states
+      // are public scans, so shut it before anything is typed.
+      var login = sr.querySelector('.a11y-login-toggle[aria-expanded="true"]');
+      if (login) login.click();
       // Options first — they have to be set before the submit that reads them.
       if (params.get("scope") === "site") click(sr, "#a11y-scope-site");
       click(sr, params.get("audience") === "professional" ? "#a11y-aud-pro" : "#a11y-aud-biz");

@@ -130,6 +130,12 @@ export const PLAIN_DE: Record<string, PlainRule> = {
     plain: "Links heißen nur „Mehr erfahren“",
     impact: "Wer einen Screenreader nutzt, kann sich eine Liste aller Links geben lassen. Wenn alle gleich heißen, hilft diese Liste überhaupt nicht.",
   },
+  "label-content-name-mismatch": {
+    plain: "Angesagter Name weicht von Beschriftung ab",
+    found: (n) =>
+      `${n} ${n === 1 ? "Bedienelement zeigt" : "Bedienelemente zeigen"} bestimmte Wörter und ${n === 1 ? "trägt" : "tragen"} im Code einen anderen Namen. Der Name, den ein Screenreader ansagt, lässt die sichtbaren Wörter aus.`,
+    impact: "Wer per Sprache steuert, sagt die Wörter, die zu sehen sind. „Klick auf Nachricht senden“ bewirkt nichts, wenn die Schaltfläche im Code anders heißt. Wer einen Screenreader nutzt und die Seite sieht, hört etwas anderes, als dasteht.",
+  },
   "button-name": {
     research: "Schaltflächen ohne Beschriftung stehen Jahr für Jahr weit oben in der jährlichen WebAIM-Untersuchung von einer Million Startseiten. Meist sind es reine Symbol-Schaltflächen, die für das Designteam selbsterklärend waren.",
     plain: "Schaltflächen ohne Beschriftung",
@@ -870,6 +876,11 @@ export const FIXES_DE: Record<string, string | string[]> = {
     "„Die Gebührenänderungen 2026 lesen“ statt „Mehr erfahren“.",
     "Soll die kurze Fassung auf dem Bildschirm bleiben, hinterlegen Sie den vollen Wortlaut als Beschriftung.",
   ],
+  "label-content-name-mismatch": [
+    "Übernehmen Sie die sichtbaren Wörter des Bedienelements in seinen Namen im Code.",
+    "Beginnen Sie den Namen mit genau diesen Wörtern und ergänzen Sie erst danach.",
+    "Wer per Sprache steuert, sagt, was er sieht, also müssen beide übereinstimmen.",
+  ],
   "button-name": [
     "Geben Sie jedem Knopf Wörter, die sagen, was er tut.",
     "Bei einem Symbol-Knopf ergänzen Sie eine Beschriftung, die die Aktion beschreibt.",
@@ -1020,6 +1031,10 @@ export const UNDECIDED_DE: Record<string, { what: string; ask: string }> = {
   "css-orientation-lock": {
     what: "Styles, die die Seite vielleicht auf Hoch- oder Querformat festlegen. Die Prüfung dafür ist noch experimentell und kann sich irren.",
     ask: "Öffnen Sie die Seite auf dem Handy und drehen Sie es in beide Richtungen. Alles sollte weiter funktionieren, für Menschen mit fest montiertem Handy oder Tablet.",
+  },
+  "label-content-name-mismatch": {
+    what: "Bedienelemente, deren Name im Code die sichtbaren Wörter vielleicht nicht enthält. Die Prüfung konnte es nicht entscheiden, meist weil das Element nach seinem aktuellen Wert benannt ist.",
+    ask: "Bitten Sie Ihr Entwicklungsteam, bei jedem die sichtbaren Wörter mit dem angesagten Namen zu vergleichen. Der angesagte Name sollte die sichtbaren Wörter enthalten, in derselben Reihenfolge.",
   },
   "duplicate-id-aria": {
     what: "Eine id, die möglicherweise mehrfach verwendet wird. Jede Angabe im Code, die darauf zeigt, folgt nur der ersten, also kann ein Name still am falschen Element landen.",

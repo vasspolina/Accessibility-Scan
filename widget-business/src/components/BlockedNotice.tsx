@@ -1,4 +1,5 @@
 import { t } from "../lib/strings";
+import { Button } from "./Button";
 
 // Shown when a site turns the scanner away: bot protection, a CAPTCHA, a
 // "confirm you are human" wall. This isn't the visitor's mistake, so it gets
@@ -11,7 +12,10 @@ import { t } from "../lib/strings";
 // Not a live region: it mounts already carrying its full text, which
 // assistive tech treats as no change and never announces. The scan
 // outcome is spoken by App's persistent status paragraph instead.
-export function BlockedNotice({ message }: { message: string }) {
+// In the conversation, onSignIn opens the form at once: the third way in
+// is one press away, and the login goes from the form straight to the
+// scanner, never through the chat or its model.
+export function BlockedNotice({ message, onSignIn }: { message: string; onSignIn?: () => void }) {
   const [agentBefore, agentAfter] = t(
     "In your firewall or bot protection (Cloudflare, Akamai or similar), allow the user agent {agent}, or our IP address."
   ).split("{agent}");
@@ -36,6 +40,13 @@ export function BlockedNotice({ message }: { message: string }) {
           {t("If you can already reach the page in your own browser, use the form's login option. The scanner signs in with access you already have.")}
         </li>
       </ul>
+      {onSignIn && (
+        <p className="a11y-blocked-action">
+          <Button variant="ghost" onClick={onSignIn}>
+            {t("Open the sign-in form")}
+          </Button>
+        </p>
+      )}
     </section>
   );
 }

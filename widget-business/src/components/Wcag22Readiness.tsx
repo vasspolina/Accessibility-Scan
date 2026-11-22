@@ -2,6 +2,7 @@ import { useId, useState } from "react";
 import { t, tf } from "../lib/strings";
 import { WhatsNextPanel } from "./WhatsNextPanel";
 import type { Wcag22Readiness as Readiness } from "../api/scanClient";
+import { Icon } from "./Icon";
 
 // The law is going to move, and an owner should see it coming rather than
 // discover it. EN 301 549 v3.2.1 adopts WCAG 2.1, which is what the rest of
@@ -69,14 +70,7 @@ export function Wcag22Readiness({ readiness }: { readiness: Readiness }) {
         onClick={() => setOpen((v) => !v)}
       >
         <span>{open ? t("Hide the technical breakdown") : t("Show the technical breakdown")}</span>
-        <svg
-          className="a11y-accordion-chevron"
-          viewBox="0 0 16 16"
-          aria-hidden="true"
-          focusable="false"
-        >
-          <path d="M8 11L3 6l.7-.7L8 9.6l4.3-4.3L13 6z" fill="currentColor" />
-        </svg>
+        <Icon name="chevron--down" className="a11y-accordion-chevron" />
       </button>
 
       {/* Hidden rather than unrendered, so aria-controls always points at a
@@ -154,7 +148,7 @@ export function Wcag22Readiness({ readiness }: { readiness: Readiness }) {
                       </span>
                     ) : c.status !== "needs-review" ? (
                       <span className="a11y-next-status">
-                        <span aria-hidden="true">{fails ? "!" : "✓"}</span>{" "}
+                        <Icon name={fails ? "warning--alt" : "checkmark"} />{" "}
                         {t(STATUS_LABEL[c.status])}
                       </span>
                     ) : (

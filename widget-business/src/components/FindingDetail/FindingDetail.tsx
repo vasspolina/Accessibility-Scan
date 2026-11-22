@@ -1,5 +1,6 @@
 import { useState, type CSSProperties, type ReactNode } from "react";
 import { t } from "../../lib/strings";
+import { Icon } from "../Icon";
 
 /**
  * FindingDetail, ported from components/scan/FindingDetail.jsx.
@@ -165,9 +166,7 @@ export function FindingDetail({
             onClick={() => setTechOpen((o) => !o)}
             aria-expanded={techOpen}
           >
-            <span aria-hidden="true" className="a11y-fd-tech-caret">
-              ▸
-            </span>
+            <Icon name="caret--right" className="a11y-fd-tech-caret" />
             {technicalLabel}
           </button>
           {techOpen && <div className="a11y-fd-tech-body">{technical}</div>}

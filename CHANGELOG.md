@@ -9,6 +9,16 @@ The `backend`, `widget`, and `widget-business` packages are versioned together.
 
 ### Changed
 
+- **The pilot's barrier form is a short conversation.** One question at a
+  time (what you use, which page, what happened), each with answers to
+  pick, so a report can be made without typing. The model picks at most one
+  follow-up from seven questions written in each language
+  (`POST /api/pilot/followup`; "Where on the page was it?" when it is off
+  or slow), then writes the report. Under the report, "Anything wrong?"
+  takes a change in the person's words and the report is written again
+  (`previous` and `change` on `POST /api/pilot/draft`). What was asked and
+  answered is stored with their words, and a picked sentence is marked as
+  picked.
 - The pilot's barrier form no longer asks for an invitation code, and
   `PILOT_CODES` is gone: anyone can report, bounded by the rate limits, and
   the pilot is open whenever reports can be stored or mailed. Participants

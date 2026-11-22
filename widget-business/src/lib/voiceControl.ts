@@ -1,5 +1,6 @@
 /**
- * Voice control: say the name of a button and it is pressed.
+ * Voice control: say the name of a button and it is pressed; say anything
+ * else and it is written into the chat box.
  *
  * Two halves, kept apart so the first can be tested without a browser:
  *
@@ -20,8 +21,18 @@ import type { Lang } from "./i18n";
 
 export type VoiceCommand =
   | { kind: "click"; target: string }
+  /**
+   * Words with no command in front of them. A button whose name they match
+   * closely is pressed ("send", "new scan"); anything else is written into
+   * the chat box, because that is what a person talking to a chat means.
+   */
+  | { kind: "phrase"; target: string; text: string }
   | { kind: "click-focused" }
   | { kind: "type"; text: string }
+  /** Scan a page: the address goes into the chat box and is sent. */
+  | { kind: "scan"; url: string }
+  /** A question for the assistant: typed into the chat box and sent. */
+  | { kind: "ask"; text: string }
   | { kind: "clear" }
   | { kind: "scroll"; where: "up" | "down" | "top" | "bottom" }
   | { kind: "stop" }
@@ -41,6 +52,12 @@ export function normalize(raw: string): string {
 interface Words {
   click: string[];
   type: string[];
+  /** "scan example.com", "check example.com". */
+  scan: string[];
+  /** "ask what should I fix first": typed into the chat and sent. */
+  ask: string[];
+  /** Said before a command and meaning nothing: "uh", "please", "can you". */
+  lead: string[];
   clear: string[];
   stop: string[];
   help: string[];
@@ -59,6 +76,9 @@ const WORDS: Record<Lang, Words> = {
   en: {
     click: ["press", "click", "tap", "push", "hit", "select", "choose", "open", "activate", "go to"],
     type: ["type", "write", "enter", "dictate"],
+    scan: ["scan", "rescan", "check", "test", "audit", "analyse", "analyze", "run a scan on", "run a scan of", "scan the site", "scan the page", "scan the website"],
+    ask: ["ask", "ask the assistant", "tell the assistant", "chat", "message"],
+    lead: ["uh", "um", "uhm", "erm", "er", "ah", "eh", "hmm", "okay", "ok", "so", "now", "please", "can you", "could you", "would you", "will you", "i want to", "i'd like to", "let's"],
     clear: ["clear", "clear field", "clear text", "delete text"],
     stop: ["stop listening", "stop voice control", "turn off voice control", "voice off"],
     help: ["what can i say", "help", "voice help", "list commands"],
@@ -73,6 +93,9 @@ const WORDS: Record<Lang, Words> = {
   de: {
     click: ["drücke", "drücken", "klicke", "klick", "klicke auf", "klick auf", "tippe auf", "tippe", "wähle", "öffne", "aktiviere", "gehe zu", "geh zu"],
     type: ["tippe ein", "schreibe", "schreib", "gib ein"],
+    scan: ["scanne", "scan", "prüfe", "prüf", "teste", "überprüfe", "analysiere"],
+    ask: ["frage", "frag", "frag den assistenten", "nachricht"],
+    lead: ["äh", "ähm", "öhm", "hm", "also", "okay", "ok", "bitte", "kannst du", "könntest du", "jetzt", "mal"],
     clear: ["lösche", "leeren", "feld leeren", "text löschen"],
     stop: ["zuhören beenden", "sprachsteuerung aus", "sprachsteuerung beenden", "hör auf"],
     help: ["was kann ich sagen", "hilfe", "befehle"],
@@ -87,6 +110,9 @@ const WORDS: Record<Lang, Words> = {
   es: {
     click: ["pulsa", "pulsar", "presiona", "presionar", "haz clic en", "haz clic", "clic en", "toca", "elige", "selecciona", "abre", "activa", "ve a"],
     type: ["escribe", "teclea", "introduce"],
+    scan: ["escanea", "escanear", "analiza", "analizar", "revisa", "comprueba", "prueba"],
+    ask: ["pregunta", "pregúntale", "preguntale", "mensaje"],
+    lead: ["eh", "em", "este", "pues", "bueno", "vale", "ok", "por favor", "puedes", "podrías", "podrias", "ahora"],
     clear: ["borra", "borrar", "vacía", "limpia"],
     stop: ["deja de escuchar", "detener escucha", "control por voz desactivado", "apaga la voz"],
     help: ["qué puedo decir", "que puedo decir", "ayuda", "comandos"],
@@ -101,6 +127,9 @@ const WORDS: Record<Lang, Words> = {
   fr: {
     click: ["appuie sur", "appuyer sur", "clique sur", "cliquer sur", "touche", "choisis", "sélectionne", "selectionne", "ouvre", "active", "va à", "va a"],
     type: ["tape", "écris", "ecris", "saisis", "dicte"],
+    scan: ["scanne", "scanner", "scan", "analyse", "analyser", "vérifie", "verifie", "teste"],
+    ask: ["demande", "pose la question", "message"],
+    lead: ["euh", "heu", "hum", "bon", "alors", "ok", "s'il te plaît", "s il te plait", "stp", "peux tu", "tu peux", "maintenant"],
     clear: ["efface", "vide", "effacer le champ"],
     stop: ["arrête d'écouter", "arrete d ecouter", "arrête l'écoute", "désactive la voix", "stop écoute"],
     help: ["que puis je dire", "aide", "commandes"],
@@ -132,9 +161,48 @@ function stripFiller(text: string, filler: string[]): string {
     .trim();
 }
 
+const escapeRe = (x: string) => x.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+
+/**
+ * Drop "uh", "please", "can you" from the front (and "please" from the end)
+ * of the raw words, keeping their case and punctuation for dictation. The
+ * recogniser writes hesitations down ("Uh please scan …"), and before this a
+ * command after one was read as the name of a button.
+ */
+function stripLead(raw: string, lead: string[]): string {
+  const alts = [...lead]
+    .sort((a, b) => b.length - a.length)
+    .map((l) => escapeRe(l).replace(/'/g, "['’]?"));
+  const front = new RegExp(`^(?:${alts.join("|")})(?=[\\s,.!?]|$)[\\s,.!?]*`, "iu");
+  let text = raw.trim();
+  for (let i = 0; i < 6; i++) {
+    const next = text.replace(front, "");
+    if (next === text) break;
+    text = next;
+  }
+  return text.replace(/[\s,]+(?:please|bitte|por favor|s['’]il te plaît|stp)[\s.!?]*$/iu, "").trim();
+}
+
+/**
+ * A web address in what was heard, or null. Recognisers write a spoken
+ * address as "example.com" or as "example dot com", sometimes with spaces
+ * round the dot, and end the sentence with a full stop.
+ */
+export function addressInSpeech(raw: string): string | null {
+  const text = raw
+    .replace(/\s+(?:dot|punkt|punto|point)\s+/giu, ".")
+    .replace(/\s*\.\s*(?=[\p{L}\p{N}])/gu, ".")
+    .replace(/\s+(?:slash|schrägstrich|barra|barre oblique)\s+/giu, "/");
+  const m = text.match(/(?:https?:\/\/)?(?:[\p{L}\p{N}-]+\.)+\p{L}{2,}(?::\d+)?(?:\/\S*)?/iu);
+  if (!m) return null;
+  const url = m[0].replace(/[.,!?;:)]+$/, "");
+  return /^https?:\/\//i.test(url) ? url : `https://${url.toLowerCase()}`;
+}
+
 /** What was said, as a command. `heard` is the recogniser's raw words. */
 export function parseCommand(heard: string, lang: Lang): VoiceCommand {
   const w = WORDS[lang] ?? WORDS.en;
+  heard = stripLead(heard, w.lead);
   const text = normalize(heard);
   if (!text) return { kind: "none" };
 
@@ -143,11 +211,35 @@ export function parseCommand(heard: string, lang: Lang): VoiceCommand {
 
   // Dictation keeps the speaker's own words, so it is cut from the raw text
   // (case and punctuation as the recogniser wrote them), not the normalised.
-  const rawLower = heard.trim();
-  for (const v of [...w.type].sort((a, b) => b.length - a.length)) {
-    const re = new RegExp(`^${v.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}\\s+(.+)$`, "i");
-    const m = rawLower.match(re);
-    if (m) return { kind: "type", text: m[1].trim() };
+  const raw = heard.trim();
+  const after = (verbs: string[]): string | null => {
+    for (const v of [...verbs].sort((a, b) => b.length - a.length)) {
+      const m = raw.match(new RegExp(`^${escapeRe(v)}[\\s,:]+(.+)$`, "iu"));
+      if (m) return m[1].trim();
+    }
+    return null;
+  };
+
+  // "scan example.com". Recognisers often hear "scan" as "can", so in
+  // English "can" counts too, but only when an address follows it: "can
+  // you help" is not a scan.
+  const scanRest = after([...w.scan, ...(lang === "en" ? ["can", "skan", "scam"] : [])]);
+  if (scanRest !== null) {
+    const url = addressInSpeech(scanRest);
+    if (url) return { kind: "scan", url };
+  }
+  const asked = after(w.ask);
+  if (asked) return { kind: "ask", text: asked };
+  // "chat", "ask" on its own: go to the chat box and wait for the words.
+  if (w.ask.map(normalize).includes(text)) return { kind: "ask", text: "" };
+  const typed = after(w.type);
+  if (typed) return { kind: "type", text: typed };
+  // An address said on its own ("example.com", "example dot com").
+  if (text.split(" ").length <= 4) {
+    const url = addressInSpeech(raw);
+    const said = url && normalize(url.replace(/^https?:\/\//i, ""));
+    const spoken = normalize(raw.replace(/\b(?:dot|punkt|punto|point|slash)\b/giu, " "));
+    if (said && said === spoken) return { kind: "scan", url: url! };
   }
   if (w.clear.map(normalize).includes(text)) return { kind: "clear" };
 
@@ -171,9 +263,10 @@ export function parseCommand(heard: string, lang: Lang): VoiceCommand {
     }
     return { kind: "click", target: name };
   }
-  // No verb at all: "send", "new scan". Treated as a name, and only pressed
-  // when it matches strongly (findTarget's bare threshold).
-  return name ? { kind: "click", target: name } : { kind: "none" };
+  // No verb at all: "send", "new scan", or a sentence for the chat. The
+  // component presses a control only on a strong match and otherwise writes
+  // the words, as heard, into the chat box.
+  return name ? { kind: "phrase", target: name, text: raw } : { kind: "none" };
 }
 
 export interface VoiceControlTarget {

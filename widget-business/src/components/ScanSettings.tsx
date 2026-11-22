@@ -3,6 +3,7 @@ import type { AudienceMode } from "../lib/audienceMode";
 import type { ScanMode } from "./UrlForm";
 import { LanguageSelect } from "./LanguageSelect";
 import type { Lang } from "../lib/i18n";
+import { useReportView } from "./ReportViewContext";
 
 /**
  * The run's settings, in the rail, changeable without scrolling back to the
@@ -44,9 +45,18 @@ export function ScanSettings({
   /** Runs the scan again with one setting changed. */
   onRerun: (next: { ai?: boolean; scope?: ScanMode }) => void;
 }) {
+  // In the conversation the block's summary line already says "Settings", and
+  // "This scan" printed under it read as a second title colliding with the
+  // first (user's screenshot, 19 Nov 2026). Kept for screen readers, which
+  // land on the section by its heading; hidden on screen, as the design
+  // notes and the score do inside a block.
+  const { inChat } = useReportView();
   return (
     <section className="a11y-settings" aria-labelledby="a11y-settings-heading">
-      <h3 className="a11y-settings-heading" id="a11y-settings-heading">
+      <h3
+        className={inChat ? "a11y-settings-heading a11y-sr-only" : "a11y-settings-heading"}
+        id="a11y-settings-heading"
+      >
         {t("This scan")}
       </h3>
 

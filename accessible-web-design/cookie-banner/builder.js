@@ -176,7 +176,7 @@ L.c4 + '\n' + waiting + '\n\n' +
     var fails = 0;
     contrastList.innerHTML = checks(t).map(function (k) {
       var ok = k.value >= k.need; if (!ok) fails++;
-      return "<li>" + esc(k.label) + ": <strong>" + k.value.toFixed(1) + ":1</strong> — " +
+      return "<li>" + esc(k.label) + ": <strong>" + k.value.toFixed(1) + ":1</strong>\u00a0– " +
         (ok ? ui.pass : ui.fail.replace("{need}", k.need)) + "</li>";
     }).join("");
     out.textContent = html;
