@@ -4,6 +4,26 @@
 import type { PlainRule } from "./wcagPlain";
 
 export const PLAIN_FR: Record<string, PlainRule> = {
+  "reflow-height-unreachable": {
+    plain: "Panneau fixe qui cache ses boutons",
+    impact: "Qui zoome pour lire ne peut pas atteindre ces boutons. Faire défiler ne sert à rien, le panneau ne bouge pas.",
+  },
+  "reflow-height-pinned": {
+    plain: "Barres fixes sans place pour lire",
+    impact: "Qui zoome pour lire voit les barres et presque rien d'autre. Pas une ligne de la page ne tient entre elles.",
+  },
+  "reflow-height-pinned-advisory": {
+    plain: "Barres fixes qui serrent la page",
+    impact: "Qui zoome voit quelques lignes à la fois et perd sa place à chaque défilement.",
+  },
+  "contrast-over-image": {
+    plain: "Texte trop pâle sur une image",
+    impact: "Les personnes malvoyantes, et toute personne qui lit au soleil, perdent les mots posés sur un fond clair ou chargé.",
+  },
+  "form-error-silent": {
+    plain: "Formulaire qui refuse sans expliquer",
+    impact: "Qui oublie un champ appuie sur le bouton et rien ne se passe. Personne ne sait ce qui manque, et beaucoup abandonnent.",
+  },
   "timing-meta-refresh": {
     found: (n) => (n === 1 ? "La page se recharge toute seule, ou passe à une autre page, après un délai fixe. Rien ne propose de l’arrêter." : "{n} instructions du code rechargent la page, ou passent à une autre, après un délai fixe. Aucune ne peut être arrêtée.".replace("{n}", String(n))),
     plain: "La page se recharge après un délai fixe",
@@ -716,6 +736,11 @@ export const PLAIN_FR: Record<string, PlainRule> = {
 };
 
 export const FIXES_FR: Record<string, string | string[]> = {
+  "reflow-height-unreachable": ["Laissez le panneau défiler à l'intérieur, ou ne le fixez pas dans une fenêtre basse.", "Placez ses boutons au-dessus du long texte pour qu'ils restent visibles."],
+  "reflow-height-pinned": ["Ne fixez pas les barres du haut et du bas quand la fenêtre est basse.", "Ou laissez l'en-tête disparaître au défilement et revenir quand on remonte."],
+  "reflow-height-pinned-advisory": "Ne fixez pas les barres dans une fenêtre basse, pour laisser la place à la page.",
+  "contrast-over-image": ["Placez un fond plein ou semi-transparent derrière le texte.", "Ou assombrissez l'image sous le texte, ou sortez le texte de l'image."],
+  "form-error-silent": ["Dites en mots, à côté de chaque champ, ce qui manque.", "Marquez le champ comme invalide, reliez-lui le message et placez le focus sur la première erreur."],
   "keyboard-mouse-only": [
     "Faites-en un vrai bouton ou un vrai lien, pour que le clavier l’atteigne comme le reste.",
     "Testez-le en posant la souris et en parcourant la page avec Tab.",
@@ -1040,6 +1065,22 @@ export const FIXES_FR: Record<string, string | string[]> = {
 };
 
 export const UNDECIDED_FR: Record<string, { what: string; ask: string }> = {
+  "form-error-unlinked": {
+    what: "Un formulaire affiche une erreur après un envoi vide, sans la relier au champ. Rien n'a été envoyé au site.",
+    ask: "Demandez à votre développeur de marquer chaque champ en erreur comme invalide. Reliez le message avec aria-describedby pour qu'ils soient lus ensemble.",
+  },
+  "form-error-unannounced": {
+    what: "Un formulaire affiche des erreurs sans déplacer le focus ni les annoncer. Rien n'a été envoyé au site.",
+    ask: "Demandez à votre développeur de placer le focus sur la première erreur ou un récapitulatif. Une zone dynamique convient aussi.",
+  },
+  "media-embed-no-captions": {
+    what: "Une vidéo YouTube ou Vimeo intégrée n'a aucun sous-titre, selon son propre site. Une vidéo muette n'en a pas besoin.",
+    ask: "Lancez-la. Si quelqu'un parle, ajoutez des sous-titres dans le compte de la vidéo, corrigés par une personne.",
+  },
+  "media-embed-auto-captions": {
+    what: "Une vidéo YouTube ou Vimeo intégrée n'a que des sous-titres automatiques, selon son propre site. Ils se trompent souvent sur les noms et les chiffres.",
+    ask: "Lancez-la avec les sous-titres. S'ils se trompent, corrigez-les dans le compte de la vidéo, ou téléversez un fichier de sous-titres.",
+  },
   "color-contrast": {
     what: "Du texte posé sur une photo, une vidéo ou un dégradé. Son contraste change d’un point à l’autre, donc la vérification n’a pas pu lui donner une seule valeur.",
     ask: "Demandez à votre designer de vérifier chacun là où l’image derrière est la plus claire. Le texte courant demande un contraste de 4,5:1, le grand texte 3:1. Là où il manque, placez un aplat ou un voile sombre derrière les mots.",

@@ -113,6 +113,26 @@ export interface PlainRule {
 }
 
 export const PLAIN_RULE_EXPLANATIONS: Record<string, PlainRule> = {
+  "reflow-height-unreachable": {
+    plain: "Pinned panel hides its buttons",
+    impact: "Someone who zooms in to read cannot reach these buttons at all. Scrolling does not help, because the panel does not move.",
+  },
+  "reflow-height-pinned": {
+    plain: "Pinned bars leave no reading room",
+    impact: "Someone who zooms in to read sees the bars and almost nothing else. Not one line of the page fits between them.",
+  },
+  "reflow-height-pinned-advisory": {
+    plain: "Pinned bars squeeze the zoomed page",
+    impact: "Someone who zooms in sees a few lines at a time. They lose their place with each scroll.",
+  },
+  "contrast-over-image": {
+    plain: "Text too faint on a picture",
+    impact: "People with low vision, and anyone reading in sunlight, lose words that sit on a busy or pale background.",
+  },
+  "form-error-silent": {
+    plain: "Form refuses without saying why",
+    impact: "Someone who misses a field presses the button and nothing happens. They cannot tell what went wrong, so many give up.",
+  },
   "timing-meta-refresh": {
     plain: "The page reloads on a timer",
     impact:
@@ -879,6 +899,11 @@ export function principleText(info: PrincipleInfo): {
 // dialog/typography/motion) already write plain fixes, so they aren't here
 // and fall back to their own suggestedFix.
 export const PLAIN_RULE_FIXES: Record<string, string | string[]> = {
+  "reflow-height-unreachable": ["Let the panel scroll inside itself, or stop pinning it in a short window.", "Put its buttons above the long text so they are what shows."],
+  "reflow-height-pinned": ["Stop pinning the top and bottom bars when the window is short.", "Or let the header scroll away and come back when scrolling up."],
+  "reflow-height-pinned-advisory": "Stop pinning the bars when the window is short, so the page has the room.",
+  "contrast-over-image": ["Put a solid or semi-transparent panel behind the text.", "Or darken the picture where the text sits, or move the text off it."],
+  "form-error-silent": ["Say what is wrong next to each field, in words.", "Mark the field as invalid, link the message to it, and move focus to the first error."],
   // ── Written for the business report, not for the person who will type the
   // code. Every one of these rules used to fall through to the engineer's own
   // remediation text, which is how a site owner ended up reading "add
@@ -1237,6 +1262,22 @@ export const PRINCIPLE_ORDER: Principle[] = ["Perceivable", "Operable", "Underst
  * Written for the rules a sweep of real sites actually produced.
  */
 export const UNDECIDED_EXPLANATIONS: Record<string, { what: string; ask: string }> = {
+  "form-error-unlinked": {
+    what: "A form shows an error after an empty submit but does not tie it to the field. Nothing was sent to the site.",
+    ask: "Ask your developer to mark each field in error as invalid. Connect its message with aria-describedby, so a screen reader reads both together.",
+  },
+  "form-error-unannounced": {
+    what: "A form shows errors without moving focus or announcing them. Nothing was sent to the site.",
+    ask: "Ask your developer to move focus to the first error or to a summary. A live region also works.",
+  },
+  "media-embed-no-captions": {
+    what: "An embedded YouTube or Vimeo video has no captions at all, its own site says. A silent or music-only video needs none.",
+    ask: "Play it. If anyone speaks, add captions in the account the video is hosted on, corrected by a person.",
+  },
+  "media-embed-auto-captions": {
+    what: "An embedded YouTube or Vimeo video has only automatic captions, its own site says. These often get names and numbers wrong.",
+    ask: "Play it with captions on. If words are wrong, correct them in the video's account, or upload a captions file.",
+  },
   "color-contrast": {
     what: "Text laid over a photo, a video or a colour fade. Its contrast changes from spot to spot, so the checker could not give it one number.",
     ask: "Ask your designer to check each one where the image behind it is lightest. Body text needs a contrast of 4.5:1, large text 3:1. Where it falls short, put a solid panel or a dark wash behind the words.",

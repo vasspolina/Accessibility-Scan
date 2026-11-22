@@ -4,6 +4,26 @@
 import type { PlainRule } from "./wcagPlain";
 
 export const PLAIN_ES: Record<string, PlainRule> = {
+  "reflow-height-unreachable": {
+    plain: "Panel fijo oculta sus botones",
+    impact: "Quien amplía la página para leer no llega a estos botones. Desplazarse no sirve, porque el panel no se mueve.",
+  },
+  "reflow-height-pinned": {
+    plain: "Barras fijas sin sitio para leer",
+    impact: "Quien amplía la página para leer ve las barras y casi nada más. No cabe ni una línea de la página entre ellas.",
+  },
+  "reflow-height-pinned-advisory": {
+    plain: "Barras fijas estrechan la página",
+    impact: "Quien amplía la página ve pocas líneas a la vez y pierde el sitio cada vez que se desplaza.",
+  },
+  "contrast-over-image": {
+    plain: "Texto demasiado tenue sobre imagen",
+    impact: "Las personas con baja visión, y cualquiera que lea al sol, pierden las palabras sobre un fondo claro o recargado.",
+  },
+  "form-error-silent": {
+    plain: "Formulario rechaza sin decir por qué",
+    impact: "Quien se salta un campo pulsa el botón y no pasa nada. No sabe qué falta, y muchos lo dejan.",
+  },
   "timing-meta-refresh": {
     found: (n) => (n === 1 ? "La página se recarga sola, o salta a otra página, tras un tiempo fijo de espera. Nada ofrece una forma de detenerlo." : "{n} instrucciones del código recargan la página, o saltan a otra, tras un tiempo fijo de espera. Ninguna se puede detener.".replace("{n}", String(n))),
     plain: "La página se recarga sola",
@@ -715,6 +735,11 @@ export const PLAIN_ES: Record<string, PlainRule> = {
 };
 
 export const FIXES_ES: Record<string, string | string[]> = {
+  "reflow-height-unreachable": ["Haga que el panel se desplace por dentro, o no lo fije en una ventana baja.", "Ponga sus botones encima del texto largo para que sean lo que se ve."],
+  "reflow-height-pinned": ["No fije las barras de arriba y abajo cuando la ventana es baja.", "O deje que la cabecera desaparezca al bajar y vuelva al subir."],
+  "reflow-height-pinned-advisory": "No fije las barras en una ventana baja, para que la página tenga el sitio.",
+  "contrast-over-image": ["Ponga un fondo sólido o semitransparente detrás del texto.", "O oscurezca la imagen donde está el texto, o saque el texto de la imagen."],
+  "form-error-silent": ["Diga con palabras, junto a cada campo, qué falta.", "Marque el campo como no válido, enlace el mensaje con él y lleve el foco al primer error."],
   "keyboard-mouse-only": [
     "Conviértalo en un botón o un enlace de verdad, para que el teclado llegue a él como a todo lo demás.",
     "Compruébelo apartando el ratón y recorriendo la página con el tabulador.",
@@ -1021,6 +1046,22 @@ export const FIXES_ES: Record<string, string | string[]> = {
 };
 
 export const UNDECIDED_ES: Record<string, { what: string; ask: string }> = {
+  "form-error-unlinked": {
+    what: "Un formulario muestra un error tras un envío vacío, pero no lo une al campo. No se envió nada al sitio.",
+    ask: "Pida a su desarrollador que marque cada campo con error como no válido. Enlace el mensaje con aria-describedby para que se lean juntos.",
+  },
+  "form-error-unannounced": {
+    what: "Un formulario muestra errores sin mover el foco ni anunciarlos. No se envió nada al sitio.",
+    ask: "Pida a su desarrollador que lleve el foco al primer error o a un resumen. Una región dinámica también sirve.",
+  },
+  "media-embed-no-captions": {
+    what: "Un vídeo incrustado de YouTube o Vimeo no tiene subtítulos, según su propio sitio. Un vídeo mudo no los necesita.",
+    ask: "Reprodúzcalo. Si alguien habla, añada subtítulos en la cuenta del vídeo, corregidos por una persona.",
+  },
+  "media-embed-auto-captions": {
+    what: "Un vídeo incrustado de YouTube o Vimeo solo tiene subtítulos automáticos, según su propio sitio. Suelen fallar con nombres y cifras.",
+    ask: "Reprodúzcalo con subtítulos. Si fallan palabras, corríjalas en la cuenta del vídeo o suba un archivo de subtítulos.",
+  },
   "color-contrast": {
     what: "Texto sobre una foto, un vídeo o un degradado. Su contraste cambia de un punto a otro, así que la comprobación no pudo darle un único valor.",
     ask: "Pida a su diseñador que revise cada uno donde la imagen de fondo es más clara. El texto normal necesita un contraste de 4,5:1 y el texto grande de 3:1. Donde no llegue, ponga un panel sólido o un velo oscuro detrás de las palabras.",
