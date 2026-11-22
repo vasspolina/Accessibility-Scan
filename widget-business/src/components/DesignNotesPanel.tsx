@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { t, tf } from "../lib/strings";
+import { t } from "../lib/strings";
 import type { AccessibilityFinding } from "../api/scanClient";
 import { FindingGroup, FindingDetails } from "./FindingGroup";
 import { groupFindings } from "./FindingsList";
@@ -47,23 +47,19 @@ function noteTitle(group: AccessibilityFinding[]): string {
 export function DesignNotesPanel({ findings }: { findings: AccessibilityFinding[] }) {
   const { professional } = useReportView();
   const groups = groupFindings(findings);
-  // Keyed by the note's own id, not its position. A filter changes what is
-  // at index 0, so an index would have quietly re-pointed at a different
-  // note the moment a pill was pressed.
+  // Keyed by the note's own id, not its position, so a re-render that
+  // reorders the notes keeps the same one open.
   const [openId, setOpenId] = useState<string | null>(() => findings[0]?.id ?? null);
-  const [kind, setKind] = useState<string | null>(null);
 
   if (groups.length === 0) return null;
 
-  // One pill per distinct kind, in the order the notes appear.
-  const kinds = [...new Set(groups.map((g) => noteKind(g[0])))];
-  const visible = kind ? groups.filter((g) => noteKind(g[0]) === kind) : groups;
-
-  // The open note is whichever visible one carries the open id, and there
-  // is always one: filtering to a kind the chosen note is not in falls back
-  // to the first visible note. This used to close the note instead, which
-  // left a list of bare titles whose explanations were nowhere on the page
-  // — a note with no body under it reads as a note with nothing to say.
+  // One row of tabs, every note in it (user's choice, 22 Nov 2026, of two
+  // sketches for "there are two types of tabs"). The kind used to be a row
+  // of filter pills over the tabs: two controls that both looked like tabs,
+  // and with four to six notes a filter left one or two of them. The kind
+  // is now a label inside each tab, so it is still read, and there is one
+  // thing to press. The open note is always one of them.
+  const visible = groups;
   const open = visible.find((g) => g[0].id === openId) ?? visible[0] ?? null;
 
   return (
@@ -94,38 +90,6 @@ export function DesignNotesPanel({ findings }: { findings: AccessibilityFinding[
           finding once. */}
       {!professional && (
         <div className="a11y-dn-panel">
-          {/* Toggles, not labels. Pressing one narrows the list to that
-              kind; pressing it again clears it, so there is no separate
-              "All" pill to keep in step with the others. */}
-          <ul className="a11y-dn-kinds" aria-label={t("Filter notes by kind")}>
-            {kinds.map((k) => (
-              <li key={k}>
-                <button
-                  type="button"
-                  className="a11y-dn-kind"
-                  aria-pressed={kind === k}
-                  onClick={() => setKind(kind === k ? null : k)}
-                >
-                  {t(k)}
-                </button>
-              </li>
-            ))}
-          </ul>
-
-          {/* Says what the filter did. Without it the only feedback is a
-              list getting shorter, which a screen reader never sees. */}
-          <p className="a11y-dn-status" role="status">
-            {kind
-              ? tf("Showing {shown} of {total} notes: {kind}.", {
-                  shown: visible.length,
-                  total: groups.length,
-                  kind: t(kind),
-                })
-              : groups.length === 1
-                ? t("Showing 1 note.")
-                : tf("Showing all {count} notes.", { count: groups.length })}
-          </p>
-
           {/* Tabs (user's instruction, 22 Nov 2026, "design this into
               tabs"). One note shows at a time under its title, which is
               what a tab set is, so it now says so: a tablist of the titles
@@ -169,6 +133,13 @@ export function DesignNotesPanel({ findings }: { findings: AccessibilityFinding[
                     ) as HTMLButtonElement | null)?.focus();
                   }}
                 >
+                  {/* The kind over the title, a 15px label. The hidden
+                      comma keeps a screen reader from running the two
+                      together ("Type, Letters squeezed until they touch"). */}
+                  <span className="a11y-dn-link-kind">
+                    {t(noteKind(group[0]))}
+                    <span className="a11y-sr-only">, </span>
+                  </span>
                   <span className="a11y-dn-link-text">{noteTitle(group)}</span>
                 </button>
               );
@@ -184,7 +155,7 @@ export function DesignNotesPanel({ findings }: { findings: AccessibilityFinding[
               aria-labelledby={`a11y-dn-note-${open[0].id}`}
             >
               <div className="a11y-dn-detail-head">
-                {/* No kind tag under the title: the filter above already
+                {/* No kind tag under the title: the open tab above already
                     names the kind (Type, Layout, Design). The title itself
                     is the open note's button, solid ink, straight above:
                     printed again here it read twice in a row (user's
