@@ -24,6 +24,7 @@ const SEEN: Array<[vendor: string, script: string, marker: string]> = [
   ],
   ["Eye-Able", "https://cdn.eye-able.com/public/js/eyeAble.js", "#eyeAble_container_ID"],
   ["DIGIaccess", "https://download.digiaccess.org/digiaccess", "digiaccess-widget"],
+  ["AllAccessible", "https://api.allaccessible.org/widget/KzxtGiHCH0Z7ee.js", "#aacx-modal.aacx-widget-modal"],
 ];
 
 describe("evaluateOverlay", () => {
@@ -60,6 +61,12 @@ describe("evaluateOverlay", () => {
     // Eye-Able's second CDN and the per-domain config file.
     expect(names("https://www.eye-able-cdn.com/public/js/eyeAble.js")).toEqual(["Eye-Able"]);
     expect(names("https://cdn.eye-able.com/configs/www.example.com.js")).toEqual(["Eye-Able"]);
+    // AllAccessible's second address, seen on its own site.
+    expect(names("https://api.allaccessible.org/app/1KKbAgL0NPsyHKqxOYXGdV3c.js")).toEqual(["AllAccessible"]);
+    // Its API serves other things from the same host; only the widget
+    // script names it.
+    expect(names("https://api.allaccessible.org/v1/status")).toEqual([]);
+    expect(names("https://cdn.allaccessible.org/widget/scanner/audit-scanner.min.js")).toEqual([]);
   });
 
   it("gives the loader as the evidence when a vendor has several scripts on the page", () => {

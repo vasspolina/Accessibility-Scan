@@ -70,11 +70,13 @@ interface OverlayVendor {
  * except Eye-Able's, which is read from the vendor's own script (its site
  * serves a self-hosted copy and the widget did not start there).
  *
- * A vendor is left out when neither could be had. AllAccessible and Recite Me
- * publish their snippets (api.allaccessible.org/widget/<id>.js and
- * api.reciteme.com/asset/js) but their widget element was not observed, so
- * they wait for that. MaxAccess now redirects to AudioEye. Nothing here comes
- * from a technology-profiler list or from memory.
+ * A vendor is left out when neither could be had, or when a scan could not
+ * see it. Recite Me is the second kind: its documented snippet is an inline
+ * loader that fetches api.reciteme.com/asset/js only after a visitor presses
+ * the launch button, and on reciteme.com no such script was in the document
+ * until then. A scan presses nothing, so there is no script address and no
+ * toolbar for it to report. MaxAccess now redirects to AudioEye. Nothing
+ * here comes from a technology-profiler list or from memory.
  *
  * The patterns are anchored on the host. A match on a path alone, such as
  * "/accessibility.js", would name a vendor on the strength of a filename
@@ -163,6 +165,18 @@ const VENDORS: OverlayVendor[] = [
     vendor: "DIGIaccess",
     script: /^download\.digiaccess\.org\/digiaccess/i,
     marker: "digiaccess-widget",
+  },
+  {
+    // Docs (support.allaccessible.org): a script with id
+    // "allAccessibleWidget" and src https://api.allaccessible.org/widget/
+    // <account id>.js. Own site: that address and
+    // https://api.allaccessible.org/app/<id>.js, and
+    // div#aacx-modal.aacx-widget-modal under <body>, labelled
+    // "Accessibility Menu". The class is asked for with the id, as with
+    // AudioEye, so a short id alone names nobody.
+    vendor: "AllAccessible",
+    script: /^api\.allaccessible\.org\/(?:widget|app)\/[^/]+\.js$/i,
+    marker: "#aacx-modal.aacx-widget-modal",
   },
 ];
 
