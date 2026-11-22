@@ -3066,6 +3066,43 @@
 /* A textarea is a box like the chat's: 20px corners, not the one-line 14px. */
 .a11y-widget-biz textarea:not([type="radio"]):not([type="checkbox"]):not([hidden]) { border-radius: 20px; }
 
+/* ═══ THE FINDINGS AS A CSV (user's choice, 22 Nov 2026) ═══════════════════
+   One button at the head of the findings, beside their title, in both
+   readings: "What people can't use (N)" and the professional "Findings
+   (N)". It is the ordinary pill (22px, 1px dotted ink edge, marker-yellow
+   hover, the dark fill in dark) with the PDF button's download mark; only
+   its place is set here. The title keeps its left edge and the button
+   stands at the right on the title's baseline; where the two do not fit
+   one line the button drops under the title, at the left.
+   The head takes the title's own margins (1.2em and 0.5em of the title's
+   38px, 32px on a phone), so the title stands where it stood: a flex box
+   does not let its child's margin collapse into the 100px between
+   sections, and left on the title it would have added to it. The pill is
+   50px tall beside a 40px title line and hangs 11.5px under it, measured;
+   12px comes back off its foot, so the rows under the head did not move
+   either (title and first row measured at the same y before and after, at
+   1440px). */
+.a11y-widget-biz .a11y-findings-head {
+  display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between;
+  gap: 16px 24px; margin: 46px 0 19px;
+}
+.a11y-widget-biz .a11y-findings-head > h2 { margin: 0; min-width: 0; }
+.a11y-widget-biz .a11y-findings-head > .a11y-findings-csv {
+  display: inline-flex; flex: none; align-items: center; gap: 12px; min-height: 44px; max-width: 100%;
+  margin-bottom: -12px;
+}
+.a11y-widget-biz .a11y-findings-csv > .a11y-icon.a11y-findings-csv-icon { width: 20px; height: 20px; }
+@media (max-width: 640px) {
+  .a11y-widget-biz .a11y-findings-head { margin: 38px 0 16px; }
+  /* On a phone the button stands under the title, so it keeps its foot:
+     38px to what follows, the room the title had. */
+  .a11y-widget-biz .a11y-findings-head > .a11y-findings-csv { margin-bottom: 0; }
+}
+/* A button that saves a file has nothing to do on paper. */
+@media print {
+  .a11y-widget-biz .a11y-findings-head > .a11y-findings-csv { display: none; }
+}
+
 /* ═══ A CODE BLOCK IN THE CHAT AS A CARD TO COPY FROM (user's instruction,
    22 Nov 2026, "make this into copy form in a card with small text") ════════
    The assistant writes templates to fill in (an issue report: Title,
