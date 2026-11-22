@@ -63,6 +63,8 @@ scanner as a clean site.
 | `--junit <file>` | write the findings as JUnit XML, the test report GitLab, Jenkins and Azure Pipelines read |
 | `--csv <file>` | write the findings as a spreadsheet, one row for each finding |
 | `--markdown <file>` | write a summary for a job summary or a pull request comment |
+| `--tickets <file>` | write one ticket's text per fault, to paste into any tracker (see Findings as tickets) |
+| `--github-issues <owner/name>` | file those tickets as GitHub issues, once each; the token comes from `GITHUB_TOKEN` |
 | `--server <url>` | save the report into a hosted instance's history |
 | `--api-key <key>` | with this key; or set `A11Y_SERVER` and `A11Y_API_KEY` in the environment |
 | `--ai` | include the AI review (needs `ANTHROPIC_API_KEY`) |
@@ -263,6 +265,45 @@ actually meets it:
 A web page has no file and line, so the location is the URL and the CSS
 selector. The fingerprint is the same rule-plus-selector the baseline uses,
 so GitHub keeps a finding's identity across runs the same way.
+
+### Findings as tickets
+
+`--tickets a11y-tickets.md` writes one ticket for each fault on each page,
+worst first. A fault on forty elements is one ticket that lists the forty
+selectors (up to twenty, then a count), not forty tickets. Each ticket has
+the page, severity, WCAG criterion and level, EN 301 549 clause, rule, what
+to do, the elements, an example element and the fingerprints. Findings the
+owner marked ignored, false positive or fixed are left out.
+
+`--github-issues owner/name` files the same tickets as issues, labelled
+`accessibility`, `severity:<level>` and `wcag-<criterion>`:
+
+```yaml
+    permissions:
+      issues: write
+    steps:
+      # …
+      - name: Scan
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: a11y-scan https://staging.example.com --github-issues ${{ github.repository }}
+```
+
+Each issue carries a hidden key (the page and the rule). Before filing, the
+run reads the open issues labelled `accessibility`, so a fault that already
+has an open issue is not filed again; closing the issue lets a fault that
+comes back be filed anew. At most 25 are filed in one run. Filing never
+changes the exit code: a refused token is printed and the thresholds still
+decide.
+
+The hosted service does the same over HTTP. `POST /api/tickets/draft` with
+`{"reports":[…]}` returns the ticket text with no token. `POST /api/tickets`
+with a `target` files them: `{"kind":"github","repo":"owner/name","token":"…"}`
+or `{"kind":"jira","site":"https://team.atlassian.net","email":"…","token":"…","projectKey":"WEB"}`.
+The token is used for that request only: never stored, logged or sent back.
+Requests go only to `api.github.com` or the caller's own `*.atlassian.net`
+site. In Jira the key is a label (`a11y-<key>`), and an issue counts as open
+until its status is Done.
 
 ### Into the hosted history
 

@@ -32,6 +32,8 @@ import { scanUrlToReport } from "./services/scanPipeline.js";
 import { legacyFingerprint } from "./services/merge/fingerprint.js";
 import { discoverFromSitemap, makeTextFetcher, readSitemap } from "./services/crawl/sitemap.js";
 import { SEVERITY_ORDER, fingerprintOf, pageKeyer, toCsv, toJUnit, toMarkdown, toSarif } from "./cliFormats.js";
+import { ticketsFor, ticketsMarkdown } from "./services/tickets/tickets.js";
+import { fileInGithub, REPO_PATTERN } from "./services/tickets/fileTickets.js";
 import { describeOverlay } from "./services/overlay/analyzeOverlay.js";
 import type { AccessibilityFinding, AccessibilityReport, Severity } from "./types/report.js";
 
@@ -69,6 +71,10 @@ interface Options {
   junit?: string;
   csv?: string;
   markdown?: string;
+  /** The findings as ticket text, one Markdown section per fault. */
+  tickets?: string;
+  /** File the tickets as issues in this GitHub repository (owner/name). */
+  githubIssues?: string;
   baseline?: string;
   /** Save the report to a hosted instance's history. */
   server?: string;
@@ -134,6 +140,13 @@ export function parseArgs(argv: string[]): Options | { error: string } {
       case "--junit": opts.junit = next(); break;
       case "--csv": opts.csv = next(); break;
       case "--markdown": opts.markdown = next(); break;
+      case "--tickets": opts.tickets = next(); break;
+      case "--github-issues": {
+        const v = next();
+        if (v && !REPO_PATTERN.test(v)) return { error: "--github-issues takes owner/name" };
+        opts.githubIssues = v;
+        break;
+      }
       case "--server": opts.server = next(); break;
       case "--api-key": opts.apiKey = next(); break;
       case "--baseline": opts.baseline = next(); break;
@@ -167,6 +180,11 @@ export function parseArgs(argv: string[]): Options | { error: string } {
   // --max-new only ever applied inside the baseline comparison, so on its
   // own it was a threshold that quietly did nothing — the same green-forever
   // failure as above, arrived at from the other direction.
+  // The token comes from the environment only: a flag would print it in the
+  // job log. GitHub Actions provides GITHUB_TOKEN to every job.
+  if (opts.githubIssues && !process.env.GITHUB_TOKEN) {
+    return { error: "--github-issues needs a token in GITHUB_TOKEN (with permission to create issues)." };
+  }
   if (opts.maxNew !== undefined && !opts.baseline && !opts.writeBaseline) {
     return { error: "--max-new counts new findings against a baseline. Add --baseline <file>." };
   }
@@ -196,6 +214,11 @@ const HELP = `a11y-scan — accessibility scan for a pipeline
                         GitLab, Jenkins and Azure Pipelines read
   --csv <file>          write the findings as a spreadsheet
   --markdown <file>     write a summary for a job summary or a PR comment
+  --tickets <file>      write one ticket's text per fault, to paste into
+                        any tracker
+  --github-issues <owner/name>
+                        file those tickets as GitHub issues, once each
+                        (token from GITHUB_TOKEN)
 
   --server <url>        save the report to a hosted instance's history
   --api-key <key>       ...with this key (or A11Y_SERVER / A11Y_API_KEY)
@@ -604,6 +627,21 @@ async function main(): Promise<number> {
   if (opts.markdown) {
     writeFileSync(opts.markdown, toMarkdown(reports, failedPages));
     if (!opts.quiet) console.log(`  summary written to ${opts.markdown}`);
+  }
+  if (opts.tickets) {
+    writeFileSync(opts.tickets, ticketsMarkdown(ticketsFor(reports)));
+    if (!opts.quiet) console.log(`  tickets written to ${opts.tickets}`);
+  }
+  if (opts.githubIssues) {
+    // Filing is a report, never a gate: a refused token says so and the
+    // exit code still follows the thresholds alone.
+    const filed = await fileInGithub({ kind: "github", repo: opts.githubIssues, token: process.env.GITHUB_TOKEN ?? "" }, ticketsFor(reports));
+    const count = (s: string) => filed.filter((f) => f.status === s).length;
+    const firstError = filed.find((f) => f.error)?.error;
+    console.log(
+      `  GitHub issues in ${opts.githubIssues}: ${count("created")} new, ${count("exists")} already open` +
+        (count("failed") ? `, ${count("failed")} not filed${firstError ? ` (${firstError})` : ""}` : "")
+    );
   }
 
   if (opts.server && opts.apiKey) {
