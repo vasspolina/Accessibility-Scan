@@ -1,6 +1,7 @@
 /* BarrierFreeWeb: the studio site, laid out after a reference site
-   (user's instruction, 15 Nov 2026). One light serif at one size (18px on a
-   22px line; the reference is 16 on 20), a 32px wordmark, ink on paper, a
+   (user's instruction, 15 Nov 2026). One face at one size, Jokker Regular
+   (user's instruction, 22 Nov 2026; 18px on a 22px line, the reference
+   is a light serif at 16 on 20), a 32px wordmark, ink on paper, a
    10px page margin and a great deal of white. Measured on the reference at
    1440px: the left column is 37.5% wide with the wordmark and the entries
    centred in it, the navigation is fixed at 37.5%, the excerpt starts
@@ -14,9 +15,9 @@
    it below 1200px. */
 
 @font-face {
-  font-family: "Serrif";
-  src: url("fonts/Serrif-TRIAL-Light.otf") format("opentype");
-  font-weight: 300;
+  font-family: "Jokker";
+  src: url("fonts/JokkerVF-TRIAL.woff2") format("woff2");
+  font-weight: 100 900;
   font-style: normal;
   font-display: swap;
 }
@@ -39,9 +40,9 @@ html { background: var(--paper); -webkit-text-size-adjust: 100%; text-size-adjus
 body {
   margin: 0; padding: var(--m);
   background: var(--paper); color: var(--ink);
-  font-family: "Serrif", "Iowan Old Style", "Palatino Linotype", Georgia, serif;
-  font-size: 18px; font-weight: 300; line-height: 22px; letter-spacing: 0;
-  font-kerning: normal; font-variant-ligatures: common-ligatures;
+  font-family: "Jokker", "Helvetica Neue", Arial, sans-serif;
+  font-size: 18px; font-weight: 400; line-height: 22px; letter-spacing: 0;
+  font-kerning: normal; font-variant-ligatures: common-ligatures; font-feature-settings: "ss04", "ss05";
   text-rendering: optimizeLegibility; font-synthesis: none;
   overflow-wrap: break-word; text-wrap: pretty;
 }
@@ -109,8 +110,8 @@ p + p, p + ul, ul + p, dl + p, p + dl, ul + ul { margin-top: var(--line); }
 
 /* ── Wide: the reference's columns ───────────────────────────────────────
    The text column starts at 50%, as on the reference, or 8.5em right of
-   the navigation, whichever is further: "Check your site" is 7.2em wide in
-   Serrif, so at 50% it ran into the column under about 1300px. The wide
+   the navigation, whichever is further: "Check your site" is 7.4em wide in
+   Jokker, so at 50% it ran into the column under about 1300px. The wide
    layout starts at 1200px, where the excerpt column is still 265px. */
 @media (min-width: 1200px) {
   .mast { width: calc(37.5% - var(--m)); }
