@@ -45,11 +45,13 @@ outputs:
 runs:
   using: composite
   steps:
+    # No npm cache: setup-node's cache key needs the lockfile's path, and for
+    # a local `uses: ./` the action path ends in "./", which setup-node
+    # refuses ("Relative pathing '.' and '..' is not allowed"). npm ci takes
+    # under a minute without it.
     - uses: actions/setup-node@v4
       with:
         node-version: ${{ inputs.node-version }}
-        cache: npm
-        cache-dependency-path: ${{ github.action_path }}/backend/package-lock.json
 
     - name: Install the scanner
       shell: bash
