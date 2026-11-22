@@ -1551,7 +1551,6 @@
   display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 160px), 1fr));
   gap: 1.2em 15px; align-items: start; margin: 0 0 1.2em; padding: 0; list-style: none;
 }
-.a11y-widget-biz .a11y-dn-list > li { display: flex; margin: 0; }
 
 /* Each cell is a ruled column (user's instruction, 4 Nov 2026): no
    ground, no box; its label over a 1px ink rule,
@@ -1570,7 +1569,7 @@
    on the page's paper. It was a 128px tappable block with 20px corners on
    #f0efe8 (4 Nov 2026) until the user's word on a screenshot of it, 20 Nov
    2026: "this is a slop". The row keeps a 44px target. */
-.a11y-widget-biz .a11y-dn-list > li > .a11y-dn-link {
+.a11y-widget-biz .a11y-dn-list > .a11y-dn-link {
   box-sizing: border-box; min-width: 0; min-height: 44px; margin: 0; padding: 10px 0 12px;
   display: flex; align-items: baseline; justify-content: flex-start;
   border: 0; border-top: 1px solid var(--ink); border-radius: 0; background: none; color: var(--ink);
@@ -1634,14 +1633,27 @@
    themes (the highlight is the one place colour is allowed). Hover never
    fills the row, so the open note's words never sit white on yellow, as
    they did on the old block. */
-.a11y-widget-biz .a11y-dn-list > li > .a11y-dn-link { width: 100%; font-size: 22px; cursor: pointer; }
-.a11y-widget-biz .a11y-dn-list > li > .a11y-dn-link:enabled:hover { background: none; color: var(--ink); text-decoration: none; }
-.a11y-widget-biz .a11y-dn-list > li > .a11y-dn-link:enabled:hover > .a11y-dn-link-text { text-decoration: underline; text-underline-offset: 0.15em; }
-.a11y-widget-biz .a11y-dn-list > li > .a11y-dn-link[aria-expanded="true"] { background: none; color: var(--ink); font-weight: 400; }
-.a11y-widget-biz .a11y-dn-list > li > .a11y-dn-link[aria-expanded="true"] > .a11y-dn-link-text {
-  padding: 0 0.15em; background: var(--hl-cap-a); color: #000;
-  -webkit-box-decoration-break: clone; box-decoration-break: clone;
+.a11y-widget-biz .a11y-dn-list > .a11y-dn-link { width: 100%; font-size: 22px; cursor: pointer; }
+.a11y-widget-biz .a11y-dn-list > .a11y-dn-link:enabled:hover { background: none; color: var(--ink); text-decoration: none; }
+.a11y-widget-biz .a11y-dn-list > .a11y-dn-link:enabled:hover > .a11y-dn-link-text { text-decoration: underline; text-underline-offset: 0.15em; }
+/* The open tab (user's instruction, 22 Nov 2026, "design this into
+   tabs"): its rule is 4px instead of 1px and its title Medium, the open
+   state of the conformance report's question row, so a tab and a question
+   say "open" the same way. The marker highlight it carried before is gone
+   from the title: the thick rule is the tab. The rule grows downward into
+   the row's top padding, so no title moves when another tab opens. The
+   tabs share one line, each as wide as the row allows (auto-fit, 280px
+   floor), and stack on a phone. The open note sits under the row, 50px
+   down. */
+.a11y-widget-biz .a11y-dn-list[role="tablist"] { margin-bottom: 50px; }
+.a11y-widget-biz .a11y-dn-list > .a11y-dn-link[aria-selected="true"] {
+  border-top-width: 4px; padding-top: 7px; background: none; color: var(--ink);
 }
+.a11y-widget-biz .a11y-dn-list > .a11y-dn-link[aria-selected="true"] > .a11y-dn-link-text { font-weight: 500; }
+.a11y-widget-biz .a11y-dn-detail[role="tabpanel"]:focus-visible { outline: 2px solid var(--focus); outline-offset: 4px; }
+/* Under the tabs the note's own 4px rule would be a second "open" mark
+   under the open tab's, so it takes the 1px of the shut tabs. */
+.a11y-widget-biz .a11y-dn-detail[role="tabpanel"] > .a11y-fd { border-top-width: 1px; }
 
 /* The report actions (user's instructions, 17 Nov 2026). Each column
    opens on an uppercase label, with no rule under it (user's
@@ -1663,7 +1675,16 @@
   font-family: "PP Telegraf", sans-serif; font-size: 18px; font-weight: 400; line-height: 1.2; letter-spacing: 0.04em;
   text-transform: uppercase;
 }
+/* The address and the send stand on one line (user's instruction, 22 Nov
+   2026, "this can be in one line"): the form wraps as a row, its label and
+   its note each a full line, the field taking the width the send leaves.
+   The field's 320px floor is where the line gives up: under about 690px of
+   column (a phone) the send drops under the field and takes the full
+   width, as it did before. The send is as tall as the field beside it. */
+.a11y-widget-biz .a11y-ra-row > .a11y-ra-cell.a11y-ra-email-form { flex-direction: row; flex-wrap: wrap; gap: 20px 15px; }
+.a11y-widget-biz .a11y-ra-email-form > :is(.a11y-ra-head, .a11y-ra-note) { flex: 1 1 100%; }
 .a11y-widget-biz .a11y-ra-row > .a11y-ra-cell > .a11y-ra-field {
+  flex: 999 1 320px; min-width: 0; box-sizing: border-box;
   display: flex; flex-direction: column; gap: 10px; padding: 18px 24px 16px;
   border: 1px dotted var(--ink); border-radius: 20px; background: transparent; color: inherit;
 }
@@ -1687,11 +1708,17 @@
    are 15% smaller since 21 Nov 2026 (user's instruction, "15% smaller
    text"): 48 to 41px, 38 to 32px on a phone; the block keeps its height. */
 .a11y-widget-biz .a11y-ra-row > .a11y-ra-cell > .a11y-ra-send {
-  display: block; width: 100%; min-height: 128px; margin: 0; padding: 20px 24px;
-  border: 1px solid var(--barrier); border-radius: 14px; background: var(--barrier); color: #000;
+  flex: 1 1 auto; box-sizing: border-box; min-width: 0; min-height: 96px; margin: 0; padding: 20px 24px;
+  display: grid; align-content: center;
+  border: 1px solid var(--barrier); border-radius: 20px; background: var(--barrier); color: #000;
   font-family: "PP Telegraf", sans-serif; font-size: 41px; font-weight: 300; line-height: 1.05; letter-spacing: -0.01em;
   text-align: start;
 }
+/* The send's two wordings share one cell, so its width never changes
+   (ReportActions.tsx); its corners are the field's 20px now the two stand
+   side by side (they were 14px while it sat under the field). */
+.a11y-widget-biz .a11y-ra-send > .a11y-ra-send-word { grid-area: 1 / 1; }
+.a11y-widget-biz .a11y-ra-send > .a11y-ra-send-word[data-off] { visibility: hidden; }
 .a11y-widget-biz .a11y-ra-row > .a11y-ra-cell > .a11y-ra-send:disabled { background: var(--paper); color: var(--ink); border-style: dashed; }
 .a11y-widget-biz .a11y-ra-row > .a11y-ra-cell > .a11y-ra-pdf {
   display: inline-flex; align-self: flex-start; align-items: center; gap: 12px;
@@ -1715,7 +1742,7 @@
    whole gap. */
 .a11y-widget-biz .a11y-report-actions { margin-top: 50px; }
 @media (max-width: 640px) {
-  .a11y-widget-biz .a11y-ra-row > .a11y-ra-cell > .a11y-ra-send { min-height: 96px; font-size: 32px; }
+  .a11y-widget-biz .a11y-ra-row > .a11y-ra-cell > .a11y-ra-send { font-size: 32px; }
 }
 
 /* THE CONFORMANCE REPORT HEAD (user's instruction, 21 Nov 2026, "design
@@ -1727,15 +1754,40 @@
    not a pill: solid ink, 14px corners, the words set left at 41px Light
    (32px on a phone), the size of Send this report, mint on hover like
    every button. Then the draft's two exports side by side. */
-.a11y-widget-biz .a11y-acr .a11y-accordion-title .a11y-accordion-head { align-items: flex-start; gap: 0.6em; }
+/* Since 22 Nov 2026 the head is a question in a question-and-answer list
+   (user's reference): a 1px ink rule above it, 4px while it is open; a
+   solid triangle hung at the start of the line, right shut and down open,
+   instead of the chevron in a round at the far end; the title Regular
+   shut and Medium open; hover underlines the title. Everything under the
+   head (the lead, the way in, the draft) is the answer, indented to the
+   title's edge and set smaller than the title: 22px at line-height 1.4,
+   the lead of the caveat in Medium, one line between its parts instead of
+   the report's 2.4em, which had left the four points floating. */
+.a11y-widget-biz .a11y-acr { --acr-indent: 46px; }
+.a11y-widget-biz .a11y-acr .a11y-accordion-row { border-top: 1px solid var(--ink); padding-top: 22px; }
+.a11y-widget-biz .a11y-acr:has(.a11y-accordion-head[aria-expanded="true"]) .a11y-accordion-row { border-top-width: 4px; padding-top: 19px; }
+.a11y-widget-biz .a11y-acr .a11y-accordion-row > .a11y-accordion-title { margin: 0 0 18px; }
+.a11y-widget-biz .a11y-acr .a11y-accordion-title .a11y-accordion-head {
+  display: grid; grid-template-columns: 22px minmax(0, 1fr); column-gap: calc(var(--acr-indent) - 22px); align-items: start;
+}
+.a11y-widget-biz .a11y-acr .a11y-acr-caret {
+  width: 22px; height: 22px; margin-top: calc((1.1em - 22px) / 2); transition: transform 0.15s;
+}
+.a11y-widget-biz .a11y-acr .a11y-accordion-head[aria-expanded="true"] > .a11y-acr-caret { transform: rotate(90deg); }
+.a11y-widget-biz .a11y-acr .a11y-accordion-head[aria-expanded="true"] > span { font-weight: 500; }
+.a11y-widget-biz .a11y-acr .a11y-accordion-head:enabled:hover > span { text-decoration: underline; text-underline-offset: 0.12em; text-decoration-thickness: 1px; }
 .a11y-widget-biz .a11y-acr .a11y-accordion-head .a11y-section-count {
   display: block; margin-top: 10px; font-size: 18px; font-weight: 400; letter-spacing: 0.01em; line-height: 1.3;
+  text-decoration: none;
 }
-.a11y-widget-biz .a11y-acr .a11y-accordion-head > .a11y-accordion-chevron {
-  box-sizing: content-box; width: 20px; height: 20px; padding: 9px;
-  border: 1px solid var(--ink); border-radius: 50%; transition: background-color 0.15s, border-color 0.15s;
-}
-.a11y-widget-biz .a11y-acr .a11y-accordion-head:enabled:hover > .a11y-accordion-chevron { border-color: var(--hover); background: var(--hover); color: var(--hover-ink); }
+.a11y-widget-biz .a11y-acr .a11y-section-head > :not(.a11y-accordion-row),
+.a11y-widget-biz .a11y-acr .a11y-section-head + [id] { margin-inline-start: var(--acr-indent); }
+.a11y-widget-biz .a11y-acr .a11y-section-head > .a11y-acr-make { width: calc(100% - var(--acr-indent)); box-sizing: border-box; }
+.a11y-widget-biz .a11y-acr .a11y-section-head > .a11y-section-desc { margin-top: 0; margin-bottom: 1.2em; font-size: 22px; line-height: 1.4; letter-spacing: 0.005em; }
+.a11y-widget-biz .a11y-acr .a11y-conf-caveat { margin: 0 0 65px; font-size: 22px; line-height: 1.4; letter-spacing: 0.005em; }
+.a11y-widget-biz .a11y-acr .a11y-conf-caveat > p { margin: 0 0 0.6em; }
+.a11y-widget-biz .a11y-acr .a11y-conf-caveat > ul { margin: 0; }
+.a11y-widget-biz .a11y-acr .a11y-conf-caveat > ul > li { margin: 0; }
 .a11y-widget-biz .a11y-acr .a11y-section-desc:has(+ .a11y-acr-make) { margin-bottom: 28px; }
 .a11y-widget-biz .a11y-acr .a11y-acr-make {
   display: block; width: 100%; min-height: 128px; margin: 0; padding: 20px 24px;
@@ -1744,6 +1796,13 @@
 }
 @media (max-width: 640px) {
   .a11y-widget-biz .a11y-acr .a11y-acr-make { min-height: 96px; font-size: 32px; }
+  /* On a phone the triangle is 16px and the answer is indented 30px, so
+     the words keep the width; the answer drops to the phone's 19px. */
+  .a11y-widget-biz .a11y-acr { --acr-indent: 30px; }
+  .a11y-widget-biz .a11y-acr .a11y-accordion-title .a11y-accordion-head { grid-template-columns: 16px minmax(0, 1fr); column-gap: calc(var(--acr-indent) - 16px); }
+  .a11y-widget-biz .a11y-acr .a11y-acr-caret { width: 16px; height: 16px; margin-top: calc((1.1em - 16px) / 2); }
+  .a11y-widget-biz .a11y-acr .a11y-section-head > .a11y-section-desc,
+  .a11y-widget-biz .a11y-acr .a11y-conf-caveat { font-size: 19px; }
 }
 .a11y-widget-biz .a11y-stmt-actions { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; margin: 0 0 1.2em; }
 
