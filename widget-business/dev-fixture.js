@@ -535,6 +535,17 @@
           "3. Click the label and check the cursor lands in the field\n\n" +
           "More in [the W3C forms tutorial](https://www.w3.org/WAI/tutorials/forms/labels/).";
         content = [{ type: "text", text: text }];
+      } else if (/^\s*(why|explain)\b/i.test(blocks.filter(function (b) { return b.type === "text"; }).map(function (b) { return b.text; }).pop() || "")) {
+        // An answer in running prose, the way the model explains: three
+        // paragraphs, a list, one more paragraph. It shows the paragraph
+        // breaks (indented after a paragraph, flush after the list).
+        text =
+          "A field without a label is a box with no name. Someone who sees the page guesses from the words near it; a screen reader has nothing to say but \"edit text\", and the person filling it in has to guess what goes there.\n\n" +
+          "Voice control has the same gap. People say the name of the field to move into it, and a field with no name cannot be called.\n\n" +
+          "It also costs everyone a little. A label joined to its field makes the label itself a place to click, which is a larger target on a phone.\n\n" +
+          "- Screen reader users hear the field's purpose\n- Voice control users can name it\n- Everyone gets a bigger target\n\n" +
+          "The fix is one element and one attribute per field, so it is one of the cheapest on the list.";
+        content = [{ type: "text", text: text }];
       } else if (/deadline|when (did|does|will)|latest|news|look (it )?up|search/i.test(userText)) {
         // A question the report cannot answer and the model is not sure of:
         // it searches first. The route tells the widget when the search

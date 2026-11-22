@@ -24,8 +24,10 @@ export interface MountOptions {
 
 // @font-face is IGNORED inside a shadow-root stylesheet, so the faces are
 // declared once at document level. PP Telegraf again (user's instruction,
-// 22 Nov 2026, "use pp telegraf font", replacing Jokker VF): its three cuts,
-// Light (300), Regular (400) and Medium (500), served beside the widget
+// 22 Nov 2026, "use pp telegraf font", replacing Jokker VF): its four cuts,
+// Ultralight (200, the prose since the same day, "use pp telegraph thin";
+// the family has no cut named Thin and Ultralight is its thinnest), Light
+// (300), Regular (400) and Medium (500), served beside the widget
 // bundle, the only weights the stylesheet asks for, so none is synthesised.
 // font-display swap keeps text readable while it loads, and every rule
 // keeps a system fallback. Saans and Serrif (trial, Light only) set the
@@ -37,6 +39,13 @@ function injectFonts(apiBase: string) {
   const style = document.createElement("style");
   style.id = id;
   style.textContent = `
+@font-face {
+  font-family: "PP Telegraf";
+  src: url("${base}/fonts/PPTelegraf-Ultralight.otf") format("opentype");
+  font-weight: 200;
+  font-style: normal;
+  font-display: swap;
+}
 @font-face {
   font-family: "PP Telegraf";
   src: url("${base}/fonts/PPTelegraf-Light.otf") format("opentype");

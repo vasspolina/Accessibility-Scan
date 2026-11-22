@@ -80,8 +80,11 @@
   /* Back to 32px Regular at line-height 1.2 (user's instruction, 18 Nov
      2026, "lets go back to this font sizing", after Jokker Medium 49px
      was tried the same morning). Width and gutter are
-     40em and 1em of the 32px again. */
-  font-size: 32px; font-weight: 400; line-height: 1.2; letter-spacing: 0;
+     40em and 1em of the 32px again. The prose is PP Telegraf Ultralight
+     (200) since 22 Nov 2026 (user's instruction, "use pp telegraph thin";
+     the family's thinnest cut, it has none named Thin); controls and the
+     15px and 18px labels keep Regular, at THE THIN PROSE at the end. */
+  font-size: 32px; font-weight: 200; line-height: 1.2; letter-spacing: 0;
   font-kerning: normal; font-variant-ligatures: common-ligatures; text-rendering: optimizeLegibility; font-synthesis: none;
   background: var(--paper); color: var(--ink);
   /* No rag (user's instruction, 18 Nov 2026, "do not rag the text"): no
@@ -3268,3 +3271,50 @@
 @media (max-width: 640px) {
   .a11y-widget-biz .a11y-first-fix .a11y-first-fix-lead { font-size: 27px; letter-spacing: 0; }
 }
+
+/* ═══ PARAGRAPH BREAKS BY INDENT (Hochuli, Detail in typography p.47 and
+   fig. 68; user's instruction, 22 Nov 2026, "apply jost hochuli typography
+   ... especially paragraph breaks") ═════════════════════════════════════
+   Inside one run of prose a new paragraph is told by its first line set in
+   one em, with no space above it: "indents are the only certain indicators
+   of a new paragraph", and a line space breaks the text up and spends room.
+   This replaces the full line (1.2em) between the chat's paragraphs of
+   4 Nov 2026 and the 0.8em between the statement draft's.
+   - Only a paragraph that follows a paragraph is indented: the first after a
+     heading, a list, a code card or the speaker label stands flush, as the
+     book's own first paragraph under "Linespacing, the column" does.
+   - Space still parts what is not one run: turns, lists, code, the blocks
+     of the report, and a statement heading (a paragraph that is only a
+     strong) with the paragraph before it.
+   - Running prose only: the chat's answers and the statement draft. The
+     report's other paragraph pairs (measured on the fixture report: a label
+     over its body, a key over its value, the technical version's lines)
+     are pieces with their own setting, not paragraphs of one text.
+   text-indent is inherited, so an inline-block inside a paragraph (a code
+   chip, a held address) is set back to 0 and only the line is indented.
+   :has() cannot hold another :has(), so the statement's headings are taken
+   out by rules that out-rank the general ones, not by one :not(:has()):
+   a selector list with a nested :has() is dropped whole. The heading's own
+   0.3em under it (the statement rule above, more specific) is untouched. */
+.a11y-widget-biz .a11y-chat-text > p:has(+ p) { margin-bottom: 0; }
+.a11y-widget-biz .a11y-chat-text > p + p { text-indent: 1em; }
+.a11y-widget-biz .a11y-stmt-card .a11y-stmt-text > p:has(+ p) { margin-bottom: 0; }
+.a11y-widget-biz .a11y-stmt-card .a11y-stmt-text > p:not(:has(> strong:only-child)):has(+ p > strong:only-child) { margin-bottom: 0.8em; }
+.a11y-widget-biz .a11y-stmt-card .a11y-stmt-text > p + p { text-indent: 1em; }
+.a11y-widget-biz .a11y-stmt-card .a11y-stmt-text > p:has(> strong:only-child) + p,
+.a11y-widget-biz .a11y-stmt-card .a11y-stmt-text > p + p:has(> strong:only-child) { text-indent: 0; }
+.a11y-widget-biz .a11y-chat-text > p + p *,
+.a11y-widget-biz .a11y-stmt-card .a11y-stmt-text > p + p * { text-indent: 0; }
+
+/* ═══ THE THIN PROSE (user's instruction, 22 Nov 2026, "use pp telegraph
+   thin") ═════════════════════════════════════════════════════════════════
+   The root sets the prose in PP Telegraf Ultralight (200), the family's
+   thinnest cut (it has none named Thin; index.tsx declares it). The
+   controls and the 15px and 18px labels keep Regular: a hairline at 15px
+   is "small and thin", which the type rules never allow, and the labels are
+   what a reader acts on. :where() keeps this at the root's own
+   specificity, so any rule that names a weight (Medium titles, strong)
+   still wins, and only what would inherit the 200 comes back to 400. The
+   list is what measured under 22px at 200 on the fixture report and form. */
+.a11y-widget-biz :where(button, input, select, textarea, label, small, th,
+  .a11y-shell-nav-link, .a11y-switch-word, .a11y-url-submit-note, .a11y-sum-dial-of, .a11y-top-card-small) { font-weight: 400; }
