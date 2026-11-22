@@ -82,11 +82,11 @@ describe("evaluateReadability", () => {
     expect(evaluateReadability({ text: PLAIN, lang: "en" })).toEqual([]);
   });
 
-  it("does not judge a page that is not in English", () => {
+  it("does not judge a language it has no formula for, or a page with no lang", () => {
     // Flesch was derived from English and its syllable model does not carry
-    // over; a German or French score is a number, not an answer.
-    expect(evaluateReadability({ text: DENSE, lang: "de" })).toEqual([]);
-    expect(evaluateReadability({ text: DENSE, lang: "fr-ca" })).toEqual([]);
+    // over; an Italian or Dutch score from it is a number, not an answer.
+    expect(evaluateReadability({ text: DENSE, lang: "it" })).toEqual([]);
+    expect(evaluateReadability({ text: DENSE, lang: "nl-be" })).toEqual([]);
     expect(evaluateReadability({ text: DENSE, lang: "" })).toEqual([]);
   });
 

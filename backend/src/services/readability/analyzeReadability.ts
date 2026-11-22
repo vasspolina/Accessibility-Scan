@@ -1,5 +1,6 @@
 import { randomUUID } from "node:crypto";
 import type { AccessibilityFinding } from "../../types/report.js";
+import { languageOf, scoreOtherLanguage, OTHER_FORMULAS } from "./readabilityOther.js";
 
 // Reading level — WCAG 3.1.5 (Level AAA).
 //
@@ -12,11 +13,15 @@ import type { AccessibilityFinding } from "../../types/report.js";
 //
 // Two honest limits are built in rather than glossed over.
 //
-// The formulas are English-only. Flesch and Flesch–Kincaid were derived from
-// English text and their syllable model does not transfer — German compounds
-// and French elisions produce numbers that look authoritative and mean
-// nothing. So a page that does not declare an English `lang` is not scored at
-// all, and says so, rather than being given a wrong answer.
+// Each language takes the formula built for it. Flesch and Flesch–Kincaid
+// were derived from English text and their syllable model does not transfer:
+// German compounds and French elisions run through the English formula give
+// numbers that look authoritative and mean nothing. So German, Spanish and
+// French each get the adaptation published for that language, with its own
+// syllable counter (readabilityOther.ts): Amstad's Flesch for German,
+// Szigriszt-Pazos (INFLESZ) for Spanish, Kandel and Moles for French. A page
+// in any other language, or with no `lang`, is not scored at all rather than
+// given a wrong answer.
 //
 // And they are crude. They count syllables and sentence lengths, which is a
 // proxy for difficulty rather than a measure of it: a short sentence of
@@ -109,9 +114,11 @@ const GRADE_THRESHOLD = 14;
 
 export function evaluateReadability(signals: ReadabilitySignals): AccessibilityFinding[] {
   if (!signals?.text) return [];
-  // English only. See the note at the top: a Flesch score for German is a
-  // number, not an answer.
-  if (!/^en\b|^en-/.test(signals.lang || "")) return [];
+  // English takes Flesch–Kincaid below; German, Spanish and French their own
+  // formulas; anything else nothing. See the note at the top: a Flesch score
+  // for German is a number, not an answer.
+  const lang = signals.lang || "";
+  if (!/^en\b|^en-/.test(lang)) return evaluateOtherLanguage(signals.text, lang);
 
   const score = scoreReadability(signals.text);
   if (!score || score.grade < GRADE_THRESHOLD) return [];
@@ -131,6 +138,38 @@ export function evaluateReadability(signals: ReadabilitySignals): AccessibilityF
       description: `The writing on this page needs about ${years} years of schooling to read comfortably. Roughly first-year university. Measured over ${score.words} words, averaging ${Math.round(score.words / score.sentences)} words a sentence. Nobody reads a page like this closely: people scan it, miss things, and some give up. It is not a legal requirement, and it is the change with the widest reach of anything in this report.`,
       suggestedFix:
         "Shorten sentences first. One idea each, and around 15 to 20 words. Then swap the longest words for ordinary ones where an ordinary one exists. Put what the reader needs to do at the top rather than after the background. GOV.UK writes at about a nine-year-old's reading age on purpose. It is not a simple site; it is a well-written one.",
+      ruleId: "readability-dense-prose",
+      helpUrl: "https://www.w3.org/WAI/WCAG21/Understanding/reading-level.html",
+    },
+  ];
+}
+
+/**
+ * German, Spanish and French, each on its own formula and its own published
+ * scale. The bar is the band each scale itself names as for academic or
+ * specialist readers (see OTHER_FORMULAS), the same place the English
+ * threshold sits: first-year-university prose. The same rule id, severity and
+ * level as English, so the report treats the four the same way.
+ */
+function evaluateOtherLanguage(text: string, lang: string): AccessibilityFinding[] {
+  const language = languageOf(lang);
+  if (!language) return [];
+  const score = scoreOtherLanguage(text, language);
+  if (!score) return [];
+  const formula = OTHER_FORMULAS[language];
+  if (score.ease >= formula.hardBelow) return [];
+  return [
+    {
+      id: randomUUID(),
+      source: "automated",
+      severity: "minor",
+      category: "design-clarity",
+      wcagCriterion: "3.1.5",
+      wcagLevel: "AAA",
+      selector: "main",
+      description: `The writing on this page is very hard to read: ${Math.round(score.ease)} on ${formula.name}, the reading-ease scale made for ${formula.language}, where under ${formula.hardBelow} is written for academic or specialist readers. Measured over ${score.words} words, averaging ${Math.round(score.words / score.sentences)} words a sentence. Nobody reads a page like this closely: people scan it, miss things, and some give up. It is not a legal requirement, and it is the change with the widest reach of anything in this report.`,
+      suggestedFix:
+        "Shorten sentences first. One idea each, and around 15 to 20 words. Then swap the longest words for ordinary ones where an ordinary one exists, and split long compound words where the language allows. Put what the reader needs to do at the top rather than after the background.",
       ruleId: "readability-dense-prose",
       helpUrl: "https://www.w3.org/WAI/WCAG21/Understanding/reading-level.html",
     },
