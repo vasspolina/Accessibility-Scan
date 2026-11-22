@@ -27,7 +27,7 @@ const PRINCIPLES: Record<string, PrincipleInfo> = {
     principle: "Perceivable",
     plainTitle: "Can people see and hear it?",
     plainDescription:
-      "What people can't see or hear: faint text, images with no description, video with no captions, audio with no transcript.",
+      "Faint text, images with no description, video with no captions, audio with no transcript.",
   },
   "2": {
     principle: "Operable",
@@ -251,6 +251,15 @@ export const PLAIN_RULE_EXPLANATIONS: Record<string, PlainRule> = {
     plain: "Links say only \"read more\"",
     impact:
       "Screen reader users can pull up a list of every link on the page. When they all read the same, the list is no help at all.",
+  },
+  // A finding of its own since axe-core 4.14.0 made the rule stable; before
+  // that it reached the report only as an open question.
+  "label-content-name-mismatch": {
+    plain: "Spoken name differs from label",
+    found: (n) =>
+      `${n} ${n === 1 ? "control shows" : "controls show"} one set of words and ${n === 1 ? "carries" : "carry"} a different name in the code. The name a screen reader speaks leaves out the words printed on ${n === 1 ? "it" : "them"}.`,
+    impact:
+      "People who work a site by voice say the words they see. \"Click Send message\" does nothing when the code calls the button something else. Screen reader users who can see the page hear one thing and read another.",
   },
   "button-name": {
     research:
@@ -1131,6 +1140,11 @@ export const PLAIN_RULE_FIXES: Record<string, string | string[]> = {
     "Write link text that makes sense on its own. \"Read the 2026 fee changes\", not \"Read more\".",
     "To keep the short version on screen, add the full wording as a label.",
   ],
+  "label-content-name-mismatch": [
+    "Keep the words shown on the control inside its name in the code.",
+    "Start the name with those exact words, then add anything extra.",
+    "Voice control users say what they see, so the two have to match.",
+  ],
   "button-name":
     [
     "Give every button words that say what it does.",
@@ -1258,6 +1272,25 @@ export const UNDECIDED_EXPLANATIONS: Record<string, { what: string; ask: string 
     what: "A video playing in another company's player, such as YouTube or Vimeo. The video lives on their site, so the checker cannot look inside it.",
     ask: "Play each one and turn captions on with the CC button. If there is no button or the captions are wrong, fix them in the account the video is hosted on.",
   },
+  // Three rows about the documents a page links to. The scan counts them
+  // all, opens the first two PDFs on the page's own site, and never opens
+  // an office file. What it finds in a PDF is the document's fault and is
+  // kept out of the page's score, which is why it is listed here and not
+  // among the findings. Wording approved by the owner, 22 Nov 2026; the
+  // second row's first sentence was then cut in two to fit the voice
+  // test's twenty words.
+  "pdf-linked-not-checked": {
+    what: "PDF documents this page links to that the scan did not open. A page scan opens the first two on your own site and counts the rest.",
+    ask: "Paste a document's address into the scan to check it on its own. A PDF needs tags, a title and its language set before a screen reader can read it properly.",
+  },
+  "pdf-linked-faults": {
+    what: "A PDF this page links to. The scan opened it and found faults, such as no tags or no title. They are the document's faults, so they are not in this page's score.",
+    ask: "Paste the document's address into the scan for its own report. Then ask whoever made it to fix the original file and upload it again.",
+  },
+  "office-linked-not-checked": {
+    what: "Word, Excel or PowerPoint files this page links to. The scan counts them and never opens them.",
+    ask: "Open each one and run the accessibility checker built into Office, under Review. Better still, put what it says on a web page, which everyone can read.",
+  },
   // Three rows about what the page listens for. A listener leaves no mark on
   // the page, so the checker can say one is there and nothing about what it
   // does when it fires.
@@ -1327,6 +1360,10 @@ export const UNDECIDED_EXPLANATIONS: Record<string, { what: string; ask: string 
   "css-orientation-lock": {
     what: "Styles that may lock the page to portrait or landscape. The check that found this is still experimental, so it may be wrong.",
     ask: "Open the page on a phone and turn it both ways. Everything should still work, for people whose phone or tablet is fixed in one position.",
+  },
+  "label-content-name-mismatch": {
+    what: "Controls whose name in the code may not contain the words shown on them. The checker could not decide, usually because the control is named by its current value.",
+    ask: "Ask your developer to compare what each one shows with the name a screen reader speaks. The spoken name should contain the visible words, in the same order.",
   },
   "duplicate-id-aria": {
     what: "An id that may be used more than once. Every code label pointing at it follows only the first, so a name can silently attach to the wrong thing.",

@@ -21,6 +21,13 @@ interface Recognition extends EventTarget {
   onerror: ((e: any) => void) | null;
   onend: (() => void) | null;
 }
+/** The chat's message box, when it is on screen. */
+function chatBox(root: ShadowRoot | Document): HTMLTextAreaElement | null {
+  // The scan chat's box, or Report a barrier's, whichever is showing.
+  const el = root.querySelector<HTMLTextAreaElement>("#a11y-chat-input, #a11y-barrier-answer");
+  return el && !el.disabled && el.getClientRects().length > 0 ? el : null;
+}
+
 function recogniserClass(): (new () => Recognition) | null {
   const w = window as any;
   return w.SpeechRecognition ?? w.webkitSpeechRecognition ?? null;
@@ -34,15 +41,21 @@ function recogniserClass(): (new () => Recognition) | null {
  * of sitting there dead.
  *
  * The browser's own speech service hears the audio and may send it to its
- * maker; the line under the toggle says so. Nothing is sent to our server.
+ * maker. Nothing is sent to our server.
+ *
+ * One toggle sits in each chat box (the scan chat's and Report a barrier's),
+ * and only one box is on screen at a time. Whether it is listening is kept
+ * outside the component, so going from one box to the other leaves it on.
  */
+const listening = { current: false };
+
 export function VoiceControl() {
   const Rec = typeof window === "undefined" ? null : recogniserClass();
-  const [on, setOn] = useState(false);
+  const [on, setOn] = useState(listening.current);
   const [status, setStatus] = useState("");
-  const wrapRef = useRef<HTMLDivElement>(null);
+  const wrapRef = useRef<HTMLSpanElement>(null);
   const recRef = useRef<Recognition | null>(null);
-  const wantOn = useRef(false);
+  const wantOn = listening;
 
   const handle = useCallback((heard: string) => {
     const wrap = wrapRef.current;
@@ -65,7 +78,7 @@ export function VoiceControl() {
       case "help":
         setStatus(
           t(
-            "Say: press send, new scan, type example.com, clear, scroll down, scroll to the top, stop listening."
+            "Say: scan example.com, ask what to fix first, type a message, press send, scroll down, stop listening."
           )
         );
         return;
@@ -77,10 +90,33 @@ export function VoiceControl() {
         say(t("Scrolled."));
         return;
       }
+      case "scan":
+      case "ask": {
+        // The chat box is where a scan starts and a question goes: the words
+        // are put in it and sent, exactly as typing them and pressing Send.
+        const box = chatBox(root);
+        if (!box) {
+          say(t("There is no field to type into."));
+          return;
+        }
+        box.focus();
+        if (cmd.kind === "ask" && !cmd.text) {
+          say(t("Ready to type in the chat. Say your message."));
+          return;
+        }
+        setFieldValue(box, cmd.kind === "scan" ? tf("Scan {url}", { url: cmd.url }) : cmd.text);
+        // React re-renders the Send button enabled before the form is sent.
+        requestAnimationFrame(() => box.form?.requestSubmit());
+        say(cmd.kind === "scan" ? tf("Scanning {url}.", { url: cmd.url }) : t("Sent."));
+        return;
+      }
       case "type":
       case "clear": {
         let field =
           active && /^(INPUT|TEXTAREA)$/.test(active.tagName) ? (active as HTMLInputElement | HTMLTextAreaElement) : null;
+        // Nothing in focus (the voice button has it): the chat box, which is
+        // the field a voice user means, not whichever field comes first.
+        if (!field) field = chatBox(root);
         if (!field) {
           const first = collectControls(root, wrap).find((c) => /^(INPUT|TEXTAREA)$/.test(c.el.tagName));
           field = (first?.el as HTMLInputElement | undefined) ?? null;
@@ -101,11 +137,35 @@ export function VoiceControl() {
         } else say(t("Nothing is selected. Say the name of the button."));
         return;
       }
+      case "phrase": {
+        // Words with no command: a button only when its name fits closely
+        // (a bare phrase could be anything the room said), else dictation
+        // into the chat box, added to what is already there. Before 20 Nov
+        // 2026 every such phrase was looked up as a button name, so talking
+        // to the chat only ever answered "I can't find a button called …".
+        const controls = collectControls(root, wrap);
+        const res = findTarget(cmd.target, controls, 80);
+        if (res.status === "match") {
+          const how = press(res.target.el);
+          say(tf(how === "focused" ? "Ready to type in {name}." : "Pressed {name}.", { name: res.target.name }));
+          return;
+        }
+        const box = chatBox(root);
+        if (box) {
+          box.focus();
+          const now = box.value;
+          setFieldValue(box, now && !/\s$/.test(now) ? `${now} ${cmd.text}` : now + cmd.text);
+          say(t('Written in the chat. Say "send" to send it.'));
+        } else if (res.status === "ambiguous") {
+          say(tf("More than one control fits. Say the full name: {names}.", { names: res.names.join(", ") }));
+        } else {
+          say(tf("I can't find a button called {name}.", { name: cmd.target }));
+        }
+        return;
+      }
       case "click": {
         const controls = collectControls(root, wrap);
-        // A bare name could be anything the room said: demand a closer match.
-        const explicit = new RegExp("^\\s*" + "[^\\s]+\\s").test(heard);
-        const res = findTarget(cmd.target, controls, explicit ? 55 : 80);
+        const res = findTarget(cmd.target, controls, 55);
         if (res.status === "match") {
           const how = press(res.target.el);
           say(tf(how === "focused" ? "Ready to type in {name}." : "Pressed {name}.", { name: res.target.name }));
@@ -151,13 +211,20 @@ export function VoiceControl() {
     rec.start();
   }, [Rec, handle]);
 
-  useEffect(
-    () => () => {
-      wantOn.current = false;
-      recRef.current?.stop();
-    },
-    []
-  );
+  // Mounted while listening (the other box was just replaced by this one):
+  // carry on. Unmounted: this recogniser stops, but the wish to listen stays
+  // for the box that takes its place.
+  useEffect(() => {
+    if (wantOn.current) start();
+    return () => {
+      const rec = recRef.current;
+      if (rec) {
+        rec.onend = null;
+        rec.stop();
+      }
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   function toggle() {
     if (on) {
@@ -168,27 +235,26 @@ export function VoiceControl() {
     } else {
       wantOn.current = true;
       setOn(true);
-      setStatus(t("Listening. Say the name of a button, like \"press send\". Say \"what can I say\" for more."));
+      setStatus(t("Listening. Speak to write in the chat, or name a button, like \"press send\". Say \"what can I say\" for more."));
       start();
     }
   }
 
-  if (!Rec) {
-    return (
-      <div className="a11y-voice" ref={wrapRef}>
-        <p className="a11y-voice-note">{t("Voice control needs Chrome, Edge or Safari.")}</p>
-      </div>
-    );
-  }
+  // In the chat's box, beside Back (user's instruction, 20 Nov 2026: "move
+  // button into chat and no description needed"). The line that sat beside
+  // it at rest is gone; what the control heard and did still shows, under
+  // the button, once there is something to say. Where the browser has no
+  // recogniser there is no button, rather than a button with an excuse.
+  if (!Rec) return null;
 
   return (
-    <div className="a11y-voice" ref={wrapRef}>
-      <button type="button" className="a11y-btn a11y-btn-secondary a11y-btn-sm" aria-pressed={on} onClick={toggle}>
+    <span className="a11y-voice" ref={wrapRef}>
+      <button type="button" className="a11y-btn a11y-btn-ghost a11y-btn-md" aria-pressed={on} onClick={toggle}>
         {t("Voice control")}
       </button>
-      <p className="a11y-voice-note" role="status">
-        {status || t("Your browser's speech service hears what you say.")}
-      </p>
-    </div>
+      <span className="a11y-voice-note" role="status">
+        {status}
+      </span>
+    </span>
   );
 }

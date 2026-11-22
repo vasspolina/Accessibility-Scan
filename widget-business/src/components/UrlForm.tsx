@@ -48,6 +48,7 @@ export function UrlForm({
   progress,
   language,
   onLanguageChange,
+  startWithLogin = false,
 }: {
   language: Lang;
   onLanguageChange: (lang: Lang) => void;
@@ -80,6 +81,9 @@ export function UrlForm({
   // scope and the rest keep their place even while a scan is running,
   // instead of the bar landing after all of them.
   progress?: ReactNode;
+  /** Opened from the chat's "Scan a page behind a login": the login panel
+   *  starts open, so the person lands on the part they came for. */
+  startWithLogin?: boolean;
 }) {
   const [value, setValue] = useState("");
   const [mode, setMode] = useState<ScanMode>("page");
@@ -100,7 +104,7 @@ export function UrlForm({
   // announces.
   /* The login disclosure's state lives here because its trigger sits inside
      the address field and its panel below. See LoginFields. */
-  const [loginOpen, setLoginOpen] = useState(false);
+  const [loginOpen, setLoginOpen] = useState(startWithLogin);
   const loginPanelId = useId();
   const loginToggleRef = useRef<HTMLButtonElement>(null);
   const [showEmptyError, setShowEmptyError] = useState(false);
@@ -144,8 +148,8 @@ export function UrlForm({
     onSubmit(withProtocol, includeAiReview, mode, maxPages, auth);
   }
 
-  /* The scan form after a type foundry's newsletter form (user's reference,
-     18 Nov 2026, "design this like this"): the name large; a serif heading
+  /* The scan form as filled rows (user's reference, 18 Nov 2026,
+     "design this like this"): the name large; a serif heading
      over each group; every field a filled box with its label inside at the
      top; each choice a filled row with its radio showing; the action one
      wide block with its words set large; the note under it. The address

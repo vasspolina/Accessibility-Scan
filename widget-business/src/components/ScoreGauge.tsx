@@ -277,6 +277,7 @@ export function ScoreGauge({
   /* The same answer the report-actions panel gets, from the same shared
      helper — computing it twice would be two places to disagree. */
   const doFirst = computeDoFirst(findings);
+  const countsId = inChat ? "a11y-sum-counts-heading-chat" : "a11y-sum-counts-heading";
 
   /* "Do this first" — the one fix that settles the most at once.
    *
@@ -313,11 +314,8 @@ export function ScoreGauge({
       {/* Professional mode gets an explicit results header in this slot
           (App.tsx); business mode had none, which left heading navigation
           with no way to jump straight to the score at all. */}
-      {/* "Score" over "Your score" in the conversation, where the block's
-          summary line names it: hidden there on screen, kept for screen
-          readers. */}
       <h2
-        className={inChat ? "a11y-section-title a11y-sr-only" : "a11y-section-title"}
+        className="a11y-section-title"
         id="a11y-score-heading"
         data-nav-label={t("Score")}
       >
@@ -375,6 +373,12 @@ export function ScoreGauge({
               </div>
             </div>
 
+            {/* The run of the worst findings, centred at display size under
+                the dial, in the conversation as on the page. It was left out
+                of the chat on 20 Nov 2026 ("file a report in chat like an
+                assistant would do") and is back since 21 Nov 2026 (user's
+                instruction, "the designed centered text under score is
+                gone, bring it back"). */}
             {preview.length === 0 ? (
               <p className="a11y-score-clean">{t("Nothing here needs a fix.")}</p>
             ) : (
@@ -446,6 +450,7 @@ export function ScoreGauge({
           {/* Plain text, not the report's own HTML: the point is to leave the
               widget entirely — an email or a Slack message to whoever owns
               the fix, not a screenshot of this card. */}
+          {!inChat && (
           <div className="a11y-sum-actions">
             <button type="button" className="a11y-show-all a11y-score-copy" onClick={copySummary}>
               {copied ? t("Copied") : t("Copy summary as plain text")}
@@ -454,11 +459,15 @@ export function ScoreGauge({
               {copied ? t("Summary copied to the clipboard.") : ""}
             </span>
           </div>
+          )}
         </div>
 
-        <div className="a11y-sum-col">
+        {/* The key: Start here, the band and what the score counts, side by
+            side under one rule, each a label over its lines (user's
+            reference, 22 Nov 2026, a type foundry's footer). */}
+        <div className="a11y-sum-col a11y-sum-key">
           {doFirst && (
-            <SumPanel title={t("Do this first")}>
+            <SumPanel title={t("Start here")}>
               {/* The title in quotes rather than lowercased: lowercasing
                   broke German nouns ("zu blass zum lesen") and acronyms. */}
               <p className="a11y-sum-lead">
@@ -471,28 +480,25 @@ export function ScoreGauge({
             </SumPanel>
           )}
 
-          <SumPanel title={tf("What a score of {band} means", { band: t(BAND_WORD(score)) })}>
+          <SumPanel title={tf("Score {band}", { band: t(BAND_WORD(score)) })}>
             {/* No second line: points 05 and 06 under "What the score counts"
                 already say what a scan reaches and what needs a person. */}
             <p className="a11y-sum-lead">{t(scoreSummary(score, seed))}</p>
           </SumPanel>
 
-          {/* Set as the displaay.net Info block (user's instruction, 4 Nov
-              2026): two columns, each point's number over a rule and its
-              words under it. The number follows the words in the markup and
-              is drawn first, so a screen reader hears the sentence alone. */}
-          <section className="a11y-sum-panel a11y-sum-counts" aria-labelledby="a11y-sum-counts-heading">
-            <h3 className="a11y-sum-eyebrow" id="a11y-sum-counts-heading">{t("What the score counts")}</h3>
-            <div className="a11y-sum-specimens">
-              {SCORE_POINTS.map((point, i) => (
-                <p key={point} className="a11y-sum-specimen">
-                  <span className="a11y-sum-specimen-text">{t(point)}</span>
-                  <span className="a11y-sum-specimen-num" aria-hidden="true">
-                    {String(i + 1).padStart(2, "0")}
-                  </span>
-                </p>
+          {/* The six points are the key's last and widest column, a plain
+              list of lines, in the conversation as on the page (user's
+              reference, 22 Nov 2026, a type foundry's footer). They were
+              folded under their title in the chat, and numbered ruled
+              columns on the page. The chat's copy takes its own id, since
+              the report can be on the page and in the thread at once. */}
+          <section className="a11y-sum-panel a11y-sum-counts" aria-labelledby={countsId}>
+            <h3 className="a11y-sum-eyebrow" id={countsId}>{t("What the score counts")}</h3>
+            <ul className="a11y-sum-counts-list" role="list">
+              {SCORE_POINTS.map((point) => (
+                <li key={point}>{t(point)}</li>
               ))}
-            </div>
+            </ul>
           </section>
         </div>
       </div>

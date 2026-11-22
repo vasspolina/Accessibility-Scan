@@ -130,6 +130,12 @@ export const PLAIN_DE: Record<string, PlainRule> = {
     plain: "Links heißen nur „Mehr erfahren“",
     impact: "Wer einen Screenreader nutzt, kann sich eine Liste aller Links geben lassen. Wenn alle gleich heißen, hilft diese Liste überhaupt nicht.",
   },
+  "label-content-name-mismatch": {
+    plain: "Angesagter Name weicht von Beschriftung ab",
+    found: (n) =>
+      `${n} ${n === 1 ? "Bedienelement zeigt" : "Bedienelemente zeigen"} bestimmte Wörter und ${n === 1 ? "trägt" : "tragen"} im Code einen anderen Namen. Der Name, den ein Screenreader ansagt, lässt die sichtbaren Wörter aus.`,
+    impact: "Wer per Sprache steuert, sagt die Wörter, die zu sehen sind. „Klick auf Nachricht senden“ bewirkt nichts, wenn die Schaltfläche im Code anders heißt. Wer einen Screenreader nutzt und die Seite sieht, hört etwas anderes, als dasteht.",
+  },
   "button-name": {
     research: "Schaltflächen ohne Beschriftung stehen Jahr für Jahr weit oben in der jährlichen WebAIM-Untersuchung von einer Million Startseiten. Meist sind es reine Symbol-Schaltflächen, die für das Designteam selbsterklärend waren.",
     plain: "Schaltflächen ohne Beschriftung",
@@ -870,6 +876,11 @@ export const FIXES_DE: Record<string, string | string[]> = {
     "„Die Gebührenänderungen 2026 lesen“ statt „Mehr erfahren“.",
     "Soll die kurze Fassung auf dem Bildschirm bleiben, hinterlegen Sie den vollen Wortlaut als Beschriftung.",
   ],
+  "label-content-name-mismatch": [
+    "Übernehmen Sie die sichtbaren Wörter des Bedienelements in seinen Namen im Code.",
+    "Beginnen Sie den Namen mit genau diesen Wörtern und ergänzen Sie erst danach.",
+    "Wer per Sprache steuert, sagt, was er sieht, also müssen beide übereinstimmen.",
+  ],
   "button-name": [
     "Geben Sie jedem Knopf Wörter, die sagen, was er tut.",
     "Bei einem Symbol-Knopf ergänzen Sie eine Beschriftung, die die Aktion beschreibt.",
@@ -957,6 +968,18 @@ export const UNDECIDED_DE: Record<string, { what: string; ask: string }> = {
     what: "Ein Video im Player eines anderen Unternehmens, etwa YouTube oder Vimeo. Das Video liegt auf deren Website, deshalb kann die Prüfung nicht hineinsehen.",
     ask: "Spielen Sie jedes ab und schalten Sie die Untertitel mit der CC-Taste ein. Fehlt die Taste oder stimmen die Untertitel nicht, korrigieren Sie sie in dem Konto, auf dem das Video liegt.",
   },
+  "pdf-linked-not-checked": {
+    what: "PDF-Dokumente, auf die diese Seite verlinkt und die die Prüfung nicht geöffnet hat. Eine Seitenprüfung öffnet die ersten zwei auf Ihrer eigenen Website und zählt die übrigen.",
+    ask: "Fügen Sie die Adresse eines Dokuments in die Prüfung ein, um es einzeln zu prüfen. Ein PDF braucht Tags, einen Titel und eine festgelegte Sprache, damit ein Screenreader es richtig vorlesen kann.",
+  },
+  "pdf-linked-faults": {
+    what: "Ein PDF, auf das diese Seite verlinkt. Die Prüfung hat es geöffnet und Fehler gefunden, etwa fehlende Tags oder einen fehlenden Titel. Es sind Fehler des Dokuments, deshalb zählen sie nicht zum Ergebnis dieser Seite.",
+    ask: "Fügen Sie die Adresse des Dokuments in die Prüfung ein, dann erhalten Sie einen eigenen Bericht dazu. Bitten Sie danach die Person, die es erstellt hat, die Originaldatei zu korrigieren und neu hochzuladen.",
+  },
+  "office-linked-not-checked": {
+    what: "Word-, Excel- oder PowerPoint-Dateien, auf die diese Seite verlinkt. Die Prüfung zählt sie und öffnet sie nie.",
+    ask: "Öffnen Sie jede Datei und starten Sie die Barrierefreiheitsprüfung, die in Office im Menü Überprüfen eingebaut ist. Noch besser stellen Sie den Inhalt auf eine Webseite, die alle lesen können.",
+  },
   "consent-layer-in-frame": {
     what: "Das Cookie-Banner kommt in einem Frame von der Website eines anderen Unternehmens. Der Scan kann daher nicht prüfen, was ein Screenreader darin vorliest.",
     ask: "Lassen Sie die Seite mit einem Screenreader öffnen, etwa VoiceOver am Mac oder NVDA unter Windows. Das Banner sollte zuerst vorgelesen werden, und die Tabulatortaste sollte seine Buttons erreichen. Ablehnen sollte so viele Schritte brauchen wie Zustimmen.",
@@ -1021,6 +1044,10 @@ export const UNDECIDED_DE: Record<string, { what: string; ask: string }> = {
     what: "Styles, die die Seite vielleicht auf Hoch- oder Querformat festlegen. Die Prüfung dafür ist noch experimentell und kann sich irren.",
     ask: "Öffnen Sie die Seite auf dem Handy und drehen Sie es in beide Richtungen. Alles sollte weiter funktionieren, für Menschen mit fest montiertem Handy oder Tablet.",
   },
+  "label-content-name-mismatch": {
+    what: "Bedienelemente, deren Name im Code die sichtbaren Wörter vielleicht nicht enthält. Die Prüfung konnte es nicht entscheiden, meist weil das Element nach seinem aktuellen Wert benannt ist.",
+    ask: "Bitten Sie Ihr Entwicklungsteam, bei jedem die sichtbaren Wörter mit dem angesagten Namen zu vergleichen. Der angesagte Name sollte die sichtbaren Wörter enthalten, in derselben Reihenfolge.",
+  },
   "duplicate-id-aria": {
     what: "Eine id, die möglicherweise mehrfach verwendet wird. Jede Angabe im Code, die darauf zeigt, folgt nur der ersten, also kann ein Name still am falschen Element landen.",
     ask: "Bitten Sie Ihr Entwicklungsteam, jede id auf der Seite eindeutig zu machen, beginnend mit denen, auf die ein aria-Attribut zeigt.",
@@ -1031,7 +1058,7 @@ export const PRINCIPLES_DE: Record<string, { principleLabel: string; plainTitle:
   "1": {
     principleLabel: "Wahrnehmbar",
     plainTitle: "Können Menschen es sehen und hören?",
-    plainDescription: "Was Menschen nicht sehen oder hören können: blasser Text, Bilder ohne Beschreibung, Videos ohne Untertitel, Audio ohne Transkript.",
+    plainDescription: "Blasser Text, Bilder ohne Beschreibung, Videos ohne Untertitel, Audio ohne Transkript.",
   },
   "2": {
     principleLabel: "Bedienbar",

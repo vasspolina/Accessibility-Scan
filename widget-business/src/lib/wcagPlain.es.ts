@@ -145,6 +145,12 @@ export const PLAIN_ES: Record<string, PlainRule> = {
     impact:
       "Quien usa un lector de pantalla puede sacar una lista con todos los enlaces de la página. Si todos dicen lo mismo, la lista no sirve de nada.",
   },
+  "label-content-name-mismatch": {
+    plain: "El nombre leído no coincide",
+    found: (n) =>
+      `${n} ${n === 1 ? "control muestra" : "controles muestran"} unas palabras y ${n === 1 ? "lleva" : "llevan"} otro nombre en el código. El nombre que lee un lector de pantalla deja fuera las palabras que se ven.`,
+    impact: "Quien maneja el sitio por voz dice las palabras que ve. «Pulsa Enviar mensaje» no hace nada si el botón se llama de otro modo en el código. Quien usa un lector de pantalla y ve la página oye una cosa y lee otra.",
+  },
   "button-name": {
     research:
       "Los botones sin etiqueta están cerca de lo más alto de la revisión anual que WebAIM hace de un millón de páginas de inicio, año tras año. Suelen ser controles de solo icono, evidentes para quien los diseñó.",
@@ -955,6 +961,11 @@ export const FIXES_ES: Record<string, string | string[]> = {
     "«Lea los cambios de tarifas de 2026» en vez de «Leer más».",
     "Para dejar la versión corta en pantalla, añada el texto completo como nombre.",
   ],
+  "label-content-name-mismatch": [
+    "Conserve las palabras que muestra el control dentro de su nombre en el código.",
+    "Empiece el nombre por esas mismas palabras y añada después lo demás.",
+    "Quien maneja el sitio por voz dice lo que ve, así que los dos tienen que coincidir.",
+  ],
   "button-name": [
     "Dé a cada botón palabras que digan lo que hace.",
     "En un botón de icono, añada un nombre que describa la acción.",
@@ -1042,6 +1053,18 @@ export const UNDECIDED_ES: Record<string, { what: string; ask: string }> = {
     what: "Un vídeo en el reproductor de otra empresa, como YouTube o Vimeo. El vídeo está en su sitio, así que la comprobación no puede mirar dentro.",
     ask: "Reproduzca cada uno y active los subtítulos con el botón CC. Si no hay botón o los subtítulos están mal, corríjalos en la cuenta donde está alojado el vídeo.",
   },
+  "pdf-linked-not-checked": {
+    what: "Documentos PDF a los que enlaza esta página y que la comprobación no abrió. Una comprobación de página abre los dos primeros de su propio sitio y cuenta el resto.",
+    ask: "Pegue la dirección de un documento en la comprobación para revisarlo por separado. Un PDF necesita etiquetas, un título y su idioma definido para que un lector de pantalla pueda leerlo bien.",
+  },
+  "pdf-linked-faults": {
+    what: "Un PDF al que enlaza esta página. La comprobación lo abrió y encontró fallos, como la falta de etiquetas o de título. Son fallos del documento, así que no entran en la puntuación de esta página.",
+    ask: "Pegue la dirección del documento en la comprobación para obtener su propio informe. Después pida a quien lo hizo que corrija el archivo original y lo vuelva a subir.",
+  },
+  "office-linked-not-checked": {
+    what: "Archivos de Word, Excel o PowerPoint a los que enlaza esta página. La comprobación los cuenta y nunca los abre.",
+    ask: "Abra cada uno y ejecute el comprobador de accesibilidad incluido en Office, en la pestaña Revisar. Mejor aún, ponga su contenido en una página web, que todo el mundo puede leer.",
+  },
   "consent-layer-in-frame": {
     what: "El banner de cookies se carga desde el sitio de otra empresa dentro de un marco, así que el análisis no puede comprobar qué oye en él un lector de pantalla.",
     ask: "Pida a alguien que abra la página con un lector de pantalla, como VoiceOver en Mac o NVDA en Windows. El banner debe leerse primero y la tecla Tab debe llegar a sus botones. Rechazar debe costar los mismos pasos que aceptar.",
@@ -1106,6 +1129,10 @@ export const UNDECIDED_ES: Record<string, { what: string; ask: string }> = {
     what: "Estilos que quizá bloquean la página en vertical u horizontal. La comprobación que lo encontró aún es experimental, así que puede equivocarse.",
     ask: "Abra la página en un móvil y gírelo en los dos sentidos. Todo debe seguir funcionando, para quien tiene el móvil o la tableta fijos en una posición.",
   },
+  "label-content-name-mismatch": {
+    what: "Controles cuyo nombre en el código quizá no contiene las palabras que muestran. La comprobación no pudo decidirlo, casi siempre porque el control toma el nombre de su valor actual.",
+    ask: "Pida a su equipo de desarrollo que compare lo que muestra cada uno con el nombre que lee un lector de pantalla. El nombre leído debe contener las palabras visibles, en el mismo orden.",
+  },
   "duplicate-id-aria": {
     what: "Un id que puede estar usado más de una vez. Toda etiqueta de código que apunte a él sigue solo al primero, así que un nombre puede acabar pegado en silencio a lo que no era.",
     ask: "Pida a su equipo de desarrollo que haga único cada id de la página, empezando por los que menciona algún atributo aria.",
@@ -1117,7 +1144,7 @@ export const PRINCIPLES_ES: Record<string, { principleLabel: string; plainTitle:
     principleLabel: "Perceptible",
     plainTitle: "¿Se puede ver y oír?",
     plainDescription:
-      "Lo que la gente no puede ver ni oír: texto demasiado claro, imágenes sin descripción, vídeo sin subtítulos, audio sin transcripción.",
+      "Texto demasiado claro, imágenes sin descripción, vídeo sin subtítulos, audio sin transcripción.",
   },
   "2": {
     principleLabel: "Operable",

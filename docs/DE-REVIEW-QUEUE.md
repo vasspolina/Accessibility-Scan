@@ -836,3 +836,14 @@ Found by a live German scan: these reached a German reader in English. Same cave
 | WCAG 2.2 3.3.8 · plain | Können sich Menschen anmelden, ohne ein Rätsel zu lösen oder sich etwas zu merken? | criteriaText.de.ts |
 | WCAG 2.2 3.3.8 · failing | Die Anmeldung verlangt ein Rätsel oder etwas Auswendiggelerntes, ohne anderen Weg | criteriaText.de.ts |
 | WCAG 2.2 3.3.8 · whyManual | Die Anmeldung liegt meist hinter der Seite, die wir erreichen. Ob es einen anderen Weg gibt, ist eine Frage an den ganzen Ablauf. | criteriaText.de.ts |
+| This page loads an accessibility overlay: {vendor} | Diese Seite lädt ein Barrierefreiheits-Overlay: {vendor} |
+| An overlay is a third-party script that adds a settings button to a page. | Ein Overlay ist ein Skript eines Drittanbieters, das der Seite eine Schaltfläche für Einstellungen gibt. |
+| It was running during this scan, so every finding here was measured with it on. | Es lief während dieses Scans. Jeder Befund hier ist also mit laufendem Overlay gemessen. |
+| Its script is on this page, and its widget had not started when we measured. | Sein Skript ist auf dieser Seite, das Widget war bei unserer Messung aber noch nicht gestartet. |
+| Loaded from {url} | Geladen von {url} |
+| pdf-linked-not-checked · what | PDF-Dokumente, auf die diese Seite verlinkt und die die Prüfung nicht geöffnet hat. Eine Seitenprüfung öffnet die ersten zwei auf Ihrer eigenen Website und zählt die übrigen. | wcagPlain.de.ts |
+| pdf-linked-not-checked · ask | Fügen Sie die Adresse eines Dokuments in die Prüfung ein, um es einzeln zu prüfen. Ein PDF braucht Tags, einen Titel und eine festgelegte Sprache, damit ein Screenreader es richtig vorlesen kann. | wcagPlain.de.ts |
+| pdf-linked-faults · what | Ein PDF, auf das diese Seite verlinkt. Die Prüfung hat es geöffnet und Fehler gefunden, etwa fehlende Tags oder einen fehlenden Titel. Es sind Fehler des Dokuments, deshalb zählen sie nicht zum Ergebnis dieser Seite. | wcagPlain.de.ts |
+| pdf-linked-faults · ask | Fügen Sie die Adresse des Dokuments in die Prüfung ein, dann erhalten Sie einen eigenen Bericht dazu. Bitten Sie danach die Person, die es erstellt hat, die Originaldatei zu korrigieren und neu hochzuladen. | wcagPlain.de.ts |
+| office-linked-not-checked · what | Word-, Excel- oder PowerPoint-Dateien, auf die diese Seite verlinkt. Die Prüfung zählt sie und öffnet sie nie. | wcagPlain.de.ts |
+| office-linked-not-checked · ask | Öffnen Sie jede Datei und starten Sie die Barrierefreiheitsprüfung, die in Office im Menü Überprüfen eingebaut ist. Noch besser stellen Sie den Inhalt auf eine Webseite, die alle lesen können. | wcagPlain.de.ts |

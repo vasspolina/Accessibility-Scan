@@ -33,8 +33,12 @@ const HUMAN_QUESTIONS = [
 ];
 
 /* Counts come from the conformance summary, never recounted here. */
+type Filter = "failed" | "needs-review" | "no-issues-found" | "not-measured" | "all";
+
 function RESULT_ROWS(c: ConformanceSummary): Array<{
   key: string;
+  /** The checklist filter this tile opens. */
+  filter: Filter;
   severity: string;
   label: string;
   meaning?: string;
@@ -42,20 +46,20 @@ function RESULT_ROWS(c: ConformanceSummary): Array<{
   n: number;
 }> {
   return [
-    { key: "failed", severity: "critical", label: t("We found problems"),
+    { key: "failed", filter: "failed", severity: "critical", label: t("We found problems"),
       meaning: tf("{a} at level A, {aa} at AA", { a: c.failedByLevel.A, aa: c.failedByLevel.AA }),
       mark: t("Fix first"), n: c.failed },
     // No meaning line on these two: the band above says "nothing found"
     // is not a pass, and the mark says "Needs a person".
-    { key: "clean", severity: "pass", label: t("We checked, found nothing"),
+    { key: "clean", filter: "no-issues-found", severity: "pass", label: t("We checked, found nothing"),
       mark: t("Nothing found"), n: c.noIssuesFound },
-    { key: "human", severity: "minor", label: t("We couldn't check"),
+    { key: "human", filter: "needs-review", severity: "minor", label: t("We couldn't check"),
       mark: t("Needs a person"), n: c.needsReview },
     // Only present when it happened. A permanent zero row would teach readers
     // to skip it; when a check breaks, this is the row that keeps the clean
     // count honest.
     ...((c.notMeasured ?? 0) > 0
-      ? [{ key: "not-measured", severity: "serious", label: t("A check didn't finish"),
+      ? [{ key: "not-measured", filter: "not-measured" as const, severity: "serious", label: t("A check didn't finish"),
           meaning: t("A second run usually completes them."),
           mark: t("Not measured"), n: c.notMeasured ?? 0 }]
       : []),
@@ -116,13 +120,29 @@ export function ConformanceView({
   // the reader saw a count of 22 and had no way to reach the 22 without
   // clearing a filter that defaulted to failures-only. Naming that group as
   // a filter of its own is what makes the count answerable.
-  const [filter, setFilter] = useState<"failed" | "needs-review" | "not-measured" | "all">("failed");
+  const [filter, setFilter] = useState<Filter>("failed");
   const panelId = useId();
   const filterName = useId();
   // The toggle stays mounted whichever state we're in, so keyboard focus
   // never evaporates when the panel opens or closes. The convenience "hide"
   // at the bottom of a long checklist hands focus back up here.
   const toggleRef = useRef<HTMLButtonElement>(null);
+  const panelRef = useRef<HTMLDivElement>(null);
+  // A result tile opens the checklist on its own group, then brings the
+  // checklist into view with focus on the chosen filter, so a keyboard or
+  // screen-reader user lands where the list changed rather than staying on
+  // a tile far above it.
+  const openOn = (f: Filter) => {
+    setFilter(f);
+    setExpanded(true);
+    requestAnimationFrame(() => {
+      const panel = panelRef.current;
+      if (!panel) return;
+      const reduce = window.matchMedia?.("(prefers-reduced-motion: reduce)").matches;
+      panel.scrollIntoView({ block: "start", behavior: reduce ? "auto" : "smooth" });
+      panel.querySelector<HTMLInputElement>("input:checked")?.focus({ preventScroll: true });
+    });
+  };
 
   const failing = useMemo(
     () => conformance.criteria.filter((c) => c.status === "failed"),
@@ -134,6 +154,10 @@ export function ConformanceView({
   // set that no longer contains them.
   const needsPerson = useMemo(
     () => conformance.criteria.filter((c) => c.status === "needs-review"),
+    [conformance.criteria]
+  );
+  const nothingFound = useMemo(
+    () => conformance.criteria.filter((c) => c.status === "no-issues-found"),
     [conformance.criteria]
   );
   const notMeasured = useMemo(
@@ -202,19 +226,13 @@ export function ConformanceView({
 
       <div className="a11y-legal-grid">
         <div className="a11y-legal-panel" aria-labelledby="a11y-legal-tells-heading">
-          <h3 className="a11y-legal-eyebrow" id="a11y-legal-tells-heading">{t("What this tells you")}</h3>
+          {/* The questions alone (user's instructions, 22 Nov 2026, "delete
+              all repetition", "do not over explain"): "It can't confirm that
+              anything meets the standard" said the band above again, and the
+              count of items needing a person is the Needs a person tile. */}
+          <h3 className="a11y-legal-eyebrow" id="a11y-legal-tells-heading">{t("Questions no software can answer")}</h3>
           <div className="a11y-legal-card">
-            <p className="a11y-legal-lead">
-              {t("The scan lists where your site fails. It can't confirm that anything meets the standard.")}
-            </p>
-            <p className="a11y-legal-body">
-              {tf(
-                "{count} of the {total} items need a person.",
-                { count: conformance.needsReview, total: conformance.total }
-              )}
-            </p>
             <div className="a11y-legal-questions">
-              <p className="a11y-legal-micro">{t("Questions no software can answer")}</p>
               {HUMAN_QUESTIONS.map((q, i) => (
                 <span key={q} className="a11y-legal-q">
                   <span className="a11y-legal-qnum" aria-hidden="true">{i + 1}</span>
@@ -247,14 +265,21 @@ export function ConformanceView({
           </div>
           <div className="a11y-legal-tiles">
           {RESULT_ROWS(conformance).map((r) => (
-            <div key={r.key} className={`a11y-legal-row a11y-legal-row-${r.key}`}>
+            <button
+              key={r.key}
+              type="button"
+              className={`a11y-legal-row a11y-legal-row-${r.key}`}
+              aria-controls={panelId}
+              aria-pressed={expanded && filter === r.filter}
+              onClick={() => openOn(r.filter)}
+            >
               <span className="a11y-legal-col-result">
                 <span className="a11y-legal-row-label">{r.label}</span>
                 {r.meaning && <span className="a11y-legal-row-meaning">{r.meaning}</span>}
                 <span className={`a11y-legal-mark a11y-legal-mark-${r.severity}`}>{r.mark}</span>
               </span>
               <span className="a11y-legal-count">{r.n}</span>
-            </div>
+            </button>
           ))}
           </div>
           {/* No footer restating the standard and the item count: the chip and
@@ -283,7 +308,7 @@ export function ConformanceView({
           substance of it — appeared on paper only if the reader happened to
           expand it first. The print stylesheet can reveal a hidden element;
           it cannot reveal one React never rendered. */}
-      <div id={panelId} className="a11y-conf-panel" hidden={!expanded}>
+      <div id={panelId} ref={panelRef} className="a11y-conf-panel" hidden={!expanded}>
           {/* The counts belong here rather than on the button that opens
               this panel. That button used to promise "Show all 50 items"
               and then show three, because a filter was on by default — it
@@ -296,6 +321,8 @@ export function ConformanceView({
               [
                 ["failed", tf("Failures ({count})", { count: failing.length })],
                 ["needs-review", tf("Needs a person ({count})", { count: needsPerson.length })],
+                // The green tile opens on this one, so it is always offered.
+                ["no-issues-found", tf("Nothing found ({count})", { count: nothingFound.length })],
                 // The chip exists only when the state does — an always-empty
                 // filter would be a control that never does anything.
                 ...(notMeasured.length > 0

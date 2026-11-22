@@ -11,6 +11,7 @@ import { levelFraming, plainForRule } from "../lib/wcagPlain";
 import { findingFix, findingTitle, modelPlain } from "../lib/modelPlain";
 import { whatWeFound } from "../lib/findingText";
 import { pictureNoteText } from "../lib/failureText";
+import { toPoints } from "../lib/cardText";
 import { useReportView } from "./ReportViewContext";
 import { enClauseFor } from "../lib/audienceMode";
 import { DataTable } from "./DataTable";
@@ -23,8 +24,9 @@ import {
   aiHint,
   keyboardHint,
 } from "../lib/testMethod";
+import { Icon } from "./Icon";
 
-const severityLabel: Record<AccessibilityFinding["severity"], string> = {
+export const severityLabel: Record<AccessibilityFinding["severity"], string> = {
   critical: "Fix first",
   serious: "Fix soon",
   moderate: "Fix eventually",
@@ -319,8 +321,7 @@ function fieldLabel(purpose: string): string {
  */
 
 /** How wide a card of the expanded finding runs on the mosaic (user's
- *  reference, 18 Nov 2026: a type foundry's sheet of alternates, tiles of
- *  different widths on one grid). Measured on the words, so a one-line
+ *  reference, 18 Nov 2026: tiles of different widths on one grid). Measured on the words, so a one-line
  *  answer is a narrow tile set large and a paragraph takes the width it
  *  needs. s spans two of six columns, m three, l four. */
 export function tileSize(text: string | null | undefined): "s" | "m" | "l" {
@@ -548,6 +549,29 @@ function devElementRefs(findings: AccessibilityFinding[]): string[] {
   return refs;
 }
 
+/* A tile's words: one sentence as a line, a longer text as points
+   (toPoints decides). The list is a real ul, so a screen reader announces
+   how many points there are. */
+function TileBody({ text }: { text: string }) {
+  const points = toPoints(text);
+  if (!points) {
+    return (
+      <span className="a11y-fd-body">
+        <CodeText text={text} />
+      </span>
+    );
+  }
+  return (
+    <ul className="a11y-fd-body a11y-fd-points">
+      {points.map((p, i) => (
+        <li key={i}>
+          <CodeText text={p} />
+        </li>
+      ))}
+    </ul>
+  );
+}
+
 // One titled group = every occurrence of the same issue on the page. The
 // shared explanation (why it matters, one clean instruction, learn-more) is
 // shown once; below it, the specific elements affected are listed so the
@@ -622,34 +646,32 @@ export function FindingDetails({
           of these answers something different — who does the work, whether
           you can check it without them, and where the finding came from — so
           each gets its own line and its own label. */}
-      <p className="a11y-method-hint" data-size={tileSize(fixHint(rep))}>
-        <strong>{t("Who fixes this")}</strong> <span className="a11y-fd-body">{fixHint(rep)}</span>
-      </p>
+      <div className="a11y-method-hint" data-size={tileSize(fixHint(rep))}>
+        <strong>{t("Who fixes this")}</strong> <TileBody text={fixHint(rep)} />
+      </div>
       {keyboardCheck && (
-        <p className="a11y-method-hint" data-size={tileSize(keyboardHint())}>
-          <strong>{t("Check it yourself")}</strong> <span className="a11y-fd-body">{keyboardHint()}</span>
-        </p>
+        <div className="a11y-method-hint" data-size={tileSize(keyboardHint())}>
+          <strong>{t("Check it yourself")}</strong> <TileBody text={keyboardHint()} />
+        </div>
       )}
       {fromAi && (
-        <p className="a11y-method-hint" data-size={tileSize(aiHint())}>
-          <strong>{t("Where this came from")}</strong> <span className="a11y-fd-body">{aiHint()}</span>
-        </p>
+        <div className="a11y-method-hint" data-size={tileSize(aiHint())}>
+          <strong>{t("Where this came from")}</strong> <TileBody text={aiHint()} />
+        </div>
       )}
       {/* The model worded this card; the check, its severity and its
           criterion are still the rule's. Said once, under the same label
           the AI review's provenance uses. */}
       {worded && (
-        <p className="a11y-method-hint" data-size="l">
+        <div className="a11y-method-hint" data-size="l">
           <strong>{t("Where this came from")}</strong>{" "}
-          <span className="a11y-fd-body">
-            {tf("An automated check found this. {model}, a language model we run on our own server, put it into plain words. The check decided the severity, not the model.", { model: worded.model })}
-          </span>
-        </p>
+          <TileBody text={tf("A rule check found this. {model}, our own language model, wrote the words. The check set the severity.", { model: worded.model })} />
+        </div>
       )}
       {!rep.elementScreenshot && pictureNoteText(rep) && (
-        <p className="a11y-picture-note" data-size={tileSize(pictureNoteText(rep) ?? "")}>
-          <span className="a11y-fd-body">{pictureNoteText(rep)}</span>
-        </p>
+        <div className="a11y-picture-note" data-size={tileSize(pictureNoteText(rep) ?? "")}>
+          <TileBody text={pictureNoteText(rep) ?? ""} />
+        </div>
       )}
       {/* The rule's own account of what was found where it has one, and
           the finding's description otherwise. axe supplies a requirement
@@ -666,43 +688,39 @@ export function FindingDetails({
           shown anywhere at all. Measured across the European sweep: 32 of
           80 AI findings arrived as a headline and three badges. */}
       {measured && (
-        <p className="a11y-finding-measured" data-size={tileSize(measured)}>
-          <strong className="a11y-fd-title">{t("What we found")}</strong>{" "}
-          <span className="a11y-fd-body"><CodeText text={measured} /></span>
-        </p>
+        <div className="a11y-finding-measured" data-size={tileSize(measured)}>
+          <strong className="a11y-fd-title">{t("What we found")}</strong> <TileBody text={measured} />
+        </div>
       )}
       {/* Its own line, not folded into the text above: rules with a
           plain-language account replace the description entirely, which
           made the first of these notes invisible on the very rule it
           attached to. */}
       {rep.ageNote && (
-        <p className="a11y-finding-measured" data-size={tileSize(rep.ageNote)}>
-          <strong>{t("Past sixty")}</strong> <span className="a11y-fd-body"><CodeText text={rep.ageNote} /></span>
-        </p>
+        <div className="a11y-finding-measured" data-size={tileSize(rep.ageNote)}>
+          <strong>{t("Past sixty")}</strong> <TileBody text={rep.ageNote} />
+        </div>
       )}
       {/* The model's account of what happens on this page, from the
           elements it was shown. Beside the curated "why", not instead of
           it: the curated line is reviewed, this one is not. */}
       {worded && (
-        <p className="a11y-finding-measured" data-size={tileSize(worded.explanation)}>
-          <strong className="a11y-fd-title">{t("On this page")}</strong>{" "}
-          <span className="a11y-fd-body"><CodeText text={worded.explanation} /></span>
-        </p>
+        <div className="a11y-finding-measured" data-size={tileSize(worded.explanation)}>
+          <strong className="a11y-fd-title">{t("On this page")}</strong> <TileBody text={worded.explanation} />
+        </div>
       )}
       {/* Shared explanation — shown once for the whole group */}
       {plain && (
-        <p className="a11y-finding-impact" data-size={tileSize(plain.impact)}>
-          <strong className="a11y-fd-title">{t("Why this matters")}</strong>{" "}
-          <span className="a11y-fd-body"><CodeText text={plain.impact} /></span>
-        </p>
+        <div className="a11y-finding-impact" data-size={tileSize(plain.impact)}>
+          <strong className="a11y-fd-title">{t("Why this matters")}</strong> <TileBody text={plain.impact} />
+        </div>
       )}
       {/* Curated, hand-verified research context — never generated per
           scan, which is how invented statistics happen. */}
       {plain?.research && (
-        <p className="a11y-finding-research" data-size={tileSize(plain.research)}>
-          <strong>{t("What the research shows")}</strong>{" "}
-          <span className="a11y-fd-body"><CodeText text={plain.research} /></span>
-        </p>
+        <div className="a11y-finding-research" data-size={tileSize(plain.research)}>
+          <strong>{t("What the research shows")}</strong> <TileBody text={plain.research} />
+        </div>
       )}
       </div>
 
@@ -748,7 +766,7 @@ export function FindingDetails({
       {rep.helpUrl && (
         <p className="a11y-fd-learn">
           <a className="a11y-learn-more" href={rep.helpUrl} target="_blank" rel="noopener noreferrer">
-            {t("Learn more about this issue")} <span aria-hidden="true">↗</span>
+            {t("Learn more about this issue")} <Icon name="launch" />
           </a>
         </p>
       )}
@@ -841,7 +859,7 @@ export function FindingDetails({
                 {rep.helpUrl && (
                   <p className="a11y-pro-line">
                     <a className="a11y-learn-more" href={rep.helpUrl} target="_blank" rel="noopener noreferrer">
-                      {t("Fix technique")} <span aria-hidden="true">↗</span>
+                      {t("Fix technique")} <Icon name="launch" />
                     </a>
                   </p>
                 )}
@@ -1252,11 +1270,15 @@ function Occurrence({
   const { professional } = useReportView();
   return (
     <li className="a11y-occurrence">
-      <div className="a11y-occurrence-head">
-        <span className="a11y-occurrence-label">{label}</span>
-        {repeatCount > 1 && <span className="a11y-occurrence-count">{repeatCount}×</span>}
-      </div>
-      <ElementShot finding={finding} showLocator={professional} />
+      {/* With a picture the name rides on it as a speech bubble (ElementShot);
+          without one it stays a plain label here. */}
+      {(!finding.elementScreenshot || repeatCount > 1) && (
+        <div className="a11y-occurrence-head">
+          {!finding.elementScreenshot && <span className="a11y-occurrence-label">{label}</span>}
+          {repeatCount > 1 && <span className="a11y-occurrence-count">{repeatCount}×</span>}
+        </div>
+      )}
+      <ElementShot finding={finding} showLocator={professional} bubble={finding.elementScreenshot ? label : undefined} />
       {hasAlt && <AltTextSuggestion value={finding.suggestedAltText!} />}
       {finding.suggestedColour && <ColourSuggestion suggestion={finding.suggestedColour} />}
       {finding.suggestedCode && <CodeFixSuggestion fix={finding.suggestedCode} />}

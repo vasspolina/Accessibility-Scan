@@ -5,11 +5,16 @@ Two features that share one small language model you host yourself.
 1. **The plain-language rewrite.** During a scan, the model rewrites each axe
    rule's findings into a plain title, an explanation about this page's
    elements, and a fix. Code: `backend/src/services/plainLanguage/`.
-2. **The pilot.** A form at `/pilot.html` where invited screen-reader and
-   keyboard users report a barrier in their own words. The same model drafts
-   a structured finding from it. The participant checks and corrects the
-   draft before it is sent. Code: `backend/src/services/pilot/`,
-   `backend/src/routes/pilot.ts`, `backend/public/pilot.html`.
+2. **The pilot.** Report a barrier, a short conversation inside the scan
+   widget (since 20 Nov 2026; before that its own page, `/pilot.html`,
+   which now sends people on) where people who use assistive technology
+   report a barrier. It opens from Report a barrier in the widget's
+   conversations panel, or from a link ending `#report-a-barrier`. It asks
+   one thing at a time with answers to pick, the same model drafts a
+   detailed finding, and the participant reads it, says what is wrong with
+   it if anything, and sends it. Code: `backend/src/services/pilot/`,
+   `backend/src/routes/pilot.ts`,
+   `widget-business/src/components/BarrierReport.tsx`.
 
 Both follow the repository's rule for optional features: with nothing set,
 they say they are not set up, and nothing fails.
@@ -88,24 +93,83 @@ Only with `PLAIN_LANGUAGE_IN_SCANS=true`. Without it, scans report
 
 ## Running the pilot
 
-The form asks for as little as it can: the page's address, one sentence
-about what happened, and how much it held the participant back. Pasting an
-address looks the page up (`POST /api/pilot/page`; every hop
-goes through the SSRF guard and only the title comes back), shows its title
-under the field and gives it to the model as context. "What were you trying
-to do" is optional, and so is "What happened" when an address is given: the
-page is then scanned (no AI review, no screenshots) and the model drafts one
+The form is a conversation (since 19 Nov 2026): one question on the page
+at a time, its words the label of the one answer field, with answers to
+pick under it so a report can be made without typing. The order is fixed:
+
+1. **What do you use?** Six kinds to pick, or typed ("NVDA with Firefox",
+   read as a screen reader, the words kept as the detail). Asked once: the
+   answer is remembered in the participant's browser.
+2. **Which page?** Typed or pasted, or "I don't have it".
+3. **What happened?** A sentence, or one of a few sentences picked for what
+   they use ("A button or link had no name"). With an address there is also
+   "Scan the page instead".
+4. **One follow-up at most** (`POST /api/pilot/followup`, `nextFollowUp`):
+   the model reads what was said and picks the one question the owner
+   would most need answered, or says the report is enough. It picks from
+   seven questions written in each language (`FOLLOW_UP_QUESTIONS`: where
+   on the page, which button, link or field, what the screen reader said,
+   what happened instead, at which step), each with its own four answers to
+   pick; it never words a question itself, since its own wording came out
+   rough on the live worker, 20 Nov 2026. The screen reader question goes
+   only to screen reader users. It has ten seconds
+   (`FOLLOW_UP_TIMEOUT_MS`; about one second on a warm worker, measured 20
+   Nov 2026). When it is off, still waking or answers off the list, "Where
+   on the page was it?" is asked. Skip is always one of the answers. A
+   typed report that already names an element and where it is ("the Pay
+   now button on the checkout page") gets no follow-up and the model is
+   not asked (`namesElementAndPlace`, word lists per language): on the
+   live worker the model asked one of such reports every time. A picked
+   sentence always gets its follow-up.
+5. **The report**, written by the model, with Send report under it and one
+   field: "Anything wrong?". What is typed there goes back to the model
+   with the draft (`POST /api/pilot/draft` with `previous` and `change`)
+   and the report is written again. If that fails, the report they already
+   read stands.
+
+The model's worker sleeps when idle and took over 100 seconds to wake when
+measured (20 Nov 2026): a first report took 87 seconds, the same report
+written again 4. So the view asks the server to wake it as it opens
+(`POST /api/pilot/wake`), and once more at the first answer. The server
+lets one wake call through per two minutes; each page view outside that
+window wakes the paid worker.
+
+Every answered question stays on the page with a Change button; changing
+one keeps the later answers that still hold. What was asked and answered is
+stored with their words (`barrierRecord`): the follow-up under "Asked:",
+each change under "Asked: Change asked after reading the draft", and a
+picked sentence marked "(picked from the suggested answers, not typed)".
+
+The address answer reads what was typed the way a chat would (`POST /api/pilot/page`,
+`services/pilot/readAddress.ts`): spaces, commas or "dot" before a domain
+ending become dots, https:// goes in front, and a host that does not
+resolve is passed to Claude (when `ANTHROPIC_API_KEY` is set) for the address
+the person meant, kept only if that host resolves. "acsessobilty nl" reads as
+https://accessibility.nl. A guessed address, or one that could not be
+reached, is asked about before it is used ("Did you mean …?"); a sentence
+typed there is taken as what happened. Only text nothing can be made of is
+an error. The page is then
+looked up (every hop goes through the SSRF guard and only the title comes
+back), its title shown under the answer and given to the model as context.
+
+There is no impact rating and no "what were you trying to do". The model
+writes one finding at length (what happens, who it stops,
+how to see it, what to change, its estimate of how much it holds people
+back, and a suggested criterion), shown as finished text with one Send
+button. With "Scan the page instead" the
+page is scanned (no AI review, no screenshots) and the model drafts one
 finding from the most serious measured problems, worded as what the scan
-found, never as what the participant met. The form says so on the review
-screen, and the stored report marks the draft `fromScan`. The participant's assistive technology (and which one, picked from a list)
-is remembered in their own browser, so a second report is three fields.
+found, never as what the participant met. The form says so above the
+report, and the stored report marks the draft `fromScan`; what they type
+under "Anything wrong?" is then what happened, and the report is written
+from that instead.
 
 There is no invitation code (removed 17 Nov 2026): anyone with the link can
 report, and the routes' rate limits bound how much. The pilot is open
 whenever reports have somewhere to go (storage or mail).
 
-1. Send people the link: `https://<backend>/pilot.html`. An old link with
-   `?code=` still works; the code is ignored and taken out of the address bar.
+1. Send people the link: `https://<backend>/demo.html#report-a-barrier`.
+   Links already sent to `/pilot.html` still work: that page sends them on.
 2. Read the reports and totals:
 
    ```bash
@@ -115,11 +179,25 @@ whenever reports have somewhere to go (storage or mail).
    `totals.participants` counts distinct devices that sent a report: the
    form keeps a random id in the browser. It is an estimate: a cleared
    browser or a second device counts again. `drafted` and `confirmed` count how
-   many reports had a model draft, and how many drafts the participant said
-   were right.
+   many reports had a model draft, and how many the participant read and sent.
 
-What is stored: the participant's own words, their own impact rating, the
-draft (as they left it), the model's name, and a hash of the form's device id. Their
+   Or open the ledger, `https://<backend>/barrier-ledger.html` (since 21 Nov
+   2026; `backend/public/barrier-ledger.html` and `.js`). It asks for
+   `ADMIN_TOKEN`, keeps it for that tab only, and shows the totals, what
+   people use, and one row per report: opened, their words stand beside
+   the model's draft. The shown rows download as CSV.
+3. Mark whether the scanner caught each barrier. In an opened report, scan
+   the page, read the findings beside their words, and save Caught, Missed
+   or Can't tell with a note and your name
+   (`POST /api/pilot/reports/:id/check`, table `pilot_checks`). A person
+   decides this, never the code: matching someone's sentence to a finding
+   is a judgement. A second mark never erases the first; Earlier marks
+   lists them. Each Missed is a probe to write, with a real page for its
+   `qa-*.html` fixture.
+
+What is stored: the participant's own words with what they were asked, their impact rating if an
+older form sent one (otherwise `unrated`; the model's estimate stays in the
+draft, marked as the model's), the draft as they read it, the model's name, and a hash of the form's device id. Their
 name and email are not asked for or stored.
 
 Before you call the pilot "deployed with users", check that

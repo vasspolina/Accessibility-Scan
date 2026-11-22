@@ -1,6 +1,4 @@
-import { PosterMark } from "./PosterMark";
 import type { ReactNode, RefObject } from "react";
-import { VoiceControl } from "./VoiceControl";
 import { SideNav, type NavSection } from "./SideNav";
 
 /**
@@ -15,7 +13,6 @@ export function AppShell({
   activeId,
   navMeta,
   navSettings,
-  mark,
   onJump,
   contentRef,
   children,
@@ -23,12 +20,12 @@ export function AppShell({
   sections: NavSection[];
   activeId: string | null;
   /* "hostname · date" for the nav's footer. Optional: before a report
-     exists there is nothing to name. */
+     exists there is nothing to name. The sheet's spread word along the top
+     and the host along the foot are gone (user's instruction, 20 Nov 2026,
+     "delete this"), and the line is back in the rail. */
   navMeta?: string;
   /* The run's settings, shown in the rail under the section list. */
   navSettings?: ReactNode;
-  /* The word the page repeats as its arrow mark (decoration). */
-  mark?: string;
   /* Shared with SideNav so the two navs cannot scroll or focus differently. */
   onJump: (el: HTMLElement) => void;
   // The content wrapper App.tsx queries for `[data-nav-label]` headings
@@ -57,8 +54,8 @@ export function AppShell({
           />
         )}
         <div className="a11y-shell-content" ref={contentRef}>
-          <VoiceControl />
-          {mark && <PosterMark word={mark} />}
+          {/* Voice control sits in the chat's box now, beside Back
+              (user's instruction, 20 Nov 2026, "move button into chat"). */}
           {children}
         </div>
       </div>

@@ -9,6 +9,16 @@ The `backend`, `widget`, and `widget-business` packages are versioned together.
 
 ### Changed
 
+- **The pilot's barrier form is a short conversation.** One question at a
+  time (what you use, which page, what happened), each with answers to
+  pick, so a report can be made without typing. The model picks at most one
+  follow-up from seven questions written in each language
+  (`POST /api/pilot/followup`; "Where on the page was it?" when it is off
+  or slow), then writes the report. Under the report, "Anything wrong?"
+  takes a change in the person's words and the report is written again
+  (`previous` and `change` on `POST /api/pilot/draft`). What was asked and
+  answered is stored with their words, and a picked sentence is marked as
+  picked.
 - The pilot's barrier form no longer asks for an invitation code, and
   `PILOT_CODES` is gone: anyone can report, bounded by the rate limits, and
   the pilot is open whenever reports can be stored or mailed. Participants
@@ -20,6 +30,40 @@ The `backend`, `widget`, and `widget-business` packages are versioned together.
 
 ### Added
 
+- **A page scan says what documents the page links to.** PDFs and Word,
+  Excel and PowerPoint files are counted, one entry per document, on the
+  report's new `documents` field. A page scan opens the first two PDFs on
+  the page's own origin and runs the PDF check on each (12 s for both, 10 MB
+  each, every address and redirect through the same guard as a scanned
+  address); the rest, PDFs on other origins and every office file are
+  counted with the reason they were not opened. A linked document's faults
+  stay on the document: they are never among the page's findings and never
+  in its score. The report mentions them as up to three rows of
+  `undecidedChecks` (`pdf-linked-not-checked`, `pdf-linked-faults`,
+  `office-linked-not-checked`), the command prints one `documents:` line,
+  and the MCP digest carries the same line. The widget words the three
+  rows in English, German, Spanish and French, each marked Document fix.
+- **A site audit counts the site's documents.** `documents` on the audit is
+  the union across the scanned pages, each file once with the number of
+  pages that link to it. An audit opens none of them; the measurement
+  behind that is beside `AUDIT_BUDGET_MS` in `routes/audit.ts`.
+- **The command scans several pages.** `a11y-scan` takes more than one
+  address, a file of them (`--urls`) or a sitemap (`--sitemap`, cut to
+  `--max-pages`, 25 by default). Thresholds apply to every page, the
+  baseline keys findings by page path, and a page that could not be scanned
+  makes the run exit 2 where it would have passed.
+- **JUnit, CSV and Markdown output** beside JSON and SARIF (`--junit`,
+  `--csv`, `--markdown`), so GitLab, Jenkins and Azure Pipelines show the
+  findings and a spreadsheet can hold them. The CSV and the SARIF carry the
+  EN 301 549 clause of each Level A and AA finding.
+- **The site audit reads the sitemap and robots.txt.** `POST /api/audit`
+  ranks the pages in the site's sitemap with the links on the entry page,
+  so a page the home page does not link to can be picked. Pages the site's
+  robots.txt disallows are left out, and the audit's `discovery` field says
+  how many. The page limit is unchanged.
+- **`a11y-scan-mcp`**, the scanner as a Model Context Protocol server with
+  two tools, `scan_page` and `scan_site`, for a coding assistant working on
+  a local site. See `docs/MCP.md`.
 - **Plain-language rewrite by a self-hosted model.** With `LOCAL_LLM_URL` set
   (Ollama, llama.cpp or vLLM; default model Qwen2.5 7B Instruct), each axe
   rule's findings get a plain title, an explanation about this page's

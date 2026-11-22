@@ -18,6 +18,7 @@ import { evaluateControlContrast } from "../src/services/contrast/analyzeControl
 import { evaluateActivation } from "../src/services/interaction/analyzeActivation.js";
 import { evaluateSchemeContrast } from "../src/services/contrast/analyzeSchemeContrast.js";
 import { dropBannerShadowedAriaHiddenFocus, mergeFindings } from "../src/services/merge/mergeFindings.js";
+import { evaluateOverlay } from "../src/services/overlay/analyzeOverlay.js";
 import type { AccessibilityFinding } from "../src/types/report.js";
 
 // The two QA fixtures, run as a test rather than by hand.
@@ -116,6 +117,9 @@ describe("qa-fixture.html: the rules axe owns", () => {
     ["image with no alt", ["image-alt"]],
     ["button with no accessible name", ["button-name"]],
     ["link with no text", ["link-name"]],
+    // Stable and on by default since axe-core 4.14.0. Before that it was
+    // experimental and its results were filed as open questions.
+    ["button whose spoken name leaves out its visible words", ["label-content-name-mismatch"]],
     ["link text that says nothing", ["link-text-vague"]],
     ["input with no label", ["label"]],
     ["text far below 4.5:1", ["color-contrast"]],
@@ -912,4 +916,47 @@ describe("qa-scheme-contrast.html: contrast in the states one axe run never sees
     expect(f).toBeTruthy();
     expect(f.description).toContain("phone width");
   });
+});
+
+// The overlay note is not a finding, so it is read from the render's signals
+// and the evaluator, not from the findings list scanFixture returns.
+describe("qa-overlay.html: an accessibility overlay on the page", () => {
+  let signals: NonNullable<typeof lastRender>["domSignals"]["overlay"];
+  let findings: AccessibilityFinding[];
+  beforeAll(async () => {
+    findings = await scanFixture("qa-overlay.html");
+    signals = lastRender!.domSignals.overlay;
+  }, 180_000);
+
+  it("reads the page's script addresses, without the query string or fragment", () => {
+    const stub = signals.scriptSrcs.filter((s) => s.includes("qa-overlay-stub"));
+    expect(stub).toHaveLength(1);
+    expect(stub[0].startsWith("file://")).toBe(true);
+    expect(stub[0].endsWith("/public/qa-overlay-stub.js")).toBe(true);
+    // The account key in the fixture's query string never leaves the page.
+    expect(JSON.stringify(signals)).not.toContain("QA-TEST-0001");
+  });
+
+  it("names the one vendor whose widget element the script built", () => {
+    // No script address: the stub is a local file, and a file: address
+    // belongs to nobody. The element alone names the vendor.
+    expect(evaluateOverlay(signals)).toEqual([{ vendor: "accessiBe", widgetOnPage: true }]);
+  });
+
+  it("stays silent about the look-alikes beside it", () => {
+    // #ae_app without the vendor's own children, .access-widget-ui as a
+    // class, and the site's own text-size buttons.
+    expect(signals.markers).toEqual(["access-widget-ui"]);
+  });
+
+  it("adds nothing to the findings: the widget element is not carded", () => {
+    expect(findings.filter((f) => f.selector.includes("access-widget-ui"))).toEqual([]);
+  });
+
+  it("says nothing at all on a page with no overlay", async () => {
+    await scanFixture("qa-dialog-good.html");
+    const quiet = lastRender!.domSignals.overlay;
+    expect(quiet.markers).toEqual([]);
+    expect(evaluateOverlay(quiet)).toEqual([]);
+  }, 180_000);
 });

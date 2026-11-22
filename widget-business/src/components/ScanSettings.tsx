@@ -46,7 +46,10 @@ export function ScanSettings({
 }) {
   return (
     <section className="a11y-settings" aria-labelledby="a11y-settings-heading">
-      <h3 className="a11y-settings-heading" id="a11y-settings-heading">
+      <h3
+        className="a11y-settings-heading"
+        id="a11y-settings-heading"
+      >
         {t("This scan")}
       </h3>
 

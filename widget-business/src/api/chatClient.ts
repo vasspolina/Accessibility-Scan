@@ -175,6 +175,21 @@ export async function sendChatTurn(
   return result;
 }
 
+/** The history to answer again after a switch of language: everything up
+ *  to the latest answer, so it ends on the person's turn. Null when the
+ *  history does not end on a finished answer: nothing yet, a turn still
+ *  waiting on a tool result, or an answer that called a tool (a scan or a
+ *  section), which asking again would run a second time. The answer is
+ *  dropped whole, never edited, so the history stays valid for the API. */
+export function beforeLastAnswer(history: ChatMessage[]): ChatMessage[] | null {
+  const last = history[history.length - 1];
+  if (history.length < 2 || !last || last.role !== "assistant") return null;
+  if (history[history.length - 2].role !== "user") return null;
+  if (Array.isArray(last.content) && last.content.some((b) => b.type === "tool_use")) return null;
+  if (!textOf(last.content).trim()) return null;
+  return history.slice(0, -1);
+}
+
 /** The history with blocks added as the person's turn. Joined to a user
  *  message already at the end rather than following it: tool results must
  *  sit in the one message right after the assistant turn that called the

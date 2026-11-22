@@ -146,6 +146,12 @@ export const PLAIN_FR: Record<string, PlainRule> = {
     impact:
       "Les utilisateurs de lecteurs d’écran peuvent afficher la liste de tous les liens de la page. Quand ils se lisent tous pareil, la liste n’aide en rien.",
   },
+  "label-content-name-mismatch": {
+    plain: "Le nom lu diffère du libellé",
+    found: (n) =>
+      `${n} ${n === 1 ? "contrôle affiche" : "contrôles affichent"} certains mots et ${n === 1 ? "porte" : "portent"} un autre nom dans le code. Le nom que lit un lecteur d’écran laisse de côté les mots visibles.`,
+    impact: "Les personnes qui utilisent la commande vocale disent les mots qu’elles voient. « Clique sur Envoyer le message » ne fait rien si le bouton porte un autre nom dans le code. Avec un lecteur d’écran et la page sous les yeux, on entend une chose et on en lit une autre.",
+  },
   "button-name": {
     research:
       "Les boutons sans libellé sont tout en haut du relevé annuel de WebAIM sur un million de pages d’accueil, année après année. Ce sont en général des contrôles réduits à une icône, évidente pour qui les a dessinés.",
@@ -965,6 +971,11 @@ export const FIXES_FR: Record<string, string | string[]> = {
     "« Lire les changements de tarifs 2026 » plutôt que « En savoir plus ».",
     "Pour garder la version courte à l’écran, ajoutez la formulation complète en libellé.",
   ],
+  "label-content-name-mismatch": [
+    "Gardez les mots affichés sur le contrôle dans son nom dans le code.",
+    "Commencez le nom par ces mots exacts, puis ajoutez le reste.",
+    "Les personnes qui utilisent la commande vocale disent ce qu’elles voient, donc les deux doivent correspondre.",
+  ],
   "button-name": [
     "Donnez à chaque bouton des mots qui disent ce qu’il fait.",
     "Pour un bouton-icône, ajoutez un libellé qui décrit l’action.",
@@ -1061,6 +1072,18 @@ export const UNDECIDED_FR: Record<string, { what: string; ask: string }> = {
     what: "Une vidéo lue dans le lecteur d’une autre entreprise, comme YouTube ou Vimeo. La vidéo se trouve sur leur site, donc la vérification ne peut pas regarder dedans.",
     ask: "Lancez chacune et activez les sous-titres avec le bouton CC. S’il n’y a pas de bouton ou que les sous-titres sont faux, corrigez-les dans le compte qui héberge la vidéo.",
   },
+  "pdf-linked-not-checked": {
+    what: "Des documents PDF vers lesquels cette page renvoie et que la vérification n’a pas ouverts. Une vérification de page ouvre les deux premiers de votre propre site et compte les autres.",
+    ask: "Collez l’adresse d’un document dans la vérification pour le contrôler séparément. Un PDF a besoin de balises, d’un titre et d’une langue définie pour qu’un lecteur d’écran puisse le lire correctement.",
+  },
+  "pdf-linked-faults": {
+    what: "Un PDF vers lequel cette page renvoie. La vérification l’a ouvert et y a trouvé des défauts, comme l’absence de balises ou de titre. Ce sont les défauts du document, ils n’entrent donc pas dans le score de cette page.",
+    ask: "Collez l’adresse du document dans la vérification pour obtenir son propre rapport. Demandez ensuite à la personne qui l’a créé de corriger le fichier d’origine et de le remettre en ligne.",
+  },
+  "office-linked-not-checked": {
+    what: "Des fichiers Word, Excel ou PowerPoint vers lesquels cette page renvoie. La vérification les compte et ne les ouvre jamais.",
+    ask: "Ouvrez chacun et lancez le vérificateur d’accessibilité intégré à Office, dans l’onglet Révision. Mieux encore, mettez leur contenu sur une page web, que tout le monde peut lire.",
+  },
   "consent-layer-in-frame": {
     what: "Le bandeau cookies se charge depuis le site d’une autre entreprise, dans un cadre : l’analyse ne peut donc pas vérifier ce qu’un lecteur d’écran y entend.",
     ask: "Demandez à quelqu’un d’ouvrir la page avec un lecteur d’écran, comme VoiceOver sur Mac ou NVDA sous Windows. Le bandeau doit être lu en premier et la touche Tab doit atteindre ses boutons. Refuser doit prendre autant d’étapes qu’accepter.",
@@ -1125,6 +1148,10 @@ export const UNDECIDED_FR: Record<string, { what: string; ask: string }> = {
     what: "Des styles qui bloquent peut-être la page en portrait ou en paysage. La vérification qui l’a trouvé est encore expérimentale et peut se tromper.",
     ask: "Ouvrez la page sur un téléphone et tournez-le dans les deux sens. Tout doit continuer à fonctionner, pour les personnes dont le téléphone ou la tablette est fixé dans une position.",
   },
+  "label-content-name-mismatch": {
+    what: "Des contrôles dont le nom dans le code ne contient peut-être pas les mots affichés. La vérification n’a pas pu trancher, le plus souvent parce que le contrôle est nommé d’après sa valeur.",
+    ask: "Demandez à votre équipe de développement de comparer ce que chacun affiche avec le nom que lit un lecteur d’écran. Le nom lu doit contenir les mots visibles, dans le même ordre.",
+  },
   "duplicate-id-aria": {
     what: "Un id peut-être utilisé plus d’une fois. Chaque libellé de code qui le désigne ne suit que le premier, donc un nom peut s’attacher en silence au mauvais élément.",
     ask: "Demandez à votre équipe de développement de rendre chaque id de la page unique, en commençant par ceux auxquels un attribut aria renvoie.",
@@ -1139,7 +1166,7 @@ export const PRINCIPLES_FR: Record<
     principleLabel: "Perceptible",
     plainTitle: "Peut-on le voir et l’entendre ?",
     plainDescription:
-      "Ce que les gens ne peuvent ni voir ni entendre : texte trop pâle, images sans description, vidéos sans sous-titres, audio sans transcription.",
+      "Texte trop pâle, images sans description, vidéos sans sous-titres, audio sans transcription.",
   },
   "2": {
     principleLabel: "Utilisable",

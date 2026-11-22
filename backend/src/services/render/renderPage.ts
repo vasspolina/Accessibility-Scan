@@ -40,6 +40,7 @@ import type {
 } from "../keyboard/analyzeKeyboard.js";
 import { logger } from "../../utils/logger.js";
 import { authenticate, type AuthConfig } from "../auth/authenticate.js";
+import { OVERLAY_MARKER_SELECTORS, type OverlaySignals } from "../overlay/analyzeOverlay.js";
 
 const require = createRequire(import.meta.url);
 
@@ -180,11 +181,25 @@ export interface DomSignals {
      reading it, and offers no way to turn it off, extend it, or adjust it —
      which is the whole of WCAG 2.2.1. */
   metaRefreshSeconds: number | null;
+  /* What a third-party accessibility overlay leaves in the document: the
+     addresses of the page's scripts, and which of the widget elements the
+     known vendors build were present. Raw facts only. Which vendor an
+     address belongs to is decided in services/overlay/analyzeOverlay.ts,
+     where the table lives; the collector is handed that table's selectors
+     and knows no vendor by name. */
+  overlay: OverlaySignals;
   // Every same-document link with its text — used by the crawler to pick
   // which pages to audit. Separate from interactiveElements, which is capped
   // at 60 and mixes in buttons: a nav-heavy page would truncate the link list
   // before the pages worth auditing appeared in it.
   pageLinks: Array<{ href: string; text: string }>;
+  // How many of the page's links pageLinks left out because of its cap.
+  // Zero on almost every page. The document inventory
+  // (services/documents/inventoryDocuments.ts) counts from pageLinks, so on
+  // a page with more links than the cap its counts are a floor, and this is
+  // what lets the report say so. Optional so a hand-built DomSignals in a
+  // test need not carry it.
+  pageLinksNotRead?: number;
   // Modal/popup dialogs currently on the page (cookie banners, newsletter
   // pop-ups, age gates, etc.) — either explicitly marked (role="dialog",
   // <dialog>) or heuristically detected as a viewport-covering overlay.
@@ -393,7 +408,7 @@ export interface RenderResult {
 
 // Runs inside the browser page context via page.evaluate — must be fully
 // self-contained (no closures over outer-scope variables).
-function extractDomSignalsInPage(): DomSignals {
+function extractDomSignalsInPage(overlayMarkerSelectors: string[]): DomSignals {
   function cssPath(el: Element): string {
     // CSS.escape, because an id is not automatically a valid CSS identifier.
     // Generated markup routinely produces ids starting with a digit, and
@@ -879,6 +894,52 @@ function extractDomSignalsInPage(): DomSignals {
     if (Number.isFinite(secs) && secs > 0) metaRefreshSeconds = secs;
   }
 
+  // Script addresses and overlay widget elements, for the overlay note.
+  //
+  // document.scripts and not the network log: a script a tag manager
+  // injected is a <script> element like any other by the time this runs
+  // (after load, the network pause and axe), and the element is what an
+  // owner can find in their own page source or tag manager and remove.
+  // Scripts inside iframes are another document and are not read.
+  //
+  // The query string and fragment go here, before anything leaves the
+  // page. They carry account keys and cache stamps; the vendor is
+  // recognised by host and path, and the reader is shown host and path.
+  // A data: or blob: script is skipped: it has no host to recognise
+  // anything by and its "address" is the script itself. file: is kept so
+  // the fixture test can see this collector read a real page's scripts;
+  // the evaluator names nobody from a file: address.
+  const overlay: { scriptSrcs: string[]; markers: string[] } = { scriptSrcs: [], markers: [] };
+  {
+    const seenSrc = new Set<string>();
+    for (const el of Array.from(document.scripts)) {
+      // A guard, not a measured limit: it stops a pathological page from
+      // growing the payload without end. Nobody has counted what a heavy
+      // real page carries; raise it if a real page is ever cut short.
+      if (overlay.scriptSrcs.length >= 400) break;
+      if (!el.src) continue;
+      try {
+        const u = new URL(el.src, location.href);
+        if (u.protocol !== "https:" && u.protocol !== "http:" && u.protocol !== "file:") continue;
+        const clean = `${u.protocol}//${u.host}${u.pathname}`.slice(0, 300);
+        if (seenSrc.has(clean)) continue;
+        seenSrc.add(clean);
+        overlay.scriptSrcs.push(clean);
+      } catch {
+        // An address that does not parse names nobody.
+      }
+    }
+    for (const sel of overlayMarkerSelectors ?? []) {
+      try {
+        // Light DOM only, on purpose: every marker in the table is the
+        // element a vendor's script appends to the page's own document.
+        if (document.querySelector(sel)) overlay.markers.push(sel);
+      } catch {
+        // A selector this browser rejects is a marker not found.
+      }
+    }
+  }
+
   let respectsReducedMotion = false;
   try {
     for (const sheet of Array.from(document.styleSheets)) {
@@ -1019,7 +1080,9 @@ function extractDomSignalsInPage(): DomSignals {
       };
     });
 
-  const pageLinks = Array.from(document.querySelectorAll<HTMLAnchorElement>("a[href]"))
+  const allPageLinks = Array.from(document.querySelectorAll<HTMLAnchorElement>("a[href]"));
+  const pageLinksNotRead = Math.max(0, allPageLinks.length - 300);
+  const pageLinks = allPageLinks
     .slice(0, 300)
     .map((a) => ({
       href: a.getAttribute("href") ?? "",
@@ -1049,7 +1112,9 @@ function extractDomSignalsInPage(): DomSignals {
     titleTooltips,
     unmarkedScripts,
     metaRefreshSeconds,
+    overlay,
     pageLinks,
+    pageLinksNotRead,
     dialogs,
   };
 }
@@ -3508,7 +3573,7 @@ export async function renderAndScan(
         page.locator("body").ariaSnapshot({ timeout: 8_000 }).catch(() => "")
       );
       const domSignals = await timed("domSignals", () =>
-        page.evaluate<DomSignals>(toBrowserScript(extractDomSignalsInPage))
+        page.evaluate<DomSignals>(toBrowserScript(extractDomSignalsInPage, OVERLAY_MARKER_SELECTORS))
       );
       const typographyBlocks = await timed("typography", () =>
         page
@@ -4019,17 +4084,23 @@ export async function renderAndScan(
           await page.waitForTimeout(200);
         }).catch(() => {});
 
-        // Experimental axe rules, run explicitly because they are off by
-        // default: css-orientation-lock (1.3.4) and label-content-name-mismatch
-        // (2.5.3 — before this, nothing anywhere tested Label in Name while
-        // its conformance row claimed "automated"). Experimental rules cry
-        // wolf, so their results go to the undecided channel for a person to
-        // judge rather than into the findings as confident claims.
+        // The experimental axe rule for 1.3.4, run explicitly because it is
+        // off by default. Experimental rules cry wolf, so its results go to
+        // the undecided channel for a person to judge rather than into the
+        // findings as confident claims.
+        //
+        // label-content-name-mismatch (2.5.3) used to run here beside it, for
+        // the same reason. axe-core 4.14.0 (5 Oct 2026) took it out of
+        // experimental and turned it on by default, after rewriting it to
+        // compare the visible label with the name word by word. The main run
+        // above now returns it as a violation like any other rule, so asking
+        // for it again here would file the same control twice: once as a
+        // finding and once as an open question.
         await timed("orientationLock", async () => {
           const lock = (await page.evaluate(() =>
             (window as unknown as { axe: { run: (c: unknown, o: unknown) => Promise<unknown> } }).axe.run(
               document,
-              { runOnly: { type: "rule", values: ["css-orientation-lock", "label-content-name-mismatch"] } }
+              { runOnly: { type: "rule", values: ["css-orientation-lock"] } }
             )
           )) as AxeRunResult;
           for (const v of lock.violations) {

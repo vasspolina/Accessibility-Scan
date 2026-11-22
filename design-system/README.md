@@ -8,7 +8,7 @@
 > a brand rule — **the logo is the wordmark: "Accessible Scan" in
 > PP Telegraf Medium at 28px, never a graphic mark** — a dedicated
 > `tokens/a11y.css` (vendored into production/tokens/), filled
-> Carbon-style fields, and a scan-app UI kit. The production package
+> boxed fields, and a scan-app UI kit. The production package
 > below remains the installable copy the widget imports.
 
 This is the user's **Accessible Design System** ("Verify"), the design the
@@ -41,5 +41,5 @@ Two documented divergences:
   hang off `prefers-color-scheme` instead.
 
 When the design system updates, diff its `production/tokens/` against the
-token values in the widget's Carbon and Verify layers, and re-run the
+token values in the widget's base and Verify layers, and re-run the
 standing audit (axe matrix + live self-scan) before deploying.

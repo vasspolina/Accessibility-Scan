@@ -54,3 +54,11 @@ jobs:
           if a11y-scan notaurl --quiet; then echo "expected exit 2"; exit 1; fi
           a11y-scan https://example.com --sarif out.sarif --quiet
           node -e "const s=JSON.parse(require('fs').readFileSync('out.sarif','utf8')); if(s.version!=='2.1.0'||!s.runs[0].results.length) process.exit(1)"
+          # Two pages in one run, and the three other formats. The JSON of a
+          # run of several is a list of pages; the JUnit has a suite for each.
+          a11y-scan https://example.com https://example.org --json pages.json --junit out.xml --csv out.csv --markdown out.md --quiet
+          node -e "const fs=require('fs'); const j=JSON.parse(fs.readFileSync('pages.json','utf8')); if(j.pages.length!==2||j.failed.length) process.exit(1); if((fs.readFileSync('out.xml','utf8').match(/<testsuite /g)||[]).length!==2) process.exit(1); if(!fs.readFileSync('out.csv','utf8').includes('EN 301 549')) process.exit(1); if(!fs.readFileSync('out.md','utf8').includes('## Accessibility scan')) process.exit(1)"
+          # The assistant server: the handshake over a real pipe, and nothing
+          # on stdout that is not a protocol message.
+          printf '%s\n' '{"jsonrpc":"2.0","id":1,"method":"initialize","params":{"protocolVersion":"2025-06-18","capabilities":{}}}' '{"jsonrpc":"2.0","id":2,"method":"tools/list"}' | a11y-scan-mcp > mcp.out
+          node -e "const l=require('fs').readFileSync('mcp.out','utf8').trim().split('\n').map(JSON.parse); if(l.length!==2||l[1].result.tools.length!==2) process.exit(1)"

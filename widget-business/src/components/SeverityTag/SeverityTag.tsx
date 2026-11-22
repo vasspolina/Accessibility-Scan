@@ -14,7 +14,7 @@ import type { AccessibilityFinding } from "../../api/scanClient";
  * asks for. The glyph was repeating the word, and a screen reader that read
  * both announced "exclamation mark, Fix first".
  *
- * `onDark` switches to the Carbon dark tag pair. It exists because the pill
+ * `onDark` switches to the dark tag pair. It exists because the pill
  * appears on inverted surfaces — IssueRow flips to black on hover, and the
  * five solid fills would otherwise sit on it as bright blocks.
  *

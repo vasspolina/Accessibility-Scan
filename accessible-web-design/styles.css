@@ -1,7 +1,21 @@
 @font-face {
-  font-family: "Jokker";
-  src: url("fonts/JokkerVF-TRIAL.woff2") format("woff2");
-  font-weight: 100 900;
+  font-family: "PP Telegraf";
+  src: url("fonts/PPTelegraf-Light.otf") format("opentype");
+  font-weight: 300;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "PP Telegraf";
+  src: url("fonts/PPTelegraf-Regular.otf") format("opentype");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "PP Telegraf";
+  src: url("fonts/PPTelegraf-Medium.otf") format("opentype");
+  font-weight: 500;
   font-style: normal;
   font-display: swap;
 }
@@ -35,15 +49,14 @@ body {
   margin: 0;
   background: var(--bg);
   color: var(--body-text);
-  font-family: "Jokker", "Helvetica Neue", Arial, sans-serif;
-  font-feature-settings: "ss04", "ss05";
+  font-family: "PP Telegraf", "Helvetica Neue", Arial, sans-serif;
   font-weight: 300;
   -webkit-font-smoothing: antialiased;
   line-height: 1.45;
   /* A word wider than its column breaks instead of pushing past it. Only
      acts when a word cannot fit, so lines that fit are untouched. Needed
      because font-display: swap lays the page out in the wider fallback
-     until Jokker arrives (slow connections, and CI's expansion check,
+     until PP Telegraf arrives (slow connections, and CI's expansion check,
      which measured the fallback and found 320px paragraphs overflowing). */
   overflow-wrap: break-word;
 }

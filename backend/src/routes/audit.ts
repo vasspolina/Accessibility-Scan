@@ -8,6 +8,7 @@ import { renderAndScan } from "../services/render/renderPage.js";
 import { describeScanFailure } from "../services/scanFailure.js";
 import { scanUrlToReport } from "../services/scanPipeline.js";
 import { selectPagesToAudit } from "../services/crawl/discoverPages.js";
+import { discoverFromSitemap, makeTextFetcher, type SiteMapDiscovery } from "../services/crawl/sitemap.js";
 import { aggregateAudit, type PageOutcome } from "../services/crawl/aggregateAudit.js";
 import { accountForKey, bearerFrom } from "../storage/accounts.js";
 import { saveAudit } from "../storage/audits.js";
@@ -17,9 +18,42 @@ import { saveAudit } from "../storage/audits.js";
 // large site would pin the browser pool and starve every other request.
 const MAX_PAGES = 10;
 const AUDIT_BUDGET_MS = 240_000;
+//
+// Linked documents are counted on every page of an audit and none is
+// opened, where a single page scan opens two PDFs. Measured before
+// deciding, on 22 Nov 2026 from a laptop, through this route with the AI
+// review off:
+//
+//   etsi.org    5 pages  39.5 s      10 pages  58.2 s
+//   gov.uk      5 pages  22.6 s
+//
+// and one PDF check takes 0.02 to 1.2 s (see LINKED_PDF_BUDGET_MS in
+// services/documents/linkedDocuments.ts). Here that is room to spare: ten
+// pages used a quarter of the budget. The deployed service is the one that
+// counts, and it renders four to six times slower than this laptop (the
+// moma.org note in scanPipeline.ts: eight seconds here, forty-six there).
+// Ten pages at that rate is 230 to 350 s, which is the whole budget or
+// past it before a document is opened, and a sample allowed its full 12 s
+// on each of ten pages, two at a time, is another 60 s. So the budget
+// does not allow it where it runs. The deployed figure is scaled from one
+// measured page, not timed there; an audit timed on the service itself
+// is what would reopen this.
+//
+// There is a second reason, and it would hold with any budget: the pages
+// of one site link to the same files (a footer's price list), so a sample
+// per page opens the same two documents ten times over. A sample for an
+// audit belongs after the pages, taken once from the site's own list.
+//
 // Two at a time: enough to cut wall-clock roughly in half, low enough to leave
 // room in the pool (MAX_CONCURRENT_RENDERS) for ordinary single-page scans.
 const PAGE_CONCURRENCY = 2;
+// The sitemap read is a few small text files, and the whole of it stops at
+// ten seconds. That figure is chosen, not measured on a sample of sites: the
+// fetcher gives up on any one file at 8s, and ten keeps the worst case small
+// beside the 240s budget. Only a handful of the addresses are ever scanned
+// (MAX_PAGES), so 2000 is far more than the ranking needs.
+const SITEMAP_BUDGET_MS = 10_000;
+const SITEMAP_URL_CAP = 2000;
 
 const auditBodySchema = z.object({
   url: z.string().min(1, "url is required"),
@@ -72,7 +106,34 @@ export async function auditRoutes(app: FastifyInstance) {
       });
     }
 
-    const pages = selectPagesToAudit(resolvedEntry, links, parsed.data.maxPages);
+    // The site's own list of its pages, read beside the entry page's links,
+    // and its robots rules for the pages picked here. Bounded: a site with
+    // a slow or missing sitemap must cost the audit seconds, not its budget,
+    // and a failure here is never the audit's failure.
+    let siteMap: SiteMapDiscovery = { urls: [], sitemap: null, robots: null };
+    try {
+      siteMap = await withTimeout(
+        discoverFromSitemap(resolvedEntry, { fetchText: makeTextFetcher(), maxUrls: SITEMAP_URL_CAP }),
+        SITEMAP_BUDGET_MS,
+        "Sitemap read"
+      );
+    } catch (err) {
+      logger.info({ err, url: resolvedEntry }, "Sitemap not read, continuing with the entry page's links");
+    }
+    let excludedByRobots = 0;
+    const pages = selectPagesToAudit(
+      resolvedEntry,
+      // The entry page's links first: the sort inside is stable, so between
+      // two pages of equal weight the one a visitor can reach from the home
+      // page is kept. A sitemap page is ranked by its own rule, see
+      // sitemapImportance.
+      [...links, ...siteMap.urls.map((href) => ({ href, text: "", fromSitemap: true }))],
+      parsed.data.maxPages,
+      siteMap.robots ? (path) => siteMap.robots!.isAllowed(path) : undefined,
+      () => {
+        excludedByRobots += 1;
+      }
+    );
     const deadline = Date.now() + AUDIT_BUDGET_MS;
     const outcomes: PageOutcome[] = [];
 
@@ -100,7 +161,11 @@ export async function auditRoutes(app: FastifyInstance) {
             parsed.data.includeAiReview,
             undefined,
             false,
-            parsed.data.language
+            parsed.data.language,
+            false,
+            undefined,
+            // Counted on every page, opened on none. See AUDIT_BUDGET_MS.
+            "count-for-site-audit"
           );
           outcomes.push({ ...page, report });
         } catch (err) {
@@ -127,6 +192,13 @@ export async function auditRoutes(app: FastifyInstance) {
     outcomes.sort((a, b) => (order.get(a.url) ?? 0) - (order.get(b.url) ?? 0));
 
     const audit = aggregateAudit(resolvedEntry, outcomes, parsed.data.language);
+    if (siteMap.sitemap || excludedByRobots > 0) {
+      audit.discovery = {
+        ...(siteMap.sitemap ? { sitemap: siteMap.sitemap } : {}),
+        sitemapUrls: siteMap.urls.length,
+        excludedByRobots,
+      };
+    }
     // Saved for a caller who identified themselves, like a scan. An audit
     // is the better source of a SITE's open questions, so this is what
     // makes guided manual testing ask about the site rather than a page.
