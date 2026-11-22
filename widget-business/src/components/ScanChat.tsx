@@ -855,16 +855,15 @@ export function ScanChat({
     summary?.focus({ preventScroll: true });
   }, [turns]);
 
-  /** Where a block takes focus: its fold line, or, for the findings block,
-   *  which has none, its first heading (made focusable for the purpose). */
+  /** Where a block takes focus: its first heading (made focusable for the
+   *  purpose), or the block itself when it has none. Blocks have no fold
+   *  line since 22 Nov 2026. */
   function blockTarget(id: number): HTMLElement | null {
     const block = rootRef.current?.querySelector<HTMLElement>(`#a11y-chat-block-${id}`);
     if (!block) return null;
-    const summary = block.querySelector<HTMLElement>(":scope > summary");
-    if (summary) return summary;
-    const heading = block.querySelector<HTMLElement>("h2, h3");
-    if (heading && !heading.hasAttribute("tabindex")) heading.tabIndex = -1;
-    return heading;
+    const target = block.querySelector<HTMLElement>("h2, h3") ?? block;
+    if (!target.hasAttribute("tabindex")) target.tabIndex = -1;
+    return target;
   }
 
   /** Shows a section as a block, or — when it is already in the thread for
@@ -1582,48 +1581,26 @@ export function ScanChat({
                   </li>
                 ) : null;
               }
-              // The findings block has no fold line (user's instruction, 21 Nov
-              // 2026, "delete these" on "Findings · Hide details"): its own
-              // headings ("What people can't use") already title it, so the
-              // line only repeated them. It stands open. Other blocks keep
-              // theirs, since some hide a heading that repeats the line.
-              if (turn.section === "findings") {
-                return (
-                  <li key={turn.id} id={`a11y-chat-block-${turn.id}`} className={`a11y-chat-turn a11y-chat-block${contClass}`}>
-                    <div className="a11y-chat-blockbody">
-                      {fresh ? (
-                        <>
-                          {renderSection("protable")}
-                          {body}
-                        </>
-                      ) : (
-                        <p className="a11y-chat-stale">{t("From an earlier scan. Run it again to see it.")}</p>
-                      )}
-                    </div>
-                  </li>
-                );
-              }
+              // No fold line over a block (user's instructions: 21 Nov 2026,
+              // "delete these" on "Findings · Hide details"; 22 Nov 2026,
+              // "delete all repetition" on "WCAG 2.2 · Hide details" over
+              // "Ready for WCAG 2.2?"): every section carries its own
+              // heading, so the line only said it again. A block stands
+              // open; one from an earlier scan is a single line naming it.
               return (
-                <li key={turn.id} className={`a11y-chat-turn a11y-chat-block${contClass}`}>
-                  <details id={`a11y-chat-block-${turn.id}`} open={fresh}>
-                    <summary className="a11y-chat-blockhead">
-                      {sectionLabel(turn.section)}
-                      {/* In the markup and hidden, not drawn by CSS: generated
-                          content joins the summary's name wherever the
-                          alt-text syntax for `content` is not supported. */}
-                      <span className="a11y-chat-fold" aria-hidden="true">
-                        <span className="a11y-chat-fold-closed">{t("Show details")} <Icon name="caret--right" /></span>
-                        <span className="a11y-chat-fold-open">{t("Hide details")} <Icon name="caret--down" /></span>
-                      </span>
-                    </summary>
-                    <div className="a11y-chat-blockbody">
-                      {fresh ? (
-                        body
-                      ) : (
-                        <p className="a11y-chat-stale">{t("From an earlier scan. Run it again to see it.")}</p>
-                      )}
-                    </div>
-                  </details>
+                <li key={turn.id} id={`a11y-chat-block-${turn.id}`} className={`a11y-chat-turn a11y-chat-block${contClass}`}>
+                  <div className="a11y-chat-blockbody">
+                    {fresh ? (
+                      <>
+                        {turn.section === "findings" && renderSection("protable")}
+                        {body}
+                      </>
+                    ) : (
+                      <p className="a11y-chat-stale">
+                        {sectionLabel(turn.section)} – {t("From an earlier scan. Run it again to see it.")}
+                      </p>
+                    )}
+                  </div>
                 </li>
               );
             }

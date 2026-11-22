@@ -226,19 +226,13 @@ export function ConformanceView({
 
       <div className="a11y-legal-grid">
         <div className="a11y-legal-panel" aria-labelledby="a11y-legal-tells-heading">
-          <h3 className="a11y-legal-eyebrow" id="a11y-legal-tells-heading">{t("What this tells you")}</h3>
+          {/* The questions alone (user's instructions, 22 Nov 2026, "delete
+              all repetition", "do not over explain"): "It can't confirm that
+              anything meets the standard" said the band above again, and the
+              count of items needing a person is the Needs a person tile. */}
+          <h3 className="a11y-legal-eyebrow" id="a11y-legal-tells-heading">{t("Questions no software can answer")}</h3>
           <div className="a11y-legal-card">
-            <p className="a11y-legal-lead">
-              {t("The scan lists where your site fails. It can't confirm that anything meets the standard.")}
-            </p>
-            <p className="a11y-legal-body">
-              {tf(
-                "{count} of the {total} items need a person.",
-                { count: conformance.needsReview, total: conformance.total }
-              )}
-            </p>
             <div className="a11y-legal-questions">
-              <p className="a11y-legal-micro">{t("Questions no software can answer")}</p>
               {HUMAN_QUESTIONS.map((q, i) => (
                 <span key={q} className="a11y-legal-q">
                   <span className="a11y-legal-qnum" aria-hidden="true">{i + 1}</span>
