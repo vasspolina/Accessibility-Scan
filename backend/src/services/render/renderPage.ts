@@ -32,6 +32,7 @@ import {
 } from "../textResize/analyzeTextResize.js";
 import type { ScreenReaderScript } from "../../types/report.js";
 import type { ReadabilitySignals } from "../readability/analyzeReadability.js";
+import { collectReflowHeightInPage, REFLOW_HEIGHT, type ReflowHeightSignals } from "../reflowHeight/analyzeReflowHeight.js";
 import type {
   FocusStyles,
   KeyboardNavResult,
@@ -385,6 +386,10 @@ export interface RenderResult {
   // Main-content prose and the declared language, for the reading-level
   // advisory (services/readability/analyzeReadability.ts).
   readability: ReadabilitySignals;
+  // Pinned boxes measured in a window 256px tall, the vertical half of
+  // 1.4.10 (services/reflowHeight/analyzeReflowHeight.ts). Absent when the
+  // pass did not finish.
+  reflowHeight?: ReflowHeightSignals;
   // Checks that did not complete on this run, in words a reader understands.
   //
   // Each of these passes catches its own failures and returns empty signals so
@@ -4024,6 +4029,23 @@ export async function renderAndScan(
       // changed for the mobile pass below.
       const textResizeSignals = await timed("textResize", () => collectTextResizeSignals(page));
 
+      // The vertical half of 1.4.10: a window 256 CSS px tall, which is a
+      // 1280 x 1024 screen at 400%. At desktop width, before the mobile pass
+      // changes the viewport, and put back to 1280 x 900 afterwards so the
+      // phase is invisible to everything that follows. Its own catch: a
+      // failure here costs this check, never the scan.
+      let reflowHeight: ReflowHeightSignals | undefined;
+      if (remaining() > 3000) {
+        await timed("reflowHeight", async () => {
+          await page.setViewportSize({ width: 1280, height: REFLOW_HEIGHT });
+          await page.waitForTimeout(300);
+          reflowHeight = await page.evaluate<ReflowHeightSignals>(toBrowserScript(collectReflowHeightInPage));
+        })
+          .catch(() => {})
+          .finally(() => page.setViewportSize({ width: 1280, height: 900 }).catch(() => {}));
+        await page.waitForTimeout(200);
+      }
+
       // Mobile pass — resize to a phone width, let the layout reflow, and
       // measure mobile-only problems (sideways scrolling, tiny tap targets).
       // Done last: it changes the viewport, invalidating everything above.
@@ -4217,6 +4239,7 @@ export async function renderAndScan(
         userPreferences,
         readingOrder,
         readability,
+        reflowHeight,
         pageTitle: domSignals.pageTitle,
         finalUrl: page.url(),
         axe,
@@ -4266,6 +4289,7 @@ export async function renderAndScan(
           // error), and the dialog probe when it was skipped or threw.
           ...(screenReaderFailed ? ["screen reader names"] : []),
           ...(!mobileFailed && !mobileSignals.reflow320 ? ["320px reflow"] : []),
+          ...(!reflowHeight ? ["256px-tall reflow"] : []),
           ...(!dialogProbeRan && domSignals.dialogs.some((d) => d.selector) ? ["open dialogs"] : []),
         ],
       };

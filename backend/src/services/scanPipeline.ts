@@ -37,6 +37,7 @@ import { evaluateDialogs } from "./dialog/analyzeDialogs.js";
 import { evaluateForcedColors } from "./forcedColors/analyzeForcedColors.js";
 import { evaluateReadingOrder } from "./readingOrder/analyzeReadingOrder.js";
 import { evaluateReadability } from "./readability/analyzeReadability.js";
+import { evaluateReflowHeight } from "./reflowHeight/analyzeReflowHeight.js";
 import { evaluateMobile } from "./mobile/analyzeMobile.js";
 import { evaluateDarkPatterns } from "./darkPatterns/analyzeDarkPatterns.js";
 import { evaluateTextResize } from "./textResize/analyzeTextResize.js";
@@ -488,6 +489,7 @@ export async function scanUrlToReport(
   deterministic.push(...evaluateReadingOrder(renderResult.readingOrder));
   deterministic.push(...evaluateReadability(renderResult.readability));
   deterministic.push(...evaluateMobile(renderResult.mobileSignals));
+  deterministic.push(...evaluateReflowHeight(renderResult.reflowHeight));
   deterministic.push(...evaluateDarkPatterns(renderResult.darkPatternSignals));
   // The consent banner's screen-reader mechanics — a separate layer from the
   // dark-pattern checks on the same banner: those judge the fairness of the

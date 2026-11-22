@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>QA fixture: reflow at 256px tall</title>
+  <style>
+    body { margin: 0; font: 16px/1.5 system-ui, sans-serif; }
+    header { position: sticky; top: 0; height: 120px; background: #fff; border-bottom: 1px solid #000; }
+    footer.bar { position: fixed; bottom: 0; left: 0; right: 0; height: 120px; background: #fff; border-top: 1px solid #000; }
+    main { padding: 1em; }
+    /* The defect the probe exists for: a pinned panel 420px tall that does
+       not scroll. At 256px its buttons sit below the bottom edge for good. */
+    #consent { position: fixed; right: 16px; top: 16px; width: 320px; height: 420px; background: #fff; border: 2px solid #000; padding: 12px; overflow: hidden; }
+    #consent .buttons { position: absolute; bottom: 12px; left: 12px; }
+  </style>
+</head>
+<body>
+  <!-- Known defects:
+       1. #consent: fixed, 420px tall, no scroll; "Accept all" and "Reject all" unreachable at 256px (reflow-height-unreachable).
+       2. header (sticky, 120px) + footer.bar (fixed, 120px): 240px of a 256px window pinned, 16px left (reflow-height-pinned). -->
+  <header><a href="#main">Shop</a></header>
+  <main id="main">
+    <h1>Reflow at 256px tall</h1>
+    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
+    <p>Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
+    <p>Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.</p>
+    <p>Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
+    <p>Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
+    <p>Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.</p>
+    <p>Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
+    <p>Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
+  </main>
+  <footer class="bar"><a href="#main">Back to top</a></footer>
+  <section id="consent" aria-label="Cookies">
+    <h2>Cookies</h2>
+    <p>We use cookies to remember your basket and to count visits. Choose which you allow. You can change this later on the privacy page.</p>
+    <div class="buttons">
+      <button type="button">Accept all</button>
+      <button type="button">Reject all</button>
+    </div>
+  </section>
+</body>
+</html>

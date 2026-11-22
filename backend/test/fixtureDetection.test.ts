@@ -10,6 +10,7 @@ import { evaluateDialogs } from "../src/services/dialog/analyzeDialogs.js";
 import { evaluateForcedColors } from "../src/services/forcedColors/analyzeForcedColors.js";
 import { evaluateReadingOrder } from "../src/services/readingOrder/analyzeReadingOrder.js";
 import { evaluateMobile } from "../src/services/mobile/analyzeMobile.js";
+import { evaluateReflowHeight } from "../src/services/reflowHeight/analyzeReflowHeight.js";
 import { evaluateDarkPatterns } from "../src/services/darkPatterns/analyzeDarkPatterns.js";
 import { evaluateTextResize } from "../src/services/textResize/analyzeTextResize.js";
 import { evaluateConsentA11y } from "../src/services/consentA11y/evaluateConsentA11y.js";
@@ -58,6 +59,7 @@ async function scanFixture(name: string): Promise<AccessibilityFinding[]> {
   findings.push(...evaluateForcedColors(r.keyboardNav.stops, r.userPreferences));
   findings.push(...evaluateReadingOrder(r.readingOrder));
   findings.push(...evaluateMobile(r.mobileSignals));
+  findings.push(...evaluateReflowHeight(r.reflowHeight));
   findings.push(...evaluateDarkPatterns(r.darkPatternSignals));
   findings.push(...evaluateConsentA11y(r.darkPatternSignals));
   findings.push(...evaluateTextResize(r.textResizeSignals));
@@ -630,6 +632,43 @@ describe("qa-mobile-good.html: phone-width done right", () => {
   it("stays silent about every correct pattern", () => {
     const mobile = findings.filter((f) => f.ruleId?.startsWith("mobile-"));
     expect(mobile.map((f) => f.ruleId)).toEqual([]);
+  });
+});
+
+// The vertical half of 1.4.10: a window 256px tall. One fixture holds a
+// pinned cookie panel whose buttons fall below the edge and two bars that
+// leave 16px to read through; the other holds the same parts built right (a
+// panel that scrolls inside itself, a bar that stops pinning when the window
+// is short, a slim header) and must draw nothing.
+describe("qa-reflow-height.html: a window 256px tall", () => {
+  let findings: AccessibilityFinding[];
+  beforeAll(async () => {
+    findings = await scanFixture("qa-reflow-height.html");
+  }, 120_000);
+
+  it("names the buttons a pinned panel leaves below the edge", () => {
+    const f = findings.find((x) => x.ruleId === "reflow-height-unreachable");
+    expect(f).toBeDefined();
+    expect(f!.selector).toBe("#consent");
+    expect(f!.description).toContain("Accept all");
+    expect(f!.description).toContain("Reject all");
+  });
+
+  it("scores bars that leave less than a line", () => {
+    const f = findings.find((x) => x.ruleId === "reflow-height-pinned");
+    expect(f).toBeDefined();
+    expect(f!.wcagCriterion).toBe("1.4.10");
+  });
+});
+
+describe("qa-reflow-height-good.html: a window 256px tall, done right", () => {
+  let findings: AccessibilityFinding[];
+  beforeAll(async () => {
+    findings = await scanFixture("qa-reflow-height-good.html");
+  }, 120_000);
+
+  it("stays silent about every correct pattern", () => {
+    expect(findings.filter((f) => f.ruleId?.startsWith("reflow-height")).map((f) => f.ruleId)).toEqual([]);
   });
 });
 
