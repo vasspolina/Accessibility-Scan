@@ -337,6 +337,13 @@ export const CHROME_KEYS: string[] = [
   "Learn more {arrow} about this check",
   "Show all {count}",
   "Export the list",
+  // The findings as a spreadsheet (FindingsCsvButton, lib/findingsCsv.ts):
+  // the button, then the column titles the report does not already use. Page, Severity, Level, Issue, What to
+  // do and Element are above.
+  "Download as CSV",
+  "Rule",
+  "Found by",
+  "Fingerprint",
   "{open} open, {answered} answered",
   "Answer for {criterion}",
   "1 page checked.",
