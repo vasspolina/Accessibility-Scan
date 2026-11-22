@@ -1667,19 +1667,21 @@ export function ScanChat({
 
       {!barrier && (
       <div className="a11y-chat-dock" ref={dockRef}>
-        {/* An assistant's box: the prompt sits inside it as the placeholder
-            and the actions sit under the text, inside the same edge. The
-            label stays for the accessibility tree. Enter sends; Shift+Enter
-            breaks a line; the box grows with the text. */}
+        {/* An assistant's box: the prompt is a visible label at the top
+            inside it, and the actions sit under the text, inside the same
+            edge. It was the placeholder with a screen-reader-only label,
+            and a placeholder goes the moment someone types, the one moment
+            they need to see what the box is for (WCAG 3.3.2), so the
+            placeholder is gone rather than saying the label twice. Enter
+            sends; Shift+Enter breaks a line; the box grows with the text. */}
         <form className="a11y-chat-composer" onSubmit={send} aria-label={t("New scan")}>
-          <label className="a11y-sr-only" htmlFor="a11y-chat-input">
-            {prompt}
-          </label>
           <div className="a11y-chat-box">
+            <label className="a11y-chat-label" htmlFor="a11y-chat-input">
+              {prompt}
+            </label>
             <textarea
               id="a11y-chat-input"
               rows={2}
-              placeholder={prompt}
               value={draft}
               autoComplete="off"
               enterKeyHint="send"
