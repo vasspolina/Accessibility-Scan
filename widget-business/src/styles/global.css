@@ -2522,14 +2522,15 @@
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-hist-card > .a11y-danger-btn { margin: 0; }
 
 /* Screen reader preview: Play, the status line, the filter and the skip
-   link share one row, between two rules, that is on screen whether the
-   section is open or not.
+   link share one row that is on screen whether the section is open or not.
+   No rule above or below it (user's instruction, 22 Nov 2026, "delete line
+   underneath and above"): the pills are controls and need no frame.
    Play is the solid pill; the filter is an outlined pill around its
    checkbox; the skip link is a quiet pill at the end. */
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sr-bar {
   display: flex; flex-wrap: wrap; align-items: center; gap: 14px 16px;
-  box-sizing: border-box; margin: 0 0 30px; padding: 14px 0;
-  border-block: 1px solid var(--ink); border-radius: 0; background: none; color: var(--ink);
+  box-sizing: border-box; margin: 0 0 30px; padding: 0;
+  border: 0; border-radius: 0; background: none; color: var(--ink);
 }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sr-bar .a11y-sr-play {
   flex: 0 1 auto; min-width: 0; max-width: 100%; min-height: 48px; padding: 0 1.4em; font-size: 22px; white-space: normal; text-align: start;
