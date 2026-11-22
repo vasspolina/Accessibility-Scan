@@ -381,6 +381,9 @@
 /* A long address has no break point, so at 27px it ran past the column and
    was clipped (user's screenshot, 4 Nov 2026). It may break anywhere. */
 .a11y-widget-biz .a11y-chat-turn :is(a, .a11y-chat-url) { overflow-wrap: anywhere; }
+/* The address's last letter and the stop after it, held on one line, so the
+   stop never starts a line alone (urlInSentence in ScanChat.tsx, 22 Nov 2026). */
+.a11y-widget-biz .a11y-chat-turn .a11y-chat-url-end { white-space: nowrap; }
 /* The bubble rule below once lost the declaration above (21 Nov 2026), and
    the address took the bubble's flex column: set right-aligned on a line
    of its own, with the sentence's full stop left alone on the next line

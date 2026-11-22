@@ -310,6 +310,25 @@ export const reportVerdictSchema = z.object({
 });
 export type ReportVerdict = z.infer<typeof reportVerdictSchema>;
 
+// A third-party accessibility overlay seen on the scanned page. See
+// services/overlay/analyzeOverlay.ts for the vendor table and for why this
+// is a statement on `meta` and not a finding: it has no severity, no
+// criterion and no fix, and the score never sees it.
+export const detectedOverlaySchema = z.object({
+  // The vendor's name as the vendor writes it.
+  vendor: z.string(),
+  // The script as the page loaded it, query string removed. Absent when the
+  // widget was on the page and its script came from an address this scan
+  // does not recognise (a copy the site serves itself).
+  scriptUrl: z.string().optional(),
+  // Whether the element the vendor's script builds was in the document when
+  // the page was measured. False means the script tag was there and the
+  // widget had not started in this browser, so the report must not say the
+  // findings were measured with it on.
+  widgetOnPage: z.boolean(),
+});
+export type DetectedOverlay = z.infer<typeof detectedOverlaySchema>;
+
 export const accessibilityReportSchema = z.object({
   // See reportVerdictSchema. Absent for anonymous scans and for a site
   // nobody has answered a question about yet.
@@ -400,6 +419,11 @@ export const accessibilityReportSchema = z.object({
     aiReviewErrorKind: aiReviewErrorKindSchema.optional(),
     model: z.string().optional(),
     plainLanguage: plainLanguageMetaSchema.optional(),
+    // Accessibility overlays loaded on the page. Absent means none of the
+    // known ones was seen, or an older report. A fact about the conditions
+    // the page was measured under, like incompleteChecks above: never
+    // counted, scored or triaged.
+    overlays: z.array(detectedOverlaySchema).optional(),
   }),
 });
 export type AccessibilityReport = z.infer<typeof accessibilityReportSchema>;
