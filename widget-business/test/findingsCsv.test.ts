@@ -1,4 +1,6 @@
 import { afterEach, describe, it, expect } from "vitest";
+import fs from "node:fs";
+import path from "node:path";
 import { findingsCsv, findingsCsvFilename, FINDINGS_CSV_COLUMNS } from "../src/lib/findingsCsv";
 import { setLang } from "../src/lib/i18n";
 import type { AccessibilityFinding, AccessibilityReport } from "../src/api/scanClient";
@@ -82,8 +84,19 @@ describe("the findings as a spreadsheet", () => {
     expect(csv.replace(/\r\n/g, "")).not.toMatch(/[\r\n]/);
   });
 
-  // The command line writes the same file (backend/src/cliFormats.ts,
-  // CSV_COLUMNS). If this list changes, that one changes with it.
+  // The two packages share no code, so the command line's list is read from
+  // its source: a column added on one side alone fails here.
+  it("has the same columns as the command line's CSV, read from its source", () => {
+    const backend = fs.readFileSync(path.resolve(__dirname, "../../backend/src/cliFormats.ts"), "utf8");
+    const list = /export const CSV_COLUMNS = \[([\s\S]*?)\] as const/.exec(backend);
+    expect(list, "CSV_COLUMNS not found in backend/src/cliFormats.ts").not.toBeNull();
+    const names = [...list![1].matchAll(/"([^"]+)"/g)].map((m) => m[1]);
+    expect(names.length).toBeGreaterThan(0);
+    expect([...FINDINGS_CSV_COLUMNS]).toEqual(names);
+    // And the same guard against a cell a spreadsheet would run.
+    expect(backend).toContain("/^[=+\\-@\\t\\r]/");
+  });
+
   it("has the command line's columns, in its order", () => {
     expect([...FINDINGS_CSV_COLUMNS]).toEqual([
       "Page",
