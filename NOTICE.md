@@ -10,9 +10,9 @@ They must be removed or replaced before the repository is made public.
 
 | Path | What it is | Status |
 |---|---|---|
-| `backend/public/fonts/JokkerVF-TRIAL.woff2`, `accessible-web-design/fonts/JokkerVF-TRIAL.woff2` | Jokker, trial licence | Not redistributable; replace with an open (OFL) font |
+| `backend/public/fonts/JokkerVF-TRIAL.woff2` | Jokker, trial licence (kept only for the measurement pages in `docs/`) | Not redistributable; remove |
 | `backend/public/fonts/Saans-TRIAL-Light.ttf`, `backend/public/fonts/Serrif-TRIAL-Light.otf` | Displaay Saans and Serrif, trial licence | Not redistributable; replace |
-| `design-system/production/assets/fonts/PPTelegraf-*.otf` | PP Telegraf (Pangram Pangram) | Commercial font; remove |
+| `backend/public/fonts/PPTelegraf-*.otf`, `accessible-web-design/fonts/PPTelegraf-*.otf`, `barrierfreeweb/fonts/PPTelegraf-*.otf` | PP Telegraf (Pangram Pangram), the widget's and both sites' face | Commercial font; check the licence covers web use before publishing |
 | `design-system/`, `reference/` | Vendored design system and its UI kit | Check its terms before publishing |
 
 Bundled dependencies (React, axe-core and others in each package's

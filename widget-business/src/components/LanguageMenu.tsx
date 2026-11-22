@@ -18,6 +18,13 @@ import { Icon } from "./Icon";
  *
  * The form and the report's settings keep the full Select (LanguageSelect):
  * there the language is one setting among several, set as rows.
+ *
+ * Since 22 Nov 2026 it is the conversations panel's last row, at the foot
+ * of the column (user's instruction and reference, "add language button to
+ * the bottom menu like here", an app sidebar whose foot row reads a name, a
+ * dot, the plan and a chevron). The row shows the chosen language after
+ * the word, so the button's name is what it shows; its list opens upward,
+ * over the panel, since below it is the window's edge.
  */
 export function LanguageMenu({ value, onChange }: { value: Lang; onChange: (lang: Lang) => void }) {
   const [open, setOpen] = useState(false);
@@ -65,9 +72,16 @@ export function LanguageMenu({ value, onChange }: { value: Lang; onChange: (lang
         aria-controls={listId}
         onClick={() => setOpen((o) => !o)}
       >
-        <Icon name="translate" size={24} />
-        <span>{t("Language")}</span>
-        <span className="a11y-sr-only">, {LANG_NAMES[value]}</span>
+        <Icon name="translate" size={20} />
+        <span className="a11y-lang-word">{t("Language")}</span>
+        <span className="a11y-lang-current" lang={value}>
+          <span aria-hidden="true">· </span>
+          <span className="a11y-sr-only">, </span>
+          {LANG_NAMES[value]}
+        </span>
+        <span className="a11y-lang-chevron">
+          <Icon name="chevron--down" size={16} />
+        </span>
       </button>
       <ul className="a11y-lang-list" id={listId} role="list" hidden={!open}>
         {SUPPORTED_LANGS.map((l) => (

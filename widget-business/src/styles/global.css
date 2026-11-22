@@ -79,13 +79,13 @@
 .a11y-widget-biz[data-theme="dark"] { --ink: #fff; --paper: #000; color-scheme: dark; --tile: #1c1c1e; --tile-ink: #fff; --tile-fill: #2c2c2e; --strong: #636366; --strong-ink: #fff; --hover: #3a3a3c; --hover-ink: #fff; --solid: #636366; --solid-ink: #fff; --btn-fill: #2c2c2e; --field-edge: 1px solid #8e8e93; --field-bg: #1c1c1e; --hl-orange: #ff9f0a; --hl-blue: #409cff; --hl-green: #30d158; --hl-cap-a: #ffd60a; --hl-cap-b: #ff375f; --focus: #6fdc8c; --chats-current: #30d158; --barrier: #30d158; }
 
 .a11y-widget-biz {
-  font-family: "Jokker", "DejaVu Sans", sans-serif;
+  font-family: "PP Telegraf", "DejaVu Sans", sans-serif;
   /* Back to 32px Regular at line-height 1.2 (user's instruction, 18 Nov
      2026, "lets go back to this font sizing", after Jokker Medium 49px
      was tried the same morning). Width and gutter are
      40em and 1em of the 32px again. */
   font-size: 32px; font-weight: 400; line-height: 1.2; letter-spacing: 0;
-  font-kerning: normal; font-feature-settings: "ss04", "ss05"; font-variant-ligatures: common-ligatures; text-rendering: optimizeLegibility; font-synthesis: none;
+  font-kerning: normal; font-variant-ligatures: common-ligatures; text-rendering: optimizeLegibility; font-synthesis: none;
   background: var(--paper); color: var(--ink);
   /* No rag (user's instruction, 18 Nov 2026, "do not rag the text"): no
      hyphenation anywhere and no text-wrap pretty or balance, so every line
@@ -462,7 +462,7 @@
    emphasis is the Medium cut or nothing. Hyphenation keeps at least
    three letters either side and no more than three lines in a row end in
    a hyphen (p.47). */
-.a11y-widget-biz .a11y-caps { font-size: 30px; letter-spacing: 0.06em; font-feature-settings: "ss04", "ss05", "case"; }
+.a11y-widget-biz .a11y-caps { font-size: 30px; letter-spacing: 0.06em; font-feature-settings: "case"; }
 /* case (above): Jokker raises hyphens, brackets and dashes to capital
    height, so the punctuation in (WCAG-AA) sits with the capitals around it
    rather than at lowercase height (p.39–40). */
@@ -1340,7 +1340,7 @@
 .a11y-widget-biz .a11y-fd .a11y-finding-steps > p > strong,
 .a11y-widget-biz .a11y-fd .a11y-affected-label > strong {
   display: block; margin: 0 0 0.5em; padding-bottom: 0.6em; border-bottom: 1px solid var(--ink);
-  font-family: "Saans", "Jokker", sans-serif; font-weight: 300; font-size: 18px; line-height: 1.2;
+  font-family: "Saans", "PP Telegraf", sans-serif; font-weight: 300; font-size: 18px; line-height: 1.2;
   letter-spacing: 0.04em; text-transform: uppercase;
 }
 .a11y-widget-biz .a11y-fd .a11y-fix-once > strong { font-weight: 300; }
@@ -1382,7 +1382,7 @@
   display: flex; flex-direction: column; align-items: stretch; gap: 10px;
   box-sizing: border-box; min-width: 0; max-width: none; margin: 0; padding: 22px 24px 30px;
   border-radius: 20px; background: var(--tile); color: var(--tile-ink); text-align: start;
-  font-family: "Jokker", sans-serif; font-weight: 400; font-size: 22px; line-height: 1.25; letter-spacing: 0.005em;
+  font-family: "PP Telegraf", sans-serif; font-weight: 400; font-size: 22px; line-height: 1.25; letter-spacing: 0.005em;
 }
 /* Smaller and Regular (user's instruction, 20 Nov 2026: "make large font
    smaller and regular"): every card's words at 22px Regular, whatever their
@@ -1394,7 +1394,7 @@
 .a11y-widget-biz .a11y-fd > .a11y-fd-col:first-child .a11y-fd-points > li:last-child { margin-bottom: 0; }
 .a11y-widget-biz .a11y-fd > .a11y-fd-col:first-child > * > strong:first-child {
   flex: none; margin: 0; padding: 0 0 6px; border: 0; border-bottom: 1px solid var(--ink); border-radius: 0; background: none; color: inherit;
-  font-family: "Jokker", sans-serif; font-weight: 500; font-size: 15px; line-height: 1.2; letter-spacing: 0.01em; text-transform: none;
+  font-family: "PP Telegraf", sans-serif; font-weight: 500; font-size: 15px; line-height: 1.2; letter-spacing: 0.01em; text-transform: none;
 }
 .a11y-widget-biz .a11y-fd > .a11y-fd-col:first-child .a11y-fd-body {
   display: block; margin-block: 0; max-width: 100%;}
@@ -1413,7 +1413,7 @@
 }
 .a11y-widget-biz .a11y-fd .a11y-pro-block,
 .a11y-widget-biz .a11y-fd .a11y-tech-details {
-  font-family: "Saans", "Jokker", sans-serif; font-weight: 300; font-size: 22px; line-height: 1.3; letter-spacing: 0.01em;
+  font-family: "Saans", "PP Telegraf", sans-serif; font-weight: 300; font-size: 22px; line-height: 1.3; letter-spacing: 0.01em;
 }
 /* The technical version (user's instructions, 18 Nov 2026: "design this",
    then "needs a carret and make lines brown"). It keeps its two rules, one
@@ -1467,9 +1467,9 @@
 }
 .a11y-widget-biz .a11y-fd .a11y-pro-line:not(:has(> strong:first-child)) { text-indent: 0; }
 .a11y-widget-biz .a11y-fd .a11y-pro-block > .a11y-pro-snippet { margin: 0.3em 0 0.3em 9em; }
-.a11y-widget-biz .a11y-fd .a11y-finding-level-fold { font-family: "Saans", "Jokker", sans-serif; font-weight: 300; font-size: 22px; line-height: 1.3; margin-bottom: 1.2em; }
+.a11y-widget-biz .a11y-fd .a11y-finding-level-fold { font-family: "Saans", "PP Telegraf", sans-serif; font-weight: 300; font-size: 22px; line-height: 1.3; margin-bottom: 1.2em; }
 .a11y-widget-biz .a11y-fd .a11y-fd-learn,
-.a11y-widget-biz .a11y-fd .a11y-occurrence-list { font-family: "Saans", "Jokker", sans-serif; font-weight: 300; font-size: 22px; letter-spacing: 0.01em; }
+.a11y-widget-biz .a11y-fd .a11y-occurrence-list { font-family: "Saans", "PP Telegraf", sans-serif; font-weight: 300; font-size: 22px; letter-spacing: 0.01em; }
 .a11y-widget-biz .a11y-fd .a11y-tech-details > summary { font-size: 18px; text-transform: uppercase; letter-spacing: 0.04em; cursor: pointer; }
 /* The affected elements, two to a row (user's instruction, 18 Nov 2026,
    "put into cards so its two per row"). The cards' #f0efe8 ground and 20px
@@ -1595,7 +1595,7 @@
 .a11y-widget-biz .a11y-pro-row > span:first-child,
 .a11y-widget-biz .a11y-manual-row > .a11y-conf-id {
   display: block; margin: 0 0 10px; padding: 0 0 6px; border-bottom: 1px solid var(--ink); text-align: start;
-  font-family: "Jokker", sans-serif; font-size: 18px; font-weight: 400; line-height: 1.2; letter-spacing: 0.01em;
+  font-family: "PP Telegraf", sans-serif; font-size: 18px; font-weight: 400; line-height: 1.2; letter-spacing: 0.01em;
   text-transform: none;
 }
 /* The lines: Jokker 18px, the rows of a ruled column. */
@@ -1605,16 +1605,16 @@
 .a11y-widget-biz .a11y-pro-row > .a11y-pro-row-pass,
 .a11y-widget-biz .a11y-manual-row > .a11y-conf-body > strong {
   display: block; margin: 0;
-  font-family: "Jokker", sans-serif; font-weight: 400; font-size: 22px; line-height: 1.3; letter-spacing: 0.01em;
+  font-family: "PP Telegraf", sans-serif; font-weight: 400; font-size: 22px; line-height: 1.3; letter-spacing: 0.01em;
 }
 /* A design note's title at button size (user's instruction, 18 Nov 2026,
    "make this text size like this"): 0.6 of the 32px it was, so 22px (the larger of the two label sizes) set solid at
    line-height 1.0, +0.01em as 22px takes. */
 .a11y-widget-biz .a11y-dn-link > .a11y-dn-link-text {
-  display: block; margin: 0; font-family: "Jokker", sans-serif; font-weight: 400; font-size: 22px; line-height: 1.2; letter-spacing: 0.01em;
+  display: block; margin: 0; font-family: "PP Telegraf", sans-serif; font-weight: 400; font-size: 22px; line-height: 1.2; letter-spacing: 0.01em;
 }
 /* Small print under the words stays Jokker at 15px or 18px. */
-.a11y-widget-biz .a11y-spec-card > .a11y-spec-value > .a11y-spec-gloss { margin-top: 0.6em; font-family: "Jokker", sans-serif; }
+.a11y-widget-biz .a11y-spec-card > .a11y-spec-value > .a11y-spec-gloss { margin-top: 0.6em; font-family: "PP Telegraf", sans-serif; }
 .a11y-widget-biz .a11y-next-list .a11y-next-main { display: flex; flex-direction: column; }
 .a11y-widget-biz .a11y-next-main > .a11y-next-title + .a11y-next-meta { order: -1; }
 .a11y-widget-biz .a11y-next-main > :is(.a11y-next-meta, .a11y-next-status):not(.a11y-next-title + .a11y-next-meta) { margin-top: 0.5em; font-size: 18px; letter-spacing: 0.01em; }
@@ -1660,7 +1660,7 @@
 .a11y-widget-biz .a11y-ra-row > .a11y-ra-cell { display: flex; flex-direction: column; align-items: stretch; gap: 20px; }
 .a11y-widget-biz .a11y-ra-row > .a11y-ra-cell > .a11y-ra-head {
   margin: 0 0 14px; padding: 0; border: 0;
-  font-family: "Jokker", sans-serif; font-size: 18px; font-weight: 400; line-height: 1.2; letter-spacing: 0.04em;
+  font-family: "PP Telegraf", sans-serif; font-size: 18px; font-weight: 400; line-height: 1.2; letter-spacing: 0.04em;
   text-transform: uppercase;
 }
 .a11y-widget-biz .a11y-ra-row > .a11y-ra-cell > .a11y-ra-field {
@@ -1689,7 +1689,7 @@
 .a11y-widget-biz .a11y-ra-row > .a11y-ra-cell > .a11y-ra-send {
   display: block; width: 100%; min-height: 128px; margin: 0; padding: 20px 24px;
   border: 1px solid var(--barrier); border-radius: 14px; background: var(--barrier); color: #000;
-  font-family: "Jokker", sans-serif; font-size: 41px; font-weight: 300; line-height: 1.05; letter-spacing: -0.01em;
+  font-family: "PP Telegraf", sans-serif; font-size: 41px; font-weight: 300; line-height: 1.05; letter-spacing: -0.01em;
   text-align: start;
 }
 .a11y-widget-biz .a11y-ra-row > .a11y-ra-cell > .a11y-ra-send:disabled { background: var(--paper); color: var(--ink); border-style: dashed; }
@@ -2312,16 +2312,15 @@
    stand side by side under ONE 1px ink rule across the whole width, each
    a 15px label with its lines under it at 18px/1.3, like a footer's
    columns of links. Four tracks, 15px apart; What the score counts takes
-   the last two and runs its six points as a list in two columns, the way
-   the reference's widest group runs its names. No numbers, no markers,
+   the last two and runs its six points as one list, one under another. No numbers, no markers,
    no per-label rules, no ground. The reference's grey labels are ink here
    (black and white only) and stay sentence case.
    It replaces the ruled columns of 18 Nov (a rule under each label, the
    sentence at 27px), the numbered two-column points on the page and the
    fold the points sat under in the conversation.
    Measured on its own width (the grid is the size container): under
-   760px two tracks, the points a full row in two columns; under 480px
-   one column throughout. */
+   760px two tracks, the points a full row; under 480px one column
+   throughout. */
 .a11y-widget-biz .a11y-sum-grid { container: a11y-sum / inline-size; }
 .a11y-widget-biz .a11y-sum-key {
   display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 40px 15px; align-items: start;
@@ -2335,13 +2334,17 @@
 .a11y-widget-biz .a11y-sum-key > .a11y-sum-counts { grid-column: -3 / -1; }
 .a11y-widget-biz .a11y-sum-key .a11y-sum-eyebrow {
   margin: 0 0 20px; padding: 0; border: 0; background: none; color: var(--ink); text-align: start; text-transform: none;
-  font-family: "Jokker", sans-serif; font-size: 15px; font-weight: 400; line-height: 1.2; letter-spacing: 0.01em;
+  font-family: "PP Telegraf", sans-serif; font-size: 15px; font-weight: 400; line-height: 1.2; letter-spacing: 0.01em;
 }
 .a11y-widget-biz .a11y-sum-key :is(.a11y-sum-lead, .a11y-sum-counts-list) {
   display: block; margin: 0;
-  font-family: "Jokker", sans-serif; font-size: 18px; font-weight: 400; line-height: 1.3; letter-spacing: 0.01em;
+  font-family: "PP Telegraf", sans-serif; font-size: 18px; font-weight: 400; line-height: 1.3; letter-spacing: 0.01em;
 }
-.a11y-widget-biz .a11y-sum-key .a11y-sum-counts-list { padding: 0; list-style: none; columns: 2; column-gap: 15px; }
+/* One column, the six points one under another (user's instruction,
+   22 Nov 2026, "the selected text needs to go underneath"): the second
+   column of points went under the first. The panel still spans the last
+   two tracks, so its lines run the width of both. */
+.a11y-widget-biz .a11y-sum-key .a11y-sum-counts-list { padding: 0; list-style: none; }
 .a11y-widget-biz .a11y-sum-key .a11y-sum-counts-list > li { margin: 0; padding: 0 0 0.6em; break-inside: avoid; }
 @container a11y-sum (max-width: 760px) {
   .a11y-widget-biz .a11y-sum-key { grid-template-columns: repeat(2, minmax(0, 1fr)); }
@@ -2350,7 +2353,6 @@
   .a11y-widget-biz .a11y-sum-key { grid-template-columns: minmax(0, 1fr); }
   /* -3 on one track would open an empty implicit track before it. */
   .a11y-widget-biz .a11y-sum-key > .a11y-sum-counts { grid-column: 1 / -1; }
-  .a11y-widget-biz .a11y-sum-key .a11y-sum-counts-list { columns: 1; }
 }
 
 /* ═══ THE CONVERSATIONS PANEL'S EDGE (user's instruction, 18 Nov 2026) ═════
@@ -2715,7 +2717,7 @@
 }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-hist-card > .a11y-hist-head {
   align-self: stretch; margin: 0; padding: 0 0 6px; border-bottom: 1px solid var(--ink); border-radius: 0; background: none; color: var(--ink);
-  font-family: "Jokker", sans-serif; font-size: 18px; font-weight: 400; line-height: 1.2; letter-spacing: 0.01em;
+  font-family: "PP Telegraf", sans-serif; font-size: 18px; font-weight: 400; line-height: 1.2; letter-spacing: 0.01em;
 }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-hist-card > .a11y-hist-facts {
   align-self: stretch; margin: 0; padding: 0; list-style: none;
@@ -2731,14 +2733,15 @@
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-hist-card > .a11y-danger-btn { margin: 0; }
 
 /* Screen reader preview: Play, the status line, the filter and the skip
-   link share one row, between two rules, that is on screen whether the
-   section is open or not.
+   link share one row that is on screen whether the section is open or not.
+   No rule above or below it (user's instruction, 22 Nov 2026, "delete line
+   underneath and above"): the pills are controls and need no frame.
    Play is the solid pill; the filter is an outlined pill around its
    checkbox; the skip link is a quiet pill at the end. */
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sr-bar {
   display: flex; flex-wrap: wrap; align-items: center; gap: 14px 16px;
-  box-sizing: border-box; margin: 0 0 30px; padding: 14px 0;
-  border-block: 1px solid var(--ink); border-radius: 0; background: none; color: var(--ink);
+  box-sizing: border-box; margin: 0 0 30px; padding: 0;
+  border: 0; border-radius: 0; background: none; color: var(--ink);
 }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sr-bar .a11y-sr-play {
   flex: 0 1 auto; min-width: 0; max-width: 100%; min-height: 48px; padding: 0 1.4em; font-size: 22px; white-space: normal; text-align: start;
@@ -2988,7 +2991,7 @@
   .a11y-widget-biz .a11y-legal-tiles > button.a11y-legal-row { min-height: 0; }
 }
 
-/* ═══ 21 NOV 2026: LANGUAGE PIN, ICONS, CARDS, PANEL ══════════════════════
+/* ═══ 21 NOV 2026: LANGUAGE ROW, ICONS, CARDS, PANEL ══════════════════════
    The new parts of the user's instructions from one sitting; the cards,
    the panel and the technical caret are changed where they are set.
 
@@ -2998,47 +3001,50 @@
 .a11y-widget-biz .a11y-ra-pdf > .a11y-icon.a11y-ra-pdf-icon { width: 20px; height: 20px; vertical-align: middle; }
 .a11y-widget-biz .a11y-w22 .a11y-next-toggle > .a11y-next-chevron > .a11y-icon { width: 20px; height: 20px; }
 .a11y-widget-biz .a11y-accordion-chevron.a11y-icon { width: 0.8em; height: 0.8em; }
-/* THE LANGUAGE PIN ("fold the language button on the right like this and
-   keep it on top on scroll"): the translate icon and the word, one button
-   at the column's top right, sticky for the whole conversation. On a
-   desktop the pin takes no height, so the New scan title keeps its place
-   beside it; under 640px it takes its line, since the title and the
-   button would meet at 320px. Its list opens under it, right-aligned. */
-/* No gap above the row (user's instruction, 21 Nov 2026, "whats this gap
-   on top and bottom? delete"): the 16px that held the button off the top
-   of the window was padding, so at rest it sat 16px under New scan and the
-   panel's New chat. It is the sticky offset now, which only acts once the
-   button is stuck; at rest the button, the title and New chat share one
-   top, and the title is centred on the button's 48px. */
-.a11y-widget-biz .a11y-chat > .a11y-lang-pin {
-  position: sticky; top: 16px; z-index: 3; align-self: flex-end; height: 0;
-}
-/* Only while the title shows: folded away, the head must take no height. */
+/* THE LANGUAGE ROW AT THE PANEL'S FOOT (user's instruction and reference,
+   22 Nov 2026, "add language button to the bottom menu like here"). It was
+   a pill pinned at the conversation's top right from 21 Nov; now it is the
+   conversations panel's last row, at the foot of the column under a 1px ink
+   rule, like an app sidebar's account row: the translate mark, Language,
+   a dot and the chosen language, a chevron at the end. Set as the panel's
+   rows are: 15px, 12px corners, no edge at rest, the #f0efe8 ground with
+   black words on hover and while open. The chevron turns over while open.
+
+   The panel stretches to the row's height and is capped at the window
+   (sticky as before), the conversations scroll inside their own body, so
+   the foot stays on screen however long the list. The list opens upward
+   over the panel, full width.
+
+   Under 640px the panel folds behind its Conversations toggle; the row
+   sits on the toggle's line at the right, outside the fold, and opens
+   downward. The New scan head keeps its 48px line from the pin's time. */
 .a11y-widget-biz .a11y-chat > .a11y-newscan-head:has(> .a11y-newscan-fold:not([data-gone])) { min-height: 48px; align-items: center; }
 .a11y-widget-biz .a11y-chat > .a11y-prompts { margin-top: 0; }
 .a11y-widget-biz .a11y-chats { padding-top: 0; }
-@media (max-width: 640px) {
-  .a11y-widget-biz .a11y-chat > .a11y-lang-pin { height: auto; }
+.a11y-widget-biz .a11y-chat-layout > .a11y-chats {
+  display: flex; flex-direction: column; align-self: stretch; overflow: visible;
+}
+.a11y-widget-biz .a11y-chats > .a11y-chats-body { flex: 1 1 auto; min-height: 0; overflow-y: auto; }
+.a11y-widget-biz .a11y-chats > .a11y-chats-foot {
+  flex: none; margin-top: 16px; padding-top: 12px; border-top: 1px solid var(--ink);
 }
 .a11y-widget-biz .a11y-lang-menu { position: relative; }
 .a11y-widget-biz .a11y-lang-menu .a11y-lang-toggle {
-  display: inline-flex; align-items: center; gap: 10px; min-height: 48px; padding: 0 16px;
-  border: 1px solid var(--chats-current); border-radius: 999px;
-  background: var(--btn-fill, var(--paper)); color: var(--ink);
-  font-size: 22px; font-weight: 500; letter-spacing: 0.01em; line-height: 1;
+  display: flex; align-items: center; gap: 10px; box-sizing: border-box; width: 100%; min-height: 44px;
+  margin: 0; padding: 8px 12px; border: 1px dotted transparent; border-radius: 12px;
+  background: transparent; color: var(--ink);
+  font-size: 15px; font-weight: 500; letter-spacing: 0.01em; line-height: 1.3; text-align: start;
 }
-/* A green line round it (user's instruction, 21 Nov 2026, "outline with
-   green line"): the pin floats over the thread, and with no edge it ran
-   into what scrolled under it, the mint barrier card most of all. The
-   current chat's green: #14532d on paper and on the #f0efe8 hover fill
-   (7.9:1 or better), #30d158 in dark. It stays on hover and while open. */
+.a11y-widget-biz .a11y-lang-menu .a11y-lang-current { flex: 1 1 auto; min-width: 0; font-weight: 400; }
+.a11y-widget-biz .a11y-lang-menu .a11y-lang-chevron { flex: none; display: inline-flex; transition: transform 0.15s; }
+.a11y-widget-biz .a11y-lang-menu .a11y-lang-toggle[aria-expanded="true"] .a11y-lang-chevron { transform: rotate(180deg); }
 .a11y-widget-biz .a11y-lang-menu .a11y-lang-toggle:enabled:is(:hover, [aria-expanded="true"]) {
-  --ink: var(--tile-ink); background: var(--tile); color: var(--tile-ink); border-color: var(--chats-current);
+  --ink: var(--tile-ink); background: var(--tile); color: var(--tile-ink);
 }
 .a11y-widget-biz .a11y-lang-menu .a11y-lang-list {
   --ink: var(--tile-ink); --paper: var(--tile);
-  position: absolute; top: calc(100% + 6px); right: 0; z-index: 3;
-  box-sizing: border-box; min-width: 12em; margin: 0; padding: 6px; list-style: none;
+  position: absolute; bottom: calc(100% + 6px); left: 0; right: 0; z-index: 3;
+  box-sizing: border-box; margin: 0; padding: 6px; list-style: none;
   border: 1px dotted var(--ink); border-radius: 12px; background: var(--tile); color: var(--ink);
 }
 .a11y-widget-biz .a11y-lang-menu .a11y-lang-list[hidden] { display: none; }
@@ -3047,10 +3053,17 @@
 .a11y-widget-biz .a11y-lang-menu .a11y-lang-option {
   display: block; width: 100%; min-height: 40px; padding: 8px 12px; text-align: start;
   border: 1px dotted transparent; border-radius: 12px; background: transparent; color: var(--ink);
-  font-size: 18px; font-weight: 400; line-height: 1.3;
+  font-size: 15px; font-weight: 400; letter-spacing: 0.01em; line-height: 1.3;
 }
 .a11y-widget-biz .a11y-lang-menu .a11y-lang-option[aria-pressed="true"] { border-color: var(--ink); font-weight: 500; }
 .a11y-widget-biz .a11y-lang-menu .a11y-lang-option:enabled:hover { background: var(--tile-fill); color: var(--ink); border-color: var(--ink); }
+@media (max-width: 640px) {
+  .a11y-widget-biz .a11y-chat-layout > .a11y-chats { flex-flow: row wrap; align-items: center; justify-content: space-between; }
+  .a11y-widget-biz .a11y-chats > .a11y-chats-body { order: 3; flex: 1 1 100%; overflow: visible; }
+  .a11y-widget-biz .a11y-chats > .a11y-chats-foot { margin: 0; padding: 0; border: 0; }
+  .a11y-widget-biz .a11y-lang-menu .a11y-lang-toggle { width: auto; }
+  .a11y-widget-biz .a11y-lang-menu .a11y-lang-list { top: calc(100% + 6px); bottom: auto; left: auto; min-width: 12em; }
+}
 
 /* 40PX EACH SIDE OF THE CHAT ("add a 40 px margin from left and right of
    chat"): the panel sat flush on the window's left edge. The page now
