@@ -1406,15 +1406,15 @@ export function ScanChat({
           </>
         )}
         </div>
+        {/* The language, the panel's last row at the foot of the column
+            (user's instruction, 22 Nov 2026), outside the folding body so
+            it stays beside the Conversations toggle on a phone. It was a
+            button pinned at the conversation's top right from 21 Nov. */}
+        <div className="a11y-chats-foot">
+          <LanguageMenu value={language} onChange={onLanguageChange} />
+        </div>
       </nav>
     <div className="a11y-chat" ref={rootRef} onFocus={keepFocusClear}>
-      {/* The language, folded into one button pinned at the top right
-          (user's instruction, 21 Nov 2026). It is the column's first child
-          so sticky holds it for the whole conversation, not only while the
-          head is in view. */}
-      <div className="a11y-lang-pin">
-        <LanguageMenu value={language} onChange={onLanguageChange} />
-      </div>
       {/* The title and the intro open an empty conversation. Once there is
           one, they would sit above it saying "New scan" over a scan that
           has run — the top bar's New scan button is the way back. */}
