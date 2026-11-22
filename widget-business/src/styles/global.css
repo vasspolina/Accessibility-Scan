@@ -2371,16 +2371,15 @@
    stand side by side under ONE 1px ink rule across the whole width, each
    a 15px label with its lines under it at 18px/1.3, like a footer's
    columns of links. Four tracks, 15px apart; What the score counts takes
-   the last two and runs its six points as a list in two columns, the way
-   the reference's widest group runs its names. No numbers, no markers,
+   the last two and runs its six points as one list, one under another. No numbers, no markers,
    no per-label rules, no ground. The reference's grey labels are ink here
    (black and white only) and stay sentence case.
    It replaces the ruled columns of 18 Nov (a rule under each label, the
    sentence at 27px), the numbered two-column points on the page and the
    fold the points sat under in the conversation.
    Measured on its own width (the grid is the size container): under
-   760px two tracks, the points a full row in two columns; under 480px
-   one column throughout. */
+   760px two tracks, the points a full row; under 480px one column
+   throughout. */
 .a11y-widget-biz .a11y-sum-grid { container: a11y-sum / inline-size; }
 .a11y-widget-biz .a11y-sum-key {
   display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 40px 15px; align-items: start;
@@ -2400,7 +2399,11 @@
   display: block; margin: 0;
   font-family: "Jokker", sans-serif; font-size: 18px; font-weight: 400; line-height: 1.3; letter-spacing: 0.01em;
 }
-.a11y-widget-biz .a11y-sum-key .a11y-sum-counts-list { padding: 0; list-style: none; columns: 2; column-gap: 15px; }
+/* One column, the six points one under another (user's instruction,
+   22 Nov 2026, "the selected text needs to go underneath"): the second
+   column of points went under the first. The panel still spans the last
+   two tracks, so its lines run the width of both. */
+.a11y-widget-biz .a11y-sum-key .a11y-sum-counts-list { padding: 0; list-style: none; }
 .a11y-widget-biz .a11y-sum-key .a11y-sum-counts-list > li { margin: 0; padding: 0 0 0.6em; break-inside: avoid; }
 @container a11y-sum (max-width: 760px) {
   .a11y-widget-biz .a11y-sum-key { grid-template-columns: repeat(2, minmax(0, 1fr)); }
@@ -2409,7 +2412,6 @@
   .a11y-widget-biz .a11y-sum-key { grid-template-columns: minmax(0, 1fr); }
   /* -3 on one track would open an empty implicit track before it. */
   .a11y-widget-biz .a11y-sum-key > .a11y-sum-counts { grid-column: 1 / -1; }
-  .a11y-widget-biz .a11y-sum-key .a11y-sum-counts-list { columns: 1; }
 }
 
 /* ═══ THE CONVERSATIONS PANEL'S EDGE (user's instruction, 18 Nov 2026) ═════
@@ -2790,14 +2792,15 @@
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-hist-card > .a11y-danger-btn { margin: 0; }
 
 /* Screen reader preview: Play, the status line, the filter and the skip
-   link share one row, between two rules, that is on screen whether the
-   section is open or not.
+   link share one row that is on screen whether the section is open or not.
+   No rule above or below it (user's instruction, 22 Nov 2026, "delete line
+   underneath and above"): the pills are controls and need no frame.
    Play is the solid pill; the filter is an outlined pill around its
    checkbox; the skip link is a quiet pill at the end. */
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sr-bar {
   display: flex; flex-wrap: wrap; align-items: center; gap: 14px 16px;
-  box-sizing: border-box; margin: 0 0 30px; padding: 14px 0;
-  border-block: 1px solid var(--ink); border-radius: 0; background: none; color: var(--ink);
+  box-sizing: border-box; margin: 0 0 30px; padding: 0;
+  border: 0; border-radius: 0; background: none; color: var(--ink);
 }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sr-bar .a11y-sr-play {
   flex: 0 1 auto; min-width: 0; max-width: 100%; min-height: 48px; padding: 0 1.4em; font-size: 22px; white-space: normal; text-align: start;
