@@ -137,15 +137,46 @@ export function renderReply(text: string, marks?: Mark[]): ReactNode {
   const out: ReactNode[] = [];
   splitFences(marks?.length ? withMarks(text, marks) : text).forEach((seg, s) => {
     if (seg.code !== undefined) {
-      if (seg.code.trim())
-        out.push(
-          <pre key={`c${s}`} className="a11y-chat-pre">
-            <code>{fade(seg.code.replace(/\n+$/, ""), null)}</code>
-          </pre>
-        );
+      if (seg.code.trim()) out.push(<CodeCard key={`c${s}`} code={seg.code.replace(/\n+$/, "")} />);
     } else renderProse(seg.text, `t${s}`, out);
   });
   return out;
+}
+
+/** A fenced block as a card to copy from (user's instruction, 22 Nov 2026,
+ *  "make this into copy form in a card with small text"): the assistant
+ *  writes templates to fill in, such as an issue report, and these were
+ *  27px monospace running the thread's full width. The card is the tile
+ *  ground with the text at 15px and Copy at its top; Copy takes the code
+ *  without the streaming marks, so what pastes is what was written. */
+function CodeCard({ code }: { code: string }) {
+  const [copied, setCopied] = useState(false);
+  async function copy() {
+    try {
+      await navigator.clipboard.writeText(code.replace(SENTINELS, ""));
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    } catch {
+      // Clipboard blocked: the text is on screen to select by hand.
+    }
+  }
+  return (
+    <div className="a11y-chat-copy">
+      <div className="a11y-chat-copy-bar">
+        <button type="button" className="a11y-chat-copy-btn" onClick={copy}>
+          {copied ? t("Copied") : t("Copy")}
+        </button>
+      </div>
+      <pre className="a11y-chat-pre">
+        <code>{fade(code, null)}</code>
+      </pre>
+      {/* The button's own text changing is not reliably announced; this
+          mounted status region is. */}
+      <span className="a11y-sr-only" role="status">
+        {copied ? t("Copied to clipboard") : ""}
+      </span>
+    </div>
+  );
 }
 
 /** How long a chunk fades in for (matches the CSS), and so how long its
@@ -173,11 +204,35 @@ function waiting(label: ReactNode): ReactNode {
 function searchingLine(query: string | null): ReactNode {
   if (query === null) return t("Searching the web…").replace(/(…|\.{3})$/, "");
   const [before, after] = t("Searching the web for {query}…").replace(/(…|\.{3})$/, "").split("{query}");
+  return urlInSentence(before, query, after);
+}
+
+/** An address set into its translated sentence. The address may break at
+ *  any character (a long one must fit 320px), and that let the line break
+ *  between its last letter and the full stop after it, so "Checking
+ *  https://example.com." left the stop alone at the start of the next line
+ *  ("whats this dot", 21 Nov 2026). The last letter and the punctuation that
+ *  closes on it are held together; the rest of the address still breaks. */
+function urlInSentence(before: string, url: string, after: string): ReactNode {
+  const close = after.match(/^\p{P}+/u)?.[0];
+  if (!close || url.length < 2) {
+    return (
+      <>
+        {before}
+        <span className="a11y-chat-url">{url}</span>
+        {after}
+      </>
+    );
+  }
   return (
     <>
       {before}
-      <span className="a11y-chat-url">{query}</span>
-      {after}
+      <span className="a11y-chat-url">{url.slice(0, -1)}</span>
+      <span className="a11y-chat-url-end">
+        <span className="a11y-chat-url">{url.slice(-1)}</span>
+        {close}
+      </span>
+      {after.slice(close.length)}
     </>
   );
 }
@@ -1480,14 +1535,10 @@ export function ScanChat({
                 <li key={turn.id} className={`a11y-chat-turn a11y-chat-tool a11y-chat-scan-${turn.state}${contClass}`}>
                   <p className={whoClass}>{t("Assistant")}</p>
                   <div className="a11y-chat-text">
-                    <p>
-                      {before}
-                      <span className="a11y-chat-url">{turn.url}</span>
-                      {/* No seconds beside the address: the step list below
-                          says where the scan is, and the number was one
-                          more thing to read (user's instruction, 16 Oct 2026). */}
-                      {after}
-                    </p>
+                    {/* No seconds beside the address: the step list below
+                        says where the scan is, and the number was one
+                        more thing to read (user's instruction, 16 Oct 2026). */}
+                    <p>{urlInSentence(before, turn.url, after)}</p>
                   </div>
                   {steps.length > 0 && (
                     <StepFold folded={turn.state === "done"}>

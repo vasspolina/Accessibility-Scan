@@ -33,6 +33,7 @@ import { documentsLine } from "./services/documents/inventoryDocuments.js";
 import { legacyFingerprint } from "./services/merge/fingerprint.js";
 import { discoverFromSitemap, makeTextFetcher, readSitemap } from "./services/crawl/sitemap.js";
 import { SEVERITY_ORDER, fingerprintOf, pageKeyer, toCsv, toJUnit, toMarkdown, toSarif } from "./cliFormats.js";
+import { describeOverlay } from "./services/overlay/analyzeOverlay.js";
 import type { AccessibilityFinding, AccessibilityReport, Severity } from "./types/report.js";
 
 export { toSarif };
@@ -253,6 +254,11 @@ function summarise(report: AccessibilityReport, quiet: boolean): void {
       // not comparable with one that did, and a CI trend built on the two
       // together is measuring the weather.
       console.log(`  NOTE: these checks did not finish — ${incomplete.join(", ")}`);
+    }
+    // What was seen, and nothing about the product: the score above was
+    // measured on the page as rendered, overlay script included.
+    for (const o of report.meta?.overlays ?? []) {
+      console.log(`  NOTE: accessibility overlay loaded — ${describeOverlay(o)}`);
     }
     for (const f of acc.slice(0, 10)) {
       console.log(`    [${f.severity}] ${f.ruleId ?? f.wcagCriterion ?? ""} ${f.selector ?? ""}`);

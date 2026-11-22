@@ -71,6 +71,13 @@ export interface SiteAudit {
   // audit route, absent when the site has no sitemap and no robots rules
   // took anything out.
   discovery?: AuditDiscovery;
+  // Accessibility overlays seen on the scanned pages (each page's
+  // meta.overlays, rolled up). Absent when no page carried one. The audit
+  // reader only ever receives this aggregate, so a note left on the pages
+  // would never reach them. A statement about the pages, as on a single
+  // report: no part of it enters the scores, the site-wide issues or the
+  // conformance table above.
+  overlays?: SiteOverlay[];
   // The documents the scanned pages link to, each counted once however many
   // pages link to it. Absent when none of them links to any. A site audit
   // counts documents and opens none of them: see AUDIT_BUDGET_MS in
@@ -157,6 +164,34 @@ export function unionDocuments(outcomes: PageOutcome[]): SiteDocuments | undefin
     ...(pagesWithLinksNotRead > 0 ? { pagesWithLinksNotRead } : {}),
     items,
   };
+}
+
+export interface SiteOverlay {
+  vendor: string;
+  // The first address seen for this vendor across the pages.
+  scriptUrl?: string;
+  // Scanned pages carrying the vendor's script or its widget element.
+  pageCount: number;
+  // Of those, the pages where the widget element was in the document, so
+  // the page was measured with the overlay running. Kept apart from
+  // pageCount for the reason widgetOnPage exists on a single report: a
+  // script tag is not proof the widget started.
+  widgetPageCount: number;
+}
+
+/** Each page's overlays, one row per vendor, in the order first seen. */
+export function summariseSiteOverlays(outcomes: PageOutcome[]): SiteOverlay[] | undefined {
+  const byVendor = new Map<string, SiteOverlay>();
+  for (const o of outcomes) {
+    for (const seen of o.report?.meta.overlays ?? []) {
+      const row = byVendor.get(seen.vendor) ?? { vendor: seen.vendor, pageCount: 0, widgetPageCount: 0 };
+      row.pageCount += 1;
+      if (seen.widgetOnPage) row.widgetPageCount += 1;
+      if (!row.scriptUrl && seen.scriptUrl) row.scriptUrl = seen.scriptUrl;
+      byVendor.set(seen.vendor, row);
+    }
+  }
+  return byVendor.size ? [...byVendor.values()] : undefined;
 }
 
 export interface PageOutcome {
@@ -340,5 +375,6 @@ export function aggregateAudit(
       lang: normalizeReportLang(language),
     }),
     ...(documents ? { documents } : {}),
+    overlays: summariseSiteOverlays(scanned),
   };
 }

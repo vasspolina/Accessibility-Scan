@@ -363,16 +363,6 @@
    next. The same 100px the report keeps between its sections. One class
    over the rule above, so it wins there and on a phone. */
 .a11y-widget-biz .a11y-chat-thread > .a11y-chat-turn.a11y-chat-block:has(+ .a11y-chat-turn) { margin-bottom: 100px; }
-/* "What the score counts", folded in the conversation (ScoreGauge). */
-.a11y-widget-biz .a11y-sum-counts-fold { margin-top: 1.2em; }
-.a11y-widget-biz .a11y-sum-counts-fold > summary { font-size: 18px; letter-spacing: 0.01em; cursor: pointer; }
-.a11y-widget-biz .a11y-sum-counts-fold .a11y-sum-counts-mark { display: inline-block; margin-inline-start: 0.3em; }
-.a11y-widget-biz .a11y-sum-counts-fold[open] .a11y-sum-counts-mark { transform: rotate(90deg); }
-.a11y-widget-biz .a11y-sum-counts-fold > .a11y-sum-counts-list {
-  margin: 0.6em 0 0; padding-left: 1.4em; list-style: decimal;
-  font-size: 18px; line-height: 1.3; letter-spacing: 0.01em;
-}
-.a11y-widget-biz .a11y-sum-counts-fold > .a11y-sum-counts-list > li + li { margin-top: 0.4em; }
 /* In the conversation the run holds the dial alone (ScoreGauge), so the
    room kept for the display list under it, and the 65px between the run
    and the panels, came out as a gap the height of the dial. */
@@ -381,6 +371,9 @@
 /* A long address has no break point, so at 27px it ran past the column and
    was clipped (user's screenshot, 4 Nov 2026). It may break anywhere. */
 .a11y-widget-biz .a11y-chat-turn :is(a, .a11y-chat-url) { overflow-wrap: anywhere; }
+/* The address's last letter and the stop after it, held on one line, so the
+   stop never starts a line alone (urlInSentence in ScanChat.tsx, 22 Nov 2026). */
+.a11y-widget-biz .a11y-chat-turn .a11y-chat-url-end { white-space: nowrap; }
 /* The bubble rule below once lost the declaration above (21 Nov 2026), and
    the address took the bubble's flex column: set right-aligned on a line
    of its own, with the sentence's full stop left alone on the next line
@@ -1232,40 +1225,6 @@
      pair may part rather than run off the screen. */
   .a11y-widget-biz .a11y-sum-run .a11y-sum-nobreak { white-space: normal; }
 }
-/* What the score counts as a grid of tiles (user's instruction,
-   4 Nov 2026): a six-column grid, 15px between columns and 25px between
-   rows; the lead tile spans five columns and leaves the sixth empty, the
-   next two span three each. Each tile is square-cornered with the type
-   set big in its middle, and its name under it, 10px down, set left. Here
-   the point is the type in the tile and its number is the name under it
-   (27px, the prose size).
-   01, 04 and 07 span five columns at 48px; 02 + 03 and 05 + 06 span three
-   each at 32px. Tiles keep the proportions 636 / 1131 for the wide one
-   and 420 / 673 for the pair as a minimum, and grow when the words
-   need more. Colour is the user's tile exception (see SPECIMEN TILES):
-   #f0efe8, fixed in both themes, #000 on it at 18.4:1. Under 640px of its
-   own width every point takes the full row at 32px and 27px, with no
-   fixed proportion. */
-.a11y-widget-biz .a11y-sum-counts { container: a11y-sum-counts / inline-size; text-align: start; margin: 0 0 1.2em; }
-.a11y-widget-biz .a11y-sum-counts > .a11y-sum-eyebrow { margin: 0 0 0.6em; font-size: 38px; letter-spacing: -0.005em; line-height: 1.1; font-weight: 400; hyphens: manual; }
-/* Replaced the same day (user's instruction): no big tiles. Two columns, 15px apart; each point is its
-   number at 15px over a 1px ink rule, the words under it at 18px Regular,
-   set left. One column under 640px of its own width. */
-.a11y-widget-biz .a11y-sum-specimens {
-  display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1.2em 15px; align-items: start;
-}
-.a11y-widget-biz .a11y-sum-specimen { min-width: 0; margin: 0; display: flex; flex-direction: column; }
-.a11y-widget-biz .a11y-sum-specimen-num {
-  order: -1; font-size: 18px; letter-spacing: 0.01em; line-height: 1.2; font-weight: 400;
-  padding: 0 0 6px; margin: 0 0 10px; border-bottom: 1px solid var(--ink);
-}
-.a11y-widget-biz .a11y-sum-specimen-text {
-  font-size: 22px; letter-spacing: 0.01em; line-height: 1.3; font-weight: 400; text-align: start;
-  hyphens: manual; overflow-wrap: break-word;
-}
-@container a11y-sum-counts (max-width: 640px) {
-  .a11y-widget-biz .a11y-sum-specimens { grid-template-columns: minmax(0, 1fr); }
-}
 .a11y-widget-biz .a11y-status-chip { font-size: 22px; letter-spacing: 0.01em; }
 .a11y-widget-biz .a11y-accordion-title .a11y-accordion-head > span:first-child { flex: 0 1 auto; }
 
@@ -1588,13 +1547,6 @@
   display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 160px), 1fr));
   gap: 1.2em 15px; align-items: start; margin: 0 0 1.2em; padding: 0; list-style: none;
 }
-/* The summary column also holds the score-counts panel, which takes the full
-   row; in a grid that full-width item would keep every auto-fit track alive
-   and squeeze the two panels into the first two of five, so the column
-   wraps as a flex row instead. */
-.a11y-widget-biz .a11y-sum-col:has(> .a11y-sum-panel) { display: flex; flex-wrap: wrap; gap: 1.2em 15px; align-items: flex-start; }
-.a11y-widget-biz .a11y-sum-col > .a11y-sum-panel:not(.a11y-sum-counts) { flex: 1 1 280px; }
-.a11y-widget-biz .a11y-sum-col > :not(.a11y-sum-panel:not(.a11y-sum-counts)) { flex: 1 1 100%; }
 .a11y-widget-biz .a11y-dn-list > li { display: flex; margin: 0; }
 
 /* Each cell is a ruled column (user's instruction, 4 Nov 2026): no
@@ -1757,7 +1709,6 @@
    into "Email me this report" at 38px, so the actions read as a seventh
    point. The counts' own bottom margin is dropped here so the 50px is the
    whole gap. */
-.a11y-widget-biz .a11y-sum-col > .a11y-sum-counts:last-child { margin-bottom: 0; }
 .a11y-widget-biz .a11y-report-actions { margin-top: 50px; }
 @media (max-width: 640px) {
   .a11y-widget-biz .a11y-ra-row > .a11y-ra-cell > .a11y-ra-send { min-height: 96px; font-size: 32px; }
@@ -2078,8 +2029,6 @@
 .a11y-widget-biz .a11y-section + .a11y-section { margin-top: 100px; }
 .a11y-widget-biz .a11y-sum-grid > * + * { margin-top: 65px; }
 .a11y-widget-biz .a11y-legal-panel + * { margin-top: 65px; }
-.a11y-widget-biz .a11y-sum-col:has(> .a11y-sum-panel) { row-gap: 65px; }
-.a11y-widget-biz .a11y-sum-specimens,
 .a11y-widget-biz .a11y-next-list,
 .a11y-widget-biz .a11y-spec-grid,
 .a11y-widget-biz .a11y-ra-row,
@@ -2119,7 +2068,6 @@
    full width of its column, as the conversation already did. The 42ch and
    38ch caps, and the 60ch one on the picture's locator, are gone; the
    column itself (the widget's 40em) is the measure. */
-.a11y-widget-biz .a11y-sum-specimen-text { display: block; }
 .a11y-widget-biz :is(.a11y-sum-run, .a11y-sum-actions) :is(p, h3) { margin-inline: auto; }
 
 /* ═══ 320PX AFTER THE 20% TYPE STEP (17 Nov 2026) ══════════════════════════
@@ -2355,31 +2303,50 @@
   .a11y-widget-biz .a11y-chats .a11y-chats-delete { visibility: visible; }
 }
 
-/* ═══ THE SUMMARY PANELS (user's reference, 18 Nov 2026) ═
-   Start here and Score … (labels shortened at the user's instruction,
-   19 Nov 2026) side by side, each a ruled column: the label
-   in small print over a 1px ink rule, the sentence under it at the report's
-   prose size, 27px/1.2 at 0. They were #f0efe8 cards with 20px corners and
-   the label on a black pill until the user's word on the same cards
-   elsewhere, 20 Nov 2026: "this is a slop". Page ink and paper, so they
-   follow the theme. Under 640px the sentence takes the phone prose size. */
-.a11y-widget-biz .a11y-sum-col > .a11y-sum-panel:not(.a11y-sum-counts) {
-  box-sizing: border-box; min-width: 0; margin: 0;
-  align-self: stretch; display: flex; flex-direction: column; gap: 14px;
-  padding: 0; border: 0; border-radius: 0; background: none; color: var(--ink);
+/* ═══ THE SCORE KEY AFTER A TYPE FOUNDRY'S FOOTER (user's reference, 22 Nov 2026) ═
+   "Design this like this": Start here, Score … and What the score counts
+   stand side by side under ONE 1px ink rule across the whole width, each
+   a 15px label with its lines under it at 18px/1.3, like a footer's
+   columns of links. Four tracks, 15px apart; What the score counts takes
+   the last two and runs its six points as a list in two columns, the way
+   the reference's widest group runs its names. No numbers, no markers,
+   no per-label rules, no ground. The reference's grey labels are ink here
+   (black and white only) and stay sentence case.
+   It replaces the ruled columns of 18 Nov (a rule under each label, the
+   sentence at 27px), the numbered two-column points on the page and the
+   fold the points sat under in the conversation.
+   Measured on its own width (the grid is the size container): under
+   760px two tracks, the points a full row in two columns; under 480px
+   one column throughout. */
+.a11y-widget-biz .a11y-sum-grid { container: a11y-sum / inline-size; }
+.a11y-widget-biz .a11y-sum-key {
+  display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 40px 15px; align-items: start;
+  margin-bottom: 0; padding-top: 24px; border-top: 1px solid var(--ink);
+}
+.a11y-widget-biz .a11y-sum-key > .a11y-sum-panel {
+  box-sizing: border-box; min-width: 0; margin: 0; padding: 0;
+  border: 0; border-radius: 0; background: none; color: var(--ink);
   text-align: start; overflow-wrap: break-word; hyphens: manual;
 }
-.a11y-widget-biz .a11y-sum-col > .a11y-sum-panel:not(.a11y-sum-counts) > .a11y-sum-eyebrow {
-  align-self: stretch; margin: 0; padding: 0 0 6px; border: 0; border-bottom: 1px solid var(--ink); border-radius: 0;
-  background: none; color: var(--ink); text-align: start; text-transform: none;
-  font-family: "Jokker", sans-serif; font-size: 18px; font-weight: 400; line-height: 1.2; letter-spacing: 0.01em;
+.a11y-widget-biz .a11y-sum-key > .a11y-sum-counts { grid-column: -3 / -1; }
+.a11y-widget-biz .a11y-sum-key .a11y-sum-eyebrow {
+  margin: 0 0 20px; padding: 0; border: 0; background: none; color: var(--ink); text-align: start; text-transform: none;
+  font-family: "Jokker", sans-serif; font-size: 15px; font-weight: 400; line-height: 1.2; letter-spacing: 0.01em;
 }
-.a11y-widget-biz .a11y-sum-col > .a11y-sum-panel:not(.a11y-sum-counts) .a11y-sum-lead {
+.a11y-widget-biz .a11y-sum-key :is(.a11y-sum-lead, .a11y-sum-counts-list) {
   display: block; margin: 0;
-  font-family: "Jokker", sans-serif; font-size: 27px; font-weight: 400; line-height: 1.2; letter-spacing: 0;
+  font-family: "Jokker", sans-serif; font-size: 18px; font-weight: 400; line-height: 1.3; letter-spacing: 0.01em;
 }
-@media (max-width: 640px) {
-  .a11y-widget-biz .a11y-sum-col > .a11y-sum-panel:not(.a11y-sum-counts) .a11y-sum-lead { font-size: 22px; letter-spacing: 0.005em; }
+.a11y-widget-biz .a11y-sum-key .a11y-sum-counts-list { padding: 0; list-style: none; columns: 2; column-gap: 15px; }
+.a11y-widget-biz .a11y-sum-key .a11y-sum-counts-list > li { margin: 0; padding: 0 0 0.6em; break-inside: avoid; }
+@container a11y-sum (max-width: 760px) {
+  .a11y-widget-biz .a11y-sum-key { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@container a11y-sum (max-width: 480px) {
+  .a11y-widget-biz .a11y-sum-key { grid-template-columns: minmax(0, 1fr); }
+  /* -3 on one track would open an empty implicit track before it. */
+  .a11y-widget-biz .a11y-sum-key > .a11y-sum-counts { grid-column: 1 / -1; }
+  .a11y-widget-biz .a11y-sum-key .a11y-sum-counts-list { columns: 1; }
 }
 
 /* ═══ THE CONVERSATIONS PANEL'S EDGE (user's instruction, 18 Nov 2026) ═════
@@ -3112,3 +3079,34 @@
 .a11y-widget-biz .a11y-stmt-field input:not([type="radio"]):not([type="checkbox"]) { border: 0; border-radius: 0; background: transparent; }
 /* A textarea is a box like the chat's: 20px corners, not the one-line 14px. */
 .a11y-widget-biz textarea:not([type="radio"]):not([type="checkbox"]):not([hidden]) { border-radius: 20px; }
+
+/* ═══ A CODE BLOCK IN THE CHAT AS A CARD TO COPY FROM (user's instruction,
+   22 Nov 2026, "make this into copy form in a card with small text") ════════
+   The assistant writes templates to fill in (an issue report: Title,
+   Summary, Where, Standard) as fenced blocks, and they ran at the thread's
+   prose size in monospace across the full width. Each block is now a card
+   on the tile ground, 20px corners like the chat box, the text at 15px on
+   a 1.45 line and wrapped (pre-wrap), so nothing scrolls sideways and the
+   block needs no tab stop. Copy sits on a bar at the card's top, end side,
+   so it never covers the first line. The card redefines --ink and --paper,
+   so the button's dotted edge and the focus ring follow it in both themes.
+   The doubled class out-ranks the phone's 0.9em rule for pre and code in
+   the thread, and the chat's paragraph margin on pre. */
+.a11y-widget-biz .a11y-chat-copy.a11y-chat-copy {
+  --ink: var(--tile-ink); --paper: var(--tile);
+  box-sizing: border-box; max-width: none; margin: 0 0 1.2em; padding: 14px 20px 20px;
+  border-radius: 20px; background: var(--tile); color: var(--tile-ink);
+}
+.a11y-widget-biz .a11y-chat-text > .a11y-chat-copy:last-child { margin-bottom: 0; }
+.a11y-widget-biz .a11y-chat-copy.a11y-chat-copy > .a11y-chat-copy-bar { display: flex; justify-content: flex-end; margin: 0 0 8px; }
+.a11y-widget-biz .a11y-chat-copy.a11y-chat-copy .a11y-chat-copy-btn {
+  min-height: 34px; padding: 0 1em; font-size: 15px; font-weight: 400; line-height: 1.2; letter-spacing: 0.01em;
+}
+.a11y-widget-biz .a11y-chat-copy.a11y-chat-copy > .a11y-chat-pre {
+  margin: 0; padding: 0; max-width: none; overflow: visible;
+  font-size: 15px; line-height: 1.45; letter-spacing: 0; white-space: pre-wrap; overflow-wrap: anywhere;
+}
+.a11y-widget-biz .a11y-chat-copy.a11y-chat-copy > .a11y-chat-pre > code { font-size: inherit; line-height: inherit; color: inherit; background: none; }
+@media (max-width: 640px) {
+  .a11y-widget-biz .a11y-chat-copy.a11y-chat-copy { padding: 10px 14px 16px; }
+}
