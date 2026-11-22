@@ -140,7 +140,9 @@ CREATE TABLE IF NOT EXISTS schedules (
   last_score    INTEGER,
   last_scan_id  TEXT,
   last_error    TEXT,
-  created_at    TEXT NOT NULL
+  created_at    TEXT NOT NULL,
+  notify_webhook TEXT,
+  webhook_secret TEXT
 );
 CREATE INDEX IF NOT EXISTS schedules_due ON schedules(enabled, next_run_at);
 
@@ -191,7 +193,16 @@ CREATE INDEX IF NOT EXISTS pilot_checks_report ON pilot_checks(report_id, decide
  * the next INSERT named a column that was not there. Add a migration for
  * every change to SCHEMA; never edit an entry that has shipped.
  */
-const MIGRATIONS: Array<{ version: number; sql: string }> = [
+// A column added to a table that SCHEMA may have just created whole. A file
+// from before the table existed gets it from SCHEMA's CREATE, columns and
+// all, so a bare ALTER there fails with "duplicate column name". This adds
+// the column only where it is missing.
+function addColumnIfMissing(handle: DatabaseSync, table: string, column: string, type: string): void {
+  const cols = handle.prepare(`PRAGMA table_info(${table})`).all() as Array<{ name: string }>;
+  if (!cols.some((c) => c.name === column)) handle.exec(`ALTER TABLE ${table} ADD COLUMN ${column} ${type}`);
+}
+
+const MIGRATIONS: Array<{ version: number; sql: string; run?: (handle: DatabaseSync) => void }> = [
   // 1: the tables as first shipped. A fresh database gets them from SCHEMA
   //    and simply records the version.
   { version: 1, sql: "" },
@@ -210,6 +221,16 @@ const MIGRATIONS: Array<{ version: number; sql: string }> = [
   // 5: whether the scanner caught a pilot report's barrier (pilot_checks).
   //    A new table only, as in 3.
   { version: 5, sql: "" },
+  // 6: a schedule can alert a webhook (Slack, Teams, Discord or any
+  //    endpoint) beside the email, with a secret that signs each alert.
+  {
+    version: 6,
+    sql: "",
+    run: (handle) => {
+      addColumnIfMissing(handle, "schedules", "notify_webhook", "TEXT");
+      addColumnIfMissing(handle, "schedules", "webhook_secret", "TEXT");
+    },
+  },
 ];
 export const SCHEMA_VERSION = MIGRATIONS[MIGRATIONS.length - 1].version;
 
@@ -220,6 +241,7 @@ function migrate(handle: DatabaseSync): void {
     handle.exec("BEGIN");
     try {
       if (m.sql) handle.exec(m.sql);
+      m.run?.(handle);
       handle.exec(`PRAGMA user_version = ${m.version}`);
       handle.exec("COMMIT");
       logger.info({ version: m.version }, "storage migrated");

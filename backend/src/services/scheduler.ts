@@ -5,6 +5,7 @@ import { dueSchedules, markRun } from "../storage/schedules.js";
 import { getScan, saveScan } from "../storage/scans.js";
 import { scanUrlToReport } from "./scanPipeline.js";
 import { sendReportEmail } from "./mail/sendReport.js";
+import { alertFromReport, sendWebhook, type WebhookAlert } from "./notify/webhook.js";
 import type { AccessibilityReport } from "../types/report.js";
 
 /**
@@ -34,12 +35,15 @@ export interface RunOutcome {
   scoreChange?: number | null;
   newFindings?: number;
   notified?: boolean;
+  // Whether the webhook took the alert; absent when none was sent.
+  webhooked?: boolean;
   error?: string;
 }
 
 // Injectable so the tick can be tested without a browser.
 type Runner = (url: string) => Promise<AccessibilityReport>;
 type Mailer = (to: string, report: AccessibilityReport, heading?: string) => Promise<{ ok: boolean }>;
+type Hook = (url: string, alert: WebhookAlert, secret?: string | null) => Promise<{ ok: boolean }>;
 
 let timer: NodeJS.Timeout | null = null;
 let running = false;
@@ -57,17 +61,22 @@ export function schedulerStatus() {
   };
 }
 
-function newFingerprints(previous: AccessibilityReport | null, current: AccessibilityReport): number {
-  if (!previous) return 0;
+function newFingerprints(previous: AccessibilityReport | null, current: AccessibilityReport): Set<string> {
+  if (!previous) return new Set();
   const known = new Set(previous.findings.map((f) => f.fingerprint).filter(Boolean));
-  return current.findings.filter((f) => f.category === "accessibility" && f.fingerprint && !known.has(f.fingerprint)).length;
+  return new Set(
+    current.findings
+      .filter((f) => f.category === "accessibility" && f.fingerprint && !known.has(f.fingerprint))
+      .map((f) => f.fingerprint!)
+  );
 }
 
 /** One pass over what is due. Exported for the tests; the timer calls it. */
 export async function tick(
   runner: Runner = (url) => scanUrlToReport(url, false, undefined, true, undefined, false),
   mailer: Mailer = sendReportEmail,
-  now = new Date()
+  now = new Date(),
+  hook: Hook = sendWebhook
 ): Promise<RunOutcome | null> {
   if (running) return null;
   running = true;
@@ -81,7 +90,8 @@ export async function tick(
       const report = await runner(due.url);
       const scanId = saveScan(due.accountId, report) ?? "";
       const scoreChange = due.lastScore === null ? null : report.score - due.lastScore;
-      const fresh = newFingerprints(previous, report);
+      const freshPrints = newFingerprints(previous, report);
+      const fresh = freshPrints.size;
       const worse = (scoreChange !== null && scoreChange < 0) || fresh > 0;
       let notified = false;
       if (worse && due.notifyEmail) {
@@ -91,8 +101,15 @@ export async function tick(
         ].filter(Boolean).join(", ");
         notified = (await mailer(due.notifyEmail, report, `Scheduled scan: ${report.url} got worse. ${what}`)).ok;
       }
+      // The channel alert is independent of mail: mail may be off on this
+      // server, and a team watching Slack or Teams should hear either way.
+      let webhooked: boolean | undefined;
+      if (worse && due.webhookUrl) {
+        const alert = alertFromReport(report, due.lastScore, fresh, scanId || undefined, fresh > 0 ? freshPrints : undefined);
+        webhooked = (await hook(due.webhookUrl, alert, due.webhookSecret)).ok;
+      }
       markRun(due.id, { scanId, score: report.score }, due.everyHours, now);
-      outcome = { scheduleId: due.id, url: due.url, ok: true, score: report.score, scoreChange, newFindings: fresh, notified };
+      outcome = { scheduleId: due.id, url: due.url, ok: true, score: report.score, scoreChange, newFindings: fresh, notified, ...(webhooked !== undefined ? { webhooked } : {}) };
     } catch (err) {
       const message = err instanceof Error ? err.message : String(err);
       markRun(due.id, { error: message }, due.everyHours, now);
