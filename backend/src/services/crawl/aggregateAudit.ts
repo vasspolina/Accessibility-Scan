@@ -67,6 +67,10 @@ export interface SiteAudit {
   // single-page reports — absent in exactly the mode where 3.2.6 Consistent
   // Help and 3.3.7 Redundant Entry are answerable at all.
   wcag22: Wcag22Readiness;
+  // How the pages were found, beyond the entry page's own links. Set by the
+  // audit route, absent when the site has no sitemap and no robots rules
+  // took anything out.
+  discovery?: AuditDiscovery;
   // Accessibility overlays seen on the scanned pages (each page's
   // meta.overlays, rolled up). Absent when no page carried one. The audit
   // reader only ever receives this aggregate, so a note left on the pages
@@ -74,6 +78,15 @@ export interface SiteAudit {
   // report: no part of it enters the scores, the site-wide issues or the
   // conformance table above.
   overlays?: SiteOverlay[];
+}
+
+export interface AuditDiscovery {
+  // The sitemap that was read, when there was one.
+  sitemap?: string;
+  // How many addresses it listed (capped at the reader's limit).
+  sitemapUrls: number;
+  // Candidate pages left out because the site's robots.txt disallows them.
+  excludedByRobots: number;
 }
 
 export interface SiteOverlay {
