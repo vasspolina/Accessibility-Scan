@@ -67,6 +67,19 @@ export interface SiteAudit {
   // single-page reports — absent in exactly the mode where 3.2.6 Consistent
   // Help and 3.3.7 Redundant Entry are answerable at all.
   wcag22: Wcag22Readiness;
+  // How the pages were found, beyond the entry page's own links. Set by the
+  // audit route, absent when the site has no sitemap and no robots rules
+  // took anything out.
+  discovery?: AuditDiscovery;
+}
+
+export interface AuditDiscovery {
+  // The sitemap that was read, when there was one.
+  sitemap?: string;
+  // How many addresses it listed (capped at the reader's limit).
+  sitemapUrls: number;
+  // Candidate pages left out because the site's robots.txt disallows them.
+  excludedByRobots: number;
 }
 
 export interface PageOutcome {

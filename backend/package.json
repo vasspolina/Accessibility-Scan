@@ -45,7 +45,8 @@
     "vitest": "^4.1.10"
   },
   "bin": {
-    "a11y-scan": "dist/cli.js"
+    "a11y-scan": "dist/cli.js",
+    "a11y-scan-mcp": "dist/mcp.js"
   },
   "files": [
     "dist",

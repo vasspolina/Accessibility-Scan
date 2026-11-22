@@ -14,7 +14,8 @@ npm test                            # vitest run (~60 files in test/)
 npx vitest run test/scoring.test.ts # one file; add -t "name" for one test
 npm run build                       # tsc to dist/
 npm run build:widget-business       # builds ../widget-business, copies the bundle into public/
-node dist/cli.js https://example.com   # the a11y-scan CLI (docs/CLI.md: exit 0 ok, 1 threshold missed, 2 scan failed)
+node dist/cli.js https://example.com   # the a11y-scan CLI (docs/CLI.md: exit 0 ok, 1 threshold missed, 2 scan failed); takes several URLs, --urls, --sitemap; writes --json --sarif --junit --csv --markdown
+node dist/mcp.js                       # a11y-scan-mcp, the scanner as an MCP stdio server (docs/MCP.md); stdout is protocol only
 
 # widget-business/
 npx vite                            # dev harness on :5174
@@ -53,7 +54,7 @@ CI (`.github/workflows/`) runs only for the package whose path changed: backend 
 6. `merge/scoring.ts` scores only provable WCAG A/AA findings. `conformance/` builds the criterion table, with criterion text per language.
 7. Thumbnails are cropped last. A second, capped browser visit pictures the findings the render pass could not.
 
-Concurrency is bounded by `render/browserPool.ts` (`MAX_CONCURRENT_RENDERS`, default 2, deliberately low because of container memory). Progress streams over `GET /api/scan/progress/:id`, keyed by a client-chosen `progressId`. `POST /api/audit` crawls a site (`crawl/`) and aggregates per-page reports. `routes/chat.ts` is the report-scoped assistant. `routes/inquiry.ts` is the BarrierFreeWeb studio site's request form: an AI assistant asks up to three questions and the request is mailed to `CONTACT_TO`, never to an address the caller supplies. `backend/public/barrier-ledger.html` (with `barrier-ledger.js`) is the operator's private view of the Report a barrier reports (user's instruction, 21 Nov 2026): it reads `GET /api/pilot/reports` with `ADMIN_TOKEN`, shows each person's words beside the model's draft, and saves a signed Caught, Missed or Can't tell mark per report (`pilot_checks`, append-only). It is a plain page in the widget's look, not part of the widget bundle, and must never be linked from a public page.
+Concurrency is bounded by `render/browserPool.ts` (`MAX_CONCURRENT_RENDERS`, default 2, deliberately low because of container memory). Progress streams over `GET /api/scan/progress/:id`, keyed by a client-chosen `progressId`. `POST /api/audit` crawls a site (`crawl/`) and aggregates per-page reports; its candidates are the entry page's links plus the site's sitemap, less what robots.txt disallows (`crawl/sitemap.ts`, pure parsers and one guarded fetcher). `routes/chat.ts` is the report-scoped assistant. `routes/inquiry.ts` is the BarrierFreeWeb studio site's request form: an AI assistant asks up to three questions and the request is mailed to `CONTACT_TO`, never to an address the caller supplies. `backend/public/barrier-ledger.html` (with `barrier-ledger.js`) is the operator's private view of the Report a barrier reports (user's instruction, 21 Nov 2026): it reads `GET /api/pilot/reports` with `ADMIN_TOKEN`, shows each person's words beside the model's draft, and saves a signed Caught, Missed or Can't tell mark per report (`pilot_checks`, append-only). It is a plain page in the widget's look, not part of the widget bundle, and must never be linked from a public page.
 
 **`buildApp()` in `src/app.ts` is separate from `server.ts`** so route tests `inject()` requests with no port or browser. Storage (`src/storage/`) is `node:sqlite` and opt-in: every route works without a database. `GET /api/storage` reports whether `DB_PATH` is durable.
 
