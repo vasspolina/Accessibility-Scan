@@ -1,4 +1,4 @@
-import type { AccessibilityReport, Severity } from "../../types/report.js";
+import type { AccessibilityReport, LinkedDocument, Severity } from "../../types/report.js";
 import { buildConformance, type ConformanceSummary } from "../conformance/buildConformance.js";
 import { buildWcag22Readiness, type Wcag22Readiness } from "../conformance/wcag22Readiness.js";
 import { compareNavigation, type ConsistencyIssue } from "./consistency.js";
@@ -71,6 +71,33 @@ export interface SiteAudit {
   // audit route, absent when the site has no sitemap and no robots rules
   // took anything out.
   discovery?: AuditDiscovery;
+  // The documents the scanned pages link to, each counted once however many
+  // pages link to it. Absent when none of them links to any. A site audit
+  // counts documents and opens none of them: see AUDIT_BUDGET_MS in
+  // routes/audit.ts for the measurement behind that.
+  documents?: SiteDocuments;
+}
+
+export interface SiteDocuments {
+  counts: Record<LinkedDocument["kind"], number>;
+  total: number;
+  // On an origin other than the audited site's.
+  otherSites: number;
+  // Always 0 from a site audit today. Carried so a reader of the JSON is
+  // told the number instead of inferring it from a missing field.
+  pdfChecked: number;
+  // Pages whose link list was cut at the render's cap, which makes the
+  // counts a floor. Absent when no page was.
+  pagesWithLinksNotRead?: number;
+  items: Array<{
+    url: string;
+    kind: LinkedDocument["kind"];
+    sameOrigin: boolean;
+    // The words of the first link found pointing at it.
+    text: string;
+    // How many of the scanned pages link to it.
+    pageCount: number;
+  }>;
 }
 
 export interface AuditDiscovery {
@@ -80,6 +107,56 @@ export interface AuditDiscovery {
   sitemapUrls: number;
   // Candidate pages left out because the site's robots.txt disallows them.
   excludedByRobots: number;
+}
+
+/**
+ * One list of documents for the site, from each page's own.
+ *
+ * A footer that links the same price list on every page is one document,
+ * not ten, and the number an owner needs is how many files there are to
+ * put right.
+ */
+export function unionDocuments(outcomes: PageOutcome[]): SiteDocuments | undefined {
+  const byUrl = new Map<string, SiteDocuments["items"][number]>();
+  let pdfChecked = 0;
+  let pagesWithLinksNotRead = 0;
+  const checkedUrls = new Set<string>();
+  for (const outcome of outcomes) {
+    const inventory = outcome.report?.documents;
+    if (!inventory) continue;
+    if (inventory.linksNotRead) pagesWithLinksNotRead += 1;
+    for (const item of inventory.items) {
+      if (item.status === "checked" && !checkedUrls.has(item.url)) {
+        checkedUrls.add(item.url);
+        pdfChecked += 1;
+      }
+      const seen = byUrl.get(item.url);
+      if (seen) {
+        seen.pageCount += 1;
+        if (!seen.text && item.text) seen.text = item.text;
+        continue;
+      }
+      byUrl.set(item.url, {
+        url: item.url,
+        kind: item.kind,
+        sameOrigin: item.sameOrigin,
+        text: item.text,
+        pageCount: 1,
+      });
+    }
+  }
+  if (byUrl.size === 0) return undefined;
+  const items = [...byUrl.values()];
+  const counts = { pdf: 0, word: 0, excel: 0, powerpoint: 0 };
+  for (const item of items) counts[item.kind] += 1;
+  return {
+    counts,
+    total: items.length,
+    otherSites: items.filter((i) => !i.sameOrigin).length,
+    pdfChecked,
+    ...(pagesWithLinksNotRead > 0 ? { pagesWithLinksNotRead } : {}),
+    items,
+  };
 }
 
 export interface PageOutcome {
@@ -172,6 +249,8 @@ export function aggregateAudit(
               b.totalOccurrences - a.totalOccurrences
           );
 
+  const documents = unionDocuments(scanned);
+
   const worstPage = [...pages]
     .filter((p) => !p.error)
     .sort((a, b) => a.score - b.score)[0];
@@ -260,5 +339,6 @@ export function aggregateAudit(
       incompleteChecks: [...new Set(scanned.flatMap((o) => o.report!.meta.incompleteChecks ?? []))],
       lang: normalizeReportLang(language),
     }),
+    ...(documents ? { documents } : {}),
   };
 }

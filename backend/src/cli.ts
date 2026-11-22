@@ -29,6 +29,7 @@
 import { writeFileSync, readFileSync, existsSync, realpathSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { scanUrlToReport } from "./services/scanPipeline.js";
+import { documentsLine } from "./services/documents/inventoryDocuments.js";
 import { legacyFingerprint } from "./services/merge/fingerprint.js";
 import { discoverFromSitemap, makeTextFetcher, readSitemap } from "./services/crawl/sitemap.js";
 import { SEVERITY_ORDER, fingerprintOf, pageKeyer, toCsv, toJUnit, toMarkdown, toSarif } from "./cliFormats.js";
@@ -241,6 +242,11 @@ function summarise(report: AccessibilityReport, quiet: boolean): void {
           (c.notMeasured ? ` · ${c.notMeasured} not measured` : "")
       );
     }
+    // The PDFs and office files the page links to. Counts only: which ones,
+    // and what was found in the PDFs that were opened, is in the JSON
+    // report under `documents`. Never part of the score above.
+    const documents = documentsLine(report.documents);
+    if (documents) console.log(`  ${documents}`);
     const incomplete = report.meta?.incompleteChecks ?? [];
     if (incomplete.length) {
       // Said loudly: a score computed from checks that did not all run is

@@ -298,6 +298,26 @@ result in that same pull request. The diff shows what was accepted and who
 accepted it, which is the point: an accepted failure should be visible in
 review, not silently allowed by a raised `--max-new`.
 
+## Linked documents
+
+When the page links to PDFs or to Word, Excel or PowerPoint files, the run
+prints one line of counts:
+
+```
+  documents: 9 PDF (2 opened, 2 with faults, 7 not opened) · 1 Word, Excel or PowerPoint (counted, never opened)
+```
+
+A page scan opens the first two PDFs on the page's own origin and checks
+each for tags, a title, a language, image descriptions and headings. The
+rest are counted. Office files are counted and never opened. Which
+documents, why each was not opened and what was found in the two that were
+is in the JSON report under `documents`.
+
+A linked document's faults are the document's. They are not among the
+page's findings, they do not move the score, and no threshold
+(`--min-score`, `--fail-on`, the baseline) sees them. To hold a PDF to a
+threshold, scan its address: `a11y-scan https://example.com/form.pdf`.
+
 ## Checks that did not finish
 
 The run prints this when a probe was cut short:

@@ -1272,6 +1272,25 @@ export const UNDECIDED_EXPLANATIONS: Record<string, { what: string; ask: string 
     what: "A video playing in another company's player, such as YouTube or Vimeo. The video lives on their site, so the checker cannot look inside it.",
     ask: "Play each one and turn captions on with the CC button. If there is no button or the captions are wrong, fix them in the account the video is hosted on.",
   },
+  // Three rows about the documents a page links to. The scan counts them
+  // all, opens the first two PDFs on the page's own site, and never opens
+  // an office file. What it finds in a PDF is the document's fault and is
+  // kept out of the page's score, which is why it is listed here and not
+  // among the findings. Wording approved by the owner, 22 Nov 2026; the
+  // second row's first sentence was then cut in two to fit the voice
+  // test's twenty words.
+  "pdf-linked-not-checked": {
+    what: "PDF documents this page links to that the scan did not open. A page scan opens the first two on your own site and counts the rest.",
+    ask: "Paste a document's address into the scan to check it on its own. A PDF needs tags, a title and its language set before a screen reader can read it properly.",
+  },
+  "pdf-linked-faults": {
+    what: "A PDF this page links to. The scan opened it and found faults, such as no tags or no title. They are the document's faults, so they are not in this page's score.",
+    ask: "Paste the document's address into the scan for its own report. Then ask whoever made it to fix the original file and upload it again.",
+  },
+  "office-linked-not-checked": {
+    what: "Word, Excel or PowerPoint files this page links to. The scan counts them and never opens them.",
+    ask: "Open each one and run the accessibility checker built into Office, under Review. Better still, put what it says on a web page, which everyone can read.",
+  },
   // Three rows about what the page listens for. A listener leaves no mark on
   // the page, so the checker can say one is there and nothing about what it
   // does when it fires.
