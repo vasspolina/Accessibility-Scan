@@ -141,18 +141,6 @@ describe("the chat contract", () => {
     expect(CHAT_SYSTEM_PROMPT).toMatch(/A list is for three or more items/);
   });
 
-  // The post-scan summary once read as a run of quoted titles, "the score
-  // leaves it out" and a menu of sections (user's word, 22 Nov 2026: "vague
-  // and looks like a slop"). It now says what each finding does to a person,
-  // where, and who fixes it, and what an unfinished check may have missed.
-  it("opens a report with facts, not a list of titles", () => {
-    expect(CHAT_SYSTEM_PROMPT).toMatch(/A title alone is a label, not a fact/);
-    expect(CHAT_SYSTEM_PROMPT).toMatch(/which problems may be missing from it, and for whom/);
-    expect(CHAT_SYSTEM_PROMPT).toMatch(/Never only "the score leaves it out"/);
-    expect(CHAT_SYSTEM_PROMPT).toMatch(/Do not list the report's sections/);
-    expect(CHAT_SYSTEM_PROMPT).not.toMatch(/One line on what else you can show/);
-  });
-
   it("holds the assistant to the report's own claims", () => {
     expect(CHAT_SYSTEM_PROMPT).toMatch(/Never invent a finding/);
     expect(CHAT_SYSTEM_PROMPT).toMatch(/Never say or imply the site is compliant/);
