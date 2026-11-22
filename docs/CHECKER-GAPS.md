@@ -307,6 +307,8 @@ For public-sector buyers — whose PDFs are the bulk of their accessibility expo
 
 **Difficulty:** small for the inventory ("this site links to 47 PDFs; none were checked" as an undecided row), medium to actually scan a sample of them within the audit budget.
 
+**Status, 22 November 2026:** the inventory is built for a page scan and for a site audit (`services/documents/inventoryDocuments.ts`, `unionDocuments` in `crawl/aggregateAudit.ts`), and a page scan opens the first two same-origin PDFs (`services/documents/linkedDocuments.ts`). Measured on four public pages: the score was the same with the sample and without it on each. Still open: a site audit opens no documents (the timing is beside `AUDIT_BUDGET_MS`); PDFs on another origin are counted and never opened, which on gov.uk is all of them, since they sit on `assets.publishing.service.gov.uk`; a document whose address has no extension is not counted; the widget lists the counts and not the documents.
+
 ### 2.7 Robots.txt is not consulted
 Zero references anywhere. The SSRF guard covers the security case, not the courtesy/legal one. For a tool an agency points at third-party sites, and one that markets itself on honesty, this is an odd omission.
 

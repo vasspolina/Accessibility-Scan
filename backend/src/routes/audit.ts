@@ -18,6 +18,32 @@ import { saveAudit } from "../storage/audits.js";
 // large site would pin the browser pool and starve every other request.
 const MAX_PAGES = 10;
 const AUDIT_BUDGET_MS = 240_000;
+//
+// Linked documents are counted on every page of an audit and none is
+// opened, where a single page scan opens two PDFs. Measured before
+// deciding, on 22 Nov 2026 from a laptop, through this route with the AI
+// review off:
+//
+//   etsi.org    5 pages  39.5 s      10 pages  58.2 s
+//   gov.uk      5 pages  22.6 s
+//
+// and one PDF check takes 0.02 to 1.2 s (see LINKED_PDF_BUDGET_MS in
+// services/documents/linkedDocuments.ts). Here that is room to spare: ten
+// pages used a quarter of the budget. The deployed service is the one that
+// counts, and it renders four to six times slower than this laptop (the
+// moma.org note in scanPipeline.ts: eight seconds here, forty-six there).
+// Ten pages at that rate is 230 to 350 s, which is the whole budget or
+// past it before a document is opened, and a sample allowed its full 12 s
+// on each of ten pages, two at a time, is another 60 s. So the budget
+// does not allow it where it runs. The deployed figure is scaled from one
+// measured page, not timed there; an audit timed on the service itself
+// is what would reopen this.
+//
+// There is a second reason, and it would hold with any budget: the pages
+// of one site link to the same files (a footer's price list), so a sample
+// per page opens the same two documents ten times over. A sample for an
+// audit belongs after the pages, taken once from the site's own list.
+//
 // Two at a time: enough to cut wall-clock roughly in half, low enough to leave
 // room in the pool (MAX_CONCURRENT_RENDERS) for ordinary single-page scans.
 const PAGE_CONCURRENCY = 2;
@@ -135,7 +161,11 @@ export async function auditRoutes(app: FastifyInstance) {
             parsed.data.includeAiReview,
             undefined,
             false,
-            parsed.data.language
+            parsed.data.language,
+            false,
+            undefined,
+            // Counted on every page, opened on none. See AUDIT_BUDGET_MS.
+            "count-for-site-audit"
           );
           outcomes.push({ ...page, report });
         } catch (err) {

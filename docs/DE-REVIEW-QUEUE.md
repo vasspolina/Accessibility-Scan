@@ -841,3 +841,9 @@ Found by a live German scan: these reached a German reader in English. Same cave
 | It was running during this scan, so every finding here was measured with it on. | Es lief während dieses Scans. Jeder Befund hier ist also mit laufendem Overlay gemessen. |
 | Its script is on this page, and its widget had not started when we measured. | Sein Skript ist auf dieser Seite, das Widget war bei unserer Messung aber noch nicht gestartet. |
 | Loaded from {url} | Geladen von {url} |
+| pdf-linked-not-checked · what | PDF-Dokumente, auf die diese Seite verlinkt und die die Prüfung nicht geöffnet hat. Eine Seitenprüfung öffnet die ersten zwei auf Ihrer eigenen Website und zählt die übrigen. | wcagPlain.de.ts |
+| pdf-linked-not-checked · ask | Fügen Sie die Adresse eines Dokuments in die Prüfung ein, um es einzeln zu prüfen. Ein PDF braucht Tags, einen Titel und eine festgelegte Sprache, damit ein Screenreader es richtig vorlesen kann. | wcagPlain.de.ts |
+| pdf-linked-faults · what | Ein PDF, auf das diese Seite verlinkt. Die Prüfung hat es geöffnet und Fehler gefunden, etwa fehlende Tags oder einen fehlenden Titel. Es sind Fehler des Dokuments, deshalb zählen sie nicht zum Ergebnis dieser Seite. | wcagPlain.de.ts |
+| pdf-linked-faults · ask | Fügen Sie die Adresse des Dokuments in die Prüfung ein, dann erhalten Sie einen eigenen Bericht dazu. Bitten Sie danach die Person, die es erstellt hat, die Originaldatei zu korrigieren und neu hochzuladen. | wcagPlain.de.ts |
+| office-linked-not-checked · what | Word-, Excel- oder PowerPoint-Dateien, auf die diese Seite verlinkt. Die Prüfung zählt sie und öffnet sie nie. | wcagPlain.de.ts |
+| office-linked-not-checked · ask | Öffnen Sie jede Datei und starten Sie die Barrierefreiheitsprüfung, die in Office im Menü Überprüfen eingebaut ist. Noch besser stellen Sie den Inhalt auf eine Webseite, die alle lesen können. | wcagPlain.de.ts |
