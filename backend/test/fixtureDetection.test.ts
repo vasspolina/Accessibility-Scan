@@ -11,6 +11,7 @@ import { evaluateForcedColors } from "../src/services/forcedColors/analyzeForced
 import { evaluateReadingOrder } from "../src/services/readingOrder/analyzeReadingOrder.js";
 import { evaluateMobile } from "../src/services/mobile/analyzeMobile.js";
 import { evaluateReflowHeight } from "../src/services/reflowHeight/analyzeReflowHeight.js";
+import { evaluatePixelContrast } from "../src/services/contrast/pixelContrast.js";
 import { evaluateDarkPatterns } from "../src/services/darkPatterns/analyzeDarkPatterns.js";
 import { evaluateTextResize } from "../src/services/textResize/analyzeTextResize.js";
 import { evaluateConsentA11y } from "../src/services/consentA11y/evaluateConsentA11y.js";
@@ -60,6 +61,7 @@ async function scanFixture(name: string): Promise<AccessibilityFinding[]> {
   findings.push(...evaluateReadingOrder(r.readingOrder));
   findings.push(...evaluateMobile(r.mobileSignals));
   findings.push(...evaluateReflowHeight(r.reflowHeight));
+  findings.push(...evaluatePixelContrast(r.pixelContrast));
   findings.push(...evaluateDarkPatterns(r.darkPatternSignals));
   findings.push(...evaluateConsentA11y(r.darkPatternSignals));
   findings.push(...evaluateTextResize(r.textResizeSignals));
@@ -640,6 +642,30 @@ describe("qa-mobile-good.html: phone-width done right", () => {
 // leave 16px to read through; the other holds the same parts built right (a
 // panel that scrolls inside itself, a bar that stops pinning when the window
 // is short, a slim header) and must draw nothing.
+// Text on gradients, which axe leaves undecided. Measured from the pixels
+// behind the letters: one run fails everywhere and is scored, one passes
+// everywhere and is settled, one sits half on white and half on black and
+// stays a question for a person.
+describe("qa-contrast-images.html: text over gradients, measured from pixels", () => {
+  let findings: AccessibilityFinding[];
+  let undecided: string[] = [];
+  beforeAll(async () => {
+    findings = await scanFixture("qa-contrast-images.html");
+    undecided = (lastRender!.axe.incomplete.find((r) => r.id === "color-contrast")?.nodes ?? []).map((n) => n.target.flat().join(" "));
+  }, 120_000);
+
+  it("scores the pale text that fails over all of its background", () => {
+    const f = findings.filter((x) => x.ruleId === "contrast-over-image");
+    expect(f.map((x) => x.selector)).toEqual(["#faint"]);
+  });
+
+  it("settles both clear cases and leaves only the split one undecided", () => {
+    expect(undecided).not.toContain("#faint");
+    expect(undecided).not.toContain("#dark-ok");
+    expect(undecided).toContain("#half");
+  });
+});
+
 describe("qa-reflow-height.html: a window 256px tall", () => {
   let findings: AccessibilityFinding[];
   beforeAll(async () => {

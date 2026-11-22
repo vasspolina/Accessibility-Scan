@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>QA fixture: text over gradients and pictures</title>
+  <style>
+    body { margin: 0; font: 18px/1.5 system-ui, sans-serif; background: #fff; color: #000; }
+    main { padding: 1em; }
+    .panel { padding: 24px; margin: 0 0 24px; width: 600px; }
+    p.t { margin: 0; font-size: 18px; }
+  </style>
+</head>
+<body>
+  <!-- Every run of text here sits on a gradient, which axe cannot settle.
+       1. #faint: pale grey on a near-white gradient. Fails everywhere: a scored contrast-over-image finding.
+       2. #dark-ok: white on a near-black gradient. Passes everywhere: settled, leaves the undecided list, no finding.
+       3. #half: white on a gradient from white to black. Readable on one half only: stays undecided, no finding. -->
+  <main>
+    <h1>Text over gradients</h1>
+    <div class="panel" style="background: linear-gradient(90deg, #ffffff, #f2f2f2);">
+      <p class="t" id="faint" style="color: #c4c4c4;">Opening hours are Monday to Friday, nine to five.</p>
+    </div>
+    <div class="panel" style="background: linear-gradient(90deg, #000000, #1e1e1e);">
+      <p class="t" id="dark-ok" style="color: #ffffff;">Book a table online or call us on the number below.</p>
+    </div>
+    <div class="panel" style="background: linear-gradient(90deg, #ffffff 0%, #ffffff 45%, #000000 55%, #000000 100%);">
+      <p class="t" id="half" style="color: #ffffff;">Free delivery on every order over thirty euros this week.</p>
+    </div>
+  </main>
+</body>
+</html>

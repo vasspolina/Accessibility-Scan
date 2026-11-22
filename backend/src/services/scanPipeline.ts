@@ -39,6 +39,7 @@ import { evaluateForcedColors } from "./forcedColors/analyzeForcedColors.js";
 import { evaluateReadingOrder } from "./readingOrder/analyzeReadingOrder.js";
 import { evaluateReadability } from "./readability/analyzeReadability.js";
 import { evaluateReflowHeight } from "./reflowHeight/analyzeReflowHeight.js";
+import { evaluatePixelContrast } from "./contrast/pixelContrast.js";
 import { evaluateMobile } from "./mobile/analyzeMobile.js";
 import { evaluateDarkPatterns } from "./darkPatterns/analyzeDarkPatterns.js";
 import { evaluateTextResize } from "./textResize/analyzeTextResize.js";
@@ -491,6 +492,7 @@ export async function scanUrlToReport(
   deterministic.push(...evaluateReadability(renderResult.readability));
   deterministic.push(...evaluateMobile(renderResult.mobileSignals));
   deterministic.push(...evaluateReflowHeight(renderResult.reflowHeight));
+  deterministic.push(...evaluatePixelContrast(renderResult.pixelContrast));
   // Asked of YouTube and Vimeo now and awaited when the report is built, so
   // the lookups run beside the AI review instead of after it. Never throws:
   // an unanswered lookup is "unknown" and the embed stays undecided.

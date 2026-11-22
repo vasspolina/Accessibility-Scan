@@ -33,6 +33,7 @@ import {
 import type { ScreenReaderScript } from "../../types/report.js";
 import type { ReadabilitySignals } from "../readability/analyzeReadability.js";
 import { collectReflowHeightInPage, REFLOW_HEIGHT, type ReflowHeightSignals } from "../reflowHeight/analyzeReflowHeight.js";
+import { measureUndecidedContrast, type PixelContrastResult } from "../contrast/pixelContrast.js";
 import type {
   FocusStyles,
   KeyboardNavResult,
@@ -392,6 +393,9 @@ export interface RenderResult {
   // 1.4.10 (services/reflowHeight/analyzeReflowHeight.ts). Absent when the
   // pass did not finish.
   reflowHeight?: ReflowHeightSignals;
+  // Text over pictures and gradients that axe left undecided, measured from
+  // the pixels (services/contrast/pixelContrast.ts).
+  pixelContrast?: PixelContrastResult[];
   // Checks that did not complete on this run, in words a reader understands.
   //
   // Each of these passes catches its own failures and returns empty signals so
@@ -3572,6 +3576,30 @@ export async function renderAndScan(
       phaseMs.axe = Date.now() - axeBegan;
       const axe = axeResult;
 
+      // Text axe could not settle because it sits on a picture, a gradient
+      // or another element, measured from the pixels behind its letters
+      // (services/contrast/pixelContrast.ts). A node settled either way
+      // leaves axe's undecided list here, so the undecided count, the
+      // conformance row and the report all agree; a failure becomes a
+      // finding in the pipeline. Bounded to eight seconds and never fatal.
+      let pixelContrast: PixelContrastResult[] | undefined;
+      const undecidedContrast = axe.incomplete?.find((r) => r.id === "color-contrast");
+      if (undecidedContrast && undecidedContrast.nodes.length > 0 && remaining() > 15_000) {
+        pixelContrast = await timed("pixelContrast", () =>
+          measureUndecidedContrast(
+            page,
+            undecidedContrast.nodes.map((n) => ({ selector: axeTargetToSelector(n.target), html: n.html })),
+            Date.now() + Math.min(8000, remaining() - 10_000)
+          )
+        ).catch(() => undefined);
+        // The shots scroll each element into view; later probes start from the top.
+        await page.evaluate(() => window.scrollTo(0, 0)).catch(() => {});
+        const settled = new Set((pixelContrast ?? []).filter((r) => r.verdict !== "mixed").map((r) => r.selector));
+        if (settled.size > 0) {
+          undecidedContrast.nodes = undecidedContrast.nodes.filter((n) => !settled.has(axeTargetToSelector(n.target)));
+        }
+      }
+
       // Supplementary context for the AI layer, not something the report
       // depends on — so it must never be able to fail a scan. It normally
       // costs tens of milliseconds, but on a heavy page on a loaded container
@@ -4243,6 +4271,7 @@ export async function renderAndScan(
         readingOrder,
         readability,
         reflowHeight,
+        pixelContrast,
         pageTitle: domSignals.pageTitle,
         finalUrl: page.url(),
         axe,
