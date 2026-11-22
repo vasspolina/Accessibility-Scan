@@ -13,7 +13,7 @@ from scratch if any is worth reusing:
 |---|---|
 | `0d4611a` | the fullest one. Built from the design system's OWN stylesheet and component sources rather than from screenshots: the 12/24/48 spacing scale, the project type rules (literal px, 15/18 body, 0.01em tracking), ports of `.as-card` / `.as-head` / `.as-table` / `.as-row` / `.as-band` / `.as-pill` / `.as-sev`, the severity tone ramp, and the report sections' 5fr/7fr grid |
 | `dadf555` | Foundations-v2 component sheets |
-| `c5a2640` | the Pangram-direction system |
+| `c5a2640` | the large-type direction system |
 | `92b5a9b` | the reference-matched scan form |
 
 **Take values from `reference/accessible-scan.css`, not from a screenshot.** It

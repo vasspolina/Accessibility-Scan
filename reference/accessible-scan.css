@@ -9,14 +9,14 @@
 @font-face { font-family: "PP Telegraf"; src: url("../assets/fonts/PPTelegraf-Medium.otf") format("opentype"); font-weight: 500; font-style: normal; font-display: swap; }
 
 /* ===== tokens/colors.css ===== */
-/* Colour layer built on the IBM Carbon colour system (carbondesignsystem.com/elements/color/tokens).
-   Ramps below are Carbon's, unchanged. Semantic tokens use Carbon's names and values, with two
+/* Colour layer built on an open-source colour system (Apache 2.0).
+   Ramps below are that system's, unchanged. Semantic tokens use its names and values, with two
    deliberate brand deviations, marked BRAND: interactive/link/focus/button-primary are black rather
    than Blue 60, and --accent-red is this system's own display red.
-   Light theme (Carbon White) on :root, dark theme (Carbon Gray 100) on [data-theme="dark"].
+   Light theme (White) on :root, dark theme (Gray 100) on [data-theme="dark"].
    Every text/background pair below meets WCAG 2.2 AA (4.5:1) or better. */
 :root {
-  /* ── Carbon ramps ─────────────────────────────────────────── */
+  /* ── Colour ramps ────────────────────────────────────────── */
   --white: #ffffff;
   --gray-10: #f4f4f4; --gray-20: #e0e0e0; --gray-30: #c6c6c6; --gray-40: #a8a8a8; --gray-50: #8d8d8d;
   --gray-60: #6f6f6f; --gray-70: #525252; --gray-80: #393939; --gray-90: #262626; --gray-100: #161616;
@@ -48,7 +48,7 @@
   --teal-10: #d9fbfb; --teal-20: #9ef0f0; --teal-30: #3ddbd9; --teal-40: #08bdba; --teal-50: #009d9a;
   --teal-60: #007d79; --teal-70: #005d5d; --teal-80: #004144; --teal-90: #022b30; --teal-100: #081a1c;
 
-  /* ── Carbon semantic — White theme ────────────────────────── */
+  /* ── Semantic — White theme ───────────────────────────────── */
   --background: var(--white);
   --background-hover: #e8e8e8;
   --background-inverse: var(--gray-100);
@@ -79,7 +79,7 @@
   --skeleton-background: #e8e8e8;
   --skeleton-element: var(--gray-30);
 
-  /* BRAND: Carbon puts Blue 60 here; this system uses black for interactive, links and focus. */
+  /* BRAND: the source system puts Blue 60 here; this system uses black for interactive, links and focus. */
   --link-primary: var(--text-primary);
   --link-primary-hover: var(--gray-70);
   --link-visited: var(--purple-70);
@@ -126,14 +126,14 @@
   --text-on-invert-secondary: var(--gray-30);  /* 9.9:1 on #161616 */
   --text-on-invert-tertiary: var(--gray-40);   /* 7.6:1 on #161616 */
 
-  /* Severity tags on inverted surfaces — Carbon dark tag pairs: 20-level text on 70/80-level fill. */
+  /* Severity tags on inverted surfaces — dark tag pairs: 20-level text on 70/80-level fill. */
   --severity-critical-ondark-text: var(--red-20);     --severity-critical-ondark-bg: var(--red-70);
   --severity-serious-ondark-text: var(--orange-20);   --severity-serious-ondark-bg: var(--orange-70);
   --severity-moderate-ondark-text: var(--yellow-20);  --severity-moderate-ondark-bg: var(--yellow-70);
   --severity-minor-ondark-text: var(--gray-10);       --severity-minor-ondark-bg: var(--gray-70);
   --severity-pass-ondark-text: var(--green-20);       --severity-pass-ondark-bg: var(--green-70);
 
-  /* Carbon tag palette — 70-level text on 20-level tint, no border. All ≥ 4.5:1. */
+  /* Tag palette — 70-level text on 20-level tint, no border. All ≥ 4.5:1. */
   --tag-gray-text: var(--gray-100);      --tag-gray-bg: var(--gray-20);
   --tag-red-text: var(--red-70);         --tag-red-bg: var(--red-20);
   --tag-magenta-text: var(--magenta-70); --tag-magenta-bg: var(--magenta-20);
@@ -144,7 +144,7 @@
   --tag-green-text: var(--green-70);     --tag-green-bg: var(--green-20);
 }
 
-/* ── Carbon semantic — Gray 100 theme ───────────────────────── */
+/* ── Semantic — Gray 100 theme ──────────────────────────────── */
 [data-theme="dark"] {
   --background: var(--gray-100);
   --background-hover: #333333;
@@ -213,7 +213,7 @@
   --accent-red-hover: #ff5c33;
   --accent-red-active: #ff8266;
 
-  /* Carbon dark tags: 20-level text on 70-level fill. */
+  /* Dark tags: 20-level text on 70-level fill. */
   --tag-gray-text: var(--gray-10);       --tag-gray-bg: var(--gray-70);
   --tag-red-text: var(--red-20);         --tag-red-bg: var(--red-70);
   --tag-magenta-text: var(--magenta-20); --tag-magenta-bg: var(--magenta-70);
@@ -267,7 +267,7 @@
   --tracking-caps: 0.1em;
 
   /* Editorial display tier — hero/marketing contexts only, never dense UI.
-     Pangram Pangram-inspired: oversized type, tight leading. */
+     Oversized type, tight leading. */
   --type-display-size: 144px;
   --type-display-lh: 0.88;
   /* Display numerals inside multi-column card rows — shrinks with the column, never below 48px. */
@@ -305,7 +305,7 @@ a:hover { color: var(--link-primary-hover); }
   --space-11: 5rem;
   --space-12: 6rem;
 
-  /* Rounded corners, no Carbon-flat squareness */
+  /* Rounded corners, no flat squareness */
   --radius-none: 0;
   --radius-sm: 8px;
   --radius-md: 12px;

@@ -2,9 +2,8 @@
 
 An accessibility-first, minimalistic design system for a professional
 accessibility-checking tool: a product whose users audit websites and
-applications against WCAG. The system is derived from **IBM Carbon Design
-System** colors, spacing, motion and UX principles (Carbon is open source,
-Apache 2.0), rendered in the user-supplied **PP Telegraf** typeface.
+applications against WCAG. The system is derived from an open-source design
+system's colors, spacing, motion and UX principles (Apache 2.0), rendered in the user-supplied **PP Telegraf** typeface.
 
 The product's own credibility depends on being accessible: every token,
 component and screen in this system must itself pass the checks the product
@@ -14,11 +13,10 @@ performs.
 
 - **Typeface:** PP Telegraf (user-supplied OTFs, Regular 400 + Medium 500),
   in `assets/fonts/`. No other weights were provided.
-- **Color / spacing / motion / UX principles:** IBM Carbon Design System
-  (carbondesignsystem.com) — open source, Apache 2.0. Values are Carbon's
-  published ramps; semantic naming follows Carbon's token vocabulary
-  (`layer-01`, `text-primary`, `support-error`, …) so the system is legible
-  to anyone who knows Carbon.
+- **Color / spacing / motion / UX principles:** an open-source design
+  system, Apache 2.0. Values are its published ramps; semantic naming
+  follows its token vocabulary (`layer-01`, `text-primary`, `support-error`,
+  …) so the system is legible to anyone who knows it.
 - No logo, brand mark, screenshots, Figma file or codebase were provided.
   **There is therefore no logo in this system** — the product name is set in
   plain PP Telegraf Medium wherever a mark would go.
@@ -115,7 +113,7 @@ instrument, not a marketing page.
   letter-spacing for airiness at 18px. Legacy token names alias onto
   these three. Measure capped at 66ch. Tight
   tracking on display sizes, +0.04em on the small caps eyebrow.
-- **Color.** Carbon Gray as the whole neutral structure; Carbon Blue 60 as
+- **Color.** Gray as the whole neutral structure; Blue 60 as
   the single interactive accent. Status/severity ramps are used *only* for
   findings, never decoratively. Maximum two surface levels visible at once
   (`--background` + `--layer-01`).
@@ -138,7 +136,7 @@ instrument, not a marketing page.
   shadows, no glows.
 - **Transparency and blur.** Used only for the dialog scrim (Gray 100 at
   50%). No frosted glass, no translucent panels.
-- **Animation.** Carbon productive curves, 70–240ms. Fades and 2–4px
+- **Animation.** Productive curves, 70–240ms. Fades and 2–4px
   translations only — no bounce, no scale-in, no spring. Scan progress is
   the one long-running animation and it is a determinate bar with a live
   numeric readout.
@@ -148,15 +146,14 @@ instrument, not a marketing page.
 - **Press.** One further ramp step darker, no scale change, no shadow
   change.
 - **Layout.** Fixed left navigation rail and a fixed top header; the
-  results area is the only scrolling region. Content sits on Carbon's
+  results area is the only scrolling region. Content sits on a
   16-column-equivalent rhythm using the 2x spacing scale. Density is a
   user setting; the default is comfortable, not compact.
 
-## Tables (Carbon data-table rules)
+## Tables (data-table rules)
 
 Any list of findings, pages, or records is a `DataTable`
-(`components/core/DataTable.jsx`) — never a stack of bespoke divs. Rules,
-after Carbon's data table:
+(`components/core/DataTable.jsx`) — never a stack of bespoke divs. Rules:
 
 - **Structure.** A real `<table>`: header row followed by data rows,
   minimum three columns. Column headers are `<th scope="col">` in
@@ -168,7 +165,7 @@ after Carbon's data table:
 - **Alignment.** Text left-aligned; numbers right-aligned with the header
   matching its column.
 - **Casing.** Sentence case for headers and cells alike (the system's
-  global rule overrides Carbon's Title Case headers).
+  global rule overrides Title Case headers).
 - **Expandable rows** are the detail pattern: a 44px chevron `<button>`
   with `aria-expanded`, opening a full-width `--layer-01` panel under the
   row. One row open at a time; never a separate detail screen for a
@@ -184,9 +181,8 @@ after Carbon's data table:
 
 ## Iconography
 
-No icon assets were provided. The system uses **IBM Carbon Icons** (open
-source, Apache 2.0) — the natural companion to Carbon's color and UX
-foundations, and a 16/20/24/32px grid with a flat, single-weight, filled-
+No icon assets were provided. The system uses an **open-source icon set** (Apache
+2.0) — the natural companion to its color and UX foundations, and a 16/20/24/32px grid with a flat, single-weight, filled-
 and-outline mix that suits an instrument-like UI.
 
 - **Substitution flag:** this is a *substitution*, not a supplied asset
@@ -211,7 +207,7 @@ and-outline mix that suits an instrument-like UI.
 - `tokens/colors.css` — ramps, semantic light theme, `[data-theme="dark"]`.
 - `tokens/typography.css` — families, weights, type scale, measure.
 - `tokens/spacing.css` — 2x grid, radii, borders, target sizes, shadows.
-- `tokens/motion.css` — Carbon easings, durations, reduced-motion.
+- `tokens/motion.css` — Easings, durations, reduced-motion.
 - `tokens/focus.css` — focus ring defaults, skip link, visually-hidden.
 - `assets/fonts/` — PPTelegraf Regular + Medium OTFs.
 - `guidelines/` — 15 foundation specimen cards (colors, type, spacing, focus, motion).
