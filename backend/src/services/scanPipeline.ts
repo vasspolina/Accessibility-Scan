@@ -24,6 +24,7 @@ import {
 import { evaluateTypography } from "./typography/analyzeTypography.js";
 import { evaluateMotion } from "./motion/analyzeMotion.js";
 import { evaluateMedia } from "./media/analyzeMedia.js";
+import { lookUpEmbedCaptions } from "./media/captionTracks.js";
 import { evaluateConsentA11y, consentA11yUndecided } from "./consentA11y/evaluateConsentA11y.js";
 import { evaluateScreenReaderScript } from "./screenReader/analyzeScreenReader.js";
 import { evaluateControlContrast } from "./contrast/analyzeControlContrast.js";
@@ -490,6 +491,10 @@ export async function scanUrlToReport(
   deterministic.push(...evaluateReadability(renderResult.readability));
   deterministic.push(...evaluateMobile(renderResult.mobileSignals));
   deterministic.push(...evaluateReflowHeight(renderResult.reflowHeight));
+  // Asked of YouTube and Vimeo now and awaited when the report is built, so
+  // the lookups run beside the AI review instead of after it. Never throws:
+  // an unanswered lookup is "unknown" and the embed stays undecided.
+  const embedCaptionsLookup = lookUpEmbedCaptions(renderResult.domSignals.mediaEmbeds);
   deterministic.push(...evaluateDarkPatterns(renderResult.darkPatternSignals));
   // The consent banner's screen-reader mechanics — a separate layer from the
   // dark-pattern checks on the same banner: those judge the fairness of the
@@ -609,6 +614,7 @@ export async function scanUrlToReport(
     incompleteChecks: renderResult.incompleteChecks,
     lang: normalizeReportLang(language),
   });
+  const embedCaptions = await embedCaptionsLookup;
 
   return {
     url: safeUrl.toString(),
@@ -631,7 +637,7 @@ export async function scanUrlToReport(
       [
         ...consentA11yUndecided(renderResult.darkPatternSignals),
         ...formErrorAssociationUndecided(renderResult.domSignals.forms),
-        ...evaluateMedia(renderResult.domSignals.mediaElements, renderResult.domSignals.mediaEmbeds),
+        ...evaluateMedia(renderResult.domSignals.mediaElements, renderResult.domSignals.mediaEmbeds, embedCaptions),
         ...evaluateInteraction(renderResult.domSignals.listeners, {
           liveRegions: renderResult.domSignals.liveRegions,
           hasControls:

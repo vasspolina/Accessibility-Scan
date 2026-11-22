@@ -123,7 +123,9 @@ export interface DomSignals {
     // selector, so the label is carried when the markup offers one.
     label: string;
   }>;
-  mediaEmbeds: Array<{ selector: string; provider: string; title: string }>;
+  // src is kept (capped) so the pipeline can ask YouTube and Vimeo whether
+  // the embedded video has captions (media/captionTracks.ts).
+  mediaEmbeds: Array<{ selector: string; provider: string; title: string; src?: string }>;
   // The navigation, in the order it appears. Meaningless on its own — a
   // single page cannot be inconsistent with itself — and collected purely so
   // the crawler can compare one page against another. WCAG 3.2.3 and 3.2.4
@@ -690,9 +692,10 @@ function extractDomSignalsInPage(overlayMarkerSelectors: string[]): DomSignals {
         selector: cssPath(el),
         provider: match[1],
         title: el.getAttribute("title") ?? "",
+        src: (el as HTMLIFrameElement).src.slice(0, 300),
       };
     })
-    .filter((e): e is { selector: string; provider: string; title: string } => e !== null)
+    .filter((e): e is { selector: string; provider: string; title: string; src: string } => e !== null)
     .slice(0, 20);
 
   // Navigation landmarks first, header only as a fallback: a great many
