@@ -662,6 +662,15 @@
 .a11y-widget-biz .a11y-accordion-head[aria-expanded="true"] .a11y-accordion-chevron { transform: rotate(180deg); }
 .a11y-widget-biz .a11y-w22-toggle { display: flex; align-items: center; gap: 0.6em; text-align: start; }
 .a11y-widget-biz .a11y-section-count { font-size: 22px; letter-spacing: 0.01em; font-weight: 400; }
+/* A section title's count is a superior figure (user's instruction, 22 Nov
+   2026, "design number 1"): raised from the baseline to the title's top,
+   so "(1)" reads as a note on the title rather than a word trailing it.
+   text-top lines the count's box up with the top of the title's font, and
+   line-height 1 keeps it from pushing the title's line open. The words
+   ("What costs you trust (1)") are unchanged for screen readers. The
+   accordion heads (Screen reader preview, the buyers' report) keep their
+   own one-line head and their count or edition on the baseline. */
+.a11y-widget-biz .a11y-section-title:not(.a11y-accordion-title) .a11y-section-count { vertical-align: text-top; line-height: 1; }
 
 /* THE ACCESSIBILITY STATEMENT (user's instruction, 21 Nov 2026, "design
    this", on the conformance head, Step 1's fields and Step 2's statement).
@@ -1016,12 +1025,17 @@
    Still a list in the markup: only its display is inline. The markers are
    ink with paper figures (21:1); the severity fills are the highlight
    colours with black text, as everywhere else. */
+/* Set left since 22 Nov 2026 (user's instruction, "lets allign this to the
+   left"): the label, the dial, the run and the copy button stand on the
+   column's own left edge, with no side padding, so they line up with the
+   sections under them. The figure inside the dial stays centred in its
+   ring. */
 .a11y-widget-biz .a11y-sum-run {
   container: a11y-sum-run / inline-size;
-  text-align: center; padding: 1.2em 1.2em 1.4em; margin: 0 0 0.6em;
+  text-align: start; padding: 1.2em 0 1.4em; margin: 0 0 0.6em;
 }
 .a11y-widget-biz .a11y-sum-run > .a11y-sum-eyebrow { margin: 0 0 0.6em; }
-.a11y-widget-biz .a11y-sum-run .a11y-sum-dial-card { display: flex; justify-content: center; }
+.a11y-widget-biz .a11y-sum-run .a11y-sum-dial-card { display: flex; justify-content: flex-start; }
 .a11y-widget-biz .a11y-sum-run .a11y-sum-dial { margin: 0 0 0.5em; }
 /* The run of findings: display size, tight, centred.
    10% smaller since 18 Nov 2026 (user's instruction): 67 to 60px, the
@@ -1086,7 +1100,7 @@
   font-size: 22px; letter-spacing: 0.01em; line-height: 1.2; margin: 0 0 0 0.3em;
 }
 .a11y-widget-biz .a11y-sum-run .a11y-score-clean { font-size: 42px; letter-spacing: -0.01em; line-height: 1.06; margin: 0; }
-.a11y-widget-biz .a11y-sum-run + .a11y-sum-actions { text-align: center; margin: 0 0 1.2em; }
+.a11y-widget-biz .a11y-sum-run + .a11y-sum-actions { text-align: start; margin: 0 0 1.2em; }
 /* On a phone the run comes down to title size, so a long German word
    still fits 320px. */
 @media (max-width: 640px) { .a11y-widget-biz .a11y-sum-run { padding-inline: 0; } }
@@ -2058,7 +2072,7 @@
    full width of its column, as the conversation already did. The 42ch and
    38ch caps, and the 60ch one on the picture's locator, are gone; the
    column itself (the widget's 40em) is the measure. */
-.a11y-widget-biz :is(.a11y-sum-run, .a11y-sum-actions) :is(p, h3) { margin-inline: auto; }
+.a11y-widget-biz :is(.a11y-sum-run, .a11y-sum-actions) :is(p, h3) { margin-inline: 0; }
 
 /* ═══ 320PX AFTER THE 20% TYPE STEP (17 Nov 2026) ══════════════════════════
    The reflow check (every fixture state at 320px in en/de/es/fr) failed in
