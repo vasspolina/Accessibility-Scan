@@ -12,9 +12,38 @@ a11y-scan https://example.com
 
 ## Installing
 
-It is not on the npm registry yet, so `a11y-scan` does not work — the
-earlier version of this page said it did. Until it is published, install
-from a checkout:
+Three ways in, each one line once it is published. The npm package and the
+image are prepared (`backend/package.json`, `backend/cli.Dockerfile`, and
+`.github/workflows/release-cli.yml`, which publishes both when a `cli-v*`
+tag is pushed) but **not published yet**, so the first two do not work
+until the owner publishes them. The Action works now: it builds from this
+repository at the ref you name.
+
+```bash
+# npm (once published)
+npm install -g a11y-scan
+npx playwright@1.61.1 install chromium --with-deps
+
+# Docker (once published): output files land in the mounted directory
+docker run --rm -v "$PWD:/work" ghcr.io/vasspolina/a11y-scan https://example.com --json report.json
+```
+
+```yaml
+# GitHub Actions: use @main until a v1 tag exists
+- uses: vasspolina/Accessibility-Scan@main
+  with:
+    url: http://localhost:3000
+    args: --fail-on serious --sarif a11y.sarif
+```
+
+The Action's `url` takes one or more addresses, `args` any other options,
+and `summary: "true"` (the default) writes the Markdown summary to the job
+summary. Its `exit-code` output and its own exit code are the command's.
+The browser is pinned: Playwright 1.61.1 and the Chromium it ships. A
+Chromium from another Playwright version does not launch, and the command
+says which line to run if it is missing.
+
+Until the package is published, a checkout works too:
 
 ```bash
 git clone git@github.com:vasspolina/Accessibility-Scan.git
@@ -24,9 +53,10 @@ npx playwright install chromium --with-deps
 npm link                                  # puts `a11y-scan` on your PATH
 ```
 
-Node 24 or later. The backend's own CI runs exactly this from a temporary
-directory and checks the three exit codes, so if that job is green the
-install path works.
+Node 24 or later. The backend's own CI runs this from a temporary directory
+and checks the three exit codes, and the `Install paths` workflow runs the
+Action, builds and runs the image, and checks what npm would publish (the
+compiled command and its README, never the widgets or their fonts).
 
 ## Exit codes
 

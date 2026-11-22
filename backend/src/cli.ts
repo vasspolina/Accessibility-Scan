@@ -27,6 +27,7 @@
  * where you stand without failing your build on the day you add it.
  */
 import { writeFileSync, readFileSync, existsSync, realpathSync } from "node:fs";
+import { createRequire } from "node:module";
 import { fileURLToPath } from "node:url";
 import { scanUrlToReport } from "./services/scanPipeline.js";
 import { legacyFingerprint } from "./services/merge/fingerprint.js";
@@ -473,6 +474,24 @@ export function judge(
   return { failures, baselineLine };
 }
 
+/**
+ * Installed from the registry, the command has Playwright but not its
+ * browser, and Playwright's own message names a cache path and a generic
+ * command. This says the one line to run, with the exact Playwright version
+ * the scanner is pinned to: a browser from another version does not launch.
+ * Exported for tests.
+ */
+export function missingBrowserHint(message: string): string {
+  if (!/Executable doesn't exist|browserType\.launch: .*(not found|install)/i.test(message)) return message;
+  let version = "";
+  try {
+    version = (createRequire(import.meta.url)("playwright/package.json") as { version: string }).version;
+  } catch {
+    /* the bare command still works */
+  }
+  return `Chromium is not installed for the scanner. Run: npx playwright${version ? `@${version}` : ""} install chromium --with-deps`;
+}
+
 async function main(): Promise<number> {
   const parsed = parseArgs(process.argv.slice(2));
   if ("error" in parsed) {
@@ -576,7 +595,7 @@ async function main(): Promise<number> {
         // address a hosted scanner can never reach.
         slots[index] = await scanUrlToReport(url, opts.ai, undefined, true, undefined, true);
       } catch (err) {
-        slots[index] = { error: err instanceof Error ? err.message : String(err) };
+        slots[index] = { error: missingBrowserHint(err instanceof Error ? err.message : String(err)) };
       }
       done += 1;
       if (several && !opts.quiet) {

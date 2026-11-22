@@ -1,0 +1,84 @@
+# The scanner as a GitHub Action:
+#
+#   - uses: vasspolina/Accessibility-Scan@v1
+#     with:
+#       url: http://localhost:3000
+#       args: --fail-on serious --sarif a11y.sarif
+#
+# It builds the command from this repository's own backend/ at the tag the
+# workflow names, so it works without the npm package and always runs the
+# exact version pinned. The exit code is the command's: 0 met, 1 a threshold
+# missed, 2 could not scan (docs/CLI.md).
+#
+# Inputs reach the shell as environment variables, never pasted into the
+# script, so a URL or argument holding `$(…)` is data and not a command.
+name: Accessible Scan
+description: WCAG 2.2 and EN 301 549 accessibility scan in a real browser, with thresholds, a baseline, SARIF and JUnit.
+author: Polina Vasilyeva
+branding:
+  icon: eye
+  color: gray-dark
+
+inputs:
+  url:
+    description: The page or pages to scan, separated by spaces. Leave empty when args has --sitemap or --urls.
+    required: false
+    default: ""
+  args:
+    description: Any other options, as on the command line, such as --fail-on serious --baseline .a11y-baseline.json --sarif a11y.sarif
+    required: false
+    default: ""
+  summary:
+    description: Write the Markdown summary to the job summary.
+    required: false
+    default: "true"
+  node-version:
+    description: Node version to run the scanner with (24 or later).
+    required: false
+    default: "24"
+
+outputs:
+  exit-code:
+    description: The command's exit code (0, 1 or 2).
+    value: ${{ steps.scan.outputs.exit-code }}
+
+runs:
+  using: composite
+  steps:
+    - uses: actions/setup-node@v4
+      with:
+        node-version: ${{ inputs.node-version }}
+        cache: npm
+        cache-dependency-path: ${{ github.action_path }}/backend/package-lock.json
+
+    - name: Install the scanner
+      shell: bash
+      working-directory: ${{ github.action_path }}/backend
+      run: |
+        npm ci --no-audit --no-fund
+        npx playwright install chromium --with-deps
+
+    - name: Scan
+      id: scan
+      shell: bash
+      env:
+        A11Y_URLS: ${{ inputs.url }}
+        A11Y_ARGS: ${{ inputs.args }}
+        A11Y_SUMMARY: ${{ inputs.summary }}
+        A11Y_CLI: ${{ github.action_path }}/backend/dist/cli.js
+      run: |
+        read -r -a urls <<< "$A11Y_URLS"
+        read -r -a extra <<< "$A11Y_ARGS"
+        summary=()
+        if [ "$A11Y_SUMMARY" = "true" ]; then
+          summary=(--markdown "$RUNNER_TEMP/a11y-summary.md")
+        fi
+        set +e
+        node "$A11Y_CLI" "${urls[@]}" "${extra[@]}" "${summary[@]}"
+        code=$?
+        set -e
+        if [ "$A11Y_SUMMARY" = "true" ] && [ -f "$RUNNER_TEMP/a11y-summary.md" ]; then
+          cat "$RUNNER_TEMP/a11y-summary.md" >> "$GITHUB_STEP_SUMMARY"
+        fi
+        echo "exit-code=$code" >> "$GITHUB_OUTPUT"
+        exit "$code"

@@ -1,7 +1,7 @@
 import { describe, it, expect } from "vitest";
 import { ticketsFor, ticketsMarkdown, markerFor } from "../src/services/tickets/tickets.js";
 import { fileInGithub, fileInJira, markdownToJira, targetError } from "../src/services/tickets/fileTickets.js";
-import { parseArgs } from "../src/cli.js";
+import { missingBrowserHint, parseArgs } from "../src/cli.js";
 import { buildApp } from "../src/app.js";
 
 const finding = (over: Record<string, unknown>) => ({
@@ -162,5 +162,13 @@ describe("the command line", () => {
     expect(parseArgs(["https://x.test", "--github-issues", "nope"])).toEqual({ error: "--github-issues takes owner/name" });
     if (before === undefined) delete process.env.GITHUB_TOKEN;
     else process.env.GITHUB_TOKEN = before;
+  });
+});
+
+describe("a command installed without its browser", () => {
+  it("says the one line to run, with the pinned Playwright version", () => {
+    const hint = missingBrowserHint("browserType.launch: Executable doesn't exist at /root/.cache/ms-playwright/chromium-1200/chrome");
+    expect(hint).toMatch(/^Chromium is not installed for the scanner\. Run: npx playwright@\d+\.\d+\.\d+ install chromium --with-deps$/);
+    expect(missingBrowserHint("Page returned 404")).toBe("Page returned 404");
   });
 });
