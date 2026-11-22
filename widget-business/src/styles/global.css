@@ -98,7 +98,7 @@
 /* A heading sits a clear step above its text (0.5em, was 0.3em) and a full
    line clear of what came before (paragraph spacing, user's instruction,
    4 Nov 2026). */
-.a11y-widget-biz :is(h1, h2, h3, h4) { font-weight: 500; line-height: 1.05; font-size: 38px; letter-spacing: -0.005em; margin: 1.2em 0 0.5em; }
+.a11y-widget-biz :is(h1, h2, h3, h4) { font-weight: 400; line-height: 1.05; font-size: 38px; letter-spacing: -0.005em; margin: 1.2em 0 0.5em; }
 /* Two lines under each paragraph, list, table and figure of the report
    (was one; user asked for twice the room, 4 Nov 2026). */
 .a11y-widget-biz :is(p, ul, ol, dl, table, figure) { margin: 0 0 2.4em; }
@@ -128,7 +128,7 @@
    and a flat marker-yellow fill on hover (black text on --hl-cap-a measures
    better than 7:1). 18px. */
 .a11y-widget-biz :is(button, .a11y-btn) {
-  font: inherit; font-size: 22px; letter-spacing: 0.01em; font-weight: 500;
+  font: inherit; font-size: 22px; letter-spacing: 0.01em; font-weight: 400;
   /* Dotted like the chat box (user's instruction, 20 Nov 2026); a disabled
      button stays dashed, so the two still differ. */
   box-sizing: border-box; min-height: 34px; padding: 0.5em 1.1em; border: 1px dotted var(--btn-fill, var(--ink)); border-radius: 999px;
@@ -170,7 +170,7 @@
    column titles and every strong in bold. Column titles are Regular;
    strong and b are Medium, the emphasis the rest of the widget uses. */
 .a11y-widget-biz th { font-weight: 400; }
-.a11y-widget-biz :is(strong, b) { font-weight: 500; }
+.a11y-widget-biz :is(strong, b) { font-weight: 400; }
 
 /* The highlight. Black text, always; cap colours are decoration. */
 .a11y-widget-biz :is(.a11y-sev, .a11y-rule-chip, .a11y-level-badge, .a11y-sum-chip, .a11y-pro-chip, .a11y-conf-status, .a11y-principle-count, .a11y-status-chip) {
@@ -345,7 +345,7 @@
   gap: 0.5em; margin-top: 0.5em;
 }
 /* Who is speaking: small print above each turn. */
-.a11y-widget-biz .a11y-chat-who { font-size: 18px; letter-spacing: 0.01em; font-weight: 500; margin: 0 0 0.3em; }
+.a11y-widget-biz .a11y-chat-who { font-size: 18px; letter-spacing: 0.01em; font-weight: 400; margin: 0 0 0.3em; }
 /* Paragraph spacing (user's instruction, 4 Nov 2026, replacing "no space between turns" of 18 Oct): one line of
    the 27px text between turns and, since the same day, a full line between
    paragraphs inside one too (was half a line; user asked for twice the room),
@@ -435,7 +435,7 @@
 }
 .a11y-widget-biz .a11y-chat-text .a11y-chat-plan-title {
   display: block; margin: 0 0 6px;
-  font-size: 22px; font-weight: 500; line-height: 1.15; letter-spacing: 0.005em;
+  font-size: 22px; font-weight: 400; line-height: 1.15; letter-spacing: 0.005em;
 }
 .a11y-widget-biz .a11y-chat-text .a11y-chat-plan-text {
   display: block; font-size: 18px; font-weight: 400; line-height: 1.3; letter-spacing: 0.01em;
@@ -510,7 +510,7 @@
   display: grid; place-content: center;
   width: 32px; height: 32px; border-radius: 50%;
   background: var(--solid); color: var(--solid-ink);
-  font-size: 22px; letter-spacing: 0; font-weight: 500; line-height: inherit;
+  font-size: 22px; letter-spacing: 0; font-weight: 400; line-height: inherit;
   font-variant-numeric: tabular-nums;
 }
 .a11y-widget-biz .a11y-chat-text li::marker { font-weight: 400; }
@@ -686,7 +686,7 @@
    under it with no box of its own, two to a row where they fit. The
    placeholder is ink at Light, never grey. The focus ring goes round the
    whole field. */
-.a11y-widget-biz .a11y-stmt-step-head { margin: 0; font-size: 32px; font-weight: 500; line-height: 1.1; letter-spacing: -0.005em; }
+.a11y-widget-biz .a11y-stmt-step-head { margin: 0; font-size: 32px; font-weight: 400; line-height: 1.1; letter-spacing: -0.005em; }
 .a11y-widget-biz .a11y-stmt-step-num { margin-inline-end: 0.4em; font-weight: 400; }
 .a11y-widget-biz .a11y-stmt .a11y-stmt-step + * { margin-top: 28px; }
 .a11y-widget-biz .a11y-stmt-fields {
@@ -772,7 +772,7 @@
 .a11y-widget-biz .a11y-settings-row > .a11y-select2 { display: contents; }
 .a11y-widget-biz .a11y-settings-row > .a11y-settings-label,
 .a11y-widget-biz .a11y-settings-row > .a11y-select2 > .a11y-select2-label {
-  grid-column: 1; grid-row: 1; margin: 0; font-size: 18px; font-weight: 500; letter-spacing: 0.01em; line-height: 1.2;
+  grid-column: 1; grid-row: 1; margin: 0; font-size: 18px; font-weight: 400; letter-spacing: 0.01em; line-height: 1.2;
 }
 .a11y-widget-biz .a11y-settings-row > .a11y-settings-state { font-size: 22px; letter-spacing: 0.01em; line-height: 1.2; }
 .a11y-widget-biz .a11y-settings-row > .a11y-input { justify-self: stretch; }
@@ -809,7 +809,7 @@
   display: block; width: auto; height: auto; max-width: 100%; max-height: 55svh;
 }
 .a11y-widget-biz .a11y-sim-frame + .a11y-sim-note { margin-top: 1.2em; }
-.a11y-widget-biz .a11y-select2-label { font-size: 18px; letter-spacing: 0.01em; font-weight: 500; }
+.a11y-widget-biz .a11y-select2-label { font-size: 18px; letter-spacing: 0.01em; font-weight: 400; }
 .a11y-widget-biz .a11y-select2-field { min-width: 12em; max-width: 100%; box-sizing: border-box; }
 /* The native arrow is drawn flush against the box's edge and takes no padding.
    Drawn here instead, in ink so it follows the theme, with room on its right.
@@ -882,7 +882,7 @@
 .a11y-widget-biz .a11y-chat-alt { margin: var(--line) 0 0; }
 
 /* Name and value pairs: small label, the value under it, the gloss under that. */
-.a11y-widget-biz .a11y-spec-label { font-size: 18px; letter-spacing: 0.01em; font-weight: 500; }
+.a11y-widget-biz .a11y-spec-label { font-size: 18px; letter-spacing: 0.01em; font-weight: 400; }
 .a11y-widget-biz .a11y-spec-value { margin: 0; }
 .a11y-widget-biz .a11y-spec-gloss { display: block; font-size: 18px; letter-spacing: 0.01em; }
 
@@ -899,7 +899,7 @@
   border-radius: 14px; background: var(--tile); color: var(--tile-ink);
 }
 .a11y-widget-biz .a11y-stmt-card > .a11y-stmt-card-title {
-  margin: 0 0 28px; padding-inline-end: 6em; font-size: 22px; font-weight: 500; line-height: 1.3; letter-spacing: 0.01em;
+  margin: 0 0 28px; padding-inline-end: 6em; font-size: 22px; font-weight: 400; line-height: 1.3; letter-spacing: 0.01em;
 }
 .a11y-widget-biz .a11y-stmt-code-bar { position: absolute; top: 20px; right: 20px; display: flex; align-items: center; gap: 0.5em; margin: 0; }
 .a11y-widget-biz .a11y-stmt-text {
@@ -923,7 +923,7 @@
 .a11y-widget-biz .a11y-pro-point {
   display: grid; grid-template-columns: 2.4em minmax(0, 1fr); align-items: baseline; margin: 0 0 0.6em;
 }
-.a11y-widget-biz .a11y-pro-point-num { font-size: 18px; letter-spacing: 0.01em; font-weight: 500; }
+.a11y-widget-biz .a11y-pro-point-num { font-size: 18px; letter-spacing: 0.01em; font-weight: 400; }
 
 /* The three worst findings next to the dial: number, title with its marks under it, count. */
 .a11y-widget-biz .a11y-sum-thead { display: none; }
@@ -932,13 +932,13 @@
 .a11y-widget-biz .a11y-sum-cell-item { display: block; }
 .a11y-widget-biz .a11y-sum-row-title { display: block; }
 .a11y-widget-biz .a11y-sum-row-marks { display: block; font-size: 22px; letter-spacing: 0.01em; }
-.a11y-widget-biz .a11y-sum-cell-count { white-space: nowrap; font-weight: 500; }
+.a11y-widget-biz .a11y-sum-cell-count { white-space: nowrap; font-weight: 400; }
 
 /* Severity rows of the professional panel: the word, then its count. */
 
 /* The legal checklist's questions and the result rows. */
 .a11y-widget-biz .a11y-legal-q { display: grid; grid-template-columns: 1.6em minmax(0, 1fr); align-items: baseline; margin: 0 0 0.4em; }
-.a11y-widget-biz .a11y-legal-qnum { font-size: 18px; letter-spacing: 0.01em; font-weight: 500; }
+.a11y-widget-biz .a11y-legal-qnum { font-size: 18px; letter-spacing: 0.01em; font-weight: 400; }
 .a11y-widget-biz .a11y-legal-thead { display: none; }
 /* The result rows (We found problems 3, We checked 19, ...): one line each,
    in four columns that line up from row to row: the title, its small print,
@@ -961,9 +961,9 @@
   .a11y-widget-biz .a11y-legal-mark { grid-column: 1 / -1; grid-row: 3; }
 }
 .a11y-widget-biz :is(.a11y-legal-row-label, .a11y-legal-row-meaning) { display: block; }
-.a11y-widget-biz .a11y-legal-row-label { font-weight: 500; }
+.a11y-widget-biz .a11y-legal-row-label { font-weight: 400; }
 .a11y-widget-biz .a11y-legal-row-meaning { font-size: 18px; letter-spacing: 0.01em; }
-.a11y-widget-biz .a11y-legal-count { font-size: 38px; letter-spacing: -0.005em; font-weight: 500; }
+.a11y-widget-biz .a11y-legal-count { font-size: 38px; letter-spacing: -0.005em; font-weight: 400; }
 .a11y-widget-biz .a11y-radio-group { display: flex; flex-wrap: wrap; gap: 0.3em 1.2em; border: 0; padding: 0; margin: 0 0 1em; }
 /* Radio dots: black and white only, a 1px line, three times the browser's 13px
    (user's instruction, 3 Nov 2026). The system's blue and grey dot is drawn by
@@ -988,7 +988,7 @@
 .a11y-widget-biz .a11y-conf-list { list-style: none; padding: 0; margin: 0 0 1.2em; }
 .a11y-widget-biz .a11y-conf-row { display: grid; grid-template-columns: 4em minmax(0, 1fr); gap: 0.2em 0.8em; margin: 0 0 1em; }
 .a11y-widget-biz .a11y-conf-row .a11y-conf-status { grid-column: 2; justify-self: start; }
-.a11y-widget-biz .a11y-conf-id { font-size: 18px; letter-spacing: 0.01em; font-weight: 500; }
+.a11y-widget-biz .a11y-conf-id { font-size: 18px; letter-spacing: 0.01em; font-weight: 400; }
 .a11y-widget-biz .a11y-conf-id em { font-style: normal; }
 .a11y-widget-biz .a11y-conf-body { display: block; }
 .a11y-widget-biz .a11y-conf-plain { display: block; font-size: 18px; letter-spacing: 0.01em; }
@@ -1006,7 +1006,7 @@
 .a11y-widget-biz .a11y-undecided-table { list-style: none; padding: 0; margin: 0 0 1.2em; }
 .a11y-widget-biz .a11y-undecided-cell { display: grid; grid-template-columns: 2em minmax(0, 1fr); gap: 0.5em 0.4em; margin: 0 0 1.4em; }
 .a11y-widget-biz .a11y-undecided-cell > :not(.a11y-undecided-no) { grid-column: 2; margin: 0; }
-.a11y-widget-biz .a11y-undecided-no { font-size: 18px; letter-spacing: 0.01em; font-weight: 500; grid-row: 1; }
+.a11y-widget-biz .a11y-undecided-no { font-size: 18px; letter-spacing: 0.01em; font-weight: 400; grid-row: 1; }
 .a11y-widget-biz .a11y-undecided-call { display: flex; flex-wrap: wrap; align-items: baseline; gap: 0.3em 0.8em; font-size: 22px; letter-spacing: 0.01em; }
 .a11y-widget-biz .a11y-undecided-table .a11y-undecided-folded { display: none; }
 @media print { .a11y-widget-biz .a11y-undecided-table .a11y-undecided-folded { display: grid; } }
@@ -1021,7 +1021,7 @@
 }
 .a11y-widget-biz .a11y-sr-row:enabled:hover { background: none; color: var(--ink); }
 .a11y-widget-biz .a11y-sr-row[aria-current="true"] { text-decoration: underline; text-underline-offset: 0.15em; }
-.a11y-widget-biz .a11y-sr-num { font-size: 18px; letter-spacing: 0.01em; font-weight: 500; }
+.a11y-widget-biz .a11y-sr-num { font-size: 18px; letter-spacing: 0.01em; font-weight: 400; }
 .a11y-widget-biz .a11y-sr-issue { grid-column: 2; font-size: 18px; letter-spacing: 0.01em; }
 .a11y-widget-biz .a11y-sr-status { font-size: 18px; letter-spacing: 0.01em; }
 
@@ -1112,7 +1112,7 @@
   display: inline-grid; place-content: center; vertical-align: 0.08em;
   width: 40px; height: 40px; border-radius: 50%; margin: 0 0.18em 0 0;
   background: var(--solid); color: var(--solid-ink);
-  font-size: 29px; letter-spacing: 0; font-weight: 500; line-height: 1;
+  font-size: 29px; letter-spacing: 0; font-weight: 400; line-height: 1;
 }
 .a11y-widget-biz .a11y-sum-run .a11y-sum-row-marks,
 .a11y-widget-biz .a11y-sum-run .a11y-sum-cell-count {
@@ -1182,7 +1182,7 @@
 .a11y-widget-biz .a11y-prompts .a11y-prompt-q:focus-visible { outline: none; }
 .a11y-widget-biz .a11y-prompts .a11y-prompt-q:focus-visible::after { outline: 2px solid var(--focus); outline-offset: -2px; }
 .a11y-widget-biz .a11y-prompts .a11y-prompt-label {
-  font-size: 22px; font-weight: 500; letter-spacing: 0.01em; line-height: 1.3;
+  font-size: 22px; font-weight: 400; letter-spacing: 0.01em; line-height: 1.3;
 }
 /* 15px, 15% under the 18px it was (user's instruction, 21 Nov 2026, "make
    this text 15% smaller", on the four cards in a row): 15.3 rounds to the
@@ -1205,7 +1205,7 @@
   margin-top: auto; min-height: 0; padding: 0;
   border: 0; border-radius: 0; cursor: pointer;
   color: var(--ink); background: none;
-  font: inherit; font-size: 22px; font-weight: 500; letter-spacing: 0.01em; line-height: 1.3;
+  font: inherit; font-size: 22px; font-weight: 400; letter-spacing: 0.01em; line-height: 1.3;
   font-variant-numeric: tabular-nums;
 }
 .a11y-widget-biz .a11y-prompts .a11y-prompt-wcag:enabled:hover { background: var(--hover); color: var(--hover-ink); }
@@ -1254,8 +1254,8 @@
 
 /* A notice: its mark hangs, its title and the line under it beside it. */
 .a11y-widget-biz .a11y-note { display: grid; grid-template-columns: 1.6em minmax(0, 1fr); align-items: baseline; margin: 0 0 1.2em; }
-.a11y-widget-biz .a11y-note-glyph { font-weight: 500; }
-.a11y-widget-biz .a11y-note-title { font-weight: 500; }
+.a11y-widget-biz .a11y-note-glyph { font-weight: 400; }
+.a11y-widget-biz .a11y-note-title { font-weight: 400; }
 .a11y-widget-biz .a11y-note-sub { font-size: 22px; letter-spacing: 0.01em; }
 
 /* The legal result marks are the severity highlight, same words, same colours. */
@@ -1277,12 +1277,12 @@
   padding: 0; border: 0; border-radius: 0; background: none; color: var(--ink);
 }
 .a11y-widget-biz .a11y-shell-nav-toggle:enabled:hover { background: none; color: var(--ink); }
-.a11y-widget-biz .a11y-shell-nav-heading { font-weight: 500; }
+.a11y-widget-biz .a11y-shell-nav-heading { font-weight: 400; }
 .a11y-widget-biz .a11y-shell-nav-count { font-size: 18px; letter-spacing: 0.01em; font-weight: 400; }
 .a11y-widget-biz .a11y-shell-nav-group { margin: 0 0 0.7em; }
-.a11y-widget-biz .a11y-shell-nav-group-label { display: block; font-size: 18px; letter-spacing: 0.01em; font-weight: 500; }
+.a11y-widget-biz .a11y-shell-nav-group-label { display: block; font-size: 18px; letter-spacing: 0.01em; font-weight: 400; }
 .a11y-widget-biz .a11y-shell-nav-link { font-size: 22px; letter-spacing: 0.01em; }
-.a11y-widget-biz .a11y-shell-nav-link[aria-current="true"] { font-weight: 500; }
+.a11y-widget-biz .a11y-shell-nav-link[aria-current="true"] { font-weight: 400; }
 
 .a11y-widget-biz .a11y-status-chip-critical { background: var(--hl-orange); }
 .a11y-widget-biz .a11y-ai-toggle { display: flex; align-items: center; gap: 0.5em; font-size: 22px; letter-spacing: 0.01em; margin: 0 0 0.6em; }
@@ -1299,17 +1299,17 @@
   font-size: 32px; font-weight: 400;
 }
 .a11y-widget-biz .a11y-dn-link:enabled:hover { background: none; color: var(--ink); text-decoration: underline; }
-.a11y-widget-biz .a11y-dn-link[aria-expanded="true"] { font-weight: 500; }
+.a11y-widget-biz .a11y-dn-link[aria-expanded="true"] { font-weight: 400; }
 .a11y-widget-biz .a11y-dn-detail-title { margin-top: 0.6em; }
 
 /* An expanded finding: each part is a small label over its sentence. */
 .a11y-widget-biz :is(.a11y-method-hint, .a11y-finding-measured, .a11y-finding-impact, .a11y-finding-research, .a11y-finding-todo) > strong:first-child,
 .a11y-widget-biz .a11y-finding-steps > p > strong,
-.a11y-widget-biz .a11y-affected-label > strong { display: block; font-size: 18px; letter-spacing: 0.01em; font-weight: 500; }
+.a11y-widget-biz .a11y-affected-label > strong { display: block; font-size: 18px; letter-spacing: 0.01em; font-weight: 400; }
 .a11y-widget-biz .a11y-finding-steps ul { margin: 0 0 1.2em; }
 .a11y-widget-biz .a11y-occurrence-list { list-style: none; padding: 0; margin: 0 0 1em; }
 .a11y-widget-biz .a11y-occurrence { margin: 0 0 0.6em; }
-.a11y-widget-biz .a11y-occurrence-count { margin-inline-start: 0.4em; font-size: 18px; letter-spacing: 0.01em; font-weight: 500; }
+.a11y-widget-biz .a11y-occurrence-count { margin-inline-start: 0.4em; font-size: 18px; letter-spacing: 0.01em; font-weight: 400; }
 
 /* ═══ THE EXPANDED FINDING AS ONE RULED BLOCK ══════════════════════════════
    User's instruction, 4 Nov 2026: a heavy ink rule across the top, one
@@ -1413,7 +1413,7 @@
 .a11y-widget-biz .a11y-fd > .a11y-fd-col:first-child .a11y-fd-points > li:last-child { margin-bottom: 0; }
 .a11y-widget-biz .a11y-fd > .a11y-fd-col:first-child > * > strong:first-child {
   flex: none; margin: 0; padding: 0 0 6px; border: 0; border-bottom: 1px solid var(--ink); border-radius: 0; background: none; color: inherit;
-  font-family: "PP Telegraf", sans-serif; font-weight: 500; font-size: 15px; line-height: 1.2; letter-spacing: 0.01em; text-transform: none;
+  font-family: "PP Telegraf", sans-serif; font-weight: 400; font-size: 15px; line-height: 1.2; letter-spacing: 0.01em; text-transform: none;
 }
 .a11y-widget-biz .a11y-fd > .a11y-fd-col:first-child .a11y-fd-body {
   display: block; margin-block: 0; max-width: 100%;}
@@ -1527,7 +1527,7 @@
 .a11y-widget-biz .a11y-pro-score { display: flex; align-items: baseline; gap: 0.4em; margin: 0 0 0.4em; }
 .a11y-widget-biz .a11y-pro-score-num { font-size: 48px; letter-spacing: -0.01em; font-weight: 300; line-height: 1; }
 .a11y-widget-biz .a11y-pro-score-of { font-size: 18px; letter-spacing: 0.01em; }
-.a11y-widget-biz .a11y-pro-eyebrow { font-size: 18px; letter-spacing: 0.01em; font-weight: 500; margin: 0 0 0.4em; }
+.a11y-widget-biz .a11y-pro-eyebrow { font-size: 18px; letter-spacing: 0.01em; font-weight: 400; margin: 0 0 0.4em; }
 .a11y-widget-biz .a11y-pro-count { font-size: 22px; letter-spacing: 0.01em; }
 .a11y-widget-biz .a11y-pro-chips { display: flex; flex-wrap: wrap; gap: 0.3em 0.6em; margin: 0 0 0.6em; font-size: 22px; letter-spacing: 0.01em; }
 .a11y-widget-biz .a11y-pro-jump { display: inline-flex; align-items: baseline; gap: 0.4em; }
@@ -1675,7 +1675,7 @@
 .a11y-widget-biz .a11y-dn-list > .a11y-dn-link[aria-selected="true"] {
   border-top-width: 4px; padding-top: 7px; background: none; color: var(--ink);
 }
-.a11y-widget-biz .a11y-dn-list > .a11y-dn-link[aria-selected="true"] > .a11y-dn-link-text { font-weight: 500; }
+.a11y-widget-biz .a11y-dn-list > .a11y-dn-link[aria-selected="true"] > .a11y-dn-link-text { font-weight: 400; }
 .a11y-widget-biz .a11y-dn-detail[role="tabpanel"]:focus-visible { outline: 2px solid var(--focus); outline-offset: 4px; }
 /* Under the tabs the note's own 4px rule would be a second "open" mark
    under the open tab's, so it takes the 1px of the shut tabs. */
@@ -1800,7 +1800,7 @@
   width: 22px; height: 22px; margin-top: calc((1.1em - 22px) / 2); transition: transform 0.15s;
 }
 .a11y-widget-biz .a11y-acr .a11y-accordion-head[aria-expanded="true"] > .a11y-acr-caret { transform: rotate(90deg); }
-.a11y-widget-biz .a11y-acr .a11y-accordion-head[aria-expanded="true"] > span { font-weight: 500; }
+.a11y-widget-biz .a11y-acr .a11y-accordion-head[aria-expanded="true"] > span { font-weight: 400; }
 .a11y-widget-biz .a11y-acr .a11y-accordion-head:enabled:hover > span { text-decoration: underline; text-underline-offset: 0.12em; text-decoration-thickness: 1px; }
 .a11y-widget-biz .a11y-acr .a11y-accordion-head .a11y-section-count {
   display: block; margin-top: 10px; font-size: 18px; font-weight: 400; letter-spacing: 0.01em; line-height: 1.3;
@@ -1843,7 +1843,7 @@
    block, 20 Nov 2026: "this is a slop". The whole line is the button;
    hover underlines the title. Page ink and paper, so it follows the theme. */
 .a11y-widget-biz .a11y-top { container: a11y-top / inline-size; margin: 2.4em 0; }
-.a11y-widget-biz .a11y-top-title { margin: 0 0 0.75em; font-size: 32px; font-weight: 500; line-height: 1.05; letter-spacing: -0.005em; }
+.a11y-widget-biz .a11y-top-title { margin: 0 0 0.75em; font-size: 32px; font-weight: 400; line-height: 1.05; letter-spacing: -0.005em; }
 .a11y-widget-biz .a11y-top-list { display: block; margin: 0; padding: 0; list-style: none; border-bottom: 1px solid var(--ink); }
 .a11y-widget-biz .a11y-top-list > li { min-width: 0; margin: 0; display: block; }
 .a11y-widget-biz .a11y-top-card {
@@ -1854,7 +1854,7 @@
 }
 .a11y-widget-biz .a11y-top-card:hover { background: none; color: var(--ink); }
 .a11y-widget-biz .a11y-top-card:hover > .a11y-top-card-title { text-decoration: underline; text-underline-offset: 0.15em; }
-.a11y-widget-biz .a11y-top-card-title { font-size: 27px; font-weight: 500; line-height: 1.15; letter-spacing: 0; max-width: 100%; }
+.a11y-widget-biz .a11y-top-card-title { font-size: 27px; font-weight: 400; line-height: 1.15; letter-spacing: 0; max-width: 100%; }
 .a11y-widget-biz .a11y-top-card-small { display: flex; flex-wrap: wrap; justify-content: flex-start; gap: 0 1em; font-size: 15px; letter-spacing: 0.01em; line-height: 1.3; }
 @container a11y-top (max-width: 640px) {
   .a11y-widget-biz .a11y-top-title { font-size: 27px; letter-spacing: 0; }
@@ -1948,7 +1948,7 @@
   margin-inline: 0.2em; padding-block: 0.08em; line-height: 1.25; white-space: normal;
 }
 .a11y-widget-biz .a11y-print-cards .a11y-finding-desc {
-  display: block; font-size: 38px; font-weight: 500; line-height: 1.05; letter-spacing: -0.005em;
+  display: block; font-size: 38px; font-weight: 400; line-height: 1.05; letter-spacing: -0.005em;
   overflow-wrap: break-word; hyphens: manual;
 }
 /* The criterion is small print under the title, on its own line: set after the
@@ -2008,7 +2008,7 @@
 .a11y-widget-biz .a11y-shot-locator {
   margin-top: 0.4em; font-size: 18px; line-height: 1.3; letter-spacing: 0.01em; overflow-wrap: anywhere;
 }
-.a11y-widget-biz .a11y-shot-locator strong { font-weight: 500; }
+.a11y-widget-biz .a11y-shot-locator strong { font-weight: 400; }
 .a11y-widget-biz .a11y-shot-locator code { font-size: inherit; overflow-wrap: anywhere; }
 .a11y-widget-biz .a11y-occurrence .a11y-shot { margin-top: 0.5em; }
 /* The element's name as a speech bubble on its picture (user's
@@ -2053,7 +2053,7 @@
    each key reads with the markup it names. */
 .a11y-widget-biz .a11y-code-fix { margin: 1.3em 0 0; font-size: 22px; line-height: 1.3; letter-spacing: 0.01em; }
 .a11y-widget-biz .a11y-code-fix-label { margin: 0 0 1.3em; padding-bottom: 0.6em; border-bottom: 1px solid var(--ink); font-size: 18px; letter-spacing: 0.01em; }
-.a11y-widget-biz .a11y-code-fix-label > strong { font-weight: 500; text-transform: uppercase; letter-spacing: 0.04em; margin-inline-end: 0.4em; }
+.a11y-widget-biz .a11y-code-fix-label > strong { font-weight: 400; text-transform: uppercase; letter-spacing: 0.04em; margin-inline-end: 0.4em; }
 .a11y-widget-biz .a11y-code-fix-note { margin: 0 0 1.3em; overflow-wrap: break-word; hyphens: manual; }
 .a11y-widget-biz .a11y-code-fix-key { margin: 1.3em 0 0.4em; font-size: 18px; letter-spacing: 0.01em; }
 .a11y-widget-biz .a11y-code-fix-pre { margin: 0; padding: 0.5em 0.6em; border: 1px solid var(--ink); font-size: 18px; line-height: 1.4; white-space: pre-wrap; overflow-wrap: anywhere; }
@@ -2312,10 +2312,10 @@
   background: transparent; color: var(--ink);
   font-size: 15px; letter-spacing: 0.01em; line-height: 1.3; text-align: start;
 }
-.a11y-widget-biz .a11y-chats .a11y-chats-new { display: flex; font-weight: 500; }
+.a11y-widget-biz .a11y-chats .a11y-chats-new { display: flex; font-weight: 400; }
 .a11y-widget-biz .a11y-chats .a11y-chats-toggle { display: none; border-color: transparent; font-weight: 400; }
 .a11y-widget-biz .a11y-chats .a11y-chats-head {
-  margin: 28px 0 6px; padding-inline: 12px; font-size: 15px; font-weight: 500; letter-spacing: 0.01em; line-height: 1.2;
+  margin: 28px 0 6px; padding-inline: 12px; font-size: 15px; font-weight: 400; letter-spacing: 0.01em; line-height: 1.2;
 }
 .a11y-widget-biz .a11y-chats .a11y-chats-list { list-style: none; margin: 0; padding: 0; }
 /* Titles on two lines (19 Nov 2026, the user's screenshot, "fix this"): on
@@ -2362,7 +2362,7 @@
   --ink: var(--tile-ink); --paper: var(--tile);
   background: var(--tile); color: var(--tile-ink);
 }
-.a11y-widget-biz .a11y-chats .a11y-chats-row[data-current] .a11y-chats-item { font-weight: 500; }
+.a11y-widget-biz .a11y-chats .a11y-chats-row[data-current] .a11y-chats-item { font-weight: 400; }
 .a11y-widget-biz .a11y-chats .a11y-chats-delete {
   flex: none; display: inline-flex; align-items: center; justify-content: center;
   width: 36px; height: 36px; min-height: 0; margin-inline-end: 2px; padding: 0;
@@ -2486,10 +2486,10 @@
 }
 .a11y-widget-biz .a11y-legal-tiles > .a11y-legal-row .a11y-legal-count {
   order: 2; margin: 24px 0 6px;
-  font-size: 160px; font-weight: 500; line-height: 0.9; letter-spacing: -0.02em;
+  font-size: 160px; font-weight: 400; line-height: 0.9; letter-spacing: -0.02em;
 }
 .a11y-widget-biz .a11y-legal-tiles > .a11y-legal-row .a11y-legal-row-label {
-  order: 3; font-size: 22px; font-weight: 500; line-height: 1.15; letter-spacing: 0.005em;
+  order: 3; font-size: 22px; font-weight: 400; line-height: 1.15; letter-spacing: 0.005em;
 }
 .a11y-widget-biz .a11y-legal-tiles > .a11y-legal-row .a11y-legal-row-meaning {
   order: 4; font-size: 15px; line-height: 1.2; letter-spacing: 0.01em;
@@ -2627,7 +2627,7 @@
 /* The AI review switch matches the choices' toggles. */
 .a11y-widget-biz .a11y-tester .a11y-tester-ai .a11y-switch-track { width: 64px; height: 36px; }
 .a11y-widget-biz .a11y-tester .a11y-tester-ai .a11y-switch-knob { width: 26px; height: 26px; margin-top: -13px; }
-.a11y-widget-biz .a11y-tester .a11y-seg.a11y-seg-on { font-weight: 500; }
+.a11y-widget-biz .a11y-tester .a11y-seg.a11y-seg-on { font-weight: 400; }
 .a11y-widget-biz .a11y-tester .a11y-seg:not(.a11y-seg-disabled):hover { background: var(--hover); color: var(--hover-ink); }
 .a11y-widget-biz .a11y-tester .a11y-seg:has(input:focus-visible) { outline: 2px solid var(--focus); outline-offset: -2px; }
 .a11y-widget-biz .a11y-tester .a11y-seg > input:focus-visible { outline: none; box-shadow: none; }
@@ -2703,7 +2703,7 @@
 }
 .a11y-widget-biz .a11y-w22 > .a11y-next > .a11y-next-toggle:enabled:hover { background: none; border-color: transparent; color: var(--ink); }
 .a11y-widget-biz .a11y-w22 .a11y-next-toggle > .a11y-next-standard { display: contents; }
-.a11y-widget-biz .a11y-w22 .a11y-next-toggle > .a11y-next-standard > strong { font-weight: 500; }
+.a11y-widget-biz .a11y-w22 .a11y-next-toggle > .a11y-next-standard > strong { font-weight: 400; }
 .a11y-widget-biz .a11y-w22 .a11y-next-toggle > .a11y-next-count { padding: 2px 10px; border-radius: 999px; background: var(--hl-orange); color: #000; font-size: 18px; }
 .a11y-widget-biz .a11y-w22 .a11y-next-toggle > .a11y-next-chevron {
   display: inline-grid; place-content: center; box-sizing: border-box; width: 40px; height: 40px;
@@ -2724,7 +2724,7 @@
   .a11y-widget-biz .a11y-w22 .a11y-next-list { grid-template-columns: minmax(0, 1fr); }
 }
 .a11y-widget-biz .a11y-w22 > .a11y-w22-panel { display: flex; flex-wrap: wrap; align-items: center; gap: 12px 16px; margin-top: 65px; }
-.a11y-widget-biz .a11y-w22 > .a11y-w22-panel > .a11y-w22-panel-title { margin: 0; font-size: 22px; font-weight: 500; line-height: 1.2; letter-spacing: 0.01em; }
+.a11y-widget-biz .a11y-w22 > .a11y-w22-panel > .a11y-w22-panel-title { margin: 0; font-size: 22px; font-weight: 400; line-height: 1.2; letter-spacing: 0.01em; }
 .a11y-widget-biz .a11y-w22 > .a11y-w22-panel > .a11y-w22-toggle { font-size: 18px; }
 .a11y-widget-biz .a11y-w22 > .a11y-w22-panel > div { flex: 1 1 100%; min-width: 0; margin-top: 12px; }
 .a11y-widget-biz .a11y-w22 > .a11y-w22-panel > div[hidden] { display: none; }
@@ -2950,7 +2950,7 @@
 .a11y-widget-biz .a11y-barrier .a11y-barrier-pick { font-size: 15px; letter-spacing: 0.01em; max-width: 100%; height: auto; white-space: normal; text-align: start; overflow-wrap: break-word; }
 
 /* An answer the box refused, said over what you typed. */
-.a11y-widget-biz .a11y-barrier .a11y-barrier-error { margin: 0 0 0.3em; font-size: 18px; font-weight: 500; line-height: 1.2; letter-spacing: 0.01em; }
+.a11y-widget-biz .a11y-barrier .a11y-barrier-error { margin: 0 0 0.3em; font-size: 18px; font-weight: 400; line-height: 1.2; letter-spacing: 0.01em; }
 .a11y-widget-biz .a11y-barrier .a11y-barrier-error::before { content: "Error: "; }
 .a11y-widget-biz .a11y-barrier .a11y-chat-box:has(textarea[aria-invalid="true"]) { border-width: 3px; }
 
@@ -3107,7 +3107,7 @@
   display: flex; align-items: center; gap: 10px; box-sizing: border-box; width: 100%; min-height: 44px;
   margin: 0; padding: 8px 12px; border: 1px dotted transparent; border-radius: 12px;
   background: transparent; color: var(--ink);
-  font-size: 15px; font-weight: 500; letter-spacing: 0.01em; line-height: 1.3; text-align: start;
+  font-size: 15px; font-weight: 400; letter-spacing: 0.01em; line-height: 1.3; text-align: start;
 }
 .a11y-widget-biz .a11y-lang-menu .a11y-lang-current { flex: 1 1 auto; min-width: 0; font-weight: 400; }
 .a11y-widget-biz .a11y-lang-menu .a11y-lang-chevron { flex: none; display: inline-flex; transition: transform 0.15s; }
@@ -3129,7 +3129,7 @@
   border: 1px dotted transparent; border-radius: 12px; background: transparent; color: var(--ink);
   font-size: 15px; font-weight: 400; letter-spacing: 0.01em; line-height: 1.3;
 }
-.a11y-widget-biz .a11y-lang-menu .a11y-lang-option[aria-pressed="true"] { border-color: var(--ink); font-weight: 500; }
+.a11y-widget-biz .a11y-lang-menu .a11y-lang-option[aria-pressed="true"] { border-color: var(--ink); font-weight: 400; }
 .a11y-widget-biz .a11y-lang-menu .a11y-lang-option:enabled:hover { background: var(--tile-fill); color: var(--ink); border-color: var(--ink); }
 @media (max-width: 640px) {
   .a11y-widget-biz .a11y-chat-layout > .a11y-chats { flex-flow: row wrap; align-items: center; justify-content: space-between; }
