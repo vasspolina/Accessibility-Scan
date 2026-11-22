@@ -115,53 +115,37 @@ export function ConformanceView({
 }) {
   const verdictFor = useMemo(() => new Map(verdicts.map((v) => [v.criterion, v])), [verdicts]);
   const [expanded, setExpanded] = useState(false);
-  // Three states, not the boolean this used to be. "We couldn't check" is
-  // the largest row in the table above and was also the hardest to act on:
-  // the reader saw a count of 22 and had no way to reach the 22 without
-  // clearing a filter that defaulted to failures-only. Naming that group as
-  // a filter of its own is what makes the count answerable.
-  const [filter, setFilter] = useState<Filter>("failed");
+  // The result tiles are the checklist's only filter (user's instruction,
+  // 22 Nov 2026, "do not double the tabs"): a row of Failures, Needs a
+  // person, Nothing found, Not measured and Everything sat under them and
+  // said the same thing twice. Show the checklist opens on everything, a
+  // tile on its own group, and the pressed tile again on everything.
+  const [filter, setFilter] = useState<Filter>("all");
   const panelId = useId();
-  const filterName = useId();
   // The toggle stays mounted whichever state we're in, so keyboard focus
   // never evaporates when the panel opens or closes. The convenience "hide"
   // at the bottom of a long checklist hands focus back up here.
   const toggleRef = useRef<HTMLButtonElement>(null);
   const panelRef = useRef<HTMLDivElement>(null);
-  // A result tile opens the checklist on its own group, then brings the
-  // checklist into view with focus on the chosen filter, so a keyboard or
-  // screen-reader user lands where the list changed rather than staying on
-  // a tile far above it.
+  // A result tile opens the checklist on its own group; the tile already
+  // pressed goes back to everything. Focus stays on the tile, since it is
+  // now the control that changes the list, and the list is brought into
+  // view only when its first line is below the window (stacked on a phone),
+  // never pulled up over the tiles.
   const openOn = (f: Filter) => {
-    setFilter(f);
+    const pressed = expanded && filter === f;
+    setFilter(pressed ? "all" : f);
     setExpanded(true);
     requestAnimationFrame(() => {
       const panel = panelRef.current;
-      if (!panel) return;
+      if (!panel || panel.getBoundingClientRect().top < window.innerHeight - 80) return;
       const reduce = window.matchMedia?.("(prefers-reduced-motion: reduce)").matches;
       panel.scrollIntoView({ block: "start", behavior: reduce ? "auto" : "smooth" });
-      panel.querySelector<HTMLInputElement>("input:checked")?.focus({ preventScroll: true });
     });
   };
 
   const failing = useMemo(
     () => conformance.criteria.filter((c) => c.status === "failed"),
-    [conformance.criteria]
-  );
-  // The criteria behind the "We couldn't check" count. Naming a few of them
-  // in the caveat below beats the two hardcoded examples that used to stand
-  // in for the whole group: those were written once and could describe a
-  // set that no longer contains them.
-  const needsPerson = useMemo(
-    () => conformance.criteria.filter((c) => c.status === "needs-review"),
-    [conformance.criteria]
-  );
-  const nothingFound = useMemo(
-    () => conformance.criteria.filter((c) => c.status === "no-issues-found"),
-    [conformance.criteria]
-  );
-  const notMeasured = useMemo(
-    () => conformance.criteria.filter((c) => c.status === "not-measured"),
     [conformance.criteria]
   );
   // Every criterion is rendered; the filter hides rather than removes. On
@@ -298,7 +282,10 @@ export function ConformanceView({
         className="a11y-show-all a11y-show-checklist"
         aria-expanded={expanded}
         aria-controls={panelId}
-        onClick={() => setExpanded((v) => !v)}
+        onClick={() => {
+          if (!expanded) setFilter("all");
+          setExpanded((v) => !v);
+        }}
       >
         {expanded ? t("Hide the checklist") : t("Show the checklist")}
       </button>
@@ -309,41 +296,6 @@ export function ConformanceView({
           expand it first. The print stylesheet can reveal a hidden element;
           it cannot reveal one React never rendered. */}
       <div id={panelId} ref={panelRef} className="a11y-conf-panel" hidden={!expanded}>
-          {/* The counts belong here rather than on the button that opens
-              this panel. That button used to promise "Show all 50 items"
-              and then show three, because a filter was on by default — it
-              described the checklist's length while the reader got the
-              filtered view. Here each number sits on the option it
-              selects, so every one of them is true. */}
-          <fieldset className="a11y-radio-group a11y-conf-filter">
-            <legend>{t("Show")}</legend>
-            {(
-              [
-                ["failed", tf("Failures ({count})", { count: failing.length })],
-                ["needs-review", tf("Needs a person ({count})", { count: needsPerson.length })],
-                // The green tile opens on this one, so it is always offered.
-                ["no-issues-found", tf("Nothing found ({count})", { count: nothingFound.length })],
-                // The chip exists only when the state does — an always-empty
-                // filter would be a control that never does anything.
-                ...(notMeasured.length > 0
-                  ? ([["not-measured", tf("Not measured ({count})", { count: notMeasured.length })]] as const)
-                  : []),
-                ["all", tf("Everything ({count})", { count: conformance.total })],
-              ] as const
-            ).map(([value, label]) => (
-              <label key={value} className="a11y-radio">
-                <input
-                  type="radio"
-                  name={filterName}
-                  value={value}
-                  checked={filter === value}
-                  onChange={() => setFilter(value)}
-                />
-                <span>{label}</span>
-              </label>
-            ))}
-          </fieldset>
-
           {failing.length === 0 && filter === "failed" ? (
             <p className="a11y-conf-caveat">{t("Nothing on this page fails.")}</p>
           ) : (
