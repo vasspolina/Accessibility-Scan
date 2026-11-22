@@ -11,8 +11,7 @@
 .a11y-widget-biz .a11y-conf-filter legend,
 .a11y-widget-biz .a11y-conf-filter .a11y-radio input,
 .a11y-widget-biz .a11y-radio-group > legend,
-.a11y-widget-biz .a11y-datatable > .a11y-dt-caption,
-.a11y-widget-biz .a11y-dn-status {
+.a11y-widget-biz .a11y-datatable > .a11y-dt-caption {
   position: absolute !important;
   width: 1px; height: 1px;
   margin: -1px; padding: 0; border: 0;
@@ -788,7 +787,22 @@
    pills has, and the note sits a line under them. */
 .a11y-widget-biz .a11y-sim-defs { position: absolute; width: 0; height: 0; overflow: hidden; }
 .a11y-widget-biz .a11y-sim-controls { display: flex; flex-wrap: wrap; gap: 8px; }
-.a11y-widget-biz .a11y-sim-controls + .a11y-sr-only + .a11y-sim-note { margin-top: 1.2em; }
+/* The buttons and the picture on one screen (user's instruction, 22 Nov
+   2026, "the image and tabs need to fit into screen, use smaller tabs and
+   move text underneath below the image"). The condition buttons are 18px
+   pills, 36px tall, so the seven sit on one line at a desktop width; the
+   picture is held to 55% of the window's height (the chat box covers the
+   foot of the window), at its own proportion, never stretched; the note
+   follows the picture a line down. */
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sim-controls > .a11y-sim-btn {
+  font-size: 18px; min-height: 36px; padding: 0 0.85em;
+}
+.a11y-widget-biz .a11y-sim-controls { margin-bottom: 20px; }
+.a11y-widget-biz .a11y-sim-frame { max-width: 100%; }
+.a11y-widget-biz .a11y-sim-frame > .a11y-sim-img {
+  display: block; width: auto; height: auto; max-width: 100%; max-height: 55svh;
+}
+.a11y-widget-biz .a11y-sim-frame + .a11y-sim-note { margin-top: 1.2em; }
 .a11y-widget-biz .a11y-select2-label { font-size: 18px; letter-spacing: 0.01em; font-weight: 500; }
 .a11y-widget-biz .a11y-select2-field { min-width: 12em; max-width: 100%; box-sizing: border-box; }
 /* The native arrow is drawn flush against the box's edge and takes no padding.
@@ -1271,9 +1285,8 @@
    column is gone and the folded copy in the issue cell wraps like prose. */
 .a11y-widget-biz .a11y-finding-sev-col .a11y-sev { white-space: nowrap; }
 
-/* Notes on the design: kinds as one row of toggles, notes as plain lines, the open one in Medium. */
-.a11y-widget-biz :is(.a11y-dn-kinds, .a11y-dn-list) { list-style: none; padding: 0; margin: 0 0 1em; }
-.a11y-widget-biz .a11y-dn-kinds { display: flex; flex-wrap: wrap; gap: 0.4em 0.6em; }
+/* Notes on the design: one row of tabs, each its kind over its title
+   (the list itself is set with the ruled columns further down). */
 .a11y-widget-biz .a11y-dn-link {
   display: grid; grid-template-columns: 1em minmax(0, 1fr); gap: 0 0.3em; align-items: baseline; width: 100%;
   box-sizing: border-box; text-align: start; padding: 0.15em 0; border: 0; border-radius: 0; background: none; color: var(--ink);
@@ -1571,7 +1584,7 @@
    2026: "this is a slop". The row keeps a 44px target. */
 .a11y-widget-biz .a11y-dn-list > .a11y-dn-link {
   box-sizing: border-box; min-width: 0; min-height: 44px; margin: 0; padding: 10px 0 12px;
-  display: flex; align-items: baseline; justify-content: flex-start;
+  display: flex; flex-direction: column; align-items: flex-start; justify-content: flex-start;
   border: 0; border-top: 1px solid var(--ink); border-radius: 0; background: none; color: var(--ink);
   text-align: start; overflow-wrap: break-word; hyphens: manual;
 }
@@ -1611,6 +1624,13 @@
    line-height 1.0, +0.01em as 22px takes. */
 .a11y-widget-biz .a11y-dn-link > .a11y-dn-link-text {
   display: block; margin: 0; font-family: "PP Telegraf", sans-serif; font-weight: 400; font-size: 22px; line-height: 1.2; letter-spacing: 0.01em;
+}
+/* The note's kind over its title (user's choice, 22 Nov 2026): it was a
+   row of filter pills over the tabs, a second control that looked like a
+   tab. Now a 15px label in ink, 4px over the title, never Medium, so the
+   open tab's Medium title stays the one thing that changes. */
+.a11y-widget-biz .a11y-dn-link > .a11y-dn-link-kind {
+  display: block; margin: 0 0 4px; font-family: "PP Telegraf", sans-serif; font-weight: 400; font-size: 15px; line-height: 1.2; letter-spacing: 0.01em;
 }
 /* Small print under the words stays Jokker at 15px or 18px. */
 .a11y-widget-biz .a11y-spec-card > .a11y-spec-value > .a11y-spec-gloss { margin-top: 0.6em; font-family: "PP Telegraf", sans-serif; }
