@@ -3115,3 +3115,34 @@
 .a11y-widget-biz .a11y-stmt-field input:not([type="radio"]):not([type="checkbox"]) { border: 0; border-radius: 0; background: transparent; }
 /* A textarea is a box like the chat's: 20px corners, not the one-line 14px. */
 .a11y-widget-biz textarea:not([type="radio"]):not([type="checkbox"]):not([hidden]) { border-radius: 20px; }
+
+/* ═══ A CODE BLOCK IN THE CHAT AS A CARD TO COPY FROM (user's instruction,
+   22 Nov 2026, "make this into copy form in a card with small text") ════════
+   The assistant writes templates to fill in (an issue report: Title,
+   Summary, Where, Standard) as fenced blocks, and they ran at the thread's
+   prose size in monospace across the full width. Each block is now a card
+   on the tile ground, 20px corners like the chat box, the text at 15px on
+   a 1.45 line and wrapped (pre-wrap), so nothing scrolls sideways and the
+   block needs no tab stop. Copy sits on a bar at the card's top, end side,
+   so it never covers the first line. The card redefines --ink and --paper,
+   so the button's dotted edge and the focus ring follow it in both themes.
+   The doubled class out-ranks the phone's 0.9em rule for pre and code in
+   the thread, and the chat's paragraph margin on pre. */
+.a11y-widget-biz .a11y-chat-copy.a11y-chat-copy {
+  --ink: var(--tile-ink); --paper: var(--tile);
+  box-sizing: border-box; max-width: none; margin: 0 0 1.2em; padding: 14px 20px 20px;
+  border-radius: 20px; background: var(--tile); color: var(--tile-ink);
+}
+.a11y-widget-biz .a11y-chat-text > .a11y-chat-copy:last-child { margin-bottom: 0; }
+.a11y-widget-biz .a11y-chat-copy.a11y-chat-copy > .a11y-chat-copy-bar { display: flex; justify-content: flex-end; margin: 0 0 8px; }
+.a11y-widget-biz .a11y-chat-copy.a11y-chat-copy .a11y-chat-copy-btn {
+  min-height: 34px; padding: 0 1em; font-size: 15px; font-weight: 400; line-height: 1.2; letter-spacing: 0.01em;
+}
+.a11y-widget-biz .a11y-chat-copy.a11y-chat-copy > .a11y-chat-pre {
+  margin: 0; padding: 0; max-width: none; overflow: visible;
+  font-size: 15px; line-height: 1.45; letter-spacing: 0; white-space: pre-wrap; overflow-wrap: anywhere;
+}
+.a11y-widget-biz .a11y-chat-copy.a11y-chat-copy > .a11y-chat-pre > code { font-size: inherit; line-height: inherit; color: inherit; background: none; }
+@media (max-width: 640px) {
+  .a11y-widget-biz .a11y-chat-copy.a11y-chat-copy { padding: 10px 14px 16px; }
+}
