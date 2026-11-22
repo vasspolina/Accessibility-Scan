@@ -143,7 +143,9 @@ try {
         if (r.sideways || r.over.length) {
           console.log(`FAIL         ${label}  doc=${r.docScrollW} overflowing=${r.over.length}`);
           for (const o of r.over.slice(0, 4)) console.log(`             ↳ ${o.sel} right=${o.right} "${o.text}"`);
-          failures.push(`${state}/${lang}/${width}: ${r.over.length} element(s) past ${width}px`);
+          const first = r.over[0];
+          failures.push(`${state}/${lang}/${width}: ${r.over.length} element(s) past ${width}px` +
+            (first ? `, first ${first.sel} right=${first.right} "${first.text}"` : ""));
         } else {
           console.log(`ok           ${label}  ${r.examined} elements`);
         }
@@ -159,6 +161,13 @@ console.log(`\n${measured} element measurements across ${STATES.length * LANGS.l
 if (failures.length) {
   console.log(`\n${failures.length} reflow failure(s):`);
   for (const f of failures) console.log(`  ${f}`);
+  // On GitHub each failure is also an annotation: annotations show on the
+  // run's page to anyone, while the step log needs a signed-in, 2FA-checked
+  // account (21 Nov 2026: CI failed on every push and the log could not be
+  // read from a session, so Railway skipped deploys for an hour unexplained).
+  if (process.env.GITHUB_ACTIONS) {
+    for (const f of failures) console.log(`::error title=Reflow::${f.replace(/%/g, "%25").replace(/\r?\n/g, " ")}`);
+  }
   process.exit(1);
 }
 console.log("No reflow failures.");

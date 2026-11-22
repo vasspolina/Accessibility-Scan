@@ -1214,6 +1214,20 @@
   .a11y-widget-biz .a11y-sum-run .a11y-score-clean { font-size: 30px; letter-spacing: -0.005em; hyphens: manual; }
   .a11y-widget-biz .a11y-sum-run .a11y-sum-cell-no { width: 30px; height: 30px; font-size: 22px; }
   .a11y-widget-biz .a11y-sum-run .a11y-sum-row-marks { white-space: normal; }
+  /* The link's nowrap held the severity mark to the count, and in French
+     at 320px that pair ran 1px past the column (Widget CI, 21 Nov 2026,
+     "Les images n'ont pas de description"). In a phone's narrow run the
+     count may take the next line; the count itself stays whole. */
+  .a11y-widget-biz .a11y-sum-run .a11y-sum-row-link { white-space: normal; }
+  /* No space stands between the title's last word and the marks, or the
+     marks and the count (JSX drops the line break between the spans), so
+     "description" and the WCAG mark were one unbreakable piece, still 1px
+     too wide on CI's Linux text. A zero-width space at each end of the
+     marks gives the line a place to break (both sides of the marks, since
+     the count is nowrap and cannot hold one); it is empty for screen
+     readers. */
+  .a11y-widget-biz .a11y-sum-run .a11y-sum-row-marks::before,
+  .a11y-widget-biz .a11y-sum-run .a11y-sum-row-marks::after { content: "\200B" / ""; }
   /* A long first word held to its marker cannot break, so on a phone the
      pair may part rather than run off the screen. */
   .a11y-widget-biz .a11y-sum-run .a11y-sum-nobreak { white-space: normal; }
@@ -2508,6 +2522,13 @@
 .a11y-widget-biz .a11y-tester .a11y-input-shell > input:not([type="radio"]):focus-visible { outline: none; box-shadow: none; }
 .a11y-widget-biz .a11y-tester .a11y-input-shell > input::placeholder { color: var(--tile-ink); opacity: 1; font-weight: 300; }
 .a11y-widget-biz .a11y-tester .a11y-input-shell > .a11y-login-toggle { flex: none; min-height: 36px; padding: 0 14px; font-size: 18px; }
+/* On a phone the pill may wrap and shrink, as the general rule above lets
+   it: this rule's flex: none out-ranked that one, and "Detrás de un inicio
+   de sesión" ran 5px past 320 with CI's wide fallback font (21 Nov 2026;
+   Widget CI failed on every push from acf044a, so Railway skipped them). */
+@media (max-width: 640px) {
+  .a11y-widget-biz .a11y-tester .a11y-input-shell > .a11y-login-toggle { flex: 0 1 auto; min-width: 0; padding-block: 6px; white-space: normal; }
+}
 .a11y-widget-biz .a11y-tester > .a11y-url-error:not(:empty) { margin-top: 12px; }
 /* A choice: a filled row, its radio showing in the words' ink. */
 .a11y-widget-biz .a11y-tester .a11y-tester-choices {
@@ -2659,6 +2680,11 @@
 .a11y-widget-biz .a11y-sr .a11y-accordion-title .a11y-accordion-head > span:first-child { flex: 1 1 100%; min-width: 0; }
 .a11y-widget-biz .a11y-sr .a11y-accordion-title .a11y-section-count { white-space: nowrap; }
 .a11y-widget-biz .a11y-sr .a11y-accordion-title .a11y-status-chip { margin-inline: 0; white-space: nowrap; }
+/* "3 sagen nichts Brauchbares" ran 12px past 320 held on one line
+   (21 Nov 2026): on a phone the status may wrap. */
+@media (max-width: 640px) {
+  .a11y-widget-biz .a11y-sr .a11y-accordion-title .a11y-status-chip { white-space: normal; max-width: 100%; }
+}
 .a11y-widget-biz .a11y-sr .a11y-accordion-title .a11y-accordion-chevron { margin-inline-start: 4px; }
 /* A title is not hyphenated ("pre-view" at 375px); the description stands a
    clear step under the head. */
