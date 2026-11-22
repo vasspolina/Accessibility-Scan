@@ -39,7 +39,7 @@ import type {
   TabStop,
 } from "../keyboard/analyzeKeyboard.js";
 import { logger } from "../../utils/logger.js";
-import { authenticate, type AuthConfig } from "../auth/authenticate.js";
+import { authenticate, AuthError, sessionWasLost, type AuthConfig } from "../auth/authenticate.js";
 import { OVERLAY_MARKER_SELECTORS, type OverlaySignals } from "../overlay/analyzeOverlay.js";
 
 const require = createRequire(import.meta.url);
@@ -3503,6 +3503,16 @@ export async function renderAndScan(
       if (status >= 400) {
         throw new PageStatusError(host, status);
       }
+      // A crawled page that lands back on the sign-in form has signed the
+      // scanner out (its session expired, or the page needs a different
+      // account). Scanning the form there would report on the wrong page
+      // under the right page's address, so it is refused by name instead.
+      if (auth?.kind === "session" && auth.loginPath && sessionWasLost(page.url(), url, auth.loginPath)) {
+        const formShowing = (await page.locator('input[type="password"]').count().catch(() => 0)) > 0;
+        if (formShowing) {
+          throw new AuthError("This page sent the scanner back to the sign-in form, so it was not scanned signed in.");
+        }
+      }
       const pageTitle = await page.title().catch(() => "");
       if (BLOCK_PAGE_PATTERNS.test(pageTitle)) {
         throw new SiteBlockedError(host, { kind: "challenge", label: pageTitle.slice(0, 60) });
@@ -4262,5 +4272,5 @@ export async function renderAndScan(
     } finally {
       page.off("response", onResponse);
     }
-  }, budgetMs);
+  }, budgetMs, auth?.kind === "session" ? auth.state : undefined);
 }

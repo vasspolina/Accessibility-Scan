@@ -440,7 +440,9 @@ export async function scanUrlToReport(
     // CPU, and it was the arithmetic rather than the page that ran out.
     //
     // Signing in costs a page load of its own before the scan starts.
-    env.RENDER_TIMEOUT_MS + (auth ? 55_000 : 35_000)
+    // A captured session (a site audit's) is loaded with the context and
+    // costs nothing.
+    env.RENDER_TIMEOUT_MS + (auth && auth.kind !== "session" ? 55_000 : 35_000)
   ,
     trustPrivateHosts,
     // The render speaks phase names; the narration speaks milestones. The

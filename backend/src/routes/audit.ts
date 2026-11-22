@@ -12,6 +12,9 @@ import { discoverFromSitemap, makeTextFetcher, type SiteMapDiscovery } from "../
 import { aggregateAudit, type PageOutcome } from "../services/crawl/aggregateAudit.js";
 import { accountForKey, bearerFrom } from "../storage/accounts.js";
 import { saveAudit } from "../storage/audits.js";
+import { authSchema, carriesAuth } from "./authSchema.js";
+import { captureSession } from "../services/auth/session.js";
+import type { AuthConfig } from "../services/auth/authenticate.js";
 
 // A site audit is several full scans, so it is bounded on every axis: how many
 // pages, how long in total, and how many run at once. An unbounded crawl on a
@@ -38,13 +41,23 @@ const auditBodySchema = z.object({
   includeAiReview: z.boolean().optional().default(false),
   // Same contract as a single scan — see scanBodySchema.
   language: z.string().optional(),
+  // Sign-in for a site behind a login: checkout, account and booking pages
+  // are where a failure costs money, and an audit that stops at the login
+  // wall never reaches them. Signed in once, then every page reuses the
+  // session (services/auth/session.ts). Same handling as a single scan's:
+  // memory only, never stored, logged or put in the report.
+  auth: authSchema.optional(),
 });
 
 export async function auditRoutes(app: FastifyInstance) {
   app.post("/api/audit", async (request, reply) => {
     const parsed = auditBodySchema.safeParse(request.body);
     if (!parsed.success) {
-      return reply.status(400).send({ error: "Something in that request wasn't right. Reload the page and try again.", details: parsed.error.flatten() });
+      return reply.status(400).send({
+        error: "Something in that request wasn't right. Reload the page and try again.",
+        // Never echoed when sign-in details were sent: zod quotes the input.
+        ...(carriesAuth(request.body) ? {} : { details: parsed.error.flatten() }),
+      });
     }
 
     let entryUrl: URL;
@@ -60,9 +73,15 @@ export async function auditRoutes(app: FastifyInstance) {
     // commit to a multi-page budget.
     let links: Array<{ href: string; text: string }>;
     let resolvedEntry: string;
+    // The session every page of the audit reuses, when the caller signed in.
+    // A form login happens here, once; cookies pass straight through.
+    let session: AuthConfig | undefined;
     try {
+      if (parsed.data.auth) session = await captureSession(parsed.data.auth, entryUrl.toString());
       const entryRender = await withTimeout(
-        renderAndScan(entryUrl.toString()),
+        // Signed in, so the links read are the ones a signed-in customer
+        // sees: the account menu, the orders page, the checkout.
+        renderAndScan(entryUrl.toString(), session),
         env.RENDER_TIMEOUT_MS + 5000,
         "Entry page render"
       );
@@ -106,7 +125,11 @@ export async function auditRoutes(app: FastifyInstance) {
       siteMap.robots ? (path) => siteMap.robots!.isAllowed(path) : undefined,
       () => {
         excludedByRobots += 1;
-      }
+      },
+      // Signed in, the crawl must never follow a link that signs out or
+      // changes the account: a GET to /logout ends the customer's own
+      // session when they gave us their cookies.
+      Boolean(session)
     );
     const deadline = Date.now() + AUDIT_BUDGET_MS;
     const outcomes: PageOutcome[] = [];
@@ -127,13 +150,13 @@ export async function auditRoutes(app: FastifyInstance) {
         }
 
         try {
-          // No auth for crawled pages, and no evidence capture: this
-          // aggregate returns counts and conformance, never screenshots, so
-          // cropping them would be work thrown away on every page.
+          // The audit's session when there is one, and no evidence capture:
+          // this aggregate returns counts and conformance, never screenshots,
+          // so cropping them would be work thrown away on every page.
           const report = await scanUrlToReport(
             page.url,
             parsed.data.includeAiReview,
-            undefined,
+            session,
             false,
             parsed.data.language
           );
@@ -162,6 +185,9 @@ export async function auditRoutes(app: FastifyInstance) {
     outcomes.sort((a, b) => (order.get(a.url) ?? 0) - (order.get(b.url) ?? 0));
 
     const audit = aggregateAudit(resolvedEntry, outcomes, parsed.data.language);
+    // Says that the pages were seen signed in, and nothing about how.
+    if (session) audit.signedIn = true;
+    session = undefined;
     if (siteMap.sitemap || excludedByRobots > 0) {
       audit.discovery = {
         ...(siteMap.sitemap ? { sitemap: siteMap.sitemap } : {}),

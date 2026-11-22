@@ -2,6 +2,7 @@ import { chromium, type Browser, type Page } from "playwright";
 import { env } from "../../config/env.js";
 import { withTimeout } from "../../utils/timeout.js";
 import { logger } from "../../utils/logger.js";
+import type { SessionState } from "../auth/authenticate.js";
 
 let browserPromise: Promise<Browser> | null = null;
 
@@ -229,7 +230,14 @@ const CLICK_LISTENER_PROBE = `(() => {
  *
  * Queue time is bounded separately, and being busy is its own answer.
  */
-export async function withPage<T>(fn: (page: Page) => Promise<T>, budgetMs?: number): Promise<T> {
+export async function withPage<T>(
+  fn: (page: Page) => Promise<T>,
+  budgetMs?: number,
+  // A signed-in session captured earlier in the same audit (see
+  // auth/session.ts). Loaded into this throwaway context only, and gone with
+  // it when the context closes.
+  storageState?: SessionState
+): Promise<T> {
   await acquireSlot();
   try {
     const browser = await getBrowser();
@@ -265,6 +273,7 @@ export async function withPage<T>(fn: (page: Page) => Promise<T>, budgetMs?: num
       // only our own automation inside this throwaway context — it changes
       // nothing about the page we render or what we report about it.
       bypassCSP: true,
+      ...(storageState ? { storageState } : {}),
     });
     await context.addInitScript(CLICK_LISTENER_PROBE);
     try {
