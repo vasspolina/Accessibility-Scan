@@ -54,7 +54,14 @@ describe("a threshold never goes missing quietly", () => {
     expect(err(["https://x.test", "--min-score", "101"])).toContain("0 to 100");
     expect(err(["https://x.test", "--fail-on", "catastrophic"])).toContain("--fail-on takes one of");
     expect(err(["https://x.test", "--nonsense"])).toContain("Unknown option");
-    expect(err([])).toContain("exactly one URL");
-    expect(err(["https://a.test", "https://b.test"])).toContain("exactly one URL");
+    expect(err([])).toContain("Give a URL to scan");
+  });
+
+  it("takes several addresses since the command scans more than one page", () => {
+    // It used to refuse a second address. The first is still `url`, for a
+    // run of one.
+    const r = ok(["https://a.test", "https://b.test"]);
+    expect(r.url).toBe("https://a.test");
+    expect(r.urls).toEqual(["https://a.test", "https://b.test"]);
   });
 });

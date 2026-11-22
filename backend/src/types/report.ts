@@ -310,7 +310,109 @@ export const reportVerdictSchema = z.object({
 });
 export type ReportVerdict = z.infer<typeof reportVerdictSchema>;
 
+/**
+ * The documents a page links to: PDFs and Word, Excel and PowerPoint files.
+ *
+ * Counted on every page scan, because a page whose forms are all PDFs is not
+ * described by a report that mentions none. A page scan opens a small sample
+ * of the PDFs (services/documents/linkedDocuments.ts); the rest, and every
+ * office file, are counted and say why they were not opened.
+ *
+ * Nothing here reaches `findings`, the summary or the score. What is wrong
+ * with a linked document is wrong with the document, and scoring the page
+ * for it would mark the page down for a file it only points at.
+ */
+export const linkedDocumentSchema = z.object({
+  url: z.string(),
+  kind: z.enum(["pdf", "word", "excel", "powerpoint"]),
+  // The words of the first link that pointed at it.
+  text: z.string(),
+  // How many links on the page point at it.
+  links: z.number(),
+  // On the scanned page's own origin. A file on another host may still be
+  // the owner's (a CDN), which is for a person to say.
+  sameOrigin: z.boolean(),
+  status: z.enum(["checked", "not-checked"]),
+  // Present on every "not-checked" entry: the one reason it was not opened.
+  reason: z
+    .enum([
+      // Word, Excel, PowerPoint: counted, never opened.
+      "office-file",
+      // On another origin. Opening it would scan somebody else's property.
+      "other-site",
+      // A page scan opens the first few PDFs and counts the rest.
+      "beyond-sample",
+      // The download failed, was refused, or the file was not a PDF.
+      "could-not-open",
+      // The sample's time allowance ended first.
+      "out-of-time",
+      // The page was scanned signed in, and the document fetch is not.
+      "behind-login",
+      // A site audit counts documents and opens none.
+      "site-audit",
+    ])
+    .optional(),
+  // Present only on "checked".
+  check: z
+    .object({
+      pages: z.number(),
+      // The checker reads the first pages of a long document, not all of it.
+      pagesRead: z.number(),
+      tagged: z.boolean(),
+      title: z.string().nullable(),
+      // The document's own faults, in the same shape as a page's findings so
+      // a reader of the JSON needs no second vocabulary. Never merged into
+      // the page's findings.
+      findings: z.array(accessibilityFindingSchema),
+    })
+    .optional(),
+});
+export type LinkedDocument = z.infer<typeof linkedDocumentSchema>;
+
+export const documentInventorySchema = z.object({
+  // Distinct documents, by kind.
+  counts: z.object({
+    pdf: z.number(),
+    word: z.number(),
+    excel: z.number(),
+    powerpoint: z.number(),
+  }),
+  total: z.number(),
+  otherSites: z.number(),
+  pdfChecked: z.number(),
+  pdfNotChecked: z.number(),
+  pdfWithFaults: z.number(),
+  // The render reads a capped number of a page's links. Present only when
+  // the page had more: how many were not read, which makes the counts above
+  // a floor.
+  linksNotRead: z.number().optional(),
+  items: z.array(linkedDocumentSchema),
+});
+export type DocumentInventory = z.infer<typeof documentInventorySchema>;
+
+// A third-party accessibility overlay seen on the scanned page. See
+// services/overlay/analyzeOverlay.ts for the vendor table and for why this
+// is a statement on `meta` and not a finding: it has no severity, no
+// criterion and no fix, and the score never sees it.
+export const detectedOverlaySchema = z.object({
+  // The vendor's name as the vendor writes it.
+  vendor: z.string(),
+  // The script as the page loaded it, query string removed. Absent when the
+  // widget was on the page and its script came from an address this scan
+  // does not recognise (a copy the site serves itself).
+  scriptUrl: z.string().optional(),
+  // Whether the element the vendor's script builds was in the document when
+  // the page was measured. False means the script tag was there and the
+  // widget had not started in this browser, so the report must not say the
+  // findings were measured with it on.
+  widgetOnPage: z.boolean(),
+});
+export type DetectedOverlay = z.infer<typeof detectedOverlaySchema>;
+
 export const accessibilityReportSchema = z.object({
+  // The documents this page links to. Optional so reports stored before the
+  // field existed still parse; absent also when the page links to none.
+  documents: documentInventorySchema.optional(),
   // See reportVerdictSchema. Absent for anonymous scans and for a site
   // nobody has answered a question about yet.
   verdicts: z.array(reportVerdictSchema).optional(),
@@ -400,6 +502,11 @@ export const accessibilityReportSchema = z.object({
     aiReviewErrorKind: aiReviewErrorKindSchema.optional(),
     model: z.string().optional(),
     plainLanguage: plainLanguageMetaSchema.optional(),
+    // Accessibility overlays loaded on the page. Absent means none of the
+    // known ones was seen, or an older report. A fact about the conditions
+    // the page was measured under, like incompleteChecks above: never
+    // counted, scored or triaged.
+    overlays: z.array(detectedOverlaySchema).optional(),
   }),
 });
 export type AccessibilityReport = z.infer<typeof accessibilityReportSchema>;

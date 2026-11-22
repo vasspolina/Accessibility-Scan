@@ -3,6 +3,7 @@ import { checkNames, t, tf } from "../lib/strings";
 import { statusWord } from "./ManualChecks";
 import { SCORE_POINTS } from "./ScoreGauge";
 import { Notification } from "./Feedback";
+import { OverlayNotes } from "./OverlayNotes";
 
 export type ProView = "issues" | "clean";
 
@@ -183,6 +184,9 @@ export function ProSummary({
               subtitle={t("The score above only counts what ran, so it may look better than it should. A second run usually completes them.")}
             />
           )}
+          {/* What the score was measured with: an overlay on the page is one
+              more qualification of the same number. */}
+          <OverlayNotes overlays={report.meta.overlays} />
         </div>
       </div>
     </section>

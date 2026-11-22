@@ -3,7 +3,7 @@
 // look in styles.css.
 //
 // The layout follows a reference site (user's instruction, 15 Nov 2026):
-// one face (Jokker Regular) at one size, a centred wordmark over the left column, the
+// one face (PP Telegraf Regular) at one size, a centred wordmark over the left column, the
 // navigation fixed in a narrow column beside it, and the home page as a list
 // of centred entries, each with its excerpt set to its right.
 //
@@ -108,7 +108,7 @@ function page({ file, title, description, section, lead = "", body, home = false
 <meta name="description" content="${description}">
 <meta property="og:title" content="${title}">
 <meta property="og:description" content="${description}">
-<link rel="preload" href="fonts/JokkerVF-TRIAL.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="fonts/PPTelegraf-Regular.otf" as="font" type="font/otf" crossorigin>
 <link rel="stylesheet" href="styles.css">
 </head>
 <body class="${home ? "home" : "inner"}">

@@ -22,11 +22,21 @@ const FETCH_TIMEOUT_MS = 20_000;
 // Enough to characterise a document without reading a 400-page report.
 const MAX_PAGES_INSPECTED = 10;
 
+// A redirect chain longer than this is a loop or a tracker, not a document.
+const MAX_REDIRECTS = 5;
+
 export class PdfFetchError extends Error {
   constructor(
     message: string,
     /** The server's answer, when that is what went wrong. */
-    readonly status?: number
+    readonly status?: number,
+    /**
+     * Whether the check stopped because its time ran out, as opposed to the
+     * document being unreachable or unreadable. The two read the same to a
+     * person pasting an address, and differently to the linked-document
+     * sample, which must not report a slow file as a broken one.
+     */
+    readonly timedOut = false
   ) {
     super(message);
     this.name = "PdfFetchError";
@@ -36,8 +46,29 @@ export class PdfFetchError extends Error {
 export interface PdfCheckResult {
   findings: AccessibilityFinding[];
   pageCount: number;
+  /** How many of those pages were read. The rest were not looked at. */
+  pagesRead: number;
   title: string | null;
   tagged: boolean;
+}
+
+export interface PdfCheckOptions {
+  /** Stops the download and the reading when it fires. */
+  signal?: AbortSignal;
+  /**
+   * Run on the address and on every redirect before it is fetched; it throws
+   * to refuse. With a guard, redirects are followed one hop at a time so
+   * none is fetched unseen.
+   *
+   * A scanned address has been through assertSafeUrl before it gets here, so
+   * the direct path passes none. An address read off somebody's page has
+   * been through nothing, which is the case this exists for.
+   */
+  guard?: (url: string) => Promise<unknown>;
+  /** Largest download accepted. Defaults to the 20 MB of a direct check. */
+  maxBytes?: number;
+  /** Swapped in by tests so a fixture file is served with no socket. */
+  fetchImpl?: typeof fetch;
 }
 
 function makeFinding(
@@ -85,24 +116,94 @@ function hasHeading(node: unknown): boolean {
   return (n.children ?? []).some((c) => hasHeading(c));
 }
 
-export async function checkPdfDocument(url: string): Promise<PdfCheckResult> {
+/**
+ * Downloads the file, refusing anything over `maxBytes` without holding it.
+ *
+ * The size is checked on the declared length first and again as the bytes
+ * arrive, since a server can declare nothing or declare wrongly. It used to
+ * be checked only after the whole body was in memory, which put no bound at
+ * all on what a single address could make this process hold.
+ */
+async function downloadPdf(url: string, signal: AbortSignal, options: PdfCheckOptions): Promise<Uint8Array> {
+  const maxBytes = options.maxBytes ?? MAX_BYTES;
+  const doFetch = options.fetchImpl ?? fetch;
+  const tooLarge = () =>
+    new PdfFetchError(`That document is too large for this check (over ${Math.round(maxBytes / (1024 * 1024))}MB).`);
+
+  let current = url;
+  let res: Response;
+  for (let hop = 0; ; hop++) {
+    if (options.guard) {
+      try {
+        await options.guard(current);
+      } catch {
+        throw new PdfFetchError("That document's address can't be checked.");
+      }
+    }
+    res = await doFetch(current, {
+      signal,
+      headers: { accept: "application/pdf,*/*" },
+      redirect: options.guard ? "manual" : "follow",
+    });
+    if (!options.guard || res.status < 300 || res.status >= 400) break;
+    const location = res.headers.get("location");
+    await res.body?.cancel().catch(() => undefined);
+    if (!location || hop >= MAX_REDIRECTS) {
+      throw new PdfFetchError("We couldn't download the document (too many redirects).");
+    }
+    current = new URL(location, current).toString();
+  }
+
+  if (!res.ok) throw new PdfFetchError(`We couldn't download the document (HTTP ${res.status}).`, res.status);
+  if (Number(res.headers.get("content-length")) > maxBytes) {
+    await res.body?.cancel().catch(() => undefined);
+    throw tooLarge();
+  }
+  if (!res.body) {
+    const buf = await res.arrayBuffer();
+    if (buf.byteLength > maxBytes) throw tooLarge();
+    return new Uint8Array(buf);
+  }
+
+  const reader = res.body.getReader();
+  const chunks: Uint8Array[] = [];
+  let total = 0;
+  for (;;) {
+    const { done, value } = await reader.read();
+    if (done) break;
+    total += value.byteLength;
+    if (total > maxBytes) {
+      await reader.cancel().catch(() => undefined);
+      throw tooLarge();
+    }
+    chunks.push(value);
+  }
+  const bytes = new Uint8Array(total);
+  let offset = 0;
+  for (const chunk of chunks) {
+    bytes.set(chunk, offset);
+    offset += chunk.byteLength;
+  }
+  return bytes;
+}
+
+export async function checkPdfDocument(url: string, options: PdfCheckOptions = {}): Promise<PdfCheckResult> {
+  // One signal for the whole check: this function's own download allowance,
+  // and the caller's, whichever fires first.
   const controller = new AbortController();
   const timer = setTimeout(() => controller.abort(), FETCH_TIMEOUT_MS);
+  const onOuterAbort = () => controller.abort();
+  if (options.signal?.aborted) controller.abort();
+  else options.signal?.addEventListener("abort", onOuterAbort, { once: true });
+  const outOfTime = () => new PdfFetchError("We couldn't finish checking the document in time.", undefined, true);
+
   let bytes: Uint8Array;
   try {
-    const res = await fetch(url, {
-      signal: controller.signal,
-      headers: { accept: "application/pdf,*/*" },
-    });
-    if (!res.ok) throw new PdfFetchError(`We couldn't download the document (HTTP ${res.status}).`, res.status);
-    const buf = await res.arrayBuffer();
-    if (buf.byteLength > MAX_BYTES) {
-      throw new PdfFetchError("That document is too large for this check (over 20MB).");
-    }
-    bytes = new Uint8Array(buf);
+    bytes = await downloadPdf(url, controller.signal, options);
   } catch (err) {
+    options.signal?.removeEventListener("abort", onOuterAbort);
     if (err instanceof PdfFetchError) throw err;
-    throw new PdfFetchError("We couldn't download the document.");
+    throw new PdfFetchError("We couldn't download the document.", undefined, controller.signal.aborted);
   } finally {
     clearTimeout(timer);
   }
@@ -110,8 +211,38 @@ export async function checkPdfDocument(url: string): Promise<PdfCheckResult> {
   // verbosity 0 is errors only. Without it pdfjs writes a warning per page for
   // fonts it cannot substitute, which is noise: we read structure and text, and
   // never render a pixel, so font substitution is irrelevant here.
-  const doc = await getDocument({ data: bytes, useSystemFonts: false, verbosity: 0 }).promise.catch(() => {
-    throw new PdfFetchError("We couldn't read that file as a PDF.");
+  if (options.signal?.aborted) throw outOfTime();
+  const task = getDocument({ data: bytes, useSystemFonts: false, verbosity: 0 });
+  // Tearing the task down rejects this promise whether or not anything is
+  // still awaiting it. Unhandled, that rejection ends the process, so it is
+  // given a handler here; readPdf awaits the same promise and sees the same
+  // rejection where it can act on it.
+  task.promise.catch(() => undefined);
+  // Reading is not interruptible from outside, so the caller's signal tears
+  // the document down and the awaits below reject or come back empty. Every
+  // one of them is followed by a check of the signal, because "came back
+  // empty" is also what an untagged page looks like, and a check cut short
+  // must never be reported as a verdict on the document.
+  const onAbortDuringRead = () => void task.destroy().catch(() => undefined);
+  options.signal?.removeEventListener("abort", onOuterAbort);
+  options.signal?.addEventListener("abort", onAbortDuringRead, { once: true });
+  try {
+    return await readPdf(task, options.signal, outOfTime);
+  } finally {
+    options.signal?.removeEventListener("abort", onAbortDuringRead);
+    // Frees the parsed document here instead of leaving it to the collector.
+    void task.destroy().catch(() => undefined);
+  }
+}
+
+async function readPdf(
+  task: ReturnType<typeof getDocument>,
+  signal: AbortSignal | undefined,
+  outOfTime: () => PdfFetchError
+): Promise<PdfCheckResult> {
+  if (signal?.aborted) throw outOfTime();
+  const doc = await task.promise.catch(() => {
+    throw signal?.aborted ? outOfTime() : new PdfFetchError("We couldn't read that file as a PDF.");
   });
 
   const findings: AccessibilityFinding[] = [];
@@ -128,6 +259,7 @@ export async function checkPdfDocument(url: string): Promise<PdfCheckResult> {
   let headingSeen = false;
 
   for (let i = 1; i <= pagesToRead; i++) {
+    if (signal?.aborted) throw outOfTime();
     const page = await doc.getPage(i).catch(() => null);
     if (!page) continue;
     const struct = await page.getStructTree().catch(() => null);
@@ -139,6 +271,7 @@ export async function checkPdfDocument(url: string): Promise<PdfCheckResult> {
     const text = await page.getTextContent().catch(() => null);
     textItems += text?.items.length ?? 0;
   }
+  if (signal?.aborted) throw outOfTime();
 
   // Untagged is the one that matters most. Without tags there is no reading
   // order, no headings and no way to tell a caption from a heading — a screen
@@ -232,5 +365,5 @@ export async function checkPdfDocument(url: string): Promise<PdfCheckResult> {
     );
   }
 
-  return { findings, pageCount: doc.numPages, title, tagged };
+  return { findings, pageCount: doc.numPages, pagesRead: pagesToRead, title, tagged };
 }

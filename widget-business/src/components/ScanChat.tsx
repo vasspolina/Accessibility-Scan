@@ -137,15 +137,46 @@ export function renderReply(text: string, marks?: Mark[]): ReactNode {
   const out: ReactNode[] = [];
   splitFences(marks?.length ? withMarks(text, marks) : text).forEach((seg, s) => {
     if (seg.code !== undefined) {
-      if (seg.code.trim())
-        out.push(
-          <pre key={`c${s}`} className="a11y-chat-pre">
-            <code>{fade(seg.code.replace(/\n+$/, ""), null)}</code>
-          </pre>
-        );
+      if (seg.code.trim()) out.push(<CodeCard key={`c${s}`} code={seg.code.replace(/\n+$/, "")} />);
     } else renderProse(seg.text, `t${s}`, out);
   });
   return out;
+}
+
+/** A fenced block as a card to copy from (user's instruction, 22 Nov 2026,
+ *  "make this into copy form in a card with small text"): the assistant
+ *  writes templates to fill in, such as an issue report, and these were
+ *  27px monospace running the thread's full width. The card is the tile
+ *  ground with the text at 15px and Copy at its top; Copy takes the code
+ *  without the streaming marks, so what pastes is what was written. */
+function CodeCard({ code }: { code: string }) {
+  const [copied, setCopied] = useState(false);
+  async function copy() {
+    try {
+      await navigator.clipboard.writeText(code.replace(SENTINELS, ""));
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    } catch {
+      // Clipboard blocked: the text is on screen to select by hand.
+    }
+  }
+  return (
+    <div className="a11y-chat-copy">
+      <div className="a11y-chat-copy-bar">
+        <button type="button" className="a11y-chat-copy-btn" onClick={copy}>
+          {copied ? t("Copied") : t("Copy")}
+        </button>
+      </div>
+      <pre className="a11y-chat-pre">
+        <code>{fade(code, null)}</code>
+      </pre>
+      {/* The button's own text changing is not reliably announced; this
+          mounted status region is. */}
+      <span className="a11y-sr-only" role="status">
+        {copied ? t("Copied to clipboard") : ""}
+      </span>
+    </div>
+  );
 }
 
 /** How long a chunk fades in for (matches the CSS), and so how long its
@@ -173,11 +204,35 @@ function waiting(label: ReactNode): ReactNode {
 function searchingLine(query: string | null): ReactNode {
   if (query === null) return t("Searching the web…").replace(/(…|\.{3})$/, "");
   const [before, after] = t("Searching the web for {query}…").replace(/(…|\.{3})$/, "").split("{query}");
+  return urlInSentence(before, query, after);
+}
+
+/** An address set into its translated sentence. The address may break at
+ *  any character (a long one must fit 320px), and that let the line break
+ *  between its last letter and the full stop after it, so "Checking
+ *  https://example.com." left the stop alone at the start of the next line
+ *  ("whats this dot", 21 Nov 2026). The last letter and the punctuation that
+ *  closes on it are held together; the rest of the address still breaks. */
+function urlInSentence(before: string, url: string, after: string): ReactNode {
+  const close = after.match(/^\p{P}+/u)?.[0];
+  if (!close || url.length < 2) {
+    return (
+      <>
+        {before}
+        <span className="a11y-chat-url">{url}</span>
+        {after}
+      </>
+    );
+  }
   return (
     <>
       {before}
-      <span className="a11y-chat-url">{query}</span>
-      {after}
+      <span className="a11y-chat-url">{url.slice(0, -1)}</span>
+      <span className="a11y-chat-url-end">
+        <span className="a11y-chat-url">{url.slice(-1)}</span>
+        {close}
+      </span>
+      {after.slice(close.length)}
     </>
   );
 }
@@ -800,16 +855,15 @@ export function ScanChat({
     summary?.focus({ preventScroll: true });
   }, [turns]);
 
-  /** Where a block takes focus: its fold line, or, for the findings block,
-   *  which has none, its first heading (made focusable for the purpose). */
+  /** Where a block takes focus: its first heading (made focusable for the
+   *  purpose), or the block itself when it has none. Blocks have no fold
+   *  line since 22 Nov 2026. */
   function blockTarget(id: number): HTMLElement | null {
     const block = rootRef.current?.querySelector<HTMLElement>(`#a11y-chat-block-${id}`);
     if (!block) return null;
-    const summary = block.querySelector<HTMLElement>(":scope > summary");
-    if (summary) return summary;
-    const heading = block.querySelector<HTMLElement>("h2, h3");
-    if (heading && !heading.hasAttribute("tabindex")) heading.tabIndex = -1;
-    return heading;
+    const target = block.querySelector<HTMLElement>("h2, h3") ?? block;
+    if (!target.hasAttribute("tabindex")) target.tabIndex = -1;
+    return target;
   }
 
   /** Shows a section as a block, or — when it is already in the thread for
@@ -1352,15 +1406,15 @@ export function ScanChat({
           </>
         )}
         </div>
+        {/* The language, the panel's last row at the foot of the column
+            (user's instruction, 22 Nov 2026), outside the folding body so
+            it stays beside the Conversations toggle on a phone. It was a
+            button pinned at the conversation's top right from 21 Nov. */}
+        <div className="a11y-chats-foot">
+          <LanguageMenu value={language} onChange={onLanguageChange} />
+        </div>
       </nav>
     <div className="a11y-chat" ref={rootRef} onFocus={keepFocusClear}>
-      {/* The language, folded into one button pinned at the top right
-          (user's instruction, 21 Nov 2026). It is the column's first child
-          so sticky holds it for the whole conversation, not only while the
-          head is in view. */}
-      <div className="a11y-lang-pin">
-        <LanguageMenu value={language} onChange={onLanguageChange} />
-      </div>
       {/* The title and the intro open an empty conversation. Once there is
           one, they would sit above it saying "New scan" over a scan that
           has run — the top bar's New scan button is the way back. */}
@@ -1480,14 +1534,10 @@ export function ScanChat({
                 <li key={turn.id} className={`a11y-chat-turn a11y-chat-tool a11y-chat-scan-${turn.state}${contClass}`}>
                   <p className={whoClass}>{t("Assistant")}</p>
                   <div className="a11y-chat-text">
-                    <p>
-                      {before}
-                      <span className="a11y-chat-url">{turn.url}</span>
-                      {/* No seconds beside the address: the step list below
-                          says where the scan is, and the number was one
-                          more thing to read (user's instruction, 16 Oct 2026). */}
-                      {after}
-                    </p>
+                    {/* No seconds beside the address: the step list below
+                        says where the scan is, and the number was one
+                        more thing to read (user's instruction, 16 Oct 2026). */}
+                    <p>{urlInSentence(before, turn.url, after)}</p>
                   </div>
                   {steps.length > 0 && (
                     <StepFold folded={turn.state === "done"}>
@@ -1531,48 +1581,26 @@ export function ScanChat({
                   </li>
                 ) : null;
               }
-              // The findings block has no fold line (user's instruction, 21 Nov
-              // 2026, "delete these" on "Findings · Hide details"): its own
-              // headings ("What people can't use") already title it, so the
-              // line only repeated them. It stands open. Other blocks keep
-              // theirs, since some hide a heading that repeats the line.
-              if (turn.section === "findings") {
-                return (
-                  <li key={turn.id} id={`a11y-chat-block-${turn.id}`} className={`a11y-chat-turn a11y-chat-block${contClass}`}>
-                    <div className="a11y-chat-blockbody">
-                      {fresh ? (
-                        <>
-                          {renderSection("protable")}
-                          {body}
-                        </>
-                      ) : (
-                        <p className="a11y-chat-stale">{t("From an earlier scan. Run it again to see it.")}</p>
-                      )}
-                    </div>
-                  </li>
-                );
-              }
+              // No fold line over a block (user's instructions: 21 Nov 2026,
+              // "delete these" on "Findings · Hide details"; 22 Nov 2026,
+              // "delete all repetition" on "WCAG 2.2 · Hide details" over
+              // "Ready for WCAG 2.2?"): every section carries its own
+              // heading, so the line only said it again. A block stands
+              // open; one from an earlier scan is a single line naming it.
               return (
-                <li key={turn.id} className={`a11y-chat-turn a11y-chat-block${contClass}`}>
-                  <details id={`a11y-chat-block-${turn.id}`} open={fresh}>
-                    <summary className="a11y-chat-blockhead">
-                      {sectionLabel(turn.section)}
-                      {/* In the markup and hidden, not drawn by CSS: generated
-                          content joins the summary's name wherever the
-                          alt-text syntax for `content` is not supported. */}
-                      <span className="a11y-chat-fold" aria-hidden="true">
-                        <span className="a11y-chat-fold-closed">{t("Show details")} <Icon name="caret--right" /></span>
-                        <span className="a11y-chat-fold-open">{t("Hide details")} <Icon name="caret--down" /></span>
-                      </span>
-                    </summary>
-                    <div className="a11y-chat-blockbody">
-                      {fresh ? (
-                        body
-                      ) : (
-                        <p className="a11y-chat-stale">{t("From an earlier scan. Run it again to see it.")}</p>
-                      )}
-                    </div>
-                  </details>
+                <li key={turn.id} id={`a11y-chat-block-${turn.id}`} className={`a11y-chat-turn a11y-chat-block${contClass}`}>
+                  <div className="a11y-chat-blockbody">
+                    {fresh ? (
+                      <>
+                        {turn.section === "findings" && renderSection("protable")}
+                        {body}
+                      </>
+                    ) : (
+                      <p className="a11y-chat-stale">
+                        {sectionLabel(turn.section)} – {t("From an earlier scan. Run it again to see it.")}
+                      </p>
+                    )}
+                  </div>
                 </li>
               );
             }

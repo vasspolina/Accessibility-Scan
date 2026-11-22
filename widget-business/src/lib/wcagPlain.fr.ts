@@ -1072,6 +1072,18 @@ export const UNDECIDED_FR: Record<string, { what: string; ask: string }> = {
     what: "Une vidéo lue dans le lecteur d’une autre entreprise, comme YouTube ou Vimeo. La vidéo se trouve sur leur site, donc la vérification ne peut pas regarder dedans.",
     ask: "Lancez chacune et activez les sous-titres avec le bouton CC. S’il n’y a pas de bouton ou que les sous-titres sont faux, corrigez-les dans le compte qui héberge la vidéo.",
   },
+  "pdf-linked-not-checked": {
+    what: "Des documents PDF vers lesquels cette page renvoie et que la vérification n’a pas ouverts. Une vérification de page ouvre les deux premiers de votre propre site et compte les autres.",
+    ask: "Collez l’adresse d’un document dans la vérification pour le contrôler séparément. Un PDF a besoin de balises, d’un titre et d’une langue définie pour qu’un lecteur d’écran puisse le lire correctement.",
+  },
+  "pdf-linked-faults": {
+    what: "Un PDF vers lequel cette page renvoie. La vérification l’a ouvert et y a trouvé des défauts, comme l’absence de balises ou de titre. Ce sont les défauts du document, ils n’entrent donc pas dans le score de cette page.",
+    ask: "Collez l’adresse du document dans la vérification pour obtenir son propre rapport. Demandez ensuite à la personne qui l’a créé de corriger le fichier d’origine et de le remettre en ligne.",
+  },
+  "office-linked-not-checked": {
+    what: "Des fichiers Word, Excel ou PowerPoint vers lesquels cette page renvoie. La vérification les compte et ne les ouvre jamais.",
+    ask: "Ouvrez chacun et lancez le vérificateur d’accessibilité intégré à Office, dans l’onglet Révision. Mieux encore, mettez leur contenu sur une page web, que tout le monde peut lire.",
+  },
   "consent-layer-in-frame": {
     what: "Le bandeau cookies se charge depuis le site d’une autre entreprise, dans un cadre : l’analyse ne peut donc pas vérifier ce qu’un lecteur d’écran y entend.",
     ask: "Demandez à quelqu’un d’ouvrir la page avec un lecteur d’écran, comme VoiceOver sur Mac ou NVDA sous Windows. Le bandeau doit être lu en premier et la touche Tab doit atteindre ses boutons. Refuser doit prendre autant d’étapes qu’accepter.",
@@ -1154,7 +1166,7 @@ export const PRINCIPLES_FR: Record<
     principleLabel: "Perceptible",
     plainTitle: "Peut-on le voir et l’entendre ?",
     plainDescription:
-      "Ce que les gens ne peuvent ni voir ni entendre : texte trop pâle, images sans description, vidéos sans sous-titres, audio sans transcription.",
+      "Texte trop pâle, images sans description, vidéos sans sous-titres, audio sans transcription.",
   },
   "2": {
     principleLabel: "Utilisable",

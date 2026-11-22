@@ -341,6 +341,12 @@
         { ruleId: "interaction-acts-on-change", count: 2, help: "Controls that may act as soon as you set them", helpUrl: "https://www.w3.org/WAI/WCAG21/Understanding/on-input.html" },
         { ruleId: "interaction-pointer-cancellation", count: 4, help: "Controls that act the moment they are pressed", helpUrl: "https://www.w3.org/WAI/WCAG21/Understanding/pointer-cancellation.html" },
         { ruleId: "media-audio-transcript", count: 1, help: "Audio with no transcript we can see", helpUrl: "https://www.w3.org/WAI/WCAG21/Understanding/audio-only-and-video-only-prerecorded.html" },
+        // The page's linked documents, with the sentences the server writes
+        // (services/documents/linkedDocuments.ts). The widget words these
+        // rows itself by ruleId; `help` is what the assistant's digest reads.
+        { ruleId: "pdf-linked-not-checked", count: 7, help: "This page links to 9 PDF documents. The scan opened 2 and did not open 7: 7 come after the first 2, which is all a page scan opens.", helpUrl: "https://www.w3.org/WAI/WCAG21/Techniques/#pdf" },
+        { ruleId: "pdf-linked-faults", count: 2, help: "The scan opened 2 linked PDF documents and 2 have faults: no tags (1), no title (1), no language set (1). They are the document's faults and are not in this page's score.", helpUrl: "https://www.w3.org/WAI/WCAG21/Techniques/#pdf" },
+        { ruleId: "office-linked-not-checked", count: 1, help: "This page links to 1 Word, Excel or PowerPoint file. The scan counts these and does not open them." },
       ],
       pagePreview: TINY_JPEG,
       // The fixture report carries a consent finding, so it also carries the
@@ -352,6 +358,20 @@
         aiReviewTimeMs: 8000,
         aiReviewStatus: "completed",
         incompleteChecks: ["phone-layout walk"],
+        // The overlay note (components/OverlayNotes.tsx). A made-up vendor
+        // on a reserved domain, so the fixture names no real product; the
+        // address is long on purpose, since it is the one unbroken string
+        // in the notice and the reflow check should meet it at 320px.
+        // &overlay=script shows the other case: script there, widget not.
+        overlays: isPdf
+          ? undefined
+          : [
+              {
+                vendor: "Example Overlay",
+                scriptUrl: "https://cdn.overlay-vendor.example/apps/widget/dist/js/loader.min.js",
+                widgetOnPage: new URLSearchParams(location.search).get("overlay") !== "script",
+              },
+            ],
         documentKind: isPdf ? "pdf" : undefined,
         documentPages: isPdf ? 4 : undefined,
       },

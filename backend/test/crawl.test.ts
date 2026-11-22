@@ -2,6 +2,7 @@ import { describe, it, expect } from "vitest";
 import { selectPagesToAudit } from "../src/services/crawl/discoverPages.js";
 import { aggregateAudit, type PageOutcome } from "../src/services/crawl/aggregateAudit.js";
 import type { AccessibilityFinding, AccessibilityReport } from "../src/types/report.js";
+import { inventoryDocuments } from "../src/services/documents/inventoryDocuments.js";
 
 const ENTRY = "https://example.com/";
 const link = (href: string, text = "") => ({ href, text });
@@ -166,11 +167,84 @@ describe("aggregateAudit", () => {
     expect(audit.conformance.failedByLevel).toEqual({ A: 1, AA: 1 });
   });
 
+  it("rolls each page's overlay note up, and counts where the widget was running apart", () => {
+    const withOverlay = (url: string, widgetOnPage: boolean): PageOutcome => {
+      const p = page(url, 80, ["color-contrast"]);
+      p.report!.meta.overlays = [
+        { vendor: "UserWay", scriptUrl: "https://cdn.userway.org/widget.js", widgetOnPage },
+      ];
+      return p;
+    };
+    const plain = [page("/a", 80, ["color-contrast"]), page("/b", 80, ["color-contrast"]), page("/c", 80, ["color-contrast"])];
+    const noted = [withOverlay("/a", true), withOverlay("/b", false), page("/c", 80, ["color-contrast"])];
+    const audit = aggregateAudit(ENTRY, noted);
+    expect(audit.overlays).toEqual([
+      { vendor: "UserWay", scriptUrl: "https://cdn.userway.org/widget.js", pageCount: 2, widgetPageCount: 1 },
+    ]);
+    // The same pages without the note: nothing else in the audit moves.
+    const { overlays: _seen, scannedAt: _t1, ...rest } = audit;
+    const { overlays: none, scannedAt: _t2, ...bare } = aggregateAudit(ENTRY, plain);
+    expect(none).toBeUndefined();
+    expect(rest).toEqual(bare);
+  });
+
   it("handles an audit where every page failed", () => {
     const audit = aggregateAudit(ENTRY, [{ url: "/a", label: "a", error: "nope" }]);
     expect(audit.averageScore).toBe(0);
     expect(audit.pagesScanned).toBe(0);
     expect(audit.worstPage).toBeUndefined();
     expect(audit.siteWide).toEqual([]);
+  });
+});
+
+describe("aggregateAudit: the site's linked documents", () => {
+  const withDocuments = (url: string, links: Array<{ href: string; text: string }>, linksNotRead = 0): PageOutcome => ({
+    url,
+    label: url,
+    report: { ...report(90, []), documents: inventoryDocuments(links, url, linksNotRead) },
+  });
+
+  it("counts a document once however many pages link to it", () => {
+    const audit = aggregateAudit(ENTRY, [
+      withDocuments("https://example.com/", [link("/prices.pdf", "Prices"), link("/apply.docx", "Apply")]),
+      withDocuments("https://example.com/about", [link("/prices.pdf", "Price list"), link("/team.pdf", "Team")]),
+      withDocuments("https://example.com/contact", [link("/prices.pdf", "")]),
+    ]);
+    expect(audit.documents?.total).toBe(3);
+    expect(audit.documents?.counts).toEqual({ pdf: 2, word: 1, excel: 0, powerpoint: 0 });
+    const prices = audit.documents?.items.find((i) => i.url === "https://example.com/prices.pdf");
+    expect(prices).toMatchObject({ pageCount: 3, text: "Prices", kind: "pdf", sameOrigin: true });
+  });
+
+  it("says that a site audit opened none of them", () => {
+    const audit = aggregateAudit(ENTRY, [withDocuments("https://example.com/", [link("/a.pdf")])]);
+    expect(audit.documents?.pdfChecked).toBe(0);
+  });
+
+  it("counts documents on other sites apart", () => {
+    const audit = aggregateAudit(ENTRY, [
+      withDocuments("https://example.com/", [link("/a.pdf"), link("https://cdn.example.net/b.pdf")]),
+    ]);
+    expect(audit.documents?.otherSites).toBe(1);
+  });
+
+  it("says when a page's links were cut short, which makes the total a floor", () => {
+    const audit = aggregateAudit(ENTRY, [
+      withDocuments("https://example.com/", [link("/a.pdf")], 200),
+      withDocuments("https://example.com/b", [link("/a.pdf")]),
+    ]);
+    expect(audit.documents?.pagesWithLinksNotRead).toBe(1);
+  });
+
+  it("leaves the field off a site whose pages link to no documents", () => {
+    const audit = aggregateAudit(ENTRY, [page("/a", 80, []), withDocuments("https://example.com/b", [link("/contact")])]);
+    expect(audit.documents).toBeUndefined();
+  });
+
+  it("does not let documents move the site's score", () => {
+    const plain = aggregateAudit(ENTRY, [page("https://example.com/", 90, [])]);
+    const withDocs = aggregateAudit(ENTRY, [withDocuments("https://example.com/", [link("/a.pdf"), link("/b.docx")])]);
+    expect(withDocs.averageScore).toBe(plain.averageScore);
+    expect(withDocs.conformance.failed).toBe(plain.conformance.failed);
   });
 });
