@@ -3323,3 +3323,31 @@
    list is what measured under 22px at 200 on the fixture report and form. */
 .a11y-widget-biz :where(button, input, select, textarea, label, small, th,
   .a11y-shell-nav-link, .a11y-switch-word, .a11y-url-submit-note, .a11y-sum-dial-of, .a11y-top-card-small) { font-weight: 400; }
+
+/* ═══ THE WARNING AS A BUBBLE (user's instruction, 22 Nov 2026, "make
+   warning a buble") ══════════════════════════════════════════════════════
+   The warning notice ("Some checks didn't finish this time: …") stood as
+   bare 32px text straight under the score key's last line, with nothing
+   between them, so it read as one more line of the key. It is now a bubble
+   like the conversation's own on a phone: the tile ground, 22px corners,
+   the icon inside it in the first column, the box as wide as its words
+   (never wider than the column). The ground is the --tile / --tile-ink
+   pair, so it is #f0efe8 with black words in light and #1c1c1e with white
+   in dark, as every pinned surface. 65px above it, the least between two
+   pieces of content, parts it from the key. The other notice kinds keep
+   their plain setting. */
+.a11y-widget-biz .a11y-note.a11y-note-warning {
+  box-sizing: border-box; width: fit-content; max-width: 100%;
+  margin: 65px 0 1.2em; padding: 22px 30px 24px 22px;
+  column-gap: 14px; grid-template-columns: auto minmax(0, 1fr);
+  border-radius: 22px; background: var(--tile); color: var(--tile-ink);
+  --ink: var(--tile-ink); --paper: var(--tile);
+}
+.a11y-widget-biz .a11y-note.a11y-note-warning .a11y-note-glyph { display: flex; align-self: start; padding-top: 0.12em; }
+.a11y-widget-biz .a11y-note.a11y-note-warning .a11y-note-sub { margin-top: 6px; }
+@media (max-width: 640px) {
+  .a11y-widget-biz .a11y-note.a11y-note-warning { margin-top: 40px; padding: 16px 20px 18px 16px; column-gap: 10px; border-radius: 22px; }
+}
+@media print {
+  .a11y-widget-biz .a11y-note.a11y-note-warning { background: none; border: 1px solid #000; }
+}
