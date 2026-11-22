@@ -2381,7 +2381,14 @@
 }
 .a11y-widget-biz .a11y-chats .a11y-chats-item:disabled { cursor: not-allowed; }
 .a11y-widget-biz .a11y-chats .a11y-chats-row[data-current]:has(.a11y-chats-item:disabled) { border-width: 2px; margin-block: -1px 3px; }
-@media (max-width: 640px) {
+/* The panel folds up to 960px of window, not 640px (user's instruction,
+   22 Nov 2026, "make scan work properly on all screen sizes"). Between
+   641 and 960px the 300px panel, its 32px gap and the page's sides left
+   the conversation 300 to 590px: the opening cards broke words inside
+   themselves ("Ask abo / ut") and a scan's findings table pushed the page
+   to 927px wide at 700 and 768px. Folded, the conversation has the whole
+   width; above 960px it keeps 590px or more beside the panel. */
+@media (max-width: 960px) {
   .a11y-widget-biz .a11y-chat-layout { grid-template-columns: minmax(0, 1fr); gap: 0; }
   .a11y-widget-biz .a11y-chats {
     position: static; max-height: none; overflow: visible; padding: 6px 0; border-right: 0;
@@ -3131,7 +3138,8 @@
 }
 .a11y-widget-biz .a11y-lang-menu .a11y-lang-option[aria-pressed="true"] { border-color: var(--ink); font-weight: 400; }
 .a11y-widget-biz .a11y-lang-menu .a11y-lang-option:enabled:hover { background: var(--tile-fill); color: var(--ink); border-color: var(--ink); }
-@media (max-width: 640px) {
+/* 960px with the panel's fold above, not 640px. */
+@media (max-width: 960px) {
   .a11y-widget-biz .a11y-chat-layout > .a11y-chats { flex-flow: row wrap; align-items: center; justify-content: space-between; }
   .a11y-widget-biz .a11y-chats > .a11y-chats-body { order: 3; flex: 1 1 100%; overflow: visible; }
   .a11y-widget-biz .a11y-chats > .a11y-chats-foot { margin: 0; padding: 0; border: 0; }
@@ -3149,6 +3157,14 @@
 @media (min-width: 641px) {
   .a11y-widget-biz .a11y-chat-layout { padding-inline: 20px 40px; box-sizing: border-box; }
   .a11y-widget-biz .a11y-chat-layout > .a11y-chat { padding-inline-end: 0; }
+}
+/* Where the panel is folded (641 to 960px) there is no panel edge to keep
+   20px or 40px off, so the page stands 40px in on both sides: the widget's
+   own 16px and 24px here, and the conversation drops its 40px off the
+   panel's rule (it stood 96px in on the left and 56px on the right). */
+@media (min-width: 641px) and (max-width: 960px) {
+  .a11y-widget-biz .a11y-chat-layout { padding-inline: 24px; }
+  .a11y-widget-biz .a11y-chat-layout > .a11y-chat { padding-inline: 0; }
 }
 
 /* ═══ FORM FIELDS AS THE CHAT BOX (user's instruction, 21 Nov 2026) ═════════
@@ -3275,6 +3291,48 @@
 }
 @media (max-width: 640px) {
   .a11y-widget-biz .a11y-first-fix .a11y-first-fix-lead { font-size: 27px; letter-spacing: 0; }
+}
+
+/* ═══ THE SCAN AT EVERY WIDTH (user's instruction, 22 Nov 2026) ═════════════
+   "Make scan work properly on all screen sizes": every state was rendered
+   at 320, 375, 414, 600, 700, 768, 900, 1024, 1280, 1440 and 1920px, and
+   these are what broke.
+
+   The opening's address field took only its own words' width (331px of
+   a 580px column at 600px, 398px of 560px at 1024px): its fold is a flex
+   child of the New scan head, and a flex child is as wide as its content
+   unless told to grow. It now takes the line, up to the form's 640px. */
+.a11y-widget-biz .a11y-newscan-head > .a11y-newscan-fold { flex: 1 1 100%; min-width: 0; }
+
+/* The sign-in panel ran 60px past a 320px screen: a fieldset is never
+   narrower than its widest content (min-inline-size: min-content) and
+   the browser's own 2px side margins came on top. */
+.a11y-widget-biz .a11y-login-fieldset { min-inline-size: 0; margin-inline: 0; }
+
+/* The findings table folds by its own width, not the window's. Its columns
+   folded at 600 and 1100px of window, which held in the page report, where
+   the table runs about the window's width less 32px, and failed wherever it
+   sits in a narrower column: in the conversation a scan's table was 304px
+   wide at 768px of window with every column still standing, so the issue
+   stood one letter to a line and the page scrolled sideways. The same
+   folds now follow the table's width. The wide fold is at 1068px, the
+   width the table has at 1100px of window in the page report. The phone
+   fold is at 720px, not the 580px it had at 600px of window: with an
+   Instances column the fixed columns (Severity 8em, Fix 6.8em, Instances
+   6.6em, at 22px) left the issue 97px in a 616px table, in the page report
+   between 601 and 750px of window as much as in the conversation, so the
+   severity mark moves into the issue cell there, as on a phone. */
+.a11y-widget-biz .a11y-findings-table { container: a11y-ftable / inline-size; }
+@container a11y-ftable (max-width: 1068px) {
+  .a11y-widget-biz .a11y-finding-level-fold { display: block; }
+  .a11y-widget-biz :is(td, th):is([data-col="wcag"], [data-col="level"]) { display: none; }
+}
+@container a11y-ftable (max-width: 720px) {
+  .a11y-widget-biz .a11y-finding-sev-fold { display: block; }
+  .a11y-widget-biz :is(td, th):is([data-col="severity"]) { display: none; }
+  .a11y-widget-biz .a11y-datatable-schedule th[data-col="fix"] { width: 5.4em; }
+  .a11y-widget-biz .a11y-datatable-schedule :is(th, td) { padding-inline-end: 0.4em; }
+  .a11y-widget-biz th { overflow-wrap: anywhere; }
 }
 
 /* ═══ PARAGRAPH BREAKS BY INDENT (Hochuli, Detail in typography p.47 and
