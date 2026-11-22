@@ -1166,7 +1166,7 @@ export const PRINCIPLES_FR: Record<
     principleLabel: "Perceptible",
     plainTitle: "Peut-on le voir et l’entendre ?",
     plainDescription:
-      "Ce que les gens ne peuvent ni voir ni entendre : texte trop pâle, images sans description, vidéos sans sous-titres, audio sans transcription.",
+      "Texte trop pâle, images sans description, vidéos sans sous-titres, audio sans transcription.",
   },
   "2": {
     principleLabel: "Utilisable",

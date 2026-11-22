@@ -1144,7 +1144,7 @@ export const PRINCIPLES_ES: Record<string, { principleLabel: string; plainTitle:
     principleLabel: "Perceptible",
     plainTitle: "¿Se puede ver y oír?",
     plainDescription:
-      "Lo que la gente no puede ver ni oír: texto demasiado claro, imágenes sin descripción, vídeo sin subtítulos, audio sin transcripción.",
+      "Texto demasiado claro, imágenes sin descripción, vídeo sin subtítulos, audio sin transcripción.",
   },
   "2": {
     principleLabel: "Operable",

@@ -1058,7 +1058,7 @@ export const PRINCIPLES_DE: Record<string, { principleLabel: string; plainTitle:
   "1": {
     principleLabel: "Wahrnehmbar",
     plainTitle: "Können Menschen es sehen und hören?",
-    plainDescription: "Was Menschen nicht sehen oder hören können: blasser Text, Bilder ohne Beschreibung, Videos ohne Untertitel, Audio ohne Transkript.",
+    plainDescription: "Blasser Text, Bilder ohne Beschreibung, Videos ohne Untertitel, Audio ohne Transkript.",
   },
   "2": {
     principleLabel: "Bedienbar",

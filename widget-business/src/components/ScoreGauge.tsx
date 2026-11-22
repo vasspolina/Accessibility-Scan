@@ -314,11 +314,8 @@ export function ScoreGauge({
       {/* Professional mode gets an explicit results header in this slot
           (App.tsx); business mode had none, which left heading navigation
           with no way to jump straight to the score at all. */}
-      {/* "Score" over "Your score" in the conversation, where the block's
-          summary line names it: hidden there on screen, kept for screen
-          readers. */}
       <h2
-        className={inChat ? "a11y-section-title a11y-sr-only" : "a11y-section-title"}
+        className="a11y-section-title"
         id="a11y-score-heading"
         data-nav-label={t("Score")}
       >

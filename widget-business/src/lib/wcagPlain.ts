@@ -27,7 +27,7 @@ const PRINCIPLES: Record<string, PrincipleInfo> = {
     principle: "Perceivable",
     plainTitle: "Can people see and hear it?",
     plainDescription:
-      "What people can't see or hear: faint text, images with no description, video with no captions, audio with no transcript.",
+      "Faint text, images with no description, video with no captions, audio with no transcript.",
   },
   "2": {
     principle: "Operable",
