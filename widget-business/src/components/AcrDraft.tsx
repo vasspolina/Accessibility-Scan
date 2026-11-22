@@ -2,6 +2,7 @@ import { useId, useMemo, useRef, useState } from "react";
 import { t, tf } from "../lib/strings";
 import type { AccessibilityReport } from "../api/scanClient";
 import { buildAcrDraft } from "../lib/buildAcrDraft";
+import { Icon } from "./Icon";
 
 // The procurement document, as far as a scan can honestly take it.
 //
@@ -101,14 +102,7 @@ export function AcrDraft({ report }: { report: AccessibilityReport }) {
               {t("Conformance report for buyers")}{" "}
               <span className="a11y-section-count">{t("VPAT 2.5, draft")}</span>
             </span>
-            <svg
-              className="a11y-accordion-chevron"
-              viewBox="0 0 16 16"
-              aria-hidden="true"
-              focusable="false"
-            >
-              <path d="M8 11L3 6l.7-.7L8 9.6l4.3-4.3L13 6z" fill="currentColor" />
-            </svg>
+            <Icon name="chevron--down" className="a11y-accordion-chevron" />
           </button>
         </h2>
       </div>

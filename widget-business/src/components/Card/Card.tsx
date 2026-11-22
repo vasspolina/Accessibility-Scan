@@ -1,4 +1,5 @@
 import type { CSSProperties, ReactNode } from "react";
+import { Icon } from "../Icon";
 
 /**
  * The card, ported from components/display/Card.jsx.
@@ -71,7 +72,7 @@ export function Card({
           {/* aria-hidden: the arrow repeats what the link text already says,
               and a screen reader reading both announces "…, north east
               arrow". Same rule the report applies to other sites. */}
-          <span aria-hidden="true"> ↗</span>
+          {" "}<Icon name="launch" />
         </a>
       )}
     </section>

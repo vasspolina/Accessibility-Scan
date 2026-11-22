@@ -2,6 +2,7 @@ import { Fragment, useEffect, useLayoutEffect, useReducer, useRef, useState, typ
 import { getLang } from "../lib/i18n";
 import { t, tf } from "../lib/strings";
 import { VoiceControl } from "./VoiceControl";
+import { Icon } from "./Icon";
 
 /**
  * Report a barrier, inside the widget (user's instruction, 20 Nov 2026:
@@ -1237,7 +1238,7 @@ export function BarrierReport({ apiBase, onBack }: { apiBase: string; onBack: ()
             <div className="a11y-chat-box-row">
               <span className="a11y-chat-box-start">
                 <button type="button" className="a11y-btn a11y-btn-ghost a11y-btn-md" onClick={onBack}>
-                  <span aria-hidden="true">← </span>
+                  <Icon name="arrow--left" />{" "}
                   {t("Back to the chat")}
                 </button>
                 <VoiceControl />
@@ -1246,9 +1247,7 @@ export function BarrierReport({ apiBase, onBack }: { apiBase: string; onBack: ()
                 {/* On a phone the word is clipped and the arrow drawn, as in
                     the chat: the button keeps its words as its name. */}
                 <span className="a11y-chat-send-word">{(answering && step?.button) || t("Send")}</span>
-                <svg className="a11y-chat-send-icon" viewBox="0 0 24 24" width="22" height="22" aria-hidden="true" focusable="false">
-                  <path d="M12 19V5M5.5 11.5 12 5l6.5 6.5" fill="none" stroke="currentColor" strokeWidth="2.25" strokeLinecap="round" strokeLinejoin="round" />
-                </svg>
+                <Icon name="arrow--up" size={22} className="a11y-chat-send-icon" />
               </button>
             </div>
           </div>

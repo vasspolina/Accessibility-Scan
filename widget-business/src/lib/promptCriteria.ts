@@ -1,6 +1,6 @@
 /**
  * The WCAG criterion each opening question checks, shown on its card in a
- * marker highlight where the foundry card sets its "Aa" (user's choice,
+ * marker highlight at the foot of the card (user's choice,
  * 18 Nov 2026: the big question mark "looks like slop"). The number is a
  * button: pressing it puts a short explanation in the conversation, from
  * this table, with no request to the assistant.

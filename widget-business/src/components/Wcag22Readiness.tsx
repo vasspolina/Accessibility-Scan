@@ -2,6 +2,7 @@ import { useId, useState } from "react";
 import { t, tf } from "../lib/strings";
 import { WhatsNextPanel } from "./WhatsNextPanel";
 import type { Wcag22Readiness as Readiness } from "../api/scanClient";
+import { Icon } from "./Icon";
 
 // The law is going to move, and an owner should see it coming rather than
 // discover it. EN 301 549 v3.2.1 adopts WCAG 2.1, which is what the rest of
@@ -33,23 +34,17 @@ export function Wcag22Readiness({ readiness }: { readiness: Readiness }) {
     <section className="a11y-section a11y-w22" aria-labelledby="a11y-w22-heading">
       <h2 className="a11y-section-title" id="a11y-w22-heading" data-nav-label={t("WCAG 2.2")}>{t("Ready for WCAG 2.2?")}</h2>
 
-      {/* The kit's readiness panel, as redesigned upstream (4 Aug): it now
-          carries the "What's next" eyebrow itself, and its own disclosure
-          opens the list of the new criteria — so the separate eyebrow span
-          this section used to render, and the flattening style override
-          from the previous panel shape, are both gone. The technical
-          breakdown below stays this component's own toggle: statuses,
-          found counts and the caveats are denser detail than the panel's
-          item list holds. */}
+      {/* The heading already names the standard, so the line under it
+          says only when, and the six items are listed once, in the
+          breakdown below (user's instruction, 22 Nov 2026, "delete all
+          repetition"). */}
       <WhatsNextPanel
-        standard="WCAG 2.2"
-        expected={tf("expected {date}", { date: expectedFrom })}
+        expected={tf("Expected {date}", { date: expectedFrom })}
         failCount={alreadyFailing}
         description={tf(
           "Nothing here is required yet. These {total} new items become Level A or AA once EN 301 549 adopts WCAG 2.2.",
           { total }
         )}
-        items={criteria.map((c) => ({ criterion: c.id, title: c.plain, level: c.level }))}
       />
 
       {/* The design puts everything from here down on a purple panel and
@@ -68,27 +63,16 @@ export function Wcag22Readiness({ readiness }: { readiness: Readiness }) {
         aria-controls={panelId}
         onClick={() => setOpen((v) => !v)}
       >
-        <span>{open ? t("Hide the technical breakdown") : t("Show the technical breakdown")}</span>
-        <svg
-          className="a11y-accordion-chevron"
-          viewBox="0 0 16 16"
-          aria-hidden="true"
-          focusable="false"
-        >
-          <path d="M8 11L3 6l.7-.7L8 9.6l4.3-4.3L13 6z" fill="currentColor" />
-        </svg>
+        <span>{open ? t("Hide details") : t("Show details")}</span>
+        <Icon name="chevron--down" className="a11y-accordion-chevron" />
       </button>
 
       {/* Hidden rather than unrendered, so aria-controls always points at a
           real element. */}
       <div id={panelId} hidden={!open}>
-          <p className="a11y-conf-caveat">
-            <strong className="a11y-w22-lead">{t("What actually changes")}</strong>{" "}
-            {tf(
-              "The European Accessibility Act points at a standard called EN 301 549, which today adopts WCAG 2.1. The next version adopts WCAG 2.2, expected in the EU's Official Journal in {date}.",
-              { date: expectedFrom }
-            )}
-          </p>
+          {/* "What actually changes" is gone (user's instruction, 22 Nov
+              2026, "do not over explain"): it said the lead and the date
+              again. */}
           {/* The "Software can check only one" column and its five questions
               are gone: the cards below ask the same questions, each with its
               own call. */}
@@ -154,7 +138,7 @@ export function Wcag22Readiness({ readiness }: { readiness: Readiness }) {
                       </span>
                     ) : c.status !== "needs-review" ? (
                       <span className="a11y-next-status">
-                        <span aria-hidden="true">{fails ? "!" : "✓"}</span>{" "}
+                        <Icon name={fails ? "warning--alt" : "checkmark"} />{" "}
                         {t(STATUS_LABEL[c.status])}
                       </span>
                     ) : (

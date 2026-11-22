@@ -128,6 +128,19 @@ export function digestReport(report: AccessibilityReport) {
     // pipeline stamps on it ("disabled_by_request") would say otherwise.
     aiReview: isPdf ? "not run: documents get no AI review" : SKIPPED[report.meta.aiReviewStatus] ?? report.meta.aiReviewStatus,
     checksThatDidNotFinish: report.meta.incompleteChecks?.length ? report.meta.incompleteChecks : undefined,
+    // The overlay note, in the same two cases the report prints. The widget
+    // line is spelled out because the difference decides what the assistant
+    // may say: "measured with it running" is true only in the first case.
+    // Nothing here is a finding and none of it is in the score.
+    accessibilityOverlays: report.meta.overlays?.length
+      ? report.meta.overlays.map((o) => ({
+          vendor: o.vendor,
+          script: o.scriptUrl,
+          widget: o.widgetOnPage
+            ? "on the page during the scan: every finding was measured with the overlay running"
+            : "not on the page during the scan: its script tag was there and the widget had not started",
+        }))
+      : undefined,
     document: isPdf
       ? {
           kind: "PDF",
@@ -163,6 +176,16 @@ export function digestAudit(audit: SiteAudit) {
     // so it says nothing about design, readability or misleading patterns.
     aiReview: "not run: a site audit never includes the AI review, so it says nothing about design, readability or misleading patterns",
     checksThatDidNotFinish: audit.incompleteChecks?.length ? audit.incompleteChecks : undefined,
+    // Overlays over the crawl. The site view prints no notice for these, so
+    // the assistant is the one place a site audit's reader can ask.
+    accessibilityOverlays: audit.overlays?.length
+      ? audit.overlays.map((o) => ({
+          vendor: o.vendor,
+          script: o.scriptUrl,
+          pagesWithItsScriptOrWidget: o.pageCount,
+          pagesMeasuredWithItsWidgetRunning: o.widgetPageCount,
+        }))
+      : undefined,
     // WCAG 3.2.3 and 3.2.4: only a site audit can fail them, and they count
     // in conformance.failing.
     consistency: audit.consistency?.length

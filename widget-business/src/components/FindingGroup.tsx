@@ -24,6 +24,7 @@ import {
   aiHint,
   keyboardHint,
 } from "../lib/testMethod";
+import { Icon } from "./Icon";
 
 export const severityLabel: Record<AccessibilityFinding["severity"], string> = {
   critical: "Fix first",
@@ -320,8 +321,7 @@ function fieldLabel(purpose: string): string {
  */
 
 /** How wide a card of the expanded finding runs on the mosaic (user's
- *  reference, 18 Nov 2026: a type foundry's sheet of alternates, tiles of
- *  different widths on one grid). Measured on the words, so a one-line
+ *  reference, 18 Nov 2026: tiles of different widths on one grid). Measured on the words, so a one-line
  *  answer is a narrow tile set large and a paragraph takes the width it
  *  needs. s spans two of six columns, m three, l four. */
 export function tileSize(text: string | null | undefined): "s" | "m" | "l" {
@@ -766,7 +766,7 @@ export function FindingDetails({
       {rep.helpUrl && (
         <p className="a11y-fd-learn">
           <a className="a11y-learn-more" href={rep.helpUrl} target="_blank" rel="noopener noreferrer">
-            {t("Learn more about this issue")} <span aria-hidden="true">↗</span>
+            {t("Learn more about this issue")} <Icon name="launch" />
           </a>
         </p>
       )}
@@ -859,7 +859,7 @@ export function FindingDetails({
                 {rep.helpUrl && (
                   <p className="a11y-pro-line">
                     <a className="a11y-learn-more" href={rep.helpUrl} target="_blank" rel="noopener noreferrer">
-                      {t("Fix technique")} <span aria-hidden="true">↗</span>
+                      {t("Fix technique")} <Icon name="launch" />
                     </a>
                   </p>
                 )}
@@ -1270,11 +1270,15 @@ function Occurrence({
   const { professional } = useReportView();
   return (
     <li className="a11y-occurrence">
-      <div className="a11y-occurrence-head">
-        <span className="a11y-occurrence-label">{label}</span>
-        {repeatCount > 1 && <span className="a11y-occurrence-count">{repeatCount}×</span>}
-      </div>
-      <ElementShot finding={finding} showLocator={professional} />
+      {/* With a picture the name rides on it as a speech bubble (ElementShot);
+          without one it stays a plain label here. */}
+      {(!finding.elementScreenshot || repeatCount > 1) && (
+        <div className="a11y-occurrence-head">
+          {!finding.elementScreenshot && <span className="a11y-occurrence-label">{label}</span>}
+          {repeatCount > 1 && <span className="a11y-occurrence-count">{repeatCount}×</span>}
+        </div>
+      )}
+      <ElementShot finding={finding} showLocator={professional} bubble={finding.elementScreenshot ? label : undefined} />
       {hasAlt && <AltTextSuggestion value={finding.suggestedAltText!} />}
       {finding.suggestedColour && <ColourSuggestion suggestion={finding.suggestedColour} />}
       {finding.suggestedCode && <CodeFixSuggestion fix={finding.suggestedCode} />}

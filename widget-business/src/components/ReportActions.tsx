@@ -7,6 +7,7 @@ import { ensureHostPrintStyle } from "./PrintButton";
 import { emailReport, type EmailReportResult } from "../api/scanClient";
 import { t } from "../lib/strings";
 import type { AccessibilityReport } from "../api/scanClient";
+import { Icon } from "./Icon";
 
 /* Sending the report.
  *
@@ -66,7 +67,7 @@ export function ReportActions({
       {/* Each export carries its own note in its own column, so the sentence
           that explains a control sits under that control rather than in one
           run-on paragraph the reader has to split apart themselves. */}
-      {/* Set as the Displaay Info block and form (user's references,
+      {/* Set as a ruled block and a form (user's references,
           17 Nov 2026): two columns, each under an uppercase label (no rule
           under it since 18 Nov 2026). The address is a rounded field with its label inside it, the
           send is one wide rounded block in display type, and the PDF is an
@@ -117,11 +118,9 @@ export function ReportActions({
             }}
           >
             {t("Download in PDF")}
-            {/* The arrow is drawn, not a glyph: Jokker's ↓ sits too low on
-                the line, and the reference's arrow has a base bar. */}
-            <svg className="a11y-ra-pdf-icon" viewBox="0 0 20 20" aria-hidden="true" focusable="false">
-              <path d="M10 2v12M4.5 8.5 10 14l5.5-5.5M3 18h14" fill="none" stroke="currentColor" strokeWidth="1.5" />
-            </svg>
+            {/* The icon set's download, not a glyph: Jokker's ↓ sits too low on the
+                line, and the reference's arrow has a base bar. */}
+            <Icon name="download" className="a11y-ra-pdf-icon" />
           </button>
           <p className="a11y-ra-note">
             {t("Opens your browser’s print dialog. Choose “Save as PDF” as the destination.")}

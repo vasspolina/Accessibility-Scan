@@ -46,25 +46,25 @@ describe("renderReply", () => {
   it("draws a fenced code block whole, blank lines and all, escaped", () => {
     const out = html('Replace the div:\n\n```html\n<button type="button">\n\n  Menu\n</button>\n```\n\nThen test with Tab.');
     expect(out).toBe(
-      '<p>Replace the div:</p><pre class="a11y-chat-pre"><code>&lt;button type=&quot;button&quot;&gt;\n\n  Menu\n&lt;/button&gt;</code></pre><p>Then test with Tab.</p>'
+      '<p>Replace the div:</p><div class="a11y-chat-copy"><div class="a11y-chat-copy-bar"><button type="button" class="a11y-chat-copy-btn">Copy</button></div><pre class="a11y-chat-pre"><code>&lt;button type=&quot;button&quot;&gt;\n\n  Menu\n&lt;/button&gt;</code></pre><span class="a11y-sr-only" role="status"></span></div><p>Then test with Tab.</p>'
     );
   });
 
   it("draws a block still streaming in as code up to the end", () => {
     expect(html("Like this:\n```css\n:focus-visible {\n  outline: 2px solid")).toBe(
-      '<p>Like this:</p><pre class="a11y-chat-pre"><code>:focus-visible {\n  outline: 2px solid</code></pre>'
+      '<p>Like this:</p><div class="a11y-chat-copy"><div class="a11y-chat-copy-bar"><button type="button" class="a11y-chat-copy-btn">Copy</button></div><pre class="a11y-chat-pre"><code>:focus-visible {\n  outline: 2px solid</code></pre><span class="a11y-sr-only" role="status"></span></div>'
     );
   });
 
   it("does not take list-like lines inside code for a list", () => {
     expect(html("```js\n- not a bullet\n1. not a step\n```")).toBe(
-      '<pre class="a11y-chat-pre"><code>- not a bullet\n1. not a step</code></pre>'
+      '<div class="a11y-chat-copy"><div class="a11y-chat-copy-bar"><button type="button" class="a11y-chat-copy-btn">Copy</button></div><pre class="a11y-chat-pre"><code>- not a bullet\n1. not a step</code></pre><span class="a11y-sr-only" role="status"></span></div>'
     );
   });
 
   it("numbers steps, and keeps counting after a code block", () => {
     expect(html("1. Open the page\n2. Press Tab\n\n```html\n<a>\n```\n\n3. Check the outline")).toBe(
-      '<ol role="list"><li>Open the page</li><li>Press Tab</li></ol><pre class="a11y-chat-pre"><code>&lt;a&gt;</code></pre><ol role="list" start="3"><li>Check the outline</li></ol>'
+      '<ol role="list"><li>Open the page</li><li>Press Tab</li></ol><div class="a11y-chat-copy"><div class="a11y-chat-copy-bar"><button type="button" class="a11y-chat-copy-btn">Copy</button></div><pre class="a11y-chat-pre"><code>&lt;a&gt;</code></pre><span class="a11y-sr-only" role="status"></span></div><ol role="list" start="3"><li>Check the outline</li></ol>'
     );
   });
 
@@ -132,7 +132,7 @@ describe("renderReply while streaming", () => {
       '<p>One:</p><ul><li><span class="a11y-chat-new">two</span></li><li>th<span class="a11y-chat-new">ree</span></li></ul>'
     );
     expect(streamed("```\nlet a\n```", [0, 6])).toBe(
-      '<pre class="a11y-chat-pre"><code><span class="a11y-chat-new">le</span><span class="a11y-chat-new">t a</span></code></pre>'
+      '<div class="a11y-chat-copy"><div class="a11y-chat-copy-bar"><button type="button" class="a11y-chat-copy-btn">Copy</button></div><pre class="a11y-chat-pre"><code><span class="a11y-chat-new">le</span><span class="a11y-chat-new">t a</span></code></pre><span class="a11y-sr-only" role="status"></span></div>'
     );
   });
 

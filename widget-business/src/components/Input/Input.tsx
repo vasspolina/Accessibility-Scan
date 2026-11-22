@@ -4,7 +4,7 @@ import type { CSSProperties, ReactNode } from "react";
  * Input, ported from components/forms/Input.jsx.
  *
  * Two variants, both from the source:
- *   filled  a 56px pill on --surface-sunken — the Pangram contact-form shape
+ *   filled  a 56px pill on --surface-sunken — a contact-form shape
  *   line    a 44px field on a single rule, no box — what the Forms card and
  *           the Checker screen both use, and the default here for that reason
  *

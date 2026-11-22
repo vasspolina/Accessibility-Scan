@@ -148,8 +148,8 @@ export function UrlForm({
     onSubmit(withProtocol, includeAiReview, mode, maxPages, auth);
   }
 
-  /* The scan form after a type foundry's newsletter form (user's reference,
-     18 Nov 2026, "design this like this"): the name large; a serif heading
+  /* The scan form as filled rows (user's reference, 18 Nov 2026,
+     "design this like this"): the name large; a serif heading
      over each group; every field a filled box with its label inside at the
      top; each choice a filled row with its radio showing; the action one
      wide block with its words set large; the note under it. The address

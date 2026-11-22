@@ -1,8 +1,8 @@
-/* Carbon-derived neutral + status ramps, professional (desaturated) accent.
+/* Open-source-derived neutral + status ramps, professional (desaturated) accent.
    Light theme on :root, dark theme on [data-theme="dark"].
    All text/background pairs below meet WCAG 2.2 AA (4.5:1) or better. */
 :root {
-  /* Neutral ramp (Carbon Gray) */
+  /* Neutral ramp (Gray) */
   --gray-10: #f4f4f4;
   --gray-20: #e0e0e0;
   --gray-30: #c6c6c6;

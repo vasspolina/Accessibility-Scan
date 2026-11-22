@@ -3,6 +3,7 @@ import { undecidedExplanation } from "../lib/wcagPlain";
 import { t, tf } from "../lib/strings";
 import { fixKindForRule } from "../lib/testMethod";
 import { DataTable } from "./DataTable";
+import { Icon } from "./Icon";
 
 /* The design's "Export the list" made real. A CSV, because this section is
    the one the owner hands to someone else: it opens in whatever spreadsheet
@@ -136,7 +137,7 @@ export function UndecidedChecks({
                         rel="noopener noreferrer"
                       >
                         {learnMore}
-                        <span aria-hidden="true">↗</span>
+                        <Icon name="launch" />
                         <span className="a11y-sr-only">{learnMoreRest}</span>
                       </a>
                     )}

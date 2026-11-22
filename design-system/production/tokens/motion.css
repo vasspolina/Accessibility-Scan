@@ -1,5 +1,5 @@
 :root {
-  /* Carbon motion curves */
+  /* Productive motion curves */
   --ease-productive-standard: cubic-bezier(0.2, 0, 0.38, 0.9);
   --ease-productive-entrance: cubic-bezier(0, 0, 0.38, 0.9);
   --ease-productive-exit: cubic-bezier(0.2, 0, 1, 0.9);

@@ -20,6 +20,23 @@ export interface PilotReport {
   draft: PilotDraft | null;
   draftModel: string | null;
   confirmed: boolean;
+  /** The latest mark on whether the scanner caught this barrier, or null
+   *  while nobody has checked (pilot_checks). */
+  check: PilotCheck | null;
+}
+
+/** Whether the scanner caught a report's barrier. "caught": a scan of the
+ *  page has a finding for it; "missed": it has none; "unclear": the page
+ *  could not be scanned or the report says too little to tell. */
+export const CHECK_RESULTS = ["caught", "missed", "unclear"] as const;
+export type CheckResult = (typeof CHECK_RESULTS)[number];
+
+export interface PilotCheck {
+  id: string;
+  result: CheckResult;
+  note: string | null;
+  decidedBy: string;
+  decidedAt: string;
 }
 
 /** Returns the new id, or null when storage is not set up. */
@@ -72,6 +89,7 @@ export function listPilotReports(limit = 500): PilotReport[] {
   const rows = db
     .prepare("SELECT * FROM pilot_reports ORDER BY created_at DESC, rowid DESC LIMIT ?")
     .all(limit) as unknown as Row[];
+  const checks = latestChecks();
   return rows.map((r) => ({
     id: r.id,
     participant: r.participant,
@@ -84,7 +102,68 @@ export function listPilotReports(limit = 500): PilotReport[] {
     draft: r.draft_json ? (JSON.parse(r.draft_json) as PilotDraft) : null,
     draftModel: r.draft_model,
     confirmed: r.confirmed === 1,
+    check: checks.get(r.id) ?? null,
   }));
+}
+
+/**
+ * Marks whether the scanner caught a report's barrier. A new row every
+ * time, never an update: the latest is the mark, the rest its history.
+ */
+export function savePilotCheck(input: {
+  reportId: string;
+  result: CheckResult;
+  note?: string;
+  decidedBy: string;
+}): { check?: PilotCheck; error?: "not_configured" | "no_such_report" } {
+  const db = getDb();
+  if (!db) return { error: "not_configured" };
+  if (!db.prepare("SELECT 1 FROM pilot_reports WHERE id = ?").get(input.reportId)) return { error: "no_such_report" };
+  const check: PilotCheck = {
+    id: randomUUID(),
+    result: input.result,
+    note: input.note?.trim() || null,
+    decidedBy: input.decidedBy.trim(),
+    decidedAt: new Date().toISOString(),
+  };
+  db.prepare(
+    "INSERT INTO pilot_checks (id, report_id, result, note, decided_by, decided_at) VALUES (?, ?, ?, ?, ?, ?)"
+  ).run(check.id, input.reportId, check.result, check.note, check.decidedBy, check.decidedAt);
+  return { check };
+}
+
+/** Every mark on one report, newest first. */
+export function pilotCheckHistory(reportId: string): PilotCheck[] {
+  const db = getDb();
+  if (!db) return [];
+  const rows = db
+    .prepare(
+      `SELECT id, result, note, decided_by, decided_at FROM pilot_checks
+        WHERE report_id = ? ORDER BY decided_at DESC, rowid DESC`
+    )
+    .all(reportId) as unknown as CheckRow[];
+  return rows.map(toCheck);
+}
+
+interface CheckRow { id: string; report_id?: string; result: string; note: string | null; decided_by: string; decided_at: string }
+
+function toCheck(r: CheckRow): PilotCheck {
+  return { id: r.id, result: r.result as CheckResult, note: r.note, decidedBy: r.decided_by, decidedAt: r.decided_at };
+}
+
+/** The current mark per report: the newest row for each. */
+function latestChecks(): Map<string, PilotCheck> {
+  const out = new Map<string, PilotCheck>();
+  const db = getDb();
+  if (!db) return out;
+  const rows = db
+    .prepare(
+      `SELECT id, report_id, result, note, decided_by, decided_at FROM pilot_checks
+        ORDER BY decided_at DESC, rowid DESC`
+    )
+    .all() as unknown as CheckRow[];
+  for (const r of rows) if (r.report_id && !out.has(r.report_id)) out.set(r.report_id, toCheck(r));
+  return out;
 }
 
 /** The pilot's own numbers, counted from the table rather than kept as a tally. */

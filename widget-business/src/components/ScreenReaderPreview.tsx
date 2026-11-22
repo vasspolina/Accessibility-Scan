@@ -3,6 +3,7 @@ import { t, tf } from "../lib/strings";
 import { StatusChip } from "./SectionHeader";
 import { useReportView } from "./ReportViewContext";
 import type { ScreenReaderScript } from "../api/scanClient";
+import { Icon } from "./Icon";
 
 // Lets an owner hear their own page the way a screen-reader user does. Reading
 // a list of violations is abstract; hearing "button, unlabelled" where your
@@ -24,10 +25,9 @@ export function ScreenReaderPreview({ script }: { script: ScreenReaderScript }) 
   // Whether the accordion is open. Closed by default: this is the longest
   // section in the report and the one you consult rather than read.
   const [open, setOpen] = useState(false);
-  // In the conversation the block is already the fold: its summary line
-  // reads "Screen reader preview", and the accordion under it was a second
-  // toggle with the same name to press before the transcript showed. There
-  // the heading is kept for screen readers only and the panel is open.
+  // In the conversation the panel is open and the heading is a plain
+  // heading: a block there is the whole answer to "show me", so a toggle to
+  // press before the transcript shows would only ask again.
   const { inChat } = useReportView();
   const panelOpen = inChat || open;
   const [onlyIssues, setOnlyIssues] = useState(false);
@@ -99,7 +99,7 @@ export function ScreenReaderPreview({ script }: { script: ScreenReaderScript }) 
 
   return (
     <section className="a11y-section a11y-sr" aria-labelledby="a11y-sr-heading">
-      {/* Carbon accordion. This section is the longest thing in the report by
+      {/* An accordion. This section is the longest thing in the report by
           a wide margin — 120 rows on a normal page — and it is supplementary:
           you open it to hear a problem, not to read it end to end. Collapsed
           by default it costs one row instead of a screenful.
@@ -114,7 +114,7 @@ export function ScreenReaderPreview({ script }: { script: ScreenReaderScript }) 
       <div className="a11y-section-head">
       <div className="a11y-accordion-row">
         {inChat ? (
-          <h2 className="a11y-section-title a11y-sr-only" id="a11y-sr-heading">
+          <h2 className="a11y-section-title" id="a11y-sr-heading">
             {t("Screen reader preview")}{" "}
             {lines.length === 1
               ? t("(1 announcement)")
@@ -146,9 +146,7 @@ export function ScreenReaderPreview({ script }: { script: ScreenReaderScript }) 
                   : tf("{count} say nothing useful", { count: issueCount })}
               </StatusChip>
             )}
-            <svg className="a11y-accordion-chevron" viewBox="0 0 16 16" aria-hidden="true" focusable="false">
-              <path d="M8 11L3 6l.7-.7L8 9.6l4.3-4.3L13 6z" fill="currentColor" />
-            </svg>
+            <Icon name="chevron--down" className="a11y-accordion-chevron" />
           </button>
         </h2>
         )}
@@ -192,11 +190,11 @@ export function ScreenReaderPreview({ script }: { script: ScreenReaderScript }) 
         >
           {playing ? (
             <>
-              <span aria-hidden="true">■</span> {t("Stop")}
+              <Icon name="stop--filled--alt" /> {t("Stop")}
             </>
           ) : (
             <>
-              <span aria-hidden="true">▶</span> {t("Play the page aloud")}
+              <Icon name="play--filled--alt" /> {t("Play the page aloud")}
             </>
           )}
         </button>

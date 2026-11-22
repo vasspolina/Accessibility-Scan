@@ -1,5 +1,7 @@
 import { useId, useState } from "react";
 import type { CSSProperties } from "react";
+import { Icon } from "./Icon";
+import { tf } from "../lib/strings";
 
 /**
  * The readiness panel, brought across from the kit.
@@ -32,7 +34,7 @@ export function WhatsNextPanel({
   style,
 }: {
   eyebrow?: string;
-  standard: string;
+  standard?: string;
   expected: string;
   failCount?: number;
   description: string;
@@ -50,6 +52,17 @@ export function WhatsNextPanel({
       {/* No default label: inside "Ready for WCAG 2.2?" a "What's next"
           above the standard's name said the section title again. */}
       {eyebrow && <div className="a11y-next-eyebrow">{eyebrow}</div>}
+      {/* With no items there is nothing to open, so the line is not a
+          button: a toggle that reveals nothing is a dead control. */}
+      {items.length === 0 ? (
+        <p className="a11y-next-toggle">
+          <span className="a11y-next-standard">
+            {standard && <strong>{standard} </strong>}
+            <span>{expected}</span>
+          </span>
+          {failCount > 0 && <span className="a11y-next-count">{tf("{count} would fail today", { count: failCount })}</span>}
+        </p>
+      ) : (
       <button
         type="button"
         className="a11y-next-toggle"
@@ -58,21 +71,23 @@ export function WhatsNextPanel({
         aria-controls={listId}
       >
         <span className="a11y-next-standard">
-          <strong>{standard} </strong>
+          {standard && <strong>{standard} </strong>}
           <span>{expected}</span>
         </span>
         {failCount > 0 && (
-          <span className="a11y-next-count">{failCount} would fail today</span>
+          <span className="a11y-next-count">{tf("{count} would fail today", { count: failCount })}</span>
         )}
         <span className="a11y-next-chevron" aria-hidden="true" data-open={open}>
-          ⌄
+          <Icon name="chevron--down" />
         </span>
       </button>
+      )}
       <p className="a11y-next-desc">{description}</p>
       {/* Always in the DOM so aria-controls always points at something real;
           hidden rather than unmounted, which is also what lets the print
           stylesheet reveal it. */}
-      <ul className="a11y-next-list" id={listId} hidden={!open || items.length === 0}>
+      {items.length > 0 && (
+      <ul className="a11y-next-list" id={listId} hidden={!open}>
         {items.map((it) => (
           <li key={it.criterion}>
             <span className="a11y-next-crit">{it.criterion}</span>
@@ -81,6 +96,7 @@ export function WhatsNextPanel({
           </li>
         ))}
       </ul>
+      )}
     </section>
   );
 }

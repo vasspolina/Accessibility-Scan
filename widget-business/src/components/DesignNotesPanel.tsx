@@ -45,7 +45,7 @@ function noteTitle(group: AccessibilityFinding[]): string {
 }
 
 export function DesignNotesPanel({ findings }: { findings: AccessibilityFinding[] }) {
-  const { professional, inChat } = useReportView();
+  const { professional } = useReportView();
   const groups = groupFindings(findings);
   // Keyed by the note's own id, not its position. A filter changes what is
   // at index 0, so an index would have quietly re-pointed at a different
@@ -72,12 +72,8 @@ export function DesignNotesPanel({ findings }: { findings: AccessibilityFinding[
           The kit's yellow band with its decorative repeat of the heading
           came along in the port and outlived the direction that once
           justified it — one heading, said once, on the report's own paper. */}
-      {/* In the conversation the block's summary line already reads "Notes
-          on the design", straight above this; the heading stays for screen
-          readers, whose heading list the summary is not in. The count is
-          said again by the status line under the kinds. */}
       <h2
-        className={inChat ? "a11y-section-title a11y-sr-only" : "a11y-section-title"}
+        className="a11y-section-title"
         id="a11y-notes-heading"
         data-nav-label={t("Notes on the design")}
       >

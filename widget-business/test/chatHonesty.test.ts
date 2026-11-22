@@ -161,6 +161,27 @@ describe("what the assistant is given", () => {
     expect(d.aiReview).toMatch(/never includes the AI review/);
     expect(d.checksThatDidNotFinish).toEqual(["text resizing"]);
   });
+
+  it("says an overlay's widget was running only when the scan saw it on the page", () => {
+    // UserWay's loader does not start for the scanner's user agent, so its
+    // script tag is there and its widget is not. The assistant must not be
+    // handed "measured with it running" for that page.
+    const d = digestReport(
+      report([], {
+        overlays: [
+          { vendor: "accessiBe", scriptUrl: "https://acsbapp.com/apps/app/dist/js/app.js", widgetOnPage: true },
+          { vendor: "UserWay", scriptUrl: "https://cdn.userway.org/widget.js", widgetOnPage: false },
+        ],
+      })
+    );
+    expect(d.accessibilityOverlays?.map((o) => o.vendor)).toEqual(["accessiBe", "UserWay"]);
+    expect(d.accessibilityOverlays?.[0].widget).toMatch(/^on the page during the scan/);
+    expect(d.accessibilityOverlays?.[0].widget).toMatch(/measured with the overlay running/);
+    expect(d.accessibilityOverlays?.[1].widget).toMatch(/^not on the page during the scan/);
+    expect(d.accessibilityOverlays?.[1].widget).not.toMatch(/measured with/);
+    // No overlay, no key: the assistant is not told to look for one.
+    expect(digestReport(report([])).accessibilityOverlays).toBeUndefined();
+  });
 });
 
 describe("what the assistant is given, in the reader's language", () => {

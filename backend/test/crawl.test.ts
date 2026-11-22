@@ -166,6 +166,27 @@ describe("aggregateAudit", () => {
     expect(audit.conformance.failedByLevel).toEqual({ A: 1, AA: 1 });
   });
 
+  it("rolls each page's overlay note up, and counts where the widget was running apart", () => {
+    const withOverlay = (url: string, widgetOnPage: boolean): PageOutcome => {
+      const p = page(url, 80, ["color-contrast"]);
+      p.report!.meta.overlays = [
+        { vendor: "UserWay", scriptUrl: "https://cdn.userway.org/widget.js", widgetOnPage },
+      ];
+      return p;
+    };
+    const plain = [page("/a", 80, ["color-contrast"]), page("/b", 80, ["color-contrast"]), page("/c", 80, ["color-contrast"])];
+    const noted = [withOverlay("/a", true), withOverlay("/b", false), page("/c", 80, ["color-contrast"])];
+    const audit = aggregateAudit(ENTRY, noted);
+    expect(audit.overlays).toEqual([
+      { vendor: "UserWay", scriptUrl: "https://cdn.userway.org/widget.js", pageCount: 2, widgetPageCount: 1 },
+    ]);
+    // The same pages without the note: nothing else in the audit moves.
+    const { overlays: _seen, scannedAt: _t1, ...rest } = audit;
+    const { overlays: none, scannedAt: _t2, ...bare } = aggregateAudit(ENTRY, plain);
+    expect(none).toBeUndefined();
+    expect(rest).toEqual(bare);
+  });
+
   it("handles an audit where every page failed", () => {
     const audit = aggregateAudit(ENTRY, [{ url: "/a", label: "a", error: "nope" }]);
     expect(audit.averageScore).toBe(0);

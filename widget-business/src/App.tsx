@@ -6,6 +6,7 @@ import { UrlForm, type ScanMode } from "./components/UrlForm";
 import { BarrierReport } from "./components/BarrierReport";
 import { ScoreGauge } from "./components/ScoreGauge";
 import { ReportActions } from "./components/ReportActions";
+import { FindingsCsvButton } from "./components/FindingsCsvButton";
 import { ScanSettings } from "./components/ScanSettings";
 import { AppShell } from "./components/AppShell";
 import type { NavSection } from "./components/SideNav";
@@ -21,6 +22,7 @@ import { ProfessionalTable } from "./components/ProfessionalTable";
 import { ProSummary, type ProView } from "./components/ProSummary";
 import { Tabs } from "./components/Tabs";
 import { Notification, ProgressBar } from "./components/Feedback";
+import { OverlayNotes } from "./components/OverlayNotes";
 import { groupFindings } from "./components/FindingsList";
 import { SCAN_DURATION } from "./lib/scanDuration";
 import { ScanChat, type ChatApi, type ScanOutcome } from "./components/ScanChat";
@@ -633,6 +635,10 @@ export function App({
                 subtitle={t("The score above only counts what ran, so it may look better than it should. A second run usually completes them.")}
               />
             )}
+            {/* An accessibility overlay on the page: what was seen, beside
+                the other notices that qualify the reading. ProSummary prints
+                it for the professional reading, as with the notice above. */}
+            {!(professional && !isDocument) && <OverlayNotes overlays={report.meta.overlays} />}
           </>
         );
 
@@ -699,6 +705,7 @@ export function App({
               ]}
               conformance={report.conformance}
               view={proView}
+              action={<FindingsCsvButton report={report} describedBy="a11y-pro-findings-heading" />}
             />
           </>
         ) : null;
@@ -740,15 +747,24 @@ export function App({
                 assistant would do"). */}
             {!inChat && trust}
             <section className="a11y-section" aria-labelledby="a11y-accessibility-heading">
-              <h2
-                className="a11y-section-title"
-                id="a11y-accessibility-heading"
-                tabIndex={-1}
-                data-nav-label={t("What people can't use")}
-              >
-                {t("What people can't use")}{" "}
-                <span className="a11y-section-count">({findingsByCategory.accessibility.length})</span>
-              </h2>
+              {/* The title, and beside it the one way to take these rows away
+                  as a file (user's choice, 22 Nov 2026). In the professional
+                  reading this section is the printed copy and the button
+                  stands at the table's head instead. */}
+              <div className="a11y-findings-head">
+                <h2
+                  className="a11y-section-title"
+                  id="a11y-accessibility-heading"
+                  tabIndex={-1}
+                  data-nav-label={t("What people can't use")}
+                >
+                  {t("What people can't use")}{" "}
+                  <span className="a11y-section-count">({findingsByCategory.accessibility.length})</span>
+                </h2>
+                {!(professional && !isDocument) && (
+                  <FindingsCsvButton report={report} describedBy="a11y-accessibility-heading" />
+                )}
+              </div>
               {isDocument && (
                 <p className="a11y-section-desc">
                   {sectionDescBefore}

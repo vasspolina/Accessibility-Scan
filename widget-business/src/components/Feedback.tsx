@@ -1,4 +1,5 @@
 import type { ReactNode } from "react";
+import { Icon, type IconName } from "./Icon";
 
 /**
  * The progress bar and the notification, brought across from the kit.
@@ -62,11 +63,11 @@ export function ProgressBar({
 
 export type NotificationKind = "error" | "success" | "warning" | "info";
 
-const GLYPH: Record<NotificationKind, string> = {
-  error: "!",
-  success: "✓",
-  warning: "!",
-  info: "i",
+const GLYPH: Record<NotificationKind, IconName> = {
+  error: "warning",
+  success: "checkmark",
+  warning: "warning--alt",
+  info: "information",
 };
 
 export function Notification({
@@ -84,7 +85,7 @@ export function Notification({
           title states. Hidden, so it is the sighted reader's second channel
           rather than a third thing announced. */}
       <span className="a11y-note-glyph" aria-hidden="true">
-        {GLYPH[kind] ?? GLYPH.info}
+        <Icon name={GLYPH[kind] ?? GLYPH.info} />
       </span>
       <div className="a11y-note-body">
         <div className="a11y-note-title">{title}</div>
