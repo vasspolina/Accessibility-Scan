@@ -25,10 +25,9 @@ export function ScreenReaderPreview({ script }: { script: ScreenReaderScript }) 
   // Whether the accordion is open. Closed by default: this is the longest
   // section in the report and the one you consult rather than read.
   const [open, setOpen] = useState(false);
-  // In the conversation the block is already the fold: its summary line
-  // reads "Screen reader preview", and the accordion under it was a second
-  // toggle with the same name to press before the transcript showed. There
-  // the heading is kept for screen readers only and the panel is open.
+  // In the conversation the panel is open and the heading is a plain
+  // heading: a block there is the whole answer to "show me", so a toggle to
+  // press before the transcript shows would only ask again.
   const { inChat } = useReportView();
   const panelOpen = inChat || open;
   const [onlyIssues, setOnlyIssues] = useState(false);
@@ -115,7 +114,7 @@ export function ScreenReaderPreview({ script }: { script: ScreenReaderScript }) 
       <div className="a11y-section-head">
       <div className="a11y-accordion-row">
         {inChat ? (
-          <h2 className="a11y-section-title a11y-sr-only" id="a11y-sr-heading">
+          <h2 className="a11y-section-title" id="a11y-sr-heading">
             {t("Screen reader preview")}{" "}
             {lines.length === 1
               ? t("(1 announcement)")
