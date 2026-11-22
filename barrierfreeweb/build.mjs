@@ -84,7 +84,7 @@ function page({ file, title, description, section, body }) {
 <meta name="description" content="${description}">
 <meta property="og:title" content="${title}">
 <meta property="og:description" content="${description}">
-<link rel="preload" href="fonts/JokkerVF-TRIAL.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="fonts/PPTelegraf-Regular.otf" as="font" type="font/otf" crossorigin>
 <link rel="stylesheet" href="styles.css">
 </head>
 <body>

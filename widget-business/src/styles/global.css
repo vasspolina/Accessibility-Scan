@@ -79,13 +79,13 @@
 .a11y-widget-biz[data-theme="dark"] { --ink: #fff; --paper: #000; color-scheme: dark; --tile: #1c1c1e; --tile-ink: #fff; --tile-fill: #2c2c2e; --strong: #636366; --strong-ink: #fff; --hover: #3a3a3c; --hover-ink: #fff; --solid: #636366; --solid-ink: #fff; --btn-fill: #2c2c2e; --field-edge: 1px solid #8e8e93; --field-bg: #1c1c1e; --hl-orange: #ff9f0a; --hl-blue: #409cff; --hl-green: #30d158; --hl-cap-a: #ffd60a; --hl-cap-b: #ff375f; --focus: #6fdc8c; --chats-current: #30d158; --barrier: #30d158; }
 
 .a11y-widget-biz {
-  font-family: "Jokker", "DejaVu Sans", sans-serif;
+  font-family: "PP Telegraf", "DejaVu Sans", sans-serif;
   /* Back to 32px Regular at line-height 1.2 (user's instruction, 18 Nov
      2026, "lets go back to this font sizing", after Jokker Medium 49px
      was tried the same morning). Width and gutter are
      40em and 1em of the 32px again. */
   font-size: 32px; font-weight: 400; line-height: 1.2; letter-spacing: 0;
-  font-kerning: normal; font-feature-settings: "ss04", "ss05"; font-variant-ligatures: common-ligatures; text-rendering: optimizeLegibility; font-synthesis: none;
+  font-kerning: normal; font-variant-ligatures: common-ligatures; text-rendering: optimizeLegibility; font-synthesis: none;
   background: var(--paper); color: var(--ink);
   /* No rag (user's instruction, 18 Nov 2026, "do not rag the text"): no
      hyphenation anywhere and no text-wrap pretty or balance, so every line
@@ -462,7 +462,7 @@
    emphasis is the Medium cut or nothing. Hyphenation keeps at least
    three letters either side and no more than three lines in a row end in
    a hyphen (p.47). */
-.a11y-widget-biz .a11y-caps { font-size: 30px; letter-spacing: 0.06em; font-feature-settings: "ss04", "ss05", "case"; }
+.a11y-widget-biz .a11y-caps { font-size: 30px; letter-spacing: 0.06em; font-feature-settings: "case"; }
 /* case (above): Jokker raises hyphens, brackets and dashes to capital
    height, so the punctuation in (WCAG-AA) sits with the capitals around it
    rather than at lowercase height (p.39–40). */
@@ -1340,7 +1340,7 @@
 .a11y-widget-biz .a11y-fd .a11y-finding-steps > p > strong,
 .a11y-widget-biz .a11y-fd .a11y-affected-label > strong {
   display: block; margin: 0 0 0.5em; padding-bottom: 0.6em; border-bottom: 1px solid var(--ink);
-  font-family: "Saans", "Jokker", sans-serif; font-weight: 300; font-size: 18px; line-height: 1.2;
+  font-family: "Saans", "PP Telegraf", sans-serif; font-weight: 300; font-size: 18px; line-height: 1.2;
   letter-spacing: 0.04em; text-transform: uppercase;
 }
 .a11y-widget-biz .a11y-fd .a11y-fix-once > strong { font-weight: 300; }
@@ -1382,7 +1382,7 @@
   display: flex; flex-direction: column; align-items: stretch; gap: 10px;
   box-sizing: border-box; min-width: 0; max-width: none; margin: 0; padding: 22px 24px 30px;
   border-radius: 20px; background: var(--tile); color: var(--tile-ink); text-align: start;
-  font-family: "Jokker", sans-serif; font-weight: 400; font-size: 22px; line-height: 1.25; letter-spacing: 0.005em;
+  font-family: "PP Telegraf", sans-serif; font-weight: 400; font-size: 22px; line-height: 1.25; letter-spacing: 0.005em;
 }
 /* Smaller and Regular (user's instruction, 20 Nov 2026: "make large font
    smaller and regular"): every card's words at 22px Regular, whatever their
@@ -1394,7 +1394,7 @@
 .a11y-widget-biz .a11y-fd > .a11y-fd-col:first-child .a11y-fd-points > li:last-child { margin-bottom: 0; }
 .a11y-widget-biz .a11y-fd > .a11y-fd-col:first-child > * > strong:first-child {
   flex: none; margin: 0; padding: 0 0 6px; border: 0; border-bottom: 1px solid var(--ink); border-radius: 0; background: none; color: inherit;
-  font-family: "Jokker", sans-serif; font-weight: 500; font-size: 15px; line-height: 1.2; letter-spacing: 0.01em; text-transform: none;
+  font-family: "PP Telegraf", sans-serif; font-weight: 500; font-size: 15px; line-height: 1.2; letter-spacing: 0.01em; text-transform: none;
 }
 .a11y-widget-biz .a11y-fd > .a11y-fd-col:first-child .a11y-fd-body {
   display: block; margin-block: 0; max-width: 100%;}
@@ -1413,7 +1413,7 @@
 }
 .a11y-widget-biz .a11y-fd .a11y-pro-block,
 .a11y-widget-biz .a11y-fd .a11y-tech-details {
-  font-family: "Saans", "Jokker", sans-serif; font-weight: 300; font-size: 22px; line-height: 1.3; letter-spacing: 0.01em;
+  font-family: "Saans", "PP Telegraf", sans-serif; font-weight: 300; font-size: 22px; line-height: 1.3; letter-spacing: 0.01em;
 }
 /* The technical version (user's instructions, 18 Nov 2026: "design this",
    then "needs a carret and make lines brown"). It keeps its two rules, one
@@ -1467,9 +1467,9 @@
 }
 .a11y-widget-biz .a11y-fd .a11y-pro-line:not(:has(> strong:first-child)) { text-indent: 0; }
 .a11y-widget-biz .a11y-fd .a11y-pro-block > .a11y-pro-snippet { margin: 0.3em 0 0.3em 9em; }
-.a11y-widget-biz .a11y-fd .a11y-finding-level-fold { font-family: "Saans", "Jokker", sans-serif; font-weight: 300; font-size: 22px; line-height: 1.3; margin-bottom: 1.2em; }
+.a11y-widget-biz .a11y-fd .a11y-finding-level-fold { font-family: "Saans", "PP Telegraf", sans-serif; font-weight: 300; font-size: 22px; line-height: 1.3; margin-bottom: 1.2em; }
 .a11y-widget-biz .a11y-fd .a11y-fd-learn,
-.a11y-widget-biz .a11y-fd .a11y-occurrence-list { font-family: "Saans", "Jokker", sans-serif; font-weight: 300; font-size: 22px; letter-spacing: 0.01em; }
+.a11y-widget-biz .a11y-fd .a11y-occurrence-list { font-family: "Saans", "PP Telegraf", sans-serif; font-weight: 300; font-size: 22px; letter-spacing: 0.01em; }
 .a11y-widget-biz .a11y-fd .a11y-tech-details > summary { font-size: 18px; text-transform: uppercase; letter-spacing: 0.04em; cursor: pointer; }
 /* The affected elements, two to a row (user's instruction, 18 Nov 2026,
    "put into cards so its two per row"). The cards' #f0efe8 ground and 20px
@@ -1595,7 +1595,7 @@
 .a11y-widget-biz .a11y-pro-row > span:first-child,
 .a11y-widget-biz .a11y-manual-row > .a11y-conf-id {
   display: block; margin: 0 0 10px; padding: 0 0 6px; border-bottom: 1px solid var(--ink); text-align: start;
-  font-family: "Jokker", sans-serif; font-size: 18px; font-weight: 400; line-height: 1.2; letter-spacing: 0.01em;
+  font-family: "PP Telegraf", sans-serif; font-size: 18px; font-weight: 400; line-height: 1.2; letter-spacing: 0.01em;
   text-transform: none;
 }
 /* The lines: Jokker 18px, the rows of a ruled column. */
@@ -1605,16 +1605,16 @@
 .a11y-widget-biz .a11y-pro-row > .a11y-pro-row-pass,
 .a11y-widget-biz .a11y-manual-row > .a11y-conf-body > strong {
   display: block; margin: 0;
-  font-family: "Jokker", sans-serif; font-weight: 400; font-size: 22px; line-height: 1.3; letter-spacing: 0.01em;
+  font-family: "PP Telegraf", sans-serif; font-weight: 400; font-size: 22px; line-height: 1.3; letter-spacing: 0.01em;
 }
 /* A design note's title at button size (user's instruction, 18 Nov 2026,
    "make this text size like this"): 0.6 of the 32px it was, so 22px (the larger of the two label sizes) set solid at
    line-height 1.0, +0.01em as 22px takes. */
 .a11y-widget-biz .a11y-dn-link > .a11y-dn-link-text {
-  display: block; margin: 0; font-family: "Jokker", sans-serif; font-weight: 400; font-size: 22px; line-height: 1.2; letter-spacing: 0.01em;
+  display: block; margin: 0; font-family: "PP Telegraf", sans-serif; font-weight: 400; font-size: 22px; line-height: 1.2; letter-spacing: 0.01em;
 }
 /* Small print under the words stays Jokker at 15px or 18px. */
-.a11y-widget-biz .a11y-spec-card > .a11y-spec-value > .a11y-spec-gloss { margin-top: 0.6em; font-family: "Jokker", sans-serif; }
+.a11y-widget-biz .a11y-spec-card > .a11y-spec-value > .a11y-spec-gloss { margin-top: 0.6em; font-family: "PP Telegraf", sans-serif; }
 .a11y-widget-biz .a11y-next-list .a11y-next-main { display: flex; flex-direction: column; }
 .a11y-widget-biz .a11y-next-main > .a11y-next-title + .a11y-next-meta { order: -1; }
 .a11y-widget-biz .a11y-next-main > :is(.a11y-next-meta, .a11y-next-status):not(.a11y-next-title + .a11y-next-meta) { margin-top: 0.5em; font-size: 18px; letter-spacing: 0.01em; }
@@ -1660,7 +1660,7 @@
 .a11y-widget-biz .a11y-ra-row > .a11y-ra-cell { display: flex; flex-direction: column; align-items: stretch; gap: 20px; }
 .a11y-widget-biz .a11y-ra-row > .a11y-ra-cell > .a11y-ra-head {
   margin: 0 0 14px; padding: 0; border: 0;
-  font-family: "Jokker", sans-serif; font-size: 18px; font-weight: 400; line-height: 1.2; letter-spacing: 0.04em;
+  font-family: "PP Telegraf", sans-serif; font-size: 18px; font-weight: 400; line-height: 1.2; letter-spacing: 0.04em;
   text-transform: uppercase;
 }
 .a11y-widget-biz .a11y-ra-row > .a11y-ra-cell > .a11y-ra-field {
@@ -1689,7 +1689,7 @@
 .a11y-widget-biz .a11y-ra-row > .a11y-ra-cell > .a11y-ra-send {
   display: block; width: 100%; min-height: 128px; margin: 0; padding: 20px 24px;
   border: 1px solid var(--barrier); border-radius: 14px; background: var(--barrier); color: #000;
-  font-family: "Jokker", sans-serif; font-size: 41px; font-weight: 300; line-height: 1.05; letter-spacing: -0.01em;
+  font-family: "PP Telegraf", sans-serif; font-size: 41px; font-weight: 300; line-height: 1.05; letter-spacing: -0.01em;
   text-align: start;
 }
 .a11y-widget-biz .a11y-ra-row > .a11y-ra-cell > .a11y-ra-send:disabled { background: var(--paper); color: var(--ink); border-style: dashed; }
@@ -2335,11 +2335,11 @@
 .a11y-widget-biz .a11y-sum-key > .a11y-sum-counts { grid-column: -3 / -1; }
 .a11y-widget-biz .a11y-sum-key .a11y-sum-eyebrow {
   margin: 0 0 20px; padding: 0; border: 0; background: none; color: var(--ink); text-align: start; text-transform: none;
-  font-family: "Jokker", sans-serif; font-size: 15px; font-weight: 400; line-height: 1.2; letter-spacing: 0.01em;
+  font-family: "PP Telegraf", sans-serif; font-size: 15px; font-weight: 400; line-height: 1.2; letter-spacing: 0.01em;
 }
 .a11y-widget-biz .a11y-sum-key :is(.a11y-sum-lead, .a11y-sum-counts-list) {
   display: block; margin: 0;
-  font-family: "Jokker", sans-serif; font-size: 18px; font-weight: 400; line-height: 1.3; letter-spacing: 0.01em;
+  font-family: "PP Telegraf", sans-serif; font-size: 18px; font-weight: 400; line-height: 1.3; letter-spacing: 0.01em;
 }
 .a11y-widget-biz .a11y-sum-key .a11y-sum-counts-list { padding: 0; list-style: none; columns: 2; column-gap: 15px; }
 .a11y-widget-biz .a11y-sum-key .a11y-sum-counts-list > li { margin: 0; padding: 0 0 0.6em; break-inside: avoid; }
@@ -2715,7 +2715,7 @@
 }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-hist-card > .a11y-hist-head {
   align-self: stretch; margin: 0; padding: 0 0 6px; border-bottom: 1px solid var(--ink); border-radius: 0; background: none; color: var(--ink);
-  font-family: "Jokker", sans-serif; font-size: 18px; font-weight: 400; line-height: 1.2; letter-spacing: 0.01em;
+  font-family: "PP Telegraf", sans-serif; font-size: 18px; font-weight: 400; line-height: 1.2; letter-spacing: 0.01em;
 }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-hist-card > .a11y-hist-facts {
   align-self: stretch; margin: 0; padding: 0; list-style: none;
