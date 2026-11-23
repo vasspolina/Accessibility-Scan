@@ -1352,7 +1352,7 @@
 .a11y-widget-biz .a11y-fd .a11y-finding-steps,
 .a11y-widget-biz .a11y-fd .a11y-fix-once,
 .a11y-widget-biz .a11y-fd .a11y-picture-note {
-  font-family: "Serrif", Georgia, serif; font-weight: 300; font-size: 32px; line-height: 1.2; letter-spacing: 0;
+  font-family: "PP Telegraf", sans-serif; font-weight: 400; font-size: 32px; line-height: 1.2; letter-spacing: 0;
   overflow-wrap: break-word; hyphens: manual;
 }
 .a11y-widget-biz .a11y-fd .a11y-method-hint > strong:first-child,
@@ -1363,7 +1363,7 @@
 .a11y-widget-biz .a11y-fd .a11y-finding-steps > p > strong,
 .a11y-widget-biz .a11y-fd .a11y-affected-label > strong {
   display: block; margin: 0 0 0.5em; padding-bottom: 0.6em; border-bottom: 1px solid var(--ink);
-  font-family: "Saans", "PP Telegraf", sans-serif; font-weight: 300; font-size: 18px; line-height: 1.2;
+  font-family: "PP Telegraf", sans-serif; font-weight: 400; font-size: 18px; line-height: 1.2;
   letter-spacing: 0.04em; text-transform: uppercase;
 }
 .a11y-widget-biz .a11y-fd .a11y-fix-once > strong { font-weight: 300; }
@@ -1436,7 +1436,7 @@
 }
 .a11y-widget-biz .a11y-fd .a11y-pro-block,
 .a11y-widget-biz .a11y-fd .a11y-tech-details {
-  font-family: "Saans", "PP Telegraf", sans-serif; font-weight: 300; font-size: 22px; line-height: 1.3; letter-spacing: 0.01em;
+  font-family: "PP Telegraf", sans-serif; font-weight: 400; font-size: 22px; line-height: 1.3; letter-spacing: 0.01em;
 }
 /* The technical version (user's instructions, 18 Nov 2026: "design this",
    then "needs a carret and make lines brown"). It keeps its two rules, one
@@ -1490,9 +1490,9 @@
 }
 .a11y-widget-biz .a11y-fd .a11y-pro-line:not(:has(> strong:first-child)) { text-indent: 0; }
 .a11y-widget-biz .a11y-fd .a11y-pro-block > .a11y-pro-snippet { margin: 0.3em 0 0.3em 9em; }
-.a11y-widget-biz .a11y-fd .a11y-finding-level-fold { font-family: "Saans", "PP Telegraf", sans-serif; font-weight: 300; font-size: 22px; line-height: 1.3; margin-bottom: 1.2em; }
+.a11y-widget-biz .a11y-fd .a11y-finding-level-fold { font-family: "PP Telegraf", sans-serif; font-weight: 400; font-size: 22px; line-height: 1.3; margin-bottom: 1.2em; }
 .a11y-widget-biz .a11y-fd .a11y-fd-learn,
-.a11y-widget-biz .a11y-fd .a11y-occurrence-list { font-family: "Saans", "PP Telegraf", sans-serif; font-weight: 300; font-size: 22px; letter-spacing: 0.01em; }
+.a11y-widget-biz .a11y-fd .a11y-occurrence-list { font-family: "PP Telegraf", sans-serif; font-weight: 400; font-size: 22px; letter-spacing: 0.01em; }
 .a11y-widget-biz .a11y-fd .a11y-tech-details > summary { font-size: 18px; text-transform: uppercase; letter-spacing: 0.04em; cursor: pointer; }
 /* The affected elements, two to a row (user's instruction, 18 Nov 2026,
    "put into cards so its two per row"). The cards' #f0efe8 ground and 20px
@@ -1762,7 +1762,7 @@
    controls above it as controls. Light is the only cut, and its x-height
    is smaller than Jokker's, so 22px matches the 18px Jokker it replaced. */
 .a11y-widget-biz .a11y-ra-row > .a11y-ra-cell > .a11y-ra-note {
-  margin: 0; font-family: "Serrif", Georgia, serif; font-weight: 300;
+  margin: 0; font-family: "PP Telegraf", sans-serif; font-weight: 400;
   font-size: 22px; letter-spacing: 0; line-height: 1.3;
 }
 /* A 50px break between the score block and the report actions (user's
@@ -2001,27 +2001,30 @@
 /* Pink since 23 Nov 2026 (user's instruction, "make this note buble pink or
    green"): the light pink plate, #ffa0ff, pinned in both themes as the
    opening questions' badge is, black words on it (11:1). It was the tile
-   ground, beige in light, which sat too close to the picture's own greys. */
-.a11y-widget-biz .a11y-shot.a11y-shot-has-bubble { padding-top: 6px; }
+   ground, beige in light, which sat too close to the picture's own greys.
+   At the picture's top-right corner since the same day (user's instruction,
+   "move buble to the right"), its tail and its lean mirrored: it covered
+   the left of the picture, where the faulty element usually begins. */
+.a11y-widget-biz .a11y-shot.a11y-shot-has-bubble { width: fit-content; padding-top: 6px; }
 .a11y-widget-biz .a11y-shot-bubble { --tile: #ffa0ff; --tile-ink: #000; }
 .a11y-widget-biz .a11y-shot-bubble {
   --ink: var(--tile-ink); --paper: var(--tile);
   position: relative; z-index: 1; display: block; width: fit-content; max-width: 85%;
-  box-sizing: border-box; margin: 0 0 -16px 14px; padding: 10px 20px 12px;
+  box-sizing: border-box; margin: 0 14px -16px auto; padding: 10px 20px 12px;
   border: 1px solid transparent; border-radius: 22px; background: var(--tile); color: var(--tile-ink);
   font-size: 22px; font-weight: 400; line-height: 1.25; letter-spacing: 0.01em; overflow-wrap: anywhere;
-  transform: rotate(-2deg); transform-origin: 0 100%;
+  transform: rotate(2deg); transform-origin: 100% 100%;
 }
 .a11y-widget-biz .a11y-shot-bubble::after {
-  content: ""; position: absolute; left: 26px; bottom: -12px; width: 20px; height: 14px;
-  background: var(--tile); clip-path: polygon(0 0, 100% 0, 15% 100%);
+  content: ""; position: absolute; right: 26px; bottom: -12px; width: 20px; height: 14px;
+  background: var(--tile); clip-path: polygon(0 0, 100% 0, 85% 100%);
 }
 @media (forced-colors: active) {
   .a11y-widget-biz .a11y-shot-bubble { border-color: CanvasText; }
   .a11y-widget-biz .a11y-shot-bubble::after { display: none; }
 }
 @media (max-width: 640px) {
-  .a11y-widget-biz .a11y-shot-bubble { margin-left: 8px; padding: 8px 16px 10px; font-size: 18px; }
+  .a11y-widget-biz .a11y-shot-bubble { margin-right: 8px; padding: 8px 16px 10px; font-size: 18px; }
 }
 /* The AI fix (CodeFixSuggestion): the expanded finding's own parts at small
    size. A 15px uppercase label over a 1px ink rule, the note at 18px, then the
@@ -2539,7 +2542,7 @@
   margin: 0 0 8px; font-size: 67px; font-weight: 400; line-height: 1.05; letter-spacing: -0.01em;
 }
 .a11y-widget-biz .a11y-tester > .a11y-tester-sub {
-  margin: 40px 0 12px; font-family: "Serrif", Georgia, serif; font-size: 32px; font-weight: 300; line-height: 1.1; letter-spacing: 0;
+  margin: 40px 0 12px; font-family: "PP Telegraf", sans-serif; font-size: 32px; font-weight: 400; line-height: 1.1; letter-spacing: 0;
 }
 /* A field: the filled box holds its label and its control. */
 .a11y-widget-biz .a11y-tester .a11y-input,
@@ -3023,7 +3026,7 @@
   transition: box-shadow 0.15s;
 }
 .a11y-widget-biz .a11y-legal-tiles > button.a11y-legal-row:enabled:hover { background: var(--paper); color: #000; box-shadow: inset 0 0 0 2px #000; }
-.a11y-widget-biz .a11y-legal-tiles > button.a11y-legal-row[aria-pressed="true"] { box-shadow: inset 0 0 0 4px #000; }
+.a11y-widget-biz .a11y-legal-tiles > button.a11y-legal-row[aria-pressed="true"]:not(:focus-visible) { outline: 2px dotted #000; outline-offset: -2px; }
 .a11y-widget-biz .a11y-legal-tiles > button.a11y-legal-row:focus-visible { outline: 3px solid var(--focus); outline-offset: 3px; }
 @media (max-width: 640px) {
   .a11y-widget-biz .a11y-legal-tiles > button.a11y-legal-row { min-height: 0; }
@@ -3504,7 +3507,7 @@
    section's: one rule per section. */
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-report > .a11y-section .a11y-section-head > .a11y-accordion-row { border-top: 0; padding-top: 0; }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-report :is(.a11y-section-desc, .a11y-section > p) {
-  font-family: "Serrif", Georgia, serif; font-weight: 300;
+  font-family: "PP Telegraf", sans-serif; font-weight: 400;
   font-size: 32px; line-height: 1.2; letter-spacing: 0; margin-top: 0; margin-bottom: 1.2em;
 }
 @media (max-width: 640px) {
@@ -3634,8 +3637,8 @@
   transform: translate(-50%, -50%) rotate(var(--bubble-tilt, 0deg));
   max-width: min(80%, 22em); margin: 0; padding: 3px 9px; box-sizing: border-box;
   border-radius: 8px; box-shadow: none; color: #000;
-  font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
-  font-size: 15px; font-weight: 400; line-height: 1.3; letter-spacing: 0;
+  font-family: "Serrif", Georgia, "Times New Roman", serif; font-weight: 300; font-synthesis: none;
+  font-size: 15px; line-height: 1.3; letter-spacing: 0.1em;
   white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
 }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-conf-row > .a11y-conf-status[data-status="failed"] { background: var(--hl-orange); }
@@ -3697,8 +3700,8 @@
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-sev, .a11y-rule-chip, .a11y-level-badge, .a11y-sum-chip, .a11y-pro-chip, .a11y-conf-status, .a11y-principle-count, .a11y-status-chip, .a11y-next-count) {
   display: inline-block; vertical-align: 0.15em; box-sizing: border-box;
   margin-inline: 0.25em; padding: 2px 8px; border-radius: 8px; box-shadow: none; color: #000;
-  font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
-  font-size: 15px; font-weight: 400; line-height: 1.3; letter-spacing: 0; white-space: nowrap;
+  font-family: "Serrif", Georgia, "Times New Roman", serif; font-weight: 300; font-synthesis: none;
+  font-size: 15px; line-height: 1.3; letter-spacing: 0.1em; white-space: nowrap;
   -webkit-box-decoration-break: slice; box-decoration-break: slice;
 }
 /* Rule ids are long ("consent-blocks-reader" is 211px at 15px mono) and
@@ -3773,9 +3776,6 @@
   font-size: 40px; font-weight: 300; line-height: 1.02; letter-spacing: -0.01em;
   text-decoration-thickness: 2px; text-underline-offset: 0.12em;
 }
-.a11y-widget-biz .a11y-legal-results .a11y-legal-tiles > .a11y-legal-row:nth-child(even) .a11y-legal-row-label {
-  font-family: "Serrif", Georgia, "Times New Roman", serif; font-synthesis: none; letter-spacing: -0.015em;
-}
 .a11y-widget-biz .a11y-legal-results .a11y-legal-tiles > .a11y-legal-row .a11y-legal-row-meaning {
   margin-top: 12px; font-size: 18px; line-height: 1.3; letter-spacing: 0.01em;
 }
@@ -3789,7 +3789,7 @@
   --ink: var(--tile-ink); background: var(--tile); color: var(--tile-ink); box-shadow: none;
 }
 .a11y-widget-biz .a11y-legal-results .a11y-legal-tiles > button.a11y-legal-row:enabled:hover * { text-decoration: none; }
-.a11y-widget-biz .a11y-legal-results .a11y-legal-tiles > button.a11y-legal-row[aria-pressed="true"] { box-shadow: inset 0 0 0 4px var(--plate-text); }
+.a11y-widget-biz .a11y-legal-results .a11y-legal-tiles > button.a11y-legal-row[aria-pressed="true"]:not(:focus-visible) { box-shadow: none; outline: 2px dotted var(--plate-text); outline-offset: -2px; }
 @container a11y-legal-cards (max-width: 900px) {
   .a11y-widget-biz .a11y-legal-results .a11y-legal-tiles { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .a11y-widget-biz .a11y-legal-results .a11y-legal-tiles > .a11y-legal-row { min-height: 170px; }
@@ -3841,8 +3841,8 @@
    check-result cards. */
 .a11y-widget-biz.a11y-widget-biz .a11y-sum-run .a11y-sum-row-marks > :is(.a11y-sum-chip, .a11y-sev) {
   padding: 2px 8px; border-radius: 8px;
-  font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
-  font-size: 15px; line-height: 1.3; letter-spacing: 0;
+  font-family: "Serrif", Georgia, "Times New Roman", serif; font-weight: 300; font-synthesis: none;
+  font-size: 15px; line-height: 1.3; letter-spacing: 0.1em;
 }
 
 /* ═══ THE FINDINGS TABLES' SEVERITY AS A SERIF BUBBLE (user's instruction,
@@ -3909,9 +3909,6 @@
    subgrid would do it exactly, but Chromium will not make a <button> a
    subgrid.) The sentence that sat under the count is gone (same day, "the
    repeated words"). */
-.a11y-widget-biz .a11y-legal-results .a11y-legal-tiles > .a11y-legal-row:nth-child(even) .a11y-legal-count {
-  font-family: "Serrif", Georgia, "Times New Roman", serif; font-synthesis: none; letter-spacing: -0.015em;
-}
 .a11y-widget-biz .a11y-legal-results .a11y-legal-tiles.a11y-legal-tiles > .a11y-legal-row:not(:has(.a11y-legal-row-meaning))::after {
   content: ""; order: 5; height: calc(12px + 1.3 * 18px);
 }
@@ -3925,8 +3922,8 @@
    so it reads on the card and on its beige hover alike. */
 .a11y-widget-biz .a11y-legal-results .a11y-legal-tiles.a11y-legal-tiles > .a11y-legal-row .a11y-legal-mark {
   padding: 2px 8px; border-radius: 8px; background: var(--plate-text); color: var(--paper);
-  font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
-  font-size: 15px; line-height: 1.3; letter-spacing: 0; white-space: nowrap;
+  font-family: "Serrif", Georgia, "Times New Roman", serif; font-weight: 300; font-synthesis: none;
+  font-size: 15px; line-height: 1.3; letter-spacing: 0.1em; white-space: nowrap;
   rotate: var(--mark-tilt, -2deg);
 }
 .a11y-widget-biz .a11y-legal-results .a11y-legal-tiles.a11y-legal-tiles > .a11y-legal-row:nth-child(4n+2) { --mark-tilt: 1.5deg; }
@@ -3948,8 +3945,8 @@
 .a11y-widget-biz .a11y-next-list .a11y-next-main > .a11y-next-status[data-status] {
   display: inline-block; width: fit-content; margin-top: 10px; padding: 2px 8px; border-radius: 8px;
   background: var(--plate-4); color: var(--plate-text);
-  font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
-  font-size: 15px; line-height: 1.3; letter-spacing: 0; white-space: nowrap;
+  font-family: "Serrif", Georgia, "Times New Roman", serif; font-weight: 300; font-synthesis: none;
+  font-size: 15px; line-height: 1.3; letter-spacing: 0.1em; white-space: nowrap;
   rotate: var(--call-tilt, -2deg);
 }
 .a11y-widget-biz .a11y-next-list > li:nth-child(3n+2) { --call-tilt: 1.5deg; }
@@ -4001,12 +3998,13 @@
 @media (prefers-reduced-motion: reduce) {
   .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-dn-list > .a11y-dn-link { transition: none; }
 }
-.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-dn-list > .a11y-dn-link[aria-selected="true"] { padding-top: 22px; border: 0; box-shadow: inset 0 0 0 4px var(--plate-text); }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-dn-list > .a11y-dn-link[aria-selected="true"] { padding-top: 22px; border: 0; box-shadow: none; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-dn-list > .a11y-dn-link[aria-selected="true"]:not(:focus-visible) { outline: 2px dotted var(--plate-text); outline-offset: -2px; }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-dn-list > .a11y-dn-link > .a11y-dn-link-kind {
   align-self: flex-start; margin: 0; padding: 2px 8px; border-radius: 8px;
   background: var(--plate-text); color: var(--paper);
-  font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
-  font-size: 15px; line-height: 1.3; letter-spacing: 0; white-space: nowrap;
+  font-family: "Serrif", Georgia, "Times New Roman", serif; font-weight: 300; font-synthesis: none;
+  font-size: 15px; line-height: 1.3; letter-spacing: 0.1em; white-space: nowrap;
   rotate: var(--kind-tilt, -2deg);
 }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-dn-list > .a11y-dn-link:nth-child(3n+2) { --kind-tilt: 1.5deg; }
@@ -4014,9 +4012,6 @@
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-dn-list > .a11y-dn-link > .a11y-dn-link-text {
   font-size: 21px; font-weight: 300; line-height: 1.1; letter-spacing: 0;
   text-decoration-thickness: 2px;
-}
-.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-dn-list > .a11y-dn-link:nth-child(even) > .a11y-dn-link-text {
-  font-family: "Serrif", Georgia, "Times New Roman", serif; font-synthesis: none; letter-spacing: -0.01em;
 }
 @media (max-width: 640px) {
   .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-dn-list > .a11y-dn-link { min-height: 0; }
@@ -4027,7 +4022,7 @@
 }
 @media (forced-colors: active) {
   .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-dn-list > .a11y-dn-link { border: 1px solid CanvasText; }
-  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-dn-list > .a11y-dn-link[aria-selected="true"] { border: 4px solid CanvasText; }
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-dn-list > .a11y-dn-link[aria-selected="true"] { border: 2px dotted CanvasText; }
 }
 
 /* ═══ THE OPENING QUESTIONS AS THE NOTE CARDS (user's instruction, 23 Nov
@@ -4055,15 +4050,12 @@
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-prompts .a11y-prompt .a11y-prompt-label {
   align-self: flex-start; width: fit-content; padding: 2px 8px; border-radius: 8px;
   background: var(--ink); color: var(--paper);
-  font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
-  font-size: 15px; line-height: 1.3; letter-spacing: 0; white-space: nowrap;
+  font-family: "Serrif", Georgia, "Times New Roman", serif; font-weight: 300; font-synthesis: none;
+  font-size: 15px; line-height: 1.3; letter-spacing: 0.1em; white-space: nowrap;
   rotate: var(--label-tilt, -2deg);
 }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-prompts .a11y-prompt:nth-child(3n+2) { --label-tilt: 1.5deg; --card-plate: var(--plate-3); }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-prompts .a11y-prompt:nth-child(3n) { --label-tilt: -1deg; --card-plate: var(--plate-4); }
-.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-prompts .a11y-prompt:nth-child(even) .a11y-prompt-ask {
-  font-family: "Serrif", Georgia, "Times New Roman", serif; font-weight: 300; font-synthesis: none; letter-spacing: 0.005em;
-}
 @media print {
   .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-prompts .a11y-prompt .a11y-prompt-label { rotate: none; }
 }
@@ -4199,8 +4191,8 @@
 }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-undecided-call > :is(.a11y-method-badge, .a11y-undecided-places, .a11y-undecided-most) {
   display: inline-block; margin: 0; padding: 2px 8px; border-radius: 8px;
-  font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
-  font-size: 15px; font-weight: 400; line-height: 1.3; letter-spacing: 0;
+  font-family: "Serrif", Georgia, "Times New Roman", serif; font-weight: 300; font-synthesis: none;
+  font-size: 15px; line-height: 1.3; letter-spacing: 0.1em;
   background: var(--tile); color: var(--tile-ink);
   rotate: -2deg;
 }
@@ -4330,4 +4322,40 @@
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-undecided-table > .a11y-undecided-cell:nth-child(4n) { --no-fill: #a2e3ff; }
 @media (forced-colors: active) {
   .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-undecided-table > .a11y-undecided-cell > .a11y-undecided-no { border: 1px solid CanvasText; }
+}
+
+/* ═══ THE PANEL'S FOOT RULE, FULL BLEED (user's instruction, 23 Nov 2026,
+   "the divider needs to be full bleed in left window") ═════════════════════
+   The 1px rule over the Language row ran only as wide as the panel's rows.
+   It now runs from the window's left edge to the panel's own right rule:
+   above 960px the panel stands 20px in (the widget's 16px and the layout's
+   4px) and keeps 40px before its rule, so the foot reaches out by both and
+   pads back by the same, and the Language row does not move. Folded (960px
+   and under) there is no panel rule to meet, and phones drop the foot's
+   rule altogether. */
+@media (min-width: 961px) {
+  .a11y-widget-biz .a11y-chats > .a11y-chats-foot { margin-inline: -20px -40px; padding-inline: 20px 40px; }
+}
+
+/* ═══ SHOW ALL AND EXPORT THE LIST, 4PX APART (user's instruction, 23 Nov
+   2026, "4 px space in between"): the two buttons under the undecided rows
+   touched, with no white space between them in the markup. */
+.a11y-widget-biz .a11y-show-all + .a11y-undecided-export { margin-inline-start: 4px; }
+
+/* ═══ LEARN MORE IN BLUE AND SERIF (user's instruction, 23 Nov 2026,
+   "learn more blue as other links blue and serif") ═════════════════════════
+   The rule's documentation link beside the badges, in Serrif Light like the
+   badges, in a link blue: #0043ce on white measures 7.6:1 (5.0:1 on the
+   #f0efe8 tile); dark takes #78a9ff, 8.6:1 on black. The underline follows
+   the colour. */
+.a11y-widget-biz .a11y-learn-more {
+  color: #0043ce;
+  font-family: "Serrif", Georgia, "Times New Roman", serif; font-weight: 300; font-synthesis: none;
+}
+.a11y-widget-biz[data-theme="dark"] .a11y-learn-more { color: #78a9ff; }
+@media (prefers-color-scheme: dark) {
+  .a11y-widget-biz:not([data-theme="light"]) .a11y-learn-more { color: #78a9ff; }
+}
+@media (forced-colors: active) {
+  .a11y-widget-biz .a11y-learn-more { color: LinkText; }
 }
