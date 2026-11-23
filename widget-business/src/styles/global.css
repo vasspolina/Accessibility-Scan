@@ -3673,7 +3673,7 @@
    on the light plates (13:1 or better), white on the deep dark plates
    (12:1 or better); the tile pins --ink and --paper so the focus ring and
    the pressed ring follow. Four across; two across where the row is under
-   900px; one under 480px. Hover underlines the words, as on the reference;
+   900px; one under 480px. Hover turns the tile beige (see the hover rule);
    the tile whose group the open checklist shows keeps a 4px inset ring.
    The markup order (words, level split, status, count) is unchanged for
    screen readers; only the eye takes them as status, count, words. */
@@ -3720,8 +3720,16 @@
 .a11y-widget-biz .a11y-legal-results .a11y-legal-tiles > .a11y-legal-row .a11y-legal-row-meaning {
   margin-top: 12px; font-size: 18px; line-height: 1.3; letter-spacing: 0.01em;
 }
-.a11y-widget-biz .a11y-legal-results .a11y-legal-tiles > button.a11y-legal-row:enabled:hover { background: var(--paper); color: var(--plate-text); box-shadow: none; }
-.a11y-widget-biz .a11y-legal-results .a11y-legal-tiles > button.a11y-legal-row:enabled:hover .a11y-legal-row-label { text-decoration-line: underline; }
+/* Hover turns the whole tile the beige tile ground, words in its ink, no
+   underline (user's instruction, 23 Nov 2026, "make beige on hover no
+   underline"): the old hover repainted the plate in its own colour, so only
+   an underline moved. #000 on #f0efe8 is 18.4:1; dark takes --tile
+   (#1c1c1e) with white words. */
+.a11y-widget-biz .a11y-legal-results .a11y-legal-tiles > button.a11y-legal-row { transition: background-color 0.15s, color 0.15s, box-shadow 0.15s; }
+.a11y-widget-biz .a11y-legal-results .a11y-legal-tiles > button.a11y-legal-row:enabled:hover {
+  --ink: var(--tile-ink); background: var(--tile); color: var(--tile-ink); box-shadow: none;
+}
+.a11y-widget-biz .a11y-legal-results .a11y-legal-tiles > button.a11y-legal-row:enabled:hover * { text-decoration: none; }
 .a11y-widget-biz .a11y-legal-results .a11y-legal-tiles > button.a11y-legal-row[aria-pressed="true"] { box-shadow: inset 0 0 0 4px var(--plate-text); }
 @container a11y-legal-cards (max-width: 900px) {
   .a11y-widget-biz .a11y-legal-results .a11y-legal-tiles { grid-template-columns: repeat(2, minmax(0, 1fr)); }
