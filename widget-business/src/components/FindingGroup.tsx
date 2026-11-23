@@ -1,4 +1,4 @@
-import { Fragment, useId, useState, type ReactNode } from "react";
+import { Fragment, useId, useState, type CSSProperties, type ReactNode } from "react";
 import { dominantComponent, describeComponent } from "../lib/componentCluster";
 import { SeverityTag } from "./SeverityTag";
 import { ScanError, setFindingState, type AccessibilityFinding, type TriageState } from "../api/scanClient";
@@ -952,6 +952,17 @@ export function findingRow(
 ): { id: string; cells: ReactNode[]; expand: ReactNode } {
   const rep = findings[0];
   const count = findings.length;
+  /* The severity bubble leans like the checklist's status bubbles: a tilt
+     of -3 to 3 degrees read from the finding's id (the same small string
+     hash as ConformanceView's bubblePlace), so a row never changes its
+     lean between renders. */
+  let h = 0;
+  for (let i = 0; i < rep.id.length; i++) h = (h * 31 + rep.id.charCodeAt(i)) >>> 0;
+  // Mixed once more: short ids that differ in one character ("f1", "f2")
+  // otherwise land next to each other and every row leaned the same way.
+  h = Math.imul(h ^ (h >>> 15), 0x2c1b3c6d) >>> 0;
+  h = (h ^ (h >>> 13)) >>> 0;
+  const sevTilt = { "--sev-tilt": `${((h % 61) - 30) / 10}deg` } as CSSProperties;
   const plain = plainForRule(rep.ruleId);
   const title = findingTitle(rep);
   const fix = fixKindForFinding(rep);
@@ -964,7 +975,7 @@ export function findingRow(
       {/* The severity badge sits above the title at every width; the table
           has no Severity column (user's instruction, 23 Nov 2026). */}
       {!asNotes && (
-        <span className="a11y-finding-sev-fold">
+        <span className="a11y-finding-sev-fold" style={sevTilt}>
           <SeverityTag severity={rep.severity} label={t(severityLabel[rep.severity])} />
         </span>
       )}

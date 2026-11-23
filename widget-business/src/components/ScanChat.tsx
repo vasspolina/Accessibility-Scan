@@ -1394,20 +1394,16 @@ export function ScanChat({
           {t("Conversations")}
         </button>
         <div className="a11y-chats-body" id="a11y-chats-body">
+        {/* No icons (user's instruction, 23 Nov 2026, "delete icons, make
+            buttons look like this"): the words alone, in a button sized to
+            them, New chat and Report a barrier side by side. */}
         <button type="button" className="a11y-chats-new" onClick={newChat} disabled={switchLocked}>
-          {/* The icon set's add and flag, 32px grid, like the bin below
-              (user's instruction, 21 Nov 2026). */}
-          <Icon name="add" size={20} />
           {t("New chat")}
         </button>
         {/* Report a barrier sits under New chat, the panel's other way to
             start something (user's instruction, 20 Nov 2026). */}
         {onReportBarrier && (
           <button type="button" className="a11y-chats-new a11y-chats-barrier" onClick={onReportBarrier} disabled={switchLocked}>
-            {/* 18px, 10% under the add icon's 20: the flag fills 24 of
-                its 32 units where add fills 16, so at one size it looked
-                the larger (user's instruction, 21 Nov 2026). */}
-            <Icon name="flag" size={18} />
             {t("Report a barrier")}
           </button>
         )}
