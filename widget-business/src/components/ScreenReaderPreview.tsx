@@ -160,7 +160,7 @@ export function ScreenReaderPreview({ script }: { script: ScreenReaderScript }) 
           exactly what happened. */}
       <p className="a11y-section-desc">
         {t(
-          "A simulation built from the page’s code, not a recording of a real screen reader. Real screen readers word things differently."
+          "Built from the page’s code. Real screen readers word things differently."
         )}
       </p>
       </div>

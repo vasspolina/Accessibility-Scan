@@ -114,7 +114,7 @@ export function AcrDraft({ report }: { report: AccessibilityReport }) {
       </div>
 
       <p className="a11y-section-desc">
-        {t("If a public body or a large customer wants to buy from you, they will ask for one of these. It is the document a procurement team reads instead of your website.")}
+        {t("Public bodies and large customers ask for one before they buy.")}
       </p>
       {/* The way in that reads as one (user's instruction, 17 Nov 2026). The
           title above was the only toggle, and nothing about it said it would

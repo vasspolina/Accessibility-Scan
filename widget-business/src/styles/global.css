@@ -1835,32 +1835,6 @@
 /* A tally is the label over its figure. */
 .a11y-widget-biz .a11y-pro-rows > .a11y-pro-row { display: block; }
 
-/* ═══ WHERE TO START: THE TOP FINDINGS (user's reference, 15 Nov 2026) ═
-   The worst findings of the scan, at most five, as a plain list: each a
-   line on a 1px ink rule, the title at the prose size in Medium, the small
-   print under it at 15px. They were round #f0efe8 blocks scattered over a
-   12-column grid, the design note's block, until the user's word on that
-   block, 20 Nov 2026: "this is a slop". The whole line is the button;
-   hover underlines the title. Page ink and paper, so it follows the theme. */
-.a11y-widget-biz .a11y-top { container: a11y-top / inline-size; margin: 2.4em 0; }
-.a11y-widget-biz .a11y-top-title { margin: 0 0 0.75em; font-size: 32px; font-weight: 400; line-height: 1.05; letter-spacing: -0.005em; }
-.a11y-widget-biz .a11y-top-list { display: block; margin: 0; padding: 0; list-style: none; border-bottom: 1px solid var(--ink); }
-.a11y-widget-biz .a11y-top-list > li { min-width: 0; margin: 0; display: block; }
-.a11y-widget-biz .a11y-top-card {
-  box-sizing: border-box; width: 100%; min-width: 0; min-height: 44px; margin: 0; padding: 12px 0 14px;
-  display: flex; flex-direction: column; align-items: flex-start; justify-content: flex-start; gap: 6px;
-  border: 0; border-top: 1px solid var(--ink); border-radius: 0; background: none; color: var(--ink); cursor: pointer;
-  font: inherit; text-align: start; overflow-wrap: break-word; hyphens: auto;
-}
-.a11y-widget-biz .a11y-top-card:hover { background: none; color: var(--ink); }
-.a11y-widget-biz .a11y-top-card:hover > .a11y-top-card-title { text-decoration: underline; text-underline-offset: 0.15em; }
-.a11y-widget-biz .a11y-top-card-title { font-size: 27px; font-weight: 400; line-height: 1.15; letter-spacing: 0; max-width: 100%; }
-.a11y-widget-biz .a11y-top-card-small { display: flex; flex-wrap: wrap; justify-content: flex-start; gap: 0 1em; font-size: 15px; letter-spacing: 0.01em; line-height: 1.3; }
-@container a11y-top (max-width: 640px) {
-  .a11y-widget-biz .a11y-top-title { font-size: 27px; letter-spacing: 0; }
-  .a11y-widget-biz .a11y-top-card-title { font-size: 22px; letter-spacing: 0.005em; }
-}
-
 /* ═══ DESKTOP GUTTER AND TIGHT CHAT (18 Oct 2026; user's instruction) ═════
    On desktop the page, the conversation and every element in it sit 16px
    from the left and right edges: no centred 40em column, no 1em padding.
@@ -2091,7 +2065,7 @@
     figure, img, pre, tr, blockquote,
     .a11y-occurrence, .a11y-fd-col > p, .a11y-fd-col:first-child > div, .a11y-fd-learn, .a11y-pro-block, .a11y-fix-once,
     .a11y-sum-row, .a11y-pro-row, .a11y-pro-point, .a11y-legal-row, .a11y-legal-q,
-    .a11y-conf-row, .a11y-next-list > li, .a11y-undecided-cell, .a11y-spec-card, .a11y-sr-row, .a11y-dn-link, .a11y-top-card
+    .a11y-conf-row, .a11y-next-list > li, .a11y-undecided-cell, .a11y-spec-card, .a11y-sr-row, .a11y-dn-link
   ) { break-inside: avoid; page-break-inside: avoid; }
   .a11y-widget-biz thead { display: table-header-group; }
   .a11y-widget-biz tfoot { display: table-footer-group; }
@@ -3376,7 +3350,7 @@
    still wins, and only what would inherit the 200 comes back to 400. The
    list is what measured under 22px at 200 on the fixture report and form. */
 .a11y-widget-biz :where(button, input, select, textarea, label, small, th,
-  .a11y-shell-nav-link, .a11y-switch-word, .a11y-url-submit-note, .a11y-sum-dial-of, .a11y-top-card-small) { font-weight: 400; }
+  .a11y-shell-nav-link, .a11y-switch-word, .a11y-url-submit-note, .a11y-sum-dial-of) { font-weight: 400; }
 
 /* ═══ THE WARNING AS A BUBBLE (user's instruction, 22 Nov 2026, "make
    warning a buble") ══════════════════════════════════════════════════════

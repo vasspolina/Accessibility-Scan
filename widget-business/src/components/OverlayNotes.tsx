@@ -34,10 +34,9 @@ export function OverlayNotes({ overlays }: { overlays?: DetectedOverlay[] }) {
           title={tf("This page loads an accessibility overlay: {vendor}", { vendor: o.vendor })}
           subtitle={
             <>
-              {t("An overlay is a third-party script that adds a settings button to a page.")}{" "}
               {t(
                 o.widgetOnPage
-                  ? "It was running during this scan, so every finding here was measured with it on."
+                  ? "It was running, so every finding was measured with it on."
                   : "Its script is on this page, and its widget had not started when we measured."
               )}
               {o.scriptUrl && (

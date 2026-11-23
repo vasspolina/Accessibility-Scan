@@ -115,7 +115,7 @@ export function ReportActions({
           <p className="a11y-ra-note" role="status">
             {result
               ? t(RESULT_MESSAGE[result])
-              : t("We send it once, to this address. Nothing is stored.")}
+              : t("Sent once. Nothing is stored.")}
           </p>
         </form>
         <div className="a11y-ra-cell">
@@ -134,7 +134,7 @@ export function ReportActions({
             <Icon name="download" className="a11y-ra-pdf-icon" />
           </button>
           <p className="a11y-ra-note">
-            {t("Opens your browser’s print dialog. Choose “Save as PDF” as the destination.")}
+            {t("Choose “Save as PDF” in the print dialog.")}
           </p>
         </div>
       </div>

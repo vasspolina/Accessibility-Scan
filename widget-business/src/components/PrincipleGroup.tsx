@@ -58,7 +58,6 @@ export function PrincipleGroup({ findings }: { findings: AccessibilityFinding[] 
                 <h3 className="a11y-principle-title" id={`a11y-pg-${principle}-title`} tabIndex={-1}>
                   {text?.plainTitle ?? principle}
                 </h3>
-                {text && <p className="a11y-principle-desc">{text.plainDescription}</p>}
               </div>
             </div>
             <FindingsList findings={groupFindings} />

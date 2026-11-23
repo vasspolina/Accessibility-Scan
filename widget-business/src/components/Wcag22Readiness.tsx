@@ -42,7 +42,7 @@ export function Wcag22Readiness({ readiness }: { readiness: Readiness }) {
         expected={tf("Expected {date}", { date: expectedFrom })}
         failCount={alreadyFailing}
         description={tf(
-          "Nothing here is required yet. These {total} new items become Level A or AA once EN 301 549 adopts WCAG 2.2.",
+          "Not required yet. The {total} new items count once EN 301 549 adopts WCAG 2.2.",
           { total }
         )}
       />
@@ -108,7 +108,7 @@ export function Wcag22Readiness({ readiness }: { readiness: Readiness }) {
                       {c.id} · {t("Level")} {c.level}
                     </span>
                     {c.whyManual && <span className="a11y-next-meta">{c.whyManual}</span>}
-                    <span className="a11y-next-meta">{t("Officially:")} {c.name}</span>
+                    <span className="a11y-next-meta">{c.name}</span>
                     {/* The count rides as a sentence with the rest of the
                         meta, not as a corner "1 ×" mark: only a failing card
                         ever has one, and a bare glyph on one card in six

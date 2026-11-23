@@ -180,8 +180,8 @@ export function ProSummary({
           {incomplete.length > 0 && (
             <Notification
               kind="warning"
-              title={tf("Some checks didn't finish this time: {checks}.", { checks: checkNames(incomplete) })}
-              subtitle={t("The score above only counts what ran, so it may look better than it should. A second run usually completes them.")}
+              title={tf("Some checks didn't finish: {checks}.", { checks: checkNames(incomplete) })}
+              subtitle={t("The score counts only what ran, so it may be too high. Run the scan again.")}
             />
           )}
           {/* What the score was measured with: an overlay on the page is one

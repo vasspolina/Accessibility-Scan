@@ -13,7 +13,6 @@ import type { NavSection } from "./components/SideNav";
 import { useActiveSection } from "./lib/useActiveSection";
 import { DocumentSummary } from "./components/DocumentSummary";
 import { ReportSection } from "./components/ReportSection";
-import { TopFindings } from "./components/TopFindings";
 import { DesignNotesPanel } from "./components/DesignNotesPanel";
 import { PrincipleGroup } from "./components/PrincipleGroup";
 import { UndecidedChecks } from "./components/UndecidedChecks";
@@ -554,7 +553,7 @@ export function App({
             </p>
             <p className="a11y-blockflag-body">
               {t(
-                "The banner hides the page from screen readers and never takes focus. Until it is fixed, screen reader users never reach anything below this line."
+                "The banner hides the page and never takes keyboard focus."
               )}
             </p>
             <button
@@ -603,14 +602,11 @@ export function App({
                     the foot of the findings, where a report ends (user's
                     instruction, 20 Nov 2026). */}
                 {!inChat && <ReportActions report={report} apiBase={apiBase} />}
-                {/* The worst of the findings, as cards, before the schedule
-                    that holds them all (15 Nov 2026). */}
-                {!inChat && (
-                  <TopFindings
-                    findings={findingsByCategory.accessibility}
-                    onSee={() => focusFindings("a11y-accessibility-heading")}
-                  />
-                )}
+                {/* "Where to start" (TopFindings, 15 Nov 2026) stood here
+                    and is gone (user's instruction, 23 Nov 2026, "repeating
+                    content"): its five titles were the summary's worst-of
+                    list again, one line above the schedule that holds them
+                    all. */}
               </>
             )}
             {/* Only when the AI review was wanted but did not happen;
@@ -631,8 +627,8 @@ export function App({
             {!(professional && !isDocument) && report.meta.incompleteChecks && report.meta.incompleteChecks.length > 0 && (
               <Notification
                 kind="warning"
-                title={tf("Some checks didn't finish this time: {checks}.", { checks: checkNames(report.meta.incompleteChecks) })}
-                subtitle={t("The score above only counts what ran, so it may look better than it should. A second run usually completes them.")}
+                title={tf("Some checks didn't finish: {checks}.", { checks: checkNames(report.meta.incompleteChecks) })}
+                subtitle={t("The score counts only what ran, so it may be too high. Run the scan again.")}
               />
             )}
             {/* An accessibility overlay on the page: what was seen, beside
@@ -731,7 +727,7 @@ export function App({
             <ReportSection
               title="What costs you trust"
               description={t(
-                "Places where your site nudges people instead of leaving the choice to them. These don't move the score."
+                "Where your site nudges people instead of letting them choose. They don't move the score."
               )}
               variant="redflag"
               findings={findingsByCategory.darkPattern}
