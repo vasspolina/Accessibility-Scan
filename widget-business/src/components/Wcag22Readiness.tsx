@@ -1,4 +1,3 @@
-import { useId, useState } from "react";
 import { t, tf } from "../lib/strings";
 import { WhatsNextPanel } from "./WhatsNextPanel";
 import type { Wcag22Readiness as Readiness } from "../api/scanClient";
@@ -22,9 +21,6 @@ const STATUS_LABEL: Record<Readiness["criteria"][number]["status"], string> = {
 };
 
 export function Wcag22Readiness({ readiness }: { readiness: Readiness }) {
-  const [open, setOpen] = useState(false);
-  const panelId = useId();
-
   const { alreadyFailing, total, criteria, parsingNoLongerCounts } = readiness;
   // The backend writes the date in English ("late 2026"). Looked up like the
   // backend's check names: a date with no translation stays as it came.
@@ -47,29 +43,12 @@ export function Wcag22Readiness({ readiness }: { readiness: Readiness }) {
         )}
       />
 
-      {/* The design puts everything from here down on a purple panel and
-          heads it "The six new items" — the section's own title and intro
-          stay on the report's ground above it. A wrapper is the only way
-          to draw that: the toggle and the region it controls are siblings
-          of the heading, not children of anything. */}
+      {/* The six items stand open under the sentence (user's instruction,
+          23 Nov 2026, "this six new items repeating, just unfold all info
+          under text"): the sentence above already says there are six new
+          items, so the "The six new items" title and its Show details
+          toggle are gone. */}
       <div className="a11y-w22-panel">
-        {/* No lead under the title: each card below carries its own call,
-            and the panel above already says nothing here is required yet. */}
-        <h3 className="a11y-w22-panel-title">{t("The six new items")}</h3>
-      <button
-        type="button"
-        className="a11y-accordion-head a11y-w22-toggle"
-        aria-expanded={open}
-        aria-controls={panelId}
-        onClick={() => setOpen((v) => !v)}
-      >
-        <span>{open ? t("Hide details") : t("Show details")}</span>
-        <Icon name="chevron--down" className="a11y-accordion-chevron" />
-      </button>
-
-      {/* Hidden rather than unrendered, so aria-controls always points at a
-          real element. */}
-      <div id={panelId} hidden={!open}>
           {/* "What actually changes" is gone (user's instruction, 22 Nov
               2026, "do not over explain"): it said the lead and the date
               again. */}
@@ -157,7 +136,6 @@ export function Wcag22Readiness({ readiness }: { readiness: Readiness }) {
               {t("This scan reports a failure against 4.1.1 Parsing. WCAG 2.2 removes that criterion as obsolete, so once the standard updates, that failure no longer counts.")}
             </p>
           )}
-      </div>
       </div>
     </section>
   );

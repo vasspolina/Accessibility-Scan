@@ -214,12 +214,15 @@ export function ScreenReaderPreview({ script }: { script: ScreenReaderScript }) 
           </p>
         )}
         {panelOpen && issueCount > 0 && (
-          <label className="a11y-ai-toggle">
+          <label className="a11y-ai-toggle a11y-sr-filter">
             <input
               type="checkbox"
               checked={onlyIssues}
               onChange={(e) => setOnlyIssues(e.target.checked)}
             />
+            {/* The checkbox is clipped, not removed: it stays the control and
+                its name is the label. The mark shows its state on the pill. */}
+            {onlyIssues && <Icon name="checkmark" />}
             {issueCount === 1
               ? t("Only the one that says nothing useful")
               : tf("Only the {count} that say nothing useful", { count: issueCount })}

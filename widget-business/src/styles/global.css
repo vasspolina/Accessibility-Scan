@@ -147,7 +147,7 @@
 .a11y-widget-biz :is(input:not([type="radio"]):not([type="checkbox"]), textarea, select) {
   font: inherit; font-size: 22px; letter-spacing: 0.01em; padding: 0.4em 0.6em;
   /* The chat box's look (see FORM FIELDS AS THE CHAT BOX at the end). */
-  border: 1px dotted var(--ink); border-radius: 14px; background: var(--paper); color: var(--ink);
+  border: 1px solid var(--ink); border-radius: 10px; background: var(--paper); color: var(--ink);
 }
 /* Focus is dark green (user's instruction, 18 Nov 2026, "make focus
    outline dark green"): a 2px line inside the element's own edge, square to
@@ -665,7 +665,6 @@
 .a11y-widget-biz .a11y-accordion-title .a11y-accordion-head:enabled:hover { background: none; color: var(--ink); }
 .a11y-widget-biz .a11y-accordion-chevron { flex: none; width: 0.6em; height: 0.6em; margin-inline-start: auto; }
 .a11y-widget-biz .a11y-accordion-head[aria-expanded="true"] .a11y-accordion-chevron { transform: rotate(180deg); }
-.a11y-widget-biz .a11y-w22-toggle { display: flex; align-items: center; gap: 0.6em; text-align: start; }
 .a11y-widget-biz .a11y-section-count { font-size: 22px; letter-spacing: 0.01em; font-weight: 400; }
 /* A section title's count is a superior figure (user's instruction, 22 Nov
    2026, "design number 1"): raised from the baseline to the title's top,
@@ -821,8 +820,8 @@
      "keep language button too"), dotted since 18 Nov 2026 ("lets make line
      dotted"). A dotted edge here is the select's look, not the disabled
      state: disabled controls are dashed. */
-  border: 1px dotted var(--ink);
-  border-radius: 14px;
+  border: 1px solid var(--ink);
+  border-radius: 10px;
   padding-inline-end: 2.6em;
   background-image: linear-gradient(45deg, transparent 50%, var(--ink) 50%), linear-gradient(135deg, var(--ink) 50%, transparent 50%);
   background-position: calc(100% - 1.4em) 50%, calc(100% - 1em) 50%;
@@ -2534,8 +2533,7 @@
 }
 /* A field: the filled box holds its label and its control. */
 .a11y-widget-biz .a11y-tester .a11y-input,
-.a11y-widget-biz .a11y-tester .a11y-tester-rows > .a11y-select2,
-.a11y-widget-biz .a11y-tester .a11y-tester-row {
+.a11y-widget-biz .a11y-tester .a11y-tester-rows > .a11y-select2 {
   box-sizing: border-box; min-width: 0; margin: 0; padding: 14px 18px 16px;
   border: 1px dotted var(--tile-ink); border-radius: 20px; background: transparent; color: inherit;
 }
@@ -2545,10 +2543,6 @@
 .a11y-widget-biz .a11y-tester .a11y-input-label,
 .a11y-widget-biz .a11y-tester .a11y-tester-rows .a11y-select2-label {
   color: var(--tile-ink); font-size: 18px; font-weight: 400; line-height: 1.2; letter-spacing: 0.01em;
-}
-/* AI review reads as a choice, at the choices' 22px. */
-.a11y-widget-biz .a11y-tester .a11y-tester-ai .a11y-switch-label {
-  color: var(--tile-ink); font-size: 22px; font-weight: 400; line-height: 1.2; letter-spacing: 0.01em;
 }
 .a11y-widget-biz .a11y-tester .a11y-input-shell { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 12px; min-width: 0; }
 /* 0,5,1 out-ranks the general field rule (0,3,1). The field's size
@@ -2578,36 +2572,8 @@
   border: 1px dotted var(--tile-ink); border-radius: 20px; background: transparent; color: inherit; cursor: pointer;
   font-size: 22px; line-height: 1.2; letter-spacing: 0.01em;
 }
-/* Each choice shows a big toggle instead of a radio's dot (user's
-   instruction, 18 Nov 2026, "make big toggles instead of dots"). It is still
-   the native radio, drawn with appearance: none as a 64 x 36 track with a
-   24px knob: off is an ink edge with the knob left, on is solid with the
-   knob right. A radio cannot be switched off by itself; choosing the other
-   one in the group does it, as before. In forced colours the native radio
-   comes back, so the state never depends on a drawn fill. */
-.a11y-widget-biz .a11y-tester .a11y-seg > input {
-  display: inline-grid; place-content: center; flex: none; box-sizing: border-box; width: 64px; height: 36px; margin: 0;
-  order: 2; margin-inline-start: auto; cursor: pointer;
-  appearance: none; -webkit-appearance: none; border: 2px solid var(--tile-ink); border-radius: 999px;
-  background: var(--tile); color: var(--tile-ink); transition: background-color 0.15s;
-}
-/* The knob is the general radio rule's ::before, moved and resized: one
-   shape, so no second dot can show through. */
-.a11y-widget-biz .a11y-tester .a11y-seg > input::before {
-  width: 24px; height: 24px; background: currentColor; transform: translateX(-13px); transition: transform 0.15s;
-}
-.a11y-widget-biz .a11y-tester .a11y-seg > input:checked { border-color: var(--solid); background: var(--solid); color: var(--solid-ink); }
-.a11y-widget-biz .a11y-tester .a11y-seg > input:checked::before { transform: translateX(13px); }
-@media (forced-colors: active) {
-  .a11y-widget-biz .a11y-tester .a11y-seg > input { appearance: auto; -webkit-appearance: auto; width: 24px; height: 24px; }
-}
-@media (prefers-reduced-motion: reduce) {
-  .a11y-widget-biz .a11y-tester .a11y-seg > input,
-  .a11y-widget-biz .a11y-tester .a11y-seg > input::before { transition: none; }
-}
-/* The AI review switch matches the choices' toggles. */
-.a11y-widget-biz .a11y-tester .a11y-tester-ai .a11y-switch-track { width: 64px; height: 36px; }
-.a11y-widget-biz .a11y-tester .a11y-tester-ai .a11y-switch-knob { width: 26px; height: 26px; margin-top: -13px; }
+/* The big toggles of 18 Nov 2026 and the AI review switch are gone: see
+   THE SCAN FORM IN THE BUTTON AND FIELD STYLE at the end. */
 .a11y-widget-biz .a11y-tester .a11y-seg.a11y-seg-on { font-weight: 400; }
 .a11y-widget-biz .a11y-tester .a11y-seg:not(.a11y-seg-disabled):hover { background: var(--hover); color: var(--hover-ink); }
 .a11y-widget-biz .a11y-tester .a11y-seg:has(input:focus-visible) { outline: 2px solid var(--focus); outline-offset: -2px; }
@@ -2615,8 +2581,6 @@
 .a11y-widget-biz .a11y-tester .a11y-seg.a11y-seg-disabled { cursor: not-allowed; box-shadow: inset 0 0 0 1px var(--tile-ink); }
 /* The other settings: AI review and the language, a filled row each. */
 .a11y-widget-biz .a11y-tester > .a11y-tester-rows { display: grid; gap: 8px; margin-top: 8px; }
-.a11y-widget-biz .a11y-tester .a11y-tester-ai .a11y-switch { display: flex; justify-content: space-between; width: 100%; }
-.a11y-widget-biz .a11y-tester .a11y-tester-ai .a11y-switch-word { color: var(--tile-ink); font-size: 18px; letter-spacing: 0.01em; min-width: 1.8em; }
 .a11y-widget-biz .a11y-tester .a11y-tester-rows > .a11y-select2 { display: grid; justify-items: stretch; gap: 4px; }
 .a11y-widget-biz .a11y-tester .a11y-tester-rows > .a11y-select2 .a11y-select2-field.a11y-select2-field {
   width: 100%; min-width: 0; min-height: 40px; padding: 0 2.4em 0 0; border: 0; border-radius: 0;
@@ -2704,11 +2668,8 @@
 @media (max-width: 640px) {
   .a11y-widget-biz .a11y-w22 .a11y-next-list { grid-template-columns: minmax(0, 1fr); }
 }
-.a11y-widget-biz .a11y-w22 > .a11y-w22-panel { display: flex; flex-wrap: wrap; align-items: center; gap: 12px 16px; margin-top: 65px; }
-.a11y-widget-biz .a11y-w22 > .a11y-w22-panel > .a11y-w22-panel-title { margin: 0; font-size: 22px; font-weight: 400; line-height: 1.2; letter-spacing: 0.01em; }
-.a11y-widget-biz .a11y-w22 > .a11y-w22-panel > .a11y-w22-toggle { font-size: 18px; }
-.a11y-widget-biz .a11y-w22 > .a11y-w22-panel > div { flex: 1 1 100%; min-width: 0; margin-top: 12px; }
-.a11y-widget-biz .a11y-w22 > .a11y-w22-panel > div[hidden] { display: none; }
+/* The items stand open under the sentence (23 Nov 2026), 28px down. */
+.a11y-widget-biz .a11y-w22 > .a11y-w22-panel { display: block; margin-top: 28px; }
 @media (max-width: 640px) {
   .a11y-widget-biz .a11y-w22 > .a11y-next > .a11y-next-desc { font-size: 27px; letter-spacing: 0; }
 }
@@ -2802,31 +2763,43 @@
    link share one row that is on screen whether the section is open or not.
    No rule above or below it (user's instruction, 22 Nov 2026, "delete line
    underneath and above"): the pills are controls and need no frame.
-   Play is the solid pill; the filter is an outlined pill around its
-   checkbox; the skip link is a quiet pill at the end. */
+   One set of controls (user's instruction, 23 Nov 2026, "the buttons are
+   way too big", "and not organised", "design this"): they had three
+   heights and three sizes (Play 48px at 22px, the filter 40px at 18px
+   with a bare browser checkbox, the skip link 22px with 0.5em padding),
+   with the empty status line pushing the last two to the far right. Now
+   every one is the ordinary 34px button at 18px (see BUTTONS at the end),
+   set left in one run 8px apart: Play solid, the filter and the skip link
+   outlined. The filter's checkbox is clipped and the button shows its
+   state: off is the outline, on is solid ink with the check mark, as a
+   chosen button is everywhere. The status line takes no room while
+   empty. */
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sr-bar {
-  display: flex; flex-wrap: wrap; align-items: center; gap: 14px 16px;
+  display: flex; flex-wrap: wrap; align-items: center; justify-content: flex-start; gap: 8px;
   box-sizing: border-box; margin: 0 0 30px; padding: 0;
   border: 0; border-radius: 0; background: none; color: var(--ink);
 }
-.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sr-bar .a11y-sr-play {
-  flex: 0 1 auto; min-width: 0; max-width: 100%; min-height: 48px; padding: 0 1.4em; font-size: 22px; white-space: normal; text-align: start;
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sr-bar :is(.a11y-sr-play, .a11y-sr-filter, .a11y-skip-link) {
+  display: inline-flex; align-items: center; gap: 0.45em; flex: 0 1 auto;
+  box-sizing: border-box; min-width: 0; max-width: 100%; min-height: 34px; margin: 0; padding: 5px 14px;
+  border-radius: 10px; font-size: 18px; line-height: 1.2; letter-spacing: 0.01em;
+  white-space: normal; text-align: start;
 }
-/* On a phone the button takes the 18px label size and may wrap: at 22px
-   "Reproducir la página en voz alta" (es) ran to 463px of a 320px screen
-   (reflow check, 18 Nov 2026). */
-@media (max-width: 640px) {
-  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sr-bar .a11y-sr-play { padding: 8px 1em; font-size: 18px; }
-}
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sr-bar .a11y-sr-play > svg { font-size: 15px; }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sr-bar .a11y-sr-status {
-  flex: 1 1 8em; min-width: 0; margin: 0; font-size: 18px; letter-spacing: 0.01em; font-variant-numeric: tabular-nums;
+  flex: 0 1 auto; min-width: 0; margin: 0 8px; font-size: 18px; letter-spacing: 0.01em; font-variant-numeric: tabular-nums;
 }
-.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sr-bar .a11y-ai-toggle {
-  flex: none; margin: 0; min-height: 40px; box-sizing: border-box; padding: 0 1em 0 0.8em;
-  border: 1px solid var(--ink); border-radius: 999px; font-size: 18px; cursor: pointer;
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sr-bar span.a11y-sr-status:empty { display: none; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sr-bar p.a11y-sr-status { flex: 1 1 100%; margin: 0; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sr-bar .a11y-sr-filter {
+  position: relative; border: 1px solid var(--btn-fill, var(--ink)); background: var(--btn-fill, var(--paper)); color: var(--ink); cursor: pointer;
 }
-.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sr-bar .a11y-ai-toggle:has(:checked) { background: var(--strong); color: var(--strong-ink); }
-.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sr-bar .a11y-skip-link { flex: none; margin: 0; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sr-bar .a11y-sr-filter > input {
+  position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0; overflow: hidden; clip-path: inset(50%); border: 0; white-space: nowrap;
+}
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sr-bar .a11y-sr-filter:has(:checked) { border-color: var(--solid); background: var(--solid); color: var(--solid-ink); }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sr-bar .a11y-sr-filter:hover { background: var(--hover); border-color: var(--hover); color: var(--hover-ink); }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sr-bar .a11y-sr-filter:has(:focus-visible) { outline: 2px solid var(--focus); outline-offset: -2px; }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sr .a11y-skip-link { margin-bottom: 0; }
 
 /* The announcements: the number in the margin, the words at 26px, a rule
@@ -2849,15 +2822,11 @@
 
 @container a11y-shell (max-width: 640px) {
   .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-hist-promise { font-size: 22px; }
-  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sr-bar .a11y-sr-play { width: 100%; justify-content: center; }
   .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sr-row .a11y-sr-line-text { font-size: 22px; }
 }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sr .a11y-show-all { margin-bottom: 30px; }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sr-bar .a11y-sr-play:enabled { background: var(--strong); color: var(--strong-ink); }
-.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sr-bar .a11y-sr-play:enabled:hover { background: var(--hl-cap-a); color: #000; }
-@container a11y-shell (max-width: 640px) {
-  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sr-bar .a11y-ai-toggle { flex: 1 1 100%; min-width: 0; padding-block: 8px; border-radius: 20px; }
-}
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sr-bar .a11y-sr-play:enabled:hover { background: var(--hover); border-color: var(--hover); color: var(--hover-ink); }
 
 /* THE SPREAD WORDS AND STACKED NUMBERS are gone (user's instruction,
    20 Nov 2026: "delete, this is a design slop"): no word spread letter by letter along the top or the
@@ -3379,3 +3348,213 @@
 @media print {
   .a11y-widget-biz .a11y-note.a11y-note-warning { background: none; border: 1px solid #000; }
 }
+
+/* ═══ BUTTONS (user's instruction, 23 Nov 2026: "this button and every
+   other button except email need to look like this", with a reference) ═══
+   Every button is one of two sizes of the same shape: a 1px solid ink edge
+   and 10px corners, on the paper.
+   - Ordinary: 34px tall, 18px words, 4px 12px padding. This is every
+     action that used to be a dotted pill (Show all, Copy summary, Download
+     as CSV, Export the list, Show the checklist, See the finding, Download
+     in PDF, Behind a login, Play, the vision buttons, the professional
+     report's jump, filters and tabs) and the conformance
+     report's button, which was a 128px block.
+   - Large: 59px tall, 32px words, 0 20px padding, for the one action that
+     starts the work, Start the scan (a 120px block until now).
+   The main action and a chosen button (pressed, current, the vision
+   simulator's active one) are solid ink with paper words; dark mode's
+   --solid and --solid-ink keep them grey and white there. Hover stays mint
+   (--hover), the user's hover since 21 Nov 2026; disabled stays dashed.
+   Not buttons in this sense, and left as they are: Send this report (the
+   mint email action), whole-line rows (findings, top findings, design
+   notes, transcript lines), accordion heads, the legal tiles, the opening
+   question cards, the conversations list, switches and the chat box's own
+   buttons. Three roots, so these win over the per-component sizes.
+   One-line fields take the same edge (same day, a second reference, "take
+   other elements needed for design library styling"): the bare input and
+   the Language select are 1px solid ink with 10px corners, where they were
+   1px dotted with 14px (21 Nov 2026) and the select's dotted edge of
+   18 Nov. Fields that hold their own label (the scan form's rows, the
+   email field, the statement's fields), textareas and the chat box keep
+   their look. */
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-btn, .a11y-show-all, .a11y-blockflag-jump, .a11y-findings-csv, .a11y-undecided-export, .a11y-login-toggle, .a11y-sim-btn, .a11y-ra-pdf, .a11y-sr-play, .a11y-skip-link, .a11y-pro-jump, .a11y-mode-btn, .a11y-tab):not(.a11y-ra-send, .a11y-chat-box *, .a11y-switch-track) {
+  display: inline-flex; align-items: center; justify-content: flex-start; gap: 0.45em;
+  width: auto; max-width: 100%; min-height: 34px; box-sizing: border-box; padding: 4px 12px;
+  border: 1px solid var(--btn-fill, var(--ink)); border-radius: 10px;
+  font-size: 18px; font-weight: 400; line-height: 1.2; letter-spacing: 0.01em; text-align: start; white-space: normal;
+}
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-acr .a11y-section-head > .a11y-acr-make { width: auto; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-tester > .a11y-url-submit > .a11y-btn.a11y-btn-primary {
+  justify-self: start; min-height: 59px; padding: 0 20px; font-size: 32px; letter-spacing: -0.005em;
+}
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-btn.a11y-btn-primary, .a11y-sim-btn-active, .a11y-mode-btn-active, .a11y-tab[aria-selected="true"], .a11y-btn[aria-pressed="true"], .a11y-btn[aria-current]):enabled:not(:hover) {
+  border-color: var(--solid); background: var(--solid); color: var(--solid-ink);
+}
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-btn, .a11y-show-all, .a11y-blockflag-jump, .a11y-findings-csv, .a11y-undecided-export, .a11y-login-toggle, .a11y-sim-btn, .a11y-ra-pdf, .a11y-sr-play, .a11y-skip-link, .a11y-pro-jump, .a11y-mode-btn, .a11y-tab):not(.a11y-ra-send, .a11y-chat-box *):enabled:hover {
+  border-color: var(--hover); background: var(--hover); color: var(--hover-ink);
+}
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-btn, .a11y-show-all, .a11y-findings-csv, .a11y-sim-btn, .a11y-sr-play):disabled:disabled { border-style: dashed; border-color: var(--ink); }
+/* The chat box's buttons (Voice control, Send) and the conversations
+   panel's New chat, Report a barrier and Language take the same shape. On
+   a phone the chat box keeps its round send arrow. Report a barrier keeps
+   its mint, as Send this report does. */
+@media (min-width: 641px) {
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-chat-box .a11y-btn {
+    min-height: 34px; padding: 4px 12px; border: 1px solid var(--btn-fill, var(--ink)); border-radius: 10px;
+    font-size: 18px; line-height: 1.2; letter-spacing: 0.01em;
+  }
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-chat-box .a11y-btn:disabled { border-style: dashed; border-color: var(--ink); }
+}
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-chats-new, .a11y-lang-toggle) {
+  min-height: 34px; padding: 4px 12px; border: 1px solid var(--btn-fill, var(--ink)); border-radius: 10px;
+  font-size: 18px; line-height: 1.2; letter-spacing: 0.01em;
+}
+@media (max-width: 640px) {
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-tester > .a11y-url-submit > .a11y-btn.a11y-btn-primary { min-height: 52px; font-size: 26px; }
+}
+
+/* ═══ THE REPORT'S SECTIONS AS A PAGE OF TEXT (user's instruction,
+   23 Nov 2026, "make the typography, titles and lines between sections of
+   report like this", with a reference) ═════════════════════════════════
+   Measured on the reference: a section title is the body's own size in
+   the sans, Regular, at line-height 1.25, standing under a 1px solid rule
+   that runs the full width, 6.5px under the rule and 13px over its first
+   line of text; the body is a serif at the same size, line-height 1.2,
+   paragraphs one line apart. Here: the rule is the section's top edge
+   (so it spans the accordion triangle and the CSV button too), the title
+   is 32px Regular PP Telegraf (the report's prose size; 22px under 640px,
+   the phone's), 8px under the rule and 16px over what follows, with no
+   negative tracking; the line under each title and a section's plain
+   paragraphs are Serrif at the same 32px/1.2 (Light, the only cut we
+   have), one line apart. Between sections, 65px above the rule (user's
+   instruction, same day, "tighten it"): the reference stands about 50px
+   from the last line to the rule at 24px type, which is 65px at our 32px;
+   it was 100px from 18 Nov 2026. Sections with no visible title (the report actions,
+   the notes, the closing call) get no rule. */
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-report > * + * { margin-top: 65px; }
+/* A section's last control keeps no margin under it: an inline-flex
+   button's margin does not collapse, and Show the checklist's 18px made
+   that gap 83px (its closed panel, hidden, is the last child). */
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-report > .a11y-section > :is(:last-child, :has(+ [hidden]:last-child)) { margin-bottom: 0; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-report > :has(h2:is(.a11y-section-title, .a11y-top-title, .a11y-legal-title, .a11y-results-title):not(.a11y-sr-only)) {
+  border-top: 1px solid var(--ink); padding-top: 8px;
+}
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-report h2:is(.a11y-section-title, .a11y-top-title, .a11y-legal-title, .a11y-results-title):not(.a11y-sr-only) {
+  margin-top: 0; margin-bottom: 16px; font-family: "PP Telegraf", sans-serif;
+  font-size: 32px; font-weight: 400; line-height: 1.25; letter-spacing: 0;
+}
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-report h2.a11y-accordion-title .a11y-accordion-head { font-size: 32px; line-height: 1.25; letter-spacing: 0; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-report .a11y-findings-head { margin-top: 0; }
+/* The conformance report's accordion row drew its own rule 9px under the
+   section's: one rule per section. */
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-report > .a11y-section .a11y-section-head > .a11y-accordion-row { border-top: 0; padding-top: 0; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-report :is(.a11y-section-desc, .a11y-section > p) {
+  font-family: "Serrif", Georgia, serif; font-weight: 300;
+  font-size: 32px; line-height: 1.2; letter-spacing: 0; margin-top: 0; margin-bottom: 1.2em;
+}
+@media (max-width: 640px) {
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-report h2:is(.a11y-section-title, .a11y-top-title, .a11y-legal-title, .a11y-results-title):not(.a11y-sr-only),
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-report h2.a11y-accordion-title .a11y-accordion-head,
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-report :is(.a11y-section-desc, .a11y-section > p) { font-size: 22px; }
+}
+
+/* ═══ THE OPENING QUESTIONS AS FILLED CARDS (user's instruction, 23 Nov
+   2026, "make these look like this", with a reference of filled info
+   cards) ═════════════════════════════════════════════════════════════
+   Each card is a filled ground with no edge, 20px corners:
+   a small label at the top (the group, 15px Regular), the question under
+   it 16px down as the card's large text (20px Regular, 1.2, with 22px
+   inside the card: the cards are 225px wide at 1440px, and at 26px and
+   22px 'ticket' and 'accessibility' broke inside the word), and the
+   foot holding the criterion number at the label's size and weight
+   (they were set to match since 21 Nov 2026) and the press. The ground is
+   --tile (#f0efe8, dark #1c1c1e); Report a barrier keeps its mint. They
+   were on the page's paper with a dotted edge, the tile only on hover.
+   Hover and keyboard focus now draw a 1px ink edge inside the card and
+   show "Ask this" as the ordinary solid button (34px, 10px corners) at
+   the bottom right; Report a barrier shows "Start a report" at all times
+   and turns no colour. Disabled keeps the dashed edge. */
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-prompts .a11y-prompt {
+  --ink: var(--tile-ink); --paper: var(--tile);
+  border: 0; border-radius: 20px; background: var(--tile); color: var(--tile-ink); padding: 22px; gap: 16px;
+}
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-prompts .a11y-prompt:has(> .a11y-prompt-q:enabled:is(:hover, :focus-visible)) {
+  --ink: var(--tile-ink); --paper: var(--tile);
+  background: var(--tile); color: var(--tile-ink); box-shadow: inset 0 0 0 1px var(--tile-ink);
+}
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-prompts .a11y-prompt:has(> .a11y-prompt-q:disabled) { border: 0; box-shadow: none; outline: 1px dashed var(--tile-ink); outline-offset: -1px; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-prompts .a11y-prompt-q { gap: 16px; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-prompts .a11y-prompt-label {
+  font-size: 15px; font-weight: 400; line-height: 1.3; letter-spacing: 0.01em;
+}
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-prompts .a11y-prompt-ask {
+  font-size: 20px; font-weight: 400; line-height: 1.2; letter-spacing: 0;
+}
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-prompts .a11y-prompt-wcag {
+  font-size: 15px; font-weight: 400; line-height: 1.3; letter-spacing: 0.01em;
+}
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-prompts .a11y-prompt-go {
+  right: 22px; bottom: 22px; min-height: 34px; padding: 4px 12px; box-sizing: border-box;
+  border-radius: 10px; background: var(--solid); color: var(--solid-ink);
+  font-size: 18px; line-height: 1.2; letter-spacing: 0.01em;
+}
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-prompts .a11y-prompt.a11y-prompt-barrier {
+  --ink: #000; --paper: var(--barrier);
+  background: var(--barrier); color: #000; border: 0;
+}
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-prompts .a11y-prompt.a11y-prompt-barrier:has(> .a11y-prompt-q:enabled:is(:hover, :focus-visible)) {
+  --ink: #000; --paper: var(--barrier);
+  background: var(--barrier); color: #000; box-shadow: inset 0 0 0 1px #000;
+}
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-prompts .a11y-prompt-barrier .a11y-prompt-go,
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-prompts .a11y-prompt-barrier .a11y-prompt-q:enabled:is(:hover, :focus-visible) .a11y-prompt-go { background: #000; color: #fff; }
+@media (max-width: 640px) {
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-chat .a11y-prompts .a11y-prompt { padding: 16px; border-radius: 18px; }
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-chat .a11y-prompts .a11y-prompt-q { gap: 8px; }
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-chat .a11y-prompts .a11y-prompt-ask { font-size: 19px; line-height: 1.3; }
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-chat .a11y-prompts .a11y-prompt-go { display: none; }
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-chat .a11y-prompts .a11y-prompt-barrier .a11y-prompt-go { display: flex; margin-top: 10px; min-height: 30px; font-size: 15px; }
+}
+/* 4px between the buttons of a row (user's instruction, 23 Nov 2026, "add
+   space between buttons like 4px"): the professional report's filters
+   and its tabs touched. */
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-mode, .a11y-tablist) { display: flex; flex-wrap: wrap; align-items: center; gap: 4px; }
+
+/* ═══ THE SCAN FORM IN THE BUTTON AND FIELD STYLE (user's instruction,
+   23 Nov 2026, "why are these designed this way? this is a slop", on the
+   dotted rows with big toggles and the "On" word) ═══════════════════════
+   Each choice is the ordinary button (34px, 18px words, 1px solid ink
+   edge, 10px corners): This page / Whole site and For everyone /
+   Professionals are two rows of two, 4px apart, the chosen one solid, as
+   the report's filters and tabs are; AI review is one such button, a
+   checkbox, solid with the check mark when on. The radio and the checkbox
+   are clipped, not removed: they are still the controls, and the label is
+   what is pressed; in forced colours they come back beside the words.
+   The address and the language are fields in the same edge: 1px solid
+   ink, 10px corners, their label inside at the top. This replaces the
+   dotted 20px rows (21 Nov) and the 64 x 36 toggles (18 Nov). */
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-tester .a11y-tester-choices {
+  display: flex; flex-wrap: wrap; align-items: center; gap: 4px; margin-top: 12px;
+}
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-tester .a11y-tester-rows { gap: 12px; margin-top: 12px; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-tester .a11y-tester-rows > .a11y-tester-choices { margin-top: 0; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-tester .a11y-seg {
+  position: relative; display: inline-flex; align-items: center; gap: 0.45em; flex: 0 1 auto;
+  box-sizing: border-box; min-width: 0; min-height: 34px; padding: 4px 12px;
+  border: 1px solid var(--btn-fill, var(--ink)); border-radius: 10px; background: var(--btn-fill, var(--paper)); color: var(--ink);
+  font-size: 18px; font-weight: 400; line-height: 1.2; letter-spacing: 0.01em; cursor: pointer;
+}
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-tester .a11y-seg > input {
+  position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0; overflow: hidden; clip-path: inset(50%); border: 0; white-space: nowrap;
+}
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-tester .a11y-seg:has(> input:checked) { border-color: var(--solid); background: var(--solid); color: var(--solid-ink); }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-tester .a11y-seg:not(.a11y-seg-disabled):hover { border-color: var(--hover); background: var(--hover); color: var(--hover-ink); }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-tester .a11y-seg:has(> input:focus-visible) { outline: 2px solid var(--focus); outline-offset: -2px; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-tester .a11y-seg.a11y-seg-disabled { border-style: dashed; border-color: var(--ink); cursor: not-allowed; box-shadow: none; }
+@media (forced-colors: active) {
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-tester .a11y-seg > input { position: static; width: auto; height: auto; margin: 0; overflow: visible; clip-path: none; appearance: auto; -webkit-appearance: auto; }
+}
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-tester :is(.a11y-input, .a11y-tester-rows > .a11y-select2) {
+  padding: 10px 14px 12px; border: 1px solid var(--ink); border-radius: 10px;
+}
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-tester :is(.a11y-input-label, .a11y-tester-rows .a11y-select2-label) { font-size: 15px; }
