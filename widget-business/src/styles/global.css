@@ -3419,7 +3419,7 @@
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-btn, .a11y-show-all, .a11y-blockflag-jump, .a11y-findings-csv, .a11y-undecided-export, .a11y-login-toggle, .a11y-sim-btn, .a11y-ra-pdf, .a11y-sr-play, .a11y-skip-link, .a11y-pro-jump, .a11y-mode-btn, .a11y-tab):not(.a11y-ra-send, .a11y-chat-box *):enabled:hover {
   border-color: var(--hover); background: var(--hover); color: var(--hover-ink);
 }
-.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-btn, .a11y-show-all, .a11y-findings-csv, .a11y-sim-btn, .a11y-sr-play):disabled { border-style: dashed; border-color: var(--ink); }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-btn, .a11y-show-all, .a11y-findings-csv, .a11y-sim-btn, .a11y-sr-play):disabled:disabled { border-style: dashed; border-color: var(--ink); }
 /* The chat box's buttons (Voice control, Send) and the conversations
    panel's New chat, Report a barrier and Language take the same shape. On
    a phone the chat box keeps its round send arrow. Report a barrier keeps
