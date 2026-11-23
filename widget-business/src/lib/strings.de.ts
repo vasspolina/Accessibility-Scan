@@ -432,6 +432,7 @@ export const STRINGS_DE: Record<string, string> = {
   "Skip the transcript": "Transkript überspringen",
   "What you’d hear": "Was Sie hören würden",
   "Note": "Hinweis",
+  "Warning": "Warnung",
   "Announcement order": "Reihenfolge der Ansagen",
   "Play aloud from this line": "Ab dieser Zeile vorlesen",
   "Show all {count} with problems": "Alle {count} mit Problemen anzeigen",

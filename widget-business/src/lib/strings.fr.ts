@@ -435,6 +435,7 @@ export const STRINGS_FR: Record<string, string> = {
   "Skip the transcript": "Passer la transcription",
   "What you’d hear": "Ce que vous entendriez",
   "Note": "Remarque",
+  "Warning": "Avertissement",
   "Announcement order": "Ordre des annonces",
   "Play aloud from this line": "Lire à voix haute à partir de cette ligne",
   "Show all {count} with problems": "Afficher les {count} lignes qui posent problème",

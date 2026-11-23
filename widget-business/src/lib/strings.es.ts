@@ -435,6 +435,7 @@ export const STRINGS_ES: Record<string, string> = {
   "Skip the transcript": "Saltar la transcripción",
   "What you’d hear": "Lo que oiría",
   "Note": "Nota",
+  "Warning": "Aviso",
   "Announcement order": "Orden de los anuncios",
   "Play aloud from this line": "Reproducir en voz alta desde esta línea",
   "Show all {count} with problems": "Mostrar los {count} con problemas",
