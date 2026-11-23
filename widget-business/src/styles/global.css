@@ -665,7 +665,6 @@
 .a11y-widget-biz .a11y-accordion-title .a11y-accordion-head:enabled:hover { background: none; color: var(--ink); }
 .a11y-widget-biz .a11y-accordion-chevron { flex: none; width: 0.6em; height: 0.6em; margin-inline-start: auto; }
 .a11y-widget-biz .a11y-accordion-head[aria-expanded="true"] .a11y-accordion-chevron { transform: rotate(180deg); }
-.a11y-widget-biz .a11y-w22-toggle { display: flex; align-items: center; gap: 0.6em; text-align: start; }
 .a11y-widget-biz .a11y-section-count { font-size: 22px; letter-spacing: 0.01em; font-weight: 400; }
 /* A section title's count is a superior figure (user's instruction, 22 Nov
    2026, "design number 1"): raised from the baseline to the title's top,
@@ -2730,11 +2729,8 @@
 @media (max-width: 640px) {
   .a11y-widget-biz .a11y-w22 .a11y-next-list { grid-template-columns: minmax(0, 1fr); }
 }
-.a11y-widget-biz .a11y-w22 > .a11y-w22-panel { display: flex; flex-wrap: wrap; align-items: center; gap: 12px 16px; margin-top: 65px; }
-.a11y-widget-biz .a11y-w22 > .a11y-w22-panel > .a11y-w22-panel-title { margin: 0; font-size: 22px; font-weight: 400; line-height: 1.2; letter-spacing: 0.01em; }
-.a11y-widget-biz .a11y-w22 > .a11y-w22-panel > .a11y-w22-toggle { font-size: 18px; }
-.a11y-widget-biz .a11y-w22 > .a11y-w22-panel > div { flex: 1 1 100%; min-width: 0; margin-top: 12px; }
-.a11y-widget-biz .a11y-w22 > .a11y-w22-panel > div[hidden] { display: none; }
+/* The items stand open under the sentence (23 Nov 2026), 28px down. */
+.a11y-widget-biz .a11y-w22 > .a11y-w22-panel { display: block; margin-top: 28px; }
 @media (max-width: 640px) {
   .a11y-widget-biz .a11y-w22 > .a11y-next > .a11y-next-desc { font-size: 27px; letter-spacing: 0; }
 }
@@ -3421,7 +3417,8 @@
    - Ordinary: 34px tall, 18px words, 4px 12px padding. This is every
      action that used to be a dotted pill (Show all, Copy summary, Download
      as CSV, Export the list, Show the checklist, See the finding, Download
-     in PDF, Behind a login, Play, the vision buttons) and the conformance
+     in PDF, Behind a login, Play, the vision buttons, the professional
+     report's jump, filters and tabs) and the conformance
      report's button, which was a 128px block.
    - Large: 59px tall, 32px words, 0 20px padding, for the one action that
      starts the work, Start the scan (a 120px block until now).
@@ -3441,7 +3438,7 @@
    18 Nov. Fields that hold their own label (the scan form's rows, the
    email field, the statement's fields), textareas and the chat box keep
    their look. */
-.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-btn, .a11y-show-all, .a11y-blockflag-jump, .a11y-findings-csv, .a11y-undecided-export, .a11y-login-toggle, .a11y-w22-toggle, .a11y-sim-btn, .a11y-ra-pdf, .a11y-sr-play, .a11y-skip-link):not(.a11y-ra-send, .a11y-chat-box *, .a11y-switch-track) {
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-btn, .a11y-show-all, .a11y-blockflag-jump, .a11y-findings-csv, .a11y-undecided-export, .a11y-login-toggle, .a11y-sim-btn, .a11y-ra-pdf, .a11y-sr-play, .a11y-skip-link, .a11y-pro-jump, .a11y-mode-btn, .a11y-tab):not(.a11y-ra-send, .a11y-chat-box *, .a11y-switch-track) {
   display: inline-flex; align-items: center; justify-content: flex-start; gap: 0.45em;
   width: auto; max-width: 100%; min-height: 34px; box-sizing: border-box; padding: 4px 12px;
   border: 1px solid var(--btn-fill, var(--ink)); border-radius: 10px;
@@ -3451,10 +3448,10 @@
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-tester > .a11y-url-submit > .a11y-btn.a11y-btn-primary {
   justify-self: start; min-height: 59px; padding: 0 20px; font-size: 32px; letter-spacing: -0.005em;
 }
-.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-btn.a11y-btn-primary, .a11y-sim-btn-active, .a11y-btn[aria-pressed="true"], .a11y-btn[aria-current]):enabled:not(:hover) {
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-btn.a11y-btn-primary, .a11y-sim-btn-active, .a11y-mode-btn-active, .a11y-tab[aria-selected="true"], .a11y-btn[aria-pressed="true"], .a11y-btn[aria-current]):enabled:not(:hover) {
   border-color: var(--solid); background: var(--solid); color: var(--solid-ink);
 }
-.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-btn, .a11y-show-all, .a11y-blockflag-jump, .a11y-findings-csv, .a11y-undecided-export, .a11y-login-toggle, .a11y-w22-toggle, .a11y-sim-btn, .a11y-ra-pdf, .a11y-sr-play, .a11y-skip-link):not(.a11y-ra-send, .a11y-chat-box *):enabled:hover {
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-btn, .a11y-show-all, .a11y-blockflag-jump, .a11y-findings-csv, .a11y-undecided-export, .a11y-login-toggle, .a11y-sim-btn, .a11y-ra-pdf, .a11y-sr-play, .a11y-skip-link, .a11y-pro-jump, .a11y-mode-btn, .a11y-tab):not(.a11y-ra-send, .a11y-chat-box *):enabled:hover {
   border-color: var(--hover); background: var(--hover); color: var(--hover-ink);
 }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-btn, .a11y-show-all, .a11y-findings-csv, .a11y-sim-btn, .a11y-sr-play):disabled { border-style: dashed; border-color: var(--ink); }
@@ -3500,10 +3497,10 @@
    button's margin does not collapse, and Show the checklist's 18px made
    that gap 83px (its closed panel, hidden, is the last child). */
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-report > .a11y-section > :is(:last-child, :has(+ [hidden]:last-child)) { margin-bottom: 0; }
-.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-report > :has(h2:is(.a11y-section-title, .a11y-top-title, .a11y-legal-title):not(.a11y-sr-only)) {
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-report > :has(h2:is(.a11y-section-title, .a11y-top-title, .a11y-legal-title, .a11y-results-title):not(.a11y-sr-only)) {
   border-top: 1px solid var(--ink); padding-top: 8px;
 }
-.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-report h2:is(.a11y-section-title, .a11y-top-title, .a11y-legal-title):not(.a11y-sr-only) {
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-report h2:is(.a11y-section-title, .a11y-top-title, .a11y-legal-title, .a11y-results-title):not(.a11y-sr-only) {
   margin-top: 0; margin-bottom: 16px; font-family: "PP Telegraf", sans-serif;
   font-size: 32px; font-weight: 400; line-height: 1.25; letter-spacing: 0;
 }
@@ -3517,7 +3514,69 @@
   font-size: 32px; line-height: 1.2; letter-spacing: 0; margin-top: 0; margin-bottom: 1.2em;
 }
 @media (max-width: 640px) {
-  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-report h2:is(.a11y-section-title, .a11y-top-title, .a11y-legal-title):not(.a11y-sr-only),
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-report h2:is(.a11y-section-title, .a11y-top-title, .a11y-legal-title, .a11y-results-title):not(.a11y-sr-only),
   .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-report h2.a11y-accordion-title .a11y-accordion-head,
   .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-report :is(.a11y-section-desc, .a11y-section > p) { font-size: 22px; }
 }
+
+/* ═══ THE OPENING QUESTIONS AS FILLED CARDS (user's instruction, 23 Nov
+   2026, "make these look like this", with a reference of filled info
+   cards) ═════════════════════════════════════════════════════════════
+   Each card is a filled ground with no edge, 20px corners:
+   a small Medium label at the top (the group, 15px), the question under
+   it 16px down as the card's large text (20px Regular, 1.2, with 22px
+   inside the card: the cards are 225px wide at 1440px, and at 26px and
+   22px 'ticket' and 'accessibility' broke inside the word), and the
+   foot holding the criterion number at the label's size and weight
+   (they were set to match since 21 Nov 2026) and the press. The ground is
+   --tile (#f0efe8, dark #1c1c1e); Report a barrier keeps its mint. They
+   were on the page's paper with a dotted edge, the tile only on hover.
+   Hover and keyboard focus now draw a 1px ink edge inside the card and
+   show "Ask this" as the ordinary solid button (34px, 10px corners) at
+   the bottom right; Report a barrier shows "Start a report" at all times
+   and turns no colour. Disabled keeps the dashed edge. */
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-prompts .a11y-prompt {
+  --ink: var(--tile-ink); --paper: var(--tile);
+  border: 0; border-radius: 20px; background: var(--tile); color: var(--tile-ink); padding: 22px; gap: 16px;
+}
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-prompts .a11y-prompt:has(> .a11y-prompt-q:enabled:is(:hover, :focus-visible)) {
+  --ink: var(--tile-ink); --paper: var(--tile);
+  background: var(--tile); color: var(--tile-ink); box-shadow: inset 0 0 0 1px var(--tile-ink);
+}
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-prompts .a11y-prompt:has(> .a11y-prompt-q:disabled) { border: 0; box-shadow: none; outline: 1px dashed var(--tile-ink); outline-offset: -1px; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-prompts .a11y-prompt-q { gap: 16px; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-prompts .a11y-prompt-label {
+  font-size: 15px; font-weight: 500; line-height: 1.3; letter-spacing: 0.01em;
+}
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-prompts .a11y-prompt-ask {
+  font-size: 20px; font-weight: 400; line-height: 1.2; letter-spacing: 0;
+}
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-prompts .a11y-prompt-wcag {
+  font-size: 15px; font-weight: 500; line-height: 1.3; letter-spacing: 0.01em;
+}
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-prompts .a11y-prompt-go {
+  right: 22px; bottom: 22px; min-height: 34px; padding: 4px 12px; box-sizing: border-box;
+  border-radius: 10px; background: var(--solid); color: var(--solid-ink);
+  font-size: 18px; line-height: 1.2; letter-spacing: 0.01em;
+}
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-prompts .a11y-prompt.a11y-prompt-barrier {
+  --ink: #000; --paper: var(--barrier);
+  background: var(--barrier); color: #000; border: 0;
+}
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-prompts .a11y-prompt.a11y-prompt-barrier:has(> .a11y-prompt-q:enabled:is(:hover, :focus-visible)) {
+  --ink: #000; --paper: var(--barrier);
+  background: var(--barrier); color: #000; box-shadow: inset 0 0 0 1px #000;
+}
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-prompts .a11y-prompt-barrier .a11y-prompt-go,
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-prompts .a11y-prompt-barrier .a11y-prompt-q:enabled:is(:hover, :focus-visible) .a11y-prompt-go { background: #000; color: #fff; }
+@media (max-width: 640px) {
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-chat .a11y-prompts .a11y-prompt { padding: 16px; border-radius: 18px; }
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-chat .a11y-prompts .a11y-prompt-q { gap: 8px; }
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-chat .a11y-prompts .a11y-prompt-ask { font-size: 19px; line-height: 1.3; }
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-chat .a11y-prompts .a11y-prompt-go { display: none; }
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-chat .a11y-prompts .a11y-prompt-barrier .a11y-prompt-go { display: flex; margin-top: 10px; min-height: 30px; font-size: 15px; }
+}
+/* 4px between the buttons of a row (user's instruction, 23 Nov 2026, "add
+   space between buttons like 4px"): the professional report's filters
+   and its tabs touched. */
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-mode, .a11y-tablist) { display: flex; flex-wrap: wrap; align-items: center; gap: 4px; }

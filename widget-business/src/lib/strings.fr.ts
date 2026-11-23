@@ -161,7 +161,6 @@ export const STRINGS_FR: Record<string, string> = {
   "Fix soon": "À corriger bientôt",
   "Fix eventually": "À corriger plus tard",
   "Minor polish": "Finition mineure",
-  "The six new items": "Les six nouveautés",
   "Save as PDF": "Enregistrer en PDF",
   "Email me this report": "M’envoyer ce rapport par e-mail",
   "Your email address": "Votre adresse e-mail",

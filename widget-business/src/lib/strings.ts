@@ -214,7 +214,6 @@ export const CHROME_KEYS: string[] = [
   "Fix soon",
   "Fix eventually",
   "Minor polish",
-  "The six new items",
   "Save as PDF",
   "Email me this report",
   "Your email address",

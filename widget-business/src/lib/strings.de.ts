@@ -158,7 +158,6 @@ export const STRINGS_DE: Record<string, string> = {
   "Fix soon": "Bald beheben",
   "Fix eventually": "Irgendwann beheben",
   "Minor polish": "Kleiner Schliff",
-  "The six new items": "Die sechs neuen Punkte",
   "Save as PDF": "Als PDF speichern",
   "Email me this report": "Bericht per E-Mail schicken",
   "Your email address": "Ihre E-Mail-Adresse",
