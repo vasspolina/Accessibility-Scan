@@ -3960,3 +3960,48 @@
   .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-dn-list > .a11y-dn-link { border: 1px solid CanvasText; }
   .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-dn-list > .a11y-dn-link[aria-selected="true"] { border: 4px solid CanvasText; }
 }
+
+/* ═══ THE OPENING QUESTIONS AS THE NOTE CARDS (user's instruction, 23 Nov
+   2026, "design these as tabs as well but make dotted outline and add on
+   hover color, delete new scan") ═════════════════════════════════════════
+   The question cards take the design-note cards' set, on the page's paper:
+   a 1px dotted ink edge at rest, 20px corners; the group as the small
+   leaning badge (mono 15px, solid ink with the card's ground for its
+   words); the question at 20px, every other card in Serrif Light. Hover
+   and keyboard focus fill the card with a plate in turn (sky, pink,
+   yellow; black words, white on the deep dark plates) and show "Ask this".
+   Report a barrier keeps its mint and no edge (user's instruction, 21 Nov
+   2026), with its group as the same badge. Disabled is a dashed edge.
+   "New scan" over the cards is gone from the screen and kept as the
+   page's heading for screen readers. */
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-prompts .a11y-prompt.a11y-prompt:not(.a11y-prompt-barrier) {
+  --ink: inherit; --paper: inherit;
+  background: transparent; color: var(--ink); border: 1px dotted var(--ink); box-shadow: none;
+}
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-prompts .a11y-prompt.a11y-prompt:not(.a11y-prompt-barrier):has(> .a11y-prompt-q:enabled:is(:hover, :focus-visible)) {
+  --ink: var(--plate-text); --paper: var(--card-plate, var(--plate-1));
+  background: var(--card-plate, var(--plate-1)); color: var(--plate-text); border-color: var(--plate-text); box-shadow: none;
+}
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-prompts .a11y-prompt.a11y-prompt:not(.a11y-prompt-barrier):has(> .a11y-prompt-q:disabled) { border: 1px dashed var(--ink); outline: 0; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-prompts .a11y-prompt .a11y-prompt-label {
+  align-self: flex-start; width: fit-content; padding: 2px 8px; border-radius: 8px;
+  background: var(--ink); color: var(--paper);
+  font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  font-size: 15px; line-height: 1.3; letter-spacing: 0; white-space: nowrap;
+  rotate: var(--label-tilt, -2deg);
+}
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-prompts .a11y-prompt:nth-child(3n+2) { --label-tilt: 1.5deg; --card-plate: var(--plate-3); }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-prompts .a11y-prompt:nth-child(3n) { --label-tilt: -1deg; --card-plate: var(--plate-4); }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-prompts .a11y-prompt:nth-child(even) .a11y-prompt-ask {
+  font-family: "Serrif", Georgia, "Times New Roman", serif; font-weight: 300; font-synthesis: none; letter-spacing: 0.005em;
+}
+@media print {
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-prompts .a11y-prompt .a11y-prompt-label { rotate: none; }
+}
+/* With its title clipped the head holds nothing to see, so it gives up the
+   48px it kept for the title's line and the space under it. */
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-newscan-head { min-height: 0; margin-bottom: 0; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-newscan-head .a11y-newscan-title {
+  position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0; border: 0;
+  overflow: hidden; clip: rect(0 0 0 0); clip-path: inset(50%); white-space: nowrap;
+}
