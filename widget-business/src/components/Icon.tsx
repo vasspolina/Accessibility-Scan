@@ -54,14 +54,6 @@ const PATHS = {
     "M15 8H17V19H15z",
     "M16,22a1.5,1.5,0,1,0,1.5,1.5A1.5,1.5,0,0,0,16,22Z",
   ],
-  /* The marks alone, for an enamel pin (Pin.tsx), whose round body is the
-     ring: these are the inner paths of Carbon's own `warning` and
-     `information` above, without their circles, so no shape is drawn here. */
-  "warning--marks": ["M15 8H17V19H15z", "M16,22a1.5,1.5,0,1,0,1.5,1.5A1.5,1.5,0,0,0,16,22Z"],
-  "information--marks": [
-    "M17 22 17 14 13 14 13 16 15 16 15 22 12 22 12 24 20 24 20 22 17 22z",
-    "M16,8a1.5,1.5,0,1,0,1.5,1.5A1.5,1.5,0,0,0,16,8Z",
-  ],
   "warning--alt": [
     "M16,23a1.5,1.5,0,1,0,1.5,1.5A1.5,1.5,0,0,0,16,23Z",
     "M15 12H17V21H15z",

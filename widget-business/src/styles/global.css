@@ -4074,15 +4074,17 @@
    badges when it makes sense", "like for warning icon on this bubble", with
    a photo of enamel pins on a knit as the reference) ═══════════════════════
    A notice's icon is a pin (Pin.tsx): a round body in a plate colour,
-   leaning 8 degrees, with a black plated line, a silver rim, a soft shine
-   at the upper left where the light falls, and a shadow cast down to the
-   right. The marks inside are the Carbon icon in black. The fills are the
-   light plates pinned in both themes, as the opening questions' badge is:
-   warning yellow, error pink, info sky, success mint, black marks on each
-   at 11:1 or better; the shine sits beside the marks, never under them.
-   Only a pin's metal and shadow use greys: they are the object, not a tint
-   on words. Aria-hidden: the notice's title says what the pin shows. In
-   forced colours the fill and shadows drop and the line stays. */
+   leaning 8 degrees, with a black plated line, a silver rim and a soft
+   shine at the upper left where the light falls. No cast shadow (user's
+   instruction, the same day, "no drop shadow"). The mark inside is a
+   Serrif letter, "!" or "i" ("use serif font exclamation"); success keeps
+   Carbon's checkmark. The fills are the light plates pinned in both
+   themes, as the opening questions' badge is: warning yellow, error pink,
+   info sky, success mint, black marks on each at 11:1 or better; the shine
+   sits beside the mark, never under it. Only a pin's metal uses greys: it
+   is the object, not a tint on words. Aria-hidden: the notice's title says
+   what the pin shows. In forced colours the fill and rim drop and the
+   line stays. */
 .a11y-widget-biz .a11y-pin {
   --pin-fill: #f8ff58;
   display: inline-grid; place-items: center; flex: none; box-sizing: border-box;
@@ -4091,28 +4093,84 @@
   background:
     radial-gradient(circle at 26% 22%, rgb(255 255 255 / 0.7) 0 9%, rgb(255 255 255 / 0) 24%),
     var(--pin-fill);
-  box-shadow:
-    0 0 0 0.045em #d6d6d6,
-    0 0 0 0.07em #7d7d7d,
-    inset 0 -0.07em 0.05em rgb(0 0 0 / 0.16),
-    0.07em 0.13em 0.14em rgb(0 0 0 / 0.38);
+  box-shadow: 0 0 0 0.045em #d6d6d6, 0 0 0 0.07em #7d7d7d;
   rotate: -8deg;
 }
 /* Carbon's marks are drawn for a 1px line at 16px; at pin size they read as
-   hairlines, so the paths take a stroke in their own colour, as the
-   reference's enamel letters are cut bold. */
+   hairlines, so the paths take a stroke in their own colour. */
 .a11y-widget-biz .a11y-pin > svg { width: 0.8em; height: 0.8em; overflow: visible; }
 .a11y-widget-biz .a11y-pin > svg path { stroke: currentColor; stroke-width: 1.6px; stroke-linejoin: round; }
+/* The serif letter: Serrif's only cut (Light), at most of the pin's height,
+   set solid so the grid centres the glyph and not a tall line box. */
+.a11y-widget-biz .a11y-pin > .a11y-pin-glyph {
+  font-family: "Serrif", Georgia, "Times New Roman", serif; font-weight: 300; font-synthesis: none;
+  font-size: 0.8em; line-height: 1; letter-spacing: 0;
+}
 .a11y-widget-biz .a11y-pin-yellow { --pin-fill: #f8ff58; }
 .a11y-widget-biz .a11y-pin-pink { --pin-fill: #ffa0ff; }
 .a11y-widget-biz .a11y-pin-sky { --pin-fill: #a2e3ff; }
 .a11y-widget-biz .a11y-pin-mint { --pin-fill: #beffbd; }
-/* In a notice the pin sits on the middle of the title's first line, with
-   room for its rim and shadow so the bubble's edge never clips them. */
+/* In a plain notice the pin sits on the middle of the title's first line. */
 .a11y-widget-biz.a11y-widget-biz .a11y-note .a11y-note-glyph {
   display: flex; align-self: start; padding: 0; margin-top: calc((1lh - 1.15em) / 2);
 }
 .a11y-widget-biz.a11y-widget-biz .a11y-note { grid-template-columns: auto minmax(0, 1fr); column-gap: 16px; }
+/* On the warning bubble the pin is pinned through its edge (user's
+   instruction, 23 Nov 2026, "add it in border of buble as other badges"):
+   centred on the top edge over the words' left line, half out, the way the
+   picture's speech bubble overlaps its frame. The words take the whole
+   width, and the bubble gains room on top for the pin's lower half. */
+.a11y-widget-biz.a11y-widget-biz .a11y-note.a11y-note-warning {
+  position: relative; grid-template-columns: minmax(0, 1fr); padding-top: 34px;
+}
+.a11y-widget-biz.a11y-widget-biz .a11y-note.a11y-note-warning .a11y-note-glyph {
+  position: absolute; top: 0; left: 22px; margin: 0; translate: 0 -50%;
+}
+@media (max-width: 640px) {
+  .a11y-widget-biz.a11y-widget-biz .a11y-note.a11y-note-warning { padding-top: 28px; }
+  .a11y-widget-biz.a11y-widget-biz .a11y-note.a11y-note-warning .a11y-note-glyph { left: 16px; }
+}
 @media print {
-  .a11y-widget-biz .a11y-pin { rotate: none; box-shadow: 0 0 0 0.045em #d6d6d6, 0 0 0 0.07em #7d7d7d; }
+  .a11y-widget-biz .a11y-pin { rotate: none; }
+}
+
+/* ═══ THE DESIGNER AND DEVELOPER LIST WITH BADGES AND RULES (user's
+   instruction, 23 Nov 2026, "design this", then "add badges, lines") ══════
+   Each undecided check stands between 1px ink rules, the list's last row
+   closed by one under it, 28px above and 30px below the words inside;
+   the 65px gap that parted the rows goes, the rule does the parting. Its
+   small print is the report's small bubbles (mono 15px, 8px corners, 2px
+   8px inside, one of three small tilts by their place): the fix kind in the
+   check-result cards' colours (code sky, content mint, design pink,
+   document yellow; black words on the light plates, white on the deep dark
+   ones), the number of places on the tile ground, "Most places" solid ink
+   with paper words. Learn more stays a plain link at the end of the line. */
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-undecided-table > .a11y-undecided-cell {
+  margin: 0; padding: 28px 0 30px; border-top: 1px solid var(--ink);
+}
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-undecided-table > .a11y-undecided-cell:last-child { border-bottom: 1px solid var(--ink); }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-undecided-table > .a11y-undecided-cell > .a11y-undecided-no { padding-top: 0.4em; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-undecided-cell > .a11y-undecided-call {
+  align-items: center; gap: 10px 10px; margin-top: 6px;
+}
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-undecided-call > :is(.a11y-method-badge, .a11y-undecided-places, .a11y-undecided-most) {
+  display: inline-block; margin: 0; padding: 2px 8px; border-radius: 8px;
+  font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  font-size: 15px; font-weight: 400; line-height: 1.3; letter-spacing: 0; white-space: nowrap;
+  background: var(--tile); color: var(--tile-ink);
+  rotate: -2deg;
+}
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-undecided-call > :nth-child(3n+2):not(.a11y-learn-more) { rotate: 1.5deg; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-undecided-call > :nth-child(3n):not(.a11y-learn-more) { rotate: -1deg; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-undecided-call > .a11y-method-badge { background: var(--plate-1); color: var(--plate-text); }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-undecided-call > .a11y-method-badge.a11y-fix-content { background: var(--plate-2); }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-undecided-call > .a11y-method-badge.a11y-fix-design { background: var(--plate-3); }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-undecided-call > .a11y-method-badge.a11y-fix-document { background: var(--plate-4); }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-undecided-call > .a11y-undecided-most { background: var(--ink); color: var(--paper); }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-undecided-call > .a11y-learn-more { margin-inline-start: 6px; font-size: 18px; }
+@media print {
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-undecided-call > * { rotate: none; }
+}
+@media (forced-colors: active) {
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-undecided-call > :is(.a11y-method-badge, .a11y-undecided-places, .a11y-undecided-most) { border: 1px solid CanvasText; }
 }
