@@ -3488,7 +3488,7 @@
    2026, "make these look like this", with a reference of filled info
    cards) ═════════════════════════════════════════════════════════════
    Each card is a filled ground with no edge, 20px corners:
-   a small Medium label at the top (the group, 15px), the question under
+   a small label at the top (the group, 15px Regular), the question under
    it 16px down as the card's large text (20px Regular, 1.2, with 22px
    inside the card: the cards are 225px wide at 1440px, and at 26px and
    22px 'ticket' and 'accessibility' broke inside the word), and the
@@ -3511,13 +3511,13 @@
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-prompts .a11y-prompt:has(> .a11y-prompt-q:disabled) { border: 0; box-shadow: none; outline: 1px dashed var(--tile-ink); outline-offset: -1px; }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-prompts .a11y-prompt-q { gap: 16px; }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-prompts .a11y-prompt-label {
-  font-size: 15px; font-weight: 500; line-height: 1.3; letter-spacing: 0.01em;
+  font-size: 15px; font-weight: 400; line-height: 1.3; letter-spacing: 0.01em;
 }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-prompts .a11y-prompt-ask {
   font-size: 20px; font-weight: 400; line-height: 1.2; letter-spacing: 0;
 }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-prompts .a11y-prompt-wcag {
-  font-size: 15px; font-weight: 500; line-height: 1.3; letter-spacing: 0.01em;
+  font-size: 15px; font-weight: 400; line-height: 1.3; letter-spacing: 0.01em;
 }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-prompts .a11y-prompt-go {
   right: 22px; bottom: 22px; min-height: 34px; padding: 4px 12px; box-sizing: border-box;
