@@ -927,10 +927,11 @@ button:focus-visible, .btn:focus-visible, .nav a:focus-visible, .brand:focus-vis
    (data-theme on <html>, kept in localStorage).
 
    The page is white on black. The colour bands turn to deep versions of
-   their own hue with white words, so a band is still a band: sky #0c2f42
-   (white 14.6:1), lime band #1f2a0c (16.6:1), the green Accessibility page
-   #0f2b17 (16.1:1), cards and chips #262626 (15.3:1). Links are #9db8ff
-   (10.4:1 on black, 8.0:1 or better on every band). The opening's green
+   their own hue with white words, so a band is still a band: sky #2e3350
+   (white 12.3:1; a slate blue from the user's reference, 23 Nov 2026,
+   replacing #0c2f42), lime band #1f2a0c (16.6:1), the green Accessibility
+   page #0f2b17 (16.1:1), cards and chips #262626 (15.3:1). Links are #9db8ff
+   (10.4:1 on black, 6.3:1 on the sky band, 8.0:1 or better on the others). The opening's green
    band, the cream form fields and the cyan and mint blocks are the same in
    both themes: each carries its own fixed text colour. The focus blue
    #0f62fe is kept: 4.2:1 on black, 4.4:1 on the cream field.
@@ -942,7 +943,7 @@ button:focus-visible, .btn:focus-visible, .nav a:focus-visible, .brand:focus-vis
     --card: #262626; --chip: #262626; --toc: #262626; --quiet: #b8b8b8;
     --pill: #e6e6e6; --pill-ink: #000000; --mark-bg: #ffffff; --mark-ink: #000000;
     --link: #9db8ff; --brown: #f0c79a;
-    --sky: #0c2f42; --band-ink: #ffffff; --lime: #1f2a0c; --info-green: #0f2b17;
+    --sky: #2e3350; --band-ink: #ffffff; --lime: #1f2a0c; --info-green: #0f2b17;
     --send-dash: white;
   }
 }
@@ -952,7 +953,7 @@ button:focus-visible, .btn:focus-visible, .nav a:focus-visible, .brand:focus-vis
   --card: #262626; --chip: #262626; --toc: #262626; --quiet: #b8b8b8;
   --pill: #e6e6e6; --pill-ink: #000000; --mark-bg: #ffffff; --mark-ink: #000000;
   --link: #9db8ff; --brown: #f0c79a;
-  --sky: #0c2f42; --band-ink: #ffffff; --lime: #1f2a0c; --info-green: #0f2b17;
+  --sky: #2e3350; --band-ink: #ffffff; --lime: #1f2a0c; --info-green: #0f2b17;
   --send-dash: white;
 }
 :root[data-theme="light"] { color-scheme: light; }
