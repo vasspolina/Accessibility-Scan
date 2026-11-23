@@ -47,31 +47,34 @@ const HUMAN_QUESTIONS = [
 /* Counts come from the conformance summary, never recounted here. */
 type Filter = "failed" | "needs-review" | "no-issues-found" | "not-measured" | "all";
 
+/* No sentence under the count (user's instruction, 23 Nov 2026, "cut
+   unnecessary info", "the repeated words"): "We found problems", "We
+   checked, found nothing", "We couldn't check" and "A check didn't finish"
+   only restated the status badge above them. */
 function RESULT_ROWS(c: ConformanceSummary): Array<{
   key: string;
   /** The checklist filter this tile opens. */
   filter: Filter;
   severity: string;
-  label: string;
   meaning?: string;
   mark: string;
   n: number;
 }> {
   return [
-    { key: "failed", filter: "failed", severity: "critical", label: t("We found problems"),
+    { key: "failed", filter: "failed", severity: "critical",
       meaning: tf("{a} at level A, {aa} at AA", { a: c.failedByLevel.A, aa: c.failedByLevel.AA }),
       mark: t("Fix first"), n: c.failed },
     // No meaning line on these two: the band above says "nothing found"
     // is not a pass, and the mark says "Needs a person".
-    { key: "clean", filter: "no-issues-found", severity: "pass", label: t("We checked, found nothing"),
+    { key: "clean", filter: "no-issues-found", severity: "pass",
       mark: t("Nothing found"), n: c.noIssuesFound },
-    { key: "human", filter: "needs-review", severity: "minor", label: t("We couldn't check"),
+    { key: "human", filter: "needs-review", severity: "minor",
       mark: t("Needs a person"), n: c.needsReview },
     // Only present when it happened. A permanent zero row would teach readers
     // to skip it; when a check breaks, this is the row that keeps the clean
     // count honest.
     ...((c.notMeasured ?? 0) > 0
-      ? [{ key: "not-measured", filter: "not-measured" as const, severity: "serious", label: t("A check didn't finish"),
+      ? [{ key: "not-measured", filter: "not-measured" as const, severity: "serious",
           mark: t("Not measured"), n: c.notMeasured ?? 0 }]
       : []),
   ];
@@ -266,7 +269,6 @@ export function ConformanceView({
               onClick={() => openOn(r.filter)}
             >
               <span className="a11y-legal-col-result">
-                <span className="a11y-legal-row-label">{r.label}</span>
                 {r.meaning && <span className="a11y-legal-row-meaning">{r.meaning}</span>}
                 <span className={`a11y-legal-mark a11y-legal-mark-${r.severity}`}>{r.mark}</span>
               </span>
