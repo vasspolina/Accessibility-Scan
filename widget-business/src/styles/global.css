@@ -4005,3 +4005,38 @@
   position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0; border: 0;
   overflow: hidden; clip: rect(0 0 0 0); clip-path: inset(50%); white-space: nowrap;
 }
+
+/* ═══ REPORT A BARRIER IN THE PANEL IN MINT (user's instruction, 23 Nov
+   2026, "make this button color") ═══════════════════════════════════════
+   The panel's Report a barrier takes the barrier's own colour, the mint of
+   its card in the opening questions: black words on --barrier in both
+   themes (18.7:1 on light's #ccffcc, 7.4:1 or better on dark's #30d158), the
+   edge the ground's colour. Hover and keyboard focus add a 1px black edge,
+   as the card does, instead of New chat's solid ink. Disabled (a reply or a
+   scan running) keeps New chat's dashed ink edge on paper. */
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-chats .a11y-chats-new.a11y-chats-barrier[type="button"]:enabled {
+  --ink: #000; --paper: var(--barrier);
+  background: var(--barrier); color: #000; border-color: var(--barrier);
+}
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-chats .a11y-chats-new.a11y-chats-barrier[type="button"]:enabled:is(:hover, :focus-visible) {
+  background: var(--barrier); color: #000; border-color: #000;
+}
+
+/* ═══ THE OPENING QUESTIONS' GROUP BADGE IN SERIF, BLACK ON COLOUR (user's
+   instruction, 23 Nov 2026, "make these serif and black text on colored
+   badge") ═══════════════════════════════════════════════════════════════
+   The leaning badge with the group's name ("Ask about this page") was mono
+   on solid ink. It is now Serrif Light, black on a light plate pinned in
+   both themes, as the highlights are: sky, pink and yellow in the order the
+   cards take their hover plates (#a2e3ff, #ffa0ff, #f8ff58, each above 11:1
+   with black). Dark mode's plates are deep grounds made for white words, so
+   the badge does not follow them. A 1px black edge keeps the badge's shape
+   when its card fills with the same plate on hover. */
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-prompts .a11y-prompt { --label-plate: #a2e3ff; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-prompts .a11y-prompt:nth-child(3n+2) { --label-plate: #ffa0ff; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-prompts .a11y-prompt:nth-child(3n) { --label-plate: #f8ff58; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-prompts .a11y-prompt .a11y-prompt-label.a11y-prompt-label {
+  background: var(--label-plate); color: #000; border: 1px solid #000;
+  font-family: "Serrif", Georgia, "Times New Roman", serif; font-weight: 300; font-synthesis: none;
+  font-size: 15px; letter-spacing: 0.01em;
+}
