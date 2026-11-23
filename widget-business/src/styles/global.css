@@ -2766,7 +2766,11 @@
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-hist-card > .a11y-hist-facts > li:first-child { border-top: 0; padding-top: 0; }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-hist-card > .a11y-hist-facts > li::before { content: none; }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-hist-promise {
-  margin: 0; font-size: 30px; font-weight: 400; line-height: 1.15; letter-spacing: 0.005em;}
+  margin: 0; font-size: 30px; font-weight: 400; line-height: 1.15; letter-spacing: 0.005em;
+  min-width: 0; overflow-wrap: anywhere;}
+/* overflow-wrap above: at 320px the French and German promise ran 7 to 28px
+   past its card (measured 23 Nov 2026); it only shows once a scan is kept,
+   so the reflow check, which starts with no history, never saw it. */
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-hist-card > .a11y-danger-btn { margin: 0; }
 
 /* Screen reader preview: Play, the status line, the filter and the skip
@@ -4149,14 +4153,11 @@
   margin: 0; padding: 28px 0 30px; border-top: 1px solid var(--ink);
 }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-undecided-table > .a11y-undecided-cell:last-child { border-bottom: 1px solid var(--ink); }
-/* The row number is set at the words' own size, in line with their first
-   line (user's instruction, 23 Nov 2026, "numbers can be same font size";
-   it was 18px). */
-.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-undecided-table > .a11y-undecided-cell > .a11y-undecided-no {
-  padding-top: 0; font-size: inherit; line-height: inherit; letter-spacing: inherit; font-variant-numeric: tabular-nums;
-}
+/* The row number was 18px; it follows the words' size since the user's
+   instruction of 23 Nov 2026, "numbers can be same font size", and sits in
+   a coloured round (the last block of this file). */
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-undecided-cell > .a11y-undecided-call {
-  align-items: center; gap: 10px 10px; margin-top: 6px;
+  align-items: center; gap: 10px 12px; margin-top: 6px;
 }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-undecided-call > :is(.a11y-method-badge, .a11y-undecided-places, .a11y-undecided-most) {
   display: inline-block; margin: 0; padding: 2px 8px; border-radius: 8px;
@@ -4178,10 +4179,117 @@
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-undecided-call > .a11y-method-badge.a11y-fix-design { background: var(--plate-3); }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-undecided-call > .a11y-method-badge.a11y-fix-document { background: var(--plate-4); }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-undecided-call > .a11y-undecided-most { background: var(--ink); color: var(--paper); }
-.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-undecided-call > .a11y-learn-more { margin-inline-start: 6px; font-size: 18px; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-undecided-call > .a11y-learn-more { margin: 0; font-size: 18px; }
 @media print {
   .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-undecided-call > * { rotate: none; }
 }
 @media (forced-colors: active) {
   .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-undecided-call > :is(.a11y-method-badge, .a11y-undecided-places, .a11y-undecided-most) { border: 1px solid CanvasText; }
+}
+
+/* ═══ THE WORST FINDINGS BESIDE THE DIAL, EACH A BUTTON ON HOVER (user's
+   instruction, 23 Nov 2026, "can this bottom text go next to graph? also
+   make whole bottom text hover like buttons") ═══════════════════════════
+   The score's run of worst findings stands to the right of the dial,
+   centred on it, where the run has room for about 18em; where it has not
+   (a phone, a narrow embed, the chat column) it wraps under the dial as
+   before. The visually hidden heading is out of the flow, so it takes no
+   place. Each finding's link is one block that turns the buttons' mint on
+   hover and keyboard focus, black words (--hover / --hover-ink, #ccffcc,
+   18.7:1; dark #3a3a3c with white), 10px corners like the buttons, the
+   title, its badges and the count together; the yellow band under the
+   title alone is gone. The block's padding is given back by a negative
+   margin, so the words stay on the column's left line. */
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-run {
+  display: flex; flex-wrap: wrap; align-items: center; gap: 24px 56px;
+}
+/* The dial's card is as wide as the dial and the round sticker that hangs
+   off its right side (7em - 34px + 190px, 7em - 24px + 130px on a phone),
+   so the run starts clear of the sticker. */
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-run > .a11y-sum-dial-card { flex: none; position: relative; min-width: calc(7em + 156px); }
+@media (max-width: 640px) {
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-run > .a11y-sum-dial-card { min-width: calc(7em + 106px); }
+}
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-run > .a11y-sum-dial-card .a11y-sum-dial { margin: 0; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-run > :is(.a11y-sum-table, .a11y-score-clean) { flex: 1 1 18em; min-width: 0; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-run .a11y-sum-row-link {
+  display: inline-block; max-width: calc(100% + 0.4em); box-sizing: border-box;
+  margin: 0 -0.2em; padding: 0.05em 0.2em 0.08em; border-radius: 10px;
+  transition: background-color 0.15s, color 0.15s;
+}
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-run .a11y-sum-row-link:is(:hover, :focus-visible) {
+  background: var(--hover); color: var(--hover-ink);
+}
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-run .a11y-sum-row-link:is(:hover, :focus-visible) .a11y-sum-row-title {
+  background: none; color: inherit;
+}
+@media (prefers-reduced-motion: reduce) {
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-run .a11y-sum-row-link { transition: none; }
+}
+/* Even space on each line (user's instruction, 23 Nov 2026, "add even space
+   between elements in each line"): the title, each badge and the count
+   stand 12px apart. It measured 19, 5 and 19px: the badges' own 0.25em
+   side margins and the marks' and count's 0.3em stacked unevenly. */
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-run .a11y-sum-row-marks { gap: 12px; margin-inline-start: 12px; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-run .a11y-sum-row-marks > * { margin: 0; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-run :is(.a11y-sum-cell-item, .a11y-sum-row-title) { margin-inline-end: 0; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-run .a11y-sum-cell-count { margin-inline-start: 12px; }
+@media (forced-colors: active) {
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-run .a11y-sum-row-link:hover { outline: 1px solid LinkText; }
+}
+
+/* ═══ THE SUGGESTED ALT TEXT AS A CARD TO COPY FROM (user's instruction,
+   23 Nov 2026, "design, what to copy needs to be in a card") ═════════════
+   The alt text written for a picture is the chat's code card: the tile
+   ground (#f0efe8 with black, #1c1c1e with white in dark), 20px corners,
+   the label at 15px on a bar with the ordinary Copy button at its end, the
+   words under it in the mono face at 18px, wrapped, never scrolled. The
+   card pins --ink and --paper so Copy's edge and the focus ring follow. It
+   is a control's ground (Copy acts on it), the exception No content cards
+   allows. It sits under the picture with 16px of air. */
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-alt-card {
+  --ink: var(--tile-ink); --paper: var(--tile);
+  box-sizing: border-box; max-width: 100%; margin: 16px 0 0; padding: 14px 20px 20px;
+  border-radius: 20px; background: var(--tile); color: var(--tile-ink);
+}
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-alt-card > .a11y-alt-card-head {
+  display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px 16px; margin: 0 0 12px;
+}
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-alt-card .a11y-alt-suggestion-label {
+  flex: 1 1 12em; min-width: 0; margin: 0; font-size: 15px; line-height: 1.3; letter-spacing: 0.01em;
+}
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-alt-card .a11y-alt-copy { flex: none; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-alt-card > .a11y-alt-suggestion-value { margin: 0; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-alt-card > .a11y-alt-suggestion-value > code {
+  display: block; padding: 0; background: none; color: inherit;
+  font-size: 18px; line-height: 1.4; letter-spacing: 0; white-space: pre-wrap; overflow-wrap: anywhere;
+}
+@media (max-width: 640px) {
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-alt-card { padding: 10px 14px 16px; }
+}
+@media (forced-colors: active) {
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-alt-card { border: 1px solid CanvasText; }
+}
+
+/* ═══ THE DESIGNER AND DEVELOPER LIST'S NUMBERS IN COLOURED ROUNDS (user's
+   instruction, 23 Nov 2026, "maybe number can be in colored circle and in
+   black? make it serif") ═════════════════════════════════════════════════
+   Each row's number is a round exactly one line of the words tall (1.5em
+   of its own 0.8em is the words' 1.2 line), level with their first line,
+   in the light plates by turn (pink, mint, yellow, sky) pinned
+   in both themes as the pins are, the figure black in Serrif Light at
+   0.8em, 11:1 or better on each fill. It stays aria-hidden: the list is an
+   ol and carries its own order. */
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-undecided-table > .a11y-undecided-cell > .a11y-undecided-no {
+  display: inline-grid; place-items: center; box-sizing: border-box;
+  width: 1.5em; height: 1.5em; margin-top: 0; padding: 0; border-radius: 50%; font-variant-numeric: tabular-nums;
+  background: var(--no-fill, #ffa0ff); color: #000;
+  font-family: "Serrif", Georgia, "Times New Roman", serif; font-weight: 300; font-synthesis: none;
+  font-size: 0.8em; line-height: 1; letter-spacing: 0;
+}
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-undecided-table > .a11y-undecided-cell:nth-child(4n+2) { --no-fill: #beffbd; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-undecided-table > .a11y-undecided-cell:nth-child(4n+3) { --no-fill: #f8ff58; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-undecided-table > .a11y-undecided-cell:nth-child(4n) { --no-fill: #a2e3ff; }
+@media (forced-colors: active) {
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-undecided-table > .a11y-undecided-cell > .a11y-undecided-no { border: 1px solid CanvasText; }
 }

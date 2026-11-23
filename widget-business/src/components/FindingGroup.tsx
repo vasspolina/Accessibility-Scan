@@ -1466,28 +1466,34 @@ function AltTextSuggestion({ value }: { value: string }) {
     }
   }
 
+  /* A card to copy from (user's instruction, 23 Nov 2026, "design, what to
+     copy needs to be in a card"), like the chat's code card: the label and
+     Copy on one bar at the top, the alt text under it. The card is what
+     Copy acts on, so it is a control's ground, not a content card. */
   return (
-    <div className="a11y-alt-suggestion">
-      <p className="a11y-alt-suggestion-label">
-        <Sentence
-          text={t("{label}, written from the actual image:")}
-          parts={{ label: <strong>{t("Suggested alt text")}</strong> }}
-        />
-      </p>
-      <div className="a11y-alt-suggestion-value">
-        <code>{value}</code>
+    <div className="a11y-alt-suggestion a11y-alt-card">
+      <div className="a11y-alt-card-head">
+        <p className="a11y-alt-suggestion-label">
+          <Sentence
+            text={t("{label}, written from the actual image:")}
+            parts={{ label: <strong>{t("Suggested alt text")}</strong> }}
+          />
+        </p>
         <button
           type="button"
-          className="a11y-alt-copy"
+          className="a11y-btn a11y-alt-copy"
           onClick={copy}
           aria-label={copied ? t("Copied the suggested alt text") : t("Copy the suggested alt text")}
         >
           {copied ? t("Copied") : t("Copy")}
         </button>
-        <span className="a11y-sr-only" role="status">
-          {copied ? t("Alt text copied to the clipboard.") : ""}
-        </span>
       </div>
+      <p className="a11y-alt-suggestion-value">
+        <code>{value}</code>
+      </p>
+      <span className="a11y-sr-only" role="status">
+        {copied ? t("Alt text copied to the clipboard.") : ""}
+      </span>
     </div>
   );
 }
