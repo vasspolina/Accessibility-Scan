@@ -35,7 +35,7 @@ export function ReportSection({
       <section className="a11y-section a11y-section-concern" aria-labelledby={id}>
         <div className="a11y-section-tint">
           <h2 className="a11y-section-title" id={id} data-nav-label={t(title)}>
-            {t(title)} <span className="a11y-section-count">({findings.length})</span>
+            {t(title)} <span className="a11y-section-count a11y-count-dot">{findings.length}</span>
           </h2>
           <p className="a11y-section-desc">{description}</p>
         </div>
@@ -48,7 +48,7 @@ export function ReportSection({
     <section className={`a11y-section a11y-section-${variant}`} aria-labelledby={id}>
       <SectionHeader
         title={title}
-        qualifier={`(${findings.length})`}
+        count={findings.length}
         id={id}
         navLabel={title}
       />

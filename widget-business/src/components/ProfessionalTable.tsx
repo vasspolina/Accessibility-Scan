@@ -169,7 +169,7 @@ export function ProfessionalTable({
           table and the rail listed the section as nameless. */}
       <div className="a11y-findings-head">
         <h2 className="a11y-section-title" id="a11y-pro-findings-heading">
-          {t("Findings")} <span className="a11y-section-count">({grouped.length})</span>
+          {t("Findings")} <span className="a11y-section-count a11y-count-dot">{grouped.length}</span>
         </h2>
         {action}
       </div>

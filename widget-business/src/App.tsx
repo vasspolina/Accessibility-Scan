@@ -772,7 +772,7 @@ export function App({
                   data-nav-label={t("What people can't use")}
                 >
                   {t("What people can't use")}{" "}
-                  <span className="a11y-section-count">({findingsByCategory.accessibility.length})</span>
+                  <span className="a11y-section-count a11y-count-dot">{findingsByCategory.accessibility.length}</span>
                 </h2>
                 {!(professional && !isDocument) && (
                   <FindingsCsvButton report={report} describedBy="a11y-accessibility-heading" />

@@ -89,7 +89,7 @@ export function SiteAuditView({ audit }: { audit: SiteAudit }) {
             data-nav-label={t("Pages that disagree")}
           >
             {t("Pages that disagree")}{" "}
-            <span className="a11y-section-count">({(audit.consistency ?? []).length})</span>
+            <span className="a11y-section-count a11y-count-dot">{(audit.consistency ?? []).length}</span>
           </h2>
           <p className="a11y-section-desc">
             {t(
@@ -134,7 +134,7 @@ export function SiteAuditView({ audit }: { audit: SiteAudit }) {
         <section className="a11y-section a11y-section-concern" aria-labelledby="a11y-audit-siteWide-heading">
           <h2 className="a11y-section-title" id="a11y-audit-siteWide-heading" data-nav-label={t("Fix once, fix everywhere")}>
             {t("Fix once, fix everywhere")}{" "}
-            <span className="a11y-section-count">({audit.siteWide.length})</span>
+            <span className="a11y-section-count a11y-count-dot">{audit.siteWide.length}</span>
           </h2>
           <p className="a11y-section-desc">
             {t("These show up on every page, so they live in the template rather than the content. Start here.")}

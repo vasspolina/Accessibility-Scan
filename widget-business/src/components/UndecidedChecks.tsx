@@ -66,7 +66,7 @@ export function UndecidedChecks({
       {/* h2: this is a top-level section of the report, same as its siblings. */}
       <h2 className="a11y-section-title" id="a11y-undecided-heading" data-nav-label={t("Designer and developer")}>
         {t("For your designer and developer")}{" "}
-        <span className="a11y-section-count">({rows.length})</span>
+        <span className="a11y-section-count a11y-count-dot">{rows.length}</span>
       </h2>
       {/* Two sentences: what the checker did, and that none of it is
           scored. The heading names who decides and the Call column says

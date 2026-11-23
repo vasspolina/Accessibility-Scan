@@ -74,7 +74,7 @@ export function DesignNotesPanel({ findings }: { findings: AccessibilityFinding[
         data-nav-label={t("Notes on the design")}
       >
         {t("Notes on the design")}{" "}
-        <span className="a11y-section-count">({groups.length})</span>
+        <span className="a11y-section-count a11y-count-dot">{groups.length}</span>
       </h2>
       {/* The lead used to be three clipped thoughts with no throughline —
           "remarks rather than faults", "judgement rather than measurement" —

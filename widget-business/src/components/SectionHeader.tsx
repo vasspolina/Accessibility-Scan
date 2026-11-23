@@ -17,6 +17,7 @@ import type { ReactNode } from "react";
 export function SectionHeader({
   title,
   qualifier,
+  count,
   chip,
   action,
   id,
@@ -25,6 +26,8 @@ export function SectionHeader({
   title: ReactNode;
   /** Secondary, weight 400, inline after the title — "16 announcements". */
   qualifier?: ReactNode;
+  /** A count, set as a raised round after the title (no brackets). */
+  count?: number;
   /** A `<StatusChip>`; the kit right-aligns it with the action. */
   chip?: ReactNode;
   action?: ReactNode;
@@ -46,6 +49,7 @@ export function SectionHeader({
         <h2 className="a11y-section-title" id={id} data-nav-label={navLabel ? t(navLabel) : undefined}>
           {typeof title === "string" ? t(title) : title}
           {qualifier && <span className="a11y-section-count"> {qualifier}</span>}
+          {count !== undefined && <>{" "}<span className="a11y-section-count a11y-count-dot">{count}</span></>}
         </h2>
       </div>
       {(chip || action) && (

@@ -1003,7 +1003,6 @@
 /* WCAG 2.2 panel head: the standard, its date, what would fail today. */
 .a11y-widget-biz .a11y-next-toggle { display: flex; flex-wrap: wrap; align-items: baseline; gap: 0.3em 0.8em; text-align: start; }
 .a11y-widget-biz .a11y-next-count { font-size: 18px; letter-spacing: 0.01em; }
-.a11y-widget-biz .a11y-next-main { display: block; }
 .a11y-widget-biz :is(.a11y-next-title, .a11y-next-meta, .a11y-next-status) { display: block; }
 
 /* For your designer and developer: number, what the checker saw, what to ask for, the call. */
@@ -1508,11 +1507,11 @@
    vertical spacing inside an element are unchanged. One column under 640px
    of block. */
 .a11y-widget-biz .a11y-fd .a11y-occurrence-list {
-  display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1.2em 30px;
+  display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; align-items: stretch;
 }
 .a11y-widget-biz .a11y-fd .a11y-occurrence-list > .a11y-occurrence {
-  box-sizing: border-box; min-width: 0; max-width: none; margin: 0; padding: 0;
-  border: 0; border-radius: 0; background: none; color: var(--ink);
+  box-sizing: border-box; min-width: 0; max-width: none; margin: 0; padding: 24px;
+  --ink: var(--tile-ink); --paper: var(--tile); border: 0; border-radius: 20px; background: var(--tile); color: var(--tile-ink);
 }
 .a11y-widget-biz .a11y-fd .a11y-occurrence-list > .a11y-occurrence > :last-child,
 .a11y-widget-biz .a11y-fd .a11y-occurrence-list > .a11y-occurrence > :last-child > :last-child { margin-bottom: 0; }
@@ -1616,7 +1615,6 @@
 /* The label: 15px Jokker, sentence case, at the top-left, over a 1px ink
    rule with 10px under it. */
 .a11y-widget-biz .a11y-next-list > li > .a11y-next-crit,
-.a11y-widget-biz .a11y-next-main > .a11y-next-title + .a11y-next-meta,
 .a11y-widget-biz .a11y-spec-card > .a11y-spec-label,
 .a11y-widget-biz .a11y-pro-row > span:first-child,
 .a11y-widget-biz .a11y-manual-row > .a11y-conf-id {
@@ -1648,9 +1646,6 @@
 }
 /* Small print under the words stays Jokker at 15px or 18px. */
 .a11y-widget-biz .a11y-spec-card > .a11y-spec-value > .a11y-spec-gloss { margin-top: 0.6em; font-family: "PP Telegraf", sans-serif; }
-.a11y-widget-biz .a11y-next-list .a11y-next-main { display: flex; flex-direction: column; }
-.a11y-widget-biz .a11y-next-main > .a11y-next-title + .a11y-next-meta { order: -1; }
-.a11y-widget-biz .a11y-next-main > :is(.a11y-next-meta, .a11y-next-status):not(.a11y-next-title + .a11y-next-meta) { margin-top: 0.5em; font-size: 18px; letter-spacing: 0.01em; }
 .a11y-widget-biz .a11y-manual-row > .a11y-conf-body > .a11y-conf-plain { display: block; margin-top: 0.5em; font-size: 18px; letter-spacing: 0.01em; }
 .a11y-widget-biz .a11y-manual-row > :is(.a11y-conf-body, .a11y-manual-actions) { display: block; }
 .a11y-widget-biz .a11y-manual-row > .a11y-manual-actions { margin-top: 1em; }
@@ -2691,16 +2686,9 @@
   max-width: none; margin: 28px 0 0;
   font-size: 38px; font-weight: 400; line-height: 1.1; letter-spacing: -0.005em;
 }
-/* Two to a row (user's instruction, 21 Nov 2026, "two per row", on the
-   six new items set four across by auto-fit): wider columns, so the
-   explanations wrap less. One column on a phone. */
-.a11y-widget-biz .a11y-w22 > .a11y-next > .a11y-next-list { margin: 28px 0 0; }
-.a11y-widget-biz .a11y-w22 .a11y-next-list { grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: 30px; }
-@media (max-width: 640px) {
-  .a11y-widget-biz .a11y-w22 .a11y-next-list { grid-template-columns: minmax(0, 1fr); }
-}
-/* The items stand open under the sentence (23 Nov 2026), 28px down. */
-.a11y-widget-biz .a11y-w22 > .a11y-w22-panel { display: block; margin-top: 28px; }
+/* The items stand open under the sentence (23 Nov 2026), 48px down; the
+   list is its own size container (THE WCAG 2.2 ITEMS AS A RULED SCHEDULE). */
+.a11y-widget-biz .a11y-w22 > .a11y-w22-panel { display: block; margin-top: 48px; container: a11y-w22 / inline-size; }
 @media (max-width: 640px) {
   .a11y-widget-biz .a11y-w22 > .a11y-next > .a11y-next-desc { font-size: 27px; letter-spacing: 0; }
 }
@@ -3960,23 +3948,23 @@
    item's place, in the check-result cards' colours (failing pink, nothing
    found mint, needs a person yellow, not measured sky). Black words on the
    light plates, white on the deep dark ones. Sized to its words. */
-.a11y-widget-biz .a11y-next-list .a11y-next-main > .a11y-next-status[data-status] {
-  display: inline-block; width: fit-content; margin-top: 10px; padding: 2px 8px; border-radius: 8px;
+.a11y-widget-biz .a11y-w22-call > .a11y-next-status[data-status] {
+  display: inline-block; width: fit-content; padding: 2px 8px; border-radius: 8px;
   background: var(--plate-4); color: var(--plate-text);
   font-family: "Serrif", Georgia, "Times New Roman", serif; font-weight: 300; font-synthesis: none;
   font-size: 15px; line-height: 1.3; letter-spacing: 0.1em; white-space: nowrap;
   rotate: var(--call-tilt, -2deg);
 }
-.a11y-widget-biz .a11y-next-list > li:nth-child(3n+2) { --call-tilt: 1.5deg; }
-.a11y-widget-biz .a11y-next-list > li:nth-child(3n) { --call-tilt: -1deg; }
-.a11y-widget-biz .a11y-next-list .a11y-next-main > .a11y-next-status[data-status="failed"] { background: var(--plate-3); }
-.a11y-widget-biz .a11y-next-list .a11y-next-main > .a11y-next-status[data-status="no-issues-found"] { background: var(--plate-2); }
-.a11y-widget-biz .a11y-next-list .a11y-next-main > .a11y-next-status[data-status="not-measured"] { background: var(--plate-1); }
+.a11y-widget-biz .a11y-w22-list > li:nth-child(3n+2) { --call-tilt: 1.5deg; }
+.a11y-widget-biz .a11y-w22-list > li:nth-child(3n) { --call-tilt: -1deg; }
+.a11y-widget-biz .a11y-w22-call > .a11y-next-status[data-status="failed"] { background: var(--plate-3); }
+.a11y-widget-biz .a11y-w22-call > .a11y-next-status[data-status="no-issues-found"] { background: var(--plate-2); }
+.a11y-widget-biz .a11y-w22-call > .a11y-next-status[data-status="not-measured"] { background: var(--plate-1); }
 @media print {
-  .a11y-widget-biz .a11y-next-list .a11y-next-main > .a11y-next-status[data-status] { rotate: none; }
+  .a11y-widget-biz .a11y-w22-call > .a11y-next-status[data-status] { rotate: none; }
 }
 @media (forced-colors: active) {
-  .a11y-widget-biz .a11y-next-list .a11y-next-main > .a11y-next-status[data-status] { border: 1px solid CanvasText; }
+  .a11y-widget-biz .a11y-w22-call > .a11y-next-status[data-status] { border: 1px solid CanvasText; }
 }
 
 /* ═══ DESIGN NOTES AS THE CHECK RESULT CARDS (user's instruction, 23 Nov
@@ -4459,4 +4447,110 @@
   .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-run:has(.a11y-dial-sticker) > :is(.a11y-sum-table, .a11y-score-clean) {
     padding-inline-start: max(0px, 380px - (100cqi - 48px) / 4);
   }
+}
+
+/* ═══ A SECTION TITLE'S COUNT AS A HANGING ROUND (user's instruction, 23 Nov
+   2026, "this number can be hanging colored circle with no brackets") ════
+   The count after a section title ("Designer and developer 6") is a small
+   round on the marker yellow, hung from the top of the title like a
+   superior figure: no brackets, the figure centred, 18px Regular tabular
+   in a 32px round (26px and 15px under 640px), wider for two or three
+   figures. Black on #f8ff58 light, white on #36310c dark. The words read
+   aloud are the title and the number; the round is the eye's only. The
+   counts that carry words (Manual checks, the screen-reader head) keep
+   their brackets and the baseline. */
+.a11y-widget-biz .a11y-section-title .a11y-section-count.a11y-count-dot {
+  display: inline-grid; place-content: center; box-sizing: border-box;
+  min-width: 32px; height: 32px; padding: 0 9px; margin-inline-start: 0.05em; border-radius: 999px;
+  background: var(--plate-4); color: var(--plate-text);
+  font-size: 18px; font-weight: 400; line-height: 1; letter-spacing: 0.01em; font-variant-numeric: tabular-nums;
+  vertical-align: text-top; white-space: nowrap;
+}
+@media (max-width: 640px) {
+  .a11y-widget-biz .a11y-section-title .a11y-section-count.a11y-count-dot { min-width: 26px; height: 26px; padding: 0 7px; font-size: 15px; }
+}
+@media (forced-colors: active) {
+  .a11y-widget-biz .a11y-section-title .a11y-section-count.a11y-count-dot { border: 1px solid CanvasText; }
+}
+
+/* ═══ THE WCAG 2.2 ITEMS AS A RULED SCHEDULE (user's instruction, 23 Nov
+   2026, "design this properly with lines and stuff") ═════════════════════
+   One row per item between 1px ink rules, the last closed by a rule under
+   it. Three columns: the criterion (its number at 32px, the level at 15px,
+   the official name at 18px), the plain question at 22px with why a person
+   is needed at 18px under it, and the call's badge at the right edge. The
+   list is its own size container: under 760px the call moves under the
+   question, under 480px everything stacks with the number and the level
+   on one line. */
+.a11y-widget-biz .a11y-w22-list { margin: 0; padding: 0; list-style: none; border-bottom: 1px solid var(--ink); }
+.a11y-widget-biz .a11y-w22-list > .a11y-w22-row {
+  display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 2.2fr) 230px; gap: 14px 30px; align-items: start;
+  margin: 0; padding: 22px 0 30px; border-top: 1px solid var(--ink); color: var(--ink);
+}
+.a11y-widget-biz .a11y-w22-row > :is(.a11y-w22-ref, .a11y-w22-body, .a11y-w22-call) { display: flex; flex-direction: column; min-width: 0; }
+.a11y-widget-biz .a11y-w22-row .a11y-w22-id { font-size: 32px; line-height: 1; letter-spacing: -0.005em; font-variant-numeric: tabular-nums; }
+.a11y-widget-biz .a11y-w22-row .a11y-w22-level { margin-top: 10px; font-size: 15px; line-height: 1.3; letter-spacing: 0.01em; }
+.a11y-widget-biz .a11y-w22-row .a11y-w22-name { margin-top: 2px; font-size: 18px; line-height: 1.3; letter-spacing: 0.01em; }
+.a11y-widget-biz .a11y-w22-row .a11y-w22-q { font-size: 22px; line-height: 1.25; letter-spacing: 0.01em; }
+.a11y-widget-biz .a11y-w22-row .a11y-w22-why { margin-top: 10px; font-size: 18px; line-height: 1.35; letter-spacing: 0.01em; }
+.a11y-widget-biz .a11y-w22-row .a11y-w22-count { margin-top: 10px; font-size: 15px; line-height: 1.3; letter-spacing: 0.01em; }
+.a11y-widget-biz .a11y-w22-row > .a11y-w22-call { align-items: flex-end; padding-top: 3px; }
+@container a11y-w22 (max-width: 760px) {
+  .a11y-widget-biz .a11y-w22-list > .a11y-w22-row { grid-template-columns: minmax(0, 1fr) minmax(0, 2fr); }
+  .a11y-widget-biz .a11y-w22-row > .a11y-w22-call { grid-column: 2; align-items: flex-start; padding-top: 0; }
+}
+@container a11y-w22 (max-width: 480px) {
+  .a11y-widget-biz .a11y-w22-list > .a11y-w22-row { grid-template-columns: minmax(0, 1fr); padding: 18px 0 24px; }
+  .a11y-widget-biz .a11y-w22-row > .a11y-w22-ref { flex-flow: row wrap; align-items: baseline; column-gap: 12px; }
+  .a11y-widget-biz .a11y-w22-row .a11y-w22-id { font-size: 27px; }
+  .a11y-widget-biz .a11y-w22-row .a11y-w22-level { margin-top: 0; }
+  .a11y-widget-biz .a11y-w22-row .a11y-w22-name { flex: 1 1 100%; margin-top: 4px; }
+  .a11y-widget-biz .a11y-w22-row > .a11y-w22-call { grid-column: auto; }
+}
+@media print {
+  .a11y-widget-biz .a11y-w22-list > .a11y-w22-row { break-inside: avoid; page-break-inside: avoid; }
+}
+
+/* ═══ THE REPORT ACTIONS IN ONE CARD (user's instruction, 23 Nov 2026, "put
+   into card and design properly") ═══════════════════════════════════════
+   Email me this report and Save as PDF share one card: the tile ground,
+   20px corners, 36px inside (24px and 20px under 640px). It is a group of
+   controls, so the No content cards rule allows it. The card redefines ink
+   and paper so the rule, the PDF pill and the disabled send follow it.
+   The two parts are parted by a 1px ink rule. The address is a filled
+   field (white light, #2c2c2e dark) with no edge of its own beside the
+   mint send. The PDF part sets its button and its note on one line under
+   its label, the note wrapping under the button where they do not fit. */
+.a11y-widget-biz .a11y-report-actions > .a11y-ra-row {
+  --ink: var(--tile-ink); --paper: var(--tile);
+  box-sizing: border-box; gap: 0; margin: 0; padding: 36px 40px 40px;
+  border-radius: 20px; background: var(--tile); color: var(--tile-ink);
+}
+.a11y-widget-biz .a11y-report-actions > .a11y-ra-row > .a11y-ra-cell + .a11y-ra-cell {
+  margin-top: 32px; padding-top: 28px; border-top: 1px solid var(--ink);
+}
+.a11y-widget-biz .a11y-report-actions .a11y-ra-row > .a11y-ra-cell > .a11y-ra-head { margin: 0; font-size: 15px; letter-spacing: 0.06em; }
+.a11y-widget-biz .a11y-report-actions .a11y-ra-row > .a11y-ra-cell > .a11y-ra-field { border: 0; background: var(--tile-fill); }
+.a11y-widget-biz .a11y-report-actions .a11y-ra-row > .a11y-ra-cell:not(.a11y-ra-email-form) {
+  flex-direction: row; flex-wrap: wrap; align-items: center; gap: 20px 24px;
+}
+.a11y-widget-biz .a11y-report-actions .a11y-ra-row > .a11y-ra-cell:not(.a11y-ra-email-form) > .a11y-ra-head { flex: 1 1 100%; }
+.a11y-widget-biz .a11y-report-actions .a11y-ra-row > .a11y-ra-cell:not(.a11y-ra-email-form) > .a11y-ra-pdf { align-self: center; }
+.a11y-widget-biz .a11y-report-actions .a11y-ra-row > .a11y-ra-cell:not(.a11y-ra-email-form) > .a11y-ra-note { flex: 1 1 240px; }
+@media (max-width: 640px) {
+  .a11y-widget-biz .a11y-report-actions > .a11y-ra-row { padding: 24px 20px 28px; }
+}
+@media print {
+  .a11y-widget-biz .a11y-report-actions > .a11y-ra-row { padding: 0; background: none; }
+}
+
+/* ═══ AN AFFECTED ELEMENT AS A CARD (user's instruction, 23 Nov 2026, "this
+   can go in card as well") ═══════════════════════════════════════════════
+   Each affected element in the expanded finding is a card again, two to a
+   row as before: the tile ground, 20px corners, 24px inside, rows one
+   height. The card redefines ink and paper so the picture's frame, its
+   label and any code inside follow it. Type and spacing inside an element
+   are unchanged. One column under 640px of block (the rule above). */
+@media print {
+  .a11y-widget-biz .a11y-fd .a11y-occurrence-list > .a11y-occurrence { padding: 0; background: none; }
 }
