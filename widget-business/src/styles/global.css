@@ -3816,3 +3816,27 @@
 @media (forced-colors: active) {
   .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-finding-sev-col, .a11y-finding-sev-fold) > .a11y-sev.a11y-sev { border: 1px solid CanvasText; }
 }
+
+/* ═══ NEW CHAT AND REPORT A BARRIER AS WORD BUTTONS (user's instruction,
+   23 Nov 2026, "delete icons, make buttons look like this", with a
+   reference of a type foundry's menu buttons) ════════════════════════════
+   The conversations panel's two buttons lose their add and flag icons and
+   their full width: each is sized to its words, side by side and wrapping,
+   8px apart; a 1px solid ink edge, 14px corners, 18px words, 6px 14px
+   inside. Hover and focus fill them solid ink with paper words (black on
+   white, white on black in dark), the reference's chosen button. Disabled
+   (a reply or a scan running) is a dashed edge, never faded. */
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-chats .a11y-chats-new {
+  display: inline-flex; width: auto; min-height: 36px; margin: 0 0 8px; padding: 6px 14px;
+  border: 1px solid var(--ink); border-radius: 14px; background: transparent; color: var(--ink);
+  font-size: 18px; font-weight: 400; line-height: 1.2; letter-spacing: 0.01em; white-space: nowrap;
+}
+/* The gap goes only after a button that has another beside it, so a trailing
+   margin never pushes the pair onto two lines in the 283px panel. */
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-chats .a11y-chats-new:has(+ .a11y-chats-new) { margin-inline-end: 8px; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-chats .a11y-chats-new:enabled:is(:hover, :focus-visible) {
+  background: var(--ink); color: var(--paper); border-color: var(--ink);
+}
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-chats .a11y-chats-new:disabled {
+  padding: 6px 14px; border: 1px dashed var(--ink); background: transparent; color: var(--ink); cursor: not-allowed;
+}
