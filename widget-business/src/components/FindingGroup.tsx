@@ -972,13 +972,8 @@ export function findingRow(
   const issueCell = (
     // data-finding: the score summary's links find this row by it (lib/openFinding).
     <span className="a11y-finding-issue" data-finding={rep.id}>
-      {/* Severity's own column (below) is hidden at phone width — its
-          badge plus the Issue text plus the arrow column already exceeded
-          the viewport there, forcing horizontal scroll before a reader
-          reached the row's actual content — and folds in here instead,
-          above the title. a11y-finding-sev-fold is itself hidden by
-          default and only shown at that same narrow width, so wide
-          screens see Severity in its column, not doubled up. */}
+      {/* The severity badge sits above the title at every width; the table
+          has no Severity column (user's instruction, 23 Nov 2026). */}
       {!asNotes && (
         <span className="a11y-finding-sev-fold" style={sevTilt}>
           <SeverityTag severity={rep.severity} label={t(severityLabel[rep.severity])} />
@@ -1026,12 +1021,6 @@ export function findingRow(
     cells: asNotes
       ? [issueCell, ...(showCount ? [count > 1 ? <CountPill key="n" count={count} /> : ""] : [])]
       : [
-          // Severity's own column. Hidden at phone width by CSS
-          // (a11y-finding-sev-col), where the folded copy inside
-          // issueCell takes over instead.
-          <span key="sev" className="a11y-finding-sev-col" style={sevTilt}>
-            <SeverityTag severity={rep.severity} label={t(severityLabel[rep.severity])} />
-          </span>,
           issueCell,
           criterion,
           <span key="fix" className={`a11y-method-badge a11y-fix-${fix.key}`}>
