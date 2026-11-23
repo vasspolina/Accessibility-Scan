@@ -4195,6 +4195,25 @@
   .a11y-widget-biz .a11y-pin { rotate: none; }
   .a11y-widget-biz.a11y-widget-biz .a11y-note.a11y-note-warning .a11y-note-badge { rotate: none; }
 }
+/* The warning bubble full width in two columns (user's instruction, 23 Nov
+   2026, "make this full bleed two column", on "Some checks didn't finish"):
+   the bubble runs the column's whole width instead of its words' width,
+   the title in the left half and the line under it in the right, their
+   first lines on one baseline, 40px between. The bubble is its own size
+   container and folds to one column under 560px of its own width, the
+   line back under the title. The badge stays on the top edge. */
+.a11y-widget-biz.a11y-widget-biz .a11y-note.a11y-note-warning {
+  width: 100%; container: a11y-warning / inline-size;
+}
+.a11y-widget-biz.a11y-widget-biz .a11y-note.a11y-note-warning .a11y-note-body {
+  display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: 40px; align-items: baseline;
+}
+/* The line keeps its 4px margin-top from the rule above: under baseline
+   alignment it only lowers the shared baseline, the two first lines stay
+   on one line. */
+@container a11y-warning (max-width: 560px) {
+  .a11y-widget-biz.a11y-widget-biz .a11y-note.a11y-note-warning .a11y-note-body { grid-template-columns: minmax(0, 1fr); }
+}
 
 /* ═══ THE DESIGNER AND DEVELOPER LIST WITH BADGES AND RULES (user's
    instruction, 23 Nov 2026, "design this", then "add badges, lines") ══════
