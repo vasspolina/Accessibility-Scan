@@ -1,7 +1,6 @@
 import { t, tf } from "../lib/strings";
 import { WhatsNextPanel } from "./WhatsNextPanel";
 import type { Wcag22Readiness as Readiness } from "../api/scanClient";
-import { Icon } from "./Icon";
 
 // The law is going to move, and an owner should see it coming rather than
 // discover it. EN 301 549 v3.2.1 adopts WCAG 2.1, which is what the rest of
@@ -112,16 +111,18 @@ export function Wcag22Readiness({ readiness }: { readiness: Readiness }) {
                          died on this scan. A "✓" here — which the old
                          status!=="needs-review" branch would have drawn — is
                          the exact overclaim this block refuses elsewhere. */
-                      <span className="a11y-next-status" data-call="not-measured">
+                      <span className="a11y-next-status" data-call="not-measured" data-status="not-measured">
                         {t(STATUS_LABEL[c.status])}
                       </span>
                     ) : c.status !== "needs-review" ? (
-                      <span className="a11y-next-status">
-                        <Icon name={fails ? "warning--alt" : "checkmark"} />{" "}
+                      /* A badge since 23 Nov 2026 ("needs a person, nothing
+                         found etc can be also badges"): the words carry the
+                         call, so the tick and warning icons went. */
+                      <span className="a11y-next-status" data-status={fails ? "failed" : "no-issues-found"}>
                         {t(STATUS_LABEL[c.status])}
                       </span>
                     ) : (
-                      <span className="a11y-next-status" data-call={c.coverage}>
+                      <span className="a11y-next-status" data-call={c.coverage} data-status="needs-review">
                         {c.coverage === "automated" ? t("Software can check it") : t("Needs a person")}
                       </span>
                     )}
