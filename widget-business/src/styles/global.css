@@ -3476,3 +3476,41 @@
 @media (max-width: 640px) {
   .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-tester > .a11y-url-submit > .a11y-btn.a11y-btn-primary { min-height: 52px; font-size: 26px; }
 }
+
+/* ═══ THE REPORT'S SECTIONS AS A PAGE OF TEXT (user's instruction,
+   23 Nov 2026, "make the typography, titles and lines between sections of
+   report like this", with a reference) ═════════════════════════════════
+   Measured on the reference: a section title is the body's own size in
+   the sans, Regular, at line-height 1.25, standing under a 1px solid rule
+   that runs the full width, 6.5px under the rule and 13px over its first
+   line of text; the body is a serif at the same size, line-height 1.2,
+   paragraphs one line apart. Here: the rule is the section's top edge
+   (so it spans the accordion triangle and the CSV button too), the title
+   is 32px Regular PP Telegraf (the report's prose size; 22px under 640px,
+   the phone's), 8px under the rule and 16px over what follows, with no
+   negative tracking; the line under each title and a section's plain
+   paragraphs are Serrif at the same 32px/1.2 (Light, the only cut we
+   have), one line apart. The 100px between sections (18 Nov 2026) stays,
+   now above the rule. Sections with no visible title (the report actions,
+   the notes, the closing call) get no rule. */
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-report > :has(h2:is(.a11y-section-title, .a11y-top-title, .a11y-legal-title):not(.a11y-sr-only)) {
+  border-top: 1px solid var(--ink); padding-top: 8px;
+}
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-report h2:is(.a11y-section-title, .a11y-top-title, .a11y-legal-title):not(.a11y-sr-only) {
+  margin-top: 0; margin-bottom: 16px; font-family: "PP Telegraf", sans-serif;
+  font-size: 32px; font-weight: 400; line-height: 1.25; letter-spacing: 0;
+}
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-report h2.a11y-accordion-title .a11y-accordion-head { font-size: 32px; line-height: 1.25; letter-spacing: 0; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-report .a11y-findings-head { margin-top: 0; }
+/* The conformance report's accordion row drew its own rule 9px under the
+   section's: one rule per section. */
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-report > .a11y-section .a11y-section-head > .a11y-accordion-row { border-top: 0; padding-top: 0; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-report :is(.a11y-section-desc, .a11y-section > p) {
+  font-family: "Serrif", Georgia, serif; font-weight: 300;
+  font-size: 32px; line-height: 1.2; letter-spacing: 0; margin-top: 0; margin-bottom: 1.2em;
+}
+@media (max-width: 640px) {
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-report h2:is(.a11y-section-title, .a11y-top-title, .a11y-legal-title):not(.a11y-sr-only),
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-report h2.a11y-accordion-title .a11y-accordion-head,
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-report :is(.a11y-section-desc, .a11y-section > p) { font-size: 22px; }
+}
