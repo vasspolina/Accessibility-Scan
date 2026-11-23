@@ -53,6 +53,20 @@ document.querySelectorAll("[data-offers]").forEach((root) => {
   });
 });
 
+// A link to one of those rows (the Services page's list, data-open-offer):
+// it opens that row, takes the reader to it and moves focus onto it. Without
+// the script the link still goes to the row.
+document.querySelectorAll("a[data-open-offer]").forEach((link) => {
+  link.addEventListener("click", (event) => {
+    const btn = document.getElementById(link.getAttribute("href").slice(1));
+    if (!btn) return;
+    event.preventDefault();
+    if (btn.getAttribute("aria-expanded") !== "true") btn.click();
+    btn.scrollIntoView({ block: "start", behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth" });
+    btn.focus({ preventScroll: true });
+  });
+});
+
 // Section buttons on long pages: the button for the section being read is
 // marked aria-current, so it is filled and a screen reader hears "current".
 document.querySelectorAll("[data-toc]").forEach((nav) => {

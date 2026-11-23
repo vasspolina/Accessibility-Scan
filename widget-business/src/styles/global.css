@@ -3630,15 +3630,15 @@
    The marker highlight (a hand-drawn blob with pink and yellow end caps)
    is gone from every badge: severity words, rule ids, WCAG numbers and
    levels, the score's chips, the professional chips, principle counts,
-   status chips, the legal marks and the WCAG 2.2 count. Each is now the
-   checklist's bubble: a solid fill in its own colour, 8px corners, black
-   words in the mono face at 15px, no caps. Inline bubbles lean a little,
-   one of three tilts by their place among their siblings, as the
-   checklist's do; the legal tiles' marks, which run the tile's width,
-   stay level. Colour still never carries the meaning alone: the words
-   do. Black on every highlight fill measures 7:1 or better in both
-   themes. */
-.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-sev, .a11y-rule-chip, .a11y-level-badge, .a11y-sum-chip, .a11y-pro-chip, .a11y-conf-status, .a11y-principle-count, .a11y-status-chip, .a11y-legal-mark, .a11y-next-count) {
+   status chips and the WCAG 2.2 count. Each is now the checklist's
+   bubble: a solid fill in its own colour, 8px corners, black words in the
+   mono face at 15px, no caps. Inline bubbles lean a little, one of three
+   tilts by their place among their siblings, as the checklist's do. The
+   check-result cards' status word is not a badge (CHECK RESULTS AS THE
+   SERVICES CARDS, the same day) and is left out. Colour still never
+   carries the meaning alone: the words do. Black on every highlight fill
+   measures 7:1 or better in both themes. */
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-sev, .a11y-rule-chip, .a11y-level-badge, .a11y-sum-chip, .a11y-pro-chip, .a11y-conf-status, .a11y-principle-count, .a11y-status-chip, .a11y-next-count) {
   display: inline-block; vertical-align: 0.15em; box-sizing: border-box;
   margin-inline: 0.25em; padding: 2px 8px; border-radius: 8px; box-shadow: none; color: #000;
   font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
@@ -3648,7 +3648,127 @@
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-sev, .a11y-rule-chip, .a11y-level-badge, .a11y-sum-chip, .a11y-pro-chip, .a11y-principle-count, .a11y-status-chip, .a11y-next-count):nth-child(3n+1) { rotate: -2deg; }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-sev, .a11y-rule-chip, .a11y-level-badge, .a11y-sum-chip, .a11y-pro-chip, .a11y-principle-count, .a11y-status-chip, .a11y-next-count):nth-child(3n+2) { rotate: 1.5deg; }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-sev, .a11y-rule-chip, .a11y-level-badge, .a11y-sum-chip, .a11y-pro-chip, .a11y-principle-count, .a11y-status-chip, .a11y-next-count):nth-child(3n) { rotate: -1deg; }
-.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-legal-mark { margin-inline: 0; }
 @media print {
   .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-sev, .a11y-rule-chip, .a11y-level-badge, .a11y-sum-chip, .a11y-pro-chip, .a11y-principle-count, .a11y-status-chip, .a11y-next-count) { rotate: none; }
+}
+
+/* ═══ CHECK RESULTS AS THE SERVICES CARDS (user's instruction, 23 Nov 2026,
+   "design these like this", with the BarrierFreeWeb Services cards as the
+   reference) ═══════════════════════════════════════════════════════════════
+   The four result tiles take the Services cards' set (.slogan in
+   backend/public/barrierfreeweb/styles.css): the plates' four colours,
+   20px corners, 28px 26px 30px inside, 300px tall, 10px apart; the status
+   word small at the top left (18px, 24px line, no tracking, 15px on a
+   phone); the statement at the foot, left, in Light: the count at 96px
+   and the result's words at 40px/1.02 (32px on a phone), every other card
+   in Serrif Light as the reference alternates sans and serif. The level
+   split stays small print under the words. No pill, no centring.
+   Colours follow the status, not the reference's order: problems pink,
+   nothing found mint, needs a person yellow, not measured sky. Black words
+   on the light plates (13:1 or better), white on the deep dark plates
+   (12:1 or better); the tile pins --ink and --paper so the focus ring and
+   the pressed ring follow. Four across; two across where the row is under
+   900px; one under 480px. Hover underlines the words, as on the reference;
+   the tile whose group the open checklist shows keeps a 4px inset ring.
+   The markup order (words, level split, status, count) is unchanged for
+   screen readers; only the eye takes them as status, count, words. */
+.a11y-widget-biz {
+  --plate-1: #a2e3ff; --plate-2: #beffbd; --plate-3: #ffa0ff; --plate-4: #f8ff58; --plate-text: #000;
+}
+.a11y-widget-biz[data-theme="dark"] {
+  --plate-1: #2e3350; --plate-2: #0f3a2a; --plate-3: #3d1440; --plate-4: #36310c; --plate-text: #fff;
+}
+@media (prefers-color-scheme: dark) {
+  .a11y-widget-biz:not([data-theme="light"]) {
+    --plate-1: #2e3350; --plate-2: #0f3a2a; --plate-3: #3d1440; --plate-4: #36310c; --plate-text: #fff;
+  }
+}
+.a11y-widget-biz .a11y-legal-results { container: a11y-legal-cards / inline-size; }
+.a11y-widget-biz .a11y-legal-results .a11y-legal-tiles {
+  display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px;
+}
+.a11y-widget-biz .a11y-legal-results .a11y-legal-tiles > .a11y-legal-row {
+  --ink: var(--plate-text); --tile-ink: var(--plate-text);
+  display: flex; flex-direction: column; align-items: flex-start; gap: 0;
+  min-height: 300px; margin: 0; padding: 28px 26px 30px; border-radius: 20px;
+  color: var(--plate-text); text-align: left;
+}
+.a11y-widget-biz .a11y-legal-results .a11y-legal-tiles > .a11y-legal-row-failed { --paper: var(--plate-3); background: var(--plate-3); }
+.a11y-widget-biz .a11y-legal-results .a11y-legal-tiles > .a11y-legal-row-clean { --paper: var(--plate-2); background: var(--plate-2); }
+.a11y-widget-biz .a11y-legal-results .a11y-legal-tiles > .a11y-legal-row-human { --paper: var(--plate-4); background: var(--plate-4); }
+.a11y-widget-biz .a11y-legal-results .a11y-legal-tiles > .a11y-legal-row-not-measured { --paper: var(--plate-1); background: var(--plate-1); }
+.a11y-widget-biz .a11y-legal-results .a11y-legal-tiles > .a11y-legal-row .a11y-legal-mark {
+  align-self: flex-start; color: inherit; background: none;
+  font-size: 18px; font-weight: 400; line-height: 24px; letter-spacing: 0; white-space: normal; text-align: left;
+}
+.a11y-widget-biz .a11y-legal-results .a11y-legal-tiles > .a11y-legal-row .a11y-legal-count {
+  margin: auto 0 4px; padding-top: 24px;
+  font-size: 96px; font-weight: 300; line-height: 1; letter-spacing: -0.02em;
+}
+.a11y-widget-biz .a11y-legal-results .a11y-legal-tiles > .a11y-legal-row .a11y-legal-row-label {
+  font-size: 40px; font-weight: 300; line-height: 1.02; letter-spacing: -0.01em;
+  text-decoration-thickness: 2px; text-underline-offset: 0.12em;
+}
+.a11y-widget-biz .a11y-legal-results .a11y-legal-tiles > .a11y-legal-row:nth-child(even) .a11y-legal-row-label {
+  font-family: "Serrif", Georgia, "Times New Roman", serif; font-synthesis: none; letter-spacing: -0.015em;
+}
+.a11y-widget-biz .a11y-legal-results .a11y-legal-tiles > .a11y-legal-row .a11y-legal-row-meaning {
+  margin-top: 12px; font-size: 18px; line-height: 1.3; letter-spacing: 0.01em;
+}
+.a11y-widget-biz .a11y-legal-results .a11y-legal-tiles > button.a11y-legal-row:enabled:hover { background: var(--paper); color: var(--plate-text); box-shadow: none; }
+.a11y-widget-biz .a11y-legal-results .a11y-legal-tiles > button.a11y-legal-row:enabled:hover .a11y-legal-row-label { text-decoration-line: underline; }
+.a11y-widget-biz .a11y-legal-results .a11y-legal-tiles > button.a11y-legal-row[aria-pressed="true"] { box-shadow: inset 0 0 0 4px var(--plate-text); }
+@container a11y-legal-cards (max-width: 900px) {
+  .a11y-widget-biz .a11y-legal-results .a11y-legal-tiles { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .a11y-widget-biz .a11y-legal-results .a11y-legal-tiles > .a11y-legal-row { min-height: 240px; }
+}
+@container a11y-legal-cards (max-width: 480px) {
+  .a11y-widget-biz .a11y-legal-results .a11y-legal-tiles { grid-template-columns: minmax(0, 1fr); }
+  .a11y-widget-biz .a11y-legal-results .a11y-legal-tiles > .a11y-legal-row { min-height: 0; padding: 22px 20px 24px; }
+  .a11y-widget-biz .a11y-legal-results .a11y-legal-tiles > .a11y-legal-row .a11y-legal-mark { font-size: 15px; line-height: 20px; }
+  .a11y-widget-biz .a11y-legal-results .a11y-legal-tiles > .a11y-legal-row .a11y-legal-count { font-size: 72px; }
+  .a11y-widget-biz .a11y-legal-results .a11y-legal-tiles > .a11y-legal-row .a11y-legal-row-label { font-size: 32px; }
+}
+@media (forced-colors: active) {
+  .a11y-widget-biz .a11y-legal-results .a11y-legal-tiles > .a11y-legal-row { border: 1px solid CanvasText; }
+}
+
+/* ═══ THE WORST FINDINGS' MARKS AS BADGES (user's instruction, 23 Nov 2026,
+   "design these as badges", on the run of worst findings under the score
+   dial) ═══════════════════════════════════════════════════════════════════
+   The criterion and the severity beside each finding were marker
+   highlights (a skewed round with yellow and pink end caps); here they are
+   badges: a plain pill, 999px corners, no end caps, 18px words on one line,
+   sat on the middle of the title's line. The fills are the check-result
+   cards' plates, so a colour means the same thing in both places: Fix
+   first pink, Fix soon sky, Fix eventually mint, Minor polish yellow; the
+   criterion is the neutral tile ground. Black words on the light fills
+   (13:1 or better, 18.4:1 on the tile), white on the deep dark plates and
+   the dark tile (12:1 or better). Only this run: the highlight stays
+   wherever else these marks appear. This lifts the 14 Oct 2026 "no badges
+   across the content" rule for these two marks, at the user's word. */
+.a11y-widget-biz .a11y-sum-run .a11y-sum-row .a11y-sum-row-marks { display: inline-flex; flex-wrap: wrap; gap: 6px; align-items: center; vertical-align: middle; }
+.a11y-widget-biz .a11y-sum-run .a11y-sum-row-marks > :is(.a11y-sum-chip, .a11y-sev) {
+  display: inline-block; margin: 0; padding: 7px 14px 6px; border-radius: 999px; box-shadow: none;
+  font-size: 18px; font-weight: 400; line-height: 1.1; letter-spacing: 0.01em; white-space: nowrap;
+  background: var(--plate-2); color: var(--plate-text);
+}
+.a11y-widget-biz .a11y-sum-run .a11y-sum-row-marks > .a11y-sum-chip { background: var(--tile); color: var(--tile-ink); }
+.a11y-widget-biz .a11y-sum-run .a11y-sum-row-marks > .a11y-sev-critical { background: var(--plate-3); }
+.a11y-widget-biz .a11y-sum-run .a11y-sum-row-marks > .a11y-sev-serious { background: var(--plate-1); }
+.a11y-widget-biz .a11y-sum-run .a11y-sum-row-marks > .a11y-sev-moderate { background: var(--plate-2); }
+.a11y-widget-biz .a11y-sum-run .a11y-sum-row-marks > .a11y-sev-minor { background: var(--plate-4); }
+@media (forced-colors: active) {
+  .a11y-widget-biz .a11y-sum-run .a11y-sum-row-marks > :is(.a11y-sum-chip, .a11y-sev) { border: 1px solid CanvasText; }
+}
+/* The run's marks take the checklist's bubble shape (user's instruction,
+   23 Nov 2026, "make these badges same as here. and all other badges",
+   with a screenshot of this run beside the checklist's bubbles): 8px
+   corners, the mono face at 15px, 2px 8px inside, a small tilt, keeping
+   the plate colours above so a colour still means what it means on the
+   check-result cards. */
+.a11y-widget-biz.a11y-widget-biz .a11y-sum-run .a11y-sum-row-marks > :is(.a11y-sum-chip, .a11y-sev) {
+  padding: 2px 8px; border-radius: 8px;
+  font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  font-size: 15px; line-height: 1.3; letter-spacing: 0;
 }
