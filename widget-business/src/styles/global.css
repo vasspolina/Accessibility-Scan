@@ -3055,8 +3055,10 @@
 
    Under 640px the panel folds behind its Conversations toggle; the row
    sits on the toggle's line at the right, outside the fold, and opens
-   downward. The New scan head keeps its 48px line from the pin's time. */
-.a11y-widget-biz .a11y-chat > .a11y-newscan-head:has(> .a11y-newscan-fold:not([data-gone])) { min-height: 48px; align-items: center; }
+   downward. The New scan head's 48px line from the pin's time is gone
+   (23 Nov 2026): the title is clipped for screen readers only, and the
+   48px rule out-ranked the head's min-height 0, so the opening cards
+   stood 88px under the window's top beside the panel's 40px. */
 .a11y-widget-biz .a11y-chat > .a11y-prompts { margin-top: 0; }
 .a11y-widget-biz .a11y-chats { padding-top: 0; }
 .a11y-widget-biz .a11y-chat-layout > .a11y-chats {
@@ -3109,10 +3111,12 @@
    stands 40px in on both sides; the conversation keeps its 40px off the
    panel's rule and gives up its own right padding, so the right side is
    40px, not 80. Phones keep their 10px gutter. The left, before the
-   conversations panel, is 20px since 21 Nov 2026 (user's instruction,
-   "make this margin 20 px", on the panel's left edge). */
+   conversations panel, was 20px from 21 Nov 2026 (user's instruction,
+   "make this margin 20 px", on the panel's left edge; with the widget's
+   16px it measured 36px) until the one 40px margin below. */
 @media (min-width: 641px) {
-  .a11y-widget-biz .a11y-chat-layout { padding-inline: 20px 40px; box-sizing: border-box; }
+  /* 24px with the widget's own 16px is 40px: see ONE 40PX MARGIN below. */
+  .a11y-widget-biz .a11y-chat-layout { padding-inline: 24px; padding-top: 40px; box-sizing: border-box; }
   .a11y-widget-biz .a11y-chat-layout > .a11y-chat { padding-inline-end: 0; }
 }
 /* Where the panel is folded (641 to 960px) there is no panel edge to keep
@@ -3122,6 +3126,40 @@
 @media (min-width: 641px) and (max-width: 960px) {
   .a11y-widget-biz .a11y-chat-layout { padding-inline: 24px; }
   .a11y-widget-biz .a11y-chat-layout > .a11y-chat { padding-inline: 0; }
+}
+
+/* ONE 40PX MARGIN ROUND THE CHAT PAGE (user's instruction, 23 Nov 2026,
+   "the window sits a bit random, why the line cuts off on top? make
+   proper margin around"). Measured at 1440px before: the panel's rule
+   began 32px under the window's top (the widget's own 1em padding) and
+   ran to the foot, so it looked cut off; the page stood 36px in on the
+   left (the widget's 16px and the layout's 20px) and 56px on the right
+   (16 and 40); the conversation stood 72px off the rule, the panel's
+   rows 16px. Now the rule runs from the window's top edge, and every one
+   of those distances is 40px except the window's left to the rows, which
+   is 20px (the user's second instruction that day): the window's top to
+   the first line, the rows to the rule, the rule to the
+   conversation, the conversation to the window's right. The panel's
+   column grows by the 24px its new padding takes, so its rows keep
+   their 284px. Folded (641 to 960px) the sides were already 40px; only
+   the top changes. The foot too: the box you type in stood 20px off the
+   window's bottom and is 40px off it now, and the widget's own 32px
+   bottom padding is dropped here, since it only made a page one window
+   tall scroll by 32px. Phones keep their 10px gutter. */
+@media (min-width: 641px) {
+  .a11y-widget-biz:has(> .a11y-widget-inner .a11y-chat-layout) { padding-block: 0; }
+  .a11y-widget-biz .a11y-chat-layout .a11y-chat-dock { padding-bottom: 40px; }
+}
+@media (min-width: 961px) {
+  .a11y-widget-biz .a11y-chat-layout {
+    grid-template-columns: 324px minmax(0, 1fr); gap: 40px;
+    /* The left half as much (user's instruction, the same day, "make left
+       margin 50% less"): the window's left to the panel's rows is 20px,
+       4px here with the widget's own 16px. The rest stay 40px. */
+    padding-top: 0; padding-inline-start: 4px;
+  }
+  .a11y-widget-biz .a11y-chat-layout > .a11y-chats { padding: 40px 40px 40px 0; }
+  .a11y-widget-biz .a11y-chat-layout > .a11y-chat { padding-inline: 0; padding-top: 40px; }
 }
 
 /* ═══ FORM FIELDS AS THE CHAT BOX (user's instruction, 21 Nov 2026) ═════════
