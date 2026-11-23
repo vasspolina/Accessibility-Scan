@@ -1,5 +1,6 @@
 import type { ReactNode } from "react";
 import { Pin, type PinMark, type PinTone } from "./Pin";
+import { t } from "../lib/strings";
 
 /**
  * The progress bar and the notification, brought across from the kit.
@@ -88,9 +89,17 @@ export function Notification({
       {/* The glyph repeats the kind, which the colour also carries and the
           title states. Hidden, so it is the sighted reader's second channel
           rather than a third thing announced. */}
-      <span className="a11y-note-glyph" aria-hidden="true">
-        <Pin tone={(PIN[kind] ?? PIN.info).tone} mark={(PIN[kind] ?? PIN.info).mark} />
-      </span>
+      {/* A warning takes the report's small badge with its word, "Warning",
+          in place of the pin (user's instruction, 23 Nov 2026, "just make
+          badge with text as other badges"). The word is read out: it names
+          the kind, which the pin left to the colour. */}
+      {kind === "warning" ? (
+        <span className="a11y-note-badge">{t("Warning")}</span>
+      ) : (
+        <span className="a11y-note-glyph" aria-hidden="true">
+          <Pin tone={(PIN[kind] ?? PIN.info).tone} mark={(PIN[kind] ?? PIN.info).mark} />
+        </span>
+      )}
       <div className="a11y-note-body">
         <div className="a11y-note-title">{title}</div>
         {subtitle && <div className="a11y-note-sub">{subtitle}</div>}

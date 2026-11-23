@@ -406,6 +406,7 @@ export const CHROME_KEYS: string[] = [
   "Skip the transcript",
   "What you’d hear",
   "Note",
+  "Warning",
   "Announcement order",
   "Play aloud from this line",
   "Show all {count} with problems",
