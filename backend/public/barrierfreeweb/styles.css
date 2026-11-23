@@ -1108,3 +1108,106 @@ body > header::after {
   .foot__base { margin-top: 24px; }
 }
 @media (max-width: 640px) { .foot { margin-top: 63px; } }
+
+/* THE SCAN BUBBLE (user's instruction, 23 Nov 2026): a promo for the
+   accessibility scan, set as a message you would send it. "You" at the right,
+   the question on the cream ground with black words in both themes (18:1),
+   40px corners, a tail at the bottom right and a 1deg tilt. The whole bubble
+   is the link to the scan; hover underlines the words. In forced colours the
+   ground is dropped, so the edge turns into a line. */
+.bubble { max-width: 920px; margin: 120px 0 0; }
+.bubble figcaption { font-size: 18px; line-height: 24px; text-align: end; margin: 0 0 14px; }
+.bubble__msg {
+  position: relative; display: block;
+  padding: 36px 44px 40px; border: 1px solid transparent; border-radius: 40px;
+  background: var(--cream); color: #000; text-decoration: none;
+  font-size: 32px; line-height: 38px; text-wrap: pretty; overflow-wrap: break-word; hyphens: manual;
+  transform: rotate(-1deg);
+}
+.bubble__msg::after {
+  content: ""; position: absolute; right: 36px; bottom: -22px;
+  width: 30px; height: 24px; background: var(--cream);
+  clip-path: polygon(0 0, 100% 0, 100% 100%);
+}
+.bubble__msg:hover { text-decoration: underline; text-decoration-thickness: 2px; text-underline-offset: 0.12em; }
+.bubble__msg:focus-visible { outline: 2px solid var(--focus); outline-offset: 4px; }
+.bubble + .chat { margin-top: 96px; }
+@media (max-width: 640px) {
+  .bubble { margin-top: 72px; }
+  .bubble figcaption { font-size: 15px; line-height: 20px; margin-bottom: 10px; }
+  .bubble__msg { font-size: 23px; line-height: 27px; padding: 22px 24px 26px; border-radius: 28px; }
+  .bubble__msg::after { right: 24px; bottom: -16px; width: 22px; height: 18px; }
+  .bubble + .chat { margin-top: 72px; }
+}
+@media (forced-colors: active) { .bubble__msg { border-color: LinkText; } .bubble__msg::after { display: none; } }
+
+/* THE LOGO IN LIGHT AND DARK (user's instruction, 23 Nov 2026, "fix colors so
+   there is light and dark version"). On white the pale sky, mint and yellow
+   petals all but vanished, so light takes deep versions of the same four
+   hues, each 3:1 or better on white: forest #1e361f (13.7:1), blue #2b7ab8
+   (4.6:1), green #2e8b57 (4.2:1), ochre #a88a00 (3.3:1). Dark keeps the pale
+   set, each 12:1 or better on black, with the forest petal turned to the
+   headline's pale #e3f1bd. logo.svg (the tab icon) carries the same two sets. */
+.brand__petal-a { fill: #1e361f; }
+.brand__petal-b { fill: #2b7ab8; }
+.brand__petal-c { fill: #2e8b57; }
+.brand__petal-d { fill: #a88a00; }
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .brand__petal-a { fill: #e3f1bd; }
+  :root:not([data-theme="light"]) .brand__petal-b { fill: #a2e3ff; }
+  :root:not([data-theme="light"]) .brand__petal-c { fill: #beffbd; }
+  :root:not([data-theme="light"]) .brand__petal-d { fill: #f8ff58; }
+}
+:root[data-theme="dark"] .brand__petal-a { fill: #e3f1bd; }
+:root[data-theme="dark"] .brand__petal-b { fill: #a2e3ff; }
+:root[data-theme="dark"] .brand__petal-c { fill: #beffbd; }
+:root[data-theme="dark"] .brand__petal-d { fill: #f8ff58; }
+
+/* THE NOTICE AND STAY IN TOUCH BANDS (user's reference, 23 Nov 2026, "add
+   these elements"): at the head of the footer on every page, after the
+   What we offer band. The notice is one line on a grey band, #000 on
+   #e6e6e6 in both themes (16.1:1). Stay in touch is the sky band (black
+   words on #a2e3ff, white on #2e3350 in dark), its words centred in the
+   Light cut, and one email field with an arrow. There is no mailing list
+   service behind it, so the form opens a mail to the studio with the address
+   in it, as the contact form does without its script. The field's edge,
+   placeholder and focus ring are the band's own ink, so they hold in both
+   themes. */
+.notice, .news { box-shadow: 0 0 0 100vmax var(--band); background: var(--band); clip-path: inset(0 -100vmax); }
+.notice {
+  --band: #e6e6e6; color: #000; margin: 0; padding: 16px 0 17px;
+  text-align: center; font-size: 22px; line-height: 28px; letter-spacing: 0;
+}
+.news {
+  --band: var(--sky); color: var(--band-ink); padding: 72px 0 64px;
+  display: flex; flex-direction: column; align-items: center; text-align: center;
+}
+.news__title, .news__text {
+  margin: 0; max-width: 820px; font: inherit; font-weight: 300;
+  font-size: 34px; line-height: 40px; letter-spacing: -0.005em;
+}
+.news__form {
+  margin-top: 36px; width: min(100%, 540px); display: flex; align-items: center;
+  border: 1px solid currentColor; border-radius: 10px; padding-inline: 20px 6px;
+}
+.news__form:focus-within { outline: 2px solid currentColor; outline-offset: 3px; }
+.news__input {
+  flex: 1 1 auto; min-width: 0; min-height: 52px; border: 0; padding: 0;
+  background: transparent; color: inherit; font: inherit; font-size: 18px; letter-spacing: 0;
+}
+.news__input:focus { outline: none; }
+.news__input::placeholder { color: inherit; opacity: 1; }
+.news__btn {
+  flex: none; width: 44px; height: 44px; border: 0; border-radius: 8px; padding: 0;
+  background: transparent; color: inherit; font: inherit; font-size: 22px; cursor: pointer;
+}
+.news__btn:hover { background: var(--band-ink); color: var(--sky); }
+.news__btn:focus-visible { outline: 2px solid currentColor; outline-offset: 0; }
+.news + .foot { margin-top: 0; }
+@media (max-width: 640px) {
+  .notice { font-size: 17px; line-height: 22px; padding: 12px 0 13px; }
+  .news { padding: 48px 0 44px; }
+  .news__title, .news__text { font-size: 24px; line-height: 29px; }
+  .news__form { margin-top: 26px; }
+}
+@media (forced-colors: active) { .news__btn:hover { background: Highlight; color: HighlightText; } }
