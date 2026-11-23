@@ -57,7 +57,7 @@ export function RelatedChecks({
             onClick={() => onOpen?.(it)}
           >
             <span className="a11y-related-meta">
-              {it.id} · Level {it.level}
+              {it.id}{" — "}Level {it.level}
             </span>{" "}
             <span className="a11y-related-name">{it.name}</span>
             {/* `why` is what makes this a recommendation rather than a list

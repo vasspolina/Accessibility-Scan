@@ -83,7 +83,7 @@ export function Wcag22Readiness({ readiness }: { readiness: Readiness }) {
                       {fails ? c.failing : c.plain}
                     </span>
                     <span className="a11y-next-meta">
-                      {c.id} · {t("Level")} {c.level}
+                      {c.id}{" — "}{t("Level")} {c.level}
                     </span>
                     {c.whyManual && <span className="a11y-next-meta">{c.whyManual}</span>}
                     <span className="a11y-next-meta">{c.name}</span>

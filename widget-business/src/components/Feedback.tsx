@@ -1,5 +1,5 @@
 import type { ReactNode } from "react";
-import { Icon, type IconName } from "./Icon";
+import { Pin, type PinTone } from "./Pin";
 
 /**
  * The progress bar and the notification, brought across from the kit.
@@ -63,11 +63,13 @@ export function ProgressBar({
 
 export type NotificationKind = "error" | "success" | "warning" | "info";
 
-const GLYPH: Record<NotificationKind, IconName> = {
-  error: "warning",
-  success: "checkmark",
-  warning: "warning--alt",
-  info: "information",
+/* Each kind's pin: the plate colour and the Carbon marks it holds. Error and
+   warning share the exclamation; the colour and the title tell them apart. */
+const PIN: Record<NotificationKind, { tone: PinTone; marks: "warning--marks" | "information--marks" | "checkmark" }> = {
+  error: { tone: "pink", marks: "warning--marks" },
+  success: { tone: "mint", marks: "checkmark" },
+  warning: { tone: "yellow", marks: "warning--marks" },
+  info: { tone: "sky", marks: "information--marks" },
 };
 
 export function Notification({
@@ -85,7 +87,7 @@ export function Notification({
           title states. Hidden, so it is the sighted reader's second channel
           rather than a third thing announced. */}
       <span className="a11y-note-glyph" aria-hidden="true">
-        <Icon name={GLYPH[kind] ?? GLYPH.info} />
+        <Pin tone={(PIN[kind] ?? PIN.info).tone} icon={(PIN[kind] ?? PIN.info).marks} />
       </span>
       <div className="a11y-note-body">
         <div className="a11y-note-title">{title}</div>

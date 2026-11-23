@@ -1992,7 +1992,12 @@
    dark. It sits above the frame (z-index) and overlaps it by 16px, so the
    figure gives it room above the picture. The plain label returns where
    there is no picture. Forced colours draw an edge and drop the tail. */
+/* Pink since 23 Nov 2026 (user's instruction, "make this note buble pink or
+   green"): the light pink plate, #ffa0ff, pinned in both themes as the
+   opening questions' badge is, black words on it (11:1). It was the tile
+   ground, beige in light, which sat too close to the picture's own greys. */
 .a11y-widget-biz .a11y-shot.a11y-shot-has-bubble { padding-top: 6px; }
+.a11y-widget-biz .a11y-shot-bubble { --tile: #ffa0ff; --tile-ink: #000; }
 .a11y-widget-biz .a11y-shot-bubble {
   --ink: var(--tile-ink); --paper: var(--tile);
   position: relative; z-index: 1; display: block; width: fit-content; max-width: 85%;
@@ -3343,7 +3348,6 @@
   border-radius: 22px; background: var(--tile); color: var(--tile-ink);
   --ink: var(--tile-ink); --paper: var(--tile);
 }
-.a11y-widget-biz .a11y-note.a11y-note-warning .a11y-note-glyph { display: flex; align-self: start; padding-top: 0.12em; }
 .a11y-widget-biz .a11y-note.a11y-note-warning .a11y-note-sub { margin-top: 6px; }
 @media (max-width: 640px) {
   .a11y-widget-biz .a11y-note.a11y-note-warning { margin-top: 40px; padding: 16px 20px 18px 16px; column-gap: 10px; border-radius: 22px; }
@@ -3667,7 +3671,9 @@
    reference) ═══════════════════════════════════════════════════════════════
    The four result tiles take the Services cards' set (.slogan in
    backend/public/barrierfreeweb/styles.css): the plates' four colours,
-   20px corners, 28px 26px 30px inside, 300px tall, 10px apart; the status
+   20px corners, 22px 26px 24px inside, 190px tall (170px two across; a
+   wide rectangle since the user's instruction of 23 Nov 2026, "this can be
+   not as tall -- a rectangle"; 300px and 240px before), 10px apart; the status
    word small at the top left (18px, 24px line, no tracking, 15px on a
    phone); the statement at the foot, left, in Light: the count at 96px
    and the result's words at 40px/1.02 (32px on a phone), every other card
@@ -3700,7 +3706,7 @@
 .a11y-widget-biz .a11y-legal-results .a11y-legal-tiles > .a11y-legal-row {
   --ink: var(--plate-text); --tile-ink: var(--plate-text);
   display: flex; flex-direction: column; align-items: flex-start; gap: 0;
-  min-height: 300px; margin: 0; padding: 28px 26px 30px; border-radius: 20px;
+  min-height: 190px; margin: 0; padding: 22px 26px 24px; border-radius: 20px;
   color: var(--plate-text); text-align: left;
 }
 .a11y-widget-biz .a11y-legal-results .a11y-legal-tiles > .a11y-legal-row-failed { --paper: var(--plate-3); background: var(--plate-3); }
@@ -3712,7 +3718,7 @@
   font-size: 18px; font-weight: 400; line-height: 24px; letter-spacing: 0; white-space: normal; text-align: left;
 }
 .a11y-widget-biz .a11y-legal-results .a11y-legal-tiles > .a11y-legal-row .a11y-legal-count {
-  margin: auto 0 4px; padding-top: 24px;
+  margin: auto 0 4px; padding-top: 8px;
   font-size: 96px; font-weight: 300; line-height: 1; letter-spacing: -0.02em;
 }
 .a11y-widget-biz .a11y-legal-results .a11y-legal-tiles > .a11y-legal-row .a11y-legal-row-label {
@@ -3738,7 +3744,7 @@
 .a11y-widget-biz .a11y-legal-results .a11y-legal-tiles > button.a11y-legal-row[aria-pressed="true"] { box-shadow: inset 0 0 0 4px var(--plate-text); }
 @container a11y-legal-cards (max-width: 900px) {
   .a11y-widget-biz .a11y-legal-results .a11y-legal-tiles { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-  .a11y-widget-biz .a11y-legal-results .a11y-legal-tiles > .a11y-legal-row { min-height: 240px; }
+  .a11y-widget-biz .a11y-legal-results .a11y-legal-tiles > .a11y-legal-row { min-height: 170px; }
 }
 @container a11y-legal-cards (max-width: 480px) {
   .a11y-widget-biz .a11y-legal-results .a11y-legal-tiles { grid-template-columns: minmax(0, 1fr); }
@@ -3918,9 +3924,10 @@
    the cards apart), 20px corners, 10px apart, 22px 20px 24px inside, 220px
    tall; the kind as the small leaning badge at the top left (mono 15px,
    solid ink with the card's colour for its words); the title at the foot,
-   left, at 30px Light/1.05, every other card in Serrif. The open tab keeps
-   a 4px inset ring in ink (the pressed check-result card's mark), hover
-   underlines the title. Four across, two where the row is under 900px,
+   left, at 21px Light/1.1 (18px on a phone), every other card in Serrif;
+   30px and 26px until the user's instruction of 23 Nov 2026, "make fonts
+   30% smaller". The open tab keeps a 4px inset ring in ink (the pressed
+   check-result card's mark). Four across, two where the row is under 900px,
    one under 480px. */
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-dn-list { grid-template-columns: repeat(auto-fit, minmax(min(100%, 220px), 1fr)); gap: 10px; }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-dn-list > .a11y-dn-link {
@@ -3931,7 +3938,21 @@
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-dn-list > .a11y-dn-link:nth-child(4n+2) { --paper: var(--plate-2); background: var(--plate-2); }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-dn-list > .a11y-dn-link:nth-child(4n+3) { --paper: var(--plate-3); background: var(--plate-3); }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-dn-list > .a11y-dn-link:nth-child(4n) { --paper: var(--plate-4); background: var(--plate-4); }
-.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-dn-list > .a11y-dn-link:enabled:hover { background: var(--paper); color: var(--plate-text); }
+/* Hover and keyboard focus turn the card the beige tile ground, words in its
+   ink, no underline, as the check-result cards do (user's instruction,
+   23 Nov 2026, "and add proper hovers"; the hover only underlined the
+   title). #000 on #f0efe8 is 18.4:1; dark takes --tile (#1c1c1e) with white
+   words. The kind badge keeps solid ink and takes the tile's colour for its
+   words, so it still reads. */
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-dn-list > .a11y-dn-link { transition: background-color 0.15s, color 0.15s; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-dn-list > .a11y-dn-link:enabled:is(:hover, :focus-visible) {
+  --ink: var(--tile-ink); --paper: var(--tile); background: var(--tile); color: var(--tile-ink); text-decoration: none;
+}
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-dn-list > .a11y-dn-link:enabled:is(:hover, :focus-visible) > .a11y-dn-link-kind { background: var(--tile-ink); color: var(--tile); }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-dn-list > .a11y-dn-link:enabled:is(:hover, :focus-visible) > .a11y-dn-link-text { text-decoration: none; }
+@media (prefers-reduced-motion: reduce) {
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-dn-list > .a11y-dn-link { transition: none; }
+}
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-dn-list > .a11y-dn-link[aria-selected="true"] { padding-top: 22px; border: 0; box-shadow: inset 0 0 0 4px var(--plate-text); }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-dn-list > .a11y-dn-link > .a11y-dn-link-kind {
   align-self: flex-start; margin: 0; padding: 2px 8px; border-radius: 8px;
@@ -3943,7 +3964,7 @@
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-dn-list > .a11y-dn-link:nth-child(3n+2) { --kind-tilt: 1.5deg; }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-dn-list > .a11y-dn-link:nth-child(3n) { --kind-tilt: -1deg; }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-dn-list > .a11y-dn-link > .a11y-dn-link-text {
-  font-size: 30px; font-weight: 300; line-height: 1.05; letter-spacing: -0.005em;
+  font-size: 21px; font-weight: 300; line-height: 1.1; letter-spacing: 0;
   text-decoration-thickness: 2px;
 }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-dn-list > .a11y-dn-link:nth-child(even) > .a11y-dn-link-text {
@@ -3951,7 +3972,7 @@
 }
 @media (max-width: 640px) {
   .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-dn-list > .a11y-dn-link { min-height: 0; }
-  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-dn-list > .a11y-dn-link > .a11y-dn-link-text { font-size: 26px; }
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-dn-list > .a11y-dn-link > .a11y-dn-link-text { font-size: 18px; }
 }
 @media print {
   .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-dn-list > .a11y-dn-link > .a11y-dn-link-kind { rotate: none; }
@@ -4041,4 +4062,51 @@
   background: var(--label-plate); color: #000; border: 1px solid #000;
   font-family: "Serrif", Georgia, "Times New Roman", serif; font-weight: 300; font-synthesis: none;
   font-size: 15px; letter-spacing: 0.1em;
+}
+
+/* ═══ ENAMEL PINS (user's instruction, 23 Nov 2026, "add this pins for some
+   badges when it makes sense", "like for warning icon on this bubble", with
+   a photo of enamel pins on a knit as the reference) ═══════════════════════
+   A notice's icon is a pin (Pin.tsx): a round body in a plate colour,
+   leaning 8 degrees, with a black plated line, a silver rim, a soft shine
+   at the upper left where the light falls, and a shadow cast down to the
+   right. The marks inside are the Carbon icon in black. The fills are the
+   light plates pinned in both themes, as the opening questions' badge is:
+   warning yellow, error pink, info sky, success mint, black marks on each
+   at 11:1 or better; the shine sits beside the marks, never under them.
+   Only a pin's metal and shadow use greys: they are the object, not a tint
+   on words. Aria-hidden: the notice's title says what the pin shows. In
+   forced colours the fill and shadows drop and the line stays. */
+.a11y-widget-biz .a11y-pin {
+  --pin-fill: #f8ff58;
+  display: inline-grid; place-items: center; flex: none; box-sizing: border-box;
+  width: 1.15em; height: 1.15em; border-radius: 50%;
+  border: 0.07em solid #000; color: #000;
+  background:
+    radial-gradient(circle at 26% 22%, rgb(255 255 255 / 0.7) 0 9%, rgb(255 255 255 / 0) 24%),
+    var(--pin-fill);
+  box-shadow:
+    0 0 0 0.045em #d6d6d6,
+    0 0 0 0.07em #7d7d7d,
+    inset 0 -0.07em 0.05em rgb(0 0 0 / 0.16),
+    0.07em 0.13em 0.14em rgb(0 0 0 / 0.38);
+  rotate: -8deg;
+}
+/* Carbon's marks are drawn for a 1px line at 16px; at pin size they read as
+   hairlines, so the paths take a stroke in their own colour, as the
+   reference's enamel letters are cut bold. */
+.a11y-widget-biz .a11y-pin > svg { width: 0.8em; height: 0.8em; overflow: visible; }
+.a11y-widget-biz .a11y-pin > svg path { stroke: currentColor; stroke-width: 1.6px; stroke-linejoin: round; }
+.a11y-widget-biz .a11y-pin-yellow { --pin-fill: #f8ff58; }
+.a11y-widget-biz .a11y-pin-pink { --pin-fill: #ffa0ff; }
+.a11y-widget-biz .a11y-pin-sky { --pin-fill: #a2e3ff; }
+.a11y-widget-biz .a11y-pin-mint { --pin-fill: #beffbd; }
+/* In a notice the pin sits on the middle of the title's first line, with
+   room for its rim and shadow so the bubble's edge never clips them. */
+.a11y-widget-biz.a11y-widget-biz .a11y-note .a11y-note-glyph {
+  display: flex; align-self: start; padding: 0; margin-top: calc((1lh - 1.15em) / 2);
+}
+.a11y-widget-biz.a11y-widget-biz .a11y-note { grid-template-columns: auto minmax(0, 1fr); column-gap: 16px; }
+@media print {
+  .a11y-widget-biz .a11y-pin { rotate: none; box-shadow: 0 0 0 0.045em #d6d6d6, 0 0 0 0.07em #7d7d7d; }
 }

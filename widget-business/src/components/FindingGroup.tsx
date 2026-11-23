@@ -767,7 +767,7 @@ export function FindingDetails({
           {criterion && (
             <>
               <strong>{t("WCAG:")}</strong> {criterion}
-              {rep.wcagLevel ? " · " : ""}
+              {rep.wcagLevel ? " — " : ""}
             </>
           )}
           {rep.wcagLevel && levelFraming(rep.wcagLevel)}
