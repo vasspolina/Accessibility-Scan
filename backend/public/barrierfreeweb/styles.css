@@ -1116,7 +1116,9 @@ body > header::after {
    40px corners, a tail at the bottom right and a 1deg tilt. The whole bubble
    is the link to the scan; hover underlines the words. In forced colours the
    ground is dropped, so the edge turns into a line. */
-.bubble { max-width: 920px; margin: 120px 0 0; }
+/* at the right of the page, as a message you send sits (user's instruction,
+   23 Nov 2026, "the bubble needs to go to right") */
+.bubble { max-width: 920px; margin: 120px 0 0 auto; }
 .bubble__msg {
   position: relative; display: block;
   padding: 36px 44px 40px; border: 1px solid transparent; border-radius: 40px;
@@ -1214,21 +1216,12 @@ body > header::after {
 /* DARK VERSIONS OF THE BUBBLE AND THE QUESTION CARDS (user's instruction,
    23 Nov 2026, "make dark version"): on black the cream bubble and the white,
    cyan and mint cards stood out as light slabs. In dark the bubble is #262626
-   and the cards are deep versions of their hues, all with white words:
-   #262626 (15.3:1), deep cyan #0f3a42 (12.3:1), deep green #0f2b17 (16.1:1).
-   Hover stays the marker yellow with black words (19.4:1). */
+   with white words (15.3:1). The cards' colours moved to the plate tokens,
+   see THE QUESTION CARDS AS THE SERVICES CARDS. */
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) { --bubble: #262626; --bubble-ink: #ffffff; }
-  :root:not([data-theme="light"]) .chat__prompt:first-child { background: #262626; color: #fff; }
-  :root:not([data-theme="light"]) .chat__prompt:nth-child(2) { background: #0f3a42; color: #fff; }
-  :root:not([data-theme="light"]) .chat__prompt:nth-child(3) { background: #0f2b17; color: #fff; }
-  :root:not([data-theme="light"]) .chat__prompt:hover { background: var(--yellow); color: #000; }
 }
 :root[data-theme="dark"] { --bubble: #262626; --bubble-ink: #ffffff; }
-:root[data-theme="dark"] .chat__prompt:first-child { background: #262626; color: #fff; }
-:root[data-theme="dark"] .chat__prompt:nth-child(2) { background: #0f3a42; color: #fff; }
-:root[data-theme="dark"] .chat__prompt:nth-child(3) { background: #0f2b17; color: #fff; }
-:root[data-theme="dark"] .chat__prompt:hover { background: var(--yellow); color: #000; }
 
 /* THE CONTACT FORM AS OUTLINED FIELDS (user's instruction, 23 Nov 2026, "fix
    those forms", after the Stay in touch field): in both themes the fields
@@ -1264,3 +1257,176 @@ body > header::after {
   :root:not([data-theme="light"]) .notice { --band: #262626; color: #fff; }
 }
 :root[data-theme="dark"] .notice { --band: #262626; color: #fff; }
+
+/* A COLOUR PER PLATE AND A SERIF (user's instruction, 23 Nov 2026, "change
+   colors from card to card, also add serif font to some typesetting"). Each
+   statement takes its own ground from the page's palette: sky, mint, pink,
+   yellow, black type on each (11.7:1 or better); in dark, a deep version of
+   the same hue with white type (12:1 or better; the first is the Stay in
+   touch band's #2e3350). The second and fourth statements and the opened
+   offer's lede are set in Serrif Light (trial, Light cut only; check the
+   trial terms before the site goes public), so the plates alternate sans and
+   serif as they switch. */
+@font-face {
+  font-family: "Serrif";
+  src: url("fonts/Serrif-TRIAL-Light.woff2") format("woff2");
+  font-weight: 100 900; font-style: normal; font-display: swap;
+}
+:root {
+  --plate-1: #a2e3ff; --plate-2: #beffbd; --plate-3: #ffa0ff; --plate-4: #f8ff58;
+  --plate-text: #000000;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --plate-1: #2e3350; --plate-2: #0f3a2a; --plate-3: #3d1440; --plate-4: #36310c;
+    --plate-text: #ffffff;
+  }
+}
+:root[data-theme="dark"] {
+  --plate-1: #2e3350; --plate-2: #0f3a2a; --plate-3: #3d1440; --plate-4: #36310c;
+  --plate-text: #ffffff;
+}
+.plate { color: var(--plate-text); }
+.plate:nth-child(4n + 1) { background: var(--plate-1); }
+.plate:nth-child(4n + 2) { background: var(--plate-2); }
+.plate:nth-child(4n + 3) { background: var(--plate-3); }
+.plate:nth-child(4n) { background: var(--plate-4); }
+.plate:nth-child(even) p, .acc__lede {
+  font-family: "Serrif", Georgia, "Times New Roman", serif;
+  font-weight: 300; font-synthesis: none;
+}
+.plate:nth-child(even) p { letter-spacing: -0.015em; line-height: 1.02; }
+.acc__lede { letter-spacing: 0; }
+
+/* THE EYEBROW OVER THE CHAT, BACK WITH THE SCANNER (user's instruction,
+   23 Nov 2026, "add an eyebrow back and say use our accessibility scanner to
+   check if you need to make your website accessible"; it was removed earlier
+   the same day). Its 16px capitals and rule as before; "accessibility
+   scanner" links to the scanner, since this chat cannot check a site. The
+   link keeps the label's ink, underlined. */
+.chat__label a { color: inherit; text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 0.15em; }
+.chat__label a:hover { text-decoration-thickness: 2px; }
+
+/* THE HEADER WITHOUT ITS LINE, THE MENU CENTRED (user's instruction, 23 Nov
+   2026, "delete underline, center content", "vertically on menu"): the 4px
+   pale line along the bottom is gone, and the bar's padding is split evenly
+   above and below the brand, the crumb and the menu (it was 25px over and
+   14px under). The total is unchanged, so the header keeps the measured
+   height the opening's --head values depend on. */
+body > header::after { content: none; }
+body > header { padding-block: 20px 19px; }
+.top { padding-block: 0; }
+@media (max-width: 640px) {
+  body > header { padding-block: 11px; }
+  .top { padding-block: 0; }
+}
+
+/* THE SERVICES CARD'S LIST: ONE RULE AT EACH END, EACH ROW A LINK (user's
+   instructions, 23 Nov 2026, "delete top and bottom line", "make
+   clickable"). The title's rule and the first row's top rule stood 22px
+   apart, and the last row's rule over the card's own; one of each pair is
+   gone. Each row is a link that opens its row in What we offer below
+   (app.js, data-open-offer); hover underlines it and shows the arrow. */
+.offer li:first-child { border-top: 0; }
+.card:has(> .offer) { border-bottom: 0; padding-bottom: 0; }
+.offer li { padding: 0; }
+.offer__link {
+  display: flex; justify-content: space-between; align-items: baseline; gap: 16px;
+  width: 100%; padding-block: 6px 7px; color: var(--ink); text-decoration: none;
+}
+.offer__link::after { content: "\2192" / ""; }
+.offer__link:hover { text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 0.15em; }
+.acc__btn { scroll-margin-top: 110px; }
+
+/* THE STATEMENTS AS CARDS ON SERVICES (user's instructions, 23 Nov 2026,
+   "add more cards here from content, each card different color", "just use
+   some text about us from opening page slogans"): the home page's four
+   statements, one card each, under the title, in the plates' four colours
+   (--plate-1 to 4, black words in light, white in dark) and the plates'
+   alternation, sans then serif. Four across, two across under 1024px, one
+   under 641px. */
+.slogans {
+  list-style: none; margin: 0 0 80px; padding: 0;
+  display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px;
+}
+.slogan {
+  min-width: 0; min-height: 300px; padding: 28px 26px 30px; border-radius: 20px;
+  display: flex; align-items: flex-end;
+  background: var(--plate-1); color: var(--plate-text);
+}
+.slogan:nth-child(4n + 2) { background: var(--plate-2); }
+.slogan:nth-child(4n + 3) { background: var(--plate-3); }
+.slogan:nth-child(4n) { background: var(--plate-4); }
+.slogan p {
+  margin: 0; font-family: "PP Telegraf Display", "PP Telegraf", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-weight: 300; font-size: 40px; line-height: 1.02; letter-spacing: -0.01em;
+  overflow-wrap: break-word; hyphens: manual; text-wrap: balance;
+}
+.slogan:nth-child(even) p { font-family: "Serrif", Georgia, "Times New Roman", serif; font-synthesis: none; letter-spacing: -0.015em; }
+@media (max-width: 1023px) { .slogans { grid-template-columns: repeat(2, minmax(0, 1fr)); } .slogan { min-height: 240px; } }
+@media (max-width: 640px) {
+  .slogans { grid-template-columns: minmax(0, 1fr); margin-bottom: 48px; }
+  .slogan { min-height: 0; padding: 22px 20px 24px; }
+  .slogan p { font-size: 32px; }
+}
+@media (forced-colors: active) { .slogan { border: 1px solid CanvasText; } }
+
+/* THE SERVICES CARDS AS LINKS (user's instruction, 23 Nov 2026, "these should
+   be different from content on other cards and about services, also make it
+   clickable"): the four cards no longer repeat the home page's statements.
+   Each names one service at the top and says one thing about it, in words
+   used nowhere else on the site, and the whole card is a link that opens
+   that service's row in What we offer below (data-open-offer; without the
+   script it still goes to the row). Hover underlines the line; the focus
+   ring is the card's own ink, outside its corners. */
+.slogan { padding: 0; }
+.slogan__link {
+  display: flex; flex-direction: column; justify-content: space-between; gap: 24px;
+  width: 100%; min-height: inherit; padding: 28px 26px 30px; border-radius: 20px;
+  color: inherit; text-decoration: none;
+}
+.slogan__label { font-size: 18px; line-height: 24px; letter-spacing: 0; }
+.slogan__link:hover p { text-decoration: underline; text-decoration-thickness: 2px; text-underline-offset: 0.12em; }
+.slogan__link:focus-visible { outline: 2px solid var(--plate-text); outline-offset: 4px; box-shadow: none; }
+@media (max-width: 640px) { .slogan__link { padding: 22px 20px 24px; } .slogan__label { font-size: 15px; line-height: 20px; } }
+
+/* THE QUESTION CARDS AS THE SERVICES CARDS (user's instruction, 23 Nov 2026,
+   "design these like this but no eyebrow"): the chat's three opening
+   questions take the Services cards' look without their small label. Three
+   equal cards, 300px tall, 20px corners, in the plates' first three colours
+   (sky, mint, pink; black words in light, deep hues with white words in
+   dark, the --plate tokens); each question at the card's foot, set left at
+   40px, sans then serif then sans as the plates alternate. Hover underlines
+   the question; the focus ring is the card's own ink. Two across under
+   1024px, one under 641px. */
+.chat__prompts { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; }
+.chat .chat__prompts .chat__prompt {
+  display: flex; align-items: flex-end; justify-content: flex-start; text-align: left;
+  min-height: 300px; padding: 28px 26px 30px; border-radius: 20px; border: 0;
+  font-family: "PP Telegraf Display", "PP Telegraf", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-weight: 300; font-size: 40px; line-height: 1.02; letter-spacing: -0.01em;
+  overflow-wrap: break-word; hyphens: manual; text-wrap: balance;
+  background: var(--plate-1); color: var(--plate-text); text-decoration: none;
+}
+.chat .chat__prompts .chat__prompt:nth-child(2) {
+  background: var(--plate-2);
+  font-family: "Serrif", Georgia, "Times New Roman", serif; font-synthesis: none; letter-spacing: -0.015em;
+}
+.chat .chat__prompts .chat__prompt:nth-child(3) { background: var(--plate-3); }
+.chat .chat__prompts .chat__prompt:hover {
+  color: var(--plate-text);
+  text-decoration: underline; text-decoration-thickness: 2px; text-underline-offset: 0.12em;
+}
+.chat .chat__prompts .chat__prompt:nth-child(1):hover { background: var(--plate-1); }
+.chat .chat__prompts .chat__prompt:nth-child(2):hover { background: var(--plate-2); }
+.chat .chat__prompts .chat__prompt:nth-child(3):hover { background: var(--plate-3); }
+.chat .chat__prompts .chat__prompt:focus-visible { outline: 2px solid var(--plate-text); outline-offset: 4px; box-shadow: none; }
+@media (max-width: 1023px) {
+  .chat__prompts { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .chat .chat__prompts .chat__prompt { min-height: 240px; }
+}
+@media (max-width: 640px) {
+  .chat__prompts { grid-template-columns: minmax(0, 1fr); }
+  .chat .chat__prompts .chat__prompt { min-height: 0; padding: 22px 20px 24px; font-size: 32px; }
+}
+@media (forced-colors: active) { .chat .chat__prompts .chat__prompt { border: 1px solid CanvasText; } }
