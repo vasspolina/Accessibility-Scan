@@ -3786,3 +3786,33 @@
   font-size: 15px; line-height: 1.3; letter-spacing: 0;
 }
 
+/* ═══ THE FINDINGS TABLES' SEVERITY AS A SERIF BUBBLE (user's instruction,
+   23 Nov 2026, "make severity issue badge like this and other colors, but
+   maybe serif?", then "spaced out serif?", pointing at the checklist's
+   status bubbles) ═════════════════════════════════════════════════════
+   The severity mark in the findings tables (its own column, and the copy
+   folded under the issue on a narrow table) is the checklist's bubble: a
+   solid fill, 8px corners, no end caps, leaning by its row (--sev-tilt,
+   -3 to 3 degrees, read from the finding's id in findingRow). Its words
+   are Serrif Light at 18px, spaced out (+0.08em), not the mono. The fills
+   are the check-result cards' plates, one per severity: Fix first pink,
+   Fix soon sky, Fix eventually mint, Minor polish yellow; black words on
+   the light plates, white on the deep dark ones. Every other badge keeps
+   EVERY BADGE AS A SMALL BUBBLE. */
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-finding-sev-col, .a11y-finding-sev-fold) > .a11y-sev.a11y-sev {
+  display: inline-block; margin: 0; padding: 4px 10px 3px; border-radius: 8px; box-shadow: none;
+  font-family: "Serrif", Georgia, "Times New Roman", serif; font-weight: 300; font-synthesis: none;
+  font-size: 18px; line-height: 1.25; letter-spacing: 0.08em; white-space: nowrap;
+  rotate: var(--sev-tilt, 0deg);
+  background: var(--plate-2); color: var(--plate-text);
+}
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-finding-sev-col, .a11y-finding-sev-fold) > .a11y-sev-critical.a11y-sev { background: var(--plate-3); }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-finding-sev-col, .a11y-finding-sev-fold) > .a11y-sev-serious.a11y-sev { background: var(--plate-1); }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-finding-sev-col, .a11y-finding-sev-fold) > .a11y-sev-moderate.a11y-sev { background: var(--plate-2); }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-finding-sev-col, .a11y-finding-sev-fold) > .a11y-sev-minor.a11y-sev { background: var(--plate-4); }
+@media print {
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-finding-sev-col, .a11y-finding-sev-fold) > .a11y-sev.a11y-sev { rotate: none; }
+}
+@media (forced-colors: active) {
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-finding-sev-col, .a11y-finding-sev-fold) > .a11y-sev.a11y-sev { border: 1px solid CanvasText; }
+}
