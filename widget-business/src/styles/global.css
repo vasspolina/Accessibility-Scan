@@ -1681,9 +1681,11 @@
 }
 .a11y-widget-biz .a11y-dn-list > .a11y-dn-link[aria-selected="true"] > .a11y-dn-link-text { font-weight: 400; }
 .a11y-widget-biz .a11y-dn-detail[role="tabpanel"]:focus-visible { outline: 2px solid var(--focus); outline-offset: 4px; }
-/* Under the tabs the note's own 4px rule would be a second "open" mark
-   under the open tab's, so it takes the 1px of the shut tabs. */
-.a11y-widget-biz .a11y-dn-detail[role="tabpanel"] > .a11y-fd { border-top-width: 1px; }
+/* Under the note cards the open note has no rule on top (user's
+   instruction, 23 Nov 2026, "do not add line in between"): the cards end
+   the row and the note's parts start 50px under them, with nothing
+   between. It took the 1px of the shut tabs until then. */
+.a11y-widget-biz .a11y-dn-detail[role="tabpanel"] > .a11y-fd { margin-top: 0; padding-top: 0; border-top: 0; }
 
 /* The report actions (user's instructions, 17 Nov 2026). Each column
    opens on an uppercase label, with no rule under it (user's
