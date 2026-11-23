@@ -4031,12 +4031,14 @@
    cards take their hover plates (#a2e3ff, #ffa0ff, #f8ff58, each above 11:1
    with black). Dark mode's plates are deep grounds made for white words, so
    the badge does not follow them. A 1px black edge keeps the badge's shape
-   when its card fills with the same plate on hover. */
+   when its card fills with the same plate on hover. Its letters are spaced
+   out by a tenth of the size, 0.1em (user's instruction, 23 Nov 2026,
+   "space out serif like 10%"); it was 0.01em. */
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-prompts .a11y-prompt { --label-plate: #a2e3ff; }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-prompts .a11y-prompt:nth-child(3n+2) { --label-plate: #ffa0ff; }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-prompts .a11y-prompt:nth-child(3n) { --label-plate: #f8ff58; }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-prompts .a11y-prompt .a11y-prompt-label.a11y-prompt-label {
   background: var(--label-plate); color: #000; border: 1px solid #000;
   font-family: "Serrif", Georgia, "Times New Roman", serif; font-weight: 300; font-synthesis: none;
-  font-size: 15px; letter-spacing: 0.01em;
+  font-size: 15px; letter-spacing: 0.1em;
 }
