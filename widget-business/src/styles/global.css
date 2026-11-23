@@ -1085,8 +1085,13 @@
    already part the findings. The count is held to its marks: the link is
    nowrap, so nothing breaks between the marks and the count, and the item
    inside it wraps as before. */
+/* Body size since 23 Nov 2026 (user's instruction, "make this text
+   normal size as other body text"): the titles take the report's own
+   prose size, line and spacing by inheritance (32px at 1.2 with no
+   tracking on a desktop, the phone's and the conversation's sizes where
+   those apply), not a display size of their own. */
 .a11y-widget-biz .a11y-sum-run .a11y-sum-rows {
-  margin: 0; font-size: 42px; letter-spacing: -0.01em; line-height: 1.06;
+  margin: 0; font-size: inherit; letter-spacing: inherit; line-height: inherit;
   hyphens: manual; overflow-wrap: break-word;
 }
 .a11y-widget-biz .a11y-sum-run .a11y-sum-nobreak { white-space: nowrap; }
@@ -1112,21 +1117,23 @@
   background: linear-gradient(var(--hl-cap-a), var(--hl-cap-a)) 0 0.17em / 100% 1em no-repeat;
   color: #000; text-decoration: none;
 }
-/* The marker: a solid round with the figure in paper, sat on the line. */
+/* The marker: a round with the figure, sat on the line. One line of the
+   words tall, as every list number (1.5em of its own 0.8em figure is the
+   words' 1.2 line), so it follows the titles to body size. */
 .a11y-widget-biz .a11y-sum-run .a11y-sum-cell-no {
   display: inline-grid; place-content: center; vertical-align: 0.08em;
-  width: 40px; height: 40px; border-radius: 50%; margin: 0 0.18em 0 0;
+  width: 1.5em; height: 1.5em; border-radius: 50%; margin: 0 0.18em 0 0;
   background: var(--solid); color: var(--solid-ink);
-  font-size: 29px; letter-spacing: 0; font-weight: 400; line-height: 1;
+  font-size: 0.8em; letter-spacing: 0; font-weight: 400; line-height: 1;
 }
 .a11y-widget-biz .a11y-sum-run .a11y-sum-row-marks,
 .a11y-widget-biz .a11y-sum-run .a11y-sum-cell-count {
   display: inline; vertical-align: middle; white-space: nowrap;
   font-size: 22px; letter-spacing: 0.01em; line-height: 1.2; margin: 0 0 0 0.3em;
 }
-.a11y-widget-biz .a11y-sum-run .a11y-score-clean { font-size: 42px; letter-spacing: -0.01em; line-height: 1.06; margin: 0; }
+.a11y-widget-biz .a11y-sum-run .a11y-score-clean { font-size: inherit; letter-spacing: inherit; line-height: inherit; margin: 0; }
 .a11y-widget-biz .a11y-sum-run + .a11y-sum-actions { text-align: start; margin: 0 0 1.2em; }
-/* On a phone the run comes down to title size, so a long German word
+/* On a phone the run loses its side padding, so a long German word
    still fits 320px. */
 @media (max-width: 640px) { .a11y-widget-biz .a11y-sum-run { padding-inline: 0; } }
 
@@ -1232,9 +1239,6 @@
 .a11y-widget-biz .a11y-prompts .a11y-prompt-q:disabled { cursor: default; }
 .a11y-widget-biz .a11y-prompt-more { text-align: center; margin: 1.2em 0 0; }
 @container a11y-sum-run (max-width: 640px) {
-  .a11y-widget-biz .a11y-sum-run .a11y-sum-rows,
-  .a11y-widget-biz .a11y-sum-run .a11y-score-clean { font-size: 30px; letter-spacing: -0.005em; hyphens: manual; }
-  .a11y-widget-biz .a11y-sum-run .a11y-sum-cell-no { width: 30px; height: 30px; font-size: 22px; }
   .a11y-widget-biz .a11y-sum-run .a11y-sum-row-marks { white-space: normal; }
   /* The link's nowrap held the severity mark to the count, and in French
      at 320px that pair ran 1px past the column (Widget CI, 21 Nov 2026,
@@ -4388,8 +4392,9 @@
 /* The screen reader preview's lines are 26px on a 1.2 line: a 31px round,
    a 21px figure. */
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sr-row > .a11y-sr-num { align-self: start; width: 31px; height: 31px; font-size: 21px; }
-/* The score's run keeps its 40px round (30px on a narrow run) and 29px
-   figure; only the fill, the ink and the face change. */
+/* The score's run sizes its round with its words (1.5em of a 0.8em
+   figure, set with the run); only the fill, the ink and the face change
+   here. */
 @media (forced-colors: active) {
   .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-undecided-table > .a11y-undecided-cell > .a11y-undecided-no, .a11y-legal-q > .a11y-legal-qnum, .a11y-sum-run .a11y-sum-cell-no, .a11y-sr-row > .a11y-sr-num) { border: 1px solid CanvasText; }
   .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-chat-text ol:not(.a11y-chat-plan) > li::before { border: 1px solid CanvasText; }
