@@ -147,7 +147,7 @@
 .a11y-widget-biz :is(input:not([type="radio"]):not([type="checkbox"]), textarea, select) {
   font: inherit; font-size: 22px; letter-spacing: 0.01em; padding: 0.4em 0.6em;
   /* The chat box's look (see FORM FIELDS AS THE CHAT BOX at the end). */
-  border: 1px dotted var(--ink); border-radius: 14px; background: var(--paper); color: var(--ink);
+  border: 1px solid var(--ink); border-radius: 10px; background: var(--paper); color: var(--ink);
 }
 /* Focus is dark green (user's instruction, 18 Nov 2026, "make focus
    outline dark green"): a 2px line inside the element's own edge, square to
@@ -821,8 +821,8 @@
      "keep language button too"), dotted since 18 Nov 2026 ("lets make line
      dotted"). A dotted edge here is the select's look, not the disabled
      state: disabled controls are dashed. */
-  border: 1px dotted var(--ink);
-  border-radius: 14px;
+  border: 1px solid var(--ink);
+  border-radius: 10px;
   padding-inline-end: 2.6em;
   background-image: linear-gradient(45deg, transparent 50%, var(--ink) 50%), linear-gradient(135deg, var(--ink) 50%, transparent 50%);
   background-position: calc(100% - 1.4em) 50%, calc(100% - 1em) 50%;
@@ -2828,31 +2828,43 @@
    link share one row that is on screen whether the section is open or not.
    No rule above or below it (user's instruction, 22 Nov 2026, "delete line
    underneath and above"): the pills are controls and need no frame.
-   Play is the solid pill; the filter is an outlined pill around its
-   checkbox; the skip link is a quiet pill at the end. */
+   One set of controls (user's instruction, 23 Nov 2026, "the buttons are
+   way too big", "and not organised", "design this"): they had three
+   heights and three sizes (Play 48px at 22px, the filter 40px at 18px
+   with a bare browser checkbox, the skip link 22px with 0.5em padding),
+   with the empty status line pushing the last two to the far right. Now
+   every one is the ordinary 34px button at 18px (see BUTTONS at the end),
+   set left in one run 8px apart: Play solid, the filter and the skip link
+   outlined. The filter's checkbox is clipped and the button shows its
+   state: off is the outline, on is solid ink with the check mark, as a
+   chosen button is everywhere. The status line takes no room while
+   empty. */
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sr-bar {
-  display: flex; flex-wrap: wrap; align-items: center; gap: 14px 16px;
+  display: flex; flex-wrap: wrap; align-items: center; justify-content: flex-start; gap: 8px;
   box-sizing: border-box; margin: 0 0 30px; padding: 0;
   border: 0; border-radius: 0; background: none; color: var(--ink);
 }
-.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sr-bar .a11y-sr-play {
-  flex: 0 1 auto; min-width: 0; max-width: 100%; min-height: 48px; padding: 0 1.4em; font-size: 22px; white-space: normal; text-align: start;
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sr-bar :is(.a11y-sr-play, .a11y-sr-filter, .a11y-skip-link) {
+  display: inline-flex; align-items: center; gap: 0.45em; flex: 0 1 auto;
+  box-sizing: border-box; min-width: 0; max-width: 100%; min-height: 34px; margin: 0; padding: 5px 14px;
+  border-radius: 10px; font-size: 18px; line-height: 1.2; letter-spacing: 0.01em;
+  white-space: normal; text-align: start;
 }
-/* On a phone the button takes the 18px label size and may wrap: at 22px
-   "Reproducir la página en voz alta" (es) ran to 463px of a 320px screen
-   (reflow check, 18 Nov 2026). */
-@media (max-width: 640px) {
-  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sr-bar .a11y-sr-play { padding: 8px 1em; font-size: 18px; }
-}
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sr-bar .a11y-sr-play > svg { font-size: 15px; }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sr-bar .a11y-sr-status {
-  flex: 1 1 8em; min-width: 0; margin: 0; font-size: 18px; letter-spacing: 0.01em; font-variant-numeric: tabular-nums;
+  flex: 0 1 auto; min-width: 0; margin: 0 8px; font-size: 18px; letter-spacing: 0.01em; font-variant-numeric: tabular-nums;
 }
-.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sr-bar .a11y-ai-toggle {
-  flex: none; margin: 0; min-height: 40px; box-sizing: border-box; padding: 0 1em 0 0.8em;
-  border: 1px solid var(--ink); border-radius: 999px; font-size: 18px; cursor: pointer;
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sr-bar span.a11y-sr-status:empty { display: none; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sr-bar p.a11y-sr-status { flex: 1 1 100%; margin: 0; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sr-bar .a11y-sr-filter {
+  position: relative; border: 1px solid var(--btn-fill, var(--ink)); background: var(--btn-fill, var(--paper)); color: var(--ink); cursor: pointer;
 }
-.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sr-bar .a11y-ai-toggle:has(:checked) { background: var(--strong); color: var(--strong-ink); }
-.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sr-bar .a11y-skip-link { flex: none; margin: 0; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sr-bar .a11y-sr-filter > input {
+  position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0; overflow: hidden; clip-path: inset(50%); border: 0; white-space: nowrap;
+}
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sr-bar .a11y-sr-filter:has(:checked) { border-color: var(--solid); background: var(--solid); color: var(--solid-ink); }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sr-bar .a11y-sr-filter:hover { background: var(--hover); border-color: var(--hover); color: var(--hover-ink); }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sr-bar .a11y-sr-filter:has(:focus-visible) { outline: 2px solid var(--focus); outline-offset: -2px; }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sr .a11y-skip-link { margin-bottom: 0; }
 
 /* The announcements: the number in the margin, the words at 26px, a rule
@@ -2875,15 +2887,11 @@
 
 @container a11y-shell (max-width: 640px) {
   .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-hist-promise { font-size: 22px; }
-  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sr-bar .a11y-sr-play { width: 100%; justify-content: center; }
   .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sr-row .a11y-sr-line-text { font-size: 22px; }
 }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sr .a11y-show-all { margin-bottom: 30px; }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sr-bar .a11y-sr-play:enabled { background: var(--strong); color: var(--strong-ink); }
-.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sr-bar .a11y-sr-play:enabled:hover { background: var(--hl-cap-a); color: #000; }
-@container a11y-shell (max-width: 640px) {
-  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sr-bar .a11y-ai-toggle { flex: 1 1 100%; min-width: 0; padding-block: 8px; border-radius: 20px; }
-}
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sr-bar .a11y-sr-play:enabled:hover { background: var(--hover); border-color: var(--hover); color: var(--hover-ink); }
 
 /* THE SPREAD WORDS AND STACKED NUMBERS are gone (user's instruction,
    20 Nov 2026: "delete, this is a design slop"): no word spread letter by letter along the top or the
@@ -3404,4 +3412,67 @@
 }
 @media print {
   .a11y-widget-biz .a11y-note.a11y-note-warning { background: none; border: 1px solid #000; }
+}
+
+/* ═══ BUTTONS (user's instruction, 23 Nov 2026: "this button and every
+   other button except email need to look like this", with a reference) ═══
+   Every button is one of two sizes of the same shape: a 1px solid ink edge
+   and 10px corners, on the paper.
+   - Ordinary: 34px tall, 18px words, 4px 12px padding. This is every
+     action that used to be a dotted pill (Show all, Copy summary, Download
+     as CSV, Export the list, Show the checklist, See the finding, Download
+     in PDF, Behind a login, Play, the vision buttons) and the conformance
+     report's button, which was a 128px block.
+   - Large: 59px tall, 32px words, 0 20px padding, for the one action that
+     starts the work, Start the scan (a 120px block until now).
+   The main action and a chosen button (pressed, current, the vision
+   simulator's active one) are solid ink with paper words; dark mode's
+   --solid and --solid-ink keep them grey and white there. Hover stays mint
+   (--hover), the user's hover since 21 Nov 2026; disabled stays dashed.
+   Not buttons in this sense, and left as they are: Send this report (the
+   mint email action), whole-line rows (findings, top findings, design
+   notes, transcript lines), accordion heads, the legal tiles, the opening
+   question cards, the conversations list, switches and the chat box's own
+   buttons. Three roots, so these win over the per-component sizes.
+   One-line fields take the same edge (same day, a second reference, "take
+   other elements needed for design library styling"): the bare input and
+   the Language select are 1px solid ink with 10px corners, where they were
+   1px dotted with 14px (21 Nov 2026) and the select's dotted edge of
+   18 Nov. Fields that hold their own label (the scan form's rows, the
+   email field, the statement's fields), textareas and the chat box keep
+   their look. */
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-btn, .a11y-show-all, .a11y-blockflag-jump, .a11y-findings-csv, .a11y-undecided-export, .a11y-login-toggle, .a11y-w22-toggle, .a11y-sim-btn, .a11y-ra-pdf, .a11y-sr-play, .a11y-skip-link):not(.a11y-ra-send, .a11y-chat-box *, .a11y-switch-track) {
+  display: inline-flex; align-items: center; justify-content: flex-start; gap: 0.45em;
+  width: auto; max-width: 100%; min-height: 34px; box-sizing: border-box; padding: 4px 12px;
+  border: 1px solid var(--btn-fill, var(--ink)); border-radius: 10px;
+  font-size: 18px; font-weight: 400; line-height: 1.2; letter-spacing: 0.01em; text-align: start; white-space: normal;
+}
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-acr .a11y-section-head > .a11y-acr-make { width: auto; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-tester > .a11y-url-submit > .a11y-btn.a11y-btn-primary {
+  justify-self: start; min-height: 59px; padding: 0 20px; font-size: 32px; letter-spacing: -0.005em;
+}
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-btn.a11y-btn-primary, .a11y-sim-btn-active, .a11y-btn[aria-pressed="true"], .a11y-btn[aria-current]):enabled:not(:hover) {
+  border-color: var(--solid); background: var(--solid); color: var(--solid-ink);
+}
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-btn, .a11y-show-all, .a11y-blockflag-jump, .a11y-findings-csv, .a11y-undecided-export, .a11y-login-toggle, .a11y-w22-toggle, .a11y-sim-btn, .a11y-ra-pdf, .a11y-sr-play, .a11y-skip-link):not(.a11y-ra-send, .a11y-chat-box *):enabled:hover {
+  border-color: var(--hover); background: var(--hover); color: var(--hover-ink);
+}
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-btn, .a11y-show-all, .a11y-findings-csv, .a11y-sim-btn, .a11y-sr-play):disabled { border-style: dashed; border-color: var(--ink); }
+/* The chat box's buttons (Voice control, Send) and the conversations
+   panel's New chat, Report a barrier and Language take the same shape. On
+   a phone the chat box keeps its round send arrow. Report a barrier keeps
+   its mint, as Send this report does. */
+@media (min-width: 641px) {
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-chat-box .a11y-btn {
+    min-height: 34px; padding: 4px 12px; border: 1px solid var(--btn-fill, var(--ink)); border-radius: 10px;
+    font-size: 18px; line-height: 1.2; letter-spacing: 0.01em;
+  }
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-chat-box .a11y-btn:disabled { border-style: dashed; border-color: var(--ink); }
+}
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-chats-new, .a11y-lang-toggle) {
+  min-height: 34px; padding: 4px 12px; border: 1px solid var(--btn-fill, var(--ink)); border-radius: 10px;
+  font-size: 18px; line-height: 1.2; letter-spacing: 0.01em;
+}
+@media (max-width: 640px) {
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-tester > .a11y-url-submit > .a11y-btn.a11y-btn-primary { min-height: 52px; font-size: 26px; }
 }
