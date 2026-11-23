@@ -775,8 +775,8 @@ export function FindingDetails({
       )}
       {rep.helpUrl && (
         <p className="a11y-fd-learn">
-          <a className="a11y-learn-more" href={rep.helpUrl} target="_blank" rel="noopener noreferrer">
-            {t("Learn more about this issue")} <Icon name="launch" />
+          <a className="a11y-learn-more" href={rep.helpUrl}>
+            {t("Learn more about this issue")} <Icon name="arrow--right" />
           </a>
         </p>
       )}
@@ -868,8 +868,8 @@ export function FindingDetails({
                 )}
                 {rep.helpUrl && (
                   <p className="a11y-pro-line">
-                    <a className="a11y-learn-more" href={rep.helpUrl} target="_blank" rel="noopener noreferrer">
-                      {t("Fix technique")} <Icon name="launch" />
+                    <a className="a11y-learn-more" href={rep.helpUrl}>
+                      {t("Fix technique")} <Icon name="arrow--right" />
                     </a>
                   </p>
                 )}

@@ -132,11 +132,9 @@ export function UndecidedChecks({
                       <a
                         className="a11y-learn-more"
                         href={r.helpUrl}
-                        target="_blank"
-                        rel="noopener noreferrer"
                       >
                         {learnMore}
-                        <Icon name="launch" />
+                        <Icon name="arrow--right" />
                         <span className="a11y-sr-only">{learnMoreRest}</span>
                       </a>
                     )}
