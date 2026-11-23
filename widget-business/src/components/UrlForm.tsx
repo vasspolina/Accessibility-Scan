@@ -9,7 +9,7 @@ import { Select } from "./Select2";
 // The ported Radio, not FormControls' — it carries the per-option description
 // the design puts on each choice instead of one hint under both.
 import { Input } from "./Input";
-import { Switch } from "./Switch";
+import { Icon } from "./Icon";
 import { LoginFields } from "./LoginFields";
 import type { AuthConfig } from "../api/scanClient";
 import type { AudienceMode } from "../lib/audienceMode";
@@ -17,8 +17,8 @@ import { Button } from "./Button";
 
 export type ScanMode = "page" | "site";
 
-// One choice: a filled row with its radio showing, the way the reference
-// form shows its checkbox.
+// One choice, drawn as an ordinary button: the radio is clipped, the
+// label is the button, and the chosen one is solid.
 function Seg(props: { id: string; name: string; value: string; label: string; checked: boolean; onChange: () => void; disabled?: boolean }) {
   return (
     <label htmlFor={props.id} className={"a11y-seg" + (props.checked ? " a11y-seg-on" : "") + (props.disabled ? " a11y-seg-disabled" : "")}>
@@ -250,14 +250,22 @@ export function UrlForm({
 
       <div className="a11y-tester-rows">
         {mode === "page" ? (
-          <div className="a11y-tester-row a11y-tester-ai">
-            <Switch
-              id="a11y-ai"
-              label={t("AI review")}
-              checked={includeAiReview}
-              onChange={setIncludeAiReview}
-              disabled={loading}
-            />
+          /* A checkbox drawn as a button, like every other choice on the
+             form (user's instruction, 23 Nov 2026, "why are these designed
+             this way? this is a slop", on the big toggles and the "On"
+             word): outlined off, solid with the check mark on. */
+          <div className="a11y-tester-choices a11y-tester-ai">
+            <label htmlFor="a11y-ai" className={"a11y-seg" + (includeAiReview ? " a11y-seg-on" : "") + (loading ? " a11y-seg-disabled" : "")}>
+              <input
+                type="checkbox"
+                id="a11y-ai"
+                checked={includeAiReview}
+                onChange={(e) => setIncludeAiReview(e.target.checked)}
+                disabled={loading}
+              />
+              {includeAiReview && <Icon name="checkmark" />}
+              <span>{t("AI review")}</span>
+            </label>
           </div>
         ) : (
           <Select

@@ -146,6 +146,7 @@ export const CHROME_KEYS: string[] = [
   // Section titles and nav labels
   "Your score",
   "Score",
+  "Results",
   "New scan",
   "Since last time",
   "Do you meet the legal standard?",

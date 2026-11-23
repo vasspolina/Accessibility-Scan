@@ -2559,8 +2559,7 @@
 }
 /* A field: the filled box holds its label and its control. */
 .a11y-widget-biz .a11y-tester .a11y-input,
-.a11y-widget-biz .a11y-tester .a11y-tester-rows > .a11y-select2,
-.a11y-widget-biz .a11y-tester .a11y-tester-row {
+.a11y-widget-biz .a11y-tester .a11y-tester-rows > .a11y-select2 {
   box-sizing: border-box; min-width: 0; margin: 0; padding: 14px 18px 16px;
   border: 1px dotted var(--tile-ink); border-radius: 20px; background: transparent; color: inherit;
 }
@@ -2570,10 +2569,6 @@
 .a11y-widget-biz .a11y-tester .a11y-input-label,
 .a11y-widget-biz .a11y-tester .a11y-tester-rows .a11y-select2-label {
   color: var(--tile-ink); font-size: 18px; font-weight: 400; line-height: 1.2; letter-spacing: 0.01em;
-}
-/* AI review reads as a choice, at the choices' 22px. */
-.a11y-widget-biz .a11y-tester .a11y-tester-ai .a11y-switch-label {
-  color: var(--tile-ink); font-size: 22px; font-weight: 400; line-height: 1.2; letter-spacing: 0.01em;
 }
 .a11y-widget-biz .a11y-tester .a11y-input-shell { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 12px; min-width: 0; }
 /* 0,5,1 out-ranks the general field rule (0,3,1). The field's size
@@ -2603,36 +2598,8 @@
   border: 1px dotted var(--tile-ink); border-radius: 20px; background: transparent; color: inherit; cursor: pointer;
   font-size: 22px; line-height: 1.2; letter-spacing: 0.01em;
 }
-/* Each choice shows a big toggle instead of a radio's dot (user's
-   instruction, 18 Nov 2026, "make big toggles instead of dots"). It is still
-   the native radio, drawn with appearance: none as a 64 x 36 track with a
-   24px knob: off is an ink edge with the knob left, on is solid with the
-   knob right. A radio cannot be switched off by itself; choosing the other
-   one in the group does it, as before. In forced colours the native radio
-   comes back, so the state never depends on a drawn fill. */
-.a11y-widget-biz .a11y-tester .a11y-seg > input {
-  display: inline-grid; place-content: center; flex: none; box-sizing: border-box; width: 64px; height: 36px; margin: 0;
-  order: 2; margin-inline-start: auto; cursor: pointer;
-  appearance: none; -webkit-appearance: none; border: 2px solid var(--tile-ink); border-radius: 999px;
-  background: var(--tile); color: var(--tile-ink); transition: background-color 0.15s;
-}
-/* The knob is the general radio rule's ::before, moved and resized: one
-   shape, so no second dot can show through. */
-.a11y-widget-biz .a11y-tester .a11y-seg > input::before {
-  width: 24px; height: 24px; background: currentColor; transform: translateX(-13px); transition: transform 0.15s;
-}
-.a11y-widget-biz .a11y-tester .a11y-seg > input:checked { border-color: var(--solid); background: var(--solid); color: var(--solid-ink); }
-.a11y-widget-biz .a11y-tester .a11y-seg > input:checked::before { transform: translateX(13px); }
-@media (forced-colors: active) {
-  .a11y-widget-biz .a11y-tester .a11y-seg > input { appearance: auto; -webkit-appearance: auto; width: 24px; height: 24px; }
-}
-@media (prefers-reduced-motion: reduce) {
-  .a11y-widget-biz .a11y-tester .a11y-seg > input,
-  .a11y-widget-biz .a11y-tester .a11y-seg > input::before { transition: none; }
-}
-/* The AI review switch matches the choices' toggles. */
-.a11y-widget-biz .a11y-tester .a11y-tester-ai .a11y-switch-track { width: 64px; height: 36px; }
-.a11y-widget-biz .a11y-tester .a11y-tester-ai .a11y-switch-knob { width: 26px; height: 26px; margin-top: -13px; }
+/* The big toggles of 18 Nov 2026 and the AI review switch are gone: see
+   THE SCAN FORM IN THE BUTTON AND FIELD STYLE at the end. */
 .a11y-widget-biz .a11y-tester .a11y-seg.a11y-seg-on { font-weight: 400; }
 .a11y-widget-biz .a11y-tester .a11y-seg:not(.a11y-seg-disabled):hover { background: var(--hover); color: var(--hover-ink); }
 .a11y-widget-biz .a11y-tester .a11y-seg:has(input:focus-visible) { outline: 2px solid var(--focus); outline-offset: -2px; }
@@ -2640,8 +2607,6 @@
 .a11y-widget-biz .a11y-tester .a11y-seg.a11y-seg-disabled { cursor: not-allowed; box-shadow: inset 0 0 0 1px var(--tile-ink); }
 /* The other settings: AI review and the language, a filled row each. */
 .a11y-widget-biz .a11y-tester > .a11y-tester-rows { display: grid; gap: 8px; margin-top: 8px; }
-.a11y-widget-biz .a11y-tester .a11y-tester-ai .a11y-switch { display: flex; justify-content: space-between; width: 100%; }
-.a11y-widget-biz .a11y-tester .a11y-tester-ai .a11y-switch-word { color: var(--tile-ink); font-size: 18px; letter-spacing: 0.01em; min-width: 1.8em; }
 .a11y-widget-biz .a11y-tester .a11y-tester-rows > .a11y-select2 { display: grid; justify-items: stretch; gap: 4px; }
 .a11y-widget-biz .a11y-tester .a11y-tester-rows > .a11y-select2 .a11y-select2-field.a11y-select2-field {
   width: 100%; min-width: 0; min-height: 40px; padding: 0 2.4em 0 0; border: 0; border-radius: 0;
@@ -3580,3 +3545,42 @@
    space between buttons like 4px"): the professional report's filters
    and its tabs touched. */
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-mode, .a11y-tablist) { display: flex; flex-wrap: wrap; align-items: center; gap: 4px; }
+
+/* ═══ THE SCAN FORM IN THE BUTTON AND FIELD STYLE (user's instruction,
+   23 Nov 2026, "why are these designed this way? this is a slop", on the
+   dotted rows with big toggles and the "On" word) ═══════════════════════
+   Each choice is the ordinary button (34px, 18px words, 1px solid ink
+   edge, 10px corners): This page / Whole site and For everyone /
+   Professionals are two rows of two, 4px apart, the chosen one solid, as
+   the report's filters and tabs are; AI review is one such button, a
+   checkbox, solid with the check mark when on. The radio and the checkbox
+   are clipped, not removed: they are still the controls, and the label is
+   what is pressed; in forced colours they come back beside the words.
+   The address and the language are fields in the same edge: 1px solid
+   ink, 10px corners, their label inside at the top. This replaces the
+   dotted 20px rows (21 Nov) and the 64 x 36 toggles (18 Nov). */
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-tester .a11y-tester-choices {
+  display: flex; flex-wrap: wrap; align-items: center; gap: 4px; margin-top: 12px;
+}
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-tester .a11y-tester-rows { gap: 12px; margin-top: 12px; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-tester .a11y-tester-rows > .a11y-tester-choices { margin-top: 0; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-tester .a11y-seg {
+  position: relative; display: inline-flex; align-items: center; gap: 0.45em; flex: 0 1 auto;
+  box-sizing: border-box; min-width: 0; min-height: 34px; padding: 4px 12px;
+  border: 1px solid var(--btn-fill, var(--ink)); border-radius: 10px; background: var(--btn-fill, var(--paper)); color: var(--ink);
+  font-size: 18px; font-weight: 400; line-height: 1.2; letter-spacing: 0.01em; cursor: pointer;
+}
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-tester .a11y-seg > input {
+  position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0; overflow: hidden; clip-path: inset(50%); border: 0; white-space: nowrap;
+}
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-tester .a11y-seg:has(> input:checked) { border-color: var(--solid); background: var(--solid); color: var(--solid-ink); }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-tester .a11y-seg:not(.a11y-seg-disabled):hover { border-color: var(--hover); background: var(--hover); color: var(--hover-ink); }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-tester .a11y-seg:has(> input:focus-visible) { outline: 2px solid var(--focus); outline-offset: -2px; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-tester .a11y-seg.a11y-seg-disabled { border-style: dashed; border-color: var(--ink); cursor: not-allowed; box-shadow: none; }
+@media (forced-colors: active) {
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-tester .a11y-seg > input { position: static; width: auto; height: auto; margin: 0; overflow: visible; clip-path: none; appearance: auto; -webkit-appearance: auto; }
+}
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-tester :is(.a11y-input, .a11y-tester-rows > .a11y-select2) {
+  padding: 10px 14px 12px; border: 1px solid var(--ink); border-radius: 10px;
+}
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-tester :is(.a11y-input-label, .a11y-tester-rows .a11y-select2-label) { font-size: 15px; }

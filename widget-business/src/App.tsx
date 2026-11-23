@@ -575,6 +575,20 @@ export function App({
             {isDocument ? (
               <DocumentSummary report={report} />
             ) : professional ? (
+              <>
+              {/* The professional report opens on the owner's score block
+                  too, the dial and the run of the worst findings (user's
+                  instruction, 23 Nov 2026, "bring old design back"); its
+                  own panel follows with the counts. */}
+              <ScoreGauge
+                score={report.score}
+                seed={report.scannedAt}
+                findings={findingsByCategory.accessibility}
+                url={report.url}
+                allFindings={report.findings}
+                total={report.summary.total}
+                tookSeconds={tookSeconds}
+              />
               <ProSummary
                 report={report}
                 issueCount={proIssueGroups}
@@ -583,6 +597,7 @@ export function App({
                 onViewChange={setProView}
                 onSeeFindings={() => focusFindings("a11y-pro-findings")}
               />
+              </>
             ) : (
               <>
                 {/* The score and its dial open the block; sending or saving

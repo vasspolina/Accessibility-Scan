@@ -476,6 +476,7 @@ export const STRINGS_ES: Record<string, string> = {
   "just now": "ahora mismo",
   "earlier": "antes",
   "Previous scans": "Análisis anteriores",
+  "Results": "Resultados",
   "Score unchanged – {then} then, {now} now": "Puntuación sin cambios – antes {then}, ahora {now}",
   "Score is up – {then} then, {now} now": "La puntuación ha subido – antes {then}, ahora {now}",
   "Score is down – {then} then, {now} now": "La puntuación ha bajado – antes {then}, ahora {now}",
