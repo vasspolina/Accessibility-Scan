@@ -4301,27 +4301,51 @@
   .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-alt-card { border: 1px solid CanvasText; }
 }
 
-/* ═══ THE DESIGNER AND DEVELOPER LIST'S NUMBERS IN COLOURED ROUNDS (user's
-   instruction, 23 Nov 2026, "maybe number can be in colored circle and in
-   black? make it serif") ═════════════════════════════════════════════════
-   Each row's number is a round exactly one line of the words tall (1.5em
-   of its own 0.8em is the words' 1.2 line), level with their first line,
-   in the light plates by turn (pink, mint, yellow, sky) pinned
-   in both themes as the pins are, the figure black in Serrif Light at
-   0.8em, 11:1 or better on each fill. It stays aria-hidden: the list is an
-   ol and carries its own order. */
-.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-undecided-table > .a11y-undecided-cell > .a11y-undecided-no {
-  display: inline-grid; place-items: center; box-sizing: border-box;
-  width: 1.5em; height: 1.5em; margin-top: 0; padding: 0; border-radius: 50%; font-variant-numeric: tabular-nums;
-  background: var(--no-fill, #ffa0ff); color: #000;
+/* ═══ EVERY LIST NUMBER IN A COLOURED ROUND (user's instructions, 23 Nov
+   2026, "maybe number can be in colored circle and in black? make it
+   serif", on the designer and developer list, then "style all numbers same
+   way, make them in colored circle with black font on light") ═══════════
+   Every number that counts the items of a list is one mark: a round in the
+   light plates by turn (pink #ffa0ff, mint #beffbd, yellow #f8ff58, sky
+   #a2e3ff), pinned in both themes as the pins are, the figure black in
+   Serrif Light, 11:1 or better on each fill. The round is one line of its
+   list's words tall and level with their first line. The lists: the
+   designer and developer list, the legal panel's questions, the score's
+   worst findings, a numbered list in the conversation and the screen
+   reader preview. Left out on purpose: the test plan's big step figures
+   (a card's display number, not a marker), "Step 1:" in the statement (a
+   word) and the dial's score. Each number stays aria-hidden or a ::before:
+   the lists are ol or carry their own order. The colour is set on the
+   item as --num-fill, so the turns follow the item's place. */
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-undecided-table > .a11y-undecided-cell, .a11y-legal-questions > .a11y-legal-q, .a11y-sum-rows > .a11y-sum-row, .a11y-chat-text ol:not(.a11y-chat-plan) > li, .a11y-sr-list > li):nth-child(4n+2) { --num-fill: #beffbd; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-undecided-table > .a11y-undecided-cell, .a11y-legal-questions > .a11y-legal-q, .a11y-sum-rows > .a11y-sum-row, .a11y-chat-text ol:not(.a11y-chat-plan) > li, .a11y-sr-list > li):nth-child(4n+3) { --num-fill: #f8ff58; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-undecided-table > .a11y-undecided-cell, .a11y-legal-questions > .a11y-legal-q, .a11y-sum-rows > .a11y-sum-row, .a11y-chat-text ol:not(.a11y-chat-plan) > li, .a11y-sr-list > li):nth-child(4n) { --num-fill: #a2e3ff; }
+/* The mark. The size is set per list below; the figure is 0.8em of the
+   words where the round sits in their flow. */
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-undecided-table > .a11y-undecided-cell > .a11y-undecided-no, .a11y-legal-q > .a11y-legal-qnum, .a11y-sum-run .a11y-sum-cell-no, .a11y-sr-row > .a11y-sr-num) {
+  display: inline-grid; place-items: center; box-sizing: border-box; padding: 0; border-radius: 50%;
+  background: var(--num-fill, #ffa0ff); color: #000;
   font-family: "Serrif", Georgia, "Times New Roman", serif; font-weight: 300; font-synthesis: none;
-  font-size: 0.8em; line-height: 1; letter-spacing: 0;
+  line-height: 1; letter-spacing: 0; font-variant-numeric: tabular-nums;
 }
-.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-undecided-table > .a11y-undecided-cell:nth-child(4n+2) { --no-fill: #beffbd; }
-.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-undecided-table > .a11y-undecided-cell:nth-child(4n+3) { --no-fill: #f8ff58; }
-.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-undecided-table > .a11y-undecided-cell:nth-child(4n) { --no-fill: #a2e3ff; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-chat-text ol:not(.a11y-chat-plan) > li::before {
+  background: var(--num-fill, #ffa0ff); color: #000;
+  font-family: "Serrif", Georgia, "Times New Roman", serif; font-weight: 300; font-synthesis: none;
+}
+/* The designer and developer list and the legal questions sit in the
+   report's prose: 1.5em of the figure's own 0.8em is the words' 1.2 line. */
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-undecided-table > .a11y-undecided-cell > .a11y-undecided-no, .a11y-legal-q > .a11y-legal-qnum) {
+  width: 1.5em; height: 1.5em; margin-top: 0; font-size: 0.8em;
+}
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-legal-q { align-items: start; }
+/* The screen reader preview's lines are 26px on a 1.2 line: a 31px round,
+   a 21px figure. */
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sr-row > .a11y-sr-num { align-self: start; width: 31px; height: 31px; font-size: 21px; }
+/* The score's run keeps its 40px round (30px on a narrow run) and 29px
+   figure; only the fill, the ink and the face change. */
 @media (forced-colors: active) {
-  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-undecided-table > .a11y-undecided-cell > .a11y-undecided-no { border: 1px solid CanvasText; }
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-undecided-table > .a11y-undecided-cell > .a11y-undecided-no, .a11y-legal-q > .a11y-legal-qnum, .a11y-sum-run .a11y-sum-cell-no, .a11y-sr-row > .a11y-sr-num) { border: 1px solid CanvasText; }
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-chat-text ol:not(.a11y-chat-plan) > li::before { border: 1px solid CanvasText; }
 }
 
 /* ═══ THE PANEL'S FOOT RULE, FULL BLEED (user's instruction, 23 Nov 2026,
