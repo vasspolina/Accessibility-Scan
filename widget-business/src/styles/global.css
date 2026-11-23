@@ -3615,3 +3615,37 @@
 @media print {
   .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-conf-row > .a11y-conf-status { transform: translate(-50%, -50%); }
 }
+
+/* ═══ THE ROUND STICKER ON THE SCORE DIAL (user's instruction, 23 Nov
+   2026, "add element like this to related content", "on the score dial",
+   with a reference of a big flat circle laid over a picture, its words
+   set at a tilt) ═════════════════════════════════════════════════════════
+   A flat orange circle, 190px (130px under 640px), laid over the dial's
+   ring at its lower right, its left edge 34px inside the ring (24px on a
+   phone), so the score in the middle stays clear, and inside the dial's
+   own height, so it never covers the run of findings below. The button
+   keeps the dial's font size, so its em is the dial's (the dial is 7em
+   wide) and the place follows the dial at every size; the words carry
+   their own size. They read See the N findings, 26px Regular black (18px
+   on a phone), turned -12deg; the circle itself does not turn. It is a
+   button, so hover takes the buttons' mint and focus the green ring,
+   which follows the round edge. Black on --hl-orange measures 7:1 or
+   better in both themes. */
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-run .a11y-sum-dial-card { position: relative; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-dial-sticker {
+  position: absolute; top: calc(7em - 190px); left: calc(7em - 34px); z-index: 1;
+  display: flex; align-items: center; justify-content: center;
+  width: 190px; height: 190px; min-height: 0; margin: 0; padding: 22px; box-sizing: border-box;
+  border: 0; border-radius: 50%; background: var(--hl-orange); color: #000;
+  font-size: inherit; font-weight: 400; letter-spacing: 0; text-align: center; cursor: pointer;
+}
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-dial-sticker > .a11y-dial-sticker-words { display: block; transform: rotate(-12deg); font-size: 26px; line-height: 1.1; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-dial-sticker:enabled:hover { background: var(--hover); color: var(--hover-ink); }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-dial-sticker:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
+@media (max-width: 640px) {
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-dial-sticker { top: calc(7em - 130px); left: calc(7em - 24px); width: 130px; height: 130px; padding: 14px; }
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-dial-sticker > .a11y-dial-sticker-words { font-size: 18px; }
+}
+@media print {
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-dial-sticker { display: none; }
+}

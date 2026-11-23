@@ -588,6 +588,7 @@ export function App({
                 allFindings={report.findings}
                 total={report.summary.total}
                 tookSeconds={tookSeconds}
+                onSeeFindings={() => focusFindings("a11y-pro-findings")}
               />
               <ProSummary
                 report={report}
@@ -610,6 +611,7 @@ export function App({
                   allFindings={report.findings}
                   total={report.summary.total}
                   tookSeconds={tookSeconds}
+                  onSeeFindings={() => focusFindings("a11y-accessibility-heading")}
                 />
                 {/* In the conversation the score block heads a report the
                     assistant files, not a page. The findings block follows

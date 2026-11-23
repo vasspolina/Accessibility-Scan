@@ -244,8 +244,12 @@ export function ScoreGauge({
   allFindings,
   total,
   tookSeconds,
+  onSeeFindings,
 }: {
   score: number;
+  /* Takes the reader to the findings schedule: the round sticker on the
+     dial. Left out in the conversation, where the findings follow. */
+  onSeeFindings?: () => void;
   /* For the run pills beside the dial: how many issues, and how long it
      took. Both come from the report rather than being recounted here. */
   total: number;
@@ -388,6 +392,19 @@ export function ScoreGauge({
                   <span className="a11y-sum-dial-of">{t("out of 100")}</span>
                 </span>
               </div>
+              {/* The round sticker on the dial (user's instruction, 23 Nov
+                  2026, "add element like this to related content", "on the
+                  score dial", with a reference of a big tilted circle over
+                  a picture): a call to act rather than a verdict, since the
+                  band is said once in the key below. A real button after
+                  the dial in the markup; the tilt is the words' only. */}
+              {onSeeFindings && !inChat && findings.length > 0 && (
+                <button type="button" className="a11y-dial-sticker" onClick={onSeeFindings}>
+                  <span className="a11y-dial-sticker-words">
+                    {findings.length === 1 ? t("See the finding") : tf("See the {count} findings", { count: findings.length })}
+                  </span>
+                </button>
+              )}
             </div>
 
             {/* The run of the worst findings, centred at display size under
