@@ -39,15 +39,15 @@ const headers = (findings: AccessibilityFinding[]) =>
 
 describe("findings table columns", () => {
   it("drops Instances when no row repeats", () => {
-    expect(headers([finding("a"), finding("b")])).toEqual(["severity", "issue", "wcag", "fix", "level"]);
+    expect(headers([finding("a"), finding("b")])).toEqual(["issue", "wcag", "fix", "level"]);
   });
   it("keeps Instances when a row repeats", () => {
     expect(headers([finding("a"), { ...finding("a"), id: "a-2" }, finding("b")])).toEqual([
-      "severity", "issue", "wcag", "fix", "level", "count",
+      "issue", "wcag", "fix", "level", "count",
     ]);
   });
   it("drops WCAG and Level when no row names a criterion", () => {
     const bare = { wcagCriterion: undefined, wcagLevel: undefined } as Partial<AccessibilityFinding>;
-    expect(headers([finding("cookie", bare)])).toEqual(["severity", "issue", "fix"]);
+    expect(headers([finding("cookie", bare)])).toEqual(["issue", "fix"]);
   });
 });

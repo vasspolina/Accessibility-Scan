@@ -593,12 +593,14 @@
 /* Severity, criterion and level once each: in their columns on wide
    screens; on a phone the columns go and the folded copies in the row's
    issue cell and expanded panel take over. */
-.a11y-widget-biz .a11y-finding-sev-fold,
+/* The severity badge is always above the title: the table has no Severity
+   column (user's instruction, 23 Nov 2026, "delete the severity row, just
+   drop badges on top of rows"). */
+.a11y-widget-biz .a11y-finding-sev-fold { display: block; margin-bottom: 6px; }
 .a11y-widget-biz .a11y-finding-level-fold { display: none; }
 @media (max-width: 600px) {
-  .a11y-widget-biz .a11y-finding-sev-fold { display: block; }
   .a11y-widget-biz .a11y-finding-level-fold { display: block; }
-  .a11y-widget-biz :is(td, th):is([data-col="severity"], [data-col="wcag"], [data-col="level"]) { display: none; }
+  .a11y-widget-biz :is(td, th):is([data-col="wcag"], [data-col="level"]) { display: none; }
 }
 /* Between a phone and a wide screen the fixed columns (Severity 8em, WCAG 5em,
    Fix 6.8em, Level 11em, Instances 6.6em) add up to more than the table: at
@@ -729,7 +731,6 @@
 /* Severity is a fixed 8em: the widest mark ("Fix eventually" with its end
    caps, 125px measured) plus the 0.8em of air. It was max(9.6em, 9%), which
    left a wide gap before the issue on a large screen (user's note, 4 Nov 2026). */
-.a11y-widget-biz .a11y-datatable-schedule th[data-col="severity"] { width: 8em; }
 .a11y-widget-biz .a11y-datatable-schedule th[data-col="wcag"] { width: 5em; }
 .a11y-widget-biz .a11y-datatable-schedule th[data-col="fix"] { width: 6.8em; }
 /* A fixed width, not a share of the screen (user's instruction, 17 Nov 2026:
@@ -1285,9 +1286,8 @@
 .a11y-widget-biz .a11y-status-chip-critical { background: var(--hl-orange); }
 .a11y-widget-biz .a11y-ai-toggle { display: flex; align-items: center; gap: 0.5em; font-size: 22px; letter-spacing: 0.01em; margin: 0 0 0.6em; }
 
-/* In the table's Severity column the word stays on one line. On a phone that
-   column is gone and the folded copy in the issue cell wraps like prose. */
-.a11y-widget-biz .a11y-finding-sev-col .a11y-sev { white-space: nowrap; }
+/* The severity badge over each finding's title stays on one line. */
+.a11y-widget-biz .a11y-finding-sev-fold .a11y-sev { white-space: nowrap; }
 
 /* Notes on the design: one row of tabs, each its kind over its title
    (the list itself is set with the ruled columns further down). */
@@ -3270,9 +3270,8 @@
    at 375px and broke "description" inside the word). */
 .a11y-widget-biz .a11y-finding-count-fold { display: none; }
 @container a11y-ftable (max-width: 720px) {
-  .a11y-widget-biz .a11y-finding-sev-fold { display: block; }
   .a11y-widget-biz .a11y-finding-count-fold { display: block; margin-top: 4px; font-size: 18px; line-height: 1.3; letter-spacing: 0.01em; }
-  .a11y-widget-biz :is(td, th):is([data-col="severity"], [data-col="count"]) { display: none; }
+  .a11y-widget-biz :is(td, th):is([data-col="count"]) { display: none; }
   .a11y-widget-biz .a11y-datatable-schedule th[data-col="fix"] { width: 5.4em; }
   .a11y-widget-biz .a11y-datatable-schedule :is(th, td) { padding-inline-end: 0.4em; }
   .a11y-widget-biz th { overflow-wrap: anywhere; }
