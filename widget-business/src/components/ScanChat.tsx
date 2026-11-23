@@ -1394,20 +1394,16 @@ export function ScanChat({
           {t("Conversations")}
         </button>
         <div className="a11y-chats-body" id="a11y-chats-body">
+        {/* No icons (user's instruction, 23 Nov 2026, "delete icons, make
+            buttons look like this"): the words alone, in a button sized to
+            them, New chat and Report a barrier side by side. */}
         <button type="button" className="a11y-chats-new" onClick={newChat} disabled={switchLocked}>
-          {/* The icon set's add and flag, 32px grid, like the bin below
-              (user's instruction, 21 Nov 2026). */}
-          <Icon name="add" size={20} />
           {t("New chat")}
         </button>
         {/* Report a barrier sits under New chat, the panel's other way to
             start something (user's instruction, 20 Nov 2026). */}
         {onReportBarrier && (
           <button type="button" className="a11y-chats-new a11y-chats-barrier" onClick={onReportBarrier} disabled={switchLocked}>
-            {/* 18px, 10% under the add icon's 20: the flag fills 24 of
-                its 32 units where add fills 16, so at one size it looked
-                the larger (user's instruction, 21 Nov 2026). */}
-            <Icon name="flag" size={18} />
             {t("Report a barrier")}
           </button>
         )}
@@ -1754,13 +1750,6 @@ export function ScanChat({
                 }
               }}
             />
-            {suggestion && (
-              <p className="a11y-chat-tabhint" id="a11y-chat-tabhint">
-                <span className="a11y-sr-only">{t("Press Tab to use this suggestion:")} </span>
-                <kbd aria-hidden="true">Tab</kbd>
-                <span className="a11y-chat-tabhint-text">{smarten(suggestion, getLang())}</span>
-              </p>
-            )}
             <div className="a11y-chat-box-row">
               <span className="a11y-chat-box-start">
                 {backTo && (
@@ -1781,6 +1770,22 @@ export function ScanChat({
                   </Button>
                 )}
               </span>
+              {/* The line Tab would fill in, in the row of buttons and cut to
+                  one line (user's report, 23 Nov 2026, "the typed text is
+                  flickering"). It sat on its own line under the text, and
+                  came and went as letters matched an opening question or
+                  stopped matching; the box is pinned to the window's foot
+                  and grows upwards, so the words being typed jumped 51px up
+                  and down with it. Here it takes the row's empty middle, so
+                  the box keeps its height. Screen readers still get the
+                  whole question through aria-describedby. */}
+              {suggestion && (
+                <p className="a11y-chat-tabhint" id="a11y-chat-tabhint">
+                  <span className="a11y-sr-only">{t("Press Tab to use this suggestion:")} </span>
+                  <kbd aria-hidden="true">Tab</kbd>
+                  <span className="a11y-chat-tabhint-text">{smarten(suggestion, getLang())}</span>
+                </p>
+              )}
               <Button type="submit" variant="primary" disabled={busy || loading || !draft.trim()}>
                 {/* On a phone the word is clipped and the arrow drawn: the
                     button keeps "Send" as its name. */}

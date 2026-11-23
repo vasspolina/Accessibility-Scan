@@ -68,9 +68,9 @@ export function FindingsList({
         { key: "count", label: t("Instances"), align: "right" as const },
       ]
     : [
-        // Hidden at phone width by CSS (see .a11y-finding-sev-col)
-        // — Severity folds into the Issue cell there instead.
-        { key: "severity", label: t("Severity") },
+        // No Severity column (user's instruction, 23 Nov 2026, "delete the
+        // severity row, just drop badges on top of rows"): the badge sits
+        // above the title inside the Issue cell at every width.
         { key: "issue", label: t("Issue") },
         { key: "wcag", label: "WCAG" },
         { key: "fix", label: t("Fix") },
@@ -91,9 +91,9 @@ export function FindingsList({
           only rendering, kept for print (see FindingGroup's own comment). */}
       {!professional && (
         // The notes shape carries its own class because the table's column
-        // rules are position-based: nth-child(2) is Severity in the full
-        // shape and the note's own text in this one. Without the marker the
-        // phone-width rule that drops Severity dropped every note.
+        // rules were position-based: nth-child(2) was Severity in the full
+        // shape and the note's own text in this one. Without the marker a
+        // phone-width rule that dropped Severity dropped every note.
         <div
           className={`a11y-findings-table${asNotes ? " a11y-notes-table" : ""}`}
           onClick={expandRowOnClick}

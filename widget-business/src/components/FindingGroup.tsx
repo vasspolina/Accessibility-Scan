@@ -1,4 +1,4 @@
-import { Fragment, useId, useState, type ReactNode } from "react";
+import { Fragment, useId, useState, type CSSProperties, type ReactNode } from "react";
 import { dominantComponent, describeComponent } from "../lib/componentCluster";
 import { SeverityTag } from "./SeverityTag";
 import { ScanError, setFindingState, type AccessibilityFinding, type TriageState } from "../api/scanClient";
@@ -767,7 +767,7 @@ export function FindingDetails({
           {criterion && (
             <>
               <strong>{t("WCAG:")}</strong> {criterion}
-              {rep.wcagLevel ? " · " : ""}
+              {rep.wcagLevel ? " — " : ""}
             </>
           )}
           {rep.wcagLevel && levelFraming(rep.wcagLevel)}
@@ -952,6 +952,17 @@ export function findingRow(
 ): { id: string; cells: ReactNode[]; expand: ReactNode } {
   const rep = findings[0];
   const count = findings.length;
+  /* The severity bubble leans like the checklist's status bubbles: a tilt
+     of -3 to 3 degrees read from the finding's id (the same small string
+     hash as ConformanceView's bubblePlace), so a row never changes its
+     lean between renders. */
+  let h = 0;
+  for (let i = 0; i < rep.id.length; i++) h = (h * 31 + rep.id.charCodeAt(i)) >>> 0;
+  // Mixed once more: short ids that differ in one character ("f1", "f2")
+  // otherwise land next to each other and every row leaned the same way.
+  h = Math.imul(h ^ (h >>> 15), 0x2c1b3c6d) >>> 0;
+  h = (h ^ (h >>> 13)) >>> 0;
+  const sevTilt = { "--sev-tilt": `${((h % 61) - 30) / 10}deg` } as CSSProperties;
   const plain = plainForRule(rep.ruleId);
   const title = findingTitle(rep);
   const fix = fixKindForFinding(rep);
@@ -961,19 +972,21 @@ export function findingRow(
   const issueCell = (
     // data-finding: the score summary's links find this row by it (lib/openFinding).
     <span className="a11y-finding-issue" data-finding={rep.id}>
-      {/* Severity's own column (below) is hidden at phone width — its
-          badge plus the Issue text plus the arrow column already exceeded
-          the viewport there, forcing horizontal scroll before a reader
-          reached the row's actual content — and folds in here instead,
-          above the title. a11y-finding-sev-fold is itself hidden by
-          default and only shown at that same narrow width, so wide
-          screens see Severity in its column, not doubled up. */}
+      {/* The severity badge sits above the title at every width; the table
+          has no Severity column (user's instruction, 23 Nov 2026). */}
       {!asNotes && (
-        <span className="a11y-finding-sev-fold">
+        <span className="a11y-finding-sev-fold" style={sevTilt}>
           <SeverityTag severity={rep.severity} label={t(severityLabel[rep.severity])} />
         </span>
       )}
       <span className="a11y-finding-title">{title}</span>
+      {/* The Instances column folds in here on a narrow table, the same way
+          Severity does: its fixed 6.6em held a header word ("Occurrences")
+          over a single figure and left the issue 91px at 375px. Hidden
+          wherever the column shows. */}
+      {showCount && count > 1 && (
+        <span className="a11y-finding-count-fold">{tf("{count} places", { count })}</span>
+      )}
       {(keyboardCheck || fromAi || (rep.triage && rep.triage.state !== "open")) && (
         <span className="a11y-finding-meta-line">
           {keyboardCheck && (
@@ -1008,12 +1021,6 @@ export function findingRow(
     cells: asNotes
       ? [issueCell, ...(showCount ? [count > 1 ? <CountPill key="n" count={count} /> : ""] : [])]
       : [
-          // Severity's own column. Hidden at phone width by CSS
-          // (a11y-finding-sev-col), where the folded copy inside
-          // issueCell takes over instead.
-          <span key="sev" className="a11y-finding-sev-col">
-            <SeverityTag severity={rep.severity} label={t(severityLabel[rep.severity])} />
-          </span>,
           issueCell,
           criterion,
           <span key="fix" className={`a11y-method-badge a11y-fix-${fix.key}`}>
