@@ -367,6 +367,8 @@ export const CHROME_KEYS: string[] = [
   "n/a",
   "Unreachable",
   "Fails",
+  "Fails in 1 place",
+  "Fails in {count} places",
   "No issues found",
   "finding",
   "findings",

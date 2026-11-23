@@ -1,4 +1,4 @@
-import { useId, useMemo, useRef, useState } from "react";
+import { useId, useMemo, useRef, useState, type CSSProperties } from "react";
 import { t, tf } from "../lib/strings";
 import type { ConformanceSummary, CriterionResult, RecordedVerdict } from "../api/scanClient";
 import { statusWord } from "./ManualChecks";
@@ -11,6 +11,18 @@ import { DataTable } from "./DataTable";
 // person. Every label here is a statement about our evidence, not a verdict on
 // the site — which is also the difference between a report a specialist will
 // respect and one they'll dismiss.
+
+/* Where a status bubble sits on its row: a tilt of -4 to 4 degrees and a
+   place from 30% to 70% across the row's text column, read from the
+   criterion's id (a small string hash), so a row's bubble never moves
+   between renders. */
+function bubblePlace(id: string): CSSProperties {
+  let h = 0;
+  for (let i = 0; i < id.length; i++) h = (h * 31 + id.charCodeAt(i)) >>> 0;
+  const tilt = ((h % 81) - 40) / 10;
+  const across = 30 + ((h >>> 7) % 41);
+  return { "--bubble-tilt": `${tilt}deg`, "--bubble-x": `${across}%` } as CSSProperties;
+}
 
 const STATUS_LABEL = {
   failed: "Fails",
@@ -330,15 +342,20 @@ export function ConformanceView({
                       <DecidedLine verdict={verdictFor.get(c.id)!} />
                     )}
                   </span>
-                  <span className="a11y-conf-status">
-                    {t(STATUS_LABEL[c.status])}
-                    {/* "(13)" leaves the reader to guess thirteen of what.
-                        Say it: thirteen places on this page. */}
-                    {c.findingCount > 0 && (
-                      <em className="a11y-conf-count">
-                        {c.findingCount === 1 ? t("1 place") : tf("{count} places", { count: c.findingCount })}
-                      </em>
-                    )}
+                  {/* A small bubble that sits on its row at a place and tilt
+                      of its own (user's instruction, 23 Nov 2026, "design
+                      these badges randomly sit on related content in small
+                      bubles", "it need to say fails in 2 places"). The
+                      place comes from the criterion's id, so it stays put
+                      across renders and differs from row to row. Still last
+                      in the row's markup, so a screen reader meets it after
+                      the line it qualifies. */}
+                  <span className="a11y-conf-status" data-status={c.status} style={bubblePlace(c.id)}>
+                    {c.status === "failed" && c.findingCount > 0
+                      ? c.findingCount === 1
+                        ? t("Fails in 1 place")
+                        : tf("Fails in {count} places", { count: c.findingCount })
+                      : t(STATUS_LABEL[c.status])}
                   </span>
                 </li>
               ))}

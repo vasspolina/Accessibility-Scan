@@ -394,6 +394,8 @@ export const STRINGS_DE: Record<string, string> = {
   "n/a": "k. A.",
   "Unreachable": "Nicht erreichbar",
   "Fails": "Nicht erfüllt",
+  "Fails in 1 place": "Nicht erfüllt an 1 Stelle",
+  "Fails in {count} places": "Nicht erfüllt an {count} Stellen",
   "No issues found": "Keine Probleme gefunden",
   "finding": "Befund",
   "findings": "Befunde",

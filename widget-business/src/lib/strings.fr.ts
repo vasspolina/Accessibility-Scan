@@ -398,6 +398,8 @@ export const STRINGS_FR: Record<string, string> = {
   "n/a": "n.d.",
   "Unreachable": "Injoignable",
   "Fails": "Non respecté",
+  "Fails in 1 place": "Non respecté à 1 endroit",
+  "Fails in {count} places": "Non respecté à {count} endroits",
   "No issues found": "Aucun problème trouvé",
   "finding": "constat",
   "findings": "constats",
