@@ -1750,13 +1750,6 @@ export function ScanChat({
                 }
               }}
             />
-            {suggestion && (
-              <p className="a11y-chat-tabhint" id="a11y-chat-tabhint">
-                <span className="a11y-sr-only">{t("Press Tab to use this suggestion:")} </span>
-                <kbd aria-hidden="true">Tab</kbd>
-                <span className="a11y-chat-tabhint-text">{smarten(suggestion, getLang())}</span>
-              </p>
-            )}
             <div className="a11y-chat-box-row">
               <span className="a11y-chat-box-start">
                 {backTo && (
@@ -1777,6 +1770,22 @@ export function ScanChat({
                   </Button>
                 )}
               </span>
+              {/* The line Tab would fill in, in the row of buttons and cut to
+                  one line (user's report, 23 Nov 2026, "the typed text is
+                  flickering"). It sat on its own line under the text, and
+                  came and went as letters matched an opening question or
+                  stopped matching; the box is pinned to the window's foot
+                  and grows upwards, so the words being typed jumped 51px up
+                  and down with it. Here it takes the row's empty middle, so
+                  the box keeps its height. Screen readers still get the
+                  whole question through aria-describedby. */}
+              {suggestion && (
+                <p className="a11y-chat-tabhint" id="a11y-chat-tabhint">
+                  <span className="a11y-sr-only">{t("Press Tab to use this suggestion:")} </span>
+                  <kbd aria-hidden="true">Tab</kbd>
+                  <span className="a11y-chat-tabhint-text">{smarten(suggestion, getLang())}</span>
+                </p>
+              )}
               <Button type="submit" variant="primary" disabled={busy || loading || !draft.trim()}>
                 {/* On a phone the word is clipped and the arrow drawn: the
                     button keeps "Send" as its name. */}
