@@ -974,6 +974,13 @@ export function findingRow(
         </span>
       )}
       <span className="a11y-finding-title">{title}</span>
+      {/* The Instances column folds in here on a narrow table, the same way
+          Severity does: its fixed 6.6em held a header word ("Occurrences")
+          over a single figure and left the issue 91px at 375px. Hidden
+          wherever the column shows. */}
+      {showCount && count > 1 && (
+        <span className="a11y-finding-count-fold">{tf("{count} places", { count })}</span>
+      )}
       {(keyboardCheck || fromAi || (rep.triage && rep.triage.state !== "open")) && (
         <span className="a11y-finding-meta-line">
           {keyboardCheck && (
