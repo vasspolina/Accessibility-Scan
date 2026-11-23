@@ -1230,26 +1230,28 @@ body > header::after {
 :root[data-theme="dark"] .chat__prompt:nth-child(3) { background: #0f2b17; color: #fff; }
 :root[data-theme="dark"] .chat__prompt:hover { background: var(--yellow); color: #000; }
 
-/* THE CONTACT FORM IN DARK (user's instruction, 23 Nov 2026, "make dark
-   version"): the green band stays, but the cream fields and the pale lime
-   button no longer sit on it as light slabs. In dark each field is the band's
-   own green behind a 1px pale lime edge, with its label, words and
-   placeholder in the pale lime (#e3f1bd on #1e361f, 11.0:1); the button is
-   the same outline and fills pale lime with green words on hover. The focus
-   ring is the pale lime too, since the blue one measured 2.5:1 on green. */
-@media (prefers-color-scheme: dark) {
-  :root:not([data-theme="light"]) .signup__field { background: var(--forest); color: var(--lime-ink); border-color: var(--lime-ink); }
-  :root:not([data-theme="light"]) .signup__input { color: var(--lime-ink); }
-  :root:not([data-theme="light"]) .signup__input::placeholder { color: var(--lime-ink); }
-  :root:not([data-theme="light"]) .signup__field:focus-within { outline-color: var(--lime-ink); outline-offset: 3px; }
-  :root:not([data-theme="light"]) .signup__btn { background: var(--forest); color: var(--lime-ink); border-color: var(--lime-ink); }
-  :root:not([data-theme="light"]) .signup__btn:hover { background: var(--lime-ink); color: var(--forest); }
-  :root:not([data-theme="light"]) .signup__btn:focus-visible { outline: 2px solid var(--lime-ink); outline-offset: 3px; }
+/* THE CONTACT FORM AS OUTLINED FIELDS (user's instruction, 23 Nov 2026, "fix
+   those forms", after the Stay in touch field): in both themes the fields
+   and the button are the green band behind a 1px pale lime edge with 10px
+   corners, their words in the pale lime (#e3f1bd on #1e361f, 11.0:1). A
+   field's label sits inside it at the text size while it is empty and moves
+   up small once it holds focus or words, so a label is always showing
+   (placeholder=" " lets :placeholder-shown tell the two apart). The button
+   carries an arrow and fills pale lime with green words on hover. The focus
+   ring is the pale lime, outside the edge: the blue one measured 2.5:1 on
+   the green. */
+.signup__field, .signup__btn {
+  background: var(--forest); color: var(--lime-ink);
+  border: 1px solid var(--lime-ink); border-radius: 10px;
 }
-:root[data-theme="dark"] .signup__field { background: var(--forest); color: var(--lime-ink); border-color: var(--lime-ink); }
-:root[data-theme="dark"] .signup__input { color: var(--lime-ink); }
-:root[data-theme="dark"] .signup__input::placeholder { color: var(--lime-ink); }
-:root[data-theme="dark"] .signup__field:focus-within { outline-color: var(--lime-ink); outline-offset: 3px; }
-:root[data-theme="dark"] .signup__btn { background: var(--forest); color: var(--lime-ink); border-color: var(--lime-ink); }
-:root[data-theme="dark"] .signup__btn:hover { background: var(--lime-ink); color: var(--forest); }
-:root[data-theme="dark"] .signup__btn:focus-visible { outline: 2px solid var(--lime-ink); outline-offset: 3px; }
+.signup__field > .signup__input { color: var(--lime-ink); border-radius: 10px; }
+.signup__input::placeholder { color: transparent; }
+.signup__field > label { transition: top 0.15s, font-size 0.15s, line-height 0.15s; }
+.signup__field:has(.signup__input:placeholder-shown:not(:focus)) > label {
+  top: 15px; font-size: 18px; line-height: 24px;
+}
+.signup__field:focus-within { outline: 2px solid var(--lime-ink); outline-offset: 3px; }
+.signup__btn:hover { background: var(--lime-ink); color: var(--forest); }
+.signup__btn:focus-visible { outline: 2px solid var(--lime-ink); outline-offset: 3px; box-shadow: none; }
+@media (prefers-reduced-motion: reduce) { .signup__field > label { transition: none; } }
+@media (forced-colors: active) { .signup__field, .signup__btn { border-color: CanvasText; } }
