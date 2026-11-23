@@ -42,6 +42,7 @@ CI (`.github/workflows/`) runs only for the package whose path changed: backend 
 - `widget/` is the older technical widget. It has no tests or CI.
 - `accessible-web-design/` is the public site, built once per locale by `i18n/build.mjs`.
 - `barrierfreeweb/` is the BarrierFreeWeb studio site (home, services and five service pages, accessibility, about) set in the widget's design. `node build.mjs` writes the HTML beside it; the copy lives in `build.mjs`, the look in `styles.css`. The generated pages are committed, so rebuild in the same change as any copy edit.
+- `backend/public/barrierfreeweb/` is a second, newer version of the studio site (home with the request form, the chat and the statements, services, accessibility, about, newsletters), hand-written HTML with `styles.css` and `app.js`, served by the Railway deploy at `/barrierfreeweb/` (user's instruction, 23 Nov 2026, "merge deploy"). It was built in a claude.ai artifact and has no build script: edit the files in place. Its type is PP Telegraf Light, with Ultralight for big type only (titles, statements, What we offer rows). It is not the same site as `barrierfreeweb/` above.
 - `design-system/` is the vendored design system. The widget depends on `design-system/production` as `@verify/design-system` (a `file:` dependency). `system-guide.md` is the spec; the rules in this file override it where they differ.
 
 **The scan pipeline** is `scanUrlToReport` in `backend/src/services/scanPipeline.ts`, called by `POST /api/scan` and by the CLI (`src/cli.ts`). The steps:
