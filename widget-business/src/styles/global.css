@@ -3490,9 +3490,16 @@
    the phone's), 8px under the rule and 16px over what follows, with no
    negative tracking; the line under each title and a section's plain
    paragraphs are Serrif at the same 32px/1.2 (Light, the only cut we
-   have), one line apart. The 100px between sections (18 Nov 2026) stays,
-   now above the rule. Sections with no visible title (the report actions,
+   have), one line apart. Between sections, 65px above the rule (user's
+   instruction, same day, "tighten it"): the reference stands about 50px
+   from the last line to the rule at 24px type, which is 65px at our 32px;
+   it was 100px from 18 Nov 2026. Sections with no visible title (the report actions,
    the notes, the closing call) get no rule. */
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-report > * + * { margin-top: 65px; }
+/* A section's last control keeps no margin under it: an inline-flex
+   button's margin does not collapse, and Show the checklist's 18px made
+   that gap 83px (its closed panel, hidden, is the last child). */
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-report > .a11y-section > :is(:last-child, :has(+ [hidden]:last-child)) { margin-bottom: 0; }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-report > :has(h2:is(.a11y-section-title, .a11y-top-title, .a11y-legal-title):not(.a11y-sr-only)) {
   border-top: 1px solid var(--ink); padding-top: 8px;
 }
