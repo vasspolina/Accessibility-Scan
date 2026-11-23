@@ -44,7 +44,6 @@ export function UndecidedChecks({
 }: {
   rows: Array<{ ruleId: string; count: number; help: string; helpUrl?: string }>;
 }) {
-  const total = rows.reduce((n, r) => n + r.count, 0);
   // Folded to the first three on screen: this section was 55 % of the
   // report's words, aimed at the reader's designer rather than the reader.
   // Every row stays in the DOM so the printed report and the export carry
@@ -67,15 +66,15 @@ export function UndecidedChecks({
       {/* h2: this is a top-level section of the report, same as its siblings. */}
       <h2 className="a11y-section-title" id="a11y-undecided-heading" data-nav-label={t("Designer and developer")}>
         {t("For your designer and developer")}{" "}
-        <span className="a11y-section-count">({total})</span>
+        <span className="a11y-section-count">({rows.length})</span>
       </h2>
       {/* Two sentences: what the checker did, and that none of it is
           scored. The heading names who decides and the Call column says
           whose, so the lead no longer repeats either. */}
       <p className="a11y-section-desc">
-        {total === 1
-          ? t("The checker couldn't settle this one on its own. It does not count against the score.")
-          : tf("The checker couldn't settle these {total} on its own. None of them count against the score.", { total })}
+        {rows.length === 1
+          ? t("The scan couldn't decide this one. It doesn't count against the score.")
+          : t("The scan couldn't decide these. They don't count against the score.")}
       </p>
       </div>
       {rows.length > 0 && (

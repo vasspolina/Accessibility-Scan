@@ -87,12 +87,12 @@ function renderText(report: AccessibilityReport): string {
     // the email and the screen must not disagree about what the number
     // counts. backend/test/scoreCopy.test.ts holds them together.
     "What the score counts:",
-    "- It counts the accessibility problems this scan found, weighted by how much each one costs a visitor.",
+    "- The problems this scan found, weighted by what each costs a visitor.",
     "- Each severity has a limit on how far it lowers the score.",
-    "- Design notes, misleading patterns, the optional AAA level and checks new in WCAG 2.2 do not count.",
-    "- AI review findings do not count. They are a model’s view, and a person has to check them.",
-    "- A scan like this finds a third to a half of the problems. The rest need a person with a keyboard and a screen reader.",
-    "- It is not a statement that the site meets the law.",
+    "- Design notes, misleading patterns, AAA and WCAG 2.2 checks do not count.",
+    "- AI review findings do not count. A person has to check them.",
+    "- A scan finds a third to a half of the problems. The rest need a person.",
+    "- It does not say the site meets the law.",
     "",
     "You asked for this report from the accessibility scanner on this page."
   );

@@ -72,7 +72,6 @@ function RESULT_ROWS(c: ConformanceSummary): Array<{
     // count honest.
     ...((c.notMeasured ?? 0) > 0
       ? [{ key: "not-measured", filter: "not-measured" as const, severity: "serious", label: t("A check didn't finish"),
-          meaning: t("A second run usually completes them."),
           mark: t("Not measured"), n: c.notMeasured ?? 0 }]
       : []),
   ];
@@ -172,7 +171,7 @@ export function ConformanceView({
   // One sentence with the filter's name set into it in bold, split where
   // the name goes rather than stitched from fragments.
   const [otherBefore, otherAfter] = tf(
-    "The other {count} are in the checklist below. Choose {filter} to see them.",
+    "{count} more are under {filter} in the checklist below.",
     { count: conformance.needsReview - HUMAN_QUESTIONS.length }
   ).split("{filter}");
 
@@ -189,14 +188,14 @@ export function ConformanceView({
         </h2>
         <span className="a11y-legal-standard">{conformance.standard}</span>
         <p className="a11y-legal-intro">
-          {tf("The checklist of {total} items European accessibility law measures sites against.", {
+          {tf("The {total} items EU accessibility law checks sites against.", {
             total: conformance.total,
           })}
           {showBfsgNote && (
             <>
               {" "}
               {t(
-                "In Germany the BFSG, in force since June 2025, points at it."
+                "In Germany the BFSG points at it."
               )}
             </>
           )}
@@ -208,14 +207,11 @@ export function ConformanceView({
           brand yellow rather than a line of prose. */}
       <div className="a11y-legal-band" aria-labelledby="a11y-legal-band-heading">
         <h3 className="a11y-legal-eyebrow" id="a11y-legal-band-heading">
-          {t("So “nothing found” is not a pass")}
+          {t("“Nothing found” is not a pass")}
         </h3>
         <div className="a11y-legal-card">
           <p className="a11y-legal-lead">
-            {t("You need every item at both levels, A and AA. They don’t average out.")}
-          </p>
-          <p className="a11y-legal-body">
-            {t("One Level A failure means you don’t meet the standard.")}
+            {t("Every A and AA item has to pass.")} {t("One failure means you don’t meet the standard.")}
           </p>
         </div>
       </div>
@@ -328,7 +324,7 @@ export function ConformanceView({
                         check. */}
                     <strong>{c.status === "failed" ? c.failing : c.plain}</strong>
                     <span className="a11y-conf-plain">
-                      {t("Officially:")} {c.name}
+                      {c.name}
                     </span>
                     {/* Say which check broke, or "not measured" is just a
                         shrug. The names are the report's own, the same ones

@@ -133,7 +133,7 @@ export function ManualChecks({
             </span>
             <span className="a11y-conf-body">
               <strong>{q.question}</strong>
-              <span className="a11y-conf-plain">{t("Officially:")} {q.name}</span>
+              <span className="a11y-conf-plain">{q.name}</span>
               <span className="a11y-conf-plain">{q.whyAsking}</span>
               {q.answered && (
                 <span className="a11y-manual-verdict">

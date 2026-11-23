@@ -82,7 +82,7 @@ export function DesignNotesPanel({ findings }: { findings: AccessibilityFinding[
           what the section is, then why it matters, and it is translated,
           which the old lead never was. */}
       <p className="a11y-section-desc">
-        {t("What a designer would point out, not failures against a rule. None of it counts towards the score.")}
+        {t("A designer's view, not rule failures. They don't count towards the score.")}
       </p>
 
       {/* Professional mode gets the notes as cards only — the black panel is

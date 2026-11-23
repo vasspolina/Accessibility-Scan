@@ -65,7 +65,7 @@ export function PrintButton({
         {text}
       </Button>
       <span className="a11y-sr-status">
-        {t("Opens your browser’s print dialog. Choose “Save as PDF” as the destination.")}
+        {t("Choose “Save as PDF” in the print dialog.")}
       </span>
     </div>
   );

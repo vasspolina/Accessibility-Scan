@@ -44,7 +44,7 @@ export const FIX_KINDS: Record<FixOwner, FixKind> = {
     // a report written for the person who owns the site rather than the one
     // who builds it. They do not need the names of the files.
     get hint() {
-      return t("Whoever builds your site. Send them this card.");
+      return t("Whoever builds your site.");
     },
   },
   content: {
@@ -296,7 +296,7 @@ export function isAiFinding(finding: AccessibilityFinding): boolean {
 }
 
 export const AI_HINT =
-  "Our AI wrote this. It can be wrong, so check the element first.";
+  "Our AI wrote this. Check the element first.";
 
 export const KEYBOARD_HINT =
   "Put the mouse aside. Move through the page with Tab, Enter and Escape.";
