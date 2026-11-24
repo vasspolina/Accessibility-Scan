@@ -181,20 +181,29 @@ export function ScreenReaderPreview({ script }: { script: ScreenReaderScript }) 
             onClick={() => setOpen((v) => !v)}
           >
             <span>
-              {t("Screen reader simulation")}{" "}
-              <span className="a11y-section-count">
-                {lines.length === 1
-                  ? t("(1 announcement)")
-                  : tf("({count} announcements)", { count: lines.length })}
-              </span>
+              {t("Screen reader simulation")}
+              {/* The total rides in the badge when there are problems ("3 of
+                  16 say nothing useful", user's choice, 24 Nov 2026), so the
+                  head says the count once; with none it stays beside the
+                  title. */}
+              {issueCount === 0 && (
+                <>
+                  {" "}
+                  <span className="a11y-section-count">
+                    {lines.length === 1
+                      ? t("(1 announcement)")
+                      : tf("({count} announcements)", { count: lines.length })}
+                  </span>
+                </>
+              )}
             </span>
             {/* The count of problems stays visible while collapsed. A closed
                 section with nothing to show for it gives no reason to open it. */}
             {issueCount > 0 && (
               <StatusChip>
                 {issueCount === 1
-                  ? t("1 says nothing useful")
-                  : tf("{count} say nothing useful", { count: issueCount })}
+                  ? tf("1 of {total} says nothing useful", { total: lines.length })
+                  : tf("{count} of {total} say nothing useful", { count: issueCount, total: lines.length })}
               </StatusChip>
             )}
             <Icon name="chevron--down" className="a11y-accordion-chevron" />
@@ -203,17 +212,6 @@ export function ScreenReaderPreview({ script }: { script: ScreenReaderScript }) 
         )}
       </div>
 
-      {/* Stays visible when collapsed, and that is not a detail. With it hidden
-          inside the panel this section shrank to a bare title, while every
-          other section on the page shows a title and a line saying what it is
-          — so it stopped reading as a section at all and became a stray
-          heading between two tall ones. Easy to scroll straight past, which is
-          exactly what happened. */}
-      <p className="a11y-section-desc">
-        {t(
-          "Built from the page’s code. Real screen readers word things differently."
-        )}
-      </p>
       </div>
 
       {/* The controls are one card that stays on screen when the section is
@@ -333,6 +331,16 @@ export function ScreenReaderPreview({ script }: { script: ScreenReaderScript }) 
           </p>
         )}
       </div>
+
+      {/* How the simulation was made, as small print under Play (user's
+          choice, 24 Nov 2026): it qualifies the transcript, so it is not set
+          at the prose size between the head and the control. It stays
+          outside the panel, visible while the section is closed. */}
+      <p className="a11y-sr-caveat">
+        {t(
+          "Built from the page’s code. Real screen readers word things differently."
+        )}
+      </p>
 
       {/* The filter and the skip link sit in a row of their own under the
           bar, so only the transport sticks: on a 375px phone the whole bar

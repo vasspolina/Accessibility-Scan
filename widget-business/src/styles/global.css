@@ -4106,8 +4106,9 @@
    pulled up, and the conversation's left, by the same 2px so its centre
    stays put. The lists: the designer and developer list, the legal panel's
    questions, the score's worst findings, a numbered list in the
-   conversation and the screen reader preview. Left out on purpose: "Step
-   1:" in the statement (a word) and the dial's score. Each number stays
+   conversation and the screen reader preview; the statement's steps take
+   the same round in their own block (THE SCREEN READER HEAD AND THE
+   STATEMENT'S STEPS). Left out on purpose: the dial's score. Each number stays
    aria-hidden or a ::before: the lists are ol or carry their own order. */
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-undecided-table > .a11y-undecided-cell > .a11y-undecided-no, .a11y-legal-q > .a11y-legal-qnum, .a11y-sr-row > .a11y-sr-num) {
   display: inline-grid; place-items: center; box-sizing: content-box; padding: 2px; border-radius: 50%;
@@ -5082,6 +5083,45 @@
 }
 @media (forced-colors: active) {
   .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-table-badge[class] > .a11y-sev[class] { color: CanvasText; }
+}
+
+/* ═══ THE SCREEN READER HEAD AND THE STATEMENT'S STEPS (user's choice, 24
+   Nov 2026, "yes, build it") ═════════════════════════════════════════════
+   The screen reader head says its count once: the badge carries the total
+   ("3 of 16 say nothing useful") and the bracketed count stays only when
+   nothing is wrong. How the simulation was made is small print under Play,
+   18px, not prose between the head and the control. The statement's steps
+   number themselves in the list numbers' solid round, one line of the
+   heading tall, instead of the word "Step 1:", and stand 65px from what
+   comes before so each step starts a part of the section. */
+/* .a11y-sr > p.a11y-sr-caveat out-ranks the report's section paragraph
+   rule (.a11y-report :is(.a11y-section-desc, .a11y-section > p), 32px). */
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-report .a11y-sr > p.a11y-sr-caveat,
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sr > p.a11y-sr-caveat {
+  margin: -18px 0 30px; font-size: 18px; font-weight: 200; line-height: 1.4; letter-spacing: 0.025em;
+}
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sr > .a11y-sr-bar[data-active] + p.a11y-sr-caveat { margin-top: 0; }
+/* The badge with the total is longer ("3 von 16 sagen nichts Brauchbares"
+   ran 65px past a 320px screen held on one line), so in the head it may
+   wrap inside itself. */
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sr .a11y-accordion-head > .a11y-status-chip {
+  min-width: 0; max-width: 100%; white-space: normal; overflow-wrap: anywhere;
+}
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-stmt-step-head {
+  display: flex; align-items: center; gap: 16px;
+}
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-stmt-step-num {
+  display: inline-grid; place-items: center; flex: none; box-sizing: content-box;
+  width: 38px; height: 38px; margin: 0; padding: 2px; border-radius: 50%;
+  background: var(--ink); color: var(--paper);
+  font-size: 24px; font-weight: 200; line-height: 1; letter-spacing: 0; font-variant-numeric: tabular-nums;
+}
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-stmt > .a11y-stmt-step { margin-top: 65px; }
+@media (max-width: 640px) {
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-stmt-step-num { width: 30px; height: 30px; font-size: 18px; letter-spacing: 0.025em; }
+}
+@media (forced-colors: active) {
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-stmt-step-num { border: 1px solid CanvasText; }
 }
 
 /* THE DESIGN NOTES AS CARETS (user's instruction, 24 Nov 2026, "make these
