@@ -1,5 +1,6 @@
 import { t, tf } from "../lib/strings";
 import { WhatsNextPanel } from "./WhatsNextPanel";
+import { bubblePlace } from "./ConformanceView";
 import type { Wcag22Readiness as Readiness } from "../api/scanClient";
 
 // The law is going to move, and an owner should see it coming rather than
@@ -60,7 +61,7 @@ export function Wcag22Readiness({ readiness }: { readiness: Readiness }) {
           {criteria.map((c) => {
             const fails = c.status === "already-failing";
             return (
-              <li key={c.id} className="a11y-w22-row" data-fails={fails ? "" : undefined}>
+              <li key={c.id} className="a11y-w22-row" data-fails={fails ? "" : undefined} style={bubblePlace(c.id)}>
                 <span className="a11y-w22-ref">
                   <span className="a11y-w22-id">{c.id}</span>
                   <span className="a11y-w22-level">{t("Level")} {c.level}</span>

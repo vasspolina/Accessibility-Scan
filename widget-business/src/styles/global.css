@@ -3728,9 +3728,9 @@
    reference) ═══════════════════════════════════════════════════════════════
    The four result tiles take the Services cards' set (.slogan in
    backend/public/barrierfreeweb/styles.css): the plates' four colours,
-   20px corners, 22px 26px 24px inside, 190px tall (170px two across; a
-   wide rectangle since the user's instruction of 23 Nov 2026, "this can be
-   not as tall -- a rectangle"; 300px and 240px before), 10px apart; the status
+   20px corners, 28px 26px 30px inside, 300px tall (240px two across;
+   back since 24 Nov 2026, "bring this design back", after a 190px wide
+   rectangle from 23 Nov, "this can be not as tall"), 10px apart; the status
    word small at the top left (18px, 24px line, no tracking, 15px on a
    phone); the statement at the foot, left, in Light: the count at 96px
    and the result's words at 40px/1.02 (32px on a phone), every other card
@@ -3763,7 +3763,7 @@
 .a11y-widget-biz .a11y-legal-results .a11y-legal-tiles > .a11y-legal-row {
   --ink: var(--plate-text); --tile-ink: var(--plate-text);
   display: flex; flex-direction: column; align-items: flex-start; gap: 0;
-  min-height: 190px; margin: 0; padding: 22px 26px 24px; border-radius: 20px;
+  min-height: 300px; margin: 0; padding: 28px 26px 30px; border-radius: 20px;
   color: var(--plate-text); text-align: left;
 }
 .a11y-widget-biz .a11y-legal-results .a11y-legal-tiles > .a11y-legal-row-failed { --paper: var(--plate-3); background: var(--plate-3); }
@@ -3775,30 +3775,28 @@
   font-size: 18px; font-weight: 400; line-height: 24px; letter-spacing: 0; white-space: normal; text-align: left;
 }
 .a11y-widget-biz .a11y-legal-results .a11y-legal-tiles > .a11y-legal-row .a11y-legal-count {
-  margin: auto 0 4px; padding-top: 8px;
+  margin: auto 0 4px; padding-top: 24px;
   font-size: 96px; font-weight: 300; line-height: 1; letter-spacing: -0.02em;
 }
 .a11y-widget-biz .a11y-legal-results .a11y-legal-tiles > .a11y-legal-row .a11y-legal-row-label {
   font-size: 40px; font-weight: 300; line-height: 1.02; letter-spacing: -0.01em;
   text-decoration-thickness: 2px; text-underline-offset: 0.12em;
 }
+.a11y-widget-biz .a11y-legal-results .a11y-legal-tiles > .a11y-legal-row:nth-child(even) .a11y-legal-row-label {
+  font-family: "Serrif", Georgia, "Times New Roman", serif; font-synthesis: none; letter-spacing: -0.015em;
+}
 .a11y-widget-biz .a11y-legal-results .a11y-legal-tiles > .a11y-legal-row .a11y-legal-row-meaning {
   margin-top: 12px; font-size: 18px; line-height: 1.3; letter-spacing: 0.01em;
 }
-/* Hover turns the whole tile the beige tile ground, words in its ink, no
-   underline (user's instruction, 23 Nov 2026, "make beige on hover no
-   underline"): the old hover repainted the plate in its own colour, so only
-   an underline moved. #000 on #f0efe8 is 18.4:1; dark takes --tile
-   (#1c1c1e) with white words. */
-.a11y-widget-biz .a11y-legal-results .a11y-legal-tiles > button.a11y-legal-row { transition: background-color 0.15s, color 0.15s, box-shadow 0.15s; }
-.a11y-widget-biz .a11y-legal-results .a11y-legal-tiles > button.a11y-legal-row:enabled:hover {
-  --ink: var(--tile-ink); background: var(--tile); color: var(--tile-ink); box-shadow: none;
-}
-.a11y-widget-biz .a11y-legal-results .a11y-legal-tiles > button.a11y-legal-row:enabled:hover * { text-decoration: none; }
+/* Hover underlines the words on the card's own plate, as the cards were
+   first set (user's instruction, 24 Nov 2026, "bring this design back";
+   a beige hover with no underline stood between 23 and 24 Nov). */
+.a11y-widget-biz .a11y-legal-results .a11y-legal-tiles > button.a11y-legal-row:enabled:hover { background: var(--paper); color: var(--plate-text); box-shadow: none; }
+.a11y-widget-biz .a11y-legal-results .a11y-legal-tiles > button.a11y-legal-row:enabled:hover .a11y-legal-row-label { text-decoration-line: underline; }
 .a11y-widget-biz .a11y-legal-results .a11y-legal-tiles > button.a11y-legal-row[aria-pressed="true"]:not(:focus-visible) { box-shadow: none; outline: 2px dotted var(--plate-text); outline-offset: -2px; }
 @container a11y-legal-cards (max-width: 900px) {
   .a11y-widget-biz .a11y-legal-results .a11y-legal-tiles { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-  .a11y-widget-biz .a11y-legal-results .a11y-legal-tiles > .a11y-legal-row { min-height: 170px; }
+  .a11y-widget-biz .a11y-legal-results .a11y-legal-tiles > .a11y-legal-row { min-height: 240px; }
 }
 @container a11y-legal-cards (max-width: 480px) {
   .a11y-widget-biz .a11y-legal-results .a11y-legal-tiles { grid-template-columns: minmax(0, 1fr); }
@@ -3906,46 +3904,13 @@
   padding: 6px 14px; border: 1px dashed var(--ink); background: transparent; color: var(--ink); cursor: not-allowed;
 }
 
-/* ═══ THE CHECK RESULTS' COUNTS ON ONE LINE (user's instruction, 23 Nov
-   2026, "if serif number go serif, align numbers") ═════════════════════
-   A card whose words are in Serrif takes Serrif for its count too. The
-   counts stand on one line across the row: each card keeps the same room
-   under its count, one line for the level split, empty where a card has
-   none, so the count no longer rides up on the problems card. (A shared
-   subgrid would do it exactly, but Chromium will not make a <button> a
-   subgrid.) The sentence that sat under the count is gone (same day, "the
-   repeated words"). */
-.a11y-widget-biz .a11y-legal-results .a11y-legal-tiles.a11y-legal-tiles > .a11y-legal-row:not(:has(.a11y-legal-row-meaning))::after {
-  content: ""; order: 5; height: calc(12px + 1.3 * 18px);
-}
-
-/* ═══ THE CHECK RESULTS' STATUS AS A BADGE (user's instruction, 23 Nov
-   2026, "this can be a badge on angle") ══════════════════════════════════
-   The status word at the top of each card is the report's small bubble:
-   mono 15px, 8px corners, 2px 8px inside, leaning one of three small
-   tilts by its card's place. Solid ink with the card's own colour for its
-   words (pink, mint, yellow or sky on black; deep plate on white in dark),
-   so it reads on the card and on its beige hover alike. */
-.a11y-widget-biz .a11y-legal-results .a11y-legal-tiles.a11y-legal-tiles > .a11y-legal-row .a11y-legal-mark {
-  padding: 4px 10px 3px; border-radius: 8px; background: var(--mark-fill, var(--plate-4)); color: var(--plate-text);
-  font-family: "Serrif", Georgia, "Times New Roman", serif; font-weight: 300; font-synthesis: none;
-  font-size: 18px; line-height: 1.25; letter-spacing: 0.08em; white-space: nowrap;
-  rotate: var(--mark-tilt, -2deg);
-}
-.a11y-widget-biz .a11y-legal-results .a11y-legal-tiles.a11y-legal-tiles > .a11y-legal-row:nth-child(4n+2) { --mark-tilt: 1.5deg; }
-.a11y-widget-biz .a11y-legal-results .a11y-legal-tiles.a11y-legal-tiles > .a11y-legal-row:nth-child(4n+3) { --mark-tilt: -1deg; }
-.a11y-widget-biz .a11y-legal-results .a11y-legal-tiles.a11y-legal-tiles > .a11y-legal-row:nth-child(4n) { --mark-tilt: 2deg; }
-/* The badge as the findings table's severity (user's instruction, 24 Nov
-   2026, "all badges need to be like this but different colors"): a plate
-   fill with the plate's words, in a plate other than its card's, so it
-   shows on the card and on the beige hover alike. */
-.a11y-widget-biz .a11y-legal-results .a11y-legal-tiles > .a11y-legal-row-failed { --mark-fill: var(--plate-4); }
-.a11y-widget-biz .a11y-legal-results .a11y-legal-tiles > .a11y-legal-row-clean { --mark-fill: var(--plate-1); }
-.a11y-widget-biz .a11y-legal-results .a11y-legal-tiles > .a11y-legal-row-human { --mark-fill: var(--plate-3); }
-.a11y-widget-biz .a11y-legal-results .a11y-legal-tiles > .a11y-legal-row-not-measured { --mark-fill: var(--plate-2); }
-@media print {
-  .a11y-widget-biz .a11y-legal-results .a11y-legal-tiles.a11y-legal-tiles > .a11y-legal-row .a11y-legal-mark { rotate: none; }
-}
+/* ═══ THE CHECK RESULTS AS FIRST SET (user's instruction, 24 Nov 2026,
+   "bring this design back", with a picture of the cards of 23 Nov) ═══
+   The status is a plain word at the top left again, not a badge; the
+   sentence under the count is back (ConformanceView), Serrif on every
+   other card; the counts sit where each card's words leave them, not on
+   one line; the cards are 300px tall (240px two across). The blocks that
+   made the status a leaning badge and lined the counts up are gone. */
 
 /* ═══ THE WCAG 2.2 ITEMS' CALL AS A BADGE (user's instruction, 23 Nov
    2026, "needs a person nothing found etc can be also badges") ═══════════
@@ -3960,10 +3925,8 @@
   background: var(--plate-4); color: var(--plate-text);
   font-family: "Serrif", Georgia, "Times New Roman", serif; font-weight: 300; font-synthesis: none;
   font-size: 18px; line-height: 1.25; letter-spacing: 0.08em; white-space: nowrap;
-  rotate: var(--call-tilt, -2deg);
+  rotate: var(--bubble-tilt, -2deg);
 }
-.a11y-widget-biz .a11y-w22-list > li:nth-child(3n+2) { --call-tilt: 1.5deg; }
-.a11y-widget-biz .a11y-w22-list > li:nth-child(3n) { --call-tilt: -1deg; }
 .a11y-widget-biz .a11y-w22-call > .a11y-next-status[data-status="failed"] { background: var(--plate-3); }
 .a11y-widget-biz .a11y-w22-call > .a11y-next-status[data-status="no-issues-found"] { background: var(--plate-2); }
 .a11y-widget-biz .a11y-w22-call > .a11y-next-status[data-status="not-measured"] { background: var(--plate-1); }
@@ -4505,11 +4468,20 @@
    is needed at 18px under it, and the call's badge at the right edge. The
    list is its own size container: under 760px the call moves under the
    question, under 480px everything stacks with the number and the level
-   on one line. */
+   on one line.
+   The call sits on the row's top rule since 24 Nov 2026 (user's
+   instruction, "this design back also with labels sitting on lines",
+   "like this", pointing at the conformance checklist's bubbles): centred
+   on the rule, at a place from 30% to 70% across the row and a tilt of -4
+   to 4 degrees read from the criterion's id (bubblePlace, shared with the
+   checklist), so it never moves between renders. The right-hand column it
+   stood in is gone, and the row keeps 30px of air on top so the badge
+   covers only the rule. */
 .a11y-widget-biz .a11y-w22-list { margin: 0; padding: 0; list-style: none; border-bottom: 1px solid var(--ink); }
 .a11y-widget-biz .a11y-w22-list > .a11y-w22-row {
-  display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 2.2fr) 230px; gap: 14px 30px; align-items: start;
-  margin: 0; padding: 22px 0 30px; border-top: 1px solid var(--ink); color: var(--ink);
+  position: relative;
+  display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 2.2fr); gap: 14px 30px; align-items: start;
+  margin: 0; padding: 30px 0 30px; border-top: 1px solid var(--ink); color: var(--ink);
 }
 .a11y-widget-biz .a11y-w22-row > :is(.a11y-w22-ref, .a11y-w22-body, .a11y-w22-call) { display: flex; flex-direction: column; min-width: 0; }
 .a11y-widget-biz .a11y-w22-row .a11y-w22-id { font-size: 32px; line-height: 1; letter-spacing: -0.005em; font-variant-numeric: tabular-nums; }
@@ -4518,18 +4490,19 @@
 .a11y-widget-biz .a11y-w22-row .a11y-w22-q { font-size: 22px; line-height: 1.25; letter-spacing: 0.01em; }
 .a11y-widget-biz .a11y-w22-row .a11y-w22-why { margin-top: 10px; font-size: 18px; line-height: 1.35; letter-spacing: 0.01em; }
 .a11y-widget-biz .a11y-w22-row .a11y-w22-count { margin-top: 10px; font-size: 15px; line-height: 1.3; letter-spacing: 0.01em; }
-.a11y-widget-biz .a11y-w22-row > .a11y-w22-call { align-items: flex-end; padding-top: 3px; }
+.a11y-widget-biz .a11y-w22-row > .a11y-w22-call {
+  position: absolute; top: 0; left: var(--bubble-x, 50%); z-index: 1;
+  max-width: min(80%, 22em); padding: 0; translate: -50% -50%;
+}
 @container a11y-w22 (max-width: 760px) {
   .a11y-widget-biz .a11y-w22-list > .a11y-w22-row { grid-template-columns: minmax(0, 1fr) minmax(0, 2fr); }
-  .a11y-widget-biz .a11y-w22-row > .a11y-w22-call { grid-column: 2; align-items: flex-start; padding-top: 0; }
 }
 @container a11y-w22 (max-width: 480px) {
-  .a11y-widget-biz .a11y-w22-list > .a11y-w22-row { grid-template-columns: minmax(0, 1fr); padding: 18px 0 24px; }
+  .a11y-widget-biz .a11y-w22-list > .a11y-w22-row { grid-template-columns: minmax(0, 1fr); padding: 26px 0 24px; }
   .a11y-widget-biz .a11y-w22-row > .a11y-w22-ref { flex-flow: row wrap; align-items: baseline; column-gap: 12px; }
   .a11y-widget-biz .a11y-w22-row .a11y-w22-id { font-size: 27px; }
   .a11y-widget-biz .a11y-w22-row .a11y-w22-level { margin-top: 0; }
   .a11y-widget-biz .a11y-w22-row .a11y-w22-name { flex: 1 1 100%; margin-top: 4px; }
-  .a11y-widget-biz .a11y-w22-row > .a11y-w22-call { grid-column: auto; }
 }
 @media print {
   .a11y-widget-biz .a11y-w22-list > .a11y-w22-row { break-inside: avoid; page-break-inside: avoid; }
@@ -4615,14 +4588,15 @@
    No rule here: each badge's own rule above was set to the severity's
    measure, so nothing ties on specificity. Every badge (severity, rule id,
    level, the score's and professional chips, principle counts, status
-   chips, the checklist's bubbles, the check results' status, the WCAG 2.2
+   chips, the checklist's bubbles, the WCAG 2.2
    call, the design note's kind, the undecided rows' badges, the opening
    questions' group, the Warning badge and the key's Warning) is Serrif
    Light 18px spaced +0.08em on a 1.25 line, 4px 10px 3px inside, 8px
    corners, no edge, leaning, on a light fill with black words (the deep
-   plates with white words in dark). The two that were solid ink with
-   coloured words, the check results' status and the design note's kind,
-   take a plate other than their card's; "most places" takes yellow. */
+   plates with white words in dark). The design note's kind, which was
+   solid ink with coloured words, takes a plate other than its card's;
+   "most places" takes yellow. The check results' status is a plain word
+   again (THE CHECK RESULTS AS FIRST SET). */
 
 /* ═══ WHAT TO DO BACK IN SERRIF (user's instruction, 24 Nov 2026, "this can
    go back to seriff", on the expanded finding's steps) ═══════════════════
