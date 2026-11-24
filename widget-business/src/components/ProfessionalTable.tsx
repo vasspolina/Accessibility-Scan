@@ -1,6 +1,6 @@
 import type { ReactNode } from "react";
 import type { ProView } from "./ProSummary";
-import { t } from "../lib/strings";
+import { t, tf } from "../lib/strings";
 import { expandRowOnClick } from "../lib/rowExpand";
 import type { AccessibilityFinding, ConformanceSummary } from "../api/scanClient";
 import { plainForRule } from "../lib/wcagPlain";
@@ -89,6 +89,17 @@ export function ProfessionalTable({
                 </span>
               </>
             )}
+          </span>
+          {/* The criterion and the count under the title on a narrow table,
+              where their columns are hidden (user's instruction, 24 Nov
+              2026, "optimise properly for mobile": at 320px both columns
+              broke every word letter by letter). Hidden while the columns
+              show, so nothing is said twice. */}
+          <span className="a11y-pro-fold">
+            {criterionLine(rep) && <span className="a11y-pro-fold-line">{criterionLine(rep)}</span>}
+            <span className="a11y-pro-fold-line">
+              {group.length === 1 ? t("1 place") : tf("{count} places", { count: group.length })}
+            </span>
           </span>
         </span>,
         criterionLine(rep),

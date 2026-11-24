@@ -1617,7 +1617,11 @@
 }
 .a11y-widget-biz .a11y-acr .a11y-accordion-head[aria-expanded="true"] > .a11y-acr-caret { transform: rotate(90deg); }
 .a11y-widget-biz .a11y-acr .a11y-accordion-head[aria-expanded="true"] > span { font-weight: 200; }
-.a11y-widget-biz .a11y-acr .a11y-accordion-head:enabled:hover > span { text-decoration: underline; text-underline-offset: 0.12em; text-decoration-thickness: 1px; }
+/* Only where a pointer can hover: on a phone a tap left the underline
+   stuck on the title (user's screenshot, 24 Nov 2026). */
+@media (hover: hover) {
+  .a11y-widget-biz .a11y-acr .a11y-accordion-head:enabled:hover > span { text-decoration: underline; text-underline-offset: 0.12em; text-decoration-thickness: 1px; }
+}
 .a11y-widget-biz .a11y-acr .a11y-accordion-head .a11y-section-count {
   display: block; margin-top: 10px; font-size: 18px; font-weight: 200; letter-spacing: 0.025em; line-height: 1.2;
   text-decoration: none;
@@ -4522,7 +4526,7 @@
   .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz:not([data-theme="light"]) :is(.a11y-dt-expand-row, .a11y-dn-detail) .a11y-fd { --ink: #fff; }
 }
 /* The cards inside it take the --bubble-pill ground. */
-.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-dt-expand-row, .a11y-dn-detail) .a11y-fd :is(.a11y-method-hint, .a11y-finding-measured, .a11y-finding-impact, .a11y-finding-research, .a11y-finding-affected > li) {
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-dt-expand-row, .a11y-dn-detail) .a11y-fd :is(.a11y-method-hint, .a11y-finding-measured, .a11y-finding-impact, .a11y-finding-research, .a11y-picture-note, .a11y-finding-affected > li) {
   --tile: var(--bubble-pill); --paper: var(--bubble-pill); background: var(--bubble-pill);
   box-sizing: border-box; padding: 20px 26px 24px; border-radius: 28px;
 }
@@ -4549,32 +4553,22 @@
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-dt-expand-row, .a11y-dn-detail) .a11y-fd .a11y-occurrence {
   --tile: var(--bubble-pill); --paper: var(--bubble-pill); background: var(--bubble-pill); border-radius: 28px;
 }
-/* The short cards in one row (user's instruction, 24 Nov 2026, "make these
-   one row", on Who fixes this, What we found and Why this matters set two
-   to a row): the cards of the first column share one row at equal widths
-   and stand as tall as the row. Each keeps 300px at least: five cards
-   forced into one row of a 1277px block were 243px each, and their 32px
-   words broke inside themselves ("buil ds"). So a row that cannot give
-   every card 300px wraps, and the cards on its last line share that line's
-   width rather than leaving a quarter-wide card alone. Three cards hold one
-   row from about 930px of block. The first column
-   is also the one after the meta line: a finding that opens with the meta
-   strip has no first-child column, and its cards stacked one per line at
-   the full width. The cards' own margins are dropped, since in one row a
-   card with a margin stood shorter than the last one; the column carries
-   the 48px to what follows. One column under 640px of block, as before. */
+/* The short cards one under another (user's instruction, 24 Nov 2026,
+   "one under another, not 3 in a row", replacing that day's one row): Who
+   fixes this, Where this came from, What we found and their siblings each
+   take the full width, 16px apart (12px under 640px of block). The column
+   after the meta line is included, since a finding that opens with the
+   meta strip has no first-child column and would otherwise keep the
+   two-up grid's rules out of step with the rest. The cards' own margins
+   are dropped and the column carries the 48px to what follows. */
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-dt-expand-row, .a11y-dn-detail) .a11y-fd > :is(.a11y-fd-col:first-child, .a11y-fd-meta + .a11y-fd-col) {
-  display: flex; flex-wrap: wrap; gap: 16px; align-items: stretch; margin: 0 0 48px;
+  display: flex; flex-direction: column; gap: 16px; align-items: stretch; margin: 0 0 48px;
 }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-dt-expand-row, .a11y-dn-detail) .a11y-fd > :is(.a11y-fd-col:first-child, .a11y-fd-meta + .a11y-fd-col) > :is(.a11y-method-hint, .a11y-finding-measured, .a11y-finding-impact, .a11y-finding-research, .a11y-picture-note) {
-  flex: 1 1 300px; min-width: 0; margin: 0;
+  flex: none; min-width: 0; margin: 0;
 }
 @container a11y-fd (max-width: 640px) {
-  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-dt-expand-row, .a11y-dn-detail) .a11y-fd > :is(.a11y-fd-col:first-child, .a11y-fd-meta + .a11y-fd-col) {
-    flex-direction: column; gap: 12px;
-  }
-  /* In a column the 300px basis would be a height. */
-  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-dt-expand-row, .a11y-dn-detail) .a11y-fd > :is(.a11y-fd-col:first-child, .a11y-fd-meta + .a11y-fd-col) > :is(.a11y-method-hint, .a11y-finding-measured, .a11y-finding-impact, .a11y-finding-research, .a11y-picture-note) { flex: none; }
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-dt-expand-row, .a11y-dn-detail) .a11y-fd > :is(.a11y-fd-col:first-child, .a11y-fd-meta + .a11y-fd-col) { gap: 12px; }
 }
 
 /* CARETS AS BARS (user's reference, 24 Nov 2026, "this is design for
@@ -4671,7 +4665,9 @@
 }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-sr, .a11y-acr) .a11y-accordion-title .a11y-accordion-head:enabled:hover { background: var(--bubble); color: var(--ink); }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-sr, .a11y-acr) .a11y-accordion-title .a11y-accordion-head > span:first-of-type { flex: 0 1 auto; min-width: 0; }
-.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-sr, .a11y-acr) .a11y-accordion-title .a11y-accordion-head:hover > span:first-of-type { text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 0.14em; }
+@media (hover: hover) {
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-sr, .a11y-acr) .a11y-accordion-title .a11y-accordion-head:hover > span:first-of-type { text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 0.14em; }
+}
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-sr, .a11y-acr) .a11y-accordion-head > :is(.a11y-accordion-chevron, .a11y-acr-caret) { display: none; }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-sr, .a11y-acr) .a11y-accordion-title .a11y-accordion-head::before,
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-chat-stepfold > summary::before {
@@ -5114,4 +5110,54 @@
 }
 @media print {
   .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-dn-carets { display: none; }
+}
+
+/* ═══ THE CARET BARS ON A PHONE (user's instruction, 24 Nov 2026, "optimise
+   properly for mobile", on the conformance report's bar at about 345px) ═══
+   Under 640px the shut bar's corners are 28px instead of 999px: still
+   round ends on one line, soft corners when the title takes two or three,
+   not a stadium. Its sides and the open panel are set in EVERY CARET AS A
+   BAR's own phone rules. */
+@media (max-width: 640px) {
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-sr, .a11y-acr) .a11y-accordion-title .a11y-accordion-head { border-radius: 28px; }
+  /* A statement field's label is a label: 18px, so "Kontakt-E-Mail für
+     Barrierefreiheitsprobleme" breaks at its spaces, not inside the word.
+     The address typed under it keeps 24px. */
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-stmt .a11y-stmt-fields > .a11y-stmt-field {
+    padding: 14px 18px 12px; font-size: 18px; letter-spacing: 0.025em; line-height: 1.4;
+  }
+  /* The card title keeps room for Copy (about 90px at 12px from the edge),
+     not the desktop's 6em, which left "La declaración" 120px and broke it
+     inside the word at 320px. */
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-stmt-card > .a11y-stmt-card-title { padding-inline-end: 96px; }
+}
+/* The criterion and its level stay whole on a phone. Narrow, the key shares
+   its line with the status, and a long status ("Würde heute durchfallen")
+   squeezed "2.5.7" and "Stufe AA" until they broke inside the word
+   (measured at 320px in de, es and fr); the status wraps instead. */
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-w22-row .a11y-w22-id, .a11y-w22-row .a11y-w22-level, .a11y-conf-list > .a11y-conf-row > .a11y-conf-id) { white-space: nowrap; }
+@container a11y-qlist (max-width: 640px) {
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-conf-row > .a11y-conf-status, .a11y-w22-row > .a11y-w22-call)[class] {
+    min-width: 0; white-space: normal; overflow-wrap: break-word; text-align: end;
+  }
+}
+/* The conformance report's "VPAT 2.5, draft" moves to the next line whole. */
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-acr .a11y-accordion-head .a11y-section-count { white-space: nowrap; }
+
+/* ═══ THE PROFESSIONAL FINDINGS ON A PHONE (user's instruction, 24 Nov
+   2026, "optimise properly for mobile") ═══════════════════════════════════
+   Issue, Criterion and Instances kept three columns at 320px, and the two
+   narrow ones broke every word letter by letter ("Cr/ite/rio/n", "9.1.1.1"
+   one figure a line). Under 720px of the section the Criterion and
+   Instances columns are hidden, header and all, and both read as lines
+   under the issue title (.a11y-pro-fold), at 18px. Above 720px the fold is
+   hidden, so nothing is said twice. */
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz [id="a11y-pro-findings"] { container: a11y-ptable / inline-size; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz [id="a11y-pro-findings"] .a11y-pro-fold { display: none; }
+@container a11y-ptable (max-width: 720px) {
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz [id="a11y-pro-findings"] :is(th, td):is([data-col="criterion"], [data-col="count"]) { display: none; }
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz [id="a11y-pro-findings"] .a11y-pro-fold {
+    display: block; margin-top: 6px; font-size: 18px; font-weight: 200; line-height: 1.4; letter-spacing: 0.025em;
+  }
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz [id="a11y-pro-findings"] .a11y-pro-fold-line { display: block; overflow-wrap: break-word; }
 }
