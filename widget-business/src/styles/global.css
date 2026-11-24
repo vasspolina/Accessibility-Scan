@@ -3716,6 +3716,10 @@
    column, and Widget CI's reflow check failed at 320px in all four
    languages (run 599, 23 Nov 2026). */
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-rule-chip { max-width: 100%; white-space: normal; overflow-wrap: anywhere; }
+/* The WCAG 2.2 count wraps inside itself too since the badges went to 18px
+   (24 Nov 2026): German's "1 würden heute nicht bestehen" ran 3px past
+   320px on one line (Widget CI, run 633). */
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-next-count { max-width: 100%; white-space: normal; overflow-wrap: break-word; }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-sev, .a11y-rule-chip, .a11y-level-badge, .a11y-sum-chip, .a11y-pro-chip, .a11y-principle-count, .a11y-status-chip, .a11y-next-count):nth-child(3n+1) { rotate: -2deg; }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-sev, .a11y-rule-chip, .a11y-level-badge, .a11y-sum-chip, .a11y-pro-chip, .a11y-principle-count, .a11y-status-chip, .a11y-next-count):nth-child(3n+2) { rotate: 1.5deg; }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-sev, .a11y-rule-chip, .a11y-level-badge, .a11y-sum-chip, .a11y-pro-chip, .a11y-principle-count, .a11y-status-chip, .a11y-next-count):nth-child(3n) { rotate: -1deg; }
@@ -3924,7 +3928,8 @@
   display: inline-block; width: fit-content; padding: 4px 10px 3px; border-radius: 8px;
   background: var(--plate-4); color: var(--plate-text);
   font-family: "Serrif", Georgia, "Times New Roman", serif; font-weight: 300; font-synthesis: none;
-  font-size: 18px; line-height: 1.25; letter-spacing: 0.08em; white-space: nowrap;
+  font-size: 18px; line-height: 1.25; letter-spacing: 0.08em;
+  max-width: 100%; box-sizing: border-box; white-space: normal; overflow-wrap: break-word;
   rotate: var(--bubble-tilt, -2deg);
 }
 .a11y-widget-biz .a11y-w22-call > .a11y-next-status[data-status="failed"] { background: var(--plate-3); }
@@ -4503,6 +4508,8 @@
   .a11y-widget-biz .a11y-w22-row .a11y-w22-id { font-size: 27px; }
   .a11y-widget-biz .a11y-w22-row .a11y-w22-level { margin-top: 0; }
   .a11y-widget-biz .a11y-w22-row .a11y-w22-name { flex: 1 1 100%; margin-top: 4px; }
+  /* Centred on a narrow list: at 70% across, a 230px badge ran past 320px. */
+  .a11y-widget-biz .a11y-w22-row > .a11y-w22-call { left: 50%; }
 }
 @media print {
   .a11y-widget-biz .a11y-w22-list > .a11y-w22-row { break-inside: avoid; page-break-inside: avoid; }
