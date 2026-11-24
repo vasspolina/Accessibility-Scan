@@ -1,4 +1,4 @@
-import { Fragment, useId, useState, type CSSProperties, type ReactNode } from "react";
+import { Fragment, useId, useState, type ReactNode } from "react";
 import { dominantComponent, describeComponent } from "../lib/componentCluster";
 import { SeverityTag } from "./SeverityTag";
 import { ScanError, setFindingState, type AccessibilityFinding, type TriageState } from "../api/scanClient";
@@ -26,6 +26,7 @@ import {
   methodLine,
 } from "../lib/testMethod";
 import { Icon } from "./Icon";
+import { getLang } from "../lib/i18n";
 
 export const severityLabel: Record<AccessibilityFinding["severity"], string> = {
   critical: "Fix first",
@@ -585,9 +586,15 @@ function TileBody({ text }: { text: string }) {
 export function FindingDetails({
   findings,
   asNotes = false,
+  meta = false,
 }: {
   findings: AccessibilityFinding[];
   asNotes?: boolean;
+  /** The schedule's opened row: WCAG, level, fix kind and count as one
+   *  "Key: value" line at the top, since the row no longer has columns
+   *  for them. The printed cards and the professional table carry them
+   *  in their own heads and leave this off. */
+  meta?: boolean;
 }) {
   const [showAll, setShowAll] = useState(false);
   const { professional, criterionNames } = useReportView();
@@ -627,6 +634,21 @@ export function FindingDetails({
        applying, and the cell collapsed to 33px with both columns inside
        it. Measured, in all three engines. */
     <div className="a11y-fd">
+      {meta && (
+        <p className="a11y-fd-meta">
+          {[
+            !asNotes && criterion ? `${t("WCAG:")} ${criterion}` : "",
+            !asNotes && rep.wcagLevel ? levelFraming(rep.wcagLevel) : "",
+            // French sets a space before the colon, as its "WCAG :" key does.
+            !asNotes ? `${t("Fix")}${getLang() === "fr" ? " :" : ":"} ${fix.label}` : "",
+            count > 1 ? `${t("Instances")}${getLang() === "fr" ? " :" : ":"} ${count}` : "",
+          ]
+            .filter(Boolean)
+            .map((item) => (
+              <span key={item}>{item}</span>
+            ))}
+        </p>
+      )}
       {/* Two real column boxes, the kit's own composition. The children
           used to sit flat in the grid with grid-column rules assigning
           each to a side — which row-locked them: a grid row is as tall as
@@ -762,7 +784,7 @@ export function FindingDetails({
           nothing here carried them, so a phone reader lost the criterion
           and, more to the point, the sentence saying the item is required
           by law. Hidden above that width, where both columns show. */}
-      {!asNotes && (criterion || rep.wcagLevel) && (
+      {!meta && !asNotes && (criterion || rep.wcagLevel) && (
         <p className="a11y-finding-level-fold">
           {criterion && (
             <>
@@ -937,56 +959,33 @@ export function CountPill({ count }: { count: number }) {
   return <span className="a11y-count-pill">{count}</span>;
 }
 
-// One DataTable row for a group: severity, title plus its WCAG/fix-kind
-// context, and the occurrence count. asNotes drops the severity cell — a
-// remark on the design isn't ranked the way a defect is, and wearing "Fix
-// first"/"Minor polish" made these read as scored findings however plainly
-// the section above already said otherwise.
+// One DataTable row for a group, set as a list of questions (user's
+// reference, 24 Nov 2026, a type foundry's FAQ: a solid triangle, the
+// question on one line, its category at the far end in its own colour, and
+// the answer opening under it in a round bubble). Two cells: the issue, and
+// the severity as a coloured word at the end of the row; the list is sorted
+// by severity, so the words run in groups like the reference's categories.
+// The WCAG criterion, level, fix kind and count that had columns of their
+// own are now the first line of the opened finding (FindingDetails' meta
+// strip), set "Key: value" in a mono face. asNotes keeps its count column
+// and has no severity: a remark on the design is not ranked like a defect.
 export function findingRow(
   findings: AccessibilityFinding[],
   {
     asNotes = false,
-    showLevel = true,
     showCount = true,
   }: { asNotes?: boolean; showLevel?: boolean; showCount?: boolean } = {}
 ): { id: string; cells: ReactNode[]; expand: ReactNode } {
   const rep = findings[0];
   const count = findings.length;
-  /* The severity bubble leans like the checklist's status bubbles: a tilt
-     of -3 to 3 degrees read from the finding's id (the same small string
-     hash as ConformanceView's bubblePlace), so a row never changes its
-     lean between renders. */
-  let h = 0;
-  for (let i = 0; i < rep.id.length; i++) h = (h * 31 + rep.id.charCodeAt(i)) >>> 0;
-  // Mixed once more: short ids that differ in one character ("f1", "f2")
-  // otherwise land next to each other and every row leaned the same way.
-  h = Math.imul(h ^ (h >>> 15), 0x2c1b3c6d) >>> 0;
-  h = (h ^ (h >>> 13)) >>> 0;
-  const sevTilt = { "--sev-tilt": `${((h % 61) - 30) / 10}deg` } as CSSProperties;
-  const plain = plainForRule(rep.ruleId);
   const title = findingTitle(rep);
-  const fix = fixKindForFinding(rep);
   const keyboardCheck = isKeyboardCheck(rep);
   const fromAi = isAiFinding(rep);
 
   const issueCell = (
     // data-finding: the score summary's links find this row by it (lib/openFinding).
     <span className="a11y-finding-issue" data-finding={rep.id}>
-      {/* The severity badge sits above the title at every width; the table
-          has no Severity column (user's instruction, 23 Nov 2026). */}
-      {!asNotes && (
-        <span className="a11y-finding-sev-fold" style={sevTilt}>
-          <SeverityTag severity={rep.severity} label={t(severityLabel[rep.severity])} />
-        </span>
-      )}
       <span className="a11y-finding-title">{title}</span>
-      {/* The Instances column folds in here on a narrow table, the same way
-          Severity does: its fixed 6.6em held a header word ("Occurrences")
-          over a single figure and left the issue 91px at 375px. Hidden
-          wherever the column shows. */}
-      {showCount && count > 1 && (
-        <span className="a11y-finding-count-fold">{tf("{count} places", { count })}</span>
-      )}
       {(keyboardCheck || fromAi || (rep.triage && rep.triage.state !== "open")) && (
         <span className="a11y-finding-meta-line">
           {keyboardCheck && (
@@ -1005,39 +1004,17 @@ export function findingRow(
     </span>
   );
 
-  // Best-practice rules with no numbered criterion arrive as the literal
-  // string "WCAG (see rule help)". Used to strip a leading "WCAG" and show
-  // the rest — "(see rule help)" — which just traded one confusing string
-  // for another: a reader has no way to know what that parenthetical means
-  // sitting alone in the WCAG column. Nothing has the same effect as
-  // nothing: leave the cell blank, same as any other row with no criterion.
-  const criterion =
-    rep.wcagCriterion && rep.wcagCriterion !== "N/A"
-      ? (rep.wcagCriterion.match(/^\d\.\d+\.\d+/)?.[0] ?? "")
-      : "";
-
   return {
     id: rep.id,
     cells: asNotes
       ? [issueCell, ...(showCount ? [count > 1 ? <CountPill key="n" count={count} /> : ""] : [])]
       : [
           issueCell,
-          criterion,
-          <span key="fix" className={`a11y-method-badge a11y-fix-${fix.key}`}>
-            {fix.label}
+          <span key="sev" className={`a11y-finding-sev-word a11y-finding-sev-${rep.severity}`}>
+            {t(severityLabel[rep.severity])}
           </span>,
-          // Column dropped entirely by FindingsList when no group in the
-          // table has a level at all — an empty column is worse than no
-          // column, and best-practice rules (no numbered criterion) never
-          // carry one.
-          ...(showLevel ? [rep.wcagLevel ? levelFraming(rep.wcagLevel) : ""] : []),
-          // Same reasoning as Level: a group of dark-pattern or notes
-          // findings is almost always singular, so "Instances" reads
-          // blank on every row — drop the whole column rather than ship
-          // an empty one.
-          ...(showCount ? [count > 1 ? <CountPill key="n" count={count} /> : ""] : []),
         ],
-    expand: <FindingDetails findings={findings} asNotes={asNotes} />,
+    expand: <FindingDetails findings={findings} asNotes={asNotes} meta />,
   };
 }
 

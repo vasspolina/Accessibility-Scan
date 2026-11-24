@@ -68,16 +68,15 @@ export function FindingsList({
         { key: "count", label: t("Instances"), align: "right" as const },
       ]
     : [
-        // No Severity column (user's instruction, 23 Nov 2026, "delete the
-        // severity row, just drop badges on top of rows"): the badge sits
-        // above the title inside the Issue cell at every width.
+        // Two columns, set as a list of questions (user's reference,
+        // 24 Nov 2026): the issue, and its severity as a coloured word at
+        // the end of the row. WCAG, Level, Fix and Instances are the first
+        // line of the opened finding (findingRow's comment). The severity
+        // badge that sat over the title (23 Nov 2026) is this word now.
         { key: "issue", label: t("Issue") },
-        { key: "wcag", label: "WCAG" },
-        { key: "fix", label: t("Fix") },
-        { key: "level", label: t("Level") },
-        { key: "count", label: t("Instances"), align: "right" as const },
+        { key: "severity", label: t("Severity") },
       ];
-  const fullRows = grouped.map((group) => findingRow(group, { asNotes, showLevel: true, showCount: true }));
+  const fullRows = grouped.map((group) => findingRow(group, { asNotes, showCount: true }));
   const blank = (cell: unknown) => cell === "" || cell === null || cell === undefined || cell === false;
   const keep = fullHeaders.map((_, i) => fullRows.some((row) => !blank(row.cells[i])));
   const headers = fullHeaders.filter((_, i) => keep[i]);

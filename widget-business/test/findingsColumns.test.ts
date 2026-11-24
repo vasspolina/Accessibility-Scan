@@ -37,17 +37,30 @@ const headers = (findings: AccessibilityFinding[]) =>
     ).matchAll(/<th[^>]*data-col="([a-z]+)"/g),
   ].map((m) => m[1]);
 
+const markup = (findings: AccessibilityFinding[]) =>
+  renderToStaticMarkup(
+    createElement(
+      ReportViewProvider,
+      { value: { professional: false, criterionNames: {} } },
+      createElement(FindingsList, { findings })
+    )
+  );
+
+/* Since 24 Nov 2026 the schedule is set as a list of questions (user's
+   reference): the issue and its severity, whatever the rows carry. WCAG,
+   Level, Fix and Instances are the first line of the opened finding. */
 describe("findings table columns", () => {
-  it("drops Instances when no row repeats", () => {
-    expect(headers([finding("a"), finding("b")])).toEqual(["issue", "wcag", "fix", "level"]);
+  it("is the issue and its severity, with or without repeats", () => {
+    expect(headers([finding("a"), finding("b")])).toEqual(["issue", "severity"]);
+    expect(headers([finding("a"), { ...finding("a"), id: "a-2" }, finding("b")])).toEqual(["issue", "severity"]);
   });
-  it("keeps Instances when a row repeats", () => {
-    expect(headers([finding("a"), { ...finding("a"), id: "a-2" }, finding("b")])).toEqual([
-      "issue", "wcag", "fix", "level", "count",
-    ]);
-  });
-  it("drops WCAG and Level when no row names a criterion", () => {
+  it("keeps both when no row names a criterion", () => {
     const bare = { wcagCriterion: undefined, wcagLevel: undefined } as Partial<AccessibilityFinding>;
-    expect(headers([finding("cookie", bare)])).toEqual(["issue", "fix"]);
+    expect(headers([finding("cookie", bare)])).toEqual(["issue", "severity"]);
+  });
+  it("sets the severity as a word at the end of the row, not a badge over the title", () => {
+    const html = markup([finding("a")]);
+    expect(html).toContain('class="a11y-finding-sev-word a11y-finding-sev-serious"');
+    expect(html).not.toContain("a11y-finding-sev-fold");
   });
 });
