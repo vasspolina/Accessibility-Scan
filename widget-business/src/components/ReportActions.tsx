@@ -64,16 +64,13 @@ export function ReportActions({
         {t("Report actions")}
       </h2>
 
-      {/* Each export carries its own note in its own column, so the sentence
-          that explains a control sits under that control rather than in one
-          run-on paragraph the reader has to split apart themselves. */}
-      {/* Two rows on the score block's grid (user's instruction, 24 Nov
-          2026): each label in the first track, its controls across the
-          rest, under a 1px rule. The address is a filled field with its
-          label inside it beside the mint send, the PDF an outlined pill
-          with a download mark. Each note sits under its own control. */}
-      <div className="a11y-ra-row">
-        <form className="a11y-ra-cell a11y-ra-email-form" onSubmit={send}>
+      {/* One rounded panel (user's reference, 24 Nov 2026, "design this
+          like this, delete descriptions"): the title centred over the
+          address field, the send a black pill under it, Download in PDF a
+          small pill at the foot. The notes that sat under the two controls
+          are gone; the status line stays for the outcome of a send. */}
+      <div className="a11y-ra-panel">
+        <form className="a11y-ra-email-form" onSubmit={send}>
           <h3 className="a11y-ra-head">{t("Email me this report")}</h3>
           <div className="a11y-ra-field">
             <label className="a11y-ra-field-label" htmlFor={emailId}>
@@ -96,46 +93,39 @@ export function ReportActions({
             />
           </div>
           {/* Both wordings sit in one grid cell and only the current one is
-              shown, so the button is as wide as the wider of the two: it
-              shares a line with the field, and a button that shrank to
-              "Sending\u2026" would move the field's edge under the reader's
-              hand. The hidden one is visibility: hidden, so it is not part
-              of the button's name. */}
+              shown, so the pill keeps its width while it sends. The hidden
+              one is visibility: hidden, so it is not part of the name. */}
           <button type="submit" className="a11y-ra-send" disabled={sending}>
-            <span className="a11y-ra-send-word" data-off={sending ? "" : undefined}>
-              {t("Send this report")}
-            </span>
-            <span className="a11y-ra-send-word" data-off={sending ? undefined : ""}>
-              {t("Sending\u2026")}
+            <Icon name="email" className="a11y-ra-send-icon" />
+            <span className="a11y-ra-send-words">
+              <span className="a11y-ra-send-word" data-off={sending ? "" : undefined}>
+                {t("Send this report")}
+              </span>
+              <span className="a11y-ra-send-word" data-off={sending ? undefined : ""}>
+                {t("Sending\u2026")}
+              </span>
             </span>
           </button>
           {/* role="status" rather than a bare paragraph: the outcome arrives
-              after a wait, so it has to be announced, not just drawn. */}
+              after a wait, so it has to be announced, not just drawn. It is
+              empty until then and stays in the document, so the
+              announcement is not lost. */}
           <p className="a11y-ra-note" role="status">
-            {result
-              ? t(RESULT_MESSAGE[result])
-              : t("Sent once. Nothing is stored.")}
+            {result ? t(RESULT_MESSAGE[result]) : null}
           </p>
         </form>
-        <div className="a11y-ra-cell">
-          <h3 className="a11y-ra-head">{t("Save as PDF")}</h3>
-          <button
-            type="button"
-            className="a11y-ra-pdf"
-            onClick={() => {
-              ensureHostPrintStyle();
-              window.print();
-            }}
-          >
-            {t("Download in PDF")}
-            {/* The icon set's download, not a glyph: Jokker's ↓ sits too low on the
-                line, and the reference's arrow has a base bar. */}
-            <Icon name="download" className="a11y-ra-pdf-icon" />
-          </button>
-          <p className="a11y-ra-note">
-            {t("Choose “Save as PDF” in the print dialog.")}
-          </p>
-        </div>
+        {/* The icon set's download, not a glyph. */}
+        <button
+          type="button"
+          className="a11y-ra-pdf"
+          onClick={() => {
+            ensureHostPrintStyle();
+            window.print();
+          }}
+        >
+          {t("Download in PDF")}
+          <Icon name="download" className="a11y-ra-pdf-icon" />
+        </button>
       </div>
 
       {/* The run stats, "Do this first" and the jump to the findings all

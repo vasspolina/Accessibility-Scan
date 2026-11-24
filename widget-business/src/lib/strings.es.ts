@@ -548,7 +548,6 @@ export const STRINGS_ES: Record<string, string> = {
   "Report actions": "Acciones del informe",
   "you@example.com": "nombre@example.com",
   "Sending…": "Enviando…",
-  "Sent once. Nothing is stored.": "Se envía una vez. No se guarda nada.",
   "Sent. Check your inbox. It may take a minute.": "Enviado. Revise su bandeja de entrada. Puede tardar un minuto.",
   "Email isn't set up on this scanner yet. Save as PDF instead.": "El envío por correo aún no está configurado en esta herramienta. Guarde el informe como PDF en su lugar.",
   "That address was refused. Check it and try again.": "Esa dirección fue rechazada. Revísela e inténtelo de nuevo.",

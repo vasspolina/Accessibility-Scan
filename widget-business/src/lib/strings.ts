@@ -522,7 +522,6 @@ export const CHROME_KEYS: string[] = [
   "Report actions",
   "you@example.com",
   "Sending…",
-  "Sent once. Nothing is stored.",
   "Sent. Check your inbox. It may take a minute.",
   "Email isn't set up on this scanner yet. Save as PDF instead.",
   "That address was refused. Check it and try again.",
