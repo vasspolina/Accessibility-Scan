@@ -4684,3 +4684,82 @@
   .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-dt-expand-row .a11y-fd { border: 1px solid CanvasText; }
   .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-finding-sev-word { color: CanvasText; }
 }
+
+/* EVERY CARET AS A BAR (user's answer, 24 Nov 2026, "Yes, all of them",
+   to giving the other caret toggles the technical version's bar). The two
+   report sections that fold, the screen reader simulation and the
+   conformance report, and the chat's Details fold under a finished scan.
+   Shut, the toggle is a full-width bar with round ends on --bubble, the
+   solid caret first and the title beside it; the chevron at the far end
+   (screen reader) and the drawn triangle (conformance report) give way to
+   the one caret. Open, the whole section is the round panel, 40px corners,
+   its rule gone, the title at the top of it and everything under it inside;
+   tiles in it take --bubble-pill, since #f0efe8 on #efefef does not show.
+   "Ready for WCAG 2.2?" has no toggle since 22 Nov 2026, and the "Show
+   all" and "Show the checklist" pills are buttons, not carets. */
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-sr, .a11y-acr) .a11y-accordion-title .a11y-accordion-head {
+  display: flex; flex-wrap: wrap; align-items: center; gap: 8px 0.5em; box-sizing: border-box; width: 100%; min-height: 64px;
+  margin: 0; padding: 12px 32px; border: 0; border-radius: 999px; background: var(--bubble); color: var(--ink); text-align: start;
+}
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-sr, .a11y-acr) .a11y-accordion-title .a11y-accordion-head:enabled:hover { background: var(--bubble); color: var(--ink); }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-sr, .a11y-acr) .a11y-accordion-title .a11y-accordion-head > span:first-of-type { flex: 0 1 auto; min-width: 0; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-sr, .a11y-acr) .a11y-accordion-title .a11y-accordion-head:hover > span:first-of-type { text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 0.14em; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-sr, .a11y-acr) .a11y-accordion-head > :is(.a11y-accordion-chevron, .a11y-acr-caret) { display: none; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-sr, .a11y-acr) .a11y-accordion-title .a11y-accordion-head::before,
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-chat-stepfold > summary::before {
+  content: ""; flex: none; align-self: center; width: 0.42em; height: 0.68em; background: currentColor; transition: transform 120ms ease;
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='12 8 10 16'%3E%3Cpath d='M12 8 22 16 12 24z'/%3E%3C/svg%3E") center / contain no-repeat;
+  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='12 8 10 16'%3E%3Cpath d='M12 8 22 16 12 24z'/%3E%3C/svg%3E") center / contain no-repeat;
+}
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-sr, .a11y-acr) .a11y-accordion-title .a11y-accordion-head[aria-expanded="true"]::before,
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-chat-stepfold[open] > summary::before { transform: rotate(90deg); }
+/* The conformance report's old triangle hung its text in a 46px column;
+   with the caret inside the bar the text runs from the section's edge, as
+   the screen reader's does, and "VPAT 2.5, draft" follows the title on its
+   line like the screen reader's count. */
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-section.a11y-acr { --acr-indent: 0px; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-acr .a11y-accordion-head .a11y-section-count { display: inline; margin: 0; }
+/* Open: the section is the panel. */
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-section:is(.a11y-sr, .a11y-acr):has(.a11y-accordion-head[aria-expanded="true"]) {
+  --paper: var(--bubble); --tile: var(--bubble-pill);
+  padding: 8px 32px 40px; border-top: 0; border-radius: 40px; background: var(--bubble);
+}
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-section:is(.a11y-sr, .a11y-acr):has(.a11y-accordion-head[aria-expanded="true"]) .a11y-accordion-row { margin-top: 0; padding-top: 0; border-top: 0; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-sr, .a11y-acr) .a11y-accordion-title .a11y-accordion-head[aria-expanded="true"] { padding-inline: 0; background: none; }
+/* Shut, the bar takes the section's rule's place too: no line over a bar. */
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-section:is(.a11y-sr, .a11y-acr):has(.a11y-accordion-head[aria-expanded="false"]) { border-top: 0; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-section:is(.a11y-sr, .a11y-acr):has(.a11y-accordion-head[aria-expanded="false"]) .a11y-accordion-row { margin-top: 0; padding-top: 0; border-top: 0; }
+/* The chat's Details fold: the same bar at the fold's 18px, full width. */
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-chat-stepfold {
+  margin-top: 0.4em; border-radius: 999px; background: var(--bubble); color: var(--ink);
+}
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-chat-stepfold > summary {
+  display: flex; align-items: center; gap: 0.5em; width: auto; min-height: 40px; box-sizing: border-box;
+  margin: 0; padding: 6px 20px; list-style: none; cursor: pointer;
+}
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-chat-stepfold > summary::-webkit-details-marker { display: none; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-chat-stepfold > summary:hover { text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 0.14em; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-chat-stepfold > summary > .a11y-chat-fold { display: none; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-chat-stepfold[open] { --paper: var(--bubble); --tile: var(--bubble-pill); padding: 0 20px 16px; border-radius: 24px; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-chat-stepfold[open] > summary { margin: 0 -20px 4px; }
+@media (max-width: 640px) {
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-sr, .a11y-acr) .a11y-accordion-title .a11y-accordion-head { padding-inline: 20px; min-height: 52px; }
+  /* The title shares the caret's line and wraps beside it; the count chip
+     takes the next line. */
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-sr, .a11y-acr) .a11y-accordion-title .a11y-accordion-head {
+    display: grid; grid-template-columns: auto minmax(0, 1fr); align-items: start; justify-items: start;
+  }
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-sr, .a11y-acr) .a11y-accordion-title .a11y-accordion-head > * { grid-column: 2; }
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-sr, .a11y-acr) .a11y-accordion-title .a11y-accordion-head::before { grid-column: 1; grid-row: 1; align-self: start; margin-top: calc((1lh - 0.68em) / 2); }
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-section:is(.a11y-sr, .a11y-acr):has(.a11y-accordion-head[aria-expanded="true"]) { padding: 6px 18px 26px; border-radius: 28px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-sr, .a11y-acr) .a11y-accordion-title .a11y-accordion-head::before,
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-chat-stepfold > summary::before { transition: none; }
+}
+@media (forced-colors: active) {
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-sr, .a11y-acr) .a11y-accordion-title .a11y-accordion-head,
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-chat-stepfold { border: 1px solid CanvasText; }
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-sr, .a11y-acr) .a11y-accordion-title .a11y-accordion-head::before,
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-chat-stepfold > summary::before { forced-color-adjust: none; background: CanvasText; }
+}
