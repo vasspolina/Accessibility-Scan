@@ -4243,37 +4243,58 @@
   .a11y-widget-biz .a11y-w22-list > .a11y-w22-row { break-inside: avoid; page-break-inside: avoid; }
 }
 
-/* ═══ THE REPORT ACTIONS IN ONE CARD (user's instruction, 23 Nov 2026, "put
-   into card and design properly") ═══════════════════════════════════════
-   Email me this report and Save as PDF share one card: the tile ground,
-   20px corners, 36px inside (24px and 20px under 640px). It is a group of
-   controls, so the No content cards rule allows it. The card redefines ink
-   and paper so the rule, the PDF pill and the disabled send follow it.
-   The two parts are parted by a 1px ink rule. The address is a filled
-   field (white light, #2c2c2e dark) with no edge of its own beside the
-   mint send. The PDF part sets its button and its note on one line under
-   its label, the note wrapping under the button where they do not fit. */
-.a11y-widget-biz .a11y-report-actions > .a11y-ra-row {
-  --ink: var(--tile-ink); --paper: var(--tile);
-  box-sizing: border-box; gap: 0; margin: 0; padding: 36px 40px 40px;
-  border-radius: 20px; background: var(--tile); color: var(--tile-ink);
+/* ═══ THE REPORT ACTIONS ON THE SCORE'S GRID (user's instruction, 24 Nov
+   2026, "design this in a best way", replacing the card of 23 Nov) ═══════
+   Email this report and Save as PDF follow the score block above them:
+   no card, each a row on the page's paper under a 1px ink rule, 65px
+   apart, its label in the first of four tracks (the prose size, sentence
+   case, standing out by place) and its controls across the other three.
+   The address is the filled field in tracks two and three and the mint
+   send fills the fourth at the field's height, its words the prose size
+   rather than a display size, so the two read as one control. The PDF is
+   the ordinary outlined pill with its download mark. Each note sits
+   under its control at 24px. Under 761px of the block a row stacks,
+   label over controls, and the send takes the full width under the
+   field. */
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-report-actions { container: a11y-ra / inline-size; margin-top: 65px; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-report-actions > .a11y-ra-row {
+  display: block; margin: 0; padding: 0; border-radius: 0; background: none; color: var(--ink);
 }
-.a11y-widget-biz .a11y-report-actions > .a11y-ra-row > .a11y-ra-cell + .a11y-ra-cell {
-  margin-top: 32px; padding-top: 28px; border-top: 1px solid var(--ink);
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-report-actions .a11y-ra-row > .a11y-ra-cell {
+  display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 16px; align-items: start;
+  margin: 0; padding: 24px 0 0; border: 0; border-top: 1px solid var(--ink);
 }
-.a11y-widget-biz .a11y-report-actions .a11y-ra-row > .a11y-ra-cell > .a11y-ra-head { margin: 0; font-size: 18px; letter-spacing: 0.06em; }
-.a11y-widget-biz .a11y-report-actions .a11y-ra-row > .a11y-ra-cell > .a11y-ra-field { border: 0; background: var(--tile-fill); }
-.a11y-widget-biz .a11y-report-actions .a11y-ra-row > .a11y-ra-cell:not(.a11y-ra-email-form) {
-  flex-direction: row; flex-wrap: wrap; align-items: center; gap: 20px 24px;
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-report-actions .a11y-ra-row > .a11y-ra-cell + .a11y-ra-cell { margin-top: 65px; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-report-actions .a11y-ra-row > .a11y-ra-cell > * { grid-column: 2 / -1; min-width: 0; margin: 0; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-report-actions .a11y-ra-row > .a11y-ra-cell > .a11y-ra-head {
+  grid-column: 1; grid-row: 1 / span 2; padding: 0 16px 0 0; text-transform: none;
+  font-size: 32px; font-weight: 200; line-height: 1.3; letter-spacing: 0.01em;
 }
-.a11y-widget-biz .a11y-report-actions .a11y-ra-row > .a11y-ra-cell:not(.a11y-ra-email-form) > .a11y-ra-head { flex: 1 1 100%; }
-.a11y-widget-biz .a11y-report-actions .a11y-ra-row > .a11y-ra-cell:not(.a11y-ra-email-form) > .a11y-ra-pdf { align-self: center; }
-.a11y-widget-biz .a11y-report-actions .a11y-ra-row > .a11y-ra-cell:not(.a11y-ra-email-form) > .a11y-ra-note { flex: 1 1 240px; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-report-actions .a11y-ra-row > .a11y-ra-cell > .a11y-ra-field {
+  grid-column: 2 / 4; border: 0; background: var(--tile); color: var(--tile-ink);
+}
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-report-actions .a11y-ra-row > .a11y-ra-cell > .a11y-ra-send {
+  grid-column: 4; align-self: stretch; min-height: 0;
+  font-size: 32px; line-height: 1.3; letter-spacing: 0.01em;
+}
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-report-actions .a11y-ra-row > .a11y-ra-cell > .a11y-ra-pdf {
+  justify-self: start; min-height: 44px; padding: 8px 18px; border: 1px solid var(--ink); border-radius: 999px;
+  font-size: 18px; line-height: 1.4; letter-spacing: 0.025em;
+}
+@container a11y-ra (max-width: 760px) {
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-report-actions .a11y-ra-row > .a11y-ra-cell { grid-template-columns: minmax(0, 1fr); }
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-report-actions .a11y-ra-row > .a11y-ra-cell > :is(*, .a11y-ra-head, .a11y-ra-field, .a11y-ra-send) {
+    grid-column: 1 / -1; grid-row: auto;
+  }
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-report-actions .a11y-ra-row > .a11y-ra-cell > .a11y-ra-send { min-height: 72px; }
+}
 @media (max-width: 640px) {
-  .a11y-widget-biz .a11y-report-actions > .a11y-ra-row { padding: 24px 20px 28px; }
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-report-actions .a11y-ra-row > .a11y-ra-cell > :is(.a11y-ra-head, .a11y-ra-send) {
+    font-size: 24px; line-height: 1.35; letter-spacing: 0.015em;
+  }
 }
 @media print {
-  .a11y-widget-biz .a11y-report-actions > .a11y-ra-row { padding: 0; background: none; }
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-report-actions .a11y-ra-row > .a11y-ra-cell { break-inside: avoid; }
 }
 
 /* ═══ AN AFFECTED ELEMENT AS A CARD (user's instruction, 23 Nov 2026, "this

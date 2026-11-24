@@ -67,12 +67,11 @@ export function ReportActions({
       {/* Each export carries its own note in its own column, so the sentence
           that explains a control sits under that control rather than in one
           run-on paragraph the reader has to split apart themselves. */}
-      {/* Set as a ruled block and a form (user's references,
-          17 Nov 2026): two columns, each under an uppercase label (no rule
-          under it since 18 Nov 2026). The address is a rounded field with its label inside it, the
-          send is one wide rounded block in display type, and the PDF is an
-          outlined button with a download arrow. Each note sits under its
-          own control. */}
+      {/* Two rows on the score block's grid (user's instruction, 24 Nov
+          2026): each label in the first track, its controls across the
+          rest, under a 1px rule. The address is a filled field with its
+          label inside it beside the mint send, the PDF an outlined pill
+          with a download mark. Each note sits under its own control. */}
       <div className="a11y-ra-row">
         <form className="a11y-ra-cell a11y-ra-email-form" onSubmit={send}>
           <h3 className="a11y-ra-head">{t("Email me this report")}</h3>
