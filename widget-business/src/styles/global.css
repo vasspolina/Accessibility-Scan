@@ -1260,7 +1260,7 @@
    thick line and drop the line below content when caret is open"): no 4px
    rule on top, and the row above gives up its rule, so the only line is the
    one under the opened content, the expand cell's own. */
-.a11y-widget-biz .a11y-dt-expand-row .a11y-fd { margin-top: 0; padding-top: 0.6em; border-top: 0; }
+.a11y-widget-biz :is(.a11y-dt-expand-row, .a11y-dn-detail) .a11y-fd { margin-top: 0; padding-top: 0.6em; border-top: 0; }
 .a11y-widget-biz .a11y-datatable tr[data-open] > td { border-bottom: 0; }
 .a11y-widget-biz .a11y-fd > :not(.a11y-fd-col) { grid-column: 1 / -1; }
 .a11y-widget-biz .a11y-fd > .a11y-fd-col { min-width: 0; }
@@ -4575,37 +4575,40 @@
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-datatable-schedule .a11y-dt-expand-row > td {
   padding: 0.5em 0 1.5em 1.1em; border: 0;
 }
-.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-dt-expand-row .a11y-fd {
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-dt-expand-row, .a11y-dn-detail) .a11y-fd {
   --ink: #000; --paper: var(--bubble);
   margin: 0; padding: 44px 48px 48px; border: 0; border-radius: 56px; background: var(--bubble); color: var(--ink);
 }
-.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz[data-theme="dark"] .a11y-dt-expand-row .a11y-fd { --ink: #fff; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz[data-theme="dark"] :is(.a11y-dt-expand-row, .a11y-dn-detail) .a11y-fd { --ink: #fff; }
 @media (prefers-color-scheme: dark) {
-  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz:not([data-theme="light"]) .a11y-dt-expand-row .a11y-fd { --ink: #fff; }
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz:not([data-theme="light"]) :is(.a11y-dt-expand-row, .a11y-dn-detail) .a11y-fd { --ink: #fff; }
 }
 /* The cards inside it take the --bubble-pill ground. */
-.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-dt-expand-row .a11y-fd :is(.a11y-method-hint, .a11y-finding-measured, .a11y-finding-impact, .a11y-finding-research, .a11y-finding-affected > li) {
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-dt-expand-row, .a11y-dn-detail) .a11y-fd :is(.a11y-method-hint, .a11y-finding-measured, .a11y-finding-impact, .a11y-finding-research, .a11y-finding-affected > li) {
   --tile: var(--bubble-pill); --paper: var(--bubble-pill); background: var(--bubble-pill);
   box-sizing: border-box; padding: 20px 26px 24px; border-radius: 28px;
 }
 /* Inside the bubble the cards stand 16px apart, as the reference's rows
    do inside its panel, and the passages after them a line and a half. */
-.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-dt-expand-row .a11y-fd > .a11y-fd-col > * { margin: 0 0 48px; }
-.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-dt-expand-row .a11y-fd > .a11y-fd-col > :is(.a11y-method-hint, .a11y-finding-measured, .a11y-finding-impact, .a11y-finding-research) + * { margin-top: -32px; }
-.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-dt-expand-row .a11y-fd > .a11y-fd-col:last-of-type > :last-child { margin-bottom: 0; }
-.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-dt-expand-row .a11y-fd > .a11y-tech-details { margin: 48px 0 0; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-dt-expand-row, .a11y-dn-detail) .a11y-fd > .a11y-fd-col > * { margin: 0 0 48px; }
+/* A card followed by a card stands 16px from it. A margin, not a negative
+   pull on the next one: the note's cards sit in a grid, where margins do
+   not collapse and a pull lifted the second card over the first. */
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-dt-expand-row, .a11y-dn-detail) .a11y-fd > .a11y-fd-col > :is(.a11y-method-hint, .a11y-finding-measured, .a11y-finding-impact, .a11y-finding-research):has(+ :is(.a11y-method-hint, .a11y-finding-measured, .a11y-finding-impact, .a11y-finding-research)) { margin-bottom: 16px; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-dt-expand-row, .a11y-dn-detail) .a11y-fd > .a11y-fd-col:last-of-type > :last-child { margin-bottom: 0; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-dt-expand-row, .a11y-dn-detail) .a11y-fd > .a11y-tech-details { margin: 48px 0 0; }
 /* A card's label is a small capital line centred over its words, with no
    rule under it (the user's credits reference, the same day). */
-.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-dt-expand-row .a11y-fd :is(.a11y-method-hint, .a11y-finding-measured, .a11y-finding-impact, .a11y-finding-research) > strong:first-child {
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-dt-expand-row, .a11y-dn-detail) .a11y-fd :is(.a11y-method-hint, .a11y-finding-measured, .a11y-finding-impact, .a11y-finding-research) > strong:first-child {
   display: block; margin: 0 0 12px; padding: 0; border: 0; text-align: center;
 }
-.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-dt-expand-row .a11y-fd :is(.a11y-method-hint, .a11y-finding-measured, .a11y-finding-impact, .a11y-finding-research) :last-child { margin-bottom: 0; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-dt-expand-row, .a11y-dn-detail) .a11y-fd :is(.a11y-method-hint, .a11y-finding-measured, .a11y-finding-impact, .a11y-finding-research) :last-child { margin-bottom: 0; }
 /* What to do and Affected elements: the same centred capital line, no rule. */
-.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-dt-expand-row .a11y-fd :is(.a11y-finding-steps > p:first-child, .a11y-finding-todo > strong.a11y-fd-title, .a11y-affected-label) {
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-dt-expand-row, .a11y-dn-detail) .a11y-fd :is(.a11y-finding-steps > p:first-child, .a11y-finding-todo > strong.a11y-fd-title, .a11y-affected-label) {
   display: block; margin: 0 0 20px; padding: 0; border: 0; text-align: center;
 }
-.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-dt-expand-row .a11y-fd :is(.a11y-finding-steps > p:first-child, .a11y-affected-label) > strong { display: inline; padding: 0; border: 0; }
-.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-dt-expand-row .a11y-fd .a11y-occurrence {
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-dt-expand-row, .a11y-dn-detail) .a11y-fd :is(.a11y-finding-steps > p:first-child, .a11y-affected-label) > strong { display: inline; padding: 0; border: 0; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-dt-expand-row, .a11y-dn-detail) .a11y-fd .a11y-occurrence {
   --tile: var(--bubble-pill); --paper: var(--bubble-pill); background: var(--bubble-pill); border-radius: 28px;
 }
 
@@ -4621,7 +4624,7 @@
   --bar: var(--bubble);
   margin: 65px 0 0; padding: 0; border: 0; border-radius: 999px; background: var(--bar);
 }
-.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-dt-expand-row .a11y-fd .a11y-tech-details { --bar: var(--bubble-pill); margin: 48px 0 0; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-dt-expand-row, .a11y-dn-detail) .a11y-fd .a11y-tech-details { --bar: var(--bubble-pill); margin: 48px 0 0; }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-fd .a11y-tech-details[open] { padding: 0 32px 28px; border-radius: 40px; }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-fd .a11y-tech-details > summary {
   display: flex; align-items: center; gap: 0.5em; min-height: 56px; margin: 0; padding: 10px 32px; box-sizing: border-box;
@@ -4656,8 +4659,8 @@
   .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-datatable-schedule th[data-col="severity"] { width: 124px; }
   .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-datatable-schedule :is(.a11y-dt-toggle-cell, .a11y-dt-spacer) { width: 26px; }
   .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-datatable-schedule .a11y-dt-expand-row > td { padding-inline-start: 0; }
-  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-dt-expand-row .a11y-fd { padding: 22px 12px 24px; border-radius: 32px; }
-  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-dt-expand-row .a11y-fd :is(.a11y-method-hint, .a11y-finding-measured, .a11y-finding-impact, .a11y-finding-research, .a11y-occurrence) { padding: 16px 16px 18px; border-radius: 22px; }
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-dt-expand-row, .a11y-dn-detail) .a11y-fd { padding: 22px 12px 24px; border-radius: 32px; }
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-dt-expand-row, .a11y-dn-detail) .a11y-fd :is(.a11y-method-hint, .a11y-finding-measured, .a11y-finding-impact, .a11y-finding-research, .a11y-occurrence) { padding: 16px 16px 18px; border-radius: 22px; }
   .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-fd-meta { padding-inline: 10px; }
   .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-fd-meta { margin-bottom: 24px; }
   .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-fd-meta > span { white-space: normal; }
@@ -4681,7 +4684,7 @@
   .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-datatable-schedule > tbody > tr.a11y-dt-expand-row { display: block; }
 }
 @media (forced-colors: active) {
-  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-dt-expand-row .a11y-fd { border: 1px solid CanvasText; }
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-dt-expand-row, .a11y-dn-detail) .a11y-fd { border: 1px solid CanvasText; }
   .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-finding-sev-word { color: CanvasText; }
 }
 
@@ -4794,11 +4797,12 @@
   display: grid; grid-template-columns: 190px minmax(0, 1fr) auto; column-gap: 24px; align-items: start;
   margin: 0 0 20px; padding: 0; border: 0;
 }
-/* The key: the criterion and its level, in the mono face, set on the
-   title's first line. */
-.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-conf-list > .a11y-conf-row > .a11y-conf-id, .a11y-w22-row .a11y-w22-id, .a11y-w22-row .a11y-w22-level) {
-  font-family: ui-monospace, "SF Mono", Menlo, Consolas, "DejaVu Sans Mono", monospace;
-  font-size: 18px; font-weight: 400; line-height: 1.2; letter-spacing: 0; font-variant-numeric: normal;
+/* The key: the criterion and its level, set on the title's first line in
+   the body face (user's instruction, 24 Nov 2026, "set these in same
+   font"; it was the mono face for a few hours). */
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-conf-list > .a11y-conf-row > .a11y-conf-id, .a11y-w22-row .a11y-w22-id, .a11y-w22-row .a11y-w22-level, .a11y-sum-table .a11y-sum-table-wcag) {
+  font-family: "PP Telegraf", "DejaVu Sans", sans-serif;
+  font-size: 18px; font-weight: 200; line-height: 1.2; letter-spacing: 0.025em; font-variant-numeric: normal;
 }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-conf-list > .a11y-conf-row > .a11y-conf-id { padding-top: 9px; }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-w22-row > .a11y-w22-ref { display: flex; flex-flow: row wrap; column-gap: 0.6em; padding-top: 9px; }
@@ -5016,4 +5020,54 @@
   .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-legal-tiles, .a11y-dn-list)[class]::after { display: none; }
   .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-legal-tiles > .a11y-legal-row, .a11y-dn-list > .a11y-dn-link)[class][class]::before { forced-color-adjust: none; background: CanvasText; }
   .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-legal-tiles > .a11y-legal-row[aria-pressed="true"], .a11y-dn-list > .a11y-dn-link[aria-selected="true"])[class][class] { border: 2px solid Highlight; }
+}
+
+/* THE SCORE'S ISSUES AS QUESTIONS (user's instruction, 24 Nov 2026,
+   "design the rest of items using new design approach", "these", on the
+   "13 issues found" table under the score): set like the checklist. The
+   criterion is the key at the start of the row, the title at 32px with
+   its places beside it, and the severity at the far end as a coloured
+   word (the --word-* tokens, as the findings list) in place of the badge
+   over the title. No rules between rows and no mint row on hover: the
+   title underlines. The whole row stays the link's target; the table
+   keeps its roles for screen readers, its header row clipped. */
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-table[class] { display: block; width: 100%; margin: 0; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-table[class] > thead {
+  display: block; position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap;
+}
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-table[class] > tbody { display: block; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-table[class] > tbody > tr {
+  display: grid; grid-template-columns: 150px minmax(0, 1fr); column-gap: 24px; align-items: start; margin: 0 0 14px; background: none;
+}
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-table[class] > tbody > tr:not(:has(> .a11y-sum-table-wcag)) { grid-template-columns: minmax(0, 1fr); }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-table[class] > tbody > tr:hover { background: none; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-table[class] > tbody > tr > td[class] { display: block; width: auto; padding: 0; border: 0; color: var(--ink); white-space: normal; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-table[class] > tbody > tr > .a11y-sum-table-wcag[class] { grid-column: 1; grid-row: 1; padding-top: 9px; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-table[class] > tbody > tr > .a11y-sum-table-issue[class] {
+  grid-column: -2; grid-row: 1; display: flex; flex-wrap: wrap; align-items: baseline; column-gap: 0.35em; row-gap: 2px;
+}
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-table-issue[class] > a { order: 0; min-width: 0; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-table[class] > tbody > tr:hover .a11y-sum-table-issue[class] > a { text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 0.14em; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-table-issue[class] > .a11y-sum-table-count { order: 1; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-table-issue[class] > .a11y-sum-table-badge[class] { order: 2; display: block; margin: 0 0 0 auto; padding-left: 24px; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-table-badge[class] > .a11y-sev[class] {
+  position: static; display: inline; margin: 0; padding: 0; border: 0; border-radius: 0; background: none; box-shadow: none; rotate: none; transform: none;
+  font-family: "PP Telegraf", "DejaVu Sans", sans-serif; font-size: 32px; font-weight: 200; line-height: 1.1; letter-spacing: 0.01em; text-transform: none; white-space: nowrap;
+}
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-table-badge[class] > .a11y-sev[class]::before,
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-table-badge[class] > .a11y-sev[class]::after { content: none; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-table-badge[class] > .a11y-sev-critical[class] { color: var(--word-red); }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-table-badge[class] > .a11y-sev-serious[class] { color: var(--word-blue); }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-table-badge[class] > .a11y-sev-moderate[class] { color: var(--word-green); }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-table-badge[class] > .a11y-sev-minor[class] { color: var(--word-ochre); }
+@media (max-width: 640px) {
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-table[class] > tbody > tr { grid-template-columns: minmax(0, 1fr); row-gap: 2px; margin-bottom: 18px; }
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-table[class] > tbody > tr > .a11y-sum-table-wcag[class] { grid-row: 1; padding-top: 0; }
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-table[class] > tbody > tr > .a11y-sum-table-issue[class] { grid-column: 1; grid-row: 2; }
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-table[class] > tbody > tr:not(:has(> .a11y-sum-table-wcag)) > .a11y-sum-table-issue[class] { grid-row: 1; }
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-table-issue[class] > .a11y-sum-table-badge[class] { flex-basis: 100%; margin: 2px 0 0; padding-left: 0; }
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-table-badge[class] > .a11y-sev[class] { font-size: 18px; line-height: 1.2; letter-spacing: 0.025em; }
+}
+@media (forced-colors: active) {
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-table-badge[class] > .a11y-sev[class] { color: CanvasText; }
 }
