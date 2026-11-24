@@ -15,10 +15,10 @@ const mail = readFileSync(new URL("../src/services/mail/sendReport.ts", import.m
 const block = /export const SCORE_POINTS = \[([\s\S]*?)\];/.exec(widget)?.[1] ?? "";
 const points = [...block.matchAll(/"((?:[^"\\]|\\.)*)"/g)].map((m) => m[1]);
 
-describe("what the score counts", () => {
+describe("how the score works", () => {
   it("is read from the widget's own list", () => {
     // A probe that finds nothing passes every check below.
-    expect(points.length).toBeGreaterThanOrEqual(5);
+    expect(points.length).toBeGreaterThanOrEqual(3);
   });
 
   it("is said in the email word for word", () => {
@@ -26,12 +26,12 @@ describe("what the score counts", () => {
   });
 
   it("is headed the same way on screen and in the email", () => {
-    expect(widget).toContain('t("What the score counts")');
-    expect(mail).toContain('"What the score counts:"');
+    expect(widget).toContain('t("How the score works")');
+    expect(mail).toContain('"How the score works:"');
   });
 
   it("says each severity can only lower it so far", () => {
-    expect(points.some((p) => /limit/.test(p))).toBe(true);
+    expect(points.some((p) => /maximum deduction/.test(p))).toBe(true);
   });
 
   it("never again claims the score is only what a scan can prove", () => {
@@ -43,9 +43,8 @@ describe("what the score counts", () => {
   // Since 22 Nov 2026 no AI judgement moves the score (scoring.ts), and the
   // copy has to say so rather than the rule it replaced.
   it("says the AI review's findings do not count, and need a person", () => {
-    const ai = points.find((p) => /AI review/.test(p));
-    expect(ai).toMatch(/do not count/);
-    expect(ai).toMatch(/person/);
+    expect(points.find((p) => /excludes/.test(p))).toMatch(/AI findings/);
+    expect(points.find((p) => /verify AI findings/.test(p))).toMatch(/person/);
     expect(widget).not.toMatch(/count too when/);
   });
 });

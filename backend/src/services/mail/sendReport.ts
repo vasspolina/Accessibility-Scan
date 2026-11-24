@@ -86,13 +86,10 @@ function renderText(report: AccessibilityReport): string {
     // The widget's heading and SCORE_POINTS (ScoreGauge.tsx), word for word:
     // the email and the screen must not disagree about what the number
     // counts. backend/test/scoreCopy.test.ts holds them together.
-    "What the score counts:",
-    "- The problems this scan found, weighted by what each costs a visitor.",
-    "- Each severity has a limit on how far it lowers the score.",
-    "- Design notes, misleading patterns, AAA and WCAG 2.2 checks do not count.",
-    "- AI review findings do not count. A person has to check them.",
-    "- A scan finds a third to a half of the problems. The rest need a person.",
-    "- It does not say the site meets the law.",
+    "How the score works:",
+    "- Issues cost points based on their impact on visitors. Each severity level has a maximum deduction.",
+    "- The score excludes design notes, misleading patterns, AAA checks, WCAG 2.2 checks and AI findings.",
+    "- A scan finds roughly a third to half of accessibility issues. A person needs to check for other barriers and verify AI findings. The score alone can't establish legal compliance.",
     "",
     "You asked for this report from the accessibility scanner on this page."
   );
