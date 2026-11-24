@@ -22,19 +22,15 @@ export interface MountOptions {
   cta?: { text: string; href: string };
 }
 
-// @font-face is IGNORED inside a shadow-root stylesheet, so the faces are
-// declared once at document level. PP Telegraf again (user's instruction,
-// 22 Nov 2026, "use pp telegraf font", replacing Jokker VF): three cuts,
-// Ultralight (200, the prose since the same day, "use pp telegraph thin";
-// the family has no cut named Thin and Ultralight is its thinnest), Light
-// (300) and Regular (400), served beside the widget bundle. No bold at all
-// (user's instruction, the same day, "dont use bold font at all"): Medium
-// (500) is not declared, so with font-synthesis off a strong, a heading or
-// any rule that asks for a heavier weight is drawn in Regular, the heaviest
-// face there is. PPTelegraf-Medium.otf stays on the server for the other pages.
-// font-display swap keeps text readable while it loads, and every rule
-// keeps a system fallback. Saans and Serrif (trial, Light only) set the
-// expanded finding as one ruled block (user's instruction, 4 Nov 2026).
+// @font-face is IGNORED inside a shadow-root stylesheet, so the face is
+// declared once at document level. One face for everything (user's
+// instruction, 24 Nov 2026, "use pp telegraph thin for all fonts"): PP
+// Telegraf Ultralight, the family's thinnest cut (it has none named Thin),
+// declared for the whole weight range 100–900 so any weight a rule or the
+// browser asks for (a bold strong, a th) is drawn in it. Light, Regular,
+// Saans and Serrif are no longer declared; their files stay on the server
+// for the other pages. font-display swap keeps text readable while it
+// loads, and every rule keeps a system fallback.
 function injectFonts(apiBase: string) {
   const id = "a11y-widget-fonts";
   if (document.getElementById(id)) return;
@@ -45,35 +41,7 @@ function injectFonts(apiBase: string) {
 @font-face {
   font-family: "PP Telegraf";
   src: url("${base}/fonts/PPTelegraf-Ultralight.otf") format("opentype");
-  font-weight: 200;
-  font-style: normal;
-  font-display: swap;
-}
-@font-face {
-  font-family: "PP Telegraf";
-  src: url("${base}/fonts/PPTelegraf-Light.otf") format("opentype");
-  font-weight: 300;
-  font-style: normal;
-  font-display: swap;
-}
-@font-face {
-  font-family: "PP Telegraf";
-  src: url("${base}/fonts/PPTelegraf-Regular.otf") format("opentype");
-  font-weight: 400;
-  font-style: normal;
-  font-display: swap;
-}
-@font-face {
-  font-family: "Saans";
-  src: url("${base}/fonts/Saans-TRIAL-Light.ttf") format("truetype");
-  font-weight: 300;
-  font-style: normal;
-  font-display: swap;
-}
-@font-face {
-  font-family: "Serrif";
-  src: url("${base}/fonts/Serrif-TRIAL-Light.otf") format("opentype");
-  font-weight: 300;
+  font-weight: 100 900;
   font-style: normal;
   font-display: swap;
 }`;
