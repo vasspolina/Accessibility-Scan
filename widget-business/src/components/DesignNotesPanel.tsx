@@ -19,26 +19,6 @@ import { plainForRule } from "../lib/wcagPlain";
  * A table with one meaningful column is a list.
  */
 
-/**
- * The label on the pill. There is no field for this on the finding — the
- * kit's `criterion` ("Layout", "Target size", "Typography") has no
- * counterpart in what the backend sends — so it is derived from the rule,
- * and derived visibly rather than pretending to be data. Anything that
- * doesn't match falls back to "Design", which is true of every note here.
- */
-function noteKind(f: AccessibilityFinding): string {
-  const s = `${f.ruleId ?? ""} ${f.title ?? ""} ${f.description}`.toLowerCase();
-  if (
-    /line-height|leading|letter|spacing|capital|uppercase|typeface|font|text size|body text|very small|too small|legib/.test(
-      s
-    )
-  )
-    return "Type";
-  if (/target|tap|touch|pinned|bar|viewport|phone|layout|crowd|fold/.test(s)) return "Layout";
-  if (/colour|color|contrast/.test(s)) return "Colour";
-  return "Design";
-}
-
 function noteTitle(group: AccessibilityFinding[]): string {
   const rep = group[0];
   return plainForRule(rep.ruleId)?.plain ?? rep.title ?? rep.description;
@@ -133,13 +113,9 @@ export function DesignNotesPanel({ findings }: { findings: AccessibilityFinding[
                     ) as HTMLButtonElement | null)?.focus();
                   }}
                 >
-                  {/* The kind over the title, a 15px label. The hidden
-                      comma keeps a screen reader from running the two
-                      together ("Type, Letters squeezed until they touch"). */}
-                  <span className="a11y-dn-link-kind">
-                    {t(noteKind(group[0]))}
-                    <span className="a11y-sr-only">, </span>
-                  </span>
+                  {/* The title alone (user's instruction, 24 Nov 2026, "no
+                      need for badges, just titles"): no Type, Layout or
+                      Design badge over it. */}
                   <span className="a11y-dn-link-text">{noteTitle(group)}</span>
                 </button>
               );
@@ -155,9 +131,8 @@ export function DesignNotesPanel({ findings }: { findings: AccessibilityFinding[
               aria-labelledby={`a11y-dn-note-${open[0].id}`}
             >
               <div className="a11y-dn-detail-head">
-                {/* No kind tag under the title: the open tab above already
-                    names the kind (Type, Layout, Design). The title itself
-                    is the open note's button, solid ink, straight above:
+                {/* No kind tag under the title. The title itself is the
+                    open note's tab, straight above:
                     printed again here it read twice in a row (user's
                     instruction, 18 Nov 2026, "check for content
                     repetition"). Kept for screen readers' heading list. */}
