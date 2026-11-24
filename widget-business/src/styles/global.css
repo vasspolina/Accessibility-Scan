@@ -4763,3 +4763,153 @@
   .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-sr, .a11y-acr) .a11y-accordion-title .a11y-accordion-head::before,
   .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-chat-stepfold > summary::before { forced-color-adjust: none; background: CanvasText; }
 }
+
+/* THE OTHER LISTS AS QUESTIONS (user's instruction, 24 Nov 2026, "apply
+   this design to other elements"): the legal checklist and the WCAG 2.2
+   items are set like the findings list. No rules between rows; the
+   criterion is a mono key at the start of the row (the reference's
+   "Key: value" strip), the question or title at the prose size, its small
+   print under it, and the status at the far end as a coloured word in
+   place of the leaning bubble on the rule. The words' colours are shared
+   tokens (the findings' severity takes them too), text on paper, measured
+   on white: red #b42800 6.5:1, blue #0f53c7 6.8:1, green #0b6e45 6.3:1,
+   ochre #7a5c00 6.3:1, purple #6929c4 7.7:1; dark takes the plates,
+   7.1:1 and up on black (purple #be95ff 8.9:1). The word, not its colour,
+   carries the meaning. */
+.a11y-widget-biz {
+  --word-red: #b42800; --word-blue: #0f53c7; --word-green: #0b6e45; --word-ochre: #7a5c00; --word-purple: #6929c4;
+}
+.a11y-widget-biz[data-theme="dark"] {
+  --word-red: #ff6430; --word-blue: #6fa8ff; --word-green: #4fe0a8; --word-ochre: #ffe14d; --word-purple: #be95ff;
+}
+@media (prefers-color-scheme: dark) {
+  .a11y-widget-biz:not([data-theme="light"]) {
+    --word-red: #ff6430; --word-blue: #6fa8ff; --word-green: #4fe0a8; --word-ochre: #ffe14d; --word-purple: #be95ff;
+  }
+}
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-conf-list, .a11y-w22-list) {
+  container: a11y-qlist / inline-size; margin: 0; padding: 0; list-style: none;
+}
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-conf-list > .a11y-conf-row, .a11y-w22-list > .a11y-w22-row) {
+  display: grid; grid-template-columns: 190px minmax(0, 1fr) auto; column-gap: 24px; align-items: start;
+  margin: 0 0 20px; padding: 0; border: 0;
+}
+/* The key: the criterion and its level, in the mono face, set on the
+   title's first line. */
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-conf-list > .a11y-conf-row > .a11y-conf-id, .a11y-w22-row .a11y-w22-id, .a11y-w22-row .a11y-w22-level) {
+  font-family: ui-monospace, "SF Mono", Menlo, Consolas, "DejaVu Sans Mono", monospace;
+  font-size: 18px; font-weight: 400; line-height: 1.2; letter-spacing: 0; font-variant-numeric: normal;
+}
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-conf-list > .a11y-conf-row > .a11y-conf-id { padding-top: 9px; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-w22-row > .a11y-w22-ref { display: flex; flex-flow: row wrap; column-gap: 0.6em; padding-top: 9px; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-w22-row .a11y-w22-name { flex-basis: 100%; margin-top: 4px; font-size: 18px; line-height: 1.2; letter-spacing: 0.025em; overflow-wrap: normal; }
+/* The title at the prose size, its small print under it. */
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-conf-row > .a11y-conf-body > strong, .a11y-w22-row .a11y-w22-q) {
+  display: block; font-size: 32px; font-weight: 200; line-height: 1.1; letter-spacing: 0.01em;
+}
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-conf-row .a11y-conf-plain, .a11y-w22-row .a11y-w22-count) { margin-top: 4px; font-size: 18px; line-height: 1.2; letter-spacing: 0.025em; }
+/* The status: a coloured word at the end of the line, right-aligned, no
+   plate, no tilt, no place on the rule. */
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-conf-list .a11y-conf-row > .a11y-conf-status, .a11y-w22-list .a11y-w22-row > .a11y-w22-call, .a11y-w22-list .a11y-w22-row .a11y-next-status)[class] {
+  position: static; inset: auto; transform: none; rotate: none; translate: none;
+  margin: 0; padding: 0; border: 0; border-radius: 0; background: none; box-shadow: none;
+  font-family: "PP Telegraf", "DejaVu Sans", sans-serif; font-size: 32px; font-weight: 200; line-height: 1.1; letter-spacing: 0.01em;
+  white-space: normal; text-align: right; justify-self: end; max-width: 260px;
+}
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-conf-row > .a11y-conf-status { grid-column: 3; grid-row: 1; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-w22-row > .a11y-w22-call { display: block; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-conf-list .a11y-conf-status, .a11y-w22-list .a11y-w22-row .a11y-next-status)[data-status="failed"] { color: var(--word-red); }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-conf-list .a11y-conf-status, .a11y-w22-list .a11y-w22-row .a11y-next-status)[data-status="no-issues-found"] { color: var(--word-green); }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-conf-list .a11y-conf-status, .a11y-w22-list .a11y-w22-row .a11y-next-status)[data-status="needs-review"] { color: var(--word-ochre); }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-conf-list .a11y-conf-status, .a11y-w22-list .a11y-w22-row .a11y-next-status)[data-status="not-measured"] { color: var(--word-blue); }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-conf-status, .a11y-w22-row .a11y-next-status)::before,
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-conf-status, .a11y-w22-row .a11y-next-status)::after { content: none; }
+/* Narrow: the key and the status share the first line, the title runs
+   under them the full width. */
+@container a11y-qlist (max-width: 640px) {
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-conf-list > .a11y-conf-row, .a11y-w22-list > .a11y-w22-row) {
+    grid-template-columns: minmax(0, 1fr) auto; grid-template-areas: "key status" "body body"; row-gap: 4px; margin-bottom: 24px;
+  }
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-conf-list > .a11y-conf-row > .a11y-conf-id, .a11y-w22-list > .a11y-w22-row > .a11y-w22-ref)[class] { grid-area: key; padding-top: 0; }
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-conf-row > .a11y-conf-body, .a11y-w22-row > .a11y-w22-body) { grid-area: body; }
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-conf-row > .a11y-conf-status, .a11y-w22-row > .a11y-w22-call) { grid-area: status; }
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-conf-list .a11y-conf-row > .a11y-conf-status, .a11y-w22-list .a11y-w22-row > .a11y-w22-call, .a11y-w22-list .a11y-w22-row .a11y-next-status)[class][class] { font-size: 18px; line-height: 1.2; letter-spacing: 0.025em; }
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-conf-row > .a11y-conf-body > strong, .a11y-w22-row .a11y-w22-q) { font-size: 24px; line-height: 1.15; letter-spacing: 0.015em; }
+}
+@media (forced-colors: active) {
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-conf-status, .a11y-w22-row .a11y-next-status) { color: CanvasText; }
+}
+
+/* THE DESIGNER AND DEVELOPER LIST AS QUESTIONS AND ANSWERS (same
+   instruction). Each check is one button: the solid caret, the ink round
+   with its number, what the checker saw at the prose size, and the fix
+   kind as a coloured word at the far end (code blue, content green,
+   design purple, document ochre, the tokens above). Its answer opens under
+   it in the findings' round bubble, indented to the words: the places as
+   the mono "Key: value" line, what to ask for at 24px, Learn more. No
+   rules between the checks. */
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-undecided-ledger { container: a11y-ledger / inline-size; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-undecided-table { margin: 0; padding: 0; list-style: none; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-undecided-ledger > .a11y-undecided-table > .a11y-undecided-cell {
+  display: block; margin: 0 0 14px; padding: 0; border: 0;
+}
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-undecided-ledger > .a11y-undecided-table > .a11y-undecided-cell.a11y-undecided-folded { display: none; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-undecided-table > .a11y-undecided-cell > .a11y-undecided-q {
+  display: grid; grid-template-columns: 35px auto minmax(0, 1fr) auto; column-gap: 14px; align-items: start;
+  box-sizing: border-box; width: 100%; min-height: 0; margin: 0; padding: 0; border: 0; border-radius: 0;
+  background: none; color: var(--ink); text-align: left; cursor: pointer;
+  font-size: 32px; font-weight: 200; line-height: 1.1; letter-spacing: 0.01em;
+}
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-undecided-table > .a11y-undecided-cell > .a11y-undecided-q:enabled:hover { background: none; color: var(--ink); }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-undecided-q:hover > .a11y-undecided-what { text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 0.14em; }
+/* The caret: caret--right fills 10 of its 32 units across, so 1.4em draws
+   it 0.44em wide and the capitals' height tall, as in the findings list. */
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-undecided-q > .a11y-undecided-caret {
+  width: 1.4em; height: 1.4em; margin: calc((1lh - 1.4em) / 2) 0 0 -0.38em; transition: transform 120ms ease;
+}
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-undecided-q[aria-expanded="true"] > .a11y-undecided-caret { transform: rotate(90deg); }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-undecided-q > .a11y-undecided-no {
+  display: inline-grid; place-items: center; box-sizing: content-box; width: 28px; height: 28px; padding: 2px; margin-top: calc((1lh - 32px) / 2);
+  border-radius: 50%; background: var(--ink); color: var(--paper);
+  font-size: 24px; line-height: 1; letter-spacing: 0; font-variant-numeric: tabular-nums;
+}
+/* Every part names its column: an older rule pins the round to row 1,
+   and an item with a row is placed before the others. */
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-undecided-q > .a11y-undecided-caret { grid-column: 1; grid-row: 1; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-undecided-q > .a11y-undecided-no { grid-column: 2; grid-row: 1; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-undecided-q > .a11y-undecided-what { grid-column: 3; grid-row: 1; min-width: 0; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-undecided-q > .a11y-undecided-kind { grid-column: 4; grid-row: 1; max-width: 260px; text-align: right; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-undecided-kind.a11y-kind-code { color: var(--word-blue); }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-undecided-kind.a11y-kind-content { color: var(--word-green); }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-undecided-kind.a11y-kind-design { color: var(--word-purple); }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-undecided-kind.a11y-kind-document { color: var(--word-ochre); }
+/* The answer: the bubble, indented past the caret and the round. */
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-undecided-cell > .a11y-undecided-answer {
+  --paper: var(--bubble);
+  margin: 12px 0 24px 95px; padding: 40px 48px 44px; border-radius: 56px; background: var(--bubble); color: var(--ink);
+}
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-undecided-cell > .a11y-undecided-answer[hidden] { display: none; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-undecided-answer > .a11y-fd-meta { margin-bottom: 24px; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-undecided-answer > .a11y-undecided-ask { margin: 0 0 20px; font-size: 24px; line-height: 1.15; letter-spacing: 0.015em; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-undecided-answer > :last-child { margin-bottom: 0; }
+@container a11y-ledger (max-width: 640px) {
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-undecided-table > .a11y-undecided-cell > .a11y-undecided-q {
+    grid-template-columns: 26px auto minmax(0, 1fr); row-gap: 4px; column-gap: 10px;
+    font-size: 24px; line-height: 1.15; letter-spacing: 0.015em;
+  }
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-undecided-q > .a11y-undecided-kind { grid-column: 3; grid-row: 2; max-width: none; text-align: left; font-size: 18px; letter-spacing: 0.025em; }
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-undecided-q > .a11y-undecided-no { width: 22px; height: 22px; margin-top: calc((1lh - 26px) / 2); font-size: 18px; }
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-undecided-cell > .a11y-undecided-answer { margin-left: 0; padding: 22px 18px 24px; border-radius: 32px; }
+}
+@media print {
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-undecided-ledger > .a11y-undecided-table > .a11y-undecided-cell.a11y-undecided-folded { display: block; }
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-undecided-cell > .a11y-undecided-answer[hidden] { display: block; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-undecided-q > .a11y-undecided-caret { transition: none; }
+}
+@media (forced-colors: active) {
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-undecided-cell > .a11y-undecided-answer { border: 1px solid CanvasText; }
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-undecided-q > .a11y-undecided-kind { color: CanvasText; }
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-undecided-q > .a11y-undecided-no { border: 1px solid CanvasText; }
+}
