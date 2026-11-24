@@ -245,8 +245,14 @@ export function ScoreGauge({
   total,
   tookSeconds,
   onSeeFindings,
+  warning,
 }: {
   score: number;
+  /* Checks that did not finish, said as the key's third column beside
+     Score … and What the score counts (user's instruction, 24 Nov 2026,
+     "combine in 3 columns"): it qualifies the score, so it stands with
+     the key rather than in a bubble under it. */
+  warning?: { title: string; subtitle: string };
   /* Takes the reader to the findings schedule: the round sticker on the
      dial. Left out in the conversation, where the findings follow. */
   onSeeFindings?: () => void;
@@ -278,6 +284,7 @@ export function ScoreGauge({
   const first = computeFirstFix(findings);
   const firstId = inChat ? "a11y-first-fix-heading-chat" : "a11y-first-fix-heading";
   const countsId = inChat ? "a11y-sum-counts-heading-chat" : "a11y-sum-counts-heading";
+  const warningId = inChat ? "a11y-sum-warning-heading-chat" : "a11y-sum-warning-heading";
 
   /* "Do this first" — the one fix that settles the most at once.
    *
@@ -521,6 +528,19 @@ export function ScoreGauge({
               ))}
             </ul>
           </section>
+
+          {/* The third column: the warning's yellow badge as its label, the
+              title and what to do as its lines. A status, as the bubble
+              it replaces was, so it waits its turn to be read. */}
+          {warning && (
+            <section className="a11y-sum-panel a11y-sum-warning" role="status" aria-labelledby={warningId}>
+              <h3 className="a11y-sum-eyebrow" id={warningId}>
+                <span className="a11y-sum-warning-badge">{t("Warning")}</span>
+              </h3>
+              <p className="a11y-sum-lead">{warning.title}</p>
+              <p className="a11y-sum-lead">{warning.subtitle}</p>
+            </section>
+          )}
         </div>
       </div>
     </div>

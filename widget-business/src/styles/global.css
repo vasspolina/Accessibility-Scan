@@ -4100,12 +4100,14 @@
    the badge does not follow them. A 1px black edge keeps the badge's shape
    when its card fills with the same plate on hover. Its letters are spaced
    out by a tenth of the size, 0.1em (user's instruction, 23 Nov 2026,
-   "space out serif like 10%"); it was 0.01em. */
+   "space out serif like 10%"); it was 0.01em. No edge since 24 Nov 2026
+   (user's instruction, "dont do outline", on the Ask about this page
+   badge): the 1px black edge is gone, as on the Warning badge. */
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-prompts .a11y-prompt { --label-plate: #a2e3ff; }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-prompts .a11y-prompt:nth-child(3n+2) { --label-plate: #ffa0ff; }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-prompts .a11y-prompt:nth-child(3n) { --label-plate: #f8ff58; }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-prompts .a11y-prompt .a11y-prompt-label.a11y-prompt-label {
-  background: var(--label-plate); color: #000; border: 1px solid #000;
+  background: var(--label-plate); color: #000; border: 0;
   font-family: "Serrif", Georgia, "Times New Roman", serif; font-weight: 300; font-synthesis: none;
   font-size: 15px; letter-spacing: 0.1em;
 }
@@ -4355,31 +4357,39 @@
    (a card's display number, not a marker), "Step 1:" in the statement (a
    word) and the dial's score. Each number stays aria-hidden or a ::before:
    the lists are ol or carry their own order. The colour is set on the
-   item as --num-fill, so the turns follow the item's place. */
+   item as --num-fill, so the turns follow the item's place.
+   The figure in the body face since 24 Nov 2026 (user's instructions,
+   "make numbers same fonts as body text", then "add padding 2 px"): PP
+   Telegraf Regular 400, not Serrif Light, and 2px round it. The round is
+   content-box, so it grows 4px (a 31px round is 35px); a round placed on
+   its line is pulled up, and the conversation's left, by the same 2px so
+   its centre stays put. The score's run sets its round inline, where it
+   grows evenly round its baseline. */
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-undecided-table > .a11y-undecided-cell, .a11y-legal-questions > .a11y-legal-q, .a11y-sum-rows > .a11y-sum-row, .a11y-chat-text ol:not(.a11y-chat-plan) > li, .a11y-sr-list > li):nth-child(4n+2) { --num-fill: #beffbd; }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-undecided-table > .a11y-undecided-cell, .a11y-legal-questions > .a11y-legal-q, .a11y-sum-rows > .a11y-sum-row, .a11y-chat-text ol:not(.a11y-chat-plan) > li, .a11y-sr-list > li):nth-child(4n+3) { --num-fill: #f8ff58; }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-undecided-table > .a11y-undecided-cell, .a11y-legal-questions > .a11y-legal-q, .a11y-sum-rows > .a11y-sum-row, .a11y-chat-text ol:not(.a11y-chat-plan) > li, .a11y-sr-list > li):nth-child(4n) { --num-fill: #a2e3ff; }
 /* The mark. The size is set per list below; the figure is 0.8em of the
    words where the round sits in their flow. */
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-undecided-table > .a11y-undecided-cell > .a11y-undecided-no, .a11y-legal-q > .a11y-legal-qnum, .a11y-sum-run .a11y-sum-cell-no, .a11y-sr-row > .a11y-sr-num) {
-  display: inline-grid; place-items: center; box-sizing: border-box; padding: 0; border-radius: 50%;
+  display: inline-grid; place-items: center; box-sizing: content-box; padding: 2px; border-radius: 50%;
   background: var(--num-fill, #ffa0ff); color: #000;
-  font-family: "Serrif", Georgia, "Times New Roman", serif; font-weight: 300; font-synthesis: none;
+  font-family: "PP Telegraf", "DejaVu Sans", sans-serif; font-weight: 400; font-synthesis: none;
   line-height: 1; letter-spacing: 0; font-variant-numeric: tabular-nums;
 }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-chat-text ol:not(.a11y-chat-plan) > li::before {
+  box-sizing: content-box; padding: 2px; margin-block-start: -2px; margin-inline-start: -2px;
   background: var(--num-fill, #ffa0ff); color: #000;
-  font-family: "Serrif", Georgia, "Times New Roman", serif; font-weight: 300; font-synthesis: none;
+  font-family: "PP Telegraf", "DejaVu Sans", sans-serif; font-weight: 400; font-synthesis: none;
 }
 /* The designer and developer list and the legal questions sit in the
    report's prose: 1.5em of the figure's own 0.8em is the words' 1.2 line. */
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-undecided-table > .a11y-undecided-cell > .a11y-undecided-no, .a11y-legal-q > .a11y-legal-qnum) {
-  width: 1.5em; height: 1.5em; margin-top: 0; font-size: 0.8em;
+  width: 1.5em; height: 1.5em; margin-top: -2px; font-size: 0.8em;
 }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-legal-q { align-items: start; }
 /* The screen reader preview's lines are 26px on a 1.2 line: a 31px round,
    a 21px figure. */
-.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sr-row > .a11y-sr-num { align-self: start; width: 31px; height: 31px; font-size: 21px; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sr-row > .a11y-sr-num { align-self: start; width: 31px; height: 31px; margin-top: -2px; font-size: 21px; }
 /* The score's run sizes its round with its words (1.5em of a 0.8em
    figure, set with the run); only the fill, the ink and the face change
    here. */
@@ -4553,4 +4563,34 @@
    are unchanged. One column under 640px of block (the rule above). */
 @media print {
   .a11y-widget-biz .a11y-fd .a11y-occurrence-list > .a11y-occurrence { padding: 0; background: none; }
+}
+
+/* ═══ THE SCORE KEY IN THREE COLUMNS, THE WARNING ITS THIRD (user's
+   instruction, 24 Nov 2026, "combine in 3 columns", on the sky key and the
+   Warning bubble under it) ═════════════════════════════════════════════════
+   When some checks did not finish, the warning leaves its bubble and stands
+   in the key: Score … on the first track, What the score counts on the
+   second and third, the warning on the fourth, each under its own 1px rule.
+   Its label is the warning's yellow badge (#f8ff58, black words, 17.6:1,
+   pinned in both themes), its lines the key's 18px set solid. Two tracks
+   under 760px of the summary (the warning a full row under the points),
+   one under 480px. */
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-key:has(> .a11y-sum-warning) > .a11y-sum-counts { grid-column: 2 / 4; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-key > .a11y-sum-warning { grid-column: 4 / 5; }
+.a11y-widget-biz .a11y-sum-key .a11y-sum-warning-badge {
+  display: inline-block; padding: 0 8px; border-radius: 8px;
+  background: #f8ff58; color: #000;
+  font-family: "Serrif", Georgia, "Times New Roman", serif; font-weight: 300; font-synthesis: none;
+  font-size: 15px; line-height: 1.3; letter-spacing: 0.1em; white-space: nowrap;
+  rotate: -2deg;
+}
+@media print {
+  .a11y-widget-biz .a11y-sum-key .a11y-sum-warning-badge { rotate: none; }
+}
+@container a11y-sum (max-width: 760px) {
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-key:has(> .a11y-sum-warning) > .a11y-sum-counts { grid-column: 2 / -1; }
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-key > .a11y-sum-warning { grid-column: 1 / -1; }
+}
+@container a11y-sum (max-width: 480px) {
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-key:has(> .a11y-sum-warning) > .a11y-sum-counts { grid-column: 1 / -1; }
 }

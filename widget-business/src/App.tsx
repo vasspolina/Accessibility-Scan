@@ -568,7 +568,18 @@ export function App({
           </div>
         ) : null;
 
-      case "score":
+      case "score": {
+        /* The score only counts checks that ran, so a scan where some fell
+           over can look better than a complete one. The professional
+           reading prints it in ProSummary, beside the score points. */
+        const incomplete = report.meta.incompleteChecks;
+        const incompleteWarning =
+          !(professional && !isDocument) && incomplete && incomplete.length > 0
+            ? {
+                title: tf("Some checks didn't finish: {checks}.", { checks: checkNames(incomplete) }),
+                subtitle: t("The score counts only what ran, so it may be too high. Run the scan again."),
+              }
+            : undefined;
         return (
           <>
             {isDocument ? (
@@ -611,6 +622,7 @@ export function App({
                   total={report.summary.total}
                   tookSeconds={tookSeconds}
                   onSeeFindings={() => focusFindings("a11y-accessibility-heading")}
+                  warning={incompleteWarning}
                 />
                 {/* In the conversation the score block heads a report the
                     assistant files, not a page. The findings block follows
@@ -637,16 +649,11 @@ export function App({
                 )}`}
               />
             )}
-            {/* The score only counts checks that ran, so a scan where some
-                fell over can look better than a complete one. Both audiences. */}
-            {/* ProSummary prints this same notice beside the score points, so
-                the professional reading must not print it a second time. */}
-            {!(professional && !isDocument) && report.meta.incompleteChecks && report.meta.incompleteChecks.length > 0 && (
-              <Notification
-                kind="warning"
-                title={tf("Some checks didn't finish: {checks}.", { checks: checkNames(report.meta.incompleteChecks) })}
-                subtitle={t("The score counts only what ran, so it may be too high. Run the scan again.")}
-              />
+            {/* The owner's reading says it in the score key's third column
+                (incompleteWarning above); a document summary has no key,
+                so it keeps the bubble. */}
+            {isDocument && incompleteWarning && (
+              <Notification kind="warning" title={incompleteWarning.title} subtitle={incompleteWarning.subtitle} />
             )}
             {/* An accessibility overlay on the page: what was seen, beside
                 the other notices that qualify the reading. ProSummary prints
@@ -654,6 +661,7 @@ export function App({
             {!(professional && !isDocument) && <OverlayNotes overlays={report.meta.overlays} />}
           </>
         );
+      }
 
       case "protable":
         /* The professional reading: filter by who fixes it, the
