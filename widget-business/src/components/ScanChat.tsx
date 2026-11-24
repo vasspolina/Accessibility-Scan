@@ -1726,7 +1726,11 @@ export function ScanChat({
               maxLength={4000}
               onChange={(e) => {
                 setDraft(e.target.value);
-                e.target.style.height = "auto";
+                // Measured from 0px, not auto: auto falls back to rows={2},
+                // so a one-line message stood two lines tall on a phone,
+                // where the field starts at one. The CSS min-height still
+                // holds the desktop's two lines.
+                e.target.style.height = "0px";
                 e.target.style.height = e.target.scrollHeight + "px";
               }}
               aria-describedby={suggestion ? "a11y-chat-tabhint" : undefined}
@@ -1738,7 +1742,7 @@ export function ScanChat({
                   setDraft(suggestion);
                   const el = e.currentTarget;
                   requestAnimationFrame(() => {
-                    el.style.height = "auto";
+                    el.style.height = "0px";
                     el.style.height = el.scrollHeight + "px";
                     el.setSelectionRange(el.value.length, el.value.length);
                   });

@@ -2205,6 +2205,30 @@
     flex: none; display: inline-flex; align-items: center; justify-content: center;
     width: 40px; height: 40px; padding: 0; border-radius: 50%;
   }
+  /* A smaller box on a phone (user's instruction, 24 Nov 2026, "make the
+     chat box smaller on phone"). Empty it was 196px of an 812px screen:
+     Back, Voice control and Scan a page behind a login wrapped to two rows
+     of 40px pills (93px), and the field was two lines. With text it grew
+     a line for every line typed, with no end, and reached 460px. Now the
+     field is one line and stops at five, then scrolls; the box's buttons
+     are one row of 34px pills at 15px that scrolls sideways, as the
+     section chips under the box do, each still reached by Tab. The send
+     round stays 40px. Empty, the box is about 115px. */
+  .a11y-widget-biz .a11y-chat-dock .a11y-chat-composer .a11y-chat-box textarea {
+    height: 1.4em; max-height: calc(1.4em * 5); overflow-y: auto;
+  }
+  .a11y-widget-biz .a11y-chat .a11y-chat-box > .a11y-chat-label { margin-bottom: 2px; }
+  .a11y-widget-biz .a11y-chat .a11y-chat-box-start {
+    flex: 1 1 auto; flex-wrap: nowrap; gap: 6px; overflow-x: auto; scrollbar-width: none; overscroll-behavior-x: contain;
+    /* Room for the focus ring, which a scrolling box would clip. */
+    padding: 2px; margin: -2px;
+  }
+  .a11y-widget-biz .a11y-chat .a11y-chat-box-start::-webkit-scrollbar { display: none; }
+  /* While voice control speaks, its note needs the width: the row wraps. */
+  .a11y-widget-biz .a11y-chat .a11y-chat-box-start:has(.a11y-voice-note:not(:empty)) { flex-wrap: wrap; overflow-x: visible; }
+  .a11y-widget-biz .a11y-chat .a11y-chat-box .a11y-chat-box-start .a11y-btn {
+    flex: none; white-space: nowrap; font-size: 15px; min-height: 34px; padding: 0 0.8em;
+  }
   .a11y-widget-biz .a11y-chat .a11y-chat-send-icon { display: block; }
   .a11y-widget-biz .a11y-chat .a11y-chat-send-word,
   .a11y-widget-biz .a11y-chat .a11y-chat-who {
