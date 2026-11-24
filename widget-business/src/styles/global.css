@@ -4932,23 +4932,14 @@
    are the shop card's red-orange pill, black words. The cross is the icon
    set's close (Carbon) as a mask, cropped to its 16 units. The markup
    order (label, meaning, mark, count) is kept for screen readers; the
-   line is reordered with flex order. The scallops are decoration: a
-   strip hung under the panel, six across (four under 640px), alternating
-   ink and a grey a step under the panel. */
-.a11y-widget-biz { --awning-light: #d9d9d9; }
-.a11y-widget-biz[data-theme="dark"] { --awning-light: #3a3a3c; }
-@media (prefers-color-scheme: dark) { .a11y-widget-biz:not([data-theme="light"]) { --awning-light: #3a3a3c; } }
+   line is reordered with flex order. The scalloped foot is gone (user's
+   instruction, the same day, "delete these"), and with it the panel's
+   square bottom: it is round at all four corners. */
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-legal-tiles, .a11y-dn-list)[class] {
   position: relative; display: flex; flex-direction: column; align-items: flex-start; gap: 12px;
-  box-sizing: border-box; width: 100%; margin: 0 0 calc(100% / 12 + 40px); padding: 52px 56px 44px;
-  border: 0; border-radius: 80px 80px 0 0; background: var(--bubble); color: var(--ink);
+  box-sizing: border-box; width: 100%; margin: 0 0 40px; padding: 48px 56px;
+  border: 0; border-radius: 40px; background: var(--bubble); color: var(--ink);
   grid-template-columns: none;
-}
-.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-legal-tiles, .a11y-dn-list)[class]::after {
-  content: ""; position: absolute; left: 0; right: 0; top: 100%; aspect-ratio: 12 / 1; pointer-events: none;
-  background: repeating-linear-gradient(90deg, var(--ink) 0 calc(100% / 6), var(--awning-light) calc(100% / 6) calc(200% / 6));
-  -webkit-mask: radial-gradient(50% 100% at 50% 0, #000 calc(100% - 0.5px), transparent 100%) 0 0 / calc(100% / 6) 100% repeat-x;
-  mask: radial-gradient(50% 100% at 50% 0, #000 calc(100% - 0.5px), transparent 100%) 0 0 / calc(100% / 6) 100% repeat-x;
 }
 /* Each tab: one line of the list. */
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-legal-tiles > .a11y-legal-row, .a11y-dn-list > .a11y-dn-link)[class][class] {
@@ -5006,18 +4997,12 @@
 }
 @media (max-width: 640px) {
   .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-legal-tiles, .a11y-dn-list)[class] {
-    margin-bottom: calc(100% / 8 + 28px); padding: 30px 22px 26px; border-radius: 44px 44px 0 0;
-  }
-  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-legal-tiles, .a11y-dn-list)[class]::after {
-    aspect-ratio: 8 / 1;
-    background: repeating-linear-gradient(90deg, var(--ink) 0 25%, var(--awning-light) 25% 50%);
-    -webkit-mask-size: 25% 100%; mask-size: 25% 100%;
+    margin-bottom: 28px; padding: 26px 22px; border-radius: 28px;
   }
   .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-legal-tiles > .a11y-legal-row, .a11y-dn-list > .a11y-dn-link)[class][class] { font-size: 24px; line-height: 1.15; letter-spacing: 0.015em; }
 }
 @media (forced-colors: active) {
   .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-legal-tiles, .a11y-dn-list)[class] { border: 1px solid CanvasText; }
-  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-legal-tiles, .a11y-dn-list)[class]::after { display: none; }
   .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-legal-tiles > .a11y-legal-row, .a11y-dn-list > .a11y-dn-link)[class][class]::before { forced-color-adjust: none; background: CanvasText; }
   .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-legal-tiles > .a11y-legal-row[aria-pressed="true"], .a11y-dn-list > .a11y-dn-link[aria-selected="true"])[class][class] { border: 2px solid Highlight; }
 }
