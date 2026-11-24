@@ -4526,7 +4526,7 @@
   .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz:not([data-theme="light"]) :is(.a11y-dt-expand-row, .a11y-dn-detail) .a11y-fd { --ink: #fff; }
 }
 /* The cards inside it take the --bubble-pill ground. */
-.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-dt-expand-row, .a11y-dn-detail) .a11y-fd :is(.a11y-method-hint, .a11y-finding-measured, .a11y-finding-impact, .a11y-finding-research, .a11y-picture-note, .a11y-finding-affected > li) {
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-dt-expand-row, .a11y-dn-detail) .a11y-fd :is(.a11y-method-hint, .a11y-finding-measured, .a11y-finding-impact, .a11y-finding-research, .a11y-finding-affected > li) {
   --tile: var(--bubble-pill); --paper: var(--bubble-pill); background: var(--bubble-pill);
   box-sizing: border-box; padding: 20px 26px 24px; border-radius: 28px;
 }
@@ -4553,22 +4553,32 @@
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-dt-expand-row, .a11y-dn-detail) .a11y-fd .a11y-occurrence {
   --tile: var(--bubble-pill); --paper: var(--bubble-pill); background: var(--bubble-pill); border-radius: 28px;
 }
-/* The short cards one under another (user's instruction, 24 Nov 2026,
-   "one under another, not 3 in a row", replacing that day's one row): Who
-   fixes this, Where this came from, What we found and their siblings each
-   take the full width, 16px apart (12px under 640px of block). The column
-   after the meta line is included, since a finding that opens with the
-   meta strip has no first-child column and would otherwise keep the
-   two-up grid's rules out of step with the rest. The cards' own margins
-   are dropped and the column carries the 48px to what follows. */
+/* The short cards in one row (user's instruction, 24 Nov 2026, "make these
+   one row", on Who fixes this, What we found and Why this matters set two
+   to a row): the cards of the first column share one row at equal widths
+   and stand as tall as the row. Each keeps 300px at least: five cards
+   forced into one row of a 1277px block were 243px each, and their 32px
+   words broke inside themselves ("buil ds"). So a row that cannot give
+   every card 300px wraps, and the cards on its last line share that line's
+   width rather than leaving a quarter-wide card alone. Three cards hold one
+   row from about 930px of block. The first column
+   is also the one after the meta line: a finding that opens with the meta
+   strip has no first-child column, and its cards stacked one per line at
+   the full width. The cards' own margins are dropped, since in one row a
+   card with a margin stood shorter than the last one; the column carries
+   the 48px to what follows. One column under 640px of block, as before. */
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-dt-expand-row, .a11y-dn-detail) .a11y-fd > :is(.a11y-fd-col:first-child, .a11y-fd-meta + .a11y-fd-col) {
-  display: flex; flex-direction: column; gap: 16px; align-items: stretch; margin: 0 0 48px;
+  display: flex; flex-wrap: wrap; gap: 16px; align-items: stretch; margin: 0 0 48px;
 }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-dt-expand-row, .a11y-dn-detail) .a11y-fd > :is(.a11y-fd-col:first-child, .a11y-fd-meta + .a11y-fd-col) > :is(.a11y-method-hint, .a11y-finding-measured, .a11y-finding-impact, .a11y-finding-research, .a11y-picture-note) {
-  flex: none; min-width: 0; margin: 0;
+  flex: 1 1 300px; min-width: 0; margin: 0;
 }
 @container a11y-fd (max-width: 640px) {
-  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-dt-expand-row, .a11y-dn-detail) .a11y-fd > :is(.a11y-fd-col:first-child, .a11y-fd-meta + .a11y-fd-col) { gap: 12px; }
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-dt-expand-row, .a11y-dn-detail) .a11y-fd > :is(.a11y-fd-col:first-child, .a11y-fd-meta + .a11y-fd-col) {
+    flex-direction: column; gap: 12px;
+  }
+  /* In a column the 300px basis would be a height. */
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-dt-expand-row, .a11y-dn-detail) .a11y-fd > :is(.a11y-fd-col:first-child, .a11y-fd-meta + .a11y-fd-col) > :is(.a11y-method-hint, .a11y-finding-measured, .a11y-finding-impact, .a11y-finding-research, .a11y-picture-note) { flex: none; }
 }
 
 /* CARETS AS BARS (user's reference, 24 Nov 2026, "this is design for
