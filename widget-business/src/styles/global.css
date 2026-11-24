@@ -43,8 +43,8 @@
    is ink on paper, which swap in dark. */
 .a11y-widget-biz {
   --ink: #000; --paper: #fff; --focus: #198038; --chats-current: #14532d;
-  --hl-orange: #ff6430; --urgent: #ff6430; --hl-blue: #b8e7ff; --hl-green: #c6ffcc;
-  --hl-cap-a: #fbff8c; --hl-cap-b: #e4efc9;
+  --hl-orange: #ff6430; --urgent: #ff6430; --hl-blue: #6fa8ff; --hl-green: #4fe0a8;
+  --hl-cap-a: #ffe14d; --hl-cap-b: #ff9ad5;
   /* The Report a barrier card's mint (user's swatch, 21 Nov 2026): black
      on #c6ffcc is 18.7:1; dark takes #30d158, black on it 7.4:1+. */
   --barrier: #c6ffcc;
@@ -516,7 +516,7 @@
   display: grid; place-content: center;
   width: 32px; height: 32px; border-radius: 50%;
   background: var(--solid); color: var(--solid-ink);
-  font-size: 22px; letter-spacing: 0; font-weight: 400; line-height: inherit;
+  font-size: 24px; letter-spacing: 0; font-weight: 500; line-height: inherit;
   font-variant-numeric: tabular-nums;
 }
 .a11y-widget-biz .a11y-chat-text li::marker { font-weight: 400; }
@@ -1637,13 +1637,6 @@
 .a11y-widget-biz .a11y-dn-link > .a11y-dn-link-text {
   display: block; margin: 0; font-family: "PP Telegraf", sans-serif; font-weight: 400; font-size: 22px; line-height: 1.2; letter-spacing: 0.01em;
 }
-/* The note's kind over its title (user's choice, 22 Nov 2026): it was a
-   row of filter pills over the tabs, a second control that looked like a
-   tab. Now a 15px label in ink, 4px over the title, never Medium, so the
-   open tab's Medium title stays the one thing that changes. */
-.a11y-widget-biz .a11y-dn-link > .a11y-dn-link-kind {
-  display: block; margin: 0 0 4px; font-family: "PP Telegraf", sans-serif; font-weight: 400; font-size: 15px; line-height: 1.2; letter-spacing: 0.01em;
-}
 /* Small print under the words stays Jokker at 15px or 18px. */
 .a11y-widget-biz .a11y-spec-card > .a11y-spec-value > .a11y-spec-gloss { margin-top: 0.6em; font-family: "PP Telegraf", sans-serif; }
 .a11y-widget-biz .a11y-manual-row > .a11y-conf-body > .a11y-conf-plain { display: block; margin-top: 0.5em; font-size: 18px; letter-spacing: 0.01em; }
@@ -2007,7 +2000,7 @@
    "move buble to the right"), its tail and its lean mirrored: it covered
    the left of the picture, where the faulty element usually begins. */
 .a11y-widget-biz .a11y-shot.a11y-shot-has-bubble { width: fit-content; padding-top: 6px; }
-.a11y-widget-biz .a11y-shot-bubble { --tile: #e4efc9; --tile-ink: #000; }
+.a11y-widget-biz .a11y-shot-bubble { --tile: #ff9ad5; --tile-ink: #000; }
 .a11y-widget-biz .a11y-shot-bubble {
   --ink: var(--tile-ink); --paper: var(--tile);
   position: relative; z-index: 1; display: block; width: fit-content; max-width: 85%;
@@ -3775,7 +3768,7 @@
    The markup order (words, level split, status, count) is unchanged for
    screen readers; only the eye takes them as status, count, words. */
 .a11y-widget-biz {
-  --plate-1: #b8e7ff; --plate-2: #c6ffcc; --plate-3: #e4efc9; --plate-4: #fbff8c; --plate-text: #000;
+  --plate-1: #6fa8ff; --plate-2: #4fe0a8; --plate-3: #ff9ad5; --plate-4: #ffe14d; --plate-text: #000;
 }
 .a11y-widget-biz[data-theme="dark"] {
   --plate-1: #2e3350; --plate-2: #0f3a2a; --plate-3: #2e3814; --plate-4: #36310c; --plate-text: #fff;
@@ -3973,8 +3966,7 @@
    Each note's tab is a card in the check results' set: the plates' four
    colours in turn (a note's kind is not a status, so the colour only tells
    the cards apart), 20px corners, 10px apart, 22px 20px 24px inside, 220px
-   tall; the kind as the small leaning badge at the top left (mono 15px,
-   solid ink with the card's colour for its words); the title at the foot,
+   tall; the title at the foot,
    left, at 21px Light/1.1 (18px on a phone), every other card in Serrif;
    30px and 26px until the user's instruction of 23 Nov 2026, "make fonts
    30% smaller". The open tab keeps a 4px inset ring in ink (the pressed
@@ -3983,7 +3975,7 @@
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-dn-list { grid-template-columns: repeat(auto-fit, minmax(min(100%, 220px), 1fr)); gap: 10px; }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-dn-list > .a11y-dn-link {
   --ink: var(--plate-text); --paper: var(--plate-1);
-  justify-content: space-between; gap: 24px; min-height: 220px; padding: 22px 20px 24px;
+  justify-content: flex-end; gap: 24px; min-height: 220px; padding: 22px 20px 24px;
   border: 0; border-radius: 20px; background: var(--plate-1); color: var(--plate-text);
 }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-dn-list > .a11y-dn-link:nth-child(4n+2) { --paper: var(--plate-2); background: var(--plate-2); }
@@ -3993,8 +3985,7 @@
    ink, no underline, as the check-result cards do (user's instruction,
    23 Nov 2026, "and add proper hovers"; the hover only underlined the
    title). #000 on #f0efe8 is 18.4:1; dark takes --tile (#1c1c1e) with white
-   words. The kind badge keeps solid ink and takes the tile's colour for its
-   words, so it still reads. */
+   words. */
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-dn-list > .a11y-dn-link { transition: background-color 0.15s, color 0.15s; }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-dn-list > .a11y-dn-link:enabled:is(:hover, :focus-visible) {
   --ink: var(--tile-ink); --paper: var(--tile); background: var(--tile); color: var(--tile-ink); text-decoration: none;
@@ -4005,23 +3996,9 @@
 }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-dn-list > .a11y-dn-link[aria-selected="true"] { padding-top: 22px; border: 0; box-shadow: none; }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-dn-list > .a11y-dn-link[aria-selected="true"]:not(:focus-visible) { outline: 2px dotted var(--plate-text); outline-offset: -2px; }
-.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-dn-list > .a11y-dn-link > .a11y-dn-link-kind {
-  align-self: flex-start; margin: 0; padding: 4px 10px 3px; border-radius: 8px;
-  background: var(--kind-fill, var(--plate-4)); color: var(--plate-text);
-  font-family: "Serrif", Georgia, "Times New Roman", serif; font-weight: 300; font-synthesis: none;
-  font-size: 18px; line-height: 1.25; letter-spacing: 0.08em; white-space: nowrap;
-  rotate: var(--kind-tilt, -2deg);
-}
-/* The kind as the findings table's severity (user's instruction, 24 Nov
-   2026, "all badges need to be like this but different colors"): a plate
-   fill in a plate other than its card's (sky card, yellow badge; mint,
-   pink; pink, sky; yellow, mint), with the plate's words, so it shows on
-   the card and on the beige hover alike. */
-.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-dn-list > .a11y-dn-link:nth-child(4n+2) { --kind-fill: var(--plate-3); }
-.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-dn-list > .a11y-dn-link:nth-child(4n+3) { --kind-fill: var(--plate-1); }
-.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-dn-list > .a11y-dn-link:nth-child(4n) { --kind-fill: var(--plate-2); }
-.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-dn-list > .a11y-dn-link:nth-child(3n+2) { --kind-tilt: 1.5deg; }
-.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-dn-list > .a11y-dn-link:nth-child(3n) { --kind-tilt: -1deg; }
+/* No kind badge over the title (user's instruction, 24 Nov 2026, "no need
+   for badges, just titles"): the card holds its title alone, still at the
+   foot: the card's own rule above sets it flush to the end (flex-end). */
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-dn-list > .a11y-dn-link > .a11y-dn-link-text {
   font-size: 21px; font-weight: 300; line-height: 1.1; letter-spacing: 0;
   text-decoration-thickness: 2px;
@@ -4029,9 +4006,6 @@
 @media (max-width: 640px) {
   .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-dn-list > .a11y-dn-link { min-height: 0; }
   .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-dn-list > .a11y-dn-link > .a11y-dn-link-text { font-size: 18px; }
-}
-@media print {
-  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-dn-list > .a11y-dn-link > .a11y-dn-link-kind { rotate: none; }
 }
 @media (forced-colors: active) {
   .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-dn-list > .a11y-dn-link { border: 1px solid CanvasText; }
@@ -4042,13 +4016,13 @@
    2026, "design these as tabs as well but make dotted outline and add on
    hover color, delete new scan") ═════════════════════════════════════════
    The question cards take the design-note cards' set, on the page's paper:
-   a 1px dotted ink edge at rest, 20px corners; the group as the small
-   leaning badge (mono 15px, solid ink with the card's ground for its
-   words); the question at 20px, every other card in Serrif Light. Hover
+   a 1px dotted ink edge at rest, 20px corners; the group's name as the
+   card's title (a badge until 24 Nov 2026, see below); the question at
+   20px. Hover
    and keyboard focus fill the card with a plate in turn (sky, pink,
    yellow; black words, white on the deep dark plates) and show "Ask this".
    Report a barrier keeps its mint and no edge (user's instruction, 21 Nov
-   2026), with its group as the same badge. Disabled is a dashed edge.
+   2026), with its group as the same title. Disabled is a dashed edge.
    "New scan" over the cards is gone from the screen and kept as the
    page's heading for screen readers. */
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-prompts .a11y-prompt.a11y-prompt:not(.a11y-prompt-barrier) {
@@ -4060,18 +4034,18 @@
   background: var(--card-plate, var(--plate-1)); color: var(--plate-text); border-color: var(--plate-text); box-shadow: none;
 }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-prompts .a11y-prompt.a11y-prompt:not(.a11y-prompt-barrier):has(> .a11y-prompt-q:disabled) { border: 1px dashed var(--ink); outline: 0; }
+/* The group's name is a title, not a badge (user's instruction, 24 Nov
+   2026, "dont do badges, just titles"): the card's own ink on the card's
+   ground, no fill, no lean, the body face at 22px Medium over the question's
+   20px. */
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-prompts .a11y-prompt .a11y-prompt-label {
-  align-self: flex-start; width: fit-content; padding: 4px 10px 3px; border-radius: 8px;
-  background: var(--ink); color: var(--paper);
-  font-family: "Serrif", Georgia, "Times New Roman", serif; font-weight: 300; font-synthesis: none;
-  font-size: 18px; line-height: 1.25; letter-spacing: 0.08em; white-space: nowrap;
-  rotate: var(--label-tilt, -2deg);
+  align-self: stretch; width: auto; padding: 0; border: 0; border-radius: 0;
+  background: none; color: inherit;
+  font-family: "PP Telegraf", sans-serif; font-weight: 500; font-synthesis: none;
+  font-size: 22px; line-height: 1.2; letter-spacing: 0.01em; white-space: normal; rotate: none;
 }
-.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-prompts .a11y-prompt:nth-child(3n+2) { --label-tilt: 1.5deg; --card-plate: var(--plate-3); }
-.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-prompts .a11y-prompt:nth-child(3n) { --label-tilt: -1deg; --card-plate: var(--plate-4); }
-@media print {
-  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-prompts .a11y-prompt .a11y-prompt-label { rotate: none; }
-}
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-prompts .a11y-prompt:nth-child(3n+2) { --card-plate: var(--plate-3); }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-prompts .a11y-prompt:nth-child(3n) { --card-plate: var(--plate-4); }
 /* With its title clipped the head holds nothing to see, so it gives up the
    48px it kept for the title's line and the space under it. */
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-newscan-head { min-height: 0; margin-bottom: 0; }
@@ -4096,29 +4070,6 @@
   background: var(--barrier); color: #000; border-color: #000;
 }
 
-/* ═══ THE OPENING QUESTIONS' GROUP BADGE IN SERIF, BLACK ON COLOUR (user's
-   instruction, 23 Nov 2026, "make these serif and black text on colored
-   badge") ═══════════════════════════════════════════════════════════════
-   The leaning badge with the group's name ("Ask about this page") was mono
-   on solid ink. It is now Serrif Light, black on a light plate pinned in
-   both themes, as the highlights are: sky, pink and yellow in the order the
-   cards take their hover plates (#b8e7ff, #e4efc9, #fbff8c, each above 11:1
-   with black). Dark mode's plates are deep grounds made for white words, so
-   the badge does not follow them. A 1px black edge keeps the badge's shape
-   when its card fills with the same plate on hover. Its letters are spaced
-   out by a tenth of the size, 0.1em (user's instruction, 23 Nov 2026,
-   "space out serif like 10%"); it was 0.01em. No edge since 24 Nov 2026
-   (user's instruction, "dont do outline", on the Ask about this page
-   badge): the 1px black edge is gone, as on the Warning badge. */
-.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-prompts .a11y-prompt { --label-plate: #b8e7ff; }
-.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-prompts .a11y-prompt:nth-child(3n+2) { --label-plate: #e4efc9; }
-.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-prompts .a11y-prompt:nth-child(3n) { --label-plate: #fbff8c; }
-.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-prompts .a11y-prompt .a11y-prompt-label.a11y-prompt-label {
-  background: var(--label-plate); color: #000; border: 0;
-  font-family: "Serrif", Georgia, "Times New Roman", serif; font-weight: 300; font-synthesis: none;
-  font-size: 18px; letter-spacing: 0.08em;
-}
-
 /* ═══ ENAMEL PINS (user's instruction, 23 Nov 2026, "add this pins for some
    badges when it makes sense", "like for warning icon on this bubble", with
    a photo of enamel pins on a knit as the reference) ═══════════════════════
@@ -4135,7 +4086,7 @@
    what the pin shows. In forced colours the fill and rim drop and the
    line stays. */
 .a11y-widget-biz .a11y-pin {
-  --pin-fill: #fbff8c;
+  --pin-fill: #ffe14d;
   display: inline-grid; place-items: center; flex: none; box-sizing: border-box;
   width: 1.15em; height: 1.15em; border-radius: 50%;
   border: 0.07em solid #000; color: #000;
@@ -4155,10 +4106,10 @@
   font-family: "Serrif", Georgia, "Times New Roman", serif; font-weight: 300; font-synthesis: none;
   font-size: 0.8em; line-height: 1; letter-spacing: 0;
 }
-.a11y-widget-biz .a11y-pin-yellow { --pin-fill: #fbff8c; }
-.a11y-widget-biz .a11y-pin-pink { --pin-fill: #e4efc9; }
-.a11y-widget-biz .a11y-pin-sky { --pin-fill: #b8e7ff; }
-.a11y-widget-biz .a11y-pin-mint { --pin-fill: #c6ffcc; }
+.a11y-widget-biz .a11y-pin-yellow { --pin-fill: #ffe14d; }
+.a11y-widget-biz .a11y-pin-pink { --pin-fill: #ff9ad5; }
+.a11y-widget-biz .a11y-pin-sky { --pin-fill: #6fa8ff; }
+.a11y-widget-biz .a11y-pin-mint { --pin-fill: #4fe0a8; }
 /* In a plain notice the pin sits on the middle of the title's first line. */
 .a11y-widget-biz.a11y-widget-biz .a11y-note .a11y-note-glyph {
   display: flex; align-self: start; padding: 0; margin-top: calc((1lh - 1.15em) / 2);
@@ -4178,7 +4129,7 @@
 }
 .a11y-widget-biz.a11y-widget-biz .a11y-note.a11y-note-warning .a11y-note-badge {
   position: absolute; top: 0; left: 22px; margin: 0; padding: 4px 10px 3px; border-radius: 8px;
-  background: #fbff8c; color: #000;
+  background: #ffe14d; color: #000;
   font-family: "Serrif", Georgia, "Times New Roman", serif; font-weight: 300; font-synthesis: none;
   font-size: 18px; line-height: 1.25; letter-spacing: 0.08em; white-space: nowrap;
   translate: 0 -50%; rotate: -2deg;
@@ -4349,61 +4300,51 @@
   .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-alt-card { border: 1px solid CanvasText; }
 }
 
-/* ═══ EVERY LIST NUMBER IN A COLOURED ROUND (user's instructions, 23 Nov
-   2026, "maybe number can be in colored circle and in black? make it
-   serif", on the designer and developer list, then "style all numbers same
-   way, make them in colored circle with black font on light") ═══════════
-   Every number that counts the items of a list is one mark: a round in the
-   light plates by turn (pink #e4efc9, mint #c6ffcc, yellow #fbff8c, sky
-   #b8e7ff), pinned in both themes as the pins are, the figure black in
-   Serrif Light, 11:1 or better on each fill. The round is one line of its
-   list's words tall and level with their first line. The lists: the
-   designer and developer list, the legal panel's questions, the score's
-   worst findings, a numbered list in the conversation and the screen
-   reader preview. Left out on purpose: the test plan's big step figures
-   (a card's display number, not a marker), "Step 1:" in the statement (a
-   word) and the dial's score. Each number stays aria-hidden or a ::before:
-   the lists are ol or carry their own order. The colour is set on the
-   item as --num-fill, so the turns follow the item's place.
-   The figure in the body face since 24 Nov 2026 (user's instructions,
-   "make numbers same fonts as body text", then "add padding 2 px"): PP
-   Telegraf Regular 400, not Serrif Light, and 2px round it. The round is
-   content-box, so it grows 4px (a 31px round is 35px); a round placed on
-   its line is pulled up, and the conversation's left, by the same 2px so
-   its centre stays put. The score's run sets its round inline, where it
-   grows evenly round its baseline. */
-.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-undecided-table > .a11y-undecided-cell, .a11y-legal-questions > .a11y-legal-q, .a11y-sum-rows > .a11y-sum-row, .a11y-chat-text ol:not(.a11y-chat-plan) > li, .a11y-sr-list > li):nth-child(4n+2) { --num-fill: #c6ffcc; }
-.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-undecided-table > .a11y-undecided-cell, .a11y-legal-questions > .a11y-legal-q, .a11y-sum-rows > .a11y-sum-row, .a11y-chat-text ol:not(.a11y-chat-plan) > li, .a11y-sr-list > li):nth-child(4n+3) { --num-fill: #fbff8c; }
-.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-undecided-table > .a11y-undecided-cell, .a11y-legal-questions > .a11y-legal-q, .a11y-sum-rows > .a11y-sum-row, .a11y-chat-text ol:not(.a11y-chat-plan) > li, .a11y-sr-list > li):nth-child(4n) { --num-fill: #b8e7ff; }
-/* The mark. The size is set per list below; the figure is 0.8em of the
-   words where the round sits in their flow. */
+/* ═══ EVERY LIST NUMBER IN A SOLID ROUND (user's reference, 24 Nov 2026,
+   "design numbers like this": a white round holding a black figure, beside
+   a title on a black page) ═══════════════════════════════════════════════
+   Every number that counts the items of a list is one mark: a solid round
+   in the page's ink with the figure in its paper, so black with a white
+   figure in light and white with a black figure in dark (21:1 both ways),
+   the figure in PP Telegraf Medium 500, three quarters of the round. It
+   replaces the coloured rounds of 23 Nov 2026 (four light plates by
+   turn). The round is one line of its list's words tall, level with their
+   first line, with 2px round the figure (user's instruction, 24 Nov 2026,
+   "add padding 2 px"): content-box, so a round placed on its line is
+   pulled up, and the conversation's left, by the same 2px so its centre
+   stays put. The lists: the designer and developer list, the legal panel's
+   questions, the score's worst findings, a numbered list in the
+   conversation and the screen reader preview. Left out on purpose: "Step
+   1:" in the statement (a word) and the dial's score. Each number stays
+   aria-hidden or a ::before: the lists are ol or carry their own order. */
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-undecided-table > .a11y-undecided-cell > .a11y-undecided-no, .a11y-legal-q > .a11y-legal-qnum, .a11y-sum-run .a11y-sum-cell-no, .a11y-sr-row > .a11y-sr-num) {
   display: inline-grid; place-items: center; box-sizing: content-box; padding: 2px; border-radius: 50%;
-  background: var(--num-fill, #e4efc9); color: #000;
-  font-family: "PP Telegraf", "DejaVu Sans", sans-serif; font-weight: 400; font-synthesis: none;
+  background: var(--ink); color: var(--paper);
+  font-family: "PP Telegraf", "DejaVu Sans", sans-serif; font-weight: 500; font-synthesis: none;
   line-height: 1; letter-spacing: 0; font-variant-numeric: tabular-nums;
 }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-chat-text ol:not(.a11y-chat-plan) > li::before {
   box-sizing: content-box; padding: 2px; margin-block-start: -2px; margin-inline-start: -2px;
-  background: var(--num-fill, #e4efc9); color: #000;
-  font-family: "PP Telegraf", "DejaVu Sans", sans-serif; font-weight: 400; font-synthesis: none;
+  background: var(--ink); color: var(--paper);
+  font-family: "PP Telegraf", "DejaVu Sans", sans-serif; font-weight: 500; font-synthesis: none;
 }
 /* The designer and developer list and the legal questions sit in the
-   report's prose: 1.5em of the figure's own 0.8em is the words' 1.2 line. */
+   report's prose: a 0.9em figure in a 1.333em round is the words' 1.2
+   line. */
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-undecided-table > .a11y-undecided-cell > .a11y-undecided-no, .a11y-legal-q > .a11y-legal-qnum) {
-  width: 1.5em; height: 1.5em; margin-top: -2px; font-size: 0.8em;
+  width: 1.333em; height: 1.333em; margin-top: -2px; font-size: 0.9em;
 }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-legal-q { align-items: start; }
 /* The screen reader preview's lines are 26px on a 1.2 line: a 31px round,
-   a 21px figure. */
-.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sr-row > .a11y-sr-num { align-self: start; width: 31px; height: 31px; margin-top: -2px; font-size: 21px; }
-/* The score's run sizes its round with its words (1.5em of a 0.8em
-   figure, set with the run); only the fill, the ink and the face change
-   here. */
+   a 23px figure. */
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sr-row > .a11y-sr-num { align-self: start; width: 31px; height: 31px; margin-top: -2px; font-size: 23px; }
+/* The score's run sizes its round with its words; only the fill, the ink
+   and the weight change here. */
 @media (forced-colors: active) {
   .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-undecided-table > .a11y-undecided-cell > .a11y-undecided-no, .a11y-legal-q > .a11y-legal-qnum, .a11y-sum-run .a11y-sum-cell-no, .a11y-sr-row > .a11y-sr-num) { border: 1px solid CanvasText; }
   .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-chat-text ol:not(.a11y-chat-plan) > li::before { border: 1px solid CanvasText; }
 }
+
 
 /* ═══ THE PANEL'S FOOT RULE, FULL BLEED (user's instruction, 23 Nov 2026,
    "the divider needs to be full bleed in left window") ═════════════════════
@@ -4598,7 +4539,7 @@
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-key > .a11y-sum-warning { grid-column: 4 / 5; }
 .a11y-widget-biz .a11y-sum-key .a11y-sum-warning-badge {
   display: inline-block; padding: 4px 10px 3px; border-radius: 8px;
-  background: #fbff8c; color: #000;
+  background: #ffe14d; color: #000;
   font-family: "Serrif", Georgia, "Times New Roman", serif; font-weight: 300; font-synthesis: none;
   font-size: 18px; line-height: 1.25; letter-spacing: 0.08em; white-space: nowrap;
   rotate: -2deg;
@@ -4687,8 +4628,9 @@
    phone), the points and the warning at 18px/1.3.
    In the run every mark is the tester's pill: Telegraf Regular 15px,
    level, fully round, white (dark #2c2c2e, white words), Fix first the
-   red-orange; the numbered rounds are white with black figures, as the
-   licence panel's steps are. Copy summary is a white pill too. The words
+   red-orange. The numbered rounds keep the widget's solid ink round
+   (the same day's later instruction for every list number). Copy summary
+   is a white pill too. The words
    still carry every meaning. The key keeps its tracks from the blocks
    above: two under 760px of the summary (the warning a full row), one
    under 480px. */
@@ -4709,7 +4651,6 @@
   font-family: "PP Telegraf", "DejaVu Sans", sans-serif; font-weight: 400; font-size: 15px; line-height: 1.1; letter-spacing: 0.01em;
 }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-grid .a11y-sum-run .a11y-sum-row-marks > .a11y-sev-critical { background: var(--urgent); color: #000; }
-.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-grid .a11y-sum-run .a11y-sum-cell-no { background: var(--panel-pill); color: var(--ink); }
 /* The key as feature tiles. */
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-grid > .a11y-sum-key {
   --ink: inherit; --paper: inherit;
@@ -4737,7 +4678,7 @@
   font-size: 30px; line-height: 1.15; letter-spacing: -0.005em;
 }
 /* The warning's two lines read as one passage. */
-.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-key > .a11y-sum-warning { gap: 0; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-key > .a11y-sum-panel.a11y-sum-warning { gap: 0; }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-key > .a11y-sum-warning > .a11y-sum-eyebrow { margin-bottom: 28px; }
 @media (max-width: 640px) {
   .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-grid > .a11y-sum-col:not(.a11y-sum-key) { padding: 18px; border-radius: 20px; }
