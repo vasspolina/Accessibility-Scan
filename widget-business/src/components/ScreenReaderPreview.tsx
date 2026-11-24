@@ -283,7 +283,7 @@ export function ScreenReaderPreview({ script }: { script: ScreenReaderScript }) 
               aria-keyshortcuts="ArrowLeft"
               onClick={() => playerRef.current?.previous()}
             >
-              <Icon name="skip--back--filled" /> {t("Previous line")}
+              <Icon name="skip--back--filled" /> <span className="a11y-sr-ctl-word">{t("Previous line")}</span>
             </button>
             <button
               type="button"
@@ -291,7 +291,7 @@ export function ScreenReaderPreview({ script }: { script: ScreenReaderScript }) 
               aria-keyshortcuts="ArrowRight"
               onClick={() => playerRef.current?.next()}
             >
-              <Icon name="skip--forward--filled" /> {t("Next line")}
+              <Icon name="skip--forward--filled" /> <span className="a11y-sr-ctl-word">{t("Next line")}</span>
             </button>
             <button
               type="button"
@@ -302,7 +302,7 @@ export function ScreenReaderPreview({ script }: { script: ScreenReaderScript }) 
                 playRef.current?.focus({ preventScroll: true });
               }}
             >
-              <Icon name="stop--filled--alt" /> {t("Stop")}
+              <Icon name="stop--filled--alt" /> <span className="a11y-sr-ctl-word">{t("Stop")}</span>
             </button>
           </span>
         )}

@@ -2828,8 +2828,20 @@
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sr-bar:has(+ .a11y-sr-tools) { margin-bottom: 8px; }
 /* A phone has no arrow keys to speak of; the line would only take room
    from the transcript. The buttons still name their keys to a reader. */
+/* On a phone Previous line, Next line and Stop are their icons alone, in
+   44px pills on one row beside Pause, with each word clipped and kept as
+   the button's name (as the chat's Send is). Worded, the transport took
+   three rows: 171px stuck over a chat whose box takes half the screen,
+   leaving about 110px of transcript to follow. */
 @media (max-width: 640px) {
   .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sr-bar .a11y-sr-keys { display: none; }
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sr-bar .a11y-sr-ctl {
+    justify-content: center; width: 44px; padding-inline: 0;
+  }
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sr-bar .a11y-sr-ctl > svg { font-size: 18px; }
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sr-bar .a11y-sr-ctl-word {
+    position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0; overflow: hidden; clip-path: inset(50%); border: 0; white-space: nowrap;
+  }
 }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sr-bar .a11y-sr-status {
   flex: 0 1 auto; min-width: 0; margin: 0 8px; font-size: 18px; letter-spacing: 0.01em; font-variant-numeric: tabular-nums;
