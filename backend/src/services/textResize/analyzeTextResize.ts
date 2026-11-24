@@ -181,7 +181,7 @@ export function evaluateTextResize(signals: TextResizeSignals): AccessibilityFin
         signals.spacing.snippets[worst],
         signals.spacing.shots?.[worst],
         "Text cut off when spacing increases",
-        `${spacingBroken.length} element${spacingBroken.length === 1 ? " cuts" : "s cut"} text off when a visitor increases line and letter spacing. Instead of reflowing, the words disappear behind a fixed-height box.`,
+        `${spacingBroken.length} element${spacingBroken.length === 1 ? " cuts" : "s cut"} text off with line and letter spacing increased.`,
         FIX_CLIPPING,
         HELP_SPACING
       )
@@ -203,7 +203,7 @@ export function evaluateTextResize(signals: TextResizeSignals): AccessibilityFin
         signals.zoom.snippets[worst],
         signals.zoom.shots?.[worst],
         "Text cut off at larger font sizes",
-        `${zoomBroken.length} element${zoomBroken.length === 1 ? " cuts" : "s cut"} text off when the reader doubles their font size. The container keeps its size while the words grow, and hides the rest.`,
+        `${zoomBroken.length} element${zoomBroken.length === 1 ? " cuts" : "s cut"} text off at double the font size.`,
         FIX_CLIPPING,
         HELP_RESIZE
       )
@@ -223,7 +223,7 @@ export function evaluateTextResize(signals: TextResizeSignals): AccessibilityFin
         undefined,
         signals.zoom.viewportShot,
         "Enlarging text makes the page scroll sideways",
-        `At double the font size the page becomes about ${zoomOverflow}px wider than the window. Reading then means scrolling left and right on every line. The layout is holding a fixed width instead of reflowing around the larger text.`,
+        `At double the font size the page is about ${zoomOverflow}px wider than the window.`,
         "Let the layout reflow: use max-width with percentage or rem-based widths rather than fixed pixel widths. Allow long words to wrap.",
         HELP_RESIZE
       )

@@ -254,7 +254,7 @@ export function evaluateTypography(blocks: TypographyBlock[]): AccessibilityFind
         "typo-caps-letterspacing",
         "minor",
         longest(capsNoSpacing).selector,
-        `Text set in ALL CAPITALS has no extra letterspacing (${capsNoSpacing.length} place${capsNoSpacing.length === 1 ? "" : "s"}). Capital letters form uniform rectangles and need slight extra spacing to stay comfortably readable.`,
+        `Capitals with no extra letter spacing in ${capsNoSpacing.length} place${capsNoSpacing.length === 1 ? "" : "s"}.`,
         "Add letter-spacing of roughly 0.05em–0.1em to uppercase text (headings, labels, buttons, badges)."
       )
     );
@@ -271,7 +271,7 @@ export function evaluateTypography(blocks: TypographyBlock[]): AccessibilityFind
         "typo-lowercase-letterspaced",
         "minor",
         longest(lowercaseSpaced).selector,
-        `Body text has extra space forced between lowercase letters (${lowercaseSpaced.length} block${lowercaseSpaced.length === 1 ? "" : "s"}). Letterspacing lowercase running text breaks up the word shapes people read by.`,
+        `Extra letter spacing on lowercase body text in ${lowercaseSpaced.length} block${lowercaseSpaced.length === 1 ? "" : "s"}.`,
         "Remove letter-spacing (or reduce it to under ~0.05em) on paragraph text."
       )
     );
@@ -285,7 +285,7 @@ export function evaluateTypography(blocks: TypographyBlock[]): AccessibilityFind
         "typo-negative-letterspacing",
         "moderate",
         longest(negativeSpacing).selector,
-        `Text is spaced so tightly that letters can touch (${negativeSpacing.length} place${negativeSpacing.length === 1 ? "" : "s"}, letter-spacing below -0.4px).`,
+        `Letter-spacing below -0.4px in ${negativeSpacing.length} place${negativeSpacing.length === 1 ? "" : "s"}.`,
         "Remove the negative letter-spacing, or keep it above roughly -0.02em."
       )
     );
@@ -305,7 +305,7 @@ export function evaluateTypography(blocks: TypographyBlock[]): AccessibilityFind
         "typo-line-length-long",
         "moderate",
         worst.selector,
-        `Lines of body text run too long. About ${Math.round(charsPerLine(worst) ?? 0)} characters per line (${longLines.length} block${longLines.length === 1 ? "" : "s"} over 90). Comfortable reading is roughly 50–75 characters per line.`,
+        `Body text lines of about ${Math.round(charsPerLine(worst) ?? 0)} characters, ${longLines.length} block${longLines.length === 1 ? "" : "s"} over 90.`,
         "Constrain the text column, e.g. max-width: 65ch on paragraphs."
       )
     );
@@ -321,7 +321,7 @@ export function evaluateTypography(blocks: TypographyBlock[]): AccessibilityFind
         "typo-line-length-short",
         "minor",
         longest(shortLines).selector,
-        `Body text is squeezed into lines of under 25 characters (${shortLines.length} block${shortLines.length === 1 ? "" : "s"}). Reading becomes choppy when almost every phrase breaks.`,
+        `Body text lines under 25 characters in ${shortLines.length} block${shortLines.length === 1 ? "" : "s"}.`,
         "Widen the text column or reduce the font size slightly so lines carry more words."
       )
     );
@@ -354,7 +354,7 @@ export function evaluateTypography(blocks: TypographyBlock[]): AccessibilityFind
         "typo-leading-for-measure",
         "minor",
         worst.selector,
-        `Lines here are ${size}px, run about ${cpl} characters long, and sit ${ratio} times the text size apart (${underLed.length} block${underLed.length === 1 ? "" : "s"}). At this size and length about ${needed} would be comfortable.`,
+        `Line-height ${ratio} on ${size}px lines about ${cpl} characters long, where about ${needed} is needed (${underLed.length} block${underLed.length === 1 ? "" : "s"}).`,
         `Two fixes work and you only need one. Raise line-height to about ${needed} on this text, or narrow the column so the lines are shorter. A max-width of around 65 characters is the usual way.`
       )
     );
@@ -371,7 +371,7 @@ export function evaluateTypography(blocks: TypographyBlock[]): AccessibilityFind
         "typo-justified-no-hyphens",
         "moderate",
         longest(justifiedNoHyphens).selector,
-        `Text is justified without hyphenation (${justifiedNoHyphens.length} block${justifiedNoHyphens.length === 1 ? "" : "s"}). Justification stretches word spaces to fill each line; without hyphenation this creates uneven gaps and distracting "rivers" of white space.`,
+        `Justified text without hyphenation in ${justifiedNoHyphens.length} block${justifiedNoHyphens.length === 1 ? "" : "s"}.`,
         'Either switch to left-aligned (ragged-right) text, or enable hyphenation (hyphens: auto with a lang attribute) wherever you set text-align: justify.'
       )
     );
@@ -388,7 +388,7 @@ export function evaluateTypography(blocks: TypographyBlock[]): AccessibilityFind
         "typo-font-size-small",
         "moderate",
         worst.selector,
-        `Body text is set at ${Math.round(worst.fontSizePx)}px (${smallText.length} block${smallText.length === 1 ? "" : "s"} under 13px). Small settings that work in print are hard to read on screens.`,
+        `Body text at ${Math.round(worst.fontSizePx)}px, ${smallText.length} block${smallText.length === 1 ? "" : "s"} under 13px.`,
         "Raise body text to at least 14–16px."
       )
     );
@@ -408,7 +408,7 @@ export function evaluateTypography(blocks: TypographyBlock[]): AccessibilityFind
         "typo-underline-nonlink",
         "minor",
         longest(underlinedNonLink).selector,
-        `Text that isn't a link is underlined (${underlinedNonLink.length} place${underlinedNonLink.length === 1 ? "" : "s"}). Underlines read as links, confusing for everyone, and the line cutting through letters' descenders slows dyslexic readers.`,
+        `Underlined text that is not a link in ${underlinedNonLink.length} place${underlinedNonLink.length === 1 ? "" : "s"}.`,
         "Reserve underlines for links. Use bold or colour to emphasise other text."
       )
     );
@@ -425,7 +425,7 @@ export function evaluateTypography(blocks: TypographyBlock[]): AccessibilityFind
         "typo-italic-body",
         "minor",
         longest(italicBody).selector,
-        `Whole passages of body text are set in italics (${italicBody.length} block${italicBody.length === 1 ? "" : "s"}). Slanted, distorted letterforms are noticeably harder for people with dyslexia and low vision to read beyond a few words.`,
+        `Body text set in italics in ${italicBody.length} block${italicBody.length === 1 ? "" : "s"}.`,
         "Keep italics for short emphasis only. Set running text upright; emphasise with weight or colour instead."
       )
     );
@@ -442,7 +442,7 @@ export function evaluateTypography(blocks: TypographyBlock[]): AccessibilityFind
         "typo-allcaps-block",
         "minor",
         longest(allCapsBlocks).selector,
-        `A long passage is set in ALL CAPITALS (${allCapsBlocks.length} block${allCapsBlocks.length === 1 ? "" : "s"}). Capitals form uniform rectangles that strip out the word shapes people read by. Long all-caps text is slow and tiring, especially for dyslexic readers.`,
+        `Long passages set in capitals in ${allCapsBlocks.length} block${allCapsBlocks.length === 1 ? "" : "s"}.`,
         "Use normal sentence case for anything longer than a short label or heading. Emphasise with weight or size instead of capitals."
       )
     );
@@ -463,7 +463,7 @@ export function evaluateTypography(blocks: TypographyBlock[]): AccessibilityFind
         "typo-thin-weight",
         "minor",
         worst.selector,
-        `Body text is set in a very thin (hairline) weight. Font-weight ${worst.fontWeight} (${thinBody.length} block${thinBody.length === 1 ? "" : "s"} at 200 or lighter). Thin strokes fade out on cheaper screens and in bright light, and readers with low vision lose them first. This happens even when the colour contrast passes.`,
+        `Body text at font-weight ${worst.fontWeight}, ${thinBody.length} block${thinBody.length === 1 ? "" : "s"} at 200 or lighter.`,
         "Use a regular weight (around 400) for running text. Reserve hairline weights for large display headings, not paragraphs."
       )
     );
@@ -477,7 +477,7 @@ export function evaluateTypography(blocks: TypographyBlock[]): AccessibilityFind
         "typo-typeface-count",
         "minor",
         "body",
-        `The page mixes ${families.size} different typefaces (${Array.from(families).slice(0, 6).join(", ")}${families.size > 6 ? ", …" : ""}). More than two or three families makes the page look cluttered.`,
+        `${families.size} typefaces on one page: ${Array.from(families).slice(0, 6).join(", ")}${families.size > 6 ? ", …" : ""}.`,
         "Consolidate to one or two typeface families and use weights/sizes for hierarchy."
       )
     );

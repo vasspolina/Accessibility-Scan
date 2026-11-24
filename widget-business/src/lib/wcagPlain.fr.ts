@@ -6,62 +6,58 @@ import type { PlainRule } from "./wcagPlain";
 export const PLAIN_FR: Record<string, PlainRule> = {
   "reflow-height-unreachable": {
     plain: "Panneau fixe qui cache ses boutons",
-    impact: "Qui zoome pour lire ne peut pas atteindre ces boutons. Faire défiler ne sert à rien, le panneau ne bouge pas.",
+    impact: "Qui zoome pour lire ne peut pas du tout atteindre ces boutons.",
   },
   "reflow-height-pinned": {
     plain: "Barres fixes sans place pour lire",
-    impact: "Qui zoome pour lire voit les barres et presque rien d'autre. Pas une ligne de la page ne tient entre elles.",
+    impact: "Qui zoome voit les barres et presque rien d’autre.",
   },
   "reflow-height-pinned-advisory": {
     plain: "Barres fixes qui serrent la page",
-    impact: "Qui zoome voit quelques lignes à la fois et perd sa place à chaque défilement.",
+    impact: "Qui zoome voit quelques lignes à la fois et perd sa place.",
   },
   "contrast-over-image": {
     plain: "Texte trop pâle sur une image",
-    impact: "Les personnes malvoyantes, et toute personne qui lit au soleil, perdent les mots posés sur un fond clair ou chargé.",
+    impact: "Les personnes malvoyantes perdent les mots posés sur une image chargée ou pâle.",
   },
   "form-error-silent": {
     plain: "Formulaire qui refuse sans expliquer",
-    impact: "Qui oublie un champ appuie sur le bouton et rien ne se passe. Personne ne sait ce qui manque, et beaucoup abandonnent.",
+    impact: "Qui oublie un champ ne sait pas ce qui ne va pas, et beaucoup abandonnent.",
   },
   "timing-meta-refresh": {
-    found: (n) => (n === 1 ? "La page se recharge toute seule, ou passe à une autre page, après un délai fixe. Rien ne propose de l’arrêter." : "{n} instructions du code rechargent la page, ou passent à une autre, après un délai fixe. Aucune ne peut être arrêtée.".replace("{n}", String(n))),
+    found: (n) => (n === 1 ? "La page se recharge ou passe à une autre page après un délai fixe." : "{n} instructions du code rechargent la page ou passent à une autre après un délai fixe.".replace("{n}", String(n))),
     plain: "La page se recharge après un délai fixe",
-    impact:
-      "Qui est encore en train de lire, ou au milieu du formulaire, est renvoyé au début sans prévenir. Lire lentement n’est pas un défaut, et ceci le punit.",
+    impact: "Qui lit encore ou remplit le formulaire est renvoyé au début.",
   },
   "aria-allowed-role": {
     plain: "Un rôle que l’élément ne peut pas avoir",
     found: (n) =>
-      `${n} ${n === 1 ? "élément est désigné" : "éléments sont désignés"} dans le code comme quelque chose ${n === 1 ? "qu’il ne peut pas être" : "qu’ils ne peuvent pas être"}. Ce rôle n’a pas sa place sur ce type de balise.`,
-    impact:
-      "Les lecteurs d’écran annoncent la mauvaise chose. On dit aux gens qu’ils ont atteint un bouton alors que c’est un lien, ou un titre alors que c’est une liste.",
+      `${n} ${n === 1 ? "élément est désigné" : "éléments sont désignés"} dans le code comme quelque chose ${n === 1 ? "qu’il ne peut pas être" : "qu’ils ne peuvent pas être"}.`,
+    impact: "Les lecteurs d’écran annoncent un lien comme un bouton, ou une liste comme un titre.",
   },
   "aria-allowed-attr": {
     plain: "Un réglage de lecteur d’écran sur le mauvais élément",
     found: (n) =>
-      `${n} ${n === 1 ? "élément porte des réglages que son" : "éléments portent des réglages que leur"} type de balise n’a pas le droit d’avoir. Le navigateur et le lecteur d’écran ne sont pas d’accord sur ce ${n === 1 ? "qu’il est" : "qu’ils sont"}.`,
+      `${n} ${n === 1 ? "élément porte des réglages que son" : "éléments portent des réglages que leur"} type de balise n’a pas le droit d’avoir.`,
     impact: "Les lecteurs d’écran peuvent annoncer n’importe quoi, ou sauter l’élément entièrement.",
   },
   "aria-prohibited-attr": {
     plain: "Une étiquette que les lecteurs d’écran doivent ignorer",
     found: (n) =>
       `${n} ${n === 1 ? "élément porte" : "éléments portent"} un libellé que le code n’autorise pas sur ce type de balise.`,
-    impact:
-      "L’élément a l’air nommé dans votre source, donc personne ne remarque le problème. Les lecteurs d’écran ignorent le libellé et annoncent le texte qui se trouve dedans. Souvent rien.",
+    impact: "Les lecteurs d’écran ignorent le libellé et annoncent le texte qui se trouve dedans, souvent rien.",
   },
   "aria-required-children": {
     plain: "Des menus ou des listes sans leurs entrées",
     found: (n) =>
-      `${n} ${n === 1 ? "contrôle est désigné dans le code comme un menu ou une liste, mais ne contient" : "contrôles sont désignés dans le code comme des menus ou des listes, mais ne contiennent"} aucune des entrées ${n === 1 ? "qu’il exige" : "qu’ils exigent"}. ${n === 1 ? "Il est annoncé" : "Chacun est annoncé"} comme vide.`,
+      `${n} ${n === 1 ? "contrôle est désigné dans le code comme un menu ou une liste, mais ne contient" : "contrôles sont désignés dans le code comme des menus ou des listes, mais ne contiennent"} aucune des entrées ${n === 1 ? "qu’il exige" : "qu’ils exigent"}.`,
     impact: "Les lecteurs d’écran n’en déduisent pas la structure, donc personne ne peut y naviguer.",
   },
   "aria-required-parent": {
     plain: "Élément de liste hors de sa liste",
     found: (n) =>
-      `${n} ${n === 1 ? "élément est désigné comme un morceau" : "éléments sont désignés comme des morceaux"} d’un contrôle plus grand : un onglet, une entrée de menu, une option, une ligne. ${n === 1 ? "Il ne se trouve pas" : "Aucun ne se trouve"} dans le contrôle auquel il appartient.`,
-    impact:
-      "Un onglet hors de sa barre d’onglets n’est l’onglet de rien. Les lecteurs d’écran ne peuvent pas dire lequel il est sur combien. Les flèches du clavier qui servent à parcourir ces contrôles n’ont plus rien à parcourir.",
+      `${n} ${n === 1 ? "élément est désigné comme partie d’un contrôle plus grand, un onglet par exemple, mais se trouve" : "éléments sont désignés comme parties d’un contrôle plus grand, un onglet par exemple, mais se trouvent"} en dehors.`,
+    impact: "Les lecteurs d’écran ne peuvent pas dire lequel il est sur combien.",
   },
   "landmark-unique": {
     plain: "Deux zones de page portent le même nom",
@@ -79,14 +75,14 @@ export const PLAIN_FR: Record<string, PlainRule> = {
   "landmark-no-duplicate-contentinfo": {
     plain: "Plus d’un pied de page",
     found: () =>
-      `La page marque plus d’une zone comme son pied de page, donc il n’y a pas un seul endroit où trouver les coordonnées ou les conditions.`,
+      `La page marque plus d’une zone comme son pied de page.`,
     impact: "Les lecteurs d’écran listent plusieurs pieds de page, et les gens ne savent pas lequel est lequel.",
   },
   "landmark-no-duplicate-main": {
     plain: "Plus d’une zone de contenu principal",
     found: () =>
-      `Plus d’une zone est marquée comme le contenu principal. « Aller au contenu principal » doit en choisir une, sans pouvoir savoir laquelle vous vouliez.`,
-    impact: "Les gens atterrissent dans la mauvaise moitié de la page.",
+      `Plus d’une zone est marquée comme le contenu principal.`,
+    impact: "« Aller au contenu principal » peut mener les gens dans la mauvaise partie de la page.",
   },
   "landmark-banner-is-top-level": {
     plain: "En-tête imbriqué dans une autre zone",
@@ -104,106 +100,98 @@ export const PLAIN_FR: Record<string, PlainRule> = {
     plain: "Le lien d’évitement ne mène nulle part",
     found: (n) =>
       `${n} ${n === 1 ? "lien d’évitement pointe" : "liens d’évitement pointent"} vers quelque chose qui n’est pas sur la page.`,
-    impact:
-      "Les personnes qui naviguent au clavier l’activent et restent exactement où elles étaient, puis parcourent tout le menu quand même.",
+    impact: "Les personnes qui naviguent au clavier l’activent et parcourent quand même tout le menu.",
   },
   "component-skip-link-dead": {
     plain: "Le lien d’évitement ne mène nulle part",
     found: (n) =>
       `${n} ${n === 1 ? "lien d’évitement pointe" : "liens d’évitement pointent"} vers quelque chose qui n’est pas sur la page.`,
-    impact:
-      "Les personnes qui naviguent au clavier l’activent et restent exactement où elles étaient, puis parcourent tout le menu quand même.",
+    impact: "Les personnes qui naviguent au clavier l’activent et parcourent quand même tout le menu.",
   },
   "image-redundant-alt": {
     plain: "La description d’image répète le texte voisin",
     found: (n) =>
       `${n} ${n === 1 ? "image reprend, dans son texte alternatif, les mots déjà écrits à côté d’elle" : "images reprennent, dans leur texte alternatif, les mots déjà écrits à côté d’elles"}.`,
-    impact: "Les utilisateurs de lecteurs d’écran entendent deux fois la même chose, ce qui les ralentit pour rien.",
+    impact: "Les utilisateurs de lecteurs d’écran entendent deux fois les mêmes mots.",
   },
   "color-contrast": {
     research:
-      "WebAIM examine chaque année un million de pages d’accueil. Le texte trop peu contrasté est le défaut le plus fréquent qu’il y trouve, année après année. Bien plus de gens voient moins net que ne le supposent les écrans d’une équipe de design.",
+      "WebAIM examine chaque année un million de pages d’accueil. Le texte trop peu contrasté est le défaut le plus fréquent qu’il y trouve, année après année.",
     plain: "Texte trop pâle pour être lu",
     found: (n) =>
-      `${n} ${n === 1 ? "passage de texte sur cette page est trop proche" : "passages de texte sur cette page sont trop proches"} en couleur du fond qui se trouve derrière ${n === 1 ? "lui" : "eux"}. La version technique donne le rapport mesuré.`,
-    impact:
-      "Difficile à lire en plein soleil, sur un écran bon marché, dans une pièce sombre ou avec une vue imparfaite. Le message ne passe pas.",
+      `${n} ${n === 1 ? "passage de texte sur cette page est trop proche" : "passages de texte sur cette page sont trop proches"} en couleur du fond qui se trouve derrière ${n === 1 ? "lui" : "eux"}.`,
+    impact: "Avec une vue faible, ou en plein soleil, on ne distingue pas les mots.",
   },
   "image-alt": {
     research:
-      "WebAIM examine chaque année un million de pages d’accueil. Les images sans description comptent parmi les défauts les plus fréquents qu’il y trouve, année après année. C’est aussi l’un des plus simples à régler.",
+      "WebAIM examine chaque année un million de pages d’accueil. Les images sans description comptent parmi les défauts les plus fréquents qu’il y trouve, année après année.",
     plain: "Les images n’ont pas de description",
     found: (n) =>
-      `${n} ${n === 1 ? "image n’a" : "images n’ont"} aucun texte alternatif. Pas même un texte vide pour ${n === 1 ? "la marquer décorative" : "les marquer décoratives"}. Un lecteur d’écran se rabat sur la lecture du nom de fichier, ou ${n === 1 ? "la saute" : "les saute"} en silence.`,
-    impact:
-      "Les utilisateurs de lecteurs d’écran n’entendent rien pour ces images, et les moteurs de recherche ne savent pas ce qu’elles montrent. Le site y perd en accessibilité comme en référencement.",
+      `${n} ${n === 1 ? "image n’a" : "images n’ont"} aucun texte alternatif.`,
+    impact: "Les utilisateurs de lecteurs d’écran ne savent pas ce que montrent ces images.",
   },
   "svg-img-alt": {
     plain: "Les icônes n’ont pas de description",
     found: (n) =>
       `${n} ${n === 1 ? "icône est marquée" : "icônes sont marquées"} dans le code comme ${n === 1 ? "une image" : "des images"} mais ${n === 1 ? "ne porte" : "ne portent"} aucun mot disant ce ${n === 1 ? "qu’elle montre" : "qu’elles montrent"}.`,
-    impact:
-      "Souvent l’icône est le seul libellé d’un contrôle : une loupe pour la recherche, un panier pour le panier. Un lecteur d’écran y arrive et n’a rien à annoncer.",
+    impact: "Quand l’icône est le seul libellé, les lecteurs d’écran n’ont rien à annoncer.",
   },
   "input-image-alt": {
     plain: "Le bouton-image n’a pas de description",
     found: (n) =>
-      `${n} ${n === 1 ? "image utilisée comme bouton n’a" : "images utilisées comme boutons n’ont"} pas de texte alternatif : il n’y a rien à annoncer et rien à lire.`,
-    impact: "Les utilisateurs de lecteurs d’écran ne savent pas ce que fait le bouton, donc ils ne finissent pas.",
+      `${n} ${n === 1 ? "image utilisée comme bouton n’a" : "images utilisées comme boutons n’ont"} pas de texte alternatif.`,
+    impact: "Les utilisateurs de lecteurs d’écran ne savent pas ce que fait le bouton.",
   },
   "link-name": {
     research:
       "Les liens vides comptent parmi les défauts les plus fréquents du relevé annuel de WebAIM sur un million de pages d’accueil.",
     plain: "Des liens sans texte lisible",
     found: (n) =>
-      `${n} ${n === 1 ? "lien n’a" : "liens n’ont"} aucun texte lisible à l’intérieur : ni mots, ni libellé, rien à annoncer. ${n === 1 ? "C’est le plus souvent une icône, une flèche ou une image servant de lien." : "Ce sont le plus souvent des icônes, des flèches ou des images servant de liens."} L’image porte le sens et le code n’en porte rien.`,
-    impact:
-      "Les utilisateurs de lecteurs d’écran affichent souvent la liste de tous les liens et y choisissent. Un lien sans texte y apparaît comme le seul mot « lien ». Plusieurs d’entre eux transforment la liste en « lien, lien, lien ».",
+      `${n} ${n === 1 ? "lien n’a" : "liens n’ont"} ni mots ni libellé à l’intérieur.`,
+    impact: "Les utilisateurs de lecteurs d’écran n’entendent que « lien », sans indice sur sa destination.",
   },
   "link-text-vague": {
-    found: (n) => (n === 1 ? "Un lien ne dit que quelque chose comme « en savoir plus » ou « ici ». Lu seul, il ne dit pas où il mène." : "{n} liens ne disent que quelque chose comme « en savoir plus » ou « ici ». Lu seul, aucun ne dit où il mène.".replace("{n}", String(n))),
+    found: (n) => (n === 1 ? "Un lien ne dit que quelque chose comme « en savoir plus » ou « ici »." : "{n} liens ne disent que quelque chose comme « en savoir plus » ou « ici ».".replace("{n}", String(n))),
     plain: "Les liens ne disent que « en savoir plus »",
-    impact:
-      "Les utilisateurs de lecteurs d’écran peuvent afficher la liste de tous les liens de la page. Quand ils se lisent tous pareil, la liste n’aide en rien.",
+    impact: "Dans la liste des liens d’un lecteur d’écran, ils se lisent tous pareil.",
   },
   "label-content-name-mismatch": {
     plain: "Le nom lu diffère du libellé",
     found: (n) =>
-      `${n} ${n === 1 ? "contrôle affiche" : "contrôles affichent"} certains mots et ${n === 1 ? "porte" : "portent"} un autre nom dans le code. Le nom que lit un lecteur d’écran laisse de côté les mots visibles.`,
-    impact: "Les personnes qui utilisent la commande vocale disent les mots qu’elles voient. « Clique sur Envoyer le message » ne fait rien si le bouton porte un autre nom dans le code. Avec un lecteur d’écran et la page sous les yeux, on entend une chose et on en lit une autre.",
+      `${n} ${n === 1 ? "contrôle affiche" : "contrôles affichent"} certains mots et ${n === 1 ? "porte" : "portent"} un autre nom dans le code.`,
+    impact: "Les personnes qui utilisent la commande vocale disent les mots qu’elles voient, et rien ne se passe.",
   },
   "button-name": {
     research:
       "Les boutons sans libellé sont tout en haut du relevé annuel de WebAIM sur un million de pages d’accueil, année après année. Ce sont en général des contrôles réduits à une icône, évidente pour qui les a dessinés.",
     plain: "Les boutons n’ont pas de libellé",
     found: (n) =>
-      `${n} ${n === 1 ? "bouton n’a" : "boutons n’ont"} aucun libellé : pas de mots à l’intérieur et pas de nom dans le code. Presque toujours un bouton-icône, où le symbole porte le sens et le code n’en porte rien.`,
-    impact: "Les utilisateurs de lecteurs d’écran ne savent pas ce qu’il fait avant d’appuyer dessus. Une raison fréquente d’abandon.",
+      `${n} ${n === 1 ? "bouton n’a" : "boutons n’ont"} ni mots à l’intérieur ni nom dans le code.`,
+    impact: "Les utilisateurs de lecteurs d’écran ne savent pas ce qu’il fait avant d’appuyer dessus.",
   },
   label: {
     research:
-      "Les champs de formulaire sans libellé sont tout en haut du relevé annuel de WebAIM sur un million de pages d’accueil. Dans l’étude britannique Click-Away Pound, la plupart des personnes bloquées ainsi en plein achat sont parties sans un mot. Elles ont dépensé ailleurs.",
+      "Les champs de formulaire sans libellé sont tout en haut du relevé annuel de WebAIM sur un million de pages d’accueil. Dans l’étude britannique Click-Away Pound, la plupart des personnes bloquées ainsi en plein achat sont parties sans un mot.",
     plain: "Les champs de formulaire n’ont pas de libellé",
     found: (n) =>
-      `${n} ${n === 1 ? "champ de formulaire n’est pas relié" : "champs de formulaire ne sont pas reliés"} à un libellé dans le code. Les mots ont beau être juste à côté du champ à l’écran, rien ne relie les deux.`,
-    impact:
-      "Les utilisateurs de lecteurs d’écran ne savent pas quoi mettre dans chaque case, donc les formulaires sont abandonnés, le paiement compris.",
+      `${n} ${n === 1 ? "champ de formulaire n’est pas relié" : "champs de formulaire ne sont pas reliés"} à un libellé dans le code.`,
+    impact: "Les utilisateurs de lecteurs d’écran ne savent pas quoi mettre dans chaque case, donc les formulaires sont abandonnés.",
   },
   "select-name": {
     plain: "Une liste déroulante sans libellé",
     found: (n) =>
       `${n} ${n === 1 ? "liste déroulante n’a" : "listes déroulantes n’ont"} pas de libellé dans le code.`,
-    impact: "Les gens ne savent pas ce qu’ils choisissent. Les erreurs et les formulaires abandonnés suivent.",
+    impact: "Les gens ne savent pas ce qu’ils choisissent.",
   },
   "document-title": {
     plain: "La page n’a pas de titre",
     found: () =>
-      `La page n’a pas de titre : l’onglet du navigateur et le lecteur d’écran se rabattent tous deux sur l’adresse.`,
-    impact: "Les onglets, les favoris, l’historique et les résultats de recherche n’affichent rien d’utile.",
+      `La page n’a pas de titre, donc l’onglet du navigateur n’affiche que l’adresse.`,
+    impact: "Les onglets, les favoris et les résultats de recherche n’affichent rien d’utile.",
   },
   "html-has-lang": {
     research:
-      "La langue du document absente est l’un des rares défauts que WebAIM trouve sur la majorité du web. Il reste fréquent parce qu’il est silencieux : la page a l’air correcte, et seul quelqu’un qui l’entend dans la mauvaise voix rencontre le problème.",
+      "La langue du document absente est l’un des rares défauts que WebAIM trouve sur la majorité du web. Il reste fréquent parce qu’il est silencieux.",
     plain: "La page ne déclare aucune langue",
     found: () => `La page ne déclare pas dans quelle langue elle est écrite.`,
     impact: "Les gens entendent votre contenu avec le mauvais accent, ce qui est difficile à suivre.",
@@ -216,8 +204,8 @@ export const PLAIN_FR: Record<string, PlainRule> = {
   "heading-order": {
     plain: "Les titres sautent des niveaux",
     found: (n) =>
-      `Les niveaux de titre sautent au lieu d’avancer d’un cran. À ${n} ${n === 1 ? "endroit" : "endroits"}, un niveau est sauté : un h2 suivi directement d’un h4, ou l’équivalent.`,
-    impact: "La plupart des utilisateurs de lecteurs d’écran naviguent par les titres. Ils perdent le fil.",
+      `À ${n} ${n === 1 ? "endroit" : "endroits"}, un niveau de titre est sauté, par exemple un h2 suivi d’un h4.`,
+    impact: "Les utilisateurs de lecteurs d’écran qui naviguent par les titres perdent le fil.",
   },
   "page-has-heading-one": {
     plain: "Pas de titre principal",
@@ -238,80 +226,74 @@ export const PLAIN_FR: Record<string, PlainRule> = {
   },
   "meta-viewport": {
     plain: "Le zoom est bloqué",
-    found: () => `La page bloque le zoom : qui a besoin de l’agrandir sur un téléphone ne le peut pas.`,
-    impact: "Qui a besoin d’un texte plus gros ne l’obtient pas. Sur un téléphone, ces personnes s’en vont, tout simplement.",
+    found: () => `La page empêche quiconque de l’agrandir sur un téléphone.`,
+    impact: "Qui a besoin d’un texte plus gros ne l’obtient pas.",
   },
   "meta-viewport-large": {
     plain: "Zoom limité à un niveau fixe",
     found: () =>
       `Le zoom fonctionne, mais la page le plafonne sous 500 %.`,
-    impact:
-      "Moins grave que bloquer le zoom, et cela dessert les mêmes personnes. Qui a besoin d’un très gros texte atteint le plafond et rien de plus.",
+    impact: "Qui a besoin d’un très gros texte atteint le plafond et ne va pas plus loin.",
   },
   "frame-title": {
     plain: "Un cadre intégré sans titre",
     found: (n) =>
       `${n} ${n === 1 ? "cadre intégré n’a pas de titre, donc il est annoncé" : "cadres intégrés n’ont pas de titre, donc ils sont annoncés"} seulement comme « cadre ».`,
-    impact: "Les utilisateurs de lecteurs d’écran ne savent pas ce qu’il contient, ni si cela vaut leur temps.",
+    impact: "Les utilisateurs de lecteurs d’écran ne savent pas ce qu’il contient.",
   },
   "duplicate-id-active": {
     plain: "Deux contrôles partagent un même id",
     found: (n) =>
-      `${n} ${n === 1 ? "id est utilisé" : "id sont utilisés"} plus d’une fois sur des contrôles : les libellés et les renvois peuvent désigner le mauvais élément.`,
-    impact: "Les lecteurs d’écran s’embrouillent et ce n’est pas le bon élément qui réagit au clic.",
+      `${n} ${n === 1 ? "id est utilisé" : "id sont utilisés"} plus d’une fois sur des contrôles.`,
+    impact: "Les lecteurs d’écran peuvent lire le libellé du mauvais contrôle.",
   },
   list: {
     plain: "Une liste qui n’en est pas une dans le code",
     found: (n) =>
-      `${n} ${n === 1 ? "liste est construite" : "listes sont construites"} avec autre chose que des entrées de liste à l’intérieur. Le groupement existe à l’écran et pas dans le code.`,
-    impact:
-      "Les utilisateurs de lecteurs d’écran ne savent pas combien d’entrées il y a, et ne peuvent pas les parcourir.",
+      `${n} ${n === 1 ? "liste est construite" : "listes sont construites"} avec autre chose que des entrées de liste à l’intérieur.`,
+    impact: "Les utilisateurs de lecteurs d’écran ne savent pas combien d’entrées il y a.",
   },
   listitem: {
     plain: "Des entrées de liste hors de toute liste",
     found: (n) =>
-      `${n} ${n === 1 ? "entrée de liste se trouve" : "entrées de liste se trouvent"} hors de toute liste. Un lecteur d’écran n’annonce jamais combien il y en a, ni où le groupe commence.`,
-    impact: "Les utilisateurs de lecteurs d’écran perdent le groupement, et le contenu cesse d’avoir du sens.",
+      `${n} ${n === 1 ? "entrée de liste se trouve" : "entrées de liste se trouvent"} hors de toute liste.`,
+    impact: "Les utilisateurs de lecteurs d’écran perdent le groupement.",
   },
   "aria-required-attr": {
     plain: "Un contrôle sans état obligatoire",
     found: (n) =>
-      `${n} ${n === 1 ? "contrôle est désigné" : "contrôles sont désignés"} comme quelque chose qui a un état : coché, déplié, une valeur sur une échelle. ${n === 1 ? "Il ne dit jamais" : "Aucun ne dit"} quel est cet état.`,
-    impact: "Les utilisateurs de lecteurs d’écran ne savent pas dans quel état il est, ni comment s’en servir.",
+      `${n} ${n === 1 ? "contrôle est désigné comme ayant un état, coché ou déplié par exemple, mais ne dit jamais" : "contrôles sont désignés comme ayant un état, coché ou déplié par exemple, mais ne disent jamais"} lequel.`,
+    impact: "Les utilisateurs de lecteurs d’écran ne savent pas dans quel état il est.",
   },
   "aria-hidden-focus": {
     plain: "Des éléments masqués captent quand même le clavier",
     found: (n) =>
       `${n} ${n === 1 ? "élément est masqué" : "éléments sont masqués"} pour les lecteurs d’écran tout en restant ${n === 1 ? "accessible" : "accessibles"} au clavier.`,
-    impact:
-      "Quelqu’un qui tabule atterrit sur quelque chose que son lecteur d’écran ne lira pas. La page semble cassée.",
+    impact: "Les personnes au clavier atterrissent sur quelque chose que leur lecteur d’écran ne lira pas.",
   },
   "aria-dialog-name": {
     plain: "Une fenêtre surgissante sans nom",
     found: (n) =>
       `${n} ${n === 1 ? "fenêtre surgissante n’a rien qui la nomme, donc elle est annoncée" : "fenêtres surgissantes n’ont rien qui les nomme, donc elles sont annoncées"} comme « boîte de dialogue » et rien d’autre.`,
-    impact:
-      "Quelque chose a pris tout l’écran et il n’y a aucun moyen d’entendre ce que c’est.",
+    impact: "Les utilisateurs de lecteurs d’écran ne peuvent pas entendre ce qui a pris tout l’écran.",
   },
   "nested-interactive": {
     plain: "Un contrôle imbriqué dans un autre",
     found: (n) =>
-      `${n} ${n === 1 ? "contrôle en contient un autre" : "contrôles en contiennent chacun un autre"}. Ce qui ressemble à une seule chose à cliquer en fait deux, l’une enroulée autour de l’autre.`,
-    impact:
-      "Les lecteurs d’écran annoncent celui du dehors et cachent ce qu’il y a dedans, donc le contrôle intérieur est hors d’atteinte. Lequel des deux un clic ou une touche active, personne ne le sait.",
+      `${n} ${n === 1 ? "contrôle en contient un autre" : "contrôles en contiennent chacun un autre"}.`,
+    impact: "Le contrôle intérieur est caché aux lecteurs d’écran et hors d’atteinte.",
   },
   "presentation-role-conflict": {
     plain: "Un contrôle actif marqué comme décoration",
     found: (n) =>
       `${n} ${n === 1 ? "élément est marqué" : "éléments sont marqués"} comme à ignorer tout en restant ${n === 1 ? "atteignable et utilisable" : "atteignables et utilisables"}.`,
-    impact:
-      "Le code dit de l’ignorer et l’élément dit de s’en servir. Les lecteurs d’écran tranchent chacun à leur façon, donc certaines personnes ne le trouvent jamais.",
+    impact: "Certains lecteurs d’écran l’ignorent, et leurs utilisateurs ne le trouvent jamais.",
   },
   region: {
     plain: "Des zones de page sans nom dans le code",
     found: (n) =>
       `${n} ${n === 1 ? "bloc de contenu n’a" : "blocs de contenu n’ont"} ni en-tête, ni navigation, ni contenu principal, ni pied de page autour ${n === 1 ? "de lui" : "d’eux"}.`,
-    impact: "Les utilisateurs de lecteurs d’écran ne peuvent pas passer devant. Ils entendent tout, à chaque fois.",
+    impact: "Les utilisateurs de lecteurs d’écran ne peuvent pas sauter plus loin, donc ils entendent tout à chaque fois.",
   },
   "landmark-one-main": {
     plain: "Rien ne marque le contenu principal",
@@ -322,8 +304,8 @@ export const PLAIN_FR: Record<string, PlainRule> = {
   tabindex: {
     plain: "L’ordre de tabulation part dans tous les sens",
     found: (n) =>
-      `${n} ${n === 1 ? "élément utilise" : "éléments utilisent"} un tabindex positif. Cela ${n === 1 ? "le force" : "les force"} en tête de l’ordre de tabulation, où qu'${n === 1 ? "il se trouve" : "ils se trouvent"} sur la page.`,
-    impact: "Les gens qui ne peuvent pas se servir d’une souris sont ballottés d’un bout à l’autre de la page.",
+      `${n} ${n === 1 ? "élément utilise" : "éléments utilisent"} un tabindex positif, qui ${n === 1 ? "le place" : "les place"} en tête de l’ordre de tabulation.`,
+    impact: "Les personnes au clavier sont ballottées d’un bout à l’autre de la page.",
   },
   "scrollable-region-focusable": {
     plain: "Zone défilante hors d’atteinte au clavier",
@@ -333,110 +315,94 @@ export const PLAIN_FR: Record<string, PlainRule> = {
   },
 
   "keyboard-mouse-only": {
-    found: (n) => (n === 1 ? "Un contrôle réagit au clic, mais pas au clavier. La touche Tab ne l’atteint pas, ou Entrée et Espace n’y font rien." : "{n} contrôles réagissent au clic, mais pas au clavier. La touche Tab ne les atteint pas, ou Entrée et Espace n’y font rien.".replace("{n}", String(n))),
+    found: (n) => (n === 1 ? "Un contrôle réagit au clic, mais pas au clavier." : "{n} contrôles réagissent au clic, mais pas au clavier.".replace("{n}", String(n))),
     research:
       "Des décennies de recherche sur l’usage, en grande partie du Nielsen Norman Group, aboutissent toujours à la même conclusion. L’accès au clavier sert autant les personnes aguerries que celles qui ne peuvent pas tenir une souris.",
     plain: "Un contrôle que le clavier n’atteint pas",
-    impact:
-      "Il n’y a aucun contournement ici. Qui ne peut pas se servir d’une souris ne peut pas faire ce que fait ce contrôle. Si c’est un bouton d’achat ou une étape de formulaire, la visite s’arrête là.",
+    impact: "Qui ne peut pas se servir d’une souris ne peut pas du tout utiliser ce contrôle.",
   },
   "keyboard-no-visible-focus": {
     found: (n) => (n === 1 ? "Quand la touche Tab atteint au moins un contrôle, ni contour ni surbrillance n’apparaît pour montrer où l’on est." : "Quand la touche Tab atteint {n} contrôles, ni contour ni surbrillance n’apparaît pour montrer où l’on est.".replace("{n}", String(n))),
     plain: "Rien ne montre où est le clavier",
-    impact:
-      "Beaucoup de gens ne touchent jamais une souris. Sans repère visible, ils naviguent à l’aveugle, et ils abandonnent.",
+    impact: "Les personnes au clavier ne voient pas où elles sont, et abandonnent.",
   },
   "readability-dense-prose": {
-    found: (n) => (n === 1 ? "Le texte de cette page demande à peu près un niveau universitaire. La mesure porte sur la longueur des phrases et des mots." : "{n} textes de cette page demandent à peu près un niveau universitaire. La mesure porte sur la longueur des phrases et des mots.".replace("{n}", String(n))),
+    found: (n) => (n === 1 ? "Le texte de cette page demande à peu près un niveau universitaire." : "{n} textes de cette page demandent à peu près un niveau universitaire.".replace("{n}", String(n))),
     plain: "L’écriture demande un niveau universitaire",
-    impact:
-      "C’est le changement qui touche le plus de monde dans ce rapport. Il aide les personnes ayant des troubles cognitifs et toutes celles qui lisent dans une deuxième langue. GOV.UK écrit pour un âge de lecture d’environ neuf ans, et ce n’est pas un site simple.",
+    impact: "Les personnes ayant des troubles cognitifs, ou qui lisent dans une deuxième langue, ne peuvent pas suivre.",
   },
   "typo-leading-for-measure": {
     found: (n) => (n === 1 ? "Sur cette page, du texte courant a trop peu d’interligne pour sa taille et la longueur de ses lignes." : "{n} blocs de texte ont trop peu d’interligne pour la longueur de leurs lignes et leur taille de caractères.".replace("{n}", String(n))),
     plain: "Lignes trop serrées les unes sur les autres",
-    impact:
-      "L’œil ne glisse pas le long d’une ligne, il saute. Le saut le plus difficile est le retour au début de la suivante. Plus la ligne est longue, plus il est facile de tomber sur la mauvaise.",
+    impact: "En revenant au début de chaque ligne, l’œil tombe sur la mauvaise.",
   },
   "reading-order-mismatch": {
-    found: (n) => (n === 1 ? "Dans une rangée de contrôles côte à côte, la touche Tab ne suit pas l’ordre de l’écran. La mise en page les réordonne, le code non." : "Dans {n} rangées de contrôles côte à côte, la touche Tab ne suit pas l’ordre de l’écran. La mise en page les réordonne, le code non.".replace("{n}", String(n))),
+    found: (n) => (n === 1 ? "Dans une rangée de contrôles côte à côte, la touche Tab ne suit pas l’ordre de l’écran." : "Dans {n} rangées de contrôles côte à côte, la touche Tab ne suit pas l’ordre de l’écran.".replace("{n}", String(n))),
     plain: "L’ordre de tabulation contredit l’ordre visible",
-    impact:
-      "La page a déplacé des choses à l’écran sans les déplacer dans son propre code, et la touche Tab suit le code. Sur un duo comme Annuler et Envoyer, le bouton sous votre curseur n’est pas celui où se trouve le clavier.",
+    impact: "Les personnes au clavier peuvent tomber sur Envoyer alors qu’elles voulaient Annuler.",
   },
 
   "forced-colors-focus-lost": {
-    found: (n) => (n === 1 ? "Sur au moins un contrôle, le repère de focus n’est qu’une ombre ou un changement de couleur. Il disparaît donc en mode contraste élevé de Windows." : "Sur {n} contrôles, le repère de focus n’est qu’une ombre ou un changement de couleur. Il disparaît donc en mode contraste élevé de Windows.".replace("{n}", String(n))),
+    found: (n) => (n === 1 ? "Sur au moins un contrôle, le repère de focus disparaît en mode contraste élevé de Windows." : "Sur {n} contrôles, le repère de focus disparaît en mode contraste élevé de Windows.".replace("{n}", String(n))),
     plain: "Le repère de focus disparaît en contraste élevé",
-    impact:
-      "Le mode contraste élevé retire les ombres et les couleurs avec lesquelles la plupart des repères de focus sont dessinés. Les gens qui ont le plus besoin de voir où ils sont ne voient rien, sur une page qui paraît parfaite tant que ce mode est éteint.",
+    impact: "Les personnes en mode contraste élevé ne voient pas où se trouve le clavier.",
   },
   "forced-colors-icon-lost": {
-    found: (n) => (n === 1 ? "Un contrôle sans texte n’est qu’une image de fond. En mode contraste élevé de Windows, l’image disparaît et il reste une case vide." : "{n} contrôles sans texte ne sont qu’une image de fond. En mode contraste élevé de Windows, l’image disparaît et il reste des cases vides.".replace("{n}", String(n))),
+    found: (n) => (n === 1 ? "Un contrôle sans texte devient une case vide en mode contraste élevé de Windows." : "{n} contrôles sans texte deviennent des cases vides en mode contraste élevé de Windows.".replace("{n}", String(n))),
     plain: "Le bouton-icône disparaît en contraste élevé",
-    impact:
-      "L’icône est dessinée en image de fond, et ce mode retire les images de fond. Le bouton marche toujours, mais s’affiche comme une case vide : pas d’image, pas de libellé, rien qui indique un bouton.",
+    impact: "En mode contraste élevé, le bouton s’affiche comme une case vide.",
   },
   "keyboard-faint-focus": {
-    found: (n) => (n === 1 ? "Sur au moins un contrôle, le contour qui marque le focus clavier est trop pâle. Son contraste avec le fond reste sous 3:1, le minimum fixé par les WCAG." : "Sur {n} contrôles, le contour qui marque le focus clavier est trop pâle. Son contraste avec le fond reste sous 3:1, le minimum fixé par les WCAG.".replace("{n}", String(n))),
+    found: (n) => (n === 1 ? "Sur au moins un contrôle, le contour du focus clavier a un contraste inférieur à 3:1." : "Sur {n} contrôles, le contour du focus clavier a un contraste inférieur à 3:1.".replace("{n}", String(n))),
     plain: "Repère clavier trop pâle pour être vu",
-    impact:
-      "Tab déplace un curseur invisible, et le contour est la seule chose qui montre où il est arrivé. S’il est trop pâle, la personne au clavier ne sait pas ce qu’elle s’apprête à activer. Cela passe les tests parce qu’il y a bel et bien un contour.",
+    impact: "Les personnes au clavier ne savent pas ce qu’elles s’apprêtent à activer.",
   },
   "keyboard-focus-trap": {
-    found: (n) => (n === 1 ? "À un endroit, le focus reste bloqué quand on appuie sur Tab. Il reste sur un élément ou fait l’aller-retour entre deux, sans atteindre le reste de la page." : "À {n} endroits, le focus reste bloqué quand on appuie sur Tab. Il reste sur un élément ou fait l’aller-retour entre deux, sans atteindre le reste de la page.".replace("{n}", String(n))),
+    found: (n) => (n === 1 ? "À un endroit, le focus clavier reste bloqué quand on appuie sur Tab." : "À {n} endroits, le focus clavier reste bloqué quand on appuie sur Tab.".replace("{n}", String(n))),
     plain: "Le focus clavier reste bloqué",
-    impact:
-      "Une personne au clavier qui arrive ici ne peut pas aller plus loin. L’un des pires défauts qu’un site puisse avoir.",
+    impact: "Une personne au clavier qui arrive ici ne peut pas aller plus loin.",
   },
 
   // Les vérifications des noms pour lecteurs d'écran. Chacune est une carte
   // groupée dont le nombre figure dans la description du backend, d'où
   // l'absence de found().
   "sr-filename-alt": {
-    found: (n) => (n === 1 ? "Au moins une image a pour description son nom de fichier. Un lecteur d’écran lit des chiffres et de la ponctuation, pas ce que montre l’image." : "{n} images ont leur nom de fichier pour description. Un lecteur d’écran lit des chiffres et de la ponctuation, pas ce qu’elles montrent.".replace("{n}", String(n))),
+    found: (n) => (n === 1 ? "Au moins une image a pour description son nom de fichier." : "{n} images ont leur nom de fichier pour description.".replace("{n}", String(n))),
     plain: "Des images décrites par leur nom de fichier",
-    impact:
-      "Un lecteur d’écran lit le nom de fichier à voix haute, chiffres et ponctuation compris. Le visiteur entend du bruit là où devrait se trouver le sens de l’image.",
+    impact: "Les utilisateurs de lecteurs d’écran entendent un nom de fichier là où devrait se trouver le sens de l’image.",
   },
   "sr-vague-link-name": {
-    found: (n) => (n === 1 ? "Au moins un lien n’est annoncé que par un symbole comme « → » ou par une adresse web brute. Aucun mot ne dit où il mène." : "{n} liens ne sont annoncés que par un symbole comme « → » ou par une adresse web brute. Aucun mot ne dit où ils mènent.".replace("{n}", String(n))),
+    found: (n) => (n === 1 ? "Au moins un lien n’est annoncé que par un symbole comme « → » ou par une adresse web brute." : "{n} liens ne sont annoncés que par un symbole comme « → » ou par une adresse web brute.".replace("{n}", String(n))),
     plain: "Des liens nommés « cliquez ici »",
-    impact:
-      "Les utilisateurs de lecteurs d’écran affichent tous les liens sous forme de liste. Une liste de « cliquez ici » et « en savoir plus » ne leur donne rien pour choisir.",
+    impact: "Les utilisateurs de lecteurs d’écran qui affichent la liste des liens n’ont rien pour choisir.",
   },
   "sr-symbol-button-name": {
     found: (n) => (n === 1 ? "Au moins un bouton n’a pour nom qu’un symbole comme « × » ou « > », sans aucun mot." : "{n} boutons n’ont pour nom qu’un symbole comme « × » ou « > », sans aucun mot.".replace("{n}", String(n))),
     plain: "Des boutons nommés par un seul symbole",
-    impact:
-      "Un lecteur d’écran annonce le symbole, ou rien du tout. La personne qui écoute ne peut pas savoir ce que fait le bouton.",
+    impact: "Les utilisateurs de lecteurs d’écran ne savent pas ce que fait le bouton.",
   },
   "sr-vague-button-name": {
-    found: (n) => (n === 1 ? "Au moins un bouton ne porte qu’un nom générique comme « More » ou « Go ». Ce nom ne dit pas ce que fait le bouton." : "{n} boutons ne portent que des noms génériques comme « More » ou « Go ». Ces noms ne disent pas ce que font les boutons.".replace("{n}", String(n))),
+    found: (n) => (n === 1 ? "Au moins un bouton ne porte qu’un nom générique comme « More » ou « Go »." : "{n} boutons ne portent que des noms génériques comme « More » ou « Go ».".replace("{n}", String(n))),
     plain: "Des noms de bouton qui ne disent rien",
-    impact:
-      "Qui voit l’écran repère le × dans le coin et comprend. La personne qui écoute entend « fois, bouton », sans coin sur lequel s’appuyer.",
+    impact: "Les utilisateurs de lecteurs d’écran entendent « fois, bouton » là où d’autres voient une croix de fermeture.",
   },
   "form-field-placeholder-label": {
-    found: (n) => (n === 1 ? "Au moins un champ de formulaire n’a pour libellé que son texte d’exemple. Il n’y a aucun autre libellé, ni à côté ni dans le code." : "{n} champs de formulaire n’ont pour libellé que leur texte d’exemple. Il n’y a aucun autre libellé, ni à côté ni dans le code.".replace("{n}", String(n))),
+    found: (n) => (n === 1 ? "Au moins un champ de formulaire n’a pour libellé que son texte d’exemple." : "{n} champs de formulaire n’ont pour libellé que leur texte d’exemple.".replace("{n}", String(n))),
     plain: "Des champs libellés par un simple texte d’exemple",
-    impact:
-      "L’indication disparaît dès qu’on tape. Qui s’arrête en plein formulaire retrouve une rangée de cases remplies, sans pouvoir vérifier ce qui va où.",
+    impact: "L’indication disparaît dès qu’on tape, donc on ne peut pas vérifier ce qui va où.",
   },
   "component-form-autocomplete": {
-    found: (n) => (n === 1 ? "Au moins un champ de données personnelles, comme le nom ou l’adresse e-mail, ne déclare pas ce qu’il demande. Navigateurs et gestionnaires de mots de passe doivent deviner." : "{n} champs de données personnelles, comme le nom ou l’adresse e-mail, n’indiquent pas au navigateur ce qu’ils demandent. Navigateurs et gestionnaires de mots de passe doivent deviner.".replace("{n}", String(n))),
+    found: (n) => (n === 1 ? "Au moins un champ de données personnelles, comme le nom ou l’adresse e-mail, ne déclare pas ce qu’il demande." : "{n} champs de données personnelles, comme le nom ou l’adresse e-mail, ne déclarent pas ce qu’ils demandent.".replace("{n}", String(n))),
     plain: "Les champs bloquent le remplissage automatique",
-    impact:
-      "Tout le monde retape son nom, son adresse e-mail, son adresse postale et son numéro de téléphone à la main. Lent pour tous, un vrai obstacle pour certains.",
+    impact: "Tout le monde retape ses coordonnées à la main, un vrai obstacle pour certains.",
   },
   "component-input-type": {
     found: (n) => (n === 1 ? "Au moins un champ d’e-mail ou de téléphone n’est pas défini comme tel dans le code." : "{n} champs d’e-mail ou de téléphone ne sont pas définis comme tels dans le code.".replace("{n}", String(n))),
     plain: "Champs e-mail définis comme texte simple",
-    impact:
-      "Sur téléphone, on a le clavier générique au lieu de celui avec le « @ » ou le pavé numérique. Plus de frappes, plus d’erreurs.",
+    impact: "Sur téléphone, on a le mauvais clavier, donc la saisie prend plus de temps.",
   },
   "component-required-cue": {
-    found: (n) => (n === 1 ? "Au moins un champ obligatoire n’est signalé comme tel que dans le code. Son libellé ne dit pas « obligatoire » et ne porte pas d’astérisque." : "{n} champs obligatoires ne sont signalés comme tels que dans le code. Leurs libellés ne disent pas « obligatoire » et ne portent pas d’astérisque.".replace("{n}", String(n))),
+    found: (n) => (n === 1 ? "Au moins un champ obligatoire n’est signalé comme tel que dans le code." : "{n} champs obligatoires ne sont signalés comme tels que dans le code.".replace("{n}", String(n))),
     plain: "Champs obligatoires non signalés à l’œil",
     impact:
       "Personne ne sait qu’un champ était obligatoire avant que le formulaire ne le refuse. Les inscriptions échouent.",
@@ -444,294 +410,258 @@ export const PLAIN_FR: Record<string, PlainRule> = {
   "component-submit-clarity": {
     found: (n) => (n === 1 ? "Un formulaire semble n’avoir aucun bouton au nom clair comme « Envoyer » ou « S’inscrire »." : "{n} formulaires semblent n’avoir aucun bouton au nom clair comme « Envoyer » ou « S’inscrire ».".replace("{n}", String(n))),
     plain: "Pas de bouton d’envoi clairement libellé",
-    impact:
-      "Un bouton qui dit seulement « OK », qui n’affiche qu’une icône, ou qui manque tout court, laisse les gens sans savoir comment finir. Alors ils ne finissent pas.",
+    impact: "Les gens ne savent pas comment finir le formulaire, alors ils ne le finissent pas.",
   },
   "component-table-no-headers": {
     found: (n) => (n === 1 ? "Au moins un tableau de plusieurs lignes et colonnes n’a aucune cellule d’en-tête." : "{n} tableaux de plusieurs lignes et colonnes n’ont aucune cellule d’en-tête.".replace("{n}", String(n))),
     plain: "Un tableau sans cellules d’en-tête",
-    impact: "Un lecteur d’écran lit chaque cellule comme une valeur isolée, sans le nom de sa colonne ou de sa ligne. Les chiffres et les mots du tableau perdent leur sens.",
+    impact: "Les utilisateurs de lecteurs d’écran entendent des valeurs isolées, sans nom de colonne ni de ligne.",
   },
   "component-nav-labels": {
     found: (n) => (n === 1 ? "La page a plusieurs menus de navigation, et au moins l’un d’eux n’a pas de nom." : "La page a plusieurs menus de navigation, et {n} d’entre eux n’ont pas de nom.".replace("{n}", String(n))),
     plain: "Menus de navigation sans nom",
-    impact:
-      "Les utilisateurs de lecteurs d’écran entendent « navigation… navigation… » sans moyen de distinguer le menu principal des liens de pied de page. Se déplacer sur votre site devient une devinette.",
+    impact: "Les utilisateurs de lecteurs d’écran ne distinguent pas le menu principal des liens de pied de page.",
   },
   "component-skip-link": {
     found: (n) => (n === 1 ? "Parmi les premiers liens de la page, aucun n’est un lien « aller au contenu »." : "Sur {n} pages, parmi les premiers liens, aucun n’est un lien « aller au contenu ».".replace("{n}", String(n))),
     plain: "Pas de lien « aller au contenu »",
-    impact:
-      "Les personnes qui naviguent au clavier parcourent tout votre menu sur chaque page. Des dizaines d’appuis en plus à chaque visite.",
+    impact: "Les personnes qui naviguent au clavier parcourent tout le menu sur chaque page.",
   },
 
   "mobile-target-spacing": {
     plain: "Les cibles tactiles sont trop proches",
     found: (n) =>
-      `${n} ${n === 1 ? "paire de contrôles se trouve" : "paires de contrôles se trouvent"} à moins de 8 px l’une de l’autre en largeur de téléphone. Chacun est assez grand tout seul ; ensemble, ils ne laissent aucune marge d’erreur.`,
-    impact:
-      "Un pouce n’est pas un curseur. Un doigt qui vise un contrôle et tombe sur son voisin appuie ou achète la mauvaise chose. Les personnes qui tremblent ou qui ont de gros doigts le rencontrent en premier.",
+      `${n} ${n === 1 ? "paire de contrôles se trouve" : "paires de contrôles se trouvent"} à moins de 8 px l’une de l’autre en largeur de téléphone.`,
+    impact: "Les personnes qui tremblent ou qui ont de gros doigts appuient sur la mauvaise chose.",
   },
   "consent-blocks-reader": {
     plain: "La bannière cookies bloque les lecteurs d’écran",
     found: () =>
-      `La couche de consentement marque toute la page derrière elle comme masquée pour les lecteurs d’écran, et le focus clavier n’atteint jamais la couche elle-même.`,
-    impact:
-      "Un utilisateur de lecteur d’écran entend le silence là où la page devrait être. Il ne peut pas lire la page, et il ne peut pas trouver la bannière pour l’écarter.",
+      `La bannière cookies masque toute la page aux lecteurs d’écran, et le focus clavier n’atteint jamais la bannière.`,
+    impact: "Les utilisateurs de lecteurs d’écran entendent le silence et ne trouvent pas la bannière pour l’écarter.",
   },
   "mobile-sticky-coverage": {
     plain: "Les barres fixes envahissent l’écran du téléphone",
     found: () =>
       `Les en-têtes, bannières ou barres d’outils fixes occupent plus d’un tiers de l’écran en largeur de téléphone.`,
-    impact:
-      "Chaque pixel fixe est un pixel à travers lequel on ne peut pas lire la page. Tout ce que le clavier atteint peut finir caché derrière les barres. Les WCAG 2.2 en font déjà une exigence ; la loi n’y renvoie simplement pas encore.",
+    impact: "Sur téléphone, on lit la page à travers une fente étroite.",
   },
   "mobile-horizontal-scroll": {
     found: (n) => (n === 1 ? "En largeur de téléphone, un élément dépasse du bord de l’écran et toute la page défile de côté." : "En largeur de téléphone, {n} éléments dépassent du bord de l’écran et toute la page défile de côté.".replace("{n}", String(n))),
     plain: "La page défile de côté sur téléphone",
-    impact:
-      "La plupart des gens sont sur téléphone. Balayer de côté pour lire chaque ligne les fait partir.",
+    impact: "Sur téléphone, il faut balayer de côté à chaque ligne, et beaucoup partent.",
   },
   "mobile-tap-target": {
-    found: (n) => (n === 1 ? "En largeur de téléphone, une cible tactile mesure moins de 24 px de large ou de haut. Une autre se trouve juste à côté. Un appui qui rate de peu tombe facilement sur la voisine." : "En largeur de téléphone, {n} cibles tactiles mesurent moins de 24 px de large ou de haut. Chacune en a une autre juste à côté. Un appui qui rate de peu tombe facilement sur la voisine.".replace("{n}", String(n))),
+    found: (n) => (n === 1 ? "En largeur de téléphone, une cible tactile de moins de 24 px a une voisine juste à côté." : "En largeur de téléphone, {n} cibles tactiles de moins de 24 px ont une voisine juste à côté.".replace("{n}", String(n))),
     plain: "Cibles tactiles trop petites",
-    impact:
-      "Des appuis qui ratent, et de l’agacement. Pire avec de gros doigts ou des mains qui tremblent. Cela vous coûte des ventes.",
+    impact: "Les personnes qui ont de gros doigts ou des mains qui tremblent les ratent.",
   },
 
   "text-spacing-clipped": {
-    found: (n) => (n === 1 ? "Sur cette page, du texte est coupé dès qu’on élargit l’espacement des lignes et des lettres. Les mots dépassent le bord de leur boîte et disparaissent." : "{n} éléments coupent le texte dès qu’on élargit l’espacement des lignes et des lettres. Les mots dépassent le bord de leur boîte et disparaissent.".replace("{n}", String(n))),
+    found: (n) => (n === 1 ? "Sur cette page, du texte est coupé dès qu’on élargit l’espacement des lignes et des lettres." : "{n} éléments coupent le texte dès qu’on élargit l’espacement des lignes et des lettres.".replace("{n}", String(n))),
     plain: "Texte coupé quand l’espacement s’élargit",
-    impact:
-      "Beaucoup de personnes dyslexiques élargissent l’espacement juste pour lire. Ici les mots ne se réagencent pas. Ils disparaissent derrière une boîte figée.",
+    impact: "Les personnes dyslexiques qui élargissent l’espacement perdent des mots derrière une boîte figée.",
   },
   "text-zoom-clipped": {
-    found: (n) => (n === 1 ? "Avec une police deux fois plus grande, du texte est coupé sur cette page. Les mots dépassent le bord de leur boîte et disparaissent." : "{n} éléments coupent leur texte avec une police deux fois plus grande. Les mots dépassent le bord de leur boîte et disparaissent.".replace("{n}", String(n))),
+    found: (n) => (n === 1 ? "Avec une police deux fois plus grande, du texte est coupé sur cette page." : "{n} éléments coupent leur texte avec une police deux fois plus grande.".replace("{n}", String(n))),
     plain: "Texte coupé en plus grande taille",
-    impact:
-      "Agrandir la police est le remède le plus courant à une vue faible, bien plus courant que les lecteurs d’écran. Vos boîtes ne bougent pas, donc les mots disparaissent.",
+    impact: "Qui agrandit le texte à cause d’une vue faible perd les mots.",
   },
   "text-zoom-horizontal-scroll": {
-    found: (n) => (n === 1 ? "Avec une police deux fois plus grande, la page devient plus large que la fenêtre. Pour lire, il faut faire défiler de côté." : "À {n} endroits, la page dépasse de la fenêtre avec une police deux fois plus grande. Pour lire, il faut faire défiler de côté.".replace("{n}", String(n))),
+    found: (n) => (n === 1 ? "Avec une police deux fois plus grande, la page devient plus large que la fenêtre." : "À {n} endroits, la page dépasse de la fenêtre avec une police deux fois plus grande.".replace("{n}", String(n))),
     plain: "Le texte agrandi défile de côté",
-    impact:
-      "Chaque ligne vous oblige à partir de côté. C’est épuisant, et la plupart des gens abandonnent.",
+    impact: "Qui agrandit le texte doit défiler de côté à chaque ligne, et la plupart abandonnent.",
   },
 
   "dark-consent-no-reject": {
-    found: (n) => (n === 1 ? "La bannière cookies a un bouton pour accepter. Aucun de ses boutons ne propose de refuser, pas même « Nécessaires seulement »." : "{n} bannières cookies ont un bouton pour accepter. Aucun de leurs boutons ne propose de refuser, pas même « Nécessaires seulement ».".replace("{n}", String(n))),
+    found: (n) => (n === 1 ? "La bannière cookies a un bouton pour accepter, mais aucun pour refuser." : "{n} bannières cookies ont un bouton pour accepter, mais aucun pour refuser.".replace("{n}", String(n))),
     plain: "Bannière cookies sans option de refus",
-    impact:
-      "Le RGPD exige que refuser soit aussi simple qu’accepter. Un consentement recueilli ainsi peut être invalide. Le public lit l’absence de bouton « Refuser » comme une ruse.",
+    impact: "Selon le RGPD, un consentement recueilli sans refus facile peut être invalide.",
   },
   "dark-consent-asymmetry": {
-    found: (n) => (n === 1 ? "Sur la bannière cookies, le bouton pour accepter a un fond. Celui pour refuser n’en a pas." : "Sur {n} bannières cookies, le bouton pour accepter a un fond. Celui pour refuser n’en a pas.".replace("{n}", String(n))),
+    found: (n) => (n === 1 ? "Sur la bannière cookies, le bouton pour accepter a un fond, celui pour refuser non." : "Sur {n} bannières cookies, le bouton pour accepter a un fond, celui pour refuser non.".replace("{n}", String(n))),
     plain: "La bannière cookies minimise le refus",
-    impact:
-      "Une option en bouton et l’autre en simple texte pousse les gens à accepter. Les autorités cherchent exactement cela.",
+    impact: "Un refus en simple texte pousse les gens à accepter, et les autorités cherchent cela.",
   },
   "dark-preselected-optin": {
     found: (n) => (n === 1 ? "Une case de marketing, de newsletter ou de partage de données est déjà cochée quand la page s’ouvre." : "{n} cases de marketing, de newsletter ou de partage de données sont déjà cochées quand la page s’ouvre.".replace("{n}", String(n))),
     plain: "Case marketing cochée d’avance",
-    impact:
-      "Le RGPD dit qu’une case pré-cochée n’est pas un consentement. Les personnes qui ne la voient pas se retrouvent inscrites sans avoir accepté.",
+    impact: "Selon le RGPD, une case pré-cochée n’est pas un consentement.",
   },
   "dark-confirmshaming": {
     found: (n) => (n === 1 ? "Un bouton de refus est formulé à la première personne et sonne comme un aveu." : "{n} boutons de refus sont formulés à la première personne et sonnent comme un aveu.".replace("{n}", String(n))),
     plain: "Un « non merci » qui culpabilise",
-    impact:
-      "« Non merci, je ne veux pas économiser » marque les esprits pour de mauvaises raisons. Cela se lit comme de la manipulation.",
+    impact: "Le public lit cette formulation comme de la manipulation.",
   },
   "dark-fake-scarcity": {
-    found: (n) => (n === 1 ? "Une mention sur cette page annonce un stock limité ou une forte demande. Qui la lit ne peut pas vérifier si elle est vraie." : "{n} mentions sur cette page annoncent un stock limité ou une forte demande. Qui les lit ne peut pas vérifier si elles sont vraies.".replace("{n}", String(n))),
+    found: (n) => (n === 1 ? "Une mention invérifiable sur cette page annonce un stock limité ou une forte demande." : "{n} mentions invérifiables sur cette page annoncent un stock limité ou une forte demande.".replace("{n}", String(n))),
     plain: "Annonces de stock limité comme pression",
-    impact:
-      "Les autorités poursuivent la fausse rareté. La clientèle a appris à s’en méfier. Les chiffres inventés coûtent plus de ventes qu’ils n’en rapportent.",
+    impact: "Les autorités poursuivent la fausse rareté, et la clientèle a appris à s’en méfier.",
   },
   "dark-fake-urgency": {
-    found: (n) => (n === 1 ? "Une mention sur cette page presse le public, sans donner de date. Qui la lit ne peut pas vérifier si le délai est réel." : "{n} mentions sur cette page pressent le public, sans donner de date. Qui les lit ne peut pas vérifier si les délais sont réels.".replace("{n}", String(n))),
+    found: (n) => (n === 1 ? "Une mention sur cette page presse le public, sans donner de date." : "{n} mentions sur cette page pressent le public, sans donner de date.".replace("{n}", String(n))),
     plain: "Délais utilisés comme pression",
-    impact:
-      "Un compte à rebours qui repart au rechargement est une pratique trompeuse. Une fois repéré, plus rien de ce que vous annoncez n’est cru.",
+    impact: "Une fois un faux compte à rebours repéré, plus rien de ce que le site annonce n’est cru.",
   },
 
   "dialog-close-unlabeled": {
-    found: (n) => (n === 1 ? "Au moins une fenêtre surgissante a un bouton de fermeture qui n’est qu’une croix, sans nom dans le code. Un lecteur d’écran ne peut pas annoncer qu’il ferme." : "Sur {n} fenêtres surgissantes, le bouton de fermeture n’est qu’une croix, sans nom dans le code. Un lecteur d’écran ne peut pas annoncer qu’il ferme.".replace("{n}", String(n))),
+    found: (n) => (n === 1 ? "Au moins une fenêtre surgissante a un bouton de fermeture réduit à une croix, sans nom dans le code." : "Sur {n} fenêtres surgissantes, le bouton de fermeture n’est qu’une croix, sans nom dans le code.".replace("{n}", String(n))),
     plain: "Bouton de fermeture sans libellé",
-    impact:
-      "Les utilisateurs de lecteurs d’écran n’entendent que « bouton » et ne savent pas comment fermer la fenêtre. Cela les piège, et beaucoup s’en vont, tout simplement.",
+    impact: "Les utilisateurs de lecteurs d’écran n’entendent que « bouton » et ne savent pas comment la fermer.",
   },
   "dialog-keyboard-trap": {
-    found: (n) => (n === 1 ? "Une fenêtre surgissante ne laisse pas sortir le clavier. Échap ne la ferme pas, et après quinze appuis sur Tab, le focus est toujours dedans." : "{n} fenêtres surgissantes ne laissent pas sortir le clavier. Échap ne les ferme pas, et après quinze appuis sur Tab, le focus est toujours dedans.".replace("{n}", String(n))),
+    found: (n) => (n === 1 ? "Une fenêtre surgissante garde le focus clavier, même après Échap et quinze appuis sur Tab." : "{n} fenêtres surgissantes gardent le focus clavier, même après Échap et quinze appuis sur Tab.".replace("{n}", String(n))),
     plain: "Une fenêtre qui piège le clavier",
-    impact:
-      "Une personne qui n’a que le clavier arrive à cette fenêtre et s’arrête. Échap ne la ferme pas, et Tab ne fait que tourner dedans. Fermer l’onglet est la seule issue. Sur une bannière cookies, cela arrive avant qu’elle n’ait rien vu du tout.",
+    impact: "Les personnes au clavier sont bloquées, et fermer l’onglet est la seule issue.",
   },
   "dialog-no-escape": {
-    found: (n) => (n === 1 ? "Une fenêtre est restée ouverte quand nous avons appuyé sur Échap. On peut quand même en sortir avec Tab." : "{n} fenêtres sont restées ouvertes quand nous avons appuyé sur Échap. On peut quand même en sortir avec Tab.".replace("{n}", String(n))),
+    found: (n) => (n === 1 ? "Une fenêtre est restée ouverte quand nous avons appuyé sur Échap." : "{n} fenêtres sont restées ouvertes quand nous avons appuyé sur Échap.".replace("{n}", String(n))),
     plain: "La fenêtre ignore la touche Échap",
-    impact:
-      "Échap est la touche que tout le monde essaie en premier. Personne n’est bloqué ici, puisqu’on peut encore tabuler ailleurs. Mais quiconque navigue au clavier l’essaie, et rien ne se passe.",
+    impact: "Toute personne au clavier essaie d’abord Échap, et rien ne se passe.",
   },
   "dialog-focus-not-moved": {
-    found: (n) => (n === 1 ? "Une fenêtre est apparue, mais le focus clavier n’y est pas entré. Il est resté dehors, sur la page." : "{n} fenêtres sont apparues, mais le focus clavier n’est entré dans aucune. Il est resté dehors, sur la page.".replace("{n}", String(n))),
+    found: (n) => (n === 1 ? "Une fenêtre est apparue sans que le focus clavier y entre." : "{n} fenêtres sont apparues sans que le focus clavier y entre.".replace("{n}", String(n))),
     plain: "La fenêtre s’ouvre sans prendre le focus",
-    impact:
-      "Quelqu’un qui se sert d’un lecteur d’écran n’apprend jamais qu’elle s’est ouverte. Un utilisateur au clavier doit parcourir toute la page en dessous avant d’atteindre ce qui couvre son écran.",
+    impact: "Les utilisateurs de lecteurs d’écran n’apprennent jamais qu’elle s’est ouverte.",
   },
   "dialog-focus-lost-on-close": {
-    found: (n) => (n === 1 ? "Une fenêtre s’est fermée avec Échap, mais ensuite le focus n’était plus sur aucun élément. Il est retombé sur la page entière." : "{n} fenêtres se sont fermées avec Échap, mais ensuite le focus n’était plus sur aucun élément. Il est retombé sur la page entière.".replace("{n}", String(n))),
+    found: (n) => (n === 1 ? "Après la fermeture d’une fenêtre avec Échap, le focus n’était plus sur aucun élément." : "Après la fermeture de {n} fenêtres avec Échap, le focus n’était plus sur aucun élément.".replace("{n}", String(n))),
     plain: "Fermer la fenêtre fait perdre sa place",
-    impact: "Qui avait tabulé jusqu’à mi-page doit tout recommencer depuis le début.",
+    impact: "Les personnes au clavier doivent tout recommencer depuis le haut.",
   },
   "dialog-no-close": {
-    found: (n) => (n === 1 ? "Au moins une fenêtre n’a pas de bouton de fermeture reconnaissable. Aucun bouton à l’intérieur n’a de nom comme « Fermer », ni de signe « × » en texte." : "{n} fenêtres n’ont pas de bouton de fermeture reconnaissable. Aucun bouton à l’intérieur n’a de nom comme « Fermer », ni de signe « × » en texte.".replace("{n}", String(n))),
+    found: (n) => (n === 1 ? "Au moins une fenêtre n’a pas de bouton de fermeture reconnaissable." : "{n} fenêtres n’ont pas de bouton de fermeture reconnaissable.".replace("{n}", String(n))),
     plain: "Pas de bouton de fermeture visible",
-    impact: "Si cliquer à côté est la seule sortie, les personnes qui naviguent au clavier restent coincées derrière.",
+    impact: "Si cliquer à côté est la seule sortie, les personnes au clavier restent coincées.",
   },
   "dialog-missing-role": {
-    found: (n) => (n === 1 ? "Au moins une surcouche se pose sur la page comme une fenêtre surgissante. Le code ne la signale pas comme boîte de dialogue." : "{n} surcouches se posent sur la page comme des fenêtres surgissantes. Le code ne les signale pas comme boîtes de dialogue.".replace("{n}", String(n))),
+    found: (n) => (n === 1 ? "Au moins une surcouche se pose sur la page comme une fenêtre, sans être signalée comme boîte de dialogue." : "{n} surcouches se posent sur la page comme des fenêtres, sans être signalées comme boîtes de dialogue.".replace("{n}", String(n))),
     plain: "Surcouche non signalée comme boîte de dialogue",
-    impact:
-      "Les lecteurs d’écran n’annoncent pas son ouverture, et les gens tabulent droit dans la page cachée derrière.",
+    impact: "Les lecteurs d’écran ne l’annoncent pas, et les gens tabulent dans la page derrière.",
   },
   "dialog-missing-name": {
-    found: (n) => (n === 1 ? "Au moins une fenêtre n’a pas de nom dans le code. Un lecteur d’écran n’y trouve aucun titre à annoncer." : "{n} fenêtres n’ont pas de nom dans le code. Un lecteur d’écran n’y trouve aucun titre à annoncer.".replace("{n}", String(n))),
+    found: (n) => (n === 1 ? "Au moins une fenêtre n’a pas de nom dans le code." : "{n} fenêtres n’ont pas de nom dans le code.".replace("{n}", String(n))),
     plain: "La fenêtre ne dit pas à quoi elle sert",
-    impact:
-      "À son ouverture, un lecteur d’écran dit seulement « boîte de dialogue ». Le visiteur n’a aucune idée de ce qu’elle demande ni pourquoi.",
+    impact: "Les utilisateurs de lecteurs d’écran n’entendent que « boîte de dialogue », sans savoir ce qu’elle demande.",
   },
 
   "markup-validation": {
     found: (n) => (n === 1 ? "Un validateur signale que le code source de cette page n’est pas du HTML valide." : "Un validateur signale {n} endroits où le code source de cette page n’est pas du HTML valide.".replace("{n}", String(n))),
     plain: "HTML non valide dans la page",
-    impact:
-      "Les navigateurs devinent en silence comment corriger, et chacun devine autrement. La page peut ne pas fonctionner comme prévu.",
+    impact: "Chaque navigateur devine la correction à sa façon, donc la page peut casser.",
   },
 
   "motion-marquee": {
-    found: (n) => (n === 1 ? "Du texte défile sur la page comme un bandeau d’actualités. Il utilise l’élément HTML obsolète « marquee », qui n’offre aucune pause." : "À {n} endroits, du texte défile sur la page comme un bandeau d’actualités. Il utilise l’élément HTML obsolète « marquee », qui n’offre aucune pause.".replace("{n}", String(n))),
+    found: (n) => (n === 1 ? "Du texte défile sur la page dans un élément « marquee », sans pause possible." : "À {n} endroits, du texte défile sur la page dans un élément « marquee », sans pause possible.".replace("{n}", String(n))),
     plain: "Texte défilant impossible à arrêter",
-    impact:
-      "Un texte qui bouge est difficile à lire pour tout le monde. Pour qui a des troubles de l’attention ou de l’équilibre, il est inutilisable.",
+    impact: "Un texte qui bouge est illisible pour qui a des troubles de l’attention ou de l’équilibre.",
   },
   "motion-autoplay-media": {
-    found: (n) => (n === 1 ? "Au moins une vidéo est réglée pour démarrer toute seule. Ses commandes intégrées pour l’arrêter ne sont pas affichées." : "{n} vidéos sont réglées pour démarrer toutes seules. Leurs commandes intégrées pour les arrêter ne sont pas affichées.".replace("{n}", String(n))),
+    found: (n) => (n === 1 ? "Au moins une vidéo démarre toute seule, sans commandes affichées pour l’arrêter." : "{n} vidéos démarrent toutes seules, sans commandes affichées pour les arrêter.".replace("{n}", String(n))),
     plain: "Un média se lance tout seul",
-    impact: "Personne ne peut l’arrêter. C’est déroutant, et cela couvre la voix des lecteurs d’écran.",
+    impact: "Personne ne peut l’arrêter, et cela couvre la voix des lecteurs d’écran.",
   },
   "motion-infinite-no-reduced-motion": {
-    found: (n) => (n === 1 ? "Au moins une animation tourne en boucle sans fin. La mise en forme de la page ne l’arrête pas, même avec le réglage « moins d’animations »." : "{n} animations tournent en boucle sans fin. La mise en forme de la page ne les arrête pas, même avec le réglage « moins d’animations ».".replace("{n}", String(n))),
+    found: (n) => (n === 1 ? "Au moins une animation tourne en boucle sans fin, même avec le réglage « moins d’animations »." : "{n} animations tournent en boucle sans fin, même avec le réglage « moins d’animations ».".replace("{n}", String(n))),
     plain: "L’animation ignore le réglage « moins d’animations »",
-    impact:
-      "Un mouvement perpétuel détourne l’attention de votre contenu. Pour les personnes ayant des troubles de l’équilibre, il peut donner des vertiges ou des nausées.",
+    impact: "Un mouvement constant peut donner des vertiges ou des nausées aux personnes ayant des troubles de l’équilibre.",
   },
 
   "typo-caps-letterspacing": {
     found: (n) => (n === 1 ? "Du texte en capitales n’a pas, ou presque pas, d’espace en plus entre les lettres." : "À {n} endroits, du texte en capitales n’a pas, ou presque pas, d’espace en plus entre les lettres.".replace("{n}", String(n))),
     plain: "Capitales sans espacement des lettres",
-    impact:
-      "Les capitales forment des blocs uniformes ; sans un peu d’espace en plus entre elles, les titres et les libellés deviennent difficiles à parcourir.",
+    impact: "Des titres en capitales serrées sont difficiles à parcourir.",
   },
   "typo-lowercase-letterspaced": {
     found: (n) => (n === 1 ? "Une partie du texte courant a un espace ajouté entre les minuscules." : "{n} blocs de texte courant ont un espace ajouté entre les minuscules.".replace("{n}", String(n))),
     plain: "Espace forcé entre les lettres",
-    impact:
-      "Un espace ajouté entre les minuscules casse les formes de mots que les gens reconnaissent, et cela ralentit tout le monde.",
+    impact: "Des lettres espacées cassent la forme des mots et ralentissent tout le monde.",
   },
   "typo-negative-letterspacing": {
-    found: (n) => (n === 1 ? "Sur cette page, du texte est plus serré que ne le prévoit la police. Les lettres peuvent se toucher." : "À {n} endroits de cette page, du texte est plus serré que ne le prévoit la police. Les lettres peuvent se toucher.".replace("{n}", String(n))),
+    found: (n) => (n === 1 ? "Sur cette page, du texte est plus serré que ne le prévoit la police." : "À {n} endroits de cette page, du texte est plus serré que ne le prévoit la police.".replace("{n}", String(n))),
     plain: "Lettres serrées jusqu’à se toucher",
-    impact:
-      "Des lettres à l’étroit se confondent entre elles, surtout en petit corps ou pour les personnes malvoyantes.",
+    impact: "Des lettres à l’étroit se confondent pour les personnes malvoyantes.",
   },
   "typo-line-length-long": {
     found: (n) => (n === 1 ? "Sur cette page, du texte courant est composé en lignes de plus de 90 caractères en moyenne." : "À {n} endroits de cette page, les lignes du texte courant dépassent 90 caractères en moyenne.".replace("{n}", String(n))),
     plain: "Les lignes sont trop longues",
-    impact: "Passé environ 75 caractères par ligne, l’œil perd sa place en revenant au début.",
+    impact: "Passé environ 75 caractères, l’œil perd sa place au retour à la ligne.",
   },
   "typo-line-length-short": {
     found: (n) => (n === 1 ? "Sur cette page, du texte courant est composé en lignes de moins de 25 caractères en moyenne." : "À {n} endroits de cette page, les lignes du texte courant font moins de 25 caractères en moyenne.".replace("{n}", String(n))),
     plain: "Lignes coupées trop court",
-    impact:
-      "Quand presque chaque expression passe à la ligne, le rythme de lecture s’effondre. Le contenu paraît plus difficile qu’il n’est.",
+    impact: "Le rythme de lecture s’effondre quand presque chaque expression passe à la ligne.",
   },
   "typo-justified-no-hyphens": {
-    found: (n) => (n === 1 ? "Sur cette page, du texte courant est justifié sans césure automatique. Pour remplir chaque ligne, le navigateur étire les espaces entre les mots." : "À {n} endroits de cette page, du texte courant est justifié sans césure automatique. Pour remplir chaque ligne, le navigateur étire les espaces entre les mots.".replace("{n}", String(n))),
+    found: (n) => (n === 1 ? "Sur cette page, du texte courant est justifié sans césure automatique." : "À {n} endroits de cette page, du texte courant est justifié sans césure automatique.".replace("{n}", String(n))),
     plain: "Texte justifié sans césure",
-    impact:
-      "Le texte justifié étire les espaces entre les mots pour remplir chaque ligne. Ces écarts irréguliers forment des « rivières » de blanc qui distraient le long de la page.",
+    impact: "Les écarts irréguliers entre les mots forment des « rivières » de blanc qui distraient.",
   },
   "typo-font-size-small": {
     found: (n) => (n === 1 ? "Sur cette page, du texte courant fait moins de 13 pixels." : "À {n} endroits de cette page, du texte courant fait moins de 13 pixels.".replace("{n}", String(n))),
     plain: "Texte courant très petit",
-    impact:
-      "Un petit texte écarte quiconque lit sur un téléphone, dans une lumière faible, à bout de bras ou avec une vue imparfaite.",
+    impact: "Un petit texte est difficile à lire sur un téléphone ou avec une vue faible.",
   },
   "typo-typeface-count": {
-    found: (n) => (n === 1 ? "Cette page prévoit plus de quatre polices de caractères différentes pour son texte." : "Cette page prévoit plus de quatre polices de caractères différentes pour son texte. La vérification l’a relevé {n} fois.".replace("{n}", String(n))),
+    found: (n) => (n === 1 ? "Cette page prévoit plus de quatre polices de caractères pour son texte." : "La vérification a relevé {n} fois plus de quatre polices de caractères sur cette page.".replace("{n}", String(n))),
     plain: "Trop de polices de caractères",
-    impact:
-      "Plus de deux ou trois polices donne un air brouillon et rend la page moins digne de confiance.",
+    impact: "La page paraît brouillonne et moins digne de confiance.",
   },
 
   "typo-underline-nonlink": {
     found: (n) => (n === 1 ? "Sur cette page, du texte souligné n’est pas un lien." : "À {n} endroits de cette page, du texte souligné n’est pas un lien.".replace("{n}", String(n))),
     plain: "Texte souligné qui n’est pas un lien",
-    impact: "Un soulignement se lit comme un lien, donc les gens cliquent sur du texte qui ne mène nulle part.",
+    impact: "Les gens cliquent sur du texte souligné qui ne mène nulle part.",
   },
   "typo-italic-body": {
     found: (n) => (n === 1 ? "Sur cette page, du texte courant est en italique par paragraphes entiers, pas seulement sur quelques mots." : "À {n} endroits de cette page, du texte courant est en italique par paragraphes entiers, pas seulement sur quelques mots.".replace("{n}", String(n))),
     plain: "Des passages entiers en italique",
-    impact:
-      "Les lettres penchées deviennent difficiles au-delà de quelques mots. Un vrai obstacle en cas de dyslexie ou de vue faible.",
+    impact: "Les lettres penchées fatiguent les personnes dyslexiques ou à la vue faible.",
   },
   "typo-allcaps-block": {
     found: (n) => (n === 1 ? "Sur cette page, du texte courant de 60 caractères ou plus est entièrement en capitales." : "À {n} endroits de cette page, du texte courant de 60 caractères ou plus est entièrement en capitales.".replace("{n}", String(n))),
     plain: "Longs passages EN CAPITALES",
-    impact:
-      "Les capitales effacent les formes de mots qui nous servent à lire. Lent et fatigant, pire pour les personnes dyslexiques.",
+    impact: "Les capitales effacent la forme des mots, ce qui ralentit surtout les personnes dyslexiques.",
   },
   "typo-thin-weight": {
-    found: (n) => (n === 1 ? "Sur cette page, du texte courant est réglé sur une graisse très fine : 200 ou moins. La graisse normale est 400." : "À {n} endroits de cette page, du texte courant est réglé sur une graisse très fine : 200 ou moins. La graisse normale est 400.".replace("{n}", String(n))),
+    found: (n) => (n === 1 ? "Sur cette page, du texte courant est en graisse 200 ou moins." : "À {n} endroits de cette page, du texte courant est en graisse 200 ou moins.".replace("{n}", String(n))),
     plain: "Texte courant en graisse fine",
-    impact:
-      "Les traits fins s’effacent sur les écrans bon marché, au soleil, et une vue faible les perd en premier, même quand le contraste est suffisant.",
+    impact: "Les traits fins s’effacent sur les écrans bon marché et pour une vue faible, même quand le contraste est suffisant.",
   },
   "nav-name-inconsistent": {
     plain: "Le même lien sous plusieurs noms",
-    impact: "Qui a appris un nom doit d’abord comprendre que l’autre désigne la même chose. Qui cherche le mot habituel dans la liste des liens de son lecteur d’écran ne l’y trouve pas.",
-    found: (n) => (n === 1 ? "Un lien du menu change de nom selon la page analysée, alors qu’il mène toujours au même endroit. Les simples écarts de majuscules ou d’espaces n’ont pas été comptés." : "{n} liens du menu changent de nom selon la page analysée, alors que chacun mène toujours au même endroit. Les simples écarts de majuscules ou d’espaces n’ont pas été comptés.".replace("{n}", String(n))),
+    impact: "Qui cherche le nom habituel dans la liste des liens de son lecteur d’écran ne le trouve pas.",
+    found: (n) => (n === 1 ? "Un lien du menu change de nom d’une page à l’autre, alors qu’il mène toujours au même endroit." : "{n} liens du menu changent de nom d’une page à l’autre, alors que chacun mène toujours au même endroit.".replace("{n}", String(n))),
   },
   "color-contrast-mobile": {
     plain: "Texte trop pâle sur téléphone",
-    impact: "Sur un téléphone en plein jour, un texte pâle est difficile à lire, même avec une bonne vue. Une vérification sur ordinateur ne le voit pas, car les couleurs ne changent qu’à la largeur étroite.",
-    found: () => "À la largeur d’un téléphone, du texte de cette page passe sous le contraste requis, ce qui n’est pas le cas sur ordinateur. La vérification sur ordinateur seule ne l’aurait pas vu.",
+    impact: "Sur un téléphone en plein jour, le texte est difficile à lire, même avec une bonne vue.",
+    found: () => "À la largeur d’un téléphone seulement, du texte de cette page passe sous le contraste requis.",
   },
   "color-contrast-dark": {
     plain: "Texte trop pâle en mode sombre",
-    impact: "Qui règle son appareil en mode sombre, souvent contre l’éblouissement ou la fatigue visuelle, reçoit la version pâle. Que le thème clair passe ne dit rien de celui-ci.",
-    found: () => "Dans le thème sombre de la page, du texte passe sous le contraste requis, ce qui n’est pas le cas dans le thème clair. La vérification du thème clair seule ne l’aurait pas vu.",
+    impact: "Qui utilise le mode sombre contre l’éblouissement ou la fatigue visuelle reçoit la version pâle.",
+    found: () => "Dans le thème sombre seulement, du texte de cette page passe sous le contraste requis.",
   },
   "nav-order-inconsistent": {
     plain: "Le menu change d’ordre",
-    impact: "Qui compte ses appuis sur Tab ou retient la position d’une entrée tombe à côté sur la page suivante. Avec une loupe d’écran, qui ne montre qu’une partie de la page, il faut relire le menu chaque fois.",
-    found: (n) => (n === 1 ? "Une page présente les mêmes liens de menu dans un ordre différent de celui de la première page analysée. Seuls les liens présents sur les deux pages ont été comparés." : "{n} pages présentent les mêmes liens de menu dans un ordre différent de celui de la première page analysée. Chaque fois, seuls les liens présents sur les deux pages ont été comparés.".replace("{n}", String(n))),
+    impact: "Qui retient la position d’un lien tombe sur la mauvaise entrée.",
+    found: (n) => (n === 1 ? "Une page présente les liens du menu dans un autre ordre que la première page analysée." : "{n} pages présentent les liens du menu dans un autre ordre que la première page analysée.".replace("{n}", String(n))),
   },
   "keyboard-positive-tabindex-advisory": {
     plain: "Ordre de tabulation fixé par numéro",
-    impact: "Chaque contrôle ajouté plus tard à la page se range après ceux qui sont numérotés. Qui navigue au clavier saute alors d’un endroit à l’autre, dans un ordre que personne n’a choisi.",
-    found: (n) => (n === 1 ? "Au moins un contrôle reçoit sa place dans l’ordre de tabulation par un numéro. Sur la partie que nous avons parcourue avec Tab, le focus n’est jamais revenu en arrière." : "{n} contrôles reçoivent leur place dans l’ordre de tabulation par un numéro. Sur la partie que nous avons parcourue avec Tab, le focus n’est jamais revenu en arrière.".replace("{n}", String(n))),
+    impact: "Qui navigue au clavier saute d’un endroit à l’autre, dans un ordre sans logique.",
+    found: (n) => (n === 1 ? "Au moins un contrôle reçoit sa place dans l’ordre de tabulation par un numéro." : "{n} contrôles reçoivent leur place dans l’ordre de tabulation par un numéro.".replace("{n}", String(n))),
   },
   "activation-stale-state": {
     plain: "Un contrôle annonce l’état précédent",
-    impact: "Un lecteur d’écran dit « réduit » quand le panneau est ouvert, ou « désactivé » quand l’interrupteur est en marche. La personne qui écoute apprend le contraire de ce qui est à l’écran.",
-    found: (n) => (n === 1 ? "L’analyse a activé au moins un contrôle, et la page a visiblement réagi. Mais un lecteur d’écran annonce toujours l’état précédent." : "L’analyse a activé des contrôles de {n} types différents, et la page a visiblement réagi. Mais un lecteur d’écran annonce toujours l’état précédent.".replace("{n}", String(n))),
+    impact: "Un lecteur d’écran dit « réduit » quand le panneau est ouvert.",
+    found: (n) => (n === 1 ? "Au moins un contrôle activé annonce encore son état précédent, alors que la page a réagi." : "Des contrôles de {n} types différents annoncent encore leur état précédent une fois activés.".replace("{n}", String(n))),
   },
   "control-faint-boundary": {
     plain: "Bordures des contrôles trop pâles",
-    impact: "Avec une vue faible, ou en plein soleil, les bords des cases disparaissent. On ne sait plus où cliquer ni où taper.",
-    found: (n) => (n === 1 ? "Au moins un contrôle a une bordure qui se détache trop peu de ce qui l’entoure. L’analyse a mesuré un contraste inférieur au minimum de 3:1." : "Les bordures de {n} contrôles se détachent trop peu de ce qui les entoure. L’analyse a mesuré un contraste inférieur au minimum de 3:1.".replace("{n}", String(n))),
+    impact: "Les personnes malvoyantes ne voient pas où les cases commencent et finissent.",
+    found: (n) => (n === 1 ? "Au moins un contrôle a une bordure dont le contraste avec ce qui l’entoure reste sous 3:1." : "Les bordures de {n} contrôles ont un contraste sous 3:1 avec ce qui les entoure.".replace("{n}", String(n))),
   },
 };
 

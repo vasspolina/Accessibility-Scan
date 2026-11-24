@@ -200,14 +200,20 @@ describe("fixKindForRule: the undecided checks", () => {
 });
 
 describe("fixHint", () => {
-  // Reported on a content card reading "It belongs with whoever writes the
-  // page rather than with a developer": true, and no help in deciding who
-  // to send it to or what they should change. The sentence names both.
-  it("names the person and the change for a rule narrower than its desk", () => {
-    expect(fixHint(finding({ ruleId: "link-text-vague" }))).toMatch(/Read more/);
+  // The person only (user's instruction, 24 Nov 2026, "overexplaining"):
+  // What to do already says the change, so this card never repeats it.
+  it("names the person, where the desk would name the wrong one", () => {
     expect(fixHint(finding({ ruleId: "media-video-captions" }))).toMatch(/YouTube or Vimeo/);
-    expect(fixHint(finding({ ruleId: "dark-consent-no-reject" }))).toMatch(/Reject all/);
-    expect(fixHint(finding({ ruleId: "typo-leading-tight" }))).toMatch(/line spacing/);
+    expect(fixHint(finding({ ruleId: "dark-consent-no-reject" }))).toMatch(/cookie banner/);
+    expect(fixHint(finding({ ruleId: "typo-leading-tight" }))).toBe("Your designer, then your developer.");
+  });
+
+  it("is one short sentence, never the change", () => {
+    const all = [...ALL_RULE_HINTS, ...Object.values(FIX_KINDS).map((k) => k.hint)];
+    for (const hint of all) {
+      expect(hint.split(/[.!?](\s|$)/).filter((s) => s.trim()).length, hint).toBe(1);
+      expect(hint.split(/\s+/).length, hint).toBeLessThanOrEqual(10);
+    }
   });
 
   it("sends a dark pattern with no rule of its own to whoever decides marketing", () => {

@@ -66,7 +66,7 @@ function evaluateDialogKeyboard(results: DialogKeyboardResult[]): AccessibilityF
           "critical",
           "accessibility",
           r.selector,
-          `${what} gives you no way out with the keyboard: pressing Escape did not close it, and fifteen Tab presses never moved focus back out to the page.`,
+          `${what} holds keyboard focus: Escape did not close it, and fifteen Tab presses never left it.`,
           "Two changes, and it needs both. First, listen for the Escape key and close the dialog. Second, when it closes, put focus back on the page. Use the control that opened the dialog, or the main heading if it opened by itself. Holding focus inside an open dialog is correct and should stay. The fault is only that there is no way out. If a third party supplies this consent or newsletter banner, the bug is in their code, not yours. Send them this finding: it is their fix to make.",
           { criterion: "2.1.2", level: "A" }
         )
@@ -85,7 +85,7 @@ function evaluateDialogKeyboard(results: DialogKeyboardResult[]): AccessibilityF
           "moderate",
           "accessibility",
           r.selector,
-          `${what} does not close when you press Escape. You can still move focus away with Tab, so nobody is stuck. But Escape is the key people reach for first, and it does nothing here.`,
+          `${what} does not close on Escape, though Tab still moves focus out.`,
           "Listen for the Escape key on the dialog and close it, as the ARIA Authoring Practices dialog pattern describes. It is a few lines, and it is what every keyboard user expects."
         )
       );
@@ -98,7 +98,7 @@ function evaluateDialogKeyboard(results: DialogKeyboardResult[]): AccessibilityF
           "serious",
           "accessibility",
           r.selector,
-          `${what} appeared, but focus did not move into it. Someone using a screen reader hears nothing about it. A keyboard user must tab through the whole page behind it to reach the thing now covering their screen.`,
+          `${what} appeared, and focus did not move into it.`,
           "When the dialog opens, move focus to it. The dialog container itself, or the first control inside it. Remember where focus was, so you can put it back when the dialog closes."
         )
       );
@@ -111,7 +111,7 @@ function evaluateDialogKeyboard(results: DialogKeyboardResult[]): AccessibilityF
           "serious",
           "accessibility",
           r.selector,
-          `${what} closed on Escape, but focus ended up nowhere. It fell back to the top of the document. The next Tab press starts again from the beginning of the page. Anyone who had worked their way down loses their place entirely.`,
+          `${what} closed on Escape, and focus fell back to the top of the document.`,
           "On close, put focus back on the control that opened the dialog. Where the dialog was open from the start and has no trigger, move focus to the main content instead. Its heading or first control is a sensible spot for tabbing to carry on from."
         )
       );
@@ -147,7 +147,7 @@ export function evaluateDialogs(
   const unseen = (list: Dialog[]) =>
     list.some((d) => d.visible)
       ? ""
-      : ` Nothing here was open during the scan, which is why there is no picture. ${list.length === 1 ? "It appears" : "They appear"} when something on the page triggers ${list.length === 1 ? "it" : "them"}.`;
+      : `, ${list.length === 1 ? "not" : "none"} open during the scan`;
 
   // 1. Close control with no meaningful accessible name (a bare "×"/icon).
   //    The clearest, highest-impact failure — WCAG 4.1.2 Name, Role, Value.
@@ -159,7 +159,7 @@ export function evaluateDialogs(
         "serious",
         "accessibility",
         pick(unlabelledClose),
-        `A pop-up's close button has no readable label. It's just an "×" or icon (${unlabelledClose.length} pop-up${unlabelledClose.length === 1 ? "" : "s"}). People using a screen reader hear only "button" and can't tell how to dismiss the pop-up, so it traps them.${unseen(unlabelledClose)}`,
+        `Close button with no readable label, only an "×" or icon, in ${unlabelledClose.length} pop-up${unlabelledClose.length === 1 ? "" : "s"}${unseen(unlabelledClose)}.`,
         'Give the close control a label a screen reader can read out: aria-label="Close" on the button. A bare "×" glyph reads out as "multiplication sign", not "close".',
         { criterion: "4.1.2", level: "A" }
       )
@@ -191,7 +191,7 @@ export function evaluateDialogs(
         // because nothing here can point at a criterion for it.
         "accessibility",
         pick(noClose),
-        `A pop-up appears to have no obvious close button (${noClose.length} pop-up${noClose.length === 1 ? "" : "s"}). If clicking outside it is the only way to dismiss it, keyboard and screen-reader users may be stuck behind it.`,
+        `No visible close button in ${noClose.length} pop-up${noClose.length === 1 ? "" : "s"}.`,
         "Add a clearly-labelled close button inside the pop-up, and make sure pressing Escape closes it too.",
         undefined
       )
@@ -210,7 +210,7 @@ export function evaluateDialogs(
         "moderate",
         "design-clarity",
         pick(notMarked),
-        `A pop-up overlay isn't marked up as a dialog (${notMarked.length} overlay${notMarked.length === 1 ? "" : "s"}). Assistive technology doesn't announce that it opened and doesn't keep focus inside it. People can tab off into the hidden page behind it.`,
+        `${notMarked.length} pop-up overlay${notMarked.length === 1 ? " is" : "s are"} not marked up as a dialog.`,
         'Add role="dialog" and aria-modal="true" to the overlay. Give it a label a screen reader can read out, using aria-label or aria-labelledby. Move keyboard focus into it when it opens, and return focus to the trigger when it closes.',
         undefined
       )
@@ -236,7 +236,7 @@ export function evaluateDialogs(
         // impact paragraph sitting directly beneath it — both explaining that
         // a screen reader announces "dialog" — and led with "accessible
         // name", which is the specification's phrase rather than anybody's.
-        `${namelessDialog.length} pop-up${namelessDialog.length === 1 ? " has" : "s have"} nothing in the code naming ${namelessDialog.length === 1 ? "it" : "them"}, so there is no title for software to read out.${unseen(namelessDialog)}`,
+        `${namelessDialog.length} pop-up${namelessDialog.length === 1 ? " has" : "s have"} no name in the code${unseen(namelessDialog)}.`,
         "Add a name to the dialog itself: `aria-label=\"Cookie preferences\"`, or `aria-labelledby` pointing at the id of the heading already inside it. Use the words of that visible heading, so what gets read aloud matches what is on the screen.",
         { criterion: "4.1.2", level: "A" }
       )

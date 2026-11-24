@@ -53,6 +53,6 @@ describe("findings from opened panels", () => {
     ]);
     expect(axe.violations).toHaveLength(1);
     const noted = notePanelFindings([{ ruleId: "image-alt", selector: "#times > img", description: "Image has no alt." } as AccessibilityFinding], foundIn);
-    expect(noted[0].description).toContain("the panel that “Opening times” opens");
+    expect(noted[0].description).toContain("the panel “Opening times” opens");
   });
 });

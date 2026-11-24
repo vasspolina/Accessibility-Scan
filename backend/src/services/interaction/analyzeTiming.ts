@@ -37,8 +37,7 @@ export function evaluateTiming(signals: {
       selector: 'meta[http-equiv="refresh"]',
       ruleId: "timing-meta-refresh",
       description:
-        `This page reloads itself after ${secs} seconds, and nothing offers a way to stop it. ` +
-        "Anyone still reading, or part way through the form, loses their place. So does anyone working through it with a screen reader.",
+        `The page reloads itself after ${secs} seconds with no way to stop it.`,
       suggestedFix:
         "Remove the timed refresh. Where the content really does need to update, offer a button that refreshes it, " +
         "or warn people before it happens and let them add time.",

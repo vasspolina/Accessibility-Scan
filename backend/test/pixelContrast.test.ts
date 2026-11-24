@@ -37,6 +37,6 @@ describe("contrast measured from pixels", () => {
     ]);
     expect(f).toHaveLength(1);
     expect(f[0]).toMatchObject({ ruleId: "contrast-over-image", wcagCriterion: "1.4.3", wcagLevel: "AA", selector: "#a" });
-    expect(f[0].description).toContain("between 1.2:1 and 1.6:1");
+    expect(f[0].description).toContain("1.2:1 to 1.6:1");
   });
 });

@@ -227,8 +227,8 @@ export function evaluateKeyboardNav(nav: KeyboardNavResult): AccessibilityFindin
         // exact element is named in the technical version and shown in the
         // picture; whoever fixes it will not be short of detail.
         c.focusable
-          ? `${c.label ? `"${c.label}"` : "A control on this page"} responds when you click it, and the Tab key does reach it. But pressing Enter or Space there does nothing. For anyone working by keyboard it is a button that ignores the press.`
-          : `${c.label ? `"${c.label}"` : "A control on this page"} responds when you click it, but pressing Tab never reaches it. It is an ordinary piece of the page, not a button or a link, and the keyboard only reaches those.`,
+          ? `${c.label ? `"${c.label}"` : "A control on this page"} responds to a click and Tab reaches it, but Enter and Space do nothing.`
+          : `${c.label ? `"${c.label}"` : "A control on this page"} responds to a click, but Tab never reaches it.`,
         // Plain instruction first, because that is the one the owner can act
         // on — brief their developer, or check it was done. The specifics
         // follow, addressed to whoever writes the code, so the technical
@@ -258,7 +258,7 @@ export function evaluateKeyboardNav(nav: KeyboardNavResult): AccessibilityFindin
         "AA",
         "https://www.w3.org/WAI/WCAG22/Understanding/focus-not-obscured-minimum.html",
         first.selector,
-        `${obscuredStops.length === 1 ? "One control is" : `${obscuredStops.length} controls are`} hidden behind ${first.obscured!.coveredBy} when ${obscuredStops.length === 1 ? "it receives" : "they receive"} keyboard focus. The keyboard user can't see which control is active.`,
+        `${obscuredStops.length === 1 ? "One control is" : `${obscuredStops.length} controls are`} hidden behind ${first.obscured!.coveredBy} when ${obscuredStops.length === 1 ? "it receives" : "they receive"} keyboard focus.`,
         "Give the page's scroll position room under the pinned bar. Scroll-padding on the page, or a smaller bar. The element the keyboard lands on has to be at least partly visible while it has focus."
       )
     );
@@ -278,7 +278,7 @@ export function evaluateKeyboardNav(nav: KeyboardNavResult): AccessibilityFindin
         "A",
         "https://www.w3.org/WAI/WCAG21/Understanding/focus-order.html",
         first.selector,
-        `${anomalies.positiveTabindex.length === 1 ? "A control uses" : `${anomalies.positiveTabindex.length} controls use`} a positive tabindex (${first.tabindex}), which yanks ${anomalies.positiveTabindex.length === 1 ? "it" : "them"} out of the page's natural tab order${anomalies.domInversions.length > 0 ? ` – the walk measured ${anomalies.domInversions.length} place${anomalies.domInversions.length === 1 ? "" : "s"} where focus jumps backwards through the page` : ""}. Everything without a number then comes after everything with one, in an order no one chose.`,
+        `${anomalies.positiveTabindex.length === 1 ? "A control uses" : `${anomalies.positiveTabindex.length} controls use`} a positive tabindex (${first.tabindex})${anomalies.domInversions.length > 0 ? `, and focus jumps backwards in ${anomalies.domInversions.length} place${anomalies.domInversions.length === 1 ? "" : "s"}` : ""}.`,
         "Remove the positive tabindex values and let the DOM order carry the tab order. If the visual order is the problem, reorder the markup. A tabindex number is a patch that breaks somewhere else."
       )
     );
@@ -296,7 +296,7 @@ export function evaluateKeyboardNav(nav: KeyboardNavResult): AccessibilityFindin
       category: "design-clarity",
       selector: first.selector,
       ruleId: "keyboard-positive-tabindex-advisory",
-      description: `${anomalies.positiveTabindex.length === 1 ? "A control uses" : `${anomalies.positiveTabindex.length} controls use`} a positive tabindex (${first.tabindex}). The walk measured no broken order this time, but every new focusable element added to the page will land after the numbered ones, in an order nobody chose.`,
+      description: `${anomalies.positiveTabindex.length === 1 ? "A control uses" : `${anomalies.positiveTabindex.length} controls use`} a positive tabindex (${first.tabindex}), with no broken order measured.`,
       suggestedFix:
         "Remove the positive tabindex values and let the page order carry the tab order. The number is a patch that breaks the moment the page changes.",
       helpUrl: "https://www.w3.org/WAI/WCAG21/Understanding/focus-order.html",
@@ -311,7 +311,7 @@ export function evaluateKeyboardNav(nav: KeyboardNavResult): AccessibilityFindin
         "A",
         "https://www.w3.org/WAI/WCAG21/Understanding/focus-order.html",
         first.laterStop,
-        `Tabbing through this page jumps backwards ${anomalies.domInversions.length === 1 ? "once" : `${anomalies.domInversions.length} times`}: focus lands on an element that sits EARLIER in the page than the one before it. A keyboard user's sense of where they are breaks at each jump.`,
+        `Tab order jumps backwards in the page ${anomalies.domInversions.length === 1 ? "once" : `${anomalies.domInversions.length} times`}.`,
         "Make the tab order follow the page order. The usual causes are CSS that visually reorders content and scripts that move focus. Reorder the markup instead."
       )
     );
@@ -355,7 +355,7 @@ export function evaluateKeyboardNav(nav: KeyboardNavResult): AccessibilityFindin
         "A",
         "https://www.w3.org/WAI/WCAG21/Understanding/no-keyboard-trap.html",
         trappedSelector,
-        "Keyboard focus gets stuck: pressing Tab repeatedly leaves focus on the same element. Keyboard users can't move past it to reach the rest of the page.",
+        "Repeated Tab presses never move keyboard focus past this element.",
         "Make sure every element the Tab key reaches passes focus on when you press Tab. Check for JavaScript that cancels keydown events or re-focuses the element."
       )
     );
@@ -378,7 +378,7 @@ export function evaluateKeyboardNav(nav: KeyboardNavResult): AccessibilityFindin
         "AA",
         "https://www.w3.org/WAI/WCAG21/Understanding/focus-visible.html",
         invisible[0].selector,
-        `Moving through the page with the Tab key gives no visible sign of where you are. ${invisible.length} of ${comparable.length} keyboard stops show no outline, highlight or other visual change.`,
+        `${invisible.length} of ${comparable.length} keyboard stops show no visible change on focus.`,
         "Remove `outline: none` (or provide a replacement) so every interactive element shows a clear focus indicator. For example, `:focus-visible { outline: 2px solid; outline-offset: 2px; }`."
       )
     );
@@ -436,7 +436,7 @@ export function evaluateKeyboardNav(nav: KeyboardNavResult): AccessibilityFindin
         // matters", which already covers why a faint ring survives testing,
         // and saying it twice in consecutive paragraphs was the exact fault
         // this report gets criticised for elsewhere.
-        `At ${faint.length} of the ${comparable.length} keyboard stops, the focus ring measures roughly ${ratio.toFixed(1)}:1 against what sits behind it. Three to one is the minimum for an indicator to count as visible.`,
+        `Focus ring at roughly ${ratio.toFixed(1)}:1 against its background, under 3:1, at ${faint.length} of ${comparable.length} keyboard stops.`,
         "Two changes: a stronger colour and more weight. Pick a focus colour at least three times as light or dark as whatever sits behind it, which in practice means a firm dark tone or your brand colour, not a pale grey.\n\nDraw it at 2px or more, and add `outline-offset: 2px` so the ring sits just off the control rather than merging into its own border.\n\nA 1px line in a light grey is easy to mistake for a rendering glitch. That is why it survives testing and still fails in use."
       )
     );
