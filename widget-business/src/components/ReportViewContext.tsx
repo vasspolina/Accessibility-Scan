@@ -1,4 +1,4 @@
-import { createContext, useContext } from "react";
+import { createContext, useContext, type MouseEvent } from "react";
 
 /**
  * How the report is currently being rendered — presentation state only,
@@ -28,6 +28,15 @@ export interface ReportView {
    * repeat (the summary's copy button, the worst-of cards).
    */
   inChat?: boolean;
+  /**
+   * Puts a question to the assistant in this conversation, with the page it
+   * is about as the reply's source. Set only for blocks drawn in the chat,
+   * so Learn more there asks in the thread instead of leaving it (user's
+   * choice, 24 Nov 2026: the help sites refuse to be framed, Deque with
+   * X-Frame-Options and W3C with frame-ancestors, so the page itself cannot
+   * open inside the chat).
+   */
+  ask?: (text: string, source: { url: string; title: string }) => void;
 }
 
 const ReportViewContext = createContext<ReportView>({ professional: false, criterionNames: {} });
@@ -36,4 +45,32 @@ export const ReportViewProvider = ReportViewContext.Provider;
 
 export function useReportView(): ReportView {
   return useContext(ReportViewContext);
+}
+
+/**
+ * The click for a Learn more link. Inside the chat a plain click asks the
+ * assistant about the item and keeps the reader in the conversation; the
+ * href stays, so a modified or middle click, the printed report and the
+ * page outside the chat still go to the help page itself.
+ */
+export function learnMoreClick(
+  ask: ReportView["ask"],
+  question: string,
+  url: string
+): ((e: MouseEvent<HTMLAnchorElement>) => void) | undefined {
+  if (!ask) return undefined;
+  return (e) => {
+    if (e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
+    e.preventDefault();
+    ask(question, { url, title: sourceTitle(url) });
+  };
+}
+
+/** The help page's site, as the Sources line names it. */
+function sourceTitle(url: string): string {
+  try {
+    return new URL(url).hostname.replace(/^www\./, "");
+  } catch {
+    return url;
+  }
 }

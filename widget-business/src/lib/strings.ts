@@ -182,6 +182,7 @@ export const CHROME_KEYS: string[] = [
   "Hide the checklist",
   "Show fewer",
   "Learn more about this issue",
+  "Tell me more about this: {issue}",
   "Start the scan",
   "Which site?",
   "Website address (required)",

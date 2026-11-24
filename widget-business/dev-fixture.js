@@ -515,7 +515,11 @@
       }
       content = [{ type: "text", text: text }];
     } else {
-      var addr = (userText.match(/\b((?:https?:\/\/)?(?:[a-z0-9-]+\.)+[a-z]{2,}(?:\/[^\s]*)?)/i) || [])[1];
+      // A Learn more question names its help page, which the note says is
+      // not a site to scan; the model reads it so, and so does this stand-in.
+      var addr = /not a site to scan/.test(userText)
+        ? null
+        : (userText.match(/\b((?:https?:\/\/)?(?:[a-z0-9-]+\.)+[a-z]{2,}(?:\/[^\s]*)?)/i) || [])[1];
       if (addr) addr = addr.replace(/[.,;:!?)]+$/, "");
       if (addr && !/fix|why|what|how/i.test(userText.replace(addr, ""))) {
         chatCalls += 1;
