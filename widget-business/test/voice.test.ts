@@ -47,11 +47,15 @@ describe("titles", () => {
   // Name the problem in two to six words, sentence case, no trailing stop.
   // A title is a label, not a sentence — the length cap is what stopped the
   // long-sentence titles that wrapped to three lines on a phone.
+  // Two titles are longer by the user's own wording (24 Nov 2026, the score
+  // summary's copy): "You can't see which item has keyboard focus" and "Tab
+  // order differs from the order on screen", eight words each.
+  const LONGER_BY_USER: Record<string, number> = { "keyboard-no-visible-focus": 8, "reading-order-mismatch": 8 };
   it("run two to six words", () => {
     for (const [id, r] of Object.entries(PLAIN_RULE_EXPLANATIONS)) {
       const words = r.plain.trim().split(/\s+/);
       expect(words.length, `${id} title has ${words.length} words`).toBeGreaterThanOrEqual(2);
-      expect(words.length, `${id} title has ${words.length} words`).toBeLessThanOrEqual(6);
+      expect(words.length, `${id} title has ${words.length} words`).toBeLessThanOrEqual(LONGER_BY_USER[id] ?? 6);
     }
   });
 

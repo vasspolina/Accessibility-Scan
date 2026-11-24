@@ -113,13 +113,13 @@
    shift as it changes (Hochuli p.41–44; docs/hochuli-typography-study.html).
    Prose keeps the proportional figures. */
 .a11y-widget-biz :is(table, [role="table"], .a11y-sum-dial-num, .a11y-pro-score-num, .a11y-legal-count,
-  .a11y-section-count, .a11y-shell-nav-count, .a11y-pro-row-num, .a11y-sum-cell-count, .a11y-sum-cell-no) {
+  .a11y-section-count, .a11y-shell-nav-count, .a11y-pro-row-num) {
   font-variant-numeric: tabular-nums;
 }
 .a11y-widget-biz a { color: var(--ink); text-decoration: underline; text-underline-offset: 0.15em; }
 
 /* The small print under a title: 15px. */
-.a11y-widget-biz :is(small, .a11y-issue-row-meta, .a11y-conf-cap, .a11y-next-meta, .a11y-sum-eyebrow, .a11y-input-help, .a11y-input-label) {
+.a11y-widget-biz :is(small, .a11y-issue-row-meta, .a11y-conf-cap, .a11y-next-meta, .a11y-input-help, .a11y-input-label) {
   font-size: 18px; letter-spacing: 0.01em; line-height: 1.2;
 }
 
@@ -173,7 +173,7 @@
 .a11y-widget-biz :is(strong, b) { font-weight: 400; }
 
 /* The highlight. Black text, always; cap colours are decoration. */
-.a11y-widget-biz :is(.a11y-sev, .a11y-rule-chip, .a11y-level-badge, .a11y-sum-chip, .a11y-pro-chip, .a11y-conf-status, .a11y-principle-count, .a11y-status-chip) {
+.a11y-widget-biz :is(.a11y-sev, .a11y-rule-chip, .a11y-level-badge, .a11y-pro-chip, .a11y-conf-status, .a11y-principle-count, .a11y-status-chip) {
   color: #000; background: var(--hl-green);
   padding: 0 0.22em; margin-inline: 0.12em;
   border-radius: 0.9em 0.45em 0.9em 0.55em / 0.7em 0.5em 0.7em 0.5em;
@@ -236,14 +236,8 @@
 .a11y-widget-biz .a11y-shell-nav-heading,
 .a11y-widget-biz .a11y-sr-line-text,
 .a11y-widget-biz .a11y-sr-num,
-.a11y-widget-biz .a11y-sum-cell-count,
-.a11y-widget-biz .a11y-sum-cell-item,
-.a11y-widget-biz .a11y-sum-cell-no,
-.a11y-widget-biz .a11y-sum-chip,
 .a11y-widget-biz .a11y-sum-dial-num,
 .a11y-widget-biz .a11y-sum-dial-of,
-.a11y-widget-biz .a11y-sum-row-marks,
-.a11y-widget-biz .a11y-sum-row-title,
 .a11y-widget-biz .a11y-switch-controls,
 .a11y-widget-biz .a11y-switch-label { margin-inline-end: 0.3em; }
 
@@ -378,7 +372,6 @@
    room kept for the display list under it, and the 65px between the run
    and the panels, came out as a gap the height of the dial. */
 .a11y-widget-biz .a11y-chat-block .a11y-sum-grid .a11y-sum-run { padding-block: 0; margin-bottom: 0; }
-.a11y-widget-biz .a11y-chat-block .a11y-sum-grid > .a11y-sum-col + .a11y-sum-col { margin-top: 1.2em; }
 /* A long address has no break point, so at 27px it ran past the column and
    was clipped (user's screenshot, 4 Nov 2026). It may break anywhere. */
 .a11y-widget-biz .a11y-chat-turn :is(a, .a11y-chat-url) { overflow-wrap: anywhere; }
@@ -655,7 +648,7 @@
 
 /* A highlight is a word: it never breaks inside itself or hyphenates
    ("Fix eventual-ly"). Rule ids are the one exception, they are long. */
-.a11y-widget-biz :is(.a11y-sev, .a11y-level-badge, .a11y-sum-chip, .a11y-pro-chip, .a11y-conf-status, .a11y-principle-count, .a11y-status-chip) {
+.a11y-widget-biz :is(.a11y-sev, .a11y-level-badge, .a11y-pro-chip, .a11y-conf-status, .a11y-principle-count, .a11y-status-chip) {
   hyphens: manual; overflow-wrap: normal;
 }
 .a11y-widget-biz .a11y-rule-chip { hyphens: manual; overflow-wrap: anywhere; }
@@ -932,13 +925,6 @@
 .a11y-widget-biz .a11y-pro-point-num { font-size: 18px; letter-spacing: 0.01em; font-weight: 400; }
 
 /* The three worst findings next to the dial: number, title with its marks under it, count. */
-.a11y-widget-biz .a11y-sum-thead { display: none; }
-.a11y-widget-biz .a11y-sum-rows { list-style: none; padding: 0; margin: 0 0 1.2em; }
-.a11y-widget-biz .a11y-sum-row { display: grid; grid-template-columns: 1.6em minmax(0, 1fr) auto; gap: 0 0.4em; align-items: baseline; margin: 0 0 0.6em; }
-.a11y-widget-biz .a11y-sum-cell-item { display: block; }
-.a11y-widget-biz .a11y-sum-row-title { display: block; }
-.a11y-widget-biz .a11y-sum-row-marks { display: block; font-size: 22px; letter-spacing: 0.01em; }
-.a11y-widget-biz .a11y-sum-cell-count { white-space: nowrap; font-weight: 400; }
 
 /* Severity rows of the professional panel: the word, then its count. */
 
@@ -1058,78 +1044,8 @@
   container: a11y-sum-run / inline-size;
   text-align: start; padding: 1.2em 0 1.4em; margin: 0 0 0.6em;
 }
-.a11y-widget-biz .a11y-sum-run > .a11y-sum-eyebrow { margin: 0 0 0.6em; }
 .a11y-widget-biz .a11y-sum-run .a11y-sum-dial-card { display: flex; justify-content: flex-start; }
 .a11y-widget-biz .a11y-sum-run .a11y-sum-dial { margin: 0 0 0.5em; }
-/* The run of findings: display size, tight, centred.
-   10% smaller since 18 Nov 2026 (user's instruction): 67 to 60px, the
-   marker 44 to 40px with its figure 32 to 29px. 12% smaller again since
-   21 Nov 2026 (user's instruction, "make this a 12% smaller", then "like
-   large text only"): the titles 60 to 53px; the marker keeps its 40px
-   and 29px figure, the marks and count their 22px. */
-/* Each finding is one unit (user's instruction, 18 Nov 2026: "either two
-   full statements in a line or one ... don't leave one word from a
-   sentence on the line"). A row is an inline block, so a line holds whole
-   findings and a finding that does not fit starts a new line instead of
-   leaving its first word, "Text", hanging at the end of the one before.
-   The run no longer balances across rows, which had narrowed every line
-   (user's word the same day, "it can be 30% wider"): lines fill the column
-   and only a finding too long for one line wraps, balanced inside itself. */
-/* 20% smaller again on 21 Nov 2026 (user's instruction, "make big text
-   20% smaller"): the titles 53 to 42px, 38 to 30px on a phone; the
-   marker, marks and count keep their sizes. The commas between findings
-   are gone the same day ("whats this gaps in between?"): the comma hung
-   off the end of each row, so when a title filled its line the count and
-   then the comma each fell to a line of their own. The round numbers
-   already part the findings. The count is held to its marks: the link is
-   nowrap, so nothing breaks between the marks and the count, and the item
-   inside it wraps as before. */
-/* Body size since 23 Nov 2026 (user's instruction, "make this text
-   normal size as other body text"): the titles take the report's own
-   prose size, line and spacing by inheritance (32px at 1.2 with no
-   tracking on a desktop, the phone's and the conversation's sizes where
-   those apply), not a display size of their own. */
-.a11y-widget-biz .a11y-sum-run .a11y-sum-rows {
-  margin: 0; font-size: inherit; letter-spacing: inherit; line-height: inherit;
-  hyphens: manual; overflow-wrap: break-word;
-}
-.a11y-widget-biz .a11y-sum-run .a11y-sum-nobreak { white-space: nowrap; }
-.a11y-widget-biz .a11y-sum-run .a11y-sum-row { display: inline-block; max-width: 100%; margin: 0 0 0.12em; }
-.a11y-widget-biz .a11y-sum-run :is(.a11y-sum-cell-item, .a11y-sum-row-title) { display: inline; }
-.a11y-widget-biz .a11y-sum-run .a11y-sum-row-link { white-space: nowrap; }
-.a11y-widget-biz .a11y-sum-run .a11y-sum-row-link > .a11y-sum-cell-item { white-space: normal; }
-/* Each item links to its finding (lib/openFinding). Ink like the type
-   around it, with no underline (user's instruction, 18 Nov 2026,
-   "underline on hover is not needed"): the items stand alone in a numbered
-   run, not inside a sentence, so the round marker and the hover say they
-   can be followed. Hover lays the marker yellow under the title with
-   black text, the controls' hover. The marks and the count keep their own
-   fills inside the link. */
-.a11y-widget-biz .a11y-sum-run .a11y-sum-row-link,
-.a11y-widget-biz .a11y-sum-run .a11y-sum-row-link .a11y-sum-row-title { color: inherit; text-decoration: none; }
-/* The yellow is a band 1em tall, 0.8em above the baseline to 0.2em below,
-   not the inline box's full ground: the run's lines are 1.06em apart and
-   Jokker's content area is 1.18em (measured at 60px: 0.97em up, 0.21em
-   down), so a full ground covered the descenders of the line above
-   (user's report, 18 Nov 2026). The band clears them by about 0.04em. */
-.a11y-widget-biz .a11y-sum-run .a11y-sum-row-link:hover .a11y-sum-row-title {
-  background: linear-gradient(var(--hl-cap-a), var(--hl-cap-a)) 0 0.17em / 100% 1em no-repeat;
-  color: #000; text-decoration: none;
-}
-/* The marker: a round with the figure, sat on the line. One line of the
-   words tall, as every list number (1.5em of its own 0.8em figure is the
-   words' 1.2 line), so it follows the titles to body size. */
-.a11y-widget-biz .a11y-sum-run .a11y-sum-cell-no {
-  display: inline-grid; place-content: center; vertical-align: 0.08em;
-  width: 1.5em; height: 1.5em; border-radius: 50%; margin: 0 0.18em 0 0;
-  background: var(--solid); color: var(--solid-ink);
-  font-size: 0.8em; letter-spacing: 0; font-weight: 400; line-height: 1;
-}
-.a11y-widget-biz .a11y-sum-run .a11y-sum-row-marks,
-.a11y-widget-biz .a11y-sum-run .a11y-sum-cell-count {
-  display: inline; vertical-align: middle; white-space: nowrap;
-  font-size: 22px; letter-spacing: 0.01em; line-height: 1.2; margin: 0 0 0 0.3em;
-}
 .a11y-widget-biz .a11y-sum-run .a11y-score-clean { font-size: inherit; letter-spacing: inherit; line-height: inherit; margin: 0; }
 .a11y-widget-biz .a11y-sum-run + .a11y-sum-actions { text-align: start; margin: 0 0 1.2em; }
 /* On a phone the run loses its side padding, so a long German word
@@ -1237,26 +1153,6 @@
 .a11y-widget-biz .a11y-prompts .a11y-prompt:has(> .a11y-prompt-q:disabled) { border: 1px dashed var(--ink); }
 .a11y-widget-biz .a11y-prompts .a11y-prompt-q:disabled { cursor: default; }
 .a11y-widget-biz .a11y-prompt-more { text-align: center; margin: 1.2em 0 0; }
-@container a11y-sum-run (max-width: 640px) {
-  .a11y-widget-biz .a11y-sum-run .a11y-sum-row-marks { white-space: normal; }
-  /* The link's nowrap held the severity mark to the count, and in French
-     at 320px that pair ran 1px past the column (Widget CI, 21 Nov 2026,
-     "Les images n'ont pas de description"). In a phone's narrow run the
-     count may take the next line; the count itself stays whole. */
-  .a11y-widget-biz .a11y-sum-run .a11y-sum-row-link { white-space: normal; }
-  /* No space stands between the title's last word and the marks, or the
-     marks and the count (JSX drops the line break between the spans), so
-     "description" and the WCAG mark were one unbreakable piece, still 1px
-     too wide on CI's Linux text. A zero-width space at each end of the
-     marks gives the line a place to break (both sides of the marks, since
-     the count is nowrap and cannot hold one); it is empty for screen
-     readers. */
-  .a11y-widget-biz .a11y-sum-run .a11y-sum-row-marks::before,
-  .a11y-widget-biz .a11y-sum-run .a11y-sum-row-marks::after { content: "\200B" / ""; }
-  /* A long first word held to its marker cannot break, so on a phone the
-     pair may part rather than run off the screen. */
-  .a11y-widget-biz .a11y-sum-run .a11y-sum-nobreak { white-space: normal; }
-}
 .a11y-widget-biz .a11y-status-chip { font-size: 22px; letter-spacing: 0.01em; }
 .a11y-widget-biz .a11y-accordion-title .a11y-accordion-head > span:first-child { flex: 0 1 auto; }
 
@@ -1608,9 +1504,7 @@
 .a11y-widget-biz .a11y-manual-list > .a11y-manual-row a,
 .a11y-widget-biz .a11y-manual-list > .a11y-manual-row code,
 .a11y-widget-biz .a11y-pro-rows > .a11y-pro-row a,
-.a11y-widget-biz .a11y-pro-rows > .a11y-pro-row code,
-.a11y-widget-biz .a11y-sum-col > .a11y-sum-panel a,
-.a11y-widget-biz .a11y-sum-col > .a11y-sum-panel code { color: inherit; }
+.a11y-widget-biz .a11y-pro-rows > .a11y-pro-row code { color: inherit; }
 
 /* The label: 15px Jokker, sentence case, at the top-left, over a 1px ink
    rule with 10px under it. */
@@ -2069,8 +1963,7 @@
   }
   .a11y-widget-biz :is(
     figure, img, pre, tr, blockquote,
-    .a11y-occurrence, .a11y-fd-col > p, .a11y-fd-col:first-child > div, .a11y-fd-learn, .a11y-pro-block, .a11y-fix-once,
-    .a11y-sum-row, .a11y-pro-row, .a11y-pro-point, .a11y-legal-row, .a11y-legal-q,
+    .a11y-occurrence, .a11y-fd-col > p, .a11y-fd-col:first-child > div, .a11y-fd-learn, .a11y-pro-block, .a11y-fix-once, .a11y-pro-row, .a11y-pro-point, .a11y-legal-row, .a11y-legal-q,
     .a11y-conf-row, .a11y-next-list > li, .a11y-undecided-cell, .a11y-spec-card, .a11y-sr-row, .a11y-dn-link
   ) { break-inside: avoid; page-break-inside: avoid; }
   .a11y-widget-biz thead { display: table-header-group; }
@@ -2404,66 +2297,6 @@
   .a11y-widget-biz .a11y-chats:not([data-open]) .a11y-chats-body { display: none; }
   .a11y-widget-biz .a11y-chats[data-open] .a11y-chats-body { padding-bottom: 12px; border-bottom: 1px solid var(--ink); }
   .a11y-widget-biz .a11y-chats .a11y-chats-delete { visibility: visible; }
-}
-
-/* ═══ THE SCORE KEY AFTER A TYPE FOUNDRY'S FOOTER (user's reference, 22 Nov 2026) ═
-   "Design this like this": Start here, Score … and What the score counts
-   stand side by side under ONE 1px ink rule across the whole width, each
-   a 15px label with its lines under it at 18px/1.3, like a footer's
-   columns of links. Four tracks, 15px apart; What the score counts takes
-   the last two and runs its six points as one list, one under another. No numbers, no markers,
-   no per-label rules, no ground. The reference's grey labels are ink here
-   (black and white only) and stay sentence case.
-   It replaces the ruled columns of 18 Nov (a rule under each label, the
-   sentence at 27px), the numbered two-column points on the page and the
-   fold the points sat under in the conversation.
-   Measured on its own width (the grid is the size container): under
-   760px two tracks, the points a full row; under 480px one column
-   throughout.
-   ON A PLATE, A RULE UNDER EACH LABEL (user's reference, 23 Nov 2026, a
-   foundry's pricing panel, "design this like this"): the key is one panel
-   on the sky plate, #b8e7ff with black words in light (14.9:1), the deep
-   #2e3350 with white words in dark (12.4:1), 20px corners, 18px inside;
-   each column's label is 18px over its own 1px rule across the column,
-   and the lines under it are set solid, 18px/1.3 with no space between
-   them. The one rule across the width and the 0.6em between points are
-   gone. Labels stay sentence case. */
-.a11y-widget-biz .a11y-sum-grid { container: a11y-sum / inline-size; }
-.a11y-widget-biz .a11y-sum-key {
-  --ink: var(--plate-text); --paper: var(--plate-1);
-  display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 32px 16px; align-items: start;
-  box-sizing: border-box; margin-bottom: 0; padding: 18px 18px 24px;
-  border: 0; border-radius: 20px; background: var(--plate-1); color: var(--plate-text);
-}
-.a11y-widget-biz .a11y-sum-key > .a11y-sum-panel {
-  box-sizing: border-box; min-width: 0; margin: 0; padding: 0;
-  border: 0; border-radius: 0; background: none; color: var(--ink);
-  text-align: start; overflow-wrap: break-word; hyphens: manual;
-}
-.a11y-widget-biz .a11y-sum-key > .a11y-sum-counts { grid-column: 2 / -1; }
-.a11y-widget-biz .a11y-sum-key .a11y-sum-eyebrow {
-  margin: 0 0 18px; padding: 0 0 10px; border: 0; border-bottom: 1px solid var(--ink); background: none; color: var(--ink); text-align: start; text-transform: none;
-  font-family: "PP Telegraf", sans-serif; font-size: 18px; font-weight: 400; line-height: 1.3; letter-spacing: 0.01em;
-}
-.a11y-widget-biz .a11y-sum-key :is(.a11y-sum-lead, .a11y-sum-counts-list) {
-  display: block; margin: 0;
-  font-family: "PP Telegraf", sans-serif; font-size: 18px; font-weight: 400; line-height: 1.3; letter-spacing: 0.01em;
-}
-/* One column, the six points one under another (user's instruction,
-   22 Nov 2026, "the selected text needs to go underneath"), set solid like
-   the reference's price lists: no space between the lines. */
-.a11y-widget-biz .a11y-sum-key .a11y-sum-counts-list { padding: 0; list-style: none; }
-.a11y-widget-biz .a11y-sum-key .a11y-sum-counts-list > li { margin: 0; padding: 0; break-inside: avoid; }
-@media (forced-colors: active) {
-  .a11y-widget-biz .a11y-sum-key { border: 1px solid CanvasText; }
-}
-@container a11y-sum (max-width: 760px) {
-  .a11y-widget-biz .a11y-sum-key { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-}
-@container a11y-sum (max-width: 480px) {
-  .a11y-widget-biz .a11y-sum-key { grid-template-columns: minmax(0, 1fr); }
-  /* -3 on one track would open an empty implicit track before it. */
-  .a11y-widget-biz .a11y-sum-key > .a11y-sum-counts { grid-column: 1 / -1; }
 }
 
 /* ═══ THE CONVERSATIONS PANEL'S EDGE (user's instruction, 18 Nov 2026) ═════
@@ -3342,10 +3175,6 @@
   max-width: none; margin: 0;
   font-family: "PP Telegraf", sans-serif; font-size: 18px; font-weight: 400; line-height: 1.3; letter-spacing: 0.01em;
 }
-.a11y-widget-biz .a11y-sum-key > .a11y-sum-panel:first-child:not(.a11y-sum-counts) { grid-column: 1 / 2; }
-@container a11y-sum (max-width: 480px) {
-  .a11y-widget-biz .a11y-sum-key > .a11y-sum-panel:first-child:not(.a11y-sum-counts) { grid-column: 1 / -1; }
-}
 @media (max-width: 640px) {
   .a11y-widget-biz .a11y-first-fix .a11y-first-fix-lead { font-size: 27px; letter-spacing: 0; }
 }
@@ -3760,7 +3589,7 @@
    SERVICES CARDS, the same day) and is left out. Colour still never
    carries the meaning alone: the words do. Black on every highlight fill
    measures 7:1 or better in both themes. */
-.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-sev, .a11y-rule-chip, .a11y-level-badge, .a11y-sum-chip, .a11y-pro-chip, .a11y-conf-status, .a11y-principle-count, .a11y-status-chip, .a11y-next-count) {
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-sev, .a11y-rule-chip, .a11y-level-badge, .a11y-pro-chip, .a11y-conf-status, .a11y-principle-count, .a11y-status-chip, .a11y-next-count) {
   display: inline-block; vertical-align: 0.15em; box-sizing: border-box;
   margin-inline: 0.25em; padding: 4px 10px 3px; border-radius: 8px; box-shadow: none; color: #000;
   font-family: "Serrif", Georgia, "Times New Roman", serif; font-weight: 300; font-synthesis: none;
@@ -3777,11 +3606,11 @@
    (24 Nov 2026): German's "1 würden heute nicht bestehen" ran 3px past
    320px on one line (Widget CI, run 633). */
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-next-count { max-width: 100%; white-space: normal; overflow-wrap: break-word; }
-.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-sev, .a11y-rule-chip, .a11y-level-badge, .a11y-sum-chip, .a11y-pro-chip, .a11y-principle-count, .a11y-status-chip, .a11y-next-count):nth-child(3n+1) { rotate: -2deg; }
-.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-sev, .a11y-rule-chip, .a11y-level-badge, .a11y-sum-chip, .a11y-pro-chip, .a11y-principle-count, .a11y-status-chip, .a11y-next-count):nth-child(3n+2) { rotate: 1.5deg; }
-.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-sev, .a11y-rule-chip, .a11y-level-badge, .a11y-sum-chip, .a11y-pro-chip, .a11y-principle-count, .a11y-status-chip, .a11y-next-count):nth-child(3n) { rotate: -1deg; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-sev, .a11y-rule-chip, .a11y-level-badge, .a11y-pro-chip, .a11y-principle-count, .a11y-status-chip, .a11y-next-count):nth-child(3n+1) { rotate: -2deg; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-sev, .a11y-rule-chip, .a11y-level-badge, .a11y-pro-chip, .a11y-principle-count, .a11y-status-chip, .a11y-next-count):nth-child(3n+2) { rotate: 1.5deg; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-sev, .a11y-rule-chip, .a11y-level-badge, .a11y-pro-chip, .a11y-principle-count, .a11y-status-chip, .a11y-next-count):nth-child(3n) { rotate: -1deg; }
 @media print {
-  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-sev, .a11y-rule-chip, .a11y-level-badge, .a11y-sum-chip, .a11y-pro-chip, .a11y-principle-count, .a11y-status-chip, .a11y-next-count) { rotate: none; }
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-sev, .a11y-rule-chip, .a11y-level-badge, .a11y-pro-chip, .a11y-principle-count, .a11y-status-chip, .a11y-next-count) { rotate: none; }
 }
 
 /* ═══ CHECK RESULTS AS THE SERVICES CARDS (user's instruction, 23 Nov 2026,
@@ -3868,46 +3697,6 @@
 }
 @media (forced-colors: active) {
   .a11y-widget-biz .a11y-legal-results .a11y-legal-tiles > .a11y-legal-row { border: 1px solid CanvasText; }
-}
-
-/* ═══ THE WORST FINDINGS' MARKS AS BADGES (user's instruction, 23 Nov 2026,
-   "design these as badges", on the run of worst findings under the score
-   dial) ═══════════════════════════════════════════════════════════════════
-   The criterion and the severity beside each finding were marker
-   highlights (a skewed round with yellow and pink end caps); here they are
-   badges: a plain pill, 999px corners, no end caps, 18px words on one line,
-   sat on the middle of the title's line. The fills are the check-result
-   cards' plates, so a colour means the same thing in both places: Fix
-   first pink, Fix soon sky, Fix eventually mint, Minor polish yellow; the
-   criterion is the neutral tile ground. Black words on the light fills
-   (13:1 or better, 18.4:1 on the tile), white on the deep dark plates and
-   the dark tile (12:1 or better). Only this run: the highlight stays
-   wherever else these marks appear. This lifts the 14 Oct 2026 "no badges
-   across the content" rule for these two marks, at the user's word. */
-.a11y-widget-biz .a11y-sum-run .a11y-sum-row .a11y-sum-row-marks { display: inline-flex; flex-wrap: wrap; gap: 6px; align-items: center; vertical-align: middle; }
-.a11y-widget-biz .a11y-sum-run .a11y-sum-row-marks > :is(.a11y-sum-chip, .a11y-sev) {
-  display: inline-block; margin: 0; padding: 7px 14px 6px; border-radius: 999px; box-shadow: none;
-  font-size: 18px; font-weight: 400; line-height: 1.1; letter-spacing: 0.01em; white-space: nowrap;
-  background: var(--plate-2); color: var(--plate-text);
-}
-.a11y-widget-biz .a11y-sum-run .a11y-sum-row-marks > .a11y-sum-chip { background: var(--tile); color: var(--tile-ink); }
-.a11y-widget-biz .a11y-sum-run .a11y-sum-row-marks > .a11y-sev-critical { background: var(--urgent); color: #000; }
-.a11y-widget-biz .a11y-sum-run .a11y-sum-row-marks > .a11y-sev-serious { background: var(--plate-1); }
-.a11y-widget-biz .a11y-sum-run .a11y-sum-row-marks > .a11y-sev-moderate { background: var(--plate-2); }
-.a11y-widget-biz .a11y-sum-run .a11y-sum-row-marks > .a11y-sev-minor { background: var(--plate-4); }
-@media (forced-colors: active) {
-  .a11y-widget-biz .a11y-sum-run .a11y-sum-row-marks > :is(.a11y-sum-chip, .a11y-sev) { border: 1px solid CanvasText; }
-}
-/* The run's marks take the checklist's bubble shape (user's instruction,
-   23 Nov 2026, "make these badges same as here. and all other badges",
-   with a screenshot of this run beside the checklist's bubbles): 8px
-   corners, the mono face at 15px, 2px 8px inside, a small tilt, keeping
-   the plate colours above so a colour still means what it means on the
-   check-result cards. */
-.a11y-widget-biz.a11y-widget-biz .a11y-sum-run .a11y-sum-row-marks > :is(.a11y-sum-chip, .a11y-sev) {
-  padding: 4px 10px 3px; border-radius: 8px;
-  font-family: "Serrif", Georgia, "Times New Roman", serif; font-weight: 300; font-synthesis: none;
-  font-size: 18px; line-height: 1.25; letter-spacing: 0.08em;
 }
 
 /* ═══ THE FINDINGS TABLES' SEVERITY AS A SERIF BUBBLE (user's instruction,
@@ -4252,57 +4041,6 @@
   .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-undecided-call > :is(.a11y-method-badge, .a11y-undecided-places, .a11y-undecided-most) { border: 1px solid CanvasText; }
 }
 
-/* ═══ THE WORST FINDINGS BESIDE THE DIAL, EACH A BUTTON ON HOVER (user's
-   instruction, 23 Nov 2026, "can this bottom text go next to graph? also
-   make whole bottom text hover like buttons") ═══════════════════════════
-   The score's run of worst findings stands to the right of the dial,
-   centred on it, where the run has room for about 18em; where it has not
-   (a phone, a narrow embed, the chat column) it wraps under the dial as
-   before. The visually hidden heading is out of the flow, so it takes no
-   place. Each finding's link is one block that turns the buttons' mint on
-   hover and keyboard focus, black words (--hover / --hover-ink, #c6ffcc,
-   18.7:1; dark #3a3a3c with white), 10px corners like the buttons, the
-   title, its badges and the count together; the yellow band under the
-   title alone is gone. The block's padding is given back by a negative
-   margin, so the words stay on the column's left line. */
-.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-run {
-  display: flex; flex-wrap: wrap; align-items: center; gap: 24px 56px;
-}
-/* The dial's card is as wide as the dial and the round sticker that hangs
-   off its right side (7em - 34px + 190px, 7em - 24px + 130px on a phone),
-   so the run starts clear of the sticker. */
-.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-run > .a11y-sum-dial-card { flex: none; position: relative; min-width: calc(7em + 156px); }
-@media (max-width: 640px) {
-  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-run > .a11y-sum-dial-card { min-width: calc(7em + 106px); }
-}
-.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-run > .a11y-sum-dial-card .a11y-sum-dial { margin: 0; }
-.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-run > :is(.a11y-sum-table, .a11y-score-clean) { flex: 1 1 18em; min-width: 0; }
-.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-run .a11y-sum-row-link {
-  display: inline-block; max-width: calc(100% + 0.4em); box-sizing: border-box;
-  margin: 0 -0.2em; padding: 0.05em 0.2em 0.08em; border-radius: 10px;
-  transition: background-color 0.15s, color 0.15s;
-}
-.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-run .a11y-sum-row-link:is(:hover, :focus-visible) {
-  background: var(--hover); color: var(--hover-ink);
-}
-.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-run .a11y-sum-row-link:is(:hover, :focus-visible) .a11y-sum-row-title {
-  background: none; color: inherit;
-}
-@media (prefers-reduced-motion: reduce) {
-  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-run .a11y-sum-row-link { transition: none; }
-}
-/* Even space on each line (user's instruction, 23 Nov 2026, "add even space
-   between elements in each line"): the title, each badge and the count
-   stand 12px apart. It measured 19, 5 and 19px: the badges' own 0.25em
-   side margins and the marks' and count's 0.3em stacked unevenly. */
-.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-run .a11y-sum-row-marks { gap: 12px; margin-inline-start: 12px; }
-.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-run .a11y-sum-row-marks > * { margin: 0; }
-.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-run :is(.a11y-sum-cell-item, .a11y-sum-row-title) { margin-inline-end: 0; }
-.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-run .a11y-sum-cell-count { margin-inline-start: 12px; }
-@media (forced-colors: active) {
-  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-run .a11y-sum-row-link:hover { outline: 1px solid LinkText; }
-}
-
 /* ═══ THE SUGGESTED ALT TEXT AS A CARD TO COPY FROM (user's instruction,
    23 Nov 2026, "design, what to copy needs to be in a card") ═════════════
    The alt text written for a picture is the chat's code card: the tile
@@ -4353,7 +4091,7 @@
    conversation and the screen reader preview. Left out on purpose: "Step
    1:" in the statement (a word) and the dial's score. Each number stays
    aria-hidden or a ::before: the lists are ol or carry their own order. */
-.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-undecided-table > .a11y-undecided-cell > .a11y-undecided-no, .a11y-legal-q > .a11y-legal-qnum, .a11y-sum-run .a11y-sum-cell-no, .a11y-sr-row > .a11y-sr-num) {
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-undecided-table > .a11y-undecided-cell > .a11y-undecided-no, .a11y-legal-q > .a11y-legal-qnum, .a11y-sr-row > .a11y-sr-num) {
   display: inline-grid; place-items: center; box-sizing: content-box; padding: 2px; border-radius: 50%;
   background: var(--ink); color: var(--paper);
   font-family: "PP Telegraf", "DejaVu Sans", sans-serif; font-weight: 500; font-synthesis: none;
@@ -4377,7 +4115,7 @@
 /* The score's run sizes its round with its words; only the fill, the ink
    and the weight change here. */
 @media (forced-colors: active) {
-  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-undecided-table > .a11y-undecided-cell > .a11y-undecided-no, .a11y-legal-q > .a11y-legal-qnum, .a11y-sum-run .a11y-sum-cell-no, .a11y-sr-row > .a11y-sr-num) { border: 1px solid CanvasText; }
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-undecided-table > .a11y-undecided-cell > .a11y-undecided-no, .a11y-legal-q > .a11y-legal-qnum, .a11y-sr-row > .a11y-sr-num) { border: 1px solid CanvasText; }
   .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-chat-text ol:not(.a11y-chat-plan) > li::before { border: 1px solid CanvasText; }
 }
 
@@ -4416,31 +4154,6 @@
 }
 @media (forced-colors: active) {
   .a11y-widget-biz .a11y-learn-more { color: LinkText; }
-}
-
-/* ═══ THE SCORE AND ITS KEY ON ONE GRID (user's instruction, 23 Nov 2026,
-   "put all the columns on grid, move text closer to score") ══════════════
-   The dial, the run of worst findings and the key's two columns stand on
-   the same four tracks, 16px apart, 18px in from each side (the key's
-   plate padding), so every column starts on a shared line: the dial and
-   "Score …" on the first, the findings and "What the score counts" on the
-   second. The findings had started wherever the dial's card and a 56px gap
-   left them, near the middle. On the report page the round sticker hangs
-   156px past the 224px dial (its right edge 380px from the dial's left),
-   so there the findings step right only as far as it needs, 380px less one
-   track: nothing on the second track's line, but clear of the sticker. In
-   the conversation, with no sticker, they sit on the line. Under 761px of
-   the summary's width the run wraps under the dial as before. */
-@container a11y-sum (min-width: 761px) {
-  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-run {
-    display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 24px 16px; align-items: center;
-    padding-inline: 18px;
-  }
-  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-run > .a11y-sum-dial-card { grid-column: 1; min-width: 0; }
-  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-run > :is(.a11y-sum-table, .a11y-score-clean) { grid-column: 2 / -1; }
-  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-run:has(.a11y-dial-sticker) > :is(.a11y-sum-table, .a11y-score-clean) {
-    padding-inline-start: max(0px, 380px - (100cqi - 48px) / 4);
-  }
 }
 
 /* ═══ A SECTION TITLE'S COUNT AS A HANGING ROUND (user's instruction, 23 Nov
@@ -4561,36 +4274,6 @@
   .a11y-widget-biz .a11y-fd .a11y-occurrence-list > .a11y-occurrence { padding: 0; background: none; }
 }
 
-/* ═══ THE SCORE KEY IN THREE COLUMNS, THE WARNING ITS THIRD (user's
-   instruction, 24 Nov 2026, "combine in 3 columns", on the sky key and the
-   Warning bubble under it) ═════════════════════════════════════════════════
-   When some checks did not finish, the warning leaves its bubble and stands
-   in the key: Score … on the first track, What the score counts on the
-   second and third, the warning on the fourth, each under its own 1px rule.
-   Its label is the warning's yellow badge (#fbff8c, black words, 17.6:1,
-   pinned in both themes), its lines the key's 18px set solid. Two tracks
-   under 760px of the summary (the warning a full row under the points),
-   one under 480px. */
-.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-key:has(> .a11y-sum-warning) > .a11y-sum-counts { grid-column: 2 / 4; }
-.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-key > .a11y-sum-warning { grid-column: 4 / 5; }
-.a11y-widget-biz .a11y-sum-key .a11y-sum-warning-badge {
-  display: inline-block; padding: 4px 10px 3px; border-radius: 8px;
-  background: #ffe14d; color: #000;
-  font-family: "Serrif", Georgia, "Times New Roman", serif; font-weight: 300; font-synthesis: none;
-  font-size: 18px; line-height: 1.25; letter-spacing: 0.08em; white-space: nowrap;
-  rotate: -2deg;
-}
-@media print {
-  .a11y-widget-biz .a11y-sum-key .a11y-sum-warning-badge { rotate: none; }
-}
-@container a11y-sum (max-width: 760px) {
-  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-key:has(> .a11y-sum-warning) > .a11y-sum-counts { grid-column: 2 / -1; }
-  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-key > .a11y-sum-warning { grid-column: 1 / -1; }
-}
-@container a11y-sum (max-width: 480px) {
-  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-key:has(> .a11y-sum-warning) > .a11y-sum-counts { grid-column: 1 / -1; }
-}
-
 /* ═══ EVERY BADGE AS THE FINDINGS TABLE'S SEVERITY (user's instruction, 24
    Nov 2026, "all badges need to be like this but different colors", on the
    Fix soon badge) ══════════════════════════════════════════════════════════
@@ -4632,99 +4315,142 @@
    "fails" mark and the dial's sticker take it, and it marks the most
    urgent things: the Fix first badges, the problems card and a failing
    WCAG 2.2 item, black words in both themes. Dark mode's deep plates keep
-   white words; its pink plate is a deep lime, #2e3814.
+   white words; its pink plate is a deep lime, #2e3814. */
 
-   THE SCORE AS THE TYPE TESTER'S PANEL (same instruction, "design this
-   like this"): the dial, the worst findings and the key stand on one light
-   grey panel, #efefef with 24px corners and 36px inside (#1c1c1e in dark;
-   18px inside under 640px), as the tester's specimen does; the criterion
-   badges in the run are the tester's white pills (#fff, dark #2c2c2e);
-   the sky key and the red-orange sticker sit on it as the tester's
-   controls do. Since the same afternoon the key has left the panel: see
-   THE SCORE AS A FOUNDRY'S TESTER AND FEATURE TILES below. */
-.a11y-widget-biz { --panel: #efefef; --panel-pill: #fff; }
-.a11y-widget-biz[data-theme="dark"] { --panel: #1c1c1e; --panel-pill: #2c2c2e; }
-@media (prefers-color-scheme: dark) {
-  .a11y-widget-biz:not([data-theme="light"]) { --panel: #1c1c1e; --panel-pill: #2c2c2e; }
+
+/* ═══ THE SCORE AS PLAIN TEXT (user's instruction and copy, 24 Nov 2026,
+   "build it", replacing the grey tester panel, its feature tiles and the
+   pills round the criterion and the tiles' titles) ════════════════════════
+   One block on the page's own paper, four tracks 16px apart. Each part is
+   a row: its label in the first track, its content across the other three,
+   rows 65px apart with a 1px ink rule over each after the first.
+   - The dial in the first track and what its range means beside it at
+     38px. On the report page the sticker hangs 156px past the 224px dial,
+     so the sentence steps right only as far as it needs to stay 24px clear.
+   - "N issues found" over a real table: each row the severity badge (the
+     one every findings table uses, since it is the status) over the
+     issue at 26px, and the criterion as a plain number under a 15px
+     "WCAG"; a 1px rule under each row. The whole row is the link to the
+     finding, with no underline.
+   - Copy summary under the table, on the content's line.
+   - "How the score works": the three paragraphs one to a track, at 18px.
+   - The warning, when checks did not finish: its yellow badge as the
+     label (#ffe14d, black words, 17.6:1 in both themes), its two lines as
+     the content.
+   Under 761px of the block's width a row stacks, label over content, and
+   the paragraphs run one under another. */
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-grid { container: a11y-sum / inline-size; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-grid > :is(.a11y-sum-run, .a11y-sum-issues, .a11y-sum-actions, .a11y-sum-counts, .a11y-sum-warning) {
+  display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 0 16px; align-items: start;
+  margin: 0; padding: 0; text-align: start;
+}
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-grid > :is(.a11y-sum-issues, .a11y-score-clean, .a11y-sum-counts, .a11y-sum-warning) {
+  margin-top: 65px; padding-top: 24px; border-top: 1px solid var(--ink);
+}
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-grid > .a11y-sum-actions { margin-top: 24px; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-grid > .a11y-sum-actions > * { grid-column: 2 / -1; justify-self: start; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-grid > .a11y-sum-actions > .a11y-sr-only { grid-column: auto; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-grid .a11y-sum-label {
+  grid-column: 1; margin: 0; padding: 0 16px 0 0; border: 0; background: none; color: var(--ink); text-transform: none;
+  font-family: "PP Telegraf", "DejaVu Sans", sans-serif; font-size: 22px; font-weight: 500; line-height: 1.2; letter-spacing: 0.01em;
+}
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-grid > :is(.a11y-sum-issues, .a11y-sum-warning) > :where(:not(.a11y-sum-label)) { grid-column: 2 / -1; min-width: 0; }
+
+/* The score and what it means. */
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-run { align-items: center; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-run > .a11y-sum-dial-card { grid-column: 1; min-width: 0; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-run > .a11y-sum-dial-card .a11y-sum-dial { margin: 0; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-verdict {
+  grid-column: 2 / -1; min-width: 0; margin: 0;
+  font-size: 38px; font-weight: 400; line-height: 1.15; letter-spacing: -0.005em;
+}
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-run:has(.a11y-dial-sticker) > .a11y-sum-verdict {
+  padding-inline-start: max(0px, 404px - (100cqi + 16px) / 4);
+}
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-grid > .a11y-score-clean {
+  margin-bottom: 0; font-size: 32px; line-height: 1.2;
 }
 
-/* ═══ THE SCORE AS A FOUNDRY'S TESTER AND FEATURE TILES (user's references,
-   24 Nov 2026, "design this like this": a type tester's grey panel with a
-   red-orange pill and white pills over its specimen, the same foundry's
-   feature tiles with a small red-orange label centred over the glyphs, and
-   its licence panel with white numbered rounds and grey cards under it) ═══
-   The panel is the run alone: the dial, the worst findings and Copy
-   summary on #efefef (dark #1c1c1e), 24px corners, 36px inside. The key
-   leaves it and stands 16px under it as tiles on the same ground, 20px
-   corners, one per part (Score …, What the score counts over two tracks,
-   the warning), rows one height. Each tile's title is a small red-orange
-   pill centred at the top (--urgent, black words, 7.1:1; dark #ff9f0a,
-   9.5:1), Telegraf Regular 15px, no rule; its words are centred under it
-   in what is left of the tile, the band's sentence at 30px (22px on a
-   phone), the points and the warning at 18px/1.3.
-   In the run every mark is the tester's pill: Telegraf Regular 15px,
-   level, fully round, white (dark #2c2c2e, white words), Fix first the
-   red-orange. The numbered rounds keep the widget's solid ink round
-   (the same day's later instruction for every list number). Copy summary
-   is a white pill too. The words
-   still carry every meaning. The key keeps its tracks from the blocks
-   above: two under 760px of the summary (the warning a full row), one
-   under 480px. */
-.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-grid > .a11y-sum-col:not(.a11y-sum-key) {
-  box-sizing: border-box; padding: 36px; border-radius: 24px; background: var(--panel); color: var(--ink);
+/* The issues. */
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-table {
+  display: table; width: calc(100% + 24px); margin: 0 -12px; border-collapse: collapse; border: 0; table-layout: auto;
+  font-variant-numeric: tabular-nums;
 }
-.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-grid > .a11y-sum-col + .a11y-sum-key { margin-top: 16px; }
-.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-grid .a11y-sum-actions { margin: 0; }
-.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-grid .a11y-score-copy {
-  min-height: 34px; padding: 4px 16px; border: 0; border-radius: 999px;
-  background: var(--panel-pill); color: var(--ink); font-size: 15px; font-weight: 400; letter-spacing: 0.01em;
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-table :is(th, td) {
+  padding: 14px 16px 14px 0; border: 0; border-bottom: 1px solid var(--ink); background: none;
+  color: var(--ink); text-align: start; vertical-align: baseline;
 }
-.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-grid .a11y-score-copy:hover { background: var(--hover); color: var(--hover-ink); }
-/* The run's marks as the tester's pills. */
-.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-grid .a11y-sum-run .a11y-sum-row-marks > :is(.a11y-sum-chip, .a11y-sev) {
-  margin: 0; padding: 6px 14px 5px; border-radius: 999px; rotate: none;
-  background: var(--panel-pill); color: var(--ink);
-  font-family: "PP Telegraf", "DejaVu Sans", sans-serif; font-weight: 400; font-size: 15px; line-height: 1.1; letter-spacing: 0.01em;
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-table :is(th, td):last-child { padding-inline-end: 0; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-table th {
+  padding-top: 0; padding-bottom: 10px;
+  font-size: 15px; font-weight: 400; line-height: 1.2; letter-spacing: 0.01em; white-space: nowrap;
 }
-.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-grid .a11y-sum-run .a11y-sum-row-marks > .a11y-sev-critical { background: var(--urgent); color: #000; }
-/* The key as feature tiles. */
-.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-grid > .a11y-sum-key {
-  --ink: inherit; --paper: inherit;
-  align-items: stretch; gap: 16px; padding: 0; border-radius: 0; background: none; color: var(--ink);
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-table :is(.a11y-sum-table-wcag, th:nth-child(2)) { width: 1%; white-space: nowrap; }
+/* The badge on top of the title, then the title (user's instruction, 24 Nov
+   2026, "add badge on top of lines, delete priority issue and make hover
+   whole line, do not underline links"). The link's ::after covers the row,
+   so the whole line is pressed and hovered: the row takes the buttons'
+   mint, and keyboard focus rings the row. The table reaches 12px past the
+   column on each side (8px on a phone), so the mint has air round the
+   words while the words stay on the column's line. */
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-table :is(th, td) { padding-inline: 12px; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-table tbody tr { position: relative; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-table tbody tr:hover { background: var(--hover); }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-table tbody tr:hover > td { color: var(--hover-ink); }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-table tbody tr:has(a:focus-visible) { outline: 2px solid var(--focus); outline-offset: -2px; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-table-badge { display: block; margin: 0 0 10px; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-table-badge > .a11y-sev { margin: 0; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-table-issue {
+  font-size: 26px; font-weight: 400; line-height: 1.2; letter-spacing: 0; overflow-wrap: break-word;
 }
-.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-key > .a11y-sum-panel {
-  display: flex; flex-direction: column; align-items: center; gap: 28px;
-  padding: 22px 26px 36px; border-radius: 20px; background: var(--panel); color: var(--ink); text-align: center;
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-table-issue > a { color: inherit; text-decoration: none; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-table-issue > a:focus-visible { outline: none; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-table-issue > a::after { content: ""; position: absolute; inset: 0; }
+@media (forced-colors: active) {
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-table tbody tr:hover { outline: 1px solid LinkText; outline-offset: -1px; }
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-table tbody tr:has(a:focus-visible) { outline-color: Highlight; }
 }
-.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-key .a11y-sum-eyebrow {
-  margin: 0; padding: 4px 12px 3px; border: 0; border-radius: 999px; background: var(--urgent); color: #000;
-  font-family: "PP Telegraf", "DejaVu Sans", sans-serif; font-size: 15px; font-weight: 400; line-height: 1.25; letter-spacing: 0.01em;
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-sum-table-count, .a11y-sum-table-wcag) {
+  font-size: 18px; line-height: 1.2; letter-spacing: 0.01em;
 }
-/* The warning's own badge goes plain inside the pill: the pill is it. */
-.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-key .a11y-sum-eyebrow > .a11y-sum-warning-badge {
-  display: inline; padding: 0; border-radius: 0; background: none; color: inherit; rotate: none;
-  font: inherit; letter-spacing: inherit;
+
+/* How the score works, one paragraph to a track. */
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-point {
+  min-width: 0; margin: 0; padding-inline-end: 16px;
+  font-size: 18px; font-weight: 400; line-height: 1.3; letter-spacing: 0.01em;
 }
-/* What is left of the tile holds the words, centred in it. */
-.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-key > .a11y-sum-panel > :not(.a11y-sum-eyebrow) { margin: 0; }
-.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-key > .a11y-sum-panel > .a11y-sum-eyebrow + * { margin-top: auto; }
-.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-key > .a11y-sum-panel > :last-child:not(.a11y-sum-eyebrow) { margin-bottom: auto; }
-.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-key > .a11y-sum-panel > .a11y-sum-card { display: block; padding: 0; border: 0; background: none; }
-.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-key > .a11y-sum-panel:not(.a11y-sum-counts, .a11y-sum-warning) .a11y-sum-lead {
-  font-size: 30px; line-height: 1.15; letter-spacing: -0.005em;
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-point:last-child { padding-inline-end: 0; }
+
+/* The warning. */
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-warning-text > p {
+  margin: 0; font-size: 18px; line-height: 1.3; letter-spacing: 0.01em;
 }
-/* The warning's two lines read as one passage. */
-.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-key > .a11y-sum-panel.a11y-sum-warning { gap: 0; }
-.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-key > .a11y-sum-warning > .a11y-sum-eyebrow { margin-bottom: 28px; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-warning-badge {
+  display: inline-block; padding: 4px 10px 3px; border-radius: 8px; background: #ffe14d; color: #000;
+  font-family: "Serrif", Georgia, "Times New Roman", serif; font-weight: 300; font-synthesis: none;
+  font-size: 18px; line-height: 1.25; letter-spacing: 0.08em; white-space: nowrap; rotate: -2deg;
+}
+
+@container a11y-sum (max-width: 760px) {
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-grid > :is(.a11y-sum-run, .a11y-sum-issues, .a11y-sum-actions, .a11y-sum-counts, .a11y-sum-warning) {
+    grid-template-columns: minmax(0, 1fr); row-gap: 16px;
+  }
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-grid > :is(.a11y-sum-run, .a11y-sum-actions, .a11y-sum-issues, .a11y-sum-warning) > * {
+    grid-column: 1 / -1;
+  }
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-run { align-items: start; }
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-run:has(.a11y-dial-sticker) > .a11y-sum-verdict { padding-inline-start: 0; }
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-point { padding-inline-end: 0; }
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-counts { row-gap: 12px; }
+}
 @media (max-width: 640px) {
-  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-grid > .a11y-sum-col:not(.a11y-sum-key) { padding: 18px; border-radius: 20px; }
-  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-key > .a11y-sum-panel { gap: 20px; padding: 18px 18px 26px; }
-  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-key > .a11y-sum-warning > .a11y-sum-eyebrow { margin-bottom: 20px; }
-  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-key > .a11y-sum-panel:not(.a11y-sum-counts, .a11y-sum-warning) .a11y-sum-lead { font-size: 22px; }
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-verdict { font-size: 27px; letter-spacing: 0; }
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-grid > .a11y-score-clean { font-size: 22px; }
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-table-issue { font-size: 20px; }
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-table { width: calc(100% + 16px); margin-inline: -8px; }
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-table :is(th, td) { padding-inline: 8px; }
 }
 @media print {
-  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-key > .a11y-sum-panel { break-inside: avoid; }
-}
-@media (forced-colors: active) {
-  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-sum-grid > .a11y-sum-col:not(.a11y-sum-key), .a11y-sum-key > .a11y-sum-panel, .a11y-sum-key .a11y-sum-eyebrow) { border: 1px solid CanvasText; }
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-warning-badge { rotate: none; }
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-table tr { break-inside: avoid; }
 }

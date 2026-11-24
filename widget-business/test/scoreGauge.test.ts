@@ -50,7 +50,7 @@ describe("score summaries", () => {
   it("keeps every line short, and never exclaims", () => {
     for (const lines of Object.values(SUMMARIES)) {
       for (const line of lines) {
-        expect(line.length, line).toBeLessThan(70);
+        expect(line.length, line).toBeLessThan(90);
         expect(line, line).not.toMatch(/!/);
         expect(line, line).not.toMatch(/—/);
       }
@@ -87,9 +87,9 @@ describe("the plain-text summary", () => {
     try {
       const text = buildPlainSummary({ url: "https://example.com", seed: "2026-07-01T10:00:00.000Z", score: 73, allFindings: [] });
       expect(text).toContain("Ergebnis: 73/100");
-      expect(text).toContain("Was das Ergebnis zählt:");
+      expect(text).toContain("So funktioniert das Ergebnis:");
       expect(text).toContain("Juli 2026");
-      expect(text).not.toMatch(/What the score counts|Accessibility scan:|Scanned /);
+      expect(text).not.toMatch(/How the score works|Accessibility scan:|Scanned /);
     } finally {
       setLang("en");
     }
@@ -102,7 +102,7 @@ describe("the plain-text summary", () => {
     try {
       const text = buildPlainSummary({ url: "https://example.com", seed: "s", score: 95, allFindings: [] });
       expect(text).toContain("Score : 95/100");
-      expect(text).toContain("Ce que compte le score :");
+      expect(text).toContain("Comment fonctionne le score :");
     } finally {
       setLang("en");
     }

@@ -2,7 +2,6 @@ import { ScoreDial } from "./ScoreDial";
 import { t, tf } from "../lib/strings";
 import { getLang } from "../lib/i18n";
 import { useState } from "react";
-import type { ReactNode } from "react";
 import { SeverityTag } from "./SeverityTag";
 import type { AccessibilityFinding } from "../api/scanClient";
 import { groupFindings } from "./FindingsList";
@@ -47,12 +46,13 @@ const PREVIEW_LIMIT = 3;
 // tool is not entitled to make on the evidence it has. The good lines say what
 // was looked for and found clean, and stop there.
 export const SUMMARIES: Record<"good" | "middling" | "poor", string[]> = {
-  // One plain line per band. The rotating quips this replaced read as
-  // slogans, and a verdict about somebody's site is not the place for one:
-  // it says what the scan found and what that does not cover, then stops.
-  good: ["Little to fix. A person would still find more."],
-  middling: ["What the scan found stops some visitors. Most get through."],
-  poor: ["What the scan found keeps people from using the site."],
+  // One plain line per band, said beside the number as what that range
+  // means for visitors (user's copy, 24 Nov 2026, for the band under 70;
+  // the other two follow its form). It names the range itself, so the
+  // band needs no label of its own.
+  good: ["A score of 90 or more means the scan found little to fix."],
+  middling: ["A score from 70 to 89 means some visitors may struggle with parts of your site."],
+  poor: ["A score below 70 means some visitors may be unable to use parts of your site."],
 };
 
 /**
@@ -83,7 +83,8 @@ export function scoreSummary(score: number, seed: string): string {
    means. Split, each one can be taken in on its own — and the last two, the
    ones that stop somebody quoting 87 as proof of compliance, stop being the
    tail of a paragraph nobody finished. */
-/* What the score counts, in the words of scoreFindings
+/* How the score works, three paragraphs in the user's words (24 Nov
+   2026), true to scoreFindings
    (backend/src/services/merge/scoring.ts), which is the one place that
    knows. axe's best-practice rules count with no criterion at all. What is
    left out is what scoreFindings and summarizeSeverity leave out: design
@@ -95,12 +96,9 @@ export function scoreSummary(score: number, seed: string): string {
    t(), the email stays English for now. Keep
    backend/src/services/mail/sendReport.ts in step. */
 export const SCORE_POINTS = [
-  "The problems this scan found, weighted by what each costs a visitor.",
-  "Each severity has a limit on how far it lowers the score.",
-  "Design notes, misleading patterns, AAA and WCAG 2.2 checks do not count.",
-  "AI review findings do not count. A person has to check them.",
-  "A scan finds a third to a half of the problems. The rest need a person.",
-  "It does not say the site meets the law.",
+  "Issues cost points based on their impact on visitors. Each severity level has a maximum deduction.",
+  "The score excludes design notes, misleading patterns, AAA checks, WCAG 2.2 checks and AI findings.",
+  "A scan finds roughly a third to half of accessibility issues. A person needs to check for other barriers and verify AI findings. The score alone can't establish legal compliance.",
 ];
 
 /* A heading in the plain-text summary takes a colon, and French sets a
@@ -116,7 +114,7 @@ function asHeading(text: string): string {
    not a constant, so it is in the reader's language at the moment of
    copying. */
 export function scoreCaveatLines(): string[] {
-  return [asHeading(t("What the score counts")), ...SCORE_POINTS.map((p) => `- ${t(p)}`)];
+  return [asHeading(t("How the score works")), ...SCORE_POINTS.map((p) => `- ${t(p)}`)];
 }
 
 // A plain-text version of the same verdict, for pasting into an email or
@@ -204,6 +202,14 @@ export function computeFirstFix(
   return { id: rep.id, what, count };
 }
 
+/* Best-practice rules with no numbered criterion arrive as the literal
+   "WCAG (see rule help)": not a criterion, so treated as none. */
+function criterionOf(rep: AccessibilityFinding): string | null {
+  return rep.wcagCriterion && rep.wcagCriterion !== "N/A"
+    ? (rep.wcagCriterion.match(/^\d\.\d+\.\d+/)?.[0] ?? null)
+    : null;
+}
+
 /* The band as its range, not an adjective: "middling" told a reader
    nothing about where the line sat (user's question, 26 Aug 2026). */
 const BAND_WORD = (score: number) =>
@@ -215,26 +221,6 @@ const BAND_WORD = (score: number) =>
    rather than only the one the template happened to draw. */
 const DIAL_R = 42;
 const DIAL_C = 2 * Math.PI * DIAL_R;
-
-/* A titled purple panel wrapping a white card — the design's repeated left
-   column unit. The eyebrow is an h3 rather than a styled span so the three
-   panels are reachable as headings. */
-function SumPanel({
-  title,
-  grow = false,
-  children,
-}: {
-  title: string;
-  grow?: boolean;
-  children: ReactNode;
-}) {
-  return (
-    <section className={`a11y-sum-panel${grow ? " a11y-sum-grow" : ""}`}>
-      <h3 className="a11y-sum-eyebrow">{title}</h3>
-      <div className="a11y-sum-card">{children}</div>
-    </section>
-  );
-}
 
 export function ScoreGauge({
   score,
@@ -285,6 +271,8 @@ export function ScoreGauge({
   const firstId = inChat ? "a11y-first-fix-heading-chat" : "a11y-first-fix-heading";
   const countsId = inChat ? "a11y-sum-counts-heading-chat" : "a11y-sum-counts-heading";
   const warningId = inChat ? "a11y-sum-warning-heading-chat" : "a11y-sum-warning-heading";
+  const issuesId = inChat ? "a11y-sum-issues-heading-chat" : "a11y-sum-issues-heading";
+  const showWcag = preview.some((group) => criterionOf(group[0]));
 
   /* "Do this first" — the one fix that settles the most at once.
    *
@@ -350,148 +338,126 @@ export function ScoreGauge({
         {t("Your score")}
       </h2>
 
-      {/* The design's scan-summary template: the run and its worst findings,
-          then three titled panels. Ported from
-          templates/scan-summary/Summary.jsx in the design project — read
-          from there rather than from a screenshot, which is how the arc
-          arithmetic and every token below are the design's own. The scan
-          summary (its heading, the dial, the top three) comes first, straight
-          under the title (user's instruction, 4 Nov 2026): it was the
-          design's right column, and with the columns stacked it sat below
-          the three panels. */}
+      {/* The score as plain text on the page (user's instruction and copy,
+          24 Nov 2026, replacing the grey panel and its tiles): the dial
+          with what its range means beside it, the issues as a table, then
+          how the score works. Each part is a label in the first of four
+          tracks and its content across the other three, under a 1px rule.
+          No panel and no pills; the severity keeps its badge because it is
+          the status. */}
       <div className="a11y-sum-grid">
-        <div className="a11y-sum-col">
-          <section className="a11y-sum-run" aria-labelledby="a11y-sum-run-heading">
-            <h3 className="a11y-sr-only" id="a11y-sum-run-heading">{t("Scan summary")}</h3>
+        <section className="a11y-sum-run" aria-labelledby="a11y-sum-run-heading">
+          <h3 className="a11y-sr-only" id="a11y-sum-run-heading">{t("Scan summary")}</h3>
 
-            <div className="a11y-sum-dial-card">
-              {/* One label carries the whole thing, and every part of the
-                  drawing is hidden — the arc, the numeral and the pills all
-                  repeat it. Announced once, as a sentence. */}
-              <div
-                className="a11y-sum-dial"
-                role="img"
-                aria-label={
-                  tookSeconds != null
-                    ? tf("Score {score} out of 100, {band}. Issues found: {count}, in {seconds} seconds.", {
-                        score,
-                        band: t(BAND_WORD(score)),
-                        count: total,
-                        seconds: tookSeconds,
-                      })
-                    : tf("Score {score} out of 100, {band}. Issues found: {count}.", {
-                        score,
-                        band: t(BAND_WORD(score)),
-                        count: total,
-                      })
-                }
-              >
-                <svg viewBox="0 0 100 100" aria-hidden="true" focusable="false">
-                  <circle cx="50" cy="50" r={DIAL_R} fill="none"
-                    stroke="var(--orange-20)" strokeWidth="9" />
-                  <circle cx="50" cy="50" r={DIAL_R} fill="none"
-                    stroke="var(--orange-50)" strokeWidth="9" strokeLinecap="round"
-                    strokeDasharray={`${(Math.max(0, Math.min(100, score)) / 100) * DIAL_C} ${DIAL_C}`}
-                    transform="rotate(-90 50 50)" />
-                </svg>
-                <span className="a11y-sum-dial-face" aria-hidden="true">
-                  <span className="a11y-sum-dial-num">{score}</span>
-                  <span className="a11y-sum-dial-of">{t("out of 100")}</span>
-                </span>
-              </div>
-              {/* The round sticker on the dial (user's instruction, 23 Nov
-                  2026, "add element like this to related content", "on the
-                  score dial", with a reference of a big tilted circle over
-                  a picture): a call to act rather than a verdict, since the
-                  band is said once in the key below. A real button after
-                  the dial in the markup; the tilt is the words' only. */}
-              {onSeeFindings && !inChat && findings.length > 0 && (
-                <button type="button" className="a11y-dial-sticker" onClick={onSeeFindings}>
-                  <span className="a11y-dial-sticker-words">
-                    {findings.length === 1 ? t("See the finding") : tf("See the {count} findings", { count: findings.length })}
-                  </span>
-                </button>
-              )}
+          <div className="a11y-sum-dial-card">
+            {/* One label carries the whole thing, and every part of the
+                drawing is hidden: the arc and the numeral repeat it. */}
+            <div
+              className="a11y-sum-dial"
+              role="img"
+              aria-label={
+                tookSeconds != null
+                  ? tf("Score {score} out of 100, {band}. Issues found: {count}, in {seconds} seconds.", {
+                      score,
+                      band: t(BAND_WORD(score)),
+                      count: total,
+                      seconds: tookSeconds,
+                    })
+                  : tf("Score {score} out of 100, {band}. Issues found: {count}.", {
+                      score,
+                      band: t(BAND_WORD(score)),
+                      count: total,
+                    })
+              }
+            >
+              <svg viewBox="0 0 100 100" aria-hidden="true" focusable="false">
+                <circle cx="50" cy="50" r={DIAL_R} fill="none"
+                  stroke="var(--orange-20)" strokeWidth="9" />
+                <circle cx="50" cy="50" r={DIAL_R} fill="none"
+                  stroke="var(--orange-50)" strokeWidth="9" strokeLinecap="round"
+                  strokeDasharray={`${(Math.max(0, Math.min(100, score)) / 100) * DIAL_C} ${DIAL_C}`}
+                  transform="rotate(-90 50 50)" />
+              </svg>
+              <span className="a11y-sum-dial-face" aria-hidden="true">
+                <span className="a11y-sum-dial-num">{score}</span>
+                <span className="a11y-sum-dial-of">{t("out of 100")}</span>
+              </span>
             </div>
+            {/* The round sticker on the dial (user's instruction, 23 Nov
+                2026): a call to act, a real button after the dial in the
+                markup. Left out in the conversation, where the findings
+                follow. */}
+            {onSeeFindings && !inChat && findings.length > 0 && (
+              <button type="button" className="a11y-dial-sticker" onClick={onSeeFindings}>
+                <span className="a11y-dial-sticker-words">
+                  {findings.length === 1 ? t("See the finding") : tf("See the {count} findings", { count: findings.length })}
+                </span>
+              </button>
+            )}
+          </div>
 
-            {/* The run of the worst findings, centred at display size under
-                the dial, in the conversation as on the page. It was left out
-                of the chat on 20 Nov 2026 ("file a report in chat like an
-                assistant would do") and is back since 21 Nov 2026 (user's
-                instruction, "the designed centered text under score is
-                gone, bring it back"). */}
-            {preview.length === 0 ? (
-              <p className="a11y-score-clean">{t("Nothing here needs a fix.")}</p>
-            ) : (
-              <div className="a11y-sum-table">
-                <div className="a11y-sum-thead" aria-hidden="true">
-                  <span className="a11y-sum-cell-no">{t("No.")}</span>
-                  <span className="a11y-sum-cell-item">{t("Item")}</span>
-                  <span className="a11y-sum-cell-count">{t("Instances")}</span>
-                </div>
-                <ul className="a11y-sum-rows">
-                  {preview.map((group, i) => {
-                    const rep = group[0];
-                    const plain = plainForRule(rep.ruleId);
-                    const title = plain?.plain ?? rep.title ?? rep.description;
-                    /* Best-practice rules with no numbered criterion arrive
-                       as the literal "WCAG (see rule help)" — not a criterion
-                       and not meaningful beside the "WCAG" prefix, so it is
-                       treated as having none rather than displayed. */
-                    const criterion =
-                      rep.wcagCriterion && rep.wcagCriterion !== "N/A"
-                        ? (rep.wcagCriterion.match(/^\d\.\d+\.\d+/)?.[0] ?? null)
-                        : null;
-                    return (
-                      <li key={rep.id} className="a11y-sum-row">
-                        {/* The whole item is a link to its finding in the
-                            schedule below (user's instruction, 17 Nov 2026).
-                            A link and not a button: it goes somewhere, and
-                            a button cannot wrap across lines of display type. */}
+          {/* What the range means, beside the number it explains. */}
+          <p className="a11y-sum-verdict">{t(scoreSummary(score, seed))}</p>
+        </section>
+
+        {preview.length === 0 ? (
+          <p className="a11y-score-clean">{t("Nothing here needs a fix.")}</p>
+        ) : (
+          <section className="a11y-sum-issues" aria-labelledby={issuesId}>
+            <h3 className="a11y-sum-label" id={issuesId}>
+              {findings.length === 1 ? t("1 issue found") : tf("{count} issues found", { count: findings.length })}
+            </h3>
+            <table className="a11y-sum-table">
+              <thead>
+                <tr>
+                  {/* No visible column titles over the issues (user's
+                      instruction, 24 Nov 2026, "delete priority issue"):
+                      the badge says the priority. Kept for screen readers. */}
+                  <th scope="col"><span className="a11y-sr-only">{t("Issue")}</span></th>
+                  {/* A column empty in every row is left out, header and
+                      all, as in the findings tables. */}
+                  {showWcag && <th scope="col">WCAG</th>}
+                </tr>
+              </thead>
+              <tbody>
+                {preview.map((group) => {
+                  const rep = group[0];
+                  const title = plainForRule(rep.ruleId)?.plain ?? rep.title ?? rep.description;
+                  return (
+                    <tr key={rep.id}>
+                      <td className="a11y-sum-table-issue">
+                        {/* The badge on top of the title (user's
+                            instruction, 24 Nov 2026), then the link to the
+                            finding in the schedule, which covers the whole
+                            row, so the whole line is what you press. */}
+                        <span className="a11y-sum-table-badge">
+                          <SeverityTag severity={rep.severity} label={t(SEVERITY_LABEL[rep.severity])} />
+                        </span>
                         <a
-                          className="a11y-sum-row-link"
                           href={`#a11y-finding-${rep.id}`}
                           onClick={(e) => {
                             e.preventDefault();
                             openFinding(e.currentTarget, rep.id);
                           }}
                         >
-                        <span className="a11y-sum-cell-item">
-                          {/* The round marker is held to the title's first
-                              word, so a wrap never strands it at a line end. */}
-                          <span className="a11y-sum-row-title">
-                            <span className="a11y-sum-nobreak">
-                              <span className="a11y-sum-cell-no" aria-hidden="true">{i + 1}</span>
-                              {title.split(" ")[0]}
-                            </span>
-                            {title.includes(" ") ? ` ${title.slice(title.indexOf(" ") + 1)}` : ""}
-                          </span>
-                          <span className="a11y-sum-row-marks">
-                            {criterion && (
-                              <span className="a11y-sum-chip">WCAG {criterion}</span>
-                            )}
-                            <SeverityTag
-                              severity={rep.severity}
-                              label={t(SEVERITY_LABEL[rep.severity])}
-                            />
-                          </span>
-                        </span>
-                        <span className="a11y-sum-cell-count">
-                          {group.length}&#8202;&times;
-                        </span>
+                          {title}
                         </a>
-                      </li>
-                    );
-                  })}
-                </ul>
-              </div>
-            )}
+                        {group.length > 1 && (
+                          <span className="a11y-sum-table-count"> {tf("{count} places", { count: group.length })}</span>
+                        )}
+                      </td>
+                      {showWcag && <td className="a11y-sum-table-wcag">{criterionOf(rep) ?? ""}</td>}
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
           </section>
+        )}
 
-          {/* Plain text, not the report's own HTML: the point is to leave the
-              widget entirely — an email or a Slack message to whoever owns
-              the fix, not a screenshot of this card. */}
-          {!inChat && (
+        {/* Plain text, not the report's own HTML: the point is to leave the
+            widget entirely, an email or a message to whoever owns the fix. */}
+        {!inChat && (
           <div className="a11y-sum-actions">
             <button type="button" className="a11y-show-all a11y-score-copy" onClick={copySummary}>
               {copied ? t("Copied") : t("Copy summary as plain text")}
@@ -500,48 +466,29 @@ export function ScoreGauge({
               {copied ? t("Summary copied to the clipboard.") : ""}
             </span>
           </div>
-          )}
-        </div>
+        )}
 
-        {/* The key: the band and what the score counts, side by side under
-            one rule, each a label over its lines (user's reference, 22 Nov
-            2026, a type foundry's footer). Start here left it the same day
-            for the lead above the score. */}
-        <div className="a11y-sum-col a11y-sum-key">
-          <SumPanel title={tf("Score {band}", { band: t(BAND_WORD(score)) })}>
-            {/* No second line: points 05 and 06 under "What the score counts"
-                already say what a scan reaches and what needs a person. */}
-            <p className="a11y-sum-lead">{t(scoreSummary(score, seed))}</p>
-          </SumPanel>
+        <section className="a11y-sum-counts" aria-labelledby={countsId}>
+          <h3 className="a11y-sum-label" id={countsId}>{t("How the score works")}</h3>
+          {SCORE_POINTS.map((point) => (
+            <p key={point} className="a11y-sum-point">{t(point)}</p>
+          ))}
+        </section>
 
-          {/* The six points are the key's last and widest column, a plain
-              list of lines, in the conversation as on the page (user's
-              reference, 22 Nov 2026, a type foundry's footer). They were
-              folded under their title in the chat, and numbered ruled
-              columns on the page. The chat's copy takes its own id, since
-              the report can be on the page and in the thread at once. */}
-          <section className="a11y-sum-panel a11y-sum-counts" aria-labelledby={countsId}>
-            <h3 className="a11y-sum-eyebrow" id={countsId}>{t("What the score counts")}</h3>
-            <ul className="a11y-sum-counts-list" role="list">
-              {SCORE_POINTS.map((point) => (
-                <li key={point}>{t(point)}</li>
-              ))}
-            </ul>
+        {/* Checks that did not finish qualify the score, so they stand with
+            how it works: the warning's badge as the label, its two lines
+            as the content. A status, so it waits its turn to be read. */}
+        {warning && (
+          <section className="a11y-sum-warning" role="status" aria-labelledby={warningId}>
+            <h3 className="a11y-sum-label" id={warningId}>
+              <span className="a11y-sum-warning-badge">{t("Warning")}</span>
+            </h3>
+            <div className="a11y-sum-warning-text">
+              <p>{warning.title}</p>
+              <p>{warning.subtitle}</p>
+            </div>
           </section>
-
-          {/* The third column: the warning's yellow badge as its label, the
-              title and what to do as its lines. A status, as the bubble
-              it replaces was, so it waits its turn to be read. */}
-          {warning && (
-            <section className="a11y-sum-panel a11y-sum-warning" role="status" aria-labelledby={warningId}>
-              <h3 className="a11y-sum-eyebrow" id={warningId}>
-                <span className="a11y-sum-warning-badge">{t("Warning")}</span>
-              </h3>
-              <p className="a11y-sum-lead">{warning.title}</p>
-              <p className="a11y-sum-lead">{warning.subtitle}</p>
-            </section>
-          )}
-        </div>
+        )}
       </div>
     </div>
   );

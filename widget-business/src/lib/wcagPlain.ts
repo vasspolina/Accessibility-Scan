@@ -454,7 +454,7 @@ export const PLAIN_RULE_EXPLANATIONS: Record<string, PlainRule> = {
       "There is no workaround for this one. Anyone who can't use a mouse can't do whatever this control does. If it's a Buy button or a form step, that's the end of the visit.",
   },
   "keyboard-no-visible-focus": {
-    plain: "Nothing shows where the keyboard is",
+    plain: "You can't see which item has keyboard focus",
     impact:
       "Plenty of people never touch a mouse. Without a visible highlight they're navigating blind, and they give up.",
   },
@@ -475,7 +475,7 @@ export const PLAIN_RULE_EXPLANATIONS: Record<string, PlainRule> = {
       "The eye does not glide along a line, it jumps. The hardest jump is back to the start of the next one. The longer the line, the easier it is to land on the wrong one.",
   },
   "reading-order-mismatch": {
-    plain: "Tab order contradicts the visible order",
+    plain: "Tab order differs from the order on screen",
     impact:
       "The page moved things on screen without moving them in its own code, and the Tab key follows the code. On a pair like Cancel and Submit, the button under the pointer is not the one the keyboard is on.",
   },
@@ -663,7 +663,7 @@ export const PLAIN_RULE_EXPLANATIONS: Record<string, PlainRule> = {
       "Screen reader users hear only \"button\" and can't tell how to close the pop-up. It traps them, and many simply leave.",
   },
   "dialog-keyboard-trap": {
-    plain: "A pop-up traps keyboard users",
+    plain: "Keyboard users can't leave a pop-up",
     impact:
       "Someone using only a keyboard reaches this pop-up and stops. Escape does not close it, and Tab only cycles around inside it. Closing the tab is the only way out. On a cookie banner, that happens before they have seen anything at all.",
   },
