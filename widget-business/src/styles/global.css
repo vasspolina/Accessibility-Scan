@@ -4663,19 +4663,91 @@
    18px inside under 640px), as the tester's specimen does; the criterion
    badges in the run are the tester's white pills (#fff, dark #2c2c2e);
    the sky key and the red-orange sticker sit on it as the tester's
-   controls do. */
+   controls do. Since the same afternoon the key has left the panel: see
+   THE SCORE AS A FOUNDRY'S TESTER AND FEATURE TILES below. */
 .a11y-widget-biz { --panel: #efefef; --panel-pill: #fff; }
 .a11y-widget-biz[data-theme="dark"] { --panel: #1c1c1e; --panel-pill: #2c2c2e; }
 @media (prefers-color-scheme: dark) {
   .a11y-widget-biz:not([data-theme="light"]) { --panel: #1c1c1e; --panel-pill: #2c2c2e; }
 }
-.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-grid {
+
+/* ═══ THE SCORE AS A FOUNDRY'S TESTER AND FEATURE TILES (user's references,
+   24 Nov 2026, "design this like this": a type tester's grey panel with a
+   red-orange pill and white pills over its specimen, the same foundry's
+   feature tiles with a small red-orange label centred over the glyphs, and
+   its licence panel with white numbered rounds and grey cards under it) ═══
+   The panel is the run alone: the dial, the worst findings and Copy
+   summary on #efefef (dark #1c1c1e), 24px corners, 36px inside. The key
+   leaves it and stands 16px under it as tiles on the same ground, 20px
+   corners, one per part (Score …, What the score counts over two tracks,
+   the warning), rows one height. Each tile's title is a small red-orange
+   pill centred at the top (--urgent, black words, 7.1:1; dark #ff9f0a,
+   9.5:1), Telegraf Regular 15px, no rule; its words are centred under it
+   in what is left of the tile, the band's sentence at 30px (22px on a
+   phone), the points and the warning at 18px/1.3.
+   In the run every mark is the tester's pill: Telegraf Regular 15px,
+   level, fully round, white (dark #2c2c2e, white words), Fix first the
+   red-orange; the numbered rounds are white with black figures, as the
+   licence panel's steps are. Copy summary is a white pill too. The words
+   still carry every meaning. The key keeps its tracks from the blocks
+   above: two under 760px of the summary (the warning a full row), one
+   under 480px. */
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-grid > .a11y-sum-col:not(.a11y-sum-key) {
   box-sizing: border-box; padding: 36px; border-radius: 24px; background: var(--panel); color: var(--ink);
 }
-.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-run .a11y-sum-row-marks > .a11y-sum-chip { background: var(--panel-pill); color: var(--ink); }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-grid > .a11y-sum-col + .a11y-sum-key { margin-top: 16px; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-grid .a11y-sum-actions { margin: 0; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-grid .a11y-score-copy {
+  min-height: 34px; padding: 4px 16px; border: 0; border-radius: 999px;
+  background: var(--panel-pill); color: var(--ink); font-size: 15px; font-weight: 400; letter-spacing: 0.01em;
+}
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-grid .a11y-score-copy:hover { background: var(--hover); color: var(--hover-ink); }
+/* The run's marks as the tester's pills. */
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-grid .a11y-sum-run .a11y-sum-row-marks > :is(.a11y-sum-chip, .a11y-sev) {
+  margin: 0; padding: 6px 14px 5px; border-radius: 999px; rotate: none;
+  background: var(--panel-pill); color: var(--ink);
+  font-family: "PP Telegraf", "DejaVu Sans", sans-serif; font-weight: 400; font-size: 15px; line-height: 1.1; letter-spacing: 0.01em;
+}
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-grid .a11y-sum-run .a11y-sum-row-marks > .a11y-sev-critical { background: var(--urgent); color: #000; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-grid .a11y-sum-run .a11y-sum-cell-no { background: var(--panel-pill); color: var(--ink); }
+/* The key as feature tiles. */
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-grid > .a11y-sum-key {
+  --ink: inherit; --paper: inherit;
+  align-items: stretch; gap: 16px; padding: 0; border-radius: 0; background: none; color: var(--ink);
+}
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-key > .a11y-sum-panel {
+  display: flex; flex-direction: column; align-items: center; gap: 28px;
+  padding: 22px 26px 36px; border-radius: 20px; background: var(--panel); color: var(--ink); text-align: center;
+}
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-key .a11y-sum-eyebrow {
+  margin: 0; padding: 4px 12px 3px; border: 0; border-radius: 999px; background: var(--urgent); color: #000;
+  font-family: "PP Telegraf", "DejaVu Sans", sans-serif; font-size: 15px; font-weight: 400; line-height: 1.25; letter-spacing: 0.01em;
+}
+/* The warning's own badge goes plain inside the pill: the pill is it. */
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-key .a11y-sum-eyebrow > .a11y-sum-warning-badge {
+  display: inline; padding: 0; border-radius: 0; background: none; color: inherit; rotate: none;
+  font: inherit; letter-spacing: inherit;
+}
+/* What is left of the tile holds the words, centred in it. */
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-key > .a11y-sum-panel > :not(.a11y-sum-eyebrow) { margin: 0; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-key > .a11y-sum-panel > .a11y-sum-eyebrow + * { margin-top: auto; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-key > .a11y-sum-panel > :last-child:not(.a11y-sum-eyebrow) { margin-bottom: auto; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-key > .a11y-sum-panel > .a11y-sum-card { display: block; padding: 0; border: 0; background: none; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-key > .a11y-sum-panel:not(.a11y-sum-counts, .a11y-sum-warning) .a11y-sum-lead {
+  font-size: 30px; line-height: 1.15; letter-spacing: -0.005em;
+}
+/* The warning's two lines read as one passage. */
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-key > .a11y-sum-warning { gap: 0; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-key > .a11y-sum-warning > .a11y-sum-eyebrow { margin-bottom: 28px; }
 @media (max-width: 640px) {
-  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-grid { padding: 18px; border-radius: 20px; }
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-grid > .a11y-sum-col:not(.a11y-sum-key) { padding: 18px; border-radius: 20px; }
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-key > .a11y-sum-panel { gap: 20px; padding: 18px 18px 26px; }
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-key > .a11y-sum-warning > .a11y-sum-eyebrow { margin-bottom: 20px; }
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-key > .a11y-sum-panel:not(.a11y-sum-counts, .a11y-sum-warning) .a11y-sum-lead { font-size: 22px; }
+}
+@media print {
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-key > .a11y-sum-panel { break-inside: avoid; }
 }
 @media (forced-colors: active) {
-  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-grid { border: 1px solid CanvasText; }
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-sum-grid > .a11y-sum-col:not(.a11y-sum-key), .a11y-sum-key > .a11y-sum-panel, .a11y-sum-key .a11y-sum-eyebrow) { border: 1px solid CanvasText; }
 }
