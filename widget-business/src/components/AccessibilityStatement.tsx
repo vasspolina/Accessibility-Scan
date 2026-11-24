@@ -362,7 +362,7 @@ export function AccessibilityStatement({ report }: { report: AccessibilityReport
           not "one, two". */}
       <div className="a11y-stmt-step">
         <h3 className="a11y-stmt-step-head">
-          <span className="a11y-stmt-step-num" aria-hidden="true">{tf("Step {number}:", { number: 1 })}</span>
+          <span className="a11y-stmt-step-num" aria-hidden="true">1</span>
           {t("Tell us who this is for")}
         </h3>
       </div>
@@ -421,7 +421,7 @@ export function AccessibilityStatement({ report }: { report: AccessibilityReport
 
       <div className="a11y-stmt-step">
         <h3 className="a11y-stmt-step-head">
-          <span className="a11y-stmt-step-num" aria-hidden="true">{tf("Step {number}:", { number: 2 })}</span>
+          <span className="a11y-stmt-step-num" aria-hidden="true">2</span>
           {t("Take the statement")}
         </h3>
       </div>
