@@ -27,20 +27,19 @@ function noteTitle(group: AccessibilityFinding[]): string {
 export function DesignNotesPanel({ findings }: { findings: AccessibilityFinding[] }) {
   const { professional } = useReportView();
   const groups = groupFindings(findings);
-  // Keyed by the note's own id, not its position, so a re-render that
-  // reorders the notes keeps the same one open.
-  const [openId, setOpenId] = useState<string | null>(() => findings[0]?.id ?? null);
+  // The open notes, keyed by each note's own id, not its position, so a
+  // re-render that reorders the notes keeps the same ones open. All start
+  // shut; each opens and shuts on its own.
+  const [openIds, setOpenIds] = useState<ReadonlySet<string>>(() => new Set());
+  const toggle = (id: string) =>
+    setOpenIds((prev) => {
+      const next = new Set(prev);
+      if (next.has(id)) next.delete(id);
+      else next.add(id);
+      return next;
+    });
 
   if (groups.length === 0) return null;
-
-  // One row of tabs, every note in it (user's choice, 22 Nov 2026, of two
-  // sketches for "there are two types of tabs"). The kind used to be a row
-  // of filter pills over the tabs: two controls that both looked like tabs,
-  // and with four to six notes a filter left one or two of them. The kind
-  // is now a label inside each tab, so it is still read, and there is one
-  // thing to press. The open note is always one of them.
-  const visible = groups;
-  const open = visible.find((g) => g[0].id === openId) ?? visible[0] ?? null;
 
   return (
     <section className="a11y-section a11y-dn" aria-labelledby="a11y-notes-heading">
@@ -70,77 +69,43 @@ export function DesignNotesPanel({ findings }: { findings: AccessibilityFinding[
           finding once. */}
       {!professional && (
         <div className="a11y-dn-panel">
-          {/* Tabs (user's instruction, 22 Nov 2026, "design this into
-              tabs"). One note shows at a time under its title, which is
-              what a tab set is, so it now says so: a tablist of the titles
-              and the open note as its tabpanel, in place of a list of
-              expand buttons that never collapsed. Roving tabindex: one tab
-              in the Tab order, the arrow keys (either axis, wrapping) and
-              Home/End move and open together, Tab goes on into the note.
-              A tab opens, never closes: the panel always shows one note. */}
-          <div className="a11y-dn-list" role="tablist" aria-label={t("Notes on the design")}>
-            {visible.map((group, i) => {
-              const selected = open?.[0].id === group[0].id;
+          {/* Carets (user's instruction, 24 Nov 2026, "make these into
+              carrets like this", after the tabs of 22 Nov and the awning
+              list): each note is a bar with the caret and its title, a
+              button that opens the note in place, under its title, inside
+              the same rounded ground. Each opens and shuts on its own, so
+              two notes can be read side by side; nothing opens by itself. */}
+          <ul className="a11y-dn-carets" role="list">
+            {groups.map((group) => {
+              const id = group[0].id;
+              const open = openIds.has(id);
               return (
-                <button
-                  key={group[0].id}
-                  type="button"
-                  role="tab"
-                  className="a11y-dn-link"
-                  id={`a11y-dn-note-${group[0].id}`}
-                  aria-selected={selected}
-                  aria-controls="a11y-dn-detail"
-                  tabIndex={selected ? 0 : -1}
-                  onClick={() => setOpenId(group[0].id)}
-                  onKeyDown={(e) => {
-                    const last = visible.length - 1;
-                    const to =
-                      e.key === "ArrowRight" || e.key === "ArrowDown"
-                        ? (i + 1) % visible.length
-                        : e.key === "ArrowLeft" || e.key === "ArrowUp"
-                          ? (i + last) % visible.length
-                          : e.key === "Home"
-                            ? 0
-                            : e.key === "End"
-                              ? last
-                              : -1;
-                    if (to < 0) return;
-                    e.preventDefault();
-                    const id = visible[to][0].id;
-                    setOpenId(id);
-                    (e.currentTarget.parentElement?.querySelector(
-                      `#a11y-dn-note-${CSS.escape(id)}`
-                    ) as HTMLButtonElement | null)?.focus();
-                  }}
-                >
-                  {/* The title alone (user's instruction, 24 Nov 2026, "no
-                      need for badges, just titles"): no Type, Layout or
-                      Design badge over it. */}
-                  <span className="a11y-dn-link-text">{noteTitle(group)}</span>
-                </button>
+                <li key={id} className="a11y-dn-caret" data-open={open ? "true" : undefined}>
+                  <h3 className="a11y-dn-caret-head">
+                    <button
+                      type="button"
+                      className="a11y-dn-bar"
+                      id={`a11y-dn-note-${id}`}
+                      aria-expanded={open}
+                      aria-controls={`a11y-dn-detail-${id}`}
+                      onClick={() => toggle(id)}
+                    >
+                      <span className="a11y-dn-bar-title">{noteTitle(group)}</span>
+                    </button>
+                  </h3>
+                  <div
+                    className="a11y-dn-detail"
+                    id={`a11y-dn-detail-${id}`}
+                    role="region"
+                    aria-labelledby={`a11y-dn-note-${id}`}
+                    hidden={!open}
+                  >
+                    {open && <FindingDetails findings={group} asNotes />}
+                  </div>
+                </li>
               );
             })}
-          </div>
-
-          {open && (
-            <div
-              className="a11y-dn-detail"
-              id="a11y-dn-detail"
-              role="tabpanel"
-              tabIndex={0}
-              aria-labelledby={`a11y-dn-note-${open[0].id}`}
-            >
-              <div className="a11y-dn-detail-head">
-                {/* No kind tag under the title. The title itself is the
-                    open note's tab, straight above:
-                    printed again here it read twice in a row (user's
-                    instruction, 18 Nov 2026, "check for content
-                    repetition"). Kept for screen readers' heading list. */}
-                <h3 className="a11y-dn-detail-title a11y-sr-only">{noteTitle(open)}</h3>
-              </div>
-              <FindingDetails findings={open} asNotes />
-            </div>
-          )}
+          </ul>
         </div>
       )}
 
