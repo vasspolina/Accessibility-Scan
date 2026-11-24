@@ -3975,7 +3975,7 @@
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-dn-list { grid-template-columns: repeat(auto-fit, minmax(min(100%, 220px), 1fr)); gap: 10px; }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-dn-list > .a11y-dn-link {
   --ink: var(--plate-text); --paper: var(--plate-1);
-  justify-content: space-between; gap: 24px; min-height: 220px; padding: 22px 20px 24px;
+  justify-content: flex-end; gap: 24px; min-height: 220px; padding: 22px 20px 24px;
   border: 0; border-radius: 20px; background: var(--plate-1); color: var(--plate-text);
 }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-dn-list > .a11y-dn-link:nth-child(4n+2) { --paper: var(--plate-2); background: var(--plate-2); }
@@ -3996,10 +3996,6 @@
 }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-dn-list > .a11y-dn-link[aria-selected="true"] { padding-top: 22px; border: 0; box-shadow: none; }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-dn-list > .a11y-dn-link[aria-selected="true"]:not(:focus-visible) { outline: 2px dotted var(--plate-text); outline-offset: -2px; }
-/* No kind badge over the title (user's instruction, 24 Nov 2026, "no need
-   for badges, just titles"): the card holds its title alone, still at the
-   foot. */
-.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-dn-list > .a11y-dn-link { justify-content: flex-end; }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-dn-list > .a11y-dn-link > .a11y-dn-link-text {
   font-size: 21px; font-weight: 300; line-height: 1.1; letter-spacing: 0;
   text-decoration-thickness: 2px;
