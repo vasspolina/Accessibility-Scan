@@ -5056,3 +5056,58 @@
 @media (forced-colors: active) {
   .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-table-badge[class] > .a11y-sev[class] { color: CanvasText; }
 }
+
+/* THE DESIGN NOTES AS CARETS (user's instruction, 24 Nov 2026, "make these
+   into carrets like this", on the notes' crossed list and their cards,
+   pointing at the opened finding's grey panel): each note is a caret bar,
+   as CARETS AS BARS draws a disclosure. Shut, a full-width bar with round
+   ends on the --bubble grey, the icon set's solid caret and the title at
+   24px beside it. Open, the bar becomes a panel with 40px corners, the
+   caret turned down, and the note inside it under its title: its cards on
+   the --bubble-pill ground as in the opened finding. The note's own bubble
+   gives up its ground and padding there, so there is one grey, not two.
+   Bars stand 12px apart. Replaces the tabs and the awning list. */
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-dn-carets {
+  display: flex; flex-direction: column; gap: 12px; margin: 0 0 40px; padding: 0; list-style: none;
+}
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-dn-carets > .a11y-dn-caret {
+  --ink: #000; --paper: var(--bubble);
+  margin: 0; padding: 0; border-radius: 999px; background: var(--bubble); color: var(--ink);
+}
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz[data-theme="dark"] .a11y-dn-carets > .a11y-dn-caret { --ink: #fff; }
+@media (prefers-color-scheme: dark) {
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz:not([data-theme="light"]) .a11y-dn-carets > .a11y-dn-caret { --ink: #fff; }
+}
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-dn-carets > .a11y-dn-caret[data-open] { padding: 0 32px 32px; border-radius: 40px; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-dn-caret > .a11y-dn-caret-head { margin: 0; padding: 0; font: inherit; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-dn-caret-head > .a11y-dn-bar {
+  display: flex; align-items: center; gap: 0.5em; width: 100%; min-height: 56px; margin: 0; padding: 10px 32px; box-sizing: border-box;
+  border: 0; border-radius: 999px; background: none; color: var(--ink); text-align: start; cursor: pointer;
+  font-family: "PP Telegraf", "DejaVu Sans", sans-serif; font-size: 24px; font-weight: 200; line-height: 1.15; letter-spacing: 0.015em;
+}
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-dn-caret[data-open] .a11y-dn-caret-head > .a11y-dn-bar { margin: 0 -32px 8px; width: calc(100% + 64px); }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-dn-caret-head > .a11y-dn-bar:enabled:hover { background: none; border-color: transparent; color: var(--ink); }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-dn-caret-head > .a11y-dn-bar:enabled:hover > .a11y-dn-bar-title { text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 0.14em; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-dn-caret-head > .a11y-dn-bar::before {
+  content: ""; flex: none; width: 0.42em; height: 0.68em; background: currentColor;
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='12 8 10 16'%3E%3Cpath d='M12 8 22 16 12 24z'/%3E%3C/svg%3E") center / contain no-repeat;
+  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='12 8 10 16'%3E%3Cpath d='M12 8 22 16 12 24z'/%3E%3C/svg%3E") center / contain no-repeat;
+  transition: transform 120ms ease;
+}
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-dn-caret-head > .a11y-dn-bar[aria-expanded="true"]::before { transform: rotate(90deg); }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-dn-caret > .a11y-dn-detail .a11y-fd { margin: 0; padding: 0; border-radius: 0; background: none; }
+@media (max-width: 640px) {
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-dn-caret-head > .a11y-dn-bar { padding-inline: 20px; }
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-dn-carets > .a11y-dn-caret[data-open] { padding: 0 20px 20px; border-radius: 28px; }
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-dn-caret[data-open] .a11y-dn-caret-head > .a11y-dn-bar { margin-inline: -20px; width: calc(100% + 40px); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-dn-caret-head > .a11y-dn-bar::before { transition: none; }
+}
+@media (forced-colors: active) {
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-dn-carets > .a11y-dn-caret { border: 1px solid CanvasText; }
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-dn-caret-head > .a11y-dn-bar::before { forced-color-adjust: none; background: CanvasText; }
+}
+@media print {
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-dn-carets { display: none; }
+}
