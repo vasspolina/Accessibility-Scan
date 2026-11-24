@@ -77,6 +77,11 @@ describe("Jokker's spaces and a run's first and last word", () => {
   it("leaves runs of two or three words breakable", () => {
     expect(__test.holdEnds("Website address required")).toBe("Website address required");
   });
+  // Held, a long pair was wider than a phone's title bar and broke inside a
+  // word, "Konformitätsbericht f|ür" (24 Nov 2026).
+  it("does not hold a pair too long for a narrow line", () => {
+    expect(__test.holdEnds("Konformitätsbericht für den Einkauf")).toBe("Konformitätsbericht für den Einkauf");
+  });
 });
 
 describe("setMarks: straight marks left in interface copy", () => {

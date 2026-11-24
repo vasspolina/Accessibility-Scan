@@ -19,19 +19,33 @@ const NBSP = " ";
  * four words or more, the first word is held to the second and the last to
  * the one before, so a line never ends on a run's opening word or opens on
  * its closing one. A run of two or three words is left breakable: held
- * whole, a two-word German label could not fit 320px. overflow-wrap
- * still breaks inside a word, so a held pair cannot run off a
- * phone screen.
+ * whole, a two-word German label could not fit 320px.
+ *
+ * A pair is held only while it is short (HOLD_MAX characters, the space
+ * included). Held, "Konformit\u00E4tsbericht f\u00FCr" was one 23-character piece
+ * wider than the phone's title bar, and overflow-wrap broke it inside a
+ * word, "f|\u00FCr" (user's screenshot, 24 Nov 2026, "optimise properly for
+ * mobile"). A word that long fills its own line, so it is never the lone
+ * short word the rule is for; 14 characters at 32px is about 230px, inside
+ * the narrowest line the report sets.
  */
 const WORDS = /[^\s\u00A0]+/g;
+const HOLD_MAX = 14;
 function holdEnds(text: string): string {
   const words = [...text.matchAll(WORDS)];
   if (words.length < 4) return text;
   const gap = (a: RegExpMatchArray, b: RegExpMatchArray) => [a.index! + a[0].length, b.index!] as const;
+  const short = (a: RegExpMatchArray, b: RegExpMatchArray) => a[0].length + 1 + b[0].length <= HOLD_MAX;
   const [s1, e1] = gap(words[0], words[1]);
   const [s2, e2] = gap(words[words.length - 2], words[words.length - 1]);
-  const join = (seg: string) => (/^[\t ]+$/.test(seg) ? NBSP : seg);
-  return text.slice(0, s1) + join(text.slice(s1, e1)) + text.slice(e1, s2) + join(text.slice(s2, e2)) + text.slice(e2);
+  const join = (seg: string, hold: boolean) => (hold && /^[\t ]+$/.test(seg) ? NBSP : seg);
+  return (
+    text.slice(0, s1) +
+    join(text.slice(s1, e1), short(words[0], words[1])) +
+    text.slice(e1, s2) +
+    join(text.slice(s2, e2), short(words[words.length - 2], words[words.length - 1])) +
+    text.slice(e2)
+  );
 }
 
 /**
