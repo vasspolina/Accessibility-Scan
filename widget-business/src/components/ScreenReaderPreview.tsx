@@ -1,4 +1,5 @@
-import { useCallback, useEffect, useId, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useId, useLayoutEffect, useMemo, useRef, useState } from "react";
+import { createLinePlayer, type LinePlayer, type PlayerState, type SpeechEngine } from "../lib/linePlayer";
 import { t, tf } from "../lib/strings";
 import { StatusChip } from "./SectionHeader";
 import { useReportView } from "./ReportViewContext";
@@ -18,9 +19,33 @@ function speechSupported(): boolean {
   return typeof window !== "undefined" && "speechSynthesis" in window;
 }
 
+// Speech through the browser's engine, one utterance per line. A little
+// quicker than default: real screen-reader users run far faster than this,
+// but much beyond 1.2 stops being intelligible to someone hearing it for
+// the first time.
+const browserEngine: SpeechEngine<SpeechSynthesisUtterance> = {
+  make: (text) => {
+    const u = new SpeechSynthesisUtterance(text);
+    u.rate = 1.15;
+    return u;
+  },
+  speak: (u) => window.speechSynthesis.speak(u),
+  cancel: () => window.speechSynthesis.cancel(),
+};
+
+// Keys that type: the transcript's arrow keys leave them alone.
+function isTypingTarget(el: EventTarget | null): boolean {
+  if (!(el instanceof HTMLElement)) return false;
+  if (el.isContentEditable) return true;
+  if (el instanceof HTMLTextAreaElement || el instanceof HTMLSelectElement) return true;
+  return el instanceof HTMLInputElement && !["checkbox", "radio", "button", "submit"].includes(el.type);
+}
+
 export function ScreenReaderPreview({ script }: { script: ScreenReaderScript }) {
-  const [playing, setPlaying] = useState(false);
-  const [current, setCurrent] = useState<number | null>(null);
+  const [player, setPlayer] = useState<PlayerState>({ status: "idle", line: null });
+  const playing = player.status === "playing";
+  const active = player.status !== "idle";
+  const current = player.line;
   const [expanded, setExpanded] = useState(false);
   // Whether the accordion is open. Closed by default: this is the longest
   // section in the report and the one you consult rather than read.
@@ -32,10 +57,12 @@ export function ScreenReaderPreview({ script }: { script: ScreenReaderScript }) 
   const panelOpen = inChat || open;
   const [onlyIssues, setOnlyIssues] = useState(false);
   const panelId = useId();
-  // Guards against an utterance that finished because we cancelled it
-  // advancing playback. Cancel() fires onend just like a natural finish.
-  const stoppedRef = useRef(false);
   const supported = useMemo(speechSupported, []);
+  const sectionRef = useRef<HTMLElement>(null);
+  const playRef = useRef<HTMLButtonElement>(null);
+  // Whether keyboard focus was last on Previous, Next or Stop, which leave
+  // the screen when reading ends. Focus then goes to Play, not the page top.
+  const transportFocusRef = useRef(false);
   // Where "Skip the transcript" sends focus. The show-all/show-fewer
   // toggle just past the table, rather than every per-line play button in
   // between, which on a normal page numbers over a hundred.
@@ -44,49 +71,68 @@ export function ScreenReaderPreview({ script }: { script: ScreenReaderScript }) 
   const lines = script.lines;
   const issueCount = useMemo(() => lines.filter((l) => l.issue).length, [lines]);
 
-  // Always stop speaking when the component goes away or the report changes —
-  // audio outliving the thing that started it is jarring and inescapable.
-  const stop = useCallback(() => {
-    stoppedRef.current = true;
-    if (speechSupported()) window.speechSynthesis.cancel();
-    setPlaying(false);
-    setCurrent(null);
+  // The player lives as long as the component. Its lines follow the script;
+  // a new script stops the old one mid-sentence rather than reading on.
+  const texts = useMemo(() => lines.map((l) => l.text), [lines]);
+  const playerRef = useRef<LinePlayer | null>(null);
+  if (supported && !playerRef.current) {
+    playerRef.current = createLinePlayer(browserEngine, texts, setPlayer);
+  }
+  useEffect(() => {
+    playerRef.current?.setLines(texts);
+  }, [texts]);
+
+  // Always stop speaking when the component goes away — audio outliving the
+  // thing that started it is jarring and inescapable.
+  useEffect(() => () => playerRef.current?.stop(), []);
+
+  const speakFrom = useCallback((startIndex: number) => {
+    playerRef.current?.play(startIndex);
   }, []);
 
-  useEffect(() => stop, [stop]);
+  // Escape stops reading from anywhere on the page, the way a real screen
+  // reader is silenced with one key, and only while there is something to
+  // stop. A control that already used the key (a menu closing) keeps it.
+  useEffect(() => {
+    if (!active) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key !== "Escape" || e.defaultPrevented) return;
+      e.preventDefault();
+      playerRef.current?.stop();
+    };
+    document.addEventListener("keydown", onKey);
+    return () => document.removeEventListener("keydown", onKey);
+  }, [active]);
 
-  const speakFrom = useCallback(
-    (startIndex: number) => {
-      if (!supported) return;
-      window.speechSynthesis.cancel();
-      stoppedRef.current = false;
-      setPlaying(true);
+  // When reading ends, by itself or by Stop, the transport buttons leave.
+  // If focus was on one of them it would drop to the page; it goes to Play.
+  const wasActive = useRef(false);
+  useLayoutEffect(() => {
+    if (wasActive.current && !active && transportFocusRef.current) {
+      transportFocusRef.current = false;
+      const root = sectionRef.current?.getRootNode() as Document | ShadowRoot | undefined;
+      const focused = root?.activeElement;
+      if (!focused || !sectionRef.current?.contains(focused)) {
+        playRef.current?.focus({ preventScroll: true });
+      }
+    }
+    wasActive.current = active;
+  }, [active]);
 
-      const speakAt = (i: number) => {
-        if (stoppedRef.current || i >= lines.length) {
-          setPlaying(false);
-          setCurrent(null);
-          return;
-        }
-        setCurrent(i);
-        const utterance = new SpeechSynthesisUtterance(lines[i].text);
-        // A little quicker than default: real screen-reader users run far
-        // faster than this, but much beyond 1.2 stops being intelligible to
-        // someone hearing it for the first time.
-        utterance.rate = 1.15;
-        utterance.onend = () => {
-          if (!stoppedRef.current) speakAt(i + 1);
-        };
-        utterance.onerror = () => {
-          setPlaying(false);
-          setCurrent(null);
-        };
-        window.speechSynthesis.speak(utterance);
-      };
-      speakAt(startIndex);
-    },
-    [lines, supported]
-  );
+  // Inside the preview, while reading or paused, the left and right arrows
+  // go back and on one line. Not character keys (WCAG 2.1.4), and only with
+  // focus in the preview, so they never take the arrows from the page.
+  const onSectionKeyDown = (e: React.KeyboardEvent) => {
+    if (!active || e.altKey || e.ctrlKey || e.metaKey || e.shiftKey) return;
+    if (isTypingTarget(e.target)) return;
+    if (e.key === "ArrowLeft") {
+      e.preventDefault();
+      playerRef.current?.previous();
+    } else if (e.key === "ArrowRight") {
+      e.preventDefault();
+      playerRef.current?.next();
+    }
+  };
 
   if (lines.length === 0) return null;
 
@@ -98,7 +144,12 @@ export function ScreenReaderPreview({ script }: { script: ScreenReaderScript }) 
   const visible = expanded ? filtered : filtered.slice(0, 12);
 
   return (
-    <section className="a11y-section a11y-sr" aria-labelledby="a11y-sr-heading">
+    <section
+      ref={sectionRef}
+      className="a11y-section a11y-sr"
+      aria-labelledby="a11y-sr-heading"
+      onKeyDown={onSectionKeyDown}
+    >
       {/* An accordion. This section is the longest thing in the report by
           a wide margin — 120 rows on a normal page — and it is supplementary:
           you open it to hear a problem, not to read it end to end. Collapsed
@@ -171,26 +222,43 @@ export function ScreenReaderPreview({ script }: { script: ScreenReaderScript }) 
           ring on a narrow column). Play comes first and is the solid pill;
           the filter and the skip link only make sense beside the transcript,
           so they appear with it. */}
-      <div className="a11y-sr-bar">
+      {/* While it reads, the bar holds the whole transport and sticks to
+          the top of the scroll, so Stop is in reach however far down the
+          transcript the highlighted line has gone (user's report,
+          24 Nov 2026: "there is no way to stop screen reader from reading
+          page"). The first button is one element throughout, Play, Pause,
+          Resume, so the focus that pressed it stays on it. */}
+      <div className="a11y-sr-bar" data-active={active ? "true" : undefined}>
         {supported && (
         <button
+          ref={playRef}
           type="button"
           className="a11y-btn a11y-btn-primary a11y-sr-play"
           onClick={() => {
-            if (playing) {
-              stop();
+            const p = playerRef.current;
+            if (!p) return;
+            if (player.status === "playing") {
+              p.pause();
+              return;
+            }
+            if (player.status === "paused") {
+              p.resume();
               return;
             }
             // Opening on play is the point of having the button out here:
             // you press it from a closed section and the transcript is there
             // to follow, with the current line highlighted as it reads.
             setOpen(true);
-            speakFrom(current ?? 0);
+            p.play(0);
           }}
         >
-          {playing ? (
+          {player.status === "playing" ? (
             <>
-              <Icon name="stop--filled--alt" /> {t("Stop")}
+              <Icon name="pause--filled" /> {t("Pause")}
+            </>
+          ) : player.status === "paused" ? (
+            <>
+              <Icon name="play--filled--alt" /> {t("Resume")}
             </>
           ) : (
             <>
@@ -199,6 +267,45 @@ export function ScreenReaderPreview({ script }: { script: ScreenReaderScript }) 
           )}
         </button>
         )}
+        {supported && active && (
+          <span
+            className="a11y-sr-transport"
+            onFocus={() => {
+              transportFocusRef.current = true;
+            }}
+            onBlur={(e) => {
+              if (e.relatedTarget && e.relatedTarget !== playRef.current) transportFocusRef.current = false;
+            }}
+          >
+            <button
+              type="button"
+              className="a11y-btn a11y-sr-ctl"
+              aria-keyshortcuts="ArrowLeft"
+              onClick={() => playerRef.current?.previous()}
+            >
+              <Icon name="skip--back--filled" /> {t("Previous line")}
+            </button>
+            <button
+              type="button"
+              className="a11y-btn a11y-sr-ctl"
+              aria-keyshortcuts="ArrowRight"
+              onClick={() => playerRef.current?.next()}
+            >
+              <Icon name="skip--forward--filled" /> {t("Next line")}
+            </button>
+            <button
+              type="button"
+              className="a11y-btn a11y-sr-ctl"
+              aria-keyshortcuts="Escape"
+              onClick={() => {
+                playerRef.current?.stop();
+                playRef.current?.focus({ preventScroll: true });
+              }}
+            >
+              <Icon name="stop--filled--alt" /> {t("Stop")}
+            </button>
+          </span>
+        )}
         {/* The status span stays mounted while empty: a live region that
             appears already carrying text announces unreliably. Not a live
             region: the utterance is the audio feedback, and announcing each
@@ -206,14 +313,33 @@ export function ScreenReaderPreview({ script }: { script: ScreenReaderScript }) 
             progress for sighted users. */}
         {supported ? (
           <span className="a11y-sr-status">
-            {playing ? tf("On line {line} of {total}", { line: (current ?? 0) + 1, total: lines.length }) : ""}
+            {player.status === "playing"
+              ? tf("On line {line} of {total}", { line: (current ?? 0) + 1, total: lines.length })
+              : player.status === "paused"
+                ? tf("Paused on line {line} of {total}", { line: (current ?? 0) + 1, total: lines.length })
+                : ""}
           </span>
-        ) : (
+        ) : null}
+        {/* The keys, said once in words while they work. The buttons carry
+            them as aria-keyshortcuts too. */}
+        {supported && active && (
+          <p className="a11y-sr-keys">
+            {t("Esc stops reading. The left and right arrow keys go back or on one line.")}
+          </p>
+        )}
+        {!supported && (
           <p className="a11y-sr-status">
             {t("Your browser can't play audio for this, so read the transcript below instead.")}
           </p>
         )}
-        {panelOpen && issueCount > 0 && (
+      </div>
+
+      {/* The filter and the skip link sit in a row of their own under the
+          bar, so only the transport sticks: on a 375px phone the whole bar
+          stuck was 300px, more than a third of the screen. */}
+      {panelOpen && (issueCount > 0 || filtered.length > 12) && (
+      <div className="a11y-sr-bar a11y-sr-tools">
+        {issueCount > 0 && (
           <label className="a11y-ai-toggle a11y-sr-filter">
             <input
               type="checkbox"
@@ -231,7 +357,7 @@ export function ScreenReaderPreview({ script }: { script: ScreenReaderScript }) 
         {/* A row-by-row transcript is exactly the kind of block WCAG 2.4.1
             exists for: on a normal page it is over a hundred consecutive tab
             stops, one per play button. */}
-        {panelOpen && filtered.length > 12 && (
+        {filtered.length > 12 && (
           <button
             type="button"
             className="a11y-skip-link"
@@ -241,6 +367,7 @@ export function ScreenReaderPreview({ script }: { script: ScreenReaderScript }) 
           </button>
         )}
       </div>
+      )}
 
       {/* Hidden rather than unrendered: the accordion button's aria-controls
           points here, and it must never point at an element that does not
