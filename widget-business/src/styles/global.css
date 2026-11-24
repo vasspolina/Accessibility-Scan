@@ -2203,7 +2203,10 @@
   .a11y-widget-biz .a11y-chat .a11y-chat-box .a11y-btn { font-size: 18px; min-height: 40px; padding: 0 0.9em; }
   .a11y-widget-biz .a11y-chat .a11y-chat-box .a11y-btn[type="submit"] {
     flex: none; display: inline-flex; align-items: center; justify-content: center;
-    width: 40px; height: 40px; padding: 0; border-radius: 50%;
+    /* 34px, the height of the box's pills beside it (user's instruction,
+       24 Nov 2026, "make the send button smaller on phone too"); it was
+       40px with a 22px arrow. Still over the 24px target of WCAG 2.5.8. */
+    width: 34px; height: 34px; min-height: 34px; padding: 0; border-radius: 50%;
   }
   /* A smaller box on a phone (user's instruction, 24 Nov 2026, "make the
      chat box smaller on phone"). Empty it was 196px of an 812px screen:
@@ -2229,7 +2232,7 @@
   .a11y-widget-biz .a11y-chat .a11y-chat-box .a11y-chat-box-start .a11y-btn {
     flex: none; white-space: nowrap; font-size: 15px; min-height: 34px; padding: 0 0.8em;
   }
-  .a11y-widget-biz .a11y-chat .a11y-chat-send-icon { display: block; }
+  .a11y-widget-biz .a11y-chat .a11y-chat-send-icon { display: block; width: 18px; height: 18px; }
   .a11y-widget-biz .a11y-chat .a11y-chat-send-word,
   .a11y-widget-biz .a11y-chat .a11y-chat-who {
     position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0; border: 0;
