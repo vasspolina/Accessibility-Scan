@@ -3641,10 +3641,10 @@
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-conf-row > .a11y-conf-status {
   position: absolute; top: 0; left: var(--bubble-x, 50%); z-index: 1;
   transform: translate(-50%, -50%) rotate(var(--bubble-tilt, 0deg));
-  max-width: min(80%, 22em); margin: 0; padding: 3px 9px; box-sizing: border-box;
+  max-width: min(80%, 22em); margin: 0; padding: 4px 10px 3px; box-sizing: border-box;
   border-radius: 8px; box-shadow: none; color: #000;
   font-family: "Serrif", Georgia, "Times New Roman", serif; font-weight: 300; font-synthesis: none;
-  font-size: 15px; line-height: 1.3; letter-spacing: 0.1em;
+  font-size: 18px; line-height: 1.25; letter-spacing: 0.08em;
   white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
 }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-conf-row > .a11y-conf-status[data-status="failed"] { background: var(--hl-orange); }
@@ -3705,9 +3705,9 @@
    measures 7:1 or better in both themes. */
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-sev, .a11y-rule-chip, .a11y-level-badge, .a11y-sum-chip, .a11y-pro-chip, .a11y-conf-status, .a11y-principle-count, .a11y-status-chip, .a11y-next-count) {
   display: inline-block; vertical-align: 0.15em; box-sizing: border-box;
-  margin-inline: 0.25em; padding: 2px 8px; border-radius: 8px; box-shadow: none; color: #000;
+  margin-inline: 0.25em; padding: 4px 10px 3px; border-radius: 8px; box-shadow: none; color: #000;
   font-family: "Serrif", Georgia, "Times New Roman", serif; font-weight: 300; font-synthesis: none;
-  font-size: 15px; line-height: 1.3; letter-spacing: 0.1em; white-space: nowrap;
+  font-size: 18px; line-height: 1.25; letter-spacing: 0.08em; white-space: nowrap;
   -webkit-box-decoration-break: slice; box-decoration-break: slice;
 }
 /* Rule ids are long ("consent-blocks-reader" is 211px at 15px mono) and
@@ -3846,9 +3846,9 @@
    the plate colours above so a colour still means what it means on the
    check-result cards. */
 .a11y-widget-biz.a11y-widget-biz .a11y-sum-run .a11y-sum-row-marks > :is(.a11y-sum-chip, .a11y-sev) {
-  padding: 2px 8px; border-radius: 8px;
+  padding: 4px 10px 3px; border-radius: 8px;
   font-family: "Serrif", Georgia, "Times New Roman", serif; font-weight: 300; font-synthesis: none;
-  font-size: 15px; line-height: 1.3; letter-spacing: 0.1em;
+  font-size: 18px; line-height: 1.25; letter-spacing: 0.08em;
 }
 
 /* ═══ THE FINDINGS TABLES' SEVERITY AS A SERIF BUBBLE (user's instruction,
@@ -3927,15 +3927,22 @@
    words (pink, mint, yellow or sky on black; deep plate on white in dark),
    so it reads on the card and on its beige hover alike. */
 .a11y-widget-biz .a11y-legal-results .a11y-legal-tiles.a11y-legal-tiles > .a11y-legal-row .a11y-legal-mark {
-  padding: 2px 8px; border-radius: 8px; background: var(--plate-text); color: var(--paper);
+  padding: 4px 10px 3px; border-radius: 8px; background: var(--mark-fill, var(--plate-4)); color: var(--plate-text);
   font-family: "Serrif", Georgia, "Times New Roman", serif; font-weight: 300; font-synthesis: none;
-  font-size: 15px; line-height: 1.3; letter-spacing: 0.1em; white-space: nowrap;
+  font-size: 18px; line-height: 1.25; letter-spacing: 0.08em; white-space: nowrap;
   rotate: var(--mark-tilt, -2deg);
 }
 .a11y-widget-biz .a11y-legal-results .a11y-legal-tiles.a11y-legal-tiles > .a11y-legal-row:nth-child(4n+2) { --mark-tilt: 1.5deg; }
 .a11y-widget-biz .a11y-legal-results .a11y-legal-tiles.a11y-legal-tiles > .a11y-legal-row:nth-child(4n+3) { --mark-tilt: -1deg; }
 .a11y-widget-biz .a11y-legal-results .a11y-legal-tiles.a11y-legal-tiles > .a11y-legal-row:nth-child(4n) { --mark-tilt: 2deg; }
-.a11y-widget-biz .a11y-legal-results .a11y-legal-tiles.a11y-legal-tiles > button.a11y-legal-row:enabled:hover .a11y-legal-mark { color: var(--tile); }
+/* The badge as the findings table's severity (user's instruction, 24 Nov
+   2026, "all badges need to be like this but different colors"): a plate
+   fill with the plate's words, in a plate other than its card's, so it
+   shows on the card and on the beige hover alike. */
+.a11y-widget-biz .a11y-legal-results .a11y-legal-tiles > .a11y-legal-row-failed { --mark-fill: var(--plate-4); }
+.a11y-widget-biz .a11y-legal-results .a11y-legal-tiles > .a11y-legal-row-clean { --mark-fill: var(--plate-1); }
+.a11y-widget-biz .a11y-legal-results .a11y-legal-tiles > .a11y-legal-row-human { --mark-fill: var(--plate-3); }
+.a11y-widget-biz .a11y-legal-results .a11y-legal-tiles > .a11y-legal-row-not-measured { --mark-fill: var(--plate-2); }
 @media print {
   .a11y-widget-biz .a11y-legal-results .a11y-legal-tiles.a11y-legal-tiles > .a11y-legal-row .a11y-legal-mark { rotate: none; }
 }
@@ -3949,10 +3956,10 @@
    found mint, needs a person yellow, not measured sky). Black words on the
    light plates, white on the deep dark ones. Sized to its words. */
 .a11y-widget-biz .a11y-w22-call > .a11y-next-status[data-status] {
-  display: inline-block; width: fit-content; padding: 2px 8px; border-radius: 8px;
+  display: inline-block; width: fit-content; padding: 4px 10px 3px; border-radius: 8px;
   background: var(--plate-4); color: var(--plate-text);
   font-family: "Serrif", Georgia, "Times New Roman", serif; font-weight: 300; font-synthesis: none;
-  font-size: 15px; line-height: 1.3; letter-spacing: 0.1em; white-space: nowrap;
+  font-size: 18px; line-height: 1.25; letter-spacing: 0.08em; white-space: nowrap;
   rotate: var(--call-tilt, -2deg);
 }
 .a11y-widget-biz .a11y-w22-list > li:nth-child(3n+2) { --call-tilt: 1.5deg; }
@@ -3999,7 +4006,6 @@
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-dn-list > .a11y-dn-link:enabled:is(:hover, :focus-visible) {
   --ink: var(--tile-ink); --paper: var(--tile); background: var(--tile); color: var(--tile-ink); text-decoration: none;
 }
-.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-dn-list > .a11y-dn-link:enabled:is(:hover, :focus-visible) > .a11y-dn-link-kind { background: var(--tile-ink); color: var(--tile); }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-dn-list > .a11y-dn-link:enabled:is(:hover, :focus-visible) > .a11y-dn-link-text { text-decoration: none; }
 @media (prefers-reduced-motion: reduce) {
   .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-dn-list > .a11y-dn-link { transition: none; }
@@ -4007,12 +4013,20 @@
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-dn-list > .a11y-dn-link[aria-selected="true"] { padding-top: 22px; border: 0; box-shadow: none; }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-dn-list > .a11y-dn-link[aria-selected="true"]:not(:focus-visible) { outline: 2px dotted var(--plate-text); outline-offset: -2px; }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-dn-list > .a11y-dn-link > .a11y-dn-link-kind {
-  align-self: flex-start; margin: 0; padding: 2px 8px; border-radius: 8px;
-  background: var(--plate-text); color: var(--paper);
+  align-self: flex-start; margin: 0; padding: 4px 10px 3px; border-radius: 8px;
+  background: var(--kind-fill, var(--plate-4)); color: var(--plate-text);
   font-family: "Serrif", Georgia, "Times New Roman", serif; font-weight: 300; font-synthesis: none;
-  font-size: 15px; line-height: 1.3; letter-spacing: 0.1em; white-space: nowrap;
+  font-size: 18px; line-height: 1.25; letter-spacing: 0.08em; white-space: nowrap;
   rotate: var(--kind-tilt, -2deg);
 }
+/* The kind as the findings table's severity (user's instruction, 24 Nov
+   2026, "all badges need to be like this but different colors"): a plate
+   fill in a plate other than its card's (sky card, yellow badge; mint,
+   pink; pink, sky; yellow, mint), with the plate's words, so it shows on
+   the card and on the beige hover alike. */
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-dn-list > .a11y-dn-link:nth-child(4n+2) { --kind-fill: var(--plate-3); }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-dn-list > .a11y-dn-link:nth-child(4n+3) { --kind-fill: var(--plate-1); }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-dn-list > .a11y-dn-link:nth-child(4n) { --kind-fill: var(--plate-2); }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-dn-list > .a11y-dn-link:nth-child(3n+2) { --kind-tilt: 1.5deg; }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-dn-list > .a11y-dn-link:nth-child(3n) { --kind-tilt: -1deg; }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-dn-list > .a11y-dn-link > .a11y-dn-link-text {
@@ -4054,10 +4068,10 @@
 }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-prompts .a11y-prompt.a11y-prompt:not(.a11y-prompt-barrier):has(> .a11y-prompt-q:disabled) { border: 1px dashed var(--ink); outline: 0; }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-prompts .a11y-prompt .a11y-prompt-label {
-  align-self: flex-start; width: fit-content; padding: 2px 8px; border-radius: 8px;
+  align-self: flex-start; width: fit-content; padding: 4px 10px 3px; border-radius: 8px;
   background: var(--ink); color: var(--paper);
   font-family: "Serrif", Georgia, "Times New Roman", serif; font-weight: 300; font-synthesis: none;
-  font-size: 15px; line-height: 1.3; letter-spacing: 0.1em; white-space: nowrap;
+  font-size: 18px; line-height: 1.25; letter-spacing: 0.08em; white-space: nowrap;
   rotate: var(--label-tilt, -2deg);
 }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-prompts .a11y-prompt:nth-child(3n+2) { --label-tilt: 1.5deg; --card-plate: var(--plate-3); }
@@ -4109,7 +4123,7 @@
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-prompts .a11y-prompt .a11y-prompt-label.a11y-prompt-label {
   background: var(--label-plate); color: #000; border: 0;
   font-family: "Serrif", Georgia, "Times New Roman", serif; font-weight: 300; font-synthesis: none;
-  font-size: 15px; letter-spacing: 0.1em;
+  font-size: 18px; letter-spacing: 0.08em;
 }
 
 /* ═══ ENAMEL PINS (user's instruction, 23 Nov 2026, "add this pins for some
@@ -4170,10 +4184,10 @@
   position: relative; grid-template-columns: minmax(0, 1fr); padding: 26px 26px 20px 22px;
 }
 .a11y-widget-biz.a11y-widget-biz .a11y-note.a11y-note-warning .a11y-note-badge {
-  position: absolute; top: 0; left: 22px; margin: 0; padding: 2px 8px; border-radius: 8px;
+  position: absolute; top: 0; left: 22px; margin: 0; padding: 4px 10px 3px; border-radius: 8px;
   background: #f8ff58; color: #000;
   font-family: "Serrif", Georgia, "Times New Roman", serif; font-weight: 300; font-synthesis: none;
-  font-size: 15px; line-height: 1.3; letter-spacing: 0.1em; white-space: nowrap;
+  font-size: 18px; line-height: 1.25; letter-spacing: 0.08em; white-space: nowrap;
   translate: 0 -50%; rotate: -2deg;
 }
 .a11y-widget-biz.a11y-widget-biz .a11y-note.a11y-note-warning .a11y-note-title { font-size: 22px; line-height: 1.25; letter-spacing: 0.005em; }
@@ -4231,9 +4245,9 @@
   align-items: center; gap: 10px 12px; margin-top: 6px;
 }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-undecided-call > :is(.a11y-method-badge, .a11y-undecided-places, .a11y-undecided-most) {
-  display: inline-block; margin: 0; padding: 2px 8px; border-radius: 8px;
+  display: inline-block; margin: 0; padding: 4px 10px 3px; border-radius: 8px;
   font-family: "Serrif", Georgia, "Times New Roman", serif; font-weight: 300; font-synthesis: none;
-  font-size: 15px; line-height: 1.3; letter-spacing: 0.1em;
+  font-size: 18px; line-height: 1.25; letter-spacing: 0.08em;
   background: var(--tile); color: var(--tile-ink);
   rotate: -2deg;
 }
@@ -4249,7 +4263,7 @@
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-undecided-call > .a11y-method-badge.a11y-fix-content { background: var(--plate-2); }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-undecided-call > .a11y-method-badge.a11y-fix-design { background: var(--plate-3); }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-undecided-call > .a11y-method-badge.a11y-fix-document { background: var(--plate-4); }
-.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-undecided-call > .a11y-undecided-most { background: var(--ink); color: var(--paper); }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-undecided-call > .a11y-undecided-most { background: var(--plate-4); color: var(--plate-text); }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-undecided-call > .a11y-learn-more { margin: 0; font-size: 18px; }
 @media print {
   .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-undecided-call > * { rotate: none; }
@@ -4578,10 +4592,10 @@
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-key:has(> .a11y-sum-warning) > .a11y-sum-counts { grid-column: 2 / 4; }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-key > .a11y-sum-warning { grid-column: 4 / 5; }
 .a11y-widget-biz .a11y-sum-key .a11y-sum-warning-badge {
-  display: inline-block; padding: 0 8px; border-radius: 8px;
+  display: inline-block; padding: 4px 10px 3px; border-radius: 8px;
   background: #f8ff58; color: #000;
   font-family: "Serrif", Georgia, "Times New Roman", serif; font-weight: 300; font-synthesis: none;
-  font-size: 15px; line-height: 1.3; letter-spacing: 0.1em; white-space: nowrap;
+  font-size: 18px; line-height: 1.25; letter-spacing: 0.08em; white-space: nowrap;
   rotate: -2deg;
 }
 @media print {
@@ -4594,6 +4608,21 @@
 @container a11y-sum (max-width: 480px) {
   .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-key:has(> .a11y-sum-warning) > .a11y-sum-counts { grid-column: 1 / -1; }
 }
+
+/* ═══ EVERY BADGE AS THE FINDINGS TABLE'S SEVERITY (user's instruction, 24
+   Nov 2026, "all badges need to be like this but different colors", on the
+   Fix soon badge) ══════════════════════════════════════════════════════════
+   No rule here: each badge's own rule above was set to the severity's
+   measure, so nothing ties on specificity. Every badge (severity, rule id,
+   level, the score's and professional chips, principle counts, status
+   chips, the checklist's bubbles, the check results' status, the WCAG 2.2
+   call, the design note's kind, the undecided rows' badges, the opening
+   questions' group, the Warning badge and the key's Warning) is Serrif
+   Light 18px spaced +0.08em on a 1.25 line, 4px 10px 3px inside, 8px
+   corners, no edge, leaning, on a light fill with black words (the deep
+   plates with white words in dark). The two that were solid ink with
+   coloured words, the check results' status and the design note's kind,
+   take a plate other than their card's; "most places" takes yellow. */
 
 /* ═══ WHAT TO DO BACK IN SERRIF (user's instruction, 24 Nov 2026, "this can
    go back to seriff", on the expanded finding's steps) ═══════════════════
