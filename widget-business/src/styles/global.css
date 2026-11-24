@@ -4855,7 +4855,7 @@
 }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-undecided-ledger > .a11y-undecided-table > .a11y-undecided-cell.a11y-undecided-folded { display: none; }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-undecided-table > .a11y-undecided-cell > .a11y-undecided-q {
-  display: grid; grid-template-columns: 35px auto minmax(0, 1fr) auto; column-gap: 14px; align-items: start;
+  display: grid; grid-template-columns: 26px auto minmax(0, 1fr) auto; column-gap: 12px; --row-line: calc(32px * 1.1); align-items: start;
   box-sizing: border-box; width: 100%; min-height: 0; margin: 0; padding: 0; border: 0; border-radius: 0;
   background: none; color: var(--ink); text-align: left; cursor: pointer;
   font-size: 32px; font-weight: 200; line-height: 1.1; letter-spacing: 0.01em;
@@ -4869,7 +4869,7 @@
 }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-undecided-q[aria-expanded="true"] > .a11y-undecided-caret { transform: rotate(90deg); }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-undecided-q > .a11y-undecided-no {
-  display: inline-grid; place-items: center; box-sizing: content-box; width: 28px; height: 28px; padding: 2px; margin-top: calc((1lh - 32px) / 2);
+  display: inline-grid; place-items: center; box-sizing: content-box; width: 28px; height: 28px; padding: 2px; margin-top: calc((var(--row-line) - 32px) / 2);
   border-radius: 50%; background: var(--ink); color: var(--paper);
   font-size: 24px; line-height: 1; letter-spacing: 0; font-variant-numeric: tabular-nums;
 }
@@ -4886,7 +4886,7 @@
 /* The answer: the bubble, indented past the caret and the round. */
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-undecided-cell > .a11y-undecided-answer {
   --paper: var(--bubble);
-  margin: 12px 0 24px 95px; padding: 40px 48px 44px; border-radius: 56px; background: var(--bubble); color: var(--ink);
+  margin: 12px 0 24px 82px; padding: 40px 48px 44px; border-radius: 56px; background: var(--bubble); color: var(--ink);
 }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-undecided-cell > .a11y-undecided-answer[hidden] { display: none; }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-undecided-answer > .a11y-fd-meta { margin-bottom: 24px; }
@@ -4894,11 +4894,11 @@
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-undecided-answer > :last-child { margin-bottom: 0; }
 @container a11y-ledger (max-width: 640px) {
   .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-undecided-table > .a11y-undecided-cell > .a11y-undecided-q {
-    grid-template-columns: 26px auto minmax(0, 1fr); row-gap: 4px; column-gap: 10px;
+    grid-template-columns: 26px auto minmax(0, 1fr); row-gap: 4px; column-gap: 10px; --row-line: calc(24px * 1.15);
     font-size: 24px; line-height: 1.15; letter-spacing: 0.015em;
   }
   .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-undecided-q > .a11y-undecided-kind { grid-column: 3; grid-row: 2; max-width: none; text-align: left; font-size: 18px; letter-spacing: 0.025em; }
-  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-undecided-q > .a11y-undecided-no { width: 22px; height: 22px; margin-top: calc((1lh - 26px) / 2); font-size: 18px; }
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-undecided-q > .a11y-undecided-no { width: 22px; height: 22px; margin-top: calc((var(--row-line) - 26px) / 2); font-size: 18px; }
   .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-undecided-cell > .a11y-undecided-answer { margin-left: 0; padding: 22px 18px 24px; border-radius: 32px; }
 }
 @media print {
@@ -4912,4 +4912,108 @@
   .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-undecided-cell > .a11y-undecided-answer { border: 1px solid CanvasText; }
   .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-undecided-q > .a11y-undecided-kind { color: CanvasText; }
   .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-undecided-q > .a11y-undecided-no { border: 1px solid CanvasText; }
+}
+
+/* THE TABS AS AN AWNING (user's references and answer, 24 Nov 2026, "the
+   tabs can be this": a foundry's shop card, a grey panel with round top
+   corners over a scalloped foot of dark and light half-circles, and its
+   "Approach" list, each line an underlined phrase after a cross with its
+   key words on a highlight; "Both together", "Both sets"). The automated
+   check results and the design notes' tabs are each one awning panel
+   holding the tabs as that list. A check result's line is the cross, the
+   count, its sentence on its status colour (problems red-orange, nothing
+   found green, needs a person yellow, not measured blue; black words,
+   7:1 and up) and the status and level split in small print; a note's
+   line is the cross and its title. The pressed result and the open note
+   are the shop card's red-orange pill, black words. The cross is the icon
+   set's close (Carbon) as a mask, cropped to its 16 units. The markup
+   order (label, meaning, mark, count) is kept for screen readers; the
+   line is reordered with flex order. The scallops are decoration: a
+   strip hung under the panel, six across (four under 640px), alternating
+   ink and a grey a step under the panel. */
+.a11y-widget-biz { --awning-light: #d9d9d9; }
+.a11y-widget-biz[data-theme="dark"] { --awning-light: #3a3a3c; }
+@media (prefers-color-scheme: dark) { .a11y-widget-biz:not([data-theme="light"]) { --awning-light: #3a3a3c; } }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-legal-tiles, .a11y-dn-list)[class] {
+  position: relative; display: flex; flex-direction: column; align-items: flex-start; gap: 12px;
+  box-sizing: border-box; width: 100%; margin: 0 0 calc(100% / 12 + 40px); padding: 52px 56px 44px;
+  border: 0; border-radius: 80px 80px 0 0; background: var(--bubble); color: var(--ink);
+  grid-template-columns: none;
+}
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-legal-tiles, .a11y-dn-list)[class]::after {
+  content: ""; position: absolute; left: 0; right: 0; top: 100%; aspect-ratio: 12 / 1; pointer-events: none;
+  background: repeating-linear-gradient(90deg, var(--ink) 0 calc(100% / 6), var(--awning-light) calc(100% / 6) calc(200% / 6));
+  -webkit-mask: radial-gradient(50% 100% at 50% 0, #000 calc(100% - 0.5px), transparent 100%) 0 0 / calc(100% / 6) 100% repeat-x;
+  mask: radial-gradient(50% 100% at 50% 0, #000 calc(100% - 0.5px), transparent 100%) 0 0 / calc(100% / 6) 100% repeat-x;
+}
+/* Each tab: one line of the list. */
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-legal-tiles > .a11y-legal-row, .a11y-dn-list > .a11y-dn-link)[class][class] {
+  position: static; display: flex; flex-direction: row; flex-wrap: wrap; align-items: baseline; justify-content: flex-start; column-gap: 0.35em; row-gap: 2px;
+  box-sizing: border-box; flex: none; width: auto; max-width: 100%; height: auto; min-height: 0; aspect-ratio: auto; container-type: normal; contain: none;
+  margin: 0; padding: 2px 14px 4px 0; border: 0; border-radius: 999px; background: none; box-shadow: none; outline-offset: 2px;
+  transform: none; rotate: none; color: var(--ink); text-align: left; cursor: pointer;
+  font-family: "PP Telegraf", "DejaVu Sans", sans-serif; font-size: 32px; font-weight: 200; line-height: 1.1; letter-spacing: 0.01em;
+}
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-legal-tiles > .a11y-legal-row, .a11y-dn-list > .a11y-dn-link)[class][class]::before {
+  content: ""; flex: none; align-self: center; width: 0.5em; height: 0.5em; margin: 0 0.25em 0 0; padding: 0; border: 0; background: currentColor;
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='8 8 16 16'%3E%3Cpath d='M17.4141 16 24 9.4141 22.5859 8 16 14.5859 9.4143 8 8 9.4141 14.5859 16 8 22.5859 9.4143 24 16 17.4141 22.5859 24 24 22.5859 17.4141 16z'/%3E%3C/svg%3E") center / contain no-repeat;
+  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='8 8 16 16'%3E%3Cpath d='M17.4141 16 24 9.4141 22.5859 8 16 14.5859 9.4143 8 8 9.4141 14.5859 16 8 22.5859 9.4143 24 16 17.4141 22.5859 24 24 22.5859 17.4141 16z'/%3E%3C/svg%3E") center / contain no-repeat;
+}
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-legal-tiles > .a11y-legal-row, .a11y-dn-list > .a11y-dn-link)[class][class]::after { content: none; }
+/* A check result's line: count, sentence, then the small print. */
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-legal-tiles > .a11y-legal-row > .a11y-legal-col-result[class] { display: contents; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-legal-tiles > .a11y-legal-row .a11y-legal-count[class] {
+  order: 1; position: static; margin: 0; padding: 0; font: inherit; letter-spacing: inherit; color: inherit;
+  text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 0.12em;
+}
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-legal-tiles > .a11y-legal-row .a11y-legal-row-label[class] {
+  order: 2; display: inline; margin: 0; padding: 0 0.12em; border-radius: 6px; color: #000;
+  font: inherit; letter-spacing: inherit; box-decoration-break: clone; -webkit-box-decoration-break: clone;
+  text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 0.12em;
+}
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-legal-tiles > .a11y-legal-row-failed .a11y-legal-row-label[class] { background: var(--hl-orange); }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-legal-tiles > .a11y-legal-row-clean .a11y-legal-row-label[class] { background: var(--hl-green); }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-legal-tiles > .a11y-legal-row-human .a11y-legal-row-label[class] { background: var(--hl-cap-a); }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-legal-tiles > .a11y-legal-row-not-measured .a11y-legal-row-label[class] { background: var(--hl-blue); }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-legal-tiles > .a11y-legal-row :is(.a11y-legal-mark, .a11y-legal-row-meaning)[class] {
+  position: static; display: inline; align-self: baseline; margin: 0; padding: 0; border: 0; border-radius: 0; background: none; box-shadow: none; rotate: none; transform: none;
+  color: var(--ink); font-family: "PP Telegraf", "DejaVu Sans", sans-serif; font-size: 18px; font-weight: 200; line-height: 1.2; letter-spacing: 0.025em; text-transform: none;
+}
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-legal-tiles > .a11y-legal-row .a11y-legal-mark[class] { order: 3; margin-left: 0.4em; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-legal-tiles > .a11y-legal-row .a11y-legal-row-meaning[class] { order: 4; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-legal-tiles > .a11y-legal-row .a11y-legal-row-meaning ~ .a11y-legal-mark[class]::after { content: " \00B7"; }
+/* The line's ink is the page's: the old cards set black words on their
+   fixed plates, and in dark those rules left the problems line black on
+   the dark panel. The sentence keeps black on its highlight. */
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-legal-tiles > .a11y-legal-row:not([aria-pressed="true"])[class][class][class],
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-legal-tiles > .a11y-legal-row:not([aria-pressed="true"])[class][class] :is(.a11y-legal-count, .a11y-legal-mark, .a11y-legal-row-meaning)[class] { --ink: inherit; --paper: inherit; color: var(--ink); }
+/* A note's line: its title, underlined. */
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-dn-list > .a11y-dn-link > .a11y-dn-link-text[class] {
+  display: inline; margin: 0; padding: 0; font: inherit; letter-spacing: inherit; color: inherit;
+  text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 0.12em;
+}
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-legal-tiles > .a11y-legal-row, .a11y-dn-list > .a11y-dn-link)[class][class]:hover :is(.a11y-legal-count, .a11y-legal-row-label, .a11y-dn-link-text) { text-decoration-thickness: 2px; }
+/* The pressed result and the open note: the red-orange pill. */
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-legal-tiles > .a11y-legal-row[aria-pressed="true"], .a11y-dn-list > .a11y-dn-link[aria-selected="true"])[class][class] {
+  padding-inline: 14px 18px; background: var(--urgent); color: #000;
+}
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-legal-tiles > .a11y-legal-row[aria-pressed="true"], .a11y-dn-list > .a11y-dn-link[aria-selected="true"])[class][class] :is(.a11y-legal-count, .a11y-legal-row-label, .a11y-dn-link-text, .a11y-legal-mark, .a11y-legal-row-meaning) {
+  color: #000; text-decoration: none;
+}
+@media (max-width: 640px) {
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-legal-tiles, .a11y-dn-list)[class] {
+    margin-bottom: calc(100% / 8 + 28px); padding: 30px 22px 26px; border-radius: 44px 44px 0 0;
+  }
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-legal-tiles, .a11y-dn-list)[class]::after {
+    aspect-ratio: 8 / 1;
+    background: repeating-linear-gradient(90deg, var(--ink) 0 25%, var(--awning-light) 25% 50%);
+    -webkit-mask-size: 25% 100%; mask-size: 25% 100%;
+  }
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-legal-tiles > .a11y-legal-row, .a11y-dn-list > .a11y-dn-link)[class][class] { font-size: 24px; line-height: 1.15; letter-spacing: 0.015em; }
+}
+@media (forced-colors: active) {
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-legal-tiles, .a11y-dn-list)[class] { border: 1px solid CanvasText; }
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-legal-tiles, .a11y-dn-list)[class]::after { display: none; }
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-legal-tiles > .a11y-legal-row, .a11y-dn-list > .a11y-dn-link)[class][class]::before { forced-color-adjust: none; background: CanvasText; }
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-legal-tiles > .a11y-legal-row[aria-pressed="true"], .a11y-dn-list > .a11y-dn-link[aria-selected="true"])[class][class] { border: 2px solid Highlight; }
 }
