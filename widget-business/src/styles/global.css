@@ -4594,3 +4594,14 @@
 @container a11y-sum (max-width: 480px) {
   .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-key:has(> .a11y-sum-warning) > .a11y-sum-counts { grid-column: 1 / -1; }
 }
+
+/* ═══ WHAT TO DO BACK IN SERRIF (user's instruction, 24 Nov 2026, "this can
+   go back to seriff", on the expanded finding's steps) ═══════════════════
+   The steps, and a single action set as a sentence, are Serrif Light again
+   at the size the expanded finding sets (32px, 26px on a phone), as before
+   23 Nov 2026. The uppercase "What to do" label over its rule keeps
+   Telegraf: it sets its own face. Serrif has only the Light cut, so no
+   weight is synthesized. */
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-fd :is(.a11y-finding-steps > ul, .a11y-finding-todo) {
+  font-family: "Serrif", Georgia, "Times New Roman", serif; font-weight: 300; font-synthesis: none;
+}
