@@ -110,6 +110,9 @@ type Turn =
 export interface ChatApi {
   rerun: (url: string, scope: "page" | "site", aiReview: boolean) => void;
   show: (key: SectionKey) => void;
+  /** A question from a report block in the thread (Learn more), with the
+   *  help page it came from shown as the reply's source. */
+  ask: (text: string, source: ChatSource) => void;
 }
 
 /** Past this, the next message starts a fresh API conversation seeded with
@@ -970,7 +973,7 @@ export function ScanChat({
   /** One assistant turn, and the tools it calls. A scan gets a second turn
    *  so the assistant can say what came back; a shown section does not —
    *  the block speaks for itself, and the next question picks it up. */
-  async function assistantTurn(messages: ChatMessage[]) {
+  async function assistantTurn(messages: ChatMessage[], source?: ChatSource) {
     const turnId = nextId++;
     add({ id: turnId, who: "checker", text: "", streaming: true });
     setAnnouncement(t("Thinking…"));
@@ -1015,7 +1018,9 @@ export function ScanChat({
     if (unanswered.length) history.current = appendUser(history.current, unanswered);
     const text = textOf(result.content);
     if (text.trim()) {
-      patch(turnId, { text, streaming: false, searching: undefined, sources: sourcesOf(result.content) });
+      const cited = sourcesOf(result.content);
+      const sources = source ? [source, ...cited.filter((s) => s.url !== source.url)] : cited;
+      patch(turnId, { text, streaming: false, searching: undefined, sources });
       // The last chunks finish fading before their marks go.
       window.setTimeout(() => patch(turnId, { marks: undefined }), FADE_MS);
       setAnnouncement(text);
@@ -1164,6 +1169,16 @@ export function ScanChat({
     apiRef.current = {
       rerun: (url, scope, aiReview) => void rerun(url, scope, aiReview),
       show: (key) => void showSection(key, { force: true, announce: false, focusExisting: false }),
+      ask: (text, source) => {
+        // Mid-reply the question waits in the box, to send when the reader
+        // is ready, rather than being dropped.
+        if (busy || loading) {
+          setDraft(text);
+          focusInput();
+          return;
+        }
+        void ask(text, source);
+      },
     };
   }
 
@@ -1223,7 +1238,7 @@ export function ScanChat({
 
   /** One message from the reader, typed or picked from the opening prompts:
    *  both go the same way, so a prompt is exactly what typing it would be. */
-  async function ask(text: string) {
+  async function ask(text: string, source?: ChatSource) {
     if (!text || busy || loading) return;
     // A new question moves the conversation on; there is nowhere to go back to.
     setBackTo(null);
@@ -1264,9 +1279,17 @@ export function ScanChat({
         });
         sharedScan.current = currentKey;
       }
+      // Learn more names the help page it stood for, so the reply can draw
+      // on it; the reader's own line stays the question alone.
+      if (source) {
+        blocks.push({
+          type: "text",
+          text: `The reader pressed Learn more on this item of the report. Its help page is ${source.url}, which is not a site to scan: explain the item in plain words, and read that page with web search if it helps.`,
+        });
+      }
       const before = history.current;
       try {
-        await assistantTurn(appendUser(before, [...blocks, { type: "text", text }]));
+        await assistantTurn(appendUser(before, [...blocks, { type: "text", text }]), source);
       } catch (err) {
         // "No assistant" only when nothing of this turn reached one. After a
         // turn was committed — the reply after a scan — a failure is a

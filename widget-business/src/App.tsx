@@ -238,7 +238,11 @@ export function App({
     return { professional, criterionNames, apiBase, siteUrl: report?.url, signedIn: signedIn && Boolean(report?.savedAs) };
   }, [report, professional, apiBase, signedIn]);
   // The same view for a section drawn as a block in the conversation.
-  const chatReportView = useMemo<ReportView>(() => ({ ...reportView, inChat: true }), [reportView]);
+  // Learn more in a block asks in the thread instead of leaving the chat.
+  const chatReportView = useMemo<ReportView>(
+    () => ({ ...reportView, inChat: true, ask: (text, source) => chatApi.current?.ask(text, source) }),
+    [reportView]
+  );
 
   // Print must include every card whatever the on-screen filter shows — the
   // rule the conformance checklist already follows. The filter lives in React

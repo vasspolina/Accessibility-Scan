@@ -127,6 +127,7 @@ export const STRINGS_ES: Record<string, string> = {
   "Hide the checklist": "Ocultar la lista de comprobación",
   "Show fewer": "Mostrar menos",
   "Learn more about this issue": "Saber más sobre este problema",
+  "Tell me more about this: {issue}": "Cuéntame más sobre esto: {issue}",
   "Start the scan": "Empezar el análisis",
   "Which site?": "¿Qué sitio?",
   "Website address (required)": "Dirección del sitio web (obligatorio)",
