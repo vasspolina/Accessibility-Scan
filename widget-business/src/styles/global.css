@@ -3096,8 +3096,11 @@
   display: flex; flex-direction: column; align-self: stretch; overflow: visible;
 }
 .a11y-widget-biz .a11y-chats > .a11y-chats-body { flex: 1 1 auto; min-height: 0; overflow-y: auto; }
+/* No space above the foot's rule (user's instruction, 24 Nov 2026, "delete
+   white space above the line"): the conversations scroll right up to it.
+   It had 16px over it. */
 .a11y-widget-biz .a11y-chats > .a11y-chats-foot {
-  flex: none; margin-top: 16px; padding-top: 12px; border-top: 1px solid var(--ink);
+  flex: none; margin-top: 0; padding-top: 12px; border-top: 1px solid var(--ink);
 }
 .a11y-widget-biz .a11y-lang-menu { position: relative; }
 .a11y-widget-biz .a11y-lang-menu .a11y-lang-toggle {
