@@ -1479,12 +1479,6 @@
   display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr));
   gap: 1.2em 15px; align-items: start; margin: 0 0 1lh; padding: 0; list-style: none;
 }
-/* One column since 21 Nov 2026 (user's instruction, "rearrange save as pdf
-   under a row with send report"): the email part, then Save as PDF. */
-.a11y-widget-biz .a11y-ra-row {
-  display: grid; grid-template-columns: minmax(0, 1fr);
-  gap: 1.2em 15px; align-items: start; margin: 0 0 1lh; padding: 0; list-style: none;
-}
 .a11y-widget-biz .a11y-dn-list {
   display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr));
   gap: 0 30px; align-items: stretch; margin: 0 0 1lh; padding: 0; list-style: none;
@@ -1501,7 +1495,6 @@
    cells follow the theme. */
 .a11y-widget-biz .a11y-next-list > li,
 .a11y-widget-biz .a11y-spec-grid > .a11y-spec-card,
-.a11y-widget-biz .a11y-ra-row > .a11y-ra-cell,
 .a11y-widget-biz .a11y-pro-rows > .a11y-pro-row,
 .a11y-widget-biz .a11y-manual-list > .a11y-manual-row {
   box-sizing: border-box; min-width: 0; margin: 0; padding: 0;
@@ -1593,96 +1586,6 @@
    the row and the note's parts start 50px under them, with nothing
    between. It took the 1px of the shut tabs until then. */
 .a11y-widget-biz .a11y-dn-detail[role="tabpanel"] > .a11y-fd { margin-top: 0; padding-top: 0; border-top: 0; }
-
-/* The report actions (user's instructions, 17 Nov 2026). Each column
-   opens on an uppercase label, with no rule under it (user's
-   instruction, 18 Nov 2026, "delete lines under eyebrows"). The address
-   is a rounded #f0efe8 field with its label inside it; the send is one wide
-   rounded block in Light 40px; the PDF is an outlined button with 10px
-   corners and a download arrow. These three are the user's exceptions to
-   "buttons are pills". #f0efe8 is fixed in both themes like the design
-   notes, so the field redefines ink and paper for what is inside it; #000
-   on it is 18.4:1. The send is solid ink in the page's theme; hover is the
-   marker yellow; sending is a dashed edge on paper, never faded. */
-/* More air (user's instruction, 18 Nov 2026, "add more space between
-   content here line height"): the parts of a column 20px apart (was 10),
-   the field's label and line 10px apart (was 4) at line-height 1.4, and
-   the small print at 1.45. */
-.a11y-widget-biz .a11y-ra-row > .a11y-ra-cell { display: flex; flex-direction: column; align-items: stretch; gap: 20px; }
-.a11y-widget-biz .a11y-ra-row > .a11y-ra-cell > .a11y-ra-head {
-  margin: 0 0 14px; padding: 0; border: 0;
-  font-family: "PP Telegraf", "DejaVu Sans", sans-serif; font-size: 18px; font-weight: 200; line-height: 1.2; letter-spacing: 0.04em;
-  text-transform: uppercase;
-}
-/* The address and the send stand on one line (user's instruction, 22 Nov
-   2026, "this can be in one line"): the form wraps as a row, its label and
-   its note each a full line, the field taking the width the send leaves.
-   The field's 320px floor is where the line gives up: under about 690px of
-   column (a phone) the send drops under the field and takes the full
-   width, as it did before. The send is as tall as the field beside it. */
-.a11y-widget-biz .a11y-ra-row > .a11y-ra-cell.a11y-ra-email-form { flex-direction: row; flex-wrap: wrap; gap: 20px 15px; }
-.a11y-widget-biz .a11y-ra-email-form > :is(.a11y-ra-head, .a11y-ra-note) { flex: 1 1 100%; }
-.a11y-widget-biz .a11y-ra-row > .a11y-ra-cell > .a11y-ra-field {
-  flex: 999 1 320px; min-width: 0; box-sizing: border-box;
-  display: flex; flex-direction: column; gap: 10px; padding: 18px 24px 16px;
-  border: 1px dotted var(--ink); border-radius: 20px; background: transparent; color: inherit;
-}
-.a11y-widget-biz .a11y-ra-field > .a11y-ra-field-label { font-size: 24px; letter-spacing: 0.015em; line-height: 1.15; }
-/* input. in the selector: the general field rule (:is(input:not():not())) is
-   0,3,1, and this has to out-rank it to drop the field's own box. */
-.a11y-widget-biz .a11y-ra-field > input.a11y-ra-email-input {
-  box-sizing: border-box; width: 100%; min-height: 34px; margin: 0; padding: 4px 0;
-  border: 0; border-radius: 0; background: transparent; color: var(--tile-ink);
-  font: inherit; font-size: 24px; letter-spacing: 0.015em; line-height: 1.15;
-}
-.a11y-widget-biz .a11y-ra-field > input.a11y-ra-email-input::placeholder { color: var(--tile-ink); opacity: 1; font-weight: 200; }
-/* The field is the box, so the focus ring goes round the field, not the
-   bare line inside it. */
-.a11y-widget-biz .a11y-ra-field:focus-within { outline: 2px solid var(--focus); outline-offset: -2px; box-shadow: none; }
-.a11y-widget-biz .a11y-ra-field > input.a11y-ra-email-input:focus-visible { outline: none; }
-/* Mint, the Report a barrier card's green (user's instruction, 21 Nov 2026,
-   "make button mint green"): black words on --barrier in both themes, 18.7:1
-   on #c6ffcc and 7.4:1 or better on dark's #30d158; the edge takes the
-   ground's colour. Disabled is still paper with a dashed ink edge. The words
-   are 15% smaller since 21 Nov 2026 (user's instruction, "15% smaller
-   text"): 48 to 41px, 38 to 32px on a phone; the block keeps its height. */
-.a11y-widget-biz .a11y-ra-row > .a11y-ra-cell > .a11y-ra-send {
-  flex: 1 1 auto; box-sizing: border-box; min-width: 0; min-height: 96px; margin: 0; padding: 20px 24px;
-  display: grid; align-content: center;
-  border: 1px solid var(--barrier); border-radius: 20px; background: var(--barrier); color: #000;
-  font-family: "PP Telegraf", "DejaVu Sans", sans-serif; font-size: 48px; font-weight: 200; line-height: 1.05; letter-spacing: 0;
-  text-align: start;
-}
-/* The send's two wordings share one cell, so its width never changes
-   (ReportActions.tsx); its corners are the field's 20px now the two stand
-   side by side (they were 14px while it sat under the field). */
-.a11y-widget-biz .a11y-ra-send > .a11y-ra-send-word { grid-area: 1 / 1; }
-.a11y-widget-biz .a11y-ra-send > .a11y-ra-send-word[data-off] { visibility: hidden; }
-.a11y-widget-biz .a11y-ra-row > .a11y-ra-cell > .a11y-ra-send:disabled { background: var(--paper); color: var(--ink); border-style: dashed; }
-.a11y-widget-biz .a11y-ra-row > .a11y-ra-cell > .a11y-ra-pdf {
-  display: inline-flex; align-self: flex-start; align-items: center; gap: 12px;
-  min-height: 44px; padding: 0.55em 1.1em; border: 1px solid var(--ink); border-radius: 10px;
-  font-size: 24px; font-weight: 200; letter-spacing: 0.015em;
-}
-.a11y-widget-biz .a11y-ra-pdf > .a11y-ra-pdf-icon { width: 20px; height: 20px; flex: none; }
-/* The notes under the email and PDF controls are set in Serrif (user's
-   instruction, 19 Nov 2026, "this can be typeset in serif"), the face of
-   the expanded finding's prose, so the explanation reads as text and the
-   controls above it as controls. Light is the only cut, and its x-height
-   is smaller than Jokker's, so 22px matches the 18px Jokker it replaced. */
-.a11y-widget-biz .a11y-ra-row > .a11y-ra-cell > .a11y-ra-note {
-  margin: 0; font-family: "PP Telegraf", "DejaVu Sans", sans-serif; font-weight: 200;
-  font-size: 24px; letter-spacing: 0.015em; line-height: 1.15;
-}
-/* A 50px break between the score block and the report actions (user's
-   instruction, 19 Nov 2026): the last score point's margin ran straight
-   into "Email me this report" at 38px, so the actions read as a seventh
-   point. The counts' own bottom margin is dropped here so the 50px is the
-   whole gap. */
-.a11y-widget-biz .a11y-report-actions { margin-top: 50px; }
-@media (max-width: 640px) {
-  .a11y-widget-biz .a11y-ra-row > .a11y-ra-cell > .a11y-ra-send { font-size: 32px; letter-spacing: 0.01em; }
-}
 
 /* THE CONFORMANCE REPORT HEAD (user's instruction, 21 Nov 2026, "design
    the conformance report head too"), in the terms of the statement and
@@ -2018,7 +1921,6 @@
 .a11y-widget-biz .a11y-legal-panel + * { margin-top: 65px; }
 .a11y-widget-biz .a11y-next-list,
 .a11y-widget-biz .a11y-spec-grid,
-.a11y-widget-biz .a11y-ra-row,
 .a11y-widget-biz .a11y-manual-list,
 .a11y-widget-biz .a11y-pro-rows { row-gap: 65px; }
 .a11y-widget-biz .a11y-legal-row:not(:last-child) { margin-bottom: 65px; }
@@ -3101,7 +3003,7 @@
    from drawing an edge of its own. */
 /* A line inside a box keeps no edge of its own: the email field's rule ties
    the field rule above on specificity, so it is restated here. */
-.a11y-widget-biz .a11y-ra-row .a11y-ra-field > input.a11y-ra-email-input { border: 0; border-radius: 0; background: transparent; }
+.a11y-widget-biz .a11y-ra-panel .a11y-ra-field > input.a11y-ra-email-input { border: 0; border-radius: 0; background: transparent; }
 .a11y-widget-biz .a11y-stmt-field input:not([type="radio"]):not([type="checkbox"]) { border: 0; border-radius: 0; background: transparent; }
 /* A textarea is a box like the chat's: 20px corners, not the one-line 14px. */
 .a11y-widget-biz textarea:not([type="radio"]):not([type="checkbox"]):not([hidden]) { border-radius: 20px; }
@@ -4253,58 +4155,93 @@
   .a11y-widget-biz .a11y-w22-list > .a11y-w22-row { break-inside: avoid; page-break-inside: avoid; }
 }
 
-/* ═══ THE REPORT ACTIONS ON THE SCORE'S GRID (user's instruction, 24 Nov
-   2026, "design this in a best way", replacing the card of 23 Nov) ═══════
-   Email this report and Save as PDF follow the score block above them:
-   no card, each a row on the page's paper under a 1px ink rule, 65px
-   apart, its label in the first of four tracks (the prose size, sentence
-   case, standing out by place) and its controls across the other three.
-   The address is the filled field in tracks two and three and the mint
-   send fills the fourth at the field's height, its words the prose size
-   rather than a display size, so the two read as one control. The PDF is
-   the ordinary outlined pill with its download mark. Each note sits
-   under its control at 24px. Under 761px of the block a row stacks,
-   label over controls, and the send takes the full width under the
-   field. */
+/* ═══ THE REPORT ACTIONS AS ONE PANEL (user's reference, 24 Nov 2026,
+   "design this like this, delete descriptions"; replaces the two ruled
+   rows on the score's grid of the same morning) ═══════════════════════
+   One rounded panel on the orange highlight, everything centred: the
+   title in capitals, the address field full width (filled, 24px corners,
+   its label inside it), the send a black pill with the icon set's email
+   mark, and Download in PDF a small filled pill at the foot. The notes
+   that sat under the two controls are gone ("Sent once. Nothing is
+   stored.", "Choose 'Save as PDF' in the print dialog."), and so is the
+   Save as PDF title: the pill says it. The status line stays for the
+   outcome of a send; empty, it is clipped rather than removed, so the
+   announcement still lands.
+   Measured: black on the light orange #ff6430 is 7.1:1, on dark's #ff9f0a
+   7.4:1 or better (the highlight rule). The panel redefines ink and paper
+   as black on orange, so the disabled send's dashed edge follows. The
+   field is --tile-fill with --tile-ink (white and black in light, #2c2c2e
+   and white in dark, so nothing turns white in dark); the PDF pill is
+   --tile (#f0efe8 or #1c1c1e). The send is #000 with white words in both
+   themes (21:1); hover is --hover, as on every button. */
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-report-actions { container: a11y-ra / inline-size; margin-top: 65px; }
-.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-report-actions > .a11y-ra-row {
-  display: block; margin: 0; padding: 0; border-radius: 0; background: none; color: var(--ink);
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-report-actions > .a11y-ra-panel {
+  --ink: #000; --paper: var(--hl-orange);
+  position: relative; box-sizing: border-box; display: flex; flex-direction: column; align-items: center; gap: 36px;
+  margin: 0; padding: 56px 64px 48px; border-radius: 64px;
+  background: var(--hl-orange); color: #000; text-align: center;
 }
-.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-report-actions .a11y-ra-row > .a11y-ra-cell {
-  display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 16px; align-items: start;
-  margin: 0; padding: 24px 0 0; border: 0; border-top: 1px solid var(--ink);
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-report-actions .a11y-ra-email-form {
+  box-sizing: border-box; display: flex; flex-direction: column; align-items: center; gap: 24px;
+  width: 100%; min-width: 0; margin: 0; padding: 0;
 }
-.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-report-actions .a11y-ra-row > .a11y-ra-cell + .a11y-ra-cell { margin-top: 65px; }
-.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-report-actions .a11y-ra-row > .a11y-ra-cell > * { grid-column: 2 / -1; min-width: 0; margin: 0; }
-.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-report-actions .a11y-ra-row > .a11y-ra-cell > .a11y-ra-head {
-  grid-column: 1; grid-row: 1 / span 2; padding: 0 16px 0 0; text-transform: none;
-  font-size: 32px; font-weight: 200; line-height: 1.1; letter-spacing: 0.01em;
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-report-actions .a11y-ra-head {
+  margin: 0 0 26px; padding: 0; border: 0; color: #000;
+  font-size: 32px; font-weight: 400; line-height: 1.1; letter-spacing: 0.04em;
+  text-transform: uppercase; font-feature-settings: "case";
 }
-.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-report-actions .a11y-ra-row > .a11y-ra-cell > .a11y-ra-field {
-  grid-column: 2 / 4; border: 0; background: var(--tile); color: var(--tile-ink);
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-report-actions .a11y-ra-field {
+  box-sizing: border-box; display: flex; flex-direction: column; gap: 6px;
+  width: 100%; min-width: 0; padding: 16px 28px 14px;
+  border: 0; border-radius: 24px; background: var(--tile-fill); color: var(--tile-ink); text-align: start;
 }
-.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-report-actions .a11y-ra-row > .a11y-ra-cell > .a11y-ra-send {
-  grid-column: 4; align-self: stretch; min-height: 0;
-  font-size: 32px; line-height: 1.1; letter-spacing: 0.01em;
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-report-actions .a11y-ra-field > .a11y-ra-field-label {
+  font-size: 18px; font-weight: 400; line-height: 1.2; letter-spacing: 0.01em;
 }
-.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-report-actions .a11y-ra-row > .a11y-ra-cell > .a11y-ra-pdf {
-  justify-self: start; min-height: 44px; padding: 8px 18px; border: 1px solid var(--ink); border-radius: 999px;
-  font-size: 18px; line-height: 1.2; letter-spacing: 0.025em;
+/* input. in the selector: the general field rule (:is(input:not():not()))
+   has to be out-ranked to drop the line's own box. */
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-report-actions .a11y-ra-field > input.a11y-ra-email-input {
+  box-sizing: border-box; width: 100%; min-height: 34px; margin: 0; padding: 2px 0;
+  border: 0; border-radius: 0; background: transparent; color: var(--tile-ink);
+  font: inherit; font-size: 26px; font-weight: 400; line-height: 1.2; letter-spacing: 0;
 }
-@container a11y-ra (max-width: 760px) {
-  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-report-actions .a11y-ra-row > .a11y-ra-cell { grid-template-columns: minmax(0, 1fr); }
-  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-report-actions .a11y-ra-row > .a11y-ra-cell > :is(*, .a11y-ra-head, .a11y-ra-field, .a11y-ra-send) {
-    grid-column: 1 / -1; grid-row: auto;
-  }
-  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-report-actions .a11y-ra-row > .a11y-ra-cell > .a11y-ra-send { min-height: 72px; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-report-actions .a11y-ra-field > input.a11y-ra-email-input::placeholder { color: var(--tile-ink); opacity: 1; font-weight: 200; }
+/* The field is the box, so the focus ring goes round the field. */
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-report-actions .a11y-ra-field:focus-within { outline: 2px solid var(--focus); outline-offset: -2px; box-shadow: none; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-report-actions .a11y-ra-field > input.a11y-ra-email-input:focus-visible { outline: none; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-report-actions .a11y-ra-send {
+  box-sizing: border-box; display: inline-flex; align-items: center; justify-content: center; gap: 12px;
+  max-width: 100%; min-height: 56px; margin: 0; padding: 10px 30px;
+  border: 1px solid #000; border-radius: 999px; background: #000; color: #fff;
+  font-size: 24px; font-weight: 400; line-height: 1.15; letter-spacing: 0.01em; text-align: center;
 }
-@media (max-width: 640px) {
-  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-report-actions .a11y-ra-row > .a11y-ra-cell > :is(.a11y-ra-head, .a11y-ra-send) {
-    font-size: 24px; line-height: 1.15; letter-spacing: 0.015em;
-  }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-report-actions .a11y-ra-send:enabled:hover { border-color: var(--hover); background: var(--hover); color: var(--hover-ink); }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-report-actions .a11y-ra-send:disabled { border-style: dashed; border-color: var(--ink); background: transparent; color: var(--ink); }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-report-actions .a11y-ra-send > .a11y-ra-send-icon { width: 24px; height: 24px; flex: none; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-report-actions .a11y-ra-send-words { display: grid; min-width: 0; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-report-actions .a11y-ra-send-word { grid-area: 1 / 1; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-report-actions .a11y-ra-send-word[data-off] { visibility: hidden; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-report-actions .a11y-ra-note {
+  margin: 0; color: #000; font-size: 22px; font-weight: 400; line-height: 1.2; letter-spacing: 0;
+}
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-report-actions .a11y-ra-note:empty {
+  position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap;
+}
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-report-actions .a11y-ra-pdf {
+  justify-content: center; min-height: 40px; padding: 6px 18px;
+  border: 1px solid var(--tile); border-radius: 999px; background: var(--tile); color: var(--tile-ink);
+  font-size: 18px; font-weight: 400; line-height: 1.2; letter-spacing: 0.01em;
+}
+@container a11y-ra (max-width: 560px) {
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-report-actions > .a11y-ra-panel { gap: 28px; padding: 36px 20px 32px; border-radius: 36px; }
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-report-actions .a11y-ra-email-form { gap: 16px; }
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-report-actions .a11y-ra-head { margin-bottom: 12px; font-size: 24px; }
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-report-actions .a11y-ra-field { padding: 12px 20px 10px; border-radius: 20px; }
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-report-actions .a11y-ra-field > input.a11y-ra-email-input,
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-report-actions .a11y-ra-send { font-size: 22px; }
 }
 @media print {
-  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-report-actions .a11y-ra-row > .a11y-ra-cell { break-inside: avoid; }
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-report-actions > .a11y-ra-panel { break-inside: avoid; }
 }
 
 /* ═══ AN AFFECTED ELEMENT AS A CARD (user's instruction, 23 Nov 2026, "this

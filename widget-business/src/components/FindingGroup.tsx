@@ -12,7 +12,7 @@ import { findingFix, findingTitle, modelPlain } from "../lib/modelPlain";
 import { whatWeFound } from "../lib/findingText";
 import { pictureNoteText } from "../lib/failureText";
 import { toPoints } from "../lib/cardText";
-import { useReportView } from "./ReportViewContext";
+import { learnMoreClick, useReportView } from "./ReportViewContext";
 import { enClauseFor } from "../lib/audienceMode";
 import { DataTable } from "./DataTable";
 import { ElementShot } from "./ElementShot";
@@ -597,7 +597,7 @@ export function FindingDetails({
   meta?: boolean;
 }) {
   const [showAll, setShowAll] = useState(false);
-  const { professional, criterionNames } = useReportView();
+  const { professional, criterionNames, ask } = useReportView();
 
   const rep = findings[0];
   const count = findings.length;
@@ -797,7 +797,11 @@ export function FindingDetails({
       )}
       {rep.helpUrl && (
         <p className="a11y-fd-learn">
-          <a className="a11y-learn-more" href={rep.helpUrl}>
+          <a
+            className="a11y-learn-more"
+            href={rep.helpUrl}
+            onClick={learnMoreClick(ask, tf("Tell me more about this: {issue}", { issue: title }), rep.helpUrl)}
+          >
             {t("Learn more about this issue")} <Icon name="arrow--right" />
           </a>
         </p>

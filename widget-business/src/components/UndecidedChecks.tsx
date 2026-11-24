@@ -5,6 +5,7 @@ import { getLang } from "../lib/i18n";
 import { fixKindForRule } from "../lib/testMethod";
 import { DataTable } from "./DataTable";
 import { Icon } from "./Icon";
+import { learnMoreClick, useReportView } from "./ReportViewContext";
 
 /* The design's "Export the list" made real. A CSV, because this section is
    the one the owner hands to someone else: it opens in whatever spreadsheet
@@ -50,6 +51,7 @@ export function UndecidedChecks({
   // Every row stays in the DOM so the printed report and the export carry
   // all of them; the fold is a screen-only class, never a conditional.
   const FOLD = 3;
+  const { ask } = useReportView();
   const [showAll, setShowAll] = useState(false);
   const folded = !showAll && rows.length > FOLD;
   // Which answers are open. Independent per row, as the findings table's
@@ -159,7 +161,15 @@ export function UndecidedChecks({
                       </p>
                     )}
                     {r.helpUrl && (
-                      <a className="a11y-learn-more" href={r.helpUrl}>
+                      <a
+                        className="a11y-learn-more"
+                        href={r.helpUrl}
+                        onClick={learnMoreClick(
+                          ask,
+                          tf("Tell me more about this: {issue}", { issue: e ? e.what : r.help }),
+                          r.helpUrl
+                        )}
+                      >
                         {learnMore}
                         <Icon name="arrow--right" />
                         <span className="a11y-sr-only">{learnMoreRest}</span>
