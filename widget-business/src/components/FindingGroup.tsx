@@ -554,6 +554,18 @@ function devElementRefs(findings: AccessibilityFinding[]): string[] {
 /* A tile's words: one sentence as a line, a longer text as points
    (toPoints decides). The list is a real ul, so a screen reader announces
    how many points there are. */
+/** "No picture: the element is there…" → label "No picture", body "The
+ *  element is there…". Every picture note in every language leads with a
+ *  short phrase and a colon (French with a space before it); a note that
+ *  does not keeps its words whole and goes without a label. */
+export function splitPictureNote(text: string | undefined): { label: string; body: string } | null {
+  if (!text) return null;
+  const m = text.match(/^([^:.]{2,24}?)\s?:\s+([\s\S]+)$/);
+  if (!m) return { label: "", body: text };
+  const body = m[2];
+  return { label: m[1], body: body.charAt(0).toLocaleUpperCase() + body.slice(1) };
+}
+
 function TileBody({ text }: { text: string }) {
   const points = toPoints(text);
   if (!points) {
@@ -620,6 +632,7 @@ export function FindingDetails({
     // kept even when its label and picture identify nothing on their own.
     (e) => labelNamesSomething(e.label) || e.rep.elementScreenshot || e.rep.suggestedCode
   );
+  const pictureNote = splitPictureNote(pictureNoteText(rep));
   const cluster = dominantComponent(findings);
   const summarize = entries.length > SUMMARY_THRESHOLD;
   const visibleEntries = summarize && !showAll ? entries.slice(0, SUMMARY_THRESHOLD) : entries;
@@ -698,9 +711,13 @@ export function FindingDetails({
           <TileBody text={tf("A rule check found this. {model}, our own language model, wrote the words. The check set the severity.", { model: worded.model })} />
         </div>
       )}
-      {!rep.elementScreenshot && pictureNoteText(rep) && (
-        <div className="a11y-picture-note" data-size={tileSize(pictureNoteText(rep) ?? "")}>
-          <TileBody text={pictureNoteText(rep) ?? ""} />
+      {/* A row like its siblings, its label the note's own lead ("No
+          picture", "Kein Bild", "Sin imagen", "Pas d'image"), so no new
+          string is needed. It sat bare on the bubble, its en dash hung past
+          the bubble's edge (user's screenshot, 25 Nov 2026, "fix"). */}
+      {!rep.elementScreenshot && pictureNote && (
+        <div className="a11y-method-hint a11y-picture-note" data-size={tileSize(pictureNote.body)}>
+          {pictureNote.label && <strong>{pictureNote.label}</strong>} <TileBody text={pictureNote.body} />
         </div>
       )}
       {/* The rule's own account of what was found where it has one, and
