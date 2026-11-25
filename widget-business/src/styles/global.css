@@ -6600,3 +6600,14 @@
   border: 1px dashed var(--ink); background: transparent; color: var(--ink);
 }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-chats .a11y-chats-head + .a11y-chats-list { margin-top: 28px; }
+
+
+/* THE CRITERION'S NAME UNDER ITS NUMBER (user's instruction, 25 Nov 2026,
+   "move focus visible to first column"): in the checklist the official name
+   ("Focus Visible") stands under the number and level in the key's column,
+   at the key's own size, and the title runs alone beside it. The key is held
+   to one line so "2.4.7 AA" never breaks; the name wraps inside the column
+   instead of widening it. */
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-conf-row > .a11y-conf-id > .a11y-conf-name {
+  display: block; margin-top: 4px; white-space: normal; overflow-wrap: normal;
+}

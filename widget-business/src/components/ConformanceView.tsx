@@ -118,6 +118,10 @@ function CriterionRow({ c, verdict }: { c: CriterionResult; verdict?: RecordedVe
     >
       <span className="a11y-conf-id">
         {c.id} <em>{c.level}</em>
+        {/* The criterion's official name under its number, in the key's
+            column (user's instruction, 25 Nov 2026, "move focus visible to
+            first column"); the column on the right holds only the line. */}
+        <span className="a11y-conf-name">{c.name}</span>
       </span>
       <span className="a11y-conf-body">
         {/* A failing row states the problem; the rest ask the
@@ -125,9 +129,6 @@ function CriterionRow({ c, verdict }: { c: CriterionResult; verdict?: RecordedVe
             report — only something we didn't find, or couldn't
             check. */}
         <strong>{c.status === "failed" ? c.failing : c.plain}</strong>
-        <span className="a11y-conf-plain">
-          {c.name}
-        </span>
         {/* Say which check broke, or "not measured" is just a
             shrug. The names are the report's own, the same ones
             the warning banner above uses. */}
