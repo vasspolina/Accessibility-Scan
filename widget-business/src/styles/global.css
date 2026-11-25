@@ -4883,7 +4883,7 @@
 }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-legal-tiles > li > .a11y-legal-row .a11y-legal-mark[class] { order: 3; margin-left: 0.4em; }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-legal-tiles > li > .a11y-legal-row .a11y-legal-row-meaning[class] { order: 4; }
-.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-legal-tiles > li > .a11y-legal-row .a11y-legal-row-meaning ~ .a11y-legal-mark[class]::after { content: " \00B7"; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-legal-tiles > li > .a11y-legal-row .a11y-legal-row-meaning ~ .a11y-legal-mark[class]::after { content: ","; }
 /* The line's ink is the page's: the old cards set black words on their
    fixed plates, and in dark those rules left the problems line black on
    the dark panel. The sentence keeps black on its highlight. */
@@ -5883,4 +5883,112 @@
 @media print {
   .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-w22 > .a11y-w22-panel[hidden] { display: block; }
   .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-w22 > .a11y-next > .a11y-next-desc[hidden] { display: block; }
+}
+
+/* ═══ THE STATEMENT'S STEP 1 AS A FORM (user's instruction, 24 Nov 2026,
+   "design this as form", with a reference of a coloured login panel) ═══
+   Set as EVERY FORM AS THE EMAIL PANEL sets the others: one rounded panel
+   in its own colour, everything centred, the step's title in capitals
+   beside its round number, each field filled white (--tile-fill, 24px
+   corners) with its label inside, one under another. Its colour is
+   lavender, not yet taken by another form: #cdb8ff (black words 12.6:1),
+   dark #be95ff (9.6:1). No submit: the statement follows the fields as
+   they are typed. 70px stands above the panel, as above every group. */
+.a11y-widget-biz { --form-stmt: #cdb8ff; }
+.a11y-widget-biz[data-theme="dark"] { --form-stmt: #be95ff; }
+@media (prefers-color-scheme: dark) {
+  .a11y-widget-biz:not([data-theme="light"]) { --form-stmt: #be95ff; }
+}
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-stmt .a11y-stmt-form {
+  --ink: #000; --paper: var(--form-stmt);
+  box-sizing: border-box; display: flex; flex-direction: column; align-items: center; gap: 32px;
+  width: 100%; margin: 70px 0 0; padding: 56px 64px 48px; border-radius: 64px;
+  background: var(--form-stmt); color: #000; text-align: center;
+}
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-stmt .a11y-stmt-form > * { box-sizing: border-box; max-width: 100%; margin: 0; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-stmt .a11y-stmt-form > .a11y-stmt-step { margin: 0; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-stmt .a11y-stmt-form .a11y-stmt-step-head {
+  justify-content: center; color: #000; text-transform: uppercase; font-feature-settings: "case";
+  font-size: 32px; line-height: 1.1; letter-spacing: 0.04em;
+}
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-stmt .a11y-stmt-form > .a11y-stmt-fields {
+  display: grid; grid-template-columns: minmax(0, 1fr); gap: 16px; width: 100%;
+}
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-stmt .a11y-stmt-form .a11y-stmt-fields > .a11y-stmt-field {
+  display: flex; flex-direction: column; align-items: stretch; gap: 6px; margin: 0; padding: 16px 28px 14px;
+  border: 0; border-radius: 24px; background: var(--tile-fill); color: var(--tile-ink); text-align: start;
+  font-size: 18px; line-height: 1.4; letter-spacing: 0.025em;
+}
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-stmt .a11y-stmt-form .a11y-stmt-fields > .a11y-stmt-field > input {
+  color: var(--tile-ink); font-size: 24px; line-height: 1.2; letter-spacing: 0.015em;
+}
+@media (max-width: 640px) {
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-stmt .a11y-stmt-form { gap: 24px; padding: 32px 18px 24px; border-radius: 32px; }
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-stmt .a11y-stmt-form .a11y-stmt-step-head { font-size: 24px; letter-spacing: 0.04em; }
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-stmt .a11y-stmt-form .a11y-stmt-fields > .a11y-stmt-field { padding: 14px 18px 12px; border-radius: 20px; }
+}
+@media (forced-colors: active) {
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-stmt .a11y-stmt-form { border: 1px solid CanvasText; }
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-stmt .a11y-stmt-form .a11y-stmt-fields > .a11y-stmt-field { border: 1px solid CanvasText; }
+}
+
+/* ═══ HOW THE SCORE WORKS AS ROWS (user's instruction, 24 Nov 2026, "design
+   this like this", pointing at the findings list) ════════════════════════
+   The three paragraphs leave their three columns and run one under
+   another across the content's columns, as the findings' rows do, at the
+   findings' 32px, 14px apart; the label keeps the first column. */
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-counts > .a11y-sum-point[class] {
+  grid-column: 2 / -1; margin: 0 0 14px; padding: 0;
+  font-size: 32px; line-height: 1.1; letter-spacing: 0.01em;
+}
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-counts > .a11y-sum-point:last-child[class] { margin-bottom: 0; }
+@media (max-width: 640px) {
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-counts > .a11y-sum-point[class] { grid-column: 1 / -1; font-size: 24px; line-height: 1.15; letter-spacing: 0.015em; }
+}
+/* On the issue titles' left edge above: past the criterion's grid column. */
+@media (min-width: 641px) {
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-counts > .a11y-sum-point[class] { padding-inline-start: calc((100% - 8 * var(--grid-gap)) / 9 + var(--grid-gap)); }
+}
+/* The facts after the step 1 form are the next group: 70px under it. */
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-stmt > .a11y-stmt-form + * { margin-top: 70px; }
+
+/* ═══ SHORT PARTS OF AN OPENED FINDING TWO TO A ROW (user's instruction,
+   25 Nov 2026, "if the text is this short make it 2 white items in one
+   row") ═══════════════════════════════════════════════════════════════════
+   A part whose words run 90 characters or fewer (data-size="s", tileSize
+   in FindingGroup.tsx; What to do by its sentence, the affected elements
+   when there is one) takes half the row, so two short ones stand side by
+   side; anything longer takes the whole row. A short part with no short
+   neighbour grows to the full row, so no row is left half empty. Cards
+   stay 16px apart both ways. One column under 640px of table. */
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-dt-expand-row, .a11y-dn-detail) .a11y-fd > .a11y-fd-col {
+  display: flex; flex-wrap: wrap; align-items: stretch; gap: 16px; margin: 0 0 16px;
+}
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-dt-expand-row, .a11y-dn-detail) .a11y-fd > .a11y-fd-col:last-of-type { margin-bottom: 0; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-dt-expand-row, .a11y-dn-detail) .a11y-fd > .a11y-fd-col > *[class][class],
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-dt-expand-row, .a11y-dn-detail) .a11y-fd > .a11y-fd-col > :not([class]):not([class]) {
+  box-sizing: border-box; flex: 1 1 100%; min-width: 0; margin: 0;
+}
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-dt-expand-row, .a11y-dn-detail) .a11y-fd > .a11y-fd-col > [data-size="s"][class][class] { flex: 1 1 calc(50% - 8px); }
+@container a11y-ftable (max-width: 640px) {
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-dt-expand-row, .a11y-dn-detail) .a11y-fd > .a11y-fd-col > [data-size="s"][class][class] { flex-basis: 100%; }
+}
+
+/* ═══ LEARN MORE UNDERLINED UNDER THE ARROW TOO (user's instruction, 25 Nov
+   2026, "make learn more link underline 1 px and it needs to be under arrow
+   as well and drop it 2px down") ═════════════════════════════════════════
+   A text underline stops at the arrow, which is an icon, not text. The
+   line is painted instead, 1px, across the link's whole inline box, the
+   space and the arrow included, 2px lower than the old underline: 0.15em
+   + 2px under the baseline. The inline box ends at the face's descent,
+   measured 0.2917em on PP Telegraf (7px at 24px), so the line sits
+   0.1417em - 3px above that edge. Forced colours keep a plain underline. */
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz a.a11y-learn-more,
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz a.a11y-learn-more:is(:hover, :focus-visible) {
+  text-decoration: none;
+  background: linear-gradient(currentColor, currentColor) 0 calc(100% - 0.1417em + 3px) / 100% 1px no-repeat;
+  box-decoration-break: slice; -webkit-box-decoration-break: slice;
+}
+@media (forced-colors: active) {
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz a.a11y-learn-more { background: none; text-decoration: underline 1px; text-underline-offset: calc(0.15em + 2px); }
 }

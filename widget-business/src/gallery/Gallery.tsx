@@ -109,7 +109,7 @@ export function Gallery() {
       <div className="a11y-gallery-wrap">
         <header className="a11y-gallery-mast">
           <div>
-            <p>Accessible Scan · component cards · August 2026</p>
+            <p>Accessible Scan — component cards — August 2026</p>
             <h1>
               Component
               <br />
@@ -279,7 +279,7 @@ export function Gallery() {
               tone="invert"
               eyebrow="Dark pattern"
               badge={<SeverityTag severity="serious" onDark />}
-              meta="1 place · homepage"
+              meta="1 place — homepage"
               whatFound="A countdown implies the offer expires, and it resets on reload."
               whatToDo="Remove the countdown or make it truthful."
               actionLabel="Open the check"

@@ -365,6 +365,12 @@ export function AccessibilityStatement({ report }: { report: AccessibilityReport
           The numbers are decoration: each step already has a real heading
           the marker sits beside, so a screen reader hears the heading and
           not "one, two". */}
+      {/* Step 1 is a form, set as every form in the report is (user's
+          instruction, 24 Nov 2026, "design this as form"): one rounded
+          panel in its own colour, the title centred in capitals, each field
+          filled white with its label inside. No submit: the statement below
+          follows the fields as they are typed. */}
+      <div className="a11y-stmt-form">
       <div className="a11y-stmt-step">
         <h3 className="a11y-stmt-step-head">
           <span className="a11y-stmt-step-num" aria-hidden="true">1</span>
@@ -394,6 +400,7 @@ export function AccessibilityStatement({ report }: { report: AccessibilityReport
           />
         </label>
       </div>
+      </div>
 
       {/* The statement's declared facts as a spec sheet — the same shape the
           reference uses for a typeface's own specification: a small label
@@ -408,7 +415,7 @@ export function AccessibilityStatement({ report }: { report: AccessibilityReport
       <dl className="a11y-spec-grid" aria-label={t("What this statement declares")}>
         <SpecCard field={t("Prepared for")} value={organisation.trim() || t("[Your organisation]")} lead />
         <SpecCard field={t("Website")} value={report.url} />
-        <SpecCard field={t("Checked against")} value="EN 301 549 · WCAG 2.1 AA" />
+        <SpecCard field={t("Checked against")} value="EN 301 549 — WCAG 2.1 AA" />
         <SpecCard
           field={t("Position")}
           value={position === "partially" ? t("Partially conformant") : t("Non-conformant")}
