@@ -476,3 +476,25 @@ footer.wrap { margin-top: var(--s12); padding-bottom: var(--s07); }
   .nav a, .toc a, .plates__btn, .theme, .btn, .signup__btn, .chat__send, .request__link, .signup__field { border: 1px solid CanvasText; }
   .signup__btn::after, .plates__btn::before, .news__btn::before, .offer__link::before { background: ButtonText; forced-color-adjust: none; }
 }
+
+/* ---------- More air between the pieces (user's instruction, 25 Nov 2026,
+   "add more space between content", on the home page's EAA section, the
+   scanner invite and the chat). Everything here stood one step of 64px
+   apart, the title 8px under its rule, and the chat's title, cards and box
+   24px apart, so the sections read as one run. On a desktop the sections
+   now stand 96px apart (the scale's top step), a title sits 16px under its
+   rule with 24px under it, and the chat's parts are 40px apart. A phone
+   keeps 64px between sections and takes 32px inside the chat. ---------- */
+.plates { margin-bottom: var(--s12); }
+.cols + .cols { margin-top: var(--s12); }
+.cols:has(> .text > h2:first-child), .chat, .related { padding-top: var(--s05); }
+.text h2, .card h2 { margin-bottom: var(--s06); }
+.bubble { margin-block: var(--s12); }
+.chat, .related { margin-top: var(--s12); }
+.chat__label, .related__label { margin-bottom: var(--s08); }
+.chat__prompts { margin-bottom: var(--s08); }
+@media (max-width: 671px) {
+  .plates, .bubble { margin-bottom: var(--s10); }
+  .cols + .cols, .bubble, .chat, .related { margin-top: var(--s10); }
+  .chat__label, .related__label, .chat__prompts { margin-bottom: var(--s07); }
+}
