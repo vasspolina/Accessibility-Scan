@@ -33,7 +33,9 @@ export interface MountOptions {
 // loads, and every rule keeps a system fallback.
 // The mono face is PP Lettra Mono (user's instruction, 25 Nov 2026, "use
 // letra as mono font"), its Ultralight cut declared for every weight like
-// Telegraf (the free package has only Ultralight and Medium upright). It is
+// Telegraf (the free package has only Ultralight and Medium upright), and
+// its Medium cut from 500 up, for the principle groups' titles only (user's
+// instruction, 25 Nov 2026, "also use letra medium mono"). It is
 // the first name in every mono stack in global.css, with the system mono
 // behind it. Same free-for-personal-use licence as the Telegraf files.
 function injectFonts(apiBase: string) {
@@ -53,7 +55,14 @@ function injectFonts(apiBase: string) {
 @font-face {
   font-family: "PP Lettra Mono";
   src: url("${base}/fonts/PPLettraMono-Ultralight.otf") format("opentype");
-  font-weight: 100 900;
+  font-weight: 100 499;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "PP Lettra Mono";
+  src: url("${base}/fonts/PPLettraMono-Medium.otf") format("opentype");
+  font-weight: 500 900;
   font-style: normal;
   font-display: swap;
 }`;

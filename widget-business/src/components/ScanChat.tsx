@@ -1394,7 +1394,7 @@ export function ScanChat({
   // On the opening screen the box is the one way in, for an address or a
   // question alike (user's instruction, 22 Nov 2026, "merge inputs").
   const prompt = currentKey
-    ? t("Ask about the report, or anything else")
+    ? t("Scan your website")
     : turns.length === 0 && !barrier
       ? t("Enter a website address, or ask a question")
       : t("Ask anything, or name a site to check");
