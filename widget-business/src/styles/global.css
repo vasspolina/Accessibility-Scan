@@ -6706,3 +6706,15 @@
 @media print {
   .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-card { break-inside: avoid; }
 }
+
+/* THE SCAN'S STEPS UNDER THE FORM'S ADDRESS, NUMBERED ONCE
+   (user's report, 25 Nov 2026, "why numbers are double?"). The step list
+   (`.a11y-scan-itinerary` in App.tsx) writes its own "01" before each step
+   and had no rule since the CSS was stripped, so the browser's "1." marker
+   stood at the form's left edge while the step, under the form's centred
+   text, sat in the middle. The browser's marker goes; the written number
+   stays, in the form's centred setting; sizes are left as they were. */
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-scan-itinerary[class] {
+  width: 100%; margin: 0; padding: 0; list-style: none; text-align: center;
+}
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-scan-itinerary[class] > .a11y-scan-step::marker { content: none; }

@@ -951,7 +951,7 @@ export function App({
                   announcements come from the mounted status region below,
                   which speaks each milestone once. */}
               {milestones.length > 0 && (
-                <ol className="a11y-scan-itinerary">
+                <ol className="a11y-scan-itinerary" role="list">
                   {NARRATION_STEPS.filter(
                     (s) => s.id !== "ai-review" || aiRequested
                   ).map((step, i) => {
