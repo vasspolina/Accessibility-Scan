@@ -179,7 +179,7 @@ const TARGET_SIZE =
 const TYPE_SETTINGS =
   "Your designer sets the type size, weight and line spacing. Your developer applies it.";
 const MARKETING_DECISION =
-  "Your marketing or sales team. It is their call, not the developer's.";
+  "Your marketing or sales team.";
 
 export const RULE_HINTS: Record<string, string> = {
   "link-text-vague": LINK_WORDS,

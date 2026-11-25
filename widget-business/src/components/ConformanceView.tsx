@@ -51,7 +51,9 @@ function RESULT_ROWS(c: ConformanceSummary): Array<{
   severity: string;
   label: string;
   meaning?: string;
-  mark: string;
+  /** Left out where it would say the label again ("We checked, found
+   *  nothing" beside "Nothing found"): the row's colour is the status. */
+  mark?: string;
   n: number;
 }> {
   return [
@@ -59,9 +61,11 @@ function RESULT_ROWS(c: ConformanceSummary): Array<{
       meaning: tf("{a} at level A, {aa} at AA", { a: c.failedByLevel.A, aa: c.failedByLevel.AA }),
       mark: t("Fix first"), n: c.failed },
     // No meaning line on these two: the band above says "nothing found"
-    // is not a pass, and the mark says "Needs a person".
+    // is not a pass, and the mark says "Needs a person". No mark on the
+    // clean row or the unfinished one: it only said the label again (user's
+    // instruction, 25 Nov 2026, "no repetition").
     { key: "clean", filter: "no-issues-found", severity: "pass", label: t("We checked, found nothing"),
-      mark: t("Nothing found"), n: c.noIssuesFound },
+      n: c.noIssuesFound },
     { key: "human", filter: "needs-review", severity: "minor", label: t("We couldn't check"),
       mark: t("Needs a person"), n: c.needsReview },
     // Only present when it happened. A permanent zero row would teach readers
@@ -69,7 +73,7 @@ function RESULT_ROWS(c: ConformanceSummary): Array<{
     // count honest.
     ...((c.notMeasured ?? 0) > 0
       ? [{ key: "not-measured", filter: "not-measured" as const, severity: "serious", label: t("A check didn't finish"),
-          mark: t("Not measured"), n: c.notMeasured ?? 0 }]
+          n: c.notMeasured ?? 0 }]
       : []),
   ];
 }
@@ -189,7 +193,7 @@ export function ConformanceView({
   // One sentence with the filter's name set into it in bold, split where
   // the name goes rather than stitched from fragments.
   const [otherBefore, otherAfter] = tf(
-    "{count} more are under {filter} in the checklist below.",
+    "{count} more under {filter}.",
     { count: conformance.needsReview - HUMAN_QUESTIONS.length }
   ).split("{filter}");
 
@@ -229,7 +233,7 @@ export function ConformanceView({
         </h3>
         <div className="a11y-legal-card">
           <p className="a11y-legal-lead">
-            {t("Every A and AA item has to pass.")} {t("One failure means you don’t meet the standard.")}
+            {t("Every A and AA item has to pass.")}
           </p>
         </div>
       </div>
@@ -304,7 +308,7 @@ export function ConformanceView({
                   </span>
                   <span className="a11y-legal-count">{r.n}</span>
                   <span className="a11y-legal-row-desc">
-                    <span className={`a11y-legal-mark a11y-legal-mark-${r.severity}`}>{r.mark}</span>
+                    {r.mark && <span className={`a11y-legal-mark a11y-legal-mark-${r.severity}`}>{r.mark}</span>}
                     {r.meaning && <span className="a11y-legal-row-meaning">{r.meaning}</span>}
                   </span>
                 </button>

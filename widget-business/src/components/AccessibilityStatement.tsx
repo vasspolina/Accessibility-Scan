@@ -491,7 +491,7 @@ export function AccessibilityStatement({ report }: { report: AccessibilityReport
 
       <p className="a11y-conf-caveat">
         <strong>{t("Read it before you publish.")}</strong>{" "}
-        {t("Make sure it matches the testing you have actually done. This is a starting point, not legal advice.")}
+        {t("Not legal advice.")}
       </p>
     </section>
   );

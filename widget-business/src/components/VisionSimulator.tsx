@@ -38,7 +38,7 @@ interface Condition {
    tells the truth for whichever image is actually on the stage. */
 function noteFor(c: Condition, behindConsent: boolean): string {
   if (c.id === "none" && behindConsent) {
-    return t("Your page with the cookie banner set aside, so every view here shows the page itself.");
+    return t("Your page with the cookie banner set aside.");
   }
   return t(c.note);
 }
@@ -178,9 +178,6 @@ export function VisionSimulator({
       <p className="a11y-sim-note">
         {active.prevalence && <strong>{t(active.prevalence)}. </strong>}
         {noteFor(active, behindConsent)}
-      </p>
-      <p className="a11y-sim-caption">
-        {t("This shows the top of the page, as first loaded.")}
       </p>
     </section>
   );

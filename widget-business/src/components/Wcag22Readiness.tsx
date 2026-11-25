@@ -21,7 +21,7 @@ const STATUS_LABEL: Record<Readiness["criteria"][number]["status"], string> = {
 };
 
 export function Wcag22Readiness({ readiness }: { readiness: Readiness }) {
-  const { alreadyFailing, total, criteria, parsingNoLongerCounts } = readiness;
+  const { total, criteria, parsingNoLongerCounts } = readiness;
   // The backend writes the date in English ("late 2026"). Looked up like the
   // backend's check names: a date with no translation stays as it came.
   const expectedFrom = t(readiness.expectedFrom);
@@ -48,7 +48,9 @@ export function Wcag22Readiness({ readiness }: { readiness: Readiness }) {
           repetition"). */}
       <WhatsNextPanel
         expected={tf("Expected {date}", { date: expectedFrom })}
-        failCount={alreadyFailing}
+        /* No "1 would fail today" in the head: the failing row below
+           carries that call itself (user's instruction, 25 Nov 2026, "no
+           repetition"). */
         description={tf(
           "Not required yet. The {total} new items count once EN 301 549 adopts WCAG 2.2.",
           { total }
@@ -127,7 +129,7 @@ export function Wcag22Readiness({ readiness }: { readiness: Readiness }) {
 
         {parsingNoLongerCounts && (
           <p className="a11y-notice">
-            {t("This scan reports a failure against 4.1.1 Parsing. WCAG 2.2 removes that criterion as obsolete, so once the standard updates, that failure no longer counts.")}
+            {t("WCAG 2.2 drops 4.1.1 Parsing, so its failure here will stop counting.")}
           </p>
         )}
       </div>

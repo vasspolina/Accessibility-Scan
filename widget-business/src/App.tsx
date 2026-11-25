@@ -756,7 +756,7 @@ export function App({
             <ReportSection
               title="What costs you trust"
               description={t(
-                "Where your site nudges people instead of letting them choose. They don't move the score."
+                "Where your site nudges people instead of letting them choose."
               )}
               variant="redflag"
               findings={findingsByCategory.darkPattern}
