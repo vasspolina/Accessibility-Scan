@@ -1858,7 +1858,12 @@
    "move buble to the right"), its tail and its lean mirrored: it covered
    the left of the picture, where the faulty element usually begins. */
 .a11y-widget-biz .a11y-shot.a11y-shot-has-bubble { width: fit-content; padding-top: var(--cds-spacing-03); }
-.a11y-widget-biz .a11y-shot-bubble { --tile: var(--hl-cap-b); --tile-ink: #000; }
+/* The poster's dark green since 25 Nov 2026 (user's screenshot, "fix"):
+   with the poster's colours --hl-cap-b became the grey paper #dcdbd5, the
+   same grey as the ground round the picture, so the bubble melted into it.
+   #486048 with white words (6.9:1) stands off the white card, the grey
+   paper and the picture alike, and is the green of "pink or green". */
+.a11y-widget-biz .a11y-shot-bubble { --tile: var(--hl-green); --tile-ink: var(--hl-green-ink); }
 .a11y-widget-biz .a11y-shot-bubble {
   --ink: var(--tile-ink); --paper: var(--tile);
   position: relative; z-index: 1; display: block; width: fit-content; max-width: 85%;
