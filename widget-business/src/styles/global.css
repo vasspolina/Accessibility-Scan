@@ -7600,3 +7600,15 @@
      name; the same 8px as the note under it. */
   .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-legal-carets .a11y-conf-list > .a11y-conf-row > .a11y-conf-body[class][class][class] { margin-top: 8px; }
 }
+
+/* WHAT COSTS YOU TRUST IN LETTRA, CENTRED (user's instruction, 25 Nov
+   2026, "make this in letra too centered", on the title and the line
+   under it): PP Lettra Mono Ultralight, centred, as the score's Lettra
+   lines. Sizes stay as they were (the title 32px, 24px on a phone; the
+   line its own size); no tracking (a monospace is already spaced), 1.15
+   leading. The count's round stays hung after the title's last word and
+   is centred with it. */
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-section-concern > .a11y-section-tint > :is(h2.a11y-section-title, p.a11y-section-desc)[class][class][class] {
+  font-family: "PP Lettra Mono", ui-monospace, "SF Mono", Menlo, Consolas, "DejaVu Sans Mono", monospace; font-weight: 200; font-style: normal; font-synthesis: none;
+  text-align: center; line-height: 1.15; letter-spacing: 0;
+}
