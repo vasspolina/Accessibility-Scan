@@ -321,10 +321,13 @@ main.wrap { padding-top: var(--s10); }
 /* The What we offer panels' terms two to a row (user's instruction, 25 Nov
    2026, "make it two columns", on Copywriting): read across, row by row,
    the gutter between them, one column where the panel's words are under
-   560px wide. The lists in the text column stay one column. */
+   560px wide. The lists in the text column stay one column.
+   Each term centred in its column, the pill over its words (the same
+   day, "now center pillows"). */
 @container content (min-width: 560px) {
   .acc__body .terms { grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: var(--gutter); align-items: start; }
 }
+.acc__body .terms > div { text-align: center; }
 
 /* Links in the column and the cards on a pale yellow highlight (the same
    reference: its addresses on a pale yellow, no underline). Black words on
