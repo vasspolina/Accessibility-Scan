@@ -6426,8 +6426,10 @@
    instruction, 25 Nov 2026, "delete lines, make moon 20% larger, and big
    number inside, do not say out of 100": the guide lines are gone and the
    C is 20% over its 280px and 200px). The score alone sits in its bowl at
-   120px (88px on a phone), a display size outside the four by the user's
-   word; "out of 100" is said only to screen readers, in the dial's name.
+   48px on every screen, the display size of the four (it was 120px, 88px
+   on a phone, until the user's "make sure only 4 font sizes used" and
+   "fold them in", the same day); "out of 100" is said only to screen
+   readers, in the dial's name.
    - What the range means under it, centred, 32px (24px on a phone).
    - "N issues found" as a caption, 18px, centred, then the issues three
      to a row (user's instruction, 25 Nov 2026, "fold this in 3 rows": each
@@ -6467,7 +6469,7 @@
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-specimen .a11y-sum-dial-card > .a11y-sum-dial {
   width: var(--dial); height: var(--dial); margin: 0 auto;
 }
-.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-specimen .a11y-sum-dial-num { font-size: 120px; line-height: 1; letter-spacing: 0; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-specimen .a11y-sum-dial-num { font-size: 48px; line-height: 1; letter-spacing: 0; }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-specimen > .a11y-sum-run > .a11y-sum-verdict {
   max-width: 24em; margin: var(--cds-spacing-07) auto 0; text-align: center;
 }
@@ -6522,7 +6524,6 @@
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-spec-title:focus-visible::after { outline: 2px solid var(--focus); outline-offset: -2px; }
 @media (max-width: 671px) {
   .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-specimen > .a11y-sum-run > .a11y-sum-dial-card { --dial: 240px; }
-  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-specimen .a11y-sum-dial-num { font-size: 88px; }
   .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-specimen > .a11y-sum-issues { margin-top: var(--cds-spacing-10); }
   .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-specs > .a11y-sum-spec { gap: var(--cds-spacing-05); padding: var(--cds-spacing-05); }
   .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-spec-title { font-size: 18px; line-height: 1.4; }
@@ -6812,18 +6813,18 @@
 /* ===== THE PRINCIPLE GROUPS' TITLES IN LETTRA MONO MEDIUM =====
    "Can people use it?", "Best practice" and their siblings under "What
    people can't use" (user's instruction, 25 Nov 2026, "make this title
-   120% larger"): 120% of the 32px prose was 38px. Later the same day,
-   "make title font 10 px larger and use letra font", "also use letra
-   medium mono": 48px in PP Lettra Mono Medium (500, the user's exception
-   to Ultralight only), at 1.1 leading and no tracking, since a mono face
-   is spaced by its own fixed widths; on a phone 39px (the 29px plus ten).
-   The exceptions to three sizes only, at the user's word. */
+   120% larger"): 38px, then the prose size, 32px, for "make sure only 4
+   font sizes used". Later the same day, "make title font 10 px larger and
+   use letra font", "also use letra medium mono": 48px, the scale's display
+   step, in PP Lettra Mono Medium (500, the user's exception to Ultralight
+   only), at 1.1 leading and no tracking, since a mono face is spaced by its
+   own fixed widths; on a phone 32px, the step above the phone's 24px. */
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-principle-group .a11y-principle-title {
   font-family: "PP Lettra Mono", ui-monospace, "SF Mono", Menlo, Consolas, "DejaVu Sans Mono", monospace;
   font-size: 48px; font-weight: 500; line-height: 1.1; letter-spacing: 0;
 }
 @media (max-width: 671px) {
-  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-principle-group .a11y-principle-title { font-size: 39px; }
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-principle-group .a11y-principle-title { font-size: 32px; line-height: 1.1; }
 }
 
 /* ═══ THE CHAT BOX AS A ROUND BAR OF GREY PILLS (user's reference, 25 Nov
