@@ -6521,8 +6521,9 @@
      these", a type foundry's news cards): the marker yellow
      (--hl-cap-a, #f8ff58 in both themes, black words 19:1), 20px
      corners, 24px inside, 20px apart, set left. The finding's picture,
-     when the scanner took one, is a 168px square with 16px corners at
-     the left (96px on a phone); the title beside it in the mono face at
+     when the scanner took one, runs the card's width at half its width
+     tall (aspect-ratio 2, user's word, 25 Nov 2026, "this image can be
+     twise less tall"; it was square), cropped to cover, 16px corners; the title beside it in the mono face at
      24px/1.35 (18px on a phone), and under it the criterion, the
      severity and the places as small outlined pills (1px black, 999px,
      mono 18px). Every word on the card is black in both themes, so the
@@ -6573,7 +6574,7 @@
 }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-specs > .a11y-sum-spec::before { content: none; }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-spec-shot {
-  display: block; width: 100%; aspect-ratio: 1; object-fit: cover; border-radius: 16px; background: #fff;
+  display: block; width: 100%; aspect-ratio: 2; object-fit: cover; border-radius: 16px; background: #fff;
 }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-spec-body { min-width: 0; }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-spec-cap {
@@ -7772,9 +7773,17 @@
    alike (70px each side, where it was 40), and the box's own words and
    buttons stand 30px inside its edge (they were 16px top and bottom,
    24px at the sides). Phones keep their gutter. */
+/* The box is half as tall (user's instruction, 25 Nov 2026, "make chat
+   half tall", on the empty box at about 200px): 8px inside at the top
+   and bottom where it was 32 (the 32px sides stay), the field one line
+   where it was two (it still grows as you type, up to 40vh), and 8px
+   between the field and the row of buttons where it was 16. Empty, the
+   box is about 110px. */
 @media (min-width: 672px) {
   .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-chat-layout > .a11y-chat[class] { padding-inline: var(--cds-spacing-07); }
-  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-chat .a11y-chat-box[class][class] { padding: var(--cds-spacing-07); }
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-chat .a11y-chat-box[class][class] { padding: var(--cds-spacing-03) var(--cds-spacing-07); }
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-chat-dock .a11y-chat-composer .a11y-chat-box textarea { min-height: 1lh; }
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-chat .a11y-chat-box-row[class] { margin-top: var(--cds-spacing-03); }
 }
 
 /* ═══ THE STATEMENT'S FORM AND FACTS AS ONE PANEL (user's instruction,

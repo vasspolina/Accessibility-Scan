@@ -1753,17 +1753,17 @@ export function ScanChat({
             </label>
             <textarea
               id="a11y-chat-input"
-              rows={2}
+              rows={1}
               value={draft}
               autoComplete="off"
               enterKeyHint="send"
               maxLength={4000}
               onChange={(e) => {
                 setDraft(e.target.value);
-                // Measured from 0px, not auto: auto falls back to rows={2},
-                // so a one-line message stood two lines tall on a phone,
-                // where the field starts at one. The CSS min-height still
-                // holds the desktop's two lines.
+                // Measured from 0px, not auto, so the field fits its words
+                // exactly. It starts at one line on every width since
+                // 25 Nov 2026 ("make chat half tall"); the CSS min-height
+                // holds that line when the field is empty.
                 e.target.style.height = "0px";
                 e.target.style.height = e.target.scrollHeight + "px";
               }}
