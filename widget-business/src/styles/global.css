@@ -7217,7 +7217,9 @@
    (--hl-blue-ink, 7.4:1), both themes; the reference's violet is not in
    the palette, and this is its nearest. "This scan" is the panel's
    centred line at 32px. Each row is a centred capital label at 18px over
-   its pills; Report style, AI review and Scope are two pills to a line,
+   its pills, the labels and the notes under them in PP Lettra Mono
+   Ultralight with no tracking (user's word, the same day, "use letra for
+   these"); Report style, AI review and Scope are two pills to a line,
    one under 560px of panel. A pill is the field fill (white, dark
    #2c2c2e), 999px corners, 64px tall (56px on a phone), its words at
    24px, a 28px ring at its start: filled with a check on the setting in
@@ -7247,7 +7249,8 @@
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-settings[class] > .a11y-settings-row[class] > .a11y-select2 > .a11y-select2-label[class],
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-settings[class] > .a11y-settings-row[class] > .a11y-settings-label[class] {
   display: block; justify-self: stretch; width: auto; margin: 0 0 var(--cds-spacing-04); color: inherit; text-align: center;
-  font-size: 18px; font-weight: 200; line-height: 1.4; letter-spacing: 0.04em; text-transform: uppercase; font-feature-settings: "case";
+  font-family: "PP Lettra Mono", ui-monospace, "SF Mono", Menlo, Consolas, "DejaVu Sans Mono", monospace; font-synthesis: none;
+  font-size: 18px; font-weight: 200; line-height: 1.4; letter-spacing: 0; text-transform: uppercase; font-feature-settings: "case";
 }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-settings[class] > .a11y-settings-row[class] > :is(.a11y-select2, .a11y-input) { display: block; max-width: none; }
 /* The account field's own label says "Account key" right under the row's
@@ -7297,7 +7300,8 @@
 }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-settings[class] .a11y-select2 .a11y-select2-field.a11y-select2-field:focus-visible { outline: 2px solid var(--focus); outline-offset: -2px; box-shadow: none; }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-settings[class] :is(.a11y-select2-help, .a11y-input-help, .a11y-settings-state)[class][class] {
-  display: block; justify-self: stretch; width: auto; margin: var(--cds-spacing-04) 0 0; color: inherit; text-align: center; font-size: 18px; line-height: 1.4; letter-spacing: 0.025em;
+  display: block; justify-self: stretch; width: auto; margin: var(--cds-spacing-04) 0 0; color: inherit; text-align: center; font-size: 18px; line-height: 1.4; letter-spacing: 0;
+  font-family: "PP Lettra Mono", ui-monospace, "SF Mono", Menlo, Consolas, "DejaVu Sans Mono", monospace; font-weight: 200; font-synthesis: none;
 }
 
 /* The account rows: the field a white pill, the buttons black pills. */
