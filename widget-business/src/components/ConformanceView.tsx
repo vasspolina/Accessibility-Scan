@@ -209,37 +209,43 @@ export function ConformanceView({
         <h2 className="a11y-legal-title" id="a11y-conf-heading" data-nav-label={t("Legal standard")}>
           {t("Do you meet the legal standard?")}
         </h2>
-        <span className="a11y-legal-standard">{conformance.standard}</span>
-        <p className="a11y-legal-intro">
-          {tf("The {total} items EU accessibility law checks sites against.", {
-            total: conformance.total,
-          })}
-          {showBfsgNote && (
-            <>
-              {" "}
-              {t(
-                "In Germany the BFSG points at it."
-              )}
-            </>
-          )}
-        </p>
       </div>
 
-      {/* The band. Its claim is the one thing in this section a reader must
-          not miss, which is why the design gives it the full width and the
-          brand yellow rather than a line of prose. */}
-      <div className="a11y-legal-band" aria-labelledby="a11y-legal-band-heading">
-        <h3 className="a11y-legal-eyebrow" id="a11y-legal-band-heading">
-          {t("“Nothing found” is not a pass")}
-        </h3>
-        <div className="a11y-legal-card">
-          <p className="a11y-legal-lead">
-            {t("Every A and AA item has to pass.")}
+      {/* The standard, the band and the questions as three yellow cards in
+          a row, set like the score's issue cards (user's instruction, 25 Nov
+          2026, "make this as yellow pils above as well"). */}
+      <div className="a11y-legal-cards">
+        <div className="a11y-legal-std">
+          <span className="a11y-legal-standard">{conformance.standard}</span>
+          <p className="a11y-legal-intro">
+            {tf("The {total} items EU accessibility law checks sites against.", {
+              total: conformance.total,
+            })}
+            {showBfsgNote && (
+              <>
+                {" "}
+                {t(
+                  "In Germany the BFSG points at it."
+                )}
+              </>
+            )}
           </p>
         </div>
-      </div>
 
-      <div className="a11y-legal-grid">
+        {/* The band. Its claim is the one thing in this section a reader must
+            not miss, which is why it is a card of its own rather than a line
+            of prose. */}
+        <div className="a11y-legal-band" aria-labelledby="a11y-legal-band-heading">
+          <h3 className="a11y-legal-eyebrow" id="a11y-legal-band-heading">
+            {t("“Nothing found” is not a pass")}
+          </h3>
+          <div className="a11y-legal-card">
+            <p className="a11y-legal-lead">
+              {t("Every A and AA item has to pass.")}
+            </p>
+          </div>
+        </div>
+
         <div className="a11y-legal-panel" aria-labelledby="a11y-legal-tells-heading">
           {/* The questions alone (user's instructions, 22 Nov 2026, "delete
               all repetition", "do not over explain"): "It can't confirm that
@@ -269,7 +275,9 @@ export function ConformanceView({
             </div>
           </div>
         </div>
+      </div>
 
+      <div className="a11y-legal-grid">
         <div className="a11y-legal-results" aria-labelledby="a11y-legal-results-heading">
           <h3 className="a11y-legal-eyebrow" id="a11y-legal-results-heading">
             {t("Automated check results")}
