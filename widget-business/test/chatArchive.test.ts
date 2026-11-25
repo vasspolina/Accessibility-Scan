@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { historyFromTurns, settleTurn, titleOf } from "../src/lib/chatArchive";
+import { dropScanReplies, historyFromTurns, settleTurn, titleOf } from "../src/lib/chatArchive";
 
 describe("chatArchive", () => {
   it("names a conversation by its first question, cut at a word", () => {
@@ -14,6 +14,23 @@ describe("chatArchive", () => {
     expect(settleTurn({ id: 1, who: "scan", state: "running" }).state).toBe("failed");
     const reply = settleTurn({ id: 2, who: "checker", text: "Hi", streaming: true, marks: [], searching: null } as never);
     expect(reply).toEqual({ id: 2, who: "checker", text: "Hi" });
+  });
+
+  // Conversations saved before 25 Nov 2026 kept the paragraph that retold
+  // the score after a finished scan; reopened, they must not draw it again.
+  it("drops the reply a finished scan used to get, and keeps a failed scan's", () => {
+    const turns = [
+      { id: 1, who: "you", text: "tinder.com" },
+      { id: 2, who: "scan", state: "done" },
+      { id: 3, who: "block" },
+      { id: 4, who: "checker", text: "tinder.com scored 48 out of 100…" },
+      { id: 5, who: "block" },
+      { id: 6, who: "you", text: "Why?" },
+      { id: 7, who: "checker", text: "Because." },
+      { id: 8, who: "scan", state: "failed" },
+      { id: 9, who: "checker", text: "The scan was blocked." },
+    ];
+    expect(dropScanReplies(turns).map((x) => x.id)).toEqual([1, 2, 3, 5, 6, 7, 8, 9]);
   });
 
   it("rebuilds an alternating history that opens with the reader", () => {
@@ -81,6 +98,18 @@ describe("saving over another tab's list", () => {
       // Tab 1 saves again from its stale list, which never saw B.
       saveChat(tab1, c);
       expect(loadChats().map((x) => x.id)).toEqual(["c", "b", "a"]);
+      // A conversation stored with a post-scan reply reopens without it.
+      store.set(
+        "a11y-chat-archive-v1",
+        JSON.stringify([
+          { id: "old", title: "tinder.com", updatedAt: "2026-11-23T09:00:00Z", turns: [
+            { id: 1, who: "you", text: "tinder.com" },
+            { id: 2, who: "scan", state: "done" },
+            { id: 3, who: "checker", text: "tinder.com scored 48 out of 100" },
+          ] },
+        ])
+      );
+      expect(loadChats()[0].turns.map((x) => x.id)).toEqual([1, 2]);
     } finally {
       delete (globalThis as { window?: unknown }).window;
     }
