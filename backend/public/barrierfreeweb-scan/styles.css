@@ -382,11 +382,9 @@ main.wrap { padding-top: var(--s10); }
   background: var(--bubble); color: var(--bubble-ink); text-align: start; cursor: pointer;
   font-size: 32px; line-height: 1.1; letter-spacing: 0.01em;
 }
-.acc__btn::before {
-  content: ""; flex: none; width: 24px; height: 24px; background: currentColor;
-  -webkit-mask: var(--caret-right) center / contain no-repeat; mask: var(--caret-right) center / contain no-repeat;
-}
-.acc__btn[aria-expanded="true"]::before { -webkit-mask-image: var(--caret-down); mask-image: var(--caret-down); }
+/* No caret and no box inside the opened panel (user's instruction, 25 Nov
+   2026, "do not add dots and box inside of box for this element"): the
+   bar opening into its panel shows the state; aria-expanded says it. */
 .acc__btn:hover { border-color: var(--hover); background: var(--hover); color: var(--hover-ink); }
 .acc__row:has(> .acc__head [aria-expanded="true"]) { border-radius: var(--r-panel); background: var(--bubble); color: var(--bubble-ink); }
 .acc__row:has(> .acc__head [aria-expanded="true"]) .acc__btn { border-radius: var(--r-panel); }
@@ -395,7 +393,6 @@ main.wrap { padding-top: var(--s10); }
 .acc__lede { font-size: 32px; }
 .acc__body {
   container: content / inline-size;
-  padding: var(--s06); border-radius: var(--r-card); background: var(--bubble-pill);
   font-size: 24px; line-height: 1.15; letter-spacing: 0.015em;
 }
 
@@ -465,10 +462,8 @@ footer.wrap { margin-top: var(--s12); padding-bottom: var(--s07); }
   .plate { min-height: 240px; padding: var(--s06); }
   .text li::before { position: static; margin-right: 0.3em; }
   .acc__btn { min-height: 56px; padding: var(--s03) var(--s05); font-size: 24px; line-height: 1.15; letter-spacing: 0.015em; }
-  .acc__btn::before { width: 18px; height: 18px; }
   .acc__panel { padding: var(--s03) var(--s05) var(--s05); }
   .acc__lede { font-size: 24px; }
-  .acc__body { padding: var(--s05); }
   .news { padding: var(--s06) var(--s05); }
   .foot { grid-template-columns: minmax(0, 1fr); gap: var(--s07); }
   .bubble__msg, .chat__turn:nth-child(odd) .chat__text { max-width: 90%; }
@@ -477,7 +472,7 @@ footer.wrap { margin-top: var(--s12); padding-bottom: var(--s07); }
 
 /* ---------- Forced colours ---------- */
 @media (forced-colors: active) {
-  .signup, .request, .plate, .card, .slogan__link, .chat__prompt, .bubble__msg, .acc__btn, .acc__row, .acc__body, .notice, .news,
+  .signup, .request, .plate, .card, .slogan__link, .chat__prompt, .bubble__msg, .acc__btn, .acc__row, .notice, .news,
   .nav a, .toc a, .plates__btn, .theme, .btn, .signup__btn, .chat__send, .request__link, .signup__field { border: 1px solid CanvasText; }
-  .signup__btn::after, .plates__btn::before, .news__btn::before, .acc__btn::before, .offer__link::before { background: ButtonText; forced-color-adjust: none; }
+  .signup__btn::after, .plates__btn::before, .news__btn::before, .offer__link::before { background: ButtonText; forced-color-adjust: none; }
 }
