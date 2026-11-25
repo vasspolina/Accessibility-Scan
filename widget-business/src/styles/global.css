@@ -388,7 +388,7 @@
    one line of a filed message was too little to tell one block from the
    next. The same 100px the report keeps between its sections. One class
    over the rule above, so it wins there and on a phone. */
-.a11y-widget-biz .a11y-chat-thread > .a11y-chat-turn.a11y-chat-block:has(+ .a11y-chat-turn) { margin-bottom: 100px; }
+.a11y-widget-biz .a11y-chat-thread > .a11y-chat-turn.a11y-chat-block:has(+ .a11y-chat-turn) { margin-bottom: 70px; }
 /* In the conversation the run holds the dial alone (ScoreGauge), so the
    room kept for the display list under it, and the 65px between the run
    and the panels, came out as a gap the height of the dial. */
@@ -1368,7 +1368,7 @@
    between content groups here after technical version"). */
 .a11y-widget-biz .a11y-fd .a11y-tech-details {
   --rule-brown: #6b4226;
-  margin: 50px 0 50px; padding: 0; border: 0; border-block: 1px solid var(--rule-brown);
+  margin: 70px 0 70px; padding: 0; border: 0; border-block: 1px solid var(--rule-brown);
 }
 @media (prefers-color-scheme: dark) {
   .a11y-widget-biz:not([data-theme="light"]) .a11y-fd .a11y-tech-details { --rule-brown: #b07f4f; }
@@ -1575,7 +1575,7 @@
    tabs share one line, each as wide as the row allows (auto-fit, 280px
    floor), and stack on a phone. The open note sits under the row, 50px
    down. */
-.a11y-widget-biz .a11y-dn-list[role="tablist"] { margin-bottom: 50px; }
+.a11y-widget-biz .a11y-dn-list[role="tablist"] { margin-bottom: 70px; }
 .a11y-widget-biz .a11y-dn-list > .a11y-dn-link[aria-selected="true"] {
   border-top-width: 4px; padding-top: 7px; background: none; color: var(--ink);
 }
@@ -1630,7 +1630,7 @@
 .a11y-widget-biz .a11y-acr .a11y-section-head + [id] { margin-inline-start: var(--acr-indent); }
 .a11y-widget-biz .a11y-acr .a11y-section-head > .a11y-acr-make { width: calc(100% - var(--acr-indent)); box-sizing: border-box; }
 .a11y-widget-biz .a11y-acr .a11y-section-head > .a11y-section-desc { margin-top: 0; margin-bottom: 1lh; font-size: 24px; line-height: 1.15; letter-spacing: 0.015em; }
-.a11y-widget-biz .a11y-acr .a11y-conf-caveat { margin: 0 0 65px; font-size: 24px; line-height: 1.15; letter-spacing: 0.015em; }
+.a11y-widget-biz .a11y-acr .a11y-conf-caveat { margin: 0 0 70px; font-size: 24px; line-height: 1.15; letter-spacing: 0.015em; }
 .a11y-widget-biz .a11y-acr .a11y-conf-caveat > p { margin: 0 0 0.6em; }
 .a11y-widget-biz .a11y-acr .a11y-conf-caveat > ul { margin: 0; }
 .a11y-widget-biz .a11y-acr .a11y-conf-caveat > ul > li { margin: 0; }
@@ -1914,32 +1914,32 @@
    between groups of content"): the floor is 65px, and the report's
    sections and its principle groups, which measured 77px apart (a 2.4em
    prose margin at 32px collapsing through) or 50px, are now 100px. */
-.a11y-widget-biz .a11y-report > * + * { margin-top: 100px; }
-.a11y-widget-biz .a11y-principle-group + .a11y-principle-group { margin-top: 100px; }
-.a11y-widget-biz .a11y-section + .a11y-section { margin-top: 100px; }
-.a11y-widget-biz .a11y-sum-grid > * + * { margin-top: 65px; }
-.a11y-widget-biz .a11y-legal-panel + * { margin-top: 65px; }
+.a11y-widget-biz .a11y-report > * + * { margin-top: 70px; }
+.a11y-widget-biz .a11y-principle-group + .a11y-principle-group { margin-top: 70px; }
+.a11y-widget-biz .a11y-section + .a11y-section { margin-top: 70px; }
+.a11y-widget-biz .a11y-sum-grid > * + * { margin-top: 70px; }
+.a11y-widget-biz .a11y-legal-panel + * { margin-top: 70px; }
 .a11y-widget-biz .a11y-next-list,
 .a11y-widget-biz .a11y-spec-grid,
 .a11y-widget-biz .a11y-manual-list,
-.a11y-widget-biz .a11y-pro-rows { row-gap: 65px; }
-.a11y-widget-biz .a11y-legal-row:not(:last-child) { margin-bottom: 65px; }
-.a11y-widget-biz .a11y-undecided-cell:not(:last-child) { margin-bottom: 65px; }
-.a11y-widget-biz .a11y-dn-list { margin-bottom: 65px; }
+.a11y-widget-biz .a11y-pro-rows { row-gap: 70px; }
+.a11y-widget-biz .a11y-legal-row:not(:last-child) { margin-bottom: 70px; }
+.a11y-widget-biz .a11y-undecided-cell:not(:last-child) { margin-bottom: 70px; }
+.a11y-widget-biz .a11y-dn-list { margin-bottom: 70px; }
 /* An opened finding's sections stand 30% further apart (user's
    instruction, 18 Nov 2026, "add 30% more line height between sections of
    content when carret is opened"), measured at 1280px: the cards to What
    to do 50 to 65px, What to do to the affected elements 76.8 to 100px,
    the affected elements to the technical version 50 to 65px. */
-.a11y-widget-biz .a11y-fd > .a11y-fd-col:first-child { margin-bottom: 65px; }
-.a11y-widget-biz .a11y-fd > .a11y-fd-col:not(:first-child) > :not(:last-child) { margin-bottom: 100px; }
-.a11y-widget-biz .a11y-fd > .a11y-tech-details { margin-top: 65px; }
-.a11y-widget-biz :is(.a11y-stmt-step, .a11y-stmt-fields, .a11y-stmt-card) + * { margin-top: 65px; }
-.a11y-widget-biz .a11y-spec-grid { margin-bottom: 65px; }
+.a11y-widget-biz .a11y-fd > .a11y-fd-col:first-child { margin-bottom: 70px; }
+.a11y-widget-biz .a11y-fd > .a11y-fd-col:not(:first-child) > :not(:last-child) { margin-bottom: 70px; }
+.a11y-widget-biz .a11y-fd > .a11y-tech-details { margin-top: 70px; }
+.a11y-widget-biz :is(.a11y-stmt-step, .a11y-stmt-fields, .a11y-stmt-card) + * { margin-top: 70px; }
+.a11y-widget-biz .a11y-spec-grid { margin-bottom: 70px; }
 /* "Skip the transcript" sat flush on the transcript's first line (user's
    instruction, 18 Nov 2026: "add paragraph break space under button"). The
    button and the transcript are two pieces, so the same 65px. */
-.a11y-widget-biz .a11y-sr .a11y-skip-link { margin-bottom: 65px; }
+.a11y-widget-biz .a11y-sr .a11y-skip-link { margin-bottom: 70px; }
 
 /* ═══ MEASURE (user's instruction, 17 Nov 2026) ═══════════════════════════
    "Cap 9 to 12 words in a line; the margin can be added if needed." 42ch,
@@ -2468,7 +2468,7 @@
 }
 /* The items stand open under the sentence (23 Nov 2026), 48px down; the
    list is its own size container (THE WCAG 2.2 ITEMS AS A RULED SCHEDULE). */
-.a11y-widget-biz .a11y-w22 > .a11y-w22-panel { display: block; margin-top: 48px; container: a11y-w22 / inline-size; }
+.a11y-widget-biz .a11y-w22 > .a11y-w22-panel { display: block; margin-top: 70px; container: a11y-w22 / inline-size; }
 @media (max-width: 640px) {
   .a11y-widget-biz .a11y-w22 > .a11y-next > .a11y-next-desc { font-size: 24px; letter-spacing: 0.015em; }
 }
@@ -2507,7 +2507,7 @@
 
 /* "Back to the chat" under the form is a way out, not a second action: at
    the 22px button size it stood as large as Start the scan. */
-.a11y-widget-biz .a11y-chat-alt { margin-bottom: 65px; }
+.a11y-widget-biz .a11y-chat-alt { margin-bottom: 70px; }
 .a11y-widget-biz .a11y-chat-alt > .a11y-btn { min-height: 40px; padding: 0 18px; font-size: 18px; letter-spacing: 0.025em; }
 
 /* VOICE CONTROL: one toggle in the chat's box, beside Back (user's
@@ -3085,7 +3085,7 @@
    reads as one; ink on paper, no ground. 65px to the score, the report's
    gap between pieces of content. The key keeps two panels, so the band
    takes the first two tracks rather than leaving the second empty. */
-.a11y-widget-biz .a11y-first-fix { margin: 0 0 65px; padding: 0; }
+.a11y-widget-biz .a11y-first-fix { margin: 0 0 70px; padding: 0; }
 .a11y-widget-biz .a11y-first-fix .a11y-first-fix-label {
   margin: 0 0 20px; padding: 0; border: 0; color: var(--ink); text-transform: none;
   font-family: "PP Telegraf", "DejaVu Sans", sans-serif; font-size: 18px; font-weight: 200; line-height: 1.2; letter-spacing: 0.025em;
@@ -3210,7 +3210,7 @@
    their plain setting. */
 .a11y-widget-biz .a11y-note.a11y-note-warning {
   box-sizing: border-box; width: fit-content; max-width: 100%;
-  margin: 65px 0 1lh; padding: 22px 30px 24px 22px;
+  margin: 70px 0 1lh; padding: 22px 30px 24px 22px;
   column-gap: 14px; grid-template-columns: auto minmax(0, 1fr);
   border-radius: 22px; background: var(--tile); color: var(--tile-ink);
   --ink: var(--tile-ink); --paper: var(--tile);
@@ -3305,7 +3305,7 @@
    from the last line to the rule at 24px type, which is 65px at our 32px;
    it was 100px from 18 Nov 2026. Sections with no visible title (the report actions,
    the notes, the closing call) get no rule. */
-.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-report > * + * { margin-top: 65px; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-report > * + * { margin-top: 70px; }
 /* A section's last control keeps no margin under it: an inline-flex
    button's margin does not collapse, and Show the checklist's 18px made
    that gap 83px (its closed panel, hidden, is the last child). */
@@ -4174,7 +4174,7 @@
    and white in dark, so nothing turns white in dark); the PDF pill is
    --tile (#f0efe8 or #1c1c1e). The send is #000 with white words in both
    themes (21:1); hover is --hover, as on every button. */
-.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-report-actions { container: a11y-ra / inline-size; margin-top: 65px; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-report-actions { container: a11y-ra / inline-size; margin-top: 70px; }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-report-actions > .a11y-ra-panel {
   --ink: #000; --paper: var(--hl-orange);
   position: relative; box-sizing: border-box; display: flex; flex-direction: column; align-items: center; gap: 36px;
@@ -4328,7 +4328,7 @@
   margin: 0; padding: 0; text-align: start;
 }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-grid > :is(.a11y-sum-issues, .a11y-score-clean, .a11y-sum-counts, .a11y-sum-warning) {
-  margin-top: 65px; padding-top: 24px; border-top: 1px solid var(--ink);
+  margin-top: 70px; padding-top: 24px; border-top: 1px solid var(--ink);
 }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-grid > .a11y-sum-actions { margin-top: 24px; }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-grid > .a11y-sum-actions > * { grid-column: 2 / -1; justify-self: start; }
@@ -4538,7 +4538,7 @@
    not collapse and a pull lifted the second card over the first. */
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-dt-expand-row, .a11y-dn-detail) .a11y-fd > .a11y-fd-col > :is(.a11y-method-hint, .a11y-finding-measured, .a11y-finding-impact, .a11y-finding-research):has(+ :is(.a11y-method-hint, .a11y-finding-measured, .a11y-finding-impact, .a11y-finding-research)) { margin-bottom: 16px; }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-dt-expand-row, .a11y-dn-detail) .a11y-fd > .a11y-fd-col:last-of-type > :last-child { margin-bottom: 0; }
-.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-dt-expand-row, .a11y-dn-detail) .a11y-fd > .a11y-tech-details { margin: 48px 0 0; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-dt-expand-row, .a11y-dn-detail) .a11y-fd > .a11y-tech-details { margin: 70px 0 0; }
 /* A card's label is a small capital line centred over its words, with no
    rule under it (the user's credits reference, the same day). */
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-dt-expand-row, .a11y-dn-detail) .a11y-fd :is(.a11y-method-hint, .a11y-finding-measured, .a11y-finding-impact, .a11y-finding-research) > strong:first-child {
@@ -4564,9 +4564,9 @@
    is the triangle: 0.42em wide, 0.68em tall, the capitals' height. */
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-fd .a11y-tech-details {
   --bar: var(--bubble);
-  margin: 65px 0 0; padding: 0; border: 0; border-radius: 999px; background: var(--bar);
+  margin: 70px 0 0; padding: 0; border: 0; border-radius: 999px; background: var(--bar);
 }
-.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-dt-expand-row, .a11y-dn-detail) .a11y-fd .a11y-tech-details { --bar: var(--bubble-pill); margin: 48px 0 0; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-dt-expand-row, .a11y-dn-detail) .a11y-fd .a11y-tech-details { --bar: var(--bubble-pill); margin: 70px 0 0; }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-fd .a11y-tech-details[open] { padding: 0 32px 28px; border-radius: 40px; }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-fd .a11y-tech-details > summary {
   display: flex; align-items: center; gap: 0.5em; min-height: 56px; margin: 0; padding: 10px 32px; box-sizing: border-box;
@@ -5087,7 +5087,7 @@
   background: var(--ink); color: var(--paper);
   font-size: 24px; font-weight: 200; line-height: 1; letter-spacing: 0; font-variant-numeric: tabular-nums;
 }
-.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-stmt > .a11y-stmt-step { margin-top: 65px; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-stmt > .a11y-stmt-step { margin-top: 70px; }
 @media (max-width: 640px) {
   .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-stmt-step-num { width: 30px; height: 30px; font-size: 18px; letter-spacing: 0.025em; }
 }
@@ -5701,3 +5701,14 @@
 @container a11y-ftable (max-width: 640px) {
   .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-dt-expand-row, .a11y-dn-detail) .a11y-fd > .a11y-fd-col > :is(.a11y-finding-todo, .a11y-finding-steps, .a11y-affected) { padding: 16px 16px 18px; border-radius: 20px; }
 }
+
+/* ═══ 70PX BETWEEN GROUPS OF CONTENT (user's instruction, 24 Nov 2026,
+   "keep all paragraph breaks between content groups same 70px") ═════════
+   Every gap that parts one group of content from the next is 70px: the
+   65px floor of CONTENT SPACING and every rule written to it, the report's
+   sections (100px in the older blocks), the principle groups, a chat block
+   before the next turn, the design notes' tabs and the technical version
+   (50px), the WCAG 2.2 list under its sentence and the technical version
+   inside an opened finding (48px). Where a comment above still says 65px,
+   the value under it is now 70px. Gaps inside a group (cards 16px apart,
+   a label over its words) are unchanged. */
