@@ -265,17 +265,18 @@ export function ConformanceView({
           <h3 className="a11y-legal-eyebrow" id="a11y-legal-tells-heading">{t("Questions no software can answer")}</h3>
           <div className="a11y-legal-card">
             <div className="a11y-legal-questions">
-              {HUMAN_QUESTIONS.map((q, i) => (
+              {HUMAN_QUESTIONS.map((q) => (
                 <span key={q} className="a11y-legal-q">
-                  <span className="a11y-legal-qnum" aria-hidden="true">{i + 1}</span>
+                  {/* A hung en dash, not a numbered ring (user's instruction,
+                      25 Nov 2026, "change to dashes"): the questions are not
+                      steps in an order. */}
+                  <span className="a11y-legal-qdash" aria-hidden="true">–</span>
                   <span>{t(q)}</span>
                 </span>
               ))}
               {conformance.needsReview > HUMAN_QUESTIONS.length && (
                 <span className="a11y-legal-q a11y-legal-q-more">
-                  <span className="a11y-legal-qnum" aria-hidden="true">
-                    {HUMAN_QUESTIONS.length + 1}
-                  </span>
+                  <span className="a11y-legal-qdash" aria-hidden="true">–</span>
                   <span>
                     {otherBefore}
                     <strong>{t("Needs a person")}</strong>

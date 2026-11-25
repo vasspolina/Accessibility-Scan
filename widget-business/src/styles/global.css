@@ -7325,7 +7325,9 @@
    the body face, as the widget's other buttons and badges. */
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-chats .a11y-chats-row[class] > .a11y-chats-item[class][class] {
   font-family: "PP Lettra Mono", ui-monospace, "SF Mono", Menlo, Consolas, "DejaVu Sans Mono", monospace;
-  font-weight: 200; font-synthesis: none; letter-spacing: 0;
+  /* 18px, 15% over the 16px it was (user's instruction, 25 Nov 2026,
+     "fonts 15 % bigger", on the Recent list). */
+  font-weight: 200; font-synthesis: none; letter-spacing: 0; font-size: 18px;
 }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-chats .a11y-chats-row[class] > .a11y-chats-item[class][class] .a11y-chats-open {
   font-family: "PP Telegraf", "DejaVu Sans", sans-serif; letter-spacing: 0.025em;
@@ -7708,11 +7710,15 @@
 }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-hist :is(.a11y-hist-year, .a11y-hist-date, .a11y-hist-times, .a11y-hist-note, .a11y-hist-fact-label)[class][class],
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-hist .a11y-hist-card > .a11y-hist-head[class][class] {
-  font-family: "EB Garamond", Georgia, serif; font-style: italic; font-weight: 400; font-synthesis: none;
-  font-size: 16px; line-height: 1.2; letter-spacing: 0.025em; font-variant-numeric: lining-nums; text-transform: none;
+  /* PP Lettra Mono, upright, 22px (user's instruction, 25 Nov 2026,
+     "larger letra font and not italicks"; it was EB Garamond italic at
+     16px). The raises below are reworked for it: (cap of the large line
+     less 0.7 x 22px) / 2. */
+  font-family: "PP Lettra Mono", ui-monospace, "SF Mono", Menlo, Consolas, "DejaVu Sans Mono", monospace; font-style: normal; font-weight: 200; font-synthesis: none;
+  font-size: 22px; line-height: 1.2; letter-spacing: 0; font-variant-numeric: lining-nums; text-transform: none;
 }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-hist .a11y-hist-runs > .a11y-hist-year[class][class] { margin: 0 0 var(--cds-spacing-03); }
-.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-hist .a11y-hist-run > :is(.a11y-hist-date, .a11y-hist-times, .a11y-hist-note)[class][class] { position: relative; top: -10px; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-hist .a11y-hist-run > :is(.a11y-hist-date, .a11y-hist-times, .a11y-hist-note)[class][class] { position: relative; top: -7px; }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-hist .a11y-hist-run > .a11y-hist-score[class][class] {
   font-family: "PP Telegraf", "DejaVu Sans", sans-serif; font-weight: 200;
   font-size: 43px; line-height: 1.05; letter-spacing: 0; font-variant-numeric: tabular-nums; white-space: nowrap;
@@ -7728,15 +7734,15 @@
   display: flex; flex-wrap: wrap; align-items: baseline; column-gap: var(--cds-spacing-04); row-gap: 0; min-width: 0;
   margin: 0; padding: 0; border: 0;
 }
-.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-hist .a11y-hist-facts > li > .a11y-hist-fact-label[class][class] { position: relative; top: -5px; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-hist .a11y-hist-facts > li > .a11y-hist-fact-label[class][class] { position: relative; top: -3px; }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-hist .a11y-hist-facts > li > .a11y-hist-fact-value[class][class] {
   min-width: 0; font-size: inherit; font-weight: 200; line-height: 1.1; letter-spacing: inherit; overflow-wrap: anywhere;
 }
 @media (max-width: 671px) {
   .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-hist .a11y-hist-run > .a11y-hist-score[class][class] { font-size: 26px; }
-  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-hist .a11y-hist-run > :is(.a11y-hist-date, .a11y-hist-times, .a11y-hist-note)[class][class] { top: -5px; }
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-hist .a11y-hist-run > :is(.a11y-hist-date, .a11y-hist-times, .a11y-hist-note)[class][class] { top: -3px; font-size: 18px; }
   .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-hist .a11y-hist-facts > li > .a11y-hist-fact-value[class][class] { font-size: inherit; letter-spacing: inherit; }
-  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-hist .a11y-hist-facts > li > .a11y-hist-fact-label[class][class] { top: -2px; }
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-hist .a11y-hist-facts > li > .a11y-hist-fact-label[class][class] { top: -1px; font-size: 18px; }
 }
 
 /* ═══ TEN PERCENT SMALLER, AND 30PX ROUND THE CHAT (user's instruction,
@@ -7921,3 +7927,109 @@
   .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-acr .a11y-stmt-form[class] > .a11y-stmt-fields[class][class] { grid-template-columns: repeat(3, minmax(0, 1fr)); }
 }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-acr .a11y-stmt-form + * { margin-top: var(--cds-spacing-10); }
+
+/* ═══ WHAT TO DO AND THE AFFECTED ELEMENTS SIDE BY SIDE (user's
+   instruction, 25 Nov 2026, "can be two columns", on What to do over the
+   affected element in an opened finding) ══════════════════════════════════
+   The column that holds What to do and the affected elements comes back
+   into layout as a two-column grid, so those two cards always stand
+   together, one row, one height, 16px apart, whatever the parts above
+   them pair into (the block above lets them flow, so an odd part above
+   would have taken What to do and left the elements alone). The phone's
+   WCAG line, when it shows, spans both. Only when there are affected
+   elements; without them What to do keeps its place in the flow. Markup
+   and reading order are unchanged. One column under 640px of table (and
+   under 672px of window in the design notes, as the block above). */
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-dt-expand-row, .a11y-dn-detail) .a11y-fd[class][class] > .a11y-fd-col:has(> .a11y-affected)[class] {
+  display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); align-items: stretch;
+  gap: var(--cds-spacing-05); flex: 1 1 100%; margin: 0;
+}
+/* Words to the top (user's instruction, the same day, "allign text to
+   top"): a card stretched to its row's height shared the spare height out
+   between its own grid rows, so the words under the pill sank to the
+   middle and the picture under Affected element dropped. Every card of an
+   opened finding packs its rows at the top. */
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-dt-expand-row, .a11y-dn-detail) .a11y-fd[class][class] > .a11y-fd-col > :is(.a11y-method-hint, .a11y-finding-measured, .a11y-finding-impact, .a11y-finding-research, .a11y-finding-todo, .a11y-finding-steps, .a11y-affected)[class][class][class] { align-content: start; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-dt-expand-row, .a11y-dn-detail) .a11y-fd[class][class] > .a11y-fd-col:has(> .a11y-affected) > .a11y-finding-level-fold[class][class][class] { grid-column: 1 / -1; }
+@container a11y-ftable (max-width: 640px) {
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-dt-expand-row, .a11y-dn-detail) .a11y-fd[class][class] > .a11y-fd-col:has(> .a11y-affected)[class] { grid-template-columns: minmax(0, 1fr); }
+}
+@media (max-width: 671px) {
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-dn-detail .a11y-fd[class][class] > .a11y-fd-col:has(> .a11y-affected)[class] { grid-template-columns: minmax(0, 1fr); }
+}
+/* An opened design note stands 16px under its bar, the same as its cards
+   stand from each other (user's instruction, the same day, "make same
+   line height between cards and drawer"); it was 4px. */
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-dn-panel .a11y-dn-caret > .a11y-dn-detail[class][class][class] { margin-top: var(--cds-spacing-05); }
+
+/* ═══ THE STATEMENT'S DRAFT IN TWO COLUMNS (user's instruction, 25 Nov
+   2026, "two columns font 20% bigger, paragraph break and space underneath
+   titles should be same") ════════════════════════════════════════════════
+   The drawn statement runs in two columns, 40px apart, one under 672px of
+   window. Its words are 19px (16px x 1.2) on 1.4. A title stands 24px
+   over its words and 24px under the part before it, the same as one
+   part's paragraph or list stands from the next (it was 48px above a
+   title and 8px under it). A title never ends a column on its own. */
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-stmt .a11y-stmt-card .a11y-stmt-text[class] {
+  columns: 2; column-gap: var(--cds-spacing-09); font-size: 19px; line-height: 1.4; letter-spacing: 0.02em;
+}
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-stmt .a11y-stmt-card .a11y-stmt-text[class] > :is(p, ul, ol) { margin: 0 0 var(--cds-spacing-06); }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-stmt .a11y-stmt-card .a11y-stmt-text[class] > p:has(+ p:not(:has(> strong:only-child))) { margin-bottom: 0; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-stmt .a11y-stmt-card .a11y-stmt-text[class] > p:has(> strong:only-child) { margin: 0 0 var(--cds-spacing-06); break-after: avoid; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-stmt .a11y-stmt-card .a11y-stmt-text[class] > li,
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-stmt .a11y-stmt-card .a11y-stmt-text[class] > :is(ul, ol) > li { break-inside: avoid; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-stmt .a11y-stmt-card .a11y-stmt-text[class] > :last-child { margin-bottom: 0; }
+@media (max-width: 671px) {
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-stmt .a11y-stmt-card .a11y-stmt-text[class] { columns: auto; }
+}
+
+/* ═══ THE CHAT BOX 20% TALLER, ITS WORDS 15% LARGER (user's instruction,
+   25 Nov 2026, "make chat taller 20% and fonts 15% bigger") ═════════════
+   Measured at 1440px: the box was 99px tall, the typed line, its label
+   and the buttons in it 16px. Now the words are 18px (16 x 1.15, rounded)
+   and the box stands 16px in at top and bottom (was 8px), 119px with one
+   line typed. Above 640px only; the phone's round box keeps its sizes. */
+@media (min-width: 641px) {
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-chat .a11y-chat-box[class][class][class] { padding-block: 16px; }
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-chat-box[class][class] :is(textarea, .a11y-chat-label, button, .a11y-btn)[class] { font-size: 18px; }
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-chat-box[class][class] textarea { font-size: 18px; line-height: 1.1; }
+}
+
+/* ═══ HOW THE SCORE WORKS IN TWO COLUMNS, 15% LARGER (user's instruction,
+   25 Nov 2026, "two columns, font 15% bigger", on the yellow note alone in
+   its row) ══════════════════════════════════════════════════════════════
+   The score's notes are 21px (18 x 1.15) on 1.35. When How the score works
+   stands alone (no warning beside it), its points run in two columns 32px
+   apart under the heading, which spans both; a point never splits across
+   them. With the warning beside it, the row is already two columns. One
+   column under 672px. */
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-notes > .a11y-sum-card[class][class][class] { font-size: 21px; }
+@media (min-width: 672px) {
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-notes > .a11y-sum-card:only-child > .a11y-sum-card-body[class][class] { display: block; columns: 2; column-gap: var(--cds-spacing-07); }
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-notes > .a11y-sum-card:only-child > .a11y-sum-card-body > *[class][class][class] { margin: 0 0 1lh; break-inside: avoid; }
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-notes > .a11y-sum-card:only-child > .a11y-sum-card-body > h3[class][class][class] { column-span: all; }
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-notes > .a11y-sum-card:only-child > .a11y-sum-card-body > :last-child[class][class][class] { margin-bottom: 0; }
+}
+
+/* The affected element's picture stands centred in its card, under the
+   centred pill (user's instruction, 25 Nov 2026, "center element"); its
+   caption, code and Copy keep their left edge. */
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-dt-expand-row, .a11y-dn-detail) .a11y-fd .a11y-affected .a11y-occurrence > .a11y-shot[class] { margin-inline: auto; width: fit-content; max-width: 100%; position: relative; inset-inline-start: var(--fd-label-shift, calc((var(--cds-spacing-05) - var(--cds-spacing-08)) / 2)); }
+
+/* The legal card's questions are led by a hung en dash in the words' own
+   face and size, in place of the numbered rings (user's instruction, 25
+   Nov 2026, "change to dashes"), the widget's plain-list marker. */
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-legal-q[class][class][class] { grid-template-columns: auto minmax(0, 1fr); column-gap: var(--cds-spacing-03); }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-legal-q > .a11y-legal-qdash { font: inherit; letter-spacing: inherit; line-height: inherit; }
+
+/* ═══ EVERY SECTION TITLE IN LETTRA (user's instruction, 25 Nov 2026,
+   "title needs to be in letra", on "Notes on the design" beside "Best
+   practice") ═════════════════════════════════════════════════════════════
+   Every report section's title is PP Lettra Mono Ultralight at its own
+   size, no tracking, on 1.15, as Your score and What costs you trust
+   already were. The line under each title stays in PP Telegraf; a count
+   round beside a title keeps its own face. */
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-section-title[class][class] {
+  font-family: "PP Lettra Mono", ui-monospace, "SF Mono", Menlo, Consolas, "DejaVu Sans Mono", monospace;
+  font-weight: 200; font-style: normal; font-synthesis: none; letter-spacing: 0; line-height: 1.15;
+}
