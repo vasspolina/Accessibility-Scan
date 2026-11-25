@@ -6070,6 +6070,10 @@
    picture, its name, code and a Copy button, which centred into a ragged
    mix of three edges. */
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-dt-expand-row, .a11y-dn-detail) .a11y-fd > .a11y-fd-col > .a11y-affected[class][class] > .a11y-occurrence-list { text-align: start; }
+/* What the research shows sets its words left under the centred pill (user's
+   picture of it, "this part left align"): two long points centred read as
+   two ragged blocks. */
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-dt-expand-row, .a11y-dn-detail) .a11y-fd > .a11y-fd-col > .a11y-finding-research[class][class] > :not(strong:first-child) { text-align: start; }
 /* A list in a centred part has no en dash: an outside marker hung at the
    left of each centred line, far from its words. The points stand 12px
    apart instead, and the markup says role="list", since Safari drops the
