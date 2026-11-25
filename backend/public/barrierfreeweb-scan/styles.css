@@ -499,22 +499,12 @@ footer.wrap { margin-top: var(--s12); padding-bottom: var(--s07); }
   .chat__label, .related__label, .chat__prompts { margin-bottom: var(--s07); }
 }
 
-/* ---------- Benefits and What you get as full-bleed callouts (user's
-   references, 25 Nov 2026: "make call outs like this, full bleed", two
-   cereal-ad frames, then "type reference for these elements", a set of
-   product packaging). The frames give the shape: colour edge to edge, a word
-   repeated as a wall behind one box, then single statements in two lines.
-   The packaging gives the type: small tracked capitals in the sans over a
-   1px rule, the name in a book serif with its first part in italic, a second
-   block set to the right, the brand in lowercase at the box's foot. These
-   bands are the page's one exception to Ultralight at 18, 24 and 32px: the
-   serif is EB Garamond 400 (SIL OFL, already in ../fonts/), the capitals PP
-   Telegraf Regular at 18px. Colours are the poster's, with one terracotta
-   from the packaging for What you get. Measured: cream #f4efe2 on blue
-   #2848c8 6.4:1, on green #486048 6.0:1, on black 18.3:1, on terracotta
-   #a4432b 5.4:1; black on red #f03c38 5.4:1; blue on the pale yellow
-   #fff5c2 6.7:1, so the 18px capitals clear 4.5:1 too. The bands keep their
-   colours in dark mode. ---------- */
+/* ---------- The serif and the small capitals: EB Garamond 400 (SIL OFL,
+   in ../fonts/) for What we offer, and PP Telegraf Regular for the small
+   tracked capitals over the card's rule. The Benefits wall and the
+   full-bleed benefit and What you get bands they were first declared for
+   were deleted (user's instruction, 25 Nov 2026, "deletet these designs");
+   those sections are plain text again. ---------- */
 @font-face {
   font-family: "EB Garamond";
   src: url("../fonts/EBGaramond-latin-400-normal.woff2") format("woff2");
@@ -530,112 +520,6 @@ footer.wrap { margin-top: var(--s12); padding-bottom: var(--s07); }
   src: url("../fonts/PPTelegraf-Regular.otf") format("opentype");
   font-weight: 400; font-style: normal; font-display: swap;
 }
-body { overflow-x: clip; }   /* the bands run 100vw, the scrollbar included */
-.callouts, .pack--get { margin-inline: calc(50% - 50vw); }
-.callouts { margin-top: var(--s12); }
-.packs { margin: 0; padding: 0; list-style: none; }
-
-/* The capitals over their rule, at both ends of one line. */
-.pack__top {
-  display: flex; justify-content: space-between; gap: var(--s05);
-  padding-bottom: var(--s03); border-bottom: 1px solid currentColor;
-  font-family: "PP Telegraf Caps", "PP Telegraf", sans-serif; font-weight: 400;
-  font-size: 18px; line-height: 1.2; letter-spacing: 0.08em; text-transform: uppercase;
-}
-.pack__top h2 { font: inherit; letter-spacing: inherit; }
-.pack__top span { white-space: nowrap; }
-.pack__it { font-style: italic; }
-
-/* One band per benefit: the first part top left, the rest bottom right. */
-.pack {
-  --pack-pad: clamp(16px, 4vw, 64px);
-  display: grid; grid-template-rows: auto minmax(0, 1fr); gap: var(--s07);
-  min-height: min(84vh, 52vw); padding: var(--pack-pad);
-  background: var(--pack-bg); color: var(--pack-ink);
-}
-.pack--red    { --pack-bg: #f03c38; --pack-ink: #000; }
-.pack--green  { --pack-bg: #486048; --pack-ink: #f4efe2; }
-.pack--black  { --pack-bg: #000;    --pack-ink: #f4efe2; }
-.pack--yellow { --pack-bg: #fff5c2; --pack-ink: #2848c8; }
-.pack--blue   { --pack-bg: #2848c8; --pack-ink: #f4efe2; }
-.pack--clay   { --pack-bg: #a4432b; --pack-ink: #f4efe2; }
-.pack__name {
-  display: grid; grid-template-rows: auto minmax(0, 1fr); row-gap: var(--s07);
-  font-family: "EB Garamond", Georgia, serif; font-weight: 400;
-  font-size: clamp(48px, 9vw, 168px); line-height: 0.95; letter-spacing: -0.015em;
-}
-.pack__name > span { display: block; max-width: 11em; }
-.pack__end { align-self: end; justify-self: end; text-align: right; }
-/* The benefit names in PP Lettra Mono (user's instruction, 25 Nov 2026,
-   "change font to letra", on Legal protection). Lettra is 0.58em a letter
-   (measured on PPLettraMono-Ultralight.otf), so the longest line, "and
-   discoverability" at 19 letters, is 11em: at 7.5vw it is 83vw, inside the
-   band's 92vw. On a phone the longest word, "discoverability", is 8.7em, so
-   9.5vw keeps it inside 375px less the 16px sides (310 of 343px) and 320px
-   (264 of 288px). The face has no italic, so the first part is upright. */
-.pack__name {
-  font-family: var(--mono); font-weight: 200;
-  font-size: clamp(32px, 7.5vw, 144px); line-height: 1; letter-spacing: 0;
-}
-.pack__name .pack__it { font-style: normal; }
-.pack__name > span { max-width: none; }
-
-/* The wall: the word in rows, every other row slid along, behind one box. */
-.wall {
-  position: relative; display: grid; place-items: center; overflow: hidden;
-  min-height: min(92vh, 60vw); padding: var(--s12) var(--s05);
-  background: #2848c8;
-}
-.wall__words {
-  position: absolute; inset: 0; display: flex; flex-direction: column; justify-content: center;
-  color: #fff5c2; font-family: "EB Garamond", Georgia, serif; font-style: italic;
-  font-size: clamp(96px, 15vw, 280px); line-height: 0.9; letter-spacing: -0.02em;
-  white-space: nowrap; user-select: none;
-}
-.wall__words span { display: block; transform: translateX(-12%); }
-.wall__words span:nth-child(even) { transform: translateX(-42%); }
-
-/* The box, the packaging's face: capitals, the name, the brand at its foot. */
-.box {
-  position: relative; container: box / inline-size;
-  display: grid; grid-template-rows: auto auto minmax(0, 1fr); gap: var(--s06);
-  width: clamp(280px, 34vw, 480px); aspect-ratio: 3 / 4;
-  padding: var(--s06) var(--s06) var(--s05); border-radius: 6px;
-  background: #f4efe2; color: #000; transform: rotate(-3deg);
-}
-.box__name {
-  font-family: "EB Garamond", Georgia, serif; font-weight: 400;
-  font-size: 13cqi; line-height: 1; letter-spacing: -0.01em;
-}
-.box__name .pack__it { display: block; }
-.box__mark {
-  align-self: end; justify-self: center;
-  font-family: "EB Garamond", Georgia, serif; font-size: 15.5cqi; line-height: 1; letter-spacing: -0.02em;
-}
-
-/* What you get: the packaging's lower half, the label, the words, the action. */
-.pack--get { grid-template-rows: auto auto auto; align-content: start; min-height: 0; padding-block: var(--pack-pad) clamp(48px, 8vw, 128px); }
-.pack__text {
-  max-width: 22em; font-family: "EB Garamond", Georgia, serif; font-weight: 400;
-  font-size: clamp(32px, 4.4vw, 72px); line-height: 1.05; letter-spacing: -0.01em;
-}
-.pack__action .btn { border-color: #f4efe2; background: #f4efe2; color: #000; }
-.pack__action .btn:hover { border-color: #fff5c2; background: #fff5c2; }
-.pack--get :focus-visible { outline: 2px solid #f4efe2; outline-offset: 3px; }
-
-@media (max-width: 671px) {
-  .callouts { margin-top: var(--s10); }
-  .pack { min-height: 0; gap: var(--s06); }
-  .pack__name { font-size: clamp(28px, 9.5vw, 48px); row-gap: var(--s05); }
-  .wall { min-height: 0; padding-block: var(--s10); }
-  .wall__words { font-size: 30vw; }
-  .box { width: min(86vw, 340px); }
-}
-@media (forced-colors: active) {
-  .wall__words { display: none; }
-  .pack, .box { border: 1px solid CanvasText; }
-}
-
 /* ---------- What we offer as an index of projects (user's references, 25
    Nov 2026, "referenses for servises type": a studio's project index, and
    the opened Design and typography row). Each service is a line between 1px
@@ -688,4 +572,47 @@ body { overflow-x: clip; }   /* the bands run 100vw, the scrollbar included */
 @container content (max-width: 560px) {
   .acc__body .terms > div { grid-template-columns: minmax(0, 1fr); }
   .acc__body .terms dt { padding-top: 0; }
+}
+
+/* ---------- The Services page's "What we offer" card as the numbered list,
+   in a bubble (user's reference and choice, 25 Nov 2026: "design these using
+   this referense, keep it in buble", a packaging box, then "bring this
+   element back" on the serif index above, chosen as "Card as the numbered
+   list"). The card keeps its rounded shape and takes the packaging's
+   terracotta with cream words (#a4432b, #f4efe2, 5.4:1).
+   On top, "What we offer" in the box's small tracked capitals over
+   a 1px rule; then the six services as the index's lines, the name in the
+   serif's capitals and its number in small tracked capitals at the right,
+   each between 1px cream rules. The number is drawn with alt text "" so a
+   link's name stays the service. The marker triangles are gone. Kept in
+   both themes. ---------- */
+.card:has(> .offer) {
+  --ink: #f4efe2; --focus: #f4efe2;
+  padding: var(--s06); border-radius: var(--r-card); background: #a4432b; color: #f4efe2;
+}
+.card:has(> .offer) > h2 {
+  margin: 0; padding-bottom: var(--s03); border-bottom: 1px solid currentColor;
+  font-family: "PP Telegraf Caps", "PP Telegraf", sans-serif; font-weight: 400;
+  font-size: 18px; line-height: 1.2; letter-spacing: 0.08em; text-transform: uppercase;
+}
+.card > .offer { gap: 0; counter-reset: offer-card; }
+.card > .offer > li { counter-increment: offer-card; border-bottom: 1px solid currentColor; }
+.card .offer__link {
+  display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: baseline; column-gap: var(--s05);
+  padding: var(--s04) 0; color: inherit; text-decoration: none;
+  font-family: "EB Garamond", Georgia, serif; font-weight: 400;
+  font-size: 24px; line-height: 1.1; letter-spacing: 0.02em; text-transform: uppercase;
+}
+.card .offer__link::before { content: none; }
+.card .offer__link::after {
+  content: counter(offer-card, decimal-leading-zero) / "";
+  font-size: 18px; letter-spacing: 0.12em;
+}
+.card .offer__link:hover { background: transparent; color: inherit; text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 0.12em; }
+.card .offer__link:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
+@media (max-width: 671px) {
+  .card .offer__link { font-size: 18px; letter-spacing: 0.04em; }
+}
+@media (forced-colors: active) {
+  .card:has(> .offer) { border: 1px solid CanvasText; }
 }
