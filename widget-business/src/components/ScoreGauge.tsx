@@ -392,10 +392,6 @@ export function ScoreGauge({
                   turning it by 180·(1 − s) degrees centres an arc of s·C
                   on nine o'clock. */}
               <svg viewBox="0 0 100 100" aria-hidden="true" focusable="false">
-                {/* The counter, in the paper's colour, so the guide lines
-                    stop at the letter as they do in the glyph view and
-                    never run through the number. */}
-                <circle className="a11y-sum-dial-counter" cx="50" cy="50" r={DIAL_R} />
                 <circle cx="50" cy="50" r={DIAL_R} fill="none"
                   strokeWidth={DIAL_W} strokeLinecap="round"
                   strokeDasharray={`${dialShare * DIAL_C} ${DIAL_C}`}
@@ -403,7 +399,6 @@ export function ScoreGauge({
               </svg>
               <span className="a11y-sum-dial-face" aria-hidden="true">
                 <span className="a11y-sum-dial-num">{score}</span>
-                <span className="a11y-sum-dial-of">{t("out of 100")}</span>
               </span>
             </div>
           </div>

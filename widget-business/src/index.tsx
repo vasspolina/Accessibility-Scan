@@ -31,6 +31,11 @@ export interface MountOptions {
 // Saans and Serrif are no longer declared; their files stay on the server
 // for the other pages. font-display swap keeps text readable while it
 // loads, and every rule keeps a system fallback.
+// The mono face is PP Lettra Mono (user's instruction, 25 Nov 2026, "use
+// letra as mono font"), its Ultralight cut declared for every weight like
+// Telegraf (the free package has only Ultralight and Medium upright). It is
+// the first name in every mono stack in global.css, with the system mono
+// behind it. Same free-for-personal-use licence as the Telegraf files.
 function injectFonts(apiBase: string) {
   const id = "a11y-widget-fonts";
   if (document.getElementById(id)) return;
@@ -41,6 +46,13 @@ function injectFonts(apiBase: string) {
 @font-face {
   font-family: "PP Telegraf";
   src: url("${base}/fonts/PPTelegraf-Ultralight.otf") format("opentype");
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "PP Lettra Mono";
+  src: url("${base}/fonts/PPLettraMono-Ultralight.otf") format("opentype");
   font-weight: 100 900;
   font-style: normal;
   font-display: swap;
