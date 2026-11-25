@@ -175,16 +175,13 @@ main.wrap { padding-top: var(--s10); }
 }
 .title { max-width: 30ch; margin: 0 auto var(--s10); text-wrap: balance; }
 .title__sub { margin-top: var(--s05); color: var(--ink); font-size: 24px; }
-/* The home page's lede in blue Lettra on the page (user's instruction,
-   25 Nov 2026, "delete background and make text blue", on the black panel
-   of the same morning): no panel, corners or fill; the line centred in
-   Lettra Ultralight at 56px, 1.15, no tracking, in the title's callout blue
-   (#2848c8 on white, 7.4:1; #7d95ff on black in dark). The phone takes
-   32px. */
-.title--lede {
-  max-width: none; margin: 0 0 var(--s10);
-  font-size: 56px; line-height: 1.15;
-}
+/* The home page's lede at a tester's size (user's reference, 25 Nov 2026,
+   "design this like this", a type foundry's specimen line; then, the same
+   day, "make text blue and no black background"): the page's blue Lettra
+   callout on the paper, Ultralight at 56px, 1.15, no tracking, centred
+   across the column's width; #2848c8 on white 7.4:1, #7d95ff on black.
+   No panel. The phone takes 32px. */
+.title--lede { max-width: none; margin: 0 0 var(--s10); font-size: 56px; line-height: 1.15; }
 @media (max-width: 671px) {
   .title.title--lede { font-size: 32px; }
 }
@@ -210,6 +207,37 @@ main.wrap { padding-top: var(--s10); }
 }
 .signup__input:focus-visible { outline: none; }
 .signup__trap { position: absolute; left: -9999px; width: 1px; height: 1px; opacity: 0; }
+/* The home page's request form as one outlined row (user's instructions,
+   25 Nov 2026, "delete background on form as well", then "form can look
+   like this", a row of two outlined fields and an outlined Send request on
+   a dark panel): no grey ground, the page's own paper and words in both
+   themes. Email, Your request and Send request side by side, 8px apart,
+   centred in at most 980px; each 56px tall, 12px corners, a 1px edge in
+   the chat box's #8e8e93 (3.3:1 on white, 6.2:1 on black), no fill. Each
+   field's label stays visible, at its left on the field's line at 18px,
+   the typed words after it. Send request is the same outline with the
+   arrow; hover the pale yellow. One column on a phone. form.signup
+   out-ranks the shared .signup rules and their phone padding. */
+form.signup {
+  --ink: inherit; --focus: inherit; --solid: inherit; --solid-ink: inherit;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.3fr) auto; gap: var(--s03); align-items: stretch;
+  max-width: 980px; margin-inline: auto; padding: 0; border-radius: 0; background: none; color: inherit;
+}
+form.signup .signup__field {
+  flex-direction: row; align-items: center; gap: var(--s04); min-height: 56px; padding: 0 var(--s05);
+  border: 1px solid var(--edge); border-radius: var(--s04); background: transparent; color: inherit;
+}
+form.signup .signup__field label { flex: none; }
+form.signup .signup__input { flex: 1 1 auto; min-height: 0; color: inherit; font-size: 18px; letter-spacing: 0.025em; }
+form.signup > .signup__btn {
+  grid-column: auto; justify-self: stretch; margin-top: 0; min-height: 56px; padding: 0 var(--s05);
+  border: 1px solid var(--edge); border-radius: var(--s04); background: transparent; color: var(--ink);
+  font-size: 18px; letter-spacing: 0.025em;
+}
+form.signup > .signup__btn:hover { border-color: var(--hover); background: var(--hover); color: var(--hover-ink); }
+@media (max-width: 671px) {
+  form.signup { grid-template-columns: minmax(0, 1fr); padding: 0; }
+}
 .signup > .signup__btn {
   grid-column: 1 / -1; justify-self: center; margin-top: var(--s03);
   min-height: 56px; padding: 0 var(--s06); font-size: 24px; letter-spacing: 0.015em;
@@ -264,6 +292,16 @@ main.wrap { padding-top: var(--s10); }
 .plate:nth-child(4n + 3) { background: var(--red); --on: var(--on-red); }
 .plate:nth-child(4n + 4) { background: var(--black); --on: var(--on-black); }
 .plate p { max-width: 24ch; font-family: var(--mono); font-size: 32px; line-height: 1.15; letter-spacing: 0; text-align: center; text-wrap: balance; }
+/* The statements full screen, like cards (user's instruction, 25 Nov 2026,
+   "make this slide full screen like cards", on the red "Accessibility is a
+   human right." slide): the track breaks out of the 1312px column to the
+   window's width less 8px each side, so the 28px corners still read as a
+   card, and each slide is the window's height less the arrows' bar
+   (104px: their 16px gap, 34px and air). The body clips sideways so the
+   breakout never scrolls the page. */
+body { overflow-x: clip; }
+.plates .plates__track { width: calc(100vw - 2 * var(--s03)); margin-left: calc(50% - 50vw + var(--s03)); }
+.plates .plate { min-height: calc(100svh - 104px); }
 .plates__bar { display: flex; align-items: center; justify-content: center; gap: var(--s03); margin-top: var(--s05); }
 .plates__btn { width: 48px; padding: 0; font-size: 0; }
 .plates__btn::before { width: 18px; height: 18px; }

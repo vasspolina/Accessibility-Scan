@@ -17,9 +17,10 @@ const DATE_LOCALE: Record<Lang, string> = { en: "en-GB", de: "de-DE", es: "es-ES
 function formatDate(iso: string): string {
   // European format, house style.
   return new Date(iso).toLocaleDateString(DATE_LOCALE[getLang()], {
+    // No year: the runs stand under their year's line, and "2026" over
+    // "22 Nov 2026" said it twice.
     day: "numeric",
     month: "short",
-    year: "numeric",
   });
 }
 
@@ -216,7 +217,7 @@ export function ScanHistory({
               "not comparable" without a tile having to show a number it
               does not believe. */}
           <ul className="a11y-hist-facts">
-            <li>
+            <li className="a11y-hist-fact">
               <Fact text={comparable
                 ? tf(
                     flat
@@ -230,14 +231,14 @@ export function ScanHistory({
                     "Not comparable – we scored the earlier scan by different rules. Some checks now count towards the score that did not before, so we do not compare the two."
                   )} />
             </li>
-            <li>
+            <li className="a11y-hist-fact">
               <Fact text={diff.fixed.length === 0
                 ? t("Problems fixed – none")
                 : tf("Problems fixed – {rules}", { rules: diff.fixed.map(ruleLabel).join(", ") })} />
             </li>
             {/* "none weren't there before" is a double negative, and the
                 design's own copy has it. Said the way round it means. */}
-            <li>
+            <li className="a11y-hist-fact">
               <Fact text={diff.appeared.length === 0
                 ? t("New problems – none")
                 : tf("New problems – {rules}", { rules: diff.appeared.map(ruleLabel).join(", ") })} />
