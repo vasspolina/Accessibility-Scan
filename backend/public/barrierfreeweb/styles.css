@@ -1430,3 +1430,22 @@ body > header { padding-block: 20px 19px; }
   .chat .chat__prompts .chat__prompt { min-height: 0; padding: 22px 20px 24px; font-size: 32px; }
 }
 @media (forced-colors: active) { .chat .chat__prompts .chat__prompt { border: 1px solid CanvasText; } }
+
+/* THE OFFERS' TERMS AS CENTRED TITLES OVER THEIR SENTENCE (user's reference,
+   25 Nov 2026, "design this like this", a product title over its
+   description). In every opened What we offer row, each term is a title in
+   capitals centred over the column at 36px, set solid; what it means runs
+   under it at the column's 20px, left, at 1.15, one 24px step down. Terms
+   stand 48px apart, so each pair reads as one piece. On a phone the title is
+   28px over the 17px words, 16px under it and 36px between terms. The plain
+   .text lists (Our approach, Who needs accessibility) keep their look. */
+.acc__body .terms > div + div { margin-top: 48px; }
+.acc__body .terms dt {
+  margin: 0 0 24px; text-align: center; text-transform: uppercase;
+  font-size: 36px; line-height: 1.1; letter-spacing: 0; text-wrap: balance;
+}
+.acc__body .terms dd { margin: 0; text-align: left; line-height: 1.15; }
+@media (max-width: 860px) {
+  .acc__body .terms > div + div { margin-top: 36px; }
+  .acc__body .terms dt { margin-bottom: 16px; font-size: 28px; }
+}

@@ -143,6 +143,44 @@ export function ScreenReaderPreview({ script }: { script: ScreenReaderScript }) 
   const filtered = onlyIssues ? entries.filter((e) => e.line.issue) : entries;
   const visible = expanded ? filtered : filtered.slice(0, 12);
 
+  // The filter and the skip link stand in Play's row (user's reference,
+  // 25 Nov 2026, "design these like these, all in one row": a black pill
+  // beside grey ones). While it reads they drop to a row of their own under
+  // the bar, so only the transport sticks: on a 375px phone the whole bar
+  // stuck was 300px, more than a third of the screen.
+  const showTools = panelOpen && (issueCount > 0 || filtered.length > 12);
+  const tools = (
+    <>
+      {issueCount > 0 && (
+        <label className="a11y-ai-toggle a11y-sr-filter">
+          <input
+            type="checkbox"
+            checked={onlyIssues}
+            onChange={(e) => setOnlyIssues(e.target.checked)}
+          />
+          {/* The checkbox is clipped, not removed: it stays the control and
+              its name is the label. The mark shows its state on the pill. */}
+          {onlyIssues && <Icon name="checkmark" />}
+          {issueCount === 1
+            ? t("Only the one that says nothing useful")
+            : tf("Only the {count} that say nothing useful", { count: issueCount })}
+        </label>
+      )}
+      {/* A row-by-row transcript is exactly the kind of block WCAG 2.4.1
+          exists for: on a normal page it is over a hundred consecutive tab
+          stops, one per play button. */}
+      {filtered.length > 12 && (
+        <button
+          type="button"
+          className="a11y-skip-link"
+          onClick={() => showAllRef.current?.focus()}
+        >
+          {t("Skip the transcript")}
+        </button>
+      )}
+    </>
+  );
+
   return (
     <section
       ref={sectionRef}
@@ -265,6 +303,7 @@ export function ScreenReaderPreview({ script }: { script: ScreenReaderScript }) 
           )}
         </button>
         )}
+        {showTools && !active && tools}
         {supported && active && (
           <span
             className="a11y-sr-transport"
@@ -332,50 +371,7 @@ export function ScreenReaderPreview({ script }: { script: ScreenReaderScript }) 
         )}
       </div>
 
-      {/* How the simulation was made, as small print under Play (user's
-          choice, 24 Nov 2026): it qualifies the transcript, so it is not set
-          at the prose size between the head and the control. It stays
-          outside the panel, visible while the section is closed. */}
-      <p className="a11y-sr-caveat">
-        {t(
-          "Built from the page’s code. Real screen readers word things differently."
-        )}
-      </p>
-
-      {/* The filter and the skip link sit in a row of their own under the
-          bar, so only the transport sticks: on a 375px phone the whole bar
-          stuck was 300px, more than a third of the screen. */}
-      {panelOpen && (issueCount > 0 || filtered.length > 12) && (
-      <div className="a11y-sr-bar a11y-sr-tools">
-        {issueCount > 0 && (
-          <label className="a11y-ai-toggle a11y-sr-filter">
-            <input
-              type="checkbox"
-              checked={onlyIssues}
-              onChange={(e) => setOnlyIssues(e.target.checked)}
-            />
-            {/* The checkbox is clipped, not removed: it stays the control and
-                its name is the label. The mark shows its state on the pill. */}
-            {onlyIssues && <Icon name="checkmark" />}
-            {issueCount === 1
-              ? t("Only the one that says nothing useful")
-              : tf("Only the {count} that say nothing useful", { count: issueCount })}
-          </label>
-        )}
-        {/* A row-by-row transcript is exactly the kind of block WCAG 2.4.1
-            exists for: on a normal page it is over a hundred consecutive tab
-            stops, one per play button. */}
-        {filtered.length > 12 && (
-          <button
-            type="button"
-            className="a11y-skip-link"
-            onClick={() => showAllRef.current?.focus()}
-          >
-            {t("Skip the transcript")}
-          </button>
-        )}
-      </div>
-      )}
+      {showTools && active && <div className="a11y-sr-bar a11y-sr-tools">{tools}</div>}
 
       {/* Hidden rather than unrendered: the accordion button's aria-controls
           points here, and it must never point at an element that does not
