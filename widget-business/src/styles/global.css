@@ -921,7 +921,6 @@
 .a11y-widget-biz .a11y-stmt-card > .a11y-stmt-card-title {
   margin: 0 0 28px; padding-inline-end: 6em; font-size: 24px; font-weight: 200; line-height: 1.15; letter-spacing: 0.015em;
 }
-.a11y-widget-biz .a11y-stmt-code-bar { position: absolute; top: 20px; right: 20px; display: flex; align-items: center; gap: 0.5em; margin: 0; }
 .a11y-widget-biz .a11y-stmt-text {
   white-space: normal; overflow-wrap: anywhere; margin: 0;
   font-size: 24px; letter-spacing: 0.015em; line-height: 1.15;
@@ -934,7 +933,6 @@
 .a11y-widget-biz .a11y-stmt-card .a11y-stmt-text > :last-child { margin-bottom: 0; }
 @media (max-width: 640px) {
   .a11y-widget-biz .a11y-stmt-card { padding: 20px 18px 22px; }
-  .a11y-widget-biz .a11y-stmt-code-bar { top: 12px; right: 12px; }
   .a11y-widget-biz .a11y-stmt-text { font-size: 18px; letter-spacing: 0.025em; }
 }
 
@@ -5609,16 +5607,19 @@
 /* ═══ THE STATEMENT DRAFT UNDER A CARET (user's instructions, 24 Nov 2026,
    "make into carret and add copy button on top of it", "make font smaller
    for statement") ═══════════════════════════════════════════════════════
-   Copy stands first, an ordinary button, so the draft can be taken shut.
-   Under it the draft's title is a caret row like a finding's: the solid
-   triangle in the 35px column, "The statement" at 32px. Opened, the text
-   sits in the findings' round panel under the title, at 18px. The card's
-   tile ground is gone; the panel is the only ground. */
+   Copy is an ordinary button at the far end of the step's own line, "Take
+   the statement" ("the button can be at same row on far right"), so the
+   draft can be taken shut. Under it the draft's title is a caret row like
+   a finding's: the solid triangle in the 35px column, "The statement" at
+   32px. Opened, the text sits in the findings' round panel under the
+   title, at 18px. The card's tile ground is gone; the panel is the only
+   ground. */
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-stmt .a11y-stmt-step:has(> .a11y-stmt-copy) {
+  display: flex; align-items: center; justify-content: space-between; gap: 16px;
+}
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-stmt .a11y-stmt-step > .a11y-stmt-copy { flex: none; margin: 0; }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-stmt .a11y-stmt-card {
   --ink: inherit; --paper: inherit; padding: 0; border-radius: 0; background: none; color: var(--ink);
-}
-.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-stmt .a11y-stmt-card > .a11y-stmt-code-bar {
-  position: static; margin: 0 0 16px;
 }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-stmt .a11y-stmt-card > .a11y-stmt-card-title { margin: 0; padding: 0; }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-stmt .a11y-stmt-toggle {

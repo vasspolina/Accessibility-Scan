@@ -281,7 +281,8 @@ export function AccessibilityStatement({ report }: { report: AccessibilityReport
   const [copied, setCopied] = useState(false);
   /* The draft folds under a caret, shut at first (user's instruction, 24
      Nov 2026, "make into carret and add copy button on top of it"): Copy
-     sits above it, so the text can be taken without opening it. */
+     sits on the step's line above it, so the text can be taken without
+     opening it. */
   const [draftOpen, setDraftOpen] = useState(false);
 
   const failing = report.conformance?.failed ?? 0;
@@ -428,6 +429,12 @@ export function AccessibilityStatement({ report }: { report: AccessibilityReport
           <span className="a11y-stmt-step-num" aria-hidden="true">2</span>
           {t("Take the statement")}
         </h3>
+        {/* Copy on the step's own line, at its far end (user's instruction,
+            24 Nov 2026, "the button can be at same row on far right"), so
+            the draft can be taken without opening it. */}
+        <button type="button" className="a11y-sr-play a11y-stmt-copy" onClick={copy}>
+          {copied ? t("Copied") : t("Copy")}
+        </button>
       </div>
 
       {/* The draft, its label and its Copy on one card, the way the design
@@ -435,11 +442,6 @@ export function AccessibilityStatement({ report }: { report: AccessibilityReport
           tie to it; on the bar it is unmistakably the control for the block
           it sits on. */}
       <div className="a11y-stmt-card" data-open={draftOpen || undefined}>
-        <div className="a11y-stmt-code-bar">
-          <button type="button" className="a11y-sr-play" onClick={copy}>
-            {copied ? t("Copied") : t("Copy")}
-          </button>
-        </div>
         <h4 className="a11y-stmt-card-title">
           <button
             type="button"

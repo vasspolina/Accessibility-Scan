@@ -24,15 +24,6 @@ export function bubblePlace(id: string): CSSProperties {
   return { "--bubble-tilt": `${tilt}deg`, "--bubble-x": `${across}%` } as CSSProperties;
 }
 
-const STATUS_LABEL = {
-  failed: "Fails",
-  "no-issues-found": "Nothing found",
-  "needs-review": "Needs a person",
-  // Not the same as needs-review: a person was never going to be required
-  // here — our check was, and it did not finish. Without this state a
-  // crashed probe rendered the same row as a clean page.
-  "not-measured": "Not measured",
-} as const;
 
 /* The three the design names. Real ones, not invented: each is a WCAG 2.1
    criterion whose result axe reports as "incomplete" — it cannot judge
@@ -153,13 +144,15 @@ function CriterionRow({ c, verdict }: { c: CriterionResult; verdict?: RecordedVe
           across renders and differs from row to row. Still last
           in the row's markup, so a screen reader meets it after
           the line it qualifies. */}
-      <span className="a11y-conf-status" data-status={c.status} style={bubblePlace(c.id)}>
-        {c.status === "failed" && c.findingCount > 0
-          ? c.findingCount === 1
-            ? t("Fails in 1 place")
-            : tf("Fails in {count} places", { count: c.findingCount })
-          : t(STATUS_LABEL[c.status])}
-      </span>
+      {/* The row sits in its result's group, whose title already says
+          the status (user's instruction, 24 Nov 2026, "do not repeat this
+          content"), so it adds only what the title does not: how many
+          places a failure was found in. */}
+      {c.status === "failed" && c.findingCount > 0 && (
+        <span className="a11y-conf-status" data-status={c.status} style={bubblePlace(c.id)}>
+          {c.findingCount === 1 ? t("1 place") : tf("{count} places", { count: c.findingCount })}
+        </span>
+      )}
     </li>
   );
 }
