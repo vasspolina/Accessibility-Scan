@@ -272,7 +272,6 @@ export function ScoreGauge({
   const countsId = inChat ? "a11y-sum-counts-heading-chat" : "a11y-sum-counts-heading";
   const warningId = inChat ? "a11y-sum-warning-heading-chat" : "a11y-sum-warning-heading";
   const issuesId = inChat ? "a11y-sum-issues-heading-chat" : "a11y-sum-issues-heading";
-  const showWcag = preview.some((group) => criterionOf(group[0]));
 
   /* "Do this first" — the one fix that settles the most at once.
    *
@@ -338,17 +337,24 @@ export function ScoreGauge({
         {t("Your score")}
       </h2>
 
-      {/* The score as plain text on the page (user's instruction and copy,
-          24 Nov 2026, replacing the grey panel and its tiles): the dial
-          with what its range means beside it, the issues as a table, then
-          how the score works. Each part is a label in the first of four
-          tracks and its content across the other three, under a 1px rule.
-          No panel and no pills; the severity keeps its badge because it is
-          the status. */}
+      {/* The score as a type tester's panel with the issues as cards
+          beside it (user's reference, 25 Nov 2026, "design this like
+          this", a foundry's tester and its release-note cards). The grey
+          panel holds what the range means as its caption, the dial in a
+          white window, and Copy summary as a pill at its foot; the worst
+          issues stand beside it, one pale card each: the severity as an
+          outlined pill, the title, the criterion and places under it, and
+          the element's picture at the right where the scan took one.
+          How the score works and the warning follow as rows. */}
       <div className="a11y-sum-grid">
+        <div className="a11y-sum-top">
         <section className="a11y-sum-run" aria-labelledby="a11y-sum-run-heading">
           <h3 className="a11y-sr-only" id="a11y-sum-run-heading">{t("Scan summary")}</h3>
 
+          {/* What the range means: the panel's caption, over the number. */}
+          <p className="a11y-sum-verdict">{t(scoreSummary(score, seed))}</p>
+
+          <div className="a11y-sum-window">
           <div className="a11y-sum-dial-card">
             {/* One label carries the whole thing, and every part of the
                 drawing is hidden: the arc and the numeral repeat it. */}
@@ -390,15 +396,27 @@ export function ScoreGauge({
             {onSeeFindings && !inChat && findings.length > 0 && (
               <button type="button" className="a11y-dial-sticker" onClick={onSeeFindings}>
                 <span className="a11y-dial-sticker-words">
-                  {/* No count: "N issues found" heads the table beside it. */}
+                  {/* No count: "N issues found" heads the cards beside it. */}
                   {findings.length === 1 ? t("See the finding") : t("See the findings")}
                 </span>
               </button>
             )}
           </div>
+          </div>
 
-          {/* What the range means, beside the number it explains. */}
-          <p className="a11y-sum-verdict">{t(scoreSummary(score, seed))}</p>
+          {/* Plain text, not the report's own HTML: the point is to leave
+              the widget entirely, an email or a message to whoever owns the
+              fix. The pill at the panel's foot. */}
+          {!inChat && (
+            <div className="a11y-sum-actions">
+              <button type="button" className="a11y-show-all a11y-score-copy" onClick={copySummary}>
+                {copied ? t("Copied") : t("Copy summary as plain text")}
+              </button>
+              <span className="a11y-sr-only" role="status">
+                {copied ? t("Summary copied to the clipboard.") : ""}
+              </span>
+            </div>
+          )}
         </section>
 
         {preview.length === 0 ? (
@@ -408,66 +426,47 @@ export function ScoreGauge({
             <h3 className="a11y-sum-label" id={issuesId}>
               {findings.length === 1 ? t("1 issue found") : tf("{count} issues found", { count: findings.length })}
             </h3>
-            <table className="a11y-sum-table">
-              <thead>
-                <tr>
-                  {/* No visible column titles over the issues (user's
-                      instruction, 24 Nov 2026, "delete priority issue"):
-                      the badge says the priority. Kept for screen readers. */}
-                  <th scope="col"><span className="a11y-sr-only">{t("Issue")}</span></th>
-                  {/* A column empty in every row is left out, header and
-                      all, as in the findings tables. */}
-                  {showWcag && <th scope="col">WCAG</th>}
-                </tr>
-              </thead>
-              <tbody>
-                {preview.map((group) => {
-                  const rep = group[0];
-                  const title = plainForRule(rep.ruleId)?.plain ?? rep.title ?? rep.description;
-                  return (
-                    <tr key={rep.id}>
-                      <td className="a11y-sum-table-issue">
-                        {/* The badge on top of the title (user's
-                            instruction, 24 Nov 2026), then the link to the
-                            finding in the schedule, which covers the whole
-                            row, so the whole line is what you press. */}
-                        <span className="a11y-sum-table-badge">
-                          <SeverityTag severity={rep.severity} label={t(SEVERITY_LABEL[rep.severity])} />
-                        </span>
-                        <a
-                          href={`#a11y-finding-${rep.id}`}
-                          onClick={(e) => {
-                            e.preventDefault();
-                            openFinding(e.currentTarget, rep.id);
-                          }}
-                        >
-                          {title}
-                        </a>
-                        {group.length > 1 && (
-                          <span className="a11y-sum-table-count"> {tf("{count} places", { count: group.length })}</span>
-                        )}
-                      </td>
-                      {showWcag && <td className="a11y-sum-table-wcag">{criterionOf(rep) ?? ""}</td>}
-                    </tr>
-                  );
-                })}
-              </tbody>
-            </table>
+            {/* role="list" said out loud: WebKit drops the list role from a
+                list drawn without markers. */}
+            {/* eslint-disable-next-line jsx-a11y/no-redundant-roles */}
+            <ul className="a11y-sum-cards" role="list">
+              {preview.map((group) => {
+                const rep = group[0];
+                const title = plainForRule(rep.ruleId)?.plain ?? rep.title ?? rep.description;
+                const crit = criterionOf(rep);
+                const shot = group.find((f) => f.elementScreenshot)?.elementScreenshot;
+                return (
+                  <li key={rep.id} className="a11y-sum-card" data-shot={shot ? "" : undefined}>
+                    {/* The severity as the card's pill, then the title,
+                        whose link covers the whole card. */}
+                    <span className="a11y-sum-card-pill">
+                      <SeverityTag severity={rep.severity} label={t(SEVERITY_LABEL[rep.severity])} />
+                    </span>
+                    <a
+                      className="a11y-sum-card-title"
+                      href={`#a11y-finding-${rep.id}`}
+                      onClick={(e) => {
+                        e.preventDefault();
+                        openFinding(e.currentTarget, rep.id);
+                      }}
+                    >
+                      {title}
+                    </a>
+                    {(crit || group.length > 1) && (
+                      <span className="a11y-sum-card-meta">
+                        {crit && <span>WCAG {crit}</span>}
+                        {group.length > 1 && <span>{tf("{count} places", { count: group.length })}</span>}
+                      </span>
+                    )}
+                    {/* The element itself; the title already names it. */}
+                    {shot && <img className="a11y-sum-card-shot" src={`data:image/jpeg;base64,${shot}`} alt="" />}
+                  </li>
+                );
+              })}
+            </ul>
           </section>
         )}
-
-        {/* Plain text, not the report's own HTML: the point is to leave the
-            widget entirely, an email or a message to whoever owns the fix. */}
-        {!inChat && (
-          <div className="a11y-sum-actions">
-            <button type="button" className="a11y-show-all a11y-score-copy" onClick={copySummary}>
-              {copied ? t("Copied") : t("Copy summary as plain text")}
-            </button>
-            <span className="a11y-sr-only" role="status">
-              {copied ? t("Summary copied to the clipboard.") : ""}
-            </span>
-          </div>
-        )}
+        </div>
 
         <section className="a11y-sum-counts" aria-labelledby={countsId}>
           <h3 className="a11y-sum-label" id={countsId}>{t("How the score works")}</h3>

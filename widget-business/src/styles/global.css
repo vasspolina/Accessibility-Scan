@@ -3787,7 +3787,6 @@
   --ink: var(--plate-text); --paper: var(--card-plate, var(--plate-1));
   background: var(--card-plate, var(--plate-1)); color: var(--plate-text); border-color: var(--plate-text); box-shadow: none;
 }
-.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-prompts .a11y-prompt.a11y-prompt:not(.a11y-prompt-barrier):has(> .a11y-prompt-q:disabled) { border: 1px dashed var(--ink); outline: 0; }
 /* The group's name is a title, not a badge (user's instruction, 24 Nov
    2026, "dont do badges, just titles"): the card's own ink on the card's
    ground, no fill, no lean, the body face at 22px Medium over the question's
@@ -4319,49 +4318,6 @@
   margin-bottom: 0; font-size: 32px; font-weight: 200; line-height: 1.1; letter-spacing: 0.01em;
 }
 
-/* The issues. */
-.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-table {
-  display: table; width: calc(100% + 24px); margin: 0 -12px; border-collapse: collapse; border: 0; table-layout: auto;
-  font-variant-numeric: tabular-nums;
-}
-.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-table :is(th, td) {
-  padding: 14px 16px 14px 0; border: 0; border-bottom: 1px solid var(--ink); background: none;
-  color: var(--ink); text-align: start; vertical-align: baseline;
-}
-.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-table :is(th, td):last-child { padding-inline-end: 0; }
-.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-table th {
-  padding-top: 0; padding-bottom: 10px;
-  font-size: 18px; font-weight: 200; line-height: 1.2; letter-spacing: 0.025em; white-space: nowrap;
-}
-.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-table :is(.a11y-sum-table-wcag, th:nth-child(2)) { width: 1%; white-space: nowrap; }
-/* The badge on top of the title, then the title (user's instruction, 24 Nov
-   2026, "add badge on top of lines, delete priority issue and make hover
-   whole line, do not underline links"). The link's ::after covers the row,
-   so the whole line is pressed and hovered: the row takes the buttons'
-   mint, and keyboard focus rings the row. The table reaches 12px past the
-   column on each side (8px on a phone), so the mint has air round the
-   words while the words stay on the column's line. */
-.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-table :is(th, td) { padding-inline: 12px; }
-.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-table tbody tr { position: relative; }
-.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-table tbody tr:hover { background: var(--hover); }
-.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-table tbody tr:hover > td { color: var(--hover-ink); }
-.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-table tbody tr:has(a:focus-visible) { outline: 2px solid var(--focus); outline-offset: -2px; }
-.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-table-badge { display: block; margin: 0 0 10px; }
-.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-table-badge > .a11y-sev { margin: 0; }
-.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-table-issue {
-  font-size: 32px; font-weight: 200; line-height: 1.1; letter-spacing: 0.01em; overflow-wrap: anywhere;
-}
-.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-table-issue > a { color: inherit; text-decoration: none; }
-.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-table-issue > a:focus-visible { outline: none; }
-.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-table-issue > a::after { content: ""; position: absolute; inset: 0; }
-@media (forced-colors: active) {
-  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-table tbody tr:hover { outline: 1px solid LinkText; outline-offset: -1px; }
-  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-table tbody tr:has(a:focus-visible) { outline-color: Highlight; }
-}
-.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-sum-table-count, .a11y-sum-table-wcag) {
-  font-size: 18px; font-weight: 200; line-height: 1.2; letter-spacing: 0.025em;
-}
-
 /* How the score works, one paragraph to a track. */
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-point {
   min-width: 0; margin: 0; padding-inline-end: 16px;
@@ -4394,13 +4350,10 @@
 @media (max-width: 640px) {
   .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-verdict { font-size: 24px; line-height: 1.15; letter-spacing: 0.015em; }
   .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-grid > .a11y-score-clean { font-size: 24px; line-height: 1.15; letter-spacing: 0.015em; }
-  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-table-issue { font-size: 24px; line-height: 1.15; letter-spacing: 0.015em; }
-  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-table { width: calc(100% + 16px); margin-inline: -8px; }
-  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-table :is(th, td) { padding-inline: 8px; }
 }
 @media print {
   .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-warning-badge { rotate: none; }
-  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-table tr { break-inside: avoid; }
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-card { break-inside: avoid; }
 }
 
 /* THE FINDINGS AS A LIST OF QUESTIONS (user's reference, 24 Nov 2026, a
@@ -4709,7 +4662,7 @@
 /* The key: the criterion and its level, set on the title's first line in
    the body face (user's instruction, 24 Nov 2026, "set these in same
    font"; it was the mono face for a few hours). */
-.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-conf-list > .a11y-conf-row > .a11y-conf-id, .a11y-w22-row .a11y-w22-id, .a11y-w22-row .a11y-w22-level, .a11y-sum-table .a11y-sum-table-wcag) {
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-conf-list > .a11y-conf-row > .a11y-conf-id, .a11y-w22-row .a11y-w22-id, .a11y-w22-row .a11y-w22-level) {
   font-family: "PP Telegraf", "DejaVu Sans", sans-serif;
   font-size: 18px; font-weight: 200; line-height: 1.2; letter-spacing: 0.025em; font-variant-numeric: normal;
 }
@@ -4969,56 +4922,6 @@
 /* On paper the whole checklist shows: every group opens. */
 @media print {
   .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-legal-carets > .a11y-legal-caret > .a11y-legal-group[hidden] { display: block; }
-}
-
-/* THE SCORE'S ISSUES AS QUESTIONS (user's instruction, 24 Nov 2026,
-   "design the rest of items using new design approach", "these", on the
-   "13 issues found" table under the score): set like the checklist. The
-   criterion is the key at the start of the row, the title at 32px with
-   its places beside it, and the severity at the far end as a coloured
-   word (the --word-* tokens, as the findings list) in place of the badge
-   over the title. No rules between rows and no mint row on hover: the
-   title underlines. The whole row stays the link's target; the table
-   keeps its roles for screen readers, its header row clipped. */
-.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-table[class] { display: block; width: 100%; margin: 0; }
-.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-table[class] > thead {
-  display: block; position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap;
-}
-.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-table[class] > tbody { display: block; }
-.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-table[class] > tbody > tr {
-  display: grid; grid-template-columns: 150px minmax(0, 1fr); column-gap: 24px; align-items: start; margin: 0 0 14px; background: none;
-}
-.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-table[class] > tbody > tr:not(:has(> .a11y-sum-table-wcag)) { grid-template-columns: minmax(0, 1fr); }
-.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-table[class] > tbody > tr:hover { background: none; }
-.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-table[class] > tbody > tr > td[class] { display: block; width: auto; padding: 0; border: 0; color: var(--ink); white-space: normal; }
-.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-table[class] > tbody > tr > .a11y-sum-table-wcag[class] { grid-column: 1; grid-row: 1; padding-top: 9px; }
-.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-table[class] > tbody > tr > .a11y-sum-table-issue[class] {
-  grid-column: -2; grid-row: 1; display: flex; flex-wrap: wrap; align-items: baseline; column-gap: 0.35em; row-gap: 2px;
-}
-.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-table-issue[class] > a { order: 0; min-width: 0; }
-.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-table[class] > tbody > tr:hover .a11y-sum-table-issue[class] > a { text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 0.14em; }
-.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-table-issue[class] > .a11y-sum-table-count { order: 1; }
-.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-table-issue[class] > .a11y-sum-table-badge[class] { order: 2; display: block; margin: 0 0 0 auto; padding-left: 24px; }
-.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-table-badge[class] > .a11y-sev[class] {
-  position: static; display: inline; margin: 0; padding: 0; border: 0; border-radius: 0; background: none; box-shadow: none; rotate: none; transform: none;
-  font-family: "PP Telegraf", "DejaVu Sans", sans-serif; font-size: 32px; font-weight: 200; line-height: 1.1; letter-spacing: 0.01em; text-transform: none; white-space: nowrap;
-}
-.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-table-badge[class] > .a11y-sev[class]::before,
-.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-table-badge[class] > .a11y-sev[class]::after { content: none; }
-.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-table-badge[class] > .a11y-sev-critical[class] { color: var(--word-red); }
-.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-table-badge[class] > .a11y-sev-serious[class] { color: var(--word-blue); }
-.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-table-badge[class] > .a11y-sev-moderate[class] { color: var(--word-green); }
-.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-table-badge[class] > .a11y-sev-minor[class] { color: var(--word-ochre); }
-@media (max-width: 640px) {
-  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-table[class] > tbody > tr { grid-template-columns: minmax(0, 1fr); row-gap: 2px; margin-bottom: 18px; }
-  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-table[class] > tbody > tr > .a11y-sum-table-wcag[class] { grid-row: 1; padding-top: 0; }
-  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-table[class] > tbody > tr > .a11y-sum-table-issue[class] { grid-column: 1; grid-row: 2; }
-  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-table[class] > tbody > tr:not(:has(> .a11y-sum-table-wcag)) > .a11y-sum-table-issue[class] { grid-row: 1; }
-  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-table-issue[class] > .a11y-sum-table-badge[class] { flex-basis: 100%; margin: 2px 0 0; padding-left: 0; }
-  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-table-badge[class] > .a11y-sev[class] { font-size: 18px; line-height: 1.2; letter-spacing: 0.025em; }
-}
-@media (forced-colors: active) {
-  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-table-badge[class] > .a11y-sev[class] { color: CanvasText; }
 }
 
 /* ═══ THE SCREEN READER HEAD AND THE STATEMENT'S STEPS (user's choice, 24
@@ -5630,6 +5533,26 @@
 @media (forced-colors: active) {
   .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-fd .a11y-tech-details[class][class] > summary { border: 1px solid CanvasText; }
 }
+/* Opened, it is one yellow bubble (user's instruction, 25 Nov 2026, "open
+   in yellow buble"): the pill is its head and the code opens inside it on
+   the same marker yellow, 28px corners (the pill's own round at 56px),
+   black words in both themes as on the pill. The lines start under the
+   title: the pill's 28px padding plus the caret column. */
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-fd .a11y-tech-details[open][class][class] {
+  --ink: #000; --paper: var(--hl-cap-a);
+  padding: 0 28px 28px calc(28px + var(--caret-col)); border-radius: 28px; background: var(--hl-cap-a); color: #000;
+}
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-fd .a11y-tech-details[open][class][class] > summary {
+  width: auto; margin: 0 -28px 8px calc(-28px - var(--caret-col));
+}
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-fd .a11y-tech-details[open][class][class] > :not(summary) { margin-inline-start: 0; }
+@media (max-width: 640px) {
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-fd .a11y-tech-details[open][class][class] { padding: 0 18px 20px calc(18px + var(--caret-col)); border-radius: 24px; }
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-fd .a11y-tech-details[open][class][class] > summary { margin: 0 -18px 8px calc(-18px - var(--caret-col)); }
+}
+@media (forced-colors: active) {
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-fd .a11y-tech-details[open][class][class] { border: 1px solid CanvasText; }
+}
 
 /* Hover underlines the title, where a pointer can hover. */
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-dn-caret-head > .a11y-dn-bar, .a11y-legal-carets > .a11y-legal-caret > .a11y-legal-row, .a11y-fd .a11y-tech-details > summary, .a11y-chat-stepfold > summary)[class]:hover { text-decoration: none; }
@@ -5719,24 +5642,6 @@
   .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-stmt .a11y-stmt-step-head > .a11y-stmt-toggle:hover > .a11y-stmt-toggle-words { text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 0.14em; }
 }
 
-/* ═══ THE SCORE'S ISSUES FIT THEIR ROW (user's instruction, 24 Nov 2026,
-   "redesign so it properly fits") ════════════════════════════════════════
-   The severity word wrapped onto a line of its own whenever a title and
-   its places filled the row, and the criterion's column was 150px for a
-   five-character number. The criterion takes one grid column (ONE 12-COLUMN GRID); the severity, first in
-   the issue cell's markup, floats to the far end of the title's first line,
-   so the title and its places wrap beside it and never push it down. */
-.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-table[class] > tbody > tr:not(:has(> .a11y-sum-table-wcag)):nth-child(n) { grid-template-columns: minmax(0, 1fr); }
-.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-table[class] > tbody > tr > .a11y-sum-table-issue[class][class] { display: block; }
-.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-table-issue[class] > .a11y-sum-table-badge[class][class] { float: right; margin: 0; padding-left: 24px; }
-.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-table-issue[class] > .a11y-sum-table-count[class] { margin-left: 0.35em; }
-@media (max-width: 640px) {
-  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-table[class] > tbody > tr:nth-child(n) { grid-template-columns: minmax(0, 1fr); }
-  /* A phone keeps the flex line, the severity under the title. */
-  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-table[class] > tbody > tr > .a11y-sum-table-issue[class][class] { display: flex; }
-  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-table-issue[class] > .a11y-sum-table-badge[class][class] { float: none; flex-basis: 100%; margin: 2px 0 0; padding-left: 0; }
-}
-
 /* ═══ EVERY PART OF AN OPENED FINDING AS ONE WHITE ROW (user's instruction,
    24 Nov 2026, "make all same white full row") ═══════════════════════════
    Who fixes this and What we found were white full-width cards; What to do
@@ -5794,11 +5699,6 @@
   .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-conf-list > .a11y-conf-row[class] {
     grid-template-columns: calc((100% - 11 * var(--grid-gap)) / 12 * 2 + var(--grid-gap)) minmax(0, 1fr) calc((100% - 11 * var(--grid-gap)) / 12 * 2 + var(--grid-gap));
     column-gap: var(--grid-gap);
-  }
-}
-@media (min-width: 641px) {
-  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-table[class] > tbody > tr:has(> .a11y-sum-table-wcag):nth-child(n) {
-    grid-template-columns: calc((100% - 8 * var(--grid-gap)) / 9) minmax(0, 1fr); column-gap: var(--grid-gap);
   }
 }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-stmt .a11y-spec-grid { column-gap: var(--grid-gap); }
@@ -5955,10 +5855,6 @@
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-counts > .a11y-sum-point:last-child[class] { margin-bottom: 0; }
 @media (max-width: 640px) {
   .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-counts > .a11y-sum-point[class] { grid-column: 1 / -1; font-size: 24px; line-height: 1.15; letter-spacing: 0.015em; }
-}
-/* On the issue titles' left edge above: past the criterion's grid column. */
-@media (min-width: 641px) {
-  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-counts > .a11y-sum-point[class] { padding-inline-start: calc((100% - 8 * var(--grid-gap)) / 9 + var(--grid-gap)); }
 }
 /* The facts after the step 1 form are the next group: 70px under it. */
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-stmt > .a11y-stmt-form + * { margin-top: 70px; }
@@ -6276,4 +6172,214 @@
 }
 @media (min-width: 641px) {
   .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-stmt .a11y-spec-grid[class] { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+
+/* ═══ THE SCORE AS A TESTER PANEL WITH ISSUE CARDS (user's reference, 25 Nov
+   2026, "design this like this", a type foundry's tester beside a column
+   of release-note cards) ═════════════════════════════════════════════════
+   Replaces the score as plain text above for the dial and the issues; How
+   the score works and the warning stay rows under it.
+   - The panel: --bubble (#efefef, dark #1c1c1e), 24px corners, 24px in.
+     Its caption is what the range means, 24px, top left; under it a white
+     window (--bubble-pill, 16px corners) with the dial and its sticker
+     centred; at the foot, centred, Copy summary as a small white pill.
+   - Beside it, a third of the width: "N issues found" at 24px, then one
+     card per issue on --card-cool (#eef3f2, black words 18.5:1; dark
+     #1c1c1e), 20px corners, 16px in, sharing the panel's height: the
+     severity as an outlined pill (its word keeps its colour), the title at
+     24px, WCAG and places at 18px, and the element's picture at the right,
+     96px with 12px corners, where the scan took one. The title's link
+     covers the card; hover underlines it, focus rings the card.
+   Under 900px of the block the cards go under the panel. */
+.a11y-widget-biz { --card-cool: #eef3f2; }
+.a11y-widget-biz[data-theme="dark"] { --card-cool: #1c1c1e; }
+@media (prefers-color-scheme: dark) {
+  .a11y-widget-biz:not([data-theme="light"]) { --card-cool: #1c1c1e; }
+}
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-top {
+  display: grid; grid-template-columns: minmax(0, 2fr) minmax(0, 1fr); gap: 24px; align-items: stretch; margin: 0;
+}
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-top > .a11y-sum-run[class] {
+  display: flex; flex-direction: column; align-items: stretch; gap: 20px; min-width: 0; margin: 0; padding: 24px;
+  border-radius: 24px; background: var(--bubble); color: var(--ink);
+}
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-top > .a11y-sum-run > .a11y-sum-verdict[class] {
+  margin: 0; padding: 0; font-size: 24px; line-height: 1.15; letter-spacing: 0.015em;
+}
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-window {
+  flex: 1 1 auto; display: grid; place-items: center; min-height: 320px; padding: 40px 24px; box-sizing: border-box;
+  border-radius: 16px; background: var(--bubble-pill);
+}
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-window > .a11y-sum-dial-card { display: flex; position: relative; max-width: 100%; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-window > .a11y-sum-dial-card:has(> .a11y-dial-sticker) { padding-inline-end: 156px; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-window .a11y-sum-dial[class] { margin: 0; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-run > .a11y-sum-actions[class] { display: flex; justify-content: center; margin: 0; padding: 0; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-run > .a11y-sum-actions > .a11y-score-copy[class][class] {
+  min-height: 34px; margin: 0; padding: 4px 14px; border: 0; border-radius: 999px;
+  background: var(--bubble-pill); color: var(--ink); font-size: 18px; line-height: 1.2; letter-spacing: 0.025em;
+}
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-run > .a11y-sum-actions > .a11y-score-copy[class][class]:hover { background: var(--hover); color: var(--hover-ink); }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-top > .a11y-score-clean[class] {
+  margin: 0; padding: 24px; border: 0; border-radius: 20px; background: var(--card-cool);
+  font-size: 24px; line-height: 1.15; letter-spacing: 0.015em;
+}
+
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-top > .a11y-sum-issues[class] {
+  display: flex; flex-direction: column; gap: 12px; min-width: 0; margin: 0; padding: 0; border: 0;
+}
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-issues > .a11y-sum-label[class] {
+  margin: 0; padding: 0; font-size: 24px; line-height: 1.15; letter-spacing: 0.015em;
+}
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-cards {
+  flex: 1 1 auto; display: flex; flex-direction: column; gap: 12px; margin: 0; padding: 0; list-style: none;
+}
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-cards > .a11y-sum-card {
+  position: relative; flex: 1 1 auto; display: grid; max-width: none; margin: 0; padding: 16px; box-sizing: border-box;
+  grid-template-columns: minmax(0, 1fr); grid-template-areas: "pill" "title" "meta";
+  align-content: start; gap: 10px 16px;
+  border-radius: 20px; background: var(--card-cool); color: var(--ink);
+}
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-cards > .a11y-sum-card[data-shot] {
+  grid-template-columns: minmax(0, 1fr) 96px; grid-template-areas: "pill shot" "title shot" "meta shot";
+}
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-cards > .a11y-sum-card::before { content: none; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-card-pill {
+  grid-area: pill; justify-self: start; padding: 1px 10px 2px; border: 1px solid var(--ink); border-radius: 999px; line-height: 1.2;
+}
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-card-pill > .a11y-sev[class][class][class] {
+  font-family: "PP Telegraf", "DejaVu Sans", sans-serif; font-size: 18px; font-weight: 200; line-height: 1.2; letter-spacing: 0.025em;
+  text-transform: none; white-space: nowrap;
+}
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-card-pill > .a11y-sev[class][class][class]::before,
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-card-pill > .a11y-sev[class][class][class]::after { content: none; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-card-title {
+  grid-area: title; min-width: 0; color: inherit; text-decoration: none; overflow-wrap: anywhere;
+  font-size: 24px; font-weight: 200; line-height: 1.15; letter-spacing: 0.015em;
+}
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-card-title::after { content: ""; position: absolute; inset: 0; border-radius: 20px; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-card-title:focus-visible { outline: none; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-card-title:focus-visible::after { outline: 2px solid var(--focus); outline-offset: -2px; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-card:hover > .a11y-sum-card-title { text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 0.14em; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-card-meta {
+  grid-area: meta; display: flex; flex-wrap: wrap; gap: 2px 16px;
+  font-size: 18px; line-height: 1.2; letter-spacing: 0.025em; font-variant-numeric: tabular-nums;
+}
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-card-shot {
+  grid-area: shot; align-self: start; display: block; width: 96px; height: 96px; max-width: none;
+  object-fit: cover; border-radius: 12px; background: var(--bubble-pill);
+}
+@container a11y-sum (max-width: 900px) {
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-top { grid-template-columns: minmax(0, 1fr); }
+}
+@media (max-width: 640px) {
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-top > .a11y-sum-run[class] { padding: 16px; gap: 16px; border-radius: 20px; }
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-window { min-height: 0; padding: 32px 12px; border-radius: 12px; }
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-window > .a11y-sum-dial-card:has(> .a11y-dial-sticker) { padding-inline-end: 106px; }
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-cards > .a11y-sum-card[data-shot] { grid-template-columns: minmax(0, 1fr) 72px; }
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-card-shot { width: 72px; height: 72px; }
+}
+@media (forced-colors: active) {
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-sum-top > .a11y-sum-run, .a11y-sum-window, .a11y-sum-card, .a11y-score-copy) { border: 1px solid CanvasText; }
+}
+
+/* ═══ THE OPENING QUESTIONS AS PALE LABEL CARDS (user's reference, 25 Nov
+   2026, "and this like this", a foundry's journal cards) ═══════════════
+   Replaces the dotted note cards above. Each card a pale cream ground,
+   --note (#fdfbd5, black words 20:1; dark the --tile #1c1c1e), no edge,
+   20px corners; the group's name at 24px top left, the question under it
+   at 18px; the criterion as a small white pill centred at the foot. Hover
+   and keyboard focus turn the card the cool grey (--card-cool) and show
+   "Ask this" as a black pill at the foot; the criterion pill steps left
+   of centre beside it. The hover is the card's own, not the question's,
+   so the pointer on the criterion pill keeps the card as it is and the
+   pill never slides out from under it. Report a barrier keeps its mint
+   and its black "Start a report" pill, centred. Other questions is a
+   grey pill (--bubble), 24px words, no edge. */
+.a11y-widget-biz { --note: #fdfbd5; --note-pill: #fff; --note-hover: #eef3f2; }
+.a11y-widget-biz[data-theme="dark"] { --note: #1c1c1e; --note-pill: #3a3a3c; --note-hover: #2c2c2e; }
+@media (prefers-color-scheme: dark) {
+  .a11y-widget-biz:not([data-theme="light"]) { --note: #1c1c1e; --note-pill: #3a3a3c; --note-hover: #2c2c2e; }
+}
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-prompts .a11y-prompt.a11y-prompt.a11y-prompt {
+  padding-bottom: 76px; border: 0; box-shadow: none;
+}
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-prompts .a11y-prompt.a11y-prompt.a11y-prompt:not(.a11y-prompt-barrier) {
+  --ink: var(--tile-ink); --paper: var(--note);
+  background: var(--note); color: var(--tile-ink);
+}
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-prompts .a11y-prompt.a11y-prompt.a11y-prompt:not(.a11y-prompt-barrier):has(> .a11y-prompt-q:enabled):is(:hover, :has(> .a11y-prompt-q:focus-visible)) {
+  --ink: var(--tile-ink); --paper: var(--note-hover);
+  background: var(--note-hover); color: var(--tile-ink); border: 0; box-shadow: none;
+}
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-prompts .a11y-prompt.a11y-prompt.a11y-prompt:has(> .a11y-prompt-q:disabled) { border: 0; outline: 1px dashed var(--tile-ink); outline-offset: -1px; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-prompts .a11y-prompt .a11y-prompt-ask { margin-top: 4px; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-prompts .a11y-prompt .a11y-prompt-wcag {
+  position: absolute; left: 50%; right: auto; bottom: 26px; translate: -50% 0; z-index: 1;
+  display: flex; align-items: center; min-height: 34px; margin: 0; padding: 0 14px; box-sizing: border-box;
+  border: 0; border-radius: 999px; background: var(--note-pill); color: var(--tile-ink);
+  font-size: 18px; font-weight: 200; line-height: 1.2; letter-spacing: 0.025em;
+}
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-prompts .a11y-prompt .a11y-prompt-wcag:enabled:hover { background: var(--hover); color: var(--hover-ink); }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-prompts .a11y-prompt .a11y-prompt-go {
+  left: 50%; right: auto; bottom: 26px; translate: -50% 0;
+  min-height: 34px; padding: 0 14px; border-radius: 999px; background: #000; color: #fff; white-space: nowrap;
+}
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-prompts .a11y-prompt:not(.a11y-prompt-barrier):has(> .a11y-prompt-q:enabled):is(:hover, :has(> .a11y-prompt-q:focus-visible)) .a11y-prompt-go { visibility: visible; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-prompts .a11y-prompt:has(> .a11y-prompt-wcag):has(> .a11y-prompt-q:enabled):is(:hover, :has(> .a11y-prompt-q:focus-visible)) .a11y-prompt-go { left: calc(50% + 4px); translate: none; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-prompts .a11y-prompt:has(> .a11y-prompt-q:enabled):is(:hover, :has(> .a11y-prompt-q:focus-visible)) > .a11y-prompt-wcag { left: auto; right: calc(50% + 4px); translate: none; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-prompts .a11y-prompt.a11y-prompt-barrier.a11y-prompt-barrier {
+  --ink: #000; --paper: var(--barrier); background: var(--barrier); color: #000; box-shadow: none;
+}
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-prompts .a11y-prompt.a11y-prompt-barrier .a11y-prompt-go[class] {
+  position: absolute; visibility: visible; margin: 0; background: #000; color: #fff;
+}
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-prompt-more .a11y-btn[class][class] {
+  min-height: 48px; padding: 0 24px; border: 0; border-radius: 999px; background: var(--bubble); color: var(--ink);
+  font-size: 24px; line-height: 1.15; letter-spacing: 0.015em;
+}
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-prompt-more .a11y-btn[class][class]:enabled:hover { background: var(--hover); color: var(--hover-ink); }
+@media (max-width: 640px) {
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-chat .a11y-prompts .a11y-prompt.a11y-prompt.a11y-prompt { padding-bottom: 64px; }
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-chat .a11y-prompts .a11y-prompt .a11y-prompt-wcag { bottom: 16px; margin: 0; }
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-chat .a11y-prompts .a11y-prompt.a11y-prompt-barrier .a11y-prompt-go[class] { display: flex; bottom: 16px; min-height: 34px; }
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-chat .a11y-prompt-more .a11y-btn[class][class] { min-height: 40px; padding: 0 18px; font-size: 18px; letter-spacing: 0.025em; }
+}
+@media (forced-colors: active) {
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-prompts .a11y-prompt.a11y-prompt.a11y-prompt { border: 1px solid CanvasText; }
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-prompts .a11y-prompt :is(.a11y-prompt-wcag, .a11y-prompt-go) { border: 1px solid ButtonText; }
+}
+
+/* ═══ THE RECENT CONVERSATIONS AS A MENU (user's reference, 25 Nov 2026,
+   "this row can look like this", a foundry's menu of big tight lines) ══
+   Each past conversation is one line at 24px, set solid (1.15), no edge,
+   no fill, no space between rows; a title longer than the line ends in an
+   ellipsis (the button's name keeps all of it). The open conversation
+   carries a small yellow pill, "Open", after its title (--plate-4, black
+   words, 18px). Hover underlines the title; focus rings the row. The bin
+   shows on the open row and on hover or focus. While a reply or a scan
+   runs, the rows that cannot be opened take a dashed underline. */
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-chats .a11y-chats-list { display: block; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-chats .a11y-chats-row[class] {
+  margin: 0; border: 0; border-radius: 0; background: none; color: var(--ink);
+}
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-chats .a11y-chats-row[class] > .a11y-chats-item[class] {
+  display: flex; align-items: center; gap: 8px; min-height: 0; margin: 0; padding: 1px 12px; border: 0; border-radius: 0;
+  background: none; color: var(--ink); font-size: 24px; line-height: 1.15; letter-spacing: 0.015em;
+}
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-chats .a11y-chats-row[class] .a11y-chats-title[class] {
+  display: block; flex: 0 1 auto; min-width: 0; -webkit-line-clamp: none; line-clamp: none;
+  overflow: hidden; white-space: nowrap; text-overflow: ellipsis; overflow-wrap: normal;
+}
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-chats .a11y-chats-open {
+  flex: none; padding: 0 8px; border-radius: 999px; background: var(--plate-4); color: var(--plate-text);
+  font-size: 18px; line-height: 1.2; letter-spacing: 0.025em;
+}
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-chats .a11y-chats-row[class] > .a11y-chats-item:enabled:hover .a11y-chats-title { text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 0.14em; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-chats .a11y-chats-row[class] > .a11y-chats-item:disabled .a11y-chats-title { text-decoration: underline dashed; text-decoration-thickness: 1px; text-underline-offset: 0.14em; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-chats .a11y-chats-row[class] > .a11y-chats-item:focus-visible { outline: 2px solid var(--focus); outline-offset: -2px; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-chats .a11y-chats-row[class] > .a11y-chats-delete[class] { width: 32px; height: 32px; background: none; color: var(--ink); }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-chats .a11y-chats-row[class] > .a11y-chats-delete[class]:enabled:hover { background: var(--hover); color: var(--hover-ink); border-radius: 50%; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-chats .a11y-chats-head { margin-bottom: 8px; }
+@media (forced-colors: active) {
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-chats .a11y-chats-open { border: 1px solid CanvasText; }
 }

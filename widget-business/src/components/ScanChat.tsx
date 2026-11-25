@@ -1447,6 +1447,10 @@ export function ScanChat({
                     onClick={() => openChat(c)}
                   >
                     <span className="a11y-chats-title">{c.title}</span>
+                    {/* The open conversation's small pill (user's
+                        reference, 25 Nov 2026, a menu's "New" pill beside
+                        its line). aria-current already says it. */}
+                    {c.id === chatId && <span className="a11y-chats-open" aria-hidden="true">{t("Open")}</span>}
                   </button>
                   <button
                     type="button"
