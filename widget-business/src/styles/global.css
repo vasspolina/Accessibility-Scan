@@ -1798,9 +1798,15 @@
   position: absolute; box-sizing: border-box; min-width: 10px; min-height: 10px; pointer-events: none;
   border: 3px solid var(--ink); outline: 3px solid var(--paper);
 }
+/* Under the picture: what it shows when it is not simply the element
+   (pictureShows), then the selector in the professional view. Each its own
+   line, at the label size. */
+.a11y-widget-biz .a11y-shot-caption { display: block; margin-top: 0.4em; }
+.a11y-widget-biz .a11y-shot-shows { display: block; font-size: 18px; line-height: 1.3; letter-spacing: 0.025em; }
 .a11y-widget-biz .a11y-shot-locator {
-  margin-top: 0.4em; font-size: 18px; line-height: 1.2; letter-spacing: 0.025em; overflow-wrap: anywhere;
+  display: block; font-size: 18px; line-height: 1.2; letter-spacing: 0.025em; overflow-wrap: anywhere;
 }
+.a11y-widget-biz .a11y-shot-shows + .a11y-shot-locator { margin-top: 0.4em; }
 .a11y-widget-biz .a11y-shot-locator strong { font-weight: 200; }
 .a11y-widget-biz .a11y-shot-locator code { font-size: inherit; overflow-wrap: anywhere; }
 .a11y-widget-biz .a11y-occurrence .a11y-shot { margin-top: 0.5em; }
@@ -5583,6 +5589,11 @@
   align-items: baseline; gap: 0; width: 100%; min-height: 0; margin: 0; padding: 0; border-radius: 0; background: none;
   font-size: 32px; line-height: 1.1; letter-spacing: 0.01em;
 }
+/* Open, the bar stays on the section's edge. The panel-era rule above
+   (margin 0 -32px, width + 64px, from when the open note was a padded grey
+   panel) out-ranks the plain row by its [data-open], and pulled an open
+   note's caret 32px out past the section title. */
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-dn-caret[data-open] .a11y-dn-caret-head > .a11y-dn-bar[class] { margin: 0; width: 100%; }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-dn-caret > .a11y-dn-detail[class] {
   --paper: var(--bubble); --tile: var(--bubble-pill);
   margin: 16px 0 0 var(--caret-col); padding: 32px; border-radius: 40px; background: var(--bubble);

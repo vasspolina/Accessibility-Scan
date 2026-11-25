@@ -102,6 +102,10 @@
         elementSnippet: '<span class="legal">All rights reserved</span>',
         description: "Text has a contrast of 3.2:1, below the 4.5:1 minimum.",
         suggestedFix: "Darken the text colour until it reaches 4.5:1.",
+        // A picture a fallback took: the part of the page the element is
+        // folded into, with the line under it saying so.
+        elementScreenshot: TINY_JPEG,
+        pictureShows: "container",
       }),
       finding({
         id: "f3",

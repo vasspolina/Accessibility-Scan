@@ -86,6 +86,13 @@ export const accessibilityFindingSchema = z.object({
     .enum(["hidden", "offscreen", "missing", "too-large", "no-usable-image", "not-attempted", "unreachable"])
     .optional(),
   pictureFrame: z.string().optional(),
+  // Set when the picture is not simply the element, because the element
+  // could not be photographed on its own: "container", the visible part of
+  // the page a hidden element is folded into; "focused", a skip link shown
+  // with the keyboard on it; "top", the top of a region too tall to picture
+  // whole; "covered", the screen at the element's spot with something lying
+  // over it. The widget says which under the picture.
+  pictureShows: z.enum(["container", "focused", "top", "covered"]).optional(),
   // One sentence from the age-inclusive review on how this measured finding
   // lands for visitors past sixty. Its own field, not folded into the
   // description: rules with a plain-language account show that account
