@@ -412,12 +412,14 @@ export function ScreenReaderPreview({ script }: { script: ScreenReaderScript }) 
                   <span className="a11y-sr-line-text">{line.text}</span>
                   <span className="a11y-sr-only">. {t("Play aloud from this line")}</span>
                   {line.issue && <span className="a11y-sr-issue">{line.issue}</span>}
+                  {line.issue && <Icon name="warning--alt" className="a11y-sr-flag" />}
                 </button>
               ) : (
                 <p className="a11y-sr-row" data-issue={line.issue ? "true" : undefined}>
                   <span className="a11y-sr-num" aria-hidden="true">{i + 1}</span>
                   <span className="a11y-sr-line-text">{line.text}</span>
                   {line.issue && <span className="a11y-sr-issue">{line.issue}</span>}
+                  {line.issue && <Icon name="warning--alt" className="a11y-sr-flag" />}
                 </p>
               )}
             </li>

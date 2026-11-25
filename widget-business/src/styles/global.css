@@ -5908,3 +5908,177 @@
 @media (forced-colors: active) {
   .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz a.a11y-learn-more { background: none; text-decoration: underline 1px; text-underline-offset: calc(0.15em + 2px); }
 }
+
+/* ═══ THE SCREEN READER SIMULATION AS A FORM PANEL (user's reference,
+   25 Nov 2026, "design this like this", with a type foundry's trial form:
+   a violet panel with round corners, white pill rows each with a ring at
+   the start and a lock at the end, a darker bar holding a caret, centred
+   capital labels, a black pill at the foot) ═════════════════════════════
+   The section is one rounded panel, shut or open, in periwinkle with
+   black words in both themes: #a19cff measures 8.7:1 with black; the bar
+   is #8f8af5, 7.1:1. The reference's violet is lightened so black words
+   keep the 7:1 the highlights keep (#7868e6 is 4.9:1 with black, 4.3:1
+   with white), and kept bluer (hue 243) than the statement form's
+   lavender #cdb8ff (hue 258), which stands right under this section. The fold's toggle is the darker bar with the triangle and the
+   problem count at its end; in the conversation, where there is no fold,
+   the title is the panel's capital line, as Email me this report's is.
+   Play is the black pill, centred under the bar; the filter is a line
+   with a ring for its box; "What you'd hear" is the capital label over
+   the lines; each line is a pill on the field fill (white, dark
+   #2c2c2e) with its number in a 1px ring, a line that says nothing
+   useful carrying the warning mark at its end as the reference's rows
+   carry the lock, and its note under the words in the red word colour.
+   The line being read is a black pill. Two lines to a row where the list
+   is 760px or wider, one under that; the order runs left to right and
+   the numbers say it. Focus: the dark green on the periwinkle is 2.1:1, so
+   the panel takes a darker green, #0a3d1a (5.1:1 on the panel, 4.2:1 on
+   the bar, 12:1 on white); on the black line being read, and on the dark
+   pills in dark, the light focus green, #6fdc8c. */
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-section.a11y-sr[class][class][class] {
+  --sr-brand: #a19cff; --sr-bar: #8f8af5;
+  --ink: #000; --paper: var(--sr-brand); --tile: var(--tile-fill); --focus: #0a3d1a;
+  box-sizing: border-box; padding: 40px 64px 48px; border: 0; border-radius: 64px;
+  background: var(--sr-brand); color: #000; text-align: center;
+}
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-section.a11y-sr[class][class][class] > :not(.a11y-section-head),
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-section.a11y-sr[class][class][class] > .a11y-section-head > * { margin-inline-start: 0; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-section.a11y-sr[class][class][class] .a11y-accordion-row { margin: 0; padding: 0; border: 0; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-section.a11y-sr[class][class][class] .a11y-accordion-row > .a11y-accordion-title { margin: 0; }
+
+/* The bar: the fold's toggle, shut or open. */
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sr[class] .a11y-accordion-title .a11y-accordion-head[class][class] {
+  display: flex; flex-wrap: wrap; align-items: center; gap: 4px 0; box-sizing: border-box; width: 100%; min-height: 80px;
+  margin: 0; padding: 16px 36px; border: 0; border-radius: 999px; background: var(--sr-bar); color: #000; text-align: start;
+  font-size: 32px; line-height: 1.1; letter-spacing: 0.01em;
+}
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sr[class] .a11y-accordion-title .a11y-accordion-head[class][class]:enabled:hover { background: var(--sr-bar); color: #000; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sr[class] .a11y-accordion-title .a11y-accordion-head[class][class]::before { align-self: center; margin-top: 0; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sr[class] .a11y-accordion-title .a11y-accordion-head[class][class] > .a11y-status-chip[class] {
+  margin: 0 0 0 auto; padding: 0 0 0 24px; color: #000; font-size: 24px; line-height: 1.15; letter-spacing: 0.015em; text-align: end;
+}
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sr[class] .a11y-accordion-title .a11y-accordion-head[class][class]:focus-visible { outline: 2px solid var(--focus); outline-offset: -2px; }
+
+/* In the conversation: the title as the panel's capital line. */
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sr[class] h2.a11y-section-title:not(.a11y-accordion-title)[class] {
+  margin: 8px 0 0; color: #000; font-size: 32px; font-weight: 200; line-height: 1.1; letter-spacing: 0.04em;
+  text-align: center; text-transform: uppercase; font-feature-settings: "case";
+}
+
+/* Play, the transport, the status, the keys: centred under the bar. */
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sr[class] .a11y-sr-bar[class] {
+  justify-content: center; gap: 8px; margin: 32px 0 0; padding: 0; background: none; color: #000;
+}
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sr[class] .a11y-sr-bar[data-active][class] {
+  padding-block: 12px; background: var(--sr-brand);
+}
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sr[class] .a11y-sr-bar[class] .a11y-sr-play[class]:enabled {
+  justify-content: center; min-height: 56px; padding: 10px 30px; border: 1px solid #000; border-radius: 999px;
+  background: #000; color: #fff; font-size: 24px; line-height: 1.15; letter-spacing: 0.015em; text-align: center;
+}
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sr[class] .a11y-sr-bar[class] .a11y-sr-play[class]:enabled:hover { border-color: var(--hover); background: var(--hover); color: var(--hover-ink); }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sr[class] .a11y-sr-bar[class] .a11y-sr-play[class]:focus-visible { outline: 2px solid #6fdc8c; outline-offset: -4px; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sr[class] .a11y-sr-bar[class] .a11y-sr-play[class] > svg { font-size: 24px; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sr[class] .a11y-sr-bar[class] :is(.a11y-sr-ctl, .a11y-skip-link)[class],
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sr[class] .a11y-show-all[class] {
+  justify-content: center; min-height: 40px; padding: 6px 18px; border: 1px solid var(--tile-fill); border-radius: 999px;
+  background: var(--tile-fill); color: var(--tile-ink); font-size: 18px; line-height: 1.2; letter-spacing: 0.025em;
+}
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sr[class] .a11y-sr-bar[class] :is(.a11y-sr-ctl, .a11y-skip-link)[class]:enabled:hover,
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sr[class] .a11y-show-all[class]:enabled:hover { border-color: var(--hover); background: var(--hover); color: var(--hover-ink); }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sr[class] .a11y-sr-bar[class] :is(.a11y-sr-status, .a11y-sr-keys) { flex-basis: 100%; margin: 0; color: #000; text-align: center; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sr[class] .a11y-sr-bar[class] span.a11y-sr-status:empty { display: none; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-report .a11y-sr[class] > p.a11y-sr-caveat[class],
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sr[class] > p.a11y-sr-caveat[class] {
+  margin: 16px 0 0; color: #000; font-size: 18px; line-height: 1.4; letter-spacing: 0.025em; text-align: center;
+}
+
+/* The filter: a line with a ring for its box, the check in the ring when on. */
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sr[class] .a11y-sr-bar.a11y-sr-tools[class] { justify-content: center; gap: 16px 32px; margin: 32px 0 0; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sr[class] .a11y-sr-bar[class] .a11y-sr-filter[class] {
+  position: relative; gap: 12px; min-height: 40px; padding: 0; border: 0; border-radius: 0; background: none; color: #000;
+  font-size: 24px; line-height: 1.15; letter-spacing: 0.015em;
+}
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sr[class] .a11y-sr-bar[class] .a11y-sr-filter[class]::before {
+  content: ""; flex: none; box-sizing: border-box; width: 28px; height: 28px; border: 1px solid #000; border-radius: 50%; background: none;
+}
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sr[class] .a11y-sr-bar[class] .a11y-sr-filter[class]:has(:checked)::before { background: #000; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sr[class] .a11y-sr-bar[class] .a11y-sr-filter[class] > svg {
+  position: absolute; inset-inline-start: 5px; top: 50%; translate: 0 -50%; font-size: 18px; color: #fff;
+}
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sr[class] .a11y-sr-bar[class] .a11y-sr-filter[class]:hover { border: 0; background: none; color: #000; text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 0.14em; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sr[class] .a11y-sr-bar[class] .a11y-sr-filter[class]:has(:focus-visible) { outline: 2px solid var(--focus); outline-offset: 4px; }
+
+/* "What you'd hear": the capital label over the lines. */
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sr[class] .a11y-sr-log { container: a11y-srlog / inline-size; margin: 40px 0 0; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sr[class] .a11y-sr-log > .a11y-sr-log-heads {
+  display: block; margin: 0 0 20px; color: #000; font-size: 18px; line-height: 1.4; letter-spacing: 0.04em;
+  text-align: center; text-transform: uppercase; font-feature-settings: "case";
+}
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sr[class] .a11y-sr-log > .a11y-sr-log-heads > :not(:nth-child(2)) { display: none; }
+
+/* The lines: pills, two to a row on a wide list. */
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sr[class] .a11y-sr-list[class] {
+  display: grid; grid-template-columns: minmax(0, 1fr); gap: 16px 20px; margin: 0; padding: 0; list-style: none;
+}
+@container a11y-srlog (min-width: 760px) {
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sr[class] .a11y-sr-list[class] { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sr[class] .a11y-sr-list > li { display: flex; min-width: 0; margin: 0; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sr[class] .a11y-sr-row[class][class] {
+  display: grid; grid-template-columns: 32px minmax(0, 1fr) auto; align-items: center; gap: 4px 16px;
+  box-sizing: border-box; width: 100%; min-height: 80px; margin: 0; padding: 12px 32px 12px 20px;
+  border: 0; border-radius: 40px; background: var(--tile-fill); color: var(--tile-ink); text-align: start; text-decoration: none;
+}
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sr[class] .a11y-sr-row[class][class] > .a11y-sr-num[class] {
+  grid-column: 1; grid-row: 1; align-self: center; box-sizing: border-box; width: 32px; height: 32px; margin: 0; padding: 0;
+  border: 1px solid currentColor; border-radius: 50%; background: none; color: inherit;
+  font-size: 18px; line-height: 1; letter-spacing: 0;
+}
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sr[class] .a11y-sr-row[class][class] > .a11y-sr-line-text { grid-column: 2; grid-row: 1; font-size: 24px; line-height: 1.15; letter-spacing: 0.015em; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sr[class] .a11y-sr-row[class][class] > .a11y-sr-issue[class] {
+  grid-column: 2; grid-row: 2; margin: 0; padding: 0; background: none; color: var(--word-red, #b42800);
+  font-size: 18px; line-height: 1.3; letter-spacing: 0.025em;
+}
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sr[class] .a11y-sr-row[class][class] > .a11y-sr-flag { grid-column: 3; grid-row: 1; font-size: 24px; color: inherit; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sr[class] .a11y-sr-row[class][class]:is(button):enabled:hover { background: var(--hover); color: var(--hover-ink); }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sr[class] .a11y-sr-row[class][class]:focus-visible { outline: 2px solid var(--focus); outline-offset: -2px; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sr[class] .a11y-sr-row[aria-current="true"][class][class],
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sr[class] .a11y-sr-row[aria-current="true"][class][class]:enabled:hover { background: #000; color: #fff; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sr[class] .a11y-sr-row[aria-current="true"][class][class] > .a11y-sr-issue[class] { color: inherit; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sr[class] .a11y-sr-row[aria-current="true"][class][class]:focus-visible { outline-color: #6fdc8c; }
+
+/* Show all and the truncation note, centred at the foot. */
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sr[class] .a11y-show-all[class] { display: flex; width: fit-content; margin: 32px auto 0; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sr[class] .a11y-sr-note { margin: 16px 0 0; color: #000; font-size: 18px; line-height: 1.4; letter-spacing: 0.025em; text-align: center; }
+
+/* Dark: the pills are the dark field fill, so their focus is the light green. */
+@media (prefers-color-scheme: dark) {
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz:not([data-theme="light"]) .a11y-sr[class] :is(.a11y-sr-row, .a11y-sr-ctl, .a11y-skip-link, .a11y-show-all) { --focus: #6fdc8c; }
+}
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz[data-theme="dark"] .a11y-sr[class] :is(.a11y-sr-row, .a11y-sr-ctl, .a11y-skip-link, .a11y-show-all) { --focus: #6fdc8c; }
+
+@media (max-width: 640px) {
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-section.a11y-sr[class][class][class] { padding: 20px 16px 28px; border-radius: 36px; }
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sr[class] .a11y-accordion-title .a11y-accordion-head[class][class] {
+    display: grid; grid-template-columns: var(--caret-col) minmax(0, 1fr); align-items: start; row-gap: 4px;
+    min-height: 60px; padding: 14px 22px; border-radius: 30px; font-size: 24px; line-height: 1.15; letter-spacing: 0.015em;
+  }
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sr[class] .a11y-accordion-title .a11y-accordion-head[class][class]::before { align-self: start; margin-top: calc((1lh - 0.68em) / 2); }
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sr[class] .a11y-accordion-title .a11y-accordion-head[class][class] > .a11y-status-chip[class] { grid-column: 2; margin: 0; padding: 0; font-size: 18px; letter-spacing: 0.025em; text-align: start; }
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sr[class] h2.a11y-section-title:not(.a11y-accordion-title)[class] { font-size: 24px; letter-spacing: 0.04em; }
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sr[class] .a11y-sr-bar[class] { margin-top: 24px; }
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sr[class] .a11y-sr-bar.a11y-sr-tools[class] { margin-top: 24px; }
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sr[class] .a11y-sr-bar[class] .a11y-sr-filter[class] { font-size: 18px; letter-spacing: 0.025em; }
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sr[class] .a11y-sr-log { margin-top: 28px; }
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sr[class] .a11y-sr-list[class] { gap: 10px; }
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sr[class] .a11y-sr-row[class][class] { gap: 4px 12px; min-height: 60px; padding: 10px 18px 10px 12px; border-radius: 30px; }
+}
+@media (forced-colors: active) {
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-section.a11y-sr[class][class][class],
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sr[class] :is(.a11y-sr-row, .a11y-accordion-head)[class][class] { border: 1px solid CanvasText; }
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sr[class] .a11y-sr-bar[class] .a11y-sr-filter[class]::before { border-color: CanvasText; }
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sr[class] .a11y-sr-bar[class] .a11y-sr-filter[class]:has(:checked)::before { background: CanvasText; }
+}
+@media print {
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-section.a11y-sr[class][class][class] { padding: 0; border-radius: 0; background: none; }
+}
