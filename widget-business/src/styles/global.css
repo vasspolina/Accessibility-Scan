@@ -5522,8 +5522,17 @@
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-legal-carets > .a11y-legal-caret > .a11y-legal-row :is(.a11y-legal-mark, .a11y-legal-row-meaning)[class][class] {
   color: #000; font-size: 32px; line-height: 1.1; letter-spacing: 0.01em;
 }
-.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-legal-carets > .a11y-legal-caret > .a11y-legal-row .a11y-legal-mark[class][class] { margin-left: auto; }
-.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-legal-carets > .a11y-legal-caret > .a11y-legal-row .a11y-legal-row-meaning ~ .a11y-legal-mark[class][class]::after { content: ","; }
+/* Three columns after the triangle: the sentence, the count in the middle
+   of the row ("numbers can go in the middle"), the small print at the end. */
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-legal-carets > .a11y-legal-caret > .a11y-legal-row[class][class][class][class] {
+  display: grid; grid-template-columns: var(--caret-col) minmax(0, 1fr) auto minmax(0, 1fr); column-gap: 0;
+}
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-legal-carets > .a11y-legal-caret > .a11y-legal-row[class][class][class]::before { grid-column: 1; grid-row: 1; order: 0; margin-inline-end: 0; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-legal-carets > .a11y-legal-caret > .a11y-legal-row .a11y-legal-row-label[class][class] { grid-column: 2; grid-row: 1; order: 0; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-legal-carets > .a11y-legal-caret > .a11y-legal-row .a11y-legal-count[class][class] { grid-column: 3; grid-row: 1; order: 0; padding: 0 24px; text-align: center; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-legal-carets > .a11y-legal-caret > .a11y-legal-row > .a11y-legal-row-desc { grid-column: 4; grid-row: 1; order: 0; justify-self: end; text-align: end; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-legal-carets > .a11y-legal-caret > .a11y-legal-row > .a11y-legal-row-desc > :is(.a11y-legal-mark, .a11y-legal-row-meaning)[class][class] { margin: 0; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-legal-carets > .a11y-legal-caret > .a11y-legal-row > .a11y-legal-row-desc > .a11y-legal-mark:has(+ .a11y-legal-row-meaning)[class][class]::after { content: ", "; }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-legal-carets > .a11y-legal-caret > .a11y-legal-group[class] {
   box-sizing: border-box; width: calc(100% - var(--caret-col)); margin: 20px 0 0 var(--caret-col); padding: 0;
   border-radius: 0; background: none; color: #000;
@@ -5537,7 +5546,9 @@
   .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-legal-carets > .a11y-legal-caret[class][class] { padding: 12px 18px; border-radius: 24px; }
   .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-legal-carets > .a11y-legal-caret[data-open][class][class] { padding: 12px 18px 20px; }
   .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-legal-carets > .a11y-legal-caret > .a11y-legal-row :is(.a11y-legal-mark, .a11y-legal-row-meaning)[class][class] { font-size: 18px; line-height: 1.4; letter-spacing: 0.025em; }
-  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-legal-carets > .a11y-legal-caret > .a11y-legal-row .a11y-legal-mark[class][class] { margin-left: 0; }
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-legal-carets > .a11y-legal-caret > .a11y-legal-row[class][class][class][class] { grid-template-columns: var(--caret-col) minmax(0, 1fr) auto; row-gap: 2px; }
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-legal-carets > .a11y-legal-caret > .a11y-legal-row .a11y-legal-count[class][class] { padding: 0 0 0 12px; }
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-legal-carets > .a11y-legal-caret > .a11y-legal-row > .a11y-legal-row-desc { grid-column: 2 / -1; grid-row: 2; justify-self: start; text-align: start; }
 }
 @media (forced-colors: active) {
   .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-legal-carets > .a11y-legal-caret[class][class] { border: 1px solid CanvasText; }
@@ -5593,4 +5604,53 @@
     font-size: 24px; line-height: 1.15; letter-spacing: 0.015em;
   }
   .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-dn-caret > .a11y-dn-detail[class] { padding: 20px; border-radius: 28px; }
+}
+
+/* ═══ THE STATEMENT DRAFT UNDER A CARET (user's instructions, 24 Nov 2026,
+   "make into carret and add copy button on top of it", "make font smaller
+   for statement") ═══════════════════════════════════════════════════════
+   Copy stands first, an ordinary button, so the draft can be taken shut.
+   Under it the draft's title is a caret row like a finding's: the solid
+   triangle in the 35px column, "The statement" at 32px. Opened, the text
+   sits in the findings' round panel under the title, at 18px. The card's
+   tile ground is gone; the panel is the only ground. */
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-stmt .a11y-stmt-card {
+  --ink: inherit; --paper: inherit; padding: 0; border-radius: 0; background: none; color: var(--ink);
+}
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-stmt .a11y-stmt-card > .a11y-stmt-code-bar {
+  position: static; margin: 0 0 16px;
+}
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-stmt .a11y-stmt-card > .a11y-stmt-card-title { margin: 0; padding: 0; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-stmt .a11y-stmt-toggle {
+  display: flex; align-items: baseline; width: 100%; min-height: 0; margin: 0; padding: 0; border: 0; border-radius: 0;
+  background: none; color: var(--ink); text-align: start; cursor: pointer;
+  font-family: "PP Telegraf", "DejaVu Sans", sans-serif; font-size: 32px; font-weight: 200; line-height: 1.1; letter-spacing: 0.01em;
+}
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-stmt .a11y-stmt-toggle:enabled:hover { background: none; color: var(--ink); }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-stmt .a11y-stmt-toggle::before {
+  content: ""; flex: none; align-self: flex-start; width: 0.42em; height: 0.68em; background: currentColor;
+  margin: calc((1lh - 0.68em) / 2) calc(var(--caret-col) - 0.42em) 0 0; transition: transform 120ms ease;
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='12 8 10 16'%3E%3Cpath d='M12 8 22 16 12 24z'/%3E%3C/svg%3E") center / contain no-repeat;
+  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='12 8 10 16'%3E%3Cpath d='M12 8 22 16 12 24z'/%3E%3C/svg%3E") center / contain no-repeat;
+}
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-stmt .a11y-stmt-toggle[aria-expanded="true"]::before { transform: rotate(90deg); }
+@media (hover: hover) {
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-stmt .a11y-stmt-toggle:hover { text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 0.14em; }
+}
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-stmt .a11y-stmt-card > .a11y-stmt-code {
+  --paper: var(--bubble); margin: 16px 0 0 var(--caret-col); padding: 32px; border-radius: 40px; background: var(--bubble);
+}
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-stmt .a11y-stmt-card > .a11y-stmt-code[hidden] { display: none; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-stmt .a11y-stmt-card .a11y-stmt-text {
+  font-size: 18px; line-height: 1.4; letter-spacing: 0.025em;
+}
+@media (max-width: 640px) {
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-stmt .a11y-stmt-toggle { font-size: 24px; line-height: 1.15; letter-spacing: 0.015em; }
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-stmt .a11y-stmt-card > .a11y-stmt-code { padding: 20px; border-radius: 28px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-stmt .a11y-stmt-toggle::before { transition: none; }
+}
+@media print {
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-stmt .a11y-stmt-card > .a11y-stmt-code[hidden] { display: block; }
 }

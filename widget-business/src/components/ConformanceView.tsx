@@ -302,12 +302,18 @@ export function ConformanceView({
                   aria-expanded={open}
                   onClick={() => toggleGroup(r.filter)}
                 >
+                  {/* Read left to right as drawn: the sentence, the count in
+                      the middle of the row (user's instruction, 24 Nov 2026,
+                      "numbers can go in the middle"), then the small print,
+                      its parts parted by a comma. */}
                   <span className="a11y-legal-col-result">
                     <span className="a11y-legal-row-label">{r.label}</span>
-                    {r.meaning &&<span className="a11y-legal-row-meaning">{r.meaning}</span>}
-                    <span className={`a11y-legal-mark a11y-legal-mark-${r.severity}`}>{r.mark}</span>
                   </span>
                   <span className="a11y-legal-count">{r.n}</span>
+                  <span className="a11y-legal-row-desc">
+                    <span className={`a11y-legal-mark a11y-legal-mark-${r.severity}`}>{r.mark}</span>
+                    {r.meaning && <span className="a11y-legal-row-meaning">{r.meaning}</span>}
+                  </span>
                 </button>
                 <div id={`${panelId}-${r.key}`} className="a11y-conf-panel a11y-legal-group" hidden={!open}>
                   {rows.length === 0 ? (

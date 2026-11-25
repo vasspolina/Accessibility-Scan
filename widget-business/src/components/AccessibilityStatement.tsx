@@ -279,6 +279,10 @@ export function AccessibilityStatement({ report }: { report: AccessibilityReport
   const [organisation, setOrganisation] = useState("");
   const [contactEmail, setContactEmail] = useState("");
   const [copied, setCopied] = useState(false);
+  /* The draft folds under a caret, shut at first (user's instruction, 24
+     Nov 2026, "make into carret and add copy button on top of it"): Copy
+     sits above it, so the text can be taken without opening it. */
+  const [draftOpen, setDraftOpen] = useState(false);
 
   const failing = report.conformance?.failed ?? 0;
   // Below roughly a fifth of criteria failing reads as "partially conformant";
@@ -430,16 +434,24 @@ export function AccessibilityStatement({ report }: { report: AccessibilityReport
           draws it. Copy used to sit in a row above the text with no visible
           tie to it; on the bar it is unmistakably the control for the block
           it sits on. */}
-      <div className="a11y-stmt-card">
-        <h4 className="a11y-stmt-card-title">{t("The statement")}</h4>
-        <div className="a11y-stmt-code">
-          <div className="a11y-stmt-code-bar">
-            {/* No "Generated statement" label here: the card title above
-                already names the block. */}
-            <button type="button" className="a11y-sr-play" onClick={copy}>
-              {copied ? t("Copied") : t("Copy")}
-            </button>
-          </div>
+      <div className="a11y-stmt-card" data-open={draftOpen || undefined}>
+        <div className="a11y-stmt-code-bar">
+          <button type="button" className="a11y-sr-play" onClick={copy}>
+            {copied ? t("Copied") : t("Copy")}
+          </button>
+        </div>
+        <h4 className="a11y-stmt-card-title">
+          <button
+            type="button"
+            className="a11y-stmt-toggle"
+            aria-expanded={draftOpen}
+            aria-controls="a11y-stmt-draft"
+            onClick={() => setDraftOpen((v) => !v)}
+          >
+            {t("The statement")}
+          </button>
+        </h4>
+        <div className="a11y-stmt-code" id="a11y-stmt-draft" hidden={!draftOpen}>
           {/* Focusable on purpose. The block scrolls (overflow: auto), and a
               scrollable box that can't be focused is unreachable by keyboard —
               you can see there's more text and have no way to get to it. Giving
