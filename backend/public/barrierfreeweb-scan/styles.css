@@ -566,6 +566,19 @@ body { overflow-x: clip; }   /* the bands run 100vw, the scrollbar included */
 }
 .pack__name > span { display: block; max-width: 11em; }
 .pack__end { align-self: end; justify-self: end; text-align: right; }
+/* The benefit names in PP Lettra Mono (user's instruction, 25 Nov 2026,
+   "change font to letra", on Legal protection). Lettra is 0.58em a letter
+   (measured on PPLettraMono-Ultralight.otf), so the longest line, "and
+   discoverability" at 19 letters, is 11em: at 7.5vw it is 83vw, inside the
+   band's 92vw. On a phone the longest word, "discoverability", is 8.7em, so
+   9.5vw keeps it inside 375px less the 16px sides (310 of 343px) and 320px
+   (264 of 288px). The face has no italic, so the first part is upright. */
+.pack__name {
+  font-family: var(--mono); font-weight: 200;
+  font-size: clamp(32px, 7.5vw, 144px); line-height: 1; letter-spacing: 0;
+}
+.pack__name .pack__it { font-style: normal; }
+.pack__name > span { max-width: none; }
 
 /* The wall: the word in rows, every other row slid along, behind one box. */
 .wall {
@@ -613,7 +626,7 @@ body { overflow-x: clip; }   /* the bands run 100vw, the scrollbar included */
 @media (max-width: 671px) {
   .callouts { margin-top: var(--s10); }
   .pack { min-height: 0; gap: var(--s06); }
-  .pack__name { font-size: clamp(40px, 12vw, 64px); row-gap: var(--s05); }
+  .pack__name { font-size: clamp(28px, 9.5vw, 48px); row-gap: var(--s05); }
   .wall { min-height: 0; padding-block: var(--s10); }
   .wall__words { font-size: 30vw; }
   .box { width: min(86vw, 340px); }
