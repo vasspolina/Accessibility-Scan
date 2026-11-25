@@ -7456,3 +7456,33 @@
   font-family: "PP Lettra Mono", ui-monospace, "SF Mono", Menlo, Consolas, "DejaVu Sans Mono", monospace; font-synthesis: none;
   font-weight: 200; letter-spacing: 0;
 }
+
+/* ONE GAP BETWEEN BUTTONS (user's instruction, 25 Nov 2026, "fix chat,
+   make space between buttons consistent across website", on the chat box).
+   Measured before, at 1440px and 375px on every fixture state with every
+   fold open: buttons side by side stood 4px apart in most groups (the
+   report's pills under the box, New chat and Report a barrier, the
+   professional filters and tabs, the ledger's Show all and Export), but
+   16px inside the chat box (Voice control, Scan a page behind a login,
+   Back), 8px in the colour vision views, the statement's Copy and
+   Download, the barrier report's picks and actions and the screen reader
+   simulation's controls, and the box stood 8px over the pills under it
+   (12px on a phone). On a phone the ledger's Show all and Export wrapped
+   with 0px between the lines. Every group is now 4px, both ways, and the
+   box 4px over its pills. Send keeps its own track at the row's end, so
+   the gap before it is the row's, not this one. */
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-chat-box-start, .a11y-chat-suggest, .a11y-sim-controls, .a11y-stmt-actions, .a11y-barrier-picks, .a11y-barrier-actions, .a11y-sr-transport, .a11y-sr-tools)[class][class] {
+  gap: var(--cds-spacing-02);
+}
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-chat-composer > .a11y-chat-suggest[class][class] { margin-top: var(--cds-spacing-02); }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-show-all + .a11y-undecided-export[class][class] { margin-block-start: var(--cds-spacing-02); }
+@media (max-width: 671px) {
+  /* The pills' own 4px padding is room for the focus ring of a row that
+     scrolls sideways; it is the 4px from the box. */
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-chat-composer > .a11y-chat-suggest[class][class] { margin-top: 0; }
+}
+@media (max-width: 1055px) {
+  /* The Conversations toggle and Language share a line where the panel is
+     folded; at 375px Language wrapped under the toggle with 0px between. */
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-chat-layout > .a11y-chats[class][class] { gap: var(--cds-spacing-02); }
+}
