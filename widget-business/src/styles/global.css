@@ -7038,3 +7038,136 @@
 @media print {
   .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-code-fix[class] > .a11y-copy-btn[class] { display: none; }
 }
+
+/* ═══ THE SCAN'S SETTINGS AS A FORM PANEL OF PILLS (user's reference,
+   25 Nov 2026, "design this like this", a type foundry's trial-font
+   picker: a coloured panel, a centred sentence at the top, white pill rows
+   two to a line, a ring at the start of each, a small outlined badge at
+   the end of some) ════════════════════════════════════════════════════
+   This scan (ScanSettings, with the account rows inside it) is one panel
+   in the studio blue #48a0da, black words in both themes (7.3:1), as the
+   statement's facts are; the reference's violet has no place in the
+   studio palette, and this is its nearest. "This scan" is the panel's
+   centred line at 32px. Each row is a centred capital label at 18px over
+   its pills; Report style, AI review and Scope are two pills to a line,
+   one under 560px of panel. A pill is the field fill (white, dark
+   #2c2c2e), 999px corners, 64px tall (56px on a phone), its words at
+   24px, a 28px ring at its start: filled with a check on the setting in
+   force, empty on the other choice. The setting in force for AI review
+   and Scope is a state, not a button, so it takes no hover; the other is
+   the button that runs the scan again, and "Takes a few minutes" is its
+   badge at the end, 1px outlined, 18px. Hover is the --hover yellow,
+   black words; disabled is dashed. The Language select is a white pill
+   across the panel with its helper under it; the account field is a white
+   pill, its buttons black pills. Focus on the blue is #0a3d1a (4.3:1),
+   inside a white pill the same (12:1), and the light green on dark pills. */
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-settings[class] {
+  --ink: #000; --paper: #48a0da; --focus: #0a3d1a;
+  container: a11y-settings-panel / inline-size;
+  display: grid; grid-template-columns: minmax(0, 1fr); gap: var(--cds-spacing-07); box-sizing: border-box; min-width: 0;
+  padding: var(--cds-spacing-08) var(--cds-spacing-08) var(--cds-spacing-09); border: 0; border-radius: var(--r-panel);
+  background: #48a0da; color: #000;
+}
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-settings[class] > .a11y-settings-heading[class] {
+  margin: 0 0 var(--cds-spacing-03); padding: 0; border: 0; color: #000; text-align: center;
+  font-size: 32px; font-weight: 200; line-height: 1.1; letter-spacing: 0.01em;
+}
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-settings[class] > .a11y-settings-row[class] {
+  display: block; justify-self: stretch; width: auto; max-width: none; margin: 0; padding: 0; border: 0;
+}
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-settings[class] > .a11y-settings-row[class] > * { width: auto; max-width: none; justify-self: stretch; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-settings[class] > .a11y-settings-row[class] > .a11y-select2 > .a11y-select2-label[class],
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-settings[class] > .a11y-settings-row[class] > .a11y-settings-label[class] {
+  display: block; justify-self: stretch; width: auto; margin: 0 0 var(--cds-spacing-04); color: #000; text-align: center;
+  font-size: 18px; font-weight: 200; line-height: 1.4; letter-spacing: 0.04em; text-transform: uppercase; font-feature-settings: "case";
+}
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-settings[class] > .a11y-settings-row[class] > :is(.a11y-select2, .a11y-input) { display: block; max-width: none; }
+/* The account field's own label says "Account key" right under the row's
+   "Account": kept for a screen reader, clipped for the eye. */
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-settings[class] > .a11y-settings-row[class] > .a11y-input > .a11y-input-label[class] {
+  position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0; overflow: hidden; clip-path: inset(50%); white-space: nowrap;
+}
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-settings[class] > .a11y-settings-row[class] > * + * { margin-top: var(--cds-spacing-04); }
+
+/* The pairs. */
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-settings[class] .a11y-settings-switch[class] {
+  display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; margin: 0;
+}
+@container a11y-settings-panel (max-width: 560px) {
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-settings[class] .a11y-settings-switch[class] { grid-template-columns: minmax(0, 1fr); }
+}
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-settings[class] .a11y-settings-opt[class][class] {
+  display: flex; align-items: center; gap: var(--cds-spacing-05); box-sizing: border-box; width: 100%; min-width: 0; min-height: 64px; margin: 0;
+  padding: var(--cds-spacing-03) var(--cds-spacing-06) var(--cds-spacing-03) var(--cds-spacing-05);
+  border: 1px solid var(--tile-fill); border-radius: 999px; background: var(--tile-fill); color: var(--tile-ink); text-align: start;
+  font-size: 24px; font-weight: 200; line-height: 1.15; letter-spacing: 0.015em;
+}
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-settings[class] .a11y-settings-opt[class][class] > .a11y-settings-words { flex: 1 1 auto; min-width: 0; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-settings[class] button.a11y-settings-opt[class][class]:enabled:hover { border-color: var(--hover); background: var(--hover); color: var(--hover-ink); }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-settings[class] button.a11y-settings-opt[class][class]:disabled { border: 1px dashed currentColor; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-settings[class] button.a11y-settings-opt[class][class]:focus-visible { outline: 2px solid var(--focus); outline-offset: -2px; }
+
+/* The ring, and the badge at the end. */
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-settings[class] .a11y-settings-ring {
+  display: inline-flex; flex: none; align-items: center; justify-content: center; box-sizing: border-box; width: 28px; height: 28px;
+  border: 1px solid currentColor; border-radius: 50%; background: none;
+}
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-settings[class] .a11y-settings-ring:has(> svg) { background: currentColor; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-settings[class] .a11y-settings-ring > svg { font-size: 18px; color: var(--tile-fill); }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-settings[class] button.a11y-settings-opt[class][class]:enabled:hover .a11y-settings-ring > svg { color: var(--hover); }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-settings[class] .a11y-settings-cost[class] {
+  flex: none; margin: 0 0 0 auto; padding: 1px var(--cds-spacing-03); border: 1px solid currentColor; border-radius: 999px;
+  font-size: 18px; line-height: 1.2; letter-spacing: 0.025em; white-space: nowrap;
+}
+
+/* The language: a white pill across the panel. */
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-settings[class] .a11y-select2 .a11y-select2-field.a11y-select2-field {
+  box-sizing: border-box; width: 100%; min-width: 0; max-width: none; min-height: 64px; margin: 0;
+  padding: 0 var(--cds-spacing-11) 0 var(--cds-spacing-06); border: 1px solid var(--tile-fill); border-radius: 999px;
+  background-color: var(--tile-fill); color: var(--tile-ink); font-size: 24px; line-height: 1.15; letter-spacing: 0.015em;
+}
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-settings[class] .a11y-select2 .a11y-select2-field.a11y-select2-field:focus-visible { outline: 2px solid var(--focus); outline-offset: -2px; box-shadow: none; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-settings[class] :is(.a11y-select2-help, .a11y-input-help, .a11y-settings-state)[class][class] {
+  display: block; justify-self: stretch; width: auto; margin: var(--cds-spacing-04) 0 0; color: #000; text-align: center; font-size: 18px; line-height: 1.4; letter-spacing: 0.025em;
+}
+
+/* The account rows: the field a white pill, the buttons black pills. */
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-settings[class] .a11y-input-shell[class] {
+  min-height: 64px; box-sizing: border-box; padding: 0 var(--cds-spacing-06); border: 1px solid var(--tile-fill); border-radius: 999px;
+  background: var(--tile-fill); color: var(--tile-ink);
+}
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-settings[class] .a11y-input-shell[class] > input { border: 0; background: none; color: inherit; font-size: 24px; letter-spacing: 0.015em; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-settings[class] .a11y-input-shell[class]:has(> input:focus-visible) { outline: 2px solid var(--focus); outline-offset: -2px; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-settings[class] .a11y-input-shell[class] > input:focus-visible { outline: none; box-shadow: none; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-settings[class] :is(.a11y-settings-row, .a11y-manual-form-actions) > .a11y-btn[class][class] {
+  display: flex; justify-content: center; width: fit-content; margin-inline: auto; padding: var(--cds-spacing-02) var(--cds-spacing-05);
+  border: 1px solid #000; border-radius: 999px; background: #000; color: #fff;
+}
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-settings[class] :is(.a11y-settings-row, .a11y-manual-form-actions) > .a11y-btn[class][class]:enabled:hover { border-color: var(--hover); background: var(--hover); color: var(--hover-ink); }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-settings[class] :is(.a11y-settings-row, .a11y-manual-form-actions) > .a11y-btn[class][class]:disabled { border: 1px dashed #000; background: none; color: #000; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-settings[class] :is(.a11y-settings-row, .a11y-manual-form-actions) > .a11y-btn[class][class]:focus-visible { outline: 2px solid #6fdc8c; outline-offset: -4px; }
+
+/* Dark: the pills are the dark field fill, so their focus is the light green. */
+@media (prefers-color-scheme: dark) {
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz:not([data-theme="light"]) .a11y-settings[class] :is(.a11y-settings-switch, .a11y-select2, .a11y-input) { --focus: #6fdc8c; }
+}
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz[data-theme="dark"] .a11y-settings[class] :is(.a11y-settings-switch, .a11y-select2, .a11y-input) { --focus: #6fdc8c; }
+
+@media (max-width: 671px) {
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-settings[class] { gap: var(--cds-spacing-06); padding: var(--cds-spacing-06) var(--cds-spacing-05) var(--cds-spacing-07); }
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-settings[class] > .a11y-settings-heading[class] { font-size: 24px; line-height: 1.15; letter-spacing: 0.015em; }
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-settings[class] .a11y-settings-opt[class][class] {
+    flex-wrap: wrap; gap: var(--cds-spacing-02) var(--cds-spacing-04); min-height: 56px; padding-inline: var(--cds-spacing-04) var(--cds-spacing-05); font-size: 18px; letter-spacing: 0.025em;
+  }
+  /* The badge folds under the words, on their left edge (ring 28 + gap 12). */
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-settings[class] .a11y-settings-opt[class][class] > .a11y-settings-words { flex: 1 1 calc(100% - 40px); }
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-settings[class] .a11y-settings-cost[class] { margin: 0 0 0 40px; }
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-settings[class] .a11y-select2 .a11y-select2-field.a11y-select2-field { min-height: 56px; font-size: 18px; letter-spacing: 0.025em; }
+}
+@media (forced-colors: active) {
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-settings[class],
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-settings[class] :is(.a11y-settings-opt, .a11y-select2-field, .a11y-input-shell)[class][class] { border: 1px solid CanvasText; }
+}
+@media print {
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-settings[class] { padding: 0; border-radius: 0; background: none; }
+}

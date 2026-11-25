@@ -501,7 +501,6 @@ export function App({
   // beside it was the same four controls twice.
   const settingsNode =
     report || audit ? (
-      <>
         <ScanSettings
           audience={audience}
           onAudienceChange={setAudience}
@@ -521,9 +520,10 @@ export function App({
             if (entry === "chat" && chatApi.current) chatApi.current.rerun(url, scope ?? shown, aiOn);
             else handleScan(url, aiOn, scope ?? shown, 5);
           }}
-        />
-        {accountNode}
-      </>
+        >
+          {/* The account rows sit in the same panel, under the scan's own. */}
+          {accountNode}
+        </ScanSettings>
     ) : null;
 
   /**
