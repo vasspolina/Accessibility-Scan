@@ -1858,7 +1858,12 @@
    "move buble to the right"), its tail and its lean mirrored: it covered
    the left of the picture, where the faulty element usually begins. */
 .a11y-widget-biz .a11y-shot.a11y-shot-has-bubble { width: fit-content; padding-top: var(--cds-spacing-03); }
-.a11y-widget-biz .a11y-shot-bubble { --tile: var(--hl-cap-b); --tile-ink: #000; }
+/* The poster's dark green since 25 Nov 2026 (user's screenshot, "fix"):
+   with the poster's colours --hl-cap-b became the grey paper #dcdbd5, the
+   same grey as the ground round the picture, so the bubble melted into it.
+   #486048 with white words (6.9:1) stands off the white card, the grey
+   paper and the picture alike, and is the green of "pink or green". */
+.a11y-widget-biz .a11y-shot-bubble { --tile: var(--hl-green); --tile-ink: var(--hl-green-ink); }
 .a11y-widget-biz .a11y-shot-bubble {
   --ink: var(--tile-ink); --paper: var(--tile);
   position: relative; z-index: 1; display: block; width: fit-content; max-width: 85%;
@@ -4173,8 +4178,10 @@
   font: inherit; font-size: 24px; font-weight: 400; line-height: 1.2; letter-spacing: 0.015em;
 }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-report-actions .a11y-ra-field > input.a11y-ra-email-input::placeholder { color: var(--tile-ink); opacity: 1; font-weight: 200; }
-/* The field is the box, so the focus ring goes round the field. */
-.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-report-actions .a11y-ra-field:focus-within { outline: 2px solid var(--focus); outline-offset: -2px; box-shadow: none; }
+/* The field is the box, so the focus ring goes round the field, 3px out
+   from its edge: the edge is a 1px line in the ring's own colour, so a
+   ring laid on it only read as the line getting 1px thicker (25 Nov 2026). */
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-report-actions .a11y-ra-field:focus-within { outline: 2px solid var(--focus); outline-offset: 3px; box-shadow: none; }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-report-actions .a11y-ra-field > input.a11y-ra-email-input:focus-visible { outline: none; }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-report-actions .a11y-ra-send {
   box-sizing: border-box; display: inline-flex; align-items: center; justify-content: center; gap: var(--cds-spacing-04);
@@ -6146,7 +6153,11 @@
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sr[class] .a11y-accordion-title .a11y-accordion-head[class][class] > .a11y-status-chip[class] {
   margin: 0 0 0 auto; padding: 0 0 0 var(--cds-spacing-06); color: #fff; font-size: 24px; line-height: 1.15; letter-spacing: 0.015em; text-align: end;
 }
-.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sr[class] .a11y-accordion-title .a11y-accordion-head[class][class]:focus-visible { outline: 2px solid var(--focus); outline-offset: -2px; }
+/* The bar is --sr-bar blue (#2848c8) since the periwinkle went, and the
+   panel's dark green measured 1.5:1 on it, a ring no one could see
+   (25 Nov 2026). White on the blue is 7.4:1, set 5px in so blue stands on
+   both sides of it. */
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sr[class] .a11y-accordion-title .a11y-accordion-head[class][class]:focus-visible { outline: 2px solid #fff; outline-offset: -5px; }
 
 /* In the conversation: the title as the panel's capital line. */
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sr[class] h2.a11y-section-title:not(.a11y-accordion-title)[class] {
@@ -6558,7 +6569,10 @@
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-spec:is(:hover, :has(.a11y-sum-spec-title:focus-visible)) :is(.a11y-sum-spec-title, .a11y-sum-spec-pill) { color: var(--hl-blue-ink); border-color: var(--hl-blue-ink); text-decoration: none; }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-spec:is(:hover, :has(.a11y-sum-spec-title:focus-visible)) .a11y-sum-spec-go { visibility: visible; }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-spec-title:focus-visible { outline: none; }
-.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-spec-title:focus-visible::after { outline: 2px solid var(--focus); outline-offset: -2px; }
+/* The ring 6px inside the card: on the card's own edge the white ring met
+   the white page and read as the card's edge, so no ring showed at all
+   (25 Nov 2026). Inset, it has the blue on both sides. */
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-spec-title:focus-visible::after { outline: 2px solid var(--focus); outline-offset: -6px; }
 @media (max-width: 671px) {
   .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-specimen > .a11y-sum-run > .a11y-sum-dial-card { --dial: 240px; }
   .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-specimen > .a11y-sum-issues { margin-top: var(--cds-spacing-10); }
@@ -7445,6 +7459,41 @@
   .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-settings[class] { padding: 0; border-radius: 0; background: none; }
 }
 
+/* ═══ FOCUS THAT SHOWS ON EVERY STOP (user's instruction, 25 Nov 2026,
+   "make sure focus is visible when tabbing through the page") ═══════════
+   Measured by tabbing every fixture state at 1024px:
+   - A findings row is pressed anywhere along it (FindingsList's
+     expandRowOnClick), but its ring was drawn round the 36px caret
+     button alone, and the caret, pulled into its gutter by negative
+     margins, crossed the ring's left side. The ring now goes round the
+     row, on its edge (the rows stand flush, so a ring further out ran
+     into the next row's capitals), and the button keeps none of its own.
+   - Toggles with no edge and no fill, led by a caret (the statement's
+     Take the statement, the conformance report's head, Ready for WCAG
+     2.2?, the designer and developer questions): the ring 2px inside
+     their box ran through the caret and touched the descenders. It now
+     stands 4px out, round the caret and the words with air on all sides.
+   - A design note's ring sat on the white card's own edge, against the
+     green panel (#486048), where the dark green line vanished. It is 6px
+     inside the card, on the white (5.0:1).
+   - Email me this report: Send this report and Download in PDF have a
+     1px edge in the ring's own colour, so a ring on it only thickened the
+     line. It stands 3px out, as the field's does. */
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-datatable > tbody > tr:has(> td > .a11y-dt-toggle:focus-visible) { outline: 2px solid var(--focus); outline-offset: 0; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-datatable .a11y-dt-toggle:focus-visible { outline: none; }
+/* In a narrow table the caret's gutter is 24px and the caret reaches the
+   row's very edge, but the rows stand 12px apart, so the ring sits 5px out
+   and clears it. */
+@container a11y-ftable (max-width: 640px) {
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-datatable > tbody > tr:has(> td > .a11y-dt-toggle:focus-visible) { outline-offset: 5px; }
+}
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-stmt-toggle, .a11y-accordion-head, .a11y-w22-head, .a11y-undecided-q):focus-visible { outline: 2px solid var(--focus); outline-offset: 4px; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-dn-panel .a11y-dn-caret-head > .a11y-dn-bar:focus-visible { outline: 2px solid var(--focus); outline-offset: -6px; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-report-actions :is(.a11y-ra-send, .a11y-ra-pdf):focus-visible { outline: 2px solid var(--focus); outline-offset: 3px; }
+@media (forced-colors: active) {
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-datatable > tbody > tr:has(> td > .a11y-dt-toggle:focus-visible) { outline-color: Highlight; }
+}
+
 /* THE CHECKLIST'S CALL-OUTS IN LETTRA (user's instruction, 25 Nov 2026,
    "use letra here for call outs", on the checklist's first column): the
    criterion's number and level ("1.2.1 A") are PP Lettra Mono Ultralight
@@ -7485,4 +7534,31 @@
   /* The Conversations toggle and Language share a line where the panel is
      folded; at 375px Language wrapped under the toggle with 0px between. */
   .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-chat-layout > .a11y-chats[class][class] { gap: var(--cds-spacing-02); }
+}
+
+/* ═══ NEW CHAT AND REPORT A BARRIER STACKED (user's instructions, 25 Nov
+   2026, "slightly bigger", then "dont need to be stretched, just need to
+   be stacked on top of each other") ═══
+   The two pills stand one under the other at the panel's left edge, each
+   as wide as its words, 4px apart (they sat side by side). 44px tall with
+   16px inside (were 32px and 12px); the words stay 18px, the smallest of
+   the three sizes. Colours, hover and the dashed disabled edge are the
+   grey pills' blocks above, unchanged. */
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-chats .a11y-chats-new[type="button"][class] {
+  display: flex; align-items: center; box-sizing: border-box;
+  width: fit-content; min-height: 44px; margin: 0 0 var(--cds-spacing-02); padding: var(--cds-spacing-03) var(--cds-spacing-05);
+}
+
+/* THE CHAT BOX'S BUTTONS AS GREY OUTLINES (user's instructions, 25 Nov
+   2026, "voice control and scan page behind login can just have grey
+   outline", "no fill"). Back, Voice control and Scan a page behind a login
+   lose the grey pill's fill: the box's white shows through, the edge is
+   1px of the box's own grey, #8e8e93, words in ink (21:1 on white). Hover
+   still fills, Voice control while listening (pressed) is still solid, a
+   disabled one keeps its dashed ink edge; Send keeps its solid pill. */
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-chat-box-start .a11y-btn[class][class][class]:enabled {
+  border: 1px solid #8e8e93;
+}
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-chat-box-start .a11y-btn[class][class][class]:enabled:not(:hover, [aria-pressed="true"]) {
+  background: transparent; color: var(--ink);
 }
