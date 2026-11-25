@@ -7039,3 +7039,48 @@
 @media print {
   .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-code-fix[class] > .a11y-copy-btn[class] { display: none; }
 }
+
+/* ═══ THE OPENING QUESTIONS AS A CENTRED CREDIT IN LETTRA (user's
+   reference, 25 Nov 2026, "design this like this", a centred credit block
+   with small runs beside large lines; then "use letra") ═══════════════
+   Each card's words stand centred in one column, set close like the
+   reference, in PP Lettra Mono (the widget's mono face, declared in
+   index.tsx): the group's name at 18px, the question under it at 24px
+   (18px on a phone), and the criterion at the foot at 18px in its white
+   pill. The face has only an upright Ultralight, so the reference's italic
+   runs are told by size, never by a synthesized slope. No tracking: a
+   monospace is already spaced. The plates, the hover, the pills' places
+   and Report a barrier's mint are unchanged. The two columns of the block
+   above are gone: a credit is one centred column. */
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-prompts .a11y-prompt .a11y-prompt-q[class][class] {
+  display: flex; flex-direction: column; align-items: center; gap: var(--cds-spacing-02); text-align: center;
+}
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-prompts .a11y-prompt .a11y-prompt-q[class][class] > :is(.a11y-prompt-label, .a11y-prompt-ask) {
+  align-self: stretch; margin: 0; text-align: center;
+  font-family: "PP Lettra Mono", ui-monospace, "SF Mono", Menlo, Consolas, "DejaVu Sans Mono", monospace;
+  font-style: normal; font-weight: 200; font-synthesis: none; letter-spacing: 0;
+}
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-prompts .a11y-prompt .a11y-prompt-q[class][class] > .a11y-prompt-label { font-size: 18px; line-height: 1.2; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-prompts .a11y-prompt .a11y-prompt-q[class][class] > .a11y-prompt-ask { font-size: 24px; line-height: 1.15; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-prompts .a11y-prompt > .a11y-prompt-wcag[class][class] {
+  font-family: "PP Lettra Mono", ui-monospace, "SF Mono", Menlo, Consolas, "DejaVu Sans Mono", monospace;
+  font-style: normal; font-weight: 200; font-size: 18px; line-height: 1.2; letter-spacing: 0;
+}
+@media (max-width: 671px) {
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-chat .a11y-prompts .a11y-prompt .a11y-prompt-q[class][class] > .a11y-prompt-ask { font-size: 18px; line-height: 1.2; }
+}
+
+/* ═══ THE RECENT CONVERSATIONS IN LETTRA (user's instruction, 25 Nov 2026,
+   "use letra here too", on the Recent list) ══════════════════════════
+   The menu's lines are PP Lettra Mono, the same 24px set solid (1.15),
+   no tracking, since a monospace is already spaced. A monospace is wider,
+   so a title meets its ellipsis a few letters sooner; the button's name
+   keeps all of it. New chat, Report a barrier and the "Open" pill stay in
+   the body face, as the widget's other buttons and badges. */
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-chats .a11y-chats-row[class] > .a11y-chats-item[class][class] {
+  font-family: "PP Lettra Mono", ui-monospace, "SF Mono", Menlo, Consolas, "DejaVu Sans Mono", monospace;
+  font-weight: 200; font-synthesis: none; letter-spacing: 0;
+}
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-chats .a11y-chats-row[class] > .a11y-chats-item[class][class] .a11y-chats-open {
+  font-family: "PP Telegraf", "DejaVu Sans", sans-serif; letter-spacing: 0.025em;
+}
