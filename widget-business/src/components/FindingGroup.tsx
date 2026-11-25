@@ -542,7 +542,7 @@ function devElementRefs(findings: AccessibilityFinding[]): string[] {
   const refs: string[] = [];
   for (const f of findings) {
     const snippet = f.elementSnippet?.replace(/\s+/g, " ").trim();
-    const ref = snippet ? `${f.selector}  ·  ${snippet}` : f.selector;
+    const ref = snippet ? `${f.selector} — ${snippet}` : f.selector;
     if (ref && !seen.has(ref)) {
       seen.add(ref);
       refs.push(ref);
@@ -774,7 +774,7 @@ export function FindingDetails({
           </ul>
         </div>
       ) : (
-        <p className="a11y-finding-todo">
+        <p className="a11y-finding-todo" data-size={tileSize(whatToDo)}>
           <strong className="a11y-fd-title">{t("What to do")}</strong> <CodeText text={whatToDo} />
         </p>
       )}
@@ -808,7 +808,7 @@ export function FindingDetails({
       )}
 
       {locatesSomething && (
-      <div className="a11y-affected">
+      <div className="a11y-affected" data-size={visibleEntries.length === 1 && !summarize ? tileSize(visibleEntries[0].label) : "l"}>
         <p className="a11y-affected-label">
           <strong>{count > 1 ? t("Affected elements") : t("Affected element")}</strong>
         </p>
@@ -871,7 +871,7 @@ export function FindingDetails({
                   <p className="a11y-pro-line">
                     <strong>{t("WCAG:")}</strong> {num}
                     {known ? ` ${known.name} (${known.level})` : rep.wcagLevel ? ` (${rep.wcagLevel})` : ""}
-                    {en ? <span className="a11y-pro-en"> · {en}</span> : null}
+                    {en ? <span className="a11y-pro-en"> — {en}</span> : null}
                   </p>
                 )}
                 <p className="a11y-pro-line">

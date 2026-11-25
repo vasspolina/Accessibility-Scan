@@ -75,7 +75,7 @@ export function LanguageMenu({ value, onChange }: { value: Lang; onChange: (lang
         <Icon name="translate" size={20} />
         <span className="a11y-lang-word">{t("Language")}</span>
         <span className="a11y-lang-current" lang={value}>
-          <span aria-hidden="true">· </span>
+          <span aria-hidden="true">— </span>
           <span className="a11y-sr-only">, </span>
           {LANG_NAMES[value]}
         </span>

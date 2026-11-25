@@ -1036,10 +1036,10 @@ export function App({
       navMeta={
         report
           ? // The month in the reader's language; English keeps its day-month order.
-            `${hostnameOf(report.url)} \u00b7 ${new Date(report.scannedAt).toLocaleDateString(lang === "en" ? "en-GB" : lang, { day: "numeric", month: "short", year: "numeric" })}`
+            `${hostnameOf(report.url)} \u2014 ${new Date(report.scannedAt).toLocaleDateString(lang === "en" ? "en-GB" : lang, { day: "numeric", month: "short", year: "numeric" })}`
           : audit
             ? // Two facts side by side, not a sentence: the host, then the count.
-              `${hostnameOf(audit.pages[0]?.url ?? "")} \u00b7 ${
+              `${hostnameOf(audit.pages[0]?.url ?? "")} \u2014 ${
                 audit.pagesScanned === 1 ? t("1 page") : tf("{count} pages", { count: audit.pagesScanned })
               }`
             : undefined
