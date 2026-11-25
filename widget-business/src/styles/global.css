@@ -6094,7 +6094,7 @@
    the bar, 12:1 on white); on the black line being read, and on the dark
    pills in dark, the light focus green, #6fdc8c. */
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-section.a11y-sr[class][class][class] {
-  --sr-brand: #a2e3ff; --sr-bar: #48a0da;
+  --sr-brand: #a2e3ff; --sr-bar: #48a0da; --sr-pill: #e6e6e6; --sr-pill-hover: #beffbd;
   --ink: #000; --paper: var(--sr-brand); --tile: var(--tile-fill); --focus: #0a3d1a;
   box-sizing: border-box; padding: 40px 64px 48px; border: 0; border-radius: var(--r-panel);
   background: var(--sr-brand); color: #000; text-align: start;
@@ -6122,28 +6122,42 @@
   margin: 8px 0 0; color: #000; font-size: 32px; font-weight: 200; line-height: 1.1; letter-spacing: 0.04em;
   text-align: start; text-transform: uppercase; font-feature-settings: "case";
 }
-
-/* Play, the transport, the status, the keys: set left under the bar. */
+/* Play, the transport, the status, the keys: set left under the bar.
+   Every control in the panel is a grey pill (user's reference, 25 Nov
+   2026, "design these like these", a type foundry's row of family pills,
+   one of them black): no edge, 999px corners, 48px tall, 0 20px inside,
+   18px words, 6px apart (measured off the reference at half its pixels:
+   pills 96px tall, gaps 13px). The grey is #e6e6e6 with black words,
+   17.6:1, fixed in both themes because the panel is; Play (or Pause,
+   Resume) is the reference's black pill, white words, and so is the filter
+   while it is on, its check mark kept. Hover is the mint, black words, so
+   hovering the filter never looks like turning it on. On a desktop the
+   pills carry words only, as the reference's do; on a phone Previous line,
+   Next line and Stop keep their icons alone (the rule above says why). */
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sr[class] .a11y-sr-bar[class] {
-  justify-content: flex-start; gap: 8px; margin: 32px 0 0; padding: 0; background: none; color: #000;
+  justify-content: flex-start; gap: 6px; margin: 32px 0 0; padding: 0; background: none; color: #000;
 }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sr[class] .a11y-sr-bar[data-active][class] {
   padding-block: 12px; background: var(--sr-brand);
 }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sr[class] .a11y-sr-bar[class] .a11y-sr-transport { gap: 6px; }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sr[class] .a11y-sr-bar[class] .a11y-sr-play[class]:enabled {
-  justify-content: center; min-height: 56px; padding: 10px 30px; border: 1px solid #000; border-radius: 999px;
-  background: #000; color: #fff; font-size: 24px; line-height: 1.15; letter-spacing: 0.015em; text-align: center;
+  justify-content: center; min-height: 48px; padding: 0 20px; border: 1px solid #000; border-radius: 999px;
+  background: #000; color: #fff; font-size: 18px; line-height: 1.2; letter-spacing: 0.025em; text-align: center;
 }
-.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sr[class] .a11y-sr-bar[class] .a11y-sr-play[class]:enabled:hover { border-color: var(--hover); background: var(--hover); color: var(--hover-ink); }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sr[class] .a11y-sr-bar[class] .a11y-sr-play[class]:enabled:hover { border-color: var(--sr-pill-hover); background: var(--sr-pill-hover); color: #000; }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sr[class] .a11y-sr-bar[class] .a11y-sr-play[class]:focus-visible { outline: 2px solid #6fdc8c; outline-offset: -4px; }
-.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sr[class] .a11y-sr-bar[class] .a11y-sr-play[class] > svg { font-size: 24px; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sr[class] .a11y-sr-bar[class] .a11y-sr-play[class] > svg { display: none; }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sr[class] .a11y-sr-bar[class] :is(.a11y-sr-ctl, .a11y-skip-link)[class],
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sr[class] .a11y-show-all[class] {
-  justify-content: center; min-height: 40px; padding: 6px 18px; border: 1px solid var(--tile-fill); border-radius: 999px;
-  background: var(--tile-fill); color: var(--tile-ink); font-size: 18px; line-height: 1.2; letter-spacing: 0.025em;
+  justify-content: center; min-height: 48px; padding: 0 20px; border: 1px solid var(--sr-pill); border-radius: 999px;
+  background: var(--sr-pill); color: #000; font-size: 18px; line-height: 1.2; letter-spacing: 0.025em;
 }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sr[class] .a11y-sr-bar[class] :is(.a11y-sr-ctl, .a11y-skip-link)[class]:enabled:hover,
-.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sr[class] .a11y-show-all[class]:enabled:hover { border-color: var(--hover); background: var(--hover); color: var(--hover-ink); }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sr[class] .a11y-show-all[class]:enabled:hover { border-color: var(--sr-pill-hover); background: var(--sr-pill-hover); color: #000; }
+@media (min-width: 641px) {
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sr[class] .a11y-sr-bar[class] .a11y-sr-ctl[class] > svg { display: none; }
+}
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sr[class] .a11y-sr-bar[class] :is(.a11y-sr-status, .a11y-sr-keys) {
   flex-basis: 100%; margin: 0; color: #000; font-size: 18px; line-height: 1.4; letter-spacing: 0.025em; text-align: start;
 }
@@ -6153,21 +6167,17 @@
   margin: 4px 0 0; color: #000; font-size: 18px; line-height: 1.4; letter-spacing: 0.025em; text-align: start;
 }
 
-/* The filter: a line with a ring for its box, the check in the ring when on. */
-.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sr[class] .a11y-sr-bar.a11y-sr-tools[class] { justify-content: flex-start; gap: 16px 32px; margin: 32px 0 0; }
+/* The filter: a grey pill, black with its check mark when on. */
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sr[class] .a11y-sr-bar.a11y-sr-tools[class] { justify-content: flex-start; gap: 6px; margin: 32px 0 0; }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sr[class] .a11y-sr-bar[class] .a11y-sr-filter[class] {
-  position: relative; gap: 12px; min-height: 40px; padding: 0; border: 0; border-radius: 0; background: none; color: #000;
-  font-size: 24px; line-height: 1.15; letter-spacing: 0.015em;
+  position: relative; gap: 8px; min-height: 48px; padding: 0 20px; border: 1px solid var(--sr-pill); border-radius: 999px;
+  background: var(--sr-pill); color: #000; font-size: 18px; line-height: 1.2; letter-spacing: 0.025em;
 }
-.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sr[class] .a11y-sr-bar[class] .a11y-sr-filter[class]::before {
-  content: ""; flex: none; box-sizing: border-box; width: 28px; height: 28px; border: 1px solid #000; border-radius: 50%; background: none;
-}
-.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sr[class] .a11y-sr-bar[class] .a11y-sr-filter[class]:has(:checked)::before { background: #000; }
-.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sr[class] .a11y-sr-bar[class] .a11y-sr-filter[class] > svg {
-  position: absolute; inset-inline-start: 5px; top: 50%; translate: 0 -50%; font-size: 18px; color: #fff;
-}
-.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sr[class] .a11y-sr-bar[class] .a11y-sr-filter[class]:hover { border: 0; background: none; color: #000; text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 0.14em; }
-.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sr[class] .a11y-sr-bar[class] .a11y-sr-filter[class]:has(:focus-visible) { outline: 2px solid var(--focus); outline-offset: 4px; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sr[class] .a11y-sr-bar[class] .a11y-sr-filter[class]:has(:checked) { border-color: #000; background: #000; color: #fff; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sr[class] .a11y-sr-bar[class] .a11y-sr-filter[class] > svg { flex: none; font-size: 18px; color: currentColor; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sr[class] .a11y-sr-bar[class] .a11y-sr-filter[class]:hover { border-color: var(--sr-pill-hover); background: var(--sr-pill-hover); color: #000; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sr[class] .a11y-sr-bar[class] .a11y-sr-filter[class]:has(:checked:focus-visible) { outline-color: #6fdc8c; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sr[class] .a11y-sr-bar[class] .a11y-sr-filter[class]:has(:focus-visible) { outline: 2px solid var(--focus); outline-offset: -4px; }
 
 /* "What you'd hear": the capital label over the lines. */
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sr[class] .a11y-sr-log { container: a11y-srlog / inline-size; margin: 40px 0 0; }
@@ -6220,9 +6230,9 @@
 
 /* Dark: the pills are the dark field fill, so their focus is the light green. */
 @media (prefers-color-scheme: dark) {
-  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz:not([data-theme="light"]) .a11y-sr[class] :is(.a11y-sr-row, .a11y-sr-ctl, .a11y-skip-link, .a11y-show-all) { --focus: #6fdc8c; }
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz:not([data-theme="light"]) .a11y-sr[class] .a11y-sr-row { --focus: #6fdc8c; }
 }
-.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz[data-theme="dark"] .a11y-sr[class] :is(.a11y-sr-row, .a11y-sr-ctl, .a11y-skip-link, .a11y-show-all) { --focus: #6fdc8c; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz[data-theme="dark"] .a11y-sr[class] .a11y-sr-row { --focus: #6fdc8c; }
 
 @media (max-width: 640px) {
   .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-section.a11y-sr[class][class][class] { padding: 20px 16px 28px; border-radius: var(--r-panel); }
@@ -6235,7 +6245,7 @@
   .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sr[class] h2.a11y-section-title:not(.a11y-accordion-title)[class] { font-size: 24px; letter-spacing: 0.04em; }
   .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sr[class] .a11y-sr-bar[class] { margin-top: 24px; }
   .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sr[class] .a11y-sr-bar.a11y-sr-tools[class] { margin-top: 24px; }
-  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sr[class] .a11y-sr-bar[class] .a11y-sr-filter[class] { font-size: 18px; letter-spacing: 0.025em; }
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sr[class] .a11y-sr-bar[class] .a11y-sr-ctl[class] { width: 48px; padding-inline: 0; }
   .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sr[class] .a11y-sr-log { margin-top: 28px; }
   .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sr[class] .a11y-sr-list[class] { gap: 10px; }
   .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sr[class] .a11y-sr-row[class][class] { gap: 4px 12px; min-height: 60px; padding: 10px 18px 10px 12px; border-radius: var(--r-card); }
@@ -6243,8 +6253,6 @@
 @media (forced-colors: active) {
   .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-section.a11y-sr[class][class][class],
   .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sr[class] :is(.a11y-sr-row, .a11y-accordion-head)[class][class] { border: 1px solid CanvasText; }
-  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sr[class] .a11y-sr-bar[class] .a11y-sr-filter[class]::before { border-color: CanvasText; }
-  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sr[class] .a11y-sr-bar[class] .a11y-sr-filter[class]:has(:checked)::before { background: CanvasText; }
 }
 @media print {
   .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-section.a11y-sr[class][class][class] { padding: 0; border-radius: 0; background: none; }
