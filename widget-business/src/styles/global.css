@@ -7869,3 +7869,50 @@
 @media (max-width: 671px) {
   .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-dn-detail .a11y-fd[class][class] > .a11y-fd-col > :is(.a11y-method-hint, .a11y-finding-measured, .a11y-finding-impact, .a11y-finding-research, .a11y-finding-todo, .a11y-finding-steps)[class][class][class] { flex-basis: 100%; }
 }
+
+/* IMAGES IN THE CHAT (the user's request, 25 Nov 2026, "allow image upload
+   in the chat"). Add an image sits in the box's row with Voice control and
+   takes the box's own button style (the grey outline above), the icon set's
+   image mark before the words. A picked or pasted picture waits in the box
+   as a 64px square with its own 8px corners, 8px apart, each with a 24px
+   solid round at its top right corner that removes it (the icon set's
+   close, named "Remove <file>"). A refused file says why on one 16px line
+   in the status red (#b81c1c on white 6.6:1, #ff6b66 on black 7.6:1). In
+   the thread the reader's pictures stand over their words, up to 320px
+   wide, 8px corners, 8px apart; a picture is not a content card, so it has
+   no ground. The archive does not keep them (settleTurn). */
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-chat-attached[role="list"] {
+  display: flex; flex-wrap: wrap; gap: var(--cds-spacing-03);
+  margin: var(--cds-spacing-03) 0 0; padding: 0; list-style: none;
+}
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-chat-attached > li {
+  position: relative; width: 64px; height: 64px; margin: 0; padding: 0;
+}
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-chat-attached > li::before { content: none; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-chat-attached img {
+  display: block; width: 64px; height: 64px; object-fit: cover; border-radius: 8px; border: 1px solid #8e8e93; box-sizing: border-box;
+}
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-chat-attached-remove[type="button"] {
+  position: absolute; top: calc(-1 * var(--cds-spacing-03)); right: calc(-1 * var(--cds-spacing-03));
+  display: grid; place-items: center; box-sizing: border-box;
+  width: 24px; height: 24px; min-height: 0; margin: 0; padding: 0;
+  border: 1px solid var(--paper); border-radius: 999px;
+  background: var(--solid); color: var(--solid-ink); font-size: 16px; cursor: pointer;
+}
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-chat-attached-remove[type="button"]:hover { background: var(--hover); color: var(--hover-ink); border-color: var(--ink); }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-chat-attached-remove[type="button"]:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-chat-attach-note {
+  margin: var(--cds-spacing-03) 0 0; font-size: 16px; line-height: 1.2; letter-spacing: 0.025em; color: var(--word-red, #b81c1c);
+}
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-chat-images[role="list"] {
+  display: flex; flex-wrap: wrap; gap: var(--cds-spacing-03);
+  margin: 0 0 var(--cds-spacing-03); padding: 0; list-style: none;
+}
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-chat-images > li { margin: 0; padding: 0; max-width: min(100%, 320px); }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-chat-images > li::before { content: none; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-chat-images img {
+  display: block; max-width: 100%; max-height: 320px; height: auto; border-radius: 8px;
+}
+@media (forced-colors: active) {
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-chat-attached-remove[type="button"] { border-color: ButtonText; background: ButtonFace; color: ButtonText; }
+}

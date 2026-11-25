@@ -39,6 +39,43 @@ const MAX_MESSAGES = 60;
 const MAX_USER_TEXT = 4_000;
 const MAX_BODY_CHARS = 400_000;
 
+// Pictures the person attaches (a screenshot of the barrier they hit, most
+// often). They ride as base64 image blocks, never as a URL source, so the
+// API fetches nothing on the caller's behalf. The data is measured on its
+// own caps, not MAX_BODY_CHARS: one phone screenshot is larger than a whole
+// conversation of words. The per-image cap is the API's own (5 MB of
+// base64); the widget scales a picture down to 1568px on its long side
+// before it sends it, which is as large as the model reads one, so a sent
+// image is usually a few hundred kilobytes and the caps are for callers
+// that are not the widget. The conversation holds every image it was given
+// and sends them on each turn, so the conversation's total is capped too,
+// and over it the widget starts a new conversation on the 413.
+export const CHAT_IMAGE_TYPES = ["image/png", "image/jpeg", "image/gif", "image/webp"] as const;
+export const MAX_IMAGE_BASE64 = 5_000_000;
+export const MAX_IMAGES_PER_TURN = 4;
+export const MAX_IMAGES_PER_CONVERSATION = 12;
+export const MAX_IMAGE_CHARS_TOTAL = 12_000_000;
+// Fastify's own body cap for this route: the words and the images, with
+// room for the JSON around them. The app's default is 1 MB.
+const CHAT_BODY_LIMIT = MAX_BODY_CHARS + MAX_IMAGE_CHARS_TOTAL + 1_048_576;
+
+/** The file's first bytes match its stated type. A media type is the
+ *  caller's word; the bytes are what the API will read, and a mismatch
+ *  costs a failed model call rather than a clear refusal here. */
+function imageBytesMatch(mediaType: (typeof CHAT_IMAGE_TYPES)[number], data: string): boolean {
+  const head = Buffer.from(data.slice(0, 16), "base64");
+  switch (mediaType) {
+    case "image/png":
+      return head.subarray(0, 8).equals(Buffer.from([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a]));
+    case "image/jpeg":
+      return head[0] === 0xff && head[1] === 0xd8 && head[2] === 0xff;
+    case "image/gif":
+      return head.subarray(0, 4).toString("latin1") === "GIF8";
+    case "image/webp":
+      return head.subarray(0, 4).toString("latin1") === "RIFF" && head.subarray(8, 12).toString("latin1") === "WEBP";
+  }
+}
+
 // Web searches run in a loop on the API's side, and a long one is handed
 // back as pause_turn with the work so far. The route resumes it, up to this
 // many times, so the person sees one answer and not a half-finished one;
@@ -58,14 +95,27 @@ function searchQuery(partialJson: string): string | null {
 }
 
 // What a person's turn may hold: what the widget sends, and nothing else —
-// typed text, the report digest as text, and string tool results. No image,
-// document or search_result blocks and no URL sources: a request of a few
-// kilobytes could otherwise have the API fetch and bill a long PDF. Unknown
-// keys are stripped, so a caller's own cache_control never arrives.
+// typed text, the report digest as text, string tool results, and pictures
+// the person attached as base64 data. No document or search_result blocks
+// and no URL sources: a request of a few kilobytes could otherwise have the
+// API fetch and bill a long PDF. Unknown keys are stripped, so a caller's
+// own cache_control never arrives.
+const imageBlock = z.object({
+  type: z.literal("image"),
+  source: z
+    .object({
+      type: z.literal("base64"),
+      media_type: z.enum(CHAT_IMAGE_TYPES),
+      data: z.string().min(16).max(MAX_IMAGE_BASE64).regex(/^[A-Za-z0-9+/]+={0,2}$/),
+    })
+    .refine((src) => imageBytesMatch(src.media_type, src.data)),
+});
+
 const userBlock = z.discriminatedUnion("type", [
   // MAX_BODY_CHARS, not MAX_USER_TEXT: the report digest rides as a text
   // block. What the person typed is measured in userTextTooLong.
   z.object({ type: z.literal("text"), text: z.string().max(MAX_BODY_CHARS) }),
+  imageBlock,
   z.object({
     type: z.literal("tool_result"),
     tool_use_id: z.string().min(1).max(200),
@@ -90,7 +140,13 @@ const chatBodySchema = z.object({
   messages: z
     .array(
       z.discriminatedUnion("role", [
-        z.object({ role: z.literal("user"), content: z.union([z.string().max(MAX_BODY_CHARS), z.array(userBlock).max(50)]) }),
+        z.object({
+          role: z.literal("user"),
+          content: z.union([
+            z.string().max(MAX_BODY_CHARS),
+            z.array(userBlock).max(50).refine((blocks) => blocks.filter((b) => b.type === "image").length <= MAX_IMAGES_PER_TURN),
+          ]),
+        }),
         z.object({ role: z.literal("assistant"), content: z.union([z.string().max(MAX_BODY_CHARS), z.array(assistantBlock).max(50)]) }),
       ])
     )
@@ -131,15 +187,41 @@ function userTextTooLong(messages: z.infer<typeof chatBodySchema>["messages"]): 
   return false;
 }
 
+/** The image data in a request body, counted before it is parsed, so the
+ *  words can be held to MAX_BODY_CHARS on their own. Only well-formed
+ *  image blocks in user turns count; anything else is the parse's to
+ *  refuse. */
+function imageData(body: unknown): { count: number; chars: number } {
+  let count = 0;
+  let chars = 0;
+  const messages = (body as { messages?: unknown })?.messages;
+  if (!Array.isArray(messages)) return { count, chars };
+  for (const m of messages) {
+    if (!m || m.role !== "user" || !Array.isArray(m.content)) continue;
+    for (const b of m.content) {
+      if (b?.type === "image" && typeof b.source?.data === "string") {
+        count += 1;
+        chars += b.source.data.length;
+      }
+    }
+  }
+  return { count, chars };
+}
+
 export async function chatRoutes(app: FastifyInstance) {
   app.post(
     "/api/chat",
     // Its own budget, looser than the scan's: a message costs a model call,
     // not a browser render. See CHAT_RATE_LIMIT_MAX.
-    { config: { rateLimit: { max: env.CHAT_RATE_LIMIT_MAX, timeWindow: env.RATE_LIMIT_WINDOW_MS } } },
+    { config: { rateLimit: { max: env.CHAT_RATE_LIMIT_MAX, timeWindow: env.RATE_LIMIT_WINDOW_MS } }, bodyLimit: CHAT_BODY_LIMIT },
     async (request, reply) => {
     const raw = JSON.stringify(request.body ?? {});
-    if (raw.length > MAX_BODY_CHARS) {
+    const images = imageData(request.body);
+    if (
+      raw.length - images.chars > MAX_BODY_CHARS ||
+      images.count > MAX_IMAGES_PER_CONVERSATION ||
+      images.chars > MAX_IMAGE_CHARS_TOTAL
+    ) {
       return reply.status(413).send({ error: "The conversation is too long to continue. Start a new one." });
     }
     const parsed = chatBodySchema.safeParse(request.body);
