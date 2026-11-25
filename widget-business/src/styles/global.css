@@ -133,7 +133,9 @@
      Paragraphs are one empty line apart (1lh), so the text keeps its
      register; turns of the chat two. Tracked capitals and badges keep their
      own wider spacing (0.04em and up). */
-  font-size: 29px; font-weight: 200; line-height: 1.1; letter-spacing: 0.01em;
+  /* The running text is 26px since 25 Nov 2026 ("make main body text 10%
+     smaller", from 29px; 20px on a phone, from 22px). Titles stay 29px. */
+  font-size: 26px; font-weight: 200; line-height: 1.1; letter-spacing: 0.01em;
   font-kerning: normal; font-variant-ligatures: common-ligatures; text-rendering: optimizeLegibility; font-synthesis: none;
   background: var(--paper); color: var(--ink);
   /* No rag (user's instruction, 18 Nov 2026, "do not rag the text"): no
@@ -359,7 +361,7 @@
   font-size: 16px; letter-spacing: 0.025em; line-height: 1.2;
 }
 .a11y-widget-biz .a11y-chat-tabhint > kbd {
-  flex: none; padding: 1px var(--cds-spacing-03); border: 1px solid var(--ink); border-radius: 6px;
+  flex: none; padding: var(--cds-spacing-01) var(--cds-spacing-03); border: 1px solid var(--ink); border-radius: 6px;
   font: inherit; font-size: 16px; letter-spacing: 0.025em; line-height: 1.2;
 }
 .a11y-widget-biz .a11y-chat-tabhint-text { min-width: 0; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
@@ -516,7 +518,7 @@
    emphasis is the Medium cut or nothing. Hyphenation keeps at least
    three letters either side and no more than three lines in a row end in
    a hyphen (p.47). */
-.a11y-widget-biz .a11y-caps { font-size: 29px; letter-spacing: 0.06em; font-feature-settings: "case"; }
+.a11y-widget-biz .a11y-caps { font-size: 24px; letter-spacing: 0.06em; font-feature-settings: "case"; }
 /* case (above): Jokker raises hyphens, brackets and dashes to capital
    height, so the punctuation in (WCAG-AA) sits with the capitals around it
    rather than at lowercase height (p.39–40). */
@@ -1188,7 +1190,7 @@
 .a11y-widget-biz .a11y-prompts .a11y-prompt-wcag:enabled:hover { background: var(--hover); color: var(--hover-ink); }
 .a11y-widget-biz .a11y-prompts .a11y-prompt-wcag:disabled { cursor: default; }
 .a11y-widget-biz .a11y-prompts .a11y-prompt-go {
-  position: absolute; right: 26px; bottom: 26px;
+  position: absolute; right: var(--cds-spacing-06); bottom: var(--cds-spacing-06);
   display: flex; align-items: center; justify-content: center; min-height: 32px; padding: 0 var(--cds-spacing-05);
   border-radius: 999px; background: var(--tile-fill); color: var(--tile-ink);
   font-size: 18px; letter-spacing: 0.025em; line-height: 1.2;
@@ -1300,7 +1302,7 @@
 .a11y-widget-biz .a11y-fd .a11y-finding-steps,
 .a11y-widget-biz .a11y-fd .a11y-fix-once,
 .a11y-widget-biz .a11y-fd .a11y-picture-note {
-  font-family: "PP Telegraf", "DejaVu Sans", sans-serif; font-weight: 200; font-size: 29px; line-height: 1.1; letter-spacing: 0.01em;
+  font-family: "PP Telegraf", "DejaVu Sans", sans-serif; font-weight: 200; font-size: 26px; line-height: 1.1; letter-spacing: 0.01em;
   overflow-wrap: break-word; hyphens: manual;
 }
 .a11y-widget-biz .a11y-fd .a11y-method-hint > strong:first-child,
@@ -1441,7 +1443,7 @@
 .a11y-widget-biz .a11y-fd .a11y-finding-level-fold { font-family: "PP Telegraf", "DejaVu Sans", sans-serif; font-weight: 200; font-size: 22px; letter-spacing: 0.015em; line-height: 1.15; margin-bottom: var(--cds-spacing-06); }
 /* Learn more at the size of What to do above it, 32px (user's instruction,
    24 Nov 2026, "same size text as text above it"). */
-.a11y-widget-biz .a11y-fd .a11y-fd-learn { font-family: "PP Telegraf", "DejaVu Sans", sans-serif; font-weight: 200; font-size: 29px; line-height: 1.1; letter-spacing: 0.01em; }
+.a11y-widget-biz .a11y-fd .a11y-fd-learn { font-family: "PP Telegraf", "DejaVu Sans", sans-serif; font-weight: 200; font-size: 26px; line-height: 1.1; letter-spacing: 0.01em; }
 .a11y-widget-biz .a11y-fd .a11y-occurrence-list { font-family: "PP Telegraf", "DejaVu Sans", sans-serif; font-weight: 200; font-size: 22px; letter-spacing: 0.015em; }
 .a11y-widget-biz .a11y-fd .a11y-tech-details > summary { font-size: 16px; text-transform: uppercase; letter-spacing: 0.04em; cursor: pointer; }
 /* The affected elements, two to a row (user's instruction, 18 Nov 2026,
@@ -1713,7 +1715,7 @@
    Everything spaced in em (paragraphs, turns, the speaker gutter) follows the
    new body size on its own. */
 @media (max-width: 671px) {
-  .a11y-widget-biz { font-size: 22px; letter-spacing: 0.015em; padding: var(--cds-spacing-05); }
+  .a11y-widget-biz { font-size: 20px; letter-spacing: 0.015em; padding: var(--cds-spacing-05); }
   .a11y-widget-biz :is(h1, h2, h3, h4) { font-size: 22px; letter-spacing: 0.015em; line-height: 1.15; }
   .a11y-widget-biz .a11y-legal-count { font-size: 29px; letter-spacing: 0.01em; }
   .a11y-widget-biz .a11y-dn-link { font-size: 22px; letter-spacing: 0.015em; }
@@ -1734,7 +1736,7 @@
   .a11y-widget-biz .a11y-fd .a11y-finding-todo,
   .a11y-widget-biz .a11y-fd .a11y-finding-steps,
   .a11y-widget-biz .a11y-fd .a11y-fix-once,
-  .a11y-widget-biz .a11y-fd .a11y-picture-note { font-size: 22px; letter-spacing: 0.015em; }
+  .a11y-widget-biz .a11y-fd .a11y-picture-note { font-size: 20px; letter-spacing: 0.015em; }
 }
 .a11y-widget-biz .a11y-chat-text :is(p, pre) { margin: 0 0 var(--cds-spacing-07); }
 .a11y-widget-biz .a11y-chat-text > :last-child { margin-bottom: 0; }
@@ -1772,7 +1774,7 @@
   margin-inline: var(--cds-spacing-03); padding-block: var(--cds-spacing-01); line-height: 1.25; white-space: normal;
 }
 .a11y-widget-biz .a11y-print-cards .a11y-finding-desc {
-  display: block; font-size: 29px; font-weight: 200; line-height: 1.1; letter-spacing: 0.01em;
+  display: block; font-size: 26px; font-weight: 200; line-height: 1.1; letter-spacing: 0.01em;
   overflow-wrap: break-word; hyphens: manual;
 }
 /* The criterion is small print under the title, on its own line: set after the
@@ -2505,13 +2507,13 @@
 .a11y-widget-biz .a11y-w22 .a11y-next-toggle:enabled:hover > .a11y-next-chevron { border-color: var(--hover); background: var(--hover); color: var(--hover-ink); }
 .a11y-widget-biz .a11y-w22 > .a11y-next > .a11y-next-desc {
   max-width: none; margin: var(--cds-spacing-06) 0 0;
-  font-size: 29px; font-weight: 200; line-height: 1.1; letter-spacing: 0.01em;
+  font-size: 26px; font-weight: 200; line-height: 1.1; letter-spacing: 0.01em;
 }
 /* The items stand open under the sentence (23 Nov 2026), 48px down; the
    list is its own size container (THE WCAG 2.2 ITEMS AS A RULED SCHEDULE). */
 .a11y-widget-biz .a11y-w22 > .a11y-w22-panel { display: block; margin-top: var(--cds-spacing-10); container: a11y-w22 / inline-size; }
 @media (max-width: 671px) {
-  .a11y-widget-biz .a11y-w22 > .a11y-next > .a11y-next-desc { font-size: 22px; letter-spacing: 0.015em; }
+  .a11y-widget-biz .a11y-w22 > .a11y-next > .a11y-next-desc { font-size: 20px; letter-spacing: 0.015em; }
 }
 
 .a11y-widget-biz .a11y-sr .a11y-accordion-row { align-items: flex-start; margin-top: var(--cds-spacing-09); }
@@ -2596,7 +2598,7 @@
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-hist-card > .a11y-hist-facts > li:first-child { border-top: 0; padding-top: 0; }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-hist-card > .a11y-hist-facts > li::before { content: none; }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-hist-promise {
-  margin: 0; font-size: 29px; font-weight: 200; line-height: 1.1; letter-spacing: 0.01em;
+  margin: 0; font-size: 26px; font-weight: 200; line-height: 1.1; letter-spacing: 0.01em;
   min-width: 0; overflow-wrap: anywhere;}
 /* overflow-wrap above: at 320px the French and German promise ran 7 to 28px
    past its card (measured 23 Nov 2026); it only shows once a scan is kept,
@@ -2699,7 +2701,7 @@
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sr-row[aria-current="true"]:enabled:hover { background: var(--ink); color: var(--paper); }
 
 @container a11y-shell (max-width: 640px) {
-  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-hist-promise { font-size: 22px; letter-spacing: 0.015em; }
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-hist-promise { font-size: 20px; letter-spacing: 0.015em; }
   .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sr-row .a11y-sr-line-text { font-size: 22px; letter-spacing: 0.015em; }
 }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sr .a11y-show-all { margin-bottom: var(--cds-spacing-07); }
@@ -3365,12 +3367,12 @@
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-report > .a11y-section .a11y-section-head > .a11y-accordion-row { border-top: 0; padding-top: 0; }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-report :is(.a11y-section-desc, .a11y-section > p) {
   font-family: "PP Telegraf", "DejaVu Sans", sans-serif; font-weight: 200;
-  font-size: 29px; line-height: 1.1; letter-spacing: 0.01em; margin-top: 0; margin-bottom: var(--cds-spacing-07);
+  font-size: 26px; line-height: 1.1; letter-spacing: 0.01em; margin-top: 0; margin-bottom: var(--cds-spacing-07);
 }
 @media (max-width: 671px) {
   .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-report h2:is(.a11y-section-title, .a11y-top-title, .a11y-legal-title, .a11y-results-title):not(.a11y-sr-only),
-  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-report h2.a11y-accordion-title .a11y-accordion-head,
-  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-report :is(.a11y-section-desc, .a11y-section > p) { font-size: 22px; letter-spacing: 0.015em; }
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-report h2.a11y-accordion-title .a11y-accordion-head { font-size: 22px; letter-spacing: 0.015em; }
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-report :is(.a11y-section-desc, .a11y-section > p) { font-size: 20px; letter-spacing: 0.015em; }
 }
 
 /* ═══ THE OPENING QUESTIONS AS FILLED CARDS (user's instruction, 23 Nov
@@ -3409,7 +3411,7 @@
   font-size: 16px; font-weight: 200; line-height: 1.2; letter-spacing: 0.025em;
 }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-prompts .a11y-prompt-go {
-  right: 22px; bottom: 22px; min-height: 32px; padding: var(--cds-spacing-02) var(--cds-spacing-04); box-sizing: border-box;
+  right: var(--cds-spacing-06); bottom: var(--cds-spacing-06); min-height: 32px; padding: var(--cds-spacing-02) var(--cds-spacing-04); box-sizing: border-box;
   border-radius: 10px; background: var(--solid); color: var(--solid-ink);
   font-size: 18px; line-height: 1.2; letter-spacing: 0.025em;
 }
@@ -3732,7 +3734,7 @@
    30% smaller". The open tab keeps a 4px inset ring in ink (the pressed
    check-result card's mark). Four across, two where the row is under 900px,
    one under 480px. */
-.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-dn-list { grid-template-columns: repeat(auto-fit, minmax(min(100%, 220px), 1fr)); gap: var(--cds-spacing-03); }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-dn-list { grid-template-columns: repeat(auto-fit, minmax(min(100%, 220px), 1fr)); gap: var(--cds-spacing-03) var(--cds-grid-gutter-narrow); }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-dn-list > .a11y-dn-link {
   --ink: var(--plate-text); --paper: var(--plate-1);
   justify-content: flex-end; gap: var(--cds-spacing-06); min-height: 220px; padding: var(--cds-spacing-06) var(--cds-spacing-05) var(--cds-spacing-06);
@@ -3843,7 +3845,7 @@
   position: relative; grid-template-columns: minmax(0, 1fr); padding: var(--cds-spacing-06) var(--cds-spacing-06) var(--cds-spacing-05) var(--cds-spacing-06);
 }
 .a11y-widget-biz.a11y-widget-biz .a11y-note.a11y-note-warning .a11y-note-badge {
-  position: absolute; top: 0; left: 22px; margin: 0; padding: var(--cds-spacing-02) var(--cds-spacing-03) var(--cds-spacing-02); border-radius: 8px;
+  position: absolute; top: 0; left: var(--cds-spacing-06); margin: 0; padding: var(--cds-spacing-02) var(--cds-spacing-03) var(--cds-spacing-02); border-radius: 8px;
   background: var(--hl-cap-a); color: #000;
   font-family: "PP Telegraf", "DejaVu Sans", sans-serif; font-weight: 200; font-synthesis: none;
   font-size: 16px; line-height: 1.2; letter-spacing: 0.08em; white-space: nowrap;
@@ -4321,7 +4323,7 @@
   font-size: 29px; font-weight: 200; line-height: 1.1; letter-spacing: 0.01em;
 }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-grid > .a11y-score-clean {
-  margin-bottom: 0; font-size: 29px; font-weight: 200; line-height: 1.1; letter-spacing: 0.01em;
+  margin-bottom: 0; font-size: 26px; font-weight: 200; line-height: 1.1; letter-spacing: 0.01em;
 }
 
 /* The issues. */
@@ -4397,7 +4399,7 @@
 }
 @media (max-width: 671px) {
   .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-verdict { font-size: 22px; line-height: 1.15; letter-spacing: 0.015em; }
-  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-grid > .a11y-score-clean { font-size: 22px; line-height: 1.15; letter-spacing: 0.015em; }
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-grid > .a11y-score-clean { font-size: 20px; line-height: 1.15; letter-spacing: 0.015em; }
   .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-table-issue { font-size: 22px; line-height: 1.15; letter-spacing: 0.015em; }
   .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-table { width: calc(100% + 2 * var(--cds-spacing-03)); margin-inline: calc(var(--cds-spacing-03) * -1); }
   .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-table :is(th, td) { padding-inline: var(--cds-spacing-03); }
@@ -6396,7 +6398,7 @@
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-prompts .a11y-prompt.a11y-prompt.a11y-prompt:has(> .a11y-prompt-q:disabled) { border: 0; outline: 1px dashed var(--tile-ink); outline-offset: -1px; }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-prompts .a11y-prompt .a11y-prompt-ask { margin-top: var(--cds-spacing-02); }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-prompts .a11y-prompt .a11y-prompt-wcag {
-  position: absolute; left: 50%; right: auto; bottom: 26px; translate: -50% 0; z-index: 1;
+  position: absolute; left: 50%; right: auto; bottom: var(--cds-spacing-06); translate: -50% 0; z-index: 1;
   display: flex; align-items: center; min-height: 32px; margin: 0; padding: 0 var(--cds-spacing-05); box-sizing: border-box;
   border: 0; border-radius: 999px; background: var(--note-pill); color: var(--tile-ink);
   font-size: 16px; font-weight: 200; line-height: 1.2; letter-spacing: 0.025em;
@@ -6445,7 +6447,7 @@
   margin: 0; border: 0; border-radius: 0; background: none; color: var(--ink);
 }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-chats .a11y-chats-row[class] > .a11y-chats-item[class] {
-  display: flex; align-items: center; gap: var(--cds-spacing-03); min-height: 0; margin: 0; padding: 1px var(--cds-spacing-04); border: 0; border-radius: 0;
+  display: flex; align-items: center; gap: var(--cds-spacing-03); min-height: 0; margin: 0; padding: var(--cds-spacing-01) var(--cds-spacing-04); border: 0; border-radius: 0;
   background: none; color: var(--ink); font-size: 22px; line-height: 1.15; letter-spacing: 0.015em;
 }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-chats .a11y-chats-row[class] .a11y-chats-title[class] {
@@ -6550,7 +6552,7 @@
   display: flex; flex-wrap: wrap; gap: var(--cds-spacing-03); margin: var(--cds-spacing-04) 0 0;
 }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-spec-pill {
-  display: inline-block; box-sizing: border-box; max-width: 100%; padding: 1px var(--cds-spacing-04); border: 1px solid #000; border-radius: 999px; color: #000;
+  display: inline-block; box-sizing: border-box; max-width: 100%; padding: var(--cds-spacing-01) var(--cds-spacing-04); border: 1px solid #000; border-radius: 999px; color: #000;
   font-family: "PP Lettra Mono", ui-monospace, "SF Mono", Menlo, Consolas, "DejaVu Sans Mono", monospace;
   font-size: 16px; font-weight: 400; line-height: 1.3; letter-spacing: 0; white-space: normal;
 }
@@ -6581,10 +6583,10 @@
    room at the foot is kept while hidden, so the card does not grow on
    hover. Focus inside the blue is white (the yellow's #0a3d1a is 1.6:1 on
    the blue). */
-.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-specs > .a11y-sum-spec[class] { padding-bottom: calc(var(--cds-spacing-06) + 34px + var(--cds-spacing-05)); }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-specs > .a11y-sum-spec[class] { padding-bottom: calc(var(--cds-spacing-06) + 32px + var(--cds-spacing-06)); }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-spec-go {
   position: absolute; left: var(--cds-spacing-06); bottom: var(--cds-spacing-06); visibility: hidden; pointer-events: none;
-  display: inline-flex; align-items: center; box-sizing: border-box; min-height: 34px; padding: 0 var(--cds-spacing-04);
+  display: inline-flex; align-items: center; box-sizing: border-box; min-height: 32px; padding: 0 var(--cds-spacing-04);
   border-radius: 999px; background: #fff; color: #000; white-space: nowrap;
   font-size: 16px; font-weight: 200; line-height: 1.2; letter-spacing: 0.025em;
 }
@@ -6603,7 +6605,7 @@
   .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-specimen > .a11y-sum-run > .a11y-sum-dial-card { --dial: 240px; }
   .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-specimen > .a11y-sum-issues { margin-top: var(--cds-spacing-10); }
   .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-specs > .a11y-sum-spec { gap: var(--cds-spacing-05); padding: var(--cds-spacing-05); }
-  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-specs > .a11y-sum-spec[class] { padding-bottom: calc(var(--cds-spacing-05) + 34px + var(--cds-spacing-05)); }
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-specs > .a11y-sum-spec[class] { padding-bottom: calc(var(--cds-spacing-05) + 32px + var(--cds-spacing-05)); }
   .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-spec-go { left: var(--cds-spacing-05); bottom: var(--cds-spacing-05); }
   .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-spec-title { font-size: 16px; line-height: 1.4; }
 }
@@ -6808,7 +6810,7 @@
   font: inherit; letter-spacing: inherit; overflow-wrap: break-word;
 }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-card[class] > .a11y-sum-card-body > .a11y-sum-card-pill[class] {
-  order: 1; margin: calc(var(--cds-spacing-03) * -1) 0 0; padding: 1px var(--cds-spacing-04); border: 1px solid #000; border-radius: 999px;
+  order: 1; margin: calc(var(--cds-spacing-03) * -1) 0 0; padding: var(--cds-spacing-01) var(--cds-spacing-04); border: 1px solid #000; border-radius: 999px;
   background: none; color: #000; white-space: normal;
   font-family: inherit; font-size: 16px; font-weight: 400; line-height: 1.3; letter-spacing: 0;
 }
@@ -6876,12 +6878,12 @@
 }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-legal-cards .a11y-legal-card { margin: 0; padding: 0; border: 0; background: none; }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-legal-cards .a11y-legal-q + .a11y-legal-q { margin-top: var(--cds-spacing-03); }
-.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-legal-cards .a11y-legal-q > .a11y-legal-qnum { width: 22px; height: 22px; margin-top: 0; font-size: 16px; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-legal-cards .a11y-legal-q > .a11y-legal-qnum { width: 24px; height: 24px; margin-top: 0; font-size: 16px; }
 @media (max-width: 671px) {
   .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-legal-cards > :is(.a11y-legal-std, .a11y-legal-band, .a11y-legal-panel) { padding: var(--cds-spacing-05); }
   .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-legal-cards :is(.a11y-legal-standard, .a11y-legal-eyebrow) { font-size: 16px; line-height: 1.15; }
   .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-legal-cards :is(.a11y-legal-intro, .a11y-legal-lead, .a11y-legal-q) { font-size: 16px; line-height: 1.15; letter-spacing: 0.025em; }
-  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-legal-cards .a11y-legal-q > .a11y-legal-qnum { width: 17px; height: 17px; }
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-legal-cards .a11y-legal-q > .a11y-legal-qnum { width: 16px; height: 16px; }
 }
 @media (forced-colors: active) {
   .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-legal-cards > :is(.a11y-legal-std, .a11y-legal-band, .a11y-legal-panel) { border: 1px solid CanvasText; }
@@ -7066,7 +7068,7 @@
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-code-fix[class] {
   --ink: #000; --paper: #fff5c2;
   container-type: inline-size;
-  box-sizing: border-box; margin: var(--cds-spacing-07) 0 0; padding: 28px;
+  box-sizing: border-box; margin: var(--cds-spacing-07) 0 0; padding: var(--cds-spacing-06);
   border-radius: 28px; background: #fff5c2; color: #000;
   font-size: 22px; line-height: 1.15; letter-spacing: 0.015em;
 }
@@ -7077,23 +7079,23 @@
   display: block; margin: 0; text-transform: none; letter-spacing: 0.015em;
 }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-code-fix[class] .a11y-code-fix-warn { display: block; color: #c8102e; }
-.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-code-fix[class] > .a11y-code-fix-note { margin: 1lh 0 0; overflow-wrap: break-word; hyphens: manual; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-code-fix[class] > .a11y-code-fix-note { margin: var(--cds-spacing-07) 0 0; overflow-wrap: break-word; hyphens: manual; }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-code-fix[class] > .a11y-code-fix-cols {
-  display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 24px; margin-top: 40px;
+  display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--cds-spacing-06) var(--cds-grid-gutter-narrow); margin-top: var(--cds-spacing-08);
 }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-code-fix[class] .a11y-code-fix-col { display: flex; flex-direction: column; min-width: 0; }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-code-fix[class] .a11y-code-fix-col > .a11y-code-fix-key {
-  order: 2; margin: 12px 0 0; font-size: 22px; line-height: 1.15; letter-spacing: 0.015em;
+  order: 2; margin: var(--cds-spacing-04) 0 0; font-size: 22px; line-height: 1.15; letter-spacing: 0.015em;
 }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-code-fix[class] .a11y-code-fix-col > .a11y-code-fix-pre {
-  order: 1; flex: 1 1 auto; box-sizing: border-box; margin: 0; padding: 16px 20px;
+  order: 1; flex: 1 1 auto; box-sizing: border-box; margin: 0; padding: var(--cds-spacing-05);
   border: 0; border-radius: 20px; background: #fff; color: #000;
   font-size: 16px; line-height: 1.2; letter-spacing: 0.025em; white-space: pre-wrap; overflow-wrap: anywhere;
 }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-code-fix[class] .a11y-code-fix-col > .a11y-code-fix-pre:focus-visible { outline: 2px solid #198038; outline-offset: -2px; }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-code-fix[class] > .a11y-copy-btn[class] {
-  box-sizing: border-box; display: flex; align-items: center; justify-content: center; gap: 12px;
-  width: max-content; max-width: 100%; min-height: 48px; margin: 40px 0 0; padding: 0 24px;
+  box-sizing: border-box; display: flex; align-items: center; justify-content: center; gap: var(--cds-spacing-04);
+  width: max-content; max-width: 100%; min-height: 48px; margin: var(--cds-spacing-08) 0 0; padding: 0 var(--cds-spacing-06);
   border: 0; border-radius: 999px; background: #000; color: #fff;
   font-size: 24px; line-height: 1.15; letter-spacing: 0.015em;
 }
@@ -7106,7 +7108,7 @@
   .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-code-fix[class] > .a11y-code-fix-cols { grid-template-columns: minmax(0, 1fr); }
 }
 @media (max-width: 640px) {
-  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-code-fix[class] { padding: 20px; border-radius: 24px; }
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-code-fix[class] { padding: var(--cds-spacing-05); border-radius: 24px; }
 }
 @media (forced-colors: active) {
   .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-code-fix[class] { border: 1px solid CanvasText; }
@@ -7402,7 +7404,7 @@
 
 /* The pairs. */
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-settings[class] .a11y-settings-switch[class] {
-  display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; margin: 0;
+  display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--cds-grid-gutter-narrow); margin: 0;
 }
 @container a11y-settings-panel (max-width: 560px) {
   .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-settings[class] .a11y-settings-switch[class] { grid-template-columns: minmax(0, 1fr); }
@@ -7427,7 +7429,7 @@
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-settings[class] .a11y-settings-ring > svg { font-size: 16px; color: var(--tile-fill); }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-settings[class] button.a11y-settings-opt[class][class]:enabled:hover .a11y-settings-ring > svg { color: var(--hover); }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-settings[class] .a11y-settings-cost[class] {
-  flex: none; margin: 0 0 0 auto; padding: 1px var(--cds-spacing-03); border: 1px solid currentColor; border-radius: 999px;
+  flex: none; margin: 0 0 0 auto; padding: var(--cds-spacing-01) var(--cds-spacing-03); border: 1px solid currentColor; border-radius: 999px;
   font-size: 16px; line-height: 1.2; letter-spacing: 0.025em; white-space: nowrap;
 }
 
@@ -7474,7 +7476,7 @@
   }
   /* The badge folds under the words, on their left edge (ring 28 + gap 12). */
   .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-settings[class] .a11y-settings-opt[class][class] > .a11y-settings-words { flex: 1 1 calc(100% - 40px); }
-  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-settings[class] .a11y-settings-cost[class] { margin: 0 0 0 40px; }
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-settings[class] .a11y-settings-cost[class] { margin: 0 0 0 var(--cds-spacing-08); }
   .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-settings[class] .a11y-select2 .a11y-select2-field.a11y-select2-field { min-height: 56px; font-size: 16px; letter-spacing: 0.025em; }
 }
 @media (forced-colors: active) {
@@ -7533,7 +7535,7 @@
   font-family: "EB Garamond", Georgia, serif; font-style: italic; font-synthesis: none;
   font-weight: 400; letter-spacing: 0; font-variant-numeric: lining-nums;
 }
-.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-conf-row > .a11y-conf-id > .a11y-conf-key > em { font-style: inherit; margin-inline-start: 0.25em; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-conf-row > .a11y-conf-id > .a11y-conf-key > em { font-style: inherit; margin-inline-start: var(--cds-spacing-02); }
 
 /* ONE GAP BETWEEN BUTTONS (user's instruction, 25 Nov 2026, "fix chat,
    make space between buttons consistent across website", on the chat box).
@@ -7599,9 +7601,9 @@
    and the note 8px under its question; the question (or a failing row's
    problem) is PP Lettra Mono Ultralight at its own size, no tracking, as
    the other Lettra lines. Every result's group, since they share the row. */
-.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-legal-carets .a11y-conf-list > .a11y-conf-row[class][class][class][class] { margin-bottom: 32px; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-legal-carets .a11y-conf-list > .a11y-conf-row[class][class][class][class] { margin-bottom: var(--cds-spacing-07); }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-legal-carets .a11y-conf-list > .a11y-conf-row:last-child[class][class][class][class] { margin-bottom: 0; }
-.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-legal-carets .a11y-conf-row .a11y-conf-body > :is(.a11y-conf-plain, .a11y-manual-verdict)[class][class][class] { display: block; margin-top: 8px; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-legal-carets .a11y-conf-row .a11y-conf-body > :is(.a11y-conf-plain, .a11y-manual-verdict)[class][class][class] { display: block; margin-top: var(--cds-spacing-03); }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-legal-carets .a11y-conf-row > .a11y-conf-body > strong:not(#x):not(#y) {
   font-family: "PP Lettra Mono", ui-monospace, "SF Mono", Menlo, Consolas, "DejaVu Sans Mono", monospace;
   font-weight: 200; letter-spacing: 0;
@@ -7609,7 +7611,7 @@
 @media (max-width: 671px) {
   /* Stacked on a phone, the question stood right under the criterion's
      name; the same 8px as the note under it. */
-  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-legal-carets .a11y-conf-list > .a11y-conf-row > .a11y-conf-body[class][class][class] { margin-top: 8px; }
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-legal-carets .a11y-conf-list > .a11y-conf-row > .a11y-conf-body[class][class][class] { margin-top: var(--cds-spacing-03); }
 }
 
 /* WHAT COSTS YOU TRUST IN LETTRA, CENTRED (user's instruction, 25 Nov
@@ -7689,7 +7691,7 @@
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-hist .a11y-hist-facts > li > .a11y-hist-fact-value[class][class] {
   min-width: 0; font-size: 29px; font-weight: 200; line-height: 1.1; letter-spacing: 0.01em; overflow-wrap: anywhere;
 }
-@media (max-width: 640px) {
+@media (max-width: 671px) {
   .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-hist .a11y-hist-run > .a11y-hist-score[class][class] { font-size: 29px; }
   .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-hist .a11y-hist-run > :is(.a11y-hist-date, .a11y-hist-times, .a11y-hist-note)[class][class] { top: -5px; }
   .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-hist .a11y-hist-facts > li > .a11y-hist-fact-value[class][class] { font-size: 22px; letter-spacing: 0.015em; }
@@ -7714,6 +7716,6 @@
    buttons stand 30px inside its edge (they were 16px top and bottom,
    24px at the sides). Phones keep their gutter. */
 @media (min-width: 672px) {
-  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-chat-layout > .a11y-chat[class] { padding-inline: 30px; }
-  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-chat .a11y-chat-box[class][class] { padding: 30px; }
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-chat-layout > .a11y-chat[class] { padding-inline: var(--cds-spacing-07); }
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-chat .a11y-chat-box[class][class] { padding: var(--cds-spacing-07); }
 }
