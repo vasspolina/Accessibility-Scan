@@ -175,6 +175,25 @@ main.wrap { padding-top: var(--s10); }
 }
 .title { max-width: 30ch; margin: 0 auto var(--s10); text-wrap: balance; }
 .title__sub { margin-top: var(--s05); color: var(--ink); font-size: 24px; }
+/* The home page's lede as a type foundry's tester panel (user's reference,
+   25 Nov 2026, "design this like this", a black panel with its specimen
+   line in white Lettra): the column's width on solid black, 28px corners,
+   at least 400px tall, the line centred both ways in white Lettra
+   Ultralight at 56px, 1.15, no tracking (21:1). Black in both themes, as
+   the reference. The reference's pill and weight slider are left out:
+   there are no words or controls of the studio's own for them. The phone
+   takes 32px in a 280px panel. */
+.title--lede {
+  display: grid; place-content: center; max-width: none; min-height: 400px; margin: 0 0 var(--s10);
+  padding: var(--s10) var(--s09); border-radius: var(--r-panel); background: #000; color: #fff;
+  font-size: 56px; line-height: 1.15;
+}
+@media (max-width: 671px) {
+  .title.title--lede { min-height: 280px; padding: var(--s07) var(--s05); font-size: 32px; }
+}
+@media (forced-colors: active) {
+  .title--lede { border: 1px solid CanvasText; }
+}
 
 /* ---------- The request form: the scan form's grey panel ---------- */
 .signup, .request {
