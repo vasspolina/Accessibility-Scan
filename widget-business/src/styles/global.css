@@ -1044,7 +1044,7 @@
 .a11y-widget-biz .a11y-sum-dial circle { stroke: var(--ink); }
 .a11y-widget-biz .a11y-sum-dial circle:first-child { stroke-width: 3; stroke-linecap: round; stroke-dasharray: 0 6.6; }
 .a11y-widget-biz .a11y-sum-dial-face { position: absolute; inset: 0; display: grid; place-content: center; text-align: center; }
-.a11y-widget-biz .a11y-sum-dial-num { font-size: 48px; letter-spacing: 0; font-weight: 200; line-height: 1; margin: 0; }
+.a11y-widget-biz .a11y-sum-dial-num { font-size: 32px; letter-spacing: 0.01em; font-weight: 200; line-height: 1; margin: 0; }
 .a11y-widget-biz .a11y-sum-dial-of { font-size: 18px; letter-spacing: 0.025em; margin: 0; }
 
 /* The scan summary as a run of display type (user's instruction,
@@ -1411,7 +1411,9 @@
 .a11y-widget-biz .a11y-fd .a11y-pro-line:not(:has(> strong:first-child)) { text-indent: 0; }
 .a11y-widget-biz .a11y-fd .a11y-pro-block > .a11y-pro-snippet { margin: 0.3em 0 0.3em 9em; }
 .a11y-widget-biz .a11y-fd .a11y-finding-level-fold { font-family: "PP Telegraf", "DejaVu Sans", sans-serif; font-weight: 200; font-size: 24px; letter-spacing: 0.015em; line-height: 1.15; margin-bottom: 1lh; }
-.a11y-widget-biz .a11y-fd .a11y-fd-learn,
+/* Learn more at the size of What to do above it, 32px (user's instruction,
+   24 Nov 2026, "same size text as text above it"). */
+.a11y-widget-biz .a11y-fd .a11y-fd-learn { font-family: "PP Telegraf", "DejaVu Sans", sans-serif; font-weight: 200; font-size: 32px; line-height: 1.1; letter-spacing: 0.01em; }
 .a11y-widget-biz .a11y-fd .a11y-occurrence-list { font-family: "PP Telegraf", "DejaVu Sans", sans-serif; font-weight: 200; font-size: 24px; letter-spacing: 0.015em; }
 .a11y-widget-biz .a11y-fd .a11y-tech-details > summary { font-size: 18px; text-transform: uppercase; letter-spacing: 0.04em; cursor: pointer; }
 /* The affected elements, two to a row (user's instruction, 18 Nov 2026,
@@ -1449,7 +1451,7 @@
 
 /* The professional score: the number is the big word, the rest small print under it. */
 .a11y-widget-biz .a11y-pro-score { display: flex; align-items: baseline; gap: 0.4em; margin: 0 0 0.4em; }
-.a11y-widget-biz .a11y-pro-score-num { font-size: 48px; letter-spacing: 0; font-weight: 200; line-height: 1; }
+.a11y-widget-biz .a11y-pro-score-num { font-size: 32px; letter-spacing: 0.01em; font-weight: 200; line-height: 1; }
 .a11y-widget-biz .a11y-pro-score-of { font-size: 18px; letter-spacing: 0.025em; }
 .a11y-widget-biz .a11y-pro-eyebrow { font-size: 18px; letter-spacing: 0.025em; font-weight: 200; margin: 0 0 0.4em; }
 .a11y-widget-biz .a11y-pro-count { font-size: 24px; letter-spacing: 0.015em; }
@@ -1638,7 +1640,7 @@
 .a11y-widget-biz .a11y-acr .a11y-acr-make {
   display: block; width: 100%; min-height: 128px; margin: 0; padding: 20px 24px;
   border-radius: 14px; text-align: start;
-  font-size: 48px; font-weight: 200; line-height: 1.05; letter-spacing: 0;
+  font-size: 32px; font-weight: 200; line-height: 1.05; letter-spacing: 0.01em;
 }
 @media (max-width: 640px) {
   .a11y-widget-biz .a11y-acr .a11y-acr-make { min-height: 96px; font-size: 32px; letter-spacing: 0.01em; }
@@ -2272,7 +2274,7 @@
 }
 .a11y-widget-biz .a11y-legal-tiles > .a11y-legal-row .a11y-legal-count {
   order: 2; margin: 24px 0 6px;
-  font-size: 48px; font-weight: 200; line-height: 0.9; letter-spacing: 0;
+  font-size: 32px; font-weight: 200; line-height: 0.9; letter-spacing: 0.01em;
 }
 .a11y-widget-biz .a11y-legal-tiles > .a11y-legal-row .a11y-legal-row-label {
   order: 3; font-size: 24px; font-weight: 200; line-height: 1.15; letter-spacing: 0.015em;
@@ -2285,7 +2287,7 @@
    tile at an 800px window. The tile is its own container, so the step
    follows the tile, not the window. */
 @container a11y-legal-tile (max-width: 280px) {
-  .a11y-widget-biz .a11y-legal-tiles > .a11y-legal-row .a11y-legal-count { margin-top: 12px; font-size: 48px; letter-spacing: 0; }
+  .a11y-widget-biz .a11y-legal-tiles > .a11y-legal-row .a11y-legal-count { margin-top: 12px; font-size: 32px; letter-spacing: 0.01em; }
   .a11y-widget-biz .a11y-legal-tiles > .a11y-legal-row .a11y-legal-row-label { font-size: 18px; letter-spacing: 0.025em; }
 }
 /* The same narrow tiles take 12px sides, not 20px: the copy binds a short
@@ -2316,7 +2318,7 @@
   .a11y-widget-biz .a11y-legal-tiles > .a11y-legal-row {
     flex: none; min-height: 0; gap: 12px; padding: 16px 20px 24px;
   }
-  .a11y-widget-biz .a11y-legal-tiles > .a11y-legal-row .a11y-legal-count { margin-top: 12px; font-size: 48px; letter-spacing: 0; }
+  .a11y-widget-biz .a11y-legal-tiles > .a11y-legal-row .a11y-legal-count { margin-top: 12px; font-size: 32px; letter-spacing: 0.01em; }
   .a11y-widget-biz .a11y-legal-tiles > .a11y-legal-row .a11y-legal-row-label { font-size: 18px; letter-spacing: 0.025em; }
 }
 
@@ -2332,7 +2334,7 @@
    of the same day. */
 .a11y-widget-biz .a11y-url-form.a11y-tester { display: block; box-sizing: border-box; min-width: 0; max-width: 640px; margin: 0; }
 .a11y-widget-biz .a11y-tester > .a11y-tester-name {
-  margin: 0 0 8px; font-size: 48px; font-weight: 200; line-height: 1.05; letter-spacing: 0;
+  margin: 0 0 8px; font-size: 32px; font-weight: 200; line-height: 1.05; letter-spacing: 0.01em;
 }
 .a11y-widget-biz .a11y-tester > .a11y-tester-sub {
   margin: 40px 0 12px; font-family: "PP Telegraf", "DejaVu Sans", sans-serif; font-size: 32px; font-weight: 200; line-height: 1.1; letter-spacing: 0.01em;
@@ -2398,11 +2400,11 @@
 .a11y-widget-biz .a11y-tester > .a11y-url-submit { display: grid; gap: 14px; margin-top: 8px; }
 .a11y-widget-biz .a11y-tester > .a11y-url-submit > .a11y-btn.a11y-btn-primary {
   display: block; width: 100%; min-height: 120px; padding: 20px 24px; border-radius: 12px; text-align: start;
-  font-size: 48px; font-weight: 200; line-height: 1.05; letter-spacing: 0;
+  font-size: 32px; font-weight: 200; line-height: 1.05; letter-spacing: 0.01em;
 }
 .a11y-widget-biz .a11y-tester > .a11y-url-submit > .a11y-url-submit-note { font-size: 18px; letter-spacing: 0.025em; }
 @media (max-width: 640px) {
-  .a11y-widget-biz .a11y-tester > .a11y-tester-name { font-size: 48px; letter-spacing: 0; }
+  .a11y-widget-biz .a11y-tester > .a11y-tester-name { font-size: 32px; letter-spacing: 0.01em; }
   .a11y-widget-biz .a11y-tester > .a11y-tester-sub { margin-top: 28px; font-size: 24px; letter-spacing: 0.015em; }
   .a11y-widget-biz .a11y-tester .a11y-input-shell > input:not([type="radio"]) { font-size: 24px; letter-spacing: 0.015em; }
   .a11y-widget-biz .a11y-tester > .a11y-url-submit > .a11y-btn.a11y-btn-primary { min-height: 96px; font-size: 32px; letter-spacing: 0.01em; }
@@ -3590,10 +3592,10 @@
 }
 .a11y-widget-biz .a11y-legal-results .a11y-legal-tiles > .a11y-legal-row .a11y-legal-count {
   margin: auto 0 4px; padding-top: 24px;
-  font-size: 48px; font-weight: 200; line-height: 1; letter-spacing: 0;
+  font-size: 32px; font-weight: 200; line-height: 1; letter-spacing: 0.01em;
 }
 .a11y-widget-biz .a11y-legal-results .a11y-legal-tiles > .a11y-legal-row .a11y-legal-row-label {
-  font-size: 48px; font-weight: 200; line-height: 1.02; letter-spacing: 0;
+  font-size: 32px; font-weight: 200; line-height: 1.02; letter-spacing: 0.01em;
   text-decoration-thickness: 2px; text-underline-offset: 0.12em;
 }
 .a11y-widget-biz .a11y-legal-results .a11y-legal-tiles > .a11y-legal-row:nth-child(even) .a11y-legal-row-label {
@@ -3616,7 +3618,7 @@
   .a11y-widget-biz .a11y-legal-results .a11y-legal-tiles { grid-template-columns: minmax(0, 1fr); }
   .a11y-widget-biz .a11y-legal-results .a11y-legal-tiles > .a11y-legal-row { min-height: 0; padding: 22px 20px 24px; }
   .a11y-widget-biz .a11y-legal-results .a11y-legal-tiles > .a11y-legal-row .a11y-legal-mark { font-size: 18px; letter-spacing: 0.025em; line-height: 20px; }
-  .a11y-widget-biz .a11y-legal-results .a11y-legal-tiles > .a11y-legal-row .a11y-legal-count { font-size: 48px; letter-spacing: 0; }
+  .a11y-widget-biz .a11y-legal-results .a11y-legal-tiles > .a11y-legal-row .a11y-legal-count { font-size: 32px; letter-spacing: 0.01em; }
   .a11y-widget-biz .a11y-legal-results .a11y-legal-tiles > .a11y-legal-row .a11y-legal-row-label { font-size: 32px; letter-spacing: 0.01em; }
 }
 @media (forced-colors: active) {
@@ -4203,7 +4205,7 @@
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-report-actions .a11y-ra-field > input.a11y-ra-email-input {
   box-sizing: border-box; width: 100%; min-height: 34px; margin: 0; padding: 2px 0;
   border: 0; border-radius: 0; background: transparent; color: var(--tile-ink);
-  font: inherit; font-size: 26px; font-weight: 400; line-height: 1.2; letter-spacing: 0;
+  font: inherit; font-size: 24px; font-weight: 400; line-height: 1.2; letter-spacing: 0.015em;
 }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-report-actions .a11y-ra-field > input.a11y-ra-email-input::placeholder { color: var(--tile-ink); opacity: 1; font-weight: 200; }
 /* The field is the box, so the focus ring goes round the field. */
@@ -4222,7 +4224,7 @@
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-report-actions .a11y-ra-send-word { grid-area: 1 / 1; }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-report-actions .a11y-ra-send-word[data-off] { visibility: hidden; }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-report-actions .a11y-ra-note {
-  margin: 0; color: #000; font-size: 22px; font-weight: 400; line-height: 1.2; letter-spacing: 0;
+  margin: 0; color: #000; font-size: 24px; font-weight: 400; line-height: 1.2; letter-spacing: 0.015em;
 }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-report-actions .a11y-ra-note:empty {
   position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap;
@@ -4238,7 +4240,7 @@
   .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-report-actions .a11y-ra-head { margin-bottom: 12px; font-size: 24px; }
   .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-report-actions .a11y-ra-field { padding: 12px 20px 10px; border-radius: 20px; }
   .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-report-actions .a11y-ra-field > input.a11y-ra-email-input,
-  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-report-actions .a11y-ra-send { font-size: 22px; }
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-report-actions .a11y-ra-send { font-size: 24px; }
 }
 @media print {
   .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-report-actions > .a11y-ra-panel { break-inside: avoid; }
@@ -4840,6 +4842,10 @@
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-undecided-answer > .a11y-fd-meta { margin-bottom: 24px; }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-undecided-answer > .a11y-undecided-ask { margin: 0 0 20px; font-size: 24px; line-height: 1.15; letter-spacing: 0.015em; }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-undecided-answer > :last-child { margin-bottom: 0; }
+/* Learn more at the size of the sentence above it (user's instruction, 24
+   Nov 2026, "learn more link needs to be same size text as text above
+   it"): it inherited the row's 32px under a 24px sentence. */
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-undecided-answer > .a11y-learn-more { font-size: 24px; line-height: 1.15; letter-spacing: 0.015em; }
 @container a11y-ledger (max-width: 640px) {
   .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-undecided-table > .a11y-undecided-cell > .a11y-undecided-q {
     grid-template-columns: 26px auto minmax(0, 1fr); row-gap: 4px; column-gap: 10px; --row-line: calc(24px * 1.15);
@@ -4886,69 +4892,101 @@
   grid-template-columns: none;
 }
 /* Each tab: one line of the list. */
-.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-legal-tiles > .a11y-legal-row, .a11y-dn-list > .a11y-dn-link)[class][class] {
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-legal-tiles > li > .a11y-legal-row, .a11y-dn-list > .a11y-dn-link)[class][class] {
   position: static; display: flex; flex-direction: row; flex-wrap: wrap; align-items: baseline; justify-content: flex-start; column-gap: 0.35em; row-gap: 2px;
   box-sizing: border-box; flex: none; width: auto; max-width: 100%; height: auto; min-height: 0; aspect-ratio: auto; container-type: normal; contain: none;
   margin: 0; padding: 2px 14px 4px 0; border: 0; border-radius: 999px; background: none; box-shadow: none; outline-offset: 2px;
   transform: none; rotate: none; color: var(--ink); text-align: left; cursor: pointer;
   font-family: "PP Telegraf", "DejaVu Sans", sans-serif; font-size: 32px; font-weight: 200; line-height: 1.1; letter-spacing: 0.01em;
 }
-.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-legal-tiles > .a11y-legal-row, .a11y-dn-list > .a11y-dn-link)[class][class]::before {
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-legal-tiles > li > .a11y-legal-row, .a11y-dn-list > .a11y-dn-link)[class][class]::before {
   content: ""; flex: none; align-self: center; width: 0.5em; height: 0.5em; margin: 0 0.25em 0 0; padding: 0; border: 0; background: currentColor;
   -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='8 8 16 16'%3E%3Cpath d='M17.4141 16 24 9.4141 22.5859 8 16 14.5859 9.4143 8 8 9.4141 14.5859 16 8 22.5859 9.4143 24 16 17.4141 22.5859 24 24 22.5859 17.4141 16z'/%3E%3C/svg%3E") center / contain no-repeat;
   mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='8 8 16 16'%3E%3Cpath d='M17.4141 16 24 9.4141 22.5859 8 16 14.5859 9.4143 8 8 9.4141 14.5859 16 8 22.5859 9.4143 24 16 17.4141 22.5859 24 24 22.5859 17.4141 16z'/%3E%3C/svg%3E") center / contain no-repeat;
 }
-.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-legal-tiles > .a11y-legal-row, .a11y-dn-list > .a11y-dn-link)[class][class]::after { content: none; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-legal-tiles > li > .a11y-legal-row, .a11y-dn-list > .a11y-dn-link)[class][class]::after { content: none; }
 /* A check result's line: count, sentence, then the small print. */
-.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-legal-tiles > .a11y-legal-row > .a11y-legal-col-result[class] { display: contents; }
-.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-legal-tiles > .a11y-legal-row .a11y-legal-count[class] {
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-legal-tiles > li > .a11y-legal-row > .a11y-legal-col-result[class] { display: contents; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-legal-tiles > li > .a11y-legal-row .a11y-legal-count[class] {
   order: 1; position: static; margin: 0; padding: 0; font: inherit; letter-spacing: inherit; color: inherit;
   text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 0.12em;
 }
-.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-legal-tiles > .a11y-legal-row .a11y-legal-row-label[class] {
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-legal-tiles > li > .a11y-legal-row .a11y-legal-row-label[class] {
   order: 2; display: inline; margin: 0; padding: 0 0.12em; border-radius: 6px; color: #000;
   font: inherit; letter-spacing: inherit; box-decoration-break: clone; -webkit-box-decoration-break: clone;
   text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 0.12em;
 }
-.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-legal-tiles > .a11y-legal-row-failed .a11y-legal-row-label[class] { background: var(--hl-orange); }
-.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-legal-tiles > .a11y-legal-row-clean .a11y-legal-row-label[class] { background: var(--hl-green); }
-.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-legal-tiles > .a11y-legal-row-human .a11y-legal-row-label[class] { background: var(--hl-cap-a); }
-.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-legal-tiles > .a11y-legal-row-not-measured .a11y-legal-row-label[class] { background: var(--hl-blue); }
-.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-legal-tiles > .a11y-legal-row :is(.a11y-legal-mark, .a11y-legal-row-meaning)[class] {
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-legal-tiles > li > .a11y-legal-row-failed .a11y-legal-row-label[class] { background: var(--hl-orange); }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-legal-tiles > li > .a11y-legal-row-clean .a11y-legal-row-label[class] { background: var(--hl-green); }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-legal-tiles > li > .a11y-legal-row-human .a11y-legal-row-label[class] { background: var(--hl-cap-a); }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-legal-tiles > li > .a11y-legal-row-not-measured .a11y-legal-row-label[class] { background: var(--hl-blue); }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-legal-tiles > li > .a11y-legal-row :is(.a11y-legal-mark, .a11y-legal-row-meaning)[class] {
   position: static; display: inline; align-self: baseline; margin: 0; padding: 0; border: 0; border-radius: 0; background: none; box-shadow: none; rotate: none; transform: none;
   color: var(--ink); font-family: "PP Telegraf", "DejaVu Sans", sans-serif; font-size: 18px; font-weight: 200; line-height: 1.2; letter-spacing: 0.025em; text-transform: none;
 }
-.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-legal-tiles > .a11y-legal-row .a11y-legal-mark[class] { order: 3; margin-left: 0.4em; }
-.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-legal-tiles > .a11y-legal-row .a11y-legal-row-meaning[class] { order: 4; }
-.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-legal-tiles > .a11y-legal-row .a11y-legal-row-meaning ~ .a11y-legal-mark[class]::after { content: " \00B7"; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-legal-tiles > li > .a11y-legal-row .a11y-legal-mark[class] { order: 3; margin-left: 0.4em; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-legal-tiles > li > .a11y-legal-row .a11y-legal-row-meaning[class] { order: 4; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-legal-tiles > li > .a11y-legal-row .a11y-legal-row-meaning ~ .a11y-legal-mark[class]::after { content: " \00B7"; }
 /* The line's ink is the page's: the old cards set black words on their
    fixed plates, and in dark those rules left the problems line black on
    the dark panel. The sentence keeps black on its highlight. */
-.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-legal-tiles > .a11y-legal-row:not([aria-pressed="true"])[class][class][class],
-.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-legal-tiles > .a11y-legal-row:not([aria-pressed="true"])[class][class] :is(.a11y-legal-count, .a11y-legal-mark, .a11y-legal-row-meaning)[class] { --ink: inherit; --paper: inherit; color: var(--ink); }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-legal-tiles > li > .a11y-legal-row:not([aria-pressed="true"])[class][class][class],
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-legal-tiles > li > .a11y-legal-row:not([aria-pressed="true"])[class][class] :is(.a11y-legal-count, .a11y-legal-mark, .a11y-legal-row-meaning)[class] { --ink: inherit; --paper: inherit; color: var(--ink); }
 /* A note's line: its title, underlined. */
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-dn-list > .a11y-dn-link > .a11y-dn-link-text[class] {
   display: inline; margin: 0; padding: 0; font: inherit; letter-spacing: inherit; color: inherit;
   text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 0.12em;
 }
-.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-legal-tiles > .a11y-legal-row, .a11y-dn-list > .a11y-dn-link)[class][class]:hover :is(.a11y-legal-count, .a11y-legal-row-label, .a11y-dn-link-text) { text-decoration-thickness: 2px; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-legal-tiles > li > .a11y-legal-row, .a11y-dn-list > .a11y-dn-link)[class][class]:hover :is(.a11y-legal-count, .a11y-legal-row-label, .a11y-dn-link-text) { text-decoration-thickness: 2px; }
 /* The pressed result and the open note: the red-orange pill. */
-.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-legal-tiles > .a11y-legal-row[aria-pressed="true"], .a11y-dn-list > .a11y-dn-link[aria-selected="true"])[class][class] {
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-legal-tiles > li > .a11y-legal-row[aria-pressed="true"], .a11y-dn-list > .a11y-dn-link[aria-selected="true"])[class][class] {
   padding-inline: 14px 18px; background: var(--urgent); color: #000;
 }
-.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-legal-tiles > .a11y-legal-row[aria-pressed="true"], .a11y-dn-list > .a11y-dn-link[aria-selected="true"])[class][class] :is(.a11y-legal-count, .a11y-legal-row-label, .a11y-dn-link-text, .a11y-legal-mark, .a11y-legal-row-meaning) {
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-legal-tiles > li > .a11y-legal-row[aria-pressed="true"], .a11y-dn-list > .a11y-dn-link[aria-selected="true"])[class][class] :is(.a11y-legal-count, .a11y-legal-row-label, .a11y-dn-link-text, .a11y-legal-mark, .a11y-legal-row-meaning) {
   color: #000; text-decoration: none;
 }
 @media (max-width: 640px) {
   .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-legal-tiles, .a11y-dn-list)[class] {
     margin-bottom: 28px; padding: 26px 22px; border-radius: 28px;
   }
-  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-legal-tiles > .a11y-legal-row, .a11y-dn-list > .a11y-dn-link)[class][class] { font-size: 24px; line-height: 1.15; letter-spacing: 0.015em; }
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-legal-tiles > li > .a11y-legal-row, .a11y-dn-list > .a11y-dn-link)[class][class] { font-size: 24px; line-height: 1.15; letter-spacing: 0.015em; }
 }
 @media (forced-colors: active) {
   .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-legal-tiles, .a11y-dn-list)[class] { border: 1px solid CanvasText; }
-  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-legal-tiles > .a11y-legal-row, .a11y-dn-list > .a11y-dn-link)[class][class]::before { forced-color-adjust: none; background: CanvasText; }
-  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-legal-tiles > .a11y-legal-row[aria-pressed="true"], .a11y-dn-list > .a11y-dn-link[aria-selected="true"])[class][class] { border: 2px solid Highlight; }
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-legal-tiles > li > .a11y-legal-row, .a11y-dn-list > .a11y-dn-link)[class][class]::before { forced-color-adjust: none; background: CanvasText; }
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-legal-tiles > li > .a11y-legal-row[aria-pressed="true"], .a11y-dn-list > .a11y-dn-link[aria-selected="true"])[class][class] { border: 2px solid Highlight; }
+}
+/* THE CHECK RESULTS AS CARETS (user's instruction, 24 Nov 2026, "this can
+   be carrets as well"): each result's line leads with the icon set's solid
+   caret in place of the cross, pointing right shut and down open, and its
+   group of the checklist opens under it inside the same panel. The groups
+   replace the Show the checklist button. A list item is the whole width so
+   the opened group runs to the panel's edge; the group's rows start on the
+   sentence's left edge, past the caret. */
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-legal-carets > .a11y-legal-caret {
+  display: flex; flex-direction: column; align-items: flex-start; box-sizing: border-box; width: 100%; margin: 0; padding: 0;
+}
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-legal-carets > .a11y-legal-caret > .a11y-legal-row[class][class]::before {
+  width: 0.42em; height: 0.68em; margin-right: 0.33em;
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='12 8 10 16'%3E%3Cpath d='M12 8 22 16 12 24z'/%3E%3C/svg%3E") center / contain no-repeat;
+  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='12 8 10 16'%3E%3Cpath d='M12 8 22 16 12 24z'/%3E%3C/svg%3E") center / contain no-repeat;
+  transition: transform 120ms ease;
+}
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-legal-carets > .a11y-legal-caret > .a11y-legal-row[aria-expanded="true"][class][class]::before { transform: rotate(90deg); }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-legal-carets > .a11y-legal-caret > .a11y-legal-group {
+  box-sizing: border-box; width: 100%; margin: 20px 0 28px; padding: 0 0 0 0.75em; font-size: 32px;
+}
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-legal-carets > .a11y-legal-caret > .a11y-legal-group[hidden] { display: none; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-legal-carets > .a11y-legal-caret > .a11y-legal-group > :is(.a11y-conf-list, .a11y-conf-caveat) { margin: 0; }
+@media (prefers-reduced-motion: reduce) {
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-legal-carets > .a11y-legal-caret > .a11y-legal-row[class][class]::before { transition: none; }
+}
+@media (max-width: 640px) {
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-legal-carets > .a11y-legal-caret > .a11y-legal-group { padding-left: 0; font-size: 24px; }
+}
+/* On paper the whole checklist shows: every group opens. */
+@media print {
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-legal-carets > .a11y-legal-caret > .a11y-legal-group[hidden] { display: block; }
 }
 
 /* THE SCORE'S ISSUES AS QUESTIONS (user's instruction, 24 Nov 2026,
