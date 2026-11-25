@@ -1202,7 +1202,7 @@
 .a11y-widget-biz .a11y-prompts .a11y-prompt-q:enabled:is(:hover, :focus-visible) .a11y-prompt-go { visibility: visible; }
 .a11y-widget-biz .a11y-prompts .a11y-prompt:has(> .a11y-prompt-q:disabled) { border: 1px dashed var(--ink); }
 .a11y-widget-biz .a11y-prompts .a11y-prompt-q:disabled { cursor: default; }
-.a11y-widget-biz .a11y-prompt-more { text-align: center; margin: var(--cds-spacing-07) 0 0; }
+.a11y-widget-biz .a11y-prompt-more { text-align: left; margin: var(--cds-spacing-07) 0 0; }
 .a11y-widget-biz .a11y-status-chip { font-size: 24px; letter-spacing: 0.015em; }
 .a11y-widget-biz .a11y-accordion-title .a11y-accordion-head > span:first-child { flex: 0 1 auto; }
 
@@ -2302,14 +2302,14 @@
 .a11y-widget-biz .a11y-legal-tiles > .a11y-legal-row {
   --ink: #000; --tile-ink: #000; --paper: var(--tile);
   flex: 1 1 0; container: a11y-legal-tile / inline-size;
-  display: flex; flex-direction: column; align-items: center; gap: var(--cds-spacing-05);
+  display: flex; flex-direction: column; align-items: flex-start; gap: var(--cds-spacing-05);
   box-sizing: border-box; min-width: 0; min-height: 300px; margin: 0; padding: var(--cds-spacing-06) var(--cds-spacing-05) var(--cds-spacing-07);
   overflow-wrap: break-word; hyphens: manual;
-  border-radius: 20px; background: var(--tile); color: #000; text-align: center;
+  border-radius: 20px; background: var(--tile); color: #000; text-align: left;
 }
 .a11y-widget-biz .a11y-legal-tiles > .a11y-legal-row .a11y-legal-mark {
   order: 1; align-self: center; box-sizing: border-box; margin: 0; padding: 0; border-radius: 0; background: none; box-shadow: none; color: #000;
-  font-size: 18px; letter-spacing: 0.025em; line-height: 1.2; white-space: nowrap; text-align: center;
+  font-size: 18px; letter-spacing: 0.025em; line-height: 1.2; white-space: nowrap; text-align: left;
 }
 .a11y-widget-biz .a11y-legal-tiles > .a11y-legal-row .a11y-legal-count {
   order: 2; margin: var(--cds-spacing-06) 0 var(--cds-spacing-03);
@@ -4149,12 +4149,12 @@
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-report-actions { container: a11y-ra / inline-size; margin-top: var(--cds-spacing-10); }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-report-actions > .a11y-ra-panel {
   --ink: var(--forest-ink); --paper: var(--forest); --focus: var(--forest-ink); --tile-ink: var(--forest-ink);
-  position: relative; box-sizing: border-box; display: flex; flex-direction: column; align-items: center; gap: var(--cds-spacing-07);
+  position: relative; box-sizing: border-box; display: flex; flex-direction: column; align-items: flex-start; gap: var(--cds-spacing-07);
   margin: 0; padding: var(--cds-spacing-09) var(--cds-spacing-10) var(--cds-spacing-09); border-radius: var(--r-panel);
-  background: var(--forest); color: var(--forest-ink); text-align: center;
+  background: var(--forest); color: var(--forest-ink); text-align: left;
 }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-report-actions .a11y-ra-email-form {
-  box-sizing: border-box; display: flex; flex-direction: column; align-items: center; gap: var(--cds-spacing-06);
+  box-sizing: border-box; display: flex; flex-direction: column; align-items: flex-start; gap: var(--cds-spacing-06);
   width: 100%; min-width: 0; margin: 0; padding: 0;
 }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-report-actions .a11y-ra-head {
@@ -4187,7 +4187,7 @@
   box-sizing: border-box; display: inline-flex; align-items: center; justify-content: center; gap: var(--cds-spacing-04);
   max-width: 100%; min-height: 56px; margin: 0; padding: var(--cds-spacing-03) var(--cds-spacing-07);
   border: 1px solid var(--ink); border-radius: 999px; background: transparent; color: var(--ink);
-  font-size: 24px; font-weight: 400; line-height: 1.15; letter-spacing: 0.01em; text-align: center;
+  font-size: 24px; font-weight: 400; line-height: 1.15; letter-spacing: 0.01em; text-align: left;
 }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-report-actions .a11y-ra-send:enabled:hover { border-color: var(--ink); background: var(--ink); color: var(--forest); }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-report-actions .a11y-ra-send:disabled { border-style: dashed; border-color: var(--ink); background: transparent; color: var(--ink); }
@@ -4519,12 +4519,12 @@
 /* A card's label is a small capital line centred over its words, with no
    rule under it (the user's credits reference, the same day). */
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-dt-expand-row, .a11y-dn-detail) .a11y-fd :is(.a11y-method-hint, .a11y-finding-measured, .a11y-finding-impact, .a11y-finding-research) > strong:first-child {
-  display: block; margin: 0 0 var(--cds-spacing-04); padding: 0; border: 0; text-align: center;
+  display: block; margin: 0 0 var(--cds-spacing-04); padding: 0; border: 0; text-align: left;
 }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-dt-expand-row, .a11y-dn-detail) .a11y-fd :is(.a11y-method-hint, .a11y-finding-measured, .a11y-finding-impact, .a11y-finding-research) :last-child { margin-bottom: 0; }
 /* What to do and Affected elements: the same centred capital line, no rule. */
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-dt-expand-row, .a11y-dn-detail) .a11y-fd :is(.a11y-finding-steps > p:first-child, .a11y-finding-todo > strong.a11y-fd-title, .a11y-affected-label) {
-  display: block; margin: 0 0 var(--cds-spacing-05); padding: 0; border: 0; text-align: center;
+  display: block; margin: 0 0 var(--cds-spacing-05); padding: 0; border: 0; text-align: left;
 }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-dt-expand-row, .a11y-dn-detail) .a11y-fd :is(.a11y-finding-steps > p:first-child, .a11y-affected-label) > strong { display: inline; padding: 0; border: 0; }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-dt-expand-row, .a11y-dn-detail) .a11y-fd .a11y-occurrence {
@@ -5260,9 +5260,9 @@
    says it. */
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-url-form, .a11y-manual-form, .a11y-triage-form)[class] {
   --ink: var(--form-ink, #000); --paper: var(--form-brand);
-  position: relative; box-sizing: border-box; display: flex; flex-direction: column; align-items: center; gap: var(--cds-spacing-06);
+  position: relative; box-sizing: border-box; display: flex; flex-direction: column; align-items: flex-start; gap: var(--cds-spacing-06);
   width: 100%; max-width: none; min-width: 0; margin: 0; padding: var(--cds-spacing-09) var(--cds-spacing-10) var(--cds-spacing-09); border: 0; border-radius: var(--r-panel);
-  background: var(--form-brand); color: var(--form-ink, #000); text-align: center;
+  background: var(--form-brand); color: var(--form-ink, #000); text-align: left;
 }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-url-form[class] { --form-brand: var(--hl-cap-b); }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-manual-form[class] { --form-brand: var(--hl-green); --form-ink: var(--hl-green-ink); }
@@ -5306,7 +5306,7 @@
 
 /* Choices: small --tile pills in a centred row, the chosen one black. */
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-url-form[class] .a11y-tester-choices {
-  display: flex; flex-wrap: wrap; justify-content: center; gap: var(--cds-spacing-03); width: 100%; margin: 0;
+  display: flex; flex-wrap: wrap; justify-content: flex-start; gap: var(--cds-spacing-03); width: 100%; margin: 0;
 }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-url-form[class] .a11y-seg {
   display: inline-flex; align-items: center; justify-content: center; gap: var(--cds-spacing-03); box-sizing: border-box; flex: none;
@@ -5320,13 +5320,13 @@
 
 /* The main action a black pill; the others small --tile pills. */
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-url-form[class] > .a11y-url-submit {
-  display: flex; flex-direction: column; align-items: center; gap: var(--cds-spacing-05); width: 100%;
+  display: flex; flex-direction: column; align-items: flex-start; gap: var(--cds-spacing-05); width: 100%;
 }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-url-form[class] > .a11y-url-submit > .a11y-btn.a11y-btn-primary,
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-manual-form, .a11y-triage-form)[class] > .a11y-manual-form-actions > :is(.a11y-btn-primary, [type="submit"]) {
   display: inline-flex; align-items: center; justify-content: center; width: auto; max-width: 100%;
   min-height: 56px; padding: var(--cds-spacing-03) var(--cds-spacing-07); border: 1px solid #000; border-radius: 999px; background: #000; color: #fff;
-  font-size: 24px; font-weight: 400; line-height: 1.15; letter-spacing: 0.01em; text-align: center;
+  font-size: 24px; font-weight: 400; line-height: 1.15; letter-spacing: 0.01em; text-align: left;
 }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-url-form[class] > .a11y-url-submit > .a11y-btn.a11y-btn-primary:enabled:hover,
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-manual-form, .a11y-triage-form)[class] > .a11y-manual-form-actions > :is(.a11y-btn-primary, [type="submit"]):enabled:hover {
@@ -5338,7 +5338,7 @@
 }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-url-form[class] > .a11y-url-submit > .a11y-url-submit-note { color: #000; font-size: 18px; letter-spacing: 0.01em; }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-manual-form, .a11y-triage-form)[class] > .a11y-manual-form-actions {
-  display: flex; flex-direction: column; align-items: center; gap: var(--cds-spacing-05); width: 100%; margin: 0;
+  display: flex; flex-direction: column; align-items: flex-start; gap: var(--cds-spacing-05); width: 100%; margin: 0;
 }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-manual-form, .a11y-triage-form)[class] > .a11y-manual-form-actions > .a11y-btn:not(.a11y-btn-primary, [type="submit"]) {
   justify-content: center; min-height: 40px; padding: var(--cds-spacing-03) var(--cds-spacing-05);
@@ -5374,10 +5374,10 @@
    capitals at a smaller size, the note in 18px, each field a filled box
    with its label inside, Close and Cancel small --tile pills. */
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-url-form[class] .a11y-login:not([hidden]) {
-  box-sizing: border-box; width: 100%; padding: 0; border: 0; border-radius: 0; background: none; color: #000; text-align: center;
+  box-sizing: border-box; width: 100%; padding: 0; border: 0; border-radius: 0; background: none; color: #000; text-align: left;
 }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-url-form[class] .a11y-login-fieldset {
-  position: relative; display: flex; flex-direction: column; align-items: center; gap: var(--cds-spacing-05);
+  position: relative; display: flex; flex-direction: column; align-items: flex-start; gap: var(--cds-spacing-05);
   min-width: 0; margin: 0; padding: 0; border: 0;
 }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-url-form[class] .a11y-login-legend {
@@ -5503,7 +5503,7 @@
 }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-legal-carets > .a11y-legal-caret > .a11y-legal-row[class][class][class]::before { grid-column: 1; grid-row: 1; order: 0; margin-inline-end: 0; }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-legal-carets > .a11y-legal-caret > .a11y-legal-row .a11y-legal-row-label[class][class] { grid-column: 2; grid-row: 1; order: 0; }
-.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-legal-carets > .a11y-legal-caret > .a11y-legal-row .a11y-legal-count[class][class] { grid-column: 3; grid-row: 1; order: 0; padding: 0 var(--cds-spacing-06); text-align: center; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-legal-carets > .a11y-legal-caret > .a11y-legal-row .a11y-legal-count[class][class] { grid-column: 3; grid-row: 1; order: 0; padding: 0 var(--cds-spacing-06); text-align: left; }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-legal-carets > .a11y-legal-caret > .a11y-legal-row > .a11y-legal-row-desc { grid-column: 4; grid-row: 1; order: 0; justify-self: end; text-align: end; }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-legal-carets > .a11y-legal-caret > .a11y-legal-row > .a11y-legal-row-desc > :is(.a11y-legal-mark, .a11y-legal-row-meaning)[class][class] { margin: 0; }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-legal-carets > .a11y-legal-caret > .a11y-legal-row > .a11y-legal-row-desc > .a11y-legal-mark:has(+ .a11y-legal-row-meaning)[class][class]::after { content: ", "; }
@@ -5949,14 +5949,14 @@
 }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-stmt .a11y-stmt-form {
   --ink: #000; --paper: var(--form-stmt);
-  box-sizing: border-box; display: flex; flex-direction: column; align-items: center; gap: var(--cds-spacing-07);
+  box-sizing: border-box; display: flex; flex-direction: column; align-items: flex-start; gap: var(--cds-spacing-07);
   width: 100%; margin: var(--cds-spacing-10) 0 0; padding: var(--cds-spacing-09) var(--cds-spacing-10) var(--cds-spacing-09); border-radius: var(--r-panel);
-  background: var(--form-stmt); color: #000; text-align: center;
+  background: var(--form-stmt); color: #000; text-align: left;
 }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-stmt .a11y-stmt-form > * { box-sizing: border-box; max-width: 100%; margin: 0; }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-stmt .a11y-stmt-form > .a11y-stmt-step { margin: 0; }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-stmt .a11y-stmt-form .a11y-stmt-step-head {
-  justify-content: center; color: #000; text-transform: uppercase; font-feature-settings: "case";
+  justify-content: flex-start; color: #000; text-transform: uppercase; font-feature-settings: "case";
   font-size: 32px; line-height: 1.1; letter-spacing: 0.04em;
 }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-stmt .a11y-stmt-form > .a11y-stmt-fields {
@@ -6052,7 +6052,7 @@
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-dt-expand-row, .a11y-dn-detail) .a11y-fd > .a11y-fd-col:last-of-type[class] { margin-bottom: 0; }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-dt-expand-row, .a11y-dn-detail) .a11y-fd > .a11y-fd-col > :is(.a11y-method-hint, .a11y-finding-measured, .a11y-finding-impact, .a11y-finding-research, .a11y-finding-todo, .a11y-finding-steps, .a11y-affected)[class][class] {
   display: grid; grid-template-columns: minmax(0, 1fr); column-gap: var(--cds-spacing-05); row-gap: var(--cds-spacing-04); align-items: baseline;
-  padding: var(--cds-spacing-05); border-radius: var(--r-card); text-align: center;
+  padding: var(--cds-spacing-05); border-radius: var(--r-card); text-align: left;
 }
 /* Everything in the first column, a row each in markup order; the label
    alone in the second column, on the first row. */
@@ -6062,7 +6062,7 @@
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-dt-expand-row, .a11y-dn-detail) .a11y-fd > .a11y-fd-col > :is(.a11y-method-hint, .a11y-finding-measured, .a11y-finding-impact, .a11y-finding-research, .a11y-finding-todo)[class][class] > strong:first-child,
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-dt-expand-row, .a11y-dn-detail) .a11y-fd > .a11y-fd-col > .a11y-finding-steps[class][class] > p:first-child,
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-dt-expand-row, .a11y-dn-detail) .a11y-fd > .a11y-fd-col > .a11y-affected[class][class] > .a11y-affected-label {
-  grid-column: 1; grid-row: 1; justify-self: center; margin: 0; text-align: center;
+  grid-column: 1; grid-row: 1; justify-self: start; margin: 0; text-align: left;
 }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-dt-expand-row, .a11y-dn-detail) .a11y-fd > .a11y-fd-col > :is(.a11y-method-hint, .a11y-finding-measured, .a11y-finding-impact, .a11y-finding-research, .a11y-finding-todo)[class][class] > strong:first-child,
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-dt-expand-row, .a11y-dn-detail) .a11y-fd > .a11y-fd-col > .a11y-finding-steps[class][class] > p:first-child > strong,
@@ -6202,7 +6202,7 @@
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sr[class] .a11y-sr-bar[class] .a11y-sr-transport { gap: var(--cds-spacing-03); }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sr[class] .a11y-sr-bar[class] .a11y-sr-play[class]:enabled {
   justify-content: center; min-height: 32px; padding: 0 var(--cds-spacing-04); border: 1px solid #000; border-radius: 999px;
-  background: #000; color: #fff; font-size: 18px; line-height: 1.2; letter-spacing: 0.025em; text-align: center;
+  background: #000; color: #fff; font-size: 18px; line-height: 1.2; letter-spacing: 0.025em; text-align: left;
 }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sr[class] .a11y-sr-bar[class] .a11y-sr-play[class]:enabled:hover { border-color: var(--sr-pill-hover); background: var(--sr-pill-hover); color: #000; }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sr[class] .a11y-sr-bar[class] .a11y-sr-play[class]:focus-visible { outline: 2px solid #6fdc8c; outline-offset: -4px; }
@@ -6280,8 +6280,8 @@
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sr[class] .a11y-sr-row[aria-current="true"][class][class]:focus-visible { outline-color: #6fdc8c; }
 
 /* Show all and the truncation note, centred at the foot. */
-.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sr[class] .a11y-show-all[class] { display: flex; width: fit-content; margin: var(--cds-spacing-07) auto 0; }
-.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sr[class] .a11y-sr-note { margin: var(--cds-spacing-05) 0 0; color: #000; font-size: 18px; line-height: 1.4; letter-spacing: 0.025em; text-align: center; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sr[class] .a11y-show-all[class] { display: flex; width: fit-content; margin: var(--cds-spacing-07) 0 0; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sr[class] .a11y-sr-note { margin: var(--cds-spacing-05) 0 0; color: #000; font-size: 18px; line-height: 1.4; letter-spacing: 0.025em; text-align: left; }
 
 /* Dark: the pills are the dark field fill, so their focus is the light green. */
 @media (prefers-color-scheme: dark) {
@@ -6493,14 +6493,14 @@
      the yellow).
    How the score works and the warning keep their rows. */
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-score:has(> .a11y-sum-specimen) > h2.a11y-section-title {
-  text-align: center; font-size: 18px; line-height: 1.2; letter-spacing: 0.025em;
+  text-align: left; font-size: 18px; line-height: 1.2; letter-spacing: 0.025em;
 }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-specimen > .a11y-sum-actions {
-  display: flex; justify-content: center; margin: var(--cds-spacing-04) 0 0; padding: 0;
+  display: flex; justify-content: flex-start; margin: var(--cds-spacing-04) 0 0; padding: 0;
 }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-specimen > .a11y-sum-actions > .a11y-score-copy { margin: 0; }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-specimen > .a11y-sum-run {
-  display: block; margin: var(--cds-spacing-08) 0 0; padding: 0; text-align: center;
+  display: block; margin: var(--cds-spacing-08) 0 0; padding: 0; text-align: left;
 }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-specimen > .a11y-sum-run:first-child { margin-top: var(--cds-spacing-06); }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-specimen > .a11y-sum-run > .a11y-sum-dial-card {
@@ -6508,14 +6508,14 @@
   display: block; position: relative; height: var(--dial); margin: 0;
 }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-specimen .a11y-sum-dial-card > .a11y-sum-dial {
-  width: var(--dial); height: var(--dial); margin: 0 auto;
+  width: var(--dial); height: var(--dial); margin: 0;
 }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-specimen .a11y-sum-dial-num { font-size: 48px; line-height: 1; letter-spacing: 0; }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-specimen > .a11y-sum-run > .a11y-sum-verdict {
-  max-width: 24em; margin: var(--cds-spacing-07) auto 0; text-align: center;
+  max-width: 24em; margin: var(--cds-spacing-07) 0 0; text-align: left;
 }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-specimen > .a11y-sum-issues {
-  display: block; margin-top: var(--cds-spacing-12); padding: 0; border: 0; text-align: center;
+  display: block; margin-top: var(--cds-spacing-12); padding: 0; border: 0; text-align: left;
   container: a11y-sum-issues / inline-size;
 }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-specimen > .a11y-sum-issues > .a11y-sum-label {
@@ -6823,7 +6823,7 @@
    text, sat in the middle. The browser's marker goes; the written number
    stays, in the form's centred setting; sizes are left as they were. */
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-scan-itinerary[class] {
-  width: 100%; margin: 0; padding: 0; list-style: none; text-align: center;
+  width: 100%; margin: 0; padding: 0; list-style: none; text-align: left;
 }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-scan-itinerary[class] > .a11y-scan-step::marker { content: none; }
 
@@ -7082,7 +7082,7 @@
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-code-fix[class] .a11y-code-fix-col > .a11y-code-fix-pre:focus-visible { outline: 2px solid #198038; outline-offset: -2px; }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-code-fix[class] > .a11y-copy-btn[class] {
   box-sizing: border-box; display: flex; align-items: center; justify-content: center; gap: 12px;
-  width: max-content; max-width: 100%; min-height: 48px; margin: 40px auto 0; padding: 0 24px;
+  width: max-content; max-width: 100%; min-height: 48px; margin: 40px 0 0; padding: 0 24px;
   border: 0; border-radius: 999px; background: #000; color: #fff;
   font-size: 24px; line-height: 1.15; letter-spacing: 0.015em;
 }
@@ -7147,7 +7147,7 @@
 )[class] {
   font-family: "PP Lettra Mono", ui-monospace, "SF Mono", Menlo, Consolas, "DejaVu Sans Mono", monospace; font-weight: 200; font-style: normal; font-synthesis: none;
   font-variant-numeric: lining-nums; font-kerning: normal; font-feature-settings: "kern", "liga";
-  text-transform: none; text-align: center; line-height: 1.15; letter-spacing: 0;
+  text-transform: none; text-align: left; line-height: 1.15; letter-spacing: 0;
 }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(
   .a11y-url-form[class] > .a11y-tester-name,
@@ -7175,7 +7175,7 @@
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-score:has(> .a11y-sum-specimen) > h2.a11y-section-title[class][class],
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-score .a11y-sum-specimen :is(.a11y-sum-run > .a11y-sum-verdict, .a11y-sum-issues > .a11y-sum-label)[class][class] {
   font-family: "PP Lettra Mono", ui-monospace, "SF Mono", Menlo, Consolas, "DejaVu Sans Mono", monospace; font-weight: 200; font-style: normal; font-synthesis: none;
-  text-transform: none; text-align: center; line-height: 1.15; letter-spacing: 0;
+  text-transform: none; text-align: left; line-height: 1.15; letter-spacing: 0;
 }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-score .a11y-sum-specimen > .a11y-sum-run > .a11y-sum-verdict[class][class] { font-size: 32px; }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-score .a11y-sum-specimen > .a11y-sum-issues > .a11y-sum-label[class][class] { font-size: 24px; }
@@ -7247,10 +7247,10 @@
    and Report a barrier's mint are unchanged. The two columns of the block
    above are gone: a credit is one centred column. */
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-prompts .a11y-prompt .a11y-prompt-q[class][class] {
-  display: flex; flex-direction: column; align-items: center; gap: var(--cds-spacing-02); text-align: center;
+  display: flex; flex-direction: column; align-items: flex-start; gap: var(--cds-spacing-02); text-align: left;
 }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-prompts .a11y-prompt .a11y-prompt-q[class][class] > :is(.a11y-prompt-label, .a11y-prompt-ask) {
-  align-self: stretch; margin: 0; text-align: center;
+  align-self: stretch; margin: 0; text-align: left;
   font-family: "PP Lettra Mono", ui-monospace, "SF Mono", Menlo, Consolas, "DejaVu Sans Mono", monospace;
   font-style: normal; font-weight: 200; font-synthesis: none; letter-spacing: 0;
 }
@@ -7368,7 +7368,7 @@
   background: var(--hl-blue); color: var(--hl-blue-ink);
 }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-settings[class] > .a11y-settings-heading[class] {
-  margin: 0 0 var(--cds-spacing-03); padding: 0; border: 0; color: inherit; text-align: center;
+  margin: 0 0 var(--cds-spacing-03); padding: 0; border: 0; color: inherit; text-align: left;
   font-size: 32px; font-weight: 200; line-height: 1.1; letter-spacing: 0.01em;
 }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-settings[class] > .a11y-settings-row[class] {
@@ -7377,7 +7377,7 @@
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-settings[class] > .a11y-settings-row[class] > * { width: auto; max-width: none; justify-self: stretch; }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-settings[class] > .a11y-settings-row[class] > .a11y-select2 > .a11y-select2-label[class],
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-settings[class] > .a11y-settings-row[class] > .a11y-settings-label[class] {
-  display: block; justify-self: stretch; width: auto; margin: 0 0 var(--cds-spacing-04); color: inherit; text-align: center;
+  display: block; justify-self: stretch; width: auto; margin: 0 0 var(--cds-spacing-04); color: inherit; text-align: left;
   font-family: "PP Lettra Mono", ui-monospace, "SF Mono", Menlo, Consolas, "DejaVu Sans Mono", monospace; font-synthesis: none;
   font-size: 18px; font-weight: 200; line-height: 1.4; letter-spacing: 0; text-transform: uppercase; font-feature-settings: "case";
 }
@@ -7429,7 +7429,7 @@
 }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-settings[class] .a11y-select2 .a11y-select2-field.a11y-select2-field:focus-visible { outline: 2px solid var(--focus); outline-offset: -2px; box-shadow: none; }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-settings[class] :is(.a11y-select2-help, .a11y-input-help, .a11y-settings-state)[class][class] {
-  display: block; justify-self: stretch; width: auto; margin: var(--cds-spacing-04) 0 0; color: inherit; text-align: center; font-size: 18px; line-height: 1.4; letter-spacing: 0;
+  display: block; justify-self: stretch; width: auto; margin: var(--cds-spacing-04) 0 0; color: inherit; text-align: left; font-size: 18px; line-height: 1.4; letter-spacing: 0;
   font-family: "PP Lettra Mono", ui-monospace, "SF Mono", Menlo, Consolas, "DejaVu Sans Mono", monospace; font-weight: 200; font-synthesis: none;
 }
 
@@ -7442,7 +7442,7 @@
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-settings[class] .a11y-input-shell[class]:has(> input:focus-visible) { outline: 2px solid var(--focus); outline-offset: -2px; }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-settings[class] .a11y-input-shell[class] > input:focus-visible { outline: none; box-shadow: none; }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-settings[class] :is(.a11y-settings-row, .a11y-manual-form-actions) > .a11y-btn[class][class] {
-  display: flex; justify-content: center; width: fit-content; margin-inline: auto; padding: var(--cds-spacing-02) var(--cds-spacing-05);
+  display: flex; justify-content: center; width: fit-content; margin-inline: 0; padding: var(--cds-spacing-02) var(--cds-spacing-05);
   border: 1px solid var(--hl-blue-ink); border-radius: 999px; background: var(--hl-blue-ink); color: var(--hl-blue);
 }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-settings[class] :is(.a11y-settings-row, .a11y-manual-form-actions) > .a11y-btn[class][class]:enabled:hover { border-color: var(--hover); background: var(--hover); color: var(--hover-ink); }
@@ -7610,7 +7610,7 @@
    is centred with it. */
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-section-concern > .a11y-section-tint > :is(h2.a11y-section-title, p.a11y-section-desc)[class][class][class] {
   font-family: "PP Lettra Mono", ui-monospace, "SF Mono", Menlo, Consolas, "DejaVu Sans Mono", monospace; font-weight: 200; font-style: normal; font-synthesis: none;
-  text-align: center; line-height: 1.15; letter-spacing: 0;
+  text-align: left; line-height: 1.15; letter-spacing: 0;
 }
 
 /* THE SECTION COUNT AND THE STATEMENT'S STEPS IN LETTRA (user's
