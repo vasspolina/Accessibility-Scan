@@ -7755,3 +7755,11 @@
 @media (forced-colors: active) {
   .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-stmt .a11y-stmt-form[class] > .a11y-spec-grid[class][class] { border: 0; border-top: 1px solid CanvasText; }
 }
+/* The facts' labels (Prepared for, Website, Checked against, Position,
+   Problems disclosed) in PP Lettra Mono Ultralight, as the panel's title
+   above them (user's instruction, 25 Nov 2026, "use letra for bottom part
+   titles"), no tracking, white on the blue (7.4:1). */
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-stmt .a11y-stmt-form[class] .a11y-spec-card > .a11y-spec-label[class][class] {
+  font-family: "PP Lettra Mono", ui-monospace, "SF Mono", Menlo, Consolas, "DejaVu Sans Mono", monospace; font-weight: 200; font-style: normal; font-synthesis: none;
+  letter-spacing: 0; color: #fff;
+}
