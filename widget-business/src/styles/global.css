@@ -5446,3 +5446,151 @@
   font-size: 18px; font-weight: 400; line-height: 1.2; letter-spacing: 0.01em;
 }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-url-form[class] .a11y-login-fieldset > .a11y-login-toggle:enabled:hover { border-color: var(--hover); background: var(--hover); color: var(--hover-ink); }
+
+/* ═══ EVERY CARET AS THE FINDINGS' TRIANGLE (user's instruction, 24 Nov
+   2026, "make all carrets look like these", with the findings rows: the
+   solid triangle, the title beside it, the status word at the far end, no
+   ground) ═══════════════════════════════════════════════════════════════
+   The bars of EVERY CARET AS A BAR, THE CHECK RESULTS AS CARETS, THE DESIGN
+   NOTES AS CARETS and CARETS AS BARS lose their pill: each toggle is a
+   plain row, the triangle in the findings' 35px column (26px on a phone),
+   the title starting after it at the findings' 32px, set on the first
+   line. What opens sits under the title: the check results' groups and a
+   design note's detail in the findings' round panel (--bubble, 40px
+   corners), the two sections' parts on the title's left edge. The screen
+   reader's problem count is the coloured word at the end of the row, as a
+   finding's severity is. The screen reader and conformance report sections
+   take the section rule again, since their bar no longer stands in for it.
+   Hover underlines the title only where a pointer can hover. */
+.a11y-widget-biz { --caret-col: 35px; }
+@media (max-width: 640px) { .a11y-widget-biz { --caret-col: 26px; } }
+
+/* The triangle, wherever it is drawn as a mask. */
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-sr, .a11y-acr) .a11y-accordion-title .a11y-accordion-head[class]::before,
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-legal-carets > .a11y-legal-caret > .a11y-legal-row[class][class][class]::before,
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-dn-caret-head > .a11y-dn-bar[class]::before,
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-fd .a11y-tech-details[class] > summary::before,
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-chat-stepfold[class] > summary::before {
+  flex: none; align-self: flex-start; width: 0.42em; height: 0.68em;
+  margin: calc((1lh - 0.68em) / 2) calc(var(--caret-col) - 0.42em) 0 0;
+}
+
+/* The screen reader simulation and the conformance report. */
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-report > .a11y-section:is(.a11y-sr, .a11y-acr)[class] {
+  border-top: 1px solid var(--ink); border-radius: 0; padding: 8px 0 0; background: none;
+}
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-sr, .a11y-acr) .a11y-accordion-title .a11y-accordion-head[class] {
+  display: flex; flex-wrap: wrap; align-items: baseline; gap: 0; min-height: 0; width: 100%;
+  margin: 0; padding: 0; border: 0; border-radius: 0; background: none; color: var(--ink);
+}
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-sr, .a11y-acr) .a11y-accordion-title .a11y-accordion-head[class]:enabled:hover { background: none; color: var(--ink); }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-sr, .a11y-acr) .a11y-accordion-title .a11y-accordion-head[class] > span:first-of-type { flex: 1 1 0; min-width: 0; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sr .a11y-accordion-title .a11y-accordion-head[class] > .a11y-status-chip {
+  margin: 0 0 0 auto; padding: 0; border: 0; border-radius: 0; background: none; rotate: none; color: var(--word-red, #b42800);
+  font-family: "PP Telegraf", "DejaVu Sans", sans-serif; font-size: inherit; font-weight: 200; line-height: inherit; letter-spacing: inherit; white-space: normal;
+}
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-section:is(.a11y-sr, .a11y-acr) > :not(.a11y-section-head),
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-section:is(.a11y-sr, .a11y-acr) > .a11y-section-head > :not(.a11y-accordion-row) {
+  margin-inline-start: var(--caret-col);
+}
+
+/* The check results: the whole row is filled with its status colour, not
+   the words (user's instruction, 24 Nov 2026, "just color the whole drop
+   down not words"), black words in both themes; open, the checklist group
+   sits inside the same colour under the title. The small print is the row's
+   status at its far end, at the row's size as the WCAG 2.2 items' status
+   words are, its parts parted by a comma ("dont use middle dot"). */
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-legal-tiles.a11y-legal-carets[class] {
+  display: flex; flex-direction: column; gap: 12px; padding: 0; border: 0; border-radius: 0; background: none;
+}
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-legal-carets > .a11y-legal-caret[class][class] {
+  --ink: #000; --paper: var(--row-plate); --tile: var(--row-plate);
+  box-sizing: border-box; padding: 14px 28px; border-radius: 32px; background: var(--row-plate); color: #000;
+}
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-legal-carets > .a11y-legal-caret[data-open][class][class] { padding: 14px 28px 28px; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-legal-carets > .a11y-legal-caret-failed { --row-plate: var(--hl-orange); }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-legal-carets > .a11y-legal-caret-clean { --row-plate: var(--hl-green); }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-legal-carets > .a11y-legal-caret-human { --row-plate: var(--hl-cap-a); }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-legal-carets > .a11y-legal-caret-not-measured { --row-plate: var(--hl-blue); }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-legal-carets > .a11y-legal-caret > .a11y-legal-row[class][class][class][class] {
+  align-items: baseline; width: 100%; min-height: 0; margin: 0; padding: 0; border: 0; border-radius: 0; background: none; color: #000;
+  font-size: 32px; line-height: 1.1; letter-spacing: 0.01em;
+}
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-legal-carets > .a11y-legal-caret > .a11y-legal-row :is(.a11y-legal-count, .a11y-legal-row-label)[class][class] {
+  padding: 0; border-radius: 0; background: none; color: #000; text-decoration: none;
+}
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-legal-carets > .a11y-legal-caret > .a11y-legal-row :is(.a11y-legal-mark, .a11y-legal-row-meaning)[class][class] {
+  color: #000; font-size: 32px; line-height: 1.1; letter-spacing: 0.01em;
+}
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-legal-carets > .a11y-legal-caret > .a11y-legal-row .a11y-legal-mark[class][class] { margin-left: auto; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-legal-carets > .a11y-legal-caret > .a11y-legal-row .a11y-legal-row-meaning ~ .a11y-legal-mark[class][class]::after { content: ","; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-legal-carets > .a11y-legal-caret > .a11y-legal-group[class] {
+  box-sizing: border-box; width: calc(100% - var(--caret-col)); margin: 20px 0 0 var(--caret-col); padding: 0;
+  border-radius: 0; background: none; color: #000;
+}
+@media (hover: hover) {
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-legal-carets > .a11y-legal-caret > .a11y-legal-row[class]:hover .a11y-legal-row-label[class][class] {
+    text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 0.12em;
+  }
+}
+@media (max-width: 640px) {
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-legal-carets > .a11y-legal-caret[class][class] { padding: 12px 18px; border-radius: 24px; }
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-legal-carets > .a11y-legal-caret[data-open][class][class] { padding: 12px 18px 20px; }
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-legal-carets > .a11y-legal-caret > .a11y-legal-row :is(.a11y-legal-mark, .a11y-legal-row-meaning)[class][class] { font-size: 18px; line-height: 1.4; letter-spacing: 0.025em; }
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-legal-carets > .a11y-legal-caret > .a11y-legal-row .a11y-legal-mark[class][class] { margin-left: 0; }
+}
+@media (forced-colors: active) {
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-legal-carets > .a11y-legal-caret[class][class] { border: 1px solid CanvasText; }
+}
+
+/* The design notes. */
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-dn-carets > .a11y-dn-caret[class] {
+  --ink: inherit; --paper: inherit; padding: 0; border-radius: 0; background: none; color: var(--ink);
+}
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-dn-caret-head > .a11y-dn-bar[class] {
+  align-items: baseline; gap: 0; width: 100%; min-height: 0; margin: 0; padding: 0; border-radius: 0; background: none;
+  font-size: 32px; line-height: 1.1; letter-spacing: 0.01em;
+}
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-dn-caret > .a11y-dn-detail[class] {
+  --paper: var(--bubble); --tile: var(--bubble-pill);
+  margin: 16px 0 0 var(--caret-col); padding: 32px; border-radius: 40px; background: var(--bubble);
+}
+
+/* The technical version inside an opened finding, and the chat's Details
+   fold: plain rows at their own size. */
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-fd .a11y-tech-details[class],
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-chat-stepfold[class] {
+  padding: 0; border-radius: 0; background: none;
+}
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-fd .a11y-tech-details[class] > summary,
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-chat-stepfold[class] > summary {
+  align-items: baseline; gap: 0; min-height: 0; margin: 0; padding: 0; border-radius: 0; background: none;
+}
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-fd .a11y-tech-details[open][class] > summary,
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-chat-stepfold[open][class] > summary { margin: 0 0 16px; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-fd .a11y-tech-details[open][class] > :not(summary),
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-chat-stepfold[open][class] > :not(summary) { margin-inline-start: var(--caret-col); }
+
+/* Hover underlines the title, where a pointer can hover. */
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-dn-caret-head > .a11y-dn-bar, .a11y-legal-carets > .a11y-legal-caret > .a11y-legal-row, .a11y-fd .a11y-tech-details > summary, .a11y-chat-stepfold > summary)[class]:hover { text-decoration: none; }
+@media (hover: hover) {
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-dn-caret-head > .a11y-dn-bar[class]:hover > .a11y-dn-bar-title,
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-fd .a11y-tech-details > summary, .a11y-chat-stepfold > summary)[class]:hover {
+    text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 0.14em;
+  }
+}
+
+/* On a phone: the same rows at the phone's 24px; the screen reader's count
+   goes under its title. */
+@media (max-width: 640px) {
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-sr, .a11y-acr) .a11y-accordion-title .a11y-accordion-head[class] {
+    display: grid; grid-template-columns: var(--caret-col) minmax(0, 1fr); align-items: start; justify-items: start; row-gap: 4px; min-height: 0; padding: 0; border-radius: 0;
+  }
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-sr, .a11y-acr) .a11y-accordion-title .a11y-accordion-head[class]::before { grid-column: 1; grid-row: 1; margin-inline-end: 0; }
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-sr, .a11y-acr) .a11y-accordion-title .a11y-accordion-head[class] > * { grid-column: 2; }
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sr .a11y-accordion-title .a11y-accordion-head[class] > .a11y-status-chip { margin: 0; }
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-legal-carets > .a11y-legal-caret > .a11y-legal-row[class][class][class][class], .a11y-dn-caret-head > .a11y-dn-bar[class]) {
+    font-size: 24px; line-height: 1.15; letter-spacing: 0.015em;
+  }
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-dn-caret > .a11y-dn-detail[class] { padding: 20px; border-radius: 28px; }
+}
