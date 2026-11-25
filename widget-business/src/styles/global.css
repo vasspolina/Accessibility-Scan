@@ -6440,8 +6440,10 @@
    instruction, 25 Nov 2026, "delete lines, make moon 20% larger, and big
    number inside, do not say out of 100": the guide lines are gone and the
    C is 20% over its 280px and 200px). The score alone sits in its bowl at
-   120px (88px on a phone), a display size outside the four by the user's
-   word; "out of 100" is said only to screen readers, in the dial's name.
+   48px on every screen, the display size of the four (it was 120px, 88px
+   on a phone, until the user's "make sure only 4 font sizes used" and
+   "fold them in", the same day); "out of 100" is said only to screen
+   readers, in the dial's name.
    - What the range means under it, centred, 32px (24px on a phone).
    - "N issues found" as a caption, 18px, centred, then the issues three
      to a row (user's instruction, 25 Nov 2026, "fold this in 3 rows": each
@@ -6481,7 +6483,7 @@
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-specimen .a11y-sum-dial-card > .a11y-sum-dial {
   width: var(--dial); height: var(--dial); margin: 0 auto;
 }
-.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-specimen .a11y-sum-dial-num { font-size: 120px; line-height: 1; letter-spacing: 0; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-specimen .a11y-sum-dial-num { font-size: 48px; line-height: 1; letter-spacing: 0; }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-specimen > .a11y-sum-run > .a11y-sum-verdict {
   max-width: 24em; margin: var(--cds-spacing-07) auto 0; text-align: center;
 }
@@ -6536,7 +6538,6 @@
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-spec-title:focus-visible::after { outline: 2px solid var(--focus); outline-offset: -2px; }
 @media (max-width: 671px) {
   .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-specimen > .a11y-sum-run > .a11y-sum-dial-card { --dial: 240px; }
-  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-specimen .a11y-sum-dial-num { font-size: 88px; }
   .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-specimen > .a11y-sum-issues { margin-top: var(--cds-spacing-10); }
   .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-specs > .a11y-sum-spec { gap: var(--cds-spacing-05); padding: var(--cds-spacing-05); }
   .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-spec-title { font-size: 18px; line-height: 1.4; }
@@ -6823,18 +6824,18 @@
   .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-legal-cards > * { break-inside: avoid; }
 }
 
-/* ===== THE PRINCIPLE GROUPS' TITLES 120% OF THE PROSE =====
+/* ===== THE PRINCIPLE GROUPS' TITLES AT THE PROSE SIZE =====
    "Can people use it?" and its siblings under "What people can't use"
    (user's instruction, 25 Nov 2026, "make this title 120% larger"): they
    were the prose size, 32px, the same as the section title over them.
-   120% of 32 is 38.4, set as 38px at the 32px step's 1.1 leading and
-   0.01em tracking; on a phone 120% of the 24px headings, 29px. The one
-   exception to three sizes only, at the user's word. */
+   They were 38px (29px on a phone) until the user's "make sure only 4
+   font sizes used" and "fold them in", the same day: they are the prose
+   size again, 32px (24px on a phone), and stand out by place. */
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-principle-group .a11y-principle-title {
-  font-size: 38px; line-height: 1.1; letter-spacing: 0.01em;
+  font-size: 32px; line-height: 1.1; letter-spacing: 0.01em;
 }
 @media (max-width: 671px) {
-  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-principle-group .a11y-principle-title { font-size: 29px; }
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-principle-group .a11y-principle-title { font-size: 24px; letter-spacing: 0.015em; line-height: 1.15; }
 }
 
 /* ═══ THE CHAT BOX AS A ROUND BAR OF GREY PILLS (user's reference, 25 Nov
@@ -7066,12 +7067,10 @@
    lesser words: "by", "Dj Set", the date) ═══
    The centred passages that are words, not controls, are EB Garamond:
    "New scan" and "Sign the scanner in" over the form, the note under Start
-   the scan, the scan's steps, "Your score" and what its range means, the
-   "N issues found" line, and "Email me this report". Mixed case, no
+   the scan, the scan's steps, "Your score" and "Email me this report". Mixed case, no
    tracking (the face is fitted; 32px takes -0.005em), set solid at 1.05 as
    the programme is, lining figures as its times and dates are. The lesser
-   line takes the italic: the form's note, "N issues found", and each scan
-   step's number. Sizes are the widget's three. Controls, pills and labels
+   line takes the italic: the form's note and each scan step's number. Sizes are the widget's three. Controls, pills and labels
    stay in Telegraf. */
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(
   .a11y-url-form[class] > .a11y-tester-name,
@@ -7079,8 +7078,6 @@
   .a11y-url-form[class] > .a11y-url-submit > .a11y-url-submit-note,
   .a11y-scan-itinerary[class],
   .a11y-score:has(> .a11y-sum-specimen) > h2.a11y-section-title,
-  .a11y-sum-specimen > .a11y-sum-run > .a11y-sum-verdict,
-  .a11y-sum-specimen > .a11y-sum-issues > .a11y-sum-label,
   .a11y-report-actions .a11y-ra-head
 )[class] {
   font-family: "EB Garamond", Garamond, "Times New Roman", serif; font-weight: 200; font-style: normal; font-synthesis: none;
@@ -7091,20 +7088,31 @@
   .a11y-url-form[class] > .a11y-tester-name,
   .a11y-url-form[class] .a11y-login-legend,
   .a11y-score:has(> .a11y-sum-specimen) > h2.a11y-section-title,
-  .a11y-sum-specimen > .a11y-sum-run > .a11y-sum-verdict,
   .a11y-report-actions .a11y-ra-head
 )[class][class] { font-size: 32px; letter-spacing: -0.005em; }
-.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(
-  .a11y-url-form[class] > .a11y-url-submit > .a11y-url-submit-note,
-  .a11y-sum-specimen > .a11y-sum-issues > .a11y-sum-label
-)[class][class] { font-size: 24px; font-style: italic; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-url-form[class] > .a11y-url-submit > .a11y-url-submit-note[class][class][class] { font-size: 24px; font-style: italic; }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-scan-itinerary[class][class] > .a11y-scan-step > .a11y-scan-step-num { font-family: inherit; font-style: italic; font-variant-numeric: lining-nums; }
 @media (max-width: 640px) {
   .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(
     .a11y-url-form[class] > .a11y-tester-name,
     .a11y-url-form[class] .a11y-login-legend,
     .a11y-score:has(> .a11y-sum-specimen) > h2.a11y-section-title,
-    .a11y-sum-specimen > .a11y-sum-run > .a11y-sum-verdict,
-    .a11y-report-actions .a11y-ra-head
+      .a11y-report-actions .a11y-ra-head
   )[class][class] { font-size: 24px; letter-spacing: 0; }
+}
+
+/* THE SCORE'S RANGE AND ITS COUNT IN LETTRA (user's instruction, 25 Nov
+   2026, "use letra here too", on the sentence under the dial and "8 issues
+   found"): PP Lettra Mono Ultralight, centred, the sentence at 32px (24px
+   on a phone) and the count at 24px, no italic (the face has none), no
+   tracking, 1.15 leading (a mono line needs a little more than the
+   Garamond's 1.05). */
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-score .a11y-sum-specimen :is(.a11y-sum-run > .a11y-sum-verdict, .a11y-sum-issues > .a11y-sum-label)[class][class] {
+  font-family: "PP Lettra Mono", ui-monospace, "SF Mono", Menlo, Consolas, "DejaVu Sans Mono", monospace; font-weight: 200; font-style: normal; font-synthesis: none;
+  text-transform: none; text-align: center; line-height: 1.15; letter-spacing: 0;
+}
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-score .a11y-sum-specimen > .a11y-sum-run > .a11y-sum-verdict[class][class] { font-size: 32px; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-score .a11y-sum-specimen > .a11y-sum-issues > .a11y-sum-label[class][class] { font-size: 24px; }
+@media (max-width: 640px) {
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-score .a11y-sum-specimen > .a11y-sum-run > .a11y-sum-verdict[class][class] { font-size: 24px; }
 }
