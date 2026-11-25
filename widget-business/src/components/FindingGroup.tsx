@@ -576,7 +576,7 @@ function TileBody({ text }: { text: string }) {
     );
   }
   return (
-    <ul className="a11y-fd-body a11y-fd-points">
+    <ul className="a11y-fd-body a11y-fd-points" role="list">
       {points.map((p, i) => (
         <li key={i}>
           <CodeText text={p} />
@@ -784,7 +784,7 @@ export function FindingDetails({
           <p>
             <strong className="a11y-fd-title">{t("What to do")}</strong>
           </p>
-          <ul>
+          <ul role="list">
             {whatToDo.map((step) => (
               <li key={step}>
                 <CodeText text={step} />
