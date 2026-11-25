@@ -464,11 +464,12 @@ export function ScoreGauge({
           </section>
         )}
 
-        {/* How the score works and the warning are yellow cards (user's
-            reference, 25 Nov 2026, "design this like this", a foundry's
-            notices): a picture square at the left holding the icon, the
-            words beside it, and the label as an outlined pill under them.
-            The heading stays first in the markup, so it is read first. */}
+        {/* How the score works and the warning are grey panels set as a
+            gig poster (user's reference, 25 Nov 2026, "make these two look
+            like this"): centred, the heading as the caption, the first point
+            in the tight grotesque, the rest in the mono roman, the icon small
+            at the foot. The heading stays first in the markup, so it is read
+            first. */}
         <section className="a11y-sum-counts a11y-sum-card" aria-labelledby={countsId}>
           <span className="a11y-sum-card-pic" aria-hidden="true"><Icon name="information" /></span>
           <div className="a11y-sum-card-body">
