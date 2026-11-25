@@ -153,6 +153,14 @@ describe("the chat contract", () => {
     expect(CHAT_SYSTEM_PROMPT).not.toMatch(/One line on what else you can show/);
   });
 
+  // The user's instruction, 25 Nov 2026, "delete this chapter": a finished
+  // scan gets no reply, so the prompt must not ask for a summary of it in
+  // the answer to the next question either.
+  it("writes no summary after a finished scan", () => {
+    expect(CHAT_SYSTEM_PROMPT).toMatch(/A finished scan gets no reply from you/);
+    expect(CHAT_SYSTEM_PROMPT).not.toMatch(/Your first reply after a scan/);
+  });
+
   it("holds the assistant to the report's own claims", () => {
     expect(CHAT_SYSTEM_PROMPT).toMatch(/Never invent a finding/);
     expect(CHAT_SYSTEM_PROMPT).toMatch(/Never say or imply the site is compliant/);
