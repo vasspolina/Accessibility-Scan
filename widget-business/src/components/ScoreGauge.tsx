@@ -455,6 +455,8 @@ export function ScoreGauge({
                         )}
                       </p>
                     </div>
+                    {/* Shown on hover and focus; the title above is the link's name. */}
+                    <span className="a11y-sum-spec-go" aria-hidden="true">{t("See the finding")}</span>
                   </li>
                 );
               })}
