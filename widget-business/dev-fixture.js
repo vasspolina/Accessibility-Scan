@@ -770,7 +770,11 @@
         // button is wrapped in .a11y-voice, and Back shows only after a
         // block was opened. Looking under the box found nothing from then
         // on, and check:reflow failed every report state as not built.
-        var toForm = sr.querySelector(".a11y-chat .a11y-chat-box-start > button");
+        // Since 25 Nov 2026 Add an image is a direct-child button there too,
+        // always shown, and the harness clicked it (a file picker) instead,
+        // so every report state failed as not built again. Add an image and
+        // Back carry an icon; the sign-in button is words only.
+        var toForm = sr.querySelector(".a11y-chat .a11y-chat-box-start > button:not(:has(svg))");
         if (toForm) { toForm.click(); return null; }
         var chatInput = sr.querySelector("#a11y-chat-input");
         if (chatInput && !chatInput.value) {

@@ -6806,86 +6806,51 @@
   display: block; margin-top: var(--cds-spacing-02); white-space: normal; overflow-wrap: normal;
 }
 
-/* ═══ HOW THE SCORE WORKS AND THE WARNING AS A GIG POSTER (user's
-   reference, 25 Nov 2026, "make these two look like this", a grey bill
-   set centred: a roman caption, the names in a tight grotesque, the date
-   lines in the roman, a small pixel mark at the foot) ═══════════════════
-   This replaces the yellow cards with a black picture square of the same
-   morning. Each notice is one panel on the grey --bubble (black words in
-   light; #1c1c1e with the white ink in dark), 20px corners, 48px 32px
-   inside (32px 16px on a phone), the two 20px apart and 90px under the
-   issues (65px on a phone), everything centred on one column held to 28em
-   so a centred line stays short enough to read.
-   The roman of the reference is PP Lettra Mono Ultralight (the user's "use
-   letra for serif"), no tracking, 1.15 leading: the heading is the caption
-   at 24px over the rest, first in the markup, with no pill now. The first
-   point is the names, PP Telegraf Regular 32px set solid (1.0) at the
-   widget's own tracking for its size, +0.01em (+0.015em at 24px on a
-   phone): the reference's tight -0.025em crowded the letters ("make proper
-   letter spacing", the same day). The other points are the date lines,
-   Lettra at 24px.
-   On a phone 18px, 24px and 18px. The icon is the pixel mark: the icon
-   set's information or warning--alt at 48px (32px) in the ink, centred at
-   the foot by flex order (first in the markup, aria-hidden). Focus never
-   lands here.
-   Merged after the same day's two passes: the sizes are the ten-percent-
-   smaller ones (24 to 22, 32 to 29, 18 to 16, the icon 48 to 43 and 32 to
-   29).
-   TWO COLUMNS (user's instruction, 25 Nov 2026, "turn into two columns",
-   on both panels): no longer centred. The panel is a grid of two equal
-   columns 48px apart; the body is display: contents so its children are
-   the grid's items. Left: the caption on the first row, the first point
-   on the second, the icon at the foot of the third (bottom left). Right:
-   a11y-sum-card-rest, the other points one under another, from the second
-   row, so its first line stands level with the first point's. Under 672px
-   one column, in reading order: caption, first point, the rest, icon. */
-.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-grid > .a11y-sum-card[class][class] {
-  display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); grid-template-rows: auto auto 1fr;
-  column-gap: var(--cds-spacing-09); row-gap: var(--cds-spacing-06); align-items: start;
-  margin: var(--cds-spacing-05) 0 0; padding: var(--cds-spacing-09) var(--cds-spacing-07); border: 0; border-radius: 20px;
-  background: var(--bubble); color: var(--ink); text-align: left;
-}
-.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-grid > :not(.a11y-sum-card) + .a11y-sum-card[class][class] { margin-top: var(--cds-spacing-12); }
-.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-card[class] > .a11y-sum-card-pic {
-  display: flex; grid-column: 1; grid-row: 3; align-self: end; justify-self: start;
-  width: auto; height: auto; border-radius: 0; background: none; color: inherit;
-  font-size: 43px; line-height: 1;
-}
-.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-card[class] > .a11y-sum-card-body {
-  display: contents;
+/* ═══ HOW THE SCORE WORKS, THE WARNING AND THE OVERLAY NOTE AS YELLOW
+   NOTES (user's references, 25 Nov 2026: "design this like this skip dots
+   on left", on the overlay note, then "actually these two also like this",
+   on How the score works and the warning; a yellow note set in a mono
+   face, its striped left edge left out) ═══════════════════════════════════
+   This replaces the grey poster panels and their two columns of the same
+   day. Each note is one block on --yellow-note (#fff500, read off the
+   reference; black words 19.3:1, pinned in both themes, so the words are
+   black here, not --ink), 12px corners, 24px 28px inside (20px 16px on a
+   phone), set left. Every line is PP Lettra Mono Ultralight at 18px, 1.35,
+   +0.02em: the heading (the overlay's title) first, then one empty line,
+   then the points, each its own paragraph one line apart (the reference
+   sets its address solid, but the score's points are sentences). No icon
+   on screen: the reference has none, and the heading says the kind (the
+   icons were aria-hidden already). The score's two notes stand 16px apart
+   under the issues; the overlay note keeps the notices' 32px under it.
+   Focus never lands here. */
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-sum-grid > .a11y-sum-card, .a11y-note.a11y-yellow-note)[class][class] {
+  --yellow-note: #fff500;
+  display: flex; flex-direction: column; align-items: stretch; gap: 1lh;
+  padding: var(--cds-spacing-06) 28px; border: 0; border-radius: 12px;
+  background: var(--yellow-note); color: #000; text-align: left;
   font-family: "PP Lettra Mono", ui-monospace, "SF Mono", Menlo, Consolas, "DejaVu Sans Mono", monospace;
-  font-size: inherit; font-weight: 200; font-synthesis: none; line-height: 1.1; letter-spacing: inherit;
+  font-size: 18px; font-weight: 200; font-synthesis: none; line-height: 1.35; letter-spacing: 0.02em;
+  overflow-wrap: anywhere;
 }
-.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-card[class] > .a11y-sum-card-body > .a11y-sum-card-rest {
-  display: flex; flex-direction: column; gap: var(--cds-spacing-06); grid-column: 2; grid-row: 2 / 4; min-width: 0;
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-grid > .a11y-sum-card[class][class] { margin: var(--cds-spacing-05) 0 0; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-note.a11y-yellow-note[class][class] { margin: 0 0 var(--cds-spacing-07); }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-grid > :not(.a11y-sum-card) + .a11y-sum-card[class][class] { margin-top: var(--cds-spacing-12); }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-card[class] > .a11y-sum-card-pic { display: none; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-sum-card > .a11y-sum-card-body, .a11y-yellow-note > .a11y-note-body)[class] {
+  display: flex; flex-direction: column; gap: 1lh; min-width: 0;
+  font: inherit; letter-spacing: inherit; color: inherit;
 }
-.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-card[class] > .a11y-sum-card-body .a11y-sum-point[class] {
-  /* min-width 0 and break-word: the longest word, the German
-     "Gestaltungshinweise" in the mono face, ran past a 320px window. */
-  min-width: 0; max-width: none; margin: 0; padding: 0; color: inherit;
-  font: inherit; letter-spacing: inherit; text-align: left; overflow-wrap: break-word;
-}
-.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-card[class] > .a11y-sum-card-body > .a11y-sum-card-pill + .a11y-sum-point[class][class] {
-  grid-column: 1; grid-row: 2;
-  font-family: "PP Telegraf", "DejaVu Sans", sans-serif; font-size: inherit; font-weight: 400;
-  line-height: 1; letter-spacing: inherit;
-}
-.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-card[class] > .a11y-sum-card-body > .a11y-sum-card-pill[class] {
-  grid-column: 1; grid-row: 1; justify-self: start; margin: 0; padding: 0; border: 0; border-radius: 0;
-  background: none; color: inherit; white-space: normal; text-transform: none;
-  font-family: inherit; font-size: 18px; font-weight: 200; line-height: 1.2; letter-spacing: 0.025em;
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-sum-card > .a11y-sum-card-body > *, .a11y-yellow-note > .a11y-note-body > *)[class][class] {
+  min-width: 0; max-width: none; margin: 0; padding: 0; border: 0; border-radius: 0;
+  background: none; color: inherit; white-space: normal; text-transform: none; text-align: left;
+  font: inherit; letter-spacing: inherit;
 }
 @media (max-width: 671px) {
-  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-grid > .a11y-sum-card[class][class] { grid-template-columns: minmax(0, 1fr); grid-template-rows: none; gap: var(--cds-spacing-05); padding: var(--cds-spacing-07) var(--cds-spacing-05); }
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-sum-grid > .a11y-sum-card, .a11y-note.a11y-yellow-note)[class][class] { padding: 20px var(--cds-spacing-05); }
   .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-grid > :not(.a11y-sum-card) + .a11y-sum-card[class][class] { margin-top: var(--cds-spacing-10); }
-  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-card[class] > .a11y-sum-card-pic { grid-row: 4; font-size: 26px; }
-  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-card[class] > .a11y-sum-card-body { font-size: inherit; line-height: 1.1; }
-  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-card[class] > .a11y-sum-card-body > .a11y-sum-card-rest { grid-column: 1; grid-row: 3; gap: var(--cds-spacing-05); }
-  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-card[class] > .a11y-sum-card-body > .a11y-sum-card-pill + .a11y-sum-point[class][class] { font-size: inherit; letter-spacing: inherit; }
-  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-card[class] > .a11y-sum-card-body > .a11y-sum-card-pill[class] { font-size: 18px; line-height: 1.2; }
 }
 @media (forced-colors: active) {
-  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-grid > .a11y-sum-card[class][class] { border: 1px solid CanvasText; }
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-sum-grid > .a11y-sum-card, .a11y-note.a11y-yellow-note)[class][class] { border: 1px solid CanvasText; }
 }
 @media print {
   .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-card { break-inside: avoid; }

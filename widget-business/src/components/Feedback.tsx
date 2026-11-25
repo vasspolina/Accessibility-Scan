@@ -67,13 +67,16 @@ export function Notification({
   kind = "info",
   title,
   subtitle,
+  className,
 }: {
   kind?: NotificationKind;
   title: ReactNode;
   subtitle?: ReactNode;
+  /** An extra class for a notice with its own look (the yellow note). */
+  className?: string;
 }) {
   return (
-    <div className={`a11y-note a11y-note-${kind}`} role={kind === "error" ? "alert" : "status"}>
+    <div className={`a11y-note a11y-note-${kind}${className ? ` ${className}` : ""}`} role={kind === "error" ? "alert" : "status"}>
       {/* No icon before the words (user's instruction, 25 Nov 2026, "delete
           these icons", on the enamel pins that marked info, error and
           success): the title says the kind. A warning keeps its small badge

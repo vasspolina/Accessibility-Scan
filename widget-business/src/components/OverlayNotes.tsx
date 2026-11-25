@@ -31,6 +31,7 @@ export function OverlayNotes({ overlays }: { overlays?: DetectedOverlay[] }) {
         <Notification
           key={o.vendor}
           kind="info"
+          className="a11y-yellow-note"
           title={tf("This page loads an accessibility overlay: {vendor}", { vendor: o.vendor })}
           subtitle={
             <>
