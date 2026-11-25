@@ -57,6 +57,7 @@
   --gutter: 32px; --gutter-narrow: 16px;
 
   --mono: "PP Lettra Mono", ui-monospace, "SF Mono", Menlo, Consolas, "DejaVu Sans Mono", monospace;
+  --close: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cpath d='M17.4141 16 24 9.4141 22.5859 8 16 14.5859 9.4143 8 8 9.4141 14.5859 16 8 22.5859 9.4143 24 16 17.4141 22.5859 24 24 22.5859 17.4141 16z'/%3E%3C/svg%3E");
   --caret-right: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cpath d='M12 8 22 16 12 24z'/%3E%3C/svg%3E");
   --caret-down: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cpath d='M24 12 16 22 8 12z'/%3E%3C/svg%3E");
   --arrow-right: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cpath d='M18 6 16.57 7.393 24.15 15 4 15 4 17 24.15 17 16.57 24.573 18 26 28 16 18 6z'/%3E%3C/svg%3E");
@@ -267,10 +268,19 @@ main.wrap { padding-top: var(--s10); }
   .cols { grid-template-columns: minmax(0, 1fr); gap: var(--s06); }
 }
 .text h2, .card h2 { margin-bottom: var(--s05); }
-.text h3 { margin: 1lh 0 var(--s03); font-family: var(--mono); font-size: 18px; line-height: 1.2; letter-spacing: 0; text-transform: uppercase; }
+.text h3 { margin: 1lh 0 var(--s03); letter-spacing: 0.02em; text-transform: uppercase; }
+/* A list in the column (user's reference, 25 Nov 2026, "typesetting need to
+   look like this", on a programme of upcoming lectures): the heading in
+   capitals in the body face at the prose size, each item behind a thin
+   cross (Carbon's close, as a mask) set inside the column, not hung in the
+   margin where the en dash used to sit against the window's edge. The
+   cross is 0.7em, centred on the item's first line; the words start 1.15em in. */
 .text ul { padding: 0; list-style: none; }
-.text li { position: relative; }
-.text li::before { content: "\2013"; position: absolute; right: calc(100% + 0.3em); }
+.text li { position: relative; padding-left: 1.15em; }
+.text li::before {
+  content: ""; position: absolute; left: 0; top: calc((1lh - 0.7em) / 2); width: 0.7em; height: 0.7em; background: currentColor;
+  -webkit-mask: var(--close) center / contain no-repeat; mask: var(--close) center / contain no-repeat;
+}
 
 /* The side note: a cream card. */
 .card {
@@ -398,9 +408,13 @@ main.wrap { padding-top: var(--s10); }
 
 /* ---------- Footer ---------- */
 footer.wrap { margin-top: var(--s12); padding-bottom: var(--s07); }
+/* The EAA notice in Lettra, centred (user's instructions, 25 Nov 2026,
+   "letra", "centered"): PP Lettra Mono, no tracking, 1.15 leading, every
+   line centred and the box centred in the column. */
 .notice {
-  width: fit-content; max-width: 100%; padding: var(--s05) var(--s06); border-radius: var(--r-card);
-  background: var(--hover); color: var(--hover-ink); font-size: 24px; line-height: 1.15; letter-spacing: 0.015em;
+  width: fit-content; max-width: 100%; margin-inline: auto; padding: var(--s05) var(--s06); border-radius: var(--r-card);
+  background: var(--hover); color: var(--hover-ink); font-family: var(--mono); font-size: 24px; line-height: 1.15; letter-spacing: 0;
+  text-align: center;
 }
 
 /* Stay in touch: the scan's "Email me this report", the green panel. */
@@ -460,7 +474,6 @@ footer.wrap { margin-top: var(--s12); padding-bottom: var(--s07); }
   .request__row .signup__btn { justify-self: center; }
   .request__brief > div { gap: var(--s02); }
   .plate { min-height: 240px; padding: var(--s06); }
-  .text li::before { position: static; margin-right: 0.3em; }
   .acc__btn { min-height: 56px; padding: var(--s03) var(--s05); font-size: 24px; line-height: 1.15; letter-spacing: 0.015em; }
   .acc__panel { padding: var(--s03) var(--s05) var(--s05); }
   .acc__lede { font-size: 24px; }
@@ -468,13 +481,14 @@ footer.wrap { margin-top: var(--s12); padding-bottom: var(--s07); }
   .foot { grid-template-columns: minmax(0, 1fr); gap: var(--s07); }
   .bubble__msg, .chat__turn:nth-child(odd) .chat__text { max-width: 90%; }
   .card, .bubble__msg, .chat__box textarea, .notice, .foot__col, .news__text, .acc__body, .chat__turn:nth-child(odd) .chat__text { font-size: 18px; letter-spacing: 0.025em; line-height: 1.2; }
+  .notice { letter-spacing: 0; }
 }
 
 /* ---------- Forced colours ---------- */
 @media (forced-colors: active) {
   .signup, .request, .plate, .card, .slogan__link, .chat__prompt, .bubble__msg, .acc__btn, .acc__row, .notice, .news,
   .nav a, .toc a, .plates__btn, .theme, .btn, .signup__btn, .chat__send, .request__link, .signup__field { border: 1px solid CanvasText; }
-  .signup__btn::after, .plates__btn::before, .news__btn::before, .offer__link::before { background: ButtonText; forced-color-adjust: none; }
+  .signup__btn::after, .plates__btn::before, .news__btn::before, .offer__link::before, .text li::before { background: ButtonText; forced-color-adjust: none; }
 }
 
 /* ---------- More air between the pieces (user's instruction, 25 Nov 2026,
