@@ -7743,9 +7743,17 @@
    alike (70px each side, where it was 40), and the box's own words and
    buttons stand 30px inside its edge (they were 16px top and bottom,
    24px at the sides). Phones keep their gutter. */
+/* The box is half as tall (user's instruction, 25 Nov 2026, "make chat
+   half tall", on the empty box at about 200px): 8px inside at the top
+   and bottom where it was 32 (the 32px sides stay), the field one line
+   where it was two (it still grows as you type, up to 40vh), and 8px
+   between the field and the row of buttons where it was 16. Empty, the
+   box is about 110px. */
 @media (min-width: 672px) {
   .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-chat-layout > .a11y-chat[class] { padding-inline: var(--cds-spacing-07); }
-  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-chat .a11y-chat-box[class][class] { padding: var(--cds-spacing-07); }
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-chat .a11y-chat-box[class][class] { padding: var(--cds-spacing-03) var(--cds-spacing-07); }
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-chat-dock .a11y-chat-composer .a11y-chat-box textarea { min-height: 1lh; }
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-chat .a11y-chat-box-row[class] { margin-top: var(--cds-spacing-03); }
 }
 
 /* ═══ THE STATEMENT'S FORM AND FACTS AS ONE PANEL (user's instruction,
