@@ -1449,3 +1449,56 @@ body > header { padding-block: 20px 19px; }
   .acc__body .terms > div + div { margin-top: 36px; }
   .acc__body .terms dt { margin-bottom: 16px; font-size: 28px; }
 }
+
+/* THE EYEBROW AND THE BUBBLE AS ONE (user's choice, 23 Nov 2026, "merge",
+   "Eyebrow and bubble"): the bubble moved into the chat, under the eyebrow
+   that names the scanner, so the line and the message it invites read as
+   one block before the question cards. It keeps to the right, as a message
+   you send, at 80% of the chat's width (the full width on a phone). */
+.chat .bubble { max-width: 80%; margin: 40px 0 0 auto; }
+.chat .bubble + .chat__prompts { margin-top: 64px; }
+@media (max-width: 640px) {
+  .chat .bubble { max-width: none; margin-top: 28px; }
+  .chat .bubble + .chat__prompts { margin-top: 44px; }
+}
+
+/* THE LOGO ROW AT THE FOOT (user's reference, 23 Nov 2026, "add this kind
+   of thing in footer but use the logo from barrier free"): under the 1px
+   rule, the logo at the left and two marks at the right, all 48px. The
+   marks are the logo's four petals as one ink shape (logo.svg as a mask),
+   upright and turned 45deg; they are drawn by the row's own pseudo-elements,
+   so they say nothing to a screen reader and need no markup on each page.
+   The Light / Dark button stays, just before them. */
+.foot__base { gap: 16px; }
+.foot__logo { width: 48px; height: 48px; margin-right: auto; }
+.foot__base .theme { order: 2; }
+.foot__base::before, .foot__base::after {
+  content: ""; flex: none; width: 48px; height: 48px; background: var(--ink);
+  -webkit-mask: url("logo.svg") center / contain no-repeat; mask: url("logo.svg") center / contain no-repeat;
+}
+.foot__base::before { order: 3; }
+.foot__base::after { order: 4; transform: rotate(45deg); }
+@media (max-width: 640px) {
+  .foot__logo, .foot__base::before, .foot__base::after { width: 40px; height: 40px; }
+}
+
+/* THE TYPE FLOOR (user's instruction, 24 Nov 2026, "make font sizes do not
+   fall under 16px on desktop and 14px on mobile"). Above 640px of window
+   nothing is set under 16px: the body (15px before), the post tags, the
+   chat's speaker and note lines, and the contact form's raised label (14px
+   before; at 16px on an 18px line from 6px it ends at 24px, clear of the
+   typed words, which start 27px down the 56px field). Under 640px the
+   floor is 14px, which the phone sizes already met.
+   THE TEXT ON THE LIME BAND, LARGER (user's instruction, the same day,
+   "make text on yellow bigger"): an opened "What we offer" row's red line
+   and its terms go from 20px to 24px, the page's own running text size
+   (.text), and stay one size as before; 22px to 860px (17px before), 20px
+   on a phone, as .text is there. */
+@media (min-width: 641px) {
+  body { font-size: 16px; line-height: 21px; }
+  .tags, .post__img--todo p, .chat__who, .chat__note { font-size: 16px; line-height: 21px; }
+  .signup__field > label { top: 6px; font-size: 16px; line-height: 18px; }
+}
+.acc__lede, .acc__body { font-size: 24px; }
+@media (max-width: 860px) { .acc__lede, .acc__body { font-size: 22px; } }
+@media (max-width: 640px) { .acc__lede, .acc__body { font-size: 20px; } }
