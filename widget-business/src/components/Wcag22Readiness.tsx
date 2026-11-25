@@ -30,6 +30,7 @@ export function Wcag22Readiness({ readiness }: { readiness: Readiness }) {
      on one line, the criterion (number, level, name) and why a person is
      needed inside it. All shut at first. */
   const [open, setOpen] = useState<Set<string>>(() => new Set());
+  const [sectionOpen, setSectionOpen] = useState(false);
   const toggle = (id: string) =>
     setOpen((prev) => {
       const next = new Set(prev);
@@ -40,7 +41,22 @@ export function Wcag22Readiness({ readiness }: { readiness: Readiness }) {
 
   return (
     <section className="a11y-section a11y-w22" aria-labelledby="a11y-w22-heading">
-      <h2 className="a11y-section-title" id="a11y-w22-heading" data-nav-label={t("WCAG 2.2")}>{t("Ready for WCAG 2.2?")}</h2>
+      {/* The whole section is one caret (user's instruction, 25 Nov 2026,
+          "this whole content needs to be a caret"): the title opens and
+          shuts the sentence and the six items, and the when and the fail
+          count stay under it shut, as the picture of the shut section
+          showed. Shut at first. */}
+      <h2 className="a11y-section-title a11y-w22-title" id="a11y-w22-heading" data-nav-label={t("WCAG 2.2")}>
+        <button
+          type="button"
+          className="a11y-w22-head"
+          aria-expanded={sectionOpen}
+          aria-controls="a11y-w22-desc a11y-w22-body"
+          onClick={() => setSectionOpen((v) => !v)}
+        >
+          {t("Ready for WCAG 2.2?")}
+        </button>
+      </h2>
 
       {/* The heading already names the standard, so the line under it
           says only when, and the six items are listed once, in the
@@ -53,12 +69,14 @@ export function Wcag22Readiness({ readiness }: { readiness: Readiness }) {
           "Not required yet. The {total} new items count once EN 301 549 adopts WCAG 2.2.",
           { total }
         )}
+        descriptionId="a11y-w22-desc"
+        descriptionHidden={!sectionOpen}
       />
 
       {/* The six items stand open under the sentence (user's instruction,
           23 Nov 2026, "just unfold all info under text"): no title and no
           Show details toggle over them, since the sentence names them. */}
-      <div className="a11y-w22-panel">
+      <div className="a11y-w22-panel" id="a11y-w22-body" hidden={!sectionOpen}>
         {/* A list of caret rows, as the findings (user's instruction, 24 Nov
             2026, "align properly and make a carret"): the triangle, the
             plain question, the call at the far end; opened, the criterion

@@ -31,6 +31,8 @@ export function WhatsNextPanel({
   description,
   items = [],
   defaultOpen = false,
+  descriptionId,
+  descriptionHidden = false,
   style,
 }: {
   eyebrow?: string;
@@ -40,6 +42,10 @@ export function WhatsNextPanel({
   description: string;
   items?: Array<{ criterion: string; title: string; level: string }>;
   defaultOpen?: boolean;
+  /* For a section that folds under its own title: the sentence takes this
+     id so the title's toggle can point at it, and hides with the rest. */
+  descriptionId?: string;
+  descriptionHidden?: boolean;
   /* Kept for the same reason Card keeps it: the call site passes spacing
      through, and this stage moves components without rewriting screens. */
   style?: CSSProperties;
@@ -82,7 +88,7 @@ export function WhatsNextPanel({
         </span>
       </button>
       )}
-      <p className="a11y-next-desc">{description}</p>
+      <p className="a11y-next-desc" id={descriptionId} hidden={descriptionHidden}>{description}</p>
       {/* Always in the DOM so aria-controls always points at something real;
           hidden rather than unmounted, which is also what lets the print
           stylesheet reveal it. */}

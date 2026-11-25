@@ -56,7 +56,7 @@ function criterionOf(f: AccessibilityFinding): string {
 
 /** The clause alone: the column's title already says which standard. */
 function enClauseOf(f: AccessibilityFinding): string {
-  return enClauseFor(f.wcagCriterion, f.wcagLevel)?.replace(/^EN 301 549 · /, "") ?? "";
+  return enClauseFor(f.wcagCriterion, f.wcagLevel)?.replace(/^EN 301 549 /, "") ?? "";
 }
 
 export function findingsCsv(report: AccessibilityReport): string {

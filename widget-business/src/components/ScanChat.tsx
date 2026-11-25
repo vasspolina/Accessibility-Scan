@@ -527,7 +527,7 @@ export function stepResult(step: string, report: AccessibilityReport): string | 
   const found = (n: number) =>
     unfinished
       ? n
-        ? `${n} ${t("found")} · ${t("Did not finish")}`
+        ? `${n} ${t("found")} — ${t("Did not finish")}`
         : t("Did not finish")
       : n
         ? `${n} ${t("found")}`
@@ -559,7 +559,7 @@ export function stepResult(step: string, report: AccessibilityReport): string | 
       if (unfinished && cut && !otherUnfinished) {
         const n = count(isKeyboard);
         const first = t("first {n} stops").replace("{n}", String(cut));
-        return `${n ? `${n} ${t("found")}` : t("Nothing found")} · ${first}`;
+        return `${n ? `${n} ${t("found")}` : t("Nothing found")} — ${first}`;
       }
       return found(count(isKeyboard));
     }
